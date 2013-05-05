@@ -62,7 +62,7 @@ Policy
   .Retry(3)
 ```
 
-### Retry multiple times calling an action on each retry with the current exception and retry count ###
+### Retry multiple times, calling an action on each retry with the current exception and retry count ###
 
 ```csharp
 Policy
@@ -81,7 +81,7 @@ Policy
   .RetryForever()
 ```
 
-### Retry forever calling an action on each retry with the current exception ###
+### Retry forever, calling an action on each retry with the current exception ###
 
 ```csharp
 Policy
@@ -92,7 +92,7 @@ Policy
   });
 ```
 
-### Retry, waiting a specified time duration between each retry ###
+### Retry, waiting a specified duration between each retry ###
 
 ```csharp
 Policy
@@ -105,7 +105,7 @@ Policy
   });
 ```
 
-### Retry, waiting a specified time between each retry and calling an action on each retry with the current exception and timespan
+### Retry, waiting a specified duration between each retry, calling an action on each retry with the current exception and duration
 
 ```csharp
 Policy
@@ -120,7 +120,7 @@ Policy
   }); 
 ```
 
-### Retry a specified number of times passing a function to calculate the interval to wait between retries based on the current retry attempt (allows for exponential backoff)
+### Retry a specified number of times, using a function to calculate the duration to wait between retries based on the current retry attempt (allows for exponential backoff)
 ```csharp
 // in this case will wait for
 //  1 ^ 2 = 2 seconds then
@@ -135,7 +135,7 @@ Policy
   );
 ```
 
-### Retry a specified number of times passing a function to calculate the interval to wait between retries based on the current retry attempt and calling an action on each retry with the current exception and timespan
+### Retry a specified number of times, using a function to calculate the duration to wait between retries based on the current retry attempt, calling an action on each retry with the current exception and duration
 ```csharp
 Policy
   .Handle<DivideByZeroException>()
@@ -155,6 +155,10 @@ Policy
   .CircuitBreaker(2, TimeSpan.FromMinutes(1));
 ```
 
+For more information on the Circuit Breaker pattern see:
+* [Making the Netflix API More Resilient](http://techblog.netflix.com/2011/12/making-netflix-api-more-resilient.html)
+* [The Circuit Breaker](http://thatextramile.be/blog/2008/05/the-circuit-breaker)
+ 
 ## Step 3 : Execute the policy
 
 ### Execute an action
