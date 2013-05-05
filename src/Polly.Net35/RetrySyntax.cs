@@ -35,7 +35,7 @@ namespace Polly
 
         /// <summary>
         /// Builds a <see cref="Policy"/> that will retry <paramref name="retryCount"/> times
-        /// calling <paramref name="onRetry"/> on each retry.
+        /// calling <paramref name="onRetry"/> on each retry with the raised exception and retry count.
         /// </summary>
         /// <param name="policyBuilder">The policy builder.</param>
         /// <param name="retryCount">The retry count.</param>
@@ -66,7 +66,7 @@ namespace Polly
 
         /// <summary>
         /// Builds a <see cref="Policy"/> that will retry indefinitely
-        /// calling <paramref name="onRetry"/> on each retry.
+        /// calling <paramref name="onRetry"/> on each retry with the raised exception.
         /// </summary>
         /// <param name="policyBuilder">The policy builder.</param>
         /// <param name="onRetry">The action to call on each retry.</param>
@@ -98,7 +98,7 @@ namespace Polly
 
         /// <summary>
         /// Builds a <see cref="Policy"/> that will wait and retry <paramref name="retryCount"/> times
-        /// calling <paramref name="onRetry"/> on each retry.
+        /// calling <paramref name="onRetry"/> on each retry with the raised exception and the current sleep duration.
         /// On each retry, the duration to wait is calculated by calling <paramref name="sleepDurationProvider"/> with
         /// the current retry attempt allowing an exponentially increasing wait time (exponential backoff).
         /// </summary>
@@ -143,7 +143,7 @@ namespace Polly
 
         /// <summary>
         /// Builds a <see cref="Policy"/> that will wait and retry as many times as there are provided <paramref name="sleepDurations"/>
-        /// calling <paramref name="onRetry"/> on each retry.
+        /// calling <paramref name="onRetry"/> on each retry with the raised exception and the current sleep duration.
         /// On each retry, the duration to wait is the current <paramref name="sleepDurations"/> item.
         /// </summary>
         /// <param name="policyBuilder">The policy builder.</param>
