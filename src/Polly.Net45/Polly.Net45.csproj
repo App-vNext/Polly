@@ -1,0 +1,116 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{29265540-F724-4324-9321-643A0FCB133F}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Polly</RootNamespace>
+    <AssemblyName>Polly</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <DocumentationFile>bin\Debug\Polly.XML</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <DocumentationFile>bin\Release\Polly.XML</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>Polly.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\..\SolutionAssemblyInfo.cs">
+      <Link>Properties\SolutionAssemblyInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\..\SolutionVersion.cs">
+      <Link>Properties\SolutionVersion.cs</Link>
+    </Compile>
+    <Compile Include="..\Polly.Net35\CircuitBreakerSyntax.cs">
+      <Link>CircuitBreakerSyntax.cs</Link>
+    </Compile>
+    <Compile Include="..\Polly.Net35\CircuitBreaker\BrokenCircuitException.cs">
+      <Link>CircuitBreaker\BrokenCircuitException.cs</Link>
+    </Compile>
+    <Compile Include="..\Polly.Net35\CircuitBreaker\CircuitBreakerPolicy.cs">
+      <Link>CircuitBreaker\CircuitBreakerPolicy.cs</Link>
+    </Compile>
+    <Compile Include="..\Polly.Net35\CircuitBreaker\CircuitBreakerState.cs">
+      <Link>CircuitBreaker\CircuitBreakerState.cs</Link>
+    </Compile>
+    <Compile Include="..\Polly.Net35\CircuitBreaker\ICircuitBreakerState.cs">
+      <Link>CircuitBreaker\ICircuitBreakerState.cs</Link>
+    </Compile>
+    <Compile Include="..\Polly.Net35\ExceptionPredicate.cs">
+      <Link>ExceptionPredicate.cs</Link>
+    </Compile>
+    <Compile Include="..\Polly.Net35\OrSyntax.cs">
+      <Link>OrSyntax.cs</Link>
+    </Compile>
+    <Compile Include="..\Polly.Net35\Policy.cs">
+      <Link>Policy.cs</Link>
+    </Compile>
+    <Compile Include="..\Polly.Net35\PolicyBuilder.cs">
+      <Link>PolicyBuilder.cs</Link>
+    </Compile>
+    <Compile Include="..\Polly.Net35\RetrySyntax.cs">
+      <Link>RetrySyntax.cs</Link>
+    </Compile>
+    <Compile Include="..\Polly.Net35\Retry\IRetryPolicyState.cs">
+      <Link>Retry\IRetryPolicyState.cs</Link>
+    </Compile>
+    <Compile Include="..\Polly.Net35\Retry\RetryPolicy.cs">
+      <Link>Retry\RetryPolicy.cs</Link>
+    </Compile>
+    <Compile Include="..\Polly.Net35\Retry\RetryPolicyState.cs">
+      <Link>Retry\RetryPolicyState.cs</Link>
+    </Compile>
+    <Compile Include="..\Polly.Net35\Retry\RetryPolicyStateWithCount.cs">
+      <Link>Retry\RetryPolicyStateWithCount.cs</Link>
+    </Compile>
+    <Compile Include="..\Polly.Net35\Retry\RetryPolicyStateWithSleep.cs">
+      <Link>Retry\RetryPolicyStateWithSleep.cs</Link>
+    </Compile>
+    <Compile Include="..\Polly.Net35\Utilities\SystemClock.cs">
+      <Link>Utilities\SystemClock.cs</Link>
+    </Compile>
+    <Compile Include="..\Polly.Net35\Utilities\TimedLock.cs">
+      <Link>Utilities\TimedLock.cs</Link>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Polly.snk" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
