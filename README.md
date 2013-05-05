@@ -2,6 +2,186 @@ Polly
 =
 Polly is a .NET 3.5 / 4.0 / 4.5 library that allows developers to express transient exception handling policies such as Retry, Retry Forever, Wait and Retry or Circuit Breaker in a fluent manner.
 
+Installing via NuGet
+=
+
+    Install-Package Polly
+
+Usage
+=
+## Step 1 : Specify the type of exceptions you want the policy to handle ##
+
+### Single exception type
+
+```csharp
+Policy
+  .Handle<DivideByZeroException>()
+```
+
+### Single exception type with condition
+
+```csharp
+Policy
+  .Handle<DivideByZeroException>()
+  .Or<ArgumentException>()
+
+```
+
+### Multiple exception types
+
+```csharp
+Policy
+  .Handle<DivideByZeroException>()
+```
+
+### Multiple exception types with condition
+
+```csharp
+Policy
+  .Handle<SqlException>(ex => ex.Number == 1205)
+  .Or<ArgumentException>(ex => ex => x.ParamName == "example")
+```
+
+## Step 2 : Specifiy how the policy should handle those exceptions
+
+### Retry once ###
+
+```csharp
+Policy
+  .Handle<DivideByZeroException>()
+  .Retry()
+```
+
+### Retry multiple times ###
+
+```csharp
+Policy
+  .Handle<DivideByZeroException>()
+  .Retry(3)
+```
+
+### Retry multiple times calling an action on each retry with the current exception and retry count ###
+
+```csharp
+Policy
+    .Handle<DivideByZeroException>()
+    .Retry(3, (exception, retyCount) =>
+    {
+        // do something 
+    });
+```
+
+### Retry forever ###
+
+```csharp
+Policy
+  .Handle<DivideByZeroException>()
+  .RetryForever()
+```
+
+### Retry forever calling an action on each retry with the current exception ###
+
+```csharp
+Policy
+  .Handle<DivideByZeroException>()
+  .RetryForever(exception =>
+  {
+        // do something       
+  });
+```
+
+### Retry, waiting a specified time duration between each retry ###
+
+```csharp
+Policy
+  .Handle<DivideByZeroException>()
+  .WaitAndRetry(new[]
+  {
+    TimeSpan.FromSeconds(1),
+    TimeSpan.FromSeconds(2),
+    TimeSpan.FromSeconds(3)
+  });
+```
+
+### Retry, waiting a specified time between each retry and calling an action on each retry with the current exception and timespan
+
+```csharp
+Policy
+  .Handle<DivideByZeroException>()
+  .WaitAndRetry(new[]
+  {
+    1.Seconds(),
+    2.Seconds(),
+    3.Seconds()
+  }, (exception, timeSpan) => {
+    // do something    
+  }); 
+```
+
+### Retry a specified number of times passing a function to calculate the interval to wait between retries based on the current retry attempt (allows for exponential backoff)
+```csharp
+// in this case will wait for
+//  1 ^ 2 = 2 seconds then
+//  2 ^ 2 = 4 seconds then
+//  3 ^ 2 = 8 seconds then
+//  4 ^ 2 = 16 seconds then
+//  5 ^ 2 = 32 seconds
+Policy
+  .Handle<DivideByZeroException>()
+  .WaitAndRetry(5, retryAttempt => 
+	TimeSpan.FromSeconds(Math.Pow(2, retryAttempt) 
+  );
+```
+
+### Retry a specified number of times passing a function to calculate the interval to wait between retries based on the current retry attempt and calling an action on each retry with the current exception and timespan
+```csharp
+Policy
+  .Handle<DivideByZeroException>()
+  .WaitAndRetry(
+    5, 
+    retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)), 
+    (exception, timeSpan) => {
+      // do something
+    }
+  );
+```
+
+### Circuit Breaker, break circuit after the specified number of exceptions and keep circuit broken for the specified duration
+```csharp
+Policy
+  .Handle<DivideByZeroException>()
+  .CircuitBreaker(2, TimeSpan.FromMinutes(1));
+```
+
+## Step 3 : Execute the policy
+
+### Execute an action
+```csharp
+var policy = Policy
+              .Handle<DivideByZeroException>()
+              .Retry();
+
+policy.Execute(() => DoSomething());
+```
+
+### Execute a function returning a result
+```csharp
+var policy = Policy
+              .Handle<DivideByZeroException>()
+              .Retry();
+
+var result = policy.Execute(() => DoSomething());
+```
+
+### You can of course chain it all together
+```csharp
+Policy
+  .Handle<SqlException>(ex => ex.Number == 1205)
+  .Or<ArgumentException>(ex => ex.ParamName == "example")
+  .Retry()
+  .Execute(() => DoSomething());
+```
+
 3rd Party Libraries
 =
 
@@ -9,8 +189,7 @@ Polly is a .NET 3.5 / 4.0 / 4.5 library that allows developers to express transi
 
 * [xUnit.net](http://xunit.codeplex.com/) - Free, open source, community-focused unit testing tool for the .NET Framework | [Apache License 2.0 (Apache)](http://xunit.codeplex.com/license)
 
-* [Ian Griffith's TimedLock](http://www.interact-sw.co.uk/iangblog/2004/04/26/yetmoretimedlocking)
-
+* [Ian Griffith's TimedLock] (http://www.interact-sw.co.uk/iangblog/2004/04/26/yetmoretimedlocking)
 Acknowledgements
 =
 
