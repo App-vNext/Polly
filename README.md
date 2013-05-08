@@ -23,10 +23,9 @@ Policy
 ### Single exception type with condition
 
 ```csharp
-Policy
-  .Handle<DivideByZeroException>()
-  .Or<ArgumentException>()
 
+Policy
+  .Handle<SqlException>(ex => ex.Number == 1205)
 ```
 
 ### Multiple exception types
@@ -34,6 +33,7 @@ Policy
 ```csharp
 Policy
   .Handle<DivideByZeroException>()
+  .Or<ArgumentException>()
 ```
 
 ### Multiple exception types with condition
