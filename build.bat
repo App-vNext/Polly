@@ -3,7 +3,7 @@
 set nuget_dir=%~dp0.nuget
 set packages_dir=%~dp0packages
 
-%nuget_dir%\Nuget.exe install %nuget_dir%\packages.config -OutputDirectory %packages_dir%
+"%nuget_dir%\Nuget.exe" install "%nuget_dir%\packages.config" -OutputDirectory "%packages_dir%"
 
 set configuration=release
 set task=default
