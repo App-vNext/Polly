@@ -6,7 +6,9 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{67DE5201-A735-4C13-B528-488231ED01A8}"
 	ProjectSection(SolutionItems) = preProject
 		build.ps1 = build.ps1
+		CHANGELOG.md = CHANGELOG.md
 		LICENSE.txt = LICENSE.txt
+		Polly.nuspec = Polly.nuspec
 		README.md = README.md
 		SolutionAssemblyInfo.cs = SolutionAssemblyInfo.cs
 		SolutionVersion.cs = SolutionVersion.cs
