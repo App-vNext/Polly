@@ -4,16 +4,23 @@ namespace Polly.Retry
 {
     internal class RetryPolicyState : IRetryPolicyState
     {
-        private readonly Action<Exception> _onRetry;
+        private readonly Action<Exception, Context> _onRetry;
+        private readonly Context _context;
 
-        public RetryPolicyState(Action<Exception> onRetry)
+        public RetryPolicyState(Action<Exception, Context> onRetry, Context context)
         {
             _onRetry = onRetry;
+            _context = context;
+        }
+
+        public RetryPolicyState(Action<Exception> onRetry) :
+            this((exception, context) => onRetry(exception), null)
+        {
         }
 
         public bool CanRetry(Exception ex)
         {
-            _onRetry(ex);
+            _onRetry(ex, _context);
             return true;
         }
     }

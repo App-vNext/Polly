@@ -62,6 +62,12 @@
     <Compile Include="..\Polly.Net35\CircuitBreaker\ICircuitBreakerState.cs">
       <Link>CircuitBreaker\ICircuitBreakerState.cs</Link>
     </Compile>
+    <Compile Include="..\Polly.Net35\Context.cs">
+      <Link>Context.cs</Link>
+    </Compile>
+    <Compile Include="..\Polly.Net35\ContextualPolicy.cs">
+      <Link>ContextualPolicy.cs</Link>
+    </Compile>
     <Compile Include="..\Polly.Net35\ExceptionPredicate.cs">
       <Link>ExceptionPredicate.cs</Link>
     </Compile>
@@ -91,6 +97,9 @@
     </Compile>
     <Compile Include="..\Polly.Net35\Retry\RetryPolicyStateWithSleep.cs">
       <Link>Retry\RetryPolicyStateWithSleep.cs</Link>
+    </Compile>
+    <Compile Include="..\Polly.Net35\Utilities\ReadOnlyDictionary.cs">
+      <Link>Utilities\ReadOnlyDictionary.cs</Link>
     </Compile>
     <Compile Include="..\Polly.Net35\Utilities\SystemClock.cs">
       <Link>Utilities\SystemClock.cs</Link>

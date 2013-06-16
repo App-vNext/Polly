@@ -17,26 +17,54 @@ namespace Polly.Specs
         }
 
         [Fact]
-        public void Should_throw_when_sleep_durations_is_null()
+        public void Should_throw_when_sleep_durations_is_null_without_context()
         {
+            Action<Exception, TimeSpan> onRetry = (_, __) => { };
+
             Action policy = () => Policy
                                       .Handle<DivideByZeroException>()
-                                      .WaitAndRetry(null);
+                                      .WaitAndRetry(null, onRetry);
 
-            policy.ShouldThrow<ArgumentNullException>()
-                  .And
+            policy.ShouldThrow<ArgumentNullException>().And
                   .ParamName.Should().Be("sleepDurations");
         }
 
         [Fact]
-        public void Should_throw_when_on_retry_action_is_null()
+        public void Should_throw_when_sleep_durations_is_null_with_context()
         {
+            Action<Exception, TimeSpan, Context> onRetry = (_, __, ___) => { };
+
             Action policy = () => Policy
                                       .Handle<DivideByZeroException>()
-                                      .WaitAndRetry(Enumerable.Empty<TimeSpan>(), null);
+                                      .WaitAndRetry(null, onRetry);
 
-            policy.ShouldThrow<ArgumentNullException>()
-                  .And
+            policy.ShouldThrow<ArgumentNullException>().And
+                  .ParamName.Should().Be("sleepDurations");
+        }
+
+        [Fact]
+        public void Should_throw_when_onretry_action_is_null_without_context()
+        {
+            Action<Exception, TimeSpan> nullOnRetry = null;
+
+            Action policy = () => Policy
+                                      .Handle<DivideByZeroException>()
+                                      .WaitAndRetry(Enumerable.Empty<TimeSpan>(), nullOnRetry);
+
+            policy.ShouldThrow<ArgumentNullException>().And
+                  .ParamName.Should().Be("onRetry");
+        }
+
+        [Fact]
+        public void Should_throw_when_onretry_action_is_null_with_context()
+        {
+            Action<Exception, TimeSpan, Context> nullOnRetry = null;
+
+            Action policy = () => Policy
+                                      .Handle<DivideByZeroException>()
+                                      .WaitAndRetry(Enumerable.Empty<TimeSpan>(), nullOnRetry);
+
+            policy.ShouldThrow<ArgumentNullException>().And
                   .ParamName.Should().Be("onRetry");
         }
         
@@ -350,6 +378,29 @@ namespace Polly.Specs
         }
 
         [Fact]
+        public void Should_call_onretry_with_the_passed_context()
+        {
+            IDictionary<string, object> contextData = null;
+
+            var policy = Policy
+                .Handle<DivideByZeroException>()
+                .WaitAndRetry(new[]
+                {
+                   1.Seconds(),
+                   2.Seconds(),
+                   3.Seconds()
+                }, (_, __, context) => contextData = context);
+
+            policy.RaiseException<DivideByZeroException>(
+                new { key1 = "value1", key2 = "value2" }.AsDictionary()
+            );
+
+            contextData.Should()
+                       .ContainKeys("key1", "key2").And
+                       .ContainValues("value1", "value2");
+        }
+
+        [Fact]
         public void Should_not_call_onretry_when_no_retries_are_performed()
         {
             var retryCounts = new List<int>();
@@ -383,39 +434,107 @@ namespace Polly.Specs
         }
 
         [Fact]
-        public void Should_throw_when_retry_count_is_less_than_one()
+        public void Should_create_new_context_for_each_call_to_policy()
         {
+            string contextValue = null;
+
+            var policy = Policy
+                .Handle<DivideByZeroException>()
+                .WaitAndRetry(new[]
+                {
+                    1.Seconds()
+                }, 
+                (_, __, context) => contextValue = context["key"].ToString());
+
+            policy.RaiseException<DivideByZeroException>(
+                new { key = "original_value" }.AsDictionary()
+            );
+
+            contextValue.Should().Be("original_value");
+
+            policy.RaiseException<DivideByZeroException>(
+                new { key = "new_value" }.AsDictionary()
+            );
+
+            contextValue.Should().Be("new_value");
+        }
+
+        [Fact]
+        public void Should_throw_when_retry_count_is_less_than_one_without_context()
+        {
+            Action<Exception, TimeSpan> onRetry = (_, __) => { };
+
             Action policy = () => Policy
                                       .Handle<DivideByZeroException>()
-                                      .WaitAndRetry(0, _ => new TimeSpan());
+                                      .WaitAndRetry(0, _ => new TimeSpan(), onRetry);
                                            
-            policy.ShouldThrow<ArgumentOutOfRangeException>()
-                  .And
+            policy.ShouldThrow<ArgumentOutOfRangeException>().And                  
                   .ParamName.Should().Be("retryCount");
         }
 
         [Fact]
-        public void Should_throw_when_on_retry_action_is_null_for_overload()
+        public void Should_throw_when_retry_count_is_less_than_one_with_context()
         {
+            Action<Exception, TimeSpan, Context> onRetry = (_, __, ___) => { };
+
             Action policy = () => Policy
                                       .Handle<DivideByZeroException>()
-                                      .WaitAndRetry(1, _ => new TimeSpan(), null);
+                                      .WaitAndRetry(0, _ => new TimeSpan(), onRetry);
 
-            policy.ShouldThrow<ArgumentNullException>()
-                  .And
+            policy.ShouldThrow<ArgumentOutOfRangeException>().And
+                  .ParamName.Should().Be("retryCount");
+        }
+
+        [Fact]
+        public void Should_throw_when_sleep_duration_provider_is_null_without_context()
+        {
+            Action<Exception, TimeSpan> onRetry = (_, __) => { };
+
+            Action policy = () => Policy
+                                      .Handle<DivideByZeroException>()
+                                      .WaitAndRetry(1, null, onRetry);
+
+            policy.ShouldThrow<ArgumentNullException>().And
+                  .ParamName.Should().Be("sleepDurationProvider");
+        }
+
+        [Fact]
+        public void Should_throw_when_sleep_duration_provider_is_null_with_context()
+        {
+            Action<Exception, TimeSpan, Context> onRetry = (_, __, ___) => { };
+
+            Action policy = () => Policy
+                                      .Handle<DivideByZeroException>()
+                                      .WaitAndRetry(1, null, onRetry);
+
+            policy.ShouldThrow<ArgumentNullException>().And
+                  .ParamName.Should().Be("sleepDurationProvider");
+        }
+
+        [Fact]
+        public void Should_throw_when_onretry_action_is_null_without_context_when_using_provider_overload()
+        {
+            Action<Exception, TimeSpan> nullOnRetry = null;
+
+            Action policy = () => Policy
+                                      .Handle<DivideByZeroException>()
+                                      .WaitAndRetry(1, _ => new TimeSpan(), nullOnRetry);
+
+            policy.ShouldThrow<ArgumentNullException>().And
                   .ParamName.Should().Be("onRetry");
         }
 
         [Fact]
-        public void Should_throw_when_sleep_duration_provider_is_null()
+        public void Should_throw_when_onretry_action_is_null_with_context_when_using_provider_overload()
         {
+            Action<Exception, TimeSpan, Context> nullOnRetry = null;
+
             Action policy = () => Policy
                                       .Handle<DivideByZeroException>()
-                                      .WaitAndRetry(1, null);
+                                      .WaitAndRetry(1, _ => new TimeSpan(), nullOnRetry);
 
-            policy.ShouldThrow<ArgumentNullException>()
-                  .And
-                  .ParamName.Should().Be("sleepDurationProvider");
+            policy.ShouldThrow<ArgumentNullException>().And
+                  .ParamName.Should().Be("onRetry");
         }
 
         [Fact]

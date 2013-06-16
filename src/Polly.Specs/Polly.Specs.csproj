@@ -59,6 +59,9 @@
       <Link>Properties\SolutionAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="CircuitBreakerSpecs.cs" />
+    <Compile Include="ContextualPolicySpecs.cs" />
+    <Compile Include="Helpers\ContextualPolicyExtensions.cs" />
+    <Compile Include="Helpers\ObjectExtensions.cs" />
     <Compile Include="Helpers\PolicyExtensions.cs" />
     <Compile Include="PolicySpecs.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

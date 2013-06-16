@@ -10,14 +10,28 @@ namespace Polly.Specs
     public class RetryForeverSpecs
     {
         [Fact]
-        public void Should_throw_when_on_retry_action_is_null()
+        public void Should_throw_when_onretry_action_without_context_is_null()
         {
+            Action<Exception> nullOnRetry = null;
+
             Action policy = () => Policy
                                       .Handle<DivideByZeroException>()
-                                      .RetryForever(null);
+                                      .RetryForever(nullOnRetry);
 
-            policy.ShouldThrow<ArgumentNullException>()
-                  .And
+            policy.ShouldThrow<ArgumentNullException>().And
+                  .ParamName.Should().Be("onRetry");
+        }
+
+        [Fact]
+        public void Should_throw_when_onretry_action_with_context_is_null()
+        {
+            Action<Exception, Context> nullOnRetry = null;
+
+            Action policy = () => Policy
+                                      .Handle<DivideByZeroException>()
+                                      .RetryForever(nullOnRetry);
+
+            policy.ShouldThrow<ArgumentNullException>().And
                   .ParamName.Should().Be("onRetry");
         }
 
@@ -132,6 +146,24 @@ namespace Polly.Specs
         }
 
         [Fact]
+        public void Should_call_onretry_on_each_retry_with_the_passed_context()
+        {
+            IDictionary<string, object> contextData = null;
+
+            var policy = Policy
+                .Handle<DivideByZeroException>()
+                .RetryForever((_, context) => contextData = context);
+
+            policy.RaiseException<DivideByZeroException>(
+                new { key1 = "value1", key2 = "value2" }.AsDictionary()
+            );
+
+            contextData.Should()
+                       .ContainKeys("key1", "key2").And
+                       .ContainValues("value1", "value2");
+        }
+
+        [Fact]
         public void Should_not_call_onretry_when_no_retries_are_performed()
         {
             var retryExceptions = new List<Exception>();
@@ -145,6 +177,28 @@ namespace Polly.Specs
 
             retryExceptions.Should()
                            .BeEmpty();
+        }
+
+        [Fact]
+        public void Should_create_new_context_for_each_call_to_policy()
+        {
+            string contextValue = null;
+
+            var policy = Policy
+                .Handle<DivideByZeroException>()
+                .RetryForever((_, context) => contextValue = context["key"].ToString());
+
+            policy.RaiseException<DivideByZeroException>(
+                new { key = "original_value" }.AsDictionary()
+            );
+
+            contextValue.Should().Be("original_value");
+
+            policy.RaiseException<DivideByZeroException>(
+                new { key = "new_value" }.AsDictionary()
+            );
+
+            contextValue.Should().Be("new_value");
         }
     }
 }

@@ -59,6 +59,8 @@
     <Compile Include="CircuitBreaker\CircuitBreakerState.cs" />
     <Compile Include="CircuitBreaker\ICircuitBreakerState.cs" />
     <Compile Include="CircuitBreaker\BrokenCircuitException.cs" />
+    <Compile Include="Context.cs" />
+    <Compile Include="ContextualPolicy.cs" />
     <Compile Include="ExceptionPredicate.cs" />
     <Compile Include="OrSyntax.cs" />
     <Compile Include="Policy.cs" />
@@ -70,6 +72,7 @@
     <Compile Include="Retry\RetryPolicyState.cs" />
     <Compile Include="Retry\RetryPolicyStateWithCount.cs" />
     <Compile Include="Retry\RetryPolicyStateWithSleep.cs" />
+    <Compile Include="Utilities\ReadOnlyDictionary.cs" />
     <Compile Include="Utilities\SystemClock.cs" />
     <Compile Include="Utilities\TimedLock.cs" />
   </ItemGroup>
