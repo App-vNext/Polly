@@ -15,6 +15,12 @@
    <projectUrl>https://github.com/michael-wolfenden/Polly</projectUrl>
    <tags>Exception Handling Policy Retry Wait Circuit Breaker</tags>
    <copyright>Copyright © 2013, Michael Wolfenden</copyright>
+   <releaseNotes>
+     1.1.0
+     ---------------------
+     - Added additional overloads to Retry
+     - Allow arbitrary data to be passed to policy execution
+   </releaseNotes>
  </metadata>
  <files>
    <file src="lib\**\*.*" target="lib"/>
