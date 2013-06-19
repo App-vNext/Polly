@@ -48,7 +48,8 @@ Policy
   .Handle<DivideByZeroException>()
   .Retry(3)
 
-// Retry multiple times, calling an action on each retry with the current exception and retry count
+// Retry multiple times, calling an action on each retry 
+// with the current exception and retry count
 Policy
     .Handle<DivideByZeroException>()
     .Retry(3, (exception, retyCount) =>
@@ -56,8 +57,9 @@ Policy
         // do something 
     });
 
-// Retry multiple times, calling an action on each retry with the current exception, retry count and 
-// context provided to Execute()
+// Retry multiple times, calling an action on each retry 
+// with the current exception, retry count and context 
+// provided to Execute()
 Policy
     .Handle<DivideByZeroException>()
     .Retry(3, (exception, retyCount, context) =>
@@ -75,7 +77,8 @@ Policy
   .Handle<DivideByZeroException>()
   .RetryForever()
 
-// Retry forever, calling an action on each retry with the current exception
+// Retry forever, calling an action on each retry with the 
+// current exception
 Policy
   .Handle<DivideByZeroException>()
   .RetryForever(exception =>
@@ -83,8 +86,8 @@ Policy
         // do something       
   });
 
-// Retry forever, calling an action on each retry with the current exception and 
-// context provided to Execute()
+// Retry forever, calling an action on each retry with the
+// current exception and context provided to Execute()
 Policy
   .Handle<DivideByZeroException>()
   .RetryForever((exception, context) =>
@@ -106,8 +109,9 @@ Policy
     TimeSpan.FromSeconds(3)
   });
 
-// Retry, waiting a specified duration between each retry, calling an action on each retry with the
-// current exception and duration
+// Retry, waiting a specified duration between each retry, 
+// calling an action on each retry with the current exception
+// and duration
 Policy
   .Handle<DivideByZeroException>()
   .WaitAndRetry(new[]
@@ -119,8 +123,9 @@ Policy
     // do something    
   }); 
 
-// Retry, waiting a specified duration between each retry, calling an action on each retry with the
-// current exception, duration and context provided to Execute()
+// Retry, waiting a specified duration between each retry, 
+// calling an action on each retry with the current exception, 
+// duration and context provided to Execute()
 Policy
   .Handle<DivideByZeroException>()
   .WaitAndRetry(new[]
@@ -132,8 +137,9 @@ Policy
     // do something    
   });
 
-// Retry a specified number of times, using a function to calculate the duration to wait 
-// between retries based on the current retry attempt (allows for exponential backoff)
+// Retry a specified number of times, using a function to 
+// calculate the duration to wait between retries based on 
+// the current retry attempt (allows for exponential backoff)
 // In this case will wait for
 //  1 ^ 2 = 2 seconds then
 //  2 ^ 2 = 4 seconds then
@@ -146,9 +152,11 @@ Policy
 	TimeSpan.FromSeconds(Math.Pow(2, retryAttempt) 
   );
 
-// Retry a specified number of times, using a function to calculate the duration to wait 
-// between retries based on the current retry attempt, calling an action on each retry 
-// with the current exception, duration and context provided to Execute()
+// Retry a specified number of times, using a function to 
+// calculate the duration to wait between retries based on 
+// the current retry attempt, calling an action on each retry 
+// with the current exception, duration and context provided 
+// to Execute()
 Policy
   .Handle<DivideByZeroException>()
   .WaitAndRetry(
@@ -162,7 +170,8 @@ Policy
 
 ### Circuit Breaker ###
 ```csharp
-// Break the circuit after the specified number of exceptions and keep circuit broken for the specified duration
+// Break the circuit after the specified number of exceptions
+// and keep circuit broken for the specified duration
 Policy
   .Handle<DivideByZeroException>()
   .CircuitBreaker(2, TimeSpan.FromMinutes(1));
