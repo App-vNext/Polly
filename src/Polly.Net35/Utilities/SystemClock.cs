@@ -20,7 +20,7 @@ namespace Polly.Utilities
         public static Action<TimeSpan> Sleep = Thread.Sleep;
 #endif
 #if PORTABLE
-        public static Action<TimeSpan> Sleep = span => Task.Delay(span);
+        public static Action<TimeSpan> Sleep = async span => await Task.Delay(span);
 #endif
         /// <summary>
         /// Allows the setting of a custom DateTime.UtcNow implementation for testing.
