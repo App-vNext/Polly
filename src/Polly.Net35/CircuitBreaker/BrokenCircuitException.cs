@@ -6,7 +6,9 @@ namespace Polly.CircuitBreaker
     /// <summary>
     /// Exception thrown when a circuit is broken.
     /// </summary>
+#if !PORTABLE
     [Serializable]
+#endif
     public class BrokenCircuitException : Exception
     {
         /// <summary>
@@ -33,6 +35,7 @@ namespace Polly.CircuitBreaker
         {
         }
 
+#if !PORTABLE
         /// <summary>
         /// Initializes a new instance of the <see cref="BrokenCircuitException"/> class.
         /// </summary>
@@ -43,5 +46,6 @@ namespace Polly.CircuitBreaker
             StreamingContext context) : base(info, context)
         {
         }
+#endif
     }
 }

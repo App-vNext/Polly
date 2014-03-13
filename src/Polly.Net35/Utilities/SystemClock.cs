@@ -1,6 +1,10 @@
 ﻿using System;
 using System.Threading;
 
+#if PORTABLE
+using System.Threading.Tasks;
+#endif
+
 namespace Polly.Utilities
 {
     /// <summary>
@@ -12,8 +16,12 @@ namespace Polly.Utilities
         /// Allows the setting of a custom Thread.Sleep implementation for testing.
         /// By default this will be a call to <see cref="Thread.Sleep(TimeSpan)"/>
         /// </summary>
+#if !PORTABLE
         public static Action<TimeSpan> Sleep = Thread.Sleep;
-
+#endif
+#if PORTABLE
+        public static Action<TimeSpan> Sleep = async span => await Task.Delay(span);
+#endif
         /// <summary>
         /// Allows the setting of a custom DateTime.UtcNow implementation for testing.
         /// By default this will be a call to <see cref="DateTime.UtcNow"/>
@@ -26,7 +34,12 @@ namespace Polly.Utilities
         /// </summary>
         public static void Reset()
         {
-            Sleep = Thread.Sleep;
+#if !PORTABLE
+        Sleep = Thread.Sleep;
+#endif
+#if PORTABLE
+            Sleep = span => Task.Delay(span);
+#endif
             UtcNow = () => DateTime.UtcNow;
         }
     }

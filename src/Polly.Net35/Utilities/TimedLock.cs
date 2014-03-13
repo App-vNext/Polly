@@ -64,7 +64,9 @@ namespace Polly.Utilities
                 // If this finalizer runs, someone somewhere failed to
                 // call Dispose, which means we've failed to leave
                 // a monitor!
+#if !PORTABLE
                 System.Diagnostics.Debug.Fail("Undisposed lock");
+#endif
             }
         }
         private Sentinel leakDetector;
