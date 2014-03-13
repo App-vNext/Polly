@@ -1,3 +1,8 @@
+2.0.0
+=
+----------
+- Added Portable Class Library ([Issue #4](https://github.com/michael-wolfenden/Polly/issues/4)) - Thanks to  [@ghuntley](https://github.com/ghuntley) for the implementation
+
 1.1.0
 =
 ----------

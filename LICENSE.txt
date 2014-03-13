@@ -1,6 +1,6 @@
 New BSD License
 =
-Copyright (c) 2013, Michael Wolfenden
+Copyright (c) 2014, Michael Wolfenden
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without

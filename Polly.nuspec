@@ -14,8 +14,12 @@
    <iconUrl>https://raw.github.com/michael-wolfenden/Polly/master/Polly.png</iconUrl>    
    <projectUrl>https://github.com/michael-wolfenden/Polly</projectUrl>
    <tags>Exception Handling Policy Retry Wait Circuit Breaker</tags>
-   <copyright>Copyright © 2013, Michael Wolfenden</copyright>
+   <copyright>Copyright © 2014, Michael Wolfenden</copyright>
    <releaseNotes>
+     2.0.0
+     ---------------------
+     - Added Portable Class Library
+
      1.1.0
      ---------------------
      - Added additional overloads to Retry
