@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?> 
 <package> 
  <metadata> 
-   <id>Polly</id>
-   <title>Polly</title>
+   <id>{{PACKAGE_NAME}}</id>
+   <title>{{PACKAGE_NAME}}</title>
    <version>0.0.0</version>
    <owners>Michael Wolfenden</owners>
    <authors>Michael Wolfenden</authors>
@@ -19,6 +19,7 @@
      2.0.0
      ---------------------
      - Added Portable Class Library
+     - The "Polly" NuGet package is now no longer strongly named. The strongly named NuGet package is now "Polly-Signed"
 
      1.1.0
      ---------------------

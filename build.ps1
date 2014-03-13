@@ -1,9 +1,14 @@
+# find StrongNaming.psd1 in the packages directory and import it
+Import-Module @(Get-ChildItem $packages_dir -filter "StrongNaming.psd1" -recurse)[0].FullName
+
 Properties {
   $solution_file_name = "Polly.sln"
   $solution_dir = Split-Path $psake.build_script_file
   $version_file_name = "SolutionVersion.cs"
 
-  $nuget_package_name = "Polly.nuspec"
+  $nuget_spec_name = "Polly.nuspec"
+  $nuget_package_name = "Polly"
+  $nuget_signed_package_name = "Polly-Signed"
 
   $configuration = "release"
 
@@ -18,6 +23,8 @@ Properties {
   $nuget_dir = "$build_dir\$nuget_dir_name"
   $projects_dir = "$solution_dir\$projects_dir_name"
   $packages_dir = "$solution_dir\$packages_dir_name"  
+
+  $snk_name = "Polly.snk"  
   
   $solution_file_path = "$solution_dir\$solution_file_name"
 
@@ -43,27 +50,27 @@ FormatTaskName {
    write-host "`n $(('-'*25)) [$taskName] $(('-'*25))" -ForegroundColor Yellow
 }
 
-task Default -depends PrintVariables, Clean, CreateOutputDirectories, Compile, RunTests, CreateNugetPackage
+task Default -depends PrintVariables, Clean, CreateOutputDirectories, Compile, RunTests, CreateNugetPackage, CreateSignedNugetPackage
 
 task CreateNugetPackage {
-	$version = Get-VersionNumber-From-SolutionVersionFile
+  Create-NuGet-Structure-For-Package $nuget_package_name
+	
+  $version = Get-VersionNumber-From-SolutionVersionFile
+  Write-Host "creating NuGet package $nuget_package_name v$version" -ForegroundColor Green
 
-  Write-Host "creating NuGet package v$version" -ForegroundColor Green
+  Exec { & $nuget_full_path pack $nuget_dir\$nuget_package_name\$nuget_package_name.nuspec -o $nuget_dir\ -version $version }
+}
 
-  Copy-Item $solution_dir\$nuget_package_name $nuget_dir
+task CreateSignedNugetPackage {
+  Create-NuGet-Structure-For-Package $nuget_signed_package_name
+  
+  $version = Get-VersionNumber-From-SolutionVersionFile
+  Write-Host "creating NuGet package $nuget_signed_package_name v$version" -ForegroundColor Green
 
-  $project_to_nuget_folder_map.GetEnumerator() | % { 
-    $framework_dir = "$nuget_dir\lib\$($_.value)"
-    $framework_dll_dir = Get-Project-Output-Dir "Polly" $($_.key)
+  $key = Import-StrongNameKeyPair -KeyFile $snk_name
+  Get-ChildItem -Recurse $nuget_dir\$nuget_signed_package_name\Polly.dll| Set-Strongname -keypair $key -verbose -NoBackup
 
-    write-host "Copying $($_.key) version to $framework_dir"
-    
-    Create-Directory $framework_dir
-    Copy-Item $framework_dll_dir\Polly.dll $framework_dir
-    Copy-Item $framework_dll_dir\Polly.xml $framework_dir
-  }
-
-  Exec { & $nuget_full_path pack $nuget_dir\$nuget_package_name -o $nuget_dir -version $version }
+  Exec { & $nuget_full_path pack $nuget_dir\$nuget_signed_package_name\$nuget_signed_package_name.nuspec -o $nuget_dir\ -version $version }
 }
 
 task RunTests { 
@@ -120,7 +127,7 @@ task PrintVariables {
   Write-Host "test_project_names: $test_project_names"
 } 
 
-function global:Create-Directory([string]$directory_path) {
+function global:Create-Directory($directory_path) {
   New-Item $directory_path -itemType directory -ErrorAction SilentlyContinue | Out-Null
 }
 
@@ -132,11 +139,35 @@ function global:Get-Project-Output-Dir($project_name, $framework_version) {
     return "$projects_dir\$project_name.$framework_version\bin\$configuration"
 }
 
-function global:Get-VersionNumber-From-SolutionVersionFile
-{
+function global:Get-VersionNumber-From-SolutionVersionFile {
   $assemblyVersionPattern = 'AssemblyVersion\("([0-9]+(\.([0-9]+|\*)){1,3})"\)'
   $versionNumberGroup = get-content $version_file_name | select-string -pattern $assemblyVersionPattern | select -first 1 | % { $_.Matches }            
   $versionNumber = $versionNumberGroup.Groups[1].Value
 
   return $versionNumber
+}
+
+function global:Create-NuGet-Structure-For-Package($package_name) {
+  $nuget_package_folder = "$nuget_dir\$package_name"
+  write-host $nuget_package_folder
+  Create-Directory $nuget_package_folder
+
+  Copy-Item "$solution_dir\$nuget_spec_name" "$nuget_package_folder\$package_name.nuspec"
+  Replace-Text $nuget_package_folder\$package_name.nuspec "{{PACKAGE_NAME}}" $package_name
+
+  $project_to_nuget_folder_map.GetEnumerator() | % { 
+    $framework_dir = "$nuget_package_folder\lib\$($_.value)"
+    $framework_dll_dir = Get-Project-Output-Dir "Polly" $($_.key)
+
+    write-host "Copying $($_.key) version to $framework_dir"
+    
+    Create-Directory $framework_dir
+    Copy-Item "$framework_dll_dir\Polly.dll" $framework_dir
+    Copy-Item "$framework_dll_dir\Polly.xml" $framework_dir
+  }
+
+}
+
+function global:Replace-Text($file, $key, $value) {
+  (Get-Content $file) | Foreach-Object {$_ -replace $key, $value } | Set-Content $file
 }
