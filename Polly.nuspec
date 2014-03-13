@@ -7,7 +7,7 @@
    <owners>Michael Wolfenden</owners>
    <authors>Michael Wolfenden</authors>
    <description>
-      Polly is a .NET 3.5/4.0/4.5 library that allows developers to express transient exception handling policies such as Retry, Retry Forever, Wait and Retry or Circuit Breaker in a fluent manner.
+     Polly is a .NET 3.5 / 4.0 / 4.5 / PCL library library that allows developers to express transient exception handling policies such as Retry, Retry Forever, Wait and Retry or Circuit Breaker in a fluent manner.
    </description> 
    <language>en-AU</language>
    <licenseUrl>https://raw.github.com/michael-wolfenden/Polly/master/LICENSE.txt</licenseUrl>
