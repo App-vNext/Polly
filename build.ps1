@@ -22,11 +22,19 @@ Properties {
   $solution_file_path = "$solution_dir\$solution_file_name"
 
   $xunit_runner_exe = "xunit.console.clr4.exe"
-  $xunit_runner_full_path = @(gci $packages_dir -filter $xunit_runner_exe -recurse)[0].FullName
+  $xunit_runner_full_path = @(Get-ChildItem $packages_dir -filter $xunit_runner_exe -recurse)[0].FullName
 
   $nuget_full_path = "$solution_dir\.nuget\nuget.exe"
 
   $framework_version = @("net35", "net40", "net45")
+
+  $project_to_nuget_folder_map = @{
+    "net35" = "net35"; 
+    "net40" = "net40"; 
+    "net45" = "net45";
+    "pcl"   = "portable-net45+wp80+win";
+  }
+
   $test_project_names = @("Polly.Specs")
 }
 
@@ -44,11 +52,11 @@ task CreateNugetPackage {
 
   Copy-Item $solution_dir\$nuget_package_name $nuget_dir
 
-  $framework_version | ForEach-Object { 
-    $framework_dir = "$nuget_dir\lib\$_"
-    $framework_dll_dir = Get-Project-Output-Dir "Polly" $_
+  $project_to_nuget_folder_map.GetEnumerator() | % { 
+    $framework_dir = "$nuget_dir\lib\$($_.value)"
+    $framework_dll_dir = Get-Project-Output-Dir "Polly" $($_.key)
 
-    write-host "Copying $_ version to $framework_dir"
+    write-host "Copying $($_.key) version to $framework_dir"
     
     Create-Directory $framework_dir
     Copy-Item $framework_dll_dir\Polly.dll $framework_dir
