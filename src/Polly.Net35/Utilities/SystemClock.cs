@@ -38,7 +38,7 @@ namespace Polly.Utilities
         Sleep = Thread.Sleep;
 #endif
 #if PORTABLE
-            Sleep = span => Task.Delay(span);
+            Sleep = async span => await Task.Delay(span);
 #endif
             UtcNow = () => DateTime.UtcNow;
         }
