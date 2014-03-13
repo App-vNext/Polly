@@ -74,13 +74,13 @@
     <None Include="Polly.snk" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Polly.Pcl\Polly.Pcl.csproj">
-      <Project>{905cf38a-be90-4234-bf15-2fcfd1973a9c}</Project>
-      <Name>Polly.Pcl</Name>
-    </ProjectReference>
+    <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
   <ItemGroup>
-    <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
+    <ProjectReference Include="..\Polly.Net45\Polly.Net45.csproj">
+      <Project>{29265540-f724-4324-9321-643a0fcb133f}</Project>
+      <Name>Polly.Net45</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
