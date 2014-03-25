@@ -5,7 +5,7 @@ namespace Polly.CircuitBreaker
     /// <summary>
     /// Interface used to describe the needed functionality needed for the circuitbreaker pattern.
     /// </summary>
-    internal interface ICircuitBreakerState
+    public interface ICircuitBreakerState
     {
         /// <summary>
         /// Last exception handled.
