@@ -68,5 +68,14 @@ namespace Polly
 
             return new PolicyBuilder(predicate);
         }
+
+        /// <summary>
+        /// Builds a void policy without behaviour.
+        /// </summary>
+        /// <returns>A policy instance</returns>
+        public static Policy Empty()
+        {
+            return new Policy(x => x());
+        }
     }
 }
