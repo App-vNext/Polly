@@ -56,7 +56,7 @@ Policy
 // with the current exception and retry count
 Policy
     .Handle<DivideByZeroException>()
-    .Retry(3, (exception, retyCount) =>
+    .Retry(3, (exception, retryCount) =>
     {
         // do something 
     });
@@ -66,7 +66,7 @@ Policy
 // provided to Execute()
 Policy
     .Handle<DivideByZeroException>()
-    .Retry(3, (exception, retyCount, context) =>
+    .Retry(3, (exception, retryCount, context) =>
     {
         // do something 
     });
@@ -198,7 +198,7 @@ policy.Execute(() => DoSomething());
 // Execute an action passing arbitrary context data
 Policy
     .Handle<DivideByZeroException>()
-    .Retry(3, (exception, retyCount, context) =>
+    .Retry(3, (exception, retryCount, context) =>
     {
         var methodThatRaisedException = context["methodName"];
 		Log(exception, methodThatRaisedException);
@@ -219,7 +219,7 @@ var result = policy.Execute(() => DoSomething());
 // Execute a function returning a result passing arbitrary context data
 var policy = Policy
     .Handle<DivideByZeroException>()
-    .Retry(3, (exception, retyCount, context) =>
+    .Retry(3, (exception, retryCount, context) =>
     {
         object methodThatRaisedException = context["methodName"];
         Log(exception, methodThatRaisedException)
