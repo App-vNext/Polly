@@ -34,10 +34,10 @@ Policy
 // Multiple exception types with condition
 Policy
   .Handle<SqlException>(ex => ex.Number == 1205)
-  .Or<ArgumentException>(ex => ex => x.ParamName == "example")
+  .Or<ArgumentException>(ex => x.ParamName == "example")
 ```
 
-## Step 2 : Specifiy how the policy should handle those exceptions
+## Step 2 : Specify how the policy should handle those exceptions
 
 ### Retry ###
 
@@ -153,7 +153,7 @@ Policy
 Policy
   .Handle<DivideByZeroException>()
   .WaitAndRetry(5, retryAttempt => 
-	TimeSpan.FromSeconds(Math.Pow(2, retryAttempt) 
+	TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)) 
   );
 
 // Retry a specified number of times, using a function to 
@@ -196,7 +196,7 @@ var policy = Policy
 policy.Execute(() => DoSomething());
 
 // Execute an action passing arbitrary context data
-Policy
+var policy = Policy
     .Handle<DivideByZeroException>()
     .Retry(3, (exception, retryCount, context) =>
     {
@@ -225,7 +225,7 @@ var policy = Policy
         Log(exception, methodThatRaisedException)
     });
 
-int result = policy.Execute(
+var result = policy.Execute(
     () => DoSomething(),
     new Dictionary<string, object>() {{ "methodName", "some method" }}
 );
