@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Threading.Tasks;
 
 namespace Polly
 {
@@ -10,12 +11,15 @@ namespace Polly
     public class Policy
     {
         private readonly Action<Action> _exceptionPolicy;
+        private readonly Func<Func<Task>, Task> _asyncExceptionPolicy;
 
-        internal Policy(Action<Action> exceptionPolicy)
+        internal Policy(Action<Action> exceptionPolicy, Func<Func<Task>, Task> asyncExceptionPolicy)
         {
             if (exceptionPolicy == null) throw new ArgumentNullException("exceptionPolicy");
-            
+            if (asyncExceptionPolicy == null) throw new ArgumentNullException("asyncExceptionPolicy");
+
             _exceptionPolicy = exceptionPolicy;
+            _asyncExceptionPolicy = asyncExceptionPolicy;
         }
 
         /// <summary>
@@ -30,6 +34,16 @@ namespace Polly
 
 
         /// <summary>
+        /// Executes the specified asynchronous action within the policy.
+        /// </summary>
+        /// <param name="action">The action to perform.</param>
+        public Task ExecuteAsync(Func<Task> action)
+        {
+
+            return _asyncExceptionPolicy(action);
+        }
+
+        /// <summary>
         /// Executes the specified action within the policy and returns the result.
         /// </summary>
         /// <typeparam name="TResult">The type of the result.</typeparam>
@@ -40,6 +54,20 @@ namespace Polly
         {
             var result = default(TResult);
             _exceptionPolicy(() => { result = action(); });
+            return result;
+        }
+
+        /// <summary>
+        /// Executes the specified asynchronous action within the policy and returns the result.
+        /// </summary>
+        /// <typeparam name="TResult">The type of the result.</typeparam>
+        /// <param name="action">The action to perform.</param>
+        /// <returns>The value returned by the action</returns>
+        [DebuggerStepThrough]
+        public async Task<TResult> ExecuteAsync<TResult>(Func<Task<TResult>> action)
+        {
+            var result = default(TResult);
+            await _asyncExceptionPolicy(async () => { result = await action(); });
             return result;
         }
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Polly.Retry;
 
 namespace Polly
@@ -62,10 +63,15 @@ namespace Polly
             if (retryCount <= 0) throw new ArgumentOutOfRangeException("retryCount", "Value must be greater than zero.");
             if (onRetry == null) throw new ArgumentNullException("onRetry");
 
-            return new Policy(action => RetryPolicy.Implementation(
-                action, 
-                policyBuilder.ExceptionPredicates, 
-                () => new RetryPolicyStateWithCount(retryCount, onRetry))
+            return new Policy(
+                action => RetryPolicy.Implementation(
+                    action, 
+                    policyBuilder.ExceptionPredicates, 
+                    () => new RetryPolicyStateWithCount(retryCount, onRetry)),
+                action =>  RetryPolicy.ImplementationAsync(
+                    action, 
+                    policyBuilder.ExceptionPredicates, 
+                    () => new RetryPolicyStateWithCount(retryCount, onRetry))
             );
         }
 
@@ -131,10 +137,15 @@ namespace Polly
         {
             if (onRetry == null) throw new ArgumentNullException("onRetry");
 
-            return new Policy(action => RetryPolicy.Implementation(
-                action, 
-                policyBuilder.ExceptionPredicates, 
-                () => new RetryPolicyState(onRetry))
+            return new Policy(
+                action => RetryPolicy.Implementation(
+                    action, 
+                    policyBuilder.ExceptionPredicates, 
+                    () => new RetryPolicyState(onRetry)),
+                action => RetryPolicy.ImplementationAsync(
+                    action, 
+                    policyBuilder.ExceptionPredicates, 
+                    () => new RetryPolicyState(onRetry))
             );
         }
 
@@ -200,11 +211,16 @@ namespace Polly
             var sleepDurations = Enumerable.Range(1, retryCount)
                                            .Select(sleepDurationProvider);
 
-            return new Policy(action => RetryPolicy.Implementation(
-                action, 
-                policyBuilder.ExceptionPredicates, 
-                () => new RetryPolicyStateWithSleep(sleepDurations, onRetry)
-            ));
+            return new Policy(
+                action => RetryPolicy.Implementation(
+                    action, 
+                    policyBuilder.ExceptionPredicates, 
+                    () => new RetryPolicyStateWithSleep(sleepDurations, onRetry)),
+                action => RetryPolicy.ImplementationAsync(
+                    action, 
+                    policyBuilder.ExceptionPredicates, 
+                    () => new RetryPolicyStateWithSleep(sleepDurations, onRetry))
+            );
         }
 
         /// <summary>
@@ -274,11 +290,16 @@ namespace Polly
             if (sleepDurations == null) throw new ArgumentNullException("sleepDurations");
             if (onRetry == null) throw new ArgumentNullException("onRetry");
 
-            return new Policy(action => RetryPolicy.Implementation(
-                action, 
-                policyBuilder.ExceptionPredicates, 
-                () => new RetryPolicyStateWithSleep(sleepDurations, onRetry)
-            ));
+            return new Policy(
+                action => RetryPolicy.Implementation(
+                    action, 
+                    policyBuilder.ExceptionPredicates, 
+                    () => new RetryPolicyStateWithSleep(sleepDurations, onRetry)),
+                action => RetryPolicy.ImplementationAsync(
+                    action,
+                    policyBuilder.ExceptionPredicates,
+                    () => new RetryPolicyStateWithSleep(sleepDurations, onRetry))
+            );
         }
 
         /// <summary>
