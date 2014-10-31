@@ -33,6 +33,7 @@ namespace Polly.Retry
             }
         }
 
+#if NET45
         public static async Task ImplementationAsync(Func<Task> action, IEnumerable<ExceptionPredicate> shouldRetryPredicates, Func<IRetryPolicyState> policyStateFactory)
         {
             var policyState = policyStateFactory();
@@ -58,5 +59,11 @@ namespace Polly.Retry
                 }
             }
         }
+#else
+        internal static Task ImplementationAsync(Func<Task> action, IEnumerable<ExceptionPredicate> shouldRetryPredicates, Func<IRetryPolicyState> policyStateFactory)
+        {
+            throw new NotSupportedException();
+        }
+#endif
     }
 }

@@ -32,7 +32,7 @@ namespace Polly
             _exceptionPolicy(action);
         }
 
-
+#if NET45
         /// <summary>
         /// Executes the specified asynchronous action within the policy.
         /// </summary>
@@ -42,6 +42,7 @@ namespace Polly
 
             return _asyncExceptionPolicy(action);
         }
+#endif
 
         /// <summary>
         /// Executes the specified action within the policy and returns the result.
@@ -57,6 +58,7 @@ namespace Polly
             return result;
         }
 
+#if NET45
         /// <summary>
         /// Executes the specified asynchronous action within the policy and returns the result.
         /// </summary>
@@ -70,6 +72,7 @@ namespace Polly
             await _asyncExceptionPolicy(async () => { result = await action(); });
             return result;
         }
+#endif
 
         /// <summary>
         /// Specifies the type of exception that this policy can handle.

@@ -32,6 +32,7 @@ namespace Polly.CircuitBreaker
             }
         }
 
+#if NET45
         internal static async Task ImplementationAsync(Func<Task> action, IEnumerable<ExceptionPredicate> shouldRetryPredicates, ICircuitBreakerState breakerState)
         {
             if (breakerState.IsBroken)
@@ -56,5 +57,11 @@ namespace Polly.CircuitBreaker
                 throw;
             }
         }
+#else
+        internal static Task ImplementationAsync(Func<Task> action, IEnumerable<ExceptionPredicate> shouldRetryPredicates, ICircuitBreakerState breakerState)
+        {
+            throw new NotSupportedException();
+        }
+#endif
     }
 }
