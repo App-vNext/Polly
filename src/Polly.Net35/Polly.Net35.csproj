@@ -75,6 +75,7 @@
     <Compile Include="Retry\RetryPolicyStateWithSleep.cs" />
     <Compile Include="Utilities\ReadOnlyDictionary.cs" />
     <Compile Include="Utilities\SystemClock.cs" />
+    <Compile Include="Utilities\Task.cs" />
     <Compile Include="Utilities\TimedLock.cs" />
   </ItemGroup>
   <ItemGroup>
