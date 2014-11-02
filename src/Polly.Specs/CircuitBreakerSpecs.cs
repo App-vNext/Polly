@@ -21,6 +21,17 @@ namespace Polly.Specs
         }
 
         [Fact]
+        public void Should_be_able_to_handle_a_duration_of_timespan_maxvalue_async()
+        {
+            var policy = Policy
+                            .Handle<DivideByZeroException>()
+                            .CircuitBreaker(1, TimeSpan.MaxValue);
+
+            policy.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                  .ShouldThrow<DivideByZeroException>();
+        }
+
+        [Fact]
         public void Should_throw_if_exceptions_allowed_before_breaking_is_less_than_one()
         {
            Action action = () => Policy
@@ -46,6 +57,25 @@ namespace Polly.Specs
                   .ShouldThrow<DivideByZeroException>();
 
             policy.Invoking(x => x.RaiseException<DivideByZeroException>())
+                  .ShouldThrow<BrokenCircuitException>()
+                  .WithMessage("The circuit is now open and is not allowing calls.")
+                  .WithInnerException<DivideByZeroException>();
+        }
+
+        [Fact]
+        public void Should_open_circuit_with_the_last_raised_exception_after_specified_number_of_specified_exception_have_been_raised_async()
+        {
+            var policy = Policy
+                            .Handle<DivideByZeroException>()
+                            .CircuitBreaker(2, TimeSpan.FromMinutes(1));
+
+            policy.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                  .ShouldThrow<DivideByZeroException>();
+
+            policy.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                  .ShouldThrow<DivideByZeroException>();
+
+            policy.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
                   .ShouldThrow<BrokenCircuitException>()
                   .WithMessage("The circuit is now open and is not allowing calls.")
                   .WithInnerException<DivideByZeroException>();
@@ -133,6 +163,35 @@ namespace Polly.Specs
 
             // duration has passed, circuit now half open
             policy.Invoking(x => x.RaiseException<DivideByZeroException>())
+                  .ShouldThrow<DivideByZeroException>();
+        }
+
+        [Fact]
+        public void Should_close_circuit_after_the_specified_duration_has_passed_async()
+        {
+            var time = 1.January(2000);
+            SystemClock.UtcNow = () => time;
+
+            var durationOfBreak = TimeSpan.FromMinutes(1);
+
+            var policy = Policy
+                            .Handle<DivideByZeroException>()
+                            .CircuitBreaker(2, durationOfBreak);
+
+            policy.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                  .ShouldThrow<DivideByZeroException>();
+
+            policy.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                  .ShouldThrow<DivideByZeroException>();
+
+            // 2 exception raised, cicuit is now open
+            policy.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                  .ShouldThrow<BrokenCircuitException>();
+
+            SystemClock.UtcNow = () => time.Add(durationOfBreak);
+
+            // duration has passed, circuit now half open
+            policy.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
                   .ShouldThrow<DivideByZeroException>();
         }
 
