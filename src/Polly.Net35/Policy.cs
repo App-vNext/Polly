@@ -37,6 +37,7 @@ namespace Polly
         /// Executes the specified asynchronous action within the policy.
         /// </summary>
         /// <param name="action">The action to perform.</param>
+        [DebuggerStepThrough]
         public Task ExecuteAsync(Func<Task> action)
         {
 
@@ -95,7 +96,7 @@ namespace Polly
         public static PolicyBuilder Handle<TException>(Func<TException, bool> exceptionPredicate) where TException : Exception
         {
             ExceptionPredicate predicate = exception => exception is TException &&
-                                                        exceptionPredicate((TException) exception);
+                                                        exceptionPredicate((TException)exception);
 
             return new PolicyBuilder(predicate);
         }
