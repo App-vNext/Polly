@@ -8,7 +8,7 @@ namespace Polly
     /// <summary>
     /// Fluent API for defining a Retry <see cref="Policy"/>. 
     /// </summary>
-    public static class RetrySyntax
+    public static partial class RetrySyntax
     {
         /// <summary>
         /// Builds a <see cref="Policy"/> that will retry once.
@@ -66,12 +66,7 @@ namespace Polly
                 action => RetryPolicy.Implementation(
                     action, 
                     policyBuilder.ExceptionPredicates, 
-                    () => new RetryPolicyStateWithCount(retryCount, onRetry)),
-                action =>  RetryPolicy.ImplementationAsync(
-                    action, 
-                    policyBuilder.ExceptionPredicates, 
-                    () => new RetryPolicyStateWithCount(retryCount, onRetry))
-            );
+                    () => new RetryPolicyStateWithCount(retryCount, onRetry)));
         }
 
         /// <summary>
@@ -140,12 +135,7 @@ namespace Polly
                 action => RetryPolicy.Implementation(
                     action, 
                     policyBuilder.ExceptionPredicates, 
-                    () => new RetryPolicyState(onRetry)),
-                action => RetryPolicy.ImplementationAsync(
-                    action, 
-                    policyBuilder.ExceptionPredicates, 
-                    () => new RetryPolicyState(onRetry))
-            );
+                    () => new RetryPolicyState(onRetry)));
         }
 
         /// <summary>
@@ -214,12 +204,7 @@ namespace Polly
                 action => RetryPolicy.Implementation(
                     action, 
                     policyBuilder.ExceptionPredicates, 
-                    () => new RetryPolicyStateWithSleep(sleepDurations, onRetry)),
-                action => RetryPolicy.ImplementationAsync(
-                    action, 
-                    policyBuilder.ExceptionPredicates, 
-                    () => new RetryPolicyStateWithSleep(sleepDurations, onRetry))
-            );
+                    () => new RetryPolicyStateWithSleep(sleepDurations, onRetry)));
         }
 
         /// <summary>
@@ -293,12 +278,7 @@ namespace Polly
                 action => RetryPolicy.Implementation(
                     action, 
                     policyBuilder.ExceptionPredicates, 
-                    () => new RetryPolicyStateWithSleep(sleepDurations, onRetry)),
-                action => RetryPolicy.ImplementationAsync(
-                    action,
-                    policyBuilder.ExceptionPredicates,
-                    () => new RetryPolicyStateWithSleep(sleepDurations, onRetry))
-            );
+                    () => new RetryPolicyStateWithSleep(sleepDurations, onRetry)));
         }
 
         /// <summary>

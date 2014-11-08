@@ -131,7 +131,7 @@ namespace Polly.Specs
         {
             var policy = Policy
                 .Handle<DivideByZeroException>(e => true)
-                .RetryForever();
+                .RetryForeverAsync();
 
             policy.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
                   .ShouldNotThrow();
@@ -155,7 +155,7 @@ namespace Polly.Specs
             var policy = Policy
                 .Handle<DivideByZeroException>(e => true)
                 .Or<ArgumentException>(e => true)
-                .RetryForever();
+                .RetryForeverAsync();
 
             policy.Awaiting(x => x.RaiseExceptionAsync<ArgumentException>())
                   .ShouldNotThrow();

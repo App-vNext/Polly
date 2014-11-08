@@ -29,7 +29,7 @@ namespace Polly.Specs
 
             var policy = Policy
                           .Handle<DivideByZeroException>()
-                          .Retry((_, __) => { });
+                          .RetryAsync((_, __) => { });
 
             policy.ExecuteAsync(() =>
             {
@@ -59,7 +59,7 @@ namespace Polly.Specs
         {
             var policy = Policy
                           .Handle<DivideByZeroException>()
-                          .Retry((_, __) => { });
+                          .RetryAsync((_, __) => { });
 
             var result = await policy.ExecuteAsync(() => Task.FromResult(2));
 

@@ -253,7 +253,7 @@ namespace Polly.Specs
         {
             var policy = Policy
                 .Handle<DivideByZeroException>(e => true)
-                .WaitAndRetry(new[]
+                .WaitAndRetryAsync(new[]
                 {
                    1.Seconds()
                 });
@@ -283,7 +283,7 @@ namespace Polly.Specs
             var policy = Policy
                 .Handle<DivideByZeroException>(e => true)
                 .Or<ArgumentException>(e => true)
-               .WaitAndRetry(new[]
+               .WaitAndRetryAsync(new[]
                 {
                    1.Seconds()
                 });
@@ -321,7 +321,7 @@ namespace Polly.Specs
 
             var policy = Policy
                 .Handle<DivideByZeroException>()
-                .WaitAndRetry(new[]
+                .WaitAndRetryAsync(new[]
                 {
                    1.Seconds(),
                    2.Seconds(),

@@ -6,7 +6,7 @@ namespace Polly
     /// <summary>
     /// Fluent API for defining a Circuit Breaker <see cref="Policy"/>. 
     /// </summary>
-    public static class CircuitBreakerSyntax
+    public static class CircuitBreakerSyntaxAsync
     {
         /// <summary>
         /// <para> Builds a <see cref="Policy"/> that will function like a Circuit Breaker.</para>
@@ -31,7 +31,8 @@ namespace Polly
             if (exceptionsAllowedBeforeBreaking <= 0) throw new ArgumentOutOfRangeException("exceptionsAllowedBeforeBreaking", "Value must be greater than zero.");
 
             var policyState = new CircuitBreakerState(exceptionsAllowedBeforeBreaking, durationOfBreak);
-            return new Policy(action => CircuitBreakerPolicy.Implementation(action, policyBuilder.ExceptionPredicates, policyState));
+            return new Policy(action => CircuitBreakerPolicy.Implementation(action, policyBuilder.ExceptionPredicates, policyState),
+                action => CircuitBreakerPolicy.ImplementationAsync(action, policyBuilder.ExceptionPredicates, policyState));
         }
     }
 }

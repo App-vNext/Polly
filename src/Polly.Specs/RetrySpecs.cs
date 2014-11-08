@@ -100,7 +100,7 @@ namespace Polly.Specs
         {
             var policy = Policy
                 .Handle<DivideByZeroException>()
-                .Retry(3);
+                .RetryAsync(3);
 
             policy.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
                   .ShouldNotThrow();
@@ -124,7 +124,7 @@ namespace Polly.Specs
             var policy = Policy
                 .Handle<DivideByZeroException>()
                 .Or<ArgumentException>()
-                .Retry(3);
+                .RetryAsync(3);
 
             policy.Awaiting(x => x.RaiseExceptionAsync<ArgumentException>())
                   .ShouldNotThrow();
@@ -146,7 +146,7 @@ namespace Polly.Specs
         {
             var policy = Policy
                 .Handle<DivideByZeroException>()
-                .Retry(3);
+                .RetryAsync(3);
 
             policy.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>(3 + 1))
                   .ShouldThrow<DivideByZeroException>();
@@ -170,7 +170,7 @@ namespace Polly.Specs
             var policy = Policy
                 .Handle<DivideByZeroException>()
                 .Or<ArgumentException>()
-                .Retry(3);
+                .RetryAsync(3);
 
             policy.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>(3 + 1))
                   .ShouldThrow<DivideByZeroException>();

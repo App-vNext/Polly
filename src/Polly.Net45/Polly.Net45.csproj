@@ -50,9 +50,6 @@
     <Compile Include="..\..\SolutionVersion.cs">
       <Link>Properties\SolutionVersion.cs</Link>
     </Compile>
-    <Compile Include="..\Polly.Net35\CircuitBreakerSyntax.cs">
-      <Link>CircuitBreakerSyntax.cs</Link>
-    </Compile>
     <Compile Include="..\Polly.Net35\CircuitBreaker\BrokenCircuitException.cs">
       <Link>CircuitBreaker\BrokenCircuitException.cs</Link>
     </Compile>
@@ -104,8 +101,11 @@
     <Compile Include="..\Polly.Net35\Utilities\TimedLock.cs">
       <Link>Utilities\TimedLock.cs</Link>
     </Compile>
+    <Compile Include="CircuitBreakerSyntaxAsync.cs" />
+    <Compile Include="PolicyAsync.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Context.cs" />
+    <Compile Include="RetrySyntaxAsync.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
