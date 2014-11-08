@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Polly.CircuitBreaker
 {
     internal partial class CircuitBreakerPolicy
     {
-        internal static void Implementation(Action action, IEnumerable<ExceptionPredicate> shouldRetryPredicates, ICircuitBreakerState breakerState)
+        internal static async Task ImplementationAsync(Func<Task> action, IEnumerable<ExceptionPredicate> shouldRetryPredicates, ICircuitBreakerState breakerState)
         {
             if (breakerState.IsBroken)
             {
@@ -15,7 +17,7 @@ namespace Polly.CircuitBreaker
 
             try
             {
-                action();
+                await action();
                 breakerState.Reset();
             }
             catch (Exception ex)
