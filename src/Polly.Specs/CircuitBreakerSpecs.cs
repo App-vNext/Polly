@@ -25,7 +25,7 @@ namespace Polly.Specs
         {
             var policy = Policy
                             .Handle<DivideByZeroException>()
-                            .CircuitBreaker(1, TimeSpan.MaxValue);
+                            .CircuitBreakerAsync(1, TimeSpan.MaxValue);
 
             policy.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
                   .ShouldThrow<DivideByZeroException>();
@@ -67,7 +67,7 @@ namespace Polly.Specs
         {
             var policy = Policy
                             .Handle<DivideByZeroException>()
-                            .CircuitBreaker(2, TimeSpan.FromMinutes(1));
+                            .CircuitBreakerAsync(2, TimeSpan.FromMinutes(1));
 
             policy.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
                   .ShouldThrow<DivideByZeroException>();
@@ -176,7 +176,7 @@ namespace Polly.Specs
 
             var policy = Policy
                             .Handle<DivideByZeroException>()
-                            .CircuitBreaker(2, durationOfBreak);
+                            .CircuitBreakerAsync(2, durationOfBreak);
 
             policy.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
                   .ShouldThrow<DivideByZeroException>();

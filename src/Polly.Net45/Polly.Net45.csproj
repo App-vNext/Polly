@@ -50,6 +50,9 @@
     <Compile Include="..\..\SolutionVersion.cs">
       <Link>Properties\SolutionVersion.cs</Link>
     </Compile>
+    <Compile Include="..\Polly.Net35\CircuitBreakerSyntax.cs">
+      <Link>CircuitBreakerSyntax.cs</Link>
+    </Compile>
     <Compile Include="..\Polly.Net35\CircuitBreaker\BrokenCircuitException.cs">
       <Link>CircuitBreaker\BrokenCircuitException.cs</Link>
     </Compile>
