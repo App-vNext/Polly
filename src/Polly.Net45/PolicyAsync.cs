@@ -36,7 +36,7 @@ namespace Polly
         public async Task<TResult> ExecuteAsync<TResult>(Func<Task<TResult>> action)
         {
             TResult result = default(TResult);
-            await _asyncExceptionPolicy(async () => { result = await action(); });
+            await _asyncExceptionPolicy(async () => { result = await action().ConfigureAwait(false); });
             return result;
         }
     }

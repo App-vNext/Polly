@@ -16,7 +16,7 @@ namespace Polly.Retry
             {
                 try
                 {
-                    await action();
+                    await action().ConfigureAwait(false);
                     return;
                 }
                 catch (Exception ex)

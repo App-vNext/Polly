@@ -17,7 +17,7 @@ namespace Polly.CircuitBreaker
 
             try
             {
-                await action();
+                await action().ConfigureAwait(false);
                 breakerState.Reset();
             }
             catch (Exception ex)
