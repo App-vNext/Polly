@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using FluentAssertions;
 using Polly.Specs.Helpers;
 using Polly.Utilities;
@@ -315,7 +316,7 @@ namespace Polly.Specs
         }
 
         [Fact]
-        public void Should_sleep_for_the_specified_duration_each_retry_when_specified_exception_thrown_same_number_of_times_as_there_are_sleep_durations_async()
+        public async Task Should_sleep_for_the_specified_duration_each_retry_when_specified_exception_thrown_same_number_of_times_as_there_are_sleep_durations_async()
         {
             var totalTimeSlept = 0;
 
@@ -330,7 +331,7 @@ namespace Polly.Specs
 
             SystemClock.Sleep = span => totalTimeSlept += span.Seconds;
 
-            policy.RaiseExceptionAsync<DivideByZeroException>(3);
+            await policy.RaiseExceptionAsync<DivideByZeroException>(3);
 
             totalTimeSlept.Should()
                           .Be(1 + 2 + 3);

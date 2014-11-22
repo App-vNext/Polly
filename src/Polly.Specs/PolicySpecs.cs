@@ -23,7 +23,7 @@ namespace Polly.Specs
         }
 
         [Fact]
-        public void Executing_the_policy_action_should_execute_the_specified_async_action()
+        public async Task Executing_the_policy_action_should_execute_the_specified_async_action()
         {
             var executed = false;
 
@@ -31,7 +31,7 @@ namespace Polly.Specs
                           .Handle<DivideByZeroException>()
                           .RetryAsync((_, __) => { });
 
-            policy.ExecuteAsync(() =>
+            await policy.ExecuteAsync(() =>
             {
                 executed = true;
                 return Task.FromResult(true) as Task;
