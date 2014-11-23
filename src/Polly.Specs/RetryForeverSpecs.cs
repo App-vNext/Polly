@@ -74,7 +74,7 @@ namespace Polly.Specs
         {
             var policy = Policy
                 .Handle<DivideByZeroException>()
-                .RetryForever();
+                .RetryForeverAsync();
 
             policy.Awaiting(x => x.RaiseExceptionAsync<NullReferenceException>())
                   .ShouldThrow<NullReferenceException>();

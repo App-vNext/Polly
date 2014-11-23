@@ -8,8 +8,7 @@ namespace Polly
     {
         private readonly Func<Func<Task>, Task> _asyncExceptionPolicy;
 
-        internal Policy(Action<Action> exceptionPolicy, Func<Func<Task>, Task> asyncExceptionPolicy)
-            : this(exceptionPolicy)
+        internal Policy(Func<Func<Task>, Task> asyncExceptionPolicy)
         {
             if (asyncExceptionPolicy == null) throw new ArgumentNullException("asyncExceptionPolicy");
 
@@ -23,6 +22,8 @@ namespace Polly
         [DebuggerStepThrough]
         public Task ExecuteAsync(Func<Task> action)
         {
+            if (_asyncExceptionPolicy == null) throw new InvalidOperationException("Please use an asynchronous policy with ExecuteAsync().");
+
             return _asyncExceptionPolicy(action);
         }
 
@@ -35,6 +36,8 @@ namespace Polly
         [DebuggerStepThrough]
         public async Task<TResult> ExecuteAsync<TResult>(Func<Task<TResult>> action)
         {
+            if (_asyncExceptionPolicy == null) throw new InvalidOperationException("Please use an asynchronous policy with ExecuteAsync().");
+
             TResult result = default(TResult);
             await _asyncExceptionPolicy(async () => { result = await action().ConfigureAwait(false); });
             return result;

@@ -25,6 +25,8 @@ namespace Polly
         [DebuggerStepThrough]
         public void Execute(Action action)
         {
+            if (_exceptionPolicy == null) throw new InvalidOperationException("Please use an synchronous policy with Execute().");
+
             _exceptionPolicy(action);
         }
 
@@ -37,6 +39,8 @@ namespace Polly
         [DebuggerStepThrough]
         public TResult Execute<TResult>(Func<TResult> action)
         {
+            if (_exceptionPolicy == null) throw new InvalidOperationException("Please use an synchronous policy with Execute().");
+
             var result = default(TResult);
             _exceptionPolicy(() => { result = action(); });
             return result;

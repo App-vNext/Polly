@@ -31,8 +31,7 @@ namespace Polly
             if (exceptionsAllowedBeforeBreaking <= 0) throw new ArgumentOutOfRangeException("exceptionsAllowedBeforeBreaking", "Value must be greater than zero.");
 
             var policyState = new CircuitBreakerState(exceptionsAllowedBeforeBreaking, durationOfBreak);
-            return new Policy(action => CircuitBreakerPolicy.Implementation(action, policyBuilder.ExceptionPredicates, policyState),
-                action => CircuitBreakerPolicy.ImplementationAsync(action, policyBuilder.ExceptionPredicates, policyState));
+            return new Policy(action => CircuitBreakerPolicy.ImplementationAsync(action, policyBuilder.ExceptionPredicates, policyState));
         }
     }
 }

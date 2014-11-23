@@ -183,7 +183,7 @@ namespace Polly.Specs
         {
             var policy = Policy
                 .Handle<DivideByZeroException>()
-                .WaitAndRetry(Enumerable.Empty<TimeSpan>());
+                .WaitAndRetryAsync(Enumerable.Empty<TimeSpan>());
 
             policy.Awaiting(x => x.RaiseExceptionAsync<NullReferenceException>())
                   .ShouldThrow<NullReferenceException>();
@@ -206,7 +206,7 @@ namespace Polly.Specs
             var policy = Policy
                 .Handle<DivideByZeroException>()
                 .Or<ArgumentException>()
-                .WaitAndRetry(Enumerable.Empty<TimeSpan>());
+                .WaitAndRetryAsync(Enumerable.Empty<TimeSpan>());
 
             policy.Awaiting(x => x.RaiseExceptionAsync<NullReferenceException>())
                   .ShouldThrow<NullReferenceException>();
@@ -407,7 +407,7 @@ namespace Polly.Specs
 
             var policy = Policy
                 .Handle<DivideByZeroException>()
-                .WaitAndRetry(Enumerable.Empty<TimeSpan>());
+                .WaitAndRetryAsync(Enumerable.Empty<TimeSpan>());
 
             SystemClock.Sleep = span => totalTimeSlept += span.Seconds;
 
