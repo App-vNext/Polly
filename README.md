@@ -238,6 +238,36 @@ Policy
   .Execute(() => DoSomething());
 ```
 
+Asynchronous Support (.NET 4.5 Only)
+=
+You use Polly with asynchronous functions by using the asynchronous methods
+
+* `RetryAsync`
+* `RetryForeverAsync`
+* `WaitAndRetryAsync`
+* `CircuitBreakerAsync`
+* `ExecuteAsync`
+
+In place of their synchronous counterparts
+
+* `Retry`
+* `RetryForever`
+* `WaitAndRetry`
+* `CircuitBreaker`
+* `Execute`
+
+For example
+
+```csharp
+await Policy
+  .Handle<SqlException>(ex => ex.Number == 1205)
+  .Or<ArgumentException>(ex => ex.ParamName == "example")
+  .RetryAsync()
+  .ExecuteAsync(() => DoSomethingAsync());
+
+```
+
+
 3rd Party Libraries
 =
 
@@ -254,6 +284,7 @@ Acknowledgements
 
 * [lokad-shared-libraries](https://github.com/Lokad/lokad-shared-libraries) - Helper assemblies for .NET 3.5 and Silverlight 2.0 that are being developed as part of the Open Source effort by Lokad.com (discontinued) | [New BSD License](https://raw.github.com/Lokad/lokad-shared-libraries/master/Lokad.Shared.License.txt)
 * [@ghuntley](https://github.com/ghuntley) - Contributed Portable Class Library implementation.
+* [@mauricedb](https://github.com/mauricedb) - Contributed Async implementation.
 
 License
 =

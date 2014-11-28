@@ -1,3 +1,8 @@
+2.1.0
+=
+----------
+- Added Async Support (.NET Framework 4.5 Only) - Massive thanks to  [@mauricedb](https://github.com/mauricedb) for the implementation
+
 2.0.0
 =
 ----------

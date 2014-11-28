@@ -16,6 +16,10 @@
    <tags>Exception Handling Policy Retry Wait Circuit Breaker</tags>
    <copyright>Copyright © 2014, Michael Wolfenden</copyright>
    <releaseNotes>
+     2.1.0
+     ---------------------
+     - Added Async Support (.NET Framework 4.5 Only)
+
      2.0.0
      ---------------------
      - Added Portable Class Library
