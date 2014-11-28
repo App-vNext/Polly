@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using FluentAssertions;
 using Polly.Specs.Helpers;
 using Polly.Utilities;
@@ -177,6 +178,16 @@ namespace Polly.Specs
             policy.Invoking(x => x.RaiseException<NullReferenceException>())
                   .ShouldThrow<NullReferenceException>();
         }
+ [Fact]
+        public void Should_throw_when_exception_thrown_is_not_the_specified_exception_type_async()
+        {
+            var policy = Policy
+                .Handle<DivideByZeroException>()
+                .WaitAndRetryAsync(Enumerable.Empty<TimeSpan>());
+
+            policy.Awaiting(x => x.RaiseExceptionAsync<NullReferenceException>())
+                  .ShouldThrow<NullReferenceException>();
+        }
 
         [Fact]
         public void Should_throw_when_exception_thrown_is_not_one_of_the_specified_exception_types()
@@ -187,6 +198,17 @@ namespace Polly.Specs
                 .WaitAndRetry(Enumerable.Empty<TimeSpan>());
 
             policy.Invoking(x => x.RaiseException<NullReferenceException>())
+                  .ShouldThrow<NullReferenceException>();
+        }
+  [Fact]
+        public void Should_throw_when_exception_thrown_is_not_one_of_the_specified_exception_types_async()
+        {
+            var policy = Policy
+                .Handle<DivideByZeroException>()
+                .Or<ArgumentException>()
+                .WaitAndRetryAsync(Enumerable.Empty<TimeSpan>());
+
+            policy.Awaiting(x => x.RaiseExceptionAsync<NullReferenceException>())
                   .ShouldThrow<NullReferenceException>();
         }
 
@@ -228,6 +250,20 @@ namespace Polly.Specs
         }
 
         [Fact]
+        public void Should_not_throw_when_specified_exception_predicate_is_satisfied_async()
+        {
+            var policy = Policy
+                .Handle<DivideByZeroException>(e => true)
+                .WaitAndRetryAsync(new[]
+                {
+                   1.Seconds()
+                });
+
+            policy.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                  .ShouldNotThrow();
+        }
+
+        [Fact]
         public void Should_not_throw_when_one_of_the_specified_exception_predicates_are_satisfied()
         {
             var policy = Policy
@@ -239,6 +275,21 @@ namespace Polly.Specs
                 });
 
             policy.Invoking(x => x.RaiseException<ArgumentException>())
+                  .ShouldNotThrow();
+        }
+
+        [Fact]
+        public void Should_not_throw_when_one_of_the_specified_exception_predicates_are_satisfied_async()
+        {
+            var policy = Policy
+                .Handle<DivideByZeroException>(e => true)
+                .Or<ArgumentException>(e => true)
+               .WaitAndRetryAsync(new[]
+                {
+                   1.Seconds()
+                });
+
+            policy.Awaiting(x => x.RaiseExceptionAsync<ArgumentException>())
                   .ShouldNotThrow();
         }
 
@@ -259,6 +310,28 @@ namespace Polly.Specs
             SystemClock.Sleep = span => totalTimeSlept += span.Seconds;
 
             policy.RaiseException<DivideByZeroException>(3);
+
+            totalTimeSlept.Should()
+                          .Be(1 + 2 + 3);
+        }
+
+        [Fact]
+        public async Task Should_sleep_for_the_specified_duration_each_retry_when_specified_exception_thrown_same_number_of_times_as_there_are_sleep_durations_async()
+        {
+            var totalTimeSlept = 0;
+
+            var policy = Policy
+                .Handle<DivideByZeroException>()
+                .WaitAndRetryAsync(new[]
+                {
+                   1.Seconds(),
+                   2.Seconds(),
+                   3.Seconds()
+                });
+
+            SystemClock.Sleep = span => totalTimeSlept += span.Seconds;
+
+            await policy.RaiseExceptionAsync<DivideByZeroException>(3);
 
             totalTimeSlept.Should()
                           .Be(1 + 2 + 3);
@@ -321,6 +394,24 @@ namespace Polly.Specs
             SystemClock.Sleep = span => totalTimeSlept += span.Seconds;
 
             policy.Invoking(x => x.RaiseException<NullReferenceException>())
+                  .ShouldThrow<NullReferenceException>();
+
+            totalTimeSlept.Should()
+                          .Be(0);
+        }
+
+        [Fact]
+        public void Should_not_sleep_if_no_retries_async()
+        {
+            var totalTimeSlept = 0;
+
+            var policy = Policy
+                .Handle<DivideByZeroException>()
+                .WaitAndRetryAsync(Enumerable.Empty<TimeSpan>());
+
+            SystemClock.Sleep = span => totalTimeSlept += span.Seconds;
+
+            policy.Awaiting(x => x.RaiseExceptionAsync<NullReferenceException>())
                   .ShouldThrow<NullReferenceException>();
 
             totalTimeSlept.Should()

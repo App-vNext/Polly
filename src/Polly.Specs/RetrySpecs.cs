@@ -96,6 +96,17 @@ namespace Polly.Specs
         }
 
         [Fact]
+        public void Should_not_throw_when_specified_exception_thrown_less_number_of_times_than_retry_count_async()
+        {
+            var policy = Policy
+                .Handle<DivideByZeroException>()
+                .RetryAsync(3);
+
+            policy.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                  .ShouldNotThrow();
+        }
+
+        [Fact]
         public void Should_not_throw_when_one_of_the_specified_exceptions_thrown_less_number_of_times_than_retry_count()
         {
             var policy = Policy
@@ -104,6 +115,18 @@ namespace Polly.Specs
                 .Retry(3);
 
             policy.Invoking(x => x.RaiseException<ArgumentException>())
+                  .ShouldNotThrow();
+        }
+
+        [Fact]
+        public void Should_not_throw_when_one_of_the_specified_exceptions_thrown_less_number_of_times_than_retry_count_async()
+        {
+            var policy = Policy
+                .Handle<DivideByZeroException>()
+                .Or<ArgumentException>()
+                .RetryAsync(3);
+
+            policy.Awaiting(x => x.RaiseExceptionAsync<ArgumentException>())
                   .ShouldNotThrow();
         }
 
@@ -119,6 +142,17 @@ namespace Polly.Specs
         }
 
         [Fact]
+        public void Should_throw_when_specified_exception_thrown_more_times_then_retry_count_async()
+        {
+            var policy = Policy
+                .Handle<DivideByZeroException>()
+                .RetryAsync(3);
+
+            policy.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>(3 + 1))
+                  .ShouldThrow<DivideByZeroException>();
+        }
+
+        [Fact]
         public void Should_throw_when_one_of_the_specified_exceptions_are_thrown_more_times_then_retry_count()
         {
             var policy = Policy
@@ -128,6 +162,18 @@ namespace Polly.Specs
 
             policy.Invoking(x => x.RaiseException<ArgumentException>(3 + 1))
                   .ShouldThrow<ArgumentException>();
+        }
+
+        [Fact]
+        public void Should_throw_when_one_of_the_specified_exceptions_are_thrown_more_times_then_retry_count_async()
+        {
+            var policy = Policy
+                .Handle<DivideByZeroException>()
+                .Or<ArgumentException>()
+                .RetryAsync(3);
+
+            policy.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>(3 + 1))
+                  .ShouldThrow<DivideByZeroException>();
         }
 
         [Fact]

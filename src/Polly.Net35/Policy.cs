@@ -7,14 +7,14 @@ namespace Polly
     /// Transient exception handling policies that can
     /// be applied to delegates
     /// </summary>
-    public class Policy
+    public partial class Policy
     {
         private readonly Action<Action> _exceptionPolicy;
 
         internal Policy(Action<Action> exceptionPolicy)
         {
             if (exceptionPolicy == null) throw new ArgumentNullException("exceptionPolicy");
-            
+
             _exceptionPolicy = exceptionPolicy;
         }
 
@@ -25,9 +25,10 @@ namespace Polly
         [DebuggerStepThrough]
         public void Execute(Action action)
         {
+            if (_exceptionPolicy == null) throw new InvalidOperationException("Please use an synchronous policy with Execute().");
+
             _exceptionPolicy(action);
         }
-
 
         /// <summary>
         /// Executes the specified action within the policy and returns the result.
@@ -38,6 +39,8 @@ namespace Polly
         [DebuggerStepThrough]
         public TResult Execute<TResult>(Func<TResult> action)
         {
+            if (_exceptionPolicy == null) throw new InvalidOperationException("Please use an synchronous policy with Execute().");
+
             var result = default(TResult);
             _exceptionPolicy(() => { result = action(); });
             return result;
@@ -64,7 +67,7 @@ namespace Polly
         public static PolicyBuilder Handle<TException>(Func<TException, bool> exceptionPredicate) where TException : Exception
         {
             ExceptionPredicate predicate = exception => exception is TException &&
-                                                        exceptionPredicate((TException) exception);
+                                                        exceptionPredicate((TException)exception);
 
             return new PolicyBuilder(predicate);
         }
