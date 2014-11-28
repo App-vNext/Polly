@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
+using Polly.Extensions;
 
 namespace Polly.CircuitBreaker
 {
@@ -17,7 +17,8 @@ namespace Polly.CircuitBreaker
 
             try
             {
-                await action().ConfigureAwait(false);
+                await action().NotOnCapturedContext();
+
                 breakerState.Reset();
             }
             catch (Exception ex)

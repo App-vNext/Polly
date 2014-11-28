@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using Polly.Extensions;
 
 namespace Polly
 {
@@ -22,7 +23,8 @@ namespace Polly
         [DebuggerStepThrough]
         public Task ExecuteAsync(Func<Task> action)
         {
-            if (_asyncExceptionPolicy == null) throw new InvalidOperationException("Please use an asynchronous policy with ExecuteAsync().");
+            if (_asyncExceptionPolicy == null) throw new InvalidOperationException
+                ("Please use the asynchronous RetryAsync, RetryForeverAsync, WaitAndRetryAsync or CircuitBreakerAsync methods when calling the asynchronous Execute method.");
 
             return _asyncExceptionPolicy(action);
         }
@@ -36,10 +38,11 @@ namespace Polly
         [DebuggerStepThrough]
         public async Task<TResult> ExecuteAsync<TResult>(Func<Task<TResult>> action)
         {
-            if (_asyncExceptionPolicy == null) throw new InvalidOperationException("Please use an asynchronous policy with ExecuteAsync().");
+            if (_asyncExceptionPolicy == null) throw new InvalidOperationException(
+                "Please use the asynchronous RetryAsync, RetryForeverAsync, WaitAndRetryAsync or CircuitBreakerAsync methods when calling the asynchronous Execute method.");
 
             TResult result = default(TResult);
-            await _asyncExceptionPolicy(async () => { result = await action().ConfigureAwait(false); });
+            await _asyncExceptionPolicy(async () => { result = await action().NotOnCapturedContext(); });
             return result;
         }
     }

@@ -65,15 +65,20 @@
     <Compile Include="..\..\SolutionAssemblyInfo.cs">
       <Link>Properties\SolutionAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="CircuitBreakerAsyncSpecs.cs" />
     <Compile Include="CircuitBreakerSpecs.cs" />
     <Compile Include="ContextualPolicySpecs.cs" />
     <Compile Include="Helpers\ContextualPolicyExtensions.cs" />
     <Compile Include="Helpers\ObjectExtensions.cs" />
     <Compile Include="Helpers\PolicyExtensions.cs" />
+    <Compile Include="PolicyAsyncSpecs.cs" />
     <Compile Include="PolicySpecs.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RetryForeverAsyncSpecs.cs" />
     <Compile Include="RetryForeverSpecs.cs" />
+    <Compile Include="RetryAsyncSpecs.cs" />
     <Compile Include="RetrySpecs.cs" />
+    <Compile Include="WaitAndRetryAsyncSpecs.cs" />
     <Compile Include="WaitAndRetrySpecs.cs" />
   </ItemGroup>
   <ItemGroup>

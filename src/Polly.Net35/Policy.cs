@@ -25,7 +25,8 @@ namespace Polly
         [DebuggerStepThrough]
         public void Execute(Action action)
         {
-            if (_exceptionPolicy == null) throw new InvalidOperationException("Please use an synchronous policy with Execute().");
+            if (_exceptionPolicy == null) throw new InvalidOperationException(
+                "Please use the synchronous Retry, RetryForever, WaitAndRetry or CircuitBreaker methods when calling the synchronous Execute method.");
 
             _exceptionPolicy(action);
         }
@@ -39,7 +40,8 @@ namespace Polly
         [DebuggerStepThrough]
         public TResult Execute<TResult>(Func<TResult> action)
         {
-            if (_exceptionPolicy == null) throw new InvalidOperationException("Please use an synchronous policy with Execute().");
+            if (_exceptionPolicy == null) throw new InvalidOperationException(
+                "Please use the synchronous Retry, RetryForever, WaitAndRetry or CircuitBreaker methods when calling the synchronous Execute method.");
 
             var result = default(TResult);
             _exceptionPolicy(() => { result = action(); });
