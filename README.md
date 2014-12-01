@@ -240,7 +240,7 @@ Policy
 
 Asynchronous Support (.NET 4.5 Only)
 =
-You use Polly with asynchronous functions by using the asynchronous methods
+You can use Polly with asynchronous functions by using the asynchronous methods
 
 * `RetryAsync`
 * `RetryForeverAsync`
