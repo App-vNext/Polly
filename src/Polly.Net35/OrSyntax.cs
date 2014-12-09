@@ -11,7 +11,7 @@ namespace Polly
         /// Specifies the type of exception that this policy can handle.
         /// </summary>
         /// <typeparam name="TException">The type of the exception to handle.</typeparam>
-        /// <param name="policyBuilder"></param>
+        /// <param name="policyBuilder">The current builder to chain off.</param>
         /// <returns>The PolicyBuilder instance.</returns>
         public static PolicyBuilder Or<TException>(this PolicyBuilder policyBuilder) where TException : Exception
         {
