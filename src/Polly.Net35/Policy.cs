@@ -61,6 +61,32 @@ namespace Polly
         }
 
         /// <summary>
+        /// Specifies the type of exception that this policy can handle.
+        /// </summary>
+        /// <param name="exceptionType">The exception type expected.</param>
+        /// <returns>The PolicyBuilder instance.</returns>
+        public static PolicyBuilder Handle(Type exceptionType)
+        {
+            ExceptionPredicate predicate = exception => exception.GetType() == exceptionType;
+
+            return new PolicyBuilder(predicate);
+        }
+
+        /// <summary>
+        /// Specifies the type of exception that this policy can handle with addition filters on this exception type.
+        /// </summary>
+        /// <param name="exceptionType">The type of the exception.</param>
+        /// <param name="exceptionPredicate">The exception predicate to filter the type of exception this policy can handle.</param>
+        /// <returns>The PolicyBuilder instance.</returns>
+        public static PolicyBuilder Handle(Type exceptionType, Func<Exception, bool> exceptionPredicate)
+        {
+            ExceptionPredicate predicate = exception => exception.GetType() == exceptionType &&
+                exceptionPredicate(exception);
+
+            return new PolicyBuilder(predicate);
+        }
+
+        /// <summary>
         /// Specifies the type of exception that this policy can handle with addition filters on this exception type.
         /// </summary>
         /// <typeparam name="TException">The type of the exception.</typeparam>

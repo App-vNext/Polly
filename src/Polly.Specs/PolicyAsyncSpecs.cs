@@ -78,10 +78,42 @@ namespace Polly.Specs
         }
 
         [Fact]
+        public async Task Executing_the_policy_action_for_typeof_exception_should_execute_the_specified_async_action()
+        {
+            bool executed = false;
+
+            Policy policy = Policy
+                .Handle(typeof(DivideByZeroException))
+                .RetryAsync((_, __) => { });
+
+            await policy.ExecuteAsync(() =>
+            {
+                executed = true;
+                return Task.FromResult(true) as Task;
+            });
+
+            executed.Should()
+                .BeTrue();
+        }
+
+        [Fact]
         public async Task Executing_the_policy_function_should_execute_the_specified_async_function_and_return_the_result()
         {
             Policy policy = Policy
                 .Handle<DivideByZeroException>()
+                .RetryAsync((_, __) => { });
+
+            int result = await policy.ExecuteAsync(() => Task.FromResult(2));
+
+            result.Should()
+                .Be(2);
+        }
+
+        [Fact]
+        public async Task Executing_the_policy_function_for_typeof_exception_should_execute_the_specified_async_function_and_return_the_result()
+        {
+            Policy policy = Policy
+                .Handle(typeof(DivideByZeroException))
                 .RetryAsync((_, __) => { });
 
             int result = await policy.ExecuteAsync(() => Task.FromResult(2));
