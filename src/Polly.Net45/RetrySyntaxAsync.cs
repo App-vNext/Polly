@@ -119,6 +119,22 @@ namespace Polly
         }
 
         /// <summary>
+        ///     Builds a <see cref="Policy"/> that will wait and retry <paramref name="retryCount"/> times.
+        ///     On each retry, the duration to wait is calculated by calling <paramref name="sleepDurationProvider"/> with
+        ///     the current retry attempt allowing an exponentially increasing wait time (exponential backoff).
+        /// </summary>
+        /// <param name="policyBuilder">The policy builder.</param>
+        /// <param name="retryCount">The retry count.</param>
+        /// <param name="sleepDurationProvider">The function that provides the duration to wait for for a particular retry attempt.</param>
+        /// <returns>The policy instance.</returns>
+        public static Policy WaitAndRetryAsync(this PolicyBuilder policyBuilder, int retryCount, Func<int, TimeSpan> sleepDurationProvider)
+        {
+            Action<Exception, TimeSpan> doNothing = (_, __) => { };
+
+            return policyBuilder.WaitAndRetryAsync(retryCount, sleepDurationProvider, doNothing);
+        }
+
+        /// <summary>
         ///     Builds a <see cref="Policy" /> that will wait and retry <paramref name="retryCount" /> times
         ///     calling <paramref name="onRetry" /> on each retry with the raised exception and the current sleep duration.
         ///     On each retry, the duration to wait is calculated by calling <paramref name="sleepDurationProvider" /> with
