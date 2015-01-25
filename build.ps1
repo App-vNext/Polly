@@ -39,7 +39,7 @@ Properties {
     "net35" = "net35"; 
     "net40" = "net40"; 
     "net45" = "net45";
-    "pcl"   = "portable-net45+wp80+win";
+    "pcl"   = "portable-net45+netcore45+wpa81+wp8+MonoAndroid1+MonoTouch1";
   }
 
   $test_project_names = @("Polly.Specs")
