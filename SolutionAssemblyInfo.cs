@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 
 [assembly: AssemblyProduct("Polly")]
 [assembly: AssemblyCompany("Michael Wolfenden")]
-[assembly: AssemblyCopyright("Copyright © 2014, Michael Wolfenden")]
+[assembly: AssemblyCopyright("Copyright © 2015, Michael Wolfenden")]
 
 #if DEBUG
 [assembly: AssemblyConfiguration("Debug")]
