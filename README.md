@@ -273,7 +273,7 @@ await Policy
 3rd Party Libraries
 =
 
-* [Fluent Assertions](http://fluentassertions.codeplex.com/) - A set of .NET extension methods that allow you to more naturally specify the expected outcome of a TDD or BDD-style test | [Microsoft Public License (Ms-PL)](http://fluentassertions.codeplex.com/license)
+* [Fluent Assertions](https://github.com/dennisdoomen/fluentassertions) - A set of .NET extension methods that allow you to more naturally specify the expected outcome of a TDD or BDD-style test | [Apache License 2.0 (Apache)](https://github.com/dennisdoomen/fluentassertions/blob/develop/LICENSE)
 
 * [xUnit.net](http://xunit.codeplex.com/) - Free, open source, community-focused unit testing tool for the .NET Framework | [Apache License 2.0 (Apache)](http://xunit.codeplex.com/license)
 
