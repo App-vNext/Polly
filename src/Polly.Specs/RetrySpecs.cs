@@ -17,7 +17,7 @@ namespace Polly.Specs
             Action policy = () => Policy
                                       .Handle<DivideByZeroException>()
                                       .Retry(0, onRetry);
-        
+
             policy.ShouldThrow<ArgumentOutOfRangeException>().And
                   .ParamName.Should().Be("retryCount");
         }
@@ -66,6 +66,17 @@ namespace Polly.Specs
         {
             var policy = Policy
                 .Handle<DivideByZeroException>()
+                .Retry(3);
+
+            policy.Invoking(x => x.RaiseException<DivideByZeroException>(3))
+                  .ShouldNotThrow();
+        }
+
+        [Fact]
+        public void Should_not_throw_when_specified_typeof_exception_thrown_same_number_of_times_as_retry_count()
+        {
+            var policy = Policy
+                .Handle(typeof(DivideByZeroException))
                 .Retry(3);
 
             policy.Invoking(x => x.RaiseException<DivideByZeroException>(3))
@@ -142,6 +153,17 @@ namespace Polly.Specs
         }
 
         [Fact]
+        public void Should_throw_when_specified_typeof_exception_thrown_more_times_then_retry_count()
+        {
+            var policy = Policy
+                .Handle(typeof(DivideByZeroException))
+                .Retry(3);
+
+            policy.Invoking(x => x.RaiseException<DivideByZeroException>(3 + 1))
+                  .ShouldThrow<DivideByZeroException>();
+        }
+
+        [Fact]
         public void Should_throw_when_specified_exception_thrown_more_times_then_retry_count_async()
         {
             var policy = Policy
@@ -211,10 +233,45 @@ namespace Polly.Specs
         }
 
         [Fact]
+        public void Should_throw_when_specified_typeof_exception_predicate_is_not_satisfied()
+        {
+            var policy = Policy
+                .Handle(typeof(DivideByZeroException), e => false)
+                .Retry();
+
+            policy.Invoking(x => x.RaiseException<DivideByZeroException>())
+                  .ShouldThrow<DivideByZeroException>();
+        }
+
+        [Fact]
         public void Should_throw_when_none_of_the_specified_exception_predicates_are_satisfied()
         {
             var policy = Policy
                 .Handle<DivideByZeroException>(e => false)
+                .Or<ArgumentException>(e => false)
+                .Retry();
+
+            policy.Invoking(x => x.RaiseException<ArgumentException>())
+                  .ShouldThrow<ArgumentException>();
+        }
+
+        [Fact]
+        public void Should_throw_when_none_of_the_specified_typeof_exception_predicates_are_satisfied()
+        {
+            var policy = Policy
+                .Handle(typeof(DivideByZeroException), e => false)
+                .Or(typeof(ArgumentException), e => false)
+                .Retry();
+
+            policy.Invoking(x => x.RaiseException<ArgumentException>())
+                  .ShouldThrow<ArgumentException>();
+        }
+
+        [Fact]
+        public void Should_throw_when_none_of_the_specified_by_generic_and_type_exception_predicates_are_satisfied()
+        {
+            var policy = Policy
+                .Handle(typeof(DivideByZeroException), e => false)
                 .Or<ArgumentException>(e => false)
                 .Retry();
 
@@ -234,11 +291,35 @@ namespace Polly.Specs
         }
 
         [Fact]
+        public void Should_not_throw_when_specified_typeof_exception_predicate_is_satisfied()
+        {
+            var policy = Policy
+                .Handle(typeof(DivideByZeroException), e => true)
+                .Retry();
+
+            policy.Invoking(x => x.RaiseException<DivideByZeroException>())
+                  .ShouldNotThrow();
+        }
+
+
+        [Fact]
         public void Should_not_throw_when_one_of_the_specified_exception_predicates_are_satisfied()
         {
             var policy = Policy
                 .Handle<DivideByZeroException>(e => true)
                 .Or<ArgumentException>(e => true)
+                .Retry();
+
+            policy.Invoking(x => x.RaiseException<ArgumentException>())
+                  .ShouldNotThrow();
+        }
+
+        [Fact]
+        public void Should_not_throw_when_one_of_the_specified_typeof_exception_predicates_are_satisfied()
+        {
+            var policy = Policy
+                .Handle(typeof(DivideByZeroException), e => true)
+                .Or(typeof(ArgumentException), e => true)
                 .Retry();
 
             policy.Invoking(x => x.RaiseException<ArgumentException>())

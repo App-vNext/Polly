@@ -80,6 +80,35 @@ namespace Polly.Specs
 
             result.Should()
                   .Be(2);
-        } 
+        }
+
+
+        [Fact]
+        public void Executing_the_policy_function_for_typeof_should_execute_the_specified_function_and_return_the_result()
+        {
+            var executed = false;
+
+            var policy = Policy
+                          .Handle(typeof(DivideByZeroException))
+                          .Retry((_, __) => { });
+
+            policy.Execute(() => executed = true);
+
+            executed.Should()
+                    .BeTrue();
+        }
+
+        [Fact]
+        public void Executing_the_policy_function_for_exception_type_should_execute_the_specified_function_and_return_the_result()
+        {
+            var policy = Policy
+                          .Handle(typeof(DivideByZeroException))
+                          .Retry((_, __) => { });
+
+            var result = policy.Execute(() => 2);
+
+            result.Should()
+                  .Be(2);
+        }
     }
 }
