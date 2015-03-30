@@ -60,6 +60,7 @@
     <Compile Include="CircuitBreaker\CircuitBreakerState.cs" />
     <Compile Include="CircuitBreaker\ICircuitBreakerState.cs" />
     <Compile Include="CircuitBreaker\BrokenCircuitException.cs" />
+    <Compile Include="CircuitBreaker\ServiceLevelCircuitBreakerState.cs" />
     <Compile Include="Context.cs" />
     <Compile Include="ContextualPolicy.cs" />
     <Compile Include="ExceptionPredicate.cs" />

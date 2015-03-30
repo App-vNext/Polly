@@ -63,6 +63,9 @@
     <Compile Include="..\Polly.Net35\CircuitBreaker\ICircuitBreakerState.cs">
       <Link>CircuitBreaker\ICircuitBreakerState.cs</Link>
     </Compile>
+    <Compile Include="..\Polly.Net35\CircuitBreaker\ServiceLevelCircuitBreakerState.cs">
+      <Link>CircuitBreaker\ServiceLevelCircuitBreakerState.cs</Link>
+    </Compile>
     <Compile Include="..\Polly.Net35\Context.cs">
       <Link>Context.cs</Link>
     </Compile>
