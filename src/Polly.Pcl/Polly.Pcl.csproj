@@ -59,6 +59,9 @@
     <Compile Include="..\polly.net35\circuitbreaker\ICircuitBreakerState.cs">
       <Link>CircuitBreaker\ICircuitBreakerState.cs</Link>
     </Compile>
+    <Compile Include="..\Polly.Net35\CircuitBreaker\ServiceLevelCircuitBreakerState.cs">
+      <Link>CircuitBreaker\ServiceLevelCircuitBreakerState.cs</Link>
+    </Compile>
     <Compile Include="..\Polly.Net35\ContextualPolicy.cs">
       <Link>ContextualPolicy.cs</Link>
     </Compile>

@@ -33,5 +33,27 @@ namespace Polly
             var policyState = new CircuitBreakerState(exceptionsAllowedBeforeBreaking, durationOfBreak);
             return new Policy(action => CircuitBreakerPolicy.Implementation(action, policyBuilder.ExceptionPredicates, policyState));
         }
+
+        /// <summary>
+        /// <para> Builds a <see cref="Policy"/> that will function like a Circuit Breaker.</para>
+        /// <para>The circuit will break after the success rate falls below the <paramref name="serviceLevelPercent"/>.
+        /// The circuit will stay broken for the <paramref name="durationOfBreak"/>. Any attempt to execute this policy
+        /// while the circuit is broken, will immediately throw a <see cref="BrokenCircuitException"/> containing the exception 
+        /// that broke the cicuit.
+        /// </para>
+        /// </summary>
+        /// <param name="policyBuilder">The policy builder.</param>
+        /// <param name="serviceLevelPercent">The success rate required for the circuit to remain closed.</param>
+        /// <param name="durationOfBreak">The duration the circuit will stay open before resetting.</param>
+        /// <returns>The policy instance.</returns>
+        /// <remarks>(see "Release It!" by Michael T. Nygard fi)</remarks>
+        /// <exception cref="System.ArgumentOutOfRangeException">serviceLevelPercent;Value cannot be less than zero.</exception>
+        public static Policy CircuitBreaker(this PolicyBuilder policyBuilder, double serviceLevelPercent, TimeSpan durationOfBreak)
+        {
+            if (serviceLevelPercent < 0) throw new ArgumentOutOfRangeException("serviceLevelPercent", "Value cannot be less than zero.");
+
+            var policyState = new ServiceLevelCircuitBreakerState(serviceLevelPercent, durationOfBreak);
+            return new Policy(action => CircuitBreakerPolicy.Implementation(action, policyBuilder.ExceptionPredicates, policyState));
+        }
     }
 }
