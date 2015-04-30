@@ -55,6 +55,7 @@
     <Compile Include="..\..\SolutionVersion.cs">
       <Link>Properties\SolutionVersion.cs</Link>
     </Compile>
+    <Compile Include="AfterFinalRetryFailureSyntax.cs" />
     <Compile Include="CircuitBreakerSyntax.cs" />
     <Compile Include="CircuitBreaker\CircuitBreakerPolicy.cs" />
     <Compile Include="CircuitBreaker\CircuitBreakerState.cs" />
