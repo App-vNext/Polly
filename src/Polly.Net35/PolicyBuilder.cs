@@ -17,12 +17,15 @@ namespace Polly
             {
                 exceptionPredicate
             };
+            AfterFinalRetryFailureAction = null;
         }
 
         internal IList<ExceptionPredicate> ExceptionPredicates
         {
             get { return _exceptionPredicates; }
         }
+
+        internal Action<Exception> AfterFinalRetryFailureAction { get; set; }
 
         #region Hide object members
 
