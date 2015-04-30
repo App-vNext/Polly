@@ -65,6 +65,7 @@
     <Compile Include="..\..\SolutionAssemblyInfo.cs">
       <Link>Properties\SolutionAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="AfterFinalRetryFailureSpecs.cs" />
     <Compile Include="CircuitBreakerAsyncSpecs.cs" />
     <Compile Include="CircuitBreakerSpecs.cs" />
     <Compile Include="ContextualPolicySpecs.cs" />

@@ -69,6 +69,19 @@ namespace Polly.Specs
         }
 
         [Fact]
+        public void Should_not_throw_when_specified_exception_thrown_more_times_then_retry_count_and_after_final_retry_failure_action_defined()
+        {
+            var policy = Policy.Handle<DivideByZeroException>()
+                .AfterFinalRetryFailure(ex => { })
+                .RetryAsync(1);
+
+
+            policy.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>(1 + 1))
+                  .ShouldNotThrow<DivideByZeroException>();
+        }
+
+
+        [Fact]
         public void Should_throw_when_specified_exception_thrown_more_times_then_retry_count()
         {
             var policy = Policy
