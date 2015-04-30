@@ -8,8 +8,7 @@ namespace Polly.Retry
 {
     internal static partial class RetryPolicy
     {
-        public static async Task ImplementationAsync(Func<Task> action,
-            IEnumerable<ExceptionPredicate> shouldRetryPredicates, Func<IRetryPolicyState> policyStateFactory)
+        public static async Task ImplementationAsync(Func<Task> action, IEnumerable<ExceptionPredicate> shouldRetryPredicates, Action<Exception> afterFinalRetryFailureAction, Func<IRetryPolicyState> policyStateFactory)
         {
             IRetryPolicyState policyState = policyStateFactory();
 
@@ -30,7 +29,14 @@ namespace Polly.Retry
 
                     if (!policyState.CanRetry(ex))
                     {
-                        throw;
+                        if (afterFinalRetryFailureAction != null)
+                        {
+                            afterFinalRetryFailureAction(ex);
+                        }
+                        else
+                        {
+                            throw;
+                        }
                     }
                 }
             }

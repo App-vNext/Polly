@@ -64,8 +64,9 @@ namespace Polly
 
             return new Policy(
                 action => RetryPolicy.Implementation(
-                    action, 
-                    policyBuilder.ExceptionPredicates, 
+                    action,
+                    policyBuilder.ExceptionPredicates,
+                    policyBuilder.AfterFinalRetryFailureAction,
                     () => new RetryPolicyStateWithCount(retryCount, onRetry)));
         }
 
@@ -101,8 +102,9 @@ namespace Polly
             if (onRetry == null) throw new ArgumentNullException("onRetry");
 
             return new ContextualPolicy((action, context) => RetryPolicy.Implementation(
-                action, 
-                policyBuilder.ExceptionPredicates, 
+                action,
+                policyBuilder.ExceptionPredicates,
+                policyBuilder.AfterFinalRetryFailureAction,
                 () => new RetryPolicyStateWithCount(retryCount, onRetry, context)
             ));
         }
@@ -133,8 +135,9 @@ namespace Polly
 
             return new Policy(
                 action => RetryPolicy.Implementation(
-                    action, 
-                    policyBuilder.ExceptionPredicates, 
+                    action,
+                    policyBuilder.ExceptionPredicates,
+                    policyBuilder.AfterFinalRetryFailureAction,
                     () => new RetryPolicyState(onRetry)));
         }
 
@@ -154,6 +157,7 @@ namespace Polly
             return new ContextualPolicy((action, context) => RetryPolicy.Implementation(
                 action, 
                 policyBuilder.ExceptionPredicates,
+                policyBuilder.AfterFinalRetryFailureAction,
                 () => new RetryPolicyState(onRetry, context)
             ));
         }
@@ -203,7 +207,8 @@ namespace Polly
             return new Policy(
                 action => RetryPolicy.Implementation(
                     action, 
-                    policyBuilder.ExceptionPredicates, 
+                    policyBuilder.ExceptionPredicates,
+                    policyBuilder.AfterFinalRetryFailureAction,
                     () => new RetryPolicyStateWithSleep(sleepDurations, onRetry)));
         }
 
@@ -236,7 +241,8 @@ namespace Polly
 
             return new ContextualPolicy((action, context) => RetryPolicy.Implementation(
                 action, 
-                policyBuilder.ExceptionPredicates, 
+                policyBuilder.ExceptionPredicates,
+                policyBuilder.AfterFinalRetryFailureAction,
                 () => new RetryPolicyStateWithSleep(sleepDurations, onRetry, context)
             ));
         }
@@ -277,7 +283,8 @@ namespace Polly
             return new Policy(
                 action => RetryPolicy.Implementation(
                     action, 
-                    policyBuilder.ExceptionPredicates, 
+                    policyBuilder.ExceptionPredicates,
+                    policyBuilder.AfterFinalRetryFailureAction,
                     () => new RetryPolicyStateWithSleep(sleepDurations, onRetry)));
         }
 
@@ -303,7 +310,8 @@ namespace Polly
 
             return new ContextualPolicy((action, context) => RetryPolicy.Implementation(
                 action, 
-                policyBuilder.ExceptionPredicates, 
+                policyBuilder.ExceptionPredicates,
+                policyBuilder.AfterFinalRetryFailureAction,
                 () => new RetryPolicyStateWithSleep(sleepDurations, onRetry, context)
             ));
         }

@@ -67,6 +67,7 @@ namespace Polly
                 action => RetryPolicy.ImplementationAsync(
                     action,
                     policyBuilder.ExceptionPredicates,
+                    policyBuilder.AfterFinalRetryFailureAction,
                     () => new RetryPolicyStateWithCount(retryCount, onRetry))
                 );
         }
@@ -98,7 +99,7 @@ namespace Polly
             return new Policy(
                 action => RetryPolicy.ImplementationAsync(
                     action,
-                    policyBuilder.ExceptionPredicates,
+                    policyBuilder.ExceptionPredicates, policyBuilder.AfterFinalRetryFailureAction,
                     () => new RetryPolicyState(onRetry))
                 );
         }
@@ -165,7 +166,7 @@ namespace Polly
             return new Policy(
                 action => RetryPolicy.ImplementationAsync(
                     action,
-                    policyBuilder.ExceptionPredicates,
+                    policyBuilder.ExceptionPredicates, policyBuilder.AfterFinalRetryFailureAction,
                     () => new RetryPolicyStateWithSleep(sleepDurations, onRetry))
                 );
         }
@@ -194,7 +195,7 @@ namespace Polly
             return new Policy(
                 action => RetryPolicy.ImplementationAsync(
                     action,
-                    policyBuilder.ExceptionPredicates,
+                    policyBuilder.ExceptionPredicates, policyBuilder.AfterFinalRetryFailureAction,
                     () => new RetryPolicyStateWithSleep(sleepDurations, onRetry))
                 );
         }
