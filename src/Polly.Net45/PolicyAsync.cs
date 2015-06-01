@@ -42,7 +42,7 @@ namespace Polly
                 "Please use the asynchronous RetryAsync, RetryForeverAsync, WaitAndRetryAsync or CircuitBreakerAsync methods when calling the asynchronous Execute method.");
 
             TResult result = default(TResult);
-            await _asyncExceptionPolicy(async () => { result = await action().NotOnCapturedContext(); });
+            await _asyncExceptionPolicy(async () => { result = await action().NotOnCapturedContext(); }).NotOnCapturedContext();
             return result;
         }
     }
