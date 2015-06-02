@@ -1,3 +1,20 @@
+2.2.2
+=
+----------
+- Added extra `NotOnCapturedContext` call to prevent potential deadlocks when blocking on asynchronous calls - Thanks to [Hacko](https://github.com/hacko-bede)
+
+2.2.1
+=
+----------
+- Replaced non-blocking sleep implementation with a blocking one for PCL
+       
+2.2.0
+=
+----------
+- Added Async Support (PCL)
+- PCL Profile updated from Profile78 ->  Profile 259
+- Added missing WaitAndRetryAsync overload
+
 2.1.0
 =
 ----------

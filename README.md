@@ -288,6 +288,7 @@ Acknowledgements
 * [@ghuntley](https://github.com/ghuntley) - Portable Class Library implementation.
 * [@mauricedb](https://github.com/mauricedb) - Async implementation.
 * [@robgibbens](https://github.com/RobGibbens) - Added existing async files to PCL project
+* [Hacko](https://github.com/hacko-bede) - Added extra `NotOnCapturedContext` call to prevent potential deadlocks when blocking on asynchronous calls
 
 License
 =

@@ -16,6 +16,10 @@
    <tags>Exception Handling Policy Retry Wait Circuit Breaker</tags>
    <copyright>Copyright © 2015, Michael Wolfenden</copyright>
    <releaseNotes>
+       2.2.2
+       ---------------------
+       - Added extra `NotOnCapturedContext` call to prevent potential deadlocks when blocking on asynchronous calls
+
        2.2.1
        ---------------------
        - Replaced non-blocking sleep implementation with a blocking one for PCL
