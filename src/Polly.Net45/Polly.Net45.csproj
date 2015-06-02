@@ -104,6 +104,7 @@
     <Compile Include="..\Polly.Net35\Utilities\TimedLock.cs">
       <Link>Utilities\TimedLock.cs</Link>
     </Compile>
+    <Compile Include="AfterFinalRetryFailureSyntax.cs" />
     <Compile Include="CircuitBreakerSyntaxAsync.cs" />
     <Compile Include="CircuitBreaker\CircuitBreakerPolicyAsync.cs" />
     <Compile Include="Extensions\TaskExtensions.cs" />
