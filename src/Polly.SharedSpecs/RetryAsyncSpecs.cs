@@ -11,13 +11,13 @@ namespace Polly.Specs
     public class RetryAsyncSpecs
     {
         [Fact]
-        public void Should_throw_when_retry_count_is_less_than_one_without_context()
+        public void Should_throw_when_retry_count_is_less_than_zero_without_context()
         {
             Action<Exception, int> onRetry = (_, __) => { };
 
             Action policy = () => Policy
                                       .Handle<DivideByZeroException>()
-                                      .RetryAsync(0, onRetry);
+                                      .RetryAsync(-1, onRetry);
         
             policy.ShouldThrow<ArgumentOutOfRangeException>().And
                   .ParamName.Should().Be("retryCount");

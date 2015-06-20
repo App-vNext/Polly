@@ -551,26 +551,26 @@ namespace Polly.Specs
         }
 
         [Fact]
-        public void Should_throw_when_retry_count_is_less_than_one_without_context()
+        public void Should_throw_when_retry_count_is_less_than_zero_without_context()
         {
             Action<Exception, TimeSpan> onRetry = (_, __) => { };
 
             Action policy = () => Policy
                                       .Handle<DivideByZeroException>()
-                                      .WaitAndRetry(0, _ => new TimeSpan(), onRetry);
+                                      .WaitAndRetry(-1, _ => new TimeSpan(), onRetry);
                                            
             policy.ShouldThrow<ArgumentOutOfRangeException>().And                  
                   .ParamName.Should().Be("retryCount");
         }
 
         [Fact]
-        public void Should_throw_when_retry_count_is_less_than_one_with_context()
+        public void Should_throw_when_retry_count_is_less_than_zero_with_context()
         {
             Action<Exception, TimeSpan, Context> onRetry = (_, __, ___) => { };
 
             Action policy = () => Policy
                                       .Handle<DivideByZeroException>()
-                                      .WaitAndRetry(0, _ => new TimeSpan(), onRetry);
+                                      .WaitAndRetry(-1, _ => new TimeSpan(), onRetry);
 
             policy.ShouldThrow<ArgumentOutOfRangeException>().And
                   .ParamName.Should().Be("retryCount");
