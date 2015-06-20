@@ -363,5 +363,39 @@ namespace Polly.Specs
 
             contextValue.Should().Be("new_value");
         }
+
+        [Fact]
+        public void Should_not_call_onretry_when_retry_count_is_zero_without_context()
+        {
+            string onRetrySideEffect = "original_value";
+
+            Action<Exception, int> onRetryWithSideEffect = (_, __) => { onRetrySideEffect = "new_value"; };
+
+            var policy = Policy
+                .Handle<DivideByZeroException>()
+                .Retry(0, onRetryWithSideEffect);
+
+            policy.Invoking(x => x.RaiseException<DivideByZeroException>())
+                  .ShouldThrow<DivideByZeroException>();
+
+            onRetrySideEffect.Should().Be("original_value");
+        }
+
+        [Fact]
+        public void Should_not_call_onretry_when_retry_count_is_zero_with_context()
+        {
+            string onRetrySideEffect = "original_value";
+
+            Action<Exception, int, Context> onRetryWithSideEffect = (_, __, ___) => { onRetrySideEffect = "new_value"; };
+
+            var policy = Policy
+                .Handle<DivideByZeroException>()
+                .Retry(0, onRetryWithSideEffect);
+
+            policy.Invoking(x => x.RaiseException<DivideByZeroException>())
+                  .ShouldThrow<DivideByZeroException>();
+
+            onRetrySideEffect.Should().Be("original_value");
+        }
     }
 }

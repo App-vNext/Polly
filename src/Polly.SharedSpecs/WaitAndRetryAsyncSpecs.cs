@@ -450,6 +450,23 @@ namespace Polly.Specs
                        .ContainInOrder(expectedRetryCounts);
         }
 
+        [Fact]
+        public void Should_not_call_onretry_when_retry_count_is_zero()
+        {
+            string onRetrySideEffect = "original_value";
+
+            Action<Exception, TimeSpan> onRetryWithSideEffect = (_, __) => { onRetrySideEffect = "new_value"; };
+
+            var policy = Policy
+                .Handle<DivideByZeroException>()
+                .WaitAndRetryAsync(0, retryAttempt => TimeSpan.FromSeconds(1), onRetryWithSideEffect);
+
+            policy.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                  .ShouldThrow<DivideByZeroException>();
+
+            onRetrySideEffect.Should().Be("original_value");
+        }
+
         public void Dispose()
         {
             SystemClock.Reset();

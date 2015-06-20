@@ -224,5 +224,22 @@ namespace Polly.Specs
             policy.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
                   .ShouldNotThrow();
         }
+
+        [Fact]
+        public void Should_not_call_onretry_when_retry_count_is_zero()
+        {
+            string onRetrySideEffect = "original_value";
+
+            Action<Exception, int> onRetryWithSideEffect = (_, __) => { onRetrySideEffect = "new_value"; };
+
+            var policy = Policy
+                .Handle<DivideByZeroException>()
+                .RetryAsync(0, onRetryWithSideEffect);
+
+            policy.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                  .ShouldThrow<DivideByZeroException>();
+
+            onRetrySideEffect.Should().Be("original_value");
+        }
     }
 }
