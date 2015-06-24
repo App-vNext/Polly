@@ -50,9 +50,9 @@ namespace Polly
         }
 
         /// <summary>
-        /// Executes the specified action within the policy and returns the result.
+        /// Executes the specified action within the policy and returns the Result.
         /// </summary>
-        /// <typeparam name="TResult">The type of the result.</typeparam>
+        /// <typeparam name="TResult">The type of the Result.</typeparam>
         /// <param name="action">The action to perform.</param>
         /// <param name="contextData">Arbitrary data that is passed to the exception policy.</param>
         /// <returns>
@@ -68,9 +68,9 @@ namespace Polly
         }
 
         /// <summary>
-        /// Executes the specified action within the policy and returns the result.
+        /// Executes the specified action within the policy and returns the Result.
         /// </summary>
-        /// <typeparam name="TResult">The type of the result.</typeparam>
+        /// <typeparam name="TResult">The type of the Result.</typeparam>
         /// <param name="action">The action to perform.</param>
         /// <returns>
         /// The value returned by the action
