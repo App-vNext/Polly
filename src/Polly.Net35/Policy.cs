@@ -150,6 +150,15 @@ namespace Polly
         /// <summary>
         /// 
         /// </summary>
+        public bool HasException
+        {
+            // ReSharper disable once ConvertPropertyToExpressionBody
+            get { return InnerException != null; }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
         /// <param name="innerException"></param>
         public HandledPolicy(Exception innerException)
         {
@@ -175,6 +184,15 @@ namespace Polly
         /// <summary>
         /// 
         /// </summary>
+        public bool HasException
+        {
+            // ReSharper disable once ConvertPropertyToExpressionBody
+            get { return InnerException != null; }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
         /// <param name="result"></param>
         public HandledPolicy(TResult result)
         {
@@ -189,5 +207,4 @@ namespace Polly
             InnerException = innerException;
         }
     }
-
 }
