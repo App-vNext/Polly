@@ -240,6 +240,12 @@ Policy
   .Execute(() => DoSomething());
 ```
 
+Post Execution Steps
+=
+Using the `ExecuteAnd()` method you can continue writing post execution steps.
+
+--TODO 
+
 Asynchronous Support (.NET 4.5 and PCL Only)
 =
 You can use Polly with asynchronous functions by using the asynchronous methods
