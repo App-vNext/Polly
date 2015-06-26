@@ -76,5 +76,19 @@ namespace Polly
             throw policy.InnerException;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="policy"></param>
+        /// <param name="action"></param>
+        /// <returns></returns>
+        public static HandledPolicy FollowedBy(this HandledPolicy policy, Action<HandledPolicy> action)
+        {
+            if (!policy.HasException) return policy;
+            
+            action(policy);
+
+            return policy;
+        }
     }
 }
