@@ -65,6 +65,7 @@
     <Compile Include="Context.cs" />
     <Compile Include="ContextualPolicy.cs" />
     <Compile Include="ExceptionPredicate.cs" />
+    <Compile Include="HandledPolicy.cs" />
     <Compile Include="HandledPolicySyntax.cs" />
     <Compile Include="OrSyntax.cs" />
     <Compile Include="Policy.cs" />
