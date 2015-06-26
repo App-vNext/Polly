@@ -145,7 +145,7 @@ namespace Polly
         /// <summary>
         /// 
         /// </summary>
-        public Exception InnerException { get; }
+        public Exception InnerException { get; private set; }
 
         /// <summary>
         /// 
@@ -174,12 +174,12 @@ namespace Polly
         /// <summary>
         /// 
         /// </summary>
-        public TResult Result { get; }
+        public TResult Result { get; private set; }
 
         /// <summary>
         /// 
         /// </summary>
-        public Exception InnerException { get; }
+        public Exception InnerException { get; private set; }
 
         /// <summary>
         /// 

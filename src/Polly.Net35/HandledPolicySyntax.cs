@@ -31,16 +31,16 @@ namespace Polly
             switch (level)
             {
                 case TraceLevel.Error:
-                    System.Diagnostics.Trace.TraceError($"{message}: {policy.InnerException.Message}");
+                    System.Diagnostics.Trace.TraceError("{0}: {1}", message, policy.InnerException.Message);
                     break;
                 case TraceLevel.Warning:
-                    System.Diagnostics.Trace.TraceWarning($"{message}: {policy.InnerException.Message}");
+                    System.Diagnostics.Trace.TraceWarning("{0}: {1}", message, policy.InnerException.Message);
                     break;
                 case TraceLevel.Info:
-                    System.Diagnostics.Trace.TraceInformation($"{message}: {policy.InnerException.Message}");
+                    System.Diagnostics.Trace.TraceInformation("{0}: {1}", message, policy.InnerException.Message);
                     break;
                 case TraceLevel.Verbose:
-                    System.Diagnostics.Trace.WriteLine($"{message}: {policy.InnerException.Message}");
+                    System.Diagnostics.Trace.WriteLine(string.Format("{0}: {1}", message, policy.InnerException.Message));
                     break;
             }
 
