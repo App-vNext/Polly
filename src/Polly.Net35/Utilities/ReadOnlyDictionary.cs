@@ -57,7 +57,9 @@ namespace Polly.Utilities
         {
             if (values == null)
             {
+#pragma warning disable CSE0001 //Consider using nameof for the parameter name
                 throw new ArgumentNullException("values");
+#pragma warning restore CSE0001
             }
 
             this.source = values;
@@ -344,7 +346,9 @@ namespace Polly.Utilities
         {
             if (dictionary == null)
             {
+#pragma warning disable CSE0001 //Consider using nameof for the parameter name
                 throw new ArgumentNullException("dictionary");
+#pragma warning restore CSE0001
             }
 
             this.dict = dictionary;

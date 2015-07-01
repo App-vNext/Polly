@@ -28,7 +28,9 @@ namespace Polly
         /// <exception cref="System.ArgumentOutOfRangeException">exceptionsAllowedBeforeBreaking;Value must be greater than zero.</exception>
         public static Policy CircuitBreakerAsync(this PolicyBuilder policyBuilder, int exceptionsAllowedBeforeBreaking, TimeSpan durationOfBreak)
         {
+#pragma warning disable CSE0001 //Consider using nameof for the parameter name
             if (exceptionsAllowedBeforeBreaking <= 0) throw new ArgumentOutOfRangeException("exceptionsAllowedBeforeBreaking", "Value must be greater than zero.");
+#pragma warning restore CSE0001
 
             var policyState = new CircuitBreakerState(exceptionsAllowedBeforeBreaking, durationOfBreak);
             return new Policy(action => CircuitBreakerPolicy.ImplementationAsync(action, policyBuilder.ExceptionPredicates, policyState));

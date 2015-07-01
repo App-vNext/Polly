@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.21005.1
+# Visual Studio 14
+VisualStudioVersion = 14.0.22823.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Polly.Net35", "src\Polly.Net35\Polly.Net35.csproj", "{839C8F41-292D-486C-815B-ACE7F03467E3}"
 EndProject
@@ -31,6 +31,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Polly.Net45", "src\Polly.Ne
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Polly.Pcl", "src\Polly.Pcl\Polly.Pcl.csproj", "{905CF38A-BE90-4234-BF15-2FCFD1973A9C}"
 EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Polly.AspNet5", "src\Polly.AspNet5\Polly.AspNet5.xproj", "{7E4A77B5-EECC-4EB9-9030-6DF16E385F87}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -57,6 +59,10 @@ Global
 		{905CF38A-BE90-4234-BF15-2FCFD1973A9C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{905CF38A-BE90-4234-BF15-2FCFD1973A9C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{905CF38A-BE90-4234-BF15-2FCFD1973A9C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7E4A77B5-EECC-4EB9-9030-6DF16E385F87}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7E4A77B5-EECC-4EB9-9030-6DF16E385F87}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7E4A77B5-EECC-4EB9-9030-6DF16E385F87}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7E4A77B5-EECC-4EB9-9030-6DF16E385F87}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

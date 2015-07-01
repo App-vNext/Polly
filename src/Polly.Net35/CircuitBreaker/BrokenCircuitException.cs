@@ -1,12 +1,14 @@
 ﻿using System;
+#if !DNXCORE50
 using System.Runtime.Serialization;
+#endif
 
 namespace Polly.CircuitBreaker
 {
     /// <summary>
     /// Exception thrown when a circuit is broken.
     /// </summary>
-#if !PORTABLE
+#if !PORTABLE && !DNXCORE50
     [Serializable]
 #endif
     public class BrokenCircuitException : Exception
@@ -35,7 +37,7 @@ namespace Polly.CircuitBreaker
         {
         }
 
-#if !PORTABLE
+#if !PORTABLE && !DNXCORE50
         /// <summary>
         /// Initializes a new instance of the <see cref="BrokenCircuitException"/> class.
         /// </summary>

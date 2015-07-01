@@ -108,3 +108,7 @@ Backup*/
 UpgradeLog*.XML
 
 build_artifacts
+
+#ASPNet5 Project related stuff
+artifacts
+*.lock.json

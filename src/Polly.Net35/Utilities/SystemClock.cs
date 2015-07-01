@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading;
-
-#if PORTABLE
+#if PORTABLE || DNXCORE50
 using System.Threading.Tasks;
 #endif
 
@@ -12,14 +11,18 @@ namespace Polly.Utilities
     /// </summary>
     public static class SystemClock
     {
+
+#if !PORTABLE && !DNXCORE50
         /// <summary>
         /// Allows the setting of a custom Thread.Sleep implementation for testing.
         /// By default this will be a call to <see cref="Thread.Sleep(TimeSpan)"/>
         /// </summary>
-#if !PORTABLE
         public static Action<TimeSpan> Sleep = Thread.Sleep;
 #endif
-#if PORTABLE
+#if PORTABLE || DNXCORE50
+        /// <summary>
+        /// Allows the setting of a custom Thread.Sleep implementation for testing.
+        /// </summary>
         public static Action<TimeSpan> Sleep = timespan => new ManualResetEvent(false).WaitOne(timespan);
 #endif
         /// <summary>
@@ -34,10 +37,12 @@ namespace Polly.Utilities
         /// </summary>
         public static void Reset()
         {
-#if !PORTABLE
+
+
+#if !PORTABLE && !DNXCORE50
         Sleep = Thread.Sleep;
 #endif
-#if PORTABLE
+#if PORTABLE || DNXCORE50
             Sleep = async span => await Task.Delay(span);
 #endif
             UtcNow = () => DateTime.UtcNow;

@@ -13,7 +13,9 @@ namespace Polly
 
         internal Policy(Action<Action> exceptionPolicy)
         {
+#pragma warning disable CSE0001 //Consider using nameof for the parameter name 'exceptionPolicy'
             if (exceptionPolicy == null) throw new ArgumentNullException("exceptionPolicy");
+#pragma warning restore CSE0001
 
             _exceptionPolicy = exceptionPolicy;
         }
@@ -22,7 +24,9 @@ namespace Polly
         /// Executes the specified action within the policy.
         /// </summary>
         /// <param name="action">The action to perform.</param>
+#if !DNXCORE50
         [DebuggerStepThrough]
+#endif
         public void Execute(Action action)
         {
             if (_exceptionPolicy == null) throw new InvalidOperationException(
@@ -37,7 +41,9 @@ namespace Polly
         /// <typeparam name="TResult">The type of the result.</typeparam>
         /// <param name="action">The action to perform.</param>
         /// <returns>The value returned by the action</returns>
+#if !DNXCORE50
         [DebuggerStepThrough]
+#endif
         public TResult Execute<TResult>(Func<TResult> action)
         {
             if (_exceptionPolicy == null) throw new InvalidOperationException(
