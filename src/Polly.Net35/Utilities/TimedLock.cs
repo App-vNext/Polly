@@ -64,7 +64,7 @@ namespace Polly.Utilities
                 // If this finalizer runs, someone somewhere failed to
                 // call Dispose, which means we've failed to leave
                 // a monitor!
-#if !PORTABLE
+#if !PORTABLE && !DNXCORE50
                 System.Diagnostics.Debug.Fail("Undisposed lock");
 #endif
             }

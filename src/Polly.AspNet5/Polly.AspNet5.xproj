@@ -1,0 +1,107 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">14.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <Import Project="$(VSToolsPath)\DNX\Microsoft.DNX.Props" Condition="'$(VSToolsPath)' != ''" />
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>7e4a77b5-eecc-4eb9-9030-6df16e385f87</ProjectGuid>
+    <RootNamespace>Polly</RootNamespace>
+    <BaseIntermediateOutputPath Condition="'$(BaseIntermediateOutputPath)'=='' ">..\..\artifacts\obj\$(MSBuildProjectName)</BaseIntermediateOutputPath>
+    <OutputPath Condition="'$(OutputPath)'=='' ">..\..\artifacts\bin\$(MSBuildProjectName)\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <AssemblyName>Polly</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SchemaVersion>2.0</SchemaVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <ProduceOutputsOnBuild>True</ProduceOutputsOnBuild>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="..\..\SolutionAssemblyInfo.cs">
+      <Link>Properties\SolutionAssemblyInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\..\SolutionVersion.cs">
+      <Link>Properties\SolutionVersion.cs</Link>
+    </Compile>
+    <Compile Include="..\Polly.Net35\CircuitBreakerSyntax.cs">
+      <Link>CircuitBreakerSyntax.cs</Link>
+    </Compile>
+    <Compile Include="..\Polly.Net35\CircuitBreaker\BrokenCircuitException.cs">
+      <Link>CircuitBreaker\BrokenCircuitException.cs</Link>
+    </Compile>
+    <Compile Include="..\Polly.Net35\CircuitBreaker\CircuitBreakerPolicy.cs">
+      <Link>CircuitBreaker\CircuitBreakerPolicy.cs</Link>
+    </Compile>
+    <Compile Include="..\Polly.Net35\CircuitBreaker\CircuitBreakerState.cs">
+      <Link>CircuitBreaker\CircuitBreakerState.cs</Link>
+    </Compile>
+    <Compile Include="..\Polly.Net35\CircuitBreaker\ICircuitBreakerState.cs">
+      <Link>CircuitBreaker\ICircuitBreakerState.cs</Link>
+    </Compile>
+    <Compile Include="..\Polly.Net35\ContextualPolicy.cs">
+      <Link>ContextualPolicy.cs</Link>
+    </Compile>
+    <Compile Include="..\Polly.Net35\ExceptionPredicate.cs">
+      <Link>ExceptionPredicate.cs</Link>
+    </Compile>
+    <Compile Include="..\Polly.Net35\OrSyntax.cs">
+      <Link>OrSyntax.cs</Link>
+    </Compile>
+    <Compile Include="..\Polly.Net35\Policy.cs">
+      <Link>Policy.cs</Link>
+    </Compile>
+    <Compile Include="..\Polly.Net35\PolicyBuilder.cs">
+      <Link>PolicyBuilder.cs</Link>
+    </Compile>
+    <Compile Include="..\Polly.Net35\RetrySyntax.cs">
+      <Link>RetrySyntax.cs</Link>
+    </Compile>
+    <Compile Include="..\Polly.Net35\Retry\IRetryPolicyState.cs">
+      <Link>Retry\IRetryPolicyState.cs</Link>
+    </Compile>
+    <Compile Include="..\Polly.Net35\Retry\RetryPolicy.cs">
+      <Link>Retry\RetryPolicy.cs</Link>
+    </Compile>
+    <Compile Include="..\Polly.Net35\Retry\RetryPolicyState.cs">
+      <Link>Retry\RetryPolicyState.cs</Link>
+    </Compile>
+    <Compile Include="..\Polly.Net35\Retry\RetryPolicyStateWithCount.cs">
+      <Link>Retry\RetryPolicyStateWithCount.cs</Link>
+    </Compile>
+    <Compile Include="..\Polly.Net35\Retry\RetryPolicyStateWithSleep.cs">
+      <Link>Retry\RetryPolicyStateWithSleep.cs</Link>
+    </Compile>
+    <Compile Include="..\Polly.Net35\Utilities\SystemClock.cs">
+      <Link>Utilities\SystemClock.cs</Link>
+    </Compile>
+    <Compile Include="..\Polly.Net35\Utilities\TimedLock.cs">
+      <Link>Utilities\TimedLock.cs</Link>
+    </Compile>
+    <Compile Include="..\Polly.Net45\CircuitBreakerSyntaxAsync.cs">
+      <Link>CircuitBreakerSyntaxAsync.cs</Link>
+    </Compile>
+    <Compile Include="..\Polly.Net45\CircuitBreaker\CircuitBreakerPolicyAsync.cs">
+      <Link>CircuitBreaker\CircuitBreakerPolicyAsync.cs</Link>
+    </Compile>
+    <Compile Include="..\Polly.Net45\Context.cs">
+      <Link>Context.cs</Link>
+    </Compile>
+    <Compile Include="..\Polly.Net45\Extensions\TaskExtensions.cs">
+      <Link>Extensions\TaskExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\Polly.Net45\PolicyAsync.cs">
+      <Link>PolicyAsync.cs</Link>
+    </Compile>
+    <Compile Include="..\Polly.Net45\RetrySyntaxAsync.cs">
+      <Link>RetrySyntaxAsync.cs</Link>
+    </Compile>
+    <Compile Include="..\Polly.Net45\Retry\RetryPolicyAsync.cs">
+      <Link>Retry\RetryPolicyAsync.cs</Link>
+    </Compile>
+  </ItemGroup>
+  <Import Project="$(VSToolsPath)\DNX\Microsoft.DNX.targets" Condition="'$(VSToolsPath)' != ''" />
+</Project>

@@ -59,9 +59,11 @@ namespace Polly
         /// <exception cref="System.ArgumentNullException">onRetry</exception>
         public static Policy RetryAsync(this PolicyBuilder policyBuilder, int retryCount, Action<Exception, int> onRetry)
         {
+#pragma warning disable CSE0001 //Consider using nameof for the parameter name
             if (retryCount <= 0)
                 throw new ArgumentOutOfRangeException("retryCount", "Value must be greater than zero.");
             if (onRetry == null) throw new ArgumentNullException("onRetry");
+#pragma warning restore CSE0001
 
             return new Policy(
                 action => RetryPolicy.ImplementationAsync(
@@ -93,7 +95,9 @@ namespace Polly
         /// <exception cref="System.ArgumentNullException">onRetry</exception>
         public static Policy RetryForeverAsync(this PolicyBuilder policyBuilder, Action<Exception> onRetry)
         {
+#pragma warning disable CSE0001 //Consider using nameof for the parameter name
             if (onRetry == null) throw new ArgumentNullException("onRetry");
+#pragma warning restore CSE0001
 
             return new Policy(
                 action => RetryPolicy.ImplementationAsync(
@@ -154,10 +158,12 @@ namespace Polly
         public static Policy WaitAndRetryAsync(this PolicyBuilder policyBuilder, int retryCount,
             Func<int, TimeSpan> sleepDurationProvider, Action<Exception, TimeSpan> onRetry)
         {
+#pragma warning disable CSE0001 //Consider using nameof for the parameter name
             if (retryCount <= 0)
                 throw new ArgumentOutOfRangeException("retryCount", "Value must be greater than zero.");
             if (sleepDurationProvider == null) throw new ArgumentNullException("sleepDurationProvider");
             if (onRetry == null) throw new ArgumentNullException("onRetry");
+#pragma warning restore CSE0001
 
             IEnumerable<TimeSpan> sleepDurations = Enumerable.Range(1, retryCount)
                 .Select(sleepDurationProvider);
@@ -188,8 +194,10 @@ namespace Polly
         public static Policy WaitAndRetryAsync(this PolicyBuilder policyBuilder, IEnumerable<TimeSpan> sleepDurations,
             Action<Exception, TimeSpan> onRetry)
         {
+#pragma warning disable CSE0001 //Consider using nameof for the parameter name
             if (sleepDurations == null) throw new ArgumentNullException("sleepDurations");
             if (onRetry == null) throw new ArgumentNullException("onRetry");
+#pragma warning restore CSE0001
 
             return new Policy(
                 action => RetryPolicy.ImplementationAsync(

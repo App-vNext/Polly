@@ -1,0 +1,46 @@
+﻿{
+    "version": "3.0.0-alpha",
+    "description": "Polly is a 4.5 / dnx50 / dnxcore50 library that allows developers to express transient exception handling policies such as Retry, Retry Forever, Wait and Retry or Circuit Breaker in a fluent manner.",
+    "authors": [ "Michael Wolfenden" ],
+    "owners": [ "Michael Wolfenden" ],
+    "tags": [ "Exception", "Handling", "Policy", "Retry", "Wait", "Circuit Breaker" ],
+    "projectUrl": "https://github.com/michael-wolfenden/Polly",
+    "licenseUrl": "https://raw.github.com/michael-wolfenden/Polly/master/LICENSE.txt",
+    "copyright": "Copyright © 2015, Michael Wolfenden",
+    "iconUrl": "https://raw.github.com/michael-wolfenden/Polly/master/Polly.png",
+
+    "compile": [
+        "..\\Polly.Net35\\CircuitBreaker\\*.cs",
+        "..\\Polly.Net45\\CircuitBreaker\\*.cs",
+        "..\\Polly.Net45\\Extensions\\*.cs",
+        "..\\Polly.Net35\\Retry\\*.cs",
+        "..\\Polly.Net45\\Retry\\*.cs",
+        "..\\Polly.Net35\\Utilities\\SystemClock.cs",
+        "..\\Polly.Net35\\Utilities\\TimedLock.cs",
+        "..\\Polly.Net35\\*.cs",
+        "..\\Polly.Net45\\*.cs"
+    ],
+    "compileExclude": [
+        "..\\Polly.Net35\\Context.cs"
+    ],
+    "frameworks": {
+        "net45": { },
+
+        "dnx451": {
+            "dependencies": {
+
+            }
+        },
+        "dnxcore50": {
+            "dependencies": {
+                "System.Collections": "4.0.10-beta-22816",
+                "System.Diagnostics.Debug": "4.0.0-beta-22816",
+                "System.Linq": "4.0.0-beta-22816",
+                "System.Threading": "4.0.10-beta-22816",
+                "Microsoft.CSharp": "4.0.0-beta-22816"
+            }
+        }
+
+    }
+
+}

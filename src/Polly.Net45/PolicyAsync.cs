@@ -11,7 +11,9 @@ namespace Polly
 
         internal Policy(Func<Func<Task>, Task> asyncExceptionPolicy)
         {
+#pragma warning disable CSE0001 //Consider using nameof for the parameter name
             if (asyncExceptionPolicy == null) throw new ArgumentNullException("asyncExceptionPolicy");
+#pragma warning restore CSE0001
 
             _asyncExceptionPolicy = asyncExceptionPolicy;
         }
@@ -20,7 +22,9 @@ namespace Polly
         ///     Executes the specified asynchronous action within the policy.
         /// </summary>
         /// <param name="action">The action to perform.</param>
+#if !DNXCORE50
         [DebuggerStepThrough]
+#endif
         public Task ExecuteAsync(Func<Task> action)
         {
             if (_asyncExceptionPolicy == null) throw new InvalidOperationException
@@ -35,7 +39,9 @@ namespace Polly
         /// <typeparam name="TResult">The type of the result.</typeparam>
         /// <param name="action">The action to perform.</param>
         /// <returns>The value returned by the action</returns>
+#if !DNXCORE50
         [DebuggerStepThrough]
+#endif
         public async Task<TResult> ExecuteAsync<TResult>(Func<Task<TResult>> action)
         {
             if (_asyncExceptionPolicy == null) throw new InvalidOperationException(
