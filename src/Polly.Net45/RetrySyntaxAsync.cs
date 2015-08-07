@@ -104,6 +104,26 @@ namespace Polly
         }
 
         /// <summary>
+        ///     Builds a <see cref="Policy" /> that will retry indefinitely
+        ///     calling <paramref name="onRetry" /> on each retry with the raised exception.
+        /// </summary>
+        /// <param name="policyBuilder">The policy builder.</param>
+        /// <param name="onRetry">The action to call on each retry.</param>
+        /// <returns>The policy instance.</returns>
+        /// <exception cref="System.ArgumentNullException">onRetry</exception>
+        public static Policy RetryForeverAsync(this PolicyBuilder policyBuilder, Action<Exception, int> onRetry)
+        {
+            if (onRetry == null) throw new ArgumentNullException("onRetry");
+
+            return new Policy(
+                action => RetryPolicy.ImplementationAsync(
+                    action,
+                    policyBuilder.ExceptionPredicates,
+                    () => new RetryPolicyStateWithIteration(onRetry))
+                );
+        }
+
+        /// <summary>
         ///     Builds a <see cref="Policy" /> that will wait and retry as many times as there are provided
         ///     <paramref name="sleepDurations" />
         ///     On each retry, the duration to wait is the current <paramref name="sleepDurations" /> item.
