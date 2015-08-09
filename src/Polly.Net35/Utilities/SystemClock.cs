@@ -1,10 +1,6 @@
 ﻿using System;
 using System.Threading;
 
-#if PORTABLE
-using System.Threading.Tasks;
-#endif
-
 namespace Polly.Utilities
 {
     /// <summary>
@@ -12,14 +8,18 @@ namespace Polly.Utilities
     /// </summary>
     public static class SystemClock
     {
+#if !PORTABLE
         /// <summary>
         /// Allows the setting of a custom Thread.Sleep implementation for testing.
-        /// By default this will be a call to <see cref="Thread.Sleep(TimeSpan)"/>
+        /// By default this will be a call to <see cref="M:Thread.Sleep"/>
         /// </summary>
-#if !PORTABLE
         public static Action<TimeSpan> Sleep = Thread.Sleep;
 #endif
 #if PORTABLE
+        /// <summary>
+        /// Allows the setting of a custom Thread.Sleep implementation for testing.
+        /// By default this will be a call to <see cref="M:ManualResetEvent.WaitOne"/>
+        /// </summary>
         public static Action<TimeSpan> Sleep = timespan => new ManualResetEvent(false).WaitOne(timespan);
 #endif
         /// <summary>
@@ -38,7 +38,7 @@ namespace Polly.Utilities
         Sleep = Thread.Sleep;
 #endif
 #if PORTABLE
-            Sleep = async span => await Task.Delay(span);
+            Sleep = timeSpan => new ManualResetEvent(false).WaitOne(timeSpan);
 #endif
             UtcNow = () => DateTime.UtcNow;
         }
