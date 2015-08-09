@@ -240,6 +240,33 @@ Policy
   .Execute(() => DoSomething());
 ```
 
+Post Execution Steps (no Async support)
+=
+Using the `ExecuteAnd()` method you can continue writing post execution steps.
+
+```csharp
+// lets use ExecuteAnd() to do a rollback on error, trace the error and rethrow the exception
+Policy
+    .Handle<Exception>()
+    .WaitAndRetry(Enumerable.Empty<TimeSpan>())
+    .ExecuteAnd(() =>{ ;})
+    .Trace("could not do domething: ")
+    .RollbackWith(() => { ;})
+    .Rethrow();
+```
+
+Use a `FollowedBy()` to post execute custom actions or just create a custom extension methods.
+
+```csharp
+Policy
+    .Handle<Exception>()
+    .WaitAndRetry(Enumerable.Empty<TimeSpan>())
+    .ExecuteAnd(() =>{ ;})
+	.FollowedBy(policy => Console.WriteLine("An error occured, please check the log file."));
+```
+
+
+
 Asynchronous Support (.NET 4.5 and PCL Only)
 =
 You can use Polly with asynchronous functions by using the asynchronous methods

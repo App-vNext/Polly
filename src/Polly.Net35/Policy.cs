@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 
 namespace Polly
 {
@@ -9,13 +11,18 @@ namespace Polly
     /// </summary>
     public partial class Policy
     {
+        /// <summary>
+        /// returns a list of all defined prediaces
+        /// </summary>
         private readonly Action<Action> _exceptionPolicy;
+        private readonly IEnumerable<ExceptionPredicate> _exceptionPredicates;
 
-        internal Policy(Action<Action> exceptionPolicy)
+        internal Policy(Action<Action> exceptionPolicy, IEnumerable<ExceptionPredicate> exceptionPredicates)
         {
             if (exceptionPolicy == null) throw new ArgumentNullException("exceptionPolicy");
 
             _exceptionPolicy = exceptionPolicy;
+            _exceptionPredicates = exceptionPredicates ?? Enumerable.Empty<ExceptionPredicate>();
         }
 
         /// <summary>
@@ -25,27 +32,82 @@ namespace Polly
         [DebuggerStepThrough]
         public void Execute(Action action)
         {
-            if (_exceptionPolicy == null) throw new InvalidOperationException(
-                "Please use the synchronous Retry, RetryForever, WaitAndRetry or CircuitBreaker methods when calling the synchronous Execute method.");
+            if (_exceptionPolicy == null)
+                throw new InvalidOperationException(
+"Please use the synchronous Retry, RetryForever, WaitAndRetry or CircuitBreaker methods when calling the synchronous Execute method.");
 
             _exceptionPolicy(action);
         }
 
         /// <summary>
-        /// Executes the specified action within the policy and returns the result.
+        /// Executes the specified action within the policy and returns the Result.
         /// </summary>
-        /// <typeparam name="TResult">The type of the result.</typeparam>
+        /// <typeparam name="TResult">The type of the Result.</typeparam>
         /// <param name="action">The action to perform.</param>
         /// <returns>The value returned by the action</returns>
         [DebuggerStepThrough]
         public TResult Execute<TResult>(Func<TResult> action)
         {
-            if (_exceptionPolicy == null) throw new InvalidOperationException(
-                "Please use the synchronous Retry, RetryForever, WaitAndRetry or CircuitBreaker methods when calling the synchronous Execute method.");
+            if (_exceptionPolicy == null)
+                throw new InvalidOperationException(
+"Please use the synchronous Retry, RetryForever, WaitAndRetry or CircuitBreaker methods when calling the synchronous Execute method.");
 
             var result = default(TResult);
             _exceptionPolicy(() => { result = action(); });
             return result;
+        }
+
+        /// <summary>
+        /// Executes the specified action within the policy.
+        /// </summary>
+        /// <param name="action">The action to perform.</param>
+        [DebuggerStepThrough]
+        public HandledPolicy ExecuteAnd(Action action)
+        {
+            if (_exceptionPolicy == null)
+                throw new InvalidOperationException(
+"Please use the synchronous Retry, RetryForever, WaitAndRetry or CircuitBreaker methods when calling the synchronous Execute method.");
+
+            try
+            {
+                _exceptionPolicy(action);
+                return new HandledPolicy(null);
+            }
+            catch (Exception ex)
+            {
+                if (_exceptionPredicates.Any(x => x(ex)))
+                    return new HandledPolicy(ex);
+
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Executes the specified action within the policy and returns the Result.
+        /// </summary>
+        /// <typeparam name="TResult">The type of the Result.</typeparam>
+        /// <param name="action">The action to perform.</param>
+        /// <returns>The value returned by the action</returns>
+        [DebuggerStepThrough]
+        public HandledPolicy<TResult> ExecuteAnd<TResult>(Func<TResult> action)
+        {
+            if (_exceptionPolicy == null)
+                throw new InvalidOperationException(
+"Please use the synchronous Retry, RetryForever, WaitAndRetry or CircuitBreaker methods when calling the synchronous Execute method.");
+
+            try
+            {
+                var result = default(TResult);
+                _exceptionPolicy(() => { result = action(); });
+                return new HandledPolicy<TResult>(result);
+            }
+            catch (Exception ex)
+            {
+                if (_exceptionPredicates.Any(x => x(ex)))
+                    return new HandledPolicy<TResult>(ex);
+
+                throw;
+            }
         }
 
         /// <summary>
