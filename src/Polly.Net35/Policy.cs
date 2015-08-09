@@ -11,9 +11,6 @@ namespace Polly
     /// </summary>
     public partial class Policy
     {
-        /// <summary>
-        /// returns a list of all defined prediaces
-        /// </summary>
         private readonly Action<Action> _exceptionPolicy;
         private readonly IEnumerable<ExceptionPredicate> _exceptionPredicates;
 
@@ -32,25 +29,45 @@ namespace Polly
         [DebuggerStepThrough]
         public void Execute(Action action)
         {
-            if (_exceptionPolicy == null)
-                throw new InvalidOperationException(
-"Please use the synchronous Retry, RetryForever, WaitAndRetry or CircuitBreaker methods when calling the synchronous Execute method.");
+            if (_exceptionPolicy == null) throw new InvalidOperationException(
+                "Please use the synchronous Retry, RetryForever, WaitAndRetry or CircuitBreaker methods when calling the synchronous Execute method.");
 
             _exceptionPolicy(action);
         }
 
         /// <summary>
-        /// Executes the specified action within the policy and returns the Result.
+        /// Executes the specified action within the policy and returns the captured result
         /// </summary>
-        /// <typeparam name="TResult">The type of the Result.</typeparam>
+        /// <param name="action">The action to perform.</param>
+        /// <returns>The captured result</returns>
+        [DebuggerStepThrough]
+        public PolicyResult ExecuteAndCapture(Action action)
+        {
+            if (_exceptionPolicy == null) throw new InvalidOperationException(
+                "Please use the synchronous Retry, RetryForever, WaitAndRetry or CircuitBreaker methods when calling the synchronous Execute method.");
+
+            try
+            {
+                _exceptionPolicy(action);
+                return PolicyResult.Successful();
+            }
+            catch (Exception exception)
+            {
+                return PolicyResult.Failure(exception, GetExceptionType(_exceptionPredicates, exception));
+            }
+        }
+
+        /// <summary>
+        /// Executes the specified action within the policy and returns the result.
+        /// </summary>
+        /// <typeparam name="TResult">The type of the result.</typeparam>
         /// <param name="action">The action to perform.</param>
         /// <returns>The value returned by the action</returns>
         [DebuggerStepThrough]
         public TResult Execute<TResult>(Func<TResult> action)
         {
-            if (_exceptionPolicy == null)
-                throw new InvalidOperationException(
-"Please use the synchronous Retry, RetryForever, WaitAndRetry or CircuitBreaker methods when calling the synchronous Execute method.");
+            if (_exceptionPolicy == null) throw new InvalidOperationException(
+                "Please use the synchronous Retry, RetryForever, WaitAndRetry or CircuitBreaker methods when calling the synchronous Execute method.");
 
             var result = default(TResult);
             _exceptionPolicy(() => { result = action(); });
@@ -58,55 +75,25 @@ namespace Polly
         }
 
         /// <summary>
-        /// Executes the specified action within the policy.
+        /// Executes the specified action within the policy and returns the captured result
         /// </summary>
         /// <param name="action">The action to perform.</param>
+        /// <returns>The captured result</returns>
         [DebuggerStepThrough]
-        public HandledPolicy ExecuteAnd(Action action)
+        public PolicyResult<TResult> ExecuteAndCapture<TResult>(Func<TResult> action)
         {
-            if (_exceptionPolicy == null)
-                throw new InvalidOperationException(
-"Please use the synchronous Retry, RetryForever, WaitAndRetry or CircuitBreaker methods when calling the synchronous Execute method.");
-
-            try
-            {
-                _exceptionPolicy(action);
-                return new HandledPolicy(null);
-            }
-            catch (Exception ex)
-            {
-                if (_exceptionPredicates.Any(x => x(ex)))
-                    return new HandledPolicy(ex);
-
-                throw;
-            }
-        }
-
-        /// <summary>
-        /// Executes the specified action within the policy and returns the Result.
-        /// </summary>
-        /// <typeparam name="TResult">The type of the Result.</typeparam>
-        /// <param name="action">The action to perform.</param>
-        /// <returns>The value returned by the action</returns>
-        [DebuggerStepThrough]
-        public HandledPolicy<TResult> ExecuteAnd<TResult>(Func<TResult> action)
-        {
-            if (_exceptionPolicy == null)
-                throw new InvalidOperationException(
-"Please use the synchronous Retry, RetryForever, WaitAndRetry or CircuitBreaker methods when calling the synchronous Execute method.");
+            if (_exceptionPolicy == null) throw new InvalidOperationException(
+                "Please use the synchronous Retry, RetryForever, WaitAndRetry or CircuitBreaker methods when calling the synchronous Execute method.");
 
             try
             {
                 var result = default(TResult);
                 _exceptionPolicy(() => { result = action(); });
-                return new HandledPolicy<TResult>(result);
+                return PolicyResult<TResult>.Successful(result);
             }
-            catch (Exception ex)
+            catch (Exception exception)
             {
-                if (_exceptionPredicates.Any(x => x(ex)))
-                    return new HandledPolicy<TResult>(ex);
-
-                throw;
+                return PolicyResult<TResult>.Failure(exception, GetExceptionType(_exceptionPredicates, exception));
             }
         }
 
@@ -134,6 +121,15 @@ namespace Polly
                                                         exceptionPredicate((TException)exception);
 
             return new PolicyBuilder(predicate);
+        }
+
+        internal static ExceptionType GetExceptionType(IEnumerable<ExceptionPredicate> exceptionPredicates, Exception exception)
+        {
+            var isExceptionTypeHandledByThisPolicy = exceptionPredicates.Any(predicate => predicate(exception));
+
+            return isExceptionTypeHandledByThisPolicy
+                ? ExceptionType.HandledByThisPolicy
+                : ExceptionType.Unhandled;
         }
     }
 }

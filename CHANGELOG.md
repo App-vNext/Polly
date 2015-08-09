@@ -1,3 +1,9 @@
+2.2.3
+=
+----------
+- Fix PCL implementation of `SystemClock.Reset`
+- Added ability to capture the results of executing a policy via `ExecuteAndCapture` - Thanks to [@ThomasMentzel](https://github.com/ThomasMentzel)
+
 2.2.2
 =
 ----------

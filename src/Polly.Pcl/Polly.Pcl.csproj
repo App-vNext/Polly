@@ -65,9 +65,6 @@
     <Compile Include="..\Polly.Net35\ExceptionPredicate.cs">
       <Link>ExceptionPredicate.cs</Link>
     </Compile>
-    <Compile Include="..\Polly.Net35\HandledPolicy.cs">
-      <Link>HandledPolicy.cs</Link>
-    </Compile>
     <Compile Include="..\Polly.Net35\OrSyntax.cs">
       <Link>OrSyntax.cs</Link>
     </Compile>
@@ -76,6 +73,9 @@
     </Compile>
     <Compile Include="..\Polly.Net35\PolicyBuilder.cs">
       <Link>PolicyBuilder.cs</Link>
+    </Compile>
+    <Compile Include="..\Polly.Net35\PolicyResult.cs">
+      <Link>PolicyResult.cs</Link>
     </Compile>
     <Compile Include="..\Polly.Net35\RetrySyntax.cs">
       <Link>RetrySyntax.cs</Link>
