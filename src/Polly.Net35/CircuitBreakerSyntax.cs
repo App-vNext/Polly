@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Polly.CircuitBreaker;
 
 namespace Polly
@@ -31,7 +32,7 @@ namespace Polly
             if (exceptionsAllowedBeforeBreaking <= 0) throw new ArgumentOutOfRangeException("exceptionsAllowedBeforeBreaking", "Value must be greater than zero.");
 
             var policyState = new CircuitBreakerState(exceptionsAllowedBeforeBreaking, durationOfBreak);
-            return new Policy(action => CircuitBreakerPolicy.Implementation(action, policyBuilder.ExceptionPredicates, policyState));
+            return new Policy(action => CircuitBreakerPolicy.Implementation(action, policyBuilder.ExceptionPredicates, policyState), policyBuilder.ExceptionPredicates.ToArray());
         }
     }
 }
