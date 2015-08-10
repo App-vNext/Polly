@@ -16,37 +16,38 @@
    <tags>Exception Handling Policy Retry Wait Circuit Breaker</tags>
    <copyright>Copyright © 2015, Michael Wolfenden</copyright>
    <releaseNotes>
-       2.2.3
-       ---------------------
-       - Added additonal retry options
+     2.2.3
+     ---------------------
+     - Fix PCL implementation of `SystemClock.Reset`
+     - Added ability to capture the results of executing a policy via `ExecuteAndCapture`
 
-       2.2.2
-       ---------------------
-       - Added extra `NotOnCapturedContext` call to prevent potential deadlocks when blocking on asynchronous calls
+     2.2.2
+     ---------------------
+     - Added extra `NotOnCapturedContext` call to prevent potential deadlocks when blocking on asynchronous calls
 
-       2.2.1
-       ---------------------
-       - Replaced non-blocking sleep implementation with a blocking one for PCL
-       
-       2.2.0
-       ---------------------
-       - Added Async Support (PCL)
-       - PCL Profile updated from Profile78 ->  Profile 259
-       - Added missing WaitAndRetryAsync overload
+     2.2.1
+     ---------------------
+     - Replaced non-blocking sleep implementation with a blocking one for PCL
 
-       2.1.0
-       ---------------------
-       - Added Async Support (.NET Framework 4.5 Only)
+     2.2.0
+     ---------------------
+     - Added Async Support (PCL)
+     - PCL Profile updated from Profile78 ->  Profile 259
+     - Added missing WaitAndRetryAsync overload
 
-       2.0.0
-       ---------------------
-       - Added Portable Class Library
-       - The "Polly" NuGet package is now no longer strongly named. The strongly named NuGet package is now "Polly-Signed"
+     2.1.0
+     ---------------------
+     - Added Async Support (.NET Framework 4.5 Only)
 
-       1.1.0
-       ---------------------
-       - Added additional overloads to Retry
-       - Allow arbitrary data to be passed to policy execution
+     2.0.0
+     ---------------------
+     - Added Portable Class Library
+     - The "Polly" NuGet package is now no longer strongly named. The strongly named NuGet package is now "Polly-Signed"
+
+     1.1.0
+     ---------------------
+     - Added additional overloads to Retry
+     - Allow arbitrary data to be passed to policy execution
    </releaseNotes>
  </metadata>
  <files>

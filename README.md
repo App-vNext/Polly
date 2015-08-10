@@ -249,6 +249,22 @@ Policy
   .Execute(() => DoSomething());
 ```
 
+Post Execution Steps
+=
+Using the `ExecuteAndCapture` method you can capture the result of executing a policy.
+
+```csharp
+var policyResult = Policy
+              .Handle<DivideByZeroException>()
+              .Retry()
+              .ExecuteAndCapture(() => DoSomething());
+/*              
+policyResult.Outcome - whether the call succeeded or failed         
+policyResult.FinalException - the final exception captured, will be null if the call succeeded
+policyResult.ExceptionType - was the final exception an exception the policy was defined to handle (like DivideByZeroException above) or an unhandled one (say Exception). Will be null if the call succeeded.
+policyResult.Resut - if executing a func, the result if the call succeeded or the type's default value
+```
+
 Asynchronous Support (.NET 4.5 and PCL Only)
 =
 You can use Polly with asynchronous functions by using the asynchronous methods
@@ -258,6 +274,7 @@ You can use Polly with asynchronous functions by using the asynchronous methods
 * `WaitAndRetryAsync`
 * `CircuitBreakerAsync`
 * `ExecuteAsync`
+* `ExecuteAndCaptureAsync`
 
 In place of their synchronous counterparts
 
@@ -266,6 +283,7 @@ In place of their synchronous counterparts
 * `WaitAndRetry`
 * `CircuitBreaker`
 * `Execute`
+* `ExecuteAndCapture`
 
 For example
 
@@ -278,16 +296,12 @@ await Policy
 
 ```
 
-
 3rd Party Libraries
 =
 
 * [Fluent Assertions](https://github.com/dennisdoomen/fluentassertions) - A set of .NET extension methods that allow you to more naturally specify the expected outcome of a TDD or BDD-style test | [Apache License 2.0 (Apache)](https://github.com/dennisdoomen/fluentassertions/blob/develop/LICENSE)
-
 * [xUnit.net](https://github.com/xunit/xunit) - Free, open source, community-focused unit testing tool for the .NET Framework | [Apache License 2.0 (Apache)](https://github.com/xunit/xunit/blob/master/license.txt)
-
 * [Ian Griffith's TimedLock] (http://www.interact-sw.co.uk/iangblog/2004/04/26/yetmoretimedlocking)
-
 * [Steven van Deursen's ReadOnlyDictionary] (http://www.cuttingedge.it/blogs/steven/pivot/entry.php?id=29)
 
 Acknowledgements
@@ -298,6 +312,7 @@ Acknowledgements
 * [@mauricedb](https://github.com/mauricedb) - Async implementation.
 * [@robgibbens](https://github.com/RobGibbens) - Added existing async files to PCL project
 * [Hacko](https://github.com/hacko-bede) - Added extra `NotOnCapturedContext` call to prevent potential deadlocks when blocking on asynchronous calls
+* [@ThomasMentzel](https://github.com/ThomasMentzel) - Added ability to capture the results of executing a policy via `ExecuteAndCapture`
 
 License
 =

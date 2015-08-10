@@ -67,8 +67,10 @@ namespace Polly
                 action => RetryPolicy.ImplementationAsync(
                     action,
                     policyBuilder.ExceptionPredicates,
-                    () => new RetryPolicyStateWithCount(retryCount, onRetry))
-                );
+                    () => new RetryPolicyStateWithCount(retryCount, onRetry)
+                ),
+                policyBuilder.ExceptionPredicates
+            );
         }
 
         /// <summary>
@@ -99,8 +101,10 @@ namespace Polly
                 action => RetryPolicy.ImplementationAsync(
                     action,
                     policyBuilder.ExceptionPredicates,
-                    () => new RetryPolicyState(onRetry))
-                );
+                    () => new RetryPolicyState(onRetry)
+                ),
+                policyBuilder.ExceptionPredicates
+            );
         }
 
         /// <summary>
@@ -119,8 +123,10 @@ namespace Polly
                 action => RetryPolicy.ImplementationAsync(
                     action,
                     policyBuilder.ExceptionPredicates,
-                    () => new RetryPolicyStateWithIteration(onRetry))
-                );
+                    () => new RetryPolicyStateWithIteration(onRetry)
+                ),
+                policyBuilder.ExceptionPredicates
+            );
         }
 
         /// <summary>
@@ -186,8 +192,10 @@ namespace Polly
                 action => RetryPolicy.ImplementationAsync(
                     action,
                     policyBuilder.ExceptionPredicates,
-                    () => new RetryPolicyStateWithSleep(sleepDurations, onRetry))
-                );
+                    () => new RetryPolicyStateWithSleep(sleepDurations, onRetry)
+                ),
+                policyBuilder.ExceptionPredicates
+            );
         }
 
         /// <summary>
@@ -215,8 +223,10 @@ namespace Polly
                 action => RetryPolicy.ImplementationAsync(
                     action,
                     policyBuilder.ExceptionPredicates,
-                    () => new RetryPolicyStateWithSleep(sleepDurations, onRetry))
-                );
+                    () => new RetryPolicyStateWithSleep(sleepDurations, onRetry)
+                ),
+                policyBuilder.ExceptionPredicates
+            );
         }
     }
 }
