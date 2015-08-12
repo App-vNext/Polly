@@ -262,7 +262,7 @@ var policyResult = Policy
 policyResult.Outcome - whether the call succeeded or failed         
 policyResult.FinalException - the final exception captured, will be null if the call succeeded
 policyResult.ExceptionType - was the final exception an exception the policy was defined to handle (like DivideByZeroException above) or an unhandled one (say Exception). Will be null if the call succeeded.
-policyResult.Resut - if executing a func, the result if the call succeeded or the type's default value
+policyResult.Result - if executing a func, the result if the call succeeded or the type's default value
 ```
 
 Asynchronous Support (.NET 4.5 and PCL Only)
