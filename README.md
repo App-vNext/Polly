@@ -92,6 +92,15 @@ Policy
         // do something       
   });
 
+// Retry forever, calling an action on each retry with the 
+// current exception and retry count
+Policy
+  .Handle<DivideByZeroException>()
+  .RetryForever((exception, retryCount) =>
+  {
+        // do something       
+  });
+
 // Retry forever, calling an action on each retry with the
 // current exception and context provided to Execute()
 Policy
