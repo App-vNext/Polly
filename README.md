@@ -147,11 +147,11 @@ Policy
 // calculate the duration to wait between retries based on 
 // the current retry attempt (allows for exponential backoff)
 // In this case will wait for
-//  1 ^ 2 = 2 seconds then
+//  2 ^ 1 = 2 seconds then
 //  2 ^ 2 = 4 seconds then
-//  3 ^ 2 = 8 seconds then
-//  4 ^ 2 = 16 seconds then
-//  5 ^ 2 = 32 seconds
+//  2 ^ 3 = 8 seconds then
+//  2 ^ 4 = 16 seconds then
+//  2 ^ 5 = 32 seconds
 Policy
   .Handle<DivideByZeroException>()
   .WaitAndRetry(5, retryAttempt => 
