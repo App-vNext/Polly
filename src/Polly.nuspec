@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?> 
 <package> 
  <metadata> 
-   <id>{{PACKAGE_NAME}}</id>
-   <title>{{PACKAGE_NAME}}</title>
-   <version>0.0.0</version>
    <owners>Michael Wolfenden</owners>
    <authors>Michael Wolfenden</authors>
    <description>
