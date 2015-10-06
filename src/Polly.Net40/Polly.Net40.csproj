@@ -42,80 +42,15 @@
     </AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="..\..\SolutionAssemblyInfo.cs">
-      <Link>Properties\SolutionAssemblyInfo.cs</Link>
-    </Compile>
-    <Compile Include="..\..\SolutionVersion.cs">
-      <Link>Properties\SolutionVersion.cs</Link>
-    </Compile>
-    <Compile Include="..\Polly.Net35\CircuitBreakerSyntax.cs">
-      <Link>CircuitBreakerSyntax.cs</Link>
-    </Compile>
-    <Compile Include="..\Polly.Net35\CircuitBreaker\BrokenCircuitException.cs">
-      <Link>CircuitBreaker\BrokenCircuitException.cs</Link>
-    </Compile>
-    <Compile Include="..\Polly.Net35\CircuitBreaker\CircuitBreakerPolicy.cs">
-      <Link>CircuitBreaker\CircuitBreakerPolicy.cs</Link>
-    </Compile>
-    <Compile Include="..\Polly.Net35\CircuitBreaker\CircuitBreakerState.cs">
-      <Link>CircuitBreaker\CircuitBreakerState.cs</Link>
-    </Compile>
-    <Compile Include="..\Polly.Net35\CircuitBreaker\ICircuitBreakerState.cs">
-      <Link>CircuitBreaker\ICircuitBreakerState.cs</Link>
-    </Compile>
-    <Compile Include="..\Polly.Net35\Context.cs">
-      <Link>Context.cs</Link>
-    </Compile>
-    <Compile Include="..\Polly.Net35\ContextualPolicy.cs">
-      <Link>ContextualPolicy.cs</Link>
-    </Compile>
-    <Compile Include="..\Polly.Net35\ExceptionPredicate.cs">
-      <Link>ExceptionPredicate.cs</Link>
-    </Compile>
-    <Compile Include="..\Polly.Net35\OrSyntax.cs">
-      <Link>OrSyntax.cs</Link>
-    </Compile>
-    <Compile Include="..\Polly.Net35\Policy.cs">
-      <Link>Policy.cs</Link>
-    </Compile>
-    <Compile Include="..\Polly.Net35\PolicyBuilder.cs">
-      <Link>PolicyBuilder.cs</Link>
-    </Compile>
-    <Compile Include="..\Polly.Net35\PolicyResult.cs">
-      <Link>PolicyResult.cs</Link>
-    </Compile>
-    <Compile Include="..\Polly.Net35\RetrySyntax.cs">
-      <Link>RetrySyntax.cs</Link>
-    </Compile>
-    <Compile Include="..\Polly.Net35\Retry\IRetryPolicyState.cs">
-      <Link>Retry\IRetryPolicyState.cs</Link>
-    </Compile>
-    <Compile Include="..\Polly.Net35\Retry\RetryPolicy.cs">
-      <Link>Retry\RetryPolicy.cs</Link>
-    </Compile>
-    <Compile Include="..\Polly.Net35\Retry\RetryPolicyState.cs">
-      <Link>Retry\RetryPolicyState.cs</Link>
-    </Compile>
-    <Compile Include="..\Polly.Net35\Retry\RetryPolicyStateWithCount.cs">
-      <Link>Retry\RetryPolicyStateWithCount.cs</Link>
-    </Compile>
-    <Compile Include="..\Polly.Net35\Retry\RetryPolicyStateWithSleep.cs">
-      <Link>Retry\RetryPolicyStateWithSleep.cs</Link>
-    </Compile>
-    <Compile Include="..\Polly.Net35\Utilities\ReadOnlyDictionary.cs">
-      <Link>Utilities\ReadOnlyDictionary.cs</Link>
-    </Compile>
-    <Compile Include="..\Polly.Net35\Utilities\SystemClock.cs">
-      <Link>Utilities\SystemClock.cs</Link>
-    </Compile>
-    <Compile Include="..\Polly.Net35\Utilities\TimedLock.cs">
-      <Link>Utilities\TimedLock.cs</Link>
+    <Compile Include="..\GlobalAssemblyInfo.cs">
+      <Link>Properties\GlobalAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
   </ItemGroup>
+  <Import Project="..\Polly.Shared\Polly.Shared.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
