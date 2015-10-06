@@ -101,12 +101,8 @@ Task("__RestoreNugetPackages")
 Task("__UpdateAssemblyVersionInformation")
     .Does(() =>
 {
-
     var gitVersionSettings = new ProcessSettings()
-        .SetRedirectStandardOutput(true)
-        .WithArguments(args => args
-            .Append("/updateassemblyinfo")
-            .AppendQuoted(@".\src\GlobalAssemblyInfo.cs"));
+        .SetRedirectStandardOutput(true);
 
     IEnumerable<string> outputLines;
     StartProcess(gitVersionPath, gitVersionSettings, out outputLines);
