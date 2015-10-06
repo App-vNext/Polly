@@ -11,6 +11,7 @@ var configuration = Argument<string>("configuration", "Release");
 
 #Tool "xunit.runner.console"
 #Tool "GitVersion.CommandLine"
+#Tool "Brutal.Dev.StrongNameSigner"
 
 //////////////////////////////////////////////////////////////////////
 // EXTERNAL NUGET LIBRARIES
@@ -24,6 +25,7 @@ using System.Text.Json;
 ///////////////////////////////////////////////////////////////////////////////
 
 var projectName = "Polly";
+var keyName = "Polly.snk";
 
 var solutions = GetFiles("./**/*.sln");
 var solutionPaths = solutions.Select(solution => solution.GetDirectory());
@@ -38,6 +40,7 @@ var nuspecFilename = projectName + ".nuspec";
 var nuspecSrcFile = srcDir + File(nuspecFilename);
 var nuspecDestFile = buildDir + File(nuspecFilename);
 var nupkgDestDir = artifactsDir + Directory("nuget-package");
+var snkFile = srcDir + File(keyName);
 
 var projectToNugetFolderMap = new Dictionary<string, string>() {
     { "Net35", "net35" },
@@ -50,6 +53,9 @@ var projectToNugetFolderMap = new Dictionary<string, string>() {
 var gitVersionPath = ToolsExePath("GitVersion.exe");
 Dictionary<string, object> gitVersionOutput;
 
+// StrongNameSigner
+var strongNameSignerPath = ToolsExePath("StrongNameSigner.Console.exe");
+
 var isRunningOnAppVeyor = AppVeyor.IsRunningOnAppVeyor;
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -58,7 +64,14 @@ var isRunningOnAppVeyor = AppVeyor.IsRunningOnAppVeyor;
 
 Setup(() =>
 {
-
+    Information("");
+    Information(" ██████╗  ██████╗ ██╗     ██╗  ██╗   ██╗");
+    Information(" ██╔══██╗██╔═══██╗██║     ██║  ╚██╗ ██╔╝");
+    Information(" ██████╔╝██║   ██║██║     ██║   ╚████╔╝ ");
+    Information(" ██╔═══╝ ██║   ██║██║     ██║    ╚██╔╝  ");
+    Information(" ██║     ╚██████╔╝███████╗███████╗██║   ");
+    Information(" ╚═╝      ╚═════╝ ╚══════╝╚══════╝╚═╝   ");
+    Information("");
 });
 
 Teardown(() =>
@@ -168,14 +181,47 @@ Task("__CreateNugetPackage")
     .Does(() =>
 {
     var nugetVersion = gitVersionOutput["NuGetVersion"].ToString();
+    var packageName = projectName;
 
-    Information("Building {0}.{1}.nupkg", projectName, nugetVersion);
+    Information("Building {0}.{1}.nupkg", packageName, nugetVersion);
 
     var nuGetPackSettings = new NuGetPackSettings {
-        Id = "Polly",
-        Title = "Polly",
+        Id = packageName,
+        Title = packageName,
         Version = nugetVersion,
-        Symbols = true,
+        OutputDirectory = nupkgDestDir
+    };
+
+    NuGetPack(nuspecDestFile, nuGetPackSettings);
+});
+
+Task("__StronglySignAssemblies")
+    .Does(() =>
+{
+    var strongNameSignerSettings = new ProcessSettings()
+        .WithArguments(args => args
+            .Append("-in")
+            .AppendQuoted(buildDir)
+            .Append("-k")
+            .AppendQuoted(snkFile)
+            .Append("-l")
+            .AppendQuoted("Changes"));
+
+    StartProcess(strongNameSignerPath, strongNameSignerSettings);
+});
+
+Task("__CreateSignedNugetPackage")
+    .Does(() =>
+{
+    var nugetVersion = gitVersionOutput["NuGetVersion"].ToString();
+    var packageName = projectName + "-Signed";
+
+    Information("Building {0}.{1}.nupkg", packageName, nugetVersion);
+
+    var nuGetPackSettings = new NuGetPackSettings {
+        Id = packageName,
+        Title = packageName,
+        Version = nugetVersion,
         OutputDirectory = nupkgDestDir
     };
 
@@ -194,7 +240,9 @@ Task("Build")
     .IsDependentOn("__BuildSolutions")
     .IsDependentOn("__RunTests")
     .IsDependentOn("__CopyOutputToNugetFolder")
-    .IsDependentOn("__CreateNugetPackage");
+    .IsDependentOn("__CreateNugetPackage")
+    .IsDependentOn("__StronglySignAssemblies")
+    .IsDependentOn("__CreateSignedNugetPackage");
 
 ///////////////////////////////////////////////////////////////////////////////
 // PRIMARY TARGETS

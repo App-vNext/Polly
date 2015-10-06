@@ -48,6 +48,6 @@
    </releaseNotes>
  </metadata>
  <files>
-   <file src="lib\**\*.*" target="lib"/>
+   <file src="lib\**\*.*" target="lib" exclude="**\*.unsigned"/>
  </files>
 </package>
