@@ -12,6 +12,7 @@ var configuration = Argument<string>("configuration", "Release");
 #Tool "xunit.runner.console"
 #Tool "GitVersion.CommandLine"
 #Tool "Brutal.Dev.StrongNameSigner"
+#Tool "NuSpec.ReferenceGenerator"
 
 //////////////////////////////////////////////////////////////////////
 // EXTERNAL NUGET LIBRARIES
@@ -42,11 +43,11 @@ var nuspecDestFile = buildDir + File(nuspecFilename);
 var nupkgDestDir = artifactsDir + Directory("nuget-package");
 var snkFile = srcDir + File(keyName);
 
-var projectToNugetFolderMap = new Dictionary<string, string>() {
-    { "Net35", "net35" },
-    { "Net40", "net40" },
-    { "Net45", "net45" },
-    { "Pcl", "portable-net45+win+wpa81+wp80+monotouch+monoandroid+Xamarin.iOS" }
+var projectToNugetFolderMap = new Dictionary<string, string[]>() {
+    { "Net35", new [] {"net35"} },
+    { "Net40", new [] {"net40"} },
+    { "Net45", new [] {"net45"} },
+    { "Pcl"  , new [] {"portable-net45+netcore45+wpa81+wp8", "dotnet"} }
 };
 
 // Gitversion
@@ -56,7 +57,8 @@ Dictionary<string, object> gitVersionOutput;
 // StrongNameSigner
 var strongNameSignerPath = ToolsExePath("StrongNameSigner.Console.exe");
 
-var isRunningOnAppVeyor = AppVeyor.IsRunningOnAppVeyor;
+// NuSpec.ReferenceGenerator
+var refGenPath = ToolsExePath("RefGen.exe");
 
 ///////////////////////////////////////////////////////////////////////////////
 // SETUP / TEARDOWN
@@ -130,7 +132,7 @@ Task("__UpdateAssemblyVersionInformation")
 });
 
 Task("__UpdateAppVeyorBuildNumber")
-    .WithCriteria(() => isRunningOnAppVeyor)
+    .WithCriteria(() => AppVeyor.IsRunningOnAppVeyor)
     .Does(() =>
 {
     var fullSemVer = gitVersionOutput["FullSemVer"].ToString();
@@ -168,13 +170,36 @@ Task("__CopyOutputToNugetFolder")
 {
     foreach(var project in projectToNugetFolderMap.Keys) {
         var sourceDir = srcDir + Directory(projectName + "." + project) + Directory("bin") + Directory(configuration);
-        var destDir = buildDir + Directory("lib") + Directory(projectToNugetFolderMap[project]);
 
-        Information("Copying {0} -> {1}.", sourceDir, destDir);
-        CopyDirectory(sourceDir, destDir);
+        foreach(var targetFolder in projectToNugetFolderMap[project]) {
+            var destDir = buildDir + Directory("lib") + Directory(targetFolder);
+
+            Information("Copying {0} -> {1}.", sourceDir, destDir);
+            CopyDirectory(sourceDir, destDir);
+       }
     }
 
     CopyFile(nuspecSrcFile, nuspecDestFile);
+});
+
+Task("__AddDotNetReferencesToNuspecFile")
+    .Does(() =>
+{
+    // see: https://github.com/onovotny/ReferenceGenerator
+    var pclProjectName = projectName + ".Pcl";
+    var pclDirectory = srcDir + Directory(pclProjectName);
+    var projectFile = pclDirectory + File(pclProjectName + ".csproj");
+    var projectDll = pclDirectory + Directory("bin") + Directory(configuration) + File(projectName + ".dll");
+
+    var refGenSettings = new ProcessSettings()
+        .WithArguments(args => args
+            .AppendQuoted(".NETPortable,Version=v4.5,Profile=Profile259")
+            .AppendQuoted("dotnet")
+            .AppendQuoted(nuspecDestFile)
+            .AppendQuoted(projectFile)
+            .AppendQuoted(projectDll));
+
+    StartProcess(refGenPath, refGenSettings);
 });
 
 Task("__CreateNugetPackage")
@@ -198,6 +223,7 @@ Task("__CreateNugetPackage")
 Task("__StronglySignAssemblies")
     .Does(() =>
 {
+    //see: https://github.com/brutaldev/StrongNameSigner
     var strongNameSignerSettings = new ProcessSettings()
         .WithArguments(args => args
             .Append("-in")
@@ -240,6 +266,7 @@ Task("Build")
     .IsDependentOn("__BuildSolutions")
     .IsDependentOn("__RunTests")
     .IsDependentOn("__CopyOutputToNugetFolder")
+    .IsDependentOn("__AddDotNetReferencesToNuspecFile")
     .IsDependentOn("__CreateNugetPackage")
     .IsDependentOn("__StronglySignAssemblies")
     .IsDependentOn("__CreateSignedNugetPackage");
