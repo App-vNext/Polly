@@ -9,7 +9,7 @@ using Polly.Utilities;
 namespace Polly
 {
     /// <summary>
-    /// A readonly dictionary of string key / object value pairs
+    /// A readonly dictionary of string key / object value pairs: Just a comment
     /// </summary>
     public class Context : ReadOnlyDictionary<string, object>
     {
