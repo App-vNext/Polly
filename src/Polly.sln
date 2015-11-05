@@ -9,8 +9,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Polly.nuspec = Polly.nuspec
 	EndProjectSection
 EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Polly.Shared", "Polly.Shared\Polly.Shared.shproj", "{23FA87F9-C77D-4C67-A0B0-2901DE51B3FF}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Polly.Net35", "Polly.Net35\Polly.Net35.csproj", "{839C8F41-292D-486C-815B-ACE7F03467E3}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Polly.Net40", "Polly.Net40\Polly.Net40.csproj", "{DDF727EC-6496-44F9-ABD3-2EE4562AE685}"
@@ -25,14 +23,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Polly.Net45.Specs", "Polly.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Polly.Pcl.Specs", "Polly.Pcl.Specs\Polly.Pcl.Specs.csproj", "{4AB46D16-0806-4F51-8677-D849BA87CB05}"
 EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Polly.Shared", "Polly.Shared\Polly.Shared.xproj", "{AB1C89E9-D2DD-43A8-970D-B2E637844D52}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
-		Polly.Shared\Polly.Shared.projitems*{ddf727ec-6496-44f9-abd3-2ee4562ae685}*SharedItemsImports = 4
 		Polly.SharedSpecs\Polly.SharedSpecs.projitems*{4ab46d16-0806-4f51-8677-d849ba87cb05}*SharedItemsImports = 4
-		Polly.Shared\Polly.Shared.projitems*{29265540-f724-4324-9321-643a0fcb133f}*SharedItemsImports = 4
-		Polly.Shared\Polly.Shared.projitems*{23fa87f9-c77d-4c67-a0b0-2901de51b3ff}*SharedItemsImports = 13
-		Polly.Shared\Polly.Shared.projitems*{905cf38a-be90-4234-bf15-2fcfd1973a9c}*SharedItemsImports = 4
-		Polly.Shared\Polly.Shared.projitems*{839c8f41-292d-486c-815b-ace7f03467e3}*SharedItemsImports = 4
 		Polly.SharedSpecs\Polly.SharedSpecs.projitems*{5f2bd87d-a7ed-433d-b7e3-f3072d07c1dc}*SharedItemsImports = 4
 		Polly.SharedSpecs\Polly.SharedSpecs.projitems*{8d537c37-a4a2-4be1-84bc-34f1afb51ca8}*SharedItemsImports = 13
 	EndGlobalSection
@@ -65,6 +60,10 @@ Global
 		{4AB46D16-0806-4F51-8677-D849BA87CB05}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4AB46D16-0806-4F51-8677-D849BA87CB05}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4AB46D16-0806-4F51-8677-D849BA87CB05}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AB1C89E9-D2DD-43A8-970D-B2E637844D52}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AB1C89E9-D2DD-43A8-970D-B2E637844D52}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AB1C89E9-D2DD-43A8-970D-B2E637844D52}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AB1C89E9-D2DD-43A8-970D-B2E637844D52}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

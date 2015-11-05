@@ -52,7 +52,6 @@
   </Target>
   -->
   <ItemGroup />
-  <Import Project="..\Polly.Shared\Polly.Shared.projitems" Label="Shared" />
   <Import Project="..\packages\GitVersionTask.3.1.2\build\portable-net+sl+win+wpa+wp\GitVersionTask.targets" Condition="Exists('..\packages\GitVersionTask.3.1.2\build\portable-net+sl+win+wpa+wp\GitVersionTask.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
