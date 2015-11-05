@@ -4,7 +4,9 @@
   "frameworks": {
     "net35": { },
     "net40": { },
-    "net45": { },
+    "net45": {
+      "compilationOptions": { "define": [ "PORTABLE", "SUPPORTS_ASYNC"] }
+    },
     "dnxcore50": {
       "compilationOptions": { "define": [ "PORTABLE", "SUPPORTS_ASYNC"] },
       "dependencies": {
