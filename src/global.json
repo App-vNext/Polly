@@ -1,0 +1,9 @@
+{
+  "projects": [
+    "src",
+    "wrap"
+  ],
+  "sdk": {
+    "runtime": "coreclr"
+  }
+}

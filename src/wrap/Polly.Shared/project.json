@@ -1,0 +1,11 @@
+{
+  "version": "1.0.0-*",
+  "frameworks": {
+    "dnxcore50": {
+      "bin": {
+        "assembly": "../../Polly.Shared/bin/Debug/dnxcore50/Polly.Shared.dll",
+        "pdb": "../../Polly.Shared/bin/Debug/dnxcore50/Polly.Shared.pdb"
+      }
+    }
+  }
+}
