@@ -5,7 +5,7 @@
     "net35": { },
     "net40": { },
     "net45": {
-      "compilationOptions": { "define": [ "PORTABLE", "SUPPORTS_ASYNC"] }
+      "compilationOptions": { "define": [ "SUPPORTS_ASYNC", "SUPPORTS_READONLY_COLLECTION"] }
     },
     "dnxcore50": {
       "compilationOptions": { "define": [ "PORTABLE", "SUPPORTS_ASYNC"] },
