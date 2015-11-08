@@ -7,7 +7,7 @@
     "net45": {
       "compilationOptions": { "define": [ "SUPPORTS_ASYNC", "SUPPORTS_READONLY_COLLECTION" ] }
     },
-    "dnxcore50": {
+    "dotnet": {
       "compilationOptions": { "define": [ "PORTABLE", "SUPPORTS_ASYNC" ] },
       "dependencies": {
         "System.Runtime": "4.0.21-beta-23409",

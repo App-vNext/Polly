@@ -317,7 +317,7 @@
       },
       "Polly.Shared/1.0.0": {
         "type": "project",
-        "framework": "DNXCore,Version=v5.0",
+        "framework": ".NETPlatform,Version=v5.0",
         "dependencies": {
           "System.Linq": "4.0.1-beta-23409",
           "System.Runtime": "4.0.21-beta-23409",
@@ -1589,7 +1589,7 @@
       },
       "Polly.Shared/1.0.0": {
         "type": "project",
-        "framework": "DNXCore,Version=v5.0",
+        "framework": ".NETPlatform,Version=v5.0",
         "dependencies": {
           "System.Linq": "4.0.1-beta-23409",
           "System.Runtime": "4.0.21-beta-23409",
@@ -2888,7 +2888,7 @@
       },
       "Polly.Shared/1.0.0": {
         "type": "project",
-        "framework": "DNXCore,Version=v5.0",
+        "framework": ".NETPlatform,Version=v5.0",
         "dependencies": {
           "System.Linq": "4.0.1-beta-23409",
           "System.Runtime": "4.0.21-beta-23409",
