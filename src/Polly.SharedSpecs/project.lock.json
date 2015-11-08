@@ -6477,8 +6477,8 @@
   },
   "projectFileDependencyGroups": {
     "": [
-      "FluentAssertions >= 4.0.0",
       "Polly.Shared ",
+      "FluentAssertions >= 4.0.0",
       "System.Threading >= 4.0.11-beta-23409",
       "xunit >= 2.1.0",
       "xunit.abstractions >= 2.0.0",
