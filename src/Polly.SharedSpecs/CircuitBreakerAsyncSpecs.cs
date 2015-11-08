@@ -138,7 +138,7 @@ namespace Polly.Specs
         }
 
         [Fact]
-        public void Should_open_circuit_again_after_the_specified_duration_has_passed_if_the_next_call_raises_an_exception()
+        public void Should_open_circuit_again_after_the_specified_duration_has_passed_if_the_next_call_raises_an_exception_async()
         {
             var time = 1.January(2000);
             SystemClock.UtcNow = () => time;

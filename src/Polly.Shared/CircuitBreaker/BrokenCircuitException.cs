@@ -1,5 +1,8 @@
 ﻿using System;
+
+#if !PORTABLE
 using System.Runtime.Serialization;
+#endif
 
 namespace Polly.CircuitBreaker
 {
