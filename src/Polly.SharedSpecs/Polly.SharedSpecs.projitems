@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>8d537c37-a4a2-4be1-84bc-34f1afb51ca8</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>Polly.SharedSpecs</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)CircuitBreakerAsyncSpecs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CircuitBreakerSpecs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ContextualPolicySpecs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\ContextualPolicyExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\ObjectExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\PolicyExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)PolicyAsyncSpecs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)PolicySpecs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)RetryAsyncSpecs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)RetryForeverAsyncSpecs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)RetryForeverSpecs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)RetrySpecs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)WaitAndRetryAsyncSpecs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)WaitAndRetrySpecs.cs" />
+  </ItemGroup>
+</Project>

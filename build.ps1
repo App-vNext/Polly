@@ -1,173 +1,132 @@
-# find StrongNaming.psd1 in the packages directory and import it
-Import-Module @(Get-ChildItem $packages_dir -filter "StrongNaming.psd1" -recurse)[0].FullName
+<#
 
-Properties {
-  $solution_file_name = "Polly.sln"
-  $solution_dir = Split-Path $psake.build_script_file
-  $version_file_name = "SolutionVersion.cs"
+.SYNOPSIS
+This is a Powershell script to bootstrap a Cake build.
 
-  $nuget_spec_name = "Polly.nuspec"
-  $nuget_package_name = "Polly"
-  $nuget_signed_package_name = "Polly-Signed"
+.DESCRIPTION
+This Powershell script will download NuGet if missing, restore NuGet tools (including Cake)
+and execute your Cake build script with the parameters you provide.
 
-  $configuration = "release"
+.PARAMETER Script
+The build script to execute.
+.PARAMETER Target
+The build script target to run.
+.PARAMETER Configuration
+The build configuration to use.
+.PARAMETER Verbosity
+Specifies the amount of information to be displayed.
+.PARAMETER Experimental
+Tells Cake to use the latest Roslyn release.
+.PARAMETER WhatIf
+Performs a dry run of the build script.
+No tasks will be executed.
+.PARAMETER Mono
+Tells Cake to use the Mono scripting engine.
 
-  $build_dir_name = "build_artifacts"
-  $test_results_dir_name = "test_results"
-  $nuget_dir_name = "nuget"
-  $projects_dir_name = "src"
-  $packages_dir_name = "packages"
+.LINK
+http://cakebuild.net
+#>
 
-  $build_dir = "$solution_dir\$build_dir_name"
-  $test_results_dir = "$build_dir\$test_results_dir_name"
-  $nuget_dir = "$build_dir\$nuget_dir_name"
-  $projects_dir = "$solution_dir\$projects_dir_name"
-  $packages_dir = "$solution_dir\$packages_dir_name"  
+Param(
+    [string]$Script = "build.cake",
+    [string]$Target = "Default",
+    [string]$Configuration = "Release",
+    [ValidateSet("Quiet", "Minimal", "Normal", "Verbose", "Diagnostic")]
+    [string]$Verbosity = "Verbose",
+    [switch]$Experimental,
+    [Alias("DryRun","Noop")]
+    [switch]$WhatIf,
+    [switch]$Mono,
+    [switch]$SkipToolPackageRestore,
+    [switch]$Verbose
+)
 
-  $snk_name = "Polly.snk"  
-  
-  $solution_file_path = "$solution_dir\$solution_file_name"
+Write-Host "Preparing to run build script..."
 
-  $xunit_runner_exe = "xunit.console.clr4.exe"
-  $xunit_runner_full_path = @(Get-ChildItem $packages_dir -filter $xunit_runner_exe -recurse)[0].FullName
-
-  $nuget_full_path = "$solution_dir\.nuget\nuget.exe"
-
-  $framework_version = @("net35", "net40", "net45")
-
-  $project_to_nuget_folder_map = @{
-    "net35" = "net35"; 
-    "net40" = "net40"; 
-    "net45" = "net45";
-    "pcl"   = "portable-net45+netcore45+wpa81+wp8+MonoAndroid1+MonoTouch1";
-  }
-
-  $test_project_names = @("Polly.Specs")
+# Should we show verbose messages?
+if($Verbose.IsPresent)
+{
+    $VerbosePreference = "continue"
 }
 
-FormatTaskName {
-   param($taskName)
-   write-host "`n $(('-'*25)) [$taskName] $(('-'*25))" -ForegroundColor Yellow
+$TOOLS_DIR = Join-Path $PSScriptRoot "tools"
+$NUGET_EXE = Join-Path $TOOLS_DIR "nuget.exe"
+$CAKE_EXE = Join-Path $TOOLS_DIR "Cake/Cake.exe"
+$PACKAGES_CONFIG = Join-Path $TOOLS_DIR "packages.config"
+
+# Should we use mono?
+$UseMono = "";
+if($Mono.IsPresent) {
+    Write-Verbose -Message "Using the Mono based scripting engine."
+    $UseMono = "-mono"
 }
 
-task Default -depends PrintVariables, Clean, CreateOutputDirectories, Compile, RunTests, CreateNugetPackage, CreateSignedNugetPackage
-
-task CreateNugetPackage {
-  Create-NuGet-Structure-For-Package $nuget_package_name
-	
-  $version = Get-VersionNumber-From-SolutionVersionFile
-  Write-Host "creating NuGet package $nuget_package_name v$version" -ForegroundColor Green
-
-  Exec { & $nuget_full_path pack $nuget_dir\$nuget_package_name\$nuget_package_name.nuspec -o $nuget_dir\ -version $version }
+# Should we use the new Roslyn?
+$UseExperimental = "";
+if($Experimental.IsPresent -and !($Mono.IsPresent)) {
+    Write-Verbose -Message "Using experimental version of Roslyn."
+    $UseExperimental = "-experimental"
 }
 
-task CreateSignedNugetPackage {
-  Create-NuGet-Structure-For-Package $nuget_signed_package_name
-  
-  $version = Get-VersionNumber-From-SolutionVersionFile
-  Write-Host "creating NuGet package $nuget_signed_package_name v$version" -ForegroundColor Green
-
-  $key = Import-StrongNameKeyPair -KeyFile $snk_name
-  Get-ChildItem -Recurse $nuget_dir\$nuget_signed_package_name\Polly.dll| Set-Strongname -keypair $key -verbose -NoBackup
-
-  Exec { & $nuget_full_path pack $nuget_dir\$nuget_signed_package_name\$nuget_signed_package_name.nuspec -o $nuget_dir\ -version $version }
+# Is this a dry run?
+$UseDryRun = "";
+if($WhatIf.IsPresent) {
+    $UseDryRun = "-dryrun"
 }
 
-task RunTests { 
-  $test_project_names | ForEach-Object { 
-    Write-Host "testing $_" -ForegroundColor Green
-
-    $test_results_filename = "$test_results_dir\$_.Results.html"
-    $test_dll = "$(Get-TestProject-Output-Dir $_)\$_.dll"
-
-    Write-Host "$xunit_runner_full_path ""$test_dll"" /html ""$test_results_filename""" -ForegroundColor yellow
-    Exec { & $xunit_runner_full_path "$test_dll" /html "$test_results_filename"}
-
-    Write-Host ""
-  }
+# Make sure tools folder exists
+if ((Test-Path $PSScriptRoot) -and !(Test-Path $TOOLS_DIR)) {
+    New-Item -Path $TOOLS_DIR -Type directory | out-null
 }
 
-task Compile { 
-  Write-Host "building $solution_file_name in $configuration mode" -ForegroundColor Green
-
-  Write-Host "msbuild $solution_file_name /t:Build /p:Configuration=$configuration /v:quiet" -ForegroundColor yellow
-  Exec { msbuild $solution_file_name /t:Build /p:Configuration=$configuration /v:quiet } 
+# Try download NuGet.exe if not exists
+if (!(Test-Path $NUGET_EXE)) {
+    Write-Verbose -Message "Downloading NuGet.exe..."
+    Invoke-WebRequest -Uri http://nuget.org/nuget.exe -OutFile $NUGET_EXE
 }
 
-task CreateOutputDirectories  {
-  Write-Host "creating build_dir"
-  Create-Directory $build_dir
-
-  Write-Host "creating test_results_dir"
-  Create-Directory $test_results_dir
-
-  Write-Host "creating nuget_dir"
-  Create-Directory $nuget_dir
+# Make sure NuGet exists where we expect it.
+if (!(Test-Path $NUGET_EXE)) {
+    Throw "Could not find NuGet.exe"
 }
 
-task Clean { 
-  Write-Host "removing $build_dir directory" -ForegroundColor Green
-  Remove-Item -force -recurse $build_dir -ErrorAction SilentlyContinue
+# Save nuget.exe path to environment to be available to child processed
+$ENV:NUGET_EXE = $NUGET_EXE
 
-  Write-Host "msbuild $solution_file_name /t:Clean /p:Configuration=$configuration /v:quiet" -ForegroundColor yellow
-  Exec { msbuild $solution_file_name /t:Clean /p:Configuration=$configuration /v:quiet }
-} 
+# Restore tools from NuGet?
+if(-Not $SkipToolPackageRestore.IsPresent)
+{
+    # Restore tools from NuGet.
+    Push-Location
+    Set-Location $TOOLS_DIR
 
-task PrintVariables { 
-  Write-Host "configuration: $configuration"
-  Write-Host "solution_dir: $solution_dir"
-  Write-Host "solution_file_path: $solution_file_path"
-  Write-Host "nuget_package_name: $nuget_package_name"
-  Write-Host "build_dir: $build_dir"
-  Write-Host "test_results_dir: $test_results_dir"
-  Write-Host "nuget_dir_name: $nuget_dir_name"
-  Write-Host "projects_dir_name: $projects_dir_name"
-  Write-Host "packages_dir: $packages_dir"
-  Write-Host "xunit_runner_full_path: $xunit_runner_full_path"
-  Write-Host "test_project_names: $test_project_names"
-} 
+    Write-Verbose -Message "Restoring tools from NuGet..."
 
-function global:Create-Directory($directory_path) {
-  New-Item $directory_path -itemType directory -ErrorAction SilentlyContinue | Out-Null
+    # Restore packages
+    if (Test-Path $PACKAGES_CONFIG)
+    {
+        $NuGetOutput = Invoke-Expression "&`"$NUGET_EXE`" install -ExcludeVersion"
+        Write-Verbose ($NuGetOutput | Out-String)
+    }
+    # Install just Cake if missing config
+    else
+    {
+        $NuGetOutput = Invoke-Expression "&`"$NUGET_EXE`" install Cake -ExcludeVersion"
+        Write-Verbose ($NuGetOutput | Out-String)
+    }
+    Pop-Location
+    if ($LASTEXITCODE -ne 0)
+    {
+        exit $LASTEXITCODE
+    }
 }
 
-function global:Get-TestProject-Output-Dir($test_project_name) {
-    return "$projects_dir\$test_project_name\bin\$configuration"
+# Make sure that Cake has been installed.
+if (!(Test-Path $CAKE_EXE)) {
+    Throw "Could not find Cake.exe"
 }
 
-function global:Get-Project-Output-Dir($project_name, $framework_version) {
-    return "$projects_dir\$project_name.$framework_version\bin\$configuration"
-}
-
-function global:Get-VersionNumber-From-SolutionVersionFile {
-  $assemblyVersionPattern = 'AssemblyVersion\("([0-9]+(\.([0-9]+|\*)){1,3})"\)'
-  $versionNumberGroup = get-content $version_file_name | select-string -pattern $assemblyVersionPattern | select -first 1 | % { $_.Matches }            
-  $versionNumber = $versionNumberGroup.Groups[1].Value
-
-  return $versionNumber
-}
-
-function global:Create-NuGet-Structure-For-Package($package_name) {
-  $nuget_package_folder = "$nuget_dir\$package_name"
-  write-host $nuget_package_folder
-  Create-Directory $nuget_package_folder
-
-  Copy-Item "$solution_dir\$nuget_spec_name" "$nuget_package_folder\$package_name.nuspec"
-  Replace-Text $nuget_package_folder\$package_name.nuspec "{{PACKAGE_NAME}}" $package_name
-
-  $project_to_nuget_folder_map.GetEnumerator() | % { 
-    $framework_dir = "$nuget_package_folder\lib\$($_.value)"
-    $framework_dll_dir = Get-Project-Output-Dir "Polly" $($_.key)
-
-    write-host "Copying $($_.key) version to $framework_dir"
-    
-    Create-Directory $framework_dir
-    Copy-Item "$framework_dll_dir\Polly.dll" $framework_dir
-    Copy-Item "$framework_dll_dir\Polly.xml" $framework_dir
-  }
-
-}
-
-function global:Replace-Text($file, $key, $value) {
-  (Get-Content $file) | Foreach-Object {$_ -replace $key, $value } | Set-Content $file
-}
+# Start Cake
+Write-Host "Running build script..."
+Invoke-Expression "$CAKE_EXE `"$Script`" -target=`"$Target`" -configuration=`"$Configuration`" -verbosity=`"$Verbosity`" $UseMono $UseDryRun $UseExperimental"
+exit $LASTEXITCODE

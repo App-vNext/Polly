@@ -1,0 +1,11 @@
+os: Visual Studio 2015
+
+# Build script
+build_script:
+  - ps: .\build.ps1
+
+# Tests
+test: off
+
+artifacts:
+  - path: artifacts\nuget-package\*.nupkg

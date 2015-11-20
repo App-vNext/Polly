@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>23fa87f9-c77d-4c67-a0b0-2901de51b3ff</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>Polly.Shared</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)CircuitBreakerSyntax.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CircuitBreakerSyntaxAsync.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CircuitBreaker\BrokenCircuitException.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CircuitBreaker\CircuitBreakerPolicy.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CircuitBreaker\CircuitBreakerPolicyAsync.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CircuitBreaker\CircuitBreakerState.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CircuitBreaker\ICircuitBreakerState.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Context.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ContextualPolicy.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ExceptionPredicate.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Extensions\TaskExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)OrSyntax.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Policy.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)PolicyAsync.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)PolicyBuilder.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)PolicyResult.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)RetrySyntax.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)RetrySyntaxAsync.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Retry\IRetryPolicyState.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Retry\RetryPolicy.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Retry\RetryPolicyAsync.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Retry\RetryPolicyState.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Retry\RetryPolicyStateWithCount.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Retry\RetryPolicyStateWithSleep.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\ReadOnlyDictionary.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\SystemClock.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\TimedLock.cs" />
+  </ItemGroup>
+</Project>
