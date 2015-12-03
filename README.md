@@ -2,9 +2,9 @@ Polly
 =
 Polly is a .NET 3.5 / 4.0 / 4.5 / PCL (Profile 259) library that allows developers to express transient exception handling policies such as Retry, Retry Forever, Wait and Retry or Circuit Breaker in a fluent manner.
 
-[![NuGet version](https://badge.fury.io/nu/polly.svg)](http://badge.fury.io/nu/polly) [![Build status](https://ci.appveyor.com/api/projects/status/mo3j4g14kh4s075a?svg=true)](https://ci.appveyor.com/project/michael-wolfenden/polly)
+[![NuGet version](https://badge.fury.io/nu/polly.svg)](http://badge.fury.io/nu/polly) [![Build status](https://ci.appveyor.com/api/projects/status/imt7dymt50346k5u?svg=true)](https://ci.appveyor.com/project/joelhulen/polly)
 
-![](https://raw.github.com/michael-wolfenden/Polly/master/Polly.png)
+![](https://raw.github.com/App-vNext/Polly/master/Polly.png)
 
 Installing via NuGet
 =
@@ -299,6 +299,7 @@ Acknowledgements
 =
 
 * [lokad-shared-libraries](https://github.com/Lokad/lokad-shared-libraries) - Helper assemblies for .NET 3.5 and Silverlight 2.0 that are being developed as part of the Open Source effort by Lokad.com (discontinued) | [New BSD License](https://raw.github.com/Lokad/lokad-shared-libraries/master/Lokad.Shared.License.txt)
+* [@michael-wolfenden](https://github.com/michael-wolfenden) - The creator and mastermind of Polly!
 * [@ghuntley](https://github.com/ghuntley) - Portable Class Library implementation.
 * [@mauricedb](https://github.com/mauricedb) - Async implementation.
 * [@robgibbens](https://github.com/RobGibbens) - Added existing async files to PCL project
