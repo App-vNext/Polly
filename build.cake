@@ -12,7 +12,6 @@ var configuration = Argument<string>("configuration", "Release");
 #Tool "xunit.runner.console"
 #Tool "GitVersion.CommandLine"
 #Tool "Brutal.Dev.StrongNameSigner"
-#Tool "NuSpec.ReferenceGenerator"
 
 //////////////////////////////////////////////////////////////////////
 // EXTERNAL NUGET LIBRARIES
@@ -57,8 +56,6 @@ Dictionary<string, object> gitVersionOutput;
 // StrongNameSigner
 var strongNameSignerPath = ToolsExePath("StrongNameSigner.Console.exe");
 
-// NuSpec.ReferenceGenerator
-var refGenPath = ToolsExePath("RefGen.exe");
 
 ///////////////////////////////////////////////////////////////////////////////
 // SETUP / TEARDOWN
@@ -182,26 +179,6 @@ Task("__CopyOutputToNugetFolder")
     CopyFile(nuspecSrcFile, nuspecDestFile);
 });
 
-Task("__AddDotNetReferencesToNuspecFile")
-    .Does(() =>
-{
-    // see: https://github.com/onovotny/ReferenceGenerator
-    var pclProjectName = projectName + ".Pcl";
-    var pclDirectory = srcDir + Directory(pclProjectName);
-    var projectFile = pclDirectory + File(pclProjectName + ".csproj");
-    var projectDll = pclDirectory + Directory("bin") + Directory(configuration) + File(projectName + ".dll");
-
-    var refGenSettings = new ProcessSettings()
-        .WithArguments(args => args
-            .AppendQuoted(".NETPortable,Version=v4.5,Profile=Profile259")
-            .AppendQuoted("dotnet")
-            .AppendQuoted(nuspecDestFile)
-            .AppendQuoted(projectFile)
-            .AppendQuoted(projectDll));
-
-    StartProcess(refGenPath, refGenSettings);
-});
-
 Task("__CreateNugetPackage")
     .Does(() =>
 {
@@ -265,8 +242,7 @@ Task("Build")
     .IsDependentOn("__UpdateAppVeyorBuildNumber")
     .IsDependentOn("__BuildSolutions")
     .IsDependentOn("__RunTests")
-    .IsDependentOn("__CopyOutputToNugetFolder")
-    .IsDependentOn("__AddDotNetReferencesToNuspecFile")
+    .IsDependentOn("__CopyOutputToNugetFolder")    
     .IsDependentOn("__CreateNugetPackage")
     .IsDependentOn("__StronglySignAssemblies")
     .IsDependentOn("__CreateSignedNugetPackage");
