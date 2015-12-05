@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using Polly.CircuitBreaker;
 
 namespace Polly
 {
@@ -13,6 +14,7 @@ namespace Polly
     {
         private readonly Action<Action> _exceptionPolicy;
         private readonly IEnumerable<ExceptionPredicate> _exceptionPredicates;
+        private readonly CircuitBreakerState _policyState;
 
         internal Policy(Action<Action> exceptionPolicy, IEnumerable<ExceptionPredicate> exceptionPredicates)
         {
@@ -20,6 +22,11 @@ namespace Polly
 
             _exceptionPolicy = exceptionPolicy;
             _exceptionPredicates = exceptionPredicates ?? Enumerable.Empty<ExceptionPredicate>();
+        }
+
+        internal Policy(Action<Action> exceptionPolicy, IEnumerable<ExceptionPredicate> exceptionPredicates, CircuitBreakerState policyState) : this(exceptionPolicy, exceptionPredicates)
+        {
+            this._policyState = policyState;
         }
 
         /// <summary>
@@ -98,6 +105,14 @@ namespace Polly
         }
 
         /// <summary>
+        /// Resets the current policy
+        /// </summary>
+        public void Reset()
+        {
+            _policyState.Reset();
+        }
+
+        /// <summary>
         /// Specifies the type of exception that this policy can handle.
         /// </summary>
         /// <typeparam name="TException">The type of the exception to handle.</typeparam>
@@ -120,7 +135,7 @@ namespace Polly
             ExceptionPredicate predicate = exception => exception is TException &&
                                                         exceptionPredicate((TException)exception);
 
-            return new PolicyBuilder(predicate);
+            return new PolicyBuilder(predicate); 
         }
 
         internal static ExceptionType GetExceptionType(IEnumerable<ExceptionPredicate> exceptionPredicates, Exception exception)
