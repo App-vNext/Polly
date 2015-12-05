@@ -137,6 +137,35 @@ namespace Polly.Specs
                   .ShouldThrow<ArgumentNullException>();
         }
 
+
+        [Fact]
+        public void Should_reset_the_policy_when_reset_is_called()
+        {
+            var policy = Policy
+                            .Handle<DivideByZeroException>()
+                            .CircuitBreaker(2, TimeSpan.FromMinutes(2));
+
+            policy.Invoking(x => x.RaiseException<DivideByZeroException>())
+                  .ShouldThrow<DivideByZeroException>();
+
+            policy.Invoking(x => x.RaiseException<DivideByZeroException>())
+                  .ShouldThrow<DivideByZeroException>();
+
+            policy.Invoking(x => x.RaiseException<DivideByZeroException>())
+                  .ShouldThrow<BrokenCircuitException>();
+
+            policy.Reset();
+
+            policy.Invoking(x => x.RaiseException<DivideByZeroException>())
+                  .ShouldThrow<DivideByZeroException>();
+
+            policy.Invoking(x => x.RaiseException<DivideByZeroException>())
+                  .ShouldThrow<DivideByZeroException>();
+
+            policy.Invoking(x => x.RaiseException<DivideByZeroException>())
+                  .ShouldThrow<BrokenCircuitException>();
+        }
+
         [Fact]
         public void Should_close_circuit_after_the_specified_duration_has_passed()
         {
