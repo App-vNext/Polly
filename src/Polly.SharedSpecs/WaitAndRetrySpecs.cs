@@ -658,35 +658,35 @@ namespace Polly.Specs
         [Fact]
         public void Should_not_call_onretry_when_retry_count_is_zero_without_context()
         {
-            string onRetrySideEffect = "original_value";
+            bool retryInvoked = false;
 
-            Action<Exception, TimeSpan> onRetryWithSideEffect = (_, __) => { onRetrySideEffect = "new_value"; };
+            Action<Exception, TimeSpan> onRetry = (_, __) => { retryInvoked = true; };
 
             var policy = Policy
                 .Handle<DivideByZeroException>()
-                .WaitAndRetry(0, retryAttempt => TimeSpan.FromSeconds(1), onRetryWithSideEffect);
+                .WaitAndRetry(0, retryAttempt => TimeSpan.FromSeconds(1), onRetry);
 
             policy.Invoking(x => x.RaiseException<DivideByZeroException>())
                   .ShouldThrow<DivideByZeroException>();
 
-            onRetrySideEffect.Should().Be("original_value");
+            retryInvoked.Should().BeFalse();
         }
 
         [Fact]
         public void Should_not_call_onretry_when_retry_count_is_zero_with_context()
         {
-            string onRetrySideEffect = "original_value";
+            bool retryInvoked = false;
 
-            Action<Exception, TimeSpan, Context> onRetryWithSideEffect = (_, __, ___) => { onRetrySideEffect = "new_value"; };
+            Action<Exception, TimeSpan, Context> onRetry = (_, __, ___) => { retryInvoked = true; };
 
             var policy = Policy
                 .Handle<DivideByZeroException>()
-                .WaitAndRetry(0, retryAttempt => TimeSpan.FromSeconds(1), onRetryWithSideEffect);
+                .WaitAndRetry(0, retryAttempt => TimeSpan.FromSeconds(1), onRetry);
 
             policy.Invoking(x => x.RaiseException<DivideByZeroException>())
                   .ShouldThrow<DivideByZeroException>();
 
-            onRetrySideEffect.Should().Be("original_value");
+            retryInvoked.Should().BeFalse();
         }
 
         public void Dispose()

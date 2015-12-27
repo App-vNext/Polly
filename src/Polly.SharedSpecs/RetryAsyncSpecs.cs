@@ -228,18 +228,18 @@ namespace Polly.Specs
         [Fact]
         public void Should_not_call_onretry_when_retry_count_is_zero()
         {
-            string onRetrySideEffect = "original_value";
+            bool retryInvoked = false;
 
-            Action<Exception, int> onRetryWithSideEffect = (_, __) => { onRetrySideEffect = "new_value"; };
+            Action<Exception, int> onRetry = (_, __) => { retryInvoked = true; };
 
             var policy = Policy
                 .Handle<DivideByZeroException>()
-                .RetryAsync(0, onRetryWithSideEffect);
+                .RetryAsync(0, onRetry);
 
             policy.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
                   .ShouldThrow<DivideByZeroException>();
 
-            onRetrySideEffect.Should().Be("original_value");
+            retryInvoked.Should().BeFalse();
         }
     }
 }
