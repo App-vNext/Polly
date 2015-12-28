@@ -59,7 +59,7 @@ namespace Polly
         /// <exception cref="System.ArgumentNullException">onRetry</exception>
         public static Policy Retry(this PolicyBuilder policyBuilder, int retryCount, Action<Exception, int> onRetry)
         {
-            if (retryCount <= 0) throw new ArgumentOutOfRangeException("retryCount", "Value must be greater than zero.");
+            if (retryCount < 0) throw new ArgumentOutOfRangeException("retryCount", "Value must be equal to or greater than zero.");
             if (onRetry == null) throw new ArgumentNullException("onRetry");
 
             return new Policy(
@@ -100,7 +100,7 @@ namespace Polly
         /// <exception cref="System.ArgumentNullException">onRetry</exception>
         public static ContextualPolicy Retry(this PolicyBuilder policyBuilder, int retryCount, Action<Exception, int, Context> onRetry)
         {
-            if (retryCount <= 0) throw new ArgumentOutOfRangeException("retryCount", "Value must be greater than zero.");
+            if (retryCount < 0) throw new ArgumentOutOfRangeException("retryCount", "Value must be equal to or greater than zero.");
             if (onRetry == null) throw new ArgumentNullException("onRetry");
 
             return new ContextualPolicy((action, context) => RetryPolicy.Implementation(
@@ -199,7 +199,7 @@ namespace Polly
         /// </exception>
         public static Policy WaitAndRetry(this PolicyBuilder policyBuilder, int retryCount, Func<int, TimeSpan> sleepDurationProvider, Action<Exception, TimeSpan> onRetry)
         {
-            if (retryCount <= 0) throw new ArgumentOutOfRangeException("retryCount", "Value must be greater than zero.");
+            if (retryCount < 0) throw new ArgumentOutOfRangeException("retryCount", "Value must be equal to or greater than zero.");
             if (sleepDurationProvider == null) throw new ArgumentNullException("sleepDurationProvider");
             if (onRetry == null) throw new ArgumentNullException("onRetry");
 
@@ -236,7 +236,7 @@ namespace Polly
         /// </exception>
         public static ContextualPolicy WaitAndRetry(this PolicyBuilder policyBuilder, int retryCount, Func<int, TimeSpan> sleepDurationProvider, Action<Exception, TimeSpan, Context> onRetry)
         {
-            if (retryCount <= 0) throw new ArgumentOutOfRangeException("retryCount", "Value must be greater than zero.");
+            if (retryCount < 0) throw new ArgumentOutOfRangeException("retryCount", "Value must be equal to or greater than zero.");
             if (sleepDurationProvider == null) throw new ArgumentNullException("sleepDurationProvider");
             if (onRetry == null) throw new ArgumentNullException("onRetry");
 

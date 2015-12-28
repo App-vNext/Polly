@@ -551,26 +551,26 @@ namespace Polly.Specs
         }
 
         [Fact]
-        public void Should_throw_when_retry_count_is_less_than_one_without_context()
+        public void Should_throw_when_retry_count_is_less_than_zero_without_context()
         {
             Action<Exception, TimeSpan> onRetry = (_, __) => { };
 
             Action policy = () => Policy
                                       .Handle<DivideByZeroException>()
-                                      .WaitAndRetry(0, _ => new TimeSpan(), onRetry);
+                                      .WaitAndRetry(-1, _ => new TimeSpan(), onRetry);
                                            
             policy.ShouldThrow<ArgumentOutOfRangeException>().And                  
                   .ParamName.Should().Be("retryCount");
         }
 
         [Fact]
-        public void Should_throw_when_retry_count_is_less_than_one_with_context()
+        public void Should_throw_when_retry_count_is_less_than_zero_with_context()
         {
             Action<Exception, TimeSpan, Context> onRetry = (_, __, ___) => { };
 
             Action policy = () => Policy
                                       .Handle<DivideByZeroException>()
-                                      .WaitAndRetry(0, _ => new TimeSpan(), onRetry);
+                                      .WaitAndRetry(-1, _ => new TimeSpan(), onRetry);
 
             policy.ShouldThrow<ArgumentOutOfRangeException>().And
                   .ParamName.Should().Be("retryCount");
@@ -653,6 +653,40 @@ namespace Polly.Specs
 
             retryTimeSpans.Should()
                        .ContainInOrder(expectedRetryCounts);
+        }
+
+        [Fact]
+        public void Should_not_call_onretry_when_retry_count_is_zero_without_context()
+        {
+            bool retryInvoked = false;
+
+            Action<Exception, TimeSpan> onRetry = (_, __) => { retryInvoked = true; };
+
+            var policy = Policy
+                .Handle<DivideByZeroException>()
+                .WaitAndRetry(0, retryAttempt => TimeSpan.FromSeconds(1), onRetry);
+
+            policy.Invoking(x => x.RaiseException<DivideByZeroException>())
+                  .ShouldThrow<DivideByZeroException>();
+
+            retryInvoked.Should().BeFalse();
+        }
+
+        [Fact]
+        public void Should_not_call_onretry_when_retry_count_is_zero_with_context()
+        {
+            bool retryInvoked = false;
+
+            Action<Exception, TimeSpan, Context> onRetry = (_, __, ___) => { retryInvoked = true; };
+
+            var policy = Policy
+                .Handle<DivideByZeroException>()
+                .WaitAndRetry(0, retryAttempt => TimeSpan.FromSeconds(1), onRetry);
+
+            policy.Invoking(x => x.RaiseException<DivideByZeroException>())
+                  .ShouldThrow<DivideByZeroException>();
+
+            retryInvoked.Should().BeFalse();
         }
 
         public void Dispose()
