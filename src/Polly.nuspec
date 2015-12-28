@@ -13,6 +13,10 @@
     <tags>Exception Handling Policy Retry Wait Circuit Breaker</tags>
     <copyright>Copyright © 2015, App vNext</copyright>
     <releaseNotes>
+     2.2.5
+     ---------------------
+     - Policies with a retry count of zero are now allowed
+     
      2.2.4
      ---------------------
      - Add .NET Core support
