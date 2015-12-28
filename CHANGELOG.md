@@ -1,3 +1,8 @@
+2.2.5
+=
+----------
+- Policies with a retry count of zero are now allowed - Thanks to [@nelsonghezzi](https://github.com/nelsonghezzi)
+
 2.2.4
 =
 ----------
