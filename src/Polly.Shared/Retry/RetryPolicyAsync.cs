@@ -32,7 +32,9 @@ namespace Polly.Retry
                         throw;
                     }
 
-                    if (!(await policyState.CanRetryAsync(ex)))
+                    if (!(await policyState
+                        .CanRetryAsync(ex, continueOnCapturedContext)
+                        .ConfigureAwait(continueOnCapturedContext)))
                     {
                         throw;
                     }

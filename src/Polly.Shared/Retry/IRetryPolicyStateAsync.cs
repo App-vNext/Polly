@@ -7,7 +7,7 @@ namespace Polly.Retry
 {
     internal partial interface IRetryPolicyState
     {
-        Task<bool> CanRetryAsync(Exception ex);
+        Task<bool> CanRetryAsync(Exception ex, bool continueOnCapturedContext);
     }
 }
 

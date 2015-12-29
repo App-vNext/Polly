@@ -9,7 +9,7 @@ namespace Polly.Retry
     {
         static readonly Task<bool> Done = Task.FromResult(true);
 
-        public Task<bool> CanRetryAsync(Exception ex)
+        public Task<bool> CanRetryAsync(Exception ex, bool continueOnCapturedContext)
         {
             _onRetry(ex, _context);
             return Done;

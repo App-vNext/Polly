@@ -7,7 +7,7 @@ namespace Polly.Retry
 {
     internal partial class RetryPolicyStateWithCount : IRetryPolicyState
     {
-        public Task<bool> CanRetryAsync(Exception ex)
+        public Task<bool> CanRetryAsync(Exception ex, bool continueOnCapturedContext)
         {
             return Task.FromResult(CanRetry(ex));
         }
