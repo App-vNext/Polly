@@ -8,8 +8,6 @@ namespace Polly.Retry
 {
     internal partial class RetryPolicyStateWithSleep : IRetryPolicyState
     {
-        static readonly Task<bool> Done = Task.FromResult(true);
-
         public async Task<bool> CanRetryAsync(Exception ex)
         {
             if (!_sleepDurationsEnumerator.MoveNext()) return false;
