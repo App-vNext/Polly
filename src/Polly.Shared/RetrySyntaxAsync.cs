@@ -30,7 +30,7 @@ namespace Polly
         /// <returns>The policy instance.</returns>
         public static Policy RetryAsync(this PolicyBuilder policyBuilder, bool continueOnCapturedContext)
         {
-            return policyBuilder.RetryAsync(1);
+            return policyBuilder.RetryAsync(1, continueOnCapturedContext);
         }
 
         /// <summary>
