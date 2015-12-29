@@ -16,6 +16,27 @@ namespace Polly.Extensions
         {
             return task.ConfigureAwait(false);
         }
+
+        public static async Task Continue(this Task task, bool onCapturedContext)
+        {
+            if (onCapturedContext)
+            {
+                await task;
+                return;
+            }
+
+            await task.NotOnCapturedContext();
+        }
+
+        public static async Task<T> Continue<T>(this Task<T> task, bool onCapturedContext)
+        {
+            if (onCapturedContext)
+            {
+                return await task;
+            }
+
+            return await task.NotOnCapturedContext();
+        }
     }
 }
 

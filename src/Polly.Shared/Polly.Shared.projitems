@@ -27,11 +27,15 @@
     <Compile Include="$(MSBuildThisFileDirectory)PolicyResult.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)RetrySyntax.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)RetrySyntaxAsync.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Retry\IRetryPolicyStateAsync.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Retry\IRetryPolicyState.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Retry\RetryPolicy.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Retry\RetryPolicyAsync.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Retry\RetryPolicyStateAsync.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Retry\RetryPolicyState.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Retry\RetryPolicyStateWithCountAsync.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Retry\RetryPolicyStateWithCount.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Retry\RetryPolicyStateWithSleepAsync.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Retry\RetryPolicyStateWithSleep.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\ReadOnlyDictionary.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\SystemClock.cs" />
