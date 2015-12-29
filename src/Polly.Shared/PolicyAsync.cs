@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using Polly.Extensions;
 
 namespace Polly
 {
@@ -37,12 +36,12 @@ namespace Polly
         /// <param name="action">The action to perform.</param>
         /// <param name="continueOnCapturedContext">Whether to continue on a captured synchronization context.</param>
         [DebuggerStepThrough]
-        public Task ExecuteAsync(Func<Task> action, bool continueOnCapturedContext)
+        public async Task ExecuteAsync(Func<Task> action, bool continueOnCapturedContext)
         {
             if (_asyncExceptionPolicy == null) throw new InvalidOperationException
                 ("Please use the asynchronous RetryAsync, RetryForeverAsync, WaitAndRetryAsync or CircuitBreakerAsync methods when calling the asynchronous Execute method.");
 
-            return _asyncExceptionPolicy(action).Continue(continueOnCapturedContext);
+            await _asyncExceptionPolicy(action).ConfigureAwait(continueOnCapturedContext);
         }
 
         /// <summary>
@@ -68,7 +67,7 @@ namespace Polly
 
             try
             {
-                await _asyncExceptionPolicy(action).Continue(continueOnCapturedContext);
+                await _asyncExceptionPolicy(action).ConfigureAwait(continueOnCapturedContext);
                 return PolicyResult.Successful();
             }
             catch (Exception exception)
@@ -106,9 +105,9 @@ namespace Polly
 
             await _asyncExceptionPolicy(async () =>
             {
-                result = await action().Continue(continueOnCapturedContext);
+                result = await action().ConfigureAwait(continueOnCapturedContext);
             })
-            .Continue(continueOnCapturedContext);
+            .ConfigureAwait(continueOnCapturedContext);
 
             return result;
         }
@@ -150,9 +149,9 @@ namespace Polly
 
                 await _asyncExceptionPolicy(async () =>
                 {
-                    result = await action().Continue(continueOnCapturedContext);
+                    result = await action().ConfigureAwait(continueOnCapturedContext);
                 })
-                .Continue(continueOnCapturedContext);
+                .ConfigureAwait(continueOnCapturedContext);
 
                 return PolicyResult<TResult>.Successful(result);
             }

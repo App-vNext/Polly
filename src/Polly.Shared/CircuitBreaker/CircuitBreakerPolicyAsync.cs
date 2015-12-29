@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Polly.Extensions;
 
 namespace Polly.CircuitBreaker
 {
@@ -19,10 +18,7 @@ namespace Polly.CircuitBreaker
 
             try
             {
-                if (continueOnCapturedContext)
-                    await action();
-                else
-                    await action().NotOnCapturedContext();
+                await action().ConfigureAwait(continueOnCapturedContext);
 
                 breakerState.Reset();
             }

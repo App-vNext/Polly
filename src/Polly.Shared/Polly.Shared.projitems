@@ -19,7 +19,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Context.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ContextualPolicy.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ExceptionPredicate.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Extensions\TaskExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)OrSyntax.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Policy.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PolicyAsync.cs" />

@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Polly.Extensions;
 
 namespace Polly.Retry
 {
@@ -18,11 +17,7 @@ namespace Polly.Retry
             {
                 try
                 {
-                    if (continueOnCapturedContext)
-                        await action();
-                    else
-                        await action().NotOnCapturedContext();
-
+                    await action().ConfigureAwait(continueOnCapturedContext);
                     return;
                 }
                 catch (Exception ex)
