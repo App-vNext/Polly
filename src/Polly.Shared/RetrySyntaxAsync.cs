@@ -198,7 +198,7 @@ namespace Polly
         /// <returns>The policy instance.</returns>
         public static Policy WaitAndRetryAsync(this PolicyBuilder policyBuilder, IEnumerable<TimeSpan> sleepDurations)
         {
-            return WaitAndRetryAsync(policyBuilder, false, sleepDurations);
+            return WaitAndRetryAsync(policyBuilder, sleepDurations, false);
         }
 
         /// <summary>
@@ -207,14 +207,14 @@ namespace Polly
         ///     On each retry, the duration to wait is the current <paramref name="sleepDurations" /> item.
         /// </summary>
         /// <param name="policyBuilder">The policy builder.</param>
-        /// <param name="continueOnCapturedContext">Whether to continue on a captured synchronization context.</param>
         /// <param name="sleepDurations">The sleep durations to wait for on each retry.</param>
+        /// <param name="continueOnCapturedContext">Whether to continue on a captured synchronization context.</param>
         /// <returns>The policy instance.</returns>
-        public static Policy WaitAndRetryAsync(this PolicyBuilder policyBuilder, bool continueOnCapturedContext, IEnumerable<TimeSpan> sleepDurations)
+        public static Policy WaitAndRetryAsync(this PolicyBuilder policyBuilder, IEnumerable<TimeSpan> sleepDurations, bool continueOnCapturedContext)
         {
             Action<Exception, TimeSpan> doNothing = (_, __) => { };
 
-            return policyBuilder.WaitAndRetryAsync(continueOnCapturedContext, sleepDurations, doNothing);
+            return policyBuilder.WaitAndRetryAsync(sleepDurations, continueOnCapturedContext, doNothing);
         }
 
         /// <summary>
@@ -228,7 +228,7 @@ namespace Polly
         /// <returns>The policy instance.</returns>
         public static Policy WaitAndRetryAsync(this PolicyBuilder policyBuilder, int retryCount, Func<int, TimeSpan> sleepDurationProvider)
         {
-            return WaitAndRetryAsync(policyBuilder, retryCount, false, sleepDurationProvider);
+            return WaitAndRetryAsync(policyBuilder, retryCount, sleepDurationProvider, false);
         }
 
         /// <summary>
@@ -238,14 +238,14 @@ namespace Polly
         /// </summary>
         /// <param name="policyBuilder">The policy builder.</param>
         /// <param name="retryCount">The retry count.</param>
-        /// <param name="continueOnCapturedContext">Whether to continue on a captured synchronization context.</param>
         /// <param name="sleepDurationProvider">The function that provides the duration to wait for for a particular retry attempt.</param>
+        /// <param name="continueOnCapturedContext">Whether to continue on a captured synchronization context.</param>
         /// <returns>The policy instance.</returns>
-        public static Policy WaitAndRetryAsync(this PolicyBuilder policyBuilder, int retryCount, bool continueOnCapturedContext, Func<int, TimeSpan> sleepDurationProvider)
+        public static Policy WaitAndRetryAsync(this PolicyBuilder policyBuilder, int retryCount, Func<int, TimeSpan> sleepDurationProvider, bool continueOnCapturedContext)
         {
             Action<Exception, TimeSpan> doNothing = (_, __) => { };
 
-            return policyBuilder.WaitAndRetryAsync(retryCount, continueOnCapturedContext, sleepDurationProvider, doNothing);
+            return policyBuilder.WaitAndRetryAsync(retryCount, sleepDurationProvider, continueOnCapturedContext, doNothing);
         }
 
         /// <summary>
@@ -267,7 +267,7 @@ namespace Polly
         /// </exception>
         public static Policy WaitAndRetryAsync(this PolicyBuilder policyBuilder, int retryCount, Func<int, TimeSpan> sleepDurationProvider, Action<Exception, TimeSpan> onRetry)
         {
-            return WaitAndRetryAsync(policyBuilder, retryCount, false, sleepDurationProvider, onRetry);
+            return WaitAndRetryAsync(policyBuilder, retryCount, sleepDurationProvider, false, onRetry);
         }
 
         /// <summary>
@@ -278,8 +278,8 @@ namespace Polly
         /// </summary>
         /// <param name="policyBuilder">The policy builder.</param>
         /// <param name="retryCount">The retry count.</param>
-        /// <param name="continueOnCapturedContext">Whether to continue on a captured synchronization context.</param>
         /// <param name="sleepDurationProvider">The function that provides the duration to wait for for a particular retry attempt.</param>
+        /// <param name="continueOnCapturedContext">Whether to continue on a captured synchronization context.</param>
         /// <param name="onRetry">The action to call on each retry.</param>
         /// <returns>The policy instance.</returns>
         /// <exception cref="System.ArgumentOutOfRangeException">retryCount;Value must be greater than zero.</exception>
@@ -288,7 +288,7 @@ namespace Polly
         ///     or
         ///     onRetry
         /// </exception>
-        public static Policy WaitAndRetryAsync(this PolicyBuilder policyBuilder, int retryCount, bool continueOnCapturedContext, Func<int, TimeSpan> sleepDurationProvider, Action<Exception, TimeSpan> onRetry)
+        public static Policy WaitAndRetryAsync(this PolicyBuilder policyBuilder, int retryCount, Func<int, TimeSpan> sleepDurationProvider, bool continueOnCapturedContext, Action<Exception, TimeSpan> onRetry)
         {
             if (retryCount < 0)
                 throw new ArgumentOutOfRangeException("retryCount", "Value must be equal to or greater than zero.");
@@ -325,7 +325,7 @@ namespace Polly
         /// </exception>
         public static Policy WaitAndRetryAsync(this PolicyBuilder policyBuilder, IEnumerable<TimeSpan> sleepDurations, Action<Exception, TimeSpan> onRetry)
         {
-            return WaitAndRetryAsync(policyBuilder, false, sleepDurations, onRetry);
+            return WaitAndRetryAsync(policyBuilder, sleepDurations, false, onRetry);
         }
 
         /// <summary>
@@ -335,8 +335,8 @@ namespace Polly
         ///     On each retry, the duration to wait is the current <paramref name="sleepDurations" /> item.
         /// </summary>
         /// <param name="policyBuilder">The policy builder.</param>
-        /// <param name="continueOnCapturedContext">Whether to continue on a captured synchronization context.</param>
         /// <param name="sleepDurations">The sleep durations to wait for on each retry.</param>
+        /// <param name="continueOnCapturedContext">Whether to continue on a captured synchronization context.</param>
         /// <param name="onRetry">The action to call on each retry.</param>
         /// <returns>The policy instance.</returns>
         /// <exception cref="System.ArgumentNullException">
@@ -344,7 +344,7 @@ namespace Polly
         ///     or
         ///     onRetry
         /// </exception>
-        public static Policy WaitAndRetryAsync(this PolicyBuilder policyBuilder, bool continueOnCapturedContext, IEnumerable<TimeSpan> sleepDurations, Action<Exception, TimeSpan> onRetry)
+        public static Policy WaitAndRetryAsync(this PolicyBuilder policyBuilder, IEnumerable<TimeSpan> sleepDurations, bool continueOnCapturedContext, Action<Exception, TimeSpan> onRetry)
         {
             if (sleepDurations == null) throw new ArgumentNullException("sleepDurations");
             if (onRetry == null) throw new ArgumentNullException("onRetry");
