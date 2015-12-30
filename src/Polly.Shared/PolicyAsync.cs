@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using Polly.Extensions;
 
 namespace Polly
 {
@@ -28,10 +27,21 @@ namespace Polly
         [DebuggerStepThrough]
         public Task ExecuteAsync(Func<Task> action)
         {
+            return ExecuteAsync(action, false);
+        }
+
+        /// <summary>
+        ///     Executes the specified asynchronous action within the policy.
+        /// </summary>
+        /// <param name="action">The action to perform.</param>
+        /// <param name="continueOnCapturedContext">Whether to continue on a captured synchronization context.</param>
+        [DebuggerStepThrough]
+        public async Task ExecuteAsync(Func<Task> action, bool continueOnCapturedContext)
+        {
             if (_asyncExceptionPolicy == null) throw new InvalidOperationException
                 ("Please use the asynchronous RetryAsync, RetryForeverAsync, WaitAndRetryAsync or CircuitBreakerAsync methods when calling the asynchronous Execute method.");
 
-            return _asyncExceptionPolicy(action);
+            await _asyncExceptionPolicy(action).ConfigureAwait(continueOnCapturedContext);
         }
 
         /// <summary>
@@ -39,14 +49,25 @@ namespace Polly
         /// </summary>
         /// <param name="action">The action to perform.</param>
         [DebuggerStepThrough]
-        public async Task<PolicyResult> ExecuteAndCaptureAsync(Func<Task> action)
+        public Task<PolicyResult> ExecuteAndCaptureAsync(Func<Task> action)
+        {
+            return ExecuteAndCaptureAsync(action, false);
+        }
+
+        /// <summary>
+        ///     Executes the specified asynchronous action within the policy and returns the captured result.
+        /// </summary>
+        /// <param name="action">The action to perform.</param>
+        /// <param name="continueOnCapturedContext">Whether to continue on a captured synchronization context.</param>
+        [DebuggerStepThrough]
+        public async Task<PolicyResult> ExecuteAndCaptureAsync(Func<Task> action, bool continueOnCapturedContext)
         {
             if (_asyncExceptionPolicy == null) throw new InvalidOperationException
                 ("Please use the asynchronous RetryAsync, RetryForeverAsync, WaitAndRetryAsync or CircuitBreakerAsync methods when calling the asynchronous Execute method.");
 
             try
             {
-                await _asyncExceptionPolicy(action).NotOnCapturedContext();
+                await _asyncExceptionPolicy(action).ConfigureAwait(continueOnCapturedContext);
                 return PolicyResult.Successful();
             }
             catch (Exception exception)
@@ -62,14 +83,9 @@ namespace Polly
         /// <param name="action">The action to perform.</param>
         /// <returns>The value returned by the action</returns>
         [DebuggerStepThrough]
-        public async Task<TResult> ExecuteAsync<TResult>(Func<Task<TResult>> action)
+        public Task<TResult> ExecuteAsync<TResult>(Func<Task<TResult>> action)
         {
-            if (_asyncExceptionPolicy == null) throw new InvalidOperationException(
-                "Please use the asynchronous RetryAsync, RetryForeverAsync, WaitAndRetryAsync or CircuitBreakerAsync methods when calling the asynchronous Execute method.");
-
-            var result = default(TResult);
-            await _asyncExceptionPolicy(async () => { result = await action().NotOnCapturedContext(); }).NotOnCapturedContext();
-            return result;
+            return ExecuteAsync(action, false);
         }
 
         /// <summary>
@@ -77,9 +93,52 @@ namespace Polly
         /// </summary>
         /// <typeparam name="TResult">The type of the result.</typeparam>
         /// <param name="action">The action to perform.</param>
+        /// <param name="continueOnCapturedContext">Whether to continue on a captured synchronization context.</param>
         /// <returns>The value returned by the action</returns>
         [DebuggerStepThrough]
-        public async Task<PolicyResult<TResult>> ExecuteAndCaptureAsync<TResult>(Func<Task<TResult>> action)
+        public async Task<TResult> ExecuteAsync<TResult>(Func<Task<TResult>> action, bool continueOnCapturedContext)
+        {
+            if (_asyncExceptionPolicy == null) throw new InvalidOperationException(
+                "Please use the asynchronous RetryAsync, RetryForeverAsync, WaitAndRetryAsync or CircuitBreakerAsync methods when calling the asynchronous Execute method.");
+
+            var result = default(TResult);
+
+            await _asyncExceptionPolicy(async () =>
+            {
+                result = await action().ConfigureAwait(continueOnCapturedContext);
+            })
+            .ConfigureAwait(continueOnCapturedContext);
+
+            return result;
+        }
+
+        /// <summary>
+        /// Executes the specified asynchronous action within the policy and returns the result.
+        /// </summary>
+        /// <typeparam name="TResult">The type of the result.</typeparam>
+        /// <param name="action">The action to perform.</param>
+        /// <returns>
+        /// The value returned by the action
+        /// </returns>
+        /// <exception cref="System.InvalidOperationException">Please use the asynchronous RetryAsync, RetryForeverAsync, WaitAndRetryAsync or CircuitBreakerAsync methods when calling the asynchronous Execute method.</exception>
+        [DebuggerStepThrough]
+        public Task<PolicyResult<TResult>> ExecuteAndCaptureAsync<TResult>(Func<Task<TResult>> action)
+        {
+            return ExecuteAndCaptureAsync(action, false);
+        }
+
+        /// <summary>
+        /// Executes the specified asynchronous action within the policy and returns the result.
+        /// </summary>
+        /// <typeparam name="TResult">The type of the result.</typeparam>
+        /// <param name="action">The action to perform.</param>
+        /// <param name="continueOnCapturedContext">Whether to continue on a captured synchronization context.</param>
+        /// <returns>
+        /// The value returned by the action
+        /// </returns>
+        /// <exception cref="System.InvalidOperationException">Please use the asynchronous RetryAsync, RetryForeverAsync, WaitAndRetryAsync or CircuitBreakerAsync methods when calling the asynchronous Execute method.</exception>
+        [DebuggerStepThrough]
+        public async Task<PolicyResult<TResult>> ExecuteAndCaptureAsync<TResult>(Func<Task<TResult>> action, bool continueOnCapturedContext)
         {
             if (_asyncExceptionPolicy == null) throw new InvalidOperationException(
                 "Please use the asynchronous RetryAsync, RetryForeverAsync, WaitAndRetryAsync or CircuitBreakerAsync methods when calling the asynchronous Execute method.");
@@ -87,7 +146,13 @@ namespace Polly
             try
             {
                 var result = default(TResult);
-                await _asyncExceptionPolicy(async () => { result = await action().NotOnCapturedContext(); }).NotOnCapturedContext();
+
+                await _asyncExceptionPolicy(async () =>
+                {
+                    result = await action().ConfigureAwait(continueOnCapturedContext);
+                })
+                .ConfigureAwait(continueOnCapturedContext);
+
                 return PolicyResult<TResult>.Successful(result);
             }
             catch (Exception exception)

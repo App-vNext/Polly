@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using FluentAssertions;
 using Polly.Specs.Helpers;
 using Polly.Utilities;
@@ -13,7 +14,7 @@ namespace Polly.Specs
         public WaitAndRetryAsyncSpecs()
         {
             // do nothing on call to sleep
-            SystemClock.Sleep = (_) => { };
+            SystemClock.SleepAsync = (_) => Task.FromResult(0);
         }
 
         [Fact]
@@ -230,7 +231,11 @@ namespace Polly.Specs
                    3.Seconds()
                 });
 
-            SystemClock.Sleep = span => totalTimeSlept += span.Seconds;
+            SystemClock.SleepAsync = span =>
+            {
+                totalTimeSlept += span.Seconds;
+                return Task.FromResult(0);
+            };
 
             policy.RaiseExceptionAsync<DivideByZeroException>(3);
 
@@ -252,7 +257,11 @@ namespace Polly.Specs
                    3.Seconds()
                 });
 
-            SystemClock.Sleep = span => totalTimeSlept += span.Seconds;
+            SystemClock.SleepAsync = span =>
+            {
+                totalTimeSlept += span.Seconds;
+                return Task.FromResult(0);
+            };
 
             policy.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>(3 + 1))
                   .ShouldThrow<DivideByZeroException>();
@@ -275,7 +284,11 @@ namespace Polly.Specs
                    3.Seconds()
                 });
 
-            SystemClock.Sleep = span => totalTimeSlept += span.Seconds;
+            SystemClock.SleepAsync = span =>
+            {
+                totalTimeSlept += span.Seconds;
+                return Task.FromResult(0);
+            };
 
             policy.RaiseExceptionAsync<DivideByZeroException>(2);
 
@@ -292,7 +305,11 @@ namespace Polly.Specs
                 .Handle<DivideByZeroException>()
                 .WaitAndRetryAsync(Enumerable.Empty<TimeSpan>());
 
-            SystemClock.Sleep = span => totalTimeSlept += span.Seconds;
+            SystemClock.SleepAsync = span =>
+            {
+                totalTimeSlept += span.Seconds;
+                return Task.FromResult(0);
+            };
 
             policy.Awaiting(x => x.RaiseExceptionAsync<NullReferenceException>())
                   .ShouldThrow<NullReferenceException>();

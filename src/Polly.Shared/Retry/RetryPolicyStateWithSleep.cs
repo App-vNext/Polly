@@ -4,7 +4,7 @@ using Polly.Utilities;
 
 namespace Polly.Retry
 {
-    internal class RetryPolicyStateWithSleep : IRetryPolicyState
+    internal partial class RetryPolicyStateWithSleep : IRetryPolicyState
     {
         private readonly Action<Exception, TimeSpan, Context> _onRetry;
         private readonly Context _context;

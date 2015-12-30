@@ -287,6 +287,8 @@ await Policy
 
 ```
 
+Note: By default, continuation and retry will not run on captured synchronization context. To change this behavior use respective overloads which take boolean `continueOnCapturedContext` parameter.  
+
 3rd Party Libraries
 =
 
