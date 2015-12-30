@@ -1,3 +1,8 @@
+2.2.6
+=
+----------
+- Async sleep fix, plus added continueOnCapturedContext parameter on async methods to control whether continuation and retry will run on captured synchronization context - Thanks to [@yevhen](https://github.com/yevhen)
+
 2.2.5
 =
 ----------
