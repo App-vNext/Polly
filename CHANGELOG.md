@@ -1,3 +1,9 @@
+2.2.7
+=
+----------
+- Fixes an issue where continueOnCapturedContext needed to be specified in two places (on action execution and Policy configuration), when wanting to flow async action execution on the captured context - Thanks to [@reisenberger](https://github.com/reisenberger)
+- Fixes excess line ending issues
+
 2.2.6
 =
 ----------
