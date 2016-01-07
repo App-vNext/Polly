@@ -2,7 +2,7 @@
 
 namespace Polly.Retry
 {
-    internal class RetryPolicyStateWithCount : IRetryPolicyState
+    internal partial class RetryPolicyStateWithCount : IRetryPolicyState
     {
         private int _errorCount;
         private readonly int _retryCount;

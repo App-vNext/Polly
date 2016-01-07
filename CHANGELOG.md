@@ -1,3 +1,24 @@
+2.2.7
+=
+----------
+- Fixes an issue where continueOnCapturedContext needed to be specified in two places (on action execution and Policy configuration), when wanting to flow async action execution on the captured context - Thanks to [@reisenberger](https://github.com/reisenberger)
+- Fixes excess line ending issues
+
+2.2.6
+=
+----------
+- Async sleep fix, plus added continueOnCapturedContext parameter on async methods to control whether continuation and retry will run on captured synchronization context - Thanks to [@yevhen](https://github.com/yevhen)
+
+2.2.5
+=
+----------
+- Policies with a retry count of zero are now allowed - Thanks to [@nelsonghezzi](https://github.com/nelsonghezzi)
+
+2.2.4
+=
+----------
+- Add .NET Core support
+
 2.2.3
 =
 ----------

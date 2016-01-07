@@ -42,7 +42,6 @@ namespace Polly
         /// <param name="policyBuilder">The policy builder.</param>
         /// <param name="onRetry">The action to call on each retry.</param>
         /// <returns>The policy instance.</returns>
-        /// <exception cref="System.ArgumentOutOfRangeException">retryCount;Value must be greater than zero.</exception>
         /// <exception cref="System.ArgumentNullException">onRetry</exception>
         public static Policy RetryAsync(this PolicyBuilder policyBuilder, Action<Exception, int> onRetry)
         {
@@ -57,20 +56,20 @@ namespace Polly
         /// <param name="retryCount">The retry count.</param>
         /// <param name="onRetry">The action to call on each retry.</param>
         /// <returns>The policy instance.</returns>
-        /// <exception cref="System.ArgumentOutOfRangeException">retryCount;Value must be greater than zero.</exception>
+        /// <exception cref="System.ArgumentOutOfRangeException">retryCount;Value must be equal to or greater than zero.</exception>
         /// <exception cref="System.ArgumentNullException">onRetry</exception>
         public static Policy RetryAsync(this PolicyBuilder policyBuilder, int retryCount, Action<Exception, int> onRetry)
         {
-            if (retryCount <= 0)
-                throw new ArgumentOutOfRangeException("retryCount", "Value must be greater than zero.");
+            if (retryCount < 0)
+                throw new ArgumentOutOfRangeException("retryCount", "Value must be equal to or greater than zero.");
             if (onRetry == null) throw new ArgumentNullException("onRetry");
 
             return new Policy(
-                action => RetryPolicy.ImplementationAsync(
+                (action, continueOnCapturedContext) => RetryPolicy.ImplementationAsync(
                     action,
                     policyBuilder.ExceptionPredicates,
-                    () => new RetryPolicyStateWithCount(retryCount, onRetry)
-                ),
+                    () => new RetryPolicyStateWithCount(retryCount, onRetry), 
+                    continueOnCapturedContext),
                 policyBuilder.ExceptionPredicates
             );
         }
@@ -100,11 +99,11 @@ namespace Polly
             if (onRetry == null) throw new ArgumentNullException("onRetry");
 
             return new Policy(
-                action => RetryPolicy.ImplementationAsync(
+                (action, continueOnCapturedContext) => RetryPolicy.ImplementationAsync(
                     action,
                     policyBuilder.ExceptionPredicates,
-                    () => new RetryPolicyState(onRetry)
-                ),
+                    () => new RetryPolicyState(onRetry), 
+                    continueOnCapturedContext),
                 policyBuilder.ExceptionPredicates
             );
         }
@@ -151,7 +150,7 @@ namespace Polly
         /// <param name="sleepDurationProvider">The function that provides the duration to wait for for a particular retry attempt.</param>
         /// <param name="onRetry">The action to call on each retry.</param>
         /// <returns>The policy instance.</returns>
-        /// <exception cref="System.ArgumentOutOfRangeException">retryCount;Value must be greater than zero.</exception>
+        /// <exception cref="System.ArgumentOutOfRangeException">retryCount;Value must be equal to or greater than zero.</exception>
         /// <exception cref="System.ArgumentNullException">
         ///     timeSpanProvider
         ///     or
@@ -160,8 +159,8 @@ namespace Polly
         public static Policy WaitAndRetryAsync(this PolicyBuilder policyBuilder, int retryCount,
             Func<int, TimeSpan> sleepDurationProvider, Action<Exception, TimeSpan> onRetry)
         {
-            if (retryCount <= 0)
-                throw new ArgumentOutOfRangeException("retryCount", "Value must be greater than zero.");
+            if (retryCount < 0)
+                throw new ArgumentOutOfRangeException("retryCount", "Value must be equal to or greater than zero.");
             if (sleepDurationProvider == null) throw new ArgumentNullException("sleepDurationProvider");
             if (onRetry == null) throw new ArgumentNullException("onRetry");
 
@@ -169,11 +168,11 @@ namespace Polly
                 .Select(sleepDurationProvider);
 
             return new Policy(
-                action => RetryPolicy.ImplementationAsync(
+                (action, continueOnCapturedContext) => RetryPolicy.ImplementationAsync(
                     action,
                     policyBuilder.ExceptionPredicates,
-                    () => new RetryPolicyStateWithSleep(sleepDurations, onRetry)
-                ),
+                    () => new RetryPolicyStateWithSleep(sleepDurations, onRetry), 
+                    continueOnCapturedContext),
                 policyBuilder.ExceptionPredicates
             );
         }
@@ -200,11 +199,11 @@ namespace Polly
             if (onRetry == null) throw new ArgumentNullException("onRetry");
 
             return new Policy(
-                action => RetryPolicy.ImplementationAsync(
+                (action, continueOnCapturedContext) => RetryPolicy.ImplementationAsync(
                     action,
                     policyBuilder.ExceptionPredicates,
-                    () => new RetryPolicyStateWithSleep(sleepDurations, onRetry)
-                ),
+                    () => new RetryPolicyStateWithSleep(sleepDurations, onRetry), 
+                    continueOnCapturedContext),
                 policyBuilder.ExceptionPredicates
             );
         }

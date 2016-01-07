@@ -287,6 +287,8 @@ await Policy
 
 ```
 
+Note: By default, continuation and retry will not run on captured synchronization context. To change this behavior use respective overloads which take boolean `continueOnCapturedContext` parameter.  
+
 3rd Party Libraries
 =
 
@@ -305,6 +307,14 @@ Acknowledgements
 * [@robgibbens](https://github.com/RobGibbens) - Added existing async files to PCL project
 * [Hacko](https://github.com/hacko-bede) - Added extra `NotOnCapturedContext` call to prevent potential deadlocks when blocking on asynchronous calls
 * [@ThomasMentzel](https://github.com/ThomasMentzel) - Added ability to capture the results of executing a policy via `ExecuteAndCapture`
+
+Sample Projects
+=
+[Polly-Samples](https://github.com/App-vNext/Polly-Samples) contains practical examples for using various implementations of Polly. Please feel free to contribute to the Polly-Samples repository in order to assist others who are either learning Polly for the first time, or are seeking advanced examples and novel approaches provided by our generous community.
+
+Instructions for Contributing
+=
+Please check out our [Wiki](https://github.com/App-vNext/Polly/wiki/Git-Workflow) for contributing guidelines. We are following the excellent GitHub Flow process, and would like to make sure you have all of the information needed to be a world-class contributor!
 
 License
 =

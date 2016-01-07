@@ -178,7 +178,8 @@ namespace Polly.Specs
             policy.Invoking(x => x.RaiseException<NullReferenceException>())
                   .ShouldThrow<NullReferenceException>();
         }
- [Fact]
+
+        [Fact]
         public void Should_throw_when_exception_thrown_is_not_the_specified_exception_type_async()
         {
             var policy = Policy
@@ -200,7 +201,8 @@ namespace Polly.Specs
             policy.Invoking(x => x.RaiseException<NullReferenceException>())
                   .ShouldThrow<NullReferenceException>();
         }
-  [Fact]
+
+        [Fact]
         public void Should_throw_when_exception_thrown_is_not_one_of_the_specified_exception_types_async()
         {
             var policy = Policy
@@ -269,7 +271,7 @@ namespace Polly.Specs
             var policy = Policy
                 .Handle<DivideByZeroException>(e => true)
                 .Or<ArgumentException>(e => true)
-               .WaitAndRetry(new[]
+                .WaitAndRetry(new[]
                 {
                    1.Seconds()
                 });
@@ -284,7 +286,7 @@ namespace Polly.Specs
             var policy = Policy
                 .Handle<DivideByZeroException>(e => true)
                 .Or<ArgumentException>(e => true)
-               .WaitAndRetryAsync(new[]
+                .WaitAndRetryAsync(new[]
                 {
                    1.Seconds()
                 });
@@ -329,7 +331,11 @@ namespace Polly.Specs
                    3.Seconds()
                 });
 
-            SystemClock.Sleep = span => totalTimeSlept += span.Seconds;
+            SystemClock.SleepAsync = span =>
+            {
+                totalTimeSlept += span.Seconds;
+                return Task.FromResult(0);
+            };
 
             await policy.RaiseExceptionAsync<DivideByZeroException>(3);
 
@@ -409,7 +415,11 @@ namespace Polly.Specs
                 .Handle<DivideByZeroException>()
                 .WaitAndRetryAsync(Enumerable.Empty<TimeSpan>());
 
-            SystemClock.Sleep = span => totalTimeSlept += span.Seconds;
+            SystemClock.SleepAsync = span =>
+            {
+                totalTimeSlept += span.Seconds;
+                return Task.FromResult(0);
+            };
 
             policy.Awaiting(x => x.RaiseExceptionAsync<NullReferenceException>())
                   .ShouldThrow<NullReferenceException>();
@@ -551,26 +561,26 @@ namespace Polly.Specs
         }
 
         [Fact]
-        public void Should_throw_when_retry_count_is_less_than_one_without_context()
+        public void Should_throw_when_retry_count_is_less_than_zero_without_context()
         {
             Action<Exception, TimeSpan> onRetry = (_, __) => { };
 
             Action policy = () => Policy
                                       .Handle<DivideByZeroException>()
-                                      .WaitAndRetry(0, _ => new TimeSpan(), onRetry);
+                                      .WaitAndRetry(-1, _ => new TimeSpan(), onRetry);
                                            
             policy.ShouldThrow<ArgumentOutOfRangeException>().And                  
                   .ParamName.Should().Be("retryCount");
         }
 
         [Fact]
-        public void Should_throw_when_retry_count_is_less_than_one_with_context()
+        public void Should_throw_when_retry_count_is_less_than_zero_with_context()
         {
             Action<Exception, TimeSpan, Context> onRetry = (_, __, ___) => { };
 
             Action policy = () => Policy
                                       .Handle<DivideByZeroException>()
-                                      .WaitAndRetry(0, _ => new TimeSpan(), onRetry);
+                                      .WaitAndRetry(-1, _ => new TimeSpan(), onRetry);
 
             policy.ShouldThrow<ArgumentOutOfRangeException>().And
                   .ParamName.Should().Be("retryCount");
@@ -653,6 +663,40 @@ namespace Polly.Specs
 
             retryTimeSpans.Should()
                        .ContainInOrder(expectedRetryCounts);
+        }
+
+        [Fact]
+        public void Should_not_call_onretry_when_retry_count_is_zero_without_context()
+        {
+            bool retryInvoked = false;
+
+            Action<Exception, TimeSpan> onRetry = (_, __) => { retryInvoked = true; };
+
+            var policy = Policy
+                .Handle<DivideByZeroException>()
+                .WaitAndRetry(0, retryAttempt => TimeSpan.FromSeconds(1), onRetry);
+
+            policy.Invoking(x => x.RaiseException<DivideByZeroException>())
+                  .ShouldThrow<DivideByZeroException>();
+
+            retryInvoked.Should().BeFalse();
+        }
+
+        [Fact]
+        public void Should_not_call_onretry_when_retry_count_is_zero_with_context()
+        {
+            bool retryInvoked = false;
+
+            Action<Exception, TimeSpan, Context> onRetry = (_, __, ___) => { retryInvoked = true; };
+
+            var policy = Policy
+                .Handle<DivideByZeroException>()
+                .WaitAndRetry(0, retryAttempt => TimeSpan.FromSeconds(1), onRetry);
+
+            policy.Invoking(x => x.RaiseException<DivideByZeroException>())
+                  .ShouldThrow<DivideByZeroException>();
+
+            retryInvoked.Should().BeFalse();
         }
 
         public void Dispose()

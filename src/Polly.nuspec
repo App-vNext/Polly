@@ -1,18 +1,22 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <package>
- <metadata>
-   <owners>App vNext</owners>
-   <authors>Michael Wolfenden, App vNext</authors>
-   <description>
+  <metadata>
+    <owners>App vNext</owners>
+    <authors>Michael Wolfenden, App vNext</authors>
+    <description>
      Polly is a .NET 3.5 / 4.0 / 4.5 / PCL library (Profile 259) that allows developers to express transient exception handling policies such as Retry, Retry Forever, Wait and Retry or Circuit Breaker in a fluent manner.
    </description>
-   <language>en-AU</language>
-   <licenseUrl>https://raw.github.com/App-vNext/Polly/master/LICENSE.txt</licenseUrl>
-   <iconUrl>https://raw.github.com/App-vNext/Polly/master/Polly.png</iconUrl>
-   <projectUrl>https://github.com/App-vNext/Polly</projectUrl>
-   <tags>Exception Handling Policy Retry Wait Circuit Breaker</tags>
-   <copyright>Copyright © 2015, App vNext</copyright>
-   <releaseNotes>
+    <language>en-AU</language>
+    <licenseUrl>https://raw.github.com/App-vNext/Polly/master/LICENSE.txt</licenseUrl>
+    <iconUrl>https://raw.github.com/App-vNext/Polly/master/Polly.png</iconUrl>
+    <projectUrl>https://github.com/App-vNext/Polly</projectUrl>
+    <tags>Exception Handling Policy Retry Wait Circuit Breaker</tags>
+    <copyright>Copyright © 2015, App vNext</copyright>
+    <releaseNotes>
+     2.2.5
+     ---------------------
+     - Policies with a retry count of zero are now allowed
+     
      2.2.4
      ---------------------
      - Add .NET Core support
@@ -33,7 +37,7 @@
      2.2.0
      ---------------------
      - Added Async Support (PCL)
-     - PCL Profile updated from Profile78 ->  Profile 259
+     - PCL Profile updated from Profile78 -&gt;  Profile 259
      - Added missing WaitAndRetryAsync overload
 
      2.1.0
@@ -51,17 +55,25 @@
      - Allow arbitrary data to be passed to policy execution
    </releaseNotes>
     <dependencies>
-        <group targetFramework="net" />
-        <group targetFramework="win" />
-        <group targetFramework="wp" />
-        <group targetFramework="wpa" />
-        <group targetFramework="MonoAndroid" />
-        <group targetFramework="MonoTouch" />
-        <group targetFramework="Xamarin.iOS" />
-        <group targetFramework="portable-net45+win8+wpa81+wp8" />
+      <group targetFramework="net" />
+      <group targetFramework="win" />
+      <group targetFramework="wp" />
+      <group targetFramework="wpa" />
+      <group targetFramework="MonoAndroid" />
+      <group targetFramework="MonoTouch" />
+      <group targetFramework="Xamarin.iOS" />
+      <group targetFramework="portable-net45+win8+wpa81+wp8" />
+      <group targetFramework="dotnet">
+        <dependency id="System.Collections" version="4.0.0" />
+        <dependency id="System.Diagnostics.Debug" version="4.0.0" />
+        <dependency id="System.Linq" version="4.0.0" />
+        <dependency id="System.Runtime" version="4.0.0" />
+        <dependency id="System.Threading" version="4.0.0" />
+        <dependency id="System.Threading.Tasks" version="4.0.0" />
+      </group>
     </dependencies>
- </metadata>
- <files>
-   <file src="lib\**\*.*" target="lib" exclude="**\*.unsigned"/>
- </files>
+  </metadata>
+  <files>
+    <file src="lib\**\*.*" target="lib" exclude="**\*.unsigned" />
+  </files>
 </package>

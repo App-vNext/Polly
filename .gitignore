@@ -12,6 +12,7 @@ TestResults
 *.suo
 *.user
 *.sln.docstates
+.vs/
 
 # Build results
 [Dd]ebug/
@@ -110,3 +111,7 @@ UpgradeLog*.XML
 artifacts
 build
 tools
+
+*.lock.json
+*.nuget.targets
+*.nuget.props

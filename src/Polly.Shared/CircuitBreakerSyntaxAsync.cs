@@ -34,7 +34,7 @@ namespace Polly
 
             var policyState = new CircuitBreakerState(exceptionsAllowedBeforeBreaking, durationOfBreak);
             return new Policy(
-                action => CircuitBreakerPolicy.ImplementationAsync(action, policyBuilder.ExceptionPredicates, policyState),
+                (action, continueOnCapturedContext) => CircuitBreakerPolicy.ImplementationAsync(action, policyBuilder.ExceptionPredicates, policyState, continueOnCapturedContext),
                 policyBuilder.ExceptionPredicates
             );
         }
