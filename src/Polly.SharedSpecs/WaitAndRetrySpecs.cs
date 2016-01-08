@@ -103,7 +103,7 @@ namespace Polly.Specs
         }
 
         [Fact]
-        public void Should_not_throw_when_specified_exception_thrown_less_number_of_times_then_there_are_sleep_durations()
+        public void Should_not_throw_when_specified_exception_thrown_less_number_of_times_than_there_are_sleep_durations()
         {
             var policy = Policy
                 .Handle<DivideByZeroException>()
@@ -136,7 +136,7 @@ namespace Polly.Specs
         }
 
         [Fact]
-        public void Should_throw_when_specified_exception_thrown_more_times_then_there_are_sleep_durations()
+        public void Should_throw_when_specified_exception_thrown_more_times_than_there_are_sleep_durations()
         {
             var policy = Policy
                 .Handle<DivideByZeroException>()
@@ -318,33 +318,7 @@ namespace Polly.Specs
         }
 
         [Fact]
-        public async Task Should_sleep_for_the_specified_duration_each_retry_when_specified_exception_thrown_same_number_of_times_as_there_are_sleep_durations_async()
-        {
-            var totalTimeSlept = 0;
-
-            var policy = Policy
-                .Handle<DivideByZeroException>()
-                .WaitAndRetryAsync(new[]
-                {
-                   1.Seconds(),
-                   2.Seconds(),
-                   3.Seconds()
-                });
-
-            SystemClock.SleepAsync = span =>
-            {
-                totalTimeSlept += span.Seconds;
-                return Task.FromResult(0);
-            };
-
-            await policy.RaiseExceptionAsync<DivideByZeroException>(3);
-
-            totalTimeSlept.Should()
-                          .Be(1 + 2 + 3);
-        }
-
-        [Fact]
-        public void Should_sleep_for_the_specified_duration_each_retry_when_specified_exception_thrown_more_number_of_times_as_there_are_sleep_durations()
+        public void Should_sleep_for_the_specified_duration_each_retry_when_specified_exception_thrown_more_number_of_times_than_there_are_sleep_durations()
         {
             var totalTimeSlept = 0;
 
@@ -367,7 +341,7 @@ namespace Polly.Specs
         }
 
         [Fact]
-        public void Should_sleep_for_the_specified_duration_each_retry_when_specified_exception_thrown_less_number_of_times_then_there_are_sleep_durations()
+        public void Should_sleep_for_the_specified_duration_each_retry_when_specified_exception_thrown_less_number_of_times_than_there_are_sleep_durations()
         {
             var totalTimeSlept = 0;
 
@@ -400,28 +374,6 @@ namespace Polly.Specs
             SystemClock.Sleep = span => totalTimeSlept += span.Seconds;
 
             policy.Invoking(x => x.RaiseException<NullReferenceException>())
-                  .ShouldThrow<NullReferenceException>();
-
-            totalTimeSlept.Should()
-                          .Be(0);
-        }
-
-        [Fact]
-        public void Should_not_sleep_if_no_retries_async()
-        {
-            var totalTimeSlept = 0;
-
-            var policy = Policy
-                .Handle<DivideByZeroException>()
-                .WaitAndRetryAsync(Enumerable.Empty<TimeSpan>());
-
-            SystemClock.SleepAsync = span =>
-            {
-                totalTimeSlept += span.Seconds;
-                return Task.FromResult(0);
-            };
-
-            policy.Awaiting(x => x.RaiseExceptionAsync<NullReferenceException>())
                   .ShouldThrow<NullReferenceException>();
 
             totalTimeSlept.Should()
