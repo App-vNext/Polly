@@ -1,3 +1,9 @@
+3.0.0
+=
+----------
+- Add cancellation support for all async Policy execution - Thanks to [@reisenberger](https://github.com/reisenberger)
+
+
 2.2.7
 =
 ----------

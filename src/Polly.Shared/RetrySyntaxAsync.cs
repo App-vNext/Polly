@@ -65,8 +65,9 @@ namespace Polly
             if (onRetry == null) throw new ArgumentNullException("onRetry");
 
             return new Policy(
-                (action, continueOnCapturedContext) => RetryPolicy.ImplementationAsync(
+                (action, cancellationToken, continueOnCapturedContext) => RetryPolicy.ImplementationAsync(
                     action,
+                    cancellationToken, 
                     policyBuilder.ExceptionPredicates,
                     () => new RetryPolicyStateWithCount(retryCount, onRetry), 
                     continueOnCapturedContext),
@@ -99,8 +100,9 @@ namespace Polly
             if (onRetry == null) throw new ArgumentNullException("onRetry");
 
             return new Policy(
-                (action, continueOnCapturedContext) => RetryPolicy.ImplementationAsync(
+                (action, cancellationToken, continueOnCapturedContext) => RetryPolicy.ImplementationAsync(
                     action,
+                    cancellationToken, 
                     policyBuilder.ExceptionPredicates,
                     () => new RetryPolicyState(onRetry), 
                     continueOnCapturedContext),
@@ -168,8 +170,9 @@ namespace Polly
                 .Select(sleepDurationProvider);
 
             return new Policy(
-                (action, continueOnCapturedContext) => RetryPolicy.ImplementationAsync(
+                (action, cancellationToken, continueOnCapturedContext) => RetryPolicy.ImplementationAsync(
                     action,
+                    cancellationToken, 
                     policyBuilder.ExceptionPredicates,
                     () => new RetryPolicyStateWithSleep(sleepDurations, onRetry), 
                     continueOnCapturedContext),
@@ -199,8 +202,9 @@ namespace Polly
             if (onRetry == null) throw new ArgumentNullException("onRetry");
 
             return new Policy(
-                (action, continueOnCapturedContext) => RetryPolicy.ImplementationAsync(
+                (action, cancellationToken, continueOnCapturedContext) => RetryPolicy.ImplementationAsync(
                     action,
+                    cancellationToken, 
                     policyBuilder.ExceptionPredicates,
                     () => new RetryPolicyStateWithSleep(sleepDurations, onRetry), 
                     continueOnCapturedContext),

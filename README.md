@@ -287,7 +287,23 @@ await Policy
 
 ```
 
-Note: By default, continuation and retry will not run on captured synchronization context. To change this behavior use respective overloads which take boolean `continueOnCapturedContext` parameter.  
+
+### SynchronizationContext ###
+
+Note: By default, continuation and retry will not run on captured synchronization context. To change this behavior use `.ExecuteAsync(...)` overloads taking a boolean `continueOnCapturedContext` parameter.  
+
+### Cancellation support ###
+
+Async policy execution supports cancellation using `.ExecuteAsync(...)` overloads taking a `CancellationToken`.  Cancellation cancels Policy actions such as further retries or waits between retries.  The delegate taken by the relevant `.ExecuteAsync(...)` overloads also takes a cancellation token input parameter, to pass to calls within the delegate supporting cancellation.  For example:
+
+```csharp
+// Try several times to retrieve from a uri, but support cancellation at any time.
+CancellationToken cancellationToken = // ...
+var policy = Policy.Handle<Exception>().WaitAndRetryAsync(new[] { TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(10) });
+var response = await policy.ExecuteAsync(ct => httpClient.GetAsync(uri, ct), cancellationToken);
+```
+
+
 
 3rd Party Libraries
 =
@@ -307,6 +323,8 @@ Acknowledgements
 * [@robgibbens](https://github.com/RobGibbens) - Added existing async files to PCL project
 * [Hacko](https://github.com/hacko-bede) - Added extra `NotOnCapturedContext` call to prevent potential deadlocks when blocking on asynchronous calls
 * [@ThomasMentzel](https://github.com/ThomasMentzel) - Added ability to capture the results of executing a policy via `ExecuteAndCapture`
+* [@yevhen](https://github.com/yevhen) - Added full control of whether to continue on captured synchronization context or not
+* [@reisenberger](https://github.com/reisenberger) - Added full async cancellation support
 
 Sample Projects
 =
