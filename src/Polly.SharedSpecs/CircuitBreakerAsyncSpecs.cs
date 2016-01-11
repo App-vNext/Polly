@@ -410,6 +410,7 @@ namespace Polly.Specs
             policy.Awaiting(x => x.ExecuteAsync(async ct =>
             {
                 attemptsInvoked++;
+                await Task.FromResult(true);
                 implicitlyCapturedActionCancellationToken.ThrowIfCancellationRequested();
             }, policyCancellationToken))
                 .ShouldThrow<TaskCanceledException>()
