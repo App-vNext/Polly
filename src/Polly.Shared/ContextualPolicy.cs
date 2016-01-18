@@ -8,15 +8,11 @@ namespace Polly
     /// Transient exception handling policies that can be applied to delegates.
     /// These policies can be called with arbitrary context data.
     /// </summary>
-    public class ContextualPolicy
+    public class ContextualPolicy : Policy
     {
-         private readonly Action<Action, Context> _exceptionPolicy;
-
-         internal ContextualPolicy(Action<Action, Context> exceptionPolicy)
+        internal ContextualPolicy(Action<Action, Context> exceptionPolicy, IEnumerable<ExceptionPredicate> exceptionPredicates) 
+            : base(exceptionPolicy, exceptionPredicates)
         {
-            if (exceptionPolicy == null) throw new ArgumentNullException("exceptionPolicy");
-            
-            _exceptionPolicy = exceptionPolicy;
         }
 
          /// <summary>
@@ -30,29 +26,13 @@ namespace Polly
          {
              if (contextData == null) throw new ArgumentNullException("contextData");
 
-             Execute(action, new Context(contextData));
+             base.Execute(action, new Context(contextData));
          }
 
         /// <summary>
-        /// Executes the specified action within the policy.
+        /// Executes the specified action within the policy and returns the result.
         /// </summary>
-        /// <param name="action">The action to perform.</param>
-        [DebuggerStepThrough]
-        public void Execute(Action action)
-        {
-            Execute(action, Context.Empty);
-        }
-
-        [DebuggerStepThrough]
-        private void Execute(Action action, Context context)
-        {
-            _exceptionPolicy(action, context);
-        }
-
-        /// <summary>
-        /// Executes the specified action within the policy and returns the Result.
-        /// </summary>
-        /// <typeparam name="TResult">The type of the Result.</typeparam>
+        /// <typeparam name="TResult">The type of the result.</typeparam>
         /// <param name="action">The action to perform.</param>
         /// <param name="contextData">Arbitrary data that is passed to the exception policy.</param>
         /// <returns>
@@ -64,29 +44,7 @@ namespace Polly
         {
             if (contextData == null) throw new ArgumentNullException("contextData");
 
-            return Execute(action, new Context(contextData));
+            return base.Execute(action, new Context(contextData));
         }
-
-        /// <summary>
-        /// Executes the specified action within the policy and returns the Result.
-        /// </summary>
-        /// <typeparam name="TResult">The type of the Result.</typeparam>
-        /// <param name="action">The action to perform.</param>
-        /// <returns>
-        /// The value returned by the action
-        /// </returns>
-        [DebuggerStepThrough]
-        public TResult Execute<TResult>(Func<TResult> action)
-        {
-            return Execute(action, Context.Empty);
-        }
-
-        [DebuggerStepThrough]
-        private TResult Execute<TResult>(Func<TResult> action, Context context)
-        {
-            var result = default(TResult);
-            _exceptionPolicy(() => { result = action(); }, context);
-            return result;
-        } 
     }
 }

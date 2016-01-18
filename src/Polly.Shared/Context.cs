@@ -13,7 +13,7 @@ namespace Polly
     /// </summary>
     public class Context : ReadOnlyDictionary<string, object>
     {
-        internal static Context Empty = new Context(new Dictionary<string, object>());
+        internal static readonly Context Empty = new Context(new Dictionary<string, object>());
 
         internal Context(IDictionary<string, object> values) : base(values)
         {
