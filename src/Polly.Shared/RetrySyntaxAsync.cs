@@ -65,7 +65,7 @@ namespace Polly
             if (onRetry == null) throw new ArgumentNullException("onRetry");
 
             return new Policy(
-                (action, cancellationToken, continueOnCapturedContext) => RetryPolicy.ImplementationAsync(
+                (action, cancellationToken, continueOnCapturedContext) => RetryEngine.ImplementationAsync(
                     action,
                     cancellationToken, 
                     policyBuilder.ExceptionPredicates,
@@ -103,7 +103,7 @@ namespace Polly
             if (retryCount < 0) throw new ArgumentOutOfRangeException("retryCount", "Value must be greater than or equal to zero.");
             if (onRetry == null) throw new ArgumentNullException("onRetry");
 
-            return new ContextualPolicy((action, context, cancellationToken, continueOnCapturedContext) => RetryPolicy.ImplementationAsync(
+            return new ContextualPolicy((action, context, cancellationToken, continueOnCapturedContext) => RetryEngine.ImplementationAsync(
                 action, 
                 cancellationToken,
                 policyBuilder.ExceptionPredicates,
@@ -137,7 +137,7 @@ namespace Polly
             if (onRetry == null) throw new ArgumentNullException("onRetry");
 
             return new Policy(
-                (action, cancellationToken, continueOnCapturedContext) => RetryPolicy.ImplementationAsync(
+                (action, cancellationToken, continueOnCapturedContext) => RetryEngine.ImplementationAsync(
                     action,
                     cancellationToken, 
                     policyBuilder.ExceptionPredicates,
@@ -159,7 +159,7 @@ namespace Polly
         {
             if (onRetry == null) throw new ArgumentNullException("onRetry");
 
-            return new ContextualPolicy((action, context, cancellationToken, continueOnCapturedContext) => RetryPolicy.ImplementationAsync(
+            return new ContextualPolicy((action, context, cancellationToken, continueOnCapturedContext) => RetryEngine.ImplementationAsync(
                 action, 
                 cancellationToken,
                 policyBuilder.ExceptionPredicates,
@@ -213,7 +213,7 @@ namespace Polly
                 .Select(sleepDurationProvider);
 
             return new Policy(
-                (action, cancellationToken, continueOnCapturedContext) => RetryPolicy.ImplementationAsync(
+                (action, cancellationToken, continueOnCapturedContext) => RetryEngine.ImplementationAsync(
                     action,
                     cancellationToken, 
                     policyBuilder.ExceptionPredicates,
@@ -252,7 +252,7 @@ namespace Polly
                 .Select(sleepDurationProvider);
 
             return new ContextualPolicy(
-                (action, context, cancellationToken, continueOnCapturedContext) => RetryPolicy.ImplementationAsync(
+                (action, context, cancellationToken, continueOnCapturedContext) => RetryEngine.ImplementationAsync(
                     action,
                     cancellationToken,
                     policyBuilder.ExceptionPredicates,
@@ -299,7 +299,7 @@ namespace Polly
             if (onRetry == null) throw new ArgumentNullException("onRetry");
 
             return new Policy(
-                (action, cancellationToken, continueOnCapturedContext) => RetryPolicy.ImplementationAsync(
+                (action, cancellationToken, continueOnCapturedContext) => RetryEngine.ImplementationAsync(
                     action,
                     cancellationToken, 
                     policyBuilder.ExceptionPredicates,
@@ -331,7 +331,7 @@ namespace Polly
             if (onRetry == null) throw new ArgumentNullException("onRetry");
 
             return new ContextualPolicy(
-                (action, context, cancellationToken, continueOnCapturedContext) => RetryPolicy.ImplementationAsync(
+                (action, context, cancellationToken, continueOnCapturedContext) => RetryEngine.ImplementationAsync(
                     action,
                     cancellationToken,
                     policyBuilder.ExceptionPredicates,

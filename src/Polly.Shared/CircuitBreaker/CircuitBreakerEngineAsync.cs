@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Polly.CircuitBreaker
 {
-    internal partial class CircuitBreakerPolicy
+    internal partial class CircuitBreakerEngine
     {
         internal static async Task ImplementationAsync(Func<CancellationToken, Task> action, CancellationToken cancellationToken, IEnumerable<ExceptionPredicate> shouldHandlePredicates, ICircuitBreakerState breakerState, bool continueOnCapturedContext)
         {

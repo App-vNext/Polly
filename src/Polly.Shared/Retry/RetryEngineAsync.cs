@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Polly.Retry
 {
-    internal static partial class RetryPolicy
+    internal static partial class RetryEngine
     {
         public static async Task ImplementationAsync(Func<CancellationToken, Task> action, CancellationToken cancellationToken, IEnumerable<ExceptionPredicate> shouldRetryPredicates, Func<IRetryPolicyState> policyStateFactory, bool continueOnCapturedContext)
         {

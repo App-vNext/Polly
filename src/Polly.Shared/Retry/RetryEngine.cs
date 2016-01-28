@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Polly.Retry
 {
-    internal static partial class RetryPolicy
+    internal static partial class RetryEngine
     {
         public static void Implementation(Action action, IEnumerable<ExceptionPredicate> shouldRetryPredicates, Func<IRetryPolicyState> policyStateFactory)
         {

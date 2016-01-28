@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Polly.CircuitBreaker
 {
-    internal partial class CircuitBreakerPolicy
+    internal partial class CircuitBreakerEngine
     {
         internal static void Implementation(Action action, IEnumerable<ExceptionPredicate> shouldRetryPredicates, ICircuitBreakerState breakerState)
         {
