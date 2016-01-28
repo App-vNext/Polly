@@ -14,6 +14,11 @@ namespace Polly
         private readonly Action<Action, Context> _exceptionPolicy;
         private readonly IEnumerable<ExceptionPredicate> _exceptionPredicates;
 
+        internal Policy(Action<Action> exceptionPolicy, IEnumerable<ExceptionPredicate> exceptionPredicates)
+            : this((action, ctx) => exceptionPolicy(action), exceptionPredicates)
+        {
+        }
+
         internal Policy(Action<Action, Context> exceptionPolicy, IEnumerable<ExceptionPredicate> exceptionPredicates)
         {
             if (exceptionPolicy == null) throw new ArgumentNullException("exceptionPolicy");
@@ -21,11 +26,6 @@ namespace Polly
             _exceptionPolicy = exceptionPolicy;
             _exceptionPredicates = exceptionPredicates ?? Enumerable.Empty<ExceptionPredicate>();
 
-        }
-
-        internal Policy(Action<Action> exceptionPolicy, IEnumerable<ExceptionPredicate> exceptionPredicates)
-            : this((action, ctx) => exceptionPolicy(action), exceptionPredicates)
-        {
         }
 
         /// <summary>

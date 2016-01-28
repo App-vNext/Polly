@@ -280,29 +280,45 @@ namespace Polly.Specs
         }
 
         [Fact]
+        public void Should_not_call_onretry_when_no_retries_are_performed()
+        {
+            var retryCounts = new List<int>();
+
+            var policy = Policy
+                .Handle<DivideByZeroException>()
+                .Retry((_, retyCount) => retryCounts.Add(retyCount));
+
+            policy.Invoking(x => x.RaiseException<ArgumentException>())
+                .ShouldThrow<ArgumentException>();
+
+            retryCounts.Should()
+                .BeEmpty();
+        }
+
+        [Fact]
         public void Should_call_onretry_with_the_passed_context()
         {
             IDictionary<string, object> contextData = null;
 
-            var policy = Policy
+            ContextualPolicy policy = Policy
                 .Handle<DivideByZeroException>()
                 .Retry((_, __, context) => contextData = context);
 
             policy.RaiseException<DivideByZeroException>(
                 new { key1 = "value1", key2 = "value2" }.AsDictionary()
-            );
+                );
 
             contextData.Should()
-                       .ContainKeys("key1", "key2").And
-                       .ContainValues("value1", "value2");
+                .ContainKeys("key1", "key2").And
+                .ContainValues("value1", "value2");
         }
 
         [Fact]
-        public void Context_should_be_empty_if_policy_not_initialised_with_any_data()
+        public void Context_should_be_empty_if_execute_not_called_with_any_context_data()
         {
             Context capturedContext = null;
 
-            var policy = Policy
+            ContextualPolicy policy = Policy
                 .Handle<DivideByZeroException>()
                 .Retry((_, __, context) => capturedContext = context);
 
@@ -313,41 +329,11 @@ namespace Polly.Specs
         }
 
         [Fact]
-        public void Should_not_call_onretry_when_no_retries_are_performed()
-        {
-            var retryCounts = new List<int>();
-
-            var policy = Policy
-                .Handle<DivideByZeroException>()
-                .Retry((_, retyCount) => retryCounts.Add(retyCount));
-
-            policy.Invoking(x => x.RaiseException<ArgumentException>())
-                  .ShouldThrow<ArgumentException>();
-
-            retryCounts.Should()
-                       .BeEmpty();
-        }
-
-        [Fact]
-        public void Should_create_new_state_for_each_call_to_policy()
-        {
-            var policy = Policy
-                .Handle<DivideByZeroException>()
-                .Retry();
-
-            policy.Invoking(x => x.RaiseException<DivideByZeroException>())
-                  .ShouldNotThrow();
-
-            policy.Invoking(x => x.RaiseException<DivideByZeroException>())
-                  .ShouldNotThrow();
-        }
-
-        [Fact]
         public void Should_create_new_context_for_each_call_to_policy()
         {
             string contextValue = null;
 
-            var policy = Policy
+            ContextualPolicy policy = Policy
                 .Handle<DivideByZeroException>()
                 .Retry((_, __, context) => contextValue = context["key"].ToString());
 
@@ -362,6 +348,20 @@ namespace Polly.Specs
             );
 
             contextValue.Should().Be("new_value");
+        }
+
+        [Fact]
+        public void Should_create_new_state_for_each_call_to_policy()
+        {
+            var policy = Policy
+                .Handle<DivideByZeroException>()
+                .Retry();
+
+            policy.Invoking(x => x.RaiseException<DivideByZeroException>())
+                .ShouldNotThrow();
+
+            policy.Invoking(x => x.RaiseException<DivideByZeroException>())
+                .ShouldNotThrow();
         }
 
         [Fact]

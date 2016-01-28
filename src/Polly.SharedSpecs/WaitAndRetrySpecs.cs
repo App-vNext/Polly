@@ -431,29 +431,6 @@ namespace Polly.Specs
         }
 
         [Fact]
-        public void Should_call_onretry_with_the_passed_context()
-        {
-            IDictionary<string, object> contextData = null;
-
-            var policy = Policy
-                .Handle<DivideByZeroException>()
-                .WaitAndRetry(new[]
-                {
-                   1.Seconds(),
-                   2.Seconds(),
-                   3.Seconds()
-                }, (_, __, context) => contextData = context);
-
-            policy.RaiseException<DivideByZeroException>(
-                new { key1 = "value1", key2 = "value2" }.AsDictionary()
-            );
-
-            contextData.Should()
-                       .ContainKeys("key1", "key2").And
-                       .ContainValues("value1", "value2");
-        }
-
-        [Fact]
         public void Should_not_call_onretry_when_no_retries_are_performed()
         {
             var retryCounts = new List<int>();
@@ -484,6 +461,29 @@ namespace Polly.Specs
 
             policy.Invoking(x => x.RaiseException<DivideByZeroException>())
                   .ShouldNotThrow();
+        }
+
+        [Fact]
+        public void Should_call_onretry_with_the_passed_context()
+        {
+            IDictionary<string, object> contextData = null;
+
+            var policy = Policy
+                .Handle<DivideByZeroException>()
+                .WaitAndRetry(new[]
+                {
+                    1.Seconds(),
+                    2.Seconds(),
+                    3.Seconds()
+                }, (_, __, context) => contextData = context);
+
+            policy.RaiseException<DivideByZeroException>(
+                new { key1 = "value1", key2 = "value2" }.AsDictionary()
+                );
+
+            contextData.Should()
+                .ContainKeys("key1", "key2").And
+                .ContainValues("value1", "value2");
         }
 
         [Fact]
@@ -641,7 +641,7 @@ namespace Polly.Specs
 
             Action<Exception, TimeSpan, Context> onRetry = (_, __, ___) => { retryInvoked = true; };
 
-            var policy = Policy
+            ContextualPolicy policy = Policy
                 .Handle<DivideByZeroException>()
                 .WaitAndRetry(0, retryAttempt => TimeSpan.FromSeconds(1), onRetry);
 

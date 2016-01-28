@@ -111,21 +111,6 @@ namespace Polly
         }
 
         /// <summary>
-        ///     Builds a <see cref="Policy" /> that will wait and retry as many times as there are provided
-        ///     <paramref name="sleepDurations" />
-        ///     On each retry, the duration to wait is the current <paramref name="sleepDurations" /> item.
-        /// </summary>
-        /// <param name="policyBuilder">The policy builder.</param>
-        /// <param name="sleepDurations">The sleep durations to wait for on each retry.</param>
-        /// <returns>The policy instance.</returns>
-        public static Policy WaitAndRetryAsync(this PolicyBuilder policyBuilder, IEnumerable<TimeSpan> sleepDurations)
-        {
-            Action<Exception, TimeSpan> doNothing = (_, __) => { };
-
-            return policyBuilder.WaitAndRetryAsync(sleepDurations, doNothing);
-        }
-
-        /// <summary>
         ///     Builds a <see cref="Policy"/> that will wait and retry <paramref name="retryCount"/> times.
         ///     On each retry, the duration to wait is calculated by calling <paramref name="sleepDurationProvider"/> with
         ///     the current retry attempt allowing an exponentially increasing wait time (exponential backoff).
@@ -177,7 +162,22 @@ namespace Polly
                     () => new RetryPolicyStateWithSleep(sleepDurations, onRetry), 
                     continueOnCapturedContext),
                 policyBuilder.ExceptionPredicates
-            );
+                );
+        }
+
+        /// <summary>
+        ///     Builds a <see cref="Policy" /> that will wait and retry as many times as there are provided
+        ///     <paramref name="sleepDurations" />
+        ///     On each retry, the duration to wait is the current <paramref name="sleepDurations" /> item.
+        /// </summary>
+        /// <param name="policyBuilder">The policy builder.</param>
+        /// <param name="sleepDurations">The sleep durations to wait for on each retry.</param>
+        /// <returns>The policy instance.</returns>
+        public static Policy WaitAndRetryAsync(this PolicyBuilder policyBuilder, IEnumerable<TimeSpan> sleepDurations)
+        {
+            Action<Exception, TimeSpan> doNothing = (_, __) => { };
+
+            return policyBuilder.WaitAndRetryAsync(sleepDurations, doNothing);
         }
 
         /// <summary>
@@ -209,7 +209,7 @@ namespace Polly
                     () => new RetryPolicyStateWithSleep(sleepDurations, onRetry), 
                     continueOnCapturedContext),
                 policyBuilder.ExceptionPredicates
-            );
+                );
         }
     }
 }
