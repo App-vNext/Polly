@@ -230,6 +230,61 @@ namespace Polly.Specs
         }
 
         [Fact]
+        public void Should_call_onretry_with_the_passed_context()
+        {
+            IDictionary<string, object> contextData = null;
+
+            ContextualPolicy policy = Policy
+                .Handle<DivideByZeroException>()
+                .RetryAsync((_, __, context) => contextData = context);
+
+            policy.RaiseExceptionAsync<DivideByZeroException>(
+                new { key1 = "value1", key2 = "value2" }.AsDictionary()
+                );
+
+            contextData.Should()
+                .ContainKeys("key1", "key2").And
+                .ContainValues("value1", "value2");
+        }
+
+        [Fact]
+        public void Context_should_be_empty_if_execute_not_called_with_any_data()
+        {
+            Context capturedContext = null;
+
+            ContextualPolicy policy = Policy
+                .Handle<DivideByZeroException>()
+                .RetryAsync((_, __, context) => capturedContext = context);
+
+            policy.RaiseExceptionAsync<DivideByZeroException>();
+
+            capturedContext.Should()
+                           .BeEmpty();
+        }
+
+        [Fact]
+        public void Should_create_new_context_for_each_call_to_policy()
+        {
+            string contextValue = null;
+
+            var policy = Policy
+                .Handle<DivideByZeroException>()
+                .RetryAsync((_, __, context) => contextValue = context["key"].ToString());
+
+            policy.RaiseExceptionAsync<DivideByZeroException>(
+                new { key = "original_value" }.AsDictionary()
+            );
+
+            contextValue.Should().Be("original_value");
+
+            policy.RaiseExceptionAsync<DivideByZeroException>(
+                new { key = "new_value" }.AsDictionary()
+            );
+
+            contextValue.Should().Be("new_value");
+        }
+
+        [Fact]
         public void Should_not_call_onretry_when_retry_count_is_zero()
         {
             bool retryInvoked = false;

@@ -8,7 +8,7 @@ namespace Polly
     /// Transient exception handling policies that can be applied to delegates.
     /// These policies can be called with arbitrary context data.
     /// </summary>
-    public class ContextualPolicy : Policy
+    public partial class ContextualPolicy : Policy
     {
         internal ContextualPolicy(Action<Action, Context> exceptionPolicy, IEnumerable<ExceptionPredicate> exceptionPredicates) 
             : base(exceptionPolicy, exceptionPredicates)
