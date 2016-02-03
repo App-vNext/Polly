@@ -48,7 +48,7 @@ namespace Polly.Specs
                 .Handle<DivideByZeroException>()
                 .RetryAsync((_, __, ___) => { });
 
-            policy.Invoking(p => p.ExecuteAsync(async () => { }, null))
+            policy.Invoking(p => p.ExecuteAsync(() => Task.FromResult(true), null))
                   .ShouldThrow<ArgumentNullException>().And
                   .ParamName.Should().Be("contextData");
         }

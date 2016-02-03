@@ -111,6 +111,11 @@ namespace Polly.Specs.Helpers
         {
             return (Func<Task>)(() => action(policy));
         }
+
+        public static Func<Task> Awaiting(this ContextualPolicy policy, Func<ContextualPolicy, Task> action)
+        {
+            return (Func<Task>)(() => action(policy));
+        }
 #endif
     }
 }

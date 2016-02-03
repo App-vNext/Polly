@@ -10,20 +10,17 @@ namespace Polly.CircuitBreaker
 {
     internal partial class CircuitBreakerEngine
     {
-        internal static async Task ImplementationAsync(Func<CancellationToken, Task> action, CancellationToken cancellationToken, IEnumerable<ExceptionPredicate> shouldHandlePredicates, ICircuitBreakerState breakerState, bool continueOnCapturedContext)
+        internal static async Task ImplementationAsync(Func<CancellationToken, Task> action, Context context, IEnumerable<ExceptionPredicate> shouldHandlePredicates, ICircuitBreakerState breakerState, CancellationToken cancellationToken, bool continueOnCapturedContext)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            if (breakerState.IsBroken)
-            {
-                throw new BrokenCircuitException("The circuit is now open and is not allowing calls.", breakerState.LastException);
-            }
+            ThrowIfCircuitBroken(breakerState);
 
             try
             {
                 await action(cancellationToken).ConfigureAwait(continueOnCapturedContext);
 
-                breakerState.Reset();
+                breakerState.OnActionSuccess(context);
             }
             catch (Exception ex)
             {
@@ -41,11 +38,12 @@ namespace Polly.CircuitBreaker
                     throw;
                 }
 
-                breakerState.TryBreak(ex);
+                breakerState.OnActionFailure(ex, context);
 
                 throw;
             }
         }
+
     }
 }
 

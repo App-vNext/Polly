@@ -4,9 +4,11 @@ namespace Polly.CircuitBreaker
 {
     internal interface ICircuitBreakerState
     {
+        CircuitState CircuitState { get; }
         Exception LastException { get; }
-        bool IsBroken { get; }
+        void Isolate();
         void Reset();
-        void TryBreak(Exception ex);
+        void OnActionSuccess(Context context);
+        void OnActionFailure(Exception ex, Context context);
     }
 }

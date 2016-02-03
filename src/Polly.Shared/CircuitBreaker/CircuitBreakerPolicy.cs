@@ -18,6 +18,14 @@ namespace Polly.CircuitBreaker
         }
 
         /// <summary>
+        /// Gets the state of the underlying circuit.
+        /// </summary>
+        public CircuitState CircuitState
+        {
+            get { return _breakerState.CircuitState; }
+        }
+
+        /// <summary>
         /// Gets the last exception handled by the circuit-breaker.
         /// </summary>
         public Exception LastException {
@@ -25,14 +33,15 @@ namespace Polly.CircuitBreaker
         }
 
         /// <summary>
-        /// Returns whether the circuit breaker is currently in a broken (open) state.
+        /// Isolates (opens) the circuit manually, and holds it in this state until a call to <see cref="Reset()"/> is made.
         /// </summary>
-        public bool IsBroken {
-            get { return _breakerState.IsBroken; }
+        public void Isolate()
+        {
+            _breakerState.Isolate();
         }
 
         /// <summary>
-        /// Closes the circuit, and resets any statistics controlling automatic circuit-breaking.
+        /// Closes the circuit, and resets any statistics controlling automated circuit-breaking.
         /// </summary>
         public void Reset()
         {
