@@ -14,6 +14,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)CircuitBreaker\BrokenCircuitException.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CircuitBreaker\CircuitBreakerEngine.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CircuitBreaker\CircuitBreakerEngineAsync.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CircuitBreaker\CircuitBreakerPolicy.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CircuitBreaker\CircuitBreakerPolicyAsync.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CircuitBreaker\CircuitBreakerState.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CircuitBreaker\ICircuitBreakerState.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Context.cs" />
@@ -31,6 +33,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)Retry\IRetryPolicyState.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Retry\RetryEngine.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Retry\RetryEngineAsync.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Retry\RetryPolicy.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Retry\RetryPolicyAsync.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Retry\RetryPolicyStateAsync.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Retry\RetryPolicyState.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Retry\RetryPolicyStateWithCountAsync.cs" />

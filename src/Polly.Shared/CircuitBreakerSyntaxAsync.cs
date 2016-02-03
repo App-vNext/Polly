@@ -28,14 +28,15 @@ namespace Polly
         /// <returns>The policy instance.</returns>
         /// <remarks>(see "Release It!" by Michael T. Nygard fi)</remarks>
         /// <exception cref="System.ArgumentOutOfRangeException">exceptionsAllowedBeforeBreaking;Value must be greater than zero.</exception>
-        public static Policy CircuitBreakerAsync(this PolicyBuilder policyBuilder, int exceptionsAllowedBeforeBreaking, TimeSpan durationOfBreak)
+        public static CircuitBreakerPolicy CircuitBreakerAsync(this PolicyBuilder policyBuilder, int exceptionsAllowedBeforeBreaking, TimeSpan durationOfBreak)
         {
             if (exceptionsAllowedBeforeBreaking <= 0) throw new ArgumentOutOfRangeException("exceptionsAllowedBeforeBreaking", "Value must be greater than zero.");
 
             var policyState = new CircuitBreakerState(exceptionsAllowedBeforeBreaking, durationOfBreak);
-            return new Policy(
-                (action, cancellationToken, continueOnCapturedContext) => CircuitBreakerEngine.ImplementationAsync(action, cancellationToken, policyBuilder.ExceptionPredicates, policyState, continueOnCapturedContext),
-                policyBuilder.ExceptionPredicates
+            return new CircuitBreakerPolicy(
+                (action, context, cancellationToken, continueOnCapturedContext) => CircuitBreakerEngine.ImplementationAsync(action, cancellationToken, policyBuilder.ExceptionPredicates, policyState, continueOnCapturedContext),
+                policyBuilder.ExceptionPredicates,
+                policyState
             );
         }
     }
