@@ -181,11 +181,59 @@ Policy
 Policy
   .Handle<DivideByZeroException>()
   .CircuitBreaker(2, TimeSpan.FromMinutes(1));
+
+
+// Monitor the circuit breaker's state, for example for health monitoring and reporting.
+CircuitBreakerPolicy breaker = Policy
+    .Handle<DivideByZeroException>()
+    .CircuitBreaker(2, TimeSpan.FromMinutes(1));
+// ( ... policy in use ... )
+CircuitState state = breaker.CircuitState;
+
+/*
+CircuitState.Closed - Normal operation.  Execution of actions allowed.
+CircuitState.Open - The automated controller has opened the circuit.  Execution of actions blocked.
+CircuitState.HalfOpen - Recovering from open state, after the break period has expired.  Execution of actions permitted.  Success of subsequent action/s controls onward transition to Open or Closed state.
+CircuitState.Isolated - Circuit placed manually into a fixed open state.  Execution of actions blocked.
+*/
+
+
+// Manually control a circuit breaker's state - for example to manually isolate a downstream service known to be faulting, or to take it offline to upgrade it.
+CircuitBreakerPolicy breaker = Policy
+    .Handle<DivideByZeroException>()
+    .CircuitBreaker(2, TimeSpan.FromMinutes(1));
+// ..
+breaker.Isolate(); // ... prevents execution of actions until Reset() is called.
+// ..
+breaker.Reset(); // Resets the breaker to the closed state, and starts accepting actions.
+// ..
+
+
+// Attach delegates to execute on change of circuit state - for example for logging.
+Action<Exception, TimeSpan> onBreak = (exception, timespan) => { ... };
+Action onReset = () => { ... };
+CircuitBreakerPolicy breaker = Policy
+    .Handle<DivideByZeroException>()
+    .CircuitBreaker(2, TimeSpan.FromMinutes(1), onBreak, onReset);
+
+
+// As for onRetry, overloads exist with delegates taking a context provided to Execute().
+// Overload combinations also exist taking an onHalfOpen delegate.
+Action<Exception, TimeSpan, Context> onBreak = (exception, timespan, context) => { ... };
+Action<Context> onReset = context => { ... };
+Action onHalfOpen = () => { ... };
+CircuitBreakerPolicy breaker = Policy
+    .Handle<DivideByZeroException>()
+    .CircuitBreaker(2, TimeSpan.FromMinutes(1), onBreak, onReset, onHalfOpen);
+
 ```
+
 
 For more information on the Circuit Breaker pattern see:
 * [Making the Netflix API More Resilient](http://techblog.netflix.com/2011/12/making-netflix-api-more-resilient.html)
-* [The Circuit Breaker](http://thatextramile.be/blog/2008/05/the-circuit-breaker)
+* [Circuit Breaker (Martin Fowler)](http://martinfowler.com/bliki/CircuitBreaker.html)
+* [Circuit Breaker Pattern (Microsoft)](https://msdn.microsoft.com/en-us/library/dn589784.aspx)
+
  
 ## Step 3 : Execute the policy
 
@@ -254,6 +302,7 @@ policyResult.Outcome - whether the call succeeded or failed
 policyResult.FinalException - the final exception captured, will be null if the call succeeded
 policyResult.ExceptionType - was the final exception an exception the policy was defined to handle (like DivideByZeroException above) or an unhandled one (say Exception). Will be null if the call succeeded.
 policyResult.Result - if executing a func, the result if the call succeeded or the type's default value
+*/
 ```
 
 Asynchronous Support (.NET 4.5 and PCL Only)
@@ -290,16 +339,18 @@ await Policy
 
 ### SynchronizationContext ###
 
-Note: By default, continuation and retry will not run on captured synchronization context. To change this behavior use `.ExecuteAsync(...)` overloads taking a boolean `continueOnCapturedContext` parameter.  
+By default, async continuations and retries will not run on a captured synchronization context. To change this behavior, use `.ExecuteAsync(...)` overloads taking a boolean `continueOnCapturedContext` parameter.  
 
 ### Cancellation support ###
 
-Async policy execution supports cancellation using `.ExecuteAsync(...)` overloads taking a `CancellationToken`.  Cancellation cancels Policy actions such as further retries or waits between retries.  The delegate taken by the relevant `.ExecuteAsync(...)` overloads also takes a cancellation token input parameter, to pass to calls within the delegate supporting cancellation.  For example:
+Async policy execution supports cancellation using `.ExecuteAsync(...)` overloads taking a `CancellationToken`.  
+
+Cancellation cancels Policy actions such as further retries or waits between retries.  The delegate taken by the relevant `.ExecuteAsync(...)` overloads also takes a cancellation token input parameter, to control calls within the delegate supporting cancellation.  
 
 ```csharp
 // Try several times to retrieve from a uri, but support cancellation at any time.
 CancellationToken cancellationToken = // ...
-var policy = Policy.Handle<Exception>().WaitAndRetryAsync(new[] { TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(10) });
+var policy = Policy.Handle<Exception>().WaitAndRetryAsync(new[] { TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(2), TimeSpan.FromSeconds(4) });
 var response = await policy.ExecuteAsync(ct => httpClient.GetAsync(uri, ct), cancellationToken);
 ```
 
