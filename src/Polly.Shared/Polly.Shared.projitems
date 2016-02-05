@@ -16,9 +16,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)CircuitBreaker\CircuitBreakerEngineAsync.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CircuitBreaker\CircuitBreakerPolicy.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CircuitBreaker\CircuitBreakerPolicyAsync.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)CircuitBreaker\CircuitBreakerState.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CircuitBreaker\CircuitController.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CircuitBreaker\CircuitState.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)CircuitBreaker\ICircuitBreakerState.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CircuitBreaker\ICircuitController.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CircuitBreaker\IsolatedCircuitException.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Context.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ContextualPolicy.cs" />
