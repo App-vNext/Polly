@@ -223,8 +223,9 @@ For more information on the Circuit Breaker pattern see:
 * [Making the Netflix API More Resilient](http://techblog.netflix.com/2011/12/making-netflix-api-more-resilient.html)
 * [Circuit Breaker (Martin Fowler)](http://martinfowler.com/bliki/CircuitBreaker.html)
 * [Circuit Breaker Pattern (Microsoft)](https://msdn.microsoft.com/en-us/library/dn589784.aspx)
-
+* [Circuit breaking with Polly](http://blog.jaywayco.co.uk/circuit-breaking-with-polly/)
  
+
 ## Step 3 : Execute the policy
 
 ```csharp
