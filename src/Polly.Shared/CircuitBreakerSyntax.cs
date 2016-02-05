@@ -171,11 +171,11 @@ namespace Polly
             if (onReset == null) throw new ArgumentNullException("onReset");
             if (onHalfOpen == null) throw new ArgumentNullException("onHalfOpen");
 
-            var policyState = new CircuitBreakerState(exceptionsAllowedBeforeBreaking, durationOfBreak, onBreak, onReset, onHalfOpen);
+            var breakerController = new CircuitController(exceptionsAllowedBeforeBreaking, durationOfBreak, onBreak, onReset, onHalfOpen);
             return new CircuitBreakerPolicy(
-                (action, context) => CircuitBreakerEngine.Implementation(action, context, policyBuilder.ExceptionPredicates, policyState), 
+                (action, context) => CircuitBreakerEngine.Implementation(action, context, policyBuilder.ExceptionPredicates, breakerController), 
                 policyBuilder.ExceptionPredicates, 
-                policyState
+                breakerController
                 );
         }
     }

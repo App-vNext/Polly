@@ -2,7 +2,7 @@
 
 namespace Polly.CircuitBreaker
 {
-    internal interface ICircuitBreakerState
+    internal interface ICircuitController
     {
         CircuitState CircuitState { get; }
         Exception LastException { get; }

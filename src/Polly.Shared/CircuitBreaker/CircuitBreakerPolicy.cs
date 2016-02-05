@@ -9,12 +9,12 @@ namespace Polly.CircuitBreaker
     /// </summary>
     public partial class CircuitBreakerPolicy : ContextualPolicy
     {
-        private readonly ICircuitBreakerState _breakerState;
+        private readonly ICircuitController _breakerController;
 
-        internal CircuitBreakerPolicy(Action<Action, Context> exceptionPolicy, IEnumerable<ExceptionPredicate> exceptionPredicates, ICircuitBreakerState breakerState) 
+        internal CircuitBreakerPolicy(Action<Action, Context> exceptionPolicy, IEnumerable<ExceptionPredicate> exceptionPredicates, ICircuitController breakerController) 
             : base(exceptionPolicy, exceptionPredicates)
         {
-            _breakerState = breakerState;
+            _breakerController = breakerController;
         }
 
         /// <summary>
@@ -22,14 +22,14 @@ namespace Polly.CircuitBreaker
         /// </summary>
         public CircuitState CircuitState
         {
-            get { return _breakerState.CircuitState; }
+            get { return _breakerController.CircuitState; }
         }
 
         /// <summary>
         /// Gets the last exception handled by the circuit-breaker.
         /// </summary>
         public Exception LastException {
-            get { return _breakerState.LastException; }
+            get { return _breakerController.LastException; }
         }
 
         /// <summary>
@@ -37,7 +37,7 @@ namespace Polly.CircuitBreaker
         /// </summary>
         public void Isolate()
         {
-            _breakerState.Isolate();
+            _breakerController.Isolate();
         }
 
         /// <summary>
@@ -45,7 +45,7 @@ namespace Polly.CircuitBreaker
         /// </summary>
         public void Reset()
         {
-            _breakerState.Reset();
+            _breakerController.Reset();
         }
     }
 }

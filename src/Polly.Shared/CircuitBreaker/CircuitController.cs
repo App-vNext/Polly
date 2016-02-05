@@ -3,7 +3,7 @@ using Polly.Utilities;
 
 namespace Polly.CircuitBreaker
 {
-    internal class CircuitBreakerState : ICircuitBreakerState
+    internal class CircuitController : ICircuitController
     {
         private readonly TimeSpan _durationOfBreak;
         private readonly int _exceptionsAllowedBeforeBreaking;
@@ -16,7 +16,7 @@ namespace Polly.CircuitBreaker
         private readonly Action _onHalfOpen;
         private readonly object _lock = new object();
 
-        public CircuitBreakerState(int exceptionsAllowedBeforeBreaking, TimeSpan durationOfBreak, Action<Exception, TimeSpan, Context> onBreak, Action<Context> onReset, Action onHalfOpen)
+        public CircuitController(int exceptionsAllowedBeforeBreaking, TimeSpan durationOfBreak, Action<Exception, TimeSpan, Context> onBreak, Action<Context> onReset, Action onHalfOpen)
         {
             _durationOfBreak = durationOfBreak;
             _exceptionsAllowedBeforeBreaking = exceptionsAllowedBeforeBreaking;

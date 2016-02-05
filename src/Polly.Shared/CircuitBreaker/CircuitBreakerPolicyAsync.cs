@@ -9,10 +9,10 @@ namespace Polly.CircuitBreaker
 {
     public partial class CircuitBreakerPolicy
     {
-        internal CircuitBreakerPolicy(Func<Func<CancellationToken, Task>, Context, CancellationToken, bool, Task> asyncExceptionPolicy, IEnumerable<ExceptionPredicate> exceptionPredicates, ICircuitBreakerState breakerState)
+        internal CircuitBreakerPolicy(Func<Func<CancellationToken, Task>, Context, CancellationToken, bool, Task> asyncExceptionPolicy, IEnumerable<ExceptionPredicate> exceptionPredicates, ICircuitController breakerController)
            : base(asyncExceptionPolicy, exceptionPredicates)
         {
-            _breakerState = breakerState;
+            _breakerController = breakerController;
         }
     }
 }
