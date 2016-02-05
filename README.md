@@ -177,57 +177,47 @@ Policy
 ### Circuit Breaker ###
 ```csharp
 // Break the circuit after the specified number of exceptions
-// and keep circuit broken for the specified duration
+// and keep circuit broken for the specified duration.
 Policy
-  .Handle<DivideByZeroException>()
-  .CircuitBreaker(2, TimeSpan.FromMinutes(1));
-
-
-// Monitor the circuit breaker's state, for example for health monitoring and reporting.
-CircuitBreakerPolicy breaker = Policy
     .Handle<DivideByZeroException>()
     .CircuitBreaker(2, TimeSpan.FromMinutes(1));
-// ( ... policy in use ... )
-CircuitState state = breaker.CircuitState;
 
-/*
-CircuitState.Closed - Normal operation.  Execution of actions allowed.
-CircuitState.Open - The automated controller has opened the circuit.  Execution of actions blocked.
-CircuitState.HalfOpen - Recovering from open state, after the break period has expired.  Execution of actions permitted.  Success of subsequent action/s controls onward transition to Open or Closed state.
-CircuitState.Isolated - Circuit placed manually into a fixed open state.  Execution of actions blocked.
-*/
-
-
-// Manually control a circuit breaker's state - for example to manually isolate a downstream service known to be faulting, or to take it offline to upgrade it.
-CircuitBreakerPolicy breaker = Policy
-    .Handle<DivideByZeroException>()
-    .CircuitBreaker(2, TimeSpan.FromMinutes(1));
-// ..
-breaker.Isolate(); // ... prevents execution of actions until Reset() is called.
-// ..
-breaker.Reset(); // Resets the breaker to the closed state, and starts accepting actions.
-// ..
-
-
-// Attach delegates to execute on change of circuit state - for example for logging.
+// Break the circuit after the specified number of exceptions
+// and keep circuit broken for the specified duration,
+// calling an action on change of circuit state.
 Action<Exception, TimeSpan> onBreak = (exception, timespan) => { ... };
 Action onReset = () => { ... };
 CircuitBreakerPolicy breaker = Policy
     .Handle<DivideByZeroException>()
     .CircuitBreaker(2, TimeSpan.FromMinutes(1), onBreak, onReset);
 
-
-// As for onRetry, overloads exist with delegates taking a context provided to Execute().
-// Overload combinations also exist taking an onHalfOpen delegate.
+// Break the circuit after the specified number of exceptions
+// and keep circuit broken for the specified duration,
+// calling an action on change of circuit state,
+// passing a context provided to Execute().
 Action<Exception, TimeSpan, Context> onBreak = (exception, timespan, context) => { ... };
 Action<Context> onReset = context => { ... };
-Action onHalfOpen = () => { ... };
 CircuitBreakerPolicy breaker = Policy
     .Handle<DivideByZeroException>()
-    .CircuitBreaker(2, TimeSpan.FromMinutes(1), onBreak, onReset, onHalfOpen);
+    .CircuitBreaker(2, TimeSpan.FromMinutes(1), onBreak, onReset);
+
+// Monitor the circuit state, for example for health reporting.
+CircuitState state = breaker.CircuitState;
+
+/*
+CircuitState.Closed - Normal operation. Execution of actions allowed.
+CircuitState.Open - The automated controller has opened the circuit. Execution of actions blocked.
+CircuitState.HalfOpen - Recovering from open state, after the automated break duration has expired. Execution of actions permitted. Success of subsequent action/s controls onward transition to Open or Closed state.
+CircuitState.Isolated - Circuit held manually in an open state. Execution of actions blocked.
+*/
+
+// Manually open (and hold open) a circuit breaker - for example to manually isolate a downstream service.
+breaker.Isolate(); 
+// Reset the breaker to closed state, to start accepting actions again.
+breaker.Reset(); 
+
 
 ```
-
 
 For more information on the Circuit Breaker pattern see:
 * [Making the Netflix API More Resilient](http://techblog.netflix.com/2011/12/making-netflix-api-more-resilient.html)
@@ -339,18 +329,25 @@ await Policy
 
 ### SynchronizationContext ###
 
-By default, async continuations and retries will not run on a captured synchronization context. To change this behavior, use `.ExecuteAsync(...)` overloads taking a boolean `continueOnCapturedContext` parameter.  
+Async continuations and retries by default do not run on a captured synchronization context. To change this, use `.ExecuteAsync(...)` overloads taking a boolean `continueOnCapturedContext` parameter.  
 
 ### Cancellation support ###
 
-Async policy execution supports cancellation using `.ExecuteAsync(...)` overloads taking a `CancellationToken`.  
+Async policy execution supports cancellation via `.ExecuteAsync(...)` overloads taking a `CancellationToken`.  
 
-Cancellation cancels Policy actions such as further retries or waits between retries.  The delegate taken by the relevant `.ExecuteAsync(...)` overloads also takes a cancellation token input parameter, to control calls within the delegate supporting cancellation.  
+Cancellation cancels Policy actions such as further retries and waits between retries.  The delegate taken by the relevant `.ExecuteAsync(...)` overloads also takes a cancellation token input parameter, to support cancellation during delegate execution.  
 
 ```csharp
 // Try several times to retrieve from a uri, but support cancellation at any time.
 CancellationToken cancellationToken = // ...
-var policy = Policy.Handle<Exception>().WaitAndRetryAsync(new[] { TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(2), TimeSpan.FromSeconds(4) });
+var policy = Policy
+    .Handle<WebException>()
+    .Or<HttpRequestException>()
+    .WaitAndRetryAsync(new[] { 
+        TimeSpan.FromSeconds(1), 
+        TimeSpan.FromSeconds(2), 
+        TimeSpan.FromSeconds(4) 
+    });
 var response = await policy.ExecuteAsync(ct => httpClient.GetAsync(uri, ct), cancellationToken);
 ```
 
@@ -376,6 +373,7 @@ Acknowledgements
 * [@ThomasMentzel](https://github.com/ThomasMentzel) - Added ability to capture the results of executing a policy via `ExecuteAndCapture`
 * [@yevhen](https://github.com/yevhen) - Added full control of whether to continue on captured synchronization context or not
 * [@reisenberger](https://github.com/reisenberger) - Added full async cancellation support
+* [@reisenberger](https://github.com/reisenberger) - Extended circuit-breaker for public monitoring and control
 
 Sample Projects
 =
