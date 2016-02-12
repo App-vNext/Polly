@@ -23,5 +23,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)RetrySpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)WaitAndRetryAsyncSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)WaitAndRetrySpecs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)WaitAndRetryForeverSpecs.cs" />
   </ItemGroup>
 </Project>
