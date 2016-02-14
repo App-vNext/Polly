@@ -189,8 +189,8 @@ Policy
 // current exception and the time to wait
 Policy
   .Handle<DivideByZeroException>()
-  .WaitAndRetryForever(retryAttempt => 
-	TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),    
+  .WaitAndRetryForever(
+    retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),    
     (exception, timespan) =>
     {
         // do something       
@@ -200,8 +200,8 @@ Policy
 // current exception, time to wait, and context provided to Execute()
 Policy
   .Handle<DivideByZeroException>()
-  .WaitAndRetryForever(retryAttempt => 
-	TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),    
+  .WaitAndRetryForever(
+    retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),    
     (exception, timespan, context) =>
     {
         // do something       
