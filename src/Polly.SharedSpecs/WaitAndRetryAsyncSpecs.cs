@@ -406,6 +406,74 @@ namespace Polly.Specs
         }
 
         [Fact]
+        public void Should_call_onretry_with_the_passed_context()
+        {
+            IDictionary<string, object> contextData = null;
+
+            ContextualPolicy policy = Policy
+                .Handle<DivideByZeroException>()
+                .WaitAndRetryAsync(new[]
+                {
+                    1.Seconds(),
+                    2.Seconds(),
+                    3.Seconds()
+                }, (_, __, context) => contextData = context);
+
+            policy.RaiseExceptionAsync<DivideByZeroException>(
+                new { key1 = "value1", key2 = "value2" }.AsDictionary()
+                );
+
+            contextData.Should()
+                .ContainKeys("key1", "key2").And
+                .ContainValues("value1", "value2");
+        }
+
+        [Fact]
+        public void Context_should_be_empty_if_execute_not_called_with_any_data()
+        {
+            Context capturedContext = null;
+
+            ContextualPolicy policy = Policy
+                .Handle<DivideByZeroException>()
+                .WaitAndRetryAsync(new[]
+                {
+                    1.Seconds(),
+                    2.Seconds(),
+                    3.Seconds()
+                }, (_, __, context) => capturedContext = context);
+            policy.RaiseExceptionAsync<DivideByZeroException>();
+
+            capturedContext.Should()
+                           .BeEmpty();
+        }
+
+        [Fact]
+        public void Should_create_new_context_for_each_call_to_policy()
+        {
+            string contextValue = null;
+
+            ContextualPolicy policy = Policy
+                .Handle<DivideByZeroException>()
+                .WaitAndRetryAsync(new[]
+                {
+                    1.Seconds()
+                },
+                (_, __, context) => contextValue = context["key"].ToString());
+
+            policy.RaiseExceptionAsync<DivideByZeroException>(
+                new { key = "original_value" }.AsDictionary()
+            );
+
+            contextValue.Should().Be("original_value");
+
+            policy.RaiseExceptionAsync<DivideByZeroException>(
+                new { key = "new_value" }.AsDictionary()
+            );
+
+            contextValue.Should().Be("new_value");
+        }
+
+        [Fact]
         public void Should_throw_when_retry_count_is_less_than_zero_without_context()
         {
             Action<Exception, TimeSpan> onRetry = (_, __) => { };

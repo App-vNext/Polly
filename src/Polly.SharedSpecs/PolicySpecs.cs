@@ -170,7 +170,7 @@ namespace Polly.Specs
             Action action = () => asyncPolicy.ExecuteAndCapture(() => { });
 
             action.ShouldThrow<InvalidOperationException>()
-                .WithMessage("Please use the synchronous Retry, RetryForever, WaitAndRetry or CircuitBreaker methods when calling the synchronous Execute method.");
+                .WithMessage("Please use the synchronous Retry, RetryForever, WaitAndRetry or CircuitBreaker methods when calling the synchronous ExecuteAndCapture method.");
         }
 
         public static IEnumerable<object[]> AsyncPolicies
