@@ -224,6 +224,7 @@ For more information on the Circuit Breaker pattern see:
 * [Circuit Breaker (Martin Fowler)](http://martinfowler.com/bliki/CircuitBreaker.html)
 * [Circuit Breaker Pattern (Microsoft)](https://msdn.microsoft.com/en-us/library/dn589784.aspx)
 * [Circuit breaking with Polly](http://blog.jaywayco.co.uk/circuit-breaking-with-polly/)
+* [Original Circuit Breaking Link](https://web.archive.org/web/20160106203951/http://thatextramile.be/blog/2008/05/the-circuit-breaker)
  
 
 ## Step 3 : Execute the policy
