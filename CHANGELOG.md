@@ -1,3 +1,13 @@
+4.0.0
+=
+----------
+- Add async support and circuit-breaker support for ContextualPolicy
+- Add manual control of circuit-breaker (reset and manual circuit isolation)
+- Add public reporting of circuit-breaker state, for health/performance monitoring
+- Add delegates on changes of circuit state
+- Thanks to [@reisenberger](https://github.com/reisenberger)
+
+
 3.0.0
 =
 ----------

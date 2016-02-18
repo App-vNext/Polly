@@ -374,6 +374,8 @@ Acknowledgements
 * [@ThomasMentzel](https://github.com/ThomasMentzel) - Added ability to capture the results of executing a policy via `ExecuteAndCapture`
 * [@yevhen](https://github.com/yevhen) - Added full control of whether to continue on captured synchronization context or not
 * [@reisenberger](https://github.com/reisenberger) - Added full async cancellation support
+* [@reisenberger](https://github.com/reisenberger) - Added async support for ContextualPolicy
+* [@reisenberger](https://github.com/reisenberger) - Added ContextualPolicy support for circuit-breaker
 * [@reisenberger](https://github.com/reisenberger) - Extended circuit-breaker for public monitoring and control
 
 Sample Projects
