@@ -174,7 +174,6 @@ Policy
   );
 ```
 
-<<<<<<< HEAD
 ### Wait and retry forever ###
 
 ```csharp
@@ -256,17 +255,12 @@ breaker.Reset();
 
 For more information on the Circuit Breaker pattern see:
 * [Making the Netflix API More Resilient](http://techblog.netflix.com/2011/12/making-netflix-api-more-resilient.html)
-<<<<<<< HEAD
-* [The Circuit Breaker](http://thatextramile.be/blog/2008/05/the-circuit-breaker)
- 
-=======
 * [Circuit Breaker (Martin Fowler)](http://martinfowler.com/bliki/CircuitBreaker.html)
 * [Circuit Breaker Pattern (Microsoft)](https://msdn.microsoft.com/en-us/library/dn589784.aspx)
 * [Circuit breaking with Polly](http://blog.jaywayco.co.uk/circuit-breaking-with-polly/)
 * [Original Circuit Breaking Link](https://web.archive.org/web/20160106203951/http://thatextramile.be/blog/2008/05/the-circuit-breaker)
  
 
->>>>>>> upstream/master
 ## Step 3 : Execute the policy
 
 ```csharp
@@ -334,10 +328,7 @@ policyResult.Outcome - whether the call succeeded or failed
 policyResult.FinalException - the final exception captured, will be null if the call succeeded
 policyResult.ExceptionType - was the final exception an exception the policy was defined to handle (like DivideByZeroException above) or an unhandled one (say Exception). Will be null if the call succeeded.
 policyResult.Result - if executing a func, the result if the call succeeded or the type's default value
-<<<<<<< HEAD
-=======
 */
->>>>>>> upstream/master
 ```
 
 Asynchronous Support (.NET 4.5 and PCL Only)
@@ -371,8 +362,6 @@ await Policy
 
 ```
 
-<<<<<<< HEAD
-=======
 
 ### SynchronizationContext ###
 
@@ -400,7 +389,6 @@ var response = await policy.ExecuteAsync(ct => httpClient.GetAsync(uri, ct), can
 
 
 
->>>>>>> upstream/master
 3rd Party Libraries
 =
 
@@ -419,14 +407,11 @@ Acknowledgements
 * [@robgibbens](https://github.com/RobGibbens) - Added existing async files to PCL project
 * [Hacko](https://github.com/hacko-bede) - Added extra `NotOnCapturedContext` call to prevent potential deadlocks when blocking on asynchronous calls
 * [@ThomasMentzel](https://github.com/ThomasMentzel) - Added ability to capture the results of executing a policy via `ExecuteAndCapture`
-<<<<<<< HEAD
-=======
 * [@yevhen](https://github.com/yevhen) - Added full control of whether to continue on captured synchronization context or not
 * [@reisenberger](https://github.com/reisenberger) - Added full async cancellation support
 * [@reisenberger](https://github.com/reisenberger) - Added async support for ContextualPolicy
 * [@reisenberger](https://github.com/reisenberger) - Added ContextualPolicy support for circuit-breaker
 * [@reisenberger](https://github.com/reisenberger) - Extended circuit-breaker for public monitoring and control
->>>>>>> upstream/master
 
 Sample Projects
 =
