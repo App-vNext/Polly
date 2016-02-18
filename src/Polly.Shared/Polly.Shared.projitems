@@ -12,10 +12,14 @@
     <Compile Include="$(MSBuildThisFileDirectory)CircuitBreakerSyntax.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CircuitBreakerSyntaxAsync.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CircuitBreaker\BrokenCircuitException.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CircuitBreaker\CircuitBreakerEngine.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CircuitBreaker\CircuitBreakerEngineAsync.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CircuitBreaker\CircuitBreakerPolicy.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CircuitBreaker\CircuitBreakerPolicyAsync.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)CircuitBreaker\CircuitBreakerState.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)CircuitBreaker\ICircuitBreakerState.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CircuitBreaker\CircuitController.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CircuitBreaker\CircuitState.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CircuitBreaker\ICircuitController.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CircuitBreaker\IsolatedCircuitException.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Context.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ContextualPolicy.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ContextualPolicyAsync.cs" />
@@ -29,6 +33,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)RetrySyntaxAsync.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Retry\IRetryPolicyStateAsync.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Retry\IRetryPolicyState.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Retry\RetryEngine.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Retry\RetryEngineAsync.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Retry\RetryPolicy.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Retry\RetryPolicyAsync.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Retry\RetryPolicyStateAsync.cs" />
