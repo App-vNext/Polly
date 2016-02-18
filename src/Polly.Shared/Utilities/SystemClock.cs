@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Threading;
+#if SUPPORTS_ASYNC
+using System.Threading.Tasks;
+#endif
 
 namespace Polly.Utilities
 {
@@ -22,6 +25,13 @@ namespace Polly.Utilities
         /// </summary>
         public static Action<TimeSpan> Sleep = timespan => new ManualResetEvent(false).WaitOne(timespan);
 #endif
+#if SUPPORTS_ASYNC
+        /// <summary>
+        /// Allows the setting of a custom async Sleep implementation for testing.
+        /// By default this will be a call to <see cref="M:Task.Delay"/>
+        /// </summary>
+        public static Func<TimeSpan, CancellationToken, Task> SleepAsync = Task.Delay;
+#endif
         /// <summary>
         /// Allows the setting of a custom DateTime.UtcNow implementation for testing.
         /// By default this will be a call to <see cref="DateTime.UtcNow"/>
@@ -38,6 +48,9 @@ namespace Polly.Utilities
             Sleep = Thread.Sleep;
 #else
             Sleep = timeSpan => new ManualResetEvent(false).WaitOne(timeSpan);
+#endif
+#if SUPPORTS_ASYNC
+            SleepAsync = Task.Delay;
 #endif
             UtcNow = () => DateTime.UtcNow;
         }

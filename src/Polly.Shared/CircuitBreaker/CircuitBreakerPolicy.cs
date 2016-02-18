@@ -1,34 +1,51 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Text;
 
 namespace Polly.CircuitBreaker
 {
-    internal partial class CircuitBreakerPolicy
+    /// <summary>
+    /// A circuit-breaker policy that can be applied to delegates.
+    /// </summary>
+    public partial class CircuitBreakerPolicy : ContextualPolicy
     {
-        internal static void Implementation(Action action, IEnumerable<ExceptionPredicate> shouldRetryPredicates, ICircuitBreakerState breakerState)
+        private readonly ICircuitController _breakerController;
+
+        internal CircuitBreakerPolicy(Action<Action, Context> exceptionPolicy, IEnumerable<ExceptionPredicate> exceptionPredicates, ICircuitController breakerController) 
+            : base(exceptionPolicy, exceptionPredicates)
         {
-            if (breakerState.IsBroken)
-            {
-                throw new BrokenCircuitException("The circuit is now open and is not allowing calls.", breakerState.LastException);
-            }
+            _breakerController = breakerController;
+        }
 
-            try
-            {
-                action();
-                breakerState.Reset();
-            }
-            catch (Exception ex)
-            {
-                if (!shouldRetryPredicates.Any(predicate => predicate(ex)))
-                {
-                    throw;
-                }
+        /// <summary>
+        /// Gets the state of the underlying circuit.
+        /// </summary>
+        public CircuitState CircuitState
+        {
+            get { return _breakerController.CircuitState; }
+        }
 
-                breakerState.TryBreak(ex);
+        /// <summary>
+        /// Gets the last exception handled by the circuit-breaker.
+        /// </summary>
+        public Exception LastException {
+            get { return _breakerController.LastException; }
+        }
 
-                throw;
-            }
+        /// <summary>
+        /// Isolates (opens) the circuit manually, and holds it in this state until a call to <see cref="Reset()"/> is made.
+        /// </summary>
+        public void Isolate()
+        {
+            _breakerController.Isolate();
+        }
+
+        /// <summary>
+        /// Closes the circuit, and resets any statistics controlling automated circuit-breaking.
+        /// </summary>
+        public void Reset()
+        {
+            _breakerController.Reset();
         }
     }
 }

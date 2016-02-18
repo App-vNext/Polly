@@ -11,7 +11,7 @@ namespace Polly.Specs
         {
             var executed = false;
 
-            var policy = Policy
+            ContextualPolicy policy = Policy
                           .Handle<DivideByZeroException>()
                           .Retry((_, __, ___) => { });
 
@@ -24,7 +24,7 @@ namespace Polly.Specs
         [Fact]
         public void Executing_the_policy_function_should_execute_the_specified_function_and_return_the_result()
         {
-            var policy = Policy
+            ContextualPolicy policy = Policy
                           .Handle<DivideByZeroException>()
                           .Retry((_, __, ___) => { });
 
@@ -37,7 +37,7 @@ namespace Polly.Specs
         [Fact]
         public void Executing_the_policy_action_should_should_throw_when_context_data_is_null()
         {
-            var policy = Policy
+            ContextualPolicy policy = Policy
                 .Handle<DivideByZeroException>()
                 .Retry((_, __, ___) => { });
 
@@ -49,7 +49,7 @@ namespace Polly.Specs
         [Fact]
         public void Executing_the_policy_function_should_should_throw_when_context_data_is_null()
         {
-            var policy = Policy
+            ContextualPolicy policy = Policy
                 .Handle<DivideByZeroException>()
                 .Retry((_, __, ___) => { });
 

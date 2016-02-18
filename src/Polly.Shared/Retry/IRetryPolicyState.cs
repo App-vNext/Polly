@@ -2,7 +2,7 @@
 
 namespace Polly.Retry
 {
-    internal interface IRetryPolicyState
+    internal partial interface IRetryPolicyState
     {
         bool CanRetry(Exception ex);
     }

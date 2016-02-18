@@ -4,32 +4,14 @@ using System.Linq;
 
 namespace Polly.Retry
 {
-    internal static partial class RetryPolicy
+    /// <summary>
+    /// A retry policy that can be applied to delegates.
+    /// </summary>
+    public partial class RetryPolicy : ContextualPolicy
     {
-        public static void Implementation(Action action, IEnumerable<ExceptionPredicate> shouldRetryPredicates, Func<IRetryPolicyState> policyStateFactory)
+        internal RetryPolicy(Action<Action, Context> exceptionPolicy, IEnumerable<ExceptionPredicate> exceptionPredicates) 
+            : base(exceptionPolicy, exceptionPredicates)
         {
-            var policyState = policyStateFactory();
-
-            while (true)
-            {
-                try
-                {
-                    action();
-                    return;
-                }
-                catch (Exception ex)
-                {
-                    if (!shouldRetryPredicates.Any(predicate => predicate(ex)))
-                    {
-                        throw;
-                    }
-
-                    if (!policyState.CanRetry(ex))
-                    {
-                        throw;
-                    }
-                }
-            }
         }
     }
 }

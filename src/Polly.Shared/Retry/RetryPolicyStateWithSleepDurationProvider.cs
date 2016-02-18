@@ -3,7 +3,7 @@ using Polly.Utilities;
 
 namespace Polly.Retry
 {
-    internal class RetryPolicyStateWithSleepDurationProvider : IRetryPolicyState
+    internal partial class RetryPolicyStateWithSleepDurationProvider : IRetryPolicyState
     {
         private int _errorCount;
         private readonly Func<int, TimeSpan> _sleepDurationProvider;
@@ -24,14 +24,20 @@ namespace Polly.Retry
 
         public bool CanRetry(Exception ex)
         {
-            _errorCount += 1;
+            if (_errorCount < int.MaxValue)
+            {
+                _errorCount += 1;
+            }
+            else
+            {
+                
+            }
 
             var currentTimeSpan = _sleepDurationProvider(_errorCount);
             _onRetry(ex, currentTimeSpan, _context);
 
             SystemClock.Sleep(currentTimeSpan);
             
-
             return true;
         }        
     }

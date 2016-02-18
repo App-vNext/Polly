@@ -2,7 +2,7 @@
 
 namespace Polly.Retry
 {
-    internal class RetryPolicyState : IRetryPolicyState
+    internal partial class RetryPolicyState : IRetryPolicyState
     {
         private readonly Action<Exception, Context> _onRetry;
         private readonly Context _context;

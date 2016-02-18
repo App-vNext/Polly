@@ -174,6 +174,7 @@ Policy
   );
 ```
 
+<<<<<<< HEAD
 ### Wait and retry forever ###
 
 ```csharp
@@ -211,16 +212,61 @@ Policy
 ### Circuit Breaker ###
 ```csharp
 // Break the circuit after the specified number of exceptions
-// and keep circuit broken for the specified duration
+// and keep circuit broken for the specified duration.
 Policy
-  .Handle<DivideByZeroException>()
-  .CircuitBreaker(2, TimeSpan.FromMinutes(1));
+    .Handle<DivideByZeroException>()
+    .CircuitBreaker(2, TimeSpan.FromMinutes(1));
+
+// Break the circuit after the specified number of exceptions
+// and keep circuit broken for the specified duration,
+// calling an action on change of circuit state.
+Action<Exception, TimeSpan> onBreak = (exception, timespan) => { ... };
+Action onReset = () => { ... };
+CircuitBreakerPolicy breaker = Policy
+    .Handle<DivideByZeroException>()
+    .CircuitBreaker(2, TimeSpan.FromMinutes(1), onBreak, onReset);
+
+// Break the circuit after the specified number of exceptions
+// and keep circuit broken for the specified duration,
+// calling an action on change of circuit state,
+// passing a context provided to Execute().
+Action<Exception, TimeSpan, Context> onBreak = (exception, timespan, context) => { ... };
+Action<Context> onReset = context => { ... };
+CircuitBreakerPolicy breaker = Policy
+    .Handle<DivideByZeroException>()
+    .CircuitBreaker(2, TimeSpan.FromMinutes(1), onBreak, onReset);
+
+// Monitor the circuit state, for example for health reporting.
+CircuitState state = breaker.CircuitState;
+
+/*
+CircuitState.Closed - Normal operation. Execution of actions allowed.
+CircuitState.Open - The automated controller has opened the circuit. Execution of actions blocked.
+CircuitState.HalfOpen - Recovering from open state, after the automated break duration has expired. Execution of actions permitted. Success of subsequent action/s controls onward transition to Open or Closed state.
+CircuitState.Isolated - Circuit held manually in an open state. Execution of actions blocked.
+*/
+
+// Manually open (and hold open) a circuit breaker - for example to manually isolate a downstream service.
+breaker.Isolate(); 
+// Reset the breaker to closed state, to start accepting actions again.
+breaker.Reset(); 
+
+
 ```
 
 For more information on the Circuit Breaker pattern see:
 * [Making the Netflix API More Resilient](http://techblog.netflix.com/2011/12/making-netflix-api-more-resilient.html)
+<<<<<<< HEAD
 * [The Circuit Breaker](http://thatextramile.be/blog/2008/05/the-circuit-breaker)
  
+=======
+* [Circuit Breaker (Martin Fowler)](http://martinfowler.com/bliki/CircuitBreaker.html)
+* [Circuit Breaker Pattern (Microsoft)](https://msdn.microsoft.com/en-us/library/dn589784.aspx)
+* [Circuit breaking with Polly](http://blog.jaywayco.co.uk/circuit-breaking-with-polly/)
+* [Original Circuit Breaking Link](https://web.archive.org/web/20160106203951/http://thatextramile.be/blog/2008/05/the-circuit-breaker)
+ 
+
+>>>>>>> upstream/master
 ## Step 3 : Execute the policy
 
 ```csharp
@@ -288,6 +334,10 @@ policyResult.Outcome - whether the call succeeded or failed
 policyResult.FinalException - the final exception captured, will be null if the call succeeded
 policyResult.ExceptionType - was the final exception an exception the policy was defined to handle (like DivideByZeroException above) or an unhandled one (say Exception). Will be null if the call succeeded.
 policyResult.Result - if executing a func, the result if the call succeeded or the type's default value
+<<<<<<< HEAD
+=======
+*/
+>>>>>>> upstream/master
 ```
 
 Asynchronous Support (.NET 4.5 and PCL Only)
@@ -321,6 +371,36 @@ await Policy
 
 ```
 
+<<<<<<< HEAD
+=======
+
+### SynchronizationContext ###
+
+Async continuations and retries by default do not run on a captured synchronization context. To change this, use `.ExecuteAsync(...)` overloads taking a boolean `continueOnCapturedContext` parameter.  
+
+### Cancellation support ###
+
+Async policy execution supports cancellation via `.ExecuteAsync(...)` overloads taking a `CancellationToken`.  
+
+Cancellation cancels Policy actions such as further retries and waits between retries.  The delegate taken by the relevant `.ExecuteAsync(...)` overloads also takes a cancellation token input parameter, to support cancellation during delegate execution.  
+
+```csharp
+// Try several times to retrieve from a uri, but support cancellation at any time.
+CancellationToken cancellationToken = // ...
+var policy = Policy
+    .Handle<WebException>()
+    .Or<HttpRequestException>()
+    .WaitAndRetryAsync(new[] { 
+        TimeSpan.FromSeconds(1), 
+        TimeSpan.FromSeconds(2), 
+        TimeSpan.FromSeconds(4) 
+    });
+var response = await policy.ExecuteAsync(ct => httpClient.GetAsync(uri, ct), cancellationToken);
+```
+
+
+
+>>>>>>> upstream/master
 3rd Party Libraries
 =
 
@@ -339,6 +419,14 @@ Acknowledgements
 * [@robgibbens](https://github.com/RobGibbens) - Added existing async files to PCL project
 * [Hacko](https://github.com/hacko-bede) - Added extra `NotOnCapturedContext` call to prevent potential deadlocks when blocking on asynchronous calls
 * [@ThomasMentzel](https://github.com/ThomasMentzel) - Added ability to capture the results of executing a policy via `ExecuteAndCapture`
+<<<<<<< HEAD
+=======
+* [@yevhen](https://github.com/yevhen) - Added full control of whether to continue on captured synchronization context or not
+* [@reisenberger](https://github.com/reisenberger) - Added full async cancellation support
+* [@reisenberger](https://github.com/reisenberger) - Added async support for ContextualPolicy
+* [@reisenberger](https://github.com/reisenberger) - Added ContextualPolicy support for circuit-breaker
+* [@reisenberger](https://github.com/reisenberger) - Extended circuit-breaker for public monitoring and control
+>>>>>>> upstream/master
 
 Sample Projects
 =

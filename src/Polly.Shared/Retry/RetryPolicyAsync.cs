@@ -2,40 +2,16 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
-using Polly.Extensions;
 
 namespace Polly.Retry
 {
-    internal static partial class RetryPolicy
+    public partial class RetryPolicy
     {
-        public static async Task ImplementationAsync(Func<Task> action,
-            IEnumerable<ExceptionPredicate> shouldRetryPredicates, Func<IRetryPolicyState> policyStateFactory)
+        internal RetryPolicy(Func<Func<CancellationToken, Task>, Context, CancellationToken, bool, Task> asyncExceptionPolicy, IEnumerable<ExceptionPredicate> exceptionPredicates)
+           : base(asyncExceptionPolicy, exceptionPredicates)
         {
-            IRetryPolicyState policyState = policyStateFactory();
-
-            while (true)
-            {
-                try
-                {
-                    await action().NotOnCapturedContext();
-
-                    return;
-                }
-                catch (Exception ex)
-                {
-                    if (!shouldRetryPredicates.Any(predicate => predicate(ex)))
-                    {
-                        throw;
-                    }
-
-                    if (!policyState.CanRetry(ex))
-                    {
-                        throw;
-                    }
-                }
-            }
         }
     }
 }
