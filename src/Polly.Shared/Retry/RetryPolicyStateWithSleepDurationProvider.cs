@@ -27,11 +27,7 @@ namespace Polly.Retry
             if (_errorCount < int.MaxValue)
             {
                 _errorCount += 1;
-            }
-            else
-            {
-                
-            }
+            }           
 
             var currentTimeSpan = _sleepDurationProvider(_errorCount);
             _onRetry(ex, currentTimeSpan, _context);
