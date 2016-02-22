@@ -35,7 +35,6 @@
 ----------
 - Add .NET Core support
 
->>>>>>> upstream/master
 2.2.3
 =
 ----------
@@ -74,8 +73,4 @@
 =
 ----------
 - Added additional overloads to Retry
-<<<<<<< HEAD
 - Allow arbitrary data to be passed to policy execution ([Issue #1](https://github.com/michael-wolfenden/Polly/issues/1)) 
-=======
-- Allow arbitrary data to be passed to policy execution ([Issue #1](https://github.com/michael-wolfenden/Polly/issues/1)) 
->>>>>>> upstream/master
