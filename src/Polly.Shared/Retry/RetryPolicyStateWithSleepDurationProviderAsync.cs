@@ -11,7 +11,10 @@ namespace Polly.Retry
     {
         public async Task<bool> CanRetryAsync(Exception ex, CancellationToken cancellationToken, bool continueOnCapturedContext)
         {
-            _errorCount += 1;
+            if (_errorCount < int.MaxValue)
+            {
+                _errorCount += 1;
+            }
 
             var currentTimeSpan = _sleepDurationProvider(_errorCount);
             _onRetry(ex, currentTimeSpan, _context);
