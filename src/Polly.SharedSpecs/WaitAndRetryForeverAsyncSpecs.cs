@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Polly.Specs.Helpers;
@@ -195,36 +196,38 @@ namespace Polly.SharedSpecs
         }
 
         [Fact]
-        public void Should_not_call_onretry_when_no_retries_are_performed()
+        public void Should_call_onretry_on_each_retry_with_the_current_exception()
         {
-            Func<int, TimeSpan> provider = i => 1.Seconds();
-            var retryCounts = new List<int>();
+            var expectedExceptions = new object[] { "Exception #1", "Exception #2", "Exception #3" };
+            var retryExceptions = new List<Exception>();
+            Func<int, TimeSpan> provider = i => TimeSpan.Zero;
 
             var policy = Policy
                 .Handle<DivideByZeroException>()
-                .WaitAndRetryForeverAsync(provider);
+                .WaitAndRetryForeverAsync(provider, (exception, _) => retryExceptions.Add(exception));
+
+            policy.RaiseExceptionAsync<DivideByZeroException>(3, (e, i) => e.HelpLink = "Exception #" + i);
+
+            retryExceptions
+                .Select(x => x.HelpLink)
+                .Should()
+                .ContainInOrder(expectedExceptions);
+        }
+
+        [Fact]
+        public void Should_not_call_onretry_when_no_retries_are_performed()
+        {
+            Func<int, TimeSpan> provider = i => 1.Seconds();
+            var retryExceptions = new List<Exception>();
+
+            var policy = Policy
+                .Handle<DivideByZeroException>()
+                .WaitAndRetryForeverAsync(provider, (excpetion, _) => retryExceptions.Add(excpetion));
 
             policy.Awaiting(x => x.RaiseExceptionAsync<ArgumentException>())
                   .ShouldThrow<ArgumentException>();
 
-            retryCounts.Should()
-                       .BeEmpty();
-        }
-
-        [Fact]
-        public void Should_create_new_state_for_each_call_to_policy()
-        {
-            Func<int, TimeSpan> provider = i => 1.Seconds();
-
-            var policy = Policy
-                .Handle<DivideByZeroException>()
-                .WaitAndRetryForeverAsync(provider);
-
-            policy.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                  .ShouldNotThrow();
-
-            policy.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                  .ShouldNotThrow();
+            retryExceptions.Should().BeEmpty();
         }
 
         [Fact]
@@ -251,32 +254,6 @@ namespace Polly.SharedSpecs
             );
 
             contextValue.Should().Be("new_value");
-        }
-
-        [Fact]
-        public void Should_throw_when_onretry_action_is_null_without_context_when_using_provider_overload()
-        {
-            Action<Exception, TimeSpan> nullOnRetry = null;
-
-            Action policy = () => Policy
-                                      .Handle<DivideByZeroException>()
-                                      .WaitAndRetryForeverAsync(_ => new TimeSpan(), nullOnRetry);
-
-            policy.ShouldThrow<ArgumentNullException>().And
-                  .ParamName.Should().Be("onRetry");
-        }
-
-        [Fact]
-        public void Should_throw_when_onretry_action_is_null_with_context_when_using_provider_overload()
-        {
-            Action<Exception, TimeSpan, Context> nullOnRetry = null;
-
-            Action policy = () => Policy
-                                      .Handle<DivideByZeroException>()
-                                      .WaitAndRetryForeverAsync(_ => new TimeSpan(), nullOnRetry);
-
-            policy.ShouldThrow<ArgumentNullException>().And
-                  .ParamName.Should().Be("onRetry");
         }
 
         [Fact]
