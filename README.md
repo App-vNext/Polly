@@ -36,7 +36,7 @@ Policy
 // Multiple exception types with condition
 Policy
   .Handle<SqlException>(ex => ex.Number == 1205)
-  .Or<ArgumentException>(ex => x.ParamName == "example")
+  .Or<ArgumentException>(ex => ex.ParamName == "example")
 ```
 
 ## Step 2 : Specify how the policy should handle those exceptions
