@@ -3,7 +3,10 @@ using System.Threading;
 
 namespace Polly.Utilities
 {
+    // Adapted from the link below, with slight modifications.
+
     // http://www.interact-sw.co.uk/iangblog/2004/04/26/yetmoretimedlocking
+    // Ian Griffiths (original TimedLock author) wrote:
     // Thanks to Eric Gunnerson for recommending this be a struct rather
     // than a class - avoids a heap allocation.
     // Thanks to Change Gillespie and Jocelyn Coulmance for pointing out
@@ -13,12 +16,19 @@ namespace Polly.Utilities
     // without losing the debug leak tracking.
     internal struct TimedLock : IDisposable
     {
+
+#if DEBUG
+        private static readonly TimeSpan LockTimeout = TimeSpan.FromSeconds(5);
+#else
+        private static readonly TimeSpan LockTimeout = TimeSpan.MaxValue;
+#endif
+
         public static TimedLock Lock(object o)
         {
-            return Lock(o, TimeSpan.FromSeconds(5));
+            return Lock(o, LockTimeout);
         }
 
-        public static TimedLock Lock(object o, TimeSpan timeout)
+        private static TimedLock Lock(object o, TimeSpan timeout)
         {
             TimedLock tl = new TimedLock(o);
             if (!Monitor.TryEnter(o, timeout))
