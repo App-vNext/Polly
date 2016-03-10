@@ -43,6 +43,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)Retry\RetryPolicyStateWithCount.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Retry\RetryPolicyStateWithSleepAsync.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Retry\RetryPolicyStateWithSleep.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Retry\RetryPolicyStateWithSleepDurationProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Retry\RetryPolicyStateWithSleepDurationProviderAsync.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\ReadOnlyDictionary.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\SystemClock.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\TimedLock.cs" />

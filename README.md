@@ -174,6 +174,40 @@ Policy
   );
 ```
 
+### Wait and retry forever ###
+
+```csharp
+
+// Wait and retry forever
+Policy
+  .Handle<DivideByZeroException>()
+  .WaitAndRetryForever(retryAttempt => 
+	TimeSpan.FromSeconds(Math.Pow(2, retryAttempt))
+    );
+
+// Wait and retry forever, calling an action on each retry with the 
+// current exception and the time to wait
+Policy
+  .Handle<DivideByZeroException>()
+  .WaitAndRetryForever(
+    retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),    
+    (exception, timespan) =>
+    {
+        // do something       
+    });
+
+// Wait and retry forever, calling an action on each retry with the
+// current exception, time to wait, and context provided to Execute()
+Policy
+  .Handle<DivideByZeroException>()
+  .WaitAndRetryForever(
+    retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),    
+    (exception, timespan, context) =>
+    {
+        // do something       
+    });
+```
+
 ### Circuit Breaker ###
 ```csharp
 // Break the circuit after the specified number of exceptions

@@ -433,16 +433,16 @@ namespace Polly.Specs
         [Fact]
         public void Should_not_call_onretry_when_no_retries_are_performed()
         {
-            var retryCounts = new List<int>();
+            var retryExceptions = new List<Exception>();
 
             var policy = Policy
                 .Handle<DivideByZeroException>()
-                .WaitAndRetry(Enumerable.Empty<TimeSpan>());
+                .WaitAndRetry(Enumerable.Empty<TimeSpan>(), (exception, _) => retryExceptions.Add(exception));
 
             policy.Invoking(x => x.RaiseException<ArgumentException>())
                   .ShouldThrow<ArgumentException>();
 
-            retryCounts.Should()
+            retryExceptions.Should()
                        .BeEmpty();
         }
 
