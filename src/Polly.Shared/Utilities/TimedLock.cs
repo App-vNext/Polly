@@ -16,11 +16,13 @@ namespace Polly.Utilities
     // without losing the debug leak tracking.
     internal struct TimedLock : IDisposable
     {
-
+        // The TimedLock class throws a LockTimeoutException if a lock cannot be obtained within the LockTimeout.  This allows the easier discovery and debugging of deadlocks during Polly development, than if using a pure lock.
+        // We do not however ever want to throw a LockTimeoutException in production - hence the forked LockTimeout value below for DEBUG versus RELEASE builds.  
+        // This applies particularly because CircuitBreakerPolicy runs state-change delegates during the lock, in order that the state change holds true (cannot be superseded by activity on other threads) while the delegate runs.  
 #if DEBUG
         private static readonly TimeSpan LockTimeout = TimeSpan.FromSeconds(5);
 #else
-        private static readonly TimeSpan LockTimeout = TimeSpan.MaxValue;
+        private static readonly TimeSpan LockTimeout = TimeSpan.FromMilliseconds(int.MaxValue);
 #endif
 
         public static TimedLock Lock(object o)
