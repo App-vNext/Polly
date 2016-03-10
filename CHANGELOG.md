@@ -1,3 +1,10 @@
+4.1.0
+=
+----------
+- Add Wait and retry forever policy - Thanks to [@nedstoyanov](https://github.com/nedstoyanov)
+- Remove time-limit on CircuitBreaker state-change delegates - Thanks to [@reisenberger](https://github.com/reisenberger)
+
+
 4.0.0
 =
 ----------
