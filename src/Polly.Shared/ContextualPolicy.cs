@@ -35,6 +35,7 @@ namespace Polly
         /// <param name="action">The action to perform.</param>
         /// <param name="contextData">Arbitrary data that is passed to the exception policy.</param>
         /// <exception cref="System.ArgumentNullException">contextData</exception>
+        /// <returns>The captured result</returns>
         [DebuggerStepThrough]
         public PolicyResult ExecuteAndCapture(Action action, IDictionary<string, object> contextData)
         {
@@ -67,6 +68,7 @@ namespace Polly
         /// <param name="action">The action to perform.</param>
         /// <param name="contextData">Arbitrary data that is passed to the exception policy.</param>
         /// <exception cref="System.ArgumentNullException">contextData</exception>
+        /// <returns>The captured result</returns>
         [DebuggerStepThrough]
         public PolicyResult<TResult> ExecuteAndCapture<TResult>(Func<TResult> action, IDictionary<string, object> contextData)
         {

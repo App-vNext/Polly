@@ -126,6 +126,7 @@ namespace Polly
         ///     Executes the specified asynchronous action within the policy and returns the captured result.
         /// </summary>
         /// <param name="action">The action to perform.</param>
+        /// <returns>The captured result</returns>
         [DebuggerStepThrough]
         public Task<PolicyResult> ExecuteAndCaptureAsync(Func<Task> action)
         {
@@ -137,8 +138,9 @@ namespace Polly
         /// </summary>
         /// <param name="action">The action to perform.</param>
         /// <param name="context">Arbitrary data that is passed to the exception policy.</param>
+        /// <returns>The captured result</returns>
         [DebuggerStepThrough]
-        private Task<PolicyResult> ExecuteAndCaptureAsync(Func<Task> action, Context context)
+        protected Task<PolicyResult> ExecuteAndCaptureAsync(Func<Task> action, Context context)
         {
             return ExecuteAndCaptureAsync(action, context, false);
         }
@@ -148,6 +150,7 @@ namespace Polly
         /// </summary>
         /// <param name="action">The action to perform.</param>
         /// <param name="continueOnCapturedContext">Whether to continue on a captured synchronization context.</param>
+        /// <returns>The captured result</returns>
         [DebuggerStepThrough]
         public Task<PolicyResult> ExecuteAndCaptureAsync(Func<Task> action, bool continueOnCapturedContext)
         {
@@ -160,8 +163,9 @@ namespace Polly
         /// <param name="action">The action to perform.</param>
         /// <param name="context">Arbitrary data that is passed to the exception policy.</param>
         /// <param name="continueOnCapturedContext">Whether to continue on a captured synchronization context.</param>
+        /// <returns>The captured result</returns>
         [DebuggerStepThrough]
-        private Task<PolicyResult> ExecuteAndCaptureAsync(Func<Task> action, Context context, bool continueOnCapturedContext)
+        protected Task<PolicyResult> ExecuteAndCaptureAsync(Func<Task> action, Context context, bool continueOnCapturedContext)
         {
             return ExecuteAndCaptureAsync(ct => action(), context, CancellationToken.None, continueOnCapturedContext);
         }
@@ -184,7 +188,7 @@ namespace Polly
         /// <param name="context">Arbitrary data that is passed to the exception policy.</param>
         /// <param name="cancellationToken">A cancellation token which can be used to cancel the action.  When a retry policy in use, also cancels any further retries.</param>
         [DebuggerStepThrough]
-        private Task<PolicyResult> ExecuteAndCaptureAsync(Func<CancellationToken, Task> action, Context context, CancellationToken cancellationToken)
+        protected Task<PolicyResult> ExecuteAndCaptureAsync(Func<CancellationToken, Task> action, Context context, CancellationToken cancellationToken)
         {
             return ExecuteAndCaptureAsync(action, context, cancellationToken, false);
         }
@@ -211,7 +215,7 @@ namespace Polly
         /// <param name="cancellationToken">A cancellation token which can be used to cancel the action.  When a retry policy in use, also cancels any further retries.</param>
         /// <exception cref="System.InvalidOperationException">Please use the asynchronous RetryAsync, RetryForeverAsync, WaitAndRetryAsync or CircuitBreakerAsync methods when calling the asynchronous Execute method.</exception>
         [DebuggerStepThrough]
-        private async Task<PolicyResult> ExecuteAndCaptureAsync(Func<CancellationToken, Task> action, Context context, CancellationToken cancellationToken, bool continueOnCapturedContext)
+        protected async Task<PolicyResult> ExecuteAndCaptureAsync(Func<CancellationToken, Task> action, Context context, CancellationToken cancellationToken, bool continueOnCapturedContext)
         {
             if (_asyncExceptionPolicy == null) throw new InvalidOperationException
                 ("Please use the asynchronous RetryAsync, RetryForeverAsync, WaitAndRetryAsync or CircuitBreakerAsync methods when calling the asynchronous Execute method.");
@@ -351,9 +355,7 @@ namespace Polly
         /// </summary>
         /// <typeparam name="TResult">The type of the result.</typeparam>
         /// <param name="action">The action to perform.</param>
-        /// <returns>
-        /// The value returned by the action
-        /// </returns>
+        /// <returns>The captured result</returns>
         [DebuggerStepThrough]
         public Task<PolicyResult<TResult>> ExecuteAndCaptureAsync<TResult>(Func<Task<TResult>> action)
         {
@@ -366,11 +368,9 @@ namespace Polly
         /// <typeparam name="TResult">The type of the result.</typeparam>
         /// <param name="action">The action to perform.</param>
         /// <param name="context">Arbitrary data that is passed to the exception policy.</param>
-        /// <returns>
-        /// The value returned by the action
-        /// </returns>
+        /// <returns>The captured result</returns>
         [DebuggerStepThrough]
-        private Task<PolicyResult<TResult>> ExecuteAndCaptureAsync<TResult>(Func<Task<TResult>> action, Context context)
+        protected Task<PolicyResult<TResult>> ExecuteAndCaptureAsync<TResult>(Func<Task<TResult>> action, Context context)
         {
             return ExecuteAndCaptureAsync(action, context, false);
         }
@@ -381,9 +381,7 @@ namespace Polly
         /// <typeparam name="TResult">The type of the result.</typeparam>
         /// <param name="action">The action to perform.</param>
         /// <param name="continueOnCapturedContext">Whether to continue on a captured synchronization context.</param>
-        /// <returns>
-        /// The value returned by the action
-        /// </returns>
+        /// <returns>The captured result</returns>
         [DebuggerStepThrough]
         public Task<PolicyResult<TResult>> ExecuteAndCaptureAsync<TResult>(Func<Task<TResult>> action, bool continueOnCapturedContext)
         {
@@ -397,11 +395,9 @@ namespace Polly
         /// <param name="action">The action to perform.</param>
         /// <param name="context">Arbitrary data that is passed to the exception policy.</param>
         /// <param name="continueOnCapturedContext">Whether to continue on a captured synchronization context.</param>
-        /// <returns>
-        /// The value returned by the action
-        /// </returns>
+        /// <returns>The captured result</returns>
         [DebuggerStepThrough]
-        private Task<PolicyResult<TResult>> ExecuteAndCaptureAsync<TResult>(Func<Task<TResult>> action, Context context, bool continueOnCapturedContext)
+        protected Task<PolicyResult<TResult>> ExecuteAndCaptureAsync<TResult>(Func<Task<TResult>> action, Context context, bool continueOnCapturedContext)
         {
             return ExecuteAndCaptureAsync(ct => action(), context, CancellationToken.None, continueOnCapturedContext);
         }
@@ -412,7 +408,7 @@ namespace Polly
         /// <typeparam name="TResult">The type of the result.</typeparam>
         /// <param name="action">The action to perform.</param>
         /// <param name="cancellationToken">A cancellation token which can be used to cancel the action.  When a retry policy in use, also cancels any further retries.</param>
-        /// <returns>The value returned by the action</returns>
+        /// <returns>The captured result</returns>
         [DebuggerStepThrough]
         public Task<PolicyResult<TResult>> ExecuteAndCaptureAsync<TResult>(Func<Task<TResult>> action, CancellationToken cancellationToken)
         {
@@ -426,9 +422,9 @@ namespace Polly
         /// <param name="action">The action to perform.</param>
         /// <param name="context">Arbitrary data that is passed to the exception policy.</param>
         /// <param name="cancellationToken">A cancellation token which can be used to cancel the action.  When a retry policy in use, also cancels any further retries.</param>
-        /// <returns>The value returned by the action</returns>
+        /// <returns>The captured result</returns>
         [DebuggerStepThrough]
-        private Task<PolicyResult<TResult>> ExecuteAndCaptureAsync<TResult>(Func<Task<TResult>> action, Context context, CancellationToken cancellationToken)
+        protected Task<PolicyResult<TResult>> ExecuteAndCaptureAsync<TResult>(Func<Task<TResult>> action, Context context, CancellationToken cancellationToken)
         {
             return ExecuteAndCaptureAsync(ct => action(), context, cancellationToken, false);
         }
@@ -440,7 +436,7 @@ namespace Polly
         /// <param name="action">The action to perform.</param>
         /// <param name="continueOnCapturedContext">Whether to continue on a captured synchronization context.</param>
         /// <param name="cancellationToken">A cancellation token which can be used to cancel the action.  When a retry policy in use, also cancels any further retries.</param>
-        /// <returns>The value returned by the action</returns>
+        /// <returns>The captured result</returns>
         /// <exception cref="System.InvalidOperationException">Please use the asynchronous RetryAsync, RetryForeverAsync, WaitAndRetryAsync or CircuitBreakerAsync methods when calling the asynchronous Execute method.</exception>
         [DebuggerStepThrough]
         public Task<PolicyResult<TResult>> ExecuteAndCaptureAsync<TResult>(Func<CancellationToken, Task<TResult>> action, CancellationToken cancellationToken, bool continueOnCapturedContext)
@@ -456,10 +452,10 @@ namespace Polly
         /// <param name="context">Arbitrary data that is passed to the exception policy.</param>
         /// <param name="continueOnCapturedContext">Whether to continue on a captured synchronization context.</param>
         /// <param name="cancellationToken">A cancellation token which can be used to cancel the action.  When a retry policy in use, also cancels any further retries.</param>
-        /// <returns>The value returned by the action</returns>
+        /// <returns>The captured result</returns>
         /// <exception cref="System.InvalidOperationException">Please use the asynchronous RetryAsync, RetryForeverAsync, WaitAndRetryAsync or CircuitBreakerAsync methods when calling the asynchronous Execute method.</exception>
         [DebuggerStepThrough]
-        private async Task<PolicyResult<TResult>> ExecuteAndCaptureAsync<TResult>(Func<CancellationToken, Task<TResult>> action, Context context, CancellationToken cancellationToken, bool continueOnCapturedContext)
+        protected async Task<PolicyResult<TResult>> ExecuteAndCaptureAsync<TResult>(Func<CancellationToken, Task<TResult>> action, Context context, CancellationToken cancellationToken, bool continueOnCapturedContext)
         {
             if (_asyncExceptionPolicy == null) throw new InvalidOperationException(
                 "Please use the asynchronous RetryAsync, RetryForeverAsync, WaitAndRetryAsync or CircuitBreakerAsync methods when calling the asynchronous Execute method.");
