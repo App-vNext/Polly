@@ -314,6 +314,23 @@ namespace Polly.Specs
         }
 
         [Fact]
+        public void Should_call_onretry_with_the_passed_context_when_execute_and_capture()
+        {
+            IDictionary<string, object> contextData = null;
+
+            ContextualPolicy policy = Policy
+                .Handle<DivideByZeroException>()
+                .Retry((_, __, context) => contextData = context);
+
+            policy.Invoking(p => p.ExecuteAndCapture(() => { throw new DivideByZeroException();}, 
+                new { key1 = "value1", key2 = "value2" }.AsDictionary()));
+
+            contextData.Should()
+                .ContainKeys("key1", "key2").And
+                .ContainValues("value1", "value2");
+        }
+
+        [Fact]
         public void Context_should_be_empty_if_execute_not_called_with_any_context_data()
         {
             Context capturedContext = null;
@@ -346,6 +363,26 @@ namespace Polly.Specs
             policy.RaiseException<DivideByZeroException>(
                 new { key = "new_value" }.AsDictionary()
             );
+
+            contextValue.Should().Be("new_value");
+        }
+
+        [Fact]
+        public void Should_create_new_context_for_each_call_to_execute_and_capture()
+        {
+            string contextValue = null;
+
+            ContextualPolicy policy = Policy
+                .Handle<DivideByZeroException>()
+                .Retry((_, __, context) => contextValue = context["key"].ToString());
+
+            policy.Invoking(p => p.ExecuteAndCapture(() => { throw new DivideByZeroException(); }, 
+                new { key = "original_value" }.AsDictionary()));
+
+            contextValue.Should().Be("original_value");
+
+            policy.Invoking(p => p.ExecuteAndCapture(() => { throw new DivideByZeroException(); },
+                new { key = "new_value" }.AsDictionary()));
 
             contextValue.Should().Be("new_value");
         }
