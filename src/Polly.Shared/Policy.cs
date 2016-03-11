@@ -63,8 +63,14 @@ namespace Polly
             return ExecuteAndCapture(action, Context.Empty);
         }
 
+        /// <summary>
+        /// Executes the specified action within the policy and returns the captured result
+        /// </summary>
+        /// <param name="action">The action to perform.</param>
+        /// <param name="context">Arbitrary data that is passed to the exception policy.</param>
+        /// <returns>The captured result</returns>
         [DebuggerStepThrough]
-        private PolicyResult ExecuteAndCapture(Action action, Context context)
+        protected PolicyResult ExecuteAndCapture(Action action, Context context)
         {
             if (_exceptionPolicy == null) throw new InvalidOperationException(
                 "Please use the synchronous Retry, RetryForever, WaitAndRetry or CircuitBreaker methods when calling the synchronous ExecuteAndCapture method.");
@@ -121,8 +127,14 @@ namespace Polly
             return ExecuteAndCapture(action, Context.Empty);
         }
 
+        /// <summary>
+        /// Executes the specified action within the policy and returns the captured result.
+        /// </summary>
+        /// <param name="action">The action to perform.</param>
+        /// <param name="context">Arbitrary data that is passed to the exception policy.</param>
+        /// <returns>The captured result</returns>
         [DebuggerStepThrough]
-        private PolicyResult<TResult> ExecuteAndCapture<TResult>(Func<TResult> action, Context context)
+        protected PolicyResult<TResult> ExecuteAndCapture<TResult>(Func<TResult> action, Context context)
         {
 
             if (_exceptionPolicy == null) throw new InvalidOperationException(

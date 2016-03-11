@@ -23,11 +23,26 @@ namespace Polly
          /// <exception cref="System.ArgumentNullException">contextData</exception>
         [DebuggerStepThrough]
         public void Execute(Action action, IDictionary<string, object> contextData)
-         {
+        {
              if (contextData == null) throw new ArgumentNullException("contextData");
 
              base.Execute(action, new Context(contextData));
-         }
+        }
+
+        /// <summary>
+        /// Executes the specified action within the policy and returns the captured result.
+        /// </summary>
+        /// <param name="action">The action to perform.</param>
+        /// <param name="contextData">Arbitrary data that is passed to the exception policy.</param>
+        /// <exception cref="System.ArgumentNullException">contextData</exception>
+        /// <returns>The captured result</returns>
+        [DebuggerStepThrough]
+        public PolicyResult ExecuteAndCapture(Action action, IDictionary<string, object> contextData)
+        {
+            if (contextData == null) throw new ArgumentNullException("contextData");
+
+            return base.ExecuteAndCapture(action, new Context(contextData));
+        }
 
         /// <summary>
         /// Executes the specified action within the policy and returns the result.
@@ -35,6 +50,7 @@ namespace Polly
         /// <typeparam name="TResult">The type of the result.</typeparam>
         /// <param name="action">The action to perform.</param>
         /// <param name="contextData">Arbitrary data that is passed to the exception policy.</param>
+        /// <exception cref="System.ArgumentNullException">contextData</exception>
         /// <returns>
         /// The value returned by the action
         /// </returns>
@@ -45,6 +61,21 @@ namespace Polly
             if (contextData == null) throw new ArgumentNullException("contextData");
 
             return base.Execute(action, new Context(contextData));
+        }
+
+        /// <summary>
+        /// Executes the specified action within the policy and returns the captured result.
+        /// </summary>
+        /// <param name="action">The action to perform.</param>
+        /// <param name="contextData">Arbitrary data that is passed to the exception policy.</param>
+        /// <exception cref="System.ArgumentNullException">contextData</exception>
+        /// <returns>The captured result</returns>
+        [DebuggerStepThrough]
+        public PolicyResult<TResult> ExecuteAndCapture<TResult>(Func<TResult> action, IDictionary<string, object> contextData)
+        {
+            if (contextData == null) throw new ArgumentNullException("contextData");
+
+            return base.ExecuteAndCapture(action, new Context(contextData));
         }
     }
 }

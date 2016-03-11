@@ -1,3 +1,9 @@
+4.1.1
+=
+----------
+- Add ExecuteAndCapture support with arbitrary context data - Thanks to [@reisenberger](https://github.com/reisenberger)
+
+
 4.1.0
 =
 ----------

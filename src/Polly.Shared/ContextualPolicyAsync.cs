@@ -66,6 +66,71 @@ namespace Polly
             return base.ExecuteAsync(action, new Context(contextData), cancellationToken, continueOnCapturedContext);
         }
 
+
+        /// <summary>
+        ///     Executes the specified asynchronous action within the policy and returns the captured result.
+        /// </summary>
+        /// <param name="action">The action to perform.</param>
+        /// <param name="contextData">Arbitrary data that is passed to the exception policy.</param>
+        /// <exception cref="System.ArgumentNullException">contextData</exception>
+        /// <returns>The captured result</returns>
+        [DebuggerStepThrough]
+        public Task<PolicyResult> ExecuteAndCaptureAsync(Func<Task> action, IDictionary<string, object> contextData)
+        {
+            if (contextData == null) throw new ArgumentNullException("contextData");
+
+            return base.ExecuteAndCaptureAsync(action, new Context(contextData));
+        }
+
+        /// <summary>
+        ///     Executes the specified asynchronous action within the policy and returns the captured result.
+        /// </summary>
+        /// <param name="action">The action to perform.</param>
+        /// <param name="contextData">Arbitrary data that is passed to the exception policy.</param>
+        /// <param name="continueOnCapturedContext">Whether to continue on a captured synchronization context.</param>
+        /// <exception cref="System.ArgumentNullException">contextData</exception>
+        /// <returns>The captured result</returns>
+        [DebuggerStepThrough]
+        public Task<PolicyResult> ExecuteAndCaptureAsync(Func<Task> action, IDictionary<string, object> contextData, bool continueOnCapturedContext)
+        {
+            if (contextData == null) throw new ArgumentNullException("contextData");
+
+            return base.ExecuteAndCaptureAsync(action, new Context(contextData), continueOnCapturedContext);
+        }
+        /// <summary>
+        ///     Executes the specified asynchronous action within the policy and returns the captured result.
+        /// </summary>
+        /// <param name="action">The action to perform.</param>
+        /// <param name="contextData">Arbitrary data that is passed to the exception policy.</param>
+        /// <param name="cancellationToken">A cancellation token which can be used to cancel the action.  When a retry policy in use, also cancels any further retries.</param>
+        /// <exception cref="System.ArgumentNullException">contextData</exception>
+        /// <returns>The captured result</returns>
+        [DebuggerStepThrough]
+        public Task<PolicyResult> ExecuteAndCaptureAsync(Func<CancellationToken, Task> action, IDictionary<string, object> contextData, CancellationToken cancellationToken)
+        {
+            if (contextData == null) throw new ArgumentNullException("contextData");
+
+            return base.ExecuteAndCaptureAsync(action, new Context(contextData), cancellationToken);
+        }
+
+        /// <summary>
+        ///     Executes the specified asynchronous action within the policy and returns the captured result.
+        /// </summary>
+        /// <param name="action">The action to perform.</param>
+        /// <param name="contextData">Arbitrary data that is passed to the exception policy.</param>
+        /// <param name="continueOnCapturedContext">Whether to continue on a captured synchronization context.</param>
+        /// <param name="cancellationToken">A cancellation token which can be used to cancel the action.  When a retry policy in use, also cancels any further retries.</param>
+        /// <exception cref="System.ArgumentNullException">contextData</exception>
+        /// <returns>The captured result</returns>
+        [DebuggerStepThrough]
+        public Task<PolicyResult> ExecuteAndCaptureAsync(Func<CancellationToken, Task> action, IDictionary<string, object> contextData, CancellationToken cancellationToken, bool continueOnCapturedContext)
+        {
+            if (contextData == null) throw new ArgumentNullException("contextData");
+
+            return base.ExecuteAndCaptureAsync(action, new Context(contextData), cancellationToken,
+                continueOnCapturedContext);
+        }
+
         /// <summary>
         ///     Executes the specified asynchronous action within the policy and returns the result.
         /// </summary>
@@ -119,6 +184,74 @@ namespace Polly
             if (contextData == null) throw new ArgumentNullException("contextData");
 
             return base.ExecuteAsync(action, new Context(contextData), cancellationToken, continueOnCapturedContext);
+        }
+
+        /// <summary>
+        /// Executes the specified asynchronous action within the policy and returns the result.
+        /// </summary>
+        /// <typeparam name="TResult">The type of the result.</typeparam>
+        /// <param name="action">The action to perform.</param>
+        /// <param name="contextData">Arbitrary data that is passed to the exception policy.</param>
+        /// <exception cref="System.ArgumentNullException">contextData</exception>
+        /// <returns>The captured result</returns>
+        [DebuggerStepThrough]
+        public Task<PolicyResult<TResult>> ExecuteAndCaptureAsync<TResult>(Func<Task<TResult>> action, IDictionary<string, object> contextData)
+        {
+            if (contextData == null) throw new ArgumentNullException("contextData");
+
+            return base.ExecuteAndCaptureAsync(action, new Context(contextData));
+        }
+
+        /// <summary>
+        /// Executes the specified asynchronous action within the policy and returns the result.
+        /// </summary>
+        /// <typeparam name="TResult">The type of the result.</typeparam>
+        /// <param name="action">The action to perform.</param>
+        /// <param name="contextData">Arbitrary data that is passed to the exception policy.</param>
+        /// <param name="continueOnCapturedContext">Whether to continue on a captured synchronization context.</param>
+        /// <exception cref="System.ArgumentNullException">contextData</exception>
+        /// <returns>The captured result</returns>
+        [DebuggerStepThrough]
+        protected Task<PolicyResult<TResult>> ExecuteAndCaptureAsync<TResult>(Func<Task<TResult>> action, IDictionary<string, object> contextData, bool continueOnCapturedContext)
+        {
+            if (contextData == null) throw new ArgumentNullException("contextData");
+
+            return base.ExecuteAndCaptureAsync(action, new Context(contextData), continueOnCapturedContext);
+        }
+
+        /// <summary>
+        ///     Executes the specified asynchronous action within the policy and returns the result.
+        /// </summary>
+        /// <typeparam name="TResult">The type of the result.</typeparam>
+        /// <param name="action">The action to perform.</param>
+        /// <param name="contextData">Arbitrary data that is passed to the exception policy.</param>
+        /// <param name="cancellationToken">A cancellation token which can be used to cancel the action.  When a retry policy in use, also cancels any further retries.</param>
+        /// <exception cref="System.ArgumentNullException">contextData</exception>
+        /// <returns>The captured result</returns>
+        [DebuggerStepThrough]
+        public Task<PolicyResult<TResult>> ExecuteAndCaptureAsync<TResult>(Func<Task<TResult>> action, IDictionary<string, object> contextData, CancellationToken cancellationToken)
+        {
+            if (contextData == null) throw new ArgumentNullException("contextData");
+
+            return base.ExecuteAndCaptureAsync(action, new Context(contextData), cancellationToken);
+        }
+
+        /// <summary>
+        ///     Executes the specified asynchronous action within the policy and returns the result.
+        /// </summary>
+        /// <typeparam name="TResult">The type of the result.</typeparam>
+        /// <param name="action">The action to perform.</param>
+        /// <param name="contextData">Arbitrary data that is passed to the exception policy.</param>
+        /// <param name="continueOnCapturedContext">Whether to continue on a captured synchronization context.</param>
+        /// <param name="cancellationToken">A cancellation token which can be used to cancel the action.  When a retry policy in use, also cancels any further retries.</param>
+        /// <returns>The captured result</returns>
+        /// <exception cref="System.ArgumentNullException">contextData</exception>
+        [DebuggerStepThrough]
+        public Task<PolicyResult<TResult>> ExecuteAndCaptureAsync<TResult>(Func<CancellationToken, Task<TResult>> action, IDictionary<string, object> contextData, CancellationToken cancellationToken, bool continueOnCapturedContext)
+        {
+            if (contextData == null) throw new ArgumentNullException("contextData");
+
+            return base.ExecuteAndCaptureAsync(action, new Context(contextData), cancellationToken, continueOnCapturedContext);
         }
     }
 }

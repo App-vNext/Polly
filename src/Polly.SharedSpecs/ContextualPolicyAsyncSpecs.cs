@@ -42,7 +42,7 @@ namespace Polly.Specs
         }
 
         [Fact]
-        public void Executing_the_policy_action_should_should_throw_when_context_data_is_null()
+        public void Executing_the_policy_action_should_throw_when_context_data_is_null()
         {
             ContextualPolicy policy = Policy
                 .Handle<DivideByZeroException>()
@@ -54,13 +54,37 @@ namespace Polly.Specs
         }
 
         [Fact]
-        public void Executing_the_policy_function_should_should_throw_when_context_data_is_null()
+        public void Executing_the_policy_function_should_throw_when_context_data_is_null()
         {
             ContextualPolicy policy = Policy
                 .Handle<DivideByZeroException>()
                 .RetryAsync((_, __, ___) => { });
 
             policy.Invoking(p => p.ExecuteAsync(() => Task.FromResult(2), null))
+                  .ShouldThrow<ArgumentNullException>().And
+                  .ParamName.Should().Be("contextData");
+        }
+
+        [Fact]
+        public void Execute_and_capturing_the_policy_action_should_throw_when_context_data_is_null()
+        {
+            ContextualPolicy policy = Policy
+                .Handle<DivideByZeroException>()
+                .RetryAsync((_, __, ___) => { });
+
+            policy.Invoking(p => p.ExecuteAndCaptureAsync(() => Task.FromResult(true), null))
+                  .ShouldThrow<ArgumentNullException>().And
+                  .ParamName.Should().Be("contextData");
+        }
+
+        [Fact]
+        public void Execute_and_capturing_the_policy_function_should_throw_when_context_data_is_null()
+        {
+            ContextualPolicy policy = Policy
+                .Handle<DivideByZeroException>()
+                .RetryAsync((_, __, ___) => { });
+
+            policy.Invoking(p => p.ExecuteAndCaptureAsync(() => Task.FromResult(2), null))
                   .ShouldThrow<ArgumentNullException>().And
                   .ParamName.Should().Be("contextData");
         }
