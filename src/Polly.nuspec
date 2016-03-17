@@ -13,6 +13,10 @@
     <tags>Exception Handling Policy Retry Wait Circuit Breaker</tags>
     <copyright>Copyright © 2015, App vNext</copyright>
     <releaseNotes>
+     4.1.2
+     ---------------------
+     - Fixed an issue with the onReset delegate of the CircuitBreaker.
+     
      4.1.1
      ---------------------
      - Add ExecuteAndCapture support with arbitrary context data - Thanks to @reisenberger
