@@ -93,9 +93,14 @@ namespace Polly.CircuitBreaker
         {
             using (TimedLock.Lock(_lock))
             {
+                CircuitState priorState = _circuitState;
+
                 ResetInternal_NeedsLock();
 
-                _onReset(context ?? Context.Empty);
+                if (priorState != CircuitState.Closed)
+                {
+                    _onReset(context ?? Context.Empty);
+                }
             }
         }
 
