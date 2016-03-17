@@ -1,3 +1,9 @@
+4.1.2
+=
+----------
+- Fixed an issue with the onReset delegate of the CircuitBreaker.
+
+
 4.1.1
 =
 ----------
