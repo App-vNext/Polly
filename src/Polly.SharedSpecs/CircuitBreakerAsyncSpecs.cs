@@ -442,6 +442,28 @@ namespace Polly.Specs
         }
 
         [Fact]
+        public void Should_not_call_onreset_on_successive_succesful_calls()
+        {
+            Action<Exception, TimeSpan> onBreak = (_, __) => { };
+            bool onResetCalled = false;
+            Action onReset = () => { onResetCalled = true; };
+
+            CircuitBreakerPolicy breaker = Policy
+                            .Handle<DivideByZeroException>()
+                            .CircuitBreakerAsync(2, TimeSpan.FromMinutes(1), onBreak, onReset);
+
+            onResetCalled.Should().BeFalse();
+
+            breaker.ExecuteAsync(() => Task.FromResult(true));
+            breaker.CircuitState.Should().Be(CircuitState.Closed);
+            onResetCalled.Should().BeFalse();
+
+            breaker.ExecuteAsync(() => Task.FromResult(true));
+            breaker.CircuitState.Should().Be(CircuitState.Closed);
+            onResetCalled.Should().BeFalse();
+        }
+
+        [Fact]
         public void Should_call_onreset_when_automatically_closing_circuit_but_not_when_halfopen()
         {
             int onBreakCalled = 0;
