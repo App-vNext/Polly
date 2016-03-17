@@ -484,7 +484,7 @@ namespace Polly.Specs
         }
 
         [Fact]
-        public void Should_not_call_onreset_on_successive_succesful_calls()
+        public void Should_not_call_onreset_on_successive_successful_calls()
         {
             Action<Exception, TimeSpan> onBreak = (_, __) => { };
             bool onResetCalled = false;
