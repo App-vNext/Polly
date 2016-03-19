@@ -1,25 +1,36 @@
 ﻿using System;
+
+using Polly.CircuitBreaker;
 using Polly.Utilities;
 
-namespace Polly.CircuitBreaker
+namespace Polly.Shared.CircuitBreaker
 {
-    internal class CircuitController : ICircuitController
+    internal class ProportionCircuitController : ICircuitController
     {
         private readonly TimeSpan _durationOfBreak;
-        private readonly int _exceptionsAllowedBeforeBreaking;
-        private int _count;
+        private readonly int _faultsAllowedBeforeBreaking;
+        private readonly int _perTotalActions;
+        private readonly bool[] _faultHistory;
+        private int _faultCount;
+        private int _historyIndex;
+
         private DateTime _blockedTill;
         private CircuitState _circuitState;
         private Exception _lastException;
+
         private readonly Action<Exception, TimeSpan, Context> _onBreak;
         private readonly Action<Context> _onReset;
         private readonly Action _onHalfOpen;
+
         private readonly object _lock = new object();
 
-        public CircuitController(int exceptionsAllowedBeforeBreaking, TimeSpan durationOfBreak, Action<Exception, TimeSpan, Context> onBreak, Action<Context> onReset, Action onHalfOpen)
+        public ProportionCircuitController(int faultsAllowedBeforeBreaking, int perTotalActions, TimeSpan durationOfBreak, Action<Exception, TimeSpan, Context> onBreak, Action<Context> onReset, Action onHalfOpen)
         {
             _durationOfBreak = durationOfBreak;
-            _exceptionsAllowedBeforeBreaking = exceptionsAllowedBeforeBreaking;
+            _faultsAllowedBeforeBreaking = faultsAllowedBeforeBreaking;
+            _perTotalActions = perTotalActions;
+            _faultHistory = new bool[_perTotalActions];
+
             _onBreak = onBreak;
             _onReset = onReset;
             _onHalfOpen = onHalfOpen;
@@ -48,9 +59,9 @@ namespace Polly.CircuitBreaker
             get
             {
                 using (TimedLock.Lock(_lock))
-				{
-					 return _lastException;
-				}
+                {
+                    return _lastException;
+                }
             }
         }
 
@@ -74,7 +85,10 @@ namespace Polly.CircuitBreaker
 
         void ResetInternal_NeedsLock()
         {
-            _count = 0;
+            for (int i = 0; i < _perTotalActions; i++) _faultHistory[i] = false;
+            _faultCount = 0;
+            _historyIndex = 0;
+
             _blockedTill = DateTime.MinValue;
             _circuitState = CircuitState.Closed;
 
@@ -103,7 +117,12 @@ namespace Polly.CircuitBreaker
 
         public void OnActionSuccess(Context context)
         {
-            Reset(context);
+            using (TimedLock.Lock(_lock))
+            {
+                if (_faultHistory[_historyIndex]) _faultCount--; // We have success, this slot previously recorded a failure, so we are now one failure less.
+                _faultHistory[_historyIndex] = false;
+                _historyIndex = (_historyIndex + 1) % _perTotalActions;
+            }
         }
 
         public void OnActionFailure(Exception ex, Context context)
@@ -112,8 +131,11 @@ namespace Polly.CircuitBreaker
             {
                 _lastException = ex;
 
-                _count += 1;
-                if (_count >= _exceptionsAllowedBeforeBreaking)
+                if (!_faultHistory[_historyIndex]) _faultCount++; // We have failure, this slot previously recorded a success, so we are now one failure more.
+                _faultHistory[_historyIndex] = true;
+                _historyIndex = (_historyIndex + 1) % _perTotalActions;
+
+                if (_faultCount >= _faultsAllowedBeforeBreaking)
                 {
                     BreakFor_NeedsLock(_durationOfBreak, context);
                 }
