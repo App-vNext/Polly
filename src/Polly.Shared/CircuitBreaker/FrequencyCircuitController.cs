@@ -1,25 +1,36 @@
 ﻿using System;
+
+using Polly.CircuitBreaker;
 using Polly.Utilities;
 
-namespace Polly.CircuitBreaker
+namespace Polly.Shared.CircuitBreaker
 {
-    internal class CircuitController : ICircuitController
+    internal class FrequencyCircuitController : ICircuitController
     {
         private readonly TimeSpan _durationOfBreak;
-        private readonly int _exceptionsAllowedBeforeBreaking;
-        private int _count;
+        private readonly int _faultsAllowedBeforeBreaking;
+        private readonly long _measuringPeriodAsTicks;
+        private readonly long[] _faultTimings;
+        private int _faultIndex;
+        private bool _statisticsComplete;
+
         private DateTime _blockedTill;
         private CircuitState _circuitState;
         private Exception _lastException;
+
         private readonly Action<Exception, TimeSpan, Context> _onBreak;
         private readonly Action<Context> _onReset;
         private readonly Action _onHalfOpen;
+
         private readonly object _lock = new object();
 
-        public CircuitController(int exceptionsAllowedBeforeBreaking, TimeSpan durationOfBreak, Action<Exception, TimeSpan, Context> onBreak, Action<Context> onReset, Action onHalfOpen)
+        public FrequencyCircuitController(int faultsAllowedBeforeBreaking, TimeSpan measuringPeriod, TimeSpan durationOfBreak, Action<Exception, TimeSpan, Context> onBreak, Action<Context> onReset, Action onHalfOpen)
         {
             _durationOfBreak = durationOfBreak;
-            _exceptionsAllowedBeforeBreaking = exceptionsAllowedBeforeBreaking;
+            _faultsAllowedBeforeBreaking = faultsAllowedBeforeBreaking;
+            _measuringPeriodAsTicks = measuringPeriod.Ticks;
+            _faultTimings = new long[_faultsAllowedBeforeBreaking];
+
             _onBreak = onBreak;
             _onReset = onReset;
             _onHalfOpen = onHalfOpen;
@@ -48,9 +59,9 @@ namespace Polly.CircuitBreaker
             get
             {
                 using (TimedLock.Lock(_lock))
-				{
-					 return _lastException;
-				}
+                {
+                    return _lastException;
+                }
             }
         }
 
@@ -74,7 +85,9 @@ namespace Polly.CircuitBreaker
 
         void ResetInternal_NeedsLock()
         {
-            _count = 0;
+            _faultIndex = 0;
+            _statisticsComplete = false;
+
             _blockedTill = DateTime.MinValue;
             _circuitState = CircuitState.Closed;
 
@@ -103,7 +116,7 @@ namespace Polly.CircuitBreaker
 
         public void OnActionSuccess(Context context)
         {
-            Reset(context);
+            
         }
 
         public void OnActionFailure(Exception ex, Context context)
@@ -112,10 +125,27 @@ namespace Polly.CircuitBreaker
             {
                 _lastException = ex;
 
-                _count += 1;
-                if (_count >= _exceptionsAllowedBeforeBreaking)
+                long ticksNow = SystemClock.UtcNow().Ticks;
+                _faultTimings[_faultIndex] = ticksNow;
+
+                _faultIndex = (_faultIndex + 1) %_faultsAllowedBeforeBreaking;
+                _statisticsComplete = _statisticsComplete || (_faultIndex == 0); // If at 0 after ++ operation, we must have wrapped.
+
+                // Alternative to above - more readable?
+                //_faultIndex++;
+                //if (_faultIndex == _faultsAllowedBeforeBreaking)
+                //{
+                //    _statisticsComplete = true;
+                //    _faultIndex = 0;
+                //}
+
+                if (_statisticsComplete)
                 {
-                    BreakFor_NeedsLock(_durationOfBreak, context);
+                    long ticksNFaultsAgo = _faultTimings[_faultIndex];
+                    if (ticksNow - ticksNFaultsAgo <= _measuringPeriodAsTicks)
+                    {
+                        BreakFor_NeedsLock(_durationOfBreak, context);
+                    }
                 }
             }
         }
