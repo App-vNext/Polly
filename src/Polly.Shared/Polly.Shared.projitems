@@ -22,6 +22,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)CircuitBreaker\ICircuitController.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CircuitBreaker\IsolatedCircuitException.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CircuitBreaker\ProportionCircuitController.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CircuitBreaker\TimesliceCircuitController.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Context.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ContextualPolicy.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ContextualPolicyAsync.cs" />
