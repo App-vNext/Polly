@@ -114,17 +114,21 @@ namespace Polly.CircuitBreaker
 
         public void OnActionPreExecute()
         {
-            switch (CircuitState)
+            using (TimedLock.Lock(_lock))
             {
-                case CircuitState.Closed:
-                case CircuitState.HalfOpen:
-                    break;
-                case CircuitState.Open:
-                    throw new BrokenCircuitException("The circuit is now open and is not allowing calls.", LastException);
-                case CircuitState.Isolated:
-                    throw new IsolatedCircuitException("The circuit is manually held open and is not allowing calls.");
-                default:
-                    throw new InvalidOperationException("Unhandled CircuitState.");
+                switch (_circuitState)
+                {
+                    case CircuitState.Closed:
+                    case CircuitState.HalfOpen:
+                        break;
+                    case CircuitState.Open:
+                        throw new BrokenCircuitException("The circuit is now open and is not allowing calls.", _lastException);
+                    case CircuitState.Isolated:
+                        throw new IsolatedCircuitException("The circuit is manually held open and is not allowing calls.");
+                    default:
+                        throw new InvalidOperationException("Unhandled CircuitState.");
+                }
+                
             }
         }
 
