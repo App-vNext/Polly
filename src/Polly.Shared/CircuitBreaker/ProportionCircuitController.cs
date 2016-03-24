@@ -30,6 +30,8 @@ namespace Polly.CircuitBreaker
         {
             using (TimedLock.Lock(_lock))
             {
+                if (_circuitState == CircuitState.HalfOpen) { Reset(context); }
+
                 if (_faultHistory[_historyIndex]) _faultCount--; // We have success, this slot previously recorded a failure, so we are now one failure less.
                 _faultHistory[_historyIndex] = false;
                 _historyIndex = (_historyIndex + 1) % _perTotalActions;
@@ -48,10 +50,9 @@ namespace Polly.CircuitBreaker
 
                 if (_faultCount >= _faultsAllowedBeforeBreaking)
                 {
-                    Break(context);
+                    Break_NeedsLock(context);
                 }
             }
         }
-        
     }
 }

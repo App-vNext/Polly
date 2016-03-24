@@ -46,6 +46,8 @@ namespace Polly.CircuitBreaker
         {
             using (TimedLock.Lock(_lock))
             {
+                if (_circuitState == CircuitState.HalfOpen) { Reset(context); }
+
                 ActualiseCurrentMetric_NeedsLock();
                 _metric.Successes++;
             }
@@ -63,8 +65,9 @@ namespace Polly.CircuitBreaker
                 int throughput = _metric.Failures + _metric.Successes;
                 if (throughput > _minimumThroughput && ((double)_metric.Failures) / throughput > _failureThreshold)
                 {
-                    Break(context);
+                    Break_NeedsLock(context);
                 }
+                
             }
         }
     }

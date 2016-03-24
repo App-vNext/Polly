@@ -20,7 +20,10 @@ namespace Polly.CircuitBreaker
 
         public override void OnActionSuccess(Context context)
         {
-            Reset(context);
+            using (TimedLock.Lock(_lock))
+            {
+                if (_circuitState == CircuitState.HalfOpen) { Reset(context); }
+            }
         }
 
         public override void OnActionFailure(Exception ex, Context context)
@@ -32,10 +35,9 @@ namespace Polly.CircuitBreaker
                 _count += 1;
                 if (_count >= _exceptionsAllowedBeforeBreaking)
                 {
-                    Break(context);
+                    Break_NeedsLock(context);
                 }
             }
         }
-
     }
 }

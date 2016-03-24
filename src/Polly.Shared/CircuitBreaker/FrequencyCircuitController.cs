@@ -25,7 +25,13 @@ namespace Polly.CircuitBreaker
             _statisticsComplete = false;
         }
 
-        public override void OnActionSuccess(Context context) { }
+        public override void OnActionSuccess(Context context)
+        {
+            using (TimedLock.Lock(_lock))
+            {
+                if (_circuitState == CircuitState.HalfOpen) { Reset(context); }
+            }
+        }
 
         public override void OnActionFailure(Exception ex, Context context)
         {
@@ -36,27 +42,22 @@ namespace Polly.CircuitBreaker
                 long ticksNow = SystemClock.UtcNow().Ticks;
                 _faultTimings[_faultIndex] = ticksNow;
 
-                _faultIndex = (_faultIndex + 1) %_faultsAllowedBeforeBreaking;
-                _statisticsComplete = _statisticsComplete || (_faultIndex == 0); // If at 0 after ++ % operation, we must have wrapped.
-
-                // Alternative to above - more readable?
-                //_faultIndex++;
-                //if (_faultIndex == _faultsAllowedBeforeBreaking)
-                //{
-                //    _statisticsComplete = true;
-                //    _faultIndex = 0;
-                //}
+                _faultIndex++;
+                if (_faultIndex == _faultsAllowedBeforeBreaking)
+                {
+                    _faultIndex = 0;
+                    _statisticsComplete = true;
+                }
 
                 if (_statisticsComplete)
                 {
                     long ticksNFaultsAgo = _faultTimings[_faultIndex];
                     if (ticksNow - ticksNFaultsAgo <= _measuringPeriodAsTicks)
                     {
-                        Break(context);
+                        Break_NeedsLock(context);
                     }
                 }
             }
         }
-
     }
 }
