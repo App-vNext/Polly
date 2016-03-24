@@ -110,7 +110,7 @@ namespace Polly.CircuitBreaker
         {
             using (TimedLock.Lock(_lock))
             {
-                switch (_circuitState)
+                switch (CircuitState)
                 {
                     case CircuitState.Closed:
                     case CircuitState.HalfOpen:
