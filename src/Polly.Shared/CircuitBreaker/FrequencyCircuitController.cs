@@ -19,17 +19,22 @@ namespace Polly.CircuitBreaker
             _faultTimings = new long[_faultsAllowedBeforeBreaking];
         }
 
-        public override void OnCircuitReset()
+        public override void OnCircuitReset(Context context)
         {
-            _faultIndex = 0;
-            _statisticsComplete = false;
+            using (TimedLock.Lock(_lock))
+            {
+                _faultIndex = 0;
+                _statisticsComplete = false;
+
+                ResetInternal_NeedsLock(context);
+            }
         }
 
         public override void OnActionSuccess(Context context)
         {
             using (TimedLock.Lock(_lock))
             {
-                if (_circuitState == CircuitState.HalfOpen) { Reset(context); }
+                if (_circuitState == CircuitState.HalfOpen) { OnCircuitReset(context); }
             }
         }
 
