@@ -90,25 +90,19 @@ namespace Polly.CircuitBreaker
 
         public void Reset()
         {
-            Reset(Context.Empty);
+            OnCircuitReset(Context.Empty);
         }
 
-        protected void Reset(Context context)
+        protected void ResetInternal_NeedsLock(Context context)
         {
-            using (TimedLock.Lock(_lock))
+            _blockedTill = DateTime.MinValue;
+            _lastException = new InvalidOperationException("This exception should never be thrown");
+
+            CircuitState priorState = _circuitState;
+            _circuitState = CircuitState.Closed;
+            if (priorState != CircuitState.Closed)
             {
-                _blockedTill = DateTime.MinValue;
-                _lastException = new InvalidOperationException("This exception should never be thrown");
-
-                CircuitState priorState = _circuitState;
-                _circuitState = CircuitState.Closed;
-
-                OnCircuitReset();
-
-                if (priorState != CircuitState.Closed)
-                {
-                    _onReset(context ?? Context.Empty);
-                }
+                _onReset(context ?? Context.Empty);
             }
         }
 
@@ -128,7 +122,6 @@ namespace Polly.CircuitBreaker
                     default:
                         throw new InvalidOperationException("Unhandled CircuitState.");
                 }
-                
             }
         }
 
@@ -136,7 +129,7 @@ namespace Polly.CircuitBreaker
 
         public abstract void OnActionFailure(Exception ex, Context context);
 
-        public abstract void OnCircuitReset();
+        public abstract void OnCircuitReset(Context context);
     }
 }
 

@@ -25,9 +25,14 @@ namespace Polly.CircuitBreaker
             _minimumThroughput = minimumThroughput;
         }
 
-        public override void OnCircuitReset()
+        public override void OnCircuitReset(Context context)
         {
-            _metric = null;
+            using (TimedLock.Lock(_lock))
+            {
+                _metric = null;
+
+                ResetInternal_NeedsLock(context);
+            }
         }
 
         private void ActualiseCurrentMetric_NeedsLock()
@@ -46,7 +51,7 @@ namespace Polly.CircuitBreaker
         {
             using (TimedLock.Lock(_lock))
             {
-                if (_circuitState == CircuitState.HalfOpen) { Reset(context); }
+                if (_circuitState == CircuitState.HalfOpen) { OnCircuitReset(context); }
 
                 ActualiseCurrentMetric_NeedsLock();
                 _metric.Successes++;

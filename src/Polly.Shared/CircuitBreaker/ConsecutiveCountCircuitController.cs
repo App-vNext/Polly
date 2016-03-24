@@ -13,16 +13,21 @@ namespace Polly.CircuitBreaker
             _exceptionsAllowedBeforeBreaking = exceptionsAllowedBeforeBreaking;
         }
 
-        public override void OnCircuitReset()
+        public override void OnCircuitReset(Context context)
         {
-            _count = 0;
+            using (TimedLock.Lock(_lock))
+            {
+                _count = 0;
+
+                ResetInternal_NeedsLock(context);
+            }
         }
 
         public override void OnActionSuccess(Context context)
         {
             using (TimedLock.Lock(_lock))
             {
-                if (_circuitState == CircuitState.HalfOpen) { Reset(context); }
+                if (_circuitState == CircuitState.HalfOpen) { OnCircuitReset(context); }
             }
         }
 

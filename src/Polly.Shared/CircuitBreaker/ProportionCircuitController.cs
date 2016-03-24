@@ -19,18 +19,23 @@ namespace Polly.CircuitBreaker
             _faultHistory = new bool[_perTotalActions];
         }
         
-        public override void OnCircuitReset()
+        public override void OnCircuitReset(Context context)
         {
-            for (int i = 0; i < _perTotalActions; i++) _faultHistory[i] = false;
-            _faultCount = 0;
-            _historyIndex = 0;
+            using (TimedLock.Lock(_lock))
+            {
+                for (int i = 0; i < _perTotalActions; i++) _faultHistory[i] = false;
+                _faultCount = 0;
+                _historyIndex = 0;
+
+                ResetInternal_NeedsLock(context);
+            }
         }
 
         public override void OnActionSuccess(Context context)
         {
             using (TimedLock.Lock(_lock))
             {
-                if (_circuitState == CircuitState.HalfOpen) { Reset(context); }
+                if (_circuitState == CircuitState.HalfOpen) { OnCircuitReset(context); }
 
                 if (_faultHistory[_historyIndex]) _faultCount--; // We have success, this slot previously recorded a failure, so we are now one failure less.
                 _faultHistory[_historyIndex] = false;
