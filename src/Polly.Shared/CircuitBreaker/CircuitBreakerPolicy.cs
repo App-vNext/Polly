@@ -28,7 +28,8 @@ namespace Polly.CircuitBreaker
         /// <summary>
         /// Gets the last exception handled by the circuit-breaker.
         /// </summary>
-        public Exception LastException {
+        public Exception LastException
+        {
             get { return _breakerController.LastException; }
         }
 

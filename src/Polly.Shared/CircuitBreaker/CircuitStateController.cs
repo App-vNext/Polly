@@ -7,7 +7,6 @@ namespace Polly.CircuitBreaker
 {
     internal abstract class CircuitStateController : ICircuitController
     {
-
         protected readonly TimeSpan _durationOfBreak;
         protected DateTime _blockedTill;
         protected CircuitState _circuitState;
@@ -73,7 +72,7 @@ namespace Polly.CircuitBreaker
             }
         }
 
-        protected void Break(Context context)
+        protected void Break_NeedsLock(Context context)
         {
             BreakFor_NeedsLock(_durationOfBreak, context);
         }
@@ -110,6 +109,22 @@ namespace Polly.CircuitBreaker
                 {
                     _onReset(context ?? Context.Empty);
                 }
+            }
+        }
+
+        public void OnActionPreExecute()
+        {
+            switch (CircuitState)
+            {
+                case CircuitState.Closed:
+                case CircuitState.HalfOpen:
+                    break;
+                case CircuitState.Open:
+                    throw new BrokenCircuitException("The circuit is now open and is not allowing calls.", LastException);
+                case CircuitState.Isolated:
+                    throw new IsolatedCircuitException("The circuit is manually held open and is not allowing calls.");
+                default:
+                    throw new InvalidOperationException("Unhandled CircuitState.");
             }
         }
 
