@@ -64,6 +64,8 @@ namespace Polly.CircuitBreaker
             {
                 _lastException = ex;
 
+                if (_circuitState == CircuitState.HalfOpen) { Break_NeedsLock(context); }
+
                 ActualiseCurrentMetric_NeedsLock();
                 _metric.Failures++;
 
