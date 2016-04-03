@@ -37,6 +37,12 @@ namespace Polly.CircuitBreaker
             {
                 _lastException = ex;
 
+                if (_circuitState == CircuitState.HalfOpen)
+                {
+                    Break_NeedsLock(context);
+                    return;
+                }
+
                 _count += 1;
                 if (_count >= _exceptionsAllowedBeforeBreaking)
                 {

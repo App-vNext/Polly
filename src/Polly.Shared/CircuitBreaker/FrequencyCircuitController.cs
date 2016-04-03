@@ -44,7 +44,11 @@ namespace Polly.CircuitBreaker
             {
                 _lastException = ex;
 
-                if (_circuitState == CircuitState.HalfOpen) { Break_NeedsLock(context); }
+                if (_circuitState == CircuitState.HalfOpen)
+                {
+                    Break_NeedsLock(context);
+                    return;
+                }
 
                 long ticksNow = SystemClock.UtcNow().Ticks;
                 _faultTimings[_faultIndex] = ticksNow;
