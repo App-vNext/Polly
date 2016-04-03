@@ -37,7 +37,7 @@ namespace Polly.CircuitBreaker
             {
                 if (_circuitState == CircuitState.HalfOpen) { OnCircuitReset(context); }
 
-                if (_faultHistory[_historyIndex]) _faultCount--; // We have success, this slot previously recorded a failure, so we are now one failure less.
+                if (_faultHistory[_historyIndex]) _faultCount--; // We have success: if this slot previously recorded a failure, we are now one failure less.
                 _faultHistory[_historyIndex] = false;
                 _historyIndex = (_historyIndex + 1) % _perTotalActions;
             }
@@ -49,7 +49,13 @@ namespace Polly.CircuitBreaker
             {
                 _lastException = ex;
 
-                if (!_faultHistory[_historyIndex]) _faultCount++; // We have failure, this slot previously recorded a success, so we are now one failure more.
+                if (_circuitState == CircuitState.HalfOpen)
+                {
+                    Break_NeedsLock(context);
+                    return;
+                }
+
+                if (!_faultHistory[_historyIndex]) _faultCount++; // We have failure: if this slot previously recorded a success, we are now one failure more.
                 _faultHistory[_historyIndex] = true;
                 _historyIndex = (_historyIndex + 1) % _perTotalActions;
 
