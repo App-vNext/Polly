@@ -18,8 +18,8 @@ namespace Polly
         /// while the circuit is broken, will immediately throw a <see cref="BrokenCircuitException"/> containing the exception 
         /// that broke the cicuit.
         /// </para>
-        /// <para>If the first action after the break duration period results in an exception, the circuit will break
-        /// again for another <paramref name="durationOfBreak"/>, otherwise it will reset.
+        /// <para>If the first action after the break duration period results in a handled exception, the circuit will break
+        /// again for another <paramref name="durationOfBreak"/>; if no exception is thrown, the circuit will reset.
         /// </para>
         /// </summary>
         /// <param name="policyBuilder">The policy builder.</param>
@@ -49,8 +49,8 @@ namespace Polly
         /// while the circuit is broken, will immediately throw a <see cref="BrokenCircuitException"/> containing the exception 
         /// that broke the cicuit.
         /// </para>
-        /// <para>If the first action after the break duration period results in an exception, the circuit will break
-        /// again for another <paramref name="durationOfBreak"/>, otherwise it will reset.
+        /// <para>If the first action after the break duration period results in a handled exception, the circuit will break
+        /// again for another <paramref name="durationOfBreak"/>; if no exception is thrown, the circuit will reset.
         /// </para>
         /// </summary>
         /// <param name="policyBuilder">The policy builder.</param>
@@ -81,8 +81,8 @@ namespace Polly
         /// while the circuit is broken, will immediately throw a <see cref="BrokenCircuitException"/> containing the exception 
         /// that broke the cicuit.
         /// </para>
-        /// <para>If the first action after the break duration period results in an exception, the circuit will break
-        /// again for another <paramref name="durationOfBreak"/>, otherwise it will reset.
+        /// <para>If the first action after the break duration period results in a handled exception, the circuit will break
+        /// again for another <paramref name="durationOfBreak"/>; if no exception is thrown, the circuit will reset.
         /// </para>
         /// </summary>
         /// <param name="policyBuilder">The policy builder.</param>
@@ -115,8 +115,8 @@ namespace Polly
         /// while the circuit is broken, will immediately throw a <see cref="BrokenCircuitException"/> containing the exception 
         /// that broke the cicuit.
         /// </para>
-        /// <para>If the first action after the break duration period results in an exception, the circuit will break
-        /// again for another <paramref name="durationOfBreak"/>, otherwise it will reset.
+        /// <para>If the first action after the break duration period results in a handled exception, the circuit will break
+        /// again for another <paramref name="durationOfBreak"/>; if no exception is thrown, the circuit will reset.
         /// </para>
         /// </summary>
         /// <param name="policyBuilder">The policy builder.</param>
@@ -149,8 +149,8 @@ namespace Polly
         /// while the circuit is broken, will immediately throw a <see cref="BrokenCircuitException"/> containing the exception 
         /// that broke the cicuit.
         /// </para>
-        /// <para>If the first action after the break duration period results in an exception, the circuit will break
-        /// again for another <paramref name="durationOfBreak"/>, otherwise it will reset.
+        /// <para>If the first action after the break duration period results in a handled exception, the circuit will break
+        /// again for another <paramref name="durationOfBreak"/>; if no exception is thrown, the circuit will reset.
         /// </para>
         /// </summary>
         /// <param name="policyBuilder">The policy builder.</param>
