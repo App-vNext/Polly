@@ -10,6 +10,8 @@ namespace Polly.Specs
 {
     public class CircuitBreakerSpecs : IDisposable
     {
+        #region Configuration tests
+
         [Fact]
         public void Should_be_able_to_handle_a_duration_of_timespan_maxvalue()
         {
@@ -26,11 +28,32 @@ namespace Polly.Specs
         {
            Action action = () => Policy
                                     .Handle<DivideByZeroException>()
-                                    .CircuitBreaker(0, new TimeSpan());
+                                    .CircuitBreaker(0, TimeSpan.FromSeconds(10));
 
             action.ShouldThrow<ArgumentOutOfRangeException>()
                   .And.ParamName.Should()
                   .Be("exceptionsAllowedBeforeBreaking");
+        }
+
+        [Fact]
+        public void Should_throw_if_duration_of_break_is_less_than_zero()
+        {
+            Action action = () => Policy
+                                     .Handle<DivideByZeroException>()
+                                     .CircuitBreaker(1, -TimeSpan.FromSeconds(1));
+
+            action.ShouldThrow<ArgumentOutOfRangeException>()
+                .And.ParamName.Should()
+                .Be("durationOfBreak");
+        }
+
+        [Fact]
+        public void Should_be_able_to_handle_a_duration_of_break_of_zero()
+        {
+            Action action = () => Policy
+                                     .Handle<DivideByZeroException>()
+                                     .CircuitBreaker(1, TimeSpan.Zero);
+            action.ShouldNotThrow();
         }
 
         [Fact]
@@ -44,6 +67,10 @@ namespace Polly.Specs
 
             breaker.CircuitState.Should().Be(CircuitState.Closed);
         }
+
+        #endregion
+
+        #region Circuit-breaker threshold-to-break tests
 
         [Fact]
         public void Should_open_circuit_with_the_last_raised_exception_after_specified_number_of_specified_exception_have_been_raised()
@@ -131,6 +158,10 @@ namespace Polly.Specs
                   .ShouldThrow<ArgumentNullException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
         }
+
+        #endregion
+
+        #region Circuit-breaker open->half-open->open/closed tests
 
         [Fact]
         public void Should_halfopen_circuit_after_the_specified_duration_has_passed()
@@ -249,7 +280,11 @@ namespace Polly.Specs
                   .ShouldThrow<BrokenCircuitException>();
             breaker.CircuitState.Should().Be(CircuitState.Open);
         }
-        
+
+        #endregion
+
+        #region Isolate and reset tests
+
         [Fact]
         public void Should_open_circuit_and_block_calls_if_manual_override_open()
         {
@@ -350,6 +385,10 @@ namespace Polly.Specs
             breaker.CircuitState.Should().Be(CircuitState.Closed);
             breaker.Invoking(x => x.Execute(() => { })).ShouldNotThrow();
         }
+
+        #endregion
+
+        #region State-change delegate tests
 
         [Fact]
         public void Should_not_call_onreset_on_initialise()
@@ -625,6 +664,10 @@ namespace Polly.Specs
             breaker.Invoking(x => x.Execute(() => { })).ShouldNotThrow();
         }
 
+        #endregion
+
+        #region Tests that supplied context is passed to stage-change delegates
+
         [Fact]
         public void Should_call_onbreak_with_the_passed_context()
         {
@@ -634,14 +677,14 @@ namespace Polly.Specs
             Action<Context> onReset = _ => { };
 
             CircuitBreakerPolicy breaker = Policy
-                            .Handle<DivideByZeroException>()
-                            .CircuitBreaker(2, TimeSpan.FromMinutes(1), onBreak, onReset);
+                .Handle<DivideByZeroException>()
+                .CircuitBreaker(2, TimeSpan.FromMinutes(1), onBreak, onReset);
 
             breaker.Invoking(x => x.RaiseException<DivideByZeroException>())
-                  .ShouldThrow<DivideByZeroException>();
+                .ShouldThrow<DivideByZeroException>();
 
             breaker.Invoking(x => x.RaiseException<DivideByZeroException>(
-                new { key1 = "value1", key2 = "value2" }.AsDictionary()
+                new {key1 = "value1", key2 = "value2"}.AsDictionary()
                 )).ShouldThrow<DivideByZeroException>();
 
             breaker.CircuitState.Should().Be(CircuitState.Open);
@@ -656,7 +699,7 @@ namespace Polly.Specs
         {
             IDictionary<string, object> contextData = null;
 
-            Action<Exception, TimeSpan, Context> onBreak = (_, __, ___) => {  };
+            Action<Exception, TimeSpan, Context> onBreak = (_, __, ___) => { };
             Action<Context> onReset = context => { contextData = context; };
 
             var time = 1.January(2000);
@@ -665,20 +708,20 @@ namespace Polly.Specs
             var durationOfBreak = TimeSpan.FromMinutes(1);
 
             CircuitBreakerPolicy breaker = Policy
-                            .Handle<DivideByZeroException>()
-                            .CircuitBreaker(2, durationOfBreak, onBreak, onReset);
+                .Handle<DivideByZeroException>()
+                .CircuitBreaker(2, durationOfBreak, onBreak, onReset);
 
             breaker.Invoking(x => x.RaiseException<DivideByZeroException>())
-                  .ShouldThrow<DivideByZeroException>();
+                .ShouldThrow<DivideByZeroException>();
             breaker.Invoking(x => x.RaiseException<DivideByZeroException>())
-                  .ShouldThrow<DivideByZeroException>();
+                .ShouldThrow<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
             SystemClock.UtcNow = () => time.Add(durationOfBreak);
             breaker.CircuitState.Should().Be(CircuitState.HalfOpen);
 
             // first call after duration should invoke onReset, with context
-            breaker.Execute(() => { }, new { key1 = "value1", key2 = "value2" }.AsDictionary());
+            breaker.Execute(() => { }, new {key1 = "value1", key2 = "value2"}.AsDictionary());
 
             contextData.Should()
                 .ContainKeys("key1", "key2").And
@@ -688,20 +731,20 @@ namespace Polly.Specs
         [Fact]
         public void Context_should_be_empty_if_execute_not_called_with_any_context_data()
         {
-            IDictionary<string, object> contextData = new { key1 = "value1", key2 = "value2" }.AsDictionary();
+            IDictionary<string, object> contextData = new {key1 = "value1", key2 = "value2"}.AsDictionary();
 
             Action<Exception, TimeSpan, Context> onBreak = (_, __, context) => { contextData = context; };
             Action<Context> onReset = _ => { };
 
             CircuitBreakerPolicy breaker = Policy
-                            .Handle<DivideByZeroException>()
-                            .CircuitBreaker(2, TimeSpan.FromMinutes(1), onBreak, onReset);
+                .Handle<DivideByZeroException>()
+                .CircuitBreaker(2, TimeSpan.FromMinutes(1), onBreak, onReset);
 
             breaker.Invoking(x => x.RaiseException<DivideByZeroException>())
-                  .ShouldThrow<DivideByZeroException>();
+                .ShouldThrow<DivideByZeroException>();
 
             breaker.Invoking(x => x.RaiseException<DivideByZeroException>())
-                  .ShouldThrow<DivideByZeroException>();
+                .ShouldThrow<DivideByZeroException>();
 
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
@@ -717,8 +760,8 @@ namespace Polly.Specs
             Action<Context> onReset = context => { contextValue = context.ContainsKey("key") ? context["key"].ToString() : null; };
 
             CircuitBreakerPolicy breaker = Policy
-                            .Handle<DivideByZeroException>()
-                            .CircuitBreaker(2, TimeSpan.FromMinutes(1), onBreak, onReset);
+                .Handle<DivideByZeroException>()
+                .CircuitBreaker(2, TimeSpan.FromMinutes(1), onBreak, onReset);
 
             var time = 1.January(2000);
             SystemClock.UtcNow = () => time;
@@ -726,11 +769,11 @@ namespace Polly.Specs
             var durationOfBreak = TimeSpan.FromMinutes(1);
 
             breaker.Invoking(x => x.RaiseException<DivideByZeroException>())
-                  .ShouldThrow<DivideByZeroException>();
+                .ShouldThrow<DivideByZeroException>();
 
             // 2 exception raised, circuit is now open
-            breaker.Invoking(x => x.RaiseException<DivideByZeroException>(new { key = "original_value" }.AsDictionary()))
-                  .ShouldThrow<DivideByZeroException>();
+            breaker.Invoking(x => x.RaiseException<DivideByZeroException>(new {key = "original_value"}.AsDictionary()))
+                .ShouldThrow<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Open);
             contextValue.Should().Be("original_value");
 
@@ -741,10 +784,12 @@ namespace Polly.Specs
             // but not yet reset
 
             // first call after duration is successful, so circuit should reset
-            breaker.Execute(() => { }, new { key = "new_value" }.AsDictionary());
+            breaker.Execute(() => { }, new {key = "new_value"}.AsDictionary());
             breaker.CircuitState.Should().Be(CircuitState.Closed);
             contextValue.Should().Be("new_value");
         }
+
+        #endregion
 
         public void Dispose()
         {
