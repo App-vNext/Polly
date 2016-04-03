@@ -18,7 +18,7 @@ namespace Polly.CircuitBreaker
             public long StartedAt { get; set; }
         }
 
-        public TimesliceCircuitController(TimeSpan timesliceDuration, double failureThreshold, int minimumThroughput, TimeSpan durationOfBreak, Action<Exception, TimeSpan, Context> onBreak, Action<Context> onReset, Action onHalfOpen) : base(durationOfBreak, onBreak, onReset, onHalfOpen)
+        public TimesliceCircuitController(double failureThreshold, TimeSpan timesliceDuration, int minimumThroughput, TimeSpan durationOfBreak, Action<Exception, TimeSpan, Context> onBreak, Action<Context> onReset, Action onHalfOpen) : base(durationOfBreak, onBreak, onReset, onHalfOpen)
         {
             _timesliceDuration = timesliceDuration.Ticks;
             _failureThreshold = failureThreshold;
@@ -41,7 +41,7 @@ namespace Polly.CircuitBreaker
 
             long now = SystemClock.UtcNow().Ticks;
 
-            if (_metric == null || now - _metric.StartedAt > _timesliceDuration)
+            if (_metric == null || now - _metric.StartedAt >= _timesliceDuration)
             {
                 _metric = new HealthMetric { StartedAt = now };
             }
@@ -64,13 +64,17 @@ namespace Polly.CircuitBreaker
             {
                 _lastException = ex;
 
-                if (_circuitState == CircuitState.HalfOpen) { Break_NeedsLock(context); }
+                if (_circuitState == CircuitState.HalfOpen)
+                {
+                    Break_NeedsLock(context);
+                    return;
+                }
 
                 ActualiseCurrentMetric_NeedsLock();
                 _metric.Failures++;
 
                 int throughput = _metric.Failures + _metric.Successes;
-                if (throughput > _minimumThroughput && ((double)_metric.Failures) / throughput > _failureThreshold)
+                if (throughput >= _minimumThroughput && ((double)_metric.Failures) / throughput >= _failureThreshold)
                 {
                     Break_NeedsLock(context);
                 }
