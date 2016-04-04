@@ -173,7 +173,7 @@ namespace Polly
         {
             if (failureThreshold <= 0) throw new ArgumentOutOfRangeException("failureThreshold", "Value must be greater than zero.");
             if (failureThreshold > 1) throw new ArgumentOutOfRangeException("failureThreshold", "Value must be less than or equal to one.");
-            if (timesliceDuration < TimeSpan.Zero) throw new ArgumentOutOfRangeException("timesliceDuration", "Value must be greater than zero.");
+            if (timesliceDuration <= TimeSpan.Zero) throw new ArgumentOutOfRangeException("timesliceDuration", "Value must be greater than zero.");
             if (minimumThroughput <= 0) throw new ArgumentOutOfRangeException("minimumThroughput", "Value must be greater than zero.");
             if (durationOfBreak < TimeSpan.Zero) throw new ArgumentOutOfRangeException("durationOfBreak", "Value must be greater than zero.");
 

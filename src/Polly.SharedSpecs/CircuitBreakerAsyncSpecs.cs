@@ -14,6 +14,8 @@ namespace Polly.Specs
 {
     public class CircuitBreakerAsyncSpecs : IDisposable
     {
+        #region Configuration tests
+
         [Fact]
         public void Should_be_able_to_handle_a_duration_of_timespan_maxvalue()
         {
@@ -30,11 +32,32 @@ namespace Polly.Specs
         {
            Action action = () => Policy
                                     .Handle<DivideByZeroException>()
-                                    .CircuitBreakerAsync(0, new TimeSpan());
+                                    .CircuitBreakerAsync(0, TimeSpan.FromSeconds(10));
 
             action.ShouldThrow<ArgumentOutOfRangeException>()
                   .And.ParamName.Should()
                   .Be("exceptionsAllowedBeforeBreaking");
+        }
+
+        [Fact]
+        public void Should_throw_if_duration_of_break_is_less_than_zero()
+        {
+            Action action = () => Policy
+                                     .Handle<DivideByZeroException>()
+                                     .CircuitBreakerAsync(1, -TimeSpan.FromSeconds(1));
+
+            action.ShouldThrow<ArgumentOutOfRangeException>()
+                .And.ParamName.Should()
+                .Be("durationOfBreak");
+        }
+
+        [Fact]
+        public void Should_be_able_to_handle_a_duration_of_break_of_zero()
+        {
+            Action action = () => Policy
+                                     .Handle<DivideByZeroException>()
+                                     .CircuitBreakerAsync(1, TimeSpan.Zero);
+            action.ShouldNotThrow();
         }
 
         [Fact]
@@ -48,6 +71,10 @@ namespace Polly.Specs
 
             breaker.CircuitState.Should().Be(CircuitState.Closed);
         }
+
+        #endregion
+
+        #region Circuit-breaker threshold-to-break tests
 
         [Fact]
         public void Should_open_circuit_with_the_last_raised_exception_after_specified_number_of_specified_exception_have_been_raised()
@@ -135,6 +162,10 @@ namespace Polly.Specs
                   .ShouldThrow<ArgumentNullException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
         }
+
+        #endregion
+
+        #region Circuit-breaker open->half-open->open/closed tests
 
         [Fact]
         public void Should_halfopen_circuit_after_the_specified_duration_has_passed()
@@ -254,6 +285,10 @@ namespace Polly.Specs
             breaker.CircuitState.Should().Be(CircuitState.Open);
         }
 
+        #endregion
+
+        #region Isolate and reset tests
+
         [Fact]
         public void Should_open_circuit_and_block_calls_if_manual_override_open()
         {
@@ -355,6 +390,10 @@ namespace Polly.Specs
             breaker.Awaiting(x => x.ExecuteAsync(() => Task.FromResult(true))).ShouldNotThrow();
         }
 
+        #endregion
+
+        #region State-change delegate tests
+
         [Fact]
         public void Should_not_call_onreset_on_initialise()
         {
@@ -442,28 +481,6 @@ namespace Polly.Specs
         }
 
         [Fact]
-        public void Should_not_call_onreset_on_successive_successful_calls()
-        {
-            Action<Exception, TimeSpan> onBreak = (_, __) => { };
-            bool onResetCalled = false;
-            Action onReset = () => { onResetCalled = true; };
-
-            CircuitBreakerPolicy breaker = Policy
-                            .Handle<DivideByZeroException>()
-                            .CircuitBreakerAsync(2, TimeSpan.FromMinutes(1), onBreak, onReset);
-
-            onResetCalled.Should().BeFalse();
-
-            breaker.ExecuteAsync(() => Task.FromResult(true));
-            breaker.CircuitState.Should().Be(CircuitState.Closed);
-            onResetCalled.Should().BeFalse();
-
-            breaker.ExecuteAsync(() => Task.FromResult(true));
-            breaker.CircuitState.Should().Be(CircuitState.Closed);
-            onResetCalled.Should().BeFalse();
-        }
-
-        [Fact]
         public void Should_call_onreset_when_automatically_closing_circuit_but_not_when_halfopen()
         {
             int onBreakCalled = 0;
@@ -507,6 +524,28 @@ namespace Polly.Specs
             breaker.ExecuteAsync(() => Task.FromResult(true));
             breaker.CircuitState.Should().Be(CircuitState.Closed);
             onResetCalled.Should().Be(1);
+        }
+
+        [Fact]
+        public void Should_not_call_onreset_on_successive_successful_calls()
+        {
+            Action<Exception, TimeSpan> onBreak = (_, __) => { };
+            bool onResetCalled = false;
+            Action onReset = () => { onResetCalled = true; };
+
+            CircuitBreakerPolicy breaker = Policy
+                .Handle<DivideByZeroException>()
+                .CircuitBreakerAsync(2, TimeSpan.FromMinutes(1), onBreak, onReset);
+
+            onResetCalled.Should().BeFalse();
+
+            breaker.ExecuteAsync(() => Task.FromResult(true));
+            breaker.CircuitState.Should().Be(CircuitState.Closed);
+            onResetCalled.Should().BeFalse();
+
+            breaker.ExecuteAsync(() => Task.FromResult(true));
+            breaker.CircuitState.Should().Be(CircuitState.Closed);
+            onResetCalled.Should().BeFalse();
         }
 
         [Fact]
@@ -629,6 +668,10 @@ namespace Polly.Specs
             breaker.Awaiting(x => x.ExecuteAsync(() => Task.FromResult(true))).ShouldNotThrow();
         }
 
+        #endregion
+
+        #region Tests that supplied context is passed to stage-change delegates
+
         [Fact]
         public void Should_call_onbreak_with_the_passed_context()
         {
@@ -656,7 +699,7 @@ namespace Polly.Specs
         }
 
         [Fact]
-        public void Should_call_onreset_with_the_passed_context()
+        public async Task Should_call_onreset_with_the_passed_context()
         {
             IDictionary<string, object> contextData = null;
 
@@ -682,7 +725,7 @@ namespace Polly.Specs
             breaker.CircuitState.Should().Be(CircuitState.HalfOpen);
 
             // first call after duration should invoke onReset, with context
-            breaker.ExecuteAsync(() => Task.FromResult(true), new { key1 = "value1", key2 = "value2" }.AsDictionary());
+            await breaker.ExecuteAsync(() => Task.FromResult(true), new { key1 = "value1", key2 = "value2" }.AsDictionary());
 
             contextData.Should()
                 .ContainKeys("key1", "key2").And
@@ -749,6 +792,9 @@ namespace Polly.Specs
             breaker.CircuitState.Should().Be(CircuitState.Closed);
             contextValue.Should().Be("new_value");
         }
+
+        #region Cancellation support
+
         [Fact]
         public void Should_execute_action_when_non_faulting_and_cancellationtoken_not_cancelled()
         {
@@ -1017,7 +1063,10 @@ namespace Polly.Specs
 
             attemptsInvoked.Should().Be(1);
         }
-        
+
+        #endregion
+
+        #endregion
 
         public void Dispose()
         {
