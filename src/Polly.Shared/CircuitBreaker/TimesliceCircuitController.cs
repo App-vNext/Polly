@@ -11,7 +11,7 @@ namespace Polly.CircuitBreaker
 
         private HealthMetric _metric;
 
-        private class HealthMetric // Perhaps this could be a struct (admittedly a mutable one), to avoid class allocations and de-allocations?  Or, if only one metric at a time is ever retained, it could be removed altogether and the properties incorporated in to the parent class.
+        private class HealthMetric // If only one metric at a time is ever retained, this could be removed (for performance) and the properties incorporated in to the parent class.
         {
             public int Successes { get; set; }
             public int Failures { get; set; }
@@ -37,7 +37,7 @@ namespace Polly.CircuitBreaker
 
         private void ActualiseCurrentMetric_NeedsLock()
         {
-            // (future enhancement) Any operation in this method disposing of an existing _metric could emit it to a delegate, for health-monitoring capturing ...
+            // (future enhancement) Any operation in this method disposing of an existing _metric could emit it to a delegate, for health-monitoring capture ...
 
             long now = SystemClock.UtcNow().Ticks;
 
