@@ -164,7 +164,7 @@ namespace Polly.Specs
         // These provide easy values for testing for failure and throughput thresholds each being met and non-met, in combination.
 
         [Fact]
-        public void Should_open_circuit_with_the_last_raised_exception_if_failure_threshold_exceeded_and_throughput_threshold_equalled_within_timeslice()
+        public void Should_open_circuit_with_the_last_raised_exception_if_failure_threshold_exceeded_and_throughput_threshold_equalled_within_timeslice_in_same_window()
         {
             var time = 1.January(2000);
             SystemClock.UtcNow = () => time;
@@ -205,8 +205,54 @@ namespace Polly.Specs
 
         }
 
+        public void Should_open_circuit_with_the_last_raised_exception_if_failure_threshold_exceeded_and_throughput_threshold_equalled_within_timeslice_in_different_windows()
+        {
+            var time = 1.January(2000);
+            SystemClock.UtcNow = () => time;
+
+            var timesliceDuration = TimeSpan.FromSeconds(10);
+
+            CircuitBreakerPolicy breaker = Policy
+                .Handle<DivideByZeroException>()
+                .TimesliceCircuitBreakerAsync(
+                    failureThreshold: 0.5,
+                    timesliceDuration: timesliceDuration,
+                    minimumThroughput: 4,
+                    durationOfBreak: TimeSpan.FromSeconds(30)
+                );
+
+            // Four of four actions in this test throw handled failures.
+            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                .ShouldThrow<DivideByZeroException>();
+            breaker.CircuitState.Should().Be(CircuitState.Closed);
+
+            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                .ShouldThrow<DivideByZeroException>();
+            breaker.CircuitState.Should().Be(CircuitState.Closed);
+
+            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                .ShouldThrow<DivideByZeroException>();
+            breaker.CircuitState.Should().Be(CircuitState.Closed);
+
+            // Placing the rest of the invocations ('timesliceDuration' / 2) + 1 seconds later
+            // ensures that even if there are only two windows, then the invocations are placed in the second.
+            // They are still placed within same timeslice
+            SystemClock.UtcNow = () => time.AddSeconds(timesliceDuration.Seconds / 2d + 1);
+
+            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                .ShouldThrow<DivideByZeroException>();
+            breaker.CircuitState.Should().Be(CircuitState.Open);
+
+            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                .ShouldThrow<BrokenCircuitException>()
+                .WithMessage("The circuit is now open and is not allowing calls.")
+                .WithInnerException<DivideByZeroException>();
+            breaker.CircuitState.Should().Be(CircuitState.Open);
+
+        }
+
         [Fact]
-        public void Should_open_circuit_with_the_last_raised_exception_if_failure_threshold_exceeded_though_not_all_are_failures_and_throughput_threshold_equalled_within_timeslice()
+        public void Should_open_circuit_with_the_last_raised_exception_if_failure_threshold_exceeded_though_not_all_are_failures_and_throughput_threshold_equalled_within_timeslice_in_same_window()
         {
             var time = 1.January(2000);
             SystemClock.UtcNow = () => time;
@@ -246,8 +292,54 @@ namespace Polly.Specs
 
         }
 
+        public void Should_open_circuit_with_the_last_raised_exception_if_failure_threshold_exceeded_though_not_all_are_failures_and_throughput_threshold_equalled_within_timeslice_in_different_windows()
+        {
+            var time = 1.January(2000);
+            SystemClock.UtcNow = () => time;
+
+            var timesliceDuration = TimeSpan.FromSeconds(10);
+
+            CircuitBreakerPolicy breaker = Policy
+                .Handle<DivideByZeroException>()
+                .TimesliceCircuitBreakerAsync(
+                    failureThreshold: 0.5,
+                    timesliceDuration: timesliceDuration,
+                    minimumThroughput: 4,
+                    durationOfBreak: TimeSpan.FromSeconds(30)
+                );
+
+            // Three of four actions in this test throw handled failures.
+            breaker.Awaiting(x => x.ExecuteAsync(() => Task.FromResult(true)))
+                .ShouldNotThrow();
+            breaker.CircuitState.Should().Be(CircuitState.Closed);
+
+            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                .ShouldThrow<DivideByZeroException>();
+            breaker.CircuitState.Should().Be(CircuitState.Closed);
+
+            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                .ShouldThrow<DivideByZeroException>();
+            breaker.CircuitState.Should().Be(CircuitState.Closed);
+
+            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                .ShouldThrow<DivideByZeroException>();
+            breaker.CircuitState.Should().Be(CircuitState.Open);
+
+            // Placing the rest of the invocations ('timesliceDuration' / 2) + 1 seconds later
+            // ensures that even if there are only two windows, then the invocations are placed in the second.
+            // They are still placed within same timeslice
+            SystemClock.UtcNow = () => time.AddSeconds(timesliceDuration.Seconds / 2d + 1);
+
+            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                .ShouldThrow<BrokenCircuitException>()
+                .WithMessage("The circuit is now open and is not allowing calls.")
+                .WithInnerException<DivideByZeroException>();
+            breaker.CircuitState.Should().Be(CircuitState.Open);
+
+        }
+
         [Fact]
-        public void Should_open_circuit_with_the_last_raised_exception_if_failure_threshold_equalled_and_throughput_threshold_equalled_within_timeslice()
+        public void Should_open_circuit_with_the_last_raised_exception_if_failure_threshold_equalled_and_throughput_threshold_equalled_within_timeslice_in_same_window()
         {
             var time = 1.January(2000);
             SystemClock.UtcNow = () => time;
@@ -278,6 +370,52 @@ namespace Polly.Specs
                 .ShouldThrow<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Open);
             // No adjustment to SystemClock.UtcNow, so all exceptions were raised within same timeslice
+
+            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                .ShouldThrow<BrokenCircuitException>()
+                .WithMessage("The circuit is now open and is not allowing calls.")
+                .WithInnerException<DivideByZeroException>();
+            breaker.CircuitState.Should().Be(CircuitState.Open);
+
+        }
+
+        public void Should_open_circuit_with_the_last_raised_exception_if_failure_threshold_equalled_and_throughput_threshold_equalled_within_timeslice_in_different_windows()
+        {
+            var time = 1.January(2000);
+            SystemClock.UtcNow = () => time;
+
+            var timesliceDuration = TimeSpan.FromSeconds(10);
+
+            CircuitBreakerPolicy breaker = Policy
+                .Handle<DivideByZeroException>()
+                .TimesliceCircuitBreakerAsync(
+                    failureThreshold: 0.5,
+                    timesliceDuration: timesliceDuration,
+                    minimumThroughput: 4,
+                    durationOfBreak: TimeSpan.FromSeconds(30)
+                );
+
+            // Two of four actions in this test throw handled failures.
+            breaker.Awaiting(x => x.ExecuteAsync(() => Task.FromResult(true)))
+                .ShouldNotThrow();
+            breaker.CircuitState.Should().Be(CircuitState.Closed);
+
+            breaker.Awaiting(x => x.ExecuteAsync(() => Task.FromResult(true)))
+                .ShouldNotThrow();
+            breaker.CircuitState.Should().Be(CircuitState.Closed);
+
+            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                .ShouldThrow<DivideByZeroException>();
+            breaker.CircuitState.Should().Be(CircuitState.Closed);
+
+            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                .ShouldThrow<DivideByZeroException>();
+            breaker.CircuitState.Should().Be(CircuitState.Open);
+
+            // Placing the rest of the invocations ('timesliceDuration' / 2) + 1 seconds later
+            // ensures that even if there are only two windows, then the invocations are placed in the second.
+            // They are still placed within same timeslice
+            SystemClock.UtcNow = () => time.AddSeconds(timesliceDuration.Seconds / 2d + 1);
 
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
                 .ShouldThrow<BrokenCircuitException>()
@@ -508,12 +646,192 @@ namespace Polly.Specs
             breaker.CircuitState.Should().Be(CircuitState.Closed);
         }
 
+        [Fact]
+        public void Should_open_circuit_if_failures_at_end_of_last_timeslice_below_failure_threshold_and_failures_in_beginning_of_new_timeslice_where_total_equals_failure_threshold()
+        {
+            var time = 1.January(2000);
+            SystemClock.UtcNow = () => time;
+
+            var timesliceDuration = TimeSpan.FromSeconds(10);
+
+            CircuitBreakerPolicy breaker = Policy
+                .Handle<DivideByZeroException>()
+                .TimesliceCircuitBreakerAsync(
+                    failureThreshold: 0.5,
+                    timesliceDuration: timesliceDuration,
+                    minimumThroughput: 4,
+                    durationOfBreak: TimeSpan.FromSeconds(30)
+                );
+
+            // Executing a single invocation to ensure timeslice is created
+            // This invocation is not be counted against the threshold
+            breaker.Awaiting(x => x.ExecuteAsync(() => Task.FromResult(true)))
+                .ShouldNotThrow();
+            breaker.CircuitState.Should().Be(CircuitState.Closed);
+
+            // The time is set to just at the end of the timeslice duration ensuring
+            // the invocations are within the timeslice, but only barely.
+            SystemClock.UtcNow = () => time.AddTicks(timesliceDuration.Ticks - 1);
+
+            // Three of four actions in this test occur within the first timeslice.
+            breaker.Awaiting(x => x.ExecuteAsync(() => Task.FromResult(true)))
+                .ShouldNotThrow();
+            breaker.CircuitState.Should().Be(CircuitState.Closed);
+
+            breaker.Awaiting(x => x.ExecuteAsync(() => Task.FromResult(true)))
+                .ShouldNotThrow();
+            breaker.CircuitState.Should().Be(CircuitState.Closed);
+
+            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                .ShouldThrow<DivideByZeroException>();
+            breaker.CircuitState.Should().Be(CircuitState.Closed);
+
+            // Setting the time to just barely into the new timeslice
+            SystemClock.UtcNow = () => time.Add(timesliceDuration);
+
+            // This failure opens the circuit, because it is the second failure of four calls
+            // equalling the failure threshold and the minimum threshold within the defined
+            // timeslice duration when using rolling buckets
+            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                .ShouldThrow<DivideByZeroException>();
+            breaker.CircuitState.Should().Be(CircuitState.Open);
+        }
+
+        [Fact]
+        public void Should_not_open_circuit_if_failures_at_end_of_last_timeslice_and_failures_in_beginning_of_new_timeslice_when_below_minimum_threshold()
+        {
+            var time = 1.January(2000);
+            SystemClock.UtcNow = () => time;
+
+            var timesliceDuration = TimeSpan.FromSeconds(10);
+
+            CircuitBreakerPolicy breaker = Policy
+                .Handle<DivideByZeroException>()
+                .TimesliceCircuitBreakerAsync(
+                    failureThreshold: 0.5,
+                    timesliceDuration: timesliceDuration,
+                    minimumThroughput: 4,
+                    durationOfBreak: TimeSpan.FromSeconds(30)
+                );
+
+            // Executing a single invocation to ensure timeslice is created
+            // This invocation is not be counted against the threshold
+            breaker.Awaiting(x => x.ExecuteAsync(() => Task.FromResult(true)))
+                .ShouldNotThrow();
+            breaker.CircuitState.Should().Be(CircuitState.Closed);
+
+            // The time is set to just at the end of the timeslice duration ensuring
+            // the invocations are within the timeslice, but only barely.
+            SystemClock.UtcNow = () => time.AddTicks(timesliceDuration.Ticks - 1);
+
+            // Two of three actions in this test occur within the first timeslice.
+            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                .ShouldThrow<DivideByZeroException>();
+            breaker.CircuitState.Should().Be(CircuitState.Closed);
+
+            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                .ShouldThrow<DivideByZeroException>();
+            breaker.CircuitState.Should().Be(CircuitState.Closed);
+
+            // Setting the time to just barely into the new timeslice
+            SystemClock.UtcNow = () => time.Add(timesliceDuration);
+
+            // A third failure occurs just at the beginning of the new timeslice making 
+            // the number of failures above the failure threshold. However, the number is 
+            // below the minimum threshold as to open the circuit.
+            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                .ShouldThrow<DivideByZeroException>();
+            breaker.CircuitState.Should().Be(CircuitState.Closed);
+        }
+
+        [Fact]
+        public void Should_not_open_circuit_if_failure_threshold_and_minimum_threshold_is_equalled_but_last_call_is_success()
+        {
+            var time = 1.January(2000);
+            SystemClock.UtcNow = () => time;
+
+            CircuitBreakerPolicy breaker = Policy
+                .Handle<DivideByZeroException>()
+                .TimesliceCircuitBreakerAsync(
+                    failureThreshold: 0.5,
+                    timesliceDuration: TimeSpan.FromSeconds(10),
+                    minimumThroughput: 4,
+                    durationOfBreak: TimeSpan.FromSeconds(30)
+                );
+
+            // One of three actions in this test throw handled failures.
+            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                .ShouldThrow<DivideByZeroException>();
+            breaker.CircuitState.Should().Be(CircuitState.Closed);
+
+            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                .ShouldThrow<DivideByZeroException>();
+            breaker.CircuitState.Should().Be(CircuitState.Closed);
+
+            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                .ShouldThrow<DivideByZeroException>();
+            breaker.CircuitState.Should().Be(CircuitState.Closed);
+
+            breaker.Awaiting(x => x.ExecuteAsync(() => Task.FromResult(true)))
+                .ShouldNotThrow();
+            breaker.CircuitState.Should().Be(CircuitState.Closed);
+            // No adjustment to SystemClock.UtcNow, so all exceptions were raised within same timeslice
+        }
+
+        [Fact]
+        public void Should_open_circuit_if_failures_in_second_window_of_last_timeslice_and_failures_in_first_window_in_next_timeslice_exceeds_failure_threshold_and_minimum_threshold()
+        {
+            var time = 1.January(2000);
+            SystemClock.UtcNow = () => time;
+
+            var timesliceDuration = TimeSpan.FromSeconds(10);
+            var numberOfWindowsDefinedInCircuitBreaker = 10;
+
+            CircuitBreakerPolicy breaker = Policy
+                .Handle<DivideByZeroException>()
+                .TimesliceCircuitBreakerAsync(
+                    failureThreshold: 0.5,
+                    timesliceDuration: timesliceDuration,
+                    minimumThroughput: 4,
+                    durationOfBreak: TimeSpan.FromSeconds(30)
+                );
+
+            // Executing a single invocation to ensure timeslice is created
+            // This invocation is not be counted against the threshold
+            breaker.Awaiting(x => x.ExecuteAsync(() => Task.FromResult(true)))
+                .ShouldNotThrow();
+            breaker.CircuitState.Should().Be(CircuitState.Closed);
+
+            // Setting the time to the second window in the rolling metrics
+            SystemClock.UtcNow = () => time.AddSeconds(timesliceDuration.Seconds / (double)numberOfWindowsDefinedInCircuitBreaker);
+
+            // Three actions occur in the second window of the first timeslice
+            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                .ShouldThrow<DivideByZeroException>();
+            breaker.CircuitState.Should().Be(CircuitState.Closed);
+
+            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                .ShouldThrow<DivideByZeroException>();
+            breaker.CircuitState.Should().Be(CircuitState.Closed);
+
+            breaker.Awaiting(x => x.ExecuteAsync(() => Task.FromResult(true)))
+                .ShouldNotThrow();
+            breaker.CircuitState.Should().Be(CircuitState.Closed);
+
+            // Setting the time to just barely into the new timeslice
+            SystemClock.UtcNow = () => time.Add(timesliceDuration);
+
+            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                .ShouldThrow<DivideByZeroException>();
+            breaker.CircuitState.Should().Be(CircuitState.Open);
+        }
+
         #endregion
 
         #region Circuit-breaker open->half-open->open/closed tests
 
         [Fact]
-        public void Should_halfopen_circuit_after_the_specified_duration_has_passed()
+        public void Should_halfopen_circuit_after_the_specified_duration_has_passed_with_failures_in_same_bucket()
         {
             var time = 1.January(2000);
             SystemClock.UtcNow = () => time;
@@ -548,6 +866,61 @@ namespace Polly.Specs
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
             SystemClock.UtcNow = () => time.Add(durationOfBreak);
+
+            // duration has passed, circuit now half open
+            breaker.CircuitState.Should().Be(CircuitState.HalfOpen);
+            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                .ShouldThrow<DivideByZeroException>();
+        }
+
+        [Fact]
+        public void Should_halfopen_circuit_after_the_specified_duration_has_passed_with_failures_in_different_buckets()
+        {
+            var time = 1.January(2000);
+            SystemClock.UtcNow = () => time;
+
+            var durationOfBreak = TimeSpan.FromSeconds(30);
+            var timesliceDuration = TimeSpan.FromSeconds(10);
+
+            CircuitBreakerPolicy breaker = Policy
+                .Handle<DivideByZeroException>()
+                .TimesliceCircuitBreakerAsync(
+                    failureThreshold: 0.5,
+                    timesliceDuration: timesliceDuration,
+                    minimumThroughput: 4,
+                    durationOfBreak: durationOfBreak
+                );
+
+            // Four of four actions in this test throw handled failures.
+            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                .ShouldThrow<DivideByZeroException>();
+            breaker.CircuitState.Should().Be(CircuitState.Closed);
+
+            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                .ShouldThrow<DivideByZeroException>();
+            breaker.CircuitState.Should().Be(CircuitState.Closed);
+
+            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                .ShouldThrow<DivideByZeroException>();
+            breaker.CircuitState.Should().Be(CircuitState.Closed);
+
+            // Placing the rest of the invocations ('timesliceDuration' / 2) + 1 seconds later
+            // ensures that even if there are only two buckets, then the invocations are placed in the second.
+            // They are still placed within same timeslice
+            var anotherBucketDuration = timesliceDuration.Seconds / 2d + 1;
+            SystemClock.UtcNow = () => time.AddSeconds(anotherBucketDuration);
+
+            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                .ShouldThrow<DivideByZeroException>();
+
+            breaker.CircuitState.Should().Be(CircuitState.Open);
+
+            SystemClock.UtcNow = () => time.Add(durationOfBreak);
+            breaker.CircuitState.Should().Be(CircuitState.Open);
+
+            // Since the call that opened the circuit occurred in a later bucket, then the
+            // break duration must be from that call.
+            SystemClock.UtcNow = () => time.Add(durationOfBreak).AddSeconds(anotherBucketDuration);
 
             // duration has passed, circuit now half open
             breaker.CircuitState.Should().Be(CircuitState.HalfOpen);
