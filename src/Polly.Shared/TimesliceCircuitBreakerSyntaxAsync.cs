@@ -172,9 +172,11 @@ namespace Polly
         /// <exception cref="ArgumentNullException">onHalfOpen</exception>
         public static CircuitBreakerPolicy TimesliceCircuitBreakerAsync(this PolicyBuilder policyBuilder, double failureThreshold, TimeSpan timesliceDuration, int minimumThroughput, TimeSpan durationOfBreak, Action<Exception, TimeSpan, Context> onBreak, Action<Context> onReset, Action onHalfOpen)
         {
+            var resolutionOfCircuit = TimeSpan.FromTicks(TimesliceCircuitController.ResolutionOfCircuitTimer);
+
             if (failureThreshold <= 0) throw new ArgumentOutOfRangeException("failureThreshold", "Value must be greater than zero.");
             if (failureThreshold > 1) throw new ArgumentOutOfRangeException("failureThreshold", "Value must be less than or equal to one.");
-            if (timesliceDuration <= TimeSpan.Zero) throw new ArgumentOutOfRangeException("timesliceDuration", "Value must be greater than zero.");
+            if (timesliceDuration < resolutionOfCircuit) throw new ArgumentOutOfRangeException("timesliceDuration", String.Format("Value must be equal to or greater than {0} milliseconds. This is the minimum resolution of the CircuitBreaker timer.", resolutionOfCircuit.TotalMilliseconds));
             if (minimumThroughput <= 0) throw new ArgumentOutOfRangeException("minimumThroughput", "Value must be greater than zero.");
             if (durationOfBreak < TimeSpan.Zero) throw new ArgumentOutOfRangeException("durationOfBreak", "Value must be greater than zero.");
 
