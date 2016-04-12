@@ -205,6 +205,7 @@ namespace Polly.Specs
 
         }
 
+        [Fact]
         public void Should_open_circuit_with_the_last_raised_exception_if_failure_threshold_exceeded_and_throughput_threshold_equalled_within_timeslice_in_different_windows()
         {
             var time = 1.January(2000);
@@ -292,6 +293,7 @@ namespace Polly.Specs
 
         }
 
+        [Fact]
         public void Should_open_circuit_with_the_last_raised_exception_if_failure_threshold_exceeded_though_not_all_are_failures_and_throughput_threshold_equalled_within_timeslice_in_different_windows()
         {
             var time = 1.January(2000);
@@ -379,6 +381,7 @@ namespace Polly.Specs
 
         }
 
+        [Fact]
         public void Should_open_circuit_with_the_last_raised_exception_if_failure_threshold_equalled_and_throughput_threshold_equalled_within_timeslice_in_different_windows()
         {
             var time = 1.January(2000);
