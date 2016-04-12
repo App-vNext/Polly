@@ -7,7 +7,7 @@ namespace Polly.CircuitBreaker
     internal class TimesliceCircuitController : CircuitStateController
     {
         private const short NumberOfWindows = 10;
-        private static readonly long ResolutionOfCircuitTimer = TimeSpan.FromMilliseconds(20).Ticks;
+        internal static readonly long ResolutionOfCircuitTimer = TimeSpan.FromMilliseconds(20).Ticks;
 
         private readonly IHealthMetrics _metrics;
         private readonly double _failureThreshold;

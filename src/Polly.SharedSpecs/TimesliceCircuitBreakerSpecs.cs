@@ -70,11 +70,15 @@ namespace Polly.Specs
         }
 
         [Fact]
-        public void Should_throw_if_timeslice_duration_is_zero()
+        public void Should_throw_if_timeslice_duration_is_less_than_resolution_of_circuit()
         {
             Action action = () => Policy
                 .Handle<DivideByZeroException>()
-                .TimesliceCircuitBreaker(0.5, TimeSpan.Zero, 4, TimeSpan.FromSeconds(30));
+                .TimesliceCircuitBreaker(
+                    0.5, 
+                    TimeSpan.FromMilliseconds(20).Add(TimeSpan.FromTicks(-1)), 
+                    4, 
+                    TimeSpan.FromSeconds(30));
 
             action.ShouldThrow<ArgumentOutOfRangeException>()
                 .And.ParamName.Should()
@@ -82,15 +86,13 @@ namespace Polly.Specs
         }
 
         [Fact]
-        public void Should_throw_if_timeslice_duration_is_less_than_zero()
+        public void Should_not_throw_if_timeslice_duration_is_resolution_of_circuit()
         {
             Action action = () => Policy
                 .Handle<DivideByZeroException>()
-                .TimesliceCircuitBreaker(0.5, -TimeSpan.FromSeconds(10), 4, TimeSpan.FromSeconds(30));
+                .TimesliceCircuitBreaker(0.5, TimeSpan.FromMilliseconds(20), 4, TimeSpan.FromSeconds(30));
 
-            action.ShouldThrow<ArgumentOutOfRangeException>()
-                .And.ParamName.Should()
-                .Be("timesliceDuration");
+            action.ShouldNotThrow<ArgumentOutOfRangeException>();
         }
 
         [Fact]
