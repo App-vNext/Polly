@@ -7,14 +7,17 @@ namespace Polly.CircuitBreaker
     internal class TimesliceCircuitController : CircuitStateController
     {
         private const short NumberOfWindows = 10;
+        private static readonly long ResolutionOfCircuitTimer = TimeSpan.FromMilliseconds(20).Ticks;
 
-        private readonly RollingHealthMetrics _metrics;
+        private readonly IHealthMetrics _metrics;
         private readonly double _failureThreshold;
         private readonly int _minimumThroughput;
 
         public TimesliceCircuitController(double failureThreshold, TimeSpan timesliceDuration, int minimumThroughput, TimeSpan durationOfBreak, Action<Exception, TimeSpan, Context> onBreak, Action<Context> onReset, Action onHalfOpen) : base(durationOfBreak, onBreak, onReset, onHalfOpen)
         {
-            _metrics = new RollingHealthMetrics(timesliceDuration, NumberOfWindows);
+            _metrics = timesliceDuration.Ticks < ResolutionOfCircuitTimer * NumberOfWindows
+                ? (IHealthMetrics)new SingleHealthMetrics(timesliceDuration)
+                : (IHealthMetrics)new RollingHealthMetrics(timesliceDuration, NumberOfWindows);
 
             _failureThreshold = failureThreshold;
             _minimumThroughput = minimumThroughput;
@@ -67,5 +70,7 @@ namespace Polly.CircuitBreaker
 
             }
         }
+
+
     }
 }
