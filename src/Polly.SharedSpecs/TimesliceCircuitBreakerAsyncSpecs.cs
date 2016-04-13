@@ -159,7 +159,7 @@ namespace Polly.Specs
 
         #region Circuit-breaker threshold-to-break tests
 
-        #region Tests that is independent from health metrics implementation
+        #region Tests that are independent from health metrics implementation
 
         // Tests on the TimesliceCircuitBreakerAsync operation typically use a breaker: 
         // - with a failure threshold of >=50%, 
@@ -182,7 +182,7 @@ namespace Polly.Specs
                     durationOfBreak: TimeSpan.FromSeconds(30)
                 );
 
-            // One of three actions in this test throw handled failures.
+            // Three of three actions in this test throw handled failures.
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
                 .ShouldThrow<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
@@ -194,7 +194,9 @@ namespace Polly.Specs
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
                 .ShouldThrow<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
+            // Failure threshold exceeded, but throughput threshold not yet.
 
+            // Throughput threshold will be exceeded by the below successful call, but we never break on a successful call; hence don't break on this.
             breaker.Awaiting(x => x.ExecuteAsync(() => Task.FromResult(true)))
                 .ShouldNotThrow();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
@@ -217,7 +219,7 @@ namespace Polly.Specs
                     durationOfBreak: TimeSpan.FromSeconds(30)
                 );
 
-            // Four of four actions in this test throw handled failures.
+            // Four of four actions in this test throw unhandled failures.
             breaker.Awaiting(x => x.RaiseExceptionAsync<ArgumentNullException>())
                 .ShouldThrow<ArgumentNullException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
@@ -319,7 +321,7 @@ namespace Polly.Specs
 
             // Placing the rest of the invocations ('timesliceDuration' / 2) + 1 seconds later
             // ensures that even if there are only two windows, then the invocations are placed in the second.
-            // They are still placed within same timeslice
+            // They are still placed within same timeslice.
             SystemClock.UtcNow = () => time.AddSeconds(timesliceDuration.Seconds / 2d + 1);
 
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
@@ -605,7 +607,9 @@ namespace Polly.Specs
                     durationOfBreak: TimeSpan.FromSeconds(30)
                 );
 
-            // Four of four actions in this test throw handled failures; but only the first three within the timeslice.
+            // Four of four actions in this test throw handled failures; but only the first three within the original timeslice.
+
+            // Two actions at the start of the original timeslice.
             breaker.Awaiting(x => x.ExecuteAsync(() => Task.FromResult(true)))
                 .ShouldNotThrow();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
@@ -614,15 +618,14 @@ namespace Polly.Specs
                 .ShouldNotThrow();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
-            // Creates a new bucket right at the end of the timeslice duration, since the buckets do not align
-            // Ensures that this is not a problem as the first bucket is not included
+            // Creates a new window right at the end of the original timeslice.
             SystemClock.UtcNow = () => time.AddTicks(timesliceDuration.Ticks - 1);
 
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
                 .ShouldThrow<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
-            // Adjust SystemClock so that timeslice (just) expires; fourth exception thrown in following timeslice.
+            // Adjust SystemClock so that timeslice (just) expires; fourth exception thrown in following timeslice.  If timeslice/window rollover is precisely defined, this should cause first two actions to be forgotten from statistics (rolled out of the window of relevance), and thus the circuit not to break.
             SystemClock.UtcNow = () => time.Add(timesliceDuration);
 
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
@@ -784,15 +787,15 @@ namespace Polly.Specs
             SystemClock.UtcNow = () => time.Add(timesliceDuration);
 
             // This failure opens the circuit, because it is the second failure of four calls
-            // equalling the failure threshold and the minimum threshold within the defined
-            // timeslice duration when using rolling buckets
+            // equalling the failure threshold. The minimum threshold within the defined
+            // timeslice duration is met, when using rolling windows.
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
                 .ShouldThrow<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Open);
         }
 
         [Fact]
-        public void Should_not_open_circuit_if_failures_at_end_of_last_timeslice_and_failures_in_beginning_of_new_timeslice_when_below_minimum_threshold()
+        public void Should_not_open_circuit_if_failures_at_end_of_last_timeslice_and_failures_in_beginning_of_new_timeslice_when_below_minimum_throughput_threshold()
         {
             var time = 1.January(2000);
             SystemClock.UtcNow = () => time;
@@ -831,7 +834,7 @@ namespace Polly.Specs
             SystemClock.UtcNow = () => time.Add(timesliceDuration);
 
             // A third failure occurs just at the beginning of the new timeslice making 
-            // the number of failures above the failure threshold. However, the number is 
+            // the number of failures above the failure threshold. However, the throughput is 
             // below the minimum threshold as to open the circuit.
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
                 .ShouldThrow<DivideByZeroException>();
@@ -890,14 +893,14 @@ namespace Polly.Specs
 
         #region With sample duration at 199 ms so that only a single window is used
 
-        // Tests on the TimesliceCircuitBreakerAsync operation typically use a breaker: 
+        // These tests on TimesliceCircuitBreakerAsync operation typically use a breaker: 
         // - with a failure threshold of >=50%, 
         // - and a throughput threshold of 4
         // - across a 199ms period.
         // These provide easy values for testing for failure and throughput thresholds each being met and non-met, in combination.
 
         [Fact]
-        public void Should_open_circuit_with_the_last_raised_exception_if_failure_threshold_exceeded_and_throughput_threshold_equalled_within_timeslice_low_sample_duration()
+        public void Should_open_circuit_with_the_last_raised_exception_if_failure_threshold_exceeded_and_throughput_threshold_equalled_within_timeslice_low_samping_duration()
         {
             var time = 1.January(2000);
             SystemClock.UtcNow = () => time;
@@ -939,7 +942,7 @@ namespace Polly.Specs
         }
 
         [Fact]
-        public void Should_open_circuit_with_the_last_raised_exception_if_failure_threshold_exceeded_though_not_all_are_failures_and_throughput_threshold_equalled_within_timeslice_low_sample_duration()
+        public void Should_open_circuit_with_the_last_raised_exception_if_failure_threshold_exceeded_though_not_all_are_failures_and_throughput_threshold_equalled_within_timeslice_low_samping_duration()
         {
             var time = 1.January(2000);
             SystemClock.UtcNow = () => time;
@@ -980,7 +983,7 @@ namespace Polly.Specs
         }
 
         [Fact]
-        public void Should_open_circuit_with_the_last_raised_exception_if_failure_threshold_equalled_and_throughput_threshold_equalled_within_timeslice_low_sample_duration()
+        public void Should_open_circuit_with_the_last_raised_exception_if_failure_threshold_equalled_and_throughput_threshold_equalled_within_timeslice_low_samping_duration()
         {
             var time = 1.January(2000);
             SystemClock.UtcNow = () => time;
@@ -1021,7 +1024,7 @@ namespace Polly.Specs
         }
 
         [Fact]
-        public void Should_not_open_circuit_if_failure_threshold_exceeded_but_throughput_threshold_not_met_before_timeslice_expires_low_sample_duration()
+        public void Should_not_open_circuit_if_failure_threshold_exceeded_but_throughput_threshold_not_met_before_timeslice_expires_low_samping_duration()
         {
             var time = 1.January(2000);
             SystemClock.UtcNow = () => time;
@@ -1060,7 +1063,7 @@ namespace Polly.Specs
         }
 
         [Fact]
-        public void Should_not_open_circuit_if_failure_threshold_exceeded_but_throughput_threshold_not_met_before_timeslice_expires_even_if_timeslice_expires_only_exactly_low_sample_duration()
+        public void Should_not_open_circuit_if_failure_threshold_exceeded_but_throughput_threshold_not_met_before_timeslice_expires_even_if_timeslice_expires_only_exactly_low_samping_duration()
         {
             var time = 1.January(2000);
             SystemClock.UtcNow = () => time;
@@ -1099,7 +1102,7 @@ namespace Polly.Specs
         }
 
         [Fact]
-        public void Should_open_circuit_with_the_last_raised_exception_if_failure_threshold_equalled_and_throughput_threshold_equalled_even_if_only_just_within_timeslice_low_sample_duration()
+        public void Should_open_circuit_with_the_last_raised_exception_if_failure_threshold_equalled_and_throughput_threshold_equalled_even_if_only_just_within_timeslice_low_samping_duration()
         {
             var time = 1.January(2000);
             SystemClock.UtcNow = () => time;
@@ -1144,7 +1147,7 @@ namespace Polly.Specs
         }
 
         [Fact]
-        public void Should_not_open_circuit_if_failure_threshold_not_met_and_throughput_threshold_not_met_low_sample_duration()
+        public void Should_not_open_circuit_if_failure_threshold_not_met_and_throughput_threshold_not_met_low_samping_duration()
         {
             var time = 1.January(2000);
             SystemClock.UtcNow = () => time;
@@ -1174,7 +1177,7 @@ namespace Polly.Specs
         }
 
         [Fact]
-        public void Should_not_open_circuit_if_failure_threshold_not_met_but_throughput_threshold_met_before_timeslice_expires_low_sample_duration()
+        public void Should_not_open_circuit_if_failure_threshold_not_met_but_throughput_threshold_met_before_timeslice_expires_low_samping_duration()
         {
             var time = 1.January(2000);
             SystemClock.UtcNow = () => time;
@@ -1208,7 +1211,7 @@ namespace Polly.Specs
         }
 
         [Fact]
-        public void Should_not_open_circuit_if_failures_at_end_of_last_timeslice_below_failure_threshold_and_failures_in_beginning_of_new_timeslice_where_total_equals_failure_threshold_low_sample_duration()
+        public void Should_not_open_circuit_if_failures_at_end_of_last_timeslice_below_failure_threshold_and_failures_in_beginning_of_new_timeslice_where_total_equals_failure_threshold_low_samping_duration()
         {
             var time = 1.January(2000);
             SystemClock.UtcNow = () => time;
@@ -1264,7 +1267,7 @@ namespace Polly.Specs
         #region Circuit-breaker open->half-open->open/closed tests
 
         [Fact]
-        public void Should_halfopen_circuit_after_the_specified_duration_has_passed_with_failures_in_same_bucket()
+        public void Should_halfopen_circuit_after_the_specified_duration_has_passed_with_failures_in_same_window()
         {
             var time = 1.January(2000);
             SystemClock.UtcNow = () => time;
@@ -1307,7 +1310,7 @@ namespace Polly.Specs
         }
 
         [Fact]
-        public void Should_halfopen_circuit_after_the_specified_duration_has_passed_with_failures_in_different_buckets()
+        public void Should_halfopen_circuit_after_the_specified_duration_has_passed_with_failures_in_different_windows()
         {
             var time = 1.January(2000);
             SystemClock.UtcNow = () => time;
@@ -1338,10 +1341,10 @@ namespace Polly.Specs
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             // Placing the rest of the invocations ('timesliceDuration' / 2) + 1 seconds later
-            // ensures that even if there are only two buckets, then the invocations are placed in the second.
+            // ensures that even if there are only two windows, then the invocations are placed in the second.
             // They are still placed within same timeslice
-            var anotherBucketDuration = timesliceDuration.Seconds / 2d + 1;
-            SystemClock.UtcNow = () => time.AddSeconds(anotherBucketDuration);
+            var anotherwindowDuration = timesliceDuration.Seconds / 2d + 1;
+            SystemClock.UtcNow = () => time.AddSeconds(anotherwindowDuration);
 
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
                 .ShouldThrow<DivideByZeroException>();
@@ -1351,9 +1354,9 @@ namespace Polly.Specs
             SystemClock.UtcNow = () => time.Add(durationOfBreak);
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
-            // Since the call that opened the circuit occurred in a later bucket, then the
-            // break duration must be from that call.
-            SystemClock.UtcNow = () => time.Add(durationOfBreak).AddSeconds(anotherBucketDuration);
+            // Since the call that opened the circuit occurred in a later window, then the
+            // break duration must be simulated as from that call.
+            SystemClock.UtcNow = () => time.Add(durationOfBreak).AddSeconds(anotherwindowDuration);
 
             // duration has passed, circuit now half open
             breaker.CircuitState.Should().Be(CircuitState.HalfOpen);

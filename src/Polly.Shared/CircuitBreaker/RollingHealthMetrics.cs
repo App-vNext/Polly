@@ -4,7 +4,7 @@ using Polly.Utilities;
 
 namespace Polly.CircuitBreaker
 {
-    class RollingHealthMetrics : IHealthMetrics
+    internal class RollingHealthMetrics : IHealthMetrics
     {
         private readonly long _timesliceDuration;
         private readonly long _windowDuration;
