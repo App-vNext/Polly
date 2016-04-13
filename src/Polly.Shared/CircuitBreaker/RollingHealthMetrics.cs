@@ -69,16 +69,8 @@ namespace Polly.Shared.CircuitBreaker
                 _windows.Enqueue(_currentWindow);
             }
 
-            while (_windows.Count > 0)
-            {
-                // If the time between now and when the window started is below the timesliceDuration
-                // then it and the rest in the queue are still within the timesliceDuration and should 
-                // therefore not be removed from the queue.
-                if (now - _windows.Peek().StartedAt < _timesliceDuration)
-                    break;
-
+            while (_windows.Count > 0 && (now - _windows.Peek().StartedAt >= _timesliceDuration))
                 _windows.Dequeue();
-            }
         }
     }
 }
