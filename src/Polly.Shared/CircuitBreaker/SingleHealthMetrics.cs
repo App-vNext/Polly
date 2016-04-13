@@ -1,7 +1,7 @@
 ﻿using System;
 using Polly.Utilities;
 
-namespace Polly.Shared.CircuitBreaker
+namespace Polly.CircuitBreaker
 {
     class SingleHealthMetrics : IHealthMetrics
     {

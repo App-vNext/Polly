@@ -1,6 +1,6 @@
 ﻿using Polly.CircuitBreaker;
 
-namespace Polly.Shared.CircuitBreaker
+namespace Polly.CircuitBreaker
 {
     /// <summary>
     /// Describes the interface for the <see cref="TimesliceCircuitController"/> on how to calculate
