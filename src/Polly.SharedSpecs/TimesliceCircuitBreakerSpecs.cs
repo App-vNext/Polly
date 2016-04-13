@@ -546,7 +546,7 @@ namespace Polly.Specs
         }
 
         [Fact]
-        public void Should_not_open_circuit_if_failure_threshold_exceeded_but_throughput_threshold_not_met_before_timeslice_expires__even_if_timeslice_expires_only_exactly()
+        public void Should_not_open_circuit_if_failure_threshold_exceeded_but_throughput_threshold_not_met_before_timeslice_expires_even_if_timeslice_expires_only_exactly()
         {
             var time = 1.January(2000);
             SystemClock.UtcNow = () => time;
@@ -570,6 +570,49 @@ namespace Polly.Specs
             breaker.Invoking(x => x.Execute(() => { }))
                 .ShouldNotThrow();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
+
+            breaker.Invoking(x => x.RaiseException<DivideByZeroException>())
+                .ShouldThrow<DivideByZeroException>();
+            breaker.CircuitState.Should().Be(CircuitState.Closed);
+
+            // Adjust SystemClock so that timeslice (just) expires; fourth exception thrown in following timeslice.
+            SystemClock.UtcNow = () => time.Add(timesliceDuration);
+
+            breaker.Invoking(x => x.RaiseException<DivideByZeroException>())
+                .ShouldThrow<DivideByZeroException>();
+            breaker.CircuitState.Should().Be(CircuitState.Closed);
+
+        }
+
+        [Fact]
+        public void Should_not_open_circuit_if_failure_threshold_exceeded_but_throughput_threshold_not_met_before_timeslice_expires_even_if_error_occurring_just_at_the_end_of_the_duration()
+        {
+            var time = 1.January(2000);
+            SystemClock.UtcNow = () => time;
+
+            var timesliceDuration = TimeSpan.FromSeconds(10);
+
+            CircuitBreakerPolicy breaker = Policy
+                .Handle<DivideByZeroException>()
+                .TimesliceCircuitBreaker(
+                    failureThreshold: 0.5,
+                    timesliceDuration: timesliceDuration,
+                    minimumThroughput: 4,
+                    durationOfBreak: TimeSpan.FromSeconds(30)
+                );
+
+            // Four of four actions in this test throw handled failures; but only the first three within the timeslice.
+            breaker.Invoking(x => x.Execute(() => { }))
+                .ShouldNotThrow();
+            breaker.CircuitState.Should().Be(CircuitState.Closed);
+
+            breaker.Invoking(x => x.Execute(() => { }))
+                .ShouldNotThrow();
+            breaker.CircuitState.Should().Be(CircuitState.Closed);
+
+            // Creates a new bucket right at the end of the timeslice duration, since the buckets do not align
+            // Ensures that this is not a problem as the first bucket is not included
+            SystemClock.UtcNow = () => time.AddTicks(timesliceDuration.Ticks - 1);
 
             breaker.Invoking(x => x.RaiseException<DivideByZeroException>())
                 .ShouldThrow<DivideByZeroException>();
