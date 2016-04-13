@@ -3,7 +3,7 @@ using Polly.Utilities;
 
 namespace Polly.CircuitBreaker
 {
-    class SingleHealthMetrics : IHealthMetrics
+    internal class SingleHealthMetrics : IHealthMetrics
     {
         private readonly long _timesliceDuration;
 
