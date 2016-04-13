@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Polly.Utilities;
 
-namespace Polly.Shared.CircuitBreaker
+namespace Polly.CircuitBreaker
 {
     class RollingHealthMetrics : IHealthMetrics
     {

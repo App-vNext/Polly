@@ -1,4 +1,4 @@
-﻿namespace Polly.Shared.CircuitBreaker
+﻿namespace Polly.CircuitBreaker
 {
     class HealthCount
     {

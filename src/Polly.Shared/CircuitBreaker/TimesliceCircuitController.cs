@@ -1,5 +1,4 @@
 ﻿using System;
-using Polly.Shared.CircuitBreaker;
 using Polly.Utilities;
 
 namespace Polly.CircuitBreaker
