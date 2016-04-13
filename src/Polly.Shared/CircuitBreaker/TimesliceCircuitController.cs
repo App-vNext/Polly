@@ -1,26 +1,24 @@
 ﻿using System;
+using Polly.Shared.CircuitBreaker;
 using Polly.Utilities;
 
 namespace Polly.CircuitBreaker
 {
     internal class TimesliceCircuitController : CircuitStateController
     {
-        private readonly long _timesliceDuration;
+        private const short NumberOfWindows = 10;
+        internal static readonly long ResolutionOfCircuitTimer = TimeSpan.FromMilliseconds(20).Ticks;
+
+        private readonly IHealthMetrics _metrics;
         private readonly double _failureThreshold;
         private readonly int _minimumThroughput;
 
-        private HealthMetric _metric;
-
-        private class HealthMetric // If only one metric at a time is ever retained, this could be removed (for performance) and the properties incorporated in to the parent class.
-        {
-            public int Successes { get; set; }
-            public int Failures { get; set; }
-            public long StartedAt { get; set; }
-        }
-
         public TimesliceCircuitController(double failureThreshold, TimeSpan timesliceDuration, int minimumThroughput, TimeSpan durationOfBreak, Action<Exception, TimeSpan, Context> onBreak, Action<Context> onReset, Action onHalfOpen) : base(durationOfBreak, onBreak, onReset, onHalfOpen)
         {
-            _timesliceDuration = timesliceDuration.Ticks;
+            _metrics = timesliceDuration.Ticks < ResolutionOfCircuitTimer * NumberOfWindows
+                ? (IHealthMetrics)new SingleHealthMetrics(timesliceDuration)
+                : (IHealthMetrics)new RollingHealthMetrics(timesliceDuration, NumberOfWindows);
+
             _failureThreshold = failureThreshold;
             _minimumThroughput = minimumThroughput;
         }
@@ -29,21 +27,13 @@ namespace Polly.CircuitBreaker
         {
             using (TimedLock.Lock(_lock))
             {
-                _metric = null;
+                // Is only null during initialization of the current class
+                // as the variable is not set, before the base class calls
+                // current method from constructor.
+                if (_metrics != null)
+                    _metrics.Reset_NeedsLock();
 
                 ResetInternal_NeedsLock(context);
-            }
-        }
-
-        private void ActualiseCurrentMetric_NeedsLock()
-        {
-            // (future enhancement) Any operation in this method disposing of an existing _metric could emit it to a delegate, for health-monitoring capture ...
-
-            long now = SystemClock.UtcNow().Ticks;
-
-            if (_metric == null || now - _metric.StartedAt >= _timesliceDuration)
-            {
-                _metric = new HealthMetric { StartedAt = now };
             }
         }
 
@@ -53,8 +43,7 @@ namespace Polly.CircuitBreaker
             {
                 if (_circuitState == CircuitState.HalfOpen) { OnCircuitReset(context); }
 
-                ActualiseCurrentMetric_NeedsLock();
-                _metric.Successes++;
+                _metrics.IncrementSuccess_NeedsLock();
             }
         }
 
@@ -70,16 +59,18 @@ namespace Polly.CircuitBreaker
                     return;
                 }
 
-                ActualiseCurrentMetric_NeedsLock();
-                _metric.Failures++;
+                _metrics.IncrementFailure_NeedsLock();
+                var healthCount = _metrics.GetHealthCount_NeedsLock();
 
-                int throughput = _metric.Failures + _metric.Successes;
-                if (throughput >= _minimumThroughput && ((double)_metric.Failures) / throughput >= _failureThreshold)
+                int throughput = healthCount.Total;
+                if (throughput >= _minimumThroughput && ((double)healthCount.Failures) / throughput >= _failureThreshold)
                 {
                     Break_NeedsLock(context);
                 }
-                
+
             }
         }
+
+
     }
 }
