@@ -1,3 +1,9 @@
+4.2.0
+=
+----------
+- Added AdvancedCircuitBreaker - Thanks to [@reisenberger](https://github.com/reisenberger) and [@kristianhald](https://github.com/kristianhald)
+
+
 4.1.2
 =
 ----------
