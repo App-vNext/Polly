@@ -276,7 +276,7 @@ Policy
 // available as described for CircuitBreaker above.
 ```
 
-For further information on the operation of the Advanced Circuit Breaker, see the (Wiki)[https://github.com/App-vNext/Polly/wiki/Advanced-Circuit-Breaker]
+For further information on the operation of the Advanced Circuit Breaker, see the [Wiki](https://github.com/App-vNext/Polly/wiki/Advanced-Circuit-Breaker)
 
 For more information on the Circuit Breaker pattern in general see:
 * [Making the Netflix API More Resilient](http://techblog.netflix.com/2011/12/making-netflix-api-more-resilient.html)
