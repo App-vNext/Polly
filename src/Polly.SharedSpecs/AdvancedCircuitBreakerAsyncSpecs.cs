@@ -100,11 +100,11 @@ namespace Polly.Specs
         }
 
         [Fact]
-        public void Should_throw_if_minimum_throughput_is_zero()
+        public void Should_throw_if_minimum_throughput_is_one()
         {
             Action action = () => Policy
                 .Handle<DivideByZeroException>()
-                .AdvancedCircuitBreakerAsync(0.5, TimeSpan.FromSeconds(10), 0, TimeSpan.FromSeconds(30));
+                .AdvancedCircuitBreakerAsync(0.5, TimeSpan.FromSeconds(10), 1, TimeSpan.FromSeconds(30));
 
             action.ShouldThrow<ArgumentOutOfRangeException>()
                 .And.ParamName.Should()
@@ -112,11 +112,11 @@ namespace Polly.Specs
         }
 
         [Fact]
-        public void Should_throw_if_minimum_throughput_is_less_than_zero()
+        public void Should_throw_if_minimum_throughput_is_less_than_one()
         {
             Action action = () => Policy
                 .Handle<DivideByZeroException>()
-                .AdvancedCircuitBreakerAsync(0.5, TimeSpan.FromSeconds(10), -1, TimeSpan.FromSeconds(30));
+                .AdvancedCircuitBreakerAsync(0.5, TimeSpan.FromSeconds(10), 0, TimeSpan.FromSeconds(30));
 
             action.ShouldThrow<ArgumentOutOfRangeException>()
                 .And.ParamName.Should()
@@ -2284,7 +2284,10 @@ namespace Polly.Specs
             var durationOfBreak = TimeSpan.FromMinutes(1);
             CircuitBreakerPolicy breaker = Policy
                 .Handle<DivideByZeroException>()
-                .AdvancedCircuitBreakerAsync(0.5, TimeSpan.FromSeconds(10), 1, durationOfBreak);
+                .AdvancedCircuitBreakerAsync(0.5, TimeSpan.FromSeconds(10), 2, durationOfBreak);
+
+            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                .ShouldThrow<DivideByZeroException>();
 
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
                 .ShouldThrow<DivideByZeroException>();

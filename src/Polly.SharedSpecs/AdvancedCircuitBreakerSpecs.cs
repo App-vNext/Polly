@@ -96,11 +96,11 @@ namespace Polly.Specs
         }
 
         [Fact]
-        public void Should_throw_if_minimum_throughput_is_zero()
+        public void Should_throw_if_minimum_throughput_is_one()
         {
             Action action = () => Policy
                 .Handle<DivideByZeroException>()
-                .AdvancedCircuitBreaker(0.5, TimeSpan.FromSeconds(10), 0, TimeSpan.FromSeconds(30));
+                .AdvancedCircuitBreaker(0.5, TimeSpan.FromSeconds(10), 1, TimeSpan.FromSeconds(30));
 
             action.ShouldThrow<ArgumentOutOfRangeException>()
                 .And.ParamName.Should()
@@ -108,11 +108,11 @@ namespace Polly.Specs
         }
 
         [Fact]
-        public void Should_throw_if_minimum_throughput_is_less_than_zero()
+        public void Should_throw_if_minimum_throughput_is_less_than_one()
         {
             Action action = () => Policy
                 .Handle<DivideByZeroException>()
-                .AdvancedCircuitBreaker(0.5, TimeSpan.FromSeconds(10), -1, TimeSpan.FromSeconds(30));
+                .AdvancedCircuitBreaker(0.5, TimeSpan.FromSeconds(10), 0, TimeSpan.FromSeconds(30));
 
             action.ShouldThrow<ArgumentOutOfRangeException>()
                 .And.ParamName.Should()
