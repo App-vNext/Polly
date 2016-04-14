@@ -8,7 +8,7 @@ namespace Polly.CircuitBreaker
     {
         internal static void Implementation(Action action, Context context, IEnumerable<ExceptionPredicate> shouldHandlePredicates, ICircuitController breakerController)
         {
-            ThrowIfCircuitBroken(breakerController);
+            breakerController.OnActionPreExecute();
 
             try
             {
@@ -25,22 +25,6 @@ namespace Polly.CircuitBreaker
                 breakerController.OnActionFailure(ex, context);
 
                 throw;
-            }
-        }
-
-        private static void ThrowIfCircuitBroken(ICircuitController breakerController)
-        {
-            switch (breakerController.CircuitState)
-            {
-                case CircuitState.Closed:
-                case CircuitState.HalfOpen:
-                    break;
-                case CircuitState.Open:
-                    throw new BrokenCircuitException("The circuit is now open and is not allowing calls.", breakerController.LastException);
-                case CircuitState.Isolated:
-                    throw new IsolatedCircuitException("The circuit is manually held open and is not allowing calls.");
-                default:
-                    throw new InvalidOperationException("Unhandled CircuitState.");
             }
         }
     }

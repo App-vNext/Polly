@@ -8,6 +8,8 @@ namespace Polly.CircuitBreaker
         Exception LastException { get; }
         void Isolate();
         void Reset();
+        void OnCircuitReset(Context context);
+        void OnActionPreExecute();
         void OnActionSuccess(Context context);
         void OnActionFailure(Exception ex, Context context);
     }

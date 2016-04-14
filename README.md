@@ -253,7 +253,32 @@ breaker.Reset();
 
 ```
 
-For more information on the Circuit Breaker pattern see:
+### Advanced Circuit Breaker ###
+```csharp
+// Break the circuit if, within any period of duration samplingDuration, 
+// the proportion of actions resulting in a handled exception exceeds failureThreshold, 
+// provided also that the number of actions through the circuit in the period
+// is at least minimumThroughput.
+
+Policy
+    .Handle<DivideByZeroException>()
+    .AdvancedCircuitBreaker(
+        failureThreshold: 0.5, // Break on >=50% actions result in handled exceptions...
+        samplingDuration: TimeSpan.FromSeconds(10), // ... over any 10 second period
+        minimumThroughput: 8, // ... provided at least 8 actions in the 10 second period.
+        durationOfBreak: TimeSpan.FromSeconds(30) // Break for 30 seconds.
+                );
+
+// Configuration overloads taking stage-change delegates are
+// available as described for CircuitBreaker above.
+
+// Circuit state monitoring and manual controls are
+// available as described for CircuitBreaker above.
+```
+
+For further information on the operation of the Advanced Circuit Breaker, see the [Wiki](https://github.com/App-vNext/Polly/wiki/Advanced-Circuit-Breaker)
+
+For more information on the Circuit Breaker pattern in general see:
 * [Making the Netflix API More Resilient](http://techblog.netflix.com/2011/12/making-netflix-api-more-resilient.html)
 * [Circuit Breaker (Martin Fowler)](http://martinfowler.com/bliki/CircuitBreaker.html)
 * [Circuit Breaker Pattern (Microsoft)](https://msdn.microsoft.com/en-us/library/dn589784.aspx)
