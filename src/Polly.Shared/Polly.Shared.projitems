@@ -25,7 +25,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)CircuitBreaker\IsolatedCircuitException.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CircuitBreaker\RollingHealthMetrics.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CircuitBreaker\SingleHealthMetrics.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)CircuitBreaker\TimesliceCircuitController.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CircuitBreaker\AdvancedCircuitController.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Context.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ContextualPolicy.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ContextualPolicyAsync.cs" />
@@ -51,8 +51,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)Retry\RetryPolicyStateWithSleep.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Retry\RetryPolicyStateWithSleepDurationProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Retry\RetryPolicyStateWithSleepDurationProviderAsync.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)TimesliceCircuitBreakerSyntax.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)TimesliceCircuitBreakerSyntaxAsync.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)AdvancedCircuitBreakerSyntax.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)AdvancedCircuitBreakerSyntaxAsync.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\ReadOnlyDictionary.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\SystemClock.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\TimedLock.cs" />

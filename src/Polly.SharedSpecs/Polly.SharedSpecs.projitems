@@ -10,7 +10,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)CircuitBreakerAsyncSpecs.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)TimesliceCircuitBreakerSpecs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)AdvancedCircuitBreakerSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CircuitBreakerSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ContextualPolicyAsyncSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ContextualPolicySpecs.cs" />
@@ -23,7 +23,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)RetryForeverAsyncSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)RetryForeverSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)RetrySpecs.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)TimesliceCircuitBreakerAsyncSpecs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)AdvancedCircuitBreakerAsyncSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)WaitAndRetryAsyncSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)WaitAndRetryForeverAsyncSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)WaitAndRetrySpecs.cs" />
