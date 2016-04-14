@@ -1,3 +1,8 @@
+## 4.2.0
+
+- Add AdvancedCircuitBreaker.  Thanks to [@reisenberger](https://github.com/reisenberger) and [@kristianhald](https://github.com/kristianhald)
+
+
 ## 4.1.2
 
 - Fixed an issue with the onReset delegate of the CircuitBreaker.
