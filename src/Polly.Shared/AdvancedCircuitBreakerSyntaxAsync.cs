@@ -177,7 +177,7 @@ namespace Polly
             if (failureThreshold <= 0) throw new ArgumentOutOfRangeException("failureThreshold", "Value must be greater than zero.");
             if (failureThreshold > 1) throw new ArgumentOutOfRangeException("failureThreshold", "Value must be less than or equal to one.");
             if (samplingDuration < resolutionOfCircuit) throw new ArgumentOutOfRangeException("samplingDuration", String.Format("Value must be equal to or greater than {0} milliseconds. This is the minimum resolution of the CircuitBreaker timer.", resolutionOfCircuit.TotalMilliseconds));
-            if (minimumThroughput <= 0) throw new ArgumentOutOfRangeException("minimumThroughput", "Value must be greater than zero.");
+            if (minimumThroughput <= 1) throw new ArgumentOutOfRangeException("minimumThroughput", "Value must be greater than one.");
             if (durationOfBreak < TimeSpan.Zero) throw new ArgumentOutOfRangeException("durationOfBreak", "Value must be greater than zero.");
 
             if (onBreak == null) throw new ArgumentNullException("onBreak");
