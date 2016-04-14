@@ -255,9 +255,9 @@ breaker.Reset();
 
 ### Advanced Circuit Breaker ###
 ```csharp
-// Break the circuit if, within any timespan of duration samplingDuration, 
+// Break the circuit if, within any period of duration samplingDuration, 
 // the proportion of actions resulting in a handled exception exceeds failureThreshold, 
-// provided also that the number of actions through the circuit in the timespan 
+// provided also that the number of actions through the circuit in the period
 // is at least minimumThroughput.
 
 Policy
@@ -269,7 +269,7 @@ Policy
         durationOfBreak: TimeSpan.FromSeconds(30) // Break for 30 seconds.
                 );
 
-// Overloads taking stage-change delegates are
+// Configuration overloads taking stage-change delegates are
 // available as described for CircuitBreaker above.
 
 // Circuit state monitoring and manual controls are
