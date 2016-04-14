@@ -6,17 +6,17 @@ namespace Polly.CircuitBreaker
 {
     internal class RollingHealthMetrics : IHealthMetrics
     {
-        private readonly long _timesliceDuration;
+        private readonly long _samplingDuration;
         private readonly long _windowDuration;
         private readonly Queue<HealthCount> _windows;
 
         private HealthCount _currentWindow;
 
-        public RollingHealthMetrics(TimeSpan timesliceDuration, short numberOfWindows)
+        public RollingHealthMetrics(TimeSpan samplingDuration, short numberOfWindows)
         {
-            _timesliceDuration = timesliceDuration.Ticks;
+            _samplingDuration = samplingDuration.Ticks;
 
-            _windowDuration = _timesliceDuration / numberOfWindows;
+            _windowDuration = _samplingDuration / numberOfWindows;
             _windows = new Queue<HealthCount>(numberOfWindows + 1);
         }
 
@@ -69,7 +69,7 @@ namespace Polly.CircuitBreaker
                 _windows.Enqueue(_currentWindow);
             }
 
-            while (_windows.Count > 0 && (now - _windows.Peek().StartedAt >= _timesliceDuration))
+            while (_windows.Count > 0 && (now - _windows.Peek().StartedAt >= _samplingDuration))
                 _windows.Dequeue();
         }
     }
