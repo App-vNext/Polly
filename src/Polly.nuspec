@@ -13,6 +13,10 @@
     <tags>Exception Handling Policy Retry Wait Circuit Breaker</tags>
     <copyright>Copyright © 2015, App vNext</copyright>
     <releaseNotes>
+     4.2.0
+     ---------------------
+     - Added AdvancedCircuitBreaker - Thanks to @reisenberger and @kristianhald
+     
      4.1.2
      ---------------------
      - Fixed an issue with the onReset delegate of the CircuitBreaker.
