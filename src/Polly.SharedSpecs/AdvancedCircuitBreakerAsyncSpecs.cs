@@ -86,7 +86,7 @@ namespace Polly.Specs
 
             action.ShouldThrow<ArgumentOutOfRangeException>()
                 .And.ParamName.Should()
-                .Be("timesliceDuration");
+                .Be("samplingDuration");
         }
 
         [Fact]
@@ -177,7 +177,7 @@ namespace Polly.Specs
                 .Handle<DivideByZeroException>()
                 .AdvancedCircuitBreakerAsync(
                     failureThreshold: 0.5,
-                    timesliceDuration: TimeSpan.FromSeconds(10),
+                    samplingDuration: TimeSpan.FromSeconds(10),
                     minimumThroughput: 4,
                     durationOfBreak: TimeSpan.FromSeconds(30)
                 );
@@ -214,7 +214,7 @@ namespace Polly.Specs
                 .Or<ArgumentOutOfRangeException>()
                 .AdvancedCircuitBreakerAsync(
                     failureThreshold: 0.5,
-                    timesliceDuration: TimeSpan.FromSeconds(10),
+                    samplingDuration: TimeSpan.FromSeconds(10),
                     minimumThroughput: 4,
                     durationOfBreak: TimeSpan.FromSeconds(30)
                 );
@@ -257,7 +257,7 @@ namespace Polly.Specs
                 .Handle<DivideByZeroException>()
                 .AdvancedCircuitBreakerAsync(
                     failureThreshold: 0.5,
-                    timesliceDuration: TimeSpan.FromSeconds(10),
+                    samplingDuration: TimeSpan.FromSeconds(10),
                     minimumThroughput: 4,
                     durationOfBreak: TimeSpan.FromSeconds(30)
                 );
@@ -295,13 +295,13 @@ namespace Polly.Specs
             var time = 1.January(2000);
             SystemClock.UtcNow = () => time;
 
-            var timesliceDuration = TimeSpan.FromSeconds(10);
+            var samplingDuration = TimeSpan.FromSeconds(10);
 
             CircuitBreakerPolicy breaker = Policy
                 .Handle<DivideByZeroException>()
                 .AdvancedCircuitBreakerAsync(
                     failureThreshold: 0.5,
-                    timesliceDuration: timesliceDuration,
+                    samplingDuration: samplingDuration,
                     minimumThroughput: 4,
                     durationOfBreak: TimeSpan.FromSeconds(30)
                 );
@@ -319,10 +319,10 @@ namespace Polly.Specs
                 .ShouldThrow<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
-            // Placing the rest of the invocations ('timesliceDuration' / 2) + 1 seconds later
+            // Placing the rest of the invocations ('samplingDuration' / 2) + 1 seconds later
             // ensures that even if there are only two windows, then the invocations are placed in the second.
             // They are still placed within same timeslice.
-            SystemClock.UtcNow = () => time.AddSeconds(timesliceDuration.Seconds / 2d + 1);
+            SystemClock.UtcNow = () => time.AddSeconds(samplingDuration.Seconds / 2d + 1);
 
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
                 .ShouldThrow<DivideByZeroException>();
@@ -346,7 +346,7 @@ namespace Polly.Specs
                 .Handle<DivideByZeroException>()
                 .AdvancedCircuitBreakerAsync(
                     failureThreshold: 0.5,
-                    timesliceDuration: TimeSpan.FromSeconds(10),
+                    samplingDuration: TimeSpan.FromSeconds(10),
                     minimumThroughput: 4,
                     durationOfBreak: TimeSpan.FromSeconds(30)
                 );
@@ -383,13 +383,13 @@ namespace Polly.Specs
             var time = 1.January(2000);
             SystemClock.UtcNow = () => time;
 
-            var timesliceDuration = TimeSpan.FromSeconds(10);
+            var samplingDuration = TimeSpan.FromSeconds(10);
 
             CircuitBreakerPolicy breaker = Policy
                 .Handle<DivideByZeroException>()
                 .AdvancedCircuitBreakerAsync(
                     failureThreshold: 0.5,
-                    timesliceDuration: timesliceDuration,
+                    samplingDuration: samplingDuration,
                     minimumThroughput: 4,
                     durationOfBreak: TimeSpan.FromSeconds(30)
                 );
@@ -411,10 +411,10 @@ namespace Polly.Specs
                 .ShouldThrow<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
-            // Placing the rest of the invocations ('timesliceDuration' / 2) + 1 seconds later
+            // Placing the rest of the invocations ('samplingDuration' / 2) + 1 seconds later
             // ensures that even if there are only two windows, then the invocations are placed in the second.
             // They are still placed within same timeslice
-            SystemClock.UtcNow = () => time.AddSeconds(timesliceDuration.Seconds / 2d + 1);
+            SystemClock.UtcNow = () => time.AddSeconds(samplingDuration.Seconds / 2d + 1);
 
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
                 .ShouldThrow<BrokenCircuitException>()
@@ -434,7 +434,7 @@ namespace Polly.Specs
                 .Handle<DivideByZeroException>()
                 .AdvancedCircuitBreakerAsync(
                     failureThreshold: 0.5,
-                    timesliceDuration: TimeSpan.FromSeconds(10),
+                    samplingDuration: TimeSpan.FromSeconds(10),
                     minimumThroughput: 4,
                     durationOfBreak: TimeSpan.FromSeconds(30)
                 );
@@ -471,13 +471,13 @@ namespace Polly.Specs
             var time = 1.January(2000);
             SystemClock.UtcNow = () => time;
 
-            var timesliceDuration = TimeSpan.FromSeconds(10);
+            var samplingDuration = TimeSpan.FromSeconds(10);
 
             CircuitBreakerPolicy breaker = Policy
                 .Handle<DivideByZeroException>()
                 .AdvancedCircuitBreakerAsync(
                     failureThreshold: 0.5,
-                    timesliceDuration: timesliceDuration,
+                    samplingDuration: samplingDuration,
                     minimumThroughput: 4,
                     durationOfBreak: TimeSpan.FromSeconds(30)
                 );
@@ -499,10 +499,10 @@ namespace Polly.Specs
                 .ShouldThrow<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
-            // Placing the rest of the invocations ('timesliceDuration' / 2) + 1 seconds later
+            // Placing the rest of the invocations ('samplingDuration' / 2) + 1 seconds later
             // ensures that even if there are only two windows, then the invocations are placed in the second.
             // They are still placed within same timeslice
-            SystemClock.UtcNow = () => time.AddSeconds(timesliceDuration.Seconds / 2d + 1);
+            SystemClock.UtcNow = () => time.AddSeconds(samplingDuration.Seconds / 2d + 1);
 
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
                 .ShouldThrow<BrokenCircuitException>()
@@ -518,13 +518,13 @@ namespace Polly.Specs
             var time = 1.January(2000);
             SystemClock.UtcNow = () => time;
 
-            var timesliceDuration = TimeSpan.FromSeconds(10);
+            var samplingDuration = TimeSpan.FromSeconds(10);
 
             CircuitBreakerPolicy breaker = Policy
                 .Handle<DivideByZeroException>()
                 .AdvancedCircuitBreakerAsync(
                     failureThreshold: 0.5,
-                    timesliceDuration: timesliceDuration,
+                    samplingDuration: samplingDuration,
                     minimumThroughput: 4,
                     durationOfBreak: TimeSpan.FromSeconds(30)
                 );
@@ -543,7 +543,7 @@ namespace Polly.Specs
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             // Adjust SystemClock so that timeslice (clearly) expires; fourth exception thrown in next-recorded timeslice.
-            SystemClock.UtcNow = () => time.Add(timesliceDuration).Add(timesliceDuration);
+            SystemClock.UtcNow = () => time.Add(samplingDuration).Add(samplingDuration);
 
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
                 .ShouldThrow<DivideByZeroException>();
@@ -557,13 +557,13 @@ namespace Polly.Specs
             var time = 1.January(2000);
             SystemClock.UtcNow = () => time;
 
-            var timesliceDuration = TimeSpan.FromSeconds(10);
+            var samplingDuration = TimeSpan.FromSeconds(10);
 
             CircuitBreakerPolicy breaker = Policy
                 .Handle<DivideByZeroException>()
                 .AdvancedCircuitBreakerAsync(
                     failureThreshold: 0.5,
-                    timesliceDuration: timesliceDuration,
+                    samplingDuration: samplingDuration,
                     minimumThroughput: 4,
                     durationOfBreak: TimeSpan.FromSeconds(30)
                 );
@@ -582,7 +582,7 @@ namespace Polly.Specs
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             // Adjust SystemClock so that timeslice (just) expires; fourth exception thrown in following timeslice.
-            SystemClock.UtcNow = () => time.Add(timesliceDuration);
+            SystemClock.UtcNow = () => time.Add(samplingDuration);
 
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
                 .ShouldThrow<DivideByZeroException>();
@@ -596,13 +596,13 @@ namespace Polly.Specs
             var time = 1.January(2000);
             SystemClock.UtcNow = () => time;
 
-            var timesliceDuration = TimeSpan.FromSeconds(10);
+            var samplingDuration = TimeSpan.FromSeconds(10);
 
             CircuitBreakerPolicy breaker = Policy
                 .Handle<DivideByZeroException>()
                 .AdvancedCircuitBreakerAsync(
                     failureThreshold: 0.5,
-                    timesliceDuration: timesliceDuration,
+                    samplingDuration: samplingDuration,
                     minimumThroughput: 4,
                     durationOfBreak: TimeSpan.FromSeconds(30)
                 );
@@ -619,14 +619,14 @@ namespace Polly.Specs
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             // Creates a new window right at the end of the original timeslice.
-            SystemClock.UtcNow = () => time.AddTicks(timesliceDuration.Ticks - 1);
+            SystemClock.UtcNow = () => time.AddTicks(samplingDuration.Ticks - 1);
 
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
                 .ShouldThrow<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             // Adjust SystemClock so that timeslice (just) expires; fourth exception thrown in following timeslice.  If timeslice/window rollover is precisely defined, this should cause first two actions to be forgotten from statistics (rolled out of the window of relevance), and thus the circuit not to break.
-            SystemClock.UtcNow = () => time.Add(timesliceDuration);
+            SystemClock.UtcNow = () => time.Add(samplingDuration);
 
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
                 .ShouldThrow<DivideByZeroException>();
@@ -640,13 +640,13 @@ namespace Polly.Specs
             var time = 1.January(2000);
             SystemClock.UtcNow = () => time;
 
-            var timesliceDuration = TimeSpan.FromSeconds(10);
+            var samplingDuration = TimeSpan.FromSeconds(10);
 
             CircuitBreakerPolicy breaker = Policy
                 .Handle<DivideByZeroException>()
                 .AdvancedCircuitBreakerAsync(
                     failureThreshold: 0.5,
-                    timesliceDuration: timesliceDuration,
+                    samplingDuration: samplingDuration,
                     minimumThroughput: 4,
                     durationOfBreak: TimeSpan.FromSeconds(30)
                 );
@@ -665,7 +665,7 @@ namespace Polly.Specs
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             // Adjust SystemClock so that timeslice doesn't quite expire; fourth exception thrown in same timeslice.
-            SystemClock.UtcNow = () => time.AddTicks(timesliceDuration.Ticks - 1);
+            SystemClock.UtcNow = () => time.AddTicks(samplingDuration.Ticks - 1);
 
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
                 .ShouldThrow<DivideByZeroException>();
@@ -689,7 +689,7 @@ namespace Polly.Specs
                 .Handle<DivideByZeroException>()
                 .AdvancedCircuitBreakerAsync(
                     failureThreshold: 0.5,
-                    timesliceDuration: TimeSpan.FromSeconds(10),
+                    samplingDuration: TimeSpan.FromSeconds(10),
                     minimumThroughput: 4,
                     durationOfBreak: TimeSpan.FromSeconds(30)
                 );
@@ -719,7 +719,7 @@ namespace Polly.Specs
                 .Handle<DivideByZeroException>()
                 .AdvancedCircuitBreakerAsync(
                     failureThreshold: 0.5,
-                    timesliceDuration: TimeSpan.FromSeconds(10),
+                    samplingDuration: TimeSpan.FromSeconds(10),
                     minimumThroughput: 4,
                     durationOfBreak: TimeSpan.FromSeconds(30)
                 );
@@ -749,13 +749,13 @@ namespace Polly.Specs
             var time = 1.January(2000);
             SystemClock.UtcNow = () => time;
 
-            var timesliceDuration = TimeSpan.FromSeconds(10);
+            var samplingDuration = TimeSpan.FromSeconds(10);
 
             CircuitBreakerPolicy breaker = Policy
                 .Handle<DivideByZeroException>()
                 .AdvancedCircuitBreakerAsync(
                     failureThreshold: 0.5,
-                    timesliceDuration: timesliceDuration,
+                    samplingDuration: samplingDuration,
                     minimumThroughput: 4,
                     durationOfBreak: TimeSpan.FromSeconds(30)
                 );
@@ -766,9 +766,9 @@ namespace Polly.Specs
                 .ShouldNotThrow();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
-            // The time is set to just at the end of the timeslice duration ensuring
+            // The time is set to just at the end of the sampling duration ensuring
             // the invocations are within the timeslice, but only barely.
-            SystemClock.UtcNow = () => time.AddTicks(timesliceDuration.Ticks - 1);
+            SystemClock.UtcNow = () => time.AddTicks(samplingDuration.Ticks - 1);
 
             // Three of four actions in this test occur within the first timeslice.
             breaker.Awaiting(x => x.ExecuteAsync(() => Task.FromResult(true)))
@@ -784,11 +784,11 @@ namespace Polly.Specs
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             // Setting the time to just barely into the new timeslice
-            SystemClock.UtcNow = () => time.Add(timesliceDuration);
+            SystemClock.UtcNow = () => time.Add(samplingDuration);
 
             // This failure opens the circuit, because it is the second failure of four calls
             // equalling the failure threshold. The minimum threshold within the defined
-            // timeslice duration is met, when using rolling windows.
+            // sampling duration is met, when using rolling windows.
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
                 .ShouldThrow<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Open);
@@ -800,13 +800,13 @@ namespace Polly.Specs
             var time = 1.January(2000);
             SystemClock.UtcNow = () => time;
 
-            var timesliceDuration = TimeSpan.FromSeconds(10);
+            var samplingDuration = TimeSpan.FromSeconds(10);
 
             CircuitBreakerPolicy breaker = Policy
                 .Handle<DivideByZeroException>()
                 .AdvancedCircuitBreakerAsync(
                     failureThreshold: 0.5,
-                    timesliceDuration: timesliceDuration,
+                    samplingDuration: samplingDuration,
                     minimumThroughput: 4,
                     durationOfBreak: TimeSpan.FromSeconds(30)
                 );
@@ -817,9 +817,9 @@ namespace Polly.Specs
                 .ShouldNotThrow();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
-            // The time is set to just at the end of the timeslice duration ensuring
+            // The time is set to just at the end of the sampling duration ensuring
             // the invocations are within the timeslice, but only barely.
-            SystemClock.UtcNow = () => time.AddTicks(timesliceDuration.Ticks - 1);
+            SystemClock.UtcNow = () => time.AddTicks(samplingDuration.Ticks - 1);
 
             // Two of three actions in this test occur within the first timeslice.
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
@@ -831,7 +831,7 @@ namespace Polly.Specs
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             // Setting the time to just barely into the new timeslice
-            SystemClock.UtcNow = () => time.Add(timesliceDuration);
+            SystemClock.UtcNow = () => time.Add(samplingDuration);
 
             // A third failure occurs just at the beginning of the new timeslice making 
             // the number of failures above the failure threshold. However, the throughput is 
@@ -847,14 +847,14 @@ namespace Polly.Specs
             var time = 1.January(2000);
             SystemClock.UtcNow = () => time;
 
-            var timesliceDuration = TimeSpan.FromSeconds(10);
+            var samplingDuration = TimeSpan.FromSeconds(10);
             var numberOfWindowsDefinedInCircuitBreaker = 10;
 
             CircuitBreakerPolicy breaker = Policy
                 .Handle<DivideByZeroException>()
                 .AdvancedCircuitBreakerAsync(
                     failureThreshold: 0.5,
-                    timesliceDuration: timesliceDuration,
+                    samplingDuration: samplingDuration,
                     minimumThroughput: 4,
                     durationOfBreak: TimeSpan.FromSeconds(30)
                 );
@@ -866,7 +866,7 @@ namespace Polly.Specs
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             // Setting the time to the second window in the rolling metrics
-            SystemClock.UtcNow = () => time.AddSeconds(timesliceDuration.Seconds / (double)numberOfWindowsDefinedInCircuitBreaker);
+            SystemClock.UtcNow = () => time.AddSeconds(samplingDuration.Seconds / (double)numberOfWindowsDefinedInCircuitBreaker);
 
             // Three actions occur in the second window of the first timeslice
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
@@ -882,7 +882,7 @@ namespace Polly.Specs
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             // Setting the time to just barely into the new timeslice
-            SystemClock.UtcNow = () => time.Add(timesliceDuration);
+            SystemClock.UtcNow = () => time.Add(samplingDuration);
 
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
                 .ShouldThrow<DivideByZeroException>();
@@ -909,7 +909,7 @@ namespace Polly.Specs
                 .Handle<DivideByZeroException>()
                 .AdvancedCircuitBreakerAsync(
                     failureThreshold: 0.5,
-                    timesliceDuration: TimeSpan.FromMilliseconds(199),
+                    samplingDuration: TimeSpan.FromMilliseconds(199),
                     minimumThroughput: 4,
                     durationOfBreak: TimeSpan.FromSeconds(30)
                 );
@@ -951,7 +951,7 @@ namespace Polly.Specs
                 .Handle<DivideByZeroException>()
                 .AdvancedCircuitBreakerAsync(
                     failureThreshold: 0.5,
-                    timesliceDuration: TimeSpan.FromMilliseconds(199),
+                    samplingDuration: TimeSpan.FromMilliseconds(199),
                     minimumThroughput: 4,
                     durationOfBreak: TimeSpan.FromSeconds(30)
                 );
@@ -992,7 +992,7 @@ namespace Polly.Specs
                 .Handle<DivideByZeroException>()
                 .AdvancedCircuitBreakerAsync(
                     failureThreshold: 0.5,
-                    timesliceDuration: TimeSpan.FromMilliseconds(199),
+                    samplingDuration: TimeSpan.FromMilliseconds(199),
                     minimumThroughput: 4,
                     durationOfBreak: TimeSpan.FromSeconds(30)
                 );
@@ -1029,13 +1029,13 @@ namespace Polly.Specs
             var time = 1.January(2000);
             SystemClock.UtcNow = () => time;
 
-            var timesliceDuration = TimeSpan.FromMilliseconds(199);
+            var samplingDuration = TimeSpan.FromMilliseconds(199);
 
             CircuitBreakerPolicy breaker = Policy
                 .Handle<DivideByZeroException>()
                 .AdvancedCircuitBreakerAsync(
                     failureThreshold: 0.5,
-                    timesliceDuration: timesliceDuration,
+                    samplingDuration: samplingDuration,
                     minimumThroughput: 4,
                     durationOfBreak: TimeSpan.FromSeconds(30)
                 );
@@ -1054,7 +1054,7 @@ namespace Polly.Specs
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             // Adjust SystemClock so that timeslice (clearly) expires; fourth exception thrown in next-recorded timeslice.
-            SystemClock.UtcNow = () => time.Add(timesliceDuration).Add(timesliceDuration);
+            SystemClock.UtcNow = () => time.Add(samplingDuration).Add(samplingDuration);
 
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
                 .ShouldThrow<DivideByZeroException>();
@@ -1068,13 +1068,13 @@ namespace Polly.Specs
             var time = 1.January(2000);
             SystemClock.UtcNow = () => time;
 
-            var timesliceDuration = TimeSpan.FromMilliseconds(199);
+            var samplingDuration = TimeSpan.FromMilliseconds(199);
 
             CircuitBreakerPolicy breaker = Policy
                 .Handle<DivideByZeroException>()
                 .AdvancedCircuitBreakerAsync(
                     failureThreshold: 0.5,
-                    timesliceDuration: timesliceDuration,
+                    samplingDuration: samplingDuration,
                     minimumThroughput: 4,
                     durationOfBreak: TimeSpan.FromSeconds(30)
                 );
@@ -1093,7 +1093,7 @@ namespace Polly.Specs
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             // Adjust SystemClock so that timeslice (just) expires; fourth exception thrown in following timeslice.
-            SystemClock.UtcNow = () => time.Add(timesliceDuration);
+            SystemClock.UtcNow = () => time.Add(samplingDuration);
 
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
                 .ShouldThrow<DivideByZeroException>();
@@ -1107,13 +1107,13 @@ namespace Polly.Specs
             var time = 1.January(2000);
             SystemClock.UtcNow = () => time;
 
-            var timesliceDuration = TimeSpan.FromMilliseconds(199);
+            var samplingDuration = TimeSpan.FromMilliseconds(199);
 
             CircuitBreakerPolicy breaker = Policy
                 .Handle<DivideByZeroException>()
                 .AdvancedCircuitBreakerAsync(
                     failureThreshold: 0.5,
-                    timesliceDuration: timesliceDuration,
+                    samplingDuration: samplingDuration,
                     minimumThroughput: 4,
                     durationOfBreak: TimeSpan.FromSeconds(30)
                 );
@@ -1132,7 +1132,7 @@ namespace Polly.Specs
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             // Adjust SystemClock so that timeslice doesn't quite expire; fourth exception thrown in same timeslice.
-            SystemClock.UtcNow = () => time.AddTicks(timesliceDuration.Ticks - 1);
+            SystemClock.UtcNow = () => time.AddTicks(samplingDuration.Ticks - 1);
 
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
                 .ShouldThrow<DivideByZeroException>();
@@ -1156,7 +1156,7 @@ namespace Polly.Specs
                 .Handle<DivideByZeroException>()
                 .AdvancedCircuitBreakerAsync(
                     failureThreshold: 0.5,
-                    timesliceDuration: TimeSpan.FromMilliseconds(199),
+                    samplingDuration: TimeSpan.FromMilliseconds(199),
                     minimumThroughput: 4,
                     durationOfBreak: TimeSpan.FromSeconds(30)
                 );
@@ -1186,7 +1186,7 @@ namespace Polly.Specs
                 .Handle<DivideByZeroException>()
                 .AdvancedCircuitBreakerAsync(
                     failureThreshold: 0.5,
-                    timesliceDuration: TimeSpan.FromMilliseconds(199),
+                    samplingDuration: TimeSpan.FromMilliseconds(199),
                     minimumThroughput: 4,
                     durationOfBreak: TimeSpan.FromSeconds(30)
                 );
@@ -1216,13 +1216,13 @@ namespace Polly.Specs
             var time = 1.January(2000);
             SystemClock.UtcNow = () => time;
 
-            var timesliceDuration = TimeSpan.FromMilliseconds(199);
+            var samplingDuration = TimeSpan.FromMilliseconds(199);
 
             CircuitBreakerPolicy breaker = Policy
                 .Handle<DivideByZeroException>()
                 .AdvancedCircuitBreakerAsync(
                     failureThreshold: 0.5,
-                    timesliceDuration: timesliceDuration,
+                    samplingDuration: samplingDuration,
                     minimumThroughput: 4,
                     durationOfBreak: TimeSpan.FromSeconds(30)
                 );
@@ -1233,9 +1233,9 @@ namespace Polly.Specs
                 .ShouldNotThrow();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
-            // The time is set to just at the end of the timeslice duration ensuring
+            // The time is set to just at the end of the sampling duration ensuring
             // the invocations are within the timeslice, but only barely.
-            SystemClock.UtcNow = () => time.AddTicks(timesliceDuration.Ticks - 1);
+            SystemClock.UtcNow = () => time.AddTicks(samplingDuration.Ticks - 1);
 
             // Three of four actions in this test occur within the first timeslice.
             breaker.Awaiting(x => x.ExecuteAsync(() => Task.FromResult(true)))
@@ -1251,7 +1251,7 @@ namespace Polly.Specs
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             // Setting the time to just barely into the new timeslice
-            SystemClock.UtcNow = () => time.Add(timesliceDuration);
+            SystemClock.UtcNow = () => time.Add(samplingDuration);
 
             // This failure does not open the circuit, because a new duration should have 
             // started and with such low sampling duration, windows should not be used.
@@ -1278,7 +1278,7 @@ namespace Polly.Specs
                 .Handle<DivideByZeroException>()
                 .AdvancedCircuitBreakerAsync(
                     failureThreshold: 0.5,
-                    timesliceDuration: TimeSpan.FromSeconds(10),
+                    samplingDuration: TimeSpan.FromSeconds(10),
                     minimumThroughput: 4,
                     durationOfBreak: durationOfBreak
                 );
@@ -1316,13 +1316,13 @@ namespace Polly.Specs
             SystemClock.UtcNow = () => time;
 
             var durationOfBreak = TimeSpan.FromSeconds(30);
-            var timesliceDuration = TimeSpan.FromSeconds(10);
+            var samplingDuration = TimeSpan.FromSeconds(10);
 
             CircuitBreakerPolicy breaker = Policy
                 .Handle<DivideByZeroException>()
                 .AdvancedCircuitBreakerAsync(
                     failureThreshold: 0.5,
-                    timesliceDuration: timesliceDuration,
+                    samplingDuration: samplingDuration,
                     minimumThroughput: 4,
                     durationOfBreak: durationOfBreak
                 );
@@ -1340,10 +1340,10 @@ namespace Polly.Specs
                 .ShouldThrow<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
-            // Placing the rest of the invocations ('timesliceDuration' / 2) + 1 seconds later
+            // Placing the rest of the invocations ('samplingDuration' / 2) + 1 seconds later
             // ensures that even if there are only two windows, then the invocations are placed in the second.
             // They are still placed within same timeslice
-            var anotherwindowDuration = timesliceDuration.Seconds / 2d + 1;
+            var anotherwindowDuration = samplingDuration.Seconds / 2d + 1;
             SystemClock.UtcNow = () => time.AddSeconds(anotherwindowDuration);
 
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
@@ -1376,7 +1376,7 @@ namespace Polly.Specs
                 .Handle<DivideByZeroException>()
                 .AdvancedCircuitBreakerAsync(
                     failureThreshold: 0.5,
-                    timesliceDuration: TimeSpan.FromSeconds(10),
+                    samplingDuration: TimeSpan.FromSeconds(10),
                     minimumThroughput: 4,
                     durationOfBreak: durationOfBreak
                 );
@@ -1425,7 +1425,7 @@ namespace Polly.Specs
                 .Handle<DivideByZeroException>()
                 .AdvancedCircuitBreakerAsync(
                     failureThreshold: 0.5,
-                    timesliceDuration: TimeSpan.FromSeconds(10),
+                    samplingDuration: TimeSpan.FromSeconds(10),
                     minimumThroughput: 4,
                     durationOfBreak: durationOfBreak
                 );
@@ -1536,7 +1536,7 @@ namespace Polly.Specs
                 .Handle<DivideByZeroException>()
                 .AdvancedCircuitBreakerAsync(
                     failureThreshold: 0.5,
-                    timesliceDuration: TimeSpan.FromSeconds(10),
+                    samplingDuration: TimeSpan.FromSeconds(10),
                     minimumThroughput: 4,
                     durationOfBreak: durationOfBreak
                 );
@@ -1599,7 +1599,7 @@ namespace Polly.Specs
                 .Handle<DivideByZeroException>()
                 .AdvancedCircuitBreakerAsync(
                     failureThreshold: 0.5,
-                    timesliceDuration: TimeSpan.FromSeconds(10),
+                    samplingDuration: TimeSpan.FromSeconds(10),
                     minimumThroughput: 4,
                     durationOfBreak: TimeSpan.FromSeconds(30),
                     onBreak: onBreak,
@@ -1661,7 +1661,7 @@ namespace Polly.Specs
                 .Handle<DivideByZeroException>()
                 .AdvancedCircuitBreakerAsync(
                     failureThreshold: 0.5,
-                    timesliceDuration: TimeSpan.FromSeconds(10),
+                    samplingDuration: TimeSpan.FromSeconds(10),
                     minimumThroughput: 4,
                     durationOfBreak: TimeSpan.FromSeconds(30),
                     onBreak: onBreak,
@@ -1717,7 +1717,7 @@ namespace Polly.Specs
                 .Handle<DivideByZeroException>()
                 .AdvancedCircuitBreakerAsync(
                     failureThreshold: 0.5,
-                    timesliceDuration: TimeSpan.FromSeconds(10),
+                    samplingDuration: TimeSpan.FromSeconds(10),
                     minimumThroughput: 4,
                     durationOfBreak: durationOfBreak,
                     onBreak: onBreak,
@@ -1800,7 +1800,7 @@ namespace Polly.Specs
                 .Handle<DivideByZeroException>()
                 .AdvancedCircuitBreakerAsync(
                     failureThreshold: 0.5,
-                    timesliceDuration: TimeSpan.FromSeconds(10),
+                    samplingDuration: TimeSpan.FromSeconds(10),
                     minimumThroughput: 4,
                     durationOfBreak: durationOfBreak,
                     onBreak: onBreak,
@@ -1862,7 +1862,7 @@ namespace Polly.Specs
                 .Handle<DivideByZeroException>()
                 .AdvancedCircuitBreakerAsync(
                     failureThreshold: 0.5,
-                    timesliceDuration: TimeSpan.FromSeconds(10),
+                    samplingDuration: TimeSpan.FromSeconds(10),
                     minimumThroughput: 4,
                     durationOfBreak: durationOfBreak,
                     onBreak: onBreak,
@@ -1950,7 +1950,7 @@ namespace Polly.Specs
                 .Handle<DivideByZeroException>()
                 .AdvancedCircuitBreakerAsync(
                     failureThreshold: 0.5,
-                    timesliceDuration: TimeSpan.FromSeconds(10),
+                    samplingDuration: TimeSpan.FromSeconds(10),
                     minimumThroughput: 4,
                     durationOfBreak: TimeSpan.FromSeconds(30),
                     onBreak: onBreak,
@@ -1997,7 +1997,7 @@ namespace Polly.Specs
                 .Handle<DivideByZeroException>()
                 .AdvancedCircuitBreakerAsync(
                     failureThreshold: 0.5,
-                    timesliceDuration: TimeSpan.FromSeconds(10),
+                    samplingDuration: TimeSpan.FromSeconds(10),
                     minimumThroughput: 4,
                     durationOfBreak: durationOfBreak,
                     onBreak: onBreak,
@@ -2050,7 +2050,7 @@ namespace Polly.Specs
                 .Handle<DivideByZeroException>()
                 .AdvancedCircuitBreakerAsync(
                     failureThreshold: 0.5,
-                    timesliceDuration: TimeSpan.FromSeconds(10),
+                    samplingDuration: TimeSpan.FromSeconds(10),
                     minimumThroughput: 4,
                     durationOfBreak: TimeSpan.FromSeconds(30),
                     onBreak: onBreak,
@@ -2097,7 +2097,7 @@ namespace Polly.Specs
                 .Handle<DivideByZeroException>()
                 .AdvancedCircuitBreakerAsync(
                     failureThreshold: 0.5,
-                    timesliceDuration: TimeSpan.FromSeconds(10),
+                    samplingDuration: TimeSpan.FromSeconds(10),
                     minimumThroughput: 4,
                     durationOfBreak: durationOfBreak,
                     onBreak: onBreak,

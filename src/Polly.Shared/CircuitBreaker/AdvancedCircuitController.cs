@@ -12,11 +12,11 @@ namespace Polly.CircuitBreaker
         private readonly double _failureThreshold;
         private readonly int _minimumThroughput;
 
-        public AdvancedCircuitController(double failureThreshold, TimeSpan timesliceDuration, int minimumThroughput, TimeSpan durationOfBreak, Action<Exception, TimeSpan, Context> onBreak, Action<Context> onReset, Action onHalfOpen) : base(durationOfBreak, onBreak, onReset, onHalfOpen)
+        public AdvancedCircuitController(double failureThreshold, TimeSpan samplingDuration, int minimumThroughput, TimeSpan durationOfBreak, Action<Exception, TimeSpan, Context> onBreak, Action<Context> onReset, Action onHalfOpen) : base(durationOfBreak, onBreak, onReset, onHalfOpen)
         {
-            _metrics = timesliceDuration.Ticks < ResolutionOfCircuitTimer * NumberOfWindows
-                ? (IHealthMetrics)new SingleHealthMetrics(timesliceDuration)
-                : (IHealthMetrics)new RollingHealthMetrics(timesliceDuration, NumberOfWindows);
+            _metrics = samplingDuration.Ticks < ResolutionOfCircuitTimer * NumberOfWindows
+                ? (IHealthMetrics)new SingleHealthMetrics(samplingDuration)
+                : (IHealthMetrics)new RollingHealthMetrics(samplingDuration, NumberOfWindows);
 
             _failureThreshold = failureThreshold;
             _minimumThroughput = minimumThroughput;
