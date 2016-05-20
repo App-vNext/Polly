@@ -78,17 +78,17 @@ namespace Polly
                 throw new ArgumentOutOfRangeException("retryCount", "Value must be greater than or equal to zero.");
             if (onRetry == null) throw new ArgumentNullException("onRetry");
 
+#pragma warning disable 1998
             return new RetryPolicy(
                 (action, context, cancellationToken, continueOnCapturedContext) => RetryEngine.ImplementationAsync(
                     action,
                     cancellationToken,
                     policyBuilder.ExceptionPredicates,
-                    () => new RetryPolicyStateWithCount(retryCount,
-                        async (e, i) => { onRetry.Invoke(e, i); await Task.FromResult(true).ConfigureAwait(continueOnCapturedContext); }
-                    ),
+                    () => new RetryPolicyStateWithCount(retryCount, async (e, i) => onRetry(e, i)),
                     continueOnCapturedContext),
                 policyBuilder.ExceptionPredicates
             );
+#pragma warning restore 1998
         }
 
         /// <summary>
@@ -159,15 +159,15 @@ namespace Polly
             if (retryCount < 0) throw new ArgumentOutOfRangeException("retryCount", "Value must be greater than or equal to zero.");
             if (onRetry == null) throw new ArgumentNullException("onRetry");
 
+#pragma warning disable 1998
             return new RetryPolicy((action, context, cancellationToken, continueOnCapturedContext) => RetryEngine.ImplementationAsync(
                 action,
                 cancellationToken,
                 policyBuilder.ExceptionPredicates,
-                () => new RetryPolicyStateWithCount(retryCount,
-                 async (e, i, c) => { onRetry.Invoke(e, i, c); await Task.FromResult(true).ConfigureAwait(continueOnCapturedContext); }
-                , context),
+                () => new RetryPolicyStateWithCount(retryCount, async (e, i, c) => onRetry(e, i, c), context),
                 continueOnCapturedContext
             ), policyBuilder.ExceptionPredicates);
+#pragma warning restore 1998
         }
 
         /// <summary>
@@ -218,17 +218,17 @@ namespace Polly
         {
             if (onRetry == null) throw new ArgumentNullException("onRetry");
 
+#pragma warning disable 1998
             return new RetryPolicy(
                 (action, context, cancellationToken, continueOnCapturedContext) => RetryEngine.ImplementationAsync(
                     action,
                     cancellationToken, 
                     policyBuilder.ExceptionPredicates,
-                    () => new RetryPolicyState(
-                        async e => { onRetry.Invoke(e); await Task.FromResult(true).ConfigureAwait(continueOnCapturedContext); }
-                        ), 
+                    () => new RetryPolicyState(async e => onRetry(e)), 
                     continueOnCapturedContext),
                 policyBuilder.ExceptionPredicates
                 );
+#pragma warning restore 1998
         }
 
         /// <summary>
@@ -266,15 +266,15 @@ namespace Polly
         {
             if (onRetry == null) throw new ArgumentNullException("onRetry");
 
+#pragma warning disable 1998
             return new RetryPolicy((action, context, cancellationToken, continueOnCapturedContext) => RetryEngine.ImplementationAsync(
                 action,
                 cancellationToken,
                 policyBuilder.ExceptionPredicates,
-                () => new RetryPolicyState(
-                    async (e, c) => { onRetry.Invoke(e, c); await Task.FromResult(true).ConfigureAwait(continueOnCapturedContext); }
-                , context),
+                () => new RetryPolicyState(async (e, c) => onRetry(e, c), context),
                 continueOnCapturedContext
             ), policyBuilder.ExceptionPredicates);
+#pragma warning restore 1998
         }
 
         /// <summary>
@@ -341,18 +341,17 @@ namespace Polly
 
             IEnumerable<TimeSpan> sleepDurations = Enumerable.Range(1, retryCount)
                 .Select(sleepDurationProvider);
-
+#pragma warning disable 1998
             return new RetryPolicy(
                 (action, context, cancellationToken, continueOnCapturedContext) => RetryEngine.ImplementationAsync(
                     action,
                     cancellationToken, 
                     policyBuilder.ExceptionPredicates,
-                    () => new RetryPolicyStateWithSleep(sleepDurations,
-                        async (e, t) => { onRetry.Invoke(e, t); await Task.FromResult(true).ConfigureAwait(continueOnCapturedContext); }
-                    ), 
+                    () => new RetryPolicyStateWithSleep(sleepDurations, async (e, t) => onRetry(e, t)), 
                     continueOnCapturedContext),
                 policyBuilder.ExceptionPredicates
             );
+#pragma warning restore 1998
         }
 
         /// <summary>
@@ -421,17 +420,17 @@ namespace Polly
             IEnumerable<TimeSpan> sleepDurations = Enumerable.Range(1, retryCount)
                 .Select(sleepDurationProvider);
 
+#pragma warning disable 1998
             return new RetryPolicy(
                 (action, context, cancellationToken, continueOnCapturedContext) => RetryEngine.ImplementationAsync(
                     action,
                     cancellationToken,
                     policyBuilder.ExceptionPredicates,
-                    () => new RetryPolicyStateWithSleep(sleepDurations,
-                        async (e, t, c) => { onRetry.Invoke(e, t, c); await Task.FromResult(true).ConfigureAwait(continueOnCapturedContext); }
-                    , context),
+                    () => new RetryPolicyStateWithSleep(sleepDurations, async (e, t, c) => onRetry(e, t, c), context),
                     continueOnCapturedContext),
                 policyBuilder.ExceptionPredicates
             );
+#pragma warning restore 1998
         }
 
         /// <summary>
@@ -507,17 +506,17 @@ namespace Polly
             if (sleepDurations == null) throw new ArgumentNullException("sleepDurations");
             if (onRetry == null) throw new ArgumentNullException("onRetry");
 
+#pragma warning disable 1998
             return new RetryPolicy(
                 (action, context, cancellationToken, continueOnCapturedContext) => RetryEngine.ImplementationAsync(
                     action,
                     cancellationToken, 
                     policyBuilder.ExceptionPredicates,
-                    () => new RetryPolicyStateWithSleep(sleepDurations,
-                        async (e, t) => { onRetry.Invoke(e, t); await Task.FromResult(true).ConfigureAwait(continueOnCapturedContext); }
-                    ), 
+                    () => new RetryPolicyStateWithSleep(sleepDurations, async (e, t) => onRetry(e, t)), 
                     continueOnCapturedContext),
                 policyBuilder.ExceptionPredicates
             );
+#pragma warning restore 1998
         }
 
         /// <summary>
@@ -571,17 +570,17 @@ namespace Polly
             if (sleepDurations == null) throw new ArgumentNullException("sleepDurations");
             if (onRetry == null) throw new ArgumentNullException("onRetry");
 
+#pragma warning disable 1998
             return new RetryPolicy(
                 (action, context, cancellationToken, continueOnCapturedContext) => RetryEngine.ImplementationAsync(
                     action,
                     cancellationToken,
                     policyBuilder.ExceptionPredicates,
-                    () => new RetryPolicyStateWithSleep(sleepDurations,
-                        async (e, t, c) => { onRetry.Invoke(e, t, c); await Task.FromResult(true).ConfigureAwait(continueOnCapturedContext); }
-                    , context),
+                    () => new RetryPolicyStateWithSleep(sleepDurations, async (e, t, c) => onRetry(e, t, c), context),
                     continueOnCapturedContext),
                 policyBuilder.ExceptionPredicates
             );
+#pragma warning restore 1998
         }
 
         /// <summary>
@@ -646,18 +645,18 @@ namespace Polly
             if (sleepDurationProvider == null) throw new ArgumentNullException("sleepDurationProvider");
             if (onRetry == null) throw new ArgumentNullException("onRetry");
 
+#pragma warning disable 1998
             return new RetryPolicy(
                 (action, context, cancellationToken, continueOnCapturedContext) => RetryEngine.ImplementationAsync(
                     action,
                     cancellationToken,
                     policyBuilder.ExceptionPredicates,
-                    () => new RetryPolicyStateWithSleepDurationProvider(sleepDurationProvider,
-                        async (e, t) => { onRetry.Invoke(e, t); await Task.FromResult(true).ConfigureAwait(continueOnCapturedContext); }
-                    ),
+                    () => new RetryPolicyStateWithSleepDurationProvider(sleepDurationProvider, async (e, t) => onRetry(e, t)),
                     continueOnCapturedContext
                 ),
                 policyBuilder.ExceptionPredicates
             );
+#pragma warning restore 1998
         }
 
         /// <summary>
@@ -703,16 +702,16 @@ namespace Polly
             if (sleepDurationProvider == null) throw new ArgumentNullException("sleepDurationProvider");
             if (onRetry == null) throw new ArgumentNullException("onRetry");
 
+#pragma warning disable 1998
             return new RetryPolicy(
                 (action, context, cancellationToken, continueOnCapturedContext) => RetryEngine.ImplementationAsync(
                 action,
                 cancellationToken,
                 policyBuilder.ExceptionPredicates,
-                () => new RetryPolicyStateWithSleepDurationProvider(sleepDurationProvider, 
-                    async (e, t, c) => { onRetry.Invoke(e, t, c); await Task.FromResult(true).ConfigureAwait(continueOnCapturedContext); }
-                , context),
+                () => new RetryPolicyStateWithSleepDurationProvider(sleepDurationProvider, async (e, t, c) => onRetry(e, t, c), context),
                 continueOnCapturedContext
             ), policyBuilder.ExceptionPredicates);
+#pragma warning restore 1998
         }
 
         /// <summary>
