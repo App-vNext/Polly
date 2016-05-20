@@ -18,7 +18,7 @@ namespace Polly.Retry
         }
 
         public RetryPolicyStateWithCount(int retryCount, Func<Exception, int, Task> onRetryAsync) :
-            this(retryCount, (exception, i, context) => onRetryAsync(exception, i), null)
+            this(retryCount, (exception, i, context) => onRetryAsync(exception, i), Context.Empty)
         {
         }
 

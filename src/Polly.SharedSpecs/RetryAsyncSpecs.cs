@@ -342,11 +342,12 @@ namespace Polly.Specs
         }
 
         [Fact]
-        public void Should_execute_async_onretry_delegate_asynchronously()
+        public void Should_wait_asynchronously_for_async_onretry_delegate()
         {
-            // This test relates to Polly issue 107.  Compiler magic allows the assigning of an async lambda to an Action<...> rather than a Func<..., Task>.  However, if this occurs, the delegate becomes an async void method.  When executed, it returns at the first await - usually an async method would return a Task which could be awaited or otherwise handled; in this case, it's async void (and an Action as far as the caller is concerned), so it can't be awaited.  Therefore, the caller's execution continues straight away.  As described by Stephen Toub in more detail: http://blogs.msdn.com/b/pfxteam/archive/2012/02/08/10265476.aspx
-            // If the Polly policies declared only Action<...> onRetry delegates - but users declared async () => { } onRetry delegates - the compiler would happily assign them without warning, but behaviour would not be as expected.  Subsequent tries of the main execute delegate would likely initiate before the onRetry delegate (which wasn't being awaited) had completed.  
-            // This test exercises the scenario.  It only passes if an overload of RetryAsync has been declared taking the Func<,,Task> onRetry delegate used in the test.  If Polly doesn't declare such an overload, the test fails.
+            // This test relates to https://github.com/App-vNext/Polly/issues/107.  
+            // An async (...) => { ... } anonymous delegate with no return type may compile to either an async void or an async Task method; which assign to an Action<...> or Func<..., Task> respectively.  However, if it compiles to async void (assigning tp Action<...>), then the delegate, when run, will return at the first await, and execution continues without waiting for the Action to complete, as described by Stephen Toub: http://blogs.msdn.com/b/pfxteam/archive/2012/02/08/10265476.aspx
+            // If Polly were to declare only an Action<...> delegate for onRetry - but users declared async () => { } onRetry delegates - the compiler would happily assign them to the Action<...>, but the next 'try' would/could occur before onRetry execution had completed.
+            // This test ensures the relevant retry policy does have a Func<..., Task> form for onRetry, and that it is awaited before the next try commences.
 
             TimeSpan shimTimeSpan = TimeSpan.FromSeconds(0.2); // Consider increasing shimTimeSpan if test fails transiently in different environments.
 
@@ -364,13 +365,14 @@ namespace Polly.Specs
             policy.Awaiting(p => p.ExecuteAsync(async () =>
             {
                 executeDelegateInvocations++;
-                await Task.FromResult(0).ConfigureAwait(false);
+                await Task.FromResult(true).ConfigureAwait(false);
                 throw new DivideByZeroException();
             })).ShouldThrow<DivideByZeroException>();
-
-            executeDelegateInvocationsWhenOnRetryExits.Should().NotBe(0); // If the unhelpful assignment of Func<,,Task> to Action<,> occurs: Because execution continues without waiting for the Task.Delay(shimTimeSpan), the whole policy.Awaiting() statement usually completes before the shimTimeSpan has expired, meaning executeDelegateInvocationsWhenOnRetryExits still has value 0.  In essence, the assignment executeDelegateInvocationsWhenOnRetryExits = executeDelegateInvocations has not been reached by the time the main test thread reaches this .Should().
-            executeDelegateInvocationsWhenOnRetryExits.Should().NotBe(2); // If the unhelpful assignment of Func<,,Task> to Action<,> occurs: It is also possible that a race condition occurs where the assignment executeDelegateInvocationsWhenOnRetryExits = executeDelegateInvocations just runs before this .Should().  In this case, executeDelegateInvocationsWhenOnRetryExits will record the two tries of the .Execute delegate made.
-            executeDelegateInvocationsWhenOnRetryExits.Should().Be(1); // If the async onRetry delegate is genuinely assigned to an async onRetry delegate - (ie where Polly supplies an overload taking this, and handles it): onRetry should be properly awaited, and only one execution of the .Execute delegate should have occurred by the time onRetry completes.
+            
+            while (executeDelegateInvocationsWhenOnRetryExits == 0) { } // Wait for the onRetry delegate to complete.
+            
+            executeDelegateInvocationsWhenOnRetryExits.Should().Be(1); // If the async onRetry delegate is genuinely awaited, only one execution of the .Execute delegate should have occurred by the time onRetry completes.  If the async onRetry delegate were instead assigned to an Action<...>, then onRetry will return, and the second action execution will commence, before await Task.Delay() completes, leaving executeDelegateInvocationsWhenOnRetryExits == 2.  
+            executeDelegateInvocations.Should().Be(2);
         }
 
         [Fact]
