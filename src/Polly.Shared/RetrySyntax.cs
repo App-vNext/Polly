@@ -188,7 +188,7 @@ namespace Polly
         /// <returns>The policy instance.</returns>
         /// <exception cref="System.ArgumentOutOfRangeException">retryCount;Value must be greater than or equal to zero.</exception>
         /// <exception cref="System.ArgumentNullException">
-        /// timeSpanProvider
+        /// sleepDurationProvider
         /// or
         /// onRetry
         /// </exception>
@@ -224,7 +224,7 @@ namespace Polly
         /// <returns>The policy instance.</returns>
         /// <exception cref="System.ArgumentOutOfRangeException">retryCount;Value must be greater than or equal to zero.</exception>
         /// <exception cref="System.ArgumentNullException">
-        /// timeSpanProvider
+        /// sleepDurationProvider
         /// or
         /// onRetry
         /// </exception>
