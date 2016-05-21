@@ -208,6 +208,8 @@ Policy
     });
 ```
 
+For further information on the operation of retry policies, see also the [wiki](https://github.com/App-vNext/Polly/wiki/Retry).
+
 ### Circuit Breaker ###
 ```csharp
 // Break the circuit after the specified number of exceptions
@@ -250,8 +252,9 @@ breaker.Isolate();
 // Reset the breaker to closed state, to start accepting actions again.
 breaker.Reset(); 
 
-
 ```
+
+For further information on the operation of circuit breaker, see also the [wiki](https://github.com/App-vNext/Polly/wiki/Circuit-Breaker).
 
 ### Advanced Circuit Breaker ###
 ```csharp
@@ -276,7 +279,7 @@ Policy
 // available as described for CircuitBreaker above.
 ```
 
-For further information on the operation of the Advanced Circuit Breaker, see the [Wiki](https://github.com/App-vNext/Polly/wiki/Advanced-Circuit-Breaker)
+For further information on the operation of Advanced Circuit Breaker, see the [Wiki](https://github.com/App-vNext/Polly/wiki/Advanced-Circuit-Breaker)
 
 For more information on the Circuit Breaker pattern in general see:
 * [Making the Netflix API More Resilient](http://techblog.netflix.com/2011/12/making-netflix-api-more-resilient.html)
@@ -363,7 +366,9 @@ You can use Polly with asynchronous functions by using the asynchronous methods
 * `RetryAsync`
 * `RetryForeverAsync`
 * `WaitAndRetryAsync`
+* `WaitAndRetryForeverAsync`
 * `CircuitBreakerAsync`
+* `AdvancedCircuitBreakerAsync`
 * `ExecuteAsync`
 * `ExecuteAndCaptureAsync`
 
@@ -372,7 +377,9 @@ In place of their synchronous counterparts
 * `Retry`
 * `RetryForever`
 * `WaitAndRetry`
+* `WaitAndRetryForever`
 * `CircuitBreaker`
+* `AdvancedCircuitBreaker`
 * `Execute`
 * `ExecuteAndCapture`
 
@@ -437,6 +444,9 @@ Acknowledgements
 * [@reisenberger](https://github.com/reisenberger) - Added async support for ContextualPolicy
 * [@reisenberger](https://github.com/reisenberger) - Added ContextualPolicy support for circuit-breaker
 * [@reisenberger](https://github.com/reisenberger) - Extended circuit-breaker for public monitoring and control
+* [@reisenberger](https://github.com/reisenberger) - Added ExecuteAndCapture support with arbitrary context data 
+* [@kristianhald](https://github.com/kristianhald) and [@reisenberger](https://github.com/reisenberger) - Added AdvancedCircuitBreaker
+* [@reisenberger](https://github.com/reisenberger) - Allowed async onRetry delegates to async retry policies
 
 Sample Projects
 =

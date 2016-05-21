@@ -1,3 +1,8 @@
+## 4.2.1
+
+- Allowed async onRetry delegates to async retry policies.  Thanks to [@reisenberger](https://github.com/reisenberger)
+
+
 ## 4.2.0
 
 - Add AdvancedCircuitBreaker.  Thanks to [@reisenberger](https://github.com/reisenberger) and [@kristianhald](https://github.com/kristianhald)
