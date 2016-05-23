@@ -122,9 +122,9 @@ Policy
   .Handle<DivideByZeroException>()
   .WaitAndRetry(new[]
   {
-    1.Seconds(),
-    2.Seconds(),
-    3.Seconds()
+    TimeSpan.FromSeconds(1),
+    TimeSpan.FromSeconds(2),
+    TimeSpan.FromSeconds(3)
   }, (exception, timeSpan) => {
     // do something    
   }); 
@@ -136,9 +136,9 @@ Policy
   .Handle<DivideByZeroException>()
   .WaitAndRetry(new[]
   {
-    1.Seconds(),
-    2.Seconds(),
-    3.Seconds()
+    TimeSpan.FromSeconds(1),
+    TimeSpan.FromSeconds(2),
+    TimeSpan.FromSeconds(3)
   }, (exception, timeSpan, context) => {
     // do something    
   });
