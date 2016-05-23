@@ -869,7 +869,7 @@ namespace Polly.Specs
             attemptsInvoked.Should().Be(1);
 
             watch.Elapsed.Should().BeLessThan(retryDelay);
-            watch.Elapsed.Should().BeCloseTo(shimTimeSpan, precision: (int)(shimTimeSpan.TotalMilliseconds) / 4);  // Consider increasing shimTimeSpan, or loosening precision, if test fails transiently in different environments.
+            watch.Elapsed.Should().BeCloseTo(shimTimeSpan, precision: (int)(shimTimeSpan.TotalMilliseconds) / 2);  // Consider increasing shimTimeSpan, or loosening precision, if test fails transiently in different environments.
         }
 
         [Fact]
