@@ -435,7 +435,7 @@ namespace Polly
 
         /// <summary>
         ///     Builds a <see cref="Policy" /> that will wait and retry <paramref name="retryCount" /> times
-        ///     calling <paramref name="onRetry" /> on each retry with the raised exception, the current sleep duration and context data.
+        ///     calling <paramref name="onRetry" /> on each retry with the raised exception, the current sleep duration, retry count, and context data.
         ///     On each retry, the duration to wait is calculated by calling <paramref name="sleepDurationProvider" /> with
         ///     the current retry attempt allowing an exponentially increasing wait time (exponential backoff).
         /// </summary>
@@ -513,7 +513,7 @@ namespace Polly
 
         /// <summary>
         ///     Builds a <see cref="Policy" /> that will wait and retry <paramref name="retryCount" /> times
-        ///     calling <paramref name="onRetryAsync" /> on each retry with the raised exception, the current sleep duration and context data.
+        ///     calling <paramref name="onRetryAsync" /> on each retry with the raised exception, the current sleep duration, retry count, and context data.
         ///     On each retry, the duration to wait is calculated by calling <paramref name="sleepDurationProvider" /> with
         ///     the current retry attempt allowing an exponentially increasing wait time (exponential backoff).
         /// </summary>
@@ -664,7 +664,7 @@ namespace Polly
         /// <summary>
         ///     Builds a <see cref="Policy" /> that will wait and retry as many times as there are provided
         ///     <paramref name="sleepDurations" />
-        ///     calling <paramref name="onRetry" /> on each retry with the raised exception, the current sleep duration and context data.
+        ///     calling <paramref name="onRetry" /> on each retry with the raised exception, the current sleep duration, retry count, and context data.
         ///     On each retry, the duration to wait is the current <paramref name="sleepDurations" /> item.
         /// </summary>
         /// <param name="policyBuilder">The policy builder.</param>
@@ -728,7 +728,7 @@ namespace Polly
         /// <summary>
         ///     Builds a <see cref="Policy" /> that will wait and retry as many times as there are provided
         ///     <paramref name="sleepDurations" />
-        ///     calling <paramref name="onRetryAsync" /> on each retry with the raised exception, the current sleep duration and context data.
+        ///     calling <paramref name="onRetryAsync" /> on each retry with the raised exception, the current sleep duration, retry count, and context data.
         ///     On each retry, the duration to wait is the current <paramref name="sleepDurations" /> item.
         /// </summary>
         /// <param name="policyBuilder">The policy builder.</param>

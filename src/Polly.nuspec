@@ -13,6 +13,10 @@
     <tags>Exception Handling Policy Retry Wait Circuit Breaker</tags>
     <copyright>Copyright © 2016, App vNext</copyright>
     <releaseNotes>
+     4.2.4
+     ---------------------
+     - Added overloads to WaitAndRetry and WaitAndRetryAsync methods that accept an onRetry delegate which includes the attempt count.
+     
      4.2.3
      ---------------------
      - Cleaned up new Polly.Net40Async NuGet package, removing Polly.dll and unused framework folders.
