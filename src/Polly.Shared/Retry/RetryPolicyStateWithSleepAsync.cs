@@ -29,6 +29,8 @@ namespace Polly.Retry
         {
             if (!_sleepDurationsEnumerator.MoveNext()) return false;
 
+            _errorCount += 1;
+
             var currentTimeSpan = _sleepDurationsEnumerator.Current;
             await _onRetryAsync(ex, currentTimeSpan, _context).ConfigureAwait(continueOnCapturedContext);
 
