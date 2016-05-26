@@ -79,7 +79,7 @@ namespace Polly.Specs
         {
             var policy = Policy
                 .Handle<DivideByZeroException>()
-                .WaitAndRetryForeverAsync(_ => new TimeSpan());
+                .WaitAndRetryForeverAsync(_ => TimeSpan.Zero);
 
             policy.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>(3))
                   .ShouldNotThrow();
@@ -91,7 +91,7 @@ namespace Polly.Specs
             var policy = Policy
                 .Handle<DivideByZeroException>()
                 .Or<ArgumentException>()
-                .WaitAndRetryForeverAsync(_ => new TimeSpan());
+                .WaitAndRetryForeverAsync(_ => TimeSpan.Zero);
 
             policy.Awaiting(x => x.RaiseExceptionAsync<ArgumentException>(3))
                   .ShouldNotThrow();
@@ -289,6 +289,42 @@ namespace Polly.Specs
         public void Dispose()
         {
             SystemClock.Reset();
+        }
+
+        [Fact]
+        public void Should_wait_asynchronously_for_async_onretry_delegate()
+        {
+            // This test relates to https://github.com/App-vNext/Polly/issues/107.  
+            // An async (...) => { ... } anonymous delegate with no return type may compile to either an async void or an async Task method; which assign to an Action<...> or Func<..., Task> respectively.  However, if it compiles to async void (assigning tp Action<...>), then the delegate, when run, will return at the first await, and execution continues without waiting for the Action to complete, as described by Stephen Toub: http://blogs.msdn.com/b/pfxteam/archive/2012/02/08/10265476.aspx
+            // If Polly were to declare only an Action<...> delegate for onRetry - but users declared async () => { } onRetry delegates - the compiler would happily assign them to the Action<...>, but the next 'try' would/could occur before onRetry execution had completed.
+            // This test ensures the relevant retry policy does have a Func<..., Task> form for onRetry, and that it is awaited before the next try commences.
+
+            TimeSpan shimTimeSpan = TimeSpan.FromSeconds(0.2); // Consider increasing shimTimeSpan if test fails transiently in different environments.
+
+            int executeDelegateInvocations = 0;
+            int executeDelegateInvocationsWhenOnRetryExits = 0;
+
+            var policy = Policy
+                .Handle<DivideByZeroException>()
+                .WaitAndRetryForeverAsync(
+                _ => TimeSpan.Zero, 
+                async (ex, timespan) =>
+                {
+                    await Task.Delay(shimTimeSpan).ConfigureAwait(false);
+                    executeDelegateInvocationsWhenOnRetryExits = executeDelegateInvocations;
+                });
+
+            policy.Awaiting(p => p.ExecuteAsync(async () =>
+            {
+                executeDelegateInvocations++;
+                await Task.FromResult(true).ConfigureAwait(false);
+                if (executeDelegateInvocations == 1) { throw new DivideByZeroException(); }
+            })).ShouldNotThrow();
+
+            while (executeDelegateInvocationsWhenOnRetryExits == 0) { } // Wait for the onRetry delegate to complete.
+
+            executeDelegateInvocationsWhenOnRetryExits.Should().Be(1); // If the async onRetry delegate is genuinely awaited, only one execution of the .Execute delegate should have occurred by the time onRetry completes.  If the async onRetry delegate were instead assigned to an Action<...>, then onRetry will return, and the second action execution will commence, before await Task.Delay() completes, leaving executeDelegateInvocationsWhenOnRetryExits == 2.  
+            executeDelegateInvocations.Should().Be(2);
         }
 
         [Fact]

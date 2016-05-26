@@ -18,7 +18,7 @@ namespace Polly.Retry
         }
 
         public RetryPolicyStateWithSleep(IEnumerable<TimeSpan> sleepDurations, Action<Exception, TimeSpan> onRetry) :
-            this(sleepDurations, (exception, span, context) => onRetry(exception, span), null)
+            this(sleepDurations, (exception, span, context) => onRetry(exception, span), Context.Empty)
         {
         }
 

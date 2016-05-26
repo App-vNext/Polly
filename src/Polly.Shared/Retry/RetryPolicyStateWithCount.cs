@@ -17,7 +17,7 @@ namespace Polly.Retry
         }
 
         public RetryPolicyStateWithCount(int retryCount, Action<Exception, int> onRetry) :
-            this(retryCount, (exception, i, context) => onRetry(exception, i), null)
+            this(retryCount, (exception, i, context) => onRetry(exception, i), Context.Empty)
         {
         }
 

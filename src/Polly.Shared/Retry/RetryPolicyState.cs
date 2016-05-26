@@ -14,7 +14,7 @@ namespace Polly.Retry
         }
 
         public RetryPolicyState(Action<Exception> onRetry) :
-            this((exception, context) => onRetry(exception), null)
+            this((exception, context) => onRetry(exception), Context.Empty)
         {
         }
 

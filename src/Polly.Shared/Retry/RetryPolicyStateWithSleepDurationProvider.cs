@@ -18,7 +18,7 @@ namespace Polly.Retry
         }
 
         public RetryPolicyStateWithSleepDurationProvider(Func<int, TimeSpan> sleepDurationProvider, Action<Exception, TimeSpan> onRetry) :
-            this(sleepDurationProvider, (exception, timespan, context) => onRetry(exception, timespan), null)
+            this(sleepDurationProvider, (exception, timespan, context) => onRetry(exception, timespan), Context.Empty)
         {
         }
 
