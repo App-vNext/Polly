@@ -359,7 +359,7 @@ policyResult.Result - if executing a func, the result if the call succeeded or t
 */
 ```
 
-Asynchronous Support (.NET 4.5, PCL and .NET4.0 (*) )
+Asynchronous Support (.NET 4.5, PCL and .NET4.0)
 =
 You can use Polly with asynchronous functions by using the asynchronous methods
 
@@ -418,7 +418,7 @@ var policy = Policy
     });
 var response = await policy.ExecuteAsync(ct => httpClient.GetAsync(uri, ct), cancellationToken);
 ```
-### (*) .NET4.0 Async support ###
+### .NET4.0 Async support ###
 
 The .NET4.0 Async support uses `Microsoft.Bcl.Async` to add async support to a .NET4.0 package.  To minimise extra dependencies on the main Polly nuget package, the .NET4.0 async version is available as separate Nuget packages `Polly.Net40Async` and `Polly.Net40Async-signed`.
 
