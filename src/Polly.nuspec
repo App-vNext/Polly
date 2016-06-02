@@ -6,13 +6,17 @@
     <description>
      Polly is a .NET 3.5 / 4.0 / 4.5 / PCL library (Profile 259) that allows developers to express transient exception handling policies such as Retry, Retry Forever, Wait and Retry or Circuit Breaker in a fluent manner.
    </description>
-    <language>en-AU</language>
+    <language>en-US</language>
     <licenseUrl>https://raw.github.com/App-vNext/Polly/master/LICENSE.txt</licenseUrl>
     <iconUrl>https://raw.github.com/App-vNext/Polly/master/Polly.png</iconUrl>
     <projectUrl>https://github.com/App-vNext/Polly</projectUrl>
     <tags>Exception Handling Policy Retry Wait Circuit Breaker</tags>
-    <copyright>Copyright © 2015, App vNext</copyright>
+    <copyright>Copyright © 2016, App vNext</copyright>
     <releaseNotes>
+     4.2.2
+     ---------------------
+     - Add new Polly.Net40Async project supporting async for .NET40 via Microsoft.Bcl.Async.  This is available as separate Nuget packages Polly.Net40Async and Polly.Net40Async-signed.
+
      4.2.1
      ---------------------
      - Allowed async onRetry delegates to async retry policies.

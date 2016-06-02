@@ -1,3 +1,8 @@
+## 4.2.2
+
+- Add new Polly.Net40Async project/package supporting async for .NET40 via Microsoft.Bcl.Async.  Thanks to [@Lumirris](https://github.com/Lumirris)
+
+
 ## 4.2.1
 
 - Allowed async onRetry delegates to async retry policies.  Thanks to [@reisenberger](https://github.com/reisenberger)

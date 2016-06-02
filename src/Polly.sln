@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.23107.0
+VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{79FE9DBE-1155-4F78-A41F-FE95DEFA19DD}"
 	ProjectSection(SolutionItems) = preProject
@@ -25,10 +25,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Polly.Net45.Specs", "Polly.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Polly.Pcl.Specs", "Polly.Pcl.Specs\Polly.Pcl.Specs.csproj", "{4AB46D16-0806-4F51-8677-D849BA87CB05}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Polly.Net40Async", "Polly.Net40Async\Polly.Net40Async.csproj", "{D6A676C2-982D-42D1-AD21-FA53582A1C31}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		Polly.Shared\Polly.Shared.projitems*{ddf727ec-6496-44f9-abd3-2ee4562ae685}*SharedItemsImports = 4
 		Polly.SharedSpecs\Polly.SharedSpecs.projitems*{4ab46d16-0806-4f51-8677-d849ba87cb05}*SharedItemsImports = 4
+		Polly.Shared\Polly.Shared.projitems*{d6a676c2-982d-42d1-ad21-fa53582a1c31}*SharedItemsImports = 4
 		Polly.Shared\Polly.Shared.projitems*{29265540-f724-4324-9321-643a0fcb133f}*SharedItemsImports = 4
 		Polly.Shared\Polly.Shared.projitems*{23fa87f9-c77d-4c67-a0b0-2901de51b3ff}*SharedItemsImports = 13
 		Polly.Shared\Polly.Shared.projitems*{905cf38a-be90-4234-bf15-2fcfd1973a9c}*SharedItemsImports = 4
@@ -65,6 +68,10 @@ Global
 		{4AB46D16-0806-4F51-8677-D849BA87CB05}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4AB46D16-0806-4F51-8677-D849BA87CB05}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4AB46D16-0806-4F51-8677-D849BA87CB05}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D6A676C2-982D-42D1-AD21-FA53582A1C31}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D6A676C2-982D-42D1-AD21-FA53582A1C31}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D6A676C2-982D-42D1-AD21-FA53582A1C31}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D6A676C2-982D-42D1-AD21-FA53582A1C31}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
