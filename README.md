@@ -15,6 +15,11 @@ You can install the Strongly Named version via:
 
     Install-Package Polly-Signed
 
+There are now .NET 4.0 Async versions (via Microsoft.Bcl.Async) of the signed and unsigned NuGet packages, which can be installed via:
+
+    Install-Package Polly.Net40Async
+    Install-Package Polly.Net40Async-Signed
+
 Usage
 =
 ## Step 1 : Specify the type of exceptions you want the policy to handle ##
