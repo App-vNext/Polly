@@ -26,7 +26,7 @@ using System.Text.Json;
 
 var sourceProjectName = "Polly";
 var targetProjectName = "Polly.Net40Async";
-var keyName = "Polly.snk"; // Do we need a different strong-name key for Net40Async?
+var keyName = "Polly.snk";
 
 var solutions = GetFiles("./**/*.sln");
 var solutionPaths = solutions.Select(solution => solution.GetDirectory());

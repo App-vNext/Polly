@@ -25,6 +25,7 @@
         <dependency id="System.Runtime" version="4.0.0" />
         <dependency id="System.Threading" version="4.0.0" />
         <dependency id="System.Threading.Tasks" version="4.0.0" />
+        <dependency id="Microsoft.Bcl.Async" version="1.0.168" />
       </group>
     </dependencies>
   </metadata>
