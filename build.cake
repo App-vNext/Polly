@@ -25,6 +25,7 @@ using System.Text.Json;
 ///////////////////////////////////////////////////////////////////////////////
 
 var projectName = "Polly";
+var net40AsyncProjectName = "Polly.Net40Async";
 var keyName = "Polly.snk";
 
 var solutions = GetFiles("./**/*.sln");
@@ -37,8 +38,11 @@ var testResultsDir = artifactsDir + Directory("test-results");
 
 // NuGet
 var nuspecFilename = projectName + ".nuspec";
+var net40AsyncNuspecFilename = net40AsyncProjectName + ".nuspec";
 var nuspecSrcFile = srcDir + File(nuspecFilename);
 var nuspecDestFile = buildDir + File(nuspecFilename);
+var net40AsyncNuspecSrcFile = srcDir + File(net40AsyncNuspecFilename);
+var net40AsyncNuspecDestFile = buildDir + File(net40AsyncNuspecFilename);
 var nupkgDestDir = artifactsDir + Directory("nuget-package");
 var snkFile = srcDir + File(keyName);
 
@@ -47,6 +51,10 @@ var projectToNugetFolderMap = new Dictionary<string, string[]>() {
     { "Net40", new [] {"net40"} },
     { "Net45", new [] {"net45"} },
     { "Pcl"  , new [] {"portable-net45+netcore45+wpa81+wp8", "dotnet"} }
+};
+
+var net40AsyncProjectToNugetFolderMap = new Dictionary<string, string[]>() {
+    { "Net40Async", new [] {"net40"} },
 };
 
 // Gitversion
@@ -179,6 +187,23 @@ Task("__CopyOutputToNugetFolder")
     CopyFile(nuspecSrcFile, nuspecDestFile);
 });
 
+Task("__CopyNet40AsyncOutputToNugetFolder")
+    .Does(() =>
+{
+    foreach(var project in net40AsyncProjectToNugetFolderMap.Keys) {
+        var sourceDir = srcDir + Directory(projectName + "." + project) + Directory("bin") + Directory(configuration);
+
+        foreach(var targetFolder in net40AsyncProjectToNugetFolderMap[project]) {
+            var destDir = buildDir + Directory("lib") + Directory(targetFolder);
+
+            Information("Copying {0} -> {1}.", sourceDir, destDir);
+            CopyDirectory(sourceDir, destDir);
+       }
+    }
+
+    CopyFile(net40AsyncNuspecSrcFile, net40AsyncNuspecDestFile);
+});
+
 Task("__CreateNugetPackage")
     .Does(() =>
 {
@@ -195,6 +220,24 @@ Task("__CreateNugetPackage")
     };
 
     NuGetPack(nuspecDestFile, nuGetPackSettings);
+});
+
+Task("__CreateNet40AsyncNugetPackage")
+    .Does(() =>
+{
+    var nugetVersion = gitVersionOutput["NuGetVersion"].ToString();
+    var packageName = net40AsyncProjectName;
+
+    Information("Building {0}.{1}.nupkg", packageName, nugetVersion);
+
+    var nuGetPackSettings = new NuGetPackSettings {
+        Id = packageName,
+        Title = packageName,
+        Version = nugetVersion,
+        OutputDirectory = nupkgDestDir
+    };
+
+    NuGetPack(net40AsyncNuspecDestFile, nuGetPackSettings);
 });
 
 Task("__StronglySignAssemblies")
@@ -231,6 +274,24 @@ Task("__CreateSignedNugetPackage")
     NuGetPack(nuspecDestFile, nuGetPackSettings);
 });
 
+Task("__CreateSignedNet40AsyncNugetPackage")
+    .Does(() =>
+{
+    var nugetVersion = gitVersionOutput["NuGetVersion"].ToString();
+    var packageName = net40AsyncProjectName + "-Signed";
+
+    Information("Building {0}.{1}.nupkg", packageName, nugetVersion);
+
+    var nuGetPackSettings = new NuGetPackSettings {
+        Id = packageName,
+        Title = packageName,
+        Version = nugetVersion,
+        OutputDirectory = nupkgDestDir
+    };
+
+    NuGetPack(net40AsyncNuspecDestFile, nuGetPackSettings);
+});
+
 //////////////////////////////////////////////////////////////////////
 // BUILD TASKS
 //////////////////////////////////////////////////////////////////////
@@ -242,10 +303,13 @@ Task("Build")
     .IsDependentOn("__UpdateAppVeyorBuildNumber")
     .IsDependentOn("__BuildSolutions")
     .IsDependentOn("__RunTests")
-    .IsDependentOn("__CopyOutputToNugetFolder")    
+    .IsDependentOn("__CopyOutputToNugetFolder")
+	.IsDependentOn("__CopyNet40AsyncOutputToNugetFolder")  
     .IsDependentOn("__CreateNugetPackage")
+	.IsDependentOn("__CreateNet40AsyncNugetPackage")
     .IsDependentOn("__StronglySignAssemblies")
-    .IsDependentOn("__CreateSignedNugetPackage");
+    .IsDependentOn("__CreateSignedNugetPackage")
+	.IsDependentOn("__CreateSignedNet40AsyncNugetPackage");
 
 ///////////////////////////////////////////////////////////////////////////////
 // PRIMARY TARGETS
