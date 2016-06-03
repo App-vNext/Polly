@@ -42,7 +42,7 @@ var net40AsyncNuspecFilename = net40AsyncProjectName + ".nuspec";
 var nuspecSrcFile = srcDir + File(nuspecFilename);
 var nuspecDestFile = buildDir + File(nuspecFilename);
 var net40AsyncNuspecSrcFile = srcDir + File(net40AsyncNuspecFilename);
-var net40AsyncNuspecDestFile = buildDir + File(net40AsyncNuspecFilename);
+var net40AsyncNuspecDestFile = buildDir + Directory(net40AsyncProjectName) + File(net40AsyncNuspecFilename);
 var nupkgDestDir = artifactsDir + Directory("nuget-package");
 var snkFile = srcDir + File(keyName);
 
@@ -54,7 +54,7 @@ var projectToNugetFolderMap = new Dictionary<string, string[]>() {
 };
 
 var net40AsyncProjectToNugetFolderMap = new Dictionary<string, string[]>() {
-    { "Net40Async", new [] {"40"} },
+    { "Net40Async", new [] {"net40"} },
 };
 
 // Gitversion
@@ -194,7 +194,7 @@ Task("__CopyNet40AsyncOutputToNugetFolder")
         var sourceDir = srcDir + Directory(projectName + "." + project) + Directory("bin") + Directory(configuration);
 
         foreach(var targetFolder in net40AsyncProjectToNugetFolderMap[project]) {
-            var destDir = buildDir + Directory("lib") + Directory(targetFolder);
+            var destDir = buildDir + Directory(net40AsyncProjectName) + Directory("lib") + Directory(targetFolder);
 
             Information("Copying {0} -> {1}.", sourceDir, destDir);
             CopyDirectory(sourceDir, destDir);
