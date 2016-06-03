@@ -54,7 +54,7 @@ var projectToNugetFolderMap = new Dictionary<string, string[]>() {
 };
 
 var net40AsyncProjectToNugetFolderMap = new Dictionary<string, string[]>() {
-    { "Net40Async", new [] {"net40"} },
+    { "Net40Async", new [] {"40"} },
 };
 
 // Gitversion
