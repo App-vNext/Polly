@@ -13,6 +13,10 @@
     <tags>Exception Handling Policy Retry Wait Circuit Breaker</tags>
     <copyright>Copyright © 2016, App vNext</copyright>
     <releaseNotes>
+     4.2.3
+     ---------------------
+     - Cleaned up new Polly.Net40Async NuGet package, removing Polly.dll and unused framework folders.
+     
      4.2.2
      ---------------------
      - Add new Polly.Net40Async project supporting async for .NET40 via Microsoft.Bcl.Async.  This is available as separate Nuget packages Polly.Net40Async and Polly.Net40Async-signed.
