@@ -30,6 +30,6 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="lib\**\*.*" target="lib" exclude="**\*.unsigned" />
+    <file src="lib\40\*.*" target="lib" exclude="**\*.unsigned" />
   </files>
 </package>
