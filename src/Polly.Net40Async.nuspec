@@ -22,18 +22,12 @@
      - Add new Polly.Net40Async project supporting async for .NET40 via Microsoft.Bcl.Async.  This is available as separate Nuget packages Polly.Net40Async and Polly.Net40Async-signed.
    </releaseNotes>
     <dependencies>
-      <group targetFramework="dotnet">
-        <dependency id="System.Collections" version="4.0.0" />
-        <dependency id="System.Diagnostics.Debug" version="4.0.0" />
-        <dependency id="System.Linq" version="4.0.0" />
-        <dependency id="System.Runtime" version="4.0.0" />
-        <dependency id="System.Threading" version="4.0.0" />
-        <dependency id="System.Threading.Tasks" version="4.0.0" />
+      <group targetFramework="net40">
         <dependency id="Microsoft.Bcl.Async" version="1.0.168" />
       </group>
     </dependencies>
   </metadata>
   <files>
-    <file src="lib\**\*.*" target="lib" exclude="**\*.unsigned" />
+    <file src="lib\**\Polly.Net40Async*.*" target="lib" exclude="**\*.unsigned" />
   </files>
 </package>
