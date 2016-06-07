@@ -7,7 +7,7 @@
     <ProjectGuid>{D6A676C2-982D-42D1-AD21-FA53582A1C31}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Polly.Net40Async</RootNamespace>
+    <RootNamespace>Polly</RootNamespace>
     <AssemblyName>Polly.Net40Async</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -27,7 +27,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
+    <DefineConstants>TRACE;SUPPORTS_ASYNC;SUPPORTS_ASYNC_40</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
