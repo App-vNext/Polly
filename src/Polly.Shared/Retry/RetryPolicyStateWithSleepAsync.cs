@@ -10,14 +10,19 @@ namespace Polly.Retry
 {
     internal partial class RetryPolicyStateWithSleep : IRetryPolicyState
     {
-        private readonly Func<Exception, TimeSpan, Context, Task> _onRetryAsync;
+        private readonly Func<Exception, TimeSpan, int, Context, Task> _onRetryAsync;
 
 
-        public RetryPolicyStateWithSleep(IEnumerable<TimeSpan> sleepDurations, Func<Exception, TimeSpan, Context, Task> onRetryAsync, Context context)
+        public RetryPolicyStateWithSleep(IEnumerable<TimeSpan> sleepDurations, Func<Exception, TimeSpan, int, Context, Task> onRetryAsync, Context context)
         {
             _onRetryAsync = onRetryAsync;
             _context = context;
             _sleepDurationsEnumerator = sleepDurations.GetEnumerator();
+        }
+
+        public RetryPolicyStateWithSleep(IEnumerable<TimeSpan> sleepDurations, Func<Exception, TimeSpan, Context, Task> onRetryAsync, Context context) :
+            this(sleepDurations, (exception, span, i, c) => onRetryAsync(exception, span, context), Context.Empty)
+        {
         }
 
         public RetryPolicyStateWithSleep(IEnumerable<TimeSpan> sleepDurations, Func<Exception, TimeSpan, Task> onRetryAsync) :
@@ -29,8 +34,10 @@ namespace Polly.Retry
         {
             if (!_sleepDurationsEnumerator.MoveNext()) return false;
 
+            _errorCount += 1;
+
             var currentTimeSpan = _sleepDurationsEnumerator.Current;
-            await _onRetryAsync(ex, currentTimeSpan, _context).ConfigureAwait(continueOnCapturedContext);
+            await _onRetryAsync(ex, currentTimeSpan, _errorCount, _context).ConfigureAwait(continueOnCapturedContext);
 
             await SystemClock.SleepAsync(currentTimeSpan, cancellationToken).ConfigureAwait(continueOnCapturedContext);
 
