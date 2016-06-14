@@ -457,6 +457,27 @@ namespace Polly.Specs
         }
 
         [Fact]
+        public void Should_call_onretry_on_each_retry_with_the_current_retry_count()
+        {
+            var expectedRetryCounts = new[] { 1, 2, 3 };
+            var retryCounts = new List<int>();
+
+            var policy = Policy
+                .Handle<DivideByZeroException>()
+                .WaitAndRetry(new[]
+                {
+                   1.Seconds(),
+                   2.Seconds(),
+                   3.Seconds()
+                }, (_, __, retryCount, ___) => retryCounts.Add(retryCount));
+
+            policy.RaiseException<DivideByZeroException>(3);
+
+            retryCounts.Should()
+                       .ContainInOrder(expectedRetryCounts);
+        }
+
+        [Fact]
         public void Should_not_call_onretry_when_no_retries_are_performed()
         {
             var retryExceptions = new List<Exception>();
