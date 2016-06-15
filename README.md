@@ -20,6 +20,8 @@ There are now .NET 4.0 Async versions (via Microsoft.Bcl.Async) of the signed an
     Install-Package Polly.Net40Async
     Install-Package Polly.Net40Async-Signed
 
+** **Please note:** The Polly.Net40Async package is only needed if you are targeting .NET 4.0 and need async capabilities. If you are targeting .NET 4.5 or greater, please use the standard Polly package.
+
 Usage
 =
 ## Step 1 : Specify the type of exceptions you want the policy to handle ##
