@@ -150,6 +150,20 @@ Policy
     // do something    
   });
 
+// Retry, waiting a specified duration between each retry, 
+// calling an action on each retry with the current exception, 
+// duration, retry count, and context provided to Execute()
+Policy
+  .Handle<DivideByZeroException>()
+  .WaitAndRetry(new[]
+  {
+    TimeSpan.FromSeconds(1),
+    TimeSpan.FromSeconds(2),
+    TimeSpan.FromSeconds(3)
+  }, (exception, timeSpan, retryCount, context) => {
+    // do something    
+  });
+
 // Retry a specified number of times, using a function to 
 // calculate the duration to wait between retries based on 
 // the current retry attempt (allows for exponential backoff)
@@ -176,6 +190,21 @@ Policy
     5, 
     retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)), 
     (exception, timeSpan, context) => {
+      // do something
+    }
+  );
+
+// Retry a specified number of times, using a function to 
+// calculate the duration to wait between retries based on 
+// the current retry attempt, calling an action on each retry 
+// with the current exception, duration, retry count, and context 
+// provided to Execute()
+Policy
+  .Handle<DivideByZeroException>()
+  .WaitAndRetry(
+    5, 
+    retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)), 
+    (exception, timeSpan, retryCount, context) => {
       // do something
     }
   );
@@ -457,6 +486,7 @@ Acknowledgements
 * [@kristianhald](https://github.com/kristianhald) and [@reisenberger](https://github.com/reisenberger) - Added AdvancedCircuitBreaker
 * [@reisenberger](https://github.com/reisenberger) - Allowed async onRetry delegates to async retry policies
 * [@Lumirris](https://github.com/Lumirris) - Add new Polly.Net40Async project/package supporting async for .NET40 via Microsoft.Bcl.Async
+* [@SteveCote](https://github.com/SteveCote) - Added overloads to WaitAndRetry and WaitAndRetryAsync methods that accept an onRetry delegate which includes the attempt count.
 
 Sample Projects
 =
