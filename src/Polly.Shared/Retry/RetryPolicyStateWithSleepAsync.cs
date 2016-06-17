@@ -21,7 +21,7 @@ namespace Polly.Retry
         }
 
         public RetryPolicyStateWithSleep(IEnumerable<TimeSpan> sleepDurations, Func<Exception, TimeSpan, Context, Task> onRetryAsync, Context context) :
-            this(sleepDurations, (exception, span, i, c) => onRetryAsync(exception, span, c), Context.Empty)
+            this(sleepDurations, (exception, span, i, c) => onRetryAsync(exception, span, c), context)
         {
         }
 
