@@ -32,9 +32,11 @@
     <Compile Include="$(MSBuildThisFileDirectory)ExceptionPredicate.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)OrSyntax.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Policy.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Policy.HandleSyntax.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PolicyAsync.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PolicyBuilder.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PolicyResult.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ResultPredicate.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)RetrySyntax.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)RetrySyntaxAsync.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Retry\IRetryPolicyStateAsync.cs" />
