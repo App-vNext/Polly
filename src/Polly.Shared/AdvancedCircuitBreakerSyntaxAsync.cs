@@ -1,7 +1,9 @@
 ﻿#if SUPPORTS_ASYNC
 
 using System;
+using System.Linq;
 using Polly.CircuitBreaker;
+using Polly.Utilities;
 
 namespace Polly
 {
@@ -172,7 +174,7 @@ namespace Polly
         /// <exception cref="ArgumentNullException">onHalfOpen</exception>
         public static CircuitBreakerPolicy AdvancedCircuitBreakerAsync(this PolicyBuilder policyBuilder, double failureThreshold, TimeSpan samplingDuration, int minimumThroughput, TimeSpan durationOfBreak, Action<Exception, TimeSpan, Context> onBreak, Action<Context> onReset, Action onHalfOpen)
         {
-            var resolutionOfCircuit = TimeSpan.FromTicks(AdvancedCircuitController.ResolutionOfCircuitTimer);
+            var resolutionOfCircuit = TimeSpan.FromTicks(AdvancedCircuitController<EmptyStruct>.ResolutionOfCircuitTimer);
 
             if (failureThreshold <= 0) throw new ArgumentOutOfRangeException("failureThreshold", "Value must be greater than zero.");
             if (failureThreshold > 1) throw new ArgumentOutOfRangeException("failureThreshold", "Value must be less than or equal to one.");
@@ -184,9 +186,23 @@ namespace Polly
             if (onReset == null) throw new ArgumentNullException("onReset");
             if (onHalfOpen == null) throw new ArgumentNullException("onHalfOpen");
 
-            var breakerController = new AdvancedCircuitController(failureThreshold, samplingDuration, minimumThroughput, durationOfBreak, onBreak, onReset, onHalfOpen);
+            var breakerController = new AdvancedCircuitController<EmptyStruct>(
+                failureThreshold,
+                samplingDuration,
+                minimumThroughput,
+                durationOfBreak,
+                (outcome, timespan, context) => onBreak(outcome.Exception, timespan, context),
+                onReset,
+                onHalfOpen);
             return new CircuitBreakerPolicy(
-                (action, context, cancellationToken, continueOnCapturedContext) => CircuitBreakerEngine.ImplementationAsync(action, context, policyBuilder.ExceptionPredicates, breakerController, cancellationToken, continueOnCapturedContext),
+                (action, context, cancellationToken, continueOnCapturedContext) => CircuitBreakerEngine.ImplementationAsync<EmptyStruct>(
+                    async ct => { await action(ct).ConfigureAwait(continueOnCapturedContext); return EmptyStruct.Instance; },
+                    context,
+                    policyBuilder.ExceptionPredicates,
+                    Enumerable.Empty<ResultPredicate<EmptyStruct>>(), 
+                    breakerController,
+                    cancellationToken,
+                    continueOnCapturedContext),
                 policyBuilder.ExceptionPredicates,
                 breakerController
             );
