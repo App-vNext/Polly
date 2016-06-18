@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -10,7 +11,13 @@ namespace Polly.Retry
 {
     internal static partial class RetryEngine
     {
-        public static async Task ImplementationAsync(Func<CancellationToken, Task> action, CancellationToken cancellationToken, IEnumerable<ExceptionPredicate> shouldRetryPredicates, Func<IRetryPolicyState> policyStateFactory, bool continueOnCapturedContext)
+        internal static async Task<TResult> ImplementationAsync<TResult>(
+            Func<CancellationToken, Task<TResult>> action, 
+            CancellationToken cancellationToken, 
+            IEnumerable<ExceptionPredicate> shouldRetryExceptionPredicates,
+            IEnumerable<ResultPredicate<TResult>> shouldRetryResultPredicates,
+            Func<IRetryPolicyState> policyStateFactory, 
+            bool continueOnCapturedContext)
         {
             IRetryPolicyState policyState = policyStateFactory();
 
@@ -20,9 +27,12 @@ namespace Polly.Retry
 
                 try
                 {
-                    await action(cancellationToken).ConfigureAwait(continueOnCapturedContext);
+                    DelegateOutcome<TResult> delegateOutcome = new DelegateOutcome<TResult>(await action(cancellationToken).ConfigureAwait(continueOnCapturedContext));
 
-                    return;
+                    if (!shouldRetryResultPredicates.Any(predicate => predicate(delegateOutcome.Result)))
+                    {
+                        return delegateOutcome.Result;
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -35,7 +45,7 @@ namespace Polly.Retry
                         cancellationToken.ThrowIfCancellationRequested();
                     }
 
-                    if (!shouldRetryPredicates.Any(predicate => predicate(ex)))
+                    if (!shouldRetryExceptionPredicates.Any(predicate => predicate(ex)))
                     {
                         throw;
                     }

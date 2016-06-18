@@ -6,7 +6,11 @@ namespace Polly.Retry
 {
     internal static partial class RetryEngine
     {
-        public static void Implementation(Action action, IEnumerable<ExceptionPredicate> shouldRetryPredicates, Func<IRetryPolicyState> policyStateFactory)
+        internal static TResult Implementation<TResult>(
+            Func<TResult> action,
+            IEnumerable<ExceptionPredicate> shouldRetryExceptionPredicates,
+            IEnumerable<ResultPredicate<TResult>> shouldRetryResultPredicates,
+            Func<IRetryPolicyState> policyStateFactory)
         {
             var policyState = policyStateFactory();
 
@@ -14,12 +18,16 @@ namespace Polly.Retry
             {
                 try
                 {
-                    action();
-                    return;
+                    DelegateOutcome<TResult> delegateOutcome = new DelegateOutcome<TResult>(action());
+
+                    if (!shouldRetryResultPredicates.Any(predicate => predicate(delegateOutcome.Result)))
+                    {
+                        return delegateOutcome.Result;
+                    }
                 }
                 catch (Exception ex)
                 {
-                    if (!shouldRetryPredicates.Any(predicate => predicate(ex)))
+                    if (!shouldRetryExceptionPredicates.Any(predicate => predicate(ex)))
                     {
                         throw;
                     }
