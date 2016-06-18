@@ -90,7 +90,7 @@ namespace Polly
         }
 
         /// <summary>
-        ///  The final exception captured. Will be null if policy executed successfully
+        ///  The final exception captured. Will be null if policy executed without exception.
         /// </summary>
         public Exception FinalException
         {
