@@ -15,10 +15,9 @@ namespace Polly.CircuitBreaker
         {
             breakerController.OnActionPreExecute();
 
-            DelegateResult<TResult> delegateOutcome;
             try
             {
-                delegateOutcome = new DelegateResult<TResult>(action());
+                DelegateResult<TResult> delegateOutcome = new DelegateResult<TResult>(action());
 
                 if (shouldHandleResultPredicates.Any(predicate => predicate(delegateOutcome.Result)))
                 {
