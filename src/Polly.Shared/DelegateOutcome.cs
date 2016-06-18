@@ -5,10 +5,10 @@ namespace Polly
     /// <summary>
     /// The captured outcome of executing an individual Func&lt;TResult&gt;
     /// </summary>
-    internal class DelegateOutcome<TResult>
+    public class DelegateOutcome<TResult>
     {
-        private readonly TResult _result;// = default (TResult);
-        private readonly Exception _exception;// = null;
+        private readonly TResult _result;
+        private readonly Exception _exception;
 
         internal DelegateOutcome(TResult result)
         {
@@ -20,11 +20,17 @@ namespace Polly
             _exception = exception;
         }
 
+        /// <summary>
+        /// The result of executing the delegate. Will be default(TResult) if an exception was thrown.
+        /// </summary>
         public TResult Result
         {
             get { return _result; }
         }
 
+        /// <summary>
+        /// Any exception thrown while executing the delegate. Will be null if policy executed without exception.
+        /// </summary>
         public Exception Exception
         {
             get { return _exception; }
