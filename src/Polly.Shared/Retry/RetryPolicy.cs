@@ -20,7 +20,7 @@ namespace Polly.Retry
     public partial class RetryPolicy<TResult> : ContextualPolicy<TResult>
     {
         internal RetryPolicy(
-            Action<Action, Context> executionPolicy,
+            Func<Func<TResult>, Context, TResult> executionPolicy,
             IEnumerable<ExceptionPredicate> exceptionPredicates,
             IEnumerable<ResultPredicate<TResult>> resultPredicates
             ) : base(executionPolicy, exceptionPredicates, resultPredicates)
