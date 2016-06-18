@@ -184,7 +184,7 @@ namespace Polly
                 onHalfOpen);
             return new CircuitBreakerPolicy(
                 (action, context, cancellationToken, continueOnCapturedContext) => 
-                  CircuitBreakerEngine.ImplementationAsync<EmptyStruct>(
+                  CircuitBreakerEngine.ImplementationAsync(
                     async ct => { await action(ct).ConfigureAwait(continueOnCapturedContext); return EmptyStruct.Instance; },
                       context, 
                       policyBuilder.ExceptionPredicates, 
