@@ -18,11 +18,10 @@ namespace Polly.Retry
             {
                 try
                 {
-                    DelegateOutcome<TResult> delegateOutcome = new DelegateOutcome<TResult>(action());
-
-                    if (!shouldRetryResultPredicates.Any(predicate => predicate(delegateOutcome.Result)))
+                    TResult result = action();
+                    if (!shouldRetryResultPredicates.Any(predicate => predicate(result)))
                     {
-                        return delegateOutcome.Result;
+                        return result;
                     }
                 }
                 catch (Exception ex)

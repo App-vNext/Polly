@@ -27,11 +27,11 @@ namespace Polly.Retry
 
                 try
                 {
-                    DelegateOutcome<TResult> delegateOutcome = new DelegateOutcome<TResult>(await action(cancellationToken).ConfigureAwait(continueOnCapturedContext));
+                    TResult result = await action(cancellationToken).ConfigureAwait(continueOnCapturedContext);
 
-                    if (!shouldRetryResultPredicates.Any(predicate => predicate(delegateOutcome.Result)))
+                    if (!shouldRetryResultPredicates.Any(predicate => predicate(result)))
                     {
-                        return delegateOutcome.Result;
+                        return result;
                     }
                 }
                 catch (Exception ex)
