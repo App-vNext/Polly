@@ -23,10 +23,10 @@ namespace Polly.CircuitBreaker
 
             breakerController.OnActionPreExecute();
 
-            DelegateOutcome<TResult> delegateOutcome;
+            DelegateResult<TResult> delegateOutcome;
             try
             {
-                delegateOutcome = new DelegateOutcome<TResult>(await action(cancellationToken).ConfigureAwait(continueOnCapturedContext));
+                delegateOutcome = new DelegateResult<TResult>(await action(cancellationToken).ConfigureAwait(continueOnCapturedContext));
 
                 if (shouldHandleResultPredicates.Any(predicate => predicate(delegateOutcome.Result)))
                 {
@@ -55,7 +55,7 @@ namespace Polly.CircuitBreaker
                     throw;
                 }
 
-                breakerController.OnActionFailure(new DelegateOutcome<TResult>(ex), context);
+                breakerController.OnActionFailure(new DelegateResult<TResult>(ex), context);
 
                 throw;
             }

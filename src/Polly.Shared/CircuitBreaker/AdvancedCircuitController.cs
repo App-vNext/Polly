@@ -17,7 +17,7 @@ namespace Polly.CircuitBreaker
             TimeSpan samplingDuration, 
             int minimumThroughput, 
             TimeSpan durationOfBreak, 
-            Action<DelegateOutcome<TResult>, TimeSpan, Context> onBreak, 
+            Action<DelegateResult<TResult>, TimeSpan, Context> onBreak, 
             Action<Context> onReset, 
             Action onHalfOpen
             ) : base(durationOfBreak, onBreak, onReset, onHalfOpen)
@@ -54,7 +54,7 @@ namespace Polly.CircuitBreaker
             }
         }
 
-        public override void OnActionFailure(DelegateOutcome<TResult> outcome, Context context)
+        public override void OnActionFailure(DelegateResult<TResult> outcome, Context context)
         {
             using (TimedLock.Lock(_lock))
             {

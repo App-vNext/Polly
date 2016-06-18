@@ -5,17 +5,17 @@ namespace Polly
     /// <summary>
     /// The captured outcome of executing an individual Func&lt;TResult&gt;
     /// </summary>
-    public class DelegateOutcome<TResult>
+    public class DelegateResult<TResult>
     {
         private readonly TResult _result;
         private readonly Exception _exception;
 
-        internal DelegateOutcome(TResult result)
+        internal DelegateResult(TResult result)
         {
             _result = result;
         }
 
-        internal DelegateOutcome(Exception exception)
+        internal DelegateResult(Exception exception)
         {
             _exception = exception;
         }
