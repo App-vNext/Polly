@@ -12,6 +12,6 @@ namespace Polly.CircuitBreaker
         void OnCircuitReset(Context context);
         void OnActionPreExecute();
         void OnActionSuccess(Context context);
-        void OnActionFailure(DelegateOutcome<TResult> outcome, Context context);
+        void OnActionFailure(DelegateResult<TResult> outcome, Context context);
     }
 }

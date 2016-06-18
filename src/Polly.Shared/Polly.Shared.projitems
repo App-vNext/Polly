@@ -32,7 +32,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)ContextualPolicy.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ContextualPolicyAsync.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ExceptionPredicate.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)DelegateOutcome.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DelegateResult.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)HandledResultException.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)OrSyntax.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Policy.cs" />

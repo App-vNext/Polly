@@ -15,10 +15,10 @@ namespace Polly.CircuitBreaker
         {
             breakerController.OnActionPreExecute();
 
-            DelegateOutcome<TResult> delegateOutcome;
+            DelegateResult<TResult> delegateOutcome;
             try
             {
-                delegateOutcome = new DelegateOutcome<TResult>(action());
+                delegateOutcome = new DelegateResult<TResult>(action());
 
                 if (shouldHandleResultPredicates.Any(predicate => predicate(delegateOutcome.Result)))
                 {
@@ -38,7 +38,7 @@ namespace Polly.CircuitBreaker
                     throw;
                 }
 
-                breakerController.OnActionFailure(new DelegateOutcome<TResult>(ex), context);
+                breakerController.OnActionFailure(new DelegateResult<TResult>(ex), context);
 
                 throw;
             }
