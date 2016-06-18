@@ -114,6 +114,8 @@ namespace Polly.Specs
                 Outcome = OutcomeType.Successful,
                 FinalException = (Exception)null,
                 ExceptionType = (ExceptionType?)null,
+                FaultType = (FaultType?)null,
+                FinalHandledResult = default(int),
                 Result = Int32.MaxValue
             });
         }
@@ -136,6 +138,8 @@ namespace Polly.Specs
                 Outcome = OutcomeType.Failure,
                 FinalException = definedException,
                 ExceptionType = ExceptionType.HandledByThisPolicy,
+                FaultType = FaultType.ExceptionHandledByThisPolicy,
+                FinalHandledResult = default(int),
                 Result = default(int)
             });
         }
@@ -158,6 +162,8 @@ namespace Polly.Specs
                 Outcome = OutcomeType.Failure,
                 FinalException = undefinedException,
                 ExceptionType = ExceptionType.Unhandled,
+                FaultType = FaultType.UnhandledException,
+                FinalHandledResult = default(int),
                 Result = default(int)
             });
         }
