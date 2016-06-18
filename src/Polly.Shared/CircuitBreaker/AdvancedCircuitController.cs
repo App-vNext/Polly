@@ -3,7 +3,7 @@ using Polly.Utilities;
 
 namespace Polly.CircuitBreaker
 {
-    internal class AdvancedCircuitController : CircuitStateController
+    internal class AdvancedCircuitController<TResult> : CircuitStateController<TResult>
     {
         private const short NumberOfWindows = 10;
         internal static readonly long ResolutionOfCircuitTimer = TimeSpan.FromMilliseconds(20).Ticks;
@@ -12,7 +12,15 @@ namespace Polly.CircuitBreaker
         private readonly double _failureThreshold;
         private readonly int _minimumThroughput;
 
-        public AdvancedCircuitController(double failureThreshold, TimeSpan samplingDuration, int minimumThroughput, TimeSpan durationOfBreak, Action<Exception, TimeSpan, Context> onBreak, Action<Context> onReset, Action onHalfOpen) : base(durationOfBreak, onBreak, onReset, onHalfOpen)
+        public AdvancedCircuitController(
+            double failureThreshold, 
+            TimeSpan samplingDuration, 
+            int minimumThroughput, 
+            TimeSpan durationOfBreak, 
+            Action<DelegateOutcome<TResult>, TimeSpan, Context> onBreak, 
+            Action<Context> onReset, 
+            Action onHalfOpen
+            ) : base(durationOfBreak, onBreak, onReset, onHalfOpen)
         {
             _metrics = samplingDuration.Ticks < ResolutionOfCircuitTimer * NumberOfWindows
                 ? (IHealthMetrics)new SingleHealthMetrics(samplingDuration)
@@ -46,11 +54,11 @@ namespace Polly.CircuitBreaker
             }
         }
 
-        public override void OnActionFailure(Exception ex, Context context)
+        public override void OnActionFailure(DelegateOutcome<TResult> outcome, Context context)
         {
             using (TimedLock.Lock(_lock))
             {
-                _lastException = ex;
+                _lastOutcome = outcome;
 
                 if (_circuitState == CircuitState.HalfOpen)
                 {

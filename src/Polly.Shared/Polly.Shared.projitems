@@ -30,6 +30,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)ContextualPolicy.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ContextualPolicyAsync.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ExceptionPredicate.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DelegateOutcome.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)HandledResultException.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)OrSyntax.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Policy.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Policy.HandleSyntax.cs" />
@@ -55,6 +57,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Retry\RetryPolicyStateWithSleepDurationProviderAsync.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)AdvancedCircuitBreakerSyntax.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)AdvancedCircuitBreakerSyntaxAsync.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\EmptyStruct.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\ReadOnlyDictionary.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\SystemClock.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\TimedLock.cs" />

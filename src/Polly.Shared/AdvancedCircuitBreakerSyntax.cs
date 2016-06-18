@@ -1,5 +1,7 @@
 using System;
+using System.Linq;
 using Polly.CircuitBreaker;
+using Polly.Utilities;
 
 namespace Polly
 {
@@ -175,7 +177,7 @@ namespace Polly
         /// <remarks>(see "Release It!" by Michael T. Nygard fi)</remarks>
         public static CircuitBreakerPolicy AdvancedCircuitBreaker(this PolicyBuilder policyBuilder, double failureThreshold, TimeSpan samplingDuration, int minimumThroughput, TimeSpan durationOfBreak, Action<Exception, TimeSpan, Context> onBreak, Action<Context> onReset, Action onHalfOpen)
         {
-            var resolutionOfCircuit = TimeSpan.FromTicks(AdvancedCircuitController.ResolutionOfCircuitTimer);
+            var resolutionOfCircuit = TimeSpan.FromTicks(AdvancedCircuitController<EmptyStruct>.ResolutionOfCircuitTimer);
 
             if (failureThreshold <= 0) throw new ArgumentOutOfRangeException("failureThreshold", "Value must be greater than zero.");
             if (failureThreshold > 1) throw new ArgumentOutOfRangeException("failureThreshold", "Value must be less than or equal to one.");
@@ -187,9 +189,21 @@ namespace Polly
             if (onReset == null) throw new ArgumentNullException("onReset");
             if (onHalfOpen == null) throw new ArgumentNullException("onHalfOpen");
 
-            var breakerController = new AdvancedCircuitController(failureThreshold, samplingDuration, minimumThroughput, durationOfBreak, onBreak, onReset, onHalfOpen);
+            var breakerController = new AdvancedCircuitController<EmptyStruct>(
+                failureThreshold, 
+                samplingDuration, 
+                minimumThroughput, 
+                durationOfBreak, 
+                (outcome, timespan, context) => onBreak(outcome.Exception, timespan, context), 
+                onReset, 
+                onHalfOpen);
             return new CircuitBreakerPolicy(
-                (action, context) => CircuitBreakerEngine.Implementation(action, context, policyBuilder.ExceptionPredicates, breakerController), 
+                (action, context) => CircuitBreakerEngine.Implementation<EmptyStruct>(
+                    () => { action(); return EmptyStruct.Instance; },
+                    context, 
+                    policyBuilder.ExceptionPredicates, 
+                    Enumerable.Empty<ResultPredicate<EmptyStruct>>(), 
+                    breakerController), 
                 policyBuilder.ExceptionPredicates, 
                 breakerController
                 );

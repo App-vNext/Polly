@@ -3,12 +3,18 @@ using Polly.Utilities;
 
 namespace Polly.CircuitBreaker
 {
-    internal class ConsecutiveCountCircuitController : CircuitStateController
+    internal class ConsecutiveCountCircuitController<TResult> : CircuitStateController<TResult>
     {
         private readonly int _exceptionsAllowedBeforeBreaking;
         private int _count;
 
-        public ConsecutiveCountCircuitController(int exceptionsAllowedBeforeBreaking, TimeSpan durationOfBreak, Action<Exception, TimeSpan, Context> onBreak, Action<Context> onReset, Action onHalfOpen) : base(durationOfBreak, onBreak, onReset, onHalfOpen)
+        public ConsecutiveCountCircuitController(
+            int exceptionsAllowedBeforeBreaking, 
+            TimeSpan durationOfBreak, 
+            Action<DelegateOutcome<TResult>, TimeSpan, Context> onBreak, 
+            Action<Context> onReset, 
+            Action onHalfOpen
+            ) : base(durationOfBreak, onBreak, onReset, onHalfOpen)
         {
             _exceptionsAllowedBeforeBreaking = exceptionsAllowedBeforeBreaking;
         }
@@ -31,11 +37,11 @@ namespace Polly.CircuitBreaker
             }
         }
 
-        public override void OnActionFailure(Exception ex, Context context)
+        public override void OnActionFailure(DelegateOutcome<TResult> outcome, Context context)
         {
             using (TimedLock.Lock(_lock))
             {
-                _lastException = ex;
+                _lastOutcome = outcome;
 
                 if (_circuitState == CircuitState.HalfOpen)
                 {
