@@ -171,12 +171,12 @@ namespace Polly
     /// </summary>
     public partial class Policy<TResult>
     {
-        private readonly Action<Action, Context> _executionPolicy;
+        private readonly Func<Func<TResult>, Context, TResult> _executionPolicy;
         private readonly IEnumerable<ExceptionPredicate> _exceptionPredicates;
         private readonly IEnumerable<ResultPredicate<TResult>> _resultPredicates;
 
         internal Policy(
-            Action<Action> executionPolicy,
+            Func<Func<TResult>, TResult> executionPolicy,
             IEnumerable<ExceptionPredicate> exceptionPredicates, 
             IEnumerable<ResultPredicate<TResult>> resultPredicates
             ) : this(
@@ -188,7 +188,7 @@ namespace Polly
         }
 
         internal Policy(
-            Action<Action, Context> executionPolicy, 
+            Func<Func<TResult>, Context, TResult> executionPolicy, 
             IEnumerable<ExceptionPredicate> exceptionPredicates, 
             IEnumerable<ResultPredicate<TResult>> resultPredicates
             )
@@ -212,9 +212,7 @@ namespace Polly
             if (_executionPolicy == null) throw new InvalidOperationException(
                 "Please use the synchronous Retry, RetryForever, WaitAndRetry or CircuitBreaker methods when calling the synchronous Execute method.");
 
-            var result = default(TResult);
-            _executionPolicy(() => { result = action(); }, context);
-            return result;
+            return _executionPolicy(action, context);
         }
 
         /// <summary>
@@ -254,8 +252,7 @@ namespace Polly
 
             try
             {
-                var result = default(TResult);
-                _executionPolicy(() => { result = action(); }, context);
+                TResult result = _executionPolicy(action, context);
 
                 if (_resultPredicates.Any(predicate => predicate(result)))
                 {

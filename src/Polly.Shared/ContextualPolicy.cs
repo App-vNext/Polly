@@ -88,7 +88,7 @@ namespace Polly
     public partial class ContextualPolicy<TResult> : Policy<TResult>
     {
         internal ContextualPolicy(
-            Action<Action, Context> executionPolicy, 
+            Func<Func<TResult>, Context, TResult> executionPolicy, 
             IEnumerable<ExceptionPredicate> exceptionPredicates, 
             IEnumerable<ResultPredicate<TResult>> resultPredicates
             ) : base(executionPolicy, exceptionPredicates, resultPredicates)
