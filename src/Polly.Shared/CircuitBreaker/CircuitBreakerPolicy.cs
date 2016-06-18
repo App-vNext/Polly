@@ -61,11 +61,11 @@ namespace Polly.CircuitBreaker
         private readonly ICircuitController<TResult> _breakerController;
 
         internal CircuitBreakerPolicy(
-            Action<Action, Context> exceptionPolicy, 
+            Action<Action, Context> executionPolicy, 
             IEnumerable<ExceptionPredicate> exceptionPredicates, 
             IEnumerable<ResultPredicate<TResult>> resultPredicates, 
             ICircuitController<TResult> breakerController
-            ) : base(exceptionPolicy, exceptionPredicates, resultPredicates)
+            ) : base(executionPolicy, exceptionPredicates, resultPredicates)
         {
             _breakerController = breakerController;
         }
