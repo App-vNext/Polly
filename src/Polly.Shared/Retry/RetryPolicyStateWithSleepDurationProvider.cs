@@ -3,26 +3,26 @@ using Polly.Utilities;
 
 namespace Polly.Retry
 {
-    internal partial class RetryPolicyStateWithSleepDurationProvider : IRetryPolicyState
+    internal partial class RetryPolicyStateWithSleepDurationProvider<TResult> : IRetryPolicyState<TResult>
     {
         private int _errorCount;
         private readonly Func<int, TimeSpan> _sleepDurationProvider;
-        private readonly Action<Exception, TimeSpan, Context> _onRetry;
+        private readonly Action<DelegateResult<TResult>, TimeSpan, Context> _onRetry;
         private readonly Context _context;
 
-        public RetryPolicyStateWithSleepDurationProvider(Func<int, TimeSpan> sleepDurationProvider, Action<Exception, TimeSpan, Context> onRetry, Context context)
+        public RetryPolicyStateWithSleepDurationProvider(Func<int, TimeSpan> sleepDurationProvider, Action<DelegateResult<TResult>, TimeSpan, Context> onRetry, Context context)
         {
             this._sleepDurationProvider = sleepDurationProvider;
             _onRetry = onRetry;
             _context = context;
         }
 
-        public RetryPolicyStateWithSleepDurationProvider(Func<int, TimeSpan> sleepDurationProvider, Action<Exception, TimeSpan> onRetry) :
-            this(sleepDurationProvider, (exception, timespan, context) => onRetry(exception, timespan), Context.Empty)
+        public RetryPolicyStateWithSleepDurationProvider(Func<int, TimeSpan> sleepDurationProvider, Action<DelegateResult<TResult>, TimeSpan> onRetry) :
+            this(sleepDurationProvider, (delegateResult, timespan, context) => onRetry(delegateResult, timespan), Context.Empty)
         {
         }
 
-        public bool CanRetry(Exception ex)
+        public bool CanRetry(DelegateResult<TResult> delegateResult)
         {
             if (_errorCount < int.MaxValue)
             {
@@ -30,7 +30,7 @@ namespace Polly.Retry
             }           
 
             var currentTimeSpan = _sleepDurationProvider(_errorCount);
-            _onRetry(ex, currentTimeSpan, _context);
+            _onRetry(delegateResult, currentTimeSpan, _context);
 
             SystemClock.Sleep(currentTimeSpan);
             
