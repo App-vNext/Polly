@@ -36,6 +36,8 @@ namespace Polly.CircuitBreaker
                 {
                     breakerController.OnActionSuccess(context);
                 }
+
+                return delegateOutcome.Result;
             }
             catch (Exception ex)
             {
@@ -58,7 +60,6 @@ namespace Polly.CircuitBreaker
                 throw;
             }
 
-            return delegateOutcome.Result;
         }
 
     }
