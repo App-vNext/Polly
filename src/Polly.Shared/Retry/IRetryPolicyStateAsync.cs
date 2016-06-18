@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Polly.Retry
 {
-    internal partial interface IRetryPolicyState
+    internal partial interface IRetryPolicyState<TResult>
     {
-        Task<bool> CanRetryAsync(Exception ex, CancellationToken ct, bool continueOnCapturedContext);
+        Task<bool> CanRetryAsync(DelegateResult<TResult> delegateResult, CancellationToken ct, bool continueOnCapturedContext);
     }
 }
 

@@ -16,10 +16,10 @@ namespace Polly.Retry
             CancellationToken cancellationToken, 
             IEnumerable<ExceptionPredicate> shouldRetryExceptionPredicates,
             IEnumerable<ResultPredicate<TResult>> shouldRetryResultPredicates,
-            Func<IRetryPolicyState> policyStateFactory, 
+            Func<IRetryPolicyState<TResult>> policyStateFactory, 
             bool continueOnCapturedContext)
         {
-            IRetryPolicyState policyState = policyStateFactory();
+            IRetryPolicyState<TResult> policyState = policyStateFactory();
 
             while (true)
             {
@@ -27,11 +27,18 @@ namespace Polly.Retry
 
                 try
                 {
-                    TResult result = await action(cancellationToken).ConfigureAwait(continueOnCapturedContext);
+                    DelegateResult<TResult> delegateOutcome = new DelegateResult<TResult>(await action(cancellationToken).ConfigureAwait(continueOnCapturedContext));
 
-                    if (!shouldRetryResultPredicates.Any(predicate => predicate(result)))
+                    if (!shouldRetryResultPredicates.Any(predicate => predicate(delegateOutcome.Result)))
                     {
-                        return result;
+                        return delegateOutcome.Result;
+                    }
+
+                    if (!await policyState
+                        .CanRetryAsync(delegateOutcome, cancellationToken, continueOnCapturedContext)
+                        .ConfigureAwait(continueOnCapturedContext))
+                    {
+                        return delegateOutcome.Result;
                     }
                 }
                 catch (Exception ex)
@@ -50,9 +57,9 @@ namespace Polly.Retry
                         throw;
                     }
 
-                    if (!(await policyState
-                        .CanRetryAsync(ex, cancellationToken, continueOnCapturedContext)
-                        .ConfigureAwait(continueOnCapturedContext)))
+                    if (!await policyState
+                        .CanRetryAsync(new DelegateResult<TResult>(ex), cancellationToken, continueOnCapturedContext)
+                        .ConfigureAwait(continueOnCapturedContext))
                     {
                         throw;
                     }

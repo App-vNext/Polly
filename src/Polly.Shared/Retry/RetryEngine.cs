@@ -10,18 +10,24 @@ namespace Polly.Retry
             Func<TResult> action,
             IEnumerable<ExceptionPredicate> shouldRetryExceptionPredicates,
             IEnumerable<ResultPredicate<TResult>> shouldRetryResultPredicates,
-            Func<IRetryPolicyState> policyStateFactory)
+            Func<IRetryPolicyState<TResult>> policyStateFactory)
         {
-            var policyState = policyStateFactory();
+            IRetryPolicyState<TResult> policyState = policyStateFactory();
 
             while (true)
             {
                 try
                 {
-                    TResult result = action();
-                    if (!shouldRetryResultPredicates.Any(predicate => predicate(result)))
+                    DelegateResult<TResult> delegateOutcome = new DelegateResult<TResult>(action());
+
+                    if (!shouldRetryResultPredicates.Any(predicate => predicate(delegateOutcome.Result)))
                     {
-                        return result;
+                        return delegateOutcome.Result;
+                    }
+
+                    if (!policyState.CanRetry(delegateOutcome))
+                    {
+                        return delegateOutcome.Result;
                     }
                 }
                 catch (Exception ex)
@@ -31,7 +37,7 @@ namespace Polly.Retry
                         throw;
                     }
 
-                    if (!policyState.CanRetry(ex))
+                    if (!policyState.CanRetry(new DelegateResult<TResult>(ex)))
                     {
                         throw;
                     }
