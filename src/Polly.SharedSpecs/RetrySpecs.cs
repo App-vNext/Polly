@@ -253,7 +253,7 @@ namespace Polly.Specs
 
             var policy = Policy
                 .Handle<DivideByZeroException>()
-                .Retry(3, (_, retyCount) => retryCounts.Add(retyCount));
+                .Retry(3, (_, retryCount) => retryCounts.Add(retryCount));
 
             policy.RaiseException<DivideByZeroException>(3);
 
