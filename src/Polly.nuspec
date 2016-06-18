@@ -120,6 +120,7 @@
         <dependency id="System.Collections" version="4.0.0" />
         <dependency id="System.Diagnostics.Debug" version="4.0.0" />
         <dependency id="System.Linq" version="4.0.0" />
+        <dependency id="System.Reflection" version="4.0.0" />
         <dependency id="System.Runtime" version="4.0.0" />
         <dependency id="System.Threading" version="4.0.0" />
         <dependency id="System.Threading.Tasks" version="4.0.0" />
