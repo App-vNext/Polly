@@ -614,7 +614,7 @@ namespace Polly
                 "Please use the asynchronous RetryAsync, RetryForeverAsync, WaitAndRetryAsync or CircuitBreakerAsync methods when calling the asynchronous Execute method.");
 
             TResult result = await _asyncExecutionPolicy(
-                async ct => await action(ct).ConfigureAwait(continueOnCapturedContext),
+                action,
                 context,
                 cancellationToken,
                 continueOnCapturedContext)
@@ -727,7 +727,7 @@ namespace Polly
             try
             {
                 TResult result = await _asyncExecutionPolicy(
-                    async ct => await action(ct).ConfigureAwait(continueOnCapturedContext),
+                    action,
                     context,
                     cancellationToken,
                     continueOnCapturedContext)
