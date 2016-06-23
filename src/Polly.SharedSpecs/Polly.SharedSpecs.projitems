@@ -15,8 +15,12 @@
     <Compile Include="$(MSBuildThisFileDirectory)ContextualPolicyAsyncSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ContextualPolicySpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\ContextualPolicyExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\ContextualPolicyTResultExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\ObjectExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\PolicyExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\PolicyTResultExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\ResultClass.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\ResultPrimitive.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PolicyAsyncSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PolicySpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)RetryAsyncSpecs.cs" />
@@ -24,6 +28,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)RetryForeverSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)RetrySpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)AdvancedCircuitBreakerAsyncSpecs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)RetryTResultSpecs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)RetryTResultSpecsAsync.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)WaitAndRetryAsyncSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)WaitAndRetryForeverAsyncSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)WaitAndRetrySpecs.cs" />
