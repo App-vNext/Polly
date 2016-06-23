@@ -286,7 +286,7 @@ namespace Polly.Specs
 
             var policy = Policy
                 .Handle<DivideByZeroException>()
-                .Retry((_, retyCount) => retryCounts.Add(retyCount));
+                .Retry((_, retryCount) => retryCounts.Add(retryCount));
 
             policy.Invoking(x => x.RaiseException<ArgumentException>())
                 .ShouldThrow<ArgumentException>();
