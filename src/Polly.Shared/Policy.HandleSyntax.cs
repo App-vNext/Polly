@@ -41,6 +41,17 @@ namespace Polly
         {
             return new PolicyBuilder<TResult>(resultPredicate);
         }
+
+        /// <summary>
+        /// Specifies the type of result that this policy can handle, and a result value which the policy will handle.
+        /// </summary>
+        /// <typeparam name="TResult">The type of the results this policy will handle.</typeparam>
+        /// <param name="result">The TResult value this policy will handle.</param>
+        /// <returns>The PolicyBuilder instance.</returns>
+        public static PolicyBuilder<TResult> HandleResult<TResult>(TResult result) 
+        {
+            return HandleResult(new Func<TResult, bool>(r => (r != null && r.Equals(result)) || (r == null && result == null)));
+        }
     }
 
     public partial class Policy<TResult>
@@ -72,13 +83,23 @@ namespace Polly
         }
 
         /// <summary>
-        /// Specifies the type of result that this policy can handle with additional filters on the result.
+        /// Specifies a filter on the result values that this strongly-typed generic policy will handle.
         /// </summary>
         /// <param name="resultPredicate">The predicate to filter the results this policy will handle.</param>
         /// <returns>The PolicyBuilder instance.</returns>
         public static PolicyBuilder<TResult> HandleResult(Func<TResult, bool> resultPredicate)
         {
             return new PolicyBuilder<TResult>(resultPredicate);
+        }
+
+        /// <summary>
+        /// Specifies a result value which the strongly-typed generic policy will handle.
+        /// </summary>
+        /// <param name="result">The TResult value this policy will handle.</param>
+        /// <returns>The PolicyBuilder instance.</returns>
+        public static PolicyBuilder<TResult> HandleResult(TResult result)
+        {
+            return HandleResult(new Func<TResult, bool>(r => (r != null && r.Equals(result)) || (r == null && result == null)));
         }
     }
 }

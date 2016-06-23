@@ -74,6 +74,18 @@ namespace Polly
             return policyBuilder;
         }
 
+        /// <summary>
+        /// Specifies a result value which the policy will handle.
+        /// </summary>
+        /// <typeparam name="TResult">The type of the results this policy will handle.</typeparam>
+        /// <param name="policyBuilder">The current builder to chain off.</param>
+        /// <param name="result">The TResult value this policy will handle.</param>
+        /// <returns>The PolicyBuilder instance.</returns>
+        public static PolicyBuilder<TResult> OrResult<TResult>(this PolicyBuilder<TResult> policyBuilder, TResult result)
+        {
+            return policyBuilder.OrResult(r => (r != null && r.Equals(result)) || (r == null && result == null));
+        }
+
         #endregion
 
         #region Add exception predicates to result-filtering policy
@@ -85,7 +97,7 @@ namespace Polly
         /// <typeparam name="TResult">The type of the results this policy will handle.</typeparam>
         /// <param name="policyBuilder">The current builder to chain off.</param>
         /// <returns>The PolicyBuilder instance.</returns>
-        public static PolicyBuilder<TResult> Or<TResult, TException>(this PolicyBuilder<TResult> policyBuilder) where TException : Exception
+        public static PolicyBuilder<TResult> Or<TException, TResult>(this PolicyBuilder<TResult> policyBuilder) where TException : Exception
         {
             ExceptionPredicate predicate = exception => exception is TException;
             policyBuilder.ExceptionPredicates.Add(predicate);
@@ -100,7 +112,7 @@ namespace Polly
         /// <param name="policyBuilder">The current builder to chain off.</param>
         /// <param name="exceptionPredicate">The exception predicate to filter the type of exception this policy can handle.</param>
         /// <returns>The PolicyBuilder instance.</returns>
-        public static PolicyBuilder<TResult> Or<TResult, TException>(this PolicyBuilder<TResult> policyBuilder, Func<TException, bool> exceptionPredicate) where TException : Exception
+        public static PolicyBuilder<TResult> Or<TException, TResult>(this PolicyBuilder<TResult> policyBuilder, Func<TException, bool> exceptionPredicate) where TException : Exception
         {
             ExceptionPredicate predicate = exception => exception is TException &&
                                                         exceptionPredicate((TException)exception);
@@ -111,4 +123,5 @@ namespace Polly
 
         #endregion
     }
+
 }
