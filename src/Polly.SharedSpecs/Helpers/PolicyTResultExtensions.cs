@@ -26,5 +26,37 @@ namespace Polly.Specs.Helpers
                 return enumerator.Current;
             });
         }
+
+        public static TResult RaiseResultAndOrExceptionSequence<TResult>(this Policy<TResult> policy, params object[] resultsOrExceptionsToRaise)
+        {
+            return policy.RaiseResultAndOrExceptionSequence(resultsOrExceptionsToRaise.ToList());
+        }
+
+        public static TResult RaiseResultAndOrExceptionSequence<TResult>(this Policy<TResult> policy, IEnumerable<object> resultsOrExceptionsToRaise)
+        {
+            var enumerator = resultsOrExceptionsToRaise.GetEnumerator();
+
+            return policy.Execute(() =>
+            {
+                if (!enumerator.MoveNext())
+                {
+                    throw new ArgumentOutOfRangeException("resultsOrExceptionsToRaise", "Not enough TResult values in resultsOrExceptionsToRaise.");
+                }
+
+                object current = enumerator.Current;
+                if (current is Exception)
+                {
+                    throw (Exception) current;
+                }
+                else if (current is TResult)
+                {
+                    return (TResult)current;
+                }
+                else
+                {
+                    throw new ArgumentOutOfRangeException("resultsOrExceptionsToRaise", "Value is not either an Exception or TResult.");
+                }
+            });
+        }
     }
 }

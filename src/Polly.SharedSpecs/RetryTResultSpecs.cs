@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
+using Polly.Retry;
 using Polly.Specs.Helpers;
 using Xunit;
 
@@ -64,7 +65,7 @@ namespace Polly.Specs
         [Fact]
         public void Should_not_return_handled_result_when_handled_result_raised_same_number_of_times_as_retry_count()
         {
-            var policy = Policy
+            Policy<ResultPrimitive> policy = Policy
                 .HandleResult(ResultPrimitive.Fault)
                 .Retry(3);
 
@@ -75,7 +76,7 @@ namespace Polly.Specs
         [Fact]
         public void Should_not_return_handled_result_when_one_of_the_handled_results_raised_same_number_of_times_as_retry_count()
         {
-            var policy = Policy
+            Policy<ResultPrimitive> policy = Policy
                 .HandleResult(ResultPrimitive.Fault)
                 .OrResult(ResultPrimitive.FaultAgain)
                 .Retry(3);
@@ -87,7 +88,7 @@ namespace Polly.Specs
         [Fact]
         public void Should_not_return_handled_result_when_handled_result_raised_less_number_of_times_than_retry_count()
         {
-            var policy = Policy
+            Policy<ResultPrimitive> policy = Policy
                 .HandleResult(ResultPrimitive.Fault)
                 .Retry(3);
 
@@ -98,7 +99,7 @@ namespace Polly.Specs
         [Fact]
         public void Should_not_return_handled_result_when_all_of_the_handled_results_raised_less_number_of_times_than_retry_count()
         {
-            var policy = Policy
+            Policy<ResultPrimitive> policy = Policy
                 .HandleResult(ResultPrimitive.Fault)
                 .OrResult(ResultPrimitive.FaultAgain)
                 .Retry(3);
@@ -110,7 +111,7 @@ namespace Polly.Specs
         [Fact]
         public void Should_return_handled_result_when_handled_result_raised_more_times_then_retry_count()
         {
-            var policy = Policy
+            Policy<ResultPrimitive> policy = Policy
                 .HandleResult(ResultPrimitive.Fault)
                 .Retry(3);
 
@@ -121,7 +122,7 @@ namespace Polly.Specs
         [Fact]
         public void Should_return_handled_result_when_one_of_the_handled_results_is_raised_more_times_then_retry_count()
         {
-            var policy = Policy
+            Policy<ResultPrimitive> policy = Policy
                 .HandleResult(ResultPrimitive.Fault)
                 .OrResult(ResultPrimitive.FaultAgain)
                 .Retry(3);
@@ -133,7 +134,7 @@ namespace Polly.Specs
         [Fact]
         public void Should_return_result_when_result_is_not_the_specified_handled_result()
         {
-            var policy = Policy
+            Policy<ResultPrimitive> policy = Policy
                 .HandleResult(ResultPrimitive.Fault)
                 .Retry();
 
@@ -144,7 +145,7 @@ namespace Polly.Specs
         [Fact]
         public void Should_return_result_when_result_is_not_one_of_the_specified_handled_results()
         {
-            var policy = Policy
+            Policy<ResultPrimitive> policy = Policy
                 .HandleResult(ResultPrimitive.Fault)
                 .OrResult(ResultPrimitive.FaultAgain)
                 .Retry();
@@ -156,7 +157,7 @@ namespace Polly.Specs
         [Fact]
         public void Should_return_result_when_specified_result_predicate_is_not_satisfied()
         {
-            var policy = Policy
+            Policy<ResultClass> policy = Policy
                 .HandleResult<ResultClass>(r => r.ResultCode == ResultPrimitive.Fault)
                 .Retry();
 
@@ -167,7 +168,7 @@ namespace Polly.Specs
         [Fact]
         public void Should_return_result_when_none_of_the_specified_result_predicates_are_satisfied()
         {
-            var policy = Policy
+            Policy<ResultClass> policy = Policy
                 .HandleResult<ResultClass>(r => r.ResultCode == ResultPrimitive.Fault)
                 .OrResult<ResultClass>(r => r.ResultCode == ResultPrimitive.FaultAgain)
                 .Retry();
@@ -179,7 +180,7 @@ namespace Polly.Specs
         [Fact]
         public void Should_not_return_handled_result_when_specified_result_predicate_is_satisfied()
         {
-            var policy = Policy
+            Policy<ResultClass> policy = Policy
                 .HandleResult<ResultClass>(r => r.ResultCode == ResultPrimitive.Fault)
                 .Retry();
 
@@ -190,7 +191,7 @@ namespace Polly.Specs
         [Fact]
         public void Should_not_return_handled_result_when_one_of_the_specified_result_predicates_is_satisfied()
         {
-            var policy = Policy
+            Policy<ResultClass> policy = Policy
                 .HandleResult<ResultClass>(r => r.ResultCode == ResultPrimitive.Fault)
                 .OrResult<ResultClass>(r => r.ResultCode == ResultPrimitive.FaultAgain)
                 .Retry();
@@ -205,7 +206,7 @@ namespace Polly.Specs
             var expectedRetryCounts = new[] { 1, 2, 3 };
             var retryCounts = new List<int>();
 
-            var policy = Policy
+            Policy<ResultPrimitive> policy = Policy
                 .HandleResult(ResultPrimitive.Fault)
                 .Retry(3, (_, retryCount) => retryCounts.Add(retryCount));
 
@@ -221,7 +222,7 @@ namespace Polly.Specs
             var expectedFaults = new [] { "Fault #1", "Fault #2", "Fault #3" };
             var retryFaults = new List<string>(); 
 
-            var policy = Policy
+            Policy<ResultClass> policy = Policy
                 .HandleResult<ResultClass>(r => r.ResultCode == ResultPrimitive.Fault)
                 .Retry(3, (outcome, _) => retryFaults.Add(outcome.Result.SomeString));
 
@@ -240,7 +241,7 @@ namespace Polly.Specs
         {
             var retryCounts = new List<int>();
 
-            var policy = Policy
+            Policy<ResultPrimitive> policy = Policy
                 .HandleResult(ResultPrimitive.Fault)
                 .Retry((_, retryCount) => retryCounts.Add(retryCount));
 
@@ -365,7 +366,7 @@ namespace Polly.Specs
         [Fact]
         public void Should_create_new_state_for_each_call_to_policy()
         {
-            var policy = Policy
+            Policy<ResultPrimitive> policy = Policy
                 .HandleResult(ResultPrimitive.Fault)
                 .Retry(1);
 
@@ -382,7 +383,7 @@ namespace Polly.Specs
 
             Action<DelegateResult<ResultPrimitive>, int> onRetry = (_, __) => { retryInvoked = true; };
 
-            var policy = Policy
+            Policy<ResultPrimitive> policy = Policy
                 .HandleResult(ResultPrimitive.Fault)
                 .Retry(0, onRetry);
 
@@ -398,7 +399,7 @@ namespace Polly.Specs
 
             Action<DelegateResult<ResultPrimitive>, int, Context> onRetry = (_, __, ___) => { retryInvoked = true; };
 
-            var policy = Policy
+            ContextualPolicy<ResultPrimitive> policy = Policy
                 .HandleResult(ResultPrimitive.Fault)
                 .Retry(0, onRetry);
 

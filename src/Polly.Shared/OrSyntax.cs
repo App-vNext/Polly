@@ -55,6 +55,18 @@ namespace Polly
             return new PolicyBuilder<TResult>(policyBuilder.ExceptionPredicates).OrResult(resultPredicate);
         }
 
+        /// <summary>
+        /// Specifies a result value which the policy will handle.
+        /// </summary>
+        /// <typeparam name="TResult">The type of the results this policy will handle.</typeparam>
+        /// <param name="policyBuilder">The current builder to chain off.</param>
+        /// <param name="result">The TResult value this policy will handle.</param>
+        /// <returns>The PolicyBuilder instance.</returns>
+        public static PolicyBuilder<TResult> OrResult<TResult>(this PolicyBuilder policyBuilder, TResult result)
+        {
+            return policyBuilder.OrResult<TResult>(r => (r != null && r.Equals(result)) || (r == null && result == null));
+        }
+
         #endregion
 
         #region Add result predicates to result-filtering policy

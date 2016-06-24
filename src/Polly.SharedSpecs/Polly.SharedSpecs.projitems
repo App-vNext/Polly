@@ -26,6 +26,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)RetryAsyncSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)RetryForeverAsyncSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)RetryForeverSpecs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)RetryTResultMixedResultExceptionSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)RetrySpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)AdvancedCircuitBreakerAsyncSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)RetryTResultSpecs.cs" />
