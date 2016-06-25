@@ -1501,8 +1501,11 @@ namespace Polly.Specs
 
             SystemClock.UtcNow = () => time.Add(durationOfBreak);
             breaker.CircuitState.Should().Be(CircuitState.Isolated);
-            breaker.Awaiting(x => x.ExecuteAsync(() => Task.FromResult(true)))
+
+            bool delegateExecutedWhenBroken = false;
+            breaker.Awaiting(x => x.ExecuteAsync(() => { delegateExecutedWhenBroken = true; return Task.FromResult(true); }))
                 .ShouldThrow<IsolatedCircuitException>();
+            delegateExecutedWhenBroken.Should().BeFalse();
         }
 
         [Fact]
