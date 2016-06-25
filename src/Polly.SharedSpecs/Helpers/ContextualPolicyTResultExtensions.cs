@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace Polly.Specs.Helpers
 {
@@ -30,6 +29,7 @@ namespace Polly.Specs.Helpers
                 return enumerator.Current;
             }, contextData);
         }
+
         public static PolicyResult<TResult> RaiseResultSequenceOnExecuteAndCapture<TResult>(this ContextualPolicy<TResult> policy,
           IDictionary<string, object> contextData,
           params TResult[] resultsToRaise)
@@ -53,5 +53,6 @@ namespace Polly.Specs.Helpers
                 return enumerator.Current;
             }, contextData);
         }
+
     }
 }
