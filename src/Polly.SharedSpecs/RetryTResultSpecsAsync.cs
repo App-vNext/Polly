@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Polly.SharedSpecs
+namespace Polly.Specs
 {
     public class RetryTResultSpecsAsync
     {

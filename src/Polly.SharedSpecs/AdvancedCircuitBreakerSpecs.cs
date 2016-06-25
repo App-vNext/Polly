@@ -1926,6 +1926,117 @@ namespace Polly.Specs
             breaker.Invoking(x => x.Execute(() => { })).ShouldNotThrow();
         }
 
+        #region Tests of supplied parameters to onBreak delegate
+
+        [Fact]
+        public void Should_call_onbreak_with_the_last_raised_exception()
+        {
+            Exception passedException = null;
+
+            Action<Exception, TimeSpan, Context> onBreak = (exception, _, __) => { passedException = exception; };
+            Action<Context> onReset = _ => { };
+
+            CircuitBreakerPolicy breaker = Policy
+                .Handle<DivideByZeroException>()
+                .AdvancedCircuitBreaker(
+                    failureThreshold: 0.5,
+                    samplingDuration: TimeSpan.FromSeconds(10),
+                    minimumThroughput: 4,
+                    durationOfBreak: TimeSpan.FromSeconds(30),
+                    onBreak: onBreak,
+                    onReset: onReset
+                );
+
+            breaker.Invoking(x => x.RaiseException<DivideByZeroException>())
+                .ShouldThrow<DivideByZeroException>();
+            breaker.CircuitState.Should().Be(CircuitState.Closed);
+
+            breaker.Invoking(x => x.RaiseException<DivideByZeroException>())
+                .ShouldThrow<DivideByZeroException>();
+            breaker.CircuitState.Should().Be(CircuitState.Closed);
+
+            breaker.Invoking(x => x.RaiseException<DivideByZeroException>())
+                .ShouldThrow<DivideByZeroException>();
+            breaker.CircuitState.Should().Be(CircuitState.Closed);
+
+            breaker.Invoking(x => x.RaiseException<DivideByZeroException>())
+                .ShouldThrow<DivideByZeroException>();
+            breaker.CircuitState.Should().Be(CircuitState.Open);
+
+            passedException?.Should().BeOfType<DivideByZeroException>();
+        }
+
+        [Fact]
+        public void Should_call_onbreak_with_the_correct_timespan()
+        {
+            TimeSpan? passedBreakTimespan = null;
+
+            Action<Exception, TimeSpan, Context> onBreak = (_, timespan, __) => { passedBreakTimespan = timespan; };
+            Action<Context> onReset = _ => { };
+
+            TimeSpan durationOfBreak = TimeSpan.FromSeconds(30);
+
+            CircuitBreakerPolicy breaker = Policy
+                .Handle<DivideByZeroException>()
+                .AdvancedCircuitBreaker(
+                    failureThreshold: 0.5,
+                    samplingDuration: TimeSpan.FromSeconds(10),
+                    minimumThroughput: 4,
+                    durationOfBreak: durationOfBreak,
+                    onBreak: onBreak,
+                    onReset: onReset
+                );
+
+            breaker.Invoking(x => x.RaiseException<DivideByZeroException>())
+                .ShouldThrow<DivideByZeroException>();
+            breaker.CircuitState.Should().Be(CircuitState.Closed);
+
+            breaker.Invoking(x => x.RaiseException<DivideByZeroException>())
+                .ShouldThrow<DivideByZeroException>();
+            breaker.CircuitState.Should().Be(CircuitState.Closed);
+
+            breaker.Invoking(x => x.RaiseException<DivideByZeroException>())
+                .ShouldThrow<DivideByZeroException>();
+            breaker.CircuitState.Should().Be(CircuitState.Closed);
+
+            breaker.Invoking(x => x.RaiseException<DivideByZeroException>())
+                .ShouldThrow<DivideByZeroException>();
+            breaker.CircuitState.Should().Be(CircuitState.Open);
+
+            passedBreakTimespan.Should().Be(durationOfBreak);
+        }
+
+        [Fact]
+        public void Should_open_circuit_with_timespan_maxvalue_if_manual_override_open()
+        {
+            TimeSpan? passedBreakTimespan = null;
+            Action<Exception, TimeSpan, Context> onBreak = (_, timespan, __) => { passedBreakTimespan = timespan; };
+            Action<Context> onReset = _ => { };
+
+            var time = 1.January(2000);
+            SystemClock.UtcNow = () => time;
+            
+            CircuitBreakerPolicy breaker = Policy
+                .Handle<DivideByZeroException>()
+                .AdvancedCircuitBreaker(
+                    failureThreshold: 0.5,
+                    samplingDuration: TimeSpan.FromSeconds(10),
+                    minimumThroughput: 4,
+                    durationOfBreak: TimeSpan.FromSeconds(30),
+                    onBreak: onBreak,
+                    onReset: onReset
+                );
+            breaker.CircuitState.Should().Be(CircuitState.Closed);
+
+            // manually break circuit
+            breaker.Isolate();
+            breaker.CircuitState.Should().Be(CircuitState.Isolated);
+
+            passedBreakTimespan.Should().Be(TimeSpan.MaxValue);
+        }
+
+        #endregion
+
         #region Tests that supplied context is passed to stage-change delegates
 
         [Fact]
