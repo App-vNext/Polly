@@ -27,6 +27,8 @@ namespace Polly.CircuitBreaker
             {
                 DelegateResult<TResult> delegateOutcome = new DelegateResult<TResult>(await action(cancellationToken).ConfigureAwait(continueOnCapturedContext));
 
+                cancellationToken.ThrowIfCancellationRequested();
+
                 if (shouldHandleResultPredicates.Any(predicate => predicate(delegateOutcome.Result)))
                 {
                     breakerController.OnActionFailure(delegateOutcome, context);
