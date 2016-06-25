@@ -333,8 +333,10 @@ namespace Polly.Specs
 
             SystemClock.UtcNow = () => time.Add(durationOfBreak);
             breaker.CircuitState.Should().Be(CircuitState.Isolated);
-            breaker.Invoking(x => x.Execute(() => { }))
+            bool delegateExecutedWhenBroken = false;
+            breaker.Invoking(x => x.Execute(() => { delegateExecutedWhenBroken = true; return ResultPrimitive.Good; }))
                 .ShouldThrow<IsolatedCircuitException>();
+            delegateExecutedWhenBroken.Should().BeFalse();
         }
 
         [Fact]
