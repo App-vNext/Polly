@@ -77,7 +77,7 @@ namespace Polly.Specs
         #region Circuit-breaker threshold-to-break tests
 
         [Fact]
-        public void Should_open_circuit_with_the_last_raised_exception_after_specified_number_of_specified_exception_have_been_raised()
+        public void Should_open_circuit_blocking_executions_and_noting_the_last_raised_exception_after_specified_number_of_specified_exception_have_been_raised()
         {
             CircuitBreakerPolicy breaker = Policy
                             .Handle<DivideByZeroException>()
@@ -91,15 +91,18 @@ namespace Polly.Specs
                   .ShouldThrow<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
-            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+            bool delegateExecutedWhenBroken = false;
+            breaker.Awaiting(x => x.ExecuteAsync(() => { delegateExecutedWhenBroken = true; return Task.FromResult(true); }))
                   .ShouldThrow<BrokenCircuitException>()
                   .WithMessage("The circuit is now open and is not allowing calls.")
                   .WithInnerException<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Open);
+            delegateExecutedWhenBroken.Should().BeFalse();
+
         }
 
         [Fact]
-        public void Should_open_circuit_with_the_last_raised_exception_after_specified_number_of_one_of_the_specified_exceptions_have_been_raised()
+        public void Should_open_circuit_blocking_executions_and_noting_the_last_raised_exception_after_specified_number_of_one_of_the_specified_exceptions_have_been_raised()
         {
             CircuitBreakerPolicy breaker = Policy
                             .Handle<DivideByZeroException>()
@@ -115,11 +118,13 @@ namespace Polly.Specs
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
             // 2 exception raised, circuit is now open
-            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+            bool delegateExecutedWhenBroken = false;
+            breaker.Awaiting(x => x.ExecuteAsync(() => { delegateExecutedWhenBroken = true; return Task.FromResult(true); }))
                   .ShouldThrow<BrokenCircuitException>()
                   .WithMessage("The circuit is now open and is not allowing calls.")
                   .WithInnerException<ArgumentOutOfRangeException>();
             breaker.CircuitState.Should().Be(CircuitState.Open);
+            delegateExecutedWhenBroken.Should().BeFalse();
         }
 
         [Fact]
@@ -143,7 +148,7 @@ namespace Polly.Specs
         }
 
         [Fact]
-        public void Should_not_open_circuit_if_exception_raised_is_not_one_of_the_the_specified_exceptions()
+        public void Should_not_open_circuit_if_exception_raised_is_not_one_of_the_specified_exceptions()
         {
             CircuitBreakerPolicy breaker = Policy
                             .Handle<DivideByZeroException>()
@@ -268,7 +273,7 @@ namespace Polly.Specs
             // duration has passed, circuit now half open
             breaker.CircuitState.Should().Be(CircuitState.HalfOpen);
             // first call after duration is successful, so circuit should reset
-            await breaker.ExecuteAsync(() => Task.FromResult(0));
+            await breaker.ExecuteAsync(() => Task.FromResult(true));
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             // circuit has been reset so should once again allow 2 exceptions to be raised before breaking
@@ -307,9 +312,11 @@ namespace Polly.Specs
             breaker.CircuitState.Should().Be(CircuitState.Isolated);
 
             // circuit manually broken: execution should be blocked; even non-exception-throwing executions should not reset circuit
-            breaker.Awaiting(x => x.ExecuteAsync(() => Task.FromResult(true)))
+            bool delegateExecutedWhenBroken = false;
+            breaker.Awaiting(x => x.ExecuteAsync(() => { delegateExecutedWhenBroken = true; return Task.FromResult(true); }))
                 .ShouldThrow<IsolatedCircuitException>();
             breaker.CircuitState.Should().Be(CircuitState.Isolated);
+            delegateExecutedWhenBroken.Should().BeFalse();
 
         }
 
