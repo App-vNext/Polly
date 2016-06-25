@@ -136,6 +136,31 @@ namespace Polly.Specs
         }
 
         [Fact]
+        public void Should_open_circuit_if_results_and_exceptions_returned_match_combination_of_the_result_and_exception_predicates()
+        {
+            CircuitBreakerPolicy<ResultClass> breaker = Policy
+                .Handle<ArgumentException>(e => e.ParamName == "key")
+                .OrResult<ResultClass>(r => r.ResultCode == ResultPrimitive.Fault)
+                .CircuitBreaker(2, TimeSpan.FromMinutes(1));
+
+            breaker.Invoking(b => b.RaiseResultAndOrExceptionSequence(new ArgumentException("message", "key")))
+                .ShouldThrow<ArgumentException>();
+            breaker.CircuitState.Should().Be(CircuitState.Closed);
+
+            breaker.RaiseResultSequence(new ResultClass(ResultPrimitive.Fault))
+                  .ResultCode.Should().Be(ResultPrimitive.Fault);
+            breaker.CircuitState.Should().Be(CircuitState.Open);
+
+            // 2 exception raised, circuit is now open
+            breaker.Invoking(b => b.RaiseResultSequence(new ResultClass(ResultPrimitive.Good)))
+                .ShouldThrow<BrokenCircuitException<ResultClass>>()
+                .WithMessage("The circuit is now open and is not allowing calls.")
+                .Where(e => e.Result.ResultCode == ResultPrimitive.Fault);
+
+            breaker.CircuitState.Should().Be(CircuitState.Open);
+        }
+
+        [Fact]
         public void Should_not_open_circuit_if_result_returned_is_not_one_of_the_configured_results_or_exceptions()
         {
             CircuitBreakerPolicy<ResultPrimitive> breaker = Policy
@@ -173,6 +198,41 @@ namespace Polly.Specs
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             breaker.Invoking(b => b.RaiseResultAndOrExceptionSequence(new ArgumentException()))
+                .ShouldThrow<ArgumentException>();
+            breaker.CircuitState.Should().Be(CircuitState.Closed);
+        }
+
+        [Fact]
+        public void Should_not_open_circuit_if_result_returned_does_not_match_any_of_the_result_predicates()
+        {
+            CircuitBreakerPolicy<ResultClass> breaker = Policy
+                .Handle<ArgumentException>(e => e.ParamName == "key")
+                .OrResult<ResultClass>(r => r.ResultCode == ResultPrimitive.Fault)
+                .CircuitBreaker(2, TimeSpan.FromMinutes(1));
+
+            // non-matched result predicate
+            breaker.RaiseResultSequence(new ResultClass(ResultPrimitive.FaultAgain))
+                  .ResultCode.Should().Be(ResultPrimitive.FaultAgain);
+            breaker.CircuitState.Should().Be(CircuitState.Closed);
+
+            breaker.RaiseResultSequence(new ResultClass(ResultPrimitive.FaultAgain))
+                  .ResultCode.Should().Be(ResultPrimitive.FaultAgain);
+            breaker.CircuitState.Should().Be(CircuitState.Closed);
+
+            breaker.RaiseResultSequence(new ResultClass(ResultPrimitive.FaultAgain))
+                  .ResultCode.Should().Be(ResultPrimitive.FaultAgain);
+            breaker.CircuitState.Should().Be(CircuitState.Closed);
+
+            // non-matched exception predicate
+            breaker.Invoking(b => b.RaiseResultAndOrExceptionSequence(new ArgumentException("message", "value")))
+                .ShouldThrow<ArgumentException>();
+            breaker.CircuitState.Should().Be(CircuitState.Closed);
+
+            breaker.Invoking(b => b.RaiseResultAndOrExceptionSequence(new ArgumentException("message", "value")))
+                .ShouldThrow<ArgumentException>();
+            breaker.CircuitState.Should().Be(CircuitState.Closed);
+
+            breaker.Invoking(b => b.RaiseResultAndOrExceptionSequence(new ArgumentException("message", "value")))
                 .ShouldThrow<ArgumentException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
         }
