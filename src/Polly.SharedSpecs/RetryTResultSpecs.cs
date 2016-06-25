@@ -65,7 +65,7 @@ namespace Polly.Specs
         [Fact]
         public void Should_not_return_handled_result_when_handled_result_raised_same_number_of_times_as_retry_count()
         {
-            Policy<ResultPrimitive> policy = Policy
+            RetryPolicy<ResultPrimitive> policy = Policy
                 .HandleResult(ResultPrimitive.Fault)
                 .Retry(3);
 
@@ -76,7 +76,7 @@ namespace Polly.Specs
         [Fact]
         public void Should_not_return_handled_result_when_one_of_the_handled_results_raised_same_number_of_times_as_retry_count()
         {
-            Policy<ResultPrimitive> policy = Policy
+            RetryPolicy<ResultPrimitive> policy = Policy
                 .HandleResult(ResultPrimitive.Fault)
                 .OrResult(ResultPrimitive.FaultAgain)
                 .Retry(3);
@@ -88,7 +88,7 @@ namespace Polly.Specs
         [Fact]
         public void Should_not_return_handled_result_when_handled_result_raised_less_number_of_times_than_retry_count()
         {
-            Policy<ResultPrimitive> policy = Policy
+            RetryPolicy<ResultPrimitive> policy = Policy
                 .HandleResult(ResultPrimitive.Fault)
                 .Retry(3);
 
@@ -99,7 +99,7 @@ namespace Polly.Specs
         [Fact]
         public void Should_not_return_handled_result_when_all_of_the_handled_results_raised_less_number_of_times_than_retry_count()
         {
-            Policy<ResultPrimitive> policy = Policy
+            RetryPolicy<ResultPrimitive> policy = Policy
                 .HandleResult(ResultPrimitive.Fault)
                 .OrResult(ResultPrimitive.FaultAgain)
                 .Retry(3);
@@ -111,7 +111,7 @@ namespace Polly.Specs
         [Fact]
         public void Should_return_handled_result_when_handled_result_raised_more_times_then_retry_count()
         {
-            Policy<ResultPrimitive> policy = Policy
+            RetryPolicy<ResultPrimitive> policy = Policy
                 .HandleResult(ResultPrimitive.Fault)
                 .Retry(3);
 
@@ -122,7 +122,7 @@ namespace Polly.Specs
         [Fact]
         public void Should_return_handled_result_when_one_of_the_handled_results_is_raised_more_times_then_retry_count()
         {
-            Policy<ResultPrimitive> policy = Policy
+            RetryPolicy<ResultPrimitive> policy = Policy
                 .HandleResult(ResultPrimitive.Fault)
                 .OrResult(ResultPrimitive.FaultAgain)
                 .Retry(3);
@@ -134,7 +134,7 @@ namespace Polly.Specs
         [Fact]
         public void Should_return_result_when_result_is_not_the_specified_handled_result()
         {
-            Policy<ResultPrimitive> policy = Policy
+            RetryPolicy<ResultPrimitive> policy = Policy
                 .HandleResult(ResultPrimitive.Fault)
                 .Retry();
 
@@ -145,7 +145,7 @@ namespace Polly.Specs
         [Fact]
         public void Should_return_result_when_result_is_not_one_of_the_specified_handled_results()
         {
-            Policy<ResultPrimitive> policy = Policy
+            RetryPolicy<ResultPrimitive> policy = Policy
                 .HandleResult(ResultPrimitive.Fault)
                 .OrResult(ResultPrimitive.FaultAgain)
                 .Retry();
@@ -206,7 +206,7 @@ namespace Polly.Specs
             var expectedRetryCounts = new[] { 1, 2, 3 };
             var retryCounts = new List<int>();
 
-            Policy<ResultPrimitive> policy = Policy
+            RetryPolicy<ResultPrimitive> policy = Policy
                 .HandleResult(ResultPrimitive.Fault)
                 .Retry(3, (_, retryCount) => retryCounts.Add(retryCount));
 
@@ -241,7 +241,7 @@ namespace Polly.Specs
         {
             var retryCounts = new List<int>();
 
-            Policy<ResultPrimitive> policy = Policy
+            RetryPolicy<ResultPrimitive> policy = Policy
                 .HandleResult(ResultPrimitive.Fault)
                 .Retry((_, retryCount) => retryCounts.Add(retryCount));
 
@@ -256,7 +256,7 @@ namespace Polly.Specs
         {
             IDictionary<string, object> contextData = null;
 
-            ContextualPolicy<ResultPrimitive> policy = Policy
+            RetryPolicy<ResultPrimitive> policy = Policy
                 .HandleResult(ResultPrimitive.Fault)
                 .Retry((_, __, context) => contextData = context);
 
@@ -276,7 +276,7 @@ namespace Polly.Specs
         {
             IDictionary<string, object> contextData = null;
 
-            ContextualPolicy<ResultPrimitive> policy = Policy
+            RetryPolicy<ResultPrimitive> policy = Policy
                 .HandleResult(ResultPrimitive.Fault)
                 .Retry((_, __, context) => contextData = context);
 
@@ -305,7 +305,7 @@ namespace Polly.Specs
         {
             Context capturedContext = null;
 
-            ContextualPolicy<ResultPrimitive> policy = Policy
+            RetryPolicy<ResultPrimitive> policy = Policy
                 .HandleResult(ResultPrimitive.Fault)
                 .Retry((_, __, context) => capturedContext = context);
 
@@ -320,7 +320,7 @@ namespace Polly.Specs
         {
             string contextValue = null;
 
-            ContextualPolicy<ResultPrimitive> policy = Policy
+            RetryPolicy<ResultPrimitive> policy = Policy
                 .HandleResult(ResultPrimitive.Fault)
                 .Retry((_, __, context) => contextValue = context["key"].ToString());
 
@@ -344,7 +344,7 @@ namespace Polly.Specs
         {
             string contextValue = null;
 
-            ContextualPolicy<ResultPrimitive> policy = Policy
+            RetryPolicy<ResultPrimitive> policy = Policy
                 .HandleResult(ResultPrimitive.Fault)
                 .Retry((_, __, context) => contextValue = context["key"].ToString());
 
@@ -366,7 +366,7 @@ namespace Polly.Specs
         [Fact]
         public void Should_create_new_state_for_each_call_to_policy()
         {
-            Policy<ResultPrimitive> policy = Policy
+            RetryPolicy<ResultPrimitive> policy = Policy
                 .HandleResult(ResultPrimitive.Fault)
                 .Retry(1);
 
@@ -383,7 +383,7 @@ namespace Polly.Specs
 
             Action<DelegateResult<ResultPrimitive>, int> onRetry = (_, __) => { retryInvoked = true; };
 
-            Policy<ResultPrimitive> policy = Policy
+            RetryPolicy<ResultPrimitive> policy = Policy
                 .HandleResult(ResultPrimitive.Fault)
                 .Retry(0, onRetry);
 
@@ -399,7 +399,7 @@ namespace Polly.Specs
 
             Action<DelegateResult<ResultPrimitive>, int, Context> onRetry = (_, __, ___) => { retryInvoked = true; };
 
-            ContextualPolicy<ResultPrimitive> policy = Policy
+            RetryPolicy<ResultPrimitive> policy = Policy
                 .HandleResult(ResultPrimitive.Fault)
                 .Retry(0, onRetry);
 
