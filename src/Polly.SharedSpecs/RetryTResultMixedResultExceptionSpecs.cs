@@ -3,7 +3,7 @@ using FluentAssertions;
 using Polly.Specs.Helpers;
 using Xunit;
 
-namespace Polly.SharedSpecs
+namespace Polly.Specs
 {
     public class RetryTResultMixedResultExceptionSpecs
     {
