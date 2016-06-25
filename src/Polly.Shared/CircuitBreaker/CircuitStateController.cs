@@ -129,7 +129,9 @@ namespace Polly.CircuitBreaker
                     case CircuitState.HalfOpen:
                         break;
                     case CircuitState.Open:
-                        throw new BrokenCircuitException("The circuit is now open and is not allowing calls.", _lastOutcome.Exception ?? new HandledResultException<TResult>(_lastOutcome.Result));
+                        throw _lastOutcome.Exception != null 
+                            ? new BrokenCircuitException("The circuit is now open and is not allowing calls.", _lastOutcome.Exception) 
+                            : new BrokenCircuitException<TResult>("The circuit is now open and is not allowing calls.", _lastOutcome.Result);
                     case CircuitState.Isolated:
                         throw new IsolatedCircuitException("The circuit is manually held open and is not allowing calls.");
                     default:
