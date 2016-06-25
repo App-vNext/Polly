@@ -89,14 +89,14 @@ namespace Polly.Specs.Helpers
             return (Func<Task>)(() => action(policy));
         }
 
-        public static Func<Task> Awaiting<TResult>(this Policy<TResult> policy, Func<Policy<TResult>, Task> action)
+        public static Func<Task<TResult>> Awaiting<TResult>(this Policy<TResult> policy, Func<Policy<TResult>, Task<TResult>> action)
         {
-            return (Func<Task>)(() => action(policy));
+            return (Func<Task<TResult>>)(() => action(policy));
         }
 
-        public static Func<Task> Awaiting<TResult>(this ContextualPolicy<TResult> policy, Func<ContextualPolicy<TResult>, Task> action)
+        public static Func<Task<TResult>> Awaiting<TResult>(this ContextualPolicy<TResult> policy, Func<ContextualPolicy<TResult>, Task<TResult>> action)
         {
-            return (Func<Task>)(() => action(policy));
+            return (Func<Task<TResult>>)(() => action(policy));
         }
     }
 }

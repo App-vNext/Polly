@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+
+using Scenario = Polly.Specs.Helpers.PolicyTResultExtensionsAsync.ResultAndOrCancellationScenario;
 
 namespace Polly.Specs.Helpers
 {
@@ -69,6 +70,54 @@ namespace Polly.Specs.Helpers
                 {
                     throw new ArgumentOutOfRangeException("resultsOrExceptionsToRaise", "Value is not either an Exception or TResult.");
                 }
+            }, cancellationToken);
+        }
+
+        public class ResultAndOrCancellationScenario
+        {
+            public int? AttemptDuringWhichToCancel = null;
+
+            public bool ActionObservesCancellation = true;
+        }
+
+        public static Task<TResult> RaiseResultSequenceAndOrCancellationAsync<TResult>(this Policy<TResult> policy,
+            Scenario scenario, CancellationTokenSource cancellationTokenSource, Action onExecute,
+            params TResult[] resultsToRaise)
+        {
+            return policy.RaiseResultSequenceAndOrCancellationAsync(scenario, cancellationTokenSource, onExecute,
+                resultsToRaise.ToList());
+        }
+
+        public static Task<TResult> RaiseResultSequenceAndOrCancellationAsync<TResult>(this Policy<TResult> policy, Scenario scenario, CancellationTokenSource cancellationTokenSource, Action onExecute, IEnumerable<TResult> resultsToRaise)
+        {
+            int counter = 0;
+
+            var enumerator = resultsToRaise.GetEnumerator();
+
+            CancellationToken cancellationToken = cancellationTokenSource.Token;
+
+            return policy.ExecuteAsync(ct =>
+            {
+                onExecute();
+
+                counter++;
+
+                if (!enumerator.MoveNext())
+                {
+                    throw new ArgumentOutOfRangeException("resultsToRaise", "Not enough TResult values in resultsToRaise.");
+                }
+
+                if (scenario.AttemptDuringWhichToCancel.HasValue && counter >= scenario.AttemptDuringWhichToCancel.Value)
+                {
+                    cancellationTokenSource.Cancel();
+                }
+
+                if (scenario.ActionObservesCancellation)
+                {
+                    ct.ThrowIfCancellationRequested();
+                }
+
+                return Task.FromResult(enumerator.Current);
             }, cancellationToken);
         }
     }

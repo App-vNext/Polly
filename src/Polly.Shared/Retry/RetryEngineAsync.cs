@@ -29,6 +29,8 @@ namespace Polly.Retry
                 {
                     DelegateResult<TResult> delegateOutcome = new DelegateResult<TResult>(await action(cancellationToken).ConfigureAwait(continueOnCapturedContext));
 
+                    cancellationToken.ThrowIfCancellationRequested();
+
                     if (!shouldRetryResultPredicates.Any(predicate => predicate(delegateOutcome.Result)))
                     {
                         return delegateOutcome.Result;
