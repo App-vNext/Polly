@@ -28,7 +28,7 @@ namespace Polly.Specs
         }
 
         [Fact]
-        public void Should_handle_both_exception_and_specified_result_if_raised_same_number_of_times_as_retry_count__specifying_results_before_exceptions()
+        public void Should_handle_both_exception_and_specified_result_if_raised_same_number_of_times_as_retry_count__when_configuring_results_before_exceptions()
         {
             Policy<ResultPrimitive> policy = Policy
                 .HandleResult(ResultPrimitive.Fault)
@@ -40,7 +40,7 @@ namespace Polly.Specs
         }
 
         [Fact]
-        public void Should_handle_both_exception_and_specified_result_if_raised_same_number_of_times_as_retry_count__specifying_exception_before_result()
+        public void Should_handle_both_exception_and_specified_result_if_raised_same_number_of_times_as_retry_count__when_configuring_exception_before_result()
         {
             Policy<ResultPrimitive> policy = Policy
                 .Handle<DivideByZeroException>()
