@@ -170,7 +170,7 @@ namespace Polly.Specs
         {
             Policy<ResultClass> policy = Policy
                 .HandleResult<ResultClass>(r => r.ResultCode == ResultPrimitive.Fault)
-                .OrResult<ResultClass>(r => r.ResultCode == ResultPrimitive.FaultAgain)
+                .OrResult(r => r.ResultCode == ResultPrimitive.FaultAgain)
                 .Retry();
 
             ResultClass result = policy.RaiseResultSequence(new ResultClass(ResultPrimitive.FaultYetAgain), new ResultClass(ResultPrimitive.Good));
@@ -193,7 +193,7 @@ namespace Polly.Specs
         {
             Policy<ResultClass> policy = Policy
                 .HandleResult<ResultClass>(r => r.ResultCode == ResultPrimitive.Fault)
-                .OrResult<ResultClass>(r => r.ResultCode == ResultPrimitive.FaultAgain)
+                .OrResult(r => r.ResultCode == ResultPrimitive.FaultAgain)
                 .Retry();
 
             ResultClass result = policy.RaiseResultSequence(new ResultClass(ResultPrimitive.FaultAgain), new ResultClass(ResultPrimitive.Good));

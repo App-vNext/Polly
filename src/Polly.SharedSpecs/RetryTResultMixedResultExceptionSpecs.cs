@@ -32,7 +32,7 @@ namespace Polly.Specs
         {
             Policy<ResultPrimitive> policy = Policy
                 .HandleResult(ResultPrimitive.Fault)
-                .Or<DivideByZeroException, ResultPrimitive>()
+                .Or<DivideByZeroException>()
                 .Retry(2);
 
             ResultPrimitive result = policy.RaiseResultAndOrExceptionSequence(ResultPrimitive.Fault, new DivideByZeroException(), ResultPrimitive.Good);
@@ -57,7 +57,7 @@ namespace Polly.Specs
             Policy<ResultPrimitive> policy = Policy
                 .Handle<DivideByZeroException>()
                 .OrResult(ResultPrimitive.Fault)
-                .Or<ArgumentException, ResultPrimitive>()
+                .Or<ArgumentException>()
                 .OrResult(ResultPrimitive.FaultAgain)
                 .Retry(4);
 
@@ -70,9 +70,9 @@ namespace Polly.Specs
         {
             Policy<ResultPrimitive> policy = Policy
                 .HandleResult(ResultPrimitive.Fault)
-                .Or<DivideByZeroException, ResultPrimitive>()
+                .Or<DivideByZeroException>()
                 .OrResult(ResultPrimitive.FaultAgain)
-                .Or<ArgumentException, ResultPrimitive>()
+                .Or<ArgumentException>()
                 .Retry(4);
 
             ResultPrimitive result = policy.RaiseResultAndOrExceptionSequence(ResultPrimitive.Fault, new DivideByZeroException(), new ArgumentException(), ResultPrimitive.FaultAgain, ResultPrimitive.Good);
@@ -84,9 +84,9 @@ namespace Polly.Specs
         {
             Policy<ResultPrimitive> policy = Policy
                 .HandleResult(ResultPrimitive.Fault)
-                .Or<DivideByZeroException, ResultPrimitive>()
+                .Or<DivideByZeroException>()
                 .OrResult(ResultPrimitive.FaultAgain)
-                .Or<ArgumentException, ResultPrimitive>()
+                .Or<ArgumentException>()
                 .Retry(3);
 
             ResultPrimitive result = policy.RaiseResultAndOrExceptionSequence(ResultPrimitive.Fault, new DivideByZeroException(), new ArgumentException(), ResultPrimitive.FaultAgain, ResultPrimitive.Good);
@@ -98,9 +98,9 @@ namespace Polly.Specs
         {
             Policy<ResultPrimitive> policy = Policy
                 .HandleResult(ResultPrimitive.Fault)
-                .Or<DivideByZeroException, ResultPrimitive>()
+                .Or<DivideByZeroException>()
                 .OrResult(ResultPrimitive.FaultAgain)
-                .Or<ArgumentException, ResultPrimitive>()
+                .Or<ArgumentException>()
                 .Retry(3);
 
             policy.Invoking(p => p.RaiseResultAndOrExceptionSequence(ResultPrimitive.Fault, new DivideByZeroException(), ResultPrimitive.FaultAgain, new ArgumentException(), ResultPrimitive.Good))
@@ -113,7 +113,7 @@ namespace Polly.Specs
             Policy<ResultPrimitive> policy = Policy
                 .Handle<DivideByZeroException>()
                 .OrResult(ResultPrimitive.Fault)
-                .Or<ArgumentException, ResultPrimitive>()
+                .Or<ArgumentException>()
                 .OrResult(ResultPrimitive.FaultAgain)
                 .Retry(3);
 
@@ -127,7 +127,7 @@ namespace Polly.Specs
             Policy<ResultPrimitive> policy = Policy
                 .Handle<DivideByZeroException>()
                 .OrResult(ResultPrimitive.Fault)
-                .Or<ArgumentException, ResultPrimitive>()
+                .Or<ArgumentException>()
                 .OrResult(ResultPrimitive.FaultAgain)
                 .Retry(3);
 
@@ -140,7 +140,7 @@ namespace Polly.Specs
         {
             Policy<ResultPrimitive> policy = Policy
                 .HandleResult(ResultPrimitive.Fault)
-                .Or<DivideByZeroException, ResultPrimitive>()
+                .Or<DivideByZeroException>()
                 .Retry(2);
 
             ResultPrimitive result = policy.RaiseResultSequence(ResultPrimitive.FaultAgain);
