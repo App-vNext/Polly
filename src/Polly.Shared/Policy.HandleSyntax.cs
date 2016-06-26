@@ -32,10 +32,10 @@ namespace Polly
         }
 
         /// <summary>
-        /// Specifies the type of result that this policy can handle with additional filters on the result.
+        /// Specifies the type of return result that this policy can handle with additional filters on the result.
         /// </summary>
-        /// <typeparam name="TResult">The type of the results this policy will handle.</typeparam>
-        /// <param name="resultPredicate">The predicate to filter the results this policy will handle.</param>
+        /// <typeparam name="TResult">The type of return values this policy will handle.</typeparam>
+        /// <param name="resultPredicate">The predicate to filter results this policy will handle.</param>
         /// <returns>The PolicyBuilder instance.</returns>
         public static PolicyBuilder<TResult> HandleResult<TResult>(Func<TResult, bool> resultPredicate)
         {
@@ -43,10 +43,11 @@ namespace Polly
         }
 
         /// <summary>
-        /// Specifies the type of result that this policy can handle, and a result value which the policy will handle.
+        /// Specifies the type of return result that this policy can handle, and a result value which the policy will handle.
         /// </summary>
-        /// <typeparam name="TResult">The type of the results this policy will handle.</typeparam>
+        /// <typeparam name="TResult">The type of return values this policy will handle.</typeparam>
         /// <param name="result">The TResult value this policy will handle.</param>
+        /// <remarks>This policy filter matches the <paramref name="result"/> value returned using .Equals(), ideally suited for value types such as int and enum.  To match characteristics of class return types, consider the overload taking a result predicate.</remarks>
         /// <returns>The PolicyBuilder instance.</returns>
         public static PolicyBuilder<TResult> HandleResult<TResult>(TResult result) 
         {
@@ -83,7 +84,7 @@ namespace Polly
         }
 
         /// <summary>
-        /// Specifies a filter on the result values that this strongly-typed generic policy will handle.
+        /// Specifies a filter on the return result values that this strongly-typed generic policy will handle.
         /// </summary>
         /// <param name="resultPredicate">The predicate to filter the results this policy will handle.</param>
         /// <returns>The PolicyBuilder instance.</returns>
@@ -93,13 +94,14 @@ namespace Polly
         }
 
         /// <summary>
-        /// Specifies a result value which the strongly-typed generic policy will handle.
+        /// Specifies a return result value which the strongly-typed generic policy will handle.
         /// </summary>
         /// <param name="result">The TResult value this policy will handle.</param>
+        /// <remarks>This policy filter matches the <paramref name="result"/> value returned using .Equals(), ideally suited for value types such as int and enum.  To match characteristics of class return types, consider the overload taking a result predicate.</remarks>
         /// <returns>The PolicyBuilder instance.</returns>
         public static PolicyBuilder<TResult> HandleResult(TResult result)
         {
-            return HandleResult(new Func<TResult, bool>(r => (r != null && r.Equals(result)) || (r == null && result == null)));
+            return HandleResult(r => (r != null && r.Equals(result)) || (r == null && result == null));
         }
     }
 }
