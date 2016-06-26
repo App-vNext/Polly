@@ -92,20 +92,6 @@ namespace Polly
 
         private PolicyBuilder()
         {
-            if (typeof (Exception)
-#if PORTABLE
-                .GetTypeInfo()
-#endif
-                .IsAssignableFrom(typeof (TResult)
-#if PORTABLE
-                .GetTypeInfo()
-#endif
-                ))
-
-            {
-                throw new ArgumentException("Generic Policy<TResult> policies cannot be established with TResult an Exception type.  Use non-generic Policy class to handle exceptions.");
-            }
-
             _exceptionPredicates = new List<ExceptionPredicate>();
             _resultPredicates = new List<ResultPredicate<TResult>>();
         }
