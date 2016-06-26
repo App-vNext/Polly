@@ -35,11 +35,11 @@
     <Compile Include="$(MSBuildThisFileDirectory)ContextualPolicyAsync.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ExceptionPredicate.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DelegateResult.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)OrSyntax.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Policy.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Policy.HandleSyntax.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PolicyAsync.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PolicyBuilder.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)PolicyBuilder.OrSyntax.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PolicyResult.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ResultPredicate.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)RetrySyntax.cs" />

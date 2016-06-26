@@ -174,7 +174,7 @@ namespace Polly.Specs
         {
             Policy<ResultClass> policy = Policy
                 .HandleResult<ResultClass>(r => r.ResultCode == ResultPrimitive.Fault)
-                .OrResult<ResultClass>(r => r.ResultCode == ResultPrimitive.FaultAgain)
+                .OrResult(r => r.ResultCode == ResultPrimitive.FaultAgain)
                 .RetryAsync();
 
             ResultClass result = await policy.RaiseResultSequenceAsync(new ResultClass(ResultPrimitive.FaultYetAgain), new ResultClass(ResultPrimitive.Good)).ConfigureAwait(false);
@@ -197,7 +197,7 @@ namespace Polly.Specs
         {
             Policy<ResultClass> policy = Policy
                 .HandleResult<ResultClass>(r => r.ResultCode == ResultPrimitive.Fault)
-                .OrResult<ResultClass>(r => r.ResultCode == ResultPrimitive.FaultAgain)
+                .OrResult(r => r.ResultCode == ResultPrimitive.FaultAgain)
                 .RetryAsync();
 
             ResultClass result = await policy.RaiseResultSequenceAsync(new ResultClass(ResultPrimitive.FaultAgain), new ResultClass(ResultPrimitive.Good)).ConfigureAwait(false);

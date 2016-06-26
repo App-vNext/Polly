@@ -40,7 +40,7 @@ namespace Polly.Specs
         {
             CircuitBreakerPolicy<ResultPrimitive> breaker = Policy
                             .HandleResult(ResultPrimitive.Fault)
-                            .Or<DivideByZeroException, ResultPrimitive>()
+                            .Or<DivideByZeroException>()
                             .CircuitBreaker(2, TimeSpan.FromMinutes(1));
 
             breaker.RaiseResultSequence(ResultPrimitive.Fault)
@@ -65,7 +65,7 @@ namespace Polly.Specs
         {
             CircuitBreakerPolicy<ResultPrimitive> breaker = Policy
                             .HandleResult(ResultPrimitive.Fault)
-                            .Or<DivideByZeroException, ResultPrimitive>()
+                            .Or<DivideByZeroException>()
                             .CircuitBreaker(2, TimeSpan.FromMinutes(1));
 
             breaker.Invoking(b => b.RaiseResultAndOrExceptionSequence(new DivideByZeroException()))
@@ -242,7 +242,7 @@ namespace Polly.Specs
             CircuitBreakerPolicy<ResultPrimitive> breaker = Policy
                 .Handle<DivideByZeroException>()
                 .OrResult(ResultPrimitive.Fault)
-                .Or<ArgumentException, ResultPrimitive>()
+                .Or<ArgumentException>()
                 .OrResult(ResultPrimitive.FaultAgain)
                 .CircuitBreaker(4, TimeSpan.FromMinutes(1));
 
@@ -277,7 +277,7 @@ namespace Polly.Specs
             CircuitBreakerPolicy<ResultPrimitive> breaker = Policy
                 .Handle<DivideByZeroException>()
                 .OrResult(ResultPrimitive.Fault)
-                .Or<ArgumentException, ResultPrimitive>()
+                .Or<ArgumentException>()
                 .OrResult(ResultPrimitive.FaultAgain)
                 .CircuitBreaker(4, TimeSpan.FromMinutes(1));
 
@@ -311,7 +311,7 @@ namespace Polly.Specs
         {
             CircuitBreakerPolicy<ResultPrimitive> breaker = Policy
                             .HandleResult(ResultPrimitive.Fault)
-                            .Or<DivideByZeroException, ResultPrimitive>()
+                            .Or<DivideByZeroException>()
                             .CircuitBreaker(2, TimeSpan.FromMinutes(1));
 
             breaker.RaiseResultSequence(ResultPrimitive.FaultAgain)
@@ -345,7 +345,7 @@ namespace Polly.Specs
 
             CircuitBreakerPolicy<ResultPrimitive> breaker = Policy
                             .HandleResult(ResultPrimitive.Fault)
-                            .Or<DivideByZeroException, ResultPrimitive>()
+                            .Or<DivideByZeroException>()
                             .CircuitBreaker(2, TimeSpan.FromMinutes(1));
 
             breaker.RaiseResultSequence(ResultPrimitive.Fault)
@@ -385,7 +385,7 @@ namespace Polly.Specs
 
             CircuitBreakerPolicy<ResultPrimitive> breaker = Policy
                             .HandleResult(ResultPrimitive.Fault)
-                            .Or<DivideByZeroException, ResultPrimitive>()
+                            .Or<DivideByZeroException>()
                             .CircuitBreaker(2, TimeSpan.FromMinutes(1));
 
             breaker.RaiseResultSequence(ResultPrimitive.Fault)

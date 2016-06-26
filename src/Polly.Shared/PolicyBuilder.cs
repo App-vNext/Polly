@@ -1,16 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-#if PORTABLE
-using System.Reflection;
-#endif
 
 namespace Polly
 {
     /// <summary>
     /// Builder class that holds the list of current exception predicates.
     /// </summary>
-    public sealed class PolicyBuilder
+    public sealed partial class PolicyBuilder
     {
         private readonly IList<ExceptionPredicate> _exceptionPredicates;
 
@@ -79,13 +76,12 @@ namespace Polly
         }
 
         #endregion
-
     }
 
     /// <summary>
     /// Builder class that holds the list of current execution predicates filtering TResult result values.
     /// </summary>
-    public sealed class PolicyBuilder<TResult>
+    public sealed partial class PolicyBuilder<TResult>
     {
         private readonly IList<ExceptionPredicate> _exceptionPredicates;
         private readonly IList<ResultPredicate<TResult>> _resultPredicates;
