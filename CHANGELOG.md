@@ -1,3 +1,7 @@
+## 4.3.0
+
+- Added ability for policies to handle returned results
+
 ## 4.2.4
 
 - Added overloads to WaitAndRetry and WaitAndRetryAsync methods that accept an onRetry delegate which includes the attempt count.
