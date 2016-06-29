@@ -33,7 +33,15 @@ namespace Polly.CircuitBreaker
         {
             using (TimedLock.Lock(_lock))
             {
-                if (_circuitState == CircuitState.HalfOpen) { OnCircuitReset(context); }
+                switch (_circuitState)
+                {
+                    case CircuitState.HalfOpen:
+                        OnCircuitReset(context);
+                        break;
+                    case CircuitState.Closed:
+                        _count = 0;
+                        break;
+                }
             }
         }
 

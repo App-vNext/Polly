@@ -576,6 +576,7 @@ For `CircuitBreakerPolicy<TResult>` policies:
 * [@SteveCote](https://github.com/SteveCote) - Added overloads to WaitAndRetry and WaitAndRetryAsync methods that accept an onRetry delegate which includes the attempt count.
 * [@reisenberger](https://github.com/reisenberger) - Allowed policies to handle returned results; added strongly-typed policies Policy&lt;TResult&gt;;.
 * [@christopherbahr](https://github.com/christopherbahr) - Added optimisation for circuit-breaker hot path.
+* [@Finity](https://github.com/Finity) - Fixed circuit-breaker threshold bug.
 
 # Sample Projects
 

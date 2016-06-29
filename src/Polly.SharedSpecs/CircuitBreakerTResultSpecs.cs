@@ -73,6 +73,26 @@ namespace Polly.Specs
         #region Circuit-breaker threshold-to-break tests
 
         [Fact]
+        public void Should_not_open_circuit_if_specified_number_of_specified_handled_result_are_not_raised_consecutively()
+        {
+            CircuitBreakerPolicy<ResultPrimitive> breaker = Policy
+                            .HandleResult(ResultPrimitive.Fault)
+                            .CircuitBreaker(2, TimeSpan.FromMinutes(1));
+
+            breaker.RaiseResultSequence(ResultPrimitive.Fault)
+                  .Should().Be(ResultPrimitive.Fault);
+            breaker.CircuitState.Should().Be(CircuitState.Closed);
+
+            breaker.RaiseResultSequence(ResultPrimitive.Good)
+                  .Should().Be(ResultPrimitive.Good);
+            breaker.CircuitState.Should().Be(CircuitState.Closed);
+
+            breaker.RaiseResultSequence(ResultPrimitive.Fault)
+                  .Should().Be(ResultPrimitive.Fault);
+            breaker.CircuitState.Should().Be(CircuitState.Closed);
+        }
+
+        [Fact]
         public void Should_open_circuit_with_the_last_handled_result_after_specified_number_of_specified_handled_result_have_been_returned()
         {
             CircuitBreakerPolicy<ResultPrimitive> breaker = Policy

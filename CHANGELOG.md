@@ -1,6 +1,6 @@
 ## 4.3.0
 
-- Added ability for policies to handle returned results.  Optimised circuit-breaker hot path.  Thanks to [@reisenberger](https://github.com/reisenberger) and [@christopherbahr](https://github.com/christopherbahr) respectively.
+- Added ability for policies to handle returned results.  Optimised circuit-breaker hot path.  Fixed circuit-breaker threshold bug.  Thanks to [@reisenberger](https://github.com/reisenberger), [@christopherbahr](https://github.com/christopherbahr) and [@Finity](https://github.com/Finity) respectively.
 
 ## 4.2.4
 
