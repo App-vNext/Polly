@@ -1,10 +1,10 @@
 ## 4.3.0
 
-- Added ability for policies to handle returned results
+- Added ability for policies to handle returned results.  Optimised circuit-breaker hot path.  Thanks to [@reisenberger](https://github.com/reisenberger) and [@christopherbahr](https://github.com/christopherbahr) respectively.
 
 ## 4.2.4
 
-- Added overloads to WaitAndRetry and WaitAndRetryAsync methods that accept an onRetry delegate which includes the attempt count.
+- Added overloads to WaitAndRetry and WaitAndRetryAsync methods that accept an onRetry delegate which includes the attempt count.  Thanks to [@SteveCote](https://github.com/steveCote) 
      
 ## 4.2.3
 

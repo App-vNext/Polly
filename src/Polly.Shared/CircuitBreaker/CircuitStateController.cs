@@ -33,6 +33,11 @@ namespace Polly.CircuitBreaker
         {
             get
             {
+                if (_circuitState != CircuitState.Open)
+                {
+                    return _circuitState;
+                }
+
                 using (TimedLock.Lock(_lock))
                 {
                     if (_circuitState == CircuitState.Open && !IsInAutomatedBreak_NeedsLock)
@@ -121,22 +126,19 @@ namespace Polly.CircuitBreaker
 
         public void OnActionPreExecute()
         {
-            using (TimedLock.Lock(_lock))
+            switch (CircuitState)
             {
-                switch (CircuitState)
-                {
-                    case CircuitState.Closed:
-                    case CircuitState.HalfOpen:
-                        break;
-                    case CircuitState.Open:
-                        throw _lastOutcome.Exception != null 
-                            ? new BrokenCircuitException("The circuit is now open and is not allowing calls.", _lastOutcome.Exception) 
-                            : new BrokenCircuitException<TResult>("The circuit is now open and is not allowing calls.", _lastOutcome.Result);
-                    case CircuitState.Isolated:
-                        throw new IsolatedCircuitException("The circuit is manually held open and is not allowing calls.");
-                    default:
-                        throw new InvalidOperationException("Unhandled CircuitState.");
-                }
+                case CircuitState.Closed:
+                case CircuitState.HalfOpen:
+                    break;
+                case CircuitState.Open:
+                    throw _lastOutcome.Exception != null
+                        ? new BrokenCircuitException("The circuit is now open and is not allowing calls.", _lastOutcome.Exception)
+                        : new BrokenCircuitException<TResult>("The circuit is now open and is not allowing calls.", _lastOutcome.Result);
+                case CircuitState.Isolated:
+                    throw new IsolatedCircuitException("The circuit is manually held open and is not allowing calls.");
+                default:
+                    throw new InvalidOperationException("Unhandled CircuitState.");
             }
         }
 

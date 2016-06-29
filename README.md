@@ -575,7 +575,8 @@ For `CircuitBreakerPolicy<TResult>` policies:
 * [@Lumirris](https://github.com/Lumirris) - Add new Polly.Net40Async project/package supporting async for .NET40 via Microsoft.Bcl.Async
 * [@SteveCote](https://github.com/SteveCote) - Added overloads to WaitAndRetry and WaitAndRetryAsync methods that accept an onRetry delegate which includes the attempt count.
 * [@reisenberger](https://github.com/reisenberger) - Allowed policies to handle returned results; added strongly-typed policies Policy&lt;TResult&gt;;.
- 
+* [@christopherbahr](https://github.com/christopherbahr) - Added optimisation for circuit-breaker hot path.
+
 # Sample Projects
 
 [Polly-Samples](https://github.com/App-vNext/Polly-Samples) contains practical examples for using various implementations of Polly. Please feel free to contribute to the Polly-Samples repository in order to assist others who are either learning Polly for the first time, or are seeking advanced examples and novel approaches provided by our generous community.
