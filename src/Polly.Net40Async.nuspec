@@ -4,7 +4,7 @@
     <owners>App vNext</owners>
     <authors>Michael Wolfenden, App vNext</authors>
     <description>
-     Polly.Net40Async is a version of the Polly library specifically for for .NET 4.0 with async support via Microsoft.Bcl.Async.  Allows developers to express transient exception handling policies such as Retry, Retry Forever, Wait and Retry or Circuit Breaker in a fluent manner.
+     Polly.Net40Async is a version of the Polly library specifically for for .NET 4.0 with async support via Microsoft.Bcl.Async.  Allows developers to express transient exception and fault handling policies such as Retry, Retry Forever, Wait and Retry or Circuit Breaker in a fluent manner.
    </description>
     <language>en-US</language>
     <licenseUrl>https://raw.github.com/App-vNext/Polly/master/LICENSE.txt</licenseUrl>
@@ -13,6 +13,10 @@
     <tags>Exception Handling Policy Retry Wait Circuit Breaker</tags>
     <copyright>Copyright © 2016, App vNext</copyright>
     <releaseNotes>
+      4.3.0
+      ---------------------
+      - Added ability for policies to handle return results.  Optimised circuit-breaker hot path.  Fixed circuit-breaker threshold bug.  
+
       4.2.4
       ---------------------
       - Added overloads to WaitAndRetry and WaitAndRetryAsync methods that accept an onRetry delegate which includes the attempt count.

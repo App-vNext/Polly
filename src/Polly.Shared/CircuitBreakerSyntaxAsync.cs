@@ -1,7 +1,9 @@
 ﻿#if SUPPORTS_ASYNC
 
 using System;
+using System.Linq;
 using Polly.CircuitBreaker;
+using Polly.Utilities;
 
 namespace Polly
 {
@@ -174,9 +176,22 @@ namespace Polly
             if (onReset == null) throw new ArgumentNullException("onReset");
             if (onHalfOpen == null) throw new ArgumentNullException("onHalfOpen");
 
-            var breakerController = new ConsecutiveCountCircuitController(exceptionsAllowedBeforeBreaking, durationOfBreak, onBreak, onReset, onHalfOpen);
+            var breakerController = new ConsecutiveCountCircuitController<EmptyStruct>(
+                exceptionsAllowedBeforeBreaking, 
+                durationOfBreak,
+                (outcome, timespan, context) => onBreak(outcome.Exception, timespan, context),
+                onReset, 
+                onHalfOpen);
             return new CircuitBreakerPolicy(
-                (action, context, cancellationToken, continueOnCapturedContext) => CircuitBreakerEngine.ImplementationAsync(action, context, policyBuilder.ExceptionPredicates, breakerController, cancellationToken, continueOnCapturedContext),
+                (action, context, cancellationToken, continueOnCapturedContext) => 
+                  CircuitBreakerEngine.ImplementationAsync(
+                    async ct => { await action(ct).ConfigureAwait(continueOnCapturedContext); return EmptyStruct.Instance; },
+                      context, 
+                      policyBuilder.ExceptionPredicates, 
+                      Enumerable.Empty<ResultPredicate<EmptyStruct>>(), 
+                      breakerController, 
+                      cancellationToken, 
+                      continueOnCapturedContext),
                 policyBuilder.ExceptionPredicates,
                 breakerController
             );

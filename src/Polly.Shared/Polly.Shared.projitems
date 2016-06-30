@@ -9,8 +9,12 @@
     <Import_RootNamespace>Polly.Shared</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)AdvancedCircuitBreakerTResultSyntax.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)AdvancedCircuitBreakerTResultSyntaxAsync.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CircuitBreakerSyntax.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CircuitBreakerSyntaxAsync.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CircuitBreakerTResultSyntax.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CircuitBreakerTResultSyntaxAsync.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CircuitBreaker\BrokenCircuitException.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CircuitBreaker\CircuitBreakerEngine.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CircuitBreaker\CircuitBreakerEngineAsync.cs" />
@@ -30,13 +34,18 @@
     <Compile Include="$(MSBuildThisFileDirectory)ContextualPolicy.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ContextualPolicyAsync.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ExceptionPredicate.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)OrSyntax.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DelegateResult.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Policy.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Policy.HandleSyntax.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PolicyAsync.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PolicyBuilder.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)PolicyBuilder.OrSyntax.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PolicyResult.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ResultPredicate.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)RetrySyntax.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)RetrySyntaxAsync.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)RetryTResultSyntax.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)RetryTResultSyntaxAsync.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Retry\IRetryPolicyStateAsync.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Retry\IRetryPolicyState.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Retry\RetryEngine.cs" />
@@ -53,6 +62,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Retry\RetryPolicyStateWithSleepDurationProviderAsync.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)AdvancedCircuitBreakerSyntax.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)AdvancedCircuitBreakerSyntaxAsync.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\EmptyStruct.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\ReadOnlyDictionary.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\SystemClock.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\TimedLock.cs" />

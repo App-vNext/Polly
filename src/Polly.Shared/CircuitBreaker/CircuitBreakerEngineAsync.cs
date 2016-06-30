@@ -10,7 +10,14 @@ namespace Polly.CircuitBreaker
 {
     internal partial class CircuitBreakerEngine
     {
-        internal static async Task ImplementationAsync(Func<CancellationToken, Task> action, Context context, IEnumerable<ExceptionPredicate> shouldHandlePredicates, ICircuitController breakerController, CancellationToken cancellationToken, bool continueOnCapturedContext)
+        internal static async Task<TResult> ImplementationAsync<TResult>(
+            Func<CancellationToken, Task<TResult>> action, 
+            Context context,
+            IEnumerable<ExceptionPredicate> shouldHandleExceptionPredicates, 
+            IEnumerable<ResultPredicate<TResult>> shouldHandleResultPredicates,
+            ICircuitController<TResult> breakerController,
+            CancellationToken cancellationToken, 
+            bool continueOnCapturedContext)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -18,9 +25,20 @@ namespace Polly.CircuitBreaker
 
             try
             {
-                await action(cancellationToken).ConfigureAwait(continueOnCapturedContext);
+                DelegateResult<TResult> delegateOutcome = new DelegateResult<TResult>(await action(cancellationToken).ConfigureAwait(continueOnCapturedContext));
 
-                breakerController.OnActionSuccess(context);
+                cancellationToken.ThrowIfCancellationRequested();
+
+                if (shouldHandleResultPredicates.Any(predicate => predicate(delegateOutcome.Result)))
+                {
+                    breakerController.OnActionFailure(delegateOutcome, context);
+                }
+                else
+                {
+                    breakerController.OnActionSuccess(context);
+                }
+
+                return delegateOutcome.Result;
             }
             catch (Exception ex)
             {
@@ -33,15 +51,16 @@ namespace Polly.CircuitBreaker
                     cancellationToken.ThrowIfCancellationRequested();
                 }
 
-                if (!shouldHandlePredicates.Any(predicate => predicate(ex)))
+                if (!shouldHandleExceptionPredicates.Any(predicate => predicate(ex)))
                 {
                     throw;
                 }
 
-                breakerController.OnActionFailure(ex, context);
+                breakerController.OnActionFailure(new DelegateResult<TResult>(ex), context);
 
                 throw;
             }
+
         }
 
     }

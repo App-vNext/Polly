@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -8,7 +7,7 @@ using FluentAssertions;
 using Polly.Specs.Helpers;
 using Xunit;
 
-using Scenario = Polly.Specs.Helpers.PolicyExtensions.ExceptionAndOrCancellationScenario;
+using Scenario = Polly.Specs.Helpers.PolicyExtensionsAsync.ExceptionAndOrCancellationScenario;
 
 namespace Polly.Specs
 {
@@ -340,6 +339,8 @@ namespace Polly.Specs
 
             retryInvoked.Should().BeFalse();
         }
+
+        #region Async and cancellation tests
 
         [Fact]
         public void Should_wait_asynchronously_for_async_onretry_delegate()
@@ -704,5 +705,6 @@ namespace Polly.Specs
             attemptsInvoked.Should().Be(1);
         }
 
+        #endregion
     }
 }

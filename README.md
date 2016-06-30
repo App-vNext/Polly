@@ -1,13 +1,13 @@
-Polly
-=
-Polly is a .NET 3.5 / 4.0 / 4.5 / PCL (Profile 259) library that allows developers to express transient exception and fault handling policies such as Retry, Retry Forever, Wait and Retry or Circuit Breaker in a fluent manner.
+# Polly
+
+Polly is a .NET 3.5 / 4.0 / 4.5 / PCL (Profile 259) library that allows developers to express transient exception- and fault-handling policies such as Retry, Retry Forever, Wait and Retry or Circuit Breaker in a fluent manner.
 
 [![NuGet version](https://badge.fury.io/nu/polly.svg)](https://badge.fury.io/nu/polly) [![Build status](https://ci.appveyor.com/api/projects/status/imt7dymt50346k5u?svg=true)](https://ci.appveyor.com/project/joelhulen/polly)
 
 ![](https://raw.github.com/App-vNext/Polly/master/Polly.png)
 
-Installing via NuGet
-=
+# Installing via NuGet
+
 
     Install-Package Polly
 
@@ -20,10 +20,10 @@ There are now .NET 4.0 Async versions (via Microsoft.Bcl.Async) of the signed an
     Install-Package Polly.Net40Async
     Install-Package Polly.Net40Async-Signed
 
-** **Please note:** The Polly.Net40Async package is only needed if you are targeting .NET 4.0 and need async capabilities. If you are targeting .NET 4.5 or greater, please use the standard Polly package.
+**Please note:** The Polly.Net40Async package is only needed if you are targeting .NET 4.0 and need async capabilities. If you are targeting .NET 4.5 or greater, please use the standard Polly package.
 
-Usage
-=
+# Usage
+
 ## Step 1 : Specify the type of exceptions you want the policy to handle ##
 
 ```csharp
@@ -46,7 +46,35 @@ Policy
   .Or<ArgumentException>(ex => ex.ParamName == "example")
 ```
 
-## Step 2 : Specify how the policy should handle those exceptions
+### Step 1b: (optionally) Specify return results you want to handle
+
+From Polly v4.3.0 onwards, policies wrapping calls returning a `TResult` can also handle `TResult` return values:
+
+```csharp
+// Handle return value with condition 
+Policy
+  .HandleResult<HttpResponse>(r => r.StatusCode == 404)
+
+// Handle multiple return values 
+Policy
+  .HandleResult<HttpResponse>(r => r.StatusCode == 500)
+  .OrResult<HttpResponse>(r => r.StatusCode == 502)
+
+// Handle primitive return values (implied use of .Equals())
+Policy
+  .HandleResult<HttpStatusCode>(HttpStatusCode.InternalServerError)
+  .OrResult<HttpStatusCode>(HttpStatusCode.BadGateway)
+ 
+// Handle both exceptions and return values in one policy
+int[] httpStatusCodesWorthRetrying = {408, 500, 502, 503, 504}; 
+HttpResponse result = Policy
+  .Handle<HttpException>()
+  .OrResult<HttpResponse>(r => httpStatusCodesWorthRetrying.Contains(r.StatusCode))
+```
+
+For more information, see Handling Return Values at foot of this readme. 
+
+## Step 2 : Specify how the policy should handle those faults
 
 ### Retry ###
 
@@ -308,7 +336,7 @@ Policy
         durationOfBreak: TimeSpan.FromSeconds(30) // Break for 30 seconds.
                 );
 
-// Configuration overloads taking stage-change delegates are
+// Configuration overloads taking state-change delegates are
 // available as described for CircuitBreaker above.
 
 // Circuit state monitoring and manual controls are
@@ -378,8 +406,8 @@ Policy
   .Execute(() => DoSomething());
 ```
 
-Post Execution Steps
-=
+# Post Execution Steps
+
 Using the `ExecuteAndCapture` method you can capture the result of executing a policy.
 
 ```csharp
@@ -395,8 +423,8 @@ policyResult.Result - if executing a func, the result if the call succeeded or t
 */
 ```
 
-Asynchronous Support (.NET 4.5, PCL and .NET4.0)
-=
+# Asynchronous Support (.NET 4.5, PCL and .NET4.0)
+
 You can use Polly with asynchronous functions by using the asynchronous methods
 
 * `RetryAsync`
@@ -458,17 +486,76 @@ var response = await policy.ExecuteAsync(ct => httpClient.GetAsync(uri, ct), can
 
 The .NET4.0 Async support uses `Microsoft.Bcl.Async` to add async support to a .NET4.0 package.  To minimise extra dependencies on the main Polly nuget package, the .NET4.0 async version is available as separate Nuget packages `Polly.Net40Async` and `Polly.Net40Async-signed`.
 
+# Handing return values, and Policy&lt;TResult&gt;
 
-3rd Party Libraries
-=
+As described at step 1b, from Polly v4.3.0 onwards, policies can handle return values and exceptions in combination: 
+
+```csharp
+// Handle both exceptions and return values in one policy
+int[] httpStatusCodesWorthRetrying = {408, 500, 502, 503, 504}; 
+HttpResponse result = Policy
+  .Handle<HttpException>()
+  .OrResult<HttpResponse>(r => httpStatusCodesWorthRetrying.Contains(r.StatusCode))
+  .Retry(...)
+  .Execute( /* some Func<HttpResponse> */ )
+```
+
+The exceptions and return results to handle can be expressed fluently in any order.
+
+### Strongly-typed Policy&lt;TResult&gt;
+
+Configuring a policy with `.HandleResult<TResult>(...)` or `.OrResult<TResult>(...)` generates a strongly-typed `Policy<TResult>` of the specific policy type, eg `Retry<TResult>`, `AdvancedCircuitBreaker<TResult>`.
+
+These policies must be used to execute delegates returning `TResult`, ie:
+
+* `Execute(Func<TResult>)` (and related overloads)
+* `ExecuteAsync(Func<CancellationToken, Task<TResult>>)` (and related overloads)  
+
+### ExecuteAndCapture&lt;TResult&gt;()
+
+`.ExecuteAndCapture(...)` on non-generic policies returns a `PolicyResult` with properties:
+
+```          
+policyResult.Outcome - whether the call succeeded or failed         
+policyResult.FinalException - the final exception captured; will be null if the call succeeded
+policyResult.ExceptionType - was the final exception an exception the policy was defined to handle (like DivideByZeroException above) or an unhandled one (say Exception)? Will be null if the call succeeded.
+policyResult.Result - if executing a func, the result if the call succeeded or the type's default value
+```
+
+`.ExecuteAndCapture<TResult>(Func<TResult>)` on strongly-typed policies adds two properties:
+
+```
+policyResult.FaultType - was the final fault handled an exception or a result handled by the policy? Will be null if the delegate execution succeeded. 
+policyResult.FinalHandledResult - the final result handled; will be null if the call succeeded or the type's default value
+```
+
+### State-change delegates on Policy&lt;TResult&gt; policies
+
+In non-generic policies handling only exceptions, state-change delegates such as `onRetry` and `onBreak` take an `Exception` parameter.  
+
+In generic-policies handling `TResult` return values, state-change delegates are identical except they take a `DelegateResult<TResult>` parameter in place of `Exception.` `DelegateResult<TResult>` has two properties:
+
+* `Exception // The exception just thrown if policy is in process of handling an exception (otherwise null)`
+* `Result // The TResult just raised, if policy is in process of handling a result (otherwise default(TResult))`
+   
+
+### BrokenCircuitException&lt;TResult&gt;
+
+Non-generic CircuitBreaker policies throw a `BrokenCircuitException` when the circuit is broken.  This `BrokenCircuitException` contains the last exception (the one which caused the circuit to break) as the `InnerException`.
+
+For `CircuitBreakerPolicy<TResult>` policies: 
+
+* A circuit broken due to an exception throws a `BrokenCircuitException` with `InnerException` set to the exception which triggered the break (as previously).
+* A circuit broken due to handling a result throws a `BrokenCircuitException<TResult>` with the `Result` property set to the result which caused the circuit to break.
+
+# 3rd Party Libraries
 
 * [Fluent Assertions](https://github.com/dennisdoomen/fluentassertions) - A set of .NET extension methods that allow you to more naturally specify the expected outcome of a TDD or BDD-style test | [Apache License 2.0 (Apache)](https://github.com/dennisdoomen/fluentassertions/blob/develop/LICENSE)
 * [xUnit.net](https://github.com/xunit/xunit) - Free, open source, community-focused unit testing tool for the .NET Framework | [Apache License 2.0 (Apache)](https://github.com/xunit/xunit/blob/master/license.txt)
 * [Ian Griffith's TimedLock] (http://www.interact-sw.co.uk/iangblog/2004/04/26/yetmoretimedlocking)
 * [Steven van Deursen's ReadOnlyDictionary] (http://www.cuttingedge.it/blogs/steven/pivot/entry.php?id=29)
 
-Acknowledgements
-=
+# Acknowledgements
 
 * [lokad-shared-libraries](https://github.com/Lokad/lokad-shared-libraries) - Helper assemblies for .NET 3.5 and Silverlight 2.0 that are being developed as part of the Open Source effort by Lokad.com (discontinued) | [New BSD License](https://raw.github.com/Lokad/lokad-shared-libraries/master/Lokad.Shared.License.txt)
 * [@michael-wolfenden](https://github.com/michael-wolfenden) - The creator and mastermind of Polly!
@@ -487,15 +574,18 @@ Acknowledgements
 * [@reisenberger](https://github.com/reisenberger) - Allowed async onRetry delegates to async retry policies
 * [@Lumirris](https://github.com/Lumirris) - Add new Polly.Net40Async project/package supporting async for .NET40 via Microsoft.Bcl.Async
 * [@SteveCote](https://github.com/SteveCote) - Added overloads to WaitAndRetry and WaitAndRetryAsync methods that accept an onRetry delegate which includes the attempt count.
+* [@reisenberger](https://github.com/reisenberger) - Allowed policies to handle returned results; added strongly-typed policies Policy&lt;TResult&gt;;.
+* [@christopherbahr](https://github.com/christopherbahr) - Added optimisation for circuit-breaker hot path.
+* [@Finity](https://github.com/Finity) - Fixed circuit-breaker threshold bug.
 
-Sample Projects
-=
+# Sample Projects
+
 [Polly-Samples](https://github.com/App-vNext/Polly-Samples) contains practical examples for using various implementations of Polly. Please feel free to contribute to the Polly-Samples repository in order to assist others who are either learning Polly for the first time, or are seeking advanced examples and novel approaches provided by our generous community.
 
-Instructions for Contributing
-=
+# Instructions for Contributing
+
 Please check out our [Wiki](https://github.com/App-vNext/Polly/wiki/Git-Workflow) for contributing guidelines. We are following the excellent GitHub Flow process, and would like to make sure you have all of the information needed to be a world-class contributor!
 
-License
-=
+# License
+
 Licensed under the terms of the [New BSD License](http://opensource.org/licenses/BSD-3-Clause)

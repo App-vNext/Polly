@@ -6,23 +6,38 @@ namespace Polly.CircuitBreaker
 {
     internal partial class CircuitBreakerEngine
     {
-        internal static void Implementation(Action action, Context context, IEnumerable<ExceptionPredicate> shouldHandlePredicates, ICircuitController breakerController)
+        internal static TResult Implementation<TResult>(
+            Func<TResult> action,
+            Context context,
+            IEnumerable<ExceptionPredicate> shouldHandleExceptionPredicates, 
+            IEnumerable<ResultPredicate<TResult>> shouldHandleResultPredicates, 
+            ICircuitController<TResult> breakerController)
         {
             breakerController.OnActionPreExecute();
 
             try
             {
-                action();
-                breakerController.OnActionSuccess(context);
+                DelegateResult<TResult> delegateOutcome = new DelegateResult<TResult>(action());
+
+                if (shouldHandleResultPredicates.Any(predicate => predicate(delegateOutcome.Result)))
+                {
+                    breakerController.OnActionFailure(delegateOutcome, context);
+                }
+                else
+                {
+                    breakerController.OnActionSuccess(context);
+                }
+
+                return delegateOutcome.Result;
             }
             catch (Exception ex)
             {
-                if (!shouldHandlePredicates.Any(predicate => predicate(ex)))
+                if (!shouldHandleExceptionPredicates.Any(predicate => predicate(ex)))
                 {
                     throw;
                 }
 
-                breakerController.OnActionFailure(ex, context);
+                breakerController.OnActionFailure(new DelegateResult<TResult>(ex), context);
 
                 throw;
             }

@@ -1,22 +1,24 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using Polly.Utilities;
 
 namespace Polly.CircuitBreaker
 {
-    internal abstract class CircuitStateController : ICircuitController
+    internal abstract class CircuitStateController<TResult> : ICircuitController<TResult>
     {
         protected readonly TimeSpan _durationOfBreak;
         protected DateTime _blockedTill;
         protected CircuitState _circuitState;
-        protected Exception _lastException;
-        protected readonly Action<Exception, TimeSpan, Context> _onBreak;
+        protected DelegateResult<TResult> _lastOutcome;
+        protected readonly Action<DelegateResult<TResult>, TimeSpan, Context> _onBreak;
         protected readonly Action<Context> _onReset;
         protected readonly Action _onHalfOpen;
         protected readonly object _lock = new object();
 
-        protected CircuitStateController(TimeSpan durationOfBreak, Action<Exception, TimeSpan, Context> onBreak, Action<Context> onReset, Action onHalfOpen)
+        protected CircuitStateController(
+            TimeSpan durationOfBreak, 
+            Action<DelegateResult<TResult>, TimeSpan, Context> onBreak, 
+            Action<Context> onReset, 
+            Action onHalfOpen)
         {
             _durationOfBreak = durationOfBreak;
             _onBreak = onBreak;
@@ -31,6 +33,11 @@ namespace Polly.CircuitBreaker
         {
             get
             {
+                if (_circuitState != CircuitState.Open)
+                {
+                    return _circuitState;
+                }
+
                 using (TimedLock.Lock(_lock))
                 {
                     if (_circuitState == CircuitState.Open && !IsInAutomatedBreak_NeedsLock)
@@ -49,7 +56,18 @@ namespace Polly.CircuitBreaker
             {
                 using (TimedLock.Lock(_lock))
                 {
-                    return _lastException;
+                    return _lastOutcome.Exception;
+                }
+            }
+        }
+
+        public TResult LastHandledResult
+        {
+            get
+            {
+                using (TimedLock.Lock(_lock))
+                {
+                    return _lastOutcome.Result;
                 }
             }
         }
@@ -66,7 +84,7 @@ namespace Polly.CircuitBreaker
         {
             using (TimedLock.Lock(_lock))
             {
-                _lastException = new IsolatedCircuitException("The circuit is manually held open and is not allowing calls.");
+                _lastOutcome = new DelegateResult<TResult>(new IsolatedCircuitException("The circuit is manually held open and is not allowing calls."));
                 BreakFor_NeedsLock(TimeSpan.MaxValue, Context.Empty);
                 _circuitState = CircuitState.Isolated;
             }
@@ -85,7 +103,7 @@ namespace Polly.CircuitBreaker
                 : SystemClock.UtcNow() + durationOfBreak;
             _circuitState = CircuitState.Open;
 
-            _onBreak(_lastException, durationOfBreak, context ?? Context.Empty);
+            _onBreak(_lastOutcome, durationOfBreak, context ?? Context.Empty);
         }
 
         public void Reset()
@@ -96,7 +114,7 @@ namespace Polly.CircuitBreaker
         protected void ResetInternal_NeedsLock(Context context)
         {
             _blockedTill = DateTime.MinValue;
-            _lastException = new InvalidOperationException("This exception should never be thrown");
+            _lastOutcome = new DelegateResult<TResult>(new InvalidOperationException("This exception should never be thrown"));
 
             CircuitState priorState = _circuitState;
             _circuitState = CircuitState.Closed;
@@ -108,26 +126,25 @@ namespace Polly.CircuitBreaker
 
         public void OnActionPreExecute()
         {
-            using (TimedLock.Lock(_lock))
+            switch (CircuitState)
             {
-                switch (CircuitState)
-                {
-                    case CircuitState.Closed:
-                    case CircuitState.HalfOpen:
-                        break;
-                    case CircuitState.Open:
-                        throw new BrokenCircuitException("The circuit is now open and is not allowing calls.", _lastException);
-                    case CircuitState.Isolated:
-                        throw new IsolatedCircuitException("The circuit is manually held open and is not allowing calls.");
-                    default:
-                        throw new InvalidOperationException("Unhandled CircuitState.");
-                }
+                case CircuitState.Closed:
+                case CircuitState.HalfOpen:
+                    break;
+                case CircuitState.Open:
+                    throw _lastOutcome.Exception != null
+                        ? new BrokenCircuitException("The circuit is now open and is not allowing calls.", _lastOutcome.Exception)
+                        : new BrokenCircuitException<TResult>("The circuit is now open and is not allowing calls.", _lastOutcome.Result);
+                case CircuitState.Isolated:
+                    throw new IsolatedCircuitException("The circuit is manually held open and is not allowing calls.");
+                default:
+                    throw new InvalidOperationException("Unhandled CircuitState.");
             }
         }
 
         public abstract void OnActionSuccess(Context context);
 
-        public abstract void OnActionFailure(Exception ex, Context context);
+        public abstract void OnActionFailure(DelegateResult<TResult> outcome, Context context);
 
         public abstract void OnCircuitReset(Context context);
     }

@@ -62,13 +62,23 @@ namespace Polly
         private readonly OutcomeType _outcome;
         private readonly Exception _finalException;
         private readonly ExceptionType? _exceptionType;
+        private readonly TResult _finalHandledResult;
+        private readonly FaultType? _faultType;
 
         internal PolicyResult(TResult result, OutcomeType outcome, Exception finalException, ExceptionType? exceptionType)
+            : this(result, outcome, finalException, exceptionType, default(TResult), null)
+        {
+
+        }
+
+        internal PolicyResult(TResult result, OutcomeType outcome, Exception finalException, ExceptionType? exceptionType, TResult finalHandledResult, FaultType? faultType)
         {
             _result = result;
             _outcome = outcome;
             _finalException = finalException;
             _exceptionType = exceptionType;
+            _finalHandledResult = finalHandledResult;
+            _faultType = faultType;
         }
 
         /// <summary>
@@ -80,7 +90,7 @@ namespace Polly
         }
 
         /// <summary>
-        ///  The final exception captured. Will be null if policy executed successfully
+        ///  The final exception captured. Will be null if policy executed without exception.
         /// </summary>
         public Exception FinalException
         {
@@ -96,11 +106,27 @@ namespace Polly
         }
 
         /// <summary>
-        /// The result of executing the policy. Will be default(TResult) is the policy failed
+        /// The result of executing the policy. Will be default(TResult) if the policy failed
         /// </summary>
         public TResult Result
         {
             get { return _result; }
+        }
+
+        /// <summary>
+        /// The final handled result captured. Will be default(TResult) if the policy executed successfully, or terminated with an exception.
+        /// </summary>
+        public TResult FinalHandledResult
+        {
+            get { return _finalHandledResult; }
+        }
+
+        /// <summary>
+        ///  The fault type of the final fault captured. Will be null if policy executed successfully
+        /// </summary>
+        public FaultType? FaultType
+        {
+            get { return _faultType; }
         }
 
         internal static PolicyResult<TResult> Successful(TResult result)
@@ -110,7 +136,12 @@ namespace Polly
 
         internal static PolicyResult<TResult> Failure(Exception exception, ExceptionType exceptionType)
         {
-            return new PolicyResult<TResult>(default(TResult), OutcomeType.Failure, exception, exceptionType);
+            return new PolicyResult<TResult>(default(TResult), OutcomeType.Failure, exception, exceptionType, default(TResult), exceptionType == Polly.ExceptionType.HandledByThisPolicy ? Polly.FaultType.ExceptionHandledByThisPolicy : Polly.FaultType.UnhandledException);
+        }
+
+        internal static PolicyResult<TResult> Failure(TResult handledResult)
+        {
+            return new PolicyResult<TResult>(default(TResult), OutcomeType.Failure, null, null, handledResult, Polly.FaultType.ResultHandledByThisPolicy);
         }
     }
 
@@ -144,5 +175,26 @@ namespace Polly
         /// An exception type that has been not been defined to be handled by this policy
         /// </summary>
         Unhandled
+    }
+
+    /// <summary>
+    /// Represents the type of outcome from a failed policy
+    /// </summary>
+    public enum FaultType
+    {
+        /// <summary>
+        /// An exception type that has been defined to be handled by this policy
+        /// </summary>
+        ExceptionHandledByThisPolicy,
+
+        /// <summary>
+        /// An exception type that has been not been defined to be handled by this policy
+        /// </summary>
+        UnhandledException,
+
+        /// <summary>
+        /// A result value that has been defined to be handled by this policy
+        /// </summary>
+        ResultHandledByThisPolicy
     }
 }

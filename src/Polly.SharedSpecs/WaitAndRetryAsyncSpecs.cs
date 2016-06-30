@@ -9,7 +9,7 @@ using Polly.Specs.Helpers;
 using Polly.Utilities;
 using Xunit;
 
-using Scenario = Polly.Specs.Helpers.PolicyExtensions.ExceptionAndOrCancellationScenario;
+using Scenario = Polly.Specs.Helpers.PolicyExtensionsAsync.ExceptionAndOrCancellationScenario;
 
 namespace Polly.Specs
 {
@@ -860,7 +860,7 @@ namespace Polly.Specs
 
             SystemClock.SleepAsync = Task.Delay;
 
-            TimeSpan shimTimeSpan = TimeSpan.FromSeconds(0.2); // Consider increasing shimTimeSpan if test fails transiently in different environments.
+            TimeSpan shimTimeSpan = TimeSpan.FromSeconds(0.4); // Consider increasing shimTimeSpan if test fails transiently in different environments.
             TimeSpan retryDelay = shimTimeSpan + shimTimeSpan + shimTimeSpan;
 
             var policy = Policy

@@ -3,12 +3,18 @@ using Polly.Utilities;
 
 namespace Polly.CircuitBreaker
 {
-    internal class ConsecutiveCountCircuitController : CircuitStateController
+    internal class ConsecutiveCountCircuitController<TResult> : CircuitStateController<TResult>
     {
         private readonly int _exceptionsAllowedBeforeBreaking;
         private int _count;
 
-        public ConsecutiveCountCircuitController(int exceptionsAllowedBeforeBreaking, TimeSpan durationOfBreak, Action<Exception, TimeSpan, Context> onBreak, Action<Context> onReset, Action onHalfOpen) : base(durationOfBreak, onBreak, onReset, onHalfOpen)
+        public ConsecutiveCountCircuitController(
+            int exceptionsAllowedBeforeBreaking, 
+            TimeSpan durationOfBreak, 
+            Action<DelegateResult<TResult>, TimeSpan, Context> onBreak, 
+            Action<Context> onReset, 
+            Action onHalfOpen
+            ) : base(durationOfBreak, onBreak, onReset, onHalfOpen)
         {
             _exceptionsAllowedBeforeBreaking = exceptionsAllowedBeforeBreaking;
         }
@@ -27,15 +33,23 @@ namespace Polly.CircuitBreaker
         {
             using (TimedLock.Lock(_lock))
             {
-                if (_circuitState == CircuitState.HalfOpen) { OnCircuitReset(context); }
+                switch (_circuitState)
+                {
+                    case CircuitState.HalfOpen:
+                        OnCircuitReset(context);
+                        break;
+                    case CircuitState.Closed:
+                        _count = 0;
+                        break;
+                }
             }
         }
 
-        public override void OnActionFailure(Exception ex, Context context)
+        public override void OnActionFailure(DelegateResult<TResult> outcome, Context context)
         {
             using (TimedLock.Lock(_lock))
             {
-                _lastException = ex;
+                _lastOutcome = outcome;
 
                 if (_circuitState == CircuitState.HalfOpen)
                 {

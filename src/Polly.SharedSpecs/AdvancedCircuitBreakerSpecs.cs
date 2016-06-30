@@ -200,7 +200,7 @@ namespace Polly.Specs
         }
 
         [Fact]
-        public void Should_not_open_circuit_if_exceptions_raised_are_not_one_of_the_the_specified_exceptions()
+        public void Should_not_open_circuit_if_exceptions_raised_are_not_one_of_the_specified_exceptions()
         {
             var time = 1.January(2000);
             SystemClock.UtcNow = () => time;
@@ -244,7 +244,7 @@ namespace Polly.Specs
         // These provide easy values for testing for failure and throughput thresholds each being met and non-met, in combination.
 
         [Fact]
-        public void Should_open_circuit_with_the_last_raised_exception_if_failure_threshold_exceeded_and_throughput_threshold_equalled_within_timeslice_in_same_window()
+        public void Should_open_circuit_blocking_executions_and_noting_the_last_raised_exception_if_failure_threshold_exceeded_and_throughput_threshold_equalled_within_timeslice_in_same_window()
         {
             var time = 1.January(2000);
             SystemClock.UtcNow = () => time;
@@ -277,11 +277,13 @@ namespace Polly.Specs
                 .ShouldThrow<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
-            breaker.Invoking(x => x.RaiseException<DivideByZeroException>())
+            bool delegateExecutedWhenBroken = false;
+            breaker.Invoking(x => x.Execute(() => delegateExecutedWhenBroken = true))
                 .ShouldThrow<BrokenCircuitException>()
                 .WithMessage("The circuit is now open and is not allowing calls.")
                 .WithInnerException<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Open);
+            delegateExecutedWhenBroken.Should().BeFalse();
 
         }
 
@@ -1471,9 +1473,11 @@ namespace Polly.Specs
             breaker.CircuitState.Should().Be(CircuitState.Isolated);
 
             // circuit manually broken: execution should be blocked; even non-exception-throwing executions should not reset circuit
-            breaker.Invoking(x => x.Execute(() => { }))
+            bool delegateExecutedWhenBroken = false;
+            breaker.Invoking(x => x.Execute(() => delegateExecutedWhenBroken = true))
                 .ShouldThrow<IsolatedCircuitException>();
             breaker.CircuitState.Should().Be(CircuitState.Isolated);
+            delegateExecutedWhenBroken.Should().BeFalse();
         }
 
         [Fact]
@@ -1493,8 +1497,11 @@ namespace Polly.Specs
 
             SystemClock.UtcNow = () => time.Add(durationOfBreak);
             breaker.CircuitState.Should().Be(CircuitState.Isolated);
-            breaker.Invoking(x => x.Execute(() => { }))
+
+            bool delegateExecutedWhenBroken = false;
+            breaker.Invoking(x => x.Execute(() => delegateExecutedWhenBroken = true))
                 .ShouldThrow<IsolatedCircuitException>();
+            delegateExecutedWhenBroken.Should().BeFalse();
         }
 
         [Fact]
@@ -1925,6 +1932,117 @@ namespace Polly.Specs
             breaker.CircuitState.Should().Be(CircuitState.Closed);
             breaker.Invoking(x => x.Execute(() => { })).ShouldNotThrow();
         }
+
+        #region Tests of supplied parameters to onBreak delegate
+
+        [Fact]
+        public void Should_call_onbreak_with_the_last_raised_exception()
+        {
+            Exception passedException = null;
+
+            Action<Exception, TimeSpan, Context> onBreak = (exception, _, __) => { passedException = exception; };
+            Action<Context> onReset = _ => { };
+
+            CircuitBreakerPolicy breaker = Policy
+                .Handle<DivideByZeroException>()
+                .AdvancedCircuitBreaker(
+                    failureThreshold: 0.5,
+                    samplingDuration: TimeSpan.FromSeconds(10),
+                    minimumThroughput: 4,
+                    durationOfBreak: TimeSpan.FromSeconds(30),
+                    onBreak: onBreak,
+                    onReset: onReset
+                );
+
+            breaker.Invoking(x => x.RaiseException<DivideByZeroException>())
+                .ShouldThrow<DivideByZeroException>();
+            breaker.CircuitState.Should().Be(CircuitState.Closed);
+
+            breaker.Invoking(x => x.RaiseException<DivideByZeroException>())
+                .ShouldThrow<DivideByZeroException>();
+            breaker.CircuitState.Should().Be(CircuitState.Closed);
+
+            breaker.Invoking(x => x.RaiseException<DivideByZeroException>())
+                .ShouldThrow<DivideByZeroException>();
+            breaker.CircuitState.Should().Be(CircuitState.Closed);
+
+            breaker.Invoking(x => x.RaiseException<DivideByZeroException>())
+                .ShouldThrow<DivideByZeroException>();
+            breaker.CircuitState.Should().Be(CircuitState.Open);
+
+            passedException?.Should().BeOfType<DivideByZeroException>();
+        }
+
+        [Fact]
+        public void Should_call_onbreak_with_the_correct_timespan()
+        {
+            TimeSpan? passedBreakTimespan = null;
+
+            Action<Exception, TimeSpan, Context> onBreak = (_, timespan, __) => { passedBreakTimespan = timespan; };
+            Action<Context> onReset = _ => { };
+
+            TimeSpan durationOfBreak = TimeSpan.FromSeconds(30);
+
+            CircuitBreakerPolicy breaker = Policy
+                .Handle<DivideByZeroException>()
+                .AdvancedCircuitBreaker(
+                    failureThreshold: 0.5,
+                    samplingDuration: TimeSpan.FromSeconds(10),
+                    minimumThroughput: 4,
+                    durationOfBreak: durationOfBreak,
+                    onBreak: onBreak,
+                    onReset: onReset
+                );
+
+            breaker.Invoking(x => x.RaiseException<DivideByZeroException>())
+                .ShouldThrow<DivideByZeroException>();
+            breaker.CircuitState.Should().Be(CircuitState.Closed);
+
+            breaker.Invoking(x => x.RaiseException<DivideByZeroException>())
+                .ShouldThrow<DivideByZeroException>();
+            breaker.CircuitState.Should().Be(CircuitState.Closed);
+
+            breaker.Invoking(x => x.RaiseException<DivideByZeroException>())
+                .ShouldThrow<DivideByZeroException>();
+            breaker.CircuitState.Should().Be(CircuitState.Closed);
+
+            breaker.Invoking(x => x.RaiseException<DivideByZeroException>())
+                .ShouldThrow<DivideByZeroException>();
+            breaker.CircuitState.Should().Be(CircuitState.Open);
+
+            passedBreakTimespan.Should().Be(durationOfBreak);
+        }
+
+        [Fact]
+        public void Should_open_circuit_with_timespan_maxvalue_if_manual_override_open()
+        {
+            TimeSpan? passedBreakTimespan = null;
+            Action<Exception, TimeSpan, Context> onBreak = (_, timespan, __) => { passedBreakTimespan = timespan; };
+            Action<Context> onReset = _ => { };
+
+            var time = 1.January(2000);
+            SystemClock.UtcNow = () => time;
+            
+            CircuitBreakerPolicy breaker = Policy
+                .Handle<DivideByZeroException>()
+                .AdvancedCircuitBreaker(
+                    failureThreshold: 0.5,
+                    samplingDuration: TimeSpan.FromSeconds(10),
+                    minimumThroughput: 4,
+                    durationOfBreak: TimeSpan.FromSeconds(30),
+                    onBreak: onBreak,
+                    onReset: onReset
+                );
+            breaker.CircuitState.Should().Be(CircuitState.Closed);
+
+            // manually break circuit
+            breaker.Isolate();
+            breaker.CircuitState.Should().Be(CircuitState.Isolated);
+
+            passedBreakTimespan.Should().Be(TimeSpan.MaxValue);
+        }
+
+        #endregion
 
         #region Tests that supplied context is passed to stage-change delegates
 
