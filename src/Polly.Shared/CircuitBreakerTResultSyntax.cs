@@ -10,8 +10,8 @@ namespace Polly
     {
         /// <summary>
         /// <para> Builds a <see cref="Policy"/> that will function like a Circuit Breaker.</para>
-        /// <para>The circuit will break after <paramref name="handledEventsAllowedBeforeBreaking"/>
-        /// exceptions or results that are handled by this policy are encountered. </para>
+        /// <para>The circuit will break if <paramref name="handledEventsAllowedBeforeBreaking"/>
+        /// exceptions or results that are handled by this policy are encountered consecutively. </para>
         /// <para>The circuit will stay broken for the <paramref name="durationOfBreak"/>. Any attempt to execute this policy
         /// while the circuit is broken, will immediately throw a <see cref="BrokenCircuitException"/> containing the exception or result 
         /// that broke the circuit.
@@ -43,8 +43,8 @@ namespace Polly
 
         /// <summary>
         /// <para> Builds a <see cref="Policy"/> that will function like a Circuit Breaker.</para>
-        /// <para>The circuit will break after <paramref name="handledEventsAllowedBeforeBreaking"/>
-        /// exceptions or results that are handled by this policy are encountered. </para>
+        /// <para>The circuit will break if <paramref name="handledEventsAllowedBeforeBreaking"/>
+        /// exceptions or results that are handled by this policy are encountered consecutively. </para>
         /// <para>The circuit will stay broken for the <paramref name="durationOfBreak"/>. Any attempt to execute this policy
         /// while the circuit is broken, will immediately throw a <see cref="BrokenCircuitException"/> containing the exception or result 
         /// that broke the circuit.
@@ -75,8 +75,8 @@ namespace Polly
 
         /// <summary>
         /// <para> Builds a <see cref="Policy"/> that will function like a Circuit Breaker.</para>
-        /// <para>The circuit will break after <paramref name="handledEventsAllowedBeforeBreaking"/>
-        /// exceptions or results that are handled by this policy are encountered. </para>
+        /// <para>The circuit will break if <paramref name="handledEventsAllowedBeforeBreaking"/>
+        /// exceptions or results that are handled by this policy are encountered consecutively. </para>
         /// <para>The circuit will stay broken for the <paramref name="durationOfBreak"/>. Any attempt to execute this policy
         /// while the circuit is broken, will immediately throw a <see cref="BrokenCircuitException"/> containing the exception or result 
         /// that broke the circuit.
@@ -108,8 +108,8 @@ namespace Polly
 
         /// <summary>
         /// <para> Builds a <see cref="Policy"/> that will function like a Circuit Breaker.</para>
-        /// <para>The circuit will break after <paramref name="handledEventsAllowedBeforeBreaking"/>
-        /// exceptions or results that are handled by this policy are encountered. </para>
+        /// <para>The circuit will break if <paramref name="handledEventsAllowedBeforeBreaking"/>
+        /// exceptions or results that are handled by this policy are encountered consecutively. </para>
         /// <para>The circuit will stay broken for the <paramref name="durationOfBreak"/>. Any attempt to execute this policy
         /// while the circuit is broken, will immediately throw a <see cref="BrokenCircuitException"/> containing the exception or result 
         /// that broke the circuit.
@@ -142,8 +142,8 @@ namespace Polly
 
         /// <summary>
         /// <para> Builds a <see cref="Policy"/> that will function like a Circuit Breaker.</para>
-        /// <para>The circuit will break after <paramref name="handledEventsAllowedBeforeBreaking"/>
-        /// exceptions or results that are handled by this policy are encountered. </para>
+        /// <para>The circuit will break if <paramref name="handledEventsAllowedBeforeBreaking"/>
+        /// exceptions or results that are handled by this policy are encountered consecutively. </para>
         /// <para>The circuit will stay broken for the <paramref name="durationOfBreak"/>. Any attempt to execute this policy
         /// while the circuit is broken, will immediately throw a <see cref="BrokenCircuitException"/> containing the exception or result 
         /// that broke the circuit.

@@ -276,13 +276,13 @@ For further information on the operation of retry policies, see also the [wiki](
 
 ### Circuit Breaker ###
 ```csharp
-// Break the circuit after the specified number of exceptions
+// Break the circuit after the specified number of consecutive exceptions
 // and keep circuit broken for the specified duration.
 Policy
     .Handle<DivideByZeroException>()
     .CircuitBreaker(2, TimeSpan.FromMinutes(1));
 
-// Break the circuit after the specified number of exceptions
+// Break the circuit after the specified number of consecutive exceptions
 // and keep circuit broken for the specified duration,
 // calling an action on change of circuit state.
 Action<Exception, TimeSpan> onBreak = (exception, timespan) => { ... };
@@ -291,7 +291,7 @@ CircuitBreakerPolicy breaker = Policy
     .Handle<DivideByZeroException>()
     .CircuitBreaker(2, TimeSpan.FromMinutes(1), onBreak, onReset);
 
-// Break the circuit after the specified number of exceptions
+// Break the circuit after the specified number of consecutive exceptions
 // and keep circuit broken for the specified duration,
 // calling an action on change of circuit state,
 // passing a context provided to Execute().
