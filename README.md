@@ -428,7 +428,7 @@ policyResult.Result - if executing a func, the result if the call succeeded or t
 
 The existing policies (retry and circuit-breaker) are fully thread-safe, and the intention is that the forthcoming wider resilience policies will be thread-safe too. 
 
-While the internal operation of the policy is thread-safe, but this does not magically make delegates you execute through the policy thread-safe: if delegates you execute through the policy are not thread-safe, they remain not thread-safe.
+While the internal operation of the policy is thread-safe, this does not magically make delegates you execute through the policy thread-safe: if delegates you execute through the policy are not thread-safe, they remain not thread-safe.
 
 
 # Asynchronous Support (.NET 4.5, PCL and .NET4.0)
