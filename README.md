@@ -1,6 +1,6 @@
 # Polly
 
-Polly is a .NET 3.5 / 4.0 / 4.5 / PCL (Profile 259) library that allows developers to express transient exception- and fault-handling policies such as Retry, Retry Forever, Wait and Retry or Circuit Breaker in a fluent manner.
+Polly is a .NET 3.5 / 4.0 / 4.5 / PCL (Profile 259) library that allows developers to express transient exception- and fault-handling policies such as Retry, Retry Forever, Wait and Retry or Circuit Breaker in a fluent and thread-safe manner.
 
 [![NuGet version](https://badge.fury.io/nu/polly.svg)](https://badge.fury.io/nu/polly) [![Build status](https://ci.appveyor.com/api/projects/status/imt7dymt50346k5u?svg=true)](https://ci.appveyor.com/project/joelhulen/polly)
 
@@ -422,6 +422,14 @@ policyResult.ExceptionType - was the final exception an exception the policy was
 policyResult.Result - if executing a func, the result if the call succeeded or the type's default value
 */
 ```
+
+
+# Thread safety
+
+The existing policies (retry and circuit-breaker) are fully thread-safe, and the intention is that the forthcoming wider resilience policies will be thread-safe too. 
+
+While the internal operation of the policy is thread-safe, but this does not magically make delegates you execute through the policy thread-safe: if delegates you execute through the policy are not thread-safe, they remain not thread-safe.
+
 
 # Asynchronous Support (.NET 4.5, PCL and .NET4.0)
 
