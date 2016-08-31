@@ -1,6 +1,6 @@
 ﻿namespace Polly.CircuitBreaker
 {
-    internal class HealthCount
+    internal class HealthCount : IHealthCount
     {
         public int Successes { get; set; }
 

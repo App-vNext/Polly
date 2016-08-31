@@ -19,6 +19,14 @@ namespace Polly.CircuitBreaker
             _exceptionsAllowedBeforeBreaking = exceptionsAllowedBeforeBreaking;
         }
 
+        public override HealthCount HealthCount
+        {
+            get
+            {
+                return new HealthCount() { Failures = _count };
+            }
+        }
+
         public override void OnCircuitReset(Context context)
         {
             using (TimedLock.Lock(_lock))

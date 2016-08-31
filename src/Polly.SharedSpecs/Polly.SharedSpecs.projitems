@@ -9,6 +9,8 @@
     <Import_RootNamespace>Polly.SharedSpecs</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)CollectMetricsSpec.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)WeakDictionarySpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CircuitBreakerAsyncSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)AdvancedCircuitBreakerSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CircuitBreakerSpecs.cs" />

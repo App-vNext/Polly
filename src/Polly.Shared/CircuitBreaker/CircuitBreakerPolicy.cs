@@ -29,6 +29,14 @@ namespace Polly.CircuitBreaker
         }
 
         /// <summary>
+        /// Gets the state of the underlying circuit.
+        /// </summary>
+        public IHealthCount HealthCount
+        {
+            get { return _breakerController.HealthCount; }
+        }
+
+        /// <summary>
         /// Gets the last exception handled by the circuit-breaker.
         /// </summary>
         public Exception LastException

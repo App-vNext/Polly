@@ -151,6 +151,16 @@ namespace Polly.Specs
             breaker.CircuitState.Should().Be(CircuitState.Closed);
         }
 
+        [Fact]
+        public void Should_return_health_count()
+        {
+            CircuitBreakerPolicy breaker = Policy
+                .Handle<DivideByZeroException>()
+                .AdvancedCircuitBreaker(0.5, TimeSpan.FromSeconds(10), 4, TimeSpan.FromSeconds(30));
+
+            breaker.HealthCount.StartedAt.Should().BeGreaterThan(0);
+        }
+
         #endregion
 
         #region Circuit-breaker threshold-to-break tests
