@@ -4,7 +4,7 @@
     <owners>App vNext</owners>
     <authors>Michael Wolfenden, App vNext</authors>
     <description>
-      Polly is a .NET 3.5 / 4.0 / 4.5 / PCL library (Profile 259) that allows developers to express transient exception and fault handling policies such as Retry, Retry Forever, Wait and Retry or Circuit Breaker in a fluent manner.
+      Polly is a .NET 4.0 / 4.5 / PCL library (Profile 259) that allows developers to express transient exception and fault handling policies such as Retry, Retry Forever, Wait and Retry or Circuit Breaker in a fluent manner.
     </description>
     <language>en-US</language>
     <licenseUrl>https://raw.github.com/App-vNext/Polly/master/LICENSE.txt</licenseUrl>
