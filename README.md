@@ -1,6 +1,6 @@
 # Polly
 
-Polly is a .NET 3.5 / 4.0 / 4.5 / PCL (Profile 259) library that allows developers to express transient exception- and fault-handling policies such as Retry, Retry Forever, Wait and Retry or Circuit Breaker in a fluent and thread-safe manner.
+Polly is a .NET 4.0 / 4.5 / PCL (Profile 259) library that allows developers to express transient exception- and fault-handling policies such as Retry, Retry Forever, Wait and Retry or Circuit Breaker in a fluent and thread-safe manner.
 
 [![NuGet version](https://badge.fury.io/nu/polly.svg)](https://badge.fury.io/nu/polly) [![Build status](https://ci.appveyor.com/api/projects/status/imt7dymt50346k5u?svg=true)](https://ci.appveyor.com/project/joelhulen/polly)
 
@@ -15,12 +15,12 @@ You can install the Strongly Named version via:
 
     Install-Package Polly-Signed
 
-There are now .NET 4.0 Async versions (via Microsoft.Bcl.Async) of the signed and unsigned NuGet packages, which can be installed via:
+.NET4.0 support is provide via the packages:
 
     Install-Package Polly.Net40Async
     Install-Package Polly.Net40Async-Signed
 
-**Please note:** The Polly.Net40Async package is only needed if you are targeting .NET 4.0 and need async capabilities. If you are targeting .NET 4.5 or greater, please use the standard Polly package.
+**Please note:** The Polly.Net40Async package is only needed if you are targeting .NET 4.0. If you are targeting .NET 4.5 or greater, or portable targets, please use the standard Polly package.
 
 # Usage
 
@@ -238,7 +238,7 @@ Policy
   );
 ```
 
-### Wait and retry forever ###
+### Wait and retry forever (until succeeds) ###
 
 ```csharp
 
@@ -490,9 +490,9 @@ var policy = Policy
     });
 var response = await policy.ExecuteAsync(ct => httpClient.GetAsync(uri, ct), cancellationToken);
 ```
-### .NET4.0 Async support ###
+# .NET4.0 support ###
 
-The .NET4.0 Async support uses `Microsoft.Bcl.Async` to add async support to a .NET4.0 package.  To minimise extra dependencies on the main Polly nuget package, the .NET4.0 async version is available as separate Nuget packages `Polly.Net40Async` and `Polly.Net40Async-signed`.
+The .NET4.0 package uses `Microsoft.Bcl.Async` to add async support.  To minimise  dependencies on the main Polly nuget package, the .NET4.0 version is available as separate Nuget packages `Polly.Net40Async` and `Polly.Net40Async-signed`.
 
 # Handing return values, and Policy&lt;TResult&gt;
 

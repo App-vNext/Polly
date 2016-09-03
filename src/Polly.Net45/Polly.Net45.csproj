@@ -17,7 +17,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;SUPPORTS_ASYNC;SUPPORTS_READONLY_COLLECTION</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;SUPPORTS_READONLY_COLLECTION</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
@@ -27,7 +27,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE;SUPPORTS_ASYNC;SUPPORTS_READONLY_COLLECTION</DefineConstants>
+    <DefineConstants>TRACE;SUPPORTS_READONLY_COLLECTION</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>

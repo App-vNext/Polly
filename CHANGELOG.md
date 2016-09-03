@@ -1,3 +1,8 @@
+## 5.0.0
+
+- Discontinue .NET3.5 support
+- Provide .NET4.0 support uniquely through Polly.NET40Async package
+
 ## 4.3.0
 
 - Added ability for policies to handle returned results.  Optimised circuit-breaker hot path.  Fixed circuit-breaker threshold bug.  Thanks to [@reisenberger](https://github.com/reisenberger), [@christopherbahr](https://github.com/christopherbahr) and [@Finity](https://github.com/Finity) respectively.

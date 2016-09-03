@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Threading;
-#if SUPPORTS_ASYNC
 using System.Threading.Tasks;
-#endif
 
 namespace Polly.Utilities
 {
@@ -17,24 +15,22 @@ namespace Polly.Utilities
         /// By default this will be a call to <see cref="M:Thread.Sleep"/>
         /// </summary>
         public static Action<TimeSpan> Sleep = Thread.Sleep;
-#endif
-#if PORTABLE
+#else
         /// <summary>
         /// Allows the setting of a custom Thread.Sleep implementation for testing.
         /// By default this will be a call to <see cref="M:ManualResetEvent.WaitOne"/>
         /// </summary>
         public static Action<TimeSpan> Sleep = timespan => new ManualResetEvent(false).WaitOne(timespan);
 #endif
-#if SUPPORTS_ASYNC
+
         /// <summary>
         /// Allows the setting of a custom async Sleep implementation for testing.
         /// By default this will be a call to <see cref="M:Task.Delay"/>
         /// </summary>
-#if SUPPORTS_ASYNC_40
+#if NET40
         public static Func<TimeSpan, CancellationToken, Task> SleepAsync = TaskEx.Delay;
 #else
         public static Func<TimeSpan, CancellationToken, Task> SleepAsync = Task.Delay;
-#endif
 #endif
         /// <summary>
         /// Allows the setting of a custom DateTime.UtcNow implementation for testing.
@@ -53,12 +49,11 @@ namespace Polly.Utilities
 #else
             Sleep = timeSpan => new ManualResetEvent(false).WaitOne(timeSpan);
 #endif
-#if SUPPORTS_ASYNC
-#if SUPPORTS_ASYNC_40
+
+#if NET40
             SleepAsync = TaskEx.Delay;
 #else
             SleepAsync = Task.Delay;
-#endif
 #endif
             UtcNow = () => DateTime.UtcNow;
         }
