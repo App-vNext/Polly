@@ -1,4 +1,4 @@
-﻿#if SUPPORTS_ASYNC
+﻿
 
 using System;
 using System.Linq;
@@ -230,5 +230,3 @@ namespace Polly
         }
     }
 }
-
-#endif

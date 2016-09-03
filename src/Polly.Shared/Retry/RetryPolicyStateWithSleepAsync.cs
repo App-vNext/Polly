@@ -1,4 +1,4 @@
-﻿#if SUPPORTS_ASYNC
+﻿
 
 using System;
 using System.Collections.Generic;
@@ -46,4 +46,3 @@ namespace Polly.Retry
     }
 }
 
-#endif

@@ -1,4 +1,4 @@
-﻿#if SUPPORTS_ASYNC
+﻿
 
 using System;
 using System.Threading;
@@ -37,4 +37,3 @@ namespace Polly.Retry
     }
 }
 
-#endif
