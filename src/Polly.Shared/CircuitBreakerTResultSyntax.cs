@@ -180,9 +180,10 @@ namespace Polly
                 onReset,
                 onHalfOpen);
             return new CircuitBreakerPolicy<TResult>(
-                (action, context) => CircuitBreakerEngine.Implementation(
+                (action, context, cancellationToken) => CircuitBreakerEngine.Implementation(
                     action,
                     context,
+                    cancellationToken,
                     policyBuilder.ExceptionPredicates,
                     policyBuilder.ResultPredicates,
                     breakerController),

@@ -13,7 +13,7 @@ namespace Polly.Specs
         public WaitAndRetryForeverSpecs()
         {
             // do nothing on call to sleep
-            SystemClock.Sleep = (_) => { };
+            SystemClock.Sleep = (_, __) => { };
         }
 
         [Fact]
@@ -185,7 +185,7 @@ namespace Polly.Specs
                 .Handle<DivideByZeroException>()
                 .WaitAndRetryForever(provider);
 
-            SystemClock.Sleep = span => totalTimeSlept += span.Seconds;
+            SystemClock.Sleep = (span, ct) => totalTimeSlept += span.Seconds;
 
             policy.Invoking(x => x.RaiseException<NullReferenceException>())
                   .ShouldThrow<NullReferenceException>();

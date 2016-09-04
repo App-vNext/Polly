@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using Polly.Utilities;
 
 namespace Polly.Retry
@@ -28,7 +29,7 @@ namespace Polly.Retry
         {
         }
 
-        public bool CanRetry(DelegateResult<TResult> delegateResult)
+        public bool CanRetry(DelegateResult<TResult> delegateResult, CancellationToken cancellationToken)
         {
             if (!_sleepDurationsEnumerator.MoveNext()) return false;
 
@@ -37,7 +38,7 @@ namespace Polly.Retry
             var currentTimeSpan = _sleepDurationsEnumerator.Current;
             _onRetry(delegateResult, currentTimeSpan, _errorCount, _context);
                 
-            SystemClock.Sleep(currentTimeSpan);
+            SystemClock.Sleep(currentTimeSpan, cancellationToken);
 
             return true;
         }

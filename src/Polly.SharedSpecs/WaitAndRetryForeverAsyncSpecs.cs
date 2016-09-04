@@ -189,7 +189,7 @@ namespace Polly.Specs
                 .Handle<DivideByZeroException>()
                 .WaitAndRetryForeverAsync(provider);
 
-            SystemClock.Sleep = span => totalTimeSlept += span.Seconds;
+            SystemClock.Sleep = (span, ct) => totalTimeSlept += span.Seconds;
 
             policy.Awaiting(x => x.RaiseExceptionAsync<NullReferenceException>())
                   .ShouldThrow<NullReferenceException>();

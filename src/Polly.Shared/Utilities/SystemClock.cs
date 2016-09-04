@@ -9,19 +9,19 @@ namespace Polly.Utilities
     /// </summary>
     public static class SystemClock
     {
-#if !PORTABLE
         /// <summary>
         /// Allows the setting of a custom Thread.Sleep implementation for testing.
-        /// By default this will be a call to <see cref="M:Thread.Sleep"/>
+        /// By default this will be a call to <see cref="M:Task.Delay"/> taking a <see cref="CancellationToken"/>
         /// </summary>
-        public static Action<TimeSpan> Sleep = Thread.Sleep;
+        public static Action<TimeSpan, CancellationToken> Sleep = (timeSpan, cancellationToken) =>
+        {
+#if NET40
+            TaskEx 
 #else
-        /// <summary>
-        /// Allows the setting of a custom Thread.Sleep implementation for testing.
-        /// By default this will be a call to <see cref="M:ManualResetEvent.WaitOne"/>
-        /// </summary>
-        public static Action<TimeSpan> Sleep = timespan => new ManualResetEvent(false).WaitOne(timespan);
-#endif
+            Task 
+#endif 
+            .Delay(timeSpan, cancellationToken).Wait(cancellationToken);
+        };
 
         /// <summary>
         /// Allows the setting of a custom async Sleep implementation for testing.
@@ -44,11 +44,13 @@ namespace Polly.Utilities
         /// </summary>
         public static void Reset()
         {
-#if !PORTABLE
-            Sleep = Thread.Sleep;
+            Sleep = (timeSpan, cancellationToken) =>
+#if NET40
+            TaskEx 
 #else
-            Sleep = timeSpan => new ManualResetEvent(false).WaitOne(timeSpan);
+            Task
 #endif
+            .Delay(timeSpan, cancellationToken).Wait(cancellationToken);
 
 #if NET40
             SleepAsync = TaskEx.Delay;

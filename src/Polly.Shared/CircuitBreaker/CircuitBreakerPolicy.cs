@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Polly.Utilities;
+using System.Threading;
 
 namespace Polly.CircuitBreaker
 {
@@ -12,7 +13,7 @@ namespace Polly.CircuitBreaker
         private readonly ICircuitController<EmptyStruct> _breakerController;
 
         internal CircuitBreakerPolicy(
-            Action<Action, Context> exceptionPolicy, 
+            Action<Action<CancellationToken>, Context, CancellationToken> exceptionPolicy, 
             IEnumerable<ExceptionPredicate> exceptionPredicates,
             ICircuitController<EmptyStruct> breakerController
             ) : base(exceptionPolicy, exceptionPredicates)
@@ -61,7 +62,7 @@ namespace Polly.CircuitBreaker
         private readonly ICircuitController<TResult> _breakerController;
 
         internal CircuitBreakerPolicy(
-            Func<Func<TResult>, Context, TResult> executionPolicy, 
+            Func<Func<CancellationToken, TResult>, Context, CancellationToken, TResult> executionPolicy, 
             IEnumerable<ExceptionPredicate> exceptionPredicates, 
             IEnumerable<ResultPredicate<TResult>> resultPredicates, 
             ICircuitController<TResult> breakerController

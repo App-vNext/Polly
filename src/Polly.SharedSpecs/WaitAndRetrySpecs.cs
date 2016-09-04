@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Polly.Specs.Helpers;
@@ -14,7 +16,7 @@ namespace Polly.Specs
         public WaitAndRetrySpecs()
         {
             // do nothing on call to sleep
-            SystemClock.Sleep = (_) => { };
+            SystemClock.Sleep = (_, __) => { };
         }
 
         [Fact]
@@ -335,7 +337,7 @@ namespace Polly.Specs
                    3.Seconds()
                 });
 
-            SystemClock.Sleep = span => totalTimeSlept += span.Seconds;
+            SystemClock.Sleep = (span, ct) => totalTimeSlept += span.Seconds;
 
             policy.RaiseException<DivideByZeroException>(3);
 
@@ -357,7 +359,7 @@ namespace Polly.Specs
                    3.Seconds()
                 });
 
-            SystemClock.Sleep = span => totalTimeSlept += span.Seconds;
+            SystemClock.Sleep = (span, ct) => totalTimeSlept += span.Seconds;
 
             policy.Invoking(x => x.RaiseException<DivideByZeroException>(3 + 1))
                   .ShouldThrow<DivideByZeroException>();
@@ -380,7 +382,7 @@ namespace Polly.Specs
                    3.Seconds()
                 });
 
-            SystemClock.Sleep = span => totalTimeSlept += span.Seconds;
+            SystemClock.Sleep = (span, ct) => totalTimeSlept += span.Seconds;
 
             policy.RaiseException<DivideByZeroException>(2);
 
@@ -397,7 +399,7 @@ namespace Polly.Specs
                 .Handle<DivideByZeroException>()
                 .WaitAndRetry(Enumerable.Empty<TimeSpan>());
 
-            SystemClock.Sleep = span => totalTimeSlept += span.Seconds;
+            SystemClock.Sleep = (span, ct) => totalTimeSlept += span.Seconds;
 
             policy.Invoking(x => x.RaiseException<NullReferenceException>())
                   .ShouldThrow<NullReferenceException>();
@@ -753,10 +755,336 @@ namespace Polly.Specs
 
             retryInvoked.Should().BeFalse();
         }
+        
+        #region Sync cancellation tests
+
+        [Fact]
+        public void Should_not_execute_action_when_cancellationtoken_cancelled_before_execute()
+        {
+            var policy = Policy
+                .Handle<DivideByZeroException>()
+                .WaitAndRetry(new[] { 1.Seconds(), 2.Seconds(), 3.Seconds() });
+
+            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+            CancellationToken cancellationToken = cancellationTokenSource.Token;
+
+            int attemptsInvoked = 0;
+            Action onExecute = () => attemptsInvoked++;
+
+            PolicyExtensions.ExceptionAndOrCancellationScenario scenario = new PolicyExtensions.ExceptionAndOrCancellationScenario
+            {
+                NumberOfTimesToRaiseException = 1 + 3,
+                AttemptDuringWhichToCancel = null, // Cancellation token cancelled manually below - before any scenario execution.
+            };
+
+            cancellationTokenSource.Cancel();
+
+            policy.Invoking(x => x.RaiseExceptionAndOrCancellation<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
+                .ShouldThrow<OperationCanceledException>()
+                .And.CancellationToken.Should().Be(cancellationToken);
+
+            attemptsInvoked.Should().Be(0);
+        }
+
+        [Fact]
+        public void Should_report_cancellation_during_otherwise_non_faulting_action_execution_and_cancel_further_retries_when_user_delegate_observes_cancellationtoken()
+        {
+            var policy = Policy
+                .Handle<DivideByZeroException>()
+                .WaitAndRetry(new[] { 1.Seconds(), 2.Seconds(), 3.Seconds() });
+
+            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+            CancellationToken cancellationToken = cancellationTokenSource.Token;
+
+            int attemptsInvoked = 0;
+            Action onExecute = () => attemptsInvoked++;
+
+            PolicyExtensions.ExceptionAndOrCancellationScenario scenario = new PolicyExtensions.ExceptionAndOrCancellationScenario
+            {
+                NumberOfTimesToRaiseException = 0,
+                AttemptDuringWhichToCancel = 1,
+                ActionObservesCancellation = true
+            };
+
+            policy.Invoking(x => x.RaiseExceptionAndOrCancellation<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
+                .ShouldThrow<OperationCanceledException>()
+                .And.CancellationToken.Should().Be(cancellationToken);
+
+            attemptsInvoked.Should().Be(1);
+        }
+
+        [Fact]
+        public void Should_report_cancellation_during_faulting_initial_action_execution_and_cancel_further_retries_when_user_delegate_observes_cancellationtoken()
+        {
+            var policy = Policy
+                .Handle<DivideByZeroException>()
+                .WaitAndRetry(new[] { 1.Seconds(), 2.Seconds(), 3.Seconds() });
+
+            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+            CancellationToken cancellationToken = cancellationTokenSource.Token;
+
+            int attemptsInvoked = 0;
+            Action onExecute = () => attemptsInvoked++;
+
+            PolicyExtensions.ExceptionAndOrCancellationScenario scenario = new PolicyExtensions.ExceptionAndOrCancellationScenario
+            {
+                NumberOfTimesToRaiseException = 1 + 3,
+                AttemptDuringWhichToCancel = 1,
+                ActionObservesCancellation = true
+            };
+
+            policy.Invoking(x => x.RaiseExceptionAndOrCancellation<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
+                .ShouldThrow<OperationCanceledException>()
+                .And.CancellationToken.Should().Be(cancellationToken);
+
+            attemptsInvoked.Should().Be(1);
+        }
+
+        [Fact]
+        public void Should_report_cancellation_during_faulting_initial_action_execution_and_cancel_further_retries_when_user_delegate_does_not_observe_cancellationtoken()
+        {
+            var policy = Policy
+                .Handle<DivideByZeroException>()
+                .WaitAndRetry(new[] { 1.Seconds(), 2.Seconds(), 3.Seconds() });
+
+            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+            CancellationToken cancellationToken = cancellationTokenSource.Token;
+
+            int attemptsInvoked = 0;
+            Action onExecute = () => attemptsInvoked++;
+
+            PolicyExtensions.ExceptionAndOrCancellationScenario scenario = new PolicyExtensions.ExceptionAndOrCancellationScenario
+            {
+                NumberOfTimesToRaiseException = 1 + 3,
+                AttemptDuringWhichToCancel = 1,
+                ActionObservesCancellation = false
+            };
+
+            policy.Invoking(x => x.RaiseExceptionAndOrCancellation<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
+                .ShouldThrow<OperationCanceledException>()
+                .And.CancellationToken.Should().Be(cancellationToken);
+
+            attemptsInvoked.Should().Be(1);
+        }
+
+        [Fact]
+        public void Should_report_cancellation_during_faulting_retried_action_execution_and_cancel_further_retries_when_user_delegate_observes_cancellationtoken()
+        {
+            var policy = Policy
+                .Handle<DivideByZeroException>()
+                .WaitAndRetry(new[] { 1.Seconds(), 2.Seconds(), 3.Seconds() });
+
+            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+            CancellationToken cancellationToken = cancellationTokenSource.Token;
+
+            int attemptsInvoked = 0;
+            Action onExecute = () => attemptsInvoked++;
+
+            PolicyExtensions.ExceptionAndOrCancellationScenario scenario = new PolicyExtensions.ExceptionAndOrCancellationScenario
+            {
+                NumberOfTimesToRaiseException = 1 + 3,
+                AttemptDuringWhichToCancel = 2,
+                ActionObservesCancellation = true
+            };
+
+            policy.Invoking(x => x.RaiseExceptionAndOrCancellation<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
+                .ShouldThrow<OperationCanceledException>()
+                .And.CancellationToken.Should().Be(cancellationToken);
+
+            attemptsInvoked.Should().Be(2);
+        }
+
+        [Fact]
+        public void Should_report_cancellation_during_faulting_retried_action_execution_and_cancel_further_retries_when_user_delegate_does_not_observe_cancellationtoken()
+        {
+            var policy = Policy
+                .Handle<DivideByZeroException>()
+                .WaitAndRetry(new[] { 1.Seconds(), 2.Seconds(), 3.Seconds() });
+
+            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+            CancellationToken cancellationToken = cancellationTokenSource.Token;
+
+            int attemptsInvoked = 0;
+            Action onExecute = () => attemptsInvoked++;
+
+            PolicyExtensions.ExceptionAndOrCancellationScenario scenario = new PolicyExtensions.ExceptionAndOrCancellationScenario
+            {
+                NumberOfTimesToRaiseException = 1 + 3,
+                AttemptDuringWhichToCancel = 2,
+                ActionObservesCancellation = false
+            };
+
+            policy.Invoking(x => x.RaiseExceptionAndOrCancellation<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
+                .ShouldThrow<OperationCanceledException>()
+                .And.CancellationToken.Should().Be(cancellationToken);
+
+            attemptsInvoked.Should().Be(2);
+        }
+
+        [Fact]
+        public void Should_report_cancellation_during_faulting_last_retry_execution_when_user_delegate_does_not_observe_cancellationtoken()
+        {
+            var policy = Policy
+                .Handle<DivideByZeroException>()
+                .WaitAndRetry(new[] { 1.Seconds(), 2.Seconds(), 3.Seconds() });
+
+            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+            CancellationToken cancellationToken = cancellationTokenSource.Token;
+
+            int attemptsInvoked = 0;
+            Action onExecute = () => attemptsInvoked++;
+
+            PolicyExtensions.ExceptionAndOrCancellationScenario scenario = new PolicyExtensions.ExceptionAndOrCancellationScenario
+            {
+                NumberOfTimesToRaiseException = 1 + 3,
+                AttemptDuringWhichToCancel = 1 + 3,
+                ActionObservesCancellation = false
+            };
+
+            policy.Invoking(x => x.RaiseExceptionAndOrCancellation<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
+                .ShouldThrow<OperationCanceledException>()
+                .And.CancellationToken.Should().Be(cancellationToken);
+
+            attemptsInvoked.Should().Be(1 + 3);
+        }
+
+        [Fact]
+        public void Should_honour_cancellation_immediately_during_wait_phase_of_waitandretry()
+        {
+            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+            CancellationToken cancellationToken = cancellationTokenSource.Token;
+
+            SystemClock.Sleep = (timeSpan, ct) => Task.Delay(timeSpan, ct).Wait(ct);
+
+            TimeSpan shimTimeSpan = TimeSpan.FromSeconds(0.4); // Consider increasing shimTimeSpan if test fails transiently in different environments.
+            TimeSpan retryDelay = shimTimeSpan + shimTimeSpan + shimTimeSpan;
+
+            var policy = Policy
+                .Handle<DivideByZeroException>()
+                .WaitAndRetry(new[] { retryDelay });
+
+            int attemptsInvoked = 0;
+            Action onExecute = () => attemptsInvoked++;
+
+            Stopwatch watch = new Stopwatch();
+            watch.Start();
+
+            PolicyExtensions.ExceptionAndOrCancellationScenario scenario = new PolicyExtensions.ExceptionAndOrCancellationScenario
+            {
+                NumberOfTimesToRaiseException = 1 + 1,
+                AttemptDuringWhichToCancel = null, // Cancellation invoked after delay - see below.
+                ActionObservesCancellation = false
+            };
+
+            cancellationTokenSource.CancelAfter(shimTimeSpan);
+
+            policy.Invoking(x => x.RaiseExceptionAndOrCancellation<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
+                    .ShouldThrow<OperationCanceledException>()
+                    .And.CancellationToken.Should().Be(cancellationToken);
+            watch.Stop();
+
+            attemptsInvoked.Should().Be(1);
+
+            watch.Elapsed.Should().BeLessThan(retryDelay);
+            watch.Elapsed.Should().BeCloseTo(shimTimeSpan, precision: (int)(shimTimeSpan.TotalMilliseconds) / 2);  // Consider increasing shimTimeSpan, or loosening precision, if test fails transiently in different environments.
+        }
+
+        [Fact]
+        public void Should_report_cancellation_after_faulting_action_execution_and_cancel_further_retries_if_onRetry_invokes_cancellation()
+        {
+            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+            CancellationToken cancellationToken = cancellationTokenSource.Token;
+
+            var policy = Policy
+                .Handle<DivideByZeroException>()
+                .WaitAndRetry(new[] { 1.Seconds(), 2.Seconds(), 3.Seconds() },
+                (_, __) =>
+                {
+                    cancellationTokenSource.Cancel();
+                });
+
+            int attemptsInvoked = 0;
+            Action onExecute = () => attemptsInvoked++;
+
+            PolicyExtensions.ExceptionAndOrCancellationScenario scenario = new PolicyExtensions.ExceptionAndOrCancellationScenario
+            {
+                NumberOfTimesToRaiseException = 1 + 3,
+                AttemptDuringWhichToCancel = null, // Cancellation during onRetry instead - see above.
+                ActionObservesCancellation = false
+            };
+
+            policy.Invoking(x => x.RaiseExceptionAndOrCancellation<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
+                .ShouldThrow<OperationCanceledException>()
+                .And.CancellationToken.Should().Be(cancellationToken);
+
+            attemptsInvoked.Should().Be(1);
+        }
+
+        [Fact]
+        public void Should_execute_func_returning_value_when_cancellationtoken_not_cancelled()
+        {
+            var policy = Policy
+               .Handle<DivideByZeroException>()
+               .WaitAndRetry(new[] { 1.Seconds(), 2.Seconds(), 3.Seconds() });
+
+            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+            CancellationToken cancellationToken = cancellationTokenSource.Token;
+
+            int attemptsInvoked = 0;
+            Action onExecute = () => attemptsInvoked++;
+
+            bool? result = null;
+
+            PolicyExtensions.ExceptionAndOrCancellationScenario scenario = new PolicyExtensions.ExceptionAndOrCancellationScenario
+            {
+                NumberOfTimesToRaiseException = 0,
+                AttemptDuringWhichToCancel = null
+            };
+
+            policy.Invoking(x => result = x.RaiseExceptionAndOrCancellation<DivideByZeroException, bool>(scenario, cancellationTokenSource, onExecute, true))
+                .ShouldNotThrow();
+
+            result.Should().BeTrue();
+
+            attemptsInvoked.Should().Be(1);
+        }
+
+        [Fact]
+        public void Should_honour_and_report_cancellation_during_func_execution()
+        {
+            var policy = Policy
+               .Handle<DivideByZeroException>()
+               .WaitAndRetry(new[] { 1.Seconds(), 2.Seconds(), 3.Seconds() });
+
+            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+            CancellationToken cancellationToken = cancellationTokenSource.Token;
+
+            int attemptsInvoked = 0;
+            Action onExecute = () => attemptsInvoked++;
+
+            bool? result = null;
+
+            PolicyExtensions.ExceptionAndOrCancellationScenario scenario = new PolicyExtensions.ExceptionAndOrCancellationScenario
+            {
+                NumberOfTimesToRaiseException = 0,
+                AttemptDuringWhichToCancel = 1,
+                ActionObservesCancellation = true
+            };
+
+            policy.Invoking(x => result = x.RaiseExceptionAndOrCancellation<DivideByZeroException, bool>(scenario, cancellationTokenSource, onExecute, true))
+                .ShouldThrow<OperationCanceledException>().And.CancellationToken.Should().Be(cancellationToken);
+
+            result.Should().Be(null);
+
+            attemptsInvoked.Should().Be(1);
+        }
 
         public void Dispose()
         {
             SystemClock.Reset();
         }
+
+        #endregion
+
     }
 }
