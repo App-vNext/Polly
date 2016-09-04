@@ -9,17 +9,10 @@ namespace Polly
     /// Transient exception handling policies that can
     /// be applied to delegates
     /// </summary>
-    public partial class Policy
+    public abstract partial class Policy
     {
         private readonly Action<Action, Context> _exceptionPolicy;
         private readonly IEnumerable<ExceptionPredicate> _exceptionPredicates;
-
-        internal Policy(
-            Action<Action> exceptionPolicy, 
-            IEnumerable<ExceptionPredicate> exceptionPredicates
-            ) : this((action, ctx) => exceptionPolicy(action), exceptionPredicates)
-        {
-        }
 
         internal Policy(
             Action<Action, Context> exceptionPolicy, 
@@ -91,6 +84,18 @@ namespace Polly
         }
 
         /// <summary>
+        /// Executes the specified action within the policy and returns the Result.
+        /// </summary>
+        /// <typeparam name="TResult">The type of the Result.</typeparam>
+        /// <param name="action">The action to perform.</param>
+        /// <returns>The value returned by the action</returns>
+        [DebuggerStepThrough]
+        public TResult Execute<TResult>(Func<TResult> action)
+        {
+            return Execute(action, Context.Empty);
+        }
+
+        /// <summary>
         /// Executes the specified action within the policy and returns the result.
         /// </summary>
         /// <typeparam name="TResult">The type of the result.</typeparam>
@@ -106,18 +111,6 @@ namespace Polly
             var result = default(TResult);
             _exceptionPolicy(() => { result = action(); }, context);
             return result;
-        }
-
-        /// <summary>
-        /// Executes the specified action within the policy and returns the Result.
-        /// </summary>
-        /// <typeparam name="TResult">The type of the Result.</typeparam>
-        /// <param name="action">The action to perform.</param>
-        /// <returns>The value returned by the action</returns>
-        [DebuggerStepThrough]
-        public TResult Execute<TResult>(Func<TResult> action)
-        {
-            return Execute(action, Context.Empty);
         }
 
         /// <summary>
@@ -176,18 +169,6 @@ namespace Polly
         private readonly IEnumerable<ResultPredicate<TResult>> _resultPredicates;
 
         internal Policy(
-            Func<Func<TResult>, TResult> executionPolicy,
-            IEnumerable<ExceptionPredicate> exceptionPredicates, 
-            IEnumerable<ResultPredicate<TResult>> resultPredicates
-            ) : this(
-                  (action, ctx) => executionPolicy(action), 
-                  exceptionPredicates, 
-                  resultPredicates
-                )
-        {
-        }
-
-        internal Policy(
             Func<Func<TResult>, Context, TResult> executionPolicy, 
             IEnumerable<ExceptionPredicate> exceptionPredicates, 
             IEnumerable<ResultPredicate<TResult>> resultPredicates
@@ -198,6 +179,17 @@ namespace Polly
             _executionPolicy = executionPolicy;
             _exceptionPredicates = exceptionPredicates ?? Enumerable.Empty<ExceptionPredicate>();
             _resultPredicates = resultPredicates ?? Enumerable.Empty<ResultPredicate<TResult>>();
+        }
+
+        /// <summary>
+        /// Executes the specified action within the policy and returns the Result.
+        /// </summary>
+        /// <param name="action">The action to perform.</param>
+        /// <returns>The value returned by the action</returns>
+        [DebuggerStepThrough]
+        public TResult Execute(Func<TResult> action)
+        {
+            return Execute(action, Context.Empty);
         }
 
         /// <summary>
@@ -213,17 +205,6 @@ namespace Polly
                 "Please use the synchronous Retry, RetryForever, WaitAndRetry or CircuitBreaker methods when calling the synchronous Execute method.");
 
             return _executionPolicy(action, context);
-        }
-
-        /// <summary>
-        /// Executes the specified action within the policy and returns the Result.
-        /// </summary>
-        /// <param name="action">The action to perform.</param>
-        /// <returns>The value returned by the action</returns>
-        [DebuggerStepThrough]
-        public TResult Execute(Func<TResult> action)
-        {
-            return Execute(action, Context.Empty);
         }
 
         /// <summary>

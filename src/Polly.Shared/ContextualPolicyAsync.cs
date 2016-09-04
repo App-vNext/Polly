@@ -8,15 +8,8 @@ using System.Threading.Tasks;
 
 namespace Polly
 {
-    public partial class ContextualPolicy
+    public partial class Policy
     {
-        internal ContextualPolicy(
-            Func<Func<CancellationToken, Task>, Context, CancellationToken, bool, Task> asyncExceptionPolicy, 
-            IEnumerable<ExceptionPredicate> exceptionPredicates
-            ) : base(asyncExceptionPolicy, exceptionPredicates)
-        {
-        }
-
         /// <summary>
         ///     Executes the specified asynchronous action within the policy.
         /// </summary>
@@ -63,9 +56,9 @@ namespace Polly
         [DebuggerStepThrough]
         public Task ExecuteAsync(Func<CancellationToken, Task> action, IDictionary<string, object> contextData, CancellationToken cancellationToken, bool continueOnCapturedContext)
         {
-            if (contextData == null) throw new ArgumentNullException("contextData");
+            if (contextData == null) throw new ArgumentNullException(nameof(contextData));
 
-            return base.ExecuteAsync(action, new Context(contextData), cancellationToken, continueOnCapturedContext);
+            return ExecuteAsync(action, new Context(contextData), cancellationToken, continueOnCapturedContext);
         }
 
 
@@ -79,9 +72,9 @@ namespace Polly
         [DebuggerStepThrough]
         public Task<PolicyResult> ExecuteAndCaptureAsync(Func<Task> action, IDictionary<string, object> contextData)
         {
-            if (contextData == null) throw new ArgumentNullException("contextData");
+            if (contextData == null) throw new ArgumentNullException(nameof(contextData));
 
-            return base.ExecuteAndCaptureAsync(action, new Context(contextData));
+            return ExecuteAndCaptureAsync(action, new Context(contextData));
         }
 
         /// <summary>
@@ -95,9 +88,9 @@ namespace Polly
         [DebuggerStepThrough]
         public Task<PolicyResult> ExecuteAndCaptureAsync(Func<Task> action, IDictionary<string, object> contextData, bool continueOnCapturedContext)
         {
-            if (contextData == null) throw new ArgumentNullException("contextData");
+            if (contextData == null) throw new ArgumentNullException(nameof(contextData));
 
-            return base.ExecuteAndCaptureAsync(action, new Context(contextData), continueOnCapturedContext);
+            return ExecuteAndCaptureAsync(action, new Context(contextData), continueOnCapturedContext);
         }
         /// <summary>
         ///     Executes the specified asynchronous action within the policy and returns the captured result.
@@ -110,9 +103,9 @@ namespace Polly
         [DebuggerStepThrough]
         public Task<PolicyResult> ExecuteAndCaptureAsync(Func<CancellationToken, Task> action, IDictionary<string, object> contextData, CancellationToken cancellationToken)
         {
-            if (contextData == null) throw new ArgumentNullException("contextData");
+            if (contextData == null) throw new ArgumentNullException(nameof(contextData));
 
-            return base.ExecuteAndCaptureAsync(action, new Context(contextData), cancellationToken);
+            return ExecuteAndCaptureAsync(action, new Context(contextData), cancellationToken);
         }
 
         /// <summary>
@@ -127,9 +120,9 @@ namespace Polly
         [DebuggerStepThrough]
         public Task<PolicyResult> ExecuteAndCaptureAsync(Func<CancellationToken, Task> action, IDictionary<string, object> contextData, CancellationToken cancellationToken, bool continueOnCapturedContext)
         {
-            if (contextData == null) throw new ArgumentNullException("contextData");
+            if (contextData == null) throw new ArgumentNullException(nameof(contextData));
 
-            return base.ExecuteAndCaptureAsync(action, new Context(contextData), cancellationToken,
+            return ExecuteAndCaptureAsync(action, new Context(contextData), cancellationToken,
                 continueOnCapturedContext);
         }
 
@@ -183,9 +176,9 @@ namespace Polly
         [DebuggerStepThrough]
         public Task<TResult> ExecuteAsync<TResult>(Func<CancellationToken, Task<TResult>> action, IDictionary<string, object> contextData, CancellationToken cancellationToken, bool continueOnCapturedContext)
         {
-            if (contextData == null) throw new ArgumentNullException("contextData");
+            if (contextData == null) throw new ArgumentNullException(nameof(contextData));
 
-            return base.ExecuteAsync(action, new Context(contextData), cancellationToken, continueOnCapturedContext);
+            return ExecuteAsync(action, new Context(contextData), cancellationToken, continueOnCapturedContext);
         }
 
         /// <summary>
@@ -199,9 +192,9 @@ namespace Polly
         [DebuggerStepThrough]
         public Task<PolicyResult<TResult>> ExecuteAndCaptureAsync<TResult>(Func<Task<TResult>> action, IDictionary<string, object> contextData)
         {
-            if (contextData == null) throw new ArgumentNullException("contextData");
+            if (contextData == null) throw new ArgumentNullException(nameof(contextData));
 
-            return base.ExecuteAndCaptureAsync(action, new Context(contextData));
+            return ExecuteAndCaptureAsync(action, new Context(contextData));
         }
 
         /// <summary>
@@ -214,11 +207,11 @@ namespace Polly
         /// <exception cref="System.ArgumentNullException">contextData</exception>
         /// <returns>The captured result</returns>
         [DebuggerStepThrough]
-        protected Task<PolicyResult<TResult>> ExecuteAndCaptureAsync<TResult>(Func<Task<TResult>> action, IDictionary<string, object> contextData, bool continueOnCapturedContext)
+        public Task<PolicyResult<TResult>> ExecuteAndCaptureAsync<TResult>(Func<Task<TResult>> action, IDictionary<string, object> contextData, bool continueOnCapturedContext)
         {
-            if (contextData == null) throw new ArgumentNullException("contextData");
+            if (contextData == null) throw new ArgumentNullException(nameof(contextData));
 
-            return base.ExecuteAndCaptureAsync(action, new Context(contextData), continueOnCapturedContext);
+            return ExecuteAndCaptureAsync(action, new Context(contextData), continueOnCapturedContext);
         }
 
         /// <summary>
@@ -231,11 +224,11 @@ namespace Polly
         /// <exception cref="System.ArgumentNullException">contextData</exception>
         /// <returns>The captured result</returns>
         [DebuggerStepThrough]
-        public Task<PolicyResult<TResult>> ExecuteAndCaptureAsync<TResult>(Func<Task<TResult>> action, IDictionary<string, object> contextData, CancellationToken cancellationToken)
+        public Task<PolicyResult<TResult>> ExecuteAndCaptureAsync<TResult>(Func<CancellationToken, Task<TResult>> action, IDictionary<string, object> contextData, CancellationToken cancellationToken)
         {
-            if (contextData == null) throw new ArgumentNullException("contextData");
+            if (contextData == null) throw new ArgumentNullException(nameof(contextData));
 
-            return base.ExecuteAndCaptureAsync(action, new Context(contextData), cancellationToken);
+            return ExecuteAndCaptureAsync(action, new Context(contextData), cancellationToken, false);
         }
 
         /// <summary>
@@ -251,22 +244,14 @@ namespace Polly
         [DebuggerStepThrough]
         public Task<PolicyResult<TResult>> ExecuteAndCaptureAsync<TResult>(Func<CancellationToken, Task<TResult>> action, IDictionary<string, object> contextData, CancellationToken cancellationToken, bool continueOnCapturedContext)
         {
-            if (contextData == null) throw new ArgumentNullException("contextData");
+            if (contextData == null) throw new ArgumentNullException(nameof(contextData));
 
-            return base.ExecuteAndCaptureAsync(action, new Context(contextData), cancellationToken, continueOnCapturedContext);
+            return ExecuteAndCaptureAsync(action, new Context(contextData), cancellationToken, continueOnCapturedContext);
         }
     }
 
-    public partial class ContextualPolicy<TResult>
+    public partial class Policy<TResult>
     {
-        internal ContextualPolicy(
-            Func<Func<CancellationToken, Task<TResult>>, Context, CancellationToken, bool, Task<TResult>> asyncExecutionPolicy, 
-            IEnumerable<ExceptionPredicate> exceptionPredicates, 
-            IEnumerable<ResultPredicate<TResult>> resultPredicates
-            ) : base(asyncExecutionPolicy, exceptionPredicates, resultPredicates)
-        {
-        }
-
         /// <summary>
         ///     Executes the specified asynchronous action within the policy and returns the result.
         /// </summary>
@@ -317,9 +302,9 @@ namespace Polly
         [DebuggerStepThrough]
         public Task<TResult> ExecuteAsync(Func<CancellationToken, Task<TResult>> action, IDictionary<string, object> contextData, CancellationToken cancellationToken, bool continueOnCapturedContext)
         {
-            if (contextData == null) throw new ArgumentNullException("contextData");
+            if (contextData == null) throw new ArgumentNullException(nameof(contextData));
 
-            return base.ExecuteAsync(action, new Context(contextData), cancellationToken, continueOnCapturedContext);
+            return ExecuteAsync(action, new Context(contextData), cancellationToken, continueOnCapturedContext);
         }
 
         /// <summary>
@@ -332,9 +317,9 @@ namespace Polly
         [DebuggerStepThrough]
         public Task<PolicyResult<TResult>> ExecuteAndCaptureAsync(Func<Task<TResult>> action, IDictionary<string, object> contextData)
         {
-            if (contextData == null) throw new ArgumentNullException("contextData");
+            if (contextData == null) throw new ArgumentNullException(nameof(contextData));
 
-            return base.ExecuteAndCaptureAsync(action, new Context(contextData));
+            return ExecuteAndCaptureAsync(action, new Context(contextData));
         }
 
         /// <summary>
@@ -346,11 +331,11 @@ namespace Polly
         /// <exception cref="System.ArgumentNullException">contextData</exception>
         /// <returns>The captured result</returns>
         [DebuggerStepThrough]
-        protected Task<PolicyResult<TResult>> ExecuteAndCaptureAsync(Func<Task<TResult>> action, IDictionary<string, object> contextData, bool continueOnCapturedContext)
+        public Task<PolicyResult<TResult>> ExecuteAndCaptureAsync(Func<Task<TResult>> action, IDictionary<string, object> contextData, bool continueOnCapturedContext)
         {
-            if (contextData == null) throw new ArgumentNullException("contextData");
+            if (contextData == null) throw new ArgumentNullException(nameof(contextData));
 
-            return base.ExecuteAndCaptureAsync(action, new Context(contextData), continueOnCapturedContext);
+            return ExecuteAndCaptureAsync(action, new Context(contextData), continueOnCapturedContext);
         }
 
         /// <summary>
@@ -362,11 +347,11 @@ namespace Polly
         /// <exception cref="System.ArgumentNullException">contextData</exception>
         /// <returns>The captured result</returns>
         [DebuggerStepThrough]
-        public Task<PolicyResult<TResult>> ExecuteAndCaptureAsync(Func<Task<TResult>> action, IDictionary<string, object> contextData, CancellationToken cancellationToken)
+        public Task<PolicyResult<TResult>> ExecuteAndCaptureAsync(Func<CancellationToken, Task<TResult>> action, IDictionary<string, object> contextData, CancellationToken cancellationToken)
         {
-            if (contextData == null) throw new ArgumentNullException("contextData");
+            if (contextData == null) throw new ArgumentNullException(nameof(contextData));
 
-            return base.ExecuteAndCaptureAsync(action, new Context(contextData), cancellationToken);
+            return ExecuteAndCaptureAsync(action, new Context(contextData), cancellationToken, false);
         }
 
         /// <summary>
@@ -381,9 +366,9 @@ namespace Polly
         [DebuggerStepThrough]
         public Task<PolicyResult<TResult>> ExecuteAndCaptureAsync(Func<CancellationToken, Task<TResult>> action, IDictionary<string, object> contextData, CancellationToken cancellationToken, bool continueOnCapturedContext)
         {
-            if (contextData == null) throw new ArgumentNullException("contextData");
+            if (contextData == null) throw new ArgumentNullException(nameof(contextData));
 
-            return base.ExecuteAndCaptureAsync(action, new Context(contextData), cancellationToken, continueOnCapturedContext);
+            return ExecuteAndCaptureAsync(action, new Context(contextData), cancellationToken, continueOnCapturedContext);
         }
     }
 
