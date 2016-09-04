@@ -4,7 +4,7 @@
 - Provide .NET4.0 support uniquely through Polly.NET40Async package
 - Retire ContextualPolicy (not part of documented API; support now in Policy base class)
 - Add some missing ExecuteAndCapture/Async overloads
-- Add CancellationToken support to synchronous executions (to support TimeoutPolicy)
+- Add CancellationToken support to synchronous executions (to support TimeoutPolicy).  Thanks to [@brunolauze](https://github.com/brunolauze) and [@reisenberger](https://github.com/reisenberger)
 
 ## 4.3.0
 
