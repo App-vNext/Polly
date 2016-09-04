@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 
 namespace Polly.Retry
 {
@@ -18,7 +19,7 @@ namespace Polly.Retry
         {
         }
 
-        public bool CanRetry(DelegateResult<TResult> delegateResult)
+        public bool CanRetry(DelegateResult<TResult> delegateResult, CancellationToken cancellationToken)
         {
             _onRetry(delegateResult, _context);
             return true;
