@@ -300,7 +300,7 @@ namespace Polly.Specs
         {
             IDictionary<string, object> contextData = null;
 
-            ContextualPolicy policy = Policy
+            Policy policy = Policy
                 .Handle<DivideByZeroException>()
                 .Retry((_, __, context) => contextData = context);
 
@@ -318,7 +318,7 @@ namespace Polly.Specs
         {
             IDictionary<string, object> contextData = null;
 
-            ContextualPolicy policy = Policy
+            Policy policy = Policy
                 .Handle<DivideByZeroException>()
                 .Retry((_, __, context) => contextData = context);
 
@@ -336,7 +336,7 @@ namespace Polly.Specs
         {
             Context capturedContext = null;
 
-            ContextualPolicy policy = Policy
+            Policy policy = Policy
                 .Handle<DivideByZeroException>()
                 .Retry((_, __, context) => capturedContext = context);
 
@@ -351,7 +351,7 @@ namespace Polly.Specs
         {
             string contextValue = null;
 
-            ContextualPolicy policy = Policy
+            Policy policy = Policy
                 .Handle<DivideByZeroException>()
                 .Retry((_, __, context) => contextValue = context["key"].ToString());
 
@@ -373,7 +373,7 @@ namespace Polly.Specs
         {
             string contextValue = null;
 
-            ContextualPolicy policy = Policy
+            Policy policy = Policy
                 .Handle<DivideByZeroException>()
                 .Retry((_, __, context) => contextValue = context["key"].ToString());
 

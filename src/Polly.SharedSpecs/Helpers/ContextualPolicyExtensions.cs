@@ -5,39 +5,8 @@ namespace Polly.Specs.Helpers
 {
     public static class ContextualPolicyExtensions
     {
-        public static void RaiseException<TException>(this ContextualPolicy policy,
-                   int numberOfTimesToRaiseException,
-                   Action<TException, int> configureException = null) where TException : Exception, new()
-        {
-            int counter = 0;
-
-            policy.Execute(() =>
-            {
-                if (counter < numberOfTimesToRaiseException)
-                {
-                    counter++;
-
-                    var exception = new TException();
-
-                    if (configureException != null)
-                    {
-                        configureException(exception, counter);
-                    }
-
-                    throw exception;
-                }
-            });
-        }
-
-        public static void RaiseException<TException>(
-            this ContextualPolicy policy,
-            Action<TException, int> configureException = null) where TException : Exception, new()
-        {
-            policy.RaiseException(1, configureException);
-        }
-
-        public static void RaiseException<TException>(this ContextualPolicy policy, 
-            int numberOfTimesToRaiseException, 
+        public static void RaiseException<TException>(this Policy policy,
+            int numberOfTimesToRaiseException,
             IDictionary<string, object> contextData,
             Action<TException, int> configureException = null) where TException : Exception, new()
         {
@@ -50,7 +19,7 @@ namespace Polly.Specs.Helpers
                     counter++;
 
                     var exception = new TException();
-                    
+
                     if (configureException != null)
                     {
                         configureException(exception, counter);
@@ -62,12 +31,12 @@ namespace Polly.Specs.Helpers
         }
 
         public static void RaiseException<TException>(
-            this ContextualPolicy policy,
+            this Policy policy,
             IDictionary<string, object> contextData,
             Action<TException, int> configureException = null) where TException : Exception, new()
         {
             policy.RaiseException(1, contextData, configureException);
         }
-        
+
     }
 }

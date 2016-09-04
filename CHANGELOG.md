@@ -2,6 +2,8 @@
 
 - Discontinue .NET3.5 support
 - Provide .NET4.0 support uniquely through Polly.NET40Async package
+- Retire ContextualPolicy (not part of documented API; support now in Policy base class)
+- Add some missing ExecuteAndCapture/Async overloads
 
 ## 4.3.0
 

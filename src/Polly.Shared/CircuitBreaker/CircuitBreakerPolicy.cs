@@ -7,7 +7,7 @@ namespace Polly.CircuitBreaker
     /// <summary>
     /// A circuit-breaker policy that can be applied to delegates.
     /// </summary>
-    public partial class CircuitBreakerPolicy : ContextualPolicy
+    public partial class CircuitBreakerPolicy : Policy
     {
         private readonly ICircuitController<EmptyStruct> _breakerController;
 
@@ -56,7 +56,7 @@ namespace Polly.CircuitBreaker
     /// <summary>
     /// A circuit-breaker policy that can be applied to delegates returning a value of type <typeparam name="TResult"/>.
     /// </summary>
-    public partial class CircuitBreakerPolicy<TResult> : ContextualPolicy<TResult>
+    public partial class CircuitBreakerPolicy<TResult> : Policy<TResult>
     {
         private readonly ICircuitController<TResult> _breakerController;
 
