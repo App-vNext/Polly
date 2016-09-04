@@ -15,11 +15,15 @@ namespace Polly.CircuitBreaker
             IEnumerable<ResultPredicate<TResult>> shouldHandleResultPredicates, 
             ICircuitController<TResult> breakerController)
         {
+            cancellationToken.ThrowIfCancellationRequested();
+
             breakerController.OnActionPreExecute();
 
             try
             {
                 DelegateResult<TResult> delegateOutcome = new DelegateResult<TResult>(action(cancellationToken));
+
+                cancellationToken.ThrowIfCancellationRequested();
 
                 if (shouldHandleResultPredicates.Any(predicate => predicate(delegateOutcome.Result)))
                 {
@@ -34,6 +38,15 @@ namespace Polly.CircuitBreaker
             }
             catch (Exception ex)
             {
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    if (ex is OperationCanceledException && ((OperationCanceledException)ex).CancellationToken == cancellationToken)
+                    {
+                        throw;
+                    }
+                    cancellationToken.ThrowIfCancellationRequested();
+                }
+
                 if (!shouldHandleExceptionPredicates.Any(predicate => predicate(ex)))
                 {
                     throw;
