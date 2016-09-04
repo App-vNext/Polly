@@ -42,5 +42,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)WaitAndRetryForeverAsyncSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)WaitAndRetrySpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)WaitAndRetryForeverSpecs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)PolicyWrapSpecs.cs" />
   </ItemGroup>
 </Project>

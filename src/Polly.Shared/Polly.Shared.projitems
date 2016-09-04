@@ -66,5 +66,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\ReadOnlyDictionary.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\SystemClock.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\TimedLock.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)PolicyWrapSyntax.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Wrap\PolicyWrap.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Wrap\PolicyWrapEngine.cs" />
   </ItemGroup>
 </Project>
