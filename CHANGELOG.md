@@ -5,6 +5,7 @@
 - Retire ContextualPolicy (not part of documented API; support now in Policy base class)
 - Add some missing ExecuteAndCapture/Async overloads
 - Add CancellationToken support to synchronous executions (to support TimeoutPolicy).  Thanks to [@brunolauze](https://github.com/brunolauze) and [@reisenberger](https://github.com/reisenberger)
+- Add PolicyWrap.  Thanks to [@reisenberger](https://github.com/reisenberger)
 
 ## 4.3.0
 

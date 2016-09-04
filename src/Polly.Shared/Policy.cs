@@ -53,7 +53,7 @@ namespace Polly
         /// <param name="context">Arbitrary data that is passed to the exception policy.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         [DebuggerStepThrough]
-        protected void Execute(Action<CancellationToken> action, Context context, CancellationToken cancellationToken)
+        internal void Execute(Action<CancellationToken> action, Context context, CancellationToken cancellationToken)
         {
             if (_exceptionPolicy == null) throw new InvalidOperationException(
                 "Please use the synchronous Retry, RetryForever, WaitAndRetry or CircuitBreaker methods when calling the synchronous Execute method.");
@@ -92,7 +92,7 @@ namespace Polly
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>The captured result</returns>
         [DebuggerStepThrough]
-        protected PolicyResult ExecuteAndCapture(Action<CancellationToken> action, Context context, CancellationToken cancellationToken)
+        internal PolicyResult ExecuteAndCapture(Action<CancellationToken> action, Context context, CancellationToken cancellationToken)
         {
             if (_exceptionPolicy == null) throw new InvalidOperationException(
                 "Please use the synchronous Retry, RetryForever, WaitAndRetry or CircuitBreaker methods when calling the synchronous ExecuteAndCapture method.");
@@ -142,7 +142,7 @@ namespace Polly
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>The value returned by the action</returns>
         [DebuggerStepThrough]
-        protected TResult Execute<TResult>(Func<CancellationToken, TResult> action, Context context, CancellationToken cancellationToken)
+        internal TResult Execute<TResult>(Func<CancellationToken, TResult> action, Context context, CancellationToken cancellationToken)
         {
             if (_exceptionPolicy == null) throw new InvalidOperationException(
                 "Please use the synchronous Retry, RetryForever, WaitAndRetry or CircuitBreaker methods when calling the synchronous Execute method.");
@@ -183,7 +183,7 @@ namespace Polly
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>The captured result</returns>
         [DebuggerStepThrough]
-        protected PolicyResult<TResult> ExecuteAndCapture<TResult>(Func<CancellationToken, TResult> action, Context context, CancellationToken cancellationToken)
+        internal PolicyResult<TResult> ExecuteAndCapture<TResult>(Func<CancellationToken, TResult> action, Context context, CancellationToken cancellationToken)
         {
 
             if (_exceptionPolicy == null) throw new InvalidOperationException(
@@ -265,7 +265,7 @@ namespace Polly
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>The value returned by the action</returns>
         [DebuggerStepThrough]
-        protected TResult Execute(Func<CancellationToken, TResult> action, Context context, CancellationToken cancellationToken)
+        internal TResult Execute(Func<CancellationToken, TResult> action, Context context, CancellationToken cancellationToken)
         {
             if (_executionPolicy == null) throw new InvalidOperationException(
                 "Please use the synchronous Retry, RetryForever, WaitAndRetry or CircuitBreaker methods when calling the synchronous Execute method.");
@@ -304,7 +304,7 @@ namespace Polly
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>The captured result</returns>
         [DebuggerStepThrough]
-        protected PolicyResult<TResult> ExecuteAndCapture(Func<CancellationToken, TResult> action, Context context, CancellationToken cancellationToken)
+        internal PolicyResult<TResult> ExecuteAndCapture(Func<CancellationToken, TResult> action, Context context, CancellationToken cancellationToken)
         {
 
             if (_executionPolicy == null) throw new InvalidOperationException(

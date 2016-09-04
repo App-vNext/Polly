@@ -41,6 +41,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)PolicyBuilder.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PolicyBuilder.OrSyntax.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PolicyResult.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)PolicyWrapSyntaxAsync.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ResultPredicate.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)RetrySyntax.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)RetrySyntaxAsync.cs" />
@@ -68,6 +69,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\TimedLock.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PolicyWrapSyntax.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Wrap\PolicyWrap.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Wrap\PolicyWrapAsync.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Wrap\PolicyWrapEngine.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Wrap\PolicyWrapEngineAsync.cs" />
   </ItemGroup>
 </Project>
