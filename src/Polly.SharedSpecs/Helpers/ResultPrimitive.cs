@@ -10,6 +10,7 @@
         Good,
         FaultAgain,
         GoodAgain,
-        FaultYetAgain
+        FaultYetAgain,
+        Substitute
     }
 }

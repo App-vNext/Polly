@@ -35,6 +35,12 @@
     <Compile Include="$(MSBuildThisFileDirectory)ContextualPolicyAsync.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ExceptionPredicate.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DelegateResult.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)FallbackSyntax.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)FallbackSyntaxAsync.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Fallback\FallbackEngine.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Fallback\FallbackEngineAsync.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Fallback\FallbackPolicy.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Fallback\FallbackPolicyAsync.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Policy.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Policy.HandleSyntax.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PolicyAsync.cs" />
@@ -66,6 +72,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\EmptyStruct.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\ReadOnlyDictionary.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\SystemClock.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\TaskHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\TimedLock.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PolicyWrapSyntax.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Wrap\PolicyWrap.cs" />

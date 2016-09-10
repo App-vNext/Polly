@@ -6,7 +6,7 @@ namespace Polly.Wrap
     internal static partial class PolicyWrapEngine
     {
         internal static TResult Implementation<TResult>(
-           Func<CancellationToken, TResult> func,
+            Func<CancellationToken, TResult> func,
             Context context,
             CancellationToken cancellationToken,
             Policy<TResult> outerPolicy,
