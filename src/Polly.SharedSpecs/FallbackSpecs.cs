@@ -371,7 +371,6 @@ namespace Polly.Specs
 
             IDictionary<string, object> contextData = null;
 
-            Exception exceptionPassedToOnFallback = null;
             Action<Exception, Context> onFallback = (ex, ctx) => { contextData = ctx; };
 
             FallbackPolicy fallbackPolicy = Policy
@@ -394,7 +393,6 @@ namespace Polly.Specs
 
             IDictionary<string, object> contextData = null;
 
-            Exception exceptionPassedToOnFallback = null;
             Action<Exception, Context> onFallback = (ex, ctx) => { contextData = ctx; };
 
             FallbackPolicy fallbackPolicy = Policy

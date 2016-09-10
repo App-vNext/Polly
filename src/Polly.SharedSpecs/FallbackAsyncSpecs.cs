@@ -304,7 +304,6 @@ namespace Polly.Specs
 
             IDictionary<string, object> contextData = null;
 
-            Exception exceptionPassedToOnFallback = null;
             Func<Exception, Context, Task> onFallbackAsync = (ex, ctx) => { contextData = ctx; return TaskHelper.EmptyTask; };
 
             FallbackPolicy fallbackPolicy = Policy
@@ -327,7 +326,6 @@ namespace Polly.Specs
 
             IDictionary<string, object> contextData = null;
 
-            Exception exceptionPassedToOnFallback = null;
             Func<Exception, Context, Task> onFallbackAsync = (ex, ctx) => { contextData = ctx; return TaskHelper.EmptyTask; };
 
             FallbackPolicy fallbackPolicy = Policy

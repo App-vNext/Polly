@@ -347,7 +347,6 @@ namespace Polly.Specs
 
             IDictionary<string, object> contextData = null;
 
-            Exception resultPassedToOnFallback = null;
             Func<DelegateResult<ResultPrimitive>, Context, Task> onFallbackAsync = (dr, ctx) => { contextData = ctx; return TaskHelper.EmptyTask; };
 
             FallbackPolicy<ResultPrimitive> fallbackPolicy = Policy
@@ -371,7 +370,6 @@ namespace Polly.Specs
 
             IDictionary<string, object> contextData = null;
 
-            Exception resultPassedToOnFallback = null;
             Func<DelegateResult<ResultPrimitive>, Context, Task> onFallbackAsync = (ex, ctx) => { contextData = ctx; return TaskHelper.EmptyTask; };
 
             FallbackPolicy<ResultPrimitive> fallbackPolicy = Policy
