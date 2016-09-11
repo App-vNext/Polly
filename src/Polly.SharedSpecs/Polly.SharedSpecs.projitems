@@ -17,6 +17,10 @@
     <Compile Include="$(MSBuildThisFileDirectory)CircuitBreakerTResultSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ContextualPolicyAsyncSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ContextualPolicySpecs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)FallbackAsyncSpecs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)FallbackSpecs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)FallbackTResultAsyncSpecs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)FallbackTResultSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\ContextualPolicyExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\ContextualPolicyExtensionsAsync.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\ContextualPolicyTResultExtensions.cs" />
