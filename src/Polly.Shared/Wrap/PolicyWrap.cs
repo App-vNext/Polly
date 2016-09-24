@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using Polly.Utilities;
 
 namespace Polly.Wrap
 {
@@ -12,7 +13,7 @@ namespace Polly.Wrap
     public partial class PolicyWrap : Policy
     {
         internal PolicyWrap(Action<Action<CancellationToken>, Context, CancellationToken> policyAction) 
-            : base(policyAction, Enumerable.Empty<ExceptionPredicate>())
+            : base(policyAction, PredicateHelper.EmptyExceptionPredicates)
         {
         }
     }
@@ -24,7 +25,7 @@ namespace Polly.Wrap
     public partial class PolicyWrap<TResult> : Policy<TResult>
     {
         internal PolicyWrap(Func<Func<CancellationToken, TResult>, Context, CancellationToken, TResult> policyAction)
-            : base(policyAction, Enumerable.Empty<ExceptionPredicate>(), Enumerable.Empty<ResultPredicate<TResult>>())
+            : base(policyAction, PredicateHelper.EmptyExceptionPredicates, PredicateHelper<TResult>.EmptyResultPredicates)
         {
         }
     }

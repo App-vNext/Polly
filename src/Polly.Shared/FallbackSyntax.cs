@@ -114,7 +114,7 @@ namespace Polly
                     context,
                     cancellationToken,
                     policyBuilder.ExceptionPredicates,
-                    Enumerable.Empty<ResultPredicate<EmptyStruct>>(),
+                    PredicateHelper<EmptyStruct>.EmptyResultPredicates,
                     (outcome, ctx) => onFallback(outcome.Exception, ctx),
                     ct => { fallbackAction(ct); return EmptyStruct.Instance; }),
                 policyBuilder.ExceptionPredicates);

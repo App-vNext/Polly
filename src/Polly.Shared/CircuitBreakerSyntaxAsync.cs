@@ -188,7 +188,7 @@ namespace Polly
                     async ct => { await action(ct).ConfigureAwait(continueOnCapturedContext); return EmptyStruct.Instance; },
                       context, 
                       policyBuilder.ExceptionPredicates, 
-                      Enumerable.Empty<ResultPredicate<EmptyStruct>>(), 
+                      PredicateHelper<EmptyStruct>.EmptyResultPredicates, 
                       breakerController, 
                       cancellationToken, 
                       continueOnCapturedContext),
