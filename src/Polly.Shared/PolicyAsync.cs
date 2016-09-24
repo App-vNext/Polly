@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Polly.Utilities;
 
 namespace Polly
 {
@@ -18,7 +19,7 @@ namespace Polly
             if (asyncExceptionPolicy == null) throw new ArgumentNullException("asyncExceptionPolicy");
 
             _asyncExceptionPolicy = asyncExceptionPolicy;
-            _exceptionPredicates = exceptionPredicates ?? Enumerable.Empty<ExceptionPredicate>();
+            _exceptionPredicates = exceptionPredicates ?? PredicateHelper.EmptyExceptionPredicates;
         }
 
         /// <summary>
@@ -590,8 +591,8 @@ namespace Polly
             if (asyncExecutionPolicy == null) throw new ArgumentNullException("asyncExecutionPolicy");
 
             _asyncExecutionPolicy = asyncExecutionPolicy;
-            _exceptionPredicates = exceptionPredicates ?? Enumerable.Empty<ExceptionPredicate>();
-            _resultPredicates = resultPredicates ?? Enumerable.Empty<ResultPredicate<TResult>>();
+            _exceptionPredicates = exceptionPredicates ?? PredicateHelper.EmptyExceptionPredicates;
+            _resultPredicates = resultPredicates ?? PredicateHelper<TResult>.EmptyResultPredicates;
         }
 
         /// <summary>

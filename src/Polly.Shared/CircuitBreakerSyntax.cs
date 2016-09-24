@@ -187,7 +187,7 @@ namespace Polly
                     context,
                     cancellationToken,
                     policyBuilder.ExceptionPredicates, 
-                    Enumerable.Empty<ResultPredicate<EmptyStruct>>(), 
+                    PredicateHelper<EmptyStruct>.EmptyResultPredicates, 
                     breakerController), 
                 policyBuilder.ExceptionPredicates, 
                 breakerController

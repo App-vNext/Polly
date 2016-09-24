@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
+using Polly.Utilities;
 
 namespace Polly
 {
@@ -22,7 +23,7 @@ namespace Polly
             if (exceptionPolicy == null) throw new ArgumentNullException("exceptionPolicy");
 
             _exceptionPolicy = exceptionPolicy;
-            _exceptionPredicates = exceptionPredicates ?? Enumerable.Empty<ExceptionPredicate>();
+            _exceptionPredicates = exceptionPredicates ?? PredicateHelper.EmptyExceptionPredicates;
         }
 
         /// <summary>
@@ -230,8 +231,8 @@ namespace Polly
             if (executionPolicy == null) throw new ArgumentNullException("executionPolicy");
 
             _executionPolicy = executionPolicy;
-            _exceptionPredicates = exceptionPredicates ?? Enumerable.Empty<ExceptionPredicate>();
-            _resultPredicates = resultPredicates ?? Enumerable.Empty<ResultPredicate<TResult>>();
+            _exceptionPredicates = exceptionPredicates ?? PredicateHelper.EmptyExceptionPredicates;
+            _resultPredicates = resultPredicates ?? PredicateHelper<TResult>.EmptyResultPredicates;
         }
 
         /// <summary>
