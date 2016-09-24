@@ -43,6 +43,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Fallback\FallbackPolicyAsync.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Policy.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Policy.HandleSyntax.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Policy.Key.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PolicyAsync.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PolicyBuilder.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PolicyBuilder.OrSyntax.cs" />
@@ -70,6 +71,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)AdvancedCircuitBreakerSyntax.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)AdvancedCircuitBreakerSyntaxAsync.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\EmptyStruct.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\KeyHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\PredicateHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\ReadOnlyDictionary.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\SystemClock.cs" />

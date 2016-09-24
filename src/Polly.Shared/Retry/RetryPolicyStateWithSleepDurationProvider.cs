@@ -18,11 +18,6 @@ namespace Polly.Retry
             _context = context;
         }
 
-        public RetryPolicyStateWithSleepDurationProvider(Func<int, TimeSpan> sleepDurationProvider, Action<DelegateResult<TResult>, TimeSpan> onRetry) :
-            this(sleepDurationProvider, (delegateResult, timespan, context) => onRetry(delegateResult, timespan), Context.Empty)
-        {
-        }
-
         public bool CanRetry(DelegateResult<TResult> delegateResult, CancellationToken cancellationToken)
         {
             if (_errorCount < int.MaxValue)

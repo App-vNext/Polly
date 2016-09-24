@@ -85,7 +85,7 @@ namespace Polly.CircuitBreaker
             using (TimedLock.Lock(_lock))
             {
                 _lastOutcome = new DelegateResult<TResult>(new IsolatedCircuitException("The circuit is manually held open and is not allowing calls."));
-                BreakFor_NeedsLock(TimeSpan.MaxValue, Context.Empty);
+                BreakFor_NeedsLock(TimeSpan.MaxValue, Context.None);
                 _circuitState = CircuitState.Isolated;
             }
         }
@@ -103,12 +103,12 @@ namespace Polly.CircuitBreaker
                 : SystemClock.UtcNow() + durationOfBreak;
             _circuitState = CircuitState.Open;
 
-            _onBreak(_lastOutcome, durationOfBreak, context ?? Context.Empty);
+            _onBreak(_lastOutcome, durationOfBreak, context);
         }
 
         public void Reset()
         {
-            OnCircuitReset(Context.Empty);
+            OnCircuitReset(Context.None);
         }
 
         protected void ResetInternal_NeedsLock(Context context)
@@ -120,7 +120,7 @@ namespace Polly.CircuitBreaker
             _circuitState = CircuitState.Closed;
             if (priorState != CircuitState.Closed)
             {
-                _onReset(context ?? Context.Empty);
+                _onReset(context);
             }
         }
 

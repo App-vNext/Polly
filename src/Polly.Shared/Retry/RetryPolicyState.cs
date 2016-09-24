@@ -14,11 +14,6 @@ namespace Polly.Retry
             _context = context;
         }
 
-        public RetryPolicyState(Action<DelegateResult<TResult>> onRetry) :
-            this((delegateResult, context) => onRetry(delegateResult), Context.Empty)
-        {
-        }
-
         public bool CanRetry(DelegateResult<TResult> delegateResult, CancellationToken cancellationToken)
         {
             _onRetry(delegateResult, _context);

@@ -68,7 +68,7 @@ namespace Polly
                     cancellationToken,
                     policyBuilder.ExceptionPredicates, 
                     PredicateHelper<EmptyStruct>.EmptyResultPredicates,
-                    () => new RetryPolicyStateWithCount<EmptyStruct>(retryCount, (outcome, i) => onRetry(outcome.Exception, i))
+                    () => new RetryPolicyStateWithCount<EmptyStruct>(retryCount, (outcome, i, ctx) => onRetry(outcome.Exception, i), context)
                 ),
                 policyBuilder.ExceptionPredicates
             );
@@ -142,7 +142,7 @@ namespace Polly
                     cancellationToken,
                     policyBuilder.ExceptionPredicates,
                     PredicateHelper<EmptyStruct>.EmptyResultPredicates, 
-                    () => new RetryPolicyState<EmptyStruct>(outcome => onRetry(outcome.Exception))
+                    () => new RetryPolicyState<EmptyStruct>((outcome, ctx) => onRetry(outcome.Exception), context)
                 ),
                 policyBuilder.ExceptionPredicates
             );
@@ -217,7 +217,7 @@ namespace Polly
                     cancellationToken,
                     policyBuilder.ExceptionPredicates,
                     PredicateHelper<EmptyStruct>.EmptyResultPredicates,
-                    () => new RetryPolicyStateWithSleep<EmptyStruct>(sleepDurations, (outcome, timespan) => onRetry(outcome.Exception, timespan))
+                    () => new RetryPolicyStateWithSleep<EmptyStruct>(sleepDurations, (outcome, timespan, ctx) => onRetry(outcome.Exception, timespan), context)
                 ),
                 policyBuilder.ExceptionPredicates
             );
@@ -333,7 +333,7 @@ namespace Polly
                     cancellationToken,
                     policyBuilder.ExceptionPredicates,
                     PredicateHelper<EmptyStruct>.EmptyResultPredicates,
-                    () => new RetryPolicyStateWithSleep<EmptyStruct>(sleepDurations, (outcome, timespan) => onRetry(outcome.Exception, timespan))
+                    () => new RetryPolicyStateWithSleep<EmptyStruct>(sleepDurations, (outcome, timespan, ctx) => onRetry(outcome.Exception, timespan), context)
                 ),
                 policyBuilder.ExceptionPredicates
             );
@@ -434,7 +434,7 @@ namespace Polly
                     cancellationToken,
                     policyBuilder.ExceptionPredicates,
                     PredicateHelper<EmptyStruct>.EmptyResultPredicates,
-                    () => new RetryPolicyStateWithSleepDurationProvider<EmptyStruct>(sleepDurationProvider, (outcome, timespan) => onRetry(outcome.Exception, timespan))
+                    () => new RetryPolicyStateWithSleepDurationProvider<EmptyStruct>(sleepDurationProvider, (outcome, timespan, ctx) => onRetry(outcome.Exception, timespan), context)
                 ),
                 policyBuilder.ExceptionPredicates
             );

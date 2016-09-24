@@ -174,7 +174,7 @@ namespace Polly.Specs
             syncPolicy
                 .Awaiting(x => x.ExecuteAsync(() => CompletedTask))
                 .ShouldThrow<InvalidOperationException>()
-                .WithMessage("Please use the asynchronous RetryAsync, RetryForeverAsync, WaitAndRetryAsync or CircuitBreakerAsync methods when calling the asynchronous Execute method.");
+                .WithMessage("Please use asynchronous-defined policies when calling asynchronous ExecuteAsync (and similar) methods.");
         }
 
         [Theory, MemberData("SyncPolicies")]
@@ -183,7 +183,7 @@ namespace Polly.Specs
             syncPolicy
                 .Awaiting(x => x.ExecuteAndCaptureAsync(() => CompletedTask))
                 .ShouldThrow<InvalidOperationException>()
-                .WithMessage("Please use the asynchronous RetryAsync, RetryForeverAsync, WaitAndRetryAsync or CircuitBreakerAsync methods when calling the asynchronous Execute method.");
+                .WithMessage("Please use asynchronous-defined policies when calling asynchronous ExecuteAsync (and similar) methods.");
         }
 
         public static IEnumerable<object[]> SyncPolicies

@@ -17,11 +17,6 @@ namespace Polly.Retry
             _context = context;
         }
 
-        public RetryPolicyStateWithCount(int retryCount, Func<DelegateResult<TResult>, int, Task> onRetryAsync) :
-            this(retryCount, (delegateResult, i, context) => onRetryAsync(delegateResult, i), Context.Empty)
-        {
-        }
-
         public async Task<bool> CanRetryAsync(DelegateResult<TResult> delegateResult, CancellationToken ct, bool continueOnCapturedContext)
         {
             _errorCount += 1;

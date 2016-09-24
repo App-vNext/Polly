@@ -15,6 +15,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)CircuitBreakerTResultAsyncSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CircuitBreakerTResultMixedResultExceptionSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CircuitBreakerTResultSpecs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ContextSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ContextualPolicyAsyncSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ContextualPolicySpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)FallbackAsyncSpecs.cs" />
@@ -33,6 +34,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\ResultClass.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\ResultPrimitive.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PolicyAsyncSpecs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)PolicyKeyAsyncSpecs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)PolicyKeySpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PolicySpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PolicyWrapSpecsAsync.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)RetryAsyncSpecs.cs" />

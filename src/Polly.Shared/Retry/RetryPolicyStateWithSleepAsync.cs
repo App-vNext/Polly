@@ -25,11 +25,6 @@ namespace Polly.Retry
         {
         }
 
-        public RetryPolicyStateWithSleep(IEnumerable<TimeSpan> sleepDurations, Func<DelegateResult<TResult>, TimeSpan, Task> onRetryAsync) :
-            this(sleepDurations, (delegateResult, span, context) => onRetryAsync(delegateResult, span), Context.Empty)
-        {
-        }
-
         public async Task<bool> CanRetryAsync(DelegateResult<TResult> delegateResult, CancellationToken cancellationToken, bool continueOnCapturedContext)
         {
             if (!_sleepDurationsEnumerator.MoveNext()) return false;
