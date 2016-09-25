@@ -108,7 +108,7 @@ namespace Polly
                 ("Please use asynchronous-defined policies when calling asynchronous ExecuteAsync (and similar) methods.");
             if (context == null) throw new ArgumentNullException(nameof(context));
 
-            context.SetPolicyContext(this);
+            SetPolicyContext(context);
 
             await _asyncExceptionPolicy(action, context, cancellationToken, continueOnCapturedContext).ConfigureAwait(continueOnCapturedContext);
         }
@@ -346,7 +346,7 @@ namespace Polly
                 "Please use asynchronous-defined policies when calling asynchronous ExecuteAsync (and similar) methods.");
             if (context == null) throw new ArgumentNullException(nameof(context));
 
-            context.SetPolicyContext(this);
+            SetPolicyContext(context);
 
             var result = default(TResult);
             await _asyncExceptionPolicy(async ct =>
@@ -596,7 +596,7 @@ namespace Polly
                 "Please use asynchronous-defined policies when calling asynchronous ExecuteAsync (and similar) methods.");
             if (context == null) throw new ArgumentNullException(nameof(context));
 
-            context.SetPolicyContext(this);
+            SetPolicyContext(context);
 
             TResult result = await _asyncExecutionPolicy(
                 action,

@@ -34,8 +34,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\ResultClass.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\ResultPrimitive.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PolicyAsyncSpecs.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)PolicyKeyAsyncSpecs.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)PolicyKeySpecs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)PolicyContextAndKeyAsyncSpecs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)PolicyContextAndKeySpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PolicySpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PolicyWrapSpecsAsync.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)RetryAsyncSpecs.cs" />

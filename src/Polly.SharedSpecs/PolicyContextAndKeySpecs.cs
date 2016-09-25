@@ -1,11 +1,14 @@
 ﻿using System;
 using FluentAssertions;
+using Polly.Specs.Helpers;
 using Xunit;
 
 namespace Polly.Specs
 {
     public class PolicyKeySpecs
     {
+        #region Configuration
+
         [Fact]
         public void Should_be_able_fluently_to_configure_the_policy_key()
         {
@@ -82,13 +85,103 @@ namespace Polly.Specs
 
             Action configure = () => policy.WithPolicyKey(Guid.NewGuid().ToString());
 
-            configure.ShouldThrow<ArgumentException>().And.ParamName.Should().Be("policyKey");
+            configure.ShouldThrow<ArgumentException>().And.ParamName.Should().Be("p" +
+                                                                                 "olicyKey");
         }
+
+        #endregion
+
+        #region PolicyKey and execution Context tests
+
+        [Fact]
+        public void Should_pass_PolicyKey_to_execution_context()
+        {
+            string policyKey = Guid.NewGuid().ToString();
+
+            string policyKeySetOnExecutionContext = null;
+            Action<Exception, int, Context> onRetry = (e, i, context) => { policyKeySetOnExecutionContext = context.PolicyKey; };
+            var retry = Policy.Handle<Exception>().Retry(1, onRetry).WithPolicyKey(policyKey);
+
+            retry.RaiseException<Exception>(1);
+
+            policyKeySetOnExecutionContext.Should().Be(policyKey);
+        }
+
+        [Fact]
+        public void Should_pass_ExecutionKey_to_execution_context()
+        {
+            string executionKey = Guid.NewGuid().ToString();
+
+            string executionKeySetOnContext = null;
+            Action<Exception, int, Context> onRetry = (e, i, context) => { executionKeySetOnContext = context.ExecutionKey; };
+            var retry = Policy.Handle<Exception>().Retry(1, onRetry);
+
+            bool firstExecution = true;
+            retry.Execute(() =>
+            {
+                if (firstExecution)
+                {
+                    firstExecution = false;
+                    throw new Exception();
+                }
+            }, new Context(executionKey));
+
+            executionKeySetOnContext.Should().Be(executionKey);
+        }
+
+        [Fact]
+        public void Should_pass_PolicyKey_to_execution_context_in_generic_execution_on_non_generic_policy()
+        {
+            string policyKey = Guid.NewGuid().ToString();
+
+            string policyKeySetOnExecutionContext = null;
+            Action<Exception, int, Context> onRetry = (e, i, context) => { policyKeySetOnExecutionContext = context.PolicyKey; };
+            var retry = Policy.Handle<Exception>().Retry(1, onRetry).WithPolicyKey(policyKey);
+
+            bool firstExecution = true;
+            retry.Execute<int>(() =>
+            {
+                if (firstExecution)
+                {
+                    firstExecution = false;
+                    throw new Exception();
+                }
+                return 0;
+            });
+
+            policyKeySetOnExecutionContext.Should().Be(policyKey);
+        }
+
+        [Fact]
+        public void Should_pass_ExecutionKey_to_execution_context_in_generic_execution_on_non_generic_policy()
+        {
+            string executionKey = Guid.NewGuid().ToString();
+
+            string executionKeySetOnContext = null;
+            Action<Exception, int, Context> onRetry = (e, i, context) => { executionKeySetOnContext = context.ExecutionKey; };
+            var retry = Policy.Handle<Exception>().Retry(1, onRetry);
+
+            bool firstExecution = true;
+            retry.Execute<int>(() =>
+            {
+                if (firstExecution)
+                {
+                    firstExecution = false;
+                    throw new Exception();
+                }
+                return 0;
+            }, new Context(executionKey));
+
+            executionKeySetOnContext.Should().Be(executionKey);
+        }
+        #endregion
     }
 
 
     public class PolicyTResultKeySpecs
     {
+        #region Configuration
+
         [Fact]
         public void Should_be_able_fluently_to_configure_the_policy_key()
         {
@@ -167,5 +260,48 @@ namespace Polly.Specs
 
             configure.ShouldThrow<ArgumentException>().And.ParamName.Should().Be("policyKey");
         }
+
+        #endregion
+
+        #region PolicyKey and execution Context tests
+
+        [Fact]
+        public void Should_pass_PolicyKey_to_execution_context()
+        {
+            string policyKey = Guid.NewGuid().ToString();
+
+            string policyKeySetOnExecutionContext = null;
+            Action<DelegateResult<ResultPrimitive>, int, Context> onRetry = (outcome, i, context) => { policyKeySetOnExecutionContext = context.PolicyKey; };
+            var retry = Policy.HandleResult(ResultPrimitive.Fault).Retry(1, onRetry).WithPolicyKey(policyKey);
+
+            retry.RaiseResultSequence(ResultPrimitive.Fault, ResultPrimitive.Good);
+
+            policyKeySetOnExecutionContext.Should().Be(policyKey);
+        }
+
+        [Fact]
+        public void Should_pass_ExecutionKey_to_execution_context()
+        {
+            string executionKey = Guid.NewGuid().ToString();
+
+            string executionKeySetOnContext = null;
+            Action<DelegateResult<ResultPrimitive>, int, Context> onRetry = (outcome, i, context) => { executionKeySetOnContext = context.ExecutionKey; };
+            var retry = Policy.HandleResult(ResultPrimitive.Fault).Retry(1, onRetry);
+
+            bool firstExecution = true;
+            retry.Execute(() =>
+            {
+                if (firstExecution)
+                {
+                    firstExecution = false;
+                    return ResultPrimitive.Fault;
+                }
+                return ResultPrimitive.Good;
+            }, new Context(executionKey));
+
+            executionKeySetOnContext.Should().Be(executionKey);
+        }
+
+        #endregion
     }
 }

@@ -52,12 +52,20 @@ namespace Polly
         /// <summary>
         /// A key unique to the outermost <see cref="PolicyWrap"/> instance involved in the current PolicyWrap execution.
         /// </summary>
-        public String PolicyWrapKey => _policyWrapKey;
+        public String PolicyWrapKey
+        {
+            get { return _policyWrapKey; }
+            internal set { _policyWrapKey = value; }
+        }
 
         /// <summary>
         /// A key unique to the <see cref="Policy"/> instance executing the current delegate.
         /// </summary>
-        public String PolicyKey => _policyKey;
+        public String PolicyKey
+        {
+            get { return _policyKey; }
+            internal set { _policyKey = value; }
+        }
 
         /// <summary>
         /// A key unique to the call site of the current execution. 
@@ -72,29 +80,10 @@ namespace Polly
         {
             get
             {
-                if (_executionGuid == null) { _executionGuid = Guid.NewGuid(); }
+                if (!_executionGuid.HasValue) { _executionGuid = Guid.NewGuid(); }
                 return _executionGuid.Value;
             }
         }
-
-        internal void SetPolicyContext(Policy executingPolicy)
-        {
-            _policyKey = executingPolicy.PolicyKey;
-
-            if (PolicyWrapKey == null && executingPolicy is PolicyWrap)
-            {
-                _policyWrapKey = executingPolicy.PolicyKey;
-            }
-        }
-
-        internal void SetPolicyContext<TResult>(Policy<TResult> executingPolicy)
-        {
-            _policyKey = executingPolicy.PolicyKey;
-
-            if (PolicyWrapKey == null && executingPolicy is PolicyWrap<TResult>)
-            {
-                _policyWrapKey = executingPolicy.PolicyKey;
-            }
-        }
+        
     }
 }

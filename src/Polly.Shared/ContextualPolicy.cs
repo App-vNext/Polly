@@ -59,7 +59,7 @@ namespace Polly
                 "Please use the synchronous-defined policies when calling the synchronous Execute (and similar) methods.");
             if (context == null) throw new ArgumentNullException(nameof(context));
 
-            context.SetPolicyContext(this);
+            SetPolicyContext(context);
 
             _exceptionPolicy(action, context, cancellationToken);
         }
@@ -192,7 +192,7 @@ namespace Polly
                 "Please use the synchronous-defined policies when calling the synchronous Execute (and similar) methods.");
             if (context == null) throw new ArgumentNullException(nameof(context));
 
-            context.SetPolicyContext(this);
+            SetPolicyContext(context);
 
             var result = default(TResult);
             _exceptionPolicy(ct => { result = action(ct); }, context, cancellationToken);
@@ -333,7 +333,7 @@ namespace Polly
                 "Please use the synchronous-defined policies when calling the synchronous Execute (and similar) methods.");
             if (context == null) throw new ArgumentNullException(nameof(context));
 
-            context.SetPolicyContext(this);
+            SetPolicyContext(context);
 
             return _executionPolicy(action, context, cancellationToken);
         }

@@ -24,6 +24,15 @@ namespace Polly
             _policyKey = policyKey;
             return this;
         }
+
+        /// <summary>
+        /// Updates the execution <see cref="Context"/> with context from the executing <see cref="Policy"/>.
+        /// </summary>
+        /// <param name="executionContext">The execution <see cref="Context"/>.</param>
+        internal virtual void SetPolicyContext(Context executionContext)
+        {
+            executionContext.PolicyKey = PolicyKey;
+        }
     }
 
     public partial class Policy<TResult>
@@ -46,6 +55,15 @@ namespace Polly
 
             _policyKey = policyKey;
             return this;
+        }
+
+        /// <summary>
+        /// Updates the execution <see cref="Context"/> with context from the executing <see cref="Policy{TResult}"/>.
+        /// </summary>
+        /// <param name="executionContext">The execution <see cref="Context"/>.</param>
+        internal virtual void SetPolicyContext(Context executionContext)
+        {
+            executionContext.PolicyKey = PolicyKey;
         }
     }
 }

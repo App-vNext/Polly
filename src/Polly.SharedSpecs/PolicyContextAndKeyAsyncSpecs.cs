@@ -1,12 +1,16 @@
 ﻿using System;
 using FluentAssertions;
 using Polly.Retry;
+using Polly.Specs.Helpers;
+using Polly.Utilities;
 using Xunit;
 
 namespace Polly.Specs
 {
     public class PolicyKeyAsyncSpecs
     {
+        #region Configuration
+
         [Fact]
         public void Should_be_able_fluently_to_configure_the_policy_key()
         {
@@ -73,7 +77,6 @@ namespace Polly.Specs
             keyRetrievedSecond.Should().Be(keyRetrievedFirst);
         }
 
-
         [Fact]
         public void Should_not_be_able_to_configure_the_policy_key_explicitly_after_retrieving_default_value()
         {
@@ -85,11 +88,103 @@ namespace Polly.Specs
 
             configure.ShouldThrow<ArgumentException>().And.ParamName.Should().Be("policyKey");
         }
-    }
 
+        #endregion
+
+        #region PolicyKey and execution Context tests
+
+        [Fact]
+        public void Should_pass_PolicyKey_to_execution_context()
+        {
+            string policyKey = Guid.NewGuid().ToString();
+
+            string policyKeySetOnExecutionContext = null;
+            Action<Exception, int, Context> onRetry = (e, i, context) => { policyKeySetOnExecutionContext = context.PolicyKey; };
+            var retry = Policy.Handle<Exception>().RetryAsync(1, onRetry).WithPolicyKey(policyKey);
+
+            retry.RaiseExceptionAsync<Exception>(1);
+
+            policyKeySetOnExecutionContext.Should().Be(policyKey);
+        }
+
+        [Fact]
+        public void Should_pass_ExecutionKey_to_execution_context()
+        {
+            string executionKey = Guid.NewGuid().ToString();
+
+            string executionKeySetOnContext = null;
+            Action<Exception, int, Context> onRetry = (e, i, context) => { executionKeySetOnContext = context.ExecutionKey; };
+            var retry = Policy.Handle<Exception>().RetryAsync(1, onRetry);
+
+            bool firstExecution = true;
+            retry.ExecuteAsync(async () =>
+            {
+                await TaskHelper.EmptyTask.ConfigureAwait(false);
+                if (firstExecution)
+                {
+                    firstExecution = false;
+                    throw new Exception();
+                }
+            }, new Context(executionKey));
+
+            executionKeySetOnContext.Should().Be(executionKey);
+        }
+
+        [Fact]
+        public void Should_pass_PolicyKey_to_execution_context_in_generic_execution_on_non_generic_policy()
+        {
+            string policyKey = Guid.NewGuid().ToString();
+
+            string policyKeySetOnExecutionContext = null;
+            Action<Exception, int, Context> onRetry = (e, i, context) => { policyKeySetOnExecutionContext = context.PolicyKey; };
+            var retry = Policy.Handle<Exception>().RetryAsync(1, onRetry).WithPolicyKey(policyKey);
+
+            bool firstExecution = true;
+            retry.ExecuteAsync<int>(async () =>
+            {
+                await TaskHelper.EmptyTask.ConfigureAwait(false);
+                if (firstExecution)
+                {
+                    firstExecution = false;
+                    throw new Exception();
+                }
+                return 0;
+            });
+
+            policyKeySetOnExecutionContext.Should().Be(policyKey);
+        }
+
+        [Fact]
+        public void Should_pass_ExecutionKey_to_execution_context_in_generic_execution_on_non_generic_policy()
+        {
+            string executionKey = Guid.NewGuid().ToString();
+
+            string executionKeySetOnContext = null;
+            Action<Exception, int, Context> onRetry = (e, i, context) => { executionKeySetOnContext = context.ExecutionKey; };
+            var retry = Policy.Handle<Exception>().RetryAsync(1, onRetry);
+
+            bool firstExecution = true;
+            retry.ExecuteAsync<int>(async () =>
+            {
+                await TaskHelper.EmptyTask.ConfigureAwait(false);
+                if (firstExecution)
+                {
+                    firstExecution = false;
+                    throw new Exception();
+                }
+                return 0;
+            }, new Context(executionKey));
+
+            executionKeySetOnContext.Should().Be(executionKey);
+        }
+        #endregion
+
+    }
 
     public class PolicyTResultKeyAsyncSpecs
     {
+        #region Configuration
+
         [Fact]
         public void Should_be_able_fluently_to_configure_the_policy_key()
         {
@@ -156,7 +251,6 @@ namespace Polly.Specs
             keyRetrievedSecond.Should().Be(keyRetrievedFirst);
         }
 
-
         [Fact]
         public void Should_not_be_able_to_configure_the_policy_key_explicitly_after_retrieving_default_value()
         {
@@ -168,5 +262,50 @@ namespace Polly.Specs
 
             configure.ShouldThrow<ArgumentException>().And.ParamName.Should().Be("policyKey");
         }
+
+        #endregion
+
+        #region PolicyKey and execution Context tests
+
+        [Fact]
+        public void Should_pass_PolicyKey_to_execution_context()
+        {
+            string policyKey = Guid.NewGuid().ToString();
+
+            string policyKeySetOnExecutionContext = null;
+            Action<DelegateResult<ResultPrimitive>, int, Context> onRetry = (outcome, i, context) => { policyKeySetOnExecutionContext = context.PolicyKey; };
+            var retry = Policy.HandleResult(ResultPrimitive.Fault).RetryAsync(1, onRetry).WithPolicyKey(policyKey);
+
+            retry.RaiseResultSequenceAsync(ResultPrimitive.Fault, ResultPrimitive.Good);
+
+            policyKeySetOnExecutionContext.Should().Be(policyKey);
+        }
+
+        [Fact]
+        public void Should_pass_ExecutionKey_to_execution_context()
+        {
+            string executionKey = Guid.NewGuid().ToString();
+
+            string executionKeySetOnContext = null;
+            Action<DelegateResult<ResultPrimitive>, int, Context> onRetry = (outcome, i, context) => { executionKeySetOnContext = context.ExecutionKey; };
+            var retry = Policy.HandleResult(ResultPrimitive.Fault).RetryAsync(1, onRetry);
+
+            bool firstExecution = true;
+            retry.ExecuteAsync(async () =>
+            {
+                await TaskHelper.EmptyTask.ConfigureAwait(false);
+                if (firstExecution)
+                {
+                    firstExecution = false;
+                    return ResultPrimitive.Fault;
+                }
+                return ResultPrimitive.Good;
+            }, new Context(executionKey));
+
+            executionKeySetOnContext.Should().Be(executionKey);
+        }
+
+        #endregion
+
     }
 }
