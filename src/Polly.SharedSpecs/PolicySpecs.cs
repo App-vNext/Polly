@@ -167,7 +167,7 @@ namespace Polly.Specs
             Action action = () => asyncPolicy.Execute(() => { });
 
             action.ShouldThrow<InvalidOperationException>()
-                .WithMessage("Please use the synchronous Retry, RetryForever, WaitAndRetry or CircuitBreaker methods when calling the synchronous Execute method.");
+                .WithMessage("Please use the synchronous-defined policies when calling the synchronous Execute (and similar) methods.");
         }
 
         [Theory, MemberData("AsyncPolicies")]
@@ -176,7 +176,7 @@ namespace Polly.Specs
             Action action = () => asyncPolicy.ExecuteAndCapture(() => { });
 
             action.ShouldThrow<InvalidOperationException>()
-                .WithMessage("Please use the synchronous Retry, RetryForever, WaitAndRetry or CircuitBreaker methods when calling the synchronous ExecuteAndCapture method.");
+                .WithMessage("Please use the synchronous-defined policies when calling the synchronous Execute (and similar) methods.");
         }
 
         public static IEnumerable<object[]> AsyncPolicies

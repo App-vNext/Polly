@@ -87,7 +87,7 @@ namespace Polly
                     policyBuilder.ExceptionPredicates,
                     PredicateHelper<EmptyStruct>.EmptyResultPredicates,
 #pragma warning disable 1998
-                    () => new RetryPolicyStateWithCount<EmptyStruct>(retryCount, async (outcome, i) => onRetry(outcome.Exception, i)),
+                    () => new RetryPolicyStateWithCount<EmptyStruct>(retryCount, async (outcome, i, ctx) => onRetry(outcome.Exception, i), context),
 #pragma warning restore 1998
                     continueOnCapturedContext),
                 policyBuilder.ExceptionPredicates
@@ -117,7 +117,7 @@ namespace Polly
                     cancellationToken,
                     policyBuilder.ExceptionPredicates,
                     PredicateHelper<EmptyStruct>.EmptyResultPredicates,
-                    () => new RetryPolicyStateWithCount<EmptyStruct>(retryCount, (outcome, i) => onRetryAsync(outcome.Exception, i)), 
+                    () => new RetryPolicyStateWithCount<EmptyStruct>(retryCount, (outcome, i, ctx) => onRetryAsync(outcome.Exception, i), context), 
                     continueOnCapturedContext),
                 policyBuilder.ExceptionPredicates
             );
@@ -237,7 +237,7 @@ namespace Polly
                     policyBuilder.ExceptionPredicates,
                     PredicateHelper<EmptyStruct>.EmptyResultPredicates,
 #pragma warning disable 1998
-                    () => new RetryPolicyState<EmptyStruct>(async outcome => onRetry(outcome.Exception)), 
+                    () => new RetryPolicyState<EmptyStruct>(async (outcome, ctx) => onRetry(outcome.Exception), context), 
 #pragma warning restore 1998
                     continueOnCapturedContext),
                 policyBuilder.ExceptionPredicates
@@ -263,7 +263,7 @@ namespace Polly
                     cancellationToken,
                     policyBuilder.ExceptionPredicates,
                     PredicateHelper<EmptyStruct>.EmptyResultPredicates,
-                    () => new RetryPolicyState<EmptyStruct>(outcome => onRetryAsync(outcome.Exception)),
+                    () => new RetryPolicyState<EmptyStruct>((outcome, ctx) => onRetryAsync(outcome.Exception), context),
                     continueOnCapturedContext),
                 policyBuilder.ExceptionPredicates
             );
@@ -370,7 +370,7 @@ namespace Polly
                     policyBuilder.ExceptionPredicates,
                     PredicateHelper<EmptyStruct>.EmptyResultPredicates,
 #pragma warning disable 1998
-                    () => new RetryPolicyStateWithSleep<EmptyStruct>(sleepDurations, async (outcome, timespan) => onRetry(outcome.Exception, timespan)), 
+                    () => new RetryPolicyStateWithSleep<EmptyStruct>(sleepDurations, async (outcome, timespan, ctx) => onRetry(outcome.Exception, timespan), context), 
 #pragma warning restore 1998
                     continueOnCapturedContext),
                 policyBuilder.ExceptionPredicates
@@ -412,7 +412,7 @@ namespace Polly
                     cancellationToken,
                     policyBuilder.ExceptionPredicates,
                     PredicateHelper<EmptyStruct>.EmptyResultPredicates,
-                    () => new RetryPolicyStateWithSleep<EmptyStruct>(sleepDurations, (outcome, timespan) => onRetryAsync(outcome.Exception, timespan)),
+                    () => new RetryPolicyStateWithSleep<EmptyStruct>(sleepDurations, (outcome, timespan, ctx) => onRetryAsync(outcome.Exception, timespan), context),
                     continueOnCapturedContext),
                 policyBuilder.ExceptionPredicates
             );
@@ -625,7 +625,7 @@ namespace Polly
                     policyBuilder.ExceptionPredicates,
                     PredicateHelper<EmptyStruct>.EmptyResultPredicates,
 #pragma warning disable 1998
-                    () => new RetryPolicyStateWithSleep<EmptyStruct>(sleepDurations, async (outcome, timespan) => onRetry(outcome.Exception, timespan)), 
+                    () => new RetryPolicyStateWithSleep<EmptyStruct>(sleepDurations, async (outcome, timespan, ctx) => onRetry(outcome.Exception, timespan), context), 
 #pragma warning restore 1998
                     continueOnCapturedContext),
                 policyBuilder.ExceptionPredicates
@@ -659,7 +659,7 @@ namespace Polly
                     cancellationToken,
                     policyBuilder.ExceptionPredicates,
                     PredicateHelper<EmptyStruct>.EmptyResultPredicates,
-                    () => new RetryPolicyStateWithSleep<EmptyStruct>(sleepDurations, (outcome, timespan) => onRetryAsync(outcome.Exception, timespan)),
+                    () => new RetryPolicyStateWithSleep<EmptyStruct>(sleepDurations, (outcome, timespan, ctx) => onRetryAsync(outcome.Exception, timespan), context),
                     continueOnCapturedContext),
                 policyBuilder.ExceptionPredicates
             );
@@ -840,7 +840,7 @@ namespace Polly
                     policyBuilder.ExceptionPredicates,
                     PredicateHelper<EmptyStruct>.EmptyResultPredicates,
 #pragma warning disable 1998
-                    () => new RetryPolicyStateWithSleepDurationProvider<EmptyStruct>(sleepDurationProvider, async (outcome, timespan) => onRetry(outcome.Exception, timespan)),
+                    () => new RetryPolicyStateWithSleepDurationProvider<EmptyStruct>(sleepDurationProvider, async (outcome, timespan, ctx) => onRetry(outcome.Exception, timespan), context),
 #pragma warning restore 1998
                     continueOnCapturedContext
                 ),
@@ -870,7 +870,7 @@ namespace Polly
                     cancellationToken,
                     policyBuilder.ExceptionPredicates,
                     PredicateHelper<EmptyStruct>.EmptyResultPredicates,
-                    () => new RetryPolicyStateWithSleepDurationProvider<EmptyStruct>(sleepDurationProvider, (outcome, timespan) => onRetryAsync(outcome.Exception, timespan)),
+                    () => new RetryPolicyStateWithSleepDurationProvider<EmptyStruct>(sleepDurationProvider, (outcome, timespan, ctx) => onRetryAsync(outcome.Exception, timespan), context),
                     continueOnCapturedContext
                 ),
                 policyBuilder.ExceptionPredicates

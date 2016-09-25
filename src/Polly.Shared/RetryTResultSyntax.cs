@@ -67,7 +67,7 @@ namespace Polly
                     cancellationToken,
                     policyBuilder.ExceptionPredicates,
                     policyBuilder.ResultPredicates,
-                    () => new RetryPolicyStateWithCount<TResult>(retryCount, onRetry)
+                    () => new RetryPolicyStateWithCount<TResult>(retryCount, (outcome, i, ctx) => onRetry(outcome, i), context)
                 ),
                 policyBuilder.ExceptionPredicates,
                 policyBuilder.ResultPredicates
@@ -144,7 +144,7 @@ namespace Polly
                     cancellationToken,
                     policyBuilder.ExceptionPredicates,
                     policyBuilder.ResultPredicates,
-                    () => new RetryPolicyState<TResult>(outcome => onRetry(outcome.Exception))
+                    () => new RetryPolicyState<TResult>((outcome, ctx) => onRetry(outcome.Exception), context)
                 ),
                 policyBuilder.ExceptionPredicates,
                 policyBuilder.ResultPredicates
@@ -223,7 +223,7 @@ namespace Polly
                     cancellationToken,
                     policyBuilder.ExceptionPredicates,
                     policyBuilder.ResultPredicates,
-                    () => new RetryPolicyStateWithSleep<TResult>(sleepDurations, onRetry)
+                    () => new RetryPolicyStateWithSleep<TResult>(sleepDurations, (outcome, span, ctx) => onRetry(outcome, span), context)
                 ),
                 policyBuilder.ExceptionPredicates,
                 policyBuilder.ResultPredicates
@@ -345,7 +345,7 @@ namespace Polly
                     cancellationToken,
                     policyBuilder.ExceptionPredicates,
                     policyBuilder.ResultPredicates,
-                    () => new RetryPolicyStateWithSleep<TResult>(sleepDurations, onRetry)
+                    () => new RetryPolicyStateWithSleep<TResult>(sleepDurations, (outcome, span, ctx) => onRetry(outcome, span), context)
                 ),
                 policyBuilder.ExceptionPredicates,
                 policyBuilder.ResultPredicates
@@ -453,7 +453,7 @@ namespace Polly
                     cancellationToken,
                     policyBuilder.ExceptionPredicates,
                     policyBuilder.ResultPredicates,
-                    () => new RetryPolicyStateWithSleepDurationProvider<TResult>(sleepDurationProvider, onRetry)
+                    () => new RetryPolicyStateWithSleepDurationProvider<TResult>(sleepDurationProvider, (outcome, timespan, ctx) => onRetry(outcome, timespan), context)
                 ),
                 policyBuilder.ExceptionPredicates,
                 policyBuilder.ResultPredicates
