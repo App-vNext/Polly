@@ -37,6 +37,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)PolicyContextAndKeyAsyncSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PolicyContextAndKeySpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PolicySpecs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)PolicyWrapContextAndKeySpecs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)PolicyWrapContextAndKeySpecsAsync.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PolicyWrapSpecsAsync.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)RetryAsyncSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)RetryForeverAsyncSpecs.cs" />
