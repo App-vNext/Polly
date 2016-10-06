@@ -9,7 +9,7 @@ namespace Polly.CircuitBreaker
 #if !PORTABLE
     [Serializable]
 #endif
-    public class BrokenCircuitException : Exception
+    public class BrokenCircuitException : ExecutionRejectedException
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="BrokenCircuitException"/> class.

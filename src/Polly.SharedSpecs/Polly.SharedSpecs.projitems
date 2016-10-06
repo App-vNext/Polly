@@ -9,6 +9,12 @@
     <Import_RootNamespace>Polly.SharedSpecs</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)BulkheadAsyncSpecs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)BulkheadSpecs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)BulkheadScenarios.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)BulkheadSpecsHelper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)BulkheadTResultAsyncSpecs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)BulkheadTResultSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CircuitBreakerAsyncSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)AdvancedCircuitBreakerSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CircuitBreakerSpecs.cs" />
@@ -22,6 +28,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)FallbackSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)FallbackTResultAsyncSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)FallbackTResultSpecs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\TraceableAction.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\ContextualPolicyExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\ContextualPolicyExtensionsAsync.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\ContextualPolicyTResultExtensions.cs" />

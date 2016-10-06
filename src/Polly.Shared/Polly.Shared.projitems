@@ -11,6 +11,15 @@
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)AdvancedCircuitBreakerTResultSyntax.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)AdvancedCircuitBreakerTResultSyntaxAsync.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)BulkheadSyntax.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)BulkheadSyntaxAsync.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)BulkheadTResultSyntax.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)BulkheadTResultSyntaxAsync.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Bulkhead\BulkheadEngine.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Bulkhead\BulkheadEngineAsync.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Bulkhead\BulkheadPolicy.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Bulkhead\BulkheadPolicyAsync.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Bulkhead\BulkheadRejectedException.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CircuitBreakerSyntax.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CircuitBreakerSyntaxAsync.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CircuitBreakerTResultSyntax.cs" />
@@ -35,6 +44,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)ContextualPolicyAsync.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ExceptionPredicate.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DelegateResult.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ExecutionRejectedException.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)FallbackSyntax.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)FallbackSyntaxAsync.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Fallback\FallbackEngine.cs" />
