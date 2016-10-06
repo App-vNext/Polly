@@ -20,7 +20,7 @@ namespace Polly.Utilities
 #else
             Task 
 #endif 
-            .Delay(timeSpan, cancellationToken).Wait(cancellationToken);
+            .Delay(timeSpan, cancellationToken).Wait();
         };
 
         /// <summary>
@@ -50,7 +50,7 @@ namespace Polly.Utilities
 #else
             Task
 #endif
-            .Delay(timeSpan, cancellationToken).Wait(cancellationToken);
+            .Delay(timeSpan, cancellationToken).Wait();
 
 #if NET40
             SleepAsync = TaskEx.Delay;
