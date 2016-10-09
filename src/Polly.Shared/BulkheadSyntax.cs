@@ -5,9 +5,6 @@ using System.Threading;
 
 namespace Polly
 {
-    /// <summary>
-    /// Fluent API for defining a <see cref="BulkheadPolicy"/>. 
-    /// </summary>
     public partial class Policy
     {
         /// <summary>

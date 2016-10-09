@@ -3,14 +3,13 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Polly.Specs.Helpers;
+using Polly.Utilities;
 using Xunit;
 
 namespace Polly.Specs
 {
     public class PolicyAsyncSpecs
     {
-        public static readonly Task CompletedTask = Task.FromResult(0);
-
         [Fact]
         public async Task Executing_the_policy_action_should_execute_the_specified_async_action()
         {
@@ -23,7 +22,7 @@ namespace Polly.Specs
             await policy.ExecuteAsync(() =>
             {
                 executed = true;
-                return Task.FromResult(true) as Task;
+                return TaskHelper.EmptyTask;
             });
 
             executed.Should()
@@ -172,7 +171,7 @@ namespace Polly.Specs
         public void Executing_the_synchronous_policies_using_the_asynchronous_execute_should_throw_an_invalid_operation_exception(Policy syncPolicy, string description)
         {
             syncPolicy
-                .Awaiting(x => x.ExecuteAsync(() => CompletedTask))
+                .Awaiting(async x => await x.ExecuteAsync(() => TaskHelper.EmptyTask))
                 .ShouldThrow<InvalidOperationException>()
                 .WithMessage("Please use asynchronous-defined policies when calling asynchronous ExecuteAsync (and similar) methods.");
         }
@@ -181,7 +180,7 @@ namespace Polly.Specs
         public void Executing_the_synchronous_policies_using_the_asynchronous_execute_and_capture_should_throw_an_invalid_operation_exception(Policy syncPolicy, string description)
         {
             syncPolicy
-                .Awaiting(x => x.ExecuteAndCaptureAsync(() => CompletedTask))
+                .Awaiting(async x => await x.ExecuteAndCaptureAsync(() => TaskHelper.EmptyTask))
                 .ShouldThrow<InvalidOperationException>()
                 .WithMessage("Please use asynchronous-defined policies when calling asynchronous ExecuteAsync (and similar) methods.");
         }

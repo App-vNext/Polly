@@ -113,7 +113,7 @@ namespace Polly.Specs
                   .Should().Be(ResultPrimitive.Fault);
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
-            breaker.Awaiting(b => b.RaiseResultSequenceAsync(ResultPrimitive.Fault))
+            breaker.Awaiting(async b => await b.RaiseResultSequenceAsync(ResultPrimitive.Fault))
                 .ShouldThrow<BrokenCircuitException<ResultPrimitive>>()
                 .WithMessage("The circuit is now open and is not allowing calls.")
                 .Where(e => e.Result == ResultPrimitive.Fault);
@@ -138,7 +138,7 @@ namespace Polly.Specs
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
             // 2 exception or fault raised, circuit is now open
-            breaker.Awaiting(b => b.RaiseResultSequenceAsync(ResultPrimitive.Fault))
+            breaker.Awaiting(async b => await b.RaiseResultSequenceAsync(ResultPrimitive.Fault))
                 .ShouldThrow<BrokenCircuitException<ResultPrimitive>>()
                 .WithMessage("The circuit is now open and is not allowing calls.")
                 .Where(e => e.Result == ResultPrimitive.FaultAgain);
@@ -160,7 +160,7 @@ namespace Polly.Specs
                   .ResultCode.Should().Be(ResultPrimitive.Fault);
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
-            breaker.Awaiting(b => b.RaiseResultSequenceAsync(new ResultClass(ResultPrimitive.Good)))
+            breaker.Awaiting(async b => await b.RaiseResultSequenceAsync(new ResultClass(ResultPrimitive.Good)))
                 .ShouldThrow<BrokenCircuitException<ResultClass>>()
                 .WithMessage("The circuit is now open and is not allowing calls.")
                 .Where(e => e.Result.ResultCode == ResultPrimitive.Fault);
@@ -275,7 +275,7 @@ namespace Polly.Specs
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
             // 2 exception or fault raised, circuit is now open
-            breaker.Awaiting(b => b.RaiseResultSequenceAsync(ResultPrimitive.Fault))
+            breaker.Awaiting(async b => await b.RaiseResultSequenceAsync(ResultPrimitive.Fault))
                 .ShouldThrow<BrokenCircuitException>();
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
@@ -308,7 +308,7 @@ namespace Polly.Specs
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
             // 2 exception or fault raised, circuit is now open
-            breaker.Awaiting(b => b.RaiseResultSequenceAsync(ResultPrimitive.Fault))
+            breaker.Awaiting(async b => await b.RaiseResultSequenceAsync(ResultPrimitive.Fault))
                   .ShouldThrow<BrokenCircuitException>();
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
@@ -321,7 +321,7 @@ namespace Polly.Specs
             (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault).ConfigureAwait(false))
                   .Should().Be(ResultPrimitive.Fault);
             breaker.CircuitState.Should().Be(CircuitState.Open);
-            breaker.Awaiting(b => b.RaiseResultSequenceAsync(ResultPrimitive.Fault))
+            breaker.Awaiting(async b => await b.RaiseResultSequenceAsync(ResultPrimitive.Fault))
                   .ShouldThrow<BrokenCircuitException>();
 
         }
@@ -347,7 +347,7 @@ namespace Polly.Specs
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
             // 2 exception or fault raised, circuit is now open
-            breaker.Awaiting(b => b.RaiseResultSequenceAsync(ResultPrimitive.Fault))
+            breaker.Awaiting(async b => await b.RaiseResultSequenceAsync(ResultPrimitive.Fault))
                   .ShouldThrow<BrokenCircuitException>();
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
@@ -369,7 +369,7 @@ namespace Polly.Specs
                   .Should().Be(ResultPrimitive.Fault);
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
-            breaker.Awaiting(b => b.RaiseResultSequenceAsync(ResultPrimitive.Fault))
+            breaker.Awaiting(async b => await b.RaiseResultSequenceAsync(ResultPrimitive.Fault))
                   .ShouldThrow<BrokenCircuitException>();
             breaker.CircuitState.Should().Be(CircuitState.Open);
         }
@@ -424,7 +424,7 @@ namespace Polly.Specs
             breaker.CircuitState.Should().Be(CircuitState.Isolated);
 
             bool delegateExecutedWhenBroken = false;
-            breaker.Awaiting(x => x.ExecuteAsync(() => { delegateExecutedWhenBroken = true; return Task.FromResult(ResultPrimitive.Good); }))
+            breaker.Awaiting(async x => await x.ExecuteAsync(() => { delegateExecutedWhenBroken = true; return Task.FromResult(ResultPrimitive.Good); }))
                 .ShouldThrow<IsolatedCircuitException>();
             delegateExecutedWhenBroken.Should().BeFalse();
         }
@@ -444,12 +444,12 @@ namespace Polly.Specs
 
             breaker.Isolate();
             breaker.CircuitState.Should().Be(CircuitState.Isolated);
-            breaker.Awaiting(x => x.ExecuteAsync(() => Task.FromResult(ResultPrimitive.Good)))
+            breaker.Awaiting(async x => await x.ExecuteAsync(() => Task.FromResult(ResultPrimitive.Good)))
                 .ShouldThrow<IsolatedCircuitException>();
 
             breaker.Reset();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
-            breaker.Awaiting(x => x.ExecuteAsync(() => Task.FromResult(ResultPrimitive.Good))).ShouldNotThrow();
+            breaker.Awaiting(async x => await x.ExecuteAsync(() => Task.FromResult(ResultPrimitive.Good))).ShouldNotThrow();
         }
 
         [Fact]
@@ -473,7 +473,7 @@ namespace Polly.Specs
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
             // 2 exception or fault raised, circuit is now open
-            breaker.Awaiting(x => x.ExecuteAsync(() => Task.FromResult(ResultPrimitive.Good)))
+            breaker.Awaiting(async x => await x.ExecuteAsync(() => Task.FromResult(ResultPrimitive.Good)))
                   .ShouldThrow<BrokenCircuitException>();
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
@@ -481,7 +481,7 @@ namespace Polly.Specs
             breaker.Reset();
             SystemClock.UtcNow().Should().Be(time);
             breaker.CircuitState.Should().Be(CircuitState.Closed);
-            breaker.Awaiting(x => x.ExecuteAsync(() => Task.FromResult(ResultPrimitive.Good))).ShouldNotThrow();
+            breaker.Awaiting(async x => await x.ExecuteAsync(() => Task.FromResult(ResultPrimitive.Good))).ShouldNotThrow();
         }
 
         #endregion
@@ -567,7 +567,7 @@ namespace Polly.Specs
             onBreakCalled.Should().Be(1);
 
             // call through circuit when already broken - should not retrigger onBreak 
-            breaker.Awaiting(x => x.ExecuteAsync(() => Task.FromResult(ResultPrimitive.Good)))
+            breaker.Awaiting(async x => await x.ExecuteAsync(() => Task.FromResult(ResultPrimitive.Good)))
                   .ShouldThrow<BrokenCircuitException>();
 
             breaker.CircuitState.Should().Be(CircuitState.Open);
@@ -602,7 +602,7 @@ namespace Polly.Specs
             onBreakCalled.Should().Be(1);
 
             // 2 exception or fault raised, circuit is now open
-            breaker.Awaiting(x => x.ExecuteAsync(() => Task.FromResult(ResultPrimitive.Good)))
+            breaker.Awaiting(async x => await x.ExecuteAsync(() => Task.FromResult(ResultPrimitive.Good)))
                   .ShouldThrow<BrokenCircuitException>();
             breaker.CircuitState.Should().Be(CircuitState.Open);
             onBreakCalled.Should().Be(1);
@@ -615,7 +615,7 @@ namespace Polly.Specs
             onResetCalled.Should().Be(0);
 
             // first call after duration is successful, so circuit should reset
-            breaker.Awaiting(x => x.ExecuteAsync(() => Task.FromResult(ResultPrimitive.Good))).ShouldNotThrow();
+            breaker.Awaiting(async x => await x.ExecuteAsync(() => Task.FromResult(ResultPrimitive.Good))).ShouldNotThrow();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
             onResetCalled.Should().Be(1);
         }
@@ -633,11 +633,11 @@ namespace Polly.Specs
 
             onResetCalled.Should().BeFalse();
 
-            breaker.Awaiting(x => x.ExecuteAsync(() => Task.FromResult(ResultPrimitive.Good))).ShouldNotThrow();
+            breaker.Awaiting(async x => await x.ExecuteAsync(() => Task.FromResult(ResultPrimitive.Good))).ShouldNotThrow();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
             onResetCalled.Should().BeFalse();
 
-            breaker.Awaiting(x => x.ExecuteAsync(() => Task.FromResult(ResultPrimitive.Good))).ShouldNotThrow();
+            breaker.Awaiting(async x => await x.ExecuteAsync(() => Task.FromResult(ResultPrimitive.Good))).ShouldNotThrow();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
             onResetCalled.Should().BeFalse();
         }
@@ -672,7 +672,7 @@ namespace Polly.Specs
             onBreakCalled.Should().Be(1);
 
             // 2 exception or fault raised, circuit is now open
-            breaker.Awaiting(x => x.ExecuteAsync(() => Task.FromResult(ResultPrimitive.Good)))
+            breaker.Awaiting(async x => await x.ExecuteAsync(() => Task.FromResult(ResultPrimitive.Good)))
                   .ShouldThrow<BrokenCircuitException>();
             breaker.CircuitState.Should().Be(CircuitState.Open);
             onBreakCalled.Should().Be(1);
@@ -682,7 +682,7 @@ namespace Polly.Specs
             onHalfOpenCalled.Should().Be(0); // not yet transitioned to half-open, because we have not queried state
 
             // first call after duration is successful, so circuit should reset
-            breaker.Awaiting(x => x.ExecuteAsync(() => Task.FromResult(ResultPrimitive.Good)))
+            breaker.Awaiting(async x => await x.ExecuteAsync(() => Task.FromResult(ResultPrimitive.Good)))
                 .ShouldNotThrow();
             onHalfOpenCalled.Should().Be(1);
             breaker.CircuitState.Should().Be(CircuitState.Closed);
@@ -719,7 +719,7 @@ namespace Polly.Specs
             onBreakCalled.Should().Be(1);
 
             // 2 exception or fault raised, circuit is now open
-            breaker.Awaiting(x => x.ExecuteAsync(() => Task.FromResult(ResultPrimitive.Good)))
+            breaker.Awaiting(async x => await x.ExecuteAsync(() => Task.FromResult(ResultPrimitive.Good)))
                   .ShouldThrow<BrokenCircuitException>();
             breaker.CircuitState.Should().Be(CircuitState.Open);
             onBreakCalled.Should().Be(1);
@@ -752,7 +752,7 @@ namespace Polly.Specs
             onBreakCalled.Should().Be(1);
 
             breaker.CircuitState.Should().Be(CircuitState.Isolated);
-            breaker.Awaiting(x => x.ExecuteAsync(() => Task.FromResult(ResultPrimitive.Good)))
+            breaker.Awaiting(async x => await x.ExecuteAsync(() => Task.FromResult(ResultPrimitive.Good)))
                 .ShouldThrow<IsolatedCircuitException>();
 
             onResetCalled.Should().Be(0);
@@ -760,7 +760,7 @@ namespace Polly.Specs
             onResetCalled.Should().Be(1);
 
             breaker.CircuitState.Should().Be(CircuitState.Closed);
-            breaker.Awaiting(x => x.ExecuteAsync(() => Task.FromResult(ResultPrimitive.Good)))
+            breaker.Awaiting(async x => await x.ExecuteAsync(() => Task.FromResult(ResultPrimitive.Good)))
                 .ShouldNotThrow();
         }
 
@@ -1018,7 +1018,7 @@ namespace Polly.Specs
 
             cancellationTokenSource.Cancel();
 
-            breaker.Awaiting(x => x.RaiseResultSequenceAndOrCancellationAsync(scenario, cancellationTokenSource, onExecute,
+            breaker.Awaiting(async x => await x.RaiseResultSequenceAndOrCancellationAsync(scenario, cancellationTokenSource, onExecute,
                ResultPrimitive.Fault,
                ResultPrimitive.Fault,
                ResultPrimitive.Good))
@@ -1048,7 +1048,7 @@ namespace Polly.Specs
                 ActionObservesCancellation = true
             };
 
-            breaker.Awaiting(x => x.RaiseResultSequenceAndOrCancellationAsync(scenario, cancellationTokenSource, onExecute,
+            breaker.Awaiting(async x => await x.RaiseResultSequenceAndOrCancellationAsync(scenario, cancellationTokenSource, onExecute,
                    ResultPrimitive.Good,
                    ResultPrimitive.Good))
                 .ShouldThrow<TaskCanceledException>()
@@ -1077,7 +1077,7 @@ namespace Polly.Specs
                 ActionObservesCancellation = true
             };
 
-            breaker.Awaiting(x => x.RaiseResultSequenceAndOrCancellationAsync(scenario, cancellationTokenSource, onExecute,
+            breaker.Awaiting(async x => await x.RaiseResultSequenceAndOrCancellationAsync(scenario, cancellationTokenSource, onExecute,
                    ResultPrimitive.Fault,
                    ResultPrimitive.Good))
                 .ShouldThrow<TaskCanceledException>()
@@ -1106,7 +1106,7 @@ namespace Polly.Specs
                 ActionObservesCancellation = false
             };
 
-            breaker.Awaiting(x => x.RaiseResultSequenceAndOrCancellationAsync(scenario, cancellationTokenSource, onExecute,
+            breaker.Awaiting(async x => await x.RaiseResultSequenceAndOrCancellationAsync(scenario, cancellationTokenSource, onExecute,
                    ResultPrimitive.Fault,
                    ResultPrimitive.Good))
                 .ShouldThrow<TaskCanceledException>()
@@ -1125,7 +1125,7 @@ namespace Polly.Specs
             (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault).ConfigureAwait(false))
                 .Should().Be(ResultPrimitive.Fault);
 
-            breaker.Awaiting(x => x.RaiseResultSequenceAsync(ResultPrimitive.Fault))
+            breaker.Awaiting(async x => await x.RaiseResultSequenceAsync(ResultPrimitive.Fault))
                 .ShouldThrow<BrokenCircuitException>()
                 .WithMessage("The circuit is now open and is not allowing calls.");
             // Circuit is now broken.
@@ -1144,7 +1144,7 @@ namespace Polly.Specs
                 ActionObservesCancellation = false
             };
 
-            breaker.Awaiting(x => x.RaiseResultSequenceAndOrCancellationAsync(scenario, cancellationTokenSource, onExecute,
+            breaker.Awaiting(async x => await x.RaiseResultSequenceAndOrCancellationAsync(scenario, cancellationTokenSource, onExecute,
                    ResultPrimitive.Fault,
                    ResultPrimitive.Good))
                 .ShouldThrow<TaskCanceledException>()
@@ -1173,10 +1173,10 @@ namespace Polly.Specs
 
             int attemptsInvoked = 0;
 
-            breaker.Awaiting(x => x.ExecuteAsync(async ct =>
+            breaker.Awaiting(async x => await x.ExecuteAsync(async ct =>
             {
                 attemptsInvoked++;
-                await Task.FromResult(true).ConfigureAwait(false);
+                await TaskHelper.EmptyTask.ConfigureAwait(false);
                 implicitlyCapturedActionCancellationToken.ThrowIfCancellationRequested();
                 return ResultPrimitive.Good;
             }, policyCancellationToken))

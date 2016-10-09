@@ -154,13 +154,13 @@ namespace Polly.Specs
 
             // When the retry wraps the breaker, the retry (being outer) should cause the call to be put through the breaker twice - causing the breaker to break.
             breaker.Reset();
-            retryWrappingBreaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>(2))
+            retryWrappingBreaker.Awaiting(async x => await x.RaiseExceptionAsync<DivideByZeroException>(2))
                 .ShouldThrow<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
             // When the breaker wraps the retry, the retry (being inner) should retry twice before throwing the exception back on the breaker - the exception only hits the breaker once - so the breaker should not break.
             breaker.Reset();
-            breakerWrappingRetry.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>(2))
+            breakerWrappingRetry.Awaiting(async x => await x.RaiseExceptionAsync<DivideByZeroException>(2))
                 .ShouldThrow<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
         }
@@ -202,13 +202,13 @@ namespace Polly.Specs
 
             // When the retry wraps the breaker, the retry (being outer) should cause the call to be put through the breaker twice - causing the breaker to break.
             breaker.Reset();
-            retryWrappingBreaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>(2))
+            retryWrappingBreaker.Awaiting(async x => await x.RaiseExceptionAsync<DivideByZeroException>(2))
                 .ShouldThrow<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
             // When the breaker wraps the retry, the retry (being inner) should retry twice before throwing the exception back on the breaker - the exception only hits the breaker once - so the breaker should not break.
             breaker.Reset();
-            breakerWrappingRetry.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>(2))
+            breakerWrappingRetry.Awaiting(async x => await x.RaiseExceptionAsync<DivideByZeroException>(2))
                 .ShouldThrow<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
         }

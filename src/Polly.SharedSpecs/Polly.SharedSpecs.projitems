@@ -55,6 +55,10 @@
     <Compile Include="$(MSBuildThisFileDirectory)AdvancedCircuitBreakerAsyncSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)RetryTResultSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)RetryTResultSpecsAsync.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)TimeoutAsyncSpecs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)TimeoutSpecs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)TimeoutTResultAsyncSpecs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)TimeoutTResultSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)WaitAndRetryAsyncSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)WaitAndRetryForeverAsyncSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)WaitAndRetrySpecs.cs" />
