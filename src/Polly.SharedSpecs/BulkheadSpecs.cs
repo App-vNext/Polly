@@ -91,8 +91,7 @@ namespace Polly.Specs
 
         [Theory, ClassData(typeof (BulkheadScenarios))]
         public void Should_control_executions_queuing_and_rejections_per_specification_with_cancellations(
-            int maxParallelization, int maxQueuingActions, int totalActions, string because, bool cancelQueuing,
-            bool cancelExecuting)
+            int maxParallelization, int maxQueuingActions, int totalActions, string because, bool cancelQueuing, bool cancelExecuting)
         {
             if (totalActions < 0) throw new ArgumentOutOfRangeException(nameof(totalActions));
             because = String.Format("MaxParallelization {0}; MaxQueuing {1}; TotalActions {2}; CancelQueuing {3}; CancelExecuting {4}: {5}", maxParallelization, maxQueuingActions, totalActions, cancelQueuing, cancelExecuting, because);
@@ -195,6 +194,7 @@ namespace Polly.Specs
                     }
 
                 }
+
                 try
                 {
                     actions.Count(a => a.Status == TraceableActionStatus.Faulted).Should().Be(0);
