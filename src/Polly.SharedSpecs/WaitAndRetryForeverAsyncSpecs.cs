@@ -12,7 +12,7 @@ using Scenario = Polly.Specs.Helpers.PolicyExtensionsAsync.ExceptionAndOrCancell
 
 namespace Polly.Specs
 {
-    public class WaitAndRetryForeverAsyncSpecs
+    public class WaitAndRetryForeverAsyncSpecs : IDisposable
     {
         public WaitAndRetryForeverAsyncSpecs()
         {
