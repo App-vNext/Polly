@@ -11,6 +11,7 @@
         FaultAgain,
         GoodAgain,
         FaultYetAgain,
-        Substitute
+        Substitute,
+        WhateverButTooLate
     }
 }

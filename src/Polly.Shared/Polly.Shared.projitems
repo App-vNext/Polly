@@ -80,6 +80,15 @@
     <Compile Include="$(MSBuildThisFileDirectory)Retry\RetryPolicyStateWithSleepDurationProviderAsync.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)AdvancedCircuitBreakerSyntax.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)AdvancedCircuitBreakerSyntaxAsync.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)TimeoutSyntax.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)TimeoutSyntaxAsync.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)TimeoutTResultSyntax.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)TimeoutTResultSyntaxAsync.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Timeout\TimeoutEngine.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Timeout\TimeoutEngineAsync.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Timeout\TimeoutPolicy.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Timeout\TimeoutPolicyAsync.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Timeout\TimeoutRejectedException.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\EmptyStruct.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\KeyHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\PredicateHelper.cs" />
