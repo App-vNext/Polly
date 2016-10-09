@@ -361,7 +361,7 @@ namespace Polly.Specs
                 return TaskHelper.EmptyTask;
             };
 
-            TimeSpan shimTimespan = TimeSpan.FromMilliseconds(250);
+            TimeSpan shimTimespan = TimeSpan.FromSeconds(1);
             TimeSpan thriceShimTimeSpan = shimTimespan + shimTimespan + shimTimespan;
             var policy = Policy.TimeoutAsync<ResultPrimitive>(shimTimespan, onTimeoutAsync);
 
