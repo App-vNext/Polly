@@ -602,7 +602,7 @@ namespace Polly.Specs
             policy.Awaiting(async p => await p.ExecuteAsync(async () =>
             {
                 executeDelegateInvocations++;
-                await Task.FromResult(true).ConfigureAwait(false);
+                await TaskHelper.EmptyTask.ConfigureAwait(false);
                 throw new DivideByZeroException(); 
             })).ShouldThrow<DivideByZeroException>();
 

@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Polly.Specs.Helpers;
+using Polly.Utilities;
 using Xunit;
 
 namespace Polly.Specs
@@ -19,7 +20,7 @@ namespace Polly.Specs
                 .Handle<DivideByZeroException>()
                 .RetryAsync((_, __, ___) => { });
 
-            policy.Awaiting(async p => await p.ExecuteAsync(() => Task.FromResult(true), (IDictionary<string, object>) null))
+            policy.Awaiting(async p => await p.ExecuteAsync(() => TaskHelper.EmptyTask, (IDictionary<string, object>) null))
                   .ShouldThrow<ArgumentNullException>();
         }
 
@@ -41,7 +42,7 @@ namespace Polly.Specs
                 .Handle<DivideByZeroException>()
                 .RetryAsync((_, __, ___) => { });
 
-            policy.Awaiting(async p => await p.ExecuteAsync(() => Task.FromResult(true), (Context) null))
+            policy.Awaiting(async p => await p.ExecuteAsync(() => TaskHelper.EmptyTask, (Context) null))
                   .ShouldThrow<ArgumentNullException>().And
                   .ParamName.Should().Be("context");
         }
@@ -65,7 +66,7 @@ namespace Polly.Specs
                 .Handle<DivideByZeroException>()
                 .RetryAsync((_, __, ___) => { });
 
-            policy.Awaiting(async p => await p.ExecuteAndCaptureAsync(() => Task.FromResult(true), (IDictionary<string, object>)null))
+            policy.Awaiting(async p => await p.ExecuteAndCaptureAsync(() => TaskHelper.EmptyTask, (IDictionary<string, object>)null))
                   .ShouldThrow<ArgumentNullException>();
         }
 
@@ -87,7 +88,7 @@ namespace Polly.Specs
                 .Handle<DivideByZeroException>()
                 .RetryAsync((_, __, ___) => { });
 
-            policy.Awaiting(async p => await p.ExecuteAndCaptureAsync(() => Task.FromResult(true), (Context)null))
+            policy.Awaiting(async p => await p.ExecuteAndCaptureAsync(() => TaskHelper.EmptyTask, (Context)null))
                   .ShouldThrow<ArgumentNullException>().And
                   .ParamName.Should().Be("context");
         }

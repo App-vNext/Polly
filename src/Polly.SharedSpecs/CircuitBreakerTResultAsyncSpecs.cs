@@ -1176,7 +1176,7 @@ namespace Polly.Specs
             breaker.Awaiting(async x => await x.ExecuteAsync(async ct =>
             {
                 attemptsInvoked++;
-                await Task.FromResult(true).ConfigureAwait(false);
+                await TaskHelper.EmptyTask.ConfigureAwait(false);
                 implicitlyCapturedActionCancellationToken.ThrowIfCancellationRequested();
                 return ResultPrimitive.Good;
             }, policyCancellationToken))

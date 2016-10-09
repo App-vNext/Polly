@@ -317,7 +317,7 @@ namespace Polly.Specs
             policy.Awaiting(async p => await p.ExecuteAsync(async () =>
             {
                 executeDelegateInvocations++;
-                await Task.FromResult(true).ConfigureAwait(false);
+                await TaskHelper.EmptyTask.ConfigureAwait(false);
                 if (executeDelegateInvocations == 1) { throw new DivideByZeroException(); }
             })).ShouldNotThrow();
 

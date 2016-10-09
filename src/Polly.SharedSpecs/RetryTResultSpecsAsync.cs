@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using Polly.Retry;
 using Polly.Specs.Helpers;
+using Polly.Utilities;
 using Xunit;
 
 using Scenario = Polly.Specs.Helpers.PolicyTResultExtensionsAsync.ResultAndOrCancellationScenario;
@@ -443,7 +444,7 @@ namespace Polly.Specs
             (await policy.ExecuteAsync(async () =>
             {
                 executeDelegateInvocations++;
-                await Task.FromResult(true).ConfigureAwait(false);
+                await TaskHelper.EmptyTask.ConfigureAwait(false);
                 return ResultPrimitive.Fault;
             }).ConfigureAwait(false)).Should().Be(ResultPrimitive.Fault);
 

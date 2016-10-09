@@ -197,7 +197,7 @@ namespace Polly.Specs
             // Failure threshold exceeded, but throughput threshold not yet.
 
             // Throughput threshold will be exceeded by the below successful call, but we never break on a successful call; hence don't break on this.
-            breaker.Awaiting(async x => await x.ExecuteAsync(() => Task.FromResult(true)))
+            breaker.Awaiting(async x => await x.ExecuteAsync(() => TaskHelper.EmptyTask))
                 .ShouldNotThrow();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
             // No adjustment to SystemClock.UtcNow, so all exceptions were raised within same timeslice
@@ -282,7 +282,7 @@ namespace Polly.Specs
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
             bool delegateExecutedWhenBroken = false;
-            breaker.Awaiting(async x => await x.ExecuteAsync(() => { delegateExecutedWhenBroken = true; return Task.FromResult(true); }))
+            breaker.Awaiting(async x => await x.ExecuteAsync(() => { delegateExecutedWhenBroken = true; return TaskHelper.EmptyTask; }))
                 .ShouldThrow<BrokenCircuitException>()
                 .WithMessage("The circuit is now open and is not allowing calls.")
                 .WithInnerException<DivideByZeroException>();
@@ -354,7 +354,7 @@ namespace Polly.Specs
                 );
 
             // Three of four actions in this test throw handled failures.
-            breaker.Awaiting(async x => await x.ExecuteAsync(() => Task.FromResult(true)))
+            breaker.Awaiting(async x => await x.ExecuteAsync(() => TaskHelper.EmptyTask))
                 .ShouldNotThrow();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
@@ -397,7 +397,7 @@ namespace Polly.Specs
                 );
 
             // Three of four actions in this test throw handled failures.
-            breaker.Awaiting(async x => await x.ExecuteAsync(() => Task.FromResult(true)))
+            breaker.Awaiting(async x => await x.ExecuteAsync(() => TaskHelper.EmptyTask))
                 .ShouldNotThrow();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
@@ -442,11 +442,11 @@ namespace Polly.Specs
                 );
 
             // Two of four actions in this test throw handled failures.
-            breaker.Awaiting(async x => await x.ExecuteAsync(() => Task.FromResult(true)))
+            breaker.Awaiting(async x => await x.ExecuteAsync(() => TaskHelper.EmptyTask))
                 .ShouldNotThrow();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
-            breaker.Awaiting(async x => await x.ExecuteAsync(() => Task.FromResult(true)))
+            breaker.Awaiting(async x => await x.ExecuteAsync(() => TaskHelper.EmptyTask))
                 .ShouldNotThrow();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
@@ -485,11 +485,11 @@ namespace Polly.Specs
                 );
 
             // Two of four actions in this test throw handled failures.
-            breaker.Awaiting(async x => await x.ExecuteAsync(() => Task.FromResult(true)))
+            breaker.Awaiting(async x => await x.ExecuteAsync(() => TaskHelper.EmptyTask))
                 .ShouldNotThrow();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
-            breaker.Awaiting(async x => await x.ExecuteAsync(() => Task.FromResult(true)))
+            breaker.Awaiting(async x => await x.ExecuteAsync(() => TaskHelper.EmptyTask))
                 .ShouldNotThrow();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
@@ -532,11 +532,11 @@ namespace Polly.Specs
                 );
 
             // Four of four actions in this test throw handled failures; but only the first three within the timeslice.
-            breaker.Awaiting(async x => await x.ExecuteAsync(() => Task.FromResult(true)))
+            breaker.Awaiting(async x => await x.ExecuteAsync(() => TaskHelper.EmptyTask))
                 .ShouldNotThrow();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
-            breaker.Awaiting(async x => await x.ExecuteAsync(() => Task.FromResult(true)))
+            breaker.Awaiting(async x => await x.ExecuteAsync(() => TaskHelper.EmptyTask))
                 .ShouldNotThrow();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
@@ -571,11 +571,11 @@ namespace Polly.Specs
                 );
 
             // Four of four actions in this test throw handled failures; but only the first three within the timeslice.
-            breaker.Awaiting(async x => await x.ExecuteAsync(() => Task.FromResult(true)))
+            breaker.Awaiting(async x => await x.ExecuteAsync(() => TaskHelper.EmptyTask))
                 .ShouldNotThrow();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
-            breaker.Awaiting(async x => await x.ExecuteAsync(() => Task.FromResult(true)))
+            breaker.Awaiting(async x => await x.ExecuteAsync(() => TaskHelper.EmptyTask))
                 .ShouldNotThrow();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
@@ -612,11 +612,11 @@ namespace Polly.Specs
             // Four of four actions in this test throw handled failures; but only the first three within the original timeslice.
 
             // Two actions at the start of the original timeslice.
-            breaker.Awaiting(async x => await x.ExecuteAsync(() => Task.FromResult(true)))
+            breaker.Awaiting(async x => await x.ExecuteAsync(() => TaskHelper.EmptyTask))
                 .ShouldNotThrow();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
-            breaker.Awaiting(async x => await x.ExecuteAsync(() => Task.FromResult(true)))
+            breaker.Awaiting(async x => await x.ExecuteAsync(() => TaskHelper.EmptyTask))
                 .ShouldNotThrow();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
@@ -697,11 +697,11 @@ namespace Polly.Specs
                 );
 
             // One of three actions in this test throw handled failures.
-            breaker.Awaiting(async x => await x.ExecuteAsync(() => Task.FromResult(true)))
+            breaker.Awaiting(async x => await x.ExecuteAsync(() => TaskHelper.EmptyTask))
                 .ShouldNotThrow();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
-            breaker.Awaiting(async x => await x.ExecuteAsync(() => Task.FromResult(true)))
+            breaker.Awaiting(async x => await x.ExecuteAsync(() => TaskHelper.EmptyTask))
                 .ShouldNotThrow();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
@@ -727,15 +727,15 @@ namespace Polly.Specs
                 );
 
             // One of four actions in this test throw handled failures.
-            breaker.Awaiting(async x => await x.ExecuteAsync(() => Task.FromResult(true)))
+            breaker.Awaiting(async x => await x.ExecuteAsync(() => TaskHelper.EmptyTask))
                 .ShouldNotThrow();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
-            breaker.Awaiting(async x => await x.ExecuteAsync(() => Task.FromResult(true)))
+            breaker.Awaiting(async x => await x.ExecuteAsync(() => TaskHelper.EmptyTask))
                 .ShouldNotThrow();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
-            breaker.Awaiting(async x => await x.ExecuteAsync(() => Task.FromResult(true)))
+            breaker.Awaiting(async x => await x.ExecuteAsync(() => TaskHelper.EmptyTask))
                 .ShouldNotThrow();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
@@ -764,7 +764,7 @@ namespace Polly.Specs
 
             // Executing a single invocation to ensure timeslice is created
             // This invocation is not be counted against the threshold
-            breaker.Awaiting(async x => await x.ExecuteAsync(() => Task.FromResult(true)))
+            breaker.Awaiting(async x => await x.ExecuteAsync(() => TaskHelper.EmptyTask))
                 .ShouldNotThrow();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
@@ -773,11 +773,11 @@ namespace Polly.Specs
             SystemClock.UtcNow = () => time.AddTicks(samplingDuration.Ticks - 1);
 
             // Three of four actions in this test occur within the first timeslice.
-            breaker.Awaiting(async x => await x.ExecuteAsync(() => Task.FromResult(true)))
+            breaker.Awaiting(async x => await x.ExecuteAsync(() => TaskHelper.EmptyTask))
                 .ShouldNotThrow();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
-            breaker.Awaiting(async x => await x.ExecuteAsync(() => Task.FromResult(true)))
+            breaker.Awaiting(async x => await x.ExecuteAsync(() => TaskHelper.EmptyTask))
                 .ShouldNotThrow();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
@@ -815,7 +815,7 @@ namespace Polly.Specs
 
             // Executing a single invocation to ensure timeslice is created
             // This invocation is not be counted against the threshold
-            breaker.Awaiting(async x => await x.ExecuteAsync(() => Task.FromResult(true)))
+            breaker.Awaiting(async x => await x.ExecuteAsync(() => TaskHelper.EmptyTask))
                 .ShouldNotThrow();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
@@ -863,7 +863,7 @@ namespace Polly.Specs
 
             // Executing a single invocation to ensure timeslice is created
             // This invocation is not be counted against the threshold
-            breaker.Awaiting(async x => await x.ExecuteAsync(() => Task.FromResult(true)))
+            breaker.Awaiting(async x => await x.ExecuteAsync(() => TaskHelper.EmptyTask))
                 .ShouldNotThrow();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
@@ -879,7 +879,7 @@ namespace Polly.Specs
                 .ShouldThrow<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
-            breaker.Awaiting(async x => await x.ExecuteAsync(() => Task.FromResult(true)))
+            breaker.Awaiting(async x => await x.ExecuteAsync(() => TaskHelper.EmptyTask))
                 .ShouldNotThrow();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
@@ -959,7 +959,7 @@ namespace Polly.Specs
                 );
 
             // Three of four actions in this test throw handled failures.
-            breaker.Awaiting(async x => await x.ExecuteAsync(() => Task.FromResult(true)))
+            breaker.Awaiting(async x => await x.ExecuteAsync(() => TaskHelper.EmptyTask))
                 .ShouldNotThrow();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
@@ -1000,11 +1000,11 @@ namespace Polly.Specs
                 );
 
             // Two of four actions in this test throw handled failures.
-            breaker.Awaiting(async x => await x.ExecuteAsync(() => Task.FromResult(true)))
+            breaker.Awaiting(async x => await x.ExecuteAsync(() => TaskHelper.EmptyTask))
                 .ShouldNotThrow();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
-            breaker.Awaiting(async x => await x.ExecuteAsync(() => Task.FromResult(true)))
+            breaker.Awaiting(async x => await x.ExecuteAsync(() => TaskHelper.EmptyTask))
                 .ShouldNotThrow();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
@@ -1082,11 +1082,11 @@ namespace Polly.Specs
                 );
 
             // Two of four actions in this test throw handled failures; but only the first within the timeslice.
-            breaker.Awaiting(async x => await x.ExecuteAsync(() => Task.FromResult(true)))
+            breaker.Awaiting(async x => await x.ExecuteAsync(() => TaskHelper.EmptyTask))
                 .ShouldNotThrow();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
-            breaker.Awaiting(async x => await x.ExecuteAsync(() => Task.FromResult(true)))
+            breaker.Awaiting(async x => await x.ExecuteAsync(() => TaskHelper.EmptyTask))
                 .ShouldNotThrow();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
@@ -1164,11 +1164,11 @@ namespace Polly.Specs
                 );
 
             // One of three actions in this test throw handled failures.
-            breaker.Awaiting(async x => await x.ExecuteAsync(() => Task.FromResult(true)))
+            breaker.Awaiting(async x => await x.ExecuteAsync(() => TaskHelper.EmptyTask))
                 .ShouldNotThrow();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
-            breaker.Awaiting(async x => await x.ExecuteAsync(() => Task.FromResult(true)))
+            breaker.Awaiting(async x => await x.ExecuteAsync(() => TaskHelper.EmptyTask))
                 .ShouldNotThrow();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
@@ -1194,15 +1194,15 @@ namespace Polly.Specs
                 );
 
             // One of four actions in this test throw handled failures.
-            breaker.Awaiting(async x => await x.ExecuteAsync(() => Task.FromResult(true)))
+            breaker.Awaiting(async x => await x.ExecuteAsync(() => TaskHelper.EmptyTask))
                 .ShouldNotThrow();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
-            breaker.Awaiting(async x => await x.ExecuteAsync(() => Task.FromResult(true)))
+            breaker.Awaiting(async x => await x.ExecuteAsync(() => TaskHelper.EmptyTask))
                 .ShouldNotThrow();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
-            breaker.Awaiting(async x => await x.ExecuteAsync(() => Task.FromResult(true)))
+            breaker.Awaiting(async x => await x.ExecuteAsync(() => TaskHelper.EmptyTask))
                 .ShouldNotThrow();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
@@ -1231,7 +1231,7 @@ namespace Polly.Specs
 
             // Executing a single invocation to ensure timeslice is created
             // This invocation is not be counted against the threshold
-            breaker.Awaiting(async x => await x.ExecuteAsync(() => Task.FromResult(true)))
+            breaker.Awaiting(async x => await x.ExecuteAsync(() => TaskHelper.EmptyTask))
                 .ShouldNotThrow();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
@@ -1240,11 +1240,11 @@ namespace Polly.Specs
             SystemClock.UtcNow = () => time.AddTicks(samplingDuration.Ticks - 1);
 
             // Three of four actions in this test occur within the first timeslice.
-            breaker.Awaiting(async x => await x.ExecuteAsync(() => Task.FromResult(true)))
+            breaker.Awaiting(async x => await x.ExecuteAsync(() => TaskHelper.EmptyTask))
                 .ShouldNotThrow();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
-            breaker.Awaiting(async x => await x.ExecuteAsync(() => Task.FromResult(true)))
+            breaker.Awaiting(async x => await x.ExecuteAsync(() => TaskHelper.EmptyTask))
                 .ShouldNotThrow();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
@@ -1456,7 +1456,7 @@ namespace Polly.Specs
             breaker.CircuitState.Should().Be(CircuitState.HalfOpen);
 
             // first call after duration is successful, so circuit should reset
-            await breaker.ExecuteAsync(() => Task.FromResult(true));
+            await breaker.ExecuteAsync(() => TaskHelper.EmptyTask);
             breaker.CircuitState.Should().Be(CircuitState.Closed);
         }
 
@@ -1478,7 +1478,7 @@ namespace Polly.Specs
 
             // circuit manually broken: execution should be blocked; even non-exception-throwing executions should not reset circuit
             bool delegateExecutedWhenBroken = false;
-            breaker.Awaiting(async x => await x.ExecuteAsync(() => { delegateExecutedWhenBroken = true; return Task.FromResult(true); }))
+            breaker.Awaiting(async x => await x.ExecuteAsync(() => { delegateExecutedWhenBroken = true; return TaskHelper.EmptyTask; }))
                 .ShouldThrow<IsolatedCircuitException>();
             breaker.CircuitState.Should().Be(CircuitState.Isolated);
             delegateExecutedWhenBroken.Should().BeFalse();
@@ -1503,7 +1503,7 @@ namespace Polly.Specs
             breaker.CircuitState.Should().Be(CircuitState.Isolated);
 
             bool delegateExecutedWhenBroken = false;
-            breaker.Awaiting(async x => await x.ExecuteAsync(() => { delegateExecutedWhenBroken = true; return Task.FromResult(true); }))
+            breaker.Awaiting(async x => await x.ExecuteAsync(() => { delegateExecutedWhenBroken = true; return TaskHelper.EmptyTask; }))
                 .ShouldThrow<IsolatedCircuitException>();
             delegateExecutedWhenBroken.Should().BeFalse();
         }
@@ -1522,12 +1522,12 @@ namespace Polly.Specs
 
             breaker.Isolate();
             breaker.CircuitState.Should().Be(CircuitState.Isolated);
-            breaker.Awaiting(async x => await x.ExecuteAsync(() => Task.FromResult(true)))
+            breaker.Awaiting(async x => await x.ExecuteAsync(() => TaskHelper.EmptyTask))
                 .ShouldThrow<IsolatedCircuitException>();
 
             breaker.Reset();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
-            breaker.Awaiting(async x => await x.ExecuteAsync(() => Task.FromResult(true)))
+            breaker.Awaiting(async x => await x.ExecuteAsync(() => TaskHelper.EmptyTask))
                 .ShouldNotThrow();
         }
 
@@ -1569,7 +1569,7 @@ namespace Polly.Specs
             breaker.Reset();
             SystemClock.UtcNow().Should().Be(time);
             breaker.CircuitState.Should().Be(CircuitState.Closed);
-            breaker.Awaiting(async x => await x.ExecuteAsync(() => Task.FromResult(true)))
+            breaker.Awaiting(async x => await x.ExecuteAsync(() => TaskHelper.EmptyTask))
                 .ShouldNotThrow();
         }
 
@@ -1760,7 +1760,7 @@ namespace Polly.Specs
             onResetCalled.Should().Be(0);
 
             // first call after duration is successful, so circuit should reset
-            await breaker.ExecuteAsync(() => Task.FromResult(true));
+            await breaker.ExecuteAsync(() => TaskHelper.EmptyTask);
             breaker.CircuitState.Should().Be(CircuitState.Closed);
             onResetCalled.Should().Be(1);
         }
@@ -1779,11 +1779,11 @@ namespace Polly.Specs
 
             onResetCalled.Should().BeFalse();
 
-            await breaker.ExecuteAsync(() => Task.FromResult(true));
+            await breaker.ExecuteAsync(() => TaskHelper.EmptyTask);
             breaker.CircuitState.Should().Be(CircuitState.Closed);
             onResetCalled.Should().BeFalse();
 
-            await breaker.ExecuteAsync(() => Task.FromResult(true));
+            await breaker.ExecuteAsync(() => TaskHelper.EmptyTask);
             breaker.CircuitState.Should().Be(CircuitState.Closed);
             onResetCalled.Should().BeFalse();
         }
@@ -1844,7 +1844,7 @@ namespace Polly.Specs
             onHalfOpenCalled.Should().Be(0); // not yet transitioned to half-open, because we have not queried state
 
             // first call after duration is successful, so circuit should reset
-            await breaker.ExecuteAsync(() => Task.FromResult(true));
+            await breaker.ExecuteAsync(() => TaskHelper.EmptyTask);
             onHalfOpenCalled.Should().Be(1); // called as action was placed for execution
             breaker.CircuitState.Should().Be(CircuitState.Closed);
             onResetCalled.Should().Be(1); // called after action succeeded
@@ -1928,7 +1928,7 @@ namespace Polly.Specs
             onBreakCalled.Should().Be(1);
 
             breaker.CircuitState.Should().Be(CircuitState.Isolated);
-            breaker.Awaiting(async x => await x.ExecuteAsync(() => Task.FromResult(true)))
+            breaker.Awaiting(async x => await x.ExecuteAsync(() => TaskHelper.EmptyTask))
                 .ShouldThrow<IsolatedCircuitException>();
 
             onResetCalled.Should().Be(0);
@@ -1936,7 +1936,7 @@ namespace Polly.Specs
             onResetCalled.Should().Be(1);
 
             breaker.CircuitState.Should().Be(CircuitState.Closed);
-            breaker.Awaiting(async x => await x.ExecuteAsync(() => Task.FromResult(true)))
+            breaker.Awaiting(async x => await x.ExecuteAsync(() => TaskHelper.EmptyTask))
                 .ShouldNotThrow();
         }
 
@@ -2151,7 +2151,7 @@ namespace Polly.Specs
 
 
             // first call after duration should invoke onReset, with context
-            await breaker.ExecuteAsync(() => Task.FromResult(true), new { key1 = "value1", key2 = "value2" }.AsDictionary());
+            await breaker.ExecuteAsync(() => TaskHelper.EmptyTask, new { key1 = "value1", key2 = "value2" }.AsDictionary());
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             contextData.Should()
@@ -2253,7 +2253,7 @@ namespace Polly.Specs
             // but not yet reset
 
             // first call after duration is successful, so circuit should reset
-            await breaker.ExecuteAsync(() => Task.FromResult(true), new { key = "new_value" }.AsDictionary());
+            await breaker.ExecuteAsync(() => TaskHelper.EmptyTask, new { key = "new_value" }.AsDictionary());
 
             breaker.CircuitState.Should().Be(CircuitState.Closed);
             contextValue.Should().Be("new_value");
@@ -2469,7 +2469,7 @@ namespace Polly.Specs
             breaker.Awaiting(async x => await x.ExecuteAsync(async ct =>
             {
                 attemptsInvoked++;
-                await Task.FromResult(true);
+                await TaskHelper.EmptyTask;
                 implicitlyCapturedActionCancellationToken.ThrowIfCancellationRequested();
             }, policyCancellationToken))
                 .ShouldThrow<TaskCanceledException>()

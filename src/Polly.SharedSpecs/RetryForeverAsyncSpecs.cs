@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Polly.Specs.Helpers;
+using Polly.Utilities;
 using Xunit;
 
 using Scenario = Polly.Specs.Helpers.PolicyExtensionsAsync.ExceptionAndOrCancellationScenario;
@@ -219,7 +220,7 @@ namespace Polly.Specs
             policy.Awaiting(async p => await p.ExecuteAsync(async () =>
             {
                 executeDelegateInvocations++;
-                await Task.FromResult(true).ConfigureAwait(false);
+                await TaskHelper.EmptyTask.ConfigureAwait(false);
                 if (executeDelegateInvocations == 1) { throw new DivideByZeroException(); }
             })).ShouldNotThrow();
 
