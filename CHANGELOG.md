@@ -9,7 +9,9 @@
 - Add Fallback policy. Thanks to [@reisenberger](https://github.com/reisenberger)
 - Add PolicyKeys and context to all policy executions, as bedrock for policy events and metrics tracking executions. Thanks to [@reisenberger](https://github.com/reisenberger) 
 - Add Bulkhead Isolation policy.  Thanks to [@reisenberger](https://github.com/reisenberger) and contributions from  [@brunolauze](https://github.com/brunolauze).
+- Add Timeout policy.  Thanks to [@reisenberger](https://github.com/reisenberger).
 
+ 
 ## 4.3.0
 
 - Added ability for policies to handle returned results.  Optimised circuit-breaker hot path.  Fixed circuit-breaker threshold bug.  Thanks to [@reisenberger](https://github.com/reisenberger), [@christopherbahr](https://github.com/christopherbahr) and [@Finity](https://github.com/Finity) respectively.
