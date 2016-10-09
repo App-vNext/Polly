@@ -214,7 +214,7 @@ namespace Polly.Specs
                 .Handle<DivideByZeroException>()
                 .WaitAndRetryAsync(Enumerable.Empty<TimeSpan>());
 
-            policy.Awaiting(x => x.RaiseExceptionAsync<NullReferenceException>())
+            policy.Awaiting(async x => await x.RaiseExceptionAsync<NullReferenceException>())
                   .ShouldThrow<NullReferenceException>();
         }
 
@@ -238,7 +238,7 @@ namespace Polly.Specs
                 .Or<ArgumentException>()
                 .WaitAndRetryAsync(Enumerable.Empty<TimeSpan>());
 
-            policy.Awaiting(x => x.RaiseExceptionAsync<NullReferenceException>())
+            policy.Awaiting(async x => await x.RaiseExceptionAsync<NullReferenceException>())
                   .ShouldThrow<NullReferenceException>();
         }
 
@@ -289,7 +289,7 @@ namespace Polly.Specs
                    1.Seconds()
                 });
 
-            policy.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+            policy.Awaiting(async x => await x.RaiseExceptionAsync<DivideByZeroException>())
                   .ShouldNotThrow();
         }
 
@@ -319,7 +319,7 @@ namespace Polly.Specs
                    1.Seconds()
                 });
 
-            policy.Awaiting(x => x.RaiseExceptionAsync<ArgumentException>())
+            policy.Awaiting(async x => await x.RaiseExceptionAsync<ArgumentException>())
                   .ShouldNotThrow();
         }
 

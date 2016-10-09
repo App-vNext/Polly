@@ -172,7 +172,7 @@ namespace Polly.Specs
         public void Executing_the_synchronous_policies_using_the_asynchronous_execute_should_throw_an_invalid_operation_exception(Policy syncPolicy, string description)
         {
             syncPolicy
-                .Awaiting(x => x.ExecuteAsync(() => CompletedTask))
+                .Awaiting(async x => await x.ExecuteAsync(() => CompletedTask))
                 .ShouldThrow<InvalidOperationException>()
                 .WithMessage("Please use asynchronous-defined policies when calling asynchronous ExecuteAsync (and similar) methods.");
         }
@@ -181,7 +181,7 @@ namespace Polly.Specs
         public void Executing_the_synchronous_policies_using_the_asynchronous_execute_and_capture_should_throw_an_invalid_operation_exception(Policy syncPolicy, string description)
         {
             syncPolicy
-                .Awaiting(x => x.ExecuteAndCaptureAsync(() => CompletedTask))
+                .Awaiting(async x => await x.ExecuteAndCaptureAsync(() => CompletedTask))
                 .ShouldThrow<InvalidOperationException>()
                 .WithMessage("Please use asynchronous-defined policies when calling asynchronous ExecuteAsync (and similar) methods.");
         }
