@@ -424,7 +424,7 @@ namespace Polly.Specs
                 return TaskHelper.EmptyTask;
             };
 
-            TimeSpan shimTimespan = TimeSpan.FromSeconds(1);
+            TimeSpan shimTimespan = TimeSpan.FromSeconds(1); // Consider increasing shimTimeSpan if test fails transiently in different environments.
             TimeSpan thriceShimTimeSpan = shimTimespan + shimTimespan + shimTimespan;
             var policy = Policy.TimeoutAsync<ResultPrimitive>(shimTimespan, TimeoutStrategy.Pessimistic, onTimeoutAsync);
 

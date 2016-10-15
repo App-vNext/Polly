@@ -54,8 +54,6 @@ namespace Polly.Specs
         [Fact]
         public void Should_call_onBulkheadRejected_with_passed_context()
         {
-            TimeSpan shimTimeSpan = TimeSpan.FromMilliseconds(50);
-
             string executionKey = Guid.NewGuid().ToString();
             Context contextPassedToExecute = new Context(executionKey);
 
