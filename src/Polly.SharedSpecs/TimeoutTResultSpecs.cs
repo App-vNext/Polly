@@ -391,7 +391,7 @@ namespace Polly.Specs
                 task.ContinueWith(t => exceptionObservedFromTaskPassedToOnTimeout = t.Exception.InnerException);
             };
 
-            TimeSpan shimTimespan = TimeSpan.FromSeconds(1);
+            TimeSpan shimTimespan = TimeSpan.FromSeconds(1); // Consider increasing shimTimeSpan if test fails transiently in different environments.
             TimeSpan thriceShimTimeSpan = shimTimespan + shimTimespan + shimTimespan;
             var policy = Policy.Timeout<ResultPrimitive>(shimTimespan, TimeoutStrategy.Pessimistic, onTimeout);
 
