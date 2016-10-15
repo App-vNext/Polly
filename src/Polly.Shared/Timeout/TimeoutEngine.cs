@@ -11,6 +11,7 @@ namespace Polly.Timeout
             Context context,
             CancellationToken cancellationToken,
             Func<TimeSpan> timeoutProvider,
+            TimeoutStrategy timeoutStrategy,
             Action<Context, TimeSpan, Task> onTimeout)
         {
             cancellationToken.ThrowIfCancellationRequested();
@@ -25,14 +26,15 @@ namespace Polly.Timeout
                     Task<TResult> actionTask = null;
                     try
                     {
-                        timeoutCancellationTokenSource.CancelAfter(timeout);
+                        if (timeoutStrategy == TimeoutStrategy.Optimistic)
+                        {
+                            timeoutCancellationTokenSource.CancelAfter(timeout);
+                            return action(combinedToken);
+                        }
 
-                        //if (timeoutStrategy == TimeoutStrategy.Optimistic)
-                        //{
-                        //     return action(combinedToken);
-                        //}
-                        //else
-                        //{
+                        // else: timeoutStrategy == TimeoutStrategy.Pessimistic
+
+                        timeoutCancellationTokenSource.CancelAfter(timeout);
 
                         actionTask = 
 
@@ -47,8 +49,6 @@ namespace Polly.Timeout
                             , combinedToken);           // cancellation token here only allows Task.Run() to not begin the passed delegate at all, if cancellation occurs prior to invoking the delegate.  
 
                         actionTask.Wait(combinedToken); // cancellation token here cancels the Wait() and causes it to throw, but does not cancel actionTask.
-
-                        //}
 
                         return actionTask.Result;
                     }

@@ -89,6 +89,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Timeout\TimeoutPolicy.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Timeout\TimeoutPolicyAsync.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Timeout\TimeoutRejectedException.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Timeout\TimeoutStrategy.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\EmptyStruct.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\KeyHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\PredicateHelper.cs" />

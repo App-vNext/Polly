@@ -9,7 +9,8 @@ namespace Polly.Timeout
         internal static async Task<TResult> ImplementationAsync<TResult>(
             Func<CancellationToken, Task<TResult>> action, 
             Context context, 
-            Func<TimeSpan> timeoutProvider, 
+            Func<TimeSpan> timeoutProvider,
+            TimeoutStrategy timeoutStrategy,
             Func<Context, TimeSpan, Task, Task> onTimeoutAsync, 
             CancellationToken cancellationToken, 
             bool continueOnCapturedContext)
@@ -22,20 +23,23 @@ namespace Polly.Timeout
                 using (CancellationTokenSource combinedTokenSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, timeoutCancellationTokenSource.Token))
                 {
                     Task<TResult> actionTask = null;
+                    CancellationToken combinedToken = combinedTokenSource.Token;
+
                     try
                     {
-                        //if (timeoutStrategy == TimeoutStrategy.Optimistic)
-                        //{
-                        //    return await action(combinedToken).ConfigureAwait(continueOnCapturedContext); 
-                        //}
-                        //else
-                        //{
+                        if (timeoutStrategy == TimeoutStrategy.Optimistic)
+                        {
+                            timeoutCancellationTokenSource.CancelAfter(timeout);
+                            return await action(combinedToken).ConfigureAwait(continueOnCapturedContext);
+                        }
+
+                        // else: timeoutStrategy == TimeoutStrategy.Pessimistic
 
                         Task<TResult> timeoutTask = timeoutCancellationTokenSource.Token.AsTask<TResult>();
 
                         timeoutCancellationTokenSource.CancelAfter(timeout);
 
-                        actionTask = action(combinedTokenSource.Token);
+                        actionTask = action(combinedToken);
 
                         return await (await 
 #if NET40
@@ -44,8 +48,6 @@ namespace Polly.Timeout
                             Task
 #endif
                             .WhenAny(actionTask, timeoutTask).ConfigureAwait(continueOnCapturedContext)).ConfigureAwait(continueOnCapturedContext);
-
-                        //}
 
                     }
                     catch (Exception e)
