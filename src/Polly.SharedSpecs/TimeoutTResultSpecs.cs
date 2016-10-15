@@ -306,7 +306,7 @@ namespace Polly.Specs
 
             policy.Invoking(p => p.Execute(() =>
             {
-                SystemClock.Sleep(TimeSpan.FromSeconds(1), CancellationToken.None);
+                SystemClock.Sleep(TimeSpan.FromSeconds(3), CancellationToken.None);
                 return ResultPrimitive.WhateverButTooLate;
             }))
             .ShouldThrow<TimeoutRejectedException>();

@@ -270,7 +270,7 @@ namespace Polly.Specs
 
             var policy = Policy.Timeout(timeoutPassedToConfiguration, TimeoutStrategy.Pessimistic, onTimeout);
 
-            policy.Invoking(p => p.Execute(() => SystemClock.Sleep(TimeSpan.FromSeconds(1), CancellationToken.None)))
+            policy.Invoking(p => p.Execute(() => SystemClock.Sleep(TimeSpan.FromSeconds(3), CancellationToken.None)))
                 .ShouldThrow<TimeoutRejectedException>();
 
             timeoutPassedToOnTimeout.Should().Be(timeoutPassedToConfiguration);
