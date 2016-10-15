@@ -25,7 +25,7 @@ namespace Polly
         /// Wraps the specified inner policy.
         /// </summary>
         /// <param name="innerPolicy">The inner policy.</param>
-        /// <typeparam name="TResult">The type of the results returned by delegates which may be executed through the policy.</typeparam>
+        /// <typeparam name="TResult">The return type of delegates which may be executed through the policy.</typeparam>
         /// <returns>PolicyWrap.PolicyWrap.</returns>
         public PolicyWrap<TResult> Wrap<TResult>(Policy<TResult> innerPolicy)
         {
@@ -93,7 +93,7 @@ namespace Polly
         /// Creates a <see cref="PolicyWrap" /> of the given policies governing delegates returning values of type <typeparamref name="TResult" />.
         /// </summary>
         /// <param name="policies">The policies to place in the wrap, outermost (at left) to innermost (at right).</param>
-        /// <typeparam name="TResult">The type of the results returned by delegates which may be executed through the policy.</typeparam>
+        /// <typeparam name="TResult">The return type of delegates which may be executed through the policy.</typeparam>
         /// <returns>The PolicyWrap.</returns>
         /// <exception cref="System.ArgumentException">The enumerable of policies to form the wrap must contain at least two policies.</exception>
         public static PolicyWrap<TResult> Wrap<TResult>(params Policy<TResult>[] policies)
