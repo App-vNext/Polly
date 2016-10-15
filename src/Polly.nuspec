@@ -13,6 +13,22 @@
     <tags>Exception Handling Policy Retry Wait Circuit Breaker</tags>
     <copyright>Copyright © 2016, App vNext</copyright>
     <releaseNotes>
+     5.0.0
+     ---------------------
+     A major release, adding significant new resilience policies:
+     - Timeout policy: allows timing out any execution (for both co-operative and unco-operative underlying delegates)
+     - Bulkhead isolation policy: limits the resources consumable by governed actions, such that a faulting channel cannot cause cascading failures, also bringing down other operations.
+     - Fallback policy: provides for a fallback execution or substitute value, in case of overall failure
+     - PolicyWrap: allows flexibly combining any Policy instances in the Polly armoury, to form an overall resilience strategy.
+
+     Other changes include:
+     - Add PolicyKeys and context to all policy executions, as bedrock for forthcoming introduction of policy events and metrics tracking executions. 
+     - Add CancellationToken support to synchronous executions (to support TimeoutPolicy).
+     - Add some missing ExecuteAndCapture/Async overloads. 
+     - Provide .NET4.0 support uniquely through Polly.NET40Async package
+     - Retire ContextualPolicy (not part of documented API; support now in Policy base class)
+     - Discontinue .NET3.5 support
+
      4.3.0
      ---------------------
      - Added ability for policies to handle return results.  Optimised circuit-breaker hot path.  Fixed circuit-breaker threshold bug.  
