@@ -16,5 +16,16 @@
         {
             return new TypedCacheProvider<TCacheFormat>(nonGenericCacheProvider);
         }
+
+        /// <summary>
+        /// Provides a strongly <typeparamref name="TCacheFormat"/>-typed version of the supplied <see cref="ICacheProviderAsync"/>
+        /// </summary>
+        /// <typeparam name="TCacheFormat">The type the returned <see cref="ICacheProvider{TResult}"/> will handle.</typeparam>
+        /// <param name="nonGenericCacheProvider">The non-generic cache provider to wrap.</param>
+        /// <returns>ICacheProviderAsync{TCacheFormat}.</returns>
+        public static ICacheProviderAsync<TCacheFormat> AsAsync<TCacheFormat>(this ICacheProviderAsync nonGenericCacheProvider)
+        {
+            return new TypedCacheProviderAsync<TCacheFormat>(nonGenericCacheProvider);
+        }
     }
 }

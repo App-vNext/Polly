@@ -29,7 +29,7 @@ namespace Polly.Caching
         /// <returns>The value returned by the action, or the cache.</returns>
         public override Task<TResult> ExecuteAsync<TResult>(Func<CancellationToken, Task<TResult>> action, Context context, CancellationToken cancellationToken, bool continueOnCapturedContext)
         {
-            return CacheEngine.ImplementationAsync<TResult>(_asyncCacheProvider, _cacheKeyStrategy, action, context, cancellationToken, continueOnCapturedContext);
+            return CacheEngine.ImplementationAsync<TResult>(_asyncCacheProvider.AsAsync<TResult>(), _cacheKeyStrategy, action, context, cancellationToken, continueOnCapturedContext);
         }
     }
 
@@ -38,7 +38,7 @@ namespace Polly.Caching
     /// </summary>
     public partial class CachePolicy<TResult>
     {
-        internal CachePolicy(ICacheProviderAsync asyncCacheProvider, ICacheKeyStrategy cacheKeyStrategy)
+        internal CachePolicy(ICacheProviderAsync<TResult> asyncCacheProvider, ICacheKeyStrategy cacheKeyStrategy)
             : base((func, context, cancellationToken, continueOnCapturedContext) => CacheEngine.ImplementationAsync(asyncCacheProvider, cacheKeyStrategy, func, context, cancellationToken, continueOnCapturedContext),
                 PredicateHelper.EmptyExceptionPredicates,
                 Enumerable.Empty<ResultPredicate<TResult>>())
