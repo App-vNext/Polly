@@ -15,6 +15,10 @@
     <Compile Include="$(MSBuildThisFileDirectory)BulkheadSpecsHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)BulkheadTResultAsyncSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)BulkheadTResultSpecs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CacheAsyncSpecs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CacheSpecs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CacheTResultAsyncSpecs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CacheTResultSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CircuitBreakerAsyncSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)AdvancedCircuitBreakerSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CircuitBreakerSpecs.cs" />
@@ -24,10 +28,15 @@
     <Compile Include="$(MSBuildThisFileDirectory)ContextSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ContextualPolicyAsyncSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ContextualPolicySpecs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DefaultCacheKeyStrategySpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)FallbackAsyncSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)FallbackSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)FallbackTResultAsyncSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)FallbackTResultSpecs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\MockCacheKeyStrategy.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\StubCacheProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\StubMappingCacheProvider_base64.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\StubMappingCacheProvider_Reverse.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\TraceableAction.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\ContextualPolicyExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\ContextualPolicyExtensionsAsync.cs" />
@@ -40,6 +49,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\PolicyTResultExtensionsAsync.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\ResultClass.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\ResultPrimitive.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MappingCacheProviderSpecs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MappingCacheProviderTResultTMappedSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PolicyAsyncSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PolicyContextAndKeyAsyncSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PolicyContextAndKeySpecs.cs" />
