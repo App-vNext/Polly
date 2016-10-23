@@ -47,12 +47,13 @@ var nupkgDestDir = artifactsDir + Directory("nuget-package");
 var snkFile = srcDir + File(keyName);
 
 var projectToNugetFolderMap = new Dictionary<string, string[]>() {
-    { "Net45", new [] {"net45"} },
-    { "Pcl"  , new [] {"portable-net45+netcore45+wpa81+wp8", "dotnet"} }
+    { "Net45"        , new [] {"net45"} },
+    { "Pcl"          , new [] {"portable-net45+netcore45+wpa81+wp8"} },
+    { "NetStandard10", new [] {"netstandard1.0"} },
 };
 
 var net40AsyncProjectToNugetFolderMap = new Dictionary<string, string[]>() {
-    { "Net40Async", new [] {"net40"} },
+    { "Net40Async"   , new [] {"net40"} },
 };
 
 // Gitversion

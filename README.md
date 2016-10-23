@@ -2,7 +2,7 @@
 
 Polly is a .NET resilience and transient-fault-handling library that allows developers to express policies such as Retry, Circuit Breaker, Timeout, Bulkhead Isolation and Fallback in a fluent and thread-safe manner.  
 
-Polly targets .NET 4.0, 4.5, PCL (Profile 259) and .NET CORE via .NET Standard **1.[TBC]**.
+Polly targets .NET 4.0, 4.5, PCL (Profile 259) and .NET CORE via .NET Standard 1.0.
 
 **Keep up to date with new feature announcements, tips & tricks, and other news through [www.thepollyproject.org](http://www.thepollyproject.org)**
 
