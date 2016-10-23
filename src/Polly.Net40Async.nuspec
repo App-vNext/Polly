@@ -4,27 +4,32 @@
     <owners>App vNext</owners>
     <authors>Michael Wolfenden, App vNext</authors>
     <description>
-     Polly.Net40Async is a version of the Polly library specifically for for .NET 4.0 with async support via Microsoft.Bcl.Async.  Allows developers to express transient exception and fault handling policies such as Retry, Retry Forever, Wait and Retry or Circuit Breaker in a fluent manner.
+     Polly.Net40Async is a version of the Polly library specifically for for .NET 4.0 with async support via Microsoft.Bcl.Async.  Polly allows developers to express resilience and transient fault handling policies such as Retry, Circuit Breaker, Timeout, Bulkhead Isolation and Fallback in a fluent and thread-safe manner.
    </description>
     <language>en-US</language>
     <licenseUrl>https://raw.github.com/App-vNext/Polly/master/LICENSE.txt</licenseUrl>
     <iconUrl>https://raw.github.com/App-vNext/Polly/master/Polly.png</iconUrl>
     <projectUrl>https://github.com/App-vNext/Polly</projectUrl>
-    <tags>Exception Handling Policy Retry Wait Circuit Breaker</tags>
+    <tags>Exception Handling Policy Retry Wait Circuit Breaker Bulkhead Fallback Timeout Resilience</tags>
     <copyright>Copyright © 2016, App vNext</copyright>
     <releaseNotes>
+     5.0.1
+     ---------------------
+     Add a .NETStandard1.0 project and target to main Nuget package.
+
      5.0.0
      ---------------------
      A major release, adding significant new resilience policies:
-     - Timeout policy: allows timing out any execution (for both co-operative and unco-operative underlying delegates)
-     - Bulkhead isolation policy: limits the resources consumable by governed actions, such that a faulting channel cannot cause cascading failures, also bringing down other operations.
-     - Fallback policy: provides for a fallback execution or substitute value, in case of overall failure
-     - PolicyWrap: allows flexibly combining any Policy instances in the Polly armoury, to form an overall resilience strategy.
+     - Timeout policy: allows timing out any execution
+     - Bulkhead isolation policy: limits the resources consumable by governed actions, such that a faulting channel cannot cause cascading failures.
+     - Fallback policy: provides for a fallback execution or value, in case of overall failure
+     - PolicyWrap: allows flexibly combining Policy instances of any type, to form an overall resilience strategy.
 
      Other changes include:
-     - Add PolicyKeys and context to all policy executions, as bedrock for forthcoming introduction of policy events and metrics tracking executions. 
-     - Add CancellationToken support to synchronous executions (to support TimeoutPolicy).
+     - Add PolicyKeys and context to all policy executions, for logging and to support later introduction of policy events and metrics. 
+     - Add CancellationToken support to synchronous executions.
      - Add some missing ExecuteAndCapture/Async overloads. 
+     - Remove invalid ExecuteAsync overloads taking (but not making use of) a CancellationToken
      - Provide .NET4.0 support uniquely through Polly.NET40Async package
      - Retire ContextualPolicy (not part of documented API; support now in Policy base class)
      - Discontinue .NET3.5 support
