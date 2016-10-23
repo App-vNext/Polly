@@ -1,13 +1,17 @@
+## 5.0.1
+
+- Add .NET Standard 1.0 project and target.
+
 ## 5.0.0
 
 - Discontinue .NET3.5 support
 - Provide .NET4.0 support uniquely through Polly.NET40Async package
 - Retire ContextualPolicy (not part of documented API; support now in Policy base class)
 - Add some missing ExecuteAndCapture/Async overloads. Thanks to [@reisenberger](https://github.com/reisenberger)
-- Add CancellationToken support to synchronous executions (to support TimeoutPolicy).  Thanks to [@brunolauze](https://github.com/brunolauze) and [@reisenberger](https://github.com/reisenberger)
+- Add CancellationToken support to synchronous executions.  Thanks to [@brunolauze](https://github.com/brunolauze) and [@reisenberger](https://github.com/reisenberger)
 - Add PolicyWrap. Thanks to [@reisenberger](https://github.com/reisenberger)
 - Add Fallback policy. Thanks to [@reisenberger](https://github.com/reisenberger)
-- Add PolicyKeys and context to all policy executions, as bedrock for policy events and metrics tracking executions. Thanks to [@reisenberger](https://github.com/reisenberger) 
+- Add PolicyKeys and context to all policy executions, to enrich logging and to support later introduction of policy events and metrics. Thanks to [@reisenberger](https://github.com/reisenberger) 
 - Add Bulkhead Isolation policy.  Thanks to [@reisenberger](https://github.com/reisenberger) and contributions from  [@brunolauze](https://github.com/brunolauze).
 - Add Timeout policy.  Thanks to [@reisenberger](https://github.com/reisenberger).
 
