@@ -803,3 +803,9 @@ Also, we've stood up a [Slack](http://www.pollytalk.org) channel for easier real
 # License
 
 Licensed under the terms of the [New BSD License](http://opensource.org/licenses/BSD-3-Clause)
+
+# Laptop Stickers!
+
+Show your support for Polly by getting your laptop sticker today, available from [Sticker Mule](https://www.stickermule.com/en/marketplace/15794-polly-dot-net)!
+
+[![Polly Sticker](https://www.stickermule.com/en/marketplace/embed_img/15794)](https://www.stickermule.com/en/marketplace/15794-polly-dot-net)
