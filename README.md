@@ -2,6 +2,9 @@
 
 Polly is a .NET 3.5 / 4.0 / 4.5 / PCL (Profile 259) library that allows developers to express transient exception- and fault-handling policies such as Retry, Retry Forever, Wait and Retry or Circuit Breaker in a fluent and thread-safe manner.
 
+[<img align="right" src="https://www.dotnetfoundation.org/Media/dotnet_logo.png" width="100" />](https://www.dotnetfoundation.org/)
+We are now a member of the [.NET Foundation](https://www.dotnetfoundation.org/about)!
+
 **Keep up to date with new feature announcements, tips & tricks, and other news through [www.thepollyproject.org](http://www.thepollyproject.org)**
 
 [![NuGet version](https://badge.fury.io/nu/polly.svg)](https://badge.fury.io/nu/polly) [![Build status](https://ci.appveyor.com/api/projects/status/imt7dymt50346k5u?svg=true)](https://ci.appveyor.com/project/joelhulen/polly) [![Slack Status](http://www.pollytalk.org/badge.svg)](http://www.pollytalk.org)
@@ -595,6 +598,8 @@ For `CircuitBreakerPolicy<TResult>` policies:
 # Instructions for Contributing
 
 Please check out our [Wiki](https://github.com/App-vNext/Polly/wiki/Git-Workflow) for contributing guidelines. We are following the excellent GitHub Flow process, and would like to make sure you have all of the information needed to be a world-class contributor!
+
+Since Polly is part of the .NET Foundation, we ask our contributors to abide by their [Code of Conduct](https://www.dotnetfoundation.org/code-of-conduct).
 
 Also, we've stood up a [Slack](http://www.pollytalk.org) channel for easier real-time discussion of ideas and the general direction of Polly as a whole. Be sure to [join the conversation](http://www.pollytalk.org) today!
 
