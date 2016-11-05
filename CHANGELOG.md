@@ -1,3 +1,6 @@
+## 5.0.2
+- Correctly state dependencies for .NETStandard1.0 target.
+
 ## 5.0.1
 
 - Add .NET Standard 1.0 project and target.

@@ -13,6 +13,10 @@
     <tags>Exception Handling Policy Retry Wait Circuit Breaker Bulkhead Fallback Timeout Resilience</tags>
     <copyright>Copyright © 2016, App vNext</copyright>
     <releaseNotes>
+     5.0.2
+     ---------------------
+     Correctly state dependencies for .NETStandard1.0 target.
+
      5.0.1
      ---------------------
      Add a .NETStandard1.0 project and target to main Nuget package.
