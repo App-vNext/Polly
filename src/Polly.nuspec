@@ -146,10 +146,7 @@
       <group targetFramework="Xamarin.iOS" />
       <group targetFramework="portable-net45+win8+wpa81+wp8" />
       <group targetFramework="netstandard1.0">
-        <dependency id="System.Diagnostics.Debug" version="4.0.11" />
-        <dependency id="System.Linq" version="4.1.0" />
-        <dependency id="System.Runtime.Extensions" version="4.1.0" />
-        <dependency id="System.Threading" version="4.0.11" />
+        <dependency id="NETStandard.Library" version="1.6.0" />
       </group>
     </dependencies>
   </metadata>
