@@ -151,7 +151,6 @@
         <dependency id="System.Runtime.Extensions" version="4.1.0" />
         <dependency id="System.Threading" version="4.0.11" />
       </group>
-      <group targetFramework="dotnet"/>
     </dependencies>
   </metadata>
   <files>
