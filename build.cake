@@ -17,6 +17,7 @@ var configuration = Argument<string>("configuration", "Release");
 // EXTERNAL NUGET LIBRARIES
 //////////////////////////////////////////////////////////////////////
 
+#addin "Cake.FileHelpers"
 #addin "System.Text.Json"
 using System.Text.Json;
 
@@ -133,6 +134,18 @@ Task("__UpdateAssemblyVersionInformation")
     Information("AssemblyVersion -> {0}", gitVersionOutput["AssemblySemVer"]);
     Information("AssemblyFileVersion -> {0}", gitVersionOutput["MajorMinorPatch"]);
     Information("AssemblyInformationalVersion -> {0}", gitVersionOutput["InformationalVersion"]);
+});
+
+Task("__UpdateDotNetStandardAssemblyVersionNumber")
+    .Does(() =>
+{
+    var assemblySemVer = gitVersionOutput["AssemblySemVer"].ToString();
+    Information("Updating NetStandard10 AssemblyVersion to {0}", assemblySemVer);
+    var replacedFiles = ReplaceRegexInFiles("./src/Polly.NetStandard10/Properties/AssemblyInfo.cs", "AssemblyVersion[(]\".*\"[)]", "AssemblyVersion(\"" + assemblySemVer +"\")");
+    if (!replacedFiles.Any())
+    {
+        Information("NetStandard10 AssemblyVersion could not be updated.");
+    }
 });
 
 Task("__UpdateAppVeyorBuildNumber")
@@ -299,6 +312,7 @@ Task("Build")
     .IsDependentOn("__Clean")
     .IsDependentOn("__RestoreNugetPackages")
     .IsDependentOn("__UpdateAssemblyVersionInformation")
+    .IsDependentOn("__UpdateDotNetStandardAssemblyVersionNumber")
     .IsDependentOn("__UpdateAppVeyorBuildNumber")
     .IsDependentOn("__BuildSolutions")
     .IsDependentOn("__RunTests")
