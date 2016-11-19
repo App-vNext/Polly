@@ -52,7 +52,7 @@ namespace Polly.Specs
 
             ICacheProviderAsync stubCacheProvider = new StubCacheProvider();
             CachePolicy cache = Policy.CacheAsync(stubCacheProvider, TimeSpan.MaxValue);
-            await stubCacheProvider.PutAsync(executionKey, TimeSpan.MaxValue, valueToReturnFromCache, CancellationToken.None, false).ConfigureAwait(false);
+            await stubCacheProvider.PutAsync(executionKey, valueToReturnFromCache, TimeSpan.MaxValue, CancellationToken.None, false).ConfigureAwait(false);
 
             bool delegateExecuted = false;
 
@@ -176,9 +176,9 @@ namespace Polly.Specs
             CachePolicy cache = Policy.CacheAsync(stubCacheProvider, TimeSpan.MaxValue, cacheKeyStrategy);
 
             object person1 = new object();
-            await stubCacheProvider.PutAsync("person1", TimeSpan.MaxValue, person1, CancellationToken.None, false).ConfigureAwait(false);
+            await stubCacheProvider.PutAsync("person1", person1, TimeSpan.MaxValue, CancellationToken.None, false).ConfigureAwait(false);
             object person2 = new object();
-            await stubCacheProvider.PutAsync("person2", TimeSpan.MaxValue, person2, CancellationToken.None, false).ConfigureAwait(false);
+            await stubCacheProvider.PutAsync("person2", person2, TimeSpan.MaxValue, CancellationToken.None, false).ConfigureAwait(false);
 
             bool funcExecuted = false;
             Func<Task<object>> func = async () => { funcExecuted = true; await TaskHelper.EmptyTask.ConfigureAwait(false); return new object(); };

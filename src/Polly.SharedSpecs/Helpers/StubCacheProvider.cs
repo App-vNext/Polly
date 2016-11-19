@@ -42,7 +42,7 @@ namespace Polly.Specs.Helpers
             return null;
         }
 
-        public void Put(string key, TimeSpan ttl, object value)
+        public void Put(string key, object value, TimeSpan ttl)
         {
             cachedValues[key] = new CacheItem(value, ttl);
         }
@@ -56,10 +56,9 @@ namespace Polly.Specs.Helpers
             return Task.FromResult(Get(key));
         }
 
-        public Task PutAsync(string key, TimeSpan ttl, object value, CancellationToken cancellationToken,
-            bool continueOnCapturedContext)
+        public Task PutAsync(string key, object value, TimeSpan ttl, CancellationToken cancellationToken, bool continueOnCapturedContext)
         {
-            Put(key, ttl, value);
+            Put(key, value, ttl);
             return TaskHelper.EmptyTask;
         }
 

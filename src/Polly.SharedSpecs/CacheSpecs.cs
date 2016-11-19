@@ -51,7 +51,7 @@ namespace Polly.Specs
 
             ICacheProvider stubCacheProvider = new StubCacheProvider();
             CachePolicy cache = Policy.Cache(stubCacheProvider, TimeSpan.MaxValue);
-            stubCacheProvider.Put(executionKey, TimeSpan.MaxValue, valueToReturnFromCache);
+            stubCacheProvider.Put(executionKey, valueToReturnFromCache, TimeSpan.MaxValue);
 
             bool delegateExecuted = false;
 
@@ -171,9 +171,9 @@ namespace Polly.Specs
             CachePolicy cache = Policy.Cache(stubCacheProvider, TimeSpan.MaxValue, cacheKeyStrategy);
 
             object person1 = new object();
-            stubCacheProvider.Put("person1", TimeSpan.MaxValue, person1);
+            stubCacheProvider.Put("person1", person1, TimeSpan.MaxValue);
             object person2 = new object();
-            stubCacheProvider.Put("person2", TimeSpan.MaxValue, person2);
+            stubCacheProvider.Put("person2", person2, TimeSpan.MaxValue);
 
             bool funcExecuted = false;
             Func<object> func = () => { funcExecuted = true; return new object(); };

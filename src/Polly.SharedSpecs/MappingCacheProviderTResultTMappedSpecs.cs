@@ -31,7 +31,7 @@ namespace Polly.Specs
 
             ICacheProvider<string> mappedCacheProvider = new TypedStubMappingCacheProvider_base64(new StubCacheProvider().As<string>());
             CachePolicy<string> cache = Policy.Cache(mappedCacheProvider, TimeSpan.MaxValue);
-            mappedCacheProvider.Put(executionKey, TimeSpan.MaxValue, valueToReturnFromCache);
+            mappedCacheProvider.Put(executionKey, valueToReturnFromCache, TimeSpan.MaxValue);
 
             bool delegateExecuted = false;
 

@@ -39,9 +39,9 @@ namespace Polly.Caching
             return GetMapper(_wrappedCacheProvider.Get(key));
         }
 
-        void ICacheProvider.Put(string key, TimeSpan ttl, object value)
+        void ICacheProvider.Put(string key, object value, TimeSpan ttl)
         {
-            _wrappedCacheProvider.Put(key, ttl, PutMapper(value));
+            _wrappedCacheProvider.Put(key, PutMapper(value), ttl);
         }
     }
     
@@ -82,9 +82,9 @@ namespace Polly.Caching
             return GetMapper(_wrappedCacheProvider.Get(key));
         }
 
-        void ICacheProvider<TNative>.Put(string key, TimeSpan ttl, TNative value)
+        void ICacheProvider<TNative>.Put(string key, TNative value, TimeSpan ttl)
         {
-            _wrappedCacheProvider.Put(key, ttl, PutMapper(value));
+            _wrappedCacheProvider.Put(key, PutMapper(value), ttl);
         }
     }
 }

@@ -32,7 +32,7 @@ namespace Polly.Caching
             TimeSpan ttl = ttlStrategy.GetTtl(context);
             if (ttl > TimeSpan.Zero)
             {
-                cacheProvider.Put(cacheKey, ttl, result);
+                cacheProvider.Put(cacheKey, result, ttl);
             }
 
             return result;

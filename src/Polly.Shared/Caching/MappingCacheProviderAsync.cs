@@ -57,20 +57,18 @@ namespace Polly.Caching
         /// Puts the specified value in the cache asynchronously.
         /// </summary>
         /// <param name="key">The cache key.</param>
-        /// <param name="ttl">The time-to-live for the cache entry.</param>
         /// <param name="value">The value to put into the cache.</param>
+        /// <param name="ttl">The time-to-live for the cache entry.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <param name="continueOnCapturedContext">Whether async calls should continue on a captured synchronization context.</param>
         /// <returns>A <see cref="Task" /> which completes when the value has been cached.</returns>
-        public async Task PutAsync(string key, TimeSpan ttl, object value, CancellationToken cancellationToken, bool continueOnCapturedContext)
+        public async Task PutAsync(string key, object value, TimeSpan ttl, CancellationToken cancellationToken, bool continueOnCapturedContext)
         {
             await _wrappedCacheProvider.PutAsync(
                     key, 
-                    ttl, 
                     await PutMapper(value, continueOnCapturedContext).ConfigureAwait(continueOnCapturedContext), 
-                    cancellationToken,
-                    continueOnCapturedContext
-                ).ConfigureAwait(continueOnCapturedContext);
+                    ttl,
+                    cancellationToken, continueOnCapturedContext).ConfigureAwait(continueOnCapturedContext);
         }
     }
 
@@ -127,18 +125,18 @@ namespace Polly.Caching
         /// Puts the specified value in the cache asynchronously.
         /// </summary>
         /// <param name="key">The cache key.</param>
-        /// <param name="ttl">The time-to-live for the cache entry.</param>
         /// <param name="value">The value to put into the cache.</param>
+        /// <param name="ttl">The time-to-live for the cache entry.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <param name="continueOnCapturedContext">Whether async calls should continue on a captured synchronization context.</param>
         /// <returns>A <see cref="Task" /> which completes when the value has been cached.</returns>
-        public async Task PutAsync(string key, TimeSpan ttl, TNative value, CancellationToken cancellationToken, bool continueOnCapturedContext)
+        public async Task PutAsync(string key, TNative value, TimeSpan ttl, CancellationToken cancellationToken, bool continueOnCapturedContext)
         {
             await _wrappedCacheProvider.PutAsync(
                     key,
-                    ttl,
                     await PutMapper(value, continueOnCapturedContext).ConfigureAwait(continueOnCapturedContext),
-                    cancellationToken,
+                    ttl,
+                    cancellationToken, 
                     continueOnCapturedContext
                 ).ConfigureAwait(continueOnCapturedContext);
         }

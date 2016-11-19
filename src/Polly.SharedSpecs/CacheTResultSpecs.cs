@@ -50,7 +50,7 @@ namespace Polly.Specs
 
             ICacheProvider stubCacheProvider = new StubCacheProvider();
             CachePolicy<string> cache = Policy.Cache<string>(stubCacheProvider, TimeSpan.MaxValue);
-            stubCacheProvider.Put(executionKey, TimeSpan.MaxValue, valueToReturnFromCache);
+            stubCacheProvider.Put(executionKey, valueToReturnFromCache, TimeSpan.MaxValue);
 
             bool delegateExecuted = false;
 
@@ -170,9 +170,9 @@ namespace Polly.Specs
             CachePolicy<ResultClass> cache = Policy.Cache<ResultClass>(stubCacheProvider, TimeSpan.MaxValue, cacheKeyStrategy);
 
             object person1 = new ResultClass(ResultPrimitive.Good, "person1");
-            stubCacheProvider.Put("person1", TimeSpan.MaxValue, person1);
+            stubCacheProvider.Put("person1", person1, TimeSpan.MaxValue);
             object person2 = new ResultClass(ResultPrimitive.Good, "person2");
-            stubCacheProvider.Put("person2", TimeSpan.MaxValue, person2);
+            stubCacheProvider.Put("person2", person2, TimeSpan.MaxValue);
 
             bool funcExecuted = false;
             Func<ResultClass> func = () => { funcExecuted = true; return new ResultClass(ResultPrimitive.Fault, "should never return this one"); };

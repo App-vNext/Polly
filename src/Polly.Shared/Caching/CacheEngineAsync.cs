@@ -34,7 +34,7 @@ namespace Polly.Caching
             TimeSpan ttl = ttlStrategy.GetTtl(context);
             if (ttl > TimeSpan.Zero)
             {
-                await cacheProvider.PutAsync(cacheKey, ttl, result, cancellationToken, continueOnCapturedContext).ConfigureAwait(continueOnCapturedContext);
+                await cacheProvider.PutAsync(cacheKey, result, ttl, cancellationToken, continueOnCapturedContext).ConfigureAwait(continueOnCapturedContext);
             }
 
             return result;
