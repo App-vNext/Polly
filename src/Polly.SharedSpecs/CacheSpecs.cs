@@ -3,11 +3,12 @@ using System.Threading;
 using FluentAssertions;
 using Polly.Caching;
 using Polly.Specs.Helpers;
+using Polly.Utilities;
 using Xunit;
 
 namespace Polly.Specs
 {
-    public class CacheSpecs
+    public class CacheSpecs : IDisposable
     {
         #region Configuration
 
@@ -15,8 +16,17 @@ namespace Polly.Specs
         public void Should_throw_when_cache_provider_is_null()
         {
             ICacheProvider cacheProvider = null;
-            Action action = () => Policy.Cache(cacheProvider);
+            Action action = () => Policy.Cache(cacheProvider, TimeSpan.MaxValue);
             action.ShouldThrow<ArgumentNullException>().And.ParamName.Should().Be("cacheProvider");
+        }
+
+        [Fact]
+        public void Should_throw_when_ttl_strategy_is_null()
+        {
+            ICacheProvider cacheProvider = new StubCacheProvider();
+            ITtlStrategy ttlStrategy = null;
+            Action action = () => Policy.Cache(cacheProvider, ttlStrategy);
+            action.ShouldThrow<ArgumentNullException>().And.ParamName.Should().Be("ttlStrategy");
         }
 
         [Fact]
@@ -24,7 +34,7 @@ namespace Polly.Specs
         {
             ICacheProvider cacheProvider = new StubCacheProvider();
             ICacheKeyStrategy cacheKeyStrategy = null;
-            Action action = () => Policy.Cache(cacheProvider, cacheKeyStrategy);
+            Action action = () => Policy.Cache(cacheProvider, TimeSpan.MaxValue, cacheKeyStrategy);
             action.ShouldThrow<ArgumentNullException>().And.ParamName.Should().Be("cacheKeyStrategy");
         }
 
@@ -40,8 +50,8 @@ namespace Polly.Specs
             const string executionKey = "SomeExecutionKey";
 
             ICacheProvider stubCacheProvider = new StubCacheProvider();
-            CachePolicy cache = Policy.Cache(stubCacheProvider);
-            stubCacheProvider.Put(executionKey, valueToReturnFromCache);
+            CachePolicy cache = Policy.Cache(stubCacheProvider, TimeSpan.MaxValue);
+            stubCacheProvider.Put(executionKey, TimeSpan.MaxValue, valueToReturnFromCache);
 
             bool delegateExecuted = false;
 
@@ -62,7 +72,7 @@ namespace Polly.Specs
             const string executionKey = "SomeExecutionKey";
 
             ICacheProvider stubCacheProvider = new StubCacheProvider();
-            CachePolicy cache = Policy.Cache(stubCacheProvider);
+            CachePolicy cache = Policy.Cache(stubCacheProvider, TimeSpan.MaxValue);
 
             stubCacheProvider.Get(executionKey).Should().BeNull();
 
@@ -72,12 +82,69 @@ namespace Polly.Specs
         }
 
         [Fact]
+        public void Should_execute_delegate_and_put_value_in_cache_but_when_it_expires_execute_delegate_again()
+        {
+            const string valueToReturn = "valueToReturn";
+            const string executionKey = "SomeExecutionKey";
+
+            ICacheProvider stubCacheProvider = new StubCacheProvider();
+            TimeSpan ttl = TimeSpan.FromMinutes(30);
+            CachePolicy cache = Policy.Cache(stubCacheProvider, ttl);
+
+            stubCacheProvider.Get(executionKey).Should().BeNull();
+
+            int delegateInvocations = 0;
+            Func<string> func = () =>
+            {
+                delegateInvocations++;
+                return valueToReturn;
+            };
+
+            DateTime fixedTime = SystemClock.UtcNow();
+            SystemClock.UtcNow = () => fixedTime;
+
+            // First execution should execute delegate and put result in the cache.
+            cache.Execute(func, new Context(executionKey)).Should().Be(valueToReturn);
+            delegateInvocations.Should().Be(1);
+            stubCacheProvider.Get(executionKey).Should().Be(valueToReturn);
+
+            // Second execution (before cache expires) should get it from the cache - no further delegate execution.
+            // (Manipulate time so just prior cache expiry).
+            SystemClock.UtcNow = () => fixedTime.Add(ttl).AddTicks(-1);
+            cache.Execute(func, new Context(executionKey)).Should().Be(valueToReturn);
+            delegateInvocations.Should().Be(1);
+
+            // Manipulate time to force cache expiry.
+            SystemClock.UtcNow = () => fixedTime.Add(ttl).AddTicks(1);
+
+            // Third execution (cache expired) should not get it from the cache - should cause further delegate execution.
+            cache.Execute(func, new Context(executionKey)).Should().Be(valueToReturn);
+            delegateInvocations.Should().Be(2);
+        }
+
+        [Fact]
+        public void Should_execute_delegate_but_not_put_value_in_cache_if_cache_does_not_hold_value_but_ttl_indicates_not_worth_caching()
+        {
+            const string valueToReturn = "valueToReturn";
+            const string executionKey = "SomeExecutionKey";
+
+            ICacheProvider stubCacheProvider = new StubCacheProvider();
+            CachePolicy cache = Policy.Cache(stubCacheProvider, TimeSpan.Zero);
+
+            stubCacheProvider.Get(executionKey).Should().BeNull();
+
+            cache.Execute(() => { return valueToReturn; }, new Context(executionKey)).Should().Be(valueToReturn);
+
+            stubCacheProvider.Get(executionKey).Should().Be(null);
+        }
+
+        [Fact]
         public void Should_return_value_from_cache_and_not_execute_delegate_if_prior_execution_has_cached()
         {
             const string valueToReturn = "valueToReturn";
             const string executionKey = "SomeExecutionKey";
 
-            CachePolicy cache = Policy.Cache(new StubCacheProvider());
+            CachePolicy cache = Policy.Cache(new StubCacheProvider(), TimeSpan.MaxValue);
 
             int delegateInvocations = 0;
             Func<string> func = () =>
@@ -101,12 +168,12 @@ namespace Polly.Specs
         {
             ICacheProvider stubCacheProvider = new StubCacheProvider();
             ICacheKeyStrategy cacheKeyStrategy = new MockCacheKeyStrategy(context => context.ExecutionKey + context["id"]);
-            CachePolicy cache = Policy.Cache(stubCacheProvider, cacheKeyStrategy);
+            CachePolicy cache = Policy.Cache(stubCacheProvider, TimeSpan.MaxValue, cacheKeyStrategy);
 
             object person1 = new object();
-            stubCacheProvider.Put("person1", person1);
+            stubCacheProvider.Put("person1", TimeSpan.MaxValue, person1);
             object person2 = new object();
-            stubCacheProvider.Put("person2", person2);
+            stubCacheProvider.Put("person2", TimeSpan.MaxValue, person2);
 
             bool funcExecuted = false;
             Func<object> func = () => { funcExecuted = true; return new object(); };
@@ -127,7 +194,7 @@ namespace Polly.Specs
         {
             string valueToReturn = Guid.NewGuid().ToString();
 
-            CachePolicy cache = Policy.Cache(new StubCacheProvider());
+            CachePolicy cache = Policy.Cache(new StubCacheProvider(), TimeSpan.MaxValue);
 
             int delegateInvocations = 0;
             Func<string> func = () =>
@@ -148,7 +215,7 @@ namespace Polly.Specs
         {
             string executionKey = Guid.NewGuid().ToString();
 
-            CachePolicy cache = Policy.Cache(new StubCacheProvider());
+            CachePolicy cache = Policy.Cache(new StubCacheProvider(), TimeSpan.MaxValue);
 
             int delegateInvocations = 0;
             Action action = () => { delegateInvocations++; };
@@ -170,7 +237,7 @@ namespace Polly.Specs
             const string valueToReturn = "valueToReturn";
             const string executionKey = "SomeExecutionKey";
 
-            CachePolicy cache = Policy.Cache(new StubCacheProvider());
+            CachePolicy cache = Policy.Cache(new StubCacheProvider(), TimeSpan.MaxValue);
 
             CancellationTokenSource tokenSource = new CancellationTokenSource();
 
@@ -199,7 +266,7 @@ namespace Polly.Specs
             const string executionKey = "SomeExecutionKey";
 
             ICacheProvider stubCacheProvider = new StubCacheProvider();
-            CachePolicy cache = Policy.Cache(stubCacheProvider);
+            CachePolicy cache = Policy.Cache(stubCacheProvider, TimeSpan.MaxValue);
 
             CancellationTokenSource tokenSource = new CancellationTokenSource();
 
@@ -217,5 +284,10 @@ namespace Polly.Specs
         }
 
         #endregion
+
+        public void Dispose()
+        {
+            SystemClock.Reset();
+        }
     }
 }

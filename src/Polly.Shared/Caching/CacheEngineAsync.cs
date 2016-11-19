@@ -8,6 +8,7 @@ namespace Polly.Caching
     {
         internal static async Task<TResult> ImplementationAsync<TResult>(
             ICacheProviderAsync<TResult> cacheProvider,
+            ITtlStrategy ttlStrategy,
             ICacheKeyStrategy cacheKeyStrategy,
             Func<CancellationToken, Task<TResult>> action,
             Context context,
@@ -29,7 +30,13 @@ namespace Polly.Caching
             }
 
             TResult result = await action(cancellationToken).ConfigureAwait(continueOnCapturedContext);
-            await cacheProvider.PutAsync(cacheKey, result, cancellationToken, continueOnCapturedContext).ConfigureAwait(continueOnCapturedContext);
+
+            TimeSpan ttl = ttlStrategy.GetTtl(context);
+            if (ttl > TimeSpan.Zero)
+            {
+                await cacheProvider.PutAsync(cacheKey, ttl, result, cancellationToken, continueOnCapturedContext).ConfigureAwait(continueOnCapturedContext);
+            }
+
             return result;
         }
     }

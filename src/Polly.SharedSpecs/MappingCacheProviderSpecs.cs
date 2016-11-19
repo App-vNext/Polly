@@ -30,8 +30,8 @@ namespace Polly.Specs
             const string executionKey = "SomeExecutionKey";
 
             ICacheProvider mappedCacheProvider = new StubMappingCacheProvider_base64(new StubCacheProvider());
-            CachePolicy cache = Policy.Cache(mappedCacheProvider);
-            mappedCacheProvider.Put(executionKey, valueToReturnFromCache);
+            CachePolicy cache = Policy.Cache(mappedCacheProvider, TimeSpan.MaxValue);
+            mappedCacheProvider.Put(executionKey, TimeSpan.MaxValue, valueToReturnFromCache);
 
             bool delegateExecuted = false;
 
@@ -52,7 +52,7 @@ namespace Polly.Specs
             const string executionKey = "SomeExecutionKey";
 
             ICacheProvider mappedCacheProvider = new StubMappingCacheProvider_base64(new StubCacheProvider());
-            CachePolicy cache = Policy.Cache(mappedCacheProvider);
+            CachePolicy cache = Policy.Cache(mappedCacheProvider, TimeSpan.MaxValue);
 
             mappedCacheProvider.Get(executionKey).Should().BeNull();
 
@@ -67,7 +67,7 @@ namespace Polly.Specs
             const string valueToReturn = "valueToReturn";
             const string executionKey = "SomeExecutionKey";
 
-            CachePolicy cache = Policy.Cache(new StubMappingCacheProvider_base64(new StubCacheProvider()));
+            CachePolicy cache = Policy.Cache(new StubMappingCacheProvider_base64(new StubCacheProvider()), TimeSpan.MaxValue);
 
             int delegateExecutions = 0;
             Func<string> func = () =>
@@ -96,7 +96,7 @@ namespace Polly.Specs
             const string valueToReturn = "valueToReturn";
             const string executionKey = "SomeExecutionKey";
 
-            CachePolicy cache = Policy.Cache(new StubMappingCacheProvider_Reverse(new StubMappingCacheProvider_base64(new StubCacheProvider())));
+            CachePolicy cache = Policy.Cache(new StubMappingCacheProvider_Reverse(new StubMappingCacheProvider_base64(new StubCacheProvider())), TimeSpan.MaxValue);
 
             int delegateExecutions = 0;
             Func<string> func = () =>

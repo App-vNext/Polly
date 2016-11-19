@@ -11,13 +11,15 @@ namespace Polly.Caching
     public partial class CachePolicy : Policy
     {
         private readonly ICacheProvider _syncCacheProvider;
+        private readonly ITtlStrategy _ttlStrategy;
         private readonly ICacheKeyStrategy _cacheKeyStrategy;
 
-        internal CachePolicy(ICacheProvider syncCacheProvider, ICacheKeyStrategy cacheKeyStrategy)
+        internal CachePolicy(ICacheProvider syncCacheProvider, ITtlStrategy ttlStrategy, ICacheKeyStrategy cacheKeyStrategy)
             : base((action, context, cancellationToken) => action(cancellationToken), // Pass-through/NOOP policy action, for non-TResult calls through a cache policy.
                 PredicateHelper.EmptyExceptionPredicates)
         {
             _syncCacheProvider = syncCacheProvider;
+            _ttlStrategy = ttlStrategy;
             _cacheKeyStrategy = cacheKeyStrategy;
         }
 
@@ -31,7 +33,7 @@ namespace Polly.Caching
         /// <returns>The value returned by the action, or the cache.</returns>
         public override TResult Execute<TResult>(Func<CancellationToken, TResult> action, Context context, CancellationToken cancellationToken)
         {
-            return CacheEngine.Implementation<TResult>(_syncCacheProvider.As<TResult>(), _cacheKeyStrategy, action, context, cancellationToken);
+            return CacheEngine.Implementation<TResult>(_syncCacheProvider.As<TResult>(), _ttlStrategy, _cacheKeyStrategy, action, context, cancellationToken);
         }
     }
 
@@ -40,8 +42,8 @@ namespace Polly.Caching
     /// </summary>
     public partial class CachePolicy<TResult> : Policy<TResult>
     {
-        internal CachePolicy(ICacheProvider<TResult> syncCacheProvider, ICacheKeyStrategy cacheKeyStrategy)
-            : base((action, context, cancellationToken) => CacheEngine.Implementation(syncCacheProvider, cacheKeyStrategy, action, context, cancellationToken),
+        internal CachePolicy(ICacheProvider<TResult> syncCacheProvider, ITtlStrategy ttlStrategy, ICacheKeyStrategy cacheKeyStrategy)
+            : base((action, context, cancellationToken) => CacheEngine.Implementation(syncCacheProvider, ttlStrategy, cacheKeyStrategy, action, context, cancellationToken),
                 PredicateHelper.EmptyExceptionPredicates,
                 Enumerable.Empty<ResultPredicate<TResult>>())
         { }
