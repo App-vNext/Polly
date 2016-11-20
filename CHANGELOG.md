@@ -1,5 +1,10 @@
 ## 5.0.2
-- Correctly state dependencies for .NETStandard1.0 target.
+
+- .NETStandard1.0 target: Correctly state dependencies. 
+- .NETStandard1.0 target: Fix SemVer stamping of Polly.dll.
+- Mark Polly.dll as CLSCompliant.
+- Tidy build around GitVersionTask and ReferenceGenerator.
+- Update FluentAssertions dependency.
 
 ## 5.0.1
 
@@ -7,17 +12,20 @@
 
 ## 5.0.0
 
-- Discontinue .NET3.5 support
+A major release, adding significant new resilience policies:
+- Timeout policy: allows timing out any execution. Thanks to [@reisenberger](https://github.com/reisenberger).
+- Bulkhead isolation policy: limits the resources consumable by governed actions, such that a faulting channel cannot cause cascading failures. Thanks to [@reisenberger](https://github.com/reisenberger) and contributions from [@brunolauze](https://github.com/brunolauze).
+- Fallback policy: provides for a fallback execution or value, in case of overall failure. Thanks to [@reisenberger](https://github.com/reisenberger)
+- PolicyWrap: allows flexibly combining Policy instances of any type, to form an overall resilience strategy. Thanks to [@reisenberger](https://github.com/reisenberger)
+
+Other changes include:
+- Add PolicyKeys and context to all policy executions, for logging and to support later introduction of policy events and metrics. Thanks to [@reisenberger](https://github.com/reisenberger)
+- Add CancellationToken support to synchronous executions.  Thanks to [@brunolauze](https://github.com/brunolauze) and [@reisenberger](https://github.com/reisenberger)
+- Add some missing ExecuteAndCapture/Async overloads. Thanks to [@reisenberger](https://github.com/reisenberger)
+- Remove invalid ExecuteAsync overloads taking (but not making use of) a CancellationToken
 - Provide .NET4.0 support uniquely through Polly.NET40Async package
 - Retire ContextualPolicy (not part of documented API; support now in Policy base class)
-- Add some missing ExecuteAndCapture/Async overloads. Thanks to [@reisenberger](https://github.com/reisenberger)
-- Add CancellationToken support to synchronous executions.  Thanks to [@brunolauze](https://github.com/brunolauze) and [@reisenberger](https://github.com/reisenberger)
-- Add PolicyWrap. Thanks to [@reisenberger](https://github.com/reisenberger)
-- Add Fallback policy. Thanks to [@reisenberger](https://github.com/reisenberger)
-- Add PolicyKeys and context to all policy executions, to enrich logging and to support later introduction of policy events and metrics. Thanks to [@reisenberger](https://github.com/reisenberger) 
-- Add Bulkhead Isolation policy.  Thanks to [@reisenberger](https://github.com/reisenberger) and contributions from  [@brunolauze](https://github.com/brunolauze).
-- Add Timeout policy.  Thanks to [@reisenberger](https://github.com/reisenberger).
-
+- Discontinue .NET3.5 support
  
 ## 4.3.0
 

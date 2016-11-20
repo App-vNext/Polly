@@ -789,8 +789,9 @@ For `CircuitBreakerPolicy<TResult>` policies:
 * [@reisenberger](https://github.com/reisenberger) - Add PolicyWrap.  
 * [@reisenberger](https://github.com/reisenberger) - Add Fallback policy. 
 * [@reisenberger](https://github.com/reisenberger) - Add PolicyKeys and context to all policy executions, as bedrock for policy events and metrics tracking executions. 
-* [@reisenberger](https://github.com/reisenberger),  and contributions from  [@brunolauze](https://github.com/brunolauze) -  Add Bulkhead Isolation policy.  
-* [@reisenberger](https://github.com/reisenberger) - Add Timeout policy. 
+* [@reisenberger](https://github.com/reisenberger),  and contributions from [@brunolauze](https://github.com/brunolauze) -  Add Bulkhead Isolation policy.  
+* [@reisenberger](https://github.com/reisenberger) - Add Timeout policy.
+* [@reisenberger](https://github.com/reisenberger) - Fix .NETStandard 1.0 targeting.  
 
 
 # Sample Projects
