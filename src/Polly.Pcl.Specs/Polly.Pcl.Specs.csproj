@@ -72,9 +72,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Polly.Pcl\Polly.Pcl.csproj">
-      <Project>{905cf38a-be90-4234-bf15-2fcfd1973a9c}</Project>
-      <Name>Polly.Pcl</Name>
+    <ProjectReference Include="..\Polly.NetStandard10\Polly.NetStandard10.csproj">
+      <Project>{5017174e-dac5-4408-ab15-1f902f40c612}</Project>
+      <Name>Polly.NetStandard10</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="..\Polly.SharedSpecs\Polly.SharedSpecs.projitems" Label="Shared" />

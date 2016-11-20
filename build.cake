@@ -49,7 +49,6 @@ var snkFile = srcDir + File(keyName);
 
 var projectToNugetFolderMap = new Dictionary<string, string[]>() {
     { "Net45"        , new [] {"net45"} },
-    { "Pcl"          , new [] {"portable-net45+netcore45+wpa81+wp8"} },
     { "NetStandard10", new [] {"netstandard1.0"} },
 };
 
@@ -69,7 +68,7 @@ var strongNameSignerPath = ToolsExePath("StrongNameSigner.Console.exe");
 // SETUP / TEARDOWN
 ///////////////////////////////////////////////////////////////////////////////
 
-Setup(() =>
+Setup(_ =>
 {
     Information("");
     Information(" ██████╗  ██████╗ ██╗     ██╗  ██╗   ██╗");
@@ -81,7 +80,7 @@ Setup(() =>
     Information("");
 });
 
-Teardown(() =>
+Teardown(_ =>
 {
     Information("Finished running tasks.");
 });

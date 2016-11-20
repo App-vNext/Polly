@@ -2,6 +2,7 @@
 
 - .NETStandard1.0 target: Correctly state dependencies. 
 - .NETStandard1.0 target: Fix SemVer stamping of Polly.dll.
+- PCL259 project and target: Remove, in favour of .NETStandard1.0 target.  PCL259 is supported via .NETStandard1.0 target, going forward.
 - Mark Polly.dll as CLSCompliant.
 - Tidy build around GitVersionTask and ReferenceGenerator.
 - Update FluentAssertions dependency.
