@@ -2,7 +2,10 @@
 
 Polly is a .NET resilience and transient-fault-handling library that allows developers to express policies such as Retry, Circuit Breaker, Timeout, Bulkhead Isolation, and Fallback in a fluent and thread-safe manner.  
 
-Polly targets .NET 4.0, 4.5, PCL (Profile 259) and .NET CORE via .NET Standard 1.0.
+Polly targets .NET 4.0, .NET 4.5 and .NET Standard 1.0 ([coverage](https://github.com/dotnet/standard/blob/master/docs/versions.md): .NET Core, Mono, Xamarin.iOS, Xamarin.Android, UWP, WP8.0+).
+
+[<img align="right" src="https://www.dotnetfoundation.org/Media/dotnet_logo.png" width="100" />](https://www.dotnetfoundation.org/)
+We are now a member of the [.NET Foundation](https://www.dotnetfoundation.org/about)!
 
 **Keep up to date with new feature announcements, tips & tricks, and other news through [www.thepollyproject.org](http://www.thepollyproject.org)**
 
@@ -33,7 +36,7 @@ Polly offers multiple resilience policies:
 | ------------- | ------------- |:-------------: |------------- |
 |**Retry** <br/>(policy family)<br/><sub>([quickstart](#retry)&nbsp;;&nbsp;[deep](https://github.com/App-vNext/Polly/wiki/Retry))</sub>|Many faults are transient and may self-correct after a short delay.| "Maybe it's just a blip" |  Allows configuring automatic retries. |
 |**Circuit-breaker**<br/>(policy family)<br/><sub>([quickstart](#circuit-breaker)&nbsp;;&nbsp;[deep](https://github.com/App-vNext/Polly/wiki/Circuit-Breaker))</sub>|When a system is seriously struggling, failing fast is better than making users/callers wait.  <br/><br/>Protecting a faulting system from overload can help it recover. | "Stop doing it if it hurts" <br/><br/>"Give that system a break" | Breaks the circuit (blocks executions) for a period, when faults exceed some pre-configured threshold. | 
-|**Timeout**<br/><sub>([quickstart](#timeout)&nbsp;;&nbsp;[deep](https://github.com/App-vNext/Polly/wiki/Timeout))</sub>|Beyond a certain wait, a success result is unlikely.| "I can't wait forever"  |Guarantees the caller won't have to wait beyond the timeout. | 
+|**Timeout**<br/><sub>([quickstart](#timeout)&nbsp;;&nbsp;[deep](https://github.com/App-vNext/Polly/wiki/Timeout))</sub>|Beyond a certain wait, a success result is unlikely.| "Don't wait forever"  |Guarantees the caller won't have to wait beyond the timeout. | 
 |**Bulkhead Isolation**<br/><sub>([quickstart](#bulkhead)&nbsp;;&nbsp;[deep](https://github.com/App-vNext/Polly/wiki/Bulkhead))</sub>|When a process faults, multiple failing calls backing up can easily swamp resource (eg threads/CPU) in a host.<br/><br/>A faulting downstream system can also cause 'backed-up' failing calls upstream.<br/><br/>Both risk a faulting process bringing down a wider system. | "One fault shouldn't sink the whole ship"  |Constrains the governed actions to a fixed-size resource pool, isolating their potential  to affect others. |
 |**Cache**<br/><sub>([quickstart](#cache)&nbsp;;&nbsp;[deep](https://github.com/App-vNext/Polly/wiki/Cache))</sub>|Some proportion of requests may be similar.| "You've asked that one before"  |Provides a response from cache if known. <br/><br/>Stores responses automatically in cache, when first retrieved. |
 |**Fallback**<br/><sub>([quickstart](#fallback)&nbsp;;&nbsp;[deep](https://github.com/App-vNext/Polly/wiki/Fallback))</sub>|Things will still fail - plan what you will do when that happens.| "Degrade gracefully"  |Defines an alternative value to be returned (or action to be executed) on failure. | 
@@ -631,9 +634,9 @@ All Polly policies are fully thread-safe.  You can safely re-use policies at mul
 While the internal operation of the policy is thread-safe, this does not magically make delegates you execute through the policy thread-safe: if delegates you execute through the policy are not thread-safe, they remain not thread-safe.
 
 
-# Asynchronous Support (.NET 4.5, PCL and .NET4.0)
+# Asynchronous Support
 
-You can use Polly with asynchronous functions by using the asynchronous methods
+Polly fully supports asynchronous executions, using the asynchronous methods:
 
 * `RetryAsync`
 * `WaitAndRetryAsync`
@@ -642,7 +645,7 @@ You can use Polly with asynchronous functions by using the asynchronous methods
 * `ExecuteAsync`
 * `ExecuteAndCaptureAsync`
 
-In place of their synchronous counterparts
+In place of their synchronous counterparts:
 
 * `Retry`
 * `WaitAndRetry`
@@ -661,7 +664,6 @@ await Policy
   .ExecuteAsync(() => DoSomethingAsync());
 
 ```
-
 
 ### SynchronizationContext ###
 
@@ -686,6 +688,9 @@ var policy = Policy
     });
 var response = await policy.ExecuteAsync(ct => httpClient.GetAsync(uri, ct), cancellationToken);
 ```
+
+From Polly v5.0, synchronous executions also support cancellation via `CancellationToken`.
+
 # .NET4.0 support ###
 
 The .NET4.0 package uses `Microsoft.Bcl.Async` to add async support.  To minimise  dependencies on the main Polly nuget package, the .NET4.0 version is available as separate Nuget packages `Polly.Net40Async` and `Polly.Net40Async-signed`.
@@ -758,6 +763,7 @@ For `CircuitBreakerPolicy<TResult>` policies:
 * [xUnit.net](https://github.com/xunit/xunit) - Free, open source, community-focused unit testing tool for the .NET Framework | [Apache License 2.0 (Apache)](https://github.com/xunit/xunit/blob/master/license.txt)
 * [Ian Griffith's TimedLock] (http://www.interact-sw.co.uk/iangblog/2004/04/26/yetmoretimedlocking)
 * [Steven van Deursen's ReadOnlyDictionary] (http://www.cuttingedge.it/blogs/steven/pivot/entry.php?id=29)
+* Build powered by [Cake](http://cakebuild.net/) and [GitVersionTask](https://github.com/GitTools/GitVersion).
 
 # Acknowledgements
 
@@ -786,8 +792,9 @@ For `CircuitBreakerPolicy<TResult>` policies:
 * [@reisenberger](https://github.com/reisenberger) - Add PolicyWrap.  
 * [@reisenberger](https://github.com/reisenberger) - Add Fallback policy. 
 * [@reisenberger](https://github.com/reisenberger) - Add PolicyKeys and context to all policy executions, as bedrock for policy events and metrics tracking executions. 
-* [@reisenberger](https://github.com/reisenberger),  and contributions from  [@brunolauze](https://github.com/brunolauze) -  Add Bulkhead Isolation policy.  
-* [@reisenberger](https://github.com/reisenberger) - Add Timeout policy. 
+* [@reisenberger](https://github.com/reisenberger),  and contributions from [@brunolauze](https://github.com/brunolauze) -  Add Bulkhead Isolation policy.  
+* [@reisenberger](https://github.com/reisenberger) - Add Timeout policy.
+* [@reisenberger](https://github.com/reisenberger) - Fix .NETStandard 1.0 targeting.  Remove PCL259 target.  PCL259 support is provided via .NETStandard1.0 target, going forward.
 
 
 # Sample Projects
@@ -797,6 +804,8 @@ For `CircuitBreakerPolicy<TResult>` policies:
 # Instructions for Contributing
 
 Please check out our [Wiki](https://github.com/App-vNext/Polly/wiki/Git-Workflow) for contributing guidelines. We are following the excellent GitHub Flow process, and would like to make sure you have all of the information needed to be a world-class contributor!
+
+Since Polly is part of the .NET Foundation, we ask our contributors to abide by their [Code of Conduct](https://www.dotnetfoundation.org/code-of-conduct).
 
 Also, we've stood up a [Slack](http://www.pollytalk.org) channel for easier real-time discussion of ideas and the general direction of Polly as a whole. Be sure to [join the conversation](http://www.pollytalk.org) today!
 

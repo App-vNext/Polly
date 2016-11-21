@@ -17,6 +17,7 @@ var configuration = Argument<string>("configuration", "Release");
 // EXTERNAL NUGET LIBRARIES
 //////////////////////////////////////////////////////////////////////
 
+#addin "Cake.FileHelpers"
 #addin "System.Text.Json"
 using System.Text.Json;
 
@@ -48,7 +49,6 @@ var snkFile = srcDir + File(keyName);
 
 var projectToNugetFolderMap = new Dictionary<string, string[]>() {
     { "Net45"        , new [] {"net45"} },
-    { "Pcl"          , new [] {"portable-net45+netcore45+wpa81+wp8"} },
     { "NetStandard10", new [] {"netstandard1.0"} },
 };
 
@@ -68,7 +68,7 @@ var strongNameSignerPath = ToolsExePath("StrongNameSigner.Console.exe");
 // SETUP / TEARDOWN
 ///////////////////////////////////////////////////////////////////////////////
 
-Setup(() =>
+Setup(_ =>
 {
     Information("");
     Information(" ██████╗  ██████╗ ██╗     ██╗  ██╗   ██╗");
@@ -80,7 +80,7 @@ Setup(() =>
     Information("");
 });
 
-Teardown(() =>
+Teardown(_ =>
 {
     Information("Finished running tasks.");
 });
@@ -133,6 +133,20 @@ Task("__UpdateAssemblyVersionInformation")
     Information("AssemblyVersion -> {0}", gitVersionOutput["AssemblySemVer"]);
     Information("AssemblyFileVersion -> {0}", gitVersionOutput["MajorMinorPatch"]);
     Information("AssemblyInformationalVersion -> {0}", gitVersionOutput["InformationalVersion"]);
+});
+
+Task("__UpdateDotNetStandardAssemblyVersionNumber")
+    .Does(() =>
+{
+    // NOTE: TEMPORARY fix only, while GitVersionTask does not support .Net Standard assemblies.  See https://github.com/App-vNext/Polly/issues/176.  
+    // This build Task can be removed when GitVersionTask supports .Net Standard assemblies.
+    var assemblySemVer = gitVersionOutput["AssemblySemVer"].ToString();
+    Information("Updating NetStandard10 AssemblyVersion to {0}", assemblySemVer);
+    var replacedFiles = ReplaceRegexInFiles("./src/Polly.NetStandard10/Properties/AssemblyInfo.cs", "AssemblyVersion[(]\".*\"[)]", "AssemblyVersion(\"" + assemblySemVer +"\")");
+    if (!replacedFiles.Any())
+    {
+        Information("NetStandard1.0 AssemblyVersion could not be updated.");
+    }
 });
 
 Task("__UpdateAppVeyorBuildNumber")
@@ -299,6 +313,7 @@ Task("Build")
     .IsDependentOn("__Clean")
     .IsDependentOn("__RestoreNugetPackages")
     .IsDependentOn("__UpdateAssemblyVersionInformation")
+    .IsDependentOn("__UpdateDotNetStandardAssemblyVersionNumber")
     .IsDependentOn("__UpdateAppVeyorBuildNumber")
     .IsDependentOn("__BuildSolutions")
     .IsDependentOn("__RunTests")

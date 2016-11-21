@@ -16,7 +16,7 @@ namespace Polly.Specs
 
         internal TraceableAction[] actions;
 
-        protected readonly AutoResetEvent _statusChanged = new AutoResetEvent(false);
+        protected readonly AutoResetEvent statusChanged = new AutoResetEvent(false);
 
         public BulkheadSpecsHelper(ITestOutputHelper testOutputHelper)
         {
@@ -48,7 +48,7 @@ namespace Polly.Specs
                     TimeSpan remaining = timeoutTime - DateTime.UtcNow;
                     if (remaining <= TimeSpan.Zero) { throw; }
 
-                    _statusChanged.WaitOne(remaining);
+                    statusChanged.WaitOne(remaining);
                 }
             }
         }

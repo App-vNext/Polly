@@ -4,18 +4,27 @@
     <owners>App vNext</owners>
     <authors>Michael Wolfenden, App vNext</authors>
     <description>
-      Polly is a .NET 4.0 / 4.5 / PCL library (Profile 259) / .NET Standard 1.0 library that allows developers to express resilience and transient fault handling policies such as Retry, Circuit Breaker, Timeout, Bulkhead Isolation and Fallback in a fluent and thread-safe manner.
+      Polly is a .NET 4.0 / 4.5 / .NET Standard 1.0 library that allows developers to express resilience and transient fault handling policies such as Retry, Circuit Breaker, Timeout, Bulkhead Isolation and Fallback in a fluent and thread-safe manner.
     </description>
     <language>en-US</language>
     <licenseUrl>https://raw.github.com/App-vNext/Polly/master/LICENSE.txt</licenseUrl>
     <iconUrl>https://raw.github.com/App-vNext/Polly/master/Polly.png</iconUrl>
     <projectUrl>https://github.com/App-vNext/Polly</projectUrl>
-    <tags>Exception Handling Policy Retry Wait Circuit Breaker Bulkhead Fallback Timeout Resilience</tags>
+    <tags>Exception Handling Resilience Transient Fault Policy Circuit Breaker CircuitBreaker Retry Wait Bulkhead Fallback Timeout Throttle Parallelization</tags>
     <copyright>Copyright © 2016, App vNext</copyright>
     <releaseNotes>
+     5.0.2
+     ---------------------
+     - .NETStandard1.0 target: Correctly state dependencies. 
+     - .NETStandard1.0 target: Fix SemVer stamping of Polly.dll.
+     - PCL259 project and target: Remove, in favour of .NETStandard1.0 target.  PCL259 is still supported, via .NETStandard1.0 target.
+     - Mark Polly.dll as CLSCompliant.
+     - Tidy build around GitVersionTask and ReferenceGenerator.
+     - Update FluentAssertions dependency.
+
      5.0.1
      ---------------------
-     Add a .NETStandard1.0 project and target to Nuget package.
+     - Add a .NETStandard1.0 project and target to Nuget package.
 
      5.0.0
      ---------------------
@@ -141,15 +150,8 @@
       <group targetFramework="MonoTouch" />
       <group targetFramework="Xamarin.iOS" />
       <group targetFramework="portable-net45+win8+wpa81+wp8" />
-      <group targetFramework="dotnet">
-        <dependency id="System.Reflection" version="4.0.0" />
-        <dependency id="System.Collections" version="4.0.0" />
-        <dependency id="System.Diagnostics.Debug" version="4.0.0" />
-        <dependency id="System.Linq" version="4.0.0" />
-        <dependency id="System.Runtime" version="4.0.0" />
-        <dependency id="System.Runtime.Extensions" version="4.0.0" />
-        <dependency id="System.Threading" version="4.0.0" />
-        <dependency id="System.Threading.Tasks" version="4.0.0" />
+      <group targetFramework="netstandard1.0">
+        <dependency id="NETStandard.Library" version="1.6.0" />
       </group>
     </dependencies>
   </metadata>

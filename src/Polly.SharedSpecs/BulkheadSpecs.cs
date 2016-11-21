@@ -100,7 +100,7 @@ namespace Polly.Specs
 
             // Set up delegates which we can track whether they've started; and control when we allow them to complete (to release their semaphore slot).
             actions = new TraceableAction[totalActions];
-            for (int i = 0; i < totalActions; i++) { actions[i] = new TraceableAction(i, _statusChanged, testOutputHelper); }
+            for (int i = 0; i < totalActions; i++) { actions[i] = new TraceableAction(i, statusChanged, testOutputHelper); }
 
             // Throw all the delegates at the bulkhead simultaneously.
             Task[] tasks = new Task[totalActions];
