@@ -6,6 +6,7 @@
 - Mark Polly.dll as CLSCompliant.
 - Tidy build around GitVersionTask and ReferenceGenerator.
 - Update FluentAssertions dependency.
+- Added Polly.Net40Async specs project.
 
 ## 5.0.1
 
