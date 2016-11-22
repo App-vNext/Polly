@@ -1,6 +1,13 @@
 ﻿using System;
 using System.Threading;
 
+#if NET40
+using SemaphoreSlim = Nito.AsyncEx.AsyncSemaphore;
+using Polly.Utilities;
+#else
+using SemaphoreSlim = System.Threading.SemaphoreSlim;
+#endif
+
 namespace Polly.Bulkhead
 {
     internal static partial class BulkheadEngine

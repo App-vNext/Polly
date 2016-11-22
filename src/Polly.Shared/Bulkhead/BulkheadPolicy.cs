@@ -2,6 +2,12 @@
 using System.Threading;
 using Polly.Utilities;
 
+#if NET40
+using SemaphoreSlim = Nito.AsyncEx.AsyncSemaphore;
+#else
+using SemaphoreSlim = System.Threading.SemaphoreSlim;
+#endif
+
 namespace Polly.Bulkhead
 {
     /// <summary>

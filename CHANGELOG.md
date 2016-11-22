@@ -7,6 +7,7 @@
 - Tidy build around GitVersionTask and ReferenceGenerator.
 - Update FluentAssertions dependency.
 - Added Polly.Net40Async specs project.
+- Fix issue 179: Make Net4.0 async implementation for Bulkhead truly async. 
 
 ## 5.0.1
 

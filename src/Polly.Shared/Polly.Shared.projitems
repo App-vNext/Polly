@@ -90,10 +90,12 @@
     <Compile Include="$(MSBuildThisFileDirectory)Timeout\TimeoutPolicyAsync.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Timeout\TimeoutRejectedException.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Timeout\TimeoutStrategy.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\AsyncSemaphoreExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\EmptyStruct.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\KeyHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\PredicateHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\ReadOnlyDictionary.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\SemaphoreSlimFactory.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\SystemClock.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\TaskHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\TimedLock.cs" />

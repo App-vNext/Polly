@@ -2,6 +2,13 @@
 using System.Threading;
 using System.Threading.Tasks;
 
+#if NET40
+using SemaphoreSlim = Nito.AsyncEx.AsyncSemaphore;
+using Polly.Utilities;
+#else
+using SemaphoreSlim = System.Threading.SemaphoreSlim;
+#endif
+
 namespace Polly.Bulkhead
 {
    internal static partial class BulkheadEngine
@@ -15,27 +22,15 @@ namespace Polly.Bulkhead
             CancellationToken cancellationToken, 
             bool continueOnCapturedContext)
         {
-#if NET40
-            if (!maxQueuedActionsSemaphore.Wait(TimeSpan.Zero, cancellationToken)) 
-            {
-                await onBulkheadRejectedAsync(context).ConfigureAwait(continueOnCapturedContext);
-                throw new BulkheadRejectedException(); 
-            }
-
-#else
             if (!await maxQueuedActionsSemaphore.WaitAsync(TimeSpan.Zero, cancellationToken).ConfigureAwait(continueOnCapturedContext))
             {
                 await onBulkheadRejectedAsync(context).ConfigureAwait(continueOnCapturedContext);
                 throw new BulkheadRejectedException();
             }
-#endif
             try
             {
-#if NET40
-                maxParallelizationSemaphore.Wait(cancellationToken);
-#else
                 await maxParallelizationSemaphore.WaitAsync(cancellationToken).ConfigureAwait(continueOnCapturedContext);
-#endif
+
                 try 
                 {
                     return await action(cancellationToken).ConfigureAwait(continueOnCapturedContext);

@@ -18,11 +18,11 @@
      - (.NETStandard1.0 target: Correctly state dependencies). 
      - (.NETStandard1.0 target: Fix SemVer stamping of Polly.dll).
      - (PCL259 project and target: Remove, in favour of .NETStandard1.0 target.  PCL259 is still supported, via .NETStandard1.0 target).
-     - Mark Polly.dll as CLSCompliant.
      - Tidy build around GitVersionTask and ReferenceGenerator.
      - Update FluentAssertions dependency.
-     - Add full specs support for .NET40.
-      
+     - Add full specs support for .NET40. 
+     - Fix issue 179: Make Net4.0 async implementation for Bulkhead truly async.
+
      5.0.1
      ---------------------
      - (Add a .NETStandard1.0 project and target to main Nuget package).

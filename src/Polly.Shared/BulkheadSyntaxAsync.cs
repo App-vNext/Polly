@@ -4,6 +4,12 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
+#if NET40
+using SemaphoreSlim = Nito.AsyncEx.AsyncSemaphore;
+#else
+using SemaphoreSlim = System.Threading.SemaphoreSlim;
+#endif
+
 namespace Polly
 {
     /// <summary>
@@ -70,12 +76,12 @@ namespace Polly
             if (maxQueuingActions < 0) throw new ArgumentOutOfRangeException(nameof(maxQueuingActions), "Value must be greater than or equal to zero.");
             if (onBulkheadRejectedAsync == null) throw new ArgumentNullException(nameof(onBulkheadRejectedAsync));
 
-            SemaphoreSlim maxParallelizationSemaphore = new SemaphoreSlim(maxParallelization, maxParallelization);
+            SemaphoreSlim maxParallelizationSemaphore = SemaphoreSlimFactory.CreateSemaphoreSlim(maxParallelization);
 
             var maxQueuingCompounded = maxQueuingActions <= int.MaxValue - maxParallelization
                 ? maxQueuingActions + maxParallelization
                 : int.MaxValue;
-            SemaphoreSlim maxQueuedActionsSemaphore = new SemaphoreSlim(maxQueuingCompounded, maxQueuingCompounded);
+            SemaphoreSlim maxQueuedActionsSemaphore = SemaphoreSlimFactory.CreateSemaphoreSlim(maxQueuingCompounded);
 
             return new BulkheadPolicy((action, context, cancellationToken, continueOnCapturedContext) =>
                 BulkheadEngine.ImplementationAsync(
