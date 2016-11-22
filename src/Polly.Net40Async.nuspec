@@ -21,7 +21,8 @@
      - Mark Polly.dll as CLSCompliant.
      - Tidy build around GitVersionTask and ReferenceGenerator.
      - Update FluentAssertions dependency.
-
+     - Add full specs support for .NET40.
+      
      5.0.1
      ---------------------
      - (Add a .NETStandard1.0 project and target to main Nuget package).
