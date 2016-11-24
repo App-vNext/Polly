@@ -30,8 +30,8 @@ namespace Polly.Specs
             const string executionKey = "SomeExecutionKey";
 
             ICacheProvider<string> mappedCacheProvider = new TypedStubMappingCacheProvider_base64(new StubCacheProvider().As<string>());
-            CachePolicy<string> cache = Policy.Cache(mappedCacheProvider);
-            mappedCacheProvider.Put(executionKey, valueToReturnFromCache);
+            CachePolicy<string> cache = Policy.Cache(mappedCacheProvider, TimeSpan.MaxValue);
+            mappedCacheProvider.Put(executionKey, valueToReturnFromCache, TimeSpan.MaxValue);
 
             bool delegateExecuted = false;
 
@@ -52,7 +52,7 @@ namespace Polly.Specs
             const string executionKey = "SomeExecutionKey";
 
             ICacheProvider<string> mappedCacheProvider = new TypedStubMappingCacheProvider_base64(new StubCacheProvider().As<string>());
-            CachePolicy<string> cache = Policy.Cache(mappedCacheProvider);
+            CachePolicy<string> cache = Policy.Cache(mappedCacheProvider, TimeSpan.MaxValue);
 
             mappedCacheProvider.Get(executionKey).Should().BeNull();
 
@@ -67,7 +67,7 @@ namespace Polly.Specs
             const string valueToReturn = "valueToReturn";
             const string executionKey = "SomeExecutionKey";
 
-            CachePolicy<string> cache = Policy.Cache(new TypedStubMappingCacheProvider_base64(new StubCacheProvider().As<string>()));
+            CachePolicy<string> cache = Policy.Cache(new TypedStubMappingCacheProvider_base64(new StubCacheProvider().As<string>()), TimeSpan.MaxValue);
 
             int delegateExecutions = 0;
             Func<string> func = () =>
@@ -96,7 +96,7 @@ namespace Polly.Specs
             const string valueToReturn = "valueToReturn";
             const string executionKey = "SomeExecutionKey";
 
-            CachePolicy<string> cache = Policy.Cache(new TypedStubMappingCacheProvider_Reverse(new TypedStubMappingCacheProvider_base64(new StubCacheProvider().As<string>())));
+            CachePolicy<string> cache = Policy.Cache(new TypedStubMappingCacheProvider_Reverse(new TypedStubMappingCacheProvider_base64(new StubCacheProvider().As<string>())), TimeSpan.MaxValue);
 
             int delegateExecutions = 0;
             Func<string> func = () =>

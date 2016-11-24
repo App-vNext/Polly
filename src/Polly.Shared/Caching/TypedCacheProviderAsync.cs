@@ -25,9 +25,9 @@ namespace Polly.Caching
             return (TCacheFormat) await _wrappedCacheProvider.GetAsync(key, cancellationToken, continueOnCapturedContext).ConfigureAwait(continueOnCapturedContext);
         }
 
-        Task ICacheProviderAsync<TCacheFormat>.PutAsync(string key, TCacheFormat value, CancellationToken cancellationToken, bool continueOnCapturedContext)
+        Task ICacheProviderAsync<TCacheFormat>.PutAsync(string key, TCacheFormat value, TimeSpan ttl, CancellationToken cancellationToken, bool continueOnCapturedContext)
         {
-            return _wrappedCacheProvider.PutAsync(key, value, cancellationToken, continueOnCapturedContext);
+            return _wrappedCacheProvider.PutAsync(key, value, ttl, cancellationToken, continueOnCapturedContext);
         }
     }
 }

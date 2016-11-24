@@ -22,9 +22,9 @@ namespace Polly.Caching
             return (TCacheFormat) _wrappedCacheProvider.Get(key);
         }
 
-        void ICacheProvider<TCacheFormat>.Put(string key, TCacheFormat value)
+        void ICacheProvider<TCacheFormat>.Put(string key, TCacheFormat value, TimeSpan ttl)
         {
-            _wrappedCacheProvider.Put(key, value);
+            _wrappedCacheProvider.Put(key, value, ttl);
         }
     }
 }

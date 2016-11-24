@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Polly.Caching;
@@ -11,20 +12,39 @@ namespace Polly.Specs.Helpers
     /// </summary>
     internal class StubCacheProvider : ICacheProvider, ICacheProviderAsync
     {
-        private readonly Dictionary<string, object> cachedValues = new Dictionary<string, object>();
+        class CacheItem
+        {
+            public CacheItem(object value, TimeSpan ttl)
+            {
+                Expiry = DateTime.MaxValue - SystemClock.UtcNow() > ttl ? SystemClock.UtcNow().Add(ttl) : DateTime.MaxValue;
+                Value = value;
+            }
+
+            public readonly DateTime Expiry;
+            public readonly object Value;
+        }
+
+        private readonly Dictionary<string, CacheItem> cachedValues = new Dictionary<string, CacheItem>();
 
         public object Get(string key)
         {
             if (cachedValues.ContainsKey(key))
             {
-                return cachedValues[key];
+                if (SystemClock.UtcNow() < cachedValues[key].Expiry)
+                {
+                    return cachedValues[key].Value;
+                }
+                else
+                {
+                    cachedValues.Remove(key);
+                }
             }
             return null;
         }
 
-        public void Put(string key, object value)
+        public void Put(string key, object value, TimeSpan ttl)
         {
-            cachedValues[key] = value;
+            cachedValues[key] = new CacheItem(value, ttl);
         }
 
         #region Naive async-over-sync implementation
@@ -36,10 +56,9 @@ namespace Polly.Specs.Helpers
             return Task.FromResult(Get(key));
         }
 
-        public Task PutAsync(string key, object value, CancellationToken cancellationToken,
-            bool continueOnCapturedContext)
+        public Task PutAsync(string key, object value, TimeSpan ttl, CancellationToken cancellationToken, bool continueOnCapturedContext)
         {
-            Put(key, value);
+            Put(key, value, ttl);
             return TaskHelper.EmptyTask;
         }
 

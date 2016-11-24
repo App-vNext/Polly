@@ -28,6 +28,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)ContextSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ContextualPolicyAsyncSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ContextualPolicySpecs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ContextualTimeSpanTtlSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DefaultCacheKeyStrategySpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)FallbackAsyncSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)FallbackSpecs.cs" />
@@ -51,6 +52,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\ResultPrimitive.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MappingCacheProviderSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MappingCacheProviderTResultTMappedSpecs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)PointInTimeTtlSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PolicyAsyncSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PolicyContextAndKeyAsyncSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PolicyContextAndKeySpecs.cs" />
@@ -70,6 +72,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)TimeoutSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)TimeoutTResultAsyncSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)TimeoutTResultSpecs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)TimeSpanTtlSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)WaitAndRetryAsyncSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)WaitAndRetryForeverAsyncSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)WaitAndRetrySpecs.cs" />
