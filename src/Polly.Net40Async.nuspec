@@ -13,6 +13,10 @@
     <tags>Exception Handling Resilience Transient Fault Policy Circuit Breaker CircuitBreaker Retry Wait Bulkhead Fallback Timeout Throttle Parallelization</tags>
     <copyright>Copyright © 2016, App vNext</copyright>
     <releaseNotes>
+     5.0.3
+     ---------------------
+     - Refine implementation of cancellable synchronous WaitAndRetry
+
      5.0.2
      ---------------------
      - (.NETStandard1.0 target: Correctly state dependencies). 
