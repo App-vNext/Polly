@@ -19,7 +19,7 @@ namespace Polly
         {
             if (cacheProvider == null) throw new ArgumentNullException(nameof(cacheProvider));
 
-            return CacheAsync<TResult>(cacheProvider.AsAsync<TResult>(), new TimeSpanTtl(ttl), DefaultCacheKeyStrategy.Instance);
+            return CacheAsync<TResult>(cacheProvider.AsyncAs<TResult>(), new TimeSpanTtl(ttl), DefaultCacheKeyStrategy.Instance);
         }
 
         /// <summary>
@@ -37,7 +37,7 @@ namespace Polly
         {
             if (cacheProvider == null) throw new ArgumentNullException(nameof(cacheProvider));
 
-            return CacheAsync<TResult>(cacheProvider.AsAsync<TResult>(), ttlStrategy, DefaultCacheKeyStrategy.Instance);
+            return CacheAsync<TResult>(cacheProvider.AsyncAs<TResult>(), ttlStrategy, DefaultCacheKeyStrategy.Instance);
         }
 
         /// <summary>
@@ -87,7 +87,7 @@ namespace Polly
         {
             if (cacheProvider == null) throw new ArgumentNullException(nameof(cacheProvider));
 
-            return CacheAsync<TResult>(cacheProvider.AsAsync<TResult>(), new TimeSpanTtl(ttl), cacheKeyStrategy);
+            return CacheAsync<TResult>(cacheProvider.AsyncAs<TResult>(), new TimeSpanTtl(ttl), cacheKeyStrategy);
         }
 
         /// <summary>
@@ -107,7 +107,7 @@ namespace Polly
         {
             if (cacheProvider == null) throw new ArgumentNullException(nameof(cacheProvider));
 
-            return CacheAsync<TResult>(cacheProvider.AsAsync<TResult>(), ttlStrategy, cacheKeyStrategy);
+            return CacheAsync<TResult>(cacheProvider.AsyncAs<TResult>(), ttlStrategy, cacheKeyStrategy);
         }
 
         /// <summary>

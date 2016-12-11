@@ -21,10 +21,10 @@ namespace Polly.Caching
                 return action(cancellationToken);
             }
 
-            object valueFromCache = cacheProvider.Get(cacheKey);
+            TResult valueFromCache = cacheProvider.Get(cacheKey);
             if (valueFromCache != null)
             {
-                return (TResult) valueFromCache;
+                return valueFromCache;
             }
 
             TResult result = action(cancellationToken);

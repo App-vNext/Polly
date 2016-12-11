@@ -36,8 +36,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)FallbackTResultSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\MockCacheKeyStrategy.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\StubCacheProvider.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Helpers\StubMappingCacheProvider_base64.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Helpers\StubMappingCacheProvider_Reverse.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\TraceableAction.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\ContextualPolicyExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\ContextualPolicyExtensionsAsync.cs" />
@@ -50,8 +48,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\PolicyTResultExtensionsAsync.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\ResultClass.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\ResultPrimitive.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)MappingCacheProviderSpecs.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)MappingCacheProviderTResultTMappedSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PointInTimeTtlSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PolicyAsyncSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PolicyContextAndKeyAsyncSpecs.cs" />
@@ -68,6 +64,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)AdvancedCircuitBreakerAsyncSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)RetryTResultSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)RetryTResultSpecsAsync.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SerializingCacheProviderAsyncSpecs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SerializingCacheProviderSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)TimeoutAsyncSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)TimeoutSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)TimeoutTResultAsyncSpecs.cs" />

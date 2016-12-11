@@ -23,10 +23,10 @@ namespace Polly.Caching
                 return await action(cancellationToken).ConfigureAwait(continueOnCapturedContext);
             }
 
-            object valueFromCache = await cacheProvider.GetAsync(cacheKey, cancellationToken, continueOnCapturedContext).ConfigureAwait(continueOnCapturedContext);
+            TResult valueFromCache = await cacheProvider.GetAsync(cacheKey, cancellationToken, continueOnCapturedContext).ConfigureAwait(continueOnCapturedContext);
             if (valueFromCache != null) 
             {
-                return (TResult)valueFromCache;
+                return valueFromCache;
             }
 
             TResult result = await action(cancellationToken).ConfigureAwait(continueOnCapturedContext);

@@ -11,7 +11,7 @@ namespace Polly.Caching
         private readonly ICacheProviderAsync _asyncCacheProvider;
 
         internal CachePolicy(ICacheProviderAsync asyncCacheProvider, ITtlStrategy ttlStrategy, ICacheKeyStrategy cacheKeyStrategy)
-            : base((func, context, cancellationToken, continueOnCapturedContext) => func(cancellationToken), // Pass-through/NOOP policy action, for non-TResult executions through the cache policy.
+            : base((func, context, cancellationToken, continueOnCapturedContext) => func(cancellationToken), // Pass-through/NOOP policy action, for void-returning executions through the cache policy.
                 PredicateHelper.EmptyExceptionPredicates)
         {
             _asyncCacheProvider = asyncCacheProvider;
@@ -30,13 +30,10 @@ namespace Polly.Caching
         /// <returns>The value returned by the action, or the cache.</returns>
         public override Task<TResult> ExecuteAsync<TResult>(Func<CancellationToken, Task<TResult>> action, Context context, CancellationToken cancellationToken, bool continueOnCapturedContext)
         {
-            return CacheEngine.ImplementationAsync<TResult>(_asyncCacheProvider.AsAsync<TResult>(), _ttlStrategy, _cacheKeyStrategy, action, context, cancellationToken, continueOnCapturedContext);
+            return CacheEngine.ImplementationAsync<TResult>(_asyncCacheProvider.AsyncAs<TResult>(), _ttlStrategy, _cacheKeyStrategy, action, context, cancellationToken, continueOnCapturedContext);
         }
     }
 
-    /// <summary>
-    /// A cache policy that can be applied to the results of delegate executions.
-    /// </summary>
     public partial class CachePolicy<TResult>
     {
         internal CachePolicy(ICacheProviderAsync<TResult> asyncCacheProvider, ITtlStrategy ttlStrategy, ICacheKeyStrategy cacheKeyStrategy)

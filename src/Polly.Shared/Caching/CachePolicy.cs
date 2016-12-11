@@ -15,7 +15,7 @@ namespace Polly.Caching
         private readonly ICacheKeyStrategy _cacheKeyStrategy;
 
         internal CachePolicy(ICacheProvider syncCacheProvider, ITtlStrategy ttlStrategy, ICacheKeyStrategy cacheKeyStrategy)
-            : base((action, context, cancellationToken) => action(cancellationToken), // Pass-through/NOOP policy action, for non-TResult calls through a cache policy.
+            : base((action, context, cancellationToken) => action(cancellationToken), // Pass-through/NOOP policy action, for void-returning calls through a cache policy.
                 PredicateHelper.EmptyExceptionPredicates)
         {
             _syncCacheProvider = syncCacheProvider;
@@ -47,5 +47,6 @@ namespace Polly.Caching
                 PredicateHelper.EmptyExceptionPredicates,
                 Enumerable.Empty<ResultPredicate<TResult>>())
         { }
+
     }
 }

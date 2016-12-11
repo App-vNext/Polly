@@ -31,12 +31,13 @@
     <Compile Include="$(MSBuildThisFileDirectory)Caching\CacheProviderExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Caching\ContextualTimeSpanTtl.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Caching\DefaultCacheKeyStrategy.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Caching\ICacheItemSerializer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Caching\ICacheKeyStrategy.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Caching\ICacheProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Caching\ICacheProviderAsync.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Caching\ITtlStrategy.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Caching\MappingCacheProvider.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Caching\MappingCacheProviderAsync.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Caching\SerializingCacheProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Caching\SerializingCacheProviderAsync.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Caching\PointInTimeTtl.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Caching\TimeSpanTtl.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Caching\TypedCacheProvider.cs" />
