@@ -2,7 +2,7 @@
 
 Polly is a .NET 3.5 / 4.0 / 4.5 / PCL (Profile 259) library that allows developers to express transient exception- and fault-handling policies such as Retry, Retry Forever, Wait and Retry, or Circuit Breaker in a fluent and thread-safe manner.
 
-[<img align="right" src="https://www.dotnetfoundation.org/Media/dotnet_logo.png" width="100" />](https://www.dotnetfoundation.org/)
+[<img align="right" src="https://dotnetfoundation.org/Themes/DotNetFoundation.Theme/Images/logo-small.png" width="100" />](https://www.dotnetfoundation.org/)
 We are now a member of the [.NET Foundation](https://www.dotnetfoundation.org/about)!
 
 **Keep up to date with new feature announcements, tips & tricks, and other news through [www.thepollyproject.org](http://www.thepollyproject.org)**
