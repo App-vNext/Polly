@@ -35,6 +35,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)CircuitBreaker\CircuitState.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CircuitBreaker\CircuitStateController.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CircuitBreaker\HealthCount.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CircuitBreaker\ICircuitBreakerPolicy.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CircuitBreaker\ICircuitController.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CircuitBreaker\IHealthMetrics.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CircuitBreaker\IsolatedCircuitException.cs" />
