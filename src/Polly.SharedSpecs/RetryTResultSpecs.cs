@@ -1,10 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using FluentAssertions;
 using Polly.Retry;
 using Polly.Specs.Helpers;
 using Xunit;
+
+using Scenario = Polly.Specs.Helpers.PolicyTResultExtensions.ResultAndOrCancellationScenario;
 
 namespace Polly.Specs
 {
@@ -409,6 +413,337 @@ namespace Polly.Specs
 
             retryInvoked.Should().BeFalse();
         }
+
+        #region Sync cancellation tests
+
+        [Fact]
+        public void Should_execute_action_when_non_faulting_and_cancellationtoken_not_cancelled()
+        {
+            var policy = Policy
+                .HandleResult(ResultPrimitive.Fault)
+                .Retry(3);
+
+            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+            CancellationToken cancellationToken = cancellationTokenSource.Token;
+
+            int attemptsInvoked = 0;
+            Action onExecute = () => attemptsInvoked++;
+
+            Scenario scenario = new Scenario
+            {
+                AttemptDuringWhichToCancel = null,
+            };
+
+            policy.RaiseResultSequenceAndOrCancellation(scenario, cancellationTokenSource, onExecute, ResultPrimitive.Good)
+                .Should().Be(ResultPrimitive.Good);
+
+            attemptsInvoked.Should().Be(1);
+        }
+
+        [Fact]
+        public void Should_execute_all_tries_when_faulting_and_cancellationtoken_not_cancelled()
+        {
+            RetryPolicy<ResultPrimitive> policy = Policy
+                .HandleResult(ResultPrimitive.Fault)
+                .Retry(3);
+
+            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+            CancellationToken cancellationToken = cancellationTokenSource.Token;
+
+            int attemptsInvoked = 0;
+            Action onExecute = () => attemptsInvoked++;
+
+            Scenario scenario = new Scenario
+            {
+                AttemptDuringWhichToCancel = null,
+            };
+
+            policy.RaiseResultSequenceAndOrCancellation(scenario, cancellationTokenSource, onExecute,
+                    ResultPrimitive.Fault,
+                    ResultPrimitive.Fault,
+                    ResultPrimitive.Fault,
+                    ResultPrimitive.Good)
+                    .Should().Be(ResultPrimitive.Good);
+
+            attemptsInvoked.Should().Be(1 + 3);
+        }
+
+        [Fact]
+        public void Should_not_execute_action_when_cancellationtoken_cancelled_before_execute()
+        {
+            RetryPolicy<ResultPrimitive> policy = Policy
+                .HandleResult(ResultPrimitive.Fault)
+                .Retry(3);
+
+            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+            CancellationToken cancellationToken = cancellationTokenSource.Token;
+
+            int attemptsInvoked = 0;
+            Action onExecute = () => attemptsInvoked++;
+
+            Scenario scenario = new Scenario
+            {
+                AttemptDuringWhichToCancel = null, // Cancellation token cancelled manually below - before any scenario execution.
+            };
+
+            cancellationTokenSource.Cancel();
+
+            policy.Invoking(x => x.RaiseResultSequenceAndOrCancellation(scenario, cancellationTokenSource, onExecute,
+                   ResultPrimitive.Fault,
+                   ResultPrimitive.Fault,
+                   ResultPrimitive.Fault,
+                   ResultPrimitive.Good))
+                .ShouldThrow<OperationCanceledException>()
+                .And.CancellationToken.Should().Be(cancellationToken);
+
+            attemptsInvoked.Should().Be(0);
+        }
+
+        [Fact]
+        public void Should_report_cancellation_during_otherwise_non_faulting_action_execution_and_cancel_further_retries_when_user_delegate_observes_cancellationtoken()
+        {
+            RetryPolicy<ResultPrimitive> policy = Policy
+                .HandleResult(ResultPrimitive.Fault)
+                .Retry(3);
+
+            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+            CancellationToken cancellationToken = cancellationTokenSource.Token;
+
+            int attemptsInvoked = 0;
+            Action onExecute = () => attemptsInvoked++;
+
+            Scenario scenario = new Scenario
+            {
+                AttemptDuringWhichToCancel = 1,
+                ActionObservesCancellation = true
+            };
+
+            policy.Invoking(x => x.RaiseResultSequenceAndOrCancellation(scenario, cancellationTokenSource, onExecute,
+                   ResultPrimitive.Good,
+                   ResultPrimitive.Good,
+                   ResultPrimitive.Good,
+                   ResultPrimitive.Good))
+                .ShouldThrow<OperationCanceledException>()
+                .And.CancellationToken.Should().Be(cancellationToken);
+
+            attemptsInvoked.Should().Be(1);
+        }
+
+        [Fact]
+        public void Should_report_cancellation_during_faulting_initial_action_execution_and_cancel_further_retries_when_user_delegate_observes_cancellationtoken()
+        {
+            RetryPolicy<ResultPrimitive> policy = Policy
+               .HandleResult(ResultPrimitive.Fault)
+               .Retry(3);
+
+            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+            CancellationToken cancellationToken = cancellationTokenSource.Token;
+
+            int attemptsInvoked = 0;
+            Action onExecute = () => attemptsInvoked++;
+
+            Scenario scenario = new Scenario
+            {
+                AttemptDuringWhichToCancel = 1,
+                ActionObservesCancellation = true
+            };
+
+            policy.Invoking(x => x.RaiseResultSequenceAndOrCancellation(scenario, cancellationTokenSource, onExecute,
+                   ResultPrimitive.Fault,
+                   ResultPrimitive.Fault,
+                   ResultPrimitive.Fault,
+                   ResultPrimitive.Good))
+                .ShouldThrow<OperationCanceledException>()
+                .And.CancellationToken.Should().Be(cancellationToken);
+
+            attemptsInvoked.Should().Be(1);
+        }
+
+        [Fact]
+        public void Should_report_cancellation_during_faulting_initial_action_execution_and_cancel_further_retries_when_user_delegate_does_not_observe_cancellationtoken()
+        {
+            RetryPolicy<ResultPrimitive> policy = Policy
+              .HandleResult(ResultPrimitive.Fault)
+              .Retry(3);
+
+            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+            CancellationToken cancellationToken = cancellationTokenSource.Token;
+
+            int attemptsInvoked = 0;
+            Action onExecute = () => attemptsInvoked++;
+
+            Scenario scenario = new Scenario
+            {
+                AttemptDuringWhichToCancel = 1,
+                ActionObservesCancellation = false
+            };
+
+            policy.Invoking(x => x.RaiseResultSequenceAndOrCancellation(scenario, cancellationTokenSource, onExecute,
+                   ResultPrimitive.Fault,
+                   ResultPrimitive.Fault,
+                   ResultPrimitive.Fault,
+                   ResultPrimitive.Good))
+                .ShouldThrow<OperationCanceledException>()
+                .And.CancellationToken.Should().Be(cancellationToken);
+
+            attemptsInvoked.Should().Be(1);
+        }
+
+        [Fact]
+        public void Should_report_cancellation_during_faulting_retried_action_execution_and_cancel_further_retries_when_user_delegate_observes_cancellationtoken()
+        {
+            RetryPolicy<ResultPrimitive> policy = Policy
+              .HandleResult(ResultPrimitive.Fault)
+              .Retry(3);
+
+            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+            CancellationToken cancellationToken = cancellationTokenSource.Token;
+
+            int attemptsInvoked = 0;
+            Action onExecute = () => attemptsInvoked++;
+
+            Scenario scenario = new Scenario
+            {
+                AttemptDuringWhichToCancel = 2,
+                ActionObservesCancellation = true
+            };
+
+            policy.Invoking(x => x.RaiseResultSequenceAndOrCancellation(scenario, cancellationTokenSource, onExecute,
+                   ResultPrimitive.Fault,
+                   ResultPrimitive.Fault,
+                   ResultPrimitive.Fault,
+                   ResultPrimitive.Good))
+                .ShouldThrow<OperationCanceledException>()
+                .And.CancellationToken.Should().Be(cancellationToken);
+
+            attemptsInvoked.Should().Be(2);
+        }
+
+        [Fact]
+        public void Should_report_cancellation_during_faulting_retried_action_execution_and_cancel_further_retries_when_user_delegate_does_not_observe_cancellationtoken()
+        {
+            RetryPolicy<ResultPrimitive> policy = Policy
+              .HandleResult(ResultPrimitive.Fault)
+              .Retry(3);
+
+            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+            CancellationToken cancellationToken = cancellationTokenSource.Token;
+
+            int attemptsInvoked = 0;
+            Action onExecute = () => attemptsInvoked++;
+
+            Scenario scenario = new Scenario
+            {
+                AttemptDuringWhichToCancel = 2,
+                ActionObservesCancellation = false
+            };
+
+            policy.Invoking(x => x.RaiseResultSequenceAndOrCancellation(scenario, cancellationTokenSource, onExecute,
+                   ResultPrimitive.Fault,
+                   ResultPrimitive.Fault,
+                   ResultPrimitive.Fault,
+                   ResultPrimitive.Good))
+                .ShouldThrow<OperationCanceledException>()
+                .And.CancellationToken.Should().Be(cancellationToken);
+
+            attemptsInvoked.Should().Be(2);
+        }
+
+        [Fact]
+        public void Should_report_cancellation_during_faulting_last_retry_execution_when_user_delegate_does_observe_cancellationtoken()
+        {
+            RetryPolicy<ResultPrimitive> policy = Policy
+                       .HandleResult(ResultPrimitive.Fault)
+                       .Retry(3);
+
+            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+            CancellationToken cancellationToken = cancellationTokenSource.Token;
+
+            int attemptsInvoked = 0;
+            Action onExecute = () => attemptsInvoked++;
+
+            Scenario scenario = new Scenario
+            {
+                AttemptDuringWhichToCancel = 1 + 3,
+                ActionObservesCancellation = true
+            };
+
+            policy.Invoking(x => x.RaiseResultSequenceAndOrCancellation(scenario, cancellationTokenSource, onExecute,
+                   ResultPrimitive.Fault,
+                   ResultPrimitive.Fault,
+                   ResultPrimitive.Fault,
+                   ResultPrimitive.Fault,
+                   ResultPrimitive.Good))
+                .ShouldThrow<OperationCanceledException>()
+                .And.CancellationToken.Should().Be(cancellationToken);
+
+            attemptsInvoked.Should().Be(1 + 3);
+        }
+
+        [Fact]
+        public void Should_report_faulting_from_faulting_last_retry_execution_when_user_delegate_does_not_observe_cancellation_raised_during_last_retry()
+        {
+            RetryPolicy<ResultPrimitive> policy = Policy
+                       .HandleResult(ResultPrimitive.Fault)
+                       .Retry(3);
+
+            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+            CancellationToken cancellationToken = cancellationTokenSource.Token;
+
+            int attemptsInvoked = 0;
+            Action onExecute = () => attemptsInvoked++;
+
+            Scenario scenario = new Scenario
+            {
+                AttemptDuringWhichToCancel = 1 + 3,
+                ActionObservesCancellation = false
+            };
+
+            policy.RaiseResultSequenceAndOrCancellation(scenario, cancellationTokenSource, onExecute,
+                   ResultPrimitive.Fault,
+                   ResultPrimitive.Fault,
+                   ResultPrimitive.Fault,
+                   ResultPrimitive.Fault,
+                   ResultPrimitive.Good)
+               .Should().Be(ResultPrimitive.Fault);
+
+            attemptsInvoked.Should().Be(1 + 3);
+        }
+
+        [Fact]
+        public void Should_report_cancellation_after_faulting_action_execution_and_cancel_further_retries_if_onRetry_invokes_cancellation()
+        {
+            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+            CancellationToken cancellationToken = cancellationTokenSource.Token;
+
+            RetryPolicy<ResultPrimitive> policy = Policy
+           .HandleResult(ResultPrimitive.Fault)
+           .Retry(3, (_, __) =>
+           {
+               cancellationTokenSource.Cancel();
+           });
+
+            int attemptsInvoked = 0;
+            Action onExecute = () => attemptsInvoked++;
+
+            Scenario scenario = new Scenario
+            {
+                AttemptDuringWhichToCancel = null, // Cancellation during onRetry instead - see above.
+                ActionObservesCancellation = false
+            };
+
+            policy.Invoking(x => x.RaiseResultSequenceAndOrCancellation(scenario, cancellationTokenSource, onExecute,
+                   ResultPrimitive.Fault,
+                   ResultPrimitive.Fault,
+                   ResultPrimitive.Fault,
+                   ResultPrimitive.Good))
+                .ShouldThrow<OperationCanceledException>()
+                .And.CancellationToken.Should().Be(cancellationToken);
+
+            attemptsInvoked.Should().Be(1);
+        }
+
+        #endregion
 
     }
 }

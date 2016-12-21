@@ -664,7 +664,38 @@ namespace Polly.Specs
         }
 
         [Fact]
-        public void Should_report_cancellation_during_faulting_last_retry_execution_when_user_delegate_does_not_observe_cancellationtoken()
+        public void Should_report_cancellation_during_faulting_last_retry_execution_when_user_delegate_does_observe_cancellationtoken()
+        {
+            RetryPolicy<ResultPrimitive> policy = Policy
+                       .HandleResult(ResultPrimitive.Fault)
+                       .RetryAsync(3);
+
+            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+            CancellationToken cancellationToken = cancellationTokenSource.Token;
+
+            int attemptsInvoked = 0;
+            Action onExecute = () => attemptsInvoked++;
+
+            Scenario scenario = new Scenario
+            {
+                AttemptDuringWhichToCancel = 1 + 3,
+                ActionObservesCancellation = true
+            };
+
+            policy.Awaiting(async x => await x.RaiseResultSequenceAndOrCancellationAsync(scenario, cancellationTokenSource, onExecute,
+                   ResultPrimitive.Fault,
+                   ResultPrimitive.Fault,
+                   ResultPrimitive.Fault,
+                   ResultPrimitive.Fault,
+                   ResultPrimitive.Good))
+                .ShouldThrow<TaskCanceledException>()
+                .And.CancellationToken.Should().Be(cancellationToken);
+
+            attemptsInvoked.Should().Be(1 + 3);
+        }
+
+        [Fact]
+        public async void Should_report_faulting_from_faulting_last_retry_execution_when_user_delegate_does_not_observe_cancellation_raised_during_last_retry()
         {
             RetryPolicy<ResultPrimitive> policy = Policy
                        .HandleResult(ResultPrimitive.Fault)
@@ -682,13 +713,13 @@ namespace Polly.Specs
                 ActionObservesCancellation = false
             };
 
-            policy.Awaiting(async x => await x.RaiseResultSequenceAndOrCancellationAsync(scenario, cancellationTokenSource, onExecute,
+            (await policy.RaiseResultSequenceAndOrCancellationAsync(scenario, cancellationTokenSource, onExecute,
                    ResultPrimitive.Fault,
                    ResultPrimitive.Fault,
                    ResultPrimitive.Fault,
-                   ResultPrimitive.Good))
-                .ShouldThrow<TaskCanceledException>()
-                .And.CancellationToken.Should().Be(cancellationToken);
+                   ResultPrimitive.Fault,
+                   ResultPrimitive.Good).ConfigureAwait(false))
+               .Should().Be(ResultPrimitive.Fault);
 
             attemptsInvoked.Should().Be(1 + 3);
         }
