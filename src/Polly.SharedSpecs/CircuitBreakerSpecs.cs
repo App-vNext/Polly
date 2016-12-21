@@ -1012,7 +1012,7 @@ namespace Polly.Specs
         }
 
         [Fact]
-        public void Should_report_cancellation_during_faulting_action_execution_when_user_delegate_does_not_observe_cancellationtoken()
+        public void Should_report_faulting_from_faulting_action_execution_when_user_delegate_does_not_observe_cancellation()
         {
             var durationOfBreak = TimeSpan.FromMinutes(1);
             CircuitBreakerPolicy breaker = Policy
@@ -1033,8 +1033,7 @@ namespace Polly.Specs
             };
 
             breaker.Invoking(x => x.RaiseExceptionAndOrCancellation<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
-                .ShouldThrow<OperationCanceledException>()
-                .And.CancellationToken.Should().Be(cancellationToken);
+                .ShouldThrow<DivideByZeroException>();
 
             attemptsInvoked.Should().Be(1);
         }

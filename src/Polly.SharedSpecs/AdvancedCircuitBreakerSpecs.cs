@@ -1,10 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using FluentAssertions;
 using Polly.CircuitBreaker;
 using Polly.Specs.Helpers;
 using Polly.Utilities;
 using Xunit;
+
+using Scenario = Polly.Specs.Helpers.PolicyExtensions.ExceptionAndOrCancellationScenario;
 
 namespace Polly.Specs
 {
@@ -2248,6 +2252,283 @@ namespace Polly.Specs
         #endregion
 
         #endregion
+
+        #region Cancellation support
+
+        [Fact]
+        public void Should_execute_action_when_non_faulting_and_cancellationtoken_not_cancelled()
+        {
+            var durationOfBreak = TimeSpan.FromMinutes(1);
+            CircuitBreakerPolicy breaker = Policy
+                .Handle<DivideByZeroException>()
+                .AdvancedCircuitBreaker(0.5, TimeSpan.FromSeconds(10), 4, durationOfBreak);
+
+            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+            CancellationToken cancellationToken = cancellationTokenSource.Token;
+
+            int attemptsInvoked = 0;
+            Action onExecute = () => attemptsInvoked++;
+
+            Scenario scenario = new Scenario
+            {
+                NumberOfTimesToRaiseException = 0,
+                AttemptDuringWhichToCancel = null,
+            };
+
+            breaker.Invoking(x => x.RaiseExceptionAndOrCancellation<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
+                .ShouldNotThrow();
+
+            attemptsInvoked.Should().Be(1);
+        }
+
+        [Fact]
+        public void Should_not_execute_action_when_cancellationtoken_cancelled_before_execute()
+        {
+            var durationOfBreak = TimeSpan.FromMinutes(1);
+            CircuitBreakerPolicy breaker = Policy
+                .Handle<DivideByZeroException>()
+                .AdvancedCircuitBreaker(0.5, TimeSpan.FromSeconds(10), 4, durationOfBreak);
+
+            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+            CancellationToken cancellationToken = cancellationTokenSource.Token;
+
+            int attemptsInvoked = 0;
+            Action onExecute = () => attemptsInvoked++;
+
+            Scenario scenario = new Scenario
+            {
+                NumberOfTimesToRaiseException = 0,
+                AttemptDuringWhichToCancel = null, // Cancellation token cancelled manually below - before any scenario execution.
+            };
+
+            cancellationTokenSource.Cancel();
+
+            breaker.Invoking(x => x.RaiseExceptionAndOrCancellation<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
+                .ShouldThrow<OperationCanceledException>()
+                .And.CancellationToken.Should().Be(cancellationToken);
+
+            attemptsInvoked.Should().Be(0);
+        }
+
+        [Fact]
+        public void Should_report_cancellation_during_otherwise_non_faulting_action_execution_when_user_delegate_observes_cancellationtoken()
+        {
+            var durationOfBreak = TimeSpan.FromMinutes(1);
+            CircuitBreakerPolicy breaker = Policy
+                .Handle<DivideByZeroException>()
+                .AdvancedCircuitBreaker(0.5, TimeSpan.FromSeconds(10), 4, durationOfBreak);
+
+            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+            CancellationToken cancellationToken = cancellationTokenSource.Token;
+
+            int attemptsInvoked = 0;
+            Action onExecute = () => attemptsInvoked++;
+
+            Scenario scenario = new Scenario
+            {
+                NumberOfTimesToRaiseException = 0,
+                AttemptDuringWhichToCancel = 1,
+                ActionObservesCancellation = true
+            };
+
+            breaker.Invoking(x => x.RaiseExceptionAndOrCancellation<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
+                .ShouldThrow<OperationCanceledException>()
+                .And.CancellationToken.Should().Be(cancellationToken);
+
+            attemptsInvoked.Should().Be(1);
+        }
+
+        [Fact]
+        public void Should_report_cancellation_during_faulting_action_execution_when_user_delegate_observes_cancellationtoken()
+        {
+            var durationOfBreak = TimeSpan.FromMinutes(1);
+            CircuitBreakerPolicy breaker = Policy
+                .Handle<DivideByZeroException>()
+                .AdvancedCircuitBreaker(0.5, TimeSpan.FromSeconds(10), 4, durationOfBreak);
+
+            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+            CancellationToken cancellationToken = cancellationTokenSource.Token;
+
+            int attemptsInvoked = 0;
+            Action onExecute = () => attemptsInvoked++;
+
+            Scenario scenario = new Scenario
+            {
+                NumberOfTimesToRaiseException = 1,
+                AttemptDuringWhichToCancel = 1,
+                ActionObservesCancellation = true
+            };
+
+            breaker.Invoking(x => x.RaiseExceptionAndOrCancellation<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
+                .ShouldThrow<OperationCanceledException>()
+                .And.CancellationToken.Should().Be(cancellationToken);
+
+            attemptsInvoked.Should().Be(1);
+        }
+
+        [Fact]
+        public void Should_report_faulting_from_faulting_action_execution_when_user_delegate_does_not_observe_cancellation()
+        {
+            var durationOfBreak = TimeSpan.FromMinutes(1);
+            CircuitBreakerPolicy breaker = Policy
+                .Handle<DivideByZeroException>()
+                .AdvancedCircuitBreaker(0.5, TimeSpan.FromSeconds(10), 4, durationOfBreak);
+
+            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+            CancellationToken cancellationToken = cancellationTokenSource.Token;
+
+            int attemptsInvoked = 0;
+            Action onExecute = () => attemptsInvoked++;
+
+            Scenario scenario = new Scenario
+            {
+                NumberOfTimesToRaiseException = 1,
+                AttemptDuringWhichToCancel = 1,
+                ActionObservesCancellation = false
+            };
+
+            breaker.Invoking(x => x.RaiseExceptionAndOrCancellation<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
+                .ShouldThrow<DivideByZeroException>();
+
+            attemptsInvoked.Should().Be(1);
+        }
+
+        [Fact]
+        public void Should_report_cancellation_when_both_open_circuit_and_cancellation()
+        {
+            var durationOfBreak = TimeSpan.FromMinutes(1);
+            CircuitBreakerPolicy breaker = Policy
+                .Handle<DivideByZeroException>()
+                .AdvancedCircuitBreaker(0.5, TimeSpan.FromSeconds(10), 2, durationOfBreak);
+
+            breaker.Invoking(x => x.RaiseException<DivideByZeroException>())
+                .ShouldThrow<DivideByZeroException>();
+
+            breaker.Invoking(x => x.RaiseException<DivideByZeroException>())
+                .ShouldThrow<DivideByZeroException>();
+
+            breaker.Invoking(x => x.RaiseException<DivideByZeroException>())
+                .ShouldThrow<BrokenCircuitException>()
+                .WithMessage("The circuit is now open and is not allowing calls.")
+                .WithInnerException<DivideByZeroException>();
+            // Circuit is now broken.
+
+            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+            CancellationToken cancellationToken = cancellationTokenSource.Token;
+
+            int attemptsInvoked = 0;
+            Action onExecute = () => attemptsInvoked++;
+
+            cancellationTokenSource.Cancel();
+
+            Scenario scenario = new Scenario
+            {
+                NumberOfTimesToRaiseException = 1,
+                AttemptDuringWhichToCancel = null, // Cancelled manually instead - see above.
+                ActionObservesCancellation = false
+            };
+
+            breaker.Invoking(x => x.RaiseExceptionAndOrCancellation<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
+                .ShouldThrow<OperationCanceledException>()
+                .And.CancellationToken.Should().Be(cancellationToken);
+
+            attemptsInvoked.Should().Be(0);
+        }
+
+        [Fact]
+        public void Should_honour_different_cancellationtoken_captured_implicitly_by_action()
+        {
+            // Before CancellationToken support was built in to Polly, users of the library may have implicitly captured a CancellationToken and used it to cancel actions.  For backwards compatibility, Polly should not confuse these with its own CancellationToken; it should distinguish OperationCanceledExceptions thrown with different CancellationTokens.
+
+            var durationOfBreak = TimeSpan.FromMinutes(1);
+            CircuitBreakerPolicy breaker = Policy
+                .Handle<DivideByZeroException>()
+                .AdvancedCircuitBreaker(0.5, TimeSpan.FromSeconds(10), 4, durationOfBreak);
+
+            CancellationTokenSource policyCancellationTokenSource = new CancellationTokenSource();
+            CancellationToken policyCancellationToken = policyCancellationTokenSource.Token;
+
+            CancellationTokenSource implicitlyCapturedActionCancellationTokenSource = new CancellationTokenSource();
+            CancellationToken implicitlyCapturedActionCancellationToken = implicitlyCapturedActionCancellationTokenSource.Token;
+
+            implicitlyCapturedActionCancellationTokenSource.Cancel();
+
+            int attemptsInvoked = 0;
+
+            breaker.Invoking(x => x.Execute(ct =>
+            {
+                attemptsInvoked++;
+                implicitlyCapturedActionCancellationToken.ThrowIfCancellationRequested();
+            }, policyCancellationToken))
+                .ShouldThrow<OperationCanceledException>()
+                .And.CancellationToken.Should().Be(implicitlyCapturedActionCancellationToken);
+
+            attemptsInvoked.Should().Be(1);
+        }
+
+        [Fact]
+        public void Should_execute_func_returning_value_when_cancellationtoken_not_cancelled()
+        {
+            var durationOfBreak = TimeSpan.FromMinutes(1);
+            CircuitBreakerPolicy breaker = Policy
+                .Handle<DivideByZeroException>()
+                .AdvancedCircuitBreaker(0.5, TimeSpan.FromSeconds(10), 4, durationOfBreak);
+
+            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+            CancellationToken cancellationToken = cancellationTokenSource.Token;
+
+            int attemptsInvoked = 0;
+            Action onExecute = () => attemptsInvoked++;
+
+            bool? result = null;
+
+            Scenario scenario = new Scenario
+            {
+                NumberOfTimesToRaiseException = 0,
+                AttemptDuringWhichToCancel = null,
+            };
+
+            breaker.Invoking(x => result = x.RaiseExceptionAndOrCancellation<DivideByZeroException, bool>(scenario, cancellationTokenSource, onExecute, true))
+                .ShouldNotThrow();
+
+            result.Should().BeTrue();
+
+            attemptsInvoked.Should().Be(1);
+        }
+
+        [Fact]
+        public void Should_honour_and_report_cancellation_during_func_execution()
+        {
+            var durationOfBreak = TimeSpan.FromMinutes(1);
+            CircuitBreakerPolicy breaker = Policy
+                .Handle<DivideByZeroException>()
+                .AdvancedCircuitBreaker(0.5, TimeSpan.FromSeconds(10), 4, durationOfBreak);
+
+            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+            CancellationToken cancellationToken = cancellationTokenSource.Token;
+
+            int attemptsInvoked = 0;
+            Action onExecute = () => attemptsInvoked++;
+
+            bool? result = null;
+
+            Scenario scenario = new Scenario
+            {
+                NumberOfTimesToRaiseException = 0,
+                AttemptDuringWhichToCancel = 1,
+                ActionObservesCancellation = true
+            };
+
+            breaker.Invoking(x => result = x.RaiseExceptionAndOrCancellation<DivideByZeroException, bool>(scenario, cancellationTokenSource, onExecute, true))
+                .ShouldThrow<OperationCanceledException>().And.CancellationToken.Should().Be(cancellationToken);
+
+            result.Should().Be(null);
+
+            attemptsInvoked.Should().Be(1);
+        }
+
+        #endregion
+
 
         public void Dispose()
         {

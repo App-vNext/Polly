@@ -11,7 +11,6 @@ using Xunit;
 
 using Scenario = Polly.Specs.Helpers.PolicyTResultExtensionsAsync.ResultAndOrCancellationScenario;
 
-
 namespace Polly.Specs
 {
     public class CircuitBreakerTResultAsyncSpecs : IDisposable
@@ -1087,7 +1086,7 @@ namespace Polly.Specs
         }
 
         [Fact]
-        public void Should_report_cancellation_during_faulting_action_execution_when_user_delegate_does_not_observe_cancellationtoken()
+        public async void Should_report_faulting_from_faulting_action_execution_when_user_delegate_does_not_observe_cancellation()
         {
             var durationOfBreak = TimeSpan.FromMinutes(1);
             CircuitBreakerPolicy<ResultPrimitive> breaker = Policy
@@ -1106,11 +1105,8 @@ namespace Polly.Specs
                 ActionObservesCancellation = false
             };
 
-            breaker.Awaiting(async x => await x.RaiseResultSequenceAndOrCancellationAsync(scenario, cancellationTokenSource, onExecute,
-                   ResultPrimitive.Fault,
-                   ResultPrimitive.Good))
-                .ShouldThrow<TaskCanceledException>()
-                .And.CancellationToken.Should().Be(cancellationToken);
+            (await breaker.RaiseResultSequenceAndOrCancellationAsync(scenario, cancellationTokenSource, onExecute, ResultPrimitive.Fault).ConfigureAwait(false))
+                            .Should().Be(ResultPrimitive.Fault);
 
             attemptsInvoked.Should().Be(1);
         }
