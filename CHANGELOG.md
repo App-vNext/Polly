@@ -1,7 +1,8 @@
-## 5.0.3
+## 5.0.3 RTM
 - Refine implementation of cancellable synchronous WaitAndRetry
+- Minor breaking change: Where a user delegate does not observe cancellation, Polly will now honour the delegate's outcome rather than throw for the unobserved cancellation (issue 188).
 
-## 5.0.2
+## 5.0.2 alpha
 
 - .NETStandard1.0 target: Correctly state dependencies. 
 - .NETStandard1.0 target: Fix SemVer stamping of Polly.dll.
@@ -12,11 +13,11 @@
 - Added Polly.Net40Async specs project.
 - Fix issue 179: Make Net4.0 async implementation for Bulkhead truly async. 
 
-## 5.0.1
+## 5.0.1 alpha
 
 - Add .NET Standard 1.0 project and target.
 
-## 5.0.0
+## 5.0.0 alpha
 
 A major release, adding significant new resilience policies:
 - Timeout policy: allows timing out any execution. Thanks to [@reisenberger](https://github.com/reisenberger).

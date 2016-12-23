@@ -13,25 +13,25 @@
     <tags>Exception Handling Resilience Transient Fault Policy Circuit Breaker CircuitBreaker Retry Wait Bulkhead Fallback Timeout Throttle Parallelization</tags>
     <copyright>Copyright © 2016, App vNext</copyright>
     <releaseNotes>
-     5.0.3
+     v5.0 is a major release with significant new resilience policies: Timeout; Bulkhead Isolation; Fallback; and PolicyWrap.  See release notes back to v5.0.0 for full details. 
+
+     5.0.3 RTM
      ---------------------
      - Refine implementation of cancellable synchronous WaitAndRetry
+     - Minor breaking change: Where a user delegate does not observe cancellation, Polly will now honour the delegate's outcome rather than throw for the unobserved cancellation (issue 188).
 
-     5.0.2
+     5.0.2 alpha
      ---------------------
      - .NETStandard1.0 target: Correctly state dependencies. 
      - .NETStandard1.0 target: Fix SemVer stamping of Polly.dll.
-     - PCL259 project and target: Remove, in favour of .NETStandard1.0 target.  PCL259 is still supported, via .NETStandard1.0 target.
+     - PCL259 project and target: Remove, in favour of .NETStandard1.0 target.  PCL259 targets are still supported, via .NETStandard1.0 target.
      - Mark Polly.dll as CLSCompliant.
-     - Tidy build around GitVersionTask and ReferenceGenerator.
-     - Update FluentAssertions dependency.
-     - Fix issue 179: Make Net4.0 async implementation for Bulkhead truly async.
      
-     5.0.1
+     5.0.1 alpha
      ---------------------
-     - Add a .NETStandard1.0 project and target to Nuget package.
+     - Add a .NETStandard1.0 target.
 
-     5.0.0
+     5.0.0 alpha
      ---------------------
      A major release, adding significant new resilience policies:
      - Timeout policy: allows timing out any execution
