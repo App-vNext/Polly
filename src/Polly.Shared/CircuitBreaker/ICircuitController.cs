@@ -5,6 +5,7 @@ namespace Polly.CircuitBreaker
     internal interface ICircuitController<TResult>
     {
         CircuitState CircuitState { get; }
+        HealthCount HealthCount { get; }
         Exception LastException { get; }
         TResult LastHandledResult { get; }
         void Isolate();

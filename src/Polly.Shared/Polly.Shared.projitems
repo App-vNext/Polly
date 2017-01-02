@@ -9,6 +9,9 @@
     <Import_RootNamespace>Polly.Shared</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)CircuitBreaker\IHealthCount.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CollectedPolicies.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CollectMetricsSyntax.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)AdvancedCircuitBreakerTResultSyntax.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)AdvancedCircuitBreakerTResultSyntaxAsync.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CircuitBreakerSyntax.cs" />
@@ -35,6 +38,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)ContextualPolicyAsync.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ExceptionPredicate.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DelegateResult.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)HystrixCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MetricStream.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Policy.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Policy.HandleSyntax.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PolicyAsync.cs" />
@@ -66,5 +71,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\ReadOnlyDictionary.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\SystemClock.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\TimedLock.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)WeakDictionary.cs" />
   </ItemGroup>
 </Project>

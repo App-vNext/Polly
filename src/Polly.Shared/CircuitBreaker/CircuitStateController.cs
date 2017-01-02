@@ -15,9 +15,9 @@ namespace Polly.CircuitBreaker
         protected readonly object _lock = new object();
 
         protected CircuitStateController(
-            TimeSpan durationOfBreak, 
-            Action<DelegateResult<TResult>, TimeSpan, Context> onBreak, 
-            Action<Context> onReset, 
+            TimeSpan durationOfBreak,
+            Action<DelegateResult<TResult>, TimeSpan, Context> onBreak,
+            Action<Context> onReset,
             Action onHalfOpen)
         {
             _durationOfBreak = durationOfBreak;
@@ -147,6 +147,8 @@ namespace Polly.CircuitBreaker
         public abstract void OnActionFailure(DelegateResult<TResult> outcome, Context context);
 
         public abstract void OnCircuitReset(Context context);
+
+        public abstract HealthCount HealthCount { get; }
     }
 }
 

@@ -30,6 +30,14 @@ namespace Polly.CircuitBreaker
             _minimumThroughput = minimumThroughput;
         }
 
+        public override HealthCount HealthCount
+        {
+            get
+            {
+                return _metrics.GetHealthCount_NeedsLock();
+            }
+        }
+
         public override void OnCircuitReset(Context context)
         {
             using (TimedLock.Lock(_lock))
