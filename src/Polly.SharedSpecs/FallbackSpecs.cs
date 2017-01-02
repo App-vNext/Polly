@@ -555,7 +555,7 @@ namespace Polly.Specs
         }
 
         [Fact]
-        public void Should_report_cancellation_and_not_execute_fallback_during_otherwise_non_faulting_action_execution_when_user_delegate_observes_cancellationtoken()
+        public void Should_report_cancellation_and_not_execute_fallback_during_otherwise_non_faulting_action_execution_when_user_delegate_observes_cancellationtoken_and_fallback_does_not_handle_cancellations()
         {
             bool fallbackActionExecuted = false;
             Action fallbackAction = () => { fallbackActionExecuted = true; };
@@ -586,7 +586,38 @@ namespace Polly.Specs
         }
 
         [Fact]
-        public void Should_report_cancellation_and_not_execute_fallback_during_otherwise_non_faulting_action_execution_when_user_delegate_does_not_observe_cancellationtoken()
+        public void Should_handle_cancellation_and_execute_fallback_during_otherwise_non_faulting_action_execution_when_user_delegate_observes_cancellationtoken_and_fallback_handles_cancellations()
+        {
+            bool fallbackActionExecuted = false;
+            Action fallbackAction = () => { fallbackActionExecuted = true; };
+
+            FallbackPolicy policy = Policy
+                                    .Handle<DivideByZeroException>()
+                                    .Or<OperationCanceledException>()
+                                    .Fallback(fallbackAction);
+
+            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+            CancellationToken cancellationToken = cancellationTokenSource.Token;
+
+            int attemptsInvoked = 0;
+            Action onExecute = () => attemptsInvoked++;
+
+            Scenario scenario = new Scenario
+            {
+                NumberOfTimesToRaiseException = 0,
+                AttemptDuringWhichToCancel = 1,
+                ActionObservesCancellation = true
+            };
+
+            policy.Invoking(x => x.RaiseExceptionAndOrCancellation<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
+                .ShouldNotThrow();
+            attemptsInvoked.Should().Be(1);
+
+            fallbackActionExecuted.Should().BeTrue();
+        }
+
+        [Fact]
+        public void Should_not_report_cancellation_and_not_execute_fallback_if_non_faulting_action_execution_completes_and_user_delegate_does_not_observe_the_set_cancellationtoken()
         {
             bool fallbackActionExecuted = false;
             Action fallbackAction = () => { fallbackActionExecuted = true; };
@@ -609,27 +640,24 @@ namespace Polly.Specs
             };
 
             policy.Invoking(x => x.RaiseExceptionAndOrCancellation<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
-                .ShouldThrow<OperationCanceledException>()
-                .And.CancellationToken.Should().Be(cancellationToken);
+                .ShouldNotThrow();
             attemptsInvoked.Should().Be(1);
 
             fallbackActionExecuted.Should().BeFalse();
         }
 
         [Fact]
-        public void Should_report_cancellation_after_faulting_action_execution_and_not_call_fallback_function_if_onFallback_invokes_cancellation()
+        public void Should_report_unhandled_fault_and_not_execute_fallback_if_action_execution_raises_unhandled_fault_and_user_delegate_does_not_observe_the_set_cancellationtoken()
         {
             bool fallbackActionExecuted = false;
             Action fallbackAction = () => { fallbackActionExecuted = true; };
 
-            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-            CancellationToken cancellationToken = cancellationTokenSource.Token;
-
-            Action<Exception> onFallback = _ => { cancellationTokenSource.Cancel(); };
-
             FallbackPolicy policy = Policy
                                     .Handle<DivideByZeroException>()
-                                    .Fallback(fallbackAction, onFallback);
+                                    .Fallback(fallbackAction);
+
+            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+            CancellationToken cancellationToken = cancellationTokenSource.Token;
 
             int attemptsInvoked = 0;
             Action onExecute = () => attemptsInvoked++;
@@ -637,16 +665,45 @@ namespace Polly.Specs
             Scenario scenario = new Scenario
             {
                 NumberOfTimesToRaiseException = 1,
-                AttemptDuringWhichToCancel = null, // Cancellation during onFallback instead - see above.
+                AttemptDuringWhichToCancel = 1,
+                ActionObservesCancellation = false
+            };
+
+            policy.Invoking(x => x.RaiseExceptionAndOrCancellation<NullReferenceException>(scenario, cancellationTokenSource, onExecute))
+                .ShouldThrow<NullReferenceException>();
+            attemptsInvoked.Should().Be(1);
+
+            fallbackActionExecuted.Should().BeFalse();
+        }
+
+        [Fact]
+        public void Should_handle_handled_fault_and_execute_fallback_following_faulting_action_execution_when_user_delegate_does_not_observe_cancellationtoken()
+        {
+            bool fallbackActionExecuted = false;
+            Action fallbackAction = () => { fallbackActionExecuted = true; };
+
+            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+            CancellationToken cancellationToken = cancellationTokenSource.Token;
+
+            FallbackPolicy policy = Policy
+                                    .Handle<DivideByZeroException>()
+                                    .Fallback(fallbackAction);
+
+            int attemptsInvoked = 0;
+            Action onExecute = () => attemptsInvoked++;
+
+            Scenario scenario = new Scenario
+            {
+                NumberOfTimesToRaiseException = 1,
+                AttemptDuringWhichToCancel = 1,
                 ActionObservesCancellation = false
             };
 
             policy.Invoking(x => x.RaiseExceptionAndOrCancellation<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
-                .ShouldThrow<OperationCanceledException>()
-                .And.CancellationToken.Should().Be(cancellationToken);
+                .ShouldNotThrow();
             attemptsInvoked.Should().Be(1);
 
-            fallbackActionExecuted.Should().BeFalse();
+            fallbackActionExecuted.Should().BeTrue();
         }
         
         #endregion

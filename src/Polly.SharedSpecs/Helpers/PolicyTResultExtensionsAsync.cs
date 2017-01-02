@@ -28,7 +28,7 @@ namespace Polly.Specs.Helpers
             {
                 if (!enumerator.MoveNext())
                 {
-                    throw new ArgumentOutOfRangeException("resultsToRaise", "Not enough TResult values in resultsToRaise.");
+                    throw new ArgumentOutOfRangeException(nameof(resultsToRaise), "Not enough TResult values in resultsToRaise.");
                 }
 
                 return Task.FromResult(enumerator.Current);
@@ -104,7 +104,7 @@ namespace Polly.Specs.Helpers
 
                 if (!enumerator.MoveNext())
                 {
-                    throw new ArgumentOutOfRangeException("resultsToRaise", "Not enough TResult values in resultsToRaise.");
+                    throw new ArgumentOutOfRangeException(nameof(resultsToRaise), "Not enough TResult values in resultsToRaise.");
                 }
 
                 if (scenario.AttemptDuringWhichToCancel.HasValue && counter >= scenario.AttemptDuringWhichToCancel.Value)

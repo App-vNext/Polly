@@ -18,15 +18,13 @@ namespace Polly.Fallback
             CancellationToken cancellationToken,
             bool continueOnCapturedContext)
         {
-            cancellationToken.ThrowIfCancellationRequested();
-
             DelegateResult<TResult> delegateOutcome;
 
             try
             {
-                delegateOutcome = new DelegateResult<TResult>(await action(cancellationToken).ConfigureAwait(continueOnCapturedContext));
-
                 cancellationToken.ThrowIfCancellationRequested();
+
+                delegateOutcome = new DelegateResult<TResult>(await action(cancellationToken).ConfigureAwait(continueOnCapturedContext));
 
                 if (!shouldHandleResultPredicates.Any(predicate => predicate(delegateOutcome.Result)))
                 {
@@ -35,15 +33,6 @@ namespace Polly.Fallback
             }
             catch (Exception ex)
             {
-                if (cancellationToken.IsCancellationRequested)
-                {
-                    if (ex is OperationCanceledException && ((OperationCanceledException) ex).CancellationToken == cancellationToken)
-                    {
-                        throw;
-                    }
-                    cancellationToken.ThrowIfCancellationRequested();
-                }
-
                 if (!shouldHandleExceptionPredicates.Any(predicate => predicate(ex)))
                 {
                     throw;
@@ -53,8 +42,6 @@ namespace Polly.Fallback
             }
 
             await onFallbackAsync(delegateOutcome, context).ConfigureAwait(continueOnCapturedContext);
-
-            cancellationToken.ThrowIfCancellationRequested();
 
             return await fallbackAction(cancellationToken).ConfigureAwait(continueOnCapturedContext);
         }

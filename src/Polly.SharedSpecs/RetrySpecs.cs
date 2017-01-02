@@ -610,7 +610,34 @@ namespace Polly.Specs
         }
 
         [Fact]
-        public void Should_report_cancellation_during_faulting_last_retry_execution_when_user_delegate_does_not_observe_cancellationtoken()
+        public void Should_report_cancellation_during_faulting_last_retry_execution_when_user_delegate_does_observe_cancellationtoken()
+        {
+            var policy = Policy
+                .Handle<DivideByZeroException>()
+                .Retry(3);
+
+            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+            CancellationToken cancellationToken = cancellationTokenSource.Token;
+
+            int attemptsInvoked = 0;
+            Action onExecute = () => attemptsInvoked++;
+
+            PolicyExtensions.ExceptionAndOrCancellationScenario scenario = new PolicyExtensions.ExceptionAndOrCancellationScenario
+            {
+                NumberOfTimesToRaiseException = 1 + 3,
+                AttemptDuringWhichToCancel = 1 + 3,
+                ActionObservesCancellation = true
+            };
+
+            policy.Invoking(x => x.RaiseExceptionAndOrCancellation<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
+                .ShouldThrow<OperationCanceledException>()
+                .And.CancellationToken.Should().Be(cancellationToken);
+
+            attemptsInvoked.Should().Be(1 + 3);
+        }
+
+        [Fact]
+        public void Should_report_faulting_from_faulting_last_retry_execution_when_user_delegate_does_not_observe_cancellation_raised_during_last_retry()
         {
             var policy = Policy
                 .Handle<DivideByZeroException>()
@@ -630,8 +657,7 @@ namespace Polly.Specs
             };
 
             policy.Invoking(x => x.RaiseExceptionAndOrCancellation<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
-                .ShouldThrow<OperationCanceledException>()
-                .And.CancellationToken.Should().Be(cancellationToken);
+                .ShouldThrow<DivideByZeroException>();
 
             attemptsInvoked.Should().Be(1 + 3);
         }

@@ -210,15 +210,62 @@ namespace Polly.Specs
 
         #endregion
 
-        #region Non-timeout cancellation
+        #region Non-timeout cancellation - pessimistic (user-delegate does not observe cancellation)
 
         [Fact]
-        public void Should_be_able_to_cancel_with_user_cancellation_token_before_timeout()
+        public void Should_not_be_able_to_cancel_with_user_cancellation_token_before_timeout__pessimistic()
+        {
+            Stopwatch watch = new Stopwatch();
+
+            int timeout = 5;
+            var policy = Policy.Timeout(timeout, TimeoutStrategy.Pessimistic);
+
+            TimeSpan tolerance = TimeSpan.FromSeconds(1); // Consider increasing tolerance, if test fails transiently in different test/build environments.
+
+            TimeSpan userTokenExpiry = TimeSpan.FromSeconds(1); // Use of time-based token irrelevant to timeout policy; we just need some user token that cancels independently of policy's internal token.
+            using (CancellationTokenSource userTokenSource = new CancellationTokenSource(userTokenExpiry))
+            {
+                watch.Start();
+                policy.Invoking(p => p.Execute(
+                    _ => SystemClock.Sleep(TimeSpan.FromSeconds(timeout + 2), CancellationToken.None) // Do not observe any cancellation in the middle of execution
+                    , userTokenSource.Token) // ... with user token.
+                   ).ShouldThrow<TimeoutRejectedException>();
+                watch.Stop();
+            }
+
+            watch.Elapsed.Should().BeCloseTo(TimeSpan.FromSeconds(timeout), ((int)tolerance.TotalMilliseconds));
+
+        }
+
+        [Fact]
+        public void Should_not_execute_user_delegate_if_user_cancellationtoken_cancelled_before_delegate_reached__pessimistic()
+        {
+            var policy = Policy.Timeout(10, TimeoutStrategy.Pessimistic);
+
+            bool executed = false;
+
+            using (CancellationTokenSource cts = new CancellationTokenSource())
+            {
+                cts.Cancel();
+
+                policy.Invoking(p => p.Execute(ct => { executed = true; }, cts.Token))
+                    .ShouldThrow<OperationCanceledException>();
+            }
+
+            executed.Should().BeFalse();
+        }
+
+        #endregion
+
+        #region Non-timeout cancellation - optimistic (user-delegate observes cancellation)
+
+        [Fact]
+        public void Should_be_able_to_cancel_with_user_cancellation_token_before_timeout__optimistic()
         {
             Stopwatch watch = new Stopwatch();
 
             int timeout = 10;
-            var policy = Policy.Timeout(timeout);
+            var policy = Policy.Timeout(timeout, TimeoutStrategy.Optimistic);
 
             TimeSpan tolerance = TimeSpan.FromSeconds(1); // Consider increasing tolerance, if test fails transiently in different test/build environments.
 
@@ -239,9 +286,9 @@ namespace Polly.Specs
         }
 
         [Fact]
-        public void Should_not_execute_user_delegate_if_user_cancellationtoken_cancelled_before_delegate_reached()
+        public void Should_not_execute_user_delegate_if_user_cancellationtoken_cancelled_before_delegate_reached__optimistic()
         {
-            var policy = Policy.Timeout(10);
+            var policy = Policy.Timeout(10, TimeoutStrategy.Optimistic);
 
             bool executed = false;
 

@@ -24,8 +24,6 @@ namespace Polly.Retry
                 {
                     DelegateResult<TResult> delegateOutcome = new DelegateResult<TResult>(action(cancellationToken));
 
-                    cancellationToken.ThrowIfCancellationRequested();
-
                     if (!shouldRetryResultPredicates.Any(predicate => predicate(delegateOutcome.Result)))
                     {
                         return delegateOutcome.Result;
@@ -38,15 +36,6 @@ namespace Polly.Retry
                 }
                 catch (Exception ex)
                 {
-                    if (cancellationToken.IsCancellationRequested)
-                    {
-                        if (ex is OperationCanceledException && ((OperationCanceledException)ex).CancellationToken == cancellationToken)
-                        {
-                            throw;
-                        }
-                        cancellationToken.ThrowIfCancellationRequested();
-                    }
-
                     if (!shouldRetryExceptionPredicates.Any(predicate => predicate(ex)))
                     {
                         throw;

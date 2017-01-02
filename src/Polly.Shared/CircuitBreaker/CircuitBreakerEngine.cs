@@ -23,8 +23,6 @@ namespace Polly.CircuitBreaker
             {
                 DelegateResult<TResult> delegateOutcome = new DelegateResult<TResult>(action(cancellationToken));
 
-                cancellationToken.ThrowIfCancellationRequested();
-
                 if (shouldHandleResultPredicates.Any(predicate => predicate(delegateOutcome.Result)))
                 {
                     breakerController.OnActionFailure(delegateOutcome, context);
@@ -38,15 +36,6 @@ namespace Polly.CircuitBreaker
             }
             catch (Exception ex)
             {
-                if (cancellationToken.IsCancellationRequested)
-                {
-                    if (ex is OperationCanceledException && ((OperationCanceledException)ex).CancellationToken == cancellationToken)
-                    {
-                        throw;
-                    }
-                    cancellationToken.ThrowIfCancellationRequested();
-                }
-
                 if (!shouldHandleExceptionPredicates.Any(predicate => predicate(ex)))
                 {
                     throw;
