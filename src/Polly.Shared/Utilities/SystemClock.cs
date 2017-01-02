@@ -11,21 +11,16 @@ namespace Polly.Utilities
     {
         /// <summary>
         /// Allows the setting of a custom Thread.Sleep implementation for testing.
-        /// By default this will be a call to <see cref="M:Task.Delay"/> taking a <see cref="CancellationToken"/>
+        /// By default this will use the <see cref="CancellationToken"/>'s <see cref="WaitHandle"/>.
         /// </summary>
         public static Action<TimeSpan, CancellationToken> Sleep = (timeSpan, cancellationToken) =>
         {
-#if NET40
-            TaskEx 
-#else
-            Task 
-#endif 
-            .Delay(timeSpan, cancellationToken).Wait();
+            if (cancellationToken.WaitHandle.WaitOne(timeSpan)) cancellationToken.ThrowIfCancellationRequested();
         };
 
         /// <summary>
         /// Allows the setting of a custom async Sleep implementation for testing.
-        /// By default this will be a call to <see cref="M:Task.Delay"/>
+        /// By default this will be a call to <see cref="M:Task.Delay"/> taking a <see cref="CancellationToken"/>
         /// </summary>
 #if NET40
         public static Func<TimeSpan, CancellationToken, Task> SleepAsync = TaskEx.Delay;
@@ -45,12 +40,9 @@ namespace Polly.Utilities
         public static void Reset()
         {
             Sleep = (timeSpan, cancellationToken) =>
-#if NET40
-            TaskEx 
-#else
-            Task
-#endif
-            .Delay(timeSpan, cancellationToken).Wait();
+            {
+                if (cancellationToken.WaitHandle.WaitOne(timeSpan)) cancellationToken.ThrowIfCancellationRequested();
+            };
 
 #if NET40
             SleepAsync = TaskEx.Delay;

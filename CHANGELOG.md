@@ -1,3 +1,6 @@
+## 5.0.3
+- Refine implementation of cancellable synchronous WaitAndRetry
+
 ## 5.0.2
 
 - .NETStandard1.0 target: Correctly state dependencies. 
