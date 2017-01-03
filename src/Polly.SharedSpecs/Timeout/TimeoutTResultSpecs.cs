@@ -166,7 +166,7 @@ namespace Polly.Specs.Timeout
             TimeSpan timeout = TimeSpan.FromSeconds(1);
             var policy = Policy.Timeout<ResultPrimitive>(timeout, TimeoutStrategy.Pessimistic);
 
-            TimeSpan tolerance = TimeSpan.FromSeconds(1); // Consider increasing tolerance, if test fails transiently in different test/build environments.
+            TimeSpan tolerance = TimeSpan.FromSeconds(2); // Consider increasing tolerance, if test fails transiently in different test/build environments.
 
             watch.Start();
             policy.Invoking(p => p.Execute(() =>
