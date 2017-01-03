@@ -147,14 +147,6 @@
      - Allow arbitrary data to be passed to policy execution
    </releaseNotes>
     <dependencies>
-      <group targetFramework="net" />
-      <group targetFramework="win" />
-      <group targetFramework="wp" />
-      <group targetFramework="wpa" />
-      <group targetFramework="MonoAndroid" />
-      <group targetFramework="MonoTouch" />
-      <group targetFramework="Xamarin.iOS" />
-      <group targetFramework="portable-net45+win8+wpa81+wp8" />
       <group targetFramework="netstandard1.0">
         <dependency id="NETStandard.Library" version="1.6.0" />
       </group>
