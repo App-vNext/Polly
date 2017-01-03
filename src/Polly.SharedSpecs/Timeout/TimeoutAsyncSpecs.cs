@@ -8,7 +8,7 @@ using Polly.Timeout;
 using Polly.Utilities;
 using Xunit;
 
-namespace Polly.Specs
+namespace Polly.Specs.Timeout
 {
     public class TimeoutAsyncSpecs
     {

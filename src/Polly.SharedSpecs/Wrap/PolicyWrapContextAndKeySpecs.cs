@@ -3,7 +3,7 @@ using FluentAssertions;
 using Polly.Specs.Helpers;
 using Xunit;
 
-namespace Polly.Specs
+namespace Polly.Specs.Wrap
 {
     public class PolicyWrapContextAndKeySpecs
     {

@@ -9,7 +9,7 @@ using Polly.Utilities;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace Polly.Specs
+namespace Polly.Specs.Bulkhead
 {
     public class BulkheadTResultAsyncSpecs : BulkheadSpecsHelper
     {

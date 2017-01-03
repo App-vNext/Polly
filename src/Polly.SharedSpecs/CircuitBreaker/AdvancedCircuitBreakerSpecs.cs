@@ -10,7 +10,7 @@ using Xunit;
 
 using Scenario = Polly.Specs.Helpers.PolicyExtensions.ExceptionAndOrCancellationScenario;
 
-namespace Polly.Specs
+namespace Polly.Specs.CircuitBreaker
 {
     public class AdvancedCircuitBreakerSpecs : IDisposable
     {

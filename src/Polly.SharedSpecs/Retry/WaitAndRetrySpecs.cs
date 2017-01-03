@@ -9,7 +9,7 @@ using Polly.Specs.Helpers;
 using Polly.Utilities;
 using Xunit;
 
-namespace Polly.Specs
+namespace Polly.Specs.Retry
 {
     public class WaitAndRetrySpecs : IDisposable
     {

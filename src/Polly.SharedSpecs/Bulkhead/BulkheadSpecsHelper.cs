@@ -6,7 +6,7 @@ using Polly.Specs.Helpers;
 using Xunit.Abstractions;
 using Xunit.Sdk;
 
-namespace Polly.Specs
+namespace Polly.Specs.Bulkhead
 {
     public class BulkheadSpecsHelper : IDisposable
     {

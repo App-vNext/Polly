@@ -6,7 +6,7 @@ using Polly.Specs.Helpers;
 using Polly.Utilities;
 using Xunit;
 
-namespace Polly.Specs
+namespace Polly.Specs.CircuitBreaker
 {
     public class CircuitBreakerTResultMixedResultExceptionSpecs : IDisposable
     {

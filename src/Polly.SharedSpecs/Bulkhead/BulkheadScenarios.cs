@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 
-namespace Polly.Specs
+namespace Polly.Specs.Bulkhead
 {
     /// <summary>
     /// A set of test scenarios used in all BulkheadPolicy tests.

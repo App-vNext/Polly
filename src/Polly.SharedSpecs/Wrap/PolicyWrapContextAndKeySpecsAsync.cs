@@ -4,7 +4,7 @@ using Polly.Specs.Helpers;
 using Polly.Utilities;
 using Xunit;
 
-namespace Polly.Specs
+namespace Polly.Specs.Wrap
 {
     public class PolicyWrapContextAndKeySpecsAsync
     {

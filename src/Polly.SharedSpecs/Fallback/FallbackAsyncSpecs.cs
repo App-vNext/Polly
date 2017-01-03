@@ -10,7 +10,7 @@ using Xunit;
 
 using Scenario = Polly.Specs.Helpers.PolicyExtensionsAsync.ExceptionAndOrCancellationScenario;
 
-namespace Polly.Specs
+namespace Polly.Specs.Fallback
 {
     public class FallbackAsyncSpecs
     {

@@ -6,7 +6,7 @@ using Polly.Specs.Helpers;
 using Polly.Wrap;
 using Xunit;
 
-namespace Polly.Specs
+namespace Polly.Specs.Wrap
 {
     public class PolicyWrapSpecsAsync
     {
