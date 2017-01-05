@@ -1,3 +1,39 @@
+## 5.0.3 RTM
+- Refine implementation of cancellable synchronous WaitAndRetry
+- Minor breaking change: Where a user delegate does not observe cancellation, Polly will now honour the delegate's outcome rather than throw for the unobserved cancellation (issue 188).
+
+## 5.0.2 alpha
+
+- .NETStandard1.0 target: Correctly state dependencies. 
+- .NETStandard1.0 target: Fix SemVer stamping of Polly.dll.
+- PCL259 project and target: Remove, in favour of .NETStandard1.0 target.  PCL259 is supported via .NETStandard1.0 target, going forward.
+- Mark Polly.dll as CLSCompliant.
+- Tidy build around GitVersionTask and ReferenceGenerator.
+- Update FluentAssertions dependency.
+- Added Polly.Net40Async specs project.
+- Fix issue 179: Make Net4.0 async implementation for Bulkhead truly async. 
+
+## 5.0.1 alpha
+
+- Add .NET Standard 1.0 project and target.
+
+## 5.0.0 alpha
+
+A major release, adding significant new resilience policies:
+- Timeout policy: allows timing out any execution. Thanks to [@reisenberger](https://github.com/reisenberger).
+- Bulkhead isolation policy: limits the resources consumable by governed actions, such that a faulting channel cannot cause cascading failures. Thanks to [@reisenberger](https://github.com/reisenberger) and contributions from [@brunolauze](https://github.com/brunolauze).
+- Fallback policy: provides for a fallback execution or value, in case of overall failure. Thanks to [@reisenberger](https://github.com/reisenberger)
+- PolicyWrap: allows flexibly combining Policy instances of any type, to form an overall resilience strategy. Thanks to [@reisenberger](https://github.com/reisenberger)
+
+Other changes include:
+- Add PolicyKeys and context to all policy executions, for logging and to support later introduction of policy events and metrics. Thanks to [@reisenberger](https://github.com/reisenberger)
+- Add CancellationToken support to synchronous executions.  Thanks to [@brunolauze](https://github.com/brunolauze) and [@reisenberger](https://github.com/reisenberger)
+- Add some missing ExecuteAndCapture/Async overloads. Thanks to [@reisenberger](https://github.com/reisenberger)
+- Remove invalid ExecuteAsync overloads taking (but not making use of) a CancellationToken
+- Provide .NET4.0 support uniquely through Polly.NET40Async package
+- Retire ContextualPolicy (not part of documented API; support now in Policy base class)
+- Discontinue .NET3.5 support
+ 
 ## 4.3.0
 
 - Added ability for policies to handle returned results.  Optimised circuit-breaker hot path.  Fixed circuit-breaker threshold bug.  Thanks to [@reisenberger](https://github.com/reisenberger), [@christopherbahr](https://github.com/christopherbahr) and [@Finity](https://github.com/Finity) respectively.

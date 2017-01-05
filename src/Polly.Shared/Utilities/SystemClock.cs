@@ -1,40 +1,31 @@
 ﻿using System;
 using System.Threading;
-#if SUPPORTS_ASYNC
 using System.Threading.Tasks;
-#endif
 
 namespace Polly.Utilities
 {
     /// <summary>
-    /// Time related delegates used to improve testability of the code
+    /// Time related delegates used to support different compilation targets and to improve testability of the code.
     /// </summary>
     public static class SystemClock
     {
-#if !PORTABLE
         /// <summary>
         /// Allows the setting of a custom Thread.Sleep implementation for testing.
-        /// By default this will be a call to <see cref="M:Thread.Sleep"/>
+        /// By default this will use the <see cref="CancellationToken"/>'s <see cref="WaitHandle"/>.
         /// </summary>
-        public static Action<TimeSpan> Sleep = Thread.Sleep;
-#endif
-#if PORTABLE
-        /// <summary>
-        /// Allows the setting of a custom Thread.Sleep implementation for testing.
-        /// By default this will be a call to <see cref="M:ManualResetEvent.WaitOne"/>
-        /// </summary>
-        public static Action<TimeSpan> Sleep = timespan => new ManualResetEvent(false).WaitOne(timespan);
-#endif
-#if SUPPORTS_ASYNC
+        public static Action<TimeSpan, CancellationToken> Sleep = (timeSpan, cancellationToken) =>
+        {
+            if (cancellationToken.WaitHandle.WaitOne(timeSpan)) cancellationToken.ThrowIfCancellationRequested();
+        };
+
         /// <summary>
         /// Allows the setting of a custom async Sleep implementation for testing.
-        /// By default this will be a call to <see cref="M:Task.Delay"/>
+        /// By default this will be a call to <see cref="M:Task.Delay"/> taking a <see cref="CancellationToken"/>
         /// </summary>
-#if SUPPORTS_ASYNC_40
+#if NET40
         public static Func<TimeSpan, CancellationToken, Task> SleepAsync = TaskEx.Delay;
 #else
         public static Func<TimeSpan, CancellationToken, Task> SleepAsync = Task.Delay;
-#endif
 #endif
         /// <summary>
         /// Allows the setting of a custom DateTime.UtcNow implementation for testing.
@@ -48,17 +39,15 @@ namespace Polly.Utilities
         /// </summary>
         public static void Reset()
         {
-#if !PORTABLE
-            Sleep = Thread.Sleep;
-#else
-            Sleep = timeSpan => new ManualResetEvent(false).WaitOne(timeSpan);
-#endif
-#if SUPPORTS_ASYNC
-#if SUPPORTS_ASYNC_40
+            Sleep = (timeSpan, cancellationToken) =>
+            {
+                if (cancellationToken.WaitHandle.WaitOne(timeSpan)) cancellationToken.ThrowIfCancellationRequested();
+            };
+
+#if NET40
             SleepAsync = TaskEx.Delay;
 #else
             SleepAsync = Task.Delay;
-#endif
 #endif
             UtcNow = () => DateTime.UtcNow;
         }

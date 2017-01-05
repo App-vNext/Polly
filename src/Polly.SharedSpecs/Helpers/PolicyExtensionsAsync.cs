@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Polly.Utilities;
 
 namespace Polly.Specs.Helpers
 {
@@ -25,7 +26,7 @@ namespace Polly.Specs.Helpers
 
                     throw exception;
                 }
-                return Task.FromResult(true) as Task;
+                return TaskHelper.EmptyTask;
             }, cancellationToken);
         }
 
@@ -83,20 +84,11 @@ namespace Polly.Specs.Helpers
         {
             return (Func<Task>)(() => action(policy));
         }
-
-        public static Func<Task> Awaiting(this ContextualPolicy policy, Func<ContextualPolicy, Task> action)
-        {
-            return (Func<Task>)(() => action(policy));
-        }
-
+        
         public static Func<Task<TResult>> Awaiting<TResult>(this Policy<TResult> policy, Func<Policy<TResult>, Task<TResult>> action)
         {
             return (Func<Task<TResult>>)(() => action(policy));
         }
-
-        public static Func<Task<TResult>> Awaiting<TResult>(this ContextualPolicy<TResult> policy, Func<ContextualPolicy<TResult>, Task<TResult>> action)
-        {
-            return (Func<Task<TResult>>)(() => action(policy));
-        }
+        
     }
 }

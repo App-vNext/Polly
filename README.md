@@ -1,6 +1,8 @@
 # Polly
 
-Polly is a .NET 3.5 / 4.0 / 4.5 / PCL (Profile 259) library that allows developers to express transient exception- and fault-handling policies such as Retry, Retry Forever, Wait and Retry, or Circuit Breaker in a fluent and thread-safe manner.
+Polly is a .NET resilience and transient-fault-handling library that allows developers to express policies such as Retry, Circuit Breaker, Timeout, Bulkhead Isolation, and Fallback in a fluent and thread-safe manner.  
+
+Polly targets .NET 4.0, .NET 4.5 and .NET Standard 1.0 ([coverage](https://github.com/dotnet/standard/blob/master/docs/versions.md): .NET Core, Mono, Xamarin.iOS, Xamarin.Android, UWP, WP8.0+).
 
 [<img align="right" src="https://dotnetfoundation.org/Themes/DotNetFoundation.Theme/Images/logo-small.png" width="100" />](https://www.dotnetfoundation.org/)
 We are now a member of the [.NET Foundation](https://www.dotnetfoundation.org/about)!
@@ -13,23 +15,40 @@ We are now a member of the [.NET Foundation](https://www.dotnetfoundation.org/ab
 
 # Installing via NuGet
 
-
     Install-Package Polly
 
 You can install the Strongly Named version via: 
 
     Install-Package Polly-Signed
 
-There are now .NET 4.0 Async versions (via Microsoft.Bcl.Async) of the signed and unsigned NuGet packages, which can be installed via:
+.NET4.0 support is provide via the packages:
 
     Install-Package Polly.Net40Async
     Install-Package Polly.Net40Async-Signed
 
-**Please note:** The Polly.Net40Async package is only needed if you are targeting .NET 4.0 and need async capabilities. If you are targeting .NET 4.5 or greater, please use the standard Polly package.
 
-# Usage
 
-## Step 1 : Specify the type of exceptions you want the policy to handle ##
+# Resilience policies
+
+Polly offers multiple resilience policies:
+
+|Policy| Premise | Aka| How does the policy mitigate?|
+| ------------- | ------------- |:-------------: |------------- |
+|**Retry** <br/>(policy family)<br/><sub>([quickstart](#retry)&nbsp;;&nbsp;[deep](https://github.com/App-vNext/Polly/wiki/Retry))</sub>|Many faults are transient and may self-correct after a short delay.| "Maybe it's just a blip" |  Allows configuring automatic retries. |
+|**Circuit-breaker**<br/>(policy family)<br/><sub>([quickstart](#circuit-breaker)&nbsp;;&nbsp;[deep](https://github.com/App-vNext/Polly/wiki/Circuit-Breaker))</sub>|When a system is seriously struggling, failing fast is better than making users/callers wait.  <br/><br/>Protecting a faulting system from overload can help it recover. | "Stop doing it if it hurts" <br/><br/>"Give that system a break" | Breaks the circuit (blocks executions) for a period, when faults exceed some pre-configured threshold. | 
+|**Timeout**<br/><sub>([quickstart](#timeout)&nbsp;;&nbsp;[deep](https://github.com/App-vNext/Polly/wiki/Timeout))</sub>|Beyond a certain wait, a success result is unlikely.| "Don't wait forever"  |Guarantees the caller won't have to wait beyond the timeout. | 
+|**Bulkhead Isolation**<br/><sub>([quickstart](#bulkhead)&nbsp;;&nbsp;[deep](https://github.com/App-vNext/Polly/wiki/Bulkhead))</sub>|When a process faults, multiple failing calls backing up can easily swamp resource (eg threads/CPU) in a host.<br/><br/>A faulting downstream system can also cause 'backed-up' failing calls upstream.<br/><br/>Both risk a faulting process bringing down a wider system. | "One fault shouldn't sink the whole ship"  |Constrains the governed actions to a fixed-size resource pool, isolating their potential  to affect others. |
+|**Cache**<br/><sub>([quickstart](#cache)&nbsp;;&nbsp;[deep](https://github.com/App-vNext/Polly/wiki/Cache))</sub>|Some proportion of requests may be similar.| "You've asked that one before"  |Provides a response from cache if known. <br/><br/>Stores responses automatically in cache, when first retrieved. |
+|**Fallback**<br/><sub>([quickstart](#fallback)&nbsp;;&nbsp;[deep](https://github.com/App-vNext/Polly/wiki/Fallback))</sub>|Things will still fail - plan what you will do when that happens.| "Degrade gracefully"  |Defines an alternative value to be returned (or action to be executed) on failure. | 
+|**PolicyWrap**<br/><sub>([quickstart](#policywrap)&nbsp;;&nbsp;[deep](https://github.com/App-vNext/Polly/wiki/PolicyWrap))</sub>|Different faults require different strategies; resilience means using a combination.| "Defence in depth"  |Allows any of the above policies to be combined flexibly. | 
+
+# Usage &ndash; fault-handling policies
+
+## Step 1 : Specify the  exceptions/faults you want the policy to handle 
+
+### (for fault-handling policies:  Retry family, CircuitBreaker family and Fallback)
+
+
 
 ```csharp
 // Single exception type
@@ -51,7 +70,7 @@ Policy
   .Or<ArgumentException>(ex => ex.ParamName == "example")
 ```
 
-### Step 1b: (optionally) Specify return results you want to handle
+## Step 1b: (optionally) Specify return results you want to handle
 
 From Polly v4.3.0 onwards, policies wrapping calls returning a `TResult` can also handle `TResult` return values:
 
@@ -77,11 +96,11 @@ HttpResponse result = Policy
   .OrResult<HttpResponse>(r => httpStatusCodesWorthRetrying.Contains(r.StatusCode))
 ```
 
-For more information, see Handling Return Values at foot of this readme. 
+For more information, see [Handling Return Values](#handing-return-values-and-policytresult) at foot of this readme. 
 
 ## Step 2 : Specify how the policy should handle those faults
 
-### Retry ###
+### Retry 
 
 ```csharp
 // Retry once
@@ -114,7 +133,7 @@ Policy
     });
 ```
 
-### Retry forever ###
+### Retry forever (until succeeds)
 
 ```csharp
 
@@ -142,7 +161,7 @@ Policy
   });
 ```
 
-### Retry and Wait ###
+### Wait and retry 
 
 ```csharp
 // Retry, waiting a specified duration between each retry
@@ -243,7 +262,7 @@ Policy
   );
 ```
 
-### Wait and retry forever ###
+### Wait and retry forever (until succeeds) 
 
 ```csharp
 
@@ -277,9 +296,10 @@ Policy
     });
 ```
 
-For further information on the operation of retry policies, see also the [wiki](https://github.com/App-vNext/Polly/wiki/Retry).
+For more detail see: [Retry policy documentation](https://github.com/App-vNext/Polly/wiki/Retry) on wiki.
 
-### Circuit Breaker ###
+### Circuit Breaker
+ 
 ```csharp
 // Break the circuit after the specified number of consecutive exceptions
 // and keep circuit broken for the specified duration.
@@ -322,10 +342,9 @@ breaker.Isolate();
 breaker.Reset(); 
 
 ```
+For more detail see: [Circuit-Breaker documentation](https://github.com/App-vNext/Polly/wiki/Circuit-Breaker) on wiki.
 
-For further information on the operation of circuit breaker, see also the [wiki](https://github.com/App-vNext/Polly/wiki/Circuit-Breaker).
-
-### Advanced Circuit Breaker ###
+### Advanced Circuit Breaker 
 ```csharp
 // Break the circuit if, within any period of duration samplingDuration, 
 // the proportion of actions resulting in a handled exception exceeds failureThreshold, 
@@ -347,8 +366,7 @@ Policy
 // Circuit state monitoring and manual controls are
 // available as described for CircuitBreaker above.
 ```
-
-For further information on the operation of Advanced Circuit Breaker, see the [Wiki](https://github.com/App-vNext/Polly/wiki/Advanced-Circuit-Breaker)
+For more detail see: [Advanced Circuit-Breaker documentation](https://github.com/App-vNext/Polly/wiki/Advanced-Circuit-Breaker) on wiki.
 
 For more information on the Circuit Breaker pattern in general see:
 * [Making the Netflix API More Resilient](http://techblog.netflix.com/2011/12/making-netflix-api-more-resilient.html)
@@ -356,7 +374,31 @@ For more information on the Circuit Breaker pattern in general see:
 * [Circuit Breaker Pattern (Microsoft)](https://msdn.microsoft.com/en-us/library/dn589784.aspx)
 * [Circuit breaking with Polly](http://blog.jaywayco.co.uk/circuit-breaking-with-polly/)
 * [Original Circuit Breaking Link](https://web.archive.org/web/20160106203951/http://thatextramile.be/blog/2008/05/the-circuit-breaker)
- 
+
+
+### Fallback 
+```csharp
+// Provide a substitute value, if an execution faults.
+Policy
+   .Handle<Whatever>()
+   .Fallback<UserAvatar>(UserAvatar.Blank)
+
+// Specify a func to provide a substitute value, if execution faults.
+Policy
+   .Handle<Whatever>()
+   .Fallback<UserAvatar>(() => UserAvatar.GetRandomAvatar()) // where: public UserAvatar GetRandomAvatar() { ... }
+
+// Specify a substitute value or func, calling an action (eg for logging) if the fallback is invoked.
+Policy
+   .Handle<Whatever>()
+   .Fallback<UserAvatar>(UserAvatar.Blank, onFallback: (exception, context) => 
+    {
+        // do something
+    });
+
+```
+
+For more detail see: [Fallback policy documentation](https://github.com/App-vNext/Polly/wiki/Fallback) on wiki.
 
 ## Step 3 : Execute the policy
 
@@ -411,9 +453,127 @@ Policy
   .Execute(() => DoSomething());
 ```
 
-# Post Execution Steps
+# Usage &ndash; general resilience policies
 
-Using the `ExecuteAndCapture` method you can capture the result of executing a policy.
+## Step 1 : Configure
+
+### Timeout
+
+```csharp
+// Timeout and return to the caller after 30 seconds, if the executed delegate has not completed.  Optimistic timeout: Delegates should take and honour a CancellationToken.
+Policy
+  .Timeout(30)
+
+// Configure timeout as timespan.
+Policy
+  .Timeout(TimeSpan.FromMilliseconds(2500))
+
+// Configure variable timeout via a func provider.
+Policy
+  .Timeout(() => myTimeoutProvider)) // Func<TimeSpan> myTimeoutProvider
+
+// Timeout after 30 seconds, if the executed delegate has not completed.  Enforces a timeout on delegates which have no in-built timeout and do not honour CancellationToken, at the expense (in synchronous executions) of an extra thread.
+// (for more detail, see deep documentation)
+Policy
+  .Timeout(30, TimeoutStrategy.Pessimistic)
+
+// Timeout, calling an action if the action times out
+Policy
+  .Timeout(30, onTimeout: (context, timespan, task) => 
+    {
+        // do something 
+    });
+
+// Eg timeout, logging that the execution timed out:
+Policy
+  .Timeout(30, onTimeout: (context, timespan, task) => 
+    {
+        logger.Warn($"{context.PolicyKey} at {context.ExecutionKey}: execution timed out after {timespan.TotalSeconds} seconds.");
+    });
+
+// Eg timeout, capturing any exception from the timed-out task when it completes:
+Policy
+  .Timeout(30, onTimeout: (context, timespan, task) => 
+    {
+        task.ContinueWith(t => {
+            if (t.IsFaulted) logger.Error($"{context.PolicyKey} at {context.ExecutionKey}: execution timed out after {timespan.TotalSeconds} seconds, with: {t.Exception}.");
+        });
+    });
+```
+
+For more detail see: [Timeout policy documentation](https://github.com/App-vNext/Polly/wiki/Timeout) on wiki.
+
+### Bulkhead
+
+```csharp
+// Restrict executions through the policy to a maximum of twelve concurrent actions.
+Policy
+  .Bulkhead(12)
+
+// Restrict executions through the policy to a maximum of twelve concurrent actions, 
+// with up to two actions waiting for an execution slot in the bulkhead if all slots are taken.
+Policy
+  .Bulkhead(12, 2)
+
+// Restrict concurrent executions, calling an action if an execution is rejected
+Policy
+  .Bulkhead(12, context => 
+    {
+        // do something 
+    });
+
+// Monitor the bulkhead available capacity, for example for health/load reporting.
+var bulkhead = Policy.Bulkhead(12, 2);
+// ...
+int freeExecutionSlots = bulkhead.BulkheadAvailableCount;
+int freeQueueSlots     = bulkhead.QueueAvailableCount;
+
+```
+
+
+For more detail see: [Bulkhead policy documentation](https://github.com/App-vNext/Polly/wiki/Bulkhead) on wiki.
+
+### Cache
+
+The Cache policy is targeting Polly v5.1.  Check out [www.thepollyproject.org](http://www.thepollyproject.org) for updates.
+
+### PolicyWrap
+
+```csharp
+// Define a combined policy strategy, built of previously-defined policies.
+var policyWrap = Policy
+  .Wrap(fallback, cache, retry, breaker, timeout, bulkhead);
+// (wraps the policies around any executed delegate: fallback outermost ... bulkhead innermost)
+policyWrap.Execute(...)
+
+// Define a standard resilience strategy ...
+PolicyWrap commonResilience = Policy.Wrap(retry, breaker, timeout);
+
+// ... then wrap in extra policies specific to a call site, at that call site:
+Avatar avatar = Policy
+   .Handle<Whatever>()
+   .Fallback<Avatar>(Avatar.Blank)
+   .Wrap(commonResilience)
+   .Execute(() => { /* get avatar */ });
+
+// Share commonResilience, but wrap different policies in at another call site:
+Reputation reps = Policy
+   .Handle<Whatever>()
+   .Fallback<Reputation>(Reputation.NotAvailable)
+   .Wrap(commonResilience)
+   .Execute(() => { /* get reputation */ });  
+
+```
+
+For more detail see: [PolicyWrap documentation](https://github.com/App-vNext/Polly/wiki/PolicyWrap) on wiki.
+
+## Step 2 : Execute the policy.
+
+As for fault-handling policies [above](#step-3--execute-the-policy).
+
+# Post-execution: capturing the result, or any final exception
+
+Using the `ExecuteAndCapture(...)` methods you can capture the result of executing a policy.
 
 ```csharp
 var policyResult = Policy
@@ -428,35 +588,69 @@ policyResult.Result - if executing a func, the result if the call succeeded or t
 */
 ```
 
+# Policy Keys and Context data
+
+
+```csharp
+// Identify policies with a PolicyKey, using the WithPolicyKey() extension method
+// (for example, for correlation in logs or metrics)
+
+var policy = Policy
+    .Handle<DataAccessException>()
+    .Retry(3, onRetry: (exception, retryCount, context) =>
+       {
+           logger.Error($"Retry {retryCount} of {context.PolicyKey} at {context.ExecutionKey}, due to: {exception}.");
+       })
+    .WithPolicyKey("MyDataAccessPolicy");
+
+// Identify call sites with an ExecutionKey, by passing in a Context
+var customerDetails = policy.Execute(myDelegate, new Context("GetCustomerDetails"));
+
+// "MyDataAccessPolicy" -> context.PolicyKey 
+// "GetCustomerDetails  -> context.ExecutionKey
+
+
+// Pass additional custom information from call site into execution context 
+var policy = Policy
+    .Handle<DataAccessException>()
+    .Retry(3, onRetry: (exception, retryCount, context) =>
+       {
+           logger.Error($"Retry {retryCount} of {context.PolicyKey} at {context.ExecutionKey}, getting {context["Type"]} of id {context["Id"]}, due to: {exception}.");
+       })
+    .WithPolicyKey("MyDataAccessPolicy");
+
+int id = ... // customer id from somewhere
+var customerDetails = policy.Execute(() => GetCustomer(id), 
+    new Context("GetCustomerDetails", new Dictionary<string, object>() {{"Type","Customer"},{"Id",id}}
+    ));
+```
+
+For more detail see: [Keys and Context Data](https://github.com/App-vNext/Polly/wiki/Keys-And-Context-Data) on wiki.
 
 # Thread safety
 
-The existing policies (retry and circuit-breaker) are fully thread-safe, and the intention is that the forthcoming wider resilience policies will be thread-safe, too. 
+All Polly policies are fully thread-safe.  You can safely re-use policies at multiple call sites, and execute through policies concurrently on different threads. 
 
 While the internal operation of the policy is thread-safe, this does not magically make delegates you execute through the policy thread-safe: if delegates you execute through the policy are not thread-safe, they remain not thread-safe.
 
 
-# Asynchronous Support (.NET 4.5, PCL and .NET4.0)
+# Asynchronous Support
 
-You can use Polly with asynchronous functions by using the asynchronous methods
+Polly fully supports asynchronous executions, using the asynchronous methods:
 
 * `RetryAsync`
-* `RetryForeverAsync`
 * `WaitAndRetryAsync`
-* `WaitAndRetryForeverAsync`
 * `CircuitBreakerAsync`
-* `AdvancedCircuitBreakerAsync`
+* (etc)
 * `ExecuteAsync`
 * `ExecuteAndCaptureAsync`
 
-In place of their synchronous counterparts
+In place of their synchronous counterparts:
 
 * `Retry`
-* `RetryForever`
 * `WaitAndRetry`
-* `WaitAndRetryForever`
 * `CircuitBreaker`
-* `AdvancedCircuitBreaker`
+* (etc)
 * `Execute`
 * `ExecuteAndCapture`
 
@@ -470,7 +664,6 @@ await Policy
   .ExecuteAsync(() => DoSomethingAsync());
 
 ```
-
 
 ### SynchronizationContext ###
 
@@ -495,9 +688,12 @@ var policy = Policy
     });
 var response = await policy.ExecuteAsync(ct => httpClient.GetAsync(uri, ct), cancellationToken);
 ```
-### .NET4.0 Async support ###
 
-The .NET4.0 Async support uses `Microsoft.Bcl.Async` to add async support to a .NET4.0 package.  To minimise extra dependencies on the main Polly nuget package, the .NET4.0 async version is available as separate Nuget packages `Polly.Net40Async` and `Polly.Net40Async-signed`.
+From Polly v5.0, synchronous executions also support cancellation via `CancellationToken`.
+
+# .NET4.0 support ###
+
+The .NET4.0 package uses `Microsoft.Bcl.Async` to add async support.  To minimise  dependencies on the main Polly nuget package, the .NET4.0 version is available as separate Nuget packages `Polly.Net40Async` and `Polly.Net40Async-signed`.
 
 # Handing return values, and Policy&lt;TResult&gt;
 
@@ -532,14 +728,14 @@ These policies must be used to execute delegates returning `TResult`, ie:
 policyResult.Outcome - whether the call succeeded or failed         
 policyResult.FinalException - the final exception captured; will be null if the call succeeded
 policyResult.ExceptionType - was the final exception an exception the policy was defined to handle (like DivideByZeroException above) or an unhandled one (say Exception)? Will be null if the call succeeded.
-policyResult.Result - if executing a func, the result if the call succeeded or the type's default value
+policyResult.Result - if executing a func, the result if the call succeeded; otherwise, the type's default value
 ```
 
 `.ExecuteAndCapture<TResult>(Func<TResult>)` on strongly-typed policies adds two properties:
 
 ```
 policyResult.FaultType - was the final fault handled an exception or a result handled by the policy? Will be null if the delegate execution succeeded. 
-policyResult.FinalHandledResult - the final result handled; will be null if the call succeeded or the type's default value
+policyResult.FinalHandledResult - the final fault result handled; will be null or the type's default value, if the call succeeded
 ```
 
 ### State-change delegates on Policy&lt;TResult&gt; policies
@@ -565,8 +761,10 @@ For `CircuitBreakerPolicy<TResult>` policies:
 
 * [Fluent Assertions](https://github.com/dennisdoomen/fluentassertions) - A set of .NET extension methods that allow you to more naturally specify the expected outcome of a TDD or BDD-style test | [Apache License 2.0 (Apache)](https://github.com/dennisdoomen/fluentassertions/blob/develop/LICENSE)
 * [xUnit.net](https://github.com/xunit/xunit) - Free, open source, community-focused unit testing tool for the .NET Framework | [Apache License 2.0 (Apache)](https://github.com/xunit/xunit/blob/master/license.txt)
-* [Ian Griffith's TimedLock] (http://www.interact-sw.co.uk/iangblog/2004/04/26/yetmoretimedlocking)
-* [Steven van Deursen's ReadOnlyDictionary] (http://www.cuttingedge.it/blogs/steven/pivot/entry.php?id=29)
+* [Ian Griffith's TimedLock](http://www.interact-sw.co.uk/iangblog/2004/04/26/yetmoretimedlocking)
+* [Steven van Deursen's ReadOnlyDictionary](http://www.cuttingedge.it/blogs/steven/pivot/entry.php?id=29)
+* [Stephen Cleary's AsyncEx library](https://github.com/StephenCleary/AsyncEx) for AsyncSemaphore (supports BulkheadAsync policy for .NET4.0 only) | [MIT license](https://github.com/StephenCleary/AsyncEx/blob/master/LICENSE)
+* Build powered by [Cake](http://cakebuild.net/) and [GitVersionTask](https://github.com/GitTools/GitVersion).
 
 # Acknowledgements
 
@@ -590,6 +788,15 @@ For `CircuitBreakerPolicy<TResult>` policies:
 * [@reisenberger](https://github.com/reisenberger) - Allowed policies to handle returned results; added strongly-typed policies Policy&lt;TResult&gt;;.
 * [@christopherbahr](https://github.com/christopherbahr) - Added optimisation for circuit-breaker hot path.
 * [@Finity](https://github.com/Finity) - Fixed circuit-breaker threshold bug.
+* [@reisenberger](https://github.com/reisenberger) - Add some missing ExecuteAndCapture/Async overloads. 
+* [@brunolauze](https://github.com/brunolauze) - Add CancellationToken support to synchronous executions (to support TimeoutPolicy).  
+* [@reisenberger](https://github.com/reisenberger) - Add PolicyWrap.  
+* [@reisenberger](https://github.com/reisenberger) - Add Fallback policy. 
+* [@reisenberger](https://github.com/reisenberger) - Add PolicyKeys and context to all policy executions, as bedrock for policy events and metrics tracking executions. 
+* [@reisenberger](https://github.com/reisenberger),  and contributions from [@brunolauze](https://github.com/brunolauze) -  Add Bulkhead Isolation policy.  
+* [@reisenberger](https://github.com/reisenberger) - Add Timeout policy.
+* [@reisenberger](https://github.com/reisenberger) - Fix .NETStandard 1.0 targeting.  Remove PCL259 target.  PCL259 support is provided via .NETStandard1.0 target, going forward.
+
 
 # Sample Projects
 

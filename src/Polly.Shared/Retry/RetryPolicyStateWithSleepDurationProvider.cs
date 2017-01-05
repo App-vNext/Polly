@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using Polly.Utilities;
 
 namespace Polly.Retry
@@ -17,12 +18,7 @@ namespace Polly.Retry
             _context = context;
         }
 
-        public RetryPolicyStateWithSleepDurationProvider(Func<int, TimeSpan> sleepDurationProvider, Action<DelegateResult<TResult>, TimeSpan> onRetry) :
-            this(sleepDurationProvider, (delegateResult, timespan, context) => onRetry(delegateResult, timespan), Context.Empty)
-        {
-        }
-
-        public bool CanRetry(DelegateResult<TResult> delegateResult)
+        public bool CanRetry(DelegateResult<TResult> delegateResult, CancellationToken cancellationToken)
         {
             if (_errorCount < int.MaxValue)
             {
@@ -32,7 +28,7 @@ namespace Polly.Retry
             var currentTimeSpan = _sleepDurationProvider(_errorCount);
             _onRetry(delegateResult, currentTimeSpan, _context);
 
-            SystemClock.Sleep(currentTimeSpan);
+            SystemClock.Sleep(currentTimeSpan, cancellationToken);
             
             return true;
         }        

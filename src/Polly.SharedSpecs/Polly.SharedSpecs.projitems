@@ -9,14 +9,27 @@
     <Import_RootNamespace>Polly.SharedSpecs</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="$(MSBuildThisFileDirectory)CircuitBreakerAsyncSpecs.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)AdvancedCircuitBreakerSpecs.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)CircuitBreakerSpecs.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)CircuitBreakerTResultAsyncSpecs.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)CircuitBreakerTResultMixedResultExceptionSpecs.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)CircuitBreakerTResultSpecs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Bulkhead\BulkheadAsyncSpecs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Bulkhead\BulkheadSpecs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Bulkhead\BulkheadScenarios.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Bulkhead\BulkheadSpecsHelper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Bulkhead\BulkheadTResultAsyncSpecs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Bulkhead\BulkheadTResultSpecs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CircuitBreaker\AdvancedCircuitBreakerSpecs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CircuitBreaker\AdvancedCircuitBreakerAsyncSpecs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CircuitBreaker\CircuitBreakerSpecs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CircuitBreaker\CircuitBreakerAsyncSpecs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CircuitBreaker\CircuitBreakerTResultAsyncSpecs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CircuitBreaker\CircuitBreakerTResultMixedResultExceptionSpecs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CircuitBreaker\CircuitBreakerTResultSpecs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ContextSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ContextualPolicyAsyncSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ContextualPolicySpecs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Fallback\FallbackAsyncSpecs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Fallback\FallbackSpecs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Fallback\FallbackTResultAsyncSpecs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Fallback\FallbackTResultSpecs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\TraceableAction.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\ContextualPolicyExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\ContextualPolicyExtensionsAsync.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\ContextualPolicyTResultExtensions.cs" />
@@ -29,18 +42,27 @@
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\ResultClass.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\ResultPrimitive.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PolicyAsyncSpecs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)PolicyContextAndKeyAsyncSpecs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)PolicyContextAndKeySpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PolicySpecs.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)RetryAsyncSpecs.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)RetryForeverAsyncSpecs.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)RetryForeverSpecs.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)RetryTResultMixedResultExceptionSpecs.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)RetrySpecs.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)AdvancedCircuitBreakerAsyncSpecs.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)RetryTResultSpecs.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)RetryTResultSpecsAsync.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)WaitAndRetryAsyncSpecs.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)WaitAndRetryForeverAsyncSpecs.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)WaitAndRetrySpecs.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)WaitAndRetryForeverSpecs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Retry\RetryAsyncSpecs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Retry\RetryForeverAsyncSpecs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Retry\RetryForeverSpecs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Retry\RetryTResultMixedResultExceptionSpecs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Retry\RetrySpecs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Retry\RetryTResultSpecs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Retry\RetryTResultSpecsAsync.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Retry\WaitAndRetryAsyncSpecs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Retry\WaitAndRetryForeverAsyncSpecs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Retry\WaitAndRetrySpecs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Retry\WaitAndRetryForeverSpecs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Timeout\TimeoutAsyncSpecs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Timeout\TimeoutSpecs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Timeout\TimeoutTResultAsyncSpecs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Timeout\TimeoutTResultSpecs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Wrap\PolicyWrapSpecs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Wrap\PolicyWrapContextAndKeySpecs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Wrap\PolicyWrapContextAndKeySpecsAsync.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Wrap\PolicyWrapSpecsAsync.cs" />
   </ItemGroup>
 </Project>

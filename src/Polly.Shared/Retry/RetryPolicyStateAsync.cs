@@ -1,4 +1,4 @@
-﻿#if SUPPORTS_ASYNC
+﻿
 
 using System;
 using System.Threading;
@@ -16,11 +16,6 @@ namespace Polly.Retry
             _context = context;
         }
 
-        public RetryPolicyState(Func<DelegateResult<TResult>, Task> onRetryAsync) :
-            this((delegateResult, context) => onRetryAsync(delegateResult), Context.Empty)
-        {
-        }
-
         public async Task<bool> CanRetryAsync(DelegateResult<TResult> delegateResult, CancellationToken ct, bool continueOnCapturedContext)
         {
             await _onRetryAsync(delegateResult, _context).ConfigureAwait(continueOnCapturedContext);
@@ -29,4 +24,3 @@ namespace Polly.Retry
     }
 }
 
-#endif

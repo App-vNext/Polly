@@ -1,4 +1,4 @@
-﻿#if SUPPORTS_ASYNC
+﻿
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -32,4 +32,3 @@ namespace Polly.CircuitBreaker
         }
     }
 }
-#endif

@@ -1,23 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 
 namespace Polly.CircuitBreaker
 {
     internal partial class CircuitBreakerEngine
     {
         internal static TResult Implementation<TResult>(
-            Func<TResult> action,
+            Func<CancellationToken, TResult> action,
             Context context,
+            CancellationToken cancellationToken,
             IEnumerable<ExceptionPredicate> shouldHandleExceptionPredicates, 
             IEnumerable<ResultPredicate<TResult>> shouldHandleResultPredicates, 
             ICircuitController<TResult> breakerController)
         {
+            cancellationToken.ThrowIfCancellationRequested();
+
             breakerController.OnActionPreExecute();
 
             try
             {
-                DelegateResult<TResult> delegateOutcome = new DelegateResult<TResult>(action());
+                DelegateResult<TResult> delegateOutcome = new DelegateResult<TResult>(action(cancellationToken));
 
                 if (shouldHandleResultPredicates.Any(predicate => predicate(delegateOutcome.Result)))
                 {
