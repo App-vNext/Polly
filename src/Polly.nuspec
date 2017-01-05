@@ -147,6 +147,7 @@
      - Allow arbitrary data to be passed to policy execution
    </releaseNotes>
     <dependencies>
+      <group targetFramework="net45"/>
       <group targetFramework="netstandard1.0">
         <dependency id="NETStandard.Library" version="1.6.0" />
       </group>
