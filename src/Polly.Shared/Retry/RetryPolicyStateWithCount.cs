@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 
 namespace Polly.Retry
 {
@@ -16,12 +17,7 @@ namespace Polly.Retry
             _context = context;
         }
 
-        public RetryPolicyStateWithCount(int retryCount, Action<DelegateResult<TResult>, int> onRetry) :
-            this(retryCount, (delegateResult, i, context) => onRetry(delegateResult, i), Context.Empty)
-        {
-        }
-
-        public bool CanRetry(DelegateResult<TResult> delegateResult)
+        public bool CanRetry(DelegateResult<TResult> delegateResult, CancellationToken cancellationToken)
         {
             _errorCount += 1;
 

@@ -4,15 +4,50 @@
     <owners>App vNext</owners>
     <authors>Michael Wolfenden, App vNext</authors>
     <description>
-      Polly is a .NET 3.5 / 4.0 / 4.5 / PCL library (Profile 259) that allows developers to express transient exception and fault handling policies such as Retry, Retry Forever, Wait and Retry or Circuit Breaker in a fluent manner.
+      Polly is a .NET 4.0 / 4.5 / .NET Standard 1.0 library that allows developers to express resilience and transient fault handling policies such as Retry, Circuit Breaker, Timeout, Bulkhead Isolation and Fallback in a fluent and thread-safe manner.
     </description>
     <language>en-US</language>
     <licenseUrl>https://raw.github.com/App-vNext/Polly/master/LICENSE.txt</licenseUrl>
     <iconUrl>https://raw.github.com/App-vNext/Polly/master/Polly.png</iconUrl>
     <projectUrl>https://github.com/App-vNext/Polly</projectUrl>
-    <tags>Exception Handling Policy Retry Wait Circuit Breaker</tags>
+    <tags>Exception Handling Resilience Transient Fault Policy Circuit Breaker CircuitBreaker Retry Wait Bulkhead Fallback Timeout Throttle Parallelization</tags>
     <copyright>Copyright © 2016, App vNext</copyright>
     <releaseNotes>
+     v5.0 is a major release with significant new resilience policies: Timeout; Bulkhead Isolation; Fallback; and PolicyWrap.  See release notes back to v5.0.0 for full details. 
+
+     5.0.3 RTM
+     ---------------------
+     - Refine implementation of cancellable synchronous WaitAndRetry
+     - Minor breaking change: Where a user delegate does not observe cancellation, Polly will now honour the delegate's outcome rather than throw for the unobserved cancellation (issue 188).
+
+     5.0.2 alpha
+     ---------------------
+     - .NETStandard1.0 target: Correctly state dependencies. 
+     - .NETStandard1.0 target: Fix SemVer stamping of Polly.dll.
+     - PCL259 project and target: Remove, in favour of .NETStandard1.0 target.  PCL259 targets are still supported, via .NETStandard1.0 target.
+     - Mark Polly.dll as CLSCompliant.
+     
+     5.0.1 alpha
+     ---------------------
+     - Add a .NETStandard1.0 target.
+
+     5.0.0 alpha
+     ---------------------
+     A major release, adding significant new resilience policies:
+     - Timeout policy: allows timing out any execution
+     - Bulkhead isolation policy: limits the resources consumable by governed actions, such that a faulting channel cannot cause cascading failures.
+     - Fallback policy: provides for a fallback execution or value, in case of overall failure
+     - PolicyWrap: allows flexibly combining Policy instances of any type, to form an overall resilience strategy.
+
+     Other changes include:
+     - Add PolicyKeys and context to all policy executions, for logging and to support later introduction of policy events and metrics. 
+     - Add CancellationToken support to synchronous executions.
+     - Add some missing ExecuteAndCapture/Async overloads. 
+     - Remove invalid ExecuteAsync overloads taking (but not making use of) a CancellationToken
+     - Provide .NET4.0 support uniquely through Polly.NET40Async package
+     - Retire ContextualPolicy (not part of documented API; support now in Policy base class)
+     - Discontinue .NET3.5 support
+
      4.3.0
      ---------------------
      - Added ability for policies to handle return results.  Optimised circuit-breaker hot path.  Fixed circuit-breaker threshold bug.  
@@ -112,22 +147,9 @@
      - Allow arbitrary data to be passed to policy execution
    </releaseNotes>
     <dependencies>
-      <group targetFramework="net" />
-      <group targetFramework="win" />
-      <group targetFramework="wp" />
-      <group targetFramework="wpa" />
-      <group targetFramework="MonoAndroid" />
-      <group targetFramework="MonoTouch" />
-      <group targetFramework="Xamarin.iOS" />
-      <group targetFramework="portable-net45+win8+wpa81+wp8" />
-      <group targetFramework="dotnet">
-        <dependency id="System.Reflection" version="4.0.0" />
-        <dependency id="System.Collections" version="4.0.0" />
-        <dependency id="System.Diagnostics.Debug" version="4.0.0" />
-        <dependency id="System.Linq" version="4.0.0" />
-        <dependency id="System.Runtime" version="4.0.0" />
-        <dependency id="System.Threading" version="4.0.0" />
-        <dependency id="System.Threading.Tasks" version="4.0.0" />
+      <group targetFramework="net45"/>
+      <group targetFramework="netstandard1.0">
+        <dependency id="NETStandard.Library" version="1.6.0" />
       </group>
     </dependencies>
   </metadata>

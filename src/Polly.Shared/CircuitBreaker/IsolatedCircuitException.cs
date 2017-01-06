@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
+#if !PORTABLE
 using System.Runtime.Serialization;
-using System.Text;
-using Polly.CircuitBreaker;
+#endif
 
 namespace Polly.CircuitBreaker
 {

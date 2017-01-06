@@ -1,5 +1,7 @@
 ﻿using System;
+#if !PORTABLE
 using System.Runtime.Serialization;
+#endif
 
 namespace Polly.CircuitBreaker
 {
@@ -9,7 +11,7 @@ namespace Polly.CircuitBreaker
 #if !PORTABLE
     [Serializable]
 #endif
-    public class BrokenCircuitException : Exception
+    public class BrokenCircuitException : ExecutionRejectedException
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="BrokenCircuitException"/> class.
@@ -52,7 +54,7 @@ namespace Polly.CircuitBreaker
     /// <summary>
     /// Exception thrown when a circuit is broken.
     /// </summary>
-    /// <typeparam name="TResult">The TResult type being handled by the policy.</typeparam>
+    /// <typeparam name="TResult">The type of returned results being handled by the policy.</typeparam>
 #if !PORTABLE
     [Serializable]
 #endif

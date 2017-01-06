@@ -1,18 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using Polly.Utilities;
+using System.Threading;
 
 namespace Polly.CircuitBreaker
 {
     /// <summary>
     /// A circuit-breaker policy that can be applied to delegates.
     /// </summary>
-    public partial class CircuitBreakerPolicy : ContextualPolicy
+    public partial class CircuitBreakerPolicy : Policy
     {
         private readonly ICircuitController<EmptyStruct> _breakerController;
 
         internal CircuitBreakerPolicy(
-            Action<Action, Context> exceptionPolicy, 
+            Action<Action<CancellationToken>, Context, CancellationToken> exceptionPolicy, 
             IEnumerable<ExceptionPredicate> exceptionPredicates,
             ICircuitController<EmptyStruct> breakerController
             ) : base(exceptionPolicy, exceptionPredicates)
@@ -56,12 +57,12 @@ namespace Polly.CircuitBreaker
     /// <summary>
     /// A circuit-breaker policy that can be applied to delegates returning a value of type <typeparam name="TResult"/>.
     /// </summary>
-    public partial class CircuitBreakerPolicy<TResult> : ContextualPolicy<TResult>
+    public partial class CircuitBreakerPolicy<TResult> : Policy<TResult>
     {
         private readonly ICircuitController<TResult> _breakerController;
 
         internal CircuitBreakerPolicy(
-            Func<Func<TResult>, Context, TResult> executionPolicy, 
+            Func<Func<CancellationToken, TResult>, Context, CancellationToken, TResult> executionPolicy, 
             IEnumerable<ExceptionPredicate> exceptionPredicates, 
             IEnumerable<ResultPredicate<TResult>> resultPredicates, 
             ICircuitController<TResult> breakerController

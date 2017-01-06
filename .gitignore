@@ -60,6 +60,9 @@ _ReSharper*
 *.ncrunch*
 .*crunch*.local.xml
 
+# GhostDoc
+*.GhostDoc.xml
+
 # Installshield output folder 
 [Ee]xpress
 

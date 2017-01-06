@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading;
+using Polly.Utilities;
 
 namespace Polly
 {
@@ -9,27 +11,19 @@ namespace Polly
     /// Transient exception handling policies that can
     /// be applied to delegates
     /// </summary>
-    public partial class Policy
+    public abstract partial class Policy
     {
-        private readonly Action<Action, Context> _exceptionPolicy;
+        private readonly Action<Action<CancellationToken>, Context, CancellationToken> _exceptionPolicy;
         private readonly IEnumerable<ExceptionPredicate> _exceptionPredicates;
 
         internal Policy(
-            Action<Action> exceptionPolicy, 
-            IEnumerable<ExceptionPredicate> exceptionPredicates
-            ) : this((action, ctx) => exceptionPolicy(action), exceptionPredicates)
-        {
-        }
-
-        internal Policy(
-            Action<Action, Context> exceptionPolicy, 
+            Action<Action<CancellationToken>, Context, CancellationToken> exceptionPolicy,
             IEnumerable<ExceptionPredicate> exceptionPredicates)
         {
-            if (exceptionPolicy == null) throw new ArgumentNullException("exceptionPolicy");
+            if (exceptionPolicy == null) throw new ArgumentNullException(nameof(exceptionPolicy));
 
             _exceptionPolicy = exceptionPolicy;
-            _exceptionPredicates = exceptionPredicates ?? Enumerable.Empty<ExceptionPredicate>();
-
+            _exceptionPredicates = exceptionPredicates ?? PredicateHelper.EmptyExceptionPredicates;
         }
 
         /// <summary>
@@ -39,23 +33,20 @@ namespace Polly
         [DebuggerStepThrough]
         public void Execute(Action action)
         {
-            Execute(action, Context.Empty);
+            Execute(ct => action(), new Context(), CancellationToken.None);
         }
-
+        
         /// <summary>
-        /// Executes the specified action within the policy.
+        /// 
         /// </summary>
-        /// <param name="action">The action to perform.</param>
-        /// <param name="context">Arbitrary data that is passed to the exception policy.</param>
+        /// <param name="action"></param>
+        /// <param name="cancellationToken"></param>
         [DebuggerStepThrough]
-        protected void Execute(Action action, Context context)
+        public void Execute(Action<CancellationToken> action, CancellationToken cancellationToken)
         {
-            if (_exceptionPolicy == null) throw new InvalidOperationException(
-                "Please use the synchronous Retry, RetryForever, WaitAndRetry or CircuitBreaker methods when calling the synchronous Execute method.");
-
-            _exceptionPolicy(action, context);
+            Execute(action, new Context(), cancellationToken);
         }
-
+        
         /// <summary>
         /// Executes the specified action within the policy and returns the captured result
         /// </summary>
@@ -64,50 +55,21 @@ namespace Polly
         [DebuggerStepThrough]
         public PolicyResult ExecuteAndCapture(Action action)
         {
-            return ExecuteAndCapture(action, Context.Empty);
+            return ExecuteAndCapture(ct => action(), new Context(), CancellationToken.None);
         }
 
         /// <summary>
         /// Executes the specified action within the policy and returns the captured result
         /// </summary>
         /// <param name="action">The action to perform.</param>
-        /// <param name="context">Arbitrary data that is passed to the exception policy.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>The captured result</returns>
         [DebuggerStepThrough]
-        protected PolicyResult ExecuteAndCapture(Action action, Context context)
+        public PolicyResult ExecuteAndCapture(Action<CancellationToken> action, CancellationToken cancellationToken)
         {
-            if (_exceptionPolicy == null) throw new InvalidOperationException(
-                "Please use the synchronous Retry, RetryForever, WaitAndRetry or CircuitBreaker methods when calling the synchronous ExecuteAndCapture method.");
-
-            try
-            {
-                _exceptionPolicy(action, context);
-                return PolicyResult.Successful();
-            }
-            catch (Exception exception)
-            {
-                return PolicyResult.Failure(exception, GetExceptionType(_exceptionPredicates, exception));
-            }
+            return ExecuteAndCapture(action, new Context(), cancellationToken);
         }
-
-        /// <summary>
-        /// Executes the specified action within the policy and returns the result.
-        /// </summary>
-        /// <typeparam name="TResult">The type of the result.</typeparam>
-        /// <param name="action">The action to perform.</param>
-        /// <param name="context">Arbitrary data that is passed to the exception policy.</param>
-        /// <returns>The value returned by the action</returns>
-        [DebuggerStepThrough]
-        protected TResult Execute<TResult>(Func<TResult> action, Context context)
-        {
-            if (_exceptionPolicy == null) throw new InvalidOperationException(
-                "Please use the synchronous Retry, RetryForever, WaitAndRetry or CircuitBreaker methods when calling the synchronous Execute method.");
-
-            var result = default(TResult);
-            _exceptionPolicy(() => { result = action(); }, context);
-            return result;
-        }
-
+        
         /// <summary>
         /// Executes the specified action within the policy and returns the Result.
         /// </summary>
@@ -117,9 +79,22 @@ namespace Polly
         [DebuggerStepThrough]
         public TResult Execute<TResult>(Func<TResult> action)
         {
-            return Execute(action, Context.Empty);
+            return Execute(ct => action(), new Context(), CancellationToken.None);
         }
 
+        /// <summary>
+        /// Executes the specified action within the policy and returns the result.
+        /// </summary>
+        /// <typeparam name="TResult">The type of the result.</typeparam>
+        /// <param name="action">The action to perform.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>The value returned by the action</returns>
+        [DebuggerStepThrough]
+        public TResult Execute<TResult>(Func<CancellationToken, TResult> action, CancellationToken cancellationToken)
+        {
+            return Execute(action, new Context(), cancellationToken);
+        }
+        
         /// <summary>
         /// Executes the specified action within the policy and returns the captured result
         /// </summary>
@@ -128,34 +103,21 @@ namespace Polly
         [DebuggerStepThrough]
         public PolicyResult<TResult> ExecuteAndCapture<TResult>(Func<TResult> action)
         {
-            return ExecuteAndCapture(action, Context.Empty);
+            return ExecuteAndCapture(ct => action(), new Context(), CancellationToken.None);
         }
 
         /// <summary>
-        /// Executes the specified action within the policy and returns the captured result.
+        /// Executes the specified action within the policy and returns the captured result
         /// </summary>
+        /// <typeparam name="TResult">The type of the t result.</typeparam>
         /// <param name="action">The action to perform.</param>
-        /// <param name="context">Arbitrary data that is passed to the exception policy.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>The captured result</returns>
-        [DebuggerStepThrough]
-        protected PolicyResult<TResult> ExecuteAndCapture<TResult>(Func<TResult> action, Context context)
+        public PolicyResult<TResult> ExecuteAndCapture<TResult>(Func<CancellationToken, TResult> action, CancellationToken cancellationToken)
         {
-
-            if (_exceptionPolicy == null) throw new InvalidOperationException(
-                "Please use the synchronous Retry, RetryForever, WaitAndRetry or CircuitBreaker methods when calling the synchronous ExecuteAndCapture method.");
-
-            try
-            {
-                var result = default(TResult);
-                _exceptionPolicy(() => { result = action(); }, context);
-                return PolicyResult<TResult>.Successful(result);
-            }
-            catch (Exception exception)
-            {
-                return PolicyResult<TResult>.Failure(exception, GetExceptionType(_exceptionPredicates, exception));
-            }
+            return ExecuteAndCapture(action, new Context(), cancellationToken);
         }
-
+        
         internal static ExceptionType GetExceptionType(IEnumerable<ExceptionPredicate> exceptionPredicates, Exception exception)
         {
             var isExceptionTypeHandledByThisPolicy = exceptionPredicates.Any(predicate => predicate(exception));
@@ -169,50 +131,23 @@ namespace Polly
     /// <summary>
     /// Transient fault handling policies that can be applied to delegates returning results of type <typeparam name="TResult"/>
     /// </summary>
-    public partial class Policy<TResult>
+    public partial class Policy<TResult> 
     {
-        private readonly Func<Func<TResult>, Context, TResult> _executionPolicy;
+        private readonly Func<Func<CancellationToken, TResult>, Context, CancellationToken, TResult> _executionPolicy;
         private readonly IEnumerable<ExceptionPredicate> _exceptionPredicates;
         private readonly IEnumerable<ResultPredicate<TResult>> _resultPredicates;
 
         internal Policy(
-            Func<Func<TResult>, TResult> executionPolicy,
-            IEnumerable<ExceptionPredicate> exceptionPredicates, 
-            IEnumerable<ResultPredicate<TResult>> resultPredicates
-            ) : this(
-                  (action, ctx) => executionPolicy(action), 
-                  exceptionPredicates, 
-                  resultPredicates
-                )
-        {
-        }
-
-        internal Policy(
-            Func<Func<TResult>, Context, TResult> executionPolicy, 
-            IEnumerable<ExceptionPredicate> exceptionPredicates, 
+            Func<Func<CancellationToken, TResult>, Context, CancellationToken, TResult> executionPolicy,
+            IEnumerable<ExceptionPredicate> exceptionPredicates,
             IEnumerable<ResultPredicate<TResult>> resultPredicates
             )
         {
             if (executionPolicy == null) throw new ArgumentNullException("executionPolicy");
 
             _executionPolicy = executionPolicy;
-            _exceptionPredicates = exceptionPredicates ?? Enumerable.Empty<ExceptionPredicate>();
-            _resultPredicates = resultPredicates ?? Enumerable.Empty<ResultPredicate<TResult>>();
-        }
-
-        /// <summary>
-        /// Executes the specified action within the policy and returns the result.
-        /// </summary>
-        /// <param name="action">The action to perform.</param>
-        /// <param name="context">Arbitrary data that is passed to the exception policy.</param>
-        /// <returns>The value returned by the action</returns>
-        [DebuggerStepThrough]
-        protected TResult Execute(Func<TResult> action, Context context)
-        {
-            if (_executionPolicy == null) throw new InvalidOperationException(
-                "Please use the synchronous Retry, RetryForever, WaitAndRetry or CircuitBreaker methods when calling the synchronous Execute method.");
-
-            return _executionPolicy(action, context);
+            _exceptionPredicates = exceptionPredicates ?? PredicateHelper.EmptyExceptionPredicates;
+            _resultPredicates = resultPredicates ?? PredicateHelper<TResult>.EmptyResultPredicates;
         }
 
         /// <summary>
@@ -223,7 +158,19 @@ namespace Polly
         [DebuggerStepThrough]
         public TResult Execute(Func<TResult> action)
         {
-            return Execute(action, Context.Empty);
+            return Execute(ct => action(), new Context(), CancellationToken.None);
+        }
+
+        /// <summary>
+        /// Executes the specified action within the policy and returns the result.
+        /// </summary>
+        /// <param name="action">The action to perform.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>The value returned by the action</returns>
+        [DebuggerStepThrough]
+        public TResult Execute(Func<CancellationToken, TResult> action, CancellationToken cancellationToken)
+        {
+            return Execute(action, new Context(), cancellationToken);
         }
 
         /// <summary>
@@ -234,39 +181,27 @@ namespace Polly
         [DebuggerStepThrough]
         public PolicyResult<TResult> ExecuteAndCapture(Func<TResult> action)
         {
-            return ExecuteAndCapture(action, Context.Empty);
+            return ExecuteAndCapture(ct => action(), new Context(), CancellationToken.None);
         }
 
         /// <summary>
-        /// Executes the specified action within the policy and returns the captured result.
+        /// Executes the specified action within the policy and returns the captured result
         /// </summary>
         /// <param name="action">The action to perform.</param>
-        /// <param name="context">Arbitrary data that is passed to the exception policy.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>The captured result</returns>
         [DebuggerStepThrough]
-        protected PolicyResult<TResult> ExecuteAndCapture(Func<TResult> action, Context context)
+        public PolicyResult<TResult> ExecuteAndCapture(Func<CancellationToken, TResult> action, CancellationToken cancellationToken)
         {
-
-            if (_executionPolicy == null) throw new InvalidOperationException(
-                "Please use the synchronous Retry, RetryForever, WaitAndRetry or CircuitBreaker methods when calling the synchronous ExecuteAndCapture method.");
-
-            try
-            {
-                TResult result = _executionPolicy(action, context);
-
-                if (_resultPredicates.Any(predicate => predicate(result)))
-                {
-                    return PolicyResult<TResult>.Failure(result);
-                }
-
-                return PolicyResult<TResult>.Successful(result);
-            }
-            catch (Exception exception)
-            {
-                return PolicyResult<TResult>.Failure(exception, GetExceptionType(_exceptionPredicates, exception));
-            }
+            return ExecuteAndCapture(action, new Context(), cancellationToken);
         }
 
+        /// <summary>
+        /// Gets the exception type
+        /// </summary>
+        /// <param name="exceptionPredicates"></param>
+        /// <param name="exception"></param>
+        /// <returns></returns>
         internal static ExceptionType GetExceptionType(IEnumerable<ExceptionPredicate> exceptionPredicates, Exception exception)
         {
             return Policy.GetExceptionType(exceptionPredicates, exception);

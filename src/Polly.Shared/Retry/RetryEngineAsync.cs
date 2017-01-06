@@ -1,4 +1,4 @@
-﻿#if SUPPORTS_ASYNC
+﻿
 
 using System;
 using System.Collections.Generic;
@@ -29,12 +29,14 @@ namespace Polly.Retry
                 {
                     DelegateResult<TResult> delegateOutcome = new DelegateResult<TResult>(await action(cancellationToken).ConfigureAwait(continueOnCapturedContext));
 
-                    cancellationToken.ThrowIfCancellationRequested();
+                    //cancellationToken.ThrowIfCancellationRequested();
 
                     if (!shouldRetryResultPredicates.Any(predicate => predicate(delegateOutcome.Result)))
                     {
                         return delegateOutcome.Result;
                     }
+
+                    //cancellationToken.ThrowIfCancellationRequested();
 
                     if (!await policyState
                         .CanRetryAsync(delegateOutcome, cancellationToken, continueOnCapturedContext)
@@ -45,14 +47,14 @@ namespace Polly.Retry
                 }
                 catch (Exception ex)
                 {
-                    if (cancellationToken.IsCancellationRequested)
-                    {
-                        if (ex is OperationCanceledException && ((OperationCanceledException)ex).CancellationToken == cancellationToken)
-                        {
-                            throw;
-                        }
-                        cancellationToken.ThrowIfCancellationRequested();
-                    }
+                    //if (cancellationToken.IsCancellationRequested)
+                    //{
+                    //    if (ex is OperationCanceledException && ((OperationCanceledException)ex).CancellationToken == cancellationToken)
+                    //    {
+                    //        throw;
+                    //    }
+                    //    cancellationToken.ThrowIfCancellationRequested();
+                    //}
 
                     if (!shouldRetryExceptionPredicates.Any(predicate => predicate(ex)))
                     {
@@ -71,4 +73,4 @@ namespace Polly.Retry
     }
 }
 
-#endif
+
