@@ -1,7 +1,6 @@
 ﻿using System;
-using Polly.CircuitBreaker;
 
-namespace Polly.Shared.CircuitBreaker
+namespace Polly.CircuitBreaker
 {
     /// <summary>
     /// Common interface for CB policies allowing users of the library to 

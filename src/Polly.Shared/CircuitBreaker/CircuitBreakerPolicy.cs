@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Polly.Shared.CircuitBreaker;
 using Polly.Utilities;
 using System.Threading;
 
