@@ -114,7 +114,7 @@ namespace Polly.CircuitBreaker
         protected void ResetInternal_NeedsLock(Context context)
         {
             _blockedTill = DateTime.MinValue;
-            _lastOutcome = new DelegateResult<TResult>(new InvalidOperationException("This exception should never be thrown"));
+            _lastOutcome = new DelegateResult<TResult>(default(TResult));
 
             CircuitState priorState = _circuitState;
             _circuitState = CircuitState.Closed;
