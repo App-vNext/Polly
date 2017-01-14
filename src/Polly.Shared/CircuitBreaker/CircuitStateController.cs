@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics.Contracts;
 using Polly.Utilities;
 
 namespace Polly.CircuitBreaker
