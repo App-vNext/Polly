@@ -15,6 +15,10 @@
     <releaseNotes>
      v5.0 is a major release with significant new resilience policies: Timeout; Bulkhead Isolation; Fallback; and PolicyWrap.  See release notes back to v5.0.0 for full details. 
 
+     5.0.4 pre
+     ---------------------
+     - (.NET40Async package changes only)
+
      5.0.3 RTM
      ---------------------
      - Refine implementation of cancellable synchronous WaitAndRetry
