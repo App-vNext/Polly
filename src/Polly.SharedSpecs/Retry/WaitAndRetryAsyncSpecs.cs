@@ -886,7 +886,7 @@ namespace Polly.Specs.Retry
 
             SystemClock.SleepAsync = Task.Delay;
 
-            TimeSpan shimTimeSpan = TimeSpan.FromSeconds(0.4); // Consider increasing shimTimeSpan if test fails transiently in different environments.
+            TimeSpan shimTimeSpan = TimeSpan.FromSeconds(1); // Consider increasing shimTimeSpan if test fails transiently in different environments.
             TimeSpan retryDelay = shimTimeSpan + shimTimeSpan + shimTimeSpan;
 
             var policy = Policy
