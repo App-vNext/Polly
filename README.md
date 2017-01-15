@@ -673,7 +673,10 @@ Async continuations and retries by default do not run on a captured synchronizat
 
 Async policy execution supports cancellation via `.ExecuteAsync(...)` overloads taking a `CancellationToken`.  
 
-Cancellation cancels Policy actions such as further retries and waits between retries.  The delegate taken by the relevant `.ExecuteAsync(...)` overloads also takes a cancellation token input parameter, to support cancellation during delegate execution.  
+The token you pass as the `cancellationToken` parameter to the `ExecuteAsync(...)` call serves two purposes:
+
++ It cancels Policy actions such as further retries, waits between retries or waits for a bulkhead execution slot.
++ It is passed by the policy as the `CancellationToken` input parameter to any delegate executed through the policy, to support cancellation during delegate execution.  
 
 ```csharp
 // Try several times to retrieve from a uri, but support cancellation at any time.
