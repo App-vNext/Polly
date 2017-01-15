@@ -15,6 +15,10 @@
     <releaseNotes>
      v5.0 is a major release with significant new resilience policies: Timeout; Bulkhead Isolation; Fallback; and PolicyWrap.  See release notes back to v5.0.0 for full details.
 
+     5.0.4 pre
+     ---------------------
+     - Fix Microsoft.Bcl and Nito.AsyncEx dependencies for Polly.Net40Async. 
+
      5.0.3 RTM
      ---------------------
      - Refine implementation of cancellable synchronous WaitAndRetry
@@ -65,6 +69,8 @@
     <dependencies>
       <group targetFramework="net40">
         <dependency id="Microsoft.Bcl.Async" version="1.0.168" />
+        <dependency id="Microsoft.Bcl" version="1.1.10" />
+        <dependency id="Microsoft.Bcl.Build" version="1.0.21" />
         <dependency id="Nito.AsyncEx" version="3.0.1" />
       </group>
     </dependencies>

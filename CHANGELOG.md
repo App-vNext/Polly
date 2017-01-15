@@ -1,3 +1,6 @@
+## 5.0.4 pre
+- Fix Microsoft.Bcl and Nito.AsyncEx dependencies for Polly.Net40Async. 
+     
 ## 5.0.3 RTM
 - Refine implementation of cancellable synchronous WaitAndRetry
 - Minor breaking change: Where a user delegate does not observe cancellation, Polly will now honour the delegate's outcome rather than throw for the unobserved cancellation (issue 188).
