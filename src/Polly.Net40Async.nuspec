@@ -65,7 +65,7 @@
     <dependencies>
       <group targetFramework="net40">
         <dependency id="Microsoft.Bcl.Async" version="1.0.168" />
-        <dependency id="Nito.Async" version="3.0.1" />
+        <dependency id="Nito.AsyncEx" version="3.0.1" />
       </group>
     </dependencies>
   </metadata>
