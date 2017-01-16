@@ -166,12 +166,12 @@ namespace Polly.Specs.Timeout
             TimeSpan timeout = TimeSpan.FromSeconds(1);
             var policy = Policy.Timeout<ResultPrimitive>(timeout, TimeoutStrategy.Pessimistic);
 
-            TimeSpan tolerance = TimeSpan.FromSeconds(2); // Consider increasing tolerance, if test fails transiently in different test/build environments.
+            TimeSpan tolerance = TimeSpan.FromSeconds(3); // Consider increasing tolerance, if test fails transiently in different test/build environments.
 
             watch.Start();
             policy.Invoking(p => p.Execute(() =>
             {
-                SystemClock.Sleep(TimeSpan.FromSeconds(5), CancellationToken.None);
+                SystemClock.Sleep(TimeSpan.FromSeconds(10), CancellationToken.None);
                 return ResultPrimitive.WhateverButTooLate;
             }))
                 .ShouldThrow<TimeoutRejectedException>();
@@ -222,12 +222,12 @@ namespace Polly.Specs.Timeout
             var policy = Policy.Timeout<ResultPrimitive>(timeout, TimeoutStrategy.Optimistic);
             var userCancellationToken = CancellationToken.None;
 
-            TimeSpan tolerance = TimeSpan.FromSeconds(1); // Consider increasing tolerance, if test fails transiently in different test/build environments.
+            TimeSpan tolerance = TimeSpan.FromSeconds(3); // Consider increasing tolerance, if test fails transiently in different test/build environments.
 
             watch.Start();
             policy.Invoking(p => p.Execute(ct =>
             {
-                SystemClock.Sleep(TimeSpan.FromSeconds(5), ct);
+                SystemClock.Sleep(TimeSpan.FromSeconds(10), ct);
                 return ResultPrimitive.WhateverButTooLate;
             }, userCancellationToken))
                 .ShouldThrow<TimeoutRejectedException>();
@@ -248,14 +248,14 @@ namespace Polly.Specs.Timeout
             int timeout = 5;
             var policy = Policy.Timeout<ResultPrimitive>(timeout, TimeoutStrategy.Pessimistic);
 
-            TimeSpan tolerance = TimeSpan.FromSeconds(1); // Consider increasing tolerance, if test fails transiently in different test/build environments.
+            TimeSpan tolerance = TimeSpan.FromSeconds(3); // Consider increasing tolerance, if test fails transiently in different test/build environments.
 
             TimeSpan userTokenExpiry = TimeSpan.FromSeconds(1); // Use of time-based token irrelevant to timeout policy; we just need some user token that cancels independently of policy's internal token.
             using (CancellationTokenSource userTokenSource = new CancellationTokenSource(userTokenExpiry))
             {
                 watch.Start();
                 policy.Invoking(p => p.Execute(
-                    _ => { SystemClock.Sleep(TimeSpan.FromSeconds(timeout + 2), CancellationToken.None); // Do not observe any cancellation in the middle of execution
+                    _ => { SystemClock.Sleep(TimeSpan.FromSeconds(timeout * 2), CancellationToken.None); // Do not observe any cancellation in the middle of execution
                         return ResultPrimitive.WhateverButTooLate;
                     }, userTokenSource.Token) // ... with user token.
                    ).ShouldThrow<TimeoutRejectedException>();
@@ -300,7 +300,7 @@ namespace Polly.Specs.Timeout
             int timeout = 10;
             var policy = Policy.Timeout<ResultPrimitive>(timeout, TimeoutStrategy.Optimistic);
 
-            TimeSpan tolerance = TimeSpan.FromSeconds(1); // Consider increasing tolerance, if test fails transiently in different test/build environments.
+            TimeSpan tolerance = TimeSpan.FromSeconds(3); // Consider increasing tolerance, if test fails transiently in different test/build environments.
 
             TimeSpan userTokenExpiry = TimeSpan.FromSeconds(1); // Use of time-based token irrelevant to timeout policy; we just need some user token that cancels independently of policy's internal token.
             using (CancellationTokenSource userTokenSource = new CancellationTokenSource(userTokenExpiry))
@@ -308,7 +308,7 @@ namespace Polly.Specs.Timeout
                 watch.Start();
                 policy.Invoking(p => p.Execute(
                     ct => {
-                        SystemClock.Sleep(TimeSpan.FromSeconds(timeout + 2), ct);  // Simulate cancel in the middle of execution
+                        SystemClock.Sleep(TimeSpan.FromSeconds(timeout), ct);  // Simulate cancel in the middle of execution
                         return ResultPrimitive.WhateverButTooLate;
                     }, userTokenSource.Token) // ... with user token.
                    ).ShouldThrow<OperationCanceledException>();
