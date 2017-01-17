@@ -16,7 +16,7 @@ namespace Polly.Specs.NoOp
         {
             var policy = Policy.NoOp();
 
-            policy.Invoking(x => x.Execute(() => { var y = 1; }))
+            policy.Invoking(x => x.Execute(() => { /* do nothing */ }))
                 .ShouldNotThrow();
         }
 

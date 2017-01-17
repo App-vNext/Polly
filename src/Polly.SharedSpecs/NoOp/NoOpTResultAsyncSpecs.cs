@@ -17,7 +17,7 @@ namespace Polly.Specs.NoOp
         {
             var policy = Policy.NoOpAsync<int>();
 
-            policy.Awaiting(async p => await p.ExecuteAsync(async () => await Task.FromResult(10)))
+            policy.Awaiting(async p => await p.ExecuteAsync(() => Task.FromResult(10)))
                 .ShouldNotThrow();
         }
 
