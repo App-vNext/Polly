@@ -9,7 +9,7 @@ using Polly.Utilities;
 namespace Polly.Shared.NoOp
 {
     /// <summary>
-    /// 
+    /// An async no op policy that can be applied to delegates.
     /// </summary>
     public partial class NoOpPolicy
     {
@@ -19,6 +19,10 @@ namespace Polly.Shared.NoOp
         }
     }
 
+    /// <summary>
+    /// An async no op policy that can be applied to delegates returning a value of type <typeparamref name="TResult" />.
+    /// </summary>
+    /// <typeparam name="TResult"></typeparam>
     public partial class NoOpPolicy<TResult>
     {
         internal NoOpPolicy(

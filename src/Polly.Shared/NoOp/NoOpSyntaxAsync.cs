@@ -7,14 +7,14 @@ using Polly.Utilities;
 namespace Polly
 {
     /// <summary>
-    /// 
+    /// Fluent API for defining a NoOp <see cref="Policy"/>.
     /// </summary>
     public partial class Policy
     {
         /// <summary>
-        /// 
+        /// Builds a NoOp <see cref="Policy"/> that will execute without any custom behavior.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>The policy instance.</returns>
         public static NoOpPolicy NoOpAsync()
         {
             return new NoOpPolicy(
