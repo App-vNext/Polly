@@ -86,7 +86,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Polly.Net40Async\Polly.Net40Async.csproj">
-      <Project>{29265540-f724-4324-9321-643a0fcb133f}</Project>
+      <Project>{D6A676C2-982D-42D1-AD21-FA53582A1C31}</Project>
       <Name>Polly.Net40Async</Name>
     </ProjectReference>
   </ItemGroup>
