@@ -1,3 +1,6 @@
+## 5.0.5 pre
+- Bug fix: Prevent request stampede during half-open state of CircuitBreaker and AdvancedCircuitBreaker.  Enforce only one new trial call, after transition to half-open state.
+
 ## 5.0.4 pre
 - Fix Microsoft.Bcl and Nito.AsyncEx dependencies for Polly.Net40Async. 
      
