@@ -55,7 +55,7 @@ namespace Polly.CircuitBreaker
     }
 
     /// <summary>
-    /// A circuit-breaker policy that can be applied to delegates returning a value of type <typeparam name="TResult"/>.
+    /// A circuit-breaker policy that can be applied to delegates returning a value of type <typeparamref name="TResult"/>.
     /// </summary>
     public partial class CircuitBreakerPolicy<TResult> : Policy<TResult>
     {
