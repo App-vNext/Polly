@@ -397,8 +397,47 @@ namespace Polly.Specs.CircuitBreaker
             breaker._breakerController.Invoking(c => c.OnActionPreExecute()).ShouldNotThrow();
             breaker.CircuitState.Should().Be(CircuitState.HalfOpen);
 
-            // OnActionPreExecute() should reject a second execution..
+            // OnActionPreExecute() should reject a second execution.
             breaker._breakerController.Invoking(c => c.OnActionPreExecute()).ShouldThrow<BrokenCircuitException>();
+            breaker.CircuitState.Should().Be(CircuitState.HalfOpen);
+        }
+
+        [Fact]
+        public void Should_allow_single_execution_per_break_duration_in_halfopen_state__test_execution_permit_directly()
+        {
+            var time = 1.January(2000);
+            SystemClock.UtcNow = () => time;
+
+            var durationOfBreak = TimeSpan.FromMinutes(1);
+            CircuitBreakerPolicy<ResultPrimitive> breaker = Policy
+                .HandleResult(ResultPrimitive.Fault)
+                .CircuitBreaker(1, durationOfBreak);
+
+            breaker.RaiseResultSequence(ResultPrimitive.Fault)
+                .Should().Be(ResultPrimitive.Fault);
+
+            // exception raised, circuit is now open.  
+            breaker.CircuitState.Should().Be(CircuitState.Open);
+
+            // break duration passes, circuit now half open
+            SystemClock.UtcNow = () => time.Add(durationOfBreak);
+            breaker.CircuitState.Should().Be(CircuitState.HalfOpen);
+
+
+            // OnActionPreExecute() should permit first execution.
+            breaker._breakerController.Invoking(c => c.OnActionPreExecute()).ShouldNotThrow();
+            breaker.CircuitState.Should().Be(CircuitState.HalfOpen);
+
+            // OnActionPreExecute() should reject a second execution.
+            breaker._breakerController.Invoking(c => c.OnActionPreExecute()).ShouldThrow<BrokenCircuitException>();
+            breaker.CircuitState.Should().Be(CircuitState.HalfOpen);
+
+            // Allow another time window to pass (breaker should still be HalfOpen).
+            SystemClock.UtcNow = () => time.Add(durationOfBreak).Add(durationOfBreak);
+            breaker.CircuitState.Should().Be(CircuitState.HalfOpen);
+
+            // OnActionPreExecute() should now permit another trial execution.
+            breaker._breakerController.Invoking(c => c.OnActionPreExecute()).ShouldNotThrow();
             breaker.CircuitState.Should().Be(CircuitState.HalfOpen);
         }
 
@@ -499,6 +538,107 @@ namespace Polly.Specs.CircuitBreaker
             firstDelegateExecutedInHalfOpenState.Should().BeTrue();
             secondDelegateExecutedInHalfOpenState.Should().BeFalse();
             secondDelegateRejectedInHalfOpenState.Should().BeTrue();
+        }
+
+        [Fact]
+        public void Should_allow_single_execution_per_break_duration_in_halfopen_state__integration_test()
+        {
+            var time = 1.January(2000);
+            SystemClock.UtcNow = () => time;
+
+            var durationOfBreak = TimeSpan.FromMinutes(1);
+            CircuitBreakerPolicy<ResultPrimitive> breaker = Policy
+                .HandleResult(ResultPrimitive.Fault)
+                .CircuitBreaker(1, durationOfBreak);
+
+            breaker.RaiseResultSequence(ResultPrimitive.Fault)
+                  .Should().Be(ResultPrimitive.Fault);
+
+            // exception raised, circuit is now open.  
+            breaker.CircuitState.Should().Be(CircuitState.Open);
+
+            // break duration passes, circuit now half open
+            SystemClock.UtcNow = () => time.Add(durationOfBreak);
+            breaker.CircuitState.Should().Be(CircuitState.HalfOpen);
+
+            // Start one execution during the HalfOpen state.
+            // Request a second execution while the first is still in flight (not completed), while still during the HalfOpen state, but after one breakDuration later.
+            // The second execution should be accepted in the halfopen state due to being requested after one breakDuration later.
+
+            TimeSpan testTimeoutToExposeDeadlocks = TimeSpan.FromSeconds(5);
+            ManualResetEvent permitSecondExecutionAttempt = new ManualResetEvent(false);
+            ManualResetEvent permitFirstExecutionEnd = new ManualResetEvent(false);
+
+            bool? firstDelegateExecutedInHalfOpenState = null;
+            bool? secondDelegateExecutedInHalfOpenState = null;
+            bool? secondDelegateRejectedInHalfOpenState = null;
+
+            bool firstExecutionActive = false;
+            // First execution in HalfOpen state: we should be able to verify state is HalfOpen as it executes.
+            Task firstExecution = Task.Run(() =>
+            {
+                breaker.Invoking(x => x.Execute(() =>
+                {
+                    firstDelegateExecutedInHalfOpenState = breaker.CircuitState == CircuitState.HalfOpen; // For readability of test results, we assert on this at test end rather than nested in Task and breaker here.
+
+                    // Signal the second execution can start, overlapping with this (the first) execution.
+                    firstExecutionActive = true;
+                    permitSecondExecutionAttempt.Set();
+
+                    // Hold first execution open until second indicates it is no longer needed, or time out.
+                    permitFirstExecutionEnd.WaitOne(testTimeoutToExposeDeadlocks);
+                    firstExecutionActive = false;
+
+                    return ResultPrimitive.Good;
+                })).ShouldNotThrow();
+            });
+
+            // Attempt a second execution, signalled by the first execution to ensure they overlap; start it one breakDuration later.  We should be able to verify it does execute, though the breaker is still in a HalfOpen state.
+            permitSecondExecutionAttempt.WaitOne(testTimeoutToExposeDeadlocks);
+
+            Task secondExecution = Task.Run(() =>
+            {
+                // Validation of correct sequencing and overlapping of tasks in test (guard against erroneous test refactorings/operation).
+                firstExecutionActive.Should().BeTrue();
+                breaker.CircuitState.Should().Be(CircuitState.HalfOpen);
+
+                try
+                {
+                    SystemClock.UtcNow = () => time.Add(durationOfBreak).Add(durationOfBreak);
+
+                    breaker.Execute(() =>
+                    {
+                        secondDelegateRejectedInHalfOpenState = false;
+                        secondDelegateExecutedInHalfOpenState = breaker.CircuitState == CircuitState.HalfOpen; // For readability of test results, we assert on this at test end rather than nested in Task and breaker here.
+
+                        return ResultPrimitive.Good;
+                    });
+                }
+                catch (BrokenCircuitException)
+                {
+                    secondDelegateExecutedInHalfOpenState = false;
+                    secondDelegateRejectedInHalfOpenState = breaker.CircuitState == CircuitState.HalfOpen; // For readability of test results, we assert on this at test end rather than nested here.
+                }
+
+                // Release first execution soon as second overlapping execution is done gathering data.
+                permitFirstExecutionEnd.Set();
+            });
+
+            // Graceful cleanup: allow executions time to end naturally; signal them to end if not; timeout any deadlocks; expose any execution faults. 
+            permitFirstExecutionEnd.WaitOne(testTimeoutToExposeDeadlocks);
+            permitFirstExecutionEnd.Set();
+            Task.WaitAll(new[] { firstExecution, secondExecution }, testTimeoutToExposeDeadlocks).Should().BeTrue();
+            if (firstExecution.IsFaulted) throw firstExecution.Exception;
+            if (secondExecution.IsFaulted) throw secondExecution.Exception;
+            firstExecution.Status.Should().Be(TaskStatus.RanToCompletion);
+            secondExecution.Status.Should().Be(TaskStatus.RanToCompletion);
+
+            // Assert: 
+            // - First execution should have been permitted and executed under a HalfOpen state
+            // - Second overlapping execution in halfopen state should have been permitted, one breakDuration later.
+            firstDelegateExecutedInHalfOpenState.Should().BeTrue();
+            secondDelegateExecutedInHalfOpenState.Should().BeTrue();
+            secondDelegateRejectedInHalfOpenState.Should().BeFalse();
         }
 
         #endregion
