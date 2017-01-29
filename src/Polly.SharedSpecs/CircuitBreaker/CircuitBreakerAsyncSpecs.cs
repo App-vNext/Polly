@@ -459,7 +459,7 @@ namespace Polly.Specs.CircuitBreaker
                 permitFirstExecutionEnd.Set();
             });
 
-            // Graceful cleanup: allow executions time to end naturally; signal them to end if not; timeout any deadlocks; expose any execution faults. 
+            // Graceful cleanup: allow executions time to end naturally; signal them to end if not; timeout any deadlocks; expose any execution faults. This validates the test ran as expected (and background delegates are complete) before we assert on outcomes.
             permitFirstExecutionEnd.WaitOne(testTimeoutToExposeDeadlocks);
             permitFirstExecutionEnd.Set();
             Task.WaitAll(new[] { firstExecution, secondExecution }, testTimeoutToExposeDeadlocks).Should().BeTrue();
@@ -560,7 +560,7 @@ namespace Polly.Specs.CircuitBreaker
                 permitFirstExecutionEnd.Set();
             });
 
-            // Graceful cleanup: allow executions time to end naturally; signal them to end if not; timeout any deadlocks; expose any execution faults. 
+            // Graceful cleanup: allow executions time to end naturally; signal them to end if not; timeout any deadlocks; expose any execution faults. This validates the test ran as expected (and background delegates are complete) before we assert on outcomes.
             permitFirstExecutionEnd.WaitOne(testTimeoutToExposeDeadlocks);
             permitFirstExecutionEnd.Set();
             Task.WaitAll(new[] { firstExecution, secondExecution }, testTimeoutToExposeDeadlocks).Should().BeTrue();
@@ -746,7 +746,7 @@ namespace Polly.Specs.CircuitBreaker
         }
 
         [Fact]
-        public void Should_call_onbreak_when_breaking_circuit_first_time_but_not_for_subsequent_calls_through_open_circuit()
+        public void Should_call_onbreak_when_breaking_circuit_first_time_but_not_for_subsequent_calls_placed_through_open_circuit()
         {
             int onBreakCalled = 0;
             Action<Exception, TimeSpan> onBreak = (_, __) => { onBreakCalled++; };
@@ -772,6 +772,65 @@ namespace Polly.Specs.CircuitBreaker
             breaker.Awaiting(async x => await x.RaiseExceptionAsync<DivideByZeroException>())
                   .ShouldThrow<BrokenCircuitException>();
 
+            breaker.CircuitState.Should().Be(CircuitState.Open);
+            onBreakCalled.Should().Be(1);
+        }
+
+        [Fact]
+        public void Should_call_onbreak_when_breaking_circuit_first_time_but_not_for_subsequent_call_failure_which_arrives_on_open_state_though_started_on_closed_state()
+        {
+            int onBreakCalled = 0;
+            Action<Exception, TimeSpan> onBreak = (_, __) => { onBreakCalled++; };
+            Action onReset = () => { };
+
+            CircuitBreakerPolicy breaker = Policy
+                            .Handle<DivideByZeroException>()
+                            .CircuitBreakerAsync(1, TimeSpan.FromMinutes(1), onBreak, onReset);
+
+            // Start an execution when the breaker is in the closed state, but hold it from returning (its failure) until the breaker has opened.  This call, a failure hitting an already open breaker, should indicate its fail, but should not cause onBreak() to be called a second time.
+            TimeSpan testTimeoutToExposeDeadlocks = TimeSpan.FromSeconds(5);
+            ManualResetEvent permitLongRunningExecutionToReturnItsFailure = new ManualResetEvent(false);
+            ManualResetEvent permitMainThreadToOpenCircuit = new ManualResetEvent(false);
+
+            Task longRunningExecution = Task.Run(() =>
+            {
+                breaker.CircuitState.Should().Be(CircuitState.Closed);
+
+                breaker.Awaiting(x => x.ExecuteAsync(async () =>
+                {
+                    await TaskHelper.EmptyTask;
+
+                    permitMainThreadToOpenCircuit.Set();
+
+                    // Hold this execution until rest of the test indicates it can proceed (or timeout, to expose deadlocks).
+                    permitLongRunningExecutionToReturnItsFailure.WaitOne(testTimeoutToExposeDeadlocks);
+
+                    // Throw a further failure when rest of test has already broken the circuit.
+                    breaker.CircuitState.Should().Be(CircuitState.Open);
+                    throw new DivideByZeroException();
+
+                })).ShouldThrow<DivideByZeroException>(); // However, since execution started when circuit was closed, BrokenCircuitException will not have been thrown on entry; the original exception will still be thrown.
+            });
+
+            permitMainThreadToOpenCircuit.WaitOne(testTimeoutToExposeDeadlocks).Should().BeTrue();
+
+            // Break circuit in the normal manner: onBreak() should be called once.
+            breaker.CircuitState.Should().Be(CircuitState.Closed);
+            onBreakCalled.Should().Be(0);
+            breaker.Awaiting(async x => await x.RaiseExceptionAsync<DivideByZeroException>())
+                  .ShouldThrow<DivideByZeroException>();
+            breaker.CircuitState.Should().Be(CircuitState.Open);
+            onBreakCalled.Should().Be(1);
+
+            // Permit the second (long-running) execution to hit the open circuit with its failure.
+            permitLongRunningExecutionToReturnItsFailure.Set();
+
+            // Graceful cleanup: allow executions time to end naturally; timeout if any deadlocks; expose any execution faults.  This validates the test ran as expected (and background delegates are complete) before we assert on outcomes.
+            longRunningExecution.Wait(testTimeoutToExposeDeadlocks).Should().BeTrue();
+            if (longRunningExecution.IsFaulted) throw longRunningExecution.Exception;
+            longRunningExecution.Status.Should().Be(TaskStatus.RanToCompletion);
+
+            // onBreak() should still only have been called once.
             breaker.CircuitState.Should().Be(CircuitState.Open);
             onBreakCalled.Should().Be(1);
         }

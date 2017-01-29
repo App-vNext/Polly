@@ -771,10 +771,10 @@ For `CircuitBreakerPolicy<TResult>` policies:
 
 # Acknowledgements
 
-* [lokad-shared-libraries](https://github.com/Lokad/lokad-shared-libraries) - Helper assemblies for .NET 3.5 and Silverlight 2.0 that are being developed as part of the Open Source effort by Lokad.com (discontinued) | [New BSD License](https://raw.github.com/Lokad/lokad-shared-libraries/master/Lokad.Shared.License.txt)
+* [lokad-shared-libraries](https://github.com/Lokad/lokad-shared-libraries) - Helper assemblies originally for .NET 3.5 and Silverlight 2.0 which were developed as part of the Open Source effort by Lokad.com (discontinued) | [New BSD License](https://raw.github.com/Lokad/lokad-shared-libraries/master/Lokad.Shared.License.txt)
 * [@michael-wolfenden](https://github.com/michael-wolfenden) - The creator and mastermind of Polly!
 * [@ghuntley](https://github.com/ghuntley) - Portable Class Library implementation.
-* [@mauricedb](https://github.com/mauricedb) - Async implementation.
+* [@mauricedb](https://github.com/mauricedb) - Initial async implementation.
 * [@robgibbens](https://github.com/RobGibbens) - Added existing async files to PCL project
 * [Hacko](https://github.com/hacko-bede) - Added extra `NotOnCapturedContext` call to prevent potential deadlocks when blocking on asynchronous calls
 * [@ThomasMentzel](https://github.com/ThomasMentzel) - Added ability to capture the results of executing a policy via `ExecuteAndCapture`
@@ -799,6 +799,7 @@ For `CircuitBreakerPolicy<TResult>` policies:
 * [@reisenberger](https://github.com/reisenberger),  and contributions from [@brunolauze](https://github.com/brunolauze) -  Add Bulkhead Isolation policy.  
 * [@reisenberger](https://github.com/reisenberger) - Add Timeout policy.
 * [@reisenberger](https://github.com/reisenberger) - Fix .NETStandard 1.0 targeting.  Remove PCL259 target.  PCL259 support is provided via .NETStandard1.0 target, going forward.
+* [@reisenberger](https://github.com/reisenberger) - Fix CircuitBreaker HalfOpen state and cases when breakDuration is shorter than typical call timeout.  Thanks to [@vgouw](https://github.com/vgouw) and [@kharos](https://github.com/kharos) for the reports and insightful thinking.
 
 
 # Sample Projects
