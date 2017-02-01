@@ -31,6 +31,7 @@ namespace Polly.CircuitBreaker
 
         /// <summary>
         /// Gets the last exception handled by the circuit-breaker.
+        /// <remarks>This will be null if no exceptions have been handled by the circuit-breaker since the circuit last closed.</remarks>
         /// </summary>
         public Exception LastException
         {
@@ -81,6 +82,7 @@ namespace Polly.CircuitBreaker
 
         /// <summary>
         /// Gets the last exception handled by the circuit-breaker.
+        /// <remarks>This will be null if no exceptions have been handled by the circuit-breaker since the circuit last closed, or if the last event handled by the circuit was a handled <typeparamref name="TResult"/> value.</remarks>
         /// </summary>
         public Exception LastException
         {
@@ -89,6 +91,7 @@ namespace Polly.CircuitBreaker
 
         /// <summary>
         /// Gets the last result returned from a user delegate which the circuit-breaker handled.
+        /// <remarks>This will be default(<typeparamref name="TResult"/>) if no results have been handled by the circuit-breaker since the circuit last closed, or if the last event handled by the circuit was an exception.</remarks>
         /// </summary>
         public TResult LastHandledResult
         {
