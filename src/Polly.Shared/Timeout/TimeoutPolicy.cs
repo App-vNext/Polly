@@ -19,7 +19,7 @@ namespace Polly.Timeout
     }
 
     /// <summary>
-    /// A timeout policy which can be applied to delegates returning a value of type <typeparam name="TResult"/>.
+    /// A timeout policy which can be applied to delegates returning a value of type <typeparamref name="TResult"/>.
     /// </summary>
     public partial class TimeoutPolicy<TResult> : Policy<TResult>
     {

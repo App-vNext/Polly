@@ -16,7 +16,7 @@ namespace Polly.Retry
     }
 
     /// <summary>
-    /// A retry policy that can be applied to delegates returning a value of type <typeparam name="TResult"/>.
+    /// A retry policy that can be applied to delegates returning a value of type <typeparamref name="TResult"/>.
     /// </summary>
     public partial class RetryPolicy<TResult> : Policy<TResult>
     {
