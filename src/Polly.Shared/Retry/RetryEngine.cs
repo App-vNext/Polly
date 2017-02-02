@@ -22,16 +22,16 @@ namespace Polly.Retry
 
                 try
                 {
-                    DelegateResult<TResult> delegateOutcome = new DelegateResult<TResult>(action(cancellationToken));
+                    TResult result = action(cancellationToken);
 
-                    if (!shouldRetryResultPredicates.Any(predicate => predicate(delegateOutcome.Result)))
+                    if (!shouldRetryResultPredicates.Any(predicate => predicate(result)))
                     {
-                        return delegateOutcome.Result;
+                        return result;
                     }
 
-                    if (!policyState.CanRetry(delegateOutcome, cancellationToken))
+                    if (!policyState.CanRetry(new DelegateResult<TResult>(result), cancellationToken))
                     {
-                        return delegateOutcome.Result;
+                        return result;
                     }
                 }
                 catch (Exception ex)
