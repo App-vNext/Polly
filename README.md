@@ -800,6 +800,7 @@ For `CircuitBreakerPolicy<TResult>` policies:
 * [@reisenberger](https://github.com/reisenberger) - Add Timeout policy.
 * [@reisenberger](https://github.com/reisenberger) - Fix .NETStandard 1.0 targeting.  Remove PCL259 target.  PCL259 support is provided via .NETStandard1.0 target, going forward.
 * [@reisenberger](https://github.com/reisenberger) - Fix CircuitBreaker HalfOpen state and cases when breakDuration is shorter than typical call timeout.  Thanks to [@vgouw](https://github.com/vgouw) and [@kharos](https://github.com/kharos) for the reports and insightful thinking.
+* [@lakario](https://github.com/lakario) - Tidy CircuitBreaker LastException property.
 
 
 # Sample Projects
