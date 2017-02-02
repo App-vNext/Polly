@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Polly.Shared.NoOp;
+using Polly.NoOp;
 
 namespace Polly
 {

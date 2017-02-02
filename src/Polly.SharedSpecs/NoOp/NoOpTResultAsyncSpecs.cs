@@ -4,6 +4,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
+using Polly.NoOp;
 using Polly.Specs.Helpers;
 using Polly.Utilities;
 using Xunit;
@@ -15,29 +16,32 @@ namespace Polly.Specs.NoOp
         [Fact]
         public void Should_not_throw_when_executing()
         {
-            var policy = Policy.NoOpAsync<int>();
+            NoOpPolicy<int> policy = Policy.NoOpAsync<int>();
+            int? result = null;
 
-            policy.Awaiting(async p => await p.ExecuteAsync(() => Task.FromResult(10)))
+            policy.Awaiting(async p => result = await p.ExecuteAsync(() => Task.FromResult(10)))
                 .ShouldNotThrow();
+
+            result.HasValue.Should().BeTrue();
+            result.Should().Be(10);
         }
 
         [Fact]
-        public void Should_not_execute_if_cancellationtoken_cancelled_before_delegate_reached()
+        public void Should_execute_if_cancellationtoken_cancelled_before_delegate_reached()
         {
-            var policy = Policy.NoOpAsync<int>();
-
-            bool executed = false;
+            NoOpPolicy<int> policy = Policy.NoOpAsync<int>();
+            int? result = null;
 
             using (CancellationTokenSource cts = new CancellationTokenSource())
             {
                 cts.Cancel();
 
-                policy.Awaiting(async p => await p.ExecuteAsync(
-                    ct => { executed = true; return Task.FromResult(10); }, cts.Token))
-                    .ShouldThrow<OperationCanceledException>();
+                policy.Awaiting(async p => result = await p.ExecuteAsync(ct => Task.FromResult(10), cts.Token))
+                    .ShouldNotThrow();
             }
 
-            executed.Should().BeFalse();
+            result.HasValue.Should().BeTrue();
+            result.Should().Be(10);
         }
     }
 }

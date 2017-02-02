@@ -4,6 +4,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
+using Polly.NoOp;
 using Polly.Specs.Helpers;
 using Polly.Utilities;
 using Xunit;
@@ -15,14 +16,17 @@ namespace Polly.Specs.NoOp
         [Fact]
         public void Should_not_throw_when_executing()
         {
-            var policy = Policy.NoOpAsync();
+            NoOpPolicy policy = Policy.NoOpAsync();
+            bool executed = false;
 
-            policy.Awaiting(async p => await p.ExecuteAsync(() => Task.FromResult(0)))
+            policy.Awaiting(async p => await p.ExecuteAsync(() => { executed = true; return Task.FromResult(0); }))
                 .ShouldNotThrow();
+
+            executed.Should().BeTrue();
         }
 
         [Fact]
-        public void Should_not_execute_if_cancellationtoken_cancelled_before_delegate_reached()
+        public void Should_execute_if_cancellationtoken_cancelled_before_delegate_reached()
         {
             var policy = Policy.NoOpAsync();
 
@@ -34,10 +38,10 @@ namespace Polly.Specs.NoOp
 
                 policy.Awaiting(async p => await p.ExecuteAsync(
                     ct => { executed = true; return Task.FromResult(0); }, cts.Token))
-                    .ShouldThrow<OperationCanceledException>();
+                    .ShouldNotThrow();
             }
 
-            executed.Should().BeFalse();
+            executed.Should().BeTrue();
         }
     }
 }

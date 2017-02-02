@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 using FluentAssertions;
+using Polly.NoOp;
 using Polly.Specs.Helpers;
 using Polly.Utilities;
 using Xunit;
@@ -14,17 +15,19 @@ namespace Polly.Specs.NoOp
         [Fact]
         public void Should_not_throw_when_executing()
         {
-            var policy = Policy.NoOp();
+            NoOpPolicy policy = Policy.NoOp();
+            bool executed = false;
 
-            policy.Invoking(x => x.Execute(() => { /* do nothing */ }))
+            policy.Invoking(x => x.Execute(() => { executed = true; }))
                 .ShouldNotThrow();
+
+            executed.Should().BeTrue();
         }
 
         [Fact]
-        public void Should_not_execute_if_cancellationtoken_cancelled_before_delegate_reached()
+        public void Should_execute_if_cancellationtoken_cancelled_before_delegate_reached()
         {
-            var policy = Policy.NoOp();
-
+            NoOpPolicy policy = Policy.NoOp();
             bool executed = false;
 
             using (CancellationTokenSource cts = new CancellationTokenSource())
@@ -32,10 +35,10 @@ namespace Polly.Specs.NoOp
                 cts.Cancel();
 
                 policy.Invoking(p => p.Execute(ct => { executed = true; }, cts.Token))
-                    .ShouldThrow<OperationCanceledException>();
+                    .ShouldNotThrow();
             }
 
-            executed.Should().BeFalse();
+            executed.Should().BeTrue();
         }
     }
 }

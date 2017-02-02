@@ -5,7 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Polly.Utilities;
 
-namespace Polly.Shared.NoOp
+namespace Polly.NoOp
 {
     /// <summary>
     /// A no op policy that can be applied to delegates.

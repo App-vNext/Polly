@@ -6,7 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Polly.Utilities;
 
-namespace Polly.Shared.NoOp
+namespace Polly.NoOp
 {
     public partial class NoOpPolicy
     {
