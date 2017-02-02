@@ -1481,6 +1481,7 @@ namespace Polly.Specs.CircuitBreaker
             breaker.Awaiting(async x => await x.ExecuteAsync(() => { delegateExecutedWhenBroken = true; return TaskHelper.EmptyTask; }))
                 .ShouldThrow<IsolatedCircuitException>();
             breaker.CircuitState.Should().Be(CircuitState.Isolated);
+            breaker.LastException.Should().BeOfType<IsolatedCircuitException>();
             delegateExecutedWhenBroken.Should().BeFalse();
         }
 
@@ -2260,6 +2261,94 @@ namespace Polly.Specs.CircuitBreaker
         }
 
         #endregion
+
+        #endregion
+
+        #region LastException property
+
+        [Fact]
+        public void Should_initialise_LastException_to_null_on_creation()
+        {
+            CircuitBreakerPolicy breaker = Policy
+                .Handle<DivideByZeroException>()
+                .AdvancedCircuitBreakerAsync(
+                    failureThreshold: 0.5,
+                    samplingDuration: TimeSpan.FromSeconds(10),
+                    minimumThroughput: 2,
+                    durationOfBreak: TimeSpan.FromSeconds(30)
+                );
+
+            breaker.LastException.Should().BeNull();
+        }
+
+        [Fact]
+        public void Should_set_LastException_on_handling_exception_even_when_not_breaking()
+        {
+            CircuitBreakerPolicy breaker = Policy
+                .Handle<DivideByZeroException>()
+                .AdvancedCircuitBreakerAsync(
+                    failureThreshold: 0.5,
+                    samplingDuration: TimeSpan.FromSeconds(10),
+                    minimumThroughput: 2,
+                    durationOfBreak: TimeSpan.FromSeconds(30)
+                );
+
+            breaker.Awaiting(async x => await x.RaiseExceptionAsync<DivideByZeroException>())
+                .ShouldThrow<DivideByZeroException>();
+            breaker.CircuitState.Should().Be(CircuitState.Closed);
+
+            breaker.LastException.Should().BeOfType<DivideByZeroException>();
+        }
+
+        [Fact]
+        public void Should_set_LastException_to_last_raised_exception_when_breaking()
+        {
+            CircuitBreakerPolicy breaker = Policy
+                .Handle<DivideByZeroException>()
+                .AdvancedCircuitBreakerAsync(
+                    failureThreshold: 0.5,
+                    samplingDuration: TimeSpan.FromSeconds(10),
+                    minimumThroughput: 2,
+                    durationOfBreak: TimeSpan.FromSeconds(30)
+                );
+
+            breaker.Awaiting(async x => await x.RaiseExceptionAsync<DivideByZeroException>())
+                .ShouldThrow<DivideByZeroException>();
+            breaker.CircuitState.Should().Be(CircuitState.Closed);
+
+            breaker.Awaiting(async x => await x.RaiseExceptionAsync<DivideByZeroException>())
+                .ShouldThrow<DivideByZeroException>();
+            breaker.CircuitState.Should().Be(CircuitState.Open);
+
+            breaker.LastException.Should().BeOfType<DivideByZeroException>();
+        }
+
+        [Fact]
+        public void Should_set_LastException_to_null_on_circuit_reset()
+        {
+            CircuitBreakerPolicy breaker = Policy
+                .Handle<DivideByZeroException>()
+                .AdvancedCircuitBreakerAsync(
+                    failureThreshold: 0.5,
+                    samplingDuration: TimeSpan.FromSeconds(10),
+                    minimumThroughput: 2,
+                    durationOfBreak: TimeSpan.FromSeconds(30)
+                );
+
+            breaker.Awaiting(async x => await x.RaiseExceptionAsync<DivideByZeroException>())
+                .ShouldThrow<DivideByZeroException>();
+            breaker.CircuitState.Should().Be(CircuitState.Closed);
+
+            breaker.Awaiting(async x => await x.RaiseExceptionAsync<DivideByZeroException>())
+                .ShouldThrow<DivideByZeroException>();
+            breaker.CircuitState.Should().Be(CircuitState.Open);
+
+            breaker.LastException.Should().BeOfType<DivideByZeroException>();
+
+            breaker.Reset();
+
+            breaker.LastException.Should().BeNull();
+        }
 
         #endregion
 

@@ -397,6 +397,7 @@ namespace Polly.Specs.CircuitBreaker
             breaker.Invoking(x => x.Execute(() => { delegateExecutedWhenBroken = true; return ResultPrimitive.Good;}))
                 .ShouldThrow<IsolatedCircuitException>();
             breaker.CircuitState.Should().Be(CircuitState.Isolated);
+            breaker.LastException.Should().BeOfType<IsolatedCircuitException>();
             delegateExecutedWhenBroken.Should().BeFalse();
 
         }
@@ -961,6 +962,80 @@ namespace Polly.Specs.CircuitBreaker
         }
 
         #endregion
+
+        #endregion
+
+        #region LastHandledResult property
+
+        [Fact]
+        public void Should_initialise_LastHandledResult_and_LastResult_to_default_on_creation()
+        {
+            CircuitBreakerPolicy<ResultPrimitive> breaker = Policy
+                .HandleResult(ResultPrimitive.Fault)
+                .CircuitBreaker(2, TimeSpan.FromMinutes(1));
+
+            breaker.LastHandledResult.Should().Be(default(ResultPrimitive));
+            breaker.LastException.Should().BeNull();
+        }
+
+        [Fact]
+        public void Should_set_LastHandledResult_on_handling_result_even_when_not_breaking()
+        {
+            CircuitBreakerPolicy<ResultPrimitive> breaker = Policy
+                .HandleResult(ResultPrimitive.Fault)
+                .CircuitBreaker(2, TimeSpan.FromMinutes(1));
+
+            breaker.RaiseResultSequence(ResultPrimitive.Fault)
+                .Should().Be(ResultPrimitive.Fault);
+
+            breaker.CircuitState.Should().Be(CircuitState.Closed);
+
+            breaker.LastHandledResult.Should().Be(ResultPrimitive.Fault);
+            breaker.LastException.Should().BeNull();
+        }
+
+        [Fact]
+        public void Should_set_LastHandledResult_to_last_handled_result_when_breaking()
+        {
+            CircuitBreakerPolicy<ResultPrimitive> breaker = Policy
+                .HandleResult(ResultPrimitive.Fault)
+                .CircuitBreaker(2, TimeSpan.FromMinutes(1));
+
+            breaker.RaiseResultSequence(ResultPrimitive.Fault)
+                .Should().Be(ResultPrimitive.Fault);
+
+            breaker.RaiseResultSequence(ResultPrimitive.Fault)
+                .Should().Be(ResultPrimitive.Fault);
+
+            breaker.CircuitState.Should().Be(CircuitState.Open);
+
+            breaker.LastHandledResult.Should().Be(ResultPrimitive.Fault);
+            breaker.LastException.Should().BeNull();
+        }
+
+        [Fact]
+        public void Should_set_LastHandledResult_to_default_on_circuit_reset()
+        {
+            CircuitBreakerPolicy<ResultPrimitive> breaker = Policy
+                .HandleResult(ResultPrimitive.Fault)
+                .CircuitBreaker(2, TimeSpan.FromMinutes(1));
+
+            breaker.RaiseResultSequence(ResultPrimitive.Fault)
+                .Should().Be(ResultPrimitive.Fault);
+
+            breaker.RaiseResultSequence(ResultPrimitive.Fault)
+                .Should().Be(ResultPrimitive.Fault);
+
+            breaker.CircuitState.Should().Be(CircuitState.Open);
+
+            breaker.LastHandledResult.Should().Be(ResultPrimitive.Fault);
+            breaker.LastException.Should().BeNull();
+
+            breaker.Reset();
+
+            breaker.LastHandledResult.Should().Be(default(ResultPrimitive));
+            breaker.LastException.Should().BeNull();
+        }
 
         #endregion
 
