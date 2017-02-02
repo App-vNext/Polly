@@ -48,7 +48,22 @@ namespace Polly.CircuitBreaker
         {
             using (TimedLock.Lock(_lock))
             {
-                if (_circuitState == CircuitState.HalfOpen) { OnCircuitReset(context); }
+                switch (_circuitState)
+                {
+                    case CircuitState.HalfOpen:
+                        OnCircuitReset(context);
+                        break;
+
+                    case CircuitState.Closed:
+                        break;
+
+                    case CircuitState.Open:
+                    case CircuitState.Isolated:
+                        break; // A successful call result may arrive when the circuit is open, if it was placed before the circuit broke.  We take no special action; only time passing governs transitioning from Open to HalfOpen state.
+
+                    default:
+                        throw new InvalidOperationException("Unhandled CircuitState.");
+                }
 
                 _metrics.IncrementSuccess_NeedsLock();
             }
@@ -60,20 +75,33 @@ namespace Polly.CircuitBreaker
             {
                 _lastOutcome = outcome;
 
-                if (_circuitState == CircuitState.HalfOpen)
+                switch (_circuitState)
                 {
-                    Break_NeedsLock(context);
-                    return;
+                    case CircuitState.HalfOpen:
+                        Break_NeedsLock(context);
+                        return;
+
+                    case CircuitState.Closed:
+                        _metrics.IncrementFailure_NeedsLock();
+                        var healthCount = _metrics.GetHealthCount_NeedsLock();
+
+                        int throughput = healthCount.Total;
+                        if (throughput >= _minimumThroughput && ((double)healthCount.Failures) / throughput >= _failureThreshold)
+                        {
+                            Break_NeedsLock(context);
+                        }
+                        break;
+
+                    case CircuitState.Open:
+                    case CircuitState.Isolated:
+                        _metrics.IncrementFailure_NeedsLock();
+                        break; // A failure call result may arrive when the circuit is open, if it was placed before the circuit broke.  We take no action beyond tracking the metric; we do not want to duplicate-signal onBreak; we do not want to extend time for which the circuit is broken.  We do not want to mask the fact that the call executed (as replacing its result with a Broken/IsolatedCircuitException would do).
+
+                    default:
+                        throw new InvalidOperationException("Unhandled CircuitState.");
                 }
 
-                _metrics.IncrementFailure_NeedsLock();
-                var healthCount = _metrics.GetHealthCount_NeedsLock();
 
-                int throughput = healthCount.Total;
-                if (throughput >= _minimumThroughput && ((double)healthCount.Failures) / throughput >= _failureThreshold)
-                {
-                    Break_NeedsLock(context);
-                }
 
             }
         }
