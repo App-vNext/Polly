@@ -56,7 +56,7 @@ namespace Polly.Bulkhead
     }
 
     /// <summary>
-    /// A bulkhead-isolation policy which can be applied to delegates returning a value of type <typeparam name="TResult"/>.
+    /// A bulkhead-isolation policy which can be applied to delegates returning a value of type <typeparamref name="TResult"/>.
     /// </summary>
     public partial class BulkheadPolicy<TResult> : Policy<TResult>, IDisposable
     {

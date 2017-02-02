@@ -21,18 +21,18 @@ namespace Polly.CircuitBreaker
 
             try
             {
-                DelegateResult<TResult> delegateOutcome = new DelegateResult<TResult>(action(cancellationToken));
+                TResult result = action(cancellationToken);
 
-                if (shouldHandleResultPredicates.Any(predicate => predicate(delegateOutcome.Result)))
+                if (shouldHandleResultPredicates.Any(predicate => predicate(result)))
                 {
-                    breakerController.OnActionFailure(delegateOutcome, context);
+                    breakerController.OnActionFailure(new DelegateResult<TResult>(result), context);
                 }
                 else
                 {
                     breakerController.OnActionSuccess(context);
                 }
 
-                return delegateOutcome.Result;
+                return result;
             }
             catch (Exception ex)
             {

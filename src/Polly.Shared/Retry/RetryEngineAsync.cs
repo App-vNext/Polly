@@ -27,35 +27,22 @@ namespace Polly.Retry
 
                 try
                 {
-                    DelegateResult<TResult> delegateOutcome = new DelegateResult<TResult>(await action(cancellationToken).ConfigureAwait(continueOnCapturedContext));
+                    TResult result = await action(cancellationToken).ConfigureAwait(continueOnCapturedContext);
 
-                    //cancellationToken.ThrowIfCancellationRequested();
-
-                    if (!shouldRetryResultPredicates.Any(predicate => predicate(delegateOutcome.Result)))
+                    if (!shouldRetryResultPredicates.Any(predicate => predicate(result)))
                     {
-                        return delegateOutcome.Result;
+                        return result;
                     }
 
-                    //cancellationToken.ThrowIfCancellationRequested();
-
                     if (!await policyState
-                        .CanRetryAsync(delegateOutcome, cancellationToken, continueOnCapturedContext)
+                        .CanRetryAsync(new DelegateResult<TResult>(result), cancellationToken, continueOnCapturedContext)
                         .ConfigureAwait(continueOnCapturedContext))
                     {
-                        return delegateOutcome.Result;
+                        return result;
                     }
                 }
                 catch (Exception ex)
                 {
-                    //if (cancellationToken.IsCancellationRequested)
-                    //{
-                    //    if (ex is OperationCanceledException && ((OperationCanceledException)ex).CancellationToken == cancellationToken)
-                    //    {
-                    //        throw;
-                    //    }
-                    //    cancellationToken.ThrowIfCancellationRequested();
-                    //}
-
                     if (!shouldRetryExceptionPredicates.Any(predicate => predicate(ex)))
                     {
                         throw;
