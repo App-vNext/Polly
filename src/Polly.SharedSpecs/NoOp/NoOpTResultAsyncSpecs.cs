@@ -16,32 +16,32 @@ namespace Polly.Specs.NoOp
         [Fact]
         public void Should_not_throw_when_executing()
         {
-            NoOpPolicy<int> policy = Policy.NoOpAsync<int>();
+            NoOpPolicy<int?> policy = Policy.NoOpAsync<int?>();
             int? result = null;
 
-            policy.Awaiting(async p => result = await p.ExecuteAsync(() => Task.FromResult(10)))
+            policy.Awaiting(async p => result = await p.ExecuteAsync(() => Task.FromResult((int?)10)))
                 .ShouldNotThrow();
 
             result.HasValue.Should().BeTrue();
-            result.Value.Should().Be(10);
+            result.Should().Be(10);
         }
 
         [Fact]
         public void Should_execute_if_cancellationtoken_cancelled_before_delegate_reached()
         {
-            NoOpPolicy<int> policy = Policy.NoOpAsync<int>();
+            NoOpPolicy<int?> policy = Policy.NoOpAsync<int?>();
             int? result = null;
 
             using (CancellationTokenSource cts = new CancellationTokenSource())
             {
                 cts.Cancel();
 
-                policy.Awaiting(async p => result = await p.ExecuteAsync(ct => Task.FromResult(10), cts.Token))
+                policy.Awaiting(async p => result = await p.ExecuteAsync(ct => Task.FromResult((int?)10), cts.Token))
                     .ShouldNotThrow();
             }
 
             result.HasValue.Should().BeTrue();
-            result.Value.Should().Be(10);
+            result.Should().Be(10);
         }
     }
 }

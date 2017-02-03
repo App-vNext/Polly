@@ -23,7 +23,7 @@ namespace Polly.Specs.NoOp
                 .ShouldNotThrow();
 
             result.HasValue.Should().BeTrue();
-            result.Value.Should().Be(10);
+            result.Should().Be(10);
         }
 
         [Fact]
@@ -41,7 +41,7 @@ namespace Polly.Specs.NoOp
             }
 
             result.HasValue.Should().BeTrue();
-            result.Value.Should().Be(10);
+            result.Should().Be(10);
         }
     }
 }

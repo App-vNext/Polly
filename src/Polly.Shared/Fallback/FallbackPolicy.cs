@@ -16,7 +16,7 @@ namespace Polly.Fallback
     }
 
     /// <summary>
-    /// A fallback policy that can be applied to delegates returning a value of type <typeparam name="TResult"/>.
+    /// A fallback policy that can be applied to delegates returning a value of type <typeparamref name="TResult"/>.
     /// </summary>
     public partial class FallbackPolicy<TResult> : Policy<TResult>
     {

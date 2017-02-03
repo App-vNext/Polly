@@ -24,12 +24,14 @@ namespace Polly.Fallback
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
-                delegateOutcome = new DelegateResult<TResult>(await action(cancellationToken).ConfigureAwait(continueOnCapturedContext));
+                TResult result = await action(cancellationToken).ConfigureAwait(continueOnCapturedContext);
 
-                if (!shouldHandleResultPredicates.Any(predicate => predicate(delegateOutcome.Result)))
+                if (!shouldHandleResultPredicates.Any(predicate => predicate(result)))
                 {
-                    return delegateOutcome.Result;
+                    return result;
                 }
+
+                delegateOutcome = new DelegateResult<TResult>(result);
             }
             catch (Exception ex)
             {

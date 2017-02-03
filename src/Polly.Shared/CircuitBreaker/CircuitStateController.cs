@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using Polly.Utilities;
 
 namespace Polly.CircuitBreaker
@@ -6,12 +7,14 @@ namespace Polly.CircuitBreaker
     internal abstract class CircuitStateController<TResult> : ICircuitController<TResult>
     {
         protected readonly TimeSpan _durationOfBreak;
-        protected DateTime _blockedTill;
+        protected long _blockedTill;
         protected CircuitState _circuitState;
         protected DelegateResult<TResult> _lastOutcome;
+
         protected readonly Action<DelegateResult<TResult>, TimeSpan, Context> _onBreak;
         protected readonly Action<Context> _onReset;
         protected readonly Action _onHalfOpen;
+
         protected readonly object _lock = new object();
 
         protected CircuitStateController(
@@ -77,7 +80,7 @@ namespace Polly.CircuitBreaker
         {
             get
             {
-                return SystemClock.UtcNow() < _blockedTill;
+                return SystemClock.UtcNow().Ticks < _blockedTill;
             }
         }
 
@@ -100,8 +103,8 @@ namespace Polly.CircuitBreaker
         {
             bool willDurationTakeUsPastDateTimeMaxValue = durationOfBreak > DateTime.MaxValue - SystemClock.UtcNow();
             _blockedTill = willDurationTakeUsPastDateTimeMaxValue
-                ? DateTime.MaxValue
-                : SystemClock.UtcNow() + durationOfBreak;
+                ? DateTime.MaxValue.Ticks
+                : (SystemClock.UtcNow() + durationOfBreak).Ticks;
             _circuitState = CircuitState.Open;
 
             _onBreak(_lastOutcome, durationOfBreak, context);
@@ -114,7 +117,7 @@ namespace Polly.CircuitBreaker
 
         protected void ResetInternal_NeedsLock(Context context)
         {
-            _blockedTill = DateTime.MinValue;
+            _blockedTill = DateTime.MinValue.Ticks;
             _lastOutcome = null;
 
             CircuitState priorState = _circuitState;
@@ -125,17 +128,36 @@ namespace Polly.CircuitBreaker
             }
         }
 
+        protected bool PermitHalfOpenCircuitTest()
+        {
+            long currentlyBlockedUntil = _blockedTill;
+            if (SystemClock.UtcNow().Ticks >= currentlyBlockedUntil)
+            {
+                // It's time to permit a / another trial call in the half-open state ...
+                // ... but to prevent race conditions/multiple calls, we have to ensure only _one_ thread wins the race to own this next call.
+                return Interlocked.CompareExchange(ref _blockedTill, SystemClock.UtcNow().Ticks + _durationOfBreak.Ticks, currentlyBlockedUntil) == currentlyBlockedUntil;
+            }
+            return false;
+        }
+
+        private BrokenCircuitException GetBreakingException()
+        {
+            return _lastOutcome.Exception != null
+                ? new BrokenCircuitException("The circuit is now open and is not allowing calls.", _lastOutcome.Exception)
+                : new BrokenCircuitException<TResult>("The circuit is now open and is not allowing calls.", _lastOutcome.Result);
+        }
+
         public void OnActionPreExecute()
         {
             switch (CircuitState)
             {
                 case CircuitState.Closed:
+                    break;
                 case CircuitState.HalfOpen:
+                    if (!PermitHalfOpenCircuitTest()) { throw GetBreakingException(); }
                     break;
                 case CircuitState.Open:
-                    throw _lastOutcome.Exception != null
-                        ? new BrokenCircuitException("The circuit is now open and is not allowing calls.", _lastOutcome.Exception)
-                        : new BrokenCircuitException<TResult>("The circuit is now open and is not allowing calls.", _lastOutcome.Result);
+                    throw GetBreakingException();
                 case CircuitState.Isolated:
                     throw new IsolatedCircuitException("The circuit is manually held open and is not allowing calls.");
                 default:

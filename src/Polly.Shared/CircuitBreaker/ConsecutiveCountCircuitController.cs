@@ -6,7 +6,7 @@ namespace Polly.CircuitBreaker
     internal class ConsecutiveCountCircuitController<TResult> : CircuitStateController<TResult>
     {
         private readonly int _exceptionsAllowedBeforeBreaking;
-        private int _count;
+        private int _consecutiveFailureCount;
 
         public ConsecutiveCountCircuitController(
             int exceptionsAllowedBeforeBreaking, 
@@ -23,7 +23,7 @@ namespace Polly.CircuitBreaker
         {
             using (TimedLock.Lock(_lock))
             {
-                _count = 0;
+                _consecutiveFailureCount = 0;
 
                 ResetInternal_NeedsLock(context);
             }
@@ -38,9 +38,17 @@ namespace Polly.CircuitBreaker
                     case CircuitState.HalfOpen:
                         OnCircuitReset(context);
                         break;
+
                     case CircuitState.Closed:
-                        _count = 0;
+                        _consecutiveFailureCount = 0;
                         break;
+
+                    case CircuitState.Open:
+                    case CircuitState.Isolated:
+                        break; // A successful call result may arrive when the circuit is open, if it was placed before the circuit broke.  We take no action; only time passing governs transitioning from Open to HalfOpen state.
+
+                    default:
+                        throw new InvalidOperationException("Unhandled CircuitState.");
                 }
             }
         }
@@ -51,17 +59,29 @@ namespace Polly.CircuitBreaker
             {
                 _lastOutcome = outcome;
 
-                if (_circuitState == CircuitState.HalfOpen)
+                switch (_circuitState)
                 {
-                    Break_NeedsLock(context);
-                    return;
+                    case CircuitState.HalfOpen:
+                        Break_NeedsLock(context);
+                        return;
+
+                    case CircuitState.Closed:
+                        _consecutiveFailureCount += 1;
+                        if (_consecutiveFailureCount >= _exceptionsAllowedBeforeBreaking)
+                        {
+                            Break_NeedsLock(context);
+                        }
+                        break;
+
+                    case CircuitState.Open:
+                    case CircuitState.Isolated:
+                        break; // A failure call result may arrive when the circuit is open, if it was placed before the circuit broke.  We take no action; we do not want to duplicate-signal onBreak; we do not want to extend time for which the circuit is broken.  We do not want to mask the fact that the call executed (as replacing its result with a Broken/IsolatedCircuitException would do).
+
+                    default:
+                        throw new InvalidOperationException("Unhandled CircuitState.");
                 }
 
-                _count += 1;
-                if (_count >= _exceptionsAllowedBeforeBreaking)
-                {
-                    Break_NeedsLock(context);
-                }
+
             }
         }
     }

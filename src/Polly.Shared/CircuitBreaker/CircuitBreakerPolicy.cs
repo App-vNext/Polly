@@ -10,7 +10,7 @@ namespace Polly.CircuitBreaker
     /// </summary>
     public partial class CircuitBreakerPolicy : Policy
     {
-        private readonly ICircuitController<EmptyStruct> _breakerController;
+        internal readonly ICircuitController<EmptyStruct> _breakerController;
 
         internal CircuitBreakerPolicy(
             Action<Action<CancellationToken>, Context, CancellationToken> exceptionPolicy, 
@@ -31,6 +31,7 @@ namespace Polly.CircuitBreaker
 
         /// <summary>
         /// Gets the last exception handled by the circuit-breaker.
+        /// <remarks>This will be null if no exceptions have been handled by the circuit-breaker since the circuit last closed.</remarks>
         /// </summary>
         public Exception LastException
         {
@@ -55,11 +56,11 @@ namespace Polly.CircuitBreaker
     }
 
     /// <summary>
-    /// A circuit-breaker policy that can be applied to delegates returning a value of type <typeparam name="TResult"/>.
+    /// A circuit-breaker policy that can be applied to delegates returning a value of type <typeparamref name="TResult"/>.
     /// </summary>
     public partial class CircuitBreakerPolicy<TResult> : Policy<TResult>
     {
-        private readonly ICircuitController<TResult> _breakerController;
+        internal readonly ICircuitController<TResult> _breakerController;
 
         internal CircuitBreakerPolicy(
             Func<Func<CancellationToken, TResult>, Context, CancellationToken, TResult> executionPolicy, 
@@ -81,6 +82,7 @@ namespace Polly.CircuitBreaker
 
         /// <summary>
         /// Gets the last exception handled by the circuit-breaker.
+        /// <remarks>This will be null if no exceptions have been handled by the circuit-breaker since the circuit last closed, or if the last event handled by the circuit was a handled <typeparamref name="TResult"/> value.</remarks>
         /// </summary>
         public Exception LastException
         {
@@ -89,6 +91,7 @@ namespace Polly.CircuitBreaker
 
         /// <summary>
         /// Gets the last result returned from a user delegate which the circuit-breaker handled.
+        /// <remarks>This will be default(<typeparamref name="TResult"/>) if no results have been handled by the circuit-breaker since the circuit last closed, or if the last event handled by the circuit was an exception.</remarks>
         /// </summary>
         public TResult LastHandledResult
         {
