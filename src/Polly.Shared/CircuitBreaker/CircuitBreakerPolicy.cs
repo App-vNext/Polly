@@ -10,7 +10,7 @@ namespace Polly.CircuitBreaker
     /// </summary>
     public partial class CircuitBreakerPolicy : Policy
     {
-        private readonly ICircuitController<EmptyStruct> _breakerController;
+        internal readonly ICircuitController<EmptyStruct> _breakerController;
 
         internal CircuitBreakerPolicy(
             Action<Action<CancellationToken>, Context, CancellationToken> exceptionPolicy, 
@@ -60,7 +60,7 @@ namespace Polly.CircuitBreaker
     /// </summary>
     public partial class CircuitBreakerPolicy<TResult> : Policy<TResult>
     {
-        private readonly ICircuitController<TResult> _breakerController;
+        internal readonly ICircuitController<TResult> _breakerController;
 
         internal CircuitBreakerPolicy(
             Func<Func<CancellationToken, TResult>, Context, CancellationToken, TResult> executionPolicy, 
