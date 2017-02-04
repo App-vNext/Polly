@@ -3,6 +3,7 @@
 - Bug fix: Prevent duplicate raising of the onBreak delegate, if executions started when a circuit was closed, return faults when a circuit has already opened.
 - Optimisation: Optimise hotpaths for Circuit-Breaker, Retry and Fallback policies.
 - Minor behavioural change: For a circuit which has not handled any faults since initialisation or last reset, make `LastException` property return null rather than a fake exception.
+- Add NoOpPolicy: NoOpPolicy executes delegates without intervention; for eg stubbing out Polly in unit testing.
 
 ## 5.0.4 pre
 - Fix Microsoft.Bcl and Nito.AsyncEx dependencies for Polly.Net40Async. 

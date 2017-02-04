@@ -44,6 +44,8 @@ Polly offers multiple resilience policies:
 
 # Usage &ndash; fault-handling policies
 
+Fault-handling policies handle specific exceptions thrown by, or results returned by, the delegates you execute through the policy.
+
 ## Step 1 : Specify the  exceptions/faults you want the policy to handle 
 
 ### (for fault-handling policies:  Retry family, CircuitBreaker family and Fallback)
@@ -455,6 +457,8 @@ Policy
 
 # Usage &ndash; general resilience policies
 
+The general resilience policies add resilience strategies that are not explicitly centred around handling faults which delegates may throw or return.
+
 ## Step 1 : Configure
 
 ### Timeout
@@ -566,6 +570,17 @@ Reputation reps = Policy
 ```
 
 For more detail see: [PolicyWrap documentation](https://github.com/App-vNext/Polly/wiki/PolicyWrap) on wiki.
+
+### NoOp
+
+```csharp
+// Define a policy which will simply cause delegates passed for execution to be executed 'as is'.
+// This is useful for stubbing-out Polly in unit tests, 
+// or in application situations where your code architecture might expect a policy
+// but you simply want to pass the execution through without policy intervention.
+NoOpPolicy noOp = Policy.NoOp();
+```
+For more detail see: [NoOp documentation](https://github.com/App-vNext/Polly/wiki/NoOp) on wiki.
 
 ## Step 2 : Execute the policy.
 
@@ -760,6 +775,10 @@ For `CircuitBreakerPolicy<TResult>` policies:
 * A circuit broken due to an exception throws a `BrokenCircuitException` with `InnerException` set to the exception which triggered the break (as previously).
 * A circuit broken due to handling a result throws a `BrokenCircuitException<TResult>` with the `Result` property set to the result which caused the circuit to break.
 
+# Release notes
+
+For details of changes by release see the [change log](https://github.com/App-vNext/Polly/blob/master/CHANGELOG.md).  We also tag relevant Pull Requests and Issues with [milestones](https://github.com/App-vNext/Polly/milestones), which match to nuget package release numbers.
+
 # 3rd Party Libraries
 
 * [Fluent Assertions](https://github.com/dennisdoomen/fluentassertions) - A set of .NET extension methods that allow you to more naturally specify the expected outcome of a TDD or BDD-style test | [Apache License 2.0 (Apache)](https://github.com/dennisdoomen/fluentassertions/blob/develop/LICENSE)
@@ -801,6 +820,7 @@ For `CircuitBreakerPolicy<TResult>` policies:
 * [@reisenberger](https://github.com/reisenberger) - Fix .NETStandard 1.0 targeting.  Remove PCL259 target.  PCL259 support is provided via .NETStandard1.0 target, going forward.
 * [@reisenberger](https://github.com/reisenberger) - Fix CircuitBreaker HalfOpen state and cases when breakDuration is shorter than typical call timeout.  Thanks to [@vgouw](https://github.com/vgouw) and [@kharos](https://github.com/kharos) for the reports and insightful thinking.
 * [@lakario](https://github.com/lakario) - Tidy CircuitBreaker LastException property.
+* [@lakario](https://github.com/lakario) - Add NoOpPolicy.
 
 
 # Sample Projects

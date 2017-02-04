@@ -13,7 +13,7 @@ namespace Polly.Specs.NoOp
     public class NoOpSpecs
     {
         [Fact]
-        public void Should_not_throw_when_executing()
+        public void Should_execute_user_delegate()
         {
             NoOpPolicy policy = Policy.NoOp();
             bool executed = false;
@@ -25,7 +25,7 @@ namespace Polly.Specs.NoOp
         }
 
         [Fact]
-        public void Should_execute_if_cancellationtoken_cancelled_before_delegate_reached()
+        public void Should_execute_user_delegate_without_adding_extra_cancellation_behaviour()
         {
             NoOpPolicy policy = Policy.NoOp();
             bool executed = false;
