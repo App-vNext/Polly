@@ -80,15 +80,13 @@ namespace Polly.Specs.Helpers
             }, cancellationToken);
         }
 
-        public static Func<Task> Awaiting(this Policy policy, Func<Policy, Task> action)
+#if PORTABLE
+        // Omitted the Portable versions of FluentAssertions.  Hence re-included here for #PORTABLE only.
+        public static Func<Task> Awaiting<T>(this T subject, Func<T, Task> action)
         {
-            return (Func<Task>)(() => action(policy));
+            return (Func<Task>)(() => action(subject));
         }
-        
-        public static Func<Task<TResult>> Awaiting<TResult>(this Policy<TResult> policy, Func<Policy<TResult>, Task<TResult>> action)
-        {
-            return (Func<Task<TResult>>)(() => action(policy));
-        }
-        
+#endif
+
     }
 }
