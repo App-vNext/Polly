@@ -53,6 +53,14 @@
     <Compile Include="$(MSBuildThisFileDirectory)Fallback\FallbackEngineAsync.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Fallback\FallbackPolicy.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Fallback\FallbackPolicyAsync.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)NoOp\NoOpEngineAsync.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)NoOp\NoOpEngine.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)NoOp\NoOpPolicyAsync.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)NoOp\NoOpPolicy.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)NoOp\NoOpSyntaxAsync.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)NoOp\NoOpTResultSyntaxAsync.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)NoOp\NoOpTResultSyntax.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)NoOp\NoOpSyntax.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Policy.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Policy.HandleSyntax.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Policy.ContextAndKeys.cs" />
