@@ -14,7 +14,7 @@ namespace Polly.Specs.NoOp
     public class NoOpAsyncSpecs
     {
         [Fact]
-        public void Should_not_throw_when_executing()
+        public void Should_execute_user_delegate()
         {
             NoOpPolicy policy = Policy.NoOpAsync();
             bool executed = false;
@@ -26,7 +26,7 @@ namespace Polly.Specs.NoOp
         }
 
         [Fact]
-        public void Should_execute_if_cancellationtoken_cancelled_before_delegate_reached()
+        public void Should_execute_user_delegate_without_adding_extra_cancellation_behaviour()
         {
             var policy = Policy.NoOpAsync();
 
