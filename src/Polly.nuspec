@@ -15,6 +15,10 @@
     <releaseNotes>
      v5.0 is a major release with significant new resilience policies: Timeout; Bulkhead Isolation; Fallback; and PolicyWrap.  See release notes back to v5.0.0 for full details. 
 
+     5.0.6
+     ---------------------
+     - Update NETStandard.Library dependency to latest 1.6.1.  Resolves compatibility for some Xamarin targets.
+
      5.0.5
      ---------------------
      - Bug fix: Prevent request stampede during half-open state of CircuitBreaker and AdvancedCircuitBreaker.  Enforce only one new trial call per break duration, during half-open state.
@@ -160,7 +164,7 @@
     <dependencies>
       <group targetFramework="net45"/>
       <group targetFramework="netstandard1.0">
-        <dependency id="NETStandard.Library" version="1.6.0" />
+        <dependency id="NETStandard.Library" version="1.6.1" />
       </group>
     </dependencies>
   </metadata>
