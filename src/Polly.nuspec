@@ -17,7 +17,7 @@
 
      5.0.6
      ---------------------
-     - Update NETStandard.Library dependency to latest 1.6.1.  Resolves compatibility for some Xamarin targets.
+     - Update NETStandard.Library dependency to latest 1.6.1 for .NetStandard1.0 target.  Resolves compatibility for some Xamarin targets.
 
      5.0.5
      ---------------------
