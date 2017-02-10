@@ -669,7 +669,9 @@ In place of their synchronous counterparts:
 * `Execute`
 * `ExecuteAndCapture`
 
-For example
+Async overloads exist for all policy types and for all `Execute()` and `ExecuteAndCapture()` overloads.
+
+Usage example:
 
 ```csharp
 await Policy
@@ -688,10 +690,11 @@ Async continuations and retries by default do not run on a captured synchronizat
 
 Async policy execution supports cancellation via `.ExecuteAsync(...)` overloads taking a `CancellationToken`.  
 
-The token you pass as the `cancellationToken` parameter to the `ExecuteAsync(...)` call serves two purposes:
+The token you pass as the `cancellationToken` parameter to the `ExecuteAsync(...)` call serves three purposes:
 
 + It cancels Policy actions such as further retries, waits between retries or waits for a bulkhead execution slot.
 + It is passed by the policy as the `CancellationToken` input parameter to any delegate executed through the policy, to support cancellation during delegate execution.  
++ In common with the Base Class Library implementation in `Task.Run(…)` and elsewhere, if the cancellation token is cancelled before execution begins, the user delegate is not executed at all.
 
 ```csharp
 // Try several times to retrieve from a uri, but support cancellation at any time.
