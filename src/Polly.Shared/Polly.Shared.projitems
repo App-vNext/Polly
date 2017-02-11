@@ -68,6 +68,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)PolicyBuilder.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PolicyBuilder.OrSyntax.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PolicyResult.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Registry\DefaultPolicyRegistry.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Registry\IPolicyRegistry.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ResultPredicate.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Retry\RetrySyntax.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Retry\RetrySyntaxAsync.cs" />
