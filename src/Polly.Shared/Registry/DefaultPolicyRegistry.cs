@@ -9,31 +9,6 @@ namespace Polly.Registry
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
     public sealed class DefaultPolicyRegistry : IPolicyRegistry<string, Policy>
     {
-        #region Singleton
-        private static volatile DefaultPolicyRegistry _instance;
-        private static object _syncRoot = new Object();
-
-        public static DefaultPolicyRegistry Instance
-        {
-            get
-            {
-                if (_instance == null)
-                {
-                    lock (_syncRoot)
-                    {
-                        if (_instance == null)
-                            _instance = new DefaultPolicyRegistry();
-                    }
-                }
-                return _instance;
-            }
-        }
-
-        private DefaultPolicyRegistry()
-        {
-        }
-        #endregion
-
         private Dictionary<string, Policy> _registry = new Dictionary<string, Policy>();
 
         public Policy this[string key] { get => _registry[key]; set => _registry[key] = value; }
