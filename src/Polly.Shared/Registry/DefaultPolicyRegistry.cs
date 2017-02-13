@@ -43,10 +43,12 @@ namespace Polly.Registry
         public int Count => _registry.Count;
 
         /// <summary>
-        /// 
+        /// Adds an element with the provided key and <see cref="Policy"/> to the registry.
         /// </summary>
-        /// <param name="key"></param>
-        /// <param name="value"></param>
+        /// <param name="key">The string to use as the key of the element to add.</param>
+        /// <param name="value">The <see cref="Policy"/> to store in the registry.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="key"/> is null</exception>
+        /// <exception cref="ArgumentException">A Policy with same <paramref name="key"/> already exists</exception>
         public void Add(string key, Policy value) =>
             _registry.Add(key, value);
 
@@ -61,6 +63,7 @@ namespace Polly.Registry
         /// </summary>
         /// <param name="key">The Key to locate in the registry</param>
         /// <returns>True if Key exists otherwise false</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="key"/> is null</exception>
         public bool ContainsKey(string key) =>
             _registry.ContainsKey(key);
 
