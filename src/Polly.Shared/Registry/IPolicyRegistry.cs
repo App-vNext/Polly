@@ -65,6 +65,5 @@ namespace Polly.Registry
         /// Removes all keys and values from registry
         /// </summary>
         void Clear();
-
     }
 }
