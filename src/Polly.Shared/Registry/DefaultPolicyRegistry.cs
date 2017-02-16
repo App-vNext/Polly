@@ -28,16 +28,6 @@ namespace Polly.Registry
         }
 
         /// <summary>
-        /// Gets a collection containing the keys.
-        /// </summary>
-        public ICollection<string> Keys => _registry.Keys;
-
-        /// <summary>
-        /// Gets a collection of stored <see cref="Policy"/> .
-        /// </summary>
-        public ICollection<Policy> Values => _registry.Values;
-
-        /// <summary>
         /// Gets the number of key/<see cref="Policy"/> pairs stored in the registry.
         /// </summary>
         public int Count => _registry.Count;
@@ -68,14 +58,7 @@ namespace Polly.Registry
             _registry.ContainsKey(key);
 
         /// <summary>
-        /// Returns an enumerator that iterates through the registry
-        /// </summary>
-        /// <returns>An enumerator for <see cref="ConcurrentDictionary{String, Policy}"/></returns>
-        public IEnumerator<KeyValuePair<string, Policy>> GetEnumerator() =>
-            _registry.GetEnumerator();
-
-        /// <summary>
-        /// Removes the specified <see cref="Policy"/>  from the registry
+        /// Removes the specified <see cref="Policy"/> from the registry
         /// </summary>
         /// <param name="key">The key of the policy to remove</param>
         /// <returns>True if Policy is successfully removed. Otherwise false.</returns>
@@ -95,27 +78,5 @@ namespace Polly.Registry
         /// <returns>True if Policy exists for the provided Key. False otherwise</returns>
         public bool TryGetValue(string key, out Policy value) =>
             _registry.TryGetValue(key, out value);
-
-        #region IEnumerable members
-        IEnumerator IEnumerable.GetEnumerator() =>
-            (_registry as IEnumerable).GetEnumerator();
-        #endregion
-
-        #region ICollection members
-        bool ICollection<KeyValuePair<string, Policy>>.IsReadOnly =>
-            (_registry as ICollection<KeyValuePair<string, Policy>>).IsReadOnly;
-
-        void ICollection<KeyValuePair<string, Policy>>.Add(KeyValuePair<string, Policy> item) =>
-            (_registry as ICollection<KeyValuePair<string, Policy>>).Add(item);
-
-        bool ICollection<KeyValuePair<string, Policy>>.Contains(KeyValuePair<string, Policy> item) =>
-            (_registry as ICollection<KeyValuePair<string, Policy>>).Contains(item);
-
-        void ICollection<KeyValuePair<string, Policy>>.CopyTo(KeyValuePair<string, Policy>[] array, int arrayIndex) =>
-            (_registry as ICollection<KeyValuePair<string, Policy>>).CopyTo(array, arrayIndex);
-
-        bool ICollection<KeyValuePair<string, Policy>>.Remove(KeyValuePair<string, Policy> item) =>
-            (_registry as ICollection<KeyValuePair<string, Policy>>).Remove(item);
-        #endregion
     }
 }
