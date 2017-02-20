@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.26127.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{79FE9DBE-1155-4F78-A41F-FE95DEFA19DD}"
 	ProjectSection(SolutionItems) = preProject
@@ -22,9 +22,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Polly.Pcl.Specs", "Polly.Pc
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Polly.Net40Async", "Polly.Net40Async\Polly.Net40Async.csproj", "{D6A676C2-982D-42D1-AD21-FA53582A1C31}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Polly.NetStandard10", "Polly.NetStandard10\Polly.NetStandard10.csproj", "{5017174E-DAC5-4408-AB15-1F902F40C612}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Polly.Net40Async.Specs", "Polly.Net40Async.Specs\Polly.Net40Async.Specs.csproj", "{65062661-9E19-4FC6-859C-8B7811553E13}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Polly.NetStandard11", "Polly.NetStandard11\Polly.NetStandard11.csproj", "{5017174E-DAC5-4408-AB15-1F902F40C612}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
@@ -58,14 +58,14 @@ Global
 		{D6A676C2-982D-42D1-AD21-FA53582A1C31}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D6A676C2-982D-42D1-AD21-FA53582A1C31}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D6A676C2-982D-42D1-AD21-FA53582A1C31}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5017174E-DAC5-4408-AB15-1F902F40C612}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5017174E-DAC5-4408-AB15-1F902F40C612}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5017174E-DAC5-4408-AB15-1F902F40C612}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5017174E-DAC5-4408-AB15-1F902F40C612}.Release|Any CPU.Build.0 = Release|Any CPU
 		{65062661-9E19-4FC6-859C-8B7811553E13}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{65062661-9E19-4FC6-859C-8B7811553E13}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{65062661-9E19-4FC6-859C-8B7811553E13}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{65062661-9E19-4FC6-859C-8B7811553E13}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5017174E-DAC5-4408-AB15-1F902F40C612}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5017174E-DAC5-4408-AB15-1F902F40C612}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5017174E-DAC5-4408-AB15-1F902F40C612}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5017174E-DAC5-4408-AB15-1F902F40C612}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
