@@ -18,7 +18,7 @@ namespace Polly.SharedSpecs.Registry
         }
 
         [Fact]
-        public void Should_Allow_Adding_Policy()
+        public void Should_Allow_Adding_Policy_Using_Add()
         {
             Policy policy = Policy.NoOp();
             string key = Guid.NewGuid().ToString();
@@ -52,6 +52,24 @@ namespace Polly.SharedSpecs.Registry
         }
 
         [Fact]
+        public void Should_Allow_Adding_Policy_Using_Indexer()
+        {
+            Policy policy = Policy.NoOp();
+            string key = Guid.NewGuid().ToString();
+            _registry.Invoking(r => r[key] = policy)
+                .ShouldNotThrow();
+
+            _registry.Count.Should().Be(1);
+
+            policy = Policy.NoOp();
+            key = Guid.NewGuid().ToString();
+            _registry.Invoking(r => r[key] = policy)
+                .ShouldNotThrow();
+
+            _registry.Count.Should().Be(2);
+        }
+
+        [Fact]
         public void Should_Not_Allow_Adding_Policy_With_Duplicate_Key_Using_Add()
         {
             Policy policy = Policy.NoOp();
@@ -67,7 +85,7 @@ namespace Polly.SharedSpecs.Registry
         }
 
         [Fact]
-        public void Should_Allow_Retrieving_Stored_Policy()
+        public void Should_Allow_Retrieving_Stored_Policy_Using_TryGetValue()
         {
             Policy policy = Policy.NoOp();
             string key = Guid.NewGuid().ToString();
@@ -92,6 +110,21 @@ namespace Polly.SharedSpecs.Registry
         }
 
         [Fact]
+        public void Should_Allow_Retrieving_Stored_Policy_Using_Indexer()
+        {
+            Policy policy = Policy.NoOp();
+            string key = Guid.NewGuid().ToString();
+            Policy outPolicy = null;
+
+            _registry.Add(key, policy);
+
+            _registry.Invoking(r => outPolicy = r[key])
+                .ShouldNotThrow<KeyNotFoundException>();
+
+            outPolicy.ShouldBeEquivalentTo(policy);
+        }
+
+        [Fact]
         public void Should_Not_Throw_While_Retrieving_When_Key_Does_Not_Exist_Using_TryGetValue()
         {
             string key = Guid.NewGuid().ToString();
@@ -102,6 +135,28 @@ namespace Polly.SharedSpecs.Registry
                 .ShouldNotThrow();
 
             result.Should().BeFalse();
+        }
+
+        [Fact]
+        public void Should_Overwrite_Existing_Policy_If_Key_Exists_When_Inserting_Using_Idexer()
+        {
+            Policy policy = Policy.NoOp();
+            string key = Guid.NewGuid().ToString();
+
+            _registry.Invoking(r => r.Add(key, policy))
+                .ShouldNotThrow();
+
+            Policy policy_new = Policy.NoOp();
+
+            _registry.Invoking(r => r[key] = policy_new)
+                .ShouldNotThrow();
+
+            _registry.Count.Should().Be(1);
+
+            Policy output = null;
+            _registry.Invoking(r => output = r[key])
+                .ShouldNotThrow();
+            output.ShouldBeEquivalentTo(policy_new);
         }
 
         [Fact]
