@@ -4,7 +4,7 @@
     <owners>App vNext</owners>
     <authors>Michael Wolfenden, App vNext</authors>
     <description>
-      Polly is a .NET 4.0 / 4.5 / .NET Standard 1.0 library that allows developers to express resilience and transient fault handling policies such as Retry, Circuit Breaker, Timeout, Bulkhead Isolation and Fallback in a fluent and thread-safe manner.
+      Polly is a .NET 4.5 / .NET Standard 1.0 library that allows developers to express resilience and transient fault handling policies such as Retry, Circuit Breaker, Timeout, Bulkhead Isolation and Fallback in a fluent and thread-safe manner.
     </description>
     <language>en-US</language>
     <licenseUrl>https://raw.github.com/App-vNext/Polly/master/LICENSE.txt</licenseUrl>
