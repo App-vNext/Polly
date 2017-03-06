@@ -33,22 +33,6 @@ namespace Polly.Specs.Registry
                 .ShouldNotThrow();
 
             _registry.Count.Should().Be(2);
-
-            //Using Indexer
-
-            policy = Policy.NoOp();
-            key = Guid.NewGuid().ToString();
-            _registry.Invoking(r => r[key] = policy)
-                .ShouldNotThrow();
-
-            _registry.Count.Should().Be(3);
-
-            policy = Policy.NoOp();
-            key = Guid.NewGuid().ToString();
-            _registry.Invoking(r => r[key] = policy)
-                .ShouldNotThrow();
-
-            _registry.Count.Should().Be(4);
         }
 
         [Fact]
@@ -98,13 +82,6 @@ namespace Polly.Specs.Registry
                 .ShouldNotThrow<ArgumentException>();
 
             result.Should().BeTrue();
-
-            outPolicy.ShouldBeEquivalentTo(policy);
-
-            //indexer
-            outPolicy = null;
-            _registry.Invoking(r => outPolicy = r[key])
-                .ShouldNotThrow<KeyNotFoundException>();
 
             outPolicy.ShouldBeEquivalentTo(policy);
         }
