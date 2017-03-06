@@ -6,7 +6,7 @@ using FluentAssertions;
 using Polly.Registry;
 using Polly.NoOp;
 
-namespace Polly.SharedSpecs.Registry
+namespace Polly.Specs.Registry
 {
     public class DefaultPolicyRegistrySpecs
     {
@@ -18,7 +18,7 @@ namespace Polly.SharedSpecs.Registry
         }
 
         [Fact]
-        public void Should_Allow_Adding_Policy_Using_Add()
+        public void Should_be_able_to_add_Policy_using_Add()
         {
             Policy policy = Policy.NoOp();
             string key = Guid.NewGuid().ToString();
@@ -52,7 +52,7 @@ namespace Polly.SharedSpecs.Registry
         }
 
         [Fact]
-        public void Should_Allow_Adding_Policy_Using_Indexer()
+        public void Should_be_able_to_add_Policy_using_Indexer()
         {
             Policy policy = Policy.NoOp();
             string key = Guid.NewGuid().ToString();
@@ -70,7 +70,7 @@ namespace Polly.SharedSpecs.Registry
         }
 
         [Fact]
-        public void Should_Not_Allow_Adding_Policy_With_Duplicate_Key_Using_Add()
+        public void Should_not_be_able_to_add_Policy_with_duplicate_Key_using_Add()
         {
             Policy policy = Policy.NoOp();
             string key = Guid.NewGuid().ToString();
@@ -85,7 +85,7 @@ namespace Polly.SharedSpecs.Registry
         }
 
         [Fact]
-        public void Should_Allow_Retrieving_Stored_Policy_Using_TryGetValue()
+        public void Should_be_able_to_retrieve_stored_Policy_using_TryGetValue()
         {
             Policy policy = Policy.NoOp();
             string key = Guid.NewGuid().ToString();
@@ -110,7 +110,7 @@ namespace Polly.SharedSpecs.Registry
         }
 
         [Fact]
-        public void Should_Allow_Retrieving_Stored_Policy_Using_Indexer()
+        public void Should_be_able_to_retrieve_stored_Policy_using_Indexer()
         {
             Policy policy = Policy.NoOp();
             string key = Guid.NewGuid().ToString();
@@ -125,7 +125,7 @@ namespace Polly.SharedSpecs.Registry
         }
 
         [Fact]
-        public void Should_Not_Throw_While_Retrieving_When_Key_Does_Not_Exist_Using_TryGetValue()
+        public void Should_not_throw_while_retrieving_when_Key_does_not_exist_using_TryGetValue()
         {
             string key = Guid.NewGuid().ToString();
             Policy outPolicy = null;
@@ -138,7 +138,7 @@ namespace Polly.SharedSpecs.Registry
         }
 
         [Fact]
-        public void Should_Overwrite_Existing_Policy_If_Key_Exists_When_Inserting_Using_Idexer()
+        public void Should_be_able_to_overwrite_existing_Policy_if_Key_exists_when_inserting_using_Idexer()
         {
             Policy policy = Policy.NoOp();
             string key = Guid.NewGuid().ToString();
@@ -160,7 +160,7 @@ namespace Polly.SharedSpecs.Registry
         }
 
         [Fact]
-        public void Should_Allow_Clearing_Registry()
+        public void Should_be_able_to_clear_registry()
         {
             Policy policy = Policy.NoOp();
             string key = Guid.NewGuid().ToString();
@@ -183,7 +183,7 @@ namespace Polly.SharedSpecs.Registry
         }
 
         [Fact]
-        public void Should_Allow_Removing_Policy()
+        public void Should_be_able_to_remove_policy()
         {
             Policy policy = Policy.NoOp();
             string key = Guid.NewGuid().ToString();
@@ -199,7 +199,7 @@ namespace Polly.SharedSpecs.Registry
         }
 
         [Fact]
-        public void Should_Check_If_Key_Exists()
+        public void Should_be_able_to_check_if_Key_exists()
         {
             Policy policy = Policy.NoOp();
             string key = Guid.NewGuid().ToString();
@@ -221,7 +221,7 @@ namespace Polly.SharedSpecs.Registry
         }
 
         [Fact]
-        public void Should_Overwrite_Existing_Policy_When_Using_Indexer()
+        public void Should_be_able_to_overwrite_existing_Policy_when_using_Indexer()
         {
             Policy policy = Policy.NoOp();
             string key = Guid.NewGuid().ToString();
