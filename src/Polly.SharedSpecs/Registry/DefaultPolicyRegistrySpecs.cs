@@ -24,16 +24,14 @@ namespace Polly.Specs.Registry
         {
             Policy policy = Policy.NoOp();
             string key = Guid.NewGuid().ToString();
-            _registry.Invoking(r => r.Add(key, policy))
-                .ShouldNotThrow();
 
+            _registry.Add(key, policy);
             _registry.Count.Should().Be(1);
 
             Policy policy2 = Policy.NoOp();
             string key2 = Guid.NewGuid().ToString();
-            _registry.Invoking(r => r.Add(key2, policy2))
-                .ShouldNotThrow();
 
+            _registry.Add(key2, policy2);
             _registry.Count.Should().Be(2);
         }
 
@@ -42,16 +40,14 @@ namespace Polly.Specs.Registry
         {
             Policy policy = Policy.NoOp();
             string key = Guid.NewGuid().ToString();
-            _registry.Invoking(r => r[key] = policy)
-                .ShouldNotThrow();
 
+            _registry[key] = policy;
             _registry.Count.Should().Be(1);
 
             Policy policy2 = Policy.NoOp();
             string key2 = Guid.NewGuid().ToString();
-            _registry.Invoking(r => r[key2] = policy2)
-                .ShouldNotThrow();
 
+            _registry[key2] = policy2;
             _registry.Count.Should().Be(2);
         }
 
@@ -75,21 +71,13 @@ namespace Polly.Specs.Registry
         {
             Policy policy = Policy.NoOp();
             string key = Guid.NewGuid().ToString();
-
-            _registry.Invoking(r => r.Add(key, policy))
-                .ShouldNotThrow();
+            _registry.Add(key, policy);
 
             Policy policy_new = Policy.NoOp();
-
-            _registry.Invoking(r => r[key] = policy_new)
-                .ShouldNotThrow();
-
+            _registry[key] = policy_new;
             _registry.Count.Should().Be(1);
 
-            Policy output = null;
-            _registry.Invoking(r => output = r[key])
-                .ShouldNotThrow();
-            output.Should().BeSameAs(policy_new);
+            _registry[key].Should().BeSameAs(policy_new);
         }
 
         [Fact]
@@ -119,15 +107,9 @@ namespace Polly.Specs.Registry
             Policy policy = Policy.NoOp();
             string key = Guid.NewGuid().ToString();
             Policy outPolicy = null;
-            bool result = false;
 
             _registry.Add(key, policy);
-
-            _registry.Invoking(r => result = r.TryGetValue(key, out outPolicy))
-                .ShouldNotThrow<ArgumentException>();
-
-            result.Should().BeTrue();
-
+            _registry.TryGetValue(key, out outPolicy).Should().BeTrue();
             outPolicy.Should().BeSameAs(policy);
         }
 
@@ -136,14 +118,9 @@ namespace Polly.Specs.Registry
         {
             Policy policy = Policy.NoOp();
             string key = Guid.NewGuid().ToString();
-            Policy outPolicy = null;
 
             _registry.Add(key, policy);
-
-            _registry.Invoking(r => outPolicy = r[key])
-                .ShouldNotThrow<KeyNotFoundException>();
-
-            outPolicy.Should().BeSameAs(policy);
+            _registry[key].Should().BeSameAs(policy);
         }
 
         [Fact]
@@ -184,21 +161,17 @@ namespace Polly.Specs.Registry
         {
             Policy policy = Policy.NoOp();
             string key = Guid.NewGuid().ToString();
-            _registry.Invoking(r => r.Add(key, policy))
-                .ShouldNotThrow();
 
+            _registry.Add(key, policy);
             _registry.Count.Should().Be(1);
 
             Policy policy2 = Policy.NoOp();
             string key2 = Guid.NewGuid().ToString();
-            _registry.Invoking(r => r.Add(key2, policy2))
-                .ShouldNotThrow();
 
+            _registry.Add(key2, policy2);
             _registry.Count.Should().Be(2);
 
-            _registry.Invoking(r => r.Clear())
-                .ShouldNotThrow();
-
+            _registry.Clear();
             _registry.Count.Should().Be(0);
         }
 
@@ -207,14 +180,11 @@ namespace Polly.Specs.Registry
         {
             Policy policy = Policy.NoOp();
             string key = Guid.NewGuid().ToString();
-            _registry.Invoking(r => r.Add(key, policy))
-                .ShouldNotThrow();
 
+            _registry.Add(key, policy);
             _registry.Count.Should().Be(1);
 
-            _registry.Invoking(r => r.Remove(key))
-                .ShouldNotThrow();
-
+            _registry.Remove(key);
             _registry.Count.Should().Be(0);
         }
 
@@ -233,21 +203,12 @@ namespace Polly.Specs.Registry
         {
             Policy policy = Policy.NoOp();
             string key = Guid.NewGuid().ToString();
-            _registry.Invoking(r => r.Add(key, policy))
-                .ShouldNotThrow();
 
-            bool result = false;
-            _registry.Invoking(r => result = r.ContainsKey(key))
-                .ShouldNotThrow();
-
-            result.Should().BeTrue();
+            _registry.Add(key, policy);
+            _registry.ContainsKey(key).Should().BeTrue();
 
             string key2 = Guid.NewGuid().ToString();
-
-            _registry.Invoking(r => result = r.ContainsKey(key2))
-                .ShouldNotThrow();
-
-            result.Should().BeFalse();
+            _registry.ContainsKey(key2).Should().BeFalse();
         }
 
         [Fact]
