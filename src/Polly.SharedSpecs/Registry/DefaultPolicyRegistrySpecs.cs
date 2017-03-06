@@ -115,6 +115,15 @@ namespace Polly.Specs.Registry
         }
 
         [Fact]
+        public void Should_throw_while_retrieving_using_indexer_when_key_does_not_exist()
+        {
+            string key = Guid.NewGuid().ToString();
+            Policy policy = null;
+            _registry.Invoking(r => policy = r[key])
+                .ShouldThrow<KeyNotFoundException>();
+        }
+
+        [Fact]
         public void Should_be_able_to_overwrite_existing_Policy_if_key_exists_when_inserting_using_Idexer()
         {
             Policy policy = Policy.NoOp();
@@ -195,6 +204,41 @@ namespace Polly.Specs.Registry
                 .ShouldNotThrow();
 
             result.Should().BeFalse();
+        }
+
+        [Fact]
+        public void Should_throw_when_retrieving_using_indexer_when_key_is_null()
+        {
+            string key = null;
+            Policy policy = null;
+            _registry.Invoking(r => policy = r[key])
+                .ShouldThrow<ArgumentNullException>();
+        }
+
+        [Fact]
+        public void Should_throw_when_adding_Policy_using_Add_when_key_is_null()
+        {
+            string key = null;
+            Policy policy = Policy.NoOp();
+            _registry.Invoking(r => r.Add(key, policy))
+                .ShouldThrow<ArgumentNullException>();
+        }
+
+        [Fact]
+        public void Should_throw_when_adding_Policy_using_Indexer_when_key_is_null()
+        {
+            string key = null;
+            Policy policy = Policy.NoOp();
+            _registry.Invoking(r => r[key] = policy)
+                .ShouldThrow<ArgumentNullException>();
+        }
+
+        [Fact]
+        public void Should_throw_when_removing_Policy_when_key_is_null()
+        {
+            string key = null;
+            _registry.Invoking(r => r.Remove(key))
+                .ShouldThrow<ArgumentNullException>();
         }
     }
 }
