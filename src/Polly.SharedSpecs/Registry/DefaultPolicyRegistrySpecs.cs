@@ -83,7 +83,7 @@ namespace Polly.Specs.Registry
 
             result.Should().BeTrue();
 
-            outPolicy.ShouldBeEquivalentTo(policy);
+            outPolicy.Should().BeSameAs(policy);
         }
 
         [Fact]
@@ -98,7 +98,7 @@ namespace Polly.Specs.Registry
             _registry.Invoking(r => outPolicy = r[key])
                 .ShouldNotThrow<KeyNotFoundException>();
 
-            outPolicy.ShouldBeEquivalentTo(policy);
+            outPolicy.Should().BeSameAs(policy);
         }
 
         [Fact]
@@ -133,7 +133,7 @@ namespace Polly.Specs.Registry
             Policy output = null;
             _registry.Invoking(r => output = r[key])
                 .ShouldNotThrow();
-            output.ShouldBeEquivalentTo(policy_new);
+            output.Should().BeSameAs(policy_new);
         }
 
         [Fact]
