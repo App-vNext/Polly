@@ -196,20 +196,5 @@ namespace Polly.Specs.Registry
 
             result.Should().BeFalse();
         }
-
-        [Fact]
-        public void Should_be_able_to_overwrite_existing_Policy_when_using_Indexer()
-        {
-            Policy policy = Policy.NoOp();
-            string key = Guid.NewGuid().ToString();
-
-            _registry.Invoking(r => r[key] = policy)
-                .ShouldNotThrow();
-
-            _registry.Invoking(r => r[key] = policy)
-                .ShouldNotThrow();
-
-            _registry.Count.Should().Be(1);
-        }
     }
 }
