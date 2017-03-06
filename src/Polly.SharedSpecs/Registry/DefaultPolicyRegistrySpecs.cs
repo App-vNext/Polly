@@ -54,7 +54,7 @@ namespace Polly.Specs.Registry
         }
 
         [Fact]
-        public void Should_not_be_able_to_add_Policy_with_duplicate_Key_using_Add()
+        public void Should_not_be_able_to_add_Policy_with_duplicate_key_using_Add()
         {
             Policy policy = Policy.NoOp();
             string key = Guid.NewGuid().ToString();
@@ -102,7 +102,7 @@ namespace Polly.Specs.Registry
         }
 
         [Fact]
-        public void Should_not_throw_while_retrieving_when_Key_does_not_exist_using_TryGetValue()
+        public void Should_not_throw_while_retrieving_when_key_does_not_exist_using_TryGetValue()
         {
             string key = Guid.NewGuid().ToString();
             Policy outPolicy = null;
@@ -115,7 +115,7 @@ namespace Polly.Specs.Registry
         }
 
         [Fact]
-        public void Should_be_able_to_overwrite_existing_Policy_if_Key_exists_when_inserting_using_Idexer()
+        public void Should_be_able_to_overwrite_existing_Policy_if_key_exists_when_inserting_using_Idexer()
         {
             Policy policy = Policy.NoOp();
             string key = Guid.NewGuid().ToString();
@@ -176,7 +176,7 @@ namespace Polly.Specs.Registry
         }
 
         [Fact]
-        public void Should_be_able_to_check_if_Key_exists()
+        public void Should_be_able_to_check_if_key_exists()
         {
             Policy policy = Policy.NoOp();
             string key = Guid.NewGuid().ToString();
