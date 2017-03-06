@@ -17,6 +17,8 @@ namespace Polly.Specs.Registry
             _registry = new DefaultPolicyRegistry();
         }
 
+        #region Tests for adding Policy
+
         [Fact]
         public void Should_be_able_to_add_Policy_using_Add()
         {
@@ -68,6 +70,49 @@ namespace Polly.Specs.Registry
             _registry.Count.Should().Be(1);
         }
 
+        [Fact]
+        public void Should_be_able_to_overwrite_existing_Policy_if_key_exists_when_inserting_using_Idexer()
+        {
+            Policy policy = Policy.NoOp();
+            string key = Guid.NewGuid().ToString();
+
+            _registry.Invoking(r => r.Add(key, policy))
+                .ShouldNotThrow();
+
+            Policy policy_new = Policy.NoOp();
+
+            _registry.Invoking(r => r[key] = policy_new)
+                .ShouldNotThrow();
+
+            _registry.Count.Should().Be(1);
+
+            Policy output = null;
+            _registry.Invoking(r => output = r[key])
+                .ShouldNotThrow();
+            output.Should().BeSameAs(policy_new);
+        }
+
+        [Fact]
+        public void Should_throw_when_adding_Policy_using_Add_when_key_is_null()
+        {
+            string key = null;
+            Policy policy = Policy.NoOp();
+            _registry.Invoking(r => r.Add(key, policy))
+                .ShouldThrow<ArgumentNullException>();
+        }
+
+        [Fact]
+        public void Should_throw_when_adding_Policy_using_Indexer_when_key_is_null()
+        {
+            string key = null;
+            Policy policy = Policy.NoOp();
+            _registry.Invoking(r => r[key] = policy)
+                .ShouldThrow<ArgumentNullException>();
+        }
+
+        #endregion
+
+        #region Tests for retrieving policy
         [Fact]
         public void Should_be_able_to_retrieve_stored_Policy_using_TryGetValue()
         {
@@ -124,27 +169,16 @@ namespace Polly.Specs.Registry
         }
 
         [Fact]
-        public void Should_be_able_to_overwrite_existing_Policy_if_key_exists_when_inserting_using_Idexer()
+        public void Should_throw_when_retrieving_using_indexer_when_key_is_null()
         {
-            Policy policy = Policy.NoOp();
-            string key = Guid.NewGuid().ToString();
-
-            _registry.Invoking(r => r.Add(key, policy))
-                .ShouldNotThrow();
-
-            Policy policy_new = Policy.NoOp();
-
-            _registry.Invoking(r => r[key] = policy_new)
-                .ShouldNotThrow();
-
-            _registry.Count.Should().Be(1);
-
-            Policy output = null;
-            _registry.Invoking(r => output = r[key])
-                .ShouldNotThrow();
-            output.Should().BeSameAs(policy_new);
+            string key = null;
+            Policy policy = null;
+            _registry.Invoking(r => policy = r[key])
+                .ShouldThrow<ArgumentNullException>();
         }
+        #endregion
 
+        #region Tests for removing policy
         [Fact]
         public void Should_be_able_to_clear_registry()
         {
@@ -185,6 +219,16 @@ namespace Polly.Specs.Registry
         }
 
         [Fact]
+        public void Should_throw_when_removing_Policy_when_key_is_null()
+        {
+            string key = null;
+            _registry.Invoking(r => r.Remove(key))
+                .ShouldThrow<ArgumentNullException>();
+        }
+        #endregion
+
+        #region Tests for checking if key exists
+        [Fact]
         public void Should_be_able_to_check_if_key_exists()
         {
             Policy policy = Policy.NoOp();
@@ -207,38 +251,12 @@ namespace Polly.Specs.Registry
         }
 
         [Fact]
-        public void Should_throw_when_retrieving_using_indexer_when_key_is_null()
+        public void Should_throw_when_checking_if_key_exists_when_key_is_null()
         {
             string key = null;
-            Policy policy = null;
-            _registry.Invoking(r => policy = r[key])
+            _registry.Invoking(r => r.ContainsKey(key))
                 .ShouldThrow<ArgumentNullException>();
         }
-
-        [Fact]
-        public void Should_throw_when_adding_Policy_using_Add_when_key_is_null()
-        {
-            string key = null;
-            Policy policy = Policy.NoOp();
-            _registry.Invoking(r => r.Add(key, policy))
-                .ShouldThrow<ArgumentNullException>();
-        }
-
-        [Fact]
-        public void Should_throw_when_adding_Policy_using_Indexer_when_key_is_null()
-        {
-            string key = null;
-            Policy policy = Policy.NoOp();
-            _registry.Invoking(r => r[key] = policy)
-                .ShouldThrow<ArgumentNullException>();
-        }
-
-        [Fact]
-        public void Should_throw_when_removing_Policy_when_key_is_null()
-        {
-            string key = null;
-            _registry.Invoking(r => r.Remove(key))
-                .ShouldThrow<ArgumentNullException>();
-        }
+        #endregion
     }
 }
