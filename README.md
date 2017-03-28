@@ -824,7 +824,7 @@ For details of changes by release see the [change log](https://github.com/App-vN
 * [@reisenberger](https://github.com/reisenberger) - Fix CircuitBreaker HalfOpen state and cases when breakDuration is shorter than typical call timeout.  Thanks to [@vgouw](https://github.com/vgouw) and [@kharos](https://github.com/kharos) for the reports and insightful thinking.
 * [@lakario](https://github.com/lakario) - Tidy CircuitBreaker LastException property.
 * [@lakario](https://github.com/lakario) - Add NoOpPolicy.
-
+* [@Julien-Mialon](https://github.com/Julien-Mialon) - Fixes, support and examples for .NETStandard compatibility with Xamarin PCL projects
 
 # Sample Projects
 
