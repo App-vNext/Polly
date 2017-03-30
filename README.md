@@ -851,7 +851,7 @@ When we discover an interesting write-up on Polly, we'll add it to this list. If
 * [NuGet Package of the Week: Polly wanna fluently express transient exception handling policies in .NET?](https://www.hanselman.com/blog/NuGetPackageOfTheWeekPollyWannaFluentlyExpressTransientExceptionHandlingPoliciesInNET.aspx) - by [Scott Hanselman](https://www.hanselman.com/about/)
 * [Circuit Breaking with Polly](http://blog.jaywayco.co.uk/circuit-breaking-with-polly/) - by [J. Conway](http://blog.jaywayco.co.uk/sample-page/)
 * [Exception handling policies with Polly](http://putridparrot.com/blog/exception-handling-policies-with-polly/) - by [Mark Timmings](http://putridparrot.com/blog/about/)
-* [Polly is Repetitive, and I love it!](http://www.appvnext.com/blog/2015/11/19/polly-is-repetitive-and-i-love-it) - [Joel Hulen](https://github.com/joelhulen)
+* [Polly is Repetitive, and I love it!](http://www.appvnext.com/blog/2015/11/19/polly-is-repetitive-and-i-love-it) - by [Joel Hulen](https://github.com/joelhulen)
 
 # Laptop Stickers!
 
