@@ -847,6 +847,7 @@ Licensed under the terms of the [New BSD License](http://opensource.org/licenses
 When we discover an interesting write-up on Polly, we'll add it to this list. If you have a blog post you'd like to share, please submit a PR!
 
 * [Azure SQL transient errors](https://hackernoon.com/azure-sql-transient-errors-7625ad6e0a06) - by [Mattias Karlsson](https://hackernoon.com/@devlead)
+* [Polly series on No Dogma blog](http://nodogmablog.bryanhogan.net/tag/polly/) - by [Bryan Hogan](https://twitter.com/bryanjhogan)
 * [Polly 5.0 - a wider resilience framework!](http://www.thepollyproject.org/2016/10/25/polly-5-0-a-wider-resilience-framework/) - by [Dylan Reisenberger](http://www.thepollyproject.org/author/dylan/)
 * [Implementing the retry pattern in c sharp using Polly](https://alastaircrabtree.com/implementing-the-retry-pattern-using-polly/) - by [Alastair Crabtree](https://alastaircrabtree.com/about/)
 * [NuGet Package of the Week: Polly wanna fluently express transient exception handling policies in .NET?](https://www.hanselman.com/blog/NuGetPackageOfTheWeekPollyWannaFluentlyExpressTransientExceptionHandlingPoliciesInNET.aspx) - by [Scott Hanselman](https://www.hanselman.com/about/)
