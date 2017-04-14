@@ -42,8 +42,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)CircuitBreaker\SingleHealthMetrics.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CircuitBreaker\AdvancedCircuitController.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Context.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ContextualPolicy.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ContextualPolicyAsync.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ExceptionPredicate.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DelegateResult.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ExecutionRejectedException.cs" />
