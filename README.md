@@ -824,7 +824,7 @@ For details of changes by release see the [change log](https://github.com/App-vN
 * [@reisenberger](https://github.com/reisenberger) - Fix CircuitBreaker HalfOpen state and cases when breakDuration is shorter than typical call timeout.  Thanks to [@vgouw](https://github.com/vgouw) and [@kharos](https://github.com/kharos) for the reports and insightful thinking.
 * [@lakario](https://github.com/lakario) - Tidy CircuitBreaker LastException property.
 * [@lakario](https://github.com/lakario) - Add NoOpPolicy.
-
+* [@Julien-Mialon](https://github.com/Julien-Mialon) - Fixes, support and examples for .NETStandard compatibility with Xamarin PCL projects
 
 # Sample Projects
 
@@ -841,6 +841,19 @@ Also, we've stood up a [Slack](http://www.pollytalk.org) channel for easier real
 # License
 
 Licensed under the terms of the [New BSD License](http://opensource.org/licenses/BSD-3-Clause)
+
+# Blog posts about Polly
+
+When we discover an interesting write-up on Polly, we'll add it to this list. If you have a blog post you'd like to share, please submit a PR!
+
+* [Azure SQL transient errors](https://hackernoon.com/azure-sql-transient-errors-7625ad6e0a06) - by [Mattias Karlsson](https://hackernoon.com/@devlead)
+* [Polly series on No Dogma blog](http://nodogmablog.bryanhogan.net/tag/polly/) - by [Bryan Hogan](https://twitter.com/bryanjhogan)
+* [Polly 5.0 - a wider resilience framework!](http://www.thepollyproject.org/2016/10/25/polly-5-0-a-wider-resilience-framework/) - by [Dylan Reisenberger](http://www.thepollyproject.org/author/dylan/)
+* [Implementing the retry pattern in c sharp using Polly](https://alastaircrabtree.com/implementing-the-retry-pattern-using-polly/) - by [Alastair Crabtree](https://alastaircrabtree.com/about/)
+* [NuGet Package of the Week: Polly wanna fluently express transient exception handling policies in .NET?](https://www.hanselman.com/blog/NuGetPackageOfTheWeekPollyWannaFluentlyExpressTransientExceptionHandlingPoliciesInNET.aspx) - by [Scott Hanselman](https://www.hanselman.com/about/)
+* [Circuit Breaking with Polly](http://blog.jaywayco.co.uk/circuit-breaking-with-polly/) - by [J. Conway](http://blog.jaywayco.co.uk/sample-page/)
+* [Exception handling policies with Polly](http://putridparrot.com/blog/exception-handling-policies-with-polly/) - by [Mark Timmings](http://putridparrot.com/blog/about/)
+* [Polly is Repetitive, and I love it!](http://www.appvnext.com/blog/2015/11/19/polly-is-repetitive-and-i-love-it) - by [Joel Hulen](http://www.thepollyproject.org/author/joel/)
 
 # Laptop Stickers!
 
