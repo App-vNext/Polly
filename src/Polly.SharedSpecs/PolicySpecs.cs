@@ -8,33 +8,39 @@ namespace Polly.Specs
 {
     public class PolicySpecs
     {
+        #region Execute tests
+
         [Fact]
         public void Executing_the_policy_action_should_execute_the_specified_action()
         {
             var executed = false;
 
             var policy = Policy
-                          .Handle<DivideByZeroException>()
-                          .Retry((_, __) => { });
+                .Handle<DivideByZeroException>()
+                .Retry((_, __) => { });
 
             policy.Execute(() => executed = true);
 
             executed.Should()
-                    .BeTrue();
+                .BeTrue();
         }
 
         [Fact]
         public void Executing_the_policy_function_should_execute_the_specified_function_and_return_the_result()
         {
             var policy = Policy
-                          .Handle<DivideByZeroException>()
-                          .Retry((_, __) => { });
+                .Handle<DivideByZeroException>()
+                .Retry((_, __) => { });
 
             var result = policy.Execute(() => 2);
 
             result.Should()
-                  .Be(2);
+                .Be(2);
         }
+
+        #endregion
+
+        #region ExecuteAndCapture tests
 
         [Fact]
         public void Executing_the_policy_action_successfully_should_return_success_result()
@@ -53,43 +59,43 @@ namespace Polly.Specs
         }
 
         [Fact]
-        public void Executing_the_policy_action_and_failing_with_a_defined_exception_type_should_return_failure_result_indicating_that_exception_type_is_one_handled_by_this_policy()
+        public void Executing_the_policy_action_and_failing_with_a_handled_exception_type_should_return_failure_result_indicating_that_exception_type_is_one_handled_by_this_policy()
         {
-            var definedException = new DivideByZeroException();
+            var handledException = new DivideByZeroException();
 
             var result = Policy
                 .Handle<DivideByZeroException>()
                 .Retry((_, __) => { })
                 .ExecuteAndCapture(() =>
                 {
-                    throw definedException;
+                    throw handledException;
                 });
 
             result.ShouldBeEquivalentTo(new
             {
                 Outcome = OutcomeType.Failure,
-                FinalException = definedException,
+                FinalException = handledException,
                 ExceptionType = ExceptionType.HandledByThisPolicy
             });
         }
 
         [Fact]
-        public void Executing_the_policy_action_and_failing_with_an_undefined_exception_type_should_return_failure_result_indicating_that_exception_type_is_unhandled_by_this_policy()
+        public void Executing_the_policy_action_and_failing_with_an_unhandled_exception_type_should_return_failure_result_indicating_that_exception_type_is_unhandled_by_this_policy()
         {
-            var undefinedException = new Exception();
+            var unhandledException = new Exception();
 
             var result = Policy
                 .Handle<DivideByZeroException>()
                 .Retry((_, __) => { })
                 .ExecuteAndCapture(() =>
                 {
-                    throw undefinedException;
+                    throw unhandledException;
                 });
 
             result.ShouldBeEquivalentTo(new
             {
                 Outcome = OutcomeType.Failure,
-                FinalException = undefinedException,
+                FinalException = unhandledException,
                 ExceptionType = ExceptionType.Unhandled
             });
         }
@@ -114,22 +120,22 @@ namespace Polly.Specs
         }
 
         [Fact]
-        public void Executing_the_policy_function_and_failing_with_a_defined_exception_type_should_return_failure_result_indicating_that_exception_type_is_one_handled_by_this_policy()
+        public void Executing_the_policy_function_and_failing_with_a_handled_exception_type_should_return_failure_result_indicating_that_exception_type_is_one_handled_by_this_policy()
         {
-            var definedException = new DivideByZeroException();
+            var handledException = new DivideByZeroException();
 
             var result = Policy
                 .Handle<DivideByZeroException>()
                 .Retry((_, __) => { })
                 .ExecuteAndCapture<int>(() =>
                 {
-                    throw definedException;
+                    throw handledException;
                 });
 
             result.ShouldBeEquivalentTo(new
             {
                 Outcome = OutcomeType.Failure,
-                FinalException = definedException,
+                FinalException = handledException,
                 ExceptionType = ExceptionType.HandledByThisPolicy,
                 FaultType = FaultType.ExceptionHandledByThisPolicy,
                 FinalHandledResult = default(int),
@@ -138,28 +144,32 @@ namespace Polly.Specs
         }
 
         [Fact]
-        public void Executing_the_policy_function_and_failing_with_an_undefined_exception_type_should_return_failure_result_indicating_that_exception_type_is_unhandled_by_this_policy()
+        public void Executing_the_policy_function_and_failing_with_an_unhandled_exception_type_should_return_failure_result_indicating_that_exception_type_is_unhandled_by_this_policy()
         {
-            var undefinedException = new Exception();
+            var unhandledException = new Exception();
 
             var result = Policy
                 .Handle<DivideByZeroException>()
                 .Retry((_, __) => { })
                 .ExecuteAndCapture<int>(() =>
                 {
-                    throw undefinedException;
+                    throw unhandledException;
                 });
 
             result.ShouldBeEquivalentTo(new
             {
                 Outcome = OutcomeType.Failure,
-                FinalException = undefinedException,
+                FinalException = unhandledException,
                 ExceptionType = ExceptionType.Unhandled,
                 FaultType = FaultType.UnhandledException,
                 FinalHandledResult = default(int),
                 Result = default(int)
             });
         }
+
+        #endregion
+
+        #region Async erroneously on sync - tests
 
         [Theory, MemberData("AsyncPolicies")]
         public void Executing_the_asynchronous_policies_using_the_synchronous_execute_should_throw_an_invalid_operation_exception(Policy asyncPolicy, string description)
@@ -220,5 +230,103 @@ namespace Polly.Specs
                 .Handle<DivideByZeroException>()
                 .CircuitBreakerAsync(1, new TimeSpan());
         }
+
+        #endregion
+
+        #region Context tests
+
+        [Fact]
+        public void Executing_the_policy_action_should_throw_when_context_data_is_null()
+        {
+            Policy policy = Policy
+                .Handle<DivideByZeroException>()
+                .Retry((_, __, ___) => { });
+
+            policy.Invoking(p => p.Execute(() => { }, (IDictionary<string, object>)null))
+                  .ShouldThrow<ArgumentNullException>();
+        }
+
+        [Fact]
+        public void Executing_the_policy_action_should_throw_when_context_is_null()
+        {
+            Policy policy = Policy
+                .Handle<DivideByZeroException>()
+                .Retry((_, __, ___) => { });
+
+            policy.Invoking(p => p.Execute(() => { }, (Context)null))
+                .ShouldThrow<ArgumentNullException>().And
+                .ParamName.Should().Be("context");
+        }
+
+        [Fact]
+        public void Executing_the_policy_function_should_throw_when_context_data_is_null()
+        {
+            Policy policy = Policy
+                .Handle<DivideByZeroException>()
+                .Retry((_, __, ___) => { });
+
+            policy.Invoking(p => p.Execute(() => 2, (IDictionary<string, object>)null))
+                .ShouldThrow<ArgumentNullException>();
+        }
+
+        [Fact]
+        public void Executing_the_policy_function_should_throw_when_context_is_null()
+        {
+            Policy policy = Policy
+                .Handle<DivideByZeroException>()
+                .Retry((_, __, ___) => { });
+
+            policy.Invoking(p => p.Execute(() => 2, (Context)null))
+                .ShouldThrow<ArgumentNullException>().And
+                .ParamName.Should().Be("context");
+        }
+
+        [Fact]
+        public void Execute_and_capturing_the_policy_action_should_throw_when_context_data_is_null()
+        {
+            Policy policy = Policy
+                .Handle<DivideByZeroException>()
+                .Retry((_, __, ___) => { });
+
+            policy.Invoking(p => p.ExecuteAndCapture(() => { }, (IDictionary<string, object>)null))
+                  .ShouldThrow<ArgumentNullException>();
+        }
+
+        [Fact]
+        public void Execute_and_capturing_the_policy_action_should_throw_when_context_is_null()
+        {
+            Policy policy = Policy
+                .Handle<DivideByZeroException>()
+                .Retry((_, __, ___) => { });
+
+            policy.Invoking(p => p.ExecuteAndCapture(() => { }, (Context)null))
+                .ShouldThrow<ArgumentNullException>().And
+                .ParamName.Should().Be("context");
+        }
+
+        [Fact]
+        public void Execute_and_capturing_the_policy_function_should_throw_when_context_data_is_null()
+        {
+            Policy policy = Policy
+                .Handle<DivideByZeroException>()
+                .Retry((_, __, ___) => { });
+
+            policy.Invoking(p => p.ExecuteAndCapture(() => 2, (IDictionary<string, object>)null))
+                  .ShouldThrow<ArgumentNullException>();
+        }
+
+        [Fact]
+        public void Execute_and_capturing_the_policy_function_should_throw_when_context_is_null()
+        {
+            Policy policy = Policy
+                .Handle<DivideByZeroException>()
+                .Retry((_, __, ___) => { });
+
+            policy.Invoking(p => p.ExecuteAndCapture(() => 2, (Context)null))
+                  .ShouldThrow<ArgumentNullException>().And
+                  .ParamName.Should().Be("context");
+        }
+
+        #endregion
     }
 }

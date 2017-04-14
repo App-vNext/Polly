@@ -23,8 +23,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)CircuitBreaker\CircuitBreakerTResultMixedResultExceptionSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CircuitBreaker\CircuitBreakerTResultSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ContextSpecs.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ContextualPolicyAsyncSpecs.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ContextualPolicySpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Fallback\FallbackAsyncSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Fallback\FallbackSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Fallback\FallbackTResultAsyncSpecs.cs" />

@@ -10,6 +10,8 @@ namespace Polly.Specs
 {
     public class PolicyAsyncSpecs
     {
+        #region Execute tests
+
         [Fact]
         public async Task Executing_the_policy_action_should_execute_the_specified_async_action()
         {
@@ -42,6 +44,10 @@ namespace Polly.Specs
                 .Be(2);
         }
 
+        #endregion
+
+        #region ExecuteAndCapture tests
+
         [Fact]
         public async Task Executing_the_policy_action_successfully_should_return_success_result()
         {
@@ -59,43 +65,43 @@ namespace Polly.Specs
         }
 
         [Fact]
-        public async Task Executing_the_policy_action_and_failing_with_a_defined_exception_type_should_return_failure_result_indicating_that_exception_type_is_one_handled_by_this_policy()
+        public async Task Executing_the_policy_action_and_failing_with_a_handled_exception_type_should_return_failure_result_indicating_that_exception_type_is_one_handled_by_this_policy()
         {
-            var definedException = new DivideByZeroException();
+            var handledException = new DivideByZeroException();
 
             var result = await Policy
                 .Handle<DivideByZeroException>()
                 .RetryAsync((_, __) => { })
                 .ExecuteAndCaptureAsync(() =>
                 {
-                    throw definedException;
+                    throw handledException;
                 });
 
             result.ShouldBeEquivalentTo(new
             {
                 Outcome = OutcomeType.Failure,
-                FinalException = definedException,
+                FinalException = handledException,
                 ExceptionType = ExceptionType.HandledByThisPolicy
             });
         }
 
         [Fact]
-        public async Task Executing_the_policy_action_and_failing_with_an_undefined_exception_type_should_return_failure_result_indicating_that_exception_type_is_unhandled_by_this_policy()
+        public async Task Executing_the_policy_action_and_failing_with_an_unhandled_exception_type_should_return_failure_result_indicating_that_exception_type_is_unhandled_by_this_policy()
         {
-            var undefinedException = new Exception();
+            var unhandledException = new Exception();
 
             var result = await Policy
                 .Handle<DivideByZeroException>()
                 .RetryAsync((_, __) => { })
                 .ExecuteAndCaptureAsync(() =>
                 {
-                    throw undefinedException;
+                    throw unhandledException;
                 });
 
             result.ShouldBeEquivalentTo(new
             {
                 Outcome = OutcomeType.Failure,
-                FinalException = undefinedException,
+                FinalException = unhandledException,
                 ExceptionType = ExceptionType.Unhandled
             });
         }
@@ -120,22 +126,22 @@ namespace Polly.Specs
         }
 
         [Fact]
-        public async Task Executing_the_policy_function_and_failing_with_a_defined_exception_type_should_return_failure_result_indicating_that_exception_type_is_one_handled_by_this_policy()
+        public async Task Executing_the_policy_function_and_failing_with_a_handled_exception_type_should_return_failure_result_indicating_that_exception_type_is_one_handled_by_this_policy()
         {
-            var definedException = new DivideByZeroException();
+            var handledException = new DivideByZeroException();
 
             var result = await Policy
                 .Handle<DivideByZeroException>()
                 .RetryAsync((_, __) => { })
                 .ExecuteAndCaptureAsync<int>(() =>
                 {
-                    throw definedException;
+                    throw handledException;
                 });
 
             result.ShouldBeEquivalentTo(new
             {
                 Outcome = OutcomeType.Failure,
-                FinalException = definedException,
+                FinalException = handledException,
                 ExceptionType = ExceptionType.HandledByThisPolicy,
                 FaultType = FaultType.ExceptionHandledByThisPolicy,
                 FinalHandledResult = default(int),
@@ -144,28 +150,32 @@ namespace Polly.Specs
         }
 
         [Fact]
-        public async Task Executing_the_policy_function_and_failing_with_an_undefined_exception_type_should_return_failure_result_indicating_that_exception_type_is_unhandled_by_this_policy()
+        public async Task Executing_the_policy_function_and_failing_with_an_unhandled_exception_type_should_return_failure_result_indicating_that_exception_type_is_unhandled_by_this_policy()
         {
-            var undefinedException = new Exception();
+            var unhandledException = new Exception();
 
             var result = await Policy
                 .Handle<DivideByZeroException>()
                 .RetryAsync((_, __) => { })
                 .ExecuteAndCaptureAsync<int>(() =>
                 {
-                    throw undefinedException;
+                    throw unhandledException;
                 });
 
             result.ShouldBeEquivalentTo(new
             {
                 Outcome = OutcomeType.Failure,
-                FinalException = undefinedException,
+                FinalException = unhandledException,
                 ExceptionType = ExceptionType.Unhandled,
                 FaultType = FaultType.UnhandledException,
                 FinalHandledResult = default(int),
                 Result = default(int)
             });
         }
+
+        #endregion
+
+        #region Sync erroneously on async - tests
 
         [Theory, MemberData("SyncPolicies")]
         public void Executing_the_synchronous_policies_using_the_asynchronous_execute_should_throw_an_invalid_operation_exception(Policy syncPolicy, string description)
@@ -226,5 +236,103 @@ namespace Polly.Specs
                 .Handle<DivideByZeroException>()
                 .CircuitBreaker(1, new TimeSpan());
         }
+
+        #endregion
+
+        #region Context tests
+
+        [Fact]
+        public void Executing_the_policy_action_should_throw_when_context_data_is_null()
+        {
+            Policy policy = Policy
+                .Handle<DivideByZeroException>()
+                .RetryAsync((_, __, ___) => { });
+
+            policy.Awaiting(async p => await p.ExecuteAsync(() => TaskHelper.EmptyTask, (IDictionary<string, object>)null))
+                  .ShouldThrow<ArgumentNullException>();
+        }
+
+        [Fact]
+        public void Executing_the_policy_action_should_throw_when_context_is_null()
+        {
+            Policy policy = Policy
+                .Handle<DivideByZeroException>()
+                .RetryAsync((_, __, ___) => { });
+
+            policy.Awaiting(async p => await p.ExecuteAsync(() => TaskHelper.EmptyTask, (Context)null))
+                .ShouldThrow<ArgumentNullException>().And
+                .ParamName.Should().Be("context");
+        }
+
+        [Fact]
+        public void Executing_the_policy_function_should_throw_when_context_data_is_null()
+        {
+            Policy policy = Policy
+                .Handle<DivideByZeroException>()
+                .RetryAsync((_, __, ___) => { });
+
+            policy.Awaiting(async p => await p.ExecuteAsync(() => Task.FromResult(2), (IDictionary<string, object>)null))
+                  .ShouldThrow<ArgumentNullException>();
+        }
+
+        [Fact]
+        public void Executing_the_policy_function_should_throw_when_context_is_null()
+        {
+            Policy policy = Policy
+                .Handle<DivideByZeroException>()
+                .RetryAsync((_, __, ___) => { });
+
+            policy.Awaiting(async p => await p.ExecuteAsync(() => Task.FromResult(2), (Context)null))
+                  .ShouldThrow<ArgumentNullException>().And
+                  .ParamName.Should().Be("context");
+        }
+
+        [Fact]
+        public void Execute_and_capturing_the_policy_action_should_throw_when_context_data_is_null()
+        {
+            Policy policy = Policy
+                .Handle<DivideByZeroException>()
+                .RetryAsync((_, __, ___) => { });
+
+            policy.Awaiting(async p => await p.ExecuteAndCaptureAsync(() => TaskHelper.EmptyTask, (IDictionary<string, object>)null))
+                  .ShouldThrow<ArgumentNullException>();
+        }
+
+        [Fact]
+        public void Execute_and_capturing_the_policy_action_should_throw_when_context_is_null()
+        {
+            Policy policy = Policy
+                .Handle<DivideByZeroException>()
+                .RetryAsync((_, __, ___) => { });
+
+            policy.Awaiting(async p => await p.ExecuteAndCaptureAsync(() => TaskHelper.EmptyTask, (Context)null))
+                .ShouldThrow<ArgumentNullException>().And
+                .ParamName.Should().Be("context");
+        }
+
+        [Fact]
+        public void Execute_and_capturing_the_policy_function_should_throw_when_context_data_is_null()
+        {
+            Policy policy = Policy
+                .Handle<DivideByZeroException>()
+                .RetryAsync((_, __, ___) => { });
+
+            policy.Awaiting(async p => await p.ExecuteAndCaptureAsync(() => Task.FromResult(2), (IDictionary<string, object>)null))
+                  .ShouldThrow<ArgumentNullException>();
+        }
+
+        [Fact]
+        public void Execute_and_capturing_the_policy_function_should_throw_when_context_is_null()
+        {
+            Policy policy = Policy
+                .Handle<DivideByZeroException>()
+                .RetryAsync((_, __, ___) => { });
+
+            policy.Awaiting(async p => await p.ExecuteAndCaptureAsync(() => Task.FromResult(2), (Context)null))
+                  .ShouldThrow<ArgumentNullException>().And
+                  .ParamName.Should().Be("context");
+        }
+
+        #endregion
     }
 }
