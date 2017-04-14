@@ -54,7 +54,7 @@ namespace Polly.Specs
             var result = await Policy
                 .Handle<DivideByZeroException>()
                 .RetryAsync((_, __) => { })
-                .ExecuteAndCaptureAsync(() => Task.FromResult(0) as Task);
+                .ExecuteAndCaptureAsync(() => TaskHelper.EmptyTask);
 
             result.ShouldBeEquivalentTo(new
             {

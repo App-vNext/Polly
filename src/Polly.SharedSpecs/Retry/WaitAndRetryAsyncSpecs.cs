@@ -18,7 +18,7 @@ namespace Polly.Specs.Retry
         public WaitAndRetryAsyncSpecs()
         {
             // do nothing on call to sleep
-            SystemClock.SleepAsync = (_, __) => Task.FromResult(0);
+            SystemClock.SleepAsync = (_, __) => TaskHelper.EmptyTask;
         }
 
         [Fact]
@@ -238,7 +238,7 @@ namespace Polly.Specs.Retry
             SystemClock.SleepAsync = (span, ct) =>
             {
                 totalTimeSlept += span.Seconds;
-                return Task.FromResult(0);
+                return TaskHelper.EmptyTask;
             };
 
             await policy.RaiseExceptionAsync<DivideByZeroException>(3);
@@ -264,7 +264,7 @@ namespace Polly.Specs.Retry
             SystemClock.SleepAsync = (span, ct) =>
             {
                 totalTimeSlept += span.Seconds;
-                return Task.FromResult(0);
+                return TaskHelper.EmptyTask;
             };
 
             policy.Awaiting(async x => await x.RaiseExceptionAsync<DivideByZeroException>(3 + 1))
@@ -291,7 +291,7 @@ namespace Polly.Specs.Retry
             SystemClock.SleepAsync = (span, ct) =>
             {
                 totalTimeSlept += span.Seconds;
-                return Task.FromResult(0);
+                return TaskHelper.EmptyTask;
             };
 
             policy.RaiseExceptionAsync<DivideByZeroException>(2);
@@ -312,7 +312,7 @@ namespace Polly.Specs.Retry
             SystemClock.SleepAsync = (span, ct) =>
             {
                 totalTimeSlept += span.Seconds;
-                return Task.FromResult(0);
+                return TaskHelper.EmptyTask;
             };
 
             policy.Awaiting(async x => await x.RaiseExceptionAsync<NullReferenceException>())

@@ -154,7 +154,7 @@ namespace Polly.Specs.Timeout
 
             try
             {
-                result = await policy.ExecuteAsync(() => TaskHelper.FromResult(ResultPrimitive.Good))
+                result = await policy.ExecuteAsync(() => Task.FromResult(ResultPrimitive.Good))
                     .ConfigureAwait(false);
             }
             catch (Exception e)
@@ -216,7 +216,7 @@ namespace Polly.Specs.Timeout
 
             try
             {
-                result = await policy.ExecuteAsync(ct => TaskHelper.FromResult(ResultPrimitive.Good), userCancellationToken)
+                result = await policy.ExecuteAsync(ct => Task.FromResult(ResultPrimitive.Good), userCancellationToken)
                     .ConfigureAwait(false);
             }
             catch (Exception e)
