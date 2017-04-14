@@ -65,9 +65,11 @@
     <Compile Include="$(MSBuildThisFileDirectory)Policy.HandleSyntax.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Policy.ContextAndKeys.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PolicyAsync.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)PolicyAsync.TResult.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PolicyBuilder.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PolicyBuilder.OrSyntax.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PolicyResult.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Policy.TResult.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ResultPredicate.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Retry\RetrySyntax.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Retry\RetrySyntaxAsync.cs" />
