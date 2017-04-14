@@ -177,7 +177,7 @@ namespace Polly.Specs
 
         #region Sync erroneously on async - tests
 
-        [Theory, MemberData("SyncPolicies")]
+        [Theory, MemberData(nameof(SyncPolicies))]
         public void Executing_the_synchronous_policies_using_the_asynchronous_execute_should_throw_an_invalid_operation_exception(Policy syncPolicy, string description)
         {
             syncPolicy
@@ -186,7 +186,7 @@ namespace Polly.Specs
                 .WithMessage("Please use asynchronous-defined policies when calling asynchronous ExecuteAsync (and similar) methods.");
         }
 
-        [Theory, MemberData("SyncPolicies")]
+        [Theory, MemberData(nameof(SyncPolicies))]
         public void Executing_the_synchronous_policies_using_the_asynchronous_execute_and_capture_should_throw_an_invalid_operation_exception(Policy syncPolicy, string description)
         {
             syncPolicy
@@ -195,19 +195,19 @@ namespace Polly.Specs
                 .WithMessage("Please use asynchronous-defined policies when calling asynchronous ExecuteAsync (and similar) methods.");
         }
 
-        public static IEnumerable<object[]> SyncPolicies
+        public static IEnumerable<object[]> SyncPolicies => new[]
         {
-            get
-            {
-                return new[]
-                {
-                    new object[] {RetryPolicy(), "retry"},
-                    new object[] {RetryForeverPolicy(), "retry forever"},
-                    new object[] {WaitAndRetryPolicy(), "wait and retry"},
-                    new object[] {CircuitBreakerPolicy(), "circuit breaker"}
-                };
-            }
-        }
+            new object[] {RetryPolicy(), "retry"},
+            new object[] {RetryForeverPolicy(), "retry forever"},
+            new object[] {WaitAndRetryPolicy(), "wait and retry"},
+            new object[] {WaitAndRetryForeverPolicy(), "wait and retry"},
+            new object[] {CircuitBreakerPolicy(), "circuit breaker"},
+            new object[] {AdvancedCircuitBreakerPolicy(), "advanced circuit breaker"},
+            new object[] {TimeoutPolicy(), "timeout"},
+            new object[] {BulkheadPolicy(), "bulkhead"},
+            new object[] {FallbackPolicy(), "fallback"},
+            new object[] {NoOpPolicy(), "no-op"}
+        };
 
         private static Policy RetryPolicy()
         {
@@ -230,11 +230,49 @@ namespace Polly.Specs
                 .WaitAndRetry(new TimeSpan[] { });
         }
 
+        private static Policy WaitAndRetryForeverPolicy()
+        {
+            return Policy
+                .Handle<DivideByZeroException>()
+                .WaitAndRetryForever(_ => new TimeSpan());
+        }
+
         private static Policy CircuitBreakerPolicy()
         {
             return Policy
                 .Handle<DivideByZeroException>()
                 .CircuitBreaker(1, new TimeSpan());
+        }
+
+        private static Policy AdvancedCircuitBreakerPolicy()
+        {
+            return Policy
+                .Handle<DivideByZeroException>()
+                .AdvancedCircuitBreaker(1, TimeSpan.MaxValue, 2, new TimeSpan());
+        }
+
+        private static Policy TimeoutPolicy()
+        {
+            return Policy
+                .Timeout(TimeSpan.MaxValue);
+        }
+
+        private static Policy BulkheadPolicy()
+        {
+            return Policy
+                .Bulkhead(1);
+        }
+
+        private static Policy FallbackPolicy()
+        {
+            return Policy
+                .Handle<DivideByZeroException>()
+                .Fallback(() => { });
+        }
+
+        private static Policy NoOpPolicy()
+        {
+            return Policy.NoOp();
         }
 
         #endregion
