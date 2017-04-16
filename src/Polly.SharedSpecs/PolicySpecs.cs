@@ -56,7 +56,7 @@ namespace Polly.Specs
                 Outcome = OutcomeType.Successful,
                 FinalException = (Exception) null,
                 ExceptionType = (ExceptionType?) null,
-            });
+            }, options => options.Excluding(o => o.Context));
         }
 
         [Fact]
@@ -77,7 +77,7 @@ namespace Polly.Specs
                 Outcome = OutcomeType.Failure,
                 FinalException = handledException,
                 ExceptionType = ExceptionType.HandledByThisPolicy
-            });
+            }, options => options.Excluding(o => o.Context));
         }
 
         [Fact]
@@ -98,7 +98,7 @@ namespace Polly.Specs
                 Outcome = OutcomeType.Failure,
                 FinalException = unhandledException,
                 ExceptionType = ExceptionType.Unhandled
-            });
+            }, options => options.Excluding(o => o.Context));
         }
 
         [Fact]
@@ -117,7 +117,7 @@ namespace Polly.Specs
                 FaultType = (FaultType?)null,
                 FinalHandledResult = default(int),
                 Result = Int32.MaxValue
-            });
+            }, options => options.Excluding(o => o.Context));
         }
 
         [Fact]
@@ -141,7 +141,7 @@ namespace Polly.Specs
                 FaultType = FaultType.ExceptionHandledByThisPolicy,
                 FinalHandledResult = default(int),
                 Result = default(int)
-            });
+            }, options => options.Excluding(o => o.Context));
         }
 
         [Fact]
@@ -165,7 +165,7 @@ namespace Polly.Specs
                 FaultType = FaultType.UnhandledException,
                 FinalHandledResult = default(int),
                 Result = default(int)
-            });
+            }, options => options.Excluding(o => o.Context));
         }
 
         #endregion
@@ -321,6 +321,20 @@ namespace Polly.Specs
         }
 
         [Fact]
+        public void Executing_the_policy_function_should_pass_context_to_executed_delegate()
+        {
+            string executionKey = Guid.NewGuid().ToString();
+            Context executionContext = new Context(executionKey);
+            Context capturedContext = null;
+
+            Policy policy = Policy.NoOp();
+
+            policy.Execute((context) => { capturedContext = context; }, executionContext);
+
+            capturedContext.Should().BeSameAs(executionContext);
+        }
+
+        [Fact]
         public void Execute_and_capturing_the_policy_action_should_throw_when_context_data_is_null()
         {
             Policy policy = Policy
@@ -364,6 +378,32 @@ namespace Polly.Specs
             policy.Invoking(p => p.ExecuteAndCapture(() => 2, (Context)null))
                   .ShouldThrow<ArgumentNullException>().And
                   .ParamName.Should().Be("context");
+        }
+
+        [Fact]
+        public void Execute_and_capturing_the_policy_function_should_pass_context_to_executed_delegate()
+        {
+            string executionKey = Guid.NewGuid().ToString();
+            Context executionContext = new Context(executionKey);
+            Context capturedContext = null;
+
+            Policy policy = Policy.NoOp();
+
+            policy.ExecuteAndCapture((context) => { capturedContext = context; }, executionContext);
+
+            capturedContext.Should().BeSameAs(executionContext);
+        }
+
+        [Fact]
+        public void Execute_and_capturing_the_policy_function_should_pass_context_to_PolicyResult()
+        {
+            string executionKey = Guid.NewGuid().ToString();
+            Context executionContext = new Context(executionKey);
+
+            Policy policy = Policy.NoOp();
+
+            policy.ExecuteAndCapture((context) => { }, executionContext)
+                .Context.Should().BeSameAs(executionContext);
         }
 
         #endregion

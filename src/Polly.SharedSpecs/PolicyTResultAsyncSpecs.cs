@@ -46,7 +46,7 @@ namespace Polly.Specs
                 Result = ResultPrimitive.Good,
                 FinalHandledResult = default(ResultPrimitive),
                 FaultType = (FaultType?)null
-            });
+            }, options => options.Excluding(o => o.Context));
         }
 
         [Fact]
@@ -67,7 +67,7 @@ namespace Polly.Specs
                 FaultType = FaultType.ResultHandledByThisPolicy,
                 FinalHandledResult = handledResult,
                 Result = default(ResultPrimitive)
-            });
+            }, options => options.Excluding(o => o.Context));
         }
 
         [Fact]
@@ -89,7 +89,7 @@ namespace Polly.Specs
                 Result = unhandledResult,
                 FinalHandledResult = default(ResultPrimitive),
                 FaultType = (FaultType?)null
-            });
+            }, options => options.Excluding(o => o.Context));
         }
 
         #endregion
@@ -235,6 +235,20 @@ namespace Polly.Specs
         }
 
         [Fact]
+        public async Task Executing_the_policy_function_should_pass_context_to_executed_delegate()
+        {
+            string executionKey = Guid.NewGuid().ToString();
+            Context executionContext = new Context(executionKey);
+            Context capturedContext = null;
+
+            Policy<ResultPrimitive> policy = Policy.NoOpAsync<ResultPrimitive>();
+
+            await policy.ExecuteAsync((context) => { capturedContext = context; return Task.FromResult(ResultPrimitive.Good); }, executionContext);
+
+            capturedContext.Should().BeSameAs(executionContext);
+        }
+
+        [Fact]
         public void Execute_and_capturing_the_policy_function_should_throw_when_context_is_null()
         {
             Policy<ResultPrimitive> policy = Policy
@@ -244,6 +258,32 @@ namespace Polly.Specs
             policy.Awaiting(async p => await p.ExecuteAndCaptureAsync(() => Task.FromResult(ResultPrimitive.Good), (Context)null))
                   .ShouldThrow<ArgumentNullException>().And
                   .ParamName.Should().Be("context");
+        }
+
+        [Fact]
+        public async Task Execute_and_capturing_the_policy_function_should_pass_context_to_executed_delegate()
+        {
+            string executionKey = Guid.NewGuid().ToString();
+            Context executionContext = new Context(executionKey);
+            Context capturedContext = null;
+
+            Policy<ResultPrimitive> policy = Policy.NoOpAsync<ResultPrimitive>();
+
+            await policy.ExecuteAndCaptureAsync((context) => { capturedContext = context; return Task.FromResult(ResultPrimitive.Good); }, executionContext);
+
+            capturedContext.Should().BeSameAs(executionContext);
+        }
+
+        [Fact]
+        public async Task Execute_and_capturing_the_policy_function_should_pass_context_to_PolicyResult()
+        {
+            string executionKey = Guid.NewGuid().ToString();
+            Context executionContext = new Context(executionKey);
+
+            Policy<ResultPrimitive> policy = Policy.NoOpAsync<ResultPrimitive>();
+
+            (await policy.ExecuteAndCaptureAsync((context) => Task.FromResult(ResultPrimitive.Good), executionContext))
+                .Context.Should().BeSameAs(executionContext);
         }
 
         #endregion

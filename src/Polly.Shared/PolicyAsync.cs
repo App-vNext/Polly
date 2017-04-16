@@ -828,11 +828,11 @@ namespace Polly
             try
             {
                 await ExecuteAsync(action, context, cancellationToken, continueOnCapturedContext).ConfigureAwait(continueOnCapturedContext);
-                return PolicyResult.Successful();
+                return PolicyResult.Successful(context);
             }
             catch (Exception exception)
             {
-                return PolicyResult.Failure(exception, GetExceptionType(_exceptionPredicates, exception));
+                return PolicyResult.Failure(exception, GetExceptionType(_exceptionPredicates, exception), context);
             }
         }
 
@@ -1129,11 +1129,12 @@ namespace Polly
 
             try
             {
-                return PolicyResult<TResult>.Successful(await ExecuteAsync(action, context, cancellationToken, continueOnCapturedContext).ConfigureAwait(continueOnCapturedContext));
+                return PolicyResult<TResult>.Successful(
+                    await ExecuteAsync(action, context, cancellationToken, continueOnCapturedContext).ConfigureAwait(continueOnCapturedContext), context);
             }
             catch (Exception exception)
             {
-                return PolicyResult<TResult>.Failure(exception, GetExceptionType(_exceptionPredicates, exception));
+                return PolicyResult<TResult>.Failure(exception, GetExceptionType(_exceptionPredicates, exception), context);
             }
         }
 

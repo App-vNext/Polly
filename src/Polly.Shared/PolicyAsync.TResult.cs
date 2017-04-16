@@ -579,14 +579,14 @@ namespace Polly
 
                 if (_resultPredicates.Any(predicate => predicate(result)))
                 {
-                    return PolicyResult<TResult>.Failure(result);
+                    return PolicyResult<TResult>.Failure(result, context);
                 }
 
-                return PolicyResult<TResult>.Successful(result);
+                return PolicyResult<TResult>.Successful(result, context);
             }
             catch (Exception exception)
             {
-                return PolicyResult<TResult>.Failure(exception, GetExceptionType(_exceptionPredicates, exception));
+                return PolicyResult<TResult>.Failure(exception, GetExceptionType(_exceptionPredicates, exception), context);
             }
         }
 

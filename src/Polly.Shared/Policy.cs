@@ -445,11 +445,11 @@ namespace Polly
             try
             {
                 Execute(action, context, cancellationToken);
-                return PolicyResult.Successful();
+                return PolicyResult.Successful(context);
             }
             catch (Exception exception)
             {
-                return PolicyResult.Failure(exception, GetExceptionType(_exceptionPredicates, exception));
+                return PolicyResult.Failure(exception, GetExceptionType(_exceptionPredicates, exception), context);
             }
         }
 
@@ -592,11 +592,11 @@ namespace Polly
 
             try
             {
-                return PolicyResult<TResult>.Successful(Execute(action, context, cancellationToken));
+                return PolicyResult<TResult>.Successful(Execute(action, context, cancellationToken), context);
             }
             catch (Exception exception)
             {
-                return PolicyResult<TResult>.Failure(exception, GetExceptionType(_exceptionPredicates, exception));
+                return PolicyResult<TResult>.Failure(exception, GetExceptionType(_exceptionPredicates, exception), context);
             }
         }
         #endregion
