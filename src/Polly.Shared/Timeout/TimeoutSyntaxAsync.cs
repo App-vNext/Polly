@@ -190,7 +190,7 @@ namespace Polly
 
             return new TimeoutPolicy(
                 (action, context, cancellationToken, continueOnCapturedContext) => TimeoutEngine.ImplementationAsync(
-                    async ct => { await action(ct).ConfigureAwait(continueOnCapturedContext); return EmptyStruct.Instance; },
+                    async (ctx, ct) => { await action(ctx, ct).ConfigureAwait(continueOnCapturedContext); return EmptyStruct.Instance; },
                     context,
                     timeoutProvider,
                     timeoutStrategy,

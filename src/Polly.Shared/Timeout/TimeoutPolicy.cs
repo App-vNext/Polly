@@ -10,7 +10,7 @@ namespace Polly.Timeout
     public partial class TimeoutPolicy : Policy
     {
         internal TimeoutPolicy(
-            Action<Action<CancellationToken>, Context, CancellationToken> exceptionPolicy
+            Action<Action<Context, CancellationToken>, Context, CancellationToken> exceptionPolicy
             ) 
             : base(exceptionPolicy, PredicateHelper.EmptyExceptionPredicates)
         {
@@ -24,7 +24,7 @@ namespace Polly.Timeout
     public partial class TimeoutPolicy<TResult> : Policy<TResult>
     {
         internal TimeoutPolicy(
-            Func<Func<CancellationToken, TResult>, Context, CancellationToken, TResult> executionPolicy
+            Func<Func<Context, CancellationToken, TResult>, Context, CancellationToken, TResult> executionPolicy
             ) : base(executionPolicy, PredicateHelper.EmptyExceptionPredicates, PredicateHelper<TResult>.EmptyResultPredicates)
         {
         }

@@ -8,7 +8,7 @@ namespace Polly.Fallback
     internal static partial class FallbackEngine
     {
         internal static TResult Implementation<TResult>(
-            Func<CancellationToken, TResult> action,
+            Func<Context, CancellationToken, TResult> action,
             Context context,
             CancellationToken cancellationToken,
             IEnumerable<ExceptionPredicate> shouldHandleExceptionPredicates,
@@ -22,7 +22,7 @@ namespace Polly.Fallback
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
-                TResult result = action(cancellationToken);
+                TResult result = action(context, cancellationToken);
 
                 if (!shouldHandleResultPredicates.Any(predicate => predicate(result)))
                 {

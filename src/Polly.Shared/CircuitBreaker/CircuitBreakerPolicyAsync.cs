@@ -10,7 +10,7 @@ namespace Polly.CircuitBreaker
     public partial class CircuitBreakerPolicy
     {
         internal CircuitBreakerPolicy(
-            Func<Func<CancellationToken, Task>, Context, CancellationToken, bool, Task> asyncExceptionPolicy, 
+            Func<Func<Context, CancellationToken, Task>, Context, CancellationToken, bool, Task> asyncExceptionPolicy, 
             IEnumerable<ExceptionPredicate> exceptionPredicates, 
             ICircuitController<EmptyStruct> breakerController
             ) : base(asyncExceptionPolicy, exceptionPredicates)
@@ -22,7 +22,7 @@ namespace Polly.CircuitBreaker
     public partial class CircuitBreakerPolicy<TResult>
     {
         internal CircuitBreakerPolicy(
-            Func<Func<CancellationToken, Task<TResult>>, Context, CancellationToken, bool, Task<TResult>> asyncExecutionPolicy, 
+            Func<Func<Context, CancellationToken, Task<TResult>>, Context, CancellationToken, bool, Task<TResult>> asyncExecutionPolicy, 
             IEnumerable<ExceptionPredicate> exceptionPredicates, 
             IEnumerable<ResultPredicate<TResult>> resultPredicates, 
             ICircuitController<TResult> breakerController

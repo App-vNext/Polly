@@ -64,6 +64,7 @@ namespace Polly
             return new RetryPolicy<TResult>(
                 (action, context, cancellationToken) => RetryEngine.Implementation<TResult>(
                     action,
+                    context, 
                     cancellationToken,
                     policyBuilder.ExceptionPredicates,
                     policyBuilder.ResultPredicates,
@@ -105,6 +106,7 @@ namespace Polly
             return new RetryPolicy<TResult>(
                 (action, context, cancellationToken) => RetryEngine.Implementation(
                     action,
+                    context, 
                     cancellationToken,
                     policyBuilder.ExceptionPredicates,
                     policyBuilder.ResultPredicates,
@@ -141,6 +143,7 @@ namespace Polly
             return new RetryPolicy<TResult>(
                 (action, context, cancellationToken) => RetryEngine.Implementation(
                     action,
+                    context,
                     cancellationToken,
                     policyBuilder.ExceptionPredicates,
                     policyBuilder.ResultPredicates,
@@ -166,6 +169,7 @@ namespace Polly
             return new RetryPolicy<TResult>(
                 (action, context, cancellationToken) => RetryEngine.Implementation(
                     action,
+                    context,
                     cancellationToken,
                     policyBuilder.ExceptionPredicates,
                     policyBuilder.ResultPredicates,
@@ -220,6 +224,7 @@ namespace Polly
             return new RetryPolicy<TResult>(
                 (action, context, cancellationToken) => RetryEngine.Implementation(
                     action,
+                    context,
                     cancellationToken,
                     policyBuilder.ExceptionPredicates,
                     policyBuilder.ResultPredicates,
@@ -259,6 +264,7 @@ namespace Polly
             return new RetryPolicy<TResult>(
                 (action, context, cancellationToken) => RetryEngine.Implementation(
                     action,
+                    context,
                     cancellationToken,
                     policyBuilder.ExceptionPredicates,
                     policyBuilder.ResultPredicates,
@@ -297,6 +303,7 @@ namespace Polly
             return new RetryPolicy<TResult>(
                 (action, context, cancellationToken) => RetryEngine.Implementation(
                     action,
+                    context,
                     cancellationToken,
                     policyBuilder.ExceptionPredicates,
                     policyBuilder.ResultPredicates,
@@ -342,6 +349,7 @@ namespace Polly
             return new RetryPolicy<TResult>(
                 (action, context, cancellationToken) => RetryEngine.Implementation(
                     action,
+                    context,
                     cancellationToken,
                     policyBuilder.ExceptionPredicates,
                     policyBuilder.ResultPredicates,
@@ -374,6 +382,7 @@ namespace Polly
             return new RetryPolicy<TResult>(
                 (action, context, cancellationToken) => RetryEngine.Implementation(
                     action,
+                    context,
                     cancellationToken,
                     policyBuilder.ExceptionPredicates,
                     policyBuilder.ResultPredicates,
@@ -406,6 +415,7 @@ namespace Polly
             return new RetryPolicy<TResult>(
                 (action, context, cancellationToken) => RetryEngine.Implementation(
                     action,
+                    context,
                     cancellationToken,
                     policyBuilder.ExceptionPredicates,
                     policyBuilder.ResultPredicates,
@@ -450,6 +460,7 @@ namespace Polly
             return new RetryPolicy<TResult>(
                 (action, context, cancellationToken) => RetryEngine.Implementation(
                     action,
+                    context,
                     cancellationToken,
                     policyBuilder.ExceptionPredicates,
                     policyBuilder.ResultPredicates,
@@ -479,6 +490,7 @@ namespace Polly
             return new RetryPolicy<TResult>(
                 (action, context, cancellationToken) => RetryEngine.Implementation(
                     action,
+                    context,
                     cancellationToken,
                     policyBuilder.ExceptionPredicates,
                     policyBuilder.ResultPredicates,

@@ -12,7 +12,7 @@ namespace Polly.NoOp
     /// </summary>
     public partial class NoOpPolicy : Policy
     {
-        internal NoOpPolicy(Action<Action<CancellationToken>, Context, CancellationToken> exceptionPolicy)
+        internal NoOpPolicy(Action<Action<Context, CancellationToken>, Context, CancellationToken> exceptionPolicy)
             : base(exceptionPolicy, PredicateHelper.EmptyExceptionPredicates)
         {
         }
@@ -25,7 +25,7 @@ namespace Polly.NoOp
     public partial class NoOpPolicy<TResult> : Policy<TResult>
     {
         internal NoOpPolicy(
-             Func<Func<CancellationToken, TResult>, Context, CancellationToken, TResult> executionPolicy
+             Func<Func<Context, CancellationToken, TResult>, Context, CancellationToken, TResult> executionPolicy
              ) : base(executionPolicy, PredicateHelper.EmptyExceptionPredicates, PredicateHelper<TResult>.EmptyResultPredicates)
         {
         }

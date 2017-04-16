@@ -7,7 +7,7 @@ namespace Polly.Timeout
     internal static partial class TimeoutEngine
     {
         internal static async Task<TResult> ImplementationAsync<TResult>(
-            Func<CancellationToken, Task<TResult>> action, 
+            Func<Context, CancellationToken, Task<TResult>> action, 
             Context context, 
             Func<TimeSpan> timeoutProvider,
             TimeoutStrategy timeoutStrategy,
@@ -30,7 +30,7 @@ namespace Polly.Timeout
                         if (timeoutStrategy == TimeoutStrategy.Optimistic)
                         {
                             timeoutCancellationTokenSource.CancelAfter(timeout);
-                            return await action(combinedToken).ConfigureAwait(continueOnCapturedContext);
+                            return await action(context, combinedToken).ConfigureAwait(continueOnCapturedContext);
                         }
 
                         // else: timeoutStrategy == TimeoutStrategy.Pessimistic
@@ -39,7 +39,7 @@ namespace Polly.Timeout
 
                         timeoutCancellationTokenSource.CancelAfter(timeout);
 
-                        actionTask = action(combinedToken);
+                        actionTask = action(context, combinedToken);
 
                         return await (await 
 #if NET40

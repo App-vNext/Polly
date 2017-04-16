@@ -64,7 +64,8 @@ namespace Polly
 
             return new RetryPolicy(
                 (action, context, cancellationToken) => RetryEngine.Implementation(
-                    ct => { action(ct); return EmptyStruct.Instance; }, 
+                    (ctx, ct) => { action(ctx, ct); return EmptyStruct.Instance; },
+                    context,
                     cancellationToken,
                     policyBuilder.ExceptionPredicates, 
                     PredicateHelper<EmptyStruct>.EmptyResultPredicates,
@@ -104,7 +105,8 @@ namespace Polly
 
             return new RetryPolicy(
                 (action, context, cancellationToken) => RetryEngine.Implementation(
-                    ct => { action(ct); return EmptyStruct.Instance; },
+                    (ctx, ct) => { action(ctx, ct); return EmptyStruct.Instance; },
+                    context,
                     cancellationToken,
                     policyBuilder.ExceptionPredicates,
                     PredicateHelper<EmptyStruct>.EmptyResultPredicates,
@@ -138,7 +140,8 @@ namespace Polly
 
             return new RetryPolicy(
                 (action, context, cancellationToken) => RetryEngine.Implementation(
-                    ct => { action(ct); return EmptyStruct.Instance; },
+                    (ctx, ct) => { action(ctx, ct); return EmptyStruct.Instance; },
+                    context,
                     cancellationToken,
                     policyBuilder.ExceptionPredicates,
                     PredicateHelper<EmptyStruct>.EmptyResultPredicates, 
@@ -161,7 +164,8 @@ namespace Polly
             if (onRetry == null) throw new ArgumentNullException("onRetry");
 
             return new RetryPolicy((action, context, cancellationToken) => RetryEngine.Implementation(
-                ct => { action(ct); return EmptyStruct.Instance; },
+                (ctx, ct) => { action(ctx, ct); return EmptyStruct.Instance; },
+                context,
                 cancellationToken,
                 policyBuilder.ExceptionPredicates,
                 PredicateHelper<EmptyStruct>.EmptyResultPredicates,
@@ -213,7 +217,8 @@ namespace Polly
 
             return new RetryPolicy(
                 (action, context, cancellationToken) => RetryEngine.Implementation(
-                    ct => { action(ct); return EmptyStruct.Instance; },
+                    (ctx, ct) => { action(ctx, ct); return EmptyStruct.Instance; },
+                    context,
                     cancellationToken,
                     policyBuilder.ExceptionPredicates,
                     PredicateHelper<EmptyStruct>.EmptyResultPredicates,
@@ -250,7 +255,8 @@ namespace Polly
                                            .Select(sleepDurationProvider);
 
             return new RetryPolicy((action, context, cancellationToken) => RetryEngine.Implementation(
-                ct => { action(ct); return EmptyStruct.Instance; },
+                (ctx, ct) => { action(ctx, ct); return EmptyStruct.Instance; },
+                context,
                 cancellationToken,
                 policyBuilder.ExceptionPredicates,
                 PredicateHelper<EmptyStruct>.EmptyResultPredicates,
@@ -286,7 +292,8 @@ namespace Polly
 
             return new RetryPolicy(
                 (action, context, cancellationToken) => RetryEngine.Implementation(
-                ct => { action(ct); return EmptyStruct.Instance; },
+                (ctx, ct) => { action(ctx, ct); return EmptyStruct.Instance; },
+                context,
                 cancellationToken,
                 policyBuilder.ExceptionPredicates,
                 PredicateHelper<EmptyStruct>.EmptyResultPredicates,
@@ -329,7 +336,8 @@ namespace Polly
 
             return new RetryPolicy(
                 (action, context, cancellationToken) => RetryEngine.Implementation(
-                    ct => { action(ct); return EmptyStruct.Instance; },
+                    (ctx, ct) => { action(ctx, ct); return EmptyStruct.Instance; },
+                    context,
                     cancellationToken,
                     policyBuilder.ExceptionPredicates,
                     PredicateHelper<EmptyStruct>.EmptyResultPredicates,
@@ -360,7 +368,8 @@ namespace Polly
 
             return new RetryPolicy(
                 (action, context, cancellationToken) => RetryEngine.Implementation(
-                ct => { action(ct); return EmptyStruct.Instance; },
+                (ctx, ct) => { action(ctx, ct); return EmptyStruct.Instance; },
+                context,
                 cancellationToken,
                 policyBuilder.ExceptionPredicates,
                 PredicateHelper<EmptyStruct>.EmptyResultPredicates,
@@ -389,7 +398,8 @@ namespace Polly
 
             return new RetryPolicy(
                 (action, context, cancellationToken) => RetryEngine.Implementation(
-                ct => { action(ct); return EmptyStruct.Instance; },
+                (ctx, ct) => { action(ctx, ct); return EmptyStruct.Instance; },
+                context,
                 cancellationToken,
                 policyBuilder.ExceptionPredicates,
                 PredicateHelper<EmptyStruct>.EmptyResultPredicates,
@@ -430,7 +440,8 @@ namespace Polly
 
             return new RetryPolicy(
                 (action, context, cancellationToken) => RetryEngine.Implementation(
-                    ct => { action(ct); return EmptyStruct.Instance; },
+                    (ctx, ct) => { action(ctx, ct); return EmptyStruct.Instance; },
+                    context,
                     cancellationToken,
                     policyBuilder.ExceptionPredicates,
                     PredicateHelper<EmptyStruct>.EmptyResultPredicates,
@@ -457,7 +468,8 @@ namespace Polly
             if (onRetry == null) throw new ArgumentNullException("onRetry");
 
             return new RetryPolicy((action, context, cancellationToken) => RetryEngine.Implementation(
-                ct => { action(ct); return EmptyStruct.Instance; },
+                (ctx, ct) => { action(ctx, ct); return EmptyStruct.Instance; },
+                context, 
                 cancellationToken,
                 policyBuilder.ExceptionPredicates,
                 PredicateHelper<EmptyStruct>.EmptyResultPredicates,

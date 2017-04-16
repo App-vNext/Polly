@@ -12,7 +12,7 @@ namespace Polly.Wrap
     /// </summary>
     public partial class PolicyWrap : Policy
     {
-        internal PolicyWrap(Action<Action<CancellationToken>, Context, CancellationToken> policyAction) 
+        internal PolicyWrap(Action<Action<Context, CancellationToken>, Context, CancellationToken> policyAction) 
             : base(policyAction, PredicateHelper.EmptyExceptionPredicates)
         {
         }
@@ -24,7 +24,7 @@ namespace Polly.Wrap
     /// <typeparam name="TResult">The return type of delegates which may be executed through the policy.</typeparam>
     public partial class PolicyWrap<TResult> : Policy<TResult>
     {
-        internal PolicyWrap(Func<Func<CancellationToken, TResult>, Context, CancellationToken, TResult> policyAction)
+        internal PolicyWrap(Func<Func<Context, CancellationToken, TResult>, Context, CancellationToken, TResult> policyAction)
             : base(policyAction, PredicateHelper.EmptyExceptionPredicates, PredicateHelper<TResult>.EmptyResultPredicates)
         {
         }

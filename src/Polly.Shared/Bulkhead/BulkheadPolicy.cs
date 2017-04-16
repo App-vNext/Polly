@@ -21,7 +21,7 @@ namespace Polly.Bulkhead
         private readonly int _maxQueueingActions;
 
         internal BulkheadPolicy(
-            Action<Action<CancellationToken>, Context, CancellationToken> exceptionPolicy, 
+            Action<Action<Context, CancellationToken>, Context, CancellationToken> exceptionPolicy, 
             int maxParallelization,
             int maxQueueingActions,
             SemaphoreSlim maxParallelizationSemaphore, 
@@ -66,7 +66,7 @@ namespace Polly.Bulkhead
         private readonly int _maxQueueingActions;
 
         internal BulkheadPolicy(
-            Func<Func<CancellationToken, TResult>, Context, CancellationToken, TResult> executionPolicy,
+            Func<Func<Context, CancellationToken, TResult>, Context, CancellationToken, TResult> executionPolicy,
             int maxParallelization,
             int maxQueueingActions,
             SemaphoreSlim maxParallelizationSemaphore,

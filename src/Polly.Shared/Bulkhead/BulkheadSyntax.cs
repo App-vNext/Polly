@@ -81,7 +81,7 @@ namespace Polly
 
             return new BulkheadPolicy(
                 (action, context, cancellationToken) => BulkheadEngine.Implementation(
-                    ct => { action(ct); return EmptyStruct.Instance; },
+                    (ctx, ct) => { action(ctx, ct); return EmptyStruct.Instance; },
                     context,
                     onBulkheadRejected,
                     maxParallelizationSemaphore,

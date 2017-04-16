@@ -186,7 +186,7 @@ namespace Polly
 
             return new TimeoutPolicy(
                 (action, context, cancellationToken) => TimeoutEngine.Implementation(
-                    ct => { action(ct); return EmptyStruct.Instance; },
+                    (ctx, ct) => { action(ctx, ct); return EmptyStruct.Instance; },
                     context,
                     cancellationToken,
                     timeoutProvider,

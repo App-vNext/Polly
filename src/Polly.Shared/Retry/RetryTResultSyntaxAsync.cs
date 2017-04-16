@@ -82,6 +82,7 @@ namespace Polly
                 (action, context, cancellationToken, continueOnCapturedContext) =>
                   RetryEngine.ImplementationAsync(
                     action,
+                    context,
                     cancellationToken,
                     policyBuilder.ExceptionPredicates,
                     policyBuilder.ResultPredicates,
@@ -114,6 +115,7 @@ namespace Polly
                 (action, context, cancellationToken, continueOnCapturedContext) =>
                   RetryEngine.ImplementationAsync(
                     action,
+                    context,
                     cancellationToken,
                     policyBuilder.ExceptionPredicates,
                     policyBuilder.ResultPredicates,
@@ -169,6 +171,7 @@ namespace Polly
                 (action, context, cancellationToken, continueOnCapturedContext) =>
                   RetryEngine.ImplementationAsync(
                     action,
+                    context,
                     cancellationToken,
                     policyBuilder.ExceptionPredicates,
                     policyBuilder.ResultPredicates,
@@ -200,6 +203,7 @@ namespace Polly
                 (action, context, cancellationToken, continueOnCapturedContext) =>
                   RetryEngine.ImplementationAsync(
                     action,
+                    context,
                     cancellationToken,
                     policyBuilder.ExceptionPredicates,
                     policyBuilder.ResultPredicates,
@@ -238,6 +242,7 @@ namespace Polly
                 (action, context, cancellationToken, continueOnCapturedContext) =>
                   RetryEngine.ImplementationAsync(
                     action,
+                    context,
                     cancellationToken,
                     policyBuilder.ExceptionPredicates,
                     policyBuilder.ResultPredicates,
@@ -266,6 +271,7 @@ namespace Polly
                 (action, context, cancellationToken, continueOnCapturedContext) =>
                   RetryEngine.ImplementationAsync(
                     action,
+                    context,
                     cancellationToken,
                     policyBuilder.ExceptionPredicates,
                     policyBuilder.ResultPredicates,
@@ -292,6 +298,7 @@ namespace Polly
                 (action, context, cancellationToken, continueOnCapturedContext) =>
                   RetryEngine.ImplementationAsync(
                     action,
+                    context,
                     cancellationToken,
                     policyBuilder.ExceptionPredicates,
                     policyBuilder.ResultPredicates,
@@ -320,6 +327,7 @@ namespace Polly
                 (action, context, cancellationToken, continueOnCapturedContext) =>
                   RetryEngine.ImplementationAsync(
                     action,
+                    context,
                     cancellationToken,
                     policyBuilder.ExceptionPredicates,
                     policyBuilder.ResultPredicates,
@@ -377,6 +385,7 @@ namespace Polly
                 (action, context, cancellationToken, continueOnCapturedContext) =>
                   RetryEngine.ImplementationAsync(
                     action,
+                    context,
                     cancellationToken,
                     policyBuilder.ExceptionPredicates,
                     policyBuilder.ResultPredicates,
@@ -421,6 +430,7 @@ namespace Polly
                 (action, context, cancellationToken, continueOnCapturedContext) =>
                   RetryEngine.ImplementationAsync(
                     action,
+                    context,
                     cancellationToken,
                     policyBuilder.ExceptionPredicates,
                     policyBuilder.ResultPredicates,
@@ -462,6 +472,7 @@ namespace Polly
                 (action, context, cancellationToken, continueOnCapturedContext) =>
                   RetryEngine.ImplementationAsync(
                     action,
+                    context,
                     cancellationToken,
                     policyBuilder.ExceptionPredicates,
                     policyBuilder.ResultPredicates,
@@ -505,6 +516,7 @@ namespace Polly
                 (action, context, cancellationToken, continueOnCapturedContext) =>
                   RetryEngine.ImplementationAsync(
                     action,
+                    context,
                     cancellationToken,
                     policyBuilder.ExceptionPredicates,
                     policyBuilder.ResultPredicates,
@@ -548,6 +560,7 @@ namespace Polly
                 (action, context, cancellationToken, continueOnCapturedContext) =>
                   RetryEngine.ImplementationAsync(
                     action,
+                    context,
                     cancellationToken,
                     policyBuilder.ExceptionPredicates,
                     policyBuilder.ResultPredicates,
@@ -589,6 +602,7 @@ namespace Polly
                 (action, context, cancellationToken, continueOnCapturedContext) =>
                   RetryEngine.ImplementationAsync(
                     action,
+                    context,
                     cancellationToken,
                     policyBuilder.ExceptionPredicates,
                     policyBuilder.ResultPredicates,
@@ -638,6 +652,7 @@ namespace Polly
                 (action, context, cancellationToken, continueOnCapturedContext) =>
                   RetryEngine.ImplementationAsync(
                     action,
+                    context,
                     cancellationToken,
                     policyBuilder.ExceptionPredicates,
                     policyBuilder.ResultPredicates,
@@ -674,6 +689,7 @@ namespace Polly
                 (action, context, cancellationToken, continueOnCapturedContext) =>
                   RetryEngine.ImplementationAsync(
                     action,
+                    context,
                     cancellationToken,
                     policyBuilder.ExceptionPredicates,
                     policyBuilder.ResultPredicates,
@@ -708,6 +724,7 @@ namespace Polly
                 (action, context, cancellationToken, continueOnCapturedContext) =>
                   RetryEngine.ImplementationAsync(
                     action,
+                    context,
                     cancellationToken,
                     policyBuilder.ExceptionPredicates,
                     policyBuilder.ResultPredicates,
@@ -744,6 +761,7 @@ namespace Polly
                 (action, context, cancellationToken, continueOnCapturedContext) =>
                   RetryEngine.ImplementationAsync(
                     action,
+                    context,
                     cancellationToken,
                     policyBuilder.ExceptionPredicates,
                     policyBuilder.ResultPredicates,
@@ -780,6 +798,7 @@ namespace Polly
                 (action, context, cancellationToken, continueOnCapturedContext) =>
                   RetryEngine.ImplementationAsync(
                     action,
+                    context,
                     cancellationToken,
                     policyBuilder.ExceptionPredicates,
                     policyBuilder.ResultPredicates,
@@ -814,6 +833,7 @@ namespace Polly
                 (action, context, cancellationToken, continueOnCapturedContext) =>
                   RetryEngine.ImplementationAsync(
                     action,
+                    context,
                     cancellationToken,
                     policyBuilder.ExceptionPredicates,
                     policyBuilder.ResultPredicates,
@@ -859,6 +879,7 @@ namespace Polly
                 (action, context, cancellationToken, continueOnCapturedContext) =>
                   RetryEngine.ImplementationAsync(
                     action,
+                    context,
                     cancellationToken,
                     policyBuilder.ExceptionPredicates,
                     policyBuilder.ResultPredicates,
@@ -891,6 +912,7 @@ namespace Polly
                 (action, context, cancellationToken, continueOnCapturedContext) =>
                   RetryEngine.ImplementationAsync(
                     action,
+                    context,
                     cancellationToken,
                     policyBuilder.ExceptionPredicates,
                     policyBuilder.ResultPredicates,
@@ -922,6 +944,7 @@ namespace Polly
                 (action, context, cancellationToken, continueOnCapturedContext) =>
                   RetryEngine.ImplementationAsync(
                     action,
+                    context,
                     cancellationToken,
                     policyBuilder.ExceptionPredicates,
                     policyBuilder.ResultPredicates,
@@ -954,6 +977,7 @@ namespace Polly
                 (action, context, cancellationToken, continueOnCapturedContext) =>
                   RetryEngine.ImplementationAsync(
                     action,
+                    context,
                     cancellationToken,
                     policyBuilder.ExceptionPredicates,
                     policyBuilder.ResultPredicates,
