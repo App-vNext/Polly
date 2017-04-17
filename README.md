@@ -842,9 +842,11 @@ Also, we've stood up a [Slack](http://www.pollytalk.org) channel for easier real
 
 Licensed under the terms of the [New BSD License](http://opensource.org/licenses/BSD-3-Clause)
 
-# Blog posts about Polly
+# Blog posts and podcasts about Polly
 
 When we discover an interesting write-up on Polly, we'll add it to this list. If you have a blog post you'd like to share, please submit a PR!
+
+## Blog posts
 
 * [Azure SQL transient errors](https://hackernoon.com/azure-sql-transient-errors-7625ad6e0a06) - by [Mattias Karlsson](https://hackernoon.com/@devlead)
 * [Polly series on No Dogma blog](http://nodogmablog.bryanhogan.net/tag/polly/) - by [Bryan Hogan](https://twitter.com/bryanjhogan)
@@ -854,6 +856,10 @@ When we discover an interesting write-up on Polly, we'll add it to this list. If
 * [Circuit Breaking with Polly](http://blog.jaywayco.co.uk/circuit-breaking-with-polly/) - by [J. Conway](http://blog.jaywayco.co.uk/sample-page/)
 * [Exception handling policies with Polly](http://putridparrot.com/blog/exception-handling-policies-with-polly/) - by [Mark Timmings](http://putridparrot.com/blog/about/)
 * [Polly is Repetitive, and I love it!](http://www.appvnext.com/blog/2015/11/19/polly-is-repetitive-and-i-love-it) - by [Joel Hulen](http://www.thepollyproject.org/author/joel/)
+
+## Podcasts
+
+* [Dylan Reisenberger](https://twitter.com/softwarereisen) sits down virtually with [Bryan Hogan](https://twitter.com/bryanjhogan) of [NoDogmaBlog](http://nodogmablog.bryanhogan.net/) for an [Introduction to Polly podcast](http://nodogmapodcast.bryanhogan.net/71-dylan-reisenberger-the-polly-project/).  Why do I need Polly?  History of the Polly project.  What do we mean by resilience and transient faults?  How retry and circuit-breaker help.  Exponential backoff.  Stability patterns.  Bulkhead isolation.  Future directions (as at April 2017).
 
 # Laptop Stickers!
 
