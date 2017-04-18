@@ -324,25 +324,6 @@ namespace Polly.Specs.Timeout
         }
 
         [Fact]
-        public void Should_call_ontimeout_with_timeout_supplied_different_for_each_execution_by_evaluating_func__pessimistic()
-        {
-            for (int i = 1; i <= 3; i++)
-            {
-                Func<TimeSpan> timeoutFunc = () => TimeSpan.FromMilliseconds(25*i);
-
-                TimeSpan? timeoutPassedToOnTimeout = null;
-                Action<Context, TimeSpan, Task> onTimeout = (ctx, span, task) => { timeoutPassedToOnTimeout = span; };
-
-                var policy = Policy.Timeout(timeoutFunc, TimeoutStrategy.Pessimistic, onTimeout);
-
-                policy.Invoking(p => p.Execute(() => SystemClock.Sleep(TimeSpan.FromSeconds(3), CancellationToken.None)))
-                    .ShouldThrow<TimeoutRejectedException>();
-
-                timeoutPassedToOnTimeout.Should().Be(timeoutFunc());
-            }
-        }
-
-        [Fact]
         public void Should_call_ontimeout_with_passed_context__pessimistic()
         {
             string executionKey = Guid.NewGuid().ToString();
@@ -360,6 +341,46 @@ namespace Polly.Specs.Timeout
             contextPassedToOnTimeout.Should().NotBeNull();
             contextPassedToOnTimeout.ExecutionKey.Should().Be(executionKey);
             contextPassedToOnTimeout.Should().BeSameAs(contextPassedToExecute);
+        }
+
+        [Theory]
+        [InlineData(1)]
+        [InlineData(2)]
+        [InlineData(3)]
+        public void Should_call_ontimeout_with_timeout_supplied_different_for_each_execution_by_evaluating_func__pessimistic(int programaticallyControlledDelay)
+        {
+            Func<TimeSpan> timeoutFunc = () => TimeSpan.FromMilliseconds(25* programaticallyControlledDelay);
+
+            TimeSpan? timeoutPassedToOnTimeout = null;
+            Action<Context, TimeSpan, Task> onTimeout = (ctx, span, task) => { timeoutPassedToOnTimeout = span; };
+
+            var policy = Policy.Timeout(timeoutFunc, TimeoutStrategy.Pessimistic, onTimeout);
+            
+            policy.Invoking(p => p.Execute(() => SystemClock.Sleep(TimeSpan.FromSeconds(3), CancellationToken.None)))
+                .ShouldThrow<TimeoutRejectedException>();
+
+            timeoutPassedToOnTimeout.Should().Be(timeoutFunc());
+        }
+
+        [Theory]
+        [InlineData(1)]
+        [InlineData(2)]
+        [InlineData(3)]
+        public void Should_call_ontimeout_with_timeout_supplied_different_for_each_execution_by_evaluating_func_influenced_by_context__pessimistic(int programaticallyControlledDelay)
+        {
+            Func<Context, TimeSpan> timeoutProvider = ctx => (TimeSpan) ctx["timeout"];
+
+            TimeSpan? timeoutPassedToOnTimeout = null;
+            Action<Context, TimeSpan, Task> onTimeout = (ctx, span, task) => { timeoutPassedToOnTimeout = span; };
+            var policy = Policy.Timeout(timeoutProvider, TimeoutStrategy.Pessimistic, onTimeout);
+
+            // Supply a programatically-controlled timeout, via the execution context.
+            Context context = new Context("SomeExecutionKey") {["timeout"] = TimeSpan.FromMilliseconds(25* programaticallyControlledDelay) };
+
+            policy.Invoking(p => p.Execute(() => SystemClock.Sleep(TimeSpan.FromSeconds(3), CancellationToken.None), context))
+                .ShouldThrow<TimeoutRejectedException>();
+
+            timeoutPassedToOnTimeout.Should().Be(timeoutProvider(context));
         }
 
         [Fact]
@@ -427,26 +448,6 @@ namespace Polly.Specs.Timeout
         }
 
         [Fact]
-        public void Should_call_ontimeout_with_timeout_supplied_different_for_each_execution_by_evaluating_func__optimistic()
-        {
-            for (int i = 1; i <= 3; i++)
-            {
-                Func<TimeSpan> timeoutFunc = () => TimeSpan.FromMilliseconds(25 * i);
-
-                TimeSpan? timeoutPassedToOnTimeout = null;
-                Action<Context, TimeSpan, Task> onTimeout = (ctx, span, task) => { timeoutPassedToOnTimeout = span; };
-
-                var policy = Policy.Timeout(timeoutFunc, TimeoutStrategy.Optimistic, onTimeout);
-                var userCancellationToken = CancellationToken.None;
-
-                policy.Invoking(p => p.Execute(ct => SystemClock.Sleep(TimeSpan.FromSeconds(3), ct), userCancellationToken))
-                    .ShouldThrow<TimeoutRejectedException>();
-
-                timeoutPassedToOnTimeout.Should().Be(timeoutFunc());
-            }
-        }
-
-        [Fact]
         public void Should_call_ontimeout_with_passed_context__optimistic()
         {
             string executionKey = Guid.NewGuid().ToString();
@@ -465,6 +466,52 @@ namespace Polly.Specs.Timeout
             contextPassedToOnTimeout.Should().NotBeNull();
             contextPassedToOnTimeout.ExecutionKey.Should().Be(executionKey);
             contextPassedToOnTimeout.Should().BeSameAs(contextPassedToExecute);
+        }
+
+        [Theory]
+        [InlineData(1)]
+        [InlineData(2)]
+        [InlineData(3)]
+        public void Should_call_ontimeout_with_timeout_supplied_different_for_each_execution_by_evaluating_func__optimistic(int programaticallyControlledDelay)
+        {
+            Func<TimeSpan> timeoutFunc = () => TimeSpan.FromMilliseconds(25*programaticallyControlledDelay);
+
+            TimeSpan? timeoutPassedToOnTimeout = null;
+            Action<Context, TimeSpan, Task> onTimeout = (ctx, span, task) => { timeoutPassedToOnTimeout = span; };
+
+            var policy = Policy.Timeout(timeoutFunc, TimeoutStrategy.Optimistic, onTimeout);
+            var userCancellationToken = CancellationToken.None;
+
+            policy.Invoking(p => p.Execute(ct => SystemClock.Sleep(TimeSpan.FromSeconds(3), ct), userCancellationToken))
+                .ShouldThrow<TimeoutRejectedException>();
+
+            timeoutPassedToOnTimeout.Should().Be(timeoutFunc());
+        }
+
+        [Theory]
+        [InlineData(1)]
+        [InlineData(2)]
+        [InlineData(3)]
+        public void Should_call_ontimeout_with_timeout_supplied_different_for_each_execution_by_evaluating_func_influenced_by_context__optimistic(int programaticallyControlledDelay)
+        {
+            Func<Context, TimeSpan> timeoutProvider = ctx => (TimeSpan) ctx["timeout"];
+
+            TimeSpan? timeoutPassedToOnTimeout = null;
+            Action<Context, TimeSpan, Task> onTimeout = (ctx, span, task) => { timeoutPassedToOnTimeout = span; };
+            var policy = Policy.Timeout(timeoutProvider, TimeoutStrategy.Optimistic, onTimeout);
+
+            var userCancellationToken = CancellationToken.None;
+
+            // Supply a programatically-controlled timeout, via the execution context.
+            Context context = new Context("SomeExecutionKey")
+            {
+                ["timeout"] = TimeSpan.FromMilliseconds(25*programaticallyControlledDelay)
+            };
+
+            policy.Invoking(p => p.Execute(ct => SystemClock.Sleep(TimeSpan.FromSeconds(3), ct), context, userCancellationToken))
+                .ShouldThrow<TimeoutRejectedException>();
+
+            timeoutPassedToOnTimeout.Should().Be(timeoutProvider(context));
         }
 
         [Fact]

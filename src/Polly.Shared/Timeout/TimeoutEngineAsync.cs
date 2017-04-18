@@ -9,14 +9,14 @@ namespace Polly.Timeout
         internal static async Task<TResult> ImplementationAsync<TResult>(
             Func<Context, CancellationToken, Task<TResult>> action, 
             Context context, 
-            Func<TimeSpan> timeoutProvider,
+            Func<Context, TimeSpan> timeoutProvider,
             TimeoutStrategy timeoutStrategy,
             Func<Context, TimeSpan, Task, Task> onTimeoutAsync, 
             CancellationToken cancellationToken, 
             bool continueOnCapturedContext)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            TimeSpan timeout = timeoutProvider();
+            TimeSpan timeout = timeoutProvider(context);
 
             using (CancellationTokenSource timeoutCancellationTokenSource = new CancellationTokenSource())
             {

@@ -10,12 +10,12 @@ namespace Polly.Timeout
             Func<Context, CancellationToken, TResult> action,
             Context context,
             CancellationToken cancellationToken,
-            Func<TimeSpan> timeoutProvider,
+            Func<Context, TimeSpan> timeoutProvider,
             TimeoutStrategy timeoutStrategy,
             Action<Context, TimeSpan, Task> onTimeout)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            TimeSpan timeout = timeoutProvider();
+            TimeSpan timeout = timeoutProvider(context);
 
             using (CancellationTokenSource timeoutCancellationTokenSource = new CancellationTokenSource())
             {
