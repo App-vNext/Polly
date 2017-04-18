@@ -7,11 +7,11 @@ using Polly.Utilities;
 
 namespace Polly.Retry
 {
-    internal partial class RetryPolicyStateWithSleepDurationProvider<TResult> : IRetryPolicyState<TResult>
+    internal partial class RetryStateWaitAndRetryForever<TResult> : IRetryPolicyState<TResult>
     {
         private readonly Func<DelegateResult<TResult>, TimeSpan, Context, Task> _onRetryAsync;
 
-        public RetryPolicyStateWithSleepDurationProvider(Func<int, TimeSpan> sleepDurationProvider, Func<DelegateResult<TResult>, TimeSpan, Context, Task> onRetryAsync, Context context)
+        public RetryStateWaitAndRetryForever(Func<int, TimeSpan> sleepDurationProvider, Func<DelegateResult<TResult>, TimeSpan, Context, Task> onRetryAsync, Context context)
         {
             this._sleepDurationProvider = sleepDurationProvider;
             _onRetryAsync = onRetryAsync;

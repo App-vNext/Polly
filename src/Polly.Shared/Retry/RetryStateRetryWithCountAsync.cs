@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace Polly.Retry
 {
-    internal partial class RetryPolicyStateWithCount<TResult> : IRetryPolicyState<TResult>
+    internal partial class RetryStateRetryWithCount<TResult> : IRetryPolicyState<TResult>
     {
         private readonly Func<DelegateResult<TResult>, int, Context, Task> _onRetryAsync;
 
-        public RetryPolicyStateWithCount(int retryCount, Func<DelegateResult<TResult>, int, Context, Task> onRetryAsync, Context context)
+        public RetryStateRetryWithCount(int retryCount, Func<DelegateResult<TResult>, int, Context, Task> onRetryAsync, Context context)
         {
             _retryCount = retryCount;
             _onRetryAsync = onRetryAsync;

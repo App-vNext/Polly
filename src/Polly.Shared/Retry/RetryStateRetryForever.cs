@@ -3,12 +3,12 @@ using System.Threading;
 
 namespace Polly.Retry
 {
-    internal partial class RetryPolicyState<TResult> : IRetryPolicyState<TResult>
+    internal partial class RetryStateRetryForever<TResult> : IRetryPolicyState<TResult>
     {
         private readonly Action<DelegateResult<TResult>, Context> _onRetry;
         private readonly Context _context;
 
-        public RetryPolicyState(Action<DelegateResult<TResult>, Context> onRetry, Context context)
+        public RetryStateRetryForever(Action<DelegateResult<TResult>, Context> onRetry, Context context)
         {
             _onRetry = onRetry;
             _context = context;

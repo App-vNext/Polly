@@ -68,7 +68,7 @@ namespace Polly
                     cancellationToken,
                     policyBuilder.ExceptionPredicates,
                     policyBuilder.ResultPredicates,
-                    () => new RetryPolicyStateWithCount<TResult>(retryCount, (outcome, i, ctx) => onRetry(outcome, i), context)
+                    () => new RetryStateRetryWithCount<TResult>(retryCount, (outcome, i, ctx) => onRetry(outcome, i), context)
                 ),
                 policyBuilder.ExceptionPredicates,
                 policyBuilder.ResultPredicates
@@ -110,7 +110,7 @@ namespace Polly
                     cancellationToken,
                     policyBuilder.ExceptionPredicates,
                     policyBuilder.ResultPredicates,
-                    () => new RetryPolicyStateWithCount<TResult>(retryCount, onRetry, context)
+                    () => new RetryStateRetryWithCount<TResult>(retryCount, onRetry, context)
                 ), 
                 policyBuilder.ExceptionPredicates,
                 policyBuilder.ResultPredicates);
@@ -147,7 +147,7 @@ namespace Polly
                     cancellationToken,
                     policyBuilder.ExceptionPredicates,
                     policyBuilder.ResultPredicates,
-                    () => new RetryPolicyState<TResult>((outcome, ctx) => onRetry(outcome.Exception), context)
+                    () => new RetryStateRetryForever<TResult>((outcome, ctx) => onRetry(outcome.Exception), context)
                 ),
                 policyBuilder.ExceptionPredicates,
                 policyBuilder.ResultPredicates
@@ -173,7 +173,7 @@ namespace Polly
                     cancellationToken,
                     policyBuilder.ExceptionPredicates,
                     policyBuilder.ResultPredicates,
-                    () => new RetryPolicyState<TResult>(onRetry, context)
+                    () => new RetryStateRetryForever<TResult>(onRetry, context)
                     ), 
                 policyBuilder.ExceptionPredicates,
                 policyBuilder.ResultPredicates);
@@ -228,7 +228,7 @@ namespace Polly
                     cancellationToken,
                     policyBuilder.ExceptionPredicates,
                     policyBuilder.ResultPredicates,
-                    () => new RetryPolicyStateWithSleep<TResult>(sleepDurations, (outcome, span, ctx) => onRetry(outcome, span), context)
+                    () => new RetryStateWaitAndRetry<TResult>(sleepDurations, (outcome, span, ctx) => onRetry(outcome, span), context)
                 ),
                 policyBuilder.ExceptionPredicates,
                 policyBuilder.ResultPredicates
@@ -268,7 +268,7 @@ namespace Polly
                     cancellationToken,
                     policyBuilder.ExceptionPredicates,
                     policyBuilder.ResultPredicates,
-                    () => new RetryPolicyStateWithSleep<TResult>(sleepDurations, onRetry, context)
+                    () => new RetryStateWaitAndRetry<TResult>(sleepDurations, onRetry, context)
                 ), 
                 policyBuilder.ExceptionPredicates,
                 policyBuilder.ResultPredicates);
@@ -307,7 +307,7 @@ namespace Polly
                     cancellationToken,
                     policyBuilder.ExceptionPredicates,
                     policyBuilder.ResultPredicates,
-                    () => new RetryPolicyStateWithSleep<TResult>(sleepDurations, onRetry, context)
+                    () => new RetryStateWaitAndRetry<TResult>(sleepDurations, onRetry, context)
                 ), 
             policyBuilder.ExceptionPredicates,
             policyBuilder.ResultPredicates);
@@ -353,7 +353,7 @@ namespace Polly
                     cancellationToken,
                     policyBuilder.ExceptionPredicates,
                     policyBuilder.ResultPredicates,
-                    () => new RetryPolicyStateWithSleep<TResult>(sleepDurations, (outcome, span, ctx) => onRetry(outcome, span), context)
+                    () => new RetryStateWaitAndRetry<TResult>(sleepDurations, (outcome, span, ctx) => onRetry(outcome, span), context)
                 ),
                 policyBuilder.ExceptionPredicates,
                 policyBuilder.ResultPredicates
@@ -386,7 +386,7 @@ namespace Polly
                     cancellationToken,
                     policyBuilder.ExceptionPredicates,
                     policyBuilder.ResultPredicates,
-                    () => new RetryPolicyStateWithSleep<TResult>(sleepDurations, onRetry, context)
+                    () => new RetryStateWaitAndRetry<TResult>(sleepDurations, onRetry, context)
                     ),
                 policyBuilder.ExceptionPredicates,
                 policyBuilder.ResultPredicates
@@ -419,7 +419,7 @@ namespace Polly
                     cancellationToken,
                     policyBuilder.ExceptionPredicates,
                     policyBuilder.ResultPredicates,
-                    () => new RetryPolicyStateWithSleep<TResult>(sleepDurations, onRetry, context)
+                    () => new RetryStateWaitAndRetry<TResult>(sleepDurations, onRetry, context)
                 ), 
                 policyBuilder.ExceptionPredicates,
                 policyBuilder.ResultPredicates
@@ -464,7 +464,7 @@ namespace Polly
                     cancellationToken,
                     policyBuilder.ExceptionPredicates,
                     policyBuilder.ResultPredicates,
-                    () => new RetryPolicyStateWithSleepDurationProvider<TResult>(sleepDurationProvider, (outcome, timespan, ctx) => onRetry(outcome, timespan), context)
+                    () => new RetryStateWaitAndRetryForever<TResult>(sleepDurationProvider, (outcome, timespan, ctx) => onRetry(outcome, timespan), context)
                 ),
                 policyBuilder.ExceptionPredicates,
                 policyBuilder.ResultPredicates
@@ -494,7 +494,7 @@ namespace Polly
                     cancellationToken,
                     policyBuilder.ExceptionPredicates,
                     policyBuilder.ResultPredicates,
-                    () => new RetryPolicyStateWithSleepDurationProvider<TResult>(sleepDurationProvider, onRetry, context)
+                    () => new RetryStateWaitAndRetryForever<TResult>(sleepDurationProvider, onRetry, context)
                 ), 
                 policyBuilder.ExceptionPredicates,
                 policyBuilder.ResultPredicates
