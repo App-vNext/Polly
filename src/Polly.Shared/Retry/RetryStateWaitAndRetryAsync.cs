@@ -18,11 +18,6 @@ namespace Polly.Retry
             _sleepDurationsEnumerator = sleepDurations.GetEnumerator();
         }
 
-        public RetryStateWaitAndRetry(IEnumerable<TimeSpan> sleepDurations, Func<DelegateResult<TResult>, TimeSpan, Context, Task> onRetryAsync, Context context) :
-            this(sleepDurations, (delegateResult, span, i, c) => onRetryAsync(delegateResult, span, c), context)
-        {
-        }
-
         public async Task<bool> CanRetryAsync(DelegateResult<TResult> delegateResult, CancellationToken cancellationToken, bool continueOnCapturedContext)
         {
             if (!_sleepDurationsEnumerator.MoveNext()) return false;

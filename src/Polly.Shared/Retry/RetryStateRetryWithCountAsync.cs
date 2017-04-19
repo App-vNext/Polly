@@ -19,7 +19,7 @@ namespace Polly.Retry
         {
             _errorCount += 1;
 
-            var shouldRetry = _errorCount <= _retryCount;
+            bool shouldRetry = _errorCount <= _retryCount;
             if (shouldRetry)
             {
                await _onRetryAsync(delegateResult, _errorCount, _context).ConfigureAwait(continueOnCapturedContext);

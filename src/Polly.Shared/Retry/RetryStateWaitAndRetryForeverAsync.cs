@@ -11,7 +11,7 @@ namespace Polly.Retry
 
         public RetryStateWaitAndRetryForever(Func<int, Context, TimeSpan> sleepDurationProvider, Func<DelegateResult<TResult>, TimeSpan, Context, Task> onRetryAsync, Context context)
         {
-            this._sleepDurationProvider = sleepDurationProvider;
+            _sleepDurationProvider = sleepDurationProvider;
             _onRetryAsync = onRetryAsync;
             _context = context;
         }

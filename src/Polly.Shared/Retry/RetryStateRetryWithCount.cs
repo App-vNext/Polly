@@ -21,7 +21,7 @@ namespace Polly.Retry
         {
             _errorCount += 1;
 
-            var shouldRetry = _errorCount <= _retryCount;
+            bool shouldRetry = _errorCount <= _retryCount;
             if (shouldRetry)
             {
                 _onRetry(delegateResult, _errorCount, _context);

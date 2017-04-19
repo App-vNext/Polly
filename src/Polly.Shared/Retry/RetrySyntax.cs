@@ -62,17 +62,7 @@ namespace Polly
             if (retryCount < 0) throw new ArgumentOutOfRangeException(nameof(retryCount), "Value must be greater than or equal to zero.");
             if (onRetry == null) throw new ArgumentNullException(nameof(onRetry));
 
-            return new RetryPolicy(
-                (action, context, cancellationToken) => RetryEngine.Implementation(
-                    (ctx, ct) => { action(ctx, ct); return EmptyStruct.Instance; },
-                    context,
-                    cancellationToken,
-                    policyBuilder.ExceptionPredicates, 
-                    PredicateHelper<EmptyStruct>.EmptyResultPredicates,
-                    () => new RetryStateRetryWithCount<EmptyStruct>(retryCount, (outcome, i, ctx) => onRetry(outcome.Exception, i), context)
-                ),
-                policyBuilder.ExceptionPredicates
-            );
+            return policyBuilder.Retry(retryCount, (outcome, i, ctx) => onRetry(outcome, i));
         }
 
         /// <summary>
@@ -85,7 +75,7 @@ namespace Polly
         /// <exception cref="System.ArgumentNullException">onRetry</exception>
         public static RetryPolicy Retry(this PolicyBuilder policyBuilder, Action<Exception, int, Context> onRetry)
         {
-            return Retry(policyBuilder, 1, onRetry);
+            return policyBuilder.Retry(1, onRetry);
         }
 
         /// <summary>
@@ -138,17 +128,7 @@ namespace Polly
         {
             if (onRetry == null) throw new ArgumentNullException(nameof(onRetry));
 
-            return new RetryPolicy(
-                (action, context, cancellationToken) => RetryEngine.Implementation(
-                    (ctx, ct) => { action(ctx, ct); return EmptyStruct.Instance; },
-                    context,
-                    cancellationToken,
-                    policyBuilder.ExceptionPredicates,
-                    PredicateHelper<EmptyStruct>.EmptyResultPredicates, 
-                    () => new RetryStateRetryForever<EmptyStruct>((outcome, ctx) => onRetry(outcome.Exception), context)
-                ),
-                policyBuilder.ExceptionPredicates
-            );
+            return policyBuilder.RetryForever((outcome, ctx) => onRetry(outcome));
         }
 
         /// <summary>
@@ -184,7 +164,7 @@ namespace Polly
         /// <returns>The policy instance.</returns>
         public static RetryPolicy  WaitAndRetry(this PolicyBuilder policyBuilder, int retryCount, Func<int, TimeSpan> sleepDurationProvider)
         {
-            Action<Exception, TimeSpan> doNothing = (_, __) => { };
+            Action<Exception, TimeSpan, int, Context> doNothing = (_, __, ___, ____) => { };
 
             return policyBuilder.WaitAndRetry(retryCount, sleepDurationProvider, doNothing);
         }
@@ -208,24 +188,13 @@ namespace Polly
         /// </exception>
         public static RetryPolicy  WaitAndRetry(this PolicyBuilder policyBuilder, int retryCount, Func<int, TimeSpan> sleepDurationProvider, Action<Exception, TimeSpan> onRetry)
         {
-            if (retryCount < 0) throw new ArgumentOutOfRangeException(nameof(retryCount), "Value must be greater than or equal to zero.");
-            if (sleepDurationProvider == null) throw new ArgumentNullException(nameof(sleepDurationProvider));
             if (onRetry == null) throw new ArgumentNullException(nameof(onRetry));
 
-            var sleepDurations = Enumerable.Range(1, retryCount)
-                                           .Select(sleepDurationProvider);
-
-            return new RetryPolicy(
-                (action, context, cancellationToken) => RetryEngine.Implementation(
-                    (ctx, ct) => { action(ctx, ct); return EmptyStruct.Instance; },
-                    context,
-                    cancellationToken,
-                    policyBuilder.ExceptionPredicates,
-                    PredicateHelper<EmptyStruct>.EmptyResultPredicates,
-                    () => new RetryStateWaitAndRetry<EmptyStruct>(sleepDurations, (outcome, timespan, ctx) => onRetry(outcome.Exception, timespan), context)
-                ),
-                policyBuilder.ExceptionPredicates
-            );
+            return policyBuilder.WaitAndRetry(
+                retryCount,
+                sleepDurationProvider,
+                (outcome, span, i, ctx) => onRetry(outcome, span)
+                );
         }
 
         /// <summary>
@@ -247,21 +216,13 @@ namespace Polly
         /// </exception>
         public static RetryPolicy WaitAndRetry(this PolicyBuilder policyBuilder, int retryCount, Func<int, TimeSpan> sleepDurationProvider, Action<Exception, TimeSpan, Context> onRetry)
         {
-            if (retryCount < 0) throw new ArgumentOutOfRangeException(nameof(retryCount), "Value must be greater than or equal to zero.");
-            if (sleepDurationProvider == null) throw new ArgumentNullException(nameof(sleepDurationProvider));
             if (onRetry == null) throw new ArgumentNullException(nameof(onRetry));
 
-            var sleepDurations = Enumerable.Range(1, retryCount)
-                                           .Select(sleepDurationProvider);
-
-            return new RetryPolicy((action, context, cancellationToken) => RetryEngine.Implementation(
-                (ctx, ct) => { action(ctx, ct); return EmptyStruct.Instance; },
-                context,
-                cancellationToken,
-                policyBuilder.ExceptionPredicates,
-                PredicateHelper<EmptyStruct>.EmptyResultPredicates,
-                () => new RetryStateWaitAndRetry<EmptyStruct>(sleepDurations, (outcome, timespan, ctx) => onRetry(outcome.Exception, timespan, ctx), context)
-            ), policyBuilder.ExceptionPredicates);
+            return policyBuilder.WaitAndRetry(
+                retryCount, 
+                sleepDurationProvider, 
+                (outcome, span, i, ctx) => onRetry(outcome, span, ctx)
+                );
         }
 
         /// <summary>
@@ -331,20 +292,9 @@ namespace Polly
         /// </exception>
         public static RetryPolicy  WaitAndRetry(this PolicyBuilder policyBuilder, IEnumerable<TimeSpan> sleepDurations, Action<Exception, TimeSpan> onRetry)
         {
-            if (sleepDurations == null) throw new ArgumentNullException(nameof(sleepDurations));
             if (onRetry == null) throw new ArgumentNullException(nameof(onRetry));
 
-            return new RetryPolicy(
-                (action, context, cancellationToken) => RetryEngine.Implementation(
-                    (ctx, ct) => { action(ctx, ct); return EmptyStruct.Instance; },
-                    context,
-                    cancellationToken,
-                    policyBuilder.ExceptionPredicates,
-                    PredicateHelper<EmptyStruct>.EmptyResultPredicates,
-                    () => new RetryStateWaitAndRetry<EmptyStruct>(sleepDurations, (outcome, timespan, ctx) => onRetry(outcome.Exception, timespan), context)
-                ),
-                policyBuilder.ExceptionPredicates
-            );
+            return policyBuilder.WaitAndRetry(sleepDurations, (outcome, span, i, ctx) => onRetry(outcome, span));
         }
 
         /// <summary>
@@ -363,18 +313,9 @@ namespace Polly
         /// </exception>
         public static RetryPolicy WaitAndRetry(this PolicyBuilder policyBuilder, IEnumerable<TimeSpan> sleepDurations, Action<Exception, TimeSpan, Context> onRetry)
         {
-            if (sleepDurations == null) throw new ArgumentNullException(nameof(sleepDurations));
             if (onRetry == null) throw new ArgumentNullException(nameof(onRetry));
 
-            return new RetryPolicy(
-                (action, context, cancellationToken) => RetryEngine.Implementation(
-                (ctx, ct) => { action(ctx, ct); return EmptyStruct.Instance; },
-                context,
-                cancellationToken,
-                policyBuilder.ExceptionPredicates,
-                PredicateHelper<EmptyStruct>.EmptyResultPredicates,
-                () => new RetryStateWaitAndRetry<EmptyStruct>(sleepDurations, (outcome, timespan, ctx) => onRetry(outcome.Exception, timespan, ctx), context)
-            ), policyBuilder.ExceptionPredicates);
+            return policyBuilder.WaitAndRetry(sleepDurations, (outcome, span, i, ctx) => onRetry(outcome, span, ctx));
         }
 
         /// <summary>
