@@ -58,8 +58,8 @@ namespace Polly
         /// <exception cref="System.ArgumentNullException">onRetry</exception>
         public static RetryPolicy<TResult> Retry<TResult>(this PolicyBuilder<TResult> policyBuilder, int retryCount, Action<DelegateResult<TResult>, int> onRetry)
         {
-            if (retryCount < 0) throw new ArgumentOutOfRangeException("retryCount", "Value must be greater than or equal to zero.");
-            if (onRetry == null) throw new ArgumentNullException("onRetry");
+            if (retryCount < 0) throw new ArgumentOutOfRangeException(nameof(retryCount), "Value must be greater than or equal to zero.");
+            if (onRetry == null) throw new ArgumentNullException(nameof(onRetry));
 
             return new RetryPolicy<TResult>(
                 (action, context, cancellationToken) => RetryEngine.Implementation<TResult>(
@@ -100,8 +100,8 @@ namespace Polly
         /// <exception cref="System.ArgumentNullException">onRetry</exception>
         public static RetryPolicy<TResult> Retry<TResult>(this PolicyBuilder<TResult> policyBuilder, int retryCount, Action<DelegateResult<TResult>, int, Context> onRetry)
         {
-            if (retryCount < 0) throw new ArgumentOutOfRangeException("retryCount", "Value must be greater than or equal to zero.");
-            if (onRetry == null) throw new ArgumentNullException("onRetry");
+            if (retryCount < 0) throw new ArgumentOutOfRangeException(nameof(retryCount), "Value must be greater than or equal to zero.");
+            if (onRetry == null) throw new ArgumentNullException(nameof(onRetry));
 
             return new RetryPolicy<TResult>(
                 (action, context, cancellationToken) => RetryEngine.Implementation(
@@ -117,7 +117,7 @@ namespace Polly
         }
 
         /// <summary>
-        /// Builds a <see cref="Policy"/> that will retry indefinitely.
+        /// Builds a <see cref="Policy"/> that will retry indefinitely until the action succeeds.
         /// </summary>
         /// <param name="policyBuilder">The policy builder.</param>
         /// <returns>The policy instance.</returns>
@@ -138,7 +138,7 @@ namespace Polly
         /// <exception cref="System.ArgumentNullException">onRetry</exception>
         public static RetryPolicy<TResult> RetryForever<TResult>(this PolicyBuilder<TResult> policyBuilder, Action<Exception> onRetry)
         {
-            if (onRetry == null) throw new ArgumentNullException("onRetry");
+            if (onRetry == null) throw new ArgumentNullException(nameof(onRetry));
 
             return new RetryPolicy<TResult>(
                 (action, context, cancellationToken) => RetryEngine.Implementation(
@@ -164,7 +164,7 @@ namespace Polly
         /// <exception cref="System.ArgumentNullException">onRetry</exception>
         public static RetryPolicy<TResult> RetryForever<TResult>(this PolicyBuilder<TResult> policyBuilder, Action<DelegateResult<TResult>, Context> onRetry)
         {
-            if (onRetry == null) throw new ArgumentNullException("onRetry");
+            if (onRetry == null) throw new ArgumentNullException(nameof(onRetry));
 
             return new RetryPolicy<TResult>(
                 (action, context, cancellationToken) => RetryEngine.Implementation(
@@ -214,9 +214,9 @@ namespace Polly
         /// </exception>
         public static RetryPolicy<TResult> WaitAndRetry<TResult>(this PolicyBuilder<TResult> policyBuilder, int retryCount, Func<int, TimeSpan> sleepDurationProvider, Action<DelegateResult<TResult>, TimeSpan> onRetry)
         {
-            if (retryCount < 0) throw new ArgumentOutOfRangeException("retryCount", "Value must be greater than or equal to zero.");
-            if (sleepDurationProvider == null) throw new ArgumentNullException("sleepDurationProvider");
-            if (onRetry == null) throw new ArgumentNullException("onRetry");
+            if (retryCount < 0) throw new ArgumentOutOfRangeException(nameof(retryCount), "Value must be greater than or equal to zero.");
+            if (sleepDurationProvider == null) throw new ArgumentNullException(nameof(sleepDurationProvider));
+            if (onRetry == null) throw new ArgumentNullException(nameof(onRetry));
 
             var sleepDurations = Enumerable.Range(1, retryCount)
                                            .Select(sleepDurationProvider);
@@ -254,9 +254,9 @@ namespace Polly
         /// </exception>
         public static RetryPolicy<TResult> WaitAndRetry<TResult>(this PolicyBuilder<TResult> policyBuilder, int retryCount, Func<int, TimeSpan> sleepDurationProvider, Action<DelegateResult<TResult>, TimeSpan, Context> onRetry)
         {
-            if (retryCount < 0) throw new ArgumentOutOfRangeException("retryCount", "Value must be greater than or equal to zero.");
-            if (sleepDurationProvider == null) throw new ArgumentNullException("sleepDurationProvider");
-            if (onRetry == null) throw new ArgumentNullException("onRetry");
+            if (retryCount < 0) throw new ArgumentOutOfRangeException(nameof(retryCount), "Value must be greater than or equal to zero.");
+            if (sleepDurationProvider == null) throw new ArgumentNullException(nameof(sleepDurationProvider));
+            if (onRetry == null) throw new ArgumentNullException(nameof(onRetry));
 
             var sleepDurations = Enumerable.Range(1, retryCount)
                                            .Select(sleepDurationProvider);
@@ -293,9 +293,9 @@ namespace Polly
         /// </exception>
         public static RetryPolicy<TResult> WaitAndRetry<TResult>(this PolicyBuilder<TResult> policyBuilder, int retryCount, Func<int, TimeSpan> sleepDurationProvider, Action<DelegateResult<TResult>, TimeSpan, int, Context> onRetry)
         {
-            if (retryCount < 0) throw new ArgumentOutOfRangeException("retryCount", "Value must be greater than or equal to zero.");
-            if (sleepDurationProvider == null) throw new ArgumentNullException("sleepDurationProvider");
-            if (onRetry == null) throw new ArgumentNullException("onRetry");
+            if (retryCount < 0) throw new ArgumentOutOfRangeException(nameof(retryCount), "Value must be greater than or equal to zero.");
+            if (sleepDurationProvider == null) throw new ArgumentNullException(nameof(sleepDurationProvider));
+            if (onRetry == null) throw new ArgumentNullException(nameof(onRetry));
 
             var sleepDurations = Enumerable.Range(1, retryCount)
                                            .Select(sleepDurationProvider);
@@ -343,8 +343,8 @@ namespace Polly
         /// </exception>
         public static RetryPolicy<TResult> WaitAndRetry<TResult>(this PolicyBuilder<TResult> policyBuilder, IEnumerable<TimeSpan> sleepDurations, Action<DelegateResult<TResult>, TimeSpan> onRetry)
         {
-            if (sleepDurations == null) throw new ArgumentNullException("sleepDurations");
-            if (onRetry == null) throw new ArgumentNullException("onRetry");
+            if (sleepDurations == null) throw new ArgumentNullException(nameof(sleepDurations));
+            if (onRetry == null) throw new ArgumentNullException(nameof(onRetry));
 
             return new RetryPolicy<TResult>(
                 (action, context, cancellationToken) => RetryEngine.Implementation(
@@ -376,8 +376,8 @@ namespace Polly
         /// </exception>
         public static RetryPolicy<TResult> WaitAndRetry<TResult>(this PolicyBuilder<TResult> policyBuilder, IEnumerable<TimeSpan> sleepDurations, Action<DelegateResult<TResult>, TimeSpan, Context> onRetry)
         {
-            if (sleepDurations == null) throw new ArgumentNullException("sleepDurations");
-            if (onRetry == null) throw new ArgumentNullException("onRetry");
+            if (sleepDurations == null) throw new ArgumentNullException(nameof(sleepDurations));
+            if (onRetry == null) throw new ArgumentNullException(nameof(onRetry));
 
             return new RetryPolicy<TResult>(
                 (action, context, cancellationToken) => RetryEngine.Implementation(
@@ -409,8 +409,8 @@ namespace Polly
         /// </exception>
         public static RetryPolicy<TResult> WaitAndRetry<TResult>(this PolicyBuilder<TResult> policyBuilder, IEnumerable<TimeSpan> sleepDurations, Action<DelegateResult<TResult>, TimeSpan, int, Context> onRetry)
         {
-            if (sleepDurations == null) throw new ArgumentNullException("sleepDurations");
-            if (onRetry == null) throw new ArgumentNullException("onRetry");
+            if (sleepDurations == null) throw new ArgumentNullException(nameof(sleepDurations));
+            if (onRetry == null) throw new ArgumentNullException(nameof(onRetry));
 
             return new RetryPolicy<TResult>(
                 (action, context, cancellationToken) => RetryEngine.Implementation(
@@ -427,7 +427,7 @@ namespace Polly
         }
 
         /// <summary>
-        /// Builds a <see cref="Policy"/> that will wait and retry indefinitely.
+        /// Builds a <see cref="Policy"/> that will wait and retry indefinitely until the action succeeds.
         /// </summary>
         /// <param name="policyBuilder">The policy builder.</param>
         /// <param name="sleepDurationProvider">The function that provides the duration to wait for for a particular retry attempt.</param>
@@ -435,7 +435,7 @@ namespace Polly
         /// <exception cref="System.ArgumentNullException">sleepDurationProvider</exception>
         public static RetryPolicy<TResult> WaitAndRetryForever<TResult>(this PolicyBuilder<TResult> policyBuilder, Func<int, TimeSpan> sleepDurationProvider)
         {
-            if (sleepDurationProvider == null) throw new ArgumentNullException("sleepDurationProvider");
+            if (sleepDurationProvider == null) throw new ArgumentNullException(nameof(sleepDurationProvider));
 
             Action<DelegateResult<TResult>, TimeSpan> doNothing = (_, __) => { };
 
@@ -443,49 +443,57 @@ namespace Polly
         }
 
         /// <summary>
-        /// Builds a <see cref="Policy"/> that will wait and retry indefinitely
+        /// Builds a <see cref="Policy"/> that will wait and retry indefinitely until the action succeeds.
+        /// </summary>
+        /// <param name="policyBuilder">The policy builder.</param>
+        /// <param name="sleepDurationProvider">The function that provides the duration to wait for for a particular retry attempt.</param>
+        /// <returns>The policy instance.</returns>
+        /// <exception cref="System.ArgumentNullException">sleepDurationProvider</exception>
+        public static RetryPolicy<TResult> WaitAndRetryForever<TResult>(this PolicyBuilder<TResult> policyBuilder, Func<int, Context, TimeSpan> sleepDurationProvider)
+        {
+            if (sleepDurationProvider == null) throw new ArgumentNullException(nameof(sleepDurationProvider));
+
+            Action<DelegateResult<TResult>, TimeSpan, Context> doNothing = (_, __, ___) => { };
+
+            return policyBuilder.WaitAndRetryForever(sleepDurationProvider, doNothing);
+        }
+
+        /// <summary>
+        /// Builds a <see cref="Policy"/> that will wait and retry indefinitely until the action succeeds, 
         /// calling <paramref name="onRetry"/> on each retry with the handled exception or result.
         /// </summary>
         /// <param name="policyBuilder">The policy builder.</param>
-        /// <param name="sleepDurationProvider"></param>
+        /// <param name="sleepDurationProvider">A function providing the duration to wait before retrying.</param>
         /// <param name="onRetry">The action to call on each retry.</param>
         /// <returns>The policy instance.</returns>
         /// <exception cref="System.ArgumentNullException">sleepDurationProvider</exception>
         /// <exception cref="System.ArgumentNullException">onRetry</exception>
         public static RetryPolicy<TResult> WaitAndRetryForever<TResult>(this PolicyBuilder<TResult> policyBuilder, Func<int, TimeSpan> sleepDurationProvider, Action<DelegateResult<TResult>, TimeSpan> onRetry)
         {
-            if (sleepDurationProvider == null) throw new ArgumentNullException("sleepDurationProvider");
-            if (onRetry == null) throw new ArgumentNullException("onRetry");
+            if (sleepDurationProvider == null) throw new ArgumentNullException(nameof(sleepDurationProvider));
+            if (onRetry == null) throw new ArgumentNullException(nameof(onRetry));
 
-            return new RetryPolicy<TResult>(
-                (action, context, cancellationToken) => RetryEngine.Implementation(
-                    action,
-                    context,
-                    cancellationToken,
-                    policyBuilder.ExceptionPredicates,
-                    policyBuilder.ResultPredicates,
-                    () => new RetryStateWaitAndRetryForever<TResult>(sleepDurationProvider, (outcome, timespan, ctx) => onRetry(outcome, timespan), context)
-                ),
-                policyBuilder.ExceptionPredicates,
-                policyBuilder.ResultPredicates
+            return policyBuilder.WaitAndRetryForever(
+                (retryCount, context) => sleepDurationProvider(retryCount),
+                (exception, timespan, context) => onRetry(exception, timespan)
             );
         }
 
         /// <summary>
-        /// Builds a <see cref="Policy"/> that will wait and retry indefinitely
+        /// Builds a <see cref="Policy"/> that will wait and retry indefinitely until the action succeeds, 
         /// calling <paramref name="onRetry"/> on each retry with the handled exception or result and
         /// execution context.
         /// </summary>
         /// <param name="policyBuilder">The policy builder.</param>
-        /// <param name="sleepDurationProvider"></param>
+        /// <param name="sleepDurationProvider">A function providing the duration to wait before retrying.</param>
         /// <param name="onRetry">The action to call on each retry.</param>
         /// <returns>The policy instance.</returns>
         /// <exception cref="System.ArgumentNullException">sleepDurationProvider</exception>
         /// <exception cref="System.ArgumentNullException">onRetry</exception>
-        public static RetryPolicy<TResult> WaitAndRetryForever<TResult>(this PolicyBuilder<TResult> policyBuilder, Func<int, TimeSpan> sleepDurationProvider, Action<DelegateResult<TResult>, TimeSpan, Context> onRetry)
+        public static RetryPolicy<TResult> WaitAndRetryForever<TResult>(this PolicyBuilder<TResult> policyBuilder, Func<int, Context, TimeSpan> sleepDurationProvider, Action<DelegateResult<TResult>, TimeSpan, Context> onRetry)
         {
-            if (sleepDurationProvider == null) throw new ArgumentNullException("sleepDurationProvider");
-            if (onRetry == null) throw new ArgumentNullException("onRetry");
+            if (sleepDurationProvider == null) throw new ArgumentNullException(nameof(sleepDurationProvider));
+            if (onRetry == null) throw new ArgumentNullException(nameof(onRetry));
 
             return new RetryPolicy<TResult>(
                 (action, context, cancellationToken) => RetryEngine.Implementation(

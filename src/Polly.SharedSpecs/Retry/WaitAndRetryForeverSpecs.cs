@@ -60,7 +60,7 @@ namespace Polly.Specs.Retry
         public void Should_throw_when_onretry_action_is_null_with_context()
         {
             Action<Exception, TimeSpan, Context> nullOnRetry = null;
-            Func<int, TimeSpan> provider = i => TimeSpan.Zero;
+            Func<int, Context, TimeSpan> provider = (i, ctx) => TimeSpan.Zero;
 
             Action policy = () => Policy
                                       .Handle<DivideByZeroException>()
@@ -232,7 +232,7 @@ namespace Polly.Specs.Retry
         [Fact]
         public void Should_create_new_context_for_each_call_to_policy()
         {
-            Func<int, TimeSpan> provider = i => 1.Seconds();
+            Func<int, Context, TimeSpan> provider = (i, ctx) => 1.Seconds();
 
             string contextValue = null;
 
@@ -253,33 +253,66 @@ namespace Polly.Specs.Retry
             );
 
             contextValue.Should().Be("new_value");
-        }        
+        }
 
         [Fact]
         public void Should_calculate_retry_timespans_from_current_retry_attempt_and_timespan_provider()
         {
-            var expectedRetryCounts = new[]
+            var expectedRetryWaits = new[]
                 {
-                    2.Seconds(), 
-                    4.Seconds(), 
-                    8.Seconds(), 
-                    16.Seconds(), 
-                    32.Seconds() 
+                    2.Seconds(),
+                    4.Seconds(),
+                    8.Seconds(),
+                    16.Seconds(),
+                    32.Seconds()
                 };
 
-            var retryTimeSpans = new List<TimeSpan>();
+            var actualRetryWaits = new List<TimeSpan>();
 
             var policy = Policy
                 .Handle<DivideByZeroException>()
                 .WaitAndRetryForever(
-                    retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)), 
-                    (_, timeSpan) => retryTimeSpans.Add(timeSpan)
+                    retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),
+                    (_, timeSpan) => actualRetryWaits.Add(timeSpan)
                 );
 
             policy.RaiseException<DivideByZeroException>(5);
 
-            retryTimeSpans.Should()
-                       .ContainInOrder(expectedRetryCounts);
+            actualRetryWaits.Should()
+                       .ContainInOrder(expectedRetryWaits);
+        }
+
+        [Fact]
+        public void Should_be_able_to_pass_retry_duration_from_execution_to_sleepDurationProvider_via_context()
+        {
+            var expectedRetryDuration = 1.Seconds();
+            TimeSpan? actualRetryDuration = null;
+
+            TimeSpan defaultRetryAfter = 30.Seconds();
+
+            var policy = Policy
+                .Handle<DivideByZeroException>()
+                .WaitAndRetryForever(
+                    sleepDurationProvider: (retryAttempt, context) => context.ContainsKey("RetryAfter") ? (TimeSpan) context["RetryAfter"] : defaultRetryAfter, // Set sleep duration from Context, when available.
+                    onRetry: (_, timeSpan, __) => actualRetryDuration = timeSpan // Capture the actual sleep duration that was used, for test verification purposes.
+                );
+
+            bool failedOnce = false;
+            policy.Execute(context =>
+                {
+                    // Run some remote call; maybe it returns a RetryAfter header, which we can pass back to the sleepDurationProvider, via the context.
+                    context["RetryAfter"] = expectedRetryDuration;
+
+                    if (!failedOnce)
+                    {
+                        failedOnce = true;
+                        throw new DivideByZeroException();
+                    }
+                }, 
+                new {RetryAfter = defaultRetryAfter}.AsDictionary() // Can also set an initial value for RetryAfter, in the Context passed into the call.
+                );
+
+            actualRetryDuration.Should().Be(expectedRetryDuration);
         }
 
         public void Dispose()

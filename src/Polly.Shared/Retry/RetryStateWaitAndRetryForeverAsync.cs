@@ -1,6 +1,4 @@
-﻿
-
-using System;
+﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Polly.Utilities;
@@ -11,7 +9,7 @@ namespace Polly.Retry
     {
         private readonly Func<DelegateResult<TResult>, TimeSpan, Context, Task> _onRetryAsync;
 
-        public RetryStateWaitAndRetryForever(Func<int, TimeSpan> sleepDurationProvider, Func<DelegateResult<TResult>, TimeSpan, Context, Task> onRetryAsync, Context context)
+        public RetryStateWaitAndRetryForever(Func<int, Context, TimeSpan> sleepDurationProvider, Func<DelegateResult<TResult>, TimeSpan, Context, Task> onRetryAsync, Context context)
         {
             this._sleepDurationProvider = sleepDurationProvider;
             _onRetryAsync = onRetryAsync;
@@ -25,7 +23,7 @@ namespace Polly.Retry
                 _errorCount += 1;
             }
 
-            var currentTimeSpan = _sleepDurationProvider(_errorCount);
+            var currentTimeSpan = _sleepDurationProvider(_errorCount, _context);
             await _onRetryAsync(delegateResult, currentTimeSpan, _context).ConfigureAwait(continueOnCapturedContext);
 
             await SystemClock.SleepAsync(currentTimeSpan, cancellationToken).ConfigureAwait(continueOnCapturedContext);
