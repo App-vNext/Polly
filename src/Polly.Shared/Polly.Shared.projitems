@@ -69,6 +69,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)PolicyResult.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Policy.TResult.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ResultPredicate.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Retry\RetryStateWaitAndRetryWithProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Retry\RetryStateWaitAndRetryWithProviderAsync.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Retry\RetrySyntax.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Retry\RetrySyntaxAsync.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Retry\RetryTResultSyntax.cs" />
