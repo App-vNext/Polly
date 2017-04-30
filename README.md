@@ -79,12 +79,12 @@ From Polly v4.3.0 onwards, policies wrapping calls returning a `TResult` can als
 ```csharp
 // Handle return value with condition 
 Policy
-  .HandleResult<HttpResponse>(r => r.StatusCode == 404)
+  .HandleResult<HttpResponseMessage>(r => r.StatusCode == 404)
 
 // Handle multiple return values 
 Policy
-  .HandleResult<HttpResponse>(r => r.StatusCode == 500)
-  .OrResult<HttpResponse>(r => r.StatusCode == 502)
+  .HandleResult<HttpResponseMessage>(r => r.StatusCode == 500)
+  .OrResult<HttpResponseMessage>(r => r.StatusCode == 502)
 
 // Handle primitive return values (implied use of .Equals())
 Policy
@@ -93,9 +93,9 @@ Policy
  
 // Handle both exceptions and return values in one policy
 int[] httpStatusCodesWorthRetrying = {408, 500, 502, 503, 504}; 
-HttpResponse result = Policy
-  .Handle<HttpException>()
-  .OrResult<HttpResponse>(r => httpStatusCodesWorthRetrying.Contains(r.StatusCode))
+HttpResponseMessage result = Policy
+  .Handle<HttpResponseException>()
+  .OrResult<HttpResponseMessage>(r => httpStatusCodesWorthRetrying.Contains(r.StatusCode))
 ```
 
 For more information, see [Handling Return Values](#handing-return-values-and-policytresult) at foot of this readme. 
@@ -723,11 +723,11 @@ As described at step 1b, from Polly v4.3.0 onwards, policies can handle return v
 ```csharp
 // Handle both exceptions and return values in one policy
 int[] httpStatusCodesWorthRetrying = {408, 500, 502, 503, 504}; 
-HttpResponse result = Policy
-  .Handle<HttpException>()
-  .OrResult<HttpResponse>(r => httpStatusCodesWorthRetrying.Contains(r.StatusCode))
+HttpResponseMessage result = Policy
+  .Handle<HttpResponseException>()
+  .OrResult<HttpResponseMessage>(r => httpStatusCodesWorthRetrying.Contains(r.StatusCode))
   .Retry(...)
-  .Execute( /* some Func<HttpResponse> */ )
+  .Execute( /* some Func<HttpResponseMessage> */ )
 ```
 
 The exceptions and return results to handle can be expressed fluently in any order.
