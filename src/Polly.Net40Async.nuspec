@@ -15,6 +15,10 @@
     <releaseNotes>
      v5.0 is a major release with significant new resilience policies: Timeout; Bulkhead Isolation; Fallback; and PolicyWrap.  See release notes back to v5.0.0 for full details.
 
+     5.1.0
+     ---------------------
+     - Allow different parts of a policy execution to exchange data via a mutable Context travelling with each execution.
+
      5.0.6
      ---------------------
      - (.NETStandard1.0 changes only.)
