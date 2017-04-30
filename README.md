@@ -825,6 +825,7 @@ For details of changes by release see the [change log](https://github.com/App-vN
 * [@lakario](https://github.com/lakario) - Tidy CircuitBreaker LastException property.
 * [@lakario](https://github.com/lakario) - Add NoOpPolicy.
 * [@Julien-Mialon](https://github.com/Julien-Mialon) - Fixes, support and examples for .NETStandard compatibility with Xamarin PCL projects
+* [@reisenberger](https://github.com/reisenberger) - Add mutable Context and extra overloads taking Context.  Allows different parts of a policy execution to exchange data via the mutable Context travelling with each execution.
 
 # Sample Projects
 
