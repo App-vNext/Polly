@@ -8,7 +8,7 @@ using Polly.Utilities;
 namespace Polly.Specs.Helpers
 {
     /// <summary>
-    /// An intentionally naive stub cache implementation.  Its purpose is to be the simplest thing to support tests of the CachePolicy and CacheEngine, not to be a testable implementation of ICacheProvider.  
+    /// An intentionally naive stub cache implementation.  Its purpose is to be the simplest thing to support tests of the CachePolicy and CacheEngine, not a production-usable implementation.
     /// </summary>
     internal class StubCacheProvider : ICacheProvider, ICacheProviderAsync
     {
@@ -49,7 +49,7 @@ namespace Polly.Specs.Helpers
 
         #region Naive async-over-sync implementation
 
-        // Intentionally naive async-over-sync implementation.  Its purpose is to be the simplest thing to support tests of the CachePolicyAsync and CacheEngineAsync, not to be a testable or usable implementation of ICacheProviderAsync.  
+        // Intentionally naive async-over-sync implementation.  Its purpose is to be the simplest thing to support tests of the CachePolicyAsync and CacheEngineAsync, not to be a usable implementation of ICacheProviderAsync.  
 
         public Task<object> GetAsync(string key, CancellationToken cancellationToken, bool continueOnCapturedContext)
         {
