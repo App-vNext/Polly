@@ -9,7 +9,7 @@ namespace Polly.Retry
     /// </summary>
     public partial class RetryPolicy : Policy
     {
-        internal RetryPolicy(Action<Action<CancellationToken>, Context, CancellationToken> exceptionPolicy, IEnumerable<ExceptionPredicate> exceptionPredicates) 
+        internal RetryPolicy(Action<Action<Context, CancellationToken>, Context, CancellationToken> exceptionPolicy, IEnumerable<ExceptionPredicate> exceptionPredicates) 
             : base(exceptionPolicy, exceptionPredicates)
         {
         }
@@ -21,7 +21,7 @@ namespace Polly.Retry
     public partial class RetryPolicy<TResult> : Policy<TResult>
     {
         internal RetryPolicy(
-            Func<Func<CancellationToken, TResult>, Context, CancellationToken, TResult> executionPolicy,
+            Func<Func<Context, CancellationToken, TResult>, Context, CancellationToken, TResult> executionPolicy,
             IEnumerable<ExceptionPredicate> exceptionPredicates,
             IEnumerable<ResultPredicate<TResult>> resultPredicates
             ) : base(executionPolicy, exceptionPredicates, resultPredicates)

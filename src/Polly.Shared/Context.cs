@@ -1,25 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
-using Polly.Wrap;
-#if SUPPORTS_READONLY_COLLECTION
-using System.Collections.ObjectModel;
-#else
-using Polly.Utilities;
-#endif
 
 namespace Polly
 {
     /// <summary>
-    /// A readonly dictionary of string key / object value pairs
+    /// Context that carries with a single execution through a Policy.   Commonly-used properties are directly on the class.  Backed by a dictionary of string key / object value pairs, to which user-defined values may be added.
+    /// <remarks>Do not re-use an instance of <see cref="Context"/> across more than one execution.</remarks>
     /// </summary>
-    public class Context : ReadOnlyDictionary<string, object>
+    public class Context : Dictionary<string, object>
     {
+        // For an individual execution through a policy or policywrap, it is expected that all execution steps (for example executing the user delegate, invoking policy-activity delegates such as onRetry, onBreak, onTimeout etc) execute sequentially.  
+        // Therefore, this class is intentionally not constructed to be safe for concurrent access from multiple threads.
+
         private static readonly IDictionary<string, object> emptyDictionary = new Dictionary<string, object>();
         internal static readonly Context None = new Context(emptyDictionary);
 
-        private string _policyKey;
-        private string _policyWrapKey;
-        private readonly string _executionKey;
         private Guid? _executionGuid;
 
         /// <summary>
@@ -37,7 +32,7 @@ namespace Polly
         /// <param name="contextData">The context data.</param>
         public Context(String executionKey, IDictionary<string, object> contextData) : this(contextData)
         {
-            _executionKey = executionKey;
+            ExecutionKey = executionKey;
         }
 
         internal Context() : this(emptyDictionary)
@@ -50,28 +45,20 @@ namespace Polly
         }
 
         /// <summary>
-        /// A key unique to the outermost <see cref="PolicyWrap"/> instance involved in the current PolicyWrap execution.
+        /// A key unique to the outermost <see cref="Polly.Wrap.PolicyWrap"/> instance involved in the current PolicyWrap execution.
         /// </summary>
-        public String PolicyWrapKey
-        {
-            get { return _policyWrapKey; }
-            internal set { _policyWrapKey = value; }
-        }
+        public String PolicyWrapKey { get; internal set; }
 
         /// <summary>
         /// A key unique to the <see cref="Policy"/> instance executing the current delegate.
         /// </summary>
-        public String PolicyKey
-        {
-            get { return _policyKey; }
-            internal set { _policyKey = value; }
-        }
+        public String PolicyKey { get; internal set; }
 
         /// <summary>
         /// A key unique to the call site of the current execution. 
         /// <remarks>The value is set </remarks>
         /// </summary>
-        public String ExecutionKey => _executionKey;
+        public String ExecutionKey { get; }
 
         /// <summary>
         /// A Guid guaranteed to be unique to each execution.

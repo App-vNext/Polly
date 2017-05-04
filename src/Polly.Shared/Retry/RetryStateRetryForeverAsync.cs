@@ -1,16 +1,14 @@
-﻿
-
-using System;
+﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace Polly.Retry
 {
-    internal partial class RetryPolicyState<TResult> : IRetryPolicyState<TResult>
+    internal partial class RetryStateRetryForever<TResult> : IRetryPolicyState<TResult>
     {
         private readonly Func<DelegateResult<TResult>, Context, Task> _onRetryAsync;
 
-        public RetryPolicyState(Func<DelegateResult<TResult>, Context, Task> onRetryAsync, Context context)
+        public RetryStateRetryForever(Func<DelegateResult<TResult>, Context, Task> onRetryAsync, Context context)
         {
             _onRetryAsync = onRetryAsync;
             _context = context;

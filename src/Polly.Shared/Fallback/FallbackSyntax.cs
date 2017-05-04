@@ -110,7 +110,7 @@ namespace Polly
 
             return new FallbackPolicy(
                 (action, context, cancellationToken) => FallbackEngine.Implementation(
-                    ct => { action(ct); return EmptyStruct.Instance; },
+                    (ctx, ct) => { action(ctx, ct); return EmptyStruct.Instance; },
                     context,
                     cancellationToken,
                     policyBuilder.ExceptionPredicates,

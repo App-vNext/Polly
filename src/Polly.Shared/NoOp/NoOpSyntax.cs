@@ -19,7 +19,7 @@ namespace Polly
         {
             return new NoOpPolicy(
                 (action, context, cancellationToken) => NoOpEngine.Implementation(
-                    ct => { action(ct); return EmptyStruct.Instance; },
+                    (ctx, ct) => { action(ctx, ct); return EmptyStruct.Instance; }, context, 
                     cancellationToken)
                 );
         }

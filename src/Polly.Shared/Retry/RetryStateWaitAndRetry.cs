@@ -5,23 +5,18 @@ using Polly.Utilities;
 
 namespace Polly.Retry
 {
-    internal partial class RetryPolicyStateWithSleep<TResult> : IRetryPolicyState<TResult>
+    internal partial class RetryStateWaitAndRetry<TResult> : IRetryPolicyState<TResult>
     {
         private int _errorCount;
         private readonly Action<DelegateResult<TResult>, TimeSpan, int, Context> _onRetry;
         private readonly Context _context;
         private readonly IEnumerator<TimeSpan> _sleepDurationsEnumerator;
 
-        public RetryPolicyStateWithSleep(IEnumerable<TimeSpan> sleepDurations, Action<DelegateResult<TResult>, TimeSpan, int, Context> onRetry, Context context)
+        public RetryStateWaitAndRetry(IEnumerable<TimeSpan> sleepDurations, Action<DelegateResult<TResult>, TimeSpan, int, Context> onRetry, Context context)
         {
             _onRetry = onRetry;
             _context = context;
             _sleepDurationsEnumerator = sleepDurations.GetEnumerator();
-        }
-
-        public RetryPolicyStateWithSleep(IEnumerable<TimeSpan> sleepDurations, Action<DelegateResult<TResult>, TimeSpan, Context> onRetry, Context context) :
-            this(sleepDurations, (delegateResult, span, i, c) => onRetry(delegateResult, span, c), context)
-        {
         }
 
         public bool CanRetry(DelegateResult<TResult> delegateResult, CancellationToken cancellationToken)

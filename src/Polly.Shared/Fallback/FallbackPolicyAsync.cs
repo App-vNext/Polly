@@ -7,7 +7,7 @@ namespace Polly.Fallback
 {
     public partial class FallbackPolicy
     {
-        internal FallbackPolicy(Func<Func<CancellationToken, Task>, Context, CancellationToken, bool, Task> asyncExceptionPolicy, IEnumerable<ExceptionPredicate> exceptionPredicates)
+        internal FallbackPolicy(Func<Func<Context, CancellationToken, Task>, Context, CancellationToken, bool, Task> asyncExceptionPolicy, IEnumerable<ExceptionPredicate> exceptionPredicates)
            : base(asyncExceptionPolicy, exceptionPredicates)
         {
         }
@@ -16,7 +16,7 @@ namespace Polly.Fallback
     public partial class FallbackPolicy<TResult>
     {
         internal FallbackPolicy(
-            Func<Func<CancellationToken, Task<TResult>>, Context, CancellationToken, bool, Task<TResult>> asyncExecutionPolicy,
+            Func<Func<Context, CancellationToken, Task<TResult>>, Context, CancellationToken, bool, Task<TResult>> asyncExecutionPolicy,
             IEnumerable<ExceptionPredicate> exceptionPredicates,
             IEnumerable<ResultPredicate<TResult>> resultPredicates
             ) : base(asyncExecutionPolicy, exceptionPredicates, resultPredicates)

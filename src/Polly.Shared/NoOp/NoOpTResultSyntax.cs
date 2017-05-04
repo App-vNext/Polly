@@ -20,6 +20,7 @@ namespace Polly
             return new NoOpPolicy<TResult>(
                 (func, context, cancellationToken) => NoOpEngine.Implementation(
                     func,
+                    context, 
                     cancellationToken)
                 );
         }

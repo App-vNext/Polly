@@ -12,7 +12,8 @@ namespace Polly.Retry
     internal static partial class RetryEngine
     {
         internal static async Task<TResult> ImplementationAsync<TResult>(
-            Func<CancellationToken, Task<TResult>> action, 
+            Func<Context, CancellationToken, Task<TResult>> action, 
+            Context context, 
             CancellationToken cancellationToken, 
             IEnumerable<ExceptionPredicate> shouldRetryExceptionPredicates,
             IEnumerable<ResultPredicate<TResult>> shouldRetryResultPredicates,
@@ -27,7 +28,7 @@ namespace Polly.Retry
 
                 try
                 {
-                    TResult result = await action(cancellationToken).ConfigureAwait(continueOnCapturedContext);
+                    TResult result = await action(context, cancellationToken).ConfigureAwait(continueOnCapturedContext);
 
                     if (!shouldRetryResultPredicates.Any(predicate => predicate(result)))
                     {

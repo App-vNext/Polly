@@ -8,7 +8,8 @@ namespace Polly.Retry
     internal static partial class RetryEngine
     {
         internal static TResult Implementation<TResult>(
-            Func<CancellationToken, TResult> action,
+            Func<Context, CancellationToken, TResult> action,
+            Context context,
             CancellationToken cancellationToken,
             IEnumerable<ExceptionPredicate> shouldRetryExceptionPredicates,
             IEnumerable<ResultPredicate<TResult>> shouldRetryResultPredicates,
@@ -22,7 +23,7 @@ namespace Polly.Retry
 
                 try
                 {
-                    TResult result = action(cancellationToken);
+                    TResult result = action(context, cancellationToken);
 
                     if (!shouldRetryResultPredicates.Any(predicate => predicate(result)))
                     {
