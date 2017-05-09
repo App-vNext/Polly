@@ -539,7 +539,7 @@ For more detail see: [Bulkhead policy documentation](https://github.com/App-vNex
 
 ### Cache
 
-The Cache policy is targeting Polly v5.1.  Check out [www.thepollyproject.org](http://www.thepollyproject.org) for updates.
+The Cache policy is targeting an upcoming Polly v5.x version.  Check out [www.thepollyproject.org](http://www.thepollyproject.org) for updates.
 
 ### PolicyWrap
 
