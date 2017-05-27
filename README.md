@@ -79,12 +79,12 @@ From Polly v4.3.0 onwards, policies wrapping calls returning a `TResult` can als
 ```csharp
 // Handle return value with condition 
 Policy
-  .HandleResult<HttpResponseMessage>(r => r.StatusCode == 404)
+  .HandleResult<HttpResponseMessage>(r => r.StatusCode == HttpStatusCode.NotFound)
 
 // Handle multiple return values 
 Policy
-  .HandleResult<HttpResponseMessage>(r => r.StatusCode == 500)
-  .OrResult<HttpResponseMessage>(r => r.StatusCode == 502)
+  .HandleResult<HttpResponseMessage>(r => r.StatusCode == HttpStatusCode.InternalServerError)
+  .OrResult<HttpResponseMessage>(r => r.StatusCode == HttpStatusCode.BadGateway)
 
 // Handle primitive return values (implied use of .Equals())
 Policy
@@ -92,7 +92,13 @@ Policy
   .OrResult<HttpStatusCode>(HttpStatusCode.BadGateway)
  
 // Handle both exceptions and return values in one policy
-int[] httpStatusCodesWorthRetrying = {408, 500, 502, 503, 504}; 
+HttpStatusCode[] httpStatusCodesWorthRetrying = {
+   HttpStatusCode.RequestTimeout, // 408
+   HttpStatusCode.InternalServerError, // 500
+   HttpStatusCode.BadGateway, // 502
+   HttpStatusCode.ServiceUnavailable, // 503
+   HttpStatusCode.GatewayTimeout // 504
+}; 
 HttpResponseMessage result = Policy
   .Handle<HttpResponseException>()
   .OrResult<HttpResponseMessage>(r => httpStatusCodesWorthRetrying.Contains(r.StatusCode))
@@ -539,7 +545,7 @@ For more detail see: [Bulkhead policy documentation](https://github.com/App-vNex
 
 ### Cache
 
-The Cache policy is targeting Polly v5.1.  Check out [www.thepollyproject.org](http://www.thepollyproject.org) for updates.
+The Cache policy is targeting an upcoming Polly v5.x version.  Check out [www.thepollyproject.org](http://www.thepollyproject.org) for updates.
 
 ### PolicyWrap
 
@@ -722,7 +728,13 @@ As described at step 1b, from Polly v4.3.0 onwards, policies can handle return v
 
 ```csharp
 // Handle both exceptions and return values in one policy
-int[] httpStatusCodesWorthRetrying = {408, 500, 502, 503, 504}; 
+HttpStatusCode[] httpStatusCodesWorthRetrying = {
+   HttpStatusCode.RequestTimeout, // 408
+   HttpStatusCode.InternalServerError, // 500
+   HttpStatusCode.BadGateway, // 502
+   HttpStatusCode.ServiceUnavailable, // 503
+   HttpStatusCode.GatewayTimeout // 504
+}; 
 HttpResponseMessage result = Policy
   .Handle<HttpResponseException>()
   .OrResult<HttpResponseMessage>(r => httpStatusCodesWorthRetrying.Contains(r.StatusCode))
