@@ -1,3 +1,7 @@
+## 5.x-cachealpha
+- Exposes central infrastructure for forthcoming CachePolicy, so that implementations of ICacheProvider, ICacheKeyStrategy, ITtlStrategy and ICacheItemSerializer can be coded against it.  
+- ALPHA STATUS: refinement may occur as implementations developed.   
+
 ## 5.1.0
 - Allow different parts of a policy execution to exchange data via a mutable Context travelling with each execution.
 
