@@ -141,7 +141,7 @@ Task("__UpdateDotNetStandardAssemblyVersionNumber")
     // NOTE: TEMPORARY fix only, while GitVersionTask does not support .Net Standard assemblies.  See https://github.com/App-vNext/Polly/issues/176.  
     // This build Task can be removed when GitVersionTask supports .Net Standard assemblies.
     var assemblySemVer = gitVersionOutput["AssemblySemVer"].ToString();
-    Information("Updating NetStandard11 AssemblyVersion to {0}", assemblySemVer);
+    Information("Updating NetStandard1.1 AssemblyVersion to {0}", assemblySemVer);
     var replacedFiles = ReplaceRegexInFiles("./src/Polly.NetStandard11/Properties/AssemblyInfo.cs", "AssemblyVersion[(]\".*\"[)]", "AssemblyVersion(\"" + assemblySemVer +"\")");
     if (!replacedFiles.Any())
     {
