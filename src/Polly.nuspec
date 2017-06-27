@@ -4,16 +4,22 @@
     <owners>App vNext</owners>
     <authors>Michael Wolfenden, App vNext</authors>
     <description>
-      Polly is a .NET 4.5 / .NET Standard 1.0 library that allows developers to express resilience and transient fault handling policies such as Retry, Circuit Breaker, Timeout, Bulkhead Isolation and Fallback in a fluent and thread-safe manner.
+      Polly is a .NET 4.5 / .NET Standard 1.1 library that allows developers to express resilience and transient fault handling policies such as Retry, Circuit Breaker, Timeout, Bulkhead Isolation and Fallback in a fluent and thread-safe manner.
     </description>
     <language>en-US</language>
     <licenseUrl>https://raw.github.com/App-vNext/Polly/master/LICENSE.txt</licenseUrl>
     <iconUrl>https://raw.github.com/App-vNext/Polly/master/Polly.png</iconUrl>
     <projectUrl>https://github.com/App-vNext/Polly</projectUrl>
     <tags>Exception Handling Resilience Transient Fault Policy Circuit Breaker CircuitBreaker Retry Wait Bulkhead Fallback Timeout Throttle Parallelization</tags>
-    <copyright>Copyright © 2016, App vNext</copyright>
+    <copyright>Copyright © 2017, App vNext</copyright>
     <releaseNotes>
-     v5.0 is a major release with significant new resilience policies: Timeout; Bulkhead Isolation; Fallback; and PolicyWrap.  See release notes back to v5.0.0 for full details. 
+     v5.0 is a major release with significant new resilience policies: Timeout; Bulkhead Isolation; Fallback; and PolicyWrap.  See release notes back to v5.0.0 for full details.  v5.0.5 includes important circuit-breaker fixes.
+
+     5.2.0
+     ---------------------
+     - Add PolicyRegistry for storing and retrieving policies.
+     - Add interfaces by policy type and execution type.
+     - Change .NetStandard minimum support to NetStandard1.1.
 
      5.1.0
      ---------------------
@@ -167,7 +173,7 @@
    </releaseNotes>
     <dependencies>
       <group targetFramework="net45"/>
-      <group targetFramework="netstandard1.0">
+      <group targetFramework="netstandard1.1">
         <dependency id="NETStandard.Library" version="1.6.1" />
       </group>
     </dependencies>

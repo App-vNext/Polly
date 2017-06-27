@@ -18,6 +18,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Bulkhead\BulkheadPolicy.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Bulkhead\BulkheadPolicyAsync.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Bulkhead\BulkheadRejectedException.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Bulkhead\IBulkheadPolicy.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CircuitBreaker\AdvancedCircuitBreakerSyntax.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CircuitBreaker\AdvancedCircuitBreakerSyntaxAsync.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CircuitBreaker\AdvancedCircuitBreakerTResultSyntax.cs" />
@@ -35,6 +36,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)CircuitBreaker\CircuitState.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CircuitBreaker\CircuitStateController.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CircuitBreaker\HealthCount.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CircuitBreaker\ICircuitBreakerPolicy.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CircuitBreaker\ICircuitController.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CircuitBreaker\IHealthMetrics.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CircuitBreaker\IsolatedCircuitException.cs" />
@@ -51,6 +53,13 @@
     <Compile Include="$(MSBuildThisFileDirectory)Fallback\FallbackEngineAsync.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Fallback\FallbackPolicy.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Fallback\FallbackPolicyAsync.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Fallback\IFallbackPolicy.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IAsyncPolicy.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IAsyncPolicyTResult.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ISyncPolicy.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IsPolicy.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ISyncPolicyTResult.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)NoOp\INoOpPolicy.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)NoOp\NoOpEngineAsync.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)NoOp\NoOpEngine.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)NoOp\NoOpPolicyAsync.cs" />
@@ -68,7 +77,10 @@
     <Compile Include="$(MSBuildThisFileDirectory)PolicyBuilder.OrSyntax.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PolicyResult.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Policy.TResult.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Registry\PolicyRegistry.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Registry\IPolicyRegistry.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ResultPredicate.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Retry\IRetryPolicy.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Retry\RetryStateWaitAndRetryWithProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Retry\RetryStateWaitAndRetryWithProviderAsync.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Retry\RetrySyntax.cs" />
@@ -89,6 +101,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Retry\RetryStateWaitAndRetry.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Retry\RetryStateWaitAndRetryForever.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Retry\RetryStateWaitAndRetryForeverAsync.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Timeout\ITimeoutPolicy.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Timeout\TimeoutSyntax.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Timeout\TimeoutSyntaxAsync.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Timeout\TimeoutTResultSyntax.cs" />
@@ -107,6 +120,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\SystemClock.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\TaskHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\TimedLock.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Wrap\IPolicyWrap.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Wrap\PolicyWrapSyntax.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Wrap\PolicyWrapSyntaxAsync.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Wrap\PolicyWrap.ContextAndKeys.cs" />

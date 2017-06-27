@@ -49,7 +49,7 @@ var snkFile = srcDir + File(keyName);
 
 var projectToNugetFolderMap = new Dictionary<string, string[]>() {
     { "Net45"        , new [] {"net45"} },
-    { "NetStandard10", new [] {"netstandard1.0"} },
+    { "NetStandard11", new [] {"netstandard1.1"} },
 };
 
 var net40AsyncProjectToNugetFolderMap = new Dictionary<string, string[]>() {
@@ -141,11 +141,11 @@ Task("__UpdateDotNetStandardAssemblyVersionNumber")
     // NOTE: TEMPORARY fix only, while GitVersionTask does not support .Net Standard assemblies.  See https://github.com/App-vNext/Polly/issues/176.  
     // This build Task can be removed when GitVersionTask supports .Net Standard assemblies.
     var assemblySemVer = gitVersionOutput["AssemblySemVer"].ToString();
-    Information("Updating NetStandard10 AssemblyVersion to {0}", assemblySemVer);
-    var replacedFiles = ReplaceRegexInFiles("./src/Polly.NetStandard10/Properties/AssemblyInfo.cs", "AssemblyVersion[(]\".*\"[)]", "AssemblyVersion(\"" + assemblySemVer +"\")");
+    Information("Updating NetStandard1.1 AssemblyVersion to {0}", assemblySemVer);
+    var replacedFiles = ReplaceRegexInFiles("./src/Polly.NetStandard11/Properties/AssemblyInfo.cs", "AssemblyVersion[(]\".*\"[)]", "AssemblyVersion(\"" + assemblySemVer +"\")");
     if (!replacedFiles.Any())
     {
-        Information("NetStandard1.0 AssemblyVersion could not be updated.");
+        Information("NetStandard1.1 AssemblyVersion could not be updated.");
     }
 });
 

@@ -1,3 +1,8 @@
+## 5.2.0
+- Add PolicyRegistry for storing and retrieving policies.
+- Add interfaces by policy type and execution type.
+- Change .NetStandard minimum support to NetStandard1.1.
+     
 ## 5.1.0
 - Allow different parts of a policy execution to exchange data via a mutable Context travelling with each execution.
 

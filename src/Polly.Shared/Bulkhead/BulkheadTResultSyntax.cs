@@ -12,9 +12,6 @@ using SemaphoreSlim = System.Threading.SemaphoreSlim;
 
 namespace Polly
 {
-    /// <summary>
-    /// Fluent API for defining a <see cref="BulkheadPolicy"/>. 
-    /// </summary>
     public partial class Policy
     {
         /// <summary>

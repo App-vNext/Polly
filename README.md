@@ -2,7 +2,7 @@
 
 Polly is a .NET resilience and transient-fault-handling library that allows developers to express policies such as Retry, Circuit Breaker, Timeout, Bulkhead Isolation, and Fallback in a fluent and thread-safe manner.  
 
-Polly targets .NET 4.0, .NET 4.5 and .NET Standard 1.0 ([coverage](https://github.com/dotnet/standard/blob/master/docs/versions.md): .NET Core, Mono, Xamarin.iOS, Xamarin.Android, UWP, WP8.0+).
+Polly targets .NET 4.0, .NET 4.5 and .NET Standard 1.1 ([coverage](https://github.com/dotnet/standard/blob/master/docs/versions.md): .NET Core, Mono, Xamarin.iOS, Xamarin.Android, UWP, WP8.1+).
 
 [<img align="right" src="https://dotnetfoundation.org/Themes/DotNetFoundation.Theme/Images/logo-small.png" width="100" />](https://www.dotnetfoundation.org/)
 We are now a member of the [.NET Foundation](https://www.dotnetfoundation.org/about)!
@@ -461,6 +461,8 @@ Policy
   .Execute(() => DoSomething());
 ```
 
+The above examples show policy definition immediately followed by policy execution, for simplicity.  Policy definition and execution may equally be separated - for example, define policies on start-up, then provide them to point-of-use by dependency injection (perhaps using [`PolicyRegistry`](#PolicyRegistry)).
+
 # Usage &ndash; general resilience policies
 
 The general resilience policies add resilience strategies that are not explicitly centred around handling faults which delegates may throw or return.
@@ -609,6 +611,74 @@ policyResult.Result - if executing a func, the result if the call succeeded or t
 */
 ```
 
+# Handing return values, and Policy&lt;TResult&gt;
+
+As described at step 1b, from Polly v4.3.0 onwards, policies can handle return values and exceptions in combination: 
+
+```csharp
+// Handle both exceptions and return values in one policy
+HttpStatusCode[] httpStatusCodesWorthRetrying = {
+   HttpStatusCode.RequestTimeout, // 408
+   HttpStatusCode.InternalServerError, // 500
+   HttpStatusCode.BadGateway, // 502
+   HttpStatusCode.ServiceUnavailable, // 503
+   HttpStatusCode.GatewayTimeout // 504
+}; 
+HttpResponseMessage result = Policy
+  .Handle<HttpResponseException>()
+  .OrResult<HttpResponseMessage>(r => httpStatusCodesWorthRetrying.Contains(r.StatusCode))
+  .Retry(...)
+  .Execute( /* some Func<HttpResponseMessage> */ )
+```
+
+The exceptions and return results to handle can be expressed fluently in any order.
+
+### Strongly-typed Policy&lt;TResult&gt;
+
+Configuring a policy with `.HandleResult<TResult>(...)` or `.OrResult<TResult>(...)` generates a strongly-typed `Policy<TResult>` of the specific policy type, eg `Retry<TResult>`, `AdvancedCircuitBreaker<TResult>`.
+
+These policies must be used to execute delegates returning `TResult`, ie:
+
+* `Execute(Func<TResult>)` (and related overloads)
+* `ExecuteAsync(Func<CancellationToken, Task<TResult>>)` (and related overloads)  
+
+### ExecuteAndCapture&lt;TResult&gt;()
+
+`.ExecuteAndCapture(...)` on non-generic policies returns a `PolicyResult` with properties:
+
+```          
+policyResult.Outcome - whether the call succeeded or failed         
+policyResult.FinalException - the final exception captured; will be null if the call succeeded
+policyResult.ExceptionType - was the final exception an exception the policy was defined to handle (like DivideByZeroException above) or an unhandled one (say Exception)? Will be null if the call succeeded.
+policyResult.Result - if executing a func, the result if the call succeeded; otherwise, the type's default value
+```
+
+`.ExecuteAndCapture<TResult>(Func<TResult>)` on strongly-typed policies adds two properties:
+
+```
+policyResult.FaultType - was the final fault handled an exception or a result handled by the policy? Will be null if the delegate execution succeeded. 
+policyResult.FinalHandledResult - the final fault result handled; will be null or the type's default value, if the call succeeded
+```
+
+### State-change delegates on Policy&lt;TResult&gt; policies
+
+In non-generic policies handling only exceptions, state-change delegates such as `onRetry` and `onBreak` take an `Exception` parameter.  
+
+In generic-policies handling `TResult` return values, state-change delegates are identical except they take a `DelegateResult<TResult>` parameter in place of `Exception.` `DelegateResult<TResult>` has two properties:
+
+* `Exception // The exception just thrown if policy is in process of handling an exception (otherwise null)`
+* `Result // The TResult just raised, if policy is in process of handling a result (otherwise default(TResult))`
+   
+
+### BrokenCircuitException&lt;TResult&gt;
+
+Non-generic CircuitBreaker policies throw a `BrokenCircuitException` when the circuit is broken.  This `BrokenCircuitException` contains the last exception (the one which caused the circuit to break) as the `InnerException`.
+
+For `CircuitBreakerPolicy<TResult>` policies: 
+
+* A circuit broken due to an exception throws a `BrokenCircuitException` with `InnerException` set to the exception which triggered the break (as previously).
+* A circuit broken due to handling a result throws a `BrokenCircuitException<TResult>` with the `Result` property set to the result which caused the circuit to break.
+
 # Policy Keys and Context data
 
 
@@ -647,6 +717,67 @@ var customerDetails = policy.Execute(() => GetCustomer(id),
 ```
 
 For more detail see: [Keys and Context Data](https://github.com/App-vNext/Polly/wiki/Keys-And-Context-Data) on wiki.
+
+# PolicyRegistry (v5.2+)
+
+```csharp
+// Create a policy registry (for example on application start-up) 
+PolicyRegistry registry = new PolicyRegistry();
+
+// Populate the registry with policies
+registry.Add("StandardHttpResilience", myStandardHttpResiliencePolicy);
+// Or:
+registry["StandardHttpResilience"] = myStandardHttpResiliencePolicy;
+
+// Pass the registry instance to usage sites by DI, perhaps
+public class MyServiceGateway 
+{
+    public void MyServiceGateway(..., IPolicyRegistry<string> registry, ...)
+    {
+       ...
+    } 
+}
+// (Or if you prefer ambient-context pattern, use a thread-safe singleton)
+
+// Use a policy from the registry
+registry.Get<IAsyncPolicy<HttpResponseMessage>>("StandardHttpResilience")
+    .ExecuteAsync<HttpResponseMessage>(...)
+```
+
+`PolicyRegistry` has a range of further dictionary-like semantics such as `.ContainsKey(...)`, `.TryGet<TPolicy>(...)`, `.Count`, `.Clear()`, and `Remove(...)`.
+
+For more detail see: [PolicyRegistry](https://github.com/App-vNext/Polly/wiki/PolicyRegistry) on wiki.
+
+# Interfaces (v5.2+)
+
+Polly v5.2.0 adds interfaces intended to support [`PolicyRegistry`](https://github.com/App-vNext/Polly/wiki/PolicyRegistry) and to group Policy functionality by the [interface segregation principle](https://en.wikipedia.org/wiki/Interface_segregation_principle).  Polly's interfaces are not intended for coding your own policy implementations against.
+
+## Execution interfaces: `ISyncPolicy` etc
+
+Execution interfaces [`ISyncPolicy`](https://github.com/reisenberger/Polly/blob/feature/interfacesplusregistry/src/Polly.Shared/ISyncPolicy.cs), [`IAsyncPolicy`](https://github.com/reisenberger/Polly/blob/feature/interfacesplusregistry/src/Polly.Shared/IAsyncPolicy.cs), [`ISyncPolicy<TResult>`](https://github.com/reisenberger/Polly/blob/feature/interfacesplusregistry/src/Polly.Shared/ISyncPolicyTResult.cs) and [`IAsyncPolicy<TResult>`](https://github.com/reisenberger/Polly/blob/feature/interfacesplusregistry/src/Polly.Shared/IAsyncPolicyTResult.cs)  define the execution overloads available to policies targeting sync/async, and non-generic / generic calls respectively.
+
+Blog posts outline why Polly has [both non-generic and generic policies](http://www.thepollyproject.org/2017/06/07/why-does-polly-offer-both-non-generic-and-generic-policies/) and [separate sync and async policies](http://www.thepollyproject.org/2017/06/09/polly-and-synchronous-versus-asynchronous-policies/).
+
+## Policy-kind interfaces: `ICircuitBreakerPolicy` etc
+
+Orthogonal to the execution interfaces, interfaces specific to the kind of Policy define properties and methods common to that type of policy.  
+
+For example, [`ICircuitBreakerPolicy`](https://github.com/reisenberger/Polly/blob/feature/interfacesplusregistry/src/Polly.Shared/CircuitBreaker/ICircuitBreakerPolicy.cs) defines 
+
+
++ `CircuitState CircuitState`
++ `Exception LastException`
++ `void Isolate()`
++ `void Reset()`
+
+with `ICircuitBreakerPolicy<TResult> : ICircuitBreakerPolicy` adding:
+
++ `TResult LastHandledResult`.
+
+This allows collections of similar kinds of policy to be treated as one - for example, for monitoring all your circuit-breakers as [described here](https://github.com/App-vNext/Polly/pull/205). 
+
+For more detail see: [Polly and interfaces](https://github.com/App-vNext/Polly/wiki/Polly-and-interfaces) on wiki.
+
 
 # Thread safety
 
@@ -718,77 +849,9 @@ var response = await policy.ExecuteAsync(ct => httpClient.GetAsync(uri, ct), can
 
 From Polly v5.0, synchronous executions also support cancellation via `CancellationToken`.
 
-# .NET4.0 support ###
+# .NET4.0 support 
 
 The .NET4.0 package uses `Microsoft.Bcl.Async` to add async support.  To minimise  dependencies on the main Polly nuget package, the .NET4.0 version is available as separate Nuget packages `Polly.Net40Async` and `Polly.Net40Async-signed`.
-
-# Handing return values, and Policy&lt;TResult&gt;
-
-As described at step 1b, from Polly v4.3.0 onwards, policies can handle return values and exceptions in combination: 
-
-```csharp
-// Handle both exceptions and return values in one policy
-HttpStatusCode[] httpStatusCodesWorthRetrying = {
-   HttpStatusCode.RequestTimeout, // 408
-   HttpStatusCode.InternalServerError, // 500
-   HttpStatusCode.BadGateway, // 502
-   HttpStatusCode.ServiceUnavailable, // 503
-   HttpStatusCode.GatewayTimeout // 504
-}; 
-HttpResponseMessage result = Policy
-  .Handle<HttpResponseException>()
-  .OrResult<HttpResponseMessage>(r => httpStatusCodesWorthRetrying.Contains(r.StatusCode))
-  .Retry(...)
-  .Execute( /* some Func<HttpResponseMessage> */ )
-```
-
-The exceptions and return results to handle can be expressed fluently in any order.
-
-### Strongly-typed Policy&lt;TResult&gt;
-
-Configuring a policy with `.HandleResult<TResult>(...)` or `.OrResult<TResult>(...)` generates a strongly-typed `Policy<TResult>` of the specific policy type, eg `Retry<TResult>`, `AdvancedCircuitBreaker<TResult>`.
-
-These policies must be used to execute delegates returning `TResult`, ie:
-
-* `Execute(Func<TResult>)` (and related overloads)
-* `ExecuteAsync(Func<CancellationToken, Task<TResult>>)` (and related overloads)  
-
-### ExecuteAndCapture&lt;TResult&gt;()
-
-`.ExecuteAndCapture(...)` on non-generic policies returns a `PolicyResult` with properties:
-
-```          
-policyResult.Outcome - whether the call succeeded or failed         
-policyResult.FinalException - the final exception captured; will be null if the call succeeded
-policyResult.ExceptionType - was the final exception an exception the policy was defined to handle (like DivideByZeroException above) or an unhandled one (say Exception)? Will be null if the call succeeded.
-policyResult.Result - if executing a func, the result if the call succeeded; otherwise, the type's default value
-```
-
-`.ExecuteAndCapture<TResult>(Func<TResult>)` on strongly-typed policies adds two properties:
-
-```
-policyResult.FaultType - was the final fault handled an exception or a result handled by the policy? Will be null if the delegate execution succeeded. 
-policyResult.FinalHandledResult - the final fault result handled; will be null or the type's default value, if the call succeeded
-```
-
-### State-change delegates on Policy&lt;TResult&gt; policies
-
-In non-generic policies handling only exceptions, state-change delegates such as `onRetry` and `onBreak` take an `Exception` parameter.  
-
-In generic-policies handling `TResult` return values, state-change delegates are identical except they take a `DelegateResult<TResult>` parameter in place of `Exception.` `DelegateResult<TResult>` has two properties:
-
-* `Exception // The exception just thrown if policy is in process of handling an exception (otherwise null)`
-* `Result // The TResult just raised, if policy is in process of handling a result (otherwise default(TResult))`
-   
-
-### BrokenCircuitException&lt;TResult&gt;
-
-Non-generic CircuitBreaker policies throw a `BrokenCircuitException` when the circuit is broken.  This `BrokenCircuitException` contains the last exception (the one which caused the circuit to break) as the `InnerException`.
-
-For `CircuitBreakerPolicy<TResult>` policies: 
-
-* A circuit broken due to an exception throws a `BrokenCircuitException` with `InnerException` set to the exception which triggered the break (as previously).
-* A circuit broken due to handling a result throws a `BrokenCircuitException<TResult>` with the `Result` property set to the result which caused the circuit to break.
 
 # Release notes
 
@@ -799,7 +862,7 @@ For details of changes by release see the [change log](https://github.com/App-vN
 * [Fluent Assertions](https://github.com/fluentassertions/fluentassertions) - A set of .NET extension methods that allow you to more naturally specify the expected outcome of a TDD or BDD-style test | [Apache License 2.0 (Apache)](https://github.com/dennisdoomen/fluentassertions/blob/develop/LICENSE)
 * [xUnit.net](https://github.com/xunit/xunit) - Free, open source, community-focused unit testing tool for the .NET Framework | [Apache License 2.0 (Apache)](https://github.com/xunit/xunit/blob/master/license.txt)
 * [Ian Griffith's TimedLock](http://www.interact-sw.co.uk/iangblog/2004/04/26/yetmoretimedlocking)
-* [Steven van Deursen's ReadOnlyDictionary](http://www.cuttingedge.it/blogs/steven/pivot/entry.php?id=29)
+* [Steven van Deursen's ReadOnlyDictionary](http://www.cuttingedge.it/blogs/steven/pivot/entry.php?id=29) (until v5.0.6)
 * [Stephen Cleary's AsyncEx library](https://github.com/StephenCleary/AsyncEx) for AsyncSemaphore (supports BulkheadAsync policy for .NET4.0 only) | [MIT license](https://github.com/StephenCleary/AsyncEx/blob/master/LICENSE)
 * Build powered by [Cake](http://cakebuild.net/) and [GitVersionTask](https://github.com/GitTools/GitVersion).
 
@@ -838,6 +901,8 @@ For details of changes by release see the [change log](https://github.com/App-vN
 * [@lakario](https://github.com/lakario) - Add NoOpPolicy.
 * [@Julien-Mialon](https://github.com/Julien-Mialon) - Fixes, support and examples for .NETStandard compatibility with Xamarin PCL projects
 * [@reisenberger](https://github.com/reisenberger) - Add mutable Context and extra overloads taking Context.  Allows different parts of a policy execution to exchange data via the mutable Context travelling with each execution.
+* [@ankitbko](https://github.com/ankitbko) - Add PolicyRegistry for storing and retrieving policies.
+* [@reisenberger](https://github.com/reisenberger) - Add interfaces by policy type and execution type.
 
 # Sample Projects
 

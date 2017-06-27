@@ -8,7 +8,7 @@ using Polly.Utilities;
 
 namespace Polly.NoOp
 {
-    public partial class NoOpPolicy
+    public partial class NoOpPolicy : INoOpPolicy
     {
         internal NoOpPolicy(Func<Func<Context, CancellationToken, Task>, Context, CancellationToken, bool, Task> asyncExceptionPolicy)
            : base(asyncExceptionPolicy, Enumerable.Empty<ExceptionPredicate>())
@@ -16,7 +16,7 @@ namespace Polly.NoOp
         }
     }
 
-    public partial class NoOpPolicy<TResult>
+    public partial class NoOpPolicy<TResult> : INoOpPolicy<TResult>
     {
         internal NoOpPolicy(
             Func<Func<Context, CancellationToken, Task<TResult>>, Context, CancellationToken, bool, Task<TResult>> asyncExecutionPolicy
