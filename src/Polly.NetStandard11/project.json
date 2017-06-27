@@ -4,6 +4,6 @@
     "NETStandard.Library": "1.6.1"
   },
   "frameworks": {
-    "netstandard1.0": {}
+    "netstandard1.1": {}
   }
 }
