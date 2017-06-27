@@ -8,13 +8,13 @@ using Polly.NoOp;
 
 namespace Polly.Specs.Registry
 {
-    public class DefaultPolicyRegistrySpecs
+    public class PolicyRegistrySpecs
     {
         IPolicyRegistry<string, Policy> _registry;
 
-        public DefaultPolicyRegistrySpecs()
+        public PolicyRegistrySpecs()
         {
-            _registry = new DefaultPolicyRegistry();
+            _registry = new PolicyRegistry();
         }
 
         #region Tests for adding Policy

@@ -9,7 +9,7 @@ namespace Polly.Registry
     /// Stores a registry of <see cref="System.String"/> and <see cref="Policy"/> pair.
     /// </summary>
     /// <remarks>Uses ConcurrentDictionary to store the collection.</remarks>
-    public class DefaultPolicyRegistry : IPolicyRegistry<string, Policy>
+    public class PolicyRegistry : IPolicyRegistry<string, Policy>
     {
         private IDictionary<string, Policy> _registry = new ConcurrentDictionary<string, Policy>();
 

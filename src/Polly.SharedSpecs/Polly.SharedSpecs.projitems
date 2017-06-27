@@ -49,7 +49,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)PolicyContextAndKeyAsyncSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PolicyContextAndKeySpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PolicySpecs.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Registry\DefaultPolicyRegistrySpecs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Registry\PolicyRegistrySpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Retry\RetryAsyncSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Retry\RetryForeverAsyncSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Retry\RetryForeverSpecs.cs" />
