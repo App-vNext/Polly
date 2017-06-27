@@ -13,7 +13,7 @@ namespace Polly.Bulkhead
     /// <summary>
     /// A bulkhead-isolation policy which can be applied to delegates.
     /// </summary>
-    public partial class BulkheadPolicy : Policy, IDisposable
+    public partial class BulkheadPolicy : Policy, IBulkheadPolicy
     {
         private readonly SemaphoreSlim _maxParallelizationSemaphore;
         private readonly SemaphoreSlim _maxQueuedActionsSemaphore;
@@ -58,7 +58,7 @@ namespace Polly.Bulkhead
     /// <summary>
     /// A bulkhead-isolation policy which can be applied to delegates returning a value of type <typeparamref name="TResult"/>.
     /// </summary>
-    public partial class BulkheadPolicy<TResult> : Policy<TResult>, IDisposable
+    public partial class BulkheadPolicy<TResult> : Policy<TResult>, IBulkheadPolicy<TResult>
     {
         private readonly SemaphoreSlim _maxParallelizationSemaphore;
         private readonly SemaphoreSlim _maxQueuedActionsSemaphore;

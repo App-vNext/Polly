@@ -7,7 +7,7 @@ using Polly.Utilities;
 
 namespace Polly.CircuitBreaker
 {
-    public partial class CircuitBreakerPolicy
+    public partial class CircuitBreakerPolicy : ICircuitBreakerPolicy
     {
         internal CircuitBreakerPolicy(
             Func<Func<Context, CancellationToken, Task>, Context, CancellationToken, bool, Task> asyncExceptionPolicy, 
@@ -19,7 +19,7 @@ namespace Polly.CircuitBreaker
         }
     }
 
-    public partial class CircuitBreakerPolicy<TResult>
+    public partial class CircuitBreakerPolicy<TResult> : ICircuitBreakerPolicy<TResult>
     {
         internal CircuitBreakerPolicy(
             Func<Func<Context, CancellationToken, Task<TResult>>, Context, CancellationToken, bool, Task<TResult>> asyncExecutionPolicy, 

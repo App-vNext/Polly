@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Polly.Retry
 {
-    public partial class RetryPolicy
+    public partial class RetryPolicy : IRetryPolicy
     {
         internal RetryPolicy(Func<Func<Context, CancellationToken, Task>, Context, CancellationToken, bool, Task> asyncExceptionPolicy, IEnumerable<ExceptionPredicate> exceptionPredicates)
            : base(asyncExceptionPolicy, exceptionPredicates)
@@ -13,7 +13,7 @@ namespace Polly.Retry
         }
     }
 
-    public partial class RetryPolicy<TResult>
+    public partial class RetryPolicy<TResult> : IRetryPolicy<TResult>
     {
         internal RetryPolicy(
             Func<Func<Context, CancellationToken, Task<TResult>>, Context, CancellationToken, bool, Task<TResult>> asyncExecutionPolicy, 

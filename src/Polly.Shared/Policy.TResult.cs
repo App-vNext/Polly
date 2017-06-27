@@ -11,7 +11,7 @@ namespace Polly
     /// <summary>
     /// Transient fault handling policies that can be applied to delegates returning results of type <typeparamref name="TResult"/>
     /// </summary>
-    public abstract partial class Policy<TResult>
+    public abstract partial class Policy<TResult> : ISyncPolicy<TResult>
     {
         private readonly Func<Func<Context, CancellationToken, TResult>, Context, CancellationToken, TResult> _executionPolicy;
         private readonly IEnumerable<ExceptionPredicate> _exceptionPredicates;

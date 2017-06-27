@@ -15,6 +15,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Bulkhead\BulkheadSpecsHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Bulkhead\BulkheadTResultAsyncSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Bulkhead\BulkheadTResultSpecs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Bulkhead\IBulkheadPolicySpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CircuitBreaker\AdvancedCircuitBreakerSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CircuitBreaker\AdvancedCircuitBreakerAsyncSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CircuitBreaker\CircuitBreakerSpecs.cs" />
@@ -22,6 +23,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)CircuitBreaker\CircuitBreakerTResultAsyncSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CircuitBreaker\CircuitBreakerTResultMixedResultExceptionSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CircuitBreaker\CircuitBreakerTResultSpecs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CircuitBreaker\ICircuitBreakerPolicySpecs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CircuitBreaker\ICircuitBreakerPolicyTResultSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ContextSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Fallback\FallbackAsyncSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Fallback\FallbackSpecs.cs" />
@@ -47,9 +50,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)PolicyContextAndKeyAsyncSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PolicyContextAndKeySpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PolicySpecs.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Registry\PolicyRegistrySpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PolicyTResultAsyncSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PolicyTResultSpecs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Registry\PolicyRegistrySpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Retry\RetryAsyncSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Retry\RetryForeverAsyncSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Retry\RetryForeverSpecs.cs" />
