@@ -9,7 +9,7 @@ namespace Polly.Fallback
     internal static partial class FallbackEngine
     {
         internal static async Task<TResult> ImplementationAsync<TResult>(
-            Func<CancellationToken, Task<TResult>> action,
+            Func<Context, CancellationToken, Task<TResult>> action,
             Context context,
             IEnumerable<ExceptionPredicate> shouldHandleExceptionPredicates,
             IEnumerable<ResultPredicate<TResult>> shouldHandleResultPredicates,
@@ -24,7 +24,7 @@ namespace Polly.Fallback
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
-                TResult result = await action(cancellationToken).ConfigureAwait(continueOnCapturedContext);
+                TResult result = await action(context, cancellationToken).ConfigureAwait(continueOnCapturedContext);
 
                 if (!shouldHandleResultPredicates.Any(predicate => predicate(result)))
                 {

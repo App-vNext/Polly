@@ -301,7 +301,7 @@ namespace Polly.Specs.Retry
                 FaultType = (FaultType?)null,
                 FinalHandledResult = default(ResultPrimitive),
                 Result = ResultPrimitive.Good
-            });
+            }, options => options.Excluding(o => o.Context));
 
             contextData.Should()
                 .ContainKeys("key1", "key2").And

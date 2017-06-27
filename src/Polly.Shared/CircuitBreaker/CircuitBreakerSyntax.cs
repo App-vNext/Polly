@@ -183,7 +183,7 @@ namespace Polly
                 onHalfOpen);
             return new CircuitBreakerPolicy(
                 (action, context, cancellationToken) => CircuitBreakerEngine.Implementation(
-                    (ct) => { action(ct); return EmptyStruct.Instance; },
+                    (ctx, ct) => { action(ctx, ct); return EmptyStruct.Instance; },
                     context,
                     cancellationToken,
                     policyBuilder.ExceptionPredicates, 

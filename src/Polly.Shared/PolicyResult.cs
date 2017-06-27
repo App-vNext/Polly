@@ -7,49 +7,42 @@ namespace Polly
     /// </summary>
     public class PolicyResult
     {
-        private readonly OutcomeType _outcome;
-        private readonly Exception _finalException;
-        private readonly ExceptionType? _exceptionType;
-
-        internal PolicyResult(OutcomeType outcome, Exception finalException, ExceptionType? exceptionType)
+        internal PolicyResult(OutcomeType outcome, Exception finalException, ExceptionType? exceptionType, Context context)
         {
-            _outcome = outcome;
-            _finalException = finalException;
-            _exceptionType = exceptionType;
+            Outcome = outcome;
+            FinalException = finalException;
+            ExceptionType = exceptionType;
+            Context = context;
         }
 
         /// <summary>
         ///   The outcome of executing the policy
         /// </summary>
-        public OutcomeType Outcome
-        {
-            get { return _outcome; }
-        }
+        public OutcomeType Outcome { get; }
 
         /// <summary>
         ///  The final exception captured. Will be null if policy executed successfully
         /// </summary>
-        public Exception FinalException
-        {
-            get { return _finalException; }
-        }
+        public Exception FinalException { get; }
 
         /// <summary>
         ///  The exception type of the final exception captured. Will be null if policy executed successfully
         /// </summary>
-        public ExceptionType? ExceptionType
+        public ExceptionType? ExceptionType { get; }
+
+        /// <summary>
+        ///  The context for this execution.
+        /// </summary>
+        public Context Context { get; }
+
+        internal static PolicyResult Successful(Context context)
         {
-            get { return _exceptionType; }
+            return new PolicyResult(OutcomeType.Successful, null, null, context);
         }
 
-        internal static PolicyResult Successful()
+        internal static PolicyResult Failure(Exception exception, ExceptionType exceptionType, Context context)
         {
-            return new PolicyResult(OutcomeType.Successful, null, null);
-        }
-
-        internal static PolicyResult Failure(Exception exception, ExceptionType exceptionType)
-        {
-            return new PolicyResult(OutcomeType.Failure, exception, exceptionType);
+            return new PolicyResult(OutcomeType.Failure, exception, exceptionType, context);
         }
     }
 
@@ -58,90 +51,75 @@ namespace Polly
     /// </summary>
     public class PolicyResult<TResult>
     {
-        private readonly TResult _result;
-        private readonly OutcomeType _outcome;
-        private readonly Exception _finalException;
-        private readonly ExceptionType? _exceptionType;
-        private readonly TResult _finalHandledResult;
-        private readonly FaultType? _faultType;
-
-        internal PolicyResult(TResult result, OutcomeType outcome, Exception finalException, ExceptionType? exceptionType)
-            : this(result, outcome, finalException, exceptionType, default(TResult), null)
+        internal PolicyResult(TResult result, OutcomeType outcome, Exception finalException, ExceptionType? exceptionType, Context context)
+            : this(result, outcome, finalException, exceptionType, default(TResult), null, context)
         {
 
         }
 
-        internal PolicyResult(TResult result, OutcomeType outcome, Exception finalException, ExceptionType? exceptionType, TResult finalHandledResult, FaultType? faultType)
+        internal PolicyResult(TResult result, OutcomeType outcome, Exception finalException, ExceptionType? exceptionType, TResult finalHandledResult, FaultType? faultType, Context context)
         {
-            _result = result;
-            _outcome = outcome;
-            _finalException = finalException;
-            _exceptionType = exceptionType;
-            _finalHandledResult = finalHandledResult;
-            _faultType = faultType;
+            Result = result;
+            Outcome = outcome;
+            FinalException = finalException;
+            ExceptionType = exceptionType;
+            FinalHandledResult = finalHandledResult;
+            FaultType = faultType;
+            Context = context;
         }
 
         /// <summary>
         ///   The outcome of executing the policy
         /// </summary>
-        public OutcomeType Outcome
-        {
-            get { return _outcome; }
-        }
+        public OutcomeType Outcome { get; }
 
         /// <summary>
         ///  The final exception captured. Will be null if policy executed without exception.
         /// </summary>
-        public Exception FinalException
-        {
-            get { return _finalException; }
-        }
+        public Exception FinalException { get; }
 
         /// <summary>
         ///  The exception type of the final exception captured. Will be null if policy executed successfully
         /// </summary>
-        public ExceptionType? ExceptionType
-        {
-            get { return _exceptionType; }
-        }
+        public ExceptionType? ExceptionType { get; }
 
         /// <summary>
         /// The result of executing the policy. Will be default(TResult) if the policy failed
         /// </summary>
-        public TResult Result
-        {
-            get { return _result; }
-        }
+        public TResult Result { get; }
 
         /// <summary>
         /// The final handled result captured. Will be default(TResult) if the policy executed successfully, or terminated with an exception.
         /// </summary>
-        public TResult FinalHandledResult
-        {
-            get { return _finalHandledResult; }
-        }
+        public TResult FinalHandledResult { get; }
 
         /// <summary>
         ///  The fault type of the final fault captured. Will be null if policy executed successfully
         /// </summary>
-        public FaultType? FaultType
+        public FaultType? FaultType { get; }
+
+        /// <summary>
+        ///  The context for this execution.
+        /// </summary>
+        public Context Context { get; }
+
+        internal static PolicyResult<TResult> Successful(TResult result, Context context)
         {
-            get { return _faultType; }
+            return new PolicyResult<TResult>(result, OutcomeType.Successful, null, null, context);
         }
 
-        internal static PolicyResult<TResult> Successful(TResult result)
+        internal static PolicyResult<TResult> Failure(Exception exception, ExceptionType exceptionType, Context context)
         {
-            return new PolicyResult<TResult>(result, OutcomeType.Successful, null, null);
+            return new PolicyResult<TResult>(default(TResult), OutcomeType.Failure, exception, exceptionType, default(TResult), 
+                exceptionType == Polly.ExceptionType.HandledByThisPolicy 
+                ? Polly.FaultType.ExceptionHandledByThisPolicy 
+                : Polly.FaultType.UnhandledException,
+                context);
         }
 
-        internal static PolicyResult<TResult> Failure(Exception exception, ExceptionType exceptionType)
+        internal static PolicyResult<TResult> Failure(TResult handledResult, Context context)
         {
-            return new PolicyResult<TResult>(default(TResult), OutcomeType.Failure, exception, exceptionType, default(TResult), exceptionType == Polly.ExceptionType.HandledByThisPolicy ? Polly.FaultType.ExceptionHandledByThisPolicy : Polly.FaultType.UnhandledException);
-        }
-
-        internal static PolicyResult<TResult> Failure(TResult handledResult)
-        {
-            return new PolicyResult<TResult>(default(TResult), OutcomeType.Failure, null, null, handledResult, Polly.FaultType.ResultHandledByThisPolicy);
+            return new PolicyResult<TResult>(default(TResult), OutcomeType.Failure, null, null, handledResult, Polly.FaultType.ResultHandledByThisPolicy, context);
         }
     }
 

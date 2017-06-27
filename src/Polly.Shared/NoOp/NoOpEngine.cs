@@ -7,10 +7,9 @@ namespace Polly.NoOp
 {
     internal static partial class NoOpEngine
     {
-        internal static TResult Implementation<TResult>(Func<CancellationToken, TResult> action,
-            CancellationToken cancellationToken)
+        internal static TResult Implementation<TResult>(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken)
         {
-            return action(cancellationToken);
+            return action(context, cancellationToken);
         }
     }
 }

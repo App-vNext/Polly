@@ -13,7 +13,7 @@ namespace Polly.Bulkhead
     internal static partial class BulkheadEngine
     {
         internal static TResult Implementation<TResult>(
-            Func<CancellationToken, TResult> action,
+            Func<Context, CancellationToken, TResult> action,
             Context context,
             Action<Context> onBulkheadRejected,
             SemaphoreSlim maxParallelizationSemaphore,
@@ -31,7 +31,7 @@ namespace Polly.Bulkhead
                 maxParallelizationSemaphore.Wait(cancellationToken);
                 try
                 {
-                    return action(cancellationToken);
+                    return action(context, cancellationToken);
                 }
                 finally
                 {

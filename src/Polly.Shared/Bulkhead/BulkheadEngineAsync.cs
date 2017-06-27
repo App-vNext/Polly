@@ -14,7 +14,7 @@ namespace Polly.Bulkhead
    internal static partial class BulkheadEngine
     {
        internal static async Task<TResult> ImplementationAsync<TResult>(
-            Func<CancellationToken, Task<TResult>> action,
+            Func<Context, CancellationToken, Task<TResult>> action,
             Context context,
             Func<Context, Task> onBulkheadRejectedAsync,
             SemaphoreSlim maxParallelizationSemaphore,
@@ -33,7 +33,7 @@ namespace Polly.Bulkhead
 
                 try 
                 {
-                    return await action(cancellationToken).ConfigureAwait(continueOnCapturedContext);
+                    return await action(context, cancellationToken).ConfigureAwait(continueOnCapturedContext);
                 }
                 finally
                 {

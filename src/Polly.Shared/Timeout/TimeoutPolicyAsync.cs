@@ -8,7 +8,7 @@ namespace Polly.Timeout
 {
     public partial class TimeoutPolicy
     {
-        internal TimeoutPolicy(Func<Func<CancellationToken, Task>, Context, CancellationToken, bool, Task> asyncExceptionPolicy)
+        internal TimeoutPolicy(Func<Func<Context, CancellationToken, Task>, Context, CancellationToken, bool, Task> asyncExceptionPolicy)
            : base(asyncExceptionPolicy, Enumerable.Empty<ExceptionPredicate>())
         {
         }
@@ -18,7 +18,7 @@ namespace Polly.Timeout
     public partial class TimeoutPolicy<TResult>
     {
         internal TimeoutPolicy(
-            Func<Func<CancellationToken, Task<TResult>>, Context, CancellationToken, bool, Task<TResult>> asyncExecutionPolicy
+            Func<Func<Context, CancellationToken, Task<TResult>>, Context, CancellationToken, bool, Task<TResult>> asyncExecutionPolicy
             ) : base(asyncExecutionPolicy, Enumerable.Empty<ExceptionPredicate>(), Enumerable.Empty<ResultPredicate<TResult>>())
         {
         }

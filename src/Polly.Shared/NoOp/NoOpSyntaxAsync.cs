@@ -19,8 +19,8 @@ namespace Polly
         {
             return new NoOpPolicy(
                 (action, context, cancellationToken, continueOnCapturedContext) => NoOpEngine.ImplementationAsync(
-                    async ct => { await action(ct).ConfigureAwait(continueOnCapturedContext); return EmptyStruct.Instance; },
-                    cancellationToken, continueOnCapturedContext)
+                    async (ctx, ct) => { await action(ctx, ct).ConfigureAwait(continueOnCapturedContext); return EmptyStruct.Instance; },
+                    context, cancellationToken, continueOnCapturedContext)
                 );
         }
     }

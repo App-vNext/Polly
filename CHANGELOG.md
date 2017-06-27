@@ -1,3 +1,6 @@
+## 5.1.0
+- Allow different parts of a policy execution to exchange data via a mutable Context travelling with each execution.
+
 ## 5.0.6
 - Update NETStandard.Library dependency to latest 1.6.1 for .NetStandard1.0 target.  Resolves compatibility for some Xamarin targets.
 
@@ -33,12 +36,14 @@
 ## 5.0.0 alpha
 
 A major release, adding significant new resilience policies:
+
 - Timeout policy: allows timing out any execution. Thanks to [@reisenberger](https://github.com/reisenberger).
 - Bulkhead isolation policy: limits the resources consumable by governed actions, such that a faulting channel cannot cause cascading failures. Thanks to [@reisenberger](https://github.com/reisenberger) and contributions from [@brunolauze](https://github.com/brunolauze).
 - Fallback policy: provides for a fallback execution or value, in case of overall failure. Thanks to [@reisenberger](https://github.com/reisenberger)
 - PolicyWrap: allows flexibly combining Policy instances of any type, to form an overall resilience strategy. Thanks to [@reisenberger](https://github.com/reisenberger)
 
 Other changes include:
+
 - Add PolicyKeys and context to all policy executions, for logging and to support later introduction of policy events and metrics. Thanks to [@reisenberger](https://github.com/reisenberger)
 - Add CancellationToken support to synchronous executions.  Thanks to [@brunolauze](https://github.com/brunolauze) and [@reisenberger](https://github.com/reisenberger)
 - Add some missing ExecuteAndCapture/Async overloads. Thanks to [@reisenberger](https://github.com/reisenberger)

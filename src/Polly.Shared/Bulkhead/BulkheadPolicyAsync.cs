@@ -13,7 +13,7 @@ namespace Polly.Bulkhead
 {
     public partial class BulkheadPolicy
     {
-        internal BulkheadPolicy(Func<Func<CancellationToken, Task>, Context, CancellationToken, bool, Task> asyncExceptionPolicy,
+        internal BulkheadPolicy(Func<Func<Context, CancellationToken, Task>, Context, CancellationToken, bool, Task> asyncExceptionPolicy,
             int maxParallelization,
             int maxQueueingActions,
             SemaphoreSlim maxParallelizationSemaphore,
@@ -30,7 +30,7 @@ namespace Polly.Bulkhead
     public partial class BulkheadPolicy<TResult>
     {
         internal BulkheadPolicy(
-            Func<Func<CancellationToken, Task<TResult>>, Context, CancellationToken, bool, Task<TResult>> asyncExecutionPolicy,
+            Func<Func<Context, CancellationToken, Task<TResult>>, Context, CancellationToken, bool, Task<TResult>> asyncExecutionPolicy,
             int maxParallelization,
             int maxQueueingActions,
             SemaphoreSlim maxParallelizationSemaphore,

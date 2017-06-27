@@ -18,7 +18,7 @@ namespace Polly
             if (seconds <= 0) throw new ArgumentOutOfRangeException(nameof(seconds));
 
             Func<Context, TimeSpan, Task, Task> doNothingAsync = (_, __, ___) => TaskHelper.FromResult(default(TResult));
-            return TimeoutAsync<TResult>(() => TimeSpan.FromSeconds(seconds), TimeoutStrategy.Optimistic, doNothingAsync);
+            return TimeoutAsync<TResult>(ctx => TimeSpan.FromSeconds(seconds), TimeoutStrategy.Optimistic, doNothingAsync);
         }
 
         /// <summary>
@@ -33,7 +33,7 @@ namespace Polly
             if (seconds <= 0) throw new ArgumentOutOfRangeException(nameof(seconds));
 
             Func<Context, TimeSpan, Task, Task> doNothingAsync = (_, __, ___) => TaskHelper.FromResult(default(TResult));
-            return TimeoutAsync<TResult>(() => TimeSpan.FromSeconds(seconds), timeoutStrategy, doNothingAsync);
+            return TimeoutAsync<TResult>(ctx => TimeSpan.FromSeconds(seconds), timeoutStrategy, doNothingAsync);
         }
 
         /// <summary>
@@ -49,7 +49,7 @@ namespace Polly
         {
             if (seconds <= 0) throw new ArgumentOutOfRangeException(nameof(seconds));
 
-            return TimeoutAsync<TResult>(() => TimeSpan.FromSeconds(seconds), TimeoutStrategy.Optimistic, onTimeoutAsync);
+            return TimeoutAsync<TResult>(ctx => TimeSpan.FromSeconds(seconds), TimeoutStrategy.Optimistic, onTimeoutAsync);
         }
 
         /// <summary>
@@ -66,7 +66,7 @@ namespace Polly
         {
             if (seconds <= 0) throw new ArgumentOutOfRangeException(nameof(seconds));
 
-            return TimeoutAsync<TResult>(() => TimeSpan.FromSeconds(seconds), timeoutStrategy, onTimeoutAsync);
+            return TimeoutAsync<TResult>(ctx => TimeSpan.FromSeconds(seconds), timeoutStrategy, onTimeoutAsync);
         }
 
         /// <summary>
@@ -79,7 +79,7 @@ namespace Polly
             if (timeout <= TimeSpan.Zero) throw new ArgumentOutOfRangeException(nameof(timeout));
 
             Func<Context, TimeSpan, Task, Task> doNothingAsync = (_, __, ___) => TaskHelper.FromResult(default(TResult));
-            return TimeoutAsync<TResult>(() => timeout, TimeoutStrategy.Optimistic, doNothingAsync);
+            return TimeoutAsync<TResult>(ctx => timeout, TimeoutStrategy.Optimistic, doNothingAsync);
         }
 
         /// <summary>
@@ -93,7 +93,7 @@ namespace Polly
             if (timeout <= TimeSpan.Zero) throw new ArgumentOutOfRangeException(nameof(timeout));
 
             Func<Context, TimeSpan, Task, Task> doNothingAsync = (_, __, ___) => TaskHelper.FromResult(default(TResult));
-            return TimeoutAsync<TResult>(() => timeout, timeoutStrategy, doNothingAsync);
+            return TimeoutAsync<TResult>(ctx => timeout, timeoutStrategy, doNothingAsync);
         }
 
         /// <summary>
@@ -110,7 +110,7 @@ namespace Polly
             if (timeout <= TimeSpan.Zero) throw new ArgumentOutOfRangeException(nameof(timeout));
             if (onTimeoutAsync == null) throw new ArgumentNullException(nameof(onTimeoutAsync));
 
-            return TimeoutAsync<TResult>(() => timeout, TimeoutStrategy.Optimistic, onTimeoutAsync);
+            return TimeoutAsync<TResult>(ctx => timeout, TimeoutStrategy.Optimistic, onTimeoutAsync);
         }
 
         /// <summary>
@@ -127,7 +127,7 @@ namespace Polly
         {
             if (timeout <= TimeSpan.Zero) throw new ArgumentOutOfRangeException(nameof(timeout));
 
-            return TimeoutAsync<TResult>(() => timeout, timeoutStrategy, onTimeoutAsync);
+            return TimeoutAsync<TResult>(ctx => timeout, timeoutStrategy, onTimeoutAsync);
         }
 
         /// <summary>
@@ -137,6 +137,68 @@ namespace Polly
         /// <exception cref="System.ArgumentNullException">timeoutProvider</exception>
         /// <returns>The policy instance.</returns>
         public static TimeoutPolicy<TResult> TimeoutAsync<TResult>(Func<TimeSpan> timeoutProvider)
+        {
+            if (timeoutProvider == null) throw new ArgumentNullException(nameof(timeoutProvider));
+
+            Func<Context, TimeSpan, Task, Task> doNothingAsync = (_, __, ___) => TaskHelper.FromResult(default(TResult));
+            return TimeoutAsync<TResult>(ctx => timeoutProvider(), TimeoutStrategy.Optimistic, doNothingAsync);
+        }
+
+        /// <summary>
+        /// Builds a <see cref="Policy{TResult}"/> that will wait asynchronously for a delegate to complete for a specified period of time. A <see cref="TimeoutRejectedException"/> will be thrown if the delegate does not complete within the configured timeout.
+        /// </summary>
+        /// <param name="timeoutProvider">A function to provide the timeout for this execution.</param>
+        /// <param name="timeoutStrategy">The timeout strategy.</param>
+        /// <exception cref="System.ArgumentNullException">timeoutProvider</exception>
+        /// <returns>The policy instance.</returns>
+        public static TimeoutPolicy<TResult> TimeoutAsync<TResult>(Func<TimeSpan> timeoutProvider, TimeoutStrategy timeoutStrategy)
+        {
+            if (timeoutProvider == null) throw new ArgumentNullException(nameof(timeoutProvider));
+
+            Func<Context, TimeSpan, Task, Task> doNothingAsync = (_, __, ___) => TaskHelper.FromResult(default(TResult));
+            return TimeoutAsync<TResult>(ctx => timeoutProvider(), timeoutStrategy, doNothingAsync);
+        }
+
+        /// <summary>
+        /// Builds a <see cref="Policy{TResult}"/> that will wait asynchronously for a delegate to complete for a specified period of time. A <see cref="TimeoutRejectedException"/> will be thrown if the delegate does not complete within the configured timeout.
+        /// </summary>
+        /// <param name="timeoutProvider">A function to provide the timeout for this execution.</param>
+        /// <param name="onTimeoutAsync">An action to call on timeout, passing the execution context, the timeout applied, and a <see cref="Task"/> capturing the abandoned, timed-out action. 
+        /// <remarks>The Task parameter will be null if the executed action responded co-operatively to cancellation before the policy timed it out.</remarks></param>
+        /// <returns>The policy instance.</returns>
+        /// <exception cref="System.ArgumentNullException">timeoutProvider</exception>
+        /// <exception cref="System.ArgumentNullException">onTimeoutAsync</exception>
+        public static TimeoutPolicy<TResult> TimeoutAsync<TResult>(Func<TimeSpan> timeoutProvider, Func<Context, TimeSpan, Task, Task> onTimeoutAsync)
+        {
+            if (timeoutProvider == null) throw new ArgumentNullException(nameof(timeoutProvider));
+
+            return TimeoutAsync<TResult>(ctx => timeoutProvider(), TimeoutStrategy.Optimistic, onTimeoutAsync);
+        }
+
+        /// <summary>
+        /// Builds a <see cref="Policy{TResult}"/> that will wait asynchronously for a delegate to complete for a specified period of time. A <see cref="TimeoutRejectedException"/> will be thrown if the delegate does not complete within the configured timeout.
+        /// </summary>
+        /// <param name="timeoutProvider">A function to provide the timeout for this execution.</param>
+        /// <param name="timeoutStrategy">The timeout strategy.</param>
+        /// <param name="onTimeoutAsync">An action to call on timeout, passing the execution context, the timeout applied, and a <see cref="Task"/> capturing the abandoned, timed-out action. 
+        /// <remarks>The Task parameter will be null if the executed action responded co-operatively to cancellation before the policy timed it out.</remarks></param>
+        /// <returns>The policy instance.</returns>
+        /// <exception cref="System.ArgumentNullException">timeoutProvider</exception>
+        /// <exception cref="System.ArgumentNullException">onTimeoutAsync</exception>
+        public static TimeoutPolicy<TResult> TimeoutAsync<TResult>(Func<TimeSpan> timeoutProvider, TimeoutStrategy timeoutStrategy, Func<Context, TimeSpan, Task, Task> onTimeoutAsync)
+        {
+            if (timeoutProvider == null) throw new ArgumentNullException(nameof(timeoutProvider));
+
+            return TimeoutAsync<TResult>(ctx => timeoutProvider(), timeoutStrategy, onTimeoutAsync);
+        }
+
+        /// <summary>
+        /// Builds a <see cref="Policy{TResult}"/> that will wait asynchronously for a delegate to complete for a specified period of time. A <see cref="TimeoutRejectedException"/> will be thrown if the delegate does not complete within the configured timeout.
+        /// </summary>
+        /// <param name="timeoutProvider">A function to provide the timeout for this execution.</param>
+        /// <exception cref="System.ArgumentNullException">timeoutProvider</exception>
+        /// <returns>The policy instance.</returns>
+        public static TimeoutPolicy<TResult> TimeoutAsync<TResult>(Func<Context, TimeSpan> timeoutProvider)
         {
             Func<Context, TimeSpan, Task, Task> doNothingAsync = (_, __, ___) => TaskHelper.FromResult(default(TResult));
             return TimeoutAsync<TResult>(timeoutProvider, TimeoutStrategy.Optimistic, doNothingAsync);
@@ -149,7 +211,7 @@ namespace Polly
         /// <param name="timeoutStrategy">The timeout strategy.</param>
         /// <exception cref="System.ArgumentNullException">timeoutProvider</exception>
         /// <returns>The policy instance.</returns>
-        public static TimeoutPolicy<TResult> TimeoutAsync<TResult>(Func<TimeSpan> timeoutProvider, TimeoutStrategy timeoutStrategy)
+        public static TimeoutPolicy<TResult> TimeoutAsync<TResult>(Func<Context, TimeSpan> timeoutProvider, TimeoutStrategy timeoutStrategy)
         {
             Func<Context, TimeSpan, Task, Task> doNothingAsync = (_, __, ___) => TaskHelper.FromResult(default(TResult));
             return TimeoutAsync<TResult>(timeoutProvider, timeoutStrategy, doNothingAsync);
@@ -164,7 +226,7 @@ namespace Polly
         /// <returns>The policy instance.</returns>
         /// <exception cref="System.ArgumentNullException">timeoutProvider</exception>
         /// <exception cref="System.ArgumentNullException">onTimeoutAsync</exception>
-        public static TimeoutPolicy<TResult> TimeoutAsync<TResult>(Func<TimeSpan> timeoutProvider, Func<Context, TimeSpan, Task, Task> onTimeoutAsync)
+        public static TimeoutPolicy<TResult> TimeoutAsync<TResult>(Func<Context, TimeSpan> timeoutProvider, Func<Context, TimeSpan, Task, Task> onTimeoutAsync)
         {
             return TimeoutAsync<TResult>(timeoutProvider, TimeoutStrategy.Optimistic, onTimeoutAsync);
         }
@@ -179,7 +241,7 @@ namespace Polly
         /// <returns>The policy instance.</returns>
         /// <exception cref="System.ArgumentNullException">timeoutProvider</exception>
         /// <exception cref="System.ArgumentNullException">onTimeoutAsync</exception>
-        public static TimeoutPolicy<TResult> TimeoutAsync<TResult>(Func<TimeSpan> timeoutProvider, TimeoutStrategy timeoutStrategy, Func<Context, TimeSpan, Task, Task> onTimeoutAsync)
+        public static TimeoutPolicy<TResult> TimeoutAsync<TResult>(Func<Context, TimeSpan> timeoutProvider, TimeoutStrategy timeoutStrategy, Func<Context, TimeSpan, Task, Task> onTimeoutAsync)
         {
             if (timeoutProvider == null) throw new ArgumentNullException(nameof(timeoutProvider));
             if (onTimeoutAsync == null) throw new ArgumentNullException(nameof(onTimeoutAsync));

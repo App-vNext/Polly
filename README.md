@@ -79,12 +79,12 @@ From Polly v4.3.0 onwards, policies wrapping calls returning a `TResult` can als
 ```csharp
 // Handle return value with condition 
 Policy
-  .HandleResult<HttpResponse>(r => r.StatusCode == 404)
+  .HandleResult<HttpResponseMessage>(r => r.StatusCode == HttpStatusCode.NotFound)
 
 // Handle multiple return values 
 Policy
-  .HandleResult<HttpResponse>(r => r.StatusCode == 500)
-  .OrResult<HttpResponse>(r => r.StatusCode == 502)
+  .HandleResult<HttpResponseMessage>(r => r.StatusCode == HttpStatusCode.InternalServerError)
+  .OrResult<HttpResponseMessage>(r => r.StatusCode == HttpStatusCode.BadGateway)
 
 // Handle primitive return values (implied use of .Equals())
 Policy
@@ -92,10 +92,16 @@ Policy
   .OrResult<HttpStatusCode>(HttpStatusCode.BadGateway)
  
 // Handle both exceptions and return values in one policy
-int[] httpStatusCodesWorthRetrying = {408, 500, 502, 503, 504}; 
-HttpResponse result = Policy
-  .Handle<HttpException>()
-  .OrResult<HttpResponse>(r => httpStatusCodesWorthRetrying.Contains(r.StatusCode))
+HttpStatusCode[] httpStatusCodesWorthRetrying = {
+   HttpStatusCode.RequestTimeout, // 408
+   HttpStatusCode.InternalServerError, // 500
+   HttpStatusCode.BadGateway, // 502
+   HttpStatusCode.ServiceUnavailable, // 503
+   HttpStatusCode.GatewayTimeout // 504
+}; 
+HttpResponseMessage result = Policy
+  .Handle<HttpResponseException>()
+  .OrResult<HttpResponseMessage>(r => httpStatusCodesWorthRetrying.Contains(r.StatusCode))
 ```
 
 For more information, see [Handling Return Values](#handing-return-values-and-policytresult) at foot of this readme. 
@@ -539,7 +545,7 @@ For more detail see: [Bulkhead policy documentation](https://github.com/App-vNex
 
 ### Cache
 
-The Cache policy is targeting Polly v5.1.  Check out [www.thepollyproject.org](http://www.thepollyproject.org) for updates.
+The Cache policy is targeting an upcoming Polly v5.x version.  Check out [www.thepollyproject.org](http://www.thepollyproject.org) for updates.
 
 ### PolicyWrap
 
@@ -722,12 +728,18 @@ As described at step 1b, from Polly v4.3.0 onwards, policies can handle return v
 
 ```csharp
 // Handle both exceptions and return values in one policy
-int[] httpStatusCodesWorthRetrying = {408, 500, 502, 503, 504}; 
-HttpResponse result = Policy
-  .Handle<HttpException>()
-  .OrResult<HttpResponse>(r => httpStatusCodesWorthRetrying.Contains(r.StatusCode))
+HttpStatusCode[] httpStatusCodesWorthRetrying = {
+   HttpStatusCode.RequestTimeout, // 408
+   HttpStatusCode.InternalServerError, // 500
+   HttpStatusCode.BadGateway, // 502
+   HttpStatusCode.ServiceUnavailable, // 503
+   HttpStatusCode.GatewayTimeout // 504
+}; 
+HttpResponseMessage result = Policy
+  .Handle<HttpResponseException>()
+  .OrResult<HttpResponseMessage>(r => httpStatusCodesWorthRetrying.Contains(r.StatusCode))
   .Retry(...)
-  .Execute( /* some Func<HttpResponse> */ )
+  .Execute( /* some Func<HttpResponseMessage> */ )
 ```
 
 The exceptions and return results to handle can be expressed fluently in any order.
@@ -824,7 +836,8 @@ For details of changes by release see the [change log](https://github.com/App-vN
 * [@reisenberger](https://github.com/reisenberger) - Fix CircuitBreaker HalfOpen state and cases when breakDuration is shorter than typical call timeout.  Thanks to [@vgouw](https://github.com/vgouw) and [@kharos](https://github.com/kharos) for the reports and insightful thinking.
 * [@lakario](https://github.com/lakario) - Tidy CircuitBreaker LastException property.
 * [@lakario](https://github.com/lakario) - Add NoOpPolicy.
-
+* [@Julien-Mialon](https://github.com/Julien-Mialon) - Fixes, support and examples for .NETStandard compatibility with Xamarin PCL projects
+* [@reisenberger](https://github.com/reisenberger) - Add mutable Context and extra overloads taking Context.  Allows different parts of a policy execution to exchange data via the mutable Context travelling with each execution.
 
 # Sample Projects
 
@@ -841,6 +854,26 @@ Also, we've stood up a [Slack](http://www.pollytalk.org) channel for easier real
 # License
 
 Licensed under the terms of the [New BSD License](http://opensource.org/licenses/BSD-3-Clause)
+
+# Blog posts and podcasts about Polly
+
+When we discover an interesting write-up on Polly, we'll add it to this list. If you have a blog post you'd like to share, please submit a PR!
+
+## Blog posts
+
+* [Using Polly with F# async workflows](http://blog.ploeh.dk/2017/05/30/using-polly-with-f-async-workflows/) - by [Mark Seemann](http://blog.ploeh.dk/about/)
+* [Azure SQL transient errors](https://hackernoon.com/azure-sql-transient-errors-7625ad6e0a06) - by [Mattias Karlsson](https://hackernoon.com/@devlead)
+* [Polly series on No Dogma blog](http://nodogmablog.bryanhogan.net/tag/polly/) - by [Bryan Hogan](https://twitter.com/bryanjhogan)
+* [Polly 5.0 - a wider resilience framework!](http://www.thepollyproject.org/2016/10/25/polly-5-0-a-wider-resilience-framework/) - by [Dylan Reisenberger](http://www.thepollyproject.org/author/dylan/)
+* [Implementing the retry pattern in c sharp using Polly](https://alastaircrabtree.com/implementing-the-retry-pattern-using-polly/) - by [Alastair Crabtree](https://alastaircrabtree.com/about/)
+* [NuGet Package of the Week: Polly wanna fluently express transient exception handling policies in .NET?](https://www.hanselman.com/blog/NuGetPackageOfTheWeekPollyWannaFluentlyExpressTransientExceptionHandlingPoliciesInNET.aspx) - by [Scott Hanselman](https://www.hanselman.com/about/)
+* [Circuit Breaking with Polly](http://blog.jaywayco.co.uk/circuit-breaking-with-polly/) - by [J. Conway](http://blog.jaywayco.co.uk/sample-page/)
+* [Exception handling policies with Polly](http://putridparrot.com/blog/exception-handling-policies-with-polly/) - by [Mark Timmings](http://putridparrot.com/blog/about/)
+* [Polly is Repetitive, and I love it!](http://www.appvnext.com/blog/2015/11/19/polly-is-repetitive-and-i-love-it) - by [Joel Hulen](http://www.thepollyproject.org/author/joel/)
+
+## Podcasts
+
+* [Dylan Reisenberger](https://twitter.com/softwarereisen) sits down virtually with [Bryan Hogan](https://twitter.com/bryanjhogan) of [NoDogmaBlog](http://nodogmablog.bryanhogan.net/) for an [Introduction to Polly podcast](http://nodogmapodcast.bryanhogan.net/71-dylan-reisenberger-the-polly-project/).  Why do I need Polly?  History of the Polly project.  What do we mean by resilience and transient faults?  How retry and circuit-breaker help.  Exponential backoff.  Stability patterns.  Bulkhead isolation.  Future directions (as at April 2017).
 
 # Laptop Stickers!
 

@@ -18,7 +18,7 @@ namespace Polly.Specs.Retry
         public WaitAndRetryAsyncSpecs()
         {
             // do nothing on call to sleep
-            SystemClock.SleepAsync = (_, __) => Task.FromResult(0);
+            SystemClock.SleepAsync = (_, __) => TaskHelper.EmptyTask;
         }
 
         [Fact]
@@ -238,7 +238,7 @@ namespace Polly.Specs.Retry
             SystemClock.SleepAsync = (span, ct) =>
             {
                 totalTimeSlept += span.Seconds;
-                return Task.FromResult(0);
+                return TaskHelper.EmptyTask;
             };
 
             await policy.RaiseExceptionAsync<DivideByZeroException>(3);
@@ -264,7 +264,7 @@ namespace Polly.Specs.Retry
             SystemClock.SleepAsync = (span, ct) =>
             {
                 totalTimeSlept += span.Seconds;
-                return Task.FromResult(0);
+                return TaskHelper.EmptyTask;
             };
 
             policy.Awaiting(async x => await x.RaiseExceptionAsync<DivideByZeroException>(3 + 1))
@@ -291,7 +291,7 @@ namespace Polly.Specs.Retry
             SystemClock.SleepAsync = (span, ct) =>
             {
                 totalTimeSlept += span.Seconds;
-                return Task.FromResult(0);
+                return TaskHelper.EmptyTask;
             };
 
             policy.RaiseExceptionAsync<DivideByZeroException>(2);
@@ -312,7 +312,7 @@ namespace Polly.Specs.Retry
             SystemClock.SleepAsync = (span, ct) =>
             {
                 totalTimeSlept += span.Seconds;
-                return Task.FromResult(0);
+                return TaskHelper.EmptyTask;
             };
 
             policy.Awaiting(async x => await x.RaiseExceptionAsync<NullReferenceException>())
@@ -325,14 +325,14 @@ namespace Polly.Specs.Retry
         [Fact]
         public void Should_call_onretry_on_each_retry_with_the_current_timespan()
         {
-            var expectedRetryCounts = new []
+            var expectedRetryWaits = new []
                 {
                     1.Seconds(), 
                     2.Seconds(), 
                     3.Seconds()
                 };
 
-            var retryTimeSpans = new List<TimeSpan>();
+            var actualRetryWaits = new List<TimeSpan>();
 
             var policy = Policy
                 .Handle<DivideByZeroException>()
@@ -341,12 +341,12 @@ namespace Polly.Specs.Retry
                    1.Seconds(),
                    2.Seconds(),
                    3.Seconds()
-                }, (_, timeSpan) => retryTimeSpans.Add(timeSpan));
+                }, (_, timeSpan) => actualRetryWaits.Add(timeSpan));
 
             policy.RaiseExceptionAsync<DivideByZeroException>(3);
 
-            retryTimeSpans.Should()
-                       .ContainInOrder(expectedRetryCounts);
+            actualRetryWaits.Should()
+                       .ContainInOrder(expectedRetryWaits);
         }
 
         [Fact]
@@ -535,7 +535,7 @@ namespace Polly.Specs.Retry
         [Fact]
         public void Should_calculate_retry_timespans_from_current_retry_attempt_and_timespan_provider()
         {
-            var expectedRetryCounts = new[]
+            var expectedRetryWaits = new[]
                 {
                     2.Seconds(), 
                     4.Seconds(), 
@@ -544,19 +544,53 @@ namespace Polly.Specs.Retry
                     32.Seconds() 
                 };
 
-            var retryTimeSpans = new List<TimeSpan>();
+            var actualRetryWaits = new List<TimeSpan>();
 
             var policy = Policy
                 .Handle<DivideByZeroException>()
                 .WaitAndRetryAsync(5, 
                     retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)), 
-                    (_, timeSpan) => retryTimeSpans.Add(timeSpan)
+                    (_, timeSpan) => actualRetryWaits.Add(timeSpan)
                 );
 
             policy.RaiseExceptionAsync<DivideByZeroException>(5);
 
-            retryTimeSpans.Should()
-                       .ContainInOrder(expectedRetryCounts);
+            actualRetryWaits.Should()
+                       .ContainInOrder(expectedRetryWaits);
+        }
+
+        [Fact]
+        public async Task Should_be_able_to_pass_retry_duration_from_execution_to_sleepDurationProvider_via_context()
+        {
+            var expectedRetryDuration = 1.Seconds();
+            TimeSpan? actualRetryDuration = null;
+
+            TimeSpan defaultRetryAfter = 30.Seconds();
+
+            var policy = Policy
+                .Handle<DivideByZeroException>()
+                .WaitAndRetryAsync(1, 
+                    sleepDurationProvider: (retryAttempt, context) => context.ContainsKey("RetryAfter") ? (TimeSpan)context["RetryAfter"] : defaultRetryAfter, // Set sleep duration from Context, when available.
+                    onRetry: (_, timeSpan, __) => actualRetryDuration = timeSpan // Capture the actual sleep duration that was used, for test verification purposes.
+                );
+
+            bool failedOnce = false;
+            await policy.ExecuteAsync(async (context, ct) =>
+            {
+                await TaskHelper.EmptyTask; // Run some remote call; maybe it returns a RetryAfter header, which we can pass back to the sleepDurationProvider, via the context.
+                context["RetryAfter"] = expectedRetryDuration;
+
+                if (!failedOnce)
+                {
+                    failedOnce = true;
+                    throw new DivideByZeroException();
+                }
+            },
+                new { RetryAfter = defaultRetryAfter }.AsDictionary(), // Can also set an initial value for RetryAfter, in the Context passed into the call.
+                CancellationToken.None
+                );
+
+            actualRetryDuration.Should().Be(expectedRetryDuration);
         }
 
         [Fact]

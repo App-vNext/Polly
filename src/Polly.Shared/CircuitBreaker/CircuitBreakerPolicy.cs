@@ -13,7 +13,7 @@ namespace Polly.CircuitBreaker
         internal readonly ICircuitController<EmptyStruct> _breakerController;
 
         internal CircuitBreakerPolicy(
-            Action<Action<CancellationToken>, Context, CancellationToken> exceptionPolicy, 
+            Action<Action<Context, CancellationToken>, Context, CancellationToken> exceptionPolicy, 
             IEnumerable<ExceptionPredicate> exceptionPredicates,
             ICircuitController<EmptyStruct> breakerController
             ) : base(exceptionPolicy, exceptionPredicates)
@@ -63,7 +63,7 @@ namespace Polly.CircuitBreaker
         internal readonly ICircuitController<TResult> _breakerController;
 
         internal CircuitBreakerPolicy(
-            Func<Func<CancellationToken, TResult>, Context, CancellationToken, TResult> executionPolicy, 
+            Func<Func<Context, CancellationToken, TResult>, Context, CancellationToken, TResult> executionPolicy, 
             IEnumerable<ExceptionPredicate> exceptionPredicates, 
             IEnumerable<ResultPredicate<TResult>> resultPredicates, 
             ICircuitController<TResult> breakerController
