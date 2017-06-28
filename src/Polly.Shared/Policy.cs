@@ -11,7 +11,7 @@ namespace Polly
     /// Transient exception handling policies that can
     /// be applied to delegates
     /// </summary>
-    public abstract partial class Policy
+    public abstract partial class Policy : ISyncPolicy
     {
         private readonly Action<Action<Context, CancellationToken>, Context, CancellationToken> _exceptionPolicy;
         private readonly IEnumerable<ExceptionPredicate> _exceptionPredicates;

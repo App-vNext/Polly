@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Polly.Timeout
 {
-    public partial class TimeoutPolicy
+    public partial class TimeoutPolicy : ITimeoutPolicy
     {
         internal TimeoutPolicy(Func<Func<Context, CancellationToken, Task>, Context, CancellationToken, bool, Task> asyncExceptionPolicy)
            : base(asyncExceptionPolicy, Enumerable.Empty<ExceptionPredicate>())
@@ -15,7 +15,7 @@ namespace Polly.Timeout
 
     }
 
-    public partial class TimeoutPolicy<TResult>
+    public partial class TimeoutPolicy<TResult> : ITimeoutPolicy<TResult>
     {
         internal TimeoutPolicy(
             Func<Func<Context, CancellationToken, Task<TResult>>, Context, CancellationToken, bool, Task<TResult>> asyncExecutionPolicy

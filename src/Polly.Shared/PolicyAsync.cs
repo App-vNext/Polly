@@ -7,7 +7,7 @@ using Polly.Utilities;
 
 namespace Polly
 {
-    public partial class Policy
+    public abstract partial class Policy : IAsyncPolicy
     {
         private readonly Func<Func<Context, CancellationToken, Task>, Context, CancellationToken, bool, Task> _asyncExceptionPolicy;
 

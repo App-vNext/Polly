@@ -18,6 +18,15 @@ namespace Polly.Specs
         }
 
         [Fact]
+        public void Should_be_able_fluently_to_configure_the_policy_key_via_interface()
+        {
+            ISyncPolicy policyAsInterface = Policy.Handle<Exception>().Retry();
+            var policyAsInterfaceAfterWithPolicyKey = policyAsInterface.WithPolicyKey(Guid.NewGuid().ToString());
+
+            policyAsInterfaceAfterWithPolicyKey.Should().BeAssignableTo<ISyncPolicy>();
+        }
+
+        [Fact]
         public void PolicyKey_property_should_be_the_fluently_configured_policy_key()
         {
             const string key = "SomePolicyKey";
@@ -188,6 +197,15 @@ namespace Polly.Specs
             var policy = Policy.HandleResult<int>(0).Retry().WithPolicyKey(Guid.NewGuid().ToString());
 
             policy.Should().BeAssignableTo<Policy<int>>();
+        }
+
+        [Fact]
+        public void Should_be_able_fluently_to_configure_the_policy_key_via_interface()
+        {
+            ISyncPolicy<int> policyAsInterface = Policy.HandleResult<int>(0).Retry();
+            var policyAsInterfaceAfterWithPolicyKey = policyAsInterface.WithPolicyKey(Guid.NewGuid().ToString());
+
+            policyAsInterfaceAfterWithPolicyKey.Should().BeAssignableTo<ISyncPolicy<int>>();
         }
 
         [Fact]

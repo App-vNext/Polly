@@ -7,7 +7,7 @@ namespace Polly.Fallback
     /// <summary>
     /// A fallback policy that can be applied to delegates.
     /// </summary>
-    public partial class FallbackPolicy : Policy
+    public partial class FallbackPolicy : Policy, IFallbackPolicy
     {
         internal FallbackPolicy(Action<Action<Context, CancellationToken>, Context, CancellationToken> exceptionPolicy, IEnumerable<ExceptionPredicate> exceptionPredicates)
             : base(exceptionPolicy, exceptionPredicates)
@@ -18,7 +18,7 @@ namespace Polly.Fallback
     /// <summary>
     /// A fallback policy that can be applied to delegates returning a value of type <typeparamref name="TResult"/>.
     /// </summary>
-    public partial class FallbackPolicy<TResult> : Policy<TResult>
+    public partial class FallbackPolicy<TResult> : Policy<TResult>, IFallbackPolicy<TResult>
     {
         internal FallbackPolicy(
             Func<Func<Context, CancellationToken, TResult>, Context, CancellationToken, TResult> executionPolicy,

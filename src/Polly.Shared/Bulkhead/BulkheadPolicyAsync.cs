@@ -11,7 +11,7 @@ using SemaphoreSlim = System.Threading.SemaphoreSlim;
 
 namespace Polly.Bulkhead
 {
-    public partial class BulkheadPolicy
+    public partial class BulkheadPolicy : IBulkheadPolicy
     {
         internal BulkheadPolicy(Func<Func<Context, CancellationToken, Task>, Context, CancellationToken, bool, Task> asyncExceptionPolicy,
             int maxParallelization,
@@ -27,7 +27,7 @@ namespace Polly.Bulkhead
         }
     }
 
-    public partial class BulkheadPolicy<TResult>
+    public partial class BulkheadPolicy<TResult> : IBulkheadPolicy<TResult>
     {
         internal BulkheadPolicy(
             Func<Func<Context, CancellationToken, Task<TResult>>, Context, CancellationToken, bool, Task<TResult>> asyncExecutionPolicy,
