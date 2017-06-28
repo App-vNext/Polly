@@ -718,7 +718,7 @@ var customerDetails = policy.Execute(() => GetCustomer(id),
 
 For more detail see: [Keys and Context Data](https://github.com/App-vNext/Polly/wiki/Keys-And-Context-Data) on wiki.
 
-# PolicyRegistry (v5.2+)
+# PolicyRegistry
 
 ```csharp
 // Create a policy registry (for example on application start-up) 
@@ -746,23 +746,23 @@ registry.Get<IAsyncPolicy<HttpResponseMessage>>("StandardHttpResilience")
 
 `PolicyRegistry` has a range of further dictionary-like semantics such as `.ContainsKey(...)`, `.TryGet<TPolicy>(...)`, `.Count`, `.Clear()`, and `Remove(...)`.
 
-For more detail see: [PolicyRegistry](https://github.com/App-vNext/Polly/wiki/PolicyRegistry) on wiki.
+Avaiable from v5.2.0.  For more detail see: [PolicyRegistry](https://github.com/App-vNext/Polly/wiki/PolicyRegistry) on wiki.
 
-# Interfaces (v5.2+)
+# Interfaces
 
 Polly v5.2.0 adds interfaces intended to support [`PolicyRegistry`](https://github.com/App-vNext/Polly/wiki/PolicyRegistry) and to group Policy functionality by the [interface segregation principle](https://en.wikipedia.org/wiki/Interface_segregation_principle).  Polly's interfaces are not intended for coding your own policy implementations against.
 
 ## Execution interfaces: `ISyncPolicy` etc
 
-Execution interfaces [`ISyncPolicy`](https://github.com/reisenberger/Polly/blob/feature/interfacesplusregistry/src/Polly.Shared/ISyncPolicy.cs), [`IAsyncPolicy`](https://github.com/reisenberger/Polly/blob/feature/interfacesplusregistry/src/Polly.Shared/IAsyncPolicy.cs), [`ISyncPolicy<TResult>`](https://github.com/reisenberger/Polly/blob/feature/interfacesplusregistry/src/Polly.Shared/ISyncPolicyTResult.cs) and [`IAsyncPolicy<TResult>`](https://github.com/reisenberger/Polly/blob/feature/interfacesplusregistry/src/Polly.Shared/IAsyncPolicyTResult.cs)  define the execution overloads available to policies targeting sync/async, and non-generic / generic calls respectively.
+Execution interfaces [`ISyncPolicy`](https://github.com/App-vNext/Polly/tree/master/src/Polly.Shared/ISyncPolicy.cs), [`IAsyncPolicy`](https://github.com/App-vNext/Polly/tree/master/src/Polly.Shared/IAsyncPolicy.cs), [`ISyncPolicy<TResult>`](https://github.com/App-vNext/Polly/tree/master/src/Polly.Shared/ISyncPolicyTResult.cs) and [`IAsyncPolicy<TResult>`](https://github.com/App-vNext/Polly/tree/master/src/Polly.Shared/IAsyncPolicyTResult.cs)  define the execution overloads available to policies targeting sync/async, and non-generic / generic calls respectively.
 
-Blog posts outline why Polly has [both non-generic and generic policies](http://www.thepollyproject.org/2017/06/07/why-does-polly-offer-both-non-generic-and-generic-policies/) and [separate sync and async policies](http://www.thepollyproject.org/2017/06/09/polly-and-synchronous-versus-asynchronous-policies/).
+See blog posts for why Polly has [both non-generic and generic policies](http://www.thepollyproject.org/2017/06/07/why-does-polly-offer-both-non-generic-and-generic-policies/) and [separate sync and async policies](http://www.thepollyproject.org/2017/06/09/polly-and-synchronous-versus-asynchronous-policies/).
 
 ## Policy-kind interfaces: `ICircuitBreakerPolicy` etc
 
 Orthogonal to the execution interfaces, interfaces specific to the kind of Policy define properties and methods common to that type of policy.  
 
-For example, [`ICircuitBreakerPolicy`](https://github.com/reisenberger/Polly/blob/feature/interfacesplusregistry/src/Polly.Shared/CircuitBreaker/ICircuitBreakerPolicy.cs) defines 
+For example, [`ICircuitBreakerPolicy`](https://github.com/App-vNext/Polly/tree/master/src/Polly.Shared/CircuitBreaker/ICircuitBreakerPolicy.cs) defines 
 
 
 + `CircuitState CircuitState`
