@@ -746,7 +746,7 @@ registry.Get<IAsyncPolicy<HttpResponseMessage>>("StandardHttpResilience")
 
 `PolicyRegistry` has a range of further dictionary-like semantics such as `.ContainsKey(...)`, `.TryGet<TPolicy>(...)`, `.Count`, `.Clear()`, and `Remove(...)`.
 
-Avaiable from v5.2.0.  For more detail see: [PolicyRegistry](https://github.com/App-vNext/Polly/wiki/PolicyRegistry) on wiki.
+Available from v5.2.0.  For more detail see: [PolicyRegistry](https://github.com/App-vNext/Polly/wiki/PolicyRegistry) on wiki.
 
 # Interfaces
 
