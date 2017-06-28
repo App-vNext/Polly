@@ -461,7 +461,7 @@ Policy
   .Execute(() => DoSomething());
 ```
 
-The above examples show policy definition immediately followed by policy execution, for simplicity.  Policy definition and execution may equally be separated - for example, define policies on start-up, then provide them to point-of-use by dependency injection (perhaps using [`PolicyRegistry`](#PolicyRegistry)).
+The above examples show policy definition immediately followed by policy execution, for simplicity.  Policy definition and execution may equally be separated - for example, define policies on start-up, then provide them to point-of-use by dependency injection (perhaps using [`PolicyRegistry`](#policyregistry)).
 
 # Usage &ndash; general resilience policies
 
