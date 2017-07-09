@@ -17,7 +17,9 @@ namespace Polly
             if (innerPolicy == null) throw new ArgumentNullException(nameof(innerPolicy));
 
             return new PolicyWrap(
-                (action, context, cancellationtoken) => PolicyWrapEngine.Implementation(action, context, cancellationtoken, this, innerPolicy)
+                (action, context, cancellationtoken) => PolicyWrapEngine.Implementation(action, context, cancellationtoken, this, innerPolicy),
+                this,
+                innerPolicy
                 );
         }
 
@@ -32,7 +34,9 @@ namespace Polly
             if (innerPolicy == null) throw new ArgumentNullException(nameof(innerPolicy));
 
             return new PolicyWrap<TResult>(
-                (func, context, cancellationtoken) => PolicyWrapEngine.Implementation<TResult>(func, context, cancellationtoken, this, innerPolicy)
+                (func, context, cancellationtoken) => PolicyWrapEngine.Implementation<TResult>(func, context, cancellationtoken, this, innerPolicy),
+                this,
+                innerPolicy
                 );
         }
     }
@@ -49,7 +53,9 @@ namespace Polly
             if (innerPolicy == null) throw new ArgumentNullException(nameof(innerPolicy));
 
             return new PolicyWrap<TResult>(
-                (func, context, cancellationtoken) => PolicyWrapEngine.Implementation<TResult>(func, context, cancellationtoken, this, innerPolicy)
+                (func, context, cancellationtoken) => PolicyWrapEngine.Implementation<TResult>(func, context, cancellationtoken, this, innerPolicy),
+                this,
+                innerPolicy
                 );
         }
 
@@ -63,7 +69,9 @@ namespace Polly
             if (innerPolicy == null) throw new ArgumentNullException(nameof(innerPolicy));
 
             return new PolicyWrap<TResult>(
-                (func, context, cancellationtoken) => PolicyWrapEngine.Implementation<TResult>(func, context, cancellationtoken, this, innerPolicy)
+                (func, context, cancellationtoken) => PolicyWrapEngine.Implementation<TResult>(func, context, cancellationtoken, this, innerPolicy),
+                this,
+                innerPolicy
                 );
         }
     }
