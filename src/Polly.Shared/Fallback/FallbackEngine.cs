@@ -14,7 +14,7 @@ namespace Polly.Fallback
             IEnumerable<ExceptionPredicate> shouldHandleExceptionPredicates,
             IEnumerable<ResultPredicate<TResult>> shouldHandleResultPredicates,
             Action<DelegateResult<TResult>, Context> onFallback,
-            Func<CancellationToken, TResult> fallbackAction)
+            Func<Context, CancellationToken, TResult> fallbackAction)
         {
             DelegateResult<TResult> delegateOutcome;
 
@@ -43,7 +43,7 @@ namespace Polly.Fallback
 
             onFallback(delegateOutcome, context);
 
-            return fallbackAction(cancellationToken);
+            return fallbackAction(context, cancellationToken);
         }
     }
 }

@@ -55,7 +55,7 @@ namespace Polly
             if (fallbackAction == null) throw new ArgumentNullException(nameof(fallbackAction));
             if (onFallback == null) throw new ArgumentNullException(nameof(onFallback));
 
-            return policyBuilder.Fallback(fallbackAction, (exception, ctx) => onFallback(exception));
+            return policyBuilder.Fallback((ctx, ct) => fallbackAction(), (exception, ctx) => onFallback(exception));
         }
 
 
@@ -73,7 +73,7 @@ namespace Polly
             if (fallbackAction == null) throw new ArgumentNullException(nameof(fallbackAction));
             if (onFallback == null) throw new ArgumentNullException(nameof(onFallback));
 
-            return policyBuilder.Fallback(fallbackAction, (exception, ctx) => onFallback(exception));
+            return policyBuilder.Fallback((ctx, ct) => fallbackAction(ct), (exception, ctx) => onFallback(exception));
         }
 
         /// <summary>
@@ -85,14 +85,14 @@ namespace Polly
         /// <exception cref="System.ArgumentNullException">fallbackAction</exception>
         /// <exception cref="System.ArgumentNullException">onFallback</exception>
         /// <returns>The policy instance.</returns>
+        [Obsolete("This overload is deprecated and will be removed in a future release. Prefer the overload in which both fallbackAction and onFallback take a Context input parameter.")]
         public static FallbackPolicy Fallback(this PolicyBuilder policyBuilder, Action fallbackAction, Action<Exception, Context> onFallback)
         {
             if (fallbackAction == null) throw new ArgumentNullException(nameof(fallbackAction));
             if (onFallback == null) throw new ArgumentNullException(nameof(onFallback));
 
-            return policyBuilder.Fallback(ct => fallbackAction(), onFallback);
+            return policyBuilder.Fallback((ctx, ct) => fallbackAction(), onFallback);
         }
-
 
         /// <summary>
         /// Builds a <see cref="FallbackPolicy"/> which provides a fallback action if the main execution fails.  Executes the main delegate, but if this throws a handled exception, first calls <paramref name="onFallback"/> with details of the handled exception and the execution context; then calls <paramref name="fallbackAction"/>.  
@@ -103,7 +103,42 @@ namespace Polly
         /// <exception cref="System.ArgumentNullException">fallbackAction</exception>
         /// <exception cref="System.ArgumentNullException">onFallback</exception>
         /// <returns>The policy instance.</returns>
+        public static FallbackPolicy Fallback(this PolicyBuilder policyBuilder, Action<Context> fallbackAction, Action<Exception, Context> onFallback)
+        {
+            if (fallbackAction == null) throw new ArgumentNullException(nameof(fallbackAction));
+            if (onFallback == null) throw new ArgumentNullException(nameof(onFallback));
+
+            return policyBuilder.Fallback((ctx, ct) => fallbackAction(ctx), onFallback);
+        }
+
+        /// <summary>
+        /// Builds a <see cref="FallbackPolicy"/> which provides a fallback action if the main execution fails.  Executes the main delegate, but if this throws a handled exception, first calls <paramref name="onFallback"/> with details of the handled exception and the execution context; then calls <paramref name="fallbackAction"/>.  
+        /// </summary>
+        /// <param name="policyBuilder">The policy builder.</param>
+        /// <param name="fallbackAction">The fallback action.</param>
+        /// <param name="onFallback">The action to call before invoking the fallback delegate.</param>
+        /// <exception cref="System.ArgumentNullException">fallbackAction</exception>
+        /// <exception cref="System.ArgumentNullException">onFallback</exception>
+        /// <returns>The policy instance.</returns>
+        [Obsolete("This overload is deprecated and will be removed in a future release. Prefer the overload in which both fallbackAction and onFallback take a Context input parameter.")]
         public static FallbackPolicy Fallback(this PolicyBuilder policyBuilder, Action<CancellationToken> fallbackAction, Action<Exception, Context> onFallback)
+        {
+            if (fallbackAction == null) throw new ArgumentNullException(nameof(fallbackAction));
+            if (onFallback == null) throw new ArgumentNullException(nameof(onFallback));
+
+            return policyBuilder.Fallback((ctx, ct) => fallbackAction(ct), onFallback);
+        }
+
+        /// <summary>
+        /// Builds a <see cref="FallbackPolicy"/> which provides a fallback action if the main execution fails.  Executes the main delegate, but if this throws a handled exception, first calls <paramref name="onFallback"/> with details of the handled exception and the execution context; then calls <paramref name="fallbackAction"/>.  
+        /// </summary>
+        /// <param name="policyBuilder">The policy builder.</param>
+        /// <param name="fallbackAction">The fallback action.</param>
+        /// <param name="onFallback">The action to call before invoking the fallback delegate.</param>
+        /// <exception cref="System.ArgumentNullException">fallbackAction</exception>
+        /// <exception cref="System.ArgumentNullException">onFallback</exception>
+        /// <returns>The policy instance.</returns>
+        public static FallbackPolicy Fallback(this PolicyBuilder policyBuilder, Action<Context, CancellationToken> fallbackAction, Action<Exception, Context> onFallback)
         {
             if (fallbackAction == null) throw new ArgumentNullException(nameof(fallbackAction));
             if (onFallback == null) throw new ArgumentNullException(nameof(onFallback));
@@ -116,7 +151,7 @@ namespace Polly
                     policyBuilder.ExceptionPredicates,
                     PredicateHelper<EmptyStruct>.EmptyResultPredicates,
                     (outcome, ctx) => onFallback(outcome.Exception, ctx),
-                    ct => { fallbackAction(ct); return EmptyStruct.Instance; }),
+                    (ctx, ct) => { fallbackAction(ctx, ct); return EmptyStruct.Instance; }),
                 policyBuilder.ExceptionPredicates);
         }
 
@@ -181,7 +216,7 @@ namespace Polly
         {
             if (onFallback == null) throw new ArgumentNullException(nameof(onFallback));
 
-            return policyBuilder.Fallback(() => fallbackValue, (outcome, ctx) => onFallback(outcome));
+            return policyBuilder.Fallback((ctx, ct) => fallbackValue, (outcome, ctx) => onFallback(outcome));
         }
 
         /// <summary>
@@ -198,7 +233,7 @@ namespace Polly
             if (fallbackAction == null) throw new ArgumentNullException(nameof(fallbackAction));
             if (onFallback == null) throw new ArgumentNullException(nameof(onFallback));
 
-            return policyBuilder.Fallback(fallbackAction, (outcome, ctx) => onFallback(outcome));
+            return policyBuilder.Fallback((ctx, ct) => fallbackAction(), (outcome, ctx) => onFallback(outcome));
         }
 
         /// <summary>
@@ -215,7 +250,7 @@ namespace Polly
             if (fallbackAction == null) throw new ArgumentNullException(nameof(fallbackAction));
             if (onFallback == null) throw new ArgumentNullException(nameof(onFallback));
 
-            return policyBuilder.Fallback(fallbackAction, (outcome, ctx) => onFallback(outcome));
+            return policyBuilder.Fallback((ctx, ct) => fallbackAction(ct), (outcome, ctx) => onFallback(outcome));
         }
 
         /// <summary>
@@ -230,7 +265,7 @@ namespace Polly
         {
             if (onFallback == null) throw new ArgumentNullException(nameof(onFallback));
 
-            return policyBuilder.Fallback(ct => fallbackValue, onFallback);
+            return policyBuilder.Fallback((ctx, ct) => fallbackValue, onFallback);
         }
 
         /// <summary>
@@ -242,12 +277,13 @@ namespace Polly
         /// <exception cref="System.ArgumentNullException">fallbackAction</exception>
         /// <exception cref="System.ArgumentNullException">onFallback</exception>
         /// <returns>The policy instance.</returns>
+        [Obsolete("This overload is deprecated and will be removed in a future release. Prefer the overload in which both fallbackAction and onFallback take a Context input parameter.")]
         public static FallbackPolicy<TResult> Fallback<TResult>(this PolicyBuilder<TResult> policyBuilder, Func<TResult> fallbackAction, Action<DelegateResult<TResult>, Context> onFallback)
         {
             if (fallbackAction == null) throw new ArgumentNullException(nameof(fallbackAction));
             if (onFallback == null) throw new ArgumentNullException(nameof(onFallback));
 
-            return policyBuilder.Fallback(ct => fallbackAction(), onFallback);
+            return policyBuilder.Fallback((ctx, ct) => fallbackAction(), onFallback);
         }
 
         /// <summary>
@@ -259,7 +295,42 @@ namespace Polly
         /// <exception cref="System.ArgumentNullException">fallbackAction</exception>
         /// <exception cref="System.ArgumentNullException">onFallback</exception>
         /// <returns>The policy instance.</returns>
+        public static FallbackPolicy<TResult> Fallback<TResult>(this PolicyBuilder<TResult> policyBuilder, Func<Context, TResult> fallbackAction, Action<DelegateResult<TResult>, Context> onFallback)
+        {
+            if (fallbackAction == null) throw new ArgumentNullException(nameof(fallbackAction));
+            if (onFallback == null) throw new ArgumentNullException(nameof(onFallback));
+
+            return policyBuilder.Fallback((ctx, ct) => fallbackAction(ctx), onFallback);
+        }
+
+        /// <summary>
+        /// Builds a <see cref="FallbackPolicy"/> which provides a fallback value if the main execution fails.  Executes the main delegate, but if this throws a handled exception or raises a handled result, first calls <paramref name="onFallback"/> with details of the handled exception or result and the execution context; then calls <paramref name="fallbackAction"/> and returns its result.  
+        /// </summary>
+        /// <param name="policyBuilder">The policy builder.</param>
+        /// <param name="fallbackAction">The fallback action.</param>
+        /// <param name="onFallback">The action to call before invoking the fallback delegate.</param>
+        /// <exception cref="System.ArgumentNullException">fallbackAction</exception>
+        /// <exception cref="System.ArgumentNullException">onFallback</exception>
+        /// <returns>The policy instance.</returns>
+        [Obsolete("This overload is deprecated and will be removed in a future release. Prefer the overload in which both fallbackAction and onFallback take a Context input parameter.")]
         public static FallbackPolicy<TResult> Fallback<TResult>(this PolicyBuilder<TResult> policyBuilder, Func<CancellationToken, TResult> fallbackAction, Action<DelegateResult<TResult>, Context> onFallback)
+        {
+            if (fallbackAction == null) throw new ArgumentNullException(nameof(fallbackAction));
+            if (onFallback == null) throw new ArgumentNullException(nameof(onFallback));
+
+            return policyBuilder.Fallback((ctx, ct) => fallbackAction(ct), onFallback);
+        }
+
+        /// <summary>
+        /// Builds a <see cref="FallbackPolicy"/> which provides a fallback value if the main execution fails.  Executes the main delegate, but if this throws a handled exception or raises a handled result, first calls <paramref name="onFallback"/> with details of the handled exception or result and the execution context; then calls <paramref name="fallbackAction"/> and returns its result.  
+        /// </summary>
+        /// <param name="policyBuilder">The policy builder.</param>
+        /// <param name="fallbackAction">The fallback action.</param>
+        /// <param name="onFallback">The action to call before invoking the fallback delegate.</param>
+        /// <exception cref="System.ArgumentNullException">fallbackAction</exception>
+        /// <exception cref="System.ArgumentNullException">onFallback</exception>
+        /// <returns>The policy instance.</returns>
+        public static FallbackPolicy<TResult> Fallback<TResult>(this PolicyBuilder<TResult> policyBuilder, Func<Context, CancellationToken, TResult> fallbackAction, Action<DelegateResult<TResult>, Context> onFallback)
         {
             if (fallbackAction == null) throw new ArgumentNullException(nameof(fallbackAction));
             if (onFallback == null) throw new ArgumentNullException(nameof(onFallback));
