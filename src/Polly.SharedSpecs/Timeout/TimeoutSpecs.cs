@@ -139,6 +139,24 @@ namespace Polly.Specs.Timeout
         }
 
         [Fact]
+        public void Should_rethrow_exception_from_inside_delegate__pessimistic()
+        {
+            var policy = Policy.Timeout(TimeSpan.FromMilliseconds(50), TimeoutStrategy.Pessimistic);
+
+            policy.Invoking(p => p.Execute(() => { throw new NotImplementedException(); })).ShouldThrow<NotImplementedException>();
+        }
+
+        [Fact]
+        public void Should_rethrow_aggregate_exception_from_inside_delegate__pessimistic()
+        {
+            var policy = Policy.Timeout(TimeSpan.FromMilliseconds(50), TimeoutStrategy.Pessimistic);
+            var msg = "Aggregate Exception thrown from the delegate";
+            // Check to see if nested aggregate exceptions are unwrapped correctly
+            AggregateException exception = new AggregateException(msg, new NotImplementedException());
+            policy.Invoking(p => p.Execute(() => { throw exception; })).ShouldThrow<AggregateException>().WithMessage(msg).WithInnerException<NotImplementedException>();
+        }
+
+        [Fact]
         public void Should_not_throw_when_timeout_is_greater_than_execution_duration__pessimistic()
         {
             var policy = Policy
