@@ -102,6 +102,8 @@ HttpStatusCode[] httpStatusCodesWorthRetrying = {
 HttpResponseMessage result = Policy
   .Handle<HttpResponseException>()
   .OrResult<HttpResponseMessage>(r => httpStatusCodesWorthRetrying.Contains(r.StatusCode))
+  .Retry(...)
+  .Execute( /* some Func<HttpResponseMessage> */ )
 ```
 
 For more information, see [Handling Return Values](#handing-return-values-and-policytresult) at foot of this readme. 
