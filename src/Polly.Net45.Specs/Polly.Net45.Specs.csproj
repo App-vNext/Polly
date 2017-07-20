@@ -28,7 +28,6 @@
     <PackageReference Include="GitVersionTask" Version="3.1.2" />
     <PackageReference Include="xunit" Version="2.1.0" />
     <PackageReference Include="xunit.extensibility.execution" Version="2.1.0" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="2.1.0" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\GlobalAssemblyInfo.cs">
@@ -37,9 +36,6 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Polly.Net45\Polly.Net45.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <Service Include="{82a7f48d-3b50-4b1e-b82e-3ada8210c358}" />
   </ItemGroup>
   <Import Project="..\Polly.SharedSpecs\Polly.SharedSpecs.projitems" Label="Shared" />
 </Project>
