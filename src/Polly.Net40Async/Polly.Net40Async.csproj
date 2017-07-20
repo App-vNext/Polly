@@ -8,10 +8,12 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugType>full</DebugType>
+    <DefineConstants>TRACE;DEBUG;NET40</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
+    <DefineConstants>TRACE;RELEASE;NET40</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
