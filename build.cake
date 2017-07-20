@@ -168,7 +168,7 @@ Task("__BuildSolutions")
             settings
                 .SetConfiguration(configuration)
                 .WithProperty("TreatWarningsAsErrors", "true")
-                .UseToolVersion(MSBuildToolVersion.NET46)
+                .UseToolVersion(MSBuildToolVersion.VS2017)
                 .SetVerbosity(Verbosity.Minimal)
                 .SetNodeReuse(false));
     }
