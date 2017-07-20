@@ -2,19 +2,22 @@
   <PropertyGroup>
     <AssemblyName>Polly</AssemblyName>
     <AssemblyOriginatorKeyFile>..\Polly.Net45\Polly.snk</AssemblyOriginatorKeyFile>
-    <DefineConstants>TRACE;DEBUG;PORTABLE</DefineConstants>
+    <DefineConstants>TRACE;PORTABLE</DefineConstants>
     <DefaultLanguage>en-US</DefaultLanguage>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <RootNamespace>Polly</RootNamespace>
     <TargetFramework>netstandard1.1</TargetFramework>
+    <NetStandardImplicitPackageVersion>1.6.1</NetStandardImplicitPackageVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugType>full</DebugType>
+    <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
+    <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
     <NuSpecFile Include="$(SolutionDir)Polly.nuspec">
