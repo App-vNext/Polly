@@ -177,7 +177,7 @@ Task("__BuildSolutions")
 Task("__RunTests")
     .Does(() =>
 {
-    XUnit2("./src/**/bin/" + configuration + "/*.Specs.dll", new XUnit2Settings {
+    XUnit2("./src/**/bin/" + configuration + "/**/*.Specs.dll", new XUnit2Settings {
         OutputDirectory = testResultsDir,
         XmlReportV1 = true
     });
@@ -190,7 +190,7 @@ Task("__CopyOutputToNugetFolder")
         var sourceDir = srcDir + Directory(projectName + "." + project) + Directory("bin") + Directory(configuration);
 
         foreach(var targetFolder in projectToNugetFolderMap[project]) {
-            var destDir = buildDir + Directory("lib") + Directory(targetFolder);
+            var destDir = buildDir + Directory("lib");
 
             Information("Copying {0} -> {1}.", sourceDir, destDir);
             CopyDirectory(sourceDir, destDir);
@@ -207,7 +207,7 @@ Task("__CopyNet40AsyncOutputToNugetFolder")
         var sourceDir = srcDir + Directory(projectName + "." + project) + Directory("bin") + Directory(configuration);
 
         foreach(var targetFolder in net40AsyncProjectToNugetFolderMap[project]) {
-            var destDir = buildDir + Directory(net40AsyncProjectName) + Directory("lib") + Directory(targetFolder);
+            var destDir = buildDir + Directory(net40AsyncProjectName) + Directory("lib");
 
             Information("Copying {0} -> {1}.", sourceDir, destDir);
             CopyDirectory(sourceDir, destDir);
