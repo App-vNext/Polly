@@ -38,9 +38,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Polly.Net40Async\Polly.Net40Async.csproj">
-      <Properties>SkipValidatePackageReferences=true</Properties>
-    </ProjectReference>
+    <ProjectReference Include="..\Polly.Net40Async\Polly.Net40Async.csproj" />
   </ItemGroup>
   <Import Project="..\Polly.SharedSpecs\Polly.SharedSpecs.projitems" Label="Shared" />
 </Project>
