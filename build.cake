@@ -177,9 +177,18 @@ Task("__BuildSolutions")
 Task("__RunTests")
     .Does(() =>
 {
-    XUnit2("./src/**/bin/" + configuration + "/**/*.Specs.dll", new XUnit2Settings {
+    XUnit2("./src/**/bin/" + configuration + "/**/*.Net4*.Specs.dll", new XUnit2Settings {
         OutputDirectory = testResultsDir,
         XmlReportV1 = true
+    });
+});
+
+Task("__RunDotnetTests")
+    .Does(() =>
+{
+    DotNetCoreTest("./src/Polly.NetStandard11.Specs/Polly.NetStandard11.Specs.csproj", new DotNetCoreTestSettings {
+        Configuration = configuration,
+        NoBuild = true
     });
 });
 
@@ -317,6 +326,7 @@ Task("Build")
     .IsDependentOn("__UpdateAppVeyorBuildNumber")
     .IsDependentOn("__BuildSolutions")
     .IsDependentOn("__RunTests")
+    .IsDependentOn("__RunDotnetTests")
     .IsDependentOn("__CopyOutputToNugetFolder")
 	.IsDependentOn("__CopyNet40AsyncOutputToNugetFolder")  
     .IsDependentOn("__CreateNugetPackage")
