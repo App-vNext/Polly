@@ -114,6 +114,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Timeout\TimeoutStrategy.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\AsyncSemaphoreExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\EmptyStruct.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\ExceptionDispatchInfo.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\KeyHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\PredicateHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\SemaphoreSlimFactory.cs" />
