@@ -866,7 +866,7 @@ For details of changes by release see the [change log](https://github.com/App-vN
 * [Ian Griffith's TimedLock](http://www.interact-sw.co.uk/iangblog/2004/04/26/yetmoretimedlocking)
 * [Steven van Deursen's ReadOnlyDictionary](http://www.cuttingedge.it/blogs/steven/pivot/entry.php?id=29) (until v5.0.6)
 * [Stephen Cleary's AsyncEx library](https://github.com/StephenCleary/AsyncEx) for AsyncSemaphore (supports BulkheadAsync policy for .NET4.0 only) | [MIT license](https://github.com/StephenCleary/AsyncEx/blob/master/LICENSE)
-* [@theraot](https://github.com/theraot)'s [ExceptionDispatchInfo implementation for .NET4.0](https://stackoverflow.com/a/31226509/) (supports Timeout policy for .NET4.0 only) including also a contribution by [@migueldeicaza](https://github.com/migueldeicaza) | [Creative Commons Attribution Share Alike license](https://creativecommons.org/licenses/by-sa/3.0/)
+* [@theraot](https://github.com/theraot)'s [ExceptionDispatchInfo implementation for .NET4.0](https://stackoverflow.com/a/31226509/) (supports Timeout policy for .NET4.0 only) including also a contribution by [@migueldeicaza](https://github.com/migueldeicaza) | [Creative Commons Attribution Share Alike license](https://creativecommons.org/licenses/by-sa/3.0/) per [StackExchange Terms of Service](https://stackexchange.com/legal)
 * Build powered by [Cake](http://cakebuild.net/) and [GitVersionTask](https://github.com/GitTools/GitVersion).
 
 # Acknowledgements
