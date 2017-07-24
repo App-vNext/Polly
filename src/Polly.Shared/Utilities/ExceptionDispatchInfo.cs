@@ -1,8 +1,12 @@
-﻿#if NET40
-
+﻿// ==================================
 // This file only, code sourced from answer https://stackoverflow.com/a/31226509/ by https://stackoverflow.com/users/402022/theraot (Alfonso J. Ramos) to question https://stackoverflow.com/questions/20171877/ asked by https://stackoverflow.com/users/2674222/avo.  Also with contributions (as originally indicated by theraot within the code) by Miguel de Icaza (https://stackoverflow.com/users/16929/miguel-de-icaza).
 // Licensed as described in and following the conditions of the StackExchange Terms Of Service (https://stackexchange.com/legal) (retrieved 23 July 2017) under the Creative Commons Attribution Share Alike license (https://creativecommons.org/licenses/by-sa/3.0/) (retrieved 23 July 2017).
 // Minor amendment by @reisenberger (https://github.com/reisenberger/): removed unused private field _stackTraceOriginal.
+// Code in this file (only) distributed under and governed by the Creative Commons Attribution Share Alike license (https://creativecommons.org/licenses/by-sa/3.0/).
+// This notice must not be removed from this file.
+// ==================================
+
+#if NET40
 
 using System;
 using System.Text;
