@@ -1,3 +1,7 @@
+## 5.3.0
+- Fix ExecuteAndCapture() usage with PolicyWrap   
+- Allow Fallback delegates to take execution Context
+
 ## 5.2.0
 - Add PolicyRegistry for storing and retrieving policies.
 - Add interfaces by policy type and execution type.

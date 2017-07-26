@@ -71,7 +71,7 @@ namespace Polly.Specs.Fallback
         [Fact]
         public void Should_throw_when_fallback_action_is_null_with_onFallback_with_context()
         {
-            Action fallbackAction = null;
+            Action<Context> fallbackAction = null;
             Action<Exception, Context> onFallback = (_, __) => { };
 
             Action policy = () => Policy
@@ -85,7 +85,7 @@ namespace Polly.Specs.Fallback
         [Fact]
         public void Should_throw_when_fallback_action_with_cancellation_is_null_with_onFallback_with_context()
         {
-            Action<CancellationToken> fallbackAction = null;
+            Action<Context, CancellationToken> fallbackAction = null;
             Action<Exception, Context> onFallback = (_, __) => { };
 
             Action policy = () => Policy
@@ -127,7 +127,7 @@ namespace Polly.Specs.Fallback
         [Fact]
         public void Should_throw_when_onFallback_delegate_is_null_with_context()
         {
-            Action fallbackAction = () => { };
+            Action<Context> fallbackAction = _ => { };
             Action<Exception, Context> onFallback = null;
 
             Action policy = () => Policy
@@ -141,7 +141,7 @@ namespace Polly.Specs.Fallback
         [Fact]
         public void Should_throw_when_onFallback_delegate_is_null_with_context_with_action_with_cancellation()
         {
-            Action<CancellationToken> fallbackAction = ct => { };
+            Action<Context, CancellationToken> fallbackAction = (_, __) => { };
             Action<Exception, Context> onFallback = null;
 
             Action policy = () => Policy
@@ -367,7 +367,7 @@ namespace Polly.Specs.Fallback
         [Fact]
         public void Should_call_onFallback_with_the_passed_context()
         {
-            Action fallbackAction = () => { };
+            Action<Context> fallbackAction = _ => { };
 
             IDictionary<string, object> contextData = null;
 
@@ -389,7 +389,7 @@ namespace Polly.Specs.Fallback
         [Fact]
         public void Should_call_onFallback_with_the_passed_context_when_execute_and_capture()
         {
-            Action fallbackAction = () => { };
+            Action<Context> fallbackAction = _ => { };
 
             IDictionary<string, object> contextData = null;
 
@@ -411,7 +411,7 @@ namespace Polly.Specs.Fallback
         [Fact]
         public void Should_call_onFallback_with_independent_context_for_independent_calls()
         {
-            Action fallbackAction = () => { };
+            Action<Context> fallbackAction = _ => { };
 
             IDictionary<Type, object> contextData = new Dictionary<Type, object>();
 
@@ -444,7 +444,7 @@ namespace Polly.Specs.Fallback
             Context capturedContext = null;
             bool onFallbackExecuted = false;
 
-            Action fallbackAction = () => { };
+            Action<Context> fallbackAction = _ => { };
             Action<Exception, Context> onFallback = (ex, ctx) => { onFallbackExecuted = true; capturedContext = ctx; };
 
             FallbackPolicy fallbackPolicy = Policy
@@ -455,6 +455,70 @@ namespace Polly.Specs.Fallback
             fallbackPolicy.RaiseException<DivideByZeroException>();
 
             onFallbackExecuted.Should().BeTrue();
+            capturedContext.Should().BeEmpty();
+        }
+
+        [Fact]
+        public void Should_call_fallbackAction_with_the_passed_context()
+        {
+            IDictionary<string, object> contextData = null;
+
+            Action<Context, CancellationToken> fallbackAction = (ctx, ct) => { contextData = ctx;};
+
+            Action<Exception, Context> onFallback = (ex, ctx) => {  };
+
+            FallbackPolicy fallbackPolicy = Policy
+                .Handle<ArgumentNullException>()
+                .Fallback(fallbackAction, onFallback);
+
+            fallbackPolicy.Invoking(p => p.Execute(() => { throw new ArgumentNullException(); },
+                    new { key1 = "value1", key2 = "value2" }.AsDictionary()))
+                .ShouldNotThrow();
+
+            contextData.Should()
+                .ContainKeys("key1", "key2").And
+                .ContainValues("value1", "value2");
+        }
+
+        [Fact]
+        public void Should_call_fallbackAction_with_the_passed_context_when_execute_and_capture()
+        {
+            IDictionary<string, object> contextData = null;
+
+            Action<Context, CancellationToken> fallbackAction = (ctx, ct) => { contextData = ctx; };
+
+            Action<Exception, Context> onFallback = (ex, ctx) => { };
+
+            FallbackPolicy fallbackPolicy = Policy
+                .Handle<ArgumentNullException>()
+                .Fallback(fallbackAction, onFallback);
+
+            fallbackPolicy.Invoking(p => p.ExecuteAndCapture(() => { throw new ArgumentNullException(); },
+                    new { key1 = "value1", key2 = "value2" }.AsDictionary()))
+                .ShouldNotThrow();
+
+            contextData.Should()
+                .ContainKeys("key1", "key2").And
+                .ContainValues("value1", "value2");
+        }
+
+        [Fact]
+        public void Context_should_be_empty_at_fallbackAction_if_execute_not_called_with_any_context_data()
+        {
+            Context capturedContext = null;
+            bool fallbackExecuted = false;
+
+            Action<Context, CancellationToken> fallbackAction = (ctx, ct) => { fallbackExecuted = true; capturedContext = ctx;  };
+            Action<Exception, Context> onFallback = (ex, ctx) => {};
+
+            FallbackPolicy fallbackPolicy = Policy
+                .Handle<ArgumentNullException>()
+                .Or<DivideByZeroException>()
+                .Fallback(fallbackAction, onFallback);
+
+            fallbackPolicy.RaiseException<DivideByZeroException>();
+
+            fallbackExecuted.Should().BeTrue();
             capturedContext.Should().BeEmpty();
         }
 

@@ -236,5 +236,123 @@ namespace Polly.Specs.Wrap
         }
 
         #endregion
+
+        #region ExecuteAndCaptureSpecs
+
+        [Fact]
+        public void Outermost_policy_handling_exception_should_report_as_PolicyWrap_handled_exception()
+        {
+            CircuitBreakerPolicy innerHandlingDBZE = Policy
+                .Handle<DivideByZeroException>()
+                .CircuitBreaker(1, TimeSpan.Zero);
+            CircuitBreakerPolicy outerHandlingANE = Policy
+                .Handle<ArgumentNullException>()
+                .CircuitBreaker(1, TimeSpan.Zero);
+            PolicyWrap wrap = outerHandlingANE.Wrap(innerHandlingDBZE);
+
+            PolicyResult executeAndCaptureResultOnPolicyWrap = wrap.ExecuteAndCapture(() => { throw new ArgumentNullException(); });
+
+            executeAndCaptureResultOnPolicyWrap.Outcome.Should().Be(OutcomeType.Failure);
+            executeAndCaptureResultOnPolicyWrap.FinalException.Should().BeOfType<ArgumentNullException>();
+            executeAndCaptureResultOnPolicyWrap.ExceptionType.Should().Be(ExceptionType.HandledByThisPolicy);
+        }
+
+        [Fact]
+        public void Outermost_policy_not_handling_exception_even_if_inner_policies_do_should_report_as_unhandled_exception()
+        {
+            CircuitBreakerPolicy innerHandlingDBZE = Policy
+                .Handle<DivideByZeroException>()
+                .CircuitBreaker(1, TimeSpan.Zero);
+            CircuitBreakerPolicy outerHandlingANE = Policy
+                .Handle<ArgumentNullException>()
+                .CircuitBreaker(1, TimeSpan.Zero);
+            PolicyWrap wrap = outerHandlingANE.Wrap(innerHandlingDBZE);
+
+            PolicyResult executeAndCaptureResultOnPolicyWrap = wrap.ExecuteAndCapture(() => { throw new DivideByZeroException(); });
+
+            executeAndCaptureResultOnPolicyWrap.Outcome.Should().Be(OutcomeType.Failure);
+            executeAndCaptureResultOnPolicyWrap.FinalException.Should().BeOfType<DivideByZeroException>();
+            executeAndCaptureResultOnPolicyWrap.ExceptionType.Should().Be(ExceptionType.Unhandled);
+        }
+
+        [Fact]
+        public void Outermost_generic_policy_handling_exception_should_report_as_PolicyWrap_handled_exception()
+        {
+            CircuitBreakerPolicy<ResultPrimitive> innerHandlingDBZE = Policy<ResultPrimitive>
+                .Handle<DivideByZeroException>()
+                .CircuitBreaker(1, TimeSpan.Zero);
+            CircuitBreakerPolicy outerHandlingANE = Policy
+                .Handle<ArgumentNullException>()
+                .CircuitBreaker(1, TimeSpan.Zero);
+            PolicyWrap<ResultPrimitive> wrap = outerHandlingANE.Wrap(innerHandlingDBZE);
+
+            PolicyResult<ResultPrimitive> executeAndCaptureResultOnPolicyWrap = wrap.ExecuteAndCapture(() => { throw new ArgumentNullException(); });
+
+            executeAndCaptureResultOnPolicyWrap.Outcome.Should().Be(OutcomeType.Failure);
+            executeAndCaptureResultOnPolicyWrap.FinalException.Should().BeOfType<ArgumentNullException>();
+            executeAndCaptureResultOnPolicyWrap.ExceptionType.Should().Be(ExceptionType.HandledByThisPolicy);
+            executeAndCaptureResultOnPolicyWrap.FaultType.Should().Be(FaultType.ExceptionHandledByThisPolicy);
+        }
+
+        [Fact]
+        public void Outermost_generic_policy_not_handling_exception_even_if_inner_policies_do_should_report_as_unhandled_exception()
+        {
+            CircuitBreakerPolicy<ResultPrimitive> innerHandlingDBZE = Policy<ResultPrimitive>
+                .Handle<DivideByZeroException>()
+                .CircuitBreaker(1, TimeSpan.Zero);
+            CircuitBreakerPolicy outerHandlingANE = Policy
+                .Handle<ArgumentNullException>()
+                .CircuitBreaker(1, TimeSpan.Zero);
+            PolicyWrap<ResultPrimitive> wrap = outerHandlingANE.Wrap(innerHandlingDBZE);
+
+            PolicyResult<ResultPrimitive> executeAndCaptureResultOnPolicyWrap = wrap.ExecuteAndCapture(() => { throw new DivideByZeroException(); });
+
+            executeAndCaptureResultOnPolicyWrap.Outcome.Should().Be(OutcomeType.Failure);
+            executeAndCaptureResultOnPolicyWrap.FinalException.Should().BeOfType<DivideByZeroException>();
+            executeAndCaptureResultOnPolicyWrap.ExceptionType.Should().Be(ExceptionType.Unhandled);
+            executeAndCaptureResultOnPolicyWrap.FaultType.Should().Be(FaultType.UnhandledException);
+        }
+
+        [Fact]
+        public void Outermost_generic_policy_handling_result_should_report_as_PolicyWrap_handled_result()
+        {
+            CircuitBreakerPolicy<ResultPrimitive> innerHandlingFaultAgain = Policy
+                .HandleResult(ResultPrimitive.FaultAgain)
+                .CircuitBreaker(1, TimeSpan.Zero);
+            CircuitBreakerPolicy<ResultPrimitive> outerHandlingFault = Policy
+                .HandleResult(ResultPrimitive.Fault)
+                .CircuitBreaker(1, TimeSpan.Zero);
+            PolicyWrap<ResultPrimitive> wrap = outerHandlingFault.Wrap(innerHandlingFaultAgain);
+
+            PolicyResult<ResultPrimitive> executeAndCaptureResultOnPolicyWrap = wrap.ExecuteAndCapture(() => ResultPrimitive.Fault);
+
+            executeAndCaptureResultOnPolicyWrap.Outcome.Should().Be(OutcomeType.Failure);
+            executeAndCaptureResultOnPolicyWrap.FaultType.Should().Be(FaultType.ResultHandledByThisPolicy);
+            executeAndCaptureResultOnPolicyWrap.FinalHandledResult.Should().Be(ResultPrimitive.Fault);
+            executeAndCaptureResultOnPolicyWrap.FinalException.Should().BeNull();
+            executeAndCaptureResultOnPolicyWrap.ExceptionType.Should().BeNull();
+        }
+
+        [Fact]
+        public void Outermost_generic_policy_not_handling_result_even_if_inner_policies_do_should_not_report_as_handled()
+        {
+            CircuitBreakerPolicy<ResultPrimitive> innerHandlingFaultAgain = Policy
+                .HandleResult(ResultPrimitive.FaultAgain)
+                .CircuitBreaker(1, TimeSpan.Zero);
+            CircuitBreakerPolicy<ResultPrimitive> outerHandlingFault = Policy
+                .HandleResult(ResultPrimitive.Fault)
+                .CircuitBreaker(1, TimeSpan.Zero);
+            PolicyWrap<ResultPrimitive> wrap = outerHandlingFault.Wrap(innerHandlingFaultAgain);
+
+            PolicyResult<ResultPrimitive> executeAndCaptureResultOnPolicyWrap = wrap.ExecuteAndCapture(() => ResultPrimitive.FaultAgain);
+
+            executeAndCaptureResultOnPolicyWrap.Outcome.Should().Be(OutcomeType.Successful);
+            executeAndCaptureResultOnPolicyWrap.FinalHandledResult.Should().Be(default(ResultPrimitive));
+            executeAndCaptureResultOnPolicyWrap.FaultType.Should().BeNull();
+            executeAndCaptureResultOnPolicyWrap.FinalException.Should().BeNull();
+            executeAndCaptureResultOnPolicyWrap.ExceptionType.Should().BeNull();
+        }
+
+        #endregion
     }
 }

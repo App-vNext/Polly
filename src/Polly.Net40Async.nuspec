@@ -15,6 +15,11 @@
     <releaseNotes>
      v5.0 is a major release with significant new resilience policies: Timeout; Bulkhead Isolation; Fallback; and PolicyWrap.  See release notes back to v5.0.0 for full details.  v5.0.5 includes important circuit-breaker fixes.
 
+     5.3.0
+     ---------------------
+     - Fix ExecuteAndCapture() usage with PolicyWrap   
+     - Allow Fallback delegates to take execution Context
+
      5.2.0
      ---------------------
      - Add PolicyRegistry for storing and retrieving policies.
