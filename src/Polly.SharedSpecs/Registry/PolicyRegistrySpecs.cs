@@ -419,6 +419,7 @@ namespace Polly.Specs.Registry
         #endregion
 
         #region Tests for checking if key exists
+
         [Fact]
         public void Should_be_able_to_check_if_key_exists()
         {

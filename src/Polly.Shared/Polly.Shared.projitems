@@ -77,6 +77,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)PolicyBuilder.OrSyntax.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PolicyResult.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Policy.TResult.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Registry\IReadOnlyPolicyRegistry.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Registry\PolicyRegistry.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Registry\IPolicyRegistry.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ResultPredicate.cs" />
