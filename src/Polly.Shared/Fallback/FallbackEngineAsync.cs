@@ -14,7 +14,7 @@ namespace Polly.Fallback
             IEnumerable<ExceptionPredicate> shouldHandleExceptionPredicates,
             IEnumerable<ResultPredicate<TResult>> shouldHandleResultPredicates,
             Func<DelegateResult<TResult>, Context, Task> onFallbackAsync,
-            Func<CancellationToken, Task<TResult>> fallbackAction,
+            Func<Context, CancellationToken, Task<TResult>> fallbackAction,
             CancellationToken cancellationToken,
             bool continueOnCapturedContext)
         {
@@ -45,7 +45,7 @@ namespace Polly.Fallback
 
             await onFallbackAsync(delegateOutcome, context).ConfigureAwait(continueOnCapturedContext);
 
-            return await fallbackAction(cancellationToken).ConfigureAwait(continueOnCapturedContext);
+            return await fallbackAction(context, cancellationToken).ConfigureAwait(continueOnCapturedContext);
         }
     }
 }

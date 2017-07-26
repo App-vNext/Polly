@@ -18,7 +18,7 @@ namespace Polly
             if (asyncExceptionPolicy == null) throw new ArgumentNullException(nameof(asyncExceptionPolicy));
 
             _asyncExceptionPolicy = asyncExceptionPolicy;
-            _exceptionPredicates = exceptionPredicates ?? PredicateHelper.EmptyExceptionPredicates;
+            ExceptionPredicates = exceptionPredicates ?? PredicateHelper.EmptyExceptionPredicates;
         }
 
 
@@ -832,7 +832,7 @@ namespace Polly
             }
             catch (Exception exception)
             {
-                return PolicyResult.Failure(exception, GetExceptionType(_exceptionPredicates, exception), context);
+                return PolicyResult.Failure(exception, GetExceptionType(ExceptionPredicates, exception), context);
             }
         }
 
@@ -1134,7 +1134,7 @@ namespace Polly
             }
             catch (Exception exception)
             {
-                return PolicyResult<TResult>.Failure(exception, GetExceptionType(_exceptionPredicates, exception), context);
+                return PolicyResult<TResult>.Failure(exception, GetExceptionType(ExceptionPredicates, exception), context);
             }
         }
 

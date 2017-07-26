@@ -7,15 +7,14 @@ using Polly.Utilities;
 
 namespace Polly
 {
-
     /// <summary>
     /// Transient fault handling policies that can be applied to delegates returning results of type <typeparamref name="TResult"/>
     /// </summary>
     public abstract partial class Policy<TResult> : ISyncPolicy<TResult>
     {
         private readonly Func<Func<Context, CancellationToken, TResult>, Context, CancellationToken, TResult> _executionPolicy;
-        private readonly IEnumerable<ExceptionPredicate> _exceptionPredicates;
-        private readonly IEnumerable<ResultPredicate<TResult>> _resultPredicates;
+        internal IEnumerable<ExceptionPredicate> ExceptionPredicates { get; }
+        internal IEnumerable<ResultPredicate<TResult>> ResultPredicates { get; }
 
         internal Policy(
             Func<Func<Context, CancellationToken, TResult>, Context, CancellationToken, TResult> executionPolicy,
@@ -26,8 +25,8 @@ namespace Polly
             if (executionPolicy == null) throw new ArgumentNullException(nameof(executionPolicy));
 
             _executionPolicy = executionPolicy;
-            _exceptionPredicates = exceptionPredicates ?? PredicateHelper.EmptyExceptionPredicates;
-            _resultPredicates = resultPredicates ?? PredicateHelper<TResult>.EmptyResultPredicates;
+            ExceptionPredicates = exceptionPredicates ?? PredicateHelper.EmptyExceptionPredicates;
+            ResultPredicates = resultPredicates ?? PredicateHelper<TResult>.EmptyResultPredicates;
         }
 
         #region Execute overloads
@@ -317,7 +316,7 @@ namespace Polly
             {
                 TResult result = Execute(action, context, cancellationToken);
 
-                if (_resultPredicates.Any(predicate => predicate(result)))
+                if (ResultPredicates.Any(predicate => predicate(result)))
                 {
                     return PolicyResult<TResult>.Failure(result, context);
                 }
@@ -326,7 +325,7 @@ namespace Polly
             }
             catch (Exception exception)
             {
-                return PolicyResult<TResult>.Failure(exception, GetExceptionType(_exceptionPredicates, exception), context);
+                return PolicyResult<TResult>.Failure(exception, GetExceptionType(ExceptionPredicates, exception), context);
             }
         }
 
