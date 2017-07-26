@@ -734,7 +734,7 @@ registry["StandardHttpResilience"] = myStandardHttpResiliencePolicy;
 // Pass the registry instance to usage sites by DI, perhaps
 public class MyServiceGateway 
 {
-    public void MyServiceGateway(..., IPolicyRegistry<string> registry, ...)
+    public void MyServiceGateway(..., IReadOnlyPolicyRegistry<string> registry, ...)
     {
        ...
     } 
@@ -905,6 +905,7 @@ For details of changes by release see the [change log](https://github.com/App-vN
 * [@reisenberger](https://github.com/reisenberger) - Add mutable Context and extra overloads taking Context.  Allows different parts of a policy execution to exchange data via the mutable Context travelling with each execution.
 * [@ankitbko](https://github.com/ankitbko) - Add PolicyRegistry for storing and retrieving policies.
 * [@reisenberger](https://github.com/reisenberger) - Add interfaces by policy type and execution type.
+* [@seanfarrow](https://github.com/SeanFarrow) - Add IReadOnlyPolicyRegistry interface.
 
 # Sample Projects
 
