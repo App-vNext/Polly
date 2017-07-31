@@ -103,7 +103,7 @@ HttpResponseMessage result = Policy
   .Handle<HttpResponseException>()
   .OrResult<HttpResponseMessage>(r => httpStatusCodesWorthRetrying.Contains(r.StatusCode))
   .Retry(...)
-  .Execute( /* some Func<HttpResponseMessage> */ )
+  .ExecuteAsync( /* some Func<Task<HttpResponseMessage>> */ )
 ```
 
 For more information, see [Handling Return Values](#handing-return-values-and-policytresult) at foot of this readme. 
@@ -630,7 +630,7 @@ HttpResponseMessage result = Policy
   .Handle<HttpResponseException>()
   .OrResult<HttpResponseMessage>(r => httpStatusCodesWorthRetrying.Contains(r.StatusCode))
   .Retry(...)
-  .Execute( /* some Func<HttpResponseMessage> */ )
+  .ExecuteAsync( /* some Func<Task<HttpResponseMessage>> */ )
 ```
 
 The exceptions and return results to handle can be expressed fluently in any order.
