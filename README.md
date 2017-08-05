@@ -906,6 +906,7 @@ For details of changes by release see the [change log](https://github.com/App-vN
 * [@ankitbko](https://github.com/ankitbko) - Add PolicyRegistry for storing and retrieving policies.
 * [@reisenberger](https://github.com/reisenberger) - Add interfaces by policy type and execution type.
 * [@seanfarrow](https://github.com/SeanFarrow) - Add IReadOnlyPolicyRegistry interface.
+* [@kesmy](https://github.com/Kesmy) - Migrate solution to msbuild15, banish project.json and packages.config
 
 # Sample Projects
 
