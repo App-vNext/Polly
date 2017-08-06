@@ -1,6 +1,11 @@
+## 5.3.1
+- Make ISyncPolicy<TResult> public
+- (Upgrade solution to msbuild15)
+
 ## 5.3.0
 - Fix ExecuteAndCapture() usage with PolicyWrap   
 - Allow Fallback delegates to take execution Context
+- Provide IReadOnlyPolicyRegistry interface
 
 ## 5.2.0
 - Add PolicyRegistry for storing and retrieving policies.

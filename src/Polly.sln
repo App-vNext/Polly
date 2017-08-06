@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26127.0
+VisualStudioVersion = 15.0.26430.16
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{79FE9DBE-1155-4F78-A41F-FE95DEFA19DD}"
 	ProjectSection(SolutionItems) = preProject
@@ -12,25 +12,24 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Polly.Shared", "Polly.Shared\Polly.Shared.shproj", "{23FA87F9-C77D-4C67-A0B0-2901DE51B3FF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Polly.Net45", "Polly.Net45\Polly.Net45.csproj", "{29265540-F724-4324-9321-643A0FCB133F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polly.Net45", "Polly.Net45\Polly.Net45.csproj", "{29265540-F724-4324-9321-643A0FCB133F}"
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Polly.SharedSpecs", "Polly.SharedSpecs\Polly.SharedSpecs.shproj", "{8D537C37-A4A2-4BE1-84BC-34F1AFB51CA8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Polly.Net45.Specs", "Polly.Net45.Specs\Polly.Net45.Specs.csproj", "{5F2BD87D-A7ED-433D-B7E3-F3072D07C1DC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polly.Net45.Specs", "Polly.Net45.Specs\Polly.Net45.Specs.csproj", "{5F2BD87D-A7ED-433D-B7E3-F3072D07C1DC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Polly.Pcl.Specs", "Polly.Pcl.Specs\Polly.Pcl.Specs.csproj", "{4AB46D16-0806-4F51-8677-D849BA87CB05}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polly.Net40Async", "Polly.Net40Async\Polly.Net40Async.csproj", "{D6A676C2-982D-42D1-AD21-FA53582A1C31}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Polly.Net40Async", "Polly.Net40Async\Polly.Net40Async.csproj", "{D6A676C2-982D-42D1-AD21-FA53582A1C31}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polly.Net40Async.Specs", "Polly.Net40Async.Specs\Polly.Net40Async.Specs.csproj", "{65062661-9E19-4FC6-859C-8B7811553E13}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Polly.Net40Async.Specs", "Polly.Net40Async.Specs\Polly.Net40Async.Specs.csproj", "{65062661-9E19-4FC6-859C-8B7811553E13}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polly.NetStandard11", "Polly.NetStandard11\Polly.NetStandard11.csproj", "{5017174E-DAC5-4408-AB15-1F902F40C612}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Polly.NetStandard11", "Polly.NetStandard11\Polly.NetStandard11.csproj", "{5017174E-DAC5-4408-AB15-1F902F40C612}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Polly.NetStandard11.Specs", "Polly.NetStandard11.Specs\Polly.NetStandard11.Specs.csproj", "{615C92EC-5921-40F4-A690-C66B1587C08E}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		Polly.Shared\Polly.Shared.projitems*{23fa87f9-c77d-4c67-a0b0-2901de51b3ff}*SharedItemsImports = 13
 		Polly.Shared\Polly.Shared.projitems*{29265540-f724-4324-9321-643a0fcb133f}*SharedItemsImports = 4
-		Polly.SharedSpecs\Polly.SharedSpecs.projitems*{4ab46d16-0806-4f51-8677-d849ba87cb05}*SharedItemsImports = 4
 		Polly.Shared\Polly.Shared.projitems*{5017174e-dac5-4408-ab15-1f902f40c612}*SharedItemsImports = 4
 		Polly.SharedSpecs\Polly.SharedSpecs.projitems*{5f2bd87d-a7ed-433d-b7e3-f3072d07c1dc}*SharedItemsImports = 4
 		Polly.SharedSpecs\Polly.SharedSpecs.projitems*{65062661-9e19-4fc6-859c-8b7811553e13}*SharedItemsImports = 4
@@ -50,10 +49,6 @@ Global
 		{5F2BD87D-A7ED-433D-B7E3-F3072D07C1DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5F2BD87D-A7ED-433D-B7E3-F3072D07C1DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5F2BD87D-A7ED-433D-B7E3-F3072D07C1DC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4AB46D16-0806-4F51-8677-D849BA87CB05}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4AB46D16-0806-4F51-8677-D849BA87CB05}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4AB46D16-0806-4F51-8677-D849BA87CB05}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4AB46D16-0806-4F51-8677-D849BA87CB05}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D6A676C2-982D-42D1-AD21-FA53582A1C31}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D6A676C2-982D-42D1-AD21-FA53582A1C31}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D6A676C2-982D-42D1-AD21-FA53582A1C31}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -66,6 +61,10 @@ Global
 		{5017174E-DAC5-4408-AB15-1F902F40C612}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5017174E-DAC5-4408-AB15-1F902F40C612}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5017174E-DAC5-4408-AB15-1F902F40C612}.Release|Any CPU.Build.0 = Release|Any CPU
+		{615C92EC-5921-40F4-A690-C66B1587C08E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{615C92EC-5921-40F4-A690-C66B1587C08E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{615C92EC-5921-40F4-A690-C66B1587C08E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{615C92EC-5921-40F4-A690-C66B1587C08E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

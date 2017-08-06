@@ -10,7 +10,7 @@ namespace Polly
     /// </summary>
     /// <typeparam name="TResult">The type of the result of funcs executed through the Policy.</typeparam>
 
-    interface ISyncPolicy<TResult> : IsPolicy
+    public interface ISyncPolicy<TResult> : IsPolicy
     {
         /// <summary>
         /// Sets the PolicyKey for this <see cref="Policy"/> instance.
