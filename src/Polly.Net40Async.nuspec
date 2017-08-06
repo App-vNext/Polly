@@ -17,7 +17,7 @@
 
      5.3.1
      ---------------------
-     - Make ISyncPolicy<TResult> public
+     - Make ISyncPolicy&lt;TResult&gt; public
      - (Upgrade solution to msbuild15)
      
      5.3.0
