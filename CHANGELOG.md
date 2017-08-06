@@ -1,3 +1,6 @@
+## 5.3.2
+- Fix test timing errors
+
 ## 5.3.1
 - Make ISyncPolicy<TResult> public
 - (Upgrade solution to msbuild15)

@@ -14,6 +14,10 @@
     <copyright>Copyright © 2017, App vNext</copyright>
     <releaseNotes>
      v5.0 is a major release with significant new resilience policies: Timeout; Bulkhead Isolation; Fallback; and PolicyWrap.  See release notes back to v5.0.0 for full details.  v5.0.5 includes important circuit-breaker fixes.
+
+     5.3.2
+     ---------------------
+     - Fix test timing errors
     
      5.3.1
      ---------------------

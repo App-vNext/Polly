@@ -115,12 +115,12 @@ namespace Polly.Specs.Caching
 
             // Second execution (before cache expires) should get it from the cache - no further delegate execution.
             // (Manipulate time so just prior cache expiry).
-            SystemClock.DateTimeOffsetUtcNow = () => fixedTime.Add(ttl).AddTicks(-1);
+            SystemClock.DateTimeOffsetUtcNow = () => fixedTime.Add(ttl).AddSeconds(-1);
             (await cache.ExecuteAsync(func, new Context(executionKey)).ConfigureAwait(false)).Should().Be(valueToReturn);
             delegateInvocations.Should().Be(1);
 
             // Manipulate time to force cache expiry.
-            SystemClock.DateTimeOffsetUtcNow = () => fixedTime.Add(ttl).AddTicks(1);
+            SystemClock.DateTimeOffsetUtcNow = () => fixedTime.Add(ttl).AddSeconds(1);
 
             // Third execution (cache expired) should not get it from the cache - should cause further delegate execution.
             (await cache.ExecuteAsync(func, new Context(executionKey)).ConfigureAwait(false)).Should().Be(valueToReturn);
