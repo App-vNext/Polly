@@ -5,7 +5,7 @@ namespace Polly.Caching
     /// <summary>
     /// Defines methods for classes providing synchronous cache functionality for Polly <see cref="CachePolicy"/>s.
     /// </summary>
-    public interface ICacheProvider
+    public interface ISyncCacheProvider
     {
         /// <summary>
         /// Gets a value from cache.
@@ -26,7 +26,7 @@ namespace Polly.Caching
     /// <summary>
     /// Defines methods for classes providing synchronous cache functionality for Polly <see cref="CachePolicy{TResult}"/>s.
     /// </summary>
-    public interface ICacheProvider<TResult>
+    public interface ISyncCacheProvider<TResult>
     {
         /// <summary>
         /// Gets a value from cache.

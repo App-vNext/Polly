@@ -15,7 +15,7 @@ namespace Polly
         /// <param name="ttl">Duration (ttl) for which to cache values.</param>
         /// <returns>The policy instance.</returns>
         /// <exception cref="ArgumentNullException">cacheProvider</exception>
-        public static CachePolicy<TResult> CacheAsync<TResult>(ICacheProviderAsync cacheProvider, TimeSpan ttl)
+        public static CachePolicy<TResult> CacheAsync<TResult>(IAsyncCacheProvider cacheProvider, TimeSpan ttl)
         {
             if (cacheProvider == null) throw new ArgumentNullException(nameof(cacheProvider));
 
@@ -33,7 +33,7 @@ namespace Polly
         /// <returns>The policy instance.</returns>
         /// <exception cref="ArgumentNullException">cacheProvider</exception>
         /// <exception cref="ArgumentNullException">ttlStrategy</exception>
-        public static CachePolicy<TResult> CacheAsync<TResult>(ICacheProviderAsync cacheProvider, ITtlStrategy ttlStrategy)
+        public static CachePolicy<TResult> CacheAsync<TResult>(IAsyncCacheProvider cacheProvider, ITtlStrategy ttlStrategy)
         {
             if (cacheProvider == null) throw new ArgumentNullException(nameof(cacheProvider));
 
@@ -50,7 +50,7 @@ namespace Polly
         /// <param name="ttl">Duration (ttl) for which to cache values.</param>
         /// <returns>The policy instance.</returns>
         /// <exception cref="ArgumentNullException">cacheProvider</exception>
-        public static CachePolicy<TResult> CacheAsync<TResult>(ICacheProviderAsync<TResult> cacheProvider, TimeSpan ttl)
+        public static CachePolicy<TResult> CacheAsync<TResult>(IAsyncCacheProvider<TResult> cacheProvider, TimeSpan ttl)
         {
             return CacheAsync<TResult>(cacheProvider, new RelativeTtl(ttl), DefaultCacheKeyStrategy.Instance);
         }
@@ -66,7 +66,7 @@ namespace Polly
         /// <returns>The policy instance.</returns>
         /// <exception cref="ArgumentNullException">cacheProvider</exception>
         /// <exception cref="ArgumentNullException">ttlStrategy</exception>
-        public static CachePolicy<TResult> CacheAsync<TResult>(ICacheProviderAsync<TResult> cacheProvider, ITtlStrategy ttlStrategy)
+        public static CachePolicy<TResult> CacheAsync<TResult>(IAsyncCacheProvider<TResult> cacheProvider, ITtlStrategy ttlStrategy)
         {
             return CacheAsync<TResult>(cacheProvider, ttlStrategy, DefaultCacheKeyStrategy.Instance);
         }
@@ -83,7 +83,7 @@ namespace Polly
         /// <returns>The policy instance.</returns>
         /// <exception cref="ArgumentNullException">cacheKeyStrategy</exception>
         /// <exception cref="ArgumentNullException">cacheProvider</exception>
-        public static CachePolicy<TResult> CacheAsync<TResult>(ICacheProviderAsync cacheProvider, TimeSpan ttl, ICacheKeyStrategy cacheKeyStrategy)
+        public static CachePolicy<TResult> CacheAsync<TResult>(IAsyncCacheProvider cacheProvider, TimeSpan ttl, ICacheKeyStrategy cacheKeyStrategy)
         {
             if (cacheProvider == null) throw new ArgumentNullException(nameof(cacheProvider));
 
@@ -103,7 +103,7 @@ namespace Polly
         /// <exception cref="ArgumentNullException">cacheKeyStrategy</exception>
         /// <exception cref="ArgumentNullException">ttlStrategy</exception>
         /// <exception cref="ArgumentNullException">cacheProvider</exception>
-        public static CachePolicy<TResult> CacheAsync<TResult>(ICacheProviderAsync cacheProvider, ITtlStrategy ttlStrategy, ICacheKeyStrategy cacheKeyStrategy)
+        public static CachePolicy<TResult> CacheAsync<TResult>(IAsyncCacheProvider cacheProvider, ITtlStrategy ttlStrategy, ICacheKeyStrategy cacheKeyStrategy)
         {
             if (cacheProvider == null) throw new ArgumentNullException(nameof(cacheProvider));
 
@@ -122,7 +122,7 @@ namespace Polly
         /// <returns>The policy instance.</returns>
         /// <exception cref="ArgumentNullException">cacheKeyStrategy</exception>
         /// <exception cref="ArgumentNullException">cacheProvider</exception>
-        public static CachePolicy<TResult> CacheAsync<TResult>(ICacheProviderAsync<TResult> cacheProvider, TimeSpan ttl, ICacheKeyStrategy cacheKeyStrategy)
+        public static CachePolicy<TResult> CacheAsync<TResult>(IAsyncCacheProvider<TResult> cacheProvider, TimeSpan ttl, ICacheKeyStrategy cacheKeyStrategy)
         {
             return CacheAsync<TResult>(cacheProvider, new RelativeTtl(ttl), cacheKeyStrategy);
         }
@@ -140,7 +140,7 @@ namespace Polly
         /// <exception cref="ArgumentNullException">cacheKeyStrategy</exception>
         /// <exception cref="ArgumentNullException">ttlStrategy</exception>
         /// <exception cref="ArgumentNullException">cacheProvider</exception>
-        public static CachePolicy<TResult> CacheAsync<TResult>(ICacheProviderAsync<TResult> cacheProvider, ITtlStrategy ttlStrategy, ICacheKeyStrategy cacheKeyStrategy)
+        public static CachePolicy<TResult> CacheAsync<TResult>(IAsyncCacheProvider<TResult> cacheProvider, ITtlStrategy ttlStrategy, ICacheKeyStrategy cacheKeyStrategy)
         {
             if (cacheProvider == null) throw new ArgumentNullException(nameof(cacheProvider));
             if (ttlStrategy == null) throw new ArgumentNullException(nameof(ttlStrategy));

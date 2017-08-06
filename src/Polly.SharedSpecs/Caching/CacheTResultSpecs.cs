@@ -16,7 +16,7 @@ namespace Polly.Specs.Caching
         [Fact]
         public void Should_throw_when_cache_provider_is_null()
         {
-            ICacheProvider cacheProvider = null;
+            ISyncCacheProvider cacheProvider = null;
             Action action = () => Policy.Cache<ResultPrimitive>(cacheProvider, TimeSpan.MaxValue);
             action.ShouldThrow<ArgumentNullException>().And.ParamName.Should().Be("cacheProvider");
         }
@@ -24,7 +24,7 @@ namespace Polly.Specs.Caching
         [Fact]
         public void Should_throw_when_ttl_strategy_is_null()
         {
-            ICacheProvider cacheProvider = new StubCacheProvider();
+            ISyncCacheProvider cacheProvider = new StubCacheProvider();
             ITtlStrategy ttlStrategy = null;
             Action action = () => Policy.Cache<ResultPrimitive>(cacheProvider, ttlStrategy);
             action.ShouldThrow<ArgumentNullException>().And.ParamName.Should().Be("ttlStrategy");
@@ -32,7 +32,7 @@ namespace Polly.Specs.Caching
         [Fact]
         public void Should_throw_when_cache_key_strategy_is_null()
         {
-            ICacheProvider cacheProvider = new StubCacheProvider();
+            ISyncCacheProvider cacheProvider = new StubCacheProvider();
             ICacheKeyStrategy cacheKeyStrategy = null;
             Action action = () => Policy.Cache<ResultPrimitive>(cacheProvider, TimeSpan.MaxValue, cacheKeyStrategy);
             action.ShouldThrow<ArgumentNullException>().And.ParamName.Should().Be("cacheKeyStrategy");
@@ -49,7 +49,7 @@ namespace Polly.Specs.Caching
             const string valueToReturnFromExecution = "valueToReturnFromExecution";
             const string executionKey = "SomeExecutionKey";
 
-            ICacheProvider stubCacheProvider = new StubCacheProvider();
+            ISyncCacheProvider stubCacheProvider = new StubCacheProvider();
             CachePolicy<string> cache = Policy.Cache<string>(stubCacheProvider, TimeSpan.MaxValue);
             stubCacheProvider.Put(executionKey, valueToReturnFromCache, new Ttl(TimeSpan.MaxValue));
 
@@ -71,7 +71,7 @@ namespace Polly.Specs.Caching
             const string valueToReturn = "valueToReturn";
             const string executionKey = "SomeExecutionKey";
 
-            ICacheProvider stubCacheProvider = new StubCacheProvider();
+            ISyncCacheProvider stubCacheProvider = new StubCacheProvider();
             CachePolicy<string> cache = Policy.Cache<string>(stubCacheProvider, TimeSpan.MaxValue);
 
             stubCacheProvider.Get(executionKey).Should().BeNull();
@@ -87,7 +87,7 @@ namespace Polly.Specs.Caching
             const string valueToReturn = "valueToReturn";
             const string executionKey = "SomeExecutionKey";
 
-            ICacheProvider stubCacheProvider = new StubCacheProvider();
+            ISyncCacheProvider stubCacheProvider = new StubCacheProvider();
             TimeSpan ttl = TimeSpan.FromMinutes(30);
             CachePolicy<string> cache = Policy.Cache<string>(stubCacheProvider, ttl);
 
@@ -128,7 +128,7 @@ namespace Polly.Specs.Caching
             const string valueToReturn = "valueToReturn";
             const string executionKey = "SomeExecutionKey";
 
-            ICacheProvider stubCacheProvider = new StubCacheProvider();
+            ISyncCacheProvider stubCacheProvider = new StubCacheProvider();
             CachePolicy<string> cache = Policy.Cache<string>(stubCacheProvider, TimeSpan.Zero);
 
             stubCacheProvider.Get(executionKey).Should().BeNull();
@@ -166,7 +166,7 @@ namespace Polly.Specs.Caching
         [Fact]
         public void Should_allow_custom_ICacheKeyStrategy()
         {
-            ICacheProvider stubCacheProvider = new StubCacheProvider();
+            ISyncCacheProvider stubCacheProvider = new StubCacheProvider();
             ICacheKeyStrategy cacheKeyStrategy = new StubCacheKeyStrategy(context => context.ExecutionKey + context["id"]);
             CachePolicy<ResultClass> cache = Policy.Cache<ResultClass>(stubCacheProvider, TimeSpan.MaxValue, cacheKeyStrategy);
 
@@ -248,7 +248,7 @@ namespace Polly.Specs.Caching
             const string valueToReturn = "valueToReturn";
             const string executionKey = "SomeExecutionKey";
 
-            ICacheProvider stubCacheProvider = new StubCacheProvider();
+            ISyncCacheProvider stubCacheProvider = new StubCacheProvider();
             CachePolicy<string> cache = Policy.Cache<string>(stubCacheProvider, TimeSpan.MaxValue);
 
             CancellationTokenSource tokenSource = new CancellationTokenSource();

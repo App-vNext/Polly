@@ -7,7 +7,7 @@ namespace Polly.Caching
     internal static partial class CacheEngine
     {
         internal static async Task<TResult> ImplementationAsync<TResult>(
-            ICacheProviderAsync<TResult> cacheProvider,
+            IAsyncCacheProvider<TResult> cacheProvider,
             ITtlStrategy ttlStrategy,
             ICacheKeyStrategy cacheKeyStrategy,
             Func<Context, CancellationToken, Task<TResult>> action,

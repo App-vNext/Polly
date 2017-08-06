@@ -3,12 +3,12 @@
 namespace Polly.Caching
 {
     /// <summary>
-    /// Defines an <see cref="ICacheProvider"/> which serializes objects of any type in and out of an underlying cache which caches as type <typeparamref name="TSerialized"/>.  For use with synchronous <see cref="CachePolicy" />.
+    /// Defines an <see cref="ISyncCacheProvider"/> which serializes objects of any type in and out of an underlying cache which caches as type <typeparamref name="TSerialized"/>.  For use with synchronous <see cref="CachePolicy" />.
     /// </summary>
     /// <typeparam name="TSerialized">The type of serialized objects to be placed in the cache.</typeparam>
-    public class SerializingCacheProvider<TSerialized> : ICacheProvider
+    public class SerializingCacheProvider<TSerialized> : ISyncCacheProvider
     {
-        private readonly ICacheProvider<TSerialized> _wrappedCacheProvider;
+        private readonly ISyncCacheProvider<TSerialized> _wrappedCacheProvider;
         private readonly ICacheItemSerializer<object, TSerialized> _serializer;
 
         /// <summary>
@@ -18,7 +18,7 @@ namespace Polly.Caching
         /// <param name="serializer">The serializer.</param>
         /// <exception cref="System.ArgumentNullException">wrappedCacheProvider </exception>
         /// <exception cref="System.ArgumentNullException">serializer </exception>
-        public SerializingCacheProvider(ICacheProvider<TSerialized> wrappedCacheProvider, ICacheItemSerializer<object, TSerialized> serializer)
+        public SerializingCacheProvider(ISyncCacheProvider<TSerialized> wrappedCacheProvider, ICacheItemSerializer<object, TSerialized> serializer)
         {
             if (wrappedCacheProvider == null) throw new ArgumentNullException(nameof(wrappedCacheProvider));
             if (serializer == null) throw new ArgumentNullException(nameof(serializer));
@@ -51,13 +51,13 @@ namespace Polly.Caching
     }
 
     /// <summary>
-    /// Defines an <see cref="ICacheProvider{TResult}"/> which serializes objects of type <typeparamref name="TResult"/> in and out of an underlying cache which caches as type <typeparamref name="TSerialized"/>.  For use with synchronous <see cref="CachePolicy" />.
+    /// Defines an <see cref="ISyncCacheProvider{TResult}"/> which serializes objects of type <typeparamref name="TResult"/> in and out of an underlying cache which caches as type <typeparamref name="TSerialized"/>.  For use with synchronous <see cref="CachePolicy" />.
     /// </summary>
     /// <typeparam name="TResult">The return type of delegates which may be executed through the policy.</typeparam>
     /// <typeparam name="TSerialized">The type of serialized objects to be placed in the cache.</typeparam>
-    public class SerializingCacheProvider<TResult, TSerialized> : ICacheProvider<TResult>
+    public class SerializingCacheProvider<TResult, TSerialized> : ISyncCacheProvider<TResult>
     {
-        private readonly ICacheProvider<TSerialized> _wrappedCacheProvider;
+        private readonly ISyncCacheProvider<TSerialized> _wrappedCacheProvider;
         private readonly ICacheItemSerializer<TResult, TSerialized> _serializer;
 
         /// <summary>
@@ -67,7 +67,7 @@ namespace Polly.Caching
         /// <param name="serializer">The serializer.</param>
         /// <exception cref="System.ArgumentNullException">wrappedCacheProvider </exception>
         /// <exception cref="System.ArgumentNullException">serializer </exception>
-        public SerializingCacheProvider(ICacheProvider<TSerialized> wrappedCacheProvider, ICacheItemSerializer<TResult, TSerialized> serializer)
+        public SerializingCacheProvider(ISyncCacheProvider<TSerialized> wrappedCacheProvider, ICacheItemSerializer<TResult, TSerialized> serializer)
         {
             if (wrappedCacheProvider == null) throw new ArgumentNullException(nameof(wrappedCacheProvider));
             if (serializer == null) throw new ArgumentNullException(nameof(serializer));

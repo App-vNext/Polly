@@ -10,11 +10,11 @@ namespace Polly.Caching
     /// </summary>
     public partial class CachePolicy : Policy
     {
-        private readonly ICacheProvider _syncCacheProvider;
+        private readonly ISyncCacheProvider _syncCacheProvider;
         private readonly ITtlStrategy _ttlStrategy;
         private readonly ICacheKeyStrategy _cacheKeyStrategy;
 
-        internal CachePolicy(ICacheProvider syncCacheProvider, ITtlStrategy ttlStrategy, ICacheKeyStrategy cacheKeyStrategy)
+        internal CachePolicy(ISyncCacheProvider syncCacheProvider, ITtlStrategy ttlStrategy, ICacheKeyStrategy cacheKeyStrategy)
             : base((action, context, cancellationToken) => action(context, cancellationToken), // Pass-through/NOOP policy action, for void-returning calls through a cache policy.
                 PredicateHelper.EmptyExceptionPredicates)
         {
@@ -42,7 +42,7 @@ namespace Polly.Caching
     /// </summary>
     public partial class CachePolicy<TResult> : Policy<TResult>
     {
-        internal CachePolicy(ICacheProvider<TResult> syncCacheProvider, ITtlStrategy ttlStrategy, ICacheKeyStrategy cacheKeyStrategy)
+        internal CachePolicy(ISyncCacheProvider<TResult> syncCacheProvider, ITtlStrategy ttlStrategy, ICacheKeyStrategy cacheKeyStrategy)
             : base((action, context, cancellationToken) => CacheEngine.Implementation(syncCacheProvider, ttlStrategy, cacheKeyStrategy, action, context, cancellationToken),
                 PredicateHelper.EmptyExceptionPredicates,
                 Enumerable.Empty<ResultPredicate<TResult>>())

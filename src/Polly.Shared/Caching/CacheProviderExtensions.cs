@@ -6,23 +6,23 @@
     public static class CacheProviderExtensions
     {
         /// <summary>
-        /// Provides a strongly <typeparamref name="TCacheFormat"/>-typed version of the supplied <see cref="ICacheProvider"/>
+        /// Provides a strongly <typeparamref name="TCacheFormat"/>-typed version of the supplied <see cref="ISyncCacheProvider"/>
         /// </summary>
-        /// <typeparam name="TCacheFormat">The type the returned <see cref="ICacheProvider{TResult}"/> will handle.</typeparam>
+        /// <typeparam name="TCacheFormat">The type the returned <see cref="ISyncCacheProvider{TResult}"/> will handle.</typeparam>
         /// <param name="nonGenericCacheProvider">The non-generic cache provider to wrap.</param>
-        /// <returns>ICacheProvider{TCacheFormat}.</returns>
-        public static ICacheProvider<TCacheFormat> For<TCacheFormat>(this ICacheProvider nonGenericCacheProvider)
+        /// <returns>ISyncCacheProvider{TCacheFormat}.</returns>
+        public static ISyncCacheProvider<TCacheFormat> For<TCacheFormat>(this ISyncCacheProvider nonGenericCacheProvider)
         {
             return new GenericCacheProvider<TCacheFormat>(nonGenericCacheProvider);
         }
 
         /// <summary>
-        /// Provides a strongly <typeparamref name="TCacheFormat"/>-typed version of the supplied <see cref="ICacheProviderAsync"/>
+        /// Provides a strongly <typeparamref name="TCacheFormat"/>-typed version of the supplied <see cref="IAsyncCacheProvider"/>
         /// </summary>
-        /// <typeparam name="TCacheFormat">The type the returned <see cref="ICacheProvider{TResult}"/> will handle.</typeparam>
+        /// <typeparam name="TCacheFormat">The type the returned <see cref="ISyncCacheProvider{TResult}"/> will handle.</typeparam>
         /// <param name="nonGenericCacheProvider">The non-generic cache provider to wrap.</param>
-        /// <returns>ICacheProviderAsync{TCacheFormat}.</returns>
-        public static ICacheProviderAsync<TCacheFormat> AsyncFor<TCacheFormat>(this ICacheProviderAsync nonGenericCacheProvider)
+        /// <returns>IAsyncCacheProvider{TCacheFormat}.</returns>
+        public static IAsyncCacheProvider<TCacheFormat> AsyncFor<TCacheFormat>(this IAsyncCacheProvider nonGenericCacheProvider)
         {
             return new GenericCacheProviderAsync<TCacheFormat>(nonGenericCacheProvider);
         }
@@ -35,7 +35,7 @@
         /// <param name="serializer">A serializer which can serialize/deserialize all types to/from <typeparamref name="TSerialized"/>.</param>
         /// <returns>SerializingCacheProvider&lt;TResult, TSerialized&gt;.</returns>
         public static SerializingCacheProvider<TSerialized> WithSerializer<TSerialized>(
-            this ICacheProvider<TSerialized> cacheProvider, ICacheItemSerializer<object, TSerialized> serializer)
+            this ISyncCacheProvider<TSerialized> cacheProvider, ICacheItemSerializer<object, TSerialized> serializer)
         {
             return new SerializingCacheProvider<TSerialized>(cacheProvider, serializer);
         }
@@ -49,7 +49,7 @@
         /// <param name="serializer">The serializer.</param>
         /// <returns>SerializingCacheProvider&lt;TResult, TSerialized&gt;.</returns>
         public static SerializingCacheProvider<TResult, TSerialized> WithSerializer<TResult, TSerialized>(
-            this ICacheProvider<TSerialized> cacheProvider, ICacheItemSerializer<TResult, TSerialized> serializer)
+            this ISyncCacheProvider<TSerialized> cacheProvider, ICacheItemSerializer<TResult, TSerialized> serializer)
         {
             return new SerializingCacheProvider<TResult, TSerialized>(cacheProvider, serializer);
         }
@@ -62,7 +62,7 @@
         /// <param name="serializer">A serializer which can serialize/deserialize all types to/from <typeparamref name="TSerialized"/>.</param>
         /// <returns>SerializingCacheProvider&lt;TResult, TSerialized&gt;.</returns>
         public static SerializingCacheProviderAsync<TSerialized> WithSerializer<TSerialized>(
-            this ICacheProviderAsync<TSerialized> cacheProvider, ICacheItemSerializer<object, TSerialized> serializer)
+            this IAsyncCacheProvider<TSerialized> cacheProvider, ICacheItemSerializer<object, TSerialized> serializer)
         {
             return new SerializingCacheProviderAsync<TSerialized>(cacheProvider, serializer);
         }
@@ -76,7 +76,7 @@
         /// <param name="serializer">The serializer.</param>
         /// <returns>SerializingCacheProvider&lt;TResult, TSerialized&gt;.</returns>
         public static SerializingCacheProviderAsync<TResult, TSerialized> WithSerializer<TResult, TSerialized>(
-            this ICacheProviderAsync<TSerialized> cacheProvider, ICacheItemSerializer<TResult, TSerialized> serializer)
+            this IAsyncCacheProvider<TSerialized> cacheProvider, ICacheItemSerializer<TResult, TSerialized> serializer)
         {
             return new SerializingCacheProviderAsync<TResult, TSerialized>(cacheProvider, serializer);
         }

@@ -7,7 +7,7 @@ namespace Polly.Caching
     /// <summary>
     /// Defines methods for classes providing asynchronous cache functionality for Polly <see cref="CachePolicy" />s.
     /// </summary>
-    public interface ICacheProviderAsync
+    public interface IAsyncCacheProvider
     {
         /// <summary>
         /// Gets a value from the cache asynchronously.
@@ -33,7 +33,7 @@ namespace Polly.Caching
     /// <summary>
     /// Defines methods for classes providing asynchronous cache functionality for Polly <see cref="CachePolicy{TResult}"/>s.
     /// </summary>
-    public interface ICacheProviderAsync<TResult>
+    public interface IAsyncCacheProvider<TResult>
     {
         /// <summary>
         /// Gets a value from the cache asynchronously.

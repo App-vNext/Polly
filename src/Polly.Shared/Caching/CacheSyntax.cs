@@ -15,7 +15,7 @@ namespace Polly
         /// <param name="ttl">Duration (ttl) for which to cache values.</param>
         /// <returns>The policy instance.</returns>
         /// <exception cref="ArgumentNullException">cacheProvider</exception>
-        public static CachePolicy Cache(ICacheProvider cacheProvider, TimeSpan ttl)
+        public static CachePolicy Cache(ISyncCacheProvider cacheProvider, TimeSpan ttl)
         {
             return Cache(cacheProvider, new RelativeTtl(ttl), DefaultCacheKeyStrategy.Instance);
         }
@@ -31,7 +31,7 @@ namespace Polly
         /// <returns>The policy instance.</returns>
         /// <exception cref="ArgumentNullException">cacheProvider</exception>
         /// <exception cref="ArgumentNullException">ttlStrategy</exception>
-        public static CachePolicy Cache(ICacheProvider cacheProvider, ITtlStrategy ttlStrategy)
+        public static CachePolicy Cache(ISyncCacheProvider cacheProvider, ITtlStrategy ttlStrategy)
         {
             return Cache(cacheProvider, ttlStrategy, DefaultCacheKeyStrategy.Instance);
         }
@@ -50,7 +50,7 @@ namespace Polly
         /// </exception>
         /// <exception cref="ArgumentNullException">cacheProvider</exception>
         /// <exception cref="ArgumentNullException">cacheKeyStrategy</exception>
-        public static CachePolicy Cache(ICacheProvider cacheProvider, TimeSpan ttl, ICacheKeyStrategy cacheKeyStrategy)
+        public static CachePolicy Cache(ISyncCacheProvider cacheProvider, TimeSpan ttl, ICacheKeyStrategy cacheKeyStrategy)
         {
             return Cache(cacheProvider, new RelativeTtl(ttl), cacheKeyStrategy);
         }
@@ -70,7 +70,7 @@ namespace Polly
         /// <exception cref="ArgumentNullException">cacheProvider</exception>
         /// <exception cref="ArgumentNullException">ttlStrategy</exception>
         /// <exception cref="ArgumentNullException">cacheKeyStrategy</exception>
-        public static CachePolicy Cache(ICacheProvider cacheProvider, ITtlStrategy ttlStrategy, ICacheKeyStrategy cacheKeyStrategy)
+        public static CachePolicy Cache(ISyncCacheProvider cacheProvider, ITtlStrategy ttlStrategy, ICacheKeyStrategy cacheKeyStrategy)
         {
             if (cacheProvider == null) throw new ArgumentNullException(nameof(cacheProvider));
             if (ttlStrategy == null) throw new ArgumentNullException(nameof(ttlStrategy));

@@ -8,9 +8,9 @@ namespace Polly.Caching
 {
     public partial class CachePolicy 
     {
-        private readonly ICacheProviderAsync _asyncCacheProvider;
+        private readonly IAsyncCacheProvider _asyncCacheProvider;
 
-        internal CachePolicy(ICacheProviderAsync asyncCacheProvider, ITtlStrategy ttlStrategy, ICacheKeyStrategy cacheKeyStrategy)
+        internal CachePolicy(IAsyncCacheProvider asyncCacheProvider, ITtlStrategy ttlStrategy, ICacheKeyStrategy cacheKeyStrategy)
             : base((func, context, cancellationToken, continueOnCapturedContext) => func(context, cancellationToken), // Pass-through/NOOP policy action, for void-returning executions through the cache policy.
                 PredicateHelper.EmptyExceptionPredicates)
         {
@@ -36,7 +36,7 @@ namespace Polly.Caching
 
     public partial class CachePolicy<TResult>
     {
-        internal CachePolicy(ICacheProviderAsync<TResult> asyncCacheProvider, ITtlStrategy ttlStrategy, ICacheKeyStrategy cacheKeyStrategy)
+        internal CachePolicy(IAsyncCacheProvider<TResult> asyncCacheProvider, ITtlStrategy ttlStrategy, ICacheKeyStrategy cacheKeyStrategy)
             : base((func, context, cancellationToken, continueOnCapturedContext) => CacheEngine.ImplementationAsync(asyncCacheProvider, ttlStrategy, cacheKeyStrategy, func, context, cancellationToken, continueOnCapturedContext),
                 PredicateHelper.EmptyExceptionPredicates,
                 Enumerable.Empty<ResultPredicate<TResult>>())

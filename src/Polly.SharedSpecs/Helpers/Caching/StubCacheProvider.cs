@@ -10,7 +10,7 @@ namespace Polly.Specs.Helpers.Caching
     /// <summary>
     /// An intentionally naive stub cache implementation.  Its purpose is to be the simplest thing possible to support tests of the CachePolicy and CacheEngine, not a production-usable implementation.
     /// </summary>
-    internal class StubCacheProvider : ICacheProvider, ICacheProviderAsync
+    internal class StubCacheProvider : ISyncCacheProvider, IAsyncCacheProvider
     {
         class CacheItem
         {
@@ -49,7 +49,7 @@ namespace Polly.Specs.Helpers.Caching
 
         #region Naive async-over-sync implementation
 
-        // Intentionally naive async-over-sync implementation.  Its purpose is to be the simplest thing to support tests of the CachePolicyAsync and CacheEngineAsync, not to be a usable implementation of ICacheProviderAsync.  
+        // Intentionally naive async-over-sync implementation.  Its purpose is to be the simplest thing to support tests of the CachePolicyAsync and CacheEngineAsync, not to be a usable implementation of IAsyncCacheProvider.  
         public Task<object> GetAsync(string key, CancellationToken cancellationToken, bool continueOnCapturedContext)
         {
             return Task.FromResult(Get(key));
