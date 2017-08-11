@@ -71,7 +71,7 @@ namespace Polly.Specs.Fallback
         [Fact]
         public void Should_throw_when_fallback_action_is_null_with_onFallback_with_context()
         {
-            Func<ResultPrimitive> fallbackAction = null;
+            Func<Context, ResultPrimitive> fallbackAction = null;
             Action<DelegateResult<ResultPrimitive>, Context> onFallback = (_, __) => { };
 
             Action policy = () => Policy
@@ -85,7 +85,7 @@ namespace Polly.Specs.Fallback
         [Fact]
         public void Should_throw_when_fallback_action_with_cancellation_is_null_with_onFallback_with_context()
         {
-            Func<CancellationToken, ResultPrimitive> fallbackAction = null;
+            Func<Context, CancellationToken, ResultPrimitive> fallbackAction = null;
             Action<DelegateResult<ResultPrimitive>, Context> onFallback = (_, __) => { };
 
             Action policy = () => Policy
@@ -127,7 +127,7 @@ namespace Polly.Specs.Fallback
         [Fact]
         public void Should_throw_when_onFallback_delegate_is_null_with_context()
         {
-            Func<ResultPrimitive> fallbackAction = () => ResultPrimitive.Substitute;
+            Func<Context, ResultPrimitive> fallbackAction = _ => ResultPrimitive.Substitute;
             Action<DelegateResult<ResultPrimitive>, Context> onFallback = null;
 
             Action policy = () => Policy
@@ -141,7 +141,7 @@ namespace Polly.Specs.Fallback
         [Fact]
         public void Should_throw_when_onFallback_delegate_is_null_with_context_with_action_with_cancellation()
         {
-            Func<CancellationToken, ResultPrimitive> fallbackAction = ct => ResultPrimitive.Substitute;
+            Func<Context, CancellationToken, ResultPrimitive> fallbackAction = (_, __) => ResultPrimitive.Substitute;
             Action<DelegateResult<ResultPrimitive>, Context> onFallback = null;
 
             Action policy = () => Policy
@@ -375,7 +375,7 @@ namespace Polly.Specs.Fallback
         [Fact]
         public void Should_call_onFallback_with_the_passed_context()
         {
-            Func<ResultPrimitive> fallbackAction = () => ResultPrimitive.Substitute;
+            Func<Context, ResultPrimitive> fallbackAction = _ => ResultPrimitive.Substitute;
 
             IDictionary<string, object> contextData = null;
 
@@ -397,7 +397,7 @@ namespace Polly.Specs.Fallback
         [Fact]
         public void Should_call_onFallback_with_the_passed_context_when_execute_and_capture()
         {
-            Func<ResultPrimitive> fallbackAction = () => ResultPrimitive.Substitute;
+            Func<Context, ResultPrimitive> fallbackAction = _ => ResultPrimitive.Substitute;
 
             IDictionary<string, object> contextData = null;
 
@@ -419,7 +419,7 @@ namespace Polly.Specs.Fallback
         [Fact]
         public void Should_call_onFallback_with_independent_context_for_independent_calls()
         {
-            Func<ResultPrimitive> fallbackAction = () => ResultPrimitive.Substitute;
+            Func<Context, ResultPrimitive> fallbackAction = _ => ResultPrimitive.Substitute;
 
             IDictionary<ResultPrimitive, object> contextData = new Dictionary<ResultPrimitive, object>();
 
@@ -449,7 +449,7 @@ namespace Polly.Specs.Fallback
             Context capturedContext = null;
             bool onFallbackExecuted = false;
 
-            Func<ResultPrimitive> fallbackAction = () => ResultPrimitive.Substitute;
+            Func<Context, ResultPrimitive> fallbackAction = _ => ResultPrimitive.Substitute;
             Action<DelegateResult<ResultPrimitive>, Context> onFallback = (ex, ctx) => { onFallbackExecuted = true; capturedContext = ctx; };
 
             FallbackPolicy<ResultPrimitive> fallbackPolicy = Policy
@@ -463,6 +463,70 @@ namespace Polly.Specs.Fallback
             capturedContext.Should().BeEmpty();
         }
 
+        [Fact]
+        public void Should_call_fallbackAction_with_the_passed_context()
+        {
+            IDictionary<string, object> contextData = null;
+
+            Func<Context, CancellationToken, ResultPrimitive> fallbackAction = (ctx, ct) => { contextData = ctx; return ResultPrimitive.Substitute; };
+
+            Action<DelegateResult<ResultPrimitive>, Context> onFallback = (ex, ctx) => { };
+
+            FallbackPolicy<ResultPrimitive> fallbackPolicy = Policy<ResultPrimitive>
+                .HandleResult(ResultPrimitive.Fault)
+                .Fallback(fallbackAction, onFallback);
+
+            fallbackPolicy.Execute(() => { return ResultPrimitive.Fault; },
+                    new { key1 = "value1", key2 = "value2" }.AsDictionary())
+                .Should().Be(ResultPrimitive.Substitute);
+
+            contextData.Should()
+                .ContainKeys("key1", "key2").And
+                .ContainValues("value1", "value2");
+        }
+
+        [Fact]
+        public void Should_call_fallbackAction_with_the_passed_context_when_execute_and_capture()
+        {
+            IDictionary<string, object> contextData = null;
+
+            Func<Context, CancellationToken, ResultPrimitive> fallbackAction = (ctx, ct) => { contextData = ctx; return ResultPrimitive.Substitute; };
+
+            Action<DelegateResult<ResultPrimitive>, Context> onFallback = (ex, ctx) => { };
+
+            FallbackPolicy<ResultPrimitive> fallbackPolicy = Policy
+                .HandleResult(ResultPrimitive.Fault)
+                .Fallback(fallbackAction, onFallback);
+
+            fallbackPolicy.ExecuteAndCapture(() => { return ResultPrimitive.Fault; },
+                    new { key1 = "value1", key2 = "value2" }.AsDictionary())
+                .Result.Should().Be(ResultPrimitive.Substitute);
+
+            contextData.Should()
+                .ContainKeys("key1", "key2").And
+                .ContainValues("value1", "value2");
+        }
+
+        [Fact]
+        public void Context_should_be_empty_at_fallbackAction_if_execute_not_called_with_any_context_data()
+        {
+            Context capturedContext = null;
+            bool fallbackExecuted = false;
+
+            Func<Context, CancellationToken, ResultPrimitive> fallbackAction = (ctx, ct) => { fallbackExecuted = true; capturedContext = ctx; return ResultPrimitive.Substitute; };
+
+            Action<DelegateResult<ResultPrimitive>, Context> onFallback = (ex, ctx) => {  };
+
+            FallbackPolicy<ResultPrimitive> fallbackPolicy = Policy
+                .HandleResult(ResultPrimitive.Fault)
+                .OrResult(ResultPrimitive.FaultAgain)
+                .Fallback(fallbackAction, onFallback);
+
+            fallbackPolicy.RaiseResultSequence(ResultPrimitive.Fault);
+
+            fallbackExecuted.Should().BeTrue();
+            capturedContext.Should().BeEmpty();
+        }
         #endregion
 
         #region Cancellation tests

@@ -20,8 +20,8 @@ namespace Polly
             if (asyncExecutionPolicy == null) throw new ArgumentNullException(nameof(asyncExecutionPolicy));
 
             _asyncExecutionPolicy = asyncExecutionPolicy;
-            _exceptionPredicates = exceptionPredicates ?? PredicateHelper.EmptyExceptionPredicates;
-            _resultPredicates = resultPredicates ?? PredicateHelper<TResult>.EmptyResultPredicates;
+            ExceptionPredicates = exceptionPredicates ?? PredicateHelper.EmptyExceptionPredicates;
+            ResultPredicates = resultPredicates ?? PredicateHelper<TResult>.EmptyResultPredicates;
         }
 
         #region ExecuteAsync overloads
@@ -577,7 +577,7 @@ namespace Polly
             {
                 TResult result = await ExecuteAsync(action, context, cancellationToken, continueOnCapturedContext).ConfigureAwait(continueOnCapturedContext);
 
-                if (_resultPredicates.Any(predicate => predicate(result)))
+                if (ResultPredicates.Any(predicate => predicate(result)))
                 {
                     return PolicyResult<TResult>.Failure(result, context);
                 }
@@ -586,7 +586,7 @@ namespace Polly
             }
             catch (Exception exception)
             {
-                return PolicyResult<TResult>.Failure(exception, GetExceptionType(_exceptionPredicates, exception), context);
+                return PolicyResult<TResult>.Failure(exception, GetExceptionType(ExceptionPredicates, exception), context);
             }
         }
 

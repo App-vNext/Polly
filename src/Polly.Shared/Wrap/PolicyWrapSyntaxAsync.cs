@@ -17,7 +17,9 @@ namespace Polly
             if (innerPolicy == null) throw new ArgumentNullException(nameof(innerPolicy));
 
             return new PolicyWrap(
-                (action, context, cancellationtoken, continueOnCapturedContext) => PolicyWrapEngine.ImplementationAsync(action, context, cancellationtoken, continueOnCapturedContext, this, innerPolicy)
+                (action, context, cancellationtoken, continueOnCapturedContext) => PolicyWrapEngine.ImplementationAsync(action, context, cancellationtoken, continueOnCapturedContext, this, innerPolicy),
+                this,
+                innerPolicy
                 );
         }
 
@@ -32,7 +34,9 @@ namespace Polly
             if (innerPolicy == null) throw new ArgumentNullException(nameof(innerPolicy));
 
             return new PolicyWrap<TResult>(
-                (func, context, cancellationtoken, continueOnCapturedContext) => PolicyWrapEngine.ImplementationAsync<TResult>(func, context, cancellationtoken, continueOnCapturedContext, this, innerPolicy)
+                (func, context, cancellationtoken, continueOnCapturedContext) => PolicyWrapEngine.ImplementationAsync<TResult>(func, context, cancellationtoken, continueOnCapturedContext, this, innerPolicy),
+                this,
+                innerPolicy
                 );
         }
     }
@@ -49,7 +53,9 @@ namespace Polly
             if (innerPolicy == null) throw new ArgumentNullException(nameof(innerPolicy));
 
             return new PolicyWrap<TResult>(
-                (func, context, cancellationtoken, continueOnCapturedContext) => PolicyWrapEngine.ImplementationAsync<TResult>(func, context, cancellationtoken, continueOnCapturedContext, this, innerPolicy)
+                (func, context, cancellationtoken, continueOnCapturedContext) => PolicyWrapEngine.ImplementationAsync<TResult>(func, context, cancellationtoken, continueOnCapturedContext, this, innerPolicy),
+                this,
+                innerPolicy
                 );
         }
 
@@ -63,7 +69,9 @@ namespace Polly
             if (innerPolicy == null) throw new ArgumentNullException(nameof(innerPolicy));
 
             return new PolicyWrap<TResult>(
-                (func, context, cancellationtoken, continueOnCapturedContext) => PolicyWrapEngine.ImplementationAsync<TResult>(func, context, cancellationtoken, continueOnCapturedContext, this, innerPolicy)
+                (func, context, cancellationtoken, continueOnCapturedContext) => PolicyWrapEngine.ImplementationAsync<TResult>(func, context, cancellationtoken, continueOnCapturedContext, this, innerPolicy),
+                this,
+                innerPolicy
                 );
         }
     }

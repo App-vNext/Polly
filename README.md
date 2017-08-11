@@ -102,6 +102,8 @@ HttpStatusCode[] httpStatusCodesWorthRetrying = {
 HttpResponseMessage result = Policy
   .Handle<HttpResponseException>()
   .OrResult<HttpResponseMessage>(r => httpStatusCodesWorthRetrying.Contains(r.StatusCode))
+  .Retry(...)
+  .ExecuteAsync( /* some Func<Task<HttpResponseMessage>> */ )
 ```
 
 For more information, see [Handling Return Values](#handing-return-values-and-policytresult) at foot of this readme. 
@@ -628,7 +630,7 @@ HttpResponseMessage result = Policy
   .Handle<HttpResponseException>()
   .OrResult<HttpResponseMessage>(r => httpStatusCodesWorthRetrying.Contains(r.StatusCode))
   .Retry(...)
-  .Execute( /* some Func<HttpResponseMessage> */ )
+  .ExecuteAsync( /* some Func<Task<HttpResponseMessage>> */ )
 ```
 
 The exceptions and return results to handle can be expressed fluently in any order.
@@ -732,7 +734,7 @@ registry["StandardHttpResilience"] = myStandardHttpResiliencePolicy;
 // Pass the registry instance to usage sites by DI, perhaps
 public class MyServiceGateway 
 {
-    public void MyServiceGateway(..., IPolicyRegistry<string> registry, ...)
+    public void MyServiceGateway(..., IReadOnlyPolicyRegistry<string> registry, ...)
     {
        ...
     } 
@@ -903,6 +905,8 @@ For details of changes by release see the [change log](https://github.com/App-vN
 * [@reisenberger](https://github.com/reisenberger) - Add mutable Context and extra overloads taking Context.  Allows different parts of a policy execution to exchange data via the mutable Context travelling with each execution.
 * [@ankitbko](https://github.com/ankitbko) - Add PolicyRegistry for storing and retrieving policies.
 * [@reisenberger](https://github.com/reisenberger) - Add interfaces by policy type and execution type.
+* [@seanfarrow](https://github.com/SeanFarrow) - Add IReadOnlyPolicyRegistry interface.
+* [@kesmy](https://github.com/Kesmy) - Migrate solution to msbuild15, banish project.json and packages.config
 
 # Sample Projects
 

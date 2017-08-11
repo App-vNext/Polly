@@ -79,14 +79,5 @@ namespace Polly.Specs.Helpers
                 return Task.FromResult(successResult);
             }, cancellationToken);
         }
-
-#if PORTABLE
-        // Omitted the Portable versions of FluentAssertions.  Hence re-included here for #PORTABLE only.
-        public static Func<Task> Awaiting<T>(this T subject, Func<T, Task> action)
-        {
-            return (Func<Task>)(() => action(subject));
-        }
-#endif
-
     }
 }

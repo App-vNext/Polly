@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using Polly.Utilities;
 
@@ -12,8 +9,8 @@ namespace Polly.Wrap
     /// </summary>
     public partial class PolicyWrap : Policy, IPolicyWrap
     {
-        internal PolicyWrap(Action<Action<Context, CancellationToken>, Context, CancellationToken> policyAction) 
-            : base(policyAction, PredicateHelper.EmptyExceptionPredicates)
+        internal PolicyWrap(Action<Action<Context, CancellationToken>, Context, CancellationToken> policyAction, Policy outer, Policy inner) 
+            : base(policyAction, outer.ExceptionPredicates)
         {
         }
     }
@@ -24,8 +21,13 @@ namespace Polly.Wrap
     /// <typeparam name="TResult">The return type of delegates which may be executed through the policy.</typeparam>
     public partial class PolicyWrap<TResult> : Policy<TResult>, IPolicyWrap<TResult>
     {
-        internal PolicyWrap(Func<Func<Context, CancellationToken, TResult>, Context, CancellationToken, TResult> policyAction)
-            : base(policyAction, PredicateHelper.EmptyExceptionPredicates, PredicateHelper<TResult>.EmptyResultPredicates)
+        internal PolicyWrap(Func<Func<Context, CancellationToken, TResult>, Context, CancellationToken, TResult> policyAction, Policy outer, IsPolicy inner)
+            : base(policyAction, outer.ExceptionPredicates,  PredicateHelper<TResult>.EmptyResultPredicates)
+        {
+        }
+
+        internal PolicyWrap(Func<Func<Context, CancellationToken, TResult>, Context, CancellationToken, TResult> policyAction, Policy<TResult> outer, IsPolicy inner)
+            : base(policyAction, outer.ExceptionPredicates, outer.ResultPredicates)
         {
         }
     }

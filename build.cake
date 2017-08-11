@@ -168,7 +168,7 @@ Task("__BuildSolutions")
             settings
                 .SetConfiguration(configuration)
                 .WithProperty("TreatWarningsAsErrors", "true")
-                .UseToolVersion(MSBuildToolVersion.NET46)
+                .UseToolVersion(MSBuildToolVersion.VS2017)
                 .SetVerbosity(Verbosity.Minimal)
                 .SetNodeReuse(false));
     }
@@ -177,9 +177,18 @@ Task("__BuildSolutions")
 Task("__RunTests")
     .Does(() =>
 {
-    XUnit2("./src/**/bin/" + configuration + "/*.Specs.dll", new XUnit2Settings {
+    XUnit2("./src/**/bin/" + configuration + "/**/*.Net4*.Specs.dll", new XUnit2Settings {
         OutputDirectory = testResultsDir,
         XmlReportV1 = true
+    });
+});
+
+Task("__RunDotnetTests")
+    .Does(() =>
+{
+    DotNetCoreTest("./src/Polly.NetStandard11.Specs/Polly.NetStandard11.Specs.csproj", new DotNetCoreTestSettings {
+        Configuration = configuration,
+        NoBuild = true
     });
 });
 
@@ -190,7 +199,7 @@ Task("__CopyOutputToNugetFolder")
         var sourceDir = srcDir + Directory(projectName + "." + project) + Directory("bin") + Directory(configuration);
 
         foreach(var targetFolder in projectToNugetFolderMap[project]) {
-            var destDir = buildDir + Directory("lib") + Directory(targetFolder);
+            var destDir = buildDir + Directory("lib");
 
             Information("Copying {0} -> {1}.", sourceDir, destDir);
             CopyDirectory(sourceDir, destDir);
@@ -207,7 +216,7 @@ Task("__CopyNet40AsyncOutputToNugetFolder")
         var sourceDir = srcDir + Directory(projectName + "." + project) + Directory("bin") + Directory(configuration);
 
         foreach(var targetFolder in net40AsyncProjectToNugetFolderMap[project]) {
-            var destDir = buildDir + Directory(net40AsyncProjectName) + Directory("lib") + Directory(targetFolder);
+            var destDir = buildDir + Directory(net40AsyncProjectName) + Directory("lib");
 
             Information("Copying {0} -> {1}.", sourceDir, destDir);
             CopyDirectory(sourceDir, destDir);
@@ -317,6 +326,7 @@ Task("Build")
     .IsDependentOn("__UpdateAppVeyorBuildNumber")
     .IsDependentOn("__BuildSolutions")
     .IsDependentOn("__RunTests")
+    .IsDependentOn("__RunDotnetTests")
     .IsDependentOn("__CopyOutputToNugetFolder")
 	.IsDependentOn("__CopyNet40AsyncOutputToNugetFolder")  
     .IsDependentOn("__CreateNugetPackage")

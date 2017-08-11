@@ -14,7 +14,7 @@ namespace Polly
     public abstract partial class Policy : ISyncPolicy
     {
         private readonly Action<Action<Context, CancellationToken>, Context, CancellationToken> _exceptionPolicy;
-        private readonly IEnumerable<ExceptionPredicate> _exceptionPredicates;
+        internal IEnumerable<ExceptionPredicate> ExceptionPredicates { get; }
 
         internal Policy(
             Action<Action<Context, CancellationToken>, Context, CancellationToken> exceptionPolicy,
@@ -23,7 +23,7 @@ namespace Polly
             if (exceptionPolicy == null) throw new ArgumentNullException(nameof(exceptionPolicy));
 
             _exceptionPolicy = exceptionPolicy;
-            _exceptionPredicates = exceptionPredicates ?? PredicateHelper.EmptyExceptionPredicates;
+            ExceptionPredicates = exceptionPredicates ?? PredicateHelper.EmptyExceptionPredicates;
         }
 
         #region Execute overloads
@@ -449,7 +449,7 @@ namespace Polly
             }
             catch (Exception exception)
             {
-                return PolicyResult.Failure(exception, GetExceptionType(_exceptionPredicates, exception), context);
+                return PolicyResult.Failure(exception, GetExceptionType(ExceptionPredicates, exception), context);
             }
         }
 
@@ -596,7 +596,7 @@ namespace Polly
             }
             catch (Exception exception)
             {
-                return PolicyResult<TResult>.Failure(exception, GetExceptionType(_exceptionPredicates, exception), context);
+                return PolicyResult<TResult>.Failure(exception, GetExceptionType(ExceptionPredicates, exception), context);
             }
         }
         #endregion
