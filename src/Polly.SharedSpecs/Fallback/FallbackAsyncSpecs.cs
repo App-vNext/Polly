@@ -90,7 +90,7 @@ namespace Polly.Specs.Fallback
         #region Policy operation tests
 
         [Fact]
-        public void Should_not_execute_fallback_when_execute_delegate_does_not_throw()
+        public async void Should_not_execute_fallback_when_execute_delegate_does_not_throw()
         {
             bool fallbackActionExecuted = false;
             Func<CancellationToken, Task> fallbackActionAsync  = _ => { fallbackActionExecuted = true; return TaskHelper.EmptyTask; };
@@ -99,7 +99,7 @@ namespace Polly.Specs.Fallback
                                     .Handle<DivideByZeroException>()
                                     .FallbackAsync(fallbackActionAsync);
 
-            fallbackPolicy.ExecuteAsync(() => TaskHelper.EmptyTask);
+            await fallbackPolicy.ExecuteAsync(() => TaskHelper.EmptyTask);
 
             fallbackActionExecuted.Should().BeFalse();
         }
@@ -256,7 +256,7 @@ namespace Polly.Specs.Fallback
         #region onPolicyEvent delegate tests
 
         [Fact]
-        public void Should_call_onFallback_passing_exception_triggering_fallback()
+        public async void Should_call_onFallback_passing_exception_triggering_fallback()
         {
             bool fallbackActionExecuted = false;
             Func<CancellationToken, Task> fallbackActionAsync = _ => { fallbackActionExecuted = true; return TaskHelper.EmptyTask; };
@@ -269,7 +269,7 @@ namespace Polly.Specs.Fallback
                 .FallbackAsync(fallbackActionAsync, onFallbackAsync);
 
             Exception instanceToThrow = new ArgumentNullException("myParam");
-            fallbackPolicy.ExecuteAsync(() => { throw instanceToThrow; });
+            await fallbackPolicy.ExecuteAsync(() => { throw instanceToThrow; });
 
             fallbackActionExecuted.Should().BeTrue();
             exceptionPassedToOnFallback.Should().BeOfType<ArgumentNullException>();
@@ -277,7 +277,7 @@ namespace Polly.Specs.Fallback
         }
 
         [Fact]
-        public void Should_not_call_onFallback_when_execute_delegate_does_not_throw()
+        public async void Should_not_call_onFallback_when_execute_delegate_does_not_throw()
         {
             Func<CancellationToken, Task> fallbackActionAsync = _ => TaskHelper.EmptyTask;
 
@@ -288,7 +288,7 @@ namespace Polly.Specs.Fallback
                 .Handle<DivideByZeroException>()
                 .FallbackAsync(fallbackActionAsync, onFallbackAsync);
 
-            fallbackPolicy.ExecuteAsync(() => TaskHelper.EmptyTask);
+            await fallbackPolicy.ExecuteAsync(() => TaskHelper.EmptyTask);
 
             onFallbackExecuted.Should().BeFalse();
         }
@@ -372,7 +372,7 @@ namespace Polly.Specs.Fallback
         }
 
         [Fact]
-        public void Context_should_be_empty_if_execute_not_called_with_any_context_data()
+        public async void Context_should_be_empty_if_execute_not_called_with_any_context_data()
         {
             Context capturedContext = null;
             bool onFallbackExecuted = false;
@@ -385,7 +385,7 @@ namespace Polly.Specs.Fallback
                 .Or<DivideByZeroException>()
                 .FallbackAsync(fallbackActionAsync, onFallbackAsync);
 
-            fallbackPolicy.RaiseExceptionAsync<DivideByZeroException>();
+            await fallbackPolicy.RaiseExceptionAsync<DivideByZeroException>();
 
             onFallbackExecuted.Should().BeTrue();
             capturedContext.Should().BeEmpty();
@@ -436,7 +436,7 @@ namespace Polly.Specs.Fallback
         }
 
         [Fact]
-        public void Context_should_be_empty_at_fallbackAction_if_execute_not_called_with_any_context_data()
+        public async void Context_should_be_empty_at_fallbackAction_if_execute_not_called_with_any_context_data()
         {
             Context capturedContext = null;
             bool fallbackExecuted = false;
@@ -450,7 +450,7 @@ namespace Polly.Specs.Fallback
                 .Or<DivideByZeroException>()
                 .FallbackAsync(fallbackActionAsync, onFallbackAsync);
 
-            fallbackPolicy.RaiseExceptionAsync<DivideByZeroException>();
+            await fallbackPolicy.RaiseExceptionAsync<DivideByZeroException>();
 
             fallbackExecuted.Should().BeTrue();
             capturedContext.Should().BeEmpty();
