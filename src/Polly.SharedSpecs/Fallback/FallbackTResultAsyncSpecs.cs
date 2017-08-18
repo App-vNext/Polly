@@ -118,7 +118,7 @@ namespace Polly.Specs.Fallback
         #region Policy operation tests
 
         [Fact]
-        public void Should_not_execute_fallback_when_execute_delegate_does_not_raise_fault()
+        public async void Should_not_execute_fallback_when_execute_delegate_does_not_raise_fault()
         {
             bool fallbackActionExecuted = false;
             Func<CancellationToken, Task<ResultPrimitive>> fallbackAction = ct => { fallbackActionExecuted = true; return Task.FromResult(ResultPrimitive.Substitute); };
@@ -127,7 +127,7 @@ namespace Polly.Specs.Fallback
                                     .HandleResult(ResultPrimitive.Fault)
                                     .FallbackAsync(fallbackAction);
 
-            fallbackPolicy.ExecuteAsync(() => Task.FromResult(ResultPrimitive.Good));
+            await fallbackPolicy.ExecuteAsync(() => Task.FromResult(ResultPrimitive.Good));
 
             fallbackActionExecuted.Should().BeFalse();
         }
@@ -301,7 +301,7 @@ namespace Polly.Specs.Fallback
         #region onPolicyEvent delegate tests
 
         [Fact]
-        public void Should_call_onFallback_passing_result_triggering_fallback()
+        public async void Should_call_onFallback_passing_result_triggering_fallback()
         {
             bool fallbackActionExecuted = false;
             Func<CancellationToken, Task<ResultClass>> fallbackAction = ct => { fallbackActionExecuted = true; return Task.FromResult(new ResultClass(ResultPrimitive.Substitute)); };
@@ -314,7 +314,7 @@ namespace Polly.Specs.Fallback
                 .FallbackAsync(fallbackAction, onFallbackAsync);
 
             ResultClass resultFromDelegate = new ResultClass(ResultPrimitive.Fault);
-            fallbackPolicy.ExecuteAsync(() => { return Task.FromResult(resultFromDelegate); });
+            await fallbackPolicy.ExecuteAsync(() => { return Task.FromResult(resultFromDelegate); });
 
             fallbackActionExecuted.Should().BeTrue();
             resultPassedToOnFallback.Should().NotBeNull();
@@ -322,7 +322,7 @@ namespace Polly.Specs.Fallback
         }
 
         [Fact]
-        public void Should_not_call_onFallback_when_execute_delegate_does_not_raise_fault()
+        public async void Should_not_call_onFallback_when_execute_delegate_does_not_raise_fault()
         {
                         Func<CancellationToken, Task<ResultPrimitive>> fallbackAction = ct => Task.FromResult(ResultPrimitive.Substitute);
 
@@ -333,7 +333,7 @@ namespace Polly.Specs.Fallback
                 .HandleResult(ResultPrimitive.Fault)
                 .FallbackAsync(fallbackAction, onFallbackAsync);
 
-            fallbackPolicy.ExecuteAsync(() => Task.FromResult(ResultPrimitive.Good));
+            await fallbackPolicy.ExecuteAsync(() => Task.FromResult(ResultPrimitive.Good));
 
             onFallbackExecuted.Should().BeFalse();
         }
