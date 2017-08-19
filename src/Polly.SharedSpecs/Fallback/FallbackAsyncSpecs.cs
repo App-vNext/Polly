@@ -90,7 +90,7 @@ namespace Polly.Specs.Fallback
         #region Policy operation tests
 
         [Fact]
-        public async void Should_not_execute_fallback_when_execute_delegate_does_not_throw()
+        public async Task Should_not_execute_fallback_when_execute_delegate_does_not_throw()
         {
             bool fallbackActionExecuted = false;
             Func<CancellationToken, Task> fallbackActionAsync  = _ => { fallbackActionExecuted = true; return TaskHelper.EmptyTask; };
@@ -256,7 +256,7 @@ namespace Polly.Specs.Fallback
         #region onPolicyEvent delegate tests
 
         [Fact]
-        public async void Should_call_onFallback_passing_exception_triggering_fallback()
+        public async Task Should_call_onFallback_passing_exception_triggering_fallback()
         {
             bool fallbackActionExecuted = false;
             Func<CancellationToken, Task> fallbackActionAsync = _ => { fallbackActionExecuted = true; return TaskHelper.EmptyTask; };
@@ -277,7 +277,7 @@ namespace Polly.Specs.Fallback
         }
 
         [Fact]
-        public async void Should_not_call_onFallback_when_execute_delegate_does_not_throw()
+        public async Task Should_not_call_onFallback_when_execute_delegate_does_not_throw()
         {
             Func<CancellationToken, Task> fallbackActionAsync = _ => TaskHelper.EmptyTask;
 
@@ -372,7 +372,7 @@ namespace Polly.Specs.Fallback
         }
 
         [Fact]
-        public async void Context_should_be_empty_if_execute_not_called_with_any_context_data()
+        public async Task Context_should_be_empty_if_execute_not_called_with_any_context_data()
         {
             Context capturedContext = null;
             bool onFallbackExecuted = false;
@@ -436,7 +436,7 @@ namespace Polly.Specs.Fallback
         }
 
         [Fact]
-        public async void Context_should_be_empty_at_fallbackAction_if_execute_not_called_with_any_context_data()
+        public async Task Context_should_be_empty_at_fallbackAction_if_execute_not_called_with_any_context_data()
         {
             Context capturedContext = null;
             bool fallbackExecuted = false;

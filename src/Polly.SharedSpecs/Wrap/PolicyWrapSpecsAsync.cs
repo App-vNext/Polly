@@ -167,7 +167,7 @@ namespace Polly.Specs.Wrap
         }
 
         [Fact]
-        public async void Wrapping_two_generic_policies_by_instance_syntax_and_executing_should_wrap_outer_then_inner_around_delegate()
+        public async Task Wrapping_two_generic_policies_by_instance_syntax_and_executing_should_wrap_outer_then_inner_around_delegate()
         {
             RetryPolicy<ResultPrimitive> retry = Policy.HandleResult(ResultPrimitive.Fault).RetryAsync(1); // Two tries in total: first try, plus one retry.
             CircuitBreakerPolicy<ResultPrimitive> breaker = Policy.HandleResult(ResultPrimitive.Fault).CircuitBreakerAsync(2, TimeSpan.MaxValue);
@@ -215,7 +215,7 @@ namespace Polly.Specs.Wrap
         }
 
         [Fact]
-        public async void Wrapping_two_generic_policies_by_static_syntax_and_executing_should_wrap_outer_then_inner_around_delegate()
+        public async Task Wrapping_two_generic_policies_by_static_syntax_and_executing_should_wrap_outer_then_inner_around_delegate()
         {
             RetryPolicy<ResultPrimitive> retry = Policy.HandleResult(ResultPrimitive.Fault).RetryAsync(1); // Two tries in total: first try, plus one retry.
             CircuitBreakerPolicy<ResultPrimitive> breaker = Policy.HandleResult(ResultPrimitive.Fault).CircuitBreakerAsync(2, TimeSpan.MaxValue);
@@ -241,7 +241,7 @@ namespace Polly.Specs.Wrap
         #region ExecuteAndCaptureAsyncSpecs
 
         [Fact]
-        public async void Outermost_policy_handling_exception_should_report_as_PolicyWrap_handled_exception()
+        public async Task Outermost_policy_handling_exception_should_report_as_PolicyWrap_handled_exception()
         {
             CircuitBreakerPolicy innerHandlingDBZE = Policy
                 .Handle<DivideByZeroException>()
@@ -260,7 +260,7 @@ namespace Polly.Specs.Wrap
         }
 
         [Fact]
-        public async void Outermost_policy_not_handling_exception_even_if_inner_policies_do_should_report_as_unhandled_exception()
+        public async Task Outermost_policy_not_handling_exception_even_if_inner_policies_do_should_report_as_unhandled_exception()
         {
             CircuitBreakerPolicy innerHandlingDBZE = Policy
                 .Handle<DivideByZeroException>()
@@ -279,7 +279,7 @@ namespace Polly.Specs.Wrap
         }
 
         [Fact]
-        public async void Outermost_generic_policy_handling_exception_should_report_as_PolicyWrap_handled_exception()
+        public async Task Outermost_generic_policy_handling_exception_should_report_as_PolicyWrap_handled_exception()
         {
             CircuitBreakerPolicy<ResultPrimitive> innerHandlingDBZE = Policy<ResultPrimitive>
                 .Handle<DivideByZeroException>()
@@ -298,7 +298,7 @@ namespace Polly.Specs.Wrap
         }
 
         [Fact]
-        public async void Outermost_generic_policy_not_handling_exception_even_if_inner_policies_do_should_report_as_unhandled_exception()
+        public async Task Outermost_generic_policy_not_handling_exception_even_if_inner_policies_do_should_report_as_unhandled_exception()
         {
             CircuitBreakerPolicy<ResultPrimitive> innerHandlingDBZE = Policy<ResultPrimitive>
                 .Handle<DivideByZeroException>()
@@ -317,7 +317,7 @@ namespace Polly.Specs.Wrap
         }
 
         [Fact]
-        public async void Outermost_generic_policy_handling_result_should_report_as_PolicyWrap_handled_result()
+        public async Task Outermost_generic_policy_handling_result_should_report_as_PolicyWrap_handled_result()
         {
             CircuitBreakerPolicy<ResultPrimitive> innerHandlingFaultAgain = Policy
                 .HandleResult(ResultPrimitive.FaultAgain)
@@ -337,7 +337,7 @@ namespace Polly.Specs.Wrap
         }
 
         [Fact]
-        public async void Outermost_generic_policy_not_handling_result_even_if_inner_policies_do_should_not_report_as_handled()
+        public async Task Outermost_generic_policy_not_handling_result_even_if_inner_policies_do_should_not_report_as_handled()
         {
             CircuitBreakerPolicy<ResultPrimitive> innerHandlingFaultAgain = Policy
                 .HandleResult(ResultPrimitive.FaultAgain)
