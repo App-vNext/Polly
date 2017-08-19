@@ -14,9 +14,18 @@ namespace Polly
     public abstract partial class Policy : ISyncPolicy
     {
         private readonly Action<Action<Context, CancellationToken>, Context, CancellationToken> _exceptionPolicy;
-        internal IEnumerable<ExceptionPredicate> ExceptionPredicates { get; }
 
-        internal Policy(
+        /// <summary>
+        /// The Exception predicates for this policy
+        /// </summary>
+        public virtual IEnumerable<ExceptionPredicate> ExceptionPredicates { get; }
+
+        /// <summary>
+        /// Creates a new Policy instance
+        /// </summary>
+        /// <param name="exceptionPolicy">The delegate to execute</param>
+        /// <param name="exceptionPredicates">Exception predicates</param>
+        protected Policy(
             Action<Action<Context, CancellationToken>, Context, CancellationToken> exceptionPolicy,
             IEnumerable<ExceptionPredicate> exceptionPredicates)
         {
@@ -33,7 +42,7 @@ namespace Polly
         /// </summary>
         /// <param name="action">The action to perform.</param>
         [DebuggerStepThrough]
-        public void Execute(Action action)
+        public virtual void Execute(Action action)
         {
             Execute((ctx, ct) => action(), new Context(), CancellationToken.None);
         }
@@ -44,7 +53,7 @@ namespace Polly
         /// <param name="action">The action to perform.</param>
         /// <param name="contextData">Arbitrary data that is passed to the exception policy.</param>
         [DebuggerStepThrough]
-        public void Execute(Action action, IDictionary<string, object> contextData)
+        public virtual void Execute(Action action, IDictionary<string, object> contextData)
         {
             Execute((ctx, ct) => action(), new Context(contextData), CancellationToken.None);
         }
@@ -55,7 +64,7 @@ namespace Polly
         /// <param name="action">The action to perform.</param>
         /// <param name="context">Context data that is passed to the exception policy.</param>
         [DebuggerStepThrough]
-        public void Execute(Action action, Context context)
+        public virtual void Execute(Action action, Context context)
         {
             Execute((ctx, ct) => action(), context, CancellationToken.None);
         }
@@ -66,7 +75,7 @@ namespace Polly
         /// <param name="action">The action to perform.</param>
         /// <param name="contextData">Arbitrary data that is passed to the exception policy.</param>
         [DebuggerStepThrough]
-        public void Execute(Action<Context> action, IDictionary<string, object> contextData)
+        public virtual void Execute(Action<Context> action, IDictionary<string, object> contextData)
         {
             Execute((ctx, ct) => action(ctx), new Context(contextData), CancellationToken.None);
         }
@@ -77,7 +86,7 @@ namespace Polly
         /// <param name="action">The action to perform.</param>
         /// <param name="context">Context data that is passed to the exception policy.</param>
         [DebuggerStepThrough]
-        public void Execute(Action<Context> action, Context context)
+        public virtual void Execute(Action<Context> action, Context context)
         {
             Execute((ctx, ct) => action(ctx), context, CancellationToken.None);
         }
@@ -88,7 +97,7 @@ namespace Polly
         /// <param name="action"></param>
         /// <param name="cancellationToken"></param>
         [DebuggerStepThrough]
-        public void Execute(Action<CancellationToken> action, CancellationToken cancellationToken)
+        public virtual void Execute(Action<CancellationToken> action, CancellationToken cancellationToken)
         {
             Execute((ctx, ct) => action(ct), new Context(), cancellationToken);
         }
@@ -101,7 +110,7 @@ namespace Polly
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <exception cref="System.ArgumentNullException">contextData</exception>
         [DebuggerStepThrough]
-        public void Execute(Action<CancellationToken> action, IDictionary<string, object> contextData, CancellationToken cancellationToken)
+        public virtual void Execute(Action<CancellationToken> action, IDictionary<string, object> contextData, CancellationToken cancellationToken)
         {
             Execute((ctx, ct) => action(ct), new Context(contextData), cancellationToken);
         }
@@ -113,7 +122,7 @@ namespace Polly
         /// <param name="context">Context data that is passed to the exception policy.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         [DebuggerStepThrough]
-        public void Execute(Action<CancellationToken> action, Context context, CancellationToken cancellationToken)
+        public virtual void Execute(Action<CancellationToken> action, Context context, CancellationToken cancellationToken)
         {
             Execute((ctx, ct) => action(ct), context, cancellationToken);
         }
@@ -126,7 +135,7 @@ namespace Polly
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <exception cref="System.ArgumentNullException">contextData</exception>
         [DebuggerStepThrough]
-        public void Execute(Action<Context, CancellationToken> action, IDictionary<string, object> contextData, CancellationToken cancellationToken)
+        public virtual void Execute(Action<Context, CancellationToken> action, IDictionary<string, object> contextData, CancellationToken cancellationToken)
         {
             Execute(action, new Context(contextData), cancellationToken);
         }
@@ -138,7 +147,7 @@ namespace Polly
         /// <param name="context">Context data that is passed to the exception policy.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         [DebuggerStepThrough]
-        public void Execute(Action<Context, CancellationToken> action, Context context, CancellationToken cancellationToken)
+        public virtual void Execute(Action<Context, CancellationToken> action, Context context, CancellationToken cancellationToken)
         {
             if (_exceptionPolicy == null) throw new InvalidOperationException("Please use the synchronous-defined policies when calling the synchronous Execute (and similar) methods.");
             if (context == null) throw new ArgumentNullException(nameof(context));
@@ -157,7 +166,7 @@ namespace Polly
         /// <param name="action">The action to perform.</param>
         /// <returns>The value returned by the action</returns>
         [DebuggerStepThrough]
-        public TResult Execute<TResult>(Func<TResult> action)
+        public virtual TResult Execute<TResult>(Func<TResult> action)
         {
             return Execute((ctx, ct) => action(), new Context(), CancellationToken.None);
         }
@@ -174,7 +183,7 @@ namespace Polly
         /// </returns>
         /// <exception cref="System.ArgumentNullException">contextData</exception>
         [DebuggerStepThrough]
-        public TResult Execute<TResult>(Func<TResult> action, IDictionary<string, object> contextData)
+        public virtual TResult Execute<TResult>(Func<TResult> action, IDictionary<string, object> contextData)
         {
             return Execute((ctx, ct) => action(), new Context(contextData), CancellationToken.None);
         }
@@ -191,7 +200,7 @@ namespace Polly
         /// </returns>
         /// <exception cref="System.ArgumentNullException">contextData</exception>
         [DebuggerStepThrough]
-        public TResult Execute<TResult>(Func<TResult> action, Context context)
+        public virtual TResult Execute<TResult>(Func<TResult> action, Context context)
         {
             return Execute((ctx, ct) => action(), context, CancellationToken.None);
         }
@@ -208,7 +217,7 @@ namespace Polly
         /// </returns>
         /// <exception cref="System.ArgumentNullException">contextData</exception>
         [DebuggerStepThrough]
-        public TResult Execute<TResult>(Func<Context, TResult> action, IDictionary<string, object> contextData)
+        public virtual TResult Execute<TResult>(Func<Context, TResult> action, IDictionary<string, object> contextData)
         {
             return Execute((ctx, ct) => action(ctx), new Context(contextData), CancellationToken.None);
         }
@@ -225,7 +234,7 @@ namespace Polly
         /// </returns>
         /// <exception cref="System.ArgumentNullException">contextData</exception>
         [DebuggerStepThrough]
-        public TResult Execute<TResult>(Func<Context, TResult> action, Context context)
+        public virtual TResult Execute<TResult>(Func<Context, TResult> action, Context context)
         {
             return Execute((ctx, ct) => action(ctx), context, CancellationToken.None);
         }
@@ -238,7 +247,7 @@ namespace Polly
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>The value returned by the action</returns>
         [DebuggerStepThrough]
-        public TResult Execute<TResult>(Func<CancellationToken, TResult> action, CancellationToken cancellationToken)
+        public virtual TResult Execute<TResult>(Func<CancellationToken, TResult> action, CancellationToken cancellationToken)
         {
             return Execute((ctx, ct) => action(ct), new Context(), cancellationToken);
         }
@@ -253,7 +262,7 @@ namespace Polly
         /// <returns>The value returned by the action</returns>
         /// <exception cref="System.ArgumentNullException">contextData</exception>
         [DebuggerStepThrough]
-        public TResult Execute<TResult>(Func<CancellationToken, TResult> action, IDictionary<string, object> contextData, CancellationToken cancellationToken)
+        public virtual TResult Execute<TResult>(Func<CancellationToken, TResult> action, IDictionary<string, object> contextData, CancellationToken cancellationToken)
         {
             return Execute((ctx, ct) => action(ct), new Context(contextData), cancellationToken);
         }
@@ -267,7 +276,7 @@ namespace Polly
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>The value returned by the action</returns>
         [DebuggerStepThrough]
-        public TResult Execute<TResult>(Func<CancellationToken, TResult> action, Context context, CancellationToken cancellationToken)
+        public virtual TResult Execute<TResult>(Func<CancellationToken, TResult> action, Context context, CancellationToken cancellationToken)
         {
             return Execute((ctx, ct) => action(ct), context, cancellationToken);
         }
@@ -282,7 +291,7 @@ namespace Polly
         /// <returns>The value returned by the action</returns>
         /// <exception cref="System.ArgumentNullException">contextData</exception>
         [DebuggerStepThrough]
-        public TResult Execute<TResult>(Func<Context, CancellationToken, TResult> action, IDictionary<string, object> contextData, CancellationToken cancellationToken)
+        public virtual TResult Execute<TResult>(Func<Context, CancellationToken, TResult> action, IDictionary<string, object> contextData, CancellationToken cancellationToken)
         {
             return Execute(action, new Context(contextData), cancellationToken);
         }
@@ -296,7 +305,7 @@ namespace Polly
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>The value returned by the action</returns>
         [DebuggerStepThrough]
-        public TResult Execute<TResult>(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken)
+        public virtual TResult Execute<TResult>(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken)
         {
             if (_exceptionPolicy == null) throw new InvalidOperationException(
                 "Please use the synchronous-defined policies when calling the synchronous Execute (and similar) methods.");
@@ -320,7 +329,7 @@ namespace Polly
         /// <param name="action">The action to perform.</param>
         /// <returns>The captured result</returns>
         [DebuggerStepThrough]
-        public PolicyResult ExecuteAndCapture(Action action)
+        public virtual PolicyResult ExecuteAndCapture(Action action)
         {
             return ExecuteAndCapture((ctx, ct) => action(), new Context(), CancellationToken.None);
         }
@@ -333,7 +342,7 @@ namespace Polly
         /// <exception cref="System.ArgumentNullException">contextData</exception>
         /// <returns>The captured result</returns>
         [DebuggerStepThrough]
-        public PolicyResult ExecuteAndCapture(Action action, IDictionary<string, object> contextData)
+        public virtual PolicyResult ExecuteAndCapture(Action action, IDictionary<string, object> contextData)
         {
             return ExecuteAndCapture((ctx, ct) => action(), new Context(contextData), CancellationToken.None);
         }
@@ -345,7 +354,7 @@ namespace Polly
         /// <param name="context">Context data that is passed to the exception policy.</param>
         /// <returns>The captured result</returns>
         [DebuggerStepThrough]
-        public PolicyResult ExecuteAndCapture(Action action, Context context)
+        public virtual PolicyResult ExecuteAndCapture(Action action, Context context)
         {
             return ExecuteAndCapture((ctx, ct) => action(), context, CancellationToken.None);
         }
@@ -358,7 +367,7 @@ namespace Polly
         /// <exception cref="System.ArgumentNullException">contextData</exception>
         /// <returns>The captured result</returns>
         [DebuggerStepThrough]
-        public PolicyResult ExecuteAndCapture(Action<Context> action, IDictionary<string, object> contextData)
+        public virtual PolicyResult ExecuteAndCapture(Action<Context> action, IDictionary<string, object> contextData)
         {
             return ExecuteAndCapture((ctx, ct) => action(ctx), new Context(contextData), CancellationToken.None);
         }
@@ -370,7 +379,7 @@ namespace Polly
         /// <param name="context">Context data that is passed to the exception policy.</param>
         /// <returns>The captured result</returns>
         [DebuggerStepThrough]
-        public PolicyResult ExecuteAndCapture(Action<Context> action, Context context)
+        public virtual PolicyResult ExecuteAndCapture(Action<Context> action, Context context)
         {
             return ExecuteAndCapture((ctx, ct) => action(ctx), context, CancellationToken.None);
         }
@@ -382,7 +391,7 @@ namespace Polly
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>The captured result</returns>
         [DebuggerStepThrough]
-        public PolicyResult ExecuteAndCapture(Action<CancellationToken> action, CancellationToken cancellationToken)
+        public virtual PolicyResult ExecuteAndCapture(Action<CancellationToken> action, CancellationToken cancellationToken)
         {
             return ExecuteAndCapture((ctx, ct) => action(ct), new Context(), cancellationToken);
         }
@@ -396,7 +405,7 @@ namespace Polly
         /// <returns>The captured result</returns>
         /// <exception cref="System.ArgumentNullException">contextData</exception>
         [DebuggerStepThrough]
-        public PolicyResult ExecuteAndCapture(Action<CancellationToken> action, IDictionary<string, object> contextData, CancellationToken cancellationToken)
+        public virtual PolicyResult ExecuteAndCapture(Action<CancellationToken> action, IDictionary<string, object> contextData, CancellationToken cancellationToken)
         {
             return ExecuteAndCapture((ctx, ct) => action(ct), new Context(contextData), cancellationToken);
         }
@@ -409,7 +418,7 @@ namespace Polly
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>The captured result</returns>
         [DebuggerStepThrough]
-        public PolicyResult ExecuteAndCapture(Action<CancellationToken> action, Context context, CancellationToken cancellationToken)
+        public virtual PolicyResult ExecuteAndCapture(Action<CancellationToken> action, Context context, CancellationToken cancellationToken)
         {
             return ExecuteAndCapture((ctx, ct) => action(ct), context, cancellationToken);
         }
@@ -423,7 +432,7 @@ namespace Polly
         /// <returns>The captured result</returns>
         /// <exception cref="System.ArgumentNullException">contextData</exception>
         [DebuggerStepThrough]
-        public PolicyResult ExecuteAndCapture(Action<Context, CancellationToken> action, IDictionary<string, object> contextData, CancellationToken cancellationToken)
+        public virtual PolicyResult ExecuteAndCapture(Action<Context, CancellationToken> action, IDictionary<string, object> contextData, CancellationToken cancellationToken)
         {
             return ExecuteAndCapture(action, new Context(contextData), cancellationToken);
         }
@@ -436,7 +445,7 @@ namespace Polly
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>The captured result</returns>
         [DebuggerStepThrough]
-        public PolicyResult ExecuteAndCapture(Action<Context, CancellationToken> action, Context context, CancellationToken cancellationToken)
+        public virtual PolicyResult ExecuteAndCapture(Action<Context, CancellationToken> action, Context context, CancellationToken cancellationToken)
         {
             if (_exceptionPolicy == null) throw new InvalidOperationException(
                 "Please use the synchronous-defined policies when calling the synchronous Execute (and similar) methods.");
@@ -461,7 +470,7 @@ namespace Polly
         /// <param name="action">The action to perform.</param>
         /// <returns>The captured result</returns>
         [DebuggerStepThrough]
-        public PolicyResult<TResult> ExecuteAndCapture<TResult>(Func<TResult> action)
+        public virtual PolicyResult<TResult> ExecuteAndCapture<TResult>(Func<TResult> action)
         {
             return ExecuteAndCapture((ctx, ct) => action(), new Context(), CancellationToken.None);
         }
@@ -474,7 +483,7 @@ namespace Polly
         /// <exception cref="System.ArgumentNullException">contextData</exception>
         /// <returns>The captured result</returns>
         [DebuggerStepThrough]
-        public PolicyResult<TResult> ExecuteAndCapture<TResult>(Func<TResult> action, IDictionary<string, object> contextData)
+        public virtual PolicyResult<TResult> ExecuteAndCapture<TResult>(Func<TResult> action, IDictionary<string, object> contextData)
         {
             return ExecuteAndCapture((ctx, ct) => action(), new Context(contextData), CancellationToken.None);
         }
@@ -488,7 +497,7 @@ namespace Polly
         /// <exception cref="System.ArgumentNullException">contextData</exception>
         /// <returns>The captured result</returns>
         [DebuggerStepThrough]
-        public PolicyResult<TResult> ExecuteAndCapture<TResult>(Func<TResult> action, Context context)
+        public virtual PolicyResult<TResult> ExecuteAndCapture<TResult>(Func<TResult> action, Context context)
         {
             return ExecuteAndCapture((ctx, ct) => action(), context, CancellationToken.None);
         }
@@ -501,7 +510,7 @@ namespace Polly
         /// <exception cref="System.ArgumentNullException">contextData</exception>
         /// <returns>The captured result</returns>
         [DebuggerStepThrough]
-        public PolicyResult<TResult> ExecuteAndCapture<TResult>(Func<Context, TResult> action, IDictionary<string, object> contextData)
+        public virtual PolicyResult<TResult> ExecuteAndCapture<TResult>(Func<Context, TResult> action, IDictionary<string, object> contextData)
         {
             return ExecuteAndCapture((ctx, ct) => action(ctx), new Context(contextData), CancellationToken.None);
         }
@@ -515,7 +524,7 @@ namespace Polly
         /// <exception cref="System.ArgumentNullException">contextData</exception>
         /// <returns>The captured result</returns>
         [DebuggerStepThrough]
-        public PolicyResult<TResult> ExecuteAndCapture<TResult>(Func<Context, TResult> action, Context context)
+        public virtual PolicyResult<TResult> ExecuteAndCapture<TResult>(Func<Context, TResult> action, Context context)
         {
             return ExecuteAndCapture((ctx, ct) => action(ctx), context, CancellationToken.None);
         }
@@ -527,7 +536,7 @@ namespace Polly
         /// <param name="action">The action to perform.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>The captured result</returns>
-        public PolicyResult<TResult> ExecuteAndCapture<TResult>(Func<CancellationToken, TResult> action, CancellationToken cancellationToken)
+        public virtual PolicyResult<TResult> ExecuteAndCapture<TResult>(Func<CancellationToken, TResult> action, CancellationToken cancellationToken)
         {
             return ExecuteAndCapture((ctx, ct) => action(ct), new Context(), cancellationToken);
         }
@@ -543,7 +552,7 @@ namespace Polly
         /// <returns>The captured result</returns>
         /// <exception cref="System.ArgumentNullException">contextData</exception>
         [DebuggerStepThrough]
-        public PolicyResult<TResult> ExecuteAndCapture<TResult>(Func<CancellationToken, TResult> action, IDictionary<string, object> contextData, CancellationToken cancellationToken)
+        public virtual PolicyResult<TResult> ExecuteAndCapture<TResult>(Func<CancellationToken, TResult> action, IDictionary<string, object> contextData, CancellationToken cancellationToken)
         {
             return ExecuteAndCapture((ctx, ct) => action(ct), new Context(contextData), cancellationToken);
         }
@@ -556,7 +565,7 @@ namespace Polly
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>The captured result</returns>
         [DebuggerStepThrough]
-        public PolicyResult<TResult> ExecuteAndCapture<TResult>(Func<CancellationToken, TResult> action, Context context, CancellationToken cancellationToken)
+        public virtual PolicyResult<TResult> ExecuteAndCapture<TResult>(Func<CancellationToken, TResult> action, Context context, CancellationToken cancellationToken)
         {
             return ExecuteAndCapture((ctx, ct) => action(ct), context, cancellationToken);
         }
@@ -571,7 +580,7 @@ namespace Polly
         /// <returns>The captured result</returns>
         /// <exception cref="System.ArgumentNullException">contextData</exception>
         [DebuggerStepThrough]
-        public PolicyResult<TResult> ExecuteAndCapture<TResult>(Func<Context, CancellationToken, TResult> action, IDictionary<string, object> contextData, CancellationToken cancellationToken)
+        public virtual PolicyResult<TResult> ExecuteAndCapture<TResult>(Func<Context, CancellationToken, TResult> action, IDictionary<string, object> contextData, CancellationToken cancellationToken)
         {
             return ExecuteAndCapture(action, new Context(contextData), cancellationToken);
         }
@@ -584,7 +593,7 @@ namespace Polly
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>The captured result</returns>
         [DebuggerStepThrough]
-        public PolicyResult<TResult> ExecuteAndCapture<TResult>(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken)
+        public virtual PolicyResult<TResult> ExecuteAndCapture<TResult>(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken)
         {
             if (_exceptionPolicy == null) throw new InvalidOperationException(
                 "Please use the synchronous-defined policies when calling the synchronous Execute (and similar) methods.");
