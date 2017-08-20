@@ -18,7 +18,7 @@ namespace Polly.Specs.CircuitBreaker
         #region Configuration tests
 
         [Fact]
-        public async void Should_be_able_to_handle_a_duration_of_timespan_maxvalue()
+        public async Task Should_be_able_to_handle_a_duration_of_timespan_maxvalue()
         {
             CircuitBreakerPolicy<ResultPrimitive> breaker = Policy
                             .HandleResult(ResultPrimitive.Fault)
@@ -78,7 +78,7 @@ namespace Polly.Specs.CircuitBreaker
         #region Circuit-breaker threshold-to-break tests
 
         [Fact]
-        public async void Should_not_open_circuit_if_specified_number_of_specified_handled_result_are_not_raised_consecutively()
+        public async Task Should_not_open_circuit_if_specified_number_of_specified_handled_result_are_not_raised_consecutively()
         {
             CircuitBreakerPolicy<ResultPrimitive> breaker = Policy
                             .HandleResult(ResultPrimitive.Fault)
@@ -98,7 +98,7 @@ namespace Polly.Specs.CircuitBreaker
         }
 
         [Fact]
-        public async void Should_open_circuit_with_the_last_handled_result_after_specified_number_of_specified_handled_result_have_been_returned()
+        public async Task Should_open_circuit_with_the_last_handled_result_after_specified_number_of_specified_handled_result_have_been_returned()
         {
             CircuitBreakerPolicy<ResultPrimitive> breaker = Policy
                             .HandleResult(ResultPrimitive.Fault)
@@ -121,7 +121,7 @@ namespace Polly.Specs.CircuitBreaker
         }
 
         [Fact]
-        public async void Should_open_circuit_with_the_last_handled_result_after_specified_number_of_one_of_the_specified_handled_results_have_been_raised()
+        public async Task Should_open_circuit_with_the_last_handled_result_after_specified_number_of_one_of_the_specified_handled_results_have_been_raised()
         {
             CircuitBreakerPolicy<ResultPrimitive> breaker = Policy
                             .HandleResult(ResultPrimitive.Fault)
@@ -145,7 +145,7 @@ namespace Polly.Specs.CircuitBreaker
         }
 
         [Fact]
-        public async void Should_open_circuit_with_the_last_handled_result_after_specified_number_of_specified_handled_result_with_predicate_have_been_returned()
+        public async Task Should_open_circuit_with_the_last_handled_result_after_specified_number_of_specified_handled_result_with_predicate_have_been_returned()
         {
             CircuitBreakerPolicy<ResultClass> breaker = Policy
                             .HandleResult<ResultClass>(r => r.ResultCode == ResultPrimitive.Fault)
@@ -168,7 +168,7 @@ namespace Polly.Specs.CircuitBreaker
         }
 
         [Fact]
-        public async void Should_not_open_circuit_if_result_returned_is_not_the_handled_result()
+        public async Task Should_not_open_circuit_if_result_returned_is_not_the_handled_result()
         {
             CircuitBreakerPolicy<ResultPrimitive> breaker = Policy
                             .HandleResult(ResultPrimitive.Fault)
@@ -188,7 +188,7 @@ namespace Polly.Specs.CircuitBreaker
         }
 
         [Fact]
-        public async void Should_not_open_circuit_if_result_returned_is_not_one_of_the_handled_results()
+        public async Task Should_not_open_circuit_if_result_returned_is_not_one_of_the_handled_results()
         {
             CircuitBreakerPolicy<ResultPrimitive> breaker = Policy
                             .HandleResult(ResultPrimitive.Fault)
@@ -209,7 +209,7 @@ namespace Polly.Specs.CircuitBreaker
         }
 
         [Fact]
-        public async void Should_not_open_circuit_if_result_returned_does_not_match_result_predicate()
+        public async Task Should_not_open_circuit_if_result_returned_does_not_match_result_predicate()
         {
             CircuitBreakerPolicy<ResultClass> breaker = Policy
                             .HandleResult<ResultClass>(r => r.ResultCode == ResultPrimitive.Fault)
@@ -229,7 +229,7 @@ namespace Polly.Specs.CircuitBreaker
         }
 
         [Fact]
-        public async void Should_not_open_circuit_if_result_returned_does_not_match_any_of_the_result_predicates()
+        public async Task Should_not_open_circuit_if_result_returned_does_not_match_any_of_the_result_predicates()
         {
             CircuitBreakerPolicy<ResultClass> breaker = Policy
                 .HandleResult<ResultClass>(r => r.ResultCode == ResultPrimitive.Fault)
@@ -254,7 +254,7 @@ namespace Polly.Specs.CircuitBreaker
         #region Circuit-breaker open->half-open->open/closed tests
 
         [Fact]
-        public async void Should_halfopen_circuit_after_the_specified_duration_has_passed()
+        public async Task Should_halfopen_circuit_after_the_specified_duration_has_passed()
         {
             var time = 1.January(2000);
             SystemClock.UtcNow = () => time;
@@ -287,7 +287,7 @@ namespace Polly.Specs.CircuitBreaker
         }
 
         [Fact]
-        public async void Should_open_circuit_again_after_the_specified_duration_has_passed_if_the_next_call_raises_a_fault()
+        public async Task Should_open_circuit_again_after_the_specified_duration_has_passed_if_the_next_call_raises_a_fault()
         {
             var time = 1.January(2000);
             SystemClock.UtcNow = () => time;
@@ -326,7 +326,7 @@ namespace Polly.Specs.CircuitBreaker
         }
 
         [Fact]
-        public async void Should_reset_circuit_after_the_specified_duration_has_passed_if_the_next_call_does_not_return_a_fault()
+        public async Task Should_reset_circuit_after_the_specified_duration_has_passed_if_the_next_call_does_not_return_a_fault()
         {
             var time = 1.January(2000);
             SystemClock.UtcNow = () => time;
@@ -729,7 +729,7 @@ namespace Polly.Specs.CircuitBreaker
         }
 
         [Fact]
-        public async void Should_be_able_to_reset_automatically_opened_circuit_without_specified_duration_passing()
+        public async Task Should_be_able_to_reset_automatically_opened_circuit_without_specified_duration_passing()
         {
             var time = 1.January(2000);
             SystemClock.UtcNow = () => time;
@@ -779,7 +779,7 @@ namespace Polly.Specs.CircuitBreaker
         }
 
         [Fact]
-        public async void Should_call_onbreak_when_breaking_circuit_automatically()
+        public async Task Should_call_onbreak_when_breaking_circuit_automatically()
         {
             bool onBreakCalled = false;
             Action<DelegateResult<ResultPrimitive>, TimeSpan> onBreak = (_, __) => { onBreakCalled = true; };
@@ -820,7 +820,7 @@ namespace Polly.Specs.CircuitBreaker
         }
 
         [Fact]
-        public async void Should_call_onbreak_when_breaking_circuit_first_time_but_not_for_subsequent_calls_placed_through_open_circuit()
+        public async Task Should_call_onbreak_when_breaking_circuit_first_time_but_not_for_subsequent_calls_placed_through_open_circuit()
         {
             int onBreakCalled = 0;
             Action<DelegateResult<ResultPrimitive>, TimeSpan> onBreak = (_, __) => { onBreakCalled++; };
@@ -910,7 +910,7 @@ namespace Polly.Specs.CircuitBreaker
         }
 
         [Fact]
-        public async void Should_call_onreset_when_automatically_closing_circuit_but_not_when_halfopen()
+        public async Task Should_call_onreset_when_automatically_closing_circuit_but_not_when_halfopen()
         {
             int onBreakCalled = 0;
             int onResetCalled = 0;
@@ -978,7 +978,7 @@ namespace Polly.Specs.CircuitBreaker
         }
 
         [Fact]
-        public async void Should_call_onhalfopen_when_automatically_transitioning_to_halfopen_due_to_subsequent_execution()
+        public async Task Should_call_onhalfopen_when_automatically_transitioning_to_halfopen_due_to_subsequent_execution()
         {
             int onBreakCalled = 0;
             int onResetCalled = 0;
@@ -1025,7 +1025,7 @@ namespace Polly.Specs.CircuitBreaker
         }
 
         [Fact]
-        public async void Should_call_onhalfopen_when_automatically_transitioning_to_halfopen_due_to_state_read()
+        public async Task Should_call_onhalfopen_when_automatically_transitioning_to_halfopen_due_to_state_read()
         {
             int onBreakCalled = 0;
             int onResetCalled = 0;
@@ -1102,7 +1102,7 @@ namespace Polly.Specs.CircuitBreaker
         #region Tests of supplied parameters to onBreak delegate
 
         [Fact]
-        public async void Should_call_onbreak_with_the_last_handled_result()
+        public async Task Should_call_onbreak_with_the_last_handled_result()
         {
             ResultPrimitive? handledResult = null;
 
@@ -1127,7 +1127,7 @@ namespace Polly.Specs.CircuitBreaker
         }
 
         [Fact]
-        public async void Should_call_onbreak_with_the_correct_timespan()
+        public async Task Should_call_onbreak_with_the_correct_timespan()
         {
             TimeSpan? passedBreakTimespan = null;
 
@@ -1180,7 +1180,7 @@ namespace Polly.Specs.CircuitBreaker
         #region Tests that supplied context is passed to stage-change delegates
 
         [Fact]
-        public async void Should_call_onbreak_with_the_passed_context()
+        public async Task Should_call_onbreak_with_the_passed_context()
         {
             IDictionary<string, object> contextData = null;
 
@@ -1206,7 +1206,7 @@ namespace Polly.Specs.CircuitBreaker
         }
 
         [Fact]
-        public async void Should_call_onreset_with_the_passed_context()
+        public async Task Should_call_onreset_with_the_passed_context()
         {
             IDictionary<string, object> contextData = null;
 
@@ -1240,7 +1240,7 @@ namespace Polly.Specs.CircuitBreaker
         }
 
         [Fact]
-        public async void Context_should_be_empty_if_execute_not_called_with_any_context_data()
+        public async Task Context_should_be_empty_if_execute_not_called_with_any_context_data()
         {
             IDictionary<string, object> contextData = new { key1 = "value1", key2 = "value2" }.AsDictionary();
 
@@ -1263,7 +1263,7 @@ namespace Polly.Specs.CircuitBreaker
         }
 
         [Fact]
-        public async void Should_create_new_context_for_each_call_to_execute()
+        public async Task Should_create_new_context_for_each_call_to_execute()
         {
             string contextValue = null;
 
@@ -1382,7 +1382,7 @@ namespace Polly.Specs.CircuitBreaker
         #region Cancellation support
 
         [Fact]
-        public async void Should_execute_action_when_non_faulting_and_cancellationtoken_not_cancelled()
+        public async Task Should_execute_action_when_non_faulting_and_cancellationtoken_not_cancelled()
         {
             var durationOfBreak = TimeSpan.FromMinutes(1);
             CircuitBreakerPolicy<ResultPrimitive> breaker = Policy
@@ -1497,7 +1497,7 @@ namespace Polly.Specs.CircuitBreaker
         }
 
         [Fact]
-        public async void Should_report_faulting_from_faulting_action_execution_when_user_delegate_does_not_observe_cancellation()
+        public async Task Should_report_faulting_from_faulting_action_execution_when_user_delegate_does_not_observe_cancellation()
         {
             var durationOfBreak = TimeSpan.FromMinutes(1);
             CircuitBreakerPolicy<ResultPrimitive> breaker = Policy
@@ -1523,7 +1523,7 @@ namespace Polly.Specs.CircuitBreaker
         }
 
         [Fact]
-        public async void Should_report_cancellation_when_both_open_circuit_and_cancellation()
+        public async Task Should_report_cancellation_when_both_open_circuit_and_cancellation()
         {
             CircuitBreakerPolicy<ResultPrimitive> breaker = Policy
                 .HandleResult(ResultPrimitive.Fault)
