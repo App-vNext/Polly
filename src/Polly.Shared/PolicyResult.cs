@@ -35,12 +35,24 @@ namespace Polly
         /// </summary>
         public Context Context { get; }
 
-        internal static PolicyResult Successful(Context context)
+        /// <summary>
+        /// Create a new Successful PolicyResult
+        /// </summary>
+        /// <param name="context">Context</param>
+        /// <returns>PolicyResult with OutcomeType Successful</returns>
+        public static PolicyResult Successful(Context context)
         {
             return new PolicyResult(OutcomeType.Successful, null, null, context);
         }
 
-        internal static PolicyResult Failure(Exception exception, ExceptionType exceptionType, Context context)
+        /// <summary>
+        /// Create a new Failure PolicyResult
+        /// </summary>
+        /// <param name="exception">Exception that was raised</param>
+        /// <param name="exceptionType">Type of exception resulting from a failed policy</param>
+        /// <param name="context">Context</param>
+        /// <returns>PolicyResult with OutcomeType Failure</returns>
+        public static PolicyResult Failure(Exception exception, ExceptionType exceptionType, Context context)
         {
             return new PolicyResult(OutcomeType.Failure, exception, exceptionType, context);
         }
@@ -103,12 +115,25 @@ namespace Polly
         /// </summary>
         public Context Context { get; }
 
-        internal static PolicyResult<TResult> Successful(TResult result, Context context)
+        /// <summary>
+        /// Create a new Successful PolicyResult
+        /// </summary>
+        /// <param name="result">Result value</param>
+        /// <param name="context">Context</param>
+        /// <returns>PolicyResult with OutcomeType Successful</returns>
+        public static PolicyResult<TResult> Successful(TResult result, Context context)
         {
             return new PolicyResult<TResult>(result, OutcomeType.Successful, null, null, context);
         }
 
-        internal static PolicyResult<TResult> Failure(Exception exception, ExceptionType exceptionType, Context context)
+        /// <summary>
+        /// Create a new Failure PolicyResult
+        /// </summary>
+        /// <param name="exception">Exception that was raised</param>
+        /// <param name="exceptionType">Type of exception resulting from a failed policy</param>
+        /// <param name="context">Context</param>
+        /// <returns>PolicyResult with OutcomeType Failure</returns>
+        public static PolicyResult<TResult> Failure(Exception exception, ExceptionType exceptionType, Context context)
         {
             return new PolicyResult<TResult>(default(TResult), OutcomeType.Failure, exception, exceptionType, default(TResult), 
                 exceptionType == Polly.ExceptionType.HandledByThisPolicy 
@@ -117,7 +142,13 @@ namespace Polly
                 context);
         }
 
-        internal static PolicyResult<TResult> Failure(TResult handledResult, Context context)
+        /// <summary>
+        /// Create a new Failure PolicyResult
+        /// </summary>
+        /// <param name="handledResult">Result value that was handled</param>
+        /// <param name="context">Context</param>
+        /// <returns>PolicyResult with OutcomeType Failure</returns>
+        public static PolicyResult<TResult> Failure(TResult handledResult, Context context)
         {
             return new PolicyResult<TResult>(default(TResult), OutcomeType.Failure, null, null, handledResult, Polly.FaultType.ResultHandledByThisPolicy, context);
         }

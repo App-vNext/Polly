@@ -13,8 +13,16 @@ namespace Polly
     public abstract partial class Policy<TResult> : ISyncPolicy<TResult>
     {
         private readonly Func<Func<Context, CancellationToken, TResult>, Context, CancellationToken, TResult> _executionPolicy;
-        internal IEnumerable<ExceptionPredicate> ExceptionPredicates { get; }
-        internal IEnumerable<ResultPredicate<TResult>> ResultPredicates { get; }
+        
+        /// <summary>
+        /// The Exception predicates for this policy
+        /// </summary>
+        public virtual IEnumerable<ExceptionPredicate> ExceptionPredicates { get; }
+ 
+        /// <summary>
+        /// The Result value predicates for this policy
+        /// </summary>
+        public virtual IEnumerable<ResultPredicate<TResult>> ResultPredicates { get; }
 
         internal Policy(
             Func<Func<Context, CancellationToken, TResult>, Context, CancellationToken, TResult> executionPolicy,

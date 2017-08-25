@@ -98,6 +98,39 @@ namespace Polly.Specs.Wrap
             config.ShouldNotThrow();
         }
 
+        [Fact]
+        public void Wrapping_two_policies_with_custom_async_policy_first_using_static_wrap_syntax_should_not_throw()
+        {
+            IAsyncPolicy custom = Policy.Handle<Exception>().CustomAsync();
+            Policy retry = Policy.Handle<Exception>().RetryAsync();
+            Action config = () => Policy.WrapAsync(new[] { custom, retry });
+
+            config.ShouldNotThrow();
+        }
+
+        [Fact]
+        public void Wrapping_two_policies_with_custom_async_policy_last_using_static_wrap_syntax_should_not_throw()
+        {
+
+            Policy retry = Policy.Handle<Exception>().RetryAsync();
+            IAsyncPolicy custom = Policy.Handle<Exception>().CustomAsync();
+            Action config = () => Policy.WrapAsync(new[] { retry, custom });
+
+            config.ShouldNotThrow();
+        }
+
+        [Fact]
+        public void Wrapping_more_than_two_policies_with_custom_async_policy_first_using_static_wrap_syntax_should_not_throw()
+        {
+
+            Policy retry = Policy.Handle<Exception>().RetryAsync();
+            Policy divideByZeroRetry = Policy.Handle<DivideByZeroException>().RetryAsync(2);
+            IAsyncPolicy custom = Policy.Handle<Exception>().CustomAsync();
+            Action config = () => Policy.WrapAsync(new[] { divideByZeroRetry, retry, custom });
+
+            config.ShouldNotThrow();
+        }
+
         #endregion
 
         #region Static configuration syntax tests, strongly-typed policies
@@ -137,6 +170,18 @@ namespace Polly.Specs.Wrap
             Policy<int> breaker = Policy<int>.Handle<Exception>().CircuitBreakerAsync(1, TimeSpan.FromSeconds(10));
 
             Action config = () => Policy.WrapAsync<int>(new[] { divideByZeroRetry, retry, breaker });
+
+            config.ShouldNotThrow();
+        }
+
+        [Fact]
+        public void Wrapping_more_than_two_policies_with_custom_sync_policy_first_using_static_wrap_strongly_typed_syntax_should_not_throw()
+        {
+
+            Policy<int> retry = Policy<int>.Handle<Exception>().RetryAsync();
+            Policy<int> divideByZeroRetry = Policy<int>.Handle<DivideByZeroException>().RetryAsync(2);
+            IAsyncPolicy<int> custom = Policy<int>.Handle<Exception>().CustomAsync();
+            Action config = () => Policy.WrapAsync(new[] { divideByZeroRetry, retry, custom });
 
             config.ShouldNotThrow();
         }

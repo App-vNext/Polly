@@ -1,13 +1,13 @@
-﻿using System;
+﻿using Polly.Utilities;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Polly.Utilities;
 
 namespace Polly.Wrap
 {
     public partial class PolicyWrap : IPolicyWrap
     {
-        internal PolicyWrap(Func<Func<Context, CancellationToken, Task>, Context, CancellationToken, bool, Task> policyAction, Policy outer, Policy inner)
+        internal PolicyWrap(Func<Func<Context, CancellationToken, Task>, Context, CancellationToken, bool, Task> policyAction, IAsyncPolicy outer, IAsyncPolicy inner)
             : base(policyAction, outer.ExceptionPredicates)
         {
         }
@@ -15,12 +15,17 @@ namespace Polly.Wrap
 
     public partial class PolicyWrap<TResult> : IPolicyWrap<TResult>
     {
-        internal PolicyWrap(Func<Func<Context, CancellationToken, Task<TResult>>, Context, CancellationToken, bool, Task<TResult>> policyAction, Policy outer, IsPolicy inner)
+        internal PolicyWrap(Func<Func<Context, CancellationToken, Task<TResult>>, Context, CancellationToken, bool, Task<TResult>> policyAction, IAsyncPolicy outer, IAsyncPolicy<TResult> inner)
             : base(policyAction, outer.ExceptionPredicates, PredicateHelper<TResult>.EmptyResultPredicates)
         {
         }
 
-        internal PolicyWrap(Func<Func<Context, CancellationToken, Task<TResult>>, Context, CancellationToken, bool, Task<TResult>> policyAction, Policy<TResult> outer, IsPolicy inner)
+        internal PolicyWrap(Func<Func<Context, CancellationToken, Task<TResult>>, Context, CancellationToken, bool, Task<TResult>> policyAction, IAsyncPolicy<TResult> outer, IAsyncPolicy inner)
+            : base(policyAction, outer.ExceptionPredicates, outer.ResultPredicates)
+        {
+        }
+
+        internal PolicyWrap(Func<Func<Context, CancellationToken, Task<TResult>>, Context, CancellationToken, bool, Task<TResult>> policyAction, IAsyncPolicy<TResult> outer, IAsyncPolicy<TResult> inner)
             : base(policyAction, outer.ExceptionPredicates, outer.ResultPredicates)
         {
         }

@@ -69,6 +69,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)Timeout\TimeoutSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Timeout\TimeoutTResultAsyncSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Timeout\TimeoutTResultSpecs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Wrap\CustomAsyncPolicy.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Wrap\CustomSyncPolicy.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Wrap\PolicyWrapSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Wrap\PolicyWrapContextAndKeySpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Wrap\PolicyWrapContextAndKeySpecsAsync.cs" />

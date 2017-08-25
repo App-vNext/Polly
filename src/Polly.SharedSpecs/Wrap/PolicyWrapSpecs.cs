@@ -1,9 +1,9 @@
-﻿using System;
-using FluentAssertions;
+﻿using FluentAssertions;
 using Polly.CircuitBreaker;
 using Polly.Retry;
 using Polly.Specs.Helpers;
 using Polly.Wrap;
+using System;
 using Xunit;
 
 namespace Polly.Specs.Wrap
@@ -135,6 +135,52 @@ namespace Polly.Specs.Wrap
             Policy<int> breaker = Policy<int>.Handle<Exception>().CircuitBreaker(1, TimeSpan.FromSeconds(10));
 
             Action config = () => Policy.Wrap<int>(new[] { divideByZeroRetry, retry, breaker });
+
+            config.ShouldNotThrow();
+        }
+
+        [Fact]
+        public void Wrapping_two_policies_with_custom_sync_policy_first_using_static_wrap_syntax_should_not_throw()
+        {
+
+            ISyncPolicy custom = Policy.Handle<Exception>().Custom();
+            Policy retry = Policy.Handle<Exception>().Retry();
+            Action config = () => Policy.Wrap(new[] { custom, retry });
+
+            config.ShouldNotThrow();
+        }
+
+        [Fact]
+        public void Wrapping_two_policies_with_custom_sync_policy_last_using_static_wrap_syntax_should_not_throw()
+        {
+
+            Policy retry = Policy.Handle<Exception>().Retry();
+            ISyncPolicy custom = Policy.Handle<Exception>().Custom();
+            Action config = () => Policy.Wrap(new[] { retry, custom });
+
+            config.ShouldNotThrow();
+        }
+
+        [Fact]
+        public void Wrapping_more_than_two_policies_with_custom_sync_policy_first_using_static_wrap_syntax_should_not_throw()
+        {
+
+            Policy retry = Policy.Handle<Exception>().Retry();
+            Policy divideByZeroRetry = Policy.Handle<DivideByZeroException>().Retry(2);
+            ISyncPolicy custom = Policy.Handle<Exception>().Custom();
+            Action config = () => Policy.Wrap(new[] { divideByZeroRetry, retry, custom });
+
+            config.ShouldNotThrow();
+        }
+
+        [Fact]
+        public void Wrapping_more_than_two_policies_with_custom_sync_policy_first_using_static_wrap_strongly_typed_syntax_should_not_throw()
+        {
+
+            Policy<int> retry = Policy<int>.Handle<Exception>().Retry();
+            Policy<int> divideByZeroRetry = Policy<int>.Handle<DivideByZeroException>().Retry(2);
+            ISyncPolicy<int> custom = Policy<int>.Handle<Exception>().Custom();
+            Action config = () => Policy.Wrap(new[] { divideByZeroRetry, retry, custom });
 
             config.ShouldNotThrow();
         }
@@ -347,6 +393,63 @@ namespace Polly.Specs.Wrap
             PolicyResult<ResultPrimitive> executeAndCaptureResultOnPolicyWrap = wrap.ExecuteAndCapture(() => ResultPrimitive.FaultAgain);
 
             executeAndCaptureResultOnPolicyWrap.Outcome.Should().Be(OutcomeType.Successful);
+            executeAndCaptureResultOnPolicyWrap.FinalHandledResult.Should().Be(default(ResultPrimitive));
+            executeAndCaptureResultOnPolicyWrap.FaultType.Should().BeNull();
+            executeAndCaptureResultOnPolicyWrap.FinalException.Should().BeNull();
+            executeAndCaptureResultOnPolicyWrap.ExceptionType.Should().BeNull();
+        }
+
+        [Fact]
+        public void Outermost_generic_policy_handling_result_with_custom_policy_should_not_throw()
+        {
+
+            Policy retry = Policy.Handle<Exception>().Retry();
+            ISyncPolicy custom = Policy.Handle<DivideByZeroException>().Custom();
+
+            Action config = () => Policy.Wrap(new[] { retry, custom }).Execute(() => { });
+            config.ShouldNotThrow();
+
+            config = () => Policy.Wrap(new[] { custom, retry }).Execute(() => { });
+            config.ShouldNotThrow();
+        }
+
+        [Fact]
+        public void Outermost_generic_policy_handling_result_with_custom_policy_not_handling_exception_should_throw()
+        {
+
+            Policy retry = Policy.Handle<DivideByZeroException>().Retry();
+            ISyncPolicy custom = Policy.Handle<ArgumentNullException>().Custom();
+
+            var count = 0;
+            Action config = () => Policy.Wrap(new[] { retry, custom }).Execute(() => { count++; throw new DivideByZeroException(); });
+            config.ShouldThrow<DivideByZeroException>();
+
+            count.Should().Be(2);
+        }
+
+        [Fact]
+        public void Outermost_generic_policy_handling_result_with_custom_policy_handling_exception_should_throw()
+        {
+
+            Policy retry = Policy.Handle<ArgumentNullException>().Retry();
+            ISyncPolicy custom = Policy.Handle<DivideByZeroException>().Custom();
+
+            var count = 0;
+            Action config = () => Policy.Wrap(new[] { retry, custom }).Execute(() => { count++; throw new DivideByZeroException(); });
+            config.ShouldThrow<DivideByZeroException>();
+
+            count.Should().Be(1);
+        }
+
+        [Fact]
+        public void Outermost_generic_policy_handling_result_with_custom_policy_should_return_value()
+        {
+            Policy<ResultPrimitive> retry = Policy<ResultPrimitive>.Handle<Exception>().Retry();
+            ISyncPolicy<ResultPrimitive> custom = Policy<ResultPrimitive>.Handle<DivideByZeroException>().Custom();
+
+            var executeAndCaptureResultOnPolicyWrap = Policy.Wrap(new[] { retry, custom }).ExecuteAndCapture(() => ResultPrimitive.Good);
+            executeAndCaptureResultOnPolicyWrap.Outcome.Should().Be(OutcomeType.Successful);
+            executeAndCaptureResultOnPolicyWrap.Result.Should().Be(ResultPrimitive.Good);
             executeAndCaptureResultOnPolicyWrap.FinalHandledResult.Should().Be(default(ResultPrimitive));
             executeAndCaptureResultOnPolicyWrap.FaultType.Should().BeNull();
             executeAndCaptureResultOnPolicyWrap.FinalException.Should().BeNull();

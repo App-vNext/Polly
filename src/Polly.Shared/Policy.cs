@@ -14,7 +14,11 @@ namespace Polly
     public abstract partial class Policy : ISyncPolicy
     {
         private readonly Action<Action<Context, CancellationToken>, Context, CancellationToken> _exceptionPolicy;
-        internal IEnumerable<ExceptionPredicate> ExceptionPredicates { get; }
+
+        /// <summary>
+        /// The Exception predicates for this policy
+        /// </summary>
+        public virtual IEnumerable<ExceptionPredicate> ExceptionPredicates { get; }
 
         internal Policy(
             Action<Action<Context, CancellationToken>, Context, CancellationToken> exceptionPolicy,

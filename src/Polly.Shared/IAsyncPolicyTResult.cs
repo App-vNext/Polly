@@ -19,6 +19,16 @@ namespace Polly
         IAsyncPolicy<TResult> WithPolicyKey(String policyKey);
 
         /// <summary>
+        /// The Exception predicates for this policy
+        /// </summary>
+        IEnumerable<ExceptionPredicate> ExceptionPredicates { get; }
+
+        /// <summary>
+        /// The Result value predicates for this policy
+        /// </summary>
+        IEnumerable<ResultPredicate<TResult>> ResultPredicates { get; }
+
+        /// <summary>
         ///     Executes the specified asynchronous action within the policy and returns the result.
         /// </summary>
         /// <param name="action">The action to perform.</param>

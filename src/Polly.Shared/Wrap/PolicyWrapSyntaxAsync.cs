@@ -12,7 +12,7 @@ namespace Polly
         /// </summary>
         /// <param name="innerPolicy">The inner policy.</param>
         /// <returns>PolicyWrap.PolicyWrap.</returns>
-        public PolicyWrap WrapAsync(Policy innerPolicy)
+        public PolicyWrap WrapAsync(IAsyncPolicy innerPolicy)
         {
             if (innerPolicy == null) throw new ArgumentNullException(nameof(innerPolicy));
 
@@ -29,7 +29,7 @@ namespace Polly
         /// <param name="innerPolicy">The inner policy.</param>
         /// <typeparam name="TResult">The return type of delegates which may be executed through the policy.</typeparam>
         /// <returns>PolicyWrap.PolicyWrap.</returns>
-        public PolicyWrap<TResult> WrapAsync<TResult>(Policy<TResult> innerPolicy)
+        public PolicyWrap<TResult> WrapAsync<TResult>(IAsyncPolicy<TResult> innerPolicy)
         {
             if (innerPolicy == null) throw new ArgumentNullException(nameof(innerPolicy));
 
@@ -48,7 +48,7 @@ namespace Polly
         /// </summary>
         /// <param name="innerPolicy">The inner policy.</param>
         /// <returns>PolicyWrap.PolicyWrap.</returns>
-        public PolicyWrap<TResult> WrapAsync(Policy innerPolicy)
+        public PolicyWrap<TResult> WrapAsync(IAsyncPolicy innerPolicy)
         {
             if (innerPolicy == null) throw new ArgumentNullException(nameof(innerPolicy));
 
@@ -64,7 +64,7 @@ namespace Polly
         /// </summary>
         /// <param name="innerPolicy">The inner policy.</param>
         /// <returns>PolicyWrap.PolicyWrap.</returns>
-        public PolicyWrap<TResult> WrapAsync(Policy<TResult> innerPolicy)
+        public PolicyWrap<TResult> WrapAsync(IAsyncPolicy<TResult> innerPolicy)
         {
             if (innerPolicy == null) throw new ArgumentNullException(nameof(innerPolicy));
 
@@ -84,7 +84,7 @@ namespace Polly
         /// <param name="policies">The policies to place in the wrap, outermost (at left) to innermost (at right).</param>
         /// <returns>The PolicyWrap.</returns>
         /// <exception cref="System.ArgumentException">The enumerable of policies to form the wrap must contain at least two policies.</exception>
-        public static PolicyWrap WrapAsync(params Policy[] policies)
+        public static PolicyWrap WrapAsync(params IAsyncPolicy[] policies)
         {
             switch (policies.Count())
             {
@@ -92,9 +92,21 @@ namespace Polly
                 case 1:
                     throw new ArgumentException("The enumerable of policies to form the wrap must contain at least two policies.", nameof(policies));
                 default:
-                    IEnumerable<Policy> remainder = policies.Skip(1);
-                    return policies.First().WrapAsync(remainder.Count() == 1 ? remainder.Single() : WrapAsync(remainder.ToArray()));
+                    IAsyncPolicy[] remainder = policies.Skip(1).ToArray();
+                    return WrapAsync(policies.First(), remainder.Count() == 1 ? remainder.Single() : WrapAsync(remainder));
             }
+        }
+
+        private static PolicyWrap WrapAsync(IAsyncPolicy outerPolicy, IAsyncPolicy innerPolicy)
+        {
+            if (outerPolicy == null) throw new ArgumentNullException(nameof(outerPolicy));
+            if (innerPolicy == null) throw new ArgumentNullException(nameof(innerPolicy));
+
+            return new PolicyWrap(
+                (action, context, cancellationtoken, continueOnCapturedContext) => PolicyWrapEngine.ImplementationAsync(action, context, cancellationtoken, continueOnCapturedContext, outerPolicy, innerPolicy),
+                outerPolicy,
+                innerPolicy
+                );
         }
 
         /// <summary>
@@ -104,7 +116,7 @@ namespace Polly
         /// <typeparam name="TResult">The return type of delegates which may be executed through the policy.</typeparam>
         /// <returns>The PolicyWrap.</returns>
         /// <exception cref="System.ArgumentException">The enumerable of policies to form the wrap must contain at least two policies.</exception>
-        public static PolicyWrap<TResult> WrapAsync<TResult>(params Policy<TResult>[] policies)
+        public static PolicyWrap<TResult> WrapAsync<TResult>(params IAsyncPolicy<TResult>[] policies)
         {
             switch (policies.Count())
             {
@@ -112,9 +124,21 @@ namespace Polly
                 case 1:
                     throw new ArgumentException("The enumerable of policies to form the wrap must contain at least two policies.", nameof(policies));
                 default:
-                    IEnumerable<Policy<TResult>> remainder = policies.Skip(1);
-                    return policies.First().WrapAsync(remainder.Count() == 1 ? remainder.Single() : WrapAsync(remainder.ToArray()));
+                    IAsyncPolicy<TResult>[] remainder = policies.Skip(1).ToArray();
+                    return WrapAsync(policies.First(), remainder.Count() == 1 ? remainder.Single() : WrapAsync(remainder));
             }
+        }
+
+        private static PolicyWrap<TResult> WrapAsync<TResult>(IAsyncPolicy<TResult> outerPolicy, IAsyncPolicy<TResult> innerPolicy)
+        {
+            if (outerPolicy == null) throw new ArgumentNullException(nameof(outerPolicy));
+            if (innerPolicy == null) throw new ArgumentNullException(nameof(innerPolicy));
+
+            return new PolicyWrap<TResult>(
+                (func, context, cancellationtoken, continueOnCapturedContext) => PolicyWrapEngine.ImplementationAsync<TResult>(func, context, cancellationtoken, continueOnCapturedContext, outerPolicy, innerPolicy),
+                outerPolicy,
+                innerPolicy
+                );
         }
     }
 }
