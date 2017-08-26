@@ -506,6 +506,76 @@ namespace Polly.Specs.Fallback
         }
         #endregion
 
+        #region Exception passing tests
+
+        [Fact]
+        public async Task Should_call_fallbackAction_with_the_exception()
+        {
+            DelegateResult<ResultPrimitive> fallbackOutcome = null;
+
+            Func<DelegateResult<ResultPrimitive>, Context, CancellationToken, Task<ResultPrimitive>> fallbackAction = 
+                (outcome, ctx, ct) => { fallbackOutcome = outcome; return Task.FromResult(ResultPrimitive.Substitute); };
+
+            Func<DelegateResult<ResultPrimitive>, Context, Task> onFallback = (ex, ctx) => { return TaskHelper.EmptyTask; };
+
+            FallbackPolicy<ResultPrimitive> fallbackPolicy = Policy<ResultPrimitive>
+                .HandleResult(ResultPrimitive.Fault)
+                .FallbackAsync(fallbackAction, onFallback);
+
+            var result = await fallbackPolicy.ExecuteAsync(() => { return Task.FromResult(ResultPrimitive.Fault); });
+            result.Should().Be(ResultPrimitive.Substitute);
+
+            fallbackOutcome.Should().NotBeNull();
+            fallbackOutcome.Exception.Should().BeNull();
+            fallbackOutcome.Result.Should().Be(ResultPrimitive.Fault);
+        }
+
+        [Fact]
+        public async Task Should_call_fallbackAction_with_the_exception_when_execute_and_capture()
+        {
+            DelegateResult<ResultPrimitive> fallbackOutcome = null;
+
+            Func<DelegateResult<ResultPrimitive>, Context, CancellationToken, Task<ResultPrimitive>> fallbackAction =
+                (outcome, ctx, ct) => { fallbackOutcome = outcome; return Task.FromResult(ResultPrimitive.Substitute); };
+
+            Func<DelegateResult<ResultPrimitive>, Context, Task> onFallback = (ex, ctx) => { return TaskHelper.EmptyTask; };
+
+            FallbackPolicy<ResultPrimitive> fallbackPolicy = Policy<ResultPrimitive>
+                .HandleResult(ResultPrimitive.Fault)
+                .FallbackAsync(fallbackAction, onFallback);
+
+            var result = await fallbackPolicy.ExecuteAndCaptureAsync(() => { return Task.FromResult(ResultPrimitive.Fault); });
+            result.Should().NotBeNull();
+            result.Result.Should().Be(ResultPrimitive.Substitute);
+
+            fallbackOutcome.Should().NotBeNull();
+            fallbackOutcome.Exception.Should().BeNull();
+            fallbackOutcome.Result.Should().Be(ResultPrimitive.Fault);
+        }
+
+        [Fact]
+        public async Task Should_call_fallbackAction_with_the_exception_unhandled_should_not_get_called()
+        {
+            DelegateResult<ResultPrimitive> fallbackOutcome = null;
+
+            Func<DelegateResult<ResultPrimitive>, Context, CancellationToken, Task<ResultPrimitive>> fallbackAction =
+                (outcome, ctx, ct) => { fallbackOutcome = outcome; return Task.FromResult(ResultPrimitive.Substitute); };
+
+            Func<DelegateResult<ResultPrimitive>, Context, Task> onFallback = (ex, ctx) => { return TaskHelper.EmptyTask; };
+
+            FallbackPolicy<ResultPrimitive> fallbackPolicy = Policy<ResultPrimitive>
+                .HandleResult(ResultPrimitive.Good)
+                .FallbackAsync(fallbackAction, onFallback);
+
+            var result = await fallbackPolicy.ExecuteAsync(() => { return Task.FromResult(ResultPrimitive.Fault); });
+            result.Should().Be(ResultPrimitive.Fault);
+
+            fallbackOutcome.Should().BeNull();
+        }
+
+        #endregion
+
+
         #region Cancellation tests
 
         [Fact]

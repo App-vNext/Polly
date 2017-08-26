@@ -529,6 +529,75 @@ namespace Polly.Specs.Fallback
         }
         #endregion
 
+        #region Exception passing tests
+
+        [Fact]
+        public void Should_call_fallbackAction_with_the_exception()
+        {
+            DelegateResult<ResultPrimitive> fallbackOutcome = null;
+
+            Func<DelegateResult<ResultPrimitive>, Context, CancellationToken, ResultPrimitive> fallbackAction = 
+                (outcome, ctx, ct) => { fallbackOutcome = outcome; return ResultPrimitive.Substitute; };
+
+            Action<DelegateResult<ResultPrimitive>, Context> onFallback = (ex, ctx) => { };
+
+            FallbackPolicy<ResultPrimitive> fallbackPolicy = Policy<ResultPrimitive>
+                .HandleResult(ResultPrimitive.Fault)
+                .Fallback(fallbackAction, onFallback);
+
+            fallbackPolicy.Execute(() => { return ResultPrimitive.Fault; })
+                .Should().Be(ResultPrimitive.Substitute);
+
+            fallbackOutcome.Should().NotBeNull();
+            fallbackOutcome.Exception.Should().BeNull();
+            fallbackOutcome.Result.Should().Be(ResultPrimitive.Fault);
+        }
+
+        [Fact]
+        public void Should_call_fallbackAction_with_the_exception_when_execute_and_capture()
+        {
+            DelegateResult<ResultPrimitive> fallbackOutcome = null;
+
+            Func<DelegateResult<ResultPrimitive>, Context, CancellationToken, ResultPrimitive> fallbackAction =
+                (outcome, ctx, ct) => { fallbackOutcome = outcome; return ResultPrimitive.Substitute; };
+
+            Action<DelegateResult<ResultPrimitive>, Context> onFallback = (ex, ctx) => { };
+
+            FallbackPolicy<ResultPrimitive> fallbackPolicy = Policy<ResultPrimitive>
+                .HandleResult(ResultPrimitive.Fault)
+                .Fallback(fallbackAction, onFallback);
+
+            var result = fallbackPolicy.ExecuteAndCapture(() => { return ResultPrimitive.Fault; });
+            result.Should().NotBeNull();
+            result.Result.Should().Be(ResultPrimitive.Substitute);
+
+            fallbackOutcome.Should().NotBeNull();
+            fallbackOutcome.Exception.Should().BeNull();
+            fallbackOutcome.Result.Should().Be(ResultPrimitive.Fault);
+        }
+
+        [Fact]
+        public void Should_call_fallbackAction_with_the_exception_unhandled_should_not_get_called()
+        {
+            DelegateResult<ResultPrimitive> fallbackOutcome = null;
+
+            Func<DelegateResult<ResultPrimitive>, Context, CancellationToken, ResultPrimitive> fallbackAction =
+                (outcome, ctx, ct) => { fallbackOutcome = outcome; return ResultPrimitive.Substitute; };
+
+            Action<DelegateResult<ResultPrimitive>, Context> onFallback = (ex, ctx) => { };
+
+            FallbackPolicy<ResultPrimitive> fallbackPolicy = Policy<ResultPrimitive>
+                .HandleResult(ResultPrimitive.Good)
+                .Fallback(fallbackAction, onFallback);
+
+            fallbackPolicy.Execute(() => { return ResultPrimitive.Fault; })
+                .Should().Be(ResultPrimitive.Fault);
+
+            fallbackOutcome.Should().BeNull();
+        }
+
+        #endregion
+
         #region Cancellation tests
 
         [Fact]
