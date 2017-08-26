@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Threading;
 using Polly.Fallback;
 using Polly.Utilities;
@@ -55,7 +54,7 @@ namespace Polly
             if (fallbackAction == null) throw new ArgumentNullException(nameof(fallbackAction));
             if (onFallback == null) throw new ArgumentNullException(nameof(onFallback));
 
-            return policyBuilder.Fallback((ctx, ct) => fallbackAction(), (exception, ctx) => onFallback(exception));
+            return policyBuilder.Fallback((outcome, ctx, ct) => fallbackAction(), (exception, ctx) => onFallback(exception));
         }
 
 
@@ -73,7 +72,7 @@ namespace Polly
             if (fallbackAction == null) throw new ArgumentNullException(nameof(fallbackAction));
             if (onFallback == null) throw new ArgumentNullException(nameof(onFallback));
 
-            return policyBuilder.Fallback((ctx, ct) => fallbackAction(ct), (exception, ctx) => onFallback(exception));
+            return policyBuilder.Fallback((outcome, ctx, ct) => fallbackAction(ct), (exception, ctx) => onFallback(exception));
         }
 
         /// <summary>
@@ -91,7 +90,7 @@ namespace Polly
             if (fallbackAction == null) throw new ArgumentNullException(nameof(fallbackAction));
             if (onFallback == null) throw new ArgumentNullException(nameof(onFallback));
 
-            return policyBuilder.Fallback((ctx, ct) => fallbackAction(), onFallback);
+            return policyBuilder.Fallback((outcome, ctx, ct) => fallbackAction(), onFallback);
         }
 
         /// <summary>
@@ -108,7 +107,7 @@ namespace Polly
             if (fallbackAction == null) throw new ArgumentNullException(nameof(fallbackAction));
             if (onFallback == null) throw new ArgumentNullException(nameof(onFallback));
 
-            return policyBuilder.Fallback((ctx, ct) => fallbackAction(ctx), onFallback);
+            return policyBuilder.Fallback((outcome, ctx, ct) => fallbackAction(ctx), onFallback);
         }
 
         /// <summary>
@@ -126,7 +125,7 @@ namespace Polly
             if (fallbackAction == null) throw new ArgumentNullException(nameof(fallbackAction));
             if (onFallback == null) throw new ArgumentNullException(nameof(onFallback));
 
-            return policyBuilder.Fallback((ctx, ct) => fallbackAction(ct), onFallback);
+            return policyBuilder.Fallback((outcome, ctx, ct) => fallbackAction(ct), onFallback);
         }
 
         /// <summary>
@@ -143,6 +142,23 @@ namespace Polly
             if (fallbackAction == null) throw new ArgumentNullException(nameof(fallbackAction));
             if (onFallback == null) throw new ArgumentNullException(nameof(onFallback));
 
+            return policyBuilder.Fallback((outcome, ctx, ct) => fallbackAction(ctx, ct), onFallback);
+        }
+
+        /// <summary>
+        /// Builds a <see cref="FallbackPolicy"/> which provides a fallback action if the main execution fails.  Executes the main delegate, but if this throws a handled exception, first calls <paramref name="onFallback"/> with details of the handled exception and the execution context; then calls <paramref name="fallbackAction"/>.  
+        /// </summary>
+        /// <param name="policyBuilder">The policy builder.</param>
+        /// <param name="fallbackAction">The fallback action.</param>
+        /// <param name="onFallback">The action to call before invoking the fallback delegate.</param>
+        /// <exception cref="System.ArgumentNullException">fallbackAction</exception>
+        /// <exception cref="System.ArgumentNullException">onFallback</exception>
+        /// <returns>The policy instance.</returns>
+        public static FallbackPolicy Fallback(this PolicyBuilder policyBuilder, Action<Exception, Context, CancellationToken> fallbackAction, Action<Exception, Context> onFallback)
+        {
+            if (fallbackAction == null) throw new ArgumentNullException(nameof(fallbackAction));
+            if (onFallback == null) throw new ArgumentNullException(nameof(onFallback));
+
             return new FallbackPolicy(
                 (action, context, cancellationToken) => FallbackEngine.Implementation(
                     (ctx, ct) => { action(ctx, ct); return EmptyStruct.Instance; },
@@ -151,10 +167,9 @@ namespace Polly
                     policyBuilder.ExceptionPredicates,
                     PredicateHelper<EmptyStruct>.EmptyResultPredicates,
                     (outcome, ctx) => onFallback(outcome.Exception, ctx),
-                    (ctx, ct) => { fallbackAction(ctx, ct); return EmptyStruct.Instance; }),
+                    (outcome, ctx, ct) => { fallbackAction(outcome.Exception, ctx, ct); return EmptyStruct.Instance; }),
                 policyBuilder.ExceptionPredicates);
         }
-
     }
 
     /// <summary>
@@ -216,7 +231,7 @@ namespace Polly
         {
             if (onFallback == null) throw new ArgumentNullException(nameof(onFallback));
 
-            return policyBuilder.Fallback((ctx, ct) => fallbackValue, (outcome, ctx) => onFallback(outcome));
+            return policyBuilder.Fallback((outcome, ctx, ct) => fallbackValue, (outcome, ctx) => onFallback(outcome));
         }
 
         /// <summary>
@@ -233,7 +248,7 @@ namespace Polly
             if (fallbackAction == null) throw new ArgumentNullException(nameof(fallbackAction));
             if (onFallback == null) throw new ArgumentNullException(nameof(onFallback));
 
-            return policyBuilder.Fallback((ctx, ct) => fallbackAction(), (outcome, ctx) => onFallback(outcome));
+            return policyBuilder.Fallback((outcome, ctx, ct) => fallbackAction(), (outcome, ctx) => onFallback(outcome));
         }
 
         /// <summary>
@@ -250,7 +265,7 @@ namespace Polly
             if (fallbackAction == null) throw new ArgumentNullException(nameof(fallbackAction));
             if (onFallback == null) throw new ArgumentNullException(nameof(onFallback));
 
-            return policyBuilder.Fallback((ctx, ct) => fallbackAction(ct), (outcome, ctx) => onFallback(outcome));
+            return policyBuilder.Fallback((outcome, ctx, ct) => fallbackAction(ct), (outcome, ctx) => onFallback(outcome));
         }
 
         /// <summary>
@@ -265,7 +280,7 @@ namespace Polly
         {
             if (onFallback == null) throw new ArgumentNullException(nameof(onFallback));
 
-            return policyBuilder.Fallback((ctx, ct) => fallbackValue, onFallback);
+            return policyBuilder.Fallback((outcome, ctx, ct) => fallbackValue, onFallback);
         }
 
         /// <summary>
@@ -283,7 +298,7 @@ namespace Polly
             if (fallbackAction == null) throw new ArgumentNullException(nameof(fallbackAction));
             if (onFallback == null) throw new ArgumentNullException(nameof(onFallback));
 
-            return policyBuilder.Fallback((ctx, ct) => fallbackAction(), onFallback);
+            return policyBuilder.Fallback((outcome, ctx, ct) => fallbackAction(), onFallback);
         }
 
         /// <summary>
@@ -300,7 +315,7 @@ namespace Polly
             if (fallbackAction == null) throw new ArgumentNullException(nameof(fallbackAction));
             if (onFallback == null) throw new ArgumentNullException(nameof(onFallback));
 
-            return policyBuilder.Fallback((ctx, ct) => fallbackAction(ctx), onFallback);
+            return policyBuilder.Fallback((outcome, ctx, ct) => fallbackAction(ctx), onFallback);
         }
 
         /// <summary>
@@ -318,7 +333,7 @@ namespace Polly
             if (fallbackAction == null) throw new ArgumentNullException(nameof(fallbackAction));
             if (onFallback == null) throw new ArgumentNullException(nameof(onFallback));
 
-            return policyBuilder.Fallback((ctx, ct) => fallbackAction(ct), onFallback);
+            return policyBuilder.Fallback((outcome, ctx, ct) => fallbackAction(ct), onFallback);
         }
 
         /// <summary>
@@ -331,6 +346,23 @@ namespace Polly
         /// <exception cref="System.ArgumentNullException">onFallback</exception>
         /// <returns>The policy instance.</returns>
         public static FallbackPolicy<TResult> Fallback<TResult>(this PolicyBuilder<TResult> policyBuilder, Func<Context, CancellationToken, TResult> fallbackAction, Action<DelegateResult<TResult>, Context> onFallback)
+        {
+            if (fallbackAction == null) throw new ArgumentNullException(nameof(fallbackAction));
+            if (onFallback == null) throw new ArgumentNullException(nameof(onFallback));
+
+            return policyBuilder.Fallback((outcome, ctx, ct) => fallbackAction(ctx, ct), onFallback);
+        }
+
+        /// <summary>
+        /// Builds a <see cref="FallbackPolicy"/> which provides a fallback value if the main execution fails.  Executes the main delegate, but if this throws a handled exception or raises a handled result, first calls <paramref name="onFallback"/> with details of the handled exception or result and the execution context; then calls <paramref name="fallbackAction"/> and returns its result.  
+        /// </summary>
+        /// <param name="policyBuilder">The policy builder.</param>
+        /// <param name="fallbackAction">The fallback action.</param>
+        /// <param name="onFallback">The action to call before invoking the fallback delegate.</param>
+        /// <exception cref="System.ArgumentNullException">fallbackAction</exception>
+        /// <exception cref="System.ArgumentNullException">onFallback</exception>
+        /// <returns>The policy instance.</returns>
+        public static FallbackPolicy<TResult> Fallback<TResult>(this PolicyBuilder<TResult> policyBuilder, Func<DelegateResult<TResult>, Context, CancellationToken, TResult> fallbackAction, Action<DelegateResult<TResult>, Context> onFallback)
         {
             if (fallbackAction == null) throw new ArgumentNullException(nameof(fallbackAction));
             if (onFallback == null) throw new ArgumentNullException(nameof(onFallback));
@@ -348,5 +380,4 @@ namespace Polly
                 policyBuilder.ResultPredicates);
         }
     }
-
 }
