@@ -145,7 +145,7 @@ namespace Polly.Specs.Timeout
         }
 
         [Fact]
-        public async void Should_not_throw_when_timeout_is_greater_than_execution_duration__pessimistic()
+        public async Task Should_not_throw_when_timeout_is_greater_than_execution_duration__pessimistic()
         {
             var policy = Policy.TimeoutAsync<ResultPrimitive>(TimeSpan.FromSeconds(1), TimeoutStrategy.Pessimistic);
 
@@ -206,7 +206,7 @@ namespace Polly.Specs.Timeout
         }
 
         [Fact]
-        public async void Should_not_throw_when_timeout_is_greater_than_execution_duration__optimistic()
+        public async Task Should_not_throw_when_timeout_is_greater_than_execution_duration__optimistic()
         {
             var policy = Policy.TimeoutAsync<ResultPrimitive>(TimeSpan.FromSeconds(1), TimeoutStrategy.Optimistic);
 
@@ -497,7 +497,7 @@ namespace Polly.Specs.Timeout
         }
 
         [Fact]
-        public async void Should_call_ontimeout_with_task_wrapping_abandoned_action_allowing_capture_of_otherwise_unobserved_exception__pessimistic()
+        public async Task Should_call_ontimeout_with_task_wrapping_abandoned_action_allowing_capture_of_otherwise_unobserved_exception__pessimistic()
         {
             Exception exceptionToThrow = new DivideByZeroException();
 
