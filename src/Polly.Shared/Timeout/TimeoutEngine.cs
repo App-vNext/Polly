@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.ExceptionServices;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -53,7 +54,11 @@ namespace Polly.Timeout
                         }
                         catch (AggregateException ex) when (ex.InnerExceptions.Count == 1)
                         {
-                            throw ex.InnerException;
+#if NET40
+                            Polly.Utilities.ExceptionDispatchInfo.Capture(ex.InnerException).Throw();
+#else
+                            ExceptionDispatchInfo.Capture(ex.InnerException).Throw();
+#endif
                         }
 
                         return actionTask.Result;

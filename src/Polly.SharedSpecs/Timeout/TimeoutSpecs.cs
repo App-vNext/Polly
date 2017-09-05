@@ -147,13 +147,19 @@ namespace Polly.Specs.Timeout
         }
 
         [Fact]
-        public void Should_rethrow_aggregate_exception_from_inside_delegate__pessimistic()
+        public void Should_rethrow_aggregate_exception_from_inside_delegate__pessimistic_with_full_stacktrace()
         {
             var policy = Policy.Timeout(TimeSpan.FromMilliseconds(50), TimeoutStrategy.Pessimistic);
             var msg = "Aggregate Exception thrown from the delegate";
+
             // Check to see if nested aggregate exceptions are unwrapped correctly
             AggregateException exception = new AggregateException(msg, new NotImplementedException());
-            policy.Invoking(p => p.Execute(() => { throw exception; })).ShouldThrow<AggregateException>().WithMessage(msg).WithInnerException<NotImplementedException>();
+
+            policy.Invoking(p => p.Execute(() => { Helper_ThrowException(exception); }))
+                .ShouldThrow<AggregateException>()
+                .WithMessage(exception.Message)
+                .WithInnerException<NotImplementedException>()
+                .And.StackTrace.Should().Contain("Helper_ThrowException");
         }
 
         [Fact]
@@ -169,11 +175,11 @@ namespace Polly.Specs.Timeout
 
             // Whether executing the delegate directly, or through the policy, exception behavior should be the same.
             action.ShouldThrow<AggregateException>()
-                .WithMessage(msg)
+                .WithMessage(aggregateException.Message)
                 .And.InnerExceptions.Should().BeEquivalentTo<Exception>(new[] { innerException1, innerException2 });
 
             policy.Invoking(p => p.Execute(action)).ShouldThrow<AggregateException>()
-                .WithMessage(msg)
+                .WithMessage(aggregateException.Message)
                 .And.InnerExceptions.Should().BeEquivalentTo<Exception>(new[] { innerException1, innerException2 });
         }
 
@@ -615,5 +621,11 @@ namespace Polly.Specs.Timeout
         
 
         #endregion
+
+        private void Helper_ThrowException(Exception ex)
+        {
+            // Exception is thrown from the helper method so that the stack trace is distinguishable
+            throw ex;
+        }
     }
 }
