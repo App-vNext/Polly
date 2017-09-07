@@ -141,7 +141,7 @@ namespace Polly.Specs.Timeout
         [Fact]
         public void Should_rethrow_exception_from_inside_delegate__pessimistic()
         {
-            var policy = Policy.Timeout(TimeSpan.FromMilliseconds(50), TimeoutStrategy.Pessimistic);
+            var policy = Policy.Timeout(TimeSpan.FromMilliseconds(1000), TimeoutStrategy.Pessimistic);
 
             policy.Invoking(p => p.Execute(() => { throw new NotImplementedException(); })).ShouldThrow<NotImplementedException>();
         }
@@ -149,7 +149,7 @@ namespace Polly.Specs.Timeout
         [Fact]
         public void Should_rethrow_aggregate_exception_from_inside_delegate__pessimistic_with_full_stacktrace()
         {
-            var policy = Policy.Timeout(TimeSpan.FromMilliseconds(50), TimeoutStrategy.Pessimistic);
+            var policy = Policy.Timeout(TimeSpan.FromMilliseconds(1000), TimeoutStrategy.Pessimistic);
             var msg = "Aggregate Exception thrown from the delegate";
 
             // Check to see if nested aggregate exceptions are unwrapped correctly
@@ -165,7 +165,7 @@ namespace Polly.Specs.Timeout
         [Fact]
         public void Should_rethrow_aggregate_exception_with_multiple_exceptions_from_inside_delegate__pessimistic()
         {
-            var policy = Policy.Timeout(TimeSpan.FromMilliseconds(50), TimeoutStrategy.Pessimistic);
+            var policy = Policy.Timeout(TimeSpan.FromMilliseconds(1000), TimeoutStrategy.Pessimistic);
             var msg = "Aggregate Exception thrown from the delegate";
 
             Exception innerException1 = new NotImplementedException();
@@ -186,7 +186,7 @@ namespace Polly.Specs.Timeout
         [Fact]
         public void Should_rethrow_aggregate_exception_with_example_cause_of_multiple_exceptions_from_inside_delegate__pessimistic()
         {
-            var policy = Policy.Timeout(TimeSpan.FromMilliseconds(50), TimeoutStrategy.Pessimistic);
+            var policy = Policy.Timeout(TimeSpan.FromMilliseconds(1000), TimeoutStrategy.Pessimistic);
 
             Exception innerException1 = new NotImplementedException();
             Exception innerException2 = new DivideByZeroException();
@@ -208,7 +208,7 @@ namespace Polly.Specs.Timeout
         [Fact]
         public void Should_rethrow_aggregate_exception_with_another_example_cause_of_multiple_exceptions_from_inside_delegate__pessimistic()
         {
-            var policy = Policy.Timeout(TimeSpan.FromMilliseconds(50), TimeoutStrategy.Pessimistic);
+            var policy = Policy.Timeout(TimeSpan.FromMilliseconds(1000), TimeoutStrategy.Pessimistic);
 
             Exception innerException1 = new NotImplementedException();
             Exception innerException2 = new DivideByZeroException();
