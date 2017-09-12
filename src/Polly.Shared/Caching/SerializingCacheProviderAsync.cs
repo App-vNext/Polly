@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 namespace Polly.Caching
 {
     /// <summary>
-    /// Defines an <see cref="IAsyncCacheProvider"/> which serializes objects of type in and out of an underlying cache which caches as type <typeparamref name="TSerialized"/>.  For use with asynchronous <see cref="CachePolicy" />.
+    /// Defines an <see cref="IAsyncCacheProvider"/> which serializes objects of any type in and out of an underlying cache which caches as type <typeparamref name="TSerialized"/>.  For use with asynchronous <see cref="CachePolicy" />.
     /// </summary>
     /// <typeparam name="TSerialized">The type of serialized objects to be placed in the cache.</typeparam>
     public class SerializingCacheProviderAsync<TSerialized> : IAsyncCacheProvider
