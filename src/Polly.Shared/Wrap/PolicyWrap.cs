@@ -26,7 +26,12 @@ namespace Polly.Wrap
         {
         }
 
-        internal PolicyWrap(Func<Func<Context, CancellationToken, TResult>, Context, CancellationToken, TResult> policyAction, ISyncPolicy<TResult> outer, IsPolicy inner)
+        internal PolicyWrap(Func<Func<Context, CancellationToken, TResult>, Context, CancellationToken, TResult> policyAction, ISyncPolicy<TResult> outer, ISyncPolicy inner)
+            : base(policyAction, outer.ExceptionPredicates, outer.ResultPredicates)
+        {
+        }
+
+        internal PolicyWrap(Func<Func<Context, CancellationToken, TResult>, Context, CancellationToken, TResult> policyAction, ISyncPolicy<TResult> outer, ISyncPolicy<TResult> inner)
             : base(policyAction, outer.ExceptionPredicates, outer.ResultPredicates)
         {
         }
