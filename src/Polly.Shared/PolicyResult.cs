@@ -36,23 +36,26 @@ namespace Polly
         public Context Context { get; }
 
         /// <summary>
-        /// Builds a successful <see cref="PolicyResult" />
+        /// Builds a <see cref="PolicyResult" /> representing a successful execution through the policy.
         /// </summary>
-        /// <param name="context">The policy context</param>
-        /// <returns></returns>
+        /// <param name="context">The policy execution context</param>
+        /// <returns>
+        /// A <see cref="PolicyResult" /> representing a successful execution through the policy.
+        /// </returns>
         public static PolicyResult Successful(Context context)
         {
             return new PolicyResult(OutcomeType.Successful, null, null, context);
         }
 
-
         /// <summary>
-        /// Builds a failed <see cref="PolicyResult" />
+        /// Builds a <see cref="PolicyResult" /> representing a failed execution through the policy. />
         /// </summary>
         /// <param name="exception">The exception</param>
         /// <param name="exceptionType">The exception type</param>
-        /// <param name="context">The policy context</param>
-        /// <returns></returns>
+        /// <param name="context">The policy execution context</param>
+        /// <returns>
+        /// A <see cref="PolicyResult" /> representing a failed execution through the policy.
+        /// </returns>
         public static PolicyResult Failure(Exception exception, ExceptionType exceptionType, Context context)
         {
             return new PolicyResult(OutcomeType.Failure, exception, exceptionType, context);
@@ -117,23 +120,27 @@ namespace Polly
         public Context Context { get; }
 
         /// <summary>
-        /// Builds a successful <see cref="PolicyResult" />
+        /// Builds a <see cref="PolicyResult" /> representing a successful execution through the policy.
         /// </summary>
-        /// <param name="result">The result</param>
-        /// <param name="context">The policy context</param>
-        /// <returns></returns>
+        /// <param name="result">The result returned by execution through the policy</param>
+        /// <param name="context">The policy execution context</param>
+        /// <returns>
+        /// A <see cref="PolicyResult" /> representing a successful execution through the policy.
+        /// </returns>
         public static PolicyResult<TResult> Successful(TResult result, Context context)
         {
             return new PolicyResult<TResult>(result, OutcomeType.Successful, null, null, context);
         }
 
         /// <summary>
-        /// Builds a failed <see cref="PolicyResult" />
+        /// Builds a <see cref="PolicyResult" /> representing a failed execution through the policy.
         /// </summary>
         /// <param name="exception">The exception</param>
         /// <param name="exceptionType">The exception type</param>
-        /// <param name="context">The policy context</param>
-        /// <returns></returns>
+        /// <param name="context">The policy execution context</param>
+        /// <returns>
+        /// A <see cref="PolicyResult" /> representing a failed execution through the policy.
+        /// </returns>
         public static PolicyResult<TResult> Failure(Exception exception, ExceptionType exceptionType, Context context)
         {
             return new PolicyResult<TResult>(default(TResult), OutcomeType.Failure, exception, exceptionType, default(TResult), 
@@ -144,11 +151,13 @@ namespace Polly
         }
 
         /// <summary>
-        /// Builds a failed <see cref="PolicyResult" />
+        /// Builds a <see cref="PolicyResult" /> representing a failed execution through the policy.
         /// </summary>
-        /// <param name="handledResult">The handled result</param>
-        /// <param name="context">The policy context</param>
-        /// <returns></returns>
+        /// <param name="handledResult">The result returned by execution through the policy, which was treated as a handled failure</param>
+        /// <param name="context">The policy execution context</param>
+        /// <returns>
+        /// A <see cref="PolicyResult" /> representing a failed execution through the policy.
+        /// </returns>
         public static PolicyResult<TResult> Failure(TResult handledResult, Context context)
         {
             return new PolicyResult<TResult>(default(TResult), OutcomeType.Failure, null, null, handledResult, Polly.FaultType.ResultHandledByThisPolicy, context);
