@@ -908,6 +908,7 @@ For details of changes by release see the [change log](https://github.com/App-vN
 * [@reisenberger](https://github.com/reisenberger) - Add interfaces by policy type and execution type.
 * [@seanfarrow](https://github.com/SeanFarrow) - Add IReadOnlyPolicyRegistry interface.
 * [@kesmy](https://github.com/Kesmy) - Migrate solution to msbuild15, banish project.json and packages.config
+* [@hambudi](https://github.com/hambudi) - Ensure sync TimeoutPolicy with TimeoutStrategy.Pessimistic rethrows delegate exceptions without additional AggregateException.
 
 # Sample Projects
 
