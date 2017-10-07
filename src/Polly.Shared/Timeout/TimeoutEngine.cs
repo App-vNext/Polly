@@ -3,6 +3,10 @@ using System.Runtime.ExceptionServices;
 using System.Threading;
 using System.Threading.Tasks;
 
+#if NET40
+using ExceptionDispatchInfo = Polly.Utilities.ExceptionDispatchInfo;
+#endif
+
 namespace Polly.Timeout
 {
     internal static partial class TimeoutEngine
@@ -52,13 +56,9 @@ namespace Polly.Timeout
                         {
                             actionTask.Wait(timeoutCancellationTokenSource.Token); // cancellation token here cancels the Wait() and causes it to throw, but does not cancel actionTask.  We use only timeoutCancellationTokenSource.Token here, not combinedToken.  If we allowed the user's cancellation token to cancel the Wait(), in this pessimistic scenario where the user delegate may not observe that cancellation, that would create a no-longer-observed task.  That task could in turn later fault before completing, risking an UnobservedTaskException.
                         }
-                        catch (AggregateException ex) when (ex.InnerExceptions.Count == 1)
+                        catch (AggregateException ex) when (ex.InnerExceptions.Count == 1) // Issue #270.  Unwrap extra AggregateException caused by the way pessimistic timeout policy for synchronous executions is necessarily constructed.
                         {
-#if NET40
-                            Polly.Utilities.ExceptionDispatchInfo.Capture(ex.InnerException).Throw();
-#else
                             ExceptionDispatchInfo.Capture(ex.InnerException).Throw();
-#endif
                         }
 
                         return actionTask.Result;
