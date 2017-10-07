@@ -1,3 +1,6 @@
+## 5.3.2
+- Bug fix: Sync TimeoutPolicy in pessimistic mode no longer interposes AggregateException.
+
 ## 5.3.1
 - Make ISyncPolicy<TResult> public
 - (Upgrade solution to msbuild15)
