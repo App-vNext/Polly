@@ -10,7 +10,7 @@ using Xunit;
 
 namespace Polly.Specs.Timeout
 {
-    public class TimeoutAsyncSpecs
+    public class TimeoutAsyncSpecs : TimeoutSpecsBase
     {
         #region Configuration
 
@@ -145,7 +145,7 @@ namespace Polly.Specs.Timeout
         }
 
         [Fact]
-        public async void Should_not_throw_when_timeout_is_greater_than_execution_duration__pessimistic()
+        public async Task Should_not_throw_when_timeout_is_greater_than_execution_duration__pessimistic()
         {
             var policy = Policy.TimeoutAsync(TimeSpan.FromSeconds(1), TimeoutStrategy.Pessimistic);
 
@@ -188,6 +188,14 @@ namespace Polly.Specs.Timeout
             watch.Elapsed.Should().BeCloseTo(timeout, ((int)tolerance.TotalMilliseconds));
         }
 
+        [Fact]
+        public void Should_rethrow_exception_from_inside_delegate__pessimistic()
+        {
+            var policy = Policy.TimeoutAsync(TimeSpan.FromSeconds(10), TimeoutStrategy.Pessimistic);
+
+            policy.Awaiting(p => p.ExecuteAsync(() => { throw new NotImplementedException(); })).ShouldThrow<NotImplementedException>();
+        }
+
         #endregion
 
 
@@ -210,7 +218,7 @@ namespace Polly.Specs.Timeout
         }
 
         [Fact]
-        public async void Should_not_throw_when_timeout_is_greater_than_execution_duration__optimistic()
+        public async Task Should_not_throw_when_timeout_is_greater_than_execution_duration__optimistic()
         {
             var policy = Policy.TimeoutAsync(TimeSpan.FromSeconds(1), TimeoutStrategy.Optimistic);
 
@@ -253,6 +261,14 @@ namespace Polly.Specs.Timeout
             watch.Stop();
 
             watch.Elapsed.Should().BeCloseTo(timeout, ((int)tolerance.TotalMilliseconds));
+        }
+
+        [Fact]
+        public void Should_rethrow_exception_from_inside_delegate__optimistic()
+        {
+            var policy = Policy.TimeoutAsync(TimeSpan.FromSeconds(10), TimeoutStrategy.Optimistic);
+
+            policy.Awaiting(p => p.ExecuteAsync(() => { throw new NotImplementedException(); })).ShouldThrow<NotImplementedException>();
         }
 
         #endregion
@@ -497,7 +513,7 @@ namespace Polly.Specs.Timeout
         }
 
         [Fact]
-        public async void Should_call_ontimeout_with_task_wrapping_abandoned_action_allowing_capture_of_otherwise_unobserved_exception__pessimistic()
+        public async Task Should_call_ontimeout_with_task_wrapping_abandoned_action_allowing_capture_of_otherwise_unobserved_exception__pessimistic()
         {
             Exception exceptionToThrow = new DivideByZeroException();
 

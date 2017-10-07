@@ -608,7 +608,7 @@ var policyResult = Policy
 /*              
 policyResult.Outcome - whether the call succeeded or failed         
 policyResult.FinalException - the final exception captured, will be null if the call succeeded
-policyResult.ExceptionType - was the final exception an exception the policy was defined to handle (like DivideByZeroException above) or an unhandled one (say Exception). Will be null if the call succeeded.
+policyResult.ExceptionType - was the final exception the policy was defined to handle (like DivideByZeroException above) or an unhandled one (say Exception). Will be null if the call succeeded.
 policyResult.Result - if executing a func, the result if the call succeeded or the type's default value
 */
 ```
@@ -859,13 +859,14 @@ The .NET4.0 package uses `Microsoft.Bcl.Async` to add async support.  To minimis
 
 For details of changes by release see the [change log](https://github.com/App-vNext/Polly/blob/master/CHANGELOG.md).  We also tag relevant Pull Requests and Issues with [milestones](https://github.com/App-vNext/Polly/milestones), which match to nuget package release numbers.
 
-# 3rd Party Libraries
+# 3rd Party Libraries and Contributions
 
 * [Fluent Assertions](https://github.com/fluentassertions/fluentassertions) - A set of .NET extension methods that allow you to more naturally specify the expected outcome of a TDD or BDD-style test | [Apache License 2.0 (Apache)](https://github.com/dennisdoomen/fluentassertions/blob/develop/LICENSE)
 * [xUnit.net](https://github.com/xunit/xunit) - Free, open source, community-focused unit testing tool for the .NET Framework | [Apache License 2.0 (Apache)](https://github.com/xunit/xunit/blob/master/license.txt)
 * [Ian Griffith's TimedLock](http://www.interact-sw.co.uk/iangblog/2004/04/26/yetmoretimedlocking)
 * [Steven van Deursen's ReadOnlyDictionary](http://www.cuttingedge.it/blogs/steven/pivot/entry.php?id=29) (until v5.0.6)
 * [Stephen Cleary's AsyncEx library](https://github.com/StephenCleary/AsyncEx) for AsyncSemaphore (supports BulkheadAsync policy for .NET4.0 only) | [MIT license](https://github.com/StephenCleary/AsyncEx/blob/master/LICENSE)
+* [@theraot](https://github.com/theraot)'s [ExceptionDispatchInfo implementation for .NET4.0](https://stackoverflow.com/a/31226509/) (supports Timeout policy for .NET4.0 only) including also a contribution by [@migueldeicaza](https://github.com/migueldeicaza) | Licensed under and distributed under [Creative Commons Attribution Share Alike license](https://creativecommons.org/licenses/by-sa/3.0/) per [StackExchange Terms of Service](https://stackexchange.com/legal)
 * Build powered by [Cake](http://cakebuild.net/) and [GitVersionTask](https://github.com/GitTools/GitVersion).
 
 # Acknowledgements
@@ -907,6 +908,7 @@ For details of changes by release see the [change log](https://github.com/App-vN
 * [@reisenberger](https://github.com/reisenberger) - Add interfaces by policy type and execution type.
 * [@seanfarrow](https://github.com/SeanFarrow) - Add IReadOnlyPolicyRegistry interface.
 * [@kesmy](https://github.com/Kesmy) - Migrate solution to msbuild15, banish project.json and packages.config
+* [@hambudi](https://github.com/hambudi) - Ensure sync TimeoutPolicy with TimeoutStrategy.Pessimistic rethrows delegate exceptions without additional AggregateException.
 
 # Sample Projects
 
