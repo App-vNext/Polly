@@ -12,7 +12,7 @@ using System;
 using System.Text;
 using System.Reflection;
 
-namespace Polly.Shared.Utilities
+namespace Polly.Utilities
 {
     /// <summary>
     /// The ExceptionDispatchInfo object stores the stack trace information and Watson information that the exception contains at the point where it is captured. The exception can be thrown at another time and possibly on another thread by calling the ExceptionDispatchInfo.Throw method. The exception is thrown as if it had flowed from the point where it was captured to the point where the Throw method is called.
