@@ -67,6 +67,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Retry\WaitAndRetryForeverSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Timeout\TimeoutAsyncSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Timeout\TimeoutSpecs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Timeout\TimeoutSpecsBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Timeout\TimeoutTResultAsyncSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Timeout\TimeoutTResultSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Wrap\PolicyWrapSpecs.cs" />

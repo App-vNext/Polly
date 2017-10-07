@@ -10,7 +10,7 @@ using Xunit;
 
 namespace Polly.Specs.Timeout
 {
-    public class TimeoutAsyncSpecs
+    public class TimeoutAsyncSpecs : TimeoutSpecsBase
     {
         #region Configuration
 
@@ -188,6 +188,14 @@ namespace Polly.Specs.Timeout
             watch.Elapsed.Should().BeCloseTo(timeout, ((int)tolerance.TotalMilliseconds));
         }
 
+        [Fact]
+        public void Should_rethrow_exception_from_inside_delegate__pessimistic()
+        {
+            var policy = Policy.TimeoutAsync(TimeSpan.FromSeconds(10), TimeoutStrategy.Pessimistic);
+
+            policy.Awaiting(p => p.ExecuteAsync(() => { throw new NotImplementedException(); })).ShouldThrow<NotImplementedException>();
+        }
+
         #endregion
 
 
@@ -253,6 +261,14 @@ namespace Polly.Specs.Timeout
             watch.Stop();
 
             watch.Elapsed.Should().BeCloseTo(timeout, ((int)tolerance.TotalMilliseconds));
+        }
+
+        [Fact]
+        public void Should_rethrow_exception_from_inside_delegate__optimistic()
+        {
+            var policy = Policy.TimeoutAsync(TimeSpan.FromSeconds(10), TimeoutStrategy.Optimistic);
+
+            policy.Awaiting(p => p.ExecuteAsync(() => { throw new NotImplementedException(); })).ShouldThrow<NotImplementedException>();
         }
 
         #endregion
