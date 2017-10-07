@@ -1,5 +1,6 @@
-## 5.3.2
+## 5.4.0
 - Bug fix: Sync TimeoutPolicy in pessimistic mode no longer interposes AggregateException.
+- Provide public ctors for PolicyResult, to support testing.
 
 ## 5.3.1
 - Make ISyncPolicy<TResult> public
