@@ -567,7 +567,7 @@ namespace Polly.Specs.Fallback
         }
 
         [Fact]
-        public void Should_call_fallbackAction_with_the_exception_unhandled_should_not_get_called()
+        public void Should_not_call_fallbackAction_with_the_exception_if_exception_unhandled()
         {
             Exception fallbackException = null;
 

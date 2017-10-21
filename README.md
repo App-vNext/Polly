@@ -912,6 +912,7 @@ For details of changes by release see the [change log](https://github.com/App-vN
 * [@kesmy](https://github.com/Kesmy) - Migrate solution to msbuild15, banish project.json and packages.config
 * [@hambudi](https://github.com/hambudi) - Ensure sync TimeoutPolicy with TimeoutStrategy.Pessimistic rethrows delegate exceptions without additional AggregateException.
 * [@jiimaho](https://github.com/jiimaho) - Provide public factory methods for PolicyResult, to support testing.
+* [@Extremo75](https://github.com/ExtRemo75) - Allow fallback delegates to take handled fault as input parameter.
 
 # Sample Projects
 
