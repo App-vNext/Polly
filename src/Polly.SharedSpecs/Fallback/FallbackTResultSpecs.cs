@@ -529,10 +529,10 @@ namespace Polly.Specs.Fallback
         }
         #endregion
 
-        #region Exception passing tests
+        #region Fault passing tests
 
         [Fact]
-        public void Should_call_fallbackAction_with_the_exception()
+        public void Should_call_fallbackAction_with_the_fault()
         {
             DelegateResult<ResultPrimitive> fallbackOutcome = null;
 
@@ -554,7 +554,7 @@ namespace Polly.Specs.Fallback
         }
 
         [Fact]
-        public void Should_call_fallbackAction_with_the_exception_when_execute_and_capture()
+        public void Should_call_fallbackAction_with_the_fault_when_execute_and_capture()
         {
             DelegateResult<ResultPrimitive> fallbackOutcome = null;
 
@@ -577,7 +577,7 @@ namespace Polly.Specs.Fallback
         }
 
         [Fact]
-        public void Should_call_fallbackAction_with_the_exception_unhandled_should_not_get_called()
+        public void Should_not_call_fallbackAction_with_the_fault_if_fault_unhandled()
         {
             DelegateResult<ResultPrimitive> fallbackOutcome = null;
 
@@ -587,11 +587,11 @@ namespace Polly.Specs.Fallback
             Action<DelegateResult<ResultPrimitive>, Context> onFallback = (ex, ctx) => { };
 
             FallbackPolicy<ResultPrimitive> fallbackPolicy = Policy<ResultPrimitive>
-                .HandleResult(ResultPrimitive.Good)
+                .HandleResult(ResultPrimitive.Fault)
                 .Fallback(fallbackAction, onFallback);
 
-            fallbackPolicy.Execute(() => { return ResultPrimitive.Fault; })
-                .Should().Be(ResultPrimitive.Fault);
+            fallbackPolicy.Execute(() => { return ResultPrimitive.FaultAgain; })
+                .Should().Be(ResultPrimitive.FaultAgain);
 
             fallbackOutcome.Should().BeNull();
         }
