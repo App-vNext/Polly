@@ -524,6 +524,69 @@ namespace Polly.Specs.Fallback
 
         #endregion
 
+        #region Exception passing tests
+
+        [Fact]
+        public void Should_call_fallbackAction_with_the_exception()
+        {
+            Exception fallbackException = null;
+
+            Action<Exception, Context, CancellationToken> fallbackAction = (ex, ctx, ct) => { fallbackException = ex; };
+
+            Action<Exception, Context> onFallback = (ex, ctx) => { };
+
+            FallbackPolicy fallbackPolicy = Policy
+                .Handle<ArgumentNullException>()
+                .Fallback(fallbackAction, onFallback);
+
+            fallbackPolicy.Invoking(p => p.Execute(() => { throw new ArgumentNullException(); }))
+                .ShouldNotThrow();
+
+            fallbackException.Should().NotBeNull()
+                .And.BeOfType(typeof(ArgumentNullException));
+        }
+
+        [Fact]
+        public void Should_call_fallbackAction_with_the_exception_when_execute_and_capture()
+        {
+            Exception fallbackException = null;
+
+            Action<Exception, Context, CancellationToken> fallbackAction = (ex, ctx, ct) => { fallbackException = ex; };
+
+            Action<Exception, Context> onFallback = (ex, ctx) => { };
+
+            FallbackPolicy fallbackPolicy = Policy
+                .Handle<ArgumentNullException>()
+                .Fallback(fallbackAction, onFallback);
+
+            fallbackPolicy.Invoking(p => p.ExecuteAndCapture(() => { throw new ArgumentNullException(); }))
+                .ShouldNotThrow();
+
+            fallbackException.Should().NotBeNull()
+                .And.BeOfType(typeof(ArgumentNullException));
+        }
+
+        [Fact]
+        public void Should_not_call_fallbackAction_with_the_exception_if_exception_unhandled()
+        {
+            Exception fallbackException = null;
+
+            Action<Exception, Context, CancellationToken> fallbackAction = (ex, ctx, ct) => {
+                fallbackException = ex; };
+
+            Action<Exception, Context> onFallback = (ex, ctx) => { };
+
+            FallbackPolicy fallbackPolicy = Policy
+                .Handle<DivideByZeroException>()
+                .Fallback(fallbackAction, onFallback);
+
+            fallbackPolicy.Invoking(p => p.Execute(() => { throw new ArgumentNullException(); }))
+                .ShouldThrow<ArgumentNullException>();
+
+            fallbackException.Should().BeNull();
+        }
+
+        #endregion
 
         #region Cancellation tests
 

@@ -15,10 +15,12 @@
     <releaseNotes>
      v5.0 is a major release with significant new resilience policies: Timeout; Bulkhead Isolation; Fallback; and PolicyWrap.  See release notes back to v5.0.0 for full details.  v5.0.5 includes important circuit-breaker fixes.
 
-     5.3.2
+     5.4.0
      ---------------------
-     - Fix test timing errors
-    
+     - Bug fix: Sync TimeoutPolicy in pessimistic mode no longer interposes AggregateException.
+     - Provide public factory methods for PolicyResult, to support testing.
+     - Fallback delegates can now take handled fault as input parameter.
+
      5.3.1
      ---------------------
      - Make ISyncPolicy&lt;TResult&gt; public

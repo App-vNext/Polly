@@ -1,5 +1,7 @@
-## 5.3.2
-- Fix test timing errors
+## 5.4.0
+- Bug fix: Sync TimeoutPolicy in pessimistic mode no longer interposes AggregateException.
+- Provide public factory methods for PolicyResult, to support testing.
+- Fallback delegates can now take handled fault as input parameter.
 
 ## 5.3.1
 - Make ISyncPolicy<TResult> public

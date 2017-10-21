@@ -458,6 +458,69 @@ namespace Polly.Specs.Fallback
 
         #endregion
 
+        #region Exception passing tests
+
+        [Fact]
+        public void Should_call_fallbackAction_with_the_exception()
+        {
+            Exception fallbackException = null;
+
+            Func<Exception, Context, CancellationToken, Task> fallbackFunc = (ex, ctx, ct) => { fallbackException = ex; return TaskHelper.EmptyTask; };
+
+            Func<Exception, Context, Task> onFallback = (ex, ctx) => { return TaskHelper.EmptyTask; };
+
+            FallbackPolicy fallbackPolicy = Policy
+                .Handle<ArgumentNullException>()
+                .FallbackAsync(fallbackFunc, onFallback);
+
+            fallbackPolicy.Awaiting(async p => await p.ExecuteAsync(() => { throw new ArgumentNullException(); }))
+                .ShouldNotThrow();
+
+            fallbackException.Should().NotBeNull()
+                .And.BeOfType(typeof(ArgumentNullException));
+        }
+
+        [Fact]
+        public void Should_call_fallbackAction_with_the_exception_when_execute_and_capture()
+        {
+            Exception fallbackException = null;
+
+            Func<Exception, Context, CancellationToken, Task> fallbackFunc = (ex, ctx, ct) => { fallbackException = ex; return TaskHelper.EmptyTask; };
+
+            Func<Exception, Context, Task> onFallback = (ex, ctx) => { return TaskHelper.EmptyTask; };
+
+            FallbackPolicy fallbackPolicy = Policy
+                .Handle<ArgumentNullException>()
+                .FallbackAsync(fallbackFunc, onFallback);
+
+            fallbackPolicy.Awaiting(async p => await p.ExecuteAndCaptureAsync(() => { throw new ArgumentNullException(); }))
+                .ShouldNotThrow();
+
+            fallbackException.Should().NotBeNull()
+                .And.BeOfType(typeof(ArgumentNullException));
+        }
+
+        [Fact]
+        public void Should_not_call_fallbackAction_with_the_exception_if_exception_unhandled()
+        {
+            Exception fallbackException = null;
+
+            Func<Exception, Context, CancellationToken, Task> fallbackFunc = (ex, ctx, ct) => { fallbackException = ex; return TaskHelper.EmptyTask; };
+
+            Func<Exception, Context, Task> onFallback = (ex, ctx) => { return TaskHelper.EmptyTask; };
+
+            FallbackPolicy fallbackPolicy = Policy
+                .Handle<DivideByZeroException>()
+                .FallbackAsync(fallbackFunc, onFallback);
+
+            fallbackPolicy.Awaiting(async p => await p.ExecuteAsync(() => { throw new ArgumentNullException(); }))
+                .ShouldThrow<ArgumentNullException>();
+
+            fallbackException.Should().BeNull();
+        }
+
+        #endregion
+
         #region Cancellation tests
 
         [Fact]

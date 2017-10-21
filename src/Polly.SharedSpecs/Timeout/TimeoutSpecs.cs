@@ -9,7 +9,7 @@ using Xunit;
 
 namespace Polly.Specs.Timeout
 {
-    public class TimeoutSpecs
+    public class TimeoutSpecs : TimeoutSpecsBase
     {
         #region Configuration
 
@@ -165,6 +165,95 @@ namespace Polly.Specs.Timeout
             watch.Elapsed.Should().BeCloseTo(timeout, ((int)tolerance.TotalMilliseconds));
         }
 
+        [Fact]
+        public void Should_rethrow_exception_from_inside_delegate__pessimistic()
+        {
+            var policy = Policy.Timeout(TimeSpan.FromSeconds(10), TimeoutStrategy.Pessimistic);
+
+            policy.Invoking(p => p.Execute(() => { throw new NotImplementedException(); })).ShouldThrow<NotImplementedException>();
+        }
+
+        [Fact]
+        public void Should_rethrow_aggregate_exception_from_inside_delegate__pessimistic_with_full_stacktrace()
+        {
+            var policy = Policy.Timeout(TimeSpan.FromSeconds(10), TimeoutStrategy.Pessimistic);
+            var msg = "Aggregate Exception thrown from the delegate";
+
+            // Check to see if nested aggregate exceptions are unwrapped correctly
+            AggregateException exception = new AggregateException(msg, new NotImplementedException());
+
+            policy.Invoking(p => p.Execute(() => { Helper_ThrowException(exception); }))
+                .ShouldThrow<AggregateException>()
+                .WithMessage(exception.Message)
+                .WithInnerException<NotImplementedException>()
+                .And.StackTrace.Should().Contain("Helper_ThrowException");
+        }
+
+        [Fact]
+        public void Should_rethrow_aggregate_exception_with_multiple_exceptions_from_inside_delegate__pessimistic()
+        {
+            var policy = Policy.Timeout(TimeSpan.FromSeconds(10), TimeoutStrategy.Pessimistic);
+            var msg = "Aggregate Exception thrown from the delegate";
+
+            Exception innerException1 = new NotImplementedException();
+            Exception innerException2 = new DivideByZeroException();
+            AggregateException aggregateException = new AggregateException(msg, innerException1, innerException2);
+            Action action = () => { throw aggregateException; };
+
+            // Whether executing the delegate directly, or through the policy, exception behavior should be the same.
+            action.ShouldThrow<AggregateException>()
+                .WithMessage(aggregateException.Message)
+                .And.InnerExceptions.Should().BeEquivalentTo<Exception>(new[] { innerException1, innerException2 });
+
+            policy.Invoking(p => p.Execute(action)).ShouldThrow<AggregateException>()
+                .WithMessage(aggregateException.Message)
+                .And.InnerExceptions.Should().BeEquivalentTo<Exception>(new[] { innerException1, innerException2 });
+        }
+
+        [Fact]
+        public void Should_rethrow_aggregate_exception_with_example_cause_of_multiple_exceptions_from_inside_delegate__pessimistic()
+        {
+            var policy = Policy.Timeout(TimeSpan.FromSeconds(10), TimeoutStrategy.Pessimistic);
+
+            Exception innerException1 = new NotImplementedException();
+            Exception innerException2 = new DivideByZeroException();
+            Action action = () =>
+            {
+                Task task1 = Task.Run(() => { throw innerException1; });
+                Task task2 = Task.Run(() => { throw innerException2; });
+                Task.WhenAll(task1, task2).Wait();
+            };
+
+            // Whether executing the delegate directly, or through the policy, exception behavior should be the same.
+            action.ShouldThrow<AggregateException>()
+                .And.InnerExceptions.Should().BeEquivalentTo<Exception>(new[] { innerException1, innerException2 });
+
+            policy.Invoking(p => p.Execute(action)).ShouldThrow<AggregateException>()
+                .And.InnerExceptions.Should().BeEquivalentTo<Exception>(new[] { innerException1, innerException2 });
+        }
+
+        [Fact]
+        public void Should_rethrow_aggregate_exception_with_another_example_cause_of_multiple_exceptions_from_inside_delegate__pessimistic()
+        {
+            var policy = Policy.Timeout(TimeSpan.FromSeconds(10), TimeoutStrategy.Pessimistic);
+
+            Exception innerException1 = new NotImplementedException();
+            Exception innerException2 = new DivideByZeroException();
+            Action action = () =>
+            {
+                Action action1 = () => { throw innerException1; };
+                Action action2 = () => { throw innerException2; };
+                Parallel.Invoke(action1, action2);
+            };
+
+            // Whether executing the delegate directly, or through the policy, exception behavior should be the same.
+            action.ShouldThrow<AggregateException>()
+                .And.InnerExceptions.Should().BeEquivalentTo<Exception>(new[] { innerException1, innerException2 });
+
+            policy.Invoking(p => p.Execute(action)).ShouldThrow<AggregateException>()
+                .And.InnerExceptions.Should().BeEquivalentTo<Exception>(new[] { innerException1, innerException2 });
+        }
+
         #endregion
 
         #region Timeout operation - optimistic
@@ -178,7 +267,7 @@ namespace Polly.Specs.Timeout
             policy.Invoking(p => p.Execute(ct => SystemClock.Sleep(TimeSpan.FromSeconds(3), ct), userCancellationToken)) // Delegate observes cancellation token, so permitting optimistic cancellation. 
                 .ShouldThrow<TimeoutRejectedException>();
         }
-
+        
         [Fact]
         public void Should_not_throw_when_timeout_is_greater_than_execution_duration__optimistic()
         {
@@ -206,6 +295,14 @@ namespace Polly.Specs.Timeout
             watch.Stop();
 
             watch.Elapsed.Should().BeCloseTo(timeout, ((int)tolerance.TotalMilliseconds));
+        }
+
+        [Fact]
+        public void Should_rethrow_exception_from_inside_delegate__optimistic()
+        {
+            var policy = Policy.Timeout(TimeSpan.FromSeconds(10), TimeoutStrategy.Optimistic);
+
+            policy.Invoking(p => p.Execute(() => { throw new NotImplementedException(); })).ShouldThrow<NotImplementedException>();
         }
 
         #endregion
@@ -532,5 +629,6 @@ namespace Polly.Specs.Timeout
         
 
         #endregion
+
     }
 }
