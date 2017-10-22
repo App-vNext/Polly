@@ -34,6 +34,12 @@ namespace Polly.Utilities
         public static Func<DateTime> UtcNow = () => DateTime.UtcNow;
 
         /// <summary>
+        /// Allows the setting of a custom DateTimeOffset.UtcNow implementation for testing.
+        /// By default this will be a call to <see cref="DateTime.UtcNow"/>
+        /// </summary>
+        public static Func<DateTimeOffset> DateTimeOffsetUtcNow = () => DateTimeOffset.UtcNow;
+
+        /// <summary>
         /// Resets the custom implementations to their defaults. 
         /// Should be called during test teardowns.
         /// </summary>
@@ -50,6 +56,8 @@ namespace Polly.Utilities
             SleepAsync = Task.Delay;
 #endif
             UtcNow = () => DateTime.UtcNow;
+
+            DateTimeOffsetUtcNow = () => DateTimeOffset.UtcNow;
         }
     }
 }

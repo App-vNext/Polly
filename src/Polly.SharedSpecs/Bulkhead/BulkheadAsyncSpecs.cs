@@ -3,7 +3,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Polly.Bulkhead;
-using Polly.Specs.Helpers;
+using Polly.Specs.Helpers.Bulkhead;
 
 using FluentAssertions;
 using Polly.Utilities;

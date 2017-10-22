@@ -296,7 +296,7 @@ namespace Polly
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>The value returned by the action</returns>
         [DebuggerStepThrough]
-        public TResult Execute<TResult>(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken)
+        public virtual TResult Execute<TResult>(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken)
         {
             if (_exceptionPolicy == null) throw new InvalidOperationException(
                 "Please use the synchronous-defined policies when calling the synchronous Execute (and similar) methods.");
