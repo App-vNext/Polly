@@ -19,7 +19,7 @@
         /// <summary>
         /// Provides a strongly <typeparamref name="TCacheFormat"/>-typed version of the supplied <see cref="IAsyncCacheProvider"/>
         /// </summary>
-        /// <typeparam name="TCacheFormat">The type the returned <see cref="ISyncCacheProvider{TResult}"/> will handle.</typeparam>
+        /// <typeparam name="TCacheFormat">The type the returned <see cref="IAsyncCacheProvider{TResult}"/> will handle.</typeparam>
         /// <param name="nonGenericCacheProvider">The non-generic cache provider to wrap.</param>
         /// <returns>IAsyncCacheProvider{TCacheFormat}.</returns>
         public static IAsyncCacheProvider<TCacheFormat> AsyncFor<TCacheFormat>(this IAsyncCacheProvider nonGenericCacheProvider)
