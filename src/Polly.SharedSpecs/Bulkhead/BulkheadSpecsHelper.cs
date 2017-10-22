@@ -2,7 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions.Execution;
-using Polly.Specs.Helpers;
+using Polly.Specs.Helpers.Bulkhead;
 using Xunit.Abstractions;
 using Xunit.Sdk;
 

@@ -10,13 +10,14 @@
     <licenseUrl>https://raw.github.com/App-vNext/Polly/master/LICENSE.txt</licenseUrl>
     <iconUrl>https://raw.github.com/App-vNext/Polly/master/Polly.png</iconUrl>
     <projectUrl>https://github.com/App-vNext/Polly</projectUrl>
-    <tags>Exception Handling Resilience Transient Fault Policy Circuit Breaker CircuitBreaker Retry Wait Bulkhead Fallback Timeout Throttle Parallelization</tags>
+    <tags>Exception Handling Resilience Transient Fault Policy Circuit Breaker CircuitBreaker Retry Wait Cache Cache-aside Bulkhead Fallback Timeout Throttle Parallelization</tags>
     <copyright>Copyright © 2017, App vNext</copyright>
     <releaseNotes>
-     v5.0 is a major release with significant new resilience policies: Timeout; Bulkhead Isolation; Fallback; and PolicyWrap.  See release notes back to v5.0.0 for full details.  v5.0.5 includes important circuit-breaker fixes.
+     v5.0 is a major release with significant new resilience policies: Timeout; Bulkhead Isolation; Fallback; Cache; and PolicyWrap.  See release notes back to v5.0.0 for full details.  v5.0.5 includes important circuit-breaker fixes.
 
      5.4.0
      ---------------------
+     - Add CachePolicy: cache-aside pattern, with interfaces for pluggable cache providers and serializers.
      - Bug fix: Sync TimeoutPolicy in pessimistic mode no longer interposes AggregateException.
      - Provide public factory methods for PolicyResult, to support testing.
      - Fallback delegates can now take handled fault as input parameter.
