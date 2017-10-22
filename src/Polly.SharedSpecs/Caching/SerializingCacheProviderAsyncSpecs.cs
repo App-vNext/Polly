@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading;
+using System.Threading.Tasks;
 using FluentAssertions;
 using Polly.Caching;
 using Polly.Specs.Helpers;
@@ -45,7 +46,7 @@ namespace Polly.Specs.Caching
         }
 
         [Fact]
-        public async void Single_generic_SerializingCacheProvider_should_serialize_on_put()
+        public async Task Single_generic_SerializingCacheProvider_should_serialize_on_put()
         {
             bool serializeInvoked = false;
             StubSerializer<object, StubSerialized> stubSerializer = new StubSerializer<object, StubSerialized>(
@@ -65,7 +66,7 @@ namespace Polly.Specs.Caching
         }
 
         [Fact]
-        public async void Single_generic_SerializingCacheProvider_should_deserialize_on_get()
+        public async Task Single_generic_SerializingCacheProvider_should_deserialize_on_get()
         {
             bool deserializeInvoked = false;
             StubSerializer<object, StubSerialized> stubSerializer = new StubSerializer<object, StubSerialized>(
@@ -87,7 +88,7 @@ namespace Polly.Specs.Caching
         }
 
         [Fact]
-        public async void Single_generic_SerializingCacheProvider_from_extension_syntax_should_serialize_on_put()
+        public async Task Single_generic_SerializingCacheProvider_from_extension_syntax_should_serialize_on_put()
         {
             bool serializeInvoked = false;
             StubSerializer<object, StubSerialized> stubSerializer = new StubSerializer<object, StubSerialized>(
@@ -107,7 +108,7 @@ namespace Polly.Specs.Caching
         }
 
         [Fact]
-        public async void Single_generic_SerializingCacheProvider_from_extension_syntax_should_deserialize_on_get()
+        public async Task Single_generic_SerializingCacheProvider_from_extension_syntax_should_deserialize_on_get()
         {
             bool deserializeInvoked = false;
             StubSerializer<object, StubSerialized> stubSerializer = new StubSerializer<object, StubSerialized>(
@@ -164,7 +165,7 @@ namespace Polly.Specs.Caching
         }
 
         [Fact]
-        public async void Double_generic_SerializingCacheProvider_should_serialize_on_put()
+        public async Task Double_generic_SerializingCacheProvider_should_serialize_on_put()
         {
             bool serializeInvoked = false;
             StubSerializer<ResultPrimitive, StubSerialized<ResultPrimitive>> stubTResultSerializer = new StubSerializer<ResultPrimitive, StubSerialized<ResultPrimitive>>(
@@ -184,7 +185,7 @@ namespace Polly.Specs.Caching
         }
 
         [Fact]
-        public async void Double_generic_SerializingCacheProvider_should_deserialize_on_get()
+        public async Task Double_generic_SerializingCacheProvider_should_deserialize_on_get()
         {
             bool deserializeInvoked = false;
             StubSerializer<ResultPrimitive, StubSerialized<ResultPrimitive>> stubTResultSerializer = new StubSerializer<ResultPrimitive, StubSerialized<ResultPrimitive>>(
@@ -205,7 +206,7 @@ namespace Polly.Specs.Caching
         }
 
         [Fact]
-        public async void Double_generic_SerializingCacheProvider_from_extension_syntax_should_serialize_on_put()
+        public async Task Double_generic_SerializingCacheProvider_from_extension_syntax_should_serialize_on_put()
         {
             bool serializeInvoked = false;
             StubSerializer<ResultPrimitive, StubSerialized<ResultPrimitive>> stubTResultSerializer = new StubSerializer<ResultPrimitive, StubSerialized<ResultPrimitive>>(
@@ -226,7 +227,7 @@ namespace Polly.Specs.Caching
         }
 
         [Fact]
-        public async void Double_generic_SerializingCacheProvider_from_extension_syntax_should_deserialize_on_get()
+        public async Task Double_generic_SerializingCacheProvider_from_extension_syntax_should_deserialize_on_get()
         {
             bool deserializeInvoked = false;
             StubSerializer<ResultPrimitive, StubSerialized<ResultPrimitive>> stubTResultSerializer = new StubSerializer<ResultPrimitive, StubSerialized<ResultPrimitive>>(

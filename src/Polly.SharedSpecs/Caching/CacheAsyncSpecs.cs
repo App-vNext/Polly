@@ -45,7 +45,7 @@ namespace Polly.Specs.Caching
         #region Caching behaviours
 
         [Fact]
-        public async void Should_return_value_from_cache_and_not_execute_delegate_if_cache_holds_value()
+        public async Task Should_return_value_from_cache_and_not_execute_delegate_if_cache_holds_value()
         {
             const string valueToReturnFromCache = "valueToReturnFromCache";
             const string valueToReturnFromExecution = "valueToReturnFromExecution";
@@ -70,7 +70,7 @@ namespace Polly.Specs.Caching
         }
 
         [Fact]
-        public async void Should_execute_delegate_and_put_value_in_cache_if_cache_does_not_hold_value()
+        public async Task Should_execute_delegate_and_put_value_in_cache_if_cache_does_not_hold_value()
         {
             const string valueToReturn = "valueToReturn";
             const string executionKey = "SomeExecutionKey";
@@ -86,7 +86,7 @@ namespace Polly.Specs.Caching
         }
 
         [Fact]
-        public async void Should_execute_delegate_and_put_value_in_cache_but_when_it_expires_execute_delegate_again()
+        public async Task Should_execute_delegate_and_put_value_in_cache_but_when_it_expires_execute_delegate_again()
         {
             const string valueToReturn = "valueToReturn";
             const string executionKey = "SomeExecutionKey";
@@ -128,7 +128,7 @@ namespace Polly.Specs.Caching
         }
 
         [Fact]
-        public async void Should_execute_delegate_but_not_put_value_in_cache_if_cache_does_not_hold_value_but_ttl_indicates_not_worth_caching()
+        public async Task Should_execute_delegate_but_not_put_value_in_cache_if_cache_does_not_hold_value_but_ttl_indicates_not_worth_caching()
         {
             const string valueToReturn = "valueToReturn";
             const string executionKey = "SomeExecutionKey";
@@ -144,7 +144,7 @@ namespace Polly.Specs.Caching
         }
 
         [Fact]
-        public async void Should_return_value_from_cache_and_not_execute_delegate_if_prior_execution_has_cached()
+        public async Task Should_return_value_from_cache_and_not_execute_delegate_if_prior_execution_has_cached()
         {
             const string valueToReturn = "valueToReturn";
             const string executionKey = "SomeExecutionKey";
@@ -170,7 +170,7 @@ namespace Polly.Specs.Caching
         }
 
         [Fact]
-        public async void Should_allow_custom_ICacheKeyStrategy()
+        public async Task Should_allow_custom_ICacheKeyStrategy()
         {
             IAsyncCacheProvider stubCacheProvider = new StubCacheProvider();
             ICacheKeyStrategy cacheKeyStrategy = new StubCacheKeyStrategy(context => context.ExecutionKey + context["id"]);
@@ -196,7 +196,7 @@ namespace Polly.Specs.Caching
         #region No-op pass-through behaviour
 
         [Fact]
-        public async void Should_always_execute_delegate_if_execution_key_not_set()
+        public async Task Should_always_execute_delegate_if_execution_key_not_set()
         {
             string valueToReturn = Guid.NewGuid().ToString();
             
@@ -238,7 +238,7 @@ namespace Polly.Specs.Caching
         #region Cancellation
 
         [Fact]
-        public async void Should_honour_cancellation_even_if_prior_execution_has_cached()
+        public async Task Should_honour_cancellation_even_if_prior_execution_has_cached()
         {
             const string valueToReturn = "valueToReturn";
             const string executionKey = "SomeExecutionKey";
@@ -267,7 +267,7 @@ namespace Polly.Specs.Caching
         }
 
         [Fact]
-        public async void Should_honour_cancellation_during_delegate_execution_and_not_put_to_cache()
+        public async Task Should_honour_cancellation_during_delegate_execution_and_not_put_to_cache()
         {
             const string valueToReturn = "valueToReturn";
             const string executionKey = "SomeExecutionKey";
@@ -292,6 +292,163 @@ namespace Polly.Specs.Caching
         }
 
         #endregion
+
+        #region Policy hooks
+
+        [Fact]
+        public async Task Should_call_onError_delegate_if_cache_get_errors()
+        {
+            Exception ex = new Exception();
+            IAsyncCacheProvider stubCacheProvider = new StubErroringCacheProvider(getException: ex, putException: null);
+
+            Exception exceptionFromCacheProvider = null;
+
+            const string valueToReturnFromCache = "valueToReturnFromCache";
+            const string valueToReturnFromExecution = "valueToReturnFromExecution";
+            const string executionKey = "SomeExecutionKey";
+
+            Action<Context, string, Exception> onError = (ctx, key, exc) => { exceptionFromCacheProvider = exc; };
+
+            CachePolicy cache = Policy.CacheAsync(stubCacheProvider, TimeSpan.MaxValue, onError);
+
+            await stubCacheProvider.PutAsync(executionKey, valueToReturnFromCache, new Ttl(TimeSpan.MaxValue), CancellationToken.None, false).ConfigureAwait(false);
+
+            bool delegateExecuted = false;
+
+
+            // Even though value is in cache, get will error; so value is returned from execution.
+            (await cache.ExecuteAsync(async () =>
+            {
+                delegateExecuted = true;
+                await TaskHelper.EmptyTask.ConfigureAwait(false);
+                return valueToReturnFromExecution;
+                
+            }, new Context(executionKey))
+               .ConfigureAwait(false))
+               .Should().Be(valueToReturnFromExecution);
+            delegateExecuted.Should().BeTrue();
+
+            // And error should be captured by onError delegate.
+            exceptionFromCacheProvider.Should().Be(ex);
+        }
+
+        [Fact]
+        public async Task Should_call_onError_delegate_if_cache_put_errors()
+        {
+            Exception ex = new Exception();
+            IAsyncCacheProvider stubCacheProvider = new StubErroringCacheProvider(getException: null, putException: ex);
+
+            Exception exceptionFromCacheProvider = null;
+
+            const string valueToReturn = "valueToReturn";
+            const string executionKey = "SomeExecutionKey";
+
+            Action<Context, string, Exception> onError = (ctx, key, exc) => { exceptionFromCacheProvider = exc; };
+
+            CachePolicy cache = Policy.CacheAsync(stubCacheProvider, TimeSpan.MaxValue, onError);
+
+            ((string)await stubCacheProvider.GetAsync(executionKey, CancellationToken.None, false).ConfigureAwait(false)).Should().BeNull();
+
+            (await cache.ExecuteAsync(async () => { await TaskHelper.EmptyTask.ConfigureAwait(false); return valueToReturn; }, new Context(executionKey)).ConfigureAwait(false)).Should().Be(valueToReturn);
+
+            //  error should be captured by onError delegate.
+            exceptionFromCacheProvider.Should().Be(ex);
+
+            // failed to put it in the cache
+            ((string)await stubCacheProvider.GetAsync(executionKey, CancellationToken.None, false).ConfigureAwait(false)).Should().BeNull();
+
+        }
+
+        [Fact]
+        public async Task Should_execute_oncacheget_after_got_from_cache()
+        {
+            const string valueToReturnFromCache = "valueToReturnFromCache";
+            const string valueToReturnFromExecution = "valueToReturnFromExecution";
+
+            const string executionKey = "SomeExecutionKey";
+            string keyPassedToDelegate = null;
+
+            Context contextToExecute = new Context(executionKey);
+            Context contextPassedToDelegate = null;
+
+            Action<Context, string, Exception> noErrorHandling = (_, __, ___) => { };
+            Action<Context, string> emptyDelegate = (_, __) => { };
+            Action<Context, string> onCacheAction = (ctx, key) => { contextPassedToDelegate = ctx; keyPassedToDelegate = key; };
+
+            IAsyncCacheProvider stubCacheProvider = new StubCacheProvider();
+            CachePolicy cache = Policy.CacheAsync(stubCacheProvider, new RelativeTtl(TimeSpan.MaxValue), DefaultCacheKeyStrategy.Instance, onCacheAction, emptyDelegate, emptyDelegate, noErrorHandling, noErrorHandling);
+            await stubCacheProvider.PutAsync(executionKey, valueToReturnFromCache, new Ttl(TimeSpan.MaxValue), CancellationToken.None, false).ConfigureAwait(false);
+
+            bool delegateExecuted = false;
+            (await cache.ExecuteAsync(async () =>
+                    {
+                        delegateExecuted = true;
+                        await TaskHelper.EmptyTask.ConfigureAwait(false);
+                        return valueToReturnFromExecution;
+                    }, contextToExecute)
+                    .ConfigureAwait(false))
+                .Should().Be(valueToReturnFromCache);
+            delegateExecuted.Should().BeFalse();
+
+            contextPassedToDelegate.Should().BeSameAs(contextToExecute);
+            keyPassedToDelegate.Should().Be(executionKey);
+        }
+
+        [Fact]
+        public async Task Should_execute_oncachemiss_and_oncacheput_if_cache_does_not_hold_value_and_put()
+        {
+            const string valueToReturn = "valueToReturn";
+
+            const string executionKey = "SomeExecutionKey";
+            string keyPassedToOnCacheMiss = null;
+            string keyPassedToOnCachePut = null;
+
+            Context contextToExecute = new Context(executionKey);
+            Context contextPassedToOnCacheMiss = null;
+            Context contextPassedToOnCachePut = null;
+
+            Action<Context, string, Exception> noErrorHandling = (_, __, ___) => { };
+            Action<Context, string> emptyDelegate = (_, __) => { };
+            Action<Context, string> onCacheMiss = (ctx, key) => { contextPassedToOnCacheMiss = ctx; keyPassedToOnCacheMiss = key; };
+            Action<Context, string> onCachePut = (ctx, key) => { contextPassedToOnCachePut = ctx; keyPassedToOnCachePut = key; };
+
+            IAsyncCacheProvider stubCacheProvider = new StubCacheProvider();
+            CachePolicy cache = Policy.CacheAsync(stubCacheProvider, new RelativeTtl(TimeSpan.MaxValue), DefaultCacheKeyStrategy.Instance, emptyDelegate, onCacheMiss, onCachePut, noErrorHandling, noErrorHandling);
+
+            ((string)await stubCacheProvider.GetAsync(executionKey, CancellationToken.None, false).ConfigureAwait(false)).Should().BeNull();
+            (await cache.ExecuteAsync(async () => { await TaskHelper.EmptyTask.ConfigureAwait(false); return valueToReturn; }, contextToExecute).ConfigureAwait(false)).Should().Be(valueToReturn);
+
+            ((string)await stubCacheProvider.GetAsync(executionKey, CancellationToken.None, false).ConfigureAwait(false)).Should().Be(valueToReturn);
+
+            contextPassedToOnCachePut.Should().BeSameAs(contextToExecute);
+            keyPassedToOnCachePut.Should().Be(executionKey);
+        }
+
+        [Fact]
+        public async Task Should_not_execute_oncachemiss_if_dont_query_cache_because_cache_key_not_set()
+        {
+            string valueToReturn = Guid.NewGuid().ToString();
+
+            Action<Context, string, Exception> noErrorHandling = (_, __, ___) => { };
+            Action<Context, string> emptyDelegate = (_, __) => { };
+
+            bool onCacheMissExecuted = false;
+            Action<Context, string> onCacheMiss = (ctx, key) => { onCacheMissExecuted = true; };
+
+            CachePolicy cache = Policy.CacheAsync(new StubCacheProvider(), new RelativeTtl(TimeSpan.MaxValue), DefaultCacheKeyStrategy.Instance, emptyDelegate, onCacheMiss, emptyDelegate, noErrorHandling, noErrorHandling);
+
+            (await cache.ExecuteAsync(async () => 
+            {
+                await TaskHelper.EmptyTask.ConfigureAwait(false);
+                return valueToReturn;
+            }  /*, no execution key */).ConfigureAwait(false))
+            .Should().Be(valueToReturn);
+
+            onCacheMissExecuted.Should().BeFalse();
+        }
+
+        #endregion
+
 
         public void Dispose()
         {

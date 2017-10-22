@@ -240,7 +240,7 @@ namespace Polly.Specs.Caching
                 stubCacheProvider.For<StubSerialized<ResultPrimitive>>().WithSerializer(stubTResultSerializer);
 
             stubCacheProvider.Put(key, new StubSerialized<ResultPrimitive>(objectToCache), new Ttl(TimeSpan.FromMinutes(1)));
-            object fromCache = serializingCacheProvider.Get(key);
+            ResultPrimitive fromCache = serializingCacheProvider.Get(key);
 
             deserializeInvoked.Should().Be(true);
             fromCache.Should().Be(objectToCache);

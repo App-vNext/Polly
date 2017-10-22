@@ -45,7 +45,7 @@ namespace Polly.Specs.Caching
         #region Caching behaviours
 
         [Fact]
-        public async void Should_return_value_from_cache_and_not_execute_delegate_if_cache_holds_value()
+        public async Task Should_return_value_from_cache_and_not_execute_delegate_if_cache_holds_value()
         {
             const string valueToReturnFromCache = "valueToReturnFromCache";
             const string valueToReturnFromExecution = "valueToReturnFromExecution";
@@ -70,7 +70,7 @@ namespace Polly.Specs.Caching
         }
 
         [Fact]
-        public async void Should_execute_delegate_and_put_value_in_cache_if_cache_does_not_hold_value()
+        public async Task Should_execute_delegate_and_put_value_in_cache_if_cache_does_not_hold_value()
         {
             const string valueToReturn = "valueToReturn";
             const string executionKey = "SomeExecutionKey";
@@ -86,7 +86,7 @@ namespace Polly.Specs.Caching
         }
 
         [Fact]
-        public async void Should_execute_delegate_and_put_value_in_cache_but_when_it_expires_execute_delegate_again()
+        public async Task Should_execute_delegate_and_put_value_in_cache_but_when_it_expires_execute_delegate_again()
         {
             const string valueToReturn = "valueToReturn";
             const string executionKey = "SomeExecutionKey";
@@ -128,7 +128,7 @@ namespace Polly.Specs.Caching
         }
 
         [Fact]
-        public async void Should_execute_delegate_but_not_put_value_in_cache_if_cache_does_not_hold_value_but_ttl_indicates_not_worth_caching()
+        public async Task Should_execute_delegate_but_not_put_value_in_cache_if_cache_does_not_hold_value_but_ttl_indicates_not_worth_caching()
         {
             const string valueToReturn = "valueToReturn";
             const string executionKey = "SomeExecutionKey";
@@ -144,7 +144,7 @@ namespace Polly.Specs.Caching
         }
 
         [Fact]
-        public async void Should_return_value_from_cache_and_not_execute_delegate_if_prior_execution_has_cached()
+        public async Task Should_return_value_from_cache_and_not_execute_delegate_if_prior_execution_has_cached()
         {
             const string valueToReturn = "valueToReturn";
             const string executionKey = "SomeExecutionKey";
@@ -170,7 +170,7 @@ namespace Polly.Specs.Caching
         }
 
         [Fact]
-        public async void Should_allow_custom_ICacheKeyStrategy()
+        public async Task Should_allow_custom_ICacheKeyStrategy()
         {
             IAsyncCacheProvider stubCacheProvider = new StubCacheProvider();
             ICacheKeyStrategy cacheKeyStrategy = new StubCacheKeyStrategy(context => context.ExecutionKey + context["id"]);
@@ -196,7 +196,7 @@ namespace Polly.Specs.Caching
         #region No-op pass-through behaviour
 
         [Fact]
-        public async void Should_always_execute_delegate_if_execution_key_not_set()
+        public async Task Should_always_execute_delegate_if_execution_key_not_set()
         {
             string valueToReturn = Guid.NewGuid().ToString();
 
@@ -221,7 +221,7 @@ namespace Polly.Specs.Caching
         #region Cancellation
 
         [Fact]
-        public async void Should_honour_cancellation_even_if_prior_execution_has_cached()
+        public async Task Should_honour_cancellation_even_if_prior_execution_has_cached()
         {
             const string valueToReturn = "valueToReturn";
             const string executionKey = "SomeExecutionKey";
@@ -250,7 +250,7 @@ namespace Polly.Specs.Caching
         }
 
         [Fact]
-        public async void Should_honour_cancellation_during_delegate_execution_and_not_put_to_cache()
+        public async Task Should_honour_cancellation_during_delegate_execution_and_not_put_to_cache()
         {
             const string valueToReturn = "valueToReturn";
             const string executionKey = "SomeExecutionKey";

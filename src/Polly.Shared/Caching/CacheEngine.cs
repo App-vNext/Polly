@@ -11,7 +11,12 @@ namespace Polly.Caching
             ICacheKeyStrategy cacheKeyStrategy,
             Func<Context, CancellationToken, TResult> action,
             Context context,
-            CancellationToken cancellationToken)
+            CancellationToken cancellationToken,
+            Action<Context, string> onCacheGet,
+            Action<Context, string> onCacheMiss,
+            Action<Context, string> onCachePut,
+            Action<Context, string, Exception> onCacheGetError,
+            Action<Context, string, Exception> onCachePutError)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -21,10 +26,24 @@ namespace Polly.Caching
                 return action(context, cancellationToken);
             }
 
-            TResult valueFromCache = cacheProvider.Get(cacheKey);
-            if (valueFromCache != null)
+            TResult valueFromCache;
+            try
             {
+                valueFromCache = cacheProvider.Get(cacheKey);
+            }
+            catch (Exception ex)
+            {
+                valueFromCache = default(TResult);
+                onCacheGetError(context, cacheKey, ex);
+            }
+            if (valueFromCache != null && !valueFromCache.Equals(default(TResult)))
+            {
+                onCacheGet(context, cacheKey);
                 return valueFromCache;
+            }
+            else
+            {
+                onCacheMiss(context, cacheKey);
             }
 
             TResult result = action(context, cancellationToken);
@@ -32,7 +51,15 @@ namespace Polly.Caching
             Ttl ttl = ttlStrategy.GetTtl(context);
             if (ttl.Timespan > TimeSpan.Zero)
             {
-                cacheProvider.Put(cacheKey, result, ttl);
+                try
+                {
+                    cacheProvider.Put(cacheKey, result, ttl);
+                    onCachePut(context, cacheKey);
+                }
+                catch (Exception ex)
+                {
+                    onCachePutError(context, cacheKey, ex);
+                }
             }
 
             return result;
