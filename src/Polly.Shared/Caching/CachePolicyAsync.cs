@@ -13,8 +13,8 @@ namespace Polly.Caching
         internal CachePolicy(
             IAsyncCacheProvider asyncCacheProvider, 
             ITtlStrategy 
-            ttlStrategy, 
-            ICacheKeyStrategy cacheKeyStrategy,
+            ttlStrategy,
+            Func<Context, string> cacheKeyStrategy,
             Action<Context, string> onCacheGet,
             Action<Context, string> onCacheMiss,
             Action<Context, string> onCachePut,
@@ -65,8 +65,8 @@ namespace Polly.Caching
     {
         internal CachePolicy(
             IAsyncCacheProvider<TResult> asyncCacheProvider, 
-            ITtlStrategy ttlStrategy, 
-            ICacheKeyStrategy cacheKeyStrategy,
+            ITtlStrategy ttlStrategy,
+            Func<Context, string> cacheKeyStrategy,
             Action<Context, string> onCacheGet,
             Action<Context, string> onCacheMiss,
             Action<Context, string> onCachePut,

@@ -8,7 +8,7 @@ namespace Polly.Caching
         internal static TResult Implementation<TResult>(
             ISyncCacheProvider<TResult> cacheProvider,
             ITtlStrategy ttlStrategy,
-            ICacheKeyStrategy cacheKeyStrategy,
+            Func<Context, string> cacheKeyStrategy,
             Func<Context, CancellationToken, TResult> action,
             Context context,
             CancellationToken cancellationToken,
@@ -20,7 +20,7 @@ namespace Polly.Caching
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            string cacheKey = cacheKeyStrategy.GetCacheKey(context);
+            string cacheKey = cacheKeyStrategy(context);
             if (cacheKey == null)
             {
                 return action(context, cancellationToken);

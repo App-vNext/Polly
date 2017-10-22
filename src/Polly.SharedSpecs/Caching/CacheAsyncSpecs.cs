@@ -35,7 +35,7 @@ namespace Polly.Specs.Caching
         public void Should_throw_when_cache_key_strategy_is_null()
         {
             IAsyncCacheProvider cacheProvider = new StubCacheProvider();
-            ICacheKeyStrategy cacheKeyStrategy = null;
+            Func<Context, string> cacheKeyStrategy = null;
             Action action = () => Policy.CacheAsync(cacheProvider, TimeSpan.MaxValue, cacheKeyStrategy);
             action.ShouldThrow<ArgumentNullException>().And.ParamName.Should().Be("cacheKeyStrategy");
         }
@@ -170,11 +170,35 @@ namespace Polly.Specs.Caching
         }
 
         [Fact]
-        public async Task Should_allow_custom_ICacheKeyStrategy()
+        public async Task Should_allow_custom_FuncCacheKeyStrategy()
         {
             IAsyncCacheProvider stubCacheProvider = new StubCacheProvider();
+            CachePolicy cache = Policy.CacheAsync(stubCacheProvider, TimeSpan.MaxValue, context => context.ExecutionKey + context["id"]);
+
+            object person1 = new object();
+            await stubCacheProvider.PutAsync("person1", person1, new Ttl(TimeSpan.MaxValue), CancellationToken.None, false).ConfigureAwait(false);
+            object person2 = new object();
+            await stubCacheProvider.PutAsync("person2", person2, new Ttl(TimeSpan.MaxValue), CancellationToken.None, false).ConfigureAwait(false);
+
+            bool funcExecuted = false;
+            Func<Task<object>> func = async () => { funcExecuted = true; await TaskHelper.EmptyTask.ConfigureAwait(false); return new object(); };
+
+            (await cache.ExecuteAsync(func, new Context("person", new { id = "1" }.AsDictionary())).ConfigureAwait(false)).Should().BeSameAs(person1);
+            funcExecuted.Should().BeFalse();
+
+            (await cache.ExecuteAsync(func, new Context("person", new { id = "2" }.AsDictionary())).ConfigureAwait(false)).Should().BeSameAs(person2);
+            funcExecuted.Should().BeFalse();
+        }
+
+        [Fact]
+        public async Task Should_allow_custom_ICacheKeyStrategy()
+        {
+            Action<Context, string, Exception> noErrorHandling = (_, __, ___) => { };
+            Action<Context, string> emptyDelegate = (_, __) => { };
+
+            IAsyncCacheProvider stubCacheProvider = new StubCacheProvider();
             ICacheKeyStrategy cacheKeyStrategy = new StubCacheKeyStrategy(context => context.ExecutionKey + context["id"]);
-            CachePolicy cache = Policy.CacheAsync(stubCacheProvider, TimeSpan.MaxValue, cacheKeyStrategy);
+            CachePolicy cache = Policy.CacheAsync(stubCacheProvider, new RelativeTtl(TimeSpan.MaxValue), cacheKeyStrategy, emptyDelegate, emptyDelegate, emptyDelegate, noErrorHandling, noErrorHandling);
 
             object person1 = new object();
             await stubCacheProvider.PutAsync("person1", person1, new Ttl(TimeSpan.MaxValue), CancellationToken.None, false).ConfigureAwait(false);

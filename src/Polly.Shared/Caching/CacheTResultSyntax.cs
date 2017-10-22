@@ -20,7 +20,7 @@ namespace Polly
         {
             if (cacheProvider == null) throw new ArgumentNullException(nameof(cacheProvider));
 
-            return Cache<TResult>(cacheProvider.For<TResult>(), new RelativeTtl(ttl), DefaultCacheKeyStrategy.Instance, onCacheError);
+            return Cache<TResult>(cacheProvider.For<TResult>(), new RelativeTtl(ttl), DefaultCacheKeyStrategy.Instance.GetCacheKey, onCacheError);
         }
 
         /// <summary>
@@ -39,7 +39,7 @@ namespace Polly
         {
             if (cacheProvider == null) throw new ArgumentNullException(nameof(cacheProvider));
 
-            return Cache<TResult>(cacheProvider.For<TResult>(), ttlStrategy, DefaultCacheKeyStrategy.Instance, onCacheError);
+            return Cache<TResult>(cacheProvider.For<TResult>(), ttlStrategy, DefaultCacheKeyStrategy.Instance.GetCacheKey, onCacheError);
         }
 
         /// <summary>
@@ -55,7 +55,7 @@ namespace Polly
         /// <exception cref="ArgumentNullException">cacheProvider</exception>
         public static CachePolicy<TResult> Cache<TResult>(ISyncCacheProvider<TResult> cacheProvider, TimeSpan ttl, Action<Context, string, Exception> onCacheError = null)
         {
-            return Cache<TResult>(cacheProvider, new RelativeTtl(ttl), DefaultCacheKeyStrategy.Instance, onCacheError);
+            return Cache<TResult>(cacheProvider, new RelativeTtl(ttl), DefaultCacheKeyStrategy.Instance.GetCacheKey, onCacheError);
         }
 
         /// <summary>
@@ -72,7 +72,7 @@ namespace Polly
         /// <exception cref="ArgumentNullException">ttlStrategy</exception>
         public static CachePolicy<TResult> Cache<TResult>(ISyncCacheProvider<TResult> cacheProvider, ITtlStrategy ttlStrategy, Action<Context, string, Exception> onCacheError = null)
         {
-            return Cache<TResult>(cacheProvider, ttlStrategy, DefaultCacheKeyStrategy.Instance, onCacheError);
+            return Cache<TResult>(cacheProvider, ttlStrategy, DefaultCacheKeyStrategy.Instance.GetCacheKey, onCacheError);
         }
 
         /// <summary>
@@ -88,7 +88,7 @@ namespace Polly
         /// <returns>The policy instance.</returns>
         /// <exception cref="ArgumentNullException">cacheProvider</exception>
         /// <exception cref="ArgumentNullException">cacheKeyStrategy</exception>
-        public static CachePolicy<TResult> Cache<TResult>(ISyncCacheProvider cacheProvider, TimeSpan ttl, ICacheKeyStrategy cacheKeyStrategy, Action<Context, string, Exception> onCacheError = null)
+        public static CachePolicy<TResult> Cache<TResult>(ISyncCacheProvider cacheProvider, TimeSpan ttl, Func<Context, string> cacheKeyStrategy, Action<Context, string, Exception> onCacheError = null)
         {
             if (cacheProvider == null) throw new ArgumentNullException(nameof(cacheProvider));
 
@@ -109,7 +109,7 @@ namespace Polly
         /// <exception cref="ArgumentNullException">cacheProvider</exception>
         /// <exception cref="ArgumentNullException">ttlStrategy</exception>
         /// <exception cref="ArgumentNullException">cacheKeyStrategy</exception>
-        public static CachePolicy<TResult> Cache<TResult>(ISyncCacheProvider cacheProvider, ITtlStrategy ttlStrategy, ICacheKeyStrategy cacheKeyStrategy, Action<Context, string, Exception> onCacheError = null)
+        public static CachePolicy<TResult> Cache<TResult>(ISyncCacheProvider cacheProvider, ITtlStrategy ttlStrategy, Func<Context, string> cacheKeyStrategy, Action<Context, string, Exception> onCacheError = null)
         {
             if (cacheProvider == null) throw new ArgumentNullException(nameof(cacheProvider));
 
@@ -129,7 +129,7 @@ namespace Polly
         /// <returns>The policy instance.</returns>
         /// <exception cref="ArgumentNullException">cacheProvider</exception>
         /// <exception cref="ArgumentNullException">cacheKeyStrategy</exception>
-        public static CachePolicy<TResult> Cache<TResult>(ISyncCacheProvider<TResult> cacheProvider, TimeSpan ttl, ICacheKeyStrategy cacheKeyStrategy, Action<Context, string, Exception> onCacheError = null)
+        public static CachePolicy<TResult> Cache<TResult>(ISyncCacheProvider<TResult> cacheProvider, TimeSpan ttl, Func<Context, string> cacheKeyStrategy, Action<Context, string, Exception> onCacheError = null)
         {
             return Cache<TResult>(cacheProvider, new RelativeTtl(ttl), cacheKeyStrategy, onCacheError);
         }
@@ -148,7 +148,7 @@ namespace Polly
         /// <exception cref="ArgumentNullException">cacheProvider</exception>
         /// <exception cref="ArgumentNullException">ttlStrategy</exception>
         /// <exception cref="ArgumentNullException">cacheKeyStrategy</exception>
-        public static CachePolicy<TResult> Cache<TResult>(ISyncCacheProvider<TResult> cacheProvider, ITtlStrategy ttlStrategy, ICacheKeyStrategy cacheKeyStrategy, Action<Context, string, Exception> onCacheError = null)
+        public static CachePolicy<TResult> Cache<TResult>(ISyncCacheProvider<TResult> cacheProvider, ITtlStrategy ttlStrategy, Func<Context, string> cacheKeyStrategy, Action<Context, string, Exception> onCacheError = null)
         {
             if (cacheProvider == null) throw new ArgumentNullException(nameof(cacheProvider));
             if (ttlStrategy == null) throw new ArgumentNullException(nameof(ttlStrategy));
@@ -188,6 +188,42 @@ namespace Polly
             ISyncCacheProvider<TResult> cacheProvider, 
             ITtlStrategy ttlStrategy, 
             ICacheKeyStrategy cacheKeyStrategy,
+            Action<Context, string> onCacheGet,
+            Action<Context, string> onCacheMiss,
+            Action<Context, string> onCachePut,
+            Action<Context, string, Exception> onCacheGetError,
+            Action<Context, string, Exception> onCachePutError)
+        {
+            return Cache<TResult>(cacheProvider, ttlStrategy, cacheKeyStrategy.GetCacheKey, onCacheGet, onCacheMiss, onCachePut, onCacheGetError, onCachePutError);
+        }
+
+        /// <summary>
+        /// <para>Builds a <see cref="Policy" /> that will function like a result cache for delegate executions returning a <typeparamref name="TResult"/>.</para>
+        /// <para>Before executing a delegate, checks whether the <paramref name="cacheProvider" /> holds a value for the cache key determined by applying the <paramref name="cacheKeyStrategy"/> to the execution <see cref="Context"/>.
+        /// If the <paramref name="cacheProvider" /> contains a value, returns that value and does not execute the governed delegate.  If the <paramref name="cacheProvider" /> does not provide a value, executes the governed delegate, stores the value with the <paramref name="cacheProvider" />, then returns the value.
+        /// </para>
+        /// </summary>
+        /// <param name="cacheProvider">The cache provider.</param>
+        /// <param name="ttlStrategy">A strategy for specifying ttl for values to be cached.</param>
+        /// <param name="cacheKeyStrategy">The cache key strategy.</param>
+        /// <param name="onCacheGet">Delegate to call on a cache hit, when value is returned from cache.</param>
+        /// <param name="onCacheMiss">Delegate to call on a cache miss.</param>
+        /// <param name="onCachePut">Delegate to call on cache put.</param>
+        /// <param name="onCacheGetError">Delegate to call if an exception is thrown when attempting to get a value from the cache, passing the execution context, the cache key, and the exception.</param>
+        /// <param name="onCachePutError">Delegate to call if an exception is thrown when attempting to put a value in the cache, passing the execution context, the cache key, and the exception.</param>
+        /// <returns>The policy instance.</returns>
+        /// <exception cref="ArgumentNullException">cacheProvider</exception>
+        /// <exception cref="ArgumentNullException">ttlStrategy</exception>
+        /// <exception cref="ArgumentNullException">cacheKeyStrategy</exception>
+        /// <exception cref="ArgumentNullException">onCacheGet</exception>
+        /// <exception cref="ArgumentNullException">onCacheMiss</exception>
+        /// <exception cref="ArgumentNullException">onCachePut</exception>
+        /// <exception cref="ArgumentNullException">onCacheGetError</exception>
+        /// <exception cref="ArgumentNullException">onCachePutError</exception>
+        public static CachePolicy<TResult> Cache<TResult>(
+            ISyncCacheProvider<TResult> cacheProvider,
+            ITtlStrategy ttlStrategy,
+            Func<Context, string> cacheKeyStrategy,
             Action<Context, string> onCacheGet,
             Action<Context, string> onCacheMiss,
             Action<Context, string> onCachePut,

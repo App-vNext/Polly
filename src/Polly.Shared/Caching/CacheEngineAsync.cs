@@ -9,7 +9,7 @@ namespace Polly.Caching
         internal static async Task<TResult> ImplementationAsync<TResult>(
             IAsyncCacheProvider<TResult> cacheProvider,
             ITtlStrategy ttlStrategy,
-            ICacheKeyStrategy cacheKeyStrategy,
+            Func<Context, string> cacheKeyStrategy,
             Func<Context, CancellationToken, Task<TResult>> action,
             Context context,
             CancellationToken cancellationToken,
@@ -22,7 +22,7 @@ namespace Polly.Caching
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            string cacheKey = cacheKeyStrategy.GetCacheKey(context);
+            string cacheKey = cacheKeyStrategy(context);
             if (cacheKey == null)
             {
                 return await action(context, cancellationToken).ConfigureAwait(continueOnCapturedContext);

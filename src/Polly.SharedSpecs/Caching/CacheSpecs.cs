@@ -34,7 +34,7 @@ namespace Polly.Specs.Caching
         public void Should_throw_when_cache_key_strategy_is_null()
         {
             ISyncCacheProvider cacheProvider = new StubCacheProvider();
-            ICacheKeyStrategy cacheKeyStrategy = null;
+            Func<Context, string> cacheKeyStrategy = null;
             Action action = () => Policy.Cache(cacheProvider, TimeSpan.MaxValue, cacheKeyStrategy);
             action.ShouldThrow<ArgumentNullException>().And.ParamName.Should().Be("cacheKeyStrategy");
         }
@@ -163,13 +163,37 @@ namespace Polly.Specs.Caching
             cache.Execute(func, new Context(executionKey)).Should().Be(valueToReturn);
             delegateInvocations.Should().Be(1);
         }
-        
+
+        [Fact]
+        public void Should_allow_custom_FuncCacheKeyStrategy()
+        {
+            ISyncCacheProvider stubCacheProvider = new StubCacheProvider();
+            CachePolicy cache = Policy.Cache(stubCacheProvider, TimeSpan.MaxValue, context => context.ExecutionKey + context["id"]);
+
+            object person1 = new object();
+            stubCacheProvider.Put("person1", person1, new Ttl(TimeSpan.MaxValue));
+            object person2 = new object();
+            stubCacheProvider.Put("person2", person2, new Ttl(TimeSpan.MaxValue));
+
+            bool funcExecuted = false;
+            Func<object> func = () => { funcExecuted = true; return new object(); };
+
+            cache.Execute(func, new Context("person", new { id = "1" }.AsDictionary())).Should().BeSameAs(person1);
+            funcExecuted.Should().BeFalse();
+
+            cache.Execute(func, new Context("person", new { id = "2" }.AsDictionary())).Should().BeSameAs(person2);
+            funcExecuted.Should().BeFalse();
+        }
+
         [Fact]
         public void Should_allow_custom_ICacheKeyStrategy()
         {
+            Action<Context, string, Exception> noErrorHandling = (_, __, ___) => { };
+            Action<Context, string> emptyDelegate = (_, __) => { };
+
             ISyncCacheProvider stubCacheProvider = new StubCacheProvider();
             ICacheKeyStrategy cacheKeyStrategy = new StubCacheKeyStrategy(context => context.ExecutionKey + context["id"]);
-            CachePolicy cache = Policy.Cache(stubCacheProvider, TimeSpan.MaxValue, cacheKeyStrategy);
+            CachePolicy cache = Policy.Cache(stubCacheProvider, new RelativeTtl(TimeSpan.MaxValue), cacheKeyStrategy, emptyDelegate, emptyDelegate, emptyDelegate, noErrorHandling, noErrorHandling);
 
             object person1 = new object();
             stubCacheProvider.Put("person1", person1, new Ttl(TimeSpan.MaxValue));

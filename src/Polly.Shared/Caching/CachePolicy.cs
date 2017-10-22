@@ -12,7 +12,7 @@ namespace Polly.Caching
     {
         private readonly ISyncCacheProvider _syncCacheProvider;
         private readonly ITtlStrategy _ttlStrategy;
-        private readonly ICacheKeyStrategy _cacheKeyStrategy;
+        private readonly Func<Context, string> _cacheKeyStrategy;
 
         private readonly Action<Context, string> _onCacheGet;
         private readonly Action<Context, string> _onCacheMiss;
@@ -22,8 +22,8 @@ namespace Polly.Caching
 
         internal CachePolicy(
             ISyncCacheProvider syncCacheProvider, 
-            ITtlStrategy ttlStrategy, 
-            ICacheKeyStrategy cacheKeyStrategy,
+            ITtlStrategy ttlStrategy,
+            Func<Context, string> cacheKeyStrategy,
             Action<Context, string> onCacheGet,
             Action<Context, string> onCacheMiss,
             Action<Context, string> onCachePut,
@@ -75,8 +75,8 @@ namespace Polly.Caching
     {
         internal CachePolicy(
             ISyncCacheProvider<TResult> syncCacheProvider, 
-            ITtlStrategy ttlStrategy, 
-            ICacheKeyStrategy cacheKeyStrategy,
+            ITtlStrategy ttlStrategy,
+            Func<Context, string> cacheKeyStrategy,
             Action<Context, string> onCacheGet,
             Action<Context, string> onCacheMiss,
             Action<Context, string> onCachePut,
