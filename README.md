@@ -551,7 +551,31 @@ For more detail see: [Bulkhead policy documentation](https://github.com/App-vNex
 
 ### Cache
 
-The Cache policy is targeting an upcoming Polly v5.x version.  Check out [www.thepollyproject.org](http://www.thepollyproject.org) for updates.
+```csharp
+// Define a cache Policy in the .NET Framework, using the Polly.Caching.MemoryCache nuget package.
+var memoryCacheProvider = new Polly.Caching.MemoryCache.MemoryCacheProvider(MemoryCache.Default);
+var cachePolicy = Policy.Cache(memoryCacheProvider, TimeSpan.FromMinutes(5));
+
+// Define a cache policy with absolute expiration at midnight tonight.
+var cachePolicy = Policy.Cache(memoryCacheProvider, new AbsoluteTtl(DateTimeOffset.Now.Date.AddDays(1));
+
+// Define a cache policy with sliding expiration: items remain valid for another 5 minutes each time the cache item is used.
+var cachePolicy = Policy.Cache(memoryCacheProvider, new SlidingTtl(TimeSpan.FromMinutes(5));
+
+// Execute through the cache as a read-through cache: check the cache first; if not found, execute underlying delegate and store the result in the cache. 
+TResult result = cachePolicy.Execute(() => getFoo(), new Context("FooKey")); // "FooKey" is the cache key used in this execution.
+
+// Define a cache Policy, and catch any cache provider errors for logging. 
+var cachePolicy = Policy.Cache(myCacheProvider, TimeSpan.FromMinutes(5), 
+   (context, key, ex) => { 
+       logger.Error($"Cache provider, for key {key}, threw exception: {ex}."); // (for example) 
+   }
+);
+
+
+```
+
+For richer options and details of using further cache providers see: [Cache policy documentation](https://github.com/App-vNext/Polly/wiki/Cache) on wiki.
 
 ### PolicyWrap
 
