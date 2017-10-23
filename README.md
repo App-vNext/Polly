@@ -104,7 +104,7 @@ HttpStatusCode[] httpStatusCodesWorthRetrying = {
 HttpResponseMessage result = Policy
   .Handle<HttpResponseException>()
   .OrResult<HttpResponseMessage>(r => httpStatusCodesWorthRetrying.Contains(r.StatusCode))
-  .Retry(...)
+  .RetryAsync(...)
   .ExecuteAsync( /* some Func<Task<HttpResponseMessage>> */ )
 ```
 
@@ -655,7 +655,7 @@ HttpStatusCode[] httpStatusCodesWorthRetrying = {
 HttpResponseMessage result = Policy
   .Handle<HttpResponseException>()
   .OrResult<HttpResponseMessage>(r => httpStatusCodesWorthRetrying.Contains(r.StatusCode))
-  .Retry(...)
+  .RetryAsync(...)
   .ExecuteAsync( /* some Func<Task<HttpResponseMessage>> */ )
 ```
 
