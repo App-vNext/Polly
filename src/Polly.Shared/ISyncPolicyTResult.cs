@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading;
 
 namespace Polly
@@ -18,6 +17,16 @@ namespace Polly
         /// </summary>
         /// <param name="policyKey">The unique, used-definable key to assign to this <see cref="Policy"/> instance.</param>
         ISyncPolicy<TResult> WithPolicyKey(String policyKey);
+
+        /// <summary>
+        /// The Exception predicates for this policy
+        /// </summary>
+        IEnumerable<ExceptionPredicate> ExceptionPredicates { get; }
+
+        /// <summary>
+        /// The Result value predicates for this policy
+        /// </summary>
+        IEnumerable<ResultPredicate<TResult>> ResultPredicates { get; }
 
         /// <summary>
         /// Executes the specified action within the policy and returns the Result.

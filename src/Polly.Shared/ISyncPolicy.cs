@@ -17,6 +17,11 @@ namespace Polly
         ISyncPolicy WithPolicyKey(String policyKey);
 
         /// <summary>
+        /// The Exception predicates for this policy
+        /// </summary>
+        IEnumerable<ExceptionPredicate> ExceptionPredicates { get; }
+
+        /// <summary>
         /// Executes the specified action within the policy.
         /// </summary>
         /// <param name="action">The action to perform.</param>
