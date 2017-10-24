@@ -21,7 +21,7 @@ You can install the Strongly Named version via:
 
     Install-Package Polly-Signed
 
-.NET4.0 support is provide via the packages:
+.NET4.0 support is provided via the packages:
 
     Install-Package Polly.Net40Async
     Install-Package Polly.Net40Async-Signed
