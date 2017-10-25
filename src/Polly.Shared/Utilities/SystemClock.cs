@@ -9,6 +9,13 @@ namespace Polly.Utilities
     /// </summary>
     public static class SystemClock
     {
+
+#if NETSTANDARD2_0
+        private static AsyncLocal<Action<TimeSpan, CancellationToken>> _sleep = new AsyncLocal<Action<TimeSpan, CancellationToken>>();
+        private static AsyncLocal<Func<TimeSpan, CancellationToken, Task>> _sleepAsync = new AsyncLocal<Func<TimeSpan, CancellationToken, Task>>();
+        private static AsyncLocal<Func<DateTime>> _utcNow = new AsyncLocal<Func<DateTime>>();
+#endif
+
         /// <summary>
         /// Allows the setting of a custom Thread.Sleep implementation for testing.
         /// By default this will use the <see cref="CancellationToken"/>'s <see cref="WaitHandle"/>.
@@ -19,7 +26,6 @@ namespace Polly.Utilities
             if (cancellationToken.WaitHandle.WaitOne(timeSpan)) cancellationToken.ThrowIfCancellationRequested();
         };
 #else
-        private static AsyncLocal<Action<TimeSpan, CancellationToken>> _sleep = new AsyncLocal<Action<TimeSpan, CancellationToken>>();
         public static Action<TimeSpan, CancellationToken> Sleep
         {
             get
@@ -42,7 +48,6 @@ namespace Polly.Utilities
 #if NET40
         public static Func<TimeSpan, CancellationToken, Task> SleepAsync = TaskEx.Delay;
 #elif NETSTANDARD2_0
-        private static AsyncLocal<Func<TimeSpan, CancellationToken, Task>> _sleepAsync = new AsyncLocal<Func<TimeSpan, CancellationToken, Task>>();
         public static Func<TimeSpan, CancellationToken, Task> SleepAsync
         {
             get
@@ -63,7 +68,6 @@ namespace Polly.Utilities
 #if !NETSTANDARD2_0
 public static Func<DateTime> UtcNow = () => DateTime.UtcNow;
 #else
-        private static AsyncLocal<Func<DateTime>> _utcNow = new AsyncLocal<Func<DateTime>>();
         public static Func<DateTime> UtcNow
         {
             get
