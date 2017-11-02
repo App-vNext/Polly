@@ -21,7 +21,7 @@ You can install the Strongly Named version via:
 
     Install-Package Polly-Signed
 
-.NET4.0 support is provide via the packages:
+.NET4.0 support is provided via the packages:
 
     Install-Package Polly.Net40Async
     Install-Package Polly.Net40Async-Signed
@@ -104,7 +104,7 @@ HttpStatusCode[] httpStatusCodesWorthRetrying = {
 HttpResponseMessage result = Policy
   .Handle<HttpResponseException>()
   .OrResult<HttpResponseMessage>(r => httpStatusCodesWorthRetrying.Contains(r.StatusCode))
-  .Retry(...)
+  .RetryAsync(...)
   .ExecuteAsync( /* some Func<Task<HttpResponseMessage>> */ )
 ```
 
@@ -655,7 +655,7 @@ HttpStatusCode[] httpStatusCodesWorthRetrying = {
 HttpResponseMessage result = Policy
   .Handle<HttpResponseException>()
   .OrResult<HttpResponseMessage>(r => httpStatusCodesWorthRetrying.Contains(r.StatusCode))
-  .Retry(...)
+  .RetryAsync(...)
   .ExecuteAsync( /* some Func<Task<HttpResponseMessage>> */ )
 ```
 
@@ -974,6 +974,10 @@ When we discover an interesting write-up on Polly, we'll add it to this list. If
 ## Podcasts
 
 * [Dylan Reisenberger](https://twitter.com/softwarereisen) sits down virtually with [Bryan Hogan](https://twitter.com/bryanjhogan) of [NoDogmaBlog](http://nodogmablog.bryanhogan.net/) for an [Introduction to Polly podcast](http://nodogmapodcast.bryanhogan.net/71-dylan-reisenberger-the-polly-project/).  Why do I need Polly?  History of the Polly project.  What do we mean by resilience and transient faults?  How retry and circuit-breaker help.  Exponential backoff.  Stability patterns.  Bulkhead isolation.  Future directions (as at April 2017).
+
+## Twitter
+
+* Follow [Dylan Reisenberger on twitter](https://twitter.com/softwarereisen) for notification of new Polly releases, advance notice of new proposals, occasional tweets of interesting resilience articles (no junk).
 
 ## Videos
 
