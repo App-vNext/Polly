@@ -1588,7 +1588,7 @@ namespace Polly.Specs.CircuitBreaker
 
             bool firstExecutionActive = false;
             // First execution in HalfOpen state: we should be able to verify state is HalfOpen as it executes.
-            Task firstExecution = Task.Run(() =>
+            Task firstExecution = Task.Factory.StartNew(() =>
             {
                 breaker.Invoking(x => x.Execute(() =>
                 {
@@ -1603,12 +1603,12 @@ namespace Polly.Specs.CircuitBreaker
                     firstExecutionActive = false;
 
                 })).ShouldNotThrow();
-            });
+            }, TaskCreationOptions.LongRunning);
 
             // Attempt a second execution, signalled by the first execution to ensure they overlap: we should be able to verify it doesn't execute, and is rejected by a breaker in a HalfOpen state.
             permitSecondExecutionAttempt.WaitOne(testTimeoutToExposeDeadlocks);
 
-            Task secondExecution = Task.Run(() =>
+            Task secondExecution = Task.Factory.StartNew(() =>
             {
                 // Validation of correct sequencing and overlapping of tasks in test (guard against erroneous test refactorings/operation).
                 firstExecutionActive.Should().BeTrue();
@@ -1630,7 +1630,7 @@ namespace Polly.Specs.CircuitBreaker
 
                 // Release first execution soon as second overlapping execution is done gathering data.
                 permitFirstExecutionEnd.Set();
-            });
+            }, TaskCreationOptions.LongRunning);
 
             // Graceful cleanup: allow executions time to end naturally; signal them to end if not; timeout any deadlocks; expose any execution faults. This validates the test ran as expected (and background delegates are complete) before we assert on outcomes.
             permitFirstExecutionEnd.WaitOne(testTimeoutToExposeDeadlocks);
@@ -1693,7 +1693,7 @@ namespace Polly.Specs.CircuitBreaker
 
             bool firstExecutionActive = false;
             // First execution in HalfOpen state: we should be able to verify state is HalfOpen as it executes.
-            Task firstExecution = Task.Run(() =>
+            Task firstExecution = Task.Factory.StartNew(() =>
             {
                 breaker.Invoking(x => x.Execute(() =>
                 {
@@ -1708,12 +1708,12 @@ namespace Polly.Specs.CircuitBreaker
                     firstExecutionActive = false;
 
                 })).ShouldNotThrow();
-            });
+            }, TaskCreationOptions.LongRunning);
 
             // Attempt a second execution, signalled by the first execution to ensure they overlap; start it one breakDuration later.  We should be able to verify it does execute, though the breaker is still in a HalfOpen state.
             permitSecondExecutionAttempt.WaitOne(testTimeoutToExposeDeadlocks);
 
-            Task secondExecution = Task.Run(() =>
+            Task secondExecution = Task.Factory.StartNew(() =>
             {
                 // Validation of correct sequencing and overlapping of tasks in test (guard against erroneous test refactorings/operation).
                 firstExecutionActive.Should().BeTrue();
@@ -1737,7 +1737,7 @@ namespace Polly.Specs.CircuitBreaker
 
                 // Release first execution soon as second overlapping execution is done gathering data.
                 permitFirstExecutionEnd.Set();
-            });
+            }, TaskCreationOptions.LongRunning);
 
             // Graceful cleanup: allow executions time to end naturally; signal them to end if not; timeout any deadlocks; expose any execution faults. This validates the test ran as expected (and background delegates are complete) before we assert on outcomes.
             permitFirstExecutionEnd.WaitOne(testTimeoutToExposeDeadlocks);
@@ -2025,7 +2025,7 @@ namespace Polly.Specs.CircuitBreaker
             ManualResetEvent permitLongRunningExecutionToReturnItsFailure = new ManualResetEvent(false);
             ManualResetEvent permitMainThreadToOpenCircuit = new ManualResetEvent(false);
 
-            Task longRunningExecution = Task.Run(() =>
+            Task longRunningExecution = Task.Factory.StartNew(() =>
             {
                 breaker.CircuitState.Should().Be(CircuitState.Closed);
 
@@ -2041,7 +2041,7 @@ namespace Polly.Specs.CircuitBreaker
                     throw new DivideByZeroException();
 
                 })).ShouldThrow<DivideByZeroException>(); // However, since execution started when circuit was closed, BrokenCircuitException will not have been thrown on entry; the original exception will still be thrown.
-            });
+            }, TaskCreationOptions.LongRunning);
 
             permitMainThreadToOpenCircuit.WaitOne(testTimeoutToExposeDeadlocks).Should().BeTrue();
 
