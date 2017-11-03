@@ -8,7 +8,7 @@ namespace Polly.Caching
     /// <summary>
     /// A cache policy that can be applied to the results of delegate executions.
     /// </summary>
-    public partial class CachePolicy : Policy
+    public partial class CachePolicy : Policy, ICachePolicy
     {
         private readonly ISyncCacheProvider _syncCacheProvider;
         private readonly ITtlStrategy _ttlStrategy;
@@ -71,7 +71,7 @@ namespace Polly.Caching
     /// <summary>
     /// A cache policy that can be applied to the results of delegate executions.
     /// </summary>
-    public partial class CachePolicy<TResult> : Policy<TResult>
+    public partial class CachePolicy<TResult> : Policy<TResult>, ICachePolicy<TResult>
     {
         internal CachePolicy(
             ISyncCacheProvider<TResult> syncCacheProvider, 
