@@ -15,6 +15,11 @@
     <releaseNotes>
      v5.0 is a major release with significant new resilience policies: Timeout; Bulkhead Isolation; Fallback; Cache; and PolicyWrap.  See release notes back to v5.0.0 for full details.  v5.0.5 includes important circuit-breaker fixes.
 
+     5.5.0
+     ---------------------
+     - Bug fix: non-generic CachePolicy with PolicyWrap
+     - Add Cache interfaces
+     
      5.4.0
      ---------------------
      - Add CachePolicy: cache-aside pattern, with interfaces for pluggable cache providers and serializers.

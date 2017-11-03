@@ -1,3 +1,7 @@
+## 5.5.0
+- Bug fix: non-generic CachePolicy with PolicyWrap
+- Add Cache interfaces
+
 ## 5.4.0
 - Add CachePolicy: cache-aside pattern, with interfaces for pluggable cache providers and serializers.
 - Bug fix: Sync TimeoutPolicy in pessimistic mode no longer interposes AggregateException.
