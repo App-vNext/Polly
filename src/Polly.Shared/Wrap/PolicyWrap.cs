@@ -56,12 +56,12 @@ namespace Polly.Wrap
     public partial class PolicyWrap<TResult> : Policy<TResult>, IPolicyWrap<TResult>
     {
         /// <summary>
-        /// Returns the outer <see cref="IsPolicy"/> in this <see cref="IPolicyWrap"/>
+        /// Returns the outer <see cref="IsPolicy"/> in this <see cref="IPolicyWrap{TResult}"/>
         /// </summary>
         public IsPolicy Outer { get; private set; }
 
         /// <summary>
-        /// Returns the next inner <see cref="IsPolicy"/> in this <see cref="IPolicyWrap"/>
+        /// Returns the next inner <see cref="IsPolicy"/> in this <see cref="IPolicyWrap{TResult}"/>
         /// </summary>
         public IsPolicy Inner { get; private set; }
 
