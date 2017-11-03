@@ -33,6 +33,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Caching\DefaultCacheKeyStrategy.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Caching\ICacheItemSerializer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Caching\ICacheKeyStrategy.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Caching\ICachePolicy.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Caching\ISyncCacheProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Caching\IAsyncCacheProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Caching\ITtlStrategy.cs" />
