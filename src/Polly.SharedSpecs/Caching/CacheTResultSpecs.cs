@@ -5,6 +5,7 @@ using Polly.Caching;
 using Polly.Specs.Helpers;
 using Polly.Specs.Helpers.Caching;
 using Polly.Utilities;
+using Polly.Wrap;
 using Xunit;
 
 namespace Polly.Specs.Caching
@@ -208,6 +209,88 @@ namespace Polly.Specs.Caching
 
             cache.Execute(func, new Context("person", new { id = "2" }.AsDictionary())).Should().BeSameAs(person2);
             funcExecuted.Should().BeFalse();
+        }
+
+        #endregion
+
+        #region Generic CachePolicy in PolicyWrap
+
+        [Fact]
+        public void Should_return_value_from_cache_and_not_execute_delegate_if_cache_holds_value_when_outermost_in_policywrap()
+        {
+            const string valueToReturnFromCache = "valueToReturnFromCache";
+            const string valueToReturnFromExecution = "valueToReturnFromExecution";
+            const string executionKey = "SomeExecutionKey";
+
+            ISyncCacheProvider stubCacheProvider = new StubCacheProvider();
+            CachePolicy<string> cache = Policy.Cache<string>(stubCacheProvider, TimeSpan.MaxValue);
+            Policy noop = Policy.NoOp();
+            PolicyWrap<string> wrap = cache.Wrap(noop);
+
+            stubCacheProvider.Put(executionKey, valueToReturnFromCache, new Ttl(TimeSpan.MaxValue));
+
+            bool delegateExecuted = false;
+
+            wrap.Execute(() =>
+            {
+                delegateExecuted = true;
+                return valueToReturnFromExecution;
+            }, new Context(executionKey))
+                .Should().Be(valueToReturnFromCache);
+
+            delegateExecuted.Should().BeFalse();
+        }
+
+        [Fact]
+        public void Should_return_value_from_cache_and_not_execute_delegate_if_cache_holds_value_when_innermost_in_policywrap()
+        {
+            const string valueToReturnFromCache = "valueToReturnFromCache";
+            const string valueToReturnFromExecution = "valueToReturnFromExecution";
+            const string executionKey = "SomeExecutionKey";
+
+            ISyncCacheProvider stubCacheProvider = new StubCacheProvider();
+            CachePolicy<string> cache = Policy.Cache<string>(stubCacheProvider, TimeSpan.MaxValue);
+            Policy noop = Policy.NoOp();
+            PolicyWrap<string> wrap = noop.Wrap(cache);
+
+            stubCacheProvider.Put(executionKey, valueToReturnFromCache, new Ttl(TimeSpan.MaxValue));
+
+            bool delegateExecuted = false;
+
+            wrap.Execute(() =>
+            {
+                delegateExecuted = true;
+                return valueToReturnFromExecution;
+            }, new Context(executionKey))
+                .Should().Be(valueToReturnFromCache);
+
+            delegateExecuted.Should().BeFalse();
+        }
+
+        [Fact]
+        public void Should_return_value_from_cache_and_not_execute_delegate_if_cache_holds_value_when_mid_policywrap()
+        {
+            const string valueToReturnFromCache = "valueToReturnFromCache";
+            const string valueToReturnFromExecution = "valueToReturnFromExecution";
+            const string executionKey = "SomeExecutionKey";
+
+            ISyncCacheProvider stubCacheProvider = new StubCacheProvider();
+            CachePolicy<string> cache = Policy.Cache<string>(stubCacheProvider, TimeSpan.MaxValue);
+            Policy<string> noop = Policy.NoOp<string>();
+            PolicyWrap<string> wrap = Policy.Wrap(noop, cache, noop);
+
+            stubCacheProvider.Put(executionKey, valueToReturnFromCache, new Ttl(TimeSpan.MaxValue));
+
+            bool delegateExecuted = false;
+
+            wrap.Execute(() =>
+            {
+                delegateExecuted = true;
+                return valueToReturnFromExecution;
+            }, new Context(executionKey))
+                .Should().Be(valueToReturnFromCache);
+
+            delegateExecuted.Should().BeFalse();
         }
 
         #endregion

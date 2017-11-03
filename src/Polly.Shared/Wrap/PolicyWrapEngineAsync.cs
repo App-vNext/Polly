@@ -36,7 +36,7 @@ namespace Polly.Wrap
             Policy innerPolicy)
         {
             return await outerPolicy.ExecuteAsync(
-                async (ctx, ct) => await innerPolicy.ExecuteAsync(
+                async (ctx, ct) => await innerPolicy.ExecuteAsync<TResult>(
                     func,
                     ctx,
                     ct,
@@ -56,7 +56,7 @@ namespace Polly.Wrap
             Policy outerPolicy,
             Policy<TResult> innerPolicy)
         {
-            return await outerPolicy.ExecuteAsync(
+            return await outerPolicy.ExecuteAsync<TResult>(
                 async (ctx, ct) => await innerPolicy.ExecuteAsync(
                     func,
                     ctx,
@@ -67,6 +67,27 @@ namespace Polly.Wrap
                 cancellationToken,
                 continueOnCapturedContext
                 ).ConfigureAwait(continueOnCapturedContext);
+        }
+
+        internal static async Task<TResult> ImplementationAsync<TResult>(
+           Func<Context, CancellationToken, Task<TResult>> func,
+           Context context,
+           CancellationToken cancellationToken,
+           bool continueOnCapturedContext,
+           Policy outerPolicy,
+           Policy innerPolicy)
+        {
+            return await outerPolicy.ExecuteAsync<TResult>(
+                async (ctx, ct) => await innerPolicy.ExecuteAsync<TResult>(
+                    func,
+                    ctx,
+                    ct,
+                    continueOnCapturedContext
+                ).ConfigureAwait(continueOnCapturedContext),
+                context,
+                cancellationToken,
+                continueOnCapturedContext
+            ).ConfigureAwait(continueOnCapturedContext);
         }
 
         internal static async Task ImplementationAsync(

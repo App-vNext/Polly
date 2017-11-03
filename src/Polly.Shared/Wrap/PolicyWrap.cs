@@ -9,9 +9,43 @@ namespace Polly.Wrap
     /// </summary>
     public partial class PolicyWrap : Policy, IPolicyWrap
     {
+        private Policy _outer;
+        private Policy _inner;
+
+        /// <summary>
+        /// Returns the outer <see cref="IsPolicy"/> in this <see cref="IPolicyWrap"/>
+        /// </summary>
+        public IsPolicy Outer => _outer;
+
+        /// <summary>
+        /// Returns the next inner <see cref="IsPolicy"/> in this <see cref="IPolicyWrap"/>
+        /// </summary>
+        public IsPolicy Inner => _inner;
+
         internal PolicyWrap(Action<Action<Context, CancellationToken>, Context, CancellationToken> policyAction, Policy outer, Policy inner) 
             : base(policyAction, outer.ExceptionPredicates)
         {
+            _outer = outer;
+            _inner = inner;
+        }
+
+        /// <summary>
+        /// Executes the specified action within the cache policy and returns the result.
+        /// </summary>
+        /// <typeparam name="TResult">The type of the result.</typeparam>
+        /// <param name="action">The action to perform.</param>
+        /// <param name="context">Execution context that is passed to the exception policy; defines the cache key to use in cache lookup.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>The value returned by the action, or the cache.</returns>
+        public override TResult Execute<TResult>(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken)
+        {
+            return PolicyWrapEngine.Implementation<TResult>(
+                   action,
+                   context,
+                   cancellationToken,
+                   _outer, 
+                   _inner
+                   );
         }
     }
 
@@ -21,14 +55,28 @@ namespace Polly.Wrap
     /// <typeparam name="TResult">The return type of delegates which may be executed through the policy.</typeparam>
     public partial class PolicyWrap<TResult> : Policy<TResult>, IPolicyWrap<TResult>
     {
+        /// <summary>
+        /// Returns the outer <see cref="IsPolicy"/> in this <see cref="IPolicyWrap"/>
+        /// </summary>
+        public IsPolicy Outer { get; private set; }
+
+        /// <summary>
+        /// Returns the next inner <see cref="IsPolicy"/> in this <see cref="IPolicyWrap"/>
+        /// </summary>
+        public IsPolicy Inner { get; private set; }
+
         internal PolicyWrap(Func<Func<Context, CancellationToken, TResult>, Context, CancellationToken, TResult> policyAction, Policy outer, IsPolicy inner)
             : base(policyAction, outer.ExceptionPredicates,  PredicateHelper<TResult>.EmptyResultPredicates)
         {
+            Outer = outer;
+            Inner = inner;
         }
 
         internal PolicyWrap(Func<Func<Context, CancellationToken, TResult>, Context, CancellationToken, TResult> policyAction, Policy<TResult> outer, IsPolicy inner)
             : base(policyAction, outer.ExceptionPredicates, outer.ResultPredicates)
         {
+            Outer = outer;
+            Inner = inner;
         }
     }
 }

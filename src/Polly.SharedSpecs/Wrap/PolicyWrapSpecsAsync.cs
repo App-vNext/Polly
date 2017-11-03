@@ -44,7 +44,6 @@ namespace Polly.Specs.Wrap
             config.ShouldThrow<ArgumentNullException>().And.ParamName.Should().Be("innerPolicy");
         }
 
-
         [Fact]
         public void Generic_wraps_generic_instance_syntax_wrapping_null_should_throw()
         {
@@ -53,6 +52,54 @@ namespace Polly.Specs.Wrap
             Action config = () => retry.WrapAsync((Policy<int>)null);
 
             config.ShouldThrow<ArgumentNullException>().And.ParamName.Should().Be("innerPolicy");
+        }
+
+        [Fact]
+        public void Nongeneric_wraps_nongeneric_using_instance_wrap_syntax_should_set_outer_inner()
+        {
+            Policy policyA = Policy.NoOpAsync();
+            Policy policyB = Policy.NoOpAsync();
+
+            PolicyWrap wrap = policyA.WrapAsync(policyB);
+
+            wrap.Outer.Should().BeSameAs(policyA);
+            wrap.Inner.Should().BeSameAs(policyB);
+        }
+
+        [Fact]
+        public void Nongeneric_wraps_generic_using_instance_wrap_syntax_should_set_outer_inner()
+        {
+            Policy policyA = Policy.NoOpAsync();
+            Policy<int> policyB = Policy.NoOpAsync<int>();
+
+            PolicyWrap<int> wrap = policyA.WrapAsync(policyB);
+
+            wrap.Outer.Should().BeSameAs(policyA);
+            wrap.Inner.Should().BeSameAs(policyB);
+        }
+
+        [Fact]
+        public void Generic_wraps_nongeneric_using_instance_wrap_syntax_should_set_outer_inner()
+        {
+            Policy<int> policyA = Policy.NoOpAsync<int>();
+            Policy policyB = Policy.NoOpAsync();
+
+            PolicyWrap<int> wrap = policyA.WrapAsync(policyB);
+
+            wrap.Outer.Should().BeSameAs(policyA);
+            wrap.Inner.Should().BeSameAs(policyB);
+        }
+
+        [Fact]
+        public void Generic_wraps_generic_using_instance_wrap_syntax_should_set_outer_inner()
+        {
+            Policy<int> policyA = Policy.NoOpAsync<int>();
+            Policy<int> policyB = Policy.NoOpAsync<int>();
+
+            PolicyWrap<int> wrap = policyA.WrapAsync(policyB);
+
+            wrap.Outer.Should().BeSameAs(policyA);
+            wrap.Inner.Should().BeSameAs(policyB);
         }
 
         #endregion
@@ -98,6 +145,18 @@ namespace Polly.Specs.Wrap
             config.ShouldNotThrow();
         }
 
+        [Fact]
+        public void Wrapping_policies_using_static_wrap_syntax_should_set_outer_inner()
+        {
+            Policy policyA = Policy.NoOpAsync();
+            Policy policyB = Policy.NoOpAsync();
+
+            PolicyWrap wrap = Policy.WrapAsync(policyA, policyB);
+
+            wrap.Outer.Should().BeSameAs(policyA);
+            wrap.Inner.Should().BeSameAs(policyB);
+        }
+
         #endregion
 
         #region Static configuration syntax tests, strongly-typed policies
@@ -139,6 +198,18 @@ namespace Polly.Specs.Wrap
             Action config = () => Policy.WrapAsync<int>(new[] { divideByZeroRetry, retry, breaker });
 
             config.ShouldNotThrow();
+        }
+
+        [Fact]
+        public void Wrapping_policies_using_static_wrap_strongly_typed_syntax_should_set_outer_inner()
+        {
+            Policy<int> policyA = Policy.NoOpAsync<int>();
+            Policy<int> policyB = Policy.NoOpAsync<int>();
+
+            PolicyWrap<int> wrap = Policy.WrapAsync(policyA, policyB);
+
+            wrap.Outer.Should().BeSameAs(policyA);
+            wrap.Inner.Should().BeSameAs(policyB);
         }
 
         #endregion

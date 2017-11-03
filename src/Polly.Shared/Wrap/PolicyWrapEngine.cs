@@ -22,7 +22,7 @@ namespace Polly.Wrap
            Policy<TResult> outerPolicy,
            Policy innerPolicy)
         {
-            return outerPolicy.Execute((ctx, ct) => innerPolicy.Execute(func, ctx, ct), context, cancellationToken);
+            return outerPolicy.Execute((ctx, ct) => innerPolicy.Execute<TResult>(func, ctx, ct), context, cancellationToken);
         }
 
         internal static TResult Implementation<TResult>(
@@ -33,6 +33,16 @@ namespace Polly.Wrap
            Policy<TResult> innerPolicy)
         {
             return outerPolicy.Execute<TResult>((ctx, ct) => innerPolicy.Execute(func, ctx, ct), context, cancellationToken);
+        }
+
+        internal static TResult Implementation<TResult>(
+           Func<Context, CancellationToken, TResult> func,
+           Context context,
+           CancellationToken cancellationToken,
+           Policy outerPolicy,
+           Policy innerPolicy)
+        {
+            return outerPolicy.Execute<TResult>((ctx, ct) => innerPolicy.Execute<TResult>(func, ctx, ct), context, cancellationToken);
         }
 
         internal static void Implementation(
