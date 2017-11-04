@@ -947,7 +947,7 @@ For details of changes by release see the [change log](https://github.com/App-vN
 
 Please check out our [Wiki](https://github.com/App-vNext/Polly/wiki/Git-Workflow) for contributing guidelines. We are following the excellent GitHub Flow process, and would like to make sure you have all of the information needed to be a world-class contributor!
 
-Since Polly is part of the .NET Foundation, we ask our contributors to abide by their [Code of Conduct](https://www.dotnetfoundation.org/code-of-conduct).
+Since Polly is part of the .NET Foundation, we ask our contributors to abide by their [Code of Conduct](https://www.dotnetfoundation.org/code-of-conduct).  Contributions beyond trivial typo corrections require signing the [.Net Foundation Contributor License Agreement](https://cla.dotnetfoundation.org/): this ensures the community is free to use your contributions.  The registration process can be completed entirely online.
 
 Also, we've stood up a [Slack](http://www.pollytalk.org) channel for easier real-time discussion of ideas and the general direction of Polly as a whole. Be sure to [join the conversation](http://www.pollytalk.org) today!
 
