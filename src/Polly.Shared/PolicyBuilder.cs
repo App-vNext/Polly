@@ -19,7 +19,10 @@ namespace Polly
             };
         }
 
-        internal IList<ExceptionPredicate> ExceptionPredicates
+        /// <summary>
+        /// The Exception predicates as specified using the <see cref="Policy.Handle{TException}()" /> methods
+        /// </summary>
+        public IList<ExceptionPredicate> ExceptionPredicates
         {
             get { return _exceptionPredicates; }
         }
@@ -108,12 +111,18 @@ namespace Polly
             _exceptionPredicates = exceptionPredicates;
         }
 
-        internal IList<ExceptionPredicate> ExceptionPredicates
+        /// <summary>
+        /// The Exception predicates as specified using the <see cref="Policy.Handle{TException}()" /> methods
+        /// </summary>
+        public IList<ExceptionPredicate> ExceptionPredicates
         {
             get { return _exceptionPredicates; }
         }
 
-        internal IList<ResultPredicate<TResult>> ResultPredicates
+        /// <summary>
+        /// The Result value predicates as specified using the <see cref="Policy.HandleResult{TResult}(TResult)" /> methods
+        /// </summary>
+        public IList<ResultPredicate<TResult>> ResultPredicates
         {
             get { return _resultPredicates; }
         }

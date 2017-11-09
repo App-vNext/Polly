@@ -10,7 +10,7 @@ namespace Polly
         /// <summary>
         /// A key intended to be unique to each <see cref="Policy"/> instance, which is passed with executions as the <see cref="M:Context.PolicyKey"/> property.
         /// </summary>
-        public String PolicyKey => _policyKey ?? (_policyKey = GetType().Name + "-" + KeyHelper.GuidPart());
+        public virtual String PolicyKey => _policyKey ?? (_policyKey = GetType().Name + "-" + KeyHelper.GuidPart());
 
         internal static ArgumentException PolicyKeyMustBeImmutableException => new ArgumentException("PolicyKey cannot be changed once set; or (when using the default value after the PolicyKey property has been accessed.", "policyKey");
 
@@ -19,7 +19,7 @@ namespace Polly
         /// <remarks>Must be called before the policy is first used.  Can only be set once.</remarks>
         /// </summary>
         /// <param name="policyKey">The unique, used-definable key to assign to this <see cref="Policy"/> instance.</param>
-        public Policy WithPolicyKey(String policyKey)
+        public virtual Policy WithPolicyKey(String policyKey)
         {
             if (_policyKey != null) throw PolicyKeyMustBeImmutableException;
 
@@ -57,7 +57,7 @@ namespace Polly
         /// Updates the execution <see cref="Context"/> with context from the executing <see cref="Policy"/>.
         /// </summary>
         /// <param name="executionContext">The execution <see cref="Context"/>.</param>
-        internal virtual void SetPolicyContext(Context executionContext)
+        protected virtual void SetPolicyContext(Context executionContext)
         {
             executionContext.PolicyKey = PolicyKey;
         }
@@ -70,14 +70,14 @@ namespace Polly
         /// <summary>
         /// A key intended to be unique to each <see cref="Policy"/> instance, which is passed with executions as the <see cref="M:Context.PolicyKey"/> property.
         /// </summary>
-        public String PolicyKey => _policyKey ?? (_policyKey = GetType().Name + "-" + KeyHelper.GuidPart());
+        public virtual String PolicyKey => _policyKey ?? (_policyKey = GetType().Name + "-" + KeyHelper.GuidPart());
 
         /// <summary>
         /// Sets the PolicyKey for this <see cref="Policy"/> instance.
         /// <remarks>Must be called before the policy is first used.  Can only be set once.</remarks>
         /// </summary>
         /// <param name="policyKey">The unique, used-definable key to assign to this <see cref="Policy"/> instance.</param>
-        public Policy<TResult> WithPolicyKey(String policyKey)
+        public virtual Policy<TResult> WithPolicyKey(String policyKey)
         {
             if (_policyKey != null) throw Policy.PolicyKeyMustBeImmutableException;
 
@@ -114,7 +114,7 @@ namespace Polly
         /// Updates the execution <see cref="Context"/> with context from the executing <see cref="Policy{TResult}"/>.
         /// </summary>
         /// <param name="executionContext">The execution <see cref="Context"/>.</param>
-        internal virtual void SetPolicyContext(Context executionContext)
+        protected virtual void SetPolicyContext(Context executionContext)
         {
             executionContext.PolicyKey = PolicyKey;
         }
