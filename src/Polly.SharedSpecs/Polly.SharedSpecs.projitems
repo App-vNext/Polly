@@ -10,6 +10,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)Bulkhead\BulkheadAsyncSpecs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Bulkhead\BulkheadScenario.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Bulkhead\BulkheadSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Bulkhead\BulkheadScenarios.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Bulkhead\BulkheadSpecsHelper.cs" />

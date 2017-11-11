@@ -91,10 +91,10 @@ namespace Polly.Specs.Bulkhead
 
         [Theory, ClassData(typeof (BulkheadScenarios))]
         public void Should_control_executions_queuing_and_rejections_per_specification_with_cancellations(
-            int maxParallelization, int maxQueuingActions, int totalActions, string because, bool cancelQueuing, bool cancelExecuting)
+            int maxParallelization, int maxQueuingActions, int totalActions, bool cancelQueuing, bool cancelExecuting, string scenario)
         {
             if (totalActions < 0) throw new ArgumentOutOfRangeException(nameof(totalActions));
-            because = String.Format("MaxParallelization {0}; MaxQueuing {1}; TotalActions {2}; CancelQueuing {3}; CancelExecuting {4}: {5}", maxParallelization, maxQueuingActions, totalActions, cancelQueuing, cancelExecuting, because);
+            scenario = String.Format("MaxParallelization {0}; MaxQueuing {1}; TotalActions {2}; CancelQueuing {3}; CancelExecuting {4}: {5}", maxParallelization, maxQueuingActions, totalActions, cancelQueuing, cancelExecuting, scenario);
 
             BulkheadPolicy bulkhead = Policy.Bulkhead(maxParallelization, maxQueuingActions);
 
@@ -123,13 +123,13 @@ namespace Polly.Specs.Bulkhead
             try
             {
                 actions.Count(a => a.Status == TraceableActionStatus.Faulted).Should().Be(0);
-                Within(shimTimeSpan, () => actions.Count(a => a.Status == TraceableActionStatus.Executing).Should().Be(expectedExecuting, because + ", when checking expectedExecuting"));
-                Within(shimTimeSpan, () => actions.Count(a => a.Status == TraceableActionStatus.QueueingForSemaphore).Should().Be(expectedQueuing, because + ", when checking expectedQueuing"));
-                Within(shimTimeSpan, () => actions.Count(a => a.Status == TraceableActionStatus.Rejected).Should().Be(expectedRejects, because + ", when checking expectedRejects"));
-                actions.Count(a => a.Status == TraceableActionStatus.Completed).Should().Be(expectedCompleted, because + ", when checking expectedCompleted");
-                actions.Count(a => a.Status == TraceableActionStatus.Canceled).Should().Be(expectedCancelled, because + ", when checking expectedCancelled");
-                Within(shimTimeSpan, () => bulkhead.BulkheadAvailableCount.Should().Be(expectedBulkheadFree, because + ", when checking expectedBulkheadFree"));
-                Within(shimTimeSpan, () => bulkhead.QueueAvailableCount.Should().Be(expectedQueueFree, because + ", when checking expectedQueueFree"));
+                Within(shimTimeSpan, () => actions.Count(a => a.Status == TraceableActionStatus.Executing).Should().Be(expectedExecuting, scenario + ", when checking expectedExecuting"));
+                Within(shimTimeSpan, () => actions.Count(a => a.Status == TraceableActionStatus.QueueingForSemaphore).Should().Be(expectedQueuing, scenario + ", when checking expectedQueuing"));
+                Within(shimTimeSpan, () => actions.Count(a => a.Status == TraceableActionStatus.Rejected).Should().Be(expectedRejects, scenario + ", when checking expectedRejects"));
+                actions.Count(a => a.Status == TraceableActionStatus.Completed).Should().Be(expectedCompleted, scenario + ", when checking expectedCompleted");
+                actions.Count(a => a.Status == TraceableActionStatus.Canceled).Should().Be(expectedCancelled, scenario + ", when checking expectedCancelled");
+                Within(shimTimeSpan, () => bulkhead.BulkheadAvailableCount.Should().Be(expectedBulkheadFree, scenario + ", when checking expectedBulkheadFree"));
+                Within(shimTimeSpan, () => bulkhead.QueueAvailableCount.Should().Be(expectedQueueFree, scenario + ", when checking expectedQueueFree"));
             }
             finally
             {
@@ -198,13 +198,13 @@ namespace Polly.Specs.Bulkhead
                 try
                 {
                     actions.Count(a => a.Status == TraceableActionStatus.Faulted).Should().Be(0);
-                    Within(shimTimeSpan, () => actions.Count(a => a.Status == TraceableActionStatus.Executing).Should().Be(expectedExecuting, because + ", when checking expectedExecuting"));
-                    Within(shimTimeSpan, () => actions.Count(a => a.Status == TraceableActionStatus.QueueingForSemaphore).Should().Be(expectedQueuing, because + ", when checking expectedQueuing"));
-                    Within(shimTimeSpan, () => actions.Count(a => a.Status == TraceableActionStatus.Completed).Should().Be(expectedCompleted, because + ", when checking expectedCompleted"));
-                    Within(shimTimeSpan, () => actions.Count(a => a.Status == TraceableActionStatus.Canceled).Should().Be(expectedCancelled, because + ", when checking expectedCancelled"));
-                    actions.Count(a => a.Status == TraceableActionStatus.Rejected).Should().Be(expectedRejects, because + ", when checking expectedRejects");
-                    Within(shimTimeSpan, () => bulkhead.BulkheadAvailableCount.Should().Be(expectedBulkheadFree, because + ", when checking expectedBulkheadFree"));
-                    Within(shimTimeSpan, () => bulkhead.QueueAvailableCount.Should().Be(expectedQueueFree, because + ", when checking expectedQueueFree"));
+                    Within(shimTimeSpan, () => actions.Count(a => a.Status == TraceableActionStatus.Executing).Should().Be(expectedExecuting, scenario + ", when checking expectedExecuting"));
+                    Within(shimTimeSpan, () => actions.Count(a => a.Status == TraceableActionStatus.QueueingForSemaphore).Should().Be(expectedQueuing, scenario + ", when checking expectedQueuing"));
+                    Within(shimTimeSpan, () => actions.Count(a => a.Status == TraceableActionStatus.Completed).Should().Be(expectedCompleted, scenario + ", when checking expectedCompleted"));
+                    Within(shimTimeSpan, () => actions.Count(a => a.Status == TraceableActionStatus.Canceled).Should().Be(expectedCancelled, scenario + ", when checking expectedCancelled"));
+                    actions.Count(a => a.Status == TraceableActionStatus.Rejected).Should().Be(expectedRejects, scenario + ", when checking expectedRejects");
+                    Within(shimTimeSpan, () => bulkhead.BulkheadAvailableCount.Should().Be(expectedBulkheadFree, scenario + ", when checking expectedBulkheadFree"));
+                    Within(shimTimeSpan, () => bulkhead.QueueAvailableCount.Should().Be(expectedQueueFree, scenario + ", when checking expectedQueueFree"));
                 }
                 finally
                 {
