@@ -2,6 +2,7 @@
 using System.Runtime.ExceptionServices;
 using System.Threading;
 using System.Threading.Tasks;
+using Polly.Utilities;
 
 #if NET40
 using ExceptionDispatchInfo = Polly.Utilities.ExceptionDispatchInfo;
@@ -33,13 +34,13 @@ namespace Polly.Timeout
                     {
                         if (timeoutStrategy == TimeoutStrategy.Optimistic)
                         {
-                            timeoutCancellationTokenSource.CancelAfter(timeout);
+                            SystemClock.CancelTokenAfter(timeoutCancellationTokenSource, timeout);
                             return action(context, combinedToken);
                         }
 
                         // else: timeoutStrategy == TimeoutStrategy.Pessimistic
 
-                        timeoutCancellationTokenSource.CancelAfter(timeout);
+                        SystemClock.CancelTokenAfter(timeoutCancellationTokenSource, timeout);
 
                         actionTask = 
 
