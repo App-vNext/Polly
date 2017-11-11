@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Polly.Utilities;
 
 namespace Polly.Timeout
 {
@@ -29,7 +30,7 @@ namespace Polly.Timeout
                     {
                         if (timeoutStrategy == TimeoutStrategy.Optimistic)
                         {
-                            timeoutCancellationTokenSource.CancelAfter(timeout);
+                            SystemClock.CancelTokenAfter(timeoutCancellationTokenSource, timeout);
                             return await action(context, combinedToken).ConfigureAwait(continueOnCapturedContext);
                         }
 
@@ -37,7 +38,7 @@ namespace Polly.Timeout
 
                         Task<TResult> timeoutTask = timeoutCancellationTokenSource.Token.AsTask<TResult>();
 
-                        timeoutCancellationTokenSource.CancelAfter(timeout);
+                        SystemClock.CancelTokenAfter(timeoutCancellationTokenSource, timeout);
 
                         actionTask = action(context, combinedToken);
 

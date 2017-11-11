@@ -310,28 +310,23 @@ namespace Polly.Specs.Timeout
         #region Non-timeout cancellation - pessimistic (user-delegate does not observe cancellation)
 
         [Fact]
-        public void Should_not_be_able_to_cancel_with_user_cancellation_token_before_timeout__pessimistic()
+        public void Should_not_be_able_to_cancel_with_unobserved_user_cancellation_token_before_timeout__pessimistic()
         {
-            Stopwatch watch = new Stopwatch();
-
             int timeout = 5;
             var policy = Policy.Timeout(timeout, TimeoutStrategy.Pessimistic);
 
-            TimeSpan tolerance = TimeSpan.FromSeconds(3); // Consider increasing tolerance, if test fails transiently in different test/build environments.
-
-            TimeSpan userTokenExpiry = TimeSpan.FromSeconds(1); // Use of time-based token irrelevant to timeout policy; we just need some user token that cancels independently of policy's internal token.
-            using (CancellationTokenSource userTokenSource = new CancellationTokenSource(userTokenExpiry))
+            using (CancellationTokenSource userTokenSource = new CancellationTokenSource())
             {
-                watch.Start();
                 policy.Invoking(p => p.Execute(
-                    _ => SystemClock.Sleep(TimeSpan.FromSeconds(timeout * 2), CancellationToken.None) // Do not observe any cancellation in the middle of execution
-                    , userTokenSource.Token) // ... with user token.
-                   ).ShouldThrow<TimeoutRejectedException>();
-                watch.Stop();
+                    _ => {
+                        userTokenSource.Cancel(); // User token cancels in the middle of execution ...
+                        SystemClock.Sleep(TimeSpan.FromSeconds(timeout * 2), 
+                            CancellationToken.None // ... but if the executed delegate does not observe it
+                            );
+                    } 
+                    , userTokenSource.Token) 
+                   ).ShouldThrow<TimeoutRejectedException>(); // ... it's still the timeout we expect.
             }
-
-            watch.Elapsed.Should().BeCloseTo(TimeSpan.FromSeconds(timeout), ((int)tolerance.TotalMilliseconds));
-
         }
 
         [Fact]
@@ -359,27 +354,16 @@ namespace Polly.Specs.Timeout
         [Fact]
         public void Should_be_able_to_cancel_with_user_cancellation_token_before_timeout__optimistic()
         {
-            Stopwatch watch = new Stopwatch();
-
             int timeout = 10;
             var policy = Policy.Timeout(timeout, TimeoutStrategy.Optimistic);
 
-            TimeSpan tolerance = TimeSpan.FromSeconds(3); // Consider increasing tolerance, if test fails transiently in different test/build environments.
-
-            TimeSpan userTokenExpiry = TimeSpan.FromSeconds(1); // Use of time-based token irrelevant to timeout policy; we just need some user token that cancels independently of policy's internal token.
-            using (CancellationTokenSource userTokenSource = new CancellationTokenSource(userTokenExpiry))
+            using (CancellationTokenSource userTokenSource = new CancellationTokenSource())
             {
-                watch.Start();
                 policy.Invoking(p => p.Execute(
-                    ct => SystemClock.Sleep(TimeSpan.FromSeconds(timeout), ct) // Simulate cancel in the middle of execution
+                    ct => { userTokenSource.Cancel(); ct.ThrowIfCancellationRequested(); } // Simulate cancel in the middle of execution
                     , userTokenSource.Token) // ... with user token.
-                   ).ShouldThrow<OperationCanceledException>();
-                watch.Stop();
+                   ).ShouldThrow<OperationCanceledException>(); // Not a TimeoutRejectedException; i.e. policy can distinguish user cancellation from timeout cancellation.
             }
-
-            watch.Elapsed.Should().BeLessThan(TimeSpan.FromSeconds(timeout*0.8));
-            watch.Elapsed.Should().BeCloseTo(userTokenExpiry, ((int)tolerance.TotalMilliseconds));
-
         }
 
         [Fact]
@@ -498,6 +482,10 @@ namespace Polly.Specs.Timeout
         [Fact]
         public void Should_call_ontimeout_with_task_wrapping_abandoned_action_allowing_capture_of_otherwise_unobserved_exception__pessimistic()
         {
+            SystemClock.Reset(); // This is the only test which cannot work with the artificial SystemClock of TimeoutSpecsBase.  We want the invoked delegate to continue as far as: throw exceptionToThrow, to genuinely check that the walked-away-from task throws that, and that we pass it to onTimeout.  
+            // That means we can't use the SystemClock.Sleep(...) within the executed delegate to artificially trigger the timeout cancellation (as for example the test above does).
+            // In real execution, it is the .Wait(timeoutCancellationTokenSource.Token) in the timeout implementation which throws for the timeout.  We don't want to go as far as abstracting Task.Wait() out into SystemClock, so we let this test run at real-world speed, not abstracted-clock speed.
+
             Exception exceptionToThrow = new DivideByZeroException();
 
             Exception exceptionObservedFromTaskPassedToOnTimeout = null;
