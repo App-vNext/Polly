@@ -108,7 +108,7 @@ namespace Polly.Specs.Retry
         }
 
         [Fact]
-        public void Should_call_onretry_on_each_retry_with_the_current_exception()
+        public async Task Should_call_onretry_on_each_retry_with_the_current_exception()
         {
             var expectedExceptions = new object[] {"Exception #1", "Exception #2", "Exception #3"};
             var retryExceptions = new List<Exception>();
@@ -117,7 +117,7 @@ namespace Polly.Specs.Retry
                 .Handle<DivideByZeroException>()
                 .RetryForeverAsync(exception => retryExceptions.Add(exception));
 
-            policy.RaiseExceptionAsync<DivideByZeroException>(3, (e, i) => e.HelpLink = "Exception #" + i);
+            await policy.RaiseExceptionAsync<DivideByZeroException>(3, (e, i) => e.HelpLink = "Exception #" + i);
 
             retryExceptions
                 .Select(x => x.HelpLink)
@@ -152,7 +152,7 @@ namespace Polly.Specs.Retry
                 .Handle<DivideByZeroException>()
                 .RetryForeverAsync((_, context) => capturedContext = context);
 
-            policy.RaiseExceptionAsync<DivideByZeroException>();
+            policy.Awaiting(async x => await x.RaiseExceptionAsync<DivideByZeroException>()).ShouldNotThrow();
 
             capturedContext.Should()
                            .BeEmpty();

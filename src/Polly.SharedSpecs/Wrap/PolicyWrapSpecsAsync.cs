@@ -326,7 +326,7 @@ namespace Polly.Specs.Wrap
             PolicyResult executeAndCaptureResultOnPolicyWrap =
                 await wrap.ExecuteAndCaptureAsync(() => { throw new ArgumentNullException(); });
 
-        executeAndCaptureResultOnPolicyWrap.Outcome.Should().Be(OutcomeType.Failure);
+            executeAndCaptureResultOnPolicyWrap.Outcome.Should().Be(OutcomeType.Failure);
             executeAndCaptureResultOnPolicyWrap.FinalException.Should().BeOfType<ArgumentNullException>();
             executeAndCaptureResultOnPolicyWrap.ExceptionType.Should().Be(ExceptionType.HandledByThisPolicy);
         }
