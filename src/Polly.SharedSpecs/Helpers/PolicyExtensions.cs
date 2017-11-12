@@ -6,26 +6,23 @@ namespace Polly.Specs.Helpers
 {
     public static class PolicyExtensions
     {
-        public static void RaiseException<TException>(this Policy policy, int numberOfTimesToRaiseException, Action<TException, int> configureException = null) where TException : Exception, new()
+        public class ExceptionAndOrCancellationScenario
         {
-            int counter = 0;
+            public int NumberOfTimesToRaiseException = 0;
+            public int? AttemptDuringWhichToCancel = null;
+            public bool ActionObservesCancellation = true;
+        }
 
-            policy.Execute(() =>
+        public static void RaiseException<TException>(this Policy policy, TException instance) where TException : Exception
+        {
+            ExceptionAndOrCancellationScenario scenario = new ExceptionAndOrCancellationScenario
             {
-                if (counter < numberOfTimesToRaiseException)
-                {
-                    counter++;
+                ActionObservesCancellation = false,
+                AttemptDuringWhichToCancel = null,
+                NumberOfTimesToRaiseException = 1
+            };
 
-                    var exception = new TException();
-                    
-                    if (configureException != null)
-                    {
-                        configureException(exception, counter);
-                    }
-
-                    throw exception;
-                }
-            });
+            policy.RaiseExceptionAndOrCancellation(scenario, new CancellationTokenSource(), () => { }, _ => instance, 0);
         }
 
         public static void RaiseException<TException>(this Policy policy, Action<TException, int> configureException = null) where TException : Exception, new()
@@ -33,14 +30,23 @@ namespace Polly.Specs.Helpers
             policy.RaiseException(1, configureException);
         }
 
-
-        public class ExceptionAndOrCancellationScenario
+        public static void RaiseException<TException>(this Policy policy, int numberOfTimesToRaiseException, Action<TException, int> configureException = null) where TException : Exception, new()
         {
-            public int NumberOfTimesToRaiseException = 0;
+            ExceptionAndOrCancellationScenario scenario = new ExceptionAndOrCancellationScenario
+            {
+                ActionObservesCancellation = false,
+                AttemptDuringWhichToCancel = null,
+                NumberOfTimesToRaiseException = numberOfTimesToRaiseException
+            };
 
-            public int? AttemptDuringWhichToCancel = null;
+            Func<int, TException> exceptionFactory = i =>
+            {
+                var exception = new TException();
+                configureException?.Invoke(exception, i);
+                return exception;
+            };
 
-            public bool ActionObservesCancellation = true;
+            policy.RaiseExceptionAndOrCancellation(scenario, new CancellationTokenSource(), () => { }, exceptionFactory, 0);
         }
 
         public static void RaiseExceptionAndOrCancellation<TException>(this Policy policy, ExceptionAndOrCancellationScenario scenario, CancellationTokenSource cancellationTokenSource, Action onExecute) where TException : Exception, new()
@@ -49,6 +55,12 @@ namespace Polly.Specs.Helpers
         }
 
         public static TResult RaiseExceptionAndOrCancellation<TException, TResult>(this Policy policy, ExceptionAndOrCancellationScenario scenario, CancellationTokenSource cancellationTokenSource, Action onExecute, TResult successResult) where TException : Exception, new()
+        {
+            return policy.RaiseExceptionAndOrCancellation(scenario, cancellationTokenSource, onExecute,
+                _ => new TException(), successResult);
+        }
+
+        public static TResult RaiseExceptionAndOrCancellation<TException, TResult>(this Policy policy, ExceptionAndOrCancellationScenario scenario, CancellationTokenSource cancellationTokenSource, Action onExecute, Func<int, TException> exceptionFactory, TResult successResult) where TException : Exception
         {
             int counter = 0;
 
@@ -72,7 +84,7 @@ namespace Polly.Specs.Helpers
 
                 if (counter <= scenario.NumberOfTimesToRaiseException)
                 {
-                    throw new TException();
+                    throw exceptionFactory(counter);
                 }
 
                 return successResult;

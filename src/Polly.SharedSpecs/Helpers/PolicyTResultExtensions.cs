@@ -18,17 +18,18 @@ namespace Polly.Specs.Helpers
 
         public static TResult RaiseResultSequence<TResult>(this Policy<TResult> policy, IEnumerable<TResult> resultsToRaise) 
         {
-            var enumerator = resultsToRaise.GetEnumerator();
-
-            return policy.Execute(() =>
+            using (var enumerator = resultsToRaise.GetEnumerator())
             {
-                if (!enumerator.MoveNext())
+                return policy.Execute(() =>
                 {
-                    throw new ArgumentOutOfRangeException("resultsToRaise", "Not enough TResult values in resultsToRaise.");
-                }
+                    if (!enumerator.MoveNext())
+                    {
+                        throw new ArgumentOutOfRangeException(nameof(resultsToRaise), $"Not enough {typeof(TResult).Name}  values in {nameof(resultsToRaise)}.");
+                    }
 
-                return enumerator.Current;
-            });
+                    return enumerator.Current;
+                });
+            }
         }
 
         public static TResult RaiseResultAndOrExceptionSequence<TResult>(this Policy<TResult> policy, params object[] resultsOrExceptionsToRaise)
@@ -36,31 +37,34 @@ namespace Polly.Specs.Helpers
             return policy.RaiseResultAndOrExceptionSequence(resultsOrExceptionsToRaise.ToList());
         }
 
-        public static TResult RaiseResultAndOrExceptionSequence<TResult>(this Policy<TResult> policy, IEnumerable<object> resultsOrExceptionsToRaise)
+        public static TResult RaiseResultAndOrExceptionSequence<TResult>(this Policy<TResult> policy,
+            IEnumerable<object> resultsOrExceptionsToRaise)
         {
-            var enumerator = resultsOrExceptionsToRaise.GetEnumerator();
-
-            return policy.Execute(() =>
+            using (var enumerator = resultsOrExceptionsToRaise.GetEnumerator())
             {
-                if (!enumerator.MoveNext())
-                {
-                    throw new ArgumentOutOfRangeException("resultsOrExceptionsToRaise", "Not enough TResult values in resultsOrExceptionsToRaise.");
-                }
 
-                object current = enumerator.Current;
-                if (current is Exception)
+                return policy.Execute(() =>
                 {
-                    throw (Exception) current;
-                }
-                else if (current is TResult)
-                {
-                    return (TResult)current;
-                }
-                else
-                {
-                    throw new ArgumentOutOfRangeException("resultsOrExceptionsToRaise", "Value is not either an Exception or TResult.");
-                }
-            });
+                    if (!enumerator.MoveNext())
+                    {
+                        throw new ArgumentOutOfRangeException(nameof(resultsOrExceptionsToRaise), $"Not enough {typeof(TResult).Name} values in {nameof(resultsOrExceptionsToRaise)}.");
+                    }
+
+                    object current = enumerator.Current;
+                    if (current is Exception)
+                    {
+                        throw (Exception) current;
+                    }
+                    else if (current is TResult)
+                    {
+                        return (TResult) current;
+                    }
+                    else
+                    {
+                        throw new ArgumentOutOfRangeException(nameof(resultsOrExceptionsToRaise), $"Value is not either an {typeof(Exception).Name} or {typeof(TResult).Name}.");
+                    }
+                });
+            }
         }
 
         public class ResultAndOrCancellationScenario
@@ -82,33 +86,34 @@ namespace Polly.Specs.Helpers
         {
             int counter = 0;
 
-            var enumerator = resultsToRaise.GetEnumerator();
-
             CancellationToken cancellationToken = cancellationTokenSource.Token;
 
-            return policy.Execute(ct =>
+            using (var enumerator = resultsToRaise.GetEnumerator())
             {
-                onExecute();
-
-                counter++;
-
-                if (!enumerator.MoveNext())
+                return policy.Execute(ct =>
                 {
-                    throw new ArgumentOutOfRangeException(nameof(resultsToRaise), "Not enough TResult values in resultsToRaise.");
-                }
+                    onExecute();
 
-                if (scenario.AttemptDuringWhichToCancel.HasValue && counter >= scenario.AttemptDuringWhichToCancel.Value)
-                {
-                    cancellationTokenSource.Cancel();
-                }
+                    counter++;
 
-                if (scenario.ActionObservesCancellation)
-                {
-                    ct.ThrowIfCancellationRequested();
-                }
+                    if (!enumerator.MoveNext())
+                    {
+                        throw new ArgumentOutOfRangeException(nameof(resultsToRaise), $"Not enough {typeof(TResult).Name}  values in {nameof(resultsToRaise)}.");
+                    }
 
-                return enumerator.Current;
-            }, cancellationToken);
+                    if (scenario.AttemptDuringWhichToCancel.HasValue && counter >= scenario.AttemptDuringWhichToCancel.Value)
+                    {
+                        cancellationTokenSource.Cancel();
+                    }
+
+                    if (scenario.ActionObservesCancellation)
+                    {
+                        ct.ThrowIfCancellationRequested();
+                    }
+
+                    return enumerator.Current;
+                }, cancellationToken);
+            }
         }
     }
 }
