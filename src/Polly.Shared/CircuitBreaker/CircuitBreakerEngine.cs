@@ -1,7 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.ExceptionServices;
 using System.Threading;
+
+#if NET40
+using ExceptionDispatchInfo = Polly.Utilities.ExceptionDispatchInfo;
+#endif
 
 namespace Polly.CircuitBreaker
 {
@@ -36,13 +41,20 @@ namespace Polly.CircuitBreaker
             }
             catch (Exception ex)
             {
-                if (!shouldHandleExceptionPredicates.Any(predicate => predicate(ex)))
+                Exception handledException = shouldHandleExceptionPredicates
+                    .Select(predicate => predicate(ex))
+                    .FirstOrDefault(e => e != null);
+                if (handledException == null)
                 {
                     throw;
                 }
 
-                breakerController.OnActionFailure(new DelegateResult<TResult>(ex), context);
+                breakerController.OnActionFailure(new DelegateResult<TResult>(handledException), context);
 
+                if (handledException != ex)
+                {
+                    ExceptionDispatchInfo.Capture(handledException).Throw();
+                }
                 throw;
             }
         }

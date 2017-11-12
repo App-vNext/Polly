@@ -15,7 +15,7 @@ namespace Polly
         /// <returns>The PolicyBuilder instance.</returns>
         public PolicyBuilder Or<TException>() where TException : Exception
         {
-            ExceptionPredicate predicate = exception => exception is TException;
+            ExceptionPredicate predicate = exception => exception is TException ? exception : null;
             ExceptionPredicates.Add(predicate);
             return this;
         }
@@ -29,7 +29,7 @@ namespace Polly
         public PolicyBuilder Or<TException>(Func<TException, bool> exceptionPredicate) where TException : Exception
         {
             ExceptionPredicate predicate = exception => exception is TException &&
-                                                        exceptionPredicate((TException) exception);
+                                                        exceptionPredicate((TException) exception) ? exception : null;
 
             ExceptionPredicates.Add(predicate);
             return this;
@@ -103,7 +103,7 @@ namespace Polly
         /// <returns>The PolicyBuilder instance.</returns>
         public PolicyBuilder<TResult> Or<TException>() where TException : Exception
         {
-            ExceptionPredicate predicate = exception => exception is TException;
+            ExceptionPredicate predicate = exception => exception is TException ? exception : null;
             ExceptionPredicates.Add(predicate);
             return this;
         }
@@ -117,7 +117,7 @@ namespace Polly
         public PolicyBuilder<TResult> Or<TException>(Func<TException, bool> exceptionPredicate) where TException : Exception
         {
             ExceptionPredicate predicate = exception => exception is TException &&
-                                                        exceptionPredicate((TException)exception);
+                                                        exceptionPredicate((TException)exception) ? exception : null;
 
             ExceptionPredicates.Add(predicate);
             return this;
