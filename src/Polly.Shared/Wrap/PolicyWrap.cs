@@ -37,7 +37,7 @@ namespace Polly.Wrap
         /// <param name="context">Execution context that is passed to the exception policy; defines the cache key to use in cache lookup.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>The value returned by the action, or the cache.</returns>
-        public override TResult Execute<TResult>(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken)
+        public override TResult ExecuteInternal<TResult>(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken)
         {
             return PolicyWrapEngine.Implementation<TResult>(
                    action,
