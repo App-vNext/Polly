@@ -296,18 +296,34 @@ namespace Polly
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>The value returned by the action</returns>
         [DebuggerStepThrough]
-        public virtual TResult Execute<TResult>(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken)
+        public TResult Execute<TResult>(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken)
         {
-            if (_exceptionPolicy == null) throw new InvalidOperationException(
-                "Please use the synchronous-defined policies when calling the synchronous Execute (and similar) methods.");
             if (context == null) throw new ArgumentNullException(nameof(context));
 
             SetPolicyContext(context);
+
+            return ExecuteInternal(action, context, cancellationToken);
+        }
+
+        /// <summary>
+        /// Executes the specified action within the policy and returns the result.
+        /// </summary>
+        /// <typeparam name="TResult">The type of the result.</typeparam>
+        /// <param name="action">The action to perform.</param>
+        /// <param name="context">Context data that is passed to the exception policy.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>The value returned by the action</returns>
+        [DebuggerStepThrough]
+        public virtual TResult ExecuteInternal<TResult>(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken)
+        {
+            if (_exceptionPolicy == null) throw new InvalidOperationException(
+                "Please use the synchronous-defined policies when calling the synchronous Execute (and similar) methods.");
 
             var result = default(TResult);
             _exceptionPolicy((ctx, ct) => { result = action(ctx, ct); }, context, cancellationToken);
             return result;
         }
+
         #endregion
 
         #endregion

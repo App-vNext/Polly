@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using FluentAssertions;
 using Polly.Specs.Helpers;
 using Polly.Utilities;
@@ -91,6 +92,46 @@ namespace Polly.Specs.Wrap
             policyWrapKeySetOnExecutionContext.Should().Be(outerWrapKey);
         }
 
+        [Fact]
+        public async Task Should_pass_outmost_PolicyWrap_Key_as_PolicyWrapKey_to_innermost_Policy_when_execute_method_generic()
+        {
+            string retryKey = Guid.NewGuid().ToString();
+            string breakerKey = Guid.NewGuid().ToString();
+            string fallbackKey = Guid.NewGuid().ToString();
+            string innerWrapKey = Guid.NewGuid().ToString();
+            string outerWrapKey = Guid.NewGuid().ToString();
+
+            string policyWrapKeySetOnExecutionContext = null;
+            Action<Exception, TimeSpan, Context> onBreak = (e, t, context) =>
+            {
+                policyWrapKeySetOnExecutionContext = context.PolicyWrapKey;
+            };
+            Action<Context> doNothingOnReset = _ => { };
+
+            var retry = Policy.Handle<Exception>().RetryAsync(1).WithPolicyKey(retryKey);
+            var breaker = Policy.Handle<Exception>().CircuitBreakerAsync(1, TimeSpan.Zero, onBreak, doNothingOnReset).WithPolicyKey(breakerKey);
+            var fallback = Policy.Handle<Exception>().FallbackAsync(_ => TaskHelper.EmptyTask).WithPolicyKey(fallbackKey);
+
+            var innerWrap = retry.WrapAsync(breaker).WithPolicyKey(innerWrapKey);
+            var outerWrap = fallback.WrapAsync(innerWrap).WithPolicyKey(outerWrapKey);
+
+            bool doneOnceOny = false;
+            await outerWrap.ExecuteAsync<int>(() =>
+            {
+                if (!doneOnceOny)
+                {
+                    doneOnceOny = true;
+                    throw new Exception();
+                }
+                return TaskHelper.FromResult(0);
+            });
+
+            policyWrapKeySetOnExecutionContext.Should().NotBe(retryKey);
+            policyWrapKeySetOnExecutionContext.Should().NotBe(breakerKey);
+            policyWrapKeySetOnExecutionContext.Should().NotBe(fallbackKey);
+            policyWrapKeySetOnExecutionContext.Should().NotBe(innerWrapKey);
+            policyWrapKeySetOnExecutionContext.Should().Be(outerWrapKey);
+        }
         #endregion
 
     }

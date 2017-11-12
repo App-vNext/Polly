@@ -540,13 +540,29 @@ namespace Polly
         /// <returns>The value returned by the action</returns>
         /// <exception cref="System.InvalidOperationException">Please use asynchronous-defined policies when calling asynchronous ExecuteAsync (and similar) methods.</exception>
         [DebuggerStepThrough]
-        public virtual async Task<TResult> ExecuteAsync<TResult>(Func<Context, CancellationToken, Task<TResult>> action, Context context, CancellationToken cancellationToken, bool continueOnCapturedContext)
+        public Task<TResult> ExecuteAsync<TResult>(Func<Context, CancellationToken, Task<TResult>> action, Context context, CancellationToken cancellationToken, bool continueOnCapturedContext)
+        {
+            if (context == null) throw new ArgumentNullException(nameof(context));
+            SetPolicyContext(context);
+
+            return ExecuteAsyncInternal(action, context, cancellationToken, continueOnCapturedContext);
+        }
+
+        /// <summary>
+        ///     Executes the specified asynchronous action within the policy and returns the result.
+        /// </summary>
+        /// <typeparam name="TResult">The type of the result.</typeparam>
+        /// <param name="action">The action to perform.</param>
+        /// <param name="context">Context data that is passed to the exception policy.</param>
+        /// <param name="continueOnCapturedContext">Whether to continue on a captured synchronization context.</param>
+        /// <param name="cancellationToken">A cancellation token which can be used to cancel the action.  When a retry policy is in use, also cancels any further retries.</param>
+        /// <returns>The value returned by the action</returns>
+        /// <exception cref="System.InvalidOperationException">Please use asynchronous-defined policies when calling asynchronous ExecuteAsync (and similar) methods.</exception>
+        [DebuggerStepThrough]
+        public virtual async Task<TResult> ExecuteAsyncInternal<TResult>(Func<Context, CancellationToken, Task<TResult>> action, Context context, CancellationToken cancellationToken, bool continueOnCapturedContext)
         {
             if (_asyncExceptionPolicy == null) throw new InvalidOperationException(
                 "Please use asynchronous-defined policies when calling asynchronous ExecuteAsync (and similar) methods.");
-            if (context == null) throw new ArgumentNullException(nameof(context));
-
-            SetPolicyContext(context);
 
             var result = default(TResult);
             await _asyncExceptionPolicy(async (ctx, ct) =>
@@ -556,6 +572,7 @@ namespace Polly
                 .ConfigureAwait(continueOnCapturedContext);
             return result;
         }
+
         #endregion
 
         #endregion

@@ -90,6 +90,47 @@ namespace Polly.Specs.Wrap
             policyWrapKeySetOnExecutionContext.Should().Be(outerWrapKey);
         }
 
+        [Fact]
+        public void Should_pass_outmost_PolicyWrap_Key_as_PolicyWrapKey_to_innermost_Policy_when_execute_method_generic()
+        {
+            string retryKey = Guid.NewGuid().ToString();
+            string breakerKey = Guid.NewGuid().ToString();
+            string fallbackKey = Guid.NewGuid().ToString();
+            string innerWrapKey = Guid.NewGuid().ToString();
+            string outerWrapKey = Guid.NewGuid().ToString();
+
+            string policyWrapKeySetOnExecutionContext = null;
+            Action<Exception, TimeSpan, Context> onBreak = (e, t, context) =>
+            {
+                policyWrapKeySetOnExecutionContext = context.PolicyWrapKey;
+            };
+            Action<Context> doNothingOnReset = _ => { };
+
+            var retry = Policy.Handle<Exception>().Retry(1).WithPolicyKey(retryKey);
+            var breaker = Policy.Handle<Exception>().CircuitBreaker(1, TimeSpan.Zero, onBreak, doNothingOnReset).WithPolicyKey(breakerKey);
+            var fallback = Policy.Handle<Exception>().Fallback(() => { }).WithPolicyKey(fallbackKey);
+
+            var innerWrap = retry.Wrap(breaker).WithPolicyKey(innerWrapKey);
+            var outerWrap = fallback.Wrap(innerWrap).WithPolicyKey(outerWrapKey);
+
+            bool doneOnceOny = false;
+            outerWrap.Execute<int>(() =>
+            {
+                if (!doneOnceOny)
+                {
+                    doneOnceOny = true;
+                    throw new Exception();
+                }
+                return 0;
+            });
+
+            policyWrapKeySetOnExecutionContext.Should().NotBe(retryKey);
+            policyWrapKeySetOnExecutionContext.Should().NotBe(breakerKey);
+            policyWrapKeySetOnExecutionContext.Should().NotBe(fallbackKey);
+            policyWrapKeySetOnExecutionContext.Should().NotBe(innerWrapKey);
+            policyWrapKeySetOnExecutionContext.Should().Be(outerWrapKey);
+        }
+
         #endregion
 
     }
