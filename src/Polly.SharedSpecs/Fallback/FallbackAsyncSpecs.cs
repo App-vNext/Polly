@@ -269,7 +269,7 @@ namespace Polly.Specs.Fallback
                 .FallbackAsync(fallbackActionAsync, onFallbackAsync);
 
             Exception instanceToThrow = new ArgumentNullException("myParam");
-            await fallbackPolicy.ExecuteAsync(() => { throw instanceToThrow; });
+            await fallbackPolicy.RaiseExceptionAsync(instanceToThrow);
 
             fallbackActionExecuted.Should().BeTrue();
             exceptionPassedToOnFallback.Should().BeOfType<ArgumentNullException>();
@@ -473,11 +473,11 @@ namespace Polly.Specs.Fallback
                 .Handle<ArgumentNullException>()
                 .FallbackAsync(fallbackFunc, onFallback);
 
-            fallbackPolicy.Awaiting(async p => await p.ExecuteAsync(() => { throw new ArgumentNullException(); }))
+            Exception instanceToThrow = new ArgumentNullException("myParam");
+            fallbackPolicy.Awaiting(p => p.RaiseExceptionAsync(instanceToThrow))
                 .ShouldNotThrow();
 
-            fallbackException.Should().NotBeNull()
-                .And.BeOfType(typeof(ArgumentNullException));
+            fallbackException.Should().Be(instanceToThrow);
         }
 
         [Fact]

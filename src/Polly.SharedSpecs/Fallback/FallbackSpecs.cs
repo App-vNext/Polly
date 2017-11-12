@@ -336,7 +336,7 @@ namespace Polly.Specs.Fallback
                 .Fallback(fallbackAction, onFallback);
 
             Exception instanceToThrow = new ArgumentNullException("myParam");
-            fallbackPolicy.Execute(() => { throw instanceToThrow; });
+            fallbackPolicy.RaiseException(instanceToThrow);
 
             fallbackActionExecuted.Should().BeTrue();
             exceptionPassedToOnFallback.Should().BeOfType<ArgumentNullException>();
@@ -539,11 +539,11 @@ namespace Polly.Specs.Fallback
                 .Handle<ArgumentNullException>()
                 .Fallback(fallbackAction, onFallback);
 
-            fallbackPolicy.Invoking(p => p.Execute(() => { throw new ArgumentNullException(); }))
+            Exception instanceToThrow = new ArgumentNullException("myParam");
+            fallbackPolicy.Invoking(p => p.RaiseException(instanceToThrow))
                 .ShouldNotThrow();
 
-            fallbackException.Should().NotBeNull()
-                .And.BeOfType(typeof(ArgumentNullException));
+            fallbackException.Should().Be(instanceToThrow);
         }
 
         [Fact]

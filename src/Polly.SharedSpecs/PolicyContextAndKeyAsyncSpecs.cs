@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using FluentAssertions;
 using Polly.Retry;
 using Polly.Specs.Helpers;
@@ -103,7 +104,7 @@ namespace Polly.Specs
         #region PolicyKey and execution Context tests
 
         [Fact]
-        public void Should_pass_PolicyKey_to_execution_context()
+        public async Task Should_pass_PolicyKey_to_execution_context()
         {
             string policyKey = Guid.NewGuid().ToString();
 
@@ -111,13 +112,13 @@ namespace Polly.Specs
             Action<Exception, int, Context> onRetry = (e, i, context) => { policyKeySetOnExecutionContext = context.PolicyKey; };
             var retry = Policy.Handle<Exception>().RetryAsync(1, onRetry).WithPolicyKey(policyKey);
 
-            retry.RaiseExceptionAsync<Exception>(1);
+            await retry.RaiseExceptionAsync<Exception>(1);
 
             policyKeySetOnExecutionContext.Should().Be(policyKey);
         }
 
         [Fact]
-        public void Should_pass_ExecutionKey_to_execution_context()
+        public async Task Should_pass_ExecutionKey_to_execution_context()
         {
             string executionKey = Guid.NewGuid().ToString();
 
@@ -126,7 +127,7 @@ namespace Polly.Specs
             var retry = Policy.Handle<Exception>().RetryAsync(1, onRetry);
 
             bool firstExecution = true;
-            retry.ExecuteAsync(async () =>
+            await retry.ExecuteAsync(async () =>
             {
                 await TaskHelper.EmptyTask.ConfigureAwait(false);
                 if (firstExecution)
@@ -140,7 +141,7 @@ namespace Polly.Specs
         }
 
         [Fact]
-        public void Should_pass_PolicyKey_to_execution_context_in_generic_execution_on_non_generic_policy()
+        public async Task Should_pass_PolicyKey_to_execution_context_in_generic_execution_on_non_generic_policy()
         {
             string policyKey = Guid.NewGuid().ToString();
 
@@ -149,7 +150,7 @@ namespace Polly.Specs
             var retry = Policy.Handle<Exception>().RetryAsync(1, onRetry).WithPolicyKey(policyKey);
 
             bool firstExecution = true;
-            retry.ExecuteAsync<int>(async () =>
+            await retry.ExecuteAsync<int>(async () =>
             {
                 await TaskHelper.EmptyTask.ConfigureAwait(false);
                 if (firstExecution)
@@ -164,7 +165,7 @@ namespace Polly.Specs
         }
 
         [Fact]
-        public void Should_pass_ExecutionKey_to_execution_context_in_generic_execution_on_non_generic_policy()
+        public async Task Should_pass_ExecutionKey_to_execution_context_in_generic_execution_on_non_generic_policy()
         {
             string executionKey = Guid.NewGuid().ToString();
 
@@ -173,7 +174,7 @@ namespace Polly.Specs
             var retry = Policy.Handle<Exception>().RetryAsync(1, onRetry);
 
             bool firstExecution = true;
-            retry.ExecuteAsync<int>(async () =>
+            await retry.ExecuteAsync<int>(async () =>
             {
                 await TaskHelper.EmptyTask.ConfigureAwait(false);
                 if (firstExecution)
@@ -286,7 +287,7 @@ namespace Polly.Specs
         #region PolicyKey and execution Context tests
 
         [Fact]
-        public void Should_pass_PolicyKey_to_execution_context()
+        public async Task Should_pass_PolicyKey_to_execution_context()
         {
             string policyKey = Guid.NewGuid().ToString();
 
@@ -294,13 +295,13 @@ namespace Polly.Specs
             Action<DelegateResult<ResultPrimitive>, int, Context> onRetry = (outcome, i, context) => { policyKeySetOnExecutionContext = context.PolicyKey; };
             var retry = Policy.HandleResult(ResultPrimitive.Fault).RetryAsync(1, onRetry).WithPolicyKey(policyKey);
 
-            retry.RaiseResultSequenceAsync(ResultPrimitive.Fault, ResultPrimitive.Good);
+            await retry.RaiseResultSequenceAsync(ResultPrimitive.Fault, ResultPrimitive.Good);
 
             policyKeySetOnExecutionContext.Should().Be(policyKey);
         }
 
         [Fact]
-        public void Should_pass_ExecutionKey_to_execution_context()
+        public async Task Should_pass_ExecutionKey_to_execution_context()
         {
             string executionKey = Guid.NewGuid().ToString();
 
@@ -309,7 +310,7 @@ namespace Polly.Specs
             var retry = Policy.HandleResult(ResultPrimitive.Fault).RetryAsync(1, onRetry);
 
             bool firstExecution = true;
-            retry.ExecuteAsync(async () =>
+            await retry.ExecuteAsync(async () =>
             {
                 await TaskHelper.EmptyTask.ConfigureAwait(false);
                 if (firstExecution)
