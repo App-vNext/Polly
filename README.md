@@ -938,6 +938,7 @@ For details of changes by release see the [change log](https://github.com/App-vN
 * [@jiimaho](https://github.com/jiimaho) and [@Extremo75](https://github.com/ExtRemo75) - Provide public factory methods for PolicyResult, to support testing.
 * [@Extremo75](https://github.com/ExtRemo75) - Allow fallback delegates to take handled fault as input parameter.
 * [@reisenberger](https://github.com/reisenberger) and [@seanfarrow](https://github.com/SeanFarrow) - Add CachePolicy, with interfaces for pluggable cache providers and serializers.
+* [@MartinSStewart](https://github.com/martinsstewart) - Add GetPolicies extension method to IPolicyWrap.
 
 # Sample Projects
 
