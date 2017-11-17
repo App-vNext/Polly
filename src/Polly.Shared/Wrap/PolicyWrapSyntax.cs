@@ -86,7 +86,7 @@ namespace Polly
         /// <exception cref="System.ArgumentException">The enumerable of policies to form the wrap must contain at least two policies.</exception>
         public static PolicyWrap Wrap(params Policy[] policies)
         {
-            switch (policies.Count())
+            switch (policies.Length)
             {
                 case 0:
                 case 1:
