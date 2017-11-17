@@ -560,6 +560,48 @@ namespace Polly.Specs.Retry
         }
 
         [Fact]
+        public async Task Should_calculate_retry_timespans_from_current_retry_attempt_and_timespan_provider_with_resultdelegate()
+        {
+            var expectedRetryWaits = new[]
+                {
+                    2.Seconds(),
+                    4.Seconds(),
+                    8.Seconds(),
+                    16.Seconds(),
+                    32.Seconds()
+                };
+
+            object capturedExceptionInstance = null;
+
+            DivideByZeroException exceptionInstance = new DivideByZeroException() {
+                
+            };
+
+            var actualRetryWaits = new List<TimeSpan>();
+
+            var policy = Policy
+                .Handle<DivideByZeroException>()
+                .WaitAndRetryAsync(5,
+                    sleepDurationProvider:( retries,  ex,  ctx) =>
+                    {
+                        capturedExceptionInstance = ex;
+                        return TimeSpan.FromMilliseconds(1);
+                    },
+                    onRetryAsync: ( ts,  i,  ctx,  task) =>
+                    {
+                        return new Task(()=>
+                        {
+
+                        });
+                    }
+                );
+
+            await policy.RaiseExceptionAsync(exceptionInstance);
+            capturedExceptionInstance.Should().Be(exceptionInstance);
+            
+        }
+
+        [Fact]
         public async Task Should_be_able_to_pass_retry_duration_from_execution_to_sleepDurationProvider_via_context()
         {
             var expectedRetryDuration = 1.Seconds();

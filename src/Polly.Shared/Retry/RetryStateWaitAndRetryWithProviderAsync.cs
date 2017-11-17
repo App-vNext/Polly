@@ -10,7 +10,7 @@ namespace Polly.Retry
     {
         private readonly Func<DelegateResult<TResult>, TimeSpan, int, Context, Task> _onRetryAsync;
 
-        public RetryStateWaitAndRetryWithProvider(int retryCount, Func<int, Context, TimeSpan> sleepDurationProvider, Func<DelegateResult<TResult>, TimeSpan, int, Context, Task> onRetryAsync, Context context)
+        public RetryStateWaitAndRetryWithProvider(int retryCount, Func<int, DelegateResult<TResult>, Context, TimeSpan> sleepDurationProvider, Func<DelegateResult<TResult>, TimeSpan, int, Context, Task> onRetryAsync, Context context)
         {
             _retryCount = retryCount;
             _sleepDurationProvider = sleepDurationProvider;
@@ -25,7 +25,7 @@ namespace Polly.Retry
             bool shouldRetry = _errorCount <= _retryCount;
             if (shouldRetry)
             {
-                TimeSpan waitTimeSpan = _sleepDurationProvider(_errorCount, _context);
+                TimeSpan waitTimeSpan = _sleepDurationProvider(_errorCount, delegateResult, _context);
 
                 await _onRetryAsync(delegateResult, waitTimeSpan, _errorCount, _context).ConfigureAwait(continueOnCapturedContext);
 
