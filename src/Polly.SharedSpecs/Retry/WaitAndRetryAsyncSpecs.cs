@@ -560,7 +560,7 @@ namespace Polly.Specs.Retry
         }
 
         [Fact]
-        public async Task Should_calculate_retry_timespans_from_current_retry_attempt_and_timespan_provider_with_resultdelegate()
+        public async Task Should_calculate_retry_timespans_from_current_retry_attempt_and_timespan_provider_with_exception_handling()
         {
             var expectedRetryWaits = new[]
                 {
@@ -585,14 +585,11 @@ namespace Polly.Specs.Retry
                     sleepDurationProvider:( retries,  ex,  ctx) =>
                     {
                         capturedExceptionInstance = ex;
-                        return TimeSpan.FromMilliseconds(1);
+                        return TimeSpan.FromMilliseconds(10);
                     },
                     onRetryAsync: ( ts,  i,  ctx,  task) =>
                     {
-                        return new Task(()=>
-                        {
-
-                        });
+                        return TaskHelper.EmptyTask;
                     }
                 );
 
