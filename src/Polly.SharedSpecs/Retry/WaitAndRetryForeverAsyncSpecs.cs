@@ -12,6 +12,7 @@ using Scenario = Polly.Specs.Helpers.PolicyExtensionsAsync.ExceptionAndOrCancell
 
 namespace Polly.Specs.Retry
 {
+    [Collection("SystemClockDependantCollection")]
     public class WaitAndRetryForeverAsyncSpecs : IDisposable
     {
         public WaitAndRetryForeverAsyncSpecs()

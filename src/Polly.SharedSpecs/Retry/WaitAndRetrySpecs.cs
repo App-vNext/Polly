@@ -11,6 +11,7 @@ using Xunit;
 
 namespace Polly.Specs.Retry
 {
+    [Collection("SystemClockDependantCollection")]
     public class WaitAndRetrySpecs : IDisposable
     {
         public WaitAndRetrySpecs()
