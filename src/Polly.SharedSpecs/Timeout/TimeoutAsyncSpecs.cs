@@ -10,6 +10,7 @@ using Xunit;
 
 namespace Polly.Specs.Timeout
 {
+    [Collection("SystemClockDependantCollection")]
     public class TimeoutAsyncSpecs : TimeoutSpecsBase
     {
         #region Configuration
