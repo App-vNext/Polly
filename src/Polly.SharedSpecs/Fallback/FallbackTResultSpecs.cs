@@ -157,7 +157,7 @@ namespace Polly.Specs.Fallback
         #region Policy operation tests
 
         [Fact]
-        public void Should_not_execute_fallback_when_execute_delegate_does_not_raise_fault()
+        public void Should_not_execute_fallback_when_executed_delegate_does_not_raise_fault()
         {
             bool fallbackActionExecuted = false;
             Func<ResultPrimitive> fallbackAction = () => { fallbackActionExecuted = true; return ResultPrimitive.Substitute; };
@@ -172,7 +172,7 @@ namespace Polly.Specs.Fallback
         }
 
         [Fact]
-        public void Should_not_execute_fallback_when_execute_delegate_raises_fault_not_handled_by_policy()
+        public void Should_not_execute_fallback_when_executed_delegate_raises_fault_not_handled_by_policy()
         {
             bool fallbackActionExecuted = false;
             Func<ResultPrimitive> fallbackAction = () => { fallbackActionExecuted = true; return ResultPrimitive.Substitute; };
@@ -187,7 +187,7 @@ namespace Polly.Specs.Fallback
         }
 
         [Fact]
-        public void Should_return_fallback_value_when_execute_delegate_raises_fault_handled_by_policy()
+        public void Should_return_fallback_value_when_executed_delegate_raises_fault_handled_by_policy()
         {
             FallbackPolicy<ResultPrimitive> fallbackPolicy = Policy
                                     .HandleResult(ResultPrimitive.Fault)
@@ -197,7 +197,7 @@ namespace Polly.Specs.Fallback
         }
 
         [Fact]
-        public void Should_execute_fallback_when_execute_delegate_raises_fault_handled_by_policy()
+        public void Should_execute_fallback_when_executed_delegate_raises_fault_handled_by_policy()
         {
             bool fallbackActionExecuted = false;
             Func<ResultPrimitive> fallbackAction = () => { fallbackActionExecuted = true; return ResultPrimitive.Substitute; };
@@ -212,7 +212,7 @@ namespace Polly.Specs.Fallback
         }
         
         [Fact]
-        public void Should_execute_fallback_when_execute_delegate_raises_one_of_results_handled_by_policy()
+        public void Should_execute_fallback_when_executed_delegate_raises_one_of_results_handled_by_policy()
         {
             bool fallbackActionExecuted = false;
             Func<ResultPrimitive> fallbackAction = () => { fallbackActionExecuted = true; return ResultPrimitive.Substitute; };
@@ -228,7 +228,7 @@ namespace Polly.Specs.Fallback
         }
 
         [Fact]
-        public void Should_not_execute_fallback_when_execute_delegate_raises_fault_not_one_of_faults_handled_by_policy()
+        public void Should_not_execute_fallback_when_executed_delegate_raises_fault_not_one_of_faults_handled_by_policy()
         {
             bool fallbackActionExecuted = false;
             Func<ResultPrimitive> fallbackAction = () => { fallbackActionExecuted = true; return ResultPrimitive.Substitute; };
@@ -259,7 +259,7 @@ namespace Polly.Specs.Fallback
         }
 
         [Fact]
-        public void Should_not_execute_fallback_when_execute_delegate_raises_fault_not_handled_by_any_of_predicates()
+        public void Should_not_execute_fallback_when_executed_delegate_raises_fault_not_handled_by_any_of_predicates()
         {
             bool fallbackActionExecuted = false;
             Func<ResultPrimitive> fallbackAction = () => { fallbackActionExecuted = true; return ResultPrimitive.Substitute; };
@@ -352,7 +352,7 @@ namespace Polly.Specs.Fallback
         }
 
         [Fact]
-        public void Should_not_call_onFallback_when_execute_delegate_does_not_raise_fault()
+        public void Should_not_call_onFallback_when_executed_delegate_does_not_raise_fault()
         {
             Func<ResultPrimitive> fallbackAction = () => ResultPrimitive.Substitute;
 
