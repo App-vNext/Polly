@@ -1042,6 +1042,35 @@ namespace Polly.Specs.CircuitBreaker
         }
 
         [Fact]
+        public void Should_rethrow_and_call_onbreak_with_the_last_raised_exception_unwrapped_if_matched_as_inner()
+        {
+            Exception passedException = null;
+
+            Action<Exception, TimeSpan, Context> onBreak = (exception, _, __) => { passedException = exception; };
+            Action<Context> onReset = _ => { };
+
+            TimeSpan durationOfBreak = TimeSpan.FromMinutes(1);
+
+            CircuitBreakerPolicy breaker = Policy
+                .HandleInner<DivideByZeroException>()
+                .Or<DivideByZeroException>()
+                .CircuitBreaker(2, durationOfBreak, onBreak, onReset);
+
+            Exception toRaiseAsInner = new DivideByZeroException();
+            Exception withInner = new AggregateException(toRaiseAsInner);
+
+            breaker.Invoking(x => x.RaiseException<DivideByZeroException>())
+                .ShouldThrow<DivideByZeroException>();
+
+            breaker.Invoking(x => x.RaiseException(withInner))
+                .ShouldThrow<DivideByZeroException>().Which.Should().BeSameAs(toRaiseAsInner);
+
+            breaker.CircuitState.Should().Be(CircuitState.Open);
+
+            passedException?.Should().BeSameAs(toRaiseAsInner);
+        }
+
+        [Fact]
         public void Should_call_onbreak_with_the_correct_timespan()
         {
             TimeSpan? passedBreakTimespan = null;
@@ -1244,6 +1273,25 @@ namespace Polly.Specs.CircuitBreaker
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             breaker.LastException.Should().BeOfType<DivideByZeroException>();
+        }
+
+        [Fact]
+        public void Should_set_LastException_on_handling_inner_exception_even_when_not_breaking()
+        {
+            CircuitBreakerPolicy breaker = Policy
+                .HandleInner<DivideByZeroException>()
+                .CircuitBreaker(2, TimeSpan.FromMinutes(1));
+
+
+            Exception toRaiseAsInner = new DivideByZeroException();
+            Exception withInner = new AggregateException(toRaiseAsInner);
+
+            breaker.Invoking(x => x.RaiseException(withInner))
+                .ShouldThrow<DivideByZeroException>().Which.Should().BeSameAs(toRaiseAsInner);
+
+            breaker.CircuitState.Should().Be(CircuitState.Closed);
+
+            breaker.LastException.Should().BeSameAs(toRaiseAsInner);
         }
 
         [Fact]
