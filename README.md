@@ -27,7 +27,6 @@ You can install the Strongly Named version via:
     Install-Package Polly.Net40Async-Signed
 
 
-
 # Resilience policies
 
 Polly offers multiple resilience policies:
@@ -52,8 +51,6 @@ Fault-handling policies handle specific exceptions thrown by, or results returne
 
 ### (for fault-handling policies:  Retry family, CircuitBreaker family and Fallback)
 
-
-
 ```csharp
 // Single exception type
 Policy
@@ -72,6 +69,11 @@ Policy
 Policy
   .Handle<SqlException>(ex => ex.Number == 1205)
   .Or<ArgumentException>(ex => ex.ParamName == "example")
+
+// Inner exceptions of ordinary exceptions or AggregateException, with or without conditions
+Policy
+  .HandleInner<HttpResponseException>()
+  .OrInner<OperationCanceledException>(ex => ex.CancellationToken == myToken)
 ```
 
 ## Step 1b: (optionally) Specify return results you want to handle
@@ -938,6 +940,7 @@ For details of changes by release see the [change log](https://github.com/App-vN
 * [@jiimaho](https://github.com/jiimaho) and [@Extremo75](https://github.com/ExtRemo75) - Provide public factory methods for PolicyResult, to support testing.
 * [@Extremo75](https://github.com/ExtRemo75) - Allow fallback delegates to take handled fault as input parameter.
 * [@reisenberger](https://github.com/reisenberger) and [@seanfarrow](https://github.com/SeanFarrow) - Add CachePolicy, with interfaces for pluggable cache providers and serializers.
+* [@reisenberger](https://github.com/reisenberger) - Add new .HandleInner<TException>(...) syntax for handling inner exceptions natively.
 
 # Sample Projects
 

@@ -1,5 +1,6 @@
 ## 5.6.0
 - Bug fix: set context keys for generic execute method with PolicyWrap
+- Add ability to handle inner exceptions natively: .HandleInner&lt;TEx&gt;()
 
 ## 5.5.0
 - Bug fix: non-generic CachePolicy with PolicyWrap
