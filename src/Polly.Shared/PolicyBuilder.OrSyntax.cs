@@ -62,17 +62,15 @@ namespace Polly
                     if (matchedInAggregate != null) return matchedInAggregate;
                 }
 
-                if (exception.InnerException != null) return HandleInnerNested(predicate, exception.InnerException);
-
-                return null;
+                return HandleInnerNested(predicate, exception);
             };
         }
 
         private static Exception HandleInnerNested(Func<Exception, bool> predicate, Exception current)
         {
+            if (current == null) return null;
             if (predicate(current)) return current;
-            if (current.InnerException != null) return HandleInnerNested(predicate, current.InnerException);
-            return null;
+            return HandleInnerNested(predicate, current.InnerException);
         }
 
         #endregion

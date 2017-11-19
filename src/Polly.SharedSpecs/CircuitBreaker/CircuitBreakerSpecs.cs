@@ -1336,6 +1336,27 @@ namespace Polly.Specs.CircuitBreaker
 
         #endregion
 
+        #region ExecuteAndCapture with HandleInner
+
+        [Fact]
+        public void Should_set_PolicyResult_on_handling_inner_exception()
+        {
+            CircuitBreakerPolicy breaker = Policy
+                .HandleInner<DivideByZeroException>()
+                .CircuitBreaker(2, TimeSpan.FromMinutes(1));
+
+
+            Exception toRaiseAsInner = new DivideByZeroException();
+            Exception withInner = new AggregateException(toRaiseAsInner);
+
+            PolicyResult policyResult = breaker.ExecuteAndCapture(() => throw withInner);
+
+            policyResult.ExceptionType.Should().Be(ExceptionType.HandledByThisPolicy);
+            policyResult.FinalException.Should().BeSameAs(toRaiseAsInner);
+        }
+
+        #endregion
+
         #region Cancellation support
 
         [Fact]

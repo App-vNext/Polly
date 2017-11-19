@@ -338,7 +338,7 @@ namespace Polly.Specs.Fallback
         }
 
         [Fact]
-        public void Should_not_execute_fallback_when_policy_handles_inner_but_executed_delegate_throws_as_non_inner()
+        public void Should_execute_fallback_when_policy_handles_inner_and_executed_delegate_throws_as_non_inner()
         {
             bool fallbackActionExecuted = false;
             Action fallbackAction = () => { fallbackActionExecuted = true; };
@@ -349,9 +349,9 @@ namespace Polly.Specs.Fallback
 
             Exception nonInner = new DivideByZeroException();
 
-            fallbackPolicy.Invoking(x => x.RaiseException(nonInner)).ShouldThrow<DivideByZeroException>();
+            fallbackPolicy.Invoking(x => x.RaiseException(nonInner)).ShouldNotThrow();
 
-            fallbackActionExecuted.Should().BeFalse();
+            fallbackActionExecuted.Should().BeTrue();
         }
 
         [Fact]
