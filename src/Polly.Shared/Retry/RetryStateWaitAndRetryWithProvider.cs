@@ -8,11 +8,11 @@ namespace Polly.Retry
     {
         private int _errorCount;
         private readonly int _retryCount;
-        private readonly Func<int, Context, TimeSpan> _sleepDurationProvider;
+        private readonly Func<int, DelegateResult<TResult>, Context, TimeSpan> _sleepDurationProvider;
         private readonly Action<DelegateResult<TResult>, TimeSpan, int, Context> _onRetry;
         private readonly Context _context;
 
-        public RetryStateWaitAndRetryWithProvider(int retryCount, Func<int, Context, TimeSpan> sleepDurationProvider, Action<DelegateResult<TResult>, TimeSpan, int, Context> onRetry, Context context)
+        public RetryStateWaitAndRetryWithProvider(int retryCount, Func<int, DelegateResult<TResult>, Context, TimeSpan> sleepDurationProvider, Action<DelegateResult<TResult>, TimeSpan, int, Context> onRetry, Context context)
         {
             _retryCount = retryCount;
             _sleepDurationProvider = sleepDurationProvider;
@@ -27,7 +27,7 @@ namespace Polly.Retry
             bool shouldRetry = _errorCount <= _retryCount;
             if (shouldRetry)
             {
-                TimeSpan waitTimeSpan = _sleepDurationProvider(_errorCount, _context);
+                TimeSpan waitTimeSpan = _sleepDurationProvider(_errorCount, delegateResult, _context);
 
                 _onRetry(delegateResult, waitTimeSpan, _errorCount, _context);
 
