@@ -16,19 +16,19 @@ namespace Polly.Wrap
         /// <returns>An <see cref="IEnumerable{IsPolicy}"/> of all the policies in the wrap.</returns>
         public static IEnumerable<IsPolicy> GetPolicies(this IPolicyWrap policyWrap)
         {
-            var wrappedPolicies = new[] { policyWrap.Outer, policyWrap.Inner };
-            foreach (var wrappedPolicy in wrappedPolicies)
+            var childPolicies = new[] { policyWrap.Outer, policyWrap.Inner };
+            foreach (var childPolicy in childPolicies)
             {
-                if (wrappedPolicy is IPolicyWrap anotherWrap)
+                if (childPolicy is IPolicyWrap anotherWrap)
                 {
                     foreach (var policy in anotherWrap.GetPolicies())
                     {
                         yield return policy;
                     }
                 }
-                else if (wrappedPolicy != null)
+                else if (childPolicy != null)
                 {
-                    yield return wrappedPolicy;
+                    yield return childPolicy;
                 }
             }
         }
