@@ -1,67 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using Xunit;
 using Polly.Wrap;
 using System.Linq;
 using FluentAssertions;
+using Polly.CircuitBreaker;
+using Polly.NoOp;
+using Polly.Retry;
 
 namespace Polly.Specs.Wrap
 {
     public class IPolicyWrapExtensionSpecs
     {
-        [Fact]
-        public void Should_pass_outer_policy_and_then_inner_policy_from_PolicyWrap()
-        {
-            var outerPolicy = Policy.NoOp();
-            var innerPolicy = Policy.NoOp();
-            var policyWrap = Policy.Wrap(outerPolicy, innerPolicy);
-
-            var policies = policyWrap.GetPolicies().ToList();
-            policies[0].Should().Be(outerPolicy);
-            policies[1].Should().Be(innerPolicy);
-        }
-
-        [Fact]
-        public void Should_pass_no_policy_if_PolicyWrap_has_no_inner_or_outer_policy()
-        {
-            var policyWrap = new CustomWrap();
-
-            var policies = policyWrap.GetPolicies().ToList();
-            policies.Count.Should().Be(0);
-        }
-
-        [Fact]
-        public void Should_pass_only_inner_policy_if_PolicyWrap_has_no_outer_policy()
-        {
-            var innerPolicy = Policy.NoOp();
-            var policyWrap = new CustomWrap(null, innerPolicy);
-
-            var policies = policyWrap.GetPolicies().ToList();
-            policies.Count.Should().Be(1);
-            policies[0].Should().Be(innerPolicy);
-        }
-
-        [Fact]
-        public void Should_pass_only_outer_policy_if_PolicyWrap_has_no_inner_policy()
-        {
-            var outerPolicy = Policy.NoOp();
-            var policyWrap = new CustomWrap(outerPolicy, null);
-
-            var policies = policyWrap.GetPolicies().ToList();
-            policies.Count.Should().Be(1);
-            policies[0].Should().Be(outerPolicy);
-        }
 
         [Fact]
         public void Should_pass_all_nested_policies_from_PolicyWrap_in_same_order_they_were_added()
         {
-            var policy0 = Policy.NoOp();
-            var policy1 = Policy.NoOp();
-            var policy2 = Policy.NoOp();
-            var policyWrap = Policy.Wrap(policy0, policy1, policy2);
+            NoOpPolicy policy0 = Policy.NoOp();
+            NoOpPolicy policy1 = Policy.NoOp();
+            NoOpPolicy policy2 = Policy.NoOp();
 
-            var policies = policyWrap.GetPolicies().ToList();
+            PolicyWrap policyWrap = Policy.Wrap(policy0, policy1, policy2);
+
+            List<IsPolicy> policies = policyWrap.GetPolicies().ToList();
             policies.Count.Should().Be(3);
             policies[0].Should().Be(policy0);
             policies[1].Should().Be(policy1);
@@ -69,43 +30,186 @@ namespace Polly.Specs.Wrap
         }
 
         [Fact]
-        public void Should_pass_nested_policies_in_outer_inner_order()
+        public void Should_return_sequence_from_GetPolicies()
         {
-            var policy0 = Policy.NoOp();
-            var policy1 = Policy.NoOp();
-            var policy2 = Policy.NoOp();
-            var policy3 = Policy.NoOp();
-            var policyWrap = 
-                new CustomWrap(
-                    new CustomWrap(policy0, policy1),
-                    new CustomWrap(
-                        policy2,
-                        new CustomWrap(null, policy3)));
+            Policy policyA = Policy.NoOp();
+            Policy policyB = Policy.NoOp();
+            PolicyWrap wrap = Policy.Wrap(policyA, policyB);
 
-            var policies = policyWrap.GetPolicies().ToList();
-            policies.Count.Should().Be(4);
-            policies[0].Should().Be(policy0);
-            policies[1].Should().Be(policy1);
-            policies[2].Should().Be(policy2);
-            policies[3].Should().Be(policy3);
+            wrap.GetPolicies().ShouldBeEquivalentTo(new[] { policyA, policyB }, options => options.WithStrictOrdering());
         }
 
-        public class CustomWrap : IPolicyWrap
+        [Fact]
+        public void Threepolicies_by_static_sequence_should_return_correct_sequence_from_GetPolicies()
         {
-            public IsPolicy Outer { get; }
-            public IsPolicy Inner { get; }
+            Policy policyA = Policy.NoOp();
+            Policy policyB = Policy.NoOp();
+            Policy policyC = Policy.NoOp();
+            PolicyWrap wrap = Policy.Wrap(policyA, policyB, policyC);
 
-            public string PolicyKey => throw new NotImplementedException();
+            wrap.GetPolicies().ShouldBeEquivalentTo(new[] { policyA, policyB, policyC }, options => options.WithStrictOrdering());
+        }
 
-            public CustomWrap()
-            {
-            }
+        [Fact]
+        public void Threepolicies_lefttree_should_return_correct_sequence_from_GetPolicies()
+        {
+            Policy policyA = Policy.NoOp();
+            Policy policyB = Policy.NoOp();
+            Policy policyC = Policy.NoOp();
+            PolicyWrap wrap = policyA.Wrap(policyB).Wrap(policyC);
 
-            public CustomWrap(IsPolicy outer, IsPolicy inner)
-            {
-                Outer = outer;
-                Inner = inner;
-            }
+            wrap.GetPolicies().ShouldBeEquivalentTo(new[] { policyA, policyB, policyC }, options => options.WithStrictOrdering());
+        }
+
+        [Fact]
+        public void Threepolicies_righttree_should_return_correct_sequence_from_GetPolicies()
+        {
+            Policy policyA = Policy.NoOp();
+            Policy policyB = Policy.NoOp();
+            Policy policyC = Policy.NoOp();
+            PolicyWrap wrap = policyA.Wrap(policyB.Wrap(policyC));
+
+            wrap.GetPolicies().ShouldBeEquivalentTo(new[] { policyA, policyB, policyC }, options => options.WithStrictOrdering());
+        }
+
+        [Fact]
+        public void GetPoliciesTPolicy_should_return_single_policy_of_type_TPolicy()
+        {
+            Policy policyA = Policy.NoOp();
+            Policy policyB = Policy.Handle<Exception>().Retry();
+            Policy policyC = Policy.NoOp();
+            PolicyWrap wrap = policyA.Wrap(policyB.Wrap(policyC));
+
+            wrap.GetPolicies<RetryPolicy>().ShouldBeEquivalentTo(new[] { policyB }, options => options.WithStrictOrdering());
+        }
+
+        [Fact]
+        public void GetPoliciesTPolicy_should_return_empty_enumerable_if_no_policy_of_type_TPolicy()
+        {
+            Policy policyA = Policy.NoOp();
+            Policy policyB = Policy.Handle<Exception>().Retry();
+            Policy policyC = Policy.NoOp();
+            PolicyWrap wrap = policyA.Wrap(policyB.Wrap(policyC));
+
+            wrap.GetPolicies<CircuitBreakerPolicy>().Should().BeEmpty();
+        }
+
+        [Fact]
+        public void GetPoliciesTPolicy_should_return_multiple_policies_of_type_TPolicy()
+        {
+            Policy policyA = Policy.NoOp();
+            Policy policyB = Policy.Handle<Exception>().Retry();
+            Policy policyC = Policy.NoOp();
+            PolicyWrap wrap = policyA.Wrap(policyB.Wrap(policyC));
+
+            wrap.GetPolicies<NoOpPolicy>().ShouldBeEquivalentTo(new[] { policyA, policyC }, options => options.WithStrictOrdering());
+        }
+
+        [Fact]
+        public void GetPoliciesTPolicy_should_return_policies_of_type_TPolicy_matching_predicate()
+        {
+            CircuitBreakerPolicy policyA = Policy.Handle<Exception>().CircuitBreaker(1, TimeSpan.Zero);
+            Policy policyB = Policy.Handle<Exception>().Retry();
+            CircuitBreakerPolicy policyC = Policy.Handle<Exception>().CircuitBreaker(1, TimeSpan.Zero);
+
+            policyA.Isolate();
+
+            PolicyWrap wrap = policyA.Wrap(policyB.Wrap(policyC));
+
+            wrap.GetPolicies<CircuitBreakerPolicy>(p => p.CircuitState == CircuitState.Closed).ShouldBeEquivalentTo(new[] { policyC }, options => options.WithStrictOrdering());
+        }
+
+        [Fact]
+        public void GetPoliciesTPolicy_should_return_empty_enumerable_if_none_match_predicate()
+        {
+            CircuitBreakerPolicy policyA = Policy.Handle<Exception>().CircuitBreaker(1, TimeSpan.Zero);
+            Policy policyB = Policy.Handle<Exception>().Retry();
+            CircuitBreakerPolicy policyC = Policy.Handle<Exception>().CircuitBreaker(1, TimeSpan.Zero);
+
+            PolicyWrap wrap = policyA.Wrap(policyB.Wrap(policyC));
+
+            wrap.GetPolicies<CircuitBreakerPolicy>(p => p.CircuitState == CircuitState.Open).Should().BeEmpty();
+        }
+
+        [Fact]
+        public void GetPoliciesTPolicy_with_predicate_should_return_multiple_policies_of_type_TPolicy_if_multiple_match_predicate()
+        {
+            Policy policyA = Policy.NoOp();
+            Policy policyB = Policy.Handle<Exception>().Retry();
+            Policy policyC = Policy.NoOp();
+            PolicyWrap wrap = policyA.Wrap(policyB.Wrap(policyC));
+
+            wrap.GetPolicies<NoOpPolicy>(_ => true).ShouldBeEquivalentTo(new[] { policyA, policyC }, options => options.WithStrictOrdering());
+        }
+
+        [Fact]
+        public void GetPolicyTPolicy_should_return_single_policy_of_type_TPolicy()
+        {
+            Policy policyA = Policy.NoOp();
+            Policy policyB = Policy.Handle<Exception>().Retry();
+            Policy policyC = Policy.NoOp();
+            PolicyWrap wrap = policyA.Wrap(policyB.Wrap(policyC));
+
+            wrap.GetPolicy<RetryPolicy>().Should().BeSameAs(policyB);
+        }
+
+        [Fact]
+        public void GetPolicyTPolicy_should_return_null_if_no_TPolicy()
+        {
+            Policy policyA = Policy.NoOp();
+            Policy policyB = Policy.Handle<Exception>().Retry();
+            Policy policyC = Policy.NoOp();
+            PolicyWrap wrap = policyA.Wrap(policyB.Wrap(policyC));
+
+            wrap.GetPolicy<CircuitBreakerPolicy>().Should().BeNull();
+        }
+
+        [Fact]
+        public void GetPolicyTPolicy_should_throw_if_multiple_TPolicy()
+        {
+            Policy policyA = Policy.NoOp();
+            Policy policyB = Policy.Handle<Exception>().Retry();
+            Policy policyC = Policy.NoOp();
+            PolicyWrap wrap = policyA.Wrap(policyB.Wrap(policyC));
+
+            wrap.Invoking(p => p.GetPolicy<NoOpPolicy>()).ShouldThrow<InvalidOperationException>();
+        }
+
+        [Fact]
+        public void GetPolicyTPolicy_should_return_single_policy_of_type_TPolicy_matching_predicate()
+        {
+            CircuitBreakerPolicy policyA = Policy.Handle<Exception>().CircuitBreaker(1, TimeSpan.Zero);
+            Policy policyB = Policy.Handle<Exception>().Retry();
+            CircuitBreakerPolicy policyC = Policy.Handle<Exception>().CircuitBreaker(1, TimeSpan.Zero);
+
+            policyA.Isolate();
+
+            PolicyWrap wrap = policyA.Wrap(policyB.Wrap(policyC));
+
+            wrap.GetPolicy<CircuitBreakerPolicy>(p => p.CircuitState == CircuitState.Closed).Should().BeSameAs(policyC);
+        }
+
+        [Fact]
+        public void GetPolicyTPolicy_should_return_null_if_none_match_predicate()
+        {
+            CircuitBreakerPolicy policyA = Policy.Handle<Exception>().CircuitBreaker(1, TimeSpan.Zero);
+            Policy policyB = Policy.Handle<Exception>().Retry();
+            CircuitBreakerPolicy policyC = Policy.Handle<Exception>().CircuitBreaker(1, TimeSpan.Zero);
+
+            PolicyWrap wrap = policyA.Wrap(policyB.Wrap(policyC));
+
+            wrap.GetPolicy<CircuitBreakerPolicy>(p => p.CircuitState == CircuitState.Open).Should().BeNull();
+        }
+
+        [Fact]
+        public void GetPolicyTPolicy_with_predicate_should_throw_if_multiple_TPolicy_if_multiple_match_predicate()
+        {
+            Policy policyA = Policy.NoOp();
+            Policy policyB = Policy.Handle<Exception>().Retry();
+            Policy policyC = Policy.NoOp();
+            PolicyWrap wrap = policyA.Wrap(policyB.Wrap(policyC));
+
+            wrap.Invoking(p => p.GetPolicy<NoOpPolicy>(_ => true)).ShouldThrow<InvalidOperationException>();
         }
     }
 }
