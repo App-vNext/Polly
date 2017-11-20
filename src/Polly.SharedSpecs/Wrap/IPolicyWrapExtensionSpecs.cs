@@ -143,6 +143,18 @@ namespace Polly.Specs.Wrap
         }
 
         [Fact]
+        public void GetPoliciesTPolicy_with_predicate_should_throw_if_predicate_is_null()
+        {
+            Policy policyA = Policy.NoOp();
+            Policy policyB = Policy.NoOp();
+            PolicyWrap wrap = policyA.Wrap(policyB);
+
+            Action configure = () => wrap.GetPolicies<NoOpPolicy>(null);
+            
+            configure.ShouldThrow<ArgumentNullException>().And.ParamName.Should().Be("filter");
+        }
+
+        [Fact]
         public void GetPolicyTPolicy_should_return_single_policy_of_type_TPolicy()
         {
             Policy policyA = Policy.NoOp();
@@ -210,6 +222,18 @@ namespace Polly.Specs.Wrap
             PolicyWrap wrap = policyA.Wrap(policyB.Wrap(policyC));
 
             wrap.Invoking(p => p.GetPolicy<NoOpPolicy>(_ => true)).ShouldThrow<InvalidOperationException>();
+        }
+
+        [Fact]
+        public void GetPolicyTPolicy_with_predicate_should_throw_if_predicate_is_null()
+        {
+            Policy policyA = Policy.NoOp();
+            Policy policyB = Policy.NoOp();
+            PolicyWrap wrap = policyA.Wrap(policyB);
+
+            Action configure = () => wrap.GetPolicy<NoOpPolicy>(null);
+
+            configure.ShouldThrow<ArgumentNullException>().And.ParamName.Should().Be("filter");
         }
     }
 }

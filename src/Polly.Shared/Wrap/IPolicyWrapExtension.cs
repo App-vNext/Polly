@@ -53,6 +53,7 @@ namespace Polly.Wrap
         /// <returns>An <see cref="IEnumerable{TPolicy}"/> of all the policies of the given type, matching the filter.</returns>
         public static IEnumerable<TPolicy> GetPolicies<TPolicy>(this IPolicyWrap policyWrap, Func<TPolicy, bool> filter)
         {
+            if (filter == null) throw new ArgumentNullException(nameof(filter));
             return policyWrap.GetPolicies().OfType<TPolicy>().Where(filter);
         }
 
@@ -78,6 +79,7 @@ namespace Polly.Wrap
         /// <throws>InvalidOperationException, if more than one policy of the type is found in the wrap.</throws>
         public static TPolicy GetPolicy<TPolicy>(this IPolicyWrap policyWrap, Func<TPolicy, bool> filter)
         {
+            if (filter == null) throw new ArgumentNullException(nameof(filter));
             return policyWrap.GetPolicies().OfType<TPolicy>().SingleOrDefault(filter);
         }
     }
