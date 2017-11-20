@@ -939,6 +939,8 @@ For details of changes by release see the [change log](https://github.com/App-vN
 * [@Extremo75](https://github.com/ExtRemo75) - Allow fallback delegates to take handled fault as input parameter.
 * [@reisenberger](https://github.com/reisenberger) and [@seanfarrow](https://github.com/SeanFarrow) - Add CachePolicy, with interfaces for pluggable cache providers and serializers.
 * [@MartinSStewart](https://github.com/martinsstewart) - Add GetPolicies extension method to IPolicyWrap.
+* [@matst80](https://github.com/matst80) - Allow WaitAndRetry to take handled fault as an input to the sleepDurationProvider, allowing WaitAndRetry to take account of systems which specify a duration to wait as part of a fault response; eg Azure Cosmos DB may specify this in `x-ms-retry-after-ms` headers or in a property to an exception thrown by the Azure SDK.
+* [@reisenberger](https://github.com/reisenberger) - Allow WaitAndRetryForever to take handled fault as an input to the sleepDurationProvider.
 
 # Sample Projects
 
