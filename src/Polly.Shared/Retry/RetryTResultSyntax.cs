@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using Polly.Retry;
 using System.Linq;
-using System.Runtime.InteropServices.ComTypes;
 
 namespace Polly
 {
