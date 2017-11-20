@@ -80,8 +80,12 @@
     <Compile Include="$(MSBuildThisFileDirectory)Retry\RetryTResultSpecsAsync.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Retry\WaitAndRetryAsyncSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Retry\WaitAndRetryForeverAsyncSpecs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Retry\WaitAndRetryForeverTResultAsyncSpecs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Retry\WaitAndRetryForeverTResultSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Retry\WaitAndRetrySpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Retry\WaitAndRetryForeverSpecs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Retry\WaitAndRetryTResultAsyncSpecs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Retry\WaitAndRetryTResultSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Timeout\TimeoutAsyncSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Timeout\TimeoutSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Timeout\TimeoutSpecsBase.cs" />
