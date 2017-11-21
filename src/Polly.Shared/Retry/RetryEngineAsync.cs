@@ -1,11 +1,13 @@
-﻿
-
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
+using System.Runtime.ExceptionServices;
 using System.Threading;
 using System.Threading.Tasks;
+
+#if NET40
+using ExceptionDispatchInfo = Polly.Utilities.ExceptionDispatchInfo;
+#endif
 
 namespace Polly.Retry
 {
@@ -44,15 +46,22 @@ namespace Polly.Retry
                 }
                 catch (Exception ex)
                 {
-                    if (!shouldRetryExceptionPredicates.Any(predicate => predicate(ex)))
+                    Exception handledException = shouldRetryExceptionPredicates
+                        .Select(predicate => predicate(ex))
+                        .FirstOrDefault(e => e != null);
+                    if (handledException == null)
                     {
                         throw;
                     }
 
                     if (!await policyState
-                        .CanRetryAsync(new DelegateResult<TResult>(ex), cancellationToken, continueOnCapturedContext)
+                        .CanRetryAsync(new DelegateResult<TResult>(handledException), cancellationToken, continueOnCapturedContext)
                         .ConfigureAwait(continueOnCapturedContext))
                     {
+                        if (handledException != ex)
+                        {
+                            ExceptionDispatchInfo.Capture(handledException).Throw();
+                        }
                         throw;
                     }
                 }

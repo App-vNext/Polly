@@ -619,7 +619,7 @@ namespace Polly
 
         internal static ExceptionType GetExceptionType(IEnumerable<ExceptionPredicate> exceptionPredicates, Exception exception)
         {
-            var isExceptionTypeHandledByThisPolicy = exceptionPredicates.Any(predicate => predicate(exception));
+            var isExceptionTypeHandledByThisPolicy = exceptionPredicates.Any(predicate => predicate(exception) != null);
 
             return isExceptionTypeHandledByThisPolicy
                 ? ExceptionType.HandledByThisPolicy

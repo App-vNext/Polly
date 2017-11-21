@@ -200,6 +200,23 @@ namespace Polly.Specs.Retry
         }
 
         [Fact]
+        public async Task Should_call_onretry_with_a_handled_innerexception()
+        {
+            Exception passedToOnRetry = null;
+
+            var policy = Policy
+                .HandleInner<DivideByZeroException>()
+                .RetryAsync(3, (exception, _) => passedToOnRetry = exception);
+
+            Exception toRaiseAsInner = new DivideByZeroException();
+            Exception withInner = new AggregateException(toRaiseAsInner);
+
+            await policy.RaiseExceptionAsync(withInner);
+
+            passedToOnRetry.Should().BeSameAs(toRaiseAsInner);
+        }
+
+        [Fact]
         public void Should_not_call_onretry_when_no_retries_are_performed()
         {
             var retryCounts = new List<int>();
