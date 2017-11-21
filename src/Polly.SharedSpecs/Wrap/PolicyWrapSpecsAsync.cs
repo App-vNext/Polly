@@ -10,6 +10,7 @@ using Xunit;
 
 namespace Polly.Specs.Wrap
 {
+    [Collection("SystemClockDependantCollection")]
     public class PolicyWrapSpecsAsync
     {
         #region Instance configuration syntax tests, non-generic policies
