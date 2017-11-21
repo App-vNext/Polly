@@ -7,6 +7,7 @@ using Xunit;
 
 namespace Polly.Specs.Wrap
 {
+    [Collection("SystemClockDependantCollection")]
     public class PolicyWrapContextAndKeySpecsAsync
     {
         #region PolicyKey and execution Context tests

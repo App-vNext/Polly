@@ -12,6 +12,7 @@ using Scenario = Polly.Specs.Helpers.PolicyExtensionsAsync.ExceptionAndOrCancell
 
 namespace Polly.Specs.Retry
 {
+    [Collection("SystemClockDependantCollection")]
     public class WaitAndRetryForeverAsyncSpecs : IDisposable
     {
         public WaitAndRetryForeverAsyncSpecs()
@@ -285,6 +286,42 @@ namespace Polly.Specs.Retry
             actualRetryWaits.Should()
                        .ContainInOrder(expectedRetryWaits);
         }
+
+        [Fact]
+        public async Task Should_be_able_to_calculate_retry_timespans_based_on_the_handled_fault()
+        {
+            Dictionary<Exception, TimeSpan> expectedRetryWaits = new Dictionary<Exception, TimeSpan>(){
+
+                {new DivideByZeroException(), 2.Seconds()},
+                {new ArgumentNullException(), 4.Seconds()},
+            };
+
+            var actualRetryWaits = new List<TimeSpan>();
+
+            var policy = Policy
+                .Handle<Exception>()
+                .WaitAndRetryForeverAsync(
+                    sleepDurationProvider: (retryAttempt, exc, ctx) =>
+                    {
+                        return expectedRetryWaits[exc];
+                    },
+                    onRetryAsync: (_, timeSpan, __) =>
+                    {
+                        actualRetryWaits.Add(timeSpan);
+                        return TaskHelper.EmptyTask;
+                    });
+
+            using (var enumerator = expectedRetryWaits.GetEnumerator())
+            {
+                await policy.ExecuteAsync(() => {
+                    if (enumerator.MoveNext()) throw enumerator.Current.Key;
+                    return TaskHelper.EmptyTask;
+                });
+            }
+
+            actualRetryWaits.Should().ContainInOrder(expectedRetryWaits.Values);
+        }
+
 
         [Fact]
         public async Task Should_be_able_to_pass_retry_duration_from_execution_to_sleepDurationProvider_via_context()

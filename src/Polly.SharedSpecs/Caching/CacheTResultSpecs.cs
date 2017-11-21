@@ -10,6 +10,7 @@ using Xunit;
 
 namespace Polly.Specs.Caching
 {
+    [Collection("SystemClockDependantCollection")]
     public class CacheTResultSpecs : IDisposable
     {
         #region Configuration

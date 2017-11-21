@@ -10,6 +10,7 @@ using Xunit;
 
 namespace Polly.Specs.CircuitBreaker
 {
+    [Collection("SystemClockDependantCollection")]
     public class CircuitBreakerSpecs : IDisposable
     {
         #region Configuration tests

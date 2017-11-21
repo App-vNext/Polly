@@ -149,6 +149,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\TaskHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\TimedLock.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Wrap\IPolicyWrap.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Wrap\IPolicyWrapExtension.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Wrap\PolicyWrapSyntax.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Wrap\PolicyWrapSyntaxAsync.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Wrap\PolicyWrap.ContextAndKeys.cs" />
