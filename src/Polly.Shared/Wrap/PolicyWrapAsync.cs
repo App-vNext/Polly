@@ -7,7 +7,7 @@ namespace Polly.Wrap
 {
     public partial class PolicyWrap : IPolicyWrap
     {
-        internal PolicyWrap(Func<Func<Context, CancellationToken, Task>, Context, CancellationToken, bool, Task> policyAction, Policy outer, Policy inner)
+        internal PolicyWrap(Func<Func<Context, CancellationToken, Task>, Context, CancellationToken, bool, Task> policyAction, Policy outer, IAsyncPolicy inner)
             : base(policyAction, outer.ExceptionPredicates)
         {
             _outer = outer;
@@ -30,8 +30,8 @@ namespace Polly.Wrap
                 context,
                 cancellationToken,
                 continueOnCapturedContext,
-                _outer,
-                _inner);
+                (IAsyncPolicy)_outer,
+                (IAsyncPolicy)_inner);
         }
     }
 

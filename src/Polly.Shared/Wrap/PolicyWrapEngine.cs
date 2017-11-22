@@ -9,8 +9,8 @@ namespace Polly.Wrap
             Func<Context, CancellationToken, TResult> func,
             Context context,
             CancellationToken cancellationToken,
-            Policy<TResult> outerPolicy,
-            Policy<TResult> innerPolicy)
+            ISyncPolicy<TResult> outerPolicy,
+            ISyncPolicy<TResult> innerPolicy)
         {
             return outerPolicy.Execute((ctx, ct) => innerPolicy.Execute(func, ctx, ct), context, cancellationToken);
         }
@@ -19,8 +19,8 @@ namespace Polly.Wrap
            Func<Context, CancellationToken, TResult> func,
            Context context,
            CancellationToken cancellationToken,
-           Policy<TResult> outerPolicy,
-           Policy innerPolicy)
+           ISyncPolicy<TResult> outerPolicy,
+           ISyncPolicy innerPolicy)
         {
             return outerPolicy.Execute((ctx, ct) => innerPolicy.Execute<TResult>(func, ctx, ct), context, cancellationToken);
         }
@@ -29,8 +29,8 @@ namespace Polly.Wrap
            Func<Context, CancellationToken, TResult> func,
            Context context,
            CancellationToken cancellationToken,
-           Policy outerPolicy,
-           Policy<TResult> innerPolicy)
+           ISyncPolicy outerPolicy,
+           ISyncPolicy<TResult> innerPolicy)
         {
             return outerPolicy.Execute<TResult>((ctx, ct) => innerPolicy.Execute(func, ctx, ct), context, cancellationToken);
         }
@@ -39,8 +39,8 @@ namespace Polly.Wrap
            Func<Context, CancellationToken, TResult> func,
            Context context,
            CancellationToken cancellationToken,
-           Policy outerPolicy,
-           Policy innerPolicy)
+           ISyncPolicy outerPolicy,
+           ISyncPolicy innerPolicy)
         {
             return outerPolicy.Execute<TResult>((ctx, ct) => innerPolicy.Execute<TResult>(func, ctx, ct), context, cancellationToken);
         }
@@ -49,8 +49,8 @@ namespace Polly.Wrap
            Action<Context, CancellationToken> action,
            Context context,
            CancellationToken cancellationToken, 
-           Policy outerPolicy,
-           Policy innerPolicy)
+           ISyncPolicy outerPolicy,
+           ISyncPolicy innerPolicy)
         {
             outerPolicy.Execute((ctx, ct) => innerPolicy.Execute(action, ctx, ct), context, cancellationToken);
         }

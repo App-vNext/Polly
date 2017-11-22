@@ -11,8 +11,8 @@ namespace Polly.Wrap
             Context context,
             CancellationToken cancellationToken,
             bool continueOnCapturedContext,
-            Policy<TResult> outerPolicy,
-            Policy<TResult> innerPolicy)
+            IAsyncPolicy<TResult> outerPolicy,
+            IAsyncPolicy<TResult> innerPolicy)
         {
             return await outerPolicy.ExecuteAsync(
                 async (ctx, ct) => await innerPolicy.ExecuteAsync(
@@ -32,8 +32,8 @@ namespace Polly.Wrap
             Context context,
             CancellationToken cancellationToken,
             bool continueOnCapturedContext,
-            Policy<TResult> outerPolicy,
-            Policy innerPolicy)
+            IAsyncPolicy<TResult> outerPolicy,
+            IAsyncPolicy innerPolicy)
         {
             return await outerPolicy.ExecuteAsync(
                 async (ctx, ct) => await innerPolicy.ExecuteAsync<TResult>(
@@ -53,8 +53,8 @@ namespace Polly.Wrap
             Context context,
             CancellationToken cancellationToken,
             bool continueOnCapturedContext,
-            Policy outerPolicy,
-            Policy<TResult> innerPolicy)
+            IAsyncPolicy outerPolicy,
+            IAsyncPolicy<TResult> innerPolicy)
         {
             return await outerPolicy.ExecuteAsync<TResult>(
                 async (ctx, ct) => await innerPolicy.ExecuteAsync(
@@ -74,8 +74,8 @@ namespace Polly.Wrap
            Context context,
            CancellationToken cancellationToken,
            bool continueOnCapturedContext,
-           Policy outerPolicy,
-           Policy innerPolicy)
+           IAsyncPolicy outerPolicy,
+           IAsyncPolicy innerPolicy)
         {
             return await outerPolicy.ExecuteAsync<TResult>(
                 async (ctx, ct) => await innerPolicy.ExecuteAsync<TResult>(
@@ -95,8 +95,8 @@ namespace Polly.Wrap
             Context context,
             CancellationToken cancellationToken,
             bool continueOnCapturedContext,
-            Policy outerPolicy,
-            Policy innerPolicy)
+            IAsyncPolicy outerPolicy,
+            IAsyncPolicy innerPolicy)
         {
             await outerPolicy.ExecuteAsync(
                 async (ctx, ct) => await innerPolicy.ExecuteAsync(
