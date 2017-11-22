@@ -9,8 +9,8 @@ namespace Polly.Wrap
     /// </summary>
     public partial class PolicyWrap : Policy, IPolicyWrap
     {
-        private Policy _outer;
-        private Policy _inner;
+        private IsPolicy _outer;
+        private IsPolicy _inner;
 
         /// <summary>
         /// Returns the outer <see cref="IsPolicy"/> in this <see cref="IPolicyWrap"/>
@@ -22,7 +22,7 @@ namespace Polly.Wrap
         /// </summary>
         public IsPolicy Inner => _inner;
 
-        internal PolicyWrap(Action<Action<Context, CancellationToken>, Context, CancellationToken> policyAction, Policy outer, Policy inner) 
+        internal PolicyWrap(Action<Action<Context, CancellationToken>, Context, CancellationToken> policyAction, Policy outer, ISyncPolicy inner) 
             : base(policyAction, outer.ExceptionPredicates)
         {
             _outer = outer;
@@ -43,8 +43,8 @@ namespace Polly.Wrap
                    action,
                    context,
                    cancellationToken,
-                   _outer, 
-                   _inner
+                   (ISyncPolicy)_outer,
+                   (ISyncPolicy)_inner
                    );
         }
     }
