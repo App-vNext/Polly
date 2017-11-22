@@ -17,9 +17,7 @@ namespace Polly
             IEnumerable<ExceptionPredicate> exceptionPredicates,
             IEnumerable<ResultPredicate<TResult>> resultPredicates)
         {
-            if (asyncExecutionPolicy == null) throw new ArgumentNullException(nameof(asyncExecutionPolicy));
-
-            _asyncExecutionPolicy = asyncExecutionPolicy;
+            _asyncExecutionPolicy = asyncExecutionPolicy ?? throw new ArgumentNullException(nameof(asyncExecutionPolicy));
             ExceptionPredicates = exceptionPredicates ?? PredicateHelper.EmptyExceptionPredicates;
             ResultPredicates = resultPredicates ?? PredicateHelper<TResult>.EmptyResultPredicates;
         }

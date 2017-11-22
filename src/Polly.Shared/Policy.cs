@@ -20,9 +20,7 @@ namespace Polly
             Action<Action<Context, CancellationToken>, Context, CancellationToken> exceptionPolicy,
             IEnumerable<ExceptionPredicate> exceptionPredicates)
         {
-            if (exceptionPolicy == null) throw new ArgumentNullException(nameof(exceptionPolicy));
-
-            _exceptionPolicy = exceptionPolicy;
+            _exceptionPolicy = exceptionPolicy ?? throw new ArgumentNullException(nameof(exceptionPolicy));
             ExceptionPredicates = exceptionPredicates ?? PredicateHelper.EmptyExceptionPredicates;
         }
 
