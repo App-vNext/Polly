@@ -3,6 +3,7 @@
 - Add ability to handle inner exceptions natively: .HandleInner&lt;TEx&gt;()
 - Add GetPolicies extension method to IPolicyWrap
 - Allow WaitAndRetry policies to calculate wait based on the handled fault
+- Better explanation when generic TResult method used with non-generic fallback
 
 ## 5.5.0
 - Bug fix: non-generic CachePolicy with PolicyWrap

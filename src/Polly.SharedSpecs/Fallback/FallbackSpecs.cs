@@ -316,6 +316,16 @@ namespace Polly.Specs.Fallback
             fallbackActionExecuted.Should().BeTrue();
         }
 
+        [Fact]
+        public void Should_throw_for_generic_method_execution_on_non_generic_policy()
+        {
+            FallbackPolicy fallbackPolicy = Policy
+                .Handle<DivideByZeroException>()
+                .Fallback(() => {});
+
+            fallbackPolicy.Invoking(p => p.Execute<int>(() => 0)).ShouldThrow<InvalidOperationException>();
+        }
+
         #endregion
 
         #region HandleInner tests, inner of normal exceptions

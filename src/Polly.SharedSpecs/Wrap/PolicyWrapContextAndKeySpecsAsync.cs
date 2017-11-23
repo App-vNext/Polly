@@ -117,14 +117,14 @@ namespace Polly.Specs.Wrap
             var outerWrap = fallback.WrapAsync(innerWrap).WithPolicyKey(outerWrapKey);
 
             bool doneOnceOny = false;
-            await outerWrap.ExecuteAsync<int>(() =>
+            await outerWrap.ExecuteAsync(() =>
             {
                 if (!doneOnceOny)
                 {
                     doneOnceOny = true;
                     throw new Exception();
                 }
-                return TaskHelper.FromResult(0);
+                return TaskHelper.EmptyTask;
             });
 
             policyWrapKeySetOnExecutionContext.Should().NotBe(retryKey);
