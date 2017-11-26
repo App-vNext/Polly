@@ -15,9 +15,7 @@ namespace Polly
             Func<Func<Context, CancellationToken, Task>, Context, CancellationToken, bool, Task> asyncExceptionPolicy, 
             IEnumerable<ExceptionPredicate> exceptionPredicates)
         {
-            if (asyncExceptionPolicy == null) throw new ArgumentNullException(nameof(asyncExceptionPolicy));
-
-            _asyncExceptionPolicy = asyncExceptionPolicy;
+            _asyncExceptionPolicy = asyncExceptionPolicy ?? throw new ArgumentNullException(nameof(asyncExceptionPolicy));
             ExceptionPredicates = exceptionPredicates ?? PredicateHelper.EmptyExceptionPredicates;
         }
 

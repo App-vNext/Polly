@@ -22,9 +22,7 @@ namespace Polly
             IEnumerable<ResultPredicate<TResult>> resultPredicates
             )
         {
-            if (executionPolicy == null) throw new ArgumentNullException(nameof(executionPolicy));
-
-            _executionPolicy = executionPolicy;
+            _executionPolicy = executionPolicy ?? throw new ArgumentNullException(nameof(executionPolicy));
             ExceptionPredicates = exceptionPredicates ?? PredicateHelper.EmptyExceptionPredicates;
             ResultPredicates = resultPredicates ?? PredicateHelper<TResult>.EmptyResultPredicates;
         }
