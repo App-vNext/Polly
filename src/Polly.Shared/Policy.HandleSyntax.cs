@@ -9,12 +9,10 @@ namespace Polly
         /// Specifies the type of exception that this policy can handle.
         /// </summary>
         /// <typeparam name="TException">The type of the exception to handle.</typeparam>
-        /// <returns>The PolicyBuilder instance.</returns>
+        /// <returns>The PolicyBuilder instance, for fluent chaining.</returns>
         public static PolicyBuilder Handle<TException>() where TException : Exception
         {
-            ExceptionPredicate predicate = exception => exception is TException;
-
-            return new PolicyBuilder(predicate);
+            return new PolicyBuilder(exception => exception is TException ? exception : null);
         }
 
         /// <summary>
@@ -22,13 +20,30 @@ namespace Polly
         /// </summary>
         /// <typeparam name="TException">The type of the exception.</typeparam>
         /// <param name="exceptionPredicate">The exception predicate to filter the type of exception this policy can handle.</param>
-        /// <returns>The PolicyBuilder instance.</returns>
+        /// <returns>The PolicyBuilder instance, for fluent chaining.</returns>
         public static PolicyBuilder Handle<TException>(Func<TException, bool> exceptionPredicate) where TException : Exception
         {
-            ExceptionPredicate predicate = exception => exception is TException &&
-                                                        exceptionPredicate((TException)exception);
+            return new PolicyBuilder(exception => exception is TException texception && exceptionPredicate(texception) ? exception : null);
+        }
 
-            return new PolicyBuilder(predicate);
+        /// <summary>
+        /// Specifies the type of exception that this policy can handle if found as an InnerException of a regular <see cref="Exception"/>, or at any level of nesting within an <see cref="AggregateException"/>.
+        /// </summary>
+        /// <typeparam name="TException">The type of the exception to handle.</typeparam>
+        /// <returns>The PolicyBuilder instance, for fluent chaining.</returns>
+        public static PolicyBuilder HandleInner<TException>() where TException : Exception
+        {
+            return new PolicyBuilder(PolicyBuilder.HandleInner(ex => ex is TException));
+        }
+
+        /// <summary>
+        /// Specifies the type of exception that this policy can handle, with additional filters on this exception type, if found as an InnerException of a regular <see cref="Exception"/>, or at any level of nesting within an <see cref="AggregateException"/>.
+        /// </summary>
+        /// <typeparam name="TException">The type of the exception to handle.</typeparam>
+        /// <returns>The PolicyBuilder instance, for fluent chaining.</returns>
+        public static PolicyBuilder HandleInner<TException>(Func<TException, bool> exceptionPredicate) where TException : Exception
+        {
+            return new PolicyBuilder(PolicyBuilder.HandleInner(ex => ex is TException texception && exceptionPredicate(texception)));
         }
 
         /// <summary>
@@ -64,9 +79,7 @@ namespace Polly
         /// <returns>The PolicyBuilder instance.</returns>
         public static PolicyBuilder<TResult> Handle<TException>() where TException : Exception
         {
-            ExceptionPredicate predicate = exception => exception is TException;
-
-            return new PolicyBuilder<TResult>(predicate);
+            return new PolicyBuilder<TResult>(exception => exception is TException ? exception : null);
         }
 
         /// <summary>
@@ -77,10 +90,27 @@ namespace Polly
         /// <returns>The PolicyBuilder instance.</returns>
         public static PolicyBuilder<TResult> Handle<TException>(Func<TException, bool> exceptionPredicate) where TException : Exception
         {
-            ExceptionPredicate predicate = exception => exception is TException &&
-                                                        exceptionPredicate((TException)exception);
+            return new PolicyBuilder<TResult>(exception => exception is TException texception && exceptionPredicate(texception) ? exception : null);
+        }
 
-            return new PolicyBuilder<TResult>(predicate);
+        /// <summary>
+        /// Specifies the type of exception that this policy can handle if found as an InnerException of a regular <see cref="Exception"/>, or at any level of nesting within an <see cref="AggregateException"/>.
+        /// </summary>
+        /// <typeparam name="TException">The type of the exception to handle.</typeparam>
+        /// <returns>The PolicyBuilder instance, for fluent chaining.</returns>
+        public static PolicyBuilder<TResult> HandleInner<TException>() where TException : Exception
+        {
+            return new PolicyBuilder<TResult>(PolicyBuilder.HandleInner(ex => ex is TException));
+        }
+
+        /// <summary>
+        /// Specifies the type of exception that this policy can handle, with additional filters on this exception type, if found as an InnerException of a regular <see cref="Exception"/>, or at any level of nesting within an <see cref="AggregateException"/>.
+        /// </summary>
+        /// <typeparam name="TException">The type of the exception to handle.</typeparam>
+        /// <returns>The PolicyBuilder instance, for fluent chaining.</returns>
+        public static PolicyBuilder<TResult> HandleInner<TException>(Func<TException, bool> exceptionPredicate) where TException : Exception
+        {
+            return new PolicyBuilder<TResult>(PolicyBuilder.HandleInner(ex => ex is TException texception && exceptionPredicate(texception)));
         }
 
         /// <summary>

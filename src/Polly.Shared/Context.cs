@@ -7,13 +7,9 @@ namespace Polly
     /// Context that carries with a single execution through a Policy.   Commonly-used properties are directly on the class.  Backed by a dictionary of string key / object value pairs, to which user-defined values may be added.
     /// <remarks>Do not re-use an instance of <see cref="Context"/> across more than one execution.</remarks>
     /// </summary>
-    public class Context : Dictionary<string, object>
+    public partial class Context
     {
-        // For an individual execution through a policy or policywrap, it is expected that all execution steps (for example executing the user delegate, invoking policy-activity delegates such as onRetry, onBreak, onTimeout etc) execute sequentially.  
-        // Therefore, this class is intentionally not constructed to be safe for concurrent access from multiple threads.
-
-        private static readonly IDictionary<string, object> emptyDictionary = new Dictionary<string, object>();
-        internal static readonly Context None = new Context(emptyDictionary);
+        internal static readonly Context None = new Context();
 
         private Guid? _executionGuid;
 
@@ -21,27 +17,13 @@ namespace Polly
         /// Initializes a new instance of the <see cref="Context"/> class, with the specified <paramref name="executionKey"/>.
         /// </summary>
         /// <param name="executionKey">The execution key.</param>
-        public Context(String executionKey) : this(executionKey, emptyDictionary)
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Context"/> class, with the specified <paramref name="executionKey" /> and the supplied <paramref name="contextData"/>.
-        /// </summary>
-        /// <param name="executionKey">The execution key.</param>
-        /// <param name="contextData">The context data.</param>
-        public Context(String executionKey, IDictionary<string, object> contextData) : this(contextData)
+        public Context(String executionKey)
         {
             ExecutionKey = executionKey;
         }
 
-        internal Context() : this(emptyDictionary)
+        internal Context()
         {
-        }
-
-        internal Context(IDictionary<string, object> contextData) : base(contextData)
-        {
-            if (contextData == null) throw new ArgumentNullException(nameof(contextData));
         }
 
         /// <summary>

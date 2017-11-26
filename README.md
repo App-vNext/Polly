@@ -27,7 +27,6 @@ You can install the Strongly Named version via:
     Install-Package Polly.Net40Async-Signed
 
 
-
 # Resilience policies
 
 Polly offers multiple resilience policies:
@@ -52,8 +51,6 @@ Fault-handling policies handle specific exceptions thrown by, or results returne
 
 ### (for fault-handling policies:  Retry family, CircuitBreaker family and Fallback)
 
-
-
 ```csharp
 // Single exception type
 Policy
@@ -72,6 +69,11 @@ Policy
 Policy
   .Handle<SqlException>(ex => ex.Number == 1205)
   .Or<ArgumentException>(ex => ex.ParamName == "example")
+
+// Inner exceptions of ordinary exceptions or AggregateException, with or without conditions
+Policy
+  .HandleInner<HttpResponseException>()
+  .OrInner<OperationCanceledException>(ex => ex.CancellationToken == myToken)
 ```
 
 ## Step 1b: (optionally) Specify return results you want to handle
@@ -938,6 +940,13 @@ For details of changes by release see the [change log](https://github.com/App-vN
 * [@jiimaho](https://github.com/jiimaho) and [@Extremo75](https://github.com/ExtRemo75) - Provide public factory methods for PolicyResult, to support testing.
 * [@Extremo75](https://github.com/ExtRemo75) - Allow fallback delegates to take handled fault as input parameter.
 * [@reisenberger](https://github.com/reisenberger) and [@seanfarrow](https://github.com/SeanFarrow) - Add CachePolicy, with interfaces for pluggable cache providers and serializers.
+* Thanks to the awesome devs at [@tretton37](https://github.com/tretton37) who delivered the following as part of a one-day in-company hackathon led by [@reisenberger](https://github.com/reisenberger), sponsored by [@tretton37](https://github.com/tretton37) and convened by [@thecodejunkie](https://github.com/thecodejunkie) 
+  * [@matst80](https://github.com/matst80) - Allow WaitAndRetry to take handled fault as an input to the sleepDurationProvider, allowing WaitAndRetry to take account of systems which specify a duration to wait as part of a fault response; eg Azure CosmosDB may specify this in `x-ms-retry-after-ms` headers or in a property to an exception thrown by the Azure CosmosDB SDK.
+  * [@MartinSStewart](https://github.com/martinsstewart) - Add GetPolicies() extension methods to IPolicyWrap.
+  * [@jbergens37](https://github.com/jbergens37) - Parallelize test running where possible, to improve overall build speed.
+* [@reisenberger](https://github.com/reisenberger) - Add new .HandleInner<TException>(...) syntax for handling inner exceptions natively.
+* [@rjongeneelen](https://github.com/rjongeneelen) and [@reisenberger](https://github.com/reisenberger) - Allow PolicyWrap configuration to configure policies via interfaces. 
+* [@reisenberger](https://github.com/reisenberger) - Performance improvements.
 
 # Sample Projects
 

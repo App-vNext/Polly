@@ -70,6 +70,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)CircuitBreaker\SingleHealthMetrics.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CircuitBreaker\AdvancedCircuitController.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Context.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Context.Dictionary.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ExceptionPredicate.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DelegateResult.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ExecutionRejectedException.cs" />
@@ -149,6 +150,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\TaskHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\TimedLock.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Wrap\IPolicyWrap.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Wrap\IPolicyWrapExtension.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Wrap\PolicyWrapSyntax.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Wrap\PolicyWrapSyntaxAsync.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Wrap\PolicyWrap.ContextAndKeys.cs" />

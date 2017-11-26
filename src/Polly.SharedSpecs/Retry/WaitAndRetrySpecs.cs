@@ -11,6 +11,7 @@ using Xunit;
 
 namespace Polly.Specs.Retry
 {
+    [Collection("SystemClockDependantCollection")]
     public class WaitAndRetrySpecs : IDisposable
     {
         public WaitAndRetrySpecs()
@@ -706,6 +707,57 @@ namespace Polly.Specs.Retry
         }
 
         [Fact]
+        public void Should_be_able_to_pass_handled_exception_to_sleepdurationprovider()
+        {
+            object capturedExceptionInstance = null;
+
+            DivideByZeroException exceptionInstance = new DivideByZeroException();
+
+            var policy = Policy
+                .Handle<DivideByZeroException>()
+                .WaitAndRetry(5,
+                    sleepDurationProvider: (retries, ex, ctx) =>
+                    {
+                        capturedExceptionInstance = ex;
+                        return TimeSpan.FromMilliseconds(0);
+                    },
+                    onRetry: (ex, ts, i, ctx) =>
+                    {
+                    }
+                );
+
+            policy.RaiseException(exceptionInstance);
+
+            capturedExceptionInstance.Should().Be(exceptionInstance);
+        }
+
+        [Fact]
+        public void Should_be_able_to_calculate_retry_timespans_based_on_the_handled_fault()
+        {
+            Dictionary<Exception, TimeSpan> expectedRetryWaits = new Dictionary<Exception, TimeSpan>(){
+
+                {new DivideByZeroException(), 2.Seconds()},
+                {new ArgumentNullException(), 4.Seconds()},
+            };
+
+            var actualRetryWaits = new List<TimeSpan>();
+
+            var policy = Policy
+                .Handle<Exception>()
+                .WaitAndRetry(2,
+                    (retryAttempt, exc, ctx) => expectedRetryWaits[exc],
+                    (_, timeSpan, __, ___) => actualRetryWaits.Add(timeSpan)
+                );
+
+            using (var enumerator = expectedRetryWaits.GetEnumerator())
+            {
+                policy.Execute(() => { if (enumerator.MoveNext()) throw enumerator.Current.Key; });
+            }
+
+            actualRetryWaits.Should().ContainInOrder(expectedRetryWaits.Values);
+        }
+
+        [Fact]
         public void Should_be_able_to_pass_retry_duration_from_execution_to_sleepDurationProvider_via_context()
         {
             var expectedRetryDuration = 1.Seconds();
@@ -1137,12 +1189,12 @@ namespace Polly.Specs.Retry
             attemptsInvoked.Should().Be(1);
         }
 
+        #endregion
+
         public void Dispose()
         {
             SystemClock.Reset();
         }
-
-        #endregion
 
     }
 }

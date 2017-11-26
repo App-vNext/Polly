@@ -157,7 +157,7 @@ namespace Polly.Specs.Fallback
         #region Policy operation tests
 
         [Fact]
-        public void Should_not_execute_fallback_when_execute_delegate_does_not_throw()
+        public void Should_not_execute_fallback_when_executed_delegate_does_not_throw()
         {
             bool fallbackActionExecuted = false;
             Action fallbackAction = () => { fallbackActionExecuted = true; };
@@ -172,7 +172,7 @@ namespace Polly.Specs.Fallback
         }
 
         [Fact]
-        public void Should_not_execute_fallback_when_execute_delegate_throws_exception_not_handled_by_policy()
+        public void Should_not_execute_fallback_when_executed_delegate_throws_exception_not_handled_by_policy()
         {
             bool fallbackActionExecuted = false;
             Action fallbackAction = () => { fallbackActionExecuted = true; };
@@ -186,41 +186,40 @@ namespace Polly.Specs.Fallback
             fallbackActionExecuted.Should().BeFalse();
         }
 
+
         [Fact]
-        public void Should_execute_fallback_when_execute_delegate_throws_exception_handled_by_policy()
+        public void Should_execute_fallback_when_executed_delegate_throws_exception_handled_by_policy()
         {
             bool fallbackActionExecuted = false;
             Action fallbackAction = () => { fallbackActionExecuted = true; };
 
             FallbackPolicy fallbackPolicy = Policy
-                                    .Handle<DivideByZeroException>()
-                                    .Fallback(fallbackAction);
+                .Handle<DivideByZeroException>()
+                .Fallback(fallbackAction);
 
             fallbackPolicy.Invoking(x => x.RaiseException<DivideByZeroException>()).ShouldNotThrow();
 
             fallbackActionExecuted.Should().BeTrue();
         }
 
-
         [Fact]
-        public void Should_execute_fallback_when_execute_delegate_throws_one_of_exceptions_handled_by_policy()
+        public void Should_execute_fallback_when_executed_delegate_throws_one_of_exceptions_handled_by_policy()
         {
             bool fallbackActionExecuted = false;
             Action fallbackAction = () => { fallbackActionExecuted = true; };
 
             FallbackPolicy fallbackPolicy = Policy
-                                    .Handle<DivideByZeroException>()
-                                    .Or<ArgumentException>()
-                                    .Fallback(fallbackAction);
+                .Handle<DivideByZeroException>()
+                .Or<ArgumentException>()
+                .Fallback(fallbackAction);
 
             fallbackPolicy.Invoking(x => x.RaiseException<ArgumentException>()).ShouldNotThrow();
 
             fallbackActionExecuted.Should().BeTrue();
         }
 
-
         [Fact]
-        public void Should_not_execute_fallback_when_execute_delegate_throws_exception_not_one_of_exceptions_handled_by_policy()
+        public void Should_not_execute_fallback_when_executed_delegate_throws_exception_not_one_of_exceptions_handled_by_policy()
         {
             bool fallbackActionExecuted = false;
             Action fallbackAction = () => { fallbackActionExecuted = true; };
@@ -273,14 +272,13 @@ namespace Polly.Specs.Fallback
             Action fallbackAction = () => { fallbackActionExecuted = true; };
 
             FallbackPolicy fallbackPolicy = Policy
-                                    .Handle<DivideByZeroException>(e => true)
-                                    .Fallback(fallbackAction);
+                .Handle<DivideByZeroException>(e => true)
+                .Fallback(fallbackAction);
 
             fallbackPolicy.Invoking(x => x.RaiseException<DivideByZeroException>()).ShouldNotThrow();
 
             fallbackActionExecuted.Should().BeTrue();
         }
-
 
         [Fact]
         public void Should_execute_fallback_when_exception_thrown_matches_one_of_handling_predicates()
@@ -289,9 +287,9 @@ namespace Polly.Specs.Fallback
             Action fallbackAction = () => { fallbackActionExecuted = true; };
 
             FallbackPolicy fallbackPolicy = Policy
-                                    .Handle<DivideByZeroException>(e => true)
-                                    .Or<ArgumentNullException>()
-                                    .Fallback(fallbackAction);
+                .Handle<DivideByZeroException>(e => true)
+                .Or<ArgumentNullException>()
+                .Fallback(fallbackAction);
 
             fallbackPolicy.Invoking(x => x.RaiseException<DivideByZeroException>()).ShouldNotThrow();
 
@@ -316,6 +314,408 @@ namespace Polly.Specs.Fallback
                 .ShouldThrow<DivideByZeroException>().And.HelpLink.Should().Be("FromFallbackAction");
 
             fallbackActionExecuted.Should().BeTrue();
+        }
+
+        [Fact]
+        public void Should_throw_for_generic_method_execution_on_non_generic_policy()
+        {
+            FallbackPolicy fallbackPolicy = Policy
+                .Handle<DivideByZeroException>()
+                .Fallback(() => {});
+
+            fallbackPolicy.Invoking(p => p.Execute<int>(() => 0)).ShouldThrow<InvalidOperationException>();
+        }
+
+        #endregion
+
+        #region HandleInner tests, inner of normal exceptions
+
+        [Fact]
+        public void Should_not_execute_fallback_when_executed_delegate_throws_inner_exception_where_policy_doesnt_handle_inner()
+        {
+            bool fallbackActionExecuted = false;
+            Action fallbackAction = () => { fallbackActionExecuted = true; };
+
+            FallbackPolicy fallbackPolicy = Policy
+                .Handle<DivideByZeroException>()
+                .Fallback(fallbackAction);
+
+            Exception withInner = new Exception(String.Empty, new DivideByZeroException());
+
+            fallbackPolicy.Invoking(x => x.RaiseException(withInner)).ShouldThrow<Exception>().And.InnerException.Should().BeOfType<DivideByZeroException>();
+
+            fallbackActionExecuted.Should().BeFalse();
+        }
+
+        [Fact]
+        public void Should_execute_fallback_when_policy_handles_inner_and_executed_delegate_throws_as_non_inner()
+        {
+            bool fallbackActionExecuted = false;
+            Action fallbackAction = () => { fallbackActionExecuted = true; };
+
+            FallbackPolicy fallbackPolicy = Policy
+                .HandleInner<DivideByZeroException>()
+                .Fallback(fallbackAction);
+
+            Exception nonInner = new DivideByZeroException();
+
+            fallbackPolicy.Invoking(x => x.RaiseException(nonInner)).ShouldNotThrow();
+
+            fallbackActionExecuted.Should().BeTrue();
+        }
+
+        [Fact]
+        public void Should_execute_fallback_when_executed_delegate_throws_inner_exception_handled_by_policy()
+        {
+            bool fallbackActionExecuted = false;
+            Action fallbackAction = () => { fallbackActionExecuted = true; };
+
+            FallbackPolicy fallbackPolicy = Policy
+                .HandleInner<DivideByZeroException>()
+                .Fallback(fallbackAction);
+
+            Exception withInner = new Exception(String.Empty, new DivideByZeroException());
+
+            fallbackPolicy.Invoking(x => x.RaiseException(withInner)).ShouldNotThrow();
+
+            fallbackActionExecuted.Should().BeTrue();
+        }
+
+        [Fact]
+        public void Should_execute_fallback_when_executed_delegate_throws_one_of_inner_exceptions_handled_by_policy()
+        {
+            bool fallbackActionExecuted = false;
+            Action fallbackAction = () => { fallbackActionExecuted = true; };
+
+            FallbackPolicy fallbackPolicy = Policy
+                .Handle<DivideByZeroException>()
+                .OrInner<ArgumentException>()
+                .Fallback(fallbackAction);
+
+            Exception withInner = new Exception(String.Empty, new ArgumentException());
+
+            fallbackPolicy.Invoking(x => x.RaiseException(withInner)).ShouldNotThrow();
+
+            fallbackActionExecuted.Should().BeTrue();
+        }
+
+        [Fact]
+        public void Should_execute_fallback_when_executed_delegate_throws_nested_inner_exception_handled_by_policy()
+        {
+            bool fallbackActionExecuted = false;
+            Action fallbackAction = () => { fallbackActionExecuted = true; };
+
+            FallbackPolicy fallbackPolicy = Policy
+                .HandleInner<DivideByZeroException>()
+                .Fallback(fallbackAction);
+
+            Exception withInner = new Exception(String.Empty, new Exception(String.Empty, new Exception(String.Empty, new DivideByZeroException())));
+
+            fallbackPolicy.Invoking(x => x.RaiseException(withInner)).ShouldNotThrow();
+
+            fallbackActionExecuted.Should().BeTrue();
+        }
+
+
+        [Fact]
+        public void Should_not_execute_fallback_when_executed_delegate_throws_inner_exception_not_handled_by_policy()
+        {
+            bool fallbackActionExecuted = false;
+            Action fallbackAction = () => { fallbackActionExecuted = true; };
+
+            FallbackPolicy fallbackPolicy = Policy
+                                    .HandleInner<DivideByZeroException>()
+                                    .Fallback(fallbackAction);
+
+            Exception withInner = new Exception(String.Empty, new ArgumentException());
+
+            fallbackPolicy.Invoking(x => x.RaiseException(withInner)).ShouldThrow<Exception>().And.InnerException.Should().BeOfType<ArgumentException>();
+
+            fallbackActionExecuted.Should().BeFalse();
+        }
+
+        [Fact]
+        public void Should_execute_fallback_when_inner_exception_thrown_matches_handling_predicates()
+        {
+            bool fallbackActionExecuted = false;
+            Action fallbackAction = () => { fallbackActionExecuted = true; };
+
+            FallbackPolicy fallbackPolicy = Policy
+                .HandleInner<DivideByZeroException>(e => true)
+                .Fallback(fallbackAction);
+
+            Exception withInner = new Exception(String.Empty, new DivideByZeroException());
+
+            fallbackPolicy.Invoking(x => x.RaiseException(withInner)).ShouldNotThrow();
+
+            fallbackActionExecuted.Should().BeTrue();
+        }
+
+        [Fact]
+        public void Should_execute_fallback_when_inner_nested_exception_thrown_matches_handling_predicates()
+        {
+            bool fallbackActionExecuted = false;
+            Action fallbackAction = () => { fallbackActionExecuted = true; };
+
+            FallbackPolicy fallbackPolicy = Policy
+                .HandleInner<DivideByZeroException>(e => true)
+                .Fallback(fallbackAction);
+
+            Exception withInner = new Exception(String.Empty, new Exception(String.Empty, new Exception(String.Empty, new DivideByZeroException())));
+
+            fallbackPolicy.Invoking(x => x.RaiseException(withInner)).ShouldNotThrow();
+
+            fallbackActionExecuted.Should().BeTrue();
+        }
+
+
+        [Fact]
+        public void Should_execute_fallback_when_inner_exception_thrown_matches_one_of_handling_predicates()
+        {
+            bool fallbackActionExecuted = false;
+            Action fallbackAction = () => { fallbackActionExecuted = true; };
+
+            FallbackPolicy fallbackPolicy = Policy
+                .HandleInner<DivideByZeroException>(e => true)
+                .OrInner<ArgumentNullException>(e => true)
+                .Fallback(fallbackAction);
+
+            Exception withInner = new Exception(String.Empty, new ArgumentNullException());
+
+            fallbackPolicy.Invoking(x => x.RaiseException(withInner)).ShouldNotThrow();
+
+            fallbackActionExecuted.Should().BeTrue();
+        }
+
+        [Fact]
+        public void Should_not_execute_fallback_when_inner_exception_thrown_does_not_match_handling_predicates()
+        {
+            bool fallbackActionExecuted = false;
+            Action fallbackAction = () => { fallbackActionExecuted = true; };
+
+            FallbackPolicy fallbackPolicy = Policy
+                                    .HandleInner<DivideByZeroException>(e => false)
+                                    .Fallback(fallbackAction);
+
+            Exception withInner = new Exception(String.Empty, new DivideByZeroException());
+
+            fallbackPolicy.Invoking(x => x.RaiseException(withInner)).ShouldThrow<Exception>().And.InnerException.Should().BeOfType<DivideByZeroException>();
+
+            fallbackActionExecuted.Should().BeFalse();
+        }
+
+        [Fact]
+        public void Should_not_execute_fallback_when_inner_exception_thrown_does_not_match_any_of_handling_predicates()
+        {
+            bool fallbackActionExecuted = false;
+            Action fallbackAction = () => { fallbackActionExecuted = true; };
+
+            FallbackPolicy fallbackPolicy = Policy
+                                    .HandleInner<DivideByZeroException>(e => false)
+                                    .OrInner<ArgumentNullException>(e => false)
+                                    .Fallback(fallbackAction);
+
+            Exception withInner = new Exception(String.Empty, new ArgumentNullException());
+
+            fallbackPolicy.Invoking(x => x.RaiseException(withInner)).ShouldThrow<Exception>().And.InnerException.Should().BeOfType<ArgumentNullException>();
+
+            fallbackActionExecuted.Should().BeFalse();
+        }
+
+        #endregion
+
+
+        #region HandleInner tests, inner of aggregate exceptions
+
+        [Fact]
+        public void Should_not_execute_fallback_when_executed_delegate_throws_inner_of_aggregate_exception_where_policy_doesnt_handle_inner()
+        {
+            bool fallbackActionExecuted = false;
+            Action fallbackAction = () => { fallbackActionExecuted = true; };
+
+            FallbackPolicy fallbackPolicy = Policy
+                .Handle<DivideByZeroException>()
+                .Fallback(fallbackAction);
+
+            Exception withInner = new AggregateException(new DivideByZeroException());
+
+            fallbackPolicy.Invoking(x => x.RaiseException(withInner)).ShouldThrow<AggregateException>().And.InnerExceptions.Should().ContainSingle(e => e is DivideByZeroException);
+
+            fallbackActionExecuted.Should().BeFalse();
+        }
+        
+        [Fact]
+        public void Should_execute_fallback_when_executed_delegate_throws_inner_of_aggregate_exception_handled_by_policy()
+        {
+            bool fallbackActionExecuted = false;
+            Action fallbackAction = () => { fallbackActionExecuted = true; };
+
+            FallbackPolicy fallbackPolicy = Policy
+                .HandleInner<DivideByZeroException>()
+                .Fallback(fallbackAction);
+
+            Exception withInner = new AggregateException(new DivideByZeroException());
+
+            fallbackPolicy.Invoking(x => x.RaiseException(withInner)).ShouldNotThrow();
+
+            fallbackActionExecuted.Should().BeTrue();
+        }
+
+        [Fact]
+        public void Should_execute_fallback_when_executed_delegate_throws_one_of_inner_of_aggregate_exceptions_handled_by_policy()
+        {
+            bool fallbackActionExecuted = false;
+            Action fallbackAction = () => { fallbackActionExecuted = true; };
+
+            FallbackPolicy fallbackPolicy = Policy
+                .Handle<DivideByZeroException>()
+                .OrInner<ArgumentException>()
+                .Fallback(fallbackAction);
+
+            Exception withInner = new AggregateException(new ArgumentException());
+
+            fallbackPolicy.Invoking(x => x.RaiseException(withInner)).ShouldNotThrow();
+
+            fallbackActionExecuted.Should().BeTrue();
+        }
+
+        [Fact]
+        public void Should_execute_fallback_when_executed_delegate_throws_aggregate_exception_with_inner_handled_by_policy_amongst_other_inners()
+        {
+            bool fallbackActionExecuted = false;
+            Action fallbackAction = () => { fallbackActionExecuted = true; };
+
+            FallbackPolicy fallbackPolicy = Policy
+                .HandleInner<DivideByZeroException>()
+                .Fallback(fallbackAction);
+
+            Exception withInner = new AggregateException(new ArgumentException(), new DivideByZeroException(), new ArgumentNullException());
+
+            fallbackPolicy.Invoking(x => x.RaiseException(withInner)).ShouldNotThrow();
+
+            fallbackActionExecuted.Should().BeTrue();
+        }
+
+        [Fact]
+        public void Should_execute_fallback_when_executed_delegate_throws_nested_inner_of_aggregate_exception_handled_by_policy()
+        {
+            bool fallbackActionExecuted = false;
+            Action fallbackAction = () => { fallbackActionExecuted = true; };
+
+            FallbackPolicy fallbackPolicy = Policy
+                .HandleInner<DivideByZeroException>()
+                .Fallback(fallbackAction);
+
+            Exception withInner = new AggregateException(new AggregateException(new DivideByZeroException()));
+
+            fallbackPolicy.Invoking(x => x.RaiseException(withInner)).ShouldNotThrow();
+
+            fallbackActionExecuted.Should().BeTrue();
+        }
+
+        [Fact]
+        public void Should_not_execute_fallback_when_executed_delegate_throws_inner_of_aggregate_exception_not_handled_by_policy()
+        {
+            bool fallbackActionExecuted = false;
+            Action fallbackAction = () => { fallbackActionExecuted = true; };
+
+            FallbackPolicy fallbackPolicy = Policy
+                                    .HandleInner<DivideByZeroException>()
+                                    .Fallback(fallbackAction);
+
+            Exception withInner = new AggregateException(new ArgumentException());
+
+            fallbackPolicy.Invoking(x => x.RaiseException(withInner)).ShouldThrow<AggregateException>().And.InnerExceptions.Should().ContainSingle(e => e is ArgumentException);
+
+             fallbackActionExecuted.Should().BeFalse();
+        }
+
+        [Fact]
+        public void Should_execute_fallback_when_inner_of_aggregate_exception_thrown_matches_handling_predicates()
+        {
+            bool fallbackActionExecuted = false;
+            Action fallbackAction = () => { fallbackActionExecuted = true; };
+
+            FallbackPolicy fallbackPolicy = Policy
+                .HandleInner<DivideByZeroException>(e => true)
+                .Fallback(fallbackAction);
+
+            Exception withInner = new AggregateException(new DivideByZeroException());
+
+            fallbackPolicy.Invoking(x => x.RaiseException(withInner)).ShouldNotThrow();
+
+            fallbackActionExecuted.Should().BeTrue();
+        }
+
+        [Fact]
+        public void Should_execute_fallback_when_inner_of_aggregate_nested_exception_thrown_matches_handling_predicates()
+        {
+            bool fallbackActionExecuted = false;
+            Action fallbackAction = () => { fallbackActionExecuted = true; };
+
+            FallbackPolicy fallbackPolicy = Policy
+                .HandleInner<DivideByZeroException>(e => true)
+                .Fallback(fallbackAction);
+
+            Exception withInner = new AggregateException(new AggregateException(new DivideByZeroException()));
+
+            fallbackPolicy.Invoking(x => x.RaiseException(withInner)).ShouldNotThrow();
+
+            fallbackActionExecuted.Should().BeTrue();
+        }
+
+
+        [Fact]
+        public void Should_execute_fallback_when_inner_of_aggregate_exception_thrown_matches_one_of_handling_predicates()
+        {
+            bool fallbackActionExecuted = false;
+            Action fallbackAction = () => { fallbackActionExecuted = true; };
+
+            FallbackPolicy fallbackPolicy = Policy
+                .HandleInner<DivideByZeroException>(e => true)
+                .OrInner<ArgumentNullException>(e => true)
+                .Fallback(fallbackAction);
+
+            Exception withInner = new AggregateException(new ArgumentNullException());
+
+            fallbackPolicy.Invoking(x => x.RaiseException(withInner)).ShouldNotThrow();
+
+            fallbackActionExecuted.Should().BeTrue();
+        }
+
+        [Fact]
+        public void Should_not_execute_fallback_when_inner_of_aggregate_exception_thrown_does_not_match_handling_predicates()
+        {
+            bool fallbackActionExecuted = false;
+            Action fallbackAction = () => { fallbackActionExecuted = true; };
+
+            FallbackPolicy fallbackPolicy = Policy
+                                    .HandleInner<DivideByZeroException>(e => false)
+                                    .Fallback(fallbackAction);
+
+            Exception withInner = new AggregateException(new DivideByZeroException());
+
+            fallbackPolicy.Invoking(x => x.RaiseException(withInner)).ShouldThrow<AggregateException>().And.InnerExceptions.Should().ContainSingle(e => e is DivideByZeroException);
+
+            fallbackActionExecuted.Should().BeFalse();
+        }
+
+        [Fact]
+        public void Should_not_execute_fallback_when_inner_of_aggregate_exception_thrown_does_not_match_any_of_handling_predicates()
+        {
+            bool fallbackActionExecuted = false;
+            Action fallbackAction = () => { fallbackActionExecuted = true; };
+
+            FallbackPolicy fallbackPolicy = Policy
+                                    .HandleInner<DivideByZeroException>(e => false)
+                                    .OrInner<ArgumentNullException>(e => false)
+                                    .Fallback(fallbackAction);
+
+            Exception withInner = new AggregateException(new ArgumentNullException());
+
+            fallbackPolicy.Invoking(x => x.RaiseException(withInner)).ShouldThrow<AggregateException>().And.InnerExceptions.Should().ContainSingle(e => e is ArgumentNullException);
+
+            fallbackActionExecuted.Should().BeFalse();
         }
 
         #endregion
@@ -344,7 +744,7 @@ namespace Polly.Specs.Fallback
         }
 
         [Fact]
-        public void Should_not_call_onFallback_when_execute_delegate_does_not_throw()
+        public void Should_not_call_onFallback_when_executed_delegate_does_not_throw()
         {
             Action fallbackAction = () => { };
 
@@ -564,6 +964,48 @@ namespace Polly.Specs.Fallback
 
             fallbackException.Should().NotBeNull()
                 .And.BeOfType(typeof(ArgumentNullException));
+        }
+
+        [Fact]
+        public void Should_call_fallbackAction_with_the_matched_inner_exception_unwrapped()
+        {
+            Exception fallbackException = null;
+
+            Action<Exception, Context, CancellationToken> fallbackAction = (ex, ctx, ct) => { fallbackException = ex; };
+
+            Action<Exception, Context> onFallback = (ex, ctx) => { };
+
+            FallbackPolicy fallbackPolicy = Policy
+                .HandleInner<ArgumentNullException>()
+                .Fallback(fallbackAction, onFallback);
+
+            Exception instanceToCapture = new ArgumentNullException("myParam");
+            Exception instanceToThrow = new Exception(String.Empty, instanceToCapture);
+            fallbackPolicy.Invoking(p => p.RaiseException(instanceToThrow))
+                .ShouldNotThrow();
+
+            fallbackException.Should().Be(instanceToCapture);
+        }
+
+        [Fact]
+        public void Should_call_fallbackAction_with_the_matched_inner_of_aggregate_exception_unwrapped()
+        {
+            Exception fallbackException = null;
+
+            Action<Exception, Context, CancellationToken> fallbackAction = (ex, ctx, ct) => { fallbackException = ex; };
+
+            Action<Exception, Context> onFallback = (ex, ctx) => { };
+
+            FallbackPolicy fallbackPolicy = Policy
+                .HandleInner<ArgumentNullException>()
+                .Fallback(fallbackAction, onFallback);
+
+            Exception instanceToCapture = new ArgumentNullException("myParam");
+            Exception instanceToThrow = new AggregateException(instanceToCapture);
+            fallbackPolicy.Invoking(p => p.RaiseException(instanceToThrow))
+                .ShouldNotThrow();
+
+            fallbackException.Should().Be(instanceToCapture);
         }
 
         [Fact]

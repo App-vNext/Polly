@@ -13,7 +13,17 @@
     <tags>Exception Handling Resilience Transient Fault Policy Circuit Breaker CircuitBreaker Retry Wait Cache Cache-aside Bulkhead Fallback Timeout Throttle Parallelization</tags>
     <copyright>Copyright © 2017, App vNext</copyright>
     <releaseNotes>
-     v5.0 is a major release with significant new resilience policies: Timeout; Bulkhead Isolation; Fallback; Cache; and PolicyWrap.  See release notes back to v5.0.0 for full details.  v5.0.5 includes important circuit-breaker fixes.
+     v5.0 is a major release with significant new resilience policies: Timeout; Bulkhead Isolation; Fallback; Cache; and PolicyWrap.  See release notes back to v5.0.0 for full details.
+
+     5.6.0
+     ---------------------
+     - Add ability to handle inner exceptions natively: .HandleInner&lt;TEx&gt;()
+     - Allow WaitAndRetry policies to calculate wait based on the handled fault
+     - Add the ability to access the policies within an IPolicyWrap
+     - Allow PolicyWrap to take interfaces as parameters
+     - Bug fix: set context keys for generic execute method with PolicyWrap
+     - Bug fix: generic TResult method with non-generic fallback policy
+     - Performance improvements
 
      5.5.0
      ---------------------

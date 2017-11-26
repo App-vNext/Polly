@@ -8,6 +8,7 @@ using Xunit;
 
 namespace Polly.Specs.Retry
 {
+    [Collection("SystemClockDependantCollection")]
     public class WaitAndRetryForeverSpecs : IDisposable
     {
         public WaitAndRetryForeverSpecs()
@@ -34,9 +35,11 @@ namespace Polly.Specs.Retry
         {
             Action<Exception, TimeSpan, Context> onRetry = (_, __, ___) => { };
 
+            Func<int, Context, TimeSpan> sleepDurationProvider = null;
+
             Action policy = () => Policy
                                       .Handle<DivideByZeroException>()
-                                      .WaitAndRetryForever(null, onRetry);
+                                      .WaitAndRetryForever(sleepDurationProvider, onRetry);
 
             policy.ShouldThrow<ArgumentNullException>().And
                   .ParamName.Should().Be("sleepDurationProvider");
@@ -280,6 +283,32 @@ namespace Polly.Specs.Retry
 
             actualRetryWaits.Should()
                        .ContainInOrder(expectedRetryWaits);
+        }
+
+        [Fact]
+        public void Should_be_able_to_calculate_retry_timespans_based_on_the_handled_fault()
+        {
+            Dictionary<Exception, TimeSpan> expectedRetryWaits = new Dictionary<Exception, TimeSpan>(){
+
+                {new DivideByZeroException(), 2.Seconds()},
+                {new ArgumentNullException(), 4.Seconds()},
+            };
+
+            var actualRetryWaits = new List<TimeSpan>();
+
+            var policy = Policy
+                .Handle<Exception>()
+                .WaitAndRetryForever(
+                    (retryAttempt, exc, ctx) => expectedRetryWaits[exc],
+                    (_, timeSpan, __) => actualRetryWaits.Add(timeSpan)
+                );
+
+            using (var enumerator = expectedRetryWaits.GetEnumerator())
+            {
+                policy.Execute(() => { if (enumerator.MoveNext()) throw enumerator.Current.Key; });
+            }
+
+            actualRetryWaits.Should().ContainInOrder(expectedRetryWaits.Values);
         }
 
         [Fact]

@@ -1,8 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.ExceptionServices;
 using System.Threading;
 using System.Threading.Tasks;
+
+#if NET40
+using ExceptionDispatchInfo = Polly.Utilities.ExceptionDispatchInfo;
+#endif
 
 namespace Polly.Fallback
 {
@@ -35,12 +40,15 @@ namespace Polly.Fallback
             }
             catch (Exception ex)
             {
-                if (!shouldHandleExceptionPredicates.Any(predicate => predicate(ex)))
+                Exception handledException = shouldHandleExceptionPredicates
+                    .Select(predicate => predicate(ex))
+                    .FirstOrDefault(e => e != null);
+                if (handledException == null)
                 {
                     throw;
                 }
 
-                delegateOutcome = new DelegateResult<TResult>(ex);
+                delegateOutcome = new DelegateResult<TResult>(handledException);
             }
 
             await onFallbackAsync(delegateOutcome, context).ConfigureAwait(continueOnCapturedContext);

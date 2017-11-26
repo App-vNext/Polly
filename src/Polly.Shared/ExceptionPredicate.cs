@@ -2,5 +2,5 @@
 
 namespace Polly
 {
-    internal delegate bool ExceptionPredicate(Exception ex); 
+    internal delegate Exception ExceptionPredicate(Exception ex); 
 }

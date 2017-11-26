@@ -20,9 +20,7 @@ namespace Polly
             Action<Action<Context, CancellationToken>, Context, CancellationToken> exceptionPolicy,
             IEnumerable<ExceptionPredicate> exceptionPredicates)
         {
-            if (exceptionPolicy == null) throw new ArgumentNullException(nameof(exceptionPolicy));
-
-            _exceptionPolicy = exceptionPolicy;
+            _exceptionPolicy = exceptionPolicy ?? throw new ArgumentNullException(nameof(exceptionPolicy));
             ExceptionPredicates = exceptionPredicates ?? PredicateHelper.EmptyExceptionPredicates;
         }
 
@@ -619,7 +617,7 @@ namespace Polly
 
         internal static ExceptionType GetExceptionType(IEnumerable<ExceptionPredicate> exceptionPredicates, Exception exception)
         {
-            var isExceptionTypeHandledByThisPolicy = exceptionPredicates.Any(predicate => predicate(exception));
+            var isExceptionTypeHandledByThisPolicy = exceptionPredicates.Any(predicate => predicate(exception) != null);
 
             return isExceptionTypeHandledByThisPolicy
                 ? ExceptionType.HandledByThisPolicy

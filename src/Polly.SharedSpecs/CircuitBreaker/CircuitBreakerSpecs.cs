@@ -10,6 +10,7 @@ using Xunit;
 
 namespace Polly.Specs.CircuitBreaker
 {
+    [Collection("SystemClockDependantCollection")]
     public class CircuitBreakerSpecs : IDisposable
     {
         #region Configuration tests
@@ -1042,6 +1043,35 @@ namespace Polly.Specs.CircuitBreaker
         }
 
         [Fact]
+        public void Should_rethrow_and_call_onbreak_with_the_last_raised_exception_unwrapped_if_matched_as_inner()
+        {
+            Exception passedException = null;
+
+            Action<Exception, TimeSpan, Context> onBreak = (exception, _, __) => { passedException = exception; };
+            Action<Context> onReset = _ => { };
+
+            TimeSpan durationOfBreak = TimeSpan.FromMinutes(1);
+
+            CircuitBreakerPolicy breaker = Policy
+                .HandleInner<DivideByZeroException>()
+                .Or<DivideByZeroException>()
+                .CircuitBreaker(2, durationOfBreak, onBreak, onReset);
+
+            Exception toRaiseAsInner = new DivideByZeroException();
+            Exception withInner = new AggregateException(toRaiseAsInner);
+
+            breaker.Invoking(x => x.RaiseException<DivideByZeroException>())
+                .ShouldThrow<DivideByZeroException>();
+
+            breaker.Invoking(x => x.RaiseException(withInner))
+                .ShouldThrow<DivideByZeroException>().Which.Should().BeSameAs(toRaiseAsInner);
+
+            breaker.CircuitState.Should().Be(CircuitState.Open);
+
+            passedException?.Should().BeSameAs(toRaiseAsInner);
+        }
+
+        [Fact]
         public void Should_call_onbreak_with_the_correct_timespan()
         {
             TimeSpan? passedBreakTimespan = null;
@@ -1247,6 +1277,25 @@ namespace Polly.Specs.CircuitBreaker
         }
 
         [Fact]
+        public void Should_set_LastException_on_handling_inner_exception_even_when_not_breaking()
+        {
+            CircuitBreakerPolicy breaker = Policy
+                .HandleInner<DivideByZeroException>()
+                .CircuitBreaker(2, TimeSpan.FromMinutes(1));
+
+
+            Exception toRaiseAsInner = new DivideByZeroException();
+            Exception withInner = new AggregateException(toRaiseAsInner);
+
+            breaker.Invoking(x => x.RaiseException(withInner))
+                .ShouldThrow<DivideByZeroException>().Which.Should().BeSameAs(toRaiseAsInner);
+
+            breaker.CircuitState.Should().Be(CircuitState.Closed);
+
+            breaker.LastException.Should().BeSameAs(toRaiseAsInner);
+        }
+
+        [Fact]
         public void Should_set_LastException_to_last_raised_exception_when_breaking()
         {
             CircuitBreakerPolicy breaker = Policy
@@ -1284,6 +1333,27 @@ namespace Polly.Specs.CircuitBreaker
             breaker.Reset();
 
             breaker.LastException.Should().BeNull();
+        }
+
+        #endregion
+
+        #region ExecuteAndCapture with HandleInner
+
+        [Fact]
+        public void Should_set_PolicyResult_on_handling_inner_exception()
+        {
+            CircuitBreakerPolicy breaker = Policy
+                .HandleInner<DivideByZeroException>()
+                .CircuitBreaker(2, TimeSpan.FromMinutes(1));
+
+
+            Exception toRaiseAsInner = new DivideByZeroException();
+            Exception withInner = new AggregateException(toRaiseAsInner);
+
+            PolicyResult policyResult = breaker.ExecuteAndCapture(() => throw withInner);
+
+            policyResult.ExceptionType.Should().Be(ExceptionType.HandledByThisPolicy);
+            policyResult.FinalException.Should().BeSameAs(toRaiseAsInner);
         }
 
         #endregion
