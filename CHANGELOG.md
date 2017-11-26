@@ -1,9 +1,10 @@
 ## 5.6.0
 - Add ability to handle inner exceptions natively: .HandleInner&lt;TEx&gt;()
 - Allow WaitAndRetry policies to calculate wait based on the handled fault
-- Add GetPolicies() extension methods to IPolicyWrap
-- Allow PolicyWrap to take interfaces as parameters
-- Bug fix: set context keys for generic execute method with PolicyWrap
+- Add the ability to access the policies within an IPolicyWrap
+- Allow PolicyWrap to configure policies expressed as interfaces
+- Bug fix: set context keys for generic execute methods with PolicyWrap
+- Bug fix: generic TResult method with non-generic fallback policy
 - Performance improvements
 - Multiple build speed improvements
 

@@ -251,6 +251,16 @@ namespace Polly.Specs.Fallback
             fallbackActionExecuted.Should().BeTrue();
         }
 
+        [Fact]
+        public void Should_throw_for_generic_method_execution_on_non_generic_policy()
+        {
+            FallbackPolicy fallbackPolicy = Policy
+                .Handle<DivideByZeroException>()
+                .FallbackAsync(_ => TaskHelper.EmptyTask);
+
+            fallbackPolicy.Awaiting(p => p.ExecuteAsync<int>(() => TaskHelper.FromResult(0))).ShouldThrow<InvalidOperationException>();
+        }
+
         #endregion
 
         #region onPolicyEvent delegate tests
