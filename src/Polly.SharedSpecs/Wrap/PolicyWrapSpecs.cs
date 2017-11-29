@@ -9,7 +9,7 @@ using Xunit;
 
 namespace Polly.Specs.Wrap
 {
-    [Collection("SystemClockDependantCollection")]
+    [Collection(Polly.Specs.Helpers.Constants.SystemClockDependentTestCollection)]
     public class PolicyWrapSpecs
     {
         #region Instance configuration syntax tests, non-generic outer

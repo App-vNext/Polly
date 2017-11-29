@@ -48,6 +48,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\Caching\StubErroringCacheProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\Caching\StubSerialized.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\Caching\StubSerializer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\Constants.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\ContextualPolicyExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\ContextualPolicyExtensionsAsync.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\ContextualPolicyTResultExtensions.cs" />
