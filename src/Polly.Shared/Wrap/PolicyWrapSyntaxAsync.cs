@@ -137,4 +137,58 @@ namespace Polly
             }
         }
     }
+
+    /// <summary>
+    /// Defines extensions for configuring <see cref="PolicyWrap"/> instances on an <see cref="IAsyncPolicy"/> or <see cref="IAsyncPolicy{TResult}"/>.
+    /// </summary>
+    public static class IAsyncPolicyPolicyWrapExtensions
+    {
+        /// <summary>
+        /// Wraps the specified outer policy round the inner policy.
+        /// </summary>
+        /// <param name="outerPolicy">The outer policy.</param>
+        /// <param name="innerPolicy">The inner policy.</param>
+        /// <returns>A <see cref="PolicyWrap"/> instance representing the combined wrap.</returns>
+        public static PolicyWrap WrapAsync(this IAsyncPolicy outerPolicy, IAsyncPolicy innerPolicy)
+        {
+            if (outerPolicy == null) throw new ArgumentNullException(nameof(outerPolicy));
+            return ((Policy)outerPolicy).WrapAsync(innerPolicy);
+        }
+
+        /// <summary>
+        /// Wraps the specified outer policy round the inner policy.
+        /// </summary>
+        /// <param name="outerPolicy">The outer policy.</param>
+        /// <param name="innerPolicy">The inner policy.</param>
+        /// <returns>A <see cref="PolicyWrap"/> instance representing the combined wrap.</returns>
+        public static PolicyWrap<TResult> WrapAsync<TResult>(this IAsyncPolicy outerPolicy, IAsyncPolicy<TResult> innerPolicy)
+        {
+            if (outerPolicy == null) throw new ArgumentNullException(nameof(outerPolicy));
+            return ((Policy)outerPolicy).WrapAsync(innerPolicy);
+        }
+
+        /// <summary>
+        /// Wraps the specified outer policy round the inner policy.
+        /// </summary>
+        /// <param name="outerPolicy">The outer policy.</param>
+        /// <param name="innerPolicy">The inner policy.</param>
+        /// <returns>A <see cref="PolicyWrap"/> instance representing the combined wrap.</returns>
+        public static PolicyWrap<TResult> WrapAsync<TResult>(this IAsyncPolicy<TResult> outerPolicy, IAsyncPolicy innerPolicy)
+        {
+            if (outerPolicy == null) throw new ArgumentNullException(nameof(outerPolicy));
+            return ((Policy<TResult>)outerPolicy).WrapAsync(innerPolicy);
+        }
+
+        /// <summary>
+        /// Wraps the specified outer policy round the inner policy.
+        /// </summary>
+        /// <param name="outerPolicy">The outer policy.</param>
+        /// <param name="innerPolicy">The inner policy.</param>
+        /// <returns>A <see cref="PolicyWrap"/> instance representing the combined wrap.</returns>
+        public static PolicyWrap<TResult> WrapAsync<TResult>(this IAsyncPolicy<TResult> outerPolicy, IAsyncPolicy<TResult> innerPolicy)
+        {
+            if (outerPolicy == null) throw new ArgumentNullException(nameof(outerPolicy));
+            return ((Policy<TResult>)outerPolicy).WrapAsync(innerPolicy);
+        }
+    }
 }
