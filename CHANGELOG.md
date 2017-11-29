@@ -1,3 +1,6 @@
+## 5.6.1
+- Extend PolicyWrap syntax with interfaces
+
 ## 5.6.0
 - Add ability to handle inner exceptions natively: .HandleInner&lt;TEx&gt;()
 - Allow WaitAndRetry policies to calculate wait based on the handled fault
