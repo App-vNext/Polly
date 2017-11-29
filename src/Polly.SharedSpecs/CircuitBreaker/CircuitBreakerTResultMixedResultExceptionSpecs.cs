@@ -8,7 +8,7 @@ using Xunit;
 
 namespace Polly.Specs.CircuitBreaker
 {
-    [Collection("SystemClockDependantCollection")]
+    [Collection(Polly.Specs.Helpers.Constants.SystemClockDependentTestCollection)]
     public class CircuitBreakerTResultMixedResultExceptionSpecs : IDisposable
     {
         #region Circuit-breaker threshold-to-break tests

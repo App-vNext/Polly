@@ -12,7 +12,7 @@ using Scenario = Polly.Specs.Helpers.PolicyTResultExtensions.ResultAndOrCancella
 
 namespace Polly.Specs.CircuitBreaker
 {
-    [Collection("SystemClockDependantCollection")]
+    [Collection(Polly.Specs.Helpers.Constants.SystemClockDependentTestCollection)]
     public class CircuitBreakerTResultSpecs : IDisposable
     {
         #region Configuration tests
