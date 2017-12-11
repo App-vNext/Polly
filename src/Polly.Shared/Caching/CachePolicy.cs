@@ -55,7 +55,7 @@ namespace Polly.Caching
         {
             return CacheEngine.Implementation<TResult>(
                 _syncCacheProvider.For<TResult>(), 
-                _ttlStrategy, 
+                _ttlStrategy.For<TResult>(),
                 _cacheKeyStrategy, 
                 action, 
                 context, 
@@ -75,7 +75,7 @@ namespace Polly.Caching
     {
         internal CachePolicy(
             ISyncCacheProvider<TResult> syncCacheProvider, 
-            ITtlStrategy ttlStrategy,
+            ITtlStrategy<TResult> ttlStrategy,
             Func<Context, string> cacheKeyStrategy,
             Action<Context, string> onCacheGet,
             Action<Context, string> onCacheMiss,
