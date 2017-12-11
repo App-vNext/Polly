@@ -24,8 +24,9 @@ namespace Polly.Caching
         /// Gets the TimeSpan for which to keep an item about to be cached, which may be influenced by data in the execution context.
         /// </summary>
         /// <param name="context">The execution context.</param>
+        /// <param name="result">The execution result.</param>
         /// <returns>TimeSpan.</returns>
-        public Ttl GetTtl(Context context)
+        public Ttl GetTtl(Context context, object result)
         {
             if (!context.ContainsKey(TimeSpanKey)) return _noTtl;
             bool sliding = context.ContainsKey(SlidingExpirationKey) ? context[SlidingExpirationKey] as bool? ?? false : false;

@@ -28,8 +28,9 @@ namespace Polly.Caching
         /// Gets a TTL for a cacheable item, given the current execution context.
         /// </summary>
         /// <param name="context">The execution context.</param>
+        /// <param name="result">The execution result.</param>
         /// <returns>A <see cref="Ttl"/> representing the remaining Ttl of the cached item.</returns>
-        public Ttl GetTtl(Context context)
+        public Ttl GetTtl(Context context, object result)
         {
             TimeSpan untilPointInTime = absoluteExpirationTime.Subtract(SystemClock.DateTimeOffsetUtcNow());
             TimeSpan remaining = untilPointInTime > TimeSpan.Zero ? untilPointInTime : TimeSpan.Zero;

@@ -7,7 +7,7 @@ namespace Polly.Caching
     {
         internal static TResult Implementation<TResult>(
             ISyncCacheProvider<TResult> cacheProvider,
-            ITtlStrategy ttlStrategy,
+            ITtlStrategy<TResult> ttlStrategy,
             Func<Context, string> cacheKeyStrategy,
             Func<Context, CancellationToken, TResult> action,
             Context context,
@@ -48,7 +48,7 @@ namespace Polly.Caching
 
             TResult result = action(context, cancellationToken);
 
-            Ttl ttl = ttlStrategy.GetTtl(context);
+            Ttl ttl = ttlStrategy.GetTtl(context, result);
             if (ttl.Timespan > TimeSpan.Zero)
             {
                 try

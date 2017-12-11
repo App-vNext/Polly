@@ -12,7 +12,7 @@ namespace Polly.Specs.Caching
         [Fact]
         public void Should_return_zero_if_no_value_set_on_context()
         {
-            new ContextualTtl().GetTtl(new Context("someExecutionKey")).Timespan.Should().Be(TimeSpan.Zero);
+            new ContextualTtl().GetTtl(new Context("someExecutionKey"), null).Timespan.Should().Be(TimeSpan.Zero);
         }
 
         [Fact]
@@ -22,7 +22,7 @@ namespace Polly.Specs.Caching
             contextData[ContextualTtl.TimeSpanKey] = new object();
 
             Context context = new Context(String.Empty, contextData);
-            new ContextualTtl().GetTtl(context).Timespan.Should().Be(TimeSpan.Zero);
+            new ContextualTtl().GetTtl(context, null).Timespan.Should().Be(TimeSpan.Zero);
         }
 
         [Fact]
@@ -33,7 +33,7 @@ namespace Polly.Specs.Caching
             contextData[ContextualTtl.TimeSpanKey] = ttl;
 
             Context context = new Context(String.Empty, contextData);
-            Ttl gotTtl = new ContextualTtl().GetTtl(context);
+            Ttl gotTtl = new ContextualTtl().GetTtl(context, null);
             gotTtl.Timespan.Should().Be(ttl);
             gotTtl.SlidingExpiration.Should().BeFalse();
         }
@@ -46,7 +46,7 @@ namespace Polly.Specs.Caching
             contextData[ContextualTtl.TimeSpanKey] = ttl;
 
             Context context = new Context(String.Empty, contextData);
-            Ttl gotTtl = new ContextualTtl().GetTtl(context);
+            Ttl gotTtl = new ContextualTtl().GetTtl(context, null);
             gotTtl.Timespan.Should().Be(ttl);
             gotTtl.SlidingExpiration.Should().BeFalse();
         }

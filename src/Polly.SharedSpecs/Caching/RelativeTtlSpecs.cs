@@ -40,7 +40,7 @@ namespace Polly.Specs.Caching
 
             RelativeTtl ttlStrategy = new RelativeTtl(ttl);
 
-            Ttl retrieved = ttlStrategy.GetTtl(new Context("someExecutionKey"));
+            Ttl retrieved = ttlStrategy.GetTtl(new Context("someExecutionKey"), null);
             retrieved.Timespan.Should().BeCloseTo(ttl);
             retrieved.SlidingExpiration.Should().BeFalse();
         }
