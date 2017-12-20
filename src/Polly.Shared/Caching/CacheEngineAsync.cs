@@ -51,7 +51,7 @@ namespace Polly.Caching
             TResult result = await action(context, cancellationToken).ConfigureAwait(continueOnCapturedContext);
 
             Ttl ttl = ttlStrategy.GetTtl(context, result);
-            if (ttl.Timespan > TimeSpan.Zero)
+            if (ttl.Timespan > TimeSpan.Zero && result != null && !result.Equals(default(TResult)))
             {
                 try
                 {

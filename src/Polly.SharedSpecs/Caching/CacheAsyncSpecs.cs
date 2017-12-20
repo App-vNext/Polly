@@ -539,6 +539,34 @@ namespace Polly.Specs.Caching
         }
 
         [Fact]
+        public async Task Should_execute_oncachemiss_but_not_oncacheput_if_cache_does_not_hold_value_and_returned_value_not_worth_caching()
+        {
+            const string valueToReturn = null;
+
+            const string executionKey = "SomeExecutionKey";
+            string keyPassedToOnCacheMiss = null;
+            string keyPassedToOnCachePut = null;
+
+            Context contextToExecute = new Context(executionKey);
+            Context contextPassedToOnCacheMiss = null;
+            Context contextPassedToOnCachePut = null;
+
+            Action<Context, string, Exception> noErrorHandling = (_, __, ___) => { };
+            Action<Context, string> emptyDelegate = (_, __) => { };
+            Action<Context, string> onCacheMiss = (ctx, key) => { contextPassedToOnCacheMiss = ctx; keyPassedToOnCacheMiss = key; };
+            Action<Context, string> onCachePut = (ctx, key) => { contextPassedToOnCachePut = ctx; keyPassedToOnCachePut = key; };
+
+            IAsyncCacheProvider stubCacheProvider = new StubCacheProvider();
+            CachePolicy cache = Policy.CacheAsync(stubCacheProvider, new RelativeTtl(TimeSpan.MaxValue), DefaultCacheKeyStrategy.Instance, emptyDelegate, onCacheMiss, onCachePut, noErrorHandling, noErrorHandling);
+
+            ((string)await stubCacheProvider.GetAsync(executionKey, CancellationToken.None, false).ConfigureAwait(false)).Should().BeNull();
+            (await cache.ExecuteAsync(async () => { await TaskHelper.EmptyTask.ConfigureAwait(false); return valueToReturn; }, contextToExecute).ConfigureAwait(false)).Should().Be(valueToReturn);
+
+            contextPassedToOnCachePut.Should().BeNull();
+            keyPassedToOnCachePut.Should().BeNull();
+        }
+
+        [Fact]
         public async Task Should_not_execute_oncachemiss_if_dont_query_cache_because_cache_key_not_set()
         {
             string valueToReturn = Guid.NewGuid().ToString();
