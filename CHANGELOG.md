@@ -1,3 +1,7 @@
+
+## 5.7.0
+- Minor cache fixes
+
 ## 5.6.1
 - Extend PolicyWrap syntax with interfaces
 
