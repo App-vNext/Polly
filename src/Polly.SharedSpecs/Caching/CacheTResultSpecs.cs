@@ -195,7 +195,7 @@ namespace Polly.Specs.Caching
 
             ISyncCacheProvider stubCacheProvider = new StubCacheProvider();
             ICacheKeyStrategy cacheKeyStrategy = new StubCacheKeyStrategy(context => context.ExecutionKey + context["id"]);
-            CachePolicy<ResultClass> cache = Policy.Cache<ResultClass>(stubCacheProvider.For<ResultClass>(), new RelativeTtl(TimeSpan.MaxValue).For<ResultClass>(), cacheKeyStrategy, emptyDelegate, emptyDelegate, emptyDelegate, noErrorHandling, noErrorHandling);
+            CachePolicy<ResultClass> cache = Policy.Cache<ResultClass>(stubCacheProvider.For<ResultClass>(), new RelativeTtl(TimeSpan.MaxValue), cacheKeyStrategy, emptyDelegate, emptyDelegate, emptyDelegate, noErrorHandling, noErrorHandling);
 
             object person1 = new ResultClass(ResultPrimitive.Good, "person1");
             stubCacheProvider.Put("person1", person1, new Ttl(TimeSpan.MaxValue));

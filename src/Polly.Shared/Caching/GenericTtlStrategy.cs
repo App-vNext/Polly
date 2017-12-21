@@ -6,7 +6,7 @@ using Polly.Utilities;
 namespace Polly.Caching
 {
     /// <summary>
-    /// Represents a <see cref="ITtlStrategy"/> expiring based on the execution result.
+    /// Represents a strongly-typed <see cref="ITtlStrategy"/> wrapper of a non-generic strategy.
     /// </summary>
     internal class GenericTtlStrategy<TResult> : ITtlStrategy<TResult>
     {
@@ -14,9 +14,7 @@ namespace Polly.Caching
 
         internal GenericTtlStrategy(ITtlStrategy ttlStrategy)
         {
-            if (ttlStrategy == null) throw new ArgumentNullException(nameof(ttlStrategy));
-
-            _wrappedTtlStrategy = ttlStrategy;
+            _wrappedTtlStrategy = ttlStrategy ?? throw new ArgumentNullException(nameof(ttlStrategy));
         }
 
         /// <summary>
