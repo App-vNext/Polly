@@ -19,7 +19,7 @@ namespace Polly
         /// <summary>
         /// Constructs a new instance of a derived <see cref="Policy"/> type with the passed <paramref name="exceptionPolicy"/> and <paramref name="exceptionPredicates"/> 
         /// </summary>
-        /// <param name="exceptionPolicy">The policy that will be applied to delegates executed through the policy.</param>
+        /// <param name="exceptionPolicy">The execution policy that will be applied to delegates executed synchronously through the policy.</param>
         /// <param name="exceptionPredicates">Predicates indicating which exceptions the policy should handle. </param>
         protected Policy(
             Action<Action<Context, CancellationToken>, Context, CancellationToken> exceptionPolicy,
