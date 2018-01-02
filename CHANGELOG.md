@@ -1,6 +1,7 @@
 
 ## 5.7.0
 - Minor cache fixes
+- Allow user-created custom policies 
 
 ## 5.6.1
 - Extend PolicyWrap syntax with interfaces
