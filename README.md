@@ -883,6 +883,10 @@ From Polly v5.0, synchronous executions also support cancellation via `Cancellat
 
 The .NET4.0 package uses `Microsoft.Bcl.Async` to add async support.  To minimise  dependencies on the main Polly nuget package, the .NET4.0 version is available as separate Nuget packages `Polly.Net40Async` and `Polly.Net40Async-signed`.
 
+# .NET3.5 support 
+
+The last version of Polly to support .NET3.5 is [v4.3.0](https://www.nuget.org/packages/Polly/4.3.0). This includes all of the 4.x features, as it was the last version before v5.0. This package may be installed via the NuGet package manager by specifying its version: `Install-Package Polly -Version 4.3.0`.
+
 # Release notes
 
 For details of changes by release see the [change log](https://github.com/App-vNext/Polly/blob/master/CHANGELOG.md).  We also tag relevant Pull Requests and Issues with [milestones](https://github.com/App-vNext/Polly/milestones), which match to nuget package release numbers.
