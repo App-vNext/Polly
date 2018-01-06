@@ -15,6 +15,12 @@
     <releaseNotes>
      v5.0 is a major release with significant new resilience policies: Timeout; Bulkhead Isolation; Fallback; Cache; and PolicyWrap.  See release notes back to v5.0.0 for full details.
 
+     5.7.0
+     ---------------------
+     - Minor cache fixes
+     - Add ability to calculate cache Ttl based on item to cache
+     - Allow user-created custom policies
+
      5.6.1
      ---------------------
      - Extend PolicyWrap syntax with interfaces

@@ -11,7 +11,12 @@ namespace Polly
     {
         private readonly Func<Func<Context, CancellationToken, Task>, Context, CancellationToken, bool, Task> _asyncExceptionPolicy;
 
-        internal Policy(
+        /// <summary>
+        /// Constructs a new instance of a derived <see cref="Policy"/> type with the passed <paramref name="asyncExceptionPolicy"/> and <paramref name="exceptionPredicates"/>.
+        /// </summary>
+        /// <param name="asyncExceptionPolicy">The execution policy that will be applied to delegates executed asychronously through the asynchronous policy.</param>
+        /// <param name="exceptionPredicates">Predicates indicating which exceptions the policy should handle. </param>
+        protected Policy(
             Func<Func<Context, CancellationToken, Task>, Context, CancellationToken, bool, Task> asyncExceptionPolicy, 
             IEnumerable<ExceptionPredicate> exceptionPredicates)
         {

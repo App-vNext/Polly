@@ -1,4 +1,4 @@
-///////////////////////////////////////////////////////////////////////////////
+﻿///////////////////////////////////////////////////////////////////////////////
 // ARGUMENTS
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -92,12 +92,16 @@ Teardown(_ =>
 Task("__Clean")
     .Does(() =>
 {
-    CleanDirectories(new DirectoryPath[] {
+    DirectoryPath[] cleanDirectories = new DirectoryPath[] {
         buildDir,
-        artifactsDir,
         testResultsDir,
-        nupkgDestDir
-  	});
+        nupkgDestDir,
+        artifactsDir
+  	};
+
+    CleanDirectories(cleanDirectories);
+
+    foreach(var path in cleanDirectories) { EnsureDirectoryExists(path); }
 
     foreach(var path in solutionPaths)
     {

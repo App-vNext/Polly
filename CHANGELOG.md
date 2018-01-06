@@ -1,3 +1,9 @@
+
+## 5.7.0
+- Minor cache fixes
+- Add ability to calculate cache Ttl based on item to cache
+- Allow user-created custom policies 
+
 ## 5.6.1
 - Extend PolicyWrap syntax with interfaces
 
