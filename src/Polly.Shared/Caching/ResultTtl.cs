@@ -10,7 +10,7 @@ namespace Polly.Caching
 
     public class ResultTtl<TResult> : ITtlStrategy<TResult>
     {
-        private readonly Func<TResult, Ttl> ttlFunc;
+        private readonly Func<TResult, Ttl> _ttlFunc;
 
         /// <summary>
         /// Constructs a new instance of the <see cref="ResultTtl{TResult}"/> ttl strategy.
@@ -18,9 +18,7 @@ namespace Polly.Caching
         /// <param name="ttlFunc">The function to calculate the TTL for which cache items should be considered valid.</param>
         public ResultTtl(Func<TResult, Ttl> ttlFunc)
         {
-            if (ttlFunc == null) throw new ArgumentNullException(nameof(ttlFunc));
-
-            this.ttlFunc = ttlFunc;
+            _ttlFunc = ttlFunc ?? throw new ArgumentNullException(nameof(ttlFunc));
         }
 
         /// <summary>
@@ -32,7 +30,7 @@ namespace Polly.Caching
 
         public Ttl GetTtl(Context context, TResult result)
         {
-            return ttlFunc(result);
+            return _ttlFunc(result);
         }
     }
 }
