@@ -15,6 +15,10 @@
     <releaseNotes>
      v5.0 is a major release with significant new resilience policies: Timeout; Bulkhead Isolation; Fallback; Cache; and PolicyWrap.  See release notes back to v5.0.0 for full details.
 
+     5.7.1
+     ---------------------
+     - Add a new onBreak overload that provides the prior state on a transition to an open state
+      
      5.7.0
      ---------------------
      - Minor cache fixes

@@ -952,6 +952,7 @@ For details of changes by release see the [change log](https://github.com/App-vN
 * [@rjongeneelen](https://github.com/rjongeneelen) and [@reisenberger](https://github.com/reisenberger) - Allow PolicyWrap configuration to configure policies via interfaces. 
 * [@reisenberger](https://github.com/reisenberger) - Performance improvements.
 * [@awarrenlove](https://github.com/awarrenlove) - Add ability to calculate cache Ttl based on item to cache.
+* [@awarrenlove](https://github.com/awarrenlove) - Add a new onBreak overload that provides the prior state on a transition to an open state.
 
 # Sample Projects
 

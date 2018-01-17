@@ -1,3 +1,5 @@
+## 5.7.1
+- Add a new onBreak overload that provides the prior state on a transition to an open state
 
 ## 5.7.0
 - Minor cache fixes
