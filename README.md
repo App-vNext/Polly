@@ -54,7 +54,7 @@ Fault-handling policies handle specific exceptions thrown by, or results returne
 ```csharp
 // Single exception type
 Policy
-  .Handle<DivideByZeroException>()
+  .Handle<HttpRequestException>()
 
 // Single exception type with condition
 Policy
@@ -62,8 +62,8 @@ Policy
 
 // Multiple exception types
 Policy
-  .Handle<DivideByZeroException>()
-  .Or<ArgumentException>()
+  .Handle<HttpRequestException>()
+  .Or<OperationCanceledException>()
 
 // Multiple exception types with condition
 Policy
@@ -72,8 +72,8 @@ Policy
 
 // Inner exceptions of ordinary exceptions or AggregateException, with or without conditions
 Policy
-  .HandleInner<HttpResponseException>()
-  .OrInner<OperationCanceledException>(ex => ex.CancellationToken == myToken)
+  .HandleInner<HttpRequestException>()
+  .OrInner<OperationCanceledException>(ex => ex.CancellationToken != myToken)
 ```
 
 ## Step 1b: (optionally) Specify return results you want to handle
@@ -104,7 +104,7 @@ HttpStatusCode[] httpStatusCodesWorthRetrying = {
    HttpStatusCode.GatewayTimeout // 504
 }; 
 HttpResponseMessage result = Policy
-  .Handle<HttpResponseException>()
+  .Handle<HttpRequestException>()
   .OrResult<HttpResponseMessage>(r => httpStatusCodesWorthRetrying.Contains(r.StatusCode))
   .RetryAsync(...)
   .ExecuteAsync( /* some Func<Task<HttpResponseMessage>> */ )
@@ -119,18 +119,18 @@ For more information, see [Handling Return Values](#handing-return-values-and-po
 ```csharp
 // Retry once
 Policy
-  .Handle<DivideByZeroException>()
+  .Handle<SomeExceptionType>()
   .Retry()
 
 // Retry multiple times
 Policy
-  .Handle<DivideByZeroException>()
+  .Handle<SomeExceptionType>()
   .Retry(3)
 
 // Retry multiple times, calling an action on each retry 
 // with the current exception and retry count
 Policy
-    .Handle<DivideByZeroException>()
+    .Handle<SomeExceptionType>()
     .Retry(3, (exception, retryCount) =>
     {
         // do something 
@@ -140,7 +140,7 @@ Policy
 // with the current exception, retry count and context 
 // provided to Execute()
 Policy
-    .Handle<DivideByZeroException>()
+    .Handle<SomeExceptionType>()
     .Retry(3, (exception, retryCount, context) =>
     {
         // do something 
@@ -153,13 +153,13 @@ Policy
 
 // Retry forever
 Policy
-  .Handle<DivideByZeroException>()
+  .Handle<SomeExceptionType>()
   .RetryForever()
 
 // Retry forever, calling an action on each retry with the 
 // current exception
 Policy
-  .Handle<DivideByZeroException>()
+  .Handle<SomeExceptionType>()
   .RetryForever(exception =>
   {
         // do something       
@@ -168,7 +168,7 @@ Policy
 // Retry forever, calling an action on each retry with the
 // current exception and context provided to Execute()
 Policy
-  .Handle<DivideByZeroException>()
+  .Handle<SomeExceptionType>()
   .RetryForever((exception, context) =>
   {
         // do something       
@@ -180,7 +180,7 @@ Policy
 ```csharp
 // Retry, waiting a specified duration between each retry
 Policy
-  .Handle<DivideByZeroException>()
+  .Handle<SomeExceptionType>()
   .WaitAndRetry(new[]
   {
     TimeSpan.FromSeconds(1),
@@ -192,7 +192,7 @@ Policy
 // calling an action on each retry with the current exception
 // and duration
 Policy
-  .Handle<DivideByZeroException>()
+  .Handle<SomeExceptionType>()
   .WaitAndRetry(new[]
   {
     TimeSpan.FromSeconds(1),
@@ -206,7 +206,7 @@ Policy
 // calling an action on each retry with the current exception, 
 // duration and context provided to Execute()
 Policy
-  .Handle<DivideByZeroException>()
+  .Handle<SomeExceptionType>()
   .WaitAndRetry(new[]
   {
     TimeSpan.FromSeconds(1),
@@ -220,7 +220,7 @@ Policy
 // calling an action on each retry with the current exception, 
 // duration, retry count, and context provided to Execute()
 Policy
-  .Handle<DivideByZeroException>()
+  .Handle<SomeExceptionType>()
   .WaitAndRetry(new[]
   {
     TimeSpan.FromSeconds(1),
@@ -240,7 +240,7 @@ Policy
 //  2 ^ 4 = 16 seconds then
 //  2 ^ 5 = 32 seconds
 Policy
-  .Handle<DivideByZeroException>()
+  .Handle<SomeExceptionType>()
   .WaitAndRetry(5, retryAttempt => 
 	TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)) 
   );
@@ -251,7 +251,7 @@ Policy
 // with the current exception, duration and context provided 
 // to Execute()
 Policy
-  .Handle<DivideByZeroException>()
+  .Handle<SomeExceptionType>()
   .WaitAndRetry(
     5, 
     retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)), 
@@ -266,7 +266,7 @@ Policy
 // with the current exception, duration, retry count, and context 
 // provided to Execute()
 Policy
-  .Handle<DivideByZeroException>()
+  .Handle<SomeExceptionType>()
   .WaitAndRetry(
     5, 
     retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)), 
@@ -282,7 +282,7 @@ Policy
 
 // Wait and retry forever
 Policy
-  .Handle<DivideByZeroException>()
+  .Handle<SomeExceptionType>()
   .WaitAndRetryForever(retryAttempt => 
 	TimeSpan.FromSeconds(Math.Pow(2, retryAttempt))
     );
@@ -290,7 +290,7 @@ Policy
 // Wait and retry forever, calling an action on each retry with the 
 // current exception and the time to wait
 Policy
-  .Handle<DivideByZeroException>()
+  .Handle<SomeExceptionType>()
   .WaitAndRetryForever(
     retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),    
     (exception, timespan) =>
@@ -301,7 +301,7 @@ Policy
 // Wait and retry forever, calling an action on each retry with the
 // current exception, time to wait, and context provided to Execute()
 Policy
-  .Handle<DivideByZeroException>()
+  .Handle<SomeExceptionType>()
   .WaitAndRetryForever(
     retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),    
     (exception, timespan, context) =>
@@ -318,7 +318,7 @@ For more detail see: [Retry policy documentation](https://github.com/App-vNext/P
 // Break the circuit after the specified number of consecutive exceptions
 // and keep circuit broken for the specified duration.
 Policy
-    .Handle<DivideByZeroException>()
+    .Handle<SomeExceptionType>()
     .CircuitBreaker(2, TimeSpan.FromMinutes(1));
 
 // Break the circuit after the specified number of consecutive exceptions
@@ -327,7 +327,7 @@ Policy
 Action<Exception, TimeSpan> onBreak = (exception, timespan) => { ... };
 Action onReset = () => { ... };
 CircuitBreakerPolicy breaker = Policy
-    .Handle<DivideByZeroException>()
+    .Handle<SomeExceptionType>()
     .CircuitBreaker(2, TimeSpan.FromMinutes(1), onBreak, onReset);
 
 // Break the circuit after the specified number of consecutive exceptions
@@ -337,7 +337,7 @@ CircuitBreakerPolicy breaker = Policy
 Action<Exception, TimeSpan, Context> onBreak = (exception, timespan, context) => { ... };
 Action<Context> onReset = context => { ... };
 CircuitBreakerPolicy breaker = Policy
-    .Handle<DivideByZeroException>()
+    .Handle<SomeExceptionType>()
     .CircuitBreaker(2, TimeSpan.FromMinutes(1), onBreak, onReset);
 
 // Monitor the circuit state, for example for health reporting.
@@ -366,7 +366,7 @@ For more detail see: [Circuit-Breaker documentation](https://github.com/App-vNex
 // is at least minimumThroughput.
 
 Policy
-    .Handle<DivideByZeroException>()
+    .Handle<SomeExceptionType>()
     .AdvancedCircuitBreaker(
         failureThreshold: 0.5, // Break on >=50% actions result in handled exceptions...
         samplingDuration: TimeSpan.FromSeconds(10), // ... over any 10 second period
@@ -419,14 +419,14 @@ For more detail see: [Fallback policy documentation](https://github.com/App-vNex
 ```csharp
 // Execute an action
 var policy = Policy
-              .Handle<DivideByZeroException>()
+              .Handle<SomeExceptionType>()
               .Retry();
 
 policy.Execute(() => DoSomething());
 
 // Execute an action passing arbitrary context data
 var policy = Policy
-    .Handle<DivideByZeroException>()
+    .Handle<SomeExceptionType>()
     .Retry(3, (exception, retryCount, context) =>
     {
         var methodThatRaisedException = context["methodName"];
@@ -440,14 +440,14 @@ policy.Execute(
 
 // Execute a function returning a result
 var policy = Policy
-              .Handle<DivideByZeroException>()
+              .Handle<SomeExceptionType>()
               .Retry();
 
 var result = policy.Execute(() => DoSomething());
 
 // Execute a function returning a result passing arbitrary context data
 var policy = Policy
-    .Handle<DivideByZeroException>()
+    .Handle<SomeExceptionType>()
     .Retry(3, (exception, retryCount, context) =>
     {
         object methodThatRaisedException = context["methodName"];
@@ -467,7 +467,7 @@ Policy
   .Execute(() => DoSomething());
 ```
 
-The above examples show policy definition immediately followed by policy execution, for simplicity.  Policy definition and execution may equally be separated - for example, define policies on start-up, then provide them to point-of-use by dependency injection (perhaps using [`PolicyRegistry`](#policyregistry)).
+The above examples show policy definition immediately followed by policy execution, for simplicity.  Policy definition and execution may just as often be separated in the codebase and application lifecycle.  You may choose for example to define policies on start-up, then provide them to point-of-use by dependency injection (perhaps using [`PolicyRegistry`](#policyregistry)).
 
 # Usage &ndash; general resilience policies
 
@@ -620,23 +620,23 @@ NoOpPolicy noOp = Policy.NoOp();
 ```
 For more detail see: [NoOp documentation](https://github.com/App-vNext/Polly/wiki/NoOp) on wiki.
 
-## Step 2 : Execute the policy.
+## Step 2 : Execute the policy
 
 As for fault-handling policies [above](#step-3--execute-the-policy).
 
 # Post-execution: capturing the result, or any final exception
 
-Using the `ExecuteAndCapture(...)` methods you can capture the result of executing a policy.
+Using the `ExecuteAndCapture(...)` methods you can capture the outcome of an execution: the methods return a `PolicyResult` instance which describes whether the outcome was a successful execution or a fault.
 
 ```csharp
 var policyResult = Policy
-              .Handle<DivideByZeroException>()
-              .Retry()
-              .ExecuteAndCapture(() => DoSomething());
+              .Handle<HttpRequestException>()
+              .RetryAsync()
+              .ExecuteAndCaptureAsync(() => DoSomethingAsync());
 /*              
 policyResult.Outcome - whether the call succeeded or failed         
 policyResult.FinalException - the final exception captured, will be null if the call succeeded
-policyResult.ExceptionType - was the final exception the policy was defined to handle (like DivideByZeroException above) or an unhandled one (say Exception). Will be null if the call succeeded.
+policyResult.ExceptionType - was the final exception an exception the policy was defined to handle (like HttpRequestException above) or an unhandled one (say Exception). Will be null if the call succeeded.
 policyResult.Result - if executing a func, the result if the call succeeded or the type's default value
 */
 ```
@@ -655,7 +655,7 @@ HttpStatusCode[] httpStatusCodesWorthRetrying = {
    HttpStatusCode.GatewayTimeout // 504
 }; 
 HttpResponseMessage result = Policy
-  .Handle<HttpResponseException>()
+  .Handle<HttpRequestException>()
   .OrResult<HttpResponseMessage>(r => httpStatusCodesWorthRetrying.Contains(r.StatusCode))
   .RetryAsync(...)
   .ExecuteAsync( /* some Func<Task<HttpResponseMessage>> */ )
@@ -679,7 +679,7 @@ These policies must be used to execute delegates returning `TResult`, ie:
 ```          
 policyResult.Outcome - whether the call succeeded or failed         
 policyResult.FinalException - the final exception captured; will be null if the call succeeded
-policyResult.ExceptionType - was the final exception an exception the policy was defined to handle (like DivideByZeroException above) or an unhandled one (say Exception)? Will be null if the call succeeded.
+policyResult.ExceptionType - was the final exception an exception the policy was defined to handle (like HttpRequestException above) or an unhandled one (say Exception)? Will be null if the call succeeded.
 policyResult.Result - if executing a func, the result if the call succeeded; otherwise, the type's default value
 ```
 
@@ -778,43 +778,6 @@ registry.Get<IAsyncPolicy<HttpResponseMessage>>("StandardHttpResilience")
 
 Available from v5.2.0.  For more detail see: [PolicyRegistry](https://github.com/App-vNext/Polly/wiki/PolicyRegistry) on wiki.
 
-# Interfaces
-
-Polly v5.2.0 adds interfaces intended to support [`PolicyRegistry`](https://github.com/App-vNext/Polly/wiki/PolicyRegistry) and to group Policy functionality by the [interface segregation principle](https://en.wikipedia.org/wiki/Interface_segregation_principle).  Polly's interfaces are not intended for coding your own policy implementations against.
-
-## Execution interfaces: `ISyncPolicy` etc
-
-Execution interfaces [`ISyncPolicy`](https://github.com/App-vNext/Polly/tree/master/src/Polly.Shared/ISyncPolicy.cs), [`IAsyncPolicy`](https://github.com/App-vNext/Polly/tree/master/src/Polly.Shared/IAsyncPolicy.cs), [`ISyncPolicy<TResult>`](https://github.com/App-vNext/Polly/tree/master/src/Polly.Shared/ISyncPolicyTResult.cs) and [`IAsyncPolicy<TResult>`](https://github.com/App-vNext/Polly/tree/master/src/Polly.Shared/IAsyncPolicyTResult.cs)  define the execution overloads available to policies targeting sync/async, and non-generic / generic calls respectively.
-
-See blog posts for why Polly has [both non-generic and generic policies](http://www.thepollyproject.org/2017/06/07/why-does-polly-offer-both-non-generic-and-generic-policies/) and [separate sync and async policies](http://www.thepollyproject.org/2017/06/09/polly-and-synchronous-versus-asynchronous-policies/).
-
-## Policy-kind interfaces: `ICircuitBreakerPolicy` etc
-
-Orthogonal to the execution interfaces, interfaces specific to the kind of Policy define properties and methods common to that type of policy.  
-
-For example, [`ICircuitBreakerPolicy`](https://github.com/App-vNext/Polly/tree/master/src/Polly.Shared/CircuitBreaker/ICircuitBreakerPolicy.cs) defines 
-
-
-+ `CircuitState CircuitState`
-+ `Exception LastException`
-+ `void Isolate()`
-+ `void Reset()`
-
-with `ICircuitBreakerPolicy<TResult> : ICircuitBreakerPolicy` adding:
-
-+ `TResult LastHandledResult`.
-
-This allows collections of similar kinds of policy to be treated as one - for example, for monitoring all your circuit-breakers as [described here](https://github.com/App-vNext/Polly/pull/205). 
-
-For more detail see: [Polly and interfaces](https://github.com/App-vNext/Polly/wiki/Polly-and-interfaces) on wiki.
-
-
-# Thread safety
-
-All Polly policies are fully thread-safe.  You can safely re-use policies at multiple call sites, and execute through policies concurrently on different threads. 
-
-While the internal operation of the policy is thread-safe, this does not magically make delegates you execute through the policy thread-safe: if delegates you execute through the policy are not thread-safe, they remain not thread-safe.
-
 
 # Asynchronous Support
 
@@ -867,8 +830,7 @@ The token you pass as the `cancellationToken` parameter to the `ExecuteAsync(...
 // Try several times to retrieve from a uri, but support cancellation at any time.
 CancellationToken cancellationToken = // ...
 var policy = Policy
-    .Handle<WebException>()
-    .Or<HttpRequestException>()
+    .Handle<HttpRequestException>()
     .WaitAndRetryAsync(new[] { 
         TimeSpan.FromSeconds(1), 
         TimeSpan.FromSeconds(2), 
@@ -878,6 +840,44 @@ var response = await policy.ExecuteAsync(ct => httpClient.GetAsync(uri, ct), can
 ```
 
 From Polly v5.0, synchronous executions also support cancellation via `CancellationToken`.
+
+# Thread safety
+
+All Polly policies are fully thread-safe.  You can safely re-use policies at multiple call sites, and execute through policies concurrently on different threads. 
+
+While the internal operation of the policy is thread-safe, this does not magically make delegates you execute through the policy thread-safe: if delegates you execute through the policy are not thread-safe, they remain not thread-safe.
+
+
+# Interfaces
+
+Polly v5.2.0 adds interfaces intended to support [`PolicyRegistry`](https://github.com/App-vNext/Polly/wiki/PolicyRegistry) and to group Policy functionality by the [interface segregation principle](https://en.wikipedia.org/wiki/Interface_segregation_principle).  Polly's interfaces are not intended for coding your own policy implementations against.
+
+## Execution interfaces: `ISyncPolicy` etc
+
+Execution interfaces [`ISyncPolicy`](https://github.com/App-vNext/Polly/tree/master/src/Polly.Shared/ISyncPolicy.cs), [`IAsyncPolicy`](https://github.com/App-vNext/Polly/tree/master/src/Polly.Shared/IAsyncPolicy.cs), [`ISyncPolicy<TResult>`](https://github.com/App-vNext/Polly/tree/master/src/Polly.Shared/ISyncPolicyTResult.cs) and [`IAsyncPolicy<TResult>`](https://github.com/App-vNext/Polly/tree/master/src/Polly.Shared/IAsyncPolicyTResult.cs)  define the execution overloads available to policies targeting sync/async, and non-generic / generic calls respectively.
+
+See blog posts for why Polly has [both non-generic and generic policies](http://www.thepollyproject.org/2017/06/07/why-does-polly-offer-both-non-generic-and-generic-policies/) and [separate sync and async policies](http://www.thepollyproject.org/2017/06/09/polly-and-synchronous-versus-asynchronous-policies/).
+
+## Policy-kind interfaces: `ICircuitBreakerPolicy` etc
+
+Orthogonal to the execution interfaces, interfaces specific to the kind of Policy define properties and methods common to that type of policy.  
+
+For example, [`ICircuitBreakerPolicy`](https://github.com/App-vNext/Polly/tree/master/src/Polly.Shared/CircuitBreaker/ICircuitBreakerPolicy.cs) defines 
+
+
++ `CircuitState CircuitState`
++ `Exception LastException`
++ `void Isolate()`
++ `void Reset()`
+
+with `ICircuitBreakerPolicy<TResult> : ICircuitBreakerPolicy` adding:
+
++ `TResult LastHandledResult`.
+
+This allows collections of similar kinds of policy to be treated as one - for example, for monitoring all your circuit-breakers as [described here](https://github.com/App-vNext/Polly/pull/205). 
+
+For more detail see: [Polly and interfaces](https://github.com/App-vNext/Polly/wiki/Polly-and-interfaces) on wiki.
+
 
 # .NET4.0 support 
 
