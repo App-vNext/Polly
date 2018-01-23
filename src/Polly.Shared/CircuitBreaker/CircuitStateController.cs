@@ -11,7 +11,7 @@ namespace Polly.CircuitBreaker
         protected CircuitState _circuitState;
         protected DelegateResult<TResult> _lastOutcome;
 
-        protected readonly Action<DelegateResult<TResult>, TimeSpan, Context> _onBreak;
+        protected readonly Action<DelegateResult<TResult>, CircuitState, TimeSpan, Context> _onBreak;
         protected readonly Action<Context> _onReset;
         protected readonly Action _onHalfOpen;
 
@@ -19,7 +19,7 @@ namespace Polly.CircuitBreaker
 
         protected CircuitStateController(
             TimeSpan durationOfBreak, 
-            Action<DelegateResult<TResult>, TimeSpan, Context> onBreak, 
+            Action<DelegateResult<TResult>, CircuitState, TimeSpan, Context> onBreak, 
             Action<Context> onReset, 
             Action onHalfOpen)
         {
@@ -105,9 +105,11 @@ namespace Polly.CircuitBreaker
             _blockedTill = willDurationTakeUsPastDateTimeMaxValue
                 ? DateTime.MaxValue.Ticks
                 : (SystemClock.UtcNow() + durationOfBreak).Ticks;
+
+            var transitionedState = _circuitState;
             _circuitState = CircuitState.Open;
 
-            _onBreak(_lastOutcome, durationOfBreak, context);
+            _onBreak(_lastOutcome, transitionedState, durationOfBreak, context);
         }
 
         public void Reset()
