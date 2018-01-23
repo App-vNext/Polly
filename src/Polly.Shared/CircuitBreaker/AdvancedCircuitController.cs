@@ -17,7 +17,7 @@ namespace Polly.CircuitBreaker
             TimeSpan samplingDuration, 
             int minimumThroughput, 
             TimeSpan durationOfBreak, 
-            Action<DelegateResult<TResult>, TimeSpan, Context> onBreak, 
+            Action<DelegateResult<TResult>, CircuitState, TimeSpan, Context> onBreak, 
             Action<Context> onReset, 
             Action onHalfOpen
             ) : base(durationOfBreak, onBreak, onReset, onHalfOpen)

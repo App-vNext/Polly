@@ -1051,6 +1051,76 @@ namespace Polly.Specs.CircuitBreaker
         }
 
         [Fact]
+        public void Should_call_onbreak_with_a_state_of_closed()
+        {
+            CircuitState? transitionedState = null;
+
+            Action<Exception, CircuitState, TimeSpan, Context> onBreak = (_, state, __, ___) => { transitionedState = state; };
+            Action<Context> onReset = _ => { };
+            Action onHalfOpen = () => { };
+
+            CircuitBreakerPolicy breaker = Policy
+                .Handle<DivideByZeroException>()
+                .CircuitBreakerAsync(2, TimeSpan.FromMinutes(1), onBreak, onReset, onHalfOpen);
+
+            breaker.Awaiting(async x => await x.RaiseExceptionAsync<DivideByZeroException>())
+                  .ShouldThrow<DivideByZeroException>();
+            breaker.CircuitState.Should().Be(CircuitState.Closed);
+
+            breaker.Awaiting(async x => await x.RaiseExceptionAsync<DivideByZeroException>())
+                  .ShouldThrow<DivideByZeroException>();
+            breaker.CircuitState.Should().Be(CircuitState.Open);
+
+            transitionedState?.Should().Be(CircuitState.Closed);
+        }
+
+        [Fact]
+        public void Should_call_onbreak_with_a_state_of_half_open()
+        {
+            List<CircuitState> transitionedStates = new List<CircuitState>();
+
+            Action<Exception, CircuitState, TimeSpan, Context> onBreak = (_, state, __, ___) => { transitionedStates.Add(state); };
+            Action<Context> onReset = _ => { };
+            Action onHalfOpen = () => { };
+
+            var time = 1.January(2000);
+            SystemClock.UtcNow = () => time;
+
+            var durationOfBreak = TimeSpan.FromMinutes(1);
+
+            CircuitBreakerPolicy breaker = Policy
+                            .Handle<DivideByZeroException>()
+                            .CircuitBreakerAsync(2, TimeSpan.FromMinutes(1), onBreak, onReset, onHalfOpen);
+
+            breaker.Awaiting(async x => await x.RaiseExceptionAsync<DivideByZeroException>())
+                  .ShouldThrow<DivideByZeroException>();
+            breaker.CircuitState.Should().Be(CircuitState.Closed);
+
+            breaker.Awaiting(async x => await x.RaiseExceptionAsync<DivideByZeroException>())
+                  .ShouldThrow<DivideByZeroException>();
+            breaker.CircuitState.Should().Be(CircuitState.Open);
+
+            // 2 exception raised, circuit is now open
+            breaker.Awaiting(async x => await x.RaiseExceptionAsync<DivideByZeroException>())
+                  .ShouldThrow<BrokenCircuitException>();
+            breaker.CircuitState.Should().Be(CircuitState.Open);
+
+            SystemClock.UtcNow = () => time.Add(durationOfBreak);
+
+            // duration has passed, circuit now half open
+            breaker.CircuitState.Should().Be(CircuitState.HalfOpen);
+            // first call after duration raises an exception, so circuit should break again
+            breaker.Awaiting(async x => await x.RaiseExceptionAsync<DivideByZeroException>())
+                  .ShouldThrow<DivideByZeroException>();
+            breaker.CircuitState.Should().Be(CircuitState.Open);
+            breaker.Awaiting(async x => await x.RaiseExceptionAsync<DivideByZeroException>())
+                  .ShouldThrow<BrokenCircuitException>();
+
+            transitionedStates[0].Should().Be(CircuitState.Closed);
+            transitionedStates[1].Should().Be(CircuitState.HalfOpen);
+        }
+
+        [Fact]
         public void Should_rethrow_and_call_onbreak_with_the_last_raised_exception_unwrapped_if_matched_as_inner()
         {
             Exception passedException = null;
