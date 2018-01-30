@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using FluentAssertions;
 using Polly.Caching;
+using Polly.Utilities;
 using Xunit;
 
 namespace Polly.Specs.Caching
@@ -39,6 +38,22 @@ namespace Polly.Specs.Caching
             TimeSpan ttl = TimeSpan.FromSeconds(30);
 
             RelativeTtl ttlStrategy = new RelativeTtl(ttl);
+
+            Ttl retrieved = ttlStrategy.GetTtl(new Context("someExecutionKey"), null);
+            retrieved.Timespan.Should().BeCloseTo(ttl);
+            retrieved.SlidingExpiration.Should().BeFalse();
+        }
+
+        [Fact]
+        public void Should_return_configured_timespan_from_time_requested()
+        {
+            DateTimeOffset fixedTime = SystemClock.DateTimeOffsetUtcNow();
+            TimeSpan ttl = TimeSpan.FromSeconds(30);
+            TimeSpan delay = TimeSpan.FromSeconds(5);
+
+            RelativeTtl ttlStrategy = new RelativeTtl(ttl);
+
+            SystemClock.DateTimeOffsetUtcNow = () => fixedTime.Add(delay);
 
             Ttl retrieved = ttlStrategy.GetTtl(new Context("someExecutionKey"), null);
             retrieved.Timespan.Should().BeCloseTo(ttl);
