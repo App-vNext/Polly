@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using Polly.Utilities;
@@ -51,6 +52,7 @@ namespace Polly.Caching
         /// <param name="context">Execution context that is passed to the exception policy; defines the cache key to use in cache lookup.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>The value returned by the action, or the cache.</returns>
+        [DebuggerStepThrough]
         public override TResult ExecuteInternal<TResult>(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken)
         {
             return CacheEngine.Implementation<TResult>(
