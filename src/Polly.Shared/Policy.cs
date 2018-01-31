@@ -86,7 +86,7 @@ namespace Polly
         }
 
         /// <summary>
-        /// 
+        /// Executes the specified action within the policy
         /// </summary>
         /// <param name="action"></param>
         /// <param name="cancellationToken"></param>
