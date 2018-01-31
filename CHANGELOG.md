@@ -1,5 +1,6 @@
-## 5.7.1
+## 5.8.0
 - Add a new onBreak overload that provides the prior state on a transition to an open state
+- Bug fix: RelativeTtl in CachePolicy now always returns a ttl relative to time item is cached
 
 ## 5.7.0
 - Minor cache fixes
