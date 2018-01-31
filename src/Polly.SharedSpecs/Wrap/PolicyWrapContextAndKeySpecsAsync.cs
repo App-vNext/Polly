@@ -116,12 +116,12 @@ namespace Polly.Specs.Wrap
             var innerWrap = retry.WrapAsync(breaker).WithPolicyKey(innerWrapKey);
             var outerWrap = fallback.WrapAsync(innerWrap).WithPolicyKey(outerWrapKey);
 
-            bool doneOnceOny = false;
+            bool doneOnceOnly = false;
             await outerWrap.ExecuteAsync(() =>
             {
-                if (!doneOnceOny)
+                if (!doneOnceOnly)
                 {
-                    doneOnceOny = true;
+                    doneOnceOnly = true;
                     throw new Exception();
                 }
                 return TaskHelper.EmptyTask;
@@ -138,6 +138,7 @@ namespace Polly.Specs.Wrap
 
     }
 
+    [Collection(Polly.Specs.Helpers.Constants.SystemClockDependentTestCollection)]
     public class PolicyWrapTResultContextAndKeySpecsAsync
     {
         #region PolicyKey and execution Context tests
