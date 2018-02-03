@@ -24,6 +24,7 @@
     <PackageReference Include="Microsoft.Bcl" Version="1.1.10" />
     <PackageReference Include="Microsoft.Bcl.Build" Version="1.0.21" />
     <PackageReference Include="Nito.AsyncEx" Version="3.0.1" />
+    <PackageReference Include="GitVersionTask" Version="3.1.2" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\GlobalAssemblyInfo.cs">
