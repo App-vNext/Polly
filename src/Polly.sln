@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26430.16
+VisualStudioVersion = 15.0.26730.16
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{79FE9DBE-1155-4F78-A41F-FE95DEFA19DD}"
 	ProjectSection(SolutionItems) = preProject
@@ -24,7 +24,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polly.Net40Async.Specs", "P
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polly.NetStandard11", "Polly.NetStandard11\Polly.NetStandard11.csproj", "{5017174E-DAC5-4408-AB15-1F902F40C612}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Polly.NetStandard11.Specs", "Polly.NetStandard11.Specs\Polly.NetStandard11.Specs.csproj", "{615C92EC-5921-40F4-A690-C66B1587C08E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polly.NetStandard11.Specs", "Polly.NetStandard11.Specs\Polly.NetStandard11.Specs.csproj", "{615C92EC-5921-40F4-A690-C66B1587C08E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Polly.NetStandard20", "Polly.NetStandard20\Polly.NetStandard20.csproj", "{D4E62691-E401-4CC5-A0DA-ED909847499A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Polly.NetStandard20.Specs", "Polly.NetStandard20.Specs\Polly.NetStandard20.Specs.csproj", "{AE9D90AE-2884-4A6C-BA29-50487B335989}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
@@ -65,8 +69,19 @@ Global
 		{615C92EC-5921-40F4-A690-C66B1587C08E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{615C92EC-5921-40F4-A690-C66B1587C08E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{615C92EC-5921-40F4-A690-C66B1587C08E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D4E62691-E401-4CC5-A0DA-ED909847499A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D4E62691-E401-4CC5-A0DA-ED909847499A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D4E62691-E401-4CC5-A0DA-ED909847499A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D4E62691-E401-4CC5-A0DA-ED909847499A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AE9D90AE-2884-4A6C-BA29-50487B335989}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AE9D90AE-2884-4A6C-BA29-50487B335989}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AE9D90AE-2884-4A6C-BA29-50487B335989}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AE9D90AE-2884-4A6C-BA29-50487B335989}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {56FC94A6-6AC6-4BA1-A26D-9B89B460549D}
 	EndGlobalSection
 EndGlobal
