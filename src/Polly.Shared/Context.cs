@@ -28,12 +28,12 @@ namespace Polly
         }
 
         /// <summary>
-        /// When execution is through a <see cref="PolicyWrap"/>, identifies the PolicyWrap executing the current delegate by returning the <see cref="Policy.PolicyKey"/> of the outermost layer in the PolicyWrap; otherwise, null.
+        /// When execution is through a <see cref="PolicyWrap"/>, identifies the PolicyWrap executing the current delegate by returning the <see cref="PolicyBase.PolicyKey"/> of the outermost layer in the PolicyWrap; otherwise, null.
         /// </summary>
         public String PolicyWrapKey { get; internal set; }
 
         /// <summary>
-        /// The <see cref="Policy.PolicyKey"/> of the <see cref="Policy"/> instance executing the current delegate.
+        /// The <see cref="PolicyBase.PolicyKey"/> of the <see cref="Policy"/> instance executing the current delegate.
         /// </summary>
         public String PolicyKey { get; internal set; }
 

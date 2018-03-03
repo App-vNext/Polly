@@ -10,23 +10,6 @@ namespace Polly
 {
     public abstract partial class Policy<TResult> : IAsyncPolicy<TResult>
     {
-        private readonly Func<Func<Context, CancellationToken, Task<TResult>>, Context, CancellationToken, bool, Task<TResult>> _asyncExecutionPolicy;
-
-        /// <summary>
-        /// Constructs a new instance of a derived <see cref="Policy"/> type with the passed <paramref name="asyncExecutionPolicy"/>, <paramref name="exceptionPredicates"/> and <paramref name="resultPredicates"/> 
-        /// </summary>
-        /// <param name="asyncExecutionPolicy">The execution policy that will be applied to delegates executed asychronously through the asynchronous policy.</param>
-        /// <param name="exceptionPredicates">Predicates indicating which exceptions the policy should handle. </param>
-        /// <param name="resultPredicates">Predicates indicating which results the policy should handle. </param>
-        protected Policy(
-            Func<Func<Context, CancellationToken, Task<TResult>>, Context, CancellationToken, bool, Task<TResult>> asyncExecutionPolicy,
-            IEnumerable<ExceptionPredicate> exceptionPredicates,
-            IEnumerable<ResultPredicate<TResult>> resultPredicates)
-        {
-            _asyncExecutionPolicy = asyncExecutionPolicy ?? throw new ArgumentNullException(nameof(asyncExecutionPolicy));
-            ExceptionPredicates = exceptionPredicates ?? PredicateHelper.EmptyExceptionPredicates;
-            ResultPredicates = resultPredicates ?? PredicateHelper<TResult>.EmptyResultPredicates;
-        }
 
         #region ExecuteAsync overloads
 
@@ -38,7 +21,7 @@ namespace Polly
         [DebuggerStepThrough]
         public Task<TResult> ExecuteAsync(Func<Task<TResult>> action)
         {
-            return ExecuteAsync((ctx, ct) => action(), new Context(), CancellationToken.None, false);
+            return ExecuteAsync((ctx, ct) => action(), new Context(), CancellationToken.None, DefaultContinueOnCapturedContext);
         }
 
         /// <summary>
@@ -62,7 +45,7 @@ namespace Polly
         [DebuggerStepThrough]
         public Task<TResult> ExecuteAsync(Func<Task<TResult>> action, IDictionary<string, object> contextData)
         {
-            return ExecuteAsync((ctx, ct) => action(), new Context(contextData), CancellationToken.None, false);
+            return ExecuteAsync((ctx, ct) => action(), new Context(contextData), CancellationToken.None, DefaultContinueOnCapturedContext);
         }
 
         /// <summary>
@@ -74,7 +57,7 @@ namespace Polly
         [DebuggerStepThrough]
         public Task<TResult> ExecuteAsync(Func<Task<TResult>> action, Context context)
         {
-            return ExecuteAsync((ctx, ct) => action(), context, CancellationToken.None, false);
+            return ExecuteAsync((ctx, ct) => action(), context, CancellationToken.None, DefaultContinueOnCapturedContext);
         }
 
         /// <summary>
@@ -86,7 +69,7 @@ namespace Polly
         [DebuggerStepThrough]
         public Task<TResult> ExecuteAsync(Func<Context, Task<TResult>> action, IDictionary<string, object> contextData)
         {
-            return ExecuteAsync((ctx, ct) => action(ctx), new Context(contextData), CancellationToken.None, false);
+            return ExecuteAsync((ctx, ct) => action(ctx), new Context(contextData), CancellationToken.None, DefaultContinueOnCapturedContext);
         }
 
         /// <summary>
@@ -98,7 +81,7 @@ namespace Polly
         [DebuggerStepThrough]
         public Task<TResult> ExecuteAsync(Func<Context, Task<TResult>> action, Context context)
         {
-            return ExecuteAsync((ctx, ct) => action(ctx), context, CancellationToken.None, false);
+            return ExecuteAsync((ctx, ct) => action(ctx), context, CancellationToken.None, DefaultContinueOnCapturedContext);
         }
 
         /// <summary>
@@ -162,7 +145,7 @@ namespace Polly
         [DebuggerStepThrough]
         public Task<TResult> ExecuteAsync(Func<CancellationToken, Task<TResult>> action, CancellationToken cancellationToken)
         {
-            return ExecuteAsync((ctx, ct) => action(ct), new Context(), cancellationToken, false);
+            return ExecuteAsync((ctx, ct) => action(ct), new Context(), cancellationToken, DefaultContinueOnCapturedContext);
         }
 
         /// <summary>
@@ -189,7 +172,7 @@ namespace Polly
         [DebuggerStepThrough]
         public Task<TResult> ExecuteAsync(Func<CancellationToken, Task<TResult>> action, IDictionary<string, object> contextData, CancellationToken cancellationToken)
         {
-            return ExecuteAsync((ctx, ct) => action(ct), new Context(contextData), cancellationToken, false);
+            return ExecuteAsync((ctx, ct) => action(ct), new Context(contextData), cancellationToken, DefaultContinueOnCapturedContext);
         }
 
         /// <summary>
@@ -202,7 +185,7 @@ namespace Polly
         [DebuggerStepThrough]
         public Task<TResult> ExecuteAsync(Func<CancellationToken, Task<TResult>> action, Context context, CancellationToken cancellationToken)
         {
-            return ExecuteAsync((ctx, ct) => action(ct), context, cancellationToken, false);
+            return ExecuteAsync((ctx, ct) => action(ct), context, cancellationToken, DefaultContinueOnCapturedContext);
         }
 
         /// <summary>
@@ -215,7 +198,7 @@ namespace Polly
         [DebuggerStepThrough]
         public Task<TResult> ExecuteAsync(Func<Context, CancellationToken, Task<TResult>> action, IDictionary<string, object> contextData, CancellationToken cancellationToken)
         {
-            return ExecuteAsync(action, new Context(contextData), cancellationToken, false);
+            return ExecuteAsync(action, new Context(contextData), cancellationToken, DefaultContinueOnCapturedContext);
         }
 
         /// <summary>
@@ -228,7 +211,7 @@ namespace Polly
         [DebuggerStepThrough]
         public Task<TResult> ExecuteAsync(Func<Context, CancellationToken, Task<TResult>> action, Context context, CancellationToken cancellationToken)
         {
-            return ExecuteAsync(action, context, cancellationToken, false);
+            return ExecuteAsync(action, context, cancellationToken, DefaultContinueOnCapturedContext);
         }
 
         /// <summary>
@@ -286,21 +269,12 @@ namespace Polly
         /// <returns>The value returned by the action</returns>
         /// <exception cref="System.InvalidOperationException">Please use asynchronous-defined policies when calling asynchronous ExecuteAsync (and similar) methods.</exception>
         [DebuggerStepThrough]
-        public async Task<TResult> ExecuteAsync(Func<Context, CancellationToken, Task<TResult>> action, Context context, CancellationToken cancellationToken, bool continueOnCapturedContext)
+        public Task<TResult> ExecuteAsync(Func<Context, CancellationToken, Task<TResult>> action, Context context, CancellationToken cancellationToken, bool continueOnCapturedContext)
         {
-            if (_asyncExecutionPolicy == null) throw new InvalidOperationException(
-                "Please use asynchronous-defined policies when calling asynchronous ExecuteAsync (and similar) methods.");
             if (context == null) throw new ArgumentNullException(nameof(context));
-
             SetPolicyContext(context);
 
-            TResult result = await _asyncExecutionPolicy(
-                    action,
-                    context,
-                    cancellationToken,
-                    continueOnCapturedContext)
-                .ConfigureAwait(continueOnCapturedContext);
-            return result;
+            return ExecuteAsyncInternal(action, context, cancellationToken, continueOnCapturedContext);
         }
 
         #endregion
@@ -315,7 +289,7 @@ namespace Polly
         [DebuggerStepThrough]
         public Task<PolicyResult<TResult>> ExecuteAndCaptureAsync(Func<Task<TResult>> action)
         {
-            return ExecuteAndCaptureAsync((ctx, ct) => action(), new Context(), CancellationToken.None, false);
+            return ExecuteAndCaptureAsync((ctx, ct) => action(), new Context(), CancellationToken.None, DefaultContinueOnCapturedContext);
         }
 
         /// <summary>
@@ -340,7 +314,7 @@ namespace Polly
         [DebuggerStepThrough]
         public Task<PolicyResult<TResult>> ExecuteAndCaptureAsync(Func<Task<TResult>> action, IDictionary<string, object> contextData)
         {
-            return ExecuteAndCaptureAsync((ctx, ct) => action(), new Context(contextData), CancellationToken.None, false);
+            return ExecuteAndCaptureAsync((ctx, ct) => action(), new Context(contextData), CancellationToken.None, DefaultContinueOnCapturedContext);
         }
 
         /// <summary>
@@ -352,7 +326,7 @@ namespace Polly
         [DebuggerStepThrough]
         public Task<PolicyResult<TResult>> ExecuteAndCaptureAsync(Func<Task<TResult>> action, Context context)
         {
-            return ExecuteAndCaptureAsync((ctx, ct) => action(), context, CancellationToken.None, false);
+            return ExecuteAndCaptureAsync((ctx, ct) => action(), context, CancellationToken.None, DefaultContinueOnCapturedContext);
         }
 
         /// <summary>
@@ -365,7 +339,7 @@ namespace Polly
         [DebuggerStepThrough]
         public Task<PolicyResult<TResult>> ExecuteAndCaptureAsync(Func<Context, Task<TResult>> action, IDictionary<string, object> contextData)
         {
-            return ExecuteAndCaptureAsync((ctx, ct) => action(ctx), new Context(contextData), CancellationToken.None, false);
+            return ExecuteAndCaptureAsync((ctx, ct) => action(ctx), new Context(contextData), CancellationToken.None, DefaultContinueOnCapturedContext);
         }
 
         /// <summary>
@@ -377,7 +351,7 @@ namespace Polly
         [DebuggerStepThrough]
         public Task<PolicyResult<TResult>> ExecuteAndCaptureAsync(Func<Context, Task<TResult>> action, Context context)
         {
-            return ExecuteAndCaptureAsync((ctx, ct) => action(ctx), context, CancellationToken.None, false);
+            return ExecuteAndCaptureAsync((ctx, ct) => action(ctx), context, CancellationToken.None, DefaultContinueOnCapturedContext);
         }
 
         /// <summary>
@@ -445,7 +419,7 @@ namespace Polly
         [DebuggerStepThrough]
         public Task<PolicyResult<TResult>> ExecuteAndCaptureAsync(Func<CancellationToken, Task<TResult>> action, CancellationToken cancellationToken)
         {
-            return ExecuteAndCaptureAsync((ctx, ct) => action(ct), new Context(), cancellationToken, false);
+            return ExecuteAndCaptureAsync((ctx, ct) => action(ct), new Context(), cancellationToken, DefaultContinueOnCapturedContext);
         }
 
         /// <summary>
@@ -473,7 +447,7 @@ namespace Polly
         [DebuggerStepThrough]
         public Task<PolicyResult<TResult>> ExecuteAndCaptureAsync(Func<CancellationToken, Task<TResult>> action, IDictionary<string, object> contextData, CancellationToken cancellationToken)
         {
-            return ExecuteAndCaptureAsync((ctx, ct) => action(ct), new Context(contextData), cancellationToken, false);
+            return ExecuteAndCaptureAsync((ctx, ct) => action(ct), new Context(contextData), cancellationToken, DefaultContinueOnCapturedContext);
         }
 
         /// <summary>
@@ -486,7 +460,7 @@ namespace Polly
         [DebuggerStepThrough]
         public Task<PolicyResult<TResult>> ExecuteAndCaptureAsync(Func<CancellationToken, Task<TResult>> action, Context context, CancellationToken cancellationToken)
         {
-            return ExecuteAndCaptureAsync((ctx, ct) => action(ct), context, cancellationToken, false);
+            return ExecuteAndCaptureAsync((ctx, ct) => action(ct), context, cancellationToken, DefaultContinueOnCapturedContext);
         }
 
         /// <summary>
@@ -500,7 +474,7 @@ namespace Polly
         [DebuggerStepThrough]
         public Task<PolicyResult<TResult>> ExecuteAndCaptureAsync(Func<Context, CancellationToken, Task<TResult>> action, IDictionary<string, object> contextData, CancellationToken cancellationToken)
         {
-            return ExecuteAndCaptureAsync(action, new Context(contextData), cancellationToken, false);
+            return ExecuteAndCaptureAsync(action, new Context(contextData), cancellationToken, DefaultContinueOnCapturedContext);
         }
 
         /// <summary>
@@ -513,7 +487,7 @@ namespace Polly
         [DebuggerStepThrough]
         public Task<PolicyResult<TResult>> ExecuteAndCaptureAsync(Func<Context, CancellationToken, Task<TResult>> action, Context context, CancellationToken cancellationToken)
         {
-            return ExecuteAndCaptureAsync(action, context, cancellationToken, false);
+            return ExecuteAndCaptureAsync(action, context, cancellationToken, DefaultContinueOnCapturedContext);
         }
 
         /// <summary>
@@ -597,5 +571,4 @@ namespace Polly
         #endregion
 
     }
-
 }
