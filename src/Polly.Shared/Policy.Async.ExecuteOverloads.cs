@@ -27,6 +27,7 @@ namespace Polly
         /// <param name="action">The action to perform.</param>
         /// <param name="contextData">Arbitrary data that is passed to the exception policy.</param>
         [DebuggerStepThrough]
+        [Obsolete("This overload is deprecated and scheduled for removal in Polly v6.")]
         public Task ExecuteAsync(Func<Task> action, IDictionary<string, object> contextData)
         {
             return ExecuteAsync((ctx, ct) => action(), new Context(contextData), DefaultCancellationToken, DefaultContinueOnCapturedContext);
@@ -38,6 +39,7 @@ namespace Polly
         /// <param name="action">The action to perform.</param>
         /// <param name="context">Context data that is passed to the exception policy.</param>
         [DebuggerStepThrough]
+        [Obsolete("This overload is deprecated and scheduled for removal in Polly v6.")]
         public Task ExecuteAsync(Func<Task> action, Context context)
         {
             return ExecuteAsync((ctx, ct) => action(), context, DefaultCancellationToken, DefaultContinueOnCapturedContext);
@@ -71,6 +73,7 @@ namespace Polly
         /// <param name="action">The action to perform.</param>
         /// <param name="continueOnCapturedContext">Whether to continue on a captured synchronization context.</param>
         [DebuggerStepThrough]
+        [Obsolete("This overload is deprecated and scheduled for removal in Polly v6.")]
         public Task ExecuteAsync(Func<Task> action, bool continueOnCapturedContext)
         {
             return ExecuteAsync((ctx, ct) => action(), new Context(), DefaultCancellationToken, continueOnCapturedContext);
@@ -83,6 +86,7 @@ namespace Polly
         /// <param name="contextData">Arbitrary data that is passed to the exception policy.</param>
         /// <param name="continueOnCapturedContext">Whether to continue on a captured synchronization context.</param>
         [DebuggerStepThrough]
+        [Obsolete("This overload is deprecated and scheduled for removal in Polly v6.")]
         public Task ExecuteAsync(Func<Task> action, IDictionary<string, object> contextData, bool continueOnCapturedContext)
         {
             return ExecuteAsync((ctx, ct) => action(), new Context(contextData), DefaultCancellationToken, continueOnCapturedContext);
@@ -95,6 +99,7 @@ namespace Polly
         /// <param name="context">Context data that is passed to the exception policy.</param>
         /// <param name="continueOnCapturedContext">Whether to continue on a captured synchronization context.</param>
         [DebuggerStepThrough]
+        [Obsolete("This overload is deprecated and scheduled for removal in Polly v6.")]
         public Task ExecuteAsync(Func<Task> action, Context context, bool continueOnCapturedContext)
         {
             return ExecuteAsync((ctx, ct) => action(), context, DefaultCancellationToken, continueOnCapturedContext);
@@ -107,6 +112,7 @@ namespace Polly
         /// <param name="contextData">Arbitrary data that is passed to the exception policy.</param>
         /// <param name="continueOnCapturedContext">Whether to continue on a captured synchronization context.</param>
         [DebuggerStepThrough]
+        [Obsolete("This overload is deprecated and scheduled for removal in Polly v6.")]
         public Task ExecuteAsync(Func<Context, Task> action, IDictionary<string, object> contextData, bool continueOnCapturedContext)
         {
             return ExecuteAsync((ctx, ct) => action(ctx), new Context(contextData), DefaultCancellationToken, continueOnCapturedContext);
@@ -119,6 +125,7 @@ namespace Polly
         /// <param name="context">Context data that is passed to the exception policy.</param>
         /// <param name="continueOnCapturedContext">Whether to continue on a captured synchronization context.</param>
         [DebuggerStepThrough]
+        [Obsolete("This overload is deprecated and scheduled for removal in Polly v6.")]
         public Task ExecuteAsync(Func<Context, Task> action, Context context, bool continueOnCapturedContext)
         {
             return ExecuteAsync((ctx, ct) => action(ctx), context, DefaultCancellationToken, continueOnCapturedContext);
@@ -142,6 +149,7 @@ namespace Polly
         /// <param name="contextData">Arbitrary data that is passed to the exception policy.</param>
         /// <param name="cancellationToken">A cancellation token which can be used to cancel the action.  When a retry policy in use, also cancels any further retries.</param>
         [DebuggerStepThrough]
+        [Obsolete("This overload is deprecated and scheduled for removal in Polly v6.")]
         public Task ExecuteAsync(Func<CancellationToken, Task> action, IDictionary<string, object> contextData, CancellationToken cancellationToken)
         {
             return ExecuteAsync((ctx, ct) => action(ct), new Context(contextData), cancellationToken, DefaultContinueOnCapturedContext);
@@ -154,6 +162,7 @@ namespace Polly
         /// <param name="context">Context data that is passed to the exception policy.</param>
         /// <param name="cancellationToken">A cancellation token which can be used to cancel the action.  When a retry policy in use, also cancels any further retries.</param>
         [DebuggerStepThrough]
+        [Obsolete("This overload is deprecated and scheduled for removal in Polly v6.")]
         public Task ExecuteAsync(Func<CancellationToken, Task> action, Context context, CancellationToken cancellationToken)
         {
             return ExecuteAsync((ctx, ct) => action(ct), context, cancellationToken, DefaultContinueOnCapturedContext);
@@ -205,6 +214,7 @@ namespace Polly
         /// <param name="continueOnCapturedContext">Whether to continue on a captured synchronization context.</param>
         /// <exception cref="System.ArgumentNullException">contextData</exception>
         [DebuggerStepThrough]
+        [Obsolete("This overload is deprecated and scheduled for removal in Polly v6.")]
         public Task ExecuteAsync(Func<CancellationToken, Task> action, IDictionary<string, object> contextData, CancellationToken cancellationToken, bool continueOnCapturedContext)
         {
             return ExecuteAsync((ctx, ct) => action(ct), new Context(contextData), cancellationToken, continueOnCapturedContext);
@@ -219,6 +229,7 @@ namespace Polly
         /// <param name="cancellationToken">A cancellation token which can be used to cancel the action.  When a retry policy in use, also cancels any further retries.</param>
         /// <exception cref="System.InvalidOperationException">Please use asynchronous-defined policies when calling asynchronous ExecuteAsync (and similar) methods.</exception>
         [DebuggerStepThrough]
+        [Obsolete("This overload is deprecated and scheduled for removal in Polly v6.")]
         public Task ExecuteAsync(Func<CancellationToken, Task> action, Context context, CancellationToken cancellationToken, bool continueOnCapturedContext)
         {
             return ExecuteAsync((ctx, ct) => action(ct), context, cancellationToken, continueOnCapturedContext);
