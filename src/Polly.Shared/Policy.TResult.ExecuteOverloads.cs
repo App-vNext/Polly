@@ -34,6 +34,7 @@ namespace Polly
         /// </returns>
         /// <exception cref="System.ArgumentNullException">contextData</exception>
         [DebuggerStepThrough]
+        [Obsolete("This overload is deprecated and scheduled for removal in Polly v6.")]
         public TResult Execute(Func<TResult> action, IDictionary<string, object> contextData)
         {
             return Execute((ctx, ct) => action(), new Context(contextData), DefaultCancellationToken);
@@ -50,6 +51,7 @@ namespace Polly
         /// </returns>
         /// <exception cref="System.ArgumentNullException">contextData</exception>
         [DebuggerStepThrough]
+        [Obsolete("This overload is deprecated and scheduled for removal in Polly v6.")]
         public TResult Execute(Func<TResult> action, Context context)
         {
             return Execute((ctx, ct) => action(), context, DefaultCancellationToken);
@@ -108,6 +110,7 @@ namespace Polly
         /// <returns>The value returned by the action</returns>
         /// <exception cref="System.ArgumentNullException">contextData</exception>
         [DebuggerStepThrough]
+        [Obsolete("This overload is deprecated and scheduled for removal in Polly v6.")]
         public TResult Execute(Func<CancellationToken, TResult> action, IDictionary<string, object> contextData, CancellationToken cancellationToken)
         {
             return Execute((ctx, ct) => action(ct), new Context(contextData), cancellationToken);
@@ -121,6 +124,7 @@ namespace Polly
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>The value returned by the action</returns>
         [DebuggerStepThrough]
+        [Obsolete("This overload is deprecated and scheduled for removal in Polly v6.")]
         public TResult Execute(Func<CancellationToken, TResult> action, Context context, CancellationToken cancellationToken)
         {
             return Execute((ctx, ct) => action(ct), context, cancellationToken);
@@ -179,6 +183,7 @@ namespace Polly
         /// <exception cref="System.ArgumentNullException">contextData</exception>
         /// <returns>The captured result</returns>
         [DebuggerStepThrough]
+        [Obsolete("This overload is deprecated and scheduled for removal in Polly v6.")]
         public PolicyResult<TResult> ExecuteAndCapture(Func<TResult> action, IDictionary<string, object> contextData)
         {
             return ExecuteAndCapture((ctx, ct) => action(), new Context(contextData), DefaultCancellationToken);
@@ -192,6 +197,7 @@ namespace Polly
         /// <exception cref="System.ArgumentNullException">contextData</exception>
         /// <returns>The captured result</returns>
         [DebuggerStepThrough]
+        [Obsolete("This overload is deprecated and scheduled for removal in Polly v6.")]
         public PolicyResult<TResult> ExecuteAndCapture(Func<TResult> action, Context context)
         {
             return ExecuteAndCapture((ctx, ct) => action(), context, DefaultCancellationToken);
@@ -244,6 +250,7 @@ namespace Polly
         /// <returns>The captured result</returns>
         /// <exception cref="System.ArgumentNullException">contextData</exception>
         [DebuggerStepThrough]
+        [Obsolete("This overload is deprecated and scheduled for removal in Polly v6.")]
         public PolicyResult<TResult> ExecuteAndCapture(Func<CancellationToken, TResult> action, IDictionary<string, object> contextData, CancellationToken cancellationToken)
         {
             return ExecuteAndCapture((ctx, ct) => action(ct), new Context(contextData), cancellationToken);
@@ -257,6 +264,7 @@ namespace Polly
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>The captured result</returns>
         [DebuggerStepThrough]
+        [Obsolete("This overload is deprecated and scheduled for removal in Polly v6.")]
         public PolicyResult<TResult> ExecuteAndCapture(Func<CancellationToken, TResult> action, Context context, CancellationToken cancellationToken)
         {
             return ExecuteAndCapture((ctx, ct) => action(ct), context, cancellationToken);

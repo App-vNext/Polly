@@ -15,6 +15,10 @@
     <releaseNotes>
      v5.0 is a major release with significant new resilience policies: Timeout; Bulkhead Isolation; Fallback; Cache; and PolicyWrap.  See release notes back to v5.0.0 for full details.
 
+     5.9.0
+     ---------------------
+     - No functional changes. Per Semver, indicates deprecation of overloads intended to be removed in Polly v6.
+
      5.8.0
      ---------------------
      - Add a new onBreak overload that provides the prior state on a transition to an open state
