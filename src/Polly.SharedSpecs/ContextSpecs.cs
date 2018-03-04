@@ -30,6 +30,14 @@ namespace Polly.Specs
         }
 
         [Fact]
+        public void NoArgsCtor_should_assign_no_ExecutionKey()
+        {
+            Context context = new Context();
+
+            context.ExecutionKey.Should().BeNull();
+        }
+
+        [Fact]
         public void Should_assign_CorrelationId_when_accessed()
         {
             Context context = new Context("SomeKey");

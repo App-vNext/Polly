@@ -22,7 +22,10 @@ namespace Polly
             ExecutionKey = executionKey;
         }
 
-        internal Context()
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Context"/> class.
+        /// </summary>
+        public Context()
         {
         }
 
