@@ -14,12 +14,12 @@ namespace Polly
         private Guid? _correlationId;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Context"/> class, with the specified <paramref name="executionKey"/>.
+        /// Initializes a new instance of the <see cref="Context"/> class, with the specified <paramref name="operationKey"/>.
         /// </summary>
-        /// <param name="executionKey">The execution key.</param>
-        public Context(String executionKey)
+        /// <param name="operationKey">The operation key.</param>
+        public Context(String operationKey)
         {
-            ExecutionKey = executionKey;
+            OperationKey = operationKey;
         }
 
         /// <summary>
@@ -41,16 +41,23 @@ namespace Polly
 
         /// <summary>
         /// A key unique to the call site of the current execution. 
-        /// <remarks><see cref="Policy"/> instances are commonly reused across multiple call sites.  Set an ExecutionKey so that logging and metrics can distinguish usages of policy instances at different call sites.</remarks>
-        /// <remarks>The value is set by using the <see cref="Context(String)"/> constructor taking an executionKey parameter.</remarks>
+        /// <remarks>The value is set by using the <see cref="Context(String)"/> constructor taking an operationKey parameter.</remarks>
         /// </summary>
-        public String ExecutionKey { get; }
+        [Obsolete("This property is being renamed OperationKey, from Polly v6.")]
+        public String ExecutionKey => OperationKey;
+
+        /// <summary>
+        /// A key unique to the call site of the current execution. 
+        /// <remarks><see cref="Policy"/> instances are commonly reused across multiple call sites.  Set an OperationKey so that logging and metrics can distinguish usages of policy instances at different call sites.</remarks>
+        /// <remarks>The value is set by using the <see cref="Context(String)"/> constructor taking an operationKey parameter.</remarks>
+        /// </summary>
+        public String OperationKey { get; }
 
         /// <summary>
         /// A Guid guaranteed to be unique to each execution.
         /// <remarks>Acts as a correlation id so that events specific to a single execution can be identified in logging and telemetry.</remarks>
         /// </summary>
-        [Obsolete("This property is being renamed CorrelationId from Polly v6.")]
+        [Obsolete("This property is being renamed CorrelationId, from Polly v6.")]
         public Guid ExecutionGuid => CorrelationId;
 
         /// <summary>

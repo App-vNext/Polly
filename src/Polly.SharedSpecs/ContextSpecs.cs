@@ -10,31 +10,31 @@ namespace Polly.Specs
     public class ContextSpecs
     {
         [Fact]
-        public void Should_assign_ExecutionKey_from_constructor()
+        public void Should_assign_OperationKey_from_constructor()
         {
             Context context = new Context("SomeKey");
 
-            context.ExecutionKey.Should().Be("SomeKey");
+            context.OperationKey.Should().Be("SomeKey");
 
             context.Keys.Count.Should().Be(0);
         }
 
         [Fact]
-        public void Should_assign_ExecutionKey_and_context_data_from_constructor()
+        public void Should_assign_OperationKey_and_context_data_from_constructor()
         {
             Context context = new Context("SomeKey", new { key1 = "value1", key2 = "value2" }.AsDictionary());
 
-            context.ExecutionKey.Should().Be("SomeKey");
+            context.OperationKey.Should().Be("SomeKey");
             context["key1"].Should().Be("value1");
             context["key2"].Should().Be("value2");
         }
 
         [Fact]
-        public void NoArgsCtor_should_assign_no_ExecutionKey()
+        public void NoArgsCtor_should_assign_no_OperationKey()
         {
             Context context = new Context();
 
-            context.ExecutionKey.Should().BeNull();
+            context.OperationKey.Should().BeNull();
         }
 
         [Fact]

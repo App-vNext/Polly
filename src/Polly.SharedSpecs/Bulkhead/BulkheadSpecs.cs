@@ -54,8 +54,8 @@ namespace Polly.Specs.Bulkhead
         [Fact]
         public void Should_call_onBulkheadRejected_with_passed_context()
         {
-            string executionKey = Guid.NewGuid().ToString();
-            Context contextPassedToExecute = new Context(executionKey);
+            string operationKey = "SomeKey";
+            Context contextPassedToExecute = new Context(operationKey);
 
             Context contextPassedToOnRejected = null;
             Action<Context> onRejected = ctx => { contextPassedToOnRejected = ctx; };
@@ -81,7 +81,7 @@ namespace Polly.Specs.Bulkhead
             }
 
             contextPassedToOnRejected.Should().NotBeNull();
-            contextPassedToOnRejected.ExecutionKey.Should().Be(executionKey);
+            contextPassedToOnRejected.OperationKey.Should().Be(operationKey);
             contextPassedToOnRejected.Should().BeSameAs(contextPassedToExecute);
         }
 

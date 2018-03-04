@@ -1,5 +1,6 @@
 ## 5.9.0
-- No functional changes. Per Semver, indicates deprecation of overloads intended to be removed in Polly v6.
+- No functional changes. 
+- Per Semver, indicates deprecation of overloads and properties intended to be removed or renamed in Polly v6.
 
 ## 5.8.0
 - Add a new onBreak overload that provides the prior state on a transition to an open state

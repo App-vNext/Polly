@@ -40,7 +40,7 @@ namespace Polly.Specs.Caching
 
             SlidingTtl ttlStrategy = new SlidingTtl(ttl);
 
-            Ttl retrieved = ttlStrategy.GetTtl(new Context("someExecutionKey"), null);
+            Ttl retrieved = ttlStrategy.GetTtl(new Context("someOperationKey"), null);
             retrieved.Timespan.Should().Be(ttl);
             retrieved.SlidingExpiration.Should().BeTrue();
         }

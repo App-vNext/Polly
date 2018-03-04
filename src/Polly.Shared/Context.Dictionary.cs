@@ -21,13 +21,13 @@ namespace Polly
         private Dictionary<string, object> WrappedDictionary => wrappedDictionary ?? (wrappedDictionary = new Dictionary<string, object>());
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Context"/> class, with the specified <paramref name="executionKey" /> and the supplied <paramref name="contextData"/>.
+        /// Initializes a new instance of the <see cref="Context"/> class, with the specified <paramref name="operationKey" /> and the supplied <paramref name="contextData"/>.
         /// </summary>
-        /// <param name="executionKey">The execution key.</param>
+        /// <param name="operationKey">The operation key.</param>
         /// <param name="contextData">The context data.</param>
-        public Context(String executionKey, IDictionary<string, object> contextData) : this(contextData)
+        public Context(String operationKey, IDictionary<string, object> contextData) : this(contextData)
         {
-            ExecutionKey = executionKey;
+            OperationKey = operationKey;
         }
 
         internal Context(IDictionary<string, object> contextData) : this()
