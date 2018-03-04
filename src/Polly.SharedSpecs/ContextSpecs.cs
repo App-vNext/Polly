@@ -30,20 +30,20 @@ namespace Polly.Specs
         }
 
         [Fact]
-        public void Should_assign_ExecutionGuid_when_accessed()
+        public void Should_assign_CorrelationId_when_accessed()
         {
             Context context = new Context("SomeKey");
 
-            context.ExecutionGuid.Should().NotBeEmpty();
+            context.CorrelationId.Should().NotBeEmpty();
         }
 
         [Fact]
-        public void Should_return_consistent_ExecutionGuid()
+        public void Should_return_consistent_CorrelationId()
         {
             Context context = new Context("SomeKey");
 
-            Guid retrieved1 = context.ExecutionGuid;
-            Guid retrieved2 = context.ExecutionGuid;
+            Guid retrieved1 = context.CorrelationId;
+            Guid retrieved2 = context.CorrelationId;
 
             retrieved1.ShouldBeEquivalentTo(retrieved2);
         }

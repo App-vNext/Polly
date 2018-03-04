@@ -1,18 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
 using Polly.Wrap;
 
 namespace Polly
 {
     /// <summary>
-    /// Context that carries with a single execution through a Policy.   Commonly-used properties are directly on the class.  Backed by a dictionary of string key / object value pairs, to which user-defined values may be added.
+    /// Context that carries with a single execution through a Policy or PolicyWrap.   Commonly-used properties are directly on the class.  Backed by a dictionary of string key / object value pairs, to which user-defined values may be added.
     /// <remarks>Do not re-use an instance of <see cref="Context"/> across more than one execution.</remarks>
     /// </summary>
     public partial class Context
     {
         internal static readonly Context None = new Context();
 
-        private Guid? _executionGuid;
+        private Guid? _correlationId;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Context"/> class, with the specified <paramref name="executionKey"/>.
@@ -48,12 +47,19 @@ namespace Polly
         /// A Guid guaranteed to be unique to each execution.
         /// <remarks>Acts as a correlation id so that events specific to a single execution can be identified in logging and telemetry.</remarks>
         /// </summary>
-        public Guid ExecutionGuid
+        [Obsolete("This property is being renamed CorrelationId from Polly v6.")]
+        public Guid ExecutionGuid => CorrelationId;
+
+        /// <summary>
+        /// A Guid guaranteed to be unique to each execution.
+        /// <remarks>Acts as a correlation id so that events specific to a single execution can be identified in logging and telemetry.</remarks>
+        /// </summary>
+        public Guid CorrelationId
         {
             get
             {
-                if (!_executionGuid.HasValue) { _executionGuid = Guid.NewGuid(); }
-                return _executionGuid.Value;
+                if (!_correlationId.HasValue) { _correlationId = Guid.NewGuid(); }
+                return _correlationId.Value;
             }
         }
         
