@@ -320,7 +320,7 @@ namespace Polly.Specs.Fallback
                 .Handle<ArgumentNullException>()
                 .FallbackAsync(fallbackActionAsync, onFallbackAsync);
 
-            fallbackPolicy.Awaiting(async p => await p.ExecuteAsync(() => { throw new ArgumentNullException(); },
+            fallbackPolicy.Awaiting(async p => await p.ExecuteAsync(ctx => { throw new ArgumentNullException(); },
                 new { key1 = "value1", key2 = "value2" }.AsDictionary()))
                 .ShouldNotThrow();
 
@@ -342,7 +342,7 @@ namespace Polly.Specs.Fallback
                 .Handle<ArgumentNullException>()
                 .FallbackAsync(fallbackActionAsync, onFallbackAsync);
 
-            fallbackPolicy.Awaiting(async p => await p.ExecuteAndCaptureAsync(() => { throw new ArgumentNullException(); },
+            fallbackPolicy.Awaiting(async p => await p.ExecuteAndCaptureAsync(ctx => { throw new ArgumentNullException(); },
                 new { key1 = "value1", key2 = "value2" }.AsDictionary()))
                 .ShouldNotThrow();
 
@@ -366,11 +366,11 @@ namespace Polly.Specs.Fallback
                 .FallbackAsync(fallbackActionAsync, onFallbackAsync);
 
             fallbackPolicy.Awaiting(async 
-                p => await p.ExecuteAsync(() => { throw new ArgumentNullException(); }, new { key = "value1" }.AsDictionary()))
+                p => await p.ExecuteAsync(ctx => { throw new ArgumentNullException(); }, new { key = "value1" }.AsDictionary()))
                 .ShouldNotThrow();
 
             fallbackPolicy.Awaiting(async 
-                p => await p.ExecuteAsync(() => { throw new DivideByZeroException(); }, new { key = "value2" }.AsDictionary()))
+                p => await p.ExecuteAsync(ctx => { throw new DivideByZeroException(); }, new { key = "value2" }.AsDictionary()))
                 .ShouldNotThrow();
 
             contextData.Count.Should().Be(2);
@@ -414,7 +414,7 @@ namespace Polly.Specs.Fallback
                 .Handle<ArgumentNullException>()
                 .FallbackAsync(fallbackActionAsync, onFallbackAsync);
 
-            fallbackPolicy.Awaiting(async p => await p.ExecuteAsync(() => { throw new ArgumentNullException(); },
+            fallbackPolicy.Awaiting(async p => await p.ExecuteAsync(ctx => { throw new ArgumentNullException(); },
                     new { key1 = "value1", key2 = "value2" }.AsDictionary()))
                 .ShouldNotThrow();
 
@@ -436,7 +436,7 @@ namespace Polly.Specs.Fallback
                 .Handle<ArgumentNullException>()
                 .FallbackAsync(fallbackActionAsync, onFallbackAsync);
 
-            fallbackPolicy.Awaiting(async p => await p.ExecuteAndCaptureAsync(() => { throw new ArgumentNullException(); },
+            fallbackPolicy.Awaiting(async p => await p.ExecuteAndCaptureAsync(ctx => { throw new ArgumentNullException(); },
                     new { key1 = "value1", key2 = "value2" }.AsDictionary()))
                 .ShouldNotThrow();
 

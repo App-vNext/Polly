@@ -206,7 +206,7 @@ namespace Polly.Specs
                 .HandleResult(ResultPrimitive.Fault)
                 .RetryAsync((_, __, ___) => { });
 
-            policy.Awaiting(async p => await p.ExecuteAsync(() => Task.FromResult(ResultPrimitive.Good), (IDictionary<string, object>)null))
+            policy.Awaiting(async p => await p.ExecuteAsync(ctx => Task.FromResult(ResultPrimitive.Good), (IDictionary<string, object>)null))
                   .ShouldThrow<ArgumentNullException>();
         }
 
@@ -217,7 +217,7 @@ namespace Polly.Specs
                 .HandleResult(ResultPrimitive.Fault)
                 .RetryAsync((_, __, ___) => { });
 
-            policy.Awaiting(async p => await p.ExecuteAsync(() => Task.FromResult(ResultPrimitive.Good), (Context)null))
+            policy.Awaiting(async p => await p.ExecuteAsync(ctx => Task.FromResult(ResultPrimitive.Good), (Context)null))
                   .ShouldThrow<ArgumentNullException>().And
                   .ParamName.Should().Be("context");
         }
@@ -229,7 +229,7 @@ namespace Polly.Specs
                 .HandleResult(ResultPrimitive.Fault)
                 .RetryAsync((_, __, ___) => { });
 
-            policy.Awaiting(async p => await p.ExecuteAndCaptureAsync(() => Task.FromResult(ResultPrimitive.Good), (Context)null))
+            policy.Awaiting(async p => await p.ExecuteAndCaptureAsync(ctx => Task.FromResult(ResultPrimitive.Good), (Context)null))
                   .ShouldThrow<ArgumentNullException>().And
                   .ParamName.Should().Be("context");
         }
@@ -255,7 +255,7 @@ namespace Polly.Specs
                 .HandleResult(ResultPrimitive.Fault)
                 .RetryAsync((_, __, ___) => { });
 
-            policy.Awaiting(async p => await p.ExecuteAndCaptureAsync(() => Task.FromResult(ResultPrimitive.Good), (Context)null))
+            policy.Awaiting(async p => await p.ExecuteAndCaptureAsync(ctx => Task.FromResult(ResultPrimitive.Good), (Context)null))
                   .ShouldThrow<ArgumentNullException>().And
                   .ParamName.Should().Be("context");
         }

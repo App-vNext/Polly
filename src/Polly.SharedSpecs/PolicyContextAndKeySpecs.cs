@@ -126,7 +126,7 @@ namespace Polly.Specs
             var retry = Policy.Handle<Exception>().Retry(1, onRetry);
 
             bool firstExecution = true;
-            retry.Execute(() =>
+            retry.Execute(ctx =>
             {
                 if (firstExecution)
                 {
@@ -171,7 +171,7 @@ namespace Polly.Specs
             var retry = Policy.Handle<Exception>().Retry(1, onRetry);
 
             bool firstExecution = true;
-            retry.Execute<int>(() =>
+            retry.Execute<int>(ctx =>
             {
                 if (firstExecution)
                 {
@@ -307,7 +307,7 @@ namespace Polly.Specs
             var retry = Policy.HandleResult(ResultPrimitive.Fault).Retry(1, onRetry);
 
             bool firstExecution = true;
-            retry.Execute(() =>
+            retry.Execute(ctx =>
             {
                 if (firstExecution)
                 {

@@ -76,7 +76,7 @@ namespace Polly.Specs.Bulkhead
 
                 Within(shimTimeSpan, () => bulkhead.BulkheadAvailableCount.Should().Be(0)); // Time for the other thread to kick up and take the bulkhead.
 
-                bulkhead.Awaiting(async b => await b.ExecuteAsync(() => Task.FromResult(1), contextPassedToExecute)).ShouldThrow<BulkheadRejectedException>();
+                bulkhead.Awaiting(async b => await b.ExecuteAsync(ctx => Task.FromResult(1), contextPassedToExecute)).ShouldThrow<BulkheadRejectedException>();
 
                 cancellationSource.Cancel();
                 tcs.SetCanceled();

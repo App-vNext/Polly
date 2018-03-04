@@ -417,7 +417,7 @@ namespace Polly.Specs.Timeout
             TimeSpan timeout = TimeSpan.FromMilliseconds(250);
             var policy = Policy.Timeout(timeout, TimeoutStrategy.Pessimistic, onTimeout);
 
-            policy.Invoking(p => p.Execute(() => SystemClock.Sleep(TimeSpan.FromSeconds(3), CancellationToken.None), contextPassedToExecute))
+            policy.Invoking(p => p.Execute(ct => SystemClock.Sleep(TimeSpan.FromSeconds(3), CancellationToken.None), contextPassedToExecute))
                 .ShouldThrow<TimeoutRejectedException>();
 
             contextPassedToOnTimeout.Should().NotBeNull();
@@ -459,7 +459,7 @@ namespace Polly.Specs.Timeout
             // Supply a programatically-controlled timeout, via the execution context.
             Context context = new Context("SomeOperationKey") {["timeout"] = TimeSpan.FromMilliseconds(25* programaticallyControlledDelay) };
 
-            policy.Invoking(p => p.Execute(() => SystemClock.Sleep(TimeSpan.FromSeconds(3), CancellationToken.None), context))
+            policy.Invoking(p => p.Execute(ct => SystemClock.Sleep(TimeSpan.FromSeconds(3), CancellationToken.None), context))
                 .ShouldThrow<TimeoutRejectedException>();
 
             timeoutPassedToOnTimeout.Should().Be(timeoutProvider(context));
@@ -546,7 +546,7 @@ namespace Polly.Specs.Timeout
             var policy = Policy.Timeout(timeout, TimeoutStrategy.Optimistic, onTimeout);
             var userCancellationToken = CancellationToken.None;
 
-            policy.Invoking(p => p.Execute(ct => SystemClock.Sleep(TimeSpan.FromSeconds(3), ct), contextPassedToExecute, userCancellationToken))
+            policy.Invoking(p => p.Execute((ctx, ct) => SystemClock.Sleep(TimeSpan.FromSeconds(3), ct), contextPassedToExecute, userCancellationToken))
                 .ShouldThrow<TimeoutRejectedException>();
 
             contextPassedToOnTimeout.Should().NotBeNull();
@@ -594,7 +594,7 @@ namespace Polly.Specs.Timeout
                 ["timeout"] = TimeSpan.FromMilliseconds(25*programaticallyControlledDelay)
             };
 
-            policy.Invoking(p => p.Execute(ct => SystemClock.Sleep(TimeSpan.FromSeconds(3), ct), context, userCancellationToken))
+            policy.Invoking(p => p.Execute((ctx, ct) => SystemClock.Sleep(TimeSpan.FromSeconds(3), ct), context, userCancellationToken))
                 .ShouldThrow<TimeoutRejectedException>();
 
             timeoutPassedToOnTimeout.Should().Be(timeoutProvider(context));

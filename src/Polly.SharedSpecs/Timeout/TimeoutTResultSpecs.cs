@@ -463,7 +463,7 @@ namespace Polly.Specs.Timeout
             TimeSpan timeout = TimeSpan.FromMilliseconds(250);
             var policy = Policy.Timeout<ResultPrimitive>(timeout, TimeoutStrategy.Pessimistic, onTimeout);
 
-            policy.Invoking(p => p.Execute(() =>
+            policy.Invoking(p => p.Execute(ctx =>
                 {
                     SystemClock.Sleep(TimeSpan.FromSeconds(3), CancellationToken.None);
                     return ResultPrimitive.WhateverButTooLate;
@@ -515,7 +515,7 @@ namespace Polly.Specs.Timeout
             // Supply a programatically-controlled timeout, via the execution context.
             Context context = new Context("SomeOperationKey") { ["timeout"] = TimeSpan.FromMilliseconds(25 * programaticallyControlledDelay) };
 
-            policy.Invoking(p => p.Execute(() =>
+            policy.Invoking(p => p.Execute(ctx =>
                 {
                     SystemClock.Sleep(TimeSpan.FromSeconds(3), CancellationToken.None);
                     return ResultPrimitive.WhateverButTooLate;
@@ -615,7 +615,7 @@ namespace Polly.Specs.Timeout
             var policy = Policy.Timeout<ResultPrimitive>(timeout, TimeoutStrategy.Optimistic, onTimeout);
             var userCancellationToken = CancellationToken.None;
 
-            policy.Invoking(p => p.Execute(ct =>
+            policy.Invoking(p => p.Execute((ctx, ct) =>
                 {
                     SystemClock.Sleep(TimeSpan.FromSeconds(3), ct);
                     return ResultPrimitive.WhateverButTooLate;
@@ -670,7 +670,7 @@ namespace Polly.Specs.Timeout
                 ["timeout"] = TimeSpan.FromMilliseconds(25 * programaticallyControlledDelay)
             };
 
-            policy.Invoking(p => p.Execute(ct =>
+            policy.Invoking(p => p.Execute((ctx, ct) =>
                 {
                     SystemClock.Sleep(TimeSpan.FromSeconds(3), ct);
                     return ResultPrimitive.WhateverButTooLate;

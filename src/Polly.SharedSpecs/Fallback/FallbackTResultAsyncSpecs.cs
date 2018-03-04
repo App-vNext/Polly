@@ -355,7 +355,7 @@ namespace Polly.Specs.Fallback
                 .HandleResult(ResultPrimitive.Fault)
                 .FallbackAsync(fallbackAction, onFallbackAsync);
 
-            fallbackPolicy.ExecuteAsync(() => { return Task.FromResult(ResultPrimitive.Fault); },
+            fallbackPolicy.ExecuteAsync(ctx => { return Task.FromResult(ResultPrimitive.Fault); },
                 new { key1 = "value1", key2 = "value2" }.AsDictionary())
                 .Result
                 .Should().Be(ResultPrimitive.Substitute);
@@ -401,11 +401,11 @@ namespace Polly.Specs.Fallback
                 .OrResult(ResultPrimitive.FaultAgain)
                 .FallbackAsync(fallbackAction, onFallbackAsync);
 
-            fallbackPolicy.ExecuteAsync(() => { return Task.FromResult(ResultPrimitive.Fault); }, new { key = "value1" }.AsDictionary())
+            fallbackPolicy.ExecuteAsync(ctx => { return Task.FromResult(ResultPrimitive.Fault); }, new { key = "value1" }.AsDictionary())
                 .Result
                 .Should().Be(ResultPrimitive.Substitute);
 
-            fallbackPolicy.ExecuteAsync(() => { return Task.FromResult(ResultPrimitive.FaultAgain); }, new { key = "value2" }.AsDictionary())
+            fallbackPolicy.ExecuteAsync(ctx => { return Task.FromResult(ResultPrimitive.FaultAgain); }, new { key = "value2" }.AsDictionary())
                 .Result
                 .Should().Be(ResultPrimitive.Substitute);
 
@@ -450,7 +450,7 @@ namespace Polly.Specs.Fallback
                 .HandleResult(ResultPrimitive.Fault)
                 .FallbackAsync(fallbackActionAsync, onFallbackAsync);
 
-            fallbackPolicy.ExecuteAsync(() => { return Task.FromResult(ResultPrimitive.Fault); },
+            fallbackPolicy.ExecuteAsync(ctx => { return Task.FromResult(ResultPrimitive.Fault); },
                     new { key1 = "value1", key2 = "value2" }.AsDictionary())
                 .Result
                 .Should().Be(ResultPrimitive.Substitute);
@@ -473,7 +473,7 @@ namespace Polly.Specs.Fallback
                 .Handle<ArgumentNullException>()
                 .FallbackAsync(fallbackActionAsync, onFallbackAsync);
 
-            fallbackPolicy.Awaiting(async p => await p.ExecuteAndCaptureAsync(() => { throw new ArgumentNullException(); },
+            fallbackPolicy.Awaiting(async p => await p.ExecuteAndCaptureAsync(ctx => { throw new ArgumentNullException(); },
                     new { key1 = "value1", key2 = "value2" }.AsDictionary()))
                 .ShouldNotThrow();
 

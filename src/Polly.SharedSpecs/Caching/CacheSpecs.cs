@@ -58,7 +58,7 @@ namespace Polly.Specs.Caching
 
             bool delegateExecuted = false;
 
-            cache.Execute(() =>
+            cache.Execute(ctx =>
             {
                 delegateExecuted = true;
                 return valueToReturnFromExecution;
@@ -79,7 +79,7 @@ namespace Polly.Specs.Caching
 
             stubCacheProvider.Get(operationKey).Should().BeNull();
 
-            cache.Execute(() => { return valueToReturn; }, new Context(operationKey)).Should().Be(valueToReturn);
+            cache.Execute(ctx => { return valueToReturn; }, new Context(operationKey)).Should().Be(valueToReturn);
 
             stubCacheProvider.Get(operationKey).Should().Be(valueToReturn);
         }
@@ -97,7 +97,7 @@ namespace Polly.Specs.Caching
             stubCacheProvider.Get(operationKey).Should().BeNull();
 
             int delegateInvocations = 0;
-            Func<string> func = () =>
+            Func<Context, string> func = ctx =>
             {
                 delegateInvocations++;
                 return valueToReturn;
@@ -136,7 +136,7 @@ namespace Polly.Specs.Caching
 
             stubCacheProvider.Get(operationKey).Should().BeNull();
 
-            cache.Execute(() => { return valueToReturn; }, new Context(operationKey)).Should().Be(valueToReturn);
+            cache.Execute(ctx => { return valueToReturn; }, new Context(operationKey)).Should().Be(valueToReturn);
 
             stubCacheProvider.Get(operationKey).Should().Be(null);
         }
@@ -150,7 +150,7 @@ namespace Polly.Specs.Caching
             CachePolicy cache = Policy.Cache(new StubCacheProvider(), TimeSpan.MaxValue);
 
             int delegateInvocations = 0;
-            Func<string> func = () =>
+            Func<Context, string> func = ctx =>
             {
                 delegateInvocations++;
                 return valueToReturn;
@@ -178,7 +178,7 @@ namespace Polly.Specs.Caching
             stubCacheProvider.Put("person2", person2, new Ttl(TimeSpan.MaxValue));
 
             bool funcExecuted = false;
-            Func<object> func = () => { funcExecuted = true; return new object(); };
+            Func<Context, object> func = ctx => { funcExecuted = true; return new object(); };
 
             cache.Execute(func, new Context("person", new { id = "1" }.AsDictionary())).Should().BeSameAs(person1);
             funcExecuted.Should().BeFalse();
@@ -203,7 +203,7 @@ namespace Polly.Specs.Caching
             stubCacheProvider.Put("person2", person2, new Ttl(TimeSpan.MaxValue));
 
             bool funcExecuted = false;
-            Func<object> func = () => { funcExecuted = true; return new object(); };
+            Func<Context, object> func = ctx => { funcExecuted = true; return new object(); };
 
             cache.Execute(func, new Context("person", new { id = "1" }.AsDictionary())).Should().BeSameAs(person1);
             funcExecuted.Should().BeFalse();
@@ -232,7 +232,7 @@ namespace Polly.Specs.Caching
 
             bool delegateExecuted = false;
 
-            wrap.Execute(() =>
+            wrap.Execute(ctx =>
             {
                 delegateExecuted = true;
                 return valueToReturnFromExecution;
@@ -258,7 +258,7 @@ namespace Polly.Specs.Caching
 
             bool delegateExecuted = false;
 
-            wrap.Execute(() =>
+            wrap.Execute(ctx =>
             {
                 delegateExecuted = true;
                 return valueToReturnFromExecution;
@@ -284,7 +284,7 @@ namespace Polly.Specs.Caching
 
             bool delegateExecuted = false;
 
-            wrap.Execute(() =>
+            wrap.Execute(ctx =>
             {
                 delegateExecuted = true;
                 return valueToReturnFromExecution;
@@ -327,7 +327,7 @@ namespace Polly.Specs.Caching
             CachePolicy cache = Policy.Cache(new StubCacheProvider(), TimeSpan.MaxValue);
 
             int delegateInvocations = 0;
-            Action action = () => { delegateInvocations++; };
+            Action<Context> action = ctx => { delegateInvocations++; };
 
             cache.Execute(action, new Context(operationKey));
             delegateInvocations.Should().Be(1);
@@ -351,7 +351,7 @@ namespace Polly.Specs.Caching
             CancellationTokenSource tokenSource = new CancellationTokenSource();
 
             int delegateInvocations = 0;
-            Func<CancellationToken, string> func = ct =>
+            Func<Context, CancellationToken, string> func = (ctx, ct) =>
             {
                 // delegate does not observe cancellation token; test is whether CacheEngine does.
                 delegateInvocations++;
@@ -379,7 +379,7 @@ namespace Polly.Specs.Caching
 
             CancellationTokenSource tokenSource = new CancellationTokenSource();
 
-            Func<CancellationToken, string> func = ct =>
+            Func<Context, CancellationToken, string> func = (ctx, ct) =>
             {
                 tokenSource.Cancel(); // simulate cancellation raised during delegate execution
                 ct.ThrowIfCancellationRequested();
@@ -418,7 +418,7 @@ namespace Polly.Specs.Caching
 
 
             // Even though value is in cache, get will error; so value is returned from execution.
-            cache.Execute(() =>
+            cache.Execute(ctx =>
                 {
                     delegateExecuted = true;
                     return valueToReturnFromExecution;
@@ -447,7 +447,7 @@ namespace Polly.Specs.Caching
 
             stubCacheProvider.Get(operationKey).Should().BeNull();
 
-            cache.Execute(() => { return valueToReturn; }, new Context(operationKey)).Should().Be(valueToReturn);
+            cache.Execute(ctx => { return valueToReturn; }, new Context(operationKey)).Should().Be(valueToReturn);
 
             //  error should be captured by onError delegate.
             exceptionFromCacheProvider.Should().Be(ex);
@@ -478,7 +478,7 @@ namespace Polly.Specs.Caching
             stubCacheProvider.Put(operationKey, valueToReturnFromCache, new Ttl(TimeSpan.MaxValue));
 
             bool delegateExecuted = false;
-            cache.Execute(() =>
+            cache.Execute(ctx =>
                 {
                     delegateExecuted = true;
                     return valueToReturnFromExecution;
@@ -512,7 +512,7 @@ namespace Polly.Specs.Caching
             CachePolicy cache = Policy.Cache(stubCacheProvider, new RelativeTtl(TimeSpan.MaxValue), DefaultCacheKeyStrategy.Instance, emptyDelegate, onCacheMiss, onCachePut, noErrorHandling, noErrorHandling);
 
             stubCacheProvider.Get(operationKey).Should().BeNull();
-            cache.Execute(() => { return valueToReturn; }, contextToExecute).Should().Be(valueToReturn);
+            cache.Execute(ctx => { return valueToReturn; }, contextToExecute).Should().Be(valueToReturn);
             stubCacheProvider.Get(operationKey).Should().Be(valueToReturn);
 
             contextPassedToOnCacheMiss.Should().BeSameAs(contextToExecute);
@@ -544,7 +544,7 @@ namespace Polly.Specs.Caching
             CachePolicy cache = Policy.Cache(stubCacheProvider, new RelativeTtl(TimeSpan.MaxValue), DefaultCacheKeyStrategy.Instance, emptyDelegate, onCacheMiss, onCachePut, noErrorHandling, noErrorHandling);
 
             stubCacheProvider.Get(operationKey).Should().BeNull();
-            cache.Execute(() => { return valueToReturn; }, contextToExecute).Should().Be(valueToReturn);
+            cache.Execute(ctx => { return valueToReturn; }, contextToExecute).Should().Be(valueToReturn);
 
             contextPassedToOnCacheMiss.Should().BeSameAs(contextToExecute);
             keyPassedToOnCacheMiss.Should().Be(operationKey);

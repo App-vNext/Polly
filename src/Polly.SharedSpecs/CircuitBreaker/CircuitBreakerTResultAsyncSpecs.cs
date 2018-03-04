@@ -1233,7 +1233,7 @@ namespace Polly.Specs.CircuitBreaker
             breaker.CircuitState.Should().Be(CircuitState.HalfOpen);
 
             // first call after duration should invoke onReset, with context
-            await breaker.ExecuteAsync(() => Task.FromResult(ResultPrimitive.Good), new { key1 = "value1", key2 = "value2" }.AsDictionary()).ConfigureAwait(false);
+            await breaker.ExecuteAsync(ctx => Task.FromResult(ResultPrimitive.Good), new { key1 = "value1", key2 = "value2" }.AsDictionary()).ConfigureAwait(false);
 
             contextData.Should()
                 .ContainKeys("key1", "key2").And
@@ -1296,7 +1296,7 @@ namespace Polly.Specs.CircuitBreaker
             // but not yet reset
 
             // first call after duration is successful, so circuit should reset
-            await breaker.ExecuteAsync(() => Task.FromResult(ResultPrimitive.Good), new { key = "new_value" }.AsDictionary()).ConfigureAwait(false);
+            await breaker.ExecuteAsync(ctx => Task.FromResult(ResultPrimitive.Good), new { key = "new_value" }.AsDictionary()).ConfigureAwait(false);
             breaker.CircuitState.Should().Be(CircuitState.Closed);
             contextValue.Should().Be("new_value");
         }

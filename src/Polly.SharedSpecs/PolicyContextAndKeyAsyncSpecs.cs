@@ -127,7 +127,7 @@ namespace Polly.Specs
             var retry = Policy.Handle<Exception>().RetryAsync(1, onRetry);
 
             bool firstExecution = true;
-            await retry.ExecuteAsync(async () =>
+            await retry.ExecuteAsync(async ctx =>
             {
                 await TaskHelper.EmptyTask.ConfigureAwait(false);
                 if (firstExecution)
@@ -174,7 +174,7 @@ namespace Polly.Specs
             var retry = Policy.Handle<Exception>().RetryAsync(1, onRetry);
 
             bool firstExecution = true;
-            await retry.ExecuteAsync<int>(async () =>
+            await retry.ExecuteAsync<int>(async ctx =>
             {
                 await TaskHelper.EmptyTask.ConfigureAwait(false);
                 if (firstExecution)
@@ -310,7 +310,7 @@ namespace Polly.Specs
             var retry = Policy.HandleResult(ResultPrimitive.Fault).RetryAsync(1, onRetry);
 
             bool firstExecution = true;
-            await retry.ExecuteAsync(async () =>
+            await retry.ExecuteAsync(async ctx =>
             {
                 await TaskHelper.EmptyTask.ConfigureAwait(false);
                 if (firstExecution)
