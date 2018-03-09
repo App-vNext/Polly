@@ -111,7 +111,7 @@ if(-Not $SkipToolPackageRestore.IsPresent)
     # Install just Cake if missing config
     else
     {
-        $NuGetOutput = Invoke-Expression "&`"$NUGET_EXE`" install Cake -ExcludeVersion"
+        $NuGetOutput = Invoke-Expression "&`"$NUGET_EXE`" install Cake -Version 0.25.0 -ExcludeVersion" # Pin Cake version to 0.25.0; see https://github.com/App-vNext/Polly/issues/416 
         Write-Verbose ($NuGetOutput | Out-String)
     }
     Pop-Location
