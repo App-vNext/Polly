@@ -276,6 +276,8 @@ Policy
   );
 ```
 
+For `WaitAndRetry` policies handling Http Status Code 429 Retry-After, see [wiki documentation](https://github.com/App-vNext/Polly/wiki/Retry#retryafter-when-the-response-specifies-how-long-to-wait).
+
 ### Wait and retry forever (until succeeds) 
 
 ```csharp
@@ -976,6 +978,8 @@ When we discover an interesting write-up on Polly, we'll add it to this list. If
 
 ## Blog posts
 
+* [Resilient network connectivity in Xamarin Forms](https://xamarinhelp.com/resilient-network-connectivity-xamarin-forms/) by [Adam Pedley](http://xamarinhelp.com/contact/).
+* [Policy recommendations for Azure Cognitive Services](http://www.thepollyproject.org/2018/03/06/policy-recommendations-for-azure-cognitive-services/) - by [Joel Hulen](http://www.thepollyproject.org/author/joel/)
 * [Using Polly with F# async workflows](http://blog.ploeh.dk/2017/05/30/using-polly-with-f-async-workflows/) - by [Mark Seemann](http://blog.ploeh.dk/about/)
 * [Azure SQL transient errors](https://hackernoon.com/azure-sql-transient-errors-7625ad6e0a06) - by [Mattias Karlsson](https://hackernoon.com/@devlead)
 * [Polly series on No Dogma blog](http://nodogmablog.bryanhogan.net/tag/polly/) - by [Bryan Hogan](https://twitter.com/bryanjhogan)
