@@ -6,7 +6,7 @@ namespace Polly
 {
     /// <summary>
     /// Context that carries with a single execution through a Policy.   Commonly-used properties are directly on the class.  Backed by a dictionary of string key / object value pairs, to which user-defined values may be added.
-    /// <remarks>Do not re-use an instance of <see cref="Context"/> across more than one execution.</remarks>
+    /// <remarks>Do not re-use an instance of <see cref="Context"/> across more than one call through .Execute(...) or .ExecuteAsync(...).</remarks>
     /// </summary>
     public partial class Context
     {
