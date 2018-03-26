@@ -76,7 +76,7 @@ namespace Polly
         /// <returns>The policy instance.</returns>
         public static TimeoutPolicy Timeout(TimeSpan timeout)
         {
-            if (timeout <= TimeSpan.Zero) throw new ArgumentOutOfRangeException(nameof(timeout));
+            ValidateTimeoutIsInRange(timeout);
             Action<Context, TimeSpan, Task> doNothing = (_, __, ___) => { };
 
             return Timeout(ctx => timeout, TimeoutStrategy.Optimistic, doNothing);
@@ -91,7 +91,7 @@ namespace Polly
         /// <exception cref="System.ArgumentOutOfRangeException"></exception>
         public static TimeoutPolicy Timeout(TimeSpan timeout, TimeoutStrategy timeoutStrategy)
         {
-            if (timeout <= TimeSpan.Zero) throw new ArgumentOutOfRangeException(nameof(timeout));
+            ValidateTimeoutIsInRange(timeout);
             Action<Context, TimeSpan, Task> doNothing = (_, __, ___) => { };
 
             return Timeout(ctx => timeout, timeoutStrategy, doNothing);
@@ -108,7 +108,7 @@ namespace Polly
         /// <exception cref="System.ArgumentNullException">onTimeout</exception>
         public static TimeoutPolicy Timeout(TimeSpan timeout, Action<Context, TimeSpan, Task> onTimeout)
         {
-            if (timeout <= TimeSpan.Zero) throw new ArgumentOutOfRangeException(nameof(timeout));
+            ValidateTimeoutIsInRange(timeout);
 
             return Timeout(ctx => timeout, TimeoutStrategy.Optimistic, onTimeout);
         }
@@ -125,9 +125,15 @@ namespace Polly
         /// <exception cref="System.ArgumentNullException">onTimeout</exception>
         public static TimeoutPolicy Timeout(TimeSpan timeout, TimeoutStrategy timeoutStrategy, Action<Context, TimeSpan, Task> onTimeout)
         {
-            if (timeout <= TimeSpan.Zero) throw new ArgumentOutOfRangeException(nameof(timeout));
+            ValidateTimeoutIsInRange(timeout);
 
             return Timeout(ctx => timeout, timeoutStrategy, onTimeout);
+        }
+
+        private static void ValidateTimeoutIsInRange(TimeSpan timeout)
+        {
+            if (timeout <= TimeSpan.Zero && timeout != System.Threading.Timeout.InfiniteTimeSpan)
+                throw new ArgumentOutOfRangeException(nameof(timeout));
         }
 
         /// <summary>
