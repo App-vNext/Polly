@@ -133,7 +133,8 @@ namespace Polly
         private static void ValidateTimeoutIsInRange(TimeSpan timeout)
         {
             if (timeout <= TimeSpan.Zero && timeout != System.Threading.Timeout.InfiniteTimeSpan)
-                throw new ArgumentOutOfRangeException(nameof(timeout));
+                throw new ArgumentOutOfRangeException(nameof(timeout), timeout, 
+                    $"{nameof(timeout)} must be a positive TimeSpan (or Timeout.InfiniteTimeSpan to indicate no timeout)");
         }
 
         /// <summary>
