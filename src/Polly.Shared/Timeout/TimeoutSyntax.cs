@@ -77,7 +77,7 @@ namespace Polly
         /// <exception cref="System.ArgumentOutOfRangeException">timeout;Value must be a positive TimeSpan (or Timeout.InfiniteTimeSpan to indicate no timeout)</exception>
         public static TimeoutPolicy Timeout(TimeSpan timeout)
         {
-            ValidateTimeoutIsInRange(timeout);
+            TimeoutValidator.ValidateTimeoutIsInRange(timeout);
             Action<Context, TimeSpan, Task> doNothing = (_, __, ___) => { };
 
             return Timeout(ctx => timeout, TimeoutStrategy.Optimistic, doNothing);
@@ -92,7 +92,7 @@ namespace Polly
         /// <exception cref="System.ArgumentOutOfRangeException">timeout;Value must be a positive TimeSpan (or Timeout.InfiniteTimeSpan to indicate no timeout)</exception>
         public static TimeoutPolicy Timeout(TimeSpan timeout, TimeoutStrategy timeoutStrategy)
         {
-            ValidateTimeoutIsInRange(timeout);
+            TimeoutValidator.ValidateTimeoutIsInRange(timeout);
             Action<Context, TimeSpan, Task> doNothing = (_, __, ___) => { };
 
             return Timeout(ctx => timeout, timeoutStrategy, doNothing);
@@ -109,7 +109,7 @@ namespace Polly
         /// <exception cref="System.ArgumentNullException">onTimeout</exception>
         public static TimeoutPolicy Timeout(TimeSpan timeout, Action<Context, TimeSpan, Task> onTimeout)
         {
-            ValidateTimeoutIsInRange(timeout);
+            TimeoutValidator.ValidateTimeoutIsInRange(timeout);
 
             return Timeout(ctx => timeout, TimeoutStrategy.Optimistic, onTimeout);
         }
@@ -126,7 +126,7 @@ namespace Polly
         /// <exception cref="System.ArgumentNullException">onTimeout</exception>
         public static TimeoutPolicy Timeout(TimeSpan timeout, TimeoutStrategy timeoutStrategy, Action<Context, TimeSpan, Task> onTimeout)
         {
-            ValidateTimeoutIsInRange(timeout);
+            TimeoutValidator.ValidateTimeoutIsInRange(timeout);
 
             return Timeout(ctx => timeout, timeoutStrategy, onTimeout);
         }

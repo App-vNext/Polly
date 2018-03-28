@@ -1,9 +1,10 @@
 ﻿using System;
 
-namespace Polly
+namespace Polly.Utilities
 {
-    public partial class Policy
+    internal static class TimeoutValidator
     {
+
 #if NET40
         internal static readonly TimeSpan InfiniteTimeSpan = new TimeSpan(0, 0, 0, 0, -1);
 #else
@@ -16,5 +17,6 @@ namespace Polly
                 throw new ArgumentOutOfRangeException(nameof(timeout), timeout,
                     $"{nameof(timeout)} must be a positive TimeSpan (or Timeout.InfiniteTimeSpan to indicate no timeout)");
         }
+
     }
 }

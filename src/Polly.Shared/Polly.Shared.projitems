@@ -135,7 +135,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Timeout\ITimeoutPolicy.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Timeout\TimeoutSyntax.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Timeout\TimeoutSyntaxAsync.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Timeout\TimeoutSyntaxBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Timeout\TimeoutTResultSyntax.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Timeout\TimeoutTResultSyntaxAsync.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Timeout\TimeoutEngine.cs" />
@@ -144,6 +143,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Timeout\TimeoutPolicyAsync.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Timeout\TimeoutRejectedException.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Timeout\TimeoutStrategy.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\TimeoutValidator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\AsyncSemaphoreExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\EmptyStruct.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\ExceptionDispatchInfo.cs" />
