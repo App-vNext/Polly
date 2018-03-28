@@ -135,6 +135,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Timeout\ITimeoutPolicy.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Timeout\TimeoutSyntax.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Timeout\TimeoutSyntaxAsync.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Timeout\TimeoutSyntaxBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Timeout\TimeoutTResultSyntax.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Timeout\TimeoutTResultSyntaxAsync.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Timeout\TimeoutEngine.cs" />

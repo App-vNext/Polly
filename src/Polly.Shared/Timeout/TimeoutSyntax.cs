@@ -1,7 +1,7 @@
-﻿using System;
-using System.Threading.Tasks;
-using Polly.Timeout;
+﻿using Polly.Timeout;
 using Polly.Utilities;
+using System;
+using System.Threading.Tasks;
 
 namespace Polly
 {
@@ -74,6 +74,7 @@ namespace Polly
         /// </summary>
         /// <param name="timeout">The timeout.</param>
         /// <returns>The policy instance.</returns>
+        /// <exception cref="System.ArgumentOutOfRangeException">timeout;Value must be a positive TimeSpan (or Timeout.InfiniteTimeSpan to indicate no timeout)</exception>
         public static TimeoutPolicy Timeout(TimeSpan timeout)
         {
             ValidateTimeoutIsInRange(timeout);
@@ -88,7 +89,7 @@ namespace Polly
         /// <param name="timeout">The timeout.</param>
         /// <param name="timeoutStrategy">The timeout strategy.</param>
         /// <returns>The policy instance.</returns>
-        /// <exception cref="System.ArgumentOutOfRangeException"></exception>
+        /// <exception cref="System.ArgumentOutOfRangeException">timeout;Value must be a positive TimeSpan (or Timeout.InfiniteTimeSpan to indicate no timeout)</exception>
         public static TimeoutPolicy Timeout(TimeSpan timeout, TimeoutStrategy timeoutStrategy)
         {
             ValidateTimeoutIsInRange(timeout);
@@ -104,7 +105,7 @@ namespace Polly
         /// <param name="onTimeout">An action to call on timeout, passing the execution context, the timeout applied, and a <see cref="Task"/> capturing the abandoned, timed-out action. 
         /// <remarks>The Task parameter will be null if the executed action responded co-operatively to cancellation before the policy timed it out.</remarks></param>
         /// <returns>The policy instance.</returns>
-        /// <exception cref="System.ArgumentOutOfRangeException">timeout;Value must be greater than zero.</exception>
+        /// <exception cref="System.ArgumentOutOfRangeException">timeout;Value must be a positive TimeSpan (or Timeout.InfiniteTimeSpan to indicate no timeout)</exception>
         /// <exception cref="System.ArgumentNullException">onTimeout</exception>
         public static TimeoutPolicy Timeout(TimeSpan timeout, Action<Context, TimeSpan, Task> onTimeout)
         {
@@ -121,20 +122,13 @@ namespace Polly
         /// <param name="onTimeout">An action to call on timeout, passing the execution context, the timeout applied, and a <see cref="Task" /> capturing the abandoned, timed-out action.
         /// <remarks>The Task parameter will be null if the executed action responded co-operatively to cancellation before the policy timed it out.</remarks></param>
         /// <returns>The policy instance.</returns>
-        /// <exception cref="System.ArgumentOutOfRangeException">timeout;Value must be greater than zero.</exception>
+        /// <exception cref="System.ArgumentOutOfRangeException">timeout;Value must be a positive TimeSpan (or Timeout.InfiniteTimeSpan to indicate no timeout)</exception>
         /// <exception cref="System.ArgumentNullException">onTimeout</exception>
         public static TimeoutPolicy Timeout(TimeSpan timeout, TimeoutStrategy timeoutStrategy, Action<Context, TimeSpan, Task> onTimeout)
         {
             ValidateTimeoutIsInRange(timeout);
 
             return Timeout(ctx => timeout, timeoutStrategy, onTimeout);
-        }
-
-        private static void ValidateTimeoutIsInRange(TimeSpan timeout)
-        {
-            if (timeout <= TimeSpan.Zero && timeout != System.Threading.Timeout.InfiniteTimeSpan)
-                throw new ArgumentOutOfRangeException(nameof(timeout), timeout, 
-                    $"{nameof(timeout)} must be a positive TimeSpan (or Timeout.InfiniteTimeSpan to indicate no timeout)");
         }
 
         /// <summary>
