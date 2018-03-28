@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Polly.Utilities
+namespace Polly.Timeout
 {
     internal static class TimeoutValidator
     {
