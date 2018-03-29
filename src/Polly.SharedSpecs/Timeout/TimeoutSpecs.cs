@@ -83,6 +83,14 @@ namespace Polly.Specs.Timeout
         }
 
         [Fact]
+        public void Should_not_throw_when_timeout_is_infinitetimespan()
+        {
+            Action policy = () => Policy.Timeout(System.Threading.Timeout.InfiniteTimeSpan);
+
+            policy.ShouldNotThrow();
+        }
+
+        [Fact]
         public void Should_not_throw_when_timeout_is_infinitetimespan_with_timeoutstrategy()
         {
             Action policy = () => Policy.Timeout(System.Threading.Timeout.InfiniteTimeSpan, TimeoutStrategy.Optimistic);
@@ -104,14 +112,6 @@ namespace Polly.Specs.Timeout
         {
             Action<Context, TimeSpan, Task> doNothing = (_, __, ___) => { };
             Action policy = () => Policy.Timeout(System.Threading.Timeout.InfiniteTimeSpan, TimeoutStrategy.Optimistic, doNothing);
-
-            policy.ShouldNotThrow();
-        }
-
-        [Fact]
-        public void Should_not_throw_when_timeout_is_infinitetimespan()
-        {
-            Action policy = () => Policy.Timeout(System.Threading.Timeout.InfiniteTimeSpan);
 
             policy.ShouldNotThrow();
         }
