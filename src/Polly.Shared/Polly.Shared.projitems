@@ -148,6 +148,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Timeout\TimeoutPolicyAsync.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Timeout\TimeoutRejectedException.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Timeout\TimeoutStrategy.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Timeout\TimeoutValidator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\AsyncSemaphoreExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\EmptyStruct.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\ExceptionDispatchInfo.cs" />

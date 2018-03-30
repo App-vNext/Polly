@@ -84,6 +84,40 @@ namespace Polly.Specs.Timeout
         }
 
         [Fact]
+        public void Should_not_throw_when_timeout_is_infinitetimespan()
+        {
+            Action policy = () => Policy.TimeoutAsync<ResultPrimitive>(System.Threading.Timeout.InfiniteTimeSpan);
+
+            policy.ShouldNotThrow();
+        }
+
+        [Fact]
+        public void Should_not_throw_when_timeout_is_infinitetimespan_with_timeoutstrategy()
+        {
+            Action policy = () => Policy.TimeoutAsync<ResultPrimitive>(System.Threading.Timeout.InfiniteTimeSpan, TimeoutStrategy.Optimistic);
+
+            policy.ShouldNotThrow();
+        }
+
+        [Fact]
+        public void Should_not_throw_when_timeout_is_infinitetimespan_with_ontimeout()
+        {
+            Func<Context, TimeSpan, Task, Task> doNothingAsync = (_, __, ___) => TaskHelper.EmptyTask;
+            Action policy = () => Policy.TimeoutAsync<ResultPrimitive>(System.Threading.Timeout.InfiniteTimeSpan, doNothingAsync);
+
+            policy.ShouldNotThrow();
+        }
+
+        [Fact]
+        public void Should_not_throw_when_timeout_is_infinitetimespan_with_timeoutstrategy_and_ontimeout()
+        {
+            Func<Context, TimeSpan, Task, Task> doNothingAsync = (_, __, ___) => TaskHelper.EmptyTask;
+            Action policy = () => Policy.TimeoutAsync<ResultPrimitive>(System.Threading.Timeout.InfiniteTimeSpan, TimeoutStrategy.Optimistic, doNothingAsync);
+
+            policy.ShouldNotThrow();
+        }
+
+        [Fact]
         public void Should_throw_when_onTimeout_is_null_with_timespan()
         {
             Action policy = () => Policy.TimeoutAsync<ResultPrimitive>(TimeSpan.FromMinutes(0.5), null);
