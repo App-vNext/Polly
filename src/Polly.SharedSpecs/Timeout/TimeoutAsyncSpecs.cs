@@ -1,11 +1,11 @@
 ﻿using FluentAssertions;
+using Polly.Specs.Helpers;
+using Polly.Timeout;
+using Polly.Utilities;
 using System;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
-using Polly.Specs.Helpers;
-using Polly.Timeout;
-using Polly.Utilities;
 using Xunit;
 
 namespace Polly.Specs.Timeout
@@ -79,6 +79,40 @@ namespace Polly.Specs.Timeout
         public void Should_not_throw_when_timeout_seconds_is_maxvalue()
         {
             Action policy = () => Policy.TimeoutAsync(int.MaxValue);
+
+            policy.ShouldNotThrow();
+        }
+
+        [Fact]
+        public void Should_not_throw_when_timeout_is_infinitetimespan()
+        {
+            Action policy = () => Policy.TimeoutAsync(System.Threading.Timeout.InfiniteTimeSpan);
+
+            policy.ShouldNotThrow();
+        }
+
+        [Fact]
+        public void Should_not_throw_when_timeout_is_infinitetimespan_with_timeoutstrategy()
+        {
+            Action policy = () => Policy.TimeoutAsync(System.Threading.Timeout.InfiniteTimeSpan, TimeoutStrategy.Optimistic);
+
+            policy.ShouldNotThrow();
+        }
+
+        [Fact]
+        public void Should_not_throw_when_timeout_is_infinitetimespan_with_ontimeout()
+        {
+            Func<Context, TimeSpan, Task, Task> doNothingAsync = (_, __, ___) => TaskHelper.EmptyTask;
+            Action policy = () => Policy.TimeoutAsync(System.Threading.Timeout.InfiniteTimeSpan, doNothingAsync);
+
+            policy.ShouldNotThrow();
+        }
+
+        [Fact]
+        public void Should_not_throw_when_timeout_is_infinitetimespan_with_timeoutstrategy_and_ontimeout()
+        {
+            Func<Context, TimeSpan, Task, Task> doNothingAsync = (_, __, ___) => TaskHelper.EmptyTask;
+            Action policy = () => Policy.TimeoutAsync(System.Threading.Timeout.InfiniteTimeSpan, TimeoutStrategy.Optimistic, doNothingAsync);
 
             policy.ShouldNotThrow();
         }

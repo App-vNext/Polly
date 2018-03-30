@@ -76,9 +76,10 @@ namespace Polly
         /// </summary>
         /// <param name="timeout">The timeout.</param>
         /// <returns>The policy instance.</returns>
+        /// <exception cref="System.ArgumentOutOfRangeException">timeout;Value must be a positive TimeSpan (or Timeout.InfiniteTimeSpan to indicate no timeout)</exception>
         public static TimeoutPolicy TimeoutAsync(TimeSpan timeout)
         {
-            if (timeout <= TimeSpan.Zero) throw new ArgumentOutOfRangeException(nameof(timeout));
+            TimeoutValidator.ValidateTimeoutIsInRange(timeout);
             Func<Context, TimeSpan, Task, Task> doNothingAsync = (_, __, ___) => TaskHelper.EmptyTask;
 
             return TimeoutAsync(ctx => timeout, TimeoutStrategy.Optimistic, doNothingAsync);
@@ -90,10 +91,10 @@ namespace Polly
         /// <param name="timeout">The timeout.</param>
         /// <param name="timeoutStrategy">The timeout strategy.</param>
         /// <returns>The policy instance.</returns>
-        /// <exception cref="System.ArgumentOutOfRangeException"></exception>
+        /// <exception cref="System.ArgumentOutOfRangeException">timeout;Value must be a positive TimeSpan (or Timeout.InfiniteTimeSpan to indicate no timeout)</exception>
         public static TimeoutPolicy TimeoutAsync(TimeSpan timeout, TimeoutStrategy timeoutStrategy)
         {
-            if (timeout <= TimeSpan.Zero) throw new ArgumentOutOfRangeException(nameof(timeout));
+            TimeoutValidator.ValidateTimeoutIsInRange(timeout);
             Func<Context, TimeSpan, Task, Task> doNothingAsync = (_, __, ___) => TaskHelper.EmptyTask;
 
             return TimeoutAsync(ctx => timeout, timeoutStrategy, doNothingAsync);
@@ -106,11 +107,11 @@ namespace Polly
         /// <param name="onTimeoutAsync">An action to call on timeout, passing the execution context, the timeout applied, and a <see cref="Task"/> capturing the abandoned, timed-out action. 
         /// <remarks>The Task parameter will be null if the executed action responded co-operatively to cancellation before the policy timed it out.</remarks></param>
         /// <returns>The policy instance.</returns>
-        /// <exception cref="System.ArgumentOutOfRangeException">timeout;Value must be greater than zero.</exception>
+        /// <exception cref="System.ArgumentOutOfRangeException">timeout;Value must be a positive TimeSpan (or Timeout.InfiniteTimeSpan to indicate no timeout)</exception>
         /// <exception cref="System.ArgumentNullException">onTimeoutAsync</exception>
         public static TimeoutPolicy TimeoutAsync(TimeSpan timeout, Func<Context, TimeSpan, Task, Task> onTimeoutAsync)
         {
-            if (timeout <= TimeSpan.Zero) throw new ArgumentOutOfRangeException(nameof(timeout));
+            TimeoutValidator.ValidateTimeoutIsInRange(timeout);
 
             return TimeoutAsync(ctx => timeout, TimeoutStrategy.Optimistic, onTimeoutAsync);
         }
@@ -123,11 +124,11 @@ namespace Polly
         /// <param name="onTimeoutAsync">An action to call on timeout, passing the execution context, the timeout applied, and a <see cref="Task" /> capturing the abandoned, timed-out action.
         /// <remarks>The Task parameter will be null if the executed action responded co-operatively to cancellation before the policy timed it out.</remarks></param>
         /// <returns>The policy instance.</returns>
-        /// <exception cref="System.ArgumentOutOfRangeException">timeout;Value must be greater than zero.</exception>
+        /// <exception cref="System.ArgumentOutOfRangeException">timeout;Value must be a positive TimeSpan (or Timeout.InfiniteTimeSpan to indicate no timeout)</exception>
         /// <exception cref="System.ArgumentNullException">onTimeoutAsync</exception>
         public static TimeoutPolicy TimeoutAsync(TimeSpan timeout, TimeoutStrategy timeoutStrategy, Func<Context, TimeSpan, Task, Task> onTimeoutAsync)
         {
-            if (timeout <= TimeSpan.Zero) throw new ArgumentOutOfRangeException(nameof(timeout));
+            TimeoutValidator.ValidateTimeoutIsInRange(timeout);
 
             return TimeoutAsync(ctx => timeout, timeoutStrategy, onTimeoutAsync);
         }
