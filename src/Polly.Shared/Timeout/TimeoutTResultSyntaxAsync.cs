@@ -15,7 +15,7 @@ namespace Polly
         /// <returns>The policy instance.</returns>
         public static TimeoutPolicy<TResult> TimeoutAsync<TResult>(int seconds)
         {
-            if (seconds <= 0) throw new ArgumentOutOfRangeException(nameof(seconds));
+            TimeoutValidator.ValidateSecondsTimeout(seconds);
 
             Func<Context, TimeSpan, Task, Task> doNothingAsync = (_, __, ___) => TaskHelper.FromResult(default(TResult));
             return TimeoutAsync<TResult>(ctx => TimeSpan.FromSeconds(seconds), TimeoutStrategy.Optimistic, doNothingAsync);
@@ -30,7 +30,7 @@ namespace Polly
         /// <returns>The policy instance.</returns>
         public static TimeoutPolicy<TResult> TimeoutAsync<TResult>(int seconds, TimeoutStrategy timeoutStrategy)
         {
-            if (seconds <= 0) throw new ArgumentOutOfRangeException(nameof(seconds));
+            TimeoutValidator.ValidateSecondsTimeout(seconds);
 
             Func<Context, TimeSpan, Task, Task> doNothingAsync = (_, __, ___) => TaskHelper.FromResult(default(TResult));
             return TimeoutAsync<TResult>(ctx => TimeSpan.FromSeconds(seconds), timeoutStrategy, doNothingAsync);
@@ -47,7 +47,7 @@ namespace Polly
         /// <exception cref="System.ArgumentNullException">onTimeoutAsync</exception>
         public static TimeoutPolicy<TResult> TimeoutAsync<TResult>(int seconds, Func<Context, TimeSpan, Task, Task> onTimeoutAsync)
         {
-            if (seconds <= 0) throw new ArgumentOutOfRangeException(nameof(seconds));
+            TimeoutValidator.ValidateSecondsTimeout(seconds);
 
             return TimeoutAsync<TResult>(ctx => TimeSpan.FromSeconds(seconds), TimeoutStrategy.Optimistic, onTimeoutAsync);
         }
@@ -64,7 +64,7 @@ namespace Polly
         /// <exception cref="System.ArgumentNullException">onTimeoutAsync</exception>
         public static TimeoutPolicy<TResult> TimeoutAsync<TResult>(int seconds, TimeoutStrategy timeoutStrategy, Func<Context, TimeSpan, Task, Task> onTimeoutAsync)
         {
-            if (seconds <= 0) throw new ArgumentOutOfRangeException(nameof(seconds));
+            TimeoutValidator.ValidateSecondsTimeout(seconds);
 
             return TimeoutAsync<TResult>(ctx => TimeSpan.FromSeconds(seconds), timeoutStrategy, onTimeoutAsync);
         }
@@ -77,7 +77,7 @@ namespace Polly
         /// <exception cref="System.ArgumentOutOfRangeException">timeout;Value must be a positive TimeSpan (or Timeout.InfiniteTimeSpan to indicate no timeout)</exception>
         public static TimeoutPolicy<TResult> TimeoutAsync<TResult>(TimeSpan timeout)
         {
-            TimeoutValidator.ValidateTimeoutIsInRange(timeout);
+            TimeoutValidator.ValidateTimeSpanTimeout(timeout);
 
             Func<Context, TimeSpan, Task, Task> doNothingAsync = (_, __, ___) => TaskHelper.FromResult(default(TResult));
             return TimeoutAsync<TResult>(ctx => timeout, TimeoutStrategy.Optimistic, doNothingAsync);
@@ -92,7 +92,7 @@ namespace Polly
         /// <exception cref="System.ArgumentOutOfRangeException">timeout;Value must be a positive TimeSpan (or Timeout.InfiniteTimeSpan to indicate no timeout)</exception>
         public static TimeoutPolicy<TResult> TimeoutAsync<TResult>(TimeSpan timeout, TimeoutStrategy timeoutStrategy)
         {
-            TimeoutValidator.ValidateTimeoutIsInRange(timeout);
+            TimeoutValidator.ValidateTimeSpanTimeout(timeout);
 
             Func<Context, TimeSpan, Task, Task> doNothingAsync = (_, __, ___) => TaskHelper.FromResult(default(TResult));
             return TimeoutAsync<TResult>(ctx => timeout, timeoutStrategy, doNothingAsync);
@@ -109,7 +109,7 @@ namespace Polly
         /// <exception cref="System.ArgumentNullException">onTimeoutAsync</exception>
         public static TimeoutPolicy<TResult> TimeoutAsync<TResult>(TimeSpan timeout, Func<Context, TimeSpan, Task, Task> onTimeoutAsync)
         {
-            TimeoutValidator.ValidateTimeoutIsInRange(timeout);
+            TimeoutValidator.ValidateTimeSpanTimeout(timeout);
             if (onTimeoutAsync == null) throw new ArgumentNullException(nameof(onTimeoutAsync));
 
             return TimeoutAsync<TResult>(ctx => timeout, TimeoutStrategy.Optimistic, onTimeoutAsync);
@@ -127,7 +127,7 @@ namespace Polly
         /// <exception cref="System.ArgumentNullException">onTimeoutAsync</exception>
         public static TimeoutPolicy<TResult> TimeoutAsync<TResult>(TimeSpan timeout, TimeoutStrategy timeoutStrategy, Func<Context, TimeSpan, Task, Task> onTimeoutAsync)
         {
-            TimeoutValidator.ValidateTimeoutIsInRange(timeout);
+            TimeoutValidator.ValidateTimeSpanTimeout(timeout);
 
             return TimeoutAsync<TResult>(ctx => timeout, timeoutStrategy, onTimeoutAsync);
         }

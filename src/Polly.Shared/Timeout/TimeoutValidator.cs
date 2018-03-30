@@ -11,7 +11,12 @@ namespace Polly.Timeout
         internal static readonly TimeSpan InfiniteTimeSpan = System.Threading.Timeout.InfiniteTimeSpan;
 #endif
 
-        internal static void ValidateTimeoutIsInRange(TimeSpan timeout)
+        internal static void ValidateSecondsTimeout(int seconds)
+        {
+            if (seconds <= 0) throw new ArgumentOutOfRangeException(nameof(seconds));
+        }
+
+        internal static void ValidateTimeSpanTimeout(TimeSpan timeout)
         {
             if (timeout <= TimeSpan.Zero && timeout != InfiniteTimeSpan)
                 throw new ArgumentOutOfRangeException(nameof(timeout), timeout,
