@@ -12,7 +12,7 @@ namespace Polly.Timeout
             Context context, 
             Func<Context, TimeSpan> timeoutProvider,
             TimeoutStrategy timeoutStrategy,
-            Func<Context, TimeSpan, Task, Task> onTimeoutAsync, 
+            Func<Context, TimeSpan, Task, Exception, Task> onTimeoutAsync, 
             CancellationToken cancellationToken, 
             bool continueOnCapturedContext)
         {
@@ -55,7 +55,7 @@ namespace Polly.Timeout
                     {
                         if (timeoutCancellationTokenSource.IsCancellationRequested)
                         {
-                            await onTimeoutAsync(context, timeout, actionTask).ConfigureAwait(continueOnCapturedContext);
+                            await onTimeoutAsync(context, timeout, actionTask, e).ConfigureAwait(continueOnCapturedContext);
                             throw new TimeoutRejectedException("The delegate executed asynchronously through TimeoutPolicy did not complete within the timeout.", e);
                         }
 
