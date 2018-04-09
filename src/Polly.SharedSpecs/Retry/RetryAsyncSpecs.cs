@@ -273,7 +273,7 @@ namespace Polly.Specs.Retry
                 .Handle<DivideByZeroException>()
                 .RetryAsync((_, __, context) => contextData = context);
 
-            policy.Awaiting(async p => await p.ExecuteAndCaptureAsync(() => { throw new DivideByZeroException(); }, 
+            policy.Awaiting(async p => await p.ExecuteAndCaptureAsync(ctx => { throw new DivideByZeroException(); }, 
                 new { key1 = "value1", key2 = "value2" }.AsDictionary()))
                 .ShouldNotThrow();
 
@@ -328,13 +328,13 @@ namespace Polly.Specs.Retry
                 .Handle<DivideByZeroException>()
                 .RetryAsync((_, __, context) => contextValue = context["key"].ToString());
 
-            policy.Awaiting(async p => await p.ExecuteAndCaptureAsync(() => { throw new DivideByZeroException(); }, 
+            policy.Awaiting(async p => await p.ExecuteAndCaptureAsync(ctx => { throw new DivideByZeroException(); }, 
                 new { key = "original_value" }.AsDictionary()))
                 .ShouldNotThrow();
 
             contextValue.Should().Be("original_value");
 
-            policy.Awaiting(async p => await p.ExecuteAndCaptureAsync(() => { throw new DivideByZeroException(); },
+            policy.Awaiting(async p => await p.ExecuteAndCaptureAsync(ctx => { throw new DivideByZeroException(); },
                 new { key = "new_value" }.AsDictionary()))
                 .ShouldNotThrow();
 

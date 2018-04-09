@@ -39,7 +39,7 @@ namespace Polly.Specs.Caching
 
             RelativeTtl ttlStrategy = new RelativeTtl(ttl);
 
-            Ttl retrieved = ttlStrategy.GetTtl(new Context("someExecutionKey"), null);
+            Ttl retrieved = ttlStrategy.GetTtl(new Context("someOperationKey"), null);
             retrieved.Timespan.Should().BeCloseTo(ttl);
             retrieved.SlidingExpiration.Should().BeFalse();
         }
@@ -55,7 +55,7 @@ namespace Polly.Specs.Caching
 
             SystemClock.DateTimeOffsetUtcNow = () => fixedTime.Add(delay);
 
-            Ttl retrieved = ttlStrategy.GetTtl(new Context("someExecutionKey"), null);
+            Ttl retrieved = ttlStrategy.GetTtl(new Context("someOperationKey"), null);
             retrieved.Timespan.Should().BeCloseTo(ttl);
             retrieved.SlidingExpiration.Should().BeFalse();
         }

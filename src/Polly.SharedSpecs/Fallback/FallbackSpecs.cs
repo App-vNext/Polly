@@ -777,7 +777,7 @@ namespace Polly.Specs.Fallback
                 .Handle<ArgumentNullException>()
                 .Fallback(fallbackAction, onFallback);
 
-            fallbackPolicy.Invoking(p => p.Execute(() => { throw new ArgumentNullException(); },
+            fallbackPolicy.Invoking(p => p.Execute(ctx => { throw new ArgumentNullException(); },
                 new {key1 = "value1", key2 = "value2"}.AsDictionary()))
                 .ShouldNotThrow();
 
@@ -799,7 +799,7 @@ namespace Polly.Specs.Fallback
                 .Handle<ArgumentNullException>()
                 .Fallback(fallbackAction, onFallback);
 
-            fallbackPolicy.Invoking(p => p.ExecuteAndCapture(() => { throw new ArgumentNullException(); },
+            fallbackPolicy.Invoking(p => p.ExecuteAndCapture(ctx => { throw new ArgumentNullException(); },
                 new {key1 = "value1", key2 = "value2"}.AsDictionary()))
                 .ShouldNotThrow();
 
@@ -823,11 +823,11 @@ namespace Polly.Specs.Fallback
                 .Fallback(fallbackAction, onFallback);
 
             fallbackPolicy.Invoking(
-                p => p.Execute(() => { throw new ArgumentNullException(); }, new {key = "value1"}.AsDictionary()))
+                p => p.Execute(ctx => { throw new ArgumentNullException(); }, new {key = "value1"}.AsDictionary()))
                 .ShouldNotThrow();
 
             fallbackPolicy.Invoking(
-                p => p.Execute(() => { throw new DivideByZeroException(); }, new {key = "value2"}.AsDictionary()))
+                p => p.Execute(ctx => { throw new DivideByZeroException(); }, new {key = "value2"}.AsDictionary()))
                 .ShouldNotThrow();
 
             contextData.Count.Should().Be(2);
@@ -871,7 +871,7 @@ namespace Polly.Specs.Fallback
                 .Handle<ArgumentNullException>()
                 .Fallback(fallbackAction, onFallback);
 
-            fallbackPolicy.Invoking(p => p.Execute(() => { throw new ArgumentNullException(); },
+            fallbackPolicy.Invoking(p => p.Execute(ctx => { throw new ArgumentNullException(); },
                     new { key1 = "value1", key2 = "value2" }.AsDictionary()))
                 .ShouldNotThrow();
 
@@ -893,7 +893,7 @@ namespace Polly.Specs.Fallback
                 .Handle<ArgumentNullException>()
                 .Fallback(fallbackAction, onFallback);
 
-            fallbackPolicy.Invoking(p => p.ExecuteAndCapture(() => { throw new ArgumentNullException(); },
+            fallbackPolicy.Invoking(p => p.ExecuteAndCapture(ctx => { throw new ArgumentNullException(); },
                     new { key1 = "value1", key2 = "value2" }.AsDictionary()))
                 .ShouldNotThrow();
 

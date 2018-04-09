@@ -203,7 +203,7 @@ namespace Polly.Specs
                 .HandleResult(ResultPrimitive.Fault)
                 .Retry((_, __, ___) => { });
 
-            policy.Invoking(p => p.Execute(() => ResultPrimitive.Good, (IDictionary<string, object>)null))
+            policy.Invoking(p => p.Execute(ctx => ResultPrimitive.Good, (IDictionary<string, object>)null))
                 .ShouldThrow<ArgumentNullException>();
         }
 
@@ -214,7 +214,7 @@ namespace Polly.Specs
                 .HandleResult(ResultPrimitive.Fault)
                 .Retry((_, __, ___) => { });
 
-            policy.Invoking(p => p.Execute(() => ResultPrimitive.Good, (Context)null))
+            policy.Invoking(p => p.Execute(ctx => ResultPrimitive.Good, (Context)null))
                 .ShouldThrow<ArgumentNullException>().And
                 .ParamName.Should().Be("context");
         }
@@ -222,8 +222,8 @@ namespace Polly.Specs
         [Fact]
         public void Executing_the_policy_function_should_pass_context_to_executed_delegate()
         {
-            string executionKey = Guid.NewGuid().ToString();
-            Context executionContext = new Context(executionKey);
+            string operationKey = "SomeKey";
+            Context executionContext = new Context(operationKey);
             Context capturedContext = null;
 
             Policy<ResultPrimitive> policy = Policy.NoOp<ResultPrimitive>();
@@ -240,7 +240,7 @@ namespace Polly.Specs
                 .HandleResult(ResultPrimitive.Fault)
                 .Retry((_, __, ___) => { });
 
-            policy.Invoking(p => p.ExecuteAndCapture(() => ResultPrimitive.Good, (IDictionary<string, object>)null))
+            policy.Invoking(p => p.ExecuteAndCapture(ctx => ResultPrimitive.Good, (IDictionary<string, object>)null))
                   .ShouldThrow<ArgumentNullException>();
         }
 
@@ -251,7 +251,7 @@ namespace Polly.Specs
                 .HandleResult(ResultPrimitive.Fault)
                 .Retry((_, __, ___) => { });
 
-            policy.Invoking(p => p.ExecuteAndCapture(() => ResultPrimitive.Good, (Context)null))
+            policy.Invoking(p => p.ExecuteAndCapture(ctx => ResultPrimitive.Good, (Context)null))
                   .ShouldThrow<ArgumentNullException>().And
                   .ParamName.Should().Be("context");
         }
@@ -259,8 +259,8 @@ namespace Polly.Specs
         [Fact]
         public void Execute_and_capturing_the_policy_function_should_pass_context_to_executed_delegate()
         {
-            string executionKey = Guid.NewGuid().ToString();
-            Context executionContext = new Context(executionKey);
+            string operationKey = "SomeKey";
+            Context executionContext = new Context(operationKey);
             Context capturedContext = null;
 
             Policy<ResultPrimitive> policy = Policy.NoOp<ResultPrimitive>();
@@ -273,8 +273,8 @@ namespace Polly.Specs
         [Fact]
         public void Execute_and_capturing_the_policy_function_should_pass_context_to_PolicyResult()
         {
-            string executionKey = Guid.NewGuid().ToString();
-            Context executionContext = new Context(executionKey);
+            string operationKey = "SomeKey";
+            Context executionContext = new Context(operationKey);
 
             Policy<ResultPrimitive> policy = Policy.NoOp<ResultPrimitive>();
 

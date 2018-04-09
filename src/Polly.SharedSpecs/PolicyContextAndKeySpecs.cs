@@ -117,25 +117,25 @@ namespace Polly.Specs
         }
 
         [Fact]
-        public void Should_pass_ExecutionKey_to_execution_context()
+        public void Should_pass_OperationKey_to_execution_context()
         {
-            string executionKey = Guid.NewGuid().ToString();
+            string operationKey = "SomeKey";
 
-            string executionKeySetOnContext = null;
-            Action<Exception, int, Context> onRetry = (e, i, context) => { executionKeySetOnContext = context.ExecutionKey; };
+            string operationKeySetOnContext = null;
+            Action<Exception, int, Context> onRetry = (e, i, context) => { operationKeySetOnContext = context.OperationKey; };
             var retry = Policy.Handle<Exception>().Retry(1, onRetry);
 
             bool firstExecution = true;
-            retry.Execute(() =>
+            retry.Execute(ctx =>
             {
                 if (firstExecution)
                 {
                     firstExecution = false;
                     throw new Exception();
                 }
-            }, new Context(executionKey));
+            }, new Context(operationKey));
 
-            executionKeySetOnContext.Should().Be(executionKey);
+            operationKeySetOnContext.Should().Be(operationKey);
         }
 
         [Fact]
@@ -162,16 +162,16 @@ namespace Polly.Specs
         }
 
         [Fact]
-        public void Should_pass_ExecutionKey_to_execution_context_in_generic_execution_on_non_generic_policy()
+        public void Should_pass_OperationKey_to_execution_context_in_generic_execution_on_non_generic_policy()
         {
-            string executionKey = Guid.NewGuid().ToString();
+            string operationKey = "SomeKey";
 
-            string executionKeySetOnContext = null;
-            Action<Exception, int, Context> onRetry = (e, i, context) => { executionKeySetOnContext = context.ExecutionKey; };
+            string operationKeySetOnContext = null;
+            Action<Exception, int, Context> onRetry = (e, i, context) => { operationKeySetOnContext = context.OperationKey; };
             var retry = Policy.Handle<Exception>().Retry(1, onRetry);
 
             bool firstExecution = true;
-            retry.Execute<int>(() =>
+            retry.Execute<int>(ctx =>
             {
                 if (firstExecution)
                 {
@@ -179,9 +179,9 @@ namespace Polly.Specs
                     throw new Exception();
                 }
                 return 0;
-            }, new Context(executionKey));
+            }, new Context(operationKey));
 
-            executionKeySetOnContext.Should().Be(executionKey);
+            operationKeySetOnContext.Should().Be(operationKey);
         }
         #endregion
     }
@@ -298,16 +298,16 @@ namespace Polly.Specs
         }
 
         [Fact]
-        public void Should_pass_ExecutionKey_to_execution_context()
+        public void Should_pass_OperationKey_to_execution_context()
         {
-            string executionKey = Guid.NewGuid().ToString();
+            string operationKey = "SomeKey";
 
-            string executionKeySetOnContext = null;
-            Action<DelegateResult<ResultPrimitive>, int, Context> onRetry = (outcome, i, context) => { executionKeySetOnContext = context.ExecutionKey; };
+            string operationKeySetOnContext = null;
+            Action<DelegateResult<ResultPrimitive>, int, Context> onRetry = (outcome, i, context) => { operationKeySetOnContext = context.OperationKey; };
             var retry = Policy.HandleResult(ResultPrimitive.Fault).Retry(1, onRetry);
 
             bool firstExecution = true;
-            retry.Execute(() =>
+            retry.Execute(ctx =>
             {
                 if (firstExecution)
                 {
@@ -315,9 +315,9 @@ namespace Polly.Specs
                     return ResultPrimitive.Fault;
                 }
                 return ResultPrimitive.Good;
-            }, new Context(executionKey));
+            }, new Context(operationKey));
 
-            executionKeySetOnContext.Should().Be(executionKey);
+            operationKeySetOnContext.Should().Be(operationKey);
         }
 
         #endregion

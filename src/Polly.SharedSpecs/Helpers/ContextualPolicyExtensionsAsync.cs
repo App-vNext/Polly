@@ -13,7 +13,7 @@ namespace Polly.Specs.Helpers
         {
             int counter = 0;
 
-            return policy.ExecuteAsync(ct =>
+            return policy.ExecuteAsync((ctx, ct) =>
             {
                 if (counter < numberOfTimesToRaiseException)
                 {

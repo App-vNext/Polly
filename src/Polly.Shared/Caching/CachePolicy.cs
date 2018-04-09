@@ -53,7 +53,7 @@ namespace Polly.Caching
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>The value returned by the action, or the cache.</returns>
         [DebuggerStepThrough]
-        public override TResult ExecuteInternal<TResult>(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken)
+        internal override TResult ExecuteInternal<TResult>(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken)
         {
             return CacheEngine.Implementation<TResult>(
                 _syncCacheProvider.For<TResult>(), 
