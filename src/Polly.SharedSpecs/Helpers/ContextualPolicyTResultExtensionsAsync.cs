@@ -21,7 +21,7 @@ namespace Polly.Specs.Helpers
         {
             var enumerator = resultsToRaise.GetEnumerator();
 
-            return policy.ExecuteAsync(ct =>
+            return policy.ExecuteAsync((ctx, ct) =>
             {
                 if (!enumerator.MoveNext())
                 {

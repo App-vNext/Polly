@@ -11,10 +11,16 @@
     <iconUrl>https://raw.github.com/App-vNext/Polly/master/Polly.png</iconUrl>
     <projectUrl>https://github.com/App-vNext/Polly</projectUrl>
     <tags>Exception Handling Resilience Transient Fault Policy Circuit Breaker CircuitBreaker Retry Wait Cache Cache-aside Bulkhead Fallback Timeout Throttle Parallelization</tags>
-    <copyright>Copyright © 2017, App vNext</copyright>
+    <copyright>Copyright © 2018, App vNext</copyright>
     <releaseNotes>
      v5.0 is a major release with significant new resilience policies: Timeout; Bulkhead Isolation; Fallback; Cache; and PolicyWrap.  See release notes back to v5.0.0 for full details.
 
+     5.9.0
+     ---------------------
+     - Allow Timeout.InfiniteTimeSpan (no timeout) for TimeoutPolicy. 
+     - Add .AsPolicy&lt;TResult&gt; and .AsAsyncPolicy&lt;TResult&gt; methods for converting non-generic policies to generic policies.
+     - Per Semver, indicates deprecation of overloads and properties intended to be removed or renamed in Polly v6.
+     
      5.8.0
      ---------------------
      - Add a new onBreak overload that provides the prior state on a transition to an open state

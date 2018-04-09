@@ -45,7 +45,7 @@ namespace Polly.Caching
         /// <param name="continueOnCapturedContext">Whether to continue on a captured synchronization context.</param>
         /// <returns>The value returned by the action, or the cache.</returns>
         [DebuggerStepThrough]
-        public override Task<TResult> ExecuteAsyncInternal<TResult>(Func<Context, CancellationToken, Task<TResult>> action, Context context, CancellationToken cancellationToken, bool continueOnCapturedContext)
+        internal override Task<TResult> ExecuteAsyncInternal<TResult>(Func<Context, CancellationToken, Task<TResult>> action, Context context, CancellationToken cancellationToken, bool continueOnCapturedContext)
         {
             return CacheEngine.ImplementationAsync<TResult>(
                 _asyncCacheProvider.AsyncFor<TResult>(), 

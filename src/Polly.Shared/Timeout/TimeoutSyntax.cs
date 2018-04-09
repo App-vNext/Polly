@@ -15,7 +15,7 @@ namespace Polly
         /// <returns>The policy instance.</returns>
         public static TimeoutPolicy Timeout(int seconds)
         {
-            if (seconds <= 0) throw new ArgumentOutOfRangeException(nameof(seconds));
+            TimeoutValidator.ValidateSecondsTimeout(seconds);
             Action<Context, TimeSpan, Task> doNothing = (_, __, ___) => { };
 
             return Timeout(ctx => TimeSpan.FromSeconds(seconds), TimeoutStrategy.Optimistic, doNothing);
@@ -30,7 +30,7 @@ namespace Polly
         /// <exception cref="System.ArgumentOutOfRangeException">seconds;Value must be greater than zero.</exception>
         public static TimeoutPolicy Timeout(int seconds, TimeoutStrategy timeoutStrategy)
         {
-            if (seconds <= 0) throw new ArgumentOutOfRangeException(nameof(seconds));
+            TimeoutValidator.ValidateSecondsTimeout(seconds);
             Action<Context, TimeSpan, Task> doNothing = (_, __, ___) => { };
 
             return Timeout(ctx => TimeSpan.FromSeconds(seconds), timeoutStrategy, doNothing);
@@ -47,7 +47,7 @@ namespace Polly
         /// <exception cref="System.ArgumentNullException">onTimeout</exception>
         public static TimeoutPolicy Timeout(int seconds, Action<Context, TimeSpan, Task> onTimeout)
         {
-            if (seconds <= 0) throw new ArgumentOutOfRangeException(nameof(seconds));
+            TimeoutValidator.ValidateSecondsTimeout(seconds);
 
             return Timeout(ctx => TimeSpan.FromSeconds(seconds), TimeoutStrategy.Optimistic, onTimeout);
         }
@@ -64,7 +64,7 @@ namespace Polly
         /// <exception cref="System.ArgumentNullException">onTimeout</exception>
         public static TimeoutPolicy Timeout(int seconds, TimeoutStrategy timeoutStrategy, Action<Context, TimeSpan, Task> onTimeout)
         {
-            if (seconds <= 0) throw new ArgumentOutOfRangeException(nameof(seconds));
+            TimeoutValidator.ValidateSecondsTimeout(seconds);
 
             return Timeout(ctx => TimeSpan.FromSeconds(seconds), timeoutStrategy, onTimeout);
         }
@@ -77,7 +77,7 @@ namespace Polly
         /// <exception cref="System.ArgumentOutOfRangeException">timeout;Value must be a positive TimeSpan (or Timeout.InfiniteTimeSpan to indicate no timeout)</exception>
         public static TimeoutPolicy Timeout(TimeSpan timeout)
         {
-            TimeoutValidator.ValidateTimeoutIsInRange(timeout);
+            TimeoutValidator.ValidateTimeSpanTimeout(timeout);
             Action<Context, TimeSpan, Task> doNothing = (_, __, ___) => { };
 
             return Timeout(ctx => timeout, TimeoutStrategy.Optimistic, doNothing);
@@ -92,7 +92,7 @@ namespace Polly
         /// <exception cref="System.ArgumentOutOfRangeException">timeout;Value must be a positive TimeSpan (or Timeout.InfiniteTimeSpan to indicate no timeout)</exception>
         public static TimeoutPolicy Timeout(TimeSpan timeout, TimeoutStrategy timeoutStrategy)
         {
-            TimeoutValidator.ValidateTimeoutIsInRange(timeout);
+            TimeoutValidator.ValidateTimeSpanTimeout(timeout);
             Action<Context, TimeSpan, Task> doNothing = (_, __, ___) => { };
 
             return Timeout(ctx => timeout, timeoutStrategy, doNothing);
@@ -109,7 +109,7 @@ namespace Polly
         /// <exception cref="System.ArgumentNullException">onTimeout</exception>
         public static TimeoutPolicy Timeout(TimeSpan timeout, Action<Context, TimeSpan, Task> onTimeout)
         {
-            TimeoutValidator.ValidateTimeoutIsInRange(timeout);
+            TimeoutValidator.ValidateTimeSpanTimeout(timeout);
 
             return Timeout(ctx => timeout, TimeoutStrategy.Optimistic, onTimeout);
         }
@@ -126,7 +126,7 @@ namespace Polly
         /// <exception cref="System.ArgumentNullException">onTimeout</exception>
         public static TimeoutPolicy Timeout(TimeSpan timeout, TimeoutStrategy timeoutStrategy, Action<Context, TimeSpan, Task> onTimeout)
         {
-            TimeoutValidator.ValidateTimeoutIsInRange(timeout);
+            TimeoutValidator.ValidateTimeSpanTimeout(timeout);
 
             return Timeout(ctx => timeout, timeoutStrategy, onTimeout);
         }

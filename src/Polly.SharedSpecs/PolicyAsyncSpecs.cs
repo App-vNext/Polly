@@ -286,7 +286,7 @@ namespace Polly.Specs
                 .Handle<DivideByZeroException>()
                 .RetryAsync((_, __, ___) => { });
 
-            policy.Awaiting(async p => await p.ExecuteAsync(() => TaskHelper.EmptyTask, (IDictionary<string, object>)null))
+            policy.Awaiting(async p => await p.ExecuteAsync(ctx => TaskHelper.EmptyTask, (IDictionary<string, object>)null))
                   .ShouldThrow<ArgumentNullException>();
         }
 
@@ -297,7 +297,7 @@ namespace Polly.Specs
                 .Handle<DivideByZeroException>()
                 .RetryAsync((_, __, ___) => { });
 
-            policy.Awaiting(async p => await p.ExecuteAsync(() => TaskHelper.EmptyTask, (Context)null))
+            policy.Awaiting(async p => await p.ExecuteAsync(ctx => TaskHelper.EmptyTask, (Context)null))
                 .ShouldThrow<ArgumentNullException>().And
                 .ParamName.Should().Be("context");
         }
@@ -309,7 +309,7 @@ namespace Polly.Specs
                 .Handle<DivideByZeroException>()
                 .RetryAsync((_, __, ___) => { });
 
-            policy.Awaiting(async p => await p.ExecuteAsync(() => Task.FromResult(2), (IDictionary<string, object>)null))
+            policy.Awaiting(async p => await p.ExecuteAsync(ctx => Task.FromResult(2), (IDictionary<string, object>)null))
                   .ShouldThrow<ArgumentNullException>();
         }
 
@@ -320,7 +320,7 @@ namespace Polly.Specs
                 .Handle<DivideByZeroException>()
                 .RetryAsync((_, __, ___) => { });
 
-            policy.Awaiting(async p => await p.ExecuteAsync(() => Task.FromResult(2), (Context)null))
+            policy.Awaiting(async p => await p.ExecuteAsync(ctx => Task.FromResult(2), (Context)null))
                   .ShouldThrow<ArgumentNullException>().And
                   .ParamName.Should().Be("context");
         }
@@ -328,8 +328,8 @@ namespace Polly.Specs
         [Fact]
         public async Task Executing_the_policy_function_should_pass_context_to_executed_delegate()
         {
-            string executionKey = Guid.NewGuid().ToString();
-            Context executionContext = new Context(executionKey);
+            string operationKey = "SomeKey";
+            Context executionContext = new Context(operationKey);
             Context capturedContext = null;
 
             Policy policy = Policy.NoOpAsync();
@@ -346,7 +346,7 @@ namespace Polly.Specs
                 .Handle<DivideByZeroException>()
                 .RetryAsync((_, __, ___) => { });
 
-            policy.Awaiting(async p => await p.ExecuteAndCaptureAsync(() => TaskHelper.EmptyTask, (IDictionary<string, object>)null))
+            policy.Awaiting(async p => await p.ExecuteAndCaptureAsync(ctx => TaskHelper.EmptyTask, (IDictionary<string, object>)null))
                   .ShouldThrow<ArgumentNullException>();
         }
 
@@ -357,7 +357,7 @@ namespace Polly.Specs
                 .Handle<DivideByZeroException>()
                 .RetryAsync((_, __, ___) => { });
 
-            policy.Awaiting(async p => await p.ExecuteAndCaptureAsync(() => TaskHelper.EmptyTask, (Context)null))
+            policy.Awaiting(async p => await p.ExecuteAndCaptureAsync(ctx => TaskHelper.EmptyTask, (Context)null))
                 .ShouldThrow<ArgumentNullException>().And
                 .ParamName.Should().Be("context");
         }
@@ -369,7 +369,7 @@ namespace Polly.Specs
                 .Handle<DivideByZeroException>()
                 .RetryAsync((_, __, ___) => { });
 
-            policy.Awaiting(async p => await p.ExecuteAndCaptureAsync(() => Task.FromResult(2), (IDictionary<string, object>)null))
+            policy.Awaiting(async p => await p.ExecuteAndCaptureAsync(ctx => Task.FromResult(2), (IDictionary<string, object>)null))
                   .ShouldThrow<ArgumentNullException>();
         }
 
@@ -380,7 +380,7 @@ namespace Polly.Specs
                 .Handle<DivideByZeroException>()
                 .RetryAsync((_, __, ___) => { });
 
-            policy.Awaiting(async p => await p.ExecuteAndCaptureAsync(() => Task.FromResult(2), (Context)null))
+            policy.Awaiting(async p => await p.ExecuteAndCaptureAsync(ctx => Task.FromResult(2), (Context)null))
                   .ShouldThrow<ArgumentNullException>().And
                   .ParamName.Should().Be("context");
         }
@@ -388,8 +388,8 @@ namespace Polly.Specs
         [Fact]
         public async Task Execute_and_capturing_the_policy_function_should_pass_context_to_executed_delegate()
         {
-            string executionKey = Guid.NewGuid().ToString();
-            Context executionContext = new Context(executionKey);
+            string operationKey = "SomeKey";
+            Context executionContext = new Context(operationKey);
             Context capturedContext = null;
 
             Policy policy = Policy.NoOpAsync();
@@ -402,8 +402,8 @@ namespace Polly.Specs
         [Fact]
         public async Task Execute_and_capturing_the_policy_function_should_pass_context_to_PolicyResult()
         {
-            string executionKey = Guid.NewGuid().ToString();
-            Context executionContext = new Context(executionKey);
+            string operationKey = "SomeKey";
+            Context executionContext = new Context(operationKey);
 
             Policy policy = Policy.NoOpAsync();
 

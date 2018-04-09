@@ -425,8 +425,8 @@ namespace Polly.Specs.Timeout
         [Fact]
         public void Should_call_ontimeout_with_passed_context__pessimistic()
         {
-            string executionKey = Guid.NewGuid().ToString();
-            Context contextPassedToExecute = new Context(executionKey);
+            string operationKey = "SomeKey";
+            Context contextPassedToExecute = new Context(operationKey);
 
             Context contextPassedToOnTimeout = null;
             Func<Context, TimeSpan, Task, Task> onTimeoutAsync = (ctx, span, task) =>
@@ -438,7 +438,7 @@ namespace Polly.Specs.Timeout
             TimeSpan timeout = TimeSpan.FromMilliseconds(250);
             var policy = Policy.TimeoutAsync(timeout, TimeoutStrategy.Pessimistic, onTimeoutAsync);
 
-            policy.Awaiting(async p => await p.ExecuteAsync(async () =>
+            policy.Awaiting(async p => await p.ExecuteAsync(async ctx =>
                 {
                     await SystemClock.SleepAsync(TimeSpan.FromSeconds(3), CancellationToken.None).ConfigureAwait(false);
                 
@@ -446,7 +446,7 @@ namespace Polly.Specs.Timeout
                 .ShouldThrow<TimeoutRejectedException>();
 
             contextPassedToOnTimeout.Should().NotBeNull();
-            contextPassedToOnTimeout.ExecutionKey.Should().Be(executionKey);
+            contextPassedToOnTimeout.OperationKey.Should().Be(operationKey);
             contextPassedToOnTimeout.Should().BeSameAs(contextPassedToExecute);
         }
 
@@ -494,9 +494,9 @@ namespace Polly.Specs.Timeout
             var policy = Policy.TimeoutAsync(timeoutProvider, TimeoutStrategy.Pessimistic, onTimeoutAsync);
 
             // Supply a programatically-controlled timeout, via the execution context.
-            Context context = new Context("SomeExecutionKey") { ["timeout"] = TimeSpan.FromMilliseconds(25 * programaticallyControlledDelay) };
+            Context context = new Context("SomeOperationKey") { ["timeout"] = TimeSpan.FromMilliseconds(25 * programaticallyControlledDelay) };
 
-            policy.Awaiting(async p => await p.ExecuteAsync(async () =>
+            policy.Awaiting(async p => await p.ExecuteAsync(async ctx =>
             {
                 await SystemClock.SleepAsync(TimeSpan.FromSeconds(3), CancellationToken.None).ConfigureAwait(false);
             }, context))
@@ -594,8 +594,8 @@ namespace Polly.Specs.Timeout
         [Fact]
         public void Should_call_ontimeout_with_passed_context__optimistic()
         {
-            string executionKey = Guid.NewGuid().ToString();
-            Context contextPassedToExecute = new Context(executionKey);
+            string operationKey = "SomeKey";
+            Context contextPassedToExecute = new Context(operationKey);
 
             Context contextPassedToOnTimeout = null;
             Func<Context, TimeSpan, Task, Task> onTimeoutAsync = (ctx, span, task) =>
@@ -608,7 +608,7 @@ namespace Polly.Specs.Timeout
             var policy = Policy.TimeoutAsync(timeout, TimeoutStrategy.Optimistic, onTimeoutAsync);
             var userCancellationToken = CancellationToken.None;
 
-            policy.Awaiting(async p => await p.ExecuteAsync(async ct =>
+            policy.Awaiting(async p => await p.ExecuteAsync(async (ctx, ct) =>
                 {
                     await SystemClock.SleepAsync(TimeSpan.FromSeconds(3), ct).ConfigureAwait(false);
 
@@ -616,7 +616,7 @@ namespace Polly.Specs.Timeout
                 .ShouldThrow<TimeoutRejectedException>();
 
             contextPassedToOnTimeout.Should().NotBeNull();
-            contextPassedToOnTimeout.ExecutionKey.Should().Be(executionKey);
+            contextPassedToOnTimeout.OperationKey.Should().Be(operationKey);
             contextPassedToOnTimeout.Should().BeSameAs(contextPassedToExecute);
         }
 
@@ -667,12 +667,12 @@ namespace Polly.Specs.Timeout
             var userCancellationToken = CancellationToken.None;
 
             // Supply a programatically-controlled timeout, via the execution context.
-            Context context = new Context("SomeExecutionKey")
+            Context context = new Context("SomeOperationKey")
             {
                 ["timeout"] = TimeSpan.FromMilliseconds(25 * programaticallyControlledDelay)
             };
 
-            policy.Awaiting(async p => await p.ExecuteAsync(async ct =>
+            policy.Awaiting(async p => await p.ExecuteAsync(async (ctx, ct) =>
             {
                 await SystemClock.SleepAsync(TimeSpan.FromSeconds(3), ct).ConfigureAwait(false);
 

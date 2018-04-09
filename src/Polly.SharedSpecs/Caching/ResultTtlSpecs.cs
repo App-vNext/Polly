@@ -48,7 +48,7 @@ namespace Polly.Specs.Caching
 
             ResultTtl<dynamic> ttlStrategy = new ResultTtl<dynamic>(func);
 
-            Ttl retrieved = ttlStrategy.GetTtl(new Context("someExecutionKey"), new { Ttl = ttl });
+            Ttl retrieved = ttlStrategy.GetTtl(new Context("someOperationKey"), new { Ttl = ttl });
             retrieved.Timespan.Should().Be(ttl);
             retrieved.SlidingExpiration.Should().BeFalse();
         }
@@ -59,11 +59,11 @@ namespace Polly.Specs.Caching
             const string specialKey = "specialKey";
 
             TimeSpan ttl = TimeSpan.FromMinutes(1);
-            Func<Context, dynamic, Ttl> func = (context, result) => { return context.ExecutionKey == specialKey ? new Ttl(TimeSpan.Zero) : new Ttl(result.Ttl); };
+            Func<Context, dynamic, Ttl> func = (context, result) => { return context.OperationKey == specialKey ? new Ttl(TimeSpan.Zero) : new Ttl(result.Ttl); };
 
             ResultTtl<dynamic> ttlStrategy = new ResultTtl<dynamic>(func);
 
-            ttlStrategy.GetTtl(new Context("someExecutionKey"), new { Ttl = ttl }).Timespan.Should().Be(ttl);
+            ttlStrategy.GetTtl(new Context("someOperationKey"), new { Ttl = ttl }).Timespan.Should().Be(ttl);
             ttlStrategy.GetTtl(new Context(specialKey), new { Ttl = ttl }).Timespan.Should().Be(TimeSpan.Zero);
         }
     }

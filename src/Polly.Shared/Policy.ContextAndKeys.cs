@@ -3,55 +3,19 @@ using Polly.Utilities;
 
 namespace Polly
 {
-    public partial class Policy
+    public abstract partial class PolicyBase
     {
-        private String _policyKey;
+        /// <summary>
+        /// A key intended to be unique to each <see cref="IsPolicy"/> instance.
+        /// </summary>
+        protected String policyKeyInternal;
 
         /// <summary>
-        /// A key intended to be unique to each <see cref="Policy"/> instance, which is passed with executions as the <see cref="M:Context.PolicyKey"/> property.
+        /// A key intended to be unique to each <see cref="IsPolicy"/> instance, which is passed with executions as the <see cref="M:Context.PolicyKey"/> property.
         /// </summary>
-        public String PolicyKey => _policyKey ?? (_policyKey = GetType().Name + "-" + KeyHelper.GuidPart());
+        public String PolicyKey => policyKeyInternal ?? (policyKeyInternal = GetType().Name + "-" + KeyHelper.GuidPart());
 
         internal static ArgumentException PolicyKeyMustBeImmutableException => new ArgumentException("PolicyKey cannot be changed once set; or (when using the default value after the PolicyKey property has been accessed.", "policyKey");
-
-        /// <summary>
-        /// Sets the PolicyKey for this <see cref="Policy"/> instance.
-        /// <remarks>Must be called before the policy is first used.  Can only be set once.</remarks>
-        /// </summary>
-        /// <param name="policyKey">The unique, used-definable key to assign to this <see cref="Policy"/> instance.</param>
-        public Policy WithPolicyKey(String policyKey)
-        {
-            if (_policyKey != null) throw PolicyKeyMustBeImmutableException;
-
-            _policyKey = policyKey;
-            return this;
-        }
-
-        /// <summary>
-        /// Sets the PolicyKey for this <see cref="Policy"/> instance.
-        /// <remarks>Must be called before the policy is first used.  Can only be set once.</remarks>
-        /// </summary>
-        /// <param name="policyKey">The unique, used-definable key to assign to this <see cref="Policy"/> instance.</param>
-        ISyncPolicy ISyncPolicy.WithPolicyKey(String policyKey)
-        {
-            if (_policyKey != null) throw PolicyKeyMustBeImmutableException;
-
-            _policyKey = policyKey;
-            return this;
-        }
-
-        /// <summary>
-        /// Sets the PolicyKey for this <see cref="Policy"/> instance.
-        /// <remarks>Must be called before the policy is first used.  Can only be set once.</remarks>
-        /// </summary>
-        /// <param name="policyKey">The unique, used-definable key to assign to this <see cref="Policy"/> instance.</param>
-        IAsyncPolicy IAsyncPolicy.WithPolicyKey(String policyKey)
-        {
-            if (_policyKey != null) throw PolicyKeyMustBeImmutableException;
-
-            _policyKey = policyKey;
-            return this;
-        }
 
         /// <summary>
         /// Updates the execution <see cref="Context"/> with context from the executing <see cref="Policy"/>.
@@ -63,15 +27,51 @@ namespace Polly
         }
     }
 
-    public partial class Policy<TResult>
+    public abstract partial class Policy
     {
-        private String _policyKey;
+        /// <summary>
+        /// Sets the PolicyKey for this <see cref="Policy"/> instance.
+        /// <remarks>Must be called before the policy is first used.  Can only be set once.</remarks>
+        /// </summary>
+        /// <param name="policyKey">The unique, used-definable key to assign to this <see cref="Policy"/> instance.</param>
+        public Policy WithPolicyKey(String policyKey)
+        {
+            if (policyKeyInternal != null) throw PolicyKeyMustBeImmutableException;
+
+            policyKeyInternal = policyKey;
+            return this;
+        }
 
         /// <summary>
-        /// A key intended to be unique to each <see cref="Policy"/> instance, which is passed with executions as the <see cref="M:Context.PolicyKey"/> property.
+        /// Sets the PolicyKey for this <see cref="Policy"/> instance.
+        /// <remarks>Must be called before the policy is first used.  Can only be set once.</remarks>
         /// </summary>
-        public String PolicyKey => _policyKey ?? (_policyKey = GetType().Name + "-" + KeyHelper.GuidPart());
+        /// <param name="policyKey">The unique, used-definable key to assign to this <see cref="Policy"/> instance.</param>
+        ISyncPolicy ISyncPolicy.WithPolicyKey(String policyKey)
+        {
+            if (policyKeyInternal != null) throw PolicyKeyMustBeImmutableException;
 
+            policyKeyInternal = policyKey;
+            return this;
+        }
+
+        /// <summary>
+        /// Sets the PolicyKey for this <see cref="Policy"/> instance.
+        /// <remarks>Must be called before the policy is first used.  Can only be set once.</remarks>
+        /// </summary>
+        /// <param name="policyKey">The unique, used-definable key to assign to this <see cref="Policy"/> instance.</param>
+        IAsyncPolicy IAsyncPolicy.WithPolicyKey(String policyKey)
+        {
+            if (policyKeyInternal != null) throw PolicyKeyMustBeImmutableException;
+
+            policyKeyInternal = policyKey;
+            return this;
+        }
+
+    }
+
+    public abstract partial class Policy<TResult>
+    {
         /// <summary>
         /// Sets the PolicyKey for this <see cref="Policy"/> instance.
         /// <remarks>Must be called before the policy is first used.  Can only be set once.</remarks>
@@ -79,9 +79,9 @@ namespace Polly
         /// <param name="policyKey">The unique, used-definable key to assign to this <see cref="Policy"/> instance.</param>
         public Policy<TResult> WithPolicyKey(String policyKey)
         {
-            if (_policyKey != null) throw Policy.PolicyKeyMustBeImmutableException;
+            if (policyKeyInternal != null) throw PolicyKeyMustBeImmutableException;
 
-            _policyKey = policyKey;
+            policyKeyInternal = policyKey;
             return this;
         }
 
@@ -92,9 +92,9 @@ namespace Polly
         /// <param name="policyKey">The unique, used-definable key to assign to this <see cref="Policy"/> instance.</param>
         ISyncPolicy<TResult> ISyncPolicy<TResult>.WithPolicyKey(String policyKey)
         {
-            if (_policyKey != null) throw Policy.PolicyKeyMustBeImmutableException;
+            if (policyKeyInternal != null) throw PolicyKeyMustBeImmutableException;
 
-            _policyKey = policyKey;
+            policyKeyInternal = policyKey;
             return this;
         }
 
@@ -105,18 +105,10 @@ namespace Polly
         /// <param name="policyKey">The unique, used-definable key to assign to this <see cref="Policy"/> instance.</param>
         IAsyncPolicy<TResult> IAsyncPolicy<TResult>.WithPolicyKey(String policyKey)
         {
-            if (_policyKey != null) throw Policy.PolicyKeyMustBeImmutableException;
+            if (policyKeyInternal != null) throw PolicyKeyMustBeImmutableException;
 
-            _policyKey = policyKey;
+            policyKeyInternal = policyKey;
             return this;
-        }
-        /// <summary>
-        /// Updates the execution <see cref="Context"/> with context from the executing <see cref="Policy{TResult}"/>.
-        /// </summary>
-        /// <param name="executionContext">The execution <see cref="Context"/>.</param>
-        internal virtual void SetPolicyContext(Context executionContext)
-        {
-            executionContext.PolicyKey = PolicyKey;
         }
     }
 }

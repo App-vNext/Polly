@@ -61,6 +61,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\PolicyTResultExtensionsAsync.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\ResultClass.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\ResultPrimitive.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IAsyncPolicyExtensionsSpecs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ISyncPolicyExtensionsSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)NoOp\NoOpTResultSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)NoOp\NoOpTResultAsyncSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)NoOp\NoOpAsyncSpecs.cs" />

@@ -8,14 +8,14 @@ namespace Polly.Specs.Caching
     public class DefaultCacheKeyStrategySpecs
     {
         [Fact]
-        public void Should_return_Context_ExecutionKey_as_cache_key()
+        public void Should_return_Context_OperationKey_as_cache_key()
         {
-            string executionKey = Guid.NewGuid().ToString();
+            string operationKey = "SomeKey";
 
-            Context context = new Context(executionKey);
+            Context context = new Context(operationKey);
 
             DefaultCacheKeyStrategy.Instance.GetCacheKey(context)
-                .Should().Be(executionKey);
+                .Should().Be(operationKey);
         }
     }
 }

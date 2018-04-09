@@ -38,7 +38,7 @@ namespace Polly.Specs.Caching
         {
             AbsoluteTtl ttlStrategy = new AbsoluteTtl(SystemClock.DateTimeOffsetUtcNow().Subtract(TimeSpan.FromTicks(1)));
 
-            ttlStrategy.GetTtl(new Context("someExecutionKey"), null).Timespan.Should().Be(TimeSpan.Zero);
+            ttlStrategy.GetTtl(new Context("someOperationKey"), null).Timespan.Should().Be(TimeSpan.Zero);
         }
 
         [Fact]
@@ -50,7 +50,7 @@ namespace Polly.Specs.Caching
             AbsoluteTtl ttlStrategy = new AbsoluteTtl(tomorrow);
 
             SystemClock.DateTimeOffsetUtcNow = () => today;
-            ttlStrategy.GetTtl(new Context("someExecutionKey"), null).Timespan.Should().Be(TimeSpan.FromDays(1));
+            ttlStrategy.GetTtl(new Context("someOperationKey"), null).Timespan.Should().Be(TimeSpan.FromDays(1));
         }
 
         public void Dispose()
