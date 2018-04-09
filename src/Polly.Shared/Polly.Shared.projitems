@@ -85,6 +85,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Fallback\FallbackPolicyAsync.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Fallback\IFallbackPolicy.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IAsyncPolicy.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IAsyncPolicy.Extensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IAsyncPolicy.TResult.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ISyncPolicy.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IsPolicy.cs" />
@@ -98,6 +99,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)NoOp\NoOpTResultSyntaxAsync.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)NoOp\NoOpTResultSyntax.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)NoOp\NoOpSyntax.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ISyncPolicy.Extensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Policy.Async.ExecuteOverloads.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Policy.Async.TResult.ExecuteOverloads.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Policy.cs" />
