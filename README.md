@@ -2,10 +2,10 @@
 
 Polly is a .NET resilience and transient-fault-handling library that allows developers to express policies such as Retry, Circuit Breaker, Timeout, Bulkhead Isolation, and Fallback in a fluent and thread-safe manner.  
 
-Polly targets .NET Standard 1.1 ([coverage](https://github.com/dotnet/standard/blob/master/docs/versions.md): .NET Framework 4.5+, .NET Core, Mono, Xamarin.iOS, Xamarin.Android, UWP, WP8.1+).
+Polly targets .NET Standard 1.1 ([coverage](https://docs.microsoft.com/en-us/dotnet/standard/net-standard#net-implementation-support): .NET Framework 4.5-4.6.1, .NET Core 1.0, Mono, Xamarin, UWP, WP8.1+) and .NET Standard 2.0+  ([coverage](https://docs.microsoft.com/en-us/dotnet/standard/net-standard#net-implementation-support): .NET Framework 4.6.1, .NET Core 2.0+, and later Mono, Xamarin and UWP targets).
 
 [<img align="right" src="https://github.com/dotnet/swag/raw/master/logo/dotnetfoundation_v4_small.png" width="100" />](https://www.dotnetfoundation.org/)
-We are now a member of the [.NET Foundation](https://www.dotnetfoundation.org/about)!
+We are a member of the [.NET Foundation](https://www.dotnetfoundation.org/about)!
 
 **Keep up to date with new feature announcements, tips & tricks, and other news through [www.thepollyproject.org](http://www.thepollyproject.org)**
 
@@ -911,7 +911,7 @@ For more detail see: [Polly and interfaces](https://github.com/App-vNext/Polly/w
 
 From Polly v6.0.0, .NET4.5 support is provided [via the .Net Standard 1.1 target](https://docs.microsoft.com/en-us/dotnet/standard/net-standard#net-implementation-support).
 
-Polly versions up to [v5.9.0](https://www.nuget.org/packages/Polly/5.9.0) have direct target support for .NET 4.5.
+Polly versions up to [v5.9.0](https://www.nuget.org/packages/Polly/5.9.0) have direct target support for .NET Framework 4.5.
 
 # .NET4.0 support 
 
@@ -930,9 +930,9 @@ For details of changes by release see the [change log](https://github.com/App-vN
 * [Fluent Assertions](https://github.com/fluentassertions/fluentassertions) - A set of .NET extension methods that allow you to more naturally specify the expected outcome of a TDD or BDD-style test | [Apache License 2.0 (Apache)](https://github.com/dennisdoomen/fluentassertions/blob/develop/LICENSE)
 * [xUnit.net](https://github.com/xunit/xunit) - Free, open source, community-focused unit testing tool for the .NET Framework | [Apache License 2.0 (Apache)](https://github.com/xunit/xunit/blob/master/license.txt)
 * [Ian Griffith's TimedLock](http://www.interact-sw.co.uk/iangblog/2004/04/26/yetmoretimedlocking)
-* [Steven van Deursen's ReadOnlyDictionary](http://www.cuttingedge.it/blogs/steven/pivot/entry.php?id=29) (until v5.0.6)
-* [Stephen Cleary's AsyncEx library](https://github.com/StephenCleary/AsyncEx) for AsyncSemaphore (supports BulkheadAsync policy for .NET4.0 only) | [MIT license](https://github.com/StephenCleary/AsyncEx/blob/master/LICENSE)
-* [@theraot](https://github.com/theraot)'s [ExceptionDispatchInfo implementation for .NET4.0](https://stackoverflow.com/a/31226509/) (supports Timeout policy for .NET4.0 only) including also a contribution by [@migueldeicaza](https://github.com/migueldeicaza) | Licensed under and distributed under [Creative Commons Attribution Share Alike license](https://creativecommons.org/licenses/by-sa/3.0/) per [StackExchange Terms of Service](https://stackexchange.com/legal)
+* [Steven van Deursen's ReadOnlyDictionary](http://www.cuttingedge.it/blogs/steven/pivot/entry.php?id=29) (until Polly v5.0.6)
+* [Stephen Cleary's AsyncEx library](https://github.com/StephenCleary/AsyncEx) for AsyncSemaphore (supports BulkheadAsync policy for .NET4.0 only) (until Polly v5.9.0) | [MIT license](https://github.com/StephenCleary/AsyncEx/blob/master/LICENSE)
+* [@theraot](https://github.com/theraot)'s [ExceptionDispatchInfo implementation for .NET4.0](https://stackoverflow.com/a/31226509/) (supports Timeout policy for .NET4.0 only) (until Polly v5.9.0) including also a contribution by [@migueldeicaza](https://github.com/migueldeicaza) | Licensed under and distributed under [Creative Commons Attribution Share Alike license](https://creativecommons.org/licenses/by-sa/3.0/) per [StackExchange Terms of Service](https://stackexchange.com/legal)
 * Build powered by [Cake](http://cakebuild.net/) and [GitVersionTask](https://github.com/GitTools/GitVersion).
 
 # Acknowledgements

@@ -45,6 +45,7 @@ var snkFile = srcDir + File(keyName);
 
 var projectToNugetFolderMap = new Dictionary<string, string[]>() {
     { "NetStandard11", new [] {"netstandard1.1"} },
+    { "NetStandard20", new [] {"netstandard2.0"} },
 };
 
 // Gitversion
@@ -209,10 +210,12 @@ Task("__BuildSolutions")
 Task("__RunTests")
     .Does(() =>
 {
-    DotNetCoreTest("./src/Polly.NetStandard11.Specs/Polly.NetStandard11.Specs.csproj", new DotNetCoreTestSettings {
-        Configuration = configuration,
-        NoBuild = true
-    });
+    foreach(var specsProj in GetFiles("./src/**/*.Specs.csproj")) {
+        DotNetCoreTest(specsProj.FullPath, new DotNetCoreTestSettings {
+            Configuration = configuration,
+            NoBuild = true
+        });
+    }
 });
 
 Task("__CopyOutputToNugetFolder")
