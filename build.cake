@@ -44,7 +44,6 @@ var nupkgDestDir = artifactsDir + Directory("nuget-package");
 var snkFile = srcDir + File(keyName);
 
 var projectToNugetFolderMap = new Dictionary<string, string[]>() {
-    { "Net45"        , new [] {"net45"} },
     { "NetStandard11", new [] {"netstandard1.1"} },
 };
 
@@ -173,15 +172,6 @@ Task("__BuildSolutions")
 Task("__RunTests")
     .Does(() =>
 {
-    XUnit2("./src/**/bin/" + configuration + "/**/*.Net4*.Specs.dll", new XUnit2Settings {
-        OutputDirectory = testResultsDir,
-        XmlReportV1 = true
-    });
-});
-
-Task("__RunDotnetTests")
-    .Does(() =>
-{
     DotNetCoreTest("./src/Polly.NetStandard11.Specs/Polly.NetStandard11.Specs.csproj", new DotNetCoreTestSettings {
         Configuration = configuration,
         NoBuild = true
@@ -269,7 +259,6 @@ Task("Build")
     .IsDependentOn("__UpdateAppVeyorBuildNumber")
     .IsDependentOn("__BuildSolutions")
     .IsDependentOn("__RunTests")
-    .IsDependentOn("__RunDotnetTests")
     .IsDependentOn("__CopyOutputToNugetFolder")
     .IsDependentOn("__CreateNugetPackage")
     .IsDependentOn("__StronglySignAssemblies")
