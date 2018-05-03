@@ -195,24 +195,6 @@ Task("__CopyOutputToNugetFolder")
     CopyFile(nuspecSrcFile, nuspecDestFile);
 });
 
-Task("__CreateNugetPackage")
-    .Does(() =>
-{
-    var nugetVersion = gitVersionOutput["NuGetVersion"].ToString();
-    var packageName = projectName;
-
-    Information("Building {0}.{1}.nupkg", packageName, nugetVersion);
-
-    var nuGetPackSettings = new NuGetPackSettings {
-        Id = packageName,
-        Title = packageName,
-        Version = nugetVersion,
-        OutputDirectory = nupkgDestDir
-    };
-
-    NuGetPack(nuspecDestFile, nuGetPackSettings);
-});
-
 Task("__StronglySignAssemblies")
     .Does(() =>
 {
@@ -233,7 +215,7 @@ Task("__CreateSignedNugetPackage")
     .Does(() =>
 {
     var nugetVersion = gitVersionOutput["NuGetVersion"].ToString();
-    var packageName = projectName + "-Signed";
+    var packageName = projectName;
 
     Information("Building {0}.{1}.nupkg", packageName, nugetVersion);
 
@@ -260,7 +242,6 @@ Task("Build")
     .IsDependentOn("__BuildSolutions")
     .IsDependentOn("__RunTests")
     .IsDependentOn("__CopyOutputToNugetFolder")
-    .IsDependentOn("__CreateNugetPackage")
     .IsDependentOn("__StronglySignAssemblies")
     .IsDependentOn("__CreateSignedNugetPackage");
 
