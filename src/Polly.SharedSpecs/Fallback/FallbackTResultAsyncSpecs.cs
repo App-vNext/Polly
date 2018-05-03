@@ -378,7 +378,7 @@ namespace Polly.Specs.Fallback
                 .HandleResult(ResultPrimitive.Fault)
                 .FallbackAsync(fallbackAction, onFallbackAsync);
 
-            (await fallbackPolicy.ExecuteAndCaptureAsync(() => { return Task.FromResult(ResultPrimitive.Fault); },
+            (await fallbackPolicy.ExecuteAndCaptureAsync(ctx => { return Task.FromResult(ResultPrimitive.Fault); },
                 new { key1 = "value1", key2 = "value2" }.AsDictionary()).ConfigureAwait(false))
                 .Result.Should().Be(ResultPrimitive.Substitute);
 
