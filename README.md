@@ -916,10 +916,15 @@ This allows collections of similar kinds of policy to be treated as one - for ex
 
 For more detail see: [Polly and interfaces](https://github.com/App-vNext/Polly/wiki/Polly-and-interfaces) on wiki.
 
+# .NET4.5 support
+
+From Polly v6.0.0, .NET4.5 support is provided [via the .Net Standard 1.1 target](https://docs.microsoft.com/en-us/dotnet/standard/net-standard#net-implementation-support).
+
+Polly versions up to [v5.9.0](https://www.nuget.org/packages/Polly/5.9.0) have direct target support for .NET 4.5.
 
 # .NET4.0 support 
 
-The .NET4.0 package uses `Microsoft.Bcl.Async` to add async support.  To minimise  dependencies on the main Polly nuget package, the .NET4.0 version is available as separate Nuget packages `Polly.Net40Async` and `Polly.Net40Async-signed`.
+The last version of Polly to support .NET4.0 is [v5.9.0](https://www.nuget.org/packages/Polly.Net40Async/5.9.0).  The .NET4.0 package uses `Microsoft.Bcl.Async` to add async support.  To minimise dependencies on the main Polly nuget package, the .NET4.0 version is available as separate Nuget packages `Polly.Net40Async` and `Polly.Net40Async-signed`.
 
 # .NET3.5 support 
 

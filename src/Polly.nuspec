@@ -13,7 +13,12 @@
     <tags>Exception Handling Resilience Transient Fault Policy Circuit Breaker CircuitBreaker Retry Wait Cache Cache-aside Bulkhead Fallback Timeout Throttle Parallelization</tags>
     <copyright>Copyright © 2018, App vNext</copyright>
     <releaseNotes>
-     v5.0 is a major release with significant new resilience policies: Timeout; Bulkhead Isolation; Fallback; Cache; and PolicyWrap.  See release notes back to v5.0.0 for full details.
+     6.0.0-v6alpha
+     ---------------------
+     - Publish as strong-named package only (discontinue non-strong-named versions)
+     - Provide .NET4.5 support via .NetStandard 1.1 tfm
+     - Discontinue .NET4.0 support
+     - Remove methods marked as deprecated in v5.9.0
 
      5.9.0
      ---------------------
