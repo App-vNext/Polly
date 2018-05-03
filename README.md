@@ -17,15 +17,6 @@ We are now a member of the [.NET Foundation](https://www.dotnetfoundation.org/ab
 
     Install-Package Polly
 
-You can install the Strongly Named version via: 
-
-    Install-Package Polly-Signed
-
-.NET4.0 support is provided via the packages:
-
-    Install-Package Polly.Net40Async
-    Install-Package Polly.Net40Async-Signed
-
 
 # Resilience policies
 
