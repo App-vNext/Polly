@@ -34,40 +34,6 @@ namespace Polly
         /// </returns>
         /// <exception cref="System.ArgumentNullException">contextData</exception>
         [DebuggerStepThrough]
-        [Obsolete("This overload is deprecated and scheduled for removal in Polly v6.")]
-        public TResult Execute(Func<TResult> action, IDictionary<string, object> contextData)
-        {
-            return Execute((ctx, ct) => action(), new Context(contextData), DefaultCancellationToken);
-        }
-
-        /// <summary>
-        /// Executes the specified action within the policy and returns the result.
-        /// </summary>
-        /// <param name="action">The action to perform.</param>
-        /// <param name="context">Context data that is passed to the exception policy.</param>
-        /// <exception cref="System.ArgumentNullException">context</exception>
-        /// <returns>
-        /// The value returned by the action
-        /// </returns>
-        /// <exception cref="System.ArgumentNullException">contextData</exception>
-        [DebuggerStepThrough]
-        [Obsolete("This overload is deprecated and scheduled for removal in Polly v6.")]
-        public TResult Execute(Func<TResult> action, Context context)
-        {
-            return Execute((ctx, ct) => action(), context, DefaultCancellationToken);
-        }
-
-        /// <summary>
-        /// Executes the specified action within the policy and returns the result.
-        /// </summary>
-        /// <param name="action">The action to perform.</param>
-        /// <param name="contextData">Arbitrary data that is passed to the exception policy.</param>
-        /// <exception cref="System.ArgumentNullException">contextData</exception>
-        /// <returns>
-        /// The value returned by the action
-        /// </returns>
-        /// <exception cref="System.ArgumentNullException">contextData</exception>
-        [DebuggerStepThrough]
         public TResult Execute(Func<Context, TResult> action, IDictionary<string, object> contextData)
         {
             return Execute((ctx, ct) => action(ctx), new Context(contextData), DefaultCancellationToken);
@@ -100,36 +66,7 @@ namespace Polly
         {
             return Execute((ctx, ct) => action(ct), new Context(), cancellationToken);
         }
-
-        /// <summary>
-        /// Executes the specified action within the policy and returns the result.
-        /// </summary>
-        /// <param name="action">The action to perform.</param>
-        /// <param name="contextData">Arbitrary data that is passed to the exception policy.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns>The value returned by the action</returns>
-        /// <exception cref="System.ArgumentNullException">contextData</exception>
-        [DebuggerStepThrough]
-        [Obsolete("This overload is deprecated and scheduled for removal in Polly v6.")]
-        public TResult Execute(Func<CancellationToken, TResult> action, IDictionary<string, object> contextData, CancellationToken cancellationToken)
-        {
-            return Execute((ctx, ct) => action(ct), new Context(contextData), cancellationToken);
-        }
-
-        /// <summary>
-        /// Executes the specified action within the policy and returns the result.
-        /// </summary>
-        /// <param name="action">The action to perform.</param>
-        /// <param name="context">Context data that is passed to the exception policy.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns>The value returned by the action</returns>
-        [DebuggerStepThrough]
-        [Obsolete("This overload is deprecated and scheduled for removal in Polly v6.")]
-        public TResult Execute(Func<CancellationToken, TResult> action, Context context, CancellationToken cancellationToken)
-        {
-            return Execute((ctx, ct) => action(ct), context, cancellationToken);
-        }
-
+        
         /// <summary>
         /// Executes the specified action within the policy and returns the result.
         /// </summary>
@@ -183,34 +120,6 @@ namespace Polly
         /// <exception cref="System.ArgumentNullException">contextData</exception>
         /// <returns>The captured result</returns>
         [DebuggerStepThrough]
-        [Obsolete("This overload is deprecated and scheduled for removal in Polly v6.")]
-        public PolicyResult<TResult> ExecuteAndCapture(Func<TResult> action, IDictionary<string, object> contextData)
-        {
-            return ExecuteAndCapture((ctx, ct) => action(), new Context(contextData), DefaultCancellationToken);
-        }
-
-        /// <summary>
-        /// Executes the specified action within the policy and returns the captured result.
-        /// </summary>
-        /// <param name="action">The action to perform.</param>
-        /// <param name="context">Context data that is passed to the exception policy.</param>
-        /// <exception cref="System.ArgumentNullException">contextData</exception>
-        /// <returns>The captured result</returns>
-        [DebuggerStepThrough]
-        [Obsolete("This overload is deprecated and scheduled for removal in Polly v6.")]
-        public PolicyResult<TResult> ExecuteAndCapture(Func<TResult> action, Context context)
-        {
-            return ExecuteAndCapture((ctx, ct) => action(), context, DefaultCancellationToken);
-        }
-
-        /// <summary>
-        /// Executes the specified action within the policy and returns the captured result.
-        /// </summary>
-        /// <param name="action">The action to perform.</param>
-        /// <param name="contextData">Arbitrary data that is passed to the exception policy.</param>
-        /// <exception cref="System.ArgumentNullException">contextData</exception>
-        /// <returns>The captured result</returns>
-        [DebuggerStepThrough]
         public PolicyResult<TResult> ExecuteAndCapture(Func<Context, TResult> action, IDictionary<string, object> contextData)
         {
             return ExecuteAndCapture((ctx, ct) => action(ctx), new Context(contextData), DefaultCancellationToken);
@@ -239,35 +148,6 @@ namespace Polly
         public PolicyResult<TResult> ExecuteAndCapture(Func<CancellationToken, TResult> action, CancellationToken cancellationToken)
         {
             return ExecuteAndCapture((ctx, ct) => action(ct), new Context(), cancellationToken);
-        }
-
-        /// <summary>
-        /// Executes the specified action within the policy and returns the captured result.
-        /// </summary>
-        /// <param name="action">The action to perform.</param>
-        /// <param name="contextData">Arbitrary data that is passed to the exception policy.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns>The captured result</returns>
-        /// <exception cref="System.ArgumentNullException">contextData</exception>
-        [DebuggerStepThrough]
-        [Obsolete("This overload is deprecated and scheduled for removal in Polly v6.")]
-        public PolicyResult<TResult> ExecuteAndCapture(Func<CancellationToken, TResult> action, IDictionary<string, object> contextData, CancellationToken cancellationToken)
-        {
-            return ExecuteAndCapture((ctx, ct) => action(ct), new Context(contextData), cancellationToken);
-        }
-
-        /// <summary>
-        /// Executes the specified action within the policy and returns the captured result.
-        /// </summary>
-        /// <param name="action">The action to perform.</param>
-        /// <param name="context">Context data that is passed to the exception policy.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns>The captured result</returns>
-        [DebuggerStepThrough]
-        [Obsolete("This overload is deprecated and scheduled for removal in Polly v6.")]
-        public PolicyResult<TResult> ExecuteAndCapture(Func<CancellationToken, TResult> action, Context context, CancellationToken cancellationToken)
-        {
-            return ExecuteAndCapture((ctx, ct) => action(ct), context, cancellationToken);
         }
 
         /// <summary>
