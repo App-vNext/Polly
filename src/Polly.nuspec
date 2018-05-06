@@ -13,6 +13,9 @@
     <tags>Exception Handling Resilience Transient Fault Policy Circuit Breaker CircuitBreaker Retry Wait Cache Cache-aside Bulkhead Fallback Timeout Throttle Parallelization</tags>
     <copyright>Copyright © 2018, App vNext</copyright>
     <releaseNotes>
+     6.0.1
+     - Version 6 RTM, for integration to ASPNET Core 2.1 IHttpClientFactory
+
      6.0.0-v6alpha
      ---------------------
      - Publish as strong-named package only (discontinue non-strong-named versions)

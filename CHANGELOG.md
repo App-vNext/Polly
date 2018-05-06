@@ -1,3 +1,6 @@
+## 6.0.1
+- Version 6 RTM, for integration to ASPNET Core 2.1 IHttpClientFactory
+
 ## 6.0.0-v6alpha
 - Publish as strong-named package only (discontinue non-strong-named versions)
 - Add .NetStandard 2.0 tfm
