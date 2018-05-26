@@ -307,7 +307,9 @@ Policy
     });
 ```
 
-For more detail see: [Retry policy documentation](https://github.com/App-vNext/Polly/wiki/Retry) on wiki.
+If all retries fail, a retry policy rethrows the final exception back to the calling code.
+
+For more depth see also: [Retry policy documentation on wiki](https://github.com/App-vNext/Polly/wiki/Retry).
 
 ### Circuit Breaker
  
@@ -353,7 +355,10 @@ breaker.Isolate();
 breaker.Reset(); 
 
 ```
-For more detail see: [Circuit-Breaker documentation](https://github.com/App-vNext/Polly/wiki/Circuit-Breaker) on wiki.
+
+Note that circuit-breaker policies [rethrow all exceptions](https://github.com/App-vNext/Polly/wiki/Circuit-Breaker#exception-handling), even handled ones. A circuit-breaker exists to measure faults and break the circuit when too many faults occur, but does not orchestrate retries.  Combine a circuit-breaker with a retry policy as needed. 
+
+For more depth see also: [Circuit-Breaker documentation on wiki](https://github.com/App-vNext/Polly/wiki/Circuit-Breaker).
 
 ### Advanced Circuit Breaker 
 ```csharp
