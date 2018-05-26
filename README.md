@@ -594,7 +594,7 @@ var cachePolicy = Policy.Cache(memoryCacheProvider, new AbsoluteTtl(DateTimeOffs
 var cachePolicy = Policy.Cache(memoryCacheProvider, new SlidingTtl(TimeSpan.FromMinutes(5));
 
 // Execute through the cache as a read-through cache: check the cache first; if not found, execute underlying delegate and store the result in the cache. 
-TResult result = cachePolicy.Execute(() => getFoo(), new Context("FooKey")); // "FooKey" is the cache key used in this execution.
+TResult result = cachePolicy.Execute(context => getFoo(), new Context("FooKey")); // "FooKey" is the cache key used in this execution.
 
 // Define a cache Policy, and catch any cache provider errors for logging. 
 var cachePolicy = Policy.Cache(myCacheProvider, TimeSpan.FromMinutes(5), 
@@ -770,7 +770,7 @@ var policy = Policy
     .WithPolicyKey("MyDataAccessPolicy");
 
 int id = ... // customer id from somewhere
-var customerDetails = policy.Execute(() => GetCustomer(id), 
+var customerDetails = policy.Execute(context => GetCustomer(id), 
     new Context("GetCustomerDetails", new Dictionary<string, object>() {{"Type","Customer"},{"Id",id}}
     ));
 ```
