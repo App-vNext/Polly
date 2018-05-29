@@ -791,12 +791,7 @@ namespace Polly.Specs.Timeout
             .ShouldThrow<TimeoutRejectedException>();
 
             exceptionPassedToOnTimeout.Should().NotBeNull();
-            /*
-                This assertion fails on NET40 as the exception is of type TaskCanceledException
-                Unfortunately, using a #if NET40 switch is not viable as the Polly.Net40Async.Specs 
-                project is using NET45 conditional compilation symbols
-            */
-            // exceptionPassedToOnTimeout.Should().BeOfType(typeof(OperationCanceledException));
+            exceptionPassedToOnTimeout.Should().BeOfType(typeof(OperationCanceledException));
         }
 
         [Fact]
@@ -991,12 +986,7 @@ namespace Polly.Specs.Timeout
             .ShouldThrow<TimeoutRejectedException>();
 
             exceptionPassedToOnTimeout.Should().NotBeNull();
-            /*
-                This assertion fails on NET40 as the exception is of type TaskCanceledException
-                Unfortunately, using a #if NET40 switch is not viable as the Polly.Net40Async.Specs 
-                project is using NET45 conditional compilation symbols
-            */
-            // exceptionPassedToOnTimeout.Should().BeOfType(typeof(OperationCanceledException));
+            exceptionPassedToOnTimeout.Should().BeOfType(typeof(OperationCanceledException));
         }
 
         [Fact]
