@@ -585,8 +585,8 @@ For more detail see: [Bulkhead policy documentation](https://github.com/App-vNex
 ### Cache
 
 ```csharp
-// Define a cache Policy in the .NET Framework, using the Polly.Caching.MemoryCache nuget package.
-var memoryCacheProvider = new Polly.Caching.MemoryCache.MemoryCacheProvider(MemoryCache.Default);
+// Define a cache Policy in the .NET Framework, using the Polly.Caching.Memory nuget package.
+var memoryCacheProvider = new MemoryCacheProvider(MemoryCache.Default);
 var cachePolicy = Policy.Cache(memoryCacheProvider, TimeSpan.FromMinutes(5));
 
 // Define a cache policy with absolute expiration at midnight tonight.
