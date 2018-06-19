@@ -983,7 +983,9 @@ For full detailed of supported targets by version, see [supported targets](https
 
 # Sample Projects
 
-[Polly-Samples](https://github.com/App-vNext/Polly-Samples) contains practical examples for using various implementations of Polly. Please feel free to contribute to the Polly-Samples repository in order to assist others who are either learning Polly for the first time, or are seeking advanced examples and novel approaches provided by our generous community.
+* [Polly-Samples](https://github.com/App-vNext/Polly-Samples) contains practical examples for using various implementations of Polly. Please feel free to contribute to the Polly-Samples repository in order to assist others who are either learning Polly for the first time, or are seeking advanced examples and novel approaches provided by our generous community.
+
+* Microsoft's [eShopOnContainers project](https://github.com/dotnet-architecture/eShopOnContainers) is a sample project demonstrating a .NET Microservices architecture and using Polly for resilience
 
 # Instructions for Contributing
 
@@ -997,7 +999,7 @@ Also, we've stood up a [Slack](http://www.pollytalk.org) channel for easier real
 
 Licensed under the terms of the [New BSD License](http://opensource.org/licenses/BSD-3-Clause)
 
-# Blog posts, podcasts and videos about Polly
+# Blogs, podcasts, courses, ebooks, architecture samples and videos around Polly
 
 When we discover an interesting write-up on Polly, we'll add it to this list. If you have a blog post you'd like to share, please submit a PR!
 
@@ -1025,6 +1027,16 @@ When we discover an interesting write-up on Polly, we'll add it to this list. If
 ## PluralSight course
 
 * [Bryan Hogan](https://twitter.com/bryanjhogan) of the [NoDogmaBlog](http://nodogmablog.bryanhogan.net/) has authored a [PluralSight course on Polly](https://www.pluralsight.com/courses/polly-fault-tolerant-web-service-requests).  The course takes you through all the major features of Polly as at v5.6.1.  The course examples are based around using Polly for fault tolerance when calling remote web services, but the principles and techniques are applicable to any context in which Polly may be used.
+
+## Sample microservices architecture and ebook
+
+### Sample microservices architecture
+
+* [Cesar de la Torre](https://github.com/CESARDELATORRE) produced the Microsoft [eShopOnContainers project](https://github.com/dotnet-architecture/eShopOnContainers), a sample project demonstrating a .NET Microservices architecture. The project uses Polly retry and circuit-breaker policies for resilience in calls to microservices, and in establishing connections to transports such as RabbitMQ.  
+
+### ebook
+
+* Accompanying the project is a [.Net Microservices Architecture ebook](https://www.microsoft.com/net/download/thank-you/microservices-architecture-ebook) with an extensive section (section 8) on using Polly for resilience, to which [Dylan Reisenberger](https://twitter.com/softwarereisen) contributed.  The ebook and code is now (June 2018) updated for using the latest ASP NET Core 2.1 features, [Polly with IHttpClientFactory](https://github.com/App-vNext/Polly/wiki/Polly-and-HttpClientFactory).
 
 ## Twitter
 
