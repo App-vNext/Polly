@@ -1,3 +1,6 @@
+## 6.1.0
+- Improved cache error message (issue 455)
+
 ## 6.0.1
 - Version 6 RTM, for integration to ASPNET Core 2.1 IHttpClientFactory
 

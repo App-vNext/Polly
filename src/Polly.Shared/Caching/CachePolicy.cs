@@ -55,6 +55,8 @@ namespace Polly.Caching
         [DebuggerStepThrough]
         internal override TResult ExecuteInternal<TResult>(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken)
         {
+            if (_syncCacheProvider == null) throw new InvalidOperationException("Please use the synchronous-defined policies when calling the synchronous Execute (and similar) methods.");
+
             return CacheEngine.Implementation<TResult>(
                 _syncCacheProvider.For<TResult>(), 
                 _ttlStrategy.For<TResult>(),

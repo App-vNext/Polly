@@ -42,6 +42,18 @@ namespace Polly.Specs.Caching
             action.ShouldThrow<ArgumentNullException>().And.ParamName.Should().Be("cacheKeyStrategy");
         }
 
+        [Fact]
+        public void Should_throw_informative_exception_when_sync_execute_on_an_async_policy()
+        {
+            IAsyncCacheProvider cacheProvider = new StubCacheProvider();
+
+            var cachePolicy = Policy.CacheAsync(cacheProvider, TimeSpan.FromMinutes(5));
+
+            Action action = () => cachePolicy.Execute(() => 0);
+
+            action.ShouldThrow<InvalidOperationException>();
+        }
+
         #endregion
 
         #region Caching behaviours
