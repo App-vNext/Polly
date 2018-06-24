@@ -17,7 +17,11 @@ namespace Polly.Retry
 
         public bool CanRetry(DelegateResult<TResult> delegateResult, CancellationToken cancellationToken)
         {
-            _errorCount += 1;
+            if (_errorCount < int.MaxValue)
+            {
+                _errorCount += 1;
+            }
+
             _onRetry(delegateResult, _errorCount, _context);
             return true;
         }

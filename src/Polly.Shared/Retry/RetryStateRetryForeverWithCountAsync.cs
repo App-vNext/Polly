@@ -16,7 +16,11 @@ namespace Polly.Retry
 
         public async Task<bool> CanRetryAsync(DelegateResult<TResult> delegateResult, CancellationToken ct, bool continueOnCapturedContext)
         {
-            _errorCount += 1;
+            if (_errorCount < int.MaxValue)
+            {
+                _errorCount += 1;
+            }
+
             await _onRetryAsync(delegateResult, _errorCount, _context).ConfigureAwait(continueOnCapturedContext);
             return true;
         }
