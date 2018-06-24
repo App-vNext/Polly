@@ -128,7 +128,8 @@ namespace Polly
         {
             if (onRetry == null) throw new ArgumentNullException(nameof(onRetry));
 
-            return policyBuilder.RetryForever((outcome) => onRetry(outcome));
+            //return policyBuilder.RetryForever((outcome, ctx) => onRetry(outcome));
+            return policyBuilder.RetryForever((Exception outcome, Context ctx) => onRetry(outcome));
         }
 
         /// <summary>
