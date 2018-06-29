@@ -14,14 +14,12 @@ namespace Polly.Caching
 
         internal GenericCacheProviderAsync(IAsyncCacheProvider nonGenericCacheProvider)
         {
-            if (nonGenericCacheProvider == null) throw new ArgumentNullException(nameof(nonGenericCacheProvider));
-
-            _wrappedCacheProvider = nonGenericCacheProvider;
+            _wrappedCacheProvider = nonGenericCacheProvider ?? throw new ArgumentNullException(nameof(nonGenericCacheProvider));
         }
 
         async Task<TCacheFormat> IAsyncCacheProvider<TCacheFormat>.GetAsync(string key, CancellationToken cancellationToken, bool continueOnCapturedContext)
         {
-            return (TCacheFormat) await _wrappedCacheProvider.GetAsync(key, cancellationToken, continueOnCapturedContext).ConfigureAwait(continueOnCapturedContext);
+            return (TCacheFormat) (await _wrappedCacheProvider.GetAsync(key, cancellationToken, continueOnCapturedContext).ConfigureAwait(continueOnCapturedContext) ?? default(TCacheFormat));
         }
 
         Task IAsyncCacheProvider<TCacheFormat>.PutAsync(string key, TCacheFormat value, Ttl ttl, CancellationToken cancellationToken, bool continueOnCapturedContext)
