@@ -22,11 +22,8 @@ namespace Polly.Caching
         /// <exception cref="System.ArgumentNullException">serializer </exception>
         public SerializingCacheProviderAsync(IAsyncCacheProvider<TSerialized> wrappedCacheProvider, ICacheItemSerializer<object, TSerialized> serializer)
         {
-            if (wrappedCacheProvider == null) throw new ArgumentNullException(nameof(wrappedCacheProvider));
-            if (serializer == null) throw new ArgumentNullException(nameof(serializer));
-
-            _wrappedCacheProvider = wrappedCacheProvider;
-            _serializer = serializer;
+            _wrappedCacheProvider = wrappedCacheProvider ?? throw new ArgumentNullException(nameof(wrappedCacheProvider));
+            _serializer = serializer ?? throw new ArgumentNullException(nameof(serializer));
         }
 
         /// <summary>
@@ -38,8 +35,8 @@ namespace Polly.Caching
         /// <returns>A <see cref="Task{TResult}" /> promising as Result the value from cache; or null, if none was found.</returns>
         public async Task<object> GetAsync(string key, CancellationToken cancellationToken, bool continueOnCapturedContext)
         {
-            return _serializer.Deserialize(
-                await _wrappedCacheProvider.GetAsync(key, cancellationToken, continueOnCapturedContext).ConfigureAwait(continueOnCapturedContext));
+            TSerialized objectToDeserialize = await _wrappedCacheProvider.GetAsync(key, cancellationToken, continueOnCapturedContext).ConfigureAwait(continueOnCapturedContext);
+            return objectToDeserialize == null || objectToDeserialize.Equals(default(TSerialized)) ? null :_serializer.Deserialize(objectToDeserialize);
         }
 
         /// <summary>
@@ -54,7 +51,9 @@ namespace Polly.Caching
         public async Task PutAsync(string key, object value, Ttl ttl, CancellationToken cancellationToken,
             bool continueOnCapturedContext)
         {
-            await _wrappedCacheProvider.PutAsync(
+            if (value != null)
+
+                await _wrappedCacheProvider.PutAsync(
                            key,
                            _serializer.Serialize(value),
                            ttl,
@@ -83,11 +82,8 @@ namespace Polly.Caching
         /// <exception cref="System.ArgumentNullException">serializer </exception>
         public SerializingCacheProviderAsync(IAsyncCacheProvider<TSerialized> wrappedCacheProvider, ICacheItemSerializer<TResult, TSerialized> serializer)
         {
-            if (wrappedCacheProvider == null) throw new ArgumentNullException(nameof(wrappedCacheProvider));
-            if (serializer == null) throw new ArgumentNullException(nameof(serializer));
-
-            _wrappedCacheProvider = wrappedCacheProvider;
-            _serializer = serializer;
+            _wrappedCacheProvider = wrappedCacheProvider ?? throw new ArgumentNullException(nameof(wrappedCacheProvider));
+            _serializer = serializer ?? throw new ArgumentNullException(nameof(serializer));
         }
 
         /// <summary>
@@ -99,8 +95,8 @@ namespace Polly.Caching
         /// <returns>A <see cref="Task{TResult}" /> promising as Result the value from cache; or null, if none was found.</returns>
         public async Task<TResult> GetAsync(string key, CancellationToken cancellationToken, bool continueOnCapturedContext)
         {
-            return _serializer.Deserialize(
-                await _wrappedCacheProvider.GetAsync(key, cancellationToken, continueOnCapturedContext).ConfigureAwait(continueOnCapturedContext));
+            TSerialized objectToDeserialize = await _wrappedCacheProvider.GetAsync(key, cancellationToken, continueOnCapturedContext).ConfigureAwait(continueOnCapturedContext);
+            return objectToDeserialize == null || objectToDeserialize.Equals(default(TSerialized)) ? default(TResult) : _serializer.Deserialize(objectToDeserialize);
         }
 
         /// <summary>
@@ -115,7 +111,9 @@ namespace Polly.Caching
         public async Task PutAsync(string key, TResult value, Ttl ttl, CancellationToken cancellationToken,
             bool continueOnCapturedContext)
         {
-            await _wrappedCacheProvider.PutAsync(
+            if (value != null && !value.Equals(default(TResult)))
+
+                await _wrappedCacheProvider.PutAsync(
                            key,
                            _serializer.Serialize(value),
                            ttl,
