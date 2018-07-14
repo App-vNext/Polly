@@ -359,19 +359,9 @@ namespace Polly
         /// <exception cref="System.ArgumentNullException">onTimeoutAsync</exception>
         public static TimeoutPolicy<TResult> TimeoutAsync<TResult>(Func<Context, TimeSpan> timeoutProvider, TimeoutStrategy timeoutStrategy, Func<Context, TimeSpan, Task, Task> onTimeoutAsync)
         {
-            if (timeoutProvider == null) throw new ArgumentNullException(nameof(timeoutProvider));
             if (onTimeoutAsync == null) throw new ArgumentNullException(nameof(onTimeoutAsync));
 
-            return new TimeoutPolicy<TResult>(
-                (action, context, cancellationToken, continueOnCapturedContext) => TimeoutEngine.ImplementationAsync(
-                    action,
-                    context,
-                    timeoutProvider,
-                    timeoutStrategy,
-                    (ctx, timeout, task, exception) => onTimeoutAsync(ctx, timeout, task),
-                    cancellationToken, 
-                    continueOnCapturedContext)
-                );
+            return TimeoutAsync<TResult>(timeoutProvider, timeoutStrategy, (ctx, timeout, task, ex) => onTimeoutAsync(ctx, timeout, task));
         }
 
         /// <summary>
