@@ -224,7 +224,7 @@ namespace Polly
 
             return policyBuilder.RetryForeverAsync(
 #pragma warning disable 1998 // async method has no awaits, will run synchronously
-                onRetryAsync: async (outcome, i) => onRetry(outcome, i)
+                onRetryAsync: async (outcome, i, context) => onRetry(outcome, i)
 #pragma warning restore 1998
                 );
         }
@@ -256,7 +256,7 @@ namespace Polly
         {
             if (onRetryAsync == null) throw new ArgumentNullException(nameof(onRetryAsync));
 
-            return policyBuilder.RetryForeverAsync(onRetryAsync: (outcome, i) => onRetryAsync(outcome, i));
+            return policyBuilder.RetryForeverAsync(onRetryAsync: (outcome, i, context) => onRetryAsync(outcome, i));
         }
 
         /// <summary>

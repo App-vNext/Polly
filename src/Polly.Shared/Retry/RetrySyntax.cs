@@ -563,7 +563,7 @@ namespace Polly
             if (onRetry == null) throw new ArgumentNullException(nameof(onRetry));
 
             return policyBuilder.WaitAndRetryForever(
-                (retryCount, context) => sleepDurationProvider(retryCount),
+                (retryCount, exception, context) => sleepDurationProvider(retryCount),
                 (exception, i, timespan, context) => onRetry(exception, i, timespan)
             );
         }
