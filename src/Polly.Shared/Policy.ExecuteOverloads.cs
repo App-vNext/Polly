@@ -77,9 +77,16 @@ namespace Polly
         {
             if (context == null) throw new ArgumentNullException(nameof(context));
 
-            SetPolicyContext(context);
+            SetPolicyContext(context, out string priorPolicyWrapKey, out string priorPolicyKey);
 
-            ExecuteInternal(action, context, cancellationToken);
+            try
+            {
+                ExecuteInternal(action, context, cancellationToken);
+            }
+            finally
+            {
+                RestorePolicyContext(context, priorPolicyWrapKey, priorPolicyKey);
+            }
         }
 
         #region Overloads method-generic in TResult
@@ -171,9 +178,16 @@ namespace Polly
         {
             if (context == null) throw new ArgumentNullException(nameof(context));
 
-            SetPolicyContext(context);
+            SetPolicyContext(context, out string priorPolicyWrapKey, out string priorPolicyKey);
 
-            return ExecuteInternal(action, context, cancellationToken);
+            try
+            {
+                return ExecuteInternal(action, context, cancellationToken);
+            }
+            finally
+            {
+                RestorePolicyContext(context, priorPolicyWrapKey, priorPolicyKey);
+            }
         }
 
         #endregion
