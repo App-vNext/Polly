@@ -120,7 +120,18 @@ namespace Polly.Specs.Timeout
         [Fact]
         public void Should_throw_when_onTimeout_is_null_with_timespan()
         {
-            Action policy = () => Policy.TimeoutAsync<ResultPrimitive>(TimeSpan.FromMinutes(0.5), null);
+            Func<Context, TimeSpan, Task, Task> onTimeout = null;
+            Action policy = () => Policy.TimeoutAsync<ResultPrimitive>(TimeSpan.FromMinutes(0.5), onTimeout);
+
+            policy.ShouldThrow<ArgumentNullException>()
+                .And.ParamName.Should().Be("onTimeoutAsync");
+        }
+
+        [Fact]
+        public void Should_throw_when_onTimeout_is_null_with_timespan_with_full_argument_list_onTimeout()
+        {
+            Func<Context, TimeSpan, Task, Exception, Task> onTimeout = null;
+            Action policy = () => Policy.TimeoutAsync<ResultPrimitive>(TimeSpan.FromMinutes(0.5), onTimeout);
 
             policy.ShouldThrow<ArgumentNullException>()
                 .And.ParamName.Should().Be("onTimeoutAsync");
@@ -129,7 +140,19 @@ namespace Polly.Specs.Timeout
         [Fact]
         public void Should_throw_when_onTimeout_is_null_with_seconds()
         {
-            Action policy = () => Policy.TimeoutAsync<ResultPrimitive>(30, null);
+            Func<Context, TimeSpan, Task, Task> onTimeout = null;
+            Action policy = () => Policy.TimeoutAsync<ResultPrimitive>(30, onTimeout);
+
+            policy.ShouldThrow<ArgumentNullException>()
+                .And.ParamName.Should().Be("onTimeoutAsync");
+        }
+
+
+        [Fact]
+        public void Should_throw_when_onTimeout_is_null_with_seconds_with_full_argument_list_onTimeout()
+        {
+            Func<Context, TimeSpan, Task, Exception, Task> onTimeout = null;
+            Action policy = () => Policy.TimeoutAsync<ResultPrimitive>(30, onTimeout);
 
             policy.ShouldThrow<ArgumentNullException>()
                 .And.ParamName.Should().Be("onTimeoutAsync");
@@ -147,7 +170,18 @@ namespace Polly.Specs.Timeout
         [Fact]
         public void Should_throw_when_onTimeout_is_null_with_timeoutprovider()
         {
-            Action policy = () => Policy.TimeoutAsync<ResultPrimitive>(() => TimeSpan.FromSeconds(30), null);
+            Func<Context, TimeSpan, Task, Task> onTimeoutAsync = null;
+            Action policy = () => Policy.TimeoutAsync<ResultPrimitive>(() => TimeSpan.FromSeconds(30), onTimeoutAsync);
+
+            policy.ShouldThrow<ArgumentNullException>()
+                .And.ParamName.Should().Be("onTimeoutAsync");
+        }
+
+        [Fact]
+        public void Should_throw_when_onTimeout_is_null_with_timeoutprovider_for_full_argument_list_onTimeout()
+        {
+            Func<Context, TimeSpan, Task, Exception, Task> onTimeoutAsync = null;
+            Action policy = () => Policy.TimeoutAsync<ResultPrimitive>(() => TimeSpan.FromSeconds(30), onTimeoutAsync);
 
             policy.ShouldThrow<ArgumentNullException>()
                 .And.ParamName.Should().Be("onTimeoutAsync");
@@ -561,6 +595,31 @@ namespace Polly.Specs.Timeout
 
         }
 
+        [Fact]
+        public void Should_call_ontimeout_with_timing_out_exception__pessimistic()
+        {
+            TimeSpan timeoutPassedToConfiguration = TimeSpan.FromMilliseconds(250);
+
+            Exception exceptionPassedToOnTimeout = null;
+            Func<Context, TimeSpan, Task, Exception, Task> onTimeoutAsync = (ctx, span, task, exception) =>
+            {
+                exceptionPassedToOnTimeout = exception;
+                return TaskHelper.EmptyTask;
+            };
+
+            var policy = Policy.TimeoutAsync<ResultPrimitive>(timeoutPassedToConfiguration, TimeoutStrategy.Pessimistic, onTimeoutAsync);
+
+            policy.Awaiting(async p => await p.ExecuteAsync(async () =>
+                {
+                    await SystemClock.SleepAsync(TimeSpan.FromSeconds(3), CancellationToken.None).ConfigureAwait(false);
+                    return ResultPrimitive.WhateverButTooLate;
+                }))
+                .ShouldThrow<TimeoutRejectedException>();
+
+            exceptionPassedToOnTimeout.Should().NotBeNull();
+            exceptionPassedToOnTimeout.Should().BeOfType(typeof(OperationCanceledException));
+        }
+
         #endregion
 
         #region onTimeout overload - optimistic
@@ -706,6 +765,31 @@ namespace Polly.Specs.Timeout
             taskPassedToOnTimeout.Should().BeNull();
         }
 
+        [Fact]
+        public void Should_call_ontimeout_with_timing_out_exception__optimistic()
+        {
+            TimeSpan timeoutPassedToConfiguration = TimeSpan.FromMilliseconds(250);
+
+            Exception exceptionPassedToOnTimeout = null;
+            Func<Context, TimeSpan, Task, Exception, Task> onTimeoutAsync = (ctx, span, task, exception) =>
+            {
+                exceptionPassedToOnTimeout = exception;
+                return TaskHelper.EmptyTask;
+            };
+
+            var policy = Policy.TimeoutAsync<ResultPrimitive>(timeoutPassedToConfiguration, TimeoutStrategy.Optimistic, onTimeoutAsync);
+            var userCancellationToken = CancellationToken.None;
+
+            policy.Awaiting(async p => await p.ExecuteAsync(async ct =>
+                {
+                    await SystemClock.SleepAsync(TimeSpan.FromSeconds(3), ct).ConfigureAwait(false);
+                    return ResultPrimitive.WhateverButTooLate;
+                }, userCancellationToken).ConfigureAwait(false))
+                .ShouldThrow<TimeoutRejectedException>();
+
+            exceptionPassedToOnTimeout.Should().NotBeNull();
+            exceptionPassedToOnTimeout.Should().BeOfType(typeof(OperationCanceledException));
+        }
 
         #endregion
 

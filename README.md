@@ -309,7 +309,9 @@ Policy
     });
 ```
 
-For more detail see: [Retry policy documentation](https://github.com/App-vNext/Polly/wiki/Retry) on wiki.
+If all retries fail, a retry policy rethrows the final exception back to the calling code.
+
+For more depth see also: [Retry policy documentation on wiki](https://github.com/App-vNext/Polly/wiki/Retry).
 
 ### Circuit Breaker
  
@@ -355,7 +357,10 @@ breaker.Isolate();
 breaker.Reset(); 
 
 ```
-For more detail see: [Circuit-Breaker documentation](https://github.com/App-vNext/Polly/wiki/Circuit-Breaker) on wiki.
+
+Note that circuit-breaker policies [rethrow all exceptions](https://github.com/App-vNext/Polly/wiki/Circuit-Breaker#exception-handling), even handled ones. A circuit-breaker exists to measure faults and break the circuit when too many faults occur, but does not orchestrate retries.  Combine a circuit-breaker with a retry policy as needed. 
+
+For more depth see also: [Circuit-Breaker documentation on wiki](https://github.com/App-vNext/Polly/wiki/Circuit-Breaker).
 
 ### Advanced Circuit Breaker 
 ```csharp
@@ -589,14 +594,15 @@ For more detail see: [Bulkhead policy documentation](https://github.com/App-vNex
 var memoryCacheProvider = new MemoryCacheProvider(MemoryCache.Default);
 var cachePolicy = Policy.Cache(memoryCacheProvider, TimeSpan.FromMinutes(5));
 
+// For .NET Core examples see the CacheProviders linked to from https://github.com/App-vNext/Polly/wiki/Cache#working-with-cacheproviders :
+// - https://github.com/App-vNext/Polly.Caching.MemoryCache
+// - https://github.com/App-vNext/Polly.Caching.IDistributedCache 
+
 // Define a cache policy with absolute expiration at midnight tonight.
 var cachePolicy = Policy.Cache(memoryCacheProvider, new AbsoluteTtl(DateTimeOffset.Now.Date.AddDays(1));
 
 // Define a cache policy with sliding expiration: items remain valid for another 5 minutes each time the cache item is used.
 var cachePolicy = Policy.Cache(memoryCacheProvider, new SlidingTtl(TimeSpan.FromMinutes(5));
-
-// Execute through the cache as a read-through cache: check the cache first; if not found, execute underlying delegate and store the result in the cache. 
-TResult result = cachePolicy.Execute(() => getFoo(), new Context("FooKey")); // "FooKey" is the cache key used in this execution.
 
 // Define a cache Policy, and catch any cache provider errors for logging. 
 var cachePolicy = Policy.Cache(myCacheProvider, TimeSpan.FromMinutes(5), 
@@ -605,6 +611,10 @@ var cachePolicy = Policy.Cache(myCacheProvider, TimeSpan.FromMinutes(5),
    }
 );
 
+// Execute through the cache as a read-through cache: check the cache first; if not found, execute underlying delegate and store the result in the cache. 
+// The key to use for caching, for a particular execution, is specified by setting the OperationKey (before v6: ExecutionKey) on a Context instance passed to the execution. Use an overload of the form shown below (or a richer overload including the same elements).
+// Example: "FooKey" is the cache key that will be used in the below execution.
+TResult result = cachePolicy.Execute(context => getFoo(), new Context("FooKey"));
 
 ```
 
@@ -772,7 +782,7 @@ var policy = Policy
     .WithPolicyKey("MyDataAccessPolicy");
 
 int id = ... // customer id from somewhere
-var customerDetails = policy.Execute(() => GetCustomer(id), 
+var customerDetails = policy.Execute(context => GetCustomer(id), 
     new Context("GetCustomerDetails", new Dictionary<string, object>() {{"Type","Customer"},{"Id",id}}
     ));
 ```
@@ -980,6 +990,8 @@ For full detailed of supported targets by version, see [supported targets](https
 * [@benagain](https://github.com/benagain) - Bug fix: RelativeTtl in CachePolicy now always returns a ttl relative to time item is cached.
 * [@urig](https://github.com/urig) - Allow TimeoutPolicy to be configured with Timeout.InfiniteTimeSpan.
 * [@reisenberger](https://github.com/reisenberger) - Integration with [IHttpClientFactory](https://github.com/aspnet/HttpClientFactory/) for ASPNET Core 2.1.
+* [@freakazoid182](https://github.com/Freakazoid182) - WaitAnd/RetryForever overloads where onRetry takes the retry number as a parameter.
+* [@dustyhoppe](https://github.com/dustyhoppe) - Overloads where onTimeout takes thrown exception as a parameter 
 
 # Sample Projects
 

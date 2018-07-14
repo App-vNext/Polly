@@ -205,7 +205,26 @@ namespace Polly
 
             return policyBuilder.RetryForeverAsync(
 #pragma warning disable 1998 // async method has no awaits, will run synchronously
-                onRetryAsync: async (outcome, ctx) => onRetry(outcome)
+                onRetryAsync: async (DelegateResult<TResult> outcome, Context ctx) => onRetry(outcome)
+#pragma warning restore 1998
+                );
+        }
+
+        /// <summary>
+        ///     Builds a <see cref="Policy" /> that will retry indefinitely
+        ///     calling <paramref name="onRetry" /> on each retry with the handled exception or result and retry count.
+        /// </summary>
+        /// <param name="policyBuilder">The policy builder.</param>
+        /// <param name="onRetry">The action to call on each retry.</param>
+        /// <returns>The policy instance.</returns>
+        /// <exception cref="System.ArgumentNullException">onRetry</exception>
+        public static RetryPolicy<TResult> RetryForeverAsync<TResult>(this PolicyBuilder<TResult> policyBuilder, Action<DelegateResult<TResult>, int> onRetry)
+        {
+            if (onRetry == null) throw new ArgumentNullException(nameof(onRetry));
+
+            return policyBuilder.RetryForeverAsync(
+#pragma warning disable 1998 // async method has no awaits, will run synchronously
+                onRetryAsync: async (outcome, i, context) => onRetry(outcome, i)
 #pragma warning restore 1998
                 );
         }
@@ -222,7 +241,22 @@ namespace Polly
         {
             if (onRetryAsync == null) throw new ArgumentNullException(nameof(onRetryAsync));
 
-            return policyBuilder.RetryForeverAsync(onRetryAsync: (outcome, ctx) => onRetryAsync(outcome));
+            return policyBuilder.RetryForeverAsync(onRetryAsync: (DelegateResult<TResult> outcome, Context ctx) => onRetryAsync(outcome));
+        }
+
+        /// <summary>
+        ///     Builds a <see cref="Policy" /> that will retry indefinitely
+        ///     calling <paramref name="onRetryAsync" /> on each retry with the handled exception or result and retry count.
+        /// </summary>
+        /// <param name="policyBuilder">The policy builder.</param>
+        /// <param name="onRetryAsync">The action to call asynchronously on each retry.</param>
+        /// <returns>The policy instance.</returns>
+        /// <exception cref="System.ArgumentNullException">onRetryAsync</exception>
+        public static RetryPolicy<TResult> RetryForeverAsync<TResult>(this PolicyBuilder<TResult> policyBuilder, Func<DelegateResult<TResult>, int, Task> onRetryAsync)
+        {
+            if (onRetryAsync == null) throw new ArgumentNullException(nameof(onRetryAsync));
+
+            return policyBuilder.RetryForeverAsync(onRetryAsync: (outcome, i, context) => onRetryAsync(outcome, i));
         }
 
         /// <summary>
@@ -240,6 +274,25 @@ namespace Polly
             return policyBuilder.RetryForeverAsync(
 #pragma warning disable 1998 // async method has no awaits, will run synchronously
                 onRetryAsync: async (outcome, ctx) => onRetry(outcome, ctx)
+#pragma warning restore 1998
+            );
+        }
+
+        /// <summary>
+        /// Builds a <see cref="Policy"/> that will retry indefinitely
+        /// calling <paramref name="onRetry"/> on each retry with the handled exception or result, retry count and context data.
+        /// </summary>
+        /// <param name="policyBuilder">The policy builder.</param>
+        /// <param name="onRetry">The action to call on each retry.</param>
+        /// <returns>The policy instance.</returns>
+        /// <exception cref="System.ArgumentNullException">onRetry</exception>
+        public static RetryPolicy<TResult> RetryForeverAsync<TResult>(this PolicyBuilder<TResult> policyBuilder, Action<DelegateResult<TResult>, int, Context> onRetry)
+        {
+            if (onRetry == null) throw new ArgumentNullException(nameof(onRetry));
+
+            return policyBuilder.RetryForeverAsync(
+#pragma warning disable 1998 // async method has no awaits, will run synchronously
+                onRetryAsync: async (outcome, i, ctx) => onRetry(outcome, i, ctx)
 #pragma warning restore 1998
             );
         }
@@ -267,6 +320,33 @@ namespace Polly
                     () => new RetryStateRetryForever<TResult>(onRetryAsync, context),
                     continueOnCapturedContext
                 ), 
+                policyBuilder.ExceptionPredicates,
+                policyBuilder.ResultPredicates);
+        }
+
+        /// <summary>
+        /// Builds a <see cref="Policy"/> that will retry indefinitely
+        /// calling <paramref name="onRetryAsync"/> on each retry with the handled exception or result, retry count and context data.
+        /// </summary>
+        /// <param name="policyBuilder">The policy builder.</param>
+        /// <param name="onRetryAsync">The action to call asynchronously on each retry.</param>
+        /// <returns>The policy instance.</returns>
+        /// <exception cref="System.ArgumentNullException">onRetryAsync</exception>
+        public static RetryPolicy<TResult> RetryForeverAsync<TResult>(this PolicyBuilder<TResult> policyBuilder, Func<DelegateResult<TResult>, int, Context, Task> onRetryAsync)
+        {
+            if (onRetryAsync == null) throw new ArgumentNullException(nameof(onRetryAsync));
+
+            return new RetryPolicy<TResult>(
+                (action, context, cancellationToken, continueOnCapturedContext) =>
+                  RetryEngine.ImplementationAsync(
+                    action,
+                    context,
+                    cancellationToken,
+                    policyBuilder.ExceptionPredicates,
+                    policyBuilder.ResultPredicates,
+                    () => new RetryStateRetryForeverWithCount<TResult>(onRetryAsync, context),
+                    continueOnCapturedContext
+                ),
                 policyBuilder.ExceptionPredicates,
                 policyBuilder.ResultPredicates);
         }
@@ -871,6 +951,27 @@ namespace Polly
 
         /// <summary>
         /// Builds a <see cref="Policy"/> that will wait and retry indefinitely until the action succeeds, 
+        /// calling <paramref name="onRetry"/> on each retry with the handled exception or result.
+        /// </summary>
+        /// <param name="policyBuilder">The policy builder.</param>
+        /// <param name="sleepDurationProvider">A function providing the duration to wait before retrying.</param>
+        /// <param name="onRetry">The action to call on each retry.</param>
+        /// <returns>The policy instance.</returns>
+        /// <exception cref="System.ArgumentNullException">sleepDurationProvider</exception>
+        /// <exception cref="System.ArgumentNullException">onRetry</exception>
+        public static RetryPolicy<TResult> WaitAndRetryForeverAsync<TResult>(this PolicyBuilder<TResult> policyBuilder, Func<int, TimeSpan> sleepDurationProvider, Action<DelegateResult<TResult>, int, TimeSpan> onRetry)
+        {
+            if (sleepDurationProvider == null) throw new ArgumentNullException(nameof(sleepDurationProvider));
+            if (onRetry == null) throw new ArgumentNullException(nameof(onRetry));
+
+            return policyBuilder.WaitAndRetryForeverAsync(
+                (retryCount, context) => sleepDurationProvider(retryCount),
+                (outcome, i, timespan, context) => onRetry(outcome, i, timespan)
+            );
+        }
+
+        /// <summary>
+        /// Builds a <see cref="Policy"/> that will wait and retry indefinitely until the action succeeds, 
         /// calling <paramref name="onRetryAsync"/> on each retry with the handled exception or result.
         /// </summary>
         /// <param name="policyBuilder">The policy builder.</param>
@@ -887,6 +988,27 @@ namespace Polly
             return policyBuilder.WaitAndRetryForeverAsync(
                 (retryCount, context) => sleepDurationProvider(retryCount),
                 (outcome, timespan, context) => onRetryAsync(outcome, timespan)
+            );
+        }
+
+        /// <summary>
+        /// Builds a <see cref="Policy"/> that will wait and retry indefinitely until the action succeeds, 
+        /// calling <paramref name="onRetryAsync"/> on each retry with the handled exception or result and retry count.
+        /// </summary>
+        /// <param name="policyBuilder">The policy builder.</param>
+        /// <param name="sleepDurationProvider">A function providing the duration to wait before retrying.</param>
+        /// <param name="onRetryAsync">The action to call asynchronously on each retry.</param>
+        /// <returns>The policy instance.</returns>
+        /// <exception cref="System.ArgumentNullException">sleepDurationProvider</exception>
+        /// <exception cref="System.ArgumentNullException">onRetryAsync</exception>
+        public static RetryPolicy<TResult> WaitAndRetryForeverAsync<TResult>(this PolicyBuilder<TResult> policyBuilder, Func<int, TimeSpan> sleepDurationProvider, Func<DelegateResult<TResult>, int, TimeSpan, Task> onRetryAsync)
+        {
+            if (sleepDurationProvider == null) throw new ArgumentNullException(nameof(sleepDurationProvider));
+            if (onRetryAsync == null) throw new ArgumentNullException(nameof(onRetryAsync));
+
+            return policyBuilder.WaitAndRetryForeverAsync(
+                (retryCount, context) => sleepDurationProvider(retryCount),
+                (outcome, i, timespan, context) => onRetryAsync(outcome, i, timespan)
             );
         }
 
@@ -915,6 +1037,29 @@ namespace Polly
 
         /// <summary>
         /// Builds a <see cref="Policy"/> that will wait and retry indefinitely until the action succeeds, 
+        /// calling <paramref name="onRetry"/> on each retry with the handled exception or result and
+        /// execution context.
+        /// </summary>
+        /// <param name="policyBuilder">The policy builder.</param>
+        /// <param name="sleepDurationProvider">A function providing the duration to wait before retrying.</param>
+        /// <param name="onRetry">The action to call on each retry.</param>
+        /// <returns>The policy instance.</returns>
+        /// <exception cref="System.ArgumentNullException">sleepDurationProvider</exception>
+        /// <exception cref="System.ArgumentNullException">onRetry</exception>        
+        public static RetryPolicy<TResult> WaitAndRetryForeverAsync<TResult>(this PolicyBuilder<TResult> policyBuilder, Func<int, Context, TimeSpan> sleepDurationProvider, Action<DelegateResult<TResult>, int, TimeSpan, Context> onRetry)
+        {
+            if (onRetry == null) throw new ArgumentNullException(nameof(onRetry));
+
+            return policyBuilder.WaitAndRetryForeverAsync(
+                sleepDurationProvider,
+#pragma warning disable 1998 // async method has no awaits, will run synchronously
+                async (outcome, i, timespan, ctx) => onRetry(outcome, i, timespan, ctx)
+#pragma warning restore 1998
+            );
+        }
+
+        /// <summary>
+        /// Builds a <see cref="Policy"/> that will wait and retry indefinitely until the action succeeds, 
         /// calling <paramref name="onRetryAsync"/> on each retry with the handled exception or result and
         /// execution context.
         /// </summary>
@@ -925,6 +1070,26 @@ namespace Polly
         /// <exception cref="System.ArgumentNullException">sleepDurationProvider</exception>
         /// <exception cref="System.ArgumentNullException">onRetryAsync</exception>        
         public static RetryPolicy<TResult> WaitAndRetryForeverAsync<TResult>(this PolicyBuilder<TResult> policyBuilder, Func<int, Context, TimeSpan> sleepDurationProvider, Func<DelegateResult<TResult>, TimeSpan, Context, Task> onRetryAsync)
+        {
+            if (sleepDurationProvider == null) throw new ArgumentNullException(nameof(sleepDurationProvider));
+            return policyBuilder.WaitAndRetryForeverAsync(
+                (i, outcome, ctx) => sleepDurationProvider(i, ctx),
+                onRetryAsync
+            );
+        }
+
+        /// <summary>
+        /// Builds a <see cref="Policy"/> that will wait and retry indefinitely until the action succeeds, 
+        /// calling <paramref name="onRetryAsync"/> on each retry with the handled exception or result, retry count and
+        /// execution context.
+        /// </summary>
+        /// <param name="policyBuilder">The policy builder.</param>
+        /// <param name="sleepDurationProvider">A function providing the duration to wait before retrying.</param>
+        /// <param name="onRetryAsync">The action to call asynchronously on each retry.</param>
+        /// <returns>The policy instance.</returns>
+        /// <exception cref="System.ArgumentNullException">sleepDurationProvider</exception>
+        /// <exception cref="System.ArgumentNullException">onRetryAsync</exception>        
+        public static RetryPolicy<TResult> WaitAndRetryForeverAsync<TResult>(this PolicyBuilder<TResult> policyBuilder, Func<int, Context, TimeSpan> sleepDurationProvider, Func<DelegateResult<TResult>, int, TimeSpan, Context, Task> onRetryAsync)
         {
             if (sleepDurationProvider == null) throw new ArgumentNullException(nameof(sleepDurationProvider));
             return policyBuilder.WaitAndRetryForeverAsync(
@@ -958,6 +1123,37 @@ namespace Polly
                         policyBuilder.ExceptionPredicates,
                         policyBuilder.ResultPredicates,
                         () => new RetryStateWaitAndRetryForever<TResult>(sleepDurationProvider, onRetryAsync, context),
+                        continueOnCapturedContext
+                    ),
+                policyBuilder.ExceptionPredicates,
+                policyBuilder.ResultPredicates);
+        }
+
+        /// <summary>
+        /// Builds a <see cref="Policy"/> that will wait and retry indefinitely until the action succeeds, 
+        /// calling <paramref name="onRetryAsync"/> on each retry with the handled exception or result, retry count and
+        /// execution context.
+        /// </summary>
+        /// <param name="policyBuilder">The policy builder.</param>
+        /// <param name="sleepDurationProvider">A function providing the duration to wait before retrying.</param>
+        /// <param name="onRetryAsync">The action to call asynchronously on each retry.</param>
+        /// <returns>The policy instance.</returns>
+        /// <exception cref="System.ArgumentNullException">sleepDurationProvider</exception>
+        /// <exception cref="System.ArgumentNullException">onRetryAsync</exception>        
+        public static RetryPolicy<TResult> WaitAndRetryForeverAsync<TResult>(this PolicyBuilder<TResult> policyBuilder, Func<int, DelegateResult<TResult>, Context, TimeSpan> sleepDurationProvider, Func<DelegateResult<TResult>, int, TimeSpan, Context, Task> onRetryAsync)
+        {
+            if (sleepDurationProvider == null) throw new ArgumentNullException(nameof(sleepDurationProvider));
+            if (onRetryAsync == null) throw new ArgumentNullException(nameof(onRetryAsync));
+
+            return new RetryPolicy<TResult>(
+                (action, context, cancellationToken, continueOnCapturedContext) =>
+                    RetryEngine.ImplementationAsync(
+                        action,
+                        context,
+                        cancellationToken,
+                        policyBuilder.ExceptionPredicates,
+                        policyBuilder.ResultPredicates,
+                        () => new RetryStateWaitAndRetryForeverWithCount<TResult>(sleepDurationProvider, onRetryAsync, context),
                         continueOnCapturedContext
                     ),
                 policyBuilder.ExceptionPredicates,

@@ -128,9 +128,17 @@ namespace Polly
         public Task<TResult> ExecuteAsync(Func<Context, CancellationToken, Task<TResult>> action, Context context, CancellationToken cancellationToken, bool continueOnCapturedContext)
         {
             if (context == null) throw new ArgumentNullException(nameof(context));
-            SetPolicyContext(context);
 
-            return ExecuteAsyncInternal(action, context, cancellationToken, continueOnCapturedContext);
+            SetPolicyContext(context, out string priorPolicyWrapKey, out string priorPolicyKey);
+
+            try
+            {
+                return ExecuteAsyncInternal(action, context, cancellationToken, continueOnCapturedContext);
+            }
+            finally
+            {
+                RestorePolicyContext(context, priorPolicyWrapKey, priorPolicyKey);
+            }
         }
 
         #endregion

@@ -47,6 +47,8 @@ namespace Polly.Caching
         [DebuggerStepThrough]
         internal override Task<TResult> ExecuteAsyncInternal<TResult>(Func<Context, CancellationToken, Task<TResult>> action, Context context, CancellationToken cancellationToken, bool continueOnCapturedContext)
         {
+            if (_asyncCacheProvider == null) throw new InvalidOperationException("Please use asynchronous-defined policies when calling asynchronous ExecuteAsync (and similar) methods.");
+
             return CacheEngine.ImplementationAsync<TResult>(
                 _asyncCacheProvider.AsyncFor<TResult>(), 
                 _ttlStrategy.For<TResult>(), 

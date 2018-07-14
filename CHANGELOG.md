@@ -1,3 +1,10 @@
+## 6.1.0
+- Bug Fix: Context.PolicyKey behaviour in PolicyWrap (issue 463)
+- Bug Fix: CachePolicy behaviour with non-nullable types (issues 472, 475)
+- Enhancement: WaitAnd/RetryForever overloads where onRetry takes the retry number as a parameter (issue 451)
+- Enhancement: Overloads where onTimeout takes thrown exception as a parameter (issue 338)
+- Enhancement: Improved cache error message (issue 455)
+
 ## 6.0.1
 - Version 6 RTM, for integration to ASPNET Core 2.1 IHttpClientFactory
 

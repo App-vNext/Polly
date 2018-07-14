@@ -20,11 +20,8 @@ namespace Polly.Caching
         /// <exception cref="System.ArgumentNullException">serializer </exception>
         public SerializingCacheProvider(ISyncCacheProvider<TSerialized> wrappedCacheProvider, ICacheItemSerializer<object, TSerialized> serializer)
         {
-            if (wrappedCacheProvider == null) throw new ArgumentNullException(nameof(wrappedCacheProvider));
-            if (serializer == null) throw new ArgumentNullException(nameof(serializer));
-
-            _wrappedCacheProvider = wrappedCacheProvider;
-            _serializer = serializer;
+            _wrappedCacheProvider = wrappedCacheProvider ?? throw new ArgumentNullException(nameof(wrappedCacheProvider));
+            _serializer = serializer ?? throw new ArgumentNullException(nameof(serializer));
         }
 
         /// <summary>
@@ -34,7 +31,8 @@ namespace Polly.Caching
         /// <returns>The value from cache; or null, if none was found.</returns>
         public object Get(string key)
         {
-            return _serializer.Deserialize(_wrappedCacheProvider.Get(key));
+            TSerialized objectToDeserialize = _wrappedCacheProvider.Get(key);
+            return objectToDeserialize == null || objectToDeserialize.Equals(default(TSerialized)) ? null : _serializer.Deserialize(objectToDeserialize);
         }
 
         /// <summary>
@@ -45,7 +43,8 @@ namespace Polly.Caching
         /// <param name="ttl">The time-to-live for the cache entry.</param>
         public void Put(string key, object value, Ttl ttl)
         {
-            _wrappedCacheProvider.Put(key, _serializer.Serialize(value), ttl);
+            if (value != null)
+                _wrappedCacheProvider.Put(key, _serializer.Serialize(value), ttl);
         }
 
     }
@@ -69,11 +68,8 @@ namespace Polly.Caching
         /// <exception cref="System.ArgumentNullException">serializer </exception>
         public SerializingCacheProvider(ISyncCacheProvider<TSerialized> wrappedCacheProvider, ICacheItemSerializer<TResult, TSerialized> serializer)
         {
-            if (wrappedCacheProvider == null) throw new ArgumentNullException(nameof(wrappedCacheProvider));
-            if (serializer == null) throw new ArgumentNullException(nameof(serializer));
-
-            _wrappedCacheProvider = wrappedCacheProvider;
-            _serializer = serializer;
+            _wrappedCacheProvider = wrappedCacheProvider ?? throw new ArgumentNullException(nameof(wrappedCacheProvider));
+            _serializer = serializer ?? throw new ArgumentNullException(nameof(serializer));
         }
 
         /// <summary>
@@ -83,7 +79,8 @@ namespace Polly.Caching
         /// <returns>The value from cache; or null, if none was found.</returns>
         public TResult Get(string key)
         {
-            return _serializer.Deserialize(_wrappedCacheProvider.Get(key));
+            TSerialized objectToDeserialize = _wrappedCacheProvider.Get(key);
+            return objectToDeserialize == null || objectToDeserialize.Equals(default(TSerialized)) ? default(TResult) : _serializer.Deserialize(objectToDeserialize);
         }
 
         /// <summary>
@@ -94,7 +91,8 @@ namespace Polly.Caching
         /// <param name="ttl">The time-to-live for the cache entry.</param>
         public void Put(string key, TResult value, Ttl ttl)
         {
-            _wrappedCacheProvider.Put(key, _serializer.Serialize(value), ttl);
+            if (value != null && !value.Equals(default(TResult)))
+                _wrappedCacheProvider.Put(key, _serializer.Serialize(value), ttl);
         }
         
     }

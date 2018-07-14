@@ -24,6 +24,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)Caching\CacheTResultSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Caching\ContextualTtlSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Caching\DefaultCacheKeyStrategySpecs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Caching\GenericCacheProviderAsyncSpecs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Caching\GenericCacheProviderSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Caching\RelativeTtlSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Caching\ResultTtlSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Caching\SerializingCacheProviderAsyncSpecs.cs" />
