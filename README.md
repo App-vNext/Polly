@@ -4,6 +4,8 @@ Polly is a .NET resilience and transient-fault-handling library that allows deve
 
 Polly targets .NET Standard 1.1 ([coverage](https://docs.microsoft.com/en-us/dotnet/standard/net-standard#net-implementation-support): .NET Framework 4.5-4.6.1, .NET Core 1.0, Mono, Xamarin, UWP, WP8.1+) and .NET Standard 2.0+  ([coverage](https://docs.microsoft.com/en-us/dotnet/standard/net-standard#net-implementation-support): .NET Framework 4.6.1, .NET Core 2.0+, and later Mono, Xamarin and UWP targets).
 
+For versions supporting earlier targets such as .NET4.0 and .NET3.5, see the [supported targets](https://github.com/App-vNext/Polly/wiki/Supported-targets) grid.
+
 [<img align="right" src="https://github.com/dotnet/swag/raw/master/logo/dotnetfoundation_v4_small.png" width="100" />](https://www.dotnetfoundation.org/)
 We are a member of the [.NET Foundation](https://www.dotnetfoundation.org/about)!
 
@@ -588,8 +590,8 @@ For more detail see: [Bulkhead policy documentation](https://github.com/App-vNex
 ### Cache
 
 ```csharp
-// Example: Define a sync cache Policy in the .NET Framework, using the Polly.Caching.MemoryCache nuget package.  
-var memoryCacheProvider = new Polly.Caching.MemoryCache.MemoryCacheProvider(MemoryCache.Default);
+// Define a cache Policy in the .NET Framework, using the Polly.Caching.Memory nuget package.
+var memoryCacheProvider = new MemoryCacheProvider(MemoryCache.Default);
 var cachePolicy = Policy.Cache(memoryCacheProvider, TimeSpan.FromMinutes(5));
 
 // For .NET Core examples see the CacheProviders linked to from https://github.com/App-vNext/Polly/wiki/Cache#working-with-cacheproviders :
@@ -917,23 +919,11 @@ This allows collections of similar kinds of policy to be treated as one - for ex
 
 For more detail see: [Polly and interfaces](https://github.com/App-vNext/Polly/wiki/Polly-and-interfaces) on wiki.
 
-# .NET4.5 support
-
-From Polly v6.0.0, .NET4.5 support is provided [via the .Net Standard 1.1 target](https://docs.microsoft.com/en-us/dotnet/standard/net-standard#net-implementation-support).
-
-Polly versions up to [v5.9.0](https://www.nuget.org/packages/Polly/5.9.0) have direct target support for .NET Framework 4.5.
-
-# .NET4.0 support 
-
-The last version of Polly to support .NET4.0 is [v5.9.0](https://www.nuget.org/packages/Polly.Net40Async/5.9.0).  The .NET4.0 package uses `Microsoft.Bcl.Async` to add async support.  To minimise dependencies on the main Polly nuget package, the .NET4.0 version is available as separate Nuget packages `Polly.Net40Async` and `Polly.Net40Async-signed`.
-
-# .NET3.5 support 
-
-The last version of Polly to support .NET3.5 is [v4.3.0](https://www.nuget.org/packages/Polly/4.3.0). This includes all of the 4.x features, as it was the last version before v5.0. This package may be installed via the NuGet package manager by specifying its version: `Install-Package Polly -Version 4.3.0`.
-
 # Release notes
 
 For details of changes by release see the [change log](https://github.com/App-vNext/Polly/blob/master/CHANGELOG.md).  We also tag relevant Pull Requests and Issues with [milestones](https://github.com/App-vNext/Polly/milestones), which match to nuget package release numbers.
+
+For full detailed of supported targets by version, see [supported targets](https://github.com/App-vNext/Polly/wiki/Supported-targets).
 
 # 3rd Party Libraries and Contributions
 
@@ -1003,7 +993,9 @@ For details of changes by release see the [change log](https://github.com/App-vN
 
 # Sample Projects
 
-[Polly-Samples](https://github.com/App-vNext/Polly-Samples) contains practical examples for using various implementations of Polly. Please feel free to contribute to the Polly-Samples repository in order to assist others who are either learning Polly for the first time, or are seeking advanced examples and novel approaches provided by our generous community.
+* [Polly-Samples](https://github.com/App-vNext/Polly-Samples) contains practical examples for using various implementations of Polly. Please feel free to contribute to the Polly-Samples repository in order to assist others who are either learning Polly for the first time, or are seeking advanced examples and novel approaches provided by our generous community.
+
+* Microsoft's [eShopOnContainers project](https://github.com/dotnet-architecture/eShopOnContainers) is a sample project demonstrating a .NET Microservices architecture and using Polly for resilience
 
 # Instructions for Contributing
 
@@ -1017,7 +1009,7 @@ Also, we've stood up a [Slack](http://www.pollytalk.org) channel for easier real
 
 Licensed under the terms of the [New BSD License](http://opensource.org/licenses/BSD-3-Clause)
 
-# Blog posts, podcasts and videos about Polly
+# Blogs, podcasts, courses, ebooks, architecture samples and videos around Polly
 
 When we discover an interesting write-up on Polly, we'll add it to this list. If you have a blog post you'd like to share, please submit a PR!
 
@@ -1040,11 +1032,23 @@ When we discover an interesting write-up on Polly, we'll add it to this list. If
 
 ## Podcasts
 
-* [Dylan Reisenberger](https://twitter.com/softwarereisen) sits down virtually with [Bryan Hogan](https://twitter.com/bryanjhogan) of [NoDogmaBlog](http://nodogmablog.bryanhogan.net/) for an [Introduction to Polly podcast](http://nodogmapodcast.bryanhogan.net/71-dylan-reisenberger-the-polly-project/).  Why do I need Polly?  History of the Polly project.  What do we mean by resilience and transient faults?  How retry and circuit-breaker help.  Exponential backoff.  Stability patterns.  Bulkhead isolation.  Future directions (as at April 2017).
+* June 2018: [DotNetRocks features Polly](https://www.dotnetrocks.com/?show=1556) as [Carl Franklin](https://twitter.com/carlfranklin) and [Richard Campbell](https://twitter.com/richcampbell) chat with [Dylan Reisenberger](https://twitter.com/softwarereisen) about policy patterns, and the new ASP NET Core 2.1 integration with IHttpClientFactory.  
+
+* April 2017: [Dylan Reisenberger](https://twitter.com/softwarereisen) sits down virtually with [Bryan Hogan](https://twitter.com/bryanjhogan) of [NoDogmaBlog](http://nodogmablog.bryanhogan.net/) for an [Introduction to Polly podcast](http://nodogmapodcast.bryanhogan.net/71-dylan-reisenberger-the-polly-project/).  Why do I need Polly?  History of the Polly project.  What do we mean by resilience and transient faults?  How retry and circuit-breaker help.  Exponential backoff.  Stability patterns.  Bulkhead isolation.  Future directions (as at April 2017).
 
 ## PluralSight course
 
 * [Bryan Hogan](https://twitter.com/bryanjhogan) of the [NoDogmaBlog](http://nodogmablog.bryanhogan.net/) has authored a [PluralSight course on Polly](https://www.pluralsight.com/courses/polly-fault-tolerant-web-service-requests).  The course takes you through all the major features of Polly as at v5.6.1.  The course examples are based around using Polly for fault tolerance when calling remote web services, but the principles and techniques are applicable to any context in which Polly may be used.
+
+## Sample microservices architecture and ebook
+
+### Sample microservices architecture
+
+* [Cesar de la Torre](https://github.com/CESARDELATORRE) produced the Microsoft [eShopOnContainers project](https://github.com/dotnet-architecture/eShopOnContainers), a sample project demonstrating a .NET Microservices architecture. The project uses Polly retry and circuit-breaker policies for resilience in calls to microservices, and in establishing connections to transports such as RabbitMQ.  
+
+### ebook
+
+* Accompanying the project is a [.Net Microservices Architecture ebook](https://www.microsoft.com/net/download/thank-you/microservices-architecture-ebook) with an extensive section (section 8) on using Polly for resilience, to which [Dylan Reisenberger](https://twitter.com/softwarereisen) contributed.  The ebook and code is now (June 2018) updated for using the latest ASP NET Core 2.1 features, [Polly with IHttpClientFactory](https://github.com/App-vNext/Polly/wiki/Polly-and-HttpClientFactory).
 
 ## Twitter
 

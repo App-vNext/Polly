@@ -119,6 +119,10 @@
     <Compile Include="$(MSBuildThisFileDirectory)Registry\IPolicyRegistry.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ResultPredicate.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Retry\IRetryPolicy.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Retry\RetryStateRetryForeverWithCountAsync.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Retry\RetryStateRetryForeverWithCount.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Retry\RetryStateWaitAndRetryForeverWithCount.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Retry\RetryStateWaitAndRetryForeverWithCountAsync.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Retry\RetryStateWaitAndRetryWithProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Retry\RetryStateWaitAndRetryWithProviderAsync.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Retry\RetrySyntax.cs" />
