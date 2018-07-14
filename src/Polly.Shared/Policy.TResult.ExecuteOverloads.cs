@@ -92,9 +92,17 @@ namespace Polly
         public TResult Execute(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken)
         {
             if (context == null) throw new ArgumentNullException(nameof(context));
-            SetPolicyContext(context);
 
-            return ExecuteInternal(action, context, cancellationToken);
+            SetPolicyContext(context, out string priorPolicyWrapKey, out string priorPolicyKey);
+
+            try
+            {
+                return ExecuteInternal(action, context, cancellationToken);
+            }
+            finally
+            {
+                RestorePolicyContext(context, priorPolicyWrapKey, priorPolicyKey);
+            }
         }
 
         #endregion

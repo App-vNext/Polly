@@ -60,6 +60,33 @@ namespace Polly.Specs.Wrap
         }
 
         [Fact]
+        public void Should_restore_PolicyKey_of_outer_policy_to_execution_context_as_move_outwards_through_PolicyWrap()
+        {
+            ISyncPolicy fallback = Policy
+                .Handle<Exception>()
+                .Fallback(_ => {}, onFallback: (_, context) =>
+                {
+                    context.PolicyWrapKey.Should().Be("PolicyWrap");
+                    context.PolicyKey.Should().Be("FallbackPolicy"); 
+                })
+                .WithPolicyKey("FallbackPolicy");
+
+            ISyncPolicy retry = Policy
+                .Handle<Exception>()
+                .Retry(1, onRetry: (result, retryCount, context) =>
+                {
+                    context.PolicyWrapKey.Should().Be("PolicyWrap");
+                    context.PolicyKey.Should().Be("RetryPolicy");
+                })
+                .WithPolicyKey("RetryPolicy");
+
+            ISyncPolicy policyWrap = Policy.Wrap(fallback, retry)
+                .WithPolicyKey("PolicyWrap");
+
+            policyWrap.Execute(() => throw new Exception());
+        }
+
+        [Fact]
         public void Should_pass_outmost_PolicyWrap_Key_as_PolicyWrapKey_ignoring_inner_PolicyWrap_keys_even_when_executing_policies_in_inner_wrap()
         {
             string retryKey = Guid.NewGuid().ToString();
@@ -187,6 +214,33 @@ namespace Polly.Specs.Wrap
             policyWrapKeySetOnExecutionContext.Should().NotBe(retryKey);
             policyWrapKeySetOnExecutionContext.Should().NotBe(breakerKey);
             policyWrapKeySetOnExecutionContext.Should().Be(wrapKey);
+        }
+
+        [Fact]
+        public void Should_restore_PolicyKey_of_outer_policy_to_execution_context_as_move_outwards_through_PolicyWrap()
+        {
+            ISyncPolicy<ResultPrimitive> fallback = Policy<ResultPrimitive>
+                .Handle<Exception>()
+                .Fallback<ResultPrimitive>(ResultPrimitive.Undefined, onFallback: (result, context) =>
+                {
+                    context.PolicyWrapKey.Should().Be("PolicyWrap");
+                    context.PolicyKey.Should().Be("FallbackPolicy");
+                })
+                .WithPolicyKey("FallbackPolicy");
+
+            ISyncPolicy<ResultPrimitive> retry = Policy<ResultPrimitive>
+                .Handle<Exception>()
+                .Retry(1, onRetry: (result, retryCount, context) =>
+                {
+                    context.PolicyWrapKey.Should().Be("PolicyWrap");
+                    context.PolicyKey.Should().Be("RetryPolicy");
+                })
+                .WithPolicyKey("RetryPolicy");
+
+            Policy<ResultPrimitive> policyWrap = Policy.Wrap(fallback, retry)
+                .WithPolicyKey("PolicyWrap");
+
+            policyWrap.Execute(() => throw new Exception());
         }
 
         [Fact]
