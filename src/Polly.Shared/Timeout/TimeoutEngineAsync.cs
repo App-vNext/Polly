@@ -51,12 +51,12 @@ namespace Polly.Timeout
                             .WhenAny(actionTask, timeoutTask).ConfigureAwait(continueOnCapturedContext)).ConfigureAwait(continueOnCapturedContext);
 
                     }
-                    catch (Exception e)
+                    catch (Exception ex)
                     {
                         if (timeoutCancellationTokenSource.IsCancellationRequested)
                         {
-                            await onTimeoutAsync(context, timeout, actionTask, e).ConfigureAwait(continueOnCapturedContext);
-                            throw new TimeoutRejectedException("The delegate executed asynchronously through TimeoutPolicy did not complete within the timeout.", e);
+                            await onTimeoutAsync(context, timeout, actionTask, ex).ConfigureAwait(continueOnCapturedContext);
+                            throw new TimeoutRejectedException("The delegate executed asynchronously through TimeoutPolicy did not complete within the timeout.", ex);
                         }
 
                         throw;
