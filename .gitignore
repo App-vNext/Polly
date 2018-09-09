@@ -119,3 +119,4 @@ tools
 *.lock.json
 *.nuget.targets
 *.nuget.props
+*.binlog

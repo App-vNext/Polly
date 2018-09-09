@@ -198,12 +198,26 @@ Task("__BuildSolutions")
         Information("Building {0}", solution);
 
         MSBuild(solution, settings =>
-            settings
-                .SetConfiguration(configuration)
-                .WithProperty("TreatWarningsAsErrors", "true")
-                .UseToolVersion(MSBuildToolVersion.VS2017)
-                .SetVerbosity(Verbosity.Minimal)
-                .SetNodeReuse(false));
+			{
+				settings
+					.WithTarget("Restore")
+					.WithTarget("Rebuild")
+					.WithTarget("Pack")
+					.SetConfiguration(configuration)
+					.WithProperty("TreatWarningsAsErrors", "true")
+					.UseToolVersion(MSBuildToolVersion.VS2017)
+					.SetVerbosity(Verbosity.Minimal)
+					.SetNodeReuse(false);
+				settings.Properties["CI"] = new string [] { "true" };
+				settings.Properties["SourceLinkCreate"] = new string [] { "true" };
+				settings.Properties["SourceLinkServerType"] = new string [] { "GitLab" };
+				settings.Properties["PackageOutputPath"] = new string [] { MakeAbsolute(nupkgDestDir.Path).FullPath };
+				settings.BinaryLogger = new MSBuildBinaryLogSettings
+				{
+					Enabled = true,
+					Imports = MSBuildBinaryLogImports.Embed,
+				};
+			});
     }
 });
 
@@ -274,15 +288,16 @@ Task("__CreateSignedNugetPackage")
 
 Task("Build")
     .IsDependentOn("__Clean")
-    .IsDependentOn("__RestoreNugetPackages")
+    //.IsDependentOn("__RestoreNugetPackages")
     .IsDependentOn("__UpdateAssemblyVersionInformation")
     .IsDependentOn("__UpdateDotNetStandardAssemblyVersionNumber")
     .IsDependentOn("__UpdateAppVeyorBuildNumber")
     .IsDependentOn("__BuildSolutions")
     .IsDependentOn("__RunTests")
-    .IsDependentOn("__CopyOutputToNugetFolder")
-    .IsDependentOn("__StronglySignAssemblies")
-    .IsDependentOn("__CreateSignedNugetPackage");
+    //.IsDependentOn("__CopyOutputToNugetFolder")
+    //.IsDependentOn("__StronglySignAssemblies")
+    //.IsDependentOn("__CreateSignedNugetPackage")
+	;
 
 ///////////////////////////////////////////////////////////////////////////////
 // PRIMARY TARGETS

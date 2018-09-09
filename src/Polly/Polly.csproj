@@ -1,0 +1,274 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>netstandard1.1;netstandard2.0</TargetFrameworks>
+    <AssemblyName>Polly</AssemblyName>
+    <RootNamespace>Polly</RootNamespace>
+    <Version>6.1.0</Version>
+    <Company>App vNext</Company>
+    <Copyright>Copyright (c) 2018, App vNext</Copyright>
+    <Description>Polly is a library that allows developers to express resilience and transient fault handling policies such as Retry, Circuit Breaker, Timeout, Bulkhead Isolation, and Fallback in a fluent and thread-safe manner.</Description>
+    <DefaultLanguage>en-US</DefaultLanguage>
+    <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <AssemblyOriginatorKeyFile>Polly.snk</AssemblyOriginatorKeyFile>
+    <Authors>App vNext</Authors>
+    <RepositoryType>Git</RepositoryType>
+    <RepositoryUrl>https://github.com/App-vNext/Polly</RepositoryUrl>
+    <PackageLicenseUrl>https://raw.github.com/App-vNext/Polly/master/LICENSE.txt</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/App-vNext/Polly</PackageProjectUrl>
+    <PackageIconUrl>https://raw.github.com/App-vNext/Polly/master/Polly.png</PackageIconUrl>
+    <PackageReleaseNotes>6.1.0
+     ---------------------
+     - Bug Fix: Context.PolicyKey behaviour in PolicyWrap
+     - Bug Fix: CachePolicy behaviour with non-nullable types
+     - Enhancement: WaitAnd/RetryForever overloads where onRetry takes the retry number as a parameter
+     - Enhancement: Overloads where onTimeout takes thrown exception as a parameter
+
+     6.0.1
+     ---------------------
+     - Version 6 RTM, for integration to ASPNET Core 2.1 IHttpClientFactory
+
+     6.0.0-v6alpha
+     ---------------------
+     - Publish as strong-named package only (discontinue non-strong-named versions)
+     - Add .NetStandard 2.0 tfm
+     - Provide .NET4.5 support via .NetStandard 1.1 tfm
+     - Discontinue .NET4.0 support
+     - Remove methods marked as deprecated in v5.9.0
+
+     5.9.0
+     ---------------------
+     - Allow Timeout.InfiniteTimeSpan (no timeout) for TimeoutPolicy. 
+     - Add .AsPolicy&amp;lt;TResult&amp;gt; and .AsAsyncPolicy&amp;lt;TResult&amp;gt; methods for converting non-generic policies to generic policies.
+     - Per Semver, indicates deprecation of overloads and properties intended to be removed or renamed in Polly v6.
+
+     5.8.0
+     ---------------------
+     - Add a new onBreak overload that provides the prior state on a transition to an open state
+     - Bug fix: RelativeTtl in CachePolicy now always returns a ttl relative to time item is cached
+            
+     5.7.0
+     ---------------------
+     - Minor cache fixes
+     - Add ability to calculate cache Ttl based on item to cache
+     - Allow user-created custom policies
+
+     5.6.1
+     ---------------------
+     - Extend PolicyWrap syntax with interfaces
+
+     5.6.0
+     ---------------------
+     - Add ability to handle inner exceptions natively: .HandleInner&amp;lt;TEx&amp;gt;()
+     - Allow WaitAndRetry policies to calculate wait based on the handled fault
+     - Add the ability to access the policies within an IPolicyWrap
+     - Allow PolicyWrap to take interfaces as parameters
+     - Bug fix: set context keys for generic execute method with PolicyWrap
+     - Bug fix: generic TResult method with non-generic fallback policy
+     - Performance improvements
+
+     5.5.0
+     ---------------------
+     - Bug fix: non-generic CachePolicy with PolicyWrap
+     - Add Cache interfaces
+     
+     5.4.0
+     ---------------------
+     - Add CachePolicy: cache-aside pattern, with interfaces for pluggable cache providers and serializers.
+     - Bug fix: Sync TimeoutPolicy in pessimistic mode no longer interposes AggregateException.
+     - Provide public factory methods for PolicyResult, to support testing.
+     - Fallback delegates can now take handled fault as input parameter.
+
+     5.3.1
+     ---------------------
+     - Make ISyncPolicy&amp;lt;TResult&amp;gt; public
+     - (Upgrade solution to msbuild15)
+
+     5.3.0
+     ---------------------
+     - Fix ExecuteAndCapture() usage with PolicyWrap   
+     - Allow Fallback delegates to take execution Context
+     - Provide IReadOnlyPolicyRegistry interface
+
+     5.2.0
+     ---------------------
+     - Add PolicyRegistry for storing and retrieving policies.
+     - Add interfaces by policy type and execution type.
+     - Change .NetStandard minimum support to NetStandard1.1.
+
+     5.1.0
+     ---------------------
+     - Allow different parts of a policy execution to exchange data via a mutable Context travelling with each execution.
+
+     5.0.6
+     ---------------------
+     - Update NETStandard.Library dependency to latest 1.6.1 for .NetStandard1.0 target.  Resolves compatibility for some Xamarin targets.
+
+     5.0.5
+     ---------------------
+     - Bug fix: Prevent request stampede during half-open state of CircuitBreaker and AdvancedCircuitBreaker.  Enforce only one new trial call per break duration, during half-open state.
+     - Bug fix: Prevent duplicate raising of the onBreak delegate, if executions started when a circuit was closed, return faults when a circuit has already opened.
+     - Optimisation: Optimise hotpaths for Circuit-Breaker, Retry and Fallback policies.
+     - Add NoOpPolicy: NoOpPolicy executes delegates without intervention; for eg stubbing out Polly in unit testing.
+
+     5.0.4 pre
+     ---------------------
+     - (.NET40Async package changes only)
+
+     5.0.3 RTM
+     ---------------------
+     - Refine implementation of cancellable synchronous WaitAndRetry
+     - Minor breaking change: Where a user delegate does not observe cancellation, Polly will now honour the delegate's outcome rather than throw for the unobserved cancellation (issue 188).
+
+     5.0.2 alpha
+     ---------------------
+     - .NETStandard1.0 target: Correctly state dependencies. 
+     - .NETStandard1.0 target: Fix SemVer stamping of Polly.dll.
+     - PCL259 project and target: Remove, in favour of .NETStandard1.0 target.  PCL259 targets are still supported, via .NETStandard1.0 target.
+     - Mark Polly.dll as CLSCompliant.
+     
+     5.0.1 alpha
+     ---------------------
+     - Add a .NETStandard1.0 target.
+
+     5.0.0 alpha
+     ---------------------
+     A major release, adding significant new resilience policies:
+     - Timeout policy: allows timing out any execution
+     - Bulkhead isolation policy: limits the resources consumable by governed actions, such that a faulting channel cannot cause cascading failures.
+     - Fallback policy: provides for a fallback execution or value, in case of overall failure
+     - PolicyWrap: allows flexibly combining Policy instances of any type, to form an overall resilience strategy.
+
+     Other changes include:
+     - Add PolicyKeys and context to all policy executions, for logging and to support later introduction of policy events and metrics. 
+     - Add CancellationToken support to synchronous executions.
+     - Add some missing ExecuteAndCapture/Async overloads. 
+     - Remove invalid ExecuteAsync overloads taking (but not making use of) a CancellationToken
+     - Provide .NET4.0 support uniquely through Polly.NET40Async package
+     - Retire ContextualPolicy (not part of documented API; support now in Policy base class)
+     - Discontinue .NET3.5 support
+
+     4.3.0
+     ---------------------
+     - Added ability for policies to handle return results.  Optimised circuit-breaker hot path.  Fixed circuit-breaker threshold bug.  
+     
+     4.2.4
+     ---------------------
+     - Added overloads to WaitAndRetry and WaitAndRetryAsync methods that accept an onRetry delegate which includes the attempt count.
+     
+     4.2.3
+     ---------------------
+     - Cleaned up new Polly.Net40Async NuGet package, removing Polly.dll and unused framework folders.
+     
+     4.2.2
+     ---------------------
+     - Add new Polly.Net40Async project supporting async for .NET40 via Microsoft.Bcl.Async.  This is available as separate Nuget packages Polly.Net40Async and Polly.Net40Async-signed.
+
+     4.2.1
+     ---------------------
+     - Allowed async onRetry delegates to async retry policies.
+
+     4.2.0
+     ---------------------
+     - Added AdvancedCircuitBreaker - Thanks to @reisenberger and @kristianhald
+     
+     4.1.2
+     ---------------------
+     - Fixed an issue with the onReset delegate of the CircuitBreaker.
+     
+     4.1.1
+     ---------------------
+     - Add ExecuteAndCapture support with arbitrary context data - Thanks to @reisenberger
+     
+     4.1.0 
+     --------------------- 
+     - Add Wait and retry forever policy - Thanks to @nedstoyanov 
+     - Remove time-limit on CircuitBreaker state-change delegates - Thanks to @reisenberger 
+     
+     4.0.0 
+     --------------------- 
+     - Add async support and circuit-breaker support for ContextualPolicy 
+     - Add manual control of circuit-breaker (reset and manual circuit isolation) 
+     - Add public reporting of circuit-breaker state, for health/performance monitoring 
+     - Add delegates on changes of circuit state - Thanks to @reisenberger 
+     
+     3.0.0 
+     --------------------- 
+     - Add cancellation support for all async Policy execution - Thanks to @reisenberger 
+     
+     2.2.7 
+     --------------------- 
+     - Fixes an issue where continueOnCapturedContext needed to be specified in two places (on action execution and Policy configuration), when wanting to flow async action execution on the captured context - Thanks to @reisenberger 
+     - Fixes excess line ending issues 
+     
+     2.2.6 
+     --------------------- 
+     - Async sleep fix, plus added continueOnCapturedContext parameter on async methods to control whether continuation and retry will run on captured synchronization context - Thanks to @yevhen 
+     
+     2.2.5
+     ---------------------
+     - Policies with a retry count of zero are now allowed
+     
+     2.2.4
+     ---------------------
+     - Add .NET Core support
+     
+     2.2.3
+     ---------------------
+     - Fix PCL implementation of `SystemClock.Reset`
+     - Added ability to capture the results of executing a policy via `ExecuteAndCapture`
+     
+     2.2.2
+     ---------------------
+     - Added extra `NotOnCapturedContext` call to prevent potential deadlocks when blocking on asynchronous calls
+     
+     2.2.1
+     ---------------------
+     - Replaced non-blocking sleep implementation with a blocking one for PCL
+     
+     2.2.0
+     ---------------------
+     - Added Async Support (PCL)
+     - PCL Profile updated from Profile78 -&amp;gt;  Profile 259
+     - Added missing WaitAndRetryAsync overload
+     
+     2.1.0
+     ---------------------
+     - Added Async Support (.NET Framework 4.5 Only)
+     
+     2.0.0
+     ---------------------
+     - Added Portable Class Library
+     - The "Polly" NuGet package is now no longer strongly named. The strongly named NuGet package is now "Polly-Signed"
+     
+     1.1.0
+     ---------------------
+     - Added additional overloads to Retry
+     - Allow arbitrary data to be passed to policy execution</PackageReleaseNotes>
+    <SignAssembly>false</SignAssembly>
+    <DelaySign>true</DelaySign>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <DebugType>full</DebugType>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
+    <NetStandardImplicitPackageVersion>1.6.1</NetStandardImplicitPackageVersion>
+  </PropertyGroup>
+  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
+    <PackageReference Include="System.Runtime.Serialization.Formatters" Version="4.3.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="SourceLink.Create.CommandLine" Version="2.8.3" />
+    <PackageReference Include="SourceLink.Copy.PdbFiles" Version="2.8.3" />
+  </ItemGroup>
+  <ItemGroup>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
+      <_Parameter1>Polly.Specs</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
+</Project>
