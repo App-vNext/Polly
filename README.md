@@ -100,7 +100,7 @@ HttpStatusCode[] httpStatusCodesWorthRetrying = {
    HttpStatusCode.ServiceUnavailable, // 503
    HttpStatusCode.GatewayTimeout // 504
 }; 
-HttpResponseMessage result = Policy
+HttpResponseMessage result = await Policy
   .Handle<HttpRequestException>()
   .OrResult<HttpResponseMessage>(r => httpStatusCodesWorthRetrying.Contains(r.StatusCode))
   .RetryAsync(...)
@@ -670,7 +670,7 @@ As for fault-handling policies [above](#step-3--execute-the-policy).
 Using the `ExecuteAndCapture(...)` methods you can capture the outcome of an execution: the methods return a `PolicyResult` instance which describes whether the outcome was a successful execution or a fault.
 
 ```csharp
-var policyResult = Policy
+var policyResult = await Policy
               .Handle<HttpRequestException>()
               .RetryAsync()
               .ExecuteAndCaptureAsync(() => DoSomethingAsync());
@@ -695,7 +695,7 @@ HttpStatusCode[] httpStatusCodesWorthRetrying = {
    HttpStatusCode.ServiceUnavailable, // 503
    HttpStatusCode.GatewayTimeout // 504
 }; 
-HttpResponseMessage result = Policy
+HttpResponseMessage result = await Policy
   .Handle<HttpRequestException>()
   .OrResult<HttpResponseMessage>(r => httpStatusCodesWorthRetrying.Contains(r.StatusCode))
   .RetryAsync(...)
