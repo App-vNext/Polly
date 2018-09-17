@@ -201,6 +201,8 @@ Task("__BuildSolutions")
             settings
                 .SetConfiguration(configuration)
                 .WithProperty("TreatWarningsAsErrors", "true")
+                .WithProperty("SourceLinkCreate", "true")
+                .WithProperty("SourceLinkServerType", "GitLab")
                 .UseToolVersion(MSBuildToolVersion.VS2017)
                 .SetVerbosity(Verbosity.Minimal)
                 .SetNodeReuse(false));
