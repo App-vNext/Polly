@@ -1,5 +1,5 @@
 ﻿using System;
-#if !PORTABLE
+#if NETSTANDARD2_0
 using System.Runtime.Serialization;
 #endif
 
@@ -8,7 +8,7 @@ namespace Polly.Bulkhead
     /// <summary>
     /// Exception thrown when a bulkhead's semaphore and queue are full.
     /// </summary>
-#if !PORTABLE
+#if NETSTANDARD2_0
     [Serializable]
 #endif
     public class BulkheadRejectedException : ExecutionRejectedException
@@ -37,7 +37,7 @@ namespace Polly.Bulkhead
         {
         }
 
-#if !PORTABLE
+#if NETSTANDARD2_0
         /// <summary>
         /// Initializes a new instance of the <see cref="BulkheadRejectedException"/> class.
         /// </summary>

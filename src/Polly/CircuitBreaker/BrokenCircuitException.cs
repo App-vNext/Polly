@@ -1,5 +1,5 @@
 ﻿using System;
-#if !PORTABLE
+#if NETSTANDARD2_0
 using System.Runtime.Serialization;
 #endif
 
@@ -8,7 +8,7 @@ namespace Polly.CircuitBreaker
     /// <summary>
     /// Exception thrown when a circuit is broken.
     /// </summary>
-#if !PORTABLE
+#if NETSTANDARD2_0
     [Serializable]
 #endif
     public class BrokenCircuitException : ExecutionRejectedException
@@ -37,7 +37,7 @@ namespace Polly.CircuitBreaker
         {
         }
 
-#if !PORTABLE
+#if NETSTANDARD2_0
         /// <summary>
         /// Initializes a new instance of the <see cref="BrokenCircuitException"/> class.
         /// </summary>
@@ -55,7 +55,7 @@ namespace Polly.CircuitBreaker
     /// Exception thrown when a circuit is broken.
     /// </summary>
     /// <typeparam name="TResult">The type of returned results being handled by the policy.</typeparam>
-#if !PORTABLE
+#if NETSTANDARD2_0
     [Serializable]
 #endif
     public class BrokenCircuitException<TResult> : BrokenCircuitException
@@ -86,7 +86,7 @@ namespace Polly.CircuitBreaker
         /// </summary>
         public TResult Result { get { return result; } }
 
-#if !PORTABLE
+#if NETSTANDARD2_0
         /// <summary>
         /// Initializes a new instance of the <see cref="BrokenCircuitException"/> class.
         /// </summary>

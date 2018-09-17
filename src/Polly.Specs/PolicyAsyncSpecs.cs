@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using FluentAssertions;
-using Polly.Specs.Helpers;
 using Polly.Utilities;
 using Xunit;
 
@@ -15,7 +14,7 @@ namespace Polly.Specs
         [Fact]
         public async Task Executing_the_policy_action_should_execute_the_specified_async_action()
         {
-            bool executed = false;
+            var executed = false;
 
             Policy policy = Policy
                 .Handle<DivideByZeroException>()
@@ -38,7 +37,7 @@ namespace Polly.Specs
                 .Handle<DivideByZeroException>()
                 .RetryAsync((_, __) => { });
 
-            int result = await policy.ExecuteAsync(() => Task.FromResult(2));
+            var result = await policy.ExecuteAsync(() => Task.FromResult(2));
 
             result.Should()
                 .Be(2);
@@ -112,7 +111,7 @@ namespace Polly.Specs
             var result = await Policy
                 .Handle<DivideByZeroException>()
                 .RetryAsync((_, __) => { })
-                .ExecuteAndCaptureAsync(() => Task.FromResult(Int32.MaxValue));
+                .ExecuteAndCaptureAsync(() => Task.FromResult(int.MaxValue));
 
             result.ShouldBeEquivalentTo(new
             {
@@ -121,7 +120,7 @@ namespace Polly.Specs
                 ExceptionType = (ExceptionType?)null,
                 FaultType = (FaultType?)null,
                 FinalHandledResult = default(int),
-                Result = Int32.MaxValue
+                Result = int.MaxValue
             }, options => options.Excluding(o => o.Context));
         }
 
@@ -178,7 +177,9 @@ namespace Polly.Specs
         #region Sync erroneously on async - tests
 
         [Theory, MemberData(nameof(SyncPolicies))]
+#pragma warning disable xUnit1026 // Theory methods should use all of their parameters
         public void Executing_the_synchronous_policies_using_the_asynchronous_execute_should_throw_an_invalid_operation_exception(Policy syncPolicy, string description)
+#pragma warning restore xUnit1026 // Theory methods should use all of their parameters
         {
             syncPolicy
                 .Awaiting(async x => await x.ExecuteAsync(() => TaskHelper.EmptyTask))
@@ -187,7 +188,9 @@ namespace Polly.Specs
         }
 
         [Theory, MemberData(nameof(SyncPolicies))]
+#pragma warning disable xUnit1026 // Theory methods should use all of their parameters
         public void Executing_the_synchronous_policies_using_the_asynchronous_execute_and_capture_should_throw_an_invalid_operation_exception(Policy syncPolicy, string description)
+#pragma warning restore xUnit1026 // Theory methods should use all of their parameters
         {
             syncPolicy
                 .Awaiting(async x => await x.ExecuteAndCaptureAsync(() => TaskHelper.EmptyTask))
@@ -251,17 +254,11 @@ namespace Polly.Specs
                 .AdvancedCircuitBreaker(1, TimeSpan.MaxValue, 2, new TimeSpan());
         }
 
-        private static Policy TimeoutPolicy()
-        {
-            return Policy
+        private static Policy TimeoutPolicy() => Policy
                 .Timeout(TimeSpan.MaxValue);
-        }
 
-        private static Policy BulkheadPolicy()
-        {
-            return Policy
+        private static Policy BulkheadPolicy() => Policy
                 .Bulkhead(1);
-        }
 
         private static Policy FallbackPolicy()
         {
@@ -270,10 +267,7 @@ namespace Polly.Specs
                 .Fallback(() => { });
         }
 
-        private static Policy NoOpPolicy()
-        {
-            return Policy.NoOp();
-        }
+        private static Policy NoOpPolicy() => Policy.NoOp();
 
         #endregion
 
@@ -297,7 +291,7 @@ namespace Polly.Specs
                 .Handle<DivideByZeroException>()
                 .RetryAsync((_, __, ___) => { });
 
-            policy.Awaiting(async p => await p.ExecuteAsync(ctx => TaskHelper.EmptyTask, (Context)null))
+            policy.Awaiting(async p => await p.ExecuteAsync(ctx => TaskHelper.EmptyTask, null))
                 .ShouldThrow<ArgumentNullException>().And
                 .ParamName.Should().Be("context");
         }
@@ -320,7 +314,7 @@ namespace Polly.Specs
                 .Handle<DivideByZeroException>()
                 .RetryAsync((_, __, ___) => { });
 
-            policy.Awaiting(async p => await p.ExecuteAsync(ctx => Task.FromResult(2), (Context)null))
+            policy.Awaiting(async p => await p.ExecuteAsync(ctx => Task.FromResult(2), null))
                   .ShouldThrow<ArgumentNullException>().And
                   .ParamName.Should().Be("context");
         }
@@ -328,8 +322,8 @@ namespace Polly.Specs
         [Fact]
         public async Task Executing_the_policy_function_should_pass_context_to_executed_delegate()
         {
-            string operationKey = "SomeKey";
-            Context executionContext = new Context(operationKey);
+            var operationKey = "SomeKey";
+            var executionContext = new Context(operationKey);
             Context capturedContext = null;
 
             Policy policy = Policy.NoOpAsync();
@@ -357,7 +351,7 @@ namespace Polly.Specs
                 .Handle<DivideByZeroException>()
                 .RetryAsync((_, __, ___) => { });
 
-            policy.Awaiting(async p => await p.ExecuteAndCaptureAsync(ctx => TaskHelper.EmptyTask, (Context)null))
+            policy.Awaiting(async p => await p.ExecuteAndCaptureAsync(ctx => TaskHelper.EmptyTask, null))
                 .ShouldThrow<ArgumentNullException>().And
                 .ParamName.Should().Be("context");
         }
@@ -380,7 +374,7 @@ namespace Polly.Specs
                 .Handle<DivideByZeroException>()
                 .RetryAsync((_, __, ___) => { });
 
-            policy.Awaiting(async p => await p.ExecuteAndCaptureAsync(ctx => Task.FromResult(2), (Context)null))
+            policy.Awaiting(async p => await p.ExecuteAndCaptureAsync(ctx => Task.FromResult(2), null))
                   .ShouldThrow<ArgumentNullException>().And
                   .ParamName.Should().Be("context");
         }
@@ -388,8 +382,8 @@ namespace Polly.Specs
         [Fact]
         public async Task Execute_and_capturing_the_policy_function_should_pass_context_to_executed_delegate()
         {
-            string operationKey = "SomeKey";
-            Context executionContext = new Context(operationKey);
+            var operationKey = "SomeKey";
+            var executionContext = new Context(operationKey);
             Context capturedContext = null;
 
             Policy policy = Policy.NoOpAsync();
@@ -402,8 +396,8 @@ namespace Polly.Specs
         [Fact]
         public async Task Execute_and_capturing_the_policy_function_should_pass_context_to_PolicyResult()
         {
-            string operationKey = "SomeKey";
-            Context executionContext = new Context(operationKey);
+            var operationKey = "SomeKey";
+            var executionContext = new Context(operationKey);
 
             Policy policy = Policy.NoOpAsync();
 

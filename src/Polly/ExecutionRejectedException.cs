@@ -1,5 +1,5 @@
 ﻿using System;
-#if !PORTABLE
+#if NETSTANDARD2_0
 using System.Runtime.Serialization;
 #endif
 
@@ -9,6 +9,9 @@ namespace Polly
     /// Exception thrown when a <see cref="Policy"/> rejects execution of a delegate.  
     /// <remarks>More specific exceptions which derive from this type, are generally thrown.</remarks>
     /// </summary>
+#if NETSTANDARD2_0
+    [Serializable]
+#endif
     public abstract class ExecutionRejectedException : Exception
     {
         /// <summary>
@@ -35,7 +38,7 @@ namespace Polly
         {
         }
 
-#if !PORTABLE
+#if NETSTANDARD2_0
         /// <summary>
         /// Initializes a new instance of the <see cref="ExecutionRejectedException"/> class.
         /// </summary>
@@ -43,7 +46,7 @@ namespace Polly
         /// <param name="context">The <see cref="T:System.Runtime.Serialization.StreamingContext" /> that contains contextual information about the source or destination.</param>
         protected ExecutionRejectedException(
             SerializationInfo info,
-            StreamingContext context) : base(info, context)
+            StreamingContext context) //: base(info, context)
         {
         }
 #endif

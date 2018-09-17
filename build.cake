@@ -43,11 +43,6 @@ var nuspecDestFile = buildDir + File(nuspecFilename);
 var nupkgDestDir = artifactsDir + Directory("nuget-package");
 var snkFile = srcDir + File(keyName);
 
-var projectToNugetFolderMap = new Dictionary<string, string[]>() {
-    { "NetStandard11", new [] {"netstandard1.1"} },
-    { "NetStandard20", new [] {"netstandard2.0"} },
-};
-
 // Gitversion
 var gitVersionPath = ToolsExePath("GitVersion.exe");
 Dictionary<string, object> gitVersionOutput;
@@ -160,24 +155,22 @@ Task("__UpdateDotNetStandardAssemblyVersionNumber")
 
     var attributeToValueMap = new Dictionary<string, string>() {
         { "AssemblyVersion", assemblyVersion },
-        { "AssemblyFileVersion", assemblySemver },
-        { "AssemblyInformationalVersion", assemblySemver },
+        { "FileVersion", assemblySemver },
+        { "InformationalVersion", assemblySemver },
+        { "Version", nugetVersion },
+        { "PackageVersion", nugetVersion },
     };
 
-    var assemblyInfosToUpdate = GetFiles("./src/**/Properties/AssemblyInfo.cs")
-        .Select(f => f.FullPath)
-        .Where(f => !f.Contains("Specs"));
+    var csproj = File("./src/Polly/Polly.csproj");
 
     foreach(var attributeMap in attributeToValueMap) {
         var attribute = attributeMap.Key;
         var value = attributeMap.Value;
 
-        foreach(var assemblyInfo in assemblyInfosToUpdate) {
-            var replacedFiles = ReplaceRegexInFiles(assemblyInfo, attribute + "[(]\".*\"[)]", attribute + "(\"" + value +"\")");
-            if (!replacedFiles.Any())
-            {
-                throw new Exception($"{attribute} attribute could not be updated in {assemblyInfo}.");
-            }
+        var replacedFiles = ReplaceRegexInFiles(csproj, $@"\<{attribute}\>[^\<]*\</{attribute}\>", $@"<{attribute}>{value}</{attribute}>");
+        if (!replacedFiles.Any())
+        {
+            throw new Exception($"{attribute} version could not be updated in {csproj}.");
         }
     }
 
@@ -221,16 +214,12 @@ Task("__RunTests")
 Task("__CopyOutputToNugetFolder")
     .Does(() =>
 {
-    foreach(var project in projectToNugetFolderMap.Keys) {
-        var sourceDir = srcDir + Directory(projectName + "." + project) + Directory("bin") + Directory(configuration);
+    var sourceDir = srcDir + Directory("Polly") + Directory("bin") + Directory(configuration);
 
-        foreach(var targetFolder in projectToNugetFolderMap[project]) {
-            var destDir = buildDir + Directory("lib");
+    var destDir = buildDir + Directory("lib");
 
-            Information("Copying {0} -> {1}.", sourceDir, destDir);
-            CopyDirectory(sourceDir, destDir);
-       }
-    }
+    Information("Copying {0} -> {1}.", sourceDir, destDir);
+    CopyDirectory(sourceDir, destDir);
 
     CopyFile(nuspecSrcFile, nuspecDestFile);
 });

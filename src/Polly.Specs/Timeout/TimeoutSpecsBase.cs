@@ -1,6 +1,7 @@
 ﻿using System;
 using Polly.Utilities;
 using System.Threading;
+using System.Runtime.CompilerServices;
 
 namespace Polly.Specs.Timeout
 {
@@ -92,6 +93,7 @@ namespace Polly.Specs.Timeout
         /// A helper method which simply throws the passed exception.  Supports tests verifying the stack trace of where an exception was thrown, by throwing that exception from a specific (other) location.
         /// </summary>
         /// <param name="ex">The exception to throw.</param>
+        [MethodImpl(MethodImplOptions.NoInlining)]
         protected void Helper_ThrowException(Exception ex)
         {
             throw ex;

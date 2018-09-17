@@ -94,7 +94,9 @@ namespace Polly.Specs
         #region Async erroneously on sync - tests
 
         [Theory, MemberData(nameof(AsyncPolicies))]
+#pragma warning disable xUnit1026 // Theory methods should use all of their parameters
         internal void Executing_the_asynchronous_policies_using_the_synchronous_execute_should_throw_an_invalid_operation_exception(Policy<ResultPrimitive> asyncPolicy, string description)
+#pragma warning restore xUnit1026 // Theory methods should use all of their parameters
         {
             Action action = () => asyncPolicy.Execute(() => ResultPrimitive.Good);
 
@@ -103,7 +105,9 @@ namespace Polly.Specs
         }
 
         [Theory, MemberData(nameof(AsyncPolicies))]
+#pragma warning disable xUnit1026 // Theory methods should use all of their parameters
         internal void Executing_the_asynchronous_policies_using_the_synchronous_execute_and_capture_should_throw_an_invalid_operation_exception(Policy<ResultPrimitive> asyncPolicy, string description)
+#pragma warning restore xUnit1026 // Theory methods should use all of their parameters
         {
             Action action = () => asyncPolicy.ExecuteAndCapture(() => ResultPrimitive.Good);
 
@@ -167,17 +171,11 @@ namespace Polly.Specs
                 .AdvancedCircuitBreakerAsync(1, TimeSpan.MaxValue, 2, new TimeSpan());
         }
 
-        private static Policy<ResultPrimitive> TimeoutAsyncPolicy()
-        {
-            return Policy
+        private static Policy<ResultPrimitive> TimeoutAsyncPolicy() => Policy
                 .TimeoutAsync<ResultPrimitive>(TimeSpan.MaxValue);
-        }
 
-        private static Policy<ResultPrimitive> BulkheadAsyncPolicy()
-        {
-            return Policy
+        private static Policy<ResultPrimitive> BulkheadAsyncPolicy() => Policy
                 .BulkheadAsync<ResultPrimitive>(1);
-        }
 
         private static Policy<ResultPrimitive> FallbackAsyncPolicy()
         {
@@ -186,15 +184,12 @@ namespace Polly.Specs
                 .FallbackAsync(ResultPrimitive.Substitute);
         }
 
-        private static Policy<ResultPrimitive> NoOpAsyncPolicy()
-        {
-            return Policy.NoOpAsync<ResultPrimitive>();
-        }
+        private static Policy<ResultPrimitive> NoOpAsyncPolicy() => Policy.NoOpAsync<ResultPrimitive>();
 
         #endregion
 
         #region Context tests
-        
+
 
         [Fact]
         public void Executing_the_policy_function_should_throw_when_context_data_is_null()
@@ -214,7 +209,7 @@ namespace Polly.Specs
                 .HandleResult(ResultPrimitive.Fault)
                 .Retry((_, __, ___) => { });
 
-            policy.Invoking(p => p.Execute(ctx => ResultPrimitive.Good, (Context)null))
+            policy.Invoking(p => p.Execute(ctx => ResultPrimitive.Good, null))
                 .ShouldThrow<ArgumentNullException>().And
                 .ParamName.Should().Be("context");
         }
@@ -222,8 +217,8 @@ namespace Polly.Specs
         [Fact]
         public void Executing_the_policy_function_should_pass_context_to_executed_delegate()
         {
-            string operationKey = "SomeKey";
-            Context executionContext = new Context(operationKey);
+            var operationKey = "SomeKey";
+            var executionContext = new Context(operationKey);
             Context capturedContext = null;
 
             Policy<ResultPrimitive> policy = Policy.NoOp<ResultPrimitive>();
@@ -251,7 +246,7 @@ namespace Polly.Specs
                 .HandleResult(ResultPrimitive.Fault)
                 .Retry((_, __, ___) => { });
 
-            policy.Invoking(p => p.ExecuteAndCapture(ctx => ResultPrimitive.Good, (Context)null))
+            policy.Invoking(p => p.ExecuteAndCapture(ctx => ResultPrimitive.Good, null))
                   .ShouldThrow<ArgumentNullException>().And
                   .ParamName.Should().Be("context");
         }
@@ -259,8 +254,8 @@ namespace Polly.Specs
         [Fact]
         public void Execute_and_capturing_the_policy_function_should_pass_context_to_executed_delegate()
         {
-            string operationKey = "SomeKey";
-            Context executionContext = new Context(operationKey);
+            var operationKey = "SomeKey";
+            var executionContext = new Context(operationKey);
             Context capturedContext = null;
 
             Policy<ResultPrimitive> policy = Policy.NoOp<ResultPrimitive>();
@@ -273,8 +268,8 @@ namespace Polly.Specs
         [Fact]
         public void Execute_and_capturing_the_policy_function_should_pass_context_to_PolicyResult()
         {
-            string operationKey = "SomeKey";
-            Context executionContext = new Context(operationKey);
+            var operationKey = "SomeKey";
+            var executionContext = new Context(operationKey);
 
             Policy<ResultPrimitive> policy = Policy.NoOp<ResultPrimitive>();
 
