@@ -90,6 +90,17 @@
     <Compile Include="$(MSBuildThisFileDirectory)ISyncPolicy.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IsPolicy.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ISyncPolicy.TResult.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Monkey\IMonkeyPolicy.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Monkey\MonkeyEngine.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Monkey\MonkeyEngineAsync.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Monkey\MonkeyPolicy.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Monkey\MonkeyPolicyAsync.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Monkey\InjectFaultSyntax.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Monkey\InjectFaultSyntaxAsync.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Monkey\MonkeySyntax.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Monkey\MonkeySyntaxAsync.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Monkey\MonkeyTResultSyntax.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Monkey\MonkeyTResultSyntaxAsync.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)NoOp\INoOpPolicy.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)NoOp\NoOpEngineAsync.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)NoOp\NoOpEngine.cs" />
