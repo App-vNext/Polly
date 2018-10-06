@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Polly.Utilities;
 
 namespace Polly.Monkey
 {
@@ -15,7 +16,7 @@ namespace Polly.Monkey
             Func<Context, Task<bool>> enabled,
             bool continueOnCapturedContext)
         {
-            if (await enabled(context) && GetRandomNumber() < await injectionRate(context))
+            if (await enabled(context) && RandomGenerator.GetRandomNumber() < await injectionRate(context))
             {
                 await fault(context, cancellationToken);
             }
@@ -27,14 +28,14 @@ namespace Polly.Monkey
             Func<Context, CancellationToken, Task<TResult>> action,
             Context context,
             CancellationToken cancellationToken,
-            Func<Context, Task<Exception>> fault,
+            Func<Context, CancellationToken, Task<Exception>> fault,
             Func<Context, Task<Double>> injectionRate,
             Func<Context, Task<bool>> enabled,
             bool continueOnCapturedContext)
         {
-            if (await enabled(context) && GetRandomNumber() < await injectionRate(context))
+            if (await enabled(context) && RandomGenerator.GetRandomNumber() < await injectionRate(context))
             {
-                throw await fault(context);
+                throw await fault(context, cancellationToken);
             }
 
             return await action(context, cancellationToken).ConfigureAwait(continueOnCapturedContext);
@@ -44,14 +45,14 @@ namespace Polly.Monkey
             Func<Context, CancellationToken, Task<TResult>> action,
             Context context,
             CancellationToken cancellationToken,
-            Func<Context, Task<DelegateResult<TResult>>> fault,
+            Func<Context, CancellationToken, Task<DelegateResult<TResult>>> fault,
             Func<Context, Task<Double>> injectionRate,
             Func<Context, Task<bool>> enabled,
             bool continueOnCapturedContext)
         {
-            if (await enabled(context) && GetRandomNumber() < await injectionRate(context))
+            if (await enabled(context) && RandomGenerator.GetRandomNumber() < await injectionRate(context))
             {
-                DelegateResult<TResult> faultResponse = await fault(context);
+                DelegateResult<TResult> faultResponse = await fault(context, cancellationToken);
                 if (faultResponse.Exception != null)
                 {
                     throw faultResponse.Exception;

@@ -27,7 +27,7 @@ namespace Polly
             if (fault == null) throw new ArgumentNullException(nameof(fault));
             if (enabled == null) throw new ArgumentNullException(nameof(enabled));
 
-            Func<Context, Task<Exception>> faultLambda = _ => Task.FromResult<Exception>(fault);
+            Func<Context, CancellationToken, Task<Exception>> faultLambda = (_, __) => Task.FromResult<Exception>(fault);
             Func<Context, Task<Double>> injectionRateLambda = _ => Task.FromResult<Double>(injectionRate);
             Func<Context, Task<bool>> enabledLambda = _ =>
             {
@@ -53,7 +53,7 @@ namespace Polly
             if (fault == null) throw new ArgumentNullException(nameof(fault));
             if (enabled == null) throw new ArgumentNullException(nameof(enabled));
 
-            Func<Context, Task<Exception>> faultLambda = _ => Task.FromResult<Exception>(fault);
+            Func<Context, CancellationToken, Task<Exception>> faultLambda = (_, __) => Task.FromResult<Exception>(fault);
             Func<Context, Task<Double>> injectionRateLambda = _ => Task.FromResult<Double>(injectionRate);
 
             return Policy.MonkeyAsync(faultLambda, injectionRateLambda, enabled);
@@ -68,7 +68,7 @@ namespace Polly
         /// <param name="enabled">Lambda to check if this policy is enabled in current context</param>
         /// <returns>The policy instance.</returns>
         public static MonkeyPolicy MonkeyAsync(
-            Func<Context, Task<Exception>> fault,
+            Func<Context, CancellationToken, Task<Exception>> fault,
             Double injectionRate,
             Func<Context, Task<bool>> enabled)
         {
@@ -96,7 +96,7 @@ namespace Polly
             if (injectionRate == null) throw new ArgumentNullException(nameof(injectionRate));
             if (enabled == null) throw new ArgumentNullException(nameof(enabled));
 
-            Func<Context, Task<Exception>> faultLambda = _ => Task.FromResult<Exception>(fault);
+            Func<Context, CancellationToken, Task<Exception>> faultLambda = (_, __) => Task.FromResult<Exception>(fault);
             return Policy.MonkeyAsync(faultLambda, injectionRate, enabled);
         }
 
@@ -109,7 +109,7 @@ namespace Polly
         /// <param name="enabled">Lambda to check if this policy is enabled in current context</param>
         /// <returns>The policy instance.</returns>
         public static MonkeyPolicy MonkeyAsync(
-            Func<Context, Task<Exception>> fault,
+            Func<Context, CancellationToken, Task<Exception>> fault,
             Func<Context, Task<Double>> injectionRate,
             Func<Context, Task<bool>> enabled)
         {

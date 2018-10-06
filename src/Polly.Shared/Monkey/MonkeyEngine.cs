@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading;
+using Polly.Utilities;
 
 namespace Polly.Monkey
 {
@@ -15,7 +16,7 @@ namespace Polly.Monkey
             Func<Context, Double> injectionRate,
             Func<Context, bool> enabled)
         {
-            if (enabled(context) && GetRandomNumber() < injectionRate(context))
+            if (enabled(context) && RandomGenerator.GetRandomNumber() < injectionRate(context))
             {
                 fault(context, cancellationToken);
             }
@@ -31,7 +32,7 @@ namespace Polly.Monkey
             Func<Context, Double> injectionRate,
             Func<Context, bool> enabled)
         {
-            if (enabled(context) && GetRandomNumber() < injectionRate(context))
+            if (enabled(context) && RandomGenerator.GetRandomNumber() < injectionRate(context))
             {
                 throw fault(context);
             }
@@ -47,7 +48,7 @@ namespace Polly.Monkey
             Func<Context, Double> injectionRate,
             Func<Context, bool> enabled)
         {
-            if (enabled(context) && GetRandomNumber() < injectionRate(context))
+            if (enabled(context) && RandomGenerator.GetRandomNumber() < injectionRate(context))
             {
                 DelegateResult<TResult> faultResponse = fault(context);
                 if (faultResponse.Exception != null)
@@ -59,16 +60,6 @@ namespace Polly.Monkey
             }
 
             return action(context, cancellationToken);
-        }
-
-        /// <summary>
-        /// TODO: abstract this out @reminder: 1d
-        /// Method to return a random number between 0 and 1
-        /// </summary>
-        /// <returns>a random <see cref="Double"/> between [0,1]</returns>
-        private static Double GetRandomNumber()
-        {
-            return rand.NextDouble();
         }
     }
 }
