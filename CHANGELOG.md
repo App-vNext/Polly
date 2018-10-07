@@ -1,3 +1,6 @@
+## 6.1.1
+- Bug Fix: Context.PolicyKey behaviour in PolicyWrap (issue 510)
+
 ## 6.1.0
 - Bug Fix: Context.PolicyKey behaviour in PolicyWrap (issue 463)
 - Bug Fix: CachePolicy behaviour with non-nullable types (issues 472, 475)
