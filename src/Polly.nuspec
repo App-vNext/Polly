@@ -13,6 +13,10 @@
     <tags>Exception Handling Resilience Transient Fault Policy Circuit Breaker CircuitBreaker Retry Wait Cache Cache-aside Bulkhead Fallback Timeout Throttle Parallelization</tags>
     <copyright>Copyright © 2018, App vNext</copyright>
     <releaseNotes>
+     6.1.1
+     ---------------------
+     - Bug Fix: Context.PolicyKey behaviour in PolicyWrap (issue 510)
+
      6.1.0
      ---------------------
      - Bug Fix: Context.PolicyKey behaviour in PolicyWrap
