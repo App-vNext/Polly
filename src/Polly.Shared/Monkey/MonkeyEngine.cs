@@ -44,19 +44,13 @@ namespace Polly.Monkey
             Func<Context, CancellationToken, TResult> action,
             Context context,
             CancellationToken cancellationToken,
-            Func<Context, DelegateResult<TResult>> fault,
+            Func<Context, TResult> fault,
             Func<Context, Double> injectionRate,
             Func<Context, bool> enabled)
         {
             if (enabled(context) && RandomGenerator.GetRandomNumber() < injectionRate(context))
             {
-                DelegateResult<TResult> faultResponse = fault(context);
-                if (faultResponse.Exception != null)
-                {
-                    throw faultResponse.Exception;
-                }
-
-                return faultResponse.Result;
+                return fault(context);
             }
 
             return action(context, cancellationToken);

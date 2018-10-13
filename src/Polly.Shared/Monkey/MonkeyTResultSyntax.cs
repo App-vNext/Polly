@@ -9,6 +9,7 @@ namespace Polly
     /// </summary>
     public partial class Policy
     {
+        #region Exception based faults
         /// <summary>
         /// Builds a <see cref="MonkeyPolicy"/> which injects a fault if <paramref name="enabled"/> returns true and
         /// a random number is within range of <paramref name="injectionRate"/>.
@@ -26,32 +27,6 @@ namespace Polly
             if (enabled == null) throw new ArgumentNullException(nameof(enabled));
 
             Func<Context, Exception> faultLambda = _ => fault;
-            Func<Context, Double> injectionRateLambda = _ => injectionRate;
-            Func<Context, bool> enabledLambda = _ =>
-            {
-                return enabled();
-            };
-
-            return Policy.Monkey<TResult>(faultLambda, injectionRateLambda, enabledLambda);
-        }
-
-        /// <summary>
-        /// Builds a <see cref="MonkeyPolicy"/> which injects a fault if <paramref name="enabled"/> returns true and
-        /// a random number is within range of <paramref name="injectionRate"/>.
-        /// </summary>
-        /// <param name="fault">The fault exception object to throw</param>
-        /// <param name="injectionRate">injection rate between [0, 1]</param>
-        /// <param name="enabled">Lambda to check if this policy is enabled in context free mode</param>
-        /// <returns>The policy instance.</returns>
-        public static MonkeyPolicy<TResult> Monkey<TResult>(
-            TResult fault,
-            Double injectionRate,
-            Func<bool> enabled)
-        {
-            if (fault == null) throw new ArgumentNullException(nameof(fault));
-            if (enabled == null) throw new ArgumentNullException(nameof(enabled));
-
-            Func<Context, TResult> faultLambda = _ => fault;
             Func<Context, Double> injectionRateLambda = _ => injectionRate;
             Func<Context, bool> enabledLambda = _ =>
             {
@@ -149,6 +124,77 @@ namespace Polly
                     injectionRate,
                     enabled));
         }
+        #endregion
+
+        #region TResult based faults
+        /// <summary>
+        /// Builds a <see cref="MonkeyPolicy"/> which injects a fault if <paramref name="enabled"/> returns true and
+        /// a random number is within range of <paramref name="injectionRate"/>.
+        /// </summary>
+        /// <param name="fault">The fault exception object to throw</param>
+        /// <param name="injectionRate">injection rate between [0, 1]</param>
+        /// <param name="enabled">Lambda to check if this policy is enabled in context free mode</param>
+        /// <returns>The policy instance.</returns>
+        public static MonkeyPolicy<TResult> Monkey<TResult>(
+            TResult fault,
+            Double injectionRate,
+            Func<bool> enabled)
+        {
+            if (fault == null) throw new ArgumentNullException(nameof(fault));
+            if (enabled == null) throw new ArgumentNullException(nameof(enabled));
+
+            Func<Context, TResult> faultLambda = _ => fault;
+            Func<Context, Double> injectionRateLambda = _ => injectionRate;
+            Func<Context, bool> enabledLambda = _ =>
+            {
+                return enabled();
+            };
+
+            return Policy.Monkey<TResult>(faultLambda, injectionRateLambda, enabledLambda);
+        }
+
+        /// <summary>
+        /// Builds a <see cref="MonkeyPolicy"/> which injects a fault if <paramref name="enabled"/> returns true and
+        /// a random number is within range of <paramref name="injectionRate"/>.
+        /// </summary>
+        /// <param name="fault">The fault exception object to throw</param>
+        /// <param name="injectionRate">injection rate between [0, 1]</param>
+        /// <param name="enabled">Lambda to check if this policy is enabled in current context</param>
+        /// <returns>The policy instance.</returns>
+        public static MonkeyPolicy<TResult> Monkey<TResult>(
+            TResult fault,
+            Double injectionRate,
+            Func<Context, bool> enabled)
+        {
+            if (fault == null) throw new ArgumentNullException(nameof(fault));
+            if (enabled == null) throw new ArgumentNullException(nameof(enabled));
+
+            Func<Context, TResult> faultLambda = _ => fault;
+            Func<Context, Double> injectionRateLambda = _ => injectionRate;
+
+            return Policy.Monkey<TResult>(faultLambda, injectionRateLambda, enabled);
+        }
+
+        /// <summary>
+        /// Builds a <see cref="MonkeyPolicy"/> which injects a fault if <paramref name="enabled"/> returns true and
+        /// a random number is within range of <paramref name="injectionRate"/>.
+        /// </summary>
+        /// <param name="fault">The fault exception object to throw</param>
+        /// <param name="injectionRate">injection rate between [0, 1]</param>
+        /// <param name="enabled">Lambda to check if this policy is enabled in current context</param>
+        /// <returns>The policy instance.</returns>
+        public static MonkeyPolicy<TResult> Monkey<TResult>(
+            Func<Context, TResult> fault,
+            Double injectionRate,
+            Func<Context, bool> enabled)
+        {
+            if (fault == null) throw new ArgumentNullException(nameof(fault));
+            if (enabled == null) throw new ArgumentNullException(nameof(enabled));
+
+            Func<Context, Double> injectionRateLambda = _ => injectionRate;
+
+            return Policy.Monkey<TResult>(fault, injectionRateLambda, enabled);
+        }
 
         /// <summary>
         /// Builds a <see cref="MonkeyPolicy"/> which executes a fault if <paramref name="enabled"/> returns true and
@@ -167,21 +213,18 @@ namespace Polly
             if (injectionRate == null) throw new ArgumentNullException(nameof(injectionRate));
             if (enabled == null) throw new ArgumentNullException(nameof(enabled));
 
-            Func<Context, DelegateResult<TResult>> faultLambda = (ctx) =>
-            {
-                return new DelegateResult<TResult>(fault(ctx));
-            };
-
             return new MonkeyPolicy<TResult>(
                 (action, context, cancellationToken) => MonkeyEngine.Implementation<TResult>(
                     action,
                     context,
                     cancellationToken,
-                    faultLambda,
+                    fault,
                     injectionRate,
                     enabled));
         }
+        #endregion
 
+        #region Delegate based faults
         /// <summary>
         /// Builds a <see cref="MonkeyPolicy"/> which executes a fault if <paramref name="enabled"/> returns true and
         /// a random number is within range of <paramref name="injectionRate"/>.
@@ -254,5 +297,6 @@ namespace Polly
                     enabled)
                 );
         }
+        #endregion
     }
 }
