@@ -234,7 +234,7 @@ namespace Polly
         /// <param name="enabled">Lambda to check if this policy is enabled in context free mode</param>
         /// <returns>The policy instance.</returns>
         public static MonkeyPolicy<TResult> Monkey<TResult>(
-            Action<Context, CancellationToken> fault,
+            Action<Context> fault,
             Double injectionRate,
             Func<bool> enabled)
         {
@@ -259,7 +259,7 @@ namespace Polly
         /// <param name="enabled">Lambda to check if this policy is enabled in current context</param>
         /// <returns>The policy instance.</returns>
         public static MonkeyPolicy<TResult> Monkey<TResult>(
-            Action<Context, CancellationToken> fault,
+            Action<Context> fault,
             Double injectionRate,
             Func<Context, bool> enabled)
         {
@@ -279,7 +279,7 @@ namespace Polly
         /// <param name="enabled">Lambda to check if this policy is enabled in current context</param>
         /// <returns>The policy instance.</returns>
         public static MonkeyPolicy<TResult> Monkey<TResult>(
-            Action<Context, CancellationToken> fault,
+            Action<Context> fault,
             Func<Context, Double> injectionRate,
             Func<Context, bool> enabled)
         {

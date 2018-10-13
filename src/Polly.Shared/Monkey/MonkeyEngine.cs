@@ -12,13 +12,13 @@ namespace Polly.Monkey
             Func<Context, CancellationToken, TResult> action,
             Context context,
             CancellationToken cancellationToken,
-            Action<Context, CancellationToken> fault,
+            Action<Context> fault,
             Func<Context, Double> injectionRate,
             Func<Context, bool> enabled)
         {
             if (enabled(context) && RandomGenerator.GetRandomNumber() < injectionRate(context))
             {
-                fault(context, cancellationToken);
+                fault(context);
             }
 
             return action(context, cancellationToken);
