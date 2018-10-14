@@ -472,6 +472,7 @@ namespace Polly.Specs.Monkey
 
             Func<CancellationToken, Task> fault = async (cts) =>
             {
+                await Task.Run(() => { });
                 throw new Exception();
             };
 
