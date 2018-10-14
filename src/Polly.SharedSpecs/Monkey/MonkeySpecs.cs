@@ -1,15 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Text;
 using System.Threading;
 using FluentAssertions;
 using Polly.Monkey;
-using Polly.NoOp;
-using Polly.Specs.Helpers;
 using Polly.Utilities;
 using Xunit;
-using Microsoft.VisualStudio.TestPlatform.Utilities.Helpers;
 
 namespace Polly.Specs.Monkey
 {
@@ -36,7 +31,7 @@ namespace Polly.Specs.Monkey
 
             Boolean executed = false;
             policy.Invoking(x => x.Execute(() => { executed = true; }))
-                .ShouldThrow<Exception>().WithMessage(exceptionMessage);
+                .ShouldThrowExactly<Exception>().WithMessage(exceptionMessage);
 
             executed.Should().BeFalse();
         }
@@ -67,12 +62,13 @@ namespace Polly.Specs.Monkey
             MonkeyPolicy policy = Policy.Monkey(
                 new Exception("test"),
                 0.6,
-                (ctx) => {
+                (ctx) =>
+                {
                     return (ctx["ShouldFail"] != null && ctx["ShouldFail"].ToString() == "true");
                 });
 
             policy.Invoking(x => x.Execute((ctx) => { executed = true; }, context))
-                .ShouldThrow<Exception>();
+                .ShouldThrowExactly<Exception>();
 
             executed.Should().BeFalse();
         }
@@ -88,7 +84,8 @@ namespace Polly.Specs.Monkey
             MonkeyPolicy policy = Policy.Monkey(
                 new Exception("test"),
                 0.4,
-                (ctx) => {
+                (ctx) =>
+                {
                     return (ctx["ShouldFail"] != null && ctx["ShouldFail"].ToString() == "true");
                 });
 
@@ -109,7 +106,8 @@ namespace Polly.Specs.Monkey
             MonkeyPolicy policy = Policy.Monkey(
                 new Exception("test"),
                 0.6,
-                (ctx) => {
+                (ctx) =>
+                {
                     return (ctx["ShouldFail"] != null && ctx["ShouldFail"].ToString() == "true");
                 });
 
@@ -133,7 +131,7 @@ namespace Polly.Specs.Monkey
             Func<Context, bool> enabled = (ctx) => true;
             MonkeyPolicy policy = Policy.Monkey(fault, 0.6, enabled);
             policy.Invoking(x => x.Execute((ctx) => { executed = true; }, context))
-                .ShouldThrow<Exception>();
+                .ShouldThrowExactly<Exception>();
 
             executed.Should().BeFalse();
         }
@@ -159,7 +157,7 @@ namespace Polly.Specs.Monkey
             Func<Context, bool> enabled = (ctx) => true;
             MonkeyPolicy policy = Policy.Monkey(fault, 0.6, enabled);
             policy.Invoking(x => x.Execute((ctx) => { executed = true; }, context))
-                .ShouldThrow<InvalidOperationException>();
+                .ShouldThrowExactly<InvalidOperationException>();
 
             executed.Should().BeFalse();
         }
@@ -185,7 +183,7 @@ namespace Polly.Specs.Monkey
             Func<Context, bool> enabled = (ctx) => true;
             MonkeyPolicy policy = Policy.Monkey(fault, 0.6, enabled);
             policy.Invoking(x => x.Execute((ctx) => { executed = true; }, context))
-                .ShouldThrow<InvalidProgramException>();
+                .ShouldThrowExactly<InvalidProgramException>();
 
             executed.Should().BeFalse();
         }
@@ -231,7 +229,7 @@ namespace Polly.Specs.Monkey
             Func<Context, bool> enabled = (ctx) => true;
             MonkeyPolicy policy = Policy.Monkey(fault, injectionRate, enabled);
             policy.Invoking(x => x.Execute((ctx) => { executed = true; }, context))
-                .ShouldThrow<Exception>();
+                .ShouldThrowExactly<Exception>();
 
             executed.Should().BeFalse();
         }
@@ -258,7 +256,7 @@ namespace Polly.Specs.Monkey
             Func<Context, bool> enabled = (ctx) => true;
             MonkeyPolicy policy = Policy.Monkey(fault, injectionRate, enabled);
             policy.Invoking(x => x.Execute((ctx) => { executed = true; }, context))
-                .ShouldThrow<Exception>();
+                .ShouldThrowExactly<Exception>();
 
             executed.Should().BeFalse();
         }
@@ -305,11 +303,12 @@ namespace Polly.Specs.Monkey
             Func<Context, bool> enabled = (ctx) => true;
             MonkeyPolicy policy = Policy.Monkey(fault, injectionRate, enabled);
             policy.Invoking(x => x.Execute((ctx) => { executed = true; }, context))
-                .ShouldThrow<Exception>();
+                .ShouldThrowExactly<Exception>();
 
             executed.Should().BeFalse();
         }
 
+        [Fact]
         public void Monkey_With_Context_Should_not_execute_user_delegate_2()
         {
             this.Init();
@@ -347,7 +346,7 @@ namespace Polly.Specs.Monkey
 
             MonkeyPolicy policy = Policy.Monkey(fault, injectionRate, enabled);
             policy.Invoking(x => x.Execute((ctx) => { executed = true; }, context))
-                .ShouldThrow<InvalidOperationException>().WithMessage(failureMessage);
+                .ShouldThrowExactly<InvalidOperationException>().WithMessage(failureMessage);
 
             executed.Should().BeFalse();
         }
@@ -359,8 +358,9 @@ namespace Polly.Specs.Monkey
         {
             this.Init();
 
-            Action fault = () => {
-                Thread.Sleep(500);
+            Action fault = () =>
+            {
+                Thread.Sleep(200);
             };
 
             MonkeyPolicy policy = Policy.Monkey(fault, 0.6, () => true);
@@ -372,7 +372,7 @@ namespace Polly.Specs.Monkey
             sw.Stop();
 
             executed.Should().BeTrue();
-            sw.ElapsedMilliseconds.Should().BeGreaterThan(500);
+            sw.ElapsedMilliseconds.Should().BeGreaterOrEqualTo(200);
 
             //// No delay
             sw.Reset();
@@ -384,7 +384,7 @@ namespace Polly.Specs.Monkey
             sw.Stop();
 
             executed.Should().BeTrue();
-            sw.ElapsedMilliseconds.Should().BeLessThan(500);
+            sw.ElapsedMilliseconds.Should().BeLessThan(200);
         }
 
         [Fact]
@@ -397,7 +397,7 @@ namespace Polly.Specs.Monkey
 
             MonkeyPolicy policy = Policy.Monkey(fault, 0.6, () => true);
             Boolean executed = false;
-            policy.Invoking(x => x.Execute(() => { executed = true; })).ShouldThrow<Exception>();
+            policy.Invoking(x => x.Execute(() => { executed = true; })).ShouldThrowExactly<Exception>();
             executed.Should().BeFalse();
         }
 
@@ -408,7 +408,8 @@ namespace Polly.Specs.Monkey
             Context context = new Context();
             context["ShouldFail"] = "true";
 
-            Action<Context> fault = (ctx) => {
+            Action<Context> fault = (ctx) =>
+            {
                 if (ctx["ShouldFail"] != null && ctx["ShouldFail"].ToString() == "true")
                 {
                     Thread.Sleep(200);
@@ -424,7 +425,7 @@ namespace Polly.Specs.Monkey
             sw.Stop();
 
             executed.Should().BeTrue();
-            sw.ElapsedMilliseconds.Should().BeGreaterThan(200);
+            sw.ElapsedMilliseconds.Should().BeGreaterOrEqualTo(200);
 
             //// No delay
             context["ShouldFail"] = "false";
@@ -445,7 +446,8 @@ namespace Polly.Specs.Monkey
             context["ShouldFail"] = "true";
             context["Enabled"] = "true";
 
-            Action<Context> fault = (ctx) => {
+            Action<Context> fault = (ctx) =>
+            {
                 if (ctx["ShouldFail"] != null && ctx["ShouldFail"].ToString() == "true")
                 {
                     Thread.Sleep(200);
@@ -465,7 +467,7 @@ namespace Polly.Specs.Monkey
             sw.Stop();
 
             executed.Should().BeTrue();
-            sw.ElapsedMilliseconds.Should().BeGreaterThan(200);
+            sw.ElapsedMilliseconds.Should().BeGreaterOrEqualTo(200);
 
             //// No delay
             context["Enabled"] = "false";
@@ -487,18 +489,21 @@ namespace Polly.Specs.Monkey
             context["Enabled"] = "true";
             context["InjectionRate"] = "0.6";
 
-            Action<Context> fault = (ctx) => {
+            Action<Context> fault = (ctx) =>
+            {
                 if (ctx["ShouldFail"] != null && ctx["ShouldFail"].ToString() == "true")
                 {
                     Thread.Sleep(200);
                 }
             };
 
-            Func<Context, bool> enabled = (ctx) => {
+            Func<Context, bool> enabled = (ctx) =>
+            {
                 return (ctx["Enabled"] != null && ctx["Enabled"].ToString() == "true");
             };
 
-            Func<Context, double> injectionRate = (ctx) => {
+            Func<Context, double> injectionRate = (ctx) =>
+            {
                 if (ctx["InjectionRate"] != null)
                 {
                     return double.Parse(ctx["InjectionRate"].ToString());
@@ -516,7 +521,7 @@ namespace Polly.Specs.Monkey
             sw.Stop();
 
             executed.Should().BeTrue();
-            sw.ElapsedMilliseconds.Should().BeGreaterThan(200);
+            sw.ElapsedMilliseconds.Should().BeGreaterOrEqualTo(200);
 
             //// No delay
             context["InjectionRate"] = "0.4";

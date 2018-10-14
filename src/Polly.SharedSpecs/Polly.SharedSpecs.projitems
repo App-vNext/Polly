@@ -65,7 +65,10 @@
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\ResultPrimitive.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IAsyncPolicyExtensionsSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ISyncPolicyExtensionsSpecs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Monkey\MonkeyAsyncSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Monkey\MonkeySpecs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Monkey\MonkeyTResultAsyncSpecs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Monkey\MonkeyTResultSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)NoOp\NoOpTResultSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)NoOp\NoOpTResultAsyncSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)NoOp\NoOpAsyncSpecs.cs" />
