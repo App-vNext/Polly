@@ -6,8 +6,6 @@ namespace Polly.Monkey
 {
     internal static partial class MonkeyEngine
     {
-        private static Random rand = new Random();
-
         internal static TResult Implementation<TResult>(
             Func<Context, CancellationToken, TResult> action,
             Context context,
