@@ -229,6 +229,32 @@ namespace Polly
         /// Builds a <see cref="MonkeyPolicy"/> which executes a fault if <paramref name="enabled"/> returns true and
         /// a random number is within range of <paramref name="injectionRate"/>.
         /// </summary>
+        /// <param name="fault">Fault Delegate to be executed without context</param>
+        /// <param name="injectionRate">The injection rate between [0, 1]</param>
+        /// <param name="enabled">Lambda to check if this policy is enabled in context free mode</param>
+        /// <returns>The policy instance.</returns>
+        public static MonkeyPolicy<TResult> Monkey<TResult>(
+            Action fault,
+            Double injectionRate,
+            Func<bool> enabled)
+        {
+            if (fault == null) throw new ArgumentNullException(nameof(fault));
+            if (enabled == null) throw new ArgumentNullException(nameof(enabled));
+
+            Action<Context> faultLamda = _ => fault();
+            Func<Context, Double> injectionRateLambda = _ => injectionRate;
+            Func<Context, bool> enabledLambda = _ =>
+            {
+                return enabled();
+            };
+
+            return Policy.Monkey<TResult>(faultLamda, injectionRateLambda, enabledLambda);
+        }
+
+        /// <summary>
+        /// Builds a <see cref="MonkeyPolicy"/> which executes a fault if <paramref name="enabled"/> returns true and
+        /// a random number is within range of <paramref name="injectionRate"/>.
+        /// </summary>
         /// <param name="fault">Fault Delegate to be executed</param>
         /// <param name="injectionRate">The injection rate between [0, 1]</param>
         /// <param name="enabled">Lambda to check if this policy is enabled in context free mode</param>

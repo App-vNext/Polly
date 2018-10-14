@@ -17,5 +17,13 @@ namespace Polly.Utilities
         /// </summary>
         /// <returns>a random <see cref="Double"/> between [0,1]</returns>
         public static Func<Double> GetRandomNumber = () => rand.NextDouble();
+
+        /// <summary>
+        /// Method to reset the random generator
+        /// </summary>
+        public static void Reset()
+        {
+            GetRandomNumber = () => rand.NextDouble();
+        }
     }
 }

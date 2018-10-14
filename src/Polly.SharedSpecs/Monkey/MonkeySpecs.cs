@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 using System.Threading;
 using FluentAssertions;
@@ -14,27 +15,28 @@ namespace Polly.Specs.Monkey
 {
     public class MonkeySpecs : IDisposable
     {
-        public MonkeySpecs()
-        {
-            RandomGenerator.GetRandomNumber = () => 0.5;
-        }
-
         public void Dispose()
         {
-            Random rand = new Random();
-            RandomGenerator.GetRandomNumber = () => rand.NextDouble();
+            RandomGenerator.Reset();
+        }
+
+        public void Init()
+        {
+            RandomGenerator.GetRandomNumber = () => 0.5;
         }
 
         #region Basic Overload, Exception, Context Free
         [Fact]
         public void Monkey_Context_Free_Enabled_Should_not_execute_user_delegate()
         {
-            Exception fault = new Exception("test");
+            this.Init();
+            string exceptionMessage = "exceptionMessage";
+            Exception fault = new Exception(exceptionMessage);
             MonkeyPolicy policy = Policy.Monkey(fault, 0.6, () => true);
 
             Boolean executed = false;
             policy.Invoking(x => x.Execute(() => { executed = true; }))
-                .ShouldThrow<Exception>();
+                .ShouldThrow<Exception>().WithMessage(exceptionMessage);
 
             executed.Should().BeFalse();
         }
@@ -42,6 +44,7 @@ namespace Polly.Specs.Monkey
         [Fact]
         public void Monkey_Context_Free_Enabled_Should_execute_user_delegate()
         {
+            this.Init();
             Exception fault = new Exception("test");
             MonkeyPolicy policy = Policy.Monkey(fault, 0.3, () => true);
 
@@ -57,6 +60,7 @@ namespace Polly.Specs.Monkey
         [Fact]
         public void Monkey_With_Context_Should_not_execute_user_delegate()
         {
+            this.Init();
             Boolean executed = false;
             Context context = new Context();
             context["ShouldFail"] = "true";
@@ -76,6 +80,7 @@ namespace Polly.Specs.Monkey
         [Fact]
         public void Monkey_With_Context_Should_execute_user_delegate()
         {
+            this.Init();
             Exception fault = new Exception("test");
             Boolean executed = false;
             Context context = new Context();
@@ -96,6 +101,7 @@ namespace Polly.Specs.Monkey
         [Fact]
         public void Monkey_With_Context_Should_execute_user_delegate_2()
         {
+            this.Init();
             Exception fault = new Exception("test");
             Boolean executed = false;
             Context context = new Context();
@@ -118,6 +124,7 @@ namespace Polly.Specs.Monkey
         [Fact]
         public void Monkey_With_Context_Exception_Should_not_execute_user_delegate_1()
         {
+            this.Init();
             Boolean executed = false;
             Context context = new Context();
             context["ShouldFail"] = "true";
@@ -134,13 +141,14 @@ namespace Polly.Specs.Monkey
         [Fact]
         public void Monkey_With_Context_Exception_Should_not_execute_user_delegate_2()
         {
+            this.Init();
             Boolean executed = false;
             Context context = new Context();
             context["ShouldFail"] = "true";
 
             Func<Context, Exception> fault = (ctx) =>
             {
-                if (context["ShouldFail"] != null && context["ShouldFail"].ToString() == "true")
+                if (ctx["ShouldFail"] != null && ctx["ShouldFail"].ToString() == "true")
                 {
                     return new InvalidOperationException();
                 }
@@ -159,13 +167,14 @@ namespace Polly.Specs.Monkey
         [Fact]
         public void Monkey_With_Context_Exception_Should_not_execute_user_delegate_3()
         {
+            this.Init();
             Boolean executed = false;
             Context context = new Context();
             context["ShouldFail"] = "false";
 
             Func<Context, Exception> fault = (ctx) =>
             {
-                if (context["ShouldFail"] != null && context["ShouldFail"].ToString() == "true")
+                if (ctx["ShouldFail"] != null && ctx["ShouldFail"].ToString() == "true")
                 {
                     return new InvalidOperationException();
                 }
@@ -184,13 +193,14 @@ namespace Polly.Specs.Monkey
         [Fact]
         public void Monkey_With_Context_Exception_Should_execute_user_delegate_1()
         {
+            this.Init();
             Boolean executed = false;
             Context context = new Context();
             context["ShouldFail"] = "false";
 
             Func<Context, Exception> fault = (ctx) =>
             {
-                if (context["ShouldFail"] != null && context["ShouldFail"].ToString() == "true")
+                if (ctx["ShouldFail"] != null && ctx["ShouldFail"].ToString() == "true")
                 {
                     return new InvalidOperationException();
                 }
@@ -211,6 +221,7 @@ namespace Polly.Specs.Monkey
         [Fact]
         public void Monkey_With_Context_InjectionRate_Should_not_execute_user_delegate_1()
         {
+            this.Init();
             Boolean executed = false;
             Context context = new Context();
             context["ShouldFail"] = "true";
@@ -228,13 +239,14 @@ namespace Polly.Specs.Monkey
         [Fact]
         public void Monkey_With_Context_InjectionRate_Should_not_execute_user_delegate_2()
         {
+            this.Init();
             Boolean executed = false;
             Context context = new Context();
             context["ShouldFail"] = "true";
 
             Func<Context, double> injectionRate = (ctx) =>
             {
-                if (context["ShouldFail"] != null && context["ShouldFail"].ToString() == "true")
+                if (ctx["ShouldFail"] != null && ctx["ShouldFail"].ToString() == "true")
                 {
                     return 0.6;
                 }
@@ -254,13 +266,14 @@ namespace Polly.Specs.Monkey
         [Fact]
         public void Monkey_With_Context_InjectionRate_Should_execute_user_delegate_1()
         {
+            this.Init();
             Boolean executed = false;
             Context context = new Context();
             context["ShouldFail"] = "false";
 
             Func<Context, double> injectionRate = (ctx) =>
             {
-                if (context["ShouldFail"] != null && context["ShouldFail"].ToString() == "true")
+                if (ctx["ShouldFail"] != null && ctx["ShouldFail"].ToString() == "true")
                 {
                     return 0.6;
                 }
@@ -275,6 +288,245 @@ namespace Polly.Specs.Monkey
                 .ShouldNotThrow<Exception>();
 
             executed.Should().BeTrue();
+        }
+        #endregion
+
+        #region Overload, All based on context
+        [Fact]
+        public void Monkey_With_Context_Should_not_execute_user_delegate_1()
+        {
+            this.Init();
+            Boolean executed = false;
+            Context context = new Context();
+            context["ShouldFail"] = "true";
+
+            Func<Context, Exception> fault = (ctx) => new Exception();
+            Func<Context, double> injectionRate = (ctx) => 0.6;
+            Func<Context, bool> enabled = (ctx) => true;
+            MonkeyPolicy policy = Policy.Monkey(fault, injectionRate, enabled);
+            policy.Invoking(x => x.Execute((ctx) => { executed = true; }, context))
+                .ShouldThrow<Exception>();
+
+            executed.Should().BeFalse();
+        }
+
+        public void Monkey_With_Context_Should_not_execute_user_delegate_2()
+        {
+            this.Init();
+            Boolean executed = false;
+            Context context = new Context();
+            string failureMessage = "Failure Message";
+            context["ShouldFail"] = "true";
+            context["Message"] = failureMessage;
+            context["InjectionRate"] = "0.6";
+
+            Func<Context, Exception> fault = (ctx) =>
+            {
+                if (ctx["Message"] != null)
+                {
+                    return new InvalidOperationException(ctx["Message"].ToString());
+                }
+
+                return new Exception();
+            };
+
+            Func<Context, double> injectionRate = (ctx) =>
+            {
+                if (ctx["InjectionRate"] != null)
+                {
+                    return double.Parse(ctx["InjectionRate"].ToString());
+                }
+
+                return 0;
+            };
+
+            Func<Context, bool> enabled = (ctx) =>
+            {
+                return (ctx["ShouldFail"] != null && ctx["ShouldFail"].ToString() == "true");
+            };
+
+            MonkeyPolicy policy = Policy.Monkey(fault, injectionRate, enabled);
+            policy.Invoking(x => x.Execute((ctx) => { executed = true; }, context))
+                .ShouldThrow<InvalidOperationException>().WithMessage(failureMessage);
+
+            executed.Should().BeFalse();
+        }
+        #endregion
+
+        #region Action based Monkey policies
+        [Fact]
+        public void Monkey_Context_Free_Introduce_Delay_1()
+        {
+            this.Init();
+
+            Action fault = () => {
+                Thread.Sleep(500);
+            };
+
+            MonkeyPolicy policy = Policy.Monkey(fault, 0.6, () => true);
+            Boolean executed = false;
+
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
+            policy.Execute(() => { executed = true; });
+            sw.Stop();
+
+            executed.Should().BeTrue();
+            sw.ElapsedMilliseconds.Should().BeGreaterThan(500);
+
+            //// No delay
+            sw.Reset();
+            policy = Policy.Monkey(() => { }, 0.6, () => true);
+            executed = false;
+
+            sw.Restart();
+            policy.Execute(() => { executed = true; });
+            sw.Stop();
+
+            executed.Should().BeTrue();
+            sw.ElapsedMilliseconds.Should().BeLessThan(500);
+        }
+
+        [Fact]
+        public void Monkey_Context_Free_Throw_Exception()
+        {
+            this.Init();
+            Action fault = () => {
+                throw new Exception();
+            };
+
+            MonkeyPolicy policy = Policy.Monkey(fault, 0.6, () => true);
+            Boolean executed = false;
+            policy.Invoking(x => x.Execute(() => { executed = true; })).ShouldThrow<Exception>();
+            executed.Should().BeFalse();
+        }
+
+        [Fact]
+        public void Monkey_With_Context_Introduce_Delay_1()
+        {
+            this.Init();
+            Context context = new Context();
+            context["ShouldFail"] = "true";
+
+            Action<Context> fault = (ctx) => {
+                if (ctx["ShouldFail"] != null && ctx["ShouldFail"].ToString() == "true")
+                {
+                    Thread.Sleep(200);
+                }
+            };
+
+            MonkeyPolicy policy = Policy.Monkey(fault, 0.6, () => true);
+            Boolean executed = false;
+
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
+            policy.Execute((ctx) => { executed = true; }, context);
+            sw.Stop();
+
+            executed.Should().BeTrue();
+            sw.ElapsedMilliseconds.Should().BeGreaterThan(200);
+
+            //// No delay
+            context["ShouldFail"] = "false";
+            executed = false;
+            sw.Restart();
+            policy.Execute((ctx) => { executed = true; }, context);
+            sw.Stop();
+
+            executed.Should().BeTrue();
+            sw.ElapsedMilliseconds.Should().BeLessThan(200);
+        }
+
+        [Fact]
+        public void Monkey_With_Context_Introduce_Delay_2()
+        {
+            this.Init();
+            Context context = new Context();
+            context["ShouldFail"] = "true";
+            context["Enabled"] = "true";
+
+            Action<Context> fault = (ctx) => {
+                if (ctx["ShouldFail"] != null && ctx["ShouldFail"].ToString() == "true")
+                {
+                    Thread.Sleep(200);
+                }
+            };
+
+            Func<Context, bool> enabled = (ctx) => {
+                return (ctx["Enabled"] != null && ctx["Enabled"].ToString() == "true");
+            };
+
+            MonkeyPolicy policy = Policy.Monkey(fault, 0.6, enabled);
+            Boolean executed = false;
+
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
+            policy.Execute((ctx) => { executed = true; }, context);
+            sw.Stop();
+
+            executed.Should().BeTrue();
+            sw.ElapsedMilliseconds.Should().BeGreaterThan(200);
+
+            //// No delay
+            context["Enabled"] = "false";
+            executed = false;
+            sw.Restart();
+            policy.Execute((ctx) => { executed = true; }, context);
+            sw.Stop();
+
+            executed.Should().BeTrue();
+            sw.ElapsedMilliseconds.Should().BeLessThan(200);
+        }
+
+        [Fact]
+        public void Monkey_With_Context_Introduce_Delay_3()
+        {
+            this.Init();
+            Context context = new Context();
+            context["ShouldFail"] = "true";
+            context["Enabled"] = "true";
+            context["InjectionRate"] = "0.6";
+
+            Action<Context> fault = (ctx) => {
+                if (ctx["ShouldFail"] != null && ctx["ShouldFail"].ToString() == "true")
+                {
+                    Thread.Sleep(200);
+                }
+            };
+
+            Func<Context, bool> enabled = (ctx) => {
+                return (ctx["Enabled"] != null && ctx["Enabled"].ToString() == "true");
+            };
+
+            Func<Context, double> injectionRate = (ctx) => {
+                if (ctx["InjectionRate"] != null)
+                {
+                    return double.Parse(ctx["InjectionRate"].ToString());
+                }
+
+                return 0;
+            };
+
+            MonkeyPolicy policy = Policy.Monkey(fault, injectionRate, enabled);
+            Boolean executed = false;
+
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
+            policy.Execute((ctx) => { executed = true; }, context);
+            sw.Stop();
+
+            executed.Should().BeTrue();
+            sw.ElapsedMilliseconds.Should().BeGreaterThan(200);
+
+            //// No delay
+            context["InjectionRate"] = "0.4";
+            executed = false;
+            sw.Restart();
+            policy.Execute((ctx) => { executed = true; }, context);
+            sw.Stop();
+
+            executed.Should().BeTrue();
+            sw.ElapsedMilliseconds.Should().BeLessThan(200);
         }
         #endregion
     }
