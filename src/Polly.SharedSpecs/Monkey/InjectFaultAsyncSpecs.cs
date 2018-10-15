@@ -9,6 +9,7 @@ using Xunit;
 
 namespace Polly.Specs.Monkey
 {
+    [Collection(Polly.Specs.Helpers.Constants.SystemClockDependentTestCollection)]
     public class InjectFaultAsyncSpecs : IDisposable
     {
         public void Dispose()

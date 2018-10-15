@@ -9,6 +9,7 @@ using Xunit;
 
 namespace Polly.Specs.Monkey
 {
+    [Collection(Polly.Specs.Helpers.Constants.SystemClockDependentTestCollection)]
     public class MonkeyTResultSpecs : IDisposable
     {
         public void Dispose()
