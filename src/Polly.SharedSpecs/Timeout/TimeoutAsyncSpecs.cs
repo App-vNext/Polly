@@ -286,25 +286,23 @@ namespace Polly.Specs.Timeout
         }
 
         [Fact]
-        public async Task Should_not_throw_when_timeout_is_greater_than_execution_duration__optimistic()
+        public void Should_not_throw_when_timeout_is_greater_than_execution_duration__optimistic()
         {
             var policy = Policy.TimeoutAsync(TimeSpan.FromSeconds(1), TimeoutStrategy.Optimistic);
-
-            ResultPrimitive result = ResultPrimitive.Undefined;
-            Exception ex = null;
+            var result = ResultPrimitive.Undefined;
             var userCancellationToken = CancellationToken.None;
 
-            try
+            Func<Task> function = async () =>
             {
-                result = await policy.ExecuteAsync(ct => Task.FromResult(ResultPrimitive.Good), userCancellationToken)
+                result = await policy.ExecuteAsync(async cancellationToken =>
+                    {
+                        await Task.Delay(TimeSpan.FromMilliseconds(500), cancellationToken);
+                        return ResultPrimitive.Good;
+                    }, userCancellationToken)
                     .ConfigureAwait(false);
-            }
-            catch (Exception e)
-            {
-                ex = e;
-            }
+            };
 
-            ex.Should().BeNull();
+            function.ShouldNotThrow<TimeoutRejectedException>();
             result.Should().Be(ResultPrimitive.Good);
         }
 
