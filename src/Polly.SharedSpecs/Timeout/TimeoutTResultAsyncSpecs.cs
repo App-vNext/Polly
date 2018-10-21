@@ -220,10 +220,10 @@ namespace Polly.Specs.Timeout
 
             ResultPrimitive result = ResultPrimitive.Undefined;
 
-            policy.Awaiting(async p => result = await p.ExecuteAsync(() => Task.FromResult(ResultPrimitive.Good))
-                    .ConfigureAwait(false))
-                .ShouldNotThrow();
+            Func<Task> act = async () => result = await policy.ExecuteAsync(() => Task.FromResult(ResultPrimitive.Good))
+                    .ConfigureAwait(false);
 
+            act.ShouldNotThrow();
             result.Should().Be(ResultPrimitive.Good);
         }
 
@@ -282,10 +282,10 @@ namespace Polly.Specs.Timeout
             ResultPrimitive result = ResultPrimitive.Undefined;
             var userCancellationToken = CancellationToken.None;
 
-            policy.Awaiting(async p => result = await policy.ExecuteAsync(ct => Task.FromResult(ResultPrimitive.Good), userCancellationToken)
-                .ConfigureAwait(false))
-                .ShouldNotThrow();
+            Func<Task> act = async () => result = await policy.ExecuteAsync(ct => Task.FromResult(ResultPrimitive.Good), userCancellationToken)
+                .ConfigureAwait(false);
             
+            act.ShouldNotThrow();
             result.Should().Be(ResultPrimitive.Good);
         }
 
