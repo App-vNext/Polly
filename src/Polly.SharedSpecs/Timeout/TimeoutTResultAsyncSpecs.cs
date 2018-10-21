@@ -214,24 +214,16 @@ namespace Polly.Specs.Timeout
         }
 
         [Fact]
-        public async Task Should_not_throw_when_timeout_is_greater_than_execution_duration__pessimistic()
+        public void Should_not_throw_when_timeout_is_greater_than_execution_duration__pessimistic()
         {
             var policy = Policy.TimeoutAsync<ResultPrimitive>(TimeSpan.FromSeconds(1), TimeoutStrategy.Pessimistic);
 
             ResultPrimitive result = ResultPrimitive.Undefined;
-            Exception ex = null;
 
-            try
-            {
-                result = await policy.ExecuteAsync(() => Task.FromResult(ResultPrimitive.Good))
-                    .ConfigureAwait(false);
-            }
-            catch (Exception e)
-            {
-                ex = e;
-            }
+            policy.Awaiting(async p => result = await p.ExecuteAsync(() => Task.FromResult(ResultPrimitive.Good))
+                    .ConfigureAwait(false))
+                .ShouldNotThrow();
 
-            ex.Should().BeNull();
             result.Should().Be(ResultPrimitive.Good);
         }
 
@@ -283,25 +275,17 @@ namespace Polly.Specs.Timeout
         }
 
         [Fact]
-        public async Task Should_not_throw_when_timeout_is_greater_than_execution_duration__optimistic()
+        public void Should_not_throw_when_timeout_is_greater_than_execution_duration__optimistic()
         {
             var policy = Policy.TimeoutAsync<ResultPrimitive>(TimeSpan.FromSeconds(1), TimeoutStrategy.Optimistic);
 
             ResultPrimitive result = ResultPrimitive.Undefined;
-            Exception ex = null;
             var userCancellationToken = CancellationToken.None;
 
-            try
-            {
-                result = await policy.ExecuteAsync(ct => Task.FromResult(ResultPrimitive.Good), userCancellationToken)
-                    .ConfigureAwait(false);
-            }
-            catch (Exception e)
-            {
-                ex = e;
-            }
-
-            ex.Should().BeNull();
+            policy.Awaiting(async p => result = await policy.ExecuteAsync(ct => Task.FromResult(ResultPrimitive.Good), userCancellationToken)
+                .ConfigureAwait(false))
+                .ShouldNotThrow();
+            
             result.Should().Be(ResultPrimitive.Good);
         }
 
