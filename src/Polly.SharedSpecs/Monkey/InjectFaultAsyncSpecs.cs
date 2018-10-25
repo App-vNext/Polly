@@ -75,7 +75,6 @@ namespace Polly.Specs.Monkey
         public void InjectFault_With_Context_Should_execute_user_delegate_async()
         {
             this.Init();
-            Exception fault = new Exception("test");
             Boolean executed = false;
             Context context = new Context();
             context["ShouldFail"] = "true";
@@ -96,7 +95,6 @@ namespace Polly.Specs.Monkey
         public void InjectFault_With_Context_Should_execute_user_delegate_async_2()
         {
             this.Init();
-            Exception fault = new Exception("test");
             Boolean executed = false;
             Context context = new Context();
             context["ShouldFail"] = "false";

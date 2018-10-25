@@ -44,7 +44,6 @@ namespace Polly
             if (fault == null) throw new ArgumentNullException(nameof(fault));
             if (enabled == null) throw new ArgumentNullException(nameof(enabled));
 
-            Func<Context, Double> injectionRateLambda = _ => injectionRate;
             return Policy.Monkey(fault, injectionRate, enabled);
         }
 
