@@ -16,9 +16,9 @@ namespace Polly.Monkey
             Func<Context, Task<bool>> enabled,
             bool continueOnCapturedContext)
         {
-            if (await enabled(context) && RandomGenerator.GetRandomNumber() < await injectionRate(context))
+            if (await enabled(context).ConfigureAwait(continueOnCapturedContext) && RandomGenerator.GetRandomNumber() < await injectionRate(context).ConfigureAwait(continueOnCapturedContext))
             {
-                await fault(context, cancellationToken);
+                await fault(context, cancellationToken).ConfigureAwait(continueOnCapturedContext);
             }
 
             return await action(context, cancellationToken).ConfigureAwait(continueOnCapturedContext);
@@ -33,9 +33,9 @@ namespace Polly.Monkey
             Func<Context, Task<bool>> enabled,
             bool continueOnCapturedContext)
         {
-            if (await enabled(context) && RandomGenerator.GetRandomNumber() < await injectionRate(context))
+            if (await enabled(context).ConfigureAwait(continueOnCapturedContext) && RandomGenerator.GetRandomNumber() < await injectionRate(context).ConfigureAwait(continueOnCapturedContext))
             {
-                throw await fault(context, cancellationToken);
+                throw await fault(context, cancellationToken).ConfigureAwait(continueOnCapturedContext);
             }
 
             return await action(context, cancellationToken).ConfigureAwait(continueOnCapturedContext);
@@ -50,9 +50,9 @@ namespace Polly.Monkey
             Func<Context, Task<bool>> enabled,
             bool continueOnCapturedContext)
         {
-            if (await enabled(context) && RandomGenerator.GetRandomNumber() < await injectionRate(context))
+            if (await enabled(context).ConfigureAwait(continueOnCapturedContext) && RandomGenerator.GetRandomNumber() < await injectionRate(context).ConfigureAwait(continueOnCapturedContext))
             {
-                return await fault(context, cancellationToken);
+                return await fault(context, cancellationToken).ConfigureAwait(continueOnCapturedContext);
             }
 
             return await action(context, cancellationToken).ConfigureAwait(continueOnCapturedContext);
