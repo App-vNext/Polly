@@ -9,5 +9,11 @@
         /// Denotes a test collection dependent on manipulating the abstracted <see cref="Polly.Utilities.SystemClock"/>.  <remarks>These tests are not parallelized.</remarks>
         /// </summary>
         public const string SystemClockDependentTestCollection = "SystemClockDependentTestCollection";
+
+        /// <summary>
+        /// Denotes a test collection dependent on manipulating the abstracted <see cref="Polly.Utilities.RandomGenerator"/>.  <remarks>These tests are not parallelized.</remarks>
+        /// </summary>
+        public const string RandomGeneratorDependentTestCollection = "RandomGeneratorDependentTestCollection";
+
     }
 }
