@@ -13,21 +13,20 @@ namespace Polly.Specs.Monkey
     [Collection(Polly.Specs.Helpers.Constants.RandomGeneratorDependentTestCollection)]
     public class InjectFaultTResultAsyncSpecs : IDisposable
     {
+        public InjectFaultTResultAsyncSpecs()
+        {
+            RandomGenerator.GetRandomNumber = () => 0.5;
+        }
+
         public void Dispose()
         {
             RandomGenerator.Reset();
-        }
-
-        public void Init()
-        {
-            RandomGenerator.GetRandomNumber = () => 0.5;
         }
 
         #region Basic Overload, Exception, Context Free
         [Fact]
         public void InjectFault_Context_Free_Enabled_Should_not_execute_user_delegate_async()
         {
-            this.Init();
             string exceptionMessage = "exceptionMessage";
             Exception fault = new Exception(exceptionMessage);
             Boolean executed = false;
@@ -43,7 +42,6 @@ namespace Polly.Specs.Monkey
         [Fact]
         public void InjectFault_Context_Free_Enabled_Should_execute_user_delegate_async()
         {
-            this.Init();
             string exceptionMessage = "exceptionMessage";
             Exception fault = new Exception(exceptionMessage);
             Boolean executed = false;
@@ -60,10 +58,9 @@ namespace Polly.Specs.Monkey
         [Fact]
         public void InjectFault_With_Context_Should_not_execute_user_delegate_async()
         {
-            this.Init();
             Boolean executed = false;
             Context context = new Context();
-            context["ShouldFail"] = "true";
+            context["ShouldFail"] = true;
             Func<Context, Task<ResultPrimitive>> actionAsync = (ctx) =>
             {
                 executed = true; return Task.FromResult(ResultPrimitive.Good);
@@ -74,7 +71,7 @@ namespace Polly.Specs.Monkey
                 0.6,
                 async (ctx) =>
                 {
-                    return await Task.FromResult(ctx["ShouldFail"] != null && ctx["ShouldFail"].ToString() == "true");
+                    return await Task.FromResult((bool)ctx["ShouldFail"]);
                 });
 
             policy.Awaiting(async x => await x.ExecuteAsync(actionAsync, context)).ShouldThrowExactly<Exception>();
@@ -84,10 +81,9 @@ namespace Polly.Specs.Monkey
         [Fact]
         public void InjectFault_With_Context_Should_execute_user_delegate_async()
         {
-            this.Init();
             Boolean executed = false;
             Context context = new Context();
-            context["ShouldFail"] = "true";
+            context["ShouldFail"] = true;
             Func<Context, Task<ResultPrimitive>> actionAsync = (ctx) =>
             {
                 executed = true; return Task.FromResult(ResultPrimitive.Good);
@@ -98,7 +94,7 @@ namespace Polly.Specs.Monkey
                 0.4,
                 async (ctx) =>
                 {
-                    return await Task.FromResult(ctx["ShouldFail"] != null && ctx["ShouldFail"].ToString() == "true");
+                    return await Task.FromResult((bool)ctx["ShouldFail"]);
                 });
 
             policy.Awaiting(async x => await x.ExecuteAsync(actionAsync, context))
@@ -108,12 +104,11 @@ namespace Polly.Specs.Monkey
         }
 
         [Fact]
-        public void InjectFault_With_Context_Should_execute_user_delegate_async_2()
+        public void InjectFault_With_Context_Should_execute_user_delegate_async_with_enabled_lambda_return_false()
         {
-            this.Init();
             Boolean executed = false;
             Context context = new Context();
-            context["ShouldFail"] = "false";
+            context["ShouldFail"] = false;
             Func<Context, Task<ResultPrimitive>> actionAsync = (ctx) =>
             {
                 executed = true; return Task.FromResult(ResultPrimitive.Good);
@@ -124,7 +119,7 @@ namespace Polly.Specs.Monkey
                 0.4,
                 async (ctx) =>
                 {
-                    return await Task.FromResult(ctx["ShouldFail"] != null && ctx["ShouldFail"].ToString() == "true");
+                    return await Task.FromResult((bool)ctx["ShouldFail"]);
                 });
 
             policy.Awaiting(async x => await x.ExecuteAsync(actionAsync, context))
@@ -136,12 +131,11 @@ namespace Polly.Specs.Monkey
 
         #region Overload, All based on context
         [Fact]
-        public void InjectFault_With_Context_Should_not_execute_user_delegate_async_1()
+        public void InjectFault_With_Context_Should_not_execute_user_delegate_async_with_default_values()
         {
-            this.Init();
             Boolean executed = false;
             Context context = new Context();
-            context["ShouldFail"] = "true";
+            context["ShouldFail"] = true;
             Func<Context, Task<ResultPrimitive>> actionAsync = (ctx) =>
             {
                 executed = true;
@@ -158,15 +152,14 @@ namespace Polly.Specs.Monkey
         }
 
         [Fact]
-        public void InjectFault_With_Context_Should_not_execute_user_delegate_async_2()
+        public void InjectFault_With_Context_Should_not_execute_user_delegate_async_with_all_values_set()
         {
-            this.Init();
             string failureMessage = "Failure Message";
             Boolean executed = false;
             Context context = new Context();
-            context["ShouldFail"] = "true";
+            context["ShouldFail"] = true;
             context["Message"] = failureMessage;
-            context["InjectionRate"] = "0.6";
+            context["InjectionRate"] = 0.6;
             Func<Context, Task<ResultPrimitive>> actionAsync = (ctx) =>
             {
                 executed = true;
@@ -189,7 +182,7 @@ namespace Polly.Specs.Monkey
                 double rate = 0;
                 if (ctx["InjectionRate"] != null)
                 {
-                    rate = double.Parse(ctx["InjectionRate"].ToString());
+                    rate = (double)ctx["InjectionRate"];
                 }
 
                 return Task.FromResult(rate);
@@ -197,7 +190,7 @@ namespace Polly.Specs.Monkey
 
             Func<Context, Task<bool>> enabled = (ctx) =>
             {
-                return Task.FromResult(ctx["ShouldFail"] != null && ctx["ShouldFail"].ToString() == "true");
+                return Task.FromResult((bool)ctx["ShouldFail"]);
             };
 
             MonkeyPolicy<ResultPrimitive> policy = Policy.InjectFaultAsync<ResultPrimitive>(fault, injectionRate, enabled);
@@ -211,7 +204,6 @@ namespace Polly.Specs.Monkey
         [Fact]
         public async Task InjectFault_Context_Free_Should_Return_Fault_async()
         {
-            this.Init();
             Boolean executed = false;
             Func<Task<ResultPrimitive>> actionAsync = () =>
             {
@@ -230,7 +222,6 @@ namespace Polly.Specs.Monkey
         [Fact]
         public async Task InjectFault_Context_Free_Should_Not_Return_Fault_async()
         {
-            this.Init();
             Boolean executed = false;
             Func<Task<ResultPrimitive>> actionAsync = () =>
             {
@@ -249,10 +240,9 @@ namespace Polly.Specs.Monkey
         [Fact]
         public async Task InjectFault_With_Context_Enabled_Should_Return_Fault_async()
         {
-            this.Init();
             Boolean executed = false;
             Context context = new Context();
-            context["ShouldFail"] = "true";
+            context["ShouldFail"] = true;
             Func<Context, Task<ResultPrimitive>> actionAsync = (ctx) =>
             {
                 executed = true;
@@ -262,7 +252,7 @@ namespace Polly.Specs.Monkey
             ResultPrimitive fault = ResultPrimitive.Fault;
             Func<Context, Task<bool>> enabled = (ctx) =>
             {
-                return Task.FromResult(ctx["ShouldFail"] != null && ctx["ShouldFail"].ToString() == "true");
+                return Task.FromResult((bool)ctx["ShouldFail"]);
             };
 
             MonkeyPolicy<ResultPrimitive> policy = Policy.InjectFaultAsync<ResultPrimitive>(fault, 0.6, enabled);
@@ -274,10 +264,9 @@ namespace Polly.Specs.Monkey
         [Fact]
         public async Task InjectFault_With_Context_Enabled_Should_Not_Return_Fault_async()
         {
-            this.Init();
             Boolean executed = false;
             Context context = new Context();
-            context["ShouldFail"] = "false";
+            context["ShouldFail"] = false;
             Func<Context, Task<ResultPrimitive>> actionAsync = (ctx) =>
             {
                 executed = true;
@@ -287,7 +276,7 @@ namespace Polly.Specs.Monkey
             ResultPrimitive fault = ResultPrimitive.Fault;
             Func<Context, Task<bool>> enabled = (ctx) =>
             {
-                return Task.FromResult(ctx["ShouldFail"] != null && ctx["ShouldFail"].ToString() == "true");
+                return Task.FromResult((bool)ctx["ShouldFail"]);
             };
 
             MonkeyPolicy<ResultPrimitive> policy = Policy.InjectFaultAsync<ResultPrimitive>(fault, 0.6, enabled);
@@ -299,10 +288,9 @@ namespace Polly.Specs.Monkey
         [Fact]
         public async Task InjectFault_With_Context_InjectionRate_Should_Return_Fault_async()
         {
-            this.Init();
             Boolean executed = false;
             Context context = new Context();
-            context["InjectionRate"] = "0.6";
+            context["InjectionRate"] = 0.6;
 
             Func<Context, Task<ResultPrimitive>> actionAsync = (ctx) =>
             {
@@ -320,7 +308,7 @@ namespace Polly.Specs.Monkey
                 double rate = 0;
                 if (ctx["InjectionRate"] != null)
                 {
-                    rate = double.Parse(ctx["InjectionRate"].ToString());
+                    rate = (double)ctx["InjectionRate"];
                 }
 
                 return Task.FromResult(rate);
@@ -340,10 +328,9 @@ namespace Polly.Specs.Monkey
         [Fact]
         public async Task InjectFault_With_Context_InjectionRate_Should_Not_Return_Fault_async()
         {
-            this.Init();
             Boolean executed = false;
             Context context = new Context();
-            context["InjectionRate"] = "0.4";
+            context["InjectionRate"] = 0.4;
 
             Func<Context, Task<ResultPrimitive>> actionAsync = (ctx) =>
             {
@@ -361,7 +348,7 @@ namespace Polly.Specs.Monkey
                 double rate = 0;
                 if (ctx["InjectionRate"] != null)
                 {
-                    rate = double.Parse(ctx["InjectionRate"].ToString());
+                    rate = (double)ctx["InjectionRate"];
                 }
 
                 return Task.FromResult(rate);

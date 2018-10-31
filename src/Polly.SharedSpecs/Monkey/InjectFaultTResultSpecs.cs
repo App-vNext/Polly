@@ -12,21 +12,20 @@ namespace Polly.Specs.Monkey
     [Collection(Polly.Specs.Helpers.Constants.RandomGeneratorDependentTestCollection)]
     public class InjectFaultTResultSpecs : IDisposable
     {
+        public InjectFaultTResultSpecs()
+        {
+            RandomGenerator.GetRandomNumber = () => 0.5;
+        }
+
         public void Dispose()
         {
             RandomGenerator.Reset();
-        }
-
-        public void Init()
-        {
-            RandomGenerator.GetRandomNumber = () => 0.5;
         }
 
         #region Basic Overload, Exception, Context Free
         [Fact]
         public void InjectFaultContext_Free_Enabled_Should_not_execute_user_delegate()
         {
-            this.Init();
             string exceptionMessage = "exceptionMessage";
             Exception fault = new Exception(exceptionMessage);
             Boolean executed = false;
@@ -42,7 +41,6 @@ namespace Polly.Specs.Monkey
         [Fact]
         public void InjectFaultContext_Free_Enabled_Should_execute_user_delegate()
         {
-            this.Init();
             string exceptionMessage = "exceptionMessage";
             Exception fault = new Exception(exceptionMessage);
             Boolean executed = false;
@@ -60,10 +58,9 @@ namespace Polly.Specs.Monkey
         [Fact]
         public void InjectFaultWith_Context_Should_not_execute_user_delegate()
         {
-            this.Init();
             Boolean executed = false;
             Context context = new Context();
-            context["ShouldFail"] = "true";
+            context["ShouldFail"] = true;
             Func<Context, ResultPrimitive> action = (ctx) => { executed = true; return ResultPrimitive.Good; };
 
             MonkeyPolicy<ResultPrimitive> policy = Policy.InjectFault<ResultPrimitive>(
@@ -71,7 +68,7 @@ namespace Polly.Specs.Monkey
                 0.6,
                 (ctx) =>
                 {
-                    return (ctx["ShouldFail"] != null && ctx["ShouldFail"].ToString() == "true");
+                    return ((bool)ctx["ShouldFail"]);
                 });
 
             policy.Invoking(x => x.Execute(action, context))
@@ -83,10 +80,9 @@ namespace Polly.Specs.Monkey
         [Fact]
         public void InjectFaultWith_Context_Should_execute_user_delegate()
         {
-            this.Init();
             Boolean executed = false;
             Context context = new Context();
-            context["ShouldFail"] = "true";
+            context["ShouldFail"] = true;
             Func<Context, ResultPrimitive> action = (ctx) => { executed = true; return ResultPrimitive.Good; };
 
             MonkeyPolicy<ResultPrimitive> policy = Policy.InjectFault<ResultPrimitive>(
@@ -94,7 +90,7 @@ namespace Polly.Specs.Monkey
                 0.4,
                 (ctx) =>
                 {
-                    return (ctx["ShouldFail"] != null && ctx["ShouldFail"].ToString() == "true");
+                    return ((bool)ctx["ShouldFail"]);
                 });
 
             policy.Invoking(x => x.Execute(action, context))
@@ -104,12 +100,11 @@ namespace Polly.Specs.Monkey
         }
 
         [Fact]
-        public void InjectFaultWith_Context_Should_execute_user_delegate_2()
+        public void InjectFaultWith_Context_Should_execute_user_delegate_with_enabled_lambda_disabled()
         {
-            this.Init();
             Boolean executed = false;
             Context context = new Context();
-            context["ShouldFail"] = "false";
+            context["ShouldFail"] = false;
             Func<Context, ResultPrimitive> action = (ctx) => { executed = true; return ResultPrimitive.Good; };
 
             MonkeyPolicy<ResultPrimitive> policy = Policy.InjectFault<ResultPrimitive>(
@@ -117,7 +112,7 @@ namespace Polly.Specs.Monkey
                 0.6,
                 (ctx) =>
                 {
-                    return (ctx["ShouldFail"] != null && ctx["ShouldFail"].ToString() == "true");
+                    return ((bool)ctx["ShouldFail"]);
                 });
 
             policy.Invoking(x => x.Execute(action, context))
@@ -129,12 +124,10 @@ namespace Polly.Specs.Monkey
 
         #region Overload, All based on context
         [Fact]
-        public void InjectFaultWith_Context_Should_not_execute_user_delegate_1()
+        public void InjectFaultWith_Context_Should_not_execute_user_delegate_default_context()
         {
-            this.Init();
             Boolean executed = false;
             Context context = new Context();
-            context["ShouldFail"] = "true";
             Func<Context, ResultPrimitive> action = (ctx) => { executed = true; return ResultPrimitive.Good; };
 
             Func<Context, Exception> fault = (ctx) => new Exception();
@@ -148,15 +141,14 @@ namespace Polly.Specs.Monkey
         }
 
         [Fact]
-        public void InjectFaultWith_Context_Should_not_execute_user_delegate_2()
+        public void InjectFaultWith_Context_Should_not_execute_user_delegate_full_context()
         {
-            this.Init();
             string failureMessage = "Failure Message";
             Boolean executed = false;
             Context context = new Context();
-            context["ShouldFail"] = "true";
+            context["ShouldFail"] = true;
             context["Message"] = failureMessage;
-            context["InjectionRate"] = "0.6";
+            context["InjectionRate"] = 0.6;
             Func<Context, ResultPrimitive> action = (ctx) => { executed = true; return ResultPrimitive.Good; };
 
             Func<Context, Exception> fault = (ctx) =>
@@ -173,7 +165,7 @@ namespace Polly.Specs.Monkey
             {
                 if (ctx["InjectionRate"] != null)
                 {
-                    return double.Parse(ctx["InjectionRate"].ToString());
+                    return (double)ctx["InjectionRate"];
                 }
 
                 return 0;
@@ -181,7 +173,7 @@ namespace Polly.Specs.Monkey
 
             Func<Context, bool> enabled = (ctx) =>
             {
-                return (ctx["ShouldFail"] != null && ctx["ShouldFail"].ToString() == "true");
+                return ((bool)ctx["ShouldFail"]);
             };
 
             MonkeyPolicy<ResultPrimitive> policy = Policy.InjectFault<ResultPrimitive>(fault, injectionRate, enabled);
@@ -196,7 +188,6 @@ namespace Polly.Specs.Monkey
         [Fact]
         public void InjectFaultContext_Free_Should_Return_Fault()
         {
-            this.Init();
             Boolean executed = false;
             Func<ResultPrimitive> action = () => { executed = true; return ResultPrimitive.Good; };
             ResultPrimitive fault = ResultPrimitive.Fault;
@@ -210,7 +201,6 @@ namespace Polly.Specs.Monkey
         [Fact]
         public void InjectFaultContext_Free_Should_Not_Return_Fault()
         {
-            this.Init();
             Boolean executed = false;
             Func<ResultPrimitive> action = () => { executed = true; return ResultPrimitive.Good; };
             ResultPrimitive fault = ResultPrimitive.Fault;
@@ -224,15 +214,14 @@ namespace Polly.Specs.Monkey
         [Fact]
         public void InjectFaultWith_Context_Enabled_Should_Return_Fault()
         {
-            this.Init();
             Boolean executed = false;
             Context context = new Context();
-            context["ShouldFail"] = "true";
+            context["ShouldFail"] = true;
             Func<Context, ResultPrimitive> action = (ctx) => { executed = true; return ResultPrimitive.Good; };
             ResultPrimitive fault = ResultPrimitive.Fault;
             Func<Context, bool> enabled = (ctx) =>
             {
-                return (ctx["ShouldFail"] != null && ctx["ShouldFail"].ToString() == "true");
+                return ((bool)ctx["ShouldFail"]);
             };
 
             MonkeyPolicy<ResultPrimitive> policy = Policy.InjectFault<ResultPrimitive>(fault, 0.6, enabled);
@@ -244,15 +233,14 @@ namespace Polly.Specs.Monkey
         [Fact]
         public void InjectFaultWith_Context_Enabled_Should_Not_Return_Fault()
         {
-            this.Init();
             Boolean executed = false;
             Context context = new Context();
-            context["ShouldFail"] = "false";
+            context["ShouldFail"] = false;
             Func<Context, ResultPrimitive> action = (ctx) => { executed = true; return ResultPrimitive.Good; };
             ResultPrimitive fault = ResultPrimitive.Fault;
             Func<Context, bool> enabled = (ctx) =>
             {
-                return (ctx["ShouldFail"] != null && ctx["ShouldFail"].ToString() == "true");
+                return ((bool)ctx["ShouldFail"]);
             };
 
             MonkeyPolicy<ResultPrimitive> policy = Policy.InjectFault<ResultPrimitive>(fault, 0.6, enabled);
@@ -264,10 +252,9 @@ namespace Polly.Specs.Monkey
         [Fact]
         public void InjectFaultWith_Context_InjectionRate_Should_Return_Fault()
         {
-            this.Init();
             Boolean executed = false;
             Context context = new Context();
-            context["InjectionRate"] = "0.6";
+            context["InjectionRate"] = 0.6;
 
             Func<Context, ResultPrimitive> action = (ctx) => { executed = true; return ResultPrimitive.Good; };
             Func<Context, ResultPrimitive> fault = (ctx) =>
@@ -279,7 +266,7 @@ namespace Polly.Specs.Monkey
             {
                 if (ctx["InjectionRate"] != null)
                 {
-                    return double.Parse(ctx["InjectionRate"].ToString());
+                    return (double)ctx["InjectionRate"];
                 }
 
                 return 0;
@@ -299,10 +286,9 @@ namespace Polly.Specs.Monkey
         [Fact]
         public void InjectFaultWith_Context_InjectionRate_Should_Not_Return_Fault()
         {
-            this.Init();
             Boolean executed = false;
             Context context = new Context();
-            context["InjectionRate"] = "0.4";
+            context["InjectionRate"] = 0.4;
 
             Func<Context, ResultPrimitive> action = (ctx) => { executed = true; return ResultPrimitive.Good; };
             Func<Context, ResultPrimitive> fault = (ctx) =>
@@ -314,7 +300,7 @@ namespace Polly.Specs.Monkey
             {
                 if (ctx["InjectionRate"] != null)
                 {
-                    return double.Parse(ctx["InjectionRate"].ToString());
+                    return (double)ctx["InjectionRate"];
                 }
 
                 return 0;

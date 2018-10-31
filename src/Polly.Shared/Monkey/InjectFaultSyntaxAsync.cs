@@ -34,7 +34,7 @@ namespace Polly
                 return Task.FromResult<bool>(enabled());
             };
 
-            return Policy.MonkeyAsync(faultLambda, injectionRateLambda, enabledLambda);
+            return Policy.InjectFaultAsync(faultLambda, injectionRateLambda, enabledLambda);
         }
 
         /// <summary>
@@ -56,7 +56,7 @@ namespace Polly
             Func<Context, CancellationToken, Task<Exception>> faultLambda = (_, __) => Task.FromResult<Exception>(fault);
             Func<Context, Task<Double>> injectionRateLambda = _ => Task.FromResult<Double>(injectionRate);
 
-            return Policy.MonkeyAsync(faultLambda, injectionRateLambda, enabled);
+            return Policy.InjectFaultAsync(faultLambda, injectionRateLambda, enabled);
         }
 
         /// <summary>
@@ -76,7 +76,13 @@ namespace Polly
             if (injectionRate == null) throw new ArgumentNullException(nameof(injectionRate));
             if (enabled == null) throw new ArgumentNullException(nameof(enabled));
 
-            return Policy.MonkeyAsync(fault, injectionRate, enabled);
+            //// Inject the exception as an action
+            Func<Context, CancellationToken, Task> faultLambda = async (ctx, ctc) =>
+            {
+                throw await fault(ctx, ctc);
+            };
+
+            return Policy.MonkeyAsync(faultLambda, injectionRate, enabled);
         }
     }
 
@@ -109,7 +115,7 @@ namespace Polly
                 return Task.FromResult<bool>(enabled());
             };
 
-            return Policy.MonkeyAsync<TResult>(faultLambda, injectionRateLambda, enabledLambda);
+            return Policy.InjectFaultAsync<TResult>(faultLambda, injectionRateLambda, enabledLambda);
         }
 
         /// <summary>
@@ -131,7 +137,7 @@ namespace Polly
             Func<Context, CancellationToken, Task<Exception>> faultLambda = (_, __) => Task.FromResult<Exception>(fault);
             Func<Context, Task<Double>> injectionRateLambda = _ => Task.FromResult<Double>(injectionRate);
 
-            return Policy.MonkeyAsync<TResult>(faultLambda, injectionRateLambda, enabled);
+            return Policy.InjectFaultAsync<TResult>(faultLambda, injectionRateLambda, enabled);
         }
 
         /// <summary>
@@ -151,7 +157,13 @@ namespace Polly
             if (injectionRate == null) throw new ArgumentNullException(nameof(injectionRate));
             if (enabled == null) throw new ArgumentNullException(nameof(enabled));
 
-            return Policy.MonkeyAsync<TResult>(fault, injectionRate, enabled);
+            //// Inject the exception as an action
+            Func<Context, CancellationToken, Task> faultLambda = async (ctx, ctc) =>
+            {
+                throw await fault(ctx, ctc);
+            };
+
+            return Policy.MonkeyAsync<TResult>(faultLambda, injectionRate, enabled);
         }
         #endregion
 

@@ -25,7 +25,11 @@ namespace Polly
             if (fault == null) throw new ArgumentNullException(nameof(fault));
             if (enabled == null) throw new ArgumentNullException(nameof(enabled));
 
-            return Policy.Monkey(fault, injectionRate, enabled);
+            Func<Context, Exception> faultLambda = _ => fault;
+            Func<Context, Double> injectionRateLambda = _ => injectionRate;
+            Func<Context, bool> enabledLambda = _ => enabled();
+
+            return Policy.InjectFault(faultLambda, injectionRateLambda, enabledLambda);
         }
 
         /// <summary>
@@ -44,7 +48,10 @@ namespace Polly
             if (fault == null) throw new ArgumentNullException(nameof(fault));
             if (enabled == null) throw new ArgumentNullException(nameof(enabled));
 
-            return Policy.Monkey(fault, injectionRate, enabled);
+            Func<Context, Exception> faultLambda = _ => fault;
+            Func<Context, Double> injectionRateLambda = _ => injectionRate;
+
+            return Policy.InjectFault(faultLambda, injectionRateLambda, enabled);
         }
 
         /// <summary>
@@ -64,7 +71,12 @@ namespace Polly
             if (injectionRate == null) throw new ArgumentNullException(nameof(injectionRate));
             if (enabled == null) throw new ArgumentNullException(nameof(enabled));
 
-            return Policy.Monkey(fault, injectionRate, enabled);
+            Action<Context> faultLambda = (ctx) =>
+            {
+                throw fault(ctx);
+            };
+
+            return Policy.Monkey(faultLambda, injectionRate, enabled);
         }
     }
 
@@ -97,7 +109,7 @@ namespace Polly
                 return enabled();
             };
 
-            return Policy.Monkey<TResult>(faultLambda, injectionRateLambda, enabledLambda);
+            return Policy.InjectFault<TResult>(faultLambda, injectionRateLambda, enabledLambda);
         }
 
         /// <summary>
@@ -119,7 +131,7 @@ namespace Polly
             Func<Context, Exception> faultLambda = _ => fault;
             Func<Context, Double> injectionRateLambda = _ => injectionRate;
 
-            return Policy.Monkey<TResult>(faultLambda, injectionRateLambda, enabled);
+            return Policy.InjectFault<TResult>(faultLambda, injectionRateLambda, enabled);
         }
 
         /// <summary>
@@ -139,7 +151,12 @@ namespace Polly
             if (injectionRate == null) throw new ArgumentNullException(nameof(injectionRate));
             if (enabled == null) throw new ArgumentNullException(nameof(enabled));
 
-            return Policy.Monkey<TResult>(fault, injectionRate, enabled);
+            Action<Context> faultLambda = (ctx) =>
+            {
+                throw fault(ctx);
+            };
+
+            return Policy.Monkey<TResult>(faultLambda, injectionRate, enabled);
         }
         #endregion
 
