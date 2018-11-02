@@ -69,6 +69,10 @@
     <Compile Include="$(MSBuildThisFileDirectory)Monkey\InjectFaultSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Monkey\InjectFaultTResultAsyncSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Monkey\InjectFaultTResultSpecs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Monkey\InjectLatencyTResultAsyncSpecs .cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Monkey\InjectLatencyAsyncSpecs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Monkey\InjectLatencyTResultSpecs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Monkey\InjectLatencySpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Monkey\MonkeyAsyncSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Monkey\MonkeySpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Monkey\MonkeyTResultAsyncSpecs.cs" />

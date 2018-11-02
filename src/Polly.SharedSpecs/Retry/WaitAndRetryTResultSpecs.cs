@@ -7,7 +7,7 @@ using Xunit;
 
 namespace Polly.Specs.Retry
 {
-    [Collection(Polly.Specs.Helpers.Constants.SystemClockDependentTestCollection)]
+    [Collection(Polly.Specs.Helpers.Constants.AmbientContextDependentTestCollection)]
     public class WaitAndRetryTResultSpecs : IDisposable
     {
         public WaitAndRetryTResultSpecs()

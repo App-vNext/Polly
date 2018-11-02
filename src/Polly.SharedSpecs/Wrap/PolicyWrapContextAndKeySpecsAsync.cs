@@ -7,7 +7,7 @@ using Xunit;
 
 namespace Polly.Specs.Wrap
 {
-    [Collection(Polly.Specs.Helpers.Constants.SystemClockDependentTestCollection)]
+    [Collection(Polly.Specs.Helpers.Constants.AmbientContextDependentTestCollection)]
     public class PolicyWrapContextAndKeySpecsAsync
     {
         #region PolicyKey and execution Context tests
@@ -166,7 +166,7 @@ namespace Polly.Specs.Wrap
 
     }
 
-    [Collection(Polly.Specs.Helpers.Constants.SystemClockDependentTestCollection)]
+    [Collection(Polly.Specs.Helpers.Constants.AmbientContextDependentTestCollection)]
     public class PolicyWrapTResultContextAndKeySpecsAsync
     {
         #region PolicyKey and execution Context tests

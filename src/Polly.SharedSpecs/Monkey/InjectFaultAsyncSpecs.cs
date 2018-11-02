@@ -8,7 +8,7 @@ using Xunit;
 
 namespace Polly.Specs.Monkey
 {
-    [Collection(Polly.Specs.Helpers.Constants.RandomGeneratorDependentTestCollection)]
+    [Collection(Polly.Specs.Helpers.Constants.AmbientContextDependentTestCollection)]
     public class InjectFaultAsyncSpecs : IDisposable
     {
         public InjectFaultAsyncSpecs()
@@ -81,7 +81,7 @@ namespace Polly.Specs.Monkey
                     return await Task.FromResult((bool)ctx["ShouldFail"]);
                 });
 
-            Func<Context, Task> actionAsync = (_) => { executed = true; return TaskHelper.EmptyTask; };
+            Func<Context, Task> actionAsync = _ => { executed = true; return TaskHelper.EmptyTask; };
             policy.Awaiting(async x => await x.ExecuteAsync(actionAsync, context)).ShouldNotThrow<Exception>();
             executed.Should().BeTrue();
         }

@@ -91,6 +91,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)IsPolicy.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ISyncPolicy.TResult.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Monkey\IMonkeyPolicy.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Monkey\InjectLatencySyntaxAsync.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Monkey\InjectLatencySyntax.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Monkey\MonkeyEngine.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Monkey\MonkeyEngineAsync.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Monkey\MonkeyPolicy.cs" />

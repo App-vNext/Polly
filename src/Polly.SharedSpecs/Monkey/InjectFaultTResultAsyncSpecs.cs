@@ -10,7 +10,7 @@ using Xunit;
 
 namespace Polly.Specs.Monkey
 {
-    [Collection(Polly.Specs.Helpers.Constants.RandomGeneratorDependentTestCollection)]
+    [Collection(Polly.Specs.Helpers.Constants.AmbientContextDependentTestCollection)]
     public class InjectFaultTResultAsyncSpecs : IDisposable
     {
         public InjectFaultTResultAsyncSpecs()
