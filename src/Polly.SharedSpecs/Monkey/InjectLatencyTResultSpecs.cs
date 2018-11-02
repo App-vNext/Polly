@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using FluentAssertions;
 using Polly.Specs.Helpers;
 using Polly.Utilities;
@@ -10,15 +9,17 @@ namespace Polly.Specs.Monkey
     [Collection(Polly.Specs.Helpers.Constants.AmbientContextDependentTestCollection)]
     public class InjectLatencyTResultSpecs : IDisposable
     {
-        private readonly int Tolerance = 15; // milliseconds
+        private int _totalTimeSlept = 0;
 
         public InjectLatencyTResultSpecs()
         {
             RandomGenerator.GetRandomNumber = () => 0.5;
+            SystemClock.Sleep = (span, ct) => _totalTimeSlept += span.Milliseconds;
         }
 
         public void Dispose()
         {
+            _totalTimeSlept = 0;
             SystemClock.Reset();
             RandomGenerator.Reset();
         }
@@ -32,16 +33,12 @@ namespace Polly.Specs.Monkey
             var policy = Policy.InjectLatency<ResultPrimitive>(delay, 0.6, () => true);
             var executed = false;
 
-            var sw = new Stopwatch();
-            sw.Start();
-
             Func<ResultPrimitive> action = () => { executed = true; return ResultPrimitive.Good; };
             var result = policy.Execute(action);
-            sw.Stop();
 
             executed.Should().BeTrue();
             result.Should().Be(ResultPrimitive.Good);
-            sw.Elapsed.Should().BeCloseTo(delay, Tolerance);
+            _totalTimeSlept.Should().Be(delay.Milliseconds);
         }
 
         [Fact]
@@ -50,16 +47,12 @@ namespace Polly.Specs.Monkey
             var policy = Policy.InjectLatency<ResultPrimitive>(TimeSpan.FromMilliseconds(500), 0.6, () => false);
             var executed = false;
 
-            var sw = new Stopwatch();
-            sw.Start();
-
             Func<ResultPrimitive> action = () => { executed = true; return ResultPrimitive.Good; };
             var result = policy.Execute(action);
-            sw.Stop();
 
             executed.Should().BeTrue();
             result.Should().Be(ResultPrimitive.Good);
-            sw.Elapsed.Should().BeCloseTo(TimeSpan.FromMilliseconds(0));
+            _totalTimeSlept.Should().Be(0);
         }
 
         [Fact]
@@ -69,16 +62,12 @@ namespace Polly.Specs.Monkey
             var policy = Policy.InjectLatency<ResultPrimitive>(delay, 0.6, () => true);
             var executed = false;
 
-            var sw = new Stopwatch();
-            sw.Start();
-
             Func<ResultPrimitive> action = () => { executed = true; return ResultPrimitive.Good; };
             var result = policy.Execute(action);
-            sw.Stop();
 
             executed.Should().BeTrue();
             result.Should().Be(ResultPrimitive.Good);
-            sw.Elapsed.Should().BeCloseTo(delay, Tolerance);
+            _totalTimeSlept.Should().Be(delay.Milliseconds);
         }
 
         [Fact]
@@ -88,16 +77,12 @@ namespace Polly.Specs.Monkey
             var policy = Policy.InjectLatency<ResultPrimitive>(delay, 0.3, () => true);
             var executed = false;
 
-            var sw = new Stopwatch();
-            sw.Start();
-
             Func<ResultPrimitive> action = () => { executed = true; return ResultPrimitive.Good; };
             var result = policy.Execute(action);
-            sw.Stop();
 
             executed.Should().BeTrue();
             result.Should().Be(ResultPrimitive.Good);
-            sw.Elapsed.Should().BeCloseTo(TimeSpan.FromMilliseconds(0));
+            _totalTimeSlept.Should().Be(0);
         }
 
         #endregion
@@ -119,16 +104,12 @@ namespace Polly.Specs.Monkey
             var policy = Policy.InjectLatency<ResultPrimitive>(delay, 0.6, enabled);
             Boolean executed = false;
 
-            Stopwatch sw = new Stopwatch();
-            sw.Start();
-
             Func<Context, ResultPrimitive> action = (ctx) => { executed = true; return ResultPrimitive.Good; };
             var result = policy.Execute(action, context);
-            sw.Stop();
 
             executed.Should().BeTrue();
             result.Should().Be(ResultPrimitive.Good);
-            sw.Elapsed.Should().BeCloseTo(delay, Tolerance);
+            _totalTimeSlept.Should().Be(delay.Milliseconds);
         }
 
         [Fact]
@@ -146,16 +127,12 @@ namespace Polly.Specs.Monkey
             var policy = Policy.InjectLatency<ResultPrimitive>(delay, 0.6, enabled);
             Boolean executed = false;
 
-            Stopwatch sw = new Stopwatch();
-            sw.Start();
-
             Func<Context, ResultPrimitive> action = (ctx) => { executed = true; return ResultPrimitive.Good; };
             var result = policy.Execute(action, context);
-            sw.Stop();
 
             executed.Should().BeTrue();
             result.Should().Be(ResultPrimitive.Good);
-            sw.Elapsed.Should().BeCloseTo(TimeSpan.FromMilliseconds(0));
+            _totalTimeSlept.Should().Be(0);
         }
 
         [Fact]
@@ -173,16 +150,12 @@ namespace Polly.Specs.Monkey
             var policy = Policy.InjectLatency<ResultPrimitive>(delay, 0.3, enabled);
             Boolean executed = false;
 
-            Stopwatch sw = new Stopwatch();
-            sw.Start();
-
             Func<Context, ResultPrimitive> action = (ctx) => { executed = true; return ResultPrimitive.Good; };
             var result = policy.Execute(action, context);
-            sw.Stop();
 
             executed.Should().BeTrue();
             result.Should().Be(ResultPrimitive.Good);
-            sw.Elapsed.Should().BeCloseTo(TimeSpan.FromMilliseconds(0));
+            _totalTimeSlept.Should().Be(0);
         }
 
         [Fact]
@@ -211,16 +184,12 @@ namespace Polly.Specs.Monkey
             var policy = Policy.InjectLatency<ResultPrimitive>(delay, injectionRate, enabled);
             Boolean executed = false;
 
-            Stopwatch sw = new Stopwatch();
-            sw.Start();
-
             Func<Context, ResultPrimitive> action = (ctx) => { executed = true; return ResultPrimitive.Good; };
             var result = policy.Execute(action, context);
-            sw.Stop();
 
             executed.Should().BeTrue();
             result.Should().Be(ResultPrimitive.Good);
-            sw.Elapsed.Should().BeCloseTo(delay, Tolerance);
+            _totalTimeSlept.Should().Be(delay.Milliseconds);
         }
 
         [Fact]
@@ -249,16 +218,12 @@ namespace Polly.Specs.Monkey
             var policy = Policy.InjectLatency<ResultPrimitive>(delay, injectionRate, enabled);
             Boolean executed = false;
 
-            Stopwatch sw = new Stopwatch();
-            sw.Start();
-
             Func<Context, ResultPrimitive> action = (ctx) => { executed = true; return ResultPrimitive.Good; };
             var result = policy.Execute(action, context);
-            sw.Stop();
 
             executed.Should().BeTrue();
             result.Should().Be(ResultPrimitive.Good);
-            sw.Elapsed.Should().BeCloseTo(TimeSpan.FromMilliseconds(0));
+            _totalTimeSlept.Should().Be(0);
         }
 
         [Fact]
@@ -298,16 +263,12 @@ namespace Polly.Specs.Monkey
             var policy = Policy.InjectLatency<ResultPrimitive>(latencyProvider, injectionRate, enabled);
             Boolean executed = false;
 
-            Stopwatch sw = new Stopwatch();
-            sw.Start();
-
             Func<Context, ResultPrimitive> action = (ctx) => { executed = true; return ResultPrimitive.Good; };
             var result = policy.Execute(action, context);
-            sw.Stop();
 
             executed.Should().BeTrue();
             result.Should().Be(ResultPrimitive.Good);
-            sw.Elapsed.Should().BeCloseTo(delay, Tolerance);
+            _totalTimeSlept.Should().Be(delay.Milliseconds);
         }
 
         [Fact]
@@ -347,16 +308,12 @@ namespace Polly.Specs.Monkey
             var policy = Policy.InjectLatency<ResultPrimitive>(latencyProvider, injectionRate, enabled);
             Boolean executed = false;
 
-            Stopwatch sw = new Stopwatch();
-            sw.Start();
-
             Func<Context, ResultPrimitive> action = (ctx) => { executed = true; return ResultPrimitive.Good; };
             var result = policy.Execute(action, context);
-            sw.Stop();
 
             executed.Should().BeTrue();
             result.Should().Be(ResultPrimitive.Good);
-            sw.Elapsed.Should().BeCloseTo(TimeSpan.FromMilliseconds(0));
+            _totalTimeSlept.Should().Be(0);
         }
 
         [Fact]
@@ -396,15 +353,11 @@ namespace Polly.Specs.Monkey
             var policy = Policy.InjectLatency<ResultPrimitive>(latencyProvider, injectionRate, enabled);
             Boolean executed = false;
 
-            Stopwatch sw = new Stopwatch();
-            sw.Start();
-
             Func<Context, ResultPrimitive> action = (ctx) => { executed = true; return ResultPrimitive.Good; };
             var result = policy.Execute(action, context);
-            sw.Stop();
 
             executed.Should().BeTrue();
-            sw.Elapsed.Should().BeCloseTo(TimeSpan.FromMilliseconds(0));
+            _totalTimeSlept.Should().Be(0);
         }
 
         #endregion
