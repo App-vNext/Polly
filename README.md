@@ -93,13 +93,13 @@ Policy
   .OrResult<HttpStatusCode>(HttpStatusCode.BadGateway)
  
 // Handle both exceptions and return values in one policy
-HttpStatusCode[] httpStatusCodesWorthRetrying = {
+HttpStatusCode[] httpStatusCodesWorthRetrying = [
    HttpStatusCode.RequestTimeout, // 408
    HttpStatusCode.InternalServerError, // 500
    HttpStatusCode.BadGateway, // 502
    HttpStatusCode.ServiceUnavailable, // 503
    HttpStatusCode.GatewayTimeout // 504
-}; 
+]; 
 HttpResponseMessage result = await Policy
   .Handle<HttpRequestException>()
   .OrResult<HttpResponseMessage>(r => httpStatusCodesWorthRetrying.Contains(r.StatusCode))
@@ -688,13 +688,13 @@ As described at step 1b, from Polly v4.3.0 onwards, policies can handle return v
 
 ```csharp
 // Handle both exceptions and return values in one policy
-HttpStatusCode[] httpStatusCodesWorthRetrying = {
+HttpStatusCode[] httpStatusCodesWorthRetrying = [
    HttpStatusCode.RequestTimeout, // 408
    HttpStatusCode.InternalServerError, // 500
    HttpStatusCode.BadGateway, // 502
    HttpStatusCode.ServiceUnavailable, // 503
    HttpStatusCode.GatewayTimeout // 504
-}; 
+]; 
 HttpResponseMessage result = await Policy
   .Handle<HttpRequestException>()
   .OrResult<HttpResponseMessage>(r => httpStatusCodesWorthRetrying.Contains(r.StatusCode))
