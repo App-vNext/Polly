@@ -17,7 +17,7 @@ namespace Polly
         {
             TimeoutValidator.ValidateSecondsTimeout(seconds);
 
-            Func<Context, TimeSpan, Task, Exception, Task> doNothingAsync = (_, __, ___, ____) => TaskHelper.FromResult(default(TResult));
+            Func<Context, TimeSpan, Task, Exception, Task> doNothingAsync = (_, __, ___, ____) => Task.FromResult(default(TResult));
             return TimeoutAsync<TResult>(ctx => TimeSpan.FromSeconds(seconds), TimeoutStrategy.Optimistic, doNothingAsync);
         }
 
@@ -32,7 +32,7 @@ namespace Polly
         {
             TimeoutValidator.ValidateSecondsTimeout(seconds);
 
-            Func<Context, TimeSpan, Task, Exception, Task> doNothingAsync = (_, __, ___, ____) => TaskHelper.FromResult(default(TResult));
+            Func<Context, TimeSpan, Task, Exception, Task> doNothingAsync = (_, __, ___, ____) => Task.FromResult(default(TResult));
             return TimeoutAsync<TResult>(ctx => TimeSpan.FromSeconds(seconds), timeoutStrategy, doNothingAsync);
         }
 
@@ -112,7 +112,7 @@ namespace Polly
         {
             TimeoutValidator.ValidateTimeSpanTimeout(timeout);
 
-            Func<Context, TimeSpan, Task, Exception, Task> doNothingAsync = (_, __, ___, ____) => TaskHelper.FromResult(default(TResult));
+            Func<Context, TimeSpan, Task, Exception, Task> doNothingAsync = (_, __, ___, ____) => Task.FromResult(default(TResult));
             return TimeoutAsync<TResult>(ctx => timeout, TimeoutStrategy.Optimistic, doNothingAsync);
         }
 
@@ -127,7 +127,7 @@ namespace Polly
         {
             TimeoutValidator.ValidateTimeSpanTimeout(timeout);
 
-            Func<Context, TimeSpan, Task, Exception, Task> doNothingAsync = (_, __, ___, ____) => TaskHelper.FromResult(default(TResult));
+            Func<Context, TimeSpan, Task, Exception, Task> doNothingAsync = (_, __, ___, ____) => Task.FromResult(default(TResult));
             return TimeoutAsync<TResult>(ctx => timeout, timeoutStrategy, doNothingAsync);
         }
 
@@ -209,7 +209,7 @@ namespace Polly
         {
             if (timeoutProvider == null) throw new ArgumentNullException(nameof(timeoutProvider));
 
-            Func<Context, TimeSpan, Task, Exception, Task> doNothingAsync = (_, __, ___, ____) => TaskHelper.FromResult(default(TResult));
+            Func<Context, TimeSpan, Task, Exception, Task> doNothingAsync = (_, __, ___, ____) => Task.FromResult(default(TResult));
             return TimeoutAsync<TResult>(ctx => timeoutProvider(), TimeoutStrategy.Optimistic, doNothingAsync);
         }
 
@@ -224,7 +224,7 @@ namespace Polly
         {
             if (timeoutProvider == null) throw new ArgumentNullException(nameof(timeoutProvider));
 
-            Func<Context, TimeSpan, Task, Exception, Task> doNothingAsync = (_, __, ___, ____) => TaskHelper.FromResult(default(TResult));
+            Func<Context, TimeSpan, Task, Exception, Task> doNothingAsync = (_, __, ___, ____) => Task.FromResult(default(TResult));
             return TimeoutAsync<TResult>(ctx => timeoutProvider(), timeoutStrategy, doNothingAsync);
         }
 
@@ -302,7 +302,7 @@ namespace Polly
         /// <returns>The policy instance.</returns>
         public static TimeoutPolicy<TResult> TimeoutAsync<TResult>(Func<Context, TimeSpan> timeoutProvider)
         {
-            Func<Context, TimeSpan, Task, Exception, Task> doNothingAsync = (_, __, ___, ____) => TaskHelper.FromResult(default(TResult));
+            Func<Context, TimeSpan, Task, Exception, Task> doNothingAsync = (_, __, ___, ____) => Task.FromResult(default(TResult));
             return TimeoutAsync<TResult>(timeoutProvider, TimeoutStrategy.Optimistic, doNothingAsync);
         }
 
@@ -315,7 +315,7 @@ namespace Polly
         /// <returns>The policy instance.</returns>
         public static TimeoutPolicy<TResult> TimeoutAsync<TResult>(Func<Context, TimeSpan> timeoutProvider, TimeoutStrategy timeoutStrategy)
         {
-            Func<Context, TimeSpan, Task, Exception, Task> doNothingAsync = (_, __, ___, ____) => TaskHelper.FromResult(default(TResult));
+            Func<Context, TimeSpan, Task, Exception, Task> doNothingAsync = (_, __, ___, ____) => Task.FromResult(default(TResult));
             return TimeoutAsync<TResult>(timeoutProvider, timeoutStrategy, doNothingAsync);
         }
 

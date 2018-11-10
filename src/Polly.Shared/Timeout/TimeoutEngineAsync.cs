@@ -42,13 +42,7 @@ namespace Polly.Timeout
 
                         actionTask = action(context, combinedToken);
 
-                        return await (await 
-#if NET40
-                            TaskEx
-#else
-                            Task
-#endif
-                            .WhenAny(actionTask, timeoutTask).ConfigureAwait(continueOnCapturedContext)).ConfigureAwait(continueOnCapturedContext);
+                        return await (await Task.WhenAny(actionTask, timeoutTask).ConfigureAwait(continueOnCapturedContext)).ConfigureAwait(continueOnCapturedContext);
 
                     }
                     catch (Exception ex)
