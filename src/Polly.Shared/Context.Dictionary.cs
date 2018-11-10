@@ -8,10 +8,7 @@ namespace Polly
     /// Context that carries with a single execution through a Policy.   Commonly-used properties are directly on the class.  Backed by a dictionary of string key / object value pairs, to which user-defined values may be added.
     /// <remarks>Do not re-use an instance of <see cref="Context"/> across more than one execution.</remarks>
     /// </summary>
-    public partial class Context : IDictionary<string, object>, IDictionary
-#if !NET40
-        , IReadOnlyDictionary<string, object>
-#endif
+    public partial class Context : IDictionary<string, object>, IDictionary, IReadOnlyDictionary<string, object>
     {
         // For an individual execution through a policy or policywrap, it is expected that all execution steps (for example executing the user delegate, invoking policy-activity delegates such as onRetry, onBreak, onTimeout etc) execute sequentially.  
         // Therefore, this class is intentionally not constructed to be safe for concurrent access from multiple threads.
@@ -125,13 +122,11 @@ namespace Polly
 
         #endregion
 
-#if !NET40
         #region IReadOnlyDictionary<string, object> implementation
         IEnumerable<string> IReadOnlyDictionary<string, object>.Keys => ((IReadOnlyDictionary<string, object>)WrappedDictionary).Keys;
 
         IEnumerable<object> IReadOnlyDictionary<string, object>.Values => ((IReadOnlyDictionary<string, object>)WrappedDictionary).Values;
         #endregion
-#endif
 
         #region IDictionary implementation
 

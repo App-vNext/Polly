@@ -381,7 +381,7 @@ namespace Polly.Specs.Timeout
                 policy.Awaiting(async p => await p.ExecuteAsync( 
                     ct => {
                         userTokenSource.Cancel(); ct.ThrowIfCancellationRequested();   // Simulate cancel in the middle of execution
-                        return TaskHelper.FromResult(ResultPrimitive.WhateverButTooLate);
+                        return Task.FromResult(ResultPrimitive.WhateverButTooLate);
                     }, userTokenSource.Token) // ... with user token.
                    ).ShouldThrow<OperationCanceledException>();
             }

@@ -28,7 +28,7 @@ namespace Polly.Specs
             CircuitBreakerPolicy breaker = Policy.Handle<Exception>().CircuitBreakerAsync(1, TimeSpan.Zero);
             IAsyncPolicy nonGenericPolicy = breaker;
             var genericPolicy = nonGenericPolicy.AsAsyncPolicy<ResultPrimitive>();
-            Func<Task<ResultPrimitive>> deleg = () => TaskHelper.FromResult(ResultPrimitive.Good);
+            Func<Task<ResultPrimitive>> deleg = () => Task.FromResult(ResultPrimitive.Good);
 
             (await genericPolicy.ExecuteAsync(deleg)).Should().Be(ResultPrimitive.Good);
             breaker.Isolate();
