@@ -1,6 +1,7 @@
 ﻿using System;
 using Polly.Utilities;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Polly.Specs.Timeout
 {
@@ -79,7 +80,7 @@ namespace Polly.Specs.Timeout
             SystemClock.SleepAsync = (sleepTimespan, cancellationtoken) =>
             {
                 SystemClock.Sleep(sleepTimespan, cancellationtoken);
-                return TaskHelper.FromResult(true);
+                return Task.FromResult(true);
             };
         }
 

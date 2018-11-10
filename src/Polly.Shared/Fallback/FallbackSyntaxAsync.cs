@@ -109,7 +109,7 @@ namespace Polly
         {
             Func<DelegateResult<TResult>, Task> doNothing = _ => TaskHelper.EmptyTask;
             return policyBuilder.FallbackAsync(
-                ct => TaskHelper.FromResult(fallbackValue),
+                ct => Task.FromResult(fallbackValue),
                 doNothing
                 );
         }
@@ -145,7 +145,7 @@ namespace Polly
             if (onFallbackAsync == null) throw new ArgumentNullException(nameof(onFallbackAsync));
 
             return policyBuilder.FallbackAsync(
-                (outcome, ctx, ct) => TaskHelper.FromResult(fallbackValue),
+                (outcome, ctx, ct) => Task.FromResult(fallbackValue),
                 (outcome, context) => onFallbackAsync(outcome)
                 );
         }
@@ -183,7 +183,7 @@ namespace Polly
             if (onFallbackAsync == null) throw new ArgumentNullException(nameof(onFallbackAsync));
 
             return policyBuilder.FallbackAsync(
-                (outcome, ctx, ct) => TaskHelper.FromResult(fallbackValue),
+                (outcome, ctx, ct) => Task.FromResult(fallbackValue),
                 onFallbackAsync
                 );
         }
