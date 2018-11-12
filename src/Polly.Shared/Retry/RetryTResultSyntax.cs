@@ -242,6 +242,22 @@ namespace Polly
             );
         }
 
+        /// <summary>
+        /// Builds a <see cref="Policy"/> that will wait and retry.
+        /// calling <paramref name="onRetry"/> on each retry with the handled exception or result and the current sleep duration.
+        /// On each retry, the duration to wait is calculated by calling <paramref name="sleepDurationStrategy"/> with
+        /// the current retry number (1 for first retry, 2 for second etc).
+        /// </summary>
+        /// <param name="policyBuilder">The policy builder.</param>
+        /// <param name="sleepDurationStrategy">The class that provides the duration to wait for for a particular retry attempt.</param>
+        /// <param name="onRetry">The action to call on each retry.</param>
+        /// <returns>The policy instance.</returns>
+        /// <exception cref="System.ArgumentOutOfRangeException">retryCount;Value must be greater than or equal to zero.</exception>
+        /// <exception cref="System.ArgumentNullException">
+        /// sleepDurationProvider
+        /// or
+        /// onRetry
+        /// </exception>
         public static RetryPolicy<TResult> WaitAndRetry<TResult>(this PolicyBuilder<TResult> policyBuilder, ISleepDurationStrategy sleepDurationStrategy, Action<DelegateResult<TResult>, TimeSpan> onRetry)
         {
             if (onRetry == null) throw new ArgumentNullException(nameof(onRetry));
@@ -406,6 +422,14 @@ namespace Polly
             return policyBuilder.WaitAndRetry(retryCount, sleepDurationProvider, doNothing);
         }
 
+        /// <summary>
+        /// Builds a <see cref="Policy"/> that will wait and retry.
+        /// On each retry, the duration to wait is calculated by calling <paramref name="sleepDurationStrategy"/> with
+        /// the current retry number (1 for first retry, 2 for second etc), previous execution result and execution context.
+        /// </summary>
+        /// <param name="policyBuilder">The policy builder.</param>
+        /// <param name="sleepDurationStrategy">The class that provides the duration to wait for for a particular retry attempt.</param>
+        /// <returns>The policy instance.</returns>
         public static RetryPolicy<TResult> WaitAndRetry<TResult>(this PolicyBuilder<TResult> policyBuilder, ISleepDurationStrategy sleepDurationStrategy)
         {
             return policyBuilder.WaitAndRetry(sleepDurationStrategy.RetryCount, CurryNCD<TResult>(sleepDurationStrategy), DoNothingDTNC);
@@ -439,6 +463,22 @@ namespace Polly
                 );
         }
 
+        /// <summary>
+        /// Builds a <see cref="Policy"/> that will wait and retry.
+        /// calling <paramref name="onRetry"/> on each retry with the handled exception or result, current sleep duration and context data.
+        /// On each retry, the duration to wait is calculated by calling <paramref name="sleepDurationStrategy"/> with
+        /// the current retry number (1 for first retry, 2 for second etc), previous execution result and execution context.
+        /// </summary>
+        /// <param name="policyBuilder">The policy builder.</param>
+        /// <param name="sleepDurationStrategy">The class that provides the duration to wait for for a particular retry attempt.</param>
+        /// <param name="onRetry">The action to call on each retry.</param>
+        /// <returns>The policy instance.</returns>
+        /// <exception cref="System.ArgumentOutOfRangeException">retryCount;Value must be greater than or equal to zero.</exception>
+        /// <exception cref="System.ArgumentNullException">
+        /// sleepDurationProvider
+        /// or
+        /// onRetry
+        /// </exception>
         public static RetryPolicy<TResult> WaitAndRetry<TResult>(this PolicyBuilder<TResult> policyBuilder, ISleepDurationStrategy sleepDurationStrategy, Action<DelegateResult<TResult>, TimeSpan, Context> onRetry)
         {
             if (onRetry == null) throw new ArgumentNullException(nameof(onRetry));
@@ -486,6 +526,22 @@ namespace Polly
                 policyBuilder.ResultPredicates);
         }
 
+        /// <summary>
+        /// Builds a <see cref="Policy"/> that will wait and retry.
+        /// calling <paramref name="onRetry"/> on each retry with the handled exception or result, current sleep duration, retry count, and context data.
+        /// On each retry, the duration to wait is calculated by calling <paramref name="sleepDurationStrategy"/> with
+        /// the current retry number (1 for first retry, 2 for second etc), previous execution result and execution context.
+        /// </summary>
+        /// <param name="policyBuilder">The policy builder.</param>
+        /// <param name="sleepDurationStrategy">The class that provides the duration to wait for for a particular retry attempt.</param>
+        /// <param name="onRetry">The action to call on each retry.</param>
+        /// <returns>The policy instance.</returns>
+        /// <exception cref="System.ArgumentOutOfRangeException">retryCount;Value must be greater than or equal to zero.</exception>
+        /// <exception cref="System.ArgumentNullException">
+        /// timeSpanProvider
+        /// or
+        /// onRetry
+        /// </exception>
         public static RetryPolicy<TResult> WaitAndRetry<TResult>(this PolicyBuilder<TResult> policyBuilder, ISleepDurationStrategy sleepDurationStrategy, Action<DelegateResult<TResult>, TimeSpan, int, Context> onRetry)
         {
             return WaitAndRetry(policyBuilder, sleepDurationStrategy.RetryCount, CurryNCD<TResult>(sleepDurationStrategy), onRetry);
@@ -598,6 +654,15 @@ namespace Polly
             return policyBuilder.WaitAndRetryForever(sleepDurationProvider, doNothing);
         }
 
+        /// <summary>
+        /// Builds a <see cref="Policy"/> that will wait and retry indefinitely until the action succeeds.
+        ///     On each retry, the duration to wait is calculated by calling <paramref name="sleepDurationStrategy" /> with 
+        ///     the current retry number (1 for first retry, 2 for second etc)
+        /// </summary>
+        /// <param name="policyBuilder">The policy builder.</param>
+        /// <param name="sleepDurationStrategy">The class that provides the duration to wait for for a particular retry attempt.</param>
+        /// <returns>The policy instance.</returns>
+        /// <exception cref="System.ArgumentNullException">sleepDurationProvider</exception>
         public static RetryPolicy<TResult> WaitAndRetryForever<TResult>(this PolicyBuilder<TResult> policyBuilder, ISleepDurationStrategy sleepDurationStrategy)
         {
             if (sleepDurationStrategy == null) throw new ArgumentNullException(nameof(sleepDurationStrategy));
@@ -646,6 +711,18 @@ namespace Polly
             );
         }
 
+        /// <summary>
+        /// Builds a <see cref="Policy"/> that will wait and retry indefinitely until the action succeeds, 
+        /// calling <paramref name="onRetry"/> on each retry with the handled exception or result.
+        ///     On each retry, the duration to wait is calculated by calling <paramref name="sleepDurationStrategy" /> with 
+        ///     the current retry number (1 for first retry, 2 for second etc)
+        /// </summary>
+        /// <param name="policyBuilder">The policy builder.</param>
+        /// <param name="sleepDurationStrategy">A class providing the duration to wait before retrying.</param>
+        /// <param name="onRetry">The action to call on each retry.</param>
+        /// <returns>The policy instance.</returns>
+        /// <exception cref="System.ArgumentNullException">sleepDurationProvider</exception>
+        /// <exception cref="System.ArgumentNullException">onRetry</exception>
         public static RetryPolicy<TResult> WaitAndRetryForever<TResult>(this PolicyBuilder<TResult> policyBuilder, ISleepDurationStrategy sleepDurationStrategy, Action<DelegateResult<TResult>, TimeSpan> onRetry)
         {
             if (sleepDurationStrategy == null) throw new ArgumentNullException(nameof(sleepDurationStrategy));
@@ -680,6 +757,18 @@ namespace Polly
             );
         }
 
+        /// <summary>
+        /// Builds a <see cref="Policy"/> that will wait and retry indefinitely until the action succeeds, 
+        /// calling <paramref name="onRetry"/> on each retry with the handled exception or result and retry count.
+        ///     On each retry, the duration to wait is calculated by calling <paramref name="sleepDurationStrategy" /> with 
+        ///     the current retry number (1 for first retry, 2 for second etc)
+        /// </summary>
+        /// <param name="policyBuilder">The policy builder.</param>
+        /// <param name="sleepDurationStrategy">A class providing the duration to wait before retrying.</param>
+        /// <param name="onRetry">The action to call on each retry.</param>
+        /// <returns>The policy instance.</returns>
+        /// <exception cref="System.ArgumentNullException">sleepDurationProvider</exception>
+        /// <exception cref="System.ArgumentNullException">onRetry</exception>
         public static RetryPolicy<TResult> WaitAndRetryForever<TResult>(this PolicyBuilder<TResult> policyBuilder, ISleepDurationStrategy sleepDurationStrategy, Action<DelegateResult<TResult>, int, TimeSpan> onRetry)
         {
             if (sleepDurationStrategy == null) throw new ArgumentNullException(nameof(sleepDurationStrategy));
@@ -765,6 +854,18 @@ namespace Polly
             );
         }
 
+        /// <summary>
+        /// Builds a <see cref="Policy"/> that will wait and retry indefinitely until the action succeeds, 
+        /// calling <paramref name="onRetry"/> on each retry with the handled exception or result and execution context.
+        ///     On each retry, the duration to wait is calculated by calling <paramref name="sleepDurationStrategy" /> with 
+        ///     the current retry number (1 for first retry, 2 for second etc), previous execution result and execution context.
+        /// </summary>
+        /// <param name="policyBuilder">The policy builder.</param>
+        /// <param name="sleepDurationStrategy">A class providing the duration to wait before retrying.</param>
+        /// <param name="onRetry">The action to call on each retry.</param>
+        /// <returns>The policy instance.</returns>
+        /// <exception cref="System.ArgumentNullException">sleepDurationProvider</exception>
+        /// <exception cref="System.ArgumentNullException">onRetry</exception>
         public static RetryPolicy<TResult> WaitAndRetryForever<TResult>(this PolicyBuilder<TResult> policyBuilder, ISleepDurationStrategy sleepDurationStrategy, Action<DelegateResult<TResult>, TimeSpan, Context> onRetry)
         {
             return WaitAndRetryForever(policyBuilder, CurryNCD<TResult>(sleepDurationStrategy), onRetry);
@@ -801,6 +902,18 @@ namespace Polly
             );
         }
 
+        /// <summary>
+        /// Builds a <see cref="Policy"/> that will wait and retry indefinitely until the action succeeds, 
+        /// calling <paramref name="onRetry"/> on each retry with the handled exception or result, retry count and execution context.
+        ///     On each retry, the duration to wait is calculated by calling <paramref name="sleepDurationStrategy" /> with 
+        ///     the current retry number (1 for first retry, 2 for second etc), previous execution result and execution context.
+        /// </summary>
+        /// <param name="policyBuilder">The policy builder.</param>
+        /// <param name="sleepDurationStrategy">A class providing the duration to wait before retrying.</param>
+        /// <param name="onRetry">The action to call on each retry.</param>
+        /// <returns>The policy instance.</returns>
+        /// <exception cref="System.ArgumentNullException">sleepDurationProvider</exception>
+        /// <exception cref="System.ArgumentNullException">onRetry</exception>
         public static RetryPolicy<TResult> WaitAndRetryForever<TResult>(this PolicyBuilder<TResult> policyBuilder, ISleepDurationStrategy sleepDurationStrategy, Action<DelegateResult<TResult>, int, TimeSpan, Context> onRetry)
         {
             return WaitAndRetryForever(policyBuilder, CurryNCD<TResult>(sleepDurationStrategy), onRetry);
