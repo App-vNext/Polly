@@ -3,9 +3,9 @@ using System;
 namespace Polly.Duration
 {
     /// <summary>
-    /// 
+    /// Utilities useful for retry duration management.
     /// </summary>
-    public static class Jitter
+    internal static class DurationUtils
     {
         [ThreadStatic]
         private static readonly Random s_random = new Random(); // Default ctor uses a time-based seed

@@ -3,44 +3,45 @@ using System.Collections.Generic;
 
 namespace Polly.Duration
 {
-    // Background: https://www.awsarchitectureblog.com/2015/03/backoff.html
-
     /// <summary>
-    /// 
+    /// Generates sleep durations in an jittered manner, making sure to mitigate any correlations.
+    /// For example: 1s, 3s, 2s, 4s.
+    /// For background, see https://www.awsarchitectureblog.com/2015/03/backoff.html.
     /// </summary>
     public sealed class DecorrelatedJitterBackoff : ISleepDurationStrategy
     {
         private readonly Random _random;
 
         /// <summary>
-        /// 
+        /// The maximum number of retries to use, in addition to the original call.
         /// </summary>
         public int RetryCount { get; }
 
         /// <summary>
-        /// 
+        /// The minimum duration value to use for each retry.
         /// </summary>
         public TimeSpan MinDelay { get; }
 
         /// <summary>
-        /// 
+        /// The maximum duration value to use for each retry.
         /// </summary>
         public TimeSpan MaxDelay { get; }
 
         /// <summary>
-        /// 
+        /// Creates a new instance of the class.
         /// </summary>
-        /// <param name="retryCount"></param>
-        /// <param name="minDelay"></param>
-        /// <param name="maxDelay"></param>
-        /// <param name="random"></param>
+        /// <param name="retryCount">The maximum number of retries to use, in addition to the original call.</param>
+        /// <param name="minDelay">The minimum duration value to use for each retry.</param>
+        /// <param name="maxDelay">The maximum duration value to use for each retry.</param>
+        /// <param name="random">An optional <see cref="Random"/> instance to use.
+        /// If not specified, will use a shared (singleton) instance with a random seed.</param>
         public DecorrelatedJitterBackoff(int retryCount, TimeSpan minDelay, TimeSpan maxDelay, Random random = null)
         {
             if (retryCount < 0) throw new ArgumentOutOfRangeException(nameof(retryCount));
             if (minDelay < TimeSpan.Zero) throw new ArgumentOutOfRangeException(nameof(minDelay));
             if (maxDelay < minDelay) throw new ArgumentOutOfRangeException(nameof(maxDelay));
 
-            _random = random ?? Jitter.Random;
+            _random = random ?? DurationUtils.Random;
 
             RetryCount = retryCount;
             MinDelay = minDelay;
@@ -48,9 +49,8 @@ namespace Polly.Duration
         }
 
         /// <summary>
-        /// 
+        /// Generate the sequence of <see cref="TimeSpan"/> values to use as sleep-durations.
         /// </summary>
-        /// <returns></returns>
         public IReadOnlyList<TimeSpan> Generate()
         {
             TimeSpan[] delays = new TimeSpan[RetryCount];

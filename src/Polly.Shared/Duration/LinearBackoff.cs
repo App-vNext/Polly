@@ -4,52 +4,53 @@ using System.Collections.Generic;
 namespace Polly.Duration
 {
     /// <summary>
-    /// 
+    /// Generates sleep durations in an linear manner.
+    /// For example: 1s, 2s, 3s, 4s.
     /// </summary>
     public sealed class LinearBackoff : ISleepDurationStrategy
     {
         /// <summary>
-        /// 
+        /// The maximum number of retries to use, in addition to the original call.
         /// </summary>
         public int RetryCount { get; }
 
         /// <summary>
-        /// 
+        /// The duration value for the first retry.
         /// </summary>
-        public TimeSpan MinDelay { get; }
+        public TimeSpan InitialDelay { get; }
 
         /// <summary>
-        /// 
+        /// The linear factor to use for increasing the delay on subsequent calls.
         /// </summary>
         public double Factor { get; }
 
         /// <summary>
-        /// 
+        /// Creates a new instance of the class.
         /// </summary>
-        /// <param name="retryCount"></param>
-        /// <param name="minDelay"></param>
-        /// <param name="factor"></param>
-        public LinearBackoff(int retryCount, TimeSpan minDelay, double factor = 1.0)
+        /// <param name="retryCount">The maximum number of retries to use, in addition to the original call.</param>
+        /// <param name="initialDelay">The duration value for the first retry.</param>
+        /// <param name="factor">The linear factor to use for increasing the duration on subsequent calls.</param>
+        public LinearBackoff(int retryCount, TimeSpan initialDelay, double factor = 1.0)
         {
             if (retryCount < 0) throw new ArgumentOutOfRangeException(nameof(retryCount));
-            if (minDelay < TimeSpan.Zero) throw new ArgumentOutOfRangeException(nameof(minDelay));
-            if (factor == 0) throw new ArgumentOutOfRangeException(nameof(factor));
+            if (initialDelay < TimeSpan.Zero) throw new ArgumentOutOfRangeException(nameof(initialDelay));
+            if (factor <= 0) throw new ArgumentOutOfRangeException(nameof(factor));
 
             RetryCount = retryCount;
-            MinDelay = minDelay;
+            InitialDelay = initialDelay;
             Factor = factor;
         }
 
         /// <summary>
-        /// 
+        /// Generate the sequence of <see cref="TimeSpan"/> values to use as sleep-durations.
         /// </summary>
         /// <returns></returns>
         public IReadOnlyList<TimeSpan> Generate()
         {
             TimeSpan[] delays = new TimeSpan[RetryCount];
 
-            double ms = MinDelay.TotalMilliseconds;
-            double ad = Factor * MinDelay.TotalMilliseconds;
+            double ms = InitialDelay.TotalMilliseconds;
+            double ad = Factor * InitialDelay.TotalMilliseconds;
 
             for (int i = 0; i < delays.Length; i++)
             {
