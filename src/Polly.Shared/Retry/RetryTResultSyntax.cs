@@ -214,8 +214,10 @@ namespace Polly
             return policyBuilder.WaitAndRetry(retryCount, sleepDurationProvider, doNothing);
         }
 
-        public static RetryPolicy<TResult> WaitAndRetry<TResult>(this PolicyBuilder<TResult> policyBuilder, int retryCount, ISleepDurationStrategy sleepDurationProvider) 
-            => WaitAndRetry(policyBuilder, retryCount, sleepDurationProvider.Next);
+        public static RetryPolicy<TResult> WaitAndRetry<TResult>(this PolicyBuilder<TResult> policyBuilder, int retryCount, ISleepDurationStrategy sleepDurationProvider)
+        {
+            return WaitAndRetry(policyBuilder, retryCount, n => sleepDurationProvider.Next<TResult>(n, null, null));
+        }
 
         /// <summary>
         /// Builds a <see cref="Policy"/> that will wait and retry <paramref name="retryCount"/> times
@@ -246,7 +248,9 @@ namespace Polly
         }
 
         public static RetryPolicy<TResult> WaitAndRetry<TResult>(this PolicyBuilder<TResult> policyBuilder, int retryCount, ISleepDurationStrategy sleepDurationProvider, Action<DelegateResult<TResult>, TimeSpan> onRetry)
-            => WaitAndRetry(policyBuilder, retryCount, sleepDurationProvider.Next, onRetry);
+        {
+            return WaitAndRetry(policyBuilder, retryCount, n => sleepDurationProvider.Next<TResult>(n, null, null), onRetry);
+        }
 
         /// <summary>
         /// Builds a <see cref="Policy"/> that will wait and retry <paramref name="retryCount"/> times
@@ -277,7 +281,9 @@ namespace Polly
         }
 
         public static RetryPolicy<TResult> WaitAndRetry<TResult>(this PolicyBuilder<TResult> policyBuilder, int retryCount, ISleepDurationStrategy sleepDurationProvider, Action<DelegateResult<TResult>, TimeSpan, Context> onRetry)
-            => WaitAndRetry(policyBuilder, retryCount, sleepDurationProvider.Next, onRetry);
+        {
+            return WaitAndRetry(policyBuilder, retryCount, n => sleepDurationProvider.Next<TResult>(n, null, null), onRetry);
+        }
 
         /// <summary>
         /// Builds a <see cref="Policy"/> that will wait and retry <paramref name="retryCount"/> times
@@ -319,7 +325,9 @@ namespace Polly
         }
 
         public static RetryPolicy<TResult> WaitAndRetry<TResult>(this PolicyBuilder<TResult> policyBuilder, int retryCount, ISleepDurationStrategy sleepDurationProvider, Action<DelegateResult<TResult>, TimeSpan, int, Context> onRetry)
-            => WaitAndRetry(policyBuilder, retryCount, sleepDurationProvider.Next, onRetry);
+        {
+            return WaitAndRetry(policyBuilder, retryCount, n => sleepDurationProvider.Next<TResult>(n, null, null), onRetry);
+        }
 
         /// <summary>
         /// Builds a <see cref="Policy"/> that will wait and retry <paramref name="retryCount"/> times.
@@ -338,7 +346,9 @@ namespace Polly
         }
 
         public static RetryPolicy<TResult> WaitAndRetry<TResult>(this PolicyBuilder<TResult> policyBuilder, int retryCount, ISleepDurationStrategy sleepDurationProvider)
-            => WaitAndRetry(policyBuilder, retryCount, sleepDurationProvider.Next2);
+        {
+            return WaitAndRetry(policyBuilder, retryCount, (n, c) => sleepDurationProvider.Next<TResult>(n, c, null));
+        }
 
         /// <summary>
         /// Builds a <see cref="Policy"/> that will wait and retry <paramref name="retryCount"/> times
@@ -369,11 +379,9 @@ namespace Polly
         }
 
         public static RetryPolicy<TResult> WaitAndRetry<TResult>(this PolicyBuilder<TResult> policyBuilder, int retryCount, ISleepDurationStrategy sleepDurationProvider, Action<DelegateResult<TResult>, TimeSpan, Context> onRetry)
-            => policyBuilder.WaitAndRetry(
-                retryCount,
-                sleepDurationProvider,
-                (outcome, span, i, ctx) => onRetry(outcome, span, ctx)
-                );
+        {
+            return policyBuilder.WaitAndRetry(retryCount, (n, c) => sleepDurationProvider.Next<TResult>(n, c, null), onRetry);
+        }
 
         /// <summary>
         /// Builds a <see cref="Policy"/> that will wait and retry <paramref name="retryCount"/> times
@@ -402,11 +410,9 @@ namespace Polly
         }
 
         public static RetryPolicy<TResult> WaitAndRetry<TResult>(this PolicyBuilder<TResult> policyBuilder, int retryCount, ISleepDurationStrategy sleepDurationProvider, Action<DelegateResult<TResult>, TimeSpan, int, Context> onRetry)
-            => policyBuilder.WaitAndRetry(
-                retryCount,
-                sleepDurationProvider.Next,
-                onRetry
-            );
+        {
+            return policyBuilder.WaitAndRetry(retryCount, (n, c) => sleepDurationProvider.Next<TResult>(n, c, null), onRetry);
+        }
 
         /// <summary>
         /// Builds a <see cref="Policy"/> that will wait and retry <paramref name="retryCount"/> times.
@@ -425,7 +431,9 @@ namespace Polly
         }
 
         public static RetryPolicy<TResult> WaitAndRetry<TResult>(this PolicyBuilder<TResult> policyBuilder, int retryCount, ISleepDurationStrategy sleepDurationProvider)
-            => WaitAndRetry(policyBuilder, retryCount, sleepDurationProvider.Next3);
+        {
+            return WaitAndRetry(policyBuilder, retryCount, (n, d, c) => sleepDurationProvider.Next(n, c, d));
+        }
 
         /// <summary>
         /// Builds a <see cref="Policy"/> that will wait and retry <paramref name="retryCount"/> times
@@ -456,7 +464,9 @@ namespace Polly
         }
 
         public static RetryPolicy<TResult> WaitAndRetry<TResult>(this PolicyBuilder<TResult> policyBuilder, int retryCount, ISleepDurationStrategy sleepDurationProvider, Action<DelegateResult<TResult>, TimeSpan, Context> onRetry)
-            => WaitAndRetry(policyBuilder, retryCount, sleepDurationProvider.Next3, onRetry);
+        {
+            return WaitAndRetry(policyBuilder, retryCount, (n, d, c) => sleepDurationProvider.Next(n, c, d), onRetry);
+        }
 
         /// <summary>
         /// Builds a <see cref="Policy"/> that will wait and retry <paramref name="retryCount"/> times
@@ -495,7 +505,9 @@ namespace Polly
         }
 
         public static RetryPolicy<TResult> WaitAndRetry<TResult>(this PolicyBuilder<TResult> policyBuilder, int retryCount, ISleepDurationStrategy sleepDurationProvider, Action<DelegateResult<TResult>, TimeSpan, int, Context> onRetry)
-            => WaitAndRetry(policyBuilder, retryCount, sleepDurationProvider.Next3, onRetry);
+        {
+            return WaitAndRetry(policyBuilder, retryCount, (n, d, c) => sleepDurationProvider.Next(n, c, d), onRetry);
+        }
 
         /// <summary>
         /// Builds a <see cref="Policy"/> that will wait and retry as many times as there are provided <paramref name="sleepDurations"/>
@@ -512,7 +524,9 @@ namespace Polly
         }
 
         public static RetryPolicy<TResult> WaitAndRetry<TResult>(this PolicyBuilder<TResult> policyBuilder, ISleepDurationStrategy sleepDurations)
-            => WaitAndRetry(policyBuilder, sleepDurations.Create());
+        {
+            return WaitAndRetry(policyBuilder, sleepDurations.Create());
+        }
 
         /// <summary>
         /// Builds a <see cref="Policy"/> that will wait and retry as many times as there are provided <paramref name="sleepDurations"/>
@@ -536,7 +550,9 @@ namespace Polly
         }
 
         public static RetryPolicy<TResult> WaitAndRetry<TResult>(this PolicyBuilder<TResult> policyBuilder, ISleepDurationStrategy sleepDurations, Action<DelegateResult<TResult>, TimeSpan> onRetry)
-            => WaitAndRetry(policyBuilder, sleepDurations.Create(), onRetry);
+        {
+            return WaitAndRetry(policyBuilder, sleepDurations.Create(), onRetry);
+        }
 
         /// <summary>
         /// Builds a <see cref="Policy"/> that will wait and retry as many times as there are provided <paramref name="sleepDurations"/>
@@ -560,7 +576,9 @@ namespace Polly
         }
 
         public static RetryPolicy<TResult> WaitAndRetry<TResult>(this PolicyBuilder<TResult> policyBuilder, ISleepDurationStrategy sleepDurations, Action<DelegateResult<TResult>, TimeSpan, Context> onRetry)
-            => WaitAndRetry(policyBuilder, sleepDurations.Create(), onRetry);
+        {
+            return WaitAndRetry(policyBuilder, sleepDurations.Create(), onRetry);
+        }
 
         /// <summary>
         /// Builds a <see cref="Policy"/> that will wait and retry as many times as there are provided <paramref name="sleepDurations"/>
@@ -596,7 +614,9 @@ namespace Polly
         }
 
         public static RetryPolicy<TResult> WaitAndRetry<TResult>(this PolicyBuilder<TResult> policyBuilder, ISleepDurationStrategy sleepDurations, Action<DelegateResult<TResult>, TimeSpan, int, Context> onRetry)
-            => WaitAndRetry(policyBuilder, sleepDurations.Create(), onRetry);
+        {
+            return WaitAndRetry(policyBuilder, sleepDurations.Create(), onRetry);
+        }
 
         /// <summary>
         /// Builds a <see cref="Policy"/> that will wait and retry indefinitely until the action succeeds.
@@ -617,7 +637,9 @@ namespace Polly
         }
 
         public static RetryPolicy<TResult> WaitAndRetryForever<TResult>(this PolicyBuilder<TResult> policyBuilder, ISleepDurationStrategy sleepDurationProvider)
-            => WaitAndRetryForever(policyBuilder, sleepDurationProvider.Next);
+        {
+            return WaitAndRetryForever(policyBuilder, n => sleepDurationProvider.Next<TResult>(n, null, null));
+        }
 
         /// <summary>
         /// Builds a <see cref="Policy"/> that will wait and retry indefinitely until the action succeeds.
@@ -638,7 +660,9 @@ namespace Polly
         }
 
         public static RetryPolicy<TResult> WaitAndRetryForever<TResult>(this PolicyBuilder<TResult> policyBuilder, ISleepDurationStrategy sleepDurationProvider)
-            => WaitAndRetryForever(policyBuilder, sleepDurationProvider.Next2);
+        {
+            return WaitAndRetryForever(policyBuilder, (n, c) => sleepDurationProvider.Next<TResult>(n, c, null));
+        }
 
         /// <summary>
         /// Builds a <see cref="Policy"/> that will wait and retry indefinitely until the action succeeds, 
@@ -664,7 +688,9 @@ namespace Polly
         }
 
         public static RetryPolicy<TResult> WaitAndRetryForever<TResult>(this PolicyBuilder<TResult> policyBuilder, ISleepDurationStrategy sleepDurationProvider, Action<DelegateResult<TResult>, TimeSpan> onRetry)
-            => WaitAndRetryForever(policyBuilder, sleepDurationProvider.Next, onRetry);
+        {
+            return WaitAndRetryForever(policyBuilder, n => sleepDurationProvider.Next<TResult>(n, null, null), onRetry);
+        }
 
         /// <summary>
         /// Builds a <see cref="Policy"/> that will wait and retry indefinitely until the action succeeds, 
@@ -690,7 +716,9 @@ namespace Polly
         }
 
         public static RetryPolicy<TResult> WaitAndRetryForever<TResult>(this PolicyBuilder<TResult> policyBuilder, ISleepDurationStrategy sleepDurationProvider, Action<DelegateResult<TResult>, int, TimeSpan> onRetry)
-            => WaitAndRetryForever(policyBuilder, sleepDurationProvider.Next, onRetry);
+        {
+            return WaitAndRetryForever(policyBuilder, n => sleepDurationProvider.Next<TResult>(n, null, null), onRetry);
+        }
 
         /// <summary>
         /// Builds a <see cref="Policy"/> that will wait and retry indefinitely until the action succeeds, 
@@ -714,7 +742,9 @@ namespace Polly
         }
 
         public static RetryPolicy<TResult> WaitAndRetryForever<TResult>(this PolicyBuilder<TResult> policyBuilder, ISleepDurationStrategy sleepDurationProvider, Action<DelegateResult<TResult>, TimeSpan, Context> onRetry)
-            => WaitAndRetryForever(policyBuilder, sleepDurationProvider.Next2, onRetry);
+        {
+            return WaitAndRetryForever(policyBuilder, (n, c) => sleepDurationProvider.Next<TResult>(n, c, null), onRetry);
+        }
 
         /// <summary>
         /// Builds a <see cref="Policy"/> that will wait and retry indefinitely until the action succeeds, 
@@ -738,7 +768,9 @@ namespace Polly
         }
 
         public static RetryPolicy<TResult> WaitAndRetryForever<TResult>(this PolicyBuilder<TResult> policyBuilder, ISleepDurationStrategy sleepDurationProvider, Action<DelegateResult<TResult>, int, TimeSpan, Context> onRetry)
-            => WaitAndRetryForever(policyBuilder, sleepDurationProvider.Next2, onRetry);
+        {
+            return WaitAndRetryForever(policyBuilder, (n, c) => sleepDurationProvider.Next<TResult>(n, c, null), onRetry);
+        }
 
         /// <summary>
         /// Builds a <see cref="Policy"/> that will wait and retry indefinitely until the action succeeds, 
@@ -772,7 +804,9 @@ namespace Polly
         }
 
         public static RetryPolicy<TResult> WaitAndRetryForever<TResult>(this PolicyBuilder<TResult> policyBuilder, ISleepDurationStrategy sleepDurationProvider, Action<DelegateResult<TResult>, TimeSpan, Context> onRetry)
-            => WaitAndRetryForever(policyBuilder, sleepDurationProvider.Next3, onRetry);
+        {
+            return WaitAndRetryForever(policyBuilder, (n, d, c) => sleepDurationProvider.Next(n, c, d), onRetry);
+        }
 
         /// <summary>
         /// Builds a <see cref="Policy"/> that will wait and retry indefinitely until the action succeeds, 
@@ -806,7 +840,8 @@ namespace Polly
         }
 
         public static RetryPolicy<TResult> WaitAndRetryForever<TResult>(this PolicyBuilder<TResult> policyBuilder, ISleepDurationStrategy sleepDurationProvider, Action<DelegateResult<TResult>, int, TimeSpan, Context> onRetry)
-            => WaitAndRetryForever(policyBuilder, sleepDurationProvider.Next3, onRetry);
-
+        {
+            return WaitAndRetryForever(policyBuilder, (n, d, c) => sleepDurationProvider.Next(n, c, d), onRetry);
+        }
     }
 }

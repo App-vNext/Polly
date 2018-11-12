@@ -69,5 +69,10 @@ namespace Polly.Duration
         {
             throw new NotImplementedException();
         }
+
+        public TimeSpan Next<TResult>(int i, Context context, DelegateResult<TResult> @delegate)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
