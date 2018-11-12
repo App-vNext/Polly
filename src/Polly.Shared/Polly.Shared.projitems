@@ -74,8 +74,10 @@
     <Compile Include="$(MSBuildThisFileDirectory)CircuitBreaker\AdvancedCircuitController.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Context.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Context.Dictionary.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Duration\Jitter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Duration\LinearBackoff.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Duration\ExponentialBackoff.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Duration\DecorrelatedJitter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Duration\DecorrelatedJitterBackoff.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Duration\ISleepDurationStrategy.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ExceptionPredicate.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DelegateResult.cs" />

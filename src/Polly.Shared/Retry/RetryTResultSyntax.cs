@@ -809,17 +809,23 @@ namespace Polly
 
         private static Func<int, TimeSpan> CurryN<TResult>(ISleepDurationStrategy sleepDurationStrategy)
         {
-            return n => sleepDurationStrategy.Next<TResult>(n);
+            var delays = sleepDurationStrategy.Generate();
+
+            return n => delays[n];
         }
 
         private static Func<int, Context, TimeSpan> CurryNC<TResult>(ISleepDurationStrategy sleepDurationStrategy)
         {
-            return (n, c) => sleepDurationStrategy.Next<TResult>(n, c);
+            var delays = sleepDurationStrategy.Generate();
+
+            return (n, _) => delays[n];
         }
 
         private static Func<int, DelegateResult<TResult>, Context, TimeSpan> CurryNCD<TResult>(ISleepDurationStrategy sleepDurationStrategy)
         {
-            return (n, d, c) => sleepDurationStrategy.Next(n, c, d);
+            var delays = sleepDurationStrategy.Generate();
+
+            return (n, _, __) => delays[n];
         }
 
         #endregion

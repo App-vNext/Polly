@@ -17,24 +17,6 @@ namespace Polly.Duration
         /// 
         /// </summary>
         /// <returns></returns>
-        IEnumerable<TimeSpan> Create(Context content = null);
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        //TimeSpan Next(int i);
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        //TimeSpan Next2(int i, Context context);
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        TimeSpan Next<TResult>(int i, Context context = null, DelegateResult<TResult> @delegate = null);
+        IReadOnlyList<TimeSpan> Generate();
     }
 }

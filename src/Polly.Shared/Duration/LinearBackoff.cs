@@ -6,7 +6,7 @@ namespace Polly.Duration
     /// <summary>
     /// 
     /// </summary>
-    public sealed class ExponentialBackoff : ISleepDurationStrategy
+    public sealed class LinearBackoff : ISleepDurationStrategy
     {
         /// <summary>
         /// 
@@ -21,15 +21,23 @@ namespace Polly.Duration
         /// <summary>
         /// 
         /// </summary>
+        public double Factor { get; }
+
+        /// <summary>
+        /// 
+        /// </summary>
         /// <param name="retryCount"></param>
         /// <param name="minDelay"></param>
-        public ExponentialBackoff(int retryCount, TimeSpan minDelay)
+        /// <param name="factor"></param>
+        public LinearBackoff(int retryCount, TimeSpan minDelay, double factor = 1.0)
         {
             if (retryCount < 0) throw new ArgumentOutOfRangeException(nameof(retryCount));
             if (minDelay < TimeSpan.Zero) throw new ArgumentOutOfRangeException(nameof(minDelay));
+            if (factor == 0) throw new ArgumentOutOfRangeException(nameof(factor));
 
             RetryCount = retryCount;
             MinDelay = minDelay;
+            Factor = factor;
         }
 
         /// <summary>
@@ -41,11 +49,13 @@ namespace Polly.Duration
             TimeSpan[] delays = new TimeSpan[RetryCount];
 
             double ms = MinDelay.TotalMilliseconds;
+            double ad = Factor * MinDelay.TotalMilliseconds;
+
             for (int i = 0; i < delays.Length; i++)
             {
-                delays[i] = TimeSpan.FromMilliseconds(ms);
+                ms += ad;
 
-                ms *= 2.0;
+                delays[i] = TimeSpan.FromMilliseconds(ms);
             }
 
             return delays;
