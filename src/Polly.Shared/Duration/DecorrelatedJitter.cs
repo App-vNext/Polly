@@ -10,7 +10,9 @@ namespace Polly.Duration
     /// </summary>
     public sealed class DecorrelatedJitter : ISleepDurationStrategy
     {
+        [ThreadStatic]
         private static readonly Random s_random = new Random(); // Default ctor uses a time-based seed
+
         private readonly Random _random;
 
         /// <summary>
@@ -65,11 +67,14 @@ namespace Polly.Duration
             }
         }
 
-        public TimeSpan Next(int i, Context content)
-        {
-            throw new NotImplementedException();
-        }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="TResult"></typeparam>
+        /// <param name="i"></param>
+        /// <param name="context"></param>
+        /// <param name="delegate"></param>
+        /// <returns></returns>
         public TimeSpan Next<TResult>(int i, Context context, DelegateResult<TResult> @delegate)
         {
             throw new NotImplementedException();

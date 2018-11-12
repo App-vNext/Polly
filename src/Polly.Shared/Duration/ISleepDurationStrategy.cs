@@ -35,6 +35,6 @@ namespace Polly.Duration
         /// 
         /// </summary>
         /// <returns></returns>
-        TimeSpan Next<TResult>(int i, Context context, DelegateResult<TResult> @delegate);
+        TimeSpan Next<TResult>(int i, Context context = null, DelegateResult<TResult> @delegate = null);
     }
 }
