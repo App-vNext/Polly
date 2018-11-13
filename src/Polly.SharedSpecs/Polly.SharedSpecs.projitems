@@ -41,6 +41,10 @@
     <Compile Include="$(MSBuildThisFileDirectory)CircuitBreaker\ICircuitBreakerPolicySpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CircuitBreaker\ICircuitBreakerPolicyTResultSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ContextSpecs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Duration\ExponentialBackoffSpecs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Duration\ConstantBackoffSpecs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Duration\LinearBackoffSpecs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Duration\DecorrelatedJitterBackoffSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Fallback\FallbackAsyncSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Fallback\FallbackSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Fallback\FallbackTResultAsyncSpecs.cs" />

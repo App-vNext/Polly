@@ -1,4 +1,5 @@
 ﻿using FluentAssertions;
+using Polly.Duration;
 using Polly.Specs.Helpers;
 using Polly.Utilities;
 using System;
@@ -51,7 +52,7 @@ namespace Polly.Specs.Retry
         [Fact]
         public void Should_be_able_to_calculate_retry_timespans_from_linear_strategy()
         {
-            Duration.LinearBackoff durationStrategy = new Duration.LinearBackoff(5, TimeSpan.FromSeconds(1), 2, false);
+            LinearBackoff durationStrategy = new LinearBackoff(5, TimeSpan.FromSeconds(1), 2, false);
 
             // Discrete
 
@@ -88,7 +89,7 @@ namespace Polly.Specs.Retry
         [Fact]
         public void Should_be_able_to_calculate_retry_timespans_from_linear_strategy_fastfirst()
         {
-            Duration.LinearBackoff durationStrategy = new Duration.LinearBackoff(5, TimeSpan.FromSeconds(1), 2, true);
+            LinearBackoff durationStrategy = new LinearBackoff(5, TimeSpan.FromSeconds(1), 2, true);
 
             // Discrete
 
@@ -125,7 +126,7 @@ namespace Polly.Specs.Retry
         [Fact]
         public void Should_be_able_to_calculate_retry_timespans_from_exponential_strategy()
         {
-            Duration.ExponentialBackoff durationStrategy = new Duration.ExponentialBackoff(5, TimeSpan.FromSeconds(1), false);
+            ExponentialBackoff durationStrategy = new ExponentialBackoff(5, TimeSpan.FromSeconds(1), false);
 
             // Discrete
 
@@ -162,7 +163,7 @@ namespace Polly.Specs.Retry
         [Fact]
         public void Should_be_able_to_calculate_retry_timespans_from_exponential_strategy_fastfirst()
         {
-            Duration.ExponentialBackoff durationStrategy = new Duration.ExponentialBackoff(5, TimeSpan.FromSeconds(1), true);
+            ExponentialBackoff durationStrategy = new ExponentialBackoff(5, TimeSpan.FromSeconds(1), true);
 
             // Discrete
 
@@ -201,7 +202,7 @@ namespace Polly.Specs.Retry
         {
             const int count = 20;
             const int take = 5;
-            Duration.DecorrelatedJitterBackoff durationStrategy = new Duration.DecorrelatedJitterBackoff(count, TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(3), false);
+            DecorrelatedJitterBackoff durationStrategy = new DecorrelatedJitterBackoff(count, TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(3), false);
 
             // Discrete
 
@@ -225,7 +226,7 @@ namespace Polly.Specs.Retry
         {
             const int count = 20;
             const int take = 5;
-            Duration.DecorrelatedJitterBackoff durationStrategy = new Duration.DecorrelatedJitterBackoff(count, TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(3), true);
+            DecorrelatedJitterBackoff durationStrategy = new DecorrelatedJitterBackoff(count, TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(3), true);
 
             // Discrete
 

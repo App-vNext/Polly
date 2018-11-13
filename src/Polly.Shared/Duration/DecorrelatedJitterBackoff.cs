@@ -10,6 +10,7 @@ namespace Polly.Duration
     /// </summary>
     public sealed class DecorrelatedJitterBackoff : ISleepDurationStrategy
     {
+        private static readonly Random s_random = DurationUtils.Uniform;
         private readonly Random _random;
 
         /// <summary>
@@ -47,7 +48,7 @@ namespace Polly.Duration
             if (minDelay < TimeSpan.Zero) throw new ArgumentOutOfRangeException(nameof(minDelay));
             if (maxDelay < minDelay) throw new ArgumentOutOfRangeException(nameof(maxDelay));
 
-            _random = random ?? DurationUtils.Uniform;
+            _random = random ?? s_random;
 
             RetryCount = retryCount;
             MinDelay = minDelay;
