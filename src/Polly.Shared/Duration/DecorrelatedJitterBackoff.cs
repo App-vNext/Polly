@@ -47,7 +47,7 @@ namespace Polly.Duration
             if (minDelay < TimeSpan.Zero) throw new ArgumentOutOfRangeException(nameof(minDelay));
             if (maxDelay < minDelay) throw new ArgumentOutOfRangeException(nameof(maxDelay));
 
-            _random = random ?? DurationUtils.Random;
+            _random = random ?? DurationUtils.Uniform;
 
             RetryCount = retryCount;
             MinDelay = minDelay;
@@ -68,12 +68,13 @@ namespace Polly.Duration
             if (FastFirst)
                 delays[i++] = TimeSpan.Zero;
 
-            double ms = MinDelay.TotalMilliseconds;
+            double range = MaxDelay.TotalMilliseconds - MinDelay.Milliseconds;
+
             for (; i < delays.Length; i++)
             {
-                ms *= 3.0 * _random.NextDouble(); // [0.0, 3.0)
-                ms = Math.Max(MinDelay.TotalMilliseconds, ms); // [min, N]
-                ms = Math.Min(MaxDelay.TotalMilliseconds, ms); // [min, max]
+                double ms = range * _random.NextDouble(); // Range
+                ms += MinDelay.TotalMilliseconds; // Floor
+                ms = Math.Min(ms, MaxDelay.TotalMilliseconds); // Ceiling
 
                 delays[i] = TimeSpan.FromMilliseconds(ms);
             }
@@ -87,6 +88,8 @@ namespace Polly.Duration
         public IEnumerable<TimeSpan> Take(int count)
         {
             if (count < 0) throw new ArgumentOutOfRangeException(nameof(count));
+            if (count == 0)
+                yield break;
 
             int i = 0;
             if (FastFirst)
@@ -95,16 +98,17 @@ namespace Polly.Duration
                 yield return TimeSpan.Zero;
             }
 
-            double ms = MinDelay.TotalMilliseconds;
-            double max = ms;
+            double range = MaxDelay.TotalMilliseconds - MinDelay.Milliseconds;
+            double max = MinDelay.TotalMilliseconds;
 
-            for (; i < RetryCount && i < count; i++)
+            int cnt = Math.Min(count, RetryCount);
+            for (; i < cnt; i++)
             {
-                ms *= 3.0 * _random.NextDouble(); // [0.0, 3.0)
-                ms = Math.Max(MinDelay.TotalMilliseconds, ms); // [min, N]
-                ms = Math.Min(MaxDelay.TotalMilliseconds, ms); // [min, max]
+                double ms = range * _random.NextDouble(); // Range
+                ms += MinDelay.TotalMilliseconds; // Floor
+                ms = Math.Min(ms, MaxDelay.TotalMilliseconds); // Ceiling
 
-                max = Math.Max(ms, max);
+                max = Math.Max(ms, max); // Extra
 
                 yield return TimeSpan.FromMilliseconds(ms);
             }

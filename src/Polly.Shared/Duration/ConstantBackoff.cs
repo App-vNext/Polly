@@ -68,6 +68,8 @@ namespace Polly.Duration
         public IEnumerable<TimeSpan> Take(int count)
         {
             if (count < 0) throw new ArgumentOutOfRangeException(nameof(count));
+            if (count == 0)
+                yield break;
 
             int i = 0;
             if (FastFirst)

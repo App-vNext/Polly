@@ -12,7 +12,8 @@ namespace Polly.Duration
 
         /// <summary>
         /// A shared, thread-safe (thread-static) instance of <see cref="Random"/>.
+        /// Note that the distribution is uniform.
         /// </summary>
-        public static Random Random => s_random;
+        public static Random Uniform => s_random;
     }
 }

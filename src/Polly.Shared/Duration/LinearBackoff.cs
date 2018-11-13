@@ -79,6 +79,8 @@ namespace Polly.Duration
         public IEnumerable<TimeSpan> Take(int count)
         {
             if (count < 0) throw new ArgumentOutOfRangeException(nameof(count));
+            if (count == 0)
+                yield break;
 
             int i = 0;
             if (FastFirst)
@@ -91,7 +93,8 @@ namespace Polly.Duration
             double ad = Factor * ms;
             double max = ms;
 
-            for (; i < RetryCount && i < count; i++, ms += ad)
+            int cnt = Math.Min(count, RetryCount);
+            for (; i < cnt; i++, ms += ad)
             {
                 max = ms;
                 yield return TimeSpan.FromMilliseconds(ms);

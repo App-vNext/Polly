@@ -76,6 +76,7 @@ namespace Polly.Specs.Retry
                 TimeSpan.FromSeconds(5),
                 TimeSpan.FromSeconds(7),
                 TimeSpan.FromSeconds(9),
+
                 TimeSpan.FromSeconds(9),
                 TimeSpan.FromSeconds(9)
             };
@@ -112,6 +113,7 @@ namespace Polly.Specs.Retry
                 TimeSpan.FromSeconds(3),
                 TimeSpan.FromSeconds(5),
                 TimeSpan.FromSeconds(7),
+
                 TimeSpan.FromSeconds(7),
                 TimeSpan.FromSeconds(7)
             };
@@ -148,6 +150,7 @@ namespace Polly.Specs.Retry
                 TimeSpan.FromSeconds(4),
                 TimeSpan.FromSeconds(8),
                 TimeSpan.FromSeconds(16),
+
                 TimeSpan.FromSeconds(16),
                 TimeSpan.FromSeconds(16)
             };
@@ -184,6 +187,7 @@ namespace Polly.Specs.Retry
                 TimeSpan.FromSeconds(2),
                 TimeSpan.FromSeconds(4),
                 TimeSpan.FromSeconds(8),
+
                 TimeSpan.FromSeconds(8),
                 TimeSpan.FromSeconds(8)
             };
@@ -195,7 +199,8 @@ namespace Polly.Specs.Retry
         [Fact]
         public void Should_be_able_to_calculate_retry_timespans_from_jitter_strategy()
         {
-            const int count = 10;
+            const int count = 20;
+            const int take = 5;
             Duration.DecorrelatedJitterBackoff durationStrategy = new Duration.DecorrelatedJitterBackoff(count, TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(3), false);
 
             // Discrete
@@ -205,15 +210,21 @@ namespace Polly.Specs.Retry
 
             // Take
 
-            actualDurations = durationStrategy.Take(count + 2).ToArray();
-            actualDurations.Take(count).Should().OnlyContain(n => n >= durationStrategy.MinDelay && n <= durationStrategy.MaxDelay);
-            actualDurations.Skip(count).Should().OnlyContain(n => n == actualDurations.Take(count).Max());
+            actualDurations = durationStrategy.Take(count + take).ToArray();
+
+            IEnumerable<TimeSpan> extra = actualDurations.Skip(count);
+            IEnumerable<TimeSpan> discrete = actualDurations.Take(count);
+            TimeSpan max = discrete.Max();
+
+            discrete.Should().OnlyContain(n => n >= durationStrategy.MinDelay && n <= durationStrategy.MaxDelay);
+            extra.Should().OnlyContain(n => n == max);
         }
 
         [Fact]
         public void Should_be_able_to_calculate_retry_timespans_from_jitter_strategy_fastfirst()
         {
-            const int count = 10;
+            const int count = 20;
+            const int take = 5;
             Duration.DecorrelatedJitterBackoff durationStrategy = new Duration.DecorrelatedJitterBackoff(count, TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(3), true);
 
             // Discrete
@@ -224,10 +235,15 @@ namespace Polly.Specs.Retry
 
             // Take
 
-            actualDurations = durationStrategy.Take(count + 2).ToArray();
+            actualDurations = durationStrategy.Take(count + take).ToArray();
             actualDurations.Take(1).Should().OnlyContain(n => n == TimeSpan.Zero);
-            actualDurations.Skip(1).Take(count - 1).Should().OnlyContain(n => n >= durationStrategy.MinDelay && n <= durationStrategy.MaxDelay);
-            actualDurations.Skip(count).Should().OnlyContain(n => n == actualDurations.Skip(count).Max());
+
+            IEnumerable<TimeSpan> extra = actualDurations.Skip(count);
+            IEnumerable<TimeSpan> discrete = actualDurations.Skip(1).Take(count - 1);
+            TimeSpan max = discrete.Max();
+
+            discrete.Should().OnlyContain(n => n >= durationStrategy.MinDelay && n <= durationStrategy.MaxDelay);
+            extra.Should().OnlyContain(n => n == max);
         }
 
         public void Dispose()
