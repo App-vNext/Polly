@@ -14,6 +14,11 @@ namespace Polly.Duration
         int RetryCount { get; }
 
         /// <summary>
+        /// Whether the first retry will be immediate or not.
+        /// </summary>
+        bool FastFirst { get; }
+
+        /// <summary>
         /// Generate the sequence of <see cref="TimeSpan"/> values to use as sleep-durations.
         /// </summary>
         /// <returns></returns>

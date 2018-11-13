@@ -5,8 +5,8 @@ namespace Polly.Duration
 {
     /// <summary>
     /// Generates sleep durations in an linear manner.
-    /// The formula used is: Duration = <see cref="Factor"/> x <see cref="RetryCount"/> + <see cref="InitialDelay"/>.
-    /// For example: 1s, 2s, 3s, 4s.
+    /// The formula used is: Duration = <see cref="Delay"/> + <see cref="Factor"/> x <see cref="RetryCount"/> x <see cref="Delay"/>.
+    /// For example: 2s, 4s, 6s, 8s.
     /// </summary>
     public sealed class LinearBackoff : ISleepDurationStrategy
     {
@@ -16,12 +16,17 @@ namespace Polly.Duration
         public int RetryCount { get; }
 
         /// <summary>
-        /// The duration value for the first retry.
+        /// Whether the first retry will be immediate or not.
         /// </summary>
-        public TimeSpan InitialDelay { get; }
+        public bool FastFirst { get; }
 
         /// <summary>
-        /// The linear factor to use for increasing the delay on subsequent calls.
+        /// The duration value for the first retry.
+        /// </summary>
+        public TimeSpan Delay { get; }
+
+        /// <summary>
+        /// The linear factor (gradient) to use for increasing the duration on subsequent calls.
         /// </summary>
         public double Factor { get; }
 
@@ -29,17 +34,19 @@ namespace Polly.Duration
         /// Creates a new instance of the class.
         /// </summary>
         /// <param name="retryCount">The maximum number of retries to use, in addition to the original call.</param>
-        /// <param name="initialDelay">The duration value for the first retry.</param>
+        /// <param name="delay">The duration value for the first retry.</param>
         /// <param name="factor">The linear factor to use for increasing the duration on subsequent calls.</param>
-        public LinearBackoff(int retryCount, TimeSpan initialDelay, double factor = 1.0)
+        /// <param name="fastFirst">Whether the first retry will be immediate or not.</param>
+        public LinearBackoff(int retryCount, TimeSpan delay, double factor = 1.0, bool fastFirst = false)
         {
             if (retryCount < 0) throw new ArgumentOutOfRangeException(nameof(retryCount));
-            if (initialDelay < TimeSpan.Zero) throw new ArgumentOutOfRangeException(nameof(initialDelay));
+            if (delay < TimeSpan.Zero) throw new ArgumentOutOfRangeException(nameof(delay));
             if (factor <= 0) throw new ArgumentOutOfRangeException(nameof(factor));
 
             RetryCount = retryCount;
-            InitialDelay = initialDelay;
+            Delay = delay;
             Factor = factor;
+            FastFirst = fastFirst;
         }
 
         /// <summary>
@@ -48,11 +55,17 @@ namespace Polly.Duration
         public IReadOnlyList<TimeSpan> Generate()
         {
             TimeSpan[] delays = new TimeSpan[RetryCount];
+            if (delays.Length == 0)
+                return delays;
 
-            double ms = InitialDelay.TotalMilliseconds;
-            double ad = Factor * InitialDelay.TotalMilliseconds;
+            int i = 0;
+            if (FastFirst)
+                delays[i++] = TimeSpan.Zero;
 
-            for (int i = 0; i < delays.Length; i++)
+            double ms = Delay.TotalMilliseconds;
+            double ad = Factor * Delay.TotalMilliseconds;
+
+            for (; i < delays.Length; i++)
             {
                 delays[i] = TimeSpan.FromMilliseconds(ms);
 

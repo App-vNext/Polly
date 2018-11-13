@@ -5,7 +5,7 @@ namespace Polly.Duration
 {
     /// <summary>
     /// Generates sleep durations in an exponential manner.
-    /// The formula used is: Duration = <see cref="InitialDelay"/> x 2^<see cref="RetryCount"/>.
+    /// The formula used is: Duration = <see cref="Delay"/> x 2^<see cref="RetryCount"/>.
     /// For example: 1s, 2s, 4s, 8s.
     /// </summary>
     public sealed class ExponentialBackoff : ISleepDurationStrategy
@@ -16,22 +16,29 @@ namespace Polly.Duration
         public int RetryCount { get; }
 
         /// <summary>
+        /// Whether the first retry will be immediate or not.
+        /// </summary>
+        public bool FastFirst { get; }
+
+        /// <summary>
         /// The duration value for the first retry.
         /// </summary>
-        public TimeSpan InitialDelay { get; }
+        public TimeSpan Delay { get; }
 
         /// <summary>
         /// Creates a new instance of the class.
         /// </summary>
         /// <param name="retryCount">The maximum number of retries to use, in addition to the original call.</param>
-        /// <param name="initialDelay">The duration value for the first retry.</param>
-        public ExponentialBackoff(int retryCount, TimeSpan initialDelay)
+        /// <param name="delay">The duration value for the first retry.</param>
+        /// <param name="fastFirst">Whether the first retry will be immediate or not.</param>
+        public ExponentialBackoff(int retryCount, TimeSpan delay, bool fastFirst = false)
         {
             if (retryCount < 0) throw new ArgumentOutOfRangeException(nameof(retryCount));
-            if (initialDelay < TimeSpan.Zero) throw new ArgumentOutOfRangeException(nameof(initialDelay));
+            if (delay < TimeSpan.Zero) throw new ArgumentOutOfRangeException(nameof(delay));
 
             RetryCount = retryCount;
-            InitialDelay = initialDelay;
+            Delay = delay;
+            FastFirst = fastFirst;
         }
 
         /// <summary>
@@ -40,9 +47,15 @@ namespace Polly.Duration
         public IReadOnlyList<TimeSpan> Generate()
         {
             TimeSpan[] delays = new TimeSpan[RetryCount];
+            if (delays.Length == 0)
+                return delays;
 
-            double ms = InitialDelay.TotalMilliseconds;
-            for (int i = 0; i < delays.Length; i++)
+            int i = 0;
+            if (FastFirst)
+                delays[i++] = TimeSpan.Zero;
+
+            double ms = Delay.TotalMilliseconds;
+            for (; i < delays.Length; i++)
             {
                 delays[i] = TimeSpan.FromMilliseconds(ms);
 
