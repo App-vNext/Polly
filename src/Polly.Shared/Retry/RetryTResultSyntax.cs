@@ -261,7 +261,7 @@ namespace Polly
             if (onRetry == null) throw new ArgumentNullException(nameof(onRetry));
             if (sleepDurationStrategy == null) throw new ArgumentNullException(nameof(sleepDurationStrategy));
 
-            IReadOnlyList<TimeSpan> delays = sleepDurationStrategy.Generate();
+            IReadOnlyList<TimeSpan> delays = sleepDurationStrategy.Discrete();
 
             return policyBuilder.WaitAndRetry(
                 sleepDurationStrategy.RetryCount,
@@ -431,7 +431,7 @@ namespace Polly
         {
             if (sleepDurationStrategy == null) throw new ArgumentNullException(nameof(sleepDurationStrategy));
 
-            IReadOnlyList<TimeSpan> delays = sleepDurationStrategy.Generate();
+            IReadOnlyList<TimeSpan> delays = sleepDurationStrategy.Discrete();
 
             return policyBuilder.WaitAndRetry(sleepDurationStrategy.RetryCount, (i, _, __) => delays[i], DoNothing);
         }
@@ -485,7 +485,7 @@ namespace Polly
             if (onRetry == null) throw new ArgumentNullException(nameof(onRetry));
             if (sleepDurationStrategy == null) throw new ArgumentNullException(nameof(sleepDurationStrategy));
 
-            IReadOnlyList<TimeSpan> delays = sleepDurationStrategy.Generate();
+            IReadOnlyList<TimeSpan> delays = sleepDurationStrategy.Discrete();
 
             return policyBuilder.WaitAndRetry(
                 sleepDurationStrategy.RetryCount,
@@ -550,7 +550,7 @@ namespace Polly
         {
             if (sleepDurationStrategy == null) throw new ArgumentNullException(nameof(sleepDurationStrategy));
 
-            IReadOnlyList<TimeSpan> delays = sleepDurationStrategy.Generate();
+            IReadOnlyList<TimeSpan> delays = sleepDurationStrategy.Discrete();
 
             return WaitAndRetry(policyBuilder, sleepDurationStrategy.RetryCount, (i, _, __) => delays[i], onRetry);
         }

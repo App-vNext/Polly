@@ -1,8 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using FluentAssertions;
+﻿using FluentAssertions;
 using Polly.Specs.Helpers;
 using Polly.Utilities;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using Xunit;
 
 namespace Polly.Specs.Retry
@@ -25,9 +26,9 @@ namespace Polly.Specs.Retry
                 {ResultPrimitive.FaultAgain, 4.Seconds()},
             };
 
-            var actualRetryWaits = new List<TimeSpan>();
+            List<TimeSpan> actualRetryWaits = new List<TimeSpan>();
 
-            var policy = Policy
+            Polly.Retry.RetryPolicy<ResultPrimitive> policy = Policy
                 .HandleResult(ResultPrimitive.Fault)
                 .OrResult(ResultPrimitive.FaultAgain)
                 .WaitAndRetry(2,
@@ -35,7 +36,7 @@ namespace Polly.Specs.Retry
                     (_, timeSpan, __, ___) => actualRetryWaits.Add(timeSpan)
                 );
 
-            using (var enumerator = expectedRetryWaits.GetEnumerator())
+            using (Dictionary<ResultPrimitive, TimeSpan>.Enumerator enumerator = expectedRetryWaits.GetEnumerator())
             {
                 policy.Execute(() =>
                 {
@@ -50,10 +51,11 @@ namespace Polly.Specs.Retry
         [Fact]
         public void Should_be_able_to_calculate_retry_timespans_from_linear_strategy()
         {
-            var durationStrategy = new Duration.LinearBackoff(5, TimeSpan.FromSeconds(1), 2, false);
-            var actualDurations = durationStrategy.Generate();
+            Duration.LinearBackoff durationStrategy = new Duration.LinearBackoff(5, TimeSpan.FromSeconds(1), 2, false);
 
-            var expectedDurations = new TimeSpan[5]
+            // Discrete
+
+            TimeSpan[] expectedDiscrete = new TimeSpan[5]
             {
                 TimeSpan.FromSeconds(1),
                 TimeSpan.FromSeconds(3),
@@ -62,16 +64,34 @@ namespace Polly.Specs.Retry
                 TimeSpan.FromSeconds(9)
             };
 
-            actualDurations.Should().ContainInOrder(expectedDurations);
+            IReadOnlyList<TimeSpan> actualDurations = durationStrategy.Discrete();
+            actualDurations.Should().ContainInOrder(expectedDiscrete);
+
+            // Continuous
+
+            TimeSpan[] expectedContinuous = new TimeSpan[7]
+            {
+                TimeSpan.FromSeconds(1),
+                TimeSpan.FromSeconds(3),
+                TimeSpan.FromSeconds(5),
+                TimeSpan.FromSeconds(7),
+                TimeSpan.FromSeconds(9),
+                TimeSpan.FromSeconds(9),
+                TimeSpan.FromSeconds(9)
+            };
+
+            actualDurations = durationStrategy.Continuous().Take(7).ToArray();
+            actualDurations.Should().ContainInOrder(expectedContinuous);
         }
 
         [Fact]
         public void Should_be_able_to_calculate_retry_timespans_from_linear_strategy_fastfirst()
         {
-            var durationStrategy = new Duration.LinearBackoff(5, TimeSpan.FromSeconds(1), 2, true);
-            var actualDurations = durationStrategy.Generate();
+            Duration.LinearBackoff durationStrategy = new Duration.LinearBackoff(5, TimeSpan.FromSeconds(1), 2, true);
 
-            var expectedDurations = new TimeSpan[5]
+            // Discrete
+
+            TimeSpan[] expectedDurations = new TimeSpan[5]
             {
                 TimeSpan.Zero,
                 TimeSpan.FromSeconds(1),
@@ -80,16 +100,34 @@ namespace Polly.Specs.Retry
                 TimeSpan.FromSeconds(7)
             };
 
+            IReadOnlyList<TimeSpan> actualDurations = durationStrategy.Discrete();
             actualDurations.Should().ContainInOrder(expectedDurations);
+
+            // Continuous
+
+            TimeSpan[] expectedContinuous = new TimeSpan[7]
+            {
+                TimeSpan.Zero,
+                TimeSpan.FromSeconds(1),
+                TimeSpan.FromSeconds(3),
+                TimeSpan.FromSeconds(5),
+                TimeSpan.FromSeconds(7),
+                TimeSpan.FromSeconds(7),
+                TimeSpan.FromSeconds(7)
+            };
+
+            actualDurations = durationStrategy.Continuous().Take(7).ToArray();
+            actualDurations.Should().ContainInOrder(expectedContinuous);
         }
 
         [Fact]
         public void Should_be_able_to_calculate_retry_timespans_from_exponential_strategy()
         {
-            var durationStrategy = new Duration.ExponentialBackoff(5, TimeSpan.FromSeconds(1), false);
-            var actualDurations = durationStrategy.Generate();
+            Duration.ExponentialBackoff durationStrategy = new Duration.ExponentialBackoff(5, TimeSpan.FromSeconds(1), false);
 
-            var expectedDurations = new TimeSpan[5]
+            // Discrete
+
+            TimeSpan[] expectedDurations = new TimeSpan[5]
             {
                 TimeSpan.FromSeconds(1),
                 TimeSpan.FromSeconds(2),
@@ -98,16 +136,34 @@ namespace Polly.Specs.Retry
                 TimeSpan.FromSeconds(16)
             };
 
+            IReadOnlyList<TimeSpan> actualDurations = durationStrategy.Discrete();
             actualDurations.Should().ContainInOrder(expectedDurations);
+
+            // Continuous
+
+            TimeSpan[] expectedContinuous = new TimeSpan[7]
+            {
+                TimeSpan.FromSeconds(1),
+                TimeSpan.FromSeconds(2),
+                TimeSpan.FromSeconds(4),
+                TimeSpan.FromSeconds(8),
+                TimeSpan.FromSeconds(16),
+                TimeSpan.FromSeconds(16),
+                TimeSpan.FromSeconds(16)
+            };
+
+            actualDurations = durationStrategy.Continuous().Take(7).ToArray();
+            actualDurations.Should().ContainInOrder(expectedContinuous);
         }
 
         [Fact]
         public void Should_be_able_to_calculate_retry_timespans_from_exponential_strategy_fastfirst()
         {
-            var durationStrategy = new Duration.ExponentialBackoff(5, TimeSpan.FromSeconds(1), true);
-            var actualDurations = durationStrategy.Generate();
+            Duration.ExponentialBackoff durationStrategy = new Duration.ExponentialBackoff(5, TimeSpan.FromSeconds(1), true);
 
-            var expectedDurations = new TimeSpan[5]
+            // Discrete
+
+            TimeSpan[] expectedDurations = new TimeSpan[5]
             {
                 TimeSpan.Zero,
                 TimeSpan.FromSeconds(1),
@@ -116,25 +172,60 @@ namespace Polly.Specs.Retry
                 TimeSpan.FromSeconds(8)
             };
 
+            IReadOnlyList<TimeSpan> actualDurations = durationStrategy.Discrete();
             actualDurations.Should().ContainInOrder(expectedDurations);
+
+            // Continuous
+
+            TimeSpan[] expectedContinuous = new TimeSpan[7]
+            {
+                TimeSpan.Zero,
+                TimeSpan.FromSeconds(1),
+                TimeSpan.FromSeconds(2),
+                TimeSpan.FromSeconds(4),
+                TimeSpan.FromSeconds(8),
+                TimeSpan.FromSeconds(8),
+                TimeSpan.FromSeconds(8)
+            };
+
+            actualDurations = durationStrategy.Continuous().Take(7).ToArray();
+            actualDurations.Should().ContainInOrder(expectedContinuous);
         }
 
         [Fact]
         public void Should_be_able_to_calculate_retry_timespans_from_jitter_strategy()
         {
-            var durationStrategy = new Duration.DecorrelatedJitterBackoff(10, TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(3), false);
-            var actualDurations = durationStrategy.Generate();
+            const int count = 10;
+            Duration.DecorrelatedJitterBackoff durationStrategy = new Duration.DecorrelatedJitterBackoff(count, TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(3), false);
 
+            // Discrete
+
+            IReadOnlyList<TimeSpan> actualDurations = durationStrategy.Discrete();
+            actualDurations.Should().OnlyContain(n => n >= durationStrategy.MinDelay && n <= durationStrategy.MaxDelay);
+
+            // Continuous
+
+            actualDurations = durationStrategy.Continuous().Take(count).ToArray();
             actualDurations.Should().OnlyContain(n => n >= durationStrategy.MinDelay && n <= durationStrategy.MaxDelay);
         }
 
         [Fact]
         public void Should_be_able_to_calculate_retry_timespans_from_jitter_strategy_fastfirst()
         {
-            var durationStrategy = new Duration.DecorrelatedJitterBackoff(10, TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(3), true);
-            var actualDurations = durationStrategy.Generate();
+            const int count = 10;
+            Duration.DecorrelatedJitterBackoff durationStrategy = new Duration.DecorrelatedJitterBackoff(count, TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(3), true);
 
-            actualDurations.Should().OnlyContain(n => n == TimeSpan.Zero || (n >= durationStrategy.MinDelay && n <= durationStrategy.MaxDelay));
+            // Discrete
+
+            IReadOnlyList<TimeSpan> actualDurations = durationStrategy.Discrete();
+            actualDurations.Take(1).Should().OnlyContain(n => n == TimeSpan.Zero);
+            actualDurations.Skip(1).Should().OnlyContain(n => n >= durationStrategy.MinDelay && n <= durationStrategy.MaxDelay);
+
+            // Continuous
+
+            actualDurations = durationStrategy.Continuous().Take(count).ToArray();
+            actualDurations.Take(1).Should().OnlyContain(n => n == TimeSpan.Zero);
+            actualDurations.Skip(1).Should().OnlyContain(n => n >= durationStrategy.MinDelay && n <= durationStrategy.MaxDelay);
         }
 
         public void Dispose()

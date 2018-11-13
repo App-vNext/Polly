@@ -44,7 +44,7 @@ namespace Polly.Duration
         /// <summary>
         /// Generate the sequence of <see cref="TimeSpan"/> values to use as sleep-durations.
         /// </summary>
-        public IReadOnlyList<TimeSpan> Generate()
+        public IReadOnlyList<TimeSpan> Discrete()
         {
             TimeSpan[] delays = new TimeSpan[RetryCount];
             if (delays.Length == 0)
@@ -55,14 +55,40 @@ namespace Polly.Duration
                 delays[i++] = TimeSpan.Zero;
 
             double ms = Delay.TotalMilliseconds;
-            for (; i < delays.Length; i++)
+            for (; i < delays.Length; i++, ms *= 2.0)
             {
                 delays[i] = TimeSpan.FromMilliseconds(ms);
-
-                ms *= 2.0;
             }
 
             return delays;
+        }
+
+        /// <summary>
+        /// Generate a continuous sequence of <see cref="TimeSpan"/> values to use as sleep-durations.
+        /// </summary>
+        public IEnumerable<TimeSpan> Continuous()
+        {
+            int i = 0;
+
+            if (FastFirst)
+            {
+                i++;
+                yield return TimeSpan.Zero;
+            }
+
+            double ms = Delay.TotalMilliseconds;
+            double max = ms;
+
+            for (; i < RetryCount; i++, ms *= 2.0)
+            {
+                max = ms;
+                yield return TimeSpan.FromMilliseconds(ms);
+            }
+
+            while (true)
+            {
+                yield return TimeSpan.FromMilliseconds(max);
+            }
         }
     }
 }

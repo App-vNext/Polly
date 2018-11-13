@@ -21,7 +21,13 @@ namespace Polly.Duration
         /// <summary>
         /// Generate the sequence of <see cref="TimeSpan"/> values to use as sleep-durations.
         /// </summary>
-        /// <returns></returns>
-        IReadOnlyList<TimeSpan> Generate();
+        IReadOnlyList<TimeSpan> Discrete();
+
+        /// <summary>
+        /// Generate a continuous sequence of <see cref="TimeSpan"/> values to use as sleep-durations.
+        /// Depending on the implementation, iterations higher than <see cref="RetryCount"/> may cap
+        /// the value (using the last value) or continue producing values per normal.
+        /// </summary>
+        IEnumerable<TimeSpan> Continuous();
     }
 }
