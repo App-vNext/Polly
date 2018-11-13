@@ -28,6 +28,6 @@ namespace Polly.Duration
         /// Depending on the implementation, iterations higher than <see cref="RetryCount"/> may cap
         /// the value (using the last value) or continue producing values per normal.
         /// </summary>
-        IEnumerable<TimeSpan> Continuous();
+        IEnumerable<TimeSpan> Continuous(int count);
     }
 }

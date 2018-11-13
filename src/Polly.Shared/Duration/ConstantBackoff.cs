@@ -65,12 +65,18 @@ namespace Polly.Duration
         /// <summary>
         /// Generate a continuous sequence of <see cref="TimeSpan"/> values to use as sleep-durations.
         /// </summary>
-        public IEnumerable<TimeSpan> Continuous()
+        public IEnumerable<TimeSpan> Continuous(int count)
         {
-            if (FastFirst)
-                yield return TimeSpan.Zero;
+            if (count < 0) throw new ArgumentOutOfRangeException(nameof(count));
 
-            while (true)
+            int i = 0;
+            if (FastFirst)
+            {
+                i++;
+                yield return TimeSpan.Zero;
+            }
+
+            for (; i < count; i++)
             {
                 yield return Delay;
             }
