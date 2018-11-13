@@ -259,10 +259,13 @@ namespace Polly
         public static RetryPolicy<TResult> WaitAndRetry<TResult>(this PolicyBuilder<TResult> policyBuilder, ISleepDurationStrategy sleepDurationStrategy, Action<DelegateResult<TResult>, TimeSpan> onRetry)
         {
             if (onRetry == null) throw new ArgumentNullException(nameof(onRetry));
+            if (sleepDurationStrategy == null) throw new ArgumentNullException(nameof(sleepDurationStrategy));
+
+            IReadOnlyList<TimeSpan> delays = sleepDurationStrategy.Generate();
 
             return policyBuilder.WaitAndRetry(
                 sleepDurationStrategy.RetryCount,
-                Curry<TResult>(sleepDurationStrategy),
+                (i, _, __) => delays[i],
                 (outcome, span, i, ctx) => onRetry(outcome, span)
             );
         }
@@ -426,7 +429,11 @@ namespace Polly
         /// <returns>The policy instance.</returns>
         public static RetryPolicy<TResult> WaitAndRetry<TResult>(this PolicyBuilder<TResult> policyBuilder, ISleepDurationStrategy sleepDurationStrategy)
         {
-            return policyBuilder.WaitAndRetry(sleepDurationStrategy.RetryCount, Curry<TResult>(sleepDurationStrategy), DoNothing);
+            if (sleepDurationStrategy == null) throw new ArgumentNullException(nameof(sleepDurationStrategy));
+
+            IReadOnlyList<TimeSpan> delays = sleepDurationStrategy.Generate();
+
+            return policyBuilder.WaitAndRetry(sleepDurationStrategy.RetryCount, (i, _, __) => delays[i], DoNothing);
         }
 
         /// <summary>
@@ -476,10 +483,13 @@ namespace Polly
         public static RetryPolicy<TResult> WaitAndRetry<TResult>(this PolicyBuilder<TResult> policyBuilder, ISleepDurationStrategy sleepDurationStrategy, Action<DelegateResult<TResult>, TimeSpan, Context> onRetry)
         {
             if (onRetry == null) throw new ArgumentNullException(nameof(onRetry));
+            if (sleepDurationStrategy == null) throw new ArgumentNullException(nameof(sleepDurationStrategy));
+
+            IReadOnlyList<TimeSpan> delays = sleepDurationStrategy.Generate();
 
             return policyBuilder.WaitAndRetry(
                 sleepDurationStrategy.RetryCount,
-                Curry<TResult>(sleepDurationStrategy),
+                (i, _, __) => delays[i],
                 (outcome, span, i, ctx) => onRetry(outcome, span, ctx)
                 );
         }
@@ -538,7 +548,11 @@ namespace Polly
         /// </exception>
         public static RetryPolicy<TResult> WaitAndRetry<TResult>(this PolicyBuilder<TResult> policyBuilder, ISleepDurationStrategy sleepDurationStrategy, Action<DelegateResult<TResult>, TimeSpan, int, Context> onRetry)
         {
-            return WaitAndRetry(policyBuilder, sleepDurationStrategy.RetryCount, Curry<TResult>(sleepDurationStrategy), onRetry);
+            if (sleepDurationStrategy == null) throw new ArgumentNullException(nameof(sleepDurationStrategy));
+
+            IReadOnlyList<TimeSpan> delays = sleepDurationStrategy.Generate();
+
+            return WaitAndRetry(policyBuilder, sleepDurationStrategy.RetryCount, (i, _, __) => delays[i], onRetry);
         }
 
         /// <summary>
@@ -821,13 +835,6 @@ namespace Polly
 
         private static void DoNothing<TResult>(DelegateResult<TResult> outcome, TimeSpan span, int i, Context ctx)
         { }
-
-        private static Func<int, DelegateResult<TResult>, Context, TimeSpan> Curry<TResult>(ISleepDurationStrategy sleepDurationStrategy)
-        {
-            IReadOnlyList<TimeSpan> delays = sleepDurationStrategy.Generate();
-
-            return (i, outcome, ctx) => delays[i];
-        }
 
         #endregion
     }

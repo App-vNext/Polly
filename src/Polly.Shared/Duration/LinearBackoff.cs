@@ -54,9 +54,9 @@ namespace Polly.Duration
 
             for (int i = 0; i < delays.Length; i++)
             {
-                ms += ad;
-
                 delays[i] = TimeSpan.FromMilliseconds(ms);
+
+                ms += ad;
             }
 
             return delays;

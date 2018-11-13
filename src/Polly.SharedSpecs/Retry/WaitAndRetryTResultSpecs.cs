@@ -47,10 +47,54 @@ namespace Polly.Specs.Retry
             actualRetryWaits.Should().ContainInOrder(expectedRetryWaits.Values);
         }
 
+        [Fact]
+        public void Should_be_able_to_calculate_retry_timespans_from_linear_strategy()
+        {
+            var durationStrategy = new Duration.LinearBackoff(5, TimeSpan.FromSeconds(1), 2);
+            var actualDurations = durationStrategy.Generate();
+
+            var expectedDurations = new TimeSpan[5]
+            {
+                TimeSpan.FromSeconds(1),
+                TimeSpan.FromSeconds(3),
+                TimeSpan.FromSeconds(5),
+                TimeSpan.FromSeconds(7),
+                TimeSpan.FromSeconds(9)
+            };
+
+            actualDurations.Should().ContainInOrder(expectedDurations);
+        }
+
+        [Fact]
+        public void Should_be_able_to_calculate_retry_timespans_from_exponential_strategy()
+        {
+            var durationStrategy = new Duration.ExponentialBackoff(5, TimeSpan.FromSeconds(1));
+            var actualDurations = durationStrategy.Generate();
+
+            var expectedDurations = new TimeSpan[5]
+            {
+                TimeSpan.FromSeconds(1),
+                TimeSpan.FromSeconds(2),
+                TimeSpan.FromSeconds(4),
+                TimeSpan.FromSeconds(8),
+                TimeSpan.FromSeconds(16)
+            };
+
+            actualDurations.Should().ContainInOrder(expectedDurations);
+        }
+
+        [Fact]
+        public void Should_be_able_to_calculate_retry_timespans_from_jitter_strategy()
+        {
+            var durationStrategy = new Duration.DecorrelatedJitterBackoff(10, TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(3));
+            var actualDurations = durationStrategy.Generate();
+
+            actualDurations.Should().OnlyContain(n => n >= durationStrategy.MinDelay && n <= durationStrategy.MaxDelay);
+        }
+
         public void Dispose()
         {
             SystemClock.Reset();
         }
-
     }
 }
