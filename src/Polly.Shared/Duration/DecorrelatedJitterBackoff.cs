@@ -6,7 +6,7 @@ namespace Polly.Duration
     /// <summary>
     /// Generates sleep durations in an jittered manner, making sure to mitigate any correlations.
     /// For example: 1s, 3s, 2s, 4s.
-    /// For background, see https://www.awsarchitectureblog.com/2015/03/backoff.html.
+    /// For background and formula, see https://www.awsarchitectureblog.com/2015/03/backoff.html.
     /// </summary>
     public sealed class DecorrelatedJitterBackoff : ISleepDurationStrategy
     {

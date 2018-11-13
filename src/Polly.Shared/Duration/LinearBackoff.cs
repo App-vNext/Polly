@@ -5,6 +5,7 @@ namespace Polly.Duration
 {
     /// <summary>
     /// Generates sleep durations in an linear manner.
+    /// The formula used is: Duration = <see cref="Factor"/> x <see cref="RetryCount"/> + <see cref="InitialDelay"/>.
     /// For example: 1s, 2s, 3s, 4s.
     /// </summary>
     public sealed class LinearBackoff : ISleepDurationStrategy
@@ -44,7 +45,6 @@ namespace Polly.Duration
         /// <summary>
         /// Generate the sequence of <see cref="TimeSpan"/> values to use as sleep-durations.
         /// </summary>
-        /// <returns></returns>
         public IReadOnlyList<TimeSpan> Generate()
         {
             TimeSpan[] delays = new TimeSpan[RetryCount];
