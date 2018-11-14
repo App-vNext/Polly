@@ -5,16 +5,11 @@ namespace Polly.Duration
 {
     /// <summary>
     /// Generates sleep durations in an exponential manner.
-    /// The formula used is: Duration = <see cref="Delay"/> x 2^<see cref="RetryCount"/>.
+    /// The formula used is: Duration = <see cref="Delay"/> x 2^iteration.
     /// For example: 1s, 2s, 4s, 8s.
     /// </summary>
     public sealed class ExponentialBackoff : ISleepDurationStrategy
     {
-        /// <summary>
-        /// The maximum number of retries to use, in addition to the original call.
-        /// </summary>
-        public int RetryCount { get; }
-
         /// <summary>
         /// Whether the first retry will be immediate or not.
         /// </summary>
@@ -28,15 +23,12 @@ namespace Polly.Duration
         /// <summary>
         /// Creates a new instance of the class.
         /// </summary>
-        /// <param name="retryCount">The maximum number of retries to use, in addition to the original call.</param>
         /// <param name="delay">The duration value for the first retry.</param>
         /// <param name="fastFirst">Whether the first retry will be immediate or not.</param>
-        public ExponentialBackoff(int retryCount, TimeSpan delay, bool fastFirst = false)
+        public ExponentialBackoff(TimeSpan delay, bool fastFirst = false)
         {
-            if (retryCount < 0) throw new ArgumentOutOfRangeException(nameof(retryCount));
             if (delay < TimeSpan.Zero) throw new ArgumentOutOfRangeException(nameof(delay));
-
-            RetryCount = retryCount;
+            
             Delay = delay;
             FastFirst = fastFirst;
         }
@@ -44,9 +36,12 @@ namespace Polly.Duration
         /// <summary>
         /// Generate the sequence of <see cref="TimeSpan"/> values to use as sleep-durations.
         /// </summary>
-        public IReadOnlyList<TimeSpan> Discrete()
+        /// <param name="retryCount">The maximum number of retries to use, in addition to the original call.</param>
+        public IReadOnlyList<TimeSpan> Discrete(int retryCount)
         {
-            TimeSpan[] delays = new TimeSpan[RetryCount];
+            if (retryCount < 0) throw new ArgumentOutOfRangeException(nameof(retryCount));
+
+            TimeSpan[] delays = new TimeSpan[retryCount];
             if (delays.Length == 0)
                 return delays;
 
@@ -66,10 +61,11 @@ namespace Polly.Duration
         /// <summary>
         /// Generate a continuous sequence of <see cref="TimeSpan"/> values to use as sleep-durations.
         /// </summary>
-        public IEnumerable<TimeSpan> Take(int count)
+        /// <param name="retryCount">The maximum number of retries to use, in addition to the original call.</param>
+        public IEnumerable<TimeSpan> Continuous(int retryCount)
         {
-            if (count < 0) throw new ArgumentOutOfRangeException(nameof(count));
-            if (count == 0)
+            if (retryCount < 0) throw new ArgumentOutOfRangeException(nameof(retryCount));
+            if (retryCount == 0)
                 yield break;
 
             int i = 0;
@@ -82,14 +78,13 @@ namespace Polly.Duration
             double ms = Delay.TotalMilliseconds;
             double max = ms;
 
-            int cnt = Math.Min(count, RetryCount);
-            for (; i < cnt; i++, ms *= 2.0)
+            for (; i < retryCount; i++, ms *= 2.0)
             {
                 max = ms;
                 yield return TimeSpan.FromMilliseconds(ms);
             }
 
-            for (; i < count; i++)
+            while (true)
             {
                 yield return TimeSpan.FromMilliseconds(max);
             }

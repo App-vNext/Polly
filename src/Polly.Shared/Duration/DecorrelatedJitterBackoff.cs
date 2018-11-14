@@ -14,11 +14,6 @@ namespace Polly.Duration
         private readonly Random _random;
 
         /// <summary>
-        /// The maximum number of retries to use, in addition to the original call.
-        /// </summary>
-        public int RetryCount { get; }
-
-        /// <summary>
         /// Whether the first retry will be immediate or not.
         /// </summary>
         public bool FastFirst { get; }
@@ -36,21 +31,18 @@ namespace Polly.Duration
         /// <summary>
         /// Creates a new instance of the class.
         /// </summary>
-        /// <param name="retryCount">The maximum number of retries to use, in addition to the original call.</param>
         /// <param name="minDelay">The minimum duration value to use for each retry.</param>
         /// <param name="maxDelay">The maximum duration value to use for each retry.</param>
         /// <param name="fastFirst">Whether the first retry will be immediate or not.</param>
         /// <param name="random">An optional <see cref="Random"/> instance to use.
         /// If not specified, will use a shared (singleton) instance with a random seed.</param>
-        public DecorrelatedJitterBackoff(int retryCount, TimeSpan minDelay, TimeSpan maxDelay, bool fastFirst = false, Random random = null)
+        public DecorrelatedJitterBackoff(TimeSpan minDelay, TimeSpan maxDelay, bool fastFirst = false, Random random = null)
         {
-            if (retryCount < 0) throw new ArgumentOutOfRangeException(nameof(retryCount));
             if (minDelay < TimeSpan.Zero) throw new ArgumentOutOfRangeException(nameof(minDelay));
             if (maxDelay < minDelay) throw new ArgumentOutOfRangeException(nameof(maxDelay));
 
             _random = random ?? s_random;
 
-            RetryCount = retryCount;
             MinDelay = minDelay;
             MaxDelay = maxDelay;
             FastFirst = fastFirst;
@@ -59,9 +51,12 @@ namespace Polly.Duration
         /// <summary>
         /// Generate the sequence of <see cref="TimeSpan"/> values to use as sleep-durations.
         /// </summary>
-        public IReadOnlyList<TimeSpan> Discrete()
+        /// <param name="retryCount">The maximum number of retries to use, in addition to the original call.</param>
+        public IReadOnlyList<TimeSpan> Discrete(int retryCount)
         {
-            TimeSpan[] delays = new TimeSpan[RetryCount];
+            if (retryCount < 0) throw new ArgumentOutOfRangeException(nameof(retryCount));
+
+            TimeSpan[] delays = new TimeSpan[retryCount];
             if (delays.Length == 0)
                 return delays;
 
@@ -86,10 +81,11 @@ namespace Polly.Duration
         /// <summary>
         /// Generate a continuous sequence of <see cref="TimeSpan"/> values to use as sleep-durations.
         /// </summary>
-        public IEnumerable<TimeSpan> Take(int count)
+        /// <param name="retryCount">The maximum number of retries to use, in addition to the original call.</param>
+        public IEnumerable<TimeSpan> Continuous(int retryCount)
         {
-            if (count < 0) throw new ArgumentOutOfRangeException(nameof(count));
-            if (count == 0)
+            if (retryCount < 0) throw new ArgumentOutOfRangeException(nameof(retryCount));
+            if (retryCount == 0)
                 yield break;
 
             int i = 0;
@@ -102,8 +98,7 @@ namespace Polly.Duration
             double range = MaxDelay.TotalMilliseconds - MinDelay.Milliseconds;
             double max = MinDelay.TotalMilliseconds;
 
-            int cnt = Math.Min(count, RetryCount);
-            for (; i < cnt; i++)
+            for (; i < retryCount; i++)
             {
                 double ms = range * _random.NextDouble(); // Range
                 ms += MinDelay.TotalMilliseconds; // Floor
@@ -114,7 +109,7 @@ namespace Polly.Duration
                 yield return TimeSpan.FromMilliseconds(ms);
             }
 
-            for (; i < count; i++)
+            while (true)
             {
                 yield return TimeSpan.FromMilliseconds(max);
             }

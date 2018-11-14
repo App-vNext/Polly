@@ -52,7 +52,7 @@ namespace Polly.Specs.Retry
         [Fact]
         public void Should_be_able_to_calculate_retry_timespans_from_linear_strategy()
         {
-            LinearBackoff durationStrategy = new LinearBackoff(5, TimeSpan.FromSeconds(1), 2, false);
+            LinearBackoff durationStrategy = new LinearBackoff(TimeSpan.FromSeconds(1), 2, false);
 
             // Discrete
 
@@ -65,7 +65,7 @@ namespace Polly.Specs.Retry
                 TimeSpan.FromSeconds(9)
             };
 
-            IReadOnlyList<TimeSpan> actualDurations = durationStrategy.Discrete();
+            IReadOnlyList<TimeSpan> actualDurations = durationStrategy.Discrete(5);
             actualDurations.Should().ContainInOrder(expectedDiscrete);
 
             // Take
@@ -82,14 +82,14 @@ namespace Polly.Specs.Retry
                 TimeSpan.FromSeconds(9)
             };
 
-            actualDurations = durationStrategy.Take(7).ToArray();
+            actualDurations = durationStrategy.Continuous(5).Take(7).ToArray();
             actualDurations.Should().ContainInOrder(expectedContinuous);
         }
 
         [Fact]
         public void Should_be_able_to_calculate_retry_timespans_from_linear_strategy_fastfirst()
         {
-            LinearBackoff durationStrategy = new LinearBackoff(5, TimeSpan.FromSeconds(1), 2, true);
+            LinearBackoff durationStrategy = new LinearBackoff(TimeSpan.FromSeconds(1), 2, true);
 
             // Discrete
 
@@ -102,7 +102,7 @@ namespace Polly.Specs.Retry
                 TimeSpan.FromSeconds(7)
             };
 
-            IReadOnlyList<TimeSpan> actualDurations = durationStrategy.Discrete();
+            IReadOnlyList<TimeSpan> actualDurations = durationStrategy.Discrete(5);
             actualDurations.Should().ContainInOrder(expectedDurations);
 
             // Take
@@ -119,14 +119,14 @@ namespace Polly.Specs.Retry
                 TimeSpan.FromSeconds(7)
             };
 
-            actualDurations = durationStrategy.Take(7).ToArray();
+            actualDurations = durationStrategy.Continuous(5).Take(7).ToArray();
             actualDurations.Should().ContainInOrder(expectedContinuous);
         }
 
         [Fact]
         public void Should_be_able_to_calculate_retry_timespans_from_exponential_strategy()
         {
-            ExponentialBackoff durationStrategy = new ExponentialBackoff(5, TimeSpan.FromSeconds(1), false);
+            ExponentialBackoff durationStrategy = new ExponentialBackoff(TimeSpan.FromSeconds(1), false);
 
             // Discrete
 
@@ -139,7 +139,7 @@ namespace Polly.Specs.Retry
                 TimeSpan.FromSeconds(16)
             };
 
-            IReadOnlyList<TimeSpan> actualDurations = durationStrategy.Discrete();
+            IReadOnlyList<TimeSpan> actualDurations = durationStrategy.Discrete(5);
             actualDurations.Should().ContainInOrder(expectedDurations);
 
             // Take
@@ -156,14 +156,14 @@ namespace Polly.Specs.Retry
                 TimeSpan.FromSeconds(16)
             };
 
-            actualDurations = durationStrategy.Take(7).ToArray();
+            actualDurations = durationStrategy.Continuous(5).Take(7).ToArray();
             actualDurations.Should().ContainInOrder(expectedContinuous);
         }
 
         [Fact]
         public void Should_be_able_to_calculate_retry_timespans_from_exponential_strategy_fastfirst()
         {
-            ExponentialBackoff durationStrategy = new ExponentialBackoff(5, TimeSpan.FromSeconds(1), true);
+            ExponentialBackoff durationStrategy = new ExponentialBackoff(TimeSpan.FromSeconds(1), true);
 
             // Discrete
 
@@ -176,7 +176,7 @@ namespace Polly.Specs.Retry
                 TimeSpan.FromSeconds(8)
             };
 
-            IReadOnlyList<TimeSpan> actualDurations = durationStrategy.Discrete();
+            IReadOnlyList<TimeSpan> actualDurations = durationStrategy.Discrete(5);
             actualDurations.Should().ContainInOrder(expectedDurations);
 
             // Take
@@ -193,7 +193,7 @@ namespace Polly.Specs.Retry
                 TimeSpan.FromSeconds(8)
             };
 
-            actualDurations = durationStrategy.Take(7).ToArray();
+            actualDurations = durationStrategy.Continuous(5).Take(7).ToArray();
             actualDurations.Should().ContainInOrder(expectedContinuous);
         }
 
@@ -202,16 +202,16 @@ namespace Polly.Specs.Retry
         {
             const int count = 20;
             const int take = 5;
-            DecorrelatedJitterBackoff durationStrategy = new DecorrelatedJitterBackoff(count, TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(3), false);
+            DecorrelatedJitterBackoff durationStrategy = new DecorrelatedJitterBackoff(TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(3), false);
 
             // Discrete
 
-            IReadOnlyList<TimeSpan> actualDurations = durationStrategy.Discrete();
+            IReadOnlyList<TimeSpan> actualDurations = durationStrategy.Discrete(count);
             actualDurations.Should().OnlyContain(n => n >= durationStrategy.MinDelay && n <= durationStrategy.MaxDelay);
 
             // Take
 
-            actualDurations = durationStrategy.Take(count + take).ToArray();
+            actualDurations = durationStrategy.Continuous(count).Take(count + take).ToArray();
 
             IEnumerable<TimeSpan> extra = actualDurations.Skip(count);
             IEnumerable<TimeSpan> discrete = actualDurations.Take(count);
@@ -226,17 +226,17 @@ namespace Polly.Specs.Retry
         {
             const int count = 20;
             const int take = 5;
-            DecorrelatedJitterBackoff durationStrategy = new DecorrelatedJitterBackoff(count, TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(3), true);
+            DecorrelatedJitterBackoff durationStrategy = new DecorrelatedJitterBackoff(TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(3), true);
 
             // Discrete
 
-            IReadOnlyList<TimeSpan> actualDurations = durationStrategy.Discrete();
+            IReadOnlyList<TimeSpan> actualDurations = durationStrategy.Discrete(count);
             actualDurations.Take(1).Should().OnlyContain(n => n == TimeSpan.Zero);
             actualDurations.Skip(1).Should().OnlyContain(n => n >= durationStrategy.MinDelay && n <= durationStrategy.MaxDelay);
 
             // Take
 
-            actualDurations = durationStrategy.Take(count + take).ToArray();
+            actualDurations = durationStrategy.Continuous(count).Take(count + take).ToArray();
             actualDurations.Take(1).Should().OnlyContain(n => n == TimeSpan.Zero);
 
             IEnumerable<TimeSpan> extra = actualDurations.Skip(count);

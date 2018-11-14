@@ -247,6 +247,7 @@ namespace Polly
         /// the current retry number (1 for first retry, 2 for second etc).
         /// </summary>
         /// <param name="policyBuilder">The policy builder.</param>
+        /// <param name="retryCount">The retry count.</param>
         /// <param name="sleepDurationStrategy">The class that provides the duration to wait for for a particular retry attempt.</param>
         /// <param name="onRetry">The action to call on each retry.</param>
         /// <returns>The policy instance.</returns>
@@ -256,15 +257,15 @@ namespace Polly
         /// or
         /// onRetry
         /// </exception>
-        public static RetryPolicy<TResult> WaitAndRetry<TResult>(this PolicyBuilder<TResult> policyBuilder, ISleepDurationStrategy sleepDurationStrategy, Action<DelegateResult<TResult>, TimeSpan> onRetry)
+        public static RetryPolicy<TResult> WaitAndRetry<TResult>(this PolicyBuilder<TResult> policyBuilder, int retryCount, ISleepDurationStrategy sleepDurationStrategy, Action<DelegateResult<TResult>, TimeSpan> onRetry)
         {
             if (onRetry == null) throw new ArgumentNullException(nameof(onRetry));
             if (sleepDurationStrategy == null) throw new ArgumentNullException(nameof(sleepDurationStrategy));
 
-            IReadOnlyList<TimeSpan> delays = sleepDurationStrategy.Discrete();
+            IReadOnlyList<TimeSpan> delays = sleepDurationStrategy.Discrete(retryCount);
 
             return policyBuilder.WaitAndRetry(
-                sleepDurationStrategy.RetryCount,
+                retryCount,
                 (i, _, __) => delays[i],
                 (outcome, span, i, ctx) => onRetry(outcome, span)
             );
@@ -425,15 +426,16 @@ namespace Polly
         /// the current retry number (1 for first retry, 2 for second etc).
         /// </summary>
         /// <param name="policyBuilder">The policy builder.</param>
+        /// <param name="retryCount">The retry count.</param>
         /// <param name="sleepDurationStrategy">The class that provides the duration to wait for for a particular retry attempt.</param>
         /// <returns>The policy instance.</returns>
-        public static RetryPolicy<TResult> WaitAndRetry<TResult>(this PolicyBuilder<TResult> policyBuilder, ISleepDurationStrategy sleepDurationStrategy)
+        public static RetryPolicy<TResult> WaitAndRetry<TResult>(this PolicyBuilder<TResult> policyBuilder, int retryCount, ISleepDurationStrategy sleepDurationStrategy)
         {
             if (sleepDurationStrategy == null) throw new ArgumentNullException(nameof(sleepDurationStrategy));
 
-            IReadOnlyList<TimeSpan> delays = sleepDurationStrategy.Discrete();
+            IReadOnlyList<TimeSpan> delays = sleepDurationStrategy.Discrete(retryCount);
 
-            return policyBuilder.WaitAndRetry(sleepDurationStrategy.RetryCount, (i, _, __) => delays[i], DoNothing);
+            return policyBuilder.WaitAndRetry(retryCount, (i, _, __) => delays[i], DoNothing);
         }
 
         /// <summary>
@@ -471,6 +473,7 @@ namespace Polly
         /// the current retry number (1 for first retry, 2 for second etc).
         /// </summary>
         /// <param name="policyBuilder">The policy builder.</param>
+        /// <param name="retryCount">The retry count.</param>
         /// <param name="sleepDurationStrategy">The class that provides the duration to wait for for a particular retry attempt.</param>
         /// <param name="onRetry">The action to call on each retry.</param>
         /// <returns>The policy instance.</returns>
@@ -480,15 +483,15 @@ namespace Polly
         /// or
         /// onRetry
         /// </exception>
-        public static RetryPolicy<TResult> WaitAndRetry<TResult>(this PolicyBuilder<TResult> policyBuilder, ISleepDurationStrategy sleepDurationStrategy, Action<DelegateResult<TResult>, TimeSpan, Context> onRetry)
+        public static RetryPolicy<TResult> WaitAndRetry<TResult>(this PolicyBuilder<TResult> policyBuilder, int retryCount, ISleepDurationStrategy sleepDurationStrategy, Action<DelegateResult<TResult>, TimeSpan, Context> onRetry)
         {
             if (onRetry == null) throw new ArgumentNullException(nameof(onRetry));
             if (sleepDurationStrategy == null) throw new ArgumentNullException(nameof(sleepDurationStrategy));
 
-            IReadOnlyList<TimeSpan> delays = sleepDurationStrategy.Discrete();
+            IReadOnlyList<TimeSpan> delays = sleepDurationStrategy.Discrete(retryCount);
 
             return policyBuilder.WaitAndRetry(
-                sleepDurationStrategy.RetryCount,
+                retryCount,
                 (i, _, __) => delays[i],
                 (outcome, span, i, ctx) => onRetry(outcome, span, ctx)
                 );
@@ -537,6 +540,7 @@ namespace Polly
         /// the current retry number (1 for first retry, 2 for second etc).
         /// </summary>
         /// <param name="policyBuilder">The policy builder.</param>
+        /// <param name="retryCount">The retry count.</param>
         /// <param name="sleepDurationStrategy">The class that provides the duration to wait for for a particular retry attempt.</param>
         /// <param name="onRetry">The action to call on each retry.</param>
         /// <returns>The policy instance.</returns>
@@ -546,13 +550,13 @@ namespace Polly
         /// or
         /// onRetry
         /// </exception>
-        public static RetryPolicy<TResult> WaitAndRetry<TResult>(this PolicyBuilder<TResult> policyBuilder, ISleepDurationStrategy sleepDurationStrategy, Action<DelegateResult<TResult>, TimeSpan, int, Context> onRetry)
+        public static RetryPolicy<TResult> WaitAndRetry<TResult>(this PolicyBuilder<TResult> policyBuilder, int retryCount, ISleepDurationStrategy sleepDurationStrategy, Action<DelegateResult<TResult>, TimeSpan, int, Context> onRetry)
         {
             if (sleepDurationStrategy == null) throw new ArgumentNullException(nameof(sleepDurationStrategy));
 
-            IReadOnlyList<TimeSpan> delays = sleepDurationStrategy.Discrete();
+            IReadOnlyList<TimeSpan> delays = sleepDurationStrategy.Discrete(retryCount);
 
-            return WaitAndRetry(policyBuilder, sleepDurationStrategy.RetryCount, (i, _, __) => delays[i], onRetry);
+            return WaitAndRetry(policyBuilder, retryCount, (i, _, __) => delays[i], onRetry);
         }
 
         /// <summary>

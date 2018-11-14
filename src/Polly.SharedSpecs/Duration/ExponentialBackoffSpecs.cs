@@ -17,10 +17,13 @@ namespace Polly.Specs.Duration
             const int count = 20;
             TimeSpan minDelay = TimeSpan.FromMilliseconds(10);
 
-            ExponentialBackoff backoff1 = new ExponentialBackoff(count, minDelay, fastFirst);
-            ExponentialBackoff backoff2 = new ExponentialBackoff(count, minDelay, fastFirst);
-            var discrete1 = backoff1.Discrete();
-            var discrete2 = backoff2.Discrete();
+            ExponentialBackoff backoff1 = new ExponentialBackoff(minDelay, fastFirst);
+            ExponentialBackoff backoff2 = new ExponentialBackoff(minDelay, fastFirst);
+            var discrete1 = backoff1.Discrete(count);
+            var discrete2 = backoff2.Discrete(count);
+
+            discrete1.Should().HaveCount(count);
+            discrete2.Should().HaveCount(count);
 
             discrete1.Should().ContainInOrder(discrete2);
         }
@@ -30,12 +33,15 @@ namespace Polly.Specs.Duration
         [InlineData(true)]
         public static void Should_have_an_adequate_variance_when_range_small(bool fastFirst)
         {
+            const int count = 20;
             TimeSpan minDelay = TimeSpan.FromMilliseconds(10);
 
-            ExponentialBackoff backoff = new ExponentialBackoff(20, minDelay, fastFirst);
-            IEnumerable<TimeSpan> discrete = backoff.Discrete();
+            ExponentialBackoff backoff = new ExponentialBackoff(minDelay, fastFirst);
+            IEnumerable<TimeSpan> discrete = backoff.Discrete(count);
 
-            int expectedCount = backoff.RetryCount;
+            discrete.Should().HaveCount(count);
+
+            int expectedCount = count;
             if (fastFirst)
             {
                 discrete.First().Should().Be(TimeSpan.Zero);
@@ -58,12 +64,15 @@ namespace Polly.Specs.Duration
         [InlineData(true)]
         public static void Should_have_an_adequate_variance_when_range_large(bool fastFirst)
         {
+            const int count = 20;
             TimeSpan minDelay = TimeSpan.FromMilliseconds(10);
 
-            ExponentialBackoff backoff = new ExponentialBackoff(20, minDelay, fastFirst);
-            IEnumerable<TimeSpan> discrete = backoff.Discrete();
+            ExponentialBackoff backoff = new ExponentialBackoff(minDelay, fastFirst);
+            IEnumerable<TimeSpan> discrete = backoff.Discrete(count);
 
-            int expectedCount = backoff.RetryCount;
+            discrete.Should().HaveCount(count);
+
+            int expectedCount = count;
             if (fastFirst)
             {
                 discrete.First().Should().Be(TimeSpan.Zero);
@@ -86,10 +95,13 @@ namespace Polly.Specs.Duration
         [InlineData(true)]
         public static void Should_have_no_variance_when_range_zero(bool fastFirst)
         {
+            const int count = 20;
             TimeSpan minDelay = TimeSpan.FromMilliseconds(0);
 
-            ExponentialBackoff backoff = new ExponentialBackoff(20, minDelay, fastFirst);
-            IEnumerable<TimeSpan> discrete = backoff.Discrete();
+            ExponentialBackoff backoff = new ExponentialBackoff(minDelay, fastFirst);
+            IEnumerable<TimeSpan> discrete = backoff.Discrete(count);
+
+            discrete.Should().HaveCount(count);
 
             if (fastFirst)
             {
@@ -105,10 +117,11 @@ namespace Polly.Specs.Duration
         [InlineData(true)]
         public static void Should_be_empty_when_count_zero(bool fastFirst)
         {
+            const int count = 0;
             TimeSpan minDelay = TimeSpan.FromMilliseconds(10);
 
-            ExponentialBackoff backoff = new ExponentialBackoff(0, minDelay, fastFirst);
-            IEnumerable<TimeSpan> discrete = backoff.Discrete();
+            ExponentialBackoff backoff = new ExponentialBackoff(minDelay, fastFirst);
+            IEnumerable<TimeSpan> discrete = backoff.Discrete(count);
 
             discrete.Should().BeEmpty();
         }
