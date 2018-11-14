@@ -94,15 +94,15 @@ namespace Polly.Duration
                 yield return TimeSpan.Zero;
             }
 
-            double range = MaxDelay.TotalMilliseconds - MinDelay.TotalMilliseconds;
+            double range = MaxDelay.TotalMilliseconds - MinDelay.TotalMilliseconds; // Range
             double max = MinDelay.TotalMilliseconds;
 
             for (; i < retryCount; i++)
             {
-                double ms = range * _random.NextDouble(); // Range
+                double ms = range * _random.NextDouble(); // Ceiling
                 ms += MinDelay.TotalMilliseconds; // Floor
 
-                max = Math.Max(ms, max); // Extra
+                max = Math.Max(ms, max); // Max
 
                 yield return TimeSpan.FromMilliseconds(ms);
             }
