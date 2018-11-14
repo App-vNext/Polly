@@ -74,7 +74,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)CircuitBreaker\AdvancedCircuitController.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Context.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Context.Dictionary.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Duration\DurationUtils.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Duration\ConstantBackoff.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Duration\LinearBackoff.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Duration\ExponentialBackoff.cs" />

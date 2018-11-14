@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace Polly.Duration
 {
@@ -10,8 +11,7 @@ namespace Polly.Duration
     /// </summary>
     public sealed class DecorrelatedJitterBackoff : ISleepDurationStrategy
     {
-        private static readonly Random s_random = DurationUtils.Uniform;
-        private readonly Random _random;
+        private readonly ConcurrentRandom _random;
 
         /// <summary>
         /// Whether the first retry will be immediate or not.
@@ -41,7 +41,7 @@ namespace Polly.Duration
             if (minDelay < TimeSpan.Zero) throw new ArgumentOutOfRangeException(nameof(minDelay));
             if (maxDelay < minDelay) throw new ArgumentOutOfRangeException(nameof(maxDelay));
 
-            _random = random ?? s_random;
+            _random = ConcurrentRandom.Create(random);
 
             MinDelay = minDelay;
             MaxDelay = maxDelay;
@@ -112,5 +112,56 @@ namespace Polly.Duration
                 yield return TimeSpan.FromMilliseconds(max);
             }
         }
+
+        #region Nested
+
+        /// <summary>
+        /// A random number generator with a Uniform distribution that is thread-safe (via locking).
+        /// Can be instantiated with a custom <see cref="Random"/> instance, for example to make
+        /// it act in a deterministic manner.
+        /// </summary>
+        private sealed class ConcurrentRandom
+        {
+            /// <summary>
+            /// A shared instance of <see cref="Random"/> that is safe to use concurrently.
+            /// </summary>
+            public static ConcurrentRandom Shared { get; } = new ConcurrentRandom(new Random());
+
+            private readonly Random _random;
+
+            private ConcurrentRandom(Random random)
+            {
+                Debug.Assert(random != null);
+
+                _random = random;
+            }
+
+            /// <summary>
+            /// Returns an instance of the <see cref="ConcurrentRandom"/> class.
+            /// </summary>
+            /// <param name="random">If not null, creates a new instance and uses the provided <see cref="Random"/> internally.
+            /// Else returns the <see cref="Shared"/> instance.</param>
+            public static ConcurrentRandom Create(Random random)
+            {
+                return random == null ? Shared : new ConcurrentRandom(random);
+            }
+
+            /// <summary>
+            /// Returns a random floating-point number that is greater than or equal to 0.0,
+            /// and less than 1.0.
+            /// This method uses locks in order to avoid issues with concurrent access.
+            /// </summary>
+            public double NextDouble()
+            {
+                // It is safe to lock on _random since it's not directly exposed 
+                // to outside use, so it cannot be locked externally.
+                lock (_random)
+                {
+                    return _random.NextDouble();
+                }
+            }
+        }
+
+        #endregion
     }
 }
