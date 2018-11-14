@@ -101,7 +101,6 @@ namespace Polly.Duration
             {
                 double ms = range * _random.NextDouble(); // Range
                 ms += MinDelay.TotalMilliseconds; // Floor
-                ms = Math.Min(ms, MaxDelay.TotalMilliseconds); // Ceiling
 
                 max = Math.Max(ms, max); // Extra
 
