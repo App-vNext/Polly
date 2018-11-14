@@ -19,8 +19,8 @@ namespace Polly.Specs.Duration
 
             ConstantBackoff backoff1 = new ConstantBackoff(minDelay, fastFirst);
             ConstantBackoff backoff2 = new ConstantBackoff(minDelay, fastFirst);
-            IReadOnlyList<TimeSpan> discrete1 = backoff1.Discrete(count);
-            IReadOnlyList<TimeSpan> discrete2 = backoff2.Discrete(count);
+            IEnumerable<TimeSpan> discrete1 = backoff1.Discrete(count);
+            IEnumerable<TimeSpan> discrete2 = backoff2.Discrete(count);
 
             discrete1.Should().HaveCount(count);
             discrete2.Should().HaveCount(count);

@@ -22,8 +22,8 @@ namespace Polly.Specs.Duration
 
             DecorrelatedJitterBackoff backoff1 = new DecorrelatedJitterBackoff(minDelay, maxDelay, fastFirst, new Random(123456789));
             DecorrelatedJitterBackoff backoff2 = new DecorrelatedJitterBackoff(minDelay, maxDelay, fastFirst, new Random(123456789));
-            IReadOnlyList<TimeSpan> discrete1 = backoff1.Discrete(count);
-            IReadOnlyList<TimeSpan> discrete2 = backoff2.Discrete(count);
+            IEnumerable<TimeSpan> discrete1 = backoff1.Discrete(count);
+            IEnumerable<TimeSpan> discrete2 = backoff2.Discrete(count);
 
             discrete1.Should().HaveCount(count);
             discrete2.Should().HaveCount(count);
@@ -41,16 +41,16 @@ namespace Polly.Specs.Duration
 
             DecorrelatedJitterBackoff backoff1 = new DecorrelatedJitterBackoff(minDelay, maxDelay, fastFirst, new Random(123));
             DecorrelatedJitterBackoff backoff2 = new DecorrelatedJitterBackoff(minDelay, maxDelay, fastFirst, new Random(321));
-            IReadOnlyList<TimeSpan> discrete1 = backoff1.Discrete(count);
-            IReadOnlyList<TimeSpan> discrete2 = backoff2.Discrete(count);
+            IEnumerable<TimeSpan> discrete1 = backoff1.Discrete(count);
+            IEnumerable<TimeSpan> discrete2 = backoff2.Discrete(count);
 
             discrete1.Should().HaveCount(count);
             discrete2.Should().HaveCount(count);
 
             if (fastFirst)
-                discrete1[0].Should().Be(discrete2[0]);
+                discrete1.First().Should().Be(discrete2.First());
             else
-                discrete1[0].Should().NotBe(discrete2[0]);
+                discrete1.First().Should().NotBe(discrete2.First());
 
             var sum1 = discrete1.Sum(n => n.TotalMilliseconds);
             var sum2 = discrete2.Sum(n => n.TotalMilliseconds);
@@ -68,16 +68,16 @@ namespace Polly.Specs.Duration
 
             DecorrelatedJitterBackoff backoff1 = new DecorrelatedJitterBackoff(minDelay, maxDelay, fastFirst);
             DecorrelatedJitterBackoff backoff2 = new DecorrelatedJitterBackoff(minDelay, maxDelay, fastFirst);
-            IReadOnlyList<TimeSpan> discrete1 = backoff1.Discrete(count);
-            IReadOnlyList<TimeSpan> discrete2 = backoff2.Discrete(count);
+            IEnumerable<TimeSpan> discrete1 = backoff1.Discrete(count);
+            IEnumerable<TimeSpan> discrete2 = backoff2.Discrete(count);
 
             discrete1.Should().HaveCount(count);
             discrete2.Should().HaveCount(count);
 
             if (fastFirst)
-                discrete1[0].Should().Be(discrete2[0]);
+                discrete1.First().Should().Be(discrete2.First());
             else
-                discrete1[0].Should().NotBe(discrete2[0]);
+                discrete1.First().Should().NotBe(discrete2.First());
 
             var sum1 = discrete1.Sum(n => n.TotalMilliseconds);
             var sum2 = discrete2.Sum(n => n.TotalMilliseconds);
@@ -191,7 +191,7 @@ namespace Polly.Specs.Duration
 
             // Discrete
 
-            IReadOnlyList<TimeSpan> actualDurations = durationStrategy.Discrete(count);
+            IEnumerable<TimeSpan> actualDurations = durationStrategy.Discrete(count);
             actualDurations.Should().OnlyContain(n => n >= durationStrategy.MinDelay && n <= durationStrategy.MaxDelay);
 
             // Take
@@ -215,7 +215,7 @@ namespace Polly.Specs.Duration
 
             // Discrete
 
-            IReadOnlyList<TimeSpan> actualDurations = durationStrategy.Discrete(count);
+            IEnumerable<TimeSpan> actualDurations = durationStrategy.Discrete(count);
             actualDurations.Take(1).Should().OnlyContain(n => n == TimeSpan.Zero);
             actualDurations.Skip(1).Should().OnlyContain(n => n >= durationStrategy.MinDelay && n <= durationStrategy.MaxDelay);
 

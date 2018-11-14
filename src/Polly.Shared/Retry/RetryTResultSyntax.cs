@@ -264,7 +264,7 @@ namespace Polly
             if (onRetry == null) throw new ArgumentNullException(nameof(onRetry));
             if (sleepDurationStrategy == null) throw new ArgumentNullException(nameof(sleepDurationStrategy));
 
-            IReadOnlyList<TimeSpan> delays = sleepDurationStrategy.Discrete(retryCount);
+            TimeSpan[] delays = sleepDurationStrategy.Discrete(retryCount).ToArray();
 
             return policyBuilder.WaitAndRetry(
                 retryCount,

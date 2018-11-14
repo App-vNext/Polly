@@ -19,8 +19,8 @@ namespace Polly.Specs.Duration
 
             LinearBackoff backoff1 = new LinearBackoff(minDelay, 1.0, fastFirst);
             LinearBackoff backoff2 = new LinearBackoff(minDelay, 1.0, fastFirst);
-            IReadOnlyList<TimeSpan> discrete1 = backoff1.Discrete(count);
-            IReadOnlyList<TimeSpan> discrete2 = backoff2.Discrete(count);
+            IEnumerable<TimeSpan> discrete1 = backoff1.Discrete(count);
+            IEnumerable<TimeSpan> discrete2 = backoff2.Discrete(count);
 
             discrete1.Should().HaveCount(count);
             discrete2.Should().HaveCount(count);
@@ -38,23 +38,23 @@ namespace Polly.Specs.Duration
 
             LinearBackoff backoff1 = new LinearBackoff(minDelay, 1.0, fastFirst);
             LinearBackoff backoff2 = new LinearBackoff(minDelay, 2.0, fastFirst);
-            IReadOnlyList<TimeSpan> discrete1 = backoff1.Discrete(count);
-            IReadOnlyList<TimeSpan> discrete2 = backoff2.Discrete(count);
+            IEnumerable<TimeSpan> discrete1 = backoff1.Discrete(count);
+            IEnumerable<TimeSpan> discrete2 = backoff2.Discrete(count);
 
             discrete1.Should().HaveCount(count);
             discrete2.Should().HaveCount(count);
 
             if (fastFirst)
             {
-                discrete1[0].Should().Be(discrete2[0]);
-                discrete1[1].Should().Be(discrete2[1]);
+                discrete1.First().Should().Be(discrete2.First());
+                discrete1.Skip(1).First().Should().Be(discrete2.Skip(1).First());
             }
             else
             {
-                discrete1[0].Should().Be(discrete2[0]);
+                discrete1.First().Should().Be(discrete2.First());
             }
 
-            discrete1[2].Should().NotBe(discrete2[2]);
+            discrete1.Skip(2).First().Should().NotBe(discrete2.Skip(2).First());
         }
 
         [Theory]
@@ -171,7 +171,7 @@ namespace Polly.Specs.Duration
                 TimeSpan.FromSeconds(9)
             };
 
-            IReadOnlyList<TimeSpan> actualDurations = durationStrategy.Discrete(5);
+            IEnumerable<TimeSpan> actualDurations = durationStrategy.Discrete(5);
             actualDurations.Should().ContainInOrder(expectedDiscrete);
 
             // Take
@@ -208,7 +208,7 @@ namespace Polly.Specs.Duration
                 TimeSpan.FromSeconds(7)
             };
 
-            IReadOnlyList<TimeSpan> actualDurations = durationStrategy.Discrete(5);
+            IEnumerable<TimeSpan> actualDurations = durationStrategy.Discrete(5);
             actualDurations.Should().ContainInOrder(expectedDurations);
 
             // Take

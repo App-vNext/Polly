@@ -37,33 +37,10 @@ namespace Polly.Duration
         /// Generate the sequence of <see cref="TimeSpan"/> values to use as sleep-durations.
         /// </summary>
         /// <param name="retryCount">The maximum number of retries to use, in addition to the original call.</param>
-        public IReadOnlyList<TimeSpan> Discrete(int retryCount)
+        public IEnumerable<TimeSpan> Discrete(int retryCount)
         {
             if (retryCount < 0) throw new ArgumentOutOfRangeException(nameof(retryCount));
 
-            TimeSpan[] delays = new TimeSpan[retryCount];
-            if (delays.Length == 0)
-                return delays;
-
-            int i = 0;
-            if (FastFirst)
-                delays[i++] = TimeSpan.Zero;
-
-            for (; i < delays.Length; i++)
-            {
-                delays[i] = Delay;
-            }
-
-            return delays;
-        }
-
-        /// <summary>
-        /// Generate a continuous sequence of <see cref="TimeSpan"/> values to use as sleep-durations.
-        /// </summary>
-        /// <param name="retryCount">The maximum number of retries to use, in addition to the original call.</param>
-        public IEnumerable<TimeSpan> Continuous(int retryCount)
-        {
-            if (retryCount < 0) throw new ArgumentOutOfRangeException(nameof(retryCount));
             if (retryCount == 0)
                 yield break;
 
@@ -73,6 +50,23 @@ namespace Polly.Duration
                 i++;
                 yield return TimeSpan.Zero;
             }
+
+            for (; i < retryCount; i++)
+            {
+                yield return Delay;
+            }
+        }
+
+        /// <summary>
+        /// Generate a continuous sequence of <see cref="TimeSpan"/> values to use as sleep-durations.
+        /// </summary>
+        /// <param name="retryCount">The maximum number of retries to use, in addition to the original call.</param>
+        public IEnumerable<TimeSpan> Continuous(int retryCount)
+        {
+            if (retryCount < 0) throw new ArgumentOutOfRangeException(nameof(retryCount));
+
+            foreach (TimeSpan delay in Discrete(retryCount))
+                yield return delay;
 
             while (true)
             {

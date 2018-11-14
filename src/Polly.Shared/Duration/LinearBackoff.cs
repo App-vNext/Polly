@@ -6,7 +6,7 @@ namespace Polly.Duration
     /// <summary>
     /// Generates sleep durations in an linear manner.
     /// The formula used is: Duration = <see cref="Delay"/> + <see cref="Factor"/> x iteration x <see cref="Delay"/>.
-    /// For example: 2s, 4s, 6s, 8s.
+    /// For example: 2s, 4s, 6s, 8s...
     /// </summary>
     public sealed class LinearBackoff : ISleepDurationStrategy
     {
@@ -43,38 +43,13 @@ namespace Polly.Duration
 
         /// <summary>
         /// Generate the sequence of <see cref="TimeSpan"/> values to use as sleep-durations.
+        /// For example: 2s, 4s, 6s, 8s...
         /// </summary>
         /// <param name="retryCount">The maximum number of retries to use, in addition to the original call.</param>
-        public IReadOnlyList<TimeSpan> Discrete(int retryCount)
+        public IEnumerable<TimeSpan> Discrete(int retryCount)
         {
             if (retryCount < 0) throw new ArgumentOutOfRangeException(nameof(retryCount));
 
-            TimeSpan[] delays = new TimeSpan[retryCount];
-            if (delays.Length == 0)
-                return delays;
-
-            int i = 0;
-            if (FastFirst)
-                delays[i++] = TimeSpan.Zero;
-
-            double ms = Delay.TotalMilliseconds;
-            double ad = Factor * ms;
-
-            for (; i < delays.Length; i++, ms += ad)
-            {
-                delays[i] = TimeSpan.FromMilliseconds(ms);
-            }
-
-            return delays;
-        }
-
-        /// <summary>
-        /// Generate a continuous sequence of <see cref="TimeSpan"/> values to use as sleep-durations.
-        /// </summary>
-        /// <param name="retryCount">The maximum number of retries to use, in addition to the original call.</param>
-        public IEnumerable<TimeSpan> Continuous(int retryCount)
-        {
-            if (retryCount < 0) throw new ArgumentOutOfRangeException(nameof(retryCount));
             if (retryCount == 0)
                 yield break;
 
@@ -87,12 +62,31 @@ namespace Polly.Duration
 
             double ms = Delay.TotalMilliseconds;
             double ad = Factor * ms;
-            double max = ms;
 
             for (; i < retryCount; i++, ms += ad)
             {
-                max = ms;
                 yield return TimeSpan.FromMilliseconds(ms);
+            }
+        }
+
+        /// <summary>
+        /// Generate a continuous sequence of <see cref="TimeSpan"/> values to use as sleep-durations.
+        /// The first <paramref name="retryCount"/> durations are generated in the same way as
+        /// the <see cref="Discrete(int)"/> method, and thereafter the maximum value from that sequence
+        /// is returned.
+        /// For example: 2s, 4s, 6s, 8s; 8s, 8s, 8s...
+        /// </summary>
+        /// <param name="retryCount">The maximum number of retries to use, in addition to the original call.</param>
+        public IEnumerable<TimeSpan> Continuous(int retryCount)
+        {
+            if (retryCount < 0) throw new ArgumentOutOfRangeException(nameof(retryCount));
+
+            double max = Delay.TotalMilliseconds;
+            foreach (TimeSpan delay in Discrete(retryCount))
+            {
+                max = delay.TotalMilliseconds;
+
+                yield return delay;
             }
 
             while (true)

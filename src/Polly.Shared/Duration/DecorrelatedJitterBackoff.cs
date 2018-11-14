@@ -6,7 +6,7 @@ namespace Polly.Duration
 {
     /// <summary>
     /// Generates sleep durations in an jittered manner, making sure to mitigate any correlations.
-    /// For example: 1s, 3s, 2s, 4s.
+    /// For example: 1s, 3s, 4s, 2s...
     /// For background, see https://aws.amazon.com/blogs/architecture/exponential-backoff-and-jitter/.
     /// </summary>
     public sealed class DecorrelatedJitterBackoff : ISleepDurationStrategy
@@ -50,41 +50,13 @@ namespace Polly.Duration
 
         /// <summary>
         /// Generate the sequence of <see cref="TimeSpan"/> values to use as sleep-durations.
+        /// For example: 1s, 3s, 4s, 2s...
         /// </summary>
         /// <param name="retryCount">The maximum number of retries to use, in addition to the original call.</param>
-        public IReadOnlyList<TimeSpan> Discrete(int retryCount)
+        public IEnumerable<TimeSpan> Discrete(int retryCount)
         {
             if (retryCount < 0) throw new ArgumentOutOfRangeException(nameof(retryCount));
 
-            TimeSpan[] delays = new TimeSpan[retryCount];
-            if (delays.Length == 0)
-                return delays;
-
-            int i = 0;
-            if (FastFirst)
-                delays[i++] = TimeSpan.Zero;
-
-            double ms = MinDelay.TotalMilliseconds;
-            for (; i < delays.Length; i++)
-            {
-                // https://github.com/aws-samples/aws-arch-backoff-simulator/blob/master/src/backoff_simulator.py#L45
-                // self.sleep = min(self.cap, random.uniform(self.base, self.sleep * 3))
-                ms = _random.Uniform(MinDelay.TotalMilliseconds, ms * 3);
-                ms = Math.Min(MaxDelay.TotalMilliseconds, ms);
-
-                delays[i] = TimeSpan.FromMilliseconds(ms);
-            }
-
-            return delays;
-        }
-
-        /// <summary>
-        /// Generate a continuous sequence of <see cref="TimeSpan"/> values to use as sleep-durations.
-        /// </summary>
-        /// <param name="retryCount">The maximum number of retries to use, in addition to the original call.</param>
-        public IEnumerable<TimeSpan> Continuous(int retryCount)
-        {
-            if (retryCount < 0) throw new ArgumentOutOfRangeException(nameof(retryCount));
             if (retryCount == 0)
                 yield break;
 
@@ -96,7 +68,6 @@ namespace Polly.Duration
             }
 
             double ms = MinDelay.TotalMilliseconds;
-            double max = ms;
             for (; i < retryCount; i++)
             {
                 // https://github.com/aws-samples/aws-arch-backoff-simulator/blob/master/src/backoff_simulator.py#L45
@@ -104,9 +75,28 @@ namespace Polly.Duration
                 ms = _random.Uniform(MinDelay.TotalMilliseconds, ms * 3);
                 ms = Math.Min(MaxDelay.TotalMilliseconds, ms);
 
-                max = Math.Max(max, ms);
-
                 yield return TimeSpan.FromMilliseconds(ms);
+            }
+        }
+
+        /// <summary>
+        /// Generate a continuous sequence of <see cref="TimeSpan"/> values to use as sleep-durations.
+        /// The first <paramref name="retryCount"/> durations are generated in the same way as
+        /// the <see cref="Discrete(int)"/> method, and thereafter the maximum value from that sequence
+        /// is returned.
+        /// For example: 1s, 3s, 4s, 2s; 4s, 4s, 4s...
+        /// </summary>
+        /// <param name="retryCount">The maximum number of retries to use, in addition to the original call.</param>
+        public IEnumerable<TimeSpan> Continuous(int retryCount)
+        {
+            if (retryCount < 0) throw new ArgumentOutOfRangeException(nameof(retryCount));
+
+            double max = MinDelay.TotalMilliseconds;
+            foreach (TimeSpan delay in Discrete(retryCount))
+            {
+                max = Math.Max(delay.TotalMilliseconds, max);
+
+                yield return delay;
             }
 
             while (true)
