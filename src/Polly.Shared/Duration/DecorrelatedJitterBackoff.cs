@@ -7,7 +7,7 @@ namespace Polly.Duration
     /// <summary>
     /// Generates sleep durations in an jittered manner, making sure to mitigate any correlations.
     /// For example: 1s, 3s, 2s, 4s.
-    /// For background and formula, see https://www.awsarchitectureblog.com/2015/03/backoff.html.
+    /// For background, see https://aws.amazon.com/blogs/architecture/exponential-backoff-and-jitter/.
     /// </summary>
     public sealed class DecorrelatedJitterBackoff : ISleepDurationStrategy
     {
@@ -64,12 +64,13 @@ namespace Polly.Duration
             if (FastFirst)
                 delays[i++] = TimeSpan.Zero;
 
-            double range = MaxDelay.TotalMilliseconds - MinDelay.TotalMilliseconds; // Range
-
+            double ms = MinDelay.TotalMilliseconds;
             for (; i < delays.Length; i++)
             {
-                double ms = range * _random.NextDouble(); // Ceiling
-                ms += MinDelay.TotalMilliseconds; // Floor
+                // https://github.com/aws-samples/aws-arch-backoff-simulator/blob/master/src/backoff_simulator.py#L45
+                // self.sleep = min(self.cap, random.uniform(self.base, self.sleep * 3))
+                ms = _random.Uniform(MinDelay.TotalMilliseconds, ms * 3);
+                ms = Math.Min(MaxDelay.TotalMilliseconds, ms);
 
                 delays[i] = TimeSpan.FromMilliseconds(ms);
             }
@@ -94,15 +95,16 @@ namespace Polly.Duration
                 yield return TimeSpan.Zero;
             }
 
-            double range = MaxDelay.TotalMilliseconds - MinDelay.TotalMilliseconds; // Range
-            double max = MinDelay.TotalMilliseconds;
-
+            double ms = MinDelay.TotalMilliseconds;
+            double max = ms;
             for (; i < retryCount; i++)
             {
-                double ms = range * _random.NextDouble(); // Ceiling
-                ms += MinDelay.TotalMilliseconds; // Floor
+                // https://github.com/aws-samples/aws-arch-backoff-simulator/blob/master/src/backoff_simulator.py#L45
+                // self.sleep = min(self.cap, random.uniform(self.base, self.sleep * 3))
+                ms = _random.Uniform(MinDelay.TotalMilliseconds, ms * 3);
+                ms = Math.Min(MaxDelay.TotalMilliseconds, ms);
 
-                max = Math.Max(ms, max); // Max
+                max = Math.Max(max, ms);
 
                 yield return TimeSpan.FromMilliseconds(ms);
             }
@@ -153,12 +155,29 @@ namespace Polly.Duration
             /// </summary>
             public double NextDouble()
             {
-                // It is safe to lock on _random since it's not directly exposed 
-                // to outside use, so it cannot be locked externally.
+                // It is safe to lock on _random since it's not exposed
+                // to outside use, so it cannot be contended.
                 lock (_random)
                 {
                     return _random.NextDouble();
                 }
+            }
+
+            /// <summary>
+            /// Returns a random floating-point number that is greater than or equal to <paramref name="a"/>,
+            /// and less than <paramref name="b"/>.
+            /// </summary>
+            /// <param name="a">The minimum value.</param>
+            /// <param name="b">The maximum value.</param>
+            public double Uniform(double a, double b)
+            {
+                Debug.Assert(a <= b);
+
+                if (a == b) return a;
+
+                // In order to match AWS guidance, this closely follows python docs:
+                // https://docs.python.org/2/library/random.html#random.uniform
+                return a + (b - a) * NextDouble();
             }
         }
 

@@ -52,7 +52,9 @@ namespace Polly.Specs.Duration
             else
                 discrete1[0].Should().NotBe(discrete2[0]);
 
-            discrete1[1].Should().NotBe(discrete2[1]);
+            var sum1 = discrete1.Sum(n => n.TotalMilliseconds);
+            var sum2 = discrete2.Sum(n => n.TotalMilliseconds);
+            sum1.Should().NotBe(sum2);
         }
 
         [Theory]
@@ -77,7 +79,9 @@ namespace Polly.Specs.Duration
             else
                 discrete1[0].Should().NotBe(discrete2[0]);
 
-            discrete1[1].Should().NotBe(discrete2[1]);
+            var sum1 = discrete1.Sum(n => n.TotalMilliseconds);
+            var sum2 = discrete2.Sum(n => n.TotalMilliseconds);
+            sum1.Should().NotBe(sum2);
         }
 
         [Theory]
@@ -107,7 +111,7 @@ namespace Polly.Specs.Duration
                 .GroupBy(n => n)
                 .Count();
 
-            groupCount.Should().BeGreaterThan(700); // 730
+            groupCount.Should().BeGreaterThan(400); // 463
         }
 
         [Theory]
@@ -137,7 +141,7 @@ namespace Polly.Specs.Duration
                 .GroupBy(n => n)
                 .Count();
 
-            groupCount.Should().BeGreaterThan(900); // 994
+            groupCount.Should().BeGreaterThan(700); // 733
         }
 
         [Theory]
