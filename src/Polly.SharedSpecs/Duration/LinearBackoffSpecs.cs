@@ -154,5 +154,79 @@ namespace Polly.Specs.Duration
 
             discrete.Should().BeEmpty();
         }
+
+        [Fact]
+        public static void Should_be_able_to_calculate_retry_timespans()
+        {
+            LinearBackoff durationStrategy = new LinearBackoff(TimeSpan.FromSeconds(1), 2, false);
+
+            // Discrete
+
+            TimeSpan[] expectedDiscrete = new TimeSpan[5]
+            {
+                TimeSpan.FromSeconds(1),
+                TimeSpan.FromSeconds(3),
+                TimeSpan.FromSeconds(5),
+                TimeSpan.FromSeconds(7),
+                TimeSpan.FromSeconds(9)
+            };
+
+            IReadOnlyList<TimeSpan> actualDurations = durationStrategy.Discrete(5);
+            actualDurations.Should().ContainInOrder(expectedDiscrete);
+
+            // Take
+
+            TimeSpan[] expectedContinuous = new TimeSpan[7]
+            {
+                TimeSpan.FromSeconds(1),
+                TimeSpan.FromSeconds(3),
+                TimeSpan.FromSeconds(5),
+                TimeSpan.FromSeconds(7),
+                TimeSpan.FromSeconds(9),
+
+                TimeSpan.FromSeconds(9),
+                TimeSpan.FromSeconds(9)
+            };
+
+            actualDurations = durationStrategy.Continuous(5).Take(7).ToArray();
+            actualDurations.Should().ContainInOrder(expectedContinuous);
+        }
+
+        [Fact]
+        public static void Should_be_able_to_calculate_retry_timespans_fastfirst()
+        {
+            LinearBackoff durationStrategy = new LinearBackoff(TimeSpan.FromSeconds(1), 2, true);
+
+            // Discrete
+
+            TimeSpan[] expectedDurations = new TimeSpan[5]
+            {
+                TimeSpan.Zero,
+                TimeSpan.FromSeconds(1),
+                TimeSpan.FromSeconds(3),
+                TimeSpan.FromSeconds(5),
+                TimeSpan.FromSeconds(7)
+            };
+
+            IReadOnlyList<TimeSpan> actualDurations = durationStrategy.Discrete(5);
+            actualDurations.Should().ContainInOrder(expectedDurations);
+
+            // Take
+
+            TimeSpan[] expectedContinuous = new TimeSpan[7]
+            {
+                TimeSpan.Zero,
+                TimeSpan.FromSeconds(1),
+                TimeSpan.FromSeconds(3),
+                TimeSpan.FromSeconds(5),
+                TimeSpan.FromSeconds(7),
+
+                TimeSpan.FromSeconds(7),
+                TimeSpan.FromSeconds(7)
+            };
+
+            actualDurations = durationStrategy.Continuous(5).Take(7).ToArray();
+            actualDurations.Should().ContainInOrder(expectedContinuous);
+        }
     }
 }

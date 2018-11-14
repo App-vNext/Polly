@@ -19,8 +19,8 @@ namespace Polly.Specs.Duration
 
             ExponentialBackoff backoff1 = new ExponentialBackoff(minDelay, fastFirst);
             ExponentialBackoff backoff2 = new ExponentialBackoff(minDelay, fastFirst);
-            var discrete1 = backoff1.Discrete(count);
-            var discrete2 = backoff2.Discrete(count);
+            IReadOnlyList<TimeSpan> discrete1 = backoff1.Discrete(count);
+            IReadOnlyList<TimeSpan> discrete2 = backoff2.Discrete(count);
 
             discrete1.Should().HaveCount(count);
             discrete2.Should().HaveCount(count);
@@ -124,6 +124,80 @@ namespace Polly.Specs.Duration
             IEnumerable<TimeSpan> discrete = backoff.Discrete(count);
 
             discrete.Should().BeEmpty();
+        }
+
+        [Fact]
+        public static void Should_be_able_to_calculate_retry_timespans()
+        {
+            ExponentialBackoff durationStrategy = new ExponentialBackoff(TimeSpan.FromSeconds(1), false);
+
+            // Discrete
+
+            TimeSpan[] expectedDurations = new TimeSpan[5]
+            {
+                TimeSpan.FromSeconds(1),
+                TimeSpan.FromSeconds(2),
+                TimeSpan.FromSeconds(4),
+                TimeSpan.FromSeconds(8),
+                TimeSpan.FromSeconds(16)
+            };
+
+            IReadOnlyList<TimeSpan> actualDurations = durationStrategy.Discrete(5);
+            actualDurations.Should().ContainInOrder(expectedDurations);
+
+            // Take
+
+            TimeSpan[] expectedContinuous = new TimeSpan[7]
+            {
+                TimeSpan.FromSeconds(1),
+                TimeSpan.FromSeconds(2),
+                TimeSpan.FromSeconds(4),
+                TimeSpan.FromSeconds(8),
+                TimeSpan.FromSeconds(16),
+
+                TimeSpan.FromSeconds(16),
+                TimeSpan.FromSeconds(16)
+            };
+
+            actualDurations = durationStrategy.Continuous(5).Take(7).ToArray();
+            actualDurations.Should().ContainInOrder(expectedContinuous);
+        }
+
+        [Fact]
+        public static void Should_be_able_to_calculate_retry_timespans_fastfirst()
+        {
+            ExponentialBackoff durationStrategy = new ExponentialBackoff(TimeSpan.FromSeconds(1), true);
+
+            // Discrete
+
+            TimeSpan[] expectedDurations = new TimeSpan[5]
+            {
+                TimeSpan.Zero,
+                TimeSpan.FromSeconds(1),
+                TimeSpan.FromSeconds(2),
+                TimeSpan.FromSeconds(4),
+                TimeSpan.FromSeconds(8)
+            };
+
+            IReadOnlyList<TimeSpan> actualDurations = durationStrategy.Discrete(5);
+            actualDurations.Should().ContainInOrder(expectedDurations);
+
+            // Take
+
+            TimeSpan[] expectedContinuous = new TimeSpan[7]
+            {
+                TimeSpan.Zero,
+                TimeSpan.FromSeconds(1),
+                TimeSpan.FromSeconds(2),
+                TimeSpan.FromSeconds(4),
+                TimeSpan.FromSeconds(8),
+
+                TimeSpan.FromSeconds(8),
+                TimeSpan.FromSeconds(8)
+            };
+
+            actualDurations = durationStrategy.Continuous(5).Take(7).ToArray();
+            actualDurations.Should().ContainInOrder(expectedContinuous);
         }
     }
 }
