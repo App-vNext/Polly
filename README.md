@@ -85,12 +85,12 @@ Policy
 // Handle multiple return values 
 Policy
   .HandleResult<HttpResponseMessage>(r => r.StatusCode == HttpStatusCode.InternalServerError)
-  .OrResult<HttpResponseMessage>(r => r.StatusCode == HttpStatusCode.BadGateway)
+  .OrResult(r => r.StatusCode == HttpStatusCode.BadGateway)
 
 // Handle primitive return values (implied use of .Equals())
 Policy
   .HandleResult<HttpStatusCode>(HttpStatusCode.InternalServerError)
-  .OrResult<HttpStatusCode>(HttpStatusCode.BadGateway)
+  .OrResult(HttpStatusCode.BadGateway)
  
 // Handle both exceptions and return values in one policy
 HttpStatusCode[] httpStatusCodesWorthRetrying = {
