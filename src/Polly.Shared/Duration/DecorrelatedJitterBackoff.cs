@@ -64,13 +64,12 @@ namespace Polly.Duration
             if (FastFirst)
                 delays[i++] = TimeSpan.Zero;
 
-            double range = MaxDelay.TotalMilliseconds - MinDelay.Milliseconds;
+            double range = MaxDelay.TotalMilliseconds - MinDelay.TotalMilliseconds; // Range
 
             for (; i < delays.Length; i++)
             {
-                double ms = range * _random.NextDouble(); // Range
+                double ms = range * _random.NextDouble(); // Ceiling
                 ms += MinDelay.TotalMilliseconds; // Floor
-                ms = Math.Min(ms, MaxDelay.TotalMilliseconds); // Ceiling
 
                 delays[i] = TimeSpan.FromMilliseconds(ms);
             }
@@ -95,7 +94,7 @@ namespace Polly.Duration
                 yield return TimeSpan.Zero;
             }
 
-            double range = MaxDelay.TotalMilliseconds - MinDelay.Milliseconds;
+            double range = MaxDelay.TotalMilliseconds - MinDelay.TotalMilliseconds;
             double max = MinDelay.TotalMilliseconds;
 
             for (; i < retryCount; i++)
