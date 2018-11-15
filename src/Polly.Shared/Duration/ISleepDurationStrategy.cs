@@ -18,13 +18,5 @@ namespace Polly.Duration
         /// </summary>
         /// <param name="retryCount">The maximum number of retries to use, in addition to the original call.</param>
         IEnumerable<TimeSpan> Discrete(int retryCount);
-
-        /// <summary>
-        /// Generate a continuous sequence of <see cref="TimeSpan"/> values to use as sleep-durations.
-        /// Depending on the implementation, iterations higher than <paramref name="retryCount"/> may cap
-        /// the value (using the last value) or continue producing values per normal.
-        /// </summary>
-        /// <param name="retryCount">The maximum number of retries to use, in addition to the original call.</param>
-        IEnumerable<TimeSpan> Continuous(int retryCount);
     }
 }

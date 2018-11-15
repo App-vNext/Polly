@@ -75,6 +75,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Context.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Context.Dictionary.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Duration\ConstantBackoff.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Duration\DurationExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Duration\LinearBackoff.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Duration\ExponentialBackoff.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Duration\DecorrelatedJitterBackoff.cs" />

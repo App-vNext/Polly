@@ -56,22 +56,5 @@ namespace Polly.Duration
                 yield return Delay;
             }
         }
-
-        /// <summary>
-        /// Generate a continuous sequence of <see cref="TimeSpan"/> values to use as sleep-durations.
-        /// </summary>
-        /// <param name="retryCount">The maximum number of retries to use, in addition to the original call.</param>
-        public IEnumerable<TimeSpan> Continuous(int retryCount)
-        {
-            if (retryCount < 0) throw new ArgumentOutOfRangeException(nameof(retryCount));
-
-            foreach (TimeSpan delay in Discrete(retryCount))
-                yield return delay;
-
-            while (true)
-            {
-                yield return Delay;
-            }
-        }
     }
 }

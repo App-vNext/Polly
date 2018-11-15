@@ -68,31 +68,5 @@ namespace Polly.Duration
                 yield return TimeSpan.FromMilliseconds(ms);
             }
         }
-
-        /// <summary>
-        /// Generate a continuous sequence of <see cref="TimeSpan"/> values to use as sleep-durations.
-        /// The first <paramref name="retryCount"/> durations are generated in the same way as
-        /// the <see cref="Discrete(int)"/> method, and thereafter the maximum value from that sequence
-        /// is returned.
-        /// For example: 2s, 4s, 6s, 8s; 8s, 8s, 8s...
-        /// </summary>
-        /// <param name="retryCount">The maximum number of retries to use, in addition to the original call.</param>
-        public IEnumerable<TimeSpan> Continuous(int retryCount)
-        {
-            if (retryCount < 0) throw new ArgumentOutOfRangeException(nameof(retryCount));
-
-            double max = Delay.TotalMilliseconds;
-            foreach (TimeSpan delay in Discrete(retryCount))
-            {
-                max = delay.TotalMilliseconds;
-
-                yield return delay;
-            }
-
-            while (true)
-            {
-                yield return TimeSpan.FromMilliseconds(max);
-            }
-        }
     }
 }
