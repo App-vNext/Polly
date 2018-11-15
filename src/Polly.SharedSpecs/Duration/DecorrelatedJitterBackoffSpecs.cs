@@ -49,8 +49,6 @@ namespace Polly.Specs.Duration
 
             if (fastFirst)
                 discrete1.First().Should().Be(discrete2.First());
-            else
-                discrete1.First().Should().NotBe(discrete2.First());
 
             var sum1 = discrete1.Sum(n => n.TotalMilliseconds);
             var sum2 = discrete2.Sum(n => n.TotalMilliseconds);
@@ -76,8 +74,6 @@ namespace Polly.Specs.Duration
 
             if (fastFirst)
                 discrete1.First().Should().Be(discrete2.First());
-            else
-                discrete1.First().Should().NotBe(discrete2.First());
 
             var sum1 = discrete1.Sum(n => n.TotalMilliseconds);
             var sum2 = discrete2.Sum(n => n.TotalMilliseconds);
