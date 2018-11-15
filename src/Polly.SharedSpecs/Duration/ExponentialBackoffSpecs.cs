@@ -145,7 +145,7 @@ namespace Polly.Specs.Duration
             IEnumerable<TimeSpan> actualDurations = durationStrategy.Generate(5);
             actualDurations.Should().ContainInOrder(expectedDurations);
 
-            // Take
+            // Generate
 
             TimeSpan[] expectedContinuous = new TimeSpan[7]
             {
@@ -182,7 +182,7 @@ namespace Polly.Specs.Duration
             IEnumerable<TimeSpan> actualDurations = durationStrategy.Generate(5);
             actualDurations.Should().ContainInOrder(expectedDurations);
 
-            // Take
+            // Generate
 
             TimeSpan[] expectedContinuous = new TimeSpan[7]
             {

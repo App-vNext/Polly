@@ -25,7 +25,7 @@ namespace Polly.Duration
             double max = 0;
             foreach (TimeSpan delay in strategy.Generate(retryCount))
             {
-                max = delay.TotalMilliseconds;
+                max = Math.Max(max, delay.TotalMilliseconds);
 
                 yield return delay;
             }

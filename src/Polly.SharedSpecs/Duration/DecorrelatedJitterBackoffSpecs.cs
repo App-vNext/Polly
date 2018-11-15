@@ -194,12 +194,12 @@ namespace Polly.Specs.Duration
             IEnumerable<TimeSpan> actualDurations = durationStrategy.Generate(count);
             actualDurations.Should().OnlyContain(n => n >= durationStrategy.MinDelay && n <= durationStrategy.MaxDelay);
 
-            // Take
+            // Continuous
 
             actualDurations = durationStrategy.Continuous(count).Take(count + take).ToArray();
 
-            IEnumerable<TimeSpan> extra = actualDurations.Skip(count);
             IEnumerable<TimeSpan> discrete = actualDurations.Take(count);
+            IEnumerable<TimeSpan> extra = actualDurations.Skip(count);
             TimeSpan max = discrete.Max();
 
             discrete.Should().OnlyContain(n => n >= durationStrategy.MinDelay && n <= durationStrategy.MaxDelay);
@@ -219,13 +219,13 @@ namespace Polly.Specs.Duration
             actualDurations.Take(1).Should().OnlyContain(n => n == TimeSpan.Zero);
             actualDurations.Skip(1).Should().OnlyContain(n => n >= durationStrategy.MinDelay && n <= durationStrategy.MaxDelay);
 
-            // Take
+            // Continuous
 
             actualDurations = durationStrategy.Continuous(count).Take(count + take).ToArray();
             actualDurations.Take(1).Should().OnlyContain(n => n == TimeSpan.Zero);
 
-            IEnumerable<TimeSpan> extra = actualDurations.Skip(count);
             IEnumerable<TimeSpan> discrete = actualDurations.Skip(1).Take(count - 1);
+            IEnumerable<TimeSpan> extra = actualDurations.Skip(count);
             TimeSpan max = discrete.Max();
 
             discrete.Should().OnlyContain(n => n >= durationStrategy.MinDelay && n <= durationStrategy.MaxDelay);
