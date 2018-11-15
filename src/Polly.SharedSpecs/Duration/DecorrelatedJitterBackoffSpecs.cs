@@ -22,8 +22,8 @@ namespace Polly.Specs.Duration
 
             DecorrelatedJitterBackoff backoff1 = new DecorrelatedJitterBackoff(minDelay, maxDelay, fastFirst, new Random(123456789));
             DecorrelatedJitterBackoff backoff2 = new DecorrelatedJitterBackoff(minDelay, maxDelay, fastFirst, new Random(123456789));
-            IEnumerable<TimeSpan> discrete1 = backoff1.Discrete(count);
-            IEnumerable<TimeSpan> discrete2 = backoff2.Discrete(count);
+            IEnumerable<TimeSpan> discrete1 = backoff1.Generate(count);
+            IEnumerable<TimeSpan> discrete2 = backoff2.Generate(count);
 
             discrete1.Should().HaveCount(count);
             discrete2.Should().HaveCount(count);
@@ -41,8 +41,8 @@ namespace Polly.Specs.Duration
 
             DecorrelatedJitterBackoff backoff1 = new DecorrelatedJitterBackoff(minDelay, maxDelay, fastFirst, new Random(123));
             DecorrelatedJitterBackoff backoff2 = new DecorrelatedJitterBackoff(minDelay, maxDelay, fastFirst, new Random(321));
-            IEnumerable<TimeSpan> discrete1 = backoff1.Discrete(count);
-            IEnumerable<TimeSpan> discrete2 = backoff2.Discrete(count);
+            IEnumerable<TimeSpan> discrete1 = backoff1.Generate(count);
+            IEnumerable<TimeSpan> discrete2 = backoff2.Generate(count);
 
             discrete1.Should().HaveCount(count);
             discrete2.Should().HaveCount(count);
@@ -68,8 +68,8 @@ namespace Polly.Specs.Duration
 
             DecorrelatedJitterBackoff backoff1 = new DecorrelatedJitterBackoff(minDelay, maxDelay, fastFirst);
             DecorrelatedJitterBackoff backoff2 = new DecorrelatedJitterBackoff(minDelay, maxDelay, fastFirst);
-            IEnumerable<TimeSpan> discrete1 = backoff1.Discrete(count);
-            IEnumerable<TimeSpan> discrete2 = backoff2.Discrete(count);
+            IEnumerable<TimeSpan> discrete1 = backoff1.Generate(count);
+            IEnumerable<TimeSpan> discrete2 = backoff2.Generate(count);
 
             discrete1.Should().HaveCount(count);
             discrete2.Should().HaveCount(count);
@@ -94,7 +94,7 @@ namespace Polly.Specs.Duration
             TimeSpan maxDelay = TimeSpan.FromMilliseconds(1500);
 
             DecorrelatedJitterBackoff backoff = new DecorrelatedJitterBackoff(minDelay, maxDelay, fastFirst, s_uniform);
-            IEnumerable<TimeSpan> discrete = backoff.Discrete(count);
+            IEnumerable<TimeSpan> discrete = backoff.Generate(count);
 
             discrete.Should().HaveCount(count);
 
@@ -124,7 +124,7 @@ namespace Polly.Specs.Duration
             TimeSpan maxDelay = TimeSpan.FromMilliseconds(150_000);
 
             DecorrelatedJitterBackoff backoff = new DecorrelatedJitterBackoff(minDelay, maxDelay, fastFirst, s_uniform);
-            IEnumerable<TimeSpan> discrete = backoff.Discrete(count);
+            IEnumerable<TimeSpan> discrete = backoff.Generate(count);
 
             discrete.Should().HaveCount(count);
 
@@ -154,7 +154,7 @@ namespace Polly.Specs.Duration
             TimeSpan maxDelay = TimeSpan.FromMilliseconds(0);
 
             DecorrelatedJitterBackoff backoff = new DecorrelatedJitterBackoff(minDelay, maxDelay, fastFirst, s_uniform);
-            IEnumerable<TimeSpan> discrete = backoff.Discrete(count);
+            IEnumerable<TimeSpan> discrete = backoff.Generate(count);
 
             discrete.Should().HaveCount(count);
 
@@ -177,7 +177,7 @@ namespace Polly.Specs.Duration
             TimeSpan maxDelay = TimeSpan.FromMilliseconds(1500);
 
             DecorrelatedJitterBackoff backoff = new DecorrelatedJitterBackoff(minDelay, maxDelay, fastFirst, s_uniform);
-            IEnumerable<TimeSpan> discrete = backoff.Discrete(count);
+            IEnumerable<TimeSpan> discrete = backoff.Generate(count);
 
             discrete.Should().BeEmpty();
         }
@@ -191,7 +191,7 @@ namespace Polly.Specs.Duration
 
             // Discrete
 
-            IEnumerable<TimeSpan> actualDurations = durationStrategy.Discrete(count);
+            IEnumerable<TimeSpan> actualDurations = durationStrategy.Generate(count);
             actualDurations.Should().OnlyContain(n => n >= durationStrategy.MinDelay && n <= durationStrategy.MaxDelay);
 
             // Take
@@ -215,7 +215,7 @@ namespace Polly.Specs.Duration
 
             // Discrete
 
-            IEnumerable<TimeSpan> actualDurations = durationStrategy.Discrete(count);
+            IEnumerable<TimeSpan> actualDurations = durationStrategy.Generate(count);
             actualDurations.Take(1).Should().OnlyContain(n => n == TimeSpan.Zero);
             actualDurations.Skip(1).Should().OnlyContain(n => n >= durationStrategy.MinDelay && n <= durationStrategy.MaxDelay);
 

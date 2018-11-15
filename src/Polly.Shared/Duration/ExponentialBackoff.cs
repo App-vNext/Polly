@@ -38,7 +38,7 @@ namespace Polly.Duration
         /// For example: 1s, 2s, 4s, 8s...
         /// </summary>
         /// <param name="retryCount">The maximum number of retries to use, in addition to the original call.</param>
-        public IEnumerable<TimeSpan> Discrete(int retryCount)
+        public IEnumerable<TimeSpan> Generate(int retryCount)
         {
             if (retryCount < 0) throw new ArgumentOutOfRangeException(nameof(retryCount));
 

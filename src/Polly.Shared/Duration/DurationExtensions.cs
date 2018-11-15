@@ -23,7 +23,7 @@ namespace Polly.Duration
             if (retryCount < 0) throw new ArgumentOutOfRangeException(nameof(retryCount));
 
             double max = 0;
-            foreach (TimeSpan delay in strategy.Discrete(retryCount))
+            foreach (TimeSpan delay in strategy.Generate(retryCount))
             {
                 max = delay.TotalMilliseconds;
 

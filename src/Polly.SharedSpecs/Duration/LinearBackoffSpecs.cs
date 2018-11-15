@@ -19,8 +19,8 @@ namespace Polly.Specs.Duration
 
             LinearBackoff backoff1 = new LinearBackoff(minDelay, 1.0, fastFirst);
             LinearBackoff backoff2 = new LinearBackoff(minDelay, 1.0, fastFirst);
-            IEnumerable<TimeSpan> discrete1 = backoff1.Discrete(count);
-            IEnumerable<TimeSpan> discrete2 = backoff2.Discrete(count);
+            IEnumerable<TimeSpan> discrete1 = backoff1.Generate(count);
+            IEnumerable<TimeSpan> discrete2 = backoff2.Generate(count);
 
             discrete1.Should().HaveCount(count);
             discrete2.Should().HaveCount(count);
@@ -38,8 +38,8 @@ namespace Polly.Specs.Duration
 
             LinearBackoff backoff1 = new LinearBackoff(minDelay, 1.0, fastFirst);
             LinearBackoff backoff2 = new LinearBackoff(minDelay, 2.0, fastFirst);
-            IEnumerable<TimeSpan> discrete1 = backoff1.Discrete(count);
-            IEnumerable<TimeSpan> discrete2 = backoff2.Discrete(count);
+            IEnumerable<TimeSpan> discrete1 = backoff1.Generate(count);
+            IEnumerable<TimeSpan> discrete2 = backoff2.Generate(count);
 
             discrete1.Should().HaveCount(count);
             discrete2.Should().HaveCount(count);
@@ -66,7 +66,7 @@ namespace Polly.Specs.Duration
             TimeSpan minDelay = TimeSpan.FromMilliseconds(10);
 
             LinearBackoff backoff = new LinearBackoff(minDelay, 1.0, fastFirst);
-            IEnumerable<TimeSpan> discrete = backoff.Discrete(count);
+            IEnumerable<TimeSpan> discrete = backoff.Generate(count);
 
             discrete.Should().HaveCount(count);
 
@@ -97,7 +97,7 @@ namespace Polly.Specs.Duration
             TimeSpan minDelay = TimeSpan.FromMilliseconds(10);
 
             LinearBackoff backoff = new LinearBackoff(minDelay, 1.0, fastFirst);
-            IEnumerable<TimeSpan> discrete = backoff.Discrete(count);
+            IEnumerable<TimeSpan> discrete = backoff.Generate(count);
 
             discrete.Should().HaveCount(count);
 
@@ -128,7 +128,7 @@ namespace Polly.Specs.Duration
             TimeSpan minDelay = TimeSpan.FromMilliseconds(0);
 
             LinearBackoff backoff = new LinearBackoff(minDelay, 1.0, fastFirst);
-            IEnumerable<TimeSpan> discrete = backoff.Discrete(count);
+            IEnumerable<TimeSpan> discrete = backoff.Generate(count);
 
             discrete.Should().HaveCount(count);
 
@@ -150,7 +150,7 @@ namespace Polly.Specs.Duration
             TimeSpan minDelay = TimeSpan.FromMilliseconds(10);
 
             LinearBackoff backoff = new LinearBackoff(minDelay, 1.0, fastFirst);
-            IEnumerable<TimeSpan> discrete = backoff.Discrete(count);
+            IEnumerable<TimeSpan> discrete = backoff.Generate(count);
 
             discrete.Should().BeEmpty();
         }
@@ -171,7 +171,7 @@ namespace Polly.Specs.Duration
                 TimeSpan.FromSeconds(9)
             };
 
-            IEnumerable<TimeSpan> actualDurations = durationStrategy.Discrete(5);
+            IEnumerable<TimeSpan> actualDurations = durationStrategy.Generate(5);
             actualDurations.Should().ContainInOrder(expectedDiscrete);
 
             // Take
@@ -208,7 +208,7 @@ namespace Polly.Specs.Duration
                 TimeSpan.FromSeconds(7)
             };
 
-            IEnumerable<TimeSpan> actualDurations = durationStrategy.Discrete(5);
+            IEnumerable<TimeSpan> actualDurations = durationStrategy.Generate(5);
             actualDurations.Should().ContainInOrder(expectedDurations);
 
             // Take
