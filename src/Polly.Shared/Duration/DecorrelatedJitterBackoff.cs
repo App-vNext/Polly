@@ -88,11 +88,7 @@ namespace Polly.Duration
         /// </summary>
         private sealed class ConcurrentRandom
         {
-            /// <summary>
-            /// A shared instance of <see cref="Random"/> that is safe to use concurrently.
-            /// </summary>
             private static readonly Random s_random = new Random();
-
             private readonly Random _random;
 
             /// <summary>
