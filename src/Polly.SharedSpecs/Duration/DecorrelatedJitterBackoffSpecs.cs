@@ -9,7 +9,7 @@ namespace Polly.Specs.Duration
 {
     public static class DecorrelatedJitterBackoffSpecs
     {
-        private static readonly Random s_uniform = new Random(123456789); // Specific seed for determinism
+        private const int Seed = 123456789; // Specific seed for determinism
 
         [Theory]
         [InlineData(false)]
@@ -20,8 +20,8 @@ namespace Polly.Specs.Duration
             TimeSpan minDelay = TimeSpan.FromMilliseconds(10);
             TimeSpan maxDelay = TimeSpan.FromMilliseconds(1500);
 
-            DecorrelatedJitterBackoff backoff1 = new DecorrelatedJitterBackoff(minDelay, maxDelay, fastFirst, new Random(123456789));
-            DecorrelatedJitterBackoff backoff2 = new DecorrelatedJitterBackoff(minDelay, maxDelay, fastFirst, new Random(123456789));
+            DecorrelatedJitterBackoff backoff1 = new DecorrelatedJitterBackoff(minDelay, maxDelay, fastFirst, Seed);
+            DecorrelatedJitterBackoff backoff2 = new DecorrelatedJitterBackoff(minDelay, maxDelay, fastFirst, Seed);
             IEnumerable<TimeSpan> discrete1 = backoff1.Generate(count);
             IEnumerable<TimeSpan> discrete2 = backoff2.Generate(count);
 
@@ -39,8 +39,8 @@ namespace Polly.Specs.Duration
             TimeSpan minDelay = TimeSpan.FromMilliseconds(10);
             TimeSpan maxDelay = TimeSpan.FromMilliseconds(1500);
 
-            DecorrelatedJitterBackoff backoff1 = new DecorrelatedJitterBackoff(minDelay, maxDelay, fastFirst, new Random(123));
-            DecorrelatedJitterBackoff backoff2 = new DecorrelatedJitterBackoff(minDelay, maxDelay, fastFirst, new Random(321));
+            DecorrelatedJitterBackoff backoff1 = new DecorrelatedJitterBackoff(minDelay, maxDelay, fastFirst, 123);
+            DecorrelatedJitterBackoff backoff2 = new DecorrelatedJitterBackoff(minDelay, maxDelay, fastFirst, 321);
             IEnumerable<TimeSpan> discrete1 = backoff1.Generate(count);
             IEnumerable<TimeSpan> discrete2 = backoff2.Generate(count);
 
@@ -50,8 +50,8 @@ namespace Polly.Specs.Duration
             if (fastFirst)
                 discrete1.First().Should().Be(discrete2.First());
 
-            var sum1 = discrete1.Sum(n => n.TotalMilliseconds);
-            var sum2 = discrete2.Sum(n => n.TotalMilliseconds);
+            double sum1 = discrete1.Sum(n => n.TotalMilliseconds);
+            double sum2 = discrete2.Sum(n => n.TotalMilliseconds);
             sum1.Should().NotBe(sum2);
         }
 
@@ -75,8 +75,8 @@ namespace Polly.Specs.Duration
             if (fastFirst)
                 discrete1.First().Should().Be(discrete2.First());
 
-            var sum1 = discrete1.Sum(n => n.TotalMilliseconds);
-            var sum2 = discrete2.Sum(n => n.TotalMilliseconds);
+            double sum1 = discrete1.Sum(n => n.TotalMilliseconds);
+            double sum2 = discrete2.Sum(n => n.TotalMilliseconds);
             sum1.Should().NotBe(sum2);
         }
 
@@ -89,7 +89,7 @@ namespace Polly.Specs.Duration
             TimeSpan minDelay = TimeSpan.FromMilliseconds(10);
             TimeSpan maxDelay = TimeSpan.FromMilliseconds(1500);
 
-            DecorrelatedJitterBackoff backoff = new DecorrelatedJitterBackoff(minDelay, maxDelay, fastFirst, s_uniform);
+            DecorrelatedJitterBackoff backoff = new DecorrelatedJitterBackoff(minDelay, maxDelay, fastFirst, Seed);
             IEnumerable<TimeSpan> discrete = backoff.Generate(count);
 
             discrete.Should().HaveCount(count);
@@ -119,7 +119,7 @@ namespace Polly.Specs.Duration
             TimeSpan minDelay = TimeSpan.FromMilliseconds(10);
             TimeSpan maxDelay = TimeSpan.FromMilliseconds(150_000);
 
-            DecorrelatedJitterBackoff backoff = new DecorrelatedJitterBackoff(minDelay, maxDelay, fastFirst, s_uniform);
+            DecorrelatedJitterBackoff backoff = new DecorrelatedJitterBackoff(minDelay, maxDelay, fastFirst, Seed);
             IEnumerable<TimeSpan> discrete = backoff.Generate(count);
 
             discrete.Should().HaveCount(count);
@@ -149,7 +149,7 @@ namespace Polly.Specs.Duration
             TimeSpan minDelay = TimeSpan.FromMilliseconds(0);
             TimeSpan maxDelay = TimeSpan.FromMilliseconds(0);
 
-            DecorrelatedJitterBackoff backoff = new DecorrelatedJitterBackoff(minDelay, maxDelay, fastFirst, s_uniform);
+            DecorrelatedJitterBackoff backoff = new DecorrelatedJitterBackoff(minDelay, maxDelay, fastFirst, Seed);
             IEnumerable<TimeSpan> discrete = backoff.Generate(count);
 
             discrete.Should().HaveCount(count);
@@ -172,7 +172,7 @@ namespace Polly.Specs.Duration
             TimeSpan minDelay = TimeSpan.FromMilliseconds(10);
             TimeSpan maxDelay = TimeSpan.FromMilliseconds(1500);
 
-            DecorrelatedJitterBackoff backoff = new DecorrelatedJitterBackoff(minDelay, maxDelay, fastFirst, s_uniform);
+            DecorrelatedJitterBackoff backoff = new DecorrelatedJitterBackoff(minDelay, maxDelay, fastFirst, Seed);
             IEnumerable<TimeSpan> discrete = backoff.Generate(count);
 
             discrete.Should().BeEmpty();

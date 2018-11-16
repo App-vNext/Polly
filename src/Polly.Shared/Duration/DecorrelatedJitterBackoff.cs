@@ -34,14 +34,14 @@ namespace Polly.Duration
         /// <param name="minDelay">The minimum duration value to use for each retry.</param>
         /// <param name="maxDelay">The maximum duration value to use for each retry.</param>
         /// <param name="fastFirst">Whether the first retry will be immediate or not.</param>
-        /// <param name="random">An optional <see cref="Random"/> instance to use.
-        /// If not specified, will use a shared (singleton) instance with a random seed.</param>
-        public DecorrelatedJitterBackoff(TimeSpan minDelay, TimeSpan maxDelay, bool fastFirst = false, Random random = null)
+        /// <param name="seed">An optional <see cref="Random"/> seed to use.
+        /// If not specified, will use a shared instance with a random seed.</param>
+        public DecorrelatedJitterBackoff(TimeSpan minDelay, TimeSpan maxDelay, bool fastFirst = false, int? seed = null)
         {
             if (minDelay < TimeSpan.Zero) throw new ArgumentOutOfRangeException(nameof(minDelay));
             if (maxDelay < minDelay) throw new ArgumentOutOfRangeException(nameof(maxDelay));
 
-            _random = ConcurrentRandom.Create(random);
+            _random = new ConcurrentRandom(seed);
 
             MinDelay = minDelay;
             MaxDelay = maxDelay;
@@ -91,25 +91,20 @@ namespace Polly.Duration
             /// <summary>
             /// A shared instance of <see cref="Random"/> that is safe to use concurrently.
             /// </summary>
-            public static ConcurrentRandom Shared { get; } = new ConcurrentRandom(new Random());
+            private static readonly Random s_random = new Random();
 
             private readonly Random _random;
 
-            private ConcurrentRandom(Random random)
-            {
-                Debug.Assert(random != null);
-
-                _random = random;
-            }
-
             /// <summary>
-            /// Returns an instance of the <see cref="ConcurrentRandom"/> class.
+            /// Creates an instance of the <see cref="ConcurrentRandom"/> class.
             /// </summary>
-            /// <param name="random">If not null, creates a new instance and uses the provided <see cref="Random"/> internally.
-            /// Else returns the <see cref="Shared"/> instance.</param>
-            public static ConcurrentRandom Create(Random random)
+            /// <param name="seed">An optional <see cref="Random"/> seed to use.
+            /// If not specified, will use a shared instance with a random seed.</param>
+            public ConcurrentRandom(int? seed = null)
             {
-                return random == null ? Shared : new ConcurrentRandom(random);
+                _random = seed == null 
+                    ? s_random // Do not use 'new Random()' here; in concurrent scenarios they could have the same seed
+                    : new Random(seed.Value);
             }
 
             /// <summary>
@@ -120,7 +115,7 @@ namespace Polly.Duration
             public double NextDouble()
             {
                 // It is safe to lock on _random since it's not exposed
-                // to outside use, so it cannot be contended.
+                // to outside use so it cannot be contended.
                 lock (_random)
                 {
                     return _random.NextDouble();
