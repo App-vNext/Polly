@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 
-namespace Polly.Duration
+namespace Polly.Retry
 {
     /// <summary>
     /// Generates sleep durations in an jittered manner, making sure to mitigate any correlations.
@@ -98,7 +98,7 @@ namespace Polly.Duration
             /// If not specified, will use a shared instance with a random seed.</param>
             public ConcurrentRandom(int? seed = null)
             {
-                _random = seed == null 
+                _random = seed == null
                     ? s_random // Do not use 'new Random()' here; in concurrent scenarios they could have the same seed
                     : new Random(seed.Value);
             }

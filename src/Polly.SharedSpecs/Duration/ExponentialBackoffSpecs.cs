@@ -1,5 +1,5 @@
 ﻿using FluentAssertions;
-using Polly.Duration;
+using Polly.Retry;
 using System;
 using System.Collections.Generic;
 using System.Linq;

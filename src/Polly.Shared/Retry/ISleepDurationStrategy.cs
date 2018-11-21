@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Polly.Duration
+namespace Polly.Retry
 {
     /// <summary>
     /// An interface defining strategies for managing the sleep-duration of retries. 

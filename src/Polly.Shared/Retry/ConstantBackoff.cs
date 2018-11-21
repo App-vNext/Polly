@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Polly.Duration
+namespace Polly.Retry
 {
     /// <summary>
     /// Generates sleep durations as a constant value.

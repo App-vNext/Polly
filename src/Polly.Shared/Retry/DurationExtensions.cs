@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Polly.Duration
+namespace Polly.Retry
 {
     /// <summary>
     /// Extensions related to <see cref="ISleepDurationStrategy"/>.
