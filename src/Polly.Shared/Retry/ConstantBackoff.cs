@@ -11,8 +11,10 @@ namespace Polly.Retry
     public sealed class ConstantBackoff : ISleepDurationSeriesStrategy
     {
         /// <summary>
-        /// Whether the first retry will be immediate or not.
+        /// Specifies whether the first retry will be immediate or not.
         /// </summary>
+        /// <remarks>When true, a first retry is made after zero delay, after which the configured
+        /// backoff strategy is followed. The overall number of retries is not increased.</remarks>
         public bool FastFirst { get; }
 
         /// <summary>

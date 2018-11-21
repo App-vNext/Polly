@@ -5,20 +5,22 @@ namespace Polly.Retry
 {
     /// <summary>
     /// Generates sleep durations in an linear manner.
-    /// The formula used is: Duration = <see cref="Delay"/> + <see cref="Factor"/> x iteration x <see cref="Delay"/>.
+    /// The formula used is: Duration = <see cref="InitialDelay"/> + <see cref="Factor"/> x iteration x <see cref="InitialDelay"/>.
     /// For example: 2s, 4s, 6s, 8s...
     /// </summary>
     public sealed class LinearBackoff : ISleepDurationSeriesStrategy
     {
         /// <summary>
-        /// Whether the first retry will be immediate or not.
+        /// Specifies whether the first retry will be immediate or not.
         /// </summary>
+        /// <remarks>When true, a first retry is made after zero delay, after which the configured
+        /// backoff strategy is followed. The overall number of retries is not increased.</remarks>
         public bool FastFirst { get; }
 
         /// <summary>
         /// The duration value for the first retry.
         /// </summary>
-        public TimeSpan Delay { get; }
+        public TimeSpan InitialDelay { get; }
 
         /// <summary>
         /// The linear factor (gradient) to use for increasing the duration on subsequent calls.
@@ -28,15 +30,15 @@ namespace Polly.Retry
         /// <summary>
         /// Creates a new instance of the class.
         /// </summary>
-        /// <param name="delay">The duration value for the first retry.</param>
+        /// <param name="initialDelay">The duration value for the first retry.</param>
         /// <param name="factor">The linear factor to use for increasing the duration on subsequent calls.</param>
         /// <param name="fastFirst">Whether the first retry will be immediate or not.</param>
-        public LinearBackoff(TimeSpan delay, double factor = 1.0, bool fastFirst = false)
+        public LinearBackoff(TimeSpan initialDelay, double factor = 1.0, bool fastFirst = false)
         {
-            if (delay < TimeSpan.Zero) throw new ArgumentOutOfRangeException(nameof(delay));
-            if (factor <= 0) throw new ArgumentOutOfRangeException(nameof(factor));
+            if (initialDelay < TimeSpan.Zero) throw new ArgumentOutOfRangeException(nameof(initialDelay));
+            if (factor < 0) throw new ArgumentOutOfRangeException(nameof(factor));
 
-            Delay = delay;
+            InitialDelay = initialDelay;
             Factor = factor;
             FastFirst = fastFirst;
         }
@@ -60,7 +62,7 @@ namespace Polly.Retry
                 yield return TimeSpan.Zero;
             }
 
-            double ms = Delay.TotalMilliseconds;
+            double ms = InitialDelay.TotalMilliseconds;
             double ad = Factor * ms;
 
             for (; i < retryCount; i++, ms += ad)

@@ -5,20 +5,20 @@ using System.Collections.Generic;
 using System.Linq;
 using Xunit;
 
-namespace Polly.Specs.Duration
+namespace Polly.Specs.Retry
 {
-    public static class LinearBackoffSpecs
+    public static class ExponentialBackoffSpecs
     {
         [Theory]
         [InlineData(false)]
         [InlineData(true)]
         public static void Should_have_identical_sequence_when_same_factor(bool fastFirst)
         {
-            const int count = 1000;
+            const int count = 20;
             TimeSpan minDelay = TimeSpan.FromMilliseconds(10);
 
-            LinearBackoff backoff1 = new LinearBackoff(minDelay, 1.0, fastFirst);
-            LinearBackoff backoff2 = new LinearBackoff(minDelay, 1.0, fastFirst);
+            ExponentialBackoff backoff1 = new ExponentialBackoff(minDelay, fastFirst);
+            ExponentialBackoff backoff2 = new ExponentialBackoff(minDelay, fastFirst);
             IEnumerable<TimeSpan> discrete1 = backoff1.Generate(count);
             IEnumerable<TimeSpan> discrete2 = backoff2.Generate(count);
 
@@ -31,41 +31,12 @@ namespace Polly.Specs.Duration
         [Theory]
         [InlineData(false)]
         [InlineData(true)]
-        public static void Should_have_different_sequence_when_different_factor(bool fastFirst)
-        {
-            const int count = 100;
-            TimeSpan minDelay = TimeSpan.FromMilliseconds(10);
-
-            LinearBackoff backoff1 = new LinearBackoff(minDelay, 1.0, fastFirst);
-            LinearBackoff backoff2 = new LinearBackoff(minDelay, 2.0, fastFirst);
-            IEnumerable<TimeSpan> discrete1 = backoff1.Generate(count);
-            IEnumerable<TimeSpan> discrete2 = backoff2.Generate(count);
-
-            discrete1.Should().HaveCount(count);
-            discrete2.Should().HaveCount(count);
-
-            if (fastFirst)
-            {
-                discrete1.First().Should().Be(discrete2.First());
-                discrete1.Skip(1).First().Should().Be(discrete2.Skip(1).First());
-            }
-            else
-            {
-                discrete1.First().Should().Be(discrete2.First());
-            }
-
-            discrete1.Skip(2).First().Should().NotBe(discrete2.Skip(2).First());
-        }
-
-        [Theory]
-        [InlineData(false)]
-        [InlineData(true)]
         public static void Should_have_an_adequate_variance_when_range_small(bool fastFirst)
         {
-            const int count = 1000;
+            const int count = 20;
             TimeSpan minDelay = TimeSpan.FromMilliseconds(10);
 
-            LinearBackoff backoff = new LinearBackoff(minDelay, 1.0, fastFirst);
+            ExponentialBackoff backoff = new ExponentialBackoff(minDelay, fastFirst);
             IEnumerable<TimeSpan> discrete = backoff.Generate(count);
 
             discrete.Should().HaveCount(count);
@@ -93,10 +64,10 @@ namespace Polly.Specs.Duration
         [InlineData(true)]
         public static void Should_have_an_adequate_variance_when_range_large(bool fastFirst)
         {
-            const int count = 1000;
+            const int count = 20;
             TimeSpan minDelay = TimeSpan.FromMilliseconds(10);
 
-            LinearBackoff backoff = new LinearBackoff(minDelay, 1.0, fastFirst);
+            ExponentialBackoff backoff = new ExponentialBackoff(minDelay, fastFirst);
             IEnumerable<TimeSpan> discrete = backoff.Generate(count);
 
             discrete.Should().HaveCount(count);
@@ -124,10 +95,10 @@ namespace Polly.Specs.Duration
         [InlineData(true)]
         public static void Should_have_no_variance_when_range_zero(bool fastFirst)
         {
-            const int count = 1000;
+            const int count = 20;
             TimeSpan minDelay = TimeSpan.FromMilliseconds(0);
 
-            LinearBackoff backoff = new LinearBackoff(minDelay, 1.0, fastFirst);
+            ExponentialBackoff backoff = new ExponentialBackoff(minDelay, fastFirst);
             IEnumerable<TimeSpan> discrete = backoff.Generate(count);
 
             discrete.Should().HaveCount(count);
@@ -149,7 +120,7 @@ namespace Polly.Specs.Duration
             const int count = 0;
             TimeSpan minDelay = TimeSpan.FromMilliseconds(10);
 
-            LinearBackoff backoff = new LinearBackoff(minDelay, 1.0, fastFirst);
+            ExponentialBackoff backoff = new ExponentialBackoff(minDelay, fastFirst);
             IEnumerable<TimeSpan> discrete = backoff.Generate(count);
 
             discrete.Should().BeEmpty();
@@ -158,33 +129,33 @@ namespace Polly.Specs.Duration
         [Fact]
         public static void Should_be_able_to_calculate_retry_timespans()
         {
-            LinearBackoff durationStrategy = new LinearBackoff(TimeSpan.FromSeconds(1), 2, false);
+            ExponentialBackoff durationStrategy = new ExponentialBackoff(TimeSpan.FromSeconds(1), false);
 
-            TimeSpan[] expectedDiscrete = new TimeSpan[5]
+            TimeSpan[] expectedDurations = new TimeSpan[5]
             {
                 TimeSpan.FromSeconds(1),
-                TimeSpan.FromSeconds(3),
-                TimeSpan.FromSeconds(5),
-                TimeSpan.FromSeconds(7),
-                TimeSpan.FromSeconds(9)
+                TimeSpan.FromSeconds(2),
+                TimeSpan.FromSeconds(4),
+                TimeSpan.FromSeconds(8),
+                TimeSpan.FromSeconds(16)
             };
 
             IEnumerable<TimeSpan> actualDurations = durationStrategy.Generate(5);
-            actualDurations.Should().ContainInOrder(expectedDiscrete);
+            actualDurations.Should().ContainInOrder(expectedDurations);
         }
 
         [Fact]
         public static void Should_be_able_to_calculate_retry_timespans_fastfirst()
         {
-            LinearBackoff durationStrategy = new LinearBackoff(TimeSpan.FromSeconds(1), 2, true);
+            ExponentialBackoff durationStrategy = new ExponentialBackoff(TimeSpan.FromSeconds(1), true);
 
             TimeSpan[] expectedDurations = new TimeSpan[5]
             {
                 TimeSpan.Zero,
                 TimeSpan.FromSeconds(1),
-                TimeSpan.FromSeconds(3),
-                TimeSpan.FromSeconds(5),
-                TimeSpan.FromSeconds(7)
+                TimeSpan.FromSeconds(2),
+                TimeSpan.FromSeconds(4),
+                TimeSpan.FromSeconds(8)
             };
 
             IEnumerable<TimeSpan> actualDurations = durationStrategy.Generate(5);

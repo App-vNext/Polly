@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Xunit;
 
-namespace Polly.Specs.Duration
+namespace Polly.Specs.Retry
 {
     public static class ConstantBackoffSpecs
     {
@@ -30,12 +30,12 @@ namespace Polly.Specs.Duration
         [Theory]
         [InlineData(false)]
         [InlineData(true)]
-        public static void Should_have_an_adequate_variance_when_range_small(bool fastFirst)
+        public static void Should_have_an_adequate_variance_when_duration_specified(bool fastFirst)
         {
             const int count = 20;
-            TimeSpan minDelay = TimeSpan.FromMilliseconds(10);
+            TimeSpan delay = TimeSpan.FromMilliseconds(5);
 
-            ConstantBackoff backoff = new ConstantBackoff(minDelay, fastFirst);
+            ConstantBackoff backoff = new ConstantBackoff(delay, fastFirst);
             IEnumerable<TimeSpan> discrete = backoff.Generate(count);
 
             discrete.Should().HaveCount(count);
@@ -46,7 +46,7 @@ namespace Polly.Specs.Duration
                 discrete = discrete.Skip(1);
             }
 
-            discrete.Should().Contain(n => n >= minDelay);
+            discrete.Should().Contain(n => n == delay);
 
             int groupCount = discrete
                 .Select(n => n.TotalMilliseconds)
@@ -59,12 +59,12 @@ namespace Polly.Specs.Duration
         [Theory]
         [InlineData(false)]
         [InlineData(true)]
-        public static void Should_have_an_adequate_variance_when_range_large(bool fastFirst)
+        public static void Should_have_no_variance_when_duration_zero(bool fastFirst)
         {
             const int count = 20;
-            TimeSpan minDelay = TimeSpan.FromMilliseconds(10);
+            TimeSpan delay = TimeSpan.FromMilliseconds(0);
 
-            ConstantBackoff backoff = new ConstantBackoff(minDelay, fastFirst);
+            ConstantBackoff backoff = new ConstantBackoff(delay, fastFirst);
             IEnumerable<TimeSpan> discrete = backoff.Generate(count);
 
             discrete.Should().HaveCount(count);
@@ -75,7 +75,7 @@ namespace Polly.Specs.Duration
                 discrete = discrete.Skip(1);
             }
 
-            discrete.Should().Contain(n => n >= minDelay);
+            discrete.Should().Contain(n => n == delay);
 
             int groupCount = discrete
                 .Select(n => n.TotalMilliseconds)
@@ -83,28 +83,6 @@ namespace Polly.Specs.Duration
                 .Count();
 
             groupCount.Should().Be(1);
-        }
-
-        [Theory]
-        [InlineData(false)]
-        [InlineData(true)]
-        public static void Should_have_no_variance_when_range_zero(bool fastFirst)
-        {
-            const int count = 20;
-            TimeSpan minDelay = TimeSpan.FromMilliseconds(0);
-
-            ConstantBackoff backoff = new ConstantBackoff(minDelay, fastFirst);
-            IEnumerable<TimeSpan> discrete = backoff.Generate(count);
-
-            discrete.Should().HaveCount(count);
-
-            if (fastFirst)
-            {
-                discrete.First().Should().Be(TimeSpan.Zero);
-                discrete = discrete.Skip(1);
-            }
-
-            discrete.Should().Contain(n => n == minDelay);
         }
 
         [Theory]
