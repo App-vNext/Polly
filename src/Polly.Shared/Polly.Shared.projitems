@@ -78,7 +78,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Retry\LinearBackoff.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Retry\ExponentialBackoff.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Retry\DecorrelatedJitterBackoff.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Retry\ISleepDurationStrategy.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Retry\ISleepDurationSeriesStrategy.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ExceptionPredicate.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DelegateResult.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ExecutionRejectedException.cs" />

@@ -6,7 +6,7 @@ namespace Polly.Retry
     /// <summary>
     /// An interface defining strategies for managing the sleep-duration of retries. 
     /// </summary>
-    public interface ISleepDurationStrategy
+    public interface ISleepDurationSeriesStrategy
     {
         /// <summary>
         /// Whether the first retry will be immediate or not.

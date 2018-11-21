@@ -8,7 +8,7 @@ namespace Polly.Retry
     /// The formula used is: Duration = <see cref="Delay"/> + <see cref="Factor"/> x iteration x <see cref="Delay"/>.
     /// For example: 2s, 4s, 6s, 8s...
     /// </summary>
-    public sealed class LinearBackoff : ISleepDurationStrategy
+    public sealed class LinearBackoff : ISleepDurationSeriesStrategy
     {
         /// <summary>
         /// Whether the first retry will be immediate or not.

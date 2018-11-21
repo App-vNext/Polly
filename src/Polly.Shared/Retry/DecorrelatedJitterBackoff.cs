@@ -9,7 +9,7 @@ namespace Polly.Retry
     /// For example: 1s, 3s, 4s, 2s...
     /// For background, see https://aws.amazon.com/blogs/architecture/exponential-backoff-and-jitter/.
     /// </summary>
-    public sealed class DecorrelatedJitterBackoff : ISleepDurationStrategy
+    public sealed class DecorrelatedJitterBackoff : ISleepDurationSeriesStrategy
     {
         private readonly ConcurrentRandom _random;
 
