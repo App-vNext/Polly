@@ -131,8 +131,6 @@ namespace Polly.Specs.Duration
         {
             ExponentialBackoff durationStrategy = new ExponentialBackoff(TimeSpan.FromSeconds(1), false);
 
-            // Discrete
-
             TimeSpan[] expectedDurations = new TimeSpan[5]
             {
                 TimeSpan.FromSeconds(1),
@@ -144,23 +142,6 @@ namespace Polly.Specs.Duration
 
             IEnumerable<TimeSpan> actualDurations = durationStrategy.Generate(5);
             actualDurations.Should().ContainInOrder(expectedDurations);
-
-            // Generate
-
-            TimeSpan[] expectedContinuous = new TimeSpan[7]
-            {
-                TimeSpan.FromSeconds(1),
-                TimeSpan.FromSeconds(2),
-                TimeSpan.FromSeconds(4),
-                TimeSpan.FromSeconds(8),
-                TimeSpan.FromSeconds(16),
-
-                TimeSpan.FromSeconds(16),
-                TimeSpan.FromSeconds(16)
-            };
-
-            actualDurations = durationStrategy.Continuous(5).Take(7).ToArray();
-            actualDurations.Should().ContainInOrder(expectedContinuous);
         }
 
         [Fact]
@@ -168,8 +149,6 @@ namespace Polly.Specs.Duration
         {
             ExponentialBackoff durationStrategy = new ExponentialBackoff(TimeSpan.FromSeconds(1), true);
 
-            // Discrete
-
             TimeSpan[] expectedDurations = new TimeSpan[5]
             {
                 TimeSpan.Zero,
@@ -181,23 +160,6 @@ namespace Polly.Specs.Duration
 
             IEnumerable<TimeSpan> actualDurations = durationStrategy.Generate(5);
             actualDurations.Should().ContainInOrder(expectedDurations);
-
-            // Generate
-
-            TimeSpan[] expectedContinuous = new TimeSpan[7]
-            {
-                TimeSpan.Zero,
-                TimeSpan.FromSeconds(1),
-                TimeSpan.FromSeconds(2),
-                TimeSpan.FromSeconds(4),
-                TimeSpan.FromSeconds(8),
-
-                TimeSpan.FromSeconds(8),
-                TimeSpan.FromSeconds(8)
-            };
-
-            actualDurations = durationStrategy.Continuous(5).Take(7).ToArray();
-            actualDurations.Should().ContainInOrder(expectedContinuous);
         }
     }
 }

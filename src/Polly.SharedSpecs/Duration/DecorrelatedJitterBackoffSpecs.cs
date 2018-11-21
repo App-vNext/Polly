@@ -182,50 +182,21 @@ namespace Polly.Specs.Duration
         public static void Should_be_able_to_calculate_retry_timespans()
         {
             const int count = 20;
-            const int take = 5;
             DecorrelatedJitterBackoff durationStrategy = new DecorrelatedJitterBackoff(TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(3), false);
-
-            // Discrete
 
             IEnumerable<TimeSpan> actualDurations = durationStrategy.Generate(count);
             actualDurations.Should().OnlyContain(n => n >= durationStrategy.MinDelay && n <= durationStrategy.MaxDelay);
-
-            // Continuous
-
-            actualDurations = durationStrategy.Continuous(count).Take(count + take).ToArray();
-
-            IEnumerable<TimeSpan> discrete = actualDurations.Take(count);
-            IEnumerable<TimeSpan> extra = actualDurations.Skip(count);
-            TimeSpan max = discrete.Max();
-
-            discrete.Should().OnlyContain(n => n >= durationStrategy.MinDelay && n <= durationStrategy.MaxDelay);
-            extra.Should().OnlyContain(n => n == max);
         }
 
         [Fact]
         public static void Should_be_able_to_calculate_retry_timespans_fastfirst()
         {
             const int count = 20;
-            const int take = 5;
             DecorrelatedJitterBackoff durationStrategy = new DecorrelatedJitterBackoff(TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(3), true);
-
-            // Discrete
 
             IEnumerable<TimeSpan> actualDurations = durationStrategy.Generate(count);
             actualDurations.Take(1).Should().OnlyContain(n => n == TimeSpan.Zero);
             actualDurations.Skip(1).Should().OnlyContain(n => n >= durationStrategy.MinDelay && n <= durationStrategy.MaxDelay);
-
-            // Continuous
-
-            actualDurations = durationStrategy.Continuous(count).Take(count + take).ToArray();
-            actualDurations.Take(1).Should().OnlyContain(n => n == TimeSpan.Zero);
-
-            IEnumerable<TimeSpan> discrete = actualDurations.Skip(1).Take(count - 1);
-            IEnumerable<TimeSpan> extra = actualDurations.Skip(count);
-            TimeSpan max = discrete.Max();
-
-            discrete.Should().OnlyContain(n => n >= durationStrategy.MinDelay && n <= durationStrategy.MaxDelay);
-            extra.Should().OnlyContain(n => n == max);
         }
     }
 }
