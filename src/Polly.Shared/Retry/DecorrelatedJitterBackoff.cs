@@ -74,8 +74,9 @@ namespace Polly.Retry
             {
                 // https://github.com/aws-samples/aws-arch-backoff-simulator/blob/master/src/backoff_simulator.py#L45
                 // self.sleep = min(self.cap, random.uniform(self.base, self.sleep * 3))
-                ms = _random.Uniform(MinDelay.TotalMilliseconds, ms * 3);
-                ms = Math.Min(MaxDelay.TotalMilliseconds, ms);
+
+                double ceiling = Math.Min(MaxDelay.TotalMilliseconds, ms * 3);
+                ms = _random.Uniform(MinDelay.TotalMilliseconds, ceiling);
 
                 yield return TimeSpan.FromMilliseconds(ms);
             }
