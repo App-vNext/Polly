@@ -5,7 +5,7 @@ namespace Polly.Retry
 {
     /// <summary>
     /// Generates sleep durations in an linear manner.
-    /// The formula used is: Duration = <see cref="InitialDelay"/> + <see cref="Factor"/> x iteration x <see cref="InitialDelay"/>.
+    /// The formula used is: Duration = <see cref="InitialDelay"/> x (1 + <see cref="Factor"/> x iteration).
     /// For example: 2s, 4s, 6s, 8s...
     /// </summary>
     public sealed class LinearBackoff : ISleepDurationSeriesStrategy
