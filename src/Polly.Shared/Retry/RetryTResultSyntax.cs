@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using Polly.Retry;
 using System.Linq;
-using Polly.Duration;
 
 namespace Polly
 {
@@ -238,37 +237,6 @@ namespace Polly
             return policyBuilder.WaitAndRetry(
                 retryCount,
                 sleepDurationProvider,
-                (outcome, span, i, ctx) => onRetry(outcome, span)
-            );
-        }
-
-        /// <summary>
-        /// Builds a <see cref="Policy"/> that will wait and retry.
-        /// calling <paramref name="onRetry"/> on each retry with the handled exception or result and the current sleep duration.
-        /// On each retry, the duration to wait is calculated by calling <paramref name="sleepDurationStrategy"/> with
-        /// the current retry number (1 for first retry, 2 for second etc).
-        /// </summary>
-        /// <param name="policyBuilder">The policy builder.</param>
-        /// <param name="retryCount">The retry count.</param>
-        /// <param name="sleepDurationStrategy">The class that provides the duration to wait for for a particular retry attempt.</param>
-        /// <param name="onRetry">The action to call on each retry.</param>
-        /// <returns>The policy instance.</returns>
-        /// <exception cref="System.ArgumentOutOfRangeException">retryCount;Value must be greater than or equal to zero.</exception>
-        /// <exception cref="System.ArgumentNullException">
-        /// sleepDurationProvider
-        /// or
-        /// onRetry
-        /// </exception>
-        public static RetryPolicy<TResult> WaitAndRetry<TResult>(this PolicyBuilder<TResult> policyBuilder, int retryCount, ISleepDurationStrategy sleepDurationStrategy, Action<DelegateResult<TResult>, TimeSpan> onRetry)
-        {
-            if (onRetry == null) throw new ArgumentNullException(nameof(onRetry));
-            if (sleepDurationStrategy == null) throw new ArgumentNullException(nameof(sleepDurationStrategy));
-
-            TimeSpan[] delays = sleepDurationStrategy.Generate(retryCount).ToArray();
-
-            return policyBuilder.WaitAndRetry(
-                retryCount,
-                (i, _, __) => delays[i],
                 (outcome, span, i, ctx) => onRetry(outcome, span)
             );
         }
