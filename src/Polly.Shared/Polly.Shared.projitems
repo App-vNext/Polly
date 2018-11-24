@@ -172,8 +172,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\EmptyStruct.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\ExceptionDispatchInfo.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\KeyHelper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\ThreadSafeRandom_LockOncePerThread.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\PredicateHelper.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Utilities\RandomGenerator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\SemaphoreSlimFactory.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\SystemClock.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\TaskHelper.cs" />

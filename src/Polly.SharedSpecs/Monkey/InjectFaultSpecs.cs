@@ -11,12 +11,12 @@ namespace Polly.Specs.Monkey
     {
         public InjectFaultSpecs()
         {
-            RandomGenerator.GetRandomNumber = () => 0.5;
+            ThreadSafeRandom_LockOncePerThread.NextDouble = () => 0.5;
         }
 
         public void Dispose()
         {
-            RandomGenerator.Reset();
+            ThreadSafeRandom_LockOncePerThread.Reset();
         }
 
         #region Basic Overload, Exception, Context Free

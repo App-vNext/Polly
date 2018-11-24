@@ -13,12 +13,12 @@ namespace Polly.Specs.Monkey
     {
         public MonkeySpecs()
         {
-            RandomGenerator.GetRandomNumber = () => 0.5;
+            ThreadSafeRandom_LockOncePerThread.NextDouble = () => 0.5;
         }
 
         public void Dispose()
         {
-            RandomGenerator.Reset();
+            ThreadSafeRandom_LockOncePerThread.Reset();
         }
 
         #region Action based Monkey policies

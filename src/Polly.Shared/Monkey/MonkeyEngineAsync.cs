@@ -16,7 +16,7 @@ namespace Polly.Monkey
             Func<Context, Task<bool>> enabled,
             bool continueOnCapturedContext)
         {
-            if (await enabled(context).ConfigureAwait(continueOnCapturedContext) && RandomGenerator.GetRandomNumber() < await injectionRate(context).ConfigureAwait(continueOnCapturedContext))
+            if (await enabled(context).ConfigureAwait(continueOnCapturedContext) && ThreadSafeRandom_LockOncePerThread.NextDouble() < await injectionRate(context).ConfigureAwait(continueOnCapturedContext))
             {
                 await fault(context, cancellationToken).ConfigureAwait(continueOnCapturedContext);
             }
@@ -33,7 +33,7 @@ namespace Polly.Monkey
             Func<Context, Task<bool>> enabled,
             bool continueOnCapturedContext)
         {
-            if (await enabled(context).ConfigureAwait(continueOnCapturedContext) && RandomGenerator.GetRandomNumber() < await injectionRate(context).ConfigureAwait(continueOnCapturedContext))
+            if (await enabled(context).ConfigureAwait(continueOnCapturedContext) && ThreadSafeRandom_LockOncePerThread.NextDouble() < await injectionRate(context).ConfigureAwait(continueOnCapturedContext))
             {
                 throw await fault(context, cancellationToken).ConfigureAwait(continueOnCapturedContext);
             }
@@ -50,7 +50,7 @@ namespace Polly.Monkey
             Func<Context, Task<bool>> enabled,
             bool continueOnCapturedContext)
         {
-            if (await enabled(context).ConfigureAwait(continueOnCapturedContext) && RandomGenerator.GetRandomNumber() < await injectionRate(context).ConfigureAwait(continueOnCapturedContext))
+            if (await enabled(context).ConfigureAwait(continueOnCapturedContext) && ThreadSafeRandom_LockOncePerThread.NextDouble() < await injectionRate(context).ConfigureAwait(continueOnCapturedContext))
             {
                 return await fault(context, cancellationToken).ConfigureAwait(continueOnCapturedContext);
             }

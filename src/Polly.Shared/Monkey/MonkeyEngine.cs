@@ -14,7 +14,7 @@ namespace Polly.Monkey
             Func<Context, Double> injectionRate,
             Func<Context, bool> enabled)
         {
-            if (enabled(context) && RandomGenerator.GetRandomNumber() < injectionRate(context))
+            if (enabled(context) && ThreadSafeRandom_LockOncePerThread.NextDouble() < injectionRate(context))
             {
                 fault(context);
             }
@@ -30,7 +30,7 @@ namespace Polly.Monkey
             Func<Context, Double> injectionRate,
             Func<Context, bool> enabled)
         {
-            if (enabled(context) && RandomGenerator.GetRandomNumber() < injectionRate(context))
+            if (enabled(context) && ThreadSafeRandom_LockOncePerThread.NextDouble() < injectionRate(context))
             {
                 throw fault(context);
             }
@@ -46,7 +46,7 @@ namespace Polly.Monkey
             Func<Context, Double> injectionRate,
             Func<Context, bool> enabled)
         {
-            if (enabled(context) && RandomGenerator.GetRandomNumber() < injectionRate(context))
+            if (enabled(context) && ThreadSafeRandom_LockOncePerThread.NextDouble() < injectionRate(context))
             {
                 return fault(context);
             }

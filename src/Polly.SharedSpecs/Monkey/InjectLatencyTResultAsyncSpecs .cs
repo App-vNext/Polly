@@ -15,7 +15,7 @@ namespace Polly.Specs.Monkey
 
         public InjectLatencyTResultAsyncSpecs()
         {
-            RandomGenerator.GetRandomNumber = () => 0.5;
+            ThreadSafeRandom_LockOncePerThread.NextDouble = () => 0.5;
             SystemClock.SleepAsync = async (span, ct) => _totalTimeSlept += await Task.FromResult(span.Milliseconds);
         }
 
@@ -23,7 +23,7 @@ namespace Polly.Specs.Monkey
         {
             _totalTimeSlept = 0;
             SystemClock.Reset();
-            RandomGenerator.Reset();
+            ThreadSafeRandom_LockOncePerThread.Reset();
         }
 
         #region Context Free
