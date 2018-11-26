@@ -48,7 +48,7 @@ namespace Polly.Retry
         /// For example: 100ms, 200ms, 300ms, 400ms, ...
         /// </summary>
         /// <param name="retryCount">The maximum number of retries to use, in addition to the original call.</param>
-        public IEnumerable<TimeSpan> Generate(int retryCount)
+        public IEnumerable<TimeSpan> GetSleepDurations(int retryCount)
         {
             if (retryCount < 0) throw new ArgumentOutOfRangeException(nameof(retryCount));
 

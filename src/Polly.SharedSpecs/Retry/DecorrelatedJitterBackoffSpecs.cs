@@ -22,8 +22,8 @@ namespace Polly.Specs.Retry
 
             DecorrelatedJitterBackoff backoff1 = new DecorrelatedJitterBackoff(minDelay, maxDelay, fastFirst, Seed);
             DecorrelatedJitterBackoff backoff2 = new DecorrelatedJitterBackoff(minDelay, maxDelay, fastFirst, Seed);
-            IEnumerable<TimeSpan> discrete1 = backoff1.Generate(count).ToList();
-            IEnumerable<TimeSpan> discrete2 = backoff2.Generate(count).ToList();
+            IEnumerable<TimeSpan> discrete1 = backoff1.GetSleepDurations(count).ToList();
+            IEnumerable<TimeSpan> discrete2 = backoff2.GetSleepDurations(count).ToList();
 
             discrete1.Should().HaveCount(count);
             discrete2.Should().HaveCount(count);
@@ -41,8 +41,8 @@ namespace Polly.Specs.Retry
 
             DecorrelatedJitterBackoff backoff1 = new DecorrelatedJitterBackoff(minDelay, maxDelay, fastFirst, 123);
             DecorrelatedJitterBackoff backoff2 = new DecorrelatedJitterBackoff(minDelay, maxDelay, fastFirst, 321);
-            IEnumerable<TimeSpan> discrete1 = backoff1.Generate(count).ToList();
-            IEnumerable<TimeSpan> discrete2 = backoff2.Generate(count).ToList();
+            IEnumerable<TimeSpan> discrete1 = backoff1.GetSleepDurations(count).ToList();
+            IEnumerable<TimeSpan> discrete2 = backoff2.GetSleepDurations(count).ToList();
 
             discrete1.Should().HaveCount(count);
             discrete2.Should().HaveCount(count);
@@ -66,8 +66,8 @@ namespace Polly.Specs.Retry
 
             DecorrelatedJitterBackoff backoff1 = new DecorrelatedJitterBackoff(minDelay, maxDelay, fastFirst);
             DecorrelatedJitterBackoff backoff2 = new DecorrelatedJitterBackoff(minDelay, maxDelay, fastFirst);
-            IEnumerable<TimeSpan> discrete1 = backoff1.Generate(count).ToList();
-            IEnumerable<TimeSpan> discrete2 = backoff2.Generate(count).ToList();
+            IEnumerable<TimeSpan> discrete1 = backoff1.GetSleepDurations(count).ToList();
+            IEnumerable<TimeSpan> discrete2 = backoff2.GetSleepDurations(count).ToList();
 
             discrete1.Should().HaveCount(count);
             discrete2.Should().HaveCount(count);
@@ -90,7 +90,7 @@ namespace Polly.Specs.Retry
             TimeSpan maxDelay = TimeSpan.FromMilliseconds(1500);
 
             DecorrelatedJitterBackoff backoff = new DecorrelatedJitterBackoff(minDelay, maxDelay, fastFirst, Seed);
-            IEnumerable<TimeSpan> discrete = backoff.Generate(count).ToList();
+            IEnumerable<TimeSpan> discrete = backoff.GetSleepDurations(count).ToList();
 
             discrete.Should().HaveCount(count);
 
@@ -120,7 +120,7 @@ namespace Polly.Specs.Retry
             TimeSpan maxDelay = TimeSpan.FromMilliseconds(150_000);
 
             DecorrelatedJitterBackoff backoff = new DecorrelatedJitterBackoff(minDelay, maxDelay, fastFirst, Seed);
-            IEnumerable<TimeSpan> discrete = backoff.Generate(count).ToList();
+            IEnumerable<TimeSpan> discrete = backoff.GetSleepDurations(count).ToList();
 
             discrete.Should().HaveCount(count);
 
@@ -150,7 +150,7 @@ namespace Polly.Specs.Retry
             TimeSpan maxDelay = TimeSpan.FromMilliseconds(0);
 
             DecorrelatedJitterBackoff backoff = new DecorrelatedJitterBackoff(minDelay, maxDelay, fastFirst, Seed);
-            IEnumerable<TimeSpan> discrete = backoff.Generate(count).ToList();
+            IEnumerable<TimeSpan> discrete = backoff.GetSleepDurations(count).ToList();
 
             discrete.Should().HaveCount(count);
 
@@ -173,7 +173,7 @@ namespace Polly.Specs.Retry
             TimeSpan maxDelay = TimeSpan.FromMilliseconds(1500);
 
             DecorrelatedJitterBackoff backoff = new DecorrelatedJitterBackoff(minDelay, maxDelay, fastFirst, Seed);
-            IEnumerable<TimeSpan> discrete = backoff.Generate(count).ToList();
+            IEnumerable<TimeSpan> discrete = backoff.GetSleepDurations(count).ToList();
 
             discrete.Should().BeEmpty();
         }
@@ -184,7 +184,7 @@ namespace Polly.Specs.Retry
             const int count = 20;
             DecorrelatedJitterBackoff durationStrategy = new DecorrelatedJitterBackoff(TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(3), false);
 
-            IEnumerable<TimeSpan> actualDurations = durationStrategy.Generate(count).ToList();
+            IEnumerable<TimeSpan> actualDurations = durationStrategy.GetSleepDurations(count).ToList();
             actualDurations.Should().OnlyContain(n => n >= durationStrategy.MinDelay && n <= durationStrategy.MaxDelay);
         }
 
@@ -194,7 +194,7 @@ namespace Polly.Specs.Retry
             const int count = 20;
             DecorrelatedJitterBackoff durationStrategy = new DecorrelatedJitterBackoff(TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(3), true);
 
-            IEnumerable<TimeSpan> actualDurations = durationStrategy.Generate(count).ToList();
+            IEnumerable<TimeSpan> actualDurations = durationStrategy.GetSleepDurations(count).ToList();
             actualDurations.Take(1).Should().OnlyContain(n => n == TimeSpan.Zero);
             actualDurations.Skip(1).Should().OnlyContain(n => n >= durationStrategy.MinDelay && n <= durationStrategy.MaxDelay);
         }
@@ -206,7 +206,7 @@ namespace Polly.Specs.Retry
             DecorrelatedJitterBackoff durationStrategy = new DecorrelatedJitterBackoff(TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(3));
 
             // Take an instance of IEnumerable<TimeSpan> as directly returned by DecorrelatedJitterBackoff.Generate(...), exactly as users should when configuring a policy.
-            IEnumerable<TimeSpan> generate = durationStrategy.Generate(count);
+            IEnumerable<TimeSpan> generate = durationStrategy.GetSleepDurations(count);
 
             // Check: We definitely only have a single instance of - we are repeatedly using the same instance of - IEnumerable<TimeSpan>
             generate.Should().BeSameAs(generate); // BeSameAs(...) in FluentAssertions means refer to exact same instance in memory.

@@ -19,8 +19,8 @@ namespace Polly.Specs.Retry
 
             LinearBackoff backoff1 = new LinearBackoff(initialDelay, 1.0, fastFirst);
             LinearBackoff backoff2 = new LinearBackoff(initialDelay, 1.0, fastFirst);
-            IEnumerable<TimeSpan> discrete1 = backoff1.Generate(count);
-            IEnumerable<TimeSpan> discrete2 = backoff2.Generate(count);
+            IEnumerable<TimeSpan> discrete1 = backoff1.GetSleepDurations(count);
+            IEnumerable<TimeSpan> discrete2 = backoff2.GetSleepDurations(count);
 
             discrete1.Should().HaveCount(count);
             discrete2.Should().HaveCount(count);
@@ -38,8 +38,8 @@ namespace Polly.Specs.Retry
 
             LinearBackoff backoff1 = new LinearBackoff(initialDelay, 1.0, fastFirst);
             LinearBackoff backoff2 = new LinearBackoff(initialDelay, 2.0, fastFirst);
-            IEnumerable<TimeSpan> discrete1 = backoff1.Generate(count);
-            IEnumerable<TimeSpan> discrete2 = backoff2.Generate(count);
+            IEnumerable<TimeSpan> discrete1 = backoff1.GetSleepDurations(count);
+            IEnumerable<TimeSpan> discrete2 = backoff2.GetSleepDurations(count);
 
             discrete1.Should().HaveCount(count);
             discrete2.Should().HaveCount(count);
@@ -66,7 +66,7 @@ namespace Polly.Specs.Retry
             TimeSpan initialDelay = TimeSpan.FromMilliseconds(5);
 
             LinearBackoff backoff = new LinearBackoff(initialDelay, 0.0, fastFirst);
-            IEnumerable<TimeSpan> discrete = backoff.Generate(count);
+            IEnumerable<TimeSpan> discrete = backoff.GetSleepDurations(count);
 
             discrete.Should().HaveCount(count);
 
@@ -88,7 +88,7 @@ namespace Polly.Specs.Retry
             TimeSpan initialDelay = TimeSpan.FromMilliseconds(5);
 
             LinearBackoff backoff = new LinearBackoff(initialDelay, 1.0, fastFirst);
-            IEnumerable<TimeSpan> discrete = backoff.Generate(count);
+            IEnumerable<TimeSpan> discrete = backoff.GetSleepDurations(count);
 
             discrete.Should().HaveCount(count);
 
@@ -119,7 +119,7 @@ namespace Polly.Specs.Retry
             TimeSpan initialDelay = TimeSpan.FromMilliseconds(0);
 
             LinearBackoff backoff = new LinearBackoff(initialDelay, 1.0, fastFirst);
-            IEnumerable<TimeSpan> discrete = backoff.Generate(count);
+            IEnumerable<TimeSpan> discrete = backoff.GetSleepDurations(count);
 
             discrete.Should().HaveCount(count);
 
@@ -141,7 +141,7 @@ namespace Polly.Specs.Retry
             TimeSpan initialDelay = TimeSpan.FromMilliseconds(5);
 
             LinearBackoff backoff = new LinearBackoff(initialDelay, 1.0, fastFirst);
-            IEnumerable<TimeSpan> discrete = backoff.Generate(count);
+            IEnumerable<TimeSpan> discrete = backoff.GetSleepDurations(count);
 
             discrete.Should().BeEmpty();
         }
@@ -160,7 +160,7 @@ namespace Polly.Specs.Retry
                 TimeSpan.FromSeconds(9)
             };
 
-            IEnumerable<TimeSpan> actualDurations = durationStrategy.Generate(5);
+            IEnumerable<TimeSpan> actualDurations = durationStrategy.GetSleepDurations(5);
             actualDurations.Should().ContainInOrder(expectedDiscrete);
         }
 
@@ -178,7 +178,7 @@ namespace Polly.Specs.Retry
                 TimeSpan.FromSeconds(7)
             };
 
-            IEnumerable<TimeSpan> actualDurations = durationStrategy.Generate(5);
+            IEnumerable<TimeSpan> actualDurations = durationStrategy.GetSleepDurations(5);
             actualDurations.Should().ContainInOrder(expectedDurations);
         }
     }
