@@ -133,7 +133,7 @@ namespace Polly
 
             try
             {
-                return await ExecuteAsyncInternal(action, context, cancellationToken, continueOnCapturedContext);
+                return await ExecuteAsyncInternal(action, context, cancellationToken, continueOnCapturedContext).ConfigureAwait(continueOnCapturedContext);
             }
             finally
             {
