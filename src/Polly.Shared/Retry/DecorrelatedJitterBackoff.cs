@@ -6,7 +6,7 @@ namespace Polly.Retry
 {
     /// <summary>
     /// Generates sleep durations in an jittered manner, making sure to mitigate any correlations.
-    /// For example: 1s, 3s, 4s, 2s...
+    /// For example: 117ms, 236ms, 141ms, 424ms, ...
     /// For background, see https://aws.amazon.com/blogs/architecture/exponential-backoff-and-jitter/.
     /// </summary>
     public sealed class DecorrelatedJitterBackoff : ISleepDurationSeriesStrategy
@@ -21,23 +21,23 @@ namespace Polly.Retry
         public bool FastFirst { get; }
 
         /// <summary>
-        /// The minimum duration value to use for each retry.
+        /// The minimum duration value to use for the wait before each retry.
         /// </summary>
         public TimeSpan MinDelay { get; }
 
         /// <summary>
-        /// The maximum duration value to use for each retry.
+        /// The maximum duration value to use for the wait before each retry.
         /// </summary>
         public TimeSpan MaxDelay { get; }
 
         /// <summary>
         /// Creates a new instance of the class.
         /// </summary>
-        /// <param name="minDelay">The minimum duration value to use for each retry.</param>
-        /// <param name="maxDelay">The maximum duration value to use for each retry.</param>
+        /// <param name="minDelay">The minimum duration value to use for the wait before each retry.</param>
+        /// <param name="maxDelay">The maximum duration value to use for the wait before each retry.</param>
         /// <param name="fastFirst">Whether the first retry will be immediate or not.</param>
         /// <param name="seed">An optional <see cref="Random"/> seed to use.
-        /// If not specified, will use a shared instance with a random seed.</param>
+        /// If not specified, will use a shared instance with a random seed, per Microsoft recommendation for maximum randomness.</param>
         public DecorrelatedJitterBackoff(TimeSpan minDelay, TimeSpan maxDelay, bool fastFirst = false, int? seed = null)
         {
             if (minDelay < TimeSpan.Zero) throw new ArgumentOutOfRangeException(nameof(minDelay));
@@ -52,7 +52,7 @@ namespace Polly.Retry
 
         /// <summary>
         /// Generate the sequence of <see cref="TimeSpan"/> values to use as sleep-durations.
-        /// For example: 1s, 3s, 4s, 2s...
+        /// For example: 117ms, 236ms, 141ms, 424ms, ...
         /// </summary>
         /// <param name="retryCount">The maximum number of retries to use, in addition to the original call.</param>
         public IEnumerable<TimeSpan> Generate(int retryCount)
@@ -75,6 +75,7 @@ namespace Polly.Retry
                 // https://github.com/aws-samples/aws-arch-backoff-simulator/blob/master/src/backoff_simulator.py#L45
                 // self.sleep = min(self.cap, random.uniform(self.base, self.sleep * 3))
 
+                // Formula avoids hard clamping (which empirically results in a bad distribution)
                 double ceiling = Math.Min(MaxDelay.TotalMilliseconds, ms * 3);
                 ms = _random.Uniform(MinDelay.TotalMilliseconds, ceiling);
 
@@ -86,11 +87,17 @@ namespace Polly.Retry
 
         /// <summary>
         /// A random number generator with a Uniform distribution that is thread-safe (via locking).
-        /// Can be instantiated with a custom <see cref="Random"/> instance, for example to make
+        /// Can be instantiated with a custom <see cref="int"/> seed, for example to make
         /// it act in a deterministic manner.
         /// </summary>
         private sealed class ConcurrentRandom
         {
+            // Singleton approach is per MS best-practices.
+            // https://docs.microsoft.com/en-us/dotnet/api/system.random?view=netframework-4.7.2#the-systemrandom-class-and-thread-safety
+            // https://stackoverflow.com/a/25448166/
+            // Also note that in concurrency testing, using a 'new Random()' for every thread ended up
+            // being highly correlated. On NetFx this is maybe due to the same seed somehow being used 
+            // in each instance, but either way the singleton approach mitigated the problem.
             private static readonly Random s_random = new Random();
             private readonly Random _random;
 
@@ -98,7 +105,7 @@ namespace Polly.Retry
             /// Creates an instance of the <see cref="ConcurrentRandom"/> class.
             /// </summary>
             /// <param name="seed">An optional <see cref="Random"/> seed to use.
-            /// If not specified, will use a shared instance with a random seed.</param>
+            /// If not specified, will use a shared instance with a random seed, per Microsoft recommendation for maximum randomness.</param>
             public ConcurrentRandom(int? seed = null)
             {
                 _random = seed == null
@@ -133,8 +140,6 @@ namespace Polly.Retry
 
                 if (a == b) return a;
 
-                // In order to match AWS guidance, this closely follows python docs:
-                // https://docs.python.org/2/library/random.html#random.uniform
                 return a + (b - a) * NextDouble();
             }
         }

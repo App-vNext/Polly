@@ -6,7 +6,7 @@ namespace Polly.Retry
     /// <summary>
     /// Generates sleep durations in an exponential manner.
     /// The formula used is: Duration = <see cref="InitialDelay"/> x 2^iteration.
-    /// For example: 1s, 2s, 4s, 8s...
+    /// For example: 100ms, 200ms, 400ms, 800ms, ...
     /// </summary>
     public sealed class ExponentialBackoff : ISleepDurationSeriesStrategy
     {
@@ -18,14 +18,14 @@ namespace Polly.Retry
         public bool FastFirst { get; }
 
         /// <summary>
-        /// The duration value for the first retry.
+        /// The duration value for the wait before the first retry.
         /// </summary>
         public TimeSpan InitialDelay { get; }
 
         /// <summary>
         /// Creates a new instance of the class.
         /// </summary>
-        /// <param name="initialDelay">The duration value for the first retry.</param>
+        /// <param name="initialDelay">The duration value for the wait before the first retry.</param>
         /// <param name="fastFirst">Whether the first retry will be immediate or not.</param>
         public ExponentialBackoff(TimeSpan initialDelay, bool fastFirst = false)
         {
@@ -37,7 +37,7 @@ namespace Polly.Retry
 
         /// <summary>
         /// Generate the sequence of <see cref="TimeSpan"/> values to use as sleep-durations.
-        /// For example: 1s, 2s, 4s, 8s...
+        /// For example: 100ms, 200ms, 400ms, 800ms, ...
         /// </summary>
         /// <param name="retryCount">The maximum number of retries to use, in addition to the original call.</param>
         public IEnumerable<TimeSpan> Generate(int retryCount)

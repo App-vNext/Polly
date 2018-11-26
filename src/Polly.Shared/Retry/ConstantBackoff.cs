@@ -6,7 +6,7 @@ namespace Polly.Retry
     /// <summary>
     /// Generates sleep durations as a constant value.
     /// The formula used is: Duration = <see cref="Delay"/>.
-    /// For example: 1s, 1s, 1s, 1s.
+    /// For example: 200ms, 200ms, 200ms, ...
     /// </summary>
     public sealed class ConstantBackoff : ISleepDurationSeriesStrategy
     {
@@ -18,14 +18,14 @@ namespace Polly.Retry
         public bool FastFirst { get; }
 
         /// <summary>
-        /// The duration value for the first retry.
+        /// The constant wait duration before each retry.
         /// </summary>
         public TimeSpan Delay { get; }
 
         /// <summary>
         /// Creates a new instance of the class.
         /// </summary>
-        /// <param name="delay">The duration value for the first retry.</param>
+        /// <param name="delay">The constant wait duration before each retry.</param>
         /// <param name="fastFirst">Whether the first retry will be immediate or not.</param>
         public ConstantBackoff(TimeSpan delay, bool fastFirst = false)
         {
@@ -37,6 +37,7 @@ namespace Polly.Retry
 
         /// <summary>
         /// Generate the sequence of <see cref="TimeSpan"/> values to use as sleep-durations.
+        /// For example: 200ms, 200ms, 200ms, ...
         /// </summary>
         /// <param name="retryCount">The maximum number of retries to use, in addition to the original call.</param>
         public IEnumerable<TimeSpan> Generate(int retryCount)
