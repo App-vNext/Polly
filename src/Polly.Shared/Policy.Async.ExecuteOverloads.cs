@@ -122,7 +122,7 @@ namespace Polly
 
             try
             {
-                await ExecuteAsyncInternal(action, context, cancellationToken, continueOnCapturedContext);
+                await ExecuteAsyncInternal(action, context, cancellationToken, continueOnCapturedContext).ConfigureAwait(continueOnCapturedContext);
             }
             finally
             {
@@ -258,7 +258,7 @@ namespace Polly
 
             try
             {
-                return await ExecuteAsyncInternal(action, context, cancellationToken, continueOnCapturedContext);
+                return await ExecuteAsyncInternal(action, context, cancellationToken, continueOnCapturedContext).ConfigureAwait(continueOnCapturedContext);
             }
             finally
             {
