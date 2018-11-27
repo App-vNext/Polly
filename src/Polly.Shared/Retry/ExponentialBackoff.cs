@@ -46,7 +46,6 @@ namespace Polly.Retry
 
         /// <summary>
         /// Generate the sequence of <see cref="TimeSpan"/> values to use as sleep-durations.
-        /// For example: 100ms, 200ms, 400ms, 800ms, ...
         /// </summary>
         /// <param name="retryCount">The maximum number of retries to use, in addition to the original call.</param>
         public IEnumerable<TimeSpan> GetSleepDurations(int retryCount)
