@@ -75,6 +75,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Context.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Context.Dictionary.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Retry\ConstantBackoff.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Retry\ConcurrentRandom.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Retry\LinearBackoff.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Retry\ExponentialBackoff.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Retry\DecorrelatedJitterBackoff.cs" />
