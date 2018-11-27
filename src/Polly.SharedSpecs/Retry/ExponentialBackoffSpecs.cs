@@ -12,13 +12,13 @@ namespace Polly.Specs.Retry
         [Theory]
         [InlineData(false)]
         [InlineData(true)]
-        public static void Should_have_identical_sequence_when_same_factor(bool fastFirst)
+        public static void Should_have_identical_sequence_when_same_params(bool fastFirst)
         {
-            const int count = 20;
+            const int count = 10;
             TimeSpan minDelay = TimeSpan.FromMilliseconds(10);
 
-            ExponentialBackoff backoff1 = new ExponentialBackoff(minDelay, fastFirst);
-            ExponentialBackoff backoff2 = new ExponentialBackoff(minDelay, fastFirst);
+            ExponentialBackoff backoff1 = new ExponentialBackoff(minDelay, fastFirst: fastFirst);
+            ExponentialBackoff backoff2 = new ExponentialBackoff(minDelay, fastFirst: fastFirst);
             IEnumerable<TimeSpan> discrete1 = backoff1.GetSleepDurations(count);
             IEnumerable<TimeSpan> discrete2 = backoff2.GetSleepDurations(count);
 
@@ -29,6 +29,25 @@ namespace Polly.Specs.Retry
         }
 
         [Theory]
+        [InlineData(1.0, false, 10 * 5)]
+        [InlineData(1.0, true, 10 * 4)]
+        [InlineData(2.0, false, 10 + 20 + 40 + 80 + 160)]
+        [InlineData(2.0, true, 10 + 20 + 40 + 80)]
+        [InlineData(3.0, false, 10 + 30 + 90 + 270 + 810)]
+        [InlineData(3.0, true, 10 + 30 + 90 + 270)]
+        public static void Should_have_different_sequence_when_different_factors(double factor, bool fastFirst, double sum)
+        {
+            const int count = 5;
+            TimeSpan minDelay = TimeSpan.FromMilliseconds(10);
+
+            ExponentialBackoff backoff1 = new ExponentialBackoff(minDelay, factor, fastFirst);
+            IEnumerable<TimeSpan> discrete1 = backoff1.GetSleepDurations(count);
+
+            discrete1.Should().HaveCount(count);
+            discrete1.Sum(n => n.TotalMilliseconds).Should().Be(sum);
+        }
+
+        [Theory]
         [InlineData(false)]
         [InlineData(true)]
         public static void Should_have_an_adequate_variance_when_range_small(bool fastFirst)
@@ -36,7 +55,7 @@ namespace Polly.Specs.Retry
             const int count = 20;
             TimeSpan minDelay = TimeSpan.FromMilliseconds(10);
 
-            ExponentialBackoff backoff = new ExponentialBackoff(minDelay, fastFirst);
+            ExponentialBackoff backoff = new ExponentialBackoff(minDelay, fastFirst: fastFirst);
             IEnumerable<TimeSpan> discrete = backoff.GetSleepDurations(count);
 
             discrete.Should().HaveCount(count);
@@ -67,7 +86,7 @@ namespace Polly.Specs.Retry
             const int count = 20;
             TimeSpan minDelay = TimeSpan.FromMilliseconds(10);
 
-            ExponentialBackoff backoff = new ExponentialBackoff(minDelay, fastFirst);
+            ExponentialBackoff backoff = new ExponentialBackoff(minDelay, fastFirst: fastFirst);
             IEnumerable<TimeSpan> discrete = backoff.GetSleepDurations(count);
 
             discrete.Should().HaveCount(count);
@@ -98,7 +117,7 @@ namespace Polly.Specs.Retry
             const int count = 20;
             TimeSpan minDelay = TimeSpan.FromMilliseconds(0);
 
-            ExponentialBackoff backoff = new ExponentialBackoff(minDelay, fastFirst);
+            ExponentialBackoff backoff = new ExponentialBackoff(minDelay, fastFirst: fastFirst);
             IEnumerable<TimeSpan> discrete = backoff.GetSleepDurations(count);
 
             discrete.Should().HaveCount(count);
@@ -120,7 +139,7 @@ namespace Polly.Specs.Retry
             const int count = 0;
             TimeSpan minDelay = TimeSpan.FromMilliseconds(10);
 
-            ExponentialBackoff backoff = new ExponentialBackoff(minDelay, fastFirst);
+            ExponentialBackoff backoff = new ExponentialBackoff(minDelay, fastFirst: fastFirst);
             IEnumerable<TimeSpan> discrete = backoff.GetSleepDurations(count);
 
             discrete.Should().BeEmpty();
@@ -129,7 +148,7 @@ namespace Polly.Specs.Retry
         [Fact]
         public static void Should_be_able_to_calculate_retry_timespans()
         {
-            ExponentialBackoff durationStrategy = new ExponentialBackoff(TimeSpan.FromSeconds(1), false);
+            ExponentialBackoff durationStrategy = new ExponentialBackoff(TimeSpan.FromSeconds(1), fastFirst: false);
 
             TimeSpan[] expectedDurations = new TimeSpan[5]
             {
@@ -147,7 +166,7 @@ namespace Polly.Specs.Retry
         [Fact]
         public static void Should_be_able_to_calculate_retry_timespans_fastfirst()
         {
-            ExponentialBackoff durationStrategy = new ExponentialBackoff(TimeSpan.FromSeconds(1), true);
+            ExponentialBackoff durationStrategy = new ExponentialBackoff(TimeSpan.FromSeconds(1), fastFirst: true);
 
             TimeSpan[] expectedDurations = new TimeSpan[5]
             {

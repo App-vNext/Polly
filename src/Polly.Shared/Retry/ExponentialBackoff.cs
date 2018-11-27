@@ -23,15 +23,24 @@ namespace Polly.Retry
         public TimeSpan InitialDelay { get; }
 
         /// <summary>
+        /// The exponent to multiply each subsequent duration by.
+        /// </summary>
+        public double Factor { get; }
+
+        /// <summary>
         /// Creates a new instance of the class.
         /// </summary>
         /// <param name="initialDelay">The duration value for the wait before the first retry.</param>
+        /// <param name="factor">The exponent to multiply each subsequent duration by.</param>
         /// <param name="fastFirst">Whether the first retry will be immediate or not.</param>
-        public ExponentialBackoff(TimeSpan initialDelay, bool fastFirst = false)
+        public ExponentialBackoff(TimeSpan initialDelay, double factor = 2.0, bool fastFirst = false)
         {
             if (initialDelay < TimeSpan.Zero) throw new ArgumentOutOfRangeException(nameof(initialDelay), initialDelay, "should be >= 0ms");
+            if (factor < 1.0) throw new ArgumentOutOfRangeException(nameof(factor), factor, "should be >= 1.0");
+            if (factor > 8.0) throw new ArgumentOutOfRangeException(nameof(factor), factor, "should be <= 8.0");
 
             InitialDelay = initialDelay;
+            Factor = factor;
             FastFirst = fastFirst;
         }
 
@@ -55,7 +64,7 @@ namespace Polly.Retry
             }
 
             double ms = InitialDelay.TotalMilliseconds;
-            for (; i < retryCount; i++, ms *= 2.0)
+            for (; i < retryCount; i++, ms *= Factor)
             {
                 yield return TimeSpan.FromMilliseconds(ms);
             }
