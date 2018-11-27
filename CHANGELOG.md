@@ -1,5 +1,5 @@
 ## 6.1.2
-- Bug Fix: Async continuation control for async executions (issue 540)
+- Bug Fix: Async continuation control for async executions (issue 540, affected only v6.1.1)
 
 ## 6.1.1
 - Bug Fix: Context.PolicyKey behaviour in PolicyWrap (issue 510)
