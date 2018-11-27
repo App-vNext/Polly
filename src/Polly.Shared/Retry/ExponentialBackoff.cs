@@ -37,7 +37,6 @@ namespace Polly.Retry
         {
             if (initialDelay < TimeSpan.Zero) throw new ArgumentOutOfRangeException(nameof(initialDelay), initialDelay, "should be >= 0ms");
             if (factor < 1.0) throw new ArgumentOutOfRangeException(nameof(factor), factor, "should be >= 1.0");
-            if (factor > 8.0) throw new ArgumentOutOfRangeException(nameof(factor), factor, "should be <= 8.0");
 
             InitialDelay = initialDelay;
             Factor = factor;
