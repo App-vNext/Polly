@@ -24,6 +24,10 @@ namespace Polly.Specs.Retry
             IEnumerable<TimeSpan> discrete1 = backoff1.GetSleepDurations(count).ToList();
             IEnumerable<TimeSpan> discrete2 = backoff2.GetSleepDurations(count).ToList();
 
+            // Experiment
+            IEnumerable<TimeSpan> discrete3 = Alternative.DecorrelatedJitterBackoff(minDelay, maxDelay, count, fastFirst, seed).ToList();
+            discrete3.Should().HaveCount(count);
+
             discrete1.Should().HaveCount(count);
             discrete2.Should().HaveCount(count);
             discrete1.Should().ContainInOrder(discrete2);

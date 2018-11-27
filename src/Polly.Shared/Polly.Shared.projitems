@@ -74,6 +74,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)CircuitBreaker\AdvancedCircuitController.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Context.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Context.Dictionary.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Retry\Alternative.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Retry\ConstantBackoff.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Retry\ConcurrentRandom.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Retry\LinearBackoff.cs" />
