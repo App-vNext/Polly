@@ -40,8 +40,8 @@ namespace Polly.Retry
         /// If not specified, will use a shared instance with a random seed, per Microsoft recommendation for maximum randomness.</param>
         public DecorrelatedJitterBackoff(TimeSpan minDelay, TimeSpan maxDelay, bool fastFirst = false, int? seed = null)
         {
-            if (minDelay < TimeSpan.Zero) throw new ArgumentOutOfRangeException(nameof(minDelay));
-            if (maxDelay < minDelay) throw new ArgumentOutOfRangeException(nameof(maxDelay));
+            if (minDelay < TimeSpan.Zero) throw new ArgumentOutOfRangeException(nameof(minDelay), minDelay, "should be >= 0ms");
+            if (maxDelay < minDelay) throw new ArgumentOutOfRangeException(nameof(maxDelay), maxDelay, $"should be >= {minDelay}");
 
             _random = new ConcurrentRandom(seed);
 
@@ -57,7 +57,7 @@ namespace Polly.Retry
         /// <param name="retryCount">The maximum number of retries to use, in addition to the original call.</param>
         public IEnumerable<TimeSpan> GetSleepDurations(int retryCount)
         {
-            if (retryCount < 0) throw new ArgumentOutOfRangeException(nameof(retryCount));
+            if (retryCount < 0) throw new ArgumentOutOfRangeException(nameof(retryCount), retryCount, "should be >= 0");
 
             if (retryCount == 0)
                 yield break;

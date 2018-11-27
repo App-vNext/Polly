@@ -35,8 +35,8 @@ namespace Polly.Retry
         /// <param name="fastFirst">Whether the first retry will be immediate or not.</param>
         public LinearBackoff(TimeSpan initialDelay, double factor = 1.0, bool fastFirst = false)
         {
-            if (initialDelay < TimeSpan.Zero) throw new ArgumentOutOfRangeException(nameof(initialDelay));
-            if (factor < 0) throw new ArgumentOutOfRangeException(nameof(factor));
+            if (initialDelay < TimeSpan.Zero) throw new ArgumentOutOfRangeException(nameof(initialDelay), initialDelay, "should be >= 0ms");
+            if (factor < 0) throw new ArgumentOutOfRangeException(nameof(factor), factor, "should be >= 0");
 
             InitialDelay = initialDelay;
             Factor = factor;
@@ -50,7 +50,7 @@ namespace Polly.Retry
         /// <param name="retryCount">The maximum number of retries to use, in addition to the original call.</param>
         public IEnumerable<TimeSpan> GetSleepDurations(int retryCount)
         {
-            if (retryCount < 0) throw new ArgumentOutOfRangeException(nameof(retryCount));
+            if (retryCount < 0) throw new ArgumentOutOfRangeException(nameof(retryCount), retryCount, "should be >= 0");
 
             if (retryCount == 0)
                 yield break;
