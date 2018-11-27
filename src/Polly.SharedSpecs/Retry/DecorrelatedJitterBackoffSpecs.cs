@@ -3,6 +3,8 @@ using Polly.Retry;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace Polly.Specs.Retry
@@ -224,6 +226,45 @@ namespace Polly.Specs.Retry
             // That would indeed cause the same sequence of timespans to be reused every time the policy was used.
             IEnumerable<TimeSpan> reifiedList = generate.ToList();
             reifiedList.SequenceEqual(reifiedList).Should().BeTrue();
+        }
+
+        [Fact]
+        public static void A_single_instance_of_IEnumerable_should_be_usable_concurrently()
+        {
+            // This actually proves underlying CLR semantics, but it's useful to guard against code drift
+            const int count = 10;
+            DecorrelatedJitterBackoff durationStrategy = new DecorrelatedJitterBackoff(TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(3));
+
+            // Take an instance of IEnumerable<TimeSpan> as directly returned by DecorrelatedJitterBackoff.Generate(...), exactly as users should when configuring a policy.
+            IEnumerable<TimeSpan> generate = durationStrategy.GetSleepDurations(count);
+
+            // We're going to enumerate the above N times in parallel
+            Task<TimeSpan[]>[] tasks = new Task<TimeSpan[]>[100];
+
+            // Make sure all threads start at the same time
+            ManualResetEvent start = new ManualResetEvent(false);
+
+            for (int i = 0; i < tasks.Length; i++)
+            {
+                TaskCompletionSource<TimeSpan[]> tcs = new TaskCompletionSource<TimeSpan[]>();
+                tasks[i] = tcs.Task;
+
+                Thread thread = new Thread(() =>
+                {
+                    // Ready, set, but don't go
+                    start.WaitOne();
+
+                    // Every thread enumerates the same shared singleton
+                    tcs.SetResult(generate.ToArray()); 
+                });
+
+                thread.Start();
+            }
+
+            start.Set(); // Unleash the fury
+            Task.WaitAll(tasks);
+
+            tasks.Should().NotContain(n => n.IsFaulted);
         }
     }
 }
