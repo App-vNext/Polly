@@ -175,7 +175,8 @@ Policy
 ### Wait and retry 
 
 ```csharp
-// Retry, waiting a specified duration between each retry
+// Retry, waiting a specified duration between each retry. 
+// (The wait is imposed on catching the failure, before making the next try.)
 Policy
   .Handle<SomeExceptionType>()
   .WaitAndRetry(new[]
