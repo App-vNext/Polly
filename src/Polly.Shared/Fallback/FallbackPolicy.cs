@@ -1,46 +1,80 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
+using Polly.Utilities;
 
 namespace Polly.Fallback
 {
     /// <summary>
     /// A fallback policy that can be applied to delegates.
     /// </summary>
-    public partial class FallbackPolicy : Policy, IFallbackPolicy
+    public class FallbackPolicy : Policy, IFallbackPolicy
     {
-        internal FallbackPolicy(Action<Action<Context, CancellationToken>, Context, CancellationToken> exceptionPolicy, IEnumerable<ExceptionPredicate> exceptionPredicates)
-            : base(exceptionPolicy, exceptionPredicates)
+        private Action<Exception, Context> _onFallback;
+        private Action<Exception, Context, CancellationToken> _fallbackAction;
+
+        internal FallbackPolicy(
+            ExceptionPredicates exceptionPredicates,
+            Action<Exception, Context> onFallback,
+            Action<Exception, Context, CancellationToken> fallbackAction)
+            : base(exceptionPredicates)
         {
+            _onFallback = onFallback ?? throw new ArgumentNullException(nameof(onFallback));
+            _fallbackAction = fallbackAction ?? throw new ArgumentNullException(nameof(fallbackAction));
         }
 
-        /// <summary>
-        /// Executes the specified action within the cache policy and returns the result.
-        /// </summary>
-        /// <typeparam name="TResult">The type of the result.</typeparam>
-        /// <param name="action">The action to perform.</param>
-        /// <param name="context">Execution context that is passed to the exception policy; defines the cache key to use in cache lookup.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns>The value returned by the action, or the cache.</returns>
+        /// <inheritdoc/>
         [DebuggerStepThrough]
-        internal override TResult ExecuteInternal<TResult>(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken)
+        protected override void Implementation(Action<Context, CancellationToken> action, Context context, CancellationToken cancellationToken)
         {
-          throw new InvalidOperationException($"You have executed the generic .Execute<{nameof(TResult)}> method on a non-generic {nameof(FallbackPolicy)}.  A non-generic {nameof(FallbackPolicy)} only defines a fallback action which returns void; it can never return a substitute {nameof(TResult)} value.  To use {nameof(FallbackPolicy)} to provide fallback {nameof(TResult)} values you must define a generic fallback policy {nameof(FallbackPolicy)}<{nameof(TResult)}>.  For example, define the policy as Policy<{nameof(TResult)}>.Handle<Whatever>.Fallback<{nameof(TResult)}>(/* some {nameof(TResult)} value or Func<..., {nameof(TResult)}> */);");
+            FallbackEngine.Implementation<EmptyStruct>(
+                (ctx, token) => { action(ctx, token); return EmptyStruct.Instance; }, 
+                context, 
+                cancellationToken, 
+                ExceptionPredicates,
+                ResultPredicates<EmptyStruct>.None,
+                (outcome, ctx) => _onFallback(outcome.Exception, ctx),
+                (outcome, ctx, ct) => { _fallbackAction(outcome.Exception, ctx, ct); return EmptyStruct.Instance; });
+        }
+
+        /// <inheritdoc/>
+        protected override TResult Implementation<TResult>(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken)
+        {
+            throw new InvalidOperationException($"You have executed the generic .Execute<{nameof(TResult)}> method on a non-generic {nameof(FallbackPolicy)}.  A non-generic {nameof(FallbackPolicy)} only defines a fallback action which returns void; it can never return a substitute {nameof(TResult)} value.  To use {nameof(FallbackPolicy)} to provide fallback {nameof(TResult)} values you must define a generic fallback policy {nameof(FallbackPolicy)}<{nameof(TResult)}>.  For example, define the policy as Policy<{nameof(TResult)}>.Handle<Whatever>.Fallback<{nameof(TResult)}>(/* some {nameof(TResult)} value or Func<..., {nameof(TResult)}> */);");
         }
     }
 
     /// <summary>
     /// A fallback policy that can be applied to delegates returning a value of type <typeparamref name="TResult"/>.
     /// </summary>
-    public partial class FallbackPolicy<TResult> : Policy<TResult>, IFallbackPolicy<TResult>
+    public class FallbackPolicy<TResult> : Policy<TResult>, IFallbackPolicy<TResult>
     {
+        private Action<DelegateResult<TResult>, Context> _onFallback;
+        private Func<DelegateResult<TResult>, Context, CancellationToken, TResult> _fallbackAction;
+
         internal FallbackPolicy(
-            Func<Func<Context, CancellationToken, TResult>, Context, CancellationToken, TResult> executionPolicy,
-            IEnumerable<ExceptionPredicate> exceptionPredicates,
-            IEnumerable<ResultPredicate<TResult>> resultPredicates
-            ) : base(executionPolicy, exceptionPredicates, resultPredicates)
+            ExceptionPredicates exceptionPredicates,
+            ResultPredicates<TResult> resultPredicates,
+            Action<DelegateResult<TResult>, Context> onFallback,
+            Func<DelegateResult<TResult>, Context, CancellationToken, TResult> fallbackAction
+            ) : base(exceptionPredicates, resultPredicates)
         {
+            _onFallback = onFallback ?? throw new ArgumentNullException(nameof(onFallback));
+            _fallbackAction = fallbackAction ?? throw new ArgumentNullException(nameof(fallbackAction));
+        }
+
+        /// <inheritdoc/>
+        [DebuggerStepThrough]
+        protected override TResult Implementation(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken)
+        {
+            return FallbackEngine.Implementation(
+                action,
+                context,
+                cancellationToken,
+                ExceptionPredicates,
+                ResultPredicates,
+                _onFallback,
+                _fallbackAction);
         }
     }
 }

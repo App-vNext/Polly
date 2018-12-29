@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using System;
 using System.Threading;
 
 namespace Polly
@@ -11,7 +11,7 @@ namespace Polly
         /// <summary>
         /// Predicates indicating which exceptions the policy should handle.
         /// </summary>
-        protected internal IEnumerable<ExceptionPredicate> ExceptionPredicates { get; protected set; }
+        protected internal ExceptionPredicates ExceptionPredicates { get; protected set; }
 
         /// <summary>
         /// Defines a CancellationToken to use, when none is supplied.
@@ -22,5 +22,15 @@ namespace Polly
         /// Defines a value to use for continueOnCaptureContext, when none is supplied.
         /// </summary>
         protected static internal bool DefaultContinueOnCapturedContext = false;
+
+        internal static ExceptionType GetExceptionType(ExceptionPredicates exceptionPredicates, Exception exception)
+        {
+            bool isExceptionTypeHandledByThisPolicy = exceptionPredicates.FirstMatchOrDefault(exception) != null;
+
+            return isExceptionTypeHandledByThisPolicy
+                ? ExceptionType.HandledByThisPolicy
+                : ExceptionType.Unhandled;
+        }
+
     }
 }

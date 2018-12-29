@@ -1,60 +1,88 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.ExceptionServices;
 using System.Threading;
+using Polly.Utilities;
 
 namespace Polly.Retry
 {
-    internal static partial class RetryEngine
+    internal static class RetryEngine
     {
         internal static TResult Implementation<TResult>(
             Func<Context, CancellationToken, TResult> action,
             Context context,
             CancellationToken cancellationToken,
-            IEnumerable<ExceptionPredicate> shouldRetryExceptionPredicates,
-            IEnumerable<ResultPredicate<TResult>> shouldRetryResultPredicates,
-            Func<IRetryPolicyState<TResult>> policyStateFactory)
+            ExceptionPredicates shouldRetryExceptionPredicates,
+            ResultPredicates<TResult> shouldRetryResultPredicates,
+            Action<DelegateResult<TResult>, TimeSpan, int, Context> onRetry,
+            int permittedRetryCount = Int32.MaxValue,
+            IEnumerable<TimeSpan> sleepDurationsEnumerable = null,
+            Func<int, DelegateResult<TResult>, Context, TimeSpan> sleepDurationProvider = null)
         {
-            IRetryPolicyState<TResult> policyState = policyStateFactory();
+            int tryCount = 0;
+            IEnumerator<TimeSpan> sleepDurationsEnumerator = sleepDurationsEnumerable?.GetEnumerator();
 
-            while (true)
+            try
             {
-                cancellationToken.ThrowIfCancellationRequested();
-
-                try
+                while (true)
                 {
-                    TResult result = action(context, cancellationToken);
+                    cancellationToken.ThrowIfCancellationRequested();
 
-                    if (!shouldRetryResultPredicates.Any(predicate => predicate(result)))
-                    {
-                        return result;
-                    }
+                    bool canRetry;
+                    DelegateResult<TResult> outcome;
 
-                    if (!policyState.CanRetry(new DelegateResult<TResult>(result), cancellationToken))
+                    try
                     {
-                        return result;
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Exception handledException = shouldRetryExceptionPredicates
-                        .Select(predicate => predicate(ex))
-                        .FirstOrDefault(e => e != null);
-                    if (handledException == null)
-                    {
-                        throw;
-                    }
+                        TResult result = action(context, cancellationToken);
 
-                    if (!policyState.CanRetry(new DelegateResult<TResult>(handledException), cancellationToken))
-                    {
-                        if (handledException != ex)
+                        if (!shouldRetryResultPredicates.AnyMatch(result))
                         {
-                            ExceptionDispatchInfo.Capture(handledException).Throw();
+                            return result;
                         }
-                        throw;
+
+                        canRetry = tryCount < permittedRetryCount && (sleepDurationsEnumerable == null || sleepDurationsEnumerator.MoveNext());
+                    
+                        if (!canRetry)
+                        {
+                            return result;
+                        }
+
+                        outcome = new DelegateResult<TResult>(result);
+                    }
+                    catch (Exception ex)
+                    {
+                        Exception handledException = shouldRetryExceptionPredicates.FirstMatchOrDefault(ex);
+                        if (handledException == null)
+                        {
+                            throw;
+                        }
+
+                        canRetry = tryCount < permittedRetryCount && (sleepDurationsEnumerable == null || sleepDurationsEnumerator.MoveNext());
+
+                        if (!canRetry)
+                        {
+                            handledException.RethrowWithOriginalStackTraceIfDiffersFrom(ex);
+                            throw;
+                        }
+
+                        outcome = new DelegateResult<TResult>(handledException);
+                    }
+
+                    if (tryCount < int.MaxValue) { tryCount++; }
+
+                    TimeSpan waitDuration = sleepDurationsEnumerator?.Current ?? (sleepDurationProvider?.Invoke(tryCount, outcome, context) ?? TimeSpan.Zero);
+                
+                    onRetry(outcome, waitDuration, tryCount, context);
+
+                    if (waitDuration > TimeSpan.Zero)
+                    {
+                        SystemClock.Sleep(waitDuration, cancellationToken);
                     }
                 }
+
+            }
+            finally
+            {
+                sleepDurationsEnumerator?.Dispose();
             }
         }
     }

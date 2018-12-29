@@ -9,7 +9,7 @@ using Xunit;
 
 namespace Polly.Specs.Caching
 {
-    public class SerializingCacheProviderAsyncSpecs
+    public class AsyncSerializingCacheProviderSpecs
     {
         #region Object-to-TSerialized serializer 
 
@@ -21,7 +21,7 @@ namespace Polly.Specs.Caching
                 deserialize: s => s.Original
             );
 
-            Action configure = () => new SerializingCacheProviderAsync<StubSerialized>(null, stubObjectSerializer);
+            Action configure = () => new AsyncSerializingCacheProvider<StubSerialized>(null, stubObjectSerializer);
 
             configure.ShouldThrow<ArgumentNullException>()
                 .And.ParamName.Should().Be("wrappedCacheProvider");
@@ -30,7 +30,7 @@ namespace Polly.Specs.Caching
         [Fact]
         public void Single_generic_constructor_should_throw_on_no_serializer()
         {
-            Action configure = () => new SerializingCacheProviderAsync<object>(new StubCacheProvider().AsyncFor<object>(), null);
+            Action configure = () => new AsyncSerializingCacheProvider<object>(new StubCacheProvider().AsyncFor<object>(), null);
 
             configure.ShouldThrow<ArgumentNullException>()
                 .And.ParamName.Should().Be("serializer");
@@ -57,7 +57,7 @@ namespace Polly.Specs.Caching
             object objectToCache = new object();
             string key = "some key";
 
-            SerializingCacheProviderAsync<StubSerialized> serializingCacheProvider = new SerializingCacheProviderAsync<StubSerialized>(stubCacheProvider.AsyncFor<StubSerialized>(), stubSerializer);
+            AsyncSerializingCacheProvider<StubSerialized> serializingCacheProvider = new AsyncSerializingCacheProvider<StubSerialized>(stubCacheProvider.AsyncFor<StubSerialized>(), stubSerializer);
             await serializingCacheProvider.PutAsync(key, objectToCache, new Ttl(TimeSpan.FromMinutes(1)), CancellationToken.None, false);
 
             serializeInvoked.Should().Be(true);
@@ -77,7 +77,7 @@ namespace Polly.Specs.Caching
             object objectToCache = default(object);
             string key = "some key";
 
-            SerializingCacheProviderAsync<StubSerialized> serializingCacheProvider = new SerializingCacheProviderAsync<StubSerialized>(stubCacheProvider.AsyncFor<StubSerialized>(), stubSerializer);
+            AsyncSerializingCacheProvider<StubSerialized> serializingCacheProvider = new AsyncSerializingCacheProvider<StubSerialized>(stubCacheProvider.AsyncFor<StubSerialized>(), stubSerializer);
             await serializingCacheProvider.PutAsync(key, objectToCache, new Ttl(TimeSpan.FromMinutes(1)), CancellationToken.None, false);
 
             serializeInvoked.Should().Be(false);
@@ -99,7 +99,7 @@ namespace Polly.Specs.Caching
 
             await stubCacheProvider.PutAsync(key, new StubSerialized(objectToCache), new Ttl(TimeSpan.FromMinutes(1)), CancellationToken.None, false);
 
-            SerializingCacheProviderAsync<StubSerialized> serializingCacheProvider = new SerializingCacheProviderAsync<StubSerialized>(stubCacheProvider.AsyncFor<StubSerialized>(), stubSerializer);
+            AsyncSerializingCacheProvider<StubSerialized> serializingCacheProvider = new AsyncSerializingCacheProvider<StubSerialized>(stubCacheProvider.AsyncFor<StubSerialized>(), stubSerializer);
             object fromCache = await serializingCacheProvider.GetAsync(key, CancellationToken.None, false);
 
             deserializeInvoked.Should().Be(true);
@@ -119,7 +119,7 @@ namespace Polly.Specs.Caching
 
             stubCacheProvider.Get(key).Should().BeNull();
 
-            SerializingCacheProviderAsync<StubSerialized> serializingCacheProvider = new SerializingCacheProviderAsync<StubSerialized>(stubCacheProvider.AsyncFor<StubSerialized>(), stubSerializer);
+            AsyncSerializingCacheProvider<StubSerialized> serializingCacheProvider = new AsyncSerializingCacheProvider<StubSerialized>(stubCacheProvider.AsyncFor<StubSerialized>(), stubSerializer);
             object fromCache = await serializingCacheProvider.GetAsync(key, CancellationToken.None, false);
 
             deserializeInvoked.Should().Be(false);
@@ -138,7 +138,7 @@ namespace Polly.Specs.Caching
             object objectToCache = new object();
             string key = "some key";
 
-            SerializingCacheProviderAsync<StubSerialized> serializingCacheProvider = stubCacheProvider.AsyncFor<StubSerialized>().WithSerializer(stubSerializer);
+            AsyncSerializingCacheProvider<StubSerialized> serializingCacheProvider = stubCacheProvider.AsyncFor<StubSerialized>().WithSerializer(stubSerializer);
             await serializingCacheProvider.PutAsync(key, objectToCache, new Ttl(TimeSpan.FromMinutes(1)), CancellationToken.None, false);
 
             serializeInvoked.Should().Be(true);
@@ -158,7 +158,7 @@ namespace Polly.Specs.Caching
             object objectToCache = default(object);
             string key = "some key";
 
-            SerializingCacheProviderAsync<StubSerialized> serializingCacheProvider = stubCacheProvider.AsyncFor<StubSerialized>().WithSerializer(stubSerializer);
+            AsyncSerializingCacheProvider<StubSerialized> serializingCacheProvider = stubCacheProvider.AsyncFor<StubSerialized>().WithSerializer(stubSerializer);
             await serializingCacheProvider.PutAsync(key, objectToCache, new Ttl(TimeSpan.FromMinutes(1)), CancellationToken.None, false);
 
             serializeInvoked.Should().Be(false);
@@ -179,7 +179,7 @@ namespace Polly.Specs.Caching
 
             await stubCacheProvider.PutAsync(key, new StubSerialized(objectToCache), new Ttl(TimeSpan.FromMinutes(1)), CancellationToken.None, false);
 
-            SerializingCacheProviderAsync<StubSerialized> serializingCacheProvider = stubCacheProvider.AsyncFor<StubSerialized>().WithSerializer(stubSerializer);
+            AsyncSerializingCacheProvider<StubSerialized> serializingCacheProvider = stubCacheProvider.AsyncFor<StubSerialized>().WithSerializer(stubSerializer);
             object fromCache = await serializingCacheProvider.GetAsync(key, CancellationToken.None, false);
 
             deserializeInvoked.Should().Be(true);
@@ -199,7 +199,7 @@ namespace Polly.Specs.Caching
 
             stubCacheProvider.Get(key).Should().BeNull();
 
-            SerializingCacheProviderAsync<StubSerialized> serializingCacheProvider = stubCacheProvider.AsyncFor<StubSerialized>().WithSerializer(stubSerializer);
+            AsyncSerializingCacheProvider<StubSerialized> serializingCacheProvider = stubCacheProvider.AsyncFor<StubSerialized>().WithSerializer(stubSerializer);
             object fromCache = await serializingCacheProvider.GetAsync(key, CancellationToken.None, false);
 
             deserializeInvoked.Should().Be(false);
@@ -218,7 +218,7 @@ namespace Polly.Specs.Caching
                 deserialize: s => s.Original
             );
 
-            Action configure = () => new SerializingCacheProviderAsync<ResultPrimitive, StubSerialized<ResultPrimitive>>(null, stubTResultSerializer);
+            Action configure = () => new AsyncSerializingCacheProvider<ResultPrimitive, StubSerialized<ResultPrimitive>>(null, stubTResultSerializer);
 
             configure.ShouldThrow<ArgumentNullException>()
                 .And.ParamName.Should().Be("wrappedCacheProvider");
@@ -227,7 +227,7 @@ namespace Polly.Specs.Caching
         [Fact]
         public void Double_generic_constructor_should_throw_on_no_serializer()
         {
-            Action configure = () => new SerializingCacheProviderAsync<object, object>(new StubCacheProvider().AsyncFor<object>(), null);
+            Action configure = () => new AsyncSerializingCacheProvider<object, object>(new StubCacheProvider().AsyncFor<object>(), null);
 
             configure.ShouldThrow<ArgumentNullException>()
                 .And.ParamName.Should().Be("serializer");
@@ -254,7 +254,7 @@ namespace Polly.Specs.Caching
             ResultPrimitive objectToCache = ResultPrimitive.Good;
             string key = "some key";
 
-            SerializingCacheProviderAsync<ResultPrimitive, StubSerialized<ResultPrimitive>> serializingCacheProvider = new SerializingCacheProviderAsync<ResultPrimitive, StubSerialized<ResultPrimitive>>(stubCacheProvider.AsyncFor<StubSerialized<ResultPrimitive>>(), stubTResultSerializer);
+            AsyncSerializingCacheProvider<ResultPrimitive, StubSerialized<ResultPrimitive>> serializingCacheProvider = new AsyncSerializingCacheProvider<ResultPrimitive, StubSerialized<ResultPrimitive>>(stubCacheProvider.AsyncFor<StubSerialized<ResultPrimitive>>(), stubTResultSerializer);
             await serializingCacheProvider.PutAsync(key, objectToCache, new Ttl(TimeSpan.FromMinutes(1)), CancellationToken.None, false);
 
             serializeInvoked.Should().Be(true);
@@ -274,7 +274,7 @@ namespace Polly.Specs.Caching
             ResultPrimitive objectToCache = default(ResultPrimitive);
             string key = "some key";
 
-            SerializingCacheProviderAsync<ResultPrimitive, StubSerialized<ResultPrimitive>> serializingCacheProvider = new SerializingCacheProviderAsync<ResultPrimitive, StubSerialized<ResultPrimitive>>(stubCacheProvider.AsyncFor<StubSerialized<ResultPrimitive>>(), stubTResultSerializer);
+            AsyncSerializingCacheProvider<ResultPrimitive, StubSerialized<ResultPrimitive>> serializingCacheProvider = new AsyncSerializingCacheProvider<ResultPrimitive, StubSerialized<ResultPrimitive>>(stubCacheProvider.AsyncFor<StubSerialized<ResultPrimitive>>(), stubTResultSerializer);
             await serializingCacheProvider.PutAsync(key, objectToCache, new Ttl(TimeSpan.FromMinutes(1)), CancellationToken.None, false);
 
             serializeInvoked.Should().Be(false);
@@ -293,7 +293,7 @@ namespace Polly.Specs.Caching
             ResultPrimitive objectToCache = ResultPrimitive.Good;
             string key = "some key";
 
-            SerializingCacheProviderAsync<ResultPrimitive, StubSerialized<ResultPrimitive>> serializingCacheProvider = new SerializingCacheProviderAsync<ResultPrimitive, StubSerialized<ResultPrimitive>>(stubCacheProvider.AsyncFor<StubSerialized<ResultPrimitive>>(), stubTResultSerializer);
+            AsyncSerializingCacheProvider<ResultPrimitive, StubSerialized<ResultPrimitive>> serializingCacheProvider = new AsyncSerializingCacheProvider<ResultPrimitive, StubSerialized<ResultPrimitive>>(stubCacheProvider.AsyncFor<StubSerialized<ResultPrimitive>>(), stubTResultSerializer);
 
             await stubCacheProvider.PutAsync(key, new StubSerialized<ResultPrimitive>(objectToCache), new Ttl(TimeSpan.FromMinutes(1)), CancellationToken.None, false);
             object fromCache = await serializingCacheProvider.GetAsync(key, CancellationToken.None, false);
@@ -315,7 +315,7 @@ namespace Polly.Specs.Caching
 
             stubCacheProvider.Get(key).Should().BeNull();
 
-            SerializingCacheProviderAsync<ResultPrimitive, StubSerialized<ResultPrimitive>> serializingCacheProvider = new SerializingCacheProviderAsync<ResultPrimitive, StubSerialized<ResultPrimitive>>(stubCacheProvider.AsyncFor<StubSerialized<ResultPrimitive>>(), stubTResultSerializer);
+            AsyncSerializingCacheProvider<ResultPrimitive, StubSerialized<ResultPrimitive>> serializingCacheProvider = new AsyncSerializingCacheProvider<ResultPrimitive, StubSerialized<ResultPrimitive>>(stubCacheProvider.AsyncFor<StubSerialized<ResultPrimitive>>(), stubTResultSerializer);
             ResultPrimitive fromCache = await serializingCacheProvider.GetAsync(key, CancellationToken.None, false);
 
             deserializeInvoked.Should().Be(false);
@@ -334,7 +334,7 @@ namespace Polly.Specs.Caching
             ResultPrimitive objectToCache = ResultPrimitive.Good;
             string key = "some key";
 
-            SerializingCacheProviderAsync<ResultPrimitive, StubSerialized<ResultPrimitive>> serializingCacheProvider =
+            AsyncSerializingCacheProvider<ResultPrimitive, StubSerialized<ResultPrimitive>> serializingCacheProvider =
                 stubCacheProvider.AsyncFor<StubSerialized<ResultPrimitive>>().WithSerializer(stubTResultSerializer);
             await serializingCacheProvider.PutAsync(key, objectToCache, new Ttl(TimeSpan.FromMinutes(1)), CancellationToken.None, false);
 
@@ -355,7 +355,7 @@ namespace Polly.Specs.Caching
             ResultPrimitive objectToCache = default(ResultPrimitive);
             string key = "some key";
 
-            SerializingCacheProviderAsync<ResultPrimitive, StubSerialized<ResultPrimitive>> serializingCacheProvider =
+            AsyncSerializingCacheProvider<ResultPrimitive, StubSerialized<ResultPrimitive>> serializingCacheProvider =
                 stubCacheProvider.AsyncFor<StubSerialized<ResultPrimitive>>().WithSerializer(stubTResultSerializer);
             await serializingCacheProvider.PutAsync(key, objectToCache, new Ttl(TimeSpan.FromMinutes(1)), CancellationToken.None, false);
 
@@ -375,7 +375,7 @@ namespace Polly.Specs.Caching
             ResultPrimitive objectToCache = ResultPrimitive.Good;
             string key = "some key";
 
-            SerializingCacheProviderAsync<ResultPrimitive, StubSerialized<ResultPrimitive>> serializingCacheProvider =
+            AsyncSerializingCacheProvider<ResultPrimitive, StubSerialized<ResultPrimitive>> serializingCacheProvider =
                 stubCacheProvider.AsyncFor<StubSerialized<ResultPrimitive>>().WithSerializer(stubTResultSerializer);
 
             await stubCacheProvider.PutAsync(key, new StubSerialized<ResultPrimitive>(objectToCache), new Ttl(TimeSpan.FromMinutes(1)), CancellationToken.None, false);
@@ -398,7 +398,7 @@ namespace Polly.Specs.Caching
 
             stubCacheProvider.Get(key).Should().BeNull();
 
-            SerializingCacheProviderAsync<ResultPrimitive, StubSerialized<ResultPrimitive>> serializingCacheProvider =
+            AsyncSerializingCacheProvider<ResultPrimitive, StubSerialized<ResultPrimitive>> serializingCacheProvider =
                 stubCacheProvider.AsyncFor<StubSerialized<ResultPrimitive>>().WithSerializer(stubTResultSerializer);
             ResultPrimitive fromCache = await serializingCacheProvider.GetAsync(key, CancellationToken.None, false);
 

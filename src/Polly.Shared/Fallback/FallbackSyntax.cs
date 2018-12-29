@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading;
 using Polly.Fallback;
-using Polly.Utilities;
 
 namespace Polly
 {
@@ -124,15 +123,9 @@ namespace Polly
             if (onFallback == null) throw new ArgumentNullException(nameof(onFallback));
 
             return new FallbackPolicy(
-                (action, context, cancellationToken) => FallbackEngine.Implementation(
-                    (ctx, ct) => { action(ctx, ct); return EmptyStruct.Instance; },
-                    context,
-                    cancellationToken,
                     policyBuilder.ExceptionPredicates,
-                    PredicateHelper<EmptyStruct>.EmptyResultPredicates,
-                    (outcome, ctx) => onFallback(outcome.Exception, ctx),
-                    (outcome, ctx, ct) => { fallbackAction(outcome.Exception, ctx, ct); return EmptyStruct.Instance; }),
-                policyBuilder.ExceptionPredicates);
+                    onFallback,
+                    fallbackAction);
         }
     }
 
@@ -296,16 +289,10 @@ namespace Polly
             if (onFallback == null) throw new ArgumentNullException(nameof(onFallback));
 
             return new FallbackPolicy<TResult>(
-                (action, context, cancellationToken) => FallbackEngine.Implementation<TResult>(
-                    action,
-                    context,
-                    cancellationToken,
-                    policyBuilder.ExceptionPredicates,
-                    policyBuilder.ResultPredicates,
-                    onFallback,
-                    fallbackAction),
                 policyBuilder.ExceptionPredicates,
-                policyBuilder.ResultPredicates);
+                policyBuilder.ResultPredicates,
+                onFallback,
+                fallbackAction);
         }
     }
 }

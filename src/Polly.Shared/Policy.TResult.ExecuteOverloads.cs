@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Threading;
 
 
@@ -97,7 +96,7 @@ namespace Polly
 
             try
             {
-                return ExecuteInternal(action, context, cancellationToken);
+                return Implementation(action, context, cancellationToken);
             }
             finally
             {
@@ -182,15 +181,13 @@ namespace Polly
         [DebuggerStepThrough]
         public PolicyResult<TResult> ExecuteAndCapture(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken)
         {
-            if (_executionPolicy == null) throw new InvalidOperationException(
-                "Please use the synchronous-defined policies when calling the synchronous Execute (and similar) methods.");
             if (context == null) throw new ArgumentNullException(nameof(context));
 
             try
             {
                 TResult result = Execute(action, context, cancellationToken);
 
-                if (ResultPredicates.Any(predicate => predicate(result)))
+                if (ResultPredicates.AnyMatch(result))
                 {
                     return PolicyResult<TResult>.Failure(result, context);
                 }
@@ -203,18 +200,6 @@ namespace Polly
             }
         }
 
-        /// <summary>
-        /// Gets the exception type
-        /// </summary>
-        /// <param name="exceptionPredicates"></param>
-        /// <param name="exception"></param>
-        /// <returns></returns>
-        internal static ExceptionType GetExceptionType(IEnumerable<ExceptionPredicate> exceptionPredicates, Exception exception)
-        {
-            return Policy.GetExceptionType(exceptionPredicates, exception);
-        }
-
         #endregion
-
     }
 }

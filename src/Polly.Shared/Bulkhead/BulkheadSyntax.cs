@@ -1,5 +1,4 @@
 ﻿using Polly.Bulkhead;
-using Polly.Utilities;
 using System;
 using System.Threading;
 
@@ -74,18 +73,11 @@ namespace Polly
             SemaphoreSlim maxQueuedActionsSemaphore = new SemaphoreSlim(maxQueuingCompounded, maxQueuingCompounded);
 
             return new BulkheadPolicy(
-                (action, context, cancellationToken) => BulkheadEngine.Implementation(
-                    (ctx, ct) => { action(ctx, ct); return EmptyStruct.Instance; },
-                    context,
-                    onBulkheadRejected,
-                    maxParallelizationSemaphore,
-                    maxQueuedActionsSemaphore,
-                    cancellationToken
-                ),
                 maxParallelization,
                 maxQueuingActions,
                 maxParallelizationSemaphore,
-                maxQueuedActionsSemaphore
+                maxQueuedActionsSemaphore,
+                onBulkheadRejected
             );
         }
         

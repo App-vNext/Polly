@@ -24,7 +24,7 @@
         /// <returns>IAsyncCacheProvider{TCacheFormat}.</returns>
         public static IAsyncCacheProvider<TCacheFormat> AsyncFor<TCacheFormat>(this IAsyncCacheProvider nonGenericCacheProvider)
         {
-            return new GenericCacheProviderAsync<TCacheFormat>(nonGenericCacheProvider);
+            return new AsyncGenericCacheProvider<TCacheFormat>(nonGenericCacheProvider);
         }
 
         /// <summary>
@@ -61,10 +61,10 @@
         /// <param name="cacheProvider">The cache provider.</param>
         /// <param name="serializer">A serializer which can serialize/deserialize all types to/from <typeparamref name="TSerialized"/>.</param>
         /// <returns>SerializingCacheProvider&lt;TResult, TSerialized&gt;.</returns>
-        public static SerializingCacheProviderAsync<TSerialized> WithSerializer<TSerialized>(
+        public static AsyncSerializingCacheProvider<TSerialized> WithSerializer<TSerialized>(
             this IAsyncCacheProvider<TSerialized> cacheProvider, ICacheItemSerializer<object, TSerialized> serializer)
         {
-            return new SerializingCacheProviderAsync<TSerialized>(cacheProvider, serializer);
+            return new AsyncSerializingCacheProvider<TSerialized>(cacheProvider, serializer);
         }
 
         /// <summary>
@@ -75,10 +75,10 @@
         /// <param name="cacheProvider">The cache provider.</param>
         /// <param name="serializer">The serializer.</param>
         /// <returns>SerializingCacheProvider&lt;TResult, TSerialized&gt;.</returns>
-        public static SerializingCacheProviderAsync<TResult, TSerialized> WithSerializer<TResult, TSerialized>(
+        public static AsyncSerializingCacheProvider<TResult, TSerialized> WithSerializer<TResult, TSerialized>(
             this IAsyncCacheProvider<TSerialized> cacheProvider, ICacheItemSerializer<TResult, TSerialized> serializer)
         {
-            return new SerializingCacheProviderAsync<TResult, TSerialized>(cacheProvider, serializer);
+            return new AsyncSerializingCacheProvider<TResult, TSerialized>(cacheProvider, serializer);
         }
     }
 }

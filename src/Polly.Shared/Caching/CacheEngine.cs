@@ -3,7 +3,7 @@ using System.Threading;
 
 namespace Polly.Caching
 {
-    internal static partial class CacheEngine
+    internal static class CacheEngine
     {
         internal static TResult Implementation<TResult>(
             ISyncCacheProvider<TResult> cacheProvider,

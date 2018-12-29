@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using FluentAssertions;
-using Polly.Specs.Helpers;
 using Polly.Utilities;
 using Xunit;
 
@@ -17,7 +16,7 @@ namespace Polly.Specs
         {
             bool executed = false;
 
-            Policy policy = Policy
+            var policy = Policy
                 .Handle<DivideByZeroException>()
                 .RetryAsync((_, __) => { });
 
@@ -34,7 +33,7 @@ namespace Polly.Specs
         [Fact]
         public async Task Executing_the_policy_function_should_execute_the_specified_async_function_and_return_the_result()
         {
-            Policy policy = Policy
+            var policy = Policy
                 .Handle<DivideByZeroException>()
                 .RetryAsync((_, __) => { });
 
@@ -175,114 +174,12 @@ namespace Polly.Specs
 
         #endregion
 
-        #region Sync erroneously on async - tests
-
-        [Theory, MemberData(nameof(SyncPolicies))]
-        public void Executing_the_synchronous_policies_using_the_asynchronous_execute_should_throw_an_invalid_operation_exception(Policy syncPolicy, string description)
-        {
-            syncPolicy
-                .Awaiting(async x => await x.ExecuteAsync(() => TaskHelper.EmptyTask))
-                .ShouldThrow<InvalidOperationException>()
-                .WithMessage("Please use asynchronous-defined policies when calling asynchronous ExecuteAsync (and similar) methods.");
-        }
-
-        [Theory, MemberData(nameof(SyncPolicies))]
-        public void Executing_the_synchronous_policies_using_the_asynchronous_execute_and_capture_should_throw_an_invalid_operation_exception(Policy syncPolicy, string description)
-        {
-            syncPolicy
-                .Awaiting(async x => await x.ExecuteAndCaptureAsync(() => TaskHelper.EmptyTask))
-                .ShouldThrow<InvalidOperationException>()
-                .WithMessage("Please use asynchronous-defined policies when calling asynchronous ExecuteAsync (and similar) methods.");
-        }
-
-        public static IEnumerable<object[]> SyncPolicies => new[]
-        {
-            new object[] {RetryPolicy(), "retry"},
-            new object[] {RetryForeverPolicy(), "retry forever"},
-            new object[] {WaitAndRetryPolicy(), "wait and retry"},
-            new object[] {WaitAndRetryForeverPolicy(), "wait and retry"},
-            new object[] {CircuitBreakerPolicy(), "circuit breaker"},
-            new object[] {AdvancedCircuitBreakerPolicy(), "advanced circuit breaker"},
-            new object[] {TimeoutPolicy(), "timeout"},
-            new object[] {BulkheadPolicy(), "bulkhead"},
-            new object[] {FallbackPolicy(), "fallback"},
-            new object[] {NoOpPolicy(), "no-op"}
-        };
-
-        private static Policy RetryPolicy()
-        {
-            return Policy
-                .Handle<DivideByZeroException>()
-                .Retry((_, __) => { });
-        }
-
-        private static Policy RetryForeverPolicy()
-        {
-            return Policy
-                .Handle<DivideByZeroException>()
-                .RetryForever((_) => { });
-        }
-
-        private static Policy WaitAndRetryPolicy()
-        {
-            return Policy
-                .Handle<DivideByZeroException>()
-                .WaitAndRetry(new TimeSpan[] { });
-        }
-
-        private static Policy WaitAndRetryForeverPolicy()
-        {
-            return Policy
-                .Handle<DivideByZeroException>()
-                .WaitAndRetryForever(_ => new TimeSpan());
-        }
-
-        private static Policy CircuitBreakerPolicy()
-        {
-            return Policy
-                .Handle<DivideByZeroException>()
-                .CircuitBreaker(1, new TimeSpan());
-        }
-
-        private static Policy AdvancedCircuitBreakerPolicy()
-        {
-            return Policy
-                .Handle<DivideByZeroException>()
-                .AdvancedCircuitBreaker(1, TimeSpan.MaxValue, 2, new TimeSpan());
-        }
-
-        private static Policy TimeoutPolicy()
-        {
-            return Policy
-                .Timeout(TimeSpan.MaxValue);
-        }
-
-        private static Policy BulkheadPolicy()
-        {
-            return Policy
-                .Bulkhead(1);
-        }
-
-        private static Policy FallbackPolicy()
-        {
-            return Policy
-                .Handle<DivideByZeroException>()
-                .Fallback(() => { });
-        }
-
-        private static Policy NoOpPolicy()
-        {
-            return Policy.NoOp();
-        }
-
-        #endregion
-
         #region Context tests
 
         [Fact]
         public void Executing_the_policy_action_should_throw_when_context_data_is_null()
         {
-            Policy policy = Policy
+            var policy = Policy
                 .Handle<DivideByZeroException>()
                 .RetryAsync((_, __, ___) => { });
 
@@ -293,7 +190,7 @@ namespace Polly.Specs
         [Fact]
         public void Executing_the_policy_action_should_throw_when_context_is_null()
         {
-            Policy policy = Policy
+            var policy = Policy
                 .Handle<DivideByZeroException>()
                 .RetryAsync((_, __, ___) => { });
 
@@ -305,7 +202,7 @@ namespace Polly.Specs
         [Fact]
         public void Executing_the_policy_function_should_throw_when_context_data_is_null()
         {
-            Policy policy = Policy
+            var policy = Policy
                 .Handle<DivideByZeroException>()
                 .RetryAsync((_, __, ___) => { });
 
@@ -316,7 +213,7 @@ namespace Polly.Specs
         [Fact]
         public void Executing_the_policy_function_should_throw_when_context_is_null()
         {
-            Policy policy = Policy
+            var policy = Policy
                 .Handle<DivideByZeroException>()
                 .RetryAsync((_, __, ___) => { });
 
@@ -332,7 +229,7 @@ namespace Polly.Specs
             Context executionContext = new Context(operationKey);
             Context capturedContext = null;
 
-            Policy policy = Policy.NoOpAsync();
+            var policy = Policy.NoOpAsync();
 
             await policy.ExecuteAsync((context) => { capturedContext = context; return TaskHelper.EmptyTask; }, executionContext);
 
@@ -342,7 +239,7 @@ namespace Polly.Specs
         [Fact]
         public void Execute_and_capturing_the_policy_action_should_throw_when_context_data_is_null()
         {
-            Policy policy = Policy
+            var policy = Policy
                 .Handle<DivideByZeroException>()
                 .RetryAsync((_, __, ___) => { });
 
@@ -353,7 +250,7 @@ namespace Polly.Specs
         [Fact]
         public void Execute_and_capturing_the_policy_action_should_throw_when_context_is_null()
         {
-            Policy policy = Policy
+            var policy = Policy
                 .Handle<DivideByZeroException>()
                 .RetryAsync((_, __, ___) => { });
 
@@ -365,7 +262,7 @@ namespace Polly.Specs
         [Fact]
         public void Execute_and_capturing_the_policy_function_should_throw_when_context_data_is_null()
         {
-            Policy policy = Policy
+            var policy = Policy
                 .Handle<DivideByZeroException>()
                 .RetryAsync((_, __, ___) => { });
 
@@ -376,7 +273,7 @@ namespace Polly.Specs
         [Fact]
         public void Execute_and_capturing_the_policy_function_should_throw_when_context_is_null()
         {
-            Policy policy = Policy
+            var policy = Policy
                 .Handle<DivideByZeroException>()
                 .RetryAsync((_, __, ___) => { });
 
@@ -392,7 +289,7 @@ namespace Polly.Specs
             Context executionContext = new Context(operationKey);
             Context capturedContext = null;
 
-            Policy policy = Policy.NoOpAsync();
+            var policy = Policy.NoOpAsync();
 
             await policy.ExecuteAndCaptureAsync((context) => { capturedContext = context; return TaskHelper.EmptyTask; }, executionContext);
 
@@ -405,7 +302,7 @@ namespace Polly.Specs
             string operationKey = "SomeKey";
             Context executionContext = new Context(operationKey);
 
-            Policy policy = Policy.NoOpAsync();
+            var policy = Policy.NoOpAsync();
 
             (await policy.ExecuteAndCaptureAsync((context) => TaskHelper.EmptyTask, executionContext))
                 .Context.Should().BeSameAs(executionContext);

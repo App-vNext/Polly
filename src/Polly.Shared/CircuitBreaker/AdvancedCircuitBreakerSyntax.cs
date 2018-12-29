@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using Polly.CircuitBreaker;
 using Polly.Utilities;
 
@@ -231,15 +230,15 @@ namespace Polly
         {
             var resolutionOfCircuit = TimeSpan.FromTicks(AdvancedCircuitController<EmptyStruct>.ResolutionOfCircuitTimer);
 
-            if (failureThreshold <= 0) throw new ArgumentOutOfRangeException("failureThreshold", "Value must be greater than zero.");
-            if (failureThreshold > 1) throw new ArgumentOutOfRangeException("failureThreshold", "Value must be less than or equal to one.");
-            if (samplingDuration < resolutionOfCircuit) throw new ArgumentOutOfRangeException("samplingDuration", String.Format("Value must be equal to or greater than {0} milliseconds. This is the minimum resolution of the CircuitBreaker timer.", resolutionOfCircuit.TotalMilliseconds));
-            if (minimumThroughput <= 1) throw new ArgumentOutOfRangeException("minimumThroughput", "Value must be greater than one.");
-            if (durationOfBreak < TimeSpan.Zero) throw new ArgumentOutOfRangeException("durationOfBreak", "Value must be greater than zero.");
+            if (failureThreshold <= 0) throw new ArgumentOutOfRangeException(nameof(failureThreshold), "Value must be greater than zero.");
+            if (failureThreshold > 1) throw new ArgumentOutOfRangeException(nameof(failureThreshold), "Value must be less than or equal to one.");
+            if (samplingDuration < resolutionOfCircuit) throw new ArgumentOutOfRangeException(nameof(samplingDuration), String.Format("Value must be equal to or greater than {0} milliseconds. This is the minimum resolution of the CircuitBreaker timer.", resolutionOfCircuit.TotalMilliseconds));
+            if (minimumThroughput <= 1) throw new ArgumentOutOfRangeException(nameof(minimumThroughput), "Value must be greater than one.");
+            if (durationOfBreak < TimeSpan.Zero) throw new ArgumentOutOfRangeException(nameof(durationOfBreak), "Value must be greater than zero.");
 
-            if (onBreak == null) throw new ArgumentNullException("onBreak");
-            if (onReset == null) throw new ArgumentNullException("onReset");
-            if (onHalfOpen == null) throw new ArgumentNullException("onHalfOpen");
+            if (onBreak == null) throw new ArgumentNullException(nameof(onBreak));
+            if (onReset == null) throw new ArgumentNullException(nameof(onReset));
+            if (onHalfOpen == null) throw new ArgumentNullException(nameof(onHalfOpen));
 
             var breakerController = new AdvancedCircuitController<EmptyStruct>(
                 failureThreshold,
@@ -250,13 +249,6 @@ namespace Polly
                 onReset,
                 onHalfOpen);
             return new CircuitBreakerPolicy(
-                (action, context, cancellationToken) => CircuitBreakerEngine.Implementation<EmptyStruct>(
-                    (ctx, ct) => { action(ctx, ct); return EmptyStruct.Instance; },
-                    context,
-                    cancellationToken,
-                    policyBuilder.ExceptionPredicates,
-                    PredicateHelper<EmptyStruct>.EmptyResultPredicates,
-                    breakerController),
                 policyBuilder.ExceptionPredicates,
                 breakerController
                 );

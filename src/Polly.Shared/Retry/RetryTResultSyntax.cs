@@ -93,16 +93,10 @@ namespace Polly
             if (onRetry == null) throw new ArgumentNullException(nameof(onRetry));
 
             return new RetryPolicy<TResult>(
-                (action, context, cancellationToken) => RetryEngine.Implementation(
-                    action,
-                    context, 
-                    cancellationToken,
-                    policyBuilder.ExceptionPredicates,
-                    policyBuilder.ResultPredicates,
-                    () => new RetryStateRetryWithCount<TResult>(retryCount, onRetry, context)
-                ), 
                 policyBuilder.ExceptionPredicates,
-                policyBuilder.ResultPredicates);
+                policyBuilder.ResultPredicates,
+                (outcome, timespan, i, ctx) => onRetry(outcome, i, ctx),
+                retryCount);
         }
 
         /// <summary>
@@ -160,16 +154,10 @@ namespace Polly
             if (onRetry == null) throw new ArgumentNullException(nameof(onRetry));
 
             return new RetryPolicy<TResult>(
-                (action, context, cancellationToken) => RetryEngine.Implementation(
-                    action,
-                    context,
-                    cancellationToken,
-                    policyBuilder.ExceptionPredicates,
-                    policyBuilder.ResultPredicates,
-                    () => new RetryStateRetryForever<TResult>(onRetry, context)
-                    ), 
                 policyBuilder.ExceptionPredicates,
-                policyBuilder.ResultPredicates);
+                policyBuilder.ResultPredicates,
+                (outcome, timespan, i, ctx) => onRetry(outcome, ctx)
+                );
         }
 
         /// <summary>
@@ -185,16 +173,10 @@ namespace Polly
             if (onRetry == null) throw new ArgumentNullException(nameof(onRetry));
 
             return new RetryPolicy<TResult>(
-                (action, context, cancellationToken) => RetryEngine.Implementation(
-                    action,
-                    context,
-                    cancellationToken,
-                    policyBuilder.ExceptionPredicates,
-                    policyBuilder.ResultPredicates,
-                    () => new RetryStateRetryForeverWithCount<TResult>(onRetry, context)
-                    ),
                 policyBuilder.ExceptionPredicates,
-                policyBuilder.ResultPredicates);
+                policyBuilder.ResultPredicates,
+                (outcome, timespan, i, ctx) => onRetry(outcome, i, ctx)
+            );
         }
 
         /// <summary>
@@ -296,16 +278,12 @@ namespace Polly
                                            .Select(sleepDurationProvider);
 
             return new RetryPolicy<TResult>(
-                (action, context, cancellationToken) => RetryEngine.Implementation(
-                    action,
-                    context,
-                    cancellationToken,
-                    policyBuilder.ExceptionPredicates,
-                    policyBuilder.ResultPredicates,
-                    () => new RetryStateWaitAndRetry<TResult>(sleepDurations, onRetry, context)
-                ), 
-            policyBuilder.ExceptionPredicates,
-            policyBuilder.ResultPredicates);
+                policyBuilder.ExceptionPredicates,
+                policyBuilder.ResultPredicates,
+                onRetry,
+                retryCount,
+                sleepDurationsEnumerable: sleepDurations
+            );
         }
 
         /// <summary>
@@ -446,16 +424,12 @@ namespace Polly
             if (onRetry == null) throw new ArgumentNullException(nameof(onRetry));
 
             return new RetryPolicy<TResult>(
-                (action, context, cancellationToken) => RetryEngine.Implementation(
-                    action,
-                    context,
-                    cancellationToken,
-                    policyBuilder.ExceptionPredicates,
-                    policyBuilder.ResultPredicates,
-                    () => new RetryStateWaitAndRetryWithProvider<TResult>(retryCount, sleepDurationProvider, onRetry, context)
-                ),
                 policyBuilder.ExceptionPredicates,
-                policyBuilder.ResultPredicates);
+                policyBuilder.ResultPredicates,
+                onRetry,
+                retryCount,
+                sleepDurationProvider: sleepDurationProvider
+            );
         }
 
         /// <summary>
@@ -534,16 +508,10 @@ namespace Polly
             if (onRetry == null) throw new ArgumentNullException(nameof(onRetry));
 
             return new RetryPolicy<TResult>(
-                (action, context, cancellationToken) => RetryEngine.Implementation(
-                    action,
-                    context,
-                    cancellationToken,
-                    policyBuilder.ExceptionPredicates,
-                    policyBuilder.ResultPredicates,
-                    () => new RetryStateWaitAndRetry<TResult>(sleepDurations, onRetry, context)
-                ), 
                 policyBuilder.ExceptionPredicates,
-                policyBuilder.ResultPredicates
+                policyBuilder.ResultPredicates,
+                onRetry,
+                sleepDurationsEnumerable: sleepDurations
             );
         }
 
@@ -689,17 +657,10 @@ namespace Polly
             if (onRetry == null) throw new ArgumentNullException(nameof(onRetry));
 
             return new RetryPolicy<TResult>(
-                (action, context, cancellationToken) => RetryEngine.Implementation(
-                    action,
-                    context,
-                    cancellationToken,
-                    policyBuilder.ExceptionPredicates,
-                    policyBuilder.ResultPredicates,
-                    () => new RetryStateWaitAndRetryForever<TResult>(sleepDurationProvider, onRetry, context)
-                ),
                 policyBuilder.ExceptionPredicates,
-                policyBuilder.ResultPredicates
-            );
+                policyBuilder.ResultPredicates,
+                (outcome, timespan, i, ctx) => onRetry(outcome, timespan, ctx),
+                sleepDurationProvider: sleepDurationProvider);
         }
 
         /// <summary>
@@ -720,17 +681,11 @@ namespace Polly
             if (onRetry == null) throw new ArgumentNullException(nameof(onRetry));
 
             return new RetryPolicy<TResult>(
-                (action, context, cancellationToken) => RetryEngine.Implementation(
-                    action,
-                    context,
-                    cancellationToken,
-                    policyBuilder.ExceptionPredicates,
-                    policyBuilder.ResultPredicates,
-                    () => new RetryStateWaitAndRetryForeverWithCount<TResult>(sleepDurationProvider, onRetry, context)
-                ),
                 policyBuilder.ExceptionPredicates,
-                policyBuilder.ResultPredicates
-            );
+                policyBuilder.ResultPredicates,
+                (exception, timespan, i, ctx) => onRetry(exception, i, timespan, ctx),
+                sleepDurationProvider: sleepDurationProvider
+                );
         }
     }
 }
