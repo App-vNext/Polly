@@ -1,5 +1,5 @@
 ﻿using System;
-#if !PORTABLE
+#if NETSTANDARD2_0
 using System.Runtime.Serialization;
 #endif
 
@@ -8,7 +8,7 @@ namespace Polly.Timeout
     /// <summary>
     /// Exception thrown when a delegate executed through a <see cref="TimeoutPolicy"/> does not complete, before the configured timeout.
     /// </summary>
-#if !PORTABLE
+#if NETSTANDARD2_0
     [Serializable]
 #endif
     public class TimeoutRejectedException : ExecutionRejectedException
@@ -37,7 +37,7 @@ namespace Polly.Timeout
         {
         }
 
-#if !PORTABLE
+#if NETSTANDARD2_0
         /// <summary>
         /// Initializes a new instance of the <see cref="TimeoutRejectedException"/> class.
         /// </summary>

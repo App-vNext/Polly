@@ -1,5 +1,5 @@
 ﻿using System;
-#if !PORTABLE
+#if NETSTANDARD2_0
 using System.Runtime.Serialization;
 #endif
 
@@ -14,7 +14,7 @@ namespace Polly
         /// <summary>
         /// Initializes a new instance of the <see cref="ExecutionRejectedException"/> class.
         /// </summary>
-        public ExecutionRejectedException()
+        protected ExecutionRejectedException()
         {
         }
 
@@ -22,7 +22,7 @@ namespace Polly
         /// Initializes a new instance of the <see cref="ExecutionRejectedException"/> class.
         /// </summary>
         /// <param name="message">The message that describes the error.</param>
-        public ExecutionRejectedException(string message) : base(message)
+        protected ExecutionRejectedException(string message) : base(message)
         {
         }
 
@@ -31,11 +31,11 @@ namespace Polly
         /// </summary>
         /// <param name="message">The message that describes the error.</param>
         /// <param name="inner">The inner exception.</param>
-        public ExecutionRejectedException(string message, Exception inner) : base(message, inner)
+        protected ExecutionRejectedException(string message, Exception inner) : base(message, inner)
         {
         }
 
-#if !PORTABLE
+#if NETSTANDARD2_0
         /// <summary>
         /// Initializes a new instance of the <see cref="ExecutionRejectedException"/> class.
         /// </summary>
