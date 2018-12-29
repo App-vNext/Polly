@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Polly.Specs.Helpers
+﻿namespace Polly.Specs.Helpers
 {
     /// <summary>
     /// A helper class supporting tests on how Policy&lt;TResult&gt; policies handle return results which are class types (as opposed to primitive types).

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Polly.Caching
+﻿namespace Polly.Caching
 {
     /// <summary>
     /// Defines operations for serializing and deserializing values being placed in caches by <see cref="CachePolicy" /> instances.

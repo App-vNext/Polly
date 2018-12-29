@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Polly.CircuitBreaker;
-
-namespace Polly.CircuitBreaker
+﻿namespace Polly.CircuitBreaker
 {
     /// <summary>
     /// Describes the possible states the circuit of a CircuitBreaker may be in.

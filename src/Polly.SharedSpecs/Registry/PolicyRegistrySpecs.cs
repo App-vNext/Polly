@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using Xunit;
 using FluentAssertions;
 using Polly.Registry;
-using Polly.NoOp;
 using Polly.Specs.Helpers;
 
 namespace Polly.Specs.Registry

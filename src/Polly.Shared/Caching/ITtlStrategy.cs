@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Polly.Caching
+﻿namespace Polly.Caching
 {
     /// <summary>
     /// Defines a strategy for providing time-to-live durations for cacheable results.
