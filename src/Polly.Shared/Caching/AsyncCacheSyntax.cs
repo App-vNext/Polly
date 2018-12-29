@@ -6,7 +6,7 @@ namespace Polly
     public partial class Policy
     {
         /// <summary>
-        /// <para>Builds a <see cref="Policy"/> that will function like a result cache for delegate executions returning a result.</para>
+        /// <para>Builds an <see cref="AsyncPolicy"/> that will function like a result cache for delegate executions returning a result.</para>
         /// <para>Before executing a delegate returning a result, checks whether the <paramref name="cacheProvider"/> holds a value for the cache key specified by <see cref="M:Context.OperationKey"/>.
         /// If the <paramref name="cacheProvider"/> provides a value, returns that value and does not execute the governed delegate.  If the <paramref name="cacheProvider"/> does not provide a value, executes the governed delegate, stores the value with the <paramref name="cacheProvider"/>, then returns the value.
         /// </para>
@@ -22,7 +22,7 @@ namespace Polly
         }
 
         /// <summary>
-        /// <para>Builds a <see cref="Policy"/> that will function like a result cache for delegate executions returning a result.</para>
+        /// <para>Builds an <see cref="AsyncPolicy"/> that will function like a result cache for delegate executions returning a result.</para>
         /// <para>Before executing a delegate returning a result, checks whether the <paramref name="cacheProvider"/> holds a value for the cache key specified by <see cref="M:Context.OperationKey"/>
         /// If the <paramref name="cacheProvider"/> provides a value, returns that value and does not execute the governed delegate.  If the <paramref name="cacheProvider"/> does not provide a value, executes the governed delegate, stores the value with the <paramref name="cacheProvider"/>, then returns the value.
         /// </para>
@@ -39,7 +39,7 @@ namespace Polly
         }
 
         /// <summary>
-        /// <para>Builds a <see cref="Policy"/> that will function like a result cache for delegate executions returning a result.</para>
+        /// <para>Builds an <see cref="AsyncPolicy"/> that will function like a result cache for delegate executions returning a result.</para>
         /// <para>Before executing a delegate returning a result, checks whether the <paramref name="cacheProvider"/> holds a value for the cache key determined by applying the <paramref name="cacheKeyStrategy"/> to the execution <see cref="Context"/>.
         /// If the <paramref name="cacheProvider"/> provides a value, returns that value and does not execute the governed delegate.  If the <paramref name="cacheProvider"/> does not provide a value, executes the governed delegate, stores the value with the <paramref name="cacheProvider"/>, then returns the value.
         /// </para>
@@ -57,7 +57,7 @@ namespace Polly
         }
 
         /// <summary>
-        /// <para>Builds a <see cref="Policy" /> that will function like a result cache for delegate executions returning a result.</para>
+        /// <para>Builds an <see cref="AsyncPolicy" /> that will function like a result cache for delegate executions returning a result.</para>
         /// <para>Before executing a delegate returning a result, checks whether the <paramref name="cacheProvider" /> holds a value for the cache key determined by applying the <paramref name="cacheKeyStrategy"/> to the execution <see cref="Context"/>.
         /// If the <paramref name="cacheProvider" /> provides a value, returns that value and does not execute the governed delegate.  If the <paramref name="cacheProvider" /> does not provide a value, executes the governed delegate, stores the value with the <paramref name="cacheProvider" />, then returns the value.
         /// </para>
@@ -83,7 +83,7 @@ namespace Polly
         }
 
         /// <summary>
-        /// <para>Builds a <see cref="Policy"/> that will function like a result cache for delegate executions returning a result.</para>
+        /// <para>Builds an <see cref="AsyncPolicy"/> that will function like a result cache for delegate executions returning a result.</para>
         /// <para>Before executing a delegate returning a result, checks whether the <paramref name="cacheProvider"/> holds a value for the cache key determined by applying the <paramref name="cacheKeyStrategy"/> to the execution <see cref="Context"/>.
         /// If the <paramref name="cacheProvider"/> provides a value, returns that value and does not execute the governed delegate.  If the <paramref name="cacheProvider"/> does not provide a value, executes the governed delegate, stores the value with the <paramref name="cacheProvider"/>, then returns the value.
         /// </para>
@@ -101,7 +101,7 @@ namespace Polly
         }
 
         /// <summary>
-        /// <para>Builds a <see cref="Policy" /> that will function like a result cache for delegate executions returning a result.</para>
+        /// <para>Builds an <see cref="AsyncPolicy" /> that will function like a result cache for delegate executions returning a result.</para>
         /// <para>Before executing a delegate returning a result, checks whether the <paramref name="cacheProvider" /> holds a value for the cache key determined by applying the <paramref name="cacheKeyStrategy"/> to the execution <see cref="Context"/>.
         /// If the <paramref name="cacheProvider" /> provides a value, returns that value and does not execute the governed delegate.  If the <paramref name="cacheProvider" /> does not provide a value, executes the governed delegate, stores the value with the <paramref name="cacheProvider" />, then returns the value.
         /// </para>
@@ -127,7 +127,7 @@ namespace Polly
         }
 
         /// <summary>
-        /// <para>Builds a <see cref="Policy" /> that will function like a result cache for delegate executions returning a result.</para>
+        /// <para>Builds an <see cref="AsyncPolicy" /> that will function like a result cache for delegate executions returning a result.</para>
         /// <para>Before executing a delegate returning a result, checks whether the <paramref name="cacheProvider" /> holds a value for the cache key.
         /// If the <paramref name="cacheProvider" /> provides a value, returns that value and does not execute the governed delegate.  If the <paramref name="cacheProvider" /> does not provide a value, executes the governed delegate, stores the value with the <paramref name="cacheProvider" />, then returns the value.
         /// </para>
@@ -159,7 +159,7 @@ namespace Polly
         }
 
         /// <summary>
-        /// <para>Builds a <see cref="Policy" /> that will function like a result cache for delegate executions returning a result.</para>
+        /// <para>Builds an <see cref="AsyncPolicy" /> that will function like a result cache for delegate executions returning a result.</para>
         /// <para>Before executing a delegate returning a result, checks whether the <paramref name="cacheProvider" /> holds a value for the cache key.
         /// If the <paramref name="cacheProvider" /> provides a value, returns that value and does not execute the governed delegate.  If the <paramref name="cacheProvider" /> does not provide a value, executes the governed delegate, stores the value with the <paramref name="cacheProvider" />, then returns the value.
         /// </para>
@@ -192,7 +192,7 @@ namespace Polly
         }
 
         /// <summary>
-        /// <para>Builds a <see cref="Policy" /> that will function like a result cache for delegate executions returning a result.</para>
+        /// <para>Builds an <see cref="AsyncPolicy" /> that will function like a result cache for delegate executions returning a result.</para>
         /// <para>Before executing a delegate returning a result, checks whether the <paramref name="cacheProvider" /> holds a value for the cache key determined by applying the <paramref name="cacheKeyStrategy"/> to the execution <see cref="Context"/>.
         /// If the <paramref name="cacheProvider" /> provides a value, returns that value and does not execute the governed delegate.  If the <paramref name="cacheProvider" /> does not provide a value, executes the governed delegate, stores the value with the <paramref name="cacheProvider" />, then returns the value.
         /// </para>
@@ -227,7 +227,7 @@ namespace Polly
         }
 
         /// <summary>
-        /// <para>Builds a <see cref="Policy" /> that will function like a result cache for delegate executions returning a result.</para>
+        /// <para>Builds an <see cref="AsyncPolicy" /> that will function like a result cache for delegate executions returning a result.</para>
         /// <para>Before executing a delegate returning a result, checks whether the <paramref name="cacheProvider" /> holds a value for the cache key determined by applying the <paramref name="cacheKeyStrategy"/> to the execution <see cref="Context"/>.
         /// If the <paramref name="cacheProvider" /> provides a value, returns that value and does not execute the governed delegate.  If the <paramref name="cacheProvider" /> does not provide a value, executes the governed delegate, stores the value with the <paramref name="cacheProvider" />, then returns the value.
         /// </para>
@@ -263,7 +263,7 @@ namespace Polly
         }
 
         /// <summary>
-        /// <para>Builds a <see cref="Policy" /> that will function like a result cache for delegate executions returning a result.</para>
+        /// <para>Builds an <see cref="AsyncPolicy" /> that will function like a result cache for delegate executions returning a result.</para>
         /// <para>Before executing a delegate returning a result, checks whether the <paramref name="cacheProvider" /> holds a value for the cache key determined by applying the <paramref name="cacheKeyStrategy"/> to the execution <see cref="Context"/>.
         /// If the <paramref name="cacheProvider" /> provides a value, returns that value and does not execute the governed delegate.  If the <paramref name="cacheProvider" /> does not provide a value, executes the governed delegate, stores the value with the <paramref name="cacheProvider" />, then returns the value.
         /// </para>
@@ -298,7 +298,7 @@ namespace Polly
         }
 
         /// <summary>
-        /// <para>Builds a <see cref="Policy" /> that will function like a result cache for delegate executions returning a result.</para>
+        /// <para>Builds an <see cref="AsyncPolicy" /> that will function like a result cache for delegate executions returning a result.</para>
         /// <para>Before executing a delegate returning a result, checks whether the <paramref name="cacheProvider" /> holds a value for the cache key determined by applying the <paramref name="cacheKeyStrategy"/> to the execution <see cref="Context"/>.
         /// If the <paramref name="cacheProvider" /> provides a value, returns that value and does not execute the governed delegate.  If the <paramref name="cacheProvider" /> does not provide a value, executes the governed delegate, stores the value with the <paramref name="cacheProvider" />, then returns the value.
         /// </para>

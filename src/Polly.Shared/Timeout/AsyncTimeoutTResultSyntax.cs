@@ -7,7 +7,7 @@ namespace Polly
     public partial class Policy
     {
         /// <summary>
-        /// Builds a <see cref="Policy{TResult}"/> that will wait asynchronously for a delegate to complete for a specified period of time. A <see cref="TimeoutRejectedException"/> will be thrown if the delegate does not complete within the configured timeout.
+        /// Builds an <see cref="AsyncPolicy{TResult}"/> that will wait asynchronously for a delegate to complete for a specified period of time. A <see cref="TimeoutRejectedException"/> will be thrown if the delegate does not complete within the configured timeout.
         /// </summary>
         /// <param name="seconds">The number of seconds after which to timeout.</param>
         /// <exception cref="System.ArgumentOutOfRangeException">seconds;Value must be greater than zero.</exception>
@@ -21,7 +21,7 @@ namespace Polly
         }
 
         /// <summary>
-        /// Builds a <see cref="Policy{TResult}"/> that will wait asynchronously for a delegate to complete for a specified period of time. A <see cref="TimeoutRejectedException"/> will be thrown if the delegate does not complete within the configured timeout.
+        /// Builds an <see cref="AsyncPolicy{TResult}"/> that will wait asynchronously for a delegate to complete for a specified period of time. A <see cref="TimeoutRejectedException"/> will be thrown if the delegate does not complete within the configured timeout.
         /// </summary>
         /// <param name="seconds">The number of seconds after which to timeout.</param>
         /// <param name="timeoutStrategy">The timeout strategy.</param>
@@ -36,7 +36,7 @@ namespace Polly
         }
 
         /// <summary>
-        /// Builds a <see cref="Policy{TResult}"/> that will wait asynchronously for a delegate to complete for a specified period of time. A <see cref="TimeoutRejectedException"/> will be thrown if the delegate does not complete within the configured timeout.
+        /// Builds an <see cref="AsyncPolicy{TResult}"/> that will wait asynchronously for a delegate to complete for a specified period of time. A <see cref="TimeoutRejectedException"/> will be thrown if the delegate does not complete within the configured timeout.
         /// </summary>
         /// <param name="seconds">The number of seconds after which to timeout.</param>
         /// <param name="onTimeoutAsync">An action to call on timeout, passing the execution context, the timeout applied, and a <see cref="Task"/> capturing the abandoned, timed-out action. 
@@ -52,7 +52,7 @@ namespace Polly
         }
 
         /// <summary>
-        /// Builds a <see cref="Policy{TResult}"/> that will wait asynchronously for a delegate to complete for a specified period of time. A <see cref="TimeoutRejectedException"/> will be thrown if the delegate does not complete within the configured timeout.
+        /// Builds an <see cref="AsyncPolicy{TResult}"/> that will wait asynchronously for a delegate to complete for a specified period of time. A <see cref="TimeoutRejectedException"/> will be thrown if the delegate does not complete within the configured timeout.
         /// </summary>
         /// <param name="seconds">The number of seconds after which to timeout.</param>
         /// <param name="onTimeoutAsync">An action to call on timeout, passing the execution context, the timeout applied, the <see cref="Task"/> capturing the abandoned, timed-out action, and the captured <see cref="Exception"/>.
@@ -68,7 +68,7 @@ namespace Polly
         }
 
         /// <summary>
-        /// Builds a <see cref="Policy{TResult}"/> that will wait asynchronously for a delegate to complete for a specified period of time. A <see cref="TimeoutRejectedException"/> will be thrown if the delegate does not complete within the configured timeout.
+        /// Builds an <see cref="AsyncPolicy{TResult}"/> that will wait asynchronously for a delegate to complete for a specified period of time. A <see cref="TimeoutRejectedException"/> will be thrown if the delegate does not complete within the configured timeout.
         /// </summary>
         /// <param name="seconds">The number of seconds after which to timeout.</param>
         /// <param name="timeoutStrategy">The timeout strategy.</param>
@@ -85,7 +85,7 @@ namespace Polly
         }
 
         /// <summary>
-        /// Builds a <see cref="Policy{TResult}"/> that will wait asynchronously for a delegate to complete for a specified period of time. A <see cref="TimeoutRejectedException"/> will be thrown if the delegate does not complete within the configured timeout.
+        /// Builds an <see cref="AsyncPolicy{TResult}"/> that will wait asynchronously for a delegate to complete for a specified period of time. A <see cref="TimeoutRejectedException"/> will be thrown if the delegate does not complete within the configured timeout.
         /// </summary>
         /// <param name="seconds">The number of seconds after which to timeout.</param>
         /// <param name="timeoutStrategy">The timeout strategy.</param>
@@ -102,7 +102,7 @@ namespace Polly
         }
 
         /// <summary>
-        /// Builds a <see cref="Policy{TResult}"/> that will wait asynchronously for a delegate to complete for a specified period of time. A <see cref="TimeoutRejectedException"/> will be thrown if the delegate does not complete within the configured timeout.
+        /// Builds an <see cref="AsyncPolicy{TResult}"/> that will wait asynchronously for a delegate to complete for a specified period of time. A <see cref="TimeoutRejectedException"/> will be thrown if the delegate does not complete within the configured timeout.
         /// </summary>
         /// <param name="timeout">The timeout.</param>
         /// <returns>The policy instance.</returns>
@@ -116,7 +116,7 @@ namespace Polly
         }
 
         /// <summary>
-        /// Builds a <see cref="Policy{TResult}"/> that will wait asynchronously for a delegate to complete for a specified period of time. A <see cref="TimeoutRejectedException"/> will be thrown if the delegate does not complete within the configured timeout.
+        /// Builds an <see cref="AsyncPolicy{TResult}"/> that will wait asynchronously for a delegate to complete for a specified period of time. A <see cref="TimeoutRejectedException"/> will be thrown if the delegate does not complete within the configured timeout.
         /// </summary>
         /// <param name="timeout">The timeout.</param>
         /// <param name="timeoutStrategy">The timeout strategy.</param>
@@ -131,7 +131,7 @@ namespace Polly
         }
 
         /// <summary>
-        /// Builds a <see cref="Policy{TResult}"/> that will wait asynchronously for a delegate to complete for a specified period of time. A <see cref="TimeoutRejectedException"/> will be thrown if the delegate does not complete within the configured timeout.
+        /// Builds an <see cref="AsyncPolicy{TResult}"/> that will wait asynchronously for a delegate to complete for a specified period of time. A <see cref="TimeoutRejectedException"/> will be thrown if the delegate does not complete within the configured timeout.
         /// </summary>
         /// <param name="timeout">The timeout.</param>
         /// <param name="onTimeoutAsync">An action to call on timeout, passing the execution context, the timeout applied, and a <see cref="Task"/> capturing the abandoned, timed-out action. 
@@ -148,7 +148,7 @@ namespace Polly
         }
 
         /// <summary>
-        /// Builds a <see cref="Policy{TResult}"/> that will wait asynchronously for a delegate to complete for a specified period of time. A <see cref="TimeoutRejectedException"/> will be thrown if the delegate does not complete within the configured timeout.
+        /// Builds an <see cref="AsyncPolicy{TResult}"/> that will wait asynchronously for a delegate to complete for a specified period of time. A <see cref="TimeoutRejectedException"/> will be thrown if the delegate does not complete within the configured timeout.
         /// </summary>
         /// <param name="timeout">The timeout.</param>
         /// <param name="onTimeoutAsync">An action to call on timeout, passing the execution context, the timeout applied, the <see cref="Task"/> capturing the abandoned, timed-out action, and the captured <see cref="Exception"/>.
@@ -165,7 +165,7 @@ namespace Polly
         }
 
         /// <summary>
-        /// Builds a <see cref="Policy{TResult}"/> that will wait asynchronously for a delegate to complete for a specified period of time. A <see cref="TimeoutRejectedException"/> will be thrown if the delegate does not complete within the configured timeout.
+        /// Builds an <see cref="AsyncPolicy{TResult}"/> that will wait asynchronously for a delegate to complete for a specified period of time. A <see cref="TimeoutRejectedException"/> will be thrown if the delegate does not complete within the configured timeout.
         /// </summary>
         /// <param name="timeout">The timeout.</param>
         /// <param name="onTimeoutAsync">An action to call on timeout, passing the execution context, the timeout applied, and a <see cref="Task"/> capturing the abandoned, timed-out action. 
@@ -182,7 +182,7 @@ namespace Polly
         }
 
         /// <summary>
-        /// Builds a <see cref="Policy{TResult}"/> that will wait asynchronously for a delegate to complete for a specified period of time. A <see cref="TimeoutRejectedException"/> will be thrown if the delegate does not complete within the configured timeout.
+        /// Builds an <see cref="AsyncPolicy{TResult}"/> that will wait asynchronously for a delegate to complete for a specified period of time. A <see cref="TimeoutRejectedException"/> will be thrown if the delegate does not complete within the configured timeout.
         /// </summary>
         /// <param name="timeout">The timeout.</param>
         /// <param name="onTimeoutAsync">An action to call on timeout, passing the execution context, the timeout applied, the <see cref="Task"/> capturing the abandoned, timed-out action, and the captured <see cref="Exception"/>.
@@ -199,7 +199,7 @@ namespace Polly
         }
 
         /// <summary>
-        /// Builds a <see cref="Policy{TResult}"/> that will wait asynchronously for a delegate to complete for a specified period of time. A <see cref="TimeoutRejectedException"/> will be thrown if the delegate does not complete within the configured timeout.
+        /// Builds an <see cref="AsyncPolicy{TResult}"/> that will wait asynchronously for a delegate to complete for a specified period of time. A <see cref="TimeoutRejectedException"/> will be thrown if the delegate does not complete within the configured timeout.
         /// </summary>
         /// <param name="timeoutProvider">A function to provide the timeout for this execution.</param>
         /// <exception cref="System.ArgumentNullException">timeoutProvider</exception>
@@ -213,7 +213,7 @@ namespace Polly
         }
 
         /// <summary>
-        /// Builds a <see cref="Policy{TResult}"/> that will wait asynchronously for a delegate to complete for a specified period of time. A <see cref="TimeoutRejectedException"/> will be thrown if the delegate does not complete within the configured timeout.
+        /// Builds an <see cref="AsyncPolicy{TResult}"/> that will wait asynchronously for a delegate to complete for a specified period of time. A <see cref="TimeoutRejectedException"/> will be thrown if the delegate does not complete within the configured timeout.
         /// </summary>
         /// <param name="timeoutProvider">A function to provide the timeout for this execution.</param>
         /// <param name="timeoutStrategy">The timeout strategy.</param>
@@ -228,7 +228,7 @@ namespace Polly
         }
 
         /// <summary>
-        /// Builds a <see cref="Policy{TResult}"/> that will wait asynchronously for a delegate to complete for a specified period of time. A <see cref="TimeoutRejectedException"/> will be thrown if the delegate does not complete within the configured timeout.
+        /// Builds an <see cref="AsyncPolicy{TResult}"/> that will wait asynchronously for a delegate to complete for a specified period of time. A <see cref="TimeoutRejectedException"/> will be thrown if the delegate does not complete within the configured timeout.
         /// </summary>
         /// <param name="timeoutProvider">A function to provide the timeout for this execution.</param>
         /// <param name="onTimeoutAsync">An action to call on timeout, passing the execution context, the timeout applied, and a <see cref="Task"/> capturing the abandoned, timed-out action. 
@@ -244,7 +244,7 @@ namespace Polly
         }
 
         /// <summary>
-        /// Builds a <see cref="Policy{TResult}"/> that will wait asynchronously for a delegate to complete for a specified period of time. A <see cref="TimeoutRejectedException"/> will be thrown if the delegate does not complete within the configured timeout.
+        /// Builds an <see cref="AsyncPolicy{TResult}"/> that will wait asynchronously for a delegate to complete for a specified period of time. A <see cref="TimeoutRejectedException"/> will be thrown if the delegate does not complete within the configured timeout.
         /// </summary>
         /// <param name="timeoutProvider">A function to provide the timeout for this execution.</param>
         /// <param name="onTimeoutAsync">An action to call on timeout, passing the execution context, the timeout applied, the <see cref="Task"/> capturing the abandoned, timed-out action, and the captured <see cref="Exception"/>.
@@ -260,7 +260,7 @@ namespace Polly
         }
 
         /// <summary>
-        /// Builds a <see cref="Policy{TResult}"/> that will wait asynchronously for a delegate to complete for a specified period of time. A <see cref="TimeoutRejectedException"/> will be thrown if the delegate does not complete within the configured timeout.
+        /// Builds an <see cref="AsyncPolicy{TResult}"/> that will wait asynchronously for a delegate to complete for a specified period of time. A <see cref="TimeoutRejectedException"/> will be thrown if the delegate does not complete within the configured timeout.
         /// </summary>
         /// <param name="timeoutProvider">A function to provide the timeout for this execution.</param>
         /// <param name="timeoutStrategy">The timeout strategy.</param>
@@ -277,7 +277,7 @@ namespace Polly
         }
 
         /// <summary>
-        /// Builds a <see cref="Policy{TResult}"/> that will wait asynchronously for a delegate to complete for a specified period of time. A <see cref="TimeoutRejectedException"/> will be thrown if the delegate does not complete within the configured timeout.
+        /// Builds an <see cref="AsyncPolicy{TResult}"/> that will wait asynchronously for a delegate to complete for a specified period of time. A <see cref="TimeoutRejectedException"/> will be thrown if the delegate does not complete within the configured timeout.
         /// </summary>
         /// <param name="timeoutProvider">A function to provide the timeout for this execution.</param>
         /// <param name="timeoutStrategy">The timeout strategy.</param>
@@ -294,7 +294,7 @@ namespace Polly
         }
 
         /// <summary>
-        /// Builds a <see cref="Policy{TResult}"/> that will wait asynchronously for a delegate to complete for a specified period of time. A <see cref="TimeoutRejectedException"/> will be thrown if the delegate does not complete within the configured timeout.
+        /// Builds an <see cref="AsyncPolicy{TResult}"/> that will wait asynchronously for a delegate to complete for a specified period of time. A <see cref="TimeoutRejectedException"/> will be thrown if the delegate does not complete within the configured timeout.
         /// </summary>
         /// <param name="timeoutProvider">A function to provide the timeout for this execution.</param>
         /// <exception cref="System.ArgumentNullException">timeoutProvider</exception>
@@ -306,7 +306,7 @@ namespace Polly
         }
 
         /// <summary>
-        /// Builds a <see cref="Policy{TResult}"/> that will wait asynchronously for a delegate to complete for a specified period of time. A <see cref="TimeoutRejectedException"/> will be thrown if the delegate does not complete within the configured timeout.
+        /// Builds an <see cref="AsyncPolicy{TResult}"/> that will wait asynchronously for a delegate to complete for a specified period of time. A <see cref="TimeoutRejectedException"/> will be thrown if the delegate does not complete within the configured timeout.
         /// </summary>
         /// <param name="timeoutProvider">A function to provide the timeout for this execution.</param>
         /// <param name="timeoutStrategy">The timeout strategy.</param>
@@ -319,7 +319,7 @@ namespace Polly
         }
 
         /// <summary>
-        /// Builds a <see cref="Policy{TResult}"/> that will wait asynchronously for a delegate to complete for a specified period of time. A <see cref="TimeoutRejectedException"/> will be thrown if the delegate does not complete within the configured timeout.
+        /// Builds an <see cref="AsyncPolicy{TResult}"/> that will wait asynchronously for a delegate to complete for a specified period of time. A <see cref="TimeoutRejectedException"/> will be thrown if the delegate does not complete within the configured timeout.
         /// </summary>
         /// <param name="timeoutProvider">A function to provide the timeout for this execution.</param>
         /// <param name="onTimeoutAsync">An action to call on timeout, passing the execution context, the timeout applied, and a <see cref="Task"/> capturing the abandoned, timed-out action. 
@@ -333,7 +333,7 @@ namespace Polly
         }
 
         /// <summary>
-        /// Builds a <see cref="Policy{TResult}"/> that will wait asynchronously for a delegate to complete for a specified period of time. A <see cref="TimeoutRejectedException"/> will be thrown if the delegate does not complete within the configured timeout.
+        /// Builds an <see cref="AsyncPolicy{TResult}"/> that will wait asynchronously for a delegate to complete for a specified period of time. A <see cref="TimeoutRejectedException"/> will be thrown if the delegate does not complete within the configured timeout.
         /// </summary>
         /// <param name="timeoutProvider">A function to provide the timeout for this execution.</param>
         /// <param name="onTimeoutAsync">An action to call on timeout, passing the execution context, the timeout applied, the <see cref="Task"/> capturing the abandoned, timed-out action, and the captured <see cref="Exception"/>. 
@@ -347,7 +347,7 @@ namespace Polly
         }
 
         /// <summary>
-        /// Builds a <see cref="Policy{TResult}"/> that will wait asynchronously for a delegate to complete for a specified period of time. A <see cref="TimeoutRejectedException"/> will be thrown if the delegate does not complete within the configured timeout.
+        /// Builds an <see cref="AsyncPolicy{TResult}"/> that will wait asynchronously for a delegate to complete for a specified period of time. A <see cref="TimeoutRejectedException"/> will be thrown if the delegate does not complete within the configured timeout.
         /// </summary>
         /// <param name="timeoutProvider">A function to provide the timeout for this execution.</param>
         /// <param name="timeoutStrategy">The timeout strategy.</param>
@@ -364,7 +364,7 @@ namespace Polly
         }
 
         /// <summary>
-        /// Builds a <see cref="Policy{TResult}"/> that will wait asynchronously for a delegate to complete for a specified period of time. A <see cref="TimeoutRejectedException"/> will be thrown if the delegate does not complete within the configured timeout.
+        /// Builds an <see cref="AsyncPolicy{TResult}"/> that will wait asynchronously for a delegate to complete for a specified period of time. A <see cref="TimeoutRejectedException"/> will be thrown if the delegate does not complete within the configured timeout.
         /// </summary>
         /// <param name="timeoutProvider">A function to provide the timeout for this execution.</param>
         /// <param name="timeoutStrategy">The timeout strategy.</param>

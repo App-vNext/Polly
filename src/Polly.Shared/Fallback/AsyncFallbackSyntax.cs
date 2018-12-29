@@ -7,7 +7,7 @@ using Polly.Utilities;
 namespace Polly
 {
     /// <summary>
-    /// Fluent API for defining a Fallback <see cref="Policy"/>. 
+    /// Fluent API for defining a Fallback <see cref="AsyncPolicy"/>. 
     /// </summary>
     public static class AsyncFallbackSyntax
     {
@@ -88,9 +88,9 @@ namespace Polly
     }
 
     /// <summary>
-    /// Fluent API for defining a Fallback <see cref="Policy"/>. 
+    /// Fluent API for defining an async Fallback policy governing executions returning TResult. 
     /// </summary>
-    public static class FallbackTResultSyntaxAsync
+    public static class AsyncFallbackTResultSyntax
     {
         /// <summary>
         /// Builds an <see cref="AsyncFallbackPolicy{TResult}"/> which provides a fallback value if the main execution fails.  Executes the main delegate asynchronously, but if this throws a handled exception or raises a handled result, returns <paramref name="fallbackValue"/>.

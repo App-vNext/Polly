@@ -4,12 +4,12 @@ using Polly.CircuitBreaker;
 namespace Polly
 {
     /// <summary>
-    /// Fluent API for defining a Circuit Breaker <see cref="Policy"/>. 
+    /// Fluent API for defining a Circuit Breaker <see cref="Policy{TResult}"/>. 
     /// </summary>
     public static class CircuitBreakerTResultSyntax
     {
         /// <summary>
-        /// <para> Builds a <see cref="Policy"/> that will function like a Circuit Breaker.</para>
+        /// <para> Builds a <see cref="Policy{TResult}"/> that will function like a Circuit Breaker.</para>
         /// <para>The circuit will break if <paramref name="handledEventsAllowedBeforeBreaking"/>
         /// exceptions or results that are handled by this policy are encountered consecutively. </para>
         /// <para>The circuit will stay broken for the <paramref name="durationOfBreak"/>. Any attempt to execute this policy
@@ -42,7 +42,7 @@ namespace Polly
         }
 
         /// <summary>
-        /// <para> Builds a <see cref="Policy"/> that will function like a Circuit Breaker.</para>
+        /// <para> Builds a <see cref="Policy{TResult}"/> that will function like a Circuit Breaker.</para>
         /// <para>The circuit will break if <paramref name="handledEventsAllowedBeforeBreaking"/>
         /// exceptions or results that are handled by this policy are encountered consecutively. </para>
         /// <para>The circuit will stay broken for the <paramref name="durationOfBreak"/>. Any attempt to execute this policy
@@ -74,7 +74,7 @@ namespace Polly
         }
 
         /// <summary>
-        /// <para> Builds a <see cref="Policy"/> that will function like a Circuit Breaker.</para>
+        /// <para> Builds a <see cref="Policy{TResult}"/> that will function like a Circuit Breaker.</para>
         /// <para>The circuit will break if <paramref name="handledEventsAllowedBeforeBreaking"/>
         /// exceptions or results that are handled by this policy are encountered consecutively. </para>
         /// <para>The circuit will stay broken for the <paramref name="durationOfBreak"/>. Any attempt to execute this policy
@@ -107,7 +107,7 @@ namespace Polly
         }
 
         /// <summary>
-        /// <para> Builds a <see cref="Policy"/> that will function like a Circuit Breaker.</para>
+        /// <para> Builds a <see cref="Policy{TResult}"/> that will function like a Circuit Breaker.</para>
         /// <para>The circuit will break if <paramref name="handledEventsAllowedBeforeBreaking"/>
         /// exceptions or results that are handled by this policy are encountered consecutively. </para>
         /// <para>The circuit will stay broken for the <paramref name="durationOfBreak"/>. Any attempt to execute this policy
@@ -141,7 +141,7 @@ namespace Polly
         }
 
         /// <summary>
-        /// <para> Builds a <see cref="Policy"/> that will function like a Circuit Breaker.</para>
+        /// <para> Builds a <see cref="Policy{TResult}"/> that will function like a Circuit Breaker.</para>
         /// <para>The circuit will break if <paramref name="handledEventsAllowedBeforeBreaking"/>
         /// exceptions or results that are handled by this policy are encountered consecutively. </para>
         /// <para>The circuit will stay broken for the <paramref name="durationOfBreak"/>. Any attempt to execute this policy
@@ -176,7 +176,7 @@ namespace Polly
         }
 
         /// <summary>
-        /// <para> Builds a <see cref="Policy"/> that will function like a Circuit Breaker.</para>
+        /// <para> Builds a <see cref="Policy{TResult}"/> that will function like a Circuit Breaker.</para>
         /// <para>The circuit will break if <paramref name="handledEventsAllowedBeforeBreaking"/>
         /// exceptions or results that are handled by this policy are encountered consecutively. </para>
         /// <para>The circuit will stay broken for the <paramref name="durationOfBreak"/>. Any attempt to execute this policy
