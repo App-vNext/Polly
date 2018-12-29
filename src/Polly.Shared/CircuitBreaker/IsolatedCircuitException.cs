@@ -1,5 +1,5 @@
 ﻿using System;
-#if !PORTABLE
+#if NETSTANDARD2_0
 using System.Runtime.Serialization;
 #endif
 
@@ -8,7 +8,7 @@ namespace Polly.CircuitBreaker
     /// <summary>
     /// Exception thrown when a circuit is isolated (held open) by manual override.
     /// </summary>
-#if !PORTABLE
+#if NETSTANDARD2_0
     [Serializable]
 #endif
     public class IsolatedCircuitException : BrokenCircuitException
@@ -19,7 +19,7 @@ namespace Polly.CircuitBreaker
         /// <param name="message">The message that describes the error.</param>
         public IsolatedCircuitException(string message) : base(message) { }
 
-#if !PORTABLE
+#if NETSTANDARD2_0
         /// <summary>
         /// Initializes a new instance of the <see cref="IsolatedCircuitException"/> class.
         /// </summary>
