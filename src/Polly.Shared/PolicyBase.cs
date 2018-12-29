@@ -16,12 +16,12 @@ namespace Polly
         /// <summary>
         /// Defines a CancellationToken to use, when none is supplied.
         /// </summary>
-        internal CancellationToken DefaultCancellationToken = CancellationToken.None;
+        internal readonly CancellationToken DefaultCancellationToken = CancellationToken.None;
 
         /// <summary>
         /// Defines a value to use for continueOnCaptureContext, when none is supplied.
         /// </summary>
-        internal bool DefaultContinueOnCapturedContext = false;
+        internal const bool DefaultContinueOnCapturedContext = false;
 
         internal static ExceptionType GetExceptionType(ExceptionPredicates exceptionPredicates, Exception exception)
         {
