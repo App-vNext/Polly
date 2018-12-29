@@ -9,7 +9,10 @@ namespace Polly
     /// </summary>
     public partial class Context
     {
-        internal static readonly Context None = new Context();
+        internal static Context None()
+        {
+            return new Context();
+        }
 
         private Guid? _correlationId;
 
