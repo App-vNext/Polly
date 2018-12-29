@@ -127,7 +127,7 @@ namespace Polly.Wrap
                 }
                 else
                 {
-                    return _outerNonGeneric.Execute(action, context, cancellationToken);
+                    throw new InvalidOperationException($"A {nameof(PolicyWrap<TResult>)} must define an inner policy.");
                 }
             }
             else if (_outerGeneric != null)
@@ -156,23 +156,12 @@ namespace Polly.Wrap
                 }
                 else
                 {
-                    return _outerGeneric.Execute(action, context, cancellationToken);
+                    throw new InvalidOperationException($"A {nameof(PolicyWrap<TResult>)} must define an inner policy.");
                 }
             }
             else
             {
-                if (_innerNonGeneric != null)
-                {
-                    return _innerNonGeneric.Execute(action, context, cancellationToken);
-                }
-                else if (_innerGeneric != null)
-                {
-                    return _innerGeneric.Execute(action, context, cancellationToken);
-                }
-                else
-                {
-                    return action(context, cancellationToken);
-                }
+                throw new InvalidOperationException($"A {nameof(PolicyWrap<TResult>)} must define an outer policy.");
             }
         }
     }

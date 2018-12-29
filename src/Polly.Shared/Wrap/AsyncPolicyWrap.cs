@@ -87,13 +87,6 @@ namespace Polly.Wrap
         /// </summary>
         public IsPolicy Inner => (IsPolicy)_innerGeneric ?? _innerNonGeneric;
 
-        internal AsyncPolicyWrap(AsyncPolicy outer, IAsyncPolicy inner)
-            : base(outer.ExceptionPredicates, ResultPredicates<TResult>.None)
-        {
-            _outerNonGeneric = outer;
-            _innerNonGeneric = inner;
-        }
-
         internal AsyncPolicyWrap(AsyncPolicy outer, IAsyncPolicy<TResult> inner)
             : base(outer.ExceptionPredicates, ResultPredicates<TResult>.None)
         {
@@ -146,7 +139,7 @@ namespace Polly.Wrap
                 }
                 else
                 {
-                    return _outerNonGeneric.ExecuteAsync(action, context, cancellationToken);
+                    throw new InvalidOperationException($"A {nameof(AsyncPolicyWrap<TResult>)} must define an inner policy.");
                 }
             }
             else if (_outerGeneric != null)
@@ -177,23 +170,12 @@ namespace Polly.Wrap
                 }
                 else
                 {
-                    return _outerGeneric.ExecuteAsync(action, context, cancellationToken);
+                    throw new InvalidOperationException($"A {nameof(AsyncPolicyWrap<TResult>)} must define an inner policy.");
                 }
             }
             else
             {
-                if (_innerNonGeneric != null)
-                {
-                    return _innerNonGeneric.ExecuteAsync(action, context, cancellationToken);
-                }
-                else if (_innerGeneric != null)
-                {
-                    return _innerGeneric.ExecuteAsync(action, context, cancellationToken);
-                }
-                else
-                {
-                    return action(context, cancellationToken);
-                }
+                throw new InvalidOperationException($"A {nameof(AsyncPolicyWrap<TResult>)} must define an outer policy.");
             }
         }
     }
