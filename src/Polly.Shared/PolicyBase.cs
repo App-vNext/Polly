@@ -11,17 +11,17 @@ namespace Polly
         /// <summary>
         /// Predicates indicating which exceptions the policy should handle.
         /// </summary>
-        protected internal ExceptionPredicates ExceptionPredicates { get; protected set; }
+        internal ExceptionPredicates ExceptionPredicates { get; set; }
 
         /// <summary>
         /// Defines a CancellationToken to use, when none is supplied.
         /// </summary>
-        protected static internal CancellationToken DefaultCancellationToken = CancellationToken.None;
+        internal CancellationToken DefaultCancellationToken = CancellationToken.None;
 
         /// <summary>
         /// Defines a value to use for continueOnCaptureContext, when none is supplied.
         /// </summary>
-        protected static internal bool DefaultContinueOnCapturedContext = false;
+        internal bool DefaultContinueOnCapturedContext = false;
 
         internal static ExceptionType GetExceptionType(ExceptionPredicates exceptionPredicates, Exception exception)
         {
