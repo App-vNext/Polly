@@ -50,7 +50,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Caching\GenericCacheProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Caching\AsyncGenericCacheProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CircuitBreaker\AdvancedCircuitBreakerSyntax.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)CircuitBreaker\AdvancedCircuitBreakerTResultSyntaxAsync.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CircuitBreaker\AsyncAdvancedCircuitBreakerTResultSyntax.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CircuitBreaker\AsyncAdvancedCircuitBreakerSyntax.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CircuitBreaker\AdvancedCircuitBreakerTResultSyntax.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CircuitBreaker\CircuitBreakerSyntax.cs" />
