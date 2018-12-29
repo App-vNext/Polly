@@ -6,7 +6,7 @@ using Polly.Utilities;
 
 namespace Polly.Timeout
 {
-    internal static partial class TimeoutEngine
+    internal static class TimeoutEngine
     {
         internal static TResult Implementation<TResult>(
             Func<Context, CancellationToken, TResult> action,

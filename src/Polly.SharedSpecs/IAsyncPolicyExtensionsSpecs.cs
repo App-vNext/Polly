@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Polly.CircuitBreaker;
 using Polly.Specs.Helpers;
-using Polly.Utilities;
 using Xunit;
 
 namespace Polly.Specs
@@ -25,7 +23,7 @@ namespace Polly.Specs
         {
             // Use a CircuitBreaker as a policy which we can easily manipulate to demonstrate that the executions are passing through the underlying non-generic policy.
 
-            CircuitBreakerPolicy breaker = Policy.Handle<Exception>().CircuitBreakerAsync(1, TimeSpan.Zero);
+            var breaker = Policy.Handle<Exception>().CircuitBreakerAsync(1, TimeSpan.Zero);
             IAsyncPolicy nonGenericPolicy = breaker;
             var genericPolicy = nonGenericPolicy.AsAsyncPolicy<ResultPrimitive>();
             Func<Task<ResultPrimitive>> deleg = () => Task.FromResult(ResultPrimitive.Good);

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using Polly.Wrap;
 
@@ -17,7 +16,6 @@ namespace Polly
             if (innerPolicy == null) throw new ArgumentNullException(nameof(innerPolicy));
 
             return new PolicyWrap(
-                (action, context, cancellationtoken) => PolicyWrapEngine.Implementation(action, context, cancellationtoken, this, innerPolicy),
                 this,
                 innerPolicy
                 );
@@ -34,7 +32,6 @@ namespace Polly
             if (innerPolicy == null) throw new ArgumentNullException(nameof(innerPolicy));
 
             return new PolicyWrap<TResult>(
-                (func, context, cancellationtoken) => PolicyWrapEngine.Implementation<TResult>(func, context, cancellationtoken, this, innerPolicy),
                 this,
                 innerPolicy
                 );
@@ -53,7 +50,6 @@ namespace Polly
             if (innerPolicy == null) throw new ArgumentNullException(nameof(innerPolicy));
 
             return new PolicyWrap<TResult>(
-                (func, context, cancellationtoken) => PolicyWrapEngine.Implementation<TResult>(func, context, cancellationtoken, this, innerPolicy),
                 this,
                 innerPolicy
                 );
@@ -69,7 +65,6 @@ namespace Polly
             if (innerPolicy == null) throw new ArgumentNullException(nameof(innerPolicy));
 
             return new PolicyWrap<TResult>(
-                (func, context, cancellationtoken) => PolicyWrapEngine.Implementation<TResult>(func, context, cancellationtoken, this, innerPolicy),
                 this,
                 innerPolicy
                 );
@@ -92,14 +87,7 @@ namespace Polly
                 case 1:
                     throw new ArgumentException("The enumerable of policies to form the wrap must contain at least two policies.", nameof(policies));
                 case 2:
-                    return new PolicyWrap(
-                        (func, context, cancellationtoken) => PolicyWrapEngine.Implementation(
-                            func, 
-                            context, 
-                            cancellationtoken, 
-                            policies[0], 
-                            policies[1]), 
-                        (Policy)policies[0], policies[1]);
+                    return new PolicyWrap((Policy)policies[0], policies[1]);
 
                 default:
                     return Wrap(policies[0], Wrap(policies.Skip(1).ToArray()));
@@ -121,14 +109,7 @@ namespace Polly
                 case 1:
                     throw new ArgumentException("The enumerable of policies to form the wrap must contain at least two policies.", nameof(policies));
                 case 2:
-                    return new PolicyWrap<TResult>(
-                        (func, context, cancellationtoken) => PolicyWrapEngine.Implementation(
-                            func,
-                            context,
-                            cancellationtoken,
-                            policies[0],
-                            policies[1]),
-                        (Policy<TResult>)policies[0], policies[1]);
+                    return new PolicyWrap<TResult>((Policy<TResult>)policies[0], policies[1]);
 
                 default:
                     return Wrap(policies[0], Wrap(policies.Skip(1).ToArray()));

@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
-using Polly.Retry;
 using Polly.Specs.Helpers;
 using Polly.Utilities;
 using Xunit;
@@ -70,7 +69,7 @@ namespace Polly.Specs.Retry
         [Fact]
         public async Task Should_not_return_handled_result_when_handled_result_raised_same_number_of_times_as_retry_count()
         {
-            RetryPolicy<ResultPrimitive> policy = Policy
+            var policy = Policy
                 .HandleResult(ResultPrimitive.Fault)
                 .RetryAsync(3);
 
@@ -81,7 +80,7 @@ namespace Polly.Specs.Retry
         [Fact]
         public async Task Should_not_return_handled_result_when_one_of_the_handled_results_raised_same_number_of_times_as_retry_count()
         {
-            RetryPolicy<ResultPrimitive> policy = Policy
+            var policy = Policy
                 .HandleResult(ResultPrimitive.Fault)
                 .OrResult(ResultPrimitive.FaultAgain)
                 .RetryAsync(3);
@@ -93,7 +92,7 @@ namespace Polly.Specs.Retry
         [Fact]
         public async Task Should_not_return_handled_result_when_handled_result_raised_less_number_of_times_than_retry_count()
         {
-            RetryPolicy<ResultPrimitive> policy = Policy
+            var policy = Policy
                 .HandleResult(ResultPrimitive.Fault)
                 .RetryAsync(3);
 
@@ -104,7 +103,7 @@ namespace Polly.Specs.Retry
         [Fact]
         public async Task Should_not_return_handled_result_when_all_of_the_handled_results_raised_less_number_of_times_than_retry_count()
         {
-            RetryPolicy<ResultPrimitive> policy = Policy
+            var policy = Policy
                 .HandleResult(ResultPrimitive.Fault)
                 .OrResult(ResultPrimitive.FaultAgain)
                 .RetryAsync(3);
@@ -116,7 +115,7 @@ namespace Polly.Specs.Retry
         [Fact]
         public async Task Should_return_handled_result_when_handled_result_raised_more_times_then_retry_count()
         {
-            RetryPolicy<ResultPrimitive> policy = Policy
+            var policy = Policy
                 .HandleResult(ResultPrimitive.Fault)
                 .RetryAsync(3);
 
@@ -127,7 +126,7 @@ namespace Polly.Specs.Retry
         [Fact]
         public async Task Should_return_handled_result_when_one_of_the_handled_results_is_raised_more_times_then_retry_count()
         {
-            RetryPolicy<ResultPrimitive> policy = Policy
+            var policy = Policy
                 .HandleResult(ResultPrimitive.Fault)
                 .OrResult(ResultPrimitive.FaultAgain)
                 .RetryAsync(3);
@@ -139,7 +138,7 @@ namespace Polly.Specs.Retry
         [Fact]
         public async Task Should_return_result_when_result_is_not_the_specified_handled_result()
         {
-            RetryPolicy<ResultPrimitive> policy = Policy
+            var policy = Policy
                 .HandleResult(ResultPrimitive.Fault)
                 .RetryAsync();
 
@@ -150,7 +149,7 @@ namespace Polly.Specs.Retry
         [Fact]
         public async Task Should_return_result_when_result_is_not_one_of_the_specified_handled_results()
         {
-            RetryPolicy<ResultPrimitive> policy = Policy
+            var policy = Policy
                 .HandleResult(ResultPrimitive.Fault)
                 .OrResult(ResultPrimitive.FaultAgain)
                 .RetryAsync();
@@ -162,7 +161,7 @@ namespace Polly.Specs.Retry
         [Fact]
         public async Task Should_return_result_when_specified_result_predicate_is_not_satisfied()
         {
-            Policy<ResultClass> policy = Policy
+            var policy = Policy
                 .HandleResult<ResultClass>(r => r.ResultCode == ResultPrimitive.Fault)
                 .RetryAsync();
 
@@ -173,7 +172,7 @@ namespace Polly.Specs.Retry
         [Fact]
         public async Task Should_return_result_when_none_of_the_specified_result_predicates_are_satisfied()
         {
-            Policy<ResultClass> policy = Policy
+            var policy = Policy
                 .HandleResult<ResultClass>(r => r.ResultCode == ResultPrimitive.Fault)
                 .OrResult(r => r.ResultCode == ResultPrimitive.FaultAgain)
                 .RetryAsync();
@@ -185,7 +184,7 @@ namespace Polly.Specs.Retry
         [Fact]
         public async Task Should_not_return_handled_result_when_specified_result_predicate_is_satisfied()
         {
-            Policy<ResultClass> policy = Policy
+            var policy = Policy
                 .HandleResult<ResultClass>(r => r.ResultCode == ResultPrimitive.Fault)
                 .RetryAsync();
 
@@ -196,7 +195,7 @@ namespace Polly.Specs.Retry
         [Fact]
         public async Task Should_not_return_handled_result_when_one_of_the_specified_result_predicates_is_satisfied()
         {
-            Policy<ResultClass> policy = Policy
+            var policy = Policy
                 .HandleResult<ResultClass>(r => r.ResultCode == ResultPrimitive.Fault)
                 .OrResult(r => r.ResultCode == ResultPrimitive.FaultAgain)
                 .RetryAsync();
@@ -211,7 +210,7 @@ namespace Polly.Specs.Retry
             var expectedRetryCounts = new[] { 1, 2, 3 };
             var retryCounts = new List<int>();
 
-            RetryPolicy<ResultPrimitive> policy = Policy
+            var policy = Policy
                 .HandleResult(ResultPrimitive.Fault)
                 .RetryAsync(3, (_, retryCount) => retryCounts.Add(retryCount));
 
@@ -228,7 +227,7 @@ namespace Polly.Specs.Retry
             var expectedFaults = new[] { "Fault #1", "Fault #2", "Fault #3" };
             var retryFaults = new List<string>();
 
-            Policy<ResultClass> policy = Policy
+            var policy = Policy
                 .HandleResult<ResultClass>(r => r.ResultCode == ResultPrimitive.Fault)
                 .RetryAsync(3, (outcome, _) => retryFaults.Add(outcome.Result.SomeString));
 
@@ -248,7 +247,7 @@ namespace Polly.Specs.Retry
         {
             var retryCounts = new List<int>();
 
-            RetryPolicy<ResultPrimitive> policy = Policy
+            var policy = Policy
                 .HandleResult(ResultPrimitive.Fault)
                 .RetryAsync((_, retryCount) => retryCounts.Add(retryCount));
 
@@ -264,7 +263,7 @@ namespace Polly.Specs.Retry
         {
             IDictionary<string, object> contextData = null;
 
-            RetryPolicy<ResultPrimitive> policy = Policy
+            var policy = Policy
                 .HandleResult(ResultPrimitive.Fault)
                 .RetryAsync((_, __, context) => contextData = context);
 
@@ -284,7 +283,7 @@ namespace Polly.Specs.Retry
         {
             IDictionary<string, object> contextData = null;
 
-            RetryPolicy<ResultPrimitive> policy = Policy
+            var policy = Policy
                 .HandleResult(ResultPrimitive.Fault)
                 .RetryAsync((_, __, context) => contextData = context);
 
@@ -313,7 +312,7 @@ namespace Polly.Specs.Retry
         {
             Context capturedContext = null;
 
-            RetryPolicy<ResultPrimitive> policy = Policy
+            var policy = Policy
                 .HandleResult(ResultPrimitive.Fault)
                 .RetryAsync((_, __, context) => capturedContext = context);
 
@@ -328,7 +327,7 @@ namespace Polly.Specs.Retry
         {
             string contextValue = null;
 
-            RetryPolicy<ResultPrimitive> policy = Policy
+            var policy = Policy
                 .HandleResult(ResultPrimitive.Fault)
                 .RetryAsync((_, __, context) => contextValue = context["key"].ToString());
 
@@ -352,7 +351,7 @@ namespace Polly.Specs.Retry
         {
             string contextValue = null;
 
-            RetryPolicy<ResultPrimitive> policy = Policy
+            var policy = Policy
                 .HandleResult(ResultPrimitive.Fault)
                 .RetryAsync((_, __, context) => contextValue = context["key"].ToString());
 
@@ -374,7 +373,7 @@ namespace Polly.Specs.Retry
         [Fact]
         public async Task Should_create_new_state_for_each_call_to_policy()
         {
-            RetryPolicy<ResultPrimitive> policy = Policy
+            var policy = Policy
                 .HandleResult(ResultPrimitive.Fault)
                 .RetryAsync(1);
 
@@ -391,7 +390,7 @@ namespace Polly.Specs.Retry
 
             Action<DelegateResult<ResultPrimitive>, int> onRetry = (_, __) => { retryInvoked = true; };
 
-            RetryPolicy<ResultPrimitive> policy = Policy
+            var policy = Policy
                 .HandleResult(ResultPrimitive.Fault)
                 .RetryAsync(0, onRetry);
 
@@ -407,7 +406,7 @@ namespace Polly.Specs.Retry
 
             Action<DelegateResult<ResultPrimitive>, int, Context> onRetry = (_, __, ___) => { retryInvoked = true; };
 
-            RetryPolicy<ResultPrimitive> policy = Policy
+            var policy = Policy
                 .HandleResult(ResultPrimitive.Fault)
                 .RetryAsync(0, onRetry);
 
@@ -433,7 +432,7 @@ namespace Polly.Specs.Retry
             int executeDelegateInvocations = 0;
             int executeDelegateInvocationsWhenOnRetryExits = 0;
 
-            RetryPolicy<ResultPrimitive> policy = Policy
+            var policy = Policy
                 .HandleResult(ResultPrimitive.Fault)
                 .RetryAsync(async (ex, retry) =>
                 {
@@ -457,7 +456,7 @@ namespace Polly.Specs.Retry
         [Fact]
         public async Task Should_execute_all_tries_when_faulting_and_cancellationtoken_not_cancelled()
         {
-            RetryPolicy<ResultPrimitive> policy = Policy
+            var policy = Policy
                 .HandleResult(ResultPrimitive.Fault)
                 .RetryAsync(3);
 
@@ -485,7 +484,7 @@ namespace Polly.Specs.Retry
         [Fact]
         public void Should_not_execute_action_when_cancellationtoken_cancelled_before_execute()
         {
-            RetryPolicy<ResultPrimitive> policy = Policy
+            var policy = Policy
                 .HandleResult(ResultPrimitive.Fault)
                 .RetryAsync(3);
 
@@ -516,7 +515,7 @@ namespace Polly.Specs.Retry
         [Fact]
         public void Should_report_cancellation_during_otherwise_non_faulting_action_execution_and_cancel_further_retries_when_user_delegate_observes_cancellationtoken()
         {
-            RetryPolicy<ResultPrimitive> policy = Policy
+            var policy = Policy
                 .HandleResult(ResultPrimitive.Fault)
                 .RetryAsync(3);
 
@@ -546,7 +545,7 @@ namespace Polly.Specs.Retry
         [Fact]
         public void Should_report_cancellation_during_faulting_initial_action_execution_and_cancel_further_retries_when_user_delegate_observes_cancellationtoken()
         {
-            RetryPolicy<ResultPrimitive> policy = Policy
+            var policy = Policy
                .HandleResult(ResultPrimitive.Fault)
                .RetryAsync(3);
 
@@ -576,7 +575,7 @@ namespace Polly.Specs.Retry
         [Fact]
         public void Should_report_cancellation_during_faulting_initial_action_execution_and_cancel_further_retries_when_user_delegate_does_not_observe_cancellationtoken()
         {
-            RetryPolicy<ResultPrimitive> policy = Policy
+            var policy = Policy
               .HandleResult(ResultPrimitive.Fault)
               .RetryAsync(3);
 
@@ -606,7 +605,7 @@ namespace Polly.Specs.Retry
         [Fact]
         public void Should_report_cancellation_during_faulting_retried_action_execution_and_cancel_further_retries_when_user_delegate_observes_cancellationtoken()
         {
-            RetryPolicy<ResultPrimitive> policy = Policy
+            var policy = Policy
               .HandleResult(ResultPrimitive.Fault)
               .RetryAsync(3);
 
@@ -636,7 +635,7 @@ namespace Polly.Specs.Retry
         [Fact]
         public void Should_report_cancellation_during_faulting_retried_action_execution_and_cancel_further_retries_when_user_delegate_does_not_observe_cancellationtoken()
         {
-            RetryPolicy<ResultPrimitive> policy = Policy
+            var policy = Policy
               .HandleResult(ResultPrimitive.Fault)
               .RetryAsync(3);
 
@@ -666,7 +665,7 @@ namespace Polly.Specs.Retry
         [Fact]
         public void Should_report_cancellation_during_faulting_last_retry_execution_when_user_delegate_does_observe_cancellationtoken()
         {
-            RetryPolicy<ResultPrimitive> policy = Policy
+            var policy = Policy
                        .HandleResult(ResultPrimitive.Fault)
                        .RetryAsync(3);
 
@@ -697,7 +696,7 @@ namespace Polly.Specs.Retry
         [Fact]
         public async Task Should_report_faulting_from_faulting_last_retry_execution_when_user_delegate_does_not_observe_cancellation_raised_during_last_retry()
         {
-            RetryPolicy<ResultPrimitive> policy = Policy
+            var policy = Policy
                        .HandleResult(ResultPrimitive.Fault)
                        .RetryAsync(3);
 
@@ -730,7 +729,7 @@ namespace Polly.Specs.Retry
             CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
             CancellationToken cancellationToken = cancellationTokenSource.Token;
 
-            RetryPolicy<ResultPrimitive> policy = Policy
+            var policy = Policy
            .HandleResult(ResultPrimitive.Fault)
            .RetryAsync(3, (_, __) =>
            {

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Threading;
-using Polly.Utilities;
 
 namespace Polly.Wrap
 {
@@ -10,8 +9,8 @@ namespace Polly.Wrap
     /// </summary>
     public partial class PolicyWrap : Policy, IPolicyWrap
     {
-        private IsPolicy _outer;
-        private IsPolicy _inner;
+        private ISyncPolicy _outer;
+        private ISyncPolicy _inner;
 
         /// <summary>
         /// Returns the outer <see cref="IsPolicy"/> in this <see cref="IPolicyWrap"/>
@@ -23,31 +22,37 @@ namespace Polly.Wrap
         /// </summary>
         public IsPolicy Inner => _inner;
 
-        internal PolicyWrap(Action<Action<Context, CancellationToken>, Context, CancellationToken> policyAction, Policy outer, ISyncPolicy inner) 
-            : base(policyAction, outer.ExceptionPredicates)
+        internal PolicyWrap(Policy outer, ISyncPolicy inner) 
+            : base(outer.ExceptionPredicates)
         {
             _outer = outer;
             _inner = inner;
         }
 
-        /// <summary>
-        /// Executes the specified action within the cache policy and returns the result.
-        /// </summary>
-        /// <typeparam name="TResult">The type of the result.</typeparam>
-        /// <param name="action">The action to perform.</param>
-        /// <param name="context">Execution context that is passed to the exception policy; defines the cache key to use in cache lookup.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns>The value returned by the action, or the cache.</returns>
+        /// <inheritdoc/>
         [DebuggerStepThrough]
-        internal override TResult ExecuteInternal<TResult>(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken)
+        protected override void Implementation(Action<Context, CancellationToken> action, Context context, CancellationToken cancellationToken)
+        {
+            PolicyWrapEngine.Implementation(
+                action,
+                context,
+                cancellationToken,
+                _outer,
+                _inner
+            );
+        }
+
+        /// <inheritdoc/>
+        [DebuggerStepThrough]
+        protected override TResult Implementation<TResult>(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken)
         {
             return PolicyWrapEngine.Implementation<TResult>(
-                   action,
-                   context,
-                   cancellationToken,
-                   (ISyncPolicy)_outer,
-                   (ISyncPolicy)_inner
-                   );
+                action,
+                context,
+                cancellationToken,
+                _outer,
+                _inner
+            );
         }
     }
 
@@ -57,28 +62,118 @@ namespace Polly.Wrap
     /// <typeparam name="TResult">The return type of delegates which may be executed through the policy.</typeparam>
     public partial class PolicyWrap<TResult> : Policy<TResult>, IPolicyWrap<TResult>
     {
+        private ISyncPolicy _outerNonGeneric;
+        private ISyncPolicy _innerNonGeneric;
+
+        private ISyncPolicy<TResult> _outerGeneric;
+        private ISyncPolicy<TResult> _innerGeneric;
+
         /// <summary>
         /// Returns the outer <see cref="IsPolicy"/> in this <see cref="IPolicyWrap{TResult}"/>
         /// </summary>
-        public IsPolicy Outer { get; private set; }
+        public IsPolicy Outer => (IsPolicy)_outerGeneric ?? _outerNonGeneric;
 
         /// <summary>
         /// Returns the next inner <see cref="IsPolicy"/> in this <see cref="IPolicyWrap{TResult}"/>
         /// </summary>
-        public IsPolicy Inner { get; private set; }
+        public IsPolicy Inner => (IsPolicy)_innerGeneric ?? _innerNonGeneric;
 
-        internal PolicyWrap(Func<Func<Context, CancellationToken, TResult>, Context, CancellationToken, TResult> policyAction, Policy outer, IsPolicy inner)
-            : base(policyAction, outer.ExceptionPredicates,  PredicateHelper<TResult>.EmptyResultPredicates)
+        internal PolicyWrap(Policy outer, ISyncPolicy<TResult> inner)
+            : base(outer.ExceptionPredicates, ResultPredicates<TResult>.None)
         {
-            Outer = outer;
-            Inner = inner;
+            _outerNonGeneric = outer;
+            _innerGeneric = inner;
         }
 
-        internal PolicyWrap(Func<Func<Context, CancellationToken, TResult>, Context, CancellationToken, TResult> policyAction, Policy<TResult> outer, IsPolicy inner)
-            : base(policyAction, outer.ExceptionPredicates, outer.ResultPredicates)
+        internal PolicyWrap(Policy<TResult> outer, ISyncPolicy inner)
+            : base(outer.ExceptionPredicates, outer.ResultPredicates)
         {
-            Outer = outer;
-            Inner = inner;
+            _outerGeneric = outer;
+            _innerNonGeneric = inner;
+        }
+
+        internal PolicyWrap(Policy<TResult> outer, ISyncPolicy<TResult> inner)
+            : base(outer.ExceptionPredicates, outer.ResultPredicates)
+        {
+            _outerGeneric = outer;
+            _innerGeneric = inner;
+        }
+
+        /// <inheritdoc/>
+        protected override TResult Implementation(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken)
+        {
+            if (_outerNonGeneric != null)
+            {
+                if (_innerNonGeneric != null)
+                {
+                    return PolicyWrapEngine.Implementation<TResult>(
+                        action,
+                        context,
+                        cancellationToken,
+                        _outerNonGeneric,
+                        _innerNonGeneric
+                    );
+                }
+                else if (_innerGeneric != null)
+                {
+                    return PolicyWrapEngine.Implementation<TResult>(
+                        action,
+                        context,
+                        cancellationToken,
+                        _outerNonGeneric,
+                        _innerGeneric
+                    );
+
+                }
+                else
+                {
+                    return _outerNonGeneric.Execute(action, context, cancellationToken);
+                }
+            }
+            else if (_outerGeneric != null)
+            {
+                if (_innerNonGeneric != null)
+                {
+                    return PolicyWrapEngine.Implementation<TResult>(
+                        action,
+                        context,
+                        cancellationToken,
+                        _outerGeneric,
+                        _innerNonGeneric
+                    );
+
+                }
+                else if (_innerGeneric != null)
+                {
+                    return PolicyWrapEngine.Implementation<TResult>(
+                        action,
+                        context,
+                        cancellationToken,
+                        _outerGeneric,
+                        _innerGeneric
+                    );
+
+                }
+                else
+                {
+                    return _outerGeneric.Execute(action, context, cancellationToken);
+                }
+            }
+            else
+            {
+                if (_innerNonGeneric != null)
+                {
+                    return _innerNonGeneric.Execute(action, context, cancellationToken);
+                }
+                else if (_innerGeneric != null)
+                {
+                    return _innerGeneric.Execute(action, context, cancellationToken);
+                }
+                else
+                {
+                    return action(context, cancellationToken);
+                }
+            }
         }
     }
 }

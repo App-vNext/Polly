@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
-using Polly.NoOp;
-using Polly.Specs.Helpers;
-using Polly.Utilities;
 using Xunit;
 
 namespace Polly.Specs.NoOp
@@ -16,7 +10,7 @@ namespace Polly.Specs.NoOp
         [Fact]
         public void Should_execute_user_delegate()
         {
-            NoOpPolicy<int?> policy = Policy.NoOpAsync<int?>();
+            var policy = Policy.NoOpAsync<int?>();
             int? result = null;
 
             policy.Awaiting(async p => result = await p.ExecuteAsync(() => Task.FromResult((int?)10)))
@@ -29,7 +23,7 @@ namespace Polly.Specs.NoOp
         [Fact]
         public void Should_execute_user_delegate_without_adding_extra_cancellation_behaviour()
         {
-            NoOpPolicy<int?> policy = Policy.NoOpAsync<int?>();
+            var policy = Policy.NoOpAsync<int?>();
             int? result = null;
 
             using (CancellationTokenSource cts = new CancellationTokenSource())

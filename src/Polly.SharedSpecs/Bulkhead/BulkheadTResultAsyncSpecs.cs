@@ -61,7 +61,7 @@ namespace Polly.Specs.Bulkhead
             Context contextPassedToOnRejected = null;
             Func<Context, Task> onRejectedAsync = async ctx => { contextPassedToOnRejected = ctx; await TaskHelper.EmptyTask.ConfigureAwait(false); };
 
-            BulkheadPolicy<int> bulkhead = Policy.BulkheadAsync<int>(1, onRejectedAsync);
+            var bulkhead = Policy.BulkheadAsync<int>(1, onRejectedAsync);
 
             TaskCompletionSource<object> tcs = new TaskCompletionSource<object>();
             using (CancellationTokenSource cancellationSource = new CancellationTokenSource())
@@ -100,7 +100,7 @@ namespace Polly.Specs.Bulkhead
             if (totalActions < 0) throw new ArgumentOutOfRangeException(nameof(totalActions));
             scenario = String.Format("MaxParallelization {0}; MaxQueuing {1}; TotalActions {2}; CancelQueuing {3}; CancelExecuting {4}: {5}", maxParallelization, maxQueuingActions, totalActions, cancelQueuing, cancelExecuting, scenario);
 
-            BulkheadPolicy<ResultPrimitive> bulkhead = Policy.BulkheadAsync<ResultPrimitive>(maxParallelization, maxQueuingActions);
+            var bulkhead = Policy.BulkheadAsync<ResultPrimitive>(maxParallelization, maxQueuingActions);
 
             // Set up delegates which we can track whether they've started; and control when we allow them to complete (to release their semaphore slot).
             actions = new TraceableAction[totalActions];

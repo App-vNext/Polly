@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -130,7 +129,7 @@ namespace Polly.Specs.Retry
         {
             IDictionary<string, object> contextData = null;
 
-            Policy policy = Policy
+            var policy = Policy
                 .Handle<DivideByZeroException>()
                 .RetryForeverAsync((_, context) => contextData = context);
 
@@ -164,7 +163,7 @@ namespace Polly.Specs.Retry
         {
             Context capturedContext = null;
 
-            Policy policy = Policy
+            var policy = Policy
                 .Handle<DivideByZeroException>()
                 .RetryForeverAsync((_, context) => capturedContext = context);
 
@@ -179,7 +178,7 @@ namespace Polly.Specs.Retry
         {
             string contextValue = null;
 
-            Policy policy = Policy
+            var policy = Policy
                 .Handle<DivideByZeroException>()
                 .RetryForeverAsync((_, context) => contextValue = context["key"].ToString());
 

@@ -1,31 +1,95 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading;
 
 namespace Polly.Retry
 {
     /// <summary>
-    /// A retry policy that can be applied to delegates.
+    /// A retry policy that can be applied to synchronous delegates.
     /// </summary>
-    public partial class RetryPolicy : Policy, IRetryPolicy
+    public class RetryPolicy : Policy, IRetryPolicy
     {
-        internal RetryPolicy(Action<Action<Context, CancellationToken>, Context, CancellationToken> exceptionPolicy, IEnumerable<ExceptionPredicate> exceptionPredicates) 
-            : base(exceptionPolicy, exceptionPredicates)
+        private readonly Action<Exception, TimeSpan, int, Context> _onRetry;
+        private readonly int _permittedRetryCount;
+        private readonly IEnumerable<TimeSpan> _sleepDurationsEnumerable;
+        private readonly Func<int, Exception, Context, TimeSpan> _sleepDurationProvider;
+
+        internal RetryPolicy(
+            ExceptionPredicates exceptionPredicates,
+            Action<Exception, TimeSpan, int, Context> onRetry, 
+            int permittedRetryCount = Int32.MaxValue,
+            IEnumerable<TimeSpan> sleepDurationsEnumerable = null,
+            Func<int, Exception, Context, TimeSpan> sleepDurationProvider = null
+            ) 
+            : base(exceptionPredicates)
         {
+            _permittedRetryCount = permittedRetryCount;
+            _sleepDurationsEnumerable = sleepDurationsEnumerable;
+            _sleepDurationProvider = sleepDurationProvider;
+            _onRetry = onRetry ?? throw new ArgumentNullException(nameof(onRetry));
+        }
+
+        /// <inheritdoc/>
+        protected override TResult Implementation<TResult>(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken)
+        {
+            return RetryEngine.Implementation(
+                    action, 
+                    context, 
+                    cancellationToken,
+                    ExceptionPredicates,
+                    ResultPredicates<TResult>.None, 
+                    (outcome, timespan, retryCount, ctx) => _onRetry(outcome.Exception, timespan, retryCount, ctx),
+                    _permittedRetryCount,
+                    _sleepDurationsEnumerable,
+                    _sleepDurationProvider != null
+                        ? (retryCount, outcome, ctx) => _sleepDurationProvider(retryCount, outcome.Exception, ctx)
+                        : (Func<int, DelegateResult<TResult>, Context, TimeSpan>)null
+                );
         }
     }
 
     /// <summary>
-    /// A retry policy that can be applied to delegates returning a value of type <typeparamref name="TResult"/>.
+    /// A retry policy that can be applied to synchronous delegates returning a value of type <typeparamref name="TResult"/>.
     /// </summary>
-    public partial class RetryPolicy<TResult> : Policy<TResult>, IRetryPolicy<TResult>
+    public class RetryPolicy<TResult> : Policy<TResult>, IRetryPolicy<TResult>
     {
+        private readonly Action<DelegateResult<TResult>, TimeSpan, int, Context> _onRetry;
+        private readonly int _permittedRetryCount;
+        private readonly IEnumerable<TimeSpan> _sleepDurationsEnumerable;
+        private readonly Func<int, DelegateResult<TResult>, Context, TimeSpan> _sleepDurationProvider;
+
         internal RetryPolicy(
-            Func<Func<Context, CancellationToken, TResult>, Context, CancellationToken, TResult> executionPolicy,
-            IEnumerable<ExceptionPredicate> exceptionPredicates,
-            IEnumerable<ResultPredicate<TResult>> resultPredicates
-            ) : base(executionPolicy, exceptionPredicates, resultPredicates)
+            ExceptionPredicates exceptionPredicates,
+            ResultPredicates<TResult> resultPredicates,
+            Action<DelegateResult<TResult>, TimeSpan, int, Context> onRetry,
+            int permittedRetryCount = Int32.MaxValue,
+            IEnumerable<TimeSpan> sleepDurationsEnumerable = null,
+            Func<int, DelegateResult<TResult>, Context, TimeSpan> sleepDurationProvider = null
+        )
+            : base(exceptionPredicates, resultPredicates)
         {
+            _permittedRetryCount = permittedRetryCount;
+            _sleepDurationsEnumerable = sleepDurationsEnumerable;
+            _sleepDurationProvider = sleepDurationProvider;
+            _onRetry = onRetry ?? throw new ArgumentNullException(nameof(onRetry));
+        }
+
+        /// <inheritdoc/>
+        [DebuggerStepThrough]
+        protected override TResult Implementation(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken)
+        {
+            return RetryEngine.Implementation(
+                action,
+                context,
+                cancellationToken,
+                ExceptionPredicates,
+                ResultPredicates,
+                _onRetry,
+                _permittedRetryCount,
+                _sleepDurationsEnumerable, 
+                _sleepDurationProvider
+            );
         }
     }
 }

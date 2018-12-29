@@ -10,17 +10,17 @@ namespace Polly.Specs.Helpers
 {
     public static class PolicyTResultExtensionsAsync
     {
-        public static Task<TResult> RaiseResultSequenceAsync<TResult>(this Policy<TResult> policy, params TResult[] resultsToRaise)
+        public static Task<TResult> RaiseResultSequenceAsync<TResult>(this AsyncPolicy<TResult> policy, params TResult[] resultsToRaise)
         {
             return policy.RaiseResultSequenceAsync(resultsToRaise.ToList());
         }
 
-        public static Task<TResult> RaiseResultSequenceAsync<TResult>(this Policy<TResult> policy, IEnumerable<TResult> resultsToRaise)
+        public static Task<TResult> RaiseResultSequenceAsync<TResult>(this AsyncPolicy<TResult> policy, IEnumerable<TResult> resultsToRaise)
         {
             return policy.RaiseResultSequenceAsync(default(CancellationToken), resultsToRaise);
         }
 
-        public static async Task<TResult> RaiseResultSequenceAsync<TResult>(this Policy<TResult> policy,
+        public static async Task<TResult> RaiseResultSequenceAsync<TResult>(this AsyncPolicy<TResult> policy,
             CancellationToken cancellationToken, IEnumerable<TResult> resultsToRaise)
         {
             using (var enumerator = resultsToRaise.GetEnumerator())
@@ -37,18 +37,18 @@ namespace Polly.Specs.Helpers
             }
         }
 
-        public static Task<TResult> RaiseResultAndOrExceptionSequenceAsync<TResult>(this Policy<TResult> policy, params object[] resultsOrExceptionsToRaise)
+        public static Task<TResult> RaiseResultAndOrExceptionSequenceAsync<TResult>(this AsyncPolicy<TResult> policy, params object[] resultsOrExceptionsToRaise)
         {
             return policy.RaiseResultAndOrExceptionSequenceAsync(resultsOrExceptionsToRaise.ToList());
         }
 
-        public static Task<TResult> RaiseResultAndOrExceptionSequenceAsync<TResult>(this Policy<TResult> policy,
+        public static Task<TResult> RaiseResultAndOrExceptionSequenceAsync<TResult>(this AsyncPolicy<TResult> policy,
             IEnumerable<object> resultsOrExceptionsToRaise)
         {
             return policy.RaiseResultAndOrExceptionSequenceAsync(CancellationToken.None, resultsOrExceptionsToRaise);
         }
 
-        public static async Task<TResult> RaiseResultAndOrExceptionSequenceAsync<TResult>(this Policy<TResult> policy,
+        public static async Task<TResult> RaiseResultAndOrExceptionSequenceAsync<TResult>(this AsyncPolicy<TResult> policy,
             CancellationToken cancellationToken, IEnumerable<object> resultsOrExceptionsToRaise)
         {
             using (var enumerator = resultsOrExceptionsToRaise.GetEnumerator())
@@ -85,7 +85,7 @@ namespace Polly.Specs.Helpers
             public bool ActionObservesCancellation = true;
         }
 
-        public static Task<TResult> RaiseResultSequenceAndOrCancellationAsync<TResult>(this Policy<TResult> policy,
+        public static Task<TResult> RaiseResultSequenceAndOrCancellationAsync<TResult>(this AsyncPolicy<TResult> policy,
             Scenario scenario, CancellationTokenSource cancellationTokenSource, Action onExecute,
             params TResult[] resultsToRaise)
         {
@@ -94,7 +94,7 @@ namespace Polly.Specs.Helpers
         }
 
         public static async Task<TResult> RaiseResultSequenceAndOrCancellationAsync<TResult>(
-            this Policy<TResult> policy, Scenario scenario, CancellationTokenSource cancellationTokenSource,
+            this AsyncPolicy<TResult> policy, Scenario scenario, CancellationTokenSource cancellationTokenSource,
             Action onExecute, IEnumerable<TResult> resultsToRaise)
         {
             int counter = 0;

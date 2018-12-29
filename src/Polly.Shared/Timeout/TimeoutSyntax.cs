@@ -1,5 +1,4 @@
 ﻿using Polly.Timeout;
-using Polly.Utilities;
 using System;
 using System.Threading.Tasks;
 
@@ -372,20 +371,18 @@ namespace Polly
         /// <returns>The policy instance.</returns>
         /// <exception cref="System.ArgumentNullException">timeoutProvider</exception>
         /// <exception cref="System.ArgumentNullException">onTimeout</exception>
-        public static TimeoutPolicy Timeout(Func<Context, TimeSpan> timeoutProvider, TimeoutStrategy timeoutStrategy, Action<Context, TimeSpan, Task, Exception> onTimeout)
+        public static TimeoutPolicy Timeout(
+            Func<Context, TimeSpan> timeoutProvider, 
+            TimeoutStrategy timeoutStrategy, 
+            Action<Context, TimeSpan, Task, Exception> onTimeout)
         {
             if (timeoutProvider == null) throw new ArgumentNullException(nameof(timeoutProvider));
             if (onTimeout == null) throw new ArgumentNullException(nameof(onTimeout));
 
             return new TimeoutPolicy(
-                (action, context, cancellationToken) => TimeoutEngine.Implementation(
-                    (ctx, ct) => { action(ctx, ct); return EmptyStruct.Instance; },
-                    context,
-                    cancellationToken,
                     timeoutProvider,
                     timeoutStrategy,
-                    onTimeout)
-                );
+                    onTimeout);
         }
     }
 }

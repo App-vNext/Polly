@@ -9,7 +9,7 @@ namespace Polly.Specs.Helpers
     public static class ContextualPolicyExtensionsAsync
     {
 
-        public static Task RaiseExceptionAsync<TException>(this Policy policy, int numberOfTimesToRaiseException, IDictionary<string, object> contextData, Action<TException, int> configureException = null, CancellationToken cancellationToken = default(CancellationToken)) where TException : Exception, new()
+        public static Task RaiseExceptionAsync<TException>(this AsyncPolicy policy, int numberOfTimesToRaiseException, IDictionary<string, object> contextData, Action<TException, int> configureException = null, CancellationToken cancellationToken = default(CancellationToken)) where TException : Exception, new()
         {
             int counter = 0;
 
@@ -32,7 +32,7 @@ namespace Polly.Specs.Helpers
             }, contextData, cancellationToken);
         }
 
-        public static Task RaiseExceptionAsync<TException>(this Policy policy, IDictionary<string, object> contextData, Action<TException, int> configureException = null, CancellationToken cancellationToken = default(CancellationToken)) where TException : Exception, new()
+        public static Task RaiseExceptionAsync<TException>(this AsyncPolicy policy, IDictionary<string, object> contextData, Action<TException, int> configureException = null, CancellationToken cancellationToken = default(CancellationToken)) where TException : Exception, new()
         {
             return policy.RaiseExceptionAsync(1, contextData, configureException, cancellationToken);
         }

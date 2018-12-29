@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading;
-using System.Threading.Tasks;
 using FluentAssertions;
 using Polly.Caching;
 using Polly.Specs.Helpers;
@@ -40,18 +39,7 @@ namespace Polly.Specs.Caching
             Action action = () => Policy.Cache<ResultPrimitive>(cacheProvider, TimeSpan.MaxValue, cacheKeyStrategy);
             action.ShouldThrow<ArgumentNullException>().And.ParamName.Should().Be("cacheKeyStrategy");
         }
-
-        [Fact]
-        public void Should_throw_informative_exception_when_async_execute_on_a_sync_policy()
-        {
-            ISyncCacheProvider cacheProvider = new StubCacheProvider();
-
-            var cachePolicy = Policy.Cache<int>(cacheProvider, TimeSpan.FromMinutes(5));
-
-            cachePolicy.Awaiting(p => p.ExecuteAsync(() => Task.FromResult(0)))
-                .ShouldThrow<InvalidOperationException>();
-        }
-
+        
         #endregion
 
         #region Caching behaviours
