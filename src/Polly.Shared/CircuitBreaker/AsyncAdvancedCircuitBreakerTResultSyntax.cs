@@ -7,7 +7,7 @@ namespace Polly
     /// <summary>
     /// Fluent API for defining a Circuit Breaker <see cref="AsyncPolicy{TResult}"/>. 
     /// </summary>
-    public static class AdvancedCircuitBreakerTResultSyntaxAsync
+    public static class AsyncAdvancedCircuitBreakerTResultSyntax
     {
         /// <summary>
         /// <para> Builds a <see cref="AsyncPolicy{TResult}"/> that will function like a Circuit Breaker.</para>
