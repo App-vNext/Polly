@@ -5,12 +5,12 @@ using Polly.Utilities;
 namespace Polly
 {
     /// <summary>
-    /// Fluent API for defining a Circuit Breaker <see cref="Policy"/>. 
+    /// Fluent API for defining a Circuit Breaker <see cref="AsyncPolicy"/>. 
     /// </summary>
     public static class AsyncAdvancedCircuitBreakerSyntax
     {
         /// <summary>
-        /// <para> Builds a <see cref="Policy"/> that will function like a Circuit Breaker.</para>
+        /// <para> Builds a <see cref="AsyncPolicy"/> that will function like a Circuit Breaker.</para>
         /// <para>The circuit will break if, within any timeslice of duration <paramref name="samplingDuration"/>, the proportion of actions resulting in a handled exception exceeds <paramref name="failureThreshold"/>, provided also that the number of actions through the circuit in the timeslice is at least <paramref name="minimumThroughput" />. </para>
         /// <para>The circuit will stay broken for the <paramref name="durationOfBreak" />. Any attempt to execute this policy
         /// while the circuit is broken, will immediately throw a <see cref="BrokenCircuitException" /> containing the exception
@@ -47,7 +47,7 @@ namespace Polly
         }
 
         /// <summary>
-        /// <para> Builds a <see cref="Policy"/> that will function like a Circuit Breaker.</para>
+        /// <para> Builds a <see cref="AsyncPolicy"/> that will function like a Circuit Breaker.</para>
         /// <para>The circuit will break if, within any timeslice of duration <paramref name="samplingDuration"/>, the proportion of actions resulting in a handled exception exceeds <paramref name="failureThreshold"/>, provided also that the number of actions through the circuit in the timeslice is at least <paramref name="minimumThroughput" />. </para>
         /// <para>The circuit will stay broken for the <paramref name="durationOfBreak" />. Any attempt to execute this policy
         /// while the circuit is broken, will immediately throw a <see cref="BrokenCircuitException" /> containing the exception
@@ -84,7 +84,7 @@ namespace Polly
         }
 
         /// <summary>
-        /// <para> Builds a <see cref="Policy"/> that will function like a Circuit Breaker.</para>
+        /// <para> Builds a <see cref="AsyncPolicy"/> that will function like a Circuit Breaker.</para>
         /// <para>The circuit will break if, within any timeslice of duration <paramref name="samplingDuration"/>, the proportion of actions resulting in a handled exception exceeds <paramref name="failureThreshold"/>, provided also that the number of actions through the circuit in the timeslice is at least <paramref name="minimumThroughput" />. </para>
         /// <para>The circuit will stay broken for the <paramref name="durationOfBreak" />. Any attempt to execute this policy
         /// while the circuit is broken, will immediately throw a <see cref="BrokenCircuitException" /> containing the exception
@@ -123,7 +123,7 @@ namespace Polly
         }
 
         /// <summary>
-        /// <para> Builds a <see cref="Policy"/> that will function like a Circuit Breaker.</para>
+        /// <para> Builds a <see cref="AsyncPolicy"/> that will function like a Circuit Breaker.</para>
         /// <para>The circuit will break if, within any timeslice of duration <paramref name="samplingDuration"/>, the proportion of actions resulting in a handled exception exceeds <paramref name="failureThreshold"/>, provided also that the number of actions through the circuit in the timeslice is at least <paramref name="minimumThroughput" />. </para>
         /// <para>The circuit will stay broken for the <paramref name="durationOfBreak" />. Any attempt to execute this policy
         /// while the circuit is broken, will immediately throw a <see cref="BrokenCircuitException" /> containing the exception
@@ -162,7 +162,7 @@ namespace Polly
         }
 
         /// <summary>
-        /// <para> Builds a <see cref="Policy"/> that will function like a Circuit Breaker.</para>
+        /// <para> Builds a <see cref="AsyncPolicy"/> that will function like a Circuit Breaker.</para>
         /// <para>The circuit will break if, within any timeslice of duration <paramref name="samplingDuration"/>, the proportion of actions resulting in a handled exception exceeds <paramref name="failureThreshold"/>, provided also that the number of actions through the circuit in the timeslice is at least <paramref name="minimumThroughput" />. </para>
         /// <para>The circuit will stay broken for the <paramref name="durationOfBreak" />. Any attempt to execute this policy
         /// while the circuit is broken, will immediately throw a <see cref="BrokenCircuitException" /> containing the exception
@@ -202,7 +202,7 @@ namespace Polly
         }
 
         /// <summary>
-        /// <para> Builds a <see cref="Policy"/> that will function like a Circuit Breaker.</para>
+        /// <para> Builds a <see cref="AsyncPolicy"/> that will function like a Circuit Breaker.</para>
         /// <para>The circuit will break if, within any timeslice of duration <paramref name="samplingDuration"/>, the proportion of actions resulting in a handled exception exceeds <paramref name="failureThreshold"/>, provided also that the number of actions through the circuit in the timeslice is at least <paramref name="minimumThroughput" />. </para>
         /// <para>The circuit will stay broken for the <paramref name="durationOfBreak" />. Any attempt to execute this policy
         /// while the circuit is broken, will immediately throw a <see cref="BrokenCircuitException" /> containing the exception

@@ -5,7 +5,7 @@ using Polly.Fallback;
 namespace Polly
 {
     /// <summary>
-    /// Fluent API for defining a Fallback <see cref="Policy"/>. 
+    /// Fluent API for defining a Fallback policy. 
     /// </summary>
     public static class FallbackSyntax
     {
@@ -130,7 +130,7 @@ namespace Polly
     }
 
     /// <summary>
-    /// Fluent API for defining a Fallback <see cref="Policy"/>. 
+    /// Fluent API for defining a Fallback policy governing executions returning TResult. 
     /// </summary>
     public static class FallbackTResultSyntax
     {

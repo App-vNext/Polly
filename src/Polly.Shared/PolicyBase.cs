@@ -4,7 +4,7 @@ using System.Threading;
 namespace Polly
 {
     /// <summary>
-    /// Implements elements common to both non-generic <see cref="Policy"/> and generic <see cref="Policy{TResult}"/>
+    /// Implements elements common to both non-generic and generic policies, and sync and async policies.
     /// </summary>
     public abstract partial class PolicyBase
     {

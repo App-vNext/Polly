@@ -11,10 +11,10 @@ namespace Polly
     public interface IAsyncPolicy : IsPolicy
     {
         /// <summary>
-        /// Sets the PolicyKey for this <see cref="Policy"/> instance.
+        /// Sets the PolicyKey for this <see cref="IAsyncPolicy"/> instance.
         /// <remarks>Must be called before the policy is first used.  Can only be set once.</remarks>
         /// </summary>
-        /// <param name="policyKey">The unique, used-definable key to assign to this <see cref="Policy"/> instance.</param>
+        /// <param name="policyKey">The unique, used-definable key to assign to this <see cref="IAsyncPolicy"/> instance.</param>
         IAsyncPolicy WithPolicyKey(String policyKey);
 
         /// <summary>

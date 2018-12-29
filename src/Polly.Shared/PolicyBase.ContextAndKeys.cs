@@ -18,7 +18,7 @@ namespace Polly
         internal static ArgumentException PolicyKeyMustBeImmutableException => new ArgumentException("PolicyKey cannot be changed once set; or (when using the default value after the PolicyKey property has been accessed.", "policyKey");
 
         /// <summary>
-        /// Updates the execution <see cref="Context"/> with context from the executing <see cref="Policy"/>.
+        /// Updates the execution <see cref="Context"/> with context from the executing policy.
         /// </summary>
         /// <param name="executionContext">The execution <see cref="Context"/>.</param>
         /// <param name="priorPolicyWrapKey">The <see cref="M:Context.PolicyWrapKey"/> prior to changes by this method.</param>

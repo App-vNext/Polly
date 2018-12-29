@@ -5,12 +5,12 @@ using Polly.Utilities;
 namespace Polly
 {
     /// <summary>
-    /// Fluent API for defining a Circuit Breaker <see cref="Policy"/>. 
+    /// Fluent API for defining a Circuit Breaker <see cref="Policy{TResult}"/>. 
     /// </summary>
     public static class AdvancedCircuitBreakerTResultSyntax
     {
         /// <summary>
-        /// <para> Builds a <see cref="Policy"/> that will function like a Circuit Breaker.</para>
+        /// <para> Builds a <see cref="Policy{TResult}"/> that will function like a Circuit Breaker.</para>
         /// <para>The circuit will break if, within any timeslice of duration <paramref name="samplingDuration"/>, the proportion of actions resulting in a handled exception or result exceeds <paramref name="failureThreshold"/>, provided also that the number of actions through the circuit in the timeslice is at least <paramref name="minimumThroughput" />. </para>
         /// <para>The circuit will stay broken for the <paramref name="durationOfBreak" />. Any attempt to execute this policy
         /// while the circuit is broken, will immediately throw a <see cref="BrokenCircuitException" /> containing the exception or result
@@ -158,7 +158,7 @@ namespace Polly
         }
 
         /// <summary>
-        /// <para> Builds a <see cref="Policy" /> that will function like a Circuit Breaker.</para>
+        /// <para> Builds a <see cref="Policy{TResult}" /> that will function like a Circuit Breaker.</para>
         /// <para>The circuit will break if, within any timeslice of duration <paramref name="samplingDuration" />, the proportion of actions resulting in a handled exception or result exceeds <paramref name="failureThreshold" />, provided also that the number of actions through the circuit in the timeslice is at least <paramref name="minimumThroughput" />. </para>
         /// <para>The circuit will stay broken for the <paramref name="durationOfBreak" />. Any attempt to execute this policy
         /// while the circuit is broken, will immediately throw a <see cref="BrokenCircuitException" /> containing the exception or result
@@ -199,7 +199,7 @@ namespace Polly
         }
 
         /// <summary>
-        /// <para> Builds a <see cref="Policy" /> that will function like a Circuit Breaker.</para>
+        /// <para> Builds a <see cref="Policy{TResult}" /> that will function like a Circuit Breaker.</para>
         /// <para>The circuit will break if, within any timeslice of duration <paramref name="samplingDuration" />, the proportion of actions resulting in a handled exception or result exceeds <paramref name="failureThreshold" />, provided also that the number of actions through the circuit in the timeslice is at least <paramref name="minimumThroughput" />. </para>
         /// <para>The circuit will stay broken for the <paramref name="durationOfBreak" />. Any attempt to execute this policy
         /// while the circuit is broken, will immediately throw a <see cref="BrokenCircuitException" /> containing the exception or result
