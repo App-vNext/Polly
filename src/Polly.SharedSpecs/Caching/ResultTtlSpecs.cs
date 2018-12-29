@@ -1,7 +1,6 @@
 ﻿using System;
 using FluentAssertions;
 using Polly.Caching;
-using Polly.Specs.Helpers.Caching;
 using Xunit;
 
 namespace Polly.Specs.Caching

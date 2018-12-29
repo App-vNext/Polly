@@ -3,7 +3,6 @@
     /// <summary>
     /// Defines properties and methods common to all PolicyWrap policies.
     /// </summary>
-
     public interface IPolicyWrap : IsPolicy
     {
         /// <summary>
