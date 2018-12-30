@@ -8,7 +8,7 @@ using Xunit;
 
 namespace Polly.Specs.Wrap
 {
-    [Collection(Polly.Specs.Helpers.Constants.SystemClockDependentTestCollection)]
+    [Collection(Polly.Specs.Helpers.Constants.AmbientContextDependentTestCollection)]
     public class PolicyWrapSpecs
     {
         #region Instance configuration syntax tests, non-generic outer
