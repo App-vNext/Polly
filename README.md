@@ -40,7 +40,7 @@ In addition to the detailed pages on each policy, an [introduction to the role o
 
 For using Polly with  HttpClient factory from ASPNET Core 2.1, see our [detailed wiki page](https://github.com/App-vNext/Polly/wiki/Polly-and-HttpClientFactory), then come back here or [explore the wiki](https://github.com/App-vNext/Polly/wiki) to learn more about the operation of each policy.
 
-# Usage &ndash; fault-handling policies
+# Usage &ndash; fault-handling, reactive policies
 
 Fault-handling policies handle specific exceptions thrown by, or results returned by, the delegates you execute through the policy.
 
@@ -359,9 +359,11 @@ breaker.Reset();
 
 ```
 
+Circuit-breaker policies block exceptions by throwing `BrokenCircuitException` when the circuit is broken. See: [Circuit-Breaker documentation on wiki](https://github.com/App-vNext/Polly/wiki/Circuit-Breaker).
+
 Note that circuit-breaker policies [rethrow all exceptions](https://github.com/App-vNext/Polly/wiki/Circuit-Breaker#exception-handling), even handled ones. A circuit-breaker exists to measure faults and break the circuit when too many faults occur, but does not orchestrate retries.  Combine a circuit-breaker with a retry policy as needed. 
 
-For more depth see also: [Circuit-Breaker documentation on wiki](https://github.com/App-vNext/Polly/wiki/Circuit-Breaker).
+
 
 ### Advanced Circuit Breaker 
 ```csharp
@@ -473,9 +475,9 @@ Policy
 
 The above examples show policy definition immediately followed by policy execution, for simplicity.  Policy definition and execution may just as often be separated in the codebase and application lifecycle.  You may choose for example to define policies on start-up, then provide them to point-of-use by dependency injection (perhaps using [`PolicyRegistry`](#policyregistry)).
 
-# Usage &ndash; general resilience policies
+# Usage &ndash; proactive policies
 
-The general resilience policies add resilience strategies that are not explicitly centred around handling faults which delegates may throw or return.
+The proactive policies add resilience strategies that not based on handling faults which delegates may throw or return.
 
 ## Step 1 : Configure
 
@@ -556,6 +558,8 @@ var response = await timeoutPolicy
       );
 ```
 
+Timeout policies throw `TimeoutRejectedException` when timeout occurs. 
+
 For more detail see: [Timeout policy documentation](https://github.com/App-vNext/Polly/wiki/Timeout) on wiki.
 
 ### Bulkhead
@@ -584,6 +588,8 @@ int freeExecutionSlots = bulkhead.BulkheadAvailableCount;
 int freeQueueSlots     = bulkhead.QueueAvailableCount;
 
 ```
+
+Bulkhead policies throw `BulkheadRejectedException` if items are queued to the bulkhead when the bulkhead execution and queue are both full. 
 
 
 For more detail see: [Bulkhead policy documentation](https://github.com/App-vNext/Polly/wiki/Bulkhead) on wiki.
