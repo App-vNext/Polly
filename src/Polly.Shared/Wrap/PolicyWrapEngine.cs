@@ -3,7 +3,7 @@ using System.Threading;
 
 namespace Polly.Wrap
 {
-    internal static partial class PolicyWrapEngine
+    internal static class PolicyWrapEngine
     {
         internal static TResult Implementation<TResult>(
             Func<Context, CancellationToken, TResult> func,

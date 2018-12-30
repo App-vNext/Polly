@@ -40,7 +40,17 @@ In addition to the detailed pages on each policy, an [introduction to the role o
 
 For using Polly with  HttpClient factory from ASPNET Core 2.1, see our [detailed wiki page](https://github.com/App-vNext/Polly/wiki/Polly-and-HttpClientFactory), then come back here or [explore the wiki](https://github.com/App-vNext/Polly/wiki) to learn more about the operation of each policy.
 
-# Usage &ndash; fault-handling policies
+### Release notes
+
++ The [change log](https://github.com/App-vNext/Polly/blob/master/CHANGELOG.md) describes changes by release.
++ We tag Pull Requests and Issues with [milestones](https://github.com/App-vNext/Polly/milestones) which match to nuget package release numbers.
++ Breaking changes are called out in the wiki ([v7](https://github.com/App-vNext/Polly/wiki/Polly-v7-breaking-changes) ; [v6](https://github.com/App-vNext/Polly/wiki/Polly-v6-breaking-changes)) with simple notes on any necessary steps to upgrade.
+
+### Supported targets
+
+For details of supported compilation targets by version, see the [supported targets](https://github.com/App-vNext/Polly/wiki/Supported-targets) grid.
+
+# Usage &ndash; fault-handling, reactive policies
 
 Fault-handling policies handle specific exceptions thrown by, or results returned by, the delegates you execute through the policy.
 
@@ -85,12 +95,12 @@ Policy
 // Handle multiple return values 
 Policy
   .HandleResult<HttpResponseMessage>(r => r.StatusCode == HttpStatusCode.InternalServerError)
-  .OrResult<HttpResponseMessage>(r => r.StatusCode == HttpStatusCode.BadGateway)
+  .OrResult(r => r.StatusCode == HttpStatusCode.BadGateway)
 
 // Handle primitive return values (implied use of .Equals())
 Policy
   .HandleResult<HttpStatusCode>(HttpStatusCode.InternalServerError)
-  .OrResult<HttpStatusCode>(HttpStatusCode.BadGateway)
+  .OrResult(HttpStatusCode.BadGateway)
  
 // Handle both exceptions and return values in one policy
 HttpStatusCode[] httpStatusCodesWorthRetrying = {
@@ -175,7 +185,8 @@ Policy
 ### Wait and retry 
 
 ```csharp
-// Retry, waiting a specified duration between each retry
+// Retry, waiting a specified duration between each retry. 
+// (The wait is imposed on catching the failure, before making the next try.)
 Policy
   .Handle<SomeExceptionType>()
   .WaitAndRetry(new[]
@@ -358,9 +369,11 @@ breaker.Reset();
 
 ```
 
+Circuit-breaker policies block exceptions by throwing `BrokenCircuitException` when the circuit is broken. See: [Circuit-Breaker documentation on wiki](https://github.com/App-vNext/Polly/wiki/Circuit-Breaker).
+
 Note that circuit-breaker policies [rethrow all exceptions](https://github.com/App-vNext/Polly/wiki/Circuit-Breaker#exception-handling), even handled ones. A circuit-breaker exists to measure faults and break the circuit when too many faults occur, but does not orchestrate retries.  Combine a circuit-breaker with a retry policy as needed. 
 
-For more depth see also: [Circuit-Breaker documentation on wiki](https://github.com/App-vNext/Polly/wiki/Circuit-Breaker).
+
 
 ### Advanced Circuit Breaker 
 ```csharp
@@ -472,9 +485,9 @@ Policy
 
 The above examples show policy definition immediately followed by policy execution, for simplicity.  Policy definition and execution may just as often be separated in the codebase and application lifecycle.  You may choose for example to define policies on start-up, then provide them to point-of-use by dependency injection (perhaps using [`PolicyRegistry`](#policyregistry)).
 
-# Usage &ndash; general resilience policies
+# Usage &ndash; proactive policies
 
-The general resilience policies add resilience strategies that are not explicitly centred around handling faults which delegates may throw or return.
+The proactive policies add resilience strategies that not based on handling faults which delegates may throw or return.
 
 ## Step 1 : Configure
 
@@ -555,6 +568,8 @@ var response = await timeoutPolicy
       );
 ```
 
+Timeout policies throw `TimeoutRejectedException` when timeout occurs. 
+
 For more detail see: [Timeout policy documentation](https://github.com/App-vNext/Polly/wiki/Timeout) on wiki.
 
 ### Bulkhead
@@ -583,6 +598,8 @@ int freeExecutionSlots = bulkhead.BulkheadAvailableCount;
 int freeQueueSlots     = bulkhead.QueueAvailableCount;
 
 ```
+
+Bulkhead policies throw `BulkheadRejectedException` if items are queued to the bulkhead when the bulkhead execution and queue are both full. 
 
 
 For more detail see: [Bulkhead policy documentation](https://github.com/App-vNext/Polly/wiki/Bulkhead) on wiki.
@@ -919,12 +936,6 @@ This allows collections of similar kinds of policy to be treated as one - for ex
 
 For more detail see: [Polly and interfaces](https://github.com/App-vNext/Polly/wiki/Polly-and-interfaces) on wiki.
 
-# Release notes
-
-For details of changes by release see the [change log](https://github.com/App-vNext/Polly/blob/master/CHANGELOG.md).  We also tag relevant Pull Requests and Issues with [milestones](https://github.com/App-vNext/Polly/milestones), which match to nuget package release numbers.
-
-For full detailed of supported targets by version, see [supported targets](https://github.com/App-vNext/Polly/wiki/Supported-targets).
-
 # 3rd Party Libraries and Contributions
 
 * [Fluent Assertions](https://github.com/fluentassertions/fluentassertions) - A set of .NET extension methods that allow you to more naturally specify the expected outcome of a TDD or BDD-style test | [Apache License 2.0 (Apache)](https://github.com/dennisdoomen/fluentassertions/blob/develop/LICENSE)
@@ -991,7 +1002,10 @@ For full detailed of supported targets by version, see [supported targets](https
 * [@urig](https://github.com/urig) - Allow TimeoutPolicy to be configured with Timeout.InfiniteTimeSpan.
 * [@reisenberger](https://github.com/reisenberger) - Integration with [IHttpClientFactory](https://github.com/aspnet/HttpClientFactory/) for ASPNET Core 2.1.
 * [@freakazoid182](https://github.com/Freakazoid182) - WaitAnd/RetryForever overloads where onRetry takes the retry number as a parameter.
-* [@dustyhoppe](https://github.com/dustyhoppe) - Overloads where onTimeout takes thrown exception as a parameter 
+* [@dustyhoppe](https://github.com/dustyhoppe) - Overloads where onTimeout takes thrown exception as a parameter.
+* [@flin-zap](https://github.com/flin-zap) - Catch missing async continuation control.
+* [@reisenberger](https://github.com/reisenberger) - Clarify separation of sync and async policies.
+* [@reisenberger](https://github.com/reisenberger) - Enable extensibility by custom policies hosted external to Polly.
 
 # Sample Projects
 
@@ -1024,15 +1038,17 @@ When we discover an interesting write-up on Polly, we'll add it to this list. If
 * [Resilient network connectivity in Xamarin Forms](https://xamarinhelp.com/resilient-network-connectivity-xamarin-forms/) - by [Adam Pedley](http://xamarinhelp.com/contact/)
 * [Policy recommendations for Azure Cognitive Services](http://www.thepollyproject.org/2018/03/06/policy-recommendations-for-azure-cognitive-services/) - by [Joel Hulen](http://www.thepollyproject.org/author/joel/)
 * [Using Polly with F# async workflows](http://blog.ploeh.dk/2017/05/30/using-polly-with-f-async-workflows/) - by [Mark Seemann](http://blog.ploeh.dk/about/)
+* [Building resilient applications with Polly](http://elvanydev.com/resilience-with-polly/) (with focus on Azure SQL transient errors) - by [Geovanny Alzate Sandoval](https://github.com/vany0114)
 * [Azure SQL transient errors](https://hackernoon.com/azure-sql-transient-errors-7625ad6e0a06) - by [Mattias Karlsson](https://hackernoon.com/@devlead)
 * [Polly series on No Dogma blog](http://nodogmablog.bryanhogan.net/tag/polly/) - by [Bryan Hogan](https://twitter.com/bryanjhogan)
 * [Polly 5.0 - a wider resilience framework!](http://www.thepollyproject.org/2016/10/25/polly-5-0-a-wider-resilience-framework/) - by [Dylan Reisenberger](http://www.thepollyproject.org/author/dylan/)
 * [Implementing the retry pattern in c sharp using Polly](https://alastaircrabtree.com/implementing-the-retry-pattern-using-polly/) - by [Alastair Crabtree](https://alastaircrabtree.com/about/)
 * [NuGet Package of the Week: Polly wanna fluently express transient exception handling policies in .NET?](https://www.hanselman.com/blog/NuGetPackageOfTheWeekPollyWannaFluentlyExpressTransientExceptionHandlingPoliciesInNET.aspx) - by [Scott Hanselman](https://www.hanselman.com/about/)
-* [Circuit Breaking with Polly](http://blog.jaywayco.co.uk/circuit-breaking-with-polly/) - by [J. Conway](http://blog.jaywayco.co.uk/sample-page/)
 * [Exception handling policies with Polly](http://putridparrot.com/blog/exception-handling-policies-with-polly/) - by [Mark Timmings](http://putridparrot.com/blog/about/)
 * [When you use the Polly circuit-breaker, make sure you share your Policy instances!](https://andrewlock.net/when-you-use-the-polly-circuit-breaker-make-sure-you-share-your-policy-instances-2/) - by [Andrew Lock](https://andrewlock.net/about/)
 * [Polly is Repetitive, and I love it!](http://www.appvnext.com/blog/2015/11/19/polly-is-repetitive-and-i-love-it) - by [Joel Hulen](http://www.thepollyproject.org/author/joel/)
+* [Using the Context to Obtain the Retry Count for Diagnostics](https://www.stevejgordon.co.uk/polly-using-context-to-obtain-retry-count-diagnostics) - by [Steve Gordon](https://twitter.com/stevejgordon)
+* [Passing an ILogger to Polly Policies](https://www.stevejgordon.co.uk/passing-an-ilogger-to-polly-policies) - by [Steve Gordon](https://twitter.com/stevejgordon)
 
 ## Podcasts
 

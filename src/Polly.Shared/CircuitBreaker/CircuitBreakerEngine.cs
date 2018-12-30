@@ -1,23 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.ExceptionServices;
 using System.Threading;
 
-#if NET40
-using ExceptionDispatchInfo = Polly.Utilities.ExceptionDispatchInfo;
-#endif
-
 namespace Polly.CircuitBreaker
 {
-    internal partial class CircuitBreakerEngine
+    internal class CircuitBreakerEngine
     {
         internal static TResult Implementation<TResult>(
             Func<Context, CancellationToken, TResult> action,
             Context context,
             CancellationToken cancellationToken,
-            IEnumerable<ExceptionPredicate> shouldHandleExceptionPredicates, 
-            IEnumerable<ResultPredicate<TResult>> shouldHandleResultPredicates, 
+            ExceptionPredicates shouldHandleExceptionPredicates, 
+            ResultPredicates<TResult> shouldHandleResultPredicates, 
             ICircuitController<TResult> breakerController)
         {
             cancellationToken.ThrowIfCancellationRequested();
@@ -28,7 +22,7 @@ namespace Polly.CircuitBreaker
             {
                 TResult result = action(context, cancellationToken);
 
-                if (shouldHandleResultPredicates.Any(predicate => predicate(result)))
+                if (shouldHandleResultPredicates.AnyMatch(result))
                 {
                     breakerController.OnActionFailure(new DelegateResult<TResult>(result), context);
                 }
@@ -41,9 +35,7 @@ namespace Polly.CircuitBreaker
             }
             catch (Exception ex)
             {
-                Exception handledException = shouldHandleExceptionPredicates
-                    .Select(predicate => predicate(ex))
-                    .FirstOrDefault(e => e != null);
+                Exception handledException = shouldHandleExceptionPredicates.FirstMatchOrDefault(ex);
                 if (handledException == null)
                 {
                     throw;

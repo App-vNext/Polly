@@ -2,7 +2,7 @@
   <PropertyGroup>
     <AssemblyName>Polly</AssemblyName>
     <AssemblyOriginatorKeyFile>..\Polly.Net45\Polly.snk</AssemblyOriginatorKeyFile>
-    <DefineConstants>TRACE;PORTABLE</DefineConstants>
+    <DefineConstants>TRACE</DefineConstants>
     <DefaultLanguage>en-US</DefaultLanguage>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>

@@ -6,7 +6,6 @@ using Polly.Caching;
 using Polly.Specs.Helpers;
 using Polly.Specs.Helpers.Caching;
 using Polly.Utilities;
-using Polly.Wrap;
 using Xunit;
 
 namespace Polly.Specs.Caching
@@ -23,7 +22,7 @@ namespace Polly.Specs.Caching
             Action<Context, string, Exception> onError = (ctx, key, exc) => { onErrorCalled = true; };
 
             IAsyncCacheProvider stubCacheProvider = new StubCacheProvider();
-            CachePolicy cache = Policy.CacheAsync(stubCacheProvider, TimeSpan.MaxValue, onError);
+            var cache = Policy.CacheAsync(stubCacheProvider, TimeSpan.MaxValue, onError);
 
             (await stubCacheProvider.GetAsync(operationKey, CancellationToken.None, false)).Should().BeNull();
             ResultPrimitive result = await cache.ExecuteAsync(async ctx =>
@@ -42,7 +41,7 @@ namespace Polly.Specs.Caching
             const string operationKey = "SomeOperationKey";
 
             IAsyncCacheProvider stubCacheProvider = new StubCacheProvider();
-            CachePolicy cache = Policy.CacheAsync(stubCacheProvider, TimeSpan.MaxValue);
+            var cache = Policy.CacheAsync(stubCacheProvider, TimeSpan.MaxValue);
 
             (await stubCacheProvider.GetAsync(operationKey, CancellationToken.None, false)).Should().BeNull();
 

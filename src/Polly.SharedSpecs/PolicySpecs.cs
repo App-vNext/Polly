@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using FluentAssertions;
-using Polly.Utilities;
 using Xunit;
-using Xunit.Extensions;
 
 namespace Polly.Specs
 {
@@ -166,108 +164,6 @@ namespace Polly.Specs
                 FinalHandledResult = default(int),
                 Result = default(int)
             }, options => options.Excluding(o => o.Context));
-        }
-
-        #endregion
-
-        #region Async erroneously on sync - tests
-
-        [Theory, MemberData(nameof(AsyncPolicies))]
-        public void Executing_the_asynchronous_policies_using_the_synchronous_execute_should_throw_an_invalid_operation_exception(Policy asyncPolicy, string description)
-        {
-            Action action = () => asyncPolicy.Execute(() => { });
-
-            action.ShouldThrow<InvalidOperationException>()
-                .WithMessage("Please use the synchronous-defined policies when calling the synchronous Execute (and similar) methods.");
-        }
-
-        [Theory, MemberData(nameof(AsyncPolicies))]
-        public void Executing_the_asynchronous_policies_using_the_synchronous_execute_and_capture_should_throw_an_invalid_operation_exception(Policy asyncPolicy, string description)
-        {
-            Action action = () => asyncPolicy.ExecuteAndCapture(() => { });
-
-            action.ShouldThrow<InvalidOperationException>()
-                .WithMessage("Please use the synchronous-defined policies when calling the synchronous Execute (and similar) methods.");
-        }
-
-        public static IEnumerable<object[]> AsyncPolicies => new[]
-        {
-            new object[] {RetryAsyncPolicy(), "retry"},
-            new object[] {RetryForeverAsyncPolicy(), "retry forever"},
-            new object[] {WaitAndRetryAsyncPolicy(), "wait and retry"},
-            new object[] {WaitAndRetryForeverAsyncPolicy(), "wait and retry forever"},
-            new object[] {CircuitBreakerAsyncPolicy(), "circuit breaker"},
-            new object[] {AdvancedCircuitBreakerAsyncPolicy(), "advanced circuit breaker"},
-            new object[] {TimeoutAsyncPolicy(), "timeout"},
-            new object[] {BulkheadAsyncPolicy(), "bulkhead"},
-            new object[] {FallbackAsyncPolicy(), "fallback"},
-            new object[] {NoOpAsyncPolicy(), "no-op"}
-        };
-
-        private static Policy RetryAsyncPolicy()
-        {
-            return Policy
-                .Handle<DivideByZeroException>()
-                .RetryAsync((_, __) => { });
-        }
-
-        private static Policy RetryForeverAsyncPolicy()
-        {
-            return Policy
-                .Handle<DivideByZeroException>()
-                .RetryForeverAsync((_) => { });
-        }
-
-        private static Policy WaitAndRetryAsyncPolicy()
-        {
-            return Policy
-                .Handle<DivideByZeroException>()
-                .WaitAndRetryAsync(new TimeSpan[] {});
-        }
-
-        private static Policy WaitAndRetryForeverAsyncPolicy()
-        {
-            return Policy
-                .Handle<DivideByZeroException>()
-                .WaitAndRetryForeverAsync(_ => new TimeSpan());
-        }
-
-        private static Policy CircuitBreakerAsyncPolicy()
-        {
-            return Policy
-                .Handle<DivideByZeroException>()
-                .CircuitBreakerAsync(1, new TimeSpan());
-        }
-
-        private static Policy AdvancedCircuitBreakerAsyncPolicy()
-        {
-            return Policy
-                .Handle<DivideByZeroException>()
-                .AdvancedCircuitBreakerAsync(1, TimeSpan.MaxValue, 2, new TimeSpan());
-        }
-
-        private static Policy TimeoutAsyncPolicy()
-        {
-            return Policy
-                .TimeoutAsync(TimeSpan.MaxValue);
-        }
-
-        private static Policy BulkheadAsyncPolicy()
-        {
-            return Policy
-                .BulkheadAsync(1);
-        }
-
-        private static Policy FallbackAsyncPolicy()
-        {
-            return Policy
-                .Handle<DivideByZeroException>()
-                .FallbackAsync(_ => TaskHelper.EmptyTask);
-        }
-
-        private static Policy NoOpAsyncPolicy()
-        {
-            return Policy.NoOpAsync();
         }
 
         #endregion

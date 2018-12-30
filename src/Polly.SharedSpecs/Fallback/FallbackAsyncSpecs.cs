@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
-using Polly.Fallback;
 using Polly.Specs.Helpers;
 using Polly.Utilities;
 using Xunit;
@@ -95,7 +94,7 @@ namespace Polly.Specs.Fallback
             bool fallbackActionExecuted = false;
             Func<CancellationToken, Task> fallbackActionAsync  = _ => { fallbackActionExecuted = true; return TaskHelper.EmptyTask; };
 
-            FallbackPolicy fallbackPolicy = Policy
+            var fallbackPolicy = Policy
                                     .Handle<DivideByZeroException>()
                                     .FallbackAsync(fallbackActionAsync);
 
@@ -110,7 +109,7 @@ namespace Polly.Specs.Fallback
             bool fallbackActionExecuted = false;
             Func<CancellationToken, Task> fallbackActionAsync  = _ => { fallbackActionExecuted = true; return TaskHelper.EmptyTask; };
 
-            FallbackPolicy fallbackPolicy = Policy
+            var fallbackPolicy = Policy
                                     .Handle<DivideByZeroException>()
                                     .FallbackAsync(fallbackActionAsync);
 
@@ -125,7 +124,7 @@ namespace Polly.Specs.Fallback
             bool fallbackActionExecuted = false;
             Func<CancellationToken, Task> fallbackActionAsync  = _ => { fallbackActionExecuted = true; return TaskHelper.EmptyTask; };
 
-            FallbackPolicy fallbackPolicy = Policy
+            var fallbackPolicy = Policy
                                     .Handle<DivideByZeroException>()
                                     .FallbackAsync(fallbackActionAsync);
 
@@ -141,7 +140,7 @@ namespace Polly.Specs.Fallback
             bool fallbackActionExecuted = false;
             Func<CancellationToken, Task> fallbackActionAsync  = _ => { fallbackActionExecuted = true; return TaskHelper.EmptyTask; };
 
-            FallbackPolicy fallbackPolicy = Policy
+            var fallbackPolicy = Policy
                                     .Handle<DivideByZeroException>()
                                     .Or<ArgumentException>()
                                     .FallbackAsync(fallbackActionAsync);
@@ -158,7 +157,7 @@ namespace Polly.Specs.Fallback
             bool fallbackActionExecuted = false;
             Func<CancellationToken, Task> fallbackActionAsync  = _ => { fallbackActionExecuted = true; return TaskHelper.EmptyTask; };
 
-            FallbackPolicy fallbackPolicy = Policy
+            var fallbackPolicy = Policy
                                     .Handle<DivideByZeroException>()
                                     .Or<NullReferenceException>()
                                     .FallbackAsync(fallbackActionAsync);
@@ -174,7 +173,7 @@ namespace Polly.Specs.Fallback
             bool fallbackActionExecuted = false;
             Func<CancellationToken, Task> fallbackActionAsync  = _ => { fallbackActionExecuted = true; return TaskHelper.EmptyTask; };
 
-            FallbackPolicy fallbackPolicy = Policy
+            var fallbackPolicy = Policy
                                     .Handle<DivideByZeroException>(e => false)
                                     .FallbackAsync(fallbackActionAsync);
 
@@ -189,7 +188,7 @@ namespace Polly.Specs.Fallback
             bool fallbackActionExecuted = false;
             Func<CancellationToken, Task> fallbackActionAsync  = _ => { fallbackActionExecuted = true; return TaskHelper.EmptyTask; };
 
-            FallbackPolicy fallbackPolicy = Policy
+            var fallbackPolicy = Policy
                                     .Handle<DivideByZeroException>(e => false)
                                     .Or<ArgumentNullException>(e => false)
                                     .FallbackAsync(fallbackActionAsync);
@@ -205,7 +204,7 @@ namespace Polly.Specs.Fallback
             bool fallbackActionExecuted = false;
             Func<CancellationToken, Task> fallbackActionAsync  = _ => { fallbackActionExecuted = true; return TaskHelper.EmptyTask; };
 
-            FallbackPolicy fallbackPolicy = Policy
+            var fallbackPolicy = Policy
                                     .Handle<DivideByZeroException>(e => true)
                                     .FallbackAsync(fallbackActionAsync);
 
@@ -221,7 +220,7 @@ namespace Polly.Specs.Fallback
             bool fallbackActionExecuted = false;
             Func<CancellationToken, Task> fallbackActionAsync  = _ => { fallbackActionExecuted = true; return TaskHelper.EmptyTask; };
 
-            FallbackPolicy fallbackPolicy = Policy
+            var fallbackPolicy = Policy
                                     .Handle<DivideByZeroException>(e => true)
                                     .Or<ArgumentNullException>()
                                     .FallbackAsync(fallbackActionAsync);
@@ -241,7 +240,7 @@ namespace Polly.Specs.Fallback
                 throw new DivideByZeroException() { HelpLink = "FromFallbackAction" };
             };
 
-            FallbackPolicy fallbackPolicy = Policy
+            var fallbackPolicy = Policy
                 .Handle<DivideByZeroException>()
                 .FallbackAsync(fallbackActionAsync);
 
@@ -254,11 +253,11 @@ namespace Polly.Specs.Fallback
         [Fact]
         public void Should_throw_for_generic_method_execution_on_non_generic_policy()
         {
-            FallbackPolicy fallbackPolicy = Policy
+            var fallbackPolicy = Policy
                 .Handle<DivideByZeroException>()
                 .FallbackAsync(_ => TaskHelper.EmptyTask);
 
-            fallbackPolicy.Awaiting(p => p.ExecuteAsync<int>(() => TaskHelper.FromResult(0))).ShouldThrow<InvalidOperationException>();
+            fallbackPolicy.Awaiting(p => p.ExecuteAsync<int>(() => Task.FromResult(0))).ShouldThrow<InvalidOperationException>();
         }
 
         #endregion
@@ -274,7 +273,7 @@ namespace Polly.Specs.Fallback
             Exception exceptionPassedToOnFallback = null;
             Func<Exception, Task> onFallbackAsync = ex => { exceptionPassedToOnFallback = ex; return TaskHelper.EmptyTask; };
 
-            FallbackPolicy fallbackPolicy = Policy
+            var fallbackPolicy = Policy
                 .Handle<ArgumentNullException>()
                 .FallbackAsync(fallbackActionAsync, onFallbackAsync);
 
@@ -294,7 +293,7 @@ namespace Polly.Specs.Fallback
             bool onFallbackExecuted = false;
             Func<Exception, Task> onFallbackAsync = ex => { onFallbackExecuted = true; return TaskHelper.EmptyTask; };
 
-            FallbackPolicy fallbackPolicy = Policy
+            var fallbackPolicy = Policy
                 .Handle<DivideByZeroException>()
                 .FallbackAsync(fallbackActionAsync, onFallbackAsync);
 
@@ -316,7 +315,7 @@ namespace Polly.Specs.Fallback
 
             Func<Exception, Context, Task> onFallbackAsync = (ex, ctx) => { contextData = ctx; return TaskHelper.EmptyTask; };
 
-            FallbackPolicy fallbackPolicy = Policy
+            var fallbackPolicy = Policy
                 .Handle<ArgumentNullException>()
                 .FallbackAsync(fallbackActionAsync, onFallbackAsync);
 
@@ -338,7 +337,7 @@ namespace Polly.Specs.Fallback
 
             Func<Exception, Context, Task> onFallbackAsync = (ex, ctx) => { contextData = ctx; return TaskHelper.EmptyTask; };
 
-            FallbackPolicy fallbackPolicy = Policy
+            var fallbackPolicy = Policy
                 .Handle<ArgumentNullException>()
                 .FallbackAsync(fallbackActionAsync, onFallbackAsync);
 
@@ -360,7 +359,7 @@ namespace Polly.Specs.Fallback
 
             Func<Exception, Context, Task> onFallbackAsync = (ex, ctx) => { contextData[ex.GetType()] = ctx["key"]; return TaskHelper.EmptyTask; };
 
-            FallbackPolicy fallbackPolicy = Policy
+            var fallbackPolicy = Policy
                 .Handle<ArgumentNullException>()
                 .Or<DivideByZeroException>()
                 .FallbackAsync(fallbackActionAsync, onFallbackAsync);
@@ -390,7 +389,7 @@ namespace Polly.Specs.Fallback
             Func<Context, CancellationToken, Task> fallbackActionAsync = (_, __) => TaskHelper.EmptyTask;
             Func<Exception, Context, Task> onFallbackAsync = (ex, ctx) => { onFallbackExecuted = true; capturedContext = ctx; return TaskHelper.EmptyTask; };
 
-            FallbackPolicy fallbackPolicy = Policy
+            var fallbackPolicy = Policy
                 .Handle<ArgumentNullException>()
                 .Or<DivideByZeroException>()
                 .FallbackAsync(fallbackActionAsync, onFallbackAsync);
@@ -410,7 +409,7 @@ namespace Polly.Specs.Fallback
 
             Func<Exception, Context, Task> onFallbackAsync = (ex, ctx) => TaskHelper.EmptyTask;
 
-            FallbackPolicy fallbackPolicy = Policy
+            var fallbackPolicy = Policy
                 .Handle<ArgumentNullException>()
                 .FallbackAsync(fallbackActionAsync, onFallbackAsync);
 
@@ -432,7 +431,7 @@ namespace Polly.Specs.Fallback
 
             Func<Exception, Context, Task> onFallbackAsync = (ex, ctx) => TaskHelper.EmptyTask;
 
-            FallbackPolicy fallbackPolicy = Policy
+            var fallbackPolicy = Policy
                 .Handle<ArgumentNullException>()
                 .FallbackAsync(fallbackActionAsync, onFallbackAsync);
 
@@ -455,7 +454,7 @@ namespace Polly.Specs.Fallback
 
             Func<Exception, Context, Task> onFallbackAsync = (ex, ctx) => TaskHelper.EmptyTask;
 
-            FallbackPolicy fallbackPolicy = Policy
+            var fallbackPolicy = Policy
                 .Handle<ArgumentNullException>()
                 .Or<DivideByZeroException>()
                 .FallbackAsync(fallbackActionAsync, onFallbackAsync);
@@ -479,7 +478,7 @@ namespace Polly.Specs.Fallback
 
             Func<Exception, Context, Task> onFallback = (ex, ctx) => { return TaskHelper.EmptyTask; };
 
-            FallbackPolicy fallbackPolicy = Policy
+            var fallbackPolicy = Policy
                 .Handle<ArgumentNullException>()
                 .FallbackAsync(fallbackFunc, onFallback);
 
@@ -499,7 +498,7 @@ namespace Polly.Specs.Fallback
 
             Func<Exception, Context, Task> onFallback = (ex, ctx) => { return TaskHelper.EmptyTask; };
 
-            FallbackPolicy fallbackPolicy = Policy
+            var fallbackPolicy = Policy
                 .Handle<ArgumentNullException>()
                 .FallbackAsync(fallbackFunc, onFallback);
 
@@ -518,7 +517,7 @@ namespace Polly.Specs.Fallback
 
             Func<Exception, Context, Task> onFallback = (ex, ctx) => { return TaskHelper.EmptyTask; };
 
-            FallbackPolicy fallbackPolicy = Policy
+            var fallbackPolicy = Policy
                 .HandleInner<ArgumentNullException>()
                 .FallbackAsync(fallbackFunc, onFallback);
 
@@ -539,7 +538,7 @@ namespace Polly.Specs.Fallback
 
             Func<Exception, Context, Task> onFallback = (ex, ctx) => { return TaskHelper.EmptyTask; };
 
-            FallbackPolicy fallbackPolicy = Policy
+            var fallbackPolicy = Policy
                 .HandleInner<ArgumentNullException>()
                 .FallbackAsync(fallbackFunc, onFallback);
 
@@ -560,7 +559,7 @@ namespace Polly.Specs.Fallback
 
             Func<Exception, Context, Task> onFallback = (ex, ctx) => { return TaskHelper.EmptyTask; };
 
-            FallbackPolicy fallbackPolicy = Policy
+            var fallbackPolicy = Policy
                 .Handle<DivideByZeroException>()
                 .FallbackAsync(fallbackFunc, onFallback);
 
@@ -580,7 +579,7 @@ namespace Polly.Specs.Fallback
             bool fallbackActionExecuted = false;
             Func<CancellationToken, Task> fallbackActionAsync = _ => { fallbackActionExecuted = true; return TaskHelper.EmptyTask; };
 
-            FallbackPolicy policy = Policy
+            var policy = Policy
                                     .Handle<DivideByZeroException>()
                                     .FallbackAsync(fallbackActionAsync);
 
@@ -609,7 +608,7 @@ namespace Polly.Specs.Fallback
             bool fallbackActionExecuted = false;
             Func<CancellationToken, Task> fallbackActionAsync = _ => { fallbackActionExecuted = true; return TaskHelper.EmptyTask; };
 
-            FallbackPolicy policy = Policy
+            var policy = Policy
                                     .Handle<DivideByZeroException>()
                                     .FallbackAsync(fallbackActionAsync);
 
@@ -638,7 +637,7 @@ namespace Polly.Specs.Fallback
             bool fallbackActionExecuted = false;
             Func<CancellationToken, Task> fallbackActionAsync = _ => { fallbackActionExecuted = true; return TaskHelper.EmptyTask; };
 
-            FallbackPolicy policy = Policy
+            var policy = Policy
                                     .Handle<DivideByZeroException>()
                                     .FallbackAsync(fallbackActionAsync);
 
@@ -671,7 +670,7 @@ namespace Polly.Specs.Fallback
             bool fallbackActionExecuted = false;
             Func<CancellationToken, Task> fallbackActionAsync = _ => { fallbackActionExecuted = true; return TaskHelper.EmptyTask; };
 
-            FallbackPolicy policy = Policy
+            var policy = Policy
                                     .Handle<DivideByZeroException>()
                                     .FallbackAsync(fallbackActionAsync);
 
@@ -702,7 +701,7 @@ namespace Polly.Specs.Fallback
             bool fallbackActionExecuted = false;
             Func<CancellationToken, Task> fallbackActionAsync = _ => { fallbackActionExecuted = true; return TaskHelper.EmptyTask; };
 
-            FallbackPolicy policy = Policy
+            var policy = Policy
                                     .Handle<DivideByZeroException>()
                                     .Or<OperationCanceledException>()
                                     .FallbackAsync(fallbackActionAsync);
@@ -734,7 +733,7 @@ namespace Polly.Specs.Fallback
             bool fallbackActionExecuted = false;
             Func<CancellationToken, Task> fallbackActionAsync = _ => { fallbackActionExecuted = true; return TaskHelper.EmptyTask; };
 
-            FallbackPolicy policy = Policy
+            var policy = Policy
                                     .Handle<DivideByZeroException>()
                                     .FallbackAsync(fallbackActionAsync);
 
@@ -769,7 +768,7 @@ namespace Polly.Specs.Fallback
             CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
             CancellationToken cancellationToken = cancellationTokenSource.Token;
 
-            FallbackPolicy policy = Policy
+            var policy = Policy
                                     .Handle<DivideByZeroException>()
                                     .FallbackAsync(fallbackActionAsync);
 
@@ -801,7 +800,7 @@ namespace Polly.Specs.Fallback
             CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
             CancellationToken cancellationToken = cancellationTokenSource.Token;
 
-            FallbackPolicy policy = Policy
+            var policy = Policy
                                     .Handle<DivideByZeroException>()
                                     .FallbackAsync(fallbackActionAsync);
 

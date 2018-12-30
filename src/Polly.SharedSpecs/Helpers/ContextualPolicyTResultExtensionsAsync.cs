@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -10,14 +9,14 @@ namespace Polly.Specs.Helpers
     public static class ContextualPolicyTResultExtensionsAsync
     {
 
-        public static Task<TResult> RaiseResultSequenceAsync<TResult>(this Policy<TResult> policy,
+        public static Task<TResult> RaiseResultSequenceAsync<TResult>(this AsyncPolicy<TResult> policy,
     IDictionary<string, object> contextData,
     params TResult[] resultsToRaise)
         {
             return policy.RaiseResultSequenceAsync(contextData, CancellationToken.None, resultsToRaise.ToList());
         }
 
-        public static Task<TResult> RaiseResultSequenceAsync<TResult>(this Policy<TResult> policy, IDictionary<string, object> contextData, CancellationToken cancellationToken, IEnumerable<TResult> resultsToRaise)
+        public static Task<TResult> RaiseResultSequenceAsync<TResult>(this AsyncPolicy<TResult> policy, IDictionary<string, object> contextData, CancellationToken cancellationToken, IEnumerable<TResult> resultsToRaise)
         {
             var enumerator = resultsToRaise.GetEnumerator();
 
@@ -25,19 +24,19 @@ namespace Polly.Specs.Helpers
             {
                 if (!enumerator.MoveNext())
                 {
-                    throw new ArgumentOutOfRangeException("resultsToRaise", "Not enough TResult values in resultsToRaise.");
+                    throw new ArgumentOutOfRangeException(nameof(resultsToRaise), "Not enough TResult values in resultsToRaise.");
                 }
 
                 return Task.FromResult(enumerator.Current);
             }, contextData, cancellationToken);
         }
 
-        public static Task<PolicyResult<TResult>> RaiseResultSequenceOnExecuteAndCaptureAsync<TResult>(this Policy<TResult> policy, IDictionary<string, object> contextData, params TResult[] resultsToRaise)
+        public static Task<PolicyResult<TResult>> RaiseResultSequenceOnExecuteAndCaptureAsync<TResult>(this AsyncPolicy<TResult> policy, IDictionary<string, object> contextData, params TResult[] resultsToRaise)
         {
             return policy.RaiseResultSequenceOnExecuteAndCaptureAsync(contextData, resultsToRaise.ToList());
         }
 
-        public static Task<PolicyResult<TResult>> RaiseResultSequenceOnExecuteAndCaptureAsync<TResult>(this Policy<TResult> policy, IDictionary<string, object> contextData, IEnumerable<TResult> resultsToRaise)
+        public static Task<PolicyResult<TResult>> RaiseResultSequenceOnExecuteAndCaptureAsync<TResult>(this AsyncPolicy<TResult> policy, IDictionary<string, object> contextData, IEnumerable<TResult> resultsToRaise)
         {
             var enumerator = resultsToRaise.GetEnumerator();
 
@@ -45,7 +44,7 @@ namespace Polly.Specs.Helpers
             {
                 if (!enumerator.MoveNext())
                 {
-                    throw new ArgumentOutOfRangeException("resultsToRaise", "Not enough TResult values in resultsToRaise.");
+                    throw new ArgumentOutOfRangeException(nameof(resultsToRaise), "Not enough TResult values in resultsToRaise.");
                 }
 
                 return Task.FromResult(enumerator.Current);

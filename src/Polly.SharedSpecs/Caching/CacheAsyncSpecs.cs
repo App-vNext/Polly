@@ -6,7 +6,6 @@ using Polly.Caching;
 using Polly.Specs.Helpers;
 using Polly.Specs.Helpers.Caching;
 using Polly.Utilities;
-using Polly.Wrap;
 using Xunit;
 
 namespace Polly.Specs.Caching
@@ -42,18 +41,6 @@ namespace Polly.Specs.Caching
             action.ShouldThrow<ArgumentNullException>().And.ParamName.Should().Be("cacheKeyStrategy");
         }
 
-        [Fact]
-        public void Should_throw_informative_exception_when_sync_execute_on_an_async_policy()
-        {
-            IAsyncCacheProvider cacheProvider = new StubCacheProvider();
-
-            var cachePolicy = Policy.CacheAsync(cacheProvider, TimeSpan.FromMinutes(5));
-
-            Action action = () => cachePolicy.Execute(() => 0);
-
-            action.ShouldThrow<InvalidOperationException>();
-        }
-
         #endregion
 
         #region Caching behaviours
@@ -66,7 +53,7 @@ namespace Polly.Specs.Caching
             const string operationKey = "SomeOperationKey";
 
             IAsyncCacheProvider stubCacheProvider = new StubCacheProvider();
-            CachePolicy cache = Policy.CacheAsync(stubCacheProvider, TimeSpan.MaxValue);
+            var cache = Policy.CacheAsync(stubCacheProvider, TimeSpan.MaxValue);
             await stubCacheProvider.PutAsync(operationKey, valueToReturnFromCache, new Ttl(TimeSpan.MaxValue), CancellationToken.None, false).ConfigureAwait(false);
 
             bool delegateExecuted = false;
@@ -90,7 +77,7 @@ namespace Polly.Specs.Caching
             const string operationKey = "SomeOperationKey";
 
             IAsyncCacheProvider stubCacheProvider = new StubCacheProvider();
-            CachePolicy cache = Policy.CacheAsync(stubCacheProvider, TimeSpan.MaxValue);
+            var cache = Policy.CacheAsync(stubCacheProvider, TimeSpan.MaxValue);
 
             ((string) await stubCacheProvider.GetAsync(operationKey, CancellationToken.None, false).ConfigureAwait(false)).Should().BeNull();
 
@@ -107,7 +94,7 @@ namespace Polly.Specs.Caching
 
             IAsyncCacheProvider stubCacheProvider = new StubCacheProvider();
             TimeSpan ttl = TimeSpan.FromMinutes(30);
-            CachePolicy cache = Policy.CacheAsync(stubCacheProvider, ttl);
+            var cache = Policy.CacheAsync(stubCacheProvider, ttl);
 
             ((string) await stubCacheProvider.GetAsync(operationKey, CancellationToken.None, false).ConfigureAwait(false)).Should().BeNull();
 
@@ -148,7 +135,7 @@ namespace Polly.Specs.Caching
             const string operationKey = "SomeOperationKey";
 
             IAsyncCacheProvider stubCacheProvider = new StubCacheProvider();
-            CachePolicy cache = Policy.CacheAsync(stubCacheProvider, TimeSpan.Zero);
+            var cache = Policy.CacheAsync(stubCacheProvider, TimeSpan.Zero);
 
             ((string)await stubCacheProvider.GetAsync(operationKey, CancellationToken.None, false).ConfigureAwait(false)).Should().Be(null);
 
@@ -163,7 +150,7 @@ namespace Polly.Specs.Caching
             const string valueToReturn = "valueToReturn";
             const string operationKey = "SomeOperationKey";
 
-            CachePolicy cache = Policy.CacheAsync(new StubCacheProvider(), TimeSpan.MaxValue);
+            var cache = Policy.CacheAsync(new StubCacheProvider(), TimeSpan.MaxValue);
 
             int delegateInvocations = 0;
             Func<Context, Task<string>> func = async ctx =>
@@ -187,7 +174,7 @@ namespace Polly.Specs.Caching
         public async Task Should_allow_custom_FuncCacheKeyStrategy()
         {
             IAsyncCacheProvider stubCacheProvider = new StubCacheProvider();
-            CachePolicy cache = Policy.CacheAsync(stubCacheProvider, TimeSpan.MaxValue, context => context.OperationKey + context["id"]);
+            var cache = Policy.CacheAsync(stubCacheProvider, TimeSpan.MaxValue, context => context.OperationKey + context["id"]);
 
             object person1 = new object();
             await stubCacheProvider.PutAsync("person1", person1, new Ttl(TimeSpan.MaxValue), CancellationToken.None, false).ConfigureAwait(false);
@@ -212,7 +199,7 @@ namespace Polly.Specs.Caching
 
             IAsyncCacheProvider stubCacheProvider = new StubCacheProvider();
             ICacheKeyStrategy cacheKeyStrategy = new StubCacheKeyStrategy(context => context.OperationKey + context["id"]);
-            CachePolicy cache = Policy.CacheAsync(stubCacheProvider, new RelativeTtl(TimeSpan.MaxValue), cacheKeyStrategy, emptyDelegate, emptyDelegate, emptyDelegate, noErrorHandling, noErrorHandling);
+            var cache = Policy.CacheAsync(stubCacheProvider, new RelativeTtl(TimeSpan.MaxValue), cacheKeyStrategy, emptyDelegate, emptyDelegate, emptyDelegate, noErrorHandling, noErrorHandling);
 
             object person1 = new object();
             await stubCacheProvider.PutAsync("person1", person1, new Ttl(TimeSpan.MaxValue), CancellationToken.None, false).ConfigureAwait(false);
@@ -241,9 +228,9 @@ namespace Polly.Specs.Caching
             const string operationKey = "SomeOperationKey";
 
             IAsyncCacheProvider stubCacheProvider = new StubCacheProvider();
-            CachePolicy cache = Policy.CacheAsync(stubCacheProvider, TimeSpan.MaxValue);
-            Policy noop = Policy.NoOpAsync();
-            PolicyWrap wrap = Policy.WrapAsync(cache, noop);
+            var cache = Policy.CacheAsync(stubCacheProvider, TimeSpan.MaxValue);
+            var noop = Policy.NoOpAsync();
+            var wrap = Policy.WrapAsync(cache, noop);
 
             await stubCacheProvider.PutAsync(operationKey, valueToReturnFromCache, new Ttl(TimeSpan.MaxValue), CancellationToken.None, false).ConfigureAwait(false);
 
@@ -269,9 +256,9 @@ namespace Polly.Specs.Caching
             const string operationKey = "SomeOperationKey";
 
             IAsyncCacheProvider stubCacheProvider = new StubCacheProvider();
-            CachePolicy cache = Policy.CacheAsync(stubCacheProvider, TimeSpan.MaxValue);
-            Policy noop = Policy.NoOpAsync();
-            PolicyWrap wrap = Policy.WrapAsync(noop, cache);
+            var cache = Policy.CacheAsync(stubCacheProvider, TimeSpan.MaxValue);
+            var noop = Policy.NoOpAsync();
+            var wrap = Policy.WrapAsync(noop, cache);
 
             await stubCacheProvider.PutAsync(operationKey, valueToReturnFromCache, new Ttl(TimeSpan.MaxValue), CancellationToken.None, false).ConfigureAwait(false);
 
@@ -297,9 +284,9 @@ namespace Polly.Specs.Caching
             const string operationKey = "SomeOperationKey";
 
             IAsyncCacheProvider stubCacheProvider = new StubCacheProvider();
-            CachePolicy cache = Policy.CacheAsync(stubCacheProvider, TimeSpan.MaxValue);
-            Policy noop = Policy.NoOpAsync();
-            PolicyWrap wrap = Policy.WrapAsync(noop, cache, noop);
+            var cache = Policy.CacheAsync(stubCacheProvider, TimeSpan.MaxValue);
+            var noop = Policy.NoOpAsync();
+            var wrap = Policy.WrapAsync(noop, cache, noop);
 
             await stubCacheProvider.PutAsync(operationKey, valueToReturnFromCache, new Ttl(TimeSpan.MaxValue), CancellationToken.None, false).ConfigureAwait(false);
 
@@ -326,7 +313,7 @@ namespace Polly.Specs.Caching
         {
             string valueToReturn = Guid.NewGuid().ToString();
             
-            CachePolicy cache = Policy.CacheAsync(new StubCacheProvider(), TimeSpan.MaxValue);
+            var cache = Policy.CacheAsync(new StubCacheProvider(), TimeSpan.MaxValue);
 
             int delegateInvocations = 0;
             Func<Task<string>> func = async () => {
@@ -347,7 +334,7 @@ namespace Polly.Specs.Caching
         {
             string operationKey = "SomeKey";
 
-            CachePolicy cache = Policy.CacheAsync(new StubCacheProvider(), TimeSpan.MaxValue);
+            var cache = Policy.CacheAsync(new StubCacheProvider(), TimeSpan.MaxValue);
 
             int delegateInvocations = 0;
             Func<Context, Task> action = async ctx => { delegateInvocations++; await TaskHelper.EmptyTask.ConfigureAwait(false); };
@@ -369,7 +356,7 @@ namespace Polly.Specs.Caching
             const string valueToReturn = "valueToReturn";
             const string operationKey = "SomeOperationKey";
 
-            CachePolicy cache = Policy.CacheAsync(new StubCacheProvider(), TimeSpan.MaxValue);
+            var cache = Policy.CacheAsync(new StubCacheProvider(), TimeSpan.MaxValue);
 
             CancellationTokenSource tokenSource = new CancellationTokenSource();
 
@@ -399,7 +386,7 @@ namespace Polly.Specs.Caching
             const string operationKey = "SomeOperationKey";
 
             IAsyncCacheProvider stubCacheProvider = new StubCacheProvider();
-            CachePolicy cache = Policy.CacheAsync(stubCacheProvider, TimeSpan.MaxValue);
+            var cache = Policy.CacheAsync(stubCacheProvider, TimeSpan.MaxValue);
 
             CancellationTokenSource tokenSource = new CancellationTokenSource();
 
@@ -435,7 +422,7 @@ namespace Polly.Specs.Caching
 
             Action<Context, string, Exception> onError = (ctx, key, exc) => { exceptionFromCacheProvider = exc; };
 
-            CachePolicy cache = Policy.CacheAsync(stubCacheProvider, TimeSpan.MaxValue, onError);
+            var cache = Policy.CacheAsync(stubCacheProvider, TimeSpan.MaxValue, onError);
 
             await stubCacheProvider.PutAsync(operationKey, valueToReturnFromCache, new Ttl(TimeSpan.MaxValue), CancellationToken.None, false).ConfigureAwait(false);
 
@@ -471,7 +458,7 @@ namespace Polly.Specs.Caching
 
             Action<Context, string, Exception> onError = (ctx, key, exc) => { exceptionFromCacheProvider = exc; };
 
-            CachePolicy cache = Policy.CacheAsync(stubCacheProvider, TimeSpan.MaxValue, onError);
+            var cache = Policy.CacheAsync(stubCacheProvider, TimeSpan.MaxValue, onError);
 
             ((string)await stubCacheProvider.GetAsync(operationKey, CancellationToken.None, false).ConfigureAwait(false)).Should().BeNull();
 
@@ -502,7 +489,7 @@ namespace Polly.Specs.Caching
             Action<Context, string> onCacheAction = (ctx, key) => { contextPassedToDelegate = ctx; keyPassedToDelegate = key; };
 
             IAsyncCacheProvider stubCacheProvider = new StubCacheProvider();
-            CachePolicy cache = Policy.CacheAsync(stubCacheProvider, new RelativeTtl(TimeSpan.MaxValue), DefaultCacheKeyStrategy.Instance, onCacheAction, emptyDelegate, emptyDelegate, noErrorHandling, noErrorHandling);
+            var cache = Policy.CacheAsync(stubCacheProvider, new RelativeTtl(TimeSpan.MaxValue), DefaultCacheKeyStrategy.Instance, onCacheAction, emptyDelegate, emptyDelegate, noErrorHandling, noErrorHandling);
             await stubCacheProvider.PutAsync(operationKey, valueToReturnFromCache, new Ttl(TimeSpan.MaxValue), CancellationToken.None, false).ConfigureAwait(false);
 
             bool delegateExecuted = false;
@@ -539,7 +526,7 @@ namespace Polly.Specs.Caching
             Action<Context, string> onCachePut = (ctx, key) => { contextPassedToOnCachePut = ctx; keyPassedToOnCachePut = key; };
 
             IAsyncCacheProvider stubCacheProvider = new StubCacheProvider();
-            CachePolicy cache = Policy.CacheAsync(stubCacheProvider, new RelativeTtl(TimeSpan.MaxValue), DefaultCacheKeyStrategy.Instance, emptyDelegate, onCacheMiss, onCachePut, noErrorHandling, noErrorHandling);
+            var cache = Policy.CacheAsync(stubCacheProvider, new RelativeTtl(TimeSpan.MaxValue), DefaultCacheKeyStrategy.Instance, emptyDelegate, onCacheMiss, onCachePut, noErrorHandling, noErrorHandling);
 
             ((string)await stubCacheProvider.GetAsync(operationKey, CancellationToken.None, false).ConfigureAwait(false)).Should().BeNull();
             (await cache.ExecuteAsync(async ctx => { await TaskHelper.EmptyTask.ConfigureAwait(false); return valueToReturn; }, contextToExecute).ConfigureAwait(false)).Should().Be(valueToReturn);
@@ -569,7 +556,7 @@ namespace Polly.Specs.Caching
             Action<Context, string> onCachePut = (ctx, key) => { contextPassedToOnCachePut = ctx; keyPassedToOnCachePut = key; };
 
             IAsyncCacheProvider stubCacheProvider = new StubCacheProvider();
-            CachePolicy cache = Policy.CacheAsync(stubCacheProvider, new RelativeTtl(TimeSpan.MaxValue), DefaultCacheKeyStrategy.Instance, emptyDelegate, onCacheMiss, onCachePut, noErrorHandling, noErrorHandling);
+            var cache = Policy.CacheAsync(stubCacheProvider, new RelativeTtl(TimeSpan.MaxValue), DefaultCacheKeyStrategy.Instance, emptyDelegate, onCacheMiss, onCachePut, noErrorHandling, noErrorHandling);
 
             ((string)await stubCacheProvider.GetAsync(operationKey, CancellationToken.None, false).ConfigureAwait(false)).Should().BeNull();
             (await cache.ExecuteAsync(async ctx => { await TaskHelper.EmptyTask.ConfigureAwait(false); return valueToReturn; }, contextToExecute).ConfigureAwait(false)).Should().Be(valueToReturn);
@@ -589,7 +576,7 @@ namespace Polly.Specs.Caching
             bool onCacheMissExecuted = false;
             Action<Context, string> onCacheMiss = (ctx, key) => { onCacheMissExecuted = true; };
 
-            CachePolicy cache = Policy.CacheAsync(new StubCacheProvider(), new RelativeTtl(TimeSpan.MaxValue), DefaultCacheKeyStrategy.Instance, emptyDelegate, onCacheMiss, emptyDelegate, noErrorHandling, noErrorHandling);
+            var cache = Policy.CacheAsync(new StubCacheProvider(), new RelativeTtl(TimeSpan.MaxValue), DefaultCacheKeyStrategy.Instance, emptyDelegate, onCacheMiss, emptyDelegate, noErrorHandling, noErrorHandling);
 
             (await cache.ExecuteAsync(async () => 
             {

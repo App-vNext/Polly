@@ -1,7 +1,6 @@
 ﻿using System;
 using FluentAssertions;
 using Polly.CircuitBreaker;
-using Polly.NoOp;
 using Polly.Retry;
 using Polly.Specs.Helpers;
 using Polly.Wrap;

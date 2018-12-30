@@ -160,7 +160,7 @@ namespace Polly.Specs.Helpers.Bulkhead
 
         }
 
-        public Task ExecuteOnBulkheadAsync(BulkheadPolicy bulkhead)
+        public Task ExecuteOnBulkheadAsync(AsyncBulkheadPolicy bulkhead)
         {
             if (Status != TraceableActionStatus.Unstarted)
             {
@@ -206,7 +206,7 @@ namespace Polly.Specs.Helpers.Bulkhead
             TaskCreationOptions.LongRunning).Unwrap();
         }
 
-        public Task<TResult> ExecuteOnBulkheadAsync<TResult>(BulkheadPolicy<TResult> bulkhead)
+        public Task<TResult> ExecuteOnBulkheadAsync<TResult>(AsyncBulkheadPolicy<TResult> bulkhead)
         {
             if (Status != TraceableActionStatus.Unstarted)
             {

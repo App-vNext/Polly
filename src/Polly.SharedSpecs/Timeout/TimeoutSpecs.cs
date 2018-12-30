@@ -3,6 +3,7 @@ using System;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
+using Polly.Specs.Helpers;
 using Polly.Timeout;
 using Polly.Utilities;
 using Xunit;
@@ -227,10 +228,21 @@ namespace Polly.Specs.Timeout
         [Fact]
         public void Should_not_throw_when_timeout_is_greater_than_execution_duration__pessimistic()
         {
-            var policy = Policy
-                .Timeout(TimeSpan.FromSeconds(1), TimeoutStrategy.Pessimistic);
+            var policy = Policy.Timeout(TimeSpan.FromSeconds(1), TimeoutStrategy.Pessimistic);
 
-            policy.Invoking(p => p.Execute(() => { })).ShouldNotThrow();
+            var result = ResultPrimitive.Undefined;
+            var userCancellationToken = CancellationToken.None;
+
+            Action act = () => {
+                result = policy.Execute(ct =>
+                {
+                    SystemClock.Sleep(TimeSpan.FromMilliseconds(500), ct);
+                    return ResultPrimitive.Good;
+                }, userCancellationToken);
+            };
+
+            act.ShouldNotThrow<TimeoutRejectedException>();
+            result.Should().Be(ResultPrimitive.Good);
         }
 
         [Fact]
@@ -357,11 +369,20 @@ namespace Polly.Specs.Timeout
         [Fact]
         public void Should_not_throw_when_timeout_is_greater_than_execution_duration__optimistic()
         {
-            var policy = Policy
-                .Timeout(TimeSpan.FromSeconds(1));
+            var policy = Policy.Timeout(TimeSpan.FromSeconds(1), TimeoutStrategy.Optimistic);
+            var result = ResultPrimitive.Undefined;
             var userCancellationToken = CancellationToken.None;
 
-            policy.Invoking(p => p.Execute(ct => { }, userCancellationToken)).ShouldNotThrow();
+            Action act = () => {
+                result = policy.Execute(ct =>
+                    {
+                        SystemClock.Sleep(TimeSpan.FromMilliseconds(500), ct);
+                        return ResultPrimitive.Good;
+                    }, userCancellationToken);
+            };
+
+            act.ShouldNotThrow<TimeoutRejectedException>();
+            result.Should().Be(ResultPrimitive.Good);
         }
 
         [Fact]

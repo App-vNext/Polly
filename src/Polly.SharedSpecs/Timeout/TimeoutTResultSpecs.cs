@@ -217,12 +217,18 @@ namespace Polly.Specs.Timeout
         {
             var policy = Policy.Timeout<ResultPrimitive>(TimeSpan.FromSeconds(1), TimeoutStrategy.Pessimistic);
 
-            ResultPrimitive result = ResultPrimitive.Undefined;
-            policy.Invoking(p =>
-            {
-                result = p.Execute(() => ResultPrimitive.Good);
-            }).ShouldNotThrow();
+            var result = ResultPrimitive.Undefined;
+            var userCancellationToken = CancellationToken.None;
 
+            Action act = () => {
+                result = policy.Execute(ct =>
+                {
+                    SystemClock.Sleep(TimeSpan.FromMilliseconds(500), ct);
+                    return ResultPrimitive.Good;
+                }, userCancellationToken);
+            };
+
+            act.ShouldNotThrow<TimeoutRejectedException>();
             result.Should().Be(ResultPrimitive.Good);
         }
 
@@ -364,14 +370,18 @@ namespace Polly.Specs.Timeout
         public void Should_not_throw_when_timeout_is_greater_than_execution_duration__optimistic()
         {
             var policy = Policy.Timeout<ResultPrimitive>(TimeSpan.FromSeconds(1), TimeoutStrategy.Optimistic);
+            var result = ResultPrimitive.Undefined;
             var userCancellationToken = CancellationToken.None;
 
-            ResultPrimitive result = ResultPrimitive.Undefined;
-            policy.Invoking(p =>
-            {
-                result = p.Execute(ct => ResultPrimitive.Good, userCancellationToken);
-            }).ShouldNotThrow();
+            Action act = () => {
+                result = policy.Execute(ct =>
+                {
+                    SystemClock.Sleep(TimeSpan.FromMilliseconds(500), ct);
+                    return ResultPrimitive.Good;
+                }, userCancellationToken);
+            };
 
+            act.ShouldNotThrow<TimeoutRejectedException>();
             result.Should().Be(ResultPrimitive.Good);
         }
 

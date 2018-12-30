@@ -5,7 +5,7 @@ using System.Collections.Concurrent;
 namespace Polly.Registry
 {
     /// <summary>
-    /// Stores a registry of <see cref="System.String"/> and <see cref="Polly.Policy"/> pair.
+    /// Stores a registry of <see cref="System.String"/> and policy pairs.
     /// </summary>
     /// <remarks>Uses ConcurrentDictionary to store the collection.</remarks>
     public class PolicyRegistry : IPolicyRegistry<string>
@@ -97,10 +97,10 @@ namespace Polly.Registry
             _registry.ContainsKey(key);
 
         /// <summary>
-        /// Removes the stored <see cref="Polly.Policy"/> under specified <paramref name="key"/> from the registry.
+        /// Removes the policy stored under the specified <paramref name="key"/> from the registry.
         /// </summary>
         /// <param name="key">The <paramref name="key"/> of the policy to remove.</param>
-        /// <returns>True if <see cref="Polly.Policy"/> is successfully removed. Otherwise false.</returns>
+        /// <returns>True if the policy is successfully removed. Otherwise false.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="key"/> is null.</exception>
         public bool Remove(string key) =>
             _registry.Remove(key);

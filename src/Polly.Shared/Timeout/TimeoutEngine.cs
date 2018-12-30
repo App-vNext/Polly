@@ -4,13 +4,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using Polly.Utilities;
 
-#if NET40
-using ExceptionDispatchInfo = Polly.Utilities.ExceptionDispatchInfo;
-#endif
-
 namespace Polly.Timeout
 {
-    internal static partial class TimeoutEngine
+    internal static class TimeoutEngine
     {
         internal static TResult Implementation<TResult>(
             Func<Context, CancellationToken, TResult> action,
@@ -42,15 +38,7 @@ namespace Polly.Timeout
 
                         SystemClock.CancelTokenAfter(timeoutCancellationTokenSource, timeout);
 
-                        actionTask = 
-
-                        #if NET40
-                            TaskEx
-                        #else
-                            Task
-                        #endif                             
-
-                        .Run(() =>
+                        actionTask = Task.Run(() =>
                             action(context, combinedToken)       // cancellation token here allows the user delegate to react to cancellation: possibly clear up; then throw an OperationCanceledException.
                             , combinedToken);           // cancellation token here only allows Task.Run() to not begin the passed delegate at all, if cancellation occurs prior to invoking the delegate.  
                         try

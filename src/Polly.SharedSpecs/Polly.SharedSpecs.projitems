@@ -41,6 +41,16 @@
     <Compile Include="$(MSBuildThisFileDirectory)CircuitBreaker\ICircuitBreakerPolicySpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CircuitBreaker\ICircuitBreakerPolicyTResultSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ContextSpecs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Custom\CustomAsyncSpecs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Custom\CustomSpecs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Custom\CustomTResultAsyncSpecs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Custom\CustomTResultSpecs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\Custom\AddBehaviourIfHandle\AsyncAddBehaviourIfHandleEngine.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\Custom\AddBehaviourIfHandle\AsyncAddBehaviourIfHandlePolicy.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\Custom\AddBehaviourIfHandle\AsyncAddBehaviourIfHandleSyntax.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\Custom\PreExecute\PreExecuteEngine.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\Custom\PreExecute\AsyncPreExecuteEngine.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\Custom\PreExecute\PreExecutePolicy.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Fallback\FallbackAsyncSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Fallback\FallbackSpecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Fallback\FallbackTResultAsyncSpecs.cs" />
@@ -56,6 +66,10 @@
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\ContextualPolicyExtensionsAsync.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\ContextualPolicyTResultExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\ContextualPolicyTResultExtensionsAsync.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\Custom\AddBehaviourIfHandle\AddBehaviourIfHandleEngine.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\Custom\AddBehaviourIfHandle\AddBehaviourIfHandlePolicy.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\Custom\AddBehaviourIfHandle\AddBehaviourIfHandleSyntax.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\Custom\PreExecute\AsyncPreExecutePolicy.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\ObjectExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\PolicyExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\PolicyExtensionsAsync.cs" />

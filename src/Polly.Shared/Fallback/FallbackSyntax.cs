@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Threading;
 using Polly.Fallback;
-using Polly.Utilities;
 
 namespace Polly
 {
     /// <summary>
-    /// Fluent API for defining a Fallback <see cref="Policy"/>. 
+    /// Fluent API for defining a Fallback policy. 
     /// </summary>
     public static class FallbackSyntax
     {
@@ -124,20 +123,14 @@ namespace Polly
             if (onFallback == null) throw new ArgumentNullException(nameof(onFallback));
 
             return new FallbackPolicy(
-                (action, context, cancellationToken) => FallbackEngine.Implementation(
-                    (ctx, ct) => { action(ctx, ct); return EmptyStruct.Instance; },
-                    context,
-                    cancellationToken,
                     policyBuilder.ExceptionPredicates,
-                    PredicateHelper<EmptyStruct>.EmptyResultPredicates,
-                    (outcome, ctx) => onFallback(outcome.Exception, ctx),
-                    (outcome, ctx, ct) => { fallbackAction(outcome.Exception, ctx, ct); return EmptyStruct.Instance; }),
-                policyBuilder.ExceptionPredicates);
+                    onFallback,
+                    fallbackAction);
         }
     }
 
     /// <summary>
-    /// Fluent API for defining a Fallback <see cref="Policy"/>. 
+    /// Fluent API for defining a Fallback policy governing executions returning TResult. 
     /// </summary>
     public static class FallbackTResultSyntax
     {
@@ -296,16 +289,10 @@ namespace Polly
             if (onFallback == null) throw new ArgumentNullException(nameof(onFallback));
 
             return new FallbackPolicy<TResult>(
-                (action, context, cancellationToken) => FallbackEngine.Implementation<TResult>(
-                    action,
-                    context,
-                    cancellationToken,
-                    policyBuilder.ExceptionPredicates,
-                    policyBuilder.ResultPredicates,
-                    onFallback,
-                    fallbackAction),
                 policyBuilder.ExceptionPredicates,
-                policyBuilder.ResultPredicates);
+                policyBuilder.ResultPredicates,
+                onFallback,
+                fallbackAction);
         }
     }
 }

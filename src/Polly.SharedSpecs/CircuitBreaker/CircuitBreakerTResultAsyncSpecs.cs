@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
@@ -21,7 +20,7 @@ namespace Polly.Specs.CircuitBreaker
         [Fact]
         public async Task Should_be_able_to_handle_a_duration_of_timespan_maxvalue()
         {
-            CircuitBreakerPolicy<ResultPrimitive> breaker = Policy
+            var breaker = Policy
                             .HandleResult(ResultPrimitive.Fault)
                             .CircuitBreakerAsync(1, TimeSpan.MaxValue);
 
@@ -67,7 +66,7 @@ namespace Polly.Specs.CircuitBreaker
         {
             var durationOfBreak = TimeSpan.FromMinutes(1);
 
-            CircuitBreakerPolicy<ResultPrimitive> breaker = Policy
+            var breaker = Policy
                 .HandleResult(ResultPrimitive.Fault)
                 .CircuitBreakerAsync(2, durationOfBreak);
 
@@ -81,7 +80,7 @@ namespace Polly.Specs.CircuitBreaker
         [Fact]
         public async Task Should_not_open_circuit_if_specified_number_of_specified_handled_result_are_not_raised_consecutively()
         {
-            CircuitBreakerPolicy<ResultPrimitive> breaker = Policy
+            var breaker = Policy
                             .HandleResult(ResultPrimitive.Fault)
                             .CircuitBreakerAsync(2, TimeSpan.FromMinutes(1));
 
@@ -101,7 +100,7 @@ namespace Polly.Specs.CircuitBreaker
         [Fact]
         public async Task Should_open_circuit_with_the_last_handled_result_after_specified_number_of_specified_handled_result_have_been_returned()
         {
-            CircuitBreakerPolicy<ResultPrimitive> breaker = Policy
+            var breaker = Policy
                             .HandleResult(ResultPrimitive.Fault)
                             .CircuitBreakerAsync(2, TimeSpan.FromMinutes(1));
 
@@ -124,7 +123,7 @@ namespace Polly.Specs.CircuitBreaker
         [Fact]
         public async Task Should_open_circuit_with_the_last_handled_result_after_specified_number_of_one_of_the_specified_handled_results_have_been_raised()
         {
-            CircuitBreakerPolicy<ResultPrimitive> breaker = Policy
+            var breaker = Policy
                             .HandleResult(ResultPrimitive.Fault)
                             .OrResult(ResultPrimitive.FaultAgain)
                             .CircuitBreakerAsync(2, TimeSpan.FromMinutes(1));
@@ -148,7 +147,7 @@ namespace Polly.Specs.CircuitBreaker
         [Fact]
         public async Task Should_open_circuit_with_the_last_handled_result_after_specified_number_of_specified_handled_result_with_predicate_have_been_returned()
         {
-            CircuitBreakerPolicy<ResultClass> breaker = Policy
+            var breaker = Policy
                             .HandleResult<ResultClass>(r => r.ResultCode == ResultPrimitive.Fault)
                             .CircuitBreakerAsync(2, TimeSpan.FromMinutes(1));
 
@@ -171,7 +170,7 @@ namespace Polly.Specs.CircuitBreaker
         [Fact]
         public async Task Should_not_open_circuit_if_result_returned_is_not_the_handled_result()
         {
-            CircuitBreakerPolicy<ResultPrimitive> breaker = Policy
+            var breaker = Policy
                             .HandleResult(ResultPrimitive.Fault)
                             .CircuitBreakerAsync(2, TimeSpan.FromMinutes(1));
 
@@ -191,7 +190,7 @@ namespace Polly.Specs.CircuitBreaker
         [Fact]
         public async Task Should_not_open_circuit_if_result_returned_is_not_one_of_the_handled_results()
         {
-            CircuitBreakerPolicy<ResultPrimitive> breaker = Policy
+            var breaker = Policy
                             .HandleResult(ResultPrimitive.Fault)
                             .OrResult(ResultPrimitive.FaultYetAgain)
                             .CircuitBreakerAsync(2, TimeSpan.FromMinutes(1));
@@ -212,7 +211,7 @@ namespace Polly.Specs.CircuitBreaker
         [Fact]
         public async Task Should_not_open_circuit_if_result_returned_does_not_match_result_predicate()
         {
-            CircuitBreakerPolicy<ResultClass> breaker = Policy
+            var breaker = Policy
                             .HandleResult<ResultClass>(r => r.ResultCode == ResultPrimitive.Fault)
                             .CircuitBreakerAsync(2, TimeSpan.FromMinutes(1));
 
@@ -232,7 +231,7 @@ namespace Polly.Specs.CircuitBreaker
         [Fact]
         public async Task Should_not_open_circuit_if_result_returned_does_not_match_any_of_the_result_predicates()
         {
-            CircuitBreakerPolicy<ResultClass> breaker = Policy
+            var breaker = Policy
                 .HandleResult<ResultClass>(r => r.ResultCode == ResultPrimitive.Fault)
                 .OrResult(r => r.ResultCode == ResultPrimitive.FaultYetAgain)
                 .CircuitBreakerAsync(2, TimeSpan.FromMinutes(1));
@@ -262,7 +261,7 @@ namespace Polly.Specs.CircuitBreaker
 
             var durationOfBreak = TimeSpan.FromMinutes(1);
 
-            CircuitBreakerPolicy<ResultPrimitive> breaker = Policy
+            var breaker = Policy
                             .HandleResult(ResultPrimitive.Fault)
                             .CircuitBreakerAsync(2, durationOfBreak);
 
@@ -295,7 +294,7 @@ namespace Polly.Specs.CircuitBreaker
 
             var durationOfBreak = TimeSpan.FromMinutes(1);
 
-            CircuitBreakerPolicy<ResultPrimitive> breaker = Policy
+            var breaker = Policy
                             .HandleResult(ResultPrimitive.Fault)
                             .CircuitBreakerAsync(2, durationOfBreak);
 
@@ -334,7 +333,7 @@ namespace Polly.Specs.CircuitBreaker
 
             var durationOfBreak = TimeSpan.FromMinutes(1);
 
-            CircuitBreakerPolicy<ResultPrimitive> breaker = Policy
+            var breaker = Policy
                             .HandleResult(ResultPrimitive.Fault)
                             .CircuitBreakerAsync(2, durationOfBreak);
 
@@ -381,7 +380,7 @@ namespace Polly.Specs.CircuitBreaker
             SystemClock.UtcNow = () => time;
 
             var durationOfBreak = TimeSpan.FromMinutes(1);
-            CircuitBreakerPolicy<ResultPrimitive> breaker = Policy
+            var breaker = Policy
                 .HandleResult(ResultPrimitive.Fault)
                 .CircuitBreakerAsync(1, durationOfBreak);
 
@@ -412,7 +411,7 @@ namespace Polly.Specs.CircuitBreaker
             SystemClock.UtcNow = () => time;
 
             var durationOfBreak = TimeSpan.FromMinutes(1);
-            CircuitBreakerPolicy<ResultPrimitive> breaker = Policy
+            var breaker = Policy
                 .HandleResult(ResultPrimitive.Fault)
                 .CircuitBreakerAsync(1, durationOfBreak);
 
@@ -451,7 +450,7 @@ namespace Polly.Specs.CircuitBreaker
             SystemClock.UtcNow = () => time;
 
             var durationOfBreak = TimeSpan.FromMinutes(1);
-            CircuitBreakerPolicy<ResultPrimitive> breaker = Policy
+            var breaker = Policy
                 .HandleResult(ResultPrimitive.Fault)
                 .CircuitBreakerAsync(1, durationOfBreak);
 
@@ -553,7 +552,7 @@ namespace Polly.Specs.CircuitBreaker
             SystemClock.UtcNow = () => time;
 
             var durationOfBreak = TimeSpan.FromMinutes(1);
-            CircuitBreakerPolicy<ResultPrimitive> breaker = Policy
+            var breaker = Policy
                 .HandleResult(ResultPrimitive.Fault)
                 .CircuitBreakerAsync(1, durationOfBreak);
 
@@ -662,7 +661,7 @@ namespace Polly.Specs.CircuitBreaker
 
             var durationOfBreak = TimeSpan.FromMinutes(1);
 
-            CircuitBreakerPolicy<ResultPrimitive> breaker = Policy
+            var breaker = Policy
                 .HandleResult(ResultPrimitive.Fault)
                 .CircuitBreakerAsync(2, durationOfBreak);
             breaker.CircuitState.Should().Be(CircuitState.Closed);
@@ -689,7 +688,7 @@ namespace Polly.Specs.CircuitBreaker
 
             var durationOfBreak = TimeSpan.FromMinutes(1);
 
-            CircuitBreakerPolicy<ResultPrimitive> breaker = Policy
+            var breaker = Policy
                 .HandleResult(ResultPrimitive.Fault)
                 .CircuitBreakerAsync(2, durationOfBreak);
             breaker.CircuitState.Should().Be(CircuitState.Closed);
@@ -714,7 +713,7 @@ namespace Polly.Specs.CircuitBreaker
 
             var durationOfBreak = TimeSpan.FromMinutes(1);
 
-            CircuitBreakerPolicy<ResultPrimitive> breaker = Policy
+            var breaker = Policy
                 .HandleResult(ResultPrimitive.Fault)
                 .CircuitBreakerAsync(2, durationOfBreak);
             breaker.CircuitState.Should().Be(CircuitState.Closed);
@@ -737,7 +736,7 @@ namespace Polly.Specs.CircuitBreaker
 
             var durationOfBreak = TimeSpan.FromMinutes(1);
 
-            CircuitBreakerPolicy<ResultPrimitive> breaker = Policy
+            var breaker = Policy
                             .HandleResult(ResultPrimitive.Fault)
                             .CircuitBreakerAsync(2, durationOfBreak);
 
@@ -786,7 +785,7 @@ namespace Polly.Specs.CircuitBreaker
             Action<DelegateResult<ResultPrimitive>, TimeSpan> onBreak = (_, __) => { onBreakCalled = true; };
             Action onReset = () => { };
 
-            CircuitBreakerPolicy<ResultPrimitive> breaker = Policy
+            var breaker = Policy
                             .HandleResult(ResultPrimitive.Fault)
                             .CircuitBreakerAsync(2, TimeSpan.FromMinutes(1), onBreak, onReset);
 
@@ -810,7 +809,7 @@ namespace Polly.Specs.CircuitBreaker
             Action<DelegateResult<ResultPrimitive>, TimeSpan> onBreak = (_, __) => { onBreakCalled = true; };
             Action onReset = () => { };
 
-            CircuitBreakerPolicy<ResultPrimitive> breaker = Policy
+            var breaker = Policy
                 .HandleResult(ResultPrimitive.Fault)
                 .CircuitBreakerAsync(2, TimeSpan.FromMinutes(1), onBreak, onReset);
             onBreakCalled.Should().BeFalse();
@@ -827,7 +826,7 @@ namespace Polly.Specs.CircuitBreaker
             Action<DelegateResult<ResultPrimitive>, TimeSpan> onBreak = (_, __) => { onBreakCalled++; };
             Action onReset = () => { };
 
-            CircuitBreakerPolicy<ResultPrimitive> breaker = Policy
+            var breaker = Policy
                             .HandleResult(ResultPrimitive.Fault)
                             .CircuitBreakerAsync(2, TimeSpan.FromMinutes(1), onBreak, onReset);
 
@@ -858,7 +857,7 @@ namespace Polly.Specs.CircuitBreaker
             Action<DelegateResult<ResultPrimitive>, TimeSpan> onBreak = (_, __) => { onBreakCalled++; };
             Action onReset = () => { };
 
-            CircuitBreakerPolicy<ResultPrimitive> breaker = Policy
+            var breaker = Policy
                             .HandleResult(ResultPrimitive.Fault)
                             .CircuitBreakerAsync(1, TimeSpan.FromMinutes(1), onBreak, onReset);
 
@@ -923,7 +922,7 @@ namespace Polly.Specs.CircuitBreaker
 
             var durationOfBreak = TimeSpan.FromMinutes(1);
 
-            CircuitBreakerPolicy<ResultPrimitive> breaker = Policy
+            var breaker = Policy
                             .HandleResult(ResultPrimitive.Fault)
                             .CircuitBreakerAsync(2, durationOfBreak, onBreak, onReset);
 
@@ -963,7 +962,7 @@ namespace Polly.Specs.CircuitBreaker
             bool onResetCalled = false;
             Action onReset = () => { onResetCalled = true; };
 
-            CircuitBreakerPolicy<ResultPrimitive> breaker = Policy
+            var breaker = Policy
                 .HandleResult(ResultPrimitive.Fault)
                 .CircuitBreakerAsync(2, TimeSpan.FromMinutes(1), onBreak, onReset);
 
@@ -993,7 +992,7 @@ namespace Polly.Specs.CircuitBreaker
 
             var durationOfBreak = TimeSpan.FromMinutes(1);
 
-            CircuitBreakerPolicy<ResultPrimitive> breaker = Policy
+            var breaker = Policy
                             .HandleResult(ResultPrimitive.Fault)
                             .CircuitBreakerAsync(2, durationOfBreak, onBreak, onReset, onHalfOpen);
 
@@ -1040,7 +1039,7 @@ namespace Polly.Specs.CircuitBreaker
 
             var durationOfBreak = TimeSpan.FromMinutes(1);
 
-            CircuitBreakerPolicy<ResultPrimitive> breaker = Policy
+            var breaker = Policy
                             .HandleResult(ResultPrimitive.Fault)
                             .CircuitBreakerAsync(2, durationOfBreak, onBreak, onReset, onHalfOpen);
 
@@ -1079,7 +1078,7 @@ namespace Polly.Specs.CircuitBreaker
 
             var durationOfBreak = TimeSpan.FromMinutes(1);
 
-            CircuitBreakerPolicy<ResultPrimitive> breaker = Policy
+            var breaker = Policy
                             .HandleResult(ResultPrimitive.Fault)
                             .CircuitBreakerAsync(2, durationOfBreak, onBreak, onReset);
 
@@ -1112,7 +1111,7 @@ namespace Polly.Specs.CircuitBreaker
 
             TimeSpan durationOfBreak = TimeSpan.FromMinutes(1);
 
-            CircuitBreakerPolicy<ResultPrimitive> breaker = Policy
+            var breaker = Policy
                 .HandleResult(ResultPrimitive.Fault)
                 .CircuitBreakerAsync(2, durationOfBreak, onBreak, onReset);
 
@@ -1137,7 +1136,7 @@ namespace Polly.Specs.CircuitBreaker
 
             TimeSpan durationOfBreak = TimeSpan.FromMinutes(1);
 
-            CircuitBreakerPolicy<ResultPrimitive> breaker = Policy
+            var breaker = Policy
                 .HandleResult(ResultPrimitive.Fault)
                 .CircuitBreakerAsync(2, durationOfBreak, onBreak, onReset);
 
@@ -1164,7 +1163,7 @@ namespace Polly.Specs.CircuitBreaker
 
             var durationOfBreak = TimeSpan.FromMinutes(1);
 
-            CircuitBreakerPolicy<ResultPrimitive> breaker = Policy
+            var breaker = Policy
                 .HandleResult(ResultPrimitive.Fault)
                 .CircuitBreakerAsync(2, durationOfBreak, onBreak, onReset);
             breaker.CircuitState.Should().Be(CircuitState.Closed);
@@ -1188,7 +1187,7 @@ namespace Polly.Specs.CircuitBreaker
             Action<DelegateResult<ResultPrimitive>, TimeSpan, Context> onBreak = (_, __, context) => { contextData = context; };
             Action<Context> onReset = _ => { };
 
-            CircuitBreakerPolicy<ResultPrimitive> breaker = Policy
+            var breaker = Policy
                 .HandleResult(ResultPrimitive.Fault)
                 .CircuitBreakerAsync(2, TimeSpan.FromMinutes(1), onBreak, onReset);
 
@@ -1219,7 +1218,7 @@ namespace Polly.Specs.CircuitBreaker
 
             var durationOfBreak = TimeSpan.FromMinutes(1);
 
-            CircuitBreakerPolicy<ResultPrimitive> breaker = Policy
+            var breaker = Policy
                 .HandleResult(ResultPrimitive.Fault)
                 .CircuitBreakerAsync(2, durationOfBreak, onBreak, onReset);
 
@@ -1248,7 +1247,7 @@ namespace Polly.Specs.CircuitBreaker
             Action<DelegateResult<ResultPrimitive>, TimeSpan, Context> onBreak = (_, __, context) => { contextData = context; };
             Action<Context> onReset = _ => { };
 
-            CircuitBreakerPolicy<ResultPrimitive> breaker = Policy
+            var breaker = Policy
                 .HandleResult(ResultPrimitive.Fault)
                 .CircuitBreakerAsync(2, TimeSpan.FromMinutes(1), onBreak, onReset);
 
@@ -1271,7 +1270,7 @@ namespace Polly.Specs.CircuitBreaker
             Action<DelegateResult<ResultPrimitive>, TimeSpan, Context> onBreak = (_, __, context) => { contextValue = context.ContainsKey("key") ? context["key"].ToString() : null; };
             Action<Context> onReset = context => { contextValue = context.ContainsKey("key") ? context["key"].ToString() : null; };
 
-            CircuitBreakerPolicy<ResultPrimitive> breaker = Policy
+            var breaker = Policy
                 .HandleResult(ResultPrimitive.Fault)
                 .CircuitBreakerAsync(2, TimeSpan.FromMinutes(1), onBreak, onReset);
 
@@ -1310,7 +1309,7 @@ namespace Polly.Specs.CircuitBreaker
         [Fact]
         public void Should_initialise_LastHandledResult_and_LastResult_to_default_on_creation()
         {
-            CircuitBreakerPolicy<ResultPrimitive> breaker = Policy
+            var breaker = Policy
                 .HandleResult(ResultPrimitive.Fault)
                 .CircuitBreakerAsync(2, TimeSpan.FromMinutes(1));
 
@@ -1321,7 +1320,7 @@ namespace Polly.Specs.CircuitBreaker
         [Fact]
         public async Task Should_set_LastHandledResult_on_handling_result_even_when_not_breaking()
         {
-            CircuitBreakerPolicy<ResultPrimitive> breaker = Policy
+            var breaker = Policy
                 .HandleResult(ResultPrimitive.Fault)
                 .CircuitBreakerAsync(2, TimeSpan.FromMinutes(1));
 
@@ -1338,7 +1337,7 @@ namespace Polly.Specs.CircuitBreaker
         [Fact]
         public async Task Should_set_LastHandledResult_to_last_handled_result_when_breaking()
         {
-            CircuitBreakerPolicy<ResultPrimitive> breaker = Policy
+            var breaker = Policy
                 .HandleResult(ResultPrimitive.Fault)
                 .CircuitBreakerAsync(2, TimeSpan.FromMinutes(1));
 
@@ -1357,7 +1356,7 @@ namespace Polly.Specs.CircuitBreaker
         [Fact]
         public async Task Should_set_LastHandledResult_to_default_on_circuit_reset()
         {
-            CircuitBreakerPolicy<ResultPrimitive> breaker = Policy
+            var breaker = Policy
                 .HandleResult(ResultPrimitive.Fault)
                 .CircuitBreakerAsync(2, TimeSpan.FromMinutes(1));
 
@@ -1386,7 +1385,7 @@ namespace Polly.Specs.CircuitBreaker
         public async Task Should_execute_action_when_non_faulting_and_cancellationtoken_not_cancelled()
         {
             var durationOfBreak = TimeSpan.FromMinutes(1);
-            CircuitBreakerPolicy<ResultPrimitive> breaker = Policy
+            var breaker = Policy
                 .HandleResult(ResultPrimitive.Fault)
                             .CircuitBreakerAsync(2, durationOfBreak);
 
@@ -1412,7 +1411,7 @@ namespace Polly.Specs.CircuitBreaker
         public void Should_not_execute_action_when_cancellationtoken_cancelled_before_execute()
         {
             var durationOfBreak = TimeSpan.FromMinutes(1);
-            CircuitBreakerPolicy<ResultPrimitive> breaker = Policy
+            var breaker = Policy
                 .HandleResult(ResultPrimitive.Fault)
                 .CircuitBreakerAsync(2, durationOfBreak);
 
@@ -1443,7 +1442,7 @@ namespace Polly.Specs.CircuitBreaker
         public void Should_report_cancellation_during_otherwise_non_faulting_action_execution_when_user_delegate_observes_cancellationtoken()
         {
             var durationOfBreak = TimeSpan.FromMinutes(1);
-            CircuitBreakerPolicy<ResultPrimitive> breaker = Policy
+            var breaker = Policy
                 .HandleResult(ResultPrimitive.Fault)
                 .CircuitBreakerAsync(2, durationOfBreak);
 
@@ -1472,7 +1471,7 @@ namespace Polly.Specs.CircuitBreaker
         public void Should_report_cancellation_during_faulting_action_execution_when_user_delegate_observes_cancellationtoken()
         {
             var durationOfBreak = TimeSpan.FromMinutes(1);
-            CircuitBreakerPolicy<ResultPrimitive> breaker = Policy
+            var breaker = Policy
                             .HandleResult(ResultPrimitive.Fault)
                             .CircuitBreakerAsync(2, durationOfBreak);
 
@@ -1501,7 +1500,7 @@ namespace Polly.Specs.CircuitBreaker
         public async Task Should_report_faulting_from_faulting_action_execution_when_user_delegate_does_not_observe_cancellation()
         {
             var durationOfBreak = TimeSpan.FromMinutes(1);
-            CircuitBreakerPolicy<ResultPrimitive> breaker = Policy
+            var breaker = Policy
                             .HandleResult(ResultPrimitive.Fault)
                             .CircuitBreakerAsync(2, durationOfBreak);
 
@@ -1526,7 +1525,7 @@ namespace Polly.Specs.CircuitBreaker
         [Fact]
         public async Task Should_report_cancellation_when_both_open_circuit_and_cancellation()
         {
-            CircuitBreakerPolicy<ResultPrimitive> breaker = Policy
+            var breaker = Policy
                 .HandleResult(ResultPrimitive.Fault)
                 .CircuitBreakerAsync(1, TimeSpan.FromMinutes(1));
 
@@ -1567,7 +1566,7 @@ namespace Polly.Specs.CircuitBreaker
             // Before CancellationToken support was built in to Polly, users of the library may have implicitly captured a CancellationToken and used it to cancel actions.  For backwards compatibility, Polly should not confuse these with its own CancellationToken; it should distinguish TaskCanceledExceptions thrown with different CancellationTokens.
 
             var durationOfBreak = TimeSpan.FromMinutes(1);
-            CircuitBreakerPolicy<ResultPrimitive> breaker = Policy
+            var breaker = Policy
                             .HandleResult(ResultPrimitive.Fault)
                             .CircuitBreakerAsync(2, durationOfBreak);
 
