@@ -5,7 +5,7 @@ using Polly.Utilities;
 
 namespace Polly.Monkey
 {
-    internal class AsyncMonkeyEngine
+    internal static class AsyncMonkeyEngine
     {
         private static async Task<bool> ShouldInjectAsync(Context context, Func<Context, Task<double>> injectionRate, Func<Context, Task<bool>> enabled, bool continueOnCapturedContext)
         {
