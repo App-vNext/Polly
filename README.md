@@ -40,6 +40,16 @@ In addition to the detailed pages on each policy, an [introduction to the role o
 
 For using Polly with  HttpClient factory from ASPNET Core 2.1, see our [detailed wiki page](https://github.com/App-vNext/Polly/wiki/Polly-and-HttpClientFactory), then come back here or [explore the wiki](https://github.com/App-vNext/Polly/wiki) to learn more about the operation of each policy.
 
+### Release notes
+
++ The [change log](https://github.com/App-vNext/Polly/blob/master/CHANGELOG.md) describes changes by release.
++ We tag Pull Requests and Issues with [milestones](https://github.com/App-vNext/Polly/milestones) which match to nuget package release numbers.
++ Breaking changes are called out in the wiki ([v7](https://github.com/App-vNext/Polly/wiki/Polly-v7-breaking-changes) ; [v6](https://github.com/App-vNext/Polly/wiki/Polly-v6-breaking-changes)) with simple notes on any necessary steps to upgrade.
+
+### Supported targets
+
+For details of supported compilation targets by version, see the [supported targets](https://github.com/App-vNext/Polly/wiki/Supported-targets) grid.
+
 # Usage &ndash; fault-handling, reactive policies
 
 Fault-handling policies handle specific exceptions thrown by, or results returned by, the delegates you execute through the policy.
@@ -926,12 +936,6 @@ This allows collections of similar kinds of policy to be treated as one - for ex
 
 For more detail see: [Polly and interfaces](https://github.com/App-vNext/Polly/wiki/Polly-and-interfaces) on wiki.
 
-# Release notes
-
-For details of changes by release see the [change log](https://github.com/App-vNext/Polly/blob/master/CHANGELOG.md).  We also tag relevant Pull Requests and Issues with [milestones](https://github.com/App-vNext/Polly/milestones), which match to nuget package release numbers.
-
-For full detailed of supported targets by version, see [supported targets](https://github.com/App-vNext/Polly/wiki/Supported-targets).
-
 # 3rd Party Libraries and Contributions
 
 * [Fluent Assertions](https://github.com/fluentassertions/fluentassertions) - A set of .NET extension methods that allow you to more naturally specify the expected outcome of a TDD or BDD-style test | [Apache License 2.0 (Apache)](https://github.com/dennisdoomen/fluentassertions/blob/develop/LICENSE)
@@ -1000,6 +1004,8 @@ For full detailed of supported targets by version, see [supported targets](https
 * [@freakazoid182](https://github.com/Freakazoid182) - WaitAnd/RetryForever overloads where onRetry takes the retry number as a parameter.
 * [@dustyhoppe](https://github.com/dustyhoppe) - Overloads where onTimeout takes thrown exception as a parameter.
 * [@flin-zap](https://github.com/flin-zap) - Catch missing async continuation control.
+* [@reisenberger](https://github.com/reisenberger) - Clarify separation of sync and async policies.
+* [@reisenberger](https://github.com/reisenberger) - Enable extensibility by custom policies hosted external to Polly.
 
 # Sample Projects
 
