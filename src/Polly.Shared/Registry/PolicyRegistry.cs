@@ -22,7 +22,11 @@ namespace Polly.Registry
             {
                 _registry = registry;
             }
+            else
+            {
+                throw new NotImplementedException();
             }
+        }
         
         /// <summary>
         /// Total number of policies in the registry.

@@ -454,7 +454,18 @@ namespace Polly.Specs.Registry
             var registryFieldValue = registryField.GetValue(testRegistry);
             registryFieldValue.Should().BeOfType(expectedDictionaryType);
         }
-        
+
+        [Fact]
+        public void Constructor_Called_With_Default_Parameters_Assigns_A_ConcurrentDictionary_Of_TKey_And_IsPolicy_To_The_Private_Registry_Field()
+        {
+            var expectedDictionaryType = typeof(ConcurrentDictionary<string, IsPolicy>);
+            var testRegistry = new PolicyRegistry();
+            //Generally, using reflection is a bad practice, but given we own the implementation, I don't think this is an issue.
+            var registryField = typeof(PolicyRegistry).GetField("_registry", BindingFlags.NonPublic | BindingFlags.GetField | BindingFlags.Instance);
+            var registryFieldValue = registryField.GetValue(testRegistry);
+            registryFieldValue.Should().BeOfType(expectedDictionaryType);
+        }
+
         #endregion
     }
 }
