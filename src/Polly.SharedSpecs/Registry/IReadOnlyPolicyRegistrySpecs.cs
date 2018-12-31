@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using FluentAssertions;
+using Moq;
 using Polly.Registry;
 using Polly.Specs.Helpers;
 using Xunit;
@@ -252,6 +253,18 @@ namespace Polly.Specs.Registry
                 .ShouldThrow<ArgumentNullException>();
         }
         #endregion
+        
+        #region Tests for the GetEnumerator method
 
+        [Fact]
+        public void Calling_The_GetEnumerator_Method_Returning_A_IEnumerator_Of_KeyValuePair_Of_String_And_IsPolicy_Calls_The_Registries_GetEnumerator_Method()
+        {
+            var testDictionary =new Mock<IDictionary<string, IsPolicy>>();
+            testDictionary.Setup(x =>x.GetEnumerator());
+            var testRegistry =new PolicyRegistry(testDictionary.Object);
+            testRegistry.GetEnumerator();
+            testDictionary.Verify(x => x.GetEnumerator(), Times.Once);
+        }
+#endregion
     }
 }

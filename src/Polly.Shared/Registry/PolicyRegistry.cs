@@ -1,11 +1,13 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Concurrent;
 
 namespace Polly.Registry
 {
+    /// <inheritdoc />
     /// <summary>
-    /// Stores a registry of <see cref="System.String"/> and policy pairs.
+    /// Stores a registry of <see cref="T:System.String" /> and policy pairs.
     /// </summary>
     /// <remarks>Uses ConcurrentDictionary to store the collection.</remarks>
     public class PolicyRegistry : IPolicyRegistry<string>
@@ -110,5 +112,33 @@ namespace Polly.Registry
         /// <exception cref="ArgumentNullException"><paramref name="key"/> is null.</exception>
         public bool Remove(string key) =>
             _registry.Remove(key);
+
+        /// <summary>Returns an enumerator that iterates through the policy objects inthe <see
+        /// cref="PolicyRegistry"/>.</summary>
+        /// <returns>An enumerator for the <see cref="PolicyRegistry"/>.</returns>
+        /// <remarks>
+        /// The enumerator returned from the registry is safe to use concurrently with
+        /// reads and writes to the registry, however it does not represent a moment-in-time snapshot
+        /// of the registries contents.  The contents exposed through the enumerator may contain modifications
+        /// made to the dictionary after <see cref="GetEnumerator"/> was called.
+        /// </remarks>
+        public IEnumerator<KeyValuePair<string, IsPolicy>> GetEnumerator()
+        {
+            throw new NotImplementedException();
+        }
+        
+        /// <summary>Returns an enumerator that iterates through the policy objects inthe <see
+        /// cref="PolicyRegistry"/>.</summary>
+        /// <returns>An enumerator for the <see cref="PolicyRegistry"/>.</returns>
+        /// <remarks>
+        /// The enumerator returned from the registry is safe to use concurrently with
+        /// reads and writes to the registry, however it does not represent a moment-in-time snapshot
+        /// of the registries contents.  The contents exposed through the enumerator may contain modifications
+        /// made to the dictionary after <see cref="GetEnumerator"/> was called.
+        /// </remarks>
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            throw new NotImplementedException();
+        }
     }
 }
