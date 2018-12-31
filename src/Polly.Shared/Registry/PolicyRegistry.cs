@@ -11,23 +11,13 @@ namespace Polly.Registry
     public class PolicyRegistry : IPolicyRegistry<string>
     {
         private readonly IDictionary<string, IsPolicy> _registry;
-        
+
         /// <summary>
-        /// 
+        /// A registry of policy policies with <see cref="System.String"/> keys.
         /// </summary>
-        /// <param name="registry"></param>
-        internal PolicyRegistry(IDictionary<string, IsPolicy> registry =null)
-        {
-            if (registry == null)
-            {
-                _registry = new ConcurrentDictionary<string, IsPolicy>();
-            }
-            else
-            {
-                _registry = registry;
-            }
-            }
-        
+        /// <param name="registry">a dictionary containing keys and policies used for testing.</param>
+        internal PolicyRegistry(IDictionary<string, IsPolicy> registry =null) => _registry = registry == null ? new ConcurrentDictionary<string, IsPolicy>() : registry;
+
         /// <summary>
         /// Total number of policies in the registry.
         /// </summary>
