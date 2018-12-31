@@ -265,6 +265,22 @@ namespace Polly.Specs.Registry
             testRegistry.GetEnumerator();
             testDictionary.Verify(x => x.GetEnumerator(), Times.Once);
         }
-#endregion
+        #endregion
+
+        #region Collection initializer tests
+
+        [Fact]
+        public void PoliciesShouldBeAddedToTheRegistryWhenUsingCollectionInitializerSyntax()
+        {
+            string key = Guid.NewGuid().ToString();
+            var policy = Policy.NoOp();
+            var testRegistry = new PolicyRegistry
+            {
+                {key, policy}
+            };
+
+            testRegistry.Should().Equal(new KeyValuePair<string, IsPolicy>(key, policy));
+        }
+        #endregion
     }
 }
