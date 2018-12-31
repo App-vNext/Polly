@@ -11,6 +11,7 @@ namespace Polly.Registry
     public class PolicyRegistry : IPolicyRegistry<string>
     {
         private readonly IDictionary<string, IsPolicy> _registry = new ConcurrentDictionary<string, IsPolicy>();
+        
         /// <summary>
         /// 
         /// </summary>
@@ -19,7 +20,7 @@ namespace Polly.Registry
         {
             if (registry !=null)
             {
-                throw new NotImplementedException();
+                _registry = registry;
             }
             }
         
