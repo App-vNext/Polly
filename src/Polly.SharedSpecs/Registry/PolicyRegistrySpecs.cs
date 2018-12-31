@@ -444,7 +444,7 @@ namespace Polly.Specs.Registry
         #endregion
         #region Tests for the constructor        
         [Fact]
-        public void Constructor_Called_With_Default_Parameters_Should_Assign_A_ConcurrentDictionary_Of_TKey_And_IsPolicy_To_The_Registry_Field()
+        public void Constructor_Called_With_A_Registry_Parameters_Should_Assign_A_ConcurrentDictionary_Of_TKey_And_IsPolicy_To_The_Registry_Field()
         {
             var testDictionary = new Mock<IDictionary<string, IsPolicy>>();
             var expectedDictionaryType = testDictionary.Object.GetType();
@@ -454,6 +454,7 @@ namespace Polly.Specs.Registry
             var registryFieldValue = registryField.GetValue(testRegistry);
             registryFieldValue.Should().BeOfType(expectedDictionaryType);
         }
+        
         #endregion
     }
 }
