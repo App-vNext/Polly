@@ -113,7 +113,7 @@ namespace Polly.Registry
         public bool Remove(string key) =>
             _registry.Remove(key);
 
-        /// <summary>Returns an enumerator that iterates through the policy objects inthe <see
+        /// <summary>Returns an enumerator that iterates through the policy objects in the <see
         /// cref="PolicyRegistry"/>.</summary>
         /// <returns>An enumerator for the <see cref="PolicyRegistry"/>.</returns>
         /// <remarks>
@@ -122,12 +122,9 @@ namespace Polly.Registry
         /// of the registries contents.  The contents exposed through the enumerator may contain modifications
         /// made to the dictionary after <see cref="GetEnumerator"/> was called.
         /// </remarks>
-        public IEnumerator<KeyValuePair<string, IsPolicy>> GetEnumerator()
-        {
-            throw new NotImplementedException();
-        }
-        
-        /// <summary>Returns an enumerator that iterates through the policy objects inthe <see
+        public IEnumerator<KeyValuePair<string, IsPolicy>> GetEnumerator() => _registry.GetEnumerator();
+
+        /// <summary>Returns an enumerator that iterates through the policy objects in the <see
         /// cref="PolicyRegistry"/>.</summary>
         /// <returns>An enumerator for the <see cref="PolicyRegistry"/>.</returns>
         /// <remarks>
@@ -136,9 +133,6 @@ namespace Polly.Registry
         /// of the registries contents.  The contents exposed through the enumerator may contain modifications
         /// made to the dictionary after <see cref="GetEnumerator"/> was called.
         /// </remarks>
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            throw new NotImplementedException();
-        }
+        IEnumerator IEnumerable.GetEnumerator() => ((PolicyRegistry)this).GetEnumerator();
     }
 }
