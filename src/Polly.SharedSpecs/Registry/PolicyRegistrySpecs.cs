@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Reflection;
 using Xunit;
 using FluentAssertions;
 using Polly.Registry;
 using Polly.Specs.Helpers;
+using Moq;
 
 namespace Polly.Specs.Registry
 {
@@ -437,6 +440,19 @@ namespace Polly.Specs.Registry
             string key = null;
             _registry.Invoking(r => r.ContainsKey(key))
                 .ShouldThrow<ArgumentNullException>();
+        }
+        #endregion
+        #region Tests for the constructor        
+        [Fact]
+        public void Constructor_Called_With_Default_Parameters_Should_Assign_A_ConcurrentDictionary_Of_TKey_And_IsPolicy_To_The_Registry_Field()
+        {
+            var testDictionary = new Mock<IDictionary<string, IsPolicy>>();
+            var expectedDictionaryType = testDictionary.Object.GetType();
+            var testRegistry = new PolicyRegistry(testDictionary.Object);
+            //Generally, using reflection is a bad practice, but given we own the implementation, I don't think this is an issue.
+            var registryField = typeof(PolicyRegistry).GetField("_registry", BindingFlags.NonPublic | BindingFlags.GetField | BindingFlags.Instance);
+            var registryFieldValue = registryField.GetValue(testRegistry);
+            registryFieldValue.Should().BeOfType(expectedDictionaryType);
         }
         #endregion
     }

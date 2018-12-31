@@ -11,7 +11,18 @@ namespace Polly.Registry
     public class PolicyRegistry : IPolicyRegistry<string>
     {
         private readonly IDictionary<string, IsPolicy> _registry = new ConcurrentDictionary<string, IsPolicy>();
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="registry"></param>
+        internal PolicyRegistry(IDictionary<string, IsPolicy> registry =null)
+        {
+            if (registry !=null)
+            {
+                throw new NotImplementedException();
+            }
+            }
+        
         /// <summary>
         /// Total number of policies in the registry.
         /// </summary>
