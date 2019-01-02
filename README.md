@@ -1006,6 +1006,7 @@ For more detail see: [Polly and interfaces](https://github.com/App-vNext/Polly/w
 * [@flin-zap](https://github.com/flin-zap) - Catch missing async continuation control.
 * [@reisenberger](https://github.com/reisenberger) - Clarify separation of sync and async policies.
 * [@reisenberger](https://github.com/reisenberger) - Enable extensibility by custom policies hosted external to Polly.
+* [@seanfarrow](https://github.com/SeanFarrow) - Enable collection initialization syntax for PolicyRegistry.
 
 # Sample Projects
 
