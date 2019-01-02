@@ -257,23 +257,26 @@ namespace Polly.Specs.Registry
         #region Tests for the GetEnumerator method
 
         [Fact]
-        public void Calling_The_GetEnumerator_Method_Returning_A_IEnumerator_Of_KeyValuePair_Of_String_And_IsPolicy_Calls_The_Registries_GetEnumerator_Method()
+        public void Calling_The_GetEnumerator_Method_Returning_A_IEnumerator_Of_KeyValuePair_Of_String_And_IsPolicy_Calls_The_Registrys_GetEnumerator_Method()
         {
-            var testDictionary =new Mock<IDictionary<string, IsPolicy>>();
-            testDictionary.Setup(x =>x.GetEnumerator());
-            var testRegistry =new PolicyRegistry(testDictionary.Object);
+            var testDictionary = new Mock<IDictionary<string, IsPolicy>>();
+            var testRegistry = new PolicyRegistry(testDictionary.Object);
+
             testRegistry.GetEnumerator();
+
             testDictionary.Verify(x => x.GetEnumerator(), Times.Once);
         }
+
         #endregion
 
         #region Collection initializer tests
 
         [Fact]
-        public void PoliciesShouldBeAddedToTheRegistryWhenUsingCollectionInitializerSyntax()
+        public void Policies_Should_Be_Added_To_The_Registry_When_Using_Collection_Initializer_Syntax()
         {
             string key = Guid.NewGuid().ToString();
             var policy = Policy.NoOp();
+
             var testRegistry = new PolicyRegistry
             {
                 {key, policy}

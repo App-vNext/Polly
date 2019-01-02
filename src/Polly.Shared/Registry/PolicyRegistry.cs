@@ -18,7 +18,7 @@ namespace Polly.Registry
         /// A registry of policy policies with <see cref="System.String"/> keys.
         /// </summary>
         /// <param name="registry">a dictionary containing keys and policies used for testing.</param>
-        internal PolicyRegistry(IDictionary<string, IsPolicy> registry =null) => _registry = registry == null ? new ConcurrentDictionary<string, IsPolicy>() : registry;
+        internal PolicyRegistry(IDictionary<string, IsPolicy> registry = null) => _registry = registry ?? new ConcurrentDictionary<string, IsPolicy>();
 
         /// <summary>
         /// Total number of policies in the registry.
@@ -119,8 +119,10 @@ namespace Polly.Registry
         /// <remarks>
         /// The enumerator returned from the registry is safe to use concurrently with
         /// reads and writes to the registry, however it does not represent a moment-in-time snapshot
-        /// of the registries contents.  The contents exposed through the enumerator may contain modifications
+        /// of the registry's contents.  The contents exposed through the enumerator may contain modifications
         /// made to the dictionary after <see cref="GetEnumerator"/> was called.
+        /// This is not considered a significant issue as typical usage of PolicyRegistry is for bulk population at app startup, 
+        /// with only infrequent changes to the PolicyRegistry during app running, if using PolicyRegistry for dynamic updates during running.
         /// </remarks>
         public IEnumerator<KeyValuePair<string, IsPolicy>> GetEnumerator() => _registry.GetEnumerator();
 
@@ -130,8 +132,10 @@ namespace Polly.Registry
         /// <remarks>
         /// The enumerator returned from the registry is safe to use concurrently with
         /// reads and writes to the registry, however it does not represent a moment-in-time snapshot
-        /// of the registries contents.  The contents exposed through the enumerator may contain modifications
+        /// of the registry's contents.  The contents exposed through the enumerator may contain modifications
         /// made to the dictionary after <see cref="GetEnumerator"/> was called.
+        /// This is not considered a significant issue as typical usage of PolicyRegistry is for bulk population at app startup, 
+        /// with only infrequent changes to the PolicyRegistry during app running, if using PolicyRegistry for dynamic updates during running.
         /// </remarks>
         IEnumerator IEnumerable.GetEnumerator() => ((PolicyRegistry)this).GetEnumerator();
     }
