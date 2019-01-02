@@ -447,12 +447,11 @@ namespace Polly.Specs.Registry
         public void Constructor_Called_With_A_Registry_Parameter_Should_Assign_The_Passed_In_Registry_To_The_Registry_Field()
         {
             var testDictionary = new Mock<IDictionary<string, IsPolicy>>();
-            var expectedDictionaryType = testDictionary.Object.GetType();
             var testRegistry = new PolicyRegistry(testDictionary.Object);
             //Generally, using reflection is a bad practice, but given we own the implementation, I don't think this is an issue.
             var registryField = typeof(PolicyRegistry).GetField("_registry", BindingFlags.NonPublic | BindingFlags.GetField | BindingFlags.Instance);
             var registryFieldValue = registryField.GetValue(testRegistry);
-            registryFieldValue.Should().BeOfType(expectedDictionaryType);
+            registryFieldValue.Should().Be(testDictionary.Object);
         }
 
         [Fact]
