@@ -7,7 +7,7 @@ namespace Polly.Registry
     /// Represents a collection of policies keyed by <typeparamref name="TKey"/>.
     /// </summary>
     /// <typeparam name="TKey">The type of keys in the policy registry.</typeparam>
-    public interface IPolicyRegistry<in TKey> : IReadOnlyPolicyRegistry<TKey>
+    public interface IPolicyRegistry<TKey> : IReadOnlyPolicyRegistry<TKey>
     {
         /// <summary>
         /// Adds an element with the provided key and policy to the registry.
