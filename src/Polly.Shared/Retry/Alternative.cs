@@ -12,6 +12,7 @@ namespace Polly.Retry
         /// Generates sleep durations as a constant value.
         /// The formula used is: Duration = <see cref="Delay"/>.
         /// For example: 200ms, 200ms, 200ms, ...
+        /// </summary>
         /// <param name="delay">The constant wait duration before each retry.</param>
         /// <param name="retryCount">The maximum number of retries to use, in addition to the original call.</param>
         /// <param name="fastFirst">Whether the first retry will be immediate or not.</param>
