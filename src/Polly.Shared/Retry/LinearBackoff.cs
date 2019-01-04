@@ -44,6 +44,40 @@ namespace Polly.Retry
         }
 
         /// <summary>
+        /// Generates sleep durations in an linear manner.
+        /// The formula used is: Duration = <paramref name="initialDelay"/> x (1 + <paramref name="factor"/> x iteration).
+        /// For example: 100ms, 200ms, 300ms, 400ms, ...
+        /// </summary>
+        /// <param name="initialDelay">The duration value for the first retry.</param>
+        /// <param name="factor">The linear factor to use for increasing the duration on subsequent calls.</param>
+        /// <param name="retryCount">The maximum number of retries to use, in addition to the original call.</param>
+        /// <param name="fastFirst">Whether the first retry will be immediate or not.</param>
+        public static IEnumerable<TimeSpan> Create(TimeSpan initialDelay, int retryCount, double factor = 1.0, bool fastFirst = false)
+        {
+            if (initialDelay < TimeSpan.Zero) throw new ArgumentOutOfRangeException(nameof(initialDelay), initialDelay, "should be >= 0ms");
+            if (retryCount < 0) throw new ArgumentOutOfRangeException(nameof(retryCount), retryCount, "should be >= 0");
+            if (factor < 0) throw new ArgumentOutOfRangeException(nameof(factor), factor, "should be >= 0");
+
+            if (retryCount == 0)
+                yield break;
+
+            int i = 0;
+            if (fastFirst)
+            {
+                i++;
+                yield return TimeSpan.Zero;
+            }
+
+            double ms = initialDelay.TotalMilliseconds;
+            double ad = factor * ms;
+
+            for (; i < retryCount; i++, ms += ad)
+            {
+                yield return TimeSpan.FromMilliseconds(ms);
+            }
+        }
+
+        /// <summary>
         /// Generate the sequence of <see cref="TimeSpan"/> values to use as sleep-durations.
         /// </summary>
         /// <param name="retryCount">The maximum number of retries to use, in addition to the original call.</param>

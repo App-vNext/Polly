@@ -25,6 +25,10 @@ namespace Polly.Specs.Retry
             discrete1.Should().HaveCount(count);
             discrete2.Should().HaveCount(count);
             discrete1.Should().ContainInOrder(discrete2);
+
+            // Factory-based instantiation
+            IEnumerable<TimeSpan> discrete3 = ConstantBackoff.Create(minDelay, count, fastFirst).ToList();
+            discrete3.Should().HaveCount(count);
         }
 
         [Theory]

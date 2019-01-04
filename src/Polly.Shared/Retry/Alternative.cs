@@ -5,6 +5,7 @@ namespace Polly.Retry
 {
     /// <summary>
     /// </summary>
+    [Obsolete("Experimenting with API shape")]
     public static class Alternative // Experiment
     {
         /// <summary>

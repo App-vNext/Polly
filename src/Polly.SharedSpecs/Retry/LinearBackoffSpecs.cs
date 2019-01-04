@@ -15,10 +15,11 @@ namespace Polly.Specs.Retry
         public static void Should_have_identical_sequence_when_same_factor(bool fastFirst)
         {
             const int count = 1000;
+            const double factor = 1.0;
             TimeSpan initialDelay = TimeSpan.FromMilliseconds(10);
 
-            LinearBackoff backoff1 = new LinearBackoff(initialDelay, 1.0, fastFirst);
-            LinearBackoff backoff2 = new LinearBackoff(initialDelay, 1.0, fastFirst);
+            LinearBackoff backoff1 = new LinearBackoff(initialDelay, factor, fastFirst);
+            LinearBackoff backoff2 = new LinearBackoff(initialDelay, factor, fastFirst);
             IEnumerable<TimeSpan> discrete1 = backoff1.GetSleepDurations(count);
             IEnumerable<TimeSpan> discrete2 = backoff2.GetSleepDurations(count);
 
@@ -26,6 +27,10 @@ namespace Polly.Specs.Retry
             discrete2.Should().HaveCount(count);
 
             discrete1.Should().ContainInOrder(discrete2);
+
+            // Factory-based instantiation
+            IEnumerable<TimeSpan> discrete3 = LinearBackoff.Create(initialDelay, count, factor, fastFirst).ToList();
+            discrete3.Should().HaveCount(count);
         }
 
         [Theory]
