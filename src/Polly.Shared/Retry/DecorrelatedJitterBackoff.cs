@@ -62,34 +62,8 @@ namespace Polly.Retry
         /// If not specified, will use a shared instance with a random seed, per Microsoft recommendation for maximum randomness.</param>
         public static IEnumerable<TimeSpan> Create(TimeSpan minDelay, TimeSpan maxDelay, int retryCount, bool fastFirst = false, int? seed = null)
         {
-            if (minDelay < TimeSpan.Zero) throw new ArgumentOutOfRangeException(nameof(minDelay), minDelay, "should be >= 0ms");
-            if (maxDelay < minDelay) throw new ArgumentOutOfRangeException(nameof(maxDelay), maxDelay, $"should be >= {minDelay}");
-            if (retryCount < 0) throw new ArgumentOutOfRangeException(nameof(retryCount), retryCount, "should be >= 0");
-
-            if (retryCount == 0)
-                yield break;
-
-            var random = new ConcurrentRandom(seed);
-
-            int i = 0;
-            if (fastFirst)
-            {
-                i++;
-                yield return TimeSpan.Zero;
-            }
-
-            double ms = minDelay.TotalMilliseconds;
-            for (; i < retryCount; i++)
-            {
-                // https://github.com/aws-samples/aws-arch-backoff-simulator/blob/master/src/backoff_simulator.py#L45
-                // self.sleep = min(self.cap, random.uniform(self.base, self.sleep * 3))
-
-                // Formula avoids hard clamping (which empirically results in a bad distribution)
-                double ceiling = Math.Min(maxDelay.TotalMilliseconds, ms * 3);
-                ms = random.Uniform(minDelay.TotalMilliseconds, ceiling);
-
-                yield return TimeSpan.FromMilliseconds(ms);
-            }
+            var backoff = new DecorrelatedJitterBackoff(minDelay, maxDelay, fastFirst, seed);
+            return backoff.GetSleepDurations(retryCount);
         }
 
         /// <summary>

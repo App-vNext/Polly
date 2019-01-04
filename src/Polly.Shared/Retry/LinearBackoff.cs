@@ -54,27 +54,8 @@ namespace Polly.Retry
         /// <param name="fastFirst">Whether the first retry will be immediate or not.</param>
         public static IEnumerable<TimeSpan> Create(TimeSpan initialDelay, int retryCount, double factor = 1.0, bool fastFirst = false)
         {
-            if (initialDelay < TimeSpan.Zero) throw new ArgumentOutOfRangeException(nameof(initialDelay), initialDelay, "should be >= 0ms");
-            if (retryCount < 0) throw new ArgumentOutOfRangeException(nameof(retryCount), retryCount, "should be >= 0");
-            if (factor < 0) throw new ArgumentOutOfRangeException(nameof(factor), factor, "should be >= 0");
-
-            if (retryCount == 0)
-                yield break;
-
-            int i = 0;
-            if (fastFirst)
-            {
-                i++;
-                yield return TimeSpan.Zero;
-            }
-
-            double ms = initialDelay.TotalMilliseconds;
-            double ad = factor * ms;
-
-            for (; i < retryCount; i++, ms += ad)
-            {
-                yield return TimeSpan.FromMilliseconds(ms);
-            }
+            var backoff = new LinearBackoff(initialDelay, factor, fastFirst);
+            return backoff.GetSleepDurations(retryCount);
         }
 
         /// <summary>

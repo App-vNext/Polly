@@ -33,6 +33,10 @@ namespace Polly.Specs.Retry
             // Factory-based instantiation
             IEnumerable<TimeSpan> discrete3 = DecorrelatedJitterBackoff.Create(minDelay, maxDelay, count, fastFirst, seed).ToList();
             discrete3.Should().HaveCount(count);
+
+            // Static-based instantiation
+            IEnumerable<TimeSpan> discrete4 = DecorrelatedJitterBackoff_static.Create(minDelay, maxDelay, count, fastFirst, seed).ToList();
+            discrete4.Should().HaveCount(count);
         }
 
         [Theory]
