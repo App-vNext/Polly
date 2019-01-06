@@ -56,8 +56,6 @@ Fault-handling policies handle specific exceptions thrown by, or results returne
 
 ## Step 1 : Specify the  exceptions/faults you want the policy to handle 
 
-### (for fault-handling policies:  Retry family, CircuitBreaker family and Fallback)
-
 ```csharp
 // Single exception type
 Policy
