@@ -50,6 +50,10 @@ For using Polly with  HttpClient factory from ASPNET Core 2.1, see our [detailed
 
 For details of supported compilation targets by version, see the [supported targets](https://github.com/App-vNext/Polly/wiki/Supported-targets) grid.
 
+### Role of the readme and the wiki
+
+This ReadMe aims to give a quick overview of all Polly features - including enough to get you started with any policy.  For deeper detail on any policy, and many other aspects of Polly, be sure also to check out the [wiki documentation](https://github.com/App-vNext/Polly/wiki).
+
 # Usage &ndash; fault-handling, reactive policies
 
 Fault-handling policies handle specific exceptions thrown by, or results returned by, the delegates you execute through the policy.
