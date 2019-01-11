@@ -22,7 +22,10 @@ namespace Polly.Specs.Caching
             ISyncCacheProvider stubCacheProvider = new StubCacheProvider();
             CachePolicy cache = Policy.Cache(stubCacheProvider, TimeSpan.MaxValue, onError);
 
-            stubCacheProvider.Get(operationKey).Should().BeNull();
+            (bool cacheHit, object fromCache) = stubCacheProvider.TryGet(operationKey);
+            cacheHit.Should().BeFalse();
+            fromCache.Should().BeNull();
+
             ResultPrimitive result = cache.Execute(ctx => ResultPrimitive.Substitute, new Context(operationKey));
 
             onErrorCalled.Should().BeFalse();
@@ -37,11 +40,17 @@ namespace Polly.Specs.Caching
             ISyncCacheProvider stubCacheProvider = new StubCacheProvider();
             CachePolicy cache = Policy.Cache(stubCacheProvider, TimeSpan.MaxValue);
 
-            stubCacheProvider.Get(operationKey).Should().BeNull();
+            (bool cacheHit1, object fromCache1) = stubCacheProvider.TryGet(operationKey);
+
+            cacheHit1.Should().BeFalse();
+            fromCache1.Should().BeNull();
 
             cache.Execute(ctx => { return valueToReturn; }, new Context(operationKey)).Should().Be(valueToReturn);
 
-            stubCacheProvider.Get(operationKey).Should().Be(valueToReturn);
+            (bool cacheHit2, object fromCache2) = stubCacheProvider.TryGet(operationKey);
+
+            cacheHit2.Should().BeTrue();
+            fromCache2.Should().Be(valueToReturn);
         }
 
         public void Dispose()

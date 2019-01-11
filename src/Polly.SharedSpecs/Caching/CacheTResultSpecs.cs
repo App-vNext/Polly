@@ -76,11 +76,15 @@ namespace Polly.Specs.Caching
             ISyncCacheProvider stubCacheProvider = new StubCacheProvider();
             CachePolicy<string> cache = Policy.Cache<string>(stubCacheProvider, TimeSpan.MaxValue);
 
-            stubCacheProvider.Get(operationKey).Should().BeNull();
+            (bool cacheHit1, object fromCache1) = stubCacheProvider.TryGet(operationKey);
+            cacheHit1.Should().BeFalse();
+            fromCache1.Should().BeNull();
 
             cache.Execute(ctx => { return valueToReturn; }, new Context(operationKey)).Should().Be(valueToReturn);
 
-            stubCacheProvider.Get(operationKey).Should().Be(valueToReturn);
+            (bool cacheHit2, object fromCache2) = stubCacheProvider.TryGet(operationKey);
+            cacheHit2.Should().BeTrue();
+            fromCache2.Should().Be(valueToReturn);
         }
 
         [Fact]
@@ -93,7 +97,9 @@ namespace Polly.Specs.Caching
             TimeSpan ttl = TimeSpan.FromMinutes(30);
             CachePolicy<string> cache = Policy.Cache<string>(stubCacheProvider, ttl);
 
-            stubCacheProvider.Get(operationKey).Should().BeNull();
+            (bool cacheHit1, object fromCache1) = stubCacheProvider.TryGet(operationKey);
+            cacheHit1.Should().BeFalse();
+            fromCache1.Should().BeNull();
 
             int delegateInvocations = 0;
             Func<Context, string> func = ctx =>
@@ -108,7 +114,10 @@ namespace Polly.Specs.Caching
             // First execution should execute delegate and put result in the cache.
             cache.Execute(func, new Context(operationKey)).Should().Be(valueToReturn);
             delegateInvocations.Should().Be(1);
-            stubCacheProvider.Get(operationKey).Should().Be(valueToReturn);
+
+            (bool cacheHit2, object fromCache2) = stubCacheProvider.TryGet(operationKey);
+            cacheHit2.Should().BeTrue();
+            fromCache2.Should().Be(valueToReturn);
 
             // Second execution (before cache expires) should get it from the cache - no further delegate execution.
             // (Manipulate time so just prior cache expiry).
@@ -133,11 +142,15 @@ namespace Polly.Specs.Caching
             ISyncCacheProvider stubCacheProvider = new StubCacheProvider();
             CachePolicy<string> cache = Policy.Cache<string>(stubCacheProvider, TimeSpan.Zero);
 
-            stubCacheProvider.Get(operationKey).Should().BeNull();
+            (bool cacheHit1, object fromCache1) = stubCacheProvider.TryGet(operationKey);
+            cacheHit1.Should().BeFalse();
+            fromCache1.Should().BeNull();
 
             cache.Execute(ctx => { return valueToReturn; }, new Context(operationKey)).Should().Be(valueToReturn);
 
-            stubCacheProvider.Get(operationKey).Should().Be(null);
+            (bool cacheHit2, object fromCache2) = stubCacheProvider.TryGet(operationKey);
+            cacheHit2.Should().BeFalse();
+            fromCache2.Should().BeNull();
         }
 
         [Fact]
@@ -372,7 +385,9 @@ namespace Polly.Specs.Caching
             cache.Invoking(policy => policy.Execute(func, new Context(operationKey), tokenSource.Token))
                 .ShouldThrow<OperationCanceledException>();
 
-            stubCacheProvider.Get(operationKey).Should().BeNull();
+            (bool cacheHit, object fromCache) = stubCacheProvider.TryGet(operationKey);
+            cacheHit.Should().BeFalse();
+            fromCache.Should().BeNull();
         }
 
         #endregion
