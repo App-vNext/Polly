@@ -16,10 +16,7 @@ namespace Polly
         /// </summary>
         /// <param name="policyBuilder">The policy builder.</param>
         /// <returns>The policy instance.</returns>
-        public static RetryPolicy Retry(this PolicyBuilder policyBuilder)
-        {
-            return policyBuilder.Retry(1);
-        }
+        public static RetryPolicy Retry(this PolicyBuilder policyBuilder) => policyBuilder.Retry(1);
 
         /// <summary>
         /// Builds a <see cref="Policy"/> that will retry <paramref name="retryCount"/> times.
@@ -27,11 +24,10 @@ namespace Polly
         /// <param name="policyBuilder">The policy builder.</param>
         /// <param name="retryCount">The retry count.</param>
         /// <returns>The policy instance.</returns>
-        public static RetryPolicy Retry(this PolicyBuilder policyBuilder, int retryCount)
+        public static RetryPolicy Retry(this PolicyBuilder policyBuilder, int retryCount) 
         {
-            Action<Exception, int> doNothing = (_, __) => { };
-
-            return policyBuilder.Retry(retryCount, doNothing);
+            return policyBuilder.Retry(retryCount, DoNothing);
+            void DoNothing(Exception _, int __) { }
         }
 
         /// <summary>
@@ -42,10 +38,7 @@ namespace Polly
         /// <param name="onRetry">The action to call on each retry.</param>
         /// <returns>The policy instance.</returns>
         /// <exception cref="System.ArgumentNullException">onRetry</exception>
-        public static RetryPolicy Retry(this PolicyBuilder policyBuilder, Action<Exception, int> onRetry)
-        {
-            return policyBuilder.Retry(1, onRetry);
-        }
+        public static RetryPolicy Retry(this PolicyBuilder policyBuilder, Action<Exception, int> onRetry) => policyBuilder.Retry(1, onRetry);
 
         /// <summary>
         /// Builds a <see cref="Policy"/> that will retry <paramref name="retryCount"/> times
@@ -73,10 +66,7 @@ namespace Polly
         /// <param name="onRetry">The action to call on each retry.</param>
         /// <returns>The policy instance.</returns>
         /// <exception cref="System.ArgumentNullException">onRetry</exception>
-        public static RetryPolicy Retry(this PolicyBuilder policyBuilder, Action<Exception, int, Context> onRetry)
-        {
-            return policyBuilder.Retry(1, onRetry);
-        }
+        public static RetryPolicy Retry(this PolicyBuilder policyBuilder, Action<Exception, int, Context> onRetry) => policyBuilder.Retry(1, onRetry);
 
         /// <summary>
         /// Builds a <see cref="Policy"/> that will retry <paramref name="retryCount"/> times
@@ -111,9 +101,8 @@ namespace Polly
         /// <returns>The policy instance.</returns>
         public static RetryPolicy RetryForever(this PolicyBuilder policyBuilder)
         {
-            Action<Exception> doNothing = _ => { };
-
-            return policyBuilder.RetryForever(doNothing);
+            return policyBuilder.RetryForever(DoNothing);
+            void DoNothing( Exception _, int __) { }
         }
 
         /// <summary>
@@ -201,9 +190,8 @@ namespace Polly
         /// <returns>The policy instance.</returns>
         public static RetryPolicy  WaitAndRetry(this PolicyBuilder policyBuilder, int retryCount, Func<int, TimeSpan> sleepDurationProvider)
         {
-            Action<Exception, TimeSpan, int, Context> doNothing = (_, __, ___, ____) => { };
-
-            return policyBuilder.WaitAndRetry(retryCount, sleepDurationProvider, doNothing);
+            return policyBuilder.WaitAndRetry(retryCount, sleepDurationProvider, DoNothing);
+            void DoNothing ( Exception _, TimeSpan __, int ___, Context ____) { }
         }
 
         /// <summary>
@@ -310,9 +298,8 @@ namespace Polly
         /// <returns>The policy instance.</returns>
         public static RetryPolicy WaitAndRetry(this PolicyBuilder policyBuilder, int retryCount, Func<int, Context, TimeSpan> sleepDurationProvider)
         {
-            Action<Exception, TimeSpan, int, Context> doNothing = (_, __, ___, ____) => { };
-
-            return policyBuilder.WaitAndRetry(retryCount, sleepDurationProvider, doNothing);
+            return policyBuilder.WaitAndRetry(retryCount, sleepDurationProvider, DoNothing);
+            void DoNothing (Exception _, TimeSpan __, int ___, Context ____) { }
         }
 
         /// <summary>
@@ -417,9 +404,8 @@ namespace Polly
         /// <returns>The policy instance.</returns>
         public static RetryPolicy  WaitAndRetry(this PolicyBuilder policyBuilder, IEnumerable<TimeSpan> sleepDurations)
         {
-            Action<Exception, TimeSpan> doNothing = (_, __) => { };
-
-            return policyBuilder.WaitAndRetry(sleepDurations, doNothing);
+            return policyBuilder.WaitAndRetry(sleepDurations, DoNothing);
+            void DoNothing (Exception _, TimeSpan __) { }
         }
 
         /// <summary>
@@ -507,9 +493,8 @@ namespace Polly
         {
             if (sleepDurationProvider == null) throw new ArgumentNullException(nameof(sleepDurationProvider));
 
-            Action<Exception, TimeSpan> doNothing = (_, __) => { };
-
-            return policyBuilder.WaitAndRetryForever(sleepDurationProvider, doNothing);
+            return policyBuilder.WaitAndRetryForever(sleepDurationProvider, DoNothing);
+            void DoNothing (Exception _, TimeSpan __) { }
         }
 
         /// <summary>
@@ -525,9 +510,8 @@ namespace Polly
         {
             if (sleepDurationProvider == null) throw new ArgumentNullException(nameof(sleepDurationProvider));
 
-            Action<Exception, TimeSpan, Context> doNothing = (_, __, ___) => { };
-
-            return policyBuilder.WaitAndRetryForever(sleepDurationProvider, doNothing);
+            return policyBuilder.WaitAndRetryForever(sleepDurationProvider, DoNothing);
+            void DoNothing (Exception _, TimeSpan __, Context ___) { }
         }
 
         /// <summary>
