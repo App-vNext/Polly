@@ -1009,6 +1009,7 @@ For more detail see: [Polly and interfaces](https://github.com/App-vNext/Polly/w
 * [@reisenberger](https://github.com/reisenberger) - Clarify separation of sync and async policies.
 * [@reisenberger](https://github.com/reisenberger) - Enable extensibility by custom policies hosted external to Polly.
 * [@seanfarrow](https://github.com/SeanFarrow) - Enable collection initialization syntax for PolicyRegistry.
+* [@cmeeren](https://github.com/cmeeren) - Enable cache policies to cache values of default(TResult).
 
 # Sample Projects
 
