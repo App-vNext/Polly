@@ -231,6 +231,101 @@ namespace Polly.Specs.Caching
 
         #endregion
 
+        #region Caching behaviours, default(TResult)
+
+        [Fact]
+        public async Task Should_execute_delegate_and_put_value_in_cache_if_cache_does_not_hold_value__default_for_reference_type()
+        {
+            ResultClass valueToReturn = default(ResultClass);
+            const string operationKey = "SomeOperationKey";
+
+            IAsyncCacheProvider stubCacheProvider = new StubCacheProvider();
+            var cache = Policy.CacheAsync<ResultClass>(stubCacheProvider, TimeSpan.MaxValue);
+
+            (bool cacheHit1, object fromCache1) = await stubCacheProvider.TryGetAsync(operationKey, CancellationToken.None, false).ConfigureAwait(false);
+            cacheHit1.Should().BeFalse();
+            fromCache1.Should().BeNull();
+
+            (await cache.ExecuteAsync(async ctx => { await TaskHelper.EmptyTask.ConfigureAwait(false); return valueToReturn; }, new Context(operationKey)).ConfigureAwait(false)).Should().Be(valueToReturn);
+
+            (bool cacheHit2, object fromCache2) = await stubCacheProvider.TryGetAsync(operationKey, CancellationToken.None, false).ConfigureAwait(false);
+            cacheHit2.Should().BeTrue();
+            fromCache2.Should().Be(valueToReturn);
+        }
+
+        [Fact]
+        public async Task Should_return_value_from_cache_and_not_execute_delegate_if_cache_holds_value__default_for_reference_type()
+        {
+            ResultClass valueToReturnFromCache = default(ResultClass);
+            ResultClass valueToReturnFromExecution = new ResultClass(ResultPrimitive.Good);
+            const string operationKey = "SomeOperationKey";
+
+            IAsyncCacheProvider stubCacheProvider = new StubCacheProvider();
+            var cache = Policy.CacheAsync<ResultClass>(stubCacheProvider, TimeSpan.MaxValue);
+            await stubCacheProvider.PutAsync(operationKey, valueToReturnFromCache, new Ttl(TimeSpan.MaxValue), CancellationToken.None, false).ConfigureAwait(false);
+
+            bool delegateExecuted = false;
+
+            (await cache.ExecuteAsync(async ctx =>
+            {
+                delegateExecuted = true;
+                await TaskHelper.EmptyTask.ConfigureAwait(false);
+                return valueToReturnFromExecution;
+            }, new Context(operationKey))
+                    .ConfigureAwait(false))
+                .Should().Be(valueToReturnFromCache);
+
+            delegateExecuted.Should().BeFalse();
+        }
+
+        [Fact]
+        public async Task Should_execute_delegate_and_put_value_in_cache_if_cache_does_not_hold_value__default_for_value_type()
+        {
+            ResultPrimitive valueToReturn = default(ResultPrimitive);
+            const string operationKey = "SomeOperationKey";
+
+            IAsyncCacheProvider stubCacheProvider = new StubCacheProvider();
+            var cache = Policy.CacheAsync<ResultPrimitive>(stubCacheProvider, TimeSpan.MaxValue);
+
+            (bool cacheHit1, object fromCache1) = await stubCacheProvider.TryGetAsync(operationKey, CancellationToken.None, false).ConfigureAwait(false);
+            cacheHit1.Should().BeFalse();
+            fromCache1.Should().BeNull();
+
+            (await cache.ExecuteAsync(async ctx => { await TaskHelper.EmptyTask.ConfigureAwait(false); return valueToReturn; }, new Context(operationKey)).ConfigureAwait(false)).Should().Be(valueToReturn);
+
+            (bool cacheHit2, object fromCache2) = await stubCacheProvider.TryGetAsync(operationKey, CancellationToken.None, false).ConfigureAwait(false);
+            cacheHit2.Should().BeTrue();
+            fromCache2.Should().Be(valueToReturn);
+        }
+
+        [Fact]
+        public async Task Should_return_value_from_cache_and_not_execute_delegate_if_cache_holds_value__default_for_value_type()
+        {
+            ResultPrimitive valueToReturnFromCache = default(ResultPrimitive);
+            ResultPrimitive valueToReturnFromExecution = ResultPrimitive.Good;
+            valueToReturnFromExecution.Should().NotBe(valueToReturnFromCache);
+            const string operationKey = "SomeOperationKey";
+
+            IAsyncCacheProvider stubCacheProvider = new StubCacheProvider();
+            var cache = Policy.CacheAsync<ResultPrimitive>(stubCacheProvider, TimeSpan.MaxValue);
+            await stubCacheProvider.PutAsync(operationKey, valueToReturnFromCache, new Ttl(TimeSpan.MaxValue), CancellationToken.None, false).ConfigureAwait(false);
+
+            bool delegateExecuted = false;
+
+            (await cache.ExecuteAsync(async ctx =>
+            {
+                delegateExecuted = true;
+                await TaskHelper.EmptyTask.ConfigureAwait(false);
+                return valueToReturnFromExecution;
+            }, new Context(operationKey))
+                    .ConfigureAwait(false))
+                .Should().Be(valueToReturnFromCache);
+
+            delegateExecuted.Should().BeFalse();
+        }
+
+        #endregion
+
         #region Generic CachePolicy in PolicyWrap
 
         [Fact]
