@@ -33,10 +33,7 @@ namespace Polly.Registry
         /// <typeparam name="TPolicy">The type of Policy.</typeparam>
         /// <exception cref="ArgumentNullException"><paramref name="key"/> is null.</exception>
         /// <exception cref="ArgumentException">A Policy with same <paramref name="key"/> already exists.</exception>
-        public void Add<TPolicy>(string key, TPolicy policy) where TPolicy : IsPolicy
-        {
-            _registry.Add(key, policy);
-        }
+        public void Add<TPolicy>(string key, TPolicy policy) where TPolicy : IsPolicy => _registry.Add(key, policy);
 
         /// <summary>
         /// Gets of sets the <see cref="IsPolicy"/> with the specified key.
@@ -48,14 +45,8 @@ namespace Polly.Registry
         /// <returns>The value associated with the specified key.</returns>
         public IsPolicy this[string key]
         {
-            get
-            {
-                return _registry[key];
-            }
-            set
-            {
-                _registry[key] = value;
-            }
+            get => _registry[key];
+            set => _registry[key] = value;
         }
 
         /// <summary>
@@ -65,10 +56,7 @@ namespace Polly.Registry
         /// <returns>The policy stored in the registry under the given key.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="key"/> is null.</exception>
         /// <exception cref="KeyNotFoundException">The given key was not present in the dictionary.</exception>
-        public TPolicy Get<TPolicy>(string key) where TPolicy : IsPolicy
-        {
-            return (TPolicy) _registry[key];
-        }
+        public TPolicy Get<TPolicy>(string key) where TPolicy : IsPolicy => (TPolicy) _registry[key];
 
         /// <summary>
         /// Gets the policy stored under the provided key, casting to <typeparamref name="TPolicy"/>.
@@ -83,8 +71,7 @@ namespace Polly.Registry
         /// <returns>True if Policy exists for the provided Key. False otherwise.</returns>
         public bool TryGet<TPolicy>(string key, out TPolicy policy) where TPolicy : IsPolicy
         {
-            IsPolicy value;
-            bool got = _registry.TryGetValue(key, out value);
+            bool got = _registry.TryGetValue(key, out IsPolicy value);
             policy = got ? (TPolicy)value : default(TPolicy);
             return got;
         }
@@ -92,8 +79,7 @@ namespace Polly.Registry
         /// <summary>
         /// Removes all keys and policies from registry.
         /// </summary>
-        public void Clear() =>
-            _registry.Clear();
+        public void Clear() => _registry.Clear();
 
         /// <summary>
         /// Determines whether the specified <paramref name="key"/> exists.
@@ -101,8 +87,7 @@ namespace Polly.Registry
         /// <param name="key">The key to locate in the registry.</param>
         /// <returns>True if <paramref name="key"/> exists otherwise false.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="key"/> is null.</exception>
-        public bool ContainsKey(string key) =>
-            _registry.ContainsKey(key);
+        public bool ContainsKey(string key) => _registry.ContainsKey(key);
 
         /// <summary>
         /// Removes the policy stored under the specified <paramref name="key"/> from the registry.

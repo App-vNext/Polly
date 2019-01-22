@@ -12,12 +12,9 @@ namespace Polly.Specs.Registry
 {
     public class PolicyRegistrySpecs
     {
-        IPolicyRegistry<string> _registry;
+        readonly IPolicyRegistry<string> _registry;
 
-        public PolicyRegistrySpecs()
-        {
-            _registry = new PolicyRegistry();
-        }
+        public PolicyRegistrySpecs() => _registry = new PolicyRegistry();
 
         #region Tests for adding Policy
 
@@ -173,10 +170,9 @@ namespace Polly.Specs.Registry
         {
             Policy policy = Policy.NoOp();
             string key = Guid.NewGuid().ToString();
-            Policy outPolicy = null;
 
             _registry.Add(key, policy);
-            _registry.TryGet(key, out outPolicy).Should().BeTrue();
+            _registry.TryGet(key, out Policy outPolicy).Should().BeTrue();
             outPolicy.Should().BeSameAs(policy);
         }
 
@@ -185,10 +181,9 @@ namespace Polly.Specs.Registry
         {
             Policy<ResultPrimitive> policy = Policy<ResultPrimitive>.HandleResult(ResultPrimitive.Fault).Retry();
             string key = Guid.NewGuid().ToString();
-            Policy<ResultPrimitive> outPolicy = null;
 
             _registry.Add(key, policy);
-            _registry.TryGet(key, out outPolicy).Should().BeTrue();
+            _registry.TryGet(key, out Policy<ResultPrimitive> outPolicy).Should().BeTrue();
             outPolicy.Should().BeSameAs(policy);
         }
 
@@ -197,10 +192,9 @@ namespace Polly.Specs.Registry
         {
             ISyncPolicy<ResultPrimitive> policy = Policy<ResultPrimitive>.HandleResult(ResultPrimitive.Fault).Retry();
             string key = Guid.NewGuid().ToString();
-            ISyncPolicy<ResultPrimitive> outPolicy = null;
 
             _registry.Add(key, policy);
-            _registry.TryGet(key, out outPolicy).Should().BeTrue();
+            _registry.TryGet(key, out ISyncPolicy<ResultPrimitive> outPolicy).Should().BeTrue();
             outPolicy.Should().BeSameAs(policy);
         }
 

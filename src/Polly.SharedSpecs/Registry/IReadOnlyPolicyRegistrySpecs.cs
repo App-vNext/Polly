@@ -10,14 +10,11 @@ namespace Polly.Specs.Registry
 {
     public class IReadOnlyPolicyRegistrySpecs
     {
-        IPolicyRegistry<string> _registry;
+        readonly IPolicyRegistry<string> _registry;
 
         IReadOnlyPolicyRegistry<string> ReadOnlyRegistry { get{ return _registry; } }
 
-        public IReadOnlyPolicyRegistrySpecs()
-        {
-            _registry = new PolicyRegistry();
-        }
+        public IReadOnlyPolicyRegistrySpecs() => _registry = new PolicyRegistry();
 
         #region Tests for retrieving policy
 
@@ -26,10 +23,9 @@ namespace Polly.Specs.Registry
         {
             Policy policy = Policy.NoOp();
             string key = Guid.NewGuid().ToString();
-            Policy outPolicy = null;
 
             _registry.Add(key, policy);
-            ReadOnlyRegistry.TryGet(key, out outPolicy).Should().BeTrue();
+            ReadOnlyRegistry.TryGet(key, out Policy outPolicy).Should().BeTrue();
             outPolicy.Should().BeSameAs(policy);
         }
 
@@ -38,10 +34,9 @@ namespace Polly.Specs.Registry
         {
             Policy<ResultPrimitive> policy = Policy<ResultPrimitive>.HandleResult(ResultPrimitive.Fault).Retry();
             string key = Guid.NewGuid().ToString();
-            Policy<ResultPrimitive> outPolicy = null;
 
             _registry.Add(key, policy);
-            ReadOnlyRegistry.TryGet(key, out outPolicy).Should().BeTrue();
+            ReadOnlyRegistry.TryGet(key, out Policy<ResultPrimitive> outPolicy).Should().BeTrue();
             outPolicy.Should().BeSameAs(policy);
         }
 
@@ -50,10 +45,9 @@ namespace Polly.Specs.Registry
         {
             ISyncPolicy<ResultPrimitive> policy = Policy<ResultPrimitive>.HandleResult(ResultPrimitive.Fault).Retry();
             string key = Guid.NewGuid().ToString();
-            ISyncPolicy<ResultPrimitive> outPolicy = null;
 
             _registry.Add(key, policy);
-            ReadOnlyRegistry.TryGet(key, out outPolicy).Should().BeTrue();
+            ReadOnlyRegistry.TryGet(key, out ISyncPolicy<ResultPrimitive> outPolicy).Should().BeTrue();
             outPolicy.Should().BeSameAs(policy);
         }
 
