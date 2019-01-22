@@ -13,7 +13,7 @@ namespace Polly.Bulkhead
         private readonly SemaphoreSlim _maxQueuedActionsSemaphore;
         private readonly int _maxParallelization;
         private readonly int _maxQueueingActions;
-        private Action<Context> _onBulkheadRejected;
+        private readonly Action<Context> _onBulkheadRejected;
 
         internal BulkheadPolicy(
             int maxParallelization,
@@ -25,17 +25,15 @@ namespace Polly.Bulkhead
         {
             _maxParallelization = maxParallelization;
             _maxQueueingActions = maxQueueingActions;
-            _maxParallelizationSemaphore = maxParallelizationSemaphore;
-            _maxQueuedActionsSemaphore = maxQueuedActionsSemaphore;
+            _maxParallelizationSemaphore = maxParallelizationSemaphore ?? throw new ArgumentNullException(nameof(maxParallelizationSemaphore));
+            _maxQueuedActionsSemaphore = maxQueuedActionsSemaphore ?? throw new ArgumentNullException(nameof(maxQueuedActionsSemaphore));
             _onBulkheadRejected = onBulkheadRejected ?? throw new ArgumentNullException(nameof(onBulkheadRejected));
         }
 
         /// <inheritdoc/>
         [DebuggerStepThrough]
         protected override TResult Implementation<TResult>(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken)
-        {
-            return BulkheadEngine.Implementation(action, context, _onBulkheadRejected, _maxParallelizationSemaphore, _maxQueuedActionsSemaphore, cancellationToken);
-        }
+            => BulkheadEngine.Implementation(action, context, _onBulkheadRejected, _maxParallelizationSemaphore, _maxQueuedActionsSemaphore, cancellationToken);
 
         /// <summary>
         /// Gets the number of slots currently available for executing actions through the bulkhead.
@@ -67,7 +65,7 @@ namespace Polly.Bulkhead
         private readonly SemaphoreSlim _maxQueuedActionsSemaphore;
         private readonly int _maxParallelization;
         private readonly int _maxQueueingActions;
-        private Action<Context> _onBulkheadRejected;
+        private readonly Action<Context> _onBulkheadRejected;
 
         /// <inheritdoc/>
         internal BulkheadPolicy(
@@ -80,17 +78,15 @@ namespace Polly.Bulkhead
         {
             _maxParallelization = maxParallelization;
             _maxQueueingActions = maxQueueingActions;
-            _maxParallelizationSemaphore = maxParallelizationSemaphore;
-            _maxQueuedActionsSemaphore = maxQueuedActionsSemaphore;
+            _maxParallelizationSemaphore = maxParallelizationSemaphore ?? throw new ArgumentNullException(nameof(maxParallelizationSemaphore));
+            _maxQueuedActionsSemaphore = maxQueuedActionsSemaphore ?? throw new ArgumentNullException(nameof(maxQueuedActionsSemaphore));
             _onBulkheadRejected = onBulkheadRejected ?? throw new ArgumentNullException(nameof(onBulkheadRejected));
         }
 
         /// <inheritdoc/>
         [DebuggerStepThrough]
         protected override TResult Implementation(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken)
-        {
-            return BulkheadEngine.Implementation(action, context, _onBulkheadRejected, _maxParallelizationSemaphore, _maxQueuedActionsSemaphore, cancellationToken);
-        }
+            => BulkheadEngine.Implementation(action, context, _onBulkheadRejected, _maxParallelizationSemaphore, _maxQueuedActionsSemaphore, cancellationToken);
 
         /// <summary>
         /// Gets the number of slots currently available for executing actions through the bulkhead.
