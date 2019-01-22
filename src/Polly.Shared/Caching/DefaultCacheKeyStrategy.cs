@@ -12,10 +12,7 @@ namespace Polly.Caching
         /// </summary>
         /// <param name="context">The execution context.</param>
         /// <returns>The cache key</returns>
-        public String GetCacheKey(Context context)
-        {
-            return context.OperationKey;
-        }
+        public String GetCacheKey(Context context) => context.OperationKey;
 
         /// <summary>
         /// Gets an instance of the <see cref="DefaultCacheKeyStrategy"/>.

@@ -13,6 +13,5 @@
     /// </summary>
     public interface ICachePolicy<TResult> : ICachePolicy
     {
-
     }
 }

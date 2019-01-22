@@ -43,10 +43,8 @@ namespace Polly.Caching
 
         /// <inheritdoc/>
         protected override void Implementation(Action<Context, CancellationToken> action, Context context, CancellationToken cancellationToken)
-        {
             // Pass-through/NOOP policy action, for void-returning calls through a cache policy.
-            action(context, cancellationToken);
-        }
+            => action(context, cancellationToken);
 
         /// <inheritdoc/>
         [DebuggerStepThrough]
@@ -107,8 +105,7 @@ namespace Polly.Caching
         /// <inheritdoc/>
         [DebuggerStepThrough]
         protected override TResult Implementation(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken)
-        {
-            return CacheEngine.Implementation(
+            => CacheEngine.Implementation(
                 _syncCacheProvider,
                 _ttlStrategy,
                 _cacheKeyStrategy,
@@ -120,6 +117,5 @@ namespace Polly.Caching
                 _onCachePut,
                 _onCacheGetError,
                 _onCachePutError);
-        }
     }
 }
