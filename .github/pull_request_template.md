@@ -8,7 +8,7 @@
 
 ### Confirm the following
 
-- [ ]  I have merged the latest changes from the dev vX.Y branch
-- [ ]  I have successfully run a local build
-- [ ]  I have included unit tests for the issue/feature
+- [ ]  I started this PR by branching from the head of the latest dev vX.Y branch, or I have merged the latest changes from the dev vX.Y branch
 - [ ]  I have targeted the PR against the latest dev vX.Y branch
+- [ ]  I have included unit tests for the issue/feature
+- [ ]  I have successfully run a local build
