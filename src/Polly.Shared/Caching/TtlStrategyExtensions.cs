@@ -12,8 +12,6 @@
         /// <param name="ttlStrategy">The non-generic ttl strategy to wrap.</param>
         /// <returns>ITtlStrategy{TCacheFormat}.</returns>
         internal static ITtlStrategy<TResult> For<TResult>(this ITtlStrategy ttlStrategy)
-        {
-            return new GenericTtlStrategy<TResult>(ttlStrategy);
-        }
+            => new GenericTtlStrategy<TResult>(ttlStrategy);
     }
 }
