@@ -31,9 +31,7 @@ namespace Polly
         /// <exception cref="System.ArgumentNullException">onBulkheadRejectedAsync</exception>
         /// <returns>The policy instance.</returns>
         public static AsyncBulkheadPolicy BulkheadAsync(int maxParallelization, Func<Context, Task> onBulkheadRejectedAsync)
-        {
-            return BulkheadAsync(maxParallelization, 0, onBulkheadRejectedAsync);
-        }
+            => BulkheadAsync(maxParallelization, 0, onBulkheadRejectedAsync);
 
         /// <summary>
         /// Builds a bulkhead isolation <see cref="Policy" />, which limits the maximum concurrency of actions executed through the policy.  Imposing a maximum concurrency limits the potential of governed actions, when faulting, to bring down the system.

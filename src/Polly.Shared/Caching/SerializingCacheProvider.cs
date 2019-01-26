@@ -28,11 +28,14 @@ namespace Polly.Caching
         /// Gets a value from the cache.
         /// </summary>
         /// <param name="key">The cache key.</param>
-        /// <returns>The value from cache; or null, if none was found.</returns>
-        public object Get(string key)
+        /// <returns>
+        /// A tuple whose first element is a value indicating whether the key was found in the cache,
+        /// and whose second element is the value from the cache (null if not found).
+        /// </returns>
+        public (bool, object) TryGet(string key)
         {
-            TSerialized objectToDeserialize = _wrappedCacheProvider.Get(key);
-            return objectToDeserialize == null || objectToDeserialize.Equals(default(TSerialized)) ? null : _serializer.Deserialize(objectToDeserialize);
+            (bool cacheHit, TSerialized objectToDeserialize) = _wrappedCacheProvider.TryGet(key);
+            return (cacheHit, cacheHit ? _serializer.Deserialize(objectToDeserialize) : null);
         }
 
         /// <summary>
@@ -43,8 +46,7 @@ namespace Polly.Caching
         /// <param name="ttl">The time-to-live for the cache entry.</param>
         public void Put(string key, object value, Ttl ttl)
         {
-            if (value != null)
-                _wrappedCacheProvider.Put(key, _serializer.Serialize(value), ttl);
+            _wrappedCacheProvider.Put(key, _serializer.Serialize(value), ttl);
         }
 
     }
@@ -76,11 +78,14 @@ namespace Polly.Caching
         /// Gets a value from the cache.
         /// </summary>
         /// <param name="key">The cache key.</param>
-        /// <returns>The value from cache; or null, if none was found.</returns>
-        public TResult Get(string key)
+        /// <returns>
+        /// A tuple whose first element is a value indicating whether the key was found in the cache,
+        /// and whose second element is the value from the cache (default(TResult) if not found).
+        /// </returns>
+        public (bool, TResult) TryGet(string key)
         {
-            TSerialized objectToDeserialize = _wrappedCacheProvider.Get(key);
-            return objectToDeserialize == null || objectToDeserialize.Equals(default(TSerialized)) ? default(TResult) : _serializer.Deserialize(objectToDeserialize);
+            (bool cacheHit, TSerialized objectToDeserialize) = _wrappedCacheProvider.TryGet(key);
+            return (cacheHit, cacheHit ? _serializer.Deserialize(objectToDeserialize) : default(TResult));
         }
 
         /// <summary>
@@ -91,9 +96,8 @@ namespace Polly.Caching
         /// <param name="ttl">The time-to-live for the cache entry.</param>
         public void Put(string key, TResult value, Ttl ttl)
         {
-            if (value != null && !value.Equals(default(TResult)))
-                _wrappedCacheProvider.Put(key, _serializer.Serialize(value), ttl);
+            _wrappedCacheProvider.Put(key, _serializer.Serialize(value), ttl);
         }
-        
+
     }
 }

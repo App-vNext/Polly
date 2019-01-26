@@ -302,6 +302,6 @@ RunTarget(target);
 //////////////////////////////////////////////////////////////////////
 
 string ToolsExePath(string exeFileName) {
-    var exePath = System.IO.Directory.GetFiles(@".\Tools", exeFileName, SearchOption.AllDirectories).FirstOrDefault();
+    var exePath = System.IO.Directory.GetFiles(@"./tools", exeFileName, SearchOption.AllDirectories).FirstOrDefault();
     return exePath;
 }
