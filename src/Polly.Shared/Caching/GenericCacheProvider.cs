@@ -15,9 +15,10 @@ namespace Polly.Caching
             _wrappedCacheProvider = nonGenericCacheProvider ?? throw new ArgumentNullException(nameof(nonGenericCacheProvider));
         }
 
-        TCacheFormat ISyncCacheProvider<TCacheFormat>.Get(string key)
+        (bool, TCacheFormat) ISyncCacheProvider<TCacheFormat>.TryGet(string key)
         {
-            return (TCacheFormat) (_wrappedCacheProvider.Get(key) ?? default(TCacheFormat));
+            (bool cacheHit, object result) = _wrappedCacheProvider.TryGet(key);
+            return (cacheHit, (TCacheFormat) (result ?? default(TCacheFormat)));
         }
 
         void ISyncCacheProvider<TCacheFormat>.Put(string key, TCacheFormat value, Ttl ttl)

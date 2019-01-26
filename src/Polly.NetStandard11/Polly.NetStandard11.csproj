@@ -27,5 +27,8 @@
       <Link>Properties\GlobalAssemblyInfo.cs</Link>
     </Compile>
   </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="System.ValueTuple" Version="4.5.0" />
+  </ItemGroup>
   <Import Project="..\Polly.Shared\Polly.Shared.projitems" Label="Shared" />
 </Project>

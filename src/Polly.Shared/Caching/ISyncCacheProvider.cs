@@ -11,8 +11,11 @@ namespace Polly.Caching
         /// Gets a value from cache.
         /// </summary>
         /// <param name="key">The cache key.</param>
-        /// <returns>The value from cache; or null, if none was found.</returns>
-        object Get(String key);
+        /// <returns>
+        /// A tuple whose first element is a value indicating whether the key was found in the cache,
+        /// and whose second element is the value from the cache (null if not found).
+        /// </returns>
+        (bool, object) TryGet(String key);
 
         /// <summary>
         /// Puts the specified value in the cache.
@@ -32,8 +35,11 @@ namespace Polly.Caching
         /// Gets a value from cache.
         /// </summary>
         /// <param name="key">The cache key.</param>
-        /// <returns>The value from cache; or null, if none was found.</returns>
-        TResult Get(String key);
+        /// <returns>
+        /// A tuple whose first element is a value indicating whether the key was found in the cache,
+        /// and whose second element is the value from the cache (default(TResult) if not found).
+        /// </returns>
+        (bool, TResult) TryGet(String key);
 
         /// <summary>
         /// Puts the specified value in the cache.

@@ -32,11 +32,14 @@ namespace Polly.Caching
         /// <param name="key">The cache key.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <param name="continueOnCapturedContext">Whether async calls should continue on a captured synchronization context.</param>
-        /// <returns>A <see cref="Task{TResult}" /> promising as Result the value from cache; or null, if none was found.</returns>
-        public async Task<object> GetAsync(string key, CancellationToken cancellationToken, bool continueOnCapturedContext)
+        /// <returns>
+        /// A <see cref="Task{TResult}" /> promising as Result a tuple whose first element is a value indicating whether
+        /// the key was found in the cache, and whose second element is the value from the cache (null if not found).
+        /// </returns>
+        public async Task<(bool, object)> TryGetAsync(string key, CancellationToken cancellationToken, bool continueOnCapturedContext)
         {
-            TSerialized objectToDeserialize = await _wrappedCacheProvider.GetAsync(key, cancellationToken, continueOnCapturedContext).ConfigureAwait(continueOnCapturedContext);
-            return objectToDeserialize == null || objectToDeserialize.Equals(default(TSerialized)) ? null :_serializer.Deserialize(objectToDeserialize);
+            (bool cacheHit, TSerialized objectToDeserialize) = await _wrappedCacheProvider.TryGetAsync(key, cancellationToken, continueOnCapturedContext).ConfigureAwait(continueOnCapturedContext);
+            return (cacheHit, cacheHit ? _serializer.Deserialize(objectToDeserialize) : null);
         }
 
         /// <summary>
@@ -51,15 +54,13 @@ namespace Polly.Caching
         public async Task PutAsync(string key, object value, Ttl ttl, CancellationToken cancellationToken,
             bool continueOnCapturedContext)
         {
-            if (value != null)
-
-                await _wrappedCacheProvider.PutAsync(
-                           key,
-                           _serializer.Serialize(value),
-                           ttl,
-                           cancellationToken,
-                           continueOnCapturedContext
-                       ).ConfigureAwait(continueOnCapturedContext);
+            await _wrappedCacheProvider.PutAsync(
+                        key,
+                        _serializer.Serialize(value),
+                        ttl,
+                        cancellationToken,
+                        continueOnCapturedContext
+                    ).ConfigureAwait(continueOnCapturedContext);
         }
     }
 
@@ -92,11 +93,14 @@ namespace Polly.Caching
         /// <param name="key">The cache key.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <param name="continueOnCapturedContext">Whether async calls should continue on a captured synchronization context.</param>
-        /// <returns>A <see cref="Task{TResult}" /> promising as Result the value from cache; or null, if none was found.</returns>
-        public async Task<TResult> GetAsync(string key, CancellationToken cancellationToken, bool continueOnCapturedContext)
+        /// <returns>
+        /// A <see cref="Task{TResult}" /> promising as Result a tuple whose first element is a value indicating whether
+        /// the key was found in the cache, and whose second element is the value from the cache (default(TResult) if not found).
+        /// </returns>
+        public async Task<(bool, TResult)> TryGetAsync(string key, CancellationToken cancellationToken, bool continueOnCapturedContext)
         {
-            TSerialized objectToDeserialize = await _wrappedCacheProvider.GetAsync(key, cancellationToken, continueOnCapturedContext).ConfigureAwait(continueOnCapturedContext);
-            return objectToDeserialize == null || objectToDeserialize.Equals(default(TSerialized)) ? default(TResult) : _serializer.Deserialize(objectToDeserialize);
+            (bool cacheHit, TSerialized objectToDeserialize) = await _wrappedCacheProvider.TryGetAsync(key, cancellationToken, continueOnCapturedContext).ConfigureAwait(continueOnCapturedContext);
+            return (cacheHit, cacheHit ? _serializer.Deserialize(objectToDeserialize) : default(TResult));
         }
 
         /// <summary>
@@ -111,15 +115,13 @@ namespace Polly.Caching
         public async Task PutAsync(string key, TResult value, Ttl ttl, CancellationToken cancellationToken,
             bool continueOnCapturedContext)
         {
-            if (value != null && !value.Equals(default(TResult)))
-
-                await _wrappedCacheProvider.PutAsync(
-                           key,
-                           _serializer.Serialize(value),
-                           ttl,
-                           cancellationToken,
-                           continueOnCapturedContext
-                       ).ConfigureAwait(continueOnCapturedContext);
+            await _wrappedCacheProvider.PutAsync(
+                        key,
+                        _serializer.Serialize(value),
+                        ttl,
+                        cancellationToken,
+                        continueOnCapturedContext
+                    ).ConfigureAwait(continueOnCapturedContext);
         }
     }
 }

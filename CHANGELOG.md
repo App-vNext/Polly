@@ -1,7 +1,8 @@
 ## 7.0.0
-- Clarify separation of sync and async policies
+- Clarify separation of sync and async policies (breaking change)
 - Enable extensibility by custom policies hosted external to Polly
 - Enable collection initialization syntax for PolicyRegistry
+- Enable cache policies to cache default(TResult) (breaking change)
 
 ## 6.1.2
 - Bug Fix: Async continuation control for async executions (issue 540, affected only v6.1.1)

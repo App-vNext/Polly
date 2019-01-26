@@ -28,17 +28,19 @@ namespace Polly.Caching
                 return await action(context, cancellationToken).ConfigureAwait(continueOnCapturedContext);
             }
 
+            bool cacheHit;
             TResult valueFromCache;
             try
             {
-                valueFromCache = await cacheProvider.GetAsync(cacheKey, cancellationToken, continueOnCapturedContext).ConfigureAwait(continueOnCapturedContext);
+                (cacheHit, valueFromCache) = await cacheProvider.TryGetAsync(cacheKey, cancellationToken, continueOnCapturedContext).ConfigureAwait(continueOnCapturedContext);
             }
             catch (Exception ex)
             {
+                cacheHit = false;
                 valueFromCache = default(TResult);
                 onCacheGetError(context, cacheKey, ex);
             }
-            if (valueFromCache != null && !valueFromCache.Equals(default(TResult)))
+            if (cacheHit)
             {
                 onCacheGet(context, cacheKey);
                 return valueFromCache;
@@ -51,7 +53,7 @@ namespace Polly.Caching
             TResult result = await action(context, cancellationToken).ConfigureAwait(continueOnCapturedContext);
 
             Ttl ttl = ttlStrategy.GetTtl(context, result);
-            if (ttl.Timespan > TimeSpan.Zero && result != null && !result.Equals(default(TResult)))
+            if (ttl.Timespan > TimeSpan.Zero)
             {
                 try
                 {

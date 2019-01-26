@@ -19,10 +19,10 @@ namespace Polly.Specs.Helpers.Caching
             _putException = putException;
         }
 
-        public object Get(string key)
+        public (bool, object) TryGet(string key)
         {
             if (_getException != null) throw _getException;
-            return innerProvider.Get(key);
+            return innerProvider.TryGet(key);
         }
 
         public void Put(string key, object value, Ttl ttl)
@@ -34,9 +34,9 @@ namespace Polly.Specs.Helpers.Caching
         #region Naive async-over-sync implementation
 
         // Intentionally naive async-over-sync implementation.  Its purpose is to be the simplest thing to support tests of the CachePolicyAsync and CacheEngineAsync, not to be a usable implementation of IAsyncCacheProvider.  
-        public Task<object> GetAsync(string key, CancellationToken cancellationToken, bool continueOnCapturedContext)
+        public Task<(bool, object)> TryGetAsync(string key, CancellationToken cancellationToken, bool continueOnCapturedContext)
         {
-            return Task.FromResult(Get(key));
+            return Task.FromResult(TryGet(key));
         }
 
         public Task PutAsync(string key, object value, Ttl ttl, CancellationToken cancellationToken, bool continueOnCapturedContext)
