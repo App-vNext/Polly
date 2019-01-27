@@ -26,8 +26,7 @@ namespace Polly.Fallback
         /// <inheritdoc/>
         [DebuggerStepThrough]
         protected override void Implementation(Action<Context, CancellationToken> action, Context context, CancellationToken cancellationToken)
-        {
-            FallbackEngine.Implementation<EmptyStruct>(
+            => FallbackEngine.Implementation<EmptyStruct>(
                 (ctx, token) => { action(ctx, token); return EmptyStruct.Instance; }, 
                 context, 
                 cancellationToken, 
@@ -35,13 +34,10 @@ namespace Polly.Fallback
                 ResultPredicates<EmptyStruct>.None,
                 (outcome, ctx) => _onFallback(outcome.Exception, ctx),
                 (outcome, ctx, ct) => { _fallbackAction(outcome.Exception, ctx, ct); return EmptyStruct.Instance; });
-        }
 
         /// <inheritdoc/>
         protected override TResult Implementation<TResult>(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken)
-        {
-            throw new InvalidOperationException($"You have executed the generic .Execute<{nameof(TResult)}> method on a non-generic {nameof(FallbackPolicy)}.  A non-generic {nameof(FallbackPolicy)} only defines a fallback action which returns void; it can never return a substitute {nameof(TResult)} value.  To use {nameof(FallbackPolicy)} to provide fallback {nameof(TResult)} values you must define a generic fallback policy {nameof(FallbackPolicy)}<{nameof(TResult)}>.  For example, define the policy as Policy<{nameof(TResult)}>.Handle<Whatever>.Fallback<{nameof(TResult)}>(/* some {nameof(TResult)} value or Func<..., {nameof(TResult)}> */);");
-        }
+            => throw new InvalidOperationException($"You have executed the generic .Execute<{nameof(TResult)}> method on a non-generic {nameof(FallbackPolicy)}.  A non-generic {nameof(FallbackPolicy)} only defines a fallback action which returns void; it can never return a substitute {nameof(TResult)} value.  To use {nameof(FallbackPolicy)} to provide fallback {nameof(TResult)} values you must define a generic fallback policy {nameof(FallbackPolicy)}<{nameof(TResult)}>.  For example, define the policy as Policy<{nameof(TResult)}>.Handle<Whatever>.Fallback<{nameof(TResult)}>(/* some {nameof(TResult)} value or Func<..., {nameof(TResult)}> */);");
     }
 
     /// <summary>
@@ -66,8 +62,7 @@ namespace Polly.Fallback
         /// <inheritdoc/>
         [DebuggerStepThrough]
         protected override TResult Implementation(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken)
-        {
-            return FallbackEngine.Implementation(
+            => FallbackEngine.Implementation(
                 action,
                 context,
                 cancellationToken,
@@ -75,6 +70,5 @@ namespace Polly.Fallback
                 ResultPredicates,
                 _onFallback,
                 _fallbackAction);
-        }
     }
 }
