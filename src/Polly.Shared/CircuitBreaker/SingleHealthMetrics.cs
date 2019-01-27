@@ -9,10 +9,7 @@ namespace Polly.CircuitBreaker
 
         private HealthCount _current;
 
-        public SingleHealthMetrics(TimeSpan samplingDuration)
-        {
-            _samplingDuration = samplingDuration.Ticks;
-        }
+        public SingleHealthMetrics(TimeSpan samplingDuration) => _samplingDuration = samplingDuration.Ticks;
 
         public void IncrementSuccess_NeedsLock()
         {
@@ -28,10 +25,7 @@ namespace Polly.CircuitBreaker
             _current.Failures++;
         }
 
-        public void Reset_NeedsLock()
-        {
-            _current = null;
-        }
+        public void Reset_NeedsLock() => _current = null;
 
         public HealthCount GetHealthCount_NeedsLock()
         {

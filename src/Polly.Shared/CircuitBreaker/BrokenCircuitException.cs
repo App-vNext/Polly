@@ -68,9 +68,7 @@ namespace Polly.CircuitBreaker
         /// </summary>
         /// <param name="result">The result which caused the circuit to break.</param>
         public BrokenCircuitException(TResult result) : base()
-        {
-            this.result = result;
-        }
+            => this.result = result;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="BrokenCircuitException{TResult}"/> class.
@@ -78,14 +76,12 @@ namespace Polly.CircuitBreaker
         /// <param name="message">The message that describes the error.</param>
         /// <param name="result">The result which caused the circuit to break.</param>
         public BrokenCircuitException(string message, TResult result) : base(message)
-        {
-            this.result = result;
-        }
+            => this.result = result;
 
         /// <summary>
         /// The result value which was considered a handled fault, by the policy.
         /// </summary>
-        public TResult Result { get { return result; } }
+        public TResult Result { get => result; } 
 
 #if NETSTANDARD2_0
         /// <summary>

@@ -16,9 +16,7 @@ namespace Polly.CircuitBreaker
             ExceptionPredicates exceptionPredicates,
             ICircuitController<EmptyStruct> breakerController
             ) : base(exceptionPredicates)
-        {
-            _breakerController = breakerController;
-        }
+            => _breakerController = breakerController;
 
         /// <summary>
         /// Gets the state of the underlying circuit.
@@ -34,18 +32,12 @@ namespace Polly.CircuitBreaker
         /// <summary>
         /// Isolates (opens) the circuit manually, and holds it in this state until a call to <see cref="Reset()"/> is made.
         /// </summary>
-        public void Isolate()
-        {
-            _breakerController.Isolate();
-        }
+        public void Isolate() => _breakerController.Isolate();
 
         /// <summary>
         /// Closes the circuit, and resets any statistics controlling automated circuit-breaking.
         /// </summary>
-        public void Reset()
-        {
-            _breakerController.Reset();
-        }
+        public void Reset() => _breakerController.Reset();
 
         /// <inheritdoc/>
         [DebuggerStepThrough]
@@ -75,9 +67,7 @@ namespace Polly.CircuitBreaker
             ResultPredicates<TResult> resultPredicates, 
             ICircuitController<TResult> breakerController
             ) : base(exceptionPredicates, resultPredicates)
-        {
-            _breakerController = breakerController;
-        }
+            => _breakerController = breakerController;
 
         /// <summary>
         /// Gets the state of the underlying circuit.
@@ -99,31 +89,22 @@ namespace Polly.CircuitBreaker
         /// <summary>
         /// Isolates (opens) the circuit manually, and holds it in this state until a call to <see cref="Reset()"/> is made.
         /// </summary>
-        public void Isolate()
-        {
-            _breakerController.Isolate();
-        }
+        public void Isolate() => _breakerController.Isolate();
 
         /// <summary>
         /// Closes the circuit, and resets any statistics controlling automated circuit-breaking.
         /// </summary>
-        public void Reset()
-        {
-            _breakerController.Reset();
-        }
+        public void Reset() => _breakerController.Reset();
 
         /// <inheritdoc/>
         [DebuggerStepThrough]
         protected override TResult Implementation(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken)
-        {
-            return CircuitBreakerEngine.Implementation(
+            => CircuitBreakerEngine.Implementation(
                 action,
                 context,
                 cancellationToken,
                 ExceptionPredicates,
                 ResultPredicates,
                 _breakerController);
-        }
     }
-
 }

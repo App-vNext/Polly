@@ -100,12 +100,7 @@ namespace Polly.CircuitBreaker
                     default:
                         throw new InvalidOperationException("Unhandled CircuitState.");
                 }
-
-
-
             }
         }
-
-
     }
 }
