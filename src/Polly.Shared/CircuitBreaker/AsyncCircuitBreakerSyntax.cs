@@ -63,14 +63,12 @@ namespace Polly
         /// <exception cref="ArgumentNullException">onBreak</exception>
         /// <exception cref="ArgumentNullException">onReset</exception>
         public static AsyncCircuitBreakerPolicy CircuitBreakerAsync(this PolicyBuilder policyBuilder, int exceptionsAllowedBeforeBreaking, TimeSpan durationOfBreak, Action<Exception, TimeSpan> onBreak, Action onReset)
-        {
-            return policyBuilder.CircuitBreakerAsync(
+            => policyBuilder.CircuitBreakerAsync(
                 exceptionsAllowedBeforeBreaking,
                 durationOfBreak,
                 (exception, timespan, context) => onBreak(exception, timespan),
                 context => onReset()
                 );
-        }
 
         /// <summary>
         /// <para> Builds a <see cref="AsyncPolicy"/> that will function like a Circuit Breaker.</para>
@@ -130,15 +128,13 @@ namespace Polly
         /// <exception cref="ArgumentNullException">onBreak</exception>
         /// <exception cref="ArgumentNullException">onReset</exception>
         public static AsyncCircuitBreakerPolicy CircuitBreakerAsync(this PolicyBuilder policyBuilder, int exceptionsAllowedBeforeBreaking, TimeSpan durationOfBreak, Action<Exception, TimeSpan> onBreak, Action onReset, Action onHalfOpen)
-        {
-            return policyBuilder.CircuitBreakerAsync(
+            => policyBuilder.CircuitBreakerAsync(
                 exceptionsAllowedBeforeBreaking,
                 durationOfBreak,
                 (exception, timespan, context) => onBreak(exception, timespan),
                 context => onReset(),
                 onHalfOpen
                 );
-        }
 
         /// <summary>
         /// <para> Builds a <see cref="AsyncPolicy"/> that will function like a Circuit Breaker.</para>
@@ -165,15 +161,13 @@ namespace Polly
         /// <exception cref="ArgumentNullException">onReset</exception>
         /// <exception cref="ArgumentNullException">onHalfOpen</exception>
         public static AsyncCircuitBreakerPolicy CircuitBreakerAsync(this PolicyBuilder policyBuilder, int exceptionsAllowedBeforeBreaking, TimeSpan durationOfBreak, Action<Exception, TimeSpan, Context> onBreak, Action<Context> onReset, Action onHalfOpen)
-        {
-            return policyBuilder.CircuitBreakerAsync(
+            => policyBuilder.CircuitBreakerAsync(
                 exceptionsAllowedBeforeBreaking,
                 durationOfBreak,
                 (exception, state, timespan, context) => onBreak(exception, timespan, context),
                 onReset,
                 onHalfOpen
             );
-        }
 
         /// <summary>
         /// <para> Builds a <see cref="AsyncPolicy"/> that will function like a Circuit Breaker.</para>

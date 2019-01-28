@@ -94,10 +94,7 @@ namespace Polly.CircuitBreaker
             }
         }
 
-        protected void Break_NeedsLock(Context context)
-        {
-            BreakFor_NeedsLock(_durationOfBreak, context);
-        }
+        protected void Break_NeedsLock(Context context) => BreakFor_NeedsLock(_durationOfBreak, context);
 
         private void BreakFor_NeedsLock(TimeSpan durationOfBreak, Context context)
         {
@@ -112,10 +109,7 @@ namespace Polly.CircuitBreaker
             _onBreak(_lastOutcome, transitionedState, durationOfBreak, context);
         }
 
-        public void Reset()
-        {
-            OnCircuitReset(Context.None());
-        }
+        public void Reset() => OnCircuitReset(Context.None());
 
         protected void ResetInternal_NeedsLock(Context context)
         {
@@ -143,11 +137,9 @@ namespace Polly.CircuitBreaker
         }
 
         private BrokenCircuitException GetBreakingException()
-        {
-            return _lastOutcome.Exception != null
+            => _lastOutcome.Exception != null
                 ? new BrokenCircuitException("The circuit is now open and is not allowing calls.", _lastOutcome.Exception)
                 : new BrokenCircuitException<TResult>("The circuit is now open and is not allowing calls.", _lastOutcome.Result);
-        }
 
         public void OnActionPreExecute()
         {

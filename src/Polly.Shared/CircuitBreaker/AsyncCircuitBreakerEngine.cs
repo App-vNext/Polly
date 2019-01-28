@@ -48,9 +48,7 @@ namespace Polly.CircuitBreaker
                 handledException.RethrowWithOriginalStackTraceIfDiffersFrom(ex);
                 throw;
             }
-
         }
-
     }
 }
 

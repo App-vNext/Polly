@@ -64,14 +64,12 @@ namespace Polly
         /// <exception cref="ArgumentNullException">onBreak</exception>
         /// <exception cref="ArgumentNullException">onReset</exception>
         public static CircuitBreakerPolicy<TResult> CircuitBreaker<TResult>(this PolicyBuilder<TResult> policyBuilder, int handledEventsAllowedBeforeBreaking, TimeSpan durationOfBreak, Action<DelegateResult<TResult>, TimeSpan> onBreak, Action onReset)
-        {
-            return policyBuilder.CircuitBreaker(
+            => policyBuilder.CircuitBreaker(
                 handledEventsAllowedBeforeBreaking,
                 durationOfBreak,
                 (outcome, timespan, context) => onBreak(outcome, timespan),
                 context => onReset()
                 );
-        }
 
         /// <summary>
         /// <para> Builds a <see cref="Policy{TResult}"/> that will function like a Circuit Breaker.</para>
@@ -130,15 +128,13 @@ namespace Polly
         /// <exception cref="ArgumentNullException">onBreak</exception>
         /// <exception cref="ArgumentNullException">onReset</exception>
         public static CircuitBreakerPolicy<TResult> CircuitBreaker<TResult>(this PolicyBuilder<TResult> policyBuilder, int handledEventsAllowedBeforeBreaking, TimeSpan durationOfBreak, Action<DelegateResult<TResult>, TimeSpan> onBreak, Action onReset, Action onHalfOpen)
-        {
-            return policyBuilder.CircuitBreaker(
+            => policyBuilder.CircuitBreaker(
                 handledEventsAllowedBeforeBreaking,
                 durationOfBreak,
                 (outcome, timespan, context) => onBreak(outcome, timespan),
                 context => onReset(),
                 onHalfOpen
                 );
-        }
 
         /// <summary>
         /// <para> Builds a <see cref="Policy{TResult}"/> that will function like a Circuit Breaker.</para>
@@ -165,15 +161,13 @@ namespace Polly
         /// <exception cref="ArgumentNullException">onReset</exception>
         /// <exception cref="ArgumentNullException">onHalfOpen</exception>
         public static CircuitBreakerPolicy<TResult> CircuitBreaker<TResult>(this PolicyBuilder<TResult> policyBuilder, int handledEventsAllowedBeforeBreaking, TimeSpan durationOfBreak, Action<DelegateResult<TResult>, TimeSpan, Context> onBreak, Action<Context> onReset, Action onHalfOpen)
-        {
-            return policyBuilder.CircuitBreaker(
+            => policyBuilder.CircuitBreaker(
                 handledEventsAllowedBeforeBreaking,
                 durationOfBreak,
                 (outcome, state, timespan, context) => onBreak(outcome, timespan, context),
                 onReset,
                 onHalfOpen
             );
-        }
 
         /// <summary>
         /// <para> Builds a <see cref="Policy{TResult}"/> that will function like a Circuit Breaker.</para>
