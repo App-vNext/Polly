@@ -49,9 +49,8 @@ namespace Polly.Fallback
         /// <inheritdoc/>
         protected override Task<TResult> ImplementationAsync<TResult>(Func<Context, CancellationToken, Task<TResult>> action, Context context, CancellationToken cancellationToken,
             bool continueOnCapturedContext)
-        {
+            => 
             throw new InvalidOperationException($"You have executed the generic .Execute<{nameof(TResult)}> method on a non-generic {nameof(FallbackPolicy)}.  A non-generic {nameof(FallbackPolicy)} only defines a fallback action which returns void; it can never return a substitute {nameof(TResult)} value.  To use {nameof(FallbackPolicy)} to provide fallback {nameof(TResult)} values you must define a generic fallback policy {nameof(FallbackPolicy)}<{nameof(TResult)}>.  For example, define the policy as Policy<{nameof(TResult)}>.Handle<Whatever>.Fallback<{nameof(TResult)}>(/* some {nameof(TResult)} value or Func<..., {nameof(TResult)}> */);");
-        }
     }
 
     /// <summary>
@@ -78,8 +77,7 @@ namespace Polly.Fallback
         [DebuggerStepThrough]
         protected override Task<TResult> ImplementationAsync(Func<Context, CancellationToken, Task<TResult>> action, Context context, CancellationToken cancellationToken,
             bool continueOnCapturedContext)
-        {
-            return AsyncFallbackEngine.ImplementationAsync(
+            => AsyncFallbackEngine.ImplementationAsync(
                 action,
                 context,
                 cancellationToken,
@@ -88,6 +86,5 @@ namespace Polly.Fallback
                 _onFallbackAsync,
                 _fallbackAction,
                 continueOnCapturedContext);
-        }
     }
 }
