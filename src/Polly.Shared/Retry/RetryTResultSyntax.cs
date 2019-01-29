@@ -16,9 +16,7 @@ namespace Polly
         /// <param name="policyBuilder">The policy builder.</param>
         /// <returns>The policy instance.</returns>
         public static RetryPolicy<TResult> Retry<TResult>(this PolicyBuilder<TResult> policyBuilder)
-        {
-            return policyBuilder.Retry(1);
-        }
+            => policyBuilder.Retry(1);
 
         /// <summary>
         /// Builds a <see cref="Policy{TResult}"/> that will retry <paramref name="retryCount"/> times.
@@ -42,9 +40,7 @@ namespace Polly
         /// <returns>The policy instance.</returns>
         /// <exception cref="System.ArgumentNullException">onRetry</exception>
         public static RetryPolicy<TResult> Retry<TResult>(this PolicyBuilder<TResult> policyBuilder, Action<DelegateResult<TResult>, int> onRetry)
-        {
-            return policyBuilder.Retry(1, onRetry);
-        }
+            => policyBuilder.Retry(1, onRetry);
 
         /// <summary>
         /// Builds a <see cref="Policy{TResult}"/> that will retry <paramref name="retryCount"/> times
@@ -73,9 +69,7 @@ namespace Polly
         /// <returns>The policy instance.</returns>
         /// <exception cref="System.ArgumentNullException">onRetry</exception>
         public static RetryPolicy<TResult> Retry<TResult>(this PolicyBuilder<TResult> policyBuilder, Action<DelegateResult<TResult>, int, Context> onRetry)
-        {
-            return policyBuilder.Retry(1, onRetry);
-        }
+            => policyBuilder.Retry(1, onRetry);
 
         /// <summary>
         /// Builds a <see cref="Policy{TResult}"/> that will retry <paramref name="retryCount"/> times
@@ -348,13 +342,11 @@ namespace Polly
         /// onRetry
         /// </exception>
         public static RetryPolicy<TResult> WaitAndRetry<TResult>(this PolicyBuilder<TResult> policyBuilder, int retryCount, Func<int, Context, TimeSpan> sleepDurationProvider, Action<DelegateResult<TResult>, TimeSpan, int, Context> onRetry)
-        {
-            return policyBuilder.WaitAndRetry(
+            => policyBuilder.WaitAndRetry(
                 retryCount,
                 (i, outcome, ctx) => sleepDurationProvider(i, ctx),
                 onRetry
             );
-        }
 
         /// <summary>
         /// Builds a <see cref="Policy{TResult}"/> that will wait and retry <paramref name="retryCount"/> times.
