@@ -16,9 +16,7 @@ namespace Polly
         /// <param name="policyBuilder">The policy builder.</param>
         /// <returns>The policy instance.</returns>
         public static RetryPolicy Retry(this PolicyBuilder policyBuilder)
-        {
-            return policyBuilder.Retry(1);
-        }
+            => policyBuilder.Retry(1);
 
         /// <summary>
         /// Builds a <see cref="Policy"/> that will retry <paramref name="retryCount"/> times.
@@ -42,9 +40,7 @@ namespace Polly
         /// <returns>The policy instance.</returns>
         /// <exception cref="System.ArgumentNullException">onRetry</exception>
         public static RetryPolicy Retry(this PolicyBuilder policyBuilder, Action<Exception, int> onRetry)
-        {
-            return policyBuilder.Retry(1, onRetry);
-        }
+            => policyBuilder.Retry(1, onRetry);
 
         /// <summary>
         /// Builds a <see cref="Policy"/> that will retry <paramref name="retryCount"/> times
@@ -73,9 +69,7 @@ namespace Polly
         /// <returns>The policy instance.</returns>
         /// <exception cref="System.ArgumentNullException">onRetry</exception>
         public static RetryPolicy Retry(this PolicyBuilder policyBuilder, Action<Exception, int, Context> onRetry)
-        {
-            return policyBuilder.Retry(1, onRetry);
-        }
+            => policyBuilder.Retry(1, onRetry);
 
         /// <summary>
         /// Builds a <see cref="Policy"/> that will retry <paramref name="retryCount"/> times

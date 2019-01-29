@@ -32,8 +32,7 @@ namespace Polly.Retry
 
         /// <inheritdoc/>
         protected override TResult Implementation<TResult>(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken)
-        {
-            return RetryEngine.Implementation(
+            => RetryEngine.Implementation(
                     action, 
                     context, 
                     cancellationToken,
@@ -46,7 +45,6 @@ namespace Polly.Retry
                         ? (retryCount, outcome, ctx) => _sleepDurationProvider(retryCount, outcome.Exception, ctx)
                         : (Func<int, DelegateResult<TResult>, Context, TimeSpan>)null
                 );
-        }
     }
 
     /// <summary>
@@ -78,8 +76,7 @@ namespace Polly.Retry
         /// <inheritdoc/>
         [DebuggerStepThrough]
         protected override TResult Implementation(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken)
-        {
-            return RetryEngine.Implementation(
+            => RetryEngine.Implementation(
                 action,
                 context,
                 cancellationToken,
@@ -90,6 +87,5 @@ namespace Polly.Retry
                 _sleepDurationsEnumerable, 
                 _sleepDurationProvider
             );
-        }
     }
 }

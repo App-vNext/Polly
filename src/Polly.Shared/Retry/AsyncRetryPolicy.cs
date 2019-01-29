@@ -82,8 +82,7 @@ namespace Polly.Retry
         [DebuggerStepThrough]
         protected override Task<TResult> ImplementationAsync(Func<Context, CancellationToken, Task<TResult>> action, Context context, CancellationToken cancellationToken,
             bool continueOnCapturedContext)
-        {
-            return AsyncRetryEngine.ImplementationAsync(
+            => AsyncRetryEngine.ImplementationAsync(
                 action,
                 context,
                 cancellationToken,
@@ -94,7 +93,6 @@ namespace Polly.Retry
                 _sleepDurationsEnumerable,
                 _sleepDurationProvider
             );
-        }
     }
 }
 

@@ -17,9 +17,7 @@ namespace Polly
         /// <param name="policyBuilder">The policy builder.</param>
         /// <returns>The policy instance.</returns>
         public static AsyncRetryPolicy<TResult> RetryAsync<TResult>(this PolicyBuilder<TResult> policyBuilder)
-        {
-            return policyBuilder.RetryAsync(1);
-        }
+            => policyBuilder.RetryAsync(1);
 
         /// <summary>
         ///     Builds an <see cref="AsyncRetryPolicy{TResult}" /> that will retry <paramref name="retryCount" /> times.
@@ -43,13 +41,11 @@ namespace Polly
         /// <returns>The policy instance.</returns>
         /// <exception cref="System.ArgumentNullException">onRetry</exception>
         public static AsyncRetryPolicy<TResult> RetryAsync<TResult>(this PolicyBuilder<TResult> policyBuilder, Action<DelegateResult<TResult>, int> onRetry)
-        {
-            return policyBuilder.RetryAsync(1,
+            => policyBuilder.RetryAsync(1,
 #pragma warning disable 1998 // async method has no awaits, will run synchronously
                 onRetryAsync: async (outcome, i, ctx) => onRetry(outcome, i)
 #pragma warning restore 1998
             );
-        }
 
         /// <summary>
         ///     Builds an <see cref="AsyncRetryPolicy{TResult}" /> that will retry once
@@ -60,9 +56,7 @@ namespace Polly
         /// <returns>The policy instance.</returns>
         /// <exception cref="System.ArgumentNullException">onRetry</exception>
         public static AsyncRetryPolicy<TResult> RetryAsync<TResult>(this PolicyBuilder<TResult> policyBuilder, Func<DelegateResult<TResult>, int, Task> onRetryAsync)
-        {
-            return policyBuilder.RetryAsync(1, onRetryAsync: (outcome, i, ctx) => onRetryAsync(outcome, i));
-        }
+            => policyBuilder.RetryAsync(1, onRetryAsync: (outcome, i, ctx) => onRetryAsync(outcome, i));
 
         /// <summary>
         ///     Builds an <see cref="AsyncRetryPolicy{TResult}" /> that will retry <paramref name="retryCount" /> times
@@ -111,9 +105,7 @@ namespace Polly
         /// <returns>The policy instance.</returns>
         /// <exception cref="System.ArgumentNullException">onRetry</exception>
         public static AsyncRetryPolicy<TResult> RetryAsync<TResult>(this PolicyBuilder<TResult> policyBuilder, Action<DelegateResult<TResult>, int, Context> onRetry)
-        {
-            return policyBuilder.RetryAsync(1, onRetry);
-        }
+            => policyBuilder.RetryAsync(1, onRetry);
 
         /// <summary>
         /// Builds an <see cref="AsyncRetryPolicy{TResult}"/> that will retry once
@@ -124,9 +116,7 @@ namespace Polly
         /// <returns>The policy instance.</returns>
         /// <exception cref="System.ArgumentNullException">onRetry</exception>
         public static AsyncRetryPolicy<TResult> RetryAsync<TResult>(this PolicyBuilder<TResult> policyBuilder, Func<DelegateResult<TResult>, int, Context, Task> onRetryAsync)
-        {
-            return policyBuilder.RetryAsync(1, onRetryAsync);
-        }
+            => policyBuilder.RetryAsync(1, onRetryAsync);
 
         /// <summary>
         /// Builds an <see cref="AsyncRetryPolicy{TResult}"/> that will retry <paramref name="retryCount"/> times
