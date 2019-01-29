@@ -9,9 +9,6 @@ namespace Polly
         /// </summary>
         /// <typeparam name="TResult">The type of return values this policy will handle.</typeparam>
         /// <returns>The policy instance.</returns>
-        public static NoOpPolicy<TResult> NoOp<TResult>()
-        {
-            return new NoOpPolicy<TResult>();
-        }
+        public static NoOpPolicy<TResult> NoOp<TResult>() => new NoOpPolicy<TResult>();
     }
 }

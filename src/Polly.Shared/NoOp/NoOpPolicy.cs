@@ -17,9 +17,7 @@ namespace Polly.NoOp
         /// <inheritdoc/>
         [DebuggerStepThrough]
         protected override TResult Implementation<TResult>(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken)
-        {
-            return NoOpEngine.Implementation(action, context, cancellationToken);
-        }
+            => NoOpEngine.Implementation(action, context, cancellationToken);
     }
 
     /// <summary>
@@ -35,8 +33,6 @@ namespace Polly.NoOp
         /// <inheritdoc/>
         [DebuggerStepThrough]
         protected override TResult Implementation(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken)
-        {
-            return NoOpEngine.Implementation(action, context, cancellationToken);
-        }
+            => NoOpEngine.Implementation(action, context, cancellationToken);
     }
 }

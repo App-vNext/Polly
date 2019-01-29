@@ -13,6 +13,5 @@
     /// </summary>
     public interface INoOpPolicy<TResult> : INoOpPolicy
     {
-
     }
 }
