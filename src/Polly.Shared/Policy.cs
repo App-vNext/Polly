@@ -10,8 +10,8 @@
         /// </summary>
         /// <param name="exceptionPredicates">Predicates indicating which exceptions the policy should handle. </param>
         protected Policy(ExceptionPredicates exceptionPredicates)
+            : base(exceptionPredicates)
         {
-            ExceptionPredicates = exceptionPredicates ?? ExceptionPredicates.None;
         }
     }
 }
