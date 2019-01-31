@@ -14,7 +14,10 @@ namespace Polly
             ExceptionPredicates.Add(exceptionPredicate);
         }
 
-        internal ExceptionPredicates ExceptionPredicates { get; }
+        /// <summary>
+        /// Predicates specifying exceptions that the policy is being configured to handle.
+        /// </summary>
+        public ExceptionPredicates ExceptionPredicates { get; }
 
         #region Hide object members
 
@@ -97,9 +100,15 @@ namespace Polly
             ExceptionPredicates = exceptionPredicates;
         }
 
-        internal ExceptionPredicates ExceptionPredicates { get; }
+        /// <summary>
+        /// Predicates specifying exceptions that the policy is being configured to handle.
+        /// </summary>
+        public ExceptionPredicates ExceptionPredicates { get; }
 
-        internal ResultPredicates<TResult> ResultPredicates { get; }
+        /// <summary>
+        /// Predicates specifying results that the policy is being configured to handle.
+        /// </summary>
+        public ResultPredicates<TResult> ResultPredicates { get; }
 
         #region Hide object members
 
