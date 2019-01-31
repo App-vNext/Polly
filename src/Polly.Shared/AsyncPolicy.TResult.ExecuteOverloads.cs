@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Polly
 {
-    public abstract partial class AsyncPolicy<TResult> : PolicyBase, IAsyncPolicy<TResult>
+    public abstract partial class AsyncPolicy<TResult> : IAsyncPolicy<TResult>
     {
 
         #region ExecuteAsync overloads
