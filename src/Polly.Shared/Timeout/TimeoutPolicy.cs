@@ -28,15 +28,13 @@ namespace Polly.Timeout
         /// <inheritdoc/>
         [DebuggerStepThrough]
         protected override TResult Implementation<TResult>(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken)
-        {
-            return TimeoutEngine.Implementation(
+            => TimeoutEngine.Implementation(
                 action,
                 context,
                 cancellationToken,
                 _timeoutProvider,
                 _timeoutStrategy,
                 _onTimeout);
-        }
     }
 
     /// <summary>
@@ -61,14 +59,12 @@ namespace Polly.Timeout
 
         /// <inheritdoc/>
         protected override TResult Implementation(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken)
-        {
-            return TimeoutEngine.Implementation(
+            => TimeoutEngine.Implementation(
                 action,
                 context,
                 cancellationToken,
                 _timeoutProvider,
                 _timeoutStrategy,
                 _onTimeout);
-        }
     }
 }
