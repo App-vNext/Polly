@@ -10,9 +10,9 @@ namespace Polly.Timeout
     /// </summary>
     public class AsyncTimeoutPolicy : AsyncPolicy, ITimeoutPolicy
     {
-        private Func<Context, TimeSpan> _timeoutProvider;
-        private TimeoutStrategy _timeoutStrategy;
-        private Func<Context, TimeSpan, Task, Exception, Task> _onTimeoutAsync;
+        private readonly Func<Context, TimeSpan> _timeoutProvider;
+        private readonly TimeoutStrategy _timeoutStrategy;
+        private readonly Func<Context, TimeSpan, Task, Exception, Task> _onTimeoutAsync;
 
         internal AsyncTimeoutPolicy(
             Func<Context, TimeSpan> timeoutProvider,
@@ -73,8 +73,7 @@ namespace Polly.Timeout
             Context context, 
             CancellationToken cancellationToken,
             bool continueOnCapturedContext)
-        {
-            return AsyncTimeoutEngine.ImplementationAsync(
+            => AsyncTimeoutEngine.ImplementationAsync(
                 action,
                 context,
                 cancellationToken,
@@ -82,6 +81,5 @@ namespace Polly.Timeout
                 _timeoutStrategy,
                 _onTimeoutAsync,
                 continueOnCapturedContext);
-        }
     }
 }

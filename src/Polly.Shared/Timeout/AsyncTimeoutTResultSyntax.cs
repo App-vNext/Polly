@@ -328,9 +328,7 @@ namespace Polly
         /// <exception cref="System.ArgumentNullException">timeoutProvider</exception>
         /// <exception cref="System.ArgumentNullException">onTimeoutAsync</exception>
         public static AsyncTimeoutPolicy<TResult> TimeoutAsync<TResult>(Func<Context, TimeSpan> timeoutProvider, Func<Context, TimeSpan, Task, Task> onTimeoutAsync)
-        {
-            return TimeoutAsync<TResult>(timeoutProvider, TimeoutStrategy.Optimistic, onTimeoutAsync);
-        }
+            => TimeoutAsync<TResult>(timeoutProvider, TimeoutStrategy.Optimistic, onTimeoutAsync);
 
         /// <summary>
         /// Builds an <see cref="AsyncPolicy{TResult}"/> that will wait asynchronously for a delegate to complete for a specified period of time. A <see cref="TimeoutRejectedException"/> will be thrown if the delegate does not complete within the configured timeout.
@@ -342,9 +340,7 @@ namespace Polly
         /// <exception cref="System.ArgumentNullException">timeoutProvider</exception>
         /// <exception cref="System.ArgumentNullException">onTimeoutAsync</exception>
         public static AsyncTimeoutPolicy<TResult> TimeoutAsync<TResult>(Func<Context, TimeSpan> timeoutProvider, Func<Context, TimeSpan, Task, Exception, Task> onTimeoutAsync)
-        {
-            return TimeoutAsync<TResult>(timeoutProvider, TimeoutStrategy.Optimistic, onTimeoutAsync);
-        }
+            => TimeoutAsync<TResult>(timeoutProvider, TimeoutStrategy.Optimistic, onTimeoutAsync);
 
         /// <summary>
         /// Builds an <see cref="AsyncPolicy{TResult}"/> that will wait asynchronously for a delegate to complete for a specified period of time. A <see cref="TimeoutRejectedException"/> will be thrown if the delegate does not complete within the configured timeout.
