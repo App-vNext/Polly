@@ -7,33 +7,32 @@ namespace Polly
     /// </summary>
     public class DelegateResult<TResult>
     {
-        private readonly TResult _result;
-        private readonly Exception _exception;
-
-        internal DelegateResult(TResult result)
+        /// <summary>
+        /// Create an instance of <see cref="DelegateResult{TResult}"/> representing an execution which returned <paramref name="result"/>
+        /// </summary>
+        /// <param name="result">The result.</param>
+        public DelegateResult(TResult result)
         {
-            _result = result;
+            Result = result;
         }
 
-        internal DelegateResult(Exception exception)
+        /// <summary>
+        /// Create an instance of <see cref="DelegateResult{TResult}"/> representing an execution which threw <paramref name="exception"/>
+        /// </summary>
+        /// <param name="exception">The exception.</param>
+        public DelegateResult(Exception exception)
         {
-            _exception = exception;
+            Exception = exception;
         }
 
         /// <summary>
         /// The result of executing the delegate. Will be default(TResult) if an exception was thrown.
         /// </summary>
-        public TResult Result
-        {
-            get { return _result; }
-        }
+        public TResult Result { get; }
 
         /// <summary>
         /// Any exception thrown while executing the delegate. Will be null if policy executed without exception.
         /// </summary>
-        public Exception Exception
-        {
-            get { return _exception; }
-        }
+        public Exception Exception { get; }
     }
 }
