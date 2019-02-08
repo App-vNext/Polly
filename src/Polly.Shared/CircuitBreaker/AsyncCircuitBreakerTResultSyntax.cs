@@ -208,8 +208,7 @@ namespace Polly
                 onReset,
                 onHalfOpen);
             return new AsyncCircuitBreakerPolicy<TResult>(
-                policyBuilder.ExceptionPredicates,
-                policyBuilder.ResultPredicates,
+                policyBuilder,
                 breakerController
             );
         }

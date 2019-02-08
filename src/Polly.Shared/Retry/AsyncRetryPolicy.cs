@@ -17,13 +17,13 @@ namespace Polly.Retry
         private readonly Func<int, Exception, Context, TimeSpan> _sleepDurationProvider;
 
         internal AsyncRetryPolicy(
-            ExceptionPredicates exceptionPredicates,
+            PolicyBuilder policyBuilder,
             Func<Exception, TimeSpan, int, Context, Task> onRetryAsync,
             int permittedRetryCount = Int32.MaxValue,
             IEnumerable<TimeSpan> sleepDurationsEnumerable = null,
             Func<int, Exception, Context, TimeSpan> sleepDurationProvider = null
         )
-            : base(exceptionPredicates)
+            : base(policyBuilder)
         {
             _permittedRetryCount = permittedRetryCount;
             _sleepDurationsEnumerable = sleepDurationsEnumerable;
@@ -63,14 +63,13 @@ namespace Polly.Retry
         private readonly Func<int, DelegateResult<TResult>, Context, TimeSpan> _sleepDurationProvider;
 
         internal AsyncRetryPolicy(
-            ExceptionPredicates exceptionPredicates,
-            ResultPredicates<TResult> resultPredicates,
+            PolicyBuilder<TResult> policyBuilder,
             Func<DelegateResult<TResult>, TimeSpan, int, Context, Task> onRetryAsync,
             int permittedRetryCount = Int32.MaxValue,
             IEnumerable<TimeSpan> sleepDurationsEnumerable = null,
             Func<int, DelegateResult<TResult>, Context, TimeSpan> sleepDurationProvider = null
         )
-            : base(exceptionPredicates, resultPredicates)
+            : base(policyBuilder)
         {
             _permittedRetryCount = permittedRetryCount;
             _sleepDurationsEnumerable = sleepDurationsEnumerable;

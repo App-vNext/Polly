@@ -19,7 +19,6 @@ namespace Polly.Timeout
             TimeoutStrategy timeoutStrategy,
             Func<Context, TimeSpan, Task, Exception, Task> onTimeoutAsync
             )
-           : base(ExceptionPredicates.None)
         {
             _timeoutProvider = timeoutProvider ?? throw new ArgumentNullException(nameof(timeoutProvider));
             _timeoutStrategy = timeoutStrategy;
@@ -58,8 +57,7 @@ namespace Polly.Timeout
         internal AsyncTimeoutPolicy(
             Func<Context, TimeSpan> timeoutProvider,
             TimeoutStrategy timeoutStrategy,
-            Func<Context, TimeSpan, Task, Exception, Task> onTimeoutAsync
-            ) : base(ExceptionPredicates.None, ResultPredicates<TResult>.None)
+            Func<Context, TimeSpan, Task, Exception, Task> onTimeoutAsync)
         {
             _timeoutProvider = timeoutProvider ?? throw new ArgumentNullException(nameof(timeoutProvider));
             _timeoutStrategy = timeoutStrategy;

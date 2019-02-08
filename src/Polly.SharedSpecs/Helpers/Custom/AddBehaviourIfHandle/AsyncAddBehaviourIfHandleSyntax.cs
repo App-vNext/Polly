@@ -11,7 +11,7 @@ namespace Polly.Specs.Helpers.Custom.AddBehaviourIfHandle
         {
             if (behaviourIfHandle == null) throw new ArgumentNullException(nameof(behaviourIfHandle));
 
-            return new AsyncAddBehaviourIfHandlePolicy(behaviourIfHandle, policyBuilder.ExceptionPredicates);
+            return new AsyncAddBehaviourIfHandlePolicy(behaviourIfHandle, policyBuilder);
         }
 
         internal static AsyncAddBehaviourIfHandlePolicy<TResult> WithBehaviourAsync<TResult>(
@@ -20,7 +20,7 @@ namespace Polly.Specs.Helpers.Custom.AddBehaviourIfHandle
         {
             if (behaviourIfHandle == null) throw new ArgumentNullException(nameof(behaviourIfHandle));
 
-            return new AsyncAddBehaviourIfHandlePolicy<TResult>(behaviourIfHandle, policyBuilder.ExceptionPredicates, policyBuilder.ResultPredicates);
+            return new AsyncAddBehaviourIfHandlePolicy<TResult>(behaviourIfHandle, policyBuilder);
         }
     }
 }

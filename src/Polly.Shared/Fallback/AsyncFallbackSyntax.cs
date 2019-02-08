@@ -80,10 +80,7 @@ namespace Polly
             if (fallbackAction == null) throw new ArgumentNullException(nameof(fallbackAction));
             if (onFallbackAsync == null) throw new ArgumentNullException(nameof(onFallbackAsync));
 
-            return new AsyncFallbackPolicy(
-                    onFallbackAsync,
-                    fallbackAction, 
-                    policyBuilder.ExceptionPredicates);
+            return new AsyncFallbackPolicy(policyBuilder, onFallbackAsync, fallbackAction);
         }
     }
 
@@ -213,8 +210,7 @@ namespace Polly
             if (onFallbackAsync == null) throw new ArgumentNullException(nameof(onFallbackAsync));
 
             return new AsyncFallbackPolicy<TResult>(
-                    policyBuilder.ExceptionPredicates,
-                    policyBuilder.ResultPredicates,
+                    policyBuilder,
                     onFallbackAsync,
                     fallbackAction);
         }

@@ -7,8 +7,8 @@ namespace Polly.Specs.Helpers.Custom.AddBehaviourIfHandle
     {
         private readonly Action<Exception> _behaviourIfHandle;
 
-        internal AddBehaviourIfHandlePolicy(Action<Exception> behaviourIfHandle, ExceptionPredicates handleExceptionPredicates)
-            : base(handleExceptionPredicates)
+        internal AddBehaviourIfHandlePolicy(Action<Exception> behaviourIfHandle, PolicyBuilder policyBuilder)
+            : base(policyBuilder)
         {
             _behaviourIfHandle = behaviourIfHandle ?? throw new ArgumentNullException(nameof(behaviourIfHandle));
         }
@@ -35,9 +35,8 @@ namespace Polly.Specs.Helpers.Custom.AddBehaviourIfHandle
 
         internal AddBehaviourIfHandlePolicy(
             Action<DelegateResult<TResult>> behaviourIfHandle,
-            ExceptionPredicates handleExceptionPredicates, 
-            ResultPredicates<TResult> handleResultPredicates)
-            : base(handleExceptionPredicates, handleResultPredicates)
+            PolicyBuilder<TResult> policyBuilder)
+            : base(policyBuilder)
         {
             _behaviourIfHandle = behaviourIfHandle ?? throw new ArgumentNullException(nameof(behaviourIfHandle));
         }

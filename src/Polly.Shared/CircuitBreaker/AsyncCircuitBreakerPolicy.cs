@@ -14,9 +14,9 @@ namespace Polly.CircuitBreaker
         internal readonly ICircuitController<EmptyStruct> _breakerController;
 
         internal AsyncCircuitBreakerPolicy(
-            ExceptionPredicates exceptionPredicates, 
+            PolicyBuilder policyBuilder, 
             ICircuitController<EmptyStruct> breakerController
-            ) : base(exceptionPredicates)
+            ) : base(policyBuilder)
         {
             _breakerController = breakerController;
         }
@@ -68,10 +68,9 @@ namespace Polly.CircuitBreaker
         internal readonly ICircuitController<TResult> _breakerController;
 
         internal AsyncCircuitBreakerPolicy(
-            ExceptionPredicates exceptionPredicates, 
-            ResultPredicates<TResult> resultPredicates, 
+            PolicyBuilder<TResult> policyBuilder, 
             ICircuitController<TResult> breakerController
-            ) : base(exceptionPredicates, resultPredicates)
+            ) : base(policyBuilder)
         {
             _breakerController = breakerController;
         }

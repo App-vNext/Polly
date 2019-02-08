@@ -87,7 +87,7 @@ namespace Polly
             if (onRetry == null) throw new ArgumentNullException(nameof(onRetry));
 
             return new RetryPolicy(
-                policyBuilder.ExceptionPredicates,
+                policyBuilder,
                 (outcome, timespan, i, ctx) => onRetry(outcome, i, ctx),
                 retryCount);
         }
@@ -147,7 +147,7 @@ namespace Polly
             if (onRetry == null) throw new ArgumentNullException(nameof(onRetry));
 
                 return new RetryPolicy(
-                    policyBuilder.ExceptionPredicates,
+                    policyBuilder,
                     (outcome, timespan, i, ctx) => onRetry(outcome, ctx)
                     );
         }
@@ -165,7 +165,7 @@ namespace Polly
             if (onRetry == null) throw new ArgumentNullException(nameof(onRetry));
 
             return new RetryPolicy(
-                policyBuilder.ExceptionPredicates,
+                policyBuilder,
                 (outcome, timespan, i, ctx) => onRetry(outcome, i, ctx)
             );
         }
@@ -269,7 +269,7 @@ namespace Polly
                                            .Select(sleepDurationProvider);
 
             return new RetryPolicy(
-                policyBuilder.ExceptionPredicates,
+                policyBuilder,
                 onRetry,
                 retryCount, 
                 sleepDurationsEnumerable: sleepDurations
@@ -371,7 +371,7 @@ namespace Polly
             if (onRetry == null) throw new ArgumentNullException(nameof(onRetry));
 
                 return new RetryPolicy(
-                    policyBuilder.ExceptionPredicates,
+                    policyBuilder,
                     onRetry,
                     retryCount,
                     sleepDurationProvider: sleepDurationProvider
@@ -454,7 +454,7 @@ namespace Polly
             if (onRetry == null) throw new ArgumentNullException(nameof(onRetry));
 
             return new RetryPolicy(
-                policyBuilder.ExceptionPredicates,
+                policyBuilder,
                 onRetry,
                 sleepDurationsEnumerable: sleepDurations
                 );
@@ -602,7 +602,7 @@ namespace Polly
             if (onRetry == null) throw new ArgumentNullException(nameof(onRetry));
 
             return new RetryPolicy(
-                policyBuilder.ExceptionPredicates,
+                policyBuilder,
                 (outcome, timespan, i, ctx) => onRetry(outcome, timespan, ctx),
                 sleepDurationProvider: sleepDurationProvider);
         }
@@ -625,7 +625,7 @@ namespace Polly
             if (onRetry == null) throw new ArgumentNullException(nameof(onRetry));
 
             return new RetryPolicy(
-                policyBuilder.ExceptionPredicates, 
+                policyBuilder, 
                 (exception, timespan, i, ctx) => onRetry(exception, i, timespan, ctx),
                 sleepDurationProvider: sleepDurationProvider
                 );

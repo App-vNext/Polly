@@ -22,7 +22,6 @@ namespace Polly.Bulkhead
             SemaphoreSlim maxParallelizationSemaphore,
             SemaphoreSlim maxQueuedActionsSemaphore,
             Func<Context, Task> onBulkheadRejectedAsync)
-           : base(ExceptionPredicates.None)
         {
             _maxParallelization = maxParallelization;
             _maxQueueingActions = maxQueueingActions;
@@ -74,8 +73,7 @@ namespace Polly.Bulkhead
             int maxQueueingActions,
             SemaphoreSlim maxParallelizationSemaphore,
             SemaphoreSlim maxQueuedActionsSemaphore,
-            Func<Context, Task> onBulkheadRejectedAsync
-            ) : base(ExceptionPredicates.None, ResultPredicates<TResult>.None)
+            Func<Context, Task> onBulkheadRejectedAsync)
         {
             _maxParallelization = maxParallelization;
             _maxQueueingActions = maxQueueingActions;

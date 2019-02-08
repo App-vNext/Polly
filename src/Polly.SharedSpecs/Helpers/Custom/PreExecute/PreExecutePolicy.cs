@@ -13,7 +13,6 @@ namespace Polly.Specs.Helpers.Custom.PreExecute
         }
 
         internal PreExecutePolicy(Action preExecute)
-            :base(ExceptionPredicates.None)
         {
             _preExecute = preExecute ?? throw new ArgumentNullException(nameof(preExecute));
         }
@@ -34,7 +33,6 @@ namespace Polly.Specs.Helpers.Custom.PreExecute
         }
 
         internal PreExecutePolicy(Action preExecute)
-            : base(ExceptionPredicates.None, ResultPredicates<TResult>.None)
         {
             _preExecute = preExecute ?? throw new ArgumentNullException(nameof(preExecute));
         }

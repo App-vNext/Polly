@@ -11,10 +11,19 @@
         /// </summary>
         /// <param name="exceptionPredicates">Predicates indicating which exceptions the policy should handle. </param>
         /// <param name="resultPredicates">Predicates indicating which results the policy should handle. </param>
-        protected AsyncPolicy(
+        internal AsyncPolicy(
             ExceptionPredicates exceptionPredicates,
             ResultPredicates<TResult> resultPredicates)
             : base(exceptionPredicates, resultPredicates)
+        {
+        }
+
+        /// <summary>
+        /// Constructs a new instance of a derived <see cref="AsyncPolicy{TResult}"/> type with the passed <paramref name="policyBuilder"/>. 
+        /// </summary>
+        /// <param name="policyBuilder">A <see cref="PolicyBuilder{TResult}"/> indicating which exceptions and results the policy should handle.</param>
+        protected AsyncPolicy(PolicyBuilder<TResult> policyBuilder = null)
+            : base(policyBuilder)
         {
         }
     }

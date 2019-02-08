@@ -10,7 +10,6 @@ namespace Polly.NoOp
     public class NoOpPolicy : Policy, INoOpPolicy
     {
         internal NoOpPolicy()
-            : base(ExceptionPredicates.None)
         {
         }
 
@@ -26,7 +25,7 @@ namespace Polly.NoOp
     /// <typeparam name="TResult">The type of return values this policy will handle.</typeparam>
     public class NoOpPolicy<TResult> : Policy<TResult>, INoOpPolicy<TResult>
     {
-        internal NoOpPolicy() : base(ExceptionPredicates.None, ResultPredicates<TResult>.None)
+        internal NoOpPolicy()
         {
         }
 

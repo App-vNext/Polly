@@ -9,8 +9,8 @@ namespace Polly.Specs.Helpers.Custom.AddBehaviourIfHandle
 
         internal AsyncAddBehaviourIfHandlePolicy(
             Func<Exception, Task> behaviourIfHandle, 
-            ExceptionPredicates handleExceptionPredicates)
-            : base(handleExceptionPredicates)
+            PolicyBuilder policyBuilder)
+            : base(policyBuilder)
         {
             _behaviourIfHandle = behaviourIfHandle ?? throw new ArgumentNullException(nameof(behaviourIfHandle));
         }
@@ -36,9 +36,8 @@ namespace Polly.Specs.Helpers.Custom.AddBehaviourIfHandle
 
         internal AsyncAddBehaviourIfHandlePolicy(
             Func<DelegateResult<TResult>, Task> behaviourIfHandle,
-            ExceptionPredicates handleExceptionPredicates, 
-            ResultPredicates<TResult> handleResultPredicates)
-            : base(handleExceptionPredicates, handleResultPredicates)
+            PolicyBuilder<TResult> policyBuilder)
+            : base(policyBuilder)
         {
             _behaviourIfHandle = behaviourIfHandle ?? throw new ArgumentNullException(nameof(behaviourIfHandle));
 
