@@ -14,11 +14,9 @@ namespace Polly.Fallback
         private Func<Exception, Context, Task> _onFallbackAsync;
         private Func<Exception, Context, CancellationToken, Task> _fallbackAction;
 
-        internal AsyncFallbackPolicy(
-            Func<Exception, Context, Task> onFallbackAsync,
-            Func<Exception, Context, CancellationToken, Task> fallbackAction,
-            ExceptionPredicates exceptionPredicates)
-           : base(exceptionPredicates)
+        internal AsyncFallbackPolicy(PolicyBuilder policyBuilder, Func<Exception, Context, Task> onFallbackAsync,
+            Func<Exception, Context, CancellationToken, Task> fallbackAction)
+           : base(policyBuilder)
         {
             _onFallbackAsync = onFallbackAsync ?? throw new ArgumentNullException(nameof(onFallbackAsync));
             _fallbackAction = fallbackAction ?? throw new ArgumentNullException(nameof(fallbackAction));
@@ -63,11 +61,10 @@ namespace Polly.Fallback
         private Func<DelegateResult<TResult>, Context, CancellationToken, Task<TResult>> _fallbackAction;
 
         internal AsyncFallbackPolicy(
-            ExceptionPredicates exceptionPredicates,
-            ResultPredicates<TResult> resultPredicates,
+            PolicyBuilder<TResult> policyBuilder,
             Func<DelegateResult<TResult>, Context, Task> onFallbackAsync, 
             Func<DelegateResult<TResult>, Context, CancellationToken, Task<TResult>> fallbackAction
-            ) : base(exceptionPredicates, resultPredicates)
+            ) : base(policyBuilder)
         {
             _onFallbackAsync = onFallbackAsync ?? throw new ArgumentNullException(nameof(onFallbackAsync));
             _fallbackAction = fallbackAction ?? throw new ArgumentNullException(nameof(fallbackAction));

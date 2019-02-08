@@ -11,7 +11,7 @@ namespace Polly
         /// <summary>
         /// Predicates indicating which exceptions the policy handles.
         /// </summary>
-        public ExceptionPredicates ExceptionPredicates { get; }
+        protected internal ExceptionPredicates ExceptionPredicates { get; }
 
         /// <summary>
         /// Defines a CancellationToken to use, when none is supplied.
@@ -36,10 +36,18 @@ namespace Polly
         /// Constructs a new instance of a derived type of <see cref="PolicyBase"/> with the passed <paramref name="exceptionPredicates"/>.
         /// </summary>
         /// <param name="exceptionPredicates">Predicates indicating which exceptions the policy should handle. </param>
-        protected PolicyBase(
-            ExceptionPredicates exceptionPredicates)
+        internal PolicyBase(ExceptionPredicates exceptionPredicates)
         {
             ExceptionPredicates = exceptionPredicates ?? ExceptionPredicates.None;
+        }
+
+        /// <summary>
+        /// Constructs a new instance of a derived type of <see cref="PolicyBase"/> with the passed <paramref name="policyBuilder"/>.
+        /// </summary>
+        /// <param name="policyBuilder">A <see cref="PolicyBuilder"/> indicating which exceptions the policy should handle.</param>
+        protected PolicyBase(PolicyBuilder policyBuilder)
+            : this(policyBuilder?.ExceptionPredicates)
+        {
         }
     }
 
@@ -51,19 +59,28 @@ namespace Polly
         /// <summary>
         /// Predicates indicating which results the policy handles.
         /// </summary>
-        public ResultPredicates<TResult> ResultPredicates { get; }
+        protected internal ResultPredicates<TResult> ResultPredicates { get; }
 
         /// <summary>
-        /// Constructs a new instance of a derived type of <see cref="PolicyBase{TResult}"/> with the passed <paramref name="exceptionPredicates"/> and <paramref name="resultPredicates"/>.
+        /// Constructs a new instance of a derived type of <see cref="PolicyBase{TResult}"/>.
         /// </summary>
         /// <param name="exceptionPredicates">Predicates indicating which exceptions the policy should handle. </param>
         /// <param name="resultPredicates">Predicates indicating which results the policy should handle. </param>
-        protected PolicyBase(
+        internal PolicyBase(
             ExceptionPredicates exceptionPredicates,
             ResultPredicates<TResult> resultPredicates)
         : base(exceptionPredicates)
         {
             ResultPredicates = resultPredicates ?? ResultPredicates<TResult>.None;
         }
-}
+
+        /// <summary>
+        /// Constructs a new instance of a derived type of <see cref="PolicyBase{TResult}"/> with the passed <paramref name="policyBuilder"/>.
+        /// </summary>
+        /// <param name="policyBuilder">A <see cref="PolicyBuilder"/> indicating which exceptions the policy should handle.</param>
+        protected PolicyBase(PolicyBuilder<TResult> policyBuilder)
+            : this(policyBuilder?.ExceptionPredicates, policyBuilder?.ResultPredicates)
+        {
+        }
+    }
 }

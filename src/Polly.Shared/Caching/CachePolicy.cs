@@ -28,7 +28,6 @@ namespace Polly.Caching
             Action<Context, string> onCachePut,
             Action<Context, string, Exception> onCacheGetError,
             Action<Context, string, Exception> onCachePutError)
-            : base(ExceptionPredicates.None)
         {
             _syncCacheProvider = syncCacheProvider;
             _ttlStrategy = ttlStrategy;
@@ -89,7 +88,6 @@ namespace Polly.Caching
             Action<Context, string> onCachePut,
             Action<Context, string, Exception> onCacheGetError,
             Action<Context, string, Exception> onCachePutError)
-            : base(ExceptionPredicates.None, ResultPredicates<TResult>.None)
         {
             _syncCacheProvider = syncCacheProvider;
             _ttlStrategy = ttlStrategy;

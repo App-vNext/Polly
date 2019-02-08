@@ -123,7 +123,7 @@ namespace Polly
             if (onFallback == null) throw new ArgumentNullException(nameof(onFallback));
 
             return new FallbackPolicy(
-                    policyBuilder.ExceptionPredicates,
+                    policyBuilder,
                     onFallback,
                     fallbackAction);
         }
@@ -289,8 +289,7 @@ namespace Polly
             if (onFallback == null) throw new ArgumentNullException(nameof(onFallback));
 
             return new FallbackPolicy<TResult>(
-                policyBuilder.ExceptionPredicates,
-                policyBuilder.ResultPredicates,
+                policyBuilder,
                 onFallback,
                 fallbackAction);
         }

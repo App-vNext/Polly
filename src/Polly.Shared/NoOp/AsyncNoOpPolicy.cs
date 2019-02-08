@@ -11,7 +11,6 @@ namespace Polly.NoOp
     public class AsyncNoOpPolicy : AsyncPolicy, INoOpPolicy
     {
         internal AsyncNoOpPolicy() 
-            : base(ExceptionPredicates.None)
         {
         }
 
@@ -28,7 +27,6 @@ namespace Polly.NoOp
     public class AsyncNoOpPolicy<TResult> : AsyncPolicy<TResult>, INoOpPolicy<TResult>
     {
         internal AsyncNoOpPolicy() 
-            : base(ExceptionPredicates.None, ResultPredicates<TResult>.None)
         {
         }
 

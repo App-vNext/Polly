@@ -10,10 +10,18 @@
         /// </summary>
         /// <param name="exceptionPredicates">Predicates indicating which exceptions the policy should handle.</param>
         /// <param name="resultPredicates">Predicates indicating which results the policy should handle.</param>
-        protected Policy(ExceptionPredicates exceptionPredicates, ResultPredicates<TResult> resultPredicates)
+        internal Policy(ExceptionPredicates exceptionPredicates, ResultPredicates<TResult> resultPredicates)
         : base(exceptionPredicates, resultPredicates)
         {
         }
-    }
 
+        /// <summary>
+        /// Constructs a new instance of a derived <see cref="Policy{TResult}"/> type with the passed <paramref name="policyBuilder"/>.
+        /// </summary>
+        /// <param name="policyBuilder">A <see cref="PolicyBuilder{TResult}"/> indicating which exceptions and results the policy should handle.</param>
+        protected Policy(PolicyBuilder<TResult> policyBuilder = null)
+            : base(policyBuilder)
+        {
+        }
+    }
 }

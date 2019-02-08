@@ -243,7 +243,7 @@ namespace Polly
                 onReset,
                 onHalfOpen);
             return new CircuitBreakerPolicy(
-                policyBuilder.ExceptionPredicates,
+                policyBuilder,
                 breakerController
                 );
         }
