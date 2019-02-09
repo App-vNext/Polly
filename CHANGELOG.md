@@ -3,6 +3,7 @@
 - Enable extensibility by custom policies hosted external to Polly
 - Enable collection initialization syntax for PolicyRegistry
 - Enable cache policies to cache default(TResult) (breaking change)
+- Restore Exception binary serialization for .Net Standard 2.0
 
 ## 6.1.2
 - Bug Fix: Async continuation control for async executions (issue 540, affected only v6.1.1)
