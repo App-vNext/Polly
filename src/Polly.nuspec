@@ -13,6 +13,10 @@
     <tags>Exception Handling Resilience Transient Fault Policy Circuit Breaker CircuitBreaker Retry Wait Cache Cache-aside Bulkhead Fallback Timeout Throttle Parallelization</tags>
     <copyright>Copyright © 2018, App vNext</copyright>
     <releaseNotes>
+     7.0.1
+     ---------------------
+     - Explicitly state System.ValueTuple dependency in nuspec (for Net Standard 1.1)
+
      7.0.0
      ---------------------
      - Clarify separation of sync and async policies (breaking change)
@@ -168,6 +172,7 @@
     <dependencies>
       <group targetFramework="netstandard1.1">
         <dependency id="NETStandard.Library" version="1.6.1" />
+        <dependency id="System.ValueTuple" version="4.5.0" />
       </group>
       <group targetFramework="netstandard2.0"/>
     </dependencies>

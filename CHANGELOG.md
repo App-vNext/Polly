@@ -1,3 +1,6 @@
+## 7.0.1
+- Explicitly state System.ValueTuple dependency in nuspec (for Net Standard 1.1)
+
 ## 7.0.0
 - Clarify separation of sync and async policies (breaking change)
 - Enable extensibility by custom policies hosted external to Polly
