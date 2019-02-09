@@ -40,13 +40,25 @@ In addition to the detailed pages on each policy, an [introduction to the role o
 
 For using Polly with  HttpClient factory from ASPNET Core 2.1, see our [detailed wiki page](https://github.com/App-vNext/Polly/wiki/Polly-and-HttpClientFactory), then come back here or [explore the wiki](https://github.com/App-vNext/Polly/wiki) to learn more about the operation of each policy.
 
-# Usage &ndash; fault-handling policies
+### Release notes
+
++ The [change log](https://github.com/App-vNext/Polly/blob/master/CHANGELOG.md) describes changes by release.
++ We tag Pull Requests and Issues with [milestones](https://github.com/App-vNext/Polly/milestones) which match to nuget package release numbers.
++ Breaking changes are called out in the wiki ([v7](https://github.com/App-vNext/Polly/wiki/Polly-v7-breaking-changes) ; [v6](https://github.com/App-vNext/Polly/wiki/Polly-v6-breaking-changes)) with simple notes on any necessary steps to upgrade.
+
+### Supported targets
+
+For details of supported compilation targets by version, see the [supported targets](https://github.com/App-vNext/Polly/wiki/Supported-targets) grid.
+
+### Role of the readme and the wiki
+
+This ReadMe aims to give a quick overview of all Polly features - including enough to get you started with any policy.  For deeper detail on any policy, and many other aspects of Polly, be sure also to check out the [wiki documentation](https://github.com/App-vNext/Polly/wiki).
+
+# Usage &ndash; fault-handling, reactive policies
 
 Fault-handling policies handle specific exceptions thrown by, or results returned by, the delegates you execute through the policy.
 
 ## Step 1 : Specify the  exceptions/faults you want the policy to handle 
-
-### (for fault-handling policies:  Retry family, CircuitBreaker family and Fallback)
 
 ```csharp
 // Single exception type
@@ -359,9 +371,11 @@ breaker.Reset();
 
 ```
 
+Circuit-breaker policies block exceptions by throwing `BrokenCircuitException` when the circuit is broken. See: [Circuit-Breaker documentation on wiki](https://github.com/App-vNext/Polly/wiki/Circuit-Breaker).
+
 Note that circuit-breaker policies [rethrow all exceptions](https://github.com/App-vNext/Polly/wiki/Circuit-Breaker#exception-handling), even handled ones. A circuit-breaker exists to measure faults and break the circuit when too many faults occur, but does not orchestrate retries.  Combine a circuit-breaker with a retry policy as needed. 
 
-For more depth see also: [Circuit-Breaker documentation on wiki](https://github.com/App-vNext/Polly/wiki/Circuit-Breaker).
+
 
 ### Advanced Circuit Breaker 
 ```csharp
@@ -473,9 +487,9 @@ Policy
 
 The above examples show policy definition immediately followed by policy execution, for simplicity.  Policy definition and execution may just as often be separated in the codebase and application lifecycle.  You may choose for example to define policies on start-up, then provide them to point-of-use by dependency injection (perhaps using [`PolicyRegistry`](#policyregistry)).
 
-# Usage &ndash; general resilience policies
+# Usage &ndash; proactive policies
 
-The general resilience policies add resilience strategies that are not explicitly centred around handling faults which delegates may throw or return.
+The proactive policies add resilience strategies that not based on handling faults which delegates may throw or return.
 
 ## Step 1 : Configure
 
@@ -556,6 +570,8 @@ var response = await timeoutPolicy
       );
 ```
 
+Timeout policies throw `TimeoutRejectedException` when timeout occurs. 
+
 For more detail see: [Timeout policy documentation](https://github.com/App-vNext/Polly/wiki/Timeout) on wiki.
 
 ### Bulkhead
@@ -584,6 +600,8 @@ int freeExecutionSlots = bulkhead.BulkheadAvailableCount;
 int freeQueueSlots     = bulkhead.QueueAvailableCount;
 
 ```
+
+Bulkhead policies throw `BulkheadRejectedException` if items are queued to the bulkhead when the bulkhead execution and queue are both full. 
 
 
 For more detail see: [Bulkhead policy documentation](https://github.com/App-vNext/Polly/wiki/Bulkhead) on wiki.
@@ -920,12 +938,6 @@ This allows collections of similar kinds of policy to be treated as one - for ex
 
 For more detail see: [Polly and interfaces](https://github.com/App-vNext/Polly/wiki/Polly-and-interfaces) on wiki.
 
-# Release notes
-
-For details of changes by release see the [change log](https://github.com/App-vNext/Polly/blob/master/CHANGELOG.md).  We also tag relevant Pull Requests and Issues with [milestones](https://github.com/App-vNext/Polly/milestones), which match to nuget package release numbers.
-
-For full detailed of supported targets by version, see [supported targets](https://github.com/App-vNext/Polly/wiki/Supported-targets).
-
 # 3rd Party Libraries and Contributions
 
 * [Fluent Assertions](https://github.com/fluentassertions/fluentassertions) - A set of .NET extension methods that allow you to more naturally specify the expected outcome of a TDD or BDD-style test | [Apache License 2.0 (Apache)](https://github.com/dennisdoomen/fluentassertions/blob/develop/LICENSE)
@@ -994,6 +1006,11 @@ For full detailed of supported targets by version, see [supported targets](https
 * [@freakazoid182](https://github.com/Freakazoid182) - WaitAnd/RetryForever overloads where onRetry takes the retry number as a parameter.
 * [@dustyhoppe](https://github.com/dustyhoppe) - Overloads where onTimeout takes thrown exception as a parameter.
 * [@flin-zap](https://github.com/flin-zap) - Catch missing async continuation control.
+* [@reisenberger](https://github.com/reisenberger) - Clarify separation of sync and async policies.
+* [@reisenberger](https://github.com/reisenberger) - Enable extensibility by custom policies hosted external to Polly.
+* [@seanfarrow](https://github.com/SeanFarrow) - Enable collection initialization syntax for PolicyRegistry.
+* [@moerwald](https://github.com/moerwald) - Code clean-ups, usage of more concise C# members.
+* [@cmeeren](https://github.com/cmeeren) - Enable cache policies to cache values of default(TResult).
 
 # Sample Projects
 
@@ -1003,7 +1020,9 @@ For full detailed of supported targets by version, see [supported targets](https
 
 # Instructions for Contributing
 
-Please check out our [Wiki](https://github.com/App-vNext/Polly/wiki/Git-Workflow) for contributing guidelines. We are following the excellent GitHub Flow process, and would like to make sure you have all of the information needed to be a world-class contributor!
+Please be sure to branch from the head of the latest vX.Y.Z dev branch (rather than master) when developing contributions.  
+
+For github workflow, check out our [Wiki](https://github.com/App-vNext/Polly/wiki/Git-Workflow). We are following the excellent GitHub Flow process, and would like to make sure you have all of the information needed to be a world-class contributor!
 
 Since Polly is part of the .NET Foundation, we ask our contributors to abide by their [Code of Conduct](https://www.dotnetfoundation.org/code-of-conduct).  To contribute (beyond trivial typo corrections), review and sign the [.Net Foundation Contributor License Agreement](https://cla.dotnetfoundation.org/). This ensures the community is free to use your contributions.  The registration process can be completed entirely online.
 

@@ -1,5 +1,4 @@
 ﻿using Polly.Bulkhead;
-using Polly.Utilities;
 using System;
 using System.Threading;
 
@@ -30,9 +29,7 @@ namespace Polly
         /// <exception cref="System.ArgumentNullException">onBulkheadRejected</exception>
         /// <returns>The policy instance.</returns>
         public static BulkheadPolicy Bulkhead(int maxParallelization, Action<Context> onBulkheadRejected)
-        {
-            return Bulkhead(maxParallelization, 0, onBulkheadRejected);
-        }
+            => Bulkhead(maxParallelization, 0, onBulkheadRejected);
 
         /// <summary>
         /// Builds a bulkhead isolation <see cref="Policy" />, which limits the maximum concurrency of actions executed through the policy.  Imposing a maximum concurrency limits the potential of governed actions, when faulting, to bring down the system.
@@ -74,18 +71,11 @@ namespace Polly
             SemaphoreSlim maxQueuedActionsSemaphore = new SemaphoreSlim(maxQueuingCompounded, maxQueuingCompounded);
 
             return new BulkheadPolicy(
-                (action, context, cancellationToken) => BulkheadEngine.Implementation(
-                    (ctx, ct) => { action(ctx, ct); return EmptyStruct.Instance; },
-                    context,
-                    onBulkheadRejected,
-                    maxParallelizationSemaphore,
-                    maxQueuedActionsSemaphore,
-                    cancellationToken
-                ),
                 maxParallelization,
                 maxQueuingActions,
                 maxParallelizationSemaphore,
-                maxQueuedActionsSemaphore
+                maxQueuedActionsSemaphore,
+                onBulkheadRejected
             );
         }
         

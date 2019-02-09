@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Polly.Caching
 {
@@ -27,9 +25,7 @@ namespace Polly.Caching
         /// </summary>
         /// <param name="ttlFunc">The function to calculate the TTL for which cache items should be considered valid.</param>
         public ResultTtl(Func<Context, TResult, Ttl> ttlFunc)
-        {
-            _ttlFunc = ttlFunc ?? throw new ArgumentNullException(nameof(ttlFunc));
-        }
+            => _ttlFunc = ttlFunc ?? throw new ArgumentNullException(nameof(ttlFunc));
 
         /// <summary>
         /// Gets a TTL for the cacheable item.
@@ -38,9 +34,6 @@ namespace Polly.Caching
         /// <param name="result">The execution result.</param>
         /// <returns>A <see cref="Ttl"/> representing the remaining Ttl of the cached item.</returns>
 
-        public Ttl GetTtl(Context context, TResult result)
-        {
-            return _ttlFunc(context, result);
-        }
+        public Ttl GetTtl(Context context, TResult result) => _ttlFunc(context, result);
     }
 }

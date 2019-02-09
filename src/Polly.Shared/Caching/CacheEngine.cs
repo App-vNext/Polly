@@ -3,7 +3,7 @@ using System.Threading;
 
 namespace Polly.Caching
 {
-    internal static partial class CacheEngine
+    internal static class CacheEngine
     {
         internal static TResult Implementation<TResult>(
             ISyncCacheProvider<TResult> cacheProvider,
@@ -26,17 +26,19 @@ namespace Polly.Caching
                 return action(context, cancellationToken);
             }
 
+            bool cacheHit;
             TResult valueFromCache;
             try
             {
-                valueFromCache = cacheProvider.Get(cacheKey);
+                (cacheHit, valueFromCache) = cacheProvider.TryGet(cacheKey);
             }
             catch (Exception ex)
             {
+                cacheHit = false;
                 valueFromCache = default(TResult);
                 onCacheGetError(context, cacheKey, ex);
             }
-            if (valueFromCache != null && !valueFromCache.Equals(default(TResult)))
+            if (cacheHit)
             {
                 onCacheGet(context, cacheKey);
                 return valueFromCache;
@@ -49,7 +51,7 @@ namespace Polly.Caching
             TResult result = action(context, cancellationToken);
 
             Ttl ttl = ttlStrategy.GetTtl(context, result);
-            if (ttl.Timespan > TimeSpan.Zero && result != null && !result.Equals(default(TResult)))
+            if (ttl.Timespan > TimeSpan.Zero)
             {
                 try
                 {

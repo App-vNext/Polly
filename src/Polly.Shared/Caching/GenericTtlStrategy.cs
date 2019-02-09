@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Polly.Utilities;
 
 namespace Polly.Caching
 {
@@ -13,9 +10,7 @@ namespace Polly.Caching
         private readonly ITtlStrategy _wrappedTtlStrategy;
 
         internal GenericTtlStrategy(ITtlStrategy ttlStrategy)
-        {
-            _wrappedTtlStrategy = ttlStrategy ?? throw new ArgumentNullException(nameof(ttlStrategy));
-        }
+            => _wrappedTtlStrategy = ttlStrategy ?? throw new ArgumentNullException(nameof(ttlStrategy));
 
         /// <summary>
         /// Gets a TTL for a cacheable item, given the current execution context and result.
@@ -23,9 +18,6 @@ namespace Polly.Caching
         /// <param name="context">The execution context.</param>
         /// <param name="result">The execution result.</param>
         /// <returns>A <see cref="Ttl"/> representing the remaining Ttl of the cached item.</returns>
-        public Ttl GetTtl(Context context, TResult result)
-        {
-            return _wrappedTtlStrategy.GetTtl(context, (object)result);
-        }
+        public Ttl GetTtl(Context context, TResult result) => _wrappedTtlStrategy.GetTtl(context, (object)result);
     }
 }

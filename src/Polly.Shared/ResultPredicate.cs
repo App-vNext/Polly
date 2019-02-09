@@ -1,7 +1,7 @@
 ﻿namespace Polly
 {
     /// <summary>
-    /// A predicate that can be run against a passed result value of type <typeparamref name="TResult"/>.
+    /// A predicate that can be run against a passed result value of type <typeparamref name="TResult"/>. Predicates are used to define whether policies handle the given result.
     /// </summary>
     /// <param name="result">The passed result, against which to evaluate the predicate.</param>
     /// <typeparam name="TResult">The type of results which this predicate can evaluate.</typeparam>

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Threading;
 
 namespace Polly
@@ -81,7 +80,7 @@ namespace Polly
 
             try
             {
-                ExecuteInternal(action, context, cancellationToken);
+                Implementation(action, context, cancellationToken);
             }
             finally
             {
@@ -182,7 +181,7 @@ namespace Polly
 
             try
             {
-                return ExecuteInternal(action, context, cancellationToken);
+                return Implementation(action, context, cancellationToken);
             }
             finally
             {
@@ -268,8 +267,6 @@ namespace Polly
         [DebuggerStepThrough]
         public PolicyResult ExecuteAndCapture(Action<Context, CancellationToken> action, Context context, CancellationToken cancellationToken)
         {
-            if (_exceptionPolicy == null) throw new InvalidOperationException(
-                "Please use the synchronous-defined policies when calling the synchronous Execute (and similar) methods.");
             if (context == null) throw new ArgumentNullException(nameof(context));
 
             try
@@ -360,8 +357,6 @@ namespace Polly
         [DebuggerStepThrough]
         public PolicyResult<TResult> ExecuteAndCapture<TResult>(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken)
         {
-            if (_exceptionPolicy == null) throw new InvalidOperationException(
-                "Please use the synchronous-defined policies when calling the synchronous Execute (and similar) methods.");
             if (context == null) throw new ArgumentNullException(nameof(context));
 
             try
@@ -374,15 +369,6 @@ namespace Polly
             }
         }
         #endregion
-
-        internal static ExceptionType GetExceptionType(IEnumerable<ExceptionPredicate> exceptionPredicates, Exception exception)
-        {
-            bool isExceptionTypeHandledByThisPolicy = exceptionPredicates.Any(predicate => predicate(exception) != null);
-
-            return isExceptionTypeHandledByThisPolicy
-                ? ExceptionType.HandledByThisPolicy
-                : ExceptionType.Unhandled;
-        }
 
         #endregion
 

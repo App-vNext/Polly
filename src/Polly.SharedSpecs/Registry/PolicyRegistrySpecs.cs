@@ -1,11 +1,12 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Text;
+using System.Reflection;
 using Xunit;
 using FluentAssertions;
 using Polly.Registry;
-using Polly.NoOp;
 using Polly.Specs.Helpers;
+using Moq;
 
 namespace Polly.Specs.Registry
 {
@@ -440,6 +441,33 @@ namespace Polly.Specs.Registry
             _registry.Invoking(r => r.ContainsKey(key))
                 .ShouldThrow<ArgumentNullException>();
         }
+        #endregion
+
+        #region Tests for the constructor        
+        [Fact]
+        public void Constructor_Called_With_A_Registry_Parameter_Should_Assign_The_Passed_In_Registry_To_The_Registry_Field()
+        {
+            var testDictionary = new Mock<IDictionary<string, IsPolicy>>();
+            var testRegistry = new PolicyRegistry(testDictionary.Object);
+
+            //Generally, using reflection is a bad practice, but we are accepting it given we own the implementation.
+            var registryField = typeof(PolicyRegistry).GetField("_registry", BindingFlags.NonPublic | BindingFlags.GetField | BindingFlags.Instance);
+            var registryFieldValue = registryField.GetValue(testRegistry);
+            registryFieldValue.Should().Be(testDictionary.Object);
+        }
+
+        [Fact]
+        public void Constructor_Called_With_Default_Parameters_Assigns_A_ConcurrentDictionary_Of_TKey_And_IsPolicy_To_The_Private_Registry_Field()
+        {
+            var expectedDictionaryType = typeof(ConcurrentDictionary<string, IsPolicy>);
+            var testRegistry = new PolicyRegistry();
+
+            //Generally, using reflection is a bad practice, but we are accepting it given we own the implementation.
+            var registryField = typeof(PolicyRegistry).GetField("_registry", BindingFlags.NonPublic | BindingFlags.GetField | BindingFlags.Instance);
+            var registryFieldValue = registryField.GetValue(testRegistry);
+            registryFieldValue.Should().BeOfType(expectedDictionaryType);
+        }
+
         #endregion
     }
 }

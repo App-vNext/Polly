@@ -4,12 +4,12 @@ using Polly.CircuitBreaker;
 namespace Polly
 {
     /// <summary>
-    /// Fluent API for defining a Circuit Breaker <see cref="Policy"/>. 
+    /// Fluent API for defining a Circuit Breaker <see cref="Policy{TResult}"/>. 
     /// </summary>
     public static class CircuitBreakerTResultSyntax
     {
         /// <summary>
-        /// <para> Builds a <see cref="Policy"/> that will function like a Circuit Breaker.</para>
+        /// <para> Builds a <see cref="Policy{TResult}"/> that will function like a Circuit Breaker.</para>
         /// <para>The circuit will break if <paramref name="handledEventsAllowedBeforeBreaking"/>
         /// exceptions or results that are handled by this policy are encountered consecutively. </para>
         /// <para>The circuit will stay broken for the <paramref name="durationOfBreak"/>. Any attempt to execute this policy
@@ -42,7 +42,7 @@ namespace Polly
         }
 
         /// <summary>
-        /// <para> Builds a <see cref="Policy"/> that will function like a Circuit Breaker.</para>
+        /// <para> Builds a <see cref="Policy{TResult}"/> that will function like a Circuit Breaker.</para>
         /// <para>The circuit will break if <paramref name="handledEventsAllowedBeforeBreaking"/>
         /// exceptions or results that are handled by this policy are encountered consecutively. </para>
         /// <para>The circuit will stay broken for the <paramref name="durationOfBreak"/>. Any attempt to execute this policy
@@ -64,17 +64,15 @@ namespace Polly
         /// <exception cref="ArgumentNullException">onBreak</exception>
         /// <exception cref="ArgumentNullException">onReset</exception>
         public static CircuitBreakerPolicy<TResult> CircuitBreaker<TResult>(this PolicyBuilder<TResult> policyBuilder, int handledEventsAllowedBeforeBreaking, TimeSpan durationOfBreak, Action<DelegateResult<TResult>, TimeSpan> onBreak, Action onReset)
-        {
-            return policyBuilder.CircuitBreaker(
+            => policyBuilder.CircuitBreaker(
                 handledEventsAllowedBeforeBreaking,
                 durationOfBreak,
                 (outcome, timespan, context) => onBreak(outcome, timespan),
                 context => onReset()
                 );
-        }
 
         /// <summary>
-        /// <para> Builds a <see cref="Policy"/> that will function like a Circuit Breaker.</para>
+        /// <para> Builds a <see cref="Policy{TResult}"/> that will function like a Circuit Breaker.</para>
         /// <para>The circuit will break if <paramref name="handledEventsAllowedBeforeBreaking"/>
         /// exceptions or results that are handled by this policy are encountered consecutively. </para>
         /// <para>The circuit will stay broken for the <paramref name="durationOfBreak"/>. Any attempt to execute this policy
@@ -107,7 +105,7 @@ namespace Polly
         }
 
         /// <summary>
-        /// <para> Builds a <see cref="Policy"/> that will function like a Circuit Breaker.</para>
+        /// <para> Builds a <see cref="Policy{TResult}"/> that will function like a Circuit Breaker.</para>
         /// <para>The circuit will break if <paramref name="handledEventsAllowedBeforeBreaking"/>
         /// exceptions or results that are handled by this policy are encountered consecutively. </para>
         /// <para>The circuit will stay broken for the <paramref name="durationOfBreak"/>. Any attempt to execute this policy
@@ -130,18 +128,16 @@ namespace Polly
         /// <exception cref="ArgumentNullException">onBreak</exception>
         /// <exception cref="ArgumentNullException">onReset</exception>
         public static CircuitBreakerPolicy<TResult> CircuitBreaker<TResult>(this PolicyBuilder<TResult> policyBuilder, int handledEventsAllowedBeforeBreaking, TimeSpan durationOfBreak, Action<DelegateResult<TResult>, TimeSpan> onBreak, Action onReset, Action onHalfOpen)
-        {
-            return policyBuilder.CircuitBreaker(
+            => policyBuilder.CircuitBreaker(
                 handledEventsAllowedBeforeBreaking,
                 durationOfBreak,
                 (outcome, timespan, context) => onBreak(outcome, timespan),
                 context => onReset(),
                 onHalfOpen
                 );
-        }
 
         /// <summary>
-        /// <para> Builds a <see cref="Policy"/> that will function like a Circuit Breaker.</para>
+        /// <para> Builds a <see cref="Policy{TResult}"/> that will function like a Circuit Breaker.</para>
         /// <para>The circuit will break if <paramref name="handledEventsAllowedBeforeBreaking"/>
         /// exceptions or results that are handled by this policy are encountered consecutively. </para>
         /// <para>The circuit will stay broken for the <paramref name="durationOfBreak"/>. Any attempt to execute this policy
@@ -165,18 +161,16 @@ namespace Polly
         /// <exception cref="ArgumentNullException">onReset</exception>
         /// <exception cref="ArgumentNullException">onHalfOpen</exception>
         public static CircuitBreakerPolicy<TResult> CircuitBreaker<TResult>(this PolicyBuilder<TResult> policyBuilder, int handledEventsAllowedBeforeBreaking, TimeSpan durationOfBreak, Action<DelegateResult<TResult>, TimeSpan, Context> onBreak, Action<Context> onReset, Action onHalfOpen)
-        {
-            return policyBuilder.CircuitBreaker(
+            => policyBuilder.CircuitBreaker(
                 handledEventsAllowedBeforeBreaking,
                 durationOfBreak,
                 (outcome, state, timespan, context) => onBreak(outcome, timespan, context),
                 onReset,
                 onHalfOpen
             );
-        }
 
         /// <summary>
-        /// <para> Builds a <see cref="Policy"/> that will function like a Circuit Breaker.</para>
+        /// <para> Builds a <see cref="Policy{TResult}"/> that will function like a Circuit Breaker.</para>
         /// <para>The circuit will break if <paramref name="handledEventsAllowedBeforeBreaking"/>
         /// exceptions or results that are handled by this policy are encountered consecutively. </para>
         /// <para>The circuit will stay broken for the <paramref name="durationOfBreak"/>. Any attempt to execute this policy
@@ -201,12 +195,12 @@ namespace Polly
         /// <exception cref="ArgumentNullException">onHalfOpen</exception>
         public static CircuitBreakerPolicy<TResult> CircuitBreaker<TResult>(this PolicyBuilder<TResult> policyBuilder, int handledEventsAllowedBeforeBreaking, TimeSpan durationOfBreak, Action<DelegateResult<TResult>, CircuitState, TimeSpan, Context> onBreak, Action<Context> onReset, Action onHalfOpen)
         {
-            if (handledEventsAllowedBeforeBreaking <= 0) throw new ArgumentOutOfRangeException("handledEventsAllowedBeforeBreaking", "Value must be greater than zero.");
-            if (durationOfBreak < TimeSpan.Zero) throw new ArgumentOutOfRangeException("durationOfBreak", "Value must be greater than zero.");
+            if (handledEventsAllowedBeforeBreaking <= 0) throw new ArgumentOutOfRangeException(nameof(handledEventsAllowedBeforeBreaking), "Value must be greater than zero.");
+            if (durationOfBreak < TimeSpan.Zero) throw new ArgumentOutOfRangeException(nameof(durationOfBreak), "Value must be greater than zero.");
 
-            if (onBreak == null) throw new ArgumentNullException("onBreak");
-            if (onReset == null) throw new ArgumentNullException("onReset");
-            if (onHalfOpen == null) throw new ArgumentNullException("onHalfOpen");
+            if (onBreak == null) throw new ArgumentNullException(nameof(onBreak));
+            if (onReset == null) throw new ArgumentNullException(nameof(onReset));
+            if (onHalfOpen == null) throw new ArgumentNullException(nameof(onHalfOpen));
 
             ICircuitController<TResult> breakerController = new ConsecutiveCountCircuitController<TResult>(
                 handledEventsAllowedBeforeBreaking,
@@ -215,15 +209,7 @@ namespace Polly
                 onReset,
                 onHalfOpen);
             return new CircuitBreakerPolicy<TResult>(
-                (action, context, cancellationToken) => CircuitBreakerEngine.Implementation(
-                    action,
-                    context,
-                    cancellationToken,
-                    policyBuilder.ExceptionPredicates,
-                    policyBuilder.ResultPredicates,
-                    breakerController),
-                policyBuilder.ExceptionPredicates,
-                policyBuilder.ResultPredicates,
+                policyBuilder,
                 breakerController
                 );
         }

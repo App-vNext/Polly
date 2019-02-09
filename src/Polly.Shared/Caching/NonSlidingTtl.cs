@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using Polly.Utilities;
 
 namespace Polly.Caching
@@ -20,9 +18,7 @@ namespace Polly.Caching
         /// </summary>
         /// <param name="absoluteExpirationTime">The absolute expiration time for cache items, represented by this strategy.</param>
         protected NonSlidingTtl(DateTimeOffset absoluteExpirationTime)
-        {
-            this.absoluteExpirationTime = absoluteExpirationTime;
-        }
+            => this.absoluteExpirationTime = absoluteExpirationTime;
 
         /// <summary>
         /// Gets a TTL for a cacheable item, given the current execution context.

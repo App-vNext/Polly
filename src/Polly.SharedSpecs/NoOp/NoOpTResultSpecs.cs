@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using System.Threading;
 using FluentAssertions;
 using Polly.NoOp;
-using Polly.Specs.Helpers;
-using Polly.Utilities;
 using Xunit;
 
 namespace Polly.Specs.NoOp

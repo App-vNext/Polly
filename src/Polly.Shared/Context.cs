@@ -9,7 +9,10 @@ namespace Polly
     /// </summary>
     public partial class Context
     {
-        internal static readonly Context None = new Context();
+        internal static Context None()
+        {
+            return new Context();
+        }
 
         private Guid? _correlationId;
 
@@ -35,13 +38,13 @@ namespace Polly
         public String PolicyWrapKey { get; internal set; }
 
         /// <summary>
-        /// The <see cref="PolicyBase.PolicyKey"/> of the <see cref="Policy"/> instance executing the current delegate.
+        /// The <see cref="PolicyBase.PolicyKey"/> of the policy instance executing the current delegate.
         /// </summary>
         public String PolicyKey { get; internal set; }
 
         /// <summary>
         /// A key unique to the call site of the current execution. 
-        /// <remarks><see cref="Policy"/> instances are commonly reused across multiple call sites.  Set an OperationKey so that logging and metrics can distinguish usages of policy instances at different call sites.</remarks>
+        /// <remarks>Policy instances are commonly reused across multiple call sites.  Set an OperationKey so that logging and metrics can distinguish usages of policy instances at different call sites.</remarks>
         /// <remarks>The value is set by using the <see cref="Context(String)"/> constructor taking an operationKey parameter.</remarks>
         /// </summary>
         public String OperationKey { get; }

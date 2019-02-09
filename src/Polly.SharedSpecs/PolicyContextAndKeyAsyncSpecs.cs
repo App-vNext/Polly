@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
 using FluentAssertions;
-using Polly.Retry;
 using Polly.Specs.Helpers;
 using Polly.Utilities;
 using Xunit;
@@ -17,7 +16,7 @@ namespace Polly.Specs
         {
             var policy = Policy.Handle<Exception>().RetryAsync().WithPolicyKey(Guid.NewGuid().ToString());
 
-            policy.Should().BeAssignableTo<Policy>();
+            policy.Should().BeAssignableTo<AsyncPolicy>();
         }
 
         [Fact]
@@ -64,7 +63,7 @@ namespace Polly.Specs
         {
             var policy = Policy.Handle<Exception>().RetryAsync();
             
-            policy.PolicyKey.Should().StartWith("Retry");
+            policy.PolicyKey.Should().StartWith("AsyncRetry");
         }
 
         [Fact]
@@ -200,7 +199,7 @@ namespace Polly.Specs
         {
             var policy = Policy.HandleResult<int>(0).RetryAsync().WithPolicyKey(Guid.NewGuid().ToString());
 
-            policy.Should().BeAssignableTo<Policy<int>>();
+            policy.Should().BeAssignableTo<AsyncPolicy<int>>();
         }
 
         [Fact]
@@ -247,7 +246,7 @@ namespace Polly.Specs
         {
             var policy = Policy.HandleResult(0).RetryAsync();
 
-            policy.PolicyKey.Should().StartWith("Retry");
+            policy.PolicyKey.Should().StartWith("AsyncRetry");
         }
 
         [Fact]

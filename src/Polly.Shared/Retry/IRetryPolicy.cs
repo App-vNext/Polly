@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Polly.Retry
+﻿namespace Polly.Retry
 {
     /// <summary>
     /// Defines properties and methods common to all Retry policies.

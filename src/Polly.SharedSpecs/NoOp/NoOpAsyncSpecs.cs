@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using System.Threading;
 using FluentAssertions;
-using Polly.NoOp;
-using Polly.Specs.Helpers;
 using Polly.Utilities;
 using Xunit;
 
@@ -16,7 +10,7 @@ namespace Polly.Specs.NoOp
         [Fact]
         public void Should_execute_user_delegate()
         {
-            NoOpPolicy policy = Policy.NoOpAsync();
+            var policy = Policy.NoOpAsync();
             bool executed = false;
 
             policy.Awaiting(async p => await p.ExecuteAsync(() => { executed = true; return TaskHelper.EmptyTask; }))

@@ -2,9 +2,7 @@
 using System.Threading.Tasks;
 using FluentAssertions;
 using Polly.CircuitBreaker;
-using Polly.Retry;
 using Polly.Specs.Helpers;
-using Polly.Utilities;
 using Polly.Wrap;
 using Xunit;
 
@@ -18,9 +16,9 @@ namespace Polly.Specs.Wrap
         [Fact]
         public void Nongeneric_wraps_nongeneric_instance_syntax_wrapping_null_should_throw()
         {
-            RetryPolicy retry = Policy.Handle<Exception>().RetryAsync(1);
+            var retry = Policy.Handle<Exception>().RetryAsync(1);
 
-            Action config = () => retry.WrapAsync((Policy)null);
+            Action config = () => retry.WrapAsync((AsyncPolicy)null);
 
             config.ShouldThrow<ArgumentNullException>().And.ParamName.Should().Be("innerPolicy");
         }
@@ -28,9 +26,9 @@ namespace Polly.Specs.Wrap
         [Fact]
         public void Nongeneric_wraps_generic_instance_syntax_wrapping_null_should_throw()
         {
-            RetryPolicy retry = Policy.Handle<Exception>().RetryAsync(1);
+            var retry = Policy.Handle<Exception>().RetryAsync(1);
 
-            Action config = () => retry.WrapAsync<int>((Policy<int>)null);
+            Action config = () => retry.WrapAsync<int>((AsyncPolicy<int>)null);
 
             config.ShouldThrow<ArgumentNullException>().And.ParamName.Should().Be("innerPolicy");
         }
@@ -38,10 +36,10 @@ namespace Polly.Specs.Wrap
         [Fact]
         public void Nongeneric_wraps_nongeneric_using_instance_wrap_syntax_should_set_outer_inner()
         {
-            Policy policyA = Policy.NoOpAsync();
-            Policy policyB = Policy.NoOpAsync();
+            AsyncPolicy policyA = Policy.NoOpAsync();
+            AsyncPolicy policyB = Policy.NoOpAsync();
 
-            PolicyWrap wrap = policyA.WrapAsync(policyB);
+            AsyncPolicyWrap wrap = policyA.WrapAsync(policyB);
 
             wrap.Outer.Should().BeSameAs(policyA);
             wrap.Inner.Should().BeSameAs(policyB);
@@ -50,10 +48,10 @@ namespace Polly.Specs.Wrap
         [Fact]
         public void Nongeneric_wraps_generic_using_instance_wrap_syntax_should_set_outer_inner()
         {
-            Policy policyA = Policy.NoOpAsync();
-            Policy<int> policyB = Policy.NoOpAsync<int>();
+            AsyncPolicy policyA = Policy.NoOpAsync();
+            AsyncPolicy<int> policyB = Policy.NoOpAsync<int>();
 
-            PolicyWrap<int> wrap = policyA.WrapAsync(policyB);
+            AsyncPolicyWrap<int> wrap = policyA.WrapAsync(policyB);
 
             wrap.Outer.Should().BeSameAs(policyA);
             wrap.Inner.Should().BeSameAs(policyB);
@@ -66,9 +64,9 @@ namespace Polly.Specs.Wrap
         [Fact]
         public void Generic_wraps_nongeneric_instance_syntax_wrapping_null_should_throw()
         {
-            RetryPolicy<int> retry = Policy.HandleResult<int>(0).RetryAsync(1);
+            var retry = Policy.HandleResult<int>(0).RetryAsync(1);
 
-            Action config = () => retry.WrapAsync((Policy)null);
+            Action config = () => retry.WrapAsync((AsyncPolicy)null);
 
             config.ShouldThrow<ArgumentNullException>().And.ParamName.Should().Be("innerPolicy");
         }
@@ -76,9 +74,9 @@ namespace Polly.Specs.Wrap
         [Fact]
         public void Generic_wraps_generic_instance_syntax_wrapping_null_should_throw()
         {
-            RetryPolicy<int> retry = Policy.HandleResult<int>(0).RetryAsync(1);
+            var retry = Policy.HandleResult<int>(0).RetryAsync(1);
 
-            Action config = () => retry.WrapAsync((Policy<int>)null);
+            Action config = () => retry.WrapAsync((AsyncPolicy<int>)null);
 
             config.ShouldThrow<ArgumentNullException>().And.ParamName.Should().Be("innerPolicy");
         }
@@ -86,10 +84,10 @@ namespace Polly.Specs.Wrap
         [Fact]
         public void Generic_wraps_nongeneric_using_instance_wrap_syntax_should_set_outer_inner()
         {
-            Policy<int> policyA = Policy.NoOpAsync<int>();
-            Policy policyB = Policy.NoOpAsync();
+            AsyncPolicy<int> policyA = Policy.NoOpAsync<int>();
+            AsyncPolicy policyB = Policy.NoOpAsync();
 
-            PolicyWrap<int> wrap = policyA.WrapAsync(policyB);
+            AsyncPolicyWrap<int> wrap = policyA.WrapAsync(policyB);
 
             wrap.Outer.Should().BeSameAs(policyA);
             wrap.Inner.Should().BeSameAs(policyB);
@@ -98,10 +96,10 @@ namespace Polly.Specs.Wrap
         [Fact]
         public void Generic_wraps_generic_using_instance_wrap_syntax_should_set_outer_inner()
         {
-            Policy<int> policyA = Policy.NoOpAsync<int>();
-            Policy<int> policyB = Policy.NoOpAsync<int>();
+            AsyncPolicy<int> policyA = Policy.NoOpAsync<int>();
+            AsyncPolicy<int> policyB = Policy.NoOpAsync<int>();
 
-            PolicyWrap<int> wrap = policyA.WrapAsync(policyB);
+            AsyncPolicyWrap<int> wrap = policyA.WrapAsync(policyB);
 
             wrap.Outer.Should().BeSameAs(policyA);
             wrap.Inner.Should().BeSameAs(policyB);
@@ -138,7 +136,7 @@ namespace Polly.Specs.Wrap
         {
             IAsyncPolicy retry = Policy.Handle<Exception>().RetryAsync(1);
 
-            Action config = () => retry.WrapAsync((Policy)null);
+            Action config = () => retry.WrapAsync((AsyncPolicy)null);
 
             config.ShouldThrow<ArgumentNullException>().And.ParamName.Should().Be("innerPolicy");
         }
@@ -148,7 +146,7 @@ namespace Polly.Specs.Wrap
         {
             IAsyncPolicy retry = Policy.Handle<Exception>().RetryAsync(1);
 
-            Action config = () => retry.WrapAsync<int>((Policy<int>)null);
+            Action config = () => retry.WrapAsync<int>((AsyncPolicy<int>)null);
 
             config.ShouldThrow<ArgumentNullException>().And.ParamName.Should().Be("innerPolicy");
         }
@@ -208,7 +206,7 @@ namespace Polly.Specs.Wrap
         {
             IAsyncPolicy<int> retry = Policy.HandleResult<int>(0).RetryAsync(1);
 
-            Action config = () => retry.WrapAsync((Policy)null);
+            Action config = () => retry.WrapAsync((AsyncPolicy)null);
 
             config.ShouldThrow<ArgumentNullException>().And.ParamName.Should().Be("innerPolicy");
         }
@@ -218,7 +216,7 @@ namespace Polly.Specs.Wrap
         {
             IAsyncPolicy<int> retry = Policy.HandleResult<int>(0).RetryAsync(1);
 
-            Action config = () => retry.WrapAsync((Policy<int>)null);
+            Action config = () => retry.WrapAsync((AsyncPolicy<int>)null);
 
             config.ShouldThrow<ArgumentNullException>().And.ParamName.Should().Be("innerPolicy");
         }
@@ -262,7 +260,7 @@ namespace Polly.Specs.Wrap
         [Fact]
         public void Wrapping_only_one_policy_using_static_wrap_syntax_should_throw()
         {
-            Policy singlePolicy = Policy.Handle<Exception>().RetryAsync();
+            AsyncPolicy singlePolicy = Policy.Handle<Exception>().RetryAsync();
             Action config = () => Policy.WrapAsync(new[] { singlePolicy });
 
             config.ShouldThrow<ArgumentException>().And.ParamName.Should().Be("policies");
@@ -271,8 +269,8 @@ namespace Polly.Specs.Wrap
         [Fact]
         public void Wrapping_two_policies_using_static_wrap_syntax_should_not_throw()
         {
-            Policy retry = Policy.Handle<Exception>().RetryAsync();
-            Policy breaker = Policy.Handle<Exception>().CircuitBreakerAsync(1, TimeSpan.FromSeconds(10));
+            AsyncPolicy retry = Policy.Handle<Exception>().RetryAsync();
+            AsyncPolicy breaker = Policy.Handle<Exception>().CircuitBreakerAsync(1, TimeSpan.FromSeconds(10));
             Action config = () => Policy.WrapAsync(new[] { retry, breaker });
 
             config.ShouldNotThrow();
@@ -281,9 +279,9 @@ namespace Polly.Specs.Wrap
         [Fact]
         public void Wrapping_more_than_two_policies_using_static_wrap_syntax_should_not_throw()
         {
-            Policy retry = Policy.Handle<Exception>().RetryAsync(1);
-            Policy divideByZeroRetry = Policy.Handle<DivideByZeroException>().RetryAsync(2);
-            Policy breaker = Policy.Handle<Exception>().CircuitBreakerAsync(1, TimeSpan.FromSeconds(10));
+            AsyncPolicy retry = Policy.Handle<Exception>().RetryAsync(1);
+            AsyncPolicy divideByZeroRetry = Policy.Handle<DivideByZeroException>().RetryAsync(2);
+            AsyncPolicy breaker = Policy.Handle<Exception>().CircuitBreakerAsync(1, TimeSpan.FromSeconds(10));
 
             Action config = () => Policy.WrapAsync(new[] { divideByZeroRetry, retry, breaker });
 
@@ -293,10 +291,10 @@ namespace Polly.Specs.Wrap
         [Fact]
         public void Wrapping_policies_using_static_wrap_syntax_should_set_outer_inner()
         {
-            Policy policyA = Policy.NoOpAsync();
-            Policy policyB = Policy.NoOpAsync();
+            AsyncPolicy policyA = Policy.NoOpAsync();
+            AsyncPolicy policyB = Policy.NoOpAsync();
 
-            PolicyWrap wrap = Policy.WrapAsync(policyA, policyB);
+            AsyncPolicyWrap wrap = Policy.WrapAsync(policyA, policyB);
 
             wrap.Outer.Should().BeSameAs(policyA);
             wrap.Inner.Should().BeSameAs(policyB);
@@ -317,7 +315,7 @@ namespace Polly.Specs.Wrap
         [Fact]
         public void Wrapping_only_one_policy_using_static_wrap_strongly_typed_syntax_should_throw()
         {
-            Policy<int> singlePolicy = Policy<int>.Handle<Exception>().RetryAsync();
+            AsyncPolicy<int> singlePolicy = Policy<int>.Handle<Exception>().RetryAsync();
             Action config = () => Policy.WrapAsync<int>(new[] { singlePolicy });
 
             config.ShouldThrow<ArgumentException>().And.ParamName.Should().Be("policies");
@@ -326,8 +324,8 @@ namespace Polly.Specs.Wrap
         [Fact]
         public void Wrapping_two_policies_using_static_wrap_strongly_typed_syntax_should_not_throw()
         {
-            Policy<int> retry = Policy<int>.Handle<Exception>().RetryAsync();
-            Policy<int> breaker = Policy<int>.Handle<Exception>().CircuitBreakerAsync(1, TimeSpan.FromSeconds(10));
+            AsyncPolicy<int> retry = Policy<int>.Handle<Exception>().RetryAsync();
+            AsyncPolicy<int> breaker = Policy<int>.Handle<Exception>().CircuitBreakerAsync(1, TimeSpan.FromSeconds(10));
             Action config = () => Policy.WrapAsync<int>(new[] { retry, breaker });
 
             config.ShouldNotThrow();
@@ -336,9 +334,9 @@ namespace Polly.Specs.Wrap
         [Fact]
         public void Wrapping_more_than_two_policies_using_static_wrap_strongly_typed_syntax_should_not_throw()
         {
-            Policy<int> retry = Policy<int>.Handle<Exception>().RetryAsync();
-            Policy<int> divideByZeroRetry = Policy<int>.Handle<DivideByZeroException>().RetryAsync(2);
-            Policy<int> breaker = Policy<int>.Handle<Exception>().CircuitBreakerAsync(1, TimeSpan.FromSeconds(10));
+            AsyncPolicy<int> retry = Policy<int>.Handle<Exception>().RetryAsync();
+            AsyncPolicy<int> divideByZeroRetry = Policy<int>.Handle<DivideByZeroException>().RetryAsync(2);
+            AsyncPolicy<int> breaker = Policy<int>.Handle<Exception>().CircuitBreakerAsync(1, TimeSpan.FromSeconds(10));
 
             Action config = () => Policy.WrapAsync<int>(new[] { divideByZeroRetry, retry, breaker });
 
@@ -348,10 +346,10 @@ namespace Polly.Specs.Wrap
         [Fact]
         public void Wrapping_policies_using_static_wrap_strongly_typed_syntax_should_set_outer_inner()
         {
-            Policy<int> policyA = Policy.NoOpAsync<int>();
-            Policy<int> policyB = Policy.NoOpAsync<int>();
+            AsyncPolicy<int> policyA = Policy.NoOpAsync<int>();
+            AsyncPolicy<int> policyB = Policy.NoOpAsync<int>();
 
-            PolicyWrap<int> wrap = Policy.WrapAsync(policyA, policyB);
+            AsyncPolicyWrap<int> wrap = Policy.WrapAsync(policyA, policyB);
 
             wrap.Outer.Should().BeSameAs(policyA);
             wrap.Inner.Should().BeSameAs(policyB);
@@ -364,11 +362,11 @@ namespace Polly.Specs.Wrap
         [Fact]
         public void Wrapping_two_policies_by_instance_syntax_and_executing_should_wrap_outer_then_inner_around_delegate()
         {
-            RetryPolicy retry = Policy.Handle<Exception>().RetryAsync(1); // Two tries in total: first try, plus one retry.
-            CircuitBreakerPolicy breaker = Policy.Handle<Exception>().CircuitBreakerAsync(2, TimeSpan.MaxValue);
+            var retry = Policy.Handle<Exception>().RetryAsync(1); // Two tries in total: first try, plus one retry.
+            var breaker = Policy.Handle<Exception>().CircuitBreakerAsync(2, TimeSpan.MaxValue);
 
-            PolicyWrap retryWrappingBreaker = retry.WrapAsync(breaker);
-            PolicyWrap breakerWrappingRetry = breaker.WrapAsync(retry);
+            AsyncPolicyWrap retryWrappingBreaker = retry.WrapAsync(breaker);
+            AsyncPolicyWrap breakerWrappingRetry = breaker.WrapAsync(retry);
 
             // When the retry wraps the breaker, the retry (being outer) should cause the call to be put through the breaker twice - causing the breaker to break.
             breaker.Reset();
@@ -386,8 +384,8 @@ namespace Polly.Specs.Wrap
         [Fact]
         public async Task Wrapping_two_generic_policies_by_instance_syntax_and_executing_should_wrap_outer_then_inner_around_delegate()
         {
-            RetryPolicy<ResultPrimitive> retry = Policy.HandleResult(ResultPrimitive.Fault).RetryAsync(1); // Two tries in total: first try, plus one retry.
-            CircuitBreakerPolicy<ResultPrimitive> breaker = Policy.HandleResult(ResultPrimitive.Fault).CircuitBreakerAsync(2, TimeSpan.MaxValue);
+            var retry = Policy.HandleResult(ResultPrimitive.Fault).RetryAsync(1); // Two tries in total: first try, plus one retry.
+            var breaker = Policy.HandleResult(ResultPrimitive.Fault).CircuitBreakerAsync(2, TimeSpan.MaxValue);
 
             var retryWrappingBreaker = retry.WrapAsync(breaker);
             var breakerWrappingRetry = breaker.WrapAsync(retry);
@@ -412,11 +410,11 @@ namespace Polly.Specs.Wrap
         [Fact]
         public void Wrapping_two_policies_by_static_syntax_and_executing_should_wrap_outer_then_inner_around_delegate()
         {
-            RetryPolicy retry = Policy.Handle<Exception>().RetryAsync(1); // Two tries in total: first try, plus one retry.
-            CircuitBreakerPolicy breaker = Policy.Handle<Exception>().CircuitBreakerAsync(2, TimeSpan.MaxValue);
+            var retry = Policy.Handle<Exception>().RetryAsync(1); // Two tries in total: first try, plus one retry.
+            var breaker = Policy.Handle<Exception>().CircuitBreakerAsync(2, TimeSpan.MaxValue);
 
-            PolicyWrap retryWrappingBreaker = Policy.WrapAsync(retry, breaker);
-            PolicyWrap breakerWrappingRetry = Policy.WrapAsync(breaker, retry);
+            AsyncPolicyWrap retryWrappingBreaker = Policy.WrapAsync(retry, breaker);
+            AsyncPolicyWrap breakerWrappingRetry = Policy.WrapAsync(breaker, retry);
 
             // When the retry wraps the breaker, the retry (being outer) should cause the call to be put through the breaker twice - causing the breaker to break.
             breaker.Reset();
@@ -434,8 +432,8 @@ namespace Polly.Specs.Wrap
         [Fact]
         public async Task Wrapping_two_generic_policies_by_static_syntax_and_executing_should_wrap_outer_then_inner_around_delegate()
         {
-            RetryPolicy<ResultPrimitive> retry = Policy.HandleResult(ResultPrimitive.Fault).RetryAsync(1); // Two tries in total: first try, plus one retry.
-            CircuitBreakerPolicy<ResultPrimitive> breaker = Policy.HandleResult(ResultPrimitive.Fault).CircuitBreakerAsync(2, TimeSpan.MaxValue);
+            var retry = Policy.HandleResult(ResultPrimitive.Fault).RetryAsync(1); // Two tries in total: first try, plus one retry.
+            var breaker = Policy.HandleResult(ResultPrimitive.Fault).CircuitBreakerAsync(2, TimeSpan.MaxValue);
 
             var retryWrappingBreaker = Policy.WrapAsync(retry, breaker);
             var breakerWrappingRetry = Policy.WrapAsync(breaker, retry);
@@ -460,13 +458,13 @@ namespace Polly.Specs.Wrap
         [Fact]
         public async Task Outermost_policy_handling_exception_should_report_as_PolicyWrap_handled_exception()
         {
-            CircuitBreakerPolicy innerHandlingDBZE = Policy
+            var innerHandlingDBZE = Policy
                 .Handle<DivideByZeroException>()
                 .CircuitBreakerAsync(1, TimeSpan.Zero);
-            CircuitBreakerPolicy outerHandlingANE = Policy
+            var outerHandlingANE = Policy
                 .Handle<ArgumentNullException>()
                 .CircuitBreakerAsync(1, TimeSpan.Zero);
-            PolicyWrap wrap = outerHandlingANE.WrapAsync(innerHandlingDBZE);
+            AsyncPolicyWrap wrap = outerHandlingANE.WrapAsync(innerHandlingDBZE);
 
             PolicyResult executeAndCaptureResultOnPolicyWrap =
                 await wrap.ExecuteAndCaptureAsync(() => { throw new ArgumentNullException(); });
@@ -479,13 +477,13 @@ namespace Polly.Specs.Wrap
         [Fact]
         public async Task Outermost_policy_not_handling_exception_even_if_inner_policies_do_should_report_as_unhandled_exception()
         {
-            CircuitBreakerPolicy innerHandlingDBZE = Policy
+            var innerHandlingDBZE = Policy
                 .Handle<DivideByZeroException>()
                 .CircuitBreakerAsync(1, TimeSpan.Zero);
-            CircuitBreakerPolicy outerHandlingANE = Policy
+            var outerHandlingANE = Policy
                 .Handle<ArgumentNullException>()
                 .CircuitBreakerAsync(1, TimeSpan.Zero);
-            PolicyWrap wrap = outerHandlingANE.WrapAsync(innerHandlingDBZE);
+            AsyncPolicyWrap wrap = outerHandlingANE.WrapAsync(innerHandlingDBZE);
 
             PolicyResult executeAndCaptureResultOnPolicyWrap =
                 await wrap.ExecuteAndCaptureAsync(() => { throw new DivideByZeroException(); });
@@ -498,13 +496,13 @@ namespace Polly.Specs.Wrap
         [Fact]
         public async Task Outermost_generic_policy_handling_exception_should_report_as_PolicyWrap_handled_exception()
         {
-            CircuitBreakerPolicy<ResultPrimitive> innerHandlingDBZE = Policy<ResultPrimitive>
+            var innerHandlingDBZE = Policy<ResultPrimitive>
                 .Handle<DivideByZeroException>()
                 .CircuitBreakerAsync(1, TimeSpan.Zero);
-            CircuitBreakerPolicy<ResultPrimitive> outerHandlingANE = Policy<ResultPrimitive>
+            var outerHandlingANE = Policy<ResultPrimitive>
                 .Handle<ArgumentNullException>()
                 .CircuitBreakerAsync(1, TimeSpan.Zero);
-            PolicyWrap<ResultPrimitive> wrap = outerHandlingANE.WrapAsync(innerHandlingDBZE);
+            AsyncPolicyWrap<ResultPrimitive> wrap = outerHandlingANE.WrapAsync(innerHandlingDBZE);
 
             PolicyResult<ResultPrimitive> executeAndCaptureResultOnPolicyWrap = await  wrap.ExecuteAndCaptureAsync(() => { throw new ArgumentNullException(); });
 
@@ -517,13 +515,13 @@ namespace Polly.Specs.Wrap
         [Fact]
         public async Task Outermost_generic_policy_not_handling_exception_even_if_inner_policies_do_should_report_as_unhandled_exception()
         {
-            CircuitBreakerPolicy<ResultPrimitive> innerHandlingDBZE = Policy<ResultPrimitive>
+            var innerHandlingDBZE = Policy<ResultPrimitive>
                 .Handle<DivideByZeroException>()
                 .CircuitBreakerAsync(1, TimeSpan.Zero);
-            CircuitBreakerPolicy<ResultPrimitive> outerHandlingANE = Policy<ResultPrimitive>
+            var outerHandlingANE = Policy<ResultPrimitive>
                 .Handle<ArgumentNullException>()
                 .CircuitBreakerAsync(1, TimeSpan.Zero);
-            PolicyWrap<ResultPrimitive> wrap = outerHandlingANE.WrapAsync(innerHandlingDBZE);
+            AsyncPolicyWrap<ResultPrimitive> wrap = outerHandlingANE.WrapAsync(innerHandlingDBZE);
 
             PolicyResult<ResultPrimitive> executeAndCaptureResultOnPolicyWrap = await wrap.ExecuteAndCaptureAsync(() => { throw new DivideByZeroException(); });
 
@@ -536,13 +534,13 @@ namespace Polly.Specs.Wrap
         [Fact]
         public async Task Outermost_generic_policy_handling_result_should_report_as_PolicyWrap_handled_result()
         {
-            CircuitBreakerPolicy<ResultPrimitive> innerHandlingFaultAgain = Policy
+            var innerHandlingFaultAgain = Policy
                 .HandleResult(ResultPrimitive.FaultAgain)
                 .CircuitBreakerAsync(1, TimeSpan.Zero);
-            CircuitBreakerPolicy<ResultPrimitive> outerHandlingFault = Policy
+            var outerHandlingFault = Policy
                 .HandleResult(ResultPrimitive.Fault)
                 .CircuitBreakerAsync(1, TimeSpan.Zero);
-            PolicyWrap<ResultPrimitive> wrap = outerHandlingFault.WrapAsync(innerHandlingFaultAgain);
+            AsyncPolicyWrap<ResultPrimitive> wrap = outerHandlingFault.WrapAsync(innerHandlingFaultAgain);
 
             PolicyResult<ResultPrimitive> executeAndCaptureResultOnPolicyWrap = await wrap.ExecuteAndCaptureAsync(() => Task.FromResult(ResultPrimitive.Fault));
 
@@ -556,13 +554,13 @@ namespace Polly.Specs.Wrap
         [Fact]
         public async Task Outermost_generic_policy_not_handling_result_even_if_inner_policies_do_should_not_report_as_handled()
         {
-            CircuitBreakerPolicy<ResultPrimitive> innerHandlingFaultAgain = Policy
+            var innerHandlingFaultAgain = Policy
                 .HandleResult(ResultPrimitive.FaultAgain)
                 .CircuitBreakerAsync(1, TimeSpan.Zero);
-            CircuitBreakerPolicy<ResultPrimitive> outerHandlingFault = Policy
+            var outerHandlingFault = Policy
                 .HandleResult(ResultPrimitive.Fault)
                 .CircuitBreakerAsync(1, TimeSpan.Zero);
-            PolicyWrap<ResultPrimitive> wrap = outerHandlingFault.WrapAsync(innerHandlingFaultAgain);
+            AsyncPolicyWrap<ResultPrimitive> wrap = outerHandlingFault.WrapAsync(innerHandlingFaultAgain);
 
             PolicyResult<ResultPrimitive> executeAndCaptureResultOnPolicyWrap = await wrap.ExecuteAndCaptureAsync(() => Task.FromResult(ResultPrimitive.FaultAgain));
 

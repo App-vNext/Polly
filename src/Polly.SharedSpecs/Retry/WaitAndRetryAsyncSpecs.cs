@@ -431,7 +431,7 @@ namespace Polly.Specs.Retry
         {
             IDictionary<string, object> contextData = null;
 
-            Policy policy = Policy
+            var policy = Policy
                 .Handle<DivideByZeroException>()
                 .WaitAndRetryAsync(new[]
                 {
@@ -454,7 +454,7 @@ namespace Polly.Specs.Retry
         {
             Context capturedContext = null;
 
-            Policy policy = Policy
+            var policy = Policy
                 .Handle<DivideByZeroException>()
                 .WaitAndRetryAsync(new[]
                 {
@@ -473,7 +473,7 @@ namespace Polly.Specs.Retry
         {
             string contextValue = null;
 
-            Policy policy = Policy
+            var policy = Policy
                 .Handle<DivideByZeroException>()
                 .WaitAndRetryAsync(new[]
                 {

@@ -1,32 +1,38 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Threading;
-using Polly.Utilities;
 
 namespace Polly.Bulkhead
 {
     /// <summary>
     /// A bulkhead-isolation policy which can be applied to delegates.
     /// </summary>
-    public partial class BulkheadPolicy : Policy, IBulkheadPolicy
+    public class BulkheadPolicy : Policy, IBulkheadPolicy
     {
         private readonly SemaphoreSlim _maxParallelizationSemaphore;
         private readonly SemaphoreSlim _maxQueuedActionsSemaphore;
         private readonly int _maxParallelization;
         private readonly int _maxQueueingActions;
+        private readonly Action<Context> _onBulkheadRejected;
 
         internal BulkheadPolicy(
-            Action<Action<Context, CancellationToken>, Context, CancellationToken> exceptionPolicy, 
             int maxParallelization,
             int maxQueueingActions,
             SemaphoreSlim maxParallelizationSemaphore, 
-            SemaphoreSlim maxQueuedActionsSemaphore
-            ) : base(exceptionPolicy, PredicateHelper.EmptyExceptionPredicates)
+            SemaphoreSlim maxQueuedActionsSemaphore,
+            Action<Context> onBulkheadRejected)
         {
             _maxParallelization = maxParallelization;
             _maxQueueingActions = maxQueueingActions;
-            _maxParallelizationSemaphore = maxParallelizationSemaphore;
-            _maxQueuedActionsSemaphore = maxQueuedActionsSemaphore;
+            _maxParallelizationSemaphore = maxParallelizationSemaphore ?? throw new ArgumentNullException(nameof(maxParallelizationSemaphore));
+            _maxQueuedActionsSemaphore = maxQueuedActionsSemaphore ?? throw new ArgumentNullException(nameof(maxQueuedActionsSemaphore));
+            _onBulkheadRejected = onBulkheadRejected ?? throw new ArgumentNullException(nameof(onBulkheadRejected));
         }
+
+        /// <inheritdoc/>
+        [DebuggerStepThrough]
+        protected override TResult Implementation<TResult>(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken)
+            => BulkheadEngine.Implementation(action, context, _onBulkheadRejected, _maxParallelizationSemaphore, _maxQueuedActionsSemaphore, cancellationToken);
 
         /// <summary>
         /// Gets the number of slots currently available for executing actions through the bulkhead.
@@ -52,27 +58,33 @@ namespace Polly.Bulkhead
     /// <summary>
     /// A bulkhead-isolation policy which can be applied to delegates returning a value of type <typeparamref name="TResult"/>.
     /// </summary>
-    public partial class BulkheadPolicy<TResult> : Policy<TResult>, IBulkheadPolicy<TResult>
+    public class BulkheadPolicy<TResult> : Policy<TResult>, IBulkheadPolicy<TResult>
     {
         private readonly SemaphoreSlim _maxParallelizationSemaphore;
         private readonly SemaphoreSlim _maxQueuedActionsSemaphore;
         private readonly int _maxParallelization;
         private readonly int _maxQueueingActions;
+        private readonly Action<Context> _onBulkheadRejected;
 
+        /// <inheritdoc/>
         internal BulkheadPolicy(
-            Func<Func<Context, CancellationToken, TResult>, Context, CancellationToken, TResult> executionPolicy,
             int maxParallelization,
             int maxQueueingActions,
             SemaphoreSlim maxParallelizationSemaphore,
-            SemaphoreSlim maxQueuedActionsSemaphore
-            ) : base(executionPolicy, PredicateHelper.EmptyExceptionPredicates, PredicateHelper<TResult>.EmptyResultPredicates)
+            SemaphoreSlim maxQueuedActionsSemaphore,
+            Action<Context> onBulkheadRejected)
         {
             _maxParallelization = maxParallelization;
             _maxQueueingActions = maxQueueingActions;
-            _maxParallelizationSemaphore = maxParallelizationSemaphore;
-            _maxQueuedActionsSemaphore = maxQueuedActionsSemaphore;
+            _maxParallelizationSemaphore = maxParallelizationSemaphore ?? throw new ArgumentNullException(nameof(maxParallelizationSemaphore));
+            _maxQueuedActionsSemaphore = maxQueuedActionsSemaphore ?? throw new ArgumentNullException(nameof(maxQueuedActionsSemaphore));
+            _onBulkheadRejected = onBulkheadRejected ?? throw new ArgumentNullException(nameof(onBulkheadRejected));
         }
 
+        /// <inheritdoc/>
+        [DebuggerStepThrough]
+        protected override TResult Implementation(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken)
+            => BulkheadEngine.Implementation(action, context, _onBulkheadRejected, _maxParallelizationSemaphore, _maxQueuedActionsSemaphore, cancellationToken);
 
         /// <summary>
         /// Gets the number of slots currently available for executing actions through the bulkhead.

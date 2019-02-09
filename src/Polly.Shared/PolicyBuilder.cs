@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 
 namespace Polly
@@ -9,20 +8,16 @@ namespace Polly
     /// </summary>
     public sealed partial class PolicyBuilder
     {
-        private readonly IList<ExceptionPredicate> _exceptionPredicates;
-
         internal PolicyBuilder(ExceptionPredicate exceptionPredicate)
         {
-            _exceptionPredicates = new List<ExceptionPredicate>()
-            {
-                exceptionPredicate
-            };
+            ExceptionPredicates = new ExceptionPredicates();
+            ExceptionPredicates.Add(exceptionPredicate);
         }
 
-        internal IList<ExceptionPredicate> ExceptionPredicates
-        {
-            get { return _exceptionPredicates; }
-        }
+        /// <summary>
+        /// Predicates specifying exceptions that the policy is being configured to handle.
+        /// </summary>
+        internal ExceptionPredicates ExceptionPredicates { get; }
 
         #region Hide object members
 
@@ -83,13 +78,10 @@ namespace Polly
     /// </summary>
     public sealed partial class PolicyBuilder<TResult>
     {
-        private readonly IList<ExceptionPredicate> _exceptionPredicates;
-        private readonly IList<ResultPredicate<TResult>> _resultPredicates;
-
         private PolicyBuilder()
         {
-            _exceptionPredicates = new List<ExceptionPredicate>();
-            _resultPredicates = new List<ResultPredicate<TResult>>();
+            ExceptionPredicates = new ExceptionPredicates();
+            ResultPredicates = new ResultPredicates<TResult>();
         }
 
         internal PolicyBuilder(Func<TResult, bool> resultPredicate) : this()
@@ -99,24 +91,24 @@ namespace Polly
 
         internal PolicyBuilder(ExceptionPredicate predicate) : this()
         {
-            _exceptionPredicates.Add(predicate);
+            ExceptionPredicates.Add(predicate);
         }
 
-        internal PolicyBuilder(IList<ExceptionPredicate> exceptionPredicates)
+        internal PolicyBuilder(ExceptionPredicates exceptionPredicates)
             : this()
         {
-            _exceptionPredicates = exceptionPredicates;
+            ExceptionPredicates = exceptionPredicates;
         }
 
-        internal IList<ExceptionPredicate> ExceptionPredicates
-        {
-            get { return _exceptionPredicates; }
-        }
+        /// <summary>
+        /// Predicates specifying exceptions that the policy is being configured to handle.
+        /// </summary>
+        internal ExceptionPredicates ExceptionPredicates { get; }
 
-        internal IList<ResultPredicate<TResult>> ResultPredicates
-        {
-            get { return _resultPredicates; }
-        }
+        /// <summary>
+        /// Predicates specifying results that the policy is being configured to handle.
+        /// </summary>
+        internal ResultPredicates<TResult> ResultPredicates { get; }
 
         #region Hide object members
 

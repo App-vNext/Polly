@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Polly;
 
 namespace Polly.Registry
 {
@@ -8,7 +7,7 @@ namespace Polly.Registry
     /// Represents a read-only collection of policies keyed by <typeparamref name="TKey"/>.
     /// </summary>
     /// <typeparam name="TKey">The type of keys in the policy registry.</typeparam>
-    public interface IReadOnlyPolicyRegistry<in TKey>
+    public interface IReadOnlyPolicyRegistry<TKey> : IEnumerable<KeyValuePair<TKey, IsPolicy>>
     {
         /// <summary>
         /// Gets the <see cref="IsPolicy"/> with the specified key.

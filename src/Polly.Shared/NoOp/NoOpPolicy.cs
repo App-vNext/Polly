@@ -1,33 +1,37 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Diagnostics;
 using System.Threading;
-using System.Threading.Tasks;
-using Polly.Utilities;
 
 namespace Polly.NoOp
 {
     /// <summary>
     /// A no op policy that can be applied to delegates.
     /// </summary>
-    public partial class NoOpPolicy : Policy, INoOpPolicy
+    public class NoOpPolicy : Policy, INoOpPolicy
     {
-        internal NoOpPolicy(Action<Action<Context, CancellationToken>, Context, CancellationToken> exceptionPolicy)
-            : base(exceptionPolicy, PredicateHelper.EmptyExceptionPredicates)
+        internal NoOpPolicy()
         {
         }
+
+        /// <inheritdoc/>
+        [DebuggerStepThrough]
+        protected override TResult Implementation<TResult>(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken)
+            => NoOpEngine.Implementation(action, context, cancellationToken);
     }
 
     /// <summary>
     /// A no op policy that can be applied to delegates returning a value of type <typeparamref name="TResult" />
     /// </summary>
     /// <typeparam name="TResult">The type of return values this policy will handle.</typeparam>
-    public partial class NoOpPolicy<TResult> : Policy<TResult>, INoOpPolicy<TResult>
+    public class NoOpPolicy<TResult> : Policy<TResult>, INoOpPolicy<TResult>
     {
-        internal NoOpPolicy(
-             Func<Func<Context, CancellationToken, TResult>, Context, CancellationToken, TResult> executionPolicy
-             ) : base(executionPolicy, PredicateHelper.EmptyExceptionPredicates, PredicateHelper<TResult>.EmptyResultPredicates)
+        internal NoOpPolicy()
         {
         }
+
+        /// <inheritdoc/>
+        [DebuggerStepThrough]
+        protected override TResult Implementation(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken)
+            => NoOpEngine.Implementation(action, context, cancellationToken);
     }
 }

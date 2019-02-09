@@ -1,5 +1,6 @@
 ﻿using System;
-#if !PORTABLE
+
+#if NETSTANDARD2_0
 using System.Runtime.Serialization;
 #endif
 
@@ -8,7 +9,7 @@ namespace Polly.CircuitBreaker
     /// <summary>
     /// Exception thrown when a circuit is broken.
     /// </summary>
-#if !PORTABLE
+#if NETSTANDARD2_0
     [Serializable]
 #endif
     public class BrokenCircuitException : ExecutionRejectedException
@@ -37,7 +38,7 @@ namespace Polly.CircuitBreaker
         {
         }
 
-#if !PORTABLE
+#if NETSTANDARD2_0
         /// <summary>
         /// Initializes a new instance of the <see cref="BrokenCircuitException"/> class.
         /// </summary>
@@ -55,7 +56,7 @@ namespace Polly.CircuitBreaker
     /// Exception thrown when a circuit is broken.
     /// </summary>
     /// <typeparam name="TResult">The type of returned results being handled by the policy.</typeparam>
-#if !PORTABLE
+#if NETSTANDARD2_0
     [Serializable]
 #endif
     public class BrokenCircuitException<TResult> : BrokenCircuitException
@@ -67,9 +68,7 @@ namespace Polly.CircuitBreaker
         /// </summary>
         /// <param name="result">The result which caused the circuit to break.</param>
         public BrokenCircuitException(TResult result) : base()
-        {
-            this.result = result;
-        }
+            => this.result = result;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="BrokenCircuitException{TResult}"/> class.
@@ -77,16 +76,14 @@ namespace Polly.CircuitBreaker
         /// <param name="message">The message that describes the error.</param>
         /// <param name="result">The result which caused the circuit to break.</param>
         public BrokenCircuitException(string message, TResult result) : base(message)
-        {
-            this.result = result;
-        }
+            => this.result = result;
 
         /// <summary>
         /// The result value which was considered a handled fault, by the policy.
         /// </summary>
-        public TResult Result { get { return result; } }
+        public TResult Result { get => result; } 
 
-#if !PORTABLE
+#if NETSTANDARD2_0
         /// <summary>
         /// Initializes a new instance of the <see cref="BrokenCircuitException"/> class.
         /// </summary>
