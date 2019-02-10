@@ -1065,7 +1065,7 @@ When we discover an interesting write-up on Polly, we'll add it to this list. If
 
 ## PluralSight course
 
-* [Bryan Hogan](https://twitter.com/bryanjhogan) of the [NoDogmaBlog](http://nodogmablog.bryanhogan.net/) has authored a [PluralSight course on Polly](https://www.pluralsight.com/courses/polly-fault-tolerant-web-service-requests).  The course takes you through all the major features of Polly as at v5.6.1.  The course examples are based around using Polly for fault tolerance when calling remote web services, but the principles and techniques are applicable to any context in which Polly may be used.
+* [Bryan Hogan](https://twitter.com/bryanjhogan) of the [NoDogmaBlog](http://nodogmablog.bryanhogan.net/) has authored a [PluralSight course on Polly](https://www.pluralsight.com/courses/polly-fault-tolerant-web-service-requests).  The course takes you through all the major features of Polly, with an additional module added in the fall of 2018 on Http Client Factory.  The course examples are based around using Polly for fault tolerance when calling remote web services, but the principles and techniques are applicable to any context in which Polly may be used.
 
 ## Sample microservices architecture and ebook
 
@@ -1083,6 +1083,7 @@ When we discover an interesting write-up on Polly, we'll add it to this list. If
 
 ## Videos
 
+* [Robust Applications with Polly, the .NET Resilience Framework] (https://www.infoq.com/presentations/polly), Bryan Hogan introduces Polly and explains how to use it to build a fault tolerant application.
 * From MVP [Houssem Dellai](https://github.com/HoussemDellai), a [youtube video on How to use Polly with Xamarin Apps](https://www.youtube.com/watch?v=7vsN0RkFN_E), covering wait-and-retry and discussing circuit-breaker policy with a demonstration in Xamarin Forms.  Here is the [source code](https://github.com/HoussemDellai/ResilientHttpClient) of the application demonstrated in the video.  Draws on the [`ResilientHttpClient`](https://github.com/dotnet-architecture/eShopOnContainers/blob/dev/src/BuildingBlocks/Resilience/Resilience.Http/ResilientHttpClient.cs) from Microsoft's [eShopOnContainers project](https://github.com/dotnet-architecture/eShopOnContainers).
 * In the video, [.NET Rocks Live with Jon Skeet and Bill Wagner](https://youtu.be/LCj7h7ZoHA8?t=1617), Bill Wagner discusses Polly.
 * Scott Allen discusses Polly during his [Building for Resiliency and Scale in the Cloud](https://youtu.be/SFLu6jZWXGs?t=1440) presentation at NDC.
