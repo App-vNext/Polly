@@ -18,7 +18,7 @@ namespace Polly.Registry
         /// A registry of policy policies with <see cref="System.String"/> keys.
         /// </summary>
         /// <param name="registry">a dictionary containing keys and policies used for testing.</param>
-        internal PolicyRegistry(IDictionary<string, IsPolicy> registry = null) => _registry = registry ?? new ConcurrentDictionary<string, IsPolicy>();
+        public PolicyRegistry(IDictionary<string, IsPolicy> registry = null) => _registry = registry ?? new ConcurrentDictionary<string, IsPolicy>();
 
         /// <summary>
         /// Total number of policies in the registry.
