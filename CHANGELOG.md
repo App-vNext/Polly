@@ -1,3 +1,6 @@
+## 7.0.3
+- Bug fix for AdvancedCircuitBreakerAsync<TResult> (issue affecting v7.0.1-2 only)
+
 ## 7.0.2
 - Bug fix for PolicyRegistry (issue affecting v7.0.1 only)
 
