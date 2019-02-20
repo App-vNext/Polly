@@ -610,7 +610,8 @@ For more detail see: [Bulkhead policy documentation](https://github.com/App-vNex
 
 ```csharp
 // Define a cache Policy in the .NET Framework, using the Polly.Caching.Memory nuget package.
-var memoryCacheProvider = new MemoryCacheProvider(MemoryCache.Default);
+var memoryCache = new MemoryCache(new MemoryCacheOptions());
+var memoryCacheProvider = new MemoryCacheProvider(memoryCache);
 var cachePolicy = Policy.Cache(memoryCacheProvider, TimeSpan.FromMinutes(5));
 
 // For .NET Core examples see the CacheProviders linked to from https://github.com/App-vNext/Polly/wiki/Cache#working-with-cacheproviders :
