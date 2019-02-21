@@ -609,12 +609,11 @@ For more detail see: [Bulkhead policy documentation](https://github.com/App-vNex
 ### Cache
 
 ```csharp
-// Define a cache Policy in the .NET Framework, using the Polly.Caching.Memory nuget package.
 var memoryCache = new MemoryCache(new MemoryCacheOptions());
 var memoryCacheProvider = new MemoryCacheProvider(memoryCache);
 var cachePolicy = Policy.Cache(memoryCacheProvider, TimeSpan.FromMinutes(5));
 
-// For .NET Core examples see the CacheProviders linked to from https://github.com/App-vNext/Polly/wiki/Cache#working-with-cacheproviders :
+// For .NET Core DI examples see the CacheProviders linked to from https://github.com/App-vNext/Polly/wiki/Cache#working-with-cacheproviders :
 // - https://github.com/App-vNext/Polly.Caching.MemoryCache
 // - https://github.com/App-vNext/Polly.Caching.IDistributedCache 
 
