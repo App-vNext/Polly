@@ -4,9 +4,6 @@ namespace Polly.Utilities
 {
     internal static class KeyHelper
     {
-        public static String GuidPart()
-        {
-            return Guid.NewGuid().ToString().Substring(0, 8);
-        }
+        public static String GuidPart() => Guid.NewGuid().ToString().Substring(0, 8);
     }
 }
