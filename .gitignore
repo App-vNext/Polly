@@ -14,6 +14,7 @@ TestResults
 *.sln.docstates
 .vs/
 .vscode/
+.idea/
 
 # Build results
 [Dd]ebug/
@@ -64,7 +65,7 @@ _ReSharper*
 # GhostDoc
 *.GhostDoc.xml
 
-# Installshield output folder 
+# Installshield output folder
 [Ee]xpress
 
 # DocProject is a documentation generator add-in
@@ -104,6 +105,8 @@ ClientBin
 [Ss]tyle[Cc]op.*
 ~$*
 *.dbmdl
+.DS_Store
+
 Generated_Code #added for RIA/Silverlight projects
 
 # Backup & report files from converting an old project file to a newer
