@@ -40,9 +40,7 @@ namespace Polly.Wrap
         /// <typeparam name="TPolicy">The type of policies to return.</typeparam>
         /// <returns>An <see cref="IEnumerable{TPolicy}"/> of all the policies of the given type.</returns>
         public static IEnumerable<TPolicy> GetPolicies<TPolicy>(this IPolicyWrap policyWrap)
-        {
-            return policyWrap.GetPolicies().OfType<TPolicy>();
-        }
+            => policyWrap.GetPolicies().OfType<TPolicy>();
 
         /// <summary>
         /// Returns all the policies in this <see cref="IPolicyWrap"/> of type <typeparamref name="TPolicy"/> matching the filter, in Outer-to-Inner order.
@@ -65,9 +63,7 @@ namespace Polly.Wrap
         /// <returns>A <typeparamref name="TPolicy"/> if one is found; else null.</returns>
         /// <throws>InvalidOperationException, if more than one policy of the type is found in the wrap.</throws>
         public static TPolicy GetPolicy<TPolicy>(this IPolicyWrap policyWrap)
-        {
-            return policyWrap.GetPolicies().OfType<TPolicy>().SingleOrDefault();
-        }
+            => policyWrap.GetPolicies().OfType<TPolicy>().SingleOrDefault();
 
         /// <summary>
         /// Returns the single policy in this <see cref="IPolicyWrap"/> of type <typeparamref name="TPolicy"/> matching the filter.
