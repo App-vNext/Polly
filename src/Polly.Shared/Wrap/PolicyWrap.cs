@@ -32,28 +32,24 @@ namespace Polly.Wrap
         /// <inheritdoc/>
         [DebuggerStepThrough]
         protected override void Implementation(Action<Context, CancellationToken> action, Context context, CancellationToken cancellationToken)
-        {
-            PolicyWrapEngine.Implementation(
+            => PolicyWrapEngine.Implementation(
                 action,
                 context,
                 cancellationToken,
                 _outer,
                 _inner
             );
-        }
 
         /// <inheritdoc/>
         [DebuggerStepThrough]
         protected override TResult Implementation<TResult>(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken)
-        {
-            return PolicyWrapEngine.Implementation<TResult>(
+            =>  PolicyWrapEngine.Implementation<TResult>(
                 action,
                 context,
                 cancellationToken,
                 _outer,
                 _inner
             );
-        }
     }
 
     /// <summary>

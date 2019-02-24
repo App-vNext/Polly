@@ -38,8 +38,7 @@ namespace Polly.Wrap
             Context context,
             CancellationToken cancellationToken,
             bool continueOnCapturedContext)
-        {
-            return AsyncPolicyWrapEngine.ImplementationAsync(
+            => AsyncPolicyWrapEngine.ImplementationAsync(
                 action,
                 context,
                 cancellationToken,
@@ -47,14 +46,12 @@ namespace Polly.Wrap
                 _outer,
                 _inner
             );
-        }
 
         /// <inheritdoc/>
         [DebuggerStepThrough]
         protected override Task<TResult> ImplementationAsync<TResult>(Func<Context, CancellationToken, Task<TResult>> action, Context context, CancellationToken cancellationToken,
             bool continueOnCapturedContext)
-        {
-            return AsyncPolicyWrapEngine.ImplementationAsync<TResult>(
+            => AsyncPolicyWrapEngine.ImplementationAsync<TResult>(
                 action,
                 context,
                 cancellationToken,
@@ -62,7 +59,6 @@ namespace Polly.Wrap
                 _outer,
                 _inner
             );
-        }
     }
 
     /// <summary>
