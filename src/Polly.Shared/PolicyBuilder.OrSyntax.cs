@@ -84,9 +84,7 @@ namespace Polly
         /// <param name="resultPredicate">The predicate to filter the results this policy will handle.</param>
         /// <returns>The PolicyBuilder instance.</returns>
         public PolicyBuilder<TResult> OrResult<TResult>(Func<TResult, bool> resultPredicate)
-        {
-            return new PolicyBuilder<TResult>(ExceptionPredicates).OrResult(resultPredicate);
-        }
+            => new PolicyBuilder<TResult>(ExceptionPredicates).OrResult(resultPredicate);
 
         /// <summary>
         /// Specifies a result value which the policy will handle.
@@ -96,9 +94,7 @@ namespace Polly
         /// <remarks>This policy filter matches the <paramref name="result"/> value returned using .Equals(), ideally suited for value types such as int and enum.  To match characteristics of class return types, consider the overload taking a result predicate.</remarks>
         /// <returns>The PolicyBuilder instance.</returns>
         public PolicyBuilder<TResult> OrResult<TResult>(TResult result)
-        {
-            return OrResult<TResult>(r => (r != null && r.Equals(result)) || (r == null && result == null));
-        }
+            => OrResult<TResult>(r => (r != null && r.Equals(result)) || (r == null && result == null));
 
         #endregion
     }
@@ -126,9 +122,7 @@ namespace Polly
         /// <remarks>This policy filter matches the <paramref name="result"/> value returned using .Equals(), ideally suited for value types such as int and enum.  To match characteristics of class return types, consider the overload taking a result predicate.</remarks>
         /// <returns>The PolicyBuilder instance.</returns>
         public PolicyBuilder<TResult> OrResult(TResult result)
-        {
-            return OrResult(r => (r != null && r.Equals(result)) || (r == null && result == null));
-        }
+            => OrResult(r => (r != null && r.Equals(result)) || (r == null && result == null));
 
         #endregion
 

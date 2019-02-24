@@ -91,34 +91,19 @@ namespace Polly
         IEnumerator IEnumerable.GetEnumerator() => WrappedDictionary.GetEnumerator();
 
         /// <inheritdoc cref="IDictionary"/> 
-        public void Add(object key, object value)
-        {
-            ((IDictionary)WrappedDictionary).Add(key, value);
-        }
+        public void Add(object key, object value) => ((IDictionary)WrappedDictionary).Add(key, value);
 
         /// <inheritdoc cref="IDictionary"/> 
-        public bool Contains(object key)
-        {
-            return ((IDictionary)WrappedDictionary).Contains(key);
-        }
+        public bool Contains(object key) => ((IDictionary)WrappedDictionary).Contains(key);
 
         /// <inheritdoc cref="IDictionary"/> 
-        IDictionaryEnumerator IDictionary.GetEnumerator()
-        {
-            return ((IDictionary)WrappedDictionary).GetEnumerator();
-        }
+        IDictionaryEnumerator IDictionary.GetEnumerator() => ((IDictionary)WrappedDictionary).GetEnumerator();
 
         /// <inheritdoc cref="IDictionary"/> 
-        public void Remove(object key)
-        {
-            ((IDictionary)WrappedDictionary).Remove(key);
-        }
+        public void Remove(object key) => ((IDictionary)WrappedDictionary).Remove(key);
 
         /// <inheritdoc cref="IDictionary"/> 
-        public void CopyTo(Array array, int index)
-        {
-            ((IDictionary)WrappedDictionary).CopyTo(array, index);
-        }
+        public void CopyTo(Array array, int index) => ((IDictionary)WrappedDictionary).CopyTo(array, index);
 
         #endregion
 
