@@ -509,6 +509,7 @@ namespace Polly.Specs.Fallback
                 .And.BeOfType(typeof(ArgumentNullException));
         }
 
+        [Fact]
         public void Should_call_fallbackAction_with_the_matched_inner_exception_unwrapped()
         {
             Exception fallbackException = null;
