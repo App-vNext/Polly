@@ -11,8 +11,13 @@
     <iconUrl>https://raw.github.com/App-vNext/Polly/master/Polly.png</iconUrl>
     <projectUrl>https://github.com/App-vNext/Polly</projectUrl>
     <tags>Exception Handling Resilience Transient Fault Policy Circuit Breaker CircuitBreaker Retry Wait Cache Cache-aside Bulkhead Fallback Timeout Throttle Parallelization</tags>
-    <copyright>Copyright © 2018, App vNext</copyright>
+    <copyright>Copyright © 2019, App vNext</copyright>
     <releaseNotes>
+     7.0.4
+     ---------------------
+     - Rationalise solution layout
+     - Add explicit .NET framework 4.6.2 and 4.7.2 test runs
+
      7.0.3
      ---------------------
      - Bug fix for AdvancedCircuitBreakerAsync&lt;TResult&gt; (issue affecting v7.0.1-2 only)
