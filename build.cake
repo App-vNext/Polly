@@ -19,6 +19,8 @@ var configuration = Argument<string>("configuration", "Release");
 
 #addin "Cake.FileHelpers"
 #addin "System.Text.Json"
+#addin nuget:?package=Cake.Yaml
+#addin nuget:?package=YamlDotNet&version=5.2.1
 using System.Text.Json;
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -46,6 +48,7 @@ var snkFile = srcDir + File(keyName);
 // Gitversion
 var gitVersionPath = ToolsExePath("GitVersion.exe");
 Dictionary<string, object> gitVersionOutput;
+var gitVersionConfigFilePath = "./GitVersionConfig.yaml";
 
 // Versioning
 string nugetVersion;
@@ -56,6 +59,13 @@ string assemblySemver;
 // StrongNameSigner
 var strongNameSignerPath = ToolsExePath("StrongNameSigner.Console.exe");
 
+///////////////////////////////////////////////////////////////////////////////
+// INNER CLASSES
+///////////////////////////////////////////////////////////////////////////////
+class GitVersionConfigYaml
+{
+    public string NextVersion { get; set; }
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 // SETUP / TEARDOWN
@@ -120,13 +130,29 @@ Task("__UpdateAssemblyVersionInformation")
     var gitVersionSettings = new ProcessSettings()
         .SetRedirectStandardOutput(true);
 
-    IEnumerable<string> outputLines;
-    StartProcess(gitVersionPath, gitVersionSettings, out outputLines);
+    try {
+        IEnumerable<string> outputLines;
+        StartProcess(gitVersionPath, gitVersionSettings, out outputLines);
 
-    var output = string.Join("\n", outputLines);
-    gitVersionOutput = new JsonParser().Parse<Dictionary<string, object>>(output);
+        var output = string.Join("\n", outputLines);
+        gitVersionOutput = new JsonParser().Parse<Dictionary<string, object>>(output);
+    }
+    catch
+    {
+        Information("Error reading git version information. Build may be running outside of a git repo. Falling back to version specified in " + gitVersionConfigFilePath);
 
-    Information("Updated GlobalAssemblyInfo");
+        string gitVersionYamlString = System.IO.File.ReadAllText(gitVersionConfigFilePath);
+        GitVersionConfigYaml deserialized = DeserializeYaml<GitVersionConfigYaml>(gitVersionYamlString.Replace("next-version", "NextVersion"));
+        string gitVersionConfig = deserialized.NextVersion;
+
+        gitVersionOutput = new Dictionary<string, object>{
+            { "NuGetVersion", gitVersionConfig + "-NotFromGitRepo" },
+            { "FullSemVer", gitVersionConfig },
+            { "AssemblySemVer", gitVersionConfig },
+            { "Major", gitVersionConfig.Split('.')[0] },
+        };
+
+    }
 
     Information("");
     Information("Obtained raw version info for package versioning:");
