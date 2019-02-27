@@ -275,7 +275,7 @@ namespace Polly.Specs.Timeout
                 .ShouldThrow<AggregateException>()
                 .WithMessage(exception.Message)
                 .WithInnerException<NotImplementedException>()
-                .And.StackTrace.Should().Contain("Helper_ThrowException");
+                .And.StackTrace.Should().Contain(nameof(Helper_ThrowException));
         }
 
         [Fact]
