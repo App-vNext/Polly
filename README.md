@@ -140,7 +140,7 @@ Policy
 // with the current exception and retry count
 Policy
     .Handle<SomeExceptionType>()
-    .Retry(3, (exception, retryCount) =>
+    .Retry(3, onRetry: (exception, retryCount) =>
     {
         // do something 
     });
@@ -150,7 +150,7 @@ Policy
 // provided to Execute()
 Policy
     .Handle<SomeExceptionType>()
-    .Retry(3, (exception, retryCount, context) =>
+    .Retry(3, onRetry: (exception, retryCount, context) =>
     {
         // do something 
     });
@@ -169,7 +169,7 @@ Policy
 // current exception
 Policy
   .Handle<SomeExceptionType>()
-  .RetryForever(exception =>
+  .RetryForever(onRetry: exception =>
   {
         // do something       
   });
@@ -178,7 +178,7 @@ Policy
 // current exception and context provided to Execute()
 Policy
   .Handle<SomeExceptionType>()
-  .RetryForever((exception, context) =>
+  .RetryForever(onRetry: (exception, context) =>
   {
         // do something       
   });
