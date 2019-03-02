@@ -9,10 +9,7 @@ namespace Polly
     /// </summary>
     public partial class Context
     {
-        internal static Context None()
-        {
-            return new Context();
-        }
+        internal static Context None() => new Context();
 
         private Guid? _correlationId;
 
@@ -20,10 +17,7 @@ namespace Polly
         /// Initializes a new instance of the <see cref="Context"/> class, with the specified <paramref name="operationKey"/>.
         /// </summary>
         /// <param name="operationKey">The operation key.</param>
-        public Context(String operationKey)
-        {
-            OperationKey = operationKey;
-        }
+        public Context(String operationKey) => OperationKey = operationKey;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Context"/> class.
