@@ -12,9 +12,7 @@
         /// <param name="policy">The non-generic <see cref="IAsyncPolicy"/>  to convert to a generic <see cref="IAsyncPolicy{TResult}"/>.</param>
         /// <returns>A generic <see cref="IAsyncPolicy{TResult}"/> version of the supplied non-generic <see cref="IAsyncPolicy"/>.</returns>
         public static IAsyncPolicy<TResult> AsAsyncPolicy<TResult>(this IAsyncPolicy policy)
-        {
-            return policy.WrapAsync(Policy.NoOpAsync<TResult>());
-        }
+            => policy.WrapAsync(Policy.NoOpAsync<TResult>());
     }
 
 }

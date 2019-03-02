@@ -43,9 +43,7 @@ namespace Polly
         /// A <see cref="PolicyResult" /> representing a successful execution through the policy.
         /// </returns>
         public static PolicyResult Successful(Context context)
-        {
-            return new PolicyResult(OutcomeType.Successful, null, null, context);
-        }
+            => new PolicyResult(OutcomeType.Successful, null, null, context);
 
         /// <summary>
         /// Builds a <see cref="PolicyResult" /> representing a failed execution through the policy. />
@@ -57,9 +55,7 @@ namespace Polly
         /// A <see cref="PolicyResult" /> representing a failed execution through the policy.
         /// </returns>
         public static PolicyResult Failure(Exception exception, ExceptionType exceptionType, Context context)
-        {
-            return new PolicyResult(OutcomeType.Failure, exception, exceptionType, context);
-        }
+            => new PolicyResult(OutcomeType.Failure, exception, exceptionType, context);
     }
 
     /// <summary>
@@ -128,9 +124,7 @@ namespace Polly
         /// A <see cref="PolicyResult" /> representing a successful execution through the policy.
         /// </returns>
         public static PolicyResult<TResult> Successful(TResult result, Context context)
-        {
-            return new PolicyResult<TResult>(result, OutcomeType.Successful, null, null, context);
-        }
+            => new PolicyResult<TResult>(result, OutcomeType.Successful, null, null, context);
 
         /// <summary>
         /// Builds a <see cref="PolicyResult" /> representing a failed execution through the policy.
@@ -142,13 +136,11 @@ namespace Polly
         /// A <see cref="PolicyResult" /> representing a failed execution through the policy.
         /// </returns>
         public static PolicyResult<TResult> Failure(Exception exception, ExceptionType exceptionType, Context context)
-        {
-            return new PolicyResult<TResult>(default(TResult), OutcomeType.Failure, exception, exceptionType, default(TResult), 
+            => new PolicyResult<TResult>(default(TResult), OutcomeType.Failure, exception, exceptionType, default(TResult), 
                 exceptionType == Polly.ExceptionType.HandledByThisPolicy 
                 ? Polly.FaultType.ExceptionHandledByThisPolicy 
                 : Polly.FaultType.UnhandledException,
                 context);
-        }
 
         /// <summary>
         /// Builds a <see cref="PolicyResult" /> representing a failed execution through the policy.
@@ -159,9 +151,7 @@ namespace Polly
         /// A <see cref="PolicyResult" /> representing a failed execution through the policy.
         /// </returns>
         public static PolicyResult<TResult> Failure(TResult handledResult, Context context)
-        {
-            return new PolicyResult<TResult>(default(TResult), OutcomeType.Failure, null, null, handledResult, Polly.FaultType.ResultHandledByThisPolicy, context);
-        }
+            => new PolicyResult<TResult>(default(TResult), OutcomeType.Failure, null, null, handledResult, Polly.FaultType.ResultHandledByThisPolicy, context);
     }
 
     /// <summary>

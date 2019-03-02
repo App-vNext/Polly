@@ -85,20 +85,14 @@ namespace Polly
         }
 
         internal PolicyBuilder(Func<TResult, bool> resultPredicate) : this()
-        {
-            this.OrResult(resultPredicate);
-        }
+            => this.OrResult(resultPredicate);
 
         internal PolicyBuilder(ExceptionPredicate predicate) : this()
-        {
-            ExceptionPredicates.Add(predicate);
-        }
+            => ExceptionPredicates.Add(predicate);
 
         internal PolicyBuilder(ExceptionPredicates exceptionPredicates)
             : this()
-        {
-            ExceptionPredicates = exceptionPredicates;
-        }
+            => ExceptionPredicates = exceptionPredicates;
 
         /// <summary>
         /// Predicates specifying exceptions that the policy is being configured to handle.
@@ -119,10 +113,7 @@ namespace Polly
         /// A <see cref="System.String" /> that represents this instance.
         /// </returns>
         [EditorBrowsable(EditorBrowsableState.Never)]
-        public override string ToString()
-        {
-            return base.ToString();
-        }
+        public override string ToString() => base.ToString(); 
 
         /// <summary>
         /// Determines whether the specified <see cref="System.Object" /> is equal to this instance.
@@ -132,10 +123,7 @@ namespace Polly
         ///   <c>true</c> if the specified <see cref="System.Object" /> is equal to this instance; otherwise, <c>false</c>.
         /// </returns>
         [EditorBrowsable(EditorBrowsableState.Never)]
-        public override bool Equals(object obj)
-        {
-            return base.Equals(obj);
-        }
+        public override bool Equals(object obj) => base.Equals(obj);
 
         /// <summary>
         /// Returns a hash code for this instance.
@@ -144,10 +132,7 @@ namespace Polly
         /// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table. 
         /// </returns>
         [EditorBrowsable(EditorBrowsableState.Never)]
-        public override int GetHashCode()
-        {
-            return base.GetHashCode();
-        }
+        public override int GetHashCode() => base.GetHashCode();
 
         /// <summary>
         /// Gets the <see cref="T:System.Type" /> of the current instance.
@@ -156,10 +141,7 @@ namespace Polly
         /// The <see cref="T:System.Type" /> instance that represents the exact runtime type of the current instance.
         /// </returns>
         [EditorBrowsable(EditorBrowsableState.Never)]
-        public new Type GetType()
-        {
-            return base.GetType();
-        }
+        public new Type GetType() => base.GetType();
 
         #endregion
     }
