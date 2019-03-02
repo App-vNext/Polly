@@ -20,13 +20,11 @@ namespace Polly
             Context context,
             CancellationToken cancellationToken,
             bool continueOnCapturedContext)
-        {
-            return ImplementationAsync<EmptyStruct>(async (ctx, token) =>
+            => ImplementationAsync<EmptyStruct>(async (ctx, token) =>
             {
                 await action(ctx, token).ConfigureAwait(continueOnCapturedContext);
                 return EmptyStruct.Instance;
             }, context, cancellationToken, continueOnCapturedContext);
-        }
 
         /// <summary>
         /// Defines the implementation of a policy for async executions returning <typeparamref name="TResult"/>.

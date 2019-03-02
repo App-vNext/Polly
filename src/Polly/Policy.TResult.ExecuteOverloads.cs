@@ -18,9 +18,7 @@ namespace Polly
         /// <returns>The value returned by the action</returns>
         [DebuggerStepThrough]
         public TResult Execute(Func<TResult> action)
-        {
-            return Execute((ctx, ct) => action(), new Context(), DefaultCancellationToken);
-        }
+            => Execute((ctx, ct) => action(), new Context(), DefaultCancellationToken);
 
         /// <summary>
         /// Executes the specified action within the policy and returns the result.
@@ -34,9 +32,7 @@ namespace Polly
         /// <exception cref="System.ArgumentNullException">contextData</exception>
         [DebuggerStepThrough]
         public TResult Execute(Func<Context, TResult> action, IDictionary<string, object> contextData)
-        {
-            return Execute((ctx, ct) => action(ctx), new Context(contextData), DefaultCancellationToken);
-        }
+            => Execute((ctx, ct) => action(ctx), new Context(contextData), DefaultCancellationToken);
 
         /// <summary>
         /// Executes the specified action within the policy and returns the result.
@@ -50,9 +46,7 @@ namespace Polly
         /// <exception cref="System.ArgumentNullException">contextData</exception>
         [DebuggerStepThrough]
         public TResult Execute(Func<Context, TResult> action, Context context)
-        {
-            return Execute((ctx, ct) => action(ctx), context, DefaultCancellationToken);
-        }
+            => Execute((ctx, ct) => action(ctx), context, DefaultCancellationToken);
 
         /// <summary>
         /// Executes the specified action within the policy and returns the result.
@@ -62,9 +56,7 @@ namespace Polly
         /// <returns>The value returned by the action</returns>
         [DebuggerStepThrough]
         public TResult Execute(Func<CancellationToken, TResult> action, CancellationToken cancellationToken)
-        {
-            return Execute((ctx, ct) => action(ct), new Context(), cancellationToken);
-        }
+            => Execute((ctx, ct) => action(ct), new Context(), cancellationToken);
         
         /// <summary>
         /// Executes the specified action within the policy and returns the result.
@@ -76,9 +68,7 @@ namespace Polly
         /// <exception cref="System.ArgumentNullException">contextData</exception>
         [DebuggerStepThrough]
         public TResult Execute(Func<Context, CancellationToken, TResult> action, IDictionary<string, object> contextData, CancellationToken cancellationToken)
-        {
-            return Execute(action, new Context(contextData), cancellationToken);
-        }
+            => Execute(action, new Context(contextData), cancellationToken);
 
         /// <summary>
         /// Executes the specified action within the policy and returns the result.
@@ -115,9 +105,7 @@ namespace Polly
         /// <returns>The captured result</returns>
         [DebuggerStepThrough]
         public PolicyResult<TResult> ExecuteAndCapture(Func<TResult> action)
-        {
-            return ExecuteAndCapture((ctx, ct) => action(), new Context(), DefaultCancellationToken);
-        }
+            => ExecuteAndCapture((ctx, ct) => action(), new Context(), DefaultCancellationToken);
 
         /// <summary>
         /// Executes the specified action within the policy and returns the captured result.
@@ -128,9 +116,7 @@ namespace Polly
         /// <returns>The captured result</returns>
         [DebuggerStepThrough]
         public PolicyResult<TResult> ExecuteAndCapture(Func<Context, TResult> action, IDictionary<string, object> contextData)
-        {
-            return ExecuteAndCapture((ctx, ct) => action(ctx), new Context(contextData), DefaultCancellationToken);
-        }
+            => ExecuteAndCapture((ctx, ct) => action(ctx), new Context(contextData), DefaultCancellationToken);
 
         /// <summary>
         /// Executes the specified action within the policy and returns the captured result.
@@ -141,9 +127,7 @@ namespace Polly
         /// <returns>The captured result</returns>
         [DebuggerStepThrough]
         public PolicyResult<TResult> ExecuteAndCapture(Func<Context, TResult> action, Context context)
-        {
-            return ExecuteAndCapture((ctx, ct) => action(ctx), context, DefaultCancellationToken);
-        }
+            => ExecuteAndCapture((ctx, ct) => action(ctx), context, DefaultCancellationToken);
 
         /// <summary>
         /// Executes the specified action within the policy and returns the captured result
@@ -153,9 +137,7 @@ namespace Polly
         /// <returns>The captured result</returns>
         [DebuggerStepThrough]
         public PolicyResult<TResult> ExecuteAndCapture(Func<CancellationToken, TResult> action, CancellationToken cancellationToken)
-        {
-            return ExecuteAndCapture((ctx, ct) => action(ct), new Context(), cancellationToken);
-        }
+            => ExecuteAndCapture((ctx, ct) => action(ct), new Context(), cancellationToken);
 
         /// <summary>
         /// Executes the specified action within the policy and returns the captured result.
@@ -167,9 +149,7 @@ namespace Polly
         /// <exception cref="System.ArgumentNullException">contextData</exception>
         [DebuggerStepThrough]
         public PolicyResult<TResult> ExecuteAndCapture(Func<Context, CancellationToken, TResult> action, IDictionary<string, object> contextData, CancellationToken cancellationToken)
-        {
-            return ExecuteAndCapture(action, new Context(contextData), cancellationToken);
-        }
+            => ExecuteAndCapture(action, new Context(contextData), cancellationToken);
 
         /// <summary>
         /// Executes the specified action within the policy and returns the captured result.
