@@ -12,13 +12,27 @@ namespace Polly.Registry
     /// <remarks>Uses ConcurrentDictionary to store the collection.</remarks>
     public class PolicyRegistry : IPolicyRegistry<string>
     {
-        private readonly IDictionary<string, IsPolicy> _registry;
+        private readonly IDictionary<string, IsPolicy> _registry = new ConcurrentDictionary<string, IsPolicy>();
+
+        /// <summary>
+        /// A registry of policy policies with <see cref="System.String"/> keys.
+        /// </summary>
+        public PolicyRegistry()
+        {
+            // This empty public constructor must be retained while the adjacent internal constructor exists for testing.
+            // The integration with HttpClientFactory, method services.AddPolicyRegistry(), depends on this empty public constructor.
+            // Do not collapse the two constructors into a constructor with optional parameter registry == null.
+            // That breaks the requirement for a noargs public constructor, against which nuget-published .NET Core dlls have been compiled.
+        }
 
         /// <summary>
         /// A registry of policy policies with <see cref="System.String"/> keys.
         /// </summary>
         /// <param name="registry">a dictionary containing keys and policies used for testing.</param>
-        public PolicyRegistry(IDictionary<string, IsPolicy> registry = null) => _registry = registry ?? new ConcurrentDictionary<string, IsPolicy>();
+        internal PolicyRegistry(IDictionary<string, IsPolicy> registry) 
+        {
+            _registry = registry ?? throw new NullReferenceException(nameof(registry));
+        }
 
         /// <summary>
         /// Total number of policies in the registry.
