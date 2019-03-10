@@ -9,6 +9,11 @@ test: off
 
 artifacts:
   - path: artifacts\nuget-package\*.nupkg
+  - path: artifacts\nuget-package\*.snupkg
+
+after_deploy:
+  # Awaiting resolution of https://github.com/appveyor/ci/issues/2753
+  - ps : Get-ChildItem artifacts\nuget-package\*.snupkg | % { dotnet nuget push $_.FullName -s https://api.nuget.org/v3/index.json -k $env:NUGET_DEPLOY_SECRET }
 
 environment:
   # Skip dotnet package caching on build servers
