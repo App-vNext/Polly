@@ -39,6 +39,7 @@
   </ItemGroup>
   <PropertyGroup Label="NuspecProperties">
     <NeutralLanguage>en-US</NeutralLanguage>
+    <AssemblyTitle>Polly</AssemblyTitle>
     <PackageLicenseExpression>BSD-3-Clause</PackageLicenseExpression>
     <PackageIconUrl>https://raw.github.com/App-vNext/Polly/master/Polly.png</PackageIconUrl>
     <PackageProjectUrl>https://github.com/App-vNext/Polly</PackageProjectUrl>
