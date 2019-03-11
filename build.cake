@@ -11,7 +11,6 @@ var configuration = Argument<string>("configuration", "Release");
 
 #Tool "xunit.runner.console"
 #Tool "GitVersion.CommandLine"
-#Tool "Brutal.Dev.StrongNameSigner"
 
 //////////////////////////////////////////////////////////////////////
 // EXTERNAL NUGET LIBRARIES
@@ -49,9 +48,6 @@ string nugetVersion;
 string appveyorBuildNumber;
 string assemblyVersion;
 string assemblySemver;
-
-// StrongNameSigner
-var strongNameSignerPath = ToolsExePath("StrongNameSigner.Console.exe");
 
 ///////////////////////////////////////////////////////////////////////////////
 // INNER CLASSES
