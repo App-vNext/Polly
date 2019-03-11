@@ -1011,6 +1011,9 @@ For more detail see: [Polly and interfaces](https://github.com/App-vNext/Polly/w
 * [@seanfarrow](https://github.com/SeanFarrow) - Enable collection initialization syntax for PolicyRegistry.
 * [@moerwald](https://github.com/moerwald) - Code clean-ups, usage of more concise C# members.
 * [@cmeeren](https://github.com/cmeeren) - Enable cache policies to cache values of default(TResult).
+* [@aprooks](https://github.com/aprooks) - Build script tweaks for Mac and mono.
+* [@kesmy](https://github.com/Kesmy) - Add Soucelink support, clean up cake build.
+
 
 # Sample Projects
 
