@@ -80,6 +80,7 @@ Policy
   .Or<ArgumentException>(ex => ex.ParamName == "example")
 
 // Inner exceptions of ordinary exceptions or AggregateException, with or without conditions
+// (HandleInner matches exceptions at both the top-level and inner exceptions)
 Policy
   .HandleInner<HttpRequestException>()
   .OrInner<OperationCanceledException>(ex => ex.CancellationToken != myToken)
