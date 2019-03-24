@@ -30,11 +30,11 @@ namespace Polly.RateLimit
     public class AsyncRateLimitPolicy<TResult> : AsyncPolicy<TResult>, IRateLimitPolicy<TResult>
     {
         private readonly IRateLimiter _rateLimiter;
-        private readonly Func<Context, TResult> _retryAfterFactory;
+        private readonly Func<TimeSpan, Context, TResult> _retryAfterFactory;
 
         internal AsyncRateLimitPolicy(
             IRateLimiter rateLimiter,
-            Func<Context, TResult> retryAfterFactory)
+            Func<TimeSpan, Context, TResult> retryAfterFactory)
         {
             _rateLimiter = rateLimiter ?? throw new NullReferenceException(nameof(rateLimiter));
             _retryAfterFactory = retryAfterFactory;

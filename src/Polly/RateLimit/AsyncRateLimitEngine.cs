@@ -8,7 +8,7 @@ namespace Polly.RateLimit
     {
         internal static async Task<TResult> ImplementationAsync<TResult>(
             IRateLimiter rateLimiter,
-            Func<Context, TResult> retryAfterFactory,
+            Func<TimeSpan, Context, TResult> retryAfterFactory,
             Func<Context, CancellationToken, Task<TResult>> action,
             Context context, CancellationToken cancellationToken, bool continueOnCapturedContext
             )
@@ -22,7 +22,7 @@ namespace Polly.RateLimit
 
             if (retryAfterFactory != null)
             {
-                return retryAfterFactory(context);
+                return retryAfterFactory(retryAfter, context);
             }
 
             throw new RateLimitRejectedException(retryAfter);
