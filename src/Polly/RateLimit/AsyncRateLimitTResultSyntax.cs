@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Globalization;
+using System.Net;
+using System.Net.Http;
 using Polly.RateLimit;
 
 namespace Polly
@@ -45,7 +48,7 @@ namespace Polly
                 /// <returns>The policy instance.</returns>
                 public static AsyncRateLimitPolicy<TResult> RateLimitAsync<TResult>(
                     TimeSpan permitOneExecutionPer,
-                    Func<Context, TResult> retryAfterFactory)
+                    Func<TimeSpan, Context, TResult> retryAfterFactory)
                 {
                     return RateLimitAsync(permitOneExecutionPer, 1, retryAfterFactory);
                 }
@@ -64,7 +67,7 @@ namespace Polly
                 public static AsyncRateLimitPolicy<TResult> RateLimitAsync<TResult>(
                     TimeSpan permitOneExecutionPer,
                     int maxBurst,
-                    Func<Context, TResult> retryAfterFactory)
+                    Func<TimeSpan, Context, TResult> retryAfterFactory)
                 {
                     return RateLimitAsync(new TokenBucketRateLimiter(permitOneExecutionPer, maxBurst), retryAfterFactory);
                 }
@@ -99,7 +102,7 @@ namespace Polly
         public static AsyncRateLimitPolicy<TResult> RateLimitAsync<TResult>(
             int numberOfExecutions,
             TimeSpan perTimeSpan,
-            Func<Context, TResult> retryAfterFactory)
+            Func<TimeSpan, Context, TResult> retryAfterFactory)
         {
             return RateLimitAsync(numberOfExecutions, perTimeSpan, 1, retryAfterFactory);
         }
@@ -120,7 +123,7 @@ namespace Polly
             int numberOfExecutions,
             TimeSpan perTimeSpan,
             int maxBurst,
-            Func<Context, TResult> retryAfterFactory)
+            Func<TimeSpan, Context, TResult> retryAfterFactory)
         {
             return RateLimitAsync(DefaultRateLimiterFactory(TimeSpan.FromTicks(perTimeSpan.Ticks / numberOfExecutions), maxBurst), retryAfterFactory);
         }
@@ -135,7 +138,7 @@ namespace Polly
         /// <returns>The policy instance.</returns>
         public static AsyncRateLimitPolicy<TResult> RateLimitAsync<TResult>(
             IRateLimiter rateLimiter,
-            Func<Context, TResult> retryAfterFactory)
+            Func<TimeSpan, Context, TResult> retryAfterFactory)
         {
             if (rateLimiter == null) throw new NullReferenceException(nameof(rateLimiter));
 
