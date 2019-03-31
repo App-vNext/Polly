@@ -1097,6 +1097,7 @@ When we discover an interesting write-up on Polly, we'll add it to this list. If
 * [Polly is Repetitive, and I love it!](http://www.appvnext.com/blog/2015/11/19/polly-is-repetitive-and-i-love-it) - by [Joel Hulen](http://www.thepollyproject.org/author/joel/)
 * [Using the Context to Obtain the Retry Count for Diagnostics](https://www.stevejgordon.co.uk/polly-using-context-to-obtain-retry-count-diagnostics) - by [Steve Gordon](https://twitter.com/stevejgordon)
 * [Passing an ILogger to Polly Policies](https://www.stevejgordon.co.uk/passing-an-ilogger-to-polly-policies) - by [Steve Gordon](https://twitter.com/stevejgordon)
+* [Using Polly and Flurl to improve your website](https://jeremylindsayni.wordpress.com/2019/01/01/using-polly-and-flurl-to-improve-your-website/) - by Jeremy Lindsay.
 
 ## Podcasts
 
