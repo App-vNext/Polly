@@ -62,8 +62,10 @@ class GitVersionConfigYaml
 Setup(_ =>
 {
     Information("");
+    Information("----------------------------------------");
     Information("Starting the cake build script");
     Information("Building: " + projectName);
+    Information("----------------------------------------");
     Information("");
 });
 
