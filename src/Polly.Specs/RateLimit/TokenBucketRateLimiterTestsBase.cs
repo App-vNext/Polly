@@ -1,20 +1,17 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
-using FluentAssertions.Execution;
 using Polly.RateLimit;
 using Polly.Specs.Helpers.RateLimit;
 using Polly.Utilities;
 using Xunit;
-using Xunit.Sdk;
 
 namespace Polly.Specs.RateLimit
 {
     [Collection(Polly.Specs.Helpers.Constants.SystemClockDependentTestCollection)]
-    public abstract class TokenBucketRateLimiterTestsBase : IDisposable
+    public abstract class TokenBucketRateLimiterTestsBase : RateLimitSpecsBase, IDisposable
     {
         public abstract IRateLimiter GetRateLimiter(TimeSpan onePer, long bucketCapacity);
 
@@ -216,47 +213,5 @@ namespace Polly.Specs.RateLimit
             results.Count(r => r.permitExecution).Should().Be(1);
             results.Count(r => !r.permitExecution).Should().Be(parallelContention - 1);
         }
-
-        /// <summary>
-        /// Asserts that the actionContainingAssertions will succeed without <see cref="AssertionFailedException"/> or <see cref="XunitException"/>, within the given timespan.  Checks are made each time a status-change pulse is received from the <see cref="TraceableAction"/>s executing through the bulkhead.
-        /// </summary>
-        /// <param name="timeSpan">The allowable timespan.</param>
-        /// <param name="actionContainingAssertions">The action containing fluent assertions, which must succeed within the timespan.</param>
-        private void Within(TimeSpan timeSpan, Action actionContainingAssertions)
-        {
-            TimeSpan retryInterval = TimeSpan.FromSeconds(0.2);
-
-            Stopwatch watch = Stopwatch.StartNew();
-            while (true)
-            {
-                try
-                {
-                    actionContainingAssertions.Invoke();
-                    break;
-                }
-                catch (Exception e)
-                {
-                    if (!(e is AssertionFailedException || e is XunitException)) { throw; }
-
-                    if (watch.Elapsed > timeSpan) { throw; }
-
-                    Thread.Sleep(retryInterval);
-                }
-            }
-        }
-
-        private static void FixClock()
-        {
-            DateTimeOffset now = DateTimeOffset.UtcNow;
-            SystemClock.DateTimeOffsetUtcNow = () => now;
-        }
-
-        private static void AdvanceClock(TimeSpan advance)
-        {
-            DateTimeOffset now = SystemClock.DateTimeOffsetUtcNow();
-            SystemClock.DateTimeOffsetUtcNow = () => now + advance;
-        }
-
-        private static void AdvanceClock(long advanceTicks) => AdvanceClock(TimeSpan.FromTicks(advanceTicks));
     }
 }
