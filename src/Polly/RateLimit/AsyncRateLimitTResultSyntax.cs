@@ -37,6 +37,23 @@ namespace Polly
         }
 
         /// <summary>
+        /// Builds a RateLimit <see cref="AsyncPolicy{TResult}"/> that will rate-limit executions to <paramref name="numberOfExecutions"/> per the timespan given.
+        /// </summary>
+        /// <typeparam name="TResult">The type of return values this policy will handle.</typeparam>
+        /// <param name="numberOfExecutions">The number of executions (call it N) permitted per timespan.</param>
+        /// <param name="perTimeSpan">How often N executions are permitted.</param>
+        /// <param name="maxBurst">The maximum number of executions that will be permitted in a single burst (for example if none have been executed for a while).
+        /// This equates to the bucket-capacity of a token-bucket implementation.</param>
+        /// <returns>The policy instance.</returns>
+        public static AsyncRateLimitPolicy<TResult> RateLimitAsync<TResult>(
+            int numberOfExecutions,
+            TimeSpan perTimeSpan,
+            int maxBurst)
+        {
+            return RateLimitAsync<TResult>(numberOfExecutions, perTimeSpan, maxBurst, null);
+        }
+
+        /// <summary>
         /// Builds a RateLimit <see cref="AsyncPolicy{TResult}"/> that will rate-limit executions to <paramref name="numberOfExecutions"/> per the timespan given,
         /// with a maximum burst size of <paramref name="maxBurst"/>
         /// </summary>
@@ -54,22 +71,11 @@ namespace Polly
             int maxBurst,
             Func<TimeSpan, Context, TResult> retryAfterFactory)
         {
-            return RateLimitAsync(DefaultRateLimiterFactory(TimeSpan.FromTicks(perTimeSpan.Ticks / numberOfExecutions), maxBurst), retryAfterFactory);
-        }
+            if (numberOfExecutions < 1) throw new ArgumentOutOfRangeException(nameof(numberOfExecutions), $"{nameof(numberOfExecutions)} per timespan must be an integer greater than or equal to 1.");
+            if (perTimeSpan <= TimeSpan.Zero) throw new ArgumentOutOfRangeException(nameof(perTimeSpan), $"{nameof(perTimeSpan)} must be a positive timespan.");
+            if (maxBurst < 1) throw new ArgumentOutOfRangeException(nameof(maxBurst), $"{nameof(maxBurst)} must be an integer greater than or equal to 1.");
 
-        /// <summary>
-        /// Builds a RateLimit <see cref="AsyncPolicy{TResult}"/> that will rate-limit executions with the provided <paramref name="rateLimiter"/>.
-        /// </summary>
-        /// <typeparam name="TResult">The type of return values this policy will handle.</typeparam>
-        /// <param name="rateLimiter">The rate-limiter to use to determine whether the execution is permitted.</param>
-        /// <param name="retryAfterFactory">An (optional) factory to use to express retry-after back to the caller, when an operation is rate-limited.
-        /// <remarks>If null, a <see cref="RateLimitRejectedException"/> with property <see cref="RateLimitRejectedException.RetryAfter"/> will be thrown to indicate rate-limiting.</remarks></param>
-        /// <returns>The policy instance.</returns>
-        private static AsyncRateLimitPolicy<TResult> RateLimitAsync<TResult>(
-            IRateLimiter rateLimiter,
-            Func<TimeSpan, Context, TResult> retryAfterFactory)
-        {
-            if (rateLimiter == null) throw new NullReferenceException(nameof(rateLimiter));
+            IRateLimiter rateLimiter = RateLimiterFactory.Create(TimeSpan.FromTicks(perTimeSpan.Ticks / numberOfExecutions), maxBurst);
 
             return new AsyncRateLimitPolicy<TResult>(rateLimiter, retryAfterFactory);
         }
