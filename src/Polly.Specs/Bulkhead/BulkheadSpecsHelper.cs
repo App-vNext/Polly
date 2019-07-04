@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions.Execution;
@@ -33,7 +34,7 @@ namespace Polly.Specs.Bulkhead
         /// <param name="actionContainingAssertions">The action containing fluent assertions, which must succeed within the timespan.</param>
         protected void Within(TimeSpan timeSpan, Action actionContainingAssertions)
         {
-            DateTime timeoutTime = DateTime.UtcNow.Add(timeSpan);
+            Stopwatch watch = Stopwatch.StartNew();
             while (true)
             {
                 try
@@ -45,7 +46,7 @@ namespace Polly.Specs.Bulkhead
                 {
                     if (!(e is AssertionFailedException || e is XunitException)) { throw; }
 
-                    TimeSpan remaining = timeoutTime - DateTime.UtcNow;
+                    TimeSpan remaining = timeSpan - watch.Elapsed;
                     if (remaining <= TimeSpan.Zero) { throw; }
 
                     statusChanged.WaitOne(remaining);
