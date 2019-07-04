@@ -132,7 +132,7 @@ namespace Polly.Specs.RateLimit
 
             // Act - release gate.
             gate.Set();
-            Within(TimeSpan.FromSeconds(5), () => tasks.All(t => t.IsCompleted).Should().BeTrue());
+            Within(TimeSpan.FromSeconds(10 /* high to allow for slow-running on time-slicing CI servers */), () => tasks.All(t => t.IsCompleted).Should().BeTrue());
 
             // Assert - one should have permitted execution, n-1 not.
             var results = tasks.Select(t => t.Result).ToList();
