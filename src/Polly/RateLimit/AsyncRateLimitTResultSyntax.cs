@@ -5,9 +5,6 @@ namespace Polly
 {
     public partial class Policy
     {
-        private static readonly Func<TimeSpan, int, IRateLimiter> DefaultRateLimiterFactory = (onePer, bucketCapacity) => new LockFreeTokenBucketRateLimiter(onePer, bucketCapacity);
-        /* private readonly Func<TimeSpan, int, IRateLimiter> DefaultRateLimiterFactory = (onePer, bucketCapacity) => new LockBasedTokenBucketRateLimiter(onePer, bucketCapacity); */
-
         /// <summary>
         /// Builds a RateLimit <see cref="AsyncPolicy{TResult}"/> that will rate-limit executions to <paramref name="numberOfExecutions"/> per the timespan given.
         /// </summary>
