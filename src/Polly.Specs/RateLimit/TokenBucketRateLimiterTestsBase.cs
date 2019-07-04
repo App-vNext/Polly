@@ -42,7 +42,7 @@ namespace Polly.Specs.RateLimit
             // (do nothing - time not advanced)
 
             // Assert - should be blocked - time not advanced.
-            rateLimiter.ShouldNotPermitAnExecution();
+            rateLimiter.ShouldNotPermitAnExecution(onePer);
         }
 
         [Theory]
@@ -61,7 +61,7 @@ namespace Polly.Specs.RateLimit
             rateLimiter.ShouldPermitNExecutions(bucketCapacity);
 
             // Assert - should not be able to take any items (given time not advanced).
-            rateLimiter.ShouldNotPermitAnExecution();
+            rateLimiter.ShouldNotPermitAnExecution(onePer);
         }
 
 
@@ -82,6 +82,7 @@ namespace Polly.Specs.RateLimit
 
             // Arrange - spend the initial bucket capacity.
             rateLimiter.ShouldPermitNExecutions(bucketCapacity);
+            rateLimiter.ShouldNotPermitAnExecution();
 
             // Act-Assert - repeatedly advance the clock towards the interval but not quite - then to the interval
             int experimentRepeats = bucketCapacity * 3;
@@ -104,6 +105,82 @@ namespace Polly.Specs.RateLimit
                 // Assert - but cannot get another token straight away
                 rateLimiter.ShouldNotPermitAnExecution();
             }
+        }
+
+        [Theory]
+        [InlineData(10)]
+        [InlineData(100)]
+        public void Given_any_bucket_capacity_rate_limiter_permits_full_bucket_burst_after_exact_elapsed_time(int bucketCapacity)
+        {
+            FixClock();
+
+            // Arrange
+            int onePerSeconds = 1;
+            TimeSpan onePer = TimeSpan.FromSeconds(onePerSeconds);
+            var rateLimiter = GetRateLimiter(onePer, bucketCapacity);
+
+            // Arrange - spend the initial bucket capacity.
+            rateLimiter.ShouldPermitNExecutions(bucketCapacity);
+            rateLimiter.ShouldNotPermitAnExecution();
+
+            // Arrange - advance exactly enough to permit a full bucket burst
+            AdvanceClock(onePer.Ticks * bucketCapacity);
+
+            // Assert - expect full bucket capacity but no more
+            rateLimiter.ShouldPermitNExecutions(bucketCapacity);
+            rateLimiter.ShouldNotPermitAnExecution();
+        }
+
+        [Theory]
+        [InlineData(10)]
+        [InlineData(100)]
+        public void Given_any_bucket_capacity_rate_limiter_permits_half_full_bucket_burst_after_half_required_refill_time_elapsed(int bucketCapacity)
+        {
+            (bucketCapacity % 2).Should().Be(0);
+
+            FixClock();
+
+            // Arrange
+            int onePerSeconds = 1;
+            TimeSpan onePer = TimeSpan.FromSeconds(onePerSeconds);
+            var rateLimiter = GetRateLimiter(onePer, bucketCapacity);
+
+            // Arrange - spend the initial bucket capacity.
+            rateLimiter.ShouldPermitNExecutions(bucketCapacity);
+            rateLimiter.ShouldNotPermitAnExecution();
+
+            // Arrange - advance multiple times enough to permit a full bucket burst
+            AdvanceClock(onePer.Ticks * (bucketCapacity / 2));
+
+            // Assert - expect full bucket capacity but no more
+            rateLimiter.ShouldPermitNExecutions(bucketCapacity / 2);
+            rateLimiter.ShouldNotPermitAnExecution();
+        }
+
+        [Theory]
+        [InlineData(100, 2)]
+        [InlineData(100, 5)]
+        public void Given_any_bucket_capacity_rate_limiter_permits_only_full_bucket_burst_even_if_multiple_required_refill_time_elapsed(int bucketCapacity, int multipleRefillTimePassed)
+        {
+            multipleRefillTimePassed.Should().BeGreaterThan(1);
+
+            FixClock();
+
+            // Arrange
+            int onePerSeconds = 1;
+            TimeSpan onePer = TimeSpan.FromSeconds(onePerSeconds);
+            var rateLimiter = GetRateLimiter(onePer, bucketCapacity);
+
+            // Arrange - spend the initial bucket capacity.
+            rateLimiter.ShouldPermitNExecutions(bucketCapacity);
+            rateLimiter.ShouldNotPermitAnExecution();
+
+            // Arrange - advance multiple times enough to permit a full bucket burst
+            AdvanceClock(onePer.Ticks * bucketCapacity * multipleRefillTimePassed);
+
+            // Assert - expect full bucket capacity but no more
+            rateLimiter.ShouldPermitNExecutions(bucketCapacity);
+            rateLimiter.ShouldNotPermitAnExecution();
         }
 
         [Theory]
@@ -147,7 +224,7 @@ namespace Polly.Specs.RateLimit
         /// <param name="actionContainingAssertions">The action containing fluent assertions, which must succeed within the timespan.</param>
         private void Within(TimeSpan timeSpan, Action actionContainingAssertions)
         {
-            TimeSpan retryInterval = TimeSpan.FromTicks(Math.Min(TimeSpan.FromSeconds(0.2).Ticks, timeSpan.Ticks / 10));
+            TimeSpan retryInterval = TimeSpan.FromSeconds(0.2);
 
             Stopwatch watch = Stopwatch.StartNew();
             while (true)
@@ -174,10 +251,12 @@ namespace Polly.Specs.RateLimit
             SystemClock.DateTimeOffsetUtcNow = () => now;
         }
 
-        private static void AdvanceClock(long advanceTicks)
+        private static void AdvanceClock(TimeSpan advance)
         {
             DateTimeOffset now = SystemClock.DateTimeOffsetUtcNow();
-            SystemClock.DateTimeOffsetUtcNow = () => now + TimeSpan.FromTicks(advanceTicks);
+            SystemClock.DateTimeOffsetUtcNow = () => now + advance;
         }
+
+        private static void AdvanceClock(long advanceTicks) => AdvanceClock(TimeSpan.FromTicks(advanceTicks));
     }
 }
