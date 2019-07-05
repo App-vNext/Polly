@@ -15,33 +15,43 @@ namespace Polly.Specs.RateLimit
             int maxBurst,
             Func<TimeSpan, Context, TResult> retryAfterFactory);
 
-        protected abstract TResult TryExecuteThroughPolicy<TResult>(IRateLimitPolicy<TResult> policy, TResult resultIfExecutionPermitted);
+        protected abstract TResult TryExecuteThroughPolicy<TResult>(IRateLimitPolicy<TResult> policy, Context context, TResult resultIfExecutionPermitted);
 
         [Theory]
         [InlineData(1)]
         [InlineData(2)]
         [InlineData(5)]
-        public void Ratelimiter_specifies_correct_wait_until_next_execution_by_custom_factory(int onePerSeconds)
+        public void Ratelimiter_specifies_correct_wait_until_next_execution_by_custom_factory_passing_correct_context(int onePerSeconds)
         {
             FixClock();
 
             // Arrange
             TimeSpan onePer = TimeSpan.FromSeconds(onePerSeconds);
-            Func<TimeSpan, Context, ResultClassWithRetryAfter> retryAfterFactory = (t, ctx) => new ResultClassWithRetryAfter(t);
+            Context contextPassedToRetryAfter = null;
+            Func<TimeSpan, Context, ResultClassWithRetryAfter> retryAfterFactory = (t, ctx) =>
+            {
+                contextPassedToRetryAfter = ctx;
+                return new ResultClassWithRetryAfter(t);
+            };
             var rateLimiter = GetPolicyViaSyntax<ResultClassWithRetryAfter>(1, onePer, 1, retryAfterFactory);
 
-            // Assert - first execution after initialising should always be permitted.
+            // Arrange - drain first permitted execution after initialising.
             ShouldPermitAnExecution(rateLimiter);
 
             // Arrange
             // (do nothing - time not advanced)
 
             // Act - try another execution.
-            var resultExpectedBlocked = TryExecuteThroughPolicy(rateLimiter, new ResultClassWithRetryAfter(ResultPrimitive.Good));
+            Context contextToPassIn = new Context();
+            var resultExpectedBlocked = TryExecuteThroughPolicy(rateLimiter, contextToPassIn, new ResultClassWithRetryAfter(ResultPrimitive.Good));
 
-            // Assert - should be blocked - time not advanced. Result should be expressed per the retryAfterFactory.
+            // Assert - should be blocked - time not advanced.
             resultExpectedBlocked.ResultCode.Should().NotBe(ResultPrimitive.Good);
+            // Result should be expressed per the retryAfterFactory.
             resultExpectedBlocked.RetryAfter.Should().Be(onePer);
+            // Context should have been passed to the retryAfterFactory.
+            contextPassedToRetryAfter.Should().NotBeNull();
+            contextPassedToRetryAfter.Should().BeSameAs(contextToPassIn);
         }
     }
 }
