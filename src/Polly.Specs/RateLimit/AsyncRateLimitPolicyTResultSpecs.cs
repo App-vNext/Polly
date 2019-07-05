@@ -52,11 +52,11 @@ namespace Polly.Specs.RateLimit
             }
         }
 
-        protected override TResult TryExecuteThroughPolicy<TResult>(IRateLimitPolicy<TResult> policy, TResult resultIfExecutionPermitted)
+        protected override TResult TryExecuteThroughPolicy<TResult>(IRateLimitPolicy<TResult> policy, Context context, TResult resultIfExecutionPermitted)
         {
             if (policy is AsyncRateLimitPolicy<TResult> typedPolicy)
             {
-                return typedPolicy.ExecuteAsync(() => Task.FromResult(resultIfExecutionPermitted)).GetAwaiter().GetResult();
+                return typedPolicy.ExecuteAsync(ctx => Task.FromResult(resultIfExecutionPermitted), context).GetAwaiter().GetResult();
             }
             else
             {
