@@ -10,7 +10,9 @@ namespace Polly.RateLimit
             IRateLimiter rateLimiter,
             Func<TimeSpan, Context, TResult> retryAfterFactory,
             Func<Context, CancellationToken, Task<TResult>> action,
-            Context context, CancellationToken cancellationToken, bool continueOnCapturedContext
+            Context context,
+            CancellationToken cancellationToken,
+            bool continueOnCapturedContext
             )
         {
             (bool permit, TimeSpan retryAfter) = rateLimiter.PermitExecution();
