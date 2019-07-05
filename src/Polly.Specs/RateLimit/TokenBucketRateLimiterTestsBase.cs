@@ -46,7 +46,7 @@ namespace Polly.Specs.RateLimit
         [InlineData(1)]
         [InlineData(2)]
         [InlineData(50)]
-        public void Given_bucket_capacity_N_and_time_not_advanced_ratelimiter_permits_executions_up_to_bucket_capacity(long bucketCapacity)
+        public void Given_bucket_capacity_N_and_time_not_advanced_ratelimiter_permits_executions_up_to_bucket_capacity(int bucketCapacity)
         {
             FixClock();
 
@@ -60,7 +60,6 @@ namespace Polly.Specs.RateLimit
             // Assert - should not be able to take any items (given time not advanced).
             rateLimiter.ShouldNotPermitAnExecution(onePer);
         }
-
 
         [Theory]
         [InlineData(1, 1)]
