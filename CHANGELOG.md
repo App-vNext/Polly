@@ -1,3 +1,6 @@
+## 7.2.0
+- Add RateLimit policy
+
 ## 7.1.0
 - Add SourceLink debugger support.
 - Bug fix: PolicyRegistry with .NET Core services.AddPolicyRegistry() overload (affects Polly v7.0.1-3 only)

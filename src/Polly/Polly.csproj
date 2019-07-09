@@ -4,14 +4,14 @@
     <TargetFrameworks>netstandard1.1;netstandard2.0</TargetFrameworks>
     <AssemblyName>Polly</AssemblyName>
     <RootNamespace>Polly</RootNamespace>
-    <Version>7.1.0</Version>
+    <Version>7.2.0</Version>
     <AssemblyVersion>7.0.0.0</AssemblyVersion>
-    <FileVersion>7.1.0.0</FileVersion>
-    <InformationalVersion>7.1.0.0</InformationalVersion>
-    <PackageVersion>7.1.0</PackageVersion>
+    <FileVersion>7.2.0.0</FileVersion>
+    <InformationalVersion>7.2.0.0</InformationalVersion>
+    <PackageVersion>7.2.0</PackageVersion>
     <Company>App vNext</Company>
     <Copyright>Copyright (c) 2019, App vNext</Copyright>
-    <Description>Polly is a library that allows developers to express resilience and transient fault handling policies such as Retry, Circuit Breaker, Timeout, Bulkhead Isolation, and Fallback in a fluent and thread-safe manner.</Description>
+    <Description>Polly is a library that allows developers to express resilience and transient fault handling policies such as Retry, Circuit Breaker, Timeout, Bulkhead Isolation, Rate-Limit and Fallback in a fluent and thread-safe manner.</Description>
     <DefaultLanguage>en-US</DefaultLanguage>
     <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
@@ -47,7 +47,7 @@
     <PackageLicenseExpression>BSD-3-Clause</PackageLicenseExpression>
     <PackageIconUrl>https://raw.github.com/App-vNext/Polly/master/Polly.png</PackageIconUrl>
     <PackageProjectUrl>https://github.com/App-vNext/Polly</PackageProjectUrl>
-    <PackageTags>Exception Handling Resilience Transient Fault Policy Circuit Breaker CircuitBreaker Retry Wait Cache Cache-aside Bulkhead Fallback Timeout Throttle Parallelization</PackageTags>
+    <PackageTags>Exception Handling Resilience Transient Fault Policy Circuit Breaker CircuitBreaker Retry Wait Cache Cache-aside Bulkhead Rate-limit Fallback Timeout Throttle Parallelization</PackageTags>
     <PackageReleaseNotes>See https://github.com/App-vNext/Polly/blob/master/CHANGELOG.md for details</PackageReleaseNotes>
   </PropertyGroup>
 </Project>
