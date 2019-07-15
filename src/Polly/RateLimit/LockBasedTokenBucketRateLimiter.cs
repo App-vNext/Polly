@@ -65,11 +65,14 @@ namespace Polly.RateLimit
                         // Time to add tokens to the bucket!
 
                         // We definitely need to add one token.  In fact, if we haven't hit this bit of code for a while, we might be due to add a bunch of tokens.
-                        long tokensMissedAdding = -ticksTillAddNextToken / addTokenTickInterval;
-                        // For clarity: it's time to add 1 + tokensMissedAdding tokens to the bucket.
+                        long tokensMissedAdding =
+                            // Passing addNextTokenAtTicks merits one token
+                            1 +
+                            // And any whole token tick intervals further each merit another.
+                            (-ticksTillAddNextToken / addTokenTickInterval);
 
                         // We mustn't exceed bucket capacity though. 
-                        long tokensToAdd = Math.Min(bucketCapacity, 1 + tokensMissedAdding);
+                        long tokensToAdd = Math.Min(bucketCapacity, tokensMissedAdding);
 
                         // Work out when tokens would next be due to be added, if we add these tokens.
                         long newAddNextTokenAtTicks = addNextTokenAtTicks + tokensToAdd * addTokenTickInterval;
