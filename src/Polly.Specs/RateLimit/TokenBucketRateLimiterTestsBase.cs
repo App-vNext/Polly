@@ -13,7 +13,7 @@ namespace Polly.Specs.RateLimit
     [Collection(Polly.Specs.Helpers.Constants.SystemClockDependentTestCollection)]
     public abstract class TokenBucketRateLimiterTestsBase : RateLimitSpecsBase, IDisposable
     {
-        public abstract IRateLimiter GetRateLimiter(TimeSpan onePer, long bucketCapacity);
+        internal abstract IRateLimiter GetRateLimiter(TimeSpan onePer, long bucketCapacity);
 
         public void Dispose()
         {
