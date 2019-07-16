@@ -38,8 +38,10 @@ namespace Polly.Specs.Helpers.Bulkhead
             _testOutputHelper = testOutputHelper;
         }
 
-    // Note re TaskCreationOptions.LongRunning: Testing the parallelization of the bulkhead policy efficiently requires the ability to start large numbers of parallel tasks in a short space of time.  The ThreadPool's algorithm of only injecting extra threads (when necessary) at a rate of two-per-second however makes high-volume tests using the ThreadPool both slow and flaky.  For PCL tests further, ThreadPool.SetMinThreads(...) is not available, to mitigate this.  Using TaskCreationOptions.LongRunning allows us to force tasks to be started near-instantly on non-ThreadPool threads.
-    // Similarly, we use ConfigureAwait(true) when awaiting, to avoid continuations being scheduled onto a ThreadPool thread, which may only be injected too slowly in high-volume tests.
+        // Note re TaskCreationOptions.LongRunning: Testing the parallelization of the bulkhead policy efficiently requires the ability to start large numbers of parallel tasks in a short space of time.
+        // The ThreadPool's algorithm of only injecting extra threads (when necessary) at a rate of two-per-second however makes high-volume tests using the ThreadPool both slow and flaky.  In the days of PCL, further, ThreadPool.SetMinThreads(...) was not available to mitigate this.
+        // Using TaskCreationOptions.LongRunning allows us to force tasks to be started near-instantly on non-ThreadPool threads.
+        // Similarly, we use ConfigureAwait(true) when awaiting, to avoid continuations being scheduled onto a ThreadPool thread, which may only be injected too slowly in high-volume tests.
 
         public Task ExecuteOnBulkhead(BulkheadPolicy bulkhead)
         {
