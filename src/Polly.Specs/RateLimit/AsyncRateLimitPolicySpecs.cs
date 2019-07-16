@@ -18,17 +18,17 @@ namespace Polly.Specs.RateLimit
 
         protected override IRateLimitPolicy GetPolicyViaSyntax(int numberOfExecutions, TimeSpan perTimeSpan)
         {
-            return Policy.RateLimitAsync<ResultClassWithRetryAfter>(numberOfExecutions, perTimeSpan);
+            return Policy.RateLimitAsync(numberOfExecutions, perTimeSpan);
         }
 
         protected override IRateLimitPolicy GetPolicyViaSyntax(int numberOfExecutions, TimeSpan perTimeSpan, int maxBurst)
         {
-            return Policy.RateLimitAsync<ResultClassWithRetryAfter>(numberOfExecutions, perTimeSpan, maxBurst);
+            return Policy.RateLimitAsync(numberOfExecutions, perTimeSpan, maxBurst);
         }
         
         protected override (bool, TimeSpan) TryExecuteThroughPolicy(IRateLimitPolicy policy)
         {
-            if (policy is AsyncRateLimitPolicy<ResultClassWithRetryAfter> typedPolicy)
+            if (policy is AsyncRateLimitPolicy typedPolicy)
             {
                 try
                 {

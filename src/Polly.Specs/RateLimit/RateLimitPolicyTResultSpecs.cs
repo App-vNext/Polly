@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading.Tasks;
 using Polly.RateLimit;
 using Polly.Specs.Helpers;
 using Polly.Specs.Helpers.RateLimit;
