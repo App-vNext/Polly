@@ -5,7 +5,7 @@ namespace Polly.RateLimit
     /// <summary>
     /// Defines methods to be provided by a rate-limiter used in a Polly <see cref="IRateLimitPolicy"/>
     /// </summary>
-    public interface IRateLimiter
+    internal interface IRateLimiter
     {
         /// <summary>
         /// Returns whether the execution is permitted; if not, returns what <see cref="TimeSpan"/> should be waited before retrying.

@@ -7,7 +7,7 @@ namespace Polly.RateLimit
     /// <summary>
     /// A lock-free token-bucket rate-limiter for a Polly <see cref="IRateLimitPolicy"/>.
     /// </summary>
-    public class LockFreeTokenBucketRateLimiter : IRateLimiter
+    internal class LockFreeTokenBucketRateLimiter : IRateLimiter
     {
         private readonly long addTokenTickInterval;
         private readonly long bucketCapacity;

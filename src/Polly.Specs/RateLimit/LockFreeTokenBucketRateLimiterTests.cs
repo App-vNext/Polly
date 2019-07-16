@@ -5,7 +5,7 @@ namespace Polly.Specs.RateLimit
 {
     public class LockFreeTokenBucketRateLimiterTests : TokenBucketRateLimiterTestsBase
     {
-        public override IRateLimiter GetRateLimiter(TimeSpan onePer, long bucketCapacity)
+        internal override IRateLimiter GetRateLimiter(TimeSpan onePer, long bucketCapacity)
             => new LockFreeTokenBucketRateLimiter(onePer, bucketCapacity);
     }
 }

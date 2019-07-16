@@ -4,7 +4,7 @@ using Polly.RateLimit;
 
 namespace Polly.Specs.Helpers.RateLimit
 {
-    public static class IRateLimiterExtensions
+    internal static class IRateLimiterExtensions
     {
         public static void ShouldPermitAnExecution(this IRateLimiter rateLimiter)
         {
