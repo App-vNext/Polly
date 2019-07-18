@@ -15,6 +15,7 @@ TestResults
 .vs/
 .vscode/
 .idea/
+.ionide/
 
 # Build results
 [Dd]ebug/
