@@ -28,7 +28,7 @@ namespace Polly.Caching
         /// <returns>A <see cref="Ttl"/> representing the remaining Ttl of the cached item.</returns>
         public Ttl GetTtl(Context context, object result)
         {
-            TimeSpan untilPointInTime = absoluteExpirationTime.Subtract(SystemClock.DateTimeOffsetUtcNow());
+            TimeSpan untilPointInTime = absoluteExpirationTime.Subtract(SystemClock.Current.DateTimeOffsetUtcNow);
             TimeSpan remaining = untilPointInTime > TimeSpan.Zero ? untilPointInTime : TimeSpan.Zero;
             return new Ttl(remaining, false);
         }

@@ -75,7 +75,7 @@ namespace Polly.Retry
 
                     if (waitDuration > TimeSpan.Zero)
                     {
-                        SystemClock.Sleep(waitDuration, cancellationToken);
+                        SystemClock.Current.Sleep(waitDuration, cancellationToken);
                     }
                 }
 

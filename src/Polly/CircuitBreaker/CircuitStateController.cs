@@ -80,7 +80,7 @@ namespace Polly.CircuitBreaker
         {
             get
             {
-                return SystemClock.UtcNow().Ticks < _blockedTill;
+                return SystemClock.Current.UtcNow.Ticks < _blockedTill;
             }
         }
 
@@ -98,10 +98,10 @@ namespace Polly.CircuitBreaker
 
         private void BreakFor_NeedsLock(TimeSpan durationOfBreak, Context context)
         {
-            bool willDurationTakeUsPastDateTimeMaxValue = durationOfBreak > DateTime.MaxValue - SystemClock.UtcNow();
+            bool willDurationTakeUsPastDateTimeMaxValue = durationOfBreak > DateTime.MaxValue - SystemClock.Current.UtcNow;
             _blockedTill = willDurationTakeUsPastDateTimeMaxValue
                 ? DateTime.MaxValue.Ticks
-                : (SystemClock.UtcNow() + durationOfBreak).Ticks;
+                : (SystemClock.Current.UtcNow + durationOfBreak).Ticks;
 
             var transitionedState = _circuitState;
             _circuitState = CircuitState.Open;
@@ -127,11 +127,11 @@ namespace Polly.CircuitBreaker
         protected bool PermitHalfOpenCircuitTest()
         {
             long currentlyBlockedUntil = _blockedTill;
-            if (SystemClock.UtcNow().Ticks >= currentlyBlockedUntil)
+            if (SystemClock.Current.UtcNow.Ticks >= currentlyBlockedUntil)
             {
                 // It's time to permit a / another trial call in the half-open state ...
                 // ... but to prevent race conditions/multiple calls, we have to ensure only _one_ thread wins the race to own this next call.
-                return Interlocked.CompareExchange(ref _blockedTill, SystemClock.UtcNow().Ticks + _durationOfBreak.Ticks, currentlyBlockedUntil) == currentlyBlockedUntil;
+                return Interlocked.CompareExchange(ref _blockedTill, SystemClock.Current.UtcNow.Ticks + _durationOfBreak.Ticks, currentlyBlockedUntil) == currentlyBlockedUntil;
             }
             return false;
         }
