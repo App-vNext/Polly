@@ -412,18 +412,20 @@ For more information on the Circuit Breaker pattern in general see:
 ### Fallback 
 ```csharp
 // Provide a substitute value, if an execution faults.
-Policy
-   .Handle<Whatever>()
+Policy<UserAvatar>
+   .Handle<FooException>()
+   .OrResult(null)
    .Fallback<UserAvatar>(UserAvatar.Blank)
 
 // Specify a func to provide a substitute value, if execution faults.
-Policy
-   .Handle<Whatever>()
+Policy<UserAvatar>
+   .Handle<FooException>()
+   .OrResult(null)
    .Fallback<UserAvatar>(() => UserAvatar.GetRandomAvatar()) // where: public UserAvatar GetRandomAvatar() { ... }
 
 // Specify a substitute value or func, calling an action (eg for logging) if the fallback is invoked.
-Policy
-   .Handle<Whatever>()
+Policy<UserAvatar>
+   .Handle<FooException>()
    .Fallback<UserAvatar>(UserAvatar.Blank, onFallback: (exception, context) => 
     {
         // do something
@@ -653,15 +655,15 @@ policyWrap.Execute(...)
 PolicyWrap commonResilience = Policy.Wrap(retry, breaker, timeout);
 
 // ... then wrap in extra policies specific to a call site, at that call site:
-Avatar avatar = Policy
-   .Handle<Whatever>()
+Avatar avatar = Policy<UserAvatar>
+   .Handle<FooException>()
    .Fallback<Avatar>(Avatar.Blank)
    .Wrap(commonResilience)
    .Execute(() => { /* get avatar */ });
 
 // Share commonResilience, but wrap different policies in at another call site:
 Reputation reps = Policy
-   .Handle<Whatever>()
+   .Handle<FooException>()
    .Fallback<Reputation>(Reputation.NotAvailable)
    .Wrap(commonResilience)
    .Execute(() => { /* get reputation */ });  
