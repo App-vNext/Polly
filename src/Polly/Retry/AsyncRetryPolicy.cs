@@ -47,7 +47,8 @@ namespace Polly.Retry
                 _sleepDurationsEnumerable,
                 _sleepDurationProvider != null 
                     ? (retryCount, outcome, ctx) =>  _sleepDurationProvider(retryCount, outcome.Exception, ctx) 
-                    : (Func<int, DelegateResult<TResult>, Context, TimeSpan>)null
+                    : (Func<int, DelegateResult<TResult>, Context, TimeSpan>)null,
+                continueOnCapturedContext
             );
         }
     }
@@ -90,7 +91,8 @@ namespace Polly.Retry
                 _onRetryAsync,
                 _permittedRetryCount,
                 _sleepDurationsEnumerable,
-                _sleepDurationProvider
+                _sleepDurationProvider,
+                continueOnCapturedContext
             );
     }
 }
