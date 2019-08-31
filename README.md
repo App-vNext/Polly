@@ -527,7 +527,7 @@ Policy
 Policy
   .Timeout(30, onTimeout: (context, timespan, task) => 
     {
-        logger.Warn($"{context.PolicyKey} at {context.ExecutionKey}: execution timed out after {timespan.TotalSeconds} seconds.");
+        logger.Warn($"{context.PolicyKey} at {context.OperationKey}: execution timed out after {timespan.TotalSeconds} seconds.");
     });
 
 // Eg timeout, capturing any exception from the timed-out task when it completes:
@@ -535,7 +535,7 @@ Policy
   .Timeout(30, onTimeout: (context, timespan, task) => 
     {
         task.ContinueWith(t => {
-            if (t.IsFaulted) logger.Error($"{context.PolicyKey} at {context.ExecutionKey}: execution timed out after {timespan.TotalSeconds} seconds, with: {t.Exception}.");
+            if (t.IsFaulted) logger.Error($"{context.PolicyKey} at {context.OperationKey}: execution timed out after {timespan.TotalSeconds} seconds, with: {t.Exception}.");
         });
     });
 ```
@@ -783,15 +783,15 @@ var policy = Policy
     .Handle<DataAccessException>()
     .Retry(3, onRetry: (exception, retryCount, context) =>
        {
-           logger.Error($"Retry {retryCount} of {context.PolicyKey} at {context.ExecutionKey}, due to: {exception}.");
+           logger.Error($"Retry {retryCount} of {context.PolicyKey} at {context.OperationKey}, due to: {exception}.");
        })
     .WithPolicyKey("MyDataAccessPolicy");
 
-// Identify call sites with an ExecutionKey, by passing in a Context
+// Identify call sites with an OperationKey, by passing in a Context
 var customerDetails = policy.Execute(myDelegate, new Context("GetCustomerDetails"));
 
 // "MyDataAccessPolicy" -> context.PolicyKey 
-// "GetCustomerDetails  -> context.ExecutionKey
+// "GetCustomerDetails  -> context.OperationKey
 
 
 // Pass additional custom information from call site into execution context 
@@ -799,7 +799,7 @@ var policy = Policy
     .Handle<DataAccessException>()
     .Retry(3, onRetry: (exception, retryCount, context) =>
        {
-           logger.Error($"Retry {retryCount} of {context.PolicyKey} at {context.ExecutionKey}, getting {context["Type"]} of id {context["Id"]}, due to: {exception}.");
+           logger.Error($"Retry {retryCount} of {context.PolicyKey} at {context.OperationKey}, getting {context["Type"]} of id {context["Id"]}, due to: {exception}.");
        })
     .WithPolicyKey("MyDataAccessPolicy");
 
