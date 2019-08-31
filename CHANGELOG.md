@@ -1,5 +1,6 @@
 ## 7.1.1
-- Fix broken build
+- Bug fix: ensure async retry policies honor continueOnCapturedContext setting (affects v7.1.0 only).
+- Remove deprecated cake add-in from build
 
 ## 7.1.0
 - Add SourceLink debugger support.
