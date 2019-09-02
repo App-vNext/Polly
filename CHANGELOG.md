@@ -1,10 +1,10 @@
 ## 7.1.1
-- Bug fix: ensure async retry policies honor continueOnCapturedContext setting (affects v7.1.0 only).
+- Bug fix: ensure async retry policies honor continueOnCapturedContext setting (affected v7.1.0 only).
 - Remove deprecated cake add-in from build
 
 ## 7.1.0
 - Add SourceLink debugger support.
-- Bug fix: PolicyRegistry with .NET Core services.AddPolicyRegistry() overload (affects Polly v7.0.1-3 only)
+- Bug fix: PolicyRegistry with .NET Core services.AddPolicyRegistry() overload (affected Polly v7.0.1-3 only)
 - Rationalise solution layout
 - Add explicit .NET framework 4.6.2 and 4.7.2 test runs
 
