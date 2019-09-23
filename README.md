@@ -976,6 +976,9 @@ Both templates contain a full project structure referencing Polly, Polly's defau
 
 ## Available via Polly-Contrib
 
++ [Polly.Contrib.WaitAndRetry](https://github.com/Polly-Contrib/Polly.Contrib.WaitAndRetry): a collection of concise helper methods for common wait-and-retry strategies; and a new jitter formula combining exponential backoff with a very even distribution of randomly-jittered retry intervals.
++ [Polly.Contrib.AzureFunctions.CircuitBreaker](https://github.com/Polly-Contrib/Polly.Contrib.AzureFunctions.CircuitBreaker): a distributed circuit-breaker implemented in Azure Functions; consumable in Azure Functions, or from anywhere over http.
++ [Simmy](https://github.com/Polly-Contrib/Simmy): our chaos engineering project.
 + [Polly.Contrib.TimingPolicy](https://github.com/Polly-Contrib/Polly.Contrib.TimingPolicy): a starter policy to publish execution timings of any call executed through Policy.
 + [Polly.Contrib.LoggingPolicy](https://github.com/Polly-Contrib/Polly.Contrib.LoggingPolicy): a policy simply to log handled exceptions/faults, and rethrow or bubble the fault outwards.
 
