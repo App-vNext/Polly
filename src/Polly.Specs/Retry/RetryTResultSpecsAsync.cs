@@ -292,7 +292,7 @@ namespace Polly.Specs.Retry
                 ResultPrimitive.Fault, ResultPrimitive.Good
                 ).ConfigureAwait(false);
 
-            result.ShouldBeEquivalentTo(new
+            result.Should().BeEquivalentTo(new
             {
                 Outcome = OutcomeType.Successful,
                 FinalException = (Exception)null,
@@ -300,7 +300,7 @@ namespace Polly.Specs.Retry
                 FaultType = (FaultType?)null,
                 FinalHandledResult = default(ResultPrimitive),
                 Result = ResultPrimitive.Good
-            }, options => options.Excluding(o => o.Context));
+            });
 
             contextData.Should()
                 .ContainKeys("key1", "key2").And

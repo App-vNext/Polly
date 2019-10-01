@@ -35,7 +35,7 @@ namespace Polly.Specs
                 .Retry((_, __) => { })
                 .ExecuteAndCapture(() => ResultPrimitive.Good);
 
-            result.ShouldBeEquivalentTo(new
+            result.Should().BeEquivalentTo(new
             {
                 Outcome = OutcomeType.Successful,
                 FinalException = (Exception)null,
@@ -43,7 +43,7 @@ namespace Polly.Specs
                 Result = ResultPrimitive.Good,
                 FinalHandledResult = default(ResultPrimitive),
                 FaultType = (FaultType?)null
-            }, options => options.Excluding(o => o.Context));
+            });
         }
 
         [Fact]
@@ -56,7 +56,7 @@ namespace Polly.Specs
                 .Retry((_, __) => { })
                 .ExecuteAndCapture(() => handledResult);
 
-            result.ShouldBeEquivalentTo(new
+            result.Should().BeEquivalentTo(new
             {
                 Outcome = OutcomeType.Failure,
                 FinalException = (Exception)null,
@@ -64,7 +64,7 @@ namespace Polly.Specs
                 FaultType = FaultType.ResultHandledByThisPolicy,
                 FinalHandledResult = handledResult,
                 Result = default(ResultPrimitive)
-            }, options => options.Excluding(o => o.Context));
+            });
         }
 
         [Fact]
@@ -78,7 +78,7 @@ namespace Polly.Specs
                 .Retry((_, __) => { })
                 .ExecuteAndCapture(() => unhandledResult);
 
-            result.ShouldBeEquivalentTo(new
+            result.Should().BeEquivalentTo(new
             {
                 Outcome = OutcomeType.Successful,
                 FinalException = (Exception)null,
@@ -86,7 +86,7 @@ namespace Polly.Specs
                 Result = unhandledResult,
                 FinalHandledResult = default(ResultPrimitive),
                 FaultType = (FaultType?)null
-            }, options => options.Excluding(o => o.Context));
+            });
         }
 
         #endregion
