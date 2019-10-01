@@ -108,7 +108,7 @@ namespace Polly.Specs.Registry
             string key = Guid.NewGuid().ToString();
 
             _registry.Invoking(r => r.Add(key, policy))
-                .ShouldNotThrow();
+                .Should().NotThrow();
 
             _registry.Invoking(r => r.Add(key, policy))
                 .Should().Throw<ArgumentException>();
@@ -272,7 +272,7 @@ namespace Polly.Specs.Registry
             bool result = false;
 
             _registry.Invoking(r => result = r.TryGet(key, out outPolicy))
-                .ShouldNotThrow();
+                .Should().NotThrow();
 
             result.Should().BeFalse();
         }
@@ -285,7 +285,7 @@ namespace Polly.Specs.Registry
             bool result = false;
 
             _registry.Invoking(r => result = r.TryGet(key, out outPolicy))
-                .ShouldNotThrow();
+                .Should().NotThrow();
 
             result.Should().BeFalse();
         }
@@ -298,7 +298,7 @@ namespace Polly.Specs.Registry
             bool result = false;
 
             _registry.Invoking(r => result = r.TryGet<ISyncPolicy<ResultPrimitive>>(key, out outPolicy))
-                .ShouldNotThrow();
+                .Should().NotThrow();
 
             result.Should().BeFalse();
         }

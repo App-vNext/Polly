@@ -43,7 +43,7 @@ namespace Polly.Specs
 
             Action configure = () => policy.WithPolicyKey(Guid.NewGuid().ToString());
 
-            configure.ShouldNotThrow();
+            configure.Should().NotThrow();
 
             configure.Should().Throw<ArgumentException>().And.ParamName.Should().Be("policyKey");
         }
@@ -225,7 +225,7 @@ namespace Polly.Specs
 
             Action configure = () => policy.WithPolicyKey(Guid.NewGuid().ToString());
 
-            configure.ShouldNotThrow();
+            configure.Should().NotThrow();
 
             configure.Should().Throw<ArgumentException>().And.ParamName.Should().Be("policyKey");
         }

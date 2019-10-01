@@ -20,7 +20,7 @@ namespace Polly.Specs.Caching
         {
             Action configure = () => new SlidingTtl(TimeSpan.Zero);
 
-            configure.ShouldNotThrow();
+            configure.Should().NotThrow();
         }
 
         [Fact]
@@ -28,7 +28,7 @@ namespace Polly.Specs.Caching
         {
             Action configure = () => new SlidingTtl(TimeSpan.MaxValue);
 
-            configure.ShouldNotThrow();
+            configure.Should().NotThrow();
         }
 
         [Fact]

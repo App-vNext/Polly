@@ -58,7 +58,7 @@ namespace Polly.Specs.CircuitBreaker
             Action action = () => Policy
                                      .HandleResult(ResultPrimitive.Fault)
                                      .CircuitBreakerAsync(1, TimeSpan.Zero);
-            action.ShouldNotThrow();
+            action.Should().NotThrow();
         }
 
         [Fact]
@@ -396,7 +396,7 @@ namespace Polly.Specs.CircuitBreaker
 
 
             // OnActionPreExecute() should permit first execution.
-            breaker._breakerController.Invoking(c => c.OnActionPreExecute()).ShouldNotThrow();
+            breaker._breakerController.Invoking(c => c.OnActionPreExecute()).Should().NotThrow();
             breaker.CircuitState.Should().Be(CircuitState.HalfOpen);
 
             // OnActionPreExecute() should reject a second execution.
@@ -427,7 +427,7 @@ namespace Polly.Specs.CircuitBreaker
 
 
             // OnActionPreExecute() should permit first execution.
-            breaker._breakerController.Invoking(c => c.OnActionPreExecute()).ShouldNotThrow();
+            breaker._breakerController.Invoking(c => c.OnActionPreExecute()).Should().NotThrow();
             breaker.CircuitState.Should().Be(CircuitState.HalfOpen);
 
             // OnActionPreExecute() should reject a second execution.
@@ -439,7 +439,7 @@ namespace Polly.Specs.CircuitBreaker
             breaker.CircuitState.Should().Be(CircuitState.HalfOpen);
 
             // OnActionPreExecute() should now permit another trial execution.
-            breaker._breakerController.Invoking(c => c.OnActionPreExecute()).ShouldNotThrow();
+            breaker._breakerController.Invoking(c => c.OnActionPreExecute()).Should().NotThrow();
             breaker.CircuitState.Should().Be(CircuitState.HalfOpen);
         }
 
@@ -493,7 +493,7 @@ namespace Polly.Specs.CircuitBreaker
                     firstExecutionActive = false;
 
                     return ResultPrimitive.Good;
-                })).ShouldNotThrow();
+                })).Should().NotThrow();
             }, TaskCreationOptions.LongRunning);
 
             // Attempt a second execution, signalled by the first execution to ensure they overlap: we should be able to verify it doesn't execute, and is rejected by a breaker in a HalfOpen state.
@@ -596,7 +596,7 @@ namespace Polly.Specs.CircuitBreaker
                     firstExecutionActive = false;
 
                     return ResultPrimitive.Good;
-                })).ShouldNotThrow();
+                })).Should().NotThrow();
             }, TaskCreationOptions.LongRunning);
 
             // Attempt a second execution, signalled by the first execution to ensure they overlap; start it one breakDuration later.  We should be able to verify it does execute, though the breaker is still in a HalfOpen state.
@@ -725,7 +725,7 @@ namespace Polly.Specs.CircuitBreaker
 
             breaker.Reset();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
-            breaker.Awaiting(async x => await x.ExecuteAsync(() => Task.FromResult(ResultPrimitive.Good))).ShouldNotThrow();
+            breaker.Awaiting(async x => await x.ExecuteAsync(() => Task.FromResult(ResultPrimitive.Good))).Should().NotThrow();
         }
 
         [Fact]
@@ -757,7 +757,7 @@ namespace Polly.Specs.CircuitBreaker
             breaker.Reset();
             SystemClock.UtcNow().Should().Be(time);
             breaker.CircuitState.Should().Be(CircuitState.Closed);
-            breaker.Awaiting(async x => await x.ExecuteAsync(() => Task.FromResult(ResultPrimitive.Good))).ShouldNotThrow();
+            breaker.Awaiting(async x => await x.ExecuteAsync(() => Task.FromResult(ResultPrimitive.Good))).Should().NotThrow();
         }
 
         #endregion
@@ -950,7 +950,7 @@ namespace Polly.Specs.CircuitBreaker
             onResetCalled.Should().Be(0);
 
             // first call after duration is successful, so circuit should reset
-            breaker.Awaiting(async x => await x.ExecuteAsync(() => Task.FromResult(ResultPrimitive.Good))).ShouldNotThrow();
+            breaker.Awaiting(async x => await x.ExecuteAsync(() => Task.FromResult(ResultPrimitive.Good))).Should().NotThrow();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
             onResetCalled.Should().Be(1);
         }
@@ -968,11 +968,11 @@ namespace Polly.Specs.CircuitBreaker
 
             onResetCalled.Should().BeFalse();
 
-            breaker.Awaiting(async x => await x.ExecuteAsync(() => Task.FromResult(ResultPrimitive.Good))).ShouldNotThrow();
+            breaker.Awaiting(async x => await x.ExecuteAsync(() => Task.FromResult(ResultPrimitive.Good))).Should().NotThrow();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
             onResetCalled.Should().BeFalse();
 
-            breaker.Awaiting(async x => await x.ExecuteAsync(() => Task.FromResult(ResultPrimitive.Good))).ShouldNotThrow();
+            breaker.Awaiting(async x => await x.ExecuteAsync(() => Task.FromResult(ResultPrimitive.Good))).Should().NotThrow();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
             onResetCalled.Should().BeFalse();
         }
@@ -1018,7 +1018,7 @@ namespace Polly.Specs.CircuitBreaker
 
             // first call after duration is successful, so circuit should reset
             breaker.Awaiting(async x => await x.ExecuteAsync(() => Task.FromResult(ResultPrimitive.Good)))
-                .ShouldNotThrow();
+                .Should().NotThrow();
             onHalfOpenCalled.Should().Be(1);
             breaker.CircuitState.Should().Be(CircuitState.Closed);
             onResetCalled.Should().Be(1);
@@ -1096,7 +1096,7 @@ namespace Polly.Specs.CircuitBreaker
 
             breaker.CircuitState.Should().Be(CircuitState.Closed);
             breaker.Awaiting(async x => await x.ExecuteAsync(() => Task.FromResult(ResultPrimitive.Good)))
-                .ShouldNotThrow();
+                .Should().NotThrow();
         }
 
         #region Tests of supplied parameters to onBreak delegate

@@ -43,7 +43,7 @@ namespace Polly.Specs.Retry
                 .RetryForever();
 
             policy.Invoking(x => x.RaiseException<DivideByZeroException>(3))
-                  .ShouldNotThrow();
+                  .Should().NotThrow();
         }
 
         [Fact]
@@ -55,7 +55,7 @@ namespace Polly.Specs.Retry
                 .RetryForever();
 
             policy.Invoking(x => x.RaiseException<ArgumentException>(3))
-                  .ShouldNotThrow();
+                  .Should().NotThrow();
         }
 
         [Fact]
@@ -123,7 +123,7 @@ namespace Polly.Specs.Retry
                 .RetryForever();
 
             policy.Invoking(x => x.RaiseException<DivideByZeroException>())
-                  .ShouldNotThrow();
+                  .Should().NotThrow();
         }
 
         [Fact]
@@ -134,7 +134,7 @@ namespace Polly.Specs.Retry
                 .RetryForeverAsync();
 
             policy.Awaiting(async x => await x.RaiseExceptionAsync<DivideByZeroException>())
-                  .ShouldNotThrow();
+                  .Should().NotThrow();
         }
 
         [Fact]
@@ -146,7 +146,7 @@ namespace Polly.Specs.Retry
                 .RetryForever();
 
             policy.Invoking(x => x.RaiseException<ArgumentException>())
-                  .ShouldNotThrow();
+                  .Should().NotThrow();
         }
 
         [Fact]
@@ -158,7 +158,7 @@ namespace Polly.Specs.Retry
                 .RetryForeverAsync();
 
             policy.Awaiting(async x => await x.RaiseExceptionAsync<ArgumentException>())
-                  .ShouldNotThrow();
+                  .Should().NotThrow();
         }
 
         [Fact]

@@ -21,7 +21,7 @@ namespace Polly.Specs.Caching
         {
             Action configure = () => new RelativeTtl(TimeSpan.Zero);
 
-            configure.ShouldNotThrow();
+            configure.Should().NotThrow();
         }
 
         [Fact]
@@ -29,7 +29,7 @@ namespace Polly.Specs.Caching
         {
             Action configure = () => new RelativeTtl(TimeSpan.MaxValue);
 
-            configure.ShouldNotThrow();
+            configure.Should().NotThrow();
         }
 
         [Fact]

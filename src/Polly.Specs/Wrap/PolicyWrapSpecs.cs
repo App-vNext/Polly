@@ -274,7 +274,7 @@ namespace Polly.Specs.Wrap
             Policy breaker = Policy.Handle<Exception>().CircuitBreaker(1, TimeSpan.FromSeconds(10));
             Action config = () => Policy.Wrap(new[] {retry, breaker});
 
-            config.ShouldNotThrow();
+            config.Should().NotThrow();
         }
 
         [Fact]
@@ -286,7 +286,7 @@ namespace Polly.Specs.Wrap
 
             Action config = () => Policy.Wrap(new[] {divideByZeroRetry, retry, breaker});
 
-            config.ShouldNotThrow();
+            config.Should().NotThrow();
         }
 
         [Fact]
@@ -329,7 +329,7 @@ namespace Polly.Specs.Wrap
             Policy<int> breaker = Policy<int>.Handle<Exception>().CircuitBreaker(1, TimeSpan.FromSeconds(10));
             Action config = () => Policy.Wrap<int>(new[] { retry, breaker });
 
-            config.ShouldNotThrow();
+            config.Should().NotThrow();
         }
 
         [Fact]
@@ -341,7 +341,7 @@ namespace Polly.Specs.Wrap
 
             Action config = () => Policy.Wrap<int>(new[] { divideByZeroRetry, retry, breaker });
 
-            config.ShouldNotThrow();
+            config.Should().NotThrow();
         }
 
         [Fact]

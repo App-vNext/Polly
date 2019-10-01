@@ -474,7 +474,7 @@ namespace Polly.Specs.Fallback
 
             fallbackPolicy.Awaiting(async p => await p.ExecuteAndCaptureAsync(ctx => Task.FromResult(ResultPrimitive.Fault),
                     new { key1 = "value1", key2 = "value2" }.AsDictionary()))
-                .ShouldNotThrow();
+                .Should().NotThrow();
 
             contextData.Should()
                 .ContainKeys("key1", "key2").And

@@ -28,7 +28,7 @@ namespace Polly.Specs.Caching
         {
             Action configure = () => new ResultTtl<object>((result) => new Ttl());
 
-            configure.ShouldNotThrow();
+            configure.Should().NotThrow();
         }
 
         [Fact]
@@ -36,7 +36,7 @@ namespace Polly.Specs.Caching
         {
             Action configure = () => new ResultTtl<object>((context, result) => new Ttl());
 
-            configure.ShouldNotThrow();
+            configure.Should().NotThrow();
         }
 
         [Fact]

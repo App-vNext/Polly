@@ -22,7 +22,7 @@ namespace Polly.Specs.Custom
                 });
             };
 
-            construct.ShouldNotThrow();
+            construct.Should().NotThrow();
         }
 
         [Fact]
@@ -34,7 +34,7 @@ namespace Polly.Specs.Custom
             bool executed = false;
 
             policy.Awaiting(x => x.ExecuteAsync(() => { executed = true; return Task.CompletedTask; }))
-                .ShouldNotThrow();
+                .Should().NotThrow();
 
             executed.Should().BeTrue();
             preExecuted.Should().BeTrue();
@@ -53,7 +53,7 @@ namespace Polly.Specs.Custom
                 });
             };
 
-            construct.ShouldNotThrow();
+            construct.Should().NotThrow();
         }
 
         [Fact]

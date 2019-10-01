@@ -70,7 +70,7 @@ namespace Polly.Specs.Retry
                 .Retry(3);
 
             policy.Invoking(x => x.RaiseException<DivideByZeroException>(3))
-                  .ShouldNotThrow();
+                  .Should().NotThrow();
         }
 
         [Fact]
@@ -82,7 +82,7 @@ namespace Polly.Specs.Retry
                 .Retry(3);
 
             policy.Invoking(x => x.RaiseException<ArgumentException>(3))
-                  .ShouldNotThrow();
+                  .Should().NotThrow();
         }
 
         [Fact]
@@ -93,7 +93,7 @@ namespace Polly.Specs.Retry
                 .Retry(3);
 
             policy.Invoking(x => x.RaiseException<DivideByZeroException>())
-                  .ShouldNotThrow();
+                  .Should().NotThrow();
         }
         
         [Fact]
@@ -105,7 +105,7 @@ namespace Polly.Specs.Retry
                 .Retry(3);
 
             policy.Invoking(x => x.RaiseException<ArgumentException>())
-                  .ShouldNotThrow();
+                  .Should().NotThrow();
         }
         
         [Fact]
@@ -185,7 +185,7 @@ namespace Polly.Specs.Retry
                 .Retry();
 
             policy.Invoking(x => x.RaiseException<DivideByZeroException>())
-                  .ShouldNotThrow();
+                  .Should().NotThrow();
         }
 
         [Fact]
@@ -197,7 +197,7 @@ namespace Polly.Specs.Retry
                 .Retry();
 
             policy.Invoking(x => x.RaiseException<ArgumentException>())
-                  .ShouldNotThrow();
+                  .Should().NotThrow();
         }
 
         [Fact]
@@ -296,7 +296,7 @@ namespace Polly.Specs.Retry
 
             policy.Invoking(p => p.ExecuteAndCapture(ctx => { throw new DivideByZeroException();}, 
                 new { key1 = "value1", key2 = "value2" }.AsDictionary()))
-                .ShouldNotThrow();
+                .Should().NotThrow();
 
             contextData.Should()
                 .ContainKeys("key1", "key2").And
@@ -351,13 +351,13 @@ namespace Polly.Specs.Retry
 
             policy.Invoking(p => p.ExecuteAndCapture(ctx => { throw new DivideByZeroException(); }, 
                 new { key = "original_value" }.AsDictionary()))
-                .ShouldNotThrow();
+                .Should().NotThrow();
 
             contextValue.Should().Be("original_value");
 
             policy.Invoking(p => p.ExecuteAndCapture(ctx => { throw new DivideByZeroException(); },
                 new { key = "new_value" }.AsDictionary()))
-                .ShouldNotThrow();
+                .Should().NotThrow();
 
             contextValue.Should().Be("new_value");
         }
@@ -370,10 +370,10 @@ namespace Polly.Specs.Retry
                 .Retry();
 
             policy.Invoking(x => x.RaiseException<DivideByZeroException>())
-                .ShouldNotThrow();
+                .Should().NotThrow();
 
             policy.Invoking(x => x.RaiseException<DivideByZeroException>())
-                .ShouldNotThrow();
+                .Should().NotThrow();
         }
 
         [Fact]
@@ -433,7 +433,7 @@ namespace Polly.Specs.Retry
             };
 
             policy.Invoking(x => x.RaiseExceptionAndOrCancellation<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
-                .ShouldNotThrow();
+                .Should().NotThrow();
 
             attemptsInvoked.Should().Be(1);
         }
@@ -731,7 +731,7 @@ namespace Polly.Specs.Retry
             };
 
             policy.Invoking(x => result = x.RaiseExceptionAndOrCancellation<DivideByZeroException, bool>(scenario, cancellationTokenSource, onExecute, true))
-                .ShouldNotThrow();
+                .Should().NotThrow();
 
             result.Should().BeTrue();
 

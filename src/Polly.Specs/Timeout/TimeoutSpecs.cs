@@ -56,7 +56,7 @@ namespace Polly.Specs.Timeout
         {
             Action policy = () => Policy.Timeout(TimeSpan.FromMilliseconds(1));
 
-            policy.ShouldNotThrow();
+            policy.Should().NotThrow();
         }
 
         [Fact]
@@ -64,7 +64,7 @@ namespace Polly.Specs.Timeout
         {
             Action policy = () => Policy.Timeout(3);
 
-            policy.ShouldNotThrow();
+            policy.Should().NotThrow();
         }
 
         [Fact]
@@ -72,7 +72,7 @@ namespace Polly.Specs.Timeout
         {
             Action policy = () => Policy.Timeout(TimeSpan.MaxValue);
 
-            policy.ShouldNotThrow();
+            policy.Should().NotThrow();
         }
 
         [Fact]
@@ -80,7 +80,7 @@ namespace Polly.Specs.Timeout
         {
             Action policy = () => Policy.Timeout(int.MaxValue);
 
-            policy.ShouldNotThrow();
+            policy.Should().NotThrow();
         }
 
         [Fact]
@@ -88,7 +88,7 @@ namespace Polly.Specs.Timeout
         {
             Action policy = () => Policy.Timeout(System.Threading.Timeout.InfiniteTimeSpan);
 
-            policy.ShouldNotThrow();
+            policy.Should().NotThrow();
         }
 
         [Fact]
@@ -96,7 +96,7 @@ namespace Polly.Specs.Timeout
         {
             Action policy = () => Policy.Timeout(System.Threading.Timeout.InfiniteTimeSpan, TimeoutStrategy.Optimistic);
 
-            policy.ShouldNotThrow();
+            policy.Should().NotThrow();
         }
 
         [Fact]
@@ -105,7 +105,7 @@ namespace Polly.Specs.Timeout
             Action<Context, TimeSpan, Task> doNothing = (_, __, ___) => { };
             Action policy = () => Policy.Timeout(System.Threading.Timeout.InfiniteTimeSpan, doNothing);
 
-            policy.ShouldNotThrow();
+            policy.Should().NotThrow();
         }
 
         [Fact]
@@ -114,7 +114,7 @@ namespace Polly.Specs.Timeout
             Action<Context, TimeSpan, Task, Exception> doNothing = (_, __, ___, ____) => { };
             Action policy = () => Policy.Timeout(System.Threading.Timeout.InfiniteTimeSpan, doNothing);
 
-            policy.ShouldNotThrow();
+            policy.Should().NotThrow();
         }
 
         [Fact]
@@ -123,7 +123,7 @@ namespace Polly.Specs.Timeout
             Action<Context, TimeSpan, Task> doNothing = (_, __, ___) => { };
             Action policy = () => Policy.Timeout(System.Threading.Timeout.InfiniteTimeSpan, TimeoutStrategy.Optimistic, doNothing);
 
-            policy.ShouldNotThrow();
+            policy.Should().NotThrow();
         }
 
         [Fact]
@@ -132,7 +132,7 @@ namespace Polly.Specs.Timeout
             Action<Context, TimeSpan, Task, Exception> doNothing = (_, __, ___, ____) => { };
             Action policy = () => Policy.Timeout(System.Threading.Timeout.InfiniteTimeSpan, TimeoutStrategy.Optimistic, doNothing);
 
-            policy.ShouldNotThrow();
+            policy.Should().NotThrow();
         }
 
         [Fact]
@@ -209,7 +209,7 @@ namespace Polly.Specs.Timeout
         {
             Action policy = () => Policy.Timeout(() => TimeSpan.FromSeconds(1));
 
-            policy.ShouldNotThrow();
+            policy.Should().NotThrow();
         }
 
         #endregion

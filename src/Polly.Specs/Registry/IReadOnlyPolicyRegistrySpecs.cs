@@ -125,7 +125,7 @@ namespace Polly.Specs.Registry
             bool result = false;
 
             ReadOnlyRegistry.Invoking(r => result = r.TryGet(key, out outPolicy))
-                .ShouldNotThrow();
+                .Should().NotThrow();
 
             result.Should().BeFalse();
         }
@@ -138,7 +138,7 @@ namespace Polly.Specs.Registry
             bool result = false;
 
             ReadOnlyRegistry.Invoking(r => result = r.TryGet(key, out outPolicy))
-                .ShouldNotThrow();
+                .Should().NotThrow();
 
             result.Should().BeFalse();
         }
@@ -151,7 +151,7 @@ namespace Polly.Specs.Registry
             bool result = false;
 
             ReadOnlyRegistry.Invoking(r => result = r.TryGet<ISyncPolicy<ResultPrimitive>>(key, out outPolicy))
-                .ShouldNotThrow();
+                .Should().NotThrow();
 
             result.Should().BeFalse();
         }

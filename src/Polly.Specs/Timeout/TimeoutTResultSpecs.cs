@@ -56,7 +56,7 @@ namespace Polly.Specs.Timeout
         {
             Action policy = () => Policy.Timeout<ResultPrimitive>(TimeSpan.FromMilliseconds(1));
 
-            policy.ShouldNotThrow();
+            policy.Should().NotThrow();
         }
 
         [Fact]
@@ -64,7 +64,7 @@ namespace Polly.Specs.Timeout
         {
             Action policy = () => Policy.Timeout<ResultPrimitive>(3);
 
-            policy.ShouldNotThrow();
+            policy.Should().NotThrow();
         }
 
         [Fact]
@@ -72,7 +72,7 @@ namespace Polly.Specs.Timeout
         {
             Action policy = () => Policy.Timeout<ResultPrimitive>(TimeSpan.MaxValue);
 
-            policy.ShouldNotThrow();
+            policy.Should().NotThrow();
         }
 
         [Fact]
@@ -80,7 +80,7 @@ namespace Polly.Specs.Timeout
         {
             Action policy = () => Policy.Timeout<ResultPrimitive>(int.MaxValue);
 
-            policy.ShouldNotThrow();
+            policy.Should().NotThrow();
         }
 
         [Fact]
@@ -88,7 +88,7 @@ namespace Polly.Specs.Timeout
         {
             Action policy = () => Policy.Timeout<ResultPrimitive>(System.Threading.Timeout.InfiniteTimeSpan);
 
-            policy.ShouldNotThrow();
+            policy.Should().NotThrow();
         }
 
         [Fact]
@@ -96,7 +96,7 @@ namespace Polly.Specs.Timeout
         {
             Action policy = () => Policy.Timeout<ResultPrimitive>(System.Threading.Timeout.InfiniteTimeSpan, TimeoutStrategy.Optimistic);
 
-            policy.ShouldNotThrow();
+            policy.Should().NotThrow();
         }
 
         [Fact]
@@ -105,7 +105,7 @@ namespace Polly.Specs.Timeout
             Action<Context, TimeSpan, Task> doNothing = (_, __, ___) => { };
             Action policy = () => Policy.Timeout<ResultPrimitive>(System.Threading.Timeout.InfiniteTimeSpan, doNothing);
 
-            policy.ShouldNotThrow();
+            policy.Should().NotThrow();
         }
 
         [Fact]
@@ -114,7 +114,7 @@ namespace Polly.Specs.Timeout
             Action<Context, TimeSpan, Task> doNothing = (_, __, ___) => { };
             Action policy = () => Policy.Timeout<ResultPrimitive>(System.Threading.Timeout.InfiniteTimeSpan, TimeoutStrategy.Optimistic, doNothing);
 
-            policy.ShouldNotThrow();
+            policy.Should().NotThrow();
         }
 
         [Fact]
@@ -191,7 +191,7 @@ namespace Polly.Specs.Timeout
         {
             Action policy = () => Policy.Timeout<ResultPrimitive>(() => TimeSpan.FromSeconds(1));
 
-            policy.ShouldNotThrow();
+            policy.Should().NotThrow();
         }
 
         #endregion
