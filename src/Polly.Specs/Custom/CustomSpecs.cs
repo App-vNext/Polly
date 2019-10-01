@@ -58,7 +58,7 @@ namespace Polly.Specs.Custom
                     executed = true;
                     throw toThrow;
                 }))
-                .ShouldThrow<Exception>().Which.Should().Be(toThrow);
+                .Should().Throw<Exception>().Which.Should().Be(toThrow);
 
             executed.Should().BeTrue();
             handled.Should().Be(toThrow);
@@ -77,7 +77,7 @@ namespace Polly.Specs.Custom
                     executed = true;
                     throw toThrow;
                 }))
-                .ShouldThrow<Exception>().Which.Should().Be(toThrow);
+                .Should().Throw<Exception>().Which.Should().Be(toThrow);
 
             executed.Should().BeTrue();
             handled.Should().Be(null);

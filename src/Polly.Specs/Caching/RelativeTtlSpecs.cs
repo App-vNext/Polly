@@ -13,7 +13,7 @@ namespace Polly.Specs.Caching
         {
             Action configure = () => new RelativeTtl(TimeSpan.FromMilliseconds(-1));
 
-            configure.ShouldThrow<ArgumentOutOfRangeException>().And.ParamName.Should().Be("ttl");
+            configure.Should().Throw<ArgumentOutOfRangeException>().And.ParamName.Should().Be("ttl");
         }
 
         [Fact]

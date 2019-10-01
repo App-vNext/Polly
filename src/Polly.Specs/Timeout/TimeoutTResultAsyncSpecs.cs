@@ -20,7 +20,7 @@ namespace Polly.Specs.Timeout
         {
             Action policy = () => Policy.TimeoutAsync<ResultPrimitive>(TimeSpan.Zero);
 
-            policy.ShouldThrow<ArgumentOutOfRangeException>().And
+            policy.Should().Throw<ArgumentOutOfRangeException>().And
                 .ParamName.Should().Be("timeout");
         }
 
@@ -29,7 +29,7 @@ namespace Polly.Specs.Timeout
         {
             Action policy = () => Policy.TimeoutAsync<ResultPrimitive>(0);
 
-            policy.ShouldThrow<ArgumentOutOfRangeException>().And
+            policy.Should().Throw<ArgumentOutOfRangeException>().And
                 .ParamName.Should().Be("seconds");
         }
 
@@ -38,7 +38,7 @@ namespace Polly.Specs.Timeout
         {
             Action policy = () => Policy.TimeoutAsync<ResultPrimitive>(-TimeSpan.FromHours(1));
 
-            policy.ShouldThrow<ArgumentOutOfRangeException>().And
+            policy.Should().Throw<ArgumentOutOfRangeException>().And
                 .ParamName.Should().Be("timeout");
         }
 
@@ -47,7 +47,7 @@ namespace Polly.Specs.Timeout
         {
             Action policy = () => Policy.TimeoutAsync<ResultPrimitive>(-10);
 
-            policy.ShouldThrow<ArgumentOutOfRangeException>().And
+            policy.Should().Throw<ArgumentOutOfRangeException>().And
                 .ParamName.Should().Be("seconds");
         }
 
@@ -123,7 +123,7 @@ namespace Polly.Specs.Timeout
             Func<Context, TimeSpan, Task, Task> onTimeout = null;
             Action policy = () => Policy.TimeoutAsync<ResultPrimitive>(TimeSpan.FromMinutes(0.5), onTimeout);
 
-            policy.ShouldThrow<ArgumentNullException>()
+            policy.Should().Throw<ArgumentNullException>()
                 .And.ParamName.Should().Be("onTimeoutAsync");
         }
 
@@ -133,7 +133,7 @@ namespace Polly.Specs.Timeout
             Func<Context, TimeSpan, Task, Exception, Task> onTimeout = null;
             Action policy = () => Policy.TimeoutAsync<ResultPrimitive>(TimeSpan.FromMinutes(0.5), onTimeout);
 
-            policy.ShouldThrow<ArgumentNullException>()
+            policy.Should().Throw<ArgumentNullException>()
                 .And.ParamName.Should().Be("onTimeoutAsync");
         }
 
@@ -143,7 +143,7 @@ namespace Polly.Specs.Timeout
             Func<Context, TimeSpan, Task, Task> onTimeout = null;
             Action policy = () => Policy.TimeoutAsync<ResultPrimitive>(30, onTimeout);
 
-            policy.ShouldThrow<ArgumentNullException>()
+            policy.Should().Throw<ArgumentNullException>()
                 .And.ParamName.Should().Be("onTimeoutAsync");
         }
 
@@ -154,7 +154,7 @@ namespace Polly.Specs.Timeout
             Func<Context, TimeSpan, Task, Exception, Task> onTimeout = null;
             Action policy = () => Policy.TimeoutAsync<ResultPrimitive>(30, onTimeout);
 
-            policy.ShouldThrow<ArgumentNullException>()
+            policy.Should().Throw<ArgumentNullException>()
                 .And.ParamName.Should().Be("onTimeoutAsync");
         }
 
@@ -163,7 +163,7 @@ namespace Polly.Specs.Timeout
         {
             Action policy = () => Policy.TimeoutAsync<ResultPrimitive>((Func<TimeSpan>)null);
 
-            policy.ShouldThrow<ArgumentNullException>()
+            policy.Should().Throw<ArgumentNullException>()
                 .And.ParamName.Should().Be("timeoutProvider");
         }
 
@@ -173,7 +173,7 @@ namespace Polly.Specs.Timeout
             Func<Context, TimeSpan, Task, Task> onTimeoutAsync = null;
             Action policy = () => Policy.TimeoutAsync<ResultPrimitive>(() => TimeSpan.FromSeconds(30), onTimeoutAsync);
 
-            policy.ShouldThrow<ArgumentNullException>()
+            policy.Should().Throw<ArgumentNullException>()
                 .And.ParamName.Should().Be("onTimeoutAsync");
         }
 
@@ -183,7 +183,7 @@ namespace Polly.Specs.Timeout
             Func<Context, TimeSpan, Task, Exception, Task> onTimeoutAsync = null;
             Action policy = () => Policy.TimeoutAsync<ResultPrimitive>(() => TimeSpan.FromSeconds(30), onTimeoutAsync);
 
-            policy.ShouldThrow<ArgumentNullException>()
+            policy.Should().Throw<ArgumentNullException>()
                 .And.ParamName.Should().Be("onTimeoutAsync");
         }
 
@@ -210,7 +210,7 @@ namespace Polly.Specs.Timeout
             {
                 await SystemClock.SleepAsync(TimeSpan.FromSeconds(3), CancellationToken.None).ConfigureAwait(false);
                 return ResultPrimitive.WhateverButTooLate;
-            }).ConfigureAwait(false)).ShouldThrow<TimeoutRejectedException>();
+            }).ConfigureAwait(false)).Should().Throw<TimeoutRejectedException>();
         }
 
         [Fact]
@@ -243,7 +243,7 @@ namespace Polly.Specs.Timeout
                 await SystemClock.SleepAsync(TimeSpan.FromSeconds(10), CancellationToken.None).ConfigureAwait(false);
                 return ResultPrimitive.WhateverButTooLate;
             }))
-                .ShouldThrow<TimeoutRejectedException>();
+                .Should().Throw<TimeoutRejectedException>();
             watch.Stop();
 
             watch.Elapsed.Should().BeCloseTo(timeout, ((int)tolerance.TotalMilliseconds));
@@ -254,7 +254,7 @@ namespace Polly.Specs.Timeout
         {
             var policy = Policy.TimeoutAsync<ResultPrimitive>(TimeSpan.FromSeconds(10), TimeoutStrategy.Pessimistic);
 
-            policy.Awaiting(p => p.ExecuteAsync(() => { throw new NotImplementedException(); })).ShouldThrow<NotImplementedException>();
+            policy.Awaiting(p => p.ExecuteAsync(() => { throw new NotImplementedException(); })).Should().Throw<NotImplementedException>();
         }
 
         #endregion
@@ -271,7 +271,7 @@ namespace Polly.Specs.Timeout
             {
                 await SystemClock.SleepAsync(TimeSpan.FromSeconds(3), ct).ConfigureAwait(false);
                 return ResultPrimitive.WhateverButTooLate;
-            }, userCancellationToken).ConfigureAwait(false)).ShouldThrow<TimeoutRejectedException>();
+            }, userCancellationToken).ConfigureAwait(false)).Should().Throw<TimeoutRejectedException>();
         }
 
         [Fact]
@@ -306,7 +306,7 @@ namespace Polly.Specs.Timeout
                 await SystemClock.SleepAsync(TimeSpan.FromSeconds(10), ct).ConfigureAwait(false);
                 return ResultPrimitive.WhateverButTooLate;
             }, userCancellationToken).ConfigureAwait(false))
-                .ShouldThrow<TimeoutRejectedException>();
+                .Should().Throw<TimeoutRejectedException>();
             watch.Stop();
 
             watch.Elapsed.Should().BeCloseTo(timeout, ((int)tolerance.TotalMilliseconds));
@@ -317,7 +317,7 @@ namespace Polly.Specs.Timeout
         {
             var policy = Policy.TimeoutAsync<ResultPrimitive>(TimeSpan.FromSeconds(10), TimeoutStrategy.Optimistic);
 
-            policy.Awaiting(p => p.ExecuteAsync(() => { throw new NotImplementedException(); })).ShouldThrow<NotImplementedException>();
+            policy.Awaiting(p => p.ExecuteAsync(() => { throw new NotImplementedException(); })).Should().Throw<NotImplementedException>();
         }
 
         #endregion
@@ -340,7 +340,7 @@ namespace Polly.Specs.Timeout
                             ).ConfigureAwait(false);
                         return ResultPrimitive.WhateverButTooLate;
                     }, userTokenSource.Token)
-                   ).ShouldThrow<TimeoutRejectedException>(); // ... it's still the timeout we expect.
+                   ).Should().Throw<TimeoutRejectedException>(); // ... it's still the timeout we expect.
             }
         }
 
@@ -361,7 +361,7 @@ namespace Polly.Specs.Timeout
                     await TaskHelper.EmptyTask.ConfigureAwait(false);
                     return ResultPrimitive.WhateverButTooLate;
                 }, cts.Token))
-                .ShouldThrow<OperationCanceledException>();
+                .Should().Throw<OperationCanceledException>();
             }
 
             executed.Should().BeFalse();
@@ -383,7 +383,7 @@ namespace Polly.Specs.Timeout
                         userTokenSource.Cancel(); ct.ThrowIfCancellationRequested();   // Simulate cancel in the middle of execution
                         return Task.FromResult(ResultPrimitive.WhateverButTooLate);
                     }, userTokenSource.Token) // ... with user token.
-                   ).ShouldThrow<OperationCanceledException>();
+                   ).Should().Throw<OperationCanceledException>();
             }
         }
 
@@ -404,7 +404,7 @@ namespace Polly.Specs.Timeout
                     await TaskHelper.EmptyTask.ConfigureAwait(false);
                     return ResultPrimitive.WhateverButTooLate;
                 }, cts.Token))
-                .ShouldThrow<OperationCanceledException>();
+                .Should().Throw<OperationCanceledException>();
             }
 
             executed.Should().BeFalse();
@@ -433,7 +433,7 @@ namespace Polly.Specs.Timeout
                 await SystemClock.SleepAsync(TimeSpan.FromSeconds(3), CancellationToken.None).ConfigureAwait(false);
                 return ResultPrimitive.WhateverButTooLate;
             }))
-            .ShouldThrow<TimeoutRejectedException>();
+            .Should().Throw<TimeoutRejectedException>();
 
             timeoutPassedToOnTimeout.Should().Be(timeoutPassedToConfiguration);
         }
@@ -459,7 +459,7 @@ namespace Polly.Specs.Timeout
                     await SystemClock.SleepAsync(TimeSpan.FromSeconds(3), CancellationToken.None).ConfigureAwait(false);
                     return ResultPrimitive.WhateverButTooLate;
                 }, contextPassedToExecute))
-                .ShouldThrow<TimeoutRejectedException>();
+                .Should().Throw<TimeoutRejectedException>();
 
             contextPassedToOnTimeout.Should().NotBeNull();
             contextPassedToOnTimeout.OperationKey.Should().Be(operationKey);
@@ -488,7 +488,7 @@ namespace Polly.Specs.Timeout
                     await SystemClock.SleepAsync(TimeSpan.FromSeconds(3), CancellationToken.None).ConfigureAwait(false);
                     return ResultPrimitive.WhateverButTooLate;
                 }))
-                .ShouldThrow<TimeoutRejectedException>();
+                .Should().Throw<TimeoutRejectedException>();
 
             timeoutPassedToOnTimeout.Should().Be(timeoutFunc());
         }
@@ -518,7 +518,7 @@ namespace Polly.Specs.Timeout
                 await SystemClock.SleepAsync(TimeSpan.FromSeconds(3), CancellationToken.None).ConfigureAwait(false);
                 return ResultPrimitive.WhateverButTooLate;
             }, context))
-            .ShouldThrow<TimeoutRejectedException>();
+            .Should().Throw<TimeoutRejectedException>();
 
             timeoutPassedToOnTimeout.Should().Be(timeoutProvider(context));
         }
@@ -541,7 +541,7 @@ namespace Polly.Specs.Timeout
                 await SystemClock.SleepAsync(TimeSpan.FromSeconds(3), CancellationToken.None).ConfigureAwait(false);
                 return ResultPrimitive.WhateverButTooLate;
             }))
-            .ShouldThrow<TimeoutRejectedException>();
+            .Should().Throw<TimeoutRejectedException>();
 
             taskPassedToOnTimeout.Should().NotBeNull();
         }
@@ -571,7 +571,7 @@ namespace Polly.Specs.Timeout
                 await SystemClock.SleepAsync(thriceShimTimeSpan, CancellationToken.None).ConfigureAwait(false);
                 throw exceptionToThrow;
             }))
-            .ShouldThrow<TimeoutRejectedException>();
+            .Should().Throw<TimeoutRejectedException>();
 
             await SystemClock.SleepAsync(thriceShimTimeSpan, CancellationToken.None).ConfigureAwait(false);
             exceptionObservedFromTaskPassedToOnTimeout.Should().NotBeNull();
@@ -598,7 +598,7 @@ namespace Polly.Specs.Timeout
                     await SystemClock.SleepAsync(TimeSpan.FromSeconds(3), CancellationToken.None).ConfigureAwait(false);
                     return ResultPrimitive.WhateverButTooLate;
                 }))
-                .ShouldThrow<TimeoutRejectedException>();
+                .Should().Throw<TimeoutRejectedException>();
 
             exceptionPassedToOnTimeout.Should().NotBeNull();
             exceptionPassedToOnTimeout.Should().BeOfType(typeof(OperationCanceledException));
@@ -628,7 +628,7 @@ namespace Polly.Specs.Timeout
                 await SystemClock.SleepAsync(TimeSpan.FromSeconds(3), ct).ConfigureAwait(false);
                 return ResultPrimitive.WhateverButTooLate;
             }, userCancellationToken).ConfigureAwait(false))
-            .ShouldThrow<TimeoutRejectedException>();
+            .Should().Throw<TimeoutRejectedException>();
 
             timeoutPassedToOnTimeout.Should().Be(timeoutPassedToConfiguration);
         }
@@ -655,7 +655,7 @@ namespace Polly.Specs.Timeout
                     await SystemClock.SleepAsync(TimeSpan.FromSeconds(3), ct).ConfigureAwait(false);
                     return ResultPrimitive.WhateverButTooLate;
                 }, contextPassedToExecute, userCancellationToken).ConfigureAwait(false))
-                .ShouldThrow<TimeoutRejectedException>();
+                .Should().Throw<TimeoutRejectedException>();
 
             contextPassedToOnTimeout.Should().NotBeNull();
             contextPassedToOnTimeout.OperationKey.Should().Be(operationKey);
@@ -686,7 +686,7 @@ namespace Polly.Specs.Timeout
                     await SystemClock.SleepAsync(TimeSpan.FromSeconds(3), ct).ConfigureAwait(false);
                     return ResultPrimitive.WhateverButTooLate;
                 }, userCancellationToken).ConfigureAwait(false))
-                .ShouldThrow<TimeoutRejectedException>();
+                .Should().Throw<TimeoutRejectedException>();
 
             timeoutPassedToOnTimeout.Should().Be(timeoutFunc());
         }
@@ -720,7 +720,7 @@ namespace Polly.Specs.Timeout
                 await SystemClock.SleepAsync(TimeSpan.FromSeconds(3), ct).ConfigureAwait(false);
                 return ResultPrimitive.WhateverButTooLate;
             }, context, userCancellationToken).ConfigureAwait(false))
-                .ShouldThrow<TimeoutRejectedException>();
+                .Should().Throw<TimeoutRejectedException>();
 
             timeoutPassedToOnTimeout.Should().Be(timeoutProvider(context));
         }
@@ -744,7 +744,7 @@ namespace Polly.Specs.Timeout
                 await SystemClock.SleepAsync(TimeSpan.FromSeconds(3), ct).ConfigureAwait(false);
                 return ResultPrimitive.WhateverButTooLate;
             }, userCancellationToken).ConfigureAwait(false))
-            .ShouldThrow<TimeoutRejectedException>();
+            .Should().Throw<TimeoutRejectedException>();
 
             taskPassedToOnTimeout.Should().BeNull();
         }
@@ -769,7 +769,7 @@ namespace Polly.Specs.Timeout
                     await SystemClock.SleepAsync(TimeSpan.FromSeconds(3), ct).ConfigureAwait(false);
                     return ResultPrimitive.WhateverButTooLate;
                 }, userCancellationToken).ConfigureAwait(false))
-                .ShouldThrow<TimeoutRejectedException>();
+                .Should().Throw<TimeoutRejectedException>();
 
             exceptionPassedToOnTimeout.Should().NotBeNull();
             exceptionPassedToOnTimeout.Should().BeOfType(typeof(OperationCanceledException));

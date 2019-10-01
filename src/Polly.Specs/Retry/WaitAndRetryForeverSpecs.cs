@@ -26,7 +26,7 @@ namespace Polly.Specs.Retry
                                       .Handle<DivideByZeroException>()
                                       .WaitAndRetryForever(null, onRetry);
 
-            policy.ShouldThrow<ArgumentNullException>().And
+            policy.Should().Throw<ArgumentNullException>().And
                   .ParamName.Should().Be("sleepDurationProvider");
         }
 
@@ -41,7 +41,7 @@ namespace Polly.Specs.Retry
                                       .Handle<DivideByZeroException>()
                                       .WaitAndRetryForever(sleepDurationProvider, onRetry);
 
-            policy.ShouldThrow<ArgumentNullException>().And
+            policy.Should().Throw<ArgumentNullException>().And
                   .ParamName.Should().Be("sleepDurationProvider");
         }
 
@@ -55,7 +55,7 @@ namespace Polly.Specs.Retry
                                       .Handle<DivideByZeroException>()
                                       .WaitAndRetryForever(provider, nullOnRetry);
 
-            policy.ShouldThrow<ArgumentNullException>().And
+            policy.Should().Throw<ArgumentNullException>().And
                   .ParamName.Should().Be("onRetry");
         }
 
@@ -69,7 +69,7 @@ namespace Polly.Specs.Retry
                                       .Handle<DivideByZeroException>()
                                       .WaitAndRetryForever(provider, nullOnRetry);
 
-            policy.ShouldThrow<ArgumentNullException>().And
+            policy.Should().Throw<ArgumentNullException>().And
                   .ParamName.Should().Be("onRetry");
         }
 
@@ -106,7 +106,7 @@ namespace Polly.Specs.Retry
                 .WaitAndRetryForever(provider);
 
             policy.Invoking(x => x.RaiseException<NullReferenceException>())
-                  .ShouldThrow<NullReferenceException>();
+                  .Should().Throw<NullReferenceException>();
         } 
 
         [Fact]
@@ -120,7 +120,7 @@ namespace Polly.Specs.Retry
                 .WaitAndRetryForever(provider);
 
             policy.Invoking(x => x.RaiseException<NullReferenceException>())
-                  .ShouldThrow<NullReferenceException>();
+                  .Should().Throw<NullReferenceException>();
         }
        
         [Fact]
@@ -133,7 +133,7 @@ namespace Polly.Specs.Retry
                 .WaitAndRetryForever(provider);
 
             policy.Invoking(x => x.RaiseException<DivideByZeroException>())
-                  .ShouldThrow<DivideByZeroException>();
+                  .Should().Throw<DivideByZeroException>();
         }
 
         [Fact]
@@ -147,7 +147,7 @@ namespace Polly.Specs.Retry
                 .WaitAndRetryForever(provider);
 
             policy.Invoking(x => x.RaiseException<ArgumentException>())
-                  .ShouldThrow<ArgumentException>();
+                  .Should().Throw<ArgumentException>();
         }
 
         [Fact]
@@ -191,7 +191,7 @@ namespace Polly.Specs.Retry
             SystemClock.Sleep = (span, ct) => totalTimeSlept += span.Seconds;
 
             policy.Invoking(x => x.RaiseException<NullReferenceException>())
-                  .ShouldThrow<NullReferenceException>();
+                  .Should().Throw<NullReferenceException>();
 
             totalTimeSlept.Should()
                           .Be(0);
@@ -244,7 +244,7 @@ namespace Polly.Specs.Retry
                 .WaitAndRetryForever(provider, (exception, _) => retryExceptions.Add(exception));
 
             policy.Invoking(x => x.RaiseException<ArgumentException>())
-                  .ShouldThrow<ArgumentException>();
+                  .Should().Throw<ArgumentException>();
 
             retryExceptions.Should().BeEmpty();
         }

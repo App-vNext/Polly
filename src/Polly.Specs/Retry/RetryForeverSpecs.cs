@@ -18,7 +18,7 @@ namespace Polly.Specs.Retry
                                       .Handle<DivideByZeroException>()
                                       .RetryForever(nullOnRetry);
 
-            policy.ShouldThrow<ArgumentNullException>().And
+            policy.Should().Throw<ArgumentNullException>().And
                   .ParamName.Should().Be("onRetry");
         }
 
@@ -31,7 +31,7 @@ namespace Polly.Specs.Retry
                                       .Handle<DivideByZeroException>()
                                       .RetryForever(nullOnRetry);
 
-            policy.ShouldThrow<ArgumentNullException>().And
+            policy.Should().Throw<ArgumentNullException>().And
                   .ParamName.Should().Be("onRetry");
         }
 
@@ -66,7 +66,7 @@ namespace Polly.Specs.Retry
                 .RetryForever();
 
             policy.Invoking(x => x.RaiseException<NullReferenceException>())
-                  .ShouldThrow<NullReferenceException>();
+                  .Should().Throw<NullReferenceException>();
         }
 
         [Fact]
@@ -77,7 +77,7 @@ namespace Polly.Specs.Retry
                 .RetryForeverAsync();
 
             policy.Awaiting(async x => await x.RaiseExceptionAsync<NullReferenceException>())
-                  .ShouldThrow<NullReferenceException>();
+                  .Should().Throw<NullReferenceException>();
         }
 
         [Fact]
@@ -89,7 +89,7 @@ namespace Polly.Specs.Retry
                 .RetryForever();
 
             policy.Invoking(x => x.RaiseException<NullReferenceException>())
-                  .ShouldThrow<NullReferenceException>();
+                  .Should().Throw<NullReferenceException>();
         }
 
         [Fact]
@@ -100,7 +100,7 @@ namespace Polly.Specs.Retry
                 .RetryForever();
 
             policy.Invoking(x => x.RaiseException<DivideByZeroException>())
-                  .ShouldThrow<DivideByZeroException>();
+                  .Should().Throw<DivideByZeroException>();
         }
 
         [Fact]
@@ -112,7 +112,7 @@ namespace Polly.Specs.Retry
                 .RetryForever();
 
             policy.Invoking(x => x.RaiseException<ArgumentException>())
-                  .ShouldThrow<ArgumentException>();
+                  .Should().Throw<ArgumentException>();
         }
 
         [Fact]
@@ -223,7 +223,7 @@ namespace Polly.Specs.Retry
                 .RetryForever(exception => retryExceptions.Add(exception));
 
             policy.Invoking(x => x.RaiseException<ArgumentException>())
-                  .ShouldThrow<ArgumentException>();
+                  .Should().Throw<ArgumentException>();
 
             retryExceptions.Should()
                            .BeEmpty();

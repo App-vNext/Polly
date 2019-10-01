@@ -20,15 +20,15 @@ namespace Polly.Specs.CircuitBreaker
                             .CircuitBreaker(2, TimeSpan.FromMinutes(1));
 
             breaker.Invoking(b => b.RaiseResultAndOrExceptionSequence(new DivideByZeroException()))
-                .ShouldThrow<DivideByZeroException>();
+                .Should().Throw<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             breaker.Invoking(b => b.RaiseResultAndOrExceptionSequence(new DivideByZeroException()))
-                .ShouldThrow<DivideByZeroException>();
+                .Should().Throw<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
             breaker.Invoking(b => b.RaiseResultSequence(ResultPrimitive.Good))
-                .ShouldThrow<BrokenCircuitException>()
+                .Should().Throw<BrokenCircuitException>()
                 .WithMessage("The circuit is now open and is not allowing calls.")
                 .WithInnerException<DivideByZeroException>();
 
@@ -48,12 +48,12 @@ namespace Polly.Specs.CircuitBreaker
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             breaker.Invoking(b => b.RaiseResultAndOrExceptionSequence(new DivideByZeroException()))
-                .ShouldThrow<DivideByZeroException>();
+                .Should().Throw<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
             // 2 exception raised, circuit is now open
             breaker.Invoking(b => b.RaiseResultSequence(ResultPrimitive.Good))
-                .ShouldThrow<BrokenCircuitException>()
+                .Should().Throw<BrokenCircuitException>()
                 .WithMessage("The circuit is now open and is not allowing calls.")
                 .WithInnerException<DivideByZeroException>();
 
@@ -69,7 +69,7 @@ namespace Polly.Specs.CircuitBreaker
                             .CircuitBreaker(2, TimeSpan.FromMinutes(1));
 
             breaker.Invoking(b => b.RaiseResultAndOrExceptionSequence(new DivideByZeroException()))
-                .ShouldThrow<DivideByZeroException>();
+                .Should().Throw<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             breaker.RaiseResultSequence(ResultPrimitive.Fault)
@@ -78,7 +78,7 @@ namespace Polly.Specs.CircuitBreaker
 
             // 2 exception raised, circuit is now open
             breaker.Invoking(b => b.RaiseResultSequence(ResultPrimitive.Good))
-                .ShouldThrow<BrokenCircuitException<ResultPrimitive>>()
+                .Should().Throw<BrokenCircuitException<ResultPrimitive>>()
                 .WithMessage("The circuit is now open and is not allowing calls.")
                 .Where(e => e. Result == ResultPrimitive.Fault);
 
@@ -98,12 +98,12 @@ namespace Polly.Specs.CircuitBreaker
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             breaker.Invoking(b => b.RaiseResultAndOrExceptionSequence(new DivideByZeroException()))
-                .ShouldThrow<DivideByZeroException>();
+                .Should().Throw<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
             // 2 exception raised, circuit is now open
             breaker.Invoking(b => b.RaiseResultSequence(ResultPrimitive.Good))
-                .ShouldThrow<BrokenCircuitException>()
+                .Should().Throw<BrokenCircuitException>()
                 .WithMessage("The circuit is now open and is not allowing calls.")
                 .WithInnerException<DivideByZeroException>();
 
@@ -119,7 +119,7 @@ namespace Polly.Specs.CircuitBreaker
                 .CircuitBreaker(2, TimeSpan.FromMinutes(1));
 
             breaker.Invoking(b => b.RaiseResultAndOrExceptionSequence(new DivideByZeroException()))
-                .ShouldThrow<DivideByZeroException>();
+                .Should().Throw<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             breaker.RaiseResultSequence(ResultPrimitive.Fault)
@@ -128,7 +128,7 @@ namespace Polly.Specs.CircuitBreaker
 
             // 2 exception raised, circuit is now open
             breaker.Invoking(b => b.RaiseResultSequence(ResultPrimitive.Good))
-                .ShouldThrow<BrokenCircuitException<ResultPrimitive>>()
+                .Should().Throw<BrokenCircuitException<ResultPrimitive>>()
                 .WithMessage("The circuit is now open and is not allowing calls.")
                 .Where(e => e.Result == ResultPrimitive.Fault);
 
@@ -144,7 +144,7 @@ namespace Polly.Specs.CircuitBreaker
                 .CircuitBreaker(2, TimeSpan.FromMinutes(1));
 
             breaker.Invoking(b => b.RaiseResultAndOrExceptionSequence(new ArgumentException("message", "key")))
-                .ShouldThrow<ArgumentException>();
+                .Should().Throw<ArgumentException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             breaker.RaiseResultSequence(new ResultClass(ResultPrimitive.Fault))
@@ -153,7 +153,7 @@ namespace Polly.Specs.CircuitBreaker
 
             // 2 exception raised, circuit is now open
             breaker.Invoking(b => b.RaiseResultSequence(new ResultClass(ResultPrimitive.Good)))
-                .ShouldThrow<BrokenCircuitException<ResultClass>>()
+                .Should().Throw<BrokenCircuitException<ResultClass>>()
                 .WithMessage("The circuit is now open and is not allowing calls.")
                 .Where(e => e.Result.ResultCode == ResultPrimitive.Fault);
 
@@ -190,15 +190,15 @@ namespace Polly.Specs.CircuitBreaker
                 .CircuitBreaker(2, TimeSpan.FromMinutes(1));
 
             breaker.Invoking(b => b.RaiseResultAndOrExceptionSequence(new ArgumentException()))
-                .ShouldThrow<ArgumentException>();
+                .Should().Throw<ArgumentException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             breaker.Invoking(b => b.RaiseResultAndOrExceptionSequence(new ArgumentException()))
-                .ShouldThrow<ArgumentException>();
+                .Should().Throw<ArgumentException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             breaker.Invoking(b => b.RaiseResultAndOrExceptionSequence(new ArgumentException()))
-                .ShouldThrow<ArgumentException>();
+                .Should().Throw<ArgumentException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
         }
 
@@ -225,15 +225,15 @@ namespace Polly.Specs.CircuitBreaker
 
             // non-matched exception predicate
             breaker.Invoking(b => b.RaiseResultAndOrExceptionSequence(new ArgumentException("message", "value")))
-                .ShouldThrow<ArgumentException>();
+                .Should().Throw<ArgumentException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             breaker.Invoking(b => b.RaiseResultAndOrExceptionSequence(new ArgumentException("message", "value")))
-                .ShouldThrow<ArgumentException>();
+                .Should().Throw<ArgumentException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             breaker.Invoking(b => b.RaiseResultAndOrExceptionSequence(new ArgumentException("message", "value")))
-                .ShouldThrow<ArgumentException>();
+                .Should().Throw<ArgumentException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
         }
 
@@ -251,7 +251,7 @@ namespace Polly.Specs.CircuitBreaker
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             breaker.Invoking(b => b.RaiseResultAndOrExceptionSequence(new DivideByZeroException()))
-                .ShouldThrow<DivideByZeroException>();
+                .Should().Throw<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             breaker.RaiseResultSequence(ResultPrimitive.FaultAgain)
@@ -259,12 +259,12 @@ namespace Polly.Specs.CircuitBreaker
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             breaker.Invoking(b => b.RaiseResultAndOrExceptionSequence(new ArgumentException()))
-                .ShouldThrow<ArgumentException>();
+                .Should().Throw<ArgumentException>();
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
             // 4 exception raised, circuit is now open
             breaker.Invoking(b => b.RaiseResultSequence(ResultPrimitive.Good))
-                .ShouldThrow<BrokenCircuitException>()
+                .Should().Throw<BrokenCircuitException>()
                 .WithMessage("The circuit is now open and is not allowing calls.")
                 .WithInnerException<ArgumentException>();
 
@@ -282,7 +282,7 @@ namespace Polly.Specs.CircuitBreaker
                 .CircuitBreaker(4, TimeSpan.FromMinutes(1));
 
             breaker.Invoking(b => b.RaiseResultAndOrExceptionSequence(new DivideByZeroException()))
-                .ShouldThrow<DivideByZeroException>();
+                .Should().Throw<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             breaker.RaiseResultSequence(ResultPrimitive.Fault)
@@ -290,7 +290,7 @@ namespace Polly.Specs.CircuitBreaker
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             breaker.Invoking(b => b.RaiseResultAndOrExceptionSequence(new ArgumentException()))
-                .ShouldThrow<ArgumentException>();
+                .Should().Throw<ArgumentException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             breaker.RaiseResultSequence(ResultPrimitive.FaultAgain)
@@ -299,7 +299,7 @@ namespace Polly.Specs.CircuitBreaker
 
             // 4 exception raised, circuit is now open
             breaker.Invoking(b => b.RaiseResultSequence(ResultPrimitive.Good))
-                .ShouldThrow<BrokenCircuitException<ResultPrimitive>>()
+                .Should().Throw<BrokenCircuitException<ResultPrimitive>>()
                 .WithMessage("The circuit is now open and is not allowing calls.")
                 .Where(e => e.Result == ResultPrimitive.FaultAgain);
 
@@ -319,7 +319,7 @@ namespace Polly.Specs.CircuitBreaker
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             breaker.Invoking(b => b.RaiseResultAndOrExceptionSequence(new ArgumentException()))
-                .ShouldThrow<ArgumentException>();
+                .Should().Throw<ArgumentException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             breaker.RaiseResultSequence(ResultPrimitive.FaultAgain)
@@ -327,7 +327,7 @@ namespace Polly.Specs.CircuitBreaker
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             breaker.Invoking(b => b.RaiseResultAndOrExceptionSequence(new ArgumentException()))
-                .ShouldThrow<ArgumentException>();
+                .Should().Throw<ArgumentException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
         }
 
@@ -353,12 +353,12 @@ namespace Polly.Specs.CircuitBreaker
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             breaker.Invoking(b => b.RaiseResultAndOrExceptionSequence(new DivideByZeroException()))
-                .ShouldThrow<DivideByZeroException>();
+                .Should().Throw<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
             // 2 exception raised, circuit is now open
             breaker.Invoking(b => b.RaiseResultSequence(ResultPrimitive.Fault))
-                  .ShouldThrow<BrokenCircuitException>();
+                  .Should().Throw<BrokenCircuitException>();
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
             SystemClock.UtcNow = () => time.Add(durationOfBreak);
@@ -371,7 +371,7 @@ namespace Polly.Specs.CircuitBreaker
                   .Should().Be(ResultPrimitive.Fault);
             breaker.CircuitState.Should().Be(CircuitState.Open);
             breaker.Invoking(b => b.RaiseResultSequence(ResultPrimitive.Fault))
-                  .ShouldThrow<BrokenCircuitException>();
+                  .Should().Throw<BrokenCircuitException>();
 
         }
 
@@ -393,12 +393,12 @@ namespace Polly.Specs.CircuitBreaker
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             breaker.Invoking(b => b.RaiseResultAndOrExceptionSequence(new DivideByZeroException()))
-                .ShouldThrow<DivideByZeroException>();
+                .Should().Throw<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
             // 2 exception raised, circuit is now open
             breaker.Invoking(b => b.RaiseResultSequence(ResultPrimitive.Fault))
-                  .ShouldThrow<BrokenCircuitException>();
+                  .Should().Throw<BrokenCircuitException>();
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
             SystemClock.UtcNow = () => time.Add(durationOfBreak);
@@ -408,10 +408,10 @@ namespace Polly.Specs.CircuitBreaker
 
             // first call after duration returns a fault, so circuit should break again
             breaker.Invoking(b => b.RaiseResultAndOrExceptionSequence(new DivideByZeroException()))
-                .ShouldThrow<DivideByZeroException>();
+                .Should().Throw<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Open);
             breaker.Invoking(b => b.RaiseResultSequence(ResultPrimitive.Fault))
-                  .ShouldThrow<BrokenCircuitException>();
+                  .Should().Throw<BrokenCircuitException>();
 
         }
 
@@ -437,7 +437,7 @@ namespace Polly.Specs.CircuitBreaker
                 .CircuitBreaker(2, durationOfBreak, onBreak, onReset);
 
             breaker.Invoking(b => b.RaiseResultAndOrExceptionSequence(new DivideByZeroException()))
-                .ShouldThrow<DivideByZeroException>();
+                .Should().Throw<DivideByZeroException>();
 
             breaker.RaiseResultSequence(ResultPrimitive.Fault)
                 .Should().Be(ResultPrimitive.Fault);
@@ -466,7 +466,7 @@ namespace Polly.Specs.CircuitBreaker
                 .Should().Be(ResultPrimitive.Fault);
 
             breaker.Invoking(b => b.RaiseResultAndOrExceptionSequence(new DivideByZeroException()))
-                .ShouldThrow<DivideByZeroException>();
+                .Should().Throw<DivideByZeroException>();
 
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
@@ -517,7 +517,7 @@ namespace Polly.Specs.CircuitBreaker
                 .CircuitBreaker(2, TimeSpan.FromMinutes(1));
 
             breaker.Invoking(b => b.RaiseResultAndOrExceptionSequence(new DivideByZeroException()))
-                .ShouldThrow<DivideByZeroException>();
+                .Should().Throw<DivideByZeroException>();
 
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
@@ -534,7 +534,7 @@ namespace Polly.Specs.CircuitBreaker
                 .CircuitBreaker(2, TimeSpan.FromMinutes(1));
 
             breaker.Invoking(b => b.RaiseResultAndOrExceptionSequence(new DivideByZeroException()))
-                .ShouldThrow<DivideByZeroException>();
+                .Should().Throw<DivideByZeroException>();
 
             breaker.RaiseResultSequence(ResultPrimitive.Fault)
                 .Should().Be(ResultPrimitive.Fault);
@@ -557,7 +557,7 @@ namespace Polly.Specs.CircuitBreaker
                 .Should().Be(ResultPrimitive.Fault);
 
             breaker.Invoking(b => b.RaiseResultAndOrExceptionSequence(new DivideByZeroException()))
-                .ShouldThrow<DivideByZeroException>();
+                .Should().Throw<DivideByZeroException>();
 
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
@@ -574,7 +574,7 @@ namespace Polly.Specs.CircuitBreaker
                 .CircuitBreaker(2, TimeSpan.FromMinutes(1));
 
             breaker.Invoking(b => b.RaiseResultAndOrExceptionSequence(new DivideByZeroException()))
-                .ShouldThrow<DivideByZeroException>();
+                .Should().Throw<DivideByZeroException>();
 
             breaker.RaiseResultSequence(ResultPrimitive.Fault)
                 .Should().Be(ResultPrimitive.Fault);

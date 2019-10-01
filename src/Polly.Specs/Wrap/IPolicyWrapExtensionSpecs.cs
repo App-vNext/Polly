@@ -151,7 +151,7 @@ namespace Polly.Specs.Wrap
 
             Action configure = () => wrap.GetPolicies<NoOpPolicy>(null);
             
-            configure.ShouldThrow<ArgumentNullException>().And.ParamName.Should().Be("filter");
+            configure.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be("filter");
         }
 
         [Fact]
@@ -184,7 +184,7 @@ namespace Polly.Specs.Wrap
             Policy policyC = Policy.NoOp();
             PolicyWrap wrap = policyA.Wrap(policyB.Wrap(policyC));
 
-            wrap.Invoking(p => p.GetPolicy<NoOpPolicy>()).ShouldThrow<InvalidOperationException>();
+            wrap.Invoking(p => p.GetPolicy<NoOpPolicy>()).Should().Throw<InvalidOperationException>();
         }
 
         [Fact]
@@ -221,7 +221,7 @@ namespace Polly.Specs.Wrap
             Policy policyC = Policy.NoOp();
             PolicyWrap wrap = policyA.Wrap(policyB.Wrap(policyC));
 
-            wrap.Invoking(p => p.GetPolicy<NoOpPolicy>(_ => true)).ShouldThrow<InvalidOperationException>();
+            wrap.Invoking(p => p.GetPolicy<NoOpPolicy>(_ => true)).Should().Throw<InvalidOperationException>();
         }
 
         [Fact]
@@ -233,7 +233,7 @@ namespace Polly.Specs.Wrap
 
             Action configure = () => wrap.GetPolicy<NoOpPolicy>(null);
 
-            configure.ShouldThrow<ArgumentNullException>().And.ParamName.Should().Be("filter");
+            configure.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be("filter");
         }
     }
 }

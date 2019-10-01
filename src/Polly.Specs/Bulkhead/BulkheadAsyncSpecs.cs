@@ -24,7 +24,7 @@ namespace Polly.Specs.Bulkhead
             Action policy = () => Policy
                 .BulkheadAsync(0, 1);
 
-            policy.ShouldThrow<ArgumentOutOfRangeException>().And
+            policy.Should().Throw<ArgumentOutOfRangeException>().And
                 .ParamName.Should().Be("maxParallelization");
         }
 
@@ -34,7 +34,7 @@ namespace Polly.Specs.Bulkhead
             Action policy = () => Policy
                 .BulkheadAsync(1, -1);
 
-            policy.ShouldThrow<ArgumentOutOfRangeException>().And
+            policy.Should().Throw<ArgumentOutOfRangeException>().And
                 .ParamName.Should().Be("maxQueuingActions");
         }
 
@@ -44,7 +44,7 @@ namespace Polly.Specs.Bulkhead
             Action policy = () => Policy
                 .BulkheadAsync(1, 0, null);
 
-            policy.ShouldThrow<ArgumentNullException>().And
+            policy.Should().Throw<ArgumentNullException>().And
                 .ParamName.Should().Be("onBulkheadRejectedAsync");
         }
 
@@ -75,7 +75,7 @@ namespace Polly.Specs.Bulkhead
 
                 Within(shimTimeSpan, () => bulkhead.BulkheadAvailableCount.Should().Be(0)); // Time for the other thread to kick up and take the bulkhead.
 
-                bulkhead.Awaiting(async b => await b.ExecuteAsync(ctx => TaskHelper.EmptyTask, contextPassedToExecute)).ShouldThrow<BulkheadRejectedException>();
+                bulkhead.Awaiting(async b => await b.ExecuteAsync(ctx => TaskHelper.EmptyTask, contextPassedToExecute)).Should().Throw<BulkheadRejectedException>();
 
                 cancellationSource.Cancel();
                 tcs.SetCanceled();

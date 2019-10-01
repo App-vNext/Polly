@@ -178,7 +178,7 @@ namespace Polly.Specs
                 .Retry((_, __, ___) => { });
 
             policy.Invoking(p => p.Execute(ctx => { }, (IDictionary<string, object>)null))
-                  .ShouldThrow<ArgumentNullException>();
+                  .Should().Throw<ArgumentNullException>();
         }
 
         [Fact]
@@ -189,7 +189,7 @@ namespace Polly.Specs
                 .Retry((_, __, ___) => { });
 
             policy.Invoking(p => p.Execute(ctx => { }, (Context)null))
-                .ShouldThrow<ArgumentNullException>().And
+                .Should().Throw<ArgumentNullException>().And
                 .ParamName.Should().Be("context");
         }
 
@@ -201,7 +201,7 @@ namespace Polly.Specs
                 .Retry((_, __, ___) => { });
 
             policy.Invoking(p => p.Execute(ctx => 2, (IDictionary<string, object>)null))
-                .ShouldThrow<ArgumentNullException>();
+                .Should().Throw<ArgumentNullException>();
         }
 
         [Fact]
@@ -212,7 +212,7 @@ namespace Polly.Specs
                 .Retry((_, __, ___) => { });
 
             policy.Invoking(p => p.Execute(ctx => 2, (Context)null))
-                .ShouldThrow<ArgumentNullException>().And
+                .Should().Throw<ArgumentNullException>().And
                 .ParamName.Should().Be("context");
         }
 
@@ -238,7 +238,7 @@ namespace Polly.Specs
                 .Retry((_, __, ___) => { });
 
             policy.Invoking(p => p.ExecuteAndCapture(ctx => { }, (IDictionary<string, object>)null))
-                  .ShouldThrow<ArgumentNullException>();
+                  .Should().Throw<ArgumentNullException>();
         }
 
         [Fact]
@@ -249,7 +249,7 @@ namespace Polly.Specs
                 .Retry((_, __, ___) => { });
 
             policy.Invoking(p => p.ExecuteAndCapture(ctx => { }, (Context)null))
-                .ShouldThrow<ArgumentNullException>().And
+                .Should().Throw<ArgumentNullException>().And
                 .ParamName.Should().Be("context");
         }
 
@@ -261,7 +261,7 @@ namespace Polly.Specs
                 .Retry((_, __, ___) => { });
 
             policy.Invoking(p => p.ExecuteAndCapture(ctx => 2, (IDictionary<string, object>)null))
-                  .ShouldThrow<ArgumentNullException>();
+                  .Should().Throw<ArgumentNullException>();
         }
 
         [Fact]
@@ -272,7 +272,7 @@ namespace Polly.Specs
                 .Retry((_, __, ___) => { });
 
             policy.Invoking(p => p.ExecuteAndCapture(ctx => 2, (Context)null))
-                  .ShouldThrow<ArgumentNullException>().And
+                  .Should().Throw<ArgumentNullException>().And
                   .ParamName.Should().Be("context");
         }
 
