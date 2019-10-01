@@ -296,7 +296,7 @@ namespace Polly.Specs.Timeout
                     .ConfigureAwait(false);
             };
             
-            act.ShouldNotThrow<TimeoutRejectedException>();
+            act.Should().NotThrow<TimeoutRejectedException>();
             result.Should().Be(ResultPrimitive.Good);
         }
 

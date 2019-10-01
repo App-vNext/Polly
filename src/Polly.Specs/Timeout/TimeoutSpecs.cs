@@ -241,7 +241,7 @@ namespace Polly.Specs.Timeout
                 }, userCancellationToken);
             };
 
-            act.ShouldNotThrow<TimeoutRejectedException>();
+            act.Should().NotThrow<TimeoutRejectedException>();
             result.Should().Be(ResultPrimitive.Good);
         }
 
@@ -381,7 +381,7 @@ namespace Polly.Specs.Timeout
                     }, userCancellationToken);
             };
 
-            act.ShouldNotThrow<TimeoutRejectedException>();
+            act.Should().NotThrow<TimeoutRejectedException>();
             result.Should().Be(ResultPrimitive.Good);
         }
 

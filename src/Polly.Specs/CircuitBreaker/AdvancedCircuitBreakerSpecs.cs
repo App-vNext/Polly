@@ -98,7 +98,7 @@ namespace Polly.Specs.CircuitBreaker
                 .Handle<DivideByZeroException>()
                 .AdvancedCircuitBreaker(0.5, TimeSpan.FromMilliseconds(20), 4, TimeSpan.FromSeconds(30));
 
-            action.ShouldNotThrow<ArgumentOutOfRangeException>();
+            action.Should().NotThrow<ArgumentOutOfRangeException>();
         }
 
         [Fact]
