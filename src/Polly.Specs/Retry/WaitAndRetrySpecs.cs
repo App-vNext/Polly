@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
+using FluentAssertions.Extensions;
 using Polly.Specs.Helpers;
 using Polly.Utilities;
 using Xunit;
