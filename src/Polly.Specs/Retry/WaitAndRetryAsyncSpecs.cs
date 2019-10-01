@@ -781,7 +781,7 @@ namespace Polly.Specs.Retry
             cancellationTokenSource.Cancel();
 
             policy.Awaiting(async x => await x.RaiseExceptionAndOrCancellationAsync<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
-                .Should().Throw<TaskCanceledException>()
+                .Should().Throw<OperationCanceledException>()
                 .And.CancellationToken.Should().Be(cancellationToken);
 
             attemptsInvoked.Should().Be(0);
@@ -808,7 +808,7 @@ namespace Polly.Specs.Retry
             };
 
             policy.Awaiting(async x => await x.RaiseExceptionAndOrCancellationAsync<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
-                .Should().Throw<TaskCanceledException>()
+                .Should().Throw<OperationCanceledException>()
                 .And.CancellationToken.Should().Be(cancellationToken);
 
             attemptsInvoked.Should().Be(1);
@@ -835,7 +835,7 @@ namespace Polly.Specs.Retry
             };
 
             policy.Awaiting(async x => await x.RaiseExceptionAndOrCancellationAsync<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
-                .Should().Throw<TaskCanceledException>()
+                .Should().Throw<OperationCanceledException>()
                 .And.CancellationToken.Should().Be(cancellationToken);
 
             attemptsInvoked.Should().Be(1); 
@@ -862,7 +862,7 @@ namespace Polly.Specs.Retry
             };
 
             policy.Awaiting(async x => await x.RaiseExceptionAndOrCancellationAsync<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
-                .Should().Throw<TaskCanceledException>()
+                .Should().Throw<OperationCanceledException>()
                 .And.CancellationToken.Should().Be(cancellationToken);
 
             attemptsInvoked.Should().Be(1);
@@ -889,7 +889,7 @@ namespace Polly.Specs.Retry
             };
 
             policy.Awaiting(async x => await x.RaiseExceptionAndOrCancellationAsync<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
-                .Should().Throw<TaskCanceledException>()
+                .Should().Throw<OperationCanceledException>()
                 .And.CancellationToken.Should().Be(cancellationToken);
 
             attemptsInvoked.Should().Be(2);
@@ -916,7 +916,7 @@ namespace Polly.Specs.Retry
             };
 
             policy.Awaiting(async x => await x.RaiseExceptionAndOrCancellationAsync<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
-                .Should().Throw<TaskCanceledException>()
+                .Should().Throw<OperationCanceledException>()
                 .And.CancellationToken.Should().Be(cancellationToken);
 
             attemptsInvoked.Should().Be(2);
@@ -943,7 +943,7 @@ namespace Polly.Specs.Retry
             };
 
             policy.Awaiting(async x => await x.RaiseExceptionAndOrCancellationAsync<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
-                .Should().Throw<TaskCanceledException>()
+                .Should().Throw<OperationCanceledException>()
                 .And.CancellationToken.Should().Be(cancellationToken);
 
             attemptsInvoked.Should().Be(1 + 3);
@@ -1006,7 +1006,7 @@ namespace Polly.Specs.Retry
             cancellationTokenSource.CancelAfter(shimTimeSpan);
 
             policy.Awaiting(async x => await x.RaiseExceptionAndOrCancellationAsync<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
-                    .Should().Throw<TaskCanceledException>()
+                    .Should().Throw<OperationCanceledException>()
                     .And.CancellationToken.Should().Be(cancellationToken);
             watch.Stop();
 
@@ -1041,7 +1041,7 @@ namespace Polly.Specs.Retry
             };
 
             policy.Awaiting(async x => await x.RaiseExceptionAndOrCancellationAsync<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
-                .Should().Throw<TaskCanceledException>()
+                .Should().Throw<OperationCanceledException>()
                 .And.CancellationToken.Should().Be(cancellationToken);
 
             attemptsInvoked.Should().Be(1);
@@ -1099,7 +1099,7 @@ namespace Polly.Specs.Retry
             };
 
             policy.Awaiting(async x => result = await x.RaiseExceptionAndOrCancellationAsync<DivideByZeroException, bool>(scenario, cancellationTokenSource, onExecute, true).ConfigureAwait(false))
-                .Should().Throw<TaskCanceledException>().And.CancellationToken.Should().Be(cancellationToken);
+                .Should().Throw<OperationCanceledException>().And.CancellationToken.Should().Be(cancellationToken);
 
             result.Should().Be(null);
 

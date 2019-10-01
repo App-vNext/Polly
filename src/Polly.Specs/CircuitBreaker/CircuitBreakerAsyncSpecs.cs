@@ -1464,7 +1464,7 @@ namespace Polly.Specs.CircuitBreaker
             cancellationTokenSource.Cancel();
 
             breaker.Awaiting(async x => await x.RaiseExceptionAndOrCancellationAsync<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
-                .Should().Throw<TaskCanceledException>()
+                .Should().Throw<OperationCanceledException>()
                 .And.CancellationToken.Should().Be(cancellationToken);
 
             attemptsInvoked.Should().Be(0);
@@ -1492,7 +1492,7 @@ namespace Polly.Specs.CircuitBreaker
             };
 
             breaker.Awaiting(async x => await x.RaiseExceptionAndOrCancellationAsync<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
-                .Should().Throw<TaskCanceledException>()
+                .Should().Throw<OperationCanceledException>()
                 .And.CancellationToken.Should().Be(cancellationToken);
 
             attemptsInvoked.Should().Be(1);
@@ -1520,7 +1520,7 @@ namespace Polly.Specs.CircuitBreaker
             };
 
             breaker.Awaiting(async x => await x.RaiseExceptionAndOrCancellationAsync<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
-                .Should().Throw<TaskCanceledException>()
+                .Should().Throw<OperationCanceledException>()
                 .And.CancellationToken.Should().Be(cancellationToken);
 
             attemptsInvoked.Should().Be(1);
@@ -1585,7 +1585,7 @@ namespace Polly.Specs.CircuitBreaker
             };
 
             breaker.Awaiting(async x => await x.RaiseExceptionAndOrCancellationAsync<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
-                .Should().Throw<TaskCanceledException>()
+                .Should().Throw<OperationCanceledException>()
                 .And.CancellationToken.Should().Be(cancellationToken);
 
             attemptsInvoked.Should().Be(0);
@@ -1617,7 +1617,7 @@ namespace Polly.Specs.CircuitBreaker
                 await TaskHelper.EmptyTask;
                 implicitlyCapturedActionCancellationToken.ThrowIfCancellationRequested();
             }, policyCancellationToken))
-                .Should().Throw<TaskCanceledException>()
+                .Should().Throw<OperationCanceledException>()
                 .And.CancellationToken.Should().Be(implicitlyCapturedActionCancellationToken);
 
             attemptsInvoked.Should().Be(1);
@@ -1676,7 +1676,7 @@ namespace Polly.Specs.CircuitBreaker
             };
 
             breaker.Awaiting(async x => result = await x.RaiseExceptionAndOrCancellationAsync<DivideByZeroException, bool>(scenario, cancellationTokenSource, onExecute, true).ConfigureAwait(false))
-                .Should().Throw<TaskCanceledException>().And.CancellationToken.Should().Be(cancellationToken);
+                .Should().Throw<OperationCanceledException>().And.CancellationToken.Should().Be(cancellationToken);
 
             result.Should().Be(null);
 

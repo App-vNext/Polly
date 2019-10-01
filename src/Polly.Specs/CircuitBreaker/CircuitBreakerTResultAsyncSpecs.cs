@@ -1433,7 +1433,7 @@ namespace Polly.Specs.CircuitBreaker
                ResultPrimitive.Fault,
                ResultPrimitive.Fault,
                ResultPrimitive.Good))
-            .Should().Throw<TaskCanceledException>()
+            .Should().Throw<OperationCanceledException>()
             .And.CancellationToken.Should().Be(cancellationToken);
 
             attemptsInvoked.Should().Be(0);
@@ -1462,7 +1462,7 @@ namespace Polly.Specs.CircuitBreaker
             breaker.Awaiting(async x => await x.RaiseResultSequenceAndOrCancellationAsync(scenario, cancellationTokenSource, onExecute,
                    ResultPrimitive.Good,
                    ResultPrimitive.Good))
-                .Should().Throw<TaskCanceledException>()
+                .Should().Throw<OperationCanceledException>()
                 .And.CancellationToken.Should().Be(cancellationToken);
 
             attemptsInvoked.Should().Be(1);
@@ -1491,7 +1491,7 @@ namespace Polly.Specs.CircuitBreaker
             breaker.Awaiting(async x => await x.RaiseResultSequenceAndOrCancellationAsync(scenario, cancellationTokenSource, onExecute,
                    ResultPrimitive.Fault,
                    ResultPrimitive.Good))
-                .Should().Throw<TaskCanceledException>()
+                .Should().Throw<OperationCanceledException>()
                 .And.CancellationToken.Should().Be(cancellationToken);
 
             attemptsInvoked.Should().Be(1);
@@ -1555,7 +1555,7 @@ namespace Polly.Specs.CircuitBreaker
             breaker.Awaiting(async x => await x.RaiseResultSequenceAndOrCancellationAsync(scenario, cancellationTokenSource, onExecute,
                    ResultPrimitive.Fault,
                    ResultPrimitive.Good))
-                .Should().Throw<TaskCanceledException>()
+                .Should().Throw<OperationCanceledException>()
                 .And.CancellationToken.Should().Be(cancellationToken);
 
             attemptsInvoked.Should().Be(0);
@@ -1588,7 +1588,7 @@ namespace Polly.Specs.CircuitBreaker
                 implicitlyCapturedActionCancellationToken.ThrowIfCancellationRequested();
                 return ResultPrimitive.Good;
             }, policyCancellationToken))
-                .Should().Throw<TaskCanceledException>()
+                .Should().Throw<OperationCanceledException>()
                 .And.CancellationToken.Should().Be(implicitlyCapturedActionCancellationToken);
 
             attemptsInvoked.Should().Be(1);
