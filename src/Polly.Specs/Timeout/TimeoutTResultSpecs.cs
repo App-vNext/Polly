@@ -288,10 +288,9 @@ namespace Polly.Specs.Timeout
             Exception innerException2 = new DivideByZeroException();
             AggregateException aggregateException = new AggregateException(msg, innerException1, innerException2);
             Func<ResultPrimitive> func = () => { Helper_ThrowException(aggregateException); return ResultPrimitive.WhateverButTooLate; };
-            Action action = () => { ResultPrimitive throwAway = func(); }; // Helper, because .ShouldThrow<>() does not exist in FluentAssertions on Func<T>.  See https://github.com/fluentassertions/fluentassertions/issues/422
 
             // Whether executing the delegate directly, or through the policy, exception behavior should be the same.
-            action.ShouldThrow<AggregateException>()
+            func.ShouldThrow<AggregateException>()
                 .WithMessage(aggregateException.Message)
                 .And.InnerExceptions.Should().BeEquivalentTo<Exception>(new[] { innerException1, innerException2 });
 
@@ -314,10 +313,9 @@ namespace Polly.Specs.Timeout
                 Task.WhenAll(task1, task2).Wait();
                 return ResultPrimitive.WhateverButTooLate;
             };
-            Action action = () => { ResultPrimitive throwAway = func(); }; // Helper, because .ShouldThrow<>() does not exist in FluentAssertions on Func<T>.  See https://github.com/fluentassertions/fluentassertions/issues/422
 
             // Whether executing the delegate directly, or through the policy, exception behavior should be the same.
-            action.ShouldThrow<AggregateException>()
+            func.ShouldThrow<AggregateException>()
                 .And.InnerExceptions.Should().BeEquivalentTo<Exception>(new[] { innerException1, innerException2 });
 
             policy.Invoking(p => p.Execute(func)).ShouldThrow<AggregateException>()
@@ -338,10 +336,9 @@ namespace Polly.Specs.Timeout
                 Parallel.Invoke(action1, action2);
                 return ResultPrimitive.WhateverButTooLate;
             };
-            Action action = () => { ResultPrimitive throwAway = func(); }; // Helper, because .ShouldThrow<>() does not exist in FluentAssertions on Func<T>.  See https://github.com/fluentassertions/fluentassertions/issues/422
 
             // Whether executing the delegate directly, or through the policy, exception behavior should be the same.
-            action.ShouldThrow<AggregateException>()
+            func.ShouldThrow<AggregateException>()
                 .And.InnerExceptions.Should().BeEquivalentTo<Exception>(new[] { innerException1, innerException2 });
 
             policy.Invoking(p => p.Execute(func)).ShouldThrow<AggregateException>()
