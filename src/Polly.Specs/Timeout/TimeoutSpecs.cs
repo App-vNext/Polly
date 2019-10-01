@@ -283,7 +283,7 @@ namespace Polly.Specs.Timeout
             policy.Invoking(p => p.Execute(() => { Helper_ThrowException(exception); }))
                 .Should().Throw<AggregateException>()
                 .WithMessage(exception.Message)
-                .WithInnerException<NotImplementedException>()
+                .Where(e => e.InnerException is NotImplementedException)
                 .And.StackTrace.Should().Contain(nameof(Helper_ThrowException));
         }
 
