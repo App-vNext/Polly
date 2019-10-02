@@ -23,7 +23,7 @@ namespace Polly.Specs.Retry
                                       .HandleResult(ResultPrimitive.Fault)
                                       .RetryAsync(-1, onRetry);
 
-            policy.ShouldThrow<ArgumentOutOfRangeException>().And
+            policy.Should().Throw<ArgumentOutOfRangeException>().And
                   .ParamName.Should().Be("retryCount");
         }
 
@@ -36,7 +36,7 @@ namespace Polly.Specs.Retry
                                       .HandleResult(ResultPrimitive.Fault)
                                       .RetryAsync(1, nullOnRetry);
 
-            policy.ShouldThrow<ArgumentNullException>().And
+            policy.Should().Throw<ArgumentNullException>().And
                   .ParamName.Should().Be("onRetry");
         }
 
@@ -49,7 +49,7 @@ namespace Polly.Specs.Retry
                                       .HandleResult(ResultPrimitive.Fault)
                                       .RetryAsync(-1, onRetry);
 
-            policy.ShouldThrow<ArgumentOutOfRangeException>().And
+            policy.Should().Throw<ArgumentOutOfRangeException>().And
                   .ParamName.Should().Be("retryCount");
         }
 
@@ -62,7 +62,7 @@ namespace Polly.Specs.Retry
                                       .HandleResult(ResultPrimitive.Fault)
                                       .RetryAsync(1, nullOnRetry);
 
-            policy.ShouldThrow<ArgumentNullException>().And
+            policy.Should().Throw<ArgumentNullException>().And
                   .ParamName.Should().Be("onRetry");
         }
 
@@ -292,7 +292,7 @@ namespace Polly.Specs.Retry
                 ResultPrimitive.Fault, ResultPrimitive.Good
                 ).ConfigureAwait(false);
 
-            result.ShouldBeEquivalentTo(new
+            result.Should().BeEquivalentTo(new
             {
                 Outcome = OutcomeType.Successful,
                 FinalException = (Exception)null,
@@ -300,7 +300,7 @@ namespace Polly.Specs.Retry
                 FaultType = (FaultType?)null,
                 FinalHandledResult = default(ResultPrimitive),
                 Result = ResultPrimitive.Good
-            }, options => options.Excluding(o => o.Context));
+            });
 
             contextData.Should()
                 .ContainKeys("key1", "key2").And
@@ -506,7 +506,7 @@ namespace Polly.Specs.Retry
                    ResultPrimitive.Fault,
                    ResultPrimitive.Fault,
                    ResultPrimitive.Good))
-                .ShouldThrow<TaskCanceledException>()
+                .Should().Throw<OperationCanceledException>()
                 .And.CancellationToken.Should().Be(cancellationToken);
 
             attemptsInvoked.Should().Be(0);
@@ -536,7 +536,7 @@ namespace Polly.Specs.Retry
                    ResultPrimitive.Good,
                    ResultPrimitive.Good,
                    ResultPrimitive.Good))
-                .ShouldThrow<TaskCanceledException>()
+                .Should().Throw<OperationCanceledException>()
                 .And.CancellationToken.Should().Be(cancellationToken);
 
             attemptsInvoked.Should().Be(1);
@@ -566,7 +566,7 @@ namespace Polly.Specs.Retry
                    ResultPrimitive.Fault,
                    ResultPrimitive.Fault,
                    ResultPrimitive.Good))
-                .ShouldThrow<TaskCanceledException>()
+                .Should().Throw<OperationCanceledException>()
                 .And.CancellationToken.Should().Be(cancellationToken);
 
             attemptsInvoked.Should().Be(1);
@@ -596,7 +596,7 @@ namespace Polly.Specs.Retry
                    ResultPrimitive.Fault,
                    ResultPrimitive.Fault,
                    ResultPrimitive.Good))
-                .ShouldThrow<TaskCanceledException>()
+                .Should().Throw<OperationCanceledException>()
                 .And.CancellationToken.Should().Be(cancellationToken);
 
             attemptsInvoked.Should().Be(1);
@@ -626,7 +626,7 @@ namespace Polly.Specs.Retry
                    ResultPrimitive.Fault,
                    ResultPrimitive.Fault,
                    ResultPrimitive.Good))
-                .ShouldThrow<TaskCanceledException>()
+                .Should().Throw<OperationCanceledException>()
                 .And.CancellationToken.Should().Be(cancellationToken);
 
             attemptsInvoked.Should().Be(2);
@@ -656,7 +656,7 @@ namespace Polly.Specs.Retry
                    ResultPrimitive.Fault,
                    ResultPrimitive.Fault,
                    ResultPrimitive.Good))
-                .ShouldThrow<TaskCanceledException>()
+                .Should().Throw<OperationCanceledException>()
                 .And.CancellationToken.Should().Be(cancellationToken);
 
             attemptsInvoked.Should().Be(2);
@@ -687,7 +687,7 @@ namespace Polly.Specs.Retry
                    ResultPrimitive.Fault,
                    ResultPrimitive.Fault,
                    ResultPrimitive.Good))
-                .ShouldThrow<TaskCanceledException>()
+                .Should().Throw<OperationCanceledException>()
                 .And.CancellationToken.Should().Be(cancellationToken);
 
             attemptsInvoked.Should().Be(1 + 3);
@@ -750,7 +750,7 @@ namespace Polly.Specs.Retry
                    ResultPrimitive.Fault,
                    ResultPrimitive.Fault,
                    ResultPrimitive.Good))
-                .ShouldThrow<TaskCanceledException>()
+                .Should().Throw<OperationCanceledException>()
                 .And.CancellationToken.Should().Be(cancellationToken);
 
             attemptsInvoked.Should().Be(1);

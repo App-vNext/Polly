@@ -12,7 +12,7 @@ namespace Polly.Specs.Caching
         {
             Action configure = () => new ResultTtl<object>((Func<object, Ttl>)null);
 
-            configure.ShouldThrow<ArgumentNullException>().And.ParamName.Should().Be("ttlFunc");
+            configure.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be("ttlFunc");
         }
 
         [Fact]
@@ -20,7 +20,7 @@ namespace Polly.Specs.Caching
         {
             Action configure = () => new ResultTtl<object>((Func<Context, object, Ttl>)null);
 
-            configure.ShouldThrow<ArgumentNullException>().And.ParamName.Should().Be("ttlFunc");
+            configure.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be("ttlFunc");
         }
 
         [Fact]
@@ -28,7 +28,7 @@ namespace Polly.Specs.Caching
         {
             Action configure = () => new ResultTtl<object>((result) => new Ttl());
 
-            configure.ShouldNotThrow();
+            configure.Should().NotThrow();
         }
 
         [Fact]
@@ -36,7 +36,7 @@ namespace Polly.Specs.Caching
         {
             Action configure = () => new ResultTtl<object>((context, result) => new Ttl());
 
-            configure.ShouldNotThrow();
+            configure.Should().NotThrow();
         }
 
         [Fact]

@@ -17,7 +17,7 @@ namespace Polly.Specs.Custom
                 PreExecutePolicy<ResultPrimitive> policy = PreExecutePolicy<ResultPrimitive>.Create(() => Console.WriteLine("Do something"));
             };
 
-            construct.ShouldNotThrow();
+            construct.Should().NotThrow();
         }
 
         [Fact]
@@ -32,7 +32,7 @@ namespace Polly.Specs.Custom
                     executed = true;
                     return ResultPrimitive.Undefined;
                 }))
-                .ShouldNotThrow();
+                .Should().NotThrow();
 
             executed.Should().BeTrue();
             preExecuted.Should().BeTrue();
@@ -46,7 +46,7 @@ namespace Polly.Specs.Custom
                 AddBehaviourIfHandlePolicy<ResultPrimitive> policy = Policy.HandleResult<ResultPrimitive>(ResultPrimitive.Fault).WithBehaviour(outcome => Console.WriteLine("Handling " + outcome.Result));
             };
 
-            construct.ShouldNotThrow();
+            construct.Should().NotThrow();
         }
 
         [Fact]

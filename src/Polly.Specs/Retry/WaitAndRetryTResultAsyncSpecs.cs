@@ -5,6 +5,7 @@ using FluentAssertions;
 using Polly.Specs.Helpers;
 using Polly.Utilities;
 using Xunit;
+using FluentAssertions.Extensions;
 
 namespace Polly.Specs.Retry
 {
