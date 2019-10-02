@@ -24,7 +24,7 @@ namespace Polly.Specs.Retry
                 .Handle<DivideByZeroException>().Retry(1);
 
             policy.Invoking(p => p.RaiseResultAndOrExceptionSequence(new ArgumentException(), ResultPrimitive.Good))
-                .ShouldThrow<ArgumentException>();
+                .Should().Throw<ArgumentException>();
         }
 
         [Fact]
@@ -104,7 +104,7 @@ namespace Polly.Specs.Retry
                 .Retry(3);
 
             policy.Invoking(p => p.RaiseResultAndOrExceptionSequence(ResultPrimitive.Fault, new DivideByZeroException(), ResultPrimitive.FaultAgain, new ArgumentException(), ResultPrimitive.Good))
-                .ShouldThrow<ArgumentException>();
+                .Should().Throw<ArgumentException>();
         }
 
         [Fact]
@@ -132,7 +132,7 @@ namespace Polly.Specs.Retry
                 .Retry(3);
 
             policy.Invoking(p => p.RaiseResultAndOrExceptionSequence(ResultPrimitive.Fault, new DivideByZeroException(), ResultPrimitive.FaultAgain, new ArgumentException(), ResultPrimitive.Good))
-                .ShouldThrow<ArgumentException>();
+                .Should().Throw<ArgumentException>();
         }
 
         [Fact]
@@ -156,7 +156,7 @@ namespace Polly.Specs.Retry
                 .Retry(2);
 
             policy.Invoking(p => p.RaiseResultAndOrExceptionSequence(new ArgumentException(), ResultPrimitive.Good))
-                .ShouldThrow<ArgumentException>();
+                .Should().Throw<ArgumentException>();
         }
 
         [Fact]
@@ -180,7 +180,7 @@ namespace Polly.Specs.Retry
                 .Retry(2);
 
             policy.Invoking(p => p.RaiseResultAndOrExceptionSequence(new ResultClass(ResultPrimitive.Fault), new ArgumentException("message", "value"), new ResultClass(ResultPrimitive.Good)))
-                .ShouldThrow<ArgumentException>();
+                .Should().Throw<ArgumentException>();
         }
 
         [Fact]

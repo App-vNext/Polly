@@ -24,7 +24,7 @@ namespace Polly.Specs.Fallback
                 .Handle<DivideByZeroException>()
                 .FallbackAsync(fallbackActionAsync);
 
-            policy.ShouldThrow<ArgumentNullException>()
+            policy.Should().Throw<ArgumentNullException>()
                 .And.ParamName.Should().Be("fallbackAction");
         }
 
@@ -38,7 +38,7 @@ namespace Polly.Specs.Fallback
                 .Handle<DivideByZeroException>()
                 .FallbackAsync(fallbackActionAsync, onFallbackAsync);
 
-            policy.ShouldThrow<ArgumentNullException>()
+            policy.Should().Throw<ArgumentNullException>()
                 .And.ParamName.Should().Be("fallbackAction");
         }
 
@@ -52,7 +52,7 @@ namespace Polly.Specs.Fallback
                                     .Handle<DivideByZeroException>()
                                     .FallbackAsync(fallbackActionAsync, onFallbackAsync);
 
-            policy.ShouldThrow<ArgumentNullException>()
+            policy.Should().Throw<ArgumentNullException>()
                 .And.ParamName.Should().Be("fallbackAction");
         }
 
@@ -66,7 +66,7 @@ namespace Polly.Specs.Fallback
                                     .Handle<DivideByZeroException>()
                                     .FallbackAsync(fallbackActionAsync, onFallbackAsync);
 
-            policy.ShouldThrow<ArgumentNullException>()
+            policy.Should().Throw<ArgumentNullException>()
                 .And.ParamName.Should().Be("onFallbackAsync");
         }
 
@@ -80,7 +80,7 @@ namespace Polly.Specs.Fallback
                                     .Handle<DivideByZeroException>()
                                     .FallbackAsync(fallbackActionAsync, onFallbackAsync);
 
-            policy.ShouldThrow<ArgumentNullException>()
+            policy.Should().Throw<ArgumentNullException>()
                 .And.ParamName.Should().Be("onFallbackAsync");
         }
 
@@ -113,7 +113,7 @@ namespace Polly.Specs.Fallback
                                     .Handle<DivideByZeroException>()
                                     .FallbackAsync(fallbackActionAsync);
 
-            fallbackPolicy.Awaiting(async x => await x.RaiseExceptionAsync<ArgumentNullException>()).ShouldThrow<ArgumentNullException>();
+            fallbackPolicy.Awaiting(async x => await x.RaiseExceptionAsync<ArgumentNullException>()).Should().Throw<ArgumentNullException>();
 
             fallbackActionExecuted.Should().BeFalse();
         }
@@ -128,7 +128,7 @@ namespace Polly.Specs.Fallback
                                     .Handle<DivideByZeroException>()
                                     .FallbackAsync(fallbackActionAsync);
 
-            fallbackPolicy.Awaiting(async x => await x.RaiseExceptionAsync<DivideByZeroException>()).ShouldNotThrow();
+            fallbackPolicy.Awaiting(async x => await x.RaiseExceptionAsync<DivideByZeroException>()).Should().NotThrow();
 
             fallbackActionExecuted.Should().BeTrue();
         }
@@ -145,7 +145,7 @@ namespace Polly.Specs.Fallback
                                     .Or<ArgumentException>()
                                     .FallbackAsync(fallbackActionAsync);
 
-            fallbackPolicy.Awaiting(async x => await x.RaiseExceptionAsync<ArgumentException>()).ShouldNotThrow();
+            fallbackPolicy.Awaiting(async x => await x.RaiseExceptionAsync<ArgumentException>()).Should().NotThrow();
 
             fallbackActionExecuted.Should().BeTrue();
         }
@@ -162,7 +162,7 @@ namespace Polly.Specs.Fallback
                                     .Or<NullReferenceException>()
                                     .FallbackAsync(fallbackActionAsync);
 
-            fallbackPolicy.Awaiting(async x => await x.RaiseExceptionAsync<ArgumentNullException>()).ShouldThrow<ArgumentNullException>();
+            fallbackPolicy.Awaiting(async x => await x.RaiseExceptionAsync<ArgumentNullException>()).Should().Throw<ArgumentNullException>();
 
             fallbackActionExecuted.Should().BeFalse();
         }
@@ -177,7 +177,7 @@ namespace Polly.Specs.Fallback
                                     .Handle<DivideByZeroException>(e => false)
                                     .FallbackAsync(fallbackActionAsync);
 
-            fallbackPolicy.Awaiting(async x => await x.RaiseExceptionAsync<DivideByZeroException>()).ShouldThrow<DivideByZeroException>();
+            fallbackPolicy.Awaiting(async x => await x.RaiseExceptionAsync<DivideByZeroException>()).Should().Throw<DivideByZeroException>();
 
             fallbackActionExecuted.Should().BeFalse();
         }
@@ -193,7 +193,7 @@ namespace Polly.Specs.Fallback
                                     .Or<ArgumentNullException>(e => false)
                                     .FallbackAsync(fallbackActionAsync);
 
-            fallbackPolicy.Awaiting(async x => await x.RaiseExceptionAsync<DivideByZeroException>()).ShouldThrow<DivideByZeroException>();
+            fallbackPolicy.Awaiting(async x => await x.RaiseExceptionAsync<DivideByZeroException>()).Should().Throw<DivideByZeroException>();
 
             fallbackActionExecuted.Should().BeFalse();
         }
@@ -208,7 +208,7 @@ namespace Polly.Specs.Fallback
                                     .Handle<DivideByZeroException>(e => true)
                                     .FallbackAsync(fallbackActionAsync);
 
-            fallbackPolicy.Awaiting(async x => await x.RaiseExceptionAsync<DivideByZeroException>()).ShouldNotThrow();
+            fallbackPolicy.Awaiting(async x => await x.RaiseExceptionAsync<DivideByZeroException>()).Should().NotThrow();
 
             fallbackActionExecuted.Should().BeTrue();
         }
@@ -225,7 +225,7 @@ namespace Polly.Specs.Fallback
                                     .Or<ArgumentNullException>()
                                     .FallbackAsync(fallbackActionAsync);
 
-            fallbackPolicy.Awaiting(async x => await x.RaiseExceptionAsync<DivideByZeroException>()).ShouldNotThrow();
+            fallbackPolicy.Awaiting(async x => await x.RaiseExceptionAsync<DivideByZeroException>()).Should().NotThrow();
 
             fallbackActionExecuted.Should().BeTrue();
         }
@@ -245,7 +245,7 @@ namespace Polly.Specs.Fallback
                 .FallbackAsync(fallbackActionAsync);
 
             fallbackPolicy.Awaiting(async x => await x.RaiseExceptionAsync<DivideByZeroException>((e, i) => e.HelpLink = "FromExecuteDelegate"))
-                .ShouldThrow<DivideByZeroException>().And.HelpLink.Should().Be("FromFallbackAction");
+                .Should().Throw<DivideByZeroException>().And.HelpLink.Should().Be("FromFallbackAction");
 
             fallbackActionExecuted.Should().BeTrue();
         }
@@ -257,7 +257,7 @@ namespace Polly.Specs.Fallback
                 .Handle<DivideByZeroException>()
                 .FallbackAsync(_ => TaskHelper.EmptyTask);
 
-            fallbackPolicy.Awaiting(p => p.ExecuteAsync<int>(() => Task.FromResult(0))).ShouldThrow<InvalidOperationException>();
+            fallbackPolicy.Awaiting(p => p.ExecuteAsync<int>(() => Task.FromResult(0))).Should().Throw<InvalidOperationException>();
         }
 
         #endregion
@@ -321,7 +321,7 @@ namespace Polly.Specs.Fallback
 
             fallbackPolicy.Awaiting(async p => await p.ExecuteAsync(ctx => { throw new ArgumentNullException(); },
                 new { key1 = "value1", key2 = "value2" }.AsDictionary()))
-                .ShouldNotThrow();
+                .Should().NotThrow();
 
             contextData.Should()
                 .ContainKeys("key1", "key2").And
@@ -343,7 +343,7 @@ namespace Polly.Specs.Fallback
 
             fallbackPolicy.Awaiting(async p => await p.ExecuteAndCaptureAsync(ctx => { throw new ArgumentNullException(); },
                 new { key1 = "value1", key2 = "value2" }.AsDictionary()))
-                .ShouldNotThrow();
+                .Should().NotThrow();
 
             contextData.Should()
                 .ContainKeys("key1", "key2").And
@@ -366,11 +366,11 @@ namespace Polly.Specs.Fallback
 
             fallbackPolicy.Awaiting(async 
                 p => await p.ExecuteAsync(ctx => { throw new ArgumentNullException(); }, new { key = "value1" }.AsDictionary()))
-                .ShouldNotThrow();
+                .Should().NotThrow();
 
             fallbackPolicy.Awaiting(async 
                 p => await p.ExecuteAsync(ctx => { throw new DivideByZeroException(); }, new { key = "value2" }.AsDictionary()))
-                .ShouldNotThrow();
+                .Should().NotThrow();
 
             contextData.Count.Should().Be(2);
             contextData.Keys.Should().Contain(typeof(ArgumentNullException));
@@ -415,7 +415,7 @@ namespace Polly.Specs.Fallback
 
             fallbackPolicy.Awaiting(async p => await p.ExecuteAsync(ctx => { throw new ArgumentNullException(); },
                     new { key1 = "value1", key2 = "value2" }.AsDictionary()))
-                .ShouldNotThrow();
+                .Should().NotThrow();
 
             contextData.Should()
                 .ContainKeys("key1", "key2").And
@@ -437,7 +437,7 @@ namespace Polly.Specs.Fallback
 
             fallbackPolicy.Awaiting(async p => await p.ExecuteAndCaptureAsync(ctx => { throw new ArgumentNullException(); },
                     new { key1 = "value1", key2 = "value2" }.AsDictionary()))
-                .ShouldNotThrow();
+                .Should().NotThrow();
 
             contextData.Should()
                 .ContainKeys("key1", "key2").And
@@ -484,7 +484,7 @@ namespace Polly.Specs.Fallback
 
             Exception instanceToThrow = new ArgumentNullException("myParam");
             fallbackPolicy.Awaiting(p => p.RaiseExceptionAsync(instanceToThrow))
-                .ShouldNotThrow();
+                .Should().NotThrow();
 
             fallbackException.Should().Be(instanceToThrow);
         }
@@ -503,7 +503,7 @@ namespace Polly.Specs.Fallback
                 .FallbackAsync(fallbackFunc, onFallback);
 
             fallbackPolicy.Awaiting(async p => await p.ExecuteAndCaptureAsync(() => { throw new ArgumentNullException(); }))
-                .ShouldNotThrow();
+                .Should().NotThrow();
 
             fallbackException.Should().NotBeNull()
                 .And.BeOfType(typeof(ArgumentNullException));
@@ -525,7 +525,7 @@ namespace Polly.Specs.Fallback
             Exception instanceToCapture = new ArgumentNullException("myParam");
             Exception instanceToThrow = new Exception(String.Empty, instanceToCapture);
             fallbackPolicy.Awaiting(p => p.RaiseExceptionAsync(instanceToThrow))
-                .ShouldNotThrow();
+                .Should().NotThrow();
 
             fallbackException.Should().Be(instanceToCapture);
         }
@@ -546,7 +546,7 @@ namespace Polly.Specs.Fallback
             Exception instanceToCapture = new ArgumentNullException("myParam");
             Exception instanceToThrow = new AggregateException(instanceToCapture);
             fallbackPolicy.Awaiting(p => p.RaiseExceptionAsync(instanceToThrow))
-                .ShouldNotThrow();
+                .Should().NotThrow();
 
             fallbackException.Should().Be(instanceToCapture);
         }
@@ -565,7 +565,7 @@ namespace Polly.Specs.Fallback
                 .FallbackAsync(fallbackFunc, onFallback);
 
             fallbackPolicy.Awaiting(async p => await p.ExecuteAsync(() => { throw new ArgumentNullException(); }))
-                .ShouldThrow<ArgumentNullException>();
+                .Should().Throw<ArgumentNullException>();
 
             fallbackException.Should().BeNull();
         }
@@ -597,7 +597,7 @@ namespace Polly.Specs.Fallback
             };
 
             policy.Awaiting(async x => await x.RaiseExceptionAndOrCancellationAsync<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
-                .ShouldNotThrow();
+                .Should().NotThrow();
             attemptsInvoked.Should().Be(1);
 
             fallbackActionExecuted.Should().BeFalse();
@@ -626,7 +626,7 @@ namespace Polly.Specs.Fallback
             };
 
             policy.Awaiting(async x => await x.RaiseExceptionAndOrCancellationAsync<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
-                .ShouldNotThrow();
+                .Should().NotThrow();
             attemptsInvoked.Should().Be(1);
 
             fallbackActionExecuted.Should().BeTrue();
@@ -657,7 +657,7 @@ namespace Polly.Specs.Fallback
             cancellationTokenSource.Cancel();
 
             policy.Awaiting(async x => await x.RaiseExceptionAndOrCancellationAsync<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
-                .ShouldThrow<OperationCanceledException>()
+                .Should().Throw<OperationCanceledException>()
                 .And.CancellationToken.Should().Be(cancellationToken);
             attemptsInvoked.Should().Be(0);
 
@@ -689,7 +689,7 @@ namespace Polly.Specs.Fallback
             };
 
             policy.Awaiting(async x => await x.RaiseExceptionAndOrCancellationAsync<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
-                .ShouldThrow<OperationCanceledException>()
+                .Should().Throw<OperationCanceledException>()
                 .And.CancellationToken.Should().Be(cancellationToken);
             attemptsInvoked.Should().Be(1);
 
@@ -721,7 +721,7 @@ namespace Polly.Specs.Fallback
             };
 
             policy.Awaiting(async x => await x.RaiseExceptionAndOrCancellationAsync<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
-                .ShouldNotThrow();
+                .Should().NotThrow();
             attemptsInvoked.Should().Be(1);
 
             fallbackActionExecuted.Should().BeTrue();
@@ -752,7 +752,7 @@ namespace Polly.Specs.Fallback
             };
 
             policy.Awaiting(async x => await x.RaiseExceptionAndOrCancellationAsync<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
-                .ShouldNotThrow();
+                .Should().NotThrow();
             attemptsInvoked.Should().Be(1);
 
             fallbackActionExecuted.Should().BeFalse();
@@ -784,7 +784,7 @@ namespace Polly.Specs.Fallback
             };
 
             policy.Awaiting(async x => await x.RaiseExceptionAndOrCancellationAsync<NullReferenceException>(scenario, cancellationTokenSource, onExecute))
-                .ShouldThrow<NullReferenceException>();
+                .Should().Throw<NullReferenceException>();
             attemptsInvoked.Should().Be(1);
 
             fallbackActionExecuted.Should().BeFalse();
@@ -816,7 +816,7 @@ namespace Polly.Specs.Fallback
             };
 
             policy.Awaiting(async x => await x.RaiseExceptionAndOrCancellationAsync<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
-                .ShouldNotThrow();
+                .Should().NotThrow();
             attemptsInvoked.Should().Be(1);
 
             fallbackActionExecuted.Should().BeTrue();

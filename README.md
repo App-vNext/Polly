@@ -1058,6 +1058,7 @@ Both templates contain a full project structure referencing Polly, Polly's defau
 * [@aprooks](https://github.com/aprooks) - Build script tweaks for Mac and mono.
 * [@kesmy](https://github.com/Kesmy) - Add Soucelink support, clean up cake build.
 * [@simluk](https://github.com/simluk) - Fix continueOnCaptureContext not being honored in async retry implementation (bug in v7.1.0 only).
+* [@jnyrup](https://github.com/jnyrup) - Upgrade tests to Fluent Assertions v5.9.0
 
 # Sample Projects
 

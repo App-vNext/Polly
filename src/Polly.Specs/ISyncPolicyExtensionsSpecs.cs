@@ -29,7 +29,7 @@ namespace Polly.Specs
 
             genericPolicy.Execute(deleg).Should().Be(ResultPrimitive.Good);
             breaker.Isolate();
-            genericPolicy.Invoking(p => p.Execute(deleg)).ShouldThrow<BrokenCircuitException>();
+            genericPolicy.Invoking(p => p.Execute(deleg)).Should().Throw<BrokenCircuitException>();
         }
     }
 
