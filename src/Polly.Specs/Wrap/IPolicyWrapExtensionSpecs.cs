@@ -36,7 +36,11 @@ namespace Polly.Specs.Wrap
             Policy policyB = Policy.NoOp();
             PolicyWrap wrap = Policy.Wrap(policyA, policyB);
 
-            wrap.GetPolicies().Should().BeEquivalentTo(new[] { policyA, policyB }, options => options.WithStrictOrdering());
+            wrap.GetPolicies().Should().BeEquivalentTo(new[] { policyA, policyB },
+                options => options
+                    .WithStrictOrdering()
+                    .Using<IsPolicy>(ctx => ctx.Subject.Should().BeSameAs(ctx.Expectation))
+                    .WhenTypeIs<IsPolicy>());
         }
 
         [Fact]
@@ -47,7 +51,11 @@ namespace Polly.Specs.Wrap
             Policy policyC = Policy.NoOp();
             PolicyWrap wrap = Policy.Wrap(policyA, policyB, policyC);
 
-            wrap.GetPolicies().Should().BeEquivalentTo(new[] { policyA, policyB, policyC }, options => options.WithStrictOrdering());
+            wrap.GetPolicies().Should().BeEquivalentTo(new[] { policyA, policyB, policyC },
+                options => options
+                    .WithStrictOrdering()
+                    .Using<IsPolicy>(ctx => ctx.Subject.Should().BeSameAs(ctx.Expectation))
+                    .WhenTypeIs<IsPolicy>());
         }
 
         [Fact]
@@ -58,7 +66,11 @@ namespace Polly.Specs.Wrap
             Policy policyC = Policy.NoOp();
             PolicyWrap wrap = policyA.Wrap(policyB).Wrap(policyC);
 
-            wrap.GetPolicies().Should().BeEquivalentTo(new[] { policyA, policyB, policyC }, options => options.WithStrictOrdering());
+            wrap.GetPolicies().Should().BeEquivalentTo(new[] { policyA, policyB, policyC },
+                options => options
+                    .WithStrictOrdering()
+                    .Using<IsPolicy>(ctx => ctx.Subject.Should().BeSameAs(ctx.Expectation))
+                    .WhenTypeIs<IsPolicy>());
         }
 
         [Fact]
@@ -69,7 +81,11 @@ namespace Polly.Specs.Wrap
             Policy policyC = Policy.NoOp();
             PolicyWrap wrap = policyA.Wrap(policyB.Wrap(policyC));
 
-            wrap.GetPolicies().Should().BeEquivalentTo(new[] { policyA, policyB, policyC }, options => options.WithStrictOrdering());
+            wrap.GetPolicies().Should().BeEquivalentTo(new[] { policyA, policyB, policyC },
+                options => options
+                    .WithStrictOrdering()
+                    .Using<IsPolicy>(ctx => ctx.Subject.Should().BeSameAs(ctx.Expectation))
+                    .WhenTypeIs<IsPolicy>());
         }
 
         [Fact]
@@ -80,7 +96,11 @@ namespace Polly.Specs.Wrap
             Policy policyC = Policy.NoOp();
             PolicyWrap wrap = policyA.Wrap(policyB.Wrap(policyC));
 
-            wrap.GetPolicies<RetryPolicy>().Should().BeEquivalentTo(new[] { policyB }, options => options.WithStrictOrdering());
+            wrap.GetPolicies<RetryPolicy>().Should().BeEquivalentTo(new[] { policyB },
+                options => options
+                    .WithStrictOrdering()
+                    .Using<IsPolicy>(ctx => ctx.Subject.Should().BeSameAs(ctx.Expectation))
+                    .WhenTypeIs<IsPolicy>());
         }
 
         [Fact]
@@ -102,7 +122,11 @@ namespace Polly.Specs.Wrap
             Policy policyC = Policy.NoOp();
             PolicyWrap wrap = policyA.Wrap(policyB.Wrap(policyC));
 
-            wrap.GetPolicies<NoOpPolicy>().Should().BeEquivalentTo(new[] { policyA, policyC }, options => options.WithStrictOrdering());
+            wrap.GetPolicies<NoOpPolicy>().Should().BeEquivalentTo(new[] { policyA, policyC },
+                options => options
+                    .WithStrictOrdering()
+                    .Using<IsPolicy>(ctx => ctx.Subject.Should().BeSameAs(ctx.Expectation))
+                    .WhenTypeIs<IsPolicy>());
         }
 
         [Fact]
@@ -116,7 +140,11 @@ namespace Polly.Specs.Wrap
 
             PolicyWrap wrap = policyA.Wrap(policyB.Wrap(policyC));
 
-            wrap.GetPolicies<CircuitBreakerPolicy>(p => p.CircuitState == CircuitState.Closed).Should().BeEquivalentTo(new[] { policyC }, options => options.WithStrictOrdering());
+            wrap.GetPolicies<CircuitBreakerPolicy>(p => p.CircuitState == CircuitState.Closed).Should().BeEquivalentTo(new[] { policyC },
+                options => options
+                    .WithStrictOrdering()
+                    .Using<IsPolicy>(ctx => ctx.Subject.Should().BeSameAs(ctx.Expectation))
+                    .WhenTypeIs<IsPolicy>());
         }
 
         [Fact]
@@ -139,7 +167,11 @@ namespace Polly.Specs.Wrap
             Policy policyC = Policy.NoOp();
             PolicyWrap wrap = policyA.Wrap(policyB.Wrap(policyC));
 
-            wrap.GetPolicies<NoOpPolicy>(_ => true).Should().BeEquivalentTo(new[] { policyA, policyC }, options => options.WithStrictOrdering());
+            wrap.GetPolicies<NoOpPolicy>(_ => true).Should().BeEquivalentTo(new[] { policyA, policyC },
+                options => options
+                    .WithStrictOrdering()
+                    .Using<IsPolicy>(ctx => ctx.Subject.Should().BeSameAs(ctx.Expectation))
+                    .WhenTypeIs<IsPolicy>());
         }
 
         [Fact]
