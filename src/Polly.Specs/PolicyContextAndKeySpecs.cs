@@ -94,8 +94,7 @@ namespace Polly.Specs
 
             Action configure = () => policy.WithPolicyKey(Guid.NewGuid().ToString());
 
-            configure.ShouldThrow<ArgumentException>().And.ParamName.Should().Be("p" +
-                                                                                 "olicyKey");
+            configure.ShouldThrow<ArgumentException>().And.ParamName.Should().Be("policyKey");
         }
 
         #endregion
