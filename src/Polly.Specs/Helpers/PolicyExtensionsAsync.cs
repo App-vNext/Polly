@@ -9,9 +9,9 @@ namespace Polly.Specs.Helpers
     {
         public class ExceptionAndOrCancellationScenario
         {
-            public int NumberOfTimesToRaiseException = 0;
+            public int NumberOfTimesToRaiseException;
 
-            public int? AttemptDuringWhichToCancel = null;
+            public int? AttemptDuringWhichToCancel;
 
             public bool ActionObservesCancellation = true;
         }
