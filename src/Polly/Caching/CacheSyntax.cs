@@ -132,7 +132,7 @@ namespace Polly
         /// <param name="onCacheGetError">Delegate to call if an exception is thrown when attempting to get a value from the cache, passing the execution context, the cache key, and the exception.</param>
         /// <param name="onCachePutError">Delegate to call if an exception is thrown when attempting to put a value in the cache, passing the execution context, the cache key, and the exception.</param>
         /// <returns>The policy instance.</returns>
-        /// <exception cref="System.ArgumentNullException">
+        /// <exception cref="ArgumentNullException">
         /// </exception>
         /// <exception cref="ArgumentNullException">cacheProvider</exception>
         /// <exception cref="ArgumentNullException">onCacheGet</exception>
@@ -164,7 +164,7 @@ namespace Polly
         /// <param name="onCacheGetError">Delegate to call if an exception is thrown when attempting to get a value from the cache, passing the execution context, the cache key, and the exception.</param>
         /// <param name="onCachePutError">Delegate to call if an exception is thrown when attempting to put a value in the cache, passing the execution context, the cache key, and the exception.</param>
         /// <returns>The policy instance.</returns>
-        /// <exception cref="System.ArgumentNullException">
+        /// <exception cref="ArgumentNullException">
         /// </exception>
         /// <exception cref="ArgumentNullException">cacheProvider</exception>
         /// <exception cref="ArgumentNullException">ttlStrategy</exception>
@@ -198,7 +198,7 @@ namespace Polly
         /// <param name="onCacheGetError">Delegate to call if an exception is thrown when attempting to get a value from the cache, passing the execution context, the cache key, and the exception.</param>
         /// <param name="onCachePutError">Delegate to call if an exception is thrown when attempting to put a value in the cache, passing the execution context, the cache key, and the exception.</param>
         /// <returns>The policy instance.</returns>
-        /// <exception cref="System.ArgumentNullException">
+        /// <exception cref="ArgumentNullException">
         /// </exception>
         /// <exception cref="ArgumentNullException">cacheProvider</exception>
         /// <exception cref="ArgumentNullException">cacheKeyStrategy</exception>
@@ -233,7 +233,7 @@ namespace Polly
         /// <param name="onCacheGetError">Delegate to call if an exception is thrown when attempting to get a value from the cache, passing the execution context, the cache key, and the exception.</param>
         /// <param name="onCachePutError">Delegate to call if an exception is thrown when attempting to put a value in the cache, passing the execution context, the cache key, and the exception.</param>
         /// <returns>The policy instance.</returns>
-        /// <exception cref="System.ArgumentNullException">
+        /// <exception cref="ArgumentNullException">
         /// </exception>
         /// <exception cref="ArgumentNullException">cacheProvider</exception>
         /// <exception cref="ArgumentNullException">ttlStrategy</exception>
@@ -269,7 +269,7 @@ namespace Polly
         /// <param name="onCacheGetError">Delegate to call if an exception is thrown when attempting to get a value from the cache, passing the execution context, the cache key, and the exception.</param>
         /// <param name="onCachePutError">Delegate to call if an exception is thrown when attempting to put a value in the cache, passing the execution context, the cache key, and the exception.</param>
         /// <returns>The policy instance.</returns>
-        /// <exception cref="System.ArgumentNullException">
+        /// <exception cref="ArgumentNullException">
         /// </exception>
         /// <exception cref="ArgumentNullException">cacheProvider</exception>
         /// <exception cref="ArgumentNullException">cacheKeyStrategy</exception>
@@ -304,7 +304,7 @@ namespace Polly
         /// <param name="onCacheGetError">Delegate to call if an exception is thrown when attempting to get a value from the cache, passing the execution context, the cache key, and the exception.</param>
         /// <param name="onCachePutError">Delegate to call if an exception is thrown when attempting to put a value in the cache, passing the execution context, the cache key, and the exception.</param>
         /// <returns>The policy instance.</returns>
-        /// <exception cref="System.ArgumentNullException">
+        /// <exception cref="ArgumentNullException">
         /// </exception>
         /// <exception cref="ArgumentNullException">cacheProvider</exception>
         /// <exception cref="ArgumentNullException">ttlStrategy</exception>
