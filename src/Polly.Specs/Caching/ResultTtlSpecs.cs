@@ -26,7 +26,7 @@ namespace Polly.Specs.Caching
         [Fact]
         public void Should_not_throw_when_func_is_set()
         {
-            Action configure = () => new ResultTtl<object>((result) => new Ttl());
+            Action configure = () => new ResultTtl<object>(result => new Ttl());
 
             configure.Should().NotThrow();
         }
@@ -43,7 +43,7 @@ namespace Polly.Specs.Caching
         public void Should_return_func_result()
         {
             TimeSpan ttl = TimeSpan.FromMinutes(1);
-            Func<dynamic, Ttl> func = (result) => { return new Ttl(result.Ttl); };
+            Func<dynamic, Ttl> func = result => { return new Ttl(result.Ttl); };
 
             ResultTtl<dynamic> ttlStrategy = new ResultTtl<dynamic>(func);
 
