@@ -23,7 +23,7 @@ namespace Polly.CircuitBreaker
             ) : base(durationOfBreak, onBreak, onReset, onHalfOpen)
         {
             _metrics = samplingDuration.Ticks < ResolutionOfCircuitTimer * NumberOfWindows
-                ? (IHealthMetrics)new SingleHealthMetrics(samplingDuration)
+                ? new SingleHealthMetrics(samplingDuration)
                 : (IHealthMetrics)new RollingHealthMetrics(samplingDuration, NumberOfWindows);
 
             _failureThreshold = failureThreshold;

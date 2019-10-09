@@ -112,7 +112,7 @@ namespace Polly.Specs
                 .HandleResult(ResultPrimitive.Fault)
                 .Retry((_, __, ___) => { });
 
-            policy.Invoking(p => p.Execute(ctx => ResultPrimitive.Good, (Context)null))
+            policy.Invoking(p => p.Execute(ctx => ResultPrimitive.Good, null))
                 .ShouldThrow<ArgumentNullException>().And
                 .ParamName.Should().Be("context");
         }
@@ -149,7 +149,7 @@ namespace Polly.Specs
                 .HandleResult(ResultPrimitive.Fault)
                 .Retry((_, __, ___) => { });
 
-            policy.Invoking(p => p.ExecuteAndCapture(ctx => ResultPrimitive.Good, (Context)null))
+            policy.Invoking(p => p.ExecuteAndCapture(ctx => ResultPrimitive.Good, null))
                   .ShouldThrow<ArgumentNullException>().And
                   .ParamName.Should().Be("context");
         }
