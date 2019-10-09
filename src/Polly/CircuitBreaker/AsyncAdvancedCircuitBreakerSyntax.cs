@@ -32,7 +32,7 @@ namespace Polly
         /// <exception cref="ArgumentOutOfRangeException">minimumThroughput;Value must be greater than one</exception>
         /// <exception cref="ArgumentOutOfRangeException">durationOfBreak;Value must be greater than zero</exception>
         /// <remarks>(see "Release It!" by Michael T. Nygard fi)</remarks>
-        /// <exception cref="System.ArgumentOutOfRangeException">exceptionsAllowedBeforeBreaking;Value must be greater than zero.</exception>
+        /// <exception cref="ArgumentOutOfRangeException">exceptionsAllowedBeforeBreaking;Value must be greater than zero.</exception>
         public static AsyncCircuitBreakerPolicy AdvancedCircuitBreakerAsync(this PolicyBuilder policyBuilder, double failureThreshold, TimeSpan samplingDuration, int minimumThroughput, TimeSpan durationOfBreak)
         {
             Action<Exception, TimeSpan> doNothingOnBreak = (_, __) => { };
