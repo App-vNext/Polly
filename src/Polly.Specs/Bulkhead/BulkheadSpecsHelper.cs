@@ -87,6 +87,7 @@ namespace Polly.Specs.Bulkhead
                     action.Dispose();
                 }
             }
+            statusChanged.Dispose();
         }
 
 #if !DEBUG
