@@ -1440,7 +1440,6 @@ namespace Polly.Specs.CircuitBreaker
                             .CircuitBreaker(2, durationOfBreak);
 
             CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-            CancellationToken cancellationToken = cancellationTokenSource.Token;
 
             int attemptsInvoked = 0;
             Action onExecute = () => attemptsInvoked++;
@@ -1551,7 +1550,6 @@ namespace Polly.Specs.CircuitBreaker
                             .CircuitBreaker(2, durationOfBreak);
 
             CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-            CancellationToken cancellationToken = cancellationTokenSource.Token;
 
             int attemptsInvoked = 0;
             Action onExecute = () => attemptsInvoked++;

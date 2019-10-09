@@ -612,7 +612,6 @@ namespace Polly.Specs.Fallback
                 .Fallback(fallbackAction);
 
             CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-            CancellationToken cancellationToken = cancellationTokenSource.Token;
 
             int attemptsInvoked = 0;
             Action onExecute = () => attemptsInvoked++;
@@ -641,7 +640,6 @@ namespace Polly.Specs.Fallback
                 .Fallback(fallbackAction);
 
             CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-            CancellationToken cancellationToken = cancellationTokenSource.Token;
 
             int attemptsInvoked = 0;
             Action onExecute = () => attemptsInvoked++;
@@ -735,7 +733,6 @@ namespace Polly.Specs.Fallback
                 .Fallback(fallbackAction);
 
             CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-            CancellationToken cancellationToken = cancellationTokenSource.Token;
 
             int attemptsInvoked = 0;
             Action onExecute = () => attemptsInvoked++;
@@ -765,7 +762,6 @@ namespace Polly.Specs.Fallback
                 .Fallback(fallbackAction);
 
             CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-            CancellationToken cancellationToken = cancellationTokenSource.Token;
 
             int attemptsInvoked = 0;
             Action onExecute = () => attemptsInvoked++;
@@ -795,7 +791,6 @@ namespace Polly.Specs.Fallback
                 .Fallback(fallbackAction);
 
             CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-            CancellationToken cancellationToken = cancellationTokenSource.Token;
 
             int attemptsInvoked = 0;
             Action onExecute = () => attemptsInvoked++;
