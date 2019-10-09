@@ -96,7 +96,7 @@ namespace Polly.Specs.Bulkhead
             bool cancelExecuting, string scenario)
         {
             if (totalActions < 0) throw new ArgumentOutOfRangeException(nameof(totalActions));
-            scenario = String.Format("MaxParallelization {0}; MaxQueuing {1}; TotalActions {2}; CancelQueuing {3}; CancelExecuting {4}: {5}", maxParallelization, maxQueuingActions, totalActions, cancelQueuing, cancelExecuting, scenario);
+            scenario = $"MaxParallelization {maxParallelization}; MaxQueuing {maxQueuingActions}; TotalActions {totalActions}; CancelQueuing {cancelQueuing}; CancelExecuting {cancelExecuting}: {scenario}";
 
             var bulkhead = Policy.BulkheadAsync(maxParallelization, maxQueuingActions);
 
