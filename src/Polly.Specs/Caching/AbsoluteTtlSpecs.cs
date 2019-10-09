@@ -1,12 +1,13 @@
 ﻿using System;
 using FluentAssertions;
 using Polly.Caching;
+using Polly.Specs.Helpers;
 using Polly.Utilities;
 using Xunit;
 
 namespace Polly.Specs.Caching
 {
-    [Collection(Polly.Specs.Helpers.Constants.SystemClockDependentTestCollection)]
+    [Collection(Constants.SystemClockDependentTestCollection)]
     public class AbsoluteTtlSpecs : IDisposable
     {
         [Fact]

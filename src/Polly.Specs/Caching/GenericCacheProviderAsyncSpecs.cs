@@ -10,7 +10,7 @@ using Xunit;
 
 namespace Polly.Specs.Caching
 {
-    [Collection(Polly.Specs.Helpers.Constants.SystemClockDependentTestCollection)]
+    [Collection(Constants.SystemClockDependentTestCollection)]
     public class GenericCacheProviderAsyncSpecs : IDisposable
     {
         [Fact]
