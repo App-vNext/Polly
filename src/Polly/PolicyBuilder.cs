@@ -85,7 +85,7 @@ namespace Polly
         }
 
         internal PolicyBuilder(Func<TResult, bool> resultPredicate) : this()
-            => this.OrResult(resultPredicate);
+            => OrResult(resultPredicate);
 
         internal PolicyBuilder(ExceptionPredicate predicate) : this()
             => ExceptionPredicates.Add(predicate);

@@ -9,7 +9,7 @@ using FluentAssertions.Extensions;
 
 namespace Polly.Specs.Retry
 {
-    [Collection(Polly.Specs.Helpers.Constants.SystemClockDependentTestCollection)]
+    [Collection(Constants.SystemClockDependentTestCollection)]
     public class WaitAndRetryTResultAsyncSpecs : IDisposable
     {
         public WaitAndRetryTResultAsyncSpecs()
