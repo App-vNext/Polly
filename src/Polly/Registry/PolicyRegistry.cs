@@ -88,7 +88,7 @@ namespace Polly.Registry
         public bool TryGet<TPolicy>(string key, out TPolicy policy) where TPolicy : IsPolicy
         {
             bool got = _registry.TryGetValue(key, out IsPolicy value);
-            policy = got ? (TPolicy)value : default(TPolicy);
+            policy = got ? (TPolicy)value : default;
             return got;
         }
 

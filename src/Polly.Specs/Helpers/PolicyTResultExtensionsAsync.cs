@@ -17,7 +17,7 @@ namespace Polly.Specs.Helpers
 
         public static Task<TResult> RaiseResultSequenceAsync<TResult>(this AsyncPolicy<TResult> policy, IEnumerable<TResult> resultsToRaise)
         {
-            return policy.RaiseResultSequenceAsync(default(CancellationToken), resultsToRaise);
+            return policy.RaiseResultSequenceAsync(default, resultsToRaise);
         }
 
         public static async Task<TResult> RaiseResultSequenceAsync<TResult>(this AsyncPolicy<TResult> policy,

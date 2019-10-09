@@ -85,7 +85,7 @@ namespace Polly.Caching
         public (bool, TResult) TryGet(string key)
         {
             (bool cacheHit, TSerialized objectToDeserialize) = _wrappedCacheProvider.TryGet(key);
-            return (cacheHit, cacheHit ? _serializer.Deserialize(objectToDeserialize) : default(TResult));
+            return (cacheHit, cacheHit ? _serializer.Deserialize(objectToDeserialize) : default);
         }
 
         /// <summary>
