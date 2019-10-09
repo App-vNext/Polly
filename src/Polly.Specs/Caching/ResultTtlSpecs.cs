@@ -43,7 +43,7 @@ namespace Polly.Specs.Caching
         public void Should_return_func_result()
         {
             TimeSpan ttl = TimeSpan.FromMinutes(1);
-            Func<dynamic, Ttl> func = (result) => { return new Ttl(result.Ttl); };
+            Func<dynamic, Ttl> func = (result) => new Ttl(result.Ttl);
 
             ResultTtl<dynamic> ttlStrategy = new ResultTtl<dynamic>(func);
 
@@ -58,7 +58,7 @@ namespace Polly.Specs.Caching
             const string specialKey = "specialKey";
 
             TimeSpan ttl = TimeSpan.FromMinutes(1);
-            Func<Context, dynamic, Ttl> func = (context, result) => { return context.OperationKey == specialKey ? new Ttl(TimeSpan.Zero) : new Ttl(result.Ttl); };
+            Func<Context, dynamic, Ttl> func = (context, result) => context.OperationKey == specialKey ? new Ttl(TimeSpan.Zero) : new Ttl(result.Ttl);
 
             ResultTtl<dynamic> ttlStrategy = new ResultTtl<dynamic>(func);
 

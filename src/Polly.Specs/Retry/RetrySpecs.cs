@@ -349,13 +349,13 @@ namespace Polly.Specs.Retry
                 .Handle<DivideByZeroException>()
                 .Retry((_, __, context) => contextValue = context["key"].ToString());
 
-            policy.Invoking(p => p.ExecuteAndCapture(ctx => { throw new DivideByZeroException(); }, 
+            policy.Invoking(p => p.ExecuteAndCapture(ctx => throw new DivideByZeroException(), 
                 new { key = "original_value" }.AsDictionary()))
                 .ShouldNotThrow();
 
             contextValue.Should().Be("original_value");
 
-            policy.Invoking(p => p.ExecuteAndCapture(ctx => { throw new DivideByZeroException(); },
+            policy.Invoking(p => p.ExecuteAndCapture(ctx => throw new DivideByZeroException(),
                 new { key = "new_value" }.AsDictionary()))
                 .ShouldNotThrow();
 

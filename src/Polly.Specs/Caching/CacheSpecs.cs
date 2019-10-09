@@ -81,7 +81,7 @@ namespace Polly.Specs.Caching
             cacheHit1.Should().BeFalse();
             fromCache1.Should().BeNull();
 
-            cache.Execute(ctx => { return valueToReturn; }, new Context(operationKey)).Should().Be(valueToReturn);
+            cache.Execute(ctx => valueToReturn, new Context(operationKey)).Should().Be(valueToReturn);
 
             (bool cacheHit2, object fromCache2) = stubCacheProvider.TryGet(operationKey);
             cacheHit2.Should().BeTrue();
@@ -147,7 +147,7 @@ namespace Polly.Specs.Caching
             cacheHit1.Should().BeFalse();
             fromCache1.Should().BeNull();
 
-            cache.Execute(ctx => { return valueToReturn; }, new Context(operationKey)).Should().Be(valueToReturn);
+            cache.Execute(ctx => valueToReturn, new Context(operationKey)).Should().Be(valueToReturn);
 
             (bool cacheHit2, object fromCache2) = stubCacheProvider.TryGet(operationKey);
             cacheHit2.Should().BeFalse();
@@ -242,7 +242,7 @@ namespace Polly.Specs.Caching
             cacheHit1.Should().BeFalse();
             fromCache1.Should().BeNull();
 
-            cache.Execute(ctx => { return valueToReturn; }, new Context(operationKey)).Should().Be(valueToReturn);
+            cache.Execute(ctx => valueToReturn, new Context(operationKey)).Should().Be(valueToReturn);
 
             (bool cacheHit2, object fromCache2) = stubCacheProvider.TryGet(operationKey);
             cacheHit2.Should().BeTrue();
@@ -285,7 +285,7 @@ namespace Polly.Specs.Caching
             cacheHit1.Should().BeFalse();
             fromCache1.Should().BeNull();
 
-            cache.Execute(ctx => { return valueToReturn; }, new Context(operationKey)).Should().Be(valueToReturn);
+            cache.Execute(ctx => valueToReturn, new Context(operationKey)).Should().Be(valueToReturn);
 
             (bool cacheHit2, object fromCache2) = stubCacheProvider.TryGet(operationKey);
             cacheHit2.Should().BeTrue();
@@ -555,7 +555,7 @@ namespace Polly.Specs.Caching
             cacheHit1.Should().BeFalse();
             fromCache1.Should().BeNull();
 
-            cache.Execute(ctx => { return valueToReturn; }, new Context(operationKey)).Should().Be(valueToReturn);
+            cache.Execute(ctx => valueToReturn, new Context(operationKey)).Should().Be(valueToReturn);
 
             //  error should be captured by onError delegate.
             exceptionFromCacheProvider.Should().Be(ex);
@@ -625,7 +625,7 @@ namespace Polly.Specs.Caching
             cacheHit1.Should().BeFalse();
             fromCache1.Should().BeNull();
 
-            cache.Execute(ctx => { return valueToReturn; }, contextToExecute).Should().Be(valueToReturn);
+            cache.Execute(ctx => valueToReturn, contextToExecute).Should().Be(valueToReturn);
 
             (bool cacheHit2, object fromCache2) = stubCacheProvider.TryGet(operationKey);
             cacheHit2.Should().BeTrue();
@@ -663,7 +663,7 @@ namespace Polly.Specs.Caching
             cacheHit.Should().BeFalse();
             fromCache.Should().BeNull();
 
-            cache.Execute(ctx => { return valueToReturn; }, contextToExecute).Should().Be(valueToReturn);
+            cache.Execute(ctx => valueToReturn, contextToExecute).Should().Be(valueToReturn);
 
             contextPassedToOnCacheMiss.Should().BeSameAs(contextToExecute);
             keyPassedToOnCacheMiss.Should().Be(operationKey);

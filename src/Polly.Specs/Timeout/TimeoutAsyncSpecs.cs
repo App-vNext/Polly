@@ -256,7 +256,7 @@ namespace Polly.Specs.Timeout
         {
             var policy = Policy.TimeoutAsync(TimeSpan.FromSeconds(10), TimeoutStrategy.Pessimistic);
 
-            policy.Awaiting(p => p.ExecuteAsync(() => { throw new NotImplementedException(); })).ShouldThrow<NotImplementedException>();
+            policy.Awaiting(p => p.ExecuteAsync(() => throw new NotImplementedException())).ShouldThrow<NotImplementedException>();
         }
 
         #endregion
@@ -328,7 +328,7 @@ namespace Polly.Specs.Timeout
         {
             var policy = Policy.TimeoutAsync(TimeSpan.FromSeconds(10), TimeoutStrategy.Optimistic);
 
-            policy.Awaiting(p => p.ExecuteAsync(() => { throw new NotImplementedException(); })).ShouldThrow<NotImplementedException>();
+            policy.Awaiting(p => p.ExecuteAsync(() => throw new NotImplementedException())).ShouldThrow<NotImplementedException>();
         }
 
         #endregion

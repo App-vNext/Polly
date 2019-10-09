@@ -575,11 +575,7 @@ namespace Polly.Specs.Retry
                         capturedExceptionInstance = ex;
                         return TimeSpan.FromMilliseconds(0);
                     },
-                    onRetryAsync: (ts,  i,  ctx,  task) =>
-                    {
-                        return TaskHelper.EmptyTask;
-                    }
-                );
+                    onRetryAsync: (ts,  i,  ctx,  task) => TaskHelper.EmptyTask);
 
             await policy.RaiseExceptionAsync(exceptionInstance);
 
@@ -600,10 +596,7 @@ namespace Polly.Specs.Retry
             var policy = Policy
                 .Handle<Exception>()
                 .WaitAndRetryAsync(2,
-                    sleepDurationProvider: (retryAttempt, exc, ctx) =>
-                    {
-                        return expectedRetryWaits[exc];
-                    },
+                    sleepDurationProvider: (retryAttempt, exc, ctx) => expectedRetryWaits[exc],
                     onRetryAsync: (_, timeSpan, __, ___) =>
                     {
                         actualRetryWaits.Add(timeSpan);
