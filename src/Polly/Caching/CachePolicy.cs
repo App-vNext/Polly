@@ -49,7 +49,7 @@ namespace Polly.Caching
         [DebuggerStepThrough]
         protected override TResult Implementation<TResult>(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken)
         {
-            return CacheEngine.Implementation<TResult>(
+            return CacheEngine.Implementation(
                 _syncCacheProvider.For<TResult>(),
                 _ttlStrategy.For<TResult>(),
                 _cacheKeyStrategy,

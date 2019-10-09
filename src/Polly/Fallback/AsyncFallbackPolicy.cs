@@ -29,7 +29,7 @@ namespace Polly.Fallback
             CancellationToken cancellationToken,
             bool continueOnCapturedContext)
         {
-            return AsyncFallbackEngine.ImplementationAsync<EmptyStruct>(
+            return AsyncFallbackEngine.ImplementationAsync(
                 async (ctx, ct) => { await action(ctx, ct).ConfigureAwait(continueOnCapturedContext); return EmptyStruct.Instance; },
                 context,
                 cancellationToken,

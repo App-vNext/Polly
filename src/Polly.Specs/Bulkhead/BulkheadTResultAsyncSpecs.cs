@@ -108,7 +108,7 @@ namespace Polly.Specs.Bulkhead
 
             // Throw all the delegates at the bulkhead simultaneously.
             Task<ResultPrimitive>[] tasks = new Task<ResultPrimitive>[totalActions];
-            for (int i = 0; i < totalActions; i++) { tasks[i] = actions[i].ExecuteOnBulkheadAsync<ResultPrimitive>(bulkhead); }
+            for (int i = 0; i < totalActions; i++) { tasks[i] = actions[i].ExecuteOnBulkheadAsync(bulkhead); }
 
             testOutputHelper.WriteLine("Immediately after queueing...");
             testOutputHelper.WriteLine("Bulkhead: {0} slots out of {1} available.", bulkhead.BulkheadAvailableCount, maxParallelization);

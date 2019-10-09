@@ -221,7 +221,7 @@ namespace Polly.Specs.Wrap
         {
             ISyncPolicy<ResultPrimitive> fallback = Policy<ResultPrimitive>
                 .Handle<Exception>()
-                .Fallback<ResultPrimitive>(ResultPrimitive.Undefined, onFallback: (result, context) =>
+                .Fallback(ResultPrimitive.Undefined, onFallback: (result, context) =>
                 {
                     context.PolicyWrapKey.Should().Be("PolicyWrap");
                     context.PolicyKey.Should().Be("FallbackPolicy");

@@ -33,7 +33,7 @@ namespace Polly.Wrap
             IAsyncPolicy<TResult> outerPolicy,
             IAsyncPolicy innerPolicy)
             => await outerPolicy.ExecuteAsync(
-                async (ctx, ct) => await innerPolicy.ExecuteAsync<TResult>(
+                async (ctx, ct) => await innerPolicy.ExecuteAsync(
                     func,
                     ctx,
                     ct,
@@ -51,7 +51,7 @@ namespace Polly.Wrap
             bool continueOnCapturedContext,
             IAsyncPolicy outerPolicy,
             IAsyncPolicy<TResult> innerPolicy)
-            => await outerPolicy.ExecuteAsync<TResult>(
+            => await outerPolicy.ExecuteAsync(
                 async (ctx, ct) => await innerPolicy.ExecuteAsync(
                     func,
                     ctx,
@@ -70,8 +70,8 @@ namespace Polly.Wrap
            bool continueOnCapturedContext,
            IAsyncPolicy outerPolicy,
            IAsyncPolicy innerPolicy)
-            => await outerPolicy.ExecuteAsync<TResult>(
-                async (ctx, ct) => await innerPolicy.ExecuteAsync<TResult>(
+            => await outerPolicy.ExecuteAsync(
+                async (ctx, ct) => await innerPolicy.ExecuteAsync(
                     func,
                     ctx,
                     ct,

@@ -65,7 +65,7 @@ namespace Polly.Specs.Registry
             ISyncPolicy<ResultPrimitive> policy2 = Policy<ResultPrimitive>.HandleResult(ResultPrimitive.Fault).Retry();
             string key2 = Guid.NewGuid().ToString();
 
-            _registry.Add<ISyncPolicy<ResultPrimitive>>(key2, policy2);
+            _registry.Add(key2, policy2);
             _registry.Count.Should().Be(2);
         }
 
@@ -297,7 +297,7 @@ namespace Polly.Specs.Registry
             ISyncPolicy<ResultPrimitive> outPolicy = null;
             bool result = false;
 
-            _registry.Invoking(r => result = r.TryGet<ISyncPolicy<ResultPrimitive>>(key, out outPolicy))
+            _registry.Invoking(r => result = r.TryGet(key, out outPolicy))
                 .ShouldNotThrow();
 
             result.Should().BeFalse();

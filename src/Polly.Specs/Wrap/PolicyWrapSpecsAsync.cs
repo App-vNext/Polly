@@ -28,7 +28,7 @@ namespace Polly.Specs.Wrap
         {
             var retry = Policy.Handle<Exception>().RetryAsync(1);
 
-            Action config = () => retry.WrapAsync<int>((AsyncPolicy<int>)null);
+            Action config = () => retry.WrapAsync((AsyncPolicy<int>)null);
 
             config.ShouldThrow<ArgumentNullException>().And.ParamName.Should().Be("innerPolicy");
         }
@@ -64,7 +64,7 @@ namespace Polly.Specs.Wrap
         [Fact]
         public void Generic_wraps_nongeneric_instance_syntax_wrapping_null_should_throw()
         {
-            var retry = Policy.HandleResult<int>(0).RetryAsync(1);
+            var retry = Policy.HandleResult(0).RetryAsync(1);
 
             Action config = () => retry.WrapAsync((AsyncPolicy)null);
 
@@ -74,7 +74,7 @@ namespace Polly.Specs.Wrap
         [Fact]
         public void Generic_wraps_generic_instance_syntax_wrapping_null_should_throw()
         {
-            var retry = Policy.HandleResult<int>(0).RetryAsync(1);
+            var retry = Policy.HandleResult(0).RetryAsync(1);
 
             Action config = () => retry.WrapAsync((AsyncPolicy<int>)null);
 
@@ -124,9 +124,9 @@ namespace Polly.Specs.Wrap
         public void Nongeneric_interface_wraps_generic_instance_syntax_null_wrapping_should_throw()
         {
             IAsyncPolicy outerNull = null;
-            IAsyncPolicy<int> retry = Policy.HandleResult<int>(0).RetryAsync(1);
+            IAsyncPolicy<int> retry = Policy.HandleResult(0).RetryAsync(1);
 
-            Action config = () => outerNull.WrapAsync<int>(retry);
+            Action config = () => outerNull.WrapAsync(retry);
 
             config.ShouldThrow<ArgumentNullException>().And.ParamName.Should().Be("outerPolicy");
         }
@@ -146,7 +146,7 @@ namespace Polly.Specs.Wrap
         {
             IAsyncPolicy retry = Policy.Handle<Exception>().RetryAsync(1);
 
-            Action config = () => retry.WrapAsync<int>((AsyncPolicy<int>)null);
+            Action config = () => retry.WrapAsync((AsyncPolicy<int>)null);
 
             config.ShouldThrow<ArgumentNullException>().And.ParamName.Should().Be("innerPolicy");
         }
@@ -194,9 +194,9 @@ namespace Polly.Specs.Wrap
         public void Generic_interface_wraps_generic_instance_syntax_null_wrapping_should_throw()
         {
             IAsyncPolicy<int> outerNull = null;
-            IAsyncPolicy<int> retry = Policy.HandleResult<int>(0).RetryAsync(1);
+            IAsyncPolicy<int> retry = Policy.HandleResult(0).RetryAsync(1);
 
-            Action config = () => outerNull.WrapAsync<int>(retry);
+            Action config = () => outerNull.WrapAsync(retry);
 
             config.ShouldThrow<ArgumentNullException>().And.ParamName.Should().Be("outerPolicy");
         }
@@ -204,7 +204,7 @@ namespace Polly.Specs.Wrap
         [Fact]
         public void Generic_interface_wraps_nongeneric_instance_syntax_wrapping_null_should_throw()
         {
-            IAsyncPolicy<int> retry = Policy.HandleResult<int>(0).RetryAsync(1);
+            IAsyncPolicy<int> retry = Policy.HandleResult(0).RetryAsync(1);
 
             Action config = () => retry.WrapAsync((AsyncPolicy)null);
 
@@ -214,7 +214,7 @@ namespace Polly.Specs.Wrap
         [Fact]
         public void Generic_interface_wraps_generic_instance_syntax_wrapping_null_should_throw()
         {
-            IAsyncPolicy<int> retry = Policy.HandleResult<int>(0).RetryAsync(1);
+            IAsyncPolicy<int> retry = Policy.HandleResult(0).RetryAsync(1);
 
             Action config = () => retry.WrapAsync((AsyncPolicy<int>)null);
 
@@ -316,7 +316,7 @@ namespace Polly.Specs.Wrap
         public void Wrapping_only_one_policy_using_static_wrap_strongly_typed_syntax_should_throw()
         {
             AsyncPolicy<int> singlePolicy = Policy<int>.Handle<Exception>().RetryAsync();
-            Action config = () => Policy.WrapAsync<int>(new[] { singlePolicy });
+            Action config = () => Policy.WrapAsync(new[] { singlePolicy });
 
             config.ShouldThrow<ArgumentException>().And.ParamName.Should().Be("policies");
         }
@@ -326,7 +326,7 @@ namespace Polly.Specs.Wrap
         {
             AsyncPolicy<int> retry = Policy<int>.Handle<Exception>().RetryAsync();
             AsyncPolicy<int> breaker = Policy<int>.Handle<Exception>().CircuitBreakerAsync(1, TimeSpan.FromSeconds(10));
-            Action config = () => Policy.WrapAsync<int>(new[] { retry, breaker });
+            Action config = () => Policy.WrapAsync(new[] { retry, breaker });
 
             config.ShouldNotThrow();
         }
@@ -338,7 +338,7 @@ namespace Polly.Specs.Wrap
             AsyncPolicy<int> divideByZeroRetry = Policy<int>.Handle<DivideByZeroException>().RetryAsync(2);
             AsyncPolicy<int> breaker = Policy<int>.Handle<Exception>().CircuitBreakerAsync(1, TimeSpan.FromSeconds(10));
 
-            Action config = () => Policy.WrapAsync<int>(new[] { divideByZeroRetry, retry, breaker });
+            Action config = () => Policy.WrapAsync(new[] { divideByZeroRetry, retry, breaker });
 
             config.ShouldNotThrow();
         }

@@ -43,7 +43,7 @@ namespace Polly.Specs.Custom
         {
             Action construct = () =>
             {
-                AddBehaviourIfHandlePolicy<ResultPrimitive> policy = Policy.HandleResult<ResultPrimitive>(ResultPrimitive.Fault).WithBehaviour(outcome => Console.WriteLine("Handling " + outcome.Result));
+                AddBehaviourIfHandlePolicy<ResultPrimitive> policy = Policy.HandleResult(ResultPrimitive.Fault).WithBehaviour(outcome => Console.WriteLine("Handling " + outcome.Result));
             };
 
             construct.ShouldNotThrow();
@@ -53,7 +53,7 @@ namespace Polly.Specs.Custom
         public void Reactive_policy_should_handle_result()
         {
             ResultPrimitive handled = ResultPrimitive.Undefined;
-            AddBehaviourIfHandlePolicy<ResultPrimitive> policy = Policy.HandleResult<ResultPrimitive>(ResultPrimitive.Fault).WithBehaviour(outcome => handled = outcome.Result);
+            AddBehaviourIfHandlePolicy<ResultPrimitive> policy = Policy.HandleResult(ResultPrimitive.Fault).WithBehaviour(outcome => handled = outcome.Result);
 
             ResultPrimitive toReturn = ResultPrimitive.Fault;
             bool executed = false;
@@ -73,7 +73,7 @@ namespace Polly.Specs.Custom
         public void Reactive_policy_should_be_able_to_ignore_unhandled_result()
         {
             ResultPrimitive? handled = null;
-            AddBehaviourIfHandlePolicy<ResultPrimitive> policy = Policy.HandleResult<ResultPrimitive>(ResultPrimitive.Fault).WithBehaviour(outcome => handled = outcome.Result);
+            AddBehaviourIfHandlePolicy<ResultPrimitive> policy = Policy.HandleResult(ResultPrimitive.Fault).WithBehaviour(outcome => handled = outcome.Result);
 
             ResultPrimitive toReturn = ResultPrimitive.FaultYetAgain;
             bool executed = false;

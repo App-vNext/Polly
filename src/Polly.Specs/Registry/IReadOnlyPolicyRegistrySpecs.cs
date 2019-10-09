@@ -150,7 +150,7 @@ namespace Polly.Specs.Registry
             ISyncPolicy<ResultPrimitive> outPolicy = null;
             bool result = false;
 
-            ReadOnlyRegistry.Invoking(r => result = r.TryGet<ISyncPolicy<ResultPrimitive>>(key, out outPolicy))
+            ReadOnlyRegistry.Invoking(r => result = r.TryGet(key, out outPolicy))
                 .ShouldNotThrow();
 
             result.Should().BeFalse();

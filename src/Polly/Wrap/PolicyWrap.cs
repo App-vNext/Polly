@@ -43,7 +43,7 @@ namespace Polly.Wrap
         /// <inheritdoc/>
         [DebuggerStepThrough]
         protected override TResult Implementation<TResult>(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken)
-            =>  PolicyWrapEngine.Implementation<TResult>(
+            =>  PolicyWrapEngine.Implementation(
                 action,
                 context,
                 cancellationToken,
@@ -102,7 +102,7 @@ namespace Polly.Wrap
             {
                 if (_innerNonGeneric != null)
                 {
-                    return PolicyWrapEngine.Implementation<TResult>(
+                    return PolicyWrapEngine.Implementation(
                         action,
                         context,
                         cancellationToken,
@@ -112,7 +112,7 @@ namespace Polly.Wrap
                 }
                 else if (_innerGeneric != null)
                 {
-                    return PolicyWrapEngine.Implementation<TResult>(
+                    return PolicyWrapEngine.Implementation(
                         action,
                         context,
                         cancellationToken,
@@ -130,7 +130,7 @@ namespace Polly.Wrap
             {
                 if (_innerNonGeneric != null)
                 {
-                    return PolicyWrapEngine.Implementation<TResult>(
+                    return PolicyWrapEngine.Implementation(
                         action,
                         context,
                         cancellationToken,
@@ -141,7 +141,7 @@ namespace Polly.Wrap
                 }
                 else if (_innerGeneric != null)
                 {
-                    return PolicyWrapEngine.Implementation<TResult>(
+                    return PolicyWrapEngine.Implementation(
                         action,
                         context,
                         cancellationToken,

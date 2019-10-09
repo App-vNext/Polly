@@ -323,7 +323,7 @@ namespace Polly.Specs.Fallback
                 .Handle<DivideByZeroException>()
                 .Fallback(() => {});
 
-            fallbackPolicy.Invoking(p => p.Execute<int>(() => 0)).ShouldThrow<InvalidOperationException>();
+            fallbackPolicy.Invoking(p => p.Execute(() => 0)).ShouldThrow<InvalidOperationException>();
         }
 
         #endregion

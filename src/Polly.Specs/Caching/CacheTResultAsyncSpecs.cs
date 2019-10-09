@@ -212,7 +212,7 @@ namespace Polly.Specs.Caching
             IAsyncCacheProvider stubCacheProvider = new StubCacheProvider();
             ICacheKeyStrategy cacheKeyStrategy = new StubCacheKeyStrategy(context => context.OperationKey + context["id"]);
             //var cache = Policy.CacheAsync<ResultClass>(stubCacheProvider, TimeSpan.MaxValue, cacheKeyStrategy);
-            var cache = Policy.CacheAsync<ResultClass>(stubCacheProvider.AsyncFor<ResultClass>(), new RelativeTtl(TimeSpan.MaxValue), cacheKeyStrategy, emptyDelegate, emptyDelegate, emptyDelegate, noErrorHandling, noErrorHandling);
+            var cache = Policy.CacheAsync(stubCacheProvider.AsyncFor<ResultClass>(), new RelativeTtl(TimeSpan.MaxValue), cacheKeyStrategy, emptyDelegate, emptyDelegate, emptyDelegate, noErrorHandling, noErrorHandling);
 
             object person1 = new ResultClass(ResultPrimitive.Good, "person1");
             await stubCacheProvider.PutAsync("person1", person1, new Ttl(TimeSpan.MaxValue), CancellationToken.None, false).ConfigureAwait(false);

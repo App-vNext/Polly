@@ -57,7 +57,7 @@ namespace Polly.Caching
         protected override Task<TResult> ImplementationAsync<TResult>(Func<Context, CancellationToken, Task<TResult>> action, Context context, CancellationToken cancellationToken,
             bool continueOnCapturedContext)
         {
-            return AsyncCacheEngine.ImplementationAsync<TResult>(
+            return AsyncCacheEngine.ImplementationAsync(
                 _asyncCacheProvider.AsyncFor<TResult>(), 
                 _ttlStrategy.For<TResult>(), 
                 _cacheKeyStrategy, 
@@ -115,7 +115,7 @@ namespace Polly.Caching
         protected override Task<TResult> ImplementationAsync(Func<Context, CancellationToken, Task<TResult>> action, Context context, CancellationToken cancellationToken,
             bool continueOnCapturedContext)
         {
-            return AsyncCacheEngine.ImplementationAsync<TResult>(
+            return AsyncCacheEngine.ImplementationAsync(
                 _asyncCacheProvider,
                 _ttlStrategy,
                 _cacheKeyStrategy,

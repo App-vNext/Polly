@@ -54,7 +54,7 @@ namespace Polly.Specs.Helpers
 
         public static Task RaiseExceptionAndOrCancellationAsync<TException>(this AsyncPolicy policy, ExceptionAndOrCancellationScenario scenario, CancellationTokenSource cancellationTokenSource, Action onExecute) where TException : Exception, new()
         {
-            return policy.RaiseExceptionAndOrCancellationAsync<TException>(scenario, cancellationTokenSource, onExecute, _ => new TException());
+            return policy.RaiseExceptionAndOrCancellationAsync(scenario, cancellationTokenSource, onExecute, _ => new TException());
         }
 
         public static Task<TResult> RaiseExceptionAndOrCancellationAsync<TException, TResult>(this AsyncPolicy policy, ExceptionAndOrCancellationScenario scenario, CancellationTokenSource cancellationTokenSource, Action onExecute, TResult successResult) where TException : Exception, new()

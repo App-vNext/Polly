@@ -257,7 +257,7 @@ namespace Polly.Specs.Fallback
                 .Handle<DivideByZeroException>()
                 .FallbackAsync(_ => TaskHelper.EmptyTask);
 
-            fallbackPolicy.Awaiting(p => p.ExecuteAsync<int>(() => Task.FromResult(0))).ShouldThrow<InvalidOperationException>();
+            fallbackPolicy.Awaiting(p => p.ExecuteAsync(() => Task.FromResult(0))).ShouldThrow<InvalidOperationException>();
         }
 
         #endregion

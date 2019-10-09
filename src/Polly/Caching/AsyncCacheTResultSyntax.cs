@@ -20,7 +20,7 @@ namespace Polly
         {
             if (cacheProvider == null) throw new ArgumentNullException(nameof(cacheProvider));
 
-            return CacheAsync<TResult>(cacheProvider.AsyncFor<TResult>(), new RelativeTtl(ttl), DefaultCacheKeyStrategy.Instance.GetCacheKey, onCacheError);
+            return CacheAsync(cacheProvider.AsyncFor<TResult>(), new RelativeTtl(ttl), DefaultCacheKeyStrategy.Instance.GetCacheKey, onCacheError);
         }
 
         /// <summary>
@@ -39,7 +39,7 @@ namespace Polly
         {
             if (cacheProvider == null) throw new ArgumentNullException(nameof(cacheProvider));
 
-            return CacheAsync<TResult>(cacheProvider.AsyncFor<TResult>(), ttlStrategy, DefaultCacheKeyStrategy.Instance.GetCacheKey, onCacheError);
+            return CacheAsync(cacheProvider.AsyncFor<TResult>(), ttlStrategy, DefaultCacheKeyStrategy.Instance.GetCacheKey, onCacheError);
         }
 
         /// <summary>
@@ -59,7 +59,7 @@ namespace Polly
         {
             if (cacheProvider == null) throw new ArgumentNullException(nameof(cacheProvider));
 
-            return CacheAsync<TResult>(cacheProvider.AsyncFor<TResult>(), new RelativeTtl(ttl), cacheKeyStrategy.GetCacheKey, onCacheError);
+            return CacheAsync(cacheProvider.AsyncFor<TResult>(), new RelativeTtl(ttl), cacheKeyStrategy.GetCacheKey, onCacheError);
         }
 
         /// <summary>
@@ -80,7 +80,7 @@ namespace Polly
         {
             if (cacheProvider == null) throw new ArgumentNullException(nameof(cacheProvider));
 
-            return CacheAsync<TResult>(cacheProvider.AsyncFor<TResult>(), ttlStrategy, cacheKeyStrategy.GetCacheKey, onCacheError);
+            return CacheAsync(cacheProvider.AsyncFor<TResult>(), ttlStrategy, cacheKeyStrategy.GetCacheKey, onCacheError);
         }
 
         /// <summary>
@@ -100,7 +100,7 @@ namespace Polly
         {
             if (cacheProvider == null) throw new ArgumentNullException(nameof(cacheProvider));
 
-            return CacheAsync<TResult>(cacheProvider.AsyncFor<TResult>(), new RelativeTtl(ttl), cacheKeyStrategy, onCacheError);
+            return CacheAsync(cacheProvider.AsyncFor<TResult>(), new RelativeTtl(ttl), cacheKeyStrategy, onCacheError);
         }
 
         /// <summary>
@@ -121,7 +121,7 @@ namespace Polly
         {
             if (cacheProvider == null) throw new ArgumentNullException(nameof(cacheProvider));
 
-            return CacheAsync<TResult>(cacheProvider.AsyncFor<TResult>(), ttlStrategy, cacheKeyStrategy, onCacheError);
+            return CacheAsync(cacheProvider.AsyncFor<TResult>(), ttlStrategy, cacheKeyStrategy, onCacheError);
         }
 
         /// <summary>
@@ -155,7 +155,7 @@ namespace Polly
         {
             if (cacheProvider == null) throw new ArgumentNullException(nameof(cacheProvider));
 
-            return CacheAsync<TResult>(cacheProvider.AsyncFor<TResult>(), new RelativeTtl(ttl), DefaultCacheKeyStrategy.Instance.GetCacheKey, onCacheGet, onCacheMiss, onCachePut, onCacheGetError, onCachePutError);
+            return CacheAsync(cacheProvider.AsyncFor<TResult>(), new RelativeTtl(ttl), DefaultCacheKeyStrategy.Instance.GetCacheKey, onCacheGet, onCacheMiss, onCachePut, onCacheGetError, onCachePutError);
         }
 
         /// <summary>
@@ -190,7 +190,7 @@ namespace Polly
         {
             if (cacheProvider == null) throw new ArgumentNullException(nameof(cacheProvider));
 
-            return CacheAsync<TResult>(cacheProvider.AsyncFor<TResult>(), ttlStrategy, DefaultCacheKeyStrategy.Instance.GetCacheKey, onCacheGet, onCacheMiss, onCachePut, onCacheGetError, onCachePutError);
+            return CacheAsync(cacheProvider.AsyncFor<TResult>(), ttlStrategy, DefaultCacheKeyStrategy.Instance.GetCacheKey, onCacheGet, onCacheMiss, onCachePut, onCacheGetError, onCachePutError);
         }
 
         /// <summary>
@@ -227,7 +227,7 @@ namespace Polly
         {
             if (cacheProvider == null) throw new ArgumentNullException(nameof(cacheProvider));
 
-            return CacheAsync<TResult>(cacheProvider.AsyncFor<TResult>(), new RelativeTtl(ttl), cacheKeyStrategy.GetCacheKey, onCacheGet, onCacheMiss, onCachePut, onCacheGetError, onCachePutError);
+            return CacheAsync(cacheProvider.AsyncFor<TResult>(), new RelativeTtl(ttl), cacheKeyStrategy.GetCacheKey, onCacheGet, onCacheMiss, onCachePut, onCacheGetError, onCachePutError);
         }
 
         /// <summary>
@@ -265,7 +265,7 @@ namespace Polly
         {
             if (cacheProvider == null) throw new ArgumentNullException(nameof(cacheProvider));
 
-            return CacheAsync<TResult>(cacheProvider.AsyncFor<TResult>(), ttlStrategy, cacheKeyStrategy.GetCacheKey, onCacheGet, onCacheMiss, onCachePut, onCacheGetError, onCachePutError);
+            return CacheAsync(cacheProvider.AsyncFor<TResult>(), ttlStrategy, cacheKeyStrategy.GetCacheKey, onCacheGet, onCacheMiss, onCachePut, onCacheGetError, onCachePutError);
         }
 
         /// <summary>
@@ -302,7 +302,7 @@ namespace Polly
         {
             if (cacheProvider == null) throw new ArgumentNullException(nameof(cacheProvider));
 
-            return CacheAsync<TResult>(cacheProvider.AsyncFor<TResult>(), new RelativeTtl(ttl), cacheKeyStrategy, onCacheGet, onCacheMiss, onCachePut, onCacheGetError, onCachePutError);
+            return CacheAsync(cacheProvider.AsyncFor<TResult>(), new RelativeTtl(ttl), cacheKeyStrategy, onCacheGet, onCacheMiss, onCachePut, onCacheGetError, onCachePutError);
         }
 
         /// <summary>
@@ -340,7 +340,7 @@ namespace Polly
         {
             if (cacheProvider == null) throw new ArgumentNullException(nameof(cacheProvider));
 
-            return CacheAsync<TResult>(cacheProvider.AsyncFor<TResult>(), ttlStrategy, cacheKeyStrategy, onCacheGet, onCacheMiss, onCachePut, onCacheGetError, onCachePutError);
+            return CacheAsync(cacheProvider.AsyncFor<TResult>(), ttlStrategy, cacheKeyStrategy, onCacheGet, onCacheMiss, onCachePut, onCacheGetError, onCachePutError);
         }
 
         /// <summary>
@@ -355,7 +355,7 @@ namespace Polly
         /// <returns>The policy instance.</returns>
         /// <exception cref="ArgumentNullException">cacheProvider</exception>
         public static AsyncCachePolicy<TResult> CacheAsync<TResult>(IAsyncCacheProvider<TResult> cacheProvider, TimeSpan ttl, Action<Context, string, Exception> onCacheError = null)
-            => CacheAsync<TResult>(cacheProvider, new RelativeTtl(ttl), DefaultCacheKeyStrategy.Instance.GetCacheKey, onCacheError);
+            => CacheAsync(cacheProvider, new RelativeTtl(ttl), DefaultCacheKeyStrategy.Instance.GetCacheKey, onCacheError);
 
         /// <summary>
         /// <para>Builds an <see cref="AsyncPolicy{TResult}"/> that will function like a result cache for delegate executions returning a <typeparamref name="TResult"/>.</para>
@@ -370,7 +370,7 @@ namespace Polly
         /// <exception cref="ArgumentNullException">cacheProvider</exception>
         /// <exception cref="ArgumentNullException">ttlStrategy</exception>
         public static AsyncCachePolicy<TResult> CacheAsync<TResult>(IAsyncCacheProvider<TResult> cacheProvider, ITtlStrategy ttlStrategy, Action<Context, string, Exception> onCacheError = null)
-            => CacheAsync<TResult>(cacheProvider, ttlStrategy, DefaultCacheKeyStrategy.Instance.GetCacheKey, onCacheError);
+            => CacheAsync(cacheProvider, ttlStrategy, DefaultCacheKeyStrategy.Instance.GetCacheKey, onCacheError);
 
         /// <summary>
         /// <para>Builds an <see cref="AsyncPolicy{TResult}"/> that will function like a result cache for delegate executions returning a <typeparamref name="TResult"/>.</para>
@@ -385,7 +385,7 @@ namespace Polly
         /// <exception cref="ArgumentNullException">cacheProvider</exception>
         /// <exception cref="ArgumentNullException">ttlStrategy</exception>
         public static AsyncCachePolicy<TResult> CacheAsync<TResult>(IAsyncCacheProvider<TResult> cacheProvider, ITtlStrategy<TResult> ttlStrategy, Action<Context, string, Exception> onCacheError = null)
-            => CacheAsync<TResult>(cacheProvider, ttlStrategy, DefaultCacheKeyStrategy.Instance.GetCacheKey, onCacheError);
+            => CacheAsync(cacheProvider, ttlStrategy, DefaultCacheKeyStrategy.Instance.GetCacheKey, onCacheError);
 
         /// <summary>
         /// <para>Builds an <see cref="AsyncPolicy{TResult}" /> that will function like a result cache for delegate executions returning a <typeparamref name="TResult"/>.</para>
@@ -401,7 +401,7 @@ namespace Polly
         /// <exception cref="ArgumentNullException">cacheProvider</exception>
         /// <exception cref="ArgumentNullException">cacheKeyStrategy</exception>
         public static AsyncCachePolicy<TResult> CacheAsync<TResult>(IAsyncCacheProvider<TResult> cacheProvider, TimeSpan ttl, ICacheKeyStrategy cacheKeyStrategy, Action<Context, string, Exception> onCacheError = null)
-            => CacheAsync<TResult>(cacheProvider, new RelativeTtl(ttl), cacheKeyStrategy.GetCacheKey, onCacheError);
+            => CacheAsync(cacheProvider, new RelativeTtl(ttl), cacheKeyStrategy.GetCacheKey, onCacheError);
 
         /// <summary>
         /// <para>Builds an <see cref="AsyncPolicy{TResult}" /> that will function like a result cache for delegate executions returning a <typeparamref name="TResult"/>.</para>
@@ -423,7 +423,7 @@ namespace Polly
 
             Action<Context, string> emptyDelegate = (_, __) => { };
 
-            return CacheAsync<TResult>(cacheProvider, ttlStrategy, cacheKeyStrategy.GetCacheKey, emptyDelegate, emptyDelegate, emptyDelegate, onCacheError, onCacheError);
+            return CacheAsync(cacheProvider, ttlStrategy, cacheKeyStrategy.GetCacheKey, emptyDelegate, emptyDelegate, emptyDelegate, onCacheError, onCacheError);
         }
 
         /// <summary>
@@ -446,7 +446,7 @@ namespace Polly
 
             Action<Context, string> emptyDelegate = (_, __) => { };
 
-            return CacheAsync<TResult>(cacheProvider, ttlStrategy, cacheKeyStrategy.GetCacheKey, emptyDelegate, emptyDelegate, emptyDelegate, onCacheError, onCacheError);
+            return CacheAsync(cacheProvider, ttlStrategy, cacheKeyStrategy.GetCacheKey, emptyDelegate, emptyDelegate, emptyDelegate, onCacheError, onCacheError);
         }
 
         /// <summary>
@@ -463,7 +463,7 @@ namespace Polly
         /// <exception cref="ArgumentNullException">cacheProvider</exception>
         /// <exception cref="ArgumentNullException">cacheKeyStrategy</exception>
         public static AsyncCachePolicy<TResult> CacheAsync<TResult>(IAsyncCacheProvider<TResult> cacheProvider, TimeSpan ttl, Func<Context, string> cacheKeyStrategy, Action<Context, string, Exception> onCacheError = null)
-            => CacheAsync<TResult>(cacheProvider, new RelativeTtl(ttl), cacheKeyStrategy, onCacheError);
+            => CacheAsync(cacheProvider, new RelativeTtl(ttl), cacheKeyStrategy, onCacheError);
 
         /// <summary>
         /// <para>Builds an <see cref="AsyncPolicy{TResult}" /> that will function like a result cache for delegate executions returning a <typeparamref name="TResult"/>.</para>
@@ -485,7 +485,7 @@ namespace Polly
 
             Action<Context, string> emptyDelegate = (_, __) => { };
 
-            return CacheAsync<TResult>(cacheProvider, ttlStrategy, cacheKeyStrategy, emptyDelegate, emptyDelegate, emptyDelegate, onCacheError, onCacheError);
+            return CacheAsync(cacheProvider, ttlStrategy, cacheKeyStrategy, emptyDelegate, emptyDelegate, emptyDelegate, onCacheError, onCacheError);
         }
 
         /// <summary>
@@ -508,7 +508,7 @@ namespace Polly
 
             Action<Context, string> emptyDelegate = (_, __) => { };
 
-            return CacheAsync<TResult>(cacheProvider, ttlStrategy, cacheKeyStrategy, emptyDelegate, emptyDelegate, emptyDelegate, onCacheError, onCacheError);
+            return CacheAsync(cacheProvider, ttlStrategy, cacheKeyStrategy, emptyDelegate, emptyDelegate, emptyDelegate, onCacheError, onCacheError);
         }
 
         /// <summary>
@@ -539,7 +539,7 @@ namespace Polly
             Action<Context, string> onCachePut,
             Action<Context, string, Exception> onCacheGetError,
             Action<Context, string, Exception> onCachePutError)
-            => CacheAsync<TResult>(cacheProvider, new RelativeTtl(ttl), DefaultCacheKeyStrategy.Instance.GetCacheKey, onCacheGet, onCacheMiss,
+            => CacheAsync(cacheProvider, new RelativeTtl(ttl), DefaultCacheKeyStrategy.Instance.GetCacheKey, onCacheGet, onCacheMiss,
                 onCachePut, onCacheGetError, onCachePutError);
 
         /// <summary>
@@ -571,7 +571,7 @@ namespace Polly
             Action<Context, string> onCachePut,
             Action<Context, string, Exception> onCacheGetError,
             Action<Context, string, Exception> onCachePutError)
-            => CacheAsync<TResult>(cacheProvider, ttlStrategy.For<TResult>(), DefaultCacheKeyStrategy.Instance.GetCacheKey, onCacheGet, onCacheMiss, onCachePut, onCacheGetError, onCachePutError);
+            => CacheAsync(cacheProvider, ttlStrategy.For<TResult>(), DefaultCacheKeyStrategy.Instance.GetCacheKey, onCacheGet, onCacheMiss, onCachePut, onCacheGetError, onCachePutError);
 
         /// <summary>
         /// <para>Builds an <see cref="AsyncPolicy{TResult}" /> that will function like a result cache for delegate executions returning a <typeparamref name="TResult"/>.</para>
@@ -602,7 +602,7 @@ namespace Polly
             Action<Context, string> onCachePut,
             Action<Context, string, Exception> onCacheGetError,
             Action<Context, string, Exception> onCachePutError)
-            => CacheAsync<TResult>(cacheProvider, ttlStrategy, DefaultCacheKeyStrategy.Instance.GetCacheKey, onCacheGet, onCacheMiss, onCachePut, onCacheGetError, onCachePutError);
+            => CacheAsync(cacheProvider, ttlStrategy, DefaultCacheKeyStrategy.Instance.GetCacheKey, onCacheGet, onCacheMiss, onCachePut, onCacheGetError, onCachePutError);
 
         /// <summary>
         /// <para>Builds an <see cref="AsyncPolicy{TResult}" /> that will function like a result cache for delegate executions returning a <typeparamref name="TResult"/>.</para>
@@ -635,7 +635,7 @@ namespace Polly
             Action<Context, string> onCachePut,
             Action<Context, string, Exception> onCacheGetError,
             Action<Context, string, Exception> onCachePutError)
-            => CacheAsync<TResult>(cacheProvider, new RelativeTtl(ttl), cacheKeyStrategy.GetCacheKey, onCacheGet, onCacheMiss,
+            => CacheAsync(cacheProvider, new RelativeTtl(ttl), cacheKeyStrategy.GetCacheKey, onCacheGet, onCacheMiss,
                 onCachePut, onCacheGetError, onCachePutError);
 
         /// <summary>
@@ -670,7 +670,7 @@ namespace Polly
             Action<Context, string> onCachePut,
             Action<Context, string, Exception> onCacheGetError,
             Action<Context, string, Exception> onCachePutError)
-            => CacheAsync<TResult>(cacheProvider, ttlStrategy.For<TResult>(), cacheKeyStrategy.GetCacheKey, onCacheGet, onCacheMiss, onCachePut, onCacheGetError, onCachePutError);
+            => CacheAsync(cacheProvider, ttlStrategy.For<TResult>(), cacheKeyStrategy.GetCacheKey, onCacheGet, onCacheMiss, onCachePut, onCacheGetError, onCachePutError);
 
         /// <summary>
         /// <para>Builds an <see cref="AsyncPolicy{TResult}" /> that will function like a result cache for delegate executions returning a <typeparamref name="TResult"/>.</para>
@@ -704,7 +704,7 @@ namespace Polly
             Action<Context, string> onCachePut,
             Action<Context, string, Exception> onCacheGetError,
             Action<Context, string, Exception> onCachePutError)
-            => CacheAsync<TResult>(cacheProvider, ttlStrategy, cacheKeyStrategy.GetCacheKey, onCacheGet, onCacheMiss, onCachePut, onCacheGetError, onCachePutError);
+            => CacheAsync(cacheProvider, ttlStrategy, cacheKeyStrategy.GetCacheKey, onCacheGet, onCacheMiss, onCachePut, onCacheGetError, onCachePutError);
 
         /// <summary>
         /// <para>Builds an <see cref="AsyncPolicy{TResult}" /> that will function like a result cache for delegate executions returning a <typeparamref name="TResult"/>.</para>
@@ -737,7 +737,7 @@ namespace Polly
             Action<Context, string> onCachePut,
             Action<Context, string, Exception> onCacheGetError,
             Action<Context, string, Exception> onCachePutError)
-            => CacheAsync<TResult>(cacheProvider, new RelativeTtl(ttl), cacheKeyStrategy, onCacheGet, onCacheMiss,
+            => CacheAsync(cacheProvider, new RelativeTtl(ttl), cacheKeyStrategy, onCacheGet, onCacheMiss,
                 onCachePut, onCacheGetError, onCachePutError);
 
         /// <summary>
@@ -772,7 +772,7 @@ namespace Polly
             Action<Context, string> onCachePut,
             Action<Context, string, Exception> onCacheGetError,
             Action<Context, string, Exception> onCachePutError)
-            => CacheAsync<TResult>(cacheProvider, ttlStrategy.For<TResult>(), cacheKeyStrategy, onCacheGet, onCacheMiss, onCachePut, onCacheGetError, onCachePutError);
+            => CacheAsync(cacheProvider, ttlStrategy.For<TResult>(), cacheKeyStrategy, onCacheGet, onCacheMiss, onCachePut, onCacheGetError, onCachePutError);
 
         /// <summary>
         /// <para>Builds an <see cref="AsyncPolicy{TResult}" /> that will function like a result cache for delegate executions returning a <typeparamref name="TResult"/>.</para>

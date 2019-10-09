@@ -51,7 +51,7 @@ namespace Polly.Wrap
         [DebuggerStepThrough]
         protected override Task<TResult> ImplementationAsync<TResult>(Func<Context, CancellationToken, Task<TResult>> action, Context context, CancellationToken cancellationToken,
             bool continueOnCapturedContext)
-            => AsyncPolicyWrapEngine.ImplementationAsync<TResult>(
+            => AsyncPolicyWrapEngine.ImplementationAsync(
                 action,
                 context,
                 cancellationToken,
@@ -112,7 +112,7 @@ namespace Polly.Wrap
             {
                 if (_innerNonGeneric != null)
                 {
-                    return AsyncPolicyWrapEngine.ImplementationAsync<TResult>(
+                    return AsyncPolicyWrapEngine.ImplementationAsync(
                         action,
                         context,
                         cancellationToken,
@@ -123,7 +123,7 @@ namespace Polly.Wrap
                 }
                 else if (_innerGeneric != null)
                 {
-                    return AsyncPolicyWrapEngine.ImplementationAsync<TResult>(
+                    return AsyncPolicyWrapEngine.ImplementationAsync(
                         action,
                         context,
                         cancellationToken,
@@ -142,7 +142,7 @@ namespace Polly.Wrap
             {
                 if (_innerNonGeneric != null)
                 {
-                    return AsyncPolicyWrapEngine.ImplementationAsync<TResult>(
+                    return AsyncPolicyWrapEngine.ImplementationAsync(
                         action,
                         context,
                         cancellationToken,
@@ -154,7 +154,7 @@ namespace Polly.Wrap
                 }
                 else if (_innerGeneric != null)
                 {
-                    return AsyncPolicyWrapEngine.ImplementationAsync<TResult>(
+                    return AsyncPolicyWrapEngine.ImplementationAsync(
                         action,
                         context,
                         cancellationToken,

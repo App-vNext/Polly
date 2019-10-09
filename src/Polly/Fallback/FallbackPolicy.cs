@@ -26,7 +26,7 @@ namespace Polly.Fallback
         /// <inheritdoc/>
         [DebuggerStepThrough]
         protected override void Implementation(Action<Context, CancellationToken> action, Context context, CancellationToken cancellationToken)
-            => FallbackEngine.Implementation<EmptyStruct>(
+            => FallbackEngine.Implementation(
                 (ctx, token) => { action(ctx, token); return EmptyStruct.Instance; }, 
                 context, 
                 cancellationToken, 

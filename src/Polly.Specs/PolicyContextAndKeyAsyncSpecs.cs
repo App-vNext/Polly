@@ -149,7 +149,7 @@ namespace Polly.Specs
             var retry = Policy.Handle<Exception>().RetryAsync(1, onRetry).WithPolicyKey(policyKey);
 
             bool firstExecution = true;
-            await retry.ExecuteAsync<int>(async () =>
+            await retry.ExecuteAsync(async () =>
             {
                 await TaskHelper.EmptyTask.ConfigureAwait(false);
                 if (firstExecution)
@@ -173,7 +173,7 @@ namespace Polly.Specs
             var retry = Policy.Handle<Exception>().RetryAsync(1, onRetry);
 
             bool firstExecution = true;
-            await retry.ExecuteAsync<int>(async ctx =>
+            await retry.ExecuteAsync(async ctx =>
             {
                 await TaskHelper.EmptyTask.ConfigureAwait(false);
                 if (firstExecution)
@@ -197,7 +197,7 @@ namespace Polly.Specs
         [Fact]
         public void Should_be_able_fluently_to_configure_the_policy_key()
         {
-            var policy = Policy.HandleResult<int>(0).RetryAsync().WithPolicyKey(Guid.NewGuid().ToString());
+            var policy = Policy.HandleResult(0).RetryAsync().WithPolicyKey(Guid.NewGuid().ToString());
 
             policy.Should().BeAssignableTo<AsyncPolicy<int>>();
         }
@@ -205,7 +205,7 @@ namespace Polly.Specs
         [Fact]
         public void Should_be_able_fluently_to_configure_the_policy_key_via_interface()
         {
-            IAsyncPolicy<int> policyAsInterface = Policy.HandleResult<int>(0).RetryAsync();
+            IAsyncPolicy<int> policyAsInterface = Policy.HandleResult(0).RetryAsync();
             var policyAsInterfaceAfterWithPolicyKey = policyAsInterface.WithPolicyKey(Guid.NewGuid().ToString());
 
             policyAsInterfaceAfterWithPolicyKey.Should().BeAssignableTo<IAsyncPolicy<int>>();

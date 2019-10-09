@@ -148,7 +148,7 @@ namespace Polly.Specs
             var retry = Policy.Handle<Exception>().Retry(1, onRetry).WithPolicyKey(policyKey);
 
             bool firstExecution = true;
-            retry.Execute<int>(() =>
+            retry.Execute(() =>
             {
                 if (firstExecution)
                 {
@@ -171,7 +171,7 @@ namespace Polly.Specs
             var retry = Policy.Handle<Exception>().Retry(1, onRetry);
 
             bool firstExecution = true;
-            retry.Execute<int>(ctx =>
+            retry.Execute(ctx =>
             {
                 if (firstExecution)
                 {
@@ -194,7 +194,7 @@ namespace Polly.Specs
         [Fact]
         public void Should_be_able_fluently_to_configure_the_policy_key()
         {
-            var policy = Policy.HandleResult<int>(0).Retry().WithPolicyKey(Guid.NewGuid().ToString());
+            var policy = Policy.HandleResult(0).Retry().WithPolicyKey(Guid.NewGuid().ToString());
 
             policy.Should().BeAssignableTo<Policy<int>>();
         }
@@ -202,7 +202,7 @@ namespace Polly.Specs
         [Fact]
         public void Should_be_able_fluently_to_configure_the_policy_key_via_interface()
         {
-            ISyncPolicy<int> policyAsInterface = Policy.HandleResult<int>(0).Retry();
+            ISyncPolicy<int> policyAsInterface = Policy.HandleResult(0).Retry();
             var policyAsInterfaceAfterWithPolicyKey = policyAsInterface.WithPolicyKey(Guid.NewGuid().ToString());
 
             policyAsInterfaceAfterWithPolicyKey.Should().BeAssignableTo<ISyncPolicy<int>>();

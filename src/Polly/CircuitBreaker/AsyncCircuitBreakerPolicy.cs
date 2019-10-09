@@ -47,7 +47,7 @@ namespace Polly.CircuitBreaker
             bool continueOnCapturedContext)
         {
             TResult result = default(TResult);
-            await AsyncCircuitBreakerEngine.ImplementationAsync<EmptyStruct>(
+            await AsyncCircuitBreakerEngine.ImplementationAsync(
                 async (ctx, ct) => { result = await action(ctx, ct).ConfigureAwait(continueOnCapturedContext); return EmptyStruct.Instance; },
                 context,
                 cancellationToken,

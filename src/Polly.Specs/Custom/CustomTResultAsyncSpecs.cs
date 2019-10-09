@@ -45,7 +45,7 @@ namespace Polly.Specs.Custom
         {
             Action construct = () =>
             {
-                AsyncAddBehaviourIfHandlePolicy<ResultPrimitive> policy = Policy.HandleResult<ResultPrimitive>(ResultPrimitive.Fault).WithBehaviourAsync(async outcome =>
+                AsyncAddBehaviourIfHandlePolicy<ResultPrimitive> policy = Policy.HandleResult(ResultPrimitive.Fault).WithBehaviourAsync(async outcome =>
                 {
                     // Placeholder for more substantive async work.
                     Console.WriteLine("Handling " + outcome.Result);
@@ -61,7 +61,7 @@ namespace Polly.Specs.Custom
         {
             ResultPrimitive handled = ResultPrimitive.Undefined;
             AsyncAddBehaviourIfHandlePolicy<ResultPrimitive> policy = Policy
-                .HandleResult<ResultPrimitive>(ResultPrimitive.Fault)
+                .HandleResult(ResultPrimitive.Fault)
                 .WithBehaviourAsync(async outcome => { handled = outcome.Result; await Task.CompletedTask; });
 
             ResultPrimitive toReturn = ResultPrimitive.Fault;
@@ -84,7 +84,7 @@ namespace Polly.Specs.Custom
         {
             ResultPrimitive? handled = null;
             AsyncAddBehaviourIfHandlePolicy<ResultPrimitive> policy = Policy
-                .HandleResult<ResultPrimitive>(ResultPrimitive.Fault)
+                .HandleResult(ResultPrimitive.Fault)
                 .WithBehaviourAsync(async outcome => { handled = outcome.Result; await Task.CompletedTask; });
 
             ResultPrimitive toReturn = ResultPrimitive.FaultYetAgain;
