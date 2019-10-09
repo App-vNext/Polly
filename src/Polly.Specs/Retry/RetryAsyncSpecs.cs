@@ -395,7 +395,7 @@ namespace Polly.Specs.Retry
         }
 
         [Fact]
-        public void Should_execute_action_when_non_faulting_and_cancellationtoken_not_cancelled()
+        public void Should_execute_action_when_non_faulting_and_cancellationToken_not_cancelled()
         {
             var policy = Policy
                 .Handle<DivideByZeroException>()
@@ -420,7 +420,7 @@ namespace Polly.Specs.Retry
         }
 
         [Fact]
-        public void Should_execute_all_tries_when_faulting_and_cancellationtoken_not_cancelled()
+        public void Should_execute_all_tries_when_faulting_and_cancellationToken_not_cancelled()
         {
             var policy = Policy
                 .Handle<DivideByZeroException>()
@@ -445,7 +445,7 @@ namespace Polly.Specs.Retry
         }
 
         [Fact]
-        public void Should_not_execute_action_when_cancellationtoken_cancelled_before_execute()
+        public void Should_not_execute_action_when_cancellationToken_cancelled_before_execute()
         {
             var policy = Policy
                 .Handle<DivideByZeroException>()
@@ -473,7 +473,7 @@ namespace Polly.Specs.Retry
         }
 
         [Fact]
-        public void Should_report_cancellation_during_otherwise_non_faulting_action_execution_and_cancel_further_retries_when_user_delegate_observes_cancellationtoken()
+        public void Should_report_cancellation_during_otherwise_non_faulting_action_execution_and_cancel_further_retries_when_user_delegate_observes_cancellationToken()
         {
             var policy = Policy
                 .Handle<DivideByZeroException>()
@@ -500,7 +500,7 @@ namespace Polly.Specs.Retry
         }
 
         [Fact]
-        public void Should_report_cancellation_during_faulting_initial_action_execution_and_cancel_further_retries_when_user_delegate_observes_cancellationtoken()
+        public void Should_report_cancellation_during_faulting_initial_action_execution_and_cancel_further_retries_when_user_delegate_observes_cancellationToken()
         {
             var policy = Policy
                 .Handle<DivideByZeroException>()
@@ -527,7 +527,7 @@ namespace Polly.Specs.Retry
         }
 
         [Fact]
-        public void Should_report_cancellation_during_faulting_initial_action_execution_and_cancel_further_retries_when_user_delegate_does_not_observe_cancellationtoken()
+        public void Should_report_cancellation_during_faulting_initial_action_execution_and_cancel_further_retries_when_user_delegate_does_not_observe_cancellationToken()
         {
             var policy = Policy
                 .Handle<DivideByZeroException>()
@@ -554,7 +554,7 @@ namespace Polly.Specs.Retry
         }
 
         [Fact]
-        public void Should_report_cancellation_during_faulting_retried_action_execution_and_cancel_further_retries_when_user_delegate_observes_cancellationtoken()
+        public void Should_report_cancellation_during_faulting_retried_action_execution_and_cancel_further_retries_when_user_delegate_observes_cancellationToken()
         {
             var policy = Policy
                 .Handle<DivideByZeroException>()
@@ -581,7 +581,7 @@ namespace Polly.Specs.Retry
         }
 
         [Fact]
-        public void Should_report_cancellation_during_faulting_retried_action_execution_and_cancel_further_retries_when_user_delegate_does_not_observe_cancellationtoken()
+        public void Should_report_cancellation_during_faulting_retried_action_execution_and_cancel_further_retries_when_user_delegate_does_not_observe_cancellationToken()
         {
             var policy = Policy
                 .Handle<DivideByZeroException>()
@@ -608,7 +608,7 @@ namespace Polly.Specs.Retry
         }
 
         [Fact]
-        public void Should_report_cancellation_during_faulting_last_retry_execution_when_user_delegate_does_observe_cancellationtoken()
+        public void Should_report_cancellation_during_faulting_last_retry_execution_when_user_delegate_does_observe_cancellationToken()
         {
             var policy = Policy
                 .Handle<DivideByZeroException>()
@@ -691,7 +691,7 @@ namespace Polly.Specs.Retry
         }
 
         [Fact]
-        public void Should_execute_func_returning_value_when_cancellationtoken_not_cancelled()
+        public void Should_execute_func_returning_value_when_cancellationToken_not_cancelled()
         {
             var policy = Policy
                 .Handle<DivideByZeroException>()

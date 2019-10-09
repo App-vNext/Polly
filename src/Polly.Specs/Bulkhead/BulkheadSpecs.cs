@@ -18,7 +18,7 @@ namespace Polly.Specs.Bulkhead
         #region Configuration
 
         [Fact]
-        public void Should_throw_when_maxparallelization_less_or_equal_to_zero()
+        public void Should_throw_when_maxParallelization_less_or_equal_to_zero()
         {
             Action policy = () => Policy
                 .Bulkhead(0, 1);
@@ -28,7 +28,7 @@ namespace Polly.Specs.Bulkhead
         }
 
         [Fact]
-        public void Should_throw_when_maxqueuedactions_less_than_zero()
+        public void Should_throw_when_maxQueuingActions_less_than_zero()
         {
             Action policy = () => Policy
                 .Bulkhead(1, -1);
@@ -216,7 +216,7 @@ namespace Polly.Specs.Bulkhead
 
             }
 
-            EnsureNoUnbservedTaskExceptions(tasks); 
+            EnsureNoUnobservedTaskExceptions(tasks); 
             testOutputHelper.WriteLine("Verifying all tasks completed...");
             Within(shimTimeSpan, () => tasks.All(t => t.IsCompleted).Should().BeTrue());
 

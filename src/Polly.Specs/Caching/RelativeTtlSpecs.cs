@@ -6,7 +6,7 @@ using Xunit;
 
 namespace Polly.Specs.Caching
 {
-    public class RelativeTtllSpecs
+    public class RelativeTtlSpecs
     {
         [Fact]
         public void Should_throw_when_timespan_is_less_than_zero()

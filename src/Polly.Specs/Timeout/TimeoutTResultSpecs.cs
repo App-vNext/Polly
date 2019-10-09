@@ -441,7 +441,7 @@ namespace Polly.Specs.Timeout
         }
 
         [Fact]
-        public void Should_not_execute_user_delegate_if_user_cancellationtoken_cancelled_before_delegate_reached__pessimistic()
+        public void Should_not_execute_user_delegate_if_user_cancellationToken_cancelled_before_delegate_reached__pessimistic()
         {
             var policy = Policy.Timeout<ResultPrimitive>(10, TimeoutStrategy.Pessimistic);
 
@@ -483,7 +483,7 @@ namespace Polly.Specs.Timeout
         }
 
         [Fact]
-        public void Should_not_execute_user_delegate_if_user_cancellationtoken_cancelled_before_delegate_reached__optimistic()
+        public void Should_not_execute_user_delegate_if_user_cancellationToken_cancelled_before_delegate_reached__optimistic()
         {
             var policy = Policy.Timeout<ResultPrimitive>(10, TimeoutStrategy.Optimistic);
 
