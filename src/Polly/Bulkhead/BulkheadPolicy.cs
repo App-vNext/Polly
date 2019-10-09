@@ -37,7 +37,7 @@ namespace Polly.Bulkhead
         /// <summary>
         /// Gets the number of slots currently available for executing actions through the bulkhead.
         /// </summary>
-        public int BulkheadAvailableCount => _maxParallelizationSemaphore.CurrentCount;
+        public int BulkheadAvailableCount => Math.Min(_maxParallelizationSemaphore.CurrentCount, _maxParallelization);
 
         /// <summary>
         /// Gets the number of slots currently available for queuing actions for execution through the bulkhead.
@@ -89,7 +89,7 @@ namespace Polly.Bulkhead
         /// <summary>
         /// Gets the number of slots currently available for executing actions through the bulkhead.
         /// </summary>
-        public int BulkheadAvailableCount => _maxParallelizationSemaphore.CurrentCount;
+        public int BulkheadAvailableCount => Math.Min(_maxParallelizationSemaphore.CurrentCount, _maxParallelization);
 
         /// <summary>
         /// Gets the number of slots currently available for queuing actions for execution through the bulkhead.
