@@ -225,7 +225,7 @@ namespace Polly.Specs
 
             Policy policy = Policy.NoOp();
 
-            policy.Execute((context) => { capturedContext = context; }, executionContext);
+            policy.Execute(context => { capturedContext = context; }, executionContext);
 
             capturedContext.Should().BeSameAs(executionContext);
         }
@@ -285,7 +285,7 @@ namespace Polly.Specs
 
             Policy policy = Policy.NoOp();
 
-            policy.ExecuteAndCapture((context) => { capturedContext = context; }, executionContext);
+            policy.ExecuteAndCapture(context => { capturedContext = context; }, executionContext);
 
             capturedContext.Should().BeSameAs(executionContext);
         }
@@ -298,7 +298,7 @@ namespace Polly.Specs
 
             Policy policy = Policy.NoOp();
 
-            policy.ExecuteAndCapture((context) => { }, executionContext)
+            policy.ExecuteAndCapture(context => { }, executionContext)
                 .Context.Should().BeSameAs(executionContext);
         }
 

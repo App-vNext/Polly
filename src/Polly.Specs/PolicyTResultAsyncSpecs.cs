@@ -139,7 +139,7 @@ namespace Polly.Specs
 
             var policy = Policy.NoOpAsync<ResultPrimitive>();
 
-            await policy.ExecuteAsync((context) => { capturedContext = context; return Task.FromResult(ResultPrimitive.Good); }, executionContext);
+            await policy.ExecuteAsync(context => { capturedContext = context; return Task.FromResult(ResultPrimitive.Good); }, executionContext);
 
             capturedContext.Should().BeSameAs(executionContext);
         }
@@ -165,7 +165,7 @@ namespace Polly.Specs
 
             var policy = Policy.NoOpAsync<ResultPrimitive>();
 
-            await policy.ExecuteAndCaptureAsync((context) => { capturedContext = context; return Task.FromResult(ResultPrimitive.Good); }, executionContext);
+            await policy.ExecuteAndCaptureAsync(context => { capturedContext = context; return Task.FromResult(ResultPrimitive.Good); }, executionContext);
 
             capturedContext.Should().BeSameAs(executionContext);
         }
@@ -178,7 +178,7 @@ namespace Polly.Specs
 
             var policy = Policy.NoOpAsync<ResultPrimitive>();
 
-            (await policy.ExecuteAndCaptureAsync((context) => Task.FromResult(ResultPrimitive.Good), executionContext))
+            (await policy.ExecuteAndCaptureAsync(context => Task.FromResult(ResultPrimitive.Good), executionContext))
                 .Context.Should().BeSameAs(executionContext);
         }
 
