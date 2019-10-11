@@ -14,7 +14,7 @@ namespace Polly.Specs.NoOp
             int? result = null;
 
             policy.Awaiting(async p => result = await p.ExecuteAsync(() => Task.FromResult((int?)10)))
-                .ShouldNotThrow();
+                .Should().NotThrow();
 
             result.HasValue.Should().BeTrue();
             result.Should().Be(10);
@@ -31,7 +31,7 @@ namespace Polly.Specs.NoOp
                 cts.Cancel();
 
                 policy.Awaiting(async p => result = await p.ExecuteAsync(ct => Task.FromResult((int?)10), cts.Token))
-                    .ShouldNotThrow();
+                    .Should().NotThrow();
             }
 
             result.HasValue.Should().BeTrue();

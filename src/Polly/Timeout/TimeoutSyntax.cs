@@ -10,7 +10,7 @@ namespace Polly
         /// Builds a <see cref="Policy"/> that will wait for a delegate to complete for a specified period of time. A <see cref="TimeoutRejectedException"/> will be thrown if the delegate does not complete within the configured timeout.
         /// </summary>
         /// <param name="seconds">The number of seconds after which to timeout.</param>
-        /// <exception cref="System.ArgumentOutOfRangeException">seconds;Value must be greater than zero.</exception>
+        /// <exception cref="ArgumentOutOfRangeException">seconds;Value must be greater than zero.</exception>
         /// <returns>The policy instance.</returns>
         public static TimeoutPolicy Timeout(int seconds)
         {
@@ -26,7 +26,7 @@ namespace Polly
         /// <param name="seconds">The number of seconds after which to timeout.</param>
         /// <param name="timeoutStrategy">The timeout strategy.</param>
         /// <returns>The policy instance.</returns>
-        /// <exception cref="System.ArgumentOutOfRangeException">seconds;Value must be greater than zero.</exception>
+        /// <exception cref="ArgumentOutOfRangeException">seconds;Value must be greater than zero.</exception>
         public static TimeoutPolicy Timeout(int seconds, TimeoutStrategy timeoutStrategy)
         {
             TimeoutValidator.ValidateSecondsTimeout(seconds);
@@ -40,10 +40,10 @@ namespace Polly
         /// </summary>
         /// <param name="seconds">The number of seconds after which to timeout.</param>
         /// <param name="onTimeout">An action to call on timeout, passing the execution context, the timeout applied, and a <see cref="Task"/> capturing the abandoned, timed-out action. 
-        /// <remarks>The Task parameter will be null if the executed action responded co-operatively to cancellation before the policy timed it out.</remarks></param>
+        /// <remarks>The Task parameter will be null if the executed action responded cooperatively to cancellation before the policy timed it out.</remarks></param>
         /// <returns>The policy instance.</returns>
-        /// <exception cref="System.ArgumentOutOfRangeException">seconds;Value must be greater than zero.</exception>
-        /// <exception cref="System.ArgumentNullException">onTimeout</exception>
+        /// <exception cref="ArgumentOutOfRangeException">seconds;Value must be greater than zero.</exception>
+        /// <exception cref="ArgumentNullException">onTimeout</exception>
         public static TimeoutPolicy Timeout(int seconds, Action<Context, TimeSpan, Task> onTimeout)
         {
             TimeoutValidator.ValidateSecondsTimeout(seconds);
@@ -56,10 +56,10 @@ namespace Polly
         /// </summary>
         /// <param name="seconds">The number of seconds after which to timeout.</param>
         /// <param name="onTimeout">An action to call on timeout, passing the execution context, the timeout applied, the <see cref="Task"/> capturing the abandoned, timed-out action, and the captured <see cref="Exception"/>.
-        /// <remarks>The Task parameter will be null if the executed action responded co-operatively to cancellation before the policy timed it out.</remarks></param>
+        /// <remarks>The Task parameter will be null if the executed action responded cooperatively to cancellation before the policy timed it out.</remarks></param>
         /// <returns>The policy instance.</returns>
-        /// <exception cref="System.ArgumentOutOfRangeException">seconds;Value must be greater than zero.</exception>
-        /// <exception cref="System.ArgumentNullException">onTimeout</exception>
+        /// <exception cref="ArgumentOutOfRangeException">seconds;Value must be greater than zero.</exception>
+        /// <exception cref="ArgumentNullException">onTimeout</exception>
         public static TimeoutPolicy Timeout(int seconds, Action<Context, TimeSpan, Task, Exception> onTimeout)
         {
             if (seconds <= 0) throw new ArgumentOutOfRangeException(nameof(seconds));
@@ -73,10 +73,10 @@ namespace Polly
         /// <param name="seconds">The number of seconds after which to timeout.</param>
         /// <param name="timeoutStrategy">The timeout strategy.</param>
         /// <param name="onTimeout">An action to call on timeout, passing the execution context, the timeout applied, and a <see cref="Task" /> capturing the abandoned, timed-out action.
-        /// <remarks>The Task parameter will be null if the executed action responded co-operatively to cancellation before the policy timed it out.</remarks></param>
+        /// <remarks>The Task parameter will be null if the executed action responded cooperatively to cancellation before the policy timed it out.</remarks></param>
         /// <returns>The policy instance.</returns>
-        /// <exception cref="System.ArgumentOutOfRangeException">seconds;Value must be greater than zero.</exception>
-        /// <exception cref="System.ArgumentNullException">onTimeout</exception>
+        /// <exception cref="ArgumentOutOfRangeException">seconds;Value must be greater than zero.</exception>
+        /// <exception cref="ArgumentNullException">onTimeout</exception>
         public static TimeoutPolicy Timeout(int seconds, TimeoutStrategy timeoutStrategy, Action<Context, TimeSpan, Task> onTimeout)
         {
             TimeoutValidator.ValidateSecondsTimeout(seconds);
@@ -90,10 +90,10 @@ namespace Polly
         /// <param name="seconds">The number of seconds after which to timeout.</param>
         /// <param name="timeoutStrategy">The timeout strategy.</param>
         /// <param name="onTimeout">An action to call on timeout, passing the execution context, the timeout applied, the <see cref="Task" /> capturing the abandoned, timed-out action, and the captured <see cref="Exception"/>.
-        /// <remarks>The Task parameter will be null if the executed action responded co-operatively to cancellation before the policy timed it out.</remarks></param>
+        /// <remarks>The Task parameter will be null if the executed action responded cooperatively to cancellation before the policy timed it out.</remarks></param>
         /// <returns>The policy instance.</returns>
-        /// <exception cref="System.ArgumentOutOfRangeException">seconds;Value must be greater than zero.</exception>
-        /// <exception cref="System.ArgumentNullException">onTimeout</exception>
+        /// <exception cref="ArgumentOutOfRangeException">seconds;Value must be greater than zero.</exception>
+        /// <exception cref="ArgumentNullException">onTimeout</exception>
         public static TimeoutPolicy Timeout(int seconds, TimeoutStrategy timeoutStrategy, Action<Context, TimeSpan, Task, Exception> onTimeout)
         {
             if (seconds <= 0) throw new ArgumentOutOfRangeException(nameof(seconds));
@@ -106,7 +106,7 @@ namespace Polly
         /// </summary>
         /// <param name="timeout">The timeout.</param>
         /// <returns>The policy instance.</returns>
-        /// <exception cref="System.ArgumentOutOfRangeException">timeout;Value must be a positive TimeSpan (or Timeout.InfiniteTimeSpan to indicate no timeout)</exception>
+        /// <exception cref="ArgumentOutOfRangeException">timeout;Value must be a positive TimeSpan (or Timeout.InfiniteTimeSpan to indicate no timeout)</exception>
         public static TimeoutPolicy Timeout(TimeSpan timeout)
         {
             TimeoutValidator.ValidateTimeSpanTimeout(timeout);
@@ -121,7 +121,7 @@ namespace Polly
         /// <param name="timeout">The timeout.</param>
         /// <param name="timeoutStrategy">The timeout strategy.</param>
         /// <returns>The policy instance.</returns>
-        /// <exception cref="System.ArgumentOutOfRangeException">timeout;Value must be a positive TimeSpan (or Timeout.InfiniteTimeSpan to indicate no timeout)</exception>
+        /// <exception cref="ArgumentOutOfRangeException">timeout;Value must be a positive TimeSpan (or Timeout.InfiniteTimeSpan to indicate no timeout)</exception>
         public static TimeoutPolicy Timeout(TimeSpan timeout, TimeoutStrategy timeoutStrategy)
         {
             TimeoutValidator.ValidateTimeSpanTimeout(timeout);
@@ -135,10 +135,10 @@ namespace Polly
         /// </summary>
         /// <param name="timeout">The timeout.</param>
         /// <param name="onTimeout">An action to call on timeout, passing the execution context, the timeout applied, and a <see cref="Task"/> capturing the abandoned, timed-out action. 
-        /// <remarks>The Task parameter will be null if the executed action responded co-operatively to cancellation before the policy timed it out.</remarks></param>
+        /// <remarks>The Task parameter will be null if the executed action responded cooperatively to cancellation before the policy timed it out.</remarks></param>
         /// <returns>The policy instance.</returns>
-        /// <exception cref="System.ArgumentOutOfRangeException">timeout;Value must be a positive TimeSpan (or Timeout.InfiniteTimeSpan to indicate no timeout)</exception>
-        /// <exception cref="System.ArgumentNullException">onTimeout</exception>
+        /// <exception cref="ArgumentOutOfRangeException">timeout;Value must be a positive TimeSpan (or Timeout.InfiniteTimeSpan to indicate no timeout)</exception>
+        /// <exception cref="ArgumentNullException">onTimeout</exception>
         public static TimeoutPolicy Timeout(TimeSpan timeout, Action<Context, TimeSpan, Task> onTimeout)
         {
             TimeoutValidator.ValidateTimeSpanTimeout(timeout);
@@ -151,10 +151,10 @@ namespace Polly
         /// </summary>
         /// <param name="timeout">The timeout.</param>
         /// <param name="onTimeout">An action to call on timeout, passing the execution context, the timeout applied, the <see cref="Task"/> capturing the abandoned, timed-out action, and captured <see cref="Exception"/>.
-        /// <remarks>The Task parameter will be null if the executed action responded co-operatively to cancellation before the policy timed it out.</remarks></param>
+        /// <remarks>The Task parameter will be null if the executed action responded cooperatively to cancellation before the policy timed it out.</remarks></param>
         /// <returns>The policy instance.</returns>
-        /// <exception cref="System.ArgumentOutOfRangeException">timeout;Value must be greater than zero.</exception>
-        /// <exception cref="System.ArgumentNullException">onTimeout</exception>
+        /// <exception cref="ArgumentOutOfRangeException">timeout;Value must be greater than zero.</exception>
+        /// <exception cref="ArgumentNullException">onTimeout</exception>
         public static TimeoutPolicy Timeout(TimeSpan timeout, Action<Context, TimeSpan, Task, Exception> onTimeout)
         {
             TimeoutValidator.ValidateTimeSpanTimeout(timeout);
@@ -168,10 +168,10 @@ namespace Polly
         /// <param name="timeout">The timeout.</param>
         /// <param name="timeoutStrategy">The timeout strategy.</param>
         /// <param name="onTimeout">An action to call on timeout, passing the execution context, the timeout applied, and a <see cref="Task" /> capturing the abandoned, timed-out action.
-        /// <remarks>The Task parameter will be null if the executed action responded co-operatively to cancellation before the policy timed it out.</remarks></param>
+        /// <remarks>The Task parameter will be null if the executed action responded cooperatively to cancellation before the policy timed it out.</remarks></param>
         /// <returns>The policy instance.</returns>
-        /// <exception cref="System.ArgumentOutOfRangeException">timeout;Value must be a positive TimeSpan (or Timeout.InfiniteTimeSpan to indicate no timeout)</exception>
-        /// <exception cref="System.ArgumentNullException">onTimeout</exception>
+        /// <exception cref="ArgumentOutOfRangeException">timeout;Value must be a positive TimeSpan (or Timeout.InfiniteTimeSpan to indicate no timeout)</exception>
+        /// <exception cref="ArgumentNullException">onTimeout</exception>
         public static TimeoutPolicy Timeout(TimeSpan timeout, TimeoutStrategy timeoutStrategy, Action<Context, TimeSpan, Task> onTimeout)
         {
             TimeoutValidator.ValidateTimeSpanTimeout(timeout);
@@ -185,10 +185,10 @@ namespace Polly
         /// <param name="timeout">The timeout.</param>
         /// <param name="timeoutStrategy">The timeout strategy.</param>
         /// <param name="onTimeout">An action to call on timeout, passing the execution context, the timeout applied, the <see cref="Task" /> capturing the abandoned, timed-out action, and the captured <see cref="Exception"/>.
-        /// <remarks>The Task parameter will be null if the executed action responded co-operatively to cancellation before the policy timed it out.</remarks></param>
+        /// <remarks>The Task parameter will be null if the executed action responded cooperatively to cancellation before the policy timed it out.</remarks></param>
         /// <returns>The policy instance.</returns>
-        /// <exception cref="System.ArgumentOutOfRangeException">timeout;Value must be greater than zero.</exception>
-        /// <exception cref="System.ArgumentNullException">onTimeout</exception>
+        /// <exception cref="ArgumentOutOfRangeException">timeout;Value must be greater than zero.</exception>
+        /// <exception cref="ArgumentNullException">onTimeout</exception>
         public static TimeoutPolicy Timeout(TimeSpan timeout, TimeoutStrategy timeoutStrategy, Action<Context, TimeSpan, Task, Exception> onTimeout)
         {
             TimeoutValidator.ValidateTimeSpanTimeout(timeout);
@@ -200,7 +200,7 @@ namespace Polly
         /// Builds a <see cref="Policy"/> that will wait for a delegate to complete for a specified period of time. A <see cref="TimeoutRejectedException"/> will be thrown if the delegate does not complete within the configured timeout.
         /// </summary>
         /// <param name="timeoutProvider">A function to provide the timeout for this execution.</param>
-        /// <exception cref="System.ArgumentNullException">timeoutProvider</exception>
+        /// <exception cref="ArgumentNullException">timeoutProvider</exception>
         /// <returns>The policy instance.</returns>
         public static TimeoutPolicy Timeout(Func<TimeSpan> timeoutProvider)
         {
@@ -216,7 +216,7 @@ namespace Polly
         /// <param name="timeoutProvider">A function to provide the timeout for this execution.</param>
         /// <param name="timeoutStrategy">The timeout strategy.</param>
         /// <returns>The policy instance.</returns>
-        /// <exception cref="System.ArgumentNullException">timeoutProvider</exception>
+        /// <exception cref="ArgumentNullException">timeoutProvider</exception>
         public static TimeoutPolicy Timeout(Func<TimeSpan> timeoutProvider, TimeoutStrategy timeoutStrategy)
         {
             if (timeoutProvider == null) throw new ArgumentNullException(nameof(timeoutProvider));
@@ -230,10 +230,10 @@ namespace Polly
         /// </summary>
         /// <param name="timeoutProvider">A function to provide the timeout for this execution.</param>
         /// <param name="onTimeout">An action to call on timeout, passing the execution context, the timeout applied, and a <see cref="Task" /> capturing the abandoned, timed-out action.
-        /// <remarks>The Task parameter will be null if the executed action responded co-operatively to cancellation before the policy timed it out.</remarks></param>
+        /// <remarks>The Task parameter will be null if the executed action responded cooperatively to cancellation before the policy timed it out.</remarks></param>
         /// <returns>The policy instance.</returns>
-        /// <exception cref="System.ArgumentNullException">timeoutProvider</exception>
-        /// <exception cref="System.ArgumentNullException">onTimeout</exception>
+        /// <exception cref="ArgumentNullException">timeoutProvider</exception>
+        /// <exception cref="ArgumentNullException">onTimeout</exception>
         public static TimeoutPolicy Timeout(Func<TimeSpan> timeoutProvider, Action<Context, TimeSpan, Task> onTimeout)
         {
             if (timeoutProvider == null) throw new ArgumentNullException(nameof(timeoutProvider));
@@ -246,10 +246,10 @@ namespace Polly
         /// </summary>
         /// <param name="timeoutProvider">A function to provide the timeout for this execution.</param>
         /// <param name="onTimeout">An action to call on timeout, passing the execution context, the timeout applied, the <see cref="Task" /> capturing the abandoned, timed-out action, and the captured <see cref="Exception"/>.
-        /// <remarks>The Task parameter will be null if the executed action responded co-operatively to cancellation before the policy timed it out.</remarks></param>
+        /// <remarks>The Task parameter will be null if the executed action responded cooperatively to cancellation before the policy timed it out.</remarks></param>
         /// <returns>The policy instance.</returns>
-        /// <exception cref="System.ArgumentNullException">timeoutProvider</exception>
-        /// <exception cref="System.ArgumentNullException">onTimeout</exception>
+        /// <exception cref="ArgumentNullException">timeoutProvider</exception>
+        /// <exception cref="ArgumentNullException">onTimeout</exception>
         public static TimeoutPolicy Timeout(Func<TimeSpan> timeoutProvider, Action<Context, TimeSpan, Task, Exception> onTimeout)
         {
             if (timeoutProvider == null) throw new ArgumentNullException(nameof(timeoutProvider));
@@ -263,10 +263,10 @@ namespace Polly
         /// <param name="timeoutProvider">A function to provide the timeout for this execution.</param>
         /// <param name="timeoutStrategy">The timeout strategy.</param>
         /// <param name="onTimeout">An action to call on timeout, passing the execution context, the timeout applied, and a <see cref="Task" /> capturing the abandoned, timed-out action.
-        /// <remarks>The Task parameter will be null if the executed action responded co-operatively to cancellation before the policy timed it out.</remarks></param>
+        /// <remarks>The Task parameter will be null if the executed action responded cooperatively to cancellation before the policy timed it out.</remarks></param>
         /// <returns>The policy instance.</returns>
-        /// <exception cref="System.ArgumentNullException">timeoutProvider</exception>
-        /// <exception cref="System.ArgumentNullException">onTimeout</exception>
+        /// <exception cref="ArgumentNullException">timeoutProvider</exception>
+        /// <exception cref="ArgumentNullException">onTimeout</exception>
         public static TimeoutPolicy Timeout(Func<TimeSpan> timeoutProvider, TimeoutStrategy timeoutStrategy, Action<Context, TimeSpan, Task> onTimeout)
         {
             if (timeoutProvider == null) throw new ArgumentNullException(nameof(timeoutProvider));
@@ -280,10 +280,10 @@ namespace Polly
         /// <param name="timeoutProvider">A function to provide the timeout for this execution.</param>
         /// <param name="timeoutStrategy">The timeout strategy.</param>
         /// <param name="onTimeout">An action to call on timeout, passing the execution context, the timeout applied, the <see cref="Task" /> capturing the abandoned, timed-out action, and the captured <see cref="Exception"/>.
-        /// <remarks>The Task parameter will be null if the executed action responded co-operatively to cancellation before the policy timed it out.</remarks></param>
+        /// <remarks>The Task parameter will be null if the executed action responded cooperatively to cancellation before the policy timed it out.</remarks></param>
         /// <returns>The policy instance.</returns>
-        /// <exception cref="System.ArgumentNullException">timeoutProvider</exception>
-        /// <exception cref="System.ArgumentNullException">onTimeout</exception>
+        /// <exception cref="ArgumentNullException">timeoutProvider</exception>
+        /// <exception cref="ArgumentNullException">onTimeout</exception>
         public static TimeoutPolicy Timeout(Func<TimeSpan> timeoutProvider, TimeoutStrategy timeoutStrategy, Action<Context, TimeSpan, Task, Exception> onTimeout)
         {
             if (timeoutProvider == null) throw new ArgumentNullException(nameof(timeoutProvider));
@@ -295,7 +295,7 @@ namespace Polly
         /// Builds a <see cref="Policy"/> that will wait for a delegate to complete for a specified period of time. A <see cref="TimeoutRejectedException"/> will be thrown if the delegate does not complete within the configured timeout.
         /// </summary>
         /// <param name="timeoutProvider">A function to provide the timeout for this execution.</param>
-        /// <exception cref="System.ArgumentNullException">timeoutProvider</exception>
+        /// <exception cref="ArgumentNullException">timeoutProvider</exception>
         /// <returns>The policy instance.</returns>
         public static TimeoutPolicy Timeout(Func<Context, TimeSpan> timeoutProvider)
         {
@@ -309,7 +309,7 @@ namespace Polly
         /// <param name="timeoutProvider">A function to provide the timeout for this execution.</param>
         /// <param name="timeoutStrategy">The timeout strategy.</param>
         /// <returns>The policy instance.</returns>
-        /// <exception cref="System.ArgumentNullException">timeoutProvider</exception>
+        /// <exception cref="ArgumentNullException">timeoutProvider</exception>
         public static TimeoutPolicy Timeout(Func<Context, TimeSpan> timeoutProvider, TimeoutStrategy timeoutStrategy)
         {
             Action<Context, TimeSpan, Task, Exception> doNothing = (_, __, ___, ____) => { };
@@ -321,10 +321,10 @@ namespace Polly
         /// </summary>
         /// <param name="timeoutProvider">A function to provide the timeout for this execution.</param>
         /// <param name="onTimeout">An action to call on timeout, passing the execution context, the timeout applied, and a <see cref="Task" /> capturing the abandoned, timed-out action.
-        /// <remarks>The Task parameter will be null if the executed action responded co-operatively to cancellation before the policy timed it out.</remarks></param>
+        /// <remarks>The Task parameter will be null if the executed action responded cooperatively to cancellation before the policy timed it out.</remarks></param>
         /// <returns>The policy instance.</returns>
-        /// <exception cref="System.ArgumentNullException">timeoutProvider</exception>
-        /// <exception cref="System.ArgumentNullException">onTimeout</exception>
+        /// <exception cref="ArgumentNullException">timeoutProvider</exception>
+        /// <exception cref="ArgumentNullException">onTimeout</exception>
         public static TimeoutPolicy Timeout(Func<Context, TimeSpan> timeoutProvider, Action<Context, TimeSpan, Task> onTimeout)
             => Timeout(timeoutProvider, TimeoutStrategy.Optimistic, onTimeout);
 
@@ -333,10 +333,10 @@ namespace Polly
         /// </summary>
         /// <param name="timeoutProvider">A function to provide the timeout for this execution.</param>
         /// <param name="onTimeout">An action to call on timeout, passing the execution context, the timeout applied, the <see cref="Task" /> capturing the abandoned, timed-out action, and the captured <see cref="Exception"/>.
-        /// <remarks>The Task parameter will be null if the executed action responded co-operatively to cancellation before the policy timed it out.</remarks></param>
+        /// <remarks>The Task parameter will be null if the executed action responded cooperatively to cancellation before the policy timed it out.</remarks></param>
         /// <returns>The policy instance.</returns>
-        /// <exception cref="System.ArgumentNullException">timeoutProvider</exception>
-        /// <exception cref="System.ArgumentNullException">onTimeout</exception>
+        /// <exception cref="ArgumentNullException">timeoutProvider</exception>
+        /// <exception cref="ArgumentNullException">onTimeout</exception>
         public static TimeoutPolicy Timeout(Func<Context, TimeSpan> timeoutProvider, Action<Context, TimeSpan, Task, Exception> onTimeout)
             => Timeout(timeoutProvider, TimeoutStrategy.Optimistic, onTimeout);
 
@@ -346,10 +346,10 @@ namespace Polly
         /// <param name="timeoutProvider">A function to provide the timeout for this execution.</param>
         /// <param name="timeoutStrategy">The timeout strategy.</param>
         /// <param name="onTimeout">An action to call on timeout, passing the execution context, the timeout applied, and a <see cref="Task" /> capturing the abandoned, timed-out action.
-        /// <remarks>The Task parameter will be null if the executed action responded co-operatively to cancellation before the policy timed it out.</remarks></param>
+        /// <remarks>The Task parameter will be null if the executed action responded cooperatively to cancellation before the policy timed it out.</remarks></param>
         /// <returns>The policy instance.</returns>
-        /// <exception cref="System.ArgumentNullException">timeoutProvider</exception>
-        /// <exception cref="System.ArgumentNullException">onTimeout</exception>
+        /// <exception cref="ArgumentNullException">timeoutProvider</exception>
+        /// <exception cref="ArgumentNullException">onTimeout</exception>
         public static TimeoutPolicy Timeout(Func<Context, TimeSpan> timeoutProvider, TimeoutStrategy timeoutStrategy, Action<Context, TimeSpan, Task> onTimeout)
         {
             if (onTimeout == null) throw new ArgumentNullException(nameof(onTimeout));
@@ -363,10 +363,10 @@ namespace Polly
         /// <param name="timeoutProvider">A function to provide the timeout for this execution.</param>
         /// <param name="timeoutStrategy">The timeout strategy.</param>
         /// <param name="onTimeout">An action to call on timeout, passing the execution context, the timeout applied, the <see cref="Task" /> capturing the abandoned, timed-out action, and the captured <see cref="Exception"/>.
-        /// <remarks>The Task parameter will be null if the executed action responded co-operatively to cancellation before the policy timed it out.</remarks></param>
+        /// <remarks>The Task parameter will be null if the executed action responded cooperatively to cancellation before the policy timed it out.</remarks></param>
         /// <returns>The policy instance.</returns>
-        /// <exception cref="System.ArgumentNullException">timeoutProvider</exception>
-        /// <exception cref="System.ArgumentNullException">onTimeout</exception>
+        /// <exception cref="ArgumentNullException">timeoutProvider</exception>
+        /// <exception cref="ArgumentNullException">onTimeout</exception>
         public static TimeoutPolicy Timeout(
             Func<Context, TimeSpan> timeoutProvider, 
             TimeoutStrategy timeoutStrategy, 

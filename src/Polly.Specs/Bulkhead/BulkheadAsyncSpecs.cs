@@ -19,12 +19,12 @@ namespace Polly.Specs.Bulkhead
         #region Configuration
 
         [Fact]
-        public void Should_throw_when_maxparallelization_less_or_equal_to_zero()
+        public void Should_throw_when_maxParallelization_less_or_equal_to_zero()
         {
             Action policy = () => Policy
                 .BulkheadAsync(0, 1);
 
-            policy.ShouldThrow<ArgumentOutOfRangeException>().And
+            policy.Should().Throw<ArgumentOutOfRangeException>().And
                 .ParamName.Should().Be("maxParallelization");
         }
 
@@ -34,7 +34,7 @@ namespace Polly.Specs.Bulkhead
             Action policy = () => Policy
                 .BulkheadAsync(1, -1);
 
-            policy.ShouldThrow<ArgumentOutOfRangeException>().And
+            policy.Should().Throw<ArgumentOutOfRangeException>().And
                 .ParamName.Should().Be("maxQueuingActions");
         }
 
@@ -44,7 +44,7 @@ namespace Polly.Specs.Bulkhead
             Action policy = () => Policy
                 .BulkheadAsync(1, 0, null);
 
-            policy.ShouldThrow<ArgumentNullException>().And
+            policy.Should().Throw<ArgumentNullException>().And
                 .ParamName.Should().Be("onBulkheadRejectedAsync");
         }
 
@@ -75,7 +75,7 @@ namespace Polly.Specs.Bulkhead
 
                 Within(shimTimeSpan, () => bulkhead.BulkheadAvailableCount.Should().Be(0)); // Time for the other thread to kick up and take the bulkhead.
 
-                bulkhead.Awaiting(async b => await b.ExecuteAsync(ctx => TaskHelper.EmptyTask, contextPassedToExecute)).ShouldThrow<BulkheadRejectedException>();
+                bulkhead.Awaiting(async b => await b.ExecuteAsync(ctx => TaskHelper.EmptyTask, contextPassedToExecute)).Should().Throw<BulkheadRejectedException>();
 
                 cancellationSource.Cancel();
                 tcs.SetCanceled();
@@ -96,7 +96,7 @@ namespace Polly.Specs.Bulkhead
             bool cancelExecuting, string scenario)
         {
             if (totalActions < 0) throw new ArgumentOutOfRangeException(nameof(totalActions));
-            scenario = String.Format("MaxParallelization {0}; MaxQueuing {1}; TotalActions {2}; CancelQueuing {3}; CancelExecuting {4}: {5}", maxParallelization, maxQueuingActions, totalActions, cancelQueuing, cancelExecuting, scenario);
+            scenario = $"MaxParallelization {maxParallelization}; MaxQueuing {maxQueuingActions}; TotalActions {totalActions}; CancelQueuing {cancelQueuing}; CancelExecuting {cancelExecuting}: {scenario}";
 
             var bulkhead = Policy.BulkheadAsync(maxParallelization, maxQueuingActions);
 
@@ -217,7 +217,7 @@ namespace Polly.Specs.Bulkhead
                 }
             }
 
-            EnsureNoUnbservedTaskExceptions(tasks); 
+            EnsureNoUnobservedTaskExceptions(tasks); 
             testOutputHelper.WriteLine("Verifying all tasks completed...");
             Within(shimTimeSpan, () => tasks.All(t => t.IsCompleted).Should().BeTrue());
         }

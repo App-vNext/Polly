@@ -23,7 +23,7 @@ namespace Polly.Specs.Caching
 
             Action configure = () => new AsyncSerializingCacheProvider<StubSerialized>(null, stubObjectSerializer);
 
-            configure.ShouldThrow<ArgumentNullException>()
+            configure.Should().Throw<ArgumentNullException>()
                 .And.ParamName.Should().Be("wrappedCacheProvider");
         }
 
@@ -32,7 +32,7 @@ namespace Polly.Specs.Caching
         {
             Action configure = () => new AsyncSerializingCacheProvider<object>(new StubCacheProvider().AsyncFor<object>(), null);
 
-            configure.ShouldThrow<ArgumentNullException>()
+            configure.Should().Throw<ArgumentNullException>()
                 .And.ParamName.Should().Be("serializer");
         }
 
@@ -41,7 +41,7 @@ namespace Polly.Specs.Caching
         {
             Action configure = () => new StubCacheProvider().AsyncFor<object>().WithSerializer(null);
 
-            configure.ShouldThrow<ArgumentNullException>()
+            configure.Should().Throw<ArgumentNullException>()
                 .And.ParamName.Should().Be("serializer");
         }
 
@@ -242,7 +242,7 @@ namespace Polly.Specs.Caching
 
             Action configure = () => new AsyncSerializingCacheProvider<ResultPrimitive, StubSerialized<ResultPrimitive>>(null, stubTResultSerializer);
 
-            configure.ShouldThrow<ArgumentNullException>()
+            configure.Should().Throw<ArgumentNullException>()
                 .And.ParamName.Should().Be("wrappedCacheProvider");
         }
 
@@ -251,7 +251,7 @@ namespace Polly.Specs.Caching
         {
             Action configure = () => new AsyncSerializingCacheProvider<object, object>(new StubCacheProvider().AsyncFor<object>(), null);
 
-            configure.ShouldThrow<ArgumentNullException>()
+            configure.Should().Throw<ArgumentNullException>()
                 .And.ParamName.Should().Be("serializer");
         }
 
@@ -260,7 +260,7 @@ namespace Polly.Specs.Caching
         {
             Action configure = () => new StubCacheProvider().AsyncFor<object>().WithSerializer<object, object>(null);
 
-            configure.ShouldThrow<ArgumentNullException>()
+            configure.Should().Throw<ArgumentNullException>()
                 .And.ParamName.Should().Be("serializer");
         }
 

@@ -22,10 +22,10 @@ namespace Polly
         #region Hide object members
 
         /// <summary>
-        /// Returns a <see cref="System.String" /> that represents this instance.
+        /// Returns a <see cref="String" /> that represents this instance.
         /// </summary>
         /// <returns>
-        /// A <see cref="System.String" /> that represents this instance.
+        /// A <see cref="String" /> that represents this instance.
         /// </returns>
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override string ToString()
@@ -34,11 +34,11 @@ namespace Polly
         }
 
         /// <summary>
-        /// Determines whether the specified <see cref="System.Object" /> is equal to this instance.
+        /// Determines whether the specified <see cref="Object" /> is equal to this instance.
         /// </summary>
-        /// <param name="obj">The <see cref="System.Object" /> to compare with this instance.</param>
+        /// <param name="obj">The <see cref="Object" /> to compare with this instance.</param>
         /// <returns>
-        ///   <c>true</c> if the specified <see cref="System.Object" /> is equal to this instance; otherwise, <c>false</c>.
+        ///   <c>true</c> if the specified <see cref="Object" /> is equal to this instance; otherwise, <c>false</c>.
         /// </returns>
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj)
@@ -85,7 +85,7 @@ namespace Polly
         }
 
         internal PolicyBuilder(Func<TResult, bool> resultPredicate) : this()
-            => this.OrResult(resultPredicate);
+            => OrResult(resultPredicate);
 
         internal PolicyBuilder(ExceptionPredicate predicate) : this()
             => ExceptionPredicates.Add(predicate);
@@ -107,20 +107,20 @@ namespace Polly
         #region Hide object members
 
         /// <summary>
-        /// Returns a <see cref="System.String" /> that represents this instance.
+        /// Returns a <see cref="String" /> that represents this instance.
         /// </summary>
         /// <returns>
-        /// A <see cref="System.String" /> that represents this instance.
+        /// A <see cref="String" /> that represents this instance.
         /// </returns>
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override string ToString() => base.ToString(); 
 
         /// <summary>
-        /// Determines whether the specified <see cref="System.Object" /> is equal to this instance.
+        /// Determines whether the specified <see cref="Object" /> is equal to this instance.
         /// </summary>
-        /// <param name="obj">The <see cref="System.Object" /> to compare with this instance.</param>
+        /// <param name="obj">The <see cref="Object" /> to compare with this instance.</param>
         /// <returns>
-        ///   <c>true</c> if the specified <see cref="System.Object" /> is equal to this instance; otherwise, <c>false</c>.
+        ///   <c>true</c> if the specified <see cref="Object" /> is equal to this instance; otherwise, <c>false</c>.
         /// </returns>
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => base.Equals(obj);

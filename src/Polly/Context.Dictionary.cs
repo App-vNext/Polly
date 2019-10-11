@@ -13,7 +13,7 @@ namespace Polly
         // For an individual execution through a policy or policywrap, it is expected that all execution steps (for example executing the user delegate, invoking policy-activity delegates such as onRetry, onBreak, onTimeout etc) execute sequentially.  
         // Therefore, this class is intentionally not constructed to be safe for concurrent access from multiple threads.
 
-        private Dictionary<string, object> wrappedDictionary = null;
+        private Dictionary<string, object> wrappedDictionary;
 
         private Dictionary<string, object> WrappedDictionary => wrappedDictionary ?? (wrappedDictionary = new Dictionary<string, object>());
 

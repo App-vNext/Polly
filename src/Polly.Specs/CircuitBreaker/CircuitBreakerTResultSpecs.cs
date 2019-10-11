@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
+using FluentAssertions.Extensions;
 using Polly.CircuitBreaker;
 using Polly.Specs.Helpers;
 using Polly.Utilities;
@@ -12,7 +13,7 @@ using Scenario = Polly.Specs.Helpers.PolicyTResultExtensions.ResultAndOrCancella
 
 namespace Polly.Specs.CircuitBreaker
 {
-    [Collection(Polly.Specs.Helpers.Constants.SystemClockDependentTestCollection)]
+    [Collection(Constants.SystemClockDependentTestCollection)]
     public class CircuitBreakerTResultSpecs : IDisposable
     {
         #region Configuration tests
@@ -35,7 +36,7 @@ namespace Polly.Specs.CircuitBreaker
                                      .HandleResult(ResultPrimitive.Fault)
                                      .CircuitBreaker(0, TimeSpan.FromSeconds(10));
 
-            action.ShouldThrow<ArgumentOutOfRangeException>()
+            action.Should().Throw<ArgumentOutOfRangeException>()
                   .And.ParamName.Should()
                   .Be("handledEventsAllowedBeforeBreaking");
         }
@@ -47,7 +48,7 @@ namespace Polly.Specs.CircuitBreaker
                                      .HandleResult(ResultPrimitive.Fault)
                                      .CircuitBreaker(1, -TimeSpan.FromSeconds(1));
 
-            action.ShouldThrow<ArgumentOutOfRangeException>()
+            action.Should().Throw<ArgumentOutOfRangeException>()
                 .And.ParamName.Should()
                 .Be("durationOfBreak");
         }
@@ -58,7 +59,7 @@ namespace Polly.Specs.CircuitBreaker
             Action action = () => Policy
                                      .HandleResult(ResultPrimitive.Fault)
                                      .CircuitBreaker(1, TimeSpan.Zero);
-            action.ShouldNotThrow();
+            action.Should().NotThrow();
         }
 
         [Fact]
@@ -113,7 +114,7 @@ namespace Polly.Specs.CircuitBreaker
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
             breaker.Invoking(b => b.RaiseResultSequence(ResultPrimitive.Fault))
-                .ShouldThrow<BrokenCircuitException<ResultPrimitive>>()
+                .Should().Throw<BrokenCircuitException<ResultPrimitive>>()
                 .WithMessage("The circuit is now open and is not allowing calls.")
                 .Where(e => e.Result == ResultPrimitive.Fault);
 
@@ -138,7 +139,7 @@ namespace Polly.Specs.CircuitBreaker
 
             // 2 exception raised, circuit is now open
             breaker.Invoking(b => b.RaiseResultSequence(ResultPrimitive.Fault))
-                .ShouldThrow<BrokenCircuitException<ResultPrimitive>>()
+                .Should().Throw<BrokenCircuitException<ResultPrimitive>>()
                 .WithMessage("The circuit is now open and is not allowing calls.")
                 .Where(e => e.Result == ResultPrimitive.FaultAgain);
             breaker.CircuitState.Should().Be(CircuitState.Open);
@@ -160,7 +161,7 @@ namespace Polly.Specs.CircuitBreaker
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
             breaker.Invoking(b => b.RaiseResultSequence(new ResultClass(ResultPrimitive.Good)))
-                .ShouldThrow<BrokenCircuitException<ResultClass>>()
+                .Should().Throw<BrokenCircuitException<ResultClass>>()
                 .WithMessage("The circuit is now open and is not allowing calls.")
                 .Where(e => e.Result.ResultCode == ResultPrimitive.Fault);
 
@@ -275,7 +276,7 @@ namespace Polly.Specs.CircuitBreaker
 
             // 2 exception raised, circuit is now open
             breaker.Invoking(b => b.RaiseResultSequence(ResultPrimitive.Fault))
-                .ShouldThrow<BrokenCircuitException>();
+                .Should().Throw<BrokenCircuitException>();
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
             SystemClock.UtcNow = () => time.Add(durationOfBreak);
@@ -308,7 +309,7 @@ namespace Polly.Specs.CircuitBreaker
 
             // 2 exception raised, circuit is now open
             breaker.Invoking(b => b.RaiseResultSequence(ResultPrimitive.Fault))
-                  .ShouldThrow<BrokenCircuitException>();
+                  .Should().Throw<BrokenCircuitException>();
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
             SystemClock.UtcNow = () => time.Add(durationOfBreak);
@@ -321,7 +322,7 @@ namespace Polly.Specs.CircuitBreaker
                   .Should().Be(ResultPrimitive.Fault);
             breaker.CircuitState.Should().Be(CircuitState.Open);
             breaker.Invoking(b => b.RaiseResultSequence(ResultPrimitive.Fault))
-                  .ShouldThrow<BrokenCircuitException>();
+                  .Should().Throw<BrokenCircuitException>();
 
         }
 
@@ -347,7 +348,7 @@ namespace Polly.Specs.CircuitBreaker
 
             // 2 exception raised, circuit is now open
             breaker.Invoking(b => b.RaiseResultSequence(ResultPrimitive.Fault))
-                  .ShouldThrow<BrokenCircuitException>();
+                  .Should().Throw<BrokenCircuitException>();
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
             SystemClock.UtcNow = () => time.Add(durationOfBreak);
@@ -368,7 +369,7 @@ namespace Polly.Specs.CircuitBreaker
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
             breaker.Invoking(b => b.RaiseResultSequence(ResultPrimitive.Fault))
-                  .ShouldThrow<BrokenCircuitException>();
+                  .Should().Throw<BrokenCircuitException>();
             breaker.CircuitState.Should().Be(CircuitState.Open);
         }
 
@@ -395,11 +396,11 @@ namespace Polly.Specs.CircuitBreaker
 
 
             // OnActionPreExecute() should permit first execution.
-            breaker._breakerController.Invoking(c => c.OnActionPreExecute()).ShouldNotThrow();
+            breaker._breakerController.Invoking(c => c.OnActionPreExecute()).Should().NotThrow();
             breaker.CircuitState.Should().Be(CircuitState.HalfOpen);
 
             // OnActionPreExecute() should reject a second execution.
-            breaker._breakerController.Invoking(c => c.OnActionPreExecute()).ShouldThrow<BrokenCircuitException>();
+            breaker._breakerController.Invoking(c => c.OnActionPreExecute()).Should().Throw<BrokenCircuitException>();
             breaker.CircuitState.Should().Be(CircuitState.HalfOpen);
         }
 
@@ -426,11 +427,11 @@ namespace Polly.Specs.CircuitBreaker
 
 
             // OnActionPreExecute() should permit first execution.
-            breaker._breakerController.Invoking(c => c.OnActionPreExecute()).ShouldNotThrow();
+            breaker._breakerController.Invoking(c => c.OnActionPreExecute()).Should().NotThrow();
             breaker.CircuitState.Should().Be(CircuitState.HalfOpen);
 
             // OnActionPreExecute() should reject a second execution.
-            breaker._breakerController.Invoking(c => c.OnActionPreExecute()).ShouldThrow<BrokenCircuitException>();
+            breaker._breakerController.Invoking(c => c.OnActionPreExecute()).Should().Throw<BrokenCircuitException>();
             breaker.CircuitState.Should().Be(CircuitState.HalfOpen);
 
             // Allow another time window to pass (breaker should still be HalfOpen).
@@ -438,7 +439,7 @@ namespace Polly.Specs.CircuitBreaker
             breaker.CircuitState.Should().Be(CircuitState.HalfOpen);
 
             // OnActionPreExecute() should now permit another trial execution.
-            breaker._breakerController.Invoking(c => c.OnActionPreExecute()).ShouldNotThrow();
+            breaker._breakerController.Invoking(c => c.OnActionPreExecute()).Should().NotThrow();
             breaker.CircuitState.Should().Be(CircuitState.HalfOpen);
         }
 
@@ -491,7 +492,7 @@ namespace Polly.Specs.CircuitBreaker
                     firstExecutionActive = false;
 
                     return ResultPrimitive.Good;
-                })).ShouldNotThrow();
+                })).Should().NotThrow();
             }, TaskCreationOptions.LongRunning);
 
             // Attempt a second execution, signalled by the first execution to ensure they overlap: we should be able to verify it doesn't execute, and is rejected by a breaker in a HalfOpen state.
@@ -591,7 +592,7 @@ namespace Polly.Specs.CircuitBreaker
                     firstExecutionActive = false;
 
                     return ResultPrimitive.Good;
-                })).ShouldNotThrow();
+                })).Should().NotThrow();
             }, TaskCreationOptions.LongRunning);
 
             // Attempt a second execution, signalled by the first execution to ensure they overlap; start it one breakDuration later.  We should be able to verify it does execute, though the breaker is still in a HalfOpen state.
@@ -666,7 +667,7 @@ namespace Polly.Specs.CircuitBreaker
             // circuit manually broken: execution should be blocked; even non-fault-returning executions should not reset circuit
             bool delegateExecutedWhenBroken = false;
             breaker.Invoking(x => x.Execute(() => { delegateExecutedWhenBroken = true; return ResultPrimitive.Good;}))
-                .ShouldThrow<IsolatedCircuitException>();
+                .Should().Throw<IsolatedCircuitException>();
             breaker.CircuitState.Should().Be(CircuitState.Isolated);
             breaker.LastException.Should().BeOfType<IsolatedCircuitException>();
             delegateExecutedWhenBroken.Should().BeFalse();
@@ -694,7 +695,7 @@ namespace Polly.Specs.CircuitBreaker
 
             bool delegateExecutedWhenBroken = false;
             breaker.Invoking(x => x.Execute(() => { delegateExecutedWhenBroken = true; return ResultPrimitive.Good; }))
-                .ShouldThrow<IsolatedCircuitException>();
+                .Should().Throw<IsolatedCircuitException>();
             delegateExecutedWhenBroken.Should().BeFalse();
         }
 
@@ -714,11 +715,11 @@ namespace Polly.Specs.CircuitBreaker
             breaker.Isolate();
             breaker.CircuitState.Should().Be(CircuitState.Isolated);
             breaker.Invoking(x => x.Execute(() => ResultPrimitive.Good))
-                .ShouldThrow<IsolatedCircuitException>();
+                .Should().Throw<IsolatedCircuitException>();
 
             breaker.Reset();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
-            breaker.Invoking(x => x.Execute(() => ResultPrimitive.Good)).ShouldNotThrow();
+            breaker.Invoking(x => x.Execute(() => ResultPrimitive.Good)).Should().NotThrow();
         }
 
         [Fact]
@@ -743,14 +744,14 @@ namespace Polly.Specs.CircuitBreaker
 
             // 2 exception raised, circuit is now open
             breaker.Invoking(x => x.Execute(() => ResultPrimitive.Good))
-                  .ShouldThrow<BrokenCircuitException>();
+                  .Should().Throw<BrokenCircuitException>();
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
             // reset circuit, with no time having passed
             breaker.Reset();
             SystemClock.UtcNow().Should().Be(time);
             breaker.CircuitState.Should().Be(CircuitState.Closed);
-            breaker.Invoking(x => x.Execute(() => ResultPrimitive.Good)).ShouldNotThrow();
+            breaker.Invoking(x => x.Execute(() => ResultPrimitive.Good)).Should().NotThrow();
         }
 
         #endregion
@@ -837,7 +838,7 @@ namespace Polly.Specs.CircuitBreaker
 
             // call through circuit when already broken - should not retrigger onBreak 
             breaker.Invoking(x => x.Execute(() => ResultPrimitive.Good))
-                  .ShouldThrow<BrokenCircuitException>();
+                  .Should().Throw<BrokenCircuitException>();
 
             breaker.CircuitState.Should().Be(CircuitState.Open);
             onBreakCalled.Should().Be(1);
@@ -929,7 +930,7 @@ namespace Polly.Specs.CircuitBreaker
 
             // 2 exception raised, circuit is now open
             breaker.Invoking(x => x.Execute(() => ResultPrimitive.Good))
-                  .ShouldThrow<BrokenCircuitException>();
+                  .Should().Throw<BrokenCircuitException>();
             breaker.CircuitState.Should().Be(CircuitState.Open);
             onBreakCalled.Should().Be(1);
 
@@ -999,7 +1000,7 @@ namespace Polly.Specs.CircuitBreaker
 
             // 2 exception raised, circuit is now open
             breaker.Invoking(x => x.Execute(() => ResultPrimitive.Good))
-                  .ShouldThrow<BrokenCircuitException>();
+                  .Should().Throw<BrokenCircuitException>();
             breaker.CircuitState.Should().Be(CircuitState.Open);
             onBreakCalled.Should().Be(1);
 
@@ -1045,7 +1046,7 @@ namespace Polly.Specs.CircuitBreaker
 
             // 2 exception raised, circuit is now open
             breaker.Invoking(x => x.Execute(() => ResultPrimitive.Good))
-                  .ShouldThrow<BrokenCircuitException>();
+                  .Should().Throw<BrokenCircuitException>();
             breaker.CircuitState.Should().Be(CircuitState.Open);
             onBreakCalled.Should().Be(1);
 
@@ -1078,14 +1079,14 @@ namespace Polly.Specs.CircuitBreaker
 
             breaker.CircuitState.Should().Be(CircuitState.Isolated);
             breaker.Invoking(x => x.Execute(() => ResultPrimitive.Good))
-                .ShouldThrow<IsolatedCircuitException>();
+                .Should().Throw<IsolatedCircuitException>();
 
             onResetCalled.Should().Be(0);
             breaker.Reset();
             onResetCalled.Should().Be(1);
 
             breaker.CircuitState.Should().Be(CircuitState.Closed);
-            breaker.Invoking(x => x.Execute(() => ResultPrimitive.Good)).ShouldNotThrow();
+            breaker.Invoking(x => x.Execute(() => ResultPrimitive.Good)).Should().NotThrow();
         }
 
         #region Tests of supplied parameters to onBreak delegate
@@ -1370,7 +1371,7 @@ namespace Polly.Specs.CircuitBreaker
         #region Cancellation support
 
         [Fact]
-        public void Should_execute_action_when_non_faulting_and_cancellationtoken_not_cancelled()
+        public void Should_execute_action_when_non_faulting_and_cancellationToken_not_cancelled()
         {
             var durationOfBreak = TimeSpan.FromMinutes(1);
             CircuitBreakerPolicy<ResultPrimitive> breaker = Policy
@@ -1378,7 +1379,6 @@ namespace Polly.Specs.CircuitBreaker
                             .CircuitBreaker(2, durationOfBreak);
 
             CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-            CancellationToken cancellationToken = cancellationTokenSource.Token;
 
             int attemptsInvoked = 0;
             Action onExecute = () => attemptsInvoked++;
@@ -1396,7 +1396,7 @@ namespace Polly.Specs.CircuitBreaker
         }
 
         [Fact]
-        public void Should_not_execute_action_when_cancellationtoken_cancelled_before_execute()
+        public void Should_not_execute_action_when_cancellationToken_cancelled_before_execute()
         {
             var durationOfBreak = TimeSpan.FromMinutes(1);
             CircuitBreakerPolicy<ResultPrimitive> breaker = Policy
@@ -1420,14 +1420,14 @@ namespace Polly.Specs.CircuitBreaker
                ResultPrimitive.Fault,
                ResultPrimitive.Fault,
                ResultPrimitive.Good))
-            .ShouldThrow<OperationCanceledException>()
+            .Should().Throw<OperationCanceledException>()
             .And.CancellationToken.Should().Be(cancellationToken);
 
             attemptsInvoked.Should().Be(0);
         }
 
         [Fact]
-        public void Should_report_cancellation_during_otherwise_non_faulting_action_execution_when_user_delegate_observes_cancellationtoken()
+        public void Should_report_cancellation_during_otherwise_non_faulting_action_execution_when_user_delegate_observes_cancellationToken()
         {
             var durationOfBreak = TimeSpan.FromMinutes(1);
             CircuitBreakerPolicy<ResultPrimitive> breaker = Policy
@@ -1449,14 +1449,14 @@ namespace Polly.Specs.CircuitBreaker
             breaker.Invoking(x => x.RaiseResultSequenceAndOrCancellation(scenario, cancellationTokenSource, onExecute,
                    ResultPrimitive.Good,
                    ResultPrimitive.Good))
-                .ShouldThrow<OperationCanceledException>()
+                .Should().Throw<OperationCanceledException>()
                 .And.CancellationToken.Should().Be(cancellationToken);
 
             attemptsInvoked.Should().Be(1);
         }
 
         [Fact]
-        public void Should_report_cancellation_during_faulting_action_execution_when_user_delegate_observes_cancellationtoken()
+        public void Should_report_cancellation_during_faulting_action_execution_when_user_delegate_observes_cancellationToken()
         {
             var durationOfBreak = TimeSpan.FromMinutes(1);
             CircuitBreakerPolicy<ResultPrimitive> breaker = Policy
@@ -1478,7 +1478,7 @@ namespace Polly.Specs.CircuitBreaker
             breaker.Invoking(x => x.RaiseResultSequenceAndOrCancellation(scenario, cancellationTokenSource, onExecute,
                    ResultPrimitive.Fault,
                    ResultPrimitive.Good))
-                .ShouldThrow<OperationCanceledException>()
+                .Should().Throw<OperationCanceledException>()
                 .And.CancellationToken.Should().Be(cancellationToken);
 
             attemptsInvoked.Should().Be(1);
@@ -1493,7 +1493,6 @@ namespace Polly.Specs.CircuitBreaker
                             .CircuitBreaker(2, durationOfBreak);
 
             CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-            CancellationToken cancellationToken = cancellationTokenSource.Token;
 
             int attemptsInvoked = 0;
             Action onExecute = () => attemptsInvoked++;
@@ -1521,7 +1520,7 @@ namespace Polly.Specs.CircuitBreaker
                 .Should().Be(ResultPrimitive.Fault);
 
             breaker.Invoking(x => x.RaiseResultSequence(ResultPrimitive.Fault))
-                .ShouldThrow<BrokenCircuitException>()
+                .Should().Throw<BrokenCircuitException>()
                 .WithMessage("The circuit is now open and is not allowing calls.");
             // Circuit is now broken.
 
@@ -1542,14 +1541,14 @@ namespace Polly.Specs.CircuitBreaker
             breaker.Invoking(x => x.RaiseResultSequenceAndOrCancellation(scenario, cancellationTokenSource, onExecute,
                    ResultPrimitive.Fault,
                    ResultPrimitive.Good))
-                .ShouldThrow<OperationCanceledException>()
+                .Should().Throw<OperationCanceledException>()
                 .And.CancellationToken.Should().Be(cancellationToken);
 
             attemptsInvoked.Should().Be(0);
         }
 
         [Fact]
-        public void Should_honour_different_cancellationtoken_captured_implicitly_by_action()
+        public void Should_honour_different_cancellationToken_captured_implicitly_by_action()
         {
             // Before CancellationToken support was built in to Polly, users of the library may have implicitly captured a CancellationToken and used it to cancel actions.  For backwards compatibility, Polly should not confuse these with its own CancellationToken; it should distinguish OperationCanceledExceptions thrown with different CancellationTokens.
 
@@ -1574,7 +1573,7 @@ namespace Polly.Specs.CircuitBreaker
                 implicitlyCapturedActionCancellationToken.ThrowIfCancellationRequested();
                 return ResultPrimitive.Good;
             }, policyCancellationToken))
-                .ShouldThrow<OperationCanceledException>()
+                .Should().Throw<OperationCanceledException>()
                 .And.CancellationToken.Should().Be(implicitlyCapturedActionCancellationToken);
 
             attemptsInvoked.Should().Be(1);

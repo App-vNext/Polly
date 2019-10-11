@@ -37,8 +37,7 @@ namespace Polly.CircuitBreaker
                 // Is only null during initialization of the current class
                 // as the variable is not set, before the base class calls
                 // current method from constructor.
-                if (_metrics != null)
-                    _metrics.Reset_NeedsLock();
+                _metrics?.Reset_NeedsLock();
 
                 ResetInternal_NeedsLock(context);
             }

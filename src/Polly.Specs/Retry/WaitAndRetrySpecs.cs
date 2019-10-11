@@ -5,13 +5,14 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
+using FluentAssertions.Extensions;
 using Polly.Specs.Helpers;
 using Polly.Utilities;
 using Xunit;
 
 namespace Polly.Specs.Retry
 {
-    [Collection(Polly.Specs.Helpers.Constants.SystemClockDependentTestCollection)]
+    [Collection(Constants.SystemClockDependentTestCollection)]
     public class WaitAndRetrySpecs : IDisposable
     {
         public WaitAndRetrySpecs()
@@ -29,7 +30,7 @@ namespace Polly.Specs.Retry
                                       .Handle<DivideByZeroException>()
                                       .WaitAndRetry(null, onRetry);
 
-            policy.ShouldThrow<ArgumentNullException>().And
+            policy.Should().Throw<ArgumentNullException>().And
                   .ParamName.Should().Be("sleepDurations");
         }
 
@@ -42,7 +43,7 @@ namespace Polly.Specs.Retry
                                       .Handle<DivideByZeroException>()
                                       .WaitAndRetry(null, onRetry);
 
-            policy.ShouldThrow<ArgumentNullException>().And
+            policy.Should().Throw<ArgumentNullException>().And
                   .ParamName.Should().Be("sleepDurations");
         }
 
@@ -55,7 +56,7 @@ namespace Polly.Specs.Retry
                                       .Handle<DivideByZeroException>()
                                       .WaitAndRetry(null, onRetry);
 
-            policy.ShouldThrow<ArgumentNullException>().And
+            policy.Should().Throw<ArgumentNullException>().And
                   .ParamName.Should().Be("sleepDurations");
         }
 
@@ -68,7 +69,7 @@ namespace Polly.Specs.Retry
                                       .Handle<DivideByZeroException>()
                                       .WaitAndRetry(Enumerable.Empty<TimeSpan>(), nullOnRetry);
 
-            policy.ShouldThrow<ArgumentNullException>().And
+            policy.Should().Throw<ArgumentNullException>().And
                   .ParamName.Should().Be("onRetry");
         }
 
@@ -81,7 +82,7 @@ namespace Polly.Specs.Retry
                                       .Handle<DivideByZeroException>()
                                       .WaitAndRetry(Enumerable.Empty<TimeSpan>(), nullOnRetry);
 
-            policy.ShouldThrow<ArgumentNullException>().And
+            policy.Should().Throw<ArgumentNullException>().And
                   .ParamName.Should().Be("onRetry");
         }
 
@@ -94,7 +95,7 @@ namespace Polly.Specs.Retry
                                       .Handle<DivideByZeroException>()
                                       .WaitAndRetry(Enumerable.Empty<TimeSpan>(), nullOnRetry);
 
-            policy.ShouldThrow<ArgumentNullException>().And
+            policy.Should().Throw<ArgumentNullException>().And
                   .ParamName.Should().Be("onRetry");
         }
 
@@ -111,7 +112,7 @@ namespace Polly.Specs.Retry
                 });
 
             policy.Invoking(x => x.RaiseException<DivideByZeroException>(3))
-                  .ShouldNotThrow();
+                  .Should().NotThrow();
         }
 
         [Fact]
@@ -128,7 +129,7 @@ namespace Polly.Specs.Retry
                 });
 
             policy.Invoking(x => x.RaiseException<ArgumentException>(3))
-                  .ShouldNotThrow();
+                  .Should().NotThrow();
         }
 
         [Fact]
@@ -144,7 +145,7 @@ namespace Polly.Specs.Retry
                 });
 
             policy.Invoking(x => x.RaiseException<DivideByZeroException>(2))
-                  .ShouldNotThrow();
+                  .Should().NotThrow();
         }
 
         [Fact]
@@ -161,7 +162,7 @@ namespace Polly.Specs.Retry
                 });
 
             policy.Invoking(x => x.RaiseException<ArgumentException>(2))
-                  .ShouldNotThrow();
+                  .Should().NotThrow();
         }
 
         [Fact]
@@ -177,7 +178,7 @@ namespace Polly.Specs.Retry
                 });
 
             policy.Invoking(x => x.RaiseException<DivideByZeroException>(3 + 1))
-                  .ShouldThrow<DivideByZeroException>();
+                  .Should().Throw<DivideByZeroException>();
         }
 
         [Fact]
@@ -194,7 +195,7 @@ namespace Polly.Specs.Retry
                 });
 
             policy.Invoking(x => x.RaiseException<ArgumentException>(3 + 1))
-                  .ShouldThrow<ArgumentException>();
+                  .Should().Throw<ArgumentException>();
         }
 
         [Fact]
@@ -205,7 +206,7 @@ namespace Polly.Specs.Retry
                 .WaitAndRetry(Enumerable.Empty<TimeSpan>());
 
             policy.Invoking(x => x.RaiseException<NullReferenceException>())
-                  .ShouldThrow<NullReferenceException>();
+                  .Should().Throw<NullReferenceException>();
         }
 
         [Fact]
@@ -216,7 +217,7 @@ namespace Polly.Specs.Retry
                 .WaitAndRetryAsync(Enumerable.Empty<TimeSpan>());
 
             policy.Awaiting(async x => await x.RaiseExceptionAsync<NullReferenceException>())
-                  .ShouldThrow<NullReferenceException>();
+                  .Should().Throw<NullReferenceException>();
         }
 
         [Fact]
@@ -228,7 +229,7 @@ namespace Polly.Specs.Retry
                 .WaitAndRetry(Enumerable.Empty<TimeSpan>());
 
             policy.Invoking(x => x.RaiseException<NullReferenceException>())
-                  .ShouldThrow<NullReferenceException>();
+                  .Should().Throw<NullReferenceException>();
         }
 
         [Fact]
@@ -240,7 +241,7 @@ namespace Polly.Specs.Retry
                 .WaitAndRetryAsync(Enumerable.Empty<TimeSpan>());
 
             policy.Awaiting(async x => await x.RaiseExceptionAsync<NullReferenceException>())
-                  .ShouldThrow<NullReferenceException>();
+                  .Should().Throw<NullReferenceException>();
         }
 
         [Fact]
@@ -251,7 +252,7 @@ namespace Polly.Specs.Retry
                 .WaitAndRetry(Enumerable.Empty<TimeSpan>());
 
             policy.Invoking(x => x.RaiseException<DivideByZeroException>())
-                  .ShouldThrow<DivideByZeroException>();
+                  .Should().Throw<DivideByZeroException>();
         }
 
         [Fact]
@@ -263,7 +264,7 @@ namespace Polly.Specs.Retry
                 .WaitAndRetry(Enumerable.Empty<TimeSpan>());
 
             policy.Invoking(x => x.RaiseException<ArgumentException>())
-                  .ShouldThrow<ArgumentException>();
+                  .Should().Throw<ArgumentException>();
         }
 
         [Fact]
@@ -277,7 +278,7 @@ namespace Polly.Specs.Retry
                 });
 
             policy.Invoking(x => x.RaiseException<DivideByZeroException>())
-                  .ShouldNotThrow();
+                  .Should().NotThrow();
         }
 
         [Fact]
@@ -291,7 +292,7 @@ namespace Polly.Specs.Retry
                 });
 
             policy.Awaiting(async x => await x.RaiseExceptionAsync<DivideByZeroException>())
-                  .ShouldNotThrow();
+                  .Should().NotThrow();
         }
 
         [Fact]
@@ -306,7 +307,7 @@ namespace Polly.Specs.Retry
                 });
 
             policy.Invoking(x => x.RaiseException<ArgumentException>())
-                  .ShouldNotThrow();
+                  .Should().NotThrow();
         }
 
         [Fact]
@@ -321,7 +322,7 @@ namespace Polly.Specs.Retry
                 });
 
             policy.Awaiting(async x => await x.RaiseExceptionAsync<ArgumentException>())
-                  .ShouldNotThrow();
+                  .Should().NotThrow();
         }
 
         [Fact]
@@ -363,7 +364,7 @@ namespace Polly.Specs.Retry
             SystemClock.Sleep = (span, ct) => totalTimeSlept += span.Seconds;
 
             policy.Invoking(x => x.RaiseException<DivideByZeroException>(3 + 1))
-                  .ShouldThrow<DivideByZeroException>();
+                  .Should().Throw<DivideByZeroException>();
 
             totalTimeSlept.Should()
                           .Be(1 + 2 + 3);
@@ -403,7 +404,7 @@ namespace Polly.Specs.Retry
             SystemClock.Sleep = (span, ct) => totalTimeSlept += span.Seconds;
 
             policy.Invoking(x => x.RaiseException<NullReferenceException>())
-                  .ShouldThrow<NullReferenceException>();
+                  .Should().Throw<NullReferenceException>();
 
             totalTimeSlept.Should()
                           .Be(0);
@@ -490,7 +491,7 @@ namespace Polly.Specs.Retry
                 .WaitAndRetry(Enumerable.Empty<TimeSpan>(), (exception, _) => retryExceptions.Add(exception));
 
             policy.Invoking(x => x.RaiseException<ArgumentException>())
-                  .ShouldThrow<ArgumentException>();
+                  .Should().Throw<ArgumentException>();
 
             retryExceptions.Should()
                        .BeEmpty();
@@ -507,10 +508,10 @@ namespace Polly.Specs.Retry
                 });
 
             policy.Invoking(x => x.RaiseException<DivideByZeroException>())
-                  .ShouldNotThrow();
+                  .Should().NotThrow();
 
             policy.Invoking(x => x.RaiseException<DivideByZeroException>())
-                  .ShouldNotThrow();
+                  .Should().NotThrow();
         }
 
         [Fact]
@@ -571,7 +572,7 @@ namespace Polly.Specs.Retry
                                       .Handle<DivideByZeroException>()
                                       .WaitAndRetry(-1, _ => new TimeSpan(), onRetry);
                                            
-            policy.ShouldThrow<ArgumentOutOfRangeException>().And                  
+            policy.Should().Throw<ArgumentOutOfRangeException>().And                  
                   .ParamName.Should().Be("retryCount");
         }
 
@@ -584,7 +585,7 @@ namespace Polly.Specs.Retry
                                       .Handle<DivideByZeroException>()
                                       .WaitAndRetry(-1, _ => new TimeSpan(), onRetry);
 
-            policy.ShouldThrow<ArgumentOutOfRangeException>().And
+            policy.Should().Throw<ArgumentOutOfRangeException>().And
                   .ParamName.Should().Be("retryCount");
         }
 
@@ -597,7 +598,7 @@ namespace Polly.Specs.Retry
                                       .Handle<DivideByZeroException>()
                                       .WaitAndRetry(-1, _ => new TimeSpan(), onRetry);
 
-            policy.ShouldThrow<ArgumentOutOfRangeException>().And
+            policy.Should().Throw<ArgumentOutOfRangeException>().And
                   .ParamName.Should().Be("retryCount");
         }
 
@@ -610,7 +611,7 @@ namespace Polly.Specs.Retry
                                       .Handle<DivideByZeroException>()
                                       .WaitAndRetry(1, null, onRetry);
 
-            policy.ShouldThrow<ArgumentNullException>().And
+            policy.Should().Throw<ArgumentNullException>().And
                   .ParamName.Should().Be("sleepDurationProvider");
         }
 
@@ -623,7 +624,7 @@ namespace Polly.Specs.Retry
                                       .Handle<DivideByZeroException>()
                                       .WaitAndRetry(1, (Func<int, TimeSpan>) null, onRetry);
 
-            policy.ShouldThrow<ArgumentNullException>().And
+            policy.Should().Throw<ArgumentNullException>().And
                   .ParamName.Should().Be("sleepDurationProvider");
         }
 
@@ -636,7 +637,7 @@ namespace Polly.Specs.Retry
                                       .Handle<DivideByZeroException>()
                                       .WaitAndRetry(1, (Func<int, TimeSpan>)null, onRetry);
 
-            policy.ShouldThrow<ArgumentNullException>().And
+            policy.Should().Throw<ArgumentNullException>().And
                   .ParamName.Should().Be("sleepDurationProvider");
         }
 
@@ -649,7 +650,7 @@ namespace Polly.Specs.Retry
                                       .Handle<DivideByZeroException>()
                                       .WaitAndRetry(1, _ => new TimeSpan(), nullOnRetry);
 
-            policy.ShouldThrow<ArgumentNullException>().And
+            policy.Should().Throw<ArgumentNullException>().And
                   .ParamName.Should().Be("onRetry");
         }
 
@@ -662,7 +663,7 @@ namespace Polly.Specs.Retry
                                       .Handle<DivideByZeroException>()
                                       .WaitAndRetry(1, _ => new TimeSpan(), nullOnRetry);
 
-            policy.ShouldThrow<ArgumentNullException>().And
+            policy.Should().Throw<ArgumentNullException>().And
                   .ParamName.Should().Be("onRetry");
         }
 
@@ -675,7 +676,7 @@ namespace Polly.Specs.Retry
                                       .Handle<DivideByZeroException>()
                                       .WaitAndRetry(1, _ => new TimeSpan(), nullOnRetry);
 
-            policy.ShouldThrow<ArgumentNullException>().And
+            policy.Should().Throw<ArgumentNullException>().And
                   .ParamName.Should().Be("onRetry");
         }
 
@@ -801,7 +802,7 @@ namespace Polly.Specs.Retry
                 .WaitAndRetry(0, retryAttempt => TimeSpan.FromSeconds(1), onRetry);
 
             policy.Invoking(x => x.RaiseException<DivideByZeroException>())
-                  .ShouldThrow<DivideByZeroException>();
+                  .Should().Throw<DivideByZeroException>();
 
             retryInvoked.Should().BeFalse();
         }
@@ -818,7 +819,7 @@ namespace Polly.Specs.Retry
                 .WaitAndRetry(0, retryAttempt => TimeSpan.FromSeconds(1), onRetry);
 
             policy.Invoking(x => x.RaiseException<DivideByZeroException>())
-                  .ShouldThrow<DivideByZeroException>();
+                  .Should().Throw<DivideByZeroException>();
 
             retryInvoked.Should().BeFalse();
         }
@@ -835,7 +836,7 @@ namespace Polly.Specs.Retry
                 .WaitAndRetry(0, retryAttempt => TimeSpan.FromSeconds(1), onRetry);
 
             policy.Invoking(x => x.RaiseException<DivideByZeroException>())
-                  .ShouldThrow<DivideByZeroException>();
+                  .Should().Throw<DivideByZeroException>();
 
             retryInvoked.Should().BeFalse();
         }
@@ -843,7 +844,7 @@ namespace Polly.Specs.Retry
         #region Sync cancellation tests
 
         [Fact]
-        public void Should_not_execute_action_when_cancellationtoken_cancelled_before_execute()
+        public void Should_not_execute_action_when_cancellationToken_cancelled_before_execute()
         {
             var policy = Policy
                 .Handle<DivideByZeroException>()
@@ -864,14 +865,14 @@ namespace Polly.Specs.Retry
             cancellationTokenSource.Cancel();
 
             policy.Invoking(x => x.RaiseExceptionAndOrCancellation<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
-                .ShouldThrow<OperationCanceledException>()
+                .Should().Throw<OperationCanceledException>()
                 .And.CancellationToken.Should().Be(cancellationToken);
 
             attemptsInvoked.Should().Be(0);
         }
 
         [Fact]
-        public void Should_report_cancellation_during_otherwise_non_faulting_action_execution_and_cancel_further_retries_when_user_delegate_observes_cancellationtoken()
+        public void Should_report_cancellation_during_otherwise_non_faulting_action_execution_and_cancel_further_retries_when_user_delegate_observes_cancellationToken()
         {
             var policy = Policy
                 .Handle<DivideByZeroException>()
@@ -891,14 +892,14 @@ namespace Polly.Specs.Retry
             };
 
             policy.Invoking(x => x.RaiseExceptionAndOrCancellation<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
-                .ShouldThrow<OperationCanceledException>()
+                .Should().Throw<OperationCanceledException>()
                 .And.CancellationToken.Should().Be(cancellationToken);
 
             attemptsInvoked.Should().Be(1);
         }
 
         [Fact]
-        public void Should_report_cancellation_during_faulting_initial_action_execution_and_cancel_further_retries_when_user_delegate_observes_cancellationtoken()
+        public void Should_report_cancellation_during_faulting_initial_action_execution_and_cancel_further_retries_when_user_delegate_observes_cancellationToken()
         {
             var policy = Policy
                 .Handle<DivideByZeroException>()
@@ -918,14 +919,14 @@ namespace Polly.Specs.Retry
             };
 
             policy.Invoking(x => x.RaiseExceptionAndOrCancellation<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
-                .ShouldThrow<OperationCanceledException>()
+                .Should().Throw<OperationCanceledException>()
                 .And.CancellationToken.Should().Be(cancellationToken);
 
             attemptsInvoked.Should().Be(1);
         }
 
         [Fact]
-        public void Should_report_cancellation_during_faulting_initial_action_execution_and_cancel_further_retries_when_user_delegate_does_not_observe_cancellationtoken()
+        public void Should_report_cancellation_during_faulting_initial_action_execution_and_cancel_further_retries_when_user_delegate_does_not_observe_cancellationToken()
         {
             var policy = Policy
                 .Handle<DivideByZeroException>()
@@ -945,14 +946,14 @@ namespace Polly.Specs.Retry
             };
 
             policy.Invoking(x => x.RaiseExceptionAndOrCancellation<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
-                .ShouldThrow<OperationCanceledException>()
+                .Should().Throw<OperationCanceledException>()
                 .And.CancellationToken.Should().Be(cancellationToken);
 
             attemptsInvoked.Should().Be(1);
         }
 
         [Fact]
-        public void Should_report_cancellation_during_faulting_retried_action_execution_and_cancel_further_retries_when_user_delegate_observes_cancellationtoken()
+        public void Should_report_cancellation_during_faulting_retried_action_execution_and_cancel_further_retries_when_user_delegate_observes_cancellationToken()
         {
             var policy = Policy
                 .Handle<DivideByZeroException>()
@@ -972,14 +973,14 @@ namespace Polly.Specs.Retry
             };
 
             policy.Invoking(x => x.RaiseExceptionAndOrCancellation<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
-                .ShouldThrow<OperationCanceledException>()
+                .Should().Throw<OperationCanceledException>()
                 .And.CancellationToken.Should().Be(cancellationToken);
 
             attemptsInvoked.Should().Be(2);
         }
 
         [Fact]
-        public void Should_report_cancellation_during_faulting_retried_action_execution_and_cancel_further_retries_when_user_delegate_does_not_observe_cancellationtoken()
+        public void Should_report_cancellation_during_faulting_retried_action_execution_and_cancel_further_retries_when_user_delegate_does_not_observe_cancellationToken()
         {
             var policy = Policy
                 .Handle<DivideByZeroException>()
@@ -999,14 +1000,14 @@ namespace Polly.Specs.Retry
             };
 
             policy.Invoking(x => x.RaiseExceptionAndOrCancellation<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
-                .ShouldThrow<OperationCanceledException>()
+                .Should().Throw<OperationCanceledException>()
                 .And.CancellationToken.Should().Be(cancellationToken);
 
             attemptsInvoked.Should().Be(2);
         }
 
         [Fact]
-        public void Should_report_cancellation_during_faulting_last_retry_execution_when_user_delegate_does_observe_cancellationtoken()
+        public void Should_report_cancellation_during_faulting_last_retry_execution_when_user_delegate_does_observe_cancellationToken()
         {
             var policy = Policy
                 .Handle<DivideByZeroException>()
@@ -1026,7 +1027,7 @@ namespace Polly.Specs.Retry
             };
 
             policy.Invoking(x => x.RaiseExceptionAndOrCancellation<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
-                .ShouldThrow<OperationCanceledException>()
+                .Should().Throw<OperationCanceledException>()
                 .And.CancellationToken.Should().Be(cancellationToken);
 
             attemptsInvoked.Should().Be(1 + 3);
@@ -1053,7 +1054,7 @@ namespace Polly.Specs.Retry
             };
 
             policy.Invoking(x => x.RaiseExceptionAndOrCancellation<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
-                .ShouldThrow<DivideByZeroException>();
+                .Should().Throw<DivideByZeroException>();
 
             attemptsInvoked.Should().Be(1 + 3);
         }
@@ -1089,7 +1090,7 @@ namespace Polly.Specs.Retry
             cancellationTokenSource.CancelAfter(shimTimeSpan);
 
             policy.Invoking(x => x.RaiseExceptionAndOrCancellation<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
-                    .ShouldThrow<OperationCanceledException>()
+                    .Should().Throw<OperationCanceledException>()
                     .And.CancellationToken.Should().Be(cancellationToken);
             watch.Stop();
 
@@ -1124,14 +1125,14 @@ namespace Polly.Specs.Retry
             };
 
             policy.Invoking(x => x.RaiseExceptionAndOrCancellation<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
-                .ShouldThrow<OperationCanceledException>()
+                .Should().Throw<OperationCanceledException>()
                 .And.CancellationToken.Should().Be(cancellationToken);
 
             attemptsInvoked.Should().Be(1);
         }
 
         [Fact]
-        public void Should_execute_func_returning_value_when_cancellationtoken_not_cancelled()
+        public void Should_execute_func_returning_value_when_cancellationToken_not_cancelled()
         {
             var policy = Policy
                .Handle<DivideByZeroException>()
@@ -1152,7 +1153,7 @@ namespace Polly.Specs.Retry
             };
 
             policy.Invoking(x => result = x.RaiseExceptionAndOrCancellation<DivideByZeroException, bool>(scenario, cancellationTokenSource, onExecute, true))
-                .ShouldNotThrow();
+                .Should().NotThrow();
 
             result.Should().BeTrue();
 
@@ -1182,7 +1183,7 @@ namespace Polly.Specs.Retry
             };
 
             policy.Invoking(x => result = x.RaiseExceptionAndOrCancellation<DivideByZeroException, bool>(scenario, cancellationTokenSource, onExecute, true))
-                .ShouldThrow<OperationCanceledException>().And.CancellationToken.Should().Be(cancellationToken);
+                .Should().Throw<OperationCanceledException>().And.CancellationToken.Should().Be(cancellationToken);
 
             result.Should().Be(null);
 

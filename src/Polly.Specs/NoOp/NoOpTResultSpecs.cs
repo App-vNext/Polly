@@ -14,7 +14,7 @@ namespace Polly.Specs.NoOp
             int? result = null;
 
             policy.Invoking(x => result = x.Execute(() => 10))
-                .ShouldNotThrow();
+                .Should().NotThrow();
 
             result.HasValue.Should().BeTrue();
             result.Should().Be(10);
@@ -31,7 +31,7 @@ namespace Polly.Specs.NoOp
                 cts.Cancel();
 
                 policy.Invoking(p => result = p.Execute(ct => 10, cts.Token))
-                   .ShouldNotThrow();
+                   .Should().NotThrow();
             }
 
             result.HasValue.Should().BeTrue();

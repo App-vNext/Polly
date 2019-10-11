@@ -18,8 +18,8 @@ namespace Polly.Caching
         /// </summary>
         /// <param name="wrappedCacheProvider">The wrapped cache provider.</param>
         /// <param name="serializer">The serializer.</param>
-        /// <exception cref="System.ArgumentNullException">wrappedCacheProvider </exception>
-        /// <exception cref="System.ArgumentNullException">serializer </exception>
+        /// <exception cref="ArgumentNullException">wrappedCacheProvider </exception>
+        /// <exception cref="ArgumentNullException">serializer </exception>
         public AsyncSerializingCacheProvider(IAsyncCacheProvider<TSerialized> wrappedCacheProvider, ICacheItemSerializer<object, TSerialized> serializer)
         {
             _wrappedCacheProvider = wrappedCacheProvider ?? throw new ArgumentNullException(nameof(wrappedCacheProvider));
@@ -79,8 +79,8 @@ namespace Polly.Caching
         /// </summary>
         /// <param name="wrappedCacheProvider">The wrapped cache provider.</param>
         /// <param name="serializer">The serializer.</param>
-        /// <exception cref="System.ArgumentNullException">wrappedCacheProvider </exception>
-        /// <exception cref="System.ArgumentNullException">serializer </exception>
+        /// <exception cref="ArgumentNullException">wrappedCacheProvider </exception>
+        /// <exception cref="ArgumentNullException">serializer </exception>
         public AsyncSerializingCacheProvider(IAsyncCacheProvider<TSerialized> wrappedCacheProvider, ICacheItemSerializer<TResult, TSerialized> serializer)
         {
             _wrappedCacheProvider = wrappedCacheProvider ?? throw new ArgumentNullException(nameof(wrappedCacheProvider));

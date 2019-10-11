@@ -51,7 +51,7 @@ namespace Polly.Specs
             Guid retrieved1 = context.CorrelationId;
             Guid retrieved2 = context.CorrelationId;
 
-            retrieved1.ShouldBeEquivalentTo(retrieved2);
+            retrieved1.Should().Be(retrieved2);
         }
     }
 }
