@@ -71,10 +71,7 @@ namespace Polly.Specs
             var result = await Policy
                 .Handle<DivideByZeroException>()
                 .RetryAsync((_, __) => { })
-                .ExecuteAndCaptureAsync(() =>
-                {
-                    throw handledException;
-                });
+                .ExecuteAndCaptureAsync(() => throw handledException);
 
             result.Should().BeEquivalentTo(new
             {
@@ -92,10 +89,7 @@ namespace Polly.Specs
             var result = await Policy
                 .Handle<DivideByZeroException>()
                 .RetryAsync((_, __) => { })
-                .ExecuteAndCaptureAsync(() =>
-                {
-                    throw unhandledException;
-                });
+                .ExecuteAndCaptureAsync(() => throw unhandledException);
 
             result.Should().BeEquivalentTo(new
             {
@@ -132,10 +126,7 @@ namespace Polly.Specs
             var result = await Policy
                 .Handle<DivideByZeroException>()
                 .RetryAsync((_, __) => { })
-                .ExecuteAndCaptureAsync<int>(() =>
-                {
-                    throw handledException;
-                });
+                .ExecuteAndCaptureAsync<int>(() => throw handledException);
 
             result.Should().BeEquivalentTo(new
             {
@@ -156,10 +147,7 @@ namespace Polly.Specs
             var result = await Policy
                 .Handle<DivideByZeroException>()
                 .RetryAsync((_, __) => { })
-                .ExecuteAndCaptureAsync<int>(() =>
-                {
-                    throw unhandledException;
-                });
+                .ExecuteAndCaptureAsync<int>(() => throw unhandledException);
 
             result.Should().BeEquivalentTo(new
             {

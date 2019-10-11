@@ -313,7 +313,7 @@ namespace Polly.Specs.Fallback
                 .FallbackAsync(fallbackAction, onFallbackAsync);
 
             ResultClass resultFromDelegate = new ResultClass(ResultPrimitive.Fault);
-            await fallbackPolicy.ExecuteAsync(() => { return Task.FromResult(resultFromDelegate); });
+            await fallbackPolicy.ExecuteAsync(() => Task.FromResult(resultFromDelegate));
 
             fallbackActionExecuted.Should().BeTrue();
             resultPassedToOnFallback.Should().NotBeNull();
@@ -354,7 +354,7 @@ namespace Polly.Specs.Fallback
                 .HandleResult(ResultPrimitive.Fault)
                 .FallbackAsync(fallbackAction, onFallbackAsync);
 
-            fallbackPolicy.ExecuteAsync(ctx => { return Task.FromResult(ResultPrimitive.Fault); },
+            fallbackPolicy.ExecuteAsync(ctx => Task.FromResult(ResultPrimitive.Fault),
                 new { key1 = "value1", key2 = "value2" }.AsDictionary())
                 .Result
                 .Should().Be(ResultPrimitive.Substitute);
@@ -377,7 +377,7 @@ namespace Polly.Specs.Fallback
                 .HandleResult(ResultPrimitive.Fault)
                 .FallbackAsync(fallbackAction, onFallbackAsync);
 
-            (await fallbackPolicy.ExecuteAndCaptureAsync(ctx => { return Task.FromResult(ResultPrimitive.Fault); },
+            (await fallbackPolicy.ExecuteAndCaptureAsync(ctx => Task.FromResult(ResultPrimitive.Fault),
                 new { key1 = "value1", key2 = "value2" }.AsDictionary()).ConfigureAwait(false))
                 .Result.Should().Be(ResultPrimitive.Substitute);
 
@@ -400,11 +400,11 @@ namespace Polly.Specs.Fallback
                 .OrResult(ResultPrimitive.FaultAgain)
                 .FallbackAsync(fallbackAction, onFallbackAsync);
 
-            fallbackPolicy.ExecuteAsync(ctx => { return Task.FromResult(ResultPrimitive.Fault); }, new { key = "value1" }.AsDictionary())
+            fallbackPolicy.ExecuteAsync(ctx => Task.FromResult(ResultPrimitive.Fault), new { key = "value1" }.AsDictionary())
                 .Result
                 .Should().Be(ResultPrimitive.Substitute);
 
-            fallbackPolicy.ExecuteAsync(ctx => { return Task.FromResult(ResultPrimitive.FaultAgain); }, new { key = "value2" }.AsDictionary())
+            fallbackPolicy.ExecuteAsync(ctx => Task.FromResult(ResultPrimitive.FaultAgain), new { key = "value2" }.AsDictionary())
                 .Result
                 .Should().Be(ResultPrimitive.Substitute);
 
@@ -449,7 +449,7 @@ namespace Polly.Specs.Fallback
                 .HandleResult(ResultPrimitive.Fault)
                 .FallbackAsync(fallbackActionAsync, onFallbackAsync);
 
-            fallbackPolicy.ExecuteAsync(ctx => { return Task.FromResult(ResultPrimitive.Fault); },
+            fallbackPolicy.ExecuteAsync(ctx => Task.FromResult(ResultPrimitive.Fault),
                     new { key1 = "value1", key2 = "value2" }.AsDictionary())
                 .Result
                 .Should().Be(ResultPrimitive.Substitute);
@@ -515,13 +515,13 @@ namespace Polly.Specs.Fallback
             Func<DelegateResult<ResultPrimitive>, Context, CancellationToken, Task<ResultPrimitive>> fallbackAction = 
                 (outcome, ctx, ct) => { fallbackOutcome = outcome; return Task.FromResult(ResultPrimitive.Substitute); };
 
-            Func<DelegateResult<ResultPrimitive>, Context, Task> onFallback = (ex, ctx) => { return TaskHelper.EmptyTask; };
+            Func<DelegateResult<ResultPrimitive>, Context, Task> onFallback = (ex, ctx) => TaskHelper.EmptyTask;
 
             var fallbackPolicy = Policy<ResultPrimitive>
                 .HandleResult(ResultPrimitive.Fault)
                 .FallbackAsync(fallbackAction, onFallback);
 
-            var result = await fallbackPolicy.ExecuteAsync(() => { return Task.FromResult(ResultPrimitive.Fault); });
+            var result = await fallbackPolicy.ExecuteAsync(() => Task.FromResult(ResultPrimitive.Fault));
             result.Should().Be(ResultPrimitive.Substitute);
 
             fallbackOutcome.Should().NotBeNull();
@@ -537,13 +537,13 @@ namespace Polly.Specs.Fallback
             Func<DelegateResult<ResultPrimitive>, Context, CancellationToken, Task<ResultPrimitive>> fallbackAction =
                 (outcome, ctx, ct) => { fallbackOutcome = outcome; return Task.FromResult(ResultPrimitive.Substitute); };
 
-            Func<DelegateResult<ResultPrimitive>, Context, Task> onFallback = (ex, ctx) => { return TaskHelper.EmptyTask; };
+            Func<DelegateResult<ResultPrimitive>, Context, Task> onFallback = (ex, ctx) => TaskHelper.EmptyTask;
 
             var fallbackPolicy = Policy<ResultPrimitive>
                 .HandleResult(ResultPrimitive.Fault)
                 .FallbackAsync(fallbackAction, onFallback);
 
-            var result = await fallbackPolicy.ExecuteAndCaptureAsync(() => { return Task.FromResult(ResultPrimitive.Fault); });
+            var result = await fallbackPolicy.ExecuteAndCaptureAsync(() => Task.FromResult(ResultPrimitive.Fault));
             result.Should().NotBeNull();
             result.Result.Should().Be(ResultPrimitive.Substitute);
 
@@ -560,13 +560,13 @@ namespace Polly.Specs.Fallback
             Func<DelegateResult<ResultPrimitive>, Context, CancellationToken, Task<ResultPrimitive>> fallbackAction =
                 (outcome, ctx, ct) => { fallbackOutcome = outcome; return Task.FromResult(ResultPrimitive.Substitute); };
 
-            Func<DelegateResult<ResultPrimitive>, Context, Task> onFallback = (ex, ctx) => { return TaskHelper.EmptyTask; };
+            Func<DelegateResult<ResultPrimitive>, Context, Task> onFallback = (ex, ctx) => TaskHelper.EmptyTask;
 
             var fallbackPolicy = Policy<ResultPrimitive>
                 .HandleResult(ResultPrimitive.Fault)
                 .FallbackAsync(fallbackAction, onFallback);
 
-            var result = await fallbackPolicy.ExecuteAsync(() => { return Task.FromResult(ResultPrimitive.FaultAgain); });
+            var result = await fallbackPolicy.ExecuteAsync(() => Task.FromResult(ResultPrimitive.FaultAgain));
             result.Should().Be(ResultPrimitive.FaultAgain);
 
             fallbackOutcome.Should().BeNull();
