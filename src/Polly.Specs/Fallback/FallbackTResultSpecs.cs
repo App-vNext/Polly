@@ -344,7 +344,7 @@ namespace Polly.Specs.Fallback
                 .Fallback(fallbackAction, onFallback);
 
             ResultClass resultFromDelegate = new ResultClass(ResultPrimitive.Fault);
-            fallbackPolicy.Execute(() => { return resultFromDelegate; });
+            fallbackPolicy.Execute(() => resultFromDelegate);
 
             fallbackActionExecuted.Should().BeTrue();
             resultPassedToOnFallback.Should().NotBeNull();
@@ -385,7 +385,7 @@ namespace Polly.Specs.Fallback
                 .HandleResult(ResultPrimitive.Fault)
                 .Fallback(fallbackAction, onFallback);
 
-            fallbackPolicy.Execute(ctx => { return ResultPrimitive.Fault; },
+            fallbackPolicy.Execute(ctx => ResultPrimitive.Fault,
                 new { key1 = "value1", key2 = "value2" }.AsDictionary())
                 .Should().Be(ResultPrimitive.Substitute);
 
@@ -407,7 +407,7 @@ namespace Polly.Specs.Fallback
                 .HandleResult(ResultPrimitive.Fault)
                 .Fallback(fallbackAction, onFallback);
 
-            fallbackPolicy.ExecuteAndCapture(ctx => { return ResultPrimitive.Fault; },
+            fallbackPolicy.ExecuteAndCapture(ctx => ResultPrimitive.Fault,
                 new { key1 = "value1", key2 = "value2" }.AsDictionary())
                 .Result.Should().Be(ResultPrimitive.Substitute);
 
@@ -430,10 +430,10 @@ namespace Polly.Specs.Fallback
                 .OrResult(ResultPrimitive.FaultAgain)
                 .Fallback(fallbackAction, onFallback);
 
-            fallbackPolicy.Execute(ctx => { return ResultPrimitive.Fault; }, new { key = "value1" }.AsDictionary())
+            fallbackPolicy.Execute(ctx => ResultPrimitive.Fault, new { key = "value1" }.AsDictionary())
                 .Should().Be(ResultPrimitive.Substitute);
 
-            fallbackPolicy.Execute(ctx => { return ResultPrimitive.FaultAgain; }, new { key = "value2" }.AsDictionary())
+            fallbackPolicy.Execute(ctx => ResultPrimitive.FaultAgain, new { key = "value2" }.AsDictionary())
                 .Should().Be(ResultPrimitive.Substitute);
 
             contextData.Count.Should().Be(2);
@@ -476,7 +476,7 @@ namespace Polly.Specs.Fallback
                 .HandleResult(ResultPrimitive.Fault)
                 .Fallback(fallbackAction, onFallback);
 
-            fallbackPolicy.Execute(ctx => { return ResultPrimitive.Fault; },
+            fallbackPolicy.Execute(ctx => ResultPrimitive.Fault,
                     new { key1 = "value1", key2 = "value2" }.AsDictionary())
                 .Should().Be(ResultPrimitive.Substitute);
 
@@ -498,7 +498,7 @@ namespace Polly.Specs.Fallback
                 .HandleResult(ResultPrimitive.Fault)
                 .Fallback(fallbackAction, onFallback);
 
-            fallbackPolicy.ExecuteAndCapture(ctx => { return ResultPrimitive.Fault; },
+            fallbackPolicy.ExecuteAndCapture(ctx => ResultPrimitive.Fault,
                     new { key1 = "value1", key2 = "value2" }.AsDictionary())
                 .Result.Should().Be(ResultPrimitive.Substitute);
 
@@ -545,7 +545,7 @@ namespace Polly.Specs.Fallback
                 .HandleResult(ResultPrimitive.Fault)
                 .Fallback(fallbackAction, onFallback);
 
-            fallbackPolicy.Execute(() => { return ResultPrimitive.Fault; })
+            fallbackPolicy.Execute(() => ResultPrimitive.Fault)
                 .Should().Be(ResultPrimitive.Substitute);
 
             fallbackOutcome.Should().NotBeNull();
@@ -567,7 +567,7 @@ namespace Polly.Specs.Fallback
                 .HandleResult(ResultPrimitive.Fault)
                 .Fallback(fallbackAction, onFallback);
 
-            var result = fallbackPolicy.ExecuteAndCapture(() => { return ResultPrimitive.Fault; });
+            var result = fallbackPolicy.ExecuteAndCapture(() => ResultPrimitive.Fault);
             result.Should().NotBeNull();
             result.Result.Should().Be(ResultPrimitive.Substitute);
 
@@ -590,7 +590,7 @@ namespace Polly.Specs.Fallback
                 .HandleResult(ResultPrimitive.Fault)
                 .Fallback(fallbackAction, onFallback);
 
-            fallbackPolicy.Execute(() => { return ResultPrimitive.FaultAgain; })
+            fallbackPolicy.Execute(() => ResultPrimitive.FaultAgain)
                 .Should().Be(ResultPrimitive.FaultAgain);
 
             fallbackOutcome.Should().BeNull();

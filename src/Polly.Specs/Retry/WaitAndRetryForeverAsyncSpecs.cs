@@ -319,10 +319,7 @@ namespace Polly.Specs.Retry
             var policy = Policy
                 .Handle<Exception>()
                 .WaitAndRetryForeverAsync(
-                    sleepDurationProvider: (retryAttempt, exc, ctx) =>
-                    {
-                        return expectedRetryWaits[exc];
-                    },
+                    sleepDurationProvider: (retryAttempt, exc, ctx) => expectedRetryWaits[exc],
                     onRetryAsync: (_, timeSpan, __) =>
                     {
                         actualRetryWaits.Add(timeSpan);

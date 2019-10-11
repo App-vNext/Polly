@@ -268,7 +268,7 @@ namespace Polly.Specs.Timeout
         {
             var policy = Policy.Timeout(TimeSpan.FromSeconds(10), TimeoutStrategy.Pessimistic);
 
-            policy.Invoking(p => p.Execute(() => { throw new NotImplementedException(); })).Should().Throw<NotImplementedException>();
+            policy.Invoking(p => p.Execute(() => throw new NotImplementedException())).Should().Throw<NotImplementedException>();
         }
 
         [Fact]
@@ -296,7 +296,7 @@ namespace Polly.Specs.Timeout
             Exception innerException1 = new NotImplementedException();
             Exception innerException2 = new DivideByZeroException();
             AggregateException aggregateException = new AggregateException(msg, innerException1, innerException2);
-            Action action = () => { throw aggregateException; };
+            Action action = () => throw aggregateException;
 
             // Whether executing the delegate directly, or through the policy, exception behavior should be the same.
             action.Should().Throw<AggregateException>()
@@ -317,8 +317,8 @@ namespace Polly.Specs.Timeout
             Exception innerException2 = new DivideByZeroException();
             Action action = () =>
             {
-                Task task1 = Task.Run(() => { throw innerException1; });
-                Task task2 = Task.Run(() => { throw innerException2; });
+                Task task1 = Task.Run(() => throw innerException1);
+                Task task2 = Task.Run(() => throw innerException2);
                 Task.WhenAll(task1, task2).Wait();
             };
 
@@ -339,8 +339,8 @@ namespace Polly.Specs.Timeout
             Exception innerException2 = new DivideByZeroException();
             Action action = () =>
             {
-                Action action1 = () => { throw innerException1; };
-                Action action2 = () => { throw innerException2; };
+                Action action1 = () => throw innerException1;
+                Action action2 = () => throw innerException2;
                 Parallel.Invoke(action1, action2);
             };
 
@@ -409,7 +409,8 @@ namespace Polly.Specs.Timeout
         {
             var policy = Policy.Timeout(TimeSpan.FromSeconds(10), TimeoutStrategy.Optimistic);
 
-            policy.Invoking(p => p.Execute(() => { throw new NotImplementedException(); })).Should().Throw<NotImplementedException>();
+            policy.Invoking(p => p.Execute(() => throw new NotImplementedException())).Should().Throw<NotImplementedException>();
+
         }
 
         #endregion

@@ -319,7 +319,7 @@ namespace Polly.Specs.Fallback
                 .Handle<ArgumentNullException>()
                 .FallbackAsync(fallbackActionAsync, onFallbackAsync);
 
-            fallbackPolicy.Awaiting(async p => await p.ExecuteAsync(ctx => { throw new ArgumentNullException(); },
+            fallbackPolicy.Awaiting(async p => await p.ExecuteAsync(ctx => throw new ArgumentNullException(),
                 new { key1 = "value1", key2 = "value2" }.AsDictionary()))
                 .Should().NotThrow();
 
@@ -341,7 +341,7 @@ namespace Polly.Specs.Fallback
                 .Handle<ArgumentNullException>()
                 .FallbackAsync(fallbackActionAsync, onFallbackAsync);
 
-            fallbackPolicy.Awaiting(async p => await p.ExecuteAndCaptureAsync(ctx => { throw new ArgumentNullException(); },
+            fallbackPolicy.Awaiting(async p => await p.ExecuteAndCaptureAsync(ctx => throw new ArgumentNullException(),
                 new { key1 = "value1", key2 = "value2" }.AsDictionary()))
                 .Should().NotThrow();
 
@@ -365,11 +365,11 @@ namespace Polly.Specs.Fallback
                 .FallbackAsync(fallbackActionAsync, onFallbackAsync);
 
             fallbackPolicy.Awaiting(async 
-                p => await p.ExecuteAsync(ctx => { throw new ArgumentNullException(); }, new { key = "value1" }.AsDictionary()))
+                p => await p.ExecuteAsync(ctx => throw new ArgumentNullException(), new { key = "value1" }.AsDictionary()))
                 .Should().NotThrow();
 
             fallbackPolicy.Awaiting(async 
-                p => await p.ExecuteAsync(ctx => { throw new DivideByZeroException(); }, new { key = "value2" }.AsDictionary()))
+                p => await p.ExecuteAsync(ctx => throw new DivideByZeroException(), new { key = "value2" }.AsDictionary()))
                 .Should().NotThrow();
 
             contextData.Count.Should().Be(2);
@@ -413,7 +413,7 @@ namespace Polly.Specs.Fallback
                 .Handle<ArgumentNullException>()
                 .FallbackAsync(fallbackActionAsync, onFallbackAsync);
 
-            fallbackPolicy.Awaiting(async p => await p.ExecuteAsync(ctx => { throw new ArgumentNullException(); },
+            fallbackPolicy.Awaiting(async p => await p.ExecuteAsync(ctx => throw new ArgumentNullException(),
                     new { key1 = "value1", key2 = "value2" }.AsDictionary()))
                 .Should().NotThrow();
 
@@ -435,7 +435,7 @@ namespace Polly.Specs.Fallback
                 .Handle<ArgumentNullException>()
                 .FallbackAsync(fallbackActionAsync, onFallbackAsync);
 
-            fallbackPolicy.Awaiting(async p => await p.ExecuteAndCaptureAsync(ctx => { throw new ArgumentNullException(); },
+            fallbackPolicy.Awaiting(async p => await p.ExecuteAndCaptureAsync(ctx => throw new ArgumentNullException(),
                     new { key1 = "value1", key2 = "value2" }.AsDictionary()))
                 .Should().NotThrow();
 
@@ -476,7 +476,7 @@ namespace Polly.Specs.Fallback
 
             Func<Exception, Context, CancellationToken, Task> fallbackFunc = (ex, ctx, ct) => { fallbackException = ex; return TaskHelper.EmptyTask; };
 
-            Func<Exception, Context, Task> onFallback = (ex, ctx) => { return TaskHelper.EmptyTask; };
+            Func<Exception, Context, Task> onFallback = (ex, ctx) => TaskHelper.EmptyTask;
 
             var fallbackPolicy = Policy
                 .Handle<ArgumentNullException>()
@@ -496,13 +496,13 @@ namespace Polly.Specs.Fallback
 
             Func<Exception, Context, CancellationToken, Task> fallbackFunc = (ex, ctx, ct) => { fallbackException = ex; return TaskHelper.EmptyTask; };
 
-            Func<Exception, Context, Task> onFallback = (ex, ctx) => { return TaskHelper.EmptyTask; };
+            Func<Exception, Context, Task> onFallback = (ex, ctx) => TaskHelper.EmptyTask;
 
             var fallbackPolicy = Policy
                 .Handle<ArgumentNullException>()
                 .FallbackAsync(fallbackFunc, onFallback);
 
-            fallbackPolicy.Awaiting(async p => await p.ExecuteAndCaptureAsync(() => { throw new ArgumentNullException(); }))
+            fallbackPolicy.Awaiting(async p => await p.ExecuteAndCaptureAsync(() => throw new ArgumentNullException()))
                 .Should().NotThrow();
 
             fallbackException.Should().NotBeNull()
@@ -516,7 +516,7 @@ namespace Polly.Specs.Fallback
 
             Func<Exception, Context, CancellationToken, Task> fallbackFunc = (ex, ctx, ct) => { fallbackException = ex; return TaskHelper.EmptyTask; };
 
-            Func<Exception, Context, Task> onFallback = (ex, ctx) => { return TaskHelper.EmptyTask; };
+            Func<Exception, Context, Task> onFallback = (ex, ctx) => TaskHelper.EmptyTask;
 
             var fallbackPolicy = Policy
                 .HandleInner<ArgumentNullException>()
@@ -537,7 +537,7 @@ namespace Polly.Specs.Fallback
 
             Func<Exception, Context, CancellationToken, Task> fallbackFunc = (ex, ctx, ct) => { fallbackException = ex; return TaskHelper.EmptyTask; };
 
-            Func<Exception, Context, Task> onFallback = (ex, ctx) => { return TaskHelper.EmptyTask; };
+            Func<Exception, Context, Task> onFallback = (ex, ctx) => TaskHelper.EmptyTask;
 
             var fallbackPolicy = Policy
                 .HandleInner<ArgumentNullException>()
@@ -558,13 +558,13 @@ namespace Polly.Specs.Fallback
 
             Func<Exception, Context, CancellationToken, Task> fallbackFunc = (ex, ctx, ct) => { fallbackException = ex; return TaskHelper.EmptyTask; };
 
-            Func<Exception, Context, Task> onFallback = (ex, ctx) => { return TaskHelper.EmptyTask; };
+            Func<Exception, Context, Task> onFallback = (ex, ctx) => TaskHelper.EmptyTask;
 
             var fallbackPolicy = Policy
                 .Handle<DivideByZeroException>()
                 .FallbackAsync(fallbackFunc, onFallback);
 
-            fallbackPolicy.Awaiting(async p => await p.ExecuteAsync(() => { throw new ArgumentNullException(); }))
+            fallbackPolicy.Awaiting(async p => await p.ExecuteAsync(() => throw new ArgumentNullException()))
                 .Should().Throw<ArgumentNullException>();
 
             fallbackException.Should().BeNull();

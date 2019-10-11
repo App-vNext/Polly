@@ -259,7 +259,7 @@ namespace Polly.Specs.Timeout
         {
             var policy = Policy.Timeout<ResultPrimitive>(TimeSpan.FromSeconds(10), TimeoutStrategy.Pessimistic);
 
-            policy.Invoking(p => p.Execute(() => { throw new NotImplementedException(); })).Should().Throw<NotImplementedException>();
+            policy.Invoking(p => p.Execute(() => throw new NotImplementedException())).Should().Throw<NotImplementedException>();
         }
 
         [Fact]
@@ -308,8 +308,8 @@ namespace Polly.Specs.Timeout
             Exception innerException2 = new DivideByZeroException();
             Func<ResultPrimitive> func = () =>
             {
-                Task task1 = Task.Run(() => { throw innerException1; });
-                Task task2 = Task.Run(() => { throw innerException2; });
+                Task task1 = Task.Run(() => throw innerException1);
+                Task task2 = Task.Run(() => throw innerException2);
                 Task.WhenAll(task1, task2).Wait();
                 return ResultPrimitive.WhateverButTooLate;
             };
@@ -332,7 +332,7 @@ namespace Polly.Specs.Timeout
             Func<ResultPrimitive> func = () =>
             {
                 Action action1 = () => { throw innerException1; };
-                Action action2 = () => { throw innerException2; };
+                Action action2 = () => throw innerException2;
                 Parallel.Invoke(action1, action2);
                 return ResultPrimitive.WhateverButTooLate;
             };
@@ -410,7 +410,7 @@ namespace Polly.Specs.Timeout
         {
             var policy = Policy.Timeout<ResultPrimitive>(TimeSpan.FromSeconds(10), TimeoutStrategy.Optimistic);
 
-            policy.Invoking(p => p.Execute(() => { throw new NotImplementedException(); })).Should().Throw<NotImplementedException>();
+            policy.Invoking(p => p.Execute(() => throw new NotImplementedException())).Should().Throw<NotImplementedException>();
         }
 
         #endregion
