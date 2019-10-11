@@ -33,7 +33,7 @@ namespace Polly.Specs.Helpers.Bulkhead
 
         public TraceableAction(int id, AutoResetEvent statusChanged, ITestOutputHelper testOutputHelper)
         {
-            _id = String.Format("{0:00}", id) + ": ";
+            _id = $"{id:00}" + ": ";
             _statusChanged = statusChanged;
             _testOutputHelper = testOutputHelper;
         }

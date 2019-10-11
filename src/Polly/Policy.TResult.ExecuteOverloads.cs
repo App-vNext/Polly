@@ -25,11 +25,11 @@ namespace Polly
         /// </summary>
         /// <param name="action">The action to perform.</param>
         /// <param name="contextData">Arbitrary data that is passed to the exception policy.</param>
-        /// <exception cref="System.ArgumentNullException">contextData</exception>
+        /// <exception cref="ArgumentNullException">contextData</exception>
         /// <returns>
         /// The value returned by the action
         /// </returns>
-        /// <exception cref="System.ArgumentNullException">contextData</exception>
+        /// <exception cref="ArgumentNullException">contextData</exception>
         [DebuggerStepThrough]
         public TResult Execute(Func<Context, TResult> action, IDictionary<string, object> contextData)
             => Execute((ctx, ct) => action(ctx), new Context(contextData), DefaultCancellationToken);
@@ -39,11 +39,11 @@ namespace Polly
         /// </summary>
         /// <param name="action">The action to perform.</param>
         /// <param name="context">Context data that is passed to the exception policy.</param>
-        /// <exception cref="System.ArgumentNullException">context</exception>
+        /// <exception cref="ArgumentNullException">context</exception>
         /// <returns>
         /// The value returned by the action
         /// </returns>
-        /// <exception cref="System.ArgumentNullException">contextData</exception>
+        /// <exception cref="ArgumentNullException">contextData</exception>
         [DebuggerStepThrough]
         public TResult Execute(Func<Context, TResult> action, Context context)
             => Execute((ctx, ct) => action(ctx), context, DefaultCancellationToken);
@@ -65,7 +65,7 @@ namespace Polly
         /// <param name="contextData">Arbitrary data that is passed to the exception policy.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>The value returned by the action</returns>
-        /// <exception cref="System.ArgumentNullException">contextData</exception>
+        /// <exception cref="ArgumentNullException">contextData</exception>
         [DebuggerStepThrough]
         public TResult Execute(Func<Context, CancellationToken, TResult> action, IDictionary<string, object> contextData, CancellationToken cancellationToken)
             => Execute(action, new Context(contextData), cancellationToken);
@@ -112,7 +112,7 @@ namespace Polly
         /// </summary>
         /// <param name="action">The action to perform.</param>
         /// <param name="contextData">Arbitrary data that is passed to the exception policy.</param>
-        /// <exception cref="System.ArgumentNullException">contextData</exception>
+        /// <exception cref="ArgumentNullException">contextData</exception>
         /// <returns>The captured result</returns>
         [DebuggerStepThrough]
         public PolicyResult<TResult> ExecuteAndCapture(Func<Context, TResult> action, IDictionary<string, object> contextData)
@@ -123,7 +123,7 @@ namespace Polly
         /// </summary>
         /// <param name="action">The action to perform.</param>
         /// <param name="context">Context data that is passed to the exception policy.</param>
-        /// <exception cref="System.ArgumentNullException">contextData</exception>
+        /// <exception cref="ArgumentNullException">contextData</exception>
         /// <returns>The captured result</returns>
         [DebuggerStepThrough]
         public PolicyResult<TResult> ExecuteAndCapture(Func<Context, TResult> action, Context context)
@@ -146,7 +146,7 @@ namespace Polly
         /// <param name="contextData">Arbitrary data that is passed to the exception policy.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>The captured result</returns>
-        /// <exception cref="System.ArgumentNullException">contextData</exception>
+        /// <exception cref="ArgumentNullException">contextData</exception>
         [DebuggerStepThrough]
         public PolicyResult<TResult> ExecuteAndCapture(Func<Context, CancellationToken, TResult> action, IDictionary<string, object> contextData, CancellationToken cancellationToken)
             => ExecuteAndCapture(action, new Context(contextData), cancellationToken);

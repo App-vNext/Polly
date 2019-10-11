@@ -6,14 +6,14 @@ using Xunit;
 
 namespace Polly.Specs.Caching
 {
-    public class RelativeTtllSpecs
+    public class RelativeTtlSpecs
     {
         [Fact]
         public void Should_throw_when_timespan_is_less_than_zero()
         {
             Action configure = () => new RelativeTtl(TimeSpan.FromMilliseconds(-1));
 
-            configure.ShouldThrow<ArgumentOutOfRangeException>().And.ParamName.Should().Be("ttl");
+            configure.Should().Throw<ArgumentOutOfRangeException>().And.ParamName.Should().Be("ttl");
         }
 
         [Fact]
@@ -21,7 +21,7 @@ namespace Polly.Specs.Caching
         {
             Action configure = () => new RelativeTtl(TimeSpan.Zero);
 
-            configure.ShouldNotThrow();
+            configure.Should().NotThrow();
         }
 
         [Fact]
@@ -29,7 +29,7 @@ namespace Polly.Specs.Caching
         {
             Action configure = () => new RelativeTtl(TimeSpan.MaxValue);
 
-            configure.ShouldNotThrow();
+            configure.Should().NotThrow();
         }
 
         [Fact]

@@ -14,7 +14,7 @@ namespace Polly
         /// </summary>
         /// <param name="policyBuilder">The policy builder.</param>
         /// <param name="fallbackAction">The fallback action.</param>
-        /// <exception cref="System.ArgumentNullException">fallbackAction</exception>
+        /// <exception cref="ArgumentNullException">fallbackAction</exception>
         /// <returns>The policy instance.</returns>
         public static FallbackPolicy Fallback(this PolicyBuilder policyBuilder, Action fallbackAction)
         {
@@ -29,7 +29,7 @@ namespace Polly
         /// </summary>
         /// <param name="policyBuilder">The policy builder.</param>
         /// <param name="fallbackAction">The fallback action.</param>
-        /// <exception cref="System.ArgumentNullException">fallbackAction</exception>
+        /// <exception cref="ArgumentNullException">fallbackAction</exception>
         /// <returns>The policy instance.</returns>
         public static FallbackPolicy Fallback(this PolicyBuilder policyBuilder, Action<CancellationToken> fallbackAction)
         {
@@ -45,8 +45,8 @@ namespace Polly
         /// <param name="policyBuilder">The policy builder.</param>
         /// <param name="fallbackAction">The fallback action.</param>
         /// <param name="onFallback">The action to call before invoking the fallback delegate.</param>
-        /// <exception cref="System.ArgumentNullException">fallbackAction</exception>
-        /// <exception cref="System.ArgumentNullException">onFallback</exception>
+        /// <exception cref="ArgumentNullException">fallbackAction</exception>
+        /// <exception cref="ArgumentNullException">onFallback</exception>
         /// <returns>The policy instance.</returns>
         public static FallbackPolicy Fallback(this PolicyBuilder policyBuilder, Action fallbackAction, Action<Exception> onFallback)
         {
@@ -63,8 +63,8 @@ namespace Polly
         /// <param name="policyBuilder">The policy builder.</param>
         /// <param name="fallbackAction">The fallback action.</param>
         /// <param name="onFallback">The action to call before invoking the fallback delegate.</param>
-        /// <exception cref="System.ArgumentNullException">fallbackAction</exception>
-        /// <exception cref="System.ArgumentNullException">onFallback</exception>
+        /// <exception cref="ArgumentNullException">fallbackAction</exception>
+        /// <exception cref="ArgumentNullException">onFallback</exception>
         /// <returns>The policy instance.</returns>
         public static FallbackPolicy Fallback(this PolicyBuilder policyBuilder, Action<CancellationToken> fallbackAction, Action<Exception> onFallback)
         {
@@ -80,8 +80,8 @@ namespace Polly
         /// <param name="policyBuilder">The policy builder.</param>
         /// <param name="fallbackAction">The fallback action.</param>
         /// <param name="onFallback">The action to call before invoking the fallback delegate.</param>
-        /// <exception cref="System.ArgumentNullException">fallbackAction</exception>
-        /// <exception cref="System.ArgumentNullException">onFallback</exception>
+        /// <exception cref="ArgumentNullException">fallbackAction</exception>
+        /// <exception cref="ArgumentNullException">onFallback</exception>
         /// <returns>The policy instance.</returns>
         public static FallbackPolicy Fallback(this PolicyBuilder policyBuilder, Action<Context> fallbackAction, Action<Exception, Context> onFallback)
         {
@@ -97,8 +97,8 @@ namespace Polly
         /// <param name="policyBuilder">The policy builder.</param>
         /// <param name="fallbackAction">The fallback action.</param>
         /// <param name="onFallback">The action to call before invoking the fallback delegate.</param>
-        /// <exception cref="System.ArgumentNullException">fallbackAction</exception>
-        /// <exception cref="System.ArgumentNullException">onFallback</exception>
+        /// <exception cref="ArgumentNullException">fallbackAction</exception>
+        /// <exception cref="ArgumentNullException">onFallback</exception>
         /// <returns>The policy instance.</returns>
         public static FallbackPolicy Fallback(this PolicyBuilder policyBuilder, Action<Context, CancellationToken> fallbackAction, Action<Exception, Context> onFallback)
         {
@@ -114,8 +114,8 @@ namespace Polly
         /// <param name="policyBuilder">The policy builder.</param>
         /// <param name="fallbackAction">The fallback action.</param>
         /// <param name="onFallback">The action to call before invoking the fallback delegate.</param>
-        /// <exception cref="System.ArgumentNullException">fallbackAction</exception>
-        /// <exception cref="System.ArgumentNullException">onFallback</exception>
+        /// <exception cref="ArgumentNullException">fallbackAction</exception>
+        /// <exception cref="ArgumentNullException">onFallback</exception>
         /// <returns>The policy instance.</returns>
         public static FallbackPolicy Fallback(this PolicyBuilder policyBuilder, Action<Exception, Context, CancellationToken> fallbackAction, Action<Exception, Context> onFallback)
         {
@@ -151,7 +151,7 @@ namespace Polly
         /// </summary>
         /// <param name="policyBuilder">The policy builder.</param>
         /// <param name="fallbackAction">The fallback action.</param>
-        /// <exception cref="System.ArgumentNullException">fallbackAction</exception>
+        /// <exception cref="ArgumentNullException">fallbackAction</exception>
         /// <returns>The policy instance.</returns>
         public static FallbackPolicy<TResult> Fallback<TResult>(this PolicyBuilder<TResult> policyBuilder, Func<TResult> fallbackAction)
         {
@@ -166,7 +166,7 @@ namespace Polly
         /// </summary>
         /// <param name="policyBuilder">The policy builder.</param>
         /// <param name="fallbackAction">The fallback action.</param>
-        /// <exception cref="System.ArgumentNullException">fallbackAction</exception>
+        /// <exception cref="ArgumentNullException">fallbackAction</exception>
         /// <returns>The policy instance.</returns>
         public static FallbackPolicy<TResult> Fallback<TResult>(this PolicyBuilder<TResult> policyBuilder, Func<CancellationToken, TResult> fallbackAction)
         {
@@ -182,7 +182,7 @@ namespace Polly
         /// <param name="policyBuilder">The policy builder.</param>
         /// <param name="fallbackValue">The fallback <typeparamref name="TResult"/> value to provide.</param>
         /// <param name="onFallback">The action to call before invoking the fallback delegate.</param>
-        /// <exception cref="System.ArgumentNullException">onFallback</exception>
+        /// <exception cref="ArgumentNullException">onFallback</exception>
         /// <returns>The policy instance.</returns>
         public static FallbackPolicy<TResult> Fallback<TResult>(this PolicyBuilder<TResult> policyBuilder, TResult fallbackValue, Action<DelegateResult<TResult>> onFallback)
         {
@@ -197,8 +197,8 @@ namespace Polly
         /// <param name="policyBuilder">The policy builder.</param>
         /// <param name="fallbackAction">The fallback action.</param>
         /// <param name="onFallback">The action to call before invoking the fallback delegate.</param>
-        /// <exception cref="System.ArgumentNullException">fallbackAction</exception>
-        /// <exception cref="System.ArgumentNullException">onFallback</exception>
+        /// <exception cref="ArgumentNullException">fallbackAction</exception>
+        /// <exception cref="ArgumentNullException">onFallback</exception>
         /// <returns>The policy instance.</returns>
         public static FallbackPolicy<TResult> Fallback<TResult>(this PolicyBuilder<TResult> policyBuilder, Func<TResult> fallbackAction, Action<DelegateResult<TResult>> onFallback)
         {
@@ -214,8 +214,8 @@ namespace Polly
         /// <param name="policyBuilder">The policy builder.</param>
         /// <param name="fallbackAction">The fallback action.</param>
         /// <param name="onFallback">The action to call before invoking the fallback delegate.</param>
-        /// <exception cref="System.ArgumentNullException">fallbackAction</exception>
-        /// <exception cref="System.ArgumentNullException">onFallback</exception>
+        /// <exception cref="ArgumentNullException">fallbackAction</exception>
+        /// <exception cref="ArgumentNullException">onFallback</exception>
         /// <returns>The policy instance.</returns>
         public static FallbackPolicy<TResult> Fallback<TResult>(this PolicyBuilder<TResult> policyBuilder, Func<CancellationToken, TResult> fallbackAction, Action<DelegateResult<TResult>> onFallback)
         {
@@ -231,7 +231,7 @@ namespace Polly
         /// <param name="policyBuilder">The policy builder.</param>
         /// <param name="fallbackValue">The fallback <typeparamref name="TResult"/> value to provide.</param>
         /// <param name="onFallback">The action to call before invoking the fallback delegate.</param>
-        /// <exception cref="System.ArgumentNullException">onFallback</exception>
+        /// <exception cref="ArgumentNullException">onFallback</exception>
         /// <returns>The policy instance.</returns>
         public static FallbackPolicy<TResult> Fallback<TResult>(this PolicyBuilder<TResult> policyBuilder, TResult fallbackValue, Action<DelegateResult<TResult>, Context> onFallback)
         {
@@ -246,8 +246,8 @@ namespace Polly
         /// <param name="policyBuilder">The policy builder.</param>
         /// <param name="fallbackAction">The fallback action.</param>
         /// <param name="onFallback">The action to call before invoking the fallback delegate.</param>
-        /// <exception cref="System.ArgumentNullException">fallbackAction</exception>
-        /// <exception cref="System.ArgumentNullException">onFallback</exception>
+        /// <exception cref="ArgumentNullException">fallbackAction</exception>
+        /// <exception cref="ArgumentNullException">onFallback</exception>
         /// <returns>The policy instance.</returns>
         public static FallbackPolicy<TResult> Fallback<TResult>(this PolicyBuilder<TResult> policyBuilder, Func<Context, TResult> fallbackAction, Action<DelegateResult<TResult>, Context> onFallback)
         {
@@ -263,8 +263,8 @@ namespace Polly
         /// <param name="policyBuilder">The policy builder.</param>
         /// <param name="fallbackAction">The fallback action.</param>
         /// <param name="onFallback">The action to call before invoking the fallback delegate.</param>
-        /// <exception cref="System.ArgumentNullException">fallbackAction</exception>
-        /// <exception cref="System.ArgumentNullException">onFallback</exception>
+        /// <exception cref="ArgumentNullException">fallbackAction</exception>
+        /// <exception cref="ArgumentNullException">onFallback</exception>
         /// <returns>The policy instance.</returns>
         public static FallbackPolicy<TResult> Fallback<TResult>(this PolicyBuilder<TResult> policyBuilder, Func<Context, CancellationToken, TResult> fallbackAction, Action<DelegateResult<TResult>, Context> onFallback)
         {
@@ -280,8 +280,8 @@ namespace Polly
         /// <param name="policyBuilder">The policy builder.</param>
         /// <param name="fallbackAction">The fallback action.</param>
         /// <param name="onFallback">The action to call before invoking the fallback delegate.</param>
-        /// <exception cref="System.ArgumentNullException">fallbackAction</exception>
-        /// <exception cref="System.ArgumentNullException">onFallback</exception>
+        /// <exception cref="ArgumentNullException">fallbackAction</exception>
+        /// <exception cref="ArgumentNullException">onFallback</exception>
         /// <returns>The policy instance.</returns>
         public static FallbackPolicy<TResult> Fallback<TResult>(this PolicyBuilder<TResult> policyBuilder, Func<DelegateResult<TResult>, Context, CancellationToken, TResult> fallbackAction, Action<DelegateResult<TResult>, Context> onFallback)
         {

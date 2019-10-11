@@ -12,7 +12,7 @@ namespace Polly.Specs.Caching
         {
             Action configure = () => new SlidingTtl(TimeSpan.FromMilliseconds(-1));
 
-            configure.ShouldThrow<ArgumentOutOfRangeException>().And.ParamName.Should().Be("slidingTtl");
+            configure.Should().Throw<ArgumentOutOfRangeException>().And.ParamName.Should().Be("slidingTtl");
         }
 
         [Fact]
@@ -20,7 +20,7 @@ namespace Polly.Specs.Caching
         {
             Action configure = () => new SlidingTtl(TimeSpan.Zero);
 
-            configure.ShouldNotThrow();
+            configure.Should().NotThrow();
         }
 
         [Fact]
@@ -28,7 +28,7 @@ namespace Polly.Specs.Caching
         {
             Action configure = () => new SlidingTtl(TimeSpan.MaxValue);
 
-            configure.ShouldNotThrow();
+            configure.Should().NotThrow();
         }
 
         [Fact]
