@@ -287,6 +287,8 @@ Policy
   );
 ```
 
+The above code demonstrates how to build common wait-and-retry patterns from scratch, but our community also came up with an awesome contrib to wrap the common cases in helper methods: see [Polly.Contrib.WaitAndRetry](https://github.com/Polly-Contrib/Polly.Contrib.WaitAndRetry/).
+
 For `WaitAndRetry` policies handling Http Status Code 429 Retry-After, see [wiki documentation](https://github.com/App-vNext/Polly/wiki/Retry#retryafter-when-the-response-specifies-how-long-to-wait).
 
 ### Wait and retry forever (until succeeds) 
@@ -939,6 +941,47 @@ This allows collections of similar kinds of policy to be treated as one - for ex
 
 For more detail see: [Polly and interfaces](https://github.com/App-vNext/Polly/wiki/Polly-and-interfaces) on wiki.
 
+
+# Simmy
+
+[Simmy](https://github.com/Polly-Contrib/Simmy) is a major new companion project adding a chaos-engineering and fault-injection dimension to Polly, through the provision of policies to selectively inject faults or latency.  
+
+Head over to the [Simmy](https://github.com/Polly-Contrib/Simmy) repo to find out more.
+
+# Custom policies
+
+From Polly v7.0 it is possible to [create your own custom policies](http://www.thepollyproject.org/2019/02/13/introducing-custom-polly-policies-and-polly-contrib-custom-policies-part-i/) outside Polly.  These custom policies can integrate in to all the existing goodness from Polly: the `Policy.Handle<>()` syntax; PolicyWrap; all the execution-dispatch overloads.
+
+For more info see our blog series:
+
++ [Part I: Introducing custom Polly policies and the Polly.Contrib](http://www.thepollyproject.org/2019/02/13/introducing-custom-polly-policies-and-polly-contrib-custom-policies-part-i/)
++ [Part II: Authoring a non-reactive custom policy](http://www.thepollyproject.org/2019/02/13/authoring-a-proactive-polly-policy-custom-policies-part-ii/) (a policy which acts on all executions)
++ [Part III: Authoring a reactive custom policy](http://www.thepollyproject.org/2019/02/13/authoring-a-reactive-polly-policy-custom-policies-part-iii-2/) (a policy which react to faults).
++ [Part IV: Custom policies for all execution types](http://www.thepollyproject.org/2019/02/13/custom-policies-for-all-execution-types-custom-policies-part-iv/): sync and async, generic and non-generic.
+
+We provide a [starter template for a custom policy](https://github.com/Polly-Contrib/Polly.Contrib.CustomPolicyTemplates) for developing your own custom policy. 
+
+# Polly-Contrib
+
+Polly now has a [Polly-Contrib](https://github.com/Polly-Contrib) to allow the community to contribute policies or other enhancements around Polly with a low burden of ceremony.
+
+Have a contrib you'd like to publish under Polly-Contrib? Contact us with  an issue here or on [Polly slack](http://pollytalk.slack.com), and we can set up a CI-ready Polly.Contrib repo to which you have full rights, to help you manage and deliver your awesomeness to the community!
+
+We also provide:
+
++ a blank [starter template for a custom policy](https://github.com/Polly-Contrib/Polly.Contrib.CustomPolicyTemplates) (see above for more on custom policies)
++ a [template repo for any other contrib](https://github.com/Polly-Contrib/Polly.Contrib.BlankTemplate)
+
+Both templates contain a full project structure referencing Polly, Polly's default build targets, and a build to build and test your contrib and make a nuget package.
+
+## Available via Polly-Contrib
+
++ [Polly.Contrib.WaitAndRetry](https://github.com/Polly-Contrib/Polly.Contrib.WaitAndRetry): a collection of concise helper methods for common wait-and-retry strategies; and a new jitter formula combining exponential backoff with a very even distribution of randomly-jittered retry intervals.
++ [Polly.Contrib.AzureFunctions.CircuitBreaker](https://github.com/Polly-Contrib/Polly.Contrib.AzureFunctions.CircuitBreaker): a distributed circuit-breaker implemented in Azure Functions; consumable in Azure Functions, or from anywhere over http.
++ [Simmy](https://github.com/Polly-Contrib/Simmy): our chaos engineering project.
++ [Polly.Contrib.TimingPolicy](https://github.com/Polly-Contrib/Polly.Contrib.TimingPolicy): a starter policy to publish execution timings of any call executed through Policy.
++ [Polly.Contrib.LoggingPolicy](https://github.com/Polly-Contrib/Polly.Contrib.LoggingPolicy): a policy simply to log handled exceptions/faults, and rethrow or bubble the fault outwards.
+
 # 3rd Party Libraries and Contributions
 
 * [Fluent Assertions](https://github.com/fluentassertions/fluentassertions) - A set of .NET extension methods that allow you to more naturally specify the expected outcome of a TDD or BDD-style test | [Apache License 2.0 (Apache)](https://github.com/dennisdoomen/fluentassertions/blob/develop/LICENSE)
@@ -1015,6 +1058,7 @@ For more detail see: [Polly and interfaces](https://github.com/App-vNext/Polly/w
 * [@aprooks](https://github.com/aprooks) - Build script tweaks for Mac and mono.
 * [@kesmy](https://github.com/Kesmy) - Add Soucelink support, clean up cake build.
 * [@simluk](https://github.com/simluk) - Fix continueOnCaptureContext not being honored in async retry implementation (bug in v7.1.0 only).
+* [@jnyrup](https://github.com/jnyrup) - Upgrade tests to Fluent Assertions v5.9.0
 
 # Sample Projects
 
@@ -1035,43 +1079,6 @@ Also, we've stood up a [Slack](http://www.pollytalk.org) channel for easier real
 # License
 
 Licensed under the terms of the [New BSD License](http://opensource.org/licenses/BSD-3-Clause)
-
-# Simmy
-
-[Simmy](https://github.com/Polly-Contrib/Simmy) is a major new companion project adding a chaos-engineering and fault-injection dimension to Polly, through the provision of policies to selectively inject faults or latency.  
-
-Head over to the [Simmy](https://github.com/Polly-Contrib/Simmy) repo to find out more.
-
-# Custom policies
-
-From Polly v7.0 it is possible to [create your own custom policies](http://www.thepollyproject.org/2019/02/13/introducing-custom-polly-policies-and-polly-contrib-custom-policies-part-i/) outside Polly.  These custom policies can integrate in to all the existing goodness from Polly: the `Policy.Handle<>()` syntax; PolicyWrap; all the execution-dispatch overloads.
-
-For more info see our blog series:
-
-+ [Part I: Introducing custom Polly policies and the Polly.Contrib](http://www.thepollyproject.org/2019/02/13/introducing-custom-polly-policies-and-polly-contrib-custom-policies-part-i/)
-+ [Part II: Authoring a non-reactive custom policy](http://www.thepollyproject.org/2019/02/13/authoring-a-proactive-polly-policy-custom-policies-part-ii/) (a policy which acts on all executions)
-+ [Part III: Authoring a reactive custom policy](http://www.thepollyproject.org/2019/02/13/authoring-a-reactive-polly-policy-custom-policies-part-iii-2/) (a policy which react to faults).
-+ [Part IV: Custom policies for all execution types](http://www.thepollyproject.org/2019/02/13/custom-policies-for-all-execution-types-custom-policies-part-iv/): sync and async, generic and non-generic.
-
-We provide a [starter template for a custom policy](https://github.com/Polly-Contrib/Polly.Contrib.CustomPolicyTemplates) for developing your own custom policy. 
-
-# Polly-Contrib
-
-Polly now has a [Polly-Contrib](https://github.com/Polly-Contrib) to allow the community to contribute policies or other enhancements around Polly with a low burden of ceremony.
-
-Have a contrib you'd like to publish under Polly-Contrib? Contact us with  an issue here or on [Polly slack](http://pollytalk.slack.com), and we can set up a Polly.Contrib repo to which you have full rights, to help you manage and deliver your awesomeness to the community!
-
-We also provide:
-
-+ a blank [starter template for a custom policy](https://github.com/Polly-Contrib/Polly.Contrib.CustomPolicyTemplates) (see above for more on custom policies)
-+ a [template repo for any other contrib](https://github.com/Polly-Contrib/Polly.Contrib.BlankTemplate)
-
-Both templates contain a full project structure referencing Polly, Polly's default build targets, and a build to build and test your contrib and make a nuget package.
-
-## Available via Polly-Contrib
-
-+ [Polly.Contrib.TimingPolicy](https://github.com/Polly-Contrib/Polly.Contrib.TimingPolicy): a starter policy to publish execution timings of any call executed through Policy.
-+ [Polly.Contrib.LoggingPolicy](https://github.com/Polly-Contrib/Polly.Contrib.LoggingPolicy): a policy simply to log handled exceptions/faults, and rethrow or bubble the fault outwards.
 
 # Blogs, podcasts, courses, ebooks, architecture samples and videos around Polly
 
@@ -1098,6 +1105,7 @@ When we discover an interesting write-up on Polly, we'll add it to this list. If
 * [Using the Context to Obtain the Retry Count for Diagnostics](https://www.stevejgordon.co.uk/polly-using-context-to-obtain-retry-count-diagnostics) - by [Steve Gordon](https://twitter.com/stevejgordon)
 * [Passing an ILogger to Polly Policies](https://www.stevejgordon.co.uk/passing-an-ilogger-to-polly-policies) - by [Steve Gordon](https://twitter.com/stevejgordon)
 * [Using Polly and Flurl to improve your website](https://jeremylindsayni.wordpress.com/2019/01/01/using-polly-and-flurl-to-improve-your-website/) - by Jeremy Lindsay.
+* [Exploring the Polly.Contrib.WaitAndRetry helpers](https://hyr.mn/Polly-wait-and-retry/) - by [Ben Hyrman](https://twitter.com/hyrmn), who also wrote most of the Polly.Contrib.WaitAndRetry documentation.
 
 ## Podcasts
 

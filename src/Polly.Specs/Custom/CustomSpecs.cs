@@ -16,7 +16,7 @@ namespace Polly.Specs.Custom
                 PreExecutePolicy policy = PreExecutePolicy.Create(() => Console.WriteLine("Do something"));
             };
 
-            construct.ShouldNotThrow();
+            construct.Should().NotThrow();
         }
 
         [Fact]
@@ -28,7 +28,7 @@ namespace Polly.Specs.Custom
             bool executed = false;
 
             policy.Invoking(x => x.Execute(() => { executed = true; }))
-                .ShouldNotThrow();
+                .Should().NotThrow();
 
             executed.Should().BeTrue();
             preExecuted.Should().BeTrue();
@@ -42,7 +42,7 @@ namespace Polly.Specs.Custom
                 AddBehaviourIfHandlePolicy policy = Policy.Handle<Exception>().WithBehaviour(ex => Console.WriteLine("Handling " + ex.Message));
             };
 
-            construct.ShouldNotThrow();
+            construct.Should().NotThrow();
         }
 
         [Fact]
@@ -58,7 +58,7 @@ namespace Polly.Specs.Custom
                     executed = true;
                     throw toThrow;
                 }))
-                .ShouldThrow<Exception>().Which.Should().Be(toThrow);
+                .Should().Throw<Exception>().Which.Should().Be(toThrow);
 
             executed.Should().BeTrue();
             handled.Should().Be(toThrow);
@@ -77,7 +77,7 @@ namespace Polly.Specs.Custom
                     executed = true;
                     throw toThrow;
                 }))
-                .ShouldThrow<Exception>().Which.Should().Be(toThrow);
+                .Should().Throw<Exception>().Which.Should().Be(toThrow);
 
             executed.Should().BeTrue();
             handled.Should().Be(null);

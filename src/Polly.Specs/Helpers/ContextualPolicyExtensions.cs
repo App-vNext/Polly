@@ -20,10 +20,7 @@ namespace Polly.Specs.Helpers
 
                     var exception = new TException();
 
-                    if (configureException != null)
-                    {
-                        configureException(exception, counter);
-                    }
+                    configureException?.Invoke(exception, counter);
 
                     throw exception;
                 }

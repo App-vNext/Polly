@@ -14,7 +14,7 @@ namespace Polly.Specs.NoOp
             bool executed = false;
 
             policy.Awaiting(async p => await p.ExecuteAsync(() => { executed = true; return TaskHelper.EmptyTask; }))
-                .ShouldNotThrow();
+                .Should().NotThrow();
 
             executed.Should().BeTrue();
         }
@@ -32,7 +32,7 @@ namespace Polly.Specs.NoOp
 
                 policy.Awaiting(async p => await p.ExecuteAsync(
                     ct => { executed = true; return TaskHelper.EmptyTask; }, cts.Token))
-                    .ShouldNotThrow();
+                    .Should().NotThrow();
             }
 
             executed.Should().BeTrue();

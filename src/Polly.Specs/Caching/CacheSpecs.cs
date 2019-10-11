@@ -10,7 +10,7 @@ using Xunit;
 
 namespace Polly.Specs.Caching
 {
-    [Collection(Polly.Specs.Helpers.Constants.SystemClockDependentTestCollection)]
+    [Collection(Constants.SystemClockDependentTestCollection)]
     public class CacheSpecs : IDisposable
     {
         #region Configuration
@@ -20,7 +20,7 @@ namespace Polly.Specs.Caching
         {
             ISyncCacheProvider cacheProvider = null;
             Action action = () => Policy.Cache(cacheProvider, TimeSpan.MaxValue);
-            action.ShouldThrow<ArgumentNullException>().And.ParamName.Should().Be("cacheProvider");
+            action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be("cacheProvider");
         }
 
         [Fact]
@@ -29,7 +29,7 @@ namespace Polly.Specs.Caching
             ISyncCacheProvider cacheProvider = new StubCacheProvider();
             ITtlStrategy ttlStrategy = null;
             Action action = () => Policy.Cache(cacheProvider, ttlStrategy);
-            action.ShouldThrow<ArgumentNullException>().And.ParamName.Should().Be("ttlStrategy");
+            action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be("ttlStrategy");
         }
 
         [Fact]
@@ -38,7 +38,7 @@ namespace Polly.Specs.Caching
             ISyncCacheProvider cacheProvider = new StubCacheProvider();
             Func<Context, string> cacheKeyStrategy = null;
             Action action = () => Policy.Cache(cacheProvider, TimeSpan.MaxValue, cacheKeyStrategy);
-            action.ShouldThrow<ArgumentNullException>().And.ParamName.Should().Be("cacheKeyStrategy");
+            action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be("cacheKeyStrategy");
         }
 
         #endregion
@@ -468,7 +468,7 @@ namespace Polly.Specs.Caching
             tokenSource.Cancel();
 
             cache.Invoking(policy => policy.Execute(func, new Context(operationKey), tokenSource.Token))
-                .ShouldThrow<OperationCanceledException>();
+                .Should().Throw<OperationCanceledException>();
             delegateInvocations.Should().Be(1);
         }
 
@@ -491,7 +491,7 @@ namespace Polly.Specs.Caching
             };
 
             cache.Invoking(policy => policy.Execute(func, new Context(operationKey), tokenSource.Token))
-                .ShouldThrow<OperationCanceledException>();
+                .Should().Throw<OperationCanceledException>();
 
             (bool cacheHit, object fromCache) = stubCacheProvider.TryGet(operationKey);
             cacheHit.Should().BeFalse();
