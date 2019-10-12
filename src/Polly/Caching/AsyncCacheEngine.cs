@@ -37,7 +37,7 @@ namespace Polly.Caching
             catch (Exception ex)
             {
                 cacheHit = false;
-                valueFromCache = default(TResult);
+                valueFromCache = default;
                 onCacheGetError(context, cacheKey, ex);
             }
             if (cacheHit)

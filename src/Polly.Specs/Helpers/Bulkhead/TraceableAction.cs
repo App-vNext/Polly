@@ -106,7 +106,7 @@ namespace Polly.Specs.Helpers.Bulkhead
             }
             Status = TraceableActionStatus.StartRequested;
 
-            TResult result = default(TResult);
+            TResult result = default;
             return Task.Factory.StartNew(() =>
             {
                 try
@@ -121,7 +121,7 @@ namespace Polly.Specs.Helpers.Bulkhead
 
                         _testOutputHelper.WriteLine(_id + "Exiting execution.");
 
-                        return default(TResult);
+                        return default;
                     }, CancellationSource.Token);
                 }
                 catch (BulkheadRejectedException)
@@ -214,7 +214,7 @@ namespace Polly.Specs.Helpers.Bulkhead
             }
             Status = TraceableActionStatus.StartRequested;
 
-            TResult result = default(TResult);
+            TResult result = default;
             return Task.Factory.StartNew(async () =>
             {
                 try
@@ -229,7 +229,7 @@ namespace Polly.Specs.Helpers.Bulkhead
 
                         _testOutputHelper.WriteLine(_id + "Exiting execution.");
 
-                        return default(TResult);
+                        return default;
                     }, CancellationSource.Token).ConfigureAwait(true); 
                 }
                 catch (BulkheadRejectedException)
