@@ -43,9 +43,9 @@ namespace Polly.Specs
 
             Action configure = () => policy.WithPolicyKey(Guid.NewGuid().ToString());
 
-            configure.ShouldNotThrow();
+            configure.Should().NotThrow();
 
-            configure.ShouldThrow<ArgumentException>().And.ParamName.Should().Be("policyKey");
+            configure.Should().Throw<ArgumentException>().And.ParamName.Should().Be("policyKey");
         }
 
         [Fact]
@@ -94,8 +94,7 @@ namespace Polly.Specs
 
             Action configure = () => policy.WithPolicyKey(Guid.NewGuid().ToString());
 
-            configure.ShouldThrow<ArgumentException>().And.ParamName.Should().Be("p" +
-                                                                                 "olicyKey");
+            configure.Should().Throw<ArgumentException>().And.ParamName.Should().Be("policyKey");
         }
 
         #endregion
@@ -225,9 +224,9 @@ namespace Polly.Specs
 
             Action configure = () => policy.WithPolicyKey(Guid.NewGuid().ToString());
 
-            configure.ShouldNotThrow();
+            configure.Should().NotThrow();
 
-            configure.ShouldThrow<ArgumentException>().And.ParamName.Should().Be("policyKey");
+            configure.Should().Throw<ArgumentException>().And.ParamName.Should().Be("policyKey");
         }
 
         [Fact]
@@ -276,7 +275,7 @@ namespace Polly.Specs
 
             Action configure = () => policy.WithPolicyKey(Guid.NewGuid().ToString());
 
-            configure.ShouldThrow<ArgumentException>().And.ParamName.Should().Be("policyKey");
+            configure.Should().Throw<ArgumentException>().And.ParamName.Should().Be("policyKey");
         }
 
         #endregion

@@ -49,12 +49,12 @@ namespace Polly.Specs
                 .Retry((_, __) => { })
                 .ExecuteAndCapture(() => { });
 
-            result.ShouldBeEquivalentTo(new
+            result.Should().BeEquivalentTo(new
             {
                 Outcome = OutcomeType.Successful,
                 FinalException = (Exception) null,
                 ExceptionType = (ExceptionType?) null,
-            }, options => options.Excluding(o => o.Context));
+            });
         }
 
         [Fact]
@@ -65,17 +65,14 @@ namespace Polly.Specs
             var result = Policy
                 .Handle<DivideByZeroException>()
                 .Retry((_, __) => { })
-                .ExecuteAndCapture(() =>
-                {
-                    throw handledException;
-                });
+                .ExecuteAndCapture(() => throw handledException);
 
-            result.ShouldBeEquivalentTo(new
+            result.Should().BeEquivalentTo(new
             {
                 Outcome = OutcomeType.Failure,
                 FinalException = handledException,
                 ExceptionType = ExceptionType.HandledByThisPolicy
-            }, options => options.Excluding(o => o.Context));
+            });
         }
 
         [Fact]
@@ -86,17 +83,14 @@ namespace Polly.Specs
             var result = Policy
                 .Handle<DivideByZeroException>()
                 .Retry((_, __) => { })
-                .ExecuteAndCapture(() =>
-                {
-                    throw unhandledException;
-                });
+                .ExecuteAndCapture(() => throw unhandledException);
 
-            result.ShouldBeEquivalentTo(new
+            result.Should().BeEquivalentTo(new
             {
                 Outcome = OutcomeType.Failure,
                 FinalException = unhandledException,
                 ExceptionType = ExceptionType.Unhandled
-            }, options => options.Excluding(o => o.Context));
+            });
         }
 
         [Fact]
@@ -107,7 +101,7 @@ namespace Polly.Specs
                 .Retry((_, __) => { })
                 .ExecuteAndCapture(() => Int32.MaxValue);
 
-            result.ShouldBeEquivalentTo(new
+            result.Should().BeEquivalentTo(new
             {
                 Outcome = OutcomeType.Successful,
                 FinalException = (Exception)null,
@@ -115,7 +109,7 @@ namespace Polly.Specs
                 FaultType = (FaultType?)null,
                 FinalHandledResult = default(int),
                 Result = Int32.MaxValue
-            }, options => options.Excluding(o => o.Context));
+            });
         }
 
         [Fact]
@@ -126,12 +120,9 @@ namespace Polly.Specs
             var result = Policy
                 .Handle<DivideByZeroException>()
                 .Retry((_, __) => { })
-                .ExecuteAndCapture<int>(() =>
-                {
-                    throw handledException;
-                });
+                .ExecuteAndCapture<int>(() => throw handledException);
 
-            result.ShouldBeEquivalentTo(new
+            result.Should().BeEquivalentTo(new
             {
                 Outcome = OutcomeType.Failure,
                 FinalException = handledException,
@@ -139,7 +130,7 @@ namespace Polly.Specs
                 FaultType = FaultType.ExceptionHandledByThisPolicy,
                 FinalHandledResult = default(int),
                 Result = default(int)
-            }, options => options.Excluding(o => o.Context));
+            });
         }
 
         [Fact]
@@ -150,12 +141,9 @@ namespace Polly.Specs
             var result = Policy
                 .Handle<DivideByZeroException>()
                 .Retry((_, __) => { })
-                .ExecuteAndCapture<int>(() =>
-                {
-                    throw unhandledException;
-                });
+                .ExecuteAndCapture<int>(() => throw unhandledException);
 
-            result.ShouldBeEquivalentTo(new
+            result.Should().BeEquivalentTo(new
             {
                 Outcome = OutcomeType.Failure,
                 FinalException = unhandledException,
@@ -163,7 +151,7 @@ namespace Polly.Specs
                 FaultType = FaultType.UnhandledException,
                 FinalHandledResult = default(int),
                 Result = default(int)
-            }, options => options.Excluding(o => o.Context));
+            });
         }
 
         #endregion
@@ -178,7 +166,7 @@ namespace Polly.Specs
                 .Retry((_, __, ___) => { });
 
             policy.Invoking(p => p.Execute(ctx => { }, (IDictionary<string, object>)null))
-                  .ShouldThrow<ArgumentNullException>();
+                  .Should().Throw<ArgumentNullException>();
         }
 
         [Fact]
@@ -189,7 +177,7 @@ namespace Polly.Specs
                 .Retry((_, __, ___) => { });
 
             policy.Invoking(p => p.Execute(ctx => { }, (Context)null))
-                .ShouldThrow<ArgumentNullException>().And
+                .Should().Throw<ArgumentNullException>().And
                 .ParamName.Should().Be("context");
         }
 
@@ -201,7 +189,7 @@ namespace Polly.Specs
                 .Retry((_, __, ___) => { });
 
             policy.Invoking(p => p.Execute(ctx => 2, (IDictionary<string, object>)null))
-                .ShouldThrow<ArgumentNullException>();
+                .Should().Throw<ArgumentNullException>();
         }
 
         [Fact]
@@ -212,7 +200,7 @@ namespace Polly.Specs
                 .Retry((_, __, ___) => { });
 
             policy.Invoking(p => p.Execute(ctx => 2, (Context)null))
-                .ShouldThrow<ArgumentNullException>().And
+                .Should().Throw<ArgumentNullException>().And
                 .ParamName.Should().Be("context");
         }
 
@@ -225,7 +213,7 @@ namespace Polly.Specs
 
             Policy policy = Policy.NoOp();
 
-            policy.Execute((context) => { capturedContext = context; }, executionContext);
+            policy.Execute(context => { capturedContext = context; }, executionContext);
 
             capturedContext.Should().BeSameAs(executionContext);
         }
@@ -238,7 +226,7 @@ namespace Polly.Specs
                 .Retry((_, __, ___) => { });
 
             policy.Invoking(p => p.ExecuteAndCapture(ctx => { }, (IDictionary<string, object>)null))
-                  .ShouldThrow<ArgumentNullException>();
+                  .Should().Throw<ArgumentNullException>();
         }
 
         [Fact]
@@ -249,7 +237,7 @@ namespace Polly.Specs
                 .Retry((_, __, ___) => { });
 
             policy.Invoking(p => p.ExecuteAndCapture(ctx => { }, (Context)null))
-                .ShouldThrow<ArgumentNullException>().And
+                .Should().Throw<ArgumentNullException>().And
                 .ParamName.Should().Be("context");
         }
 
@@ -261,7 +249,7 @@ namespace Polly.Specs
                 .Retry((_, __, ___) => { });
 
             policy.Invoking(p => p.ExecuteAndCapture(ctx => 2, (IDictionary<string, object>)null))
-                  .ShouldThrow<ArgumentNullException>();
+                  .Should().Throw<ArgumentNullException>();
         }
 
         [Fact]
@@ -272,7 +260,7 @@ namespace Polly.Specs
                 .Retry((_, __, ___) => { });
 
             policy.Invoking(p => p.ExecuteAndCapture(ctx => 2, (Context)null))
-                  .ShouldThrow<ArgumentNullException>().And
+                  .Should().Throw<ArgumentNullException>().And
                   .ParamName.Should().Be("context");
         }
 
@@ -285,7 +273,7 @@ namespace Polly.Specs
 
             Policy policy = Policy.NoOp();
 
-            policy.ExecuteAndCapture((context) => { capturedContext = context; }, executionContext);
+            policy.ExecuteAndCapture(context => { capturedContext = context; }, executionContext);
 
             capturedContext.Should().BeSameAs(executionContext);
         }
@@ -298,7 +286,7 @@ namespace Polly.Specs
 
             Policy policy = Policy.NoOp();
 
-            policy.ExecuteAndCapture((context) => { }, executionContext)
+            policy.ExecuteAndCapture(context => { }, executionContext)
                 .Context.Should().BeSameAs(executionContext);
         }
 

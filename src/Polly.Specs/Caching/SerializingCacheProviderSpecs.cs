@@ -21,7 +21,7 @@ namespace Polly.Specs.Caching
 
         Action configure = () => new SerializingCacheProvider<StubSerialized>(null, stubObjectSerializer);
 
-            configure.ShouldThrow<ArgumentNullException>()
+            configure.Should().Throw<ArgumentNullException>()
                 .And.ParamName.Should().Be("wrappedCacheProvider");
         }
 
@@ -30,7 +30,7 @@ namespace Polly.Specs.Caching
         {
             Action configure = () => new SerializingCacheProvider<object>(new StubCacheProvider().For<object>(), null);
 
-            configure.ShouldThrow<ArgumentNullException>()
+            configure.Should().Throw<ArgumentNullException>()
                 .And.ParamName.Should().Be("serializer");
         }
 
@@ -39,7 +39,7 @@ namespace Polly.Specs.Caching
         {
             Action configure = () => new StubCacheProvider().For<object>().WithSerializer(null);
 
-            configure.ShouldThrow<ArgumentNullException>()
+            configure.Should().Throw<ArgumentNullException>()
                 .And.ParamName.Should().Be("serializer");
         }
 
@@ -76,7 +76,7 @@ namespace Polly.Specs.Caching
                 deserialize: s => s.Original
             );
             StubCacheProvider stubCacheProvider = new StubCacheProvider();
-            object objectToCache = default(object);
+            object objectToCache = default;
             string key = "some key";
 
             SerializingCacheProvider<StubSerialized> serializingCacheProvider = new SerializingCacheProvider<StubSerialized>(stubCacheProvider.For<StubSerialized>(), stubSerializer);
@@ -132,7 +132,7 @@ namespace Polly.Specs.Caching
 
             cacheHit.Should().BeFalse();
             deserializeInvoked.Should().BeFalse();
-            fromCache.Should().Be(default(object));
+            fromCache.Should().Be(default);
         }
 
         [Fact]
@@ -168,7 +168,7 @@ namespace Polly.Specs.Caching
                 deserialize: s => s.Original
             );
             StubCacheProvider stubCacheProvider = new StubCacheProvider();
-            object objectToCache = default(object);
+            object objectToCache = default;
             string key = "some key";
 
             SerializingCacheProvider<StubSerialized> serializingCacheProvider = stubCacheProvider.For<StubSerialized>().WithSerializer(stubSerializer);
@@ -223,7 +223,7 @@ namespace Polly.Specs.Caching
 
             cacheHit.Should().BeFalse();
             deserializeInvoked.Should().BeFalse();
-            fromCache.Should().Be(default(object));
+            fromCache.Should().Be(default);
         }
 
         #endregion
@@ -240,7 +240,7 @@ namespace Polly.Specs.Caching
 
         Action configure = () => new SerializingCacheProvider<ResultPrimitive, StubSerialized<ResultPrimitive>>(null, stubTResultSerializer);
 
-            configure.ShouldThrow<ArgumentNullException>()
+            configure.Should().Throw<ArgumentNullException>()
                 .And.ParamName.Should().Be("wrappedCacheProvider");
         }
 
@@ -249,7 +249,7 @@ namespace Polly.Specs.Caching
         {
             Action configure = () => new SerializingCacheProvider<object, object>(new StubCacheProvider().For<object>(), null);
 
-            configure.ShouldThrow<ArgumentNullException>()
+            configure.Should().Throw<ArgumentNullException>()
                 .And.ParamName.Should().Be("serializer");
         }
 
@@ -258,7 +258,7 @@ namespace Polly.Specs.Caching
         {
             Action configure = () => new StubCacheProvider().For<object>().WithSerializer<object, object>(null);
 
-            configure.ShouldThrow<ArgumentNullException>()
+            configure.Should().Throw<ArgumentNullException>()
                 .And.ParamName.Should().Be("serializer");
         }
 
@@ -295,7 +295,7 @@ namespace Polly.Specs.Caching
                 deserialize: s => s.Original
             );
             StubCacheProvider stubCacheProvider = new StubCacheProvider();
-            ResultPrimitive objectToCache = default(ResultPrimitive);
+            ResultPrimitive objectToCache = default;
             string key = "some key";
 
             SerializingCacheProvider<ResultPrimitive, StubSerialized<ResultPrimitive>> serializingCacheProvider = new SerializingCacheProvider<ResultPrimitive, StubSerialized<ResultPrimitive>>(stubCacheProvider.For<StubSerialized<ResultPrimitive>>(), stubTResultSerializer);
@@ -387,7 +387,7 @@ namespace Polly.Specs.Caching
                 deserialize: s => s.Original
             );
             StubCacheProvider stubCacheProvider = new StubCacheProvider();
-            ResultPrimitive objectToCache = default(ResultPrimitive);
+            ResultPrimitive objectToCache = default;
             string key = "some key";
 
             SerializingCacheProvider<ResultPrimitive, StubSerialized<ResultPrimitive>> serializingCacheProvider =

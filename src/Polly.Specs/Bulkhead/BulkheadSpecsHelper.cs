@@ -62,7 +62,7 @@ namespace Polly.Specs.Bulkhead
             testOutputHelper.WriteLine(String.Empty);
         }
 
-        protected static void EnsureNoUnbservedTaskExceptions(Task[] tasks)
+        protected static void EnsureNoUnobservedTaskExceptions(Task[] tasks)
         {
             for (int i = 0; i < tasks.Length; i++)
             {
@@ -87,6 +87,7 @@ namespace Polly.Specs.Bulkhead
                     action.Dispose();
                 }
             }
+            statusChanged.Dispose();
         }
 
 #if !DEBUG

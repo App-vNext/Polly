@@ -12,7 +12,7 @@ namespace Polly.Specs.Caching
         {
             Action configure = () => new ResultTtl<object>((Func<object, Ttl>)null);
 
-            configure.ShouldThrow<ArgumentNullException>().And.ParamName.Should().Be("ttlFunc");
+            configure.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be("ttlFunc");
         }
 
         [Fact]
@@ -20,15 +20,15 @@ namespace Polly.Specs.Caching
         {
             Action configure = () => new ResultTtl<object>((Func<Context, object, Ttl>)null);
 
-            configure.ShouldThrow<ArgumentNullException>().And.ParamName.Should().Be("ttlFunc");
+            configure.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be("ttlFunc");
         }
 
         [Fact]
         public void Should_not_throw_when_func_is_set()
         {
-            Action configure = () => new ResultTtl<object>((result) => new Ttl());
+            Action configure = () => new ResultTtl<object>(result => new Ttl());
 
-            configure.ShouldNotThrow();
+            configure.Should().NotThrow();
         }
 
         [Fact]
@@ -36,14 +36,14 @@ namespace Polly.Specs.Caching
         {
             Action configure = () => new ResultTtl<object>((context, result) => new Ttl());
 
-            configure.ShouldNotThrow();
+            configure.Should().NotThrow();
         }
 
         [Fact]
         public void Should_return_func_result()
         {
             TimeSpan ttl = TimeSpan.FromMinutes(1);
-            Func<dynamic, Ttl> func = (result) => { return new Ttl(result.Ttl); };
+            Func<dynamic, Ttl> func = result => new Ttl(result.Ttl);
 
             ResultTtl<dynamic> ttlStrategy = new ResultTtl<dynamic>(func);
 
@@ -58,7 +58,7 @@ namespace Polly.Specs.Caching
             const string specialKey = "specialKey";
 
             TimeSpan ttl = TimeSpan.FromMinutes(1);
-            Func<Context, dynamic, Ttl> func = (context, result) => { return context.OperationKey == specialKey ? new Ttl(TimeSpan.Zero) : new Ttl(result.Ttl); };
+            Func<Context, dynamic, Ttl> func = (context, result) => context.OperationKey == specialKey ? new Ttl(TimeSpan.Zero) : new Ttl(result.Ttl);
 
             ResultTtl<dynamic> ttlStrategy = new ResultTtl<dynamic>(func);
 

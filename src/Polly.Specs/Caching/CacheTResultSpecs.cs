@@ -10,7 +10,7 @@ using Xunit;
 
 namespace Polly.Specs.Caching
 {
-    [Collection(Polly.Specs.Helpers.Constants.SystemClockDependentTestCollection)]
+    [Collection(Constants.SystemClockDependentTestCollection)]
     public class CacheTResultSpecs : IDisposable
     {
         #region Configuration
@@ -20,7 +20,7 @@ namespace Polly.Specs.Caching
         {
             ISyncCacheProvider cacheProvider = null;
             Action action = () => Policy.Cache<ResultPrimitive>(cacheProvider, TimeSpan.MaxValue);
-            action.ShouldThrow<ArgumentNullException>().And.ParamName.Should().Be("cacheProvider");
+            action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be("cacheProvider");
         }
 
         [Fact]
@@ -29,7 +29,7 @@ namespace Polly.Specs.Caching
             ISyncCacheProvider cacheProvider = new StubCacheProvider();
             ITtlStrategy ttlStrategy = null;
             Action action = () => Policy.Cache<ResultPrimitive>(cacheProvider, ttlStrategy);
-            action.ShouldThrow<ArgumentNullException>().And.ParamName.Should().Be("ttlStrategy");
+            action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be("ttlStrategy");
         }
         [Fact]
         public void Should_throw_when_cache_key_strategy_is_null()
@@ -37,7 +37,7 @@ namespace Polly.Specs.Caching
             ISyncCacheProvider cacheProvider = new StubCacheProvider();
             Func<Context, string> cacheKeyStrategy = null;
             Action action = () => Policy.Cache<ResultPrimitive>(cacheProvider, TimeSpan.MaxValue, cacheKeyStrategy);
-            action.ShouldThrow<ArgumentNullException>().And.ParamName.Should().Be("cacheKeyStrategy");
+            action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be("cacheKeyStrategy");
         }
         
         #endregion
@@ -80,7 +80,7 @@ namespace Polly.Specs.Caching
             cacheHit1.Should().BeFalse();
             fromCache1.Should().BeNull();
 
-            cache.Execute(ctx => { return valueToReturn; }, new Context(operationKey)).Should().Be(valueToReturn);
+            cache.Execute(ctx => valueToReturn, new Context(operationKey)).Should().Be(valueToReturn);
 
             (bool cacheHit2, object fromCache2) = stubCacheProvider.TryGet(operationKey);
             cacheHit2.Should().BeTrue();
@@ -146,7 +146,7 @@ namespace Polly.Specs.Caching
             cacheHit1.Should().BeFalse();
             fromCache1.Should().BeNull();
 
-            cache.Execute(ctx => { return valueToReturn; }, new Context(operationKey)).Should().Be(valueToReturn);
+            cache.Execute(ctx => valueToReturn, new Context(operationKey)).Should().Be(valueToReturn);
 
             (bool cacheHit2, object fromCache2) = stubCacheProvider.TryGet(operationKey);
             cacheHit2.Should().BeFalse();
@@ -232,7 +232,7 @@ namespace Polly.Specs.Caching
         [Fact]
         public void Should_execute_delegate_and_put_value_in_cache_if_cache_does_not_hold_value__default_for_reference_type()
         {
-            ResultClass valueToReturn = default(ResultClass);
+            ResultClass valueToReturn = default;
             const string operationKey = "SomeOperationKey";
 
             ISyncCacheProvider stubCacheProvider = new StubCacheProvider();
@@ -242,7 +242,7 @@ namespace Polly.Specs.Caching
             cacheHit1.Should().BeFalse();
             fromCache1.Should().BeNull();
 
-            cache.Execute(ctx => { return valueToReturn; }, new Context(operationKey)).Should().Be(valueToReturn);
+            cache.Execute(ctx => valueToReturn, new Context(operationKey)).Should().Be(valueToReturn);
 
             (bool cacheHit2, object fromCache2) = stubCacheProvider.TryGet(operationKey);
             cacheHit2.Should().BeTrue();
@@ -252,7 +252,7 @@ namespace Polly.Specs.Caching
         [Fact]
         public void Should_return_value_from_cache_and_not_execute_delegate_if_cache_holds_value__default_for_reference_type()
         {
-            ResultClass valueToReturnFromCache = default(ResultClass);
+            ResultClass valueToReturnFromCache = default;
             ResultClass valueToReturnFromExecution = new ResultClass(ResultPrimitive.Good);
             const string operationKey = "SomeOperationKey";
 
@@ -275,7 +275,7 @@ namespace Polly.Specs.Caching
         [Fact]
         public void Should_execute_delegate_and_put_value_in_cache_if_cache_does_not_hold_value__default_for_value_type()
         {
-            ResultPrimitive valueToReturn = default(ResultPrimitive);
+            ResultPrimitive valueToReturn = default;
             const string operationKey = "SomeOperationKey";
 
             ISyncCacheProvider stubCacheProvider = new StubCacheProvider();
@@ -285,7 +285,7 @@ namespace Polly.Specs.Caching
             cacheHit1.Should().BeFalse();
             fromCache1.Should().BeNull();
 
-            cache.Execute(ctx => { return valueToReturn; }, new Context(operationKey)).Should().Be(valueToReturn);
+            cache.Execute(ctx => valueToReturn, new Context(operationKey)).Should().Be(valueToReturn);
 
             (bool cacheHit2, object fromCache2) = stubCacheProvider.TryGet(operationKey);
             cacheHit2.Should().BeTrue();
@@ -295,7 +295,7 @@ namespace Polly.Specs.Caching
         [Fact]
         public void Should_return_value_from_cache_and_not_execute_delegate_if_cache_holds_value__default_for_value_type()
         {
-            ResultPrimitive valueToReturnFromCache = default(ResultPrimitive);
+            ResultPrimitive valueToReturnFromCache = default;
             ResultPrimitive valueToReturnFromExecution = ResultPrimitive.Good;
             valueToReturnFromExecution.Should().NotBe(valueToReturnFromCache);
             const string operationKey = "SomeOperationKey";
@@ -451,7 +451,7 @@ namespace Polly.Specs.Caching
             tokenSource.Cancel();
 
             cache.Invoking(policy => policy.Execute(func, new Context(operationKey), tokenSource.Token))
-                .ShouldThrow<OperationCanceledException>();
+                .Should().Throw<OperationCanceledException>();
             delegateInvocations.Should().Be(1);
         }
 
@@ -474,7 +474,7 @@ namespace Polly.Specs.Caching
             };
 
             cache.Invoking(policy => policy.Execute(func, new Context(operationKey), tokenSource.Token))
-                .ShouldThrow<OperationCanceledException>();
+                .Should().Throw<OperationCanceledException>();
 
             (bool cacheHit, object fromCache) = stubCacheProvider.TryGet(operationKey);
             cacheHit.Should().BeFalse();

@@ -1,12 +1,13 @@
 ﻿using System;
 using FluentAssertions;
 using Polly.Caching;
+using Polly.Specs.Helpers;
 using Polly.Utilities;
 using Xunit;
 
 namespace Polly.Specs.Caching
 {
-    [Collection(Polly.Specs.Helpers.Constants.SystemClockDependentTestCollection)]
+    [Collection(Constants.SystemClockDependentTestCollection)]
     public class AbsoluteTtlSpecs : IDisposable
     {
         [Fact]
@@ -14,7 +15,7 @@ namespace Polly.Specs.Caching
         {
             Action configure = () => new AbsoluteTtl(DateTime.Today.AddDays(1));
 
-            configure.ShouldNotThrow();
+            configure.Should().NotThrow();
         }
 
         [Fact]
@@ -22,7 +23,7 @@ namespace Polly.Specs.Caching
         {
             Action configure = () => new AbsoluteTtl(DateTimeOffset.MaxValue);
 
-            configure.ShouldNotThrow();
+            configure.Should().NotThrow();
         }
 
         [Fact]
@@ -30,7 +31,7 @@ namespace Polly.Specs.Caching
         {
             Action configure = () => new AbsoluteTtl(DateTimeOffset.MinValue);
 
-            configure.ShouldNotThrow();
+            configure.Should().NotThrow();
         }
 
         [Fact]
