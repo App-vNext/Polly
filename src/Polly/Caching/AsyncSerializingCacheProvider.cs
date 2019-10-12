@@ -100,7 +100,7 @@ namespace Polly.Caching
         public async Task<(bool, TResult)> TryGetAsync(string key, CancellationToken cancellationToken, bool continueOnCapturedContext)
         {
             (bool cacheHit, TSerialized objectToDeserialize) = await _wrappedCacheProvider.TryGetAsync(key, cancellationToken, continueOnCapturedContext).ConfigureAwait(continueOnCapturedContext);
-            return (cacheHit, cacheHit ? _serializer.Deserialize(objectToDeserialize) : default(TResult));
+            return (cacheHit, cacheHit ? _serializer.Deserialize(objectToDeserialize) : default);
         }
 
         /// <summary>

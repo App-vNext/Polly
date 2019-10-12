@@ -235,7 +235,7 @@ namespace Polly.Specs.Caching
         [Fact]
         public async Task Should_execute_delegate_and_put_value_in_cache_if_cache_does_not_hold_value__default_for_reference_type()
         {
-            ResultClass valueToReturn = default(ResultClass);
+            ResultClass valueToReturn = default;
             const string operationKey = "SomeOperationKey";
 
             IAsyncCacheProvider stubCacheProvider = new StubCacheProvider();
@@ -255,7 +255,7 @@ namespace Polly.Specs.Caching
         [Fact]
         public async Task Should_return_value_from_cache_and_not_execute_delegate_if_cache_holds_value__default_for_reference_type()
         {
-            ResultClass valueToReturnFromCache = default(ResultClass);
+            ResultClass valueToReturnFromCache = default;
             ResultClass valueToReturnFromExecution = new ResultClass(ResultPrimitive.Good);
             const string operationKey = "SomeOperationKey";
 
@@ -280,7 +280,7 @@ namespace Polly.Specs.Caching
         [Fact]
         public async Task Should_execute_delegate_and_put_value_in_cache_if_cache_does_not_hold_value__default_for_value_type()
         {
-            ResultPrimitive valueToReturn = default(ResultPrimitive);
+            ResultPrimitive valueToReturn = default;
             const string operationKey = "SomeOperationKey";
 
             IAsyncCacheProvider stubCacheProvider = new StubCacheProvider();
@@ -300,7 +300,7 @@ namespace Polly.Specs.Caching
         [Fact]
         public async Task Should_return_value_from_cache_and_not_execute_delegate_if_cache_holds_value__default_for_value_type()
         {
-            ResultPrimitive valueToReturnFromCache = default(ResultPrimitive);
+            ResultPrimitive valueToReturnFromCache = default;
             ResultPrimitive valueToReturnFromExecution = ResultPrimitive.Good;
             valueToReturnFromExecution.Should().NotBe(valueToReturnFromCache);
             const string operationKey = "SomeOperationKey";
