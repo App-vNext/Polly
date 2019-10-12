@@ -218,7 +218,8 @@ namespace Polly.Specs
                 .RetryAsync((_, __, ___) => { });
 
             policy.Awaiting(async p => await p.ExecuteAsync(ctx => Task.FromResult(2), null))
-                  .Should().Throw<ArgumentNullException>().Ande("context");
+                  .Should().Throw<ArgumentNullException>().And
+                  .ParamName.Should().Be("context");
         }
 
         [Fact]
