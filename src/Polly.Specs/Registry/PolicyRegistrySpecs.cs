@@ -68,6 +68,60 @@ namespace Polly.Specs.Registry
             _registry.Add<ISyncPolicy<ResultPrimitive>>(key2, policy2);
             _registry.Count.Should().Be(2);
         }
+        
+        [Fact]
+        public void Should_be_able_to_add_Policy_using_TryAdd()
+        {
+            Policy policy = Policy.NoOp();
+            string key = Guid.NewGuid().ToString();
+
+            var insert = _registry.TryAdd(key, policy);
+            _registry.Count.Should().Be(1);
+            insert.Should().Be(true);
+
+            Policy policy2 = Policy.NoOp();
+            string key2 = Guid.NewGuid().ToString();
+
+            var insert2 = _registry.TryAdd(key2, policy2);
+            _registry.Count.Should().Be(2);
+            insert2.Should().Be(true);
+        }
+
+        [Fact]
+        public void Should_be_able_to_add_PolicyTResult_using_TryAdd()
+        {
+            Policy policy = Policy.NoOp();
+            string key = Guid.NewGuid().ToString();
+
+            var insert = _registry.TryAdd(key, policy);
+            _registry.Count.Should().Be(1);
+            insert.Should().Be(true);
+
+            Policy<ResultPrimitive> policy2 = Policy<ResultPrimitive>.HandleResult(ResultPrimitive.Fault).Retry();
+            string key2 = Guid.NewGuid().ToString();
+
+            var insert2 = _registry.TryAdd(key2, policy2);
+            _registry.Count.Should().Be(2);
+            insert2.Should().Be(true);
+        }
+
+        [Fact]
+        public void Should_be_able_to_add_Policy_by_interface_using_TryAdd()
+        {
+            Policy policy = Policy.NoOp();
+            string key = Guid.NewGuid().ToString();
+
+            var insert = _registry.TryAdd(key, policy);
+            _registry.Count.Should().Be(1);
+            insert.Should().Be(true);
+
+            ISyncPolicy<ResultPrimitive> policy2 = Policy<ResultPrimitive>.HandleResult(ResultPrimitive.Fault).Retry();
+            string key2 = Guid.NewGuid().ToString();
+
+            var insert2 = _registry.TryAdd(key2, policy2);
+            _registry.Count.Should().Be(2);
+            insert2.Should().Be(true);
+        }
 
         [Fact]
         public void Should_be_able_to_add_Policy_using_Indexer()
@@ -408,6 +462,20 @@ namespace Polly.Specs.Registry
 
             _registry.Remove(key);
             _registry.Count.Should().Be(0);
+        }
+        
+        [Fact]
+        public void Should_be_able_to_remove_policy_with_TryRemove()
+        {
+            Policy policy = Policy.NoOp();
+            string key = Guid.NewGuid().ToString();
+
+            _registry.Add(key, policy);
+            _registry.Count.Should().Be(1);
+
+            _registry.TryRemove(key, out policy);
+            _registry.Count.Should().Be(0);
+            policy.Should().Be(policy);
         }
 
         [Fact]
