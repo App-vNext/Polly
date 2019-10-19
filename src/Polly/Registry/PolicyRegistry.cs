@@ -140,6 +140,6 @@ namespace Polly.Registry
         /// This is not considered a significant issue as typical usage of PolicyRegistry is for bulk population at app startup, 
         /// with only infrequent changes to the PolicyRegistry during app running, if using PolicyRegistry for dynamic updates during running.
         /// </remarks>
-        IEnumerator IEnumerable.GetEnumerator() => ((PolicyRegistry)this).GetEnumerator();
+        IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
     }
 }

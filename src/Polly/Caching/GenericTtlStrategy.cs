@@ -18,6 +18,6 @@ namespace Polly.Caching
         /// <param name="context">The execution context.</param>
         /// <param name="result">The execution result.</param>
         /// <returns>A <see cref="Ttl"/> representing the remaining Ttl of the cached item.</returns>
-        public Ttl GetTtl(Context context, TResult result) => _wrappedTtlStrategy.GetTtl(context, (object)result);
+        public Ttl GetTtl(Context context, TResult result) => _wrappedTtlStrategy.GetTtl(context, result);
     }
 }
