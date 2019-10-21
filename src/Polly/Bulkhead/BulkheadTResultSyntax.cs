@@ -1,6 +1,5 @@
 ﻿using Polly.Bulkhead;
 using System;
-using System.Threading;
 
 namespace Polly
 {

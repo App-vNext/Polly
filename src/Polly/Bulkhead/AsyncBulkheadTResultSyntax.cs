@@ -1,7 +1,6 @@
 ﻿using Polly.Bulkhead;
 using Polly.Utilities;
 using System;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace Polly
