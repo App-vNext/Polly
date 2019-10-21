@@ -11,22 +11,18 @@ namespace Polly.Bulkhead
     {
         private readonly SemaphoreSlim _maxParallelizationSemaphore;
         private readonly SemaphoreSlim _maxQueuedActionsSemaphore;
-        private readonly int _maxParallelization;
         private readonly int _maxQueueingActions;
         private readonly Action<Context> _onBulkheadRejected;
 
         internal BulkheadPolicy(
             int maxParallelization,
             int maxQueueingActions,
-            SemaphoreSlim maxParallelizationSemaphore, 
-            SemaphoreSlim maxQueuedActionsSemaphore,
             Action<Context> onBulkheadRejected)
         {
-            _maxParallelization = maxParallelization;
             _maxQueueingActions = maxQueueingActions;
-            _maxParallelizationSemaphore = maxParallelizationSemaphore ?? throw new ArgumentNullException(nameof(maxParallelizationSemaphore));
-            _maxQueuedActionsSemaphore = maxQueuedActionsSemaphore ?? throw new ArgumentNullException(nameof(maxQueuedActionsSemaphore));
             _onBulkheadRejected = onBulkheadRejected ?? throw new ArgumentNullException(nameof(onBulkheadRejected));
+
+            (_maxParallelizationSemaphore, _maxQueuedActionsSemaphore) = BulkheadSemaphoreFactory.CreateBulkheadSemaphores(maxParallelization, maxQueueingActions);
         }
 
         /// <inheritdoc/>
@@ -62,7 +58,6 @@ namespace Polly.Bulkhead
     {
         private readonly SemaphoreSlim _maxParallelizationSemaphore;
         private readonly SemaphoreSlim _maxQueuedActionsSemaphore;
-        private readonly int _maxParallelization;
         private readonly int _maxQueueingActions;
         private readonly Action<Context> _onBulkheadRejected;
 
@@ -70,15 +65,12 @@ namespace Polly.Bulkhead
         internal BulkheadPolicy(
             int maxParallelization,
             int maxQueueingActions,
-            SemaphoreSlim maxParallelizationSemaphore,
-            SemaphoreSlim maxQueuedActionsSemaphore,
             Action<Context> onBulkheadRejected)
         {
-            _maxParallelization = maxParallelization;
             _maxQueueingActions = maxQueueingActions;
-            _maxParallelizationSemaphore = maxParallelizationSemaphore ?? throw new ArgumentNullException(nameof(maxParallelizationSemaphore));
-            _maxQueuedActionsSemaphore = maxQueuedActionsSemaphore ?? throw new ArgumentNullException(nameof(maxQueuedActionsSemaphore));
             _onBulkheadRejected = onBulkheadRejected ?? throw new ArgumentNullException(nameof(onBulkheadRejected));
+
+            (_maxParallelizationSemaphore, _maxQueuedActionsSemaphore) = BulkheadSemaphoreFactory.CreateBulkheadSemaphores(maxParallelization, maxQueueingActions);
         }
 
         /// <inheritdoc/>
