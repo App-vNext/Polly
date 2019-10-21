@@ -63,18 +63,9 @@ namespace Polly
             if (maxQueuingActions < 0) throw new ArgumentOutOfRangeException(nameof(maxQueuingActions), "Value must be greater than or equal to zero.");
             if (onBulkheadRejected == null) throw new ArgumentNullException(nameof(onBulkheadRejected));
 
-            SemaphoreSlim maxParallelizationSemaphore = new SemaphoreSlim(maxParallelization, maxParallelization);
-
-            var maxQueuingCompounded = maxQueuingActions <= int.MaxValue - maxParallelization
-                ? maxQueuingActions + maxParallelization
-                : int.MaxValue;
-            SemaphoreSlim maxQueuedActionsSemaphore = new SemaphoreSlim(maxQueuingCompounded, maxQueuingCompounded);
-
             return new BulkheadPolicy<TResult>(
                 maxParallelization,
                 maxQueuingActions,
-                maxParallelizationSemaphore,
-                maxQueuedActionsSemaphore,
                 onBulkheadRejected
                 );
         }
