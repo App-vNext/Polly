@@ -1,7 +1,6 @@
 ﻿using Polly.Bulkhead;
 using Polly.Utilities;
 using System;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace Polly
@@ -65,18 +64,9 @@ namespace Polly
             if (maxQueuingActions < 0) throw new ArgumentOutOfRangeException(nameof(maxQueuingActions), "Value must be greater than or equal to zero.");
             if (onBulkheadRejectedAsync == null) throw new ArgumentNullException(nameof(onBulkheadRejectedAsync));
 
-            SemaphoreSlim maxParallelizationSemaphore = new SemaphoreSlim(maxParallelization, maxParallelization);
-
-            var maxQueuingCompounded = maxQueuingActions <= int.MaxValue - maxParallelization
-                ? maxQueuingActions + maxParallelization
-                : int.MaxValue;
-            SemaphoreSlim maxQueuedActionsSemaphore = new SemaphoreSlim(maxQueuingCompounded, maxQueuingCompounded);
-
             return new AsyncBulkheadPolicy<TResult>(
                 maxParallelization,
                 maxQueuingActions,
-                maxParallelizationSemaphore,
-                maxQueuedActionsSemaphore,
                 onBulkheadRejectedAsync
                 );
         }
