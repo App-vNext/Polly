@@ -20,15 +20,6 @@ namespace Polly.Registry
         void Add<TPolicy>(TKey key, TPolicy policy) where TPolicy : IsPolicy;
 
         /// <summary>
-        /// Adds an element with the provided key and policy to the registry.
-        /// </summary>
-        /// <param name="key">The key for the policy.</param>
-        /// <param name="policy">The policy to store in the registry.</param>
-        /// <typeparam name="TPolicy">The type of Policy.</typeparam>
-        /// <returns>True if Policy was added. False otherwise.</returns>
-        bool TryAdd<TPolicy>(string key, TPolicy policy) where TPolicy : IsPolicy;
-
-        /// <summary>
         /// Gets or sets the <see cref="IsPolicy"/> with the specified key.
         /// <remarks>To retrieve a policy directly as a particular Policy type or Policy interface (avoiding a cast), use the <see cref="IReadOnlyPolicyRegistry{TKey}.Get{TPolicy}"/> method.</remarks>
         /// </summary>
@@ -45,19 +36,6 @@ namespace Polly.Registry
         /// <returns>True if the policy is successfully removed. Otherwise false.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="key"/> is null.</exception>
         bool Remove(TKey key);
-
-        /// <summary>
-        /// Removes the policy stored under the specified <paramref name="key"/> from the registry.
-        /// </summary>
-        /// <param name="key">The <paramref name="key"/> of the policy to remove.</param>
-        /// <param name="policy">
-        /// This method returns the policy associated with the specified <paramref name="key"/>, if the
-        /// key is found; otherwise null.
-        /// This parameter is passed uninitialized.
-        /// </param>
-        /// <typeparam name="TPolicy">The type of Policy.</typeparam>
-        /// <returns>True if the policy is successfully removed. Otherwise false.</returns>
-        bool TryRemove<TPolicy>(string key, out TPolicy policy) where TPolicy : IsPolicy;
 
         /// <summary>
         /// Removes all keys and policies from registry.
