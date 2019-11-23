@@ -51,6 +51,24 @@ namespace Polly.Registry
             _registry.Add(key, policy);
 
         /// <summary>
+        /// Adds an element with the provided key and policy to the registry.
+        /// </summary>
+        /// <param name="key">The key for the policy.</param>
+        /// <param name="policy">The policy to store in the registry.</param>
+        /// <typeparam name="TPolicy">The type of Policy.</typeparam>
+        /// <returns>True if Policy was added. False otherwise.</returns>
+        public bool TryAdd<TPolicy>(string key, TPolicy policy) where TPolicy : IsPolicy
+        {
+            if (_registry is ConcurrentDictionary<string, IsPolicy> registry)
+            {
+                bool got = registry.TryAdd(key, policy);
+                return got;
+            }
+
+            return false;
+        }
+
+        /// <summary>
         /// Gets of sets the <see cref="IsPolicy"/> with the specified key.
         /// <remarks>To retrieve a policy directly as a particular Policy type or Policy interface (avoiding a cast), use the <see cref="Get{TPolicy}"/> method.</remarks>
         /// </summary>
@@ -115,6 +133,30 @@ namespace Polly.Registry
         /// <exception cref="ArgumentNullException"><paramref name="key"/> is null.</exception>
         public bool Remove(string key) =>
             _registry.Remove(key);
+
+        /// <summary>
+        /// Removes the policy stored under the specified <paramref name="key"/> from the registry.
+        /// </summary>
+        /// <param name="key">The <paramref name="key"/> of the policy to remove.</param>
+        /// <param name="policy">
+        /// This method returns the policy associated with the specified <paramref name="key"/>, if the
+        /// key is found; otherwise null.
+        /// This parameter is passed uninitialized.
+        /// </param>
+        /// <typeparam name="TPolicy">The type of Policy.</typeparam>
+        /// <returns>True if the policy is successfully removed. Otherwise false.</returns>
+        public bool TryRemove<TPolicy>(string key, out TPolicy policy) where TPolicy : IsPolicy
+        {
+            if (_registry is ConcurrentDictionary<string, IsPolicy> registry)
+            {
+                bool got = registry.TryRemove(key, out IsPolicy value);
+                policy = got ? (TPolicy)value : default;
+                return got;
+            }
+
+            policy = default;
+            return false;
+        }
 
         /// <summary>Returns an enumerator that iterates through the policy objects in the <see
         /// cref="PolicyRegistry"/>.</summary>
