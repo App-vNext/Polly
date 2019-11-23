@@ -1,3 +1,7 @@
+## 7.2.0
+- Add test target netcoreapp3.0
+- Extend PolicyRegistry with concurrent method support: TryAdd, TryRemove, TryUpdate, GetOrAdd, AddOrUpdate
+
 ## 7.1.1
 - Bug fix: ensure async retry policies honor continueOnCapturedContext setting (affected v7.1.0 only).
 - Remove deprecated cake add-in from build

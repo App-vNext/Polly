@@ -1059,6 +1059,8 @@ Both templates contain a full project structure referencing Polly, Polly's defau
 * [@kesmy](https://github.com/Kesmy) - Add Soucelink support, clean up cake build.
 * [@simluk](https://github.com/simluk) - Fix continueOnCaptureContext not being honored in async retry implementation (bug in v7.1.0 only).
 * [@jnyrup](https://github.com/jnyrup) - Upgrade tests to Fluent Assertions v5.9.0
+* [@SimonCropp](https://github.com/SimonCropp) - Add netcoreapp3.0 target; code clean-ups.
+* [@aerotog](https://github.com/aerotog) and [@reisenberger](https://github.com/reisenberger) - IConcurrentPolicyRegistry methods on PolicyRegistry
 
 # Sample Projects
 
