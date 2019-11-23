@@ -493,6 +493,41 @@ namespace Polly.Specs.Timeout
             executed.Should().BeFalse();
         }
 
+        [Fact]
+        public void Should_not_mask_user_exception_if_user_exception_overlaps_with_timeout()
+        {
+            var userException = new Exception();
+            var shimTimeSpan = TimeSpan.FromSeconds(0.2);
+            var policy = Policy.Timeout(shimTimeSpan, TimeoutStrategy.Optimistic);
+
+            var thrown = policy.Invoking(p => p.Execute(ct =>
+                {
+                    try
+                    {
+                        SystemClock.Sleep(shimTimeSpan + shimTimeSpan, CancellationToken.None);
+                    }
+                    catch
+                    {
+                        // Throw a different exception - this exception should not be masked.
+                        // The issue of more interest for issue 620 is an edge-case race condition where a user exception is thrown
+                        // quasi-simultaneously to timeout (rather than in a manual catch of a timeout as here), but this is a good way to simulate it.
+                        // A real-world case can be if timeout occurs while code is marshalling a user-exception into or through the catch block in TimeoutEngine.
+                        throw userException;
+                    }
+
+                    throw new InvalidOperationException("This exception should not be thrown. Test should throw for timeout earlier.");
+
+                }, CancellationToken.None))
+                .Should()
+                .Throw<Exception>()
+                .Which;
+
+            thrown.Should().NotBeOfType<OperationCanceledException>();
+            thrown.Should().NotBeOfType<TimeoutRejectedException>();
+            thrown.Should().NotBeOfType<InvalidOperationException>();
+            thrown.Should().BeSameAs(userException);
+        }
+
         #endregion
 
         #region onTimeout overload - pessimistic

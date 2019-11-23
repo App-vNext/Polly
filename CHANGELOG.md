@@ -1,6 +1,7 @@
 ## 7.2.0
 - Add test target netcoreapp3.0
 - Extend PolicyRegistry with concurrent method support: TryAdd, TryRemove, TryUpdate, GetOrAdd, AddOrUpdate
+- TimeoutPolicy: if timeout occurs while a user exception is being marshalled (edge case race condition), do not mask user exception (issue 620)
 
 ## 7.1.1
 - Bug fix: ensure async retry policies honor continueOnCapturedContext setting (affected v7.1.0 only).
