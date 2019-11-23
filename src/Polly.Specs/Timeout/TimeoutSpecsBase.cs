@@ -42,7 +42,7 @@ namespace Polly.Specs.Timeout
                 SystemClock.Sleep(TimeSpan.Zero, CancellationToken.None); // Invoke our custom definition of sleep, to check for immediate cancellation.
             };
 
-            // Override SysteClock.Sleep, to manipulate our artificial clock.  And - if it means sleeping beyond the time when a tracked token should cancel - cancel it!
+            // Override SystemClock.Sleep, to manipulate our artificial clock.  And - if it means sleeping beyond the time when a tracked token should cancel - cancel it!
             SystemClock.Sleep = (sleepTimespan, sleepCancellationtoken) =>
             {
                 if (sleepCancellationtoken.IsCancellationRequested) return;
