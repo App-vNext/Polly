@@ -40,7 +40,7 @@ namespace Polly.Registry
         public int Count => _registry.Count;
 
         /// <summary>
-        /// Adds an element with the provided key and policy to the registry.
+        /// Adds a policy with the provided key and policy to the registry.
         /// </summary>
         /// <param name="key">The key for the policy.</param>
         /// <param name="policy">The policy to store in the registry.</param>
@@ -51,7 +51,7 @@ namespace Polly.Registry
             _registry.Add(key, policy);
 
         /// <summary>
-        /// Adds an element with the provided key and policy to the registry.
+        /// Adds a policy with the provided key and policy to the registry.
         /// </summary>
         /// <param name="key">The key for the policy.</param>
         /// <param name="policy">The policy to store in the registry.</param>
@@ -72,10 +72,10 @@ namespace Polly.Registry
         /// Gets of sets the <see cref="IsPolicy"/> with the specified key.
         /// <remarks>To retrieve a policy directly as a particular Policy type or Policy interface (avoiding a cast), use the <see cref="Get{TPolicy}"/> method.</remarks>
         /// </summary>
-        /// <param name="key">The key of the value to get or set.</param>
+        /// <param name="key">The key of the policy to get or set.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="key" /> is null.</exception>
-        /// <exception cref="KeyNotFoundException">The given key was not present in the dictionary.</exception>
-        /// <returns>The value associated with the specified key.</returns>
+        /// <exception cref="KeyNotFoundException">The given key was not present in the registry.</exception>
+        /// <returns>The policy associated with the specified key.</returns>
         public IsPolicy this[string key]
         {
             get => _registry[key];
@@ -88,7 +88,7 @@ namespace Polly.Registry
         /// <typeparam name="TPolicy">The type of Policy.</typeparam>
         /// <returns>The policy stored in the registry under the given key.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="key"/> is null.</exception>
-        /// <exception cref="KeyNotFoundException">The given key was not present in the dictionary.</exception>
+        /// <exception cref="KeyNotFoundException">The given key was not present in the registry.</exception>
         public TPolicy Get<TPolicy>(string key) where TPolicy : IsPolicy => 
             (TPolicy) _registry[key];
 
@@ -165,7 +165,7 @@ namespace Polly.Registry
         /// The enumerator returned from the registry is safe to use concurrently with
         /// reads and writes to the registry, however it does not represent a moment-in-time snapshot
         /// of the registry's contents.  The contents exposed through the enumerator may contain modifications
-        /// made to the dictionary after <see cref="GetEnumerator"/> was called.
+        /// made to the registry after <see cref="GetEnumerator"/> was called.
         /// This is not considered a significant issue as typical usage of PolicyRegistry is for bulk population at app startup, 
         /// with only infrequent changes to the PolicyRegistry during app running, if using PolicyRegistry for dynamic updates during running.
         /// </remarks>
@@ -178,7 +178,7 @@ namespace Polly.Registry
         /// The enumerator returned from the registry is safe to use concurrently with
         /// reads and writes to the registry, however it does not represent a moment-in-time snapshot
         /// of the registry's contents.  The contents exposed through the enumerator may contain modifications
-        /// made to the dictionary after <see cref="GetEnumerator"/> was called.
+        /// made to the registry after <see cref="GetEnumerator"/> was called.
         /// This is not considered a significant issue as typical usage of PolicyRegistry is for bulk population at app startup, 
         /// with only infrequent changes to the PolicyRegistry during app running, if using PolicyRegistry for dynamic updates during running.
         /// </remarks>
