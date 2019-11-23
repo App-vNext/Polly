@@ -8,13 +8,13 @@ using Xunit;
 
 namespace Polly.Specs.Registry
 {
-    public class IReadOnlyPolicyRegistrySpecs
+    public class ReadOnlyPolicyRegistrySpecs
     {
         IPolicyRegistry<string> _registry;
 
         IReadOnlyPolicyRegistry<string> ReadOnlyRegistry { get{ return _registry; } }
 
-        public IReadOnlyPolicyRegistrySpecs()
+        public ReadOnlyPolicyRegistrySpecs()
         {
             _registry = new PolicyRegistry();
         }
