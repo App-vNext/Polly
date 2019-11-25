@@ -43,9 +43,9 @@ namespace Polly.Specs.Timeout
             };
 
             // Override SystemClock.Sleep, to manipulate our artificial clock.  And - if it means sleeping beyond the time when a tracked token should cancel - cancel it!
-            SystemClock.Sleep = (sleepTimespan, sleepCancellationtoken) =>
+            SystemClock.Sleep = (sleepTimespan, sleepCancellationToken) =>
             {
-                if (sleepCancellationtoken.IsCancellationRequested) return;
+                if (sleepCancellationToken.IsCancellationRequested) return;
 
                 if (_trackedTokenSource == null || _trackedTokenSource.IsCancellationRequested)
                 {
@@ -78,9 +78,9 @@ namespace Polly.Specs.Timeout
                 }
             };
 
-            SystemClock.SleepAsync = (sleepTimespan, cancellationtoken) =>
+            SystemClock.SleepAsync = (sleepTimespan, cancellationToken) =>
             {
-                SystemClock.Sleep(sleepTimespan, cancellationtoken);
+                SystemClock.Sleep(sleepTimespan, cancellationToken);
                 return Task.FromResult(true);
             };
         }
