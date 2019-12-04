@@ -1,7 +1,27 @@
-## 7.0.1
-- Explicitly state System.ValueTuple dependency in nuspec (for Net Standard 1.1)
+## 7.2.0
+- Add test target for netcoreapp3.0.
+- Extend PolicyRegistry with concurrent method support, TryAdd, TryRemove, TryUpdate, GetOrAdd, AddOrUpdate; new interface IConcurrentPolicyRegistry
+- Improve .NET Framework support: Add explicit targets for .NET Framework 4.6.1 and 4.7.2.
+- TimeoutPolicy: if timeout occurs while a user exception is being marshalled (edge case race condition), do not mask user exception (fix issue 620)
+- Enhance debugging/stacktrace experience for some contexts: Include pdb symbols in package again.
 
-## 7.0.0
+## 7.1.1
+- Bug fix: ensure async retry policies honor continueOnCapturedContext setting (affected v7.1.0 only).
+- Remove deprecated cake add-in from build
+
+## 7.1.0
+- Add SourceLink debugger support.
+- Bug fix: PolicyRegistry with .NET Core services.AddPolicyRegistry() overload (affected Polly v7.0.1-3 only)
+- Rationalise solution layout
+- Add explicit .NET framework 4.6.2 and 4.7.2 test runs
+
+## 7.0.3
+- Bug fix for AdvancedCircuitBreakerAsync<TResult> (issue affecting v7.0.1-2 only)
+
+## 7.0.2
+- Bug fix for PolicyRegistry (issue affecting v7.0.1 only)
+
+## 7.0.1
 - Clarify separation of sync and async policies (breaking change)
 - Enable extensibility by custom policies hosted external to Polly
 - Enable collection initialization syntax for PolicyRegistry

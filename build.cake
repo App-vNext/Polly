@@ -11,46 +11,35 @@ var configuration = Argument<string>("configuration", "Release");
 
 #Tool "xunit.runner.console"
 #Tool "GitVersion.CommandLine"
-#Tool "Brutal.Dev.StrongNameSigner"
 
 //////////////////////////////////////////////////////////////////////
 // EXTERNAL NUGET LIBRARIES
 //////////////////////////////////////////////////////////////////////
 
 #addin "Cake.FileHelpers"
-#addin "System.Text.Json"
-using System.Text.Json;
+#addin nuget:?package=Cake.Yaml
+#addin nuget:?package=YamlDotNet&version=5.2.1
 
 ///////////////////////////////////////////////////////////////////////////////
 // GLOBAL VARIABLES
 ///////////////////////////////////////////////////////////////////////////////
 
 var projectName = "Polly";
-var keyName = "Polly.snk";
 
 var solutions = GetFiles("./**/*.sln");
 var solutionPaths = solutions.Select(solution => solution.GetDirectory());
 
 var srcDir = Directory("./src");
-var buildDir = Directory("./build");
 var artifactsDir = Directory("./artifacts");
 var testResultsDir = artifactsDir + Directory("test-results");
 
 // NuGet
-var nuspecFilename = projectName + ".nuspec";
-var nuspecSrcFile = srcDir + File(nuspecFilename);
-var nuspecDestFile = buildDir + File(nuspecFilename);
 var nupkgDestDir = artifactsDir + Directory("nuget-package");
-var snkFile = srcDir + File(keyName);
-
-var projectToNugetFolderMap = new Dictionary<string, string[]>() {
-    { "NetStandard11", new [] {"netstandard1.1"} },
-    { "NetStandard20", new [] {"netstandard2.0"} },
-};
 
 // Gitversion
 var gitVersionPath = ToolsExePath("GitVersion.exe");
 Dictionary<string, object> gitVersionOutput;
+var gitVersionConfigFilePath = "./GitVersionConfig.yaml";
 
 // Versioning
 string nugetVersion;
@@ -58,9 +47,13 @@ string appveyorBuildNumber;
 string assemblyVersion;
 string assemblySemver;
 
-// StrongNameSigner
-var strongNameSignerPath = ToolsExePath("StrongNameSigner.Console.exe");
-
+///////////////////////////////////////////////////////////////////////////////
+// INNER CLASSES
+///////////////////////////////////////////////////////////////////////////////
+class GitVersionConfigYaml
+{
+    public string NextVersion { get; set; }
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 // SETUP / TEARDOWN
@@ -69,12 +62,10 @@ var strongNameSignerPath = ToolsExePath("StrongNameSigner.Console.exe");
 Setup(_ =>
 {
     Information("");
-    Information(" ██████╗  ██████╗ ██╗     ██╗  ██╗   ██╗");
-    Information(" ██╔══██╗██╔═══██╗██║     ██║  ╚██╗ ██╔╝");
-    Information(" ██████╔╝██║   ██║██║     ██║   ╚████╔╝ ");
-    Information(" ██╔═══╝ ██║   ██║██║     ██║    ╚██╔╝  ");
-    Information(" ██║     ╚██████╔╝███████╗███████╗██║   ");
-    Information(" ╚═╝      ╚═════╝ ╚══════╝╚══════╝╚═╝   ");
+    Information("----------------------------------------");
+    Information("Starting the cake build script");
+    Information("Building: " + projectName);
+    Information("----------------------------------------");
     Information("");
 });
 
@@ -91,7 +82,6 @@ Task("__Clean")
     .Does(() =>
 {
     DirectoryPath[] cleanDirectories = new DirectoryPath[] {
-        buildDir,
         testResultsDir,
         nupkgDestDir,
         artifactsDir
@@ -104,8 +94,7 @@ Task("__Clean")
     foreach(var path in solutionPaths)
     {
         Information("Cleaning {0}", path);
-        CleanDirectories(path + "/**/bin/" + configuration);
-        CleanDirectories(path + "/**/obj/" + configuration);
+        DotNetCoreClean(path.ToString());
     }
 });
 
@@ -115,7 +104,7 @@ Task("__RestoreNugetPackages")
     foreach(var solution in solutions)
     {
         Information("Restoring NuGet Packages for {0}", solution);
-        NuGetRestore(solution);
+        DotNetCoreRestore(solution.ToString());
     }
 });
 
@@ -125,13 +114,29 @@ Task("__UpdateAssemblyVersionInformation")
     var gitVersionSettings = new ProcessSettings()
         .SetRedirectStandardOutput(true);
 
-    IEnumerable<string> outputLines;
-    StartProcess(gitVersionPath, gitVersionSettings, out outputLines);
+    try {
+        IEnumerable<string> outputLines;
+        StartProcess(gitVersionPath, gitVersionSettings, out outputLines);
 
-    var output = string.Join("\n", outputLines);
-    gitVersionOutput = new JsonParser().Parse<Dictionary<string, object>>(output);
+        var output = string.Join("\n", outputLines);
+        gitVersionOutput = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, object>>(output);
+    }
+    catch
+    {
+        Information("Error reading git version information. Build may be running outside of a git repo. Falling back to version specified in " + gitVersionConfigFilePath);
 
-    Information("Updated GlobalAssemblyInfo");
+        string gitVersionYamlString = System.IO.File.ReadAllText(gitVersionConfigFilePath);
+        GitVersionConfigYaml deserialized = DeserializeYaml<GitVersionConfigYaml>(gitVersionYamlString.Replace("next-version", "NextVersion"));
+        string gitVersionConfig = deserialized.NextVersion;
+
+        gitVersionOutput = new Dictionary<string, object>{
+            { "NuGetVersion", gitVersionConfig + "-NotFromGitRepo" },
+            { "FullSemVer", gitVersionConfig },
+            { "AssemblySemVer", gitVersionConfig },
+            { "Major", gitVersionConfig.Split('.')[0] },
+        };
+
+    }
 
     Information("");
     Information("Obtained raw version info for package versioning:");
@@ -160,24 +165,22 @@ Task("__UpdateDotNetStandardAssemblyVersionNumber")
 
     var attributeToValueMap = new Dictionary<string, string>() {
         { "AssemblyVersion", assemblyVersion },
-        { "AssemblyFileVersion", assemblySemver },
-        { "AssemblyInformationalVersion", assemblySemver },
+        { "FileVersion", assemblySemver },
+        { "InformationalVersion", assemblySemver },
+        { "Version", nugetVersion },
+        { "PackageVersion", nugetVersion },
     };
 
-    var assemblyInfosToUpdate = GetFiles("./src/**/Properties/AssemblyInfo.cs")
-        .Select(f => f.FullPath)
-        .Where(f => !f.Contains("Specs"));
+    var csproj = File("./src/" + projectName + "/" + projectName + ".csproj");
 
     foreach(var attributeMap in attributeToValueMap) {
         var attribute = attributeMap.Key;
         var value = attributeMap.Value;
 
-        foreach(var assemblyInfo in assemblyInfosToUpdate) {
-            var replacedFiles = ReplaceRegexInFiles(assemblyInfo, attribute + "[(]\".*\"[)]", attribute + "(\"" + value +"\")");
-            if (!replacedFiles.Any())
-            {
-                throw new Exception($"{attribute} attribute could not be updated in {assemblyInfo}.");
-            }
+        var replacedFiles = ReplaceRegexInFiles(csproj, $@"\<{attribute}\>[^\<]*\</{attribute}\>", $@"<{attribute}>{value}</{attribute}>");
+        if (!replacedFiles.Any())
+        {
+            throw new Exception($"{attribute} version could not be updated in {csproj}.");
         }
     }
 
@@ -197,13 +200,14 @@ Task("__BuildSolutions")
     {
         Information("Building {0}", solution);
 
-        MSBuild(solution, settings =>
-            settings
-                .SetConfiguration(configuration)
-                .WithProperty("TreatWarningsAsErrors", "true")
-                .UseToolVersion(MSBuildToolVersion.VS2017)
-                .SetVerbosity(Verbosity.Minimal)
-                .SetNodeReuse(false));
+        var dotNetCoreBuildSettings = new DotNetCoreBuildSettings {
+         Configuration = configuration,
+         Verbosity = DotNetCoreVerbosity.Minimal,
+         NoRestore = true,
+         MSBuildSettings = new DotNetCoreMSBuildSettings { TreatAllWarningsAs = MSBuildTreatAllWarningsAs.Error }
+        };
+
+        DotNetCoreBuild(solution.ToString(), dotNetCoreBuildSettings);
     }
 });
 
@@ -218,39 +222,6 @@ Task("__RunTests")
     }
 });
 
-Task("__CopyOutputToNugetFolder")
-    .Does(() =>
-{
-    foreach(var project in projectToNugetFolderMap.Keys) {
-        var sourceDir = srcDir + Directory(projectName + "." + project) + Directory("bin") + Directory(configuration);
-
-        foreach(var targetFolder in projectToNugetFolderMap[project]) {
-            var destDir = buildDir + Directory("lib");
-
-            Information("Copying {0} -> {1}.", sourceDir, destDir);
-            CopyDirectory(sourceDir, destDir);
-       }
-    }
-
-    CopyFile(nuspecSrcFile, nuspecDestFile);
-});
-
-Task("__StronglySignAssemblies")
-    .Does(() =>
-{
-    //see: https://github.com/brutaldev/StrongNameSigner
-    var strongNameSignerSettings = new ProcessSettings()
-        .WithArguments(args => args
-            .Append("-in")
-            .AppendQuoted(buildDir)
-            .Append("-k")
-            .AppendQuoted(snkFile)
-            .Append("-l")
-            .AppendQuoted("Changes"));
-
-    StartProcess(strongNameSignerPath, strongNameSignerSettings);
-});
-
 Task("__CreateSignedNugetPackage")
     .Does(() =>
 {
@@ -258,14 +229,13 @@ Task("__CreateSignedNugetPackage")
 
     Information("Building {0}.{1}.nupkg", packageName, nugetVersion);
 
-    var nuGetPackSettings = new NuGetPackSettings {
-        Id = packageName,
-        Title = packageName,
-        Version = nugetVersion,
+    var dotNetCorePackSettings = new DotNetCorePackSettings {
+        Configuration = configuration,
+        NoBuild = true,
         OutputDirectory = nupkgDestDir
     };
 
-    NuGetPack(nuspecDestFile, nuGetPackSettings);
+    DotNetCorePack($@"{srcDir}\{projectName}.sln", dotNetCorePackSettings);
 });
 
 //////////////////////////////////////////////////////////////////////
@@ -280,8 +250,6 @@ Task("Build")
     .IsDependentOn("__UpdateAppVeyorBuildNumber")
     .IsDependentOn("__BuildSolutions")
     .IsDependentOn("__RunTests")
-    .IsDependentOn("__CopyOutputToNugetFolder")
-    .IsDependentOn("__StronglySignAssemblies")
     .IsDependentOn("__CreateSignedNugetPackage");
 
 ///////////////////////////////////////////////////////////////////////////////
