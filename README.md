@@ -1087,7 +1087,8 @@ Licensed under the terms of the [New BSD License](http://opensource.org/licenses
 When we discover an interesting write-up on Polly, we'll add it to this list. If you have a blog post you'd like to share, please submit a PR!
 
 ## Blog posts
-
+* [Try .NET Samples of Polly, the .NET Resilience Framework](https://github.com/bryanjhogan/trydotnet-polly) - by [Bryan Hogan](https://nodogmablog.bryanhogan.net/)
+* [Create exceptional interactive documentation with Try .NET - The Polly NuGet library did!](https://www.hanselman.com/blog/CreateExceptionalInteractiveDocumentationWithTryNETThePollyNuGetLibraryDid.aspx) - by [Scott Hanselman](https://www.hanselman.com/about/) (writing about the work of Bryan Hogan)
 * [Adding resilience and Transient Fault handling to your .NET Core HttpClient with Polly](https://www.hanselman.com/blog/AddingResilienceAndTransientFaultHandlingToYourNETCoreHttpClientWithPolly.aspx) - by [Scott Hanselman](https://www.hanselman.com/about/) 
 * [Reliable Event Processing in Azure Functions](https://hackernoon.com/reliable-event-processing-in-azure-functions-37054dc2d0fc) - by [Jeff Hollan](https://hackernoon.com/@jeffhollan)
 * [Optimally configuring ASPNET Core HttpClientFactory](https://rehansaeed.com/optimally-configuring-asp-net-core-httpclientfactory/) including with Polly policies - by [Muhammad Rehan Saeed](https://twitter.com/RehanSaeedUK/)
