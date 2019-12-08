@@ -1,14 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard1.1;netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>netstandard1.1;netstandard2.0;net461;net472</TargetFrameworks>
     <AssemblyName>Polly</AssemblyName>
     <RootNamespace>Polly</RootNamespace>
-    <Version>7.1.0</Version>
+    <Version>7.1.1</Version>
     <AssemblyVersion>7.0.0.0</AssemblyVersion>
-    <FileVersion>7.1.0.0</FileVersion>
-    <InformationalVersion>7.1.0.0</InformationalVersion>
-    <PackageVersion>7.1.0</PackageVersion>
+    <FileVersion>7.1.1.0</FileVersion>
+    <InformationalVersion>7.1.1.0</InformationalVersion>
+    <PackageVersion>7.1.1</PackageVersion>
     <Company>App vNext</Company>
     <Copyright>Copyright (c) 2019, App vNext</Copyright>
     <Description>Polly is a library that allows developers to express resilience and transient fault handling policies such as Retry, Circuit Breaker, Timeout, Bulkhead Isolation, and Fallback in a fluent and thread-safe manner.</Description>
@@ -16,8 +16,7 @@
     <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <Authors>Michael Wolfenden, App vNext</Authors>
-    <AssemblyOriginatorKeyFile>..\Polly.snk</AssemblyOriginatorKeyFile>
-    <SignAssembly>true</SignAssembly>
+    <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
   </PropertyGroup>
   <PropertyGroup Label="SourceLink">
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
@@ -33,7 +32,7 @@
   <PropertyGroup Condition=" '$(TargetFramework)' == 'netstandard1.1' ">
     <NetStandardImplicitPackageVersion>1.6.1</NetStandardImplicitPackageVersion>
   </PropertyGroup>
-  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard1.1'">
+  <ItemGroup Condition="'$(TargetFramework)'=='net461' or '$(TargetFramework)' == 'netstandard1.1'">
     <PackageReference Include="System.ValueTuple" Version="4.5.0" />
   </ItemGroup>
   <ItemGroup>

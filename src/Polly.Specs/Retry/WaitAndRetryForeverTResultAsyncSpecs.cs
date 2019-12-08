@@ -5,10 +5,11 @@ using FluentAssertions;
 using Polly.Specs.Helpers;
 using Polly.Utilities;
 using Xunit;
+using FluentAssertions.Extensions;
 
 namespace Polly.Specs.Retry
 {
-    [Collection(Polly.Specs.Helpers.Constants.SystemClockDependentTestCollection)]
+    [Collection(Constants.SystemClockDependentTestCollection)]
     public class WaitAndRetryForeverTResultAsyncSpecs : IDisposable
     {
         public WaitAndRetryForeverTResultAsyncSpecs()

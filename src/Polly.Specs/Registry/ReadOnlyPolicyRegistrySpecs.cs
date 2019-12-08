@@ -8,13 +8,13 @@ using Xunit;
 
 namespace Polly.Specs.Registry
 {
-    public class IReadOnlyPolicyRegistrySpecs
+    public class ReadOnlyPolicyRegistrySpecs
     {
         IPolicyRegistry<string> _registry;
 
         IReadOnlyPolicyRegistry<string> ReadOnlyRegistry { get{ return _registry; } }
 
-        public IReadOnlyPolicyRegistrySpecs()
+        public ReadOnlyPolicyRegistrySpecs()
         {
             _registry = new PolicyRegistry();
         }
@@ -125,7 +125,7 @@ namespace Polly.Specs.Registry
             bool result = false;
 
             ReadOnlyRegistry.Invoking(r => result = r.TryGet(key, out outPolicy))
-                .ShouldNotThrow();
+                .Should().NotThrow();
 
             result.Should().BeFalse();
         }
@@ -138,7 +138,7 @@ namespace Polly.Specs.Registry
             bool result = false;
 
             ReadOnlyRegistry.Invoking(r => result = r.TryGet(key, out outPolicy))
-                .ShouldNotThrow();
+                .Should().NotThrow();
 
             result.Should().BeFalse();
         }
@@ -151,7 +151,7 @@ namespace Polly.Specs.Registry
             bool result = false;
 
             ReadOnlyRegistry.Invoking(r => result = r.TryGet<ISyncPolicy<ResultPrimitive>>(key, out outPolicy))
-                .ShouldNotThrow();
+                .Should().NotThrow();
 
             result.Should().BeFalse();
         }
@@ -162,7 +162,7 @@ namespace Polly.Specs.Registry
             string key = Guid.NewGuid().ToString();
             Policy policy = null;
             ReadOnlyRegistry.Invoking(r => policy = r.Get<Policy>(key))
-                .ShouldThrow<KeyNotFoundException>();
+                .Should().Throw<KeyNotFoundException>();
         }
 
         [Fact]
@@ -171,7 +171,7 @@ namespace Polly.Specs.Registry
             string key = Guid.NewGuid().ToString();
             Policy<ResultPrimitive> policy = null;
             ReadOnlyRegistry.Invoking(r => policy = r.Get<Policy<ResultPrimitive>>(key))
-                .ShouldThrow<KeyNotFoundException>();
+                .Should().Throw<KeyNotFoundException>();
         }
 
         [Fact]
@@ -180,7 +180,7 @@ namespace Polly.Specs.Registry
             string key = Guid.NewGuid().ToString();
             ISyncPolicy<ResultPrimitive> policy = null;
             ReadOnlyRegistry.Invoking(r => policy = r.Get<ISyncPolicy<ResultPrimitive>>(key))
-                .ShouldThrow<KeyNotFoundException>();
+                .Should().Throw<KeyNotFoundException>();
         }
 
         [Fact]
@@ -189,7 +189,7 @@ namespace Polly.Specs.Registry
             string key = Guid.NewGuid().ToString();
             IsPolicy outPolicy = null;
             ReadOnlyRegistry.Invoking(r => outPolicy = r[key])
-                .ShouldThrow<KeyNotFoundException>();
+                .Should().Throw<KeyNotFoundException>();
         }
 
 
@@ -199,7 +199,7 @@ namespace Polly.Specs.Registry
             string key = null;
             Policy policy = null;
             ReadOnlyRegistry.Invoking(r => policy = r.Get<Policy>(key))
-                .ShouldThrow<ArgumentNullException>();
+                .Should().Throw<ArgumentNullException>();
         }
 
         [Fact]
@@ -208,7 +208,7 @@ namespace Polly.Specs.Registry
             string key = null;
             Policy<ResultPrimitive> policy = null;
             ReadOnlyRegistry.Invoking(r => policy = r.Get<Policy<ResultPrimitive>>(key))
-                .ShouldThrow<ArgumentNullException>();
+                .Should().Throw<ArgumentNullException>();
         }
 
         [Fact]
@@ -217,7 +217,7 @@ namespace Polly.Specs.Registry
             string key = null;
             ISyncPolicy<ResultPrimitive> policy = null;
             ReadOnlyRegistry.Invoking(r => policy = r.Get<ISyncPolicy<ResultPrimitive>>(key))
-                .ShouldThrow<ArgumentNullException>();
+                .Should().Throw<ArgumentNullException>();
         }
 
         [Fact]
@@ -226,7 +226,7 @@ namespace Polly.Specs.Registry
             string key = null;
             IsPolicy policy = null;
             ReadOnlyRegistry.Invoking(r => policy = r[key])
-                .ShouldThrow<ArgumentNullException>();
+                .Should().Throw<ArgumentNullException>();
         }
         #endregion
 
@@ -250,7 +250,7 @@ namespace Polly.Specs.Registry
         {
             string key = null;
             ReadOnlyRegistry.Invoking(r => r.ContainsKey(key))
-                .ShouldThrow<ArgumentNullException>();
+                .Should().Throw<ArgumentNullException>();
         }
         #endregion
         

@@ -8,7 +8,7 @@ using Xunit;
 
 namespace Polly.Specs.Wrap
 {
-    [Collection(Polly.Specs.Helpers.Constants.SystemClockDependentTestCollection)]
+    [Collection(Constants.SystemClockDependentTestCollection)]
     public class PolicyWrapSpecsAsync
     {
         #region Instance configuration syntax tests, non-generic outer
@@ -20,7 +20,7 @@ namespace Polly.Specs.Wrap
 
             Action config = () => retry.WrapAsync((AsyncPolicy)null);
 
-            config.ShouldThrow<ArgumentNullException>().And.ParamName.Should().Be("innerPolicy");
+            config.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be("innerPolicy");
         }
 
         [Fact]
@@ -30,7 +30,7 @@ namespace Polly.Specs.Wrap
 
             Action config = () => retry.WrapAsync<int>((AsyncPolicy<int>)null);
 
-            config.ShouldThrow<ArgumentNullException>().And.ParamName.Should().Be("innerPolicy");
+            config.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be("innerPolicy");
         }
 
         [Fact]
@@ -68,7 +68,7 @@ namespace Polly.Specs.Wrap
 
             Action config = () => retry.WrapAsync((AsyncPolicy)null);
 
-            config.ShouldThrow<ArgumentNullException>().And.ParamName.Should().Be("innerPolicy");
+            config.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be("innerPolicy");
         }
 
         [Fact]
@@ -78,7 +78,7 @@ namespace Polly.Specs.Wrap
 
             Action config = () => retry.WrapAsync((AsyncPolicy<int>)null);
 
-            config.ShouldThrow<ArgumentNullException>().And.ParamName.Should().Be("innerPolicy");
+            config.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be("innerPolicy");
         }
 
         [Fact]
@@ -117,7 +117,7 @@ namespace Polly.Specs.Wrap
 
             Action config = () => outerNull.WrapAsync(retry);
 
-            config.ShouldThrow<ArgumentNullException>().And.ParamName.Should().Be("outerPolicy");
+            config.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be("outerPolicy");
         }
 
         [Fact]
@@ -128,7 +128,7 @@ namespace Polly.Specs.Wrap
 
             Action config = () => outerNull.WrapAsync<int>(retry);
 
-            config.ShouldThrow<ArgumentNullException>().And.ParamName.Should().Be("outerPolicy");
+            config.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be("outerPolicy");
         }
 
         [Fact]
@@ -138,7 +138,7 @@ namespace Polly.Specs.Wrap
 
             Action config = () => retry.WrapAsync((AsyncPolicy)null);
 
-            config.ShouldThrow<ArgumentNullException>().And.ParamName.Should().Be("innerPolicy");
+            config.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be("innerPolicy");
         }
 
         [Fact]
@@ -148,7 +148,7 @@ namespace Polly.Specs.Wrap
 
             Action config = () => retry.WrapAsync<int>((AsyncPolicy<int>)null);
 
-            config.ShouldThrow<ArgumentNullException>().And.ParamName.Should().Be("innerPolicy");
+            config.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be("innerPolicy");
         }
 
         [Fact]
@@ -187,7 +187,7 @@ namespace Polly.Specs.Wrap
 
             Action config = () => outerNull.WrapAsync(retry);
 
-            config.ShouldThrow<ArgumentNullException>().And.ParamName.Should().Be("outerPolicy");
+            config.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be("outerPolicy");
         }
 
         [Fact]
@@ -198,7 +198,7 @@ namespace Polly.Specs.Wrap
 
             Action config = () => outerNull.WrapAsync<int>(retry);
 
-            config.ShouldThrow<ArgumentNullException>().And.ParamName.Should().Be("outerPolicy");
+            config.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be("outerPolicy");
         }
 
         [Fact]
@@ -208,7 +208,7 @@ namespace Polly.Specs.Wrap
 
             Action config = () => retry.WrapAsync((AsyncPolicy)null);
 
-            config.ShouldThrow<ArgumentNullException>().And.ParamName.Should().Be("innerPolicy");
+            config.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be("innerPolicy");
         }
 
         [Fact]
@@ -218,7 +218,7 @@ namespace Polly.Specs.Wrap
 
             Action config = () => retry.WrapAsync((AsyncPolicy<int>)null);
 
-            config.ShouldThrow<ArgumentNullException>().And.ParamName.Should().Be("innerPolicy");
+            config.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be("innerPolicy");
         }
 
         [Fact]
@@ -254,7 +254,7 @@ namespace Polly.Specs.Wrap
         {
             Action config = () => Policy.WrapAsync();
 
-            config.ShouldThrow<ArgumentException>().And.ParamName.Should().Be("policies");
+            config.Should().Throw<ArgumentException>().And.ParamName.Should().Be("policies");
         }
 
         [Fact]
@@ -263,7 +263,7 @@ namespace Polly.Specs.Wrap
             AsyncPolicy singlePolicy = Policy.Handle<Exception>().RetryAsync();
             Action config = () => Policy.WrapAsync(new[] { singlePolicy });
 
-            config.ShouldThrow<ArgumentException>().And.ParamName.Should().Be("policies");
+            config.Should().Throw<ArgumentException>().And.ParamName.Should().Be("policies");
         }
 
         [Fact]
@@ -273,7 +273,7 @@ namespace Polly.Specs.Wrap
             AsyncPolicy breaker = Policy.Handle<Exception>().CircuitBreakerAsync(1, TimeSpan.FromSeconds(10));
             Action config = () => Policy.WrapAsync(new[] { retry, breaker });
 
-            config.ShouldNotThrow();
+            config.Should().NotThrow();
         }
 
         [Fact]
@@ -285,7 +285,7 @@ namespace Polly.Specs.Wrap
 
             Action config = () => Policy.WrapAsync(new[] { divideByZeroRetry, retry, breaker });
 
-            config.ShouldNotThrow();
+            config.Should().NotThrow();
         }
 
         [Fact]
@@ -309,7 +309,7 @@ namespace Polly.Specs.Wrap
         {
             Action config = () => Policy.WrapAsync<int>();
 
-            config.ShouldThrow<ArgumentException>().And.ParamName.Should().Be("policies");
+            config.Should().Throw<ArgumentException>().And.ParamName.Should().Be("policies");
         }
 
         [Fact]
@@ -318,7 +318,7 @@ namespace Polly.Specs.Wrap
             AsyncPolicy<int> singlePolicy = Policy<int>.Handle<Exception>().RetryAsync();
             Action config = () => Policy.WrapAsync<int>(new[] { singlePolicy });
 
-            config.ShouldThrow<ArgumentException>().And.ParamName.Should().Be("policies");
+            config.Should().Throw<ArgumentException>().And.ParamName.Should().Be("policies");
         }
 
         [Fact]
@@ -328,7 +328,7 @@ namespace Polly.Specs.Wrap
             AsyncPolicy<int> breaker = Policy<int>.Handle<Exception>().CircuitBreakerAsync(1, TimeSpan.FromSeconds(10));
             Action config = () => Policy.WrapAsync<int>(new[] { retry, breaker });
 
-            config.ShouldNotThrow();
+            config.Should().NotThrow();
         }
 
         [Fact]
@@ -340,7 +340,7 @@ namespace Polly.Specs.Wrap
 
             Action config = () => Policy.WrapAsync<int>(new[] { divideByZeroRetry, retry, breaker });
 
-            config.ShouldNotThrow();
+            config.Should().NotThrow();
         }
 
         [Fact]
@@ -371,13 +371,13 @@ namespace Polly.Specs.Wrap
             // When the retry wraps the breaker, the retry (being outer) should cause the call to be put through the breaker twice - causing the breaker to break.
             breaker.Reset();
             retryWrappingBreaker.Awaiting(async x => await x.RaiseExceptionAsync<DivideByZeroException>(2))
-                .ShouldThrow<DivideByZeroException>();
+                .Should().Throw<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
             // When the breaker wraps the retry, the retry (being inner) should retry twice before throwing the exception back on the breaker - the exception only hits the breaker once - so the breaker should not break.
             breaker.Reset();
             breakerWrappingRetry.Awaiting(async x => await x.RaiseExceptionAsync<DivideByZeroException>(2))
-                .ShouldThrow<DivideByZeroException>();
+                .Should().Throw<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
         }
 
@@ -419,13 +419,13 @@ namespace Polly.Specs.Wrap
             // When the retry wraps the breaker, the retry (being outer) should cause the call to be put through the breaker twice - causing the breaker to break.
             breaker.Reset();
             retryWrappingBreaker.Awaiting(async x => await x.RaiseExceptionAsync<DivideByZeroException>(2))
-                .ShouldThrow<DivideByZeroException>();
+                .Should().Throw<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
             // When the breaker wraps the retry, the retry (being inner) should retry twice before throwing the exception back on the breaker - the exception only hits the breaker once - so the breaker should not break.
             breaker.Reset();
             breakerWrappingRetry.Awaiting(async x => await x.RaiseExceptionAsync<DivideByZeroException>(2))
-                .ShouldThrow<DivideByZeroException>();
+                .Should().Throw<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
         }
 

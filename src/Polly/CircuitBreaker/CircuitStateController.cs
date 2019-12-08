@@ -71,7 +71,7 @@ namespace Polly.CircuitBreaker
                 using (TimedLock.Lock(_lock))
                 {
                     return _lastOutcome != null 
-                        ? _lastOutcome.Result : default(TResult);
+                        ? _lastOutcome.Result : default;
                 }
             }
         }

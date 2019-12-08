@@ -9,9 +9,9 @@ namespace Polly.Specs.Helpers
     {
         public class ExceptionAndOrCancellationScenario
         {
-            public int NumberOfTimesToRaiseException = 0;
+            public int NumberOfTimesToRaiseException;
 
-            public int? AttemptDuringWhichToCancel = null;
+            public int? AttemptDuringWhichToCancel;
 
             public bool ActionObservesCancellation = true;
         }
@@ -33,7 +33,7 @@ namespace Polly.Specs.Helpers
             return policy.RaiseExceptionAsync(1, configureException);
         }
 
-        public static Task RaiseExceptionAsync<TException>(this AsyncPolicy policy, int numberOfTimesToRaiseException, Action<TException, int> configureException = null, CancellationToken cancellationToken = default(CancellationToken)) where TException : Exception, new()
+        public static Task RaiseExceptionAsync<TException>(this AsyncPolicy policy, int numberOfTimesToRaiseException, Action<TException, int> configureException = null, CancellationToken cancellationToken = default) where TException : Exception, new()
         {
             ExceptionAndOrCancellationScenario scenario = new ExceptionAndOrCancellationScenario
             {

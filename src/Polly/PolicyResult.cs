@@ -64,7 +64,7 @@ namespace Polly
     public class PolicyResult<TResult>
     {
         internal PolicyResult(TResult result, OutcomeType outcome, Exception finalException, ExceptionType? exceptionType, Context context)
-            : this(result, outcome, finalException, exceptionType, default(TResult), null, context)
+            : this(result, outcome, finalException, exceptionType, default, null, context)
         {
 
         }
@@ -136,7 +136,7 @@ namespace Polly
         /// A <see cref="PolicyResult" /> representing a failed execution through the policy.
         /// </returns>
         public static PolicyResult<TResult> Failure(Exception exception, ExceptionType exceptionType, Context context)
-            => new PolicyResult<TResult>(default(TResult), OutcomeType.Failure, exception, exceptionType, default(TResult), 
+            => new PolicyResult<TResult>(default, OutcomeType.Failure, exception, exceptionType, default, 
                 exceptionType == Polly.ExceptionType.HandledByThisPolicy 
                 ? Polly.FaultType.ExceptionHandledByThisPolicy 
                 : Polly.FaultType.UnhandledException,
@@ -151,7 +151,7 @@ namespace Polly
         /// A <see cref="PolicyResult" /> representing a failed execution through the policy.
         /// </returns>
         public static PolicyResult<TResult> Failure(TResult handledResult, Context context)
-            => new PolicyResult<TResult>(default(TResult), OutcomeType.Failure, null, null, handledResult, Polly.FaultType.ResultHandledByThisPolicy, context);
+            => new PolicyResult<TResult>(default, OutcomeType.Failure, null, null, handledResult, Polly.FaultType.ResultHandledByThisPolicy, context);
     }
 
     /// <summary>

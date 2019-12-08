@@ -78,7 +78,7 @@ namespace Polly
         /// </summary>
         /// <param name="policies">The policies to place in the wrap, outermost (at left) to innermost (at right).</param>
         /// <returns>The PolicyWrap.</returns>
-        /// <exception cref="System.ArgumentException">The enumerable of policies to form the wrap must contain at least two policies.</exception>
+        /// <exception cref="ArgumentException">The enumerable of policies to form the wrap must contain at least two policies.</exception>
         public static AsyncPolicyWrap WrapAsync(params IAsyncPolicy[] policies)
         {
             switch (policies.Length)
@@ -100,7 +100,7 @@ namespace Polly
         /// <param name="policies">The policies to place in the wrap, outermost (at left) to innermost (at right).</param>
         /// <typeparam name="TResult">The return type of delegates which may be executed through the policy.</typeparam>
         /// <returns>The PolicyWrap.</returns>
-        /// <exception cref="System.ArgumentException">The enumerable of policies to form the wrap must contain at least two policies.</exception>
+        /// <exception cref="ArgumentException">The enumerable of policies to form the wrap must contain at least two policies.</exception>
         public  static AsyncPolicyWrap<TResult> WrapAsync<TResult>(params IAsyncPolicy<TResult>[] policies)
         {
             switch (policies.Length)

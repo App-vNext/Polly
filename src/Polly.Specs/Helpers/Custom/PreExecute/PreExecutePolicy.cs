@@ -17,7 +17,7 @@ namespace Polly.Specs.Helpers.Custom.PreExecute
             _preExecute = preExecute ?? throw new ArgumentNullException(nameof(preExecute));
         }
 
-        protected override TResult Implementation<TResult>(Func<Context, CancellationToken, TResult> action, Context context, System.Threading.CancellationToken cancellationToken)
+        protected override TResult Implementation<TResult>(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken)
         {
             return PreExecuteEngine.Implementation(_preExecute, action, context, cancellationToken);
         }
@@ -37,7 +37,7 @@ namespace Polly.Specs.Helpers.Custom.PreExecute
             _preExecute = preExecute ?? throw new ArgumentNullException(nameof(preExecute));
         }
 
-        protected override TResult Implementation(Func<Context, CancellationToken, TResult> action, Context context, System.Threading.CancellationToken cancellationToken)
+        protected override TResult Implementation(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken)
         {
             return PreExecuteEngine.Implementation(_preExecute, action, context, cancellationToken);
         }

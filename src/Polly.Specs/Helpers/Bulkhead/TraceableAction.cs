@@ -10,7 +10,7 @@ namespace Polly.Specs.Helpers.Bulkhead
     /// A traceable action that can be executed on a <see cref="BulkheadPolicy"/>, to support specs. 
     /// <remarks>We can execute multiple instances of <see cref="TraceableAction"/> in parallel on a bulkhead, and manually control the cancellation and completion of each, to provide determinate tests on the bulkhead operation.  The status of this <see cref="TraceableAction"/> as it executes is fully traceable through the <see cref="TraceableActionStatus"/> property.</remarks>
     /// </summary>
-    internal class TraceableAction : IDisposable
+    public class TraceableAction : IDisposable
     {
         private readonly string _id;
         private readonly ITestOutputHelper _testOutputHelper;
@@ -27,21 +27,40 @@ namespace Polly.Specs.Helpers.Bulkhead
             set
             {
                 _status = value;
-                _statusChanged.Set();
+                _testOutputHelper.WriteLine(_id + "Updated status to {0}, signalling AutoResetEvent.", _status);
+                SignalStateChange();
             }
         }
 
         public TraceableAction(int id, AutoResetEvent statusChanged, ITestOutputHelper testOutputHelper)
         {
-            _id = String.Format("{0:00}", id) + ": ";
+            _id = $"{id:00}: ";
             _statusChanged = statusChanged;
             _testOutputHelper = testOutputHelper;
         }
 
-    // Note re TaskCreationOptions.LongRunning: Testing the parallelization of the bulkhead policy efficiently requires the ability to start large numbers of parallel tasks in a short space of time.  The ThreadPool's algorithm of only injecting extra threads (when necessary) at a rate of two-per-second however makes high-volume tests using the ThreadPool both slow and flaky.  For PCL tests further, ThreadPool.SetMinThreads(...) is not available, to mitigate this.  Using TaskCreationOptions.LongRunning allows us to force tasks to be started near-instantly on non-ThreadPool threads.
-    // Similarly, we use ConfigureAwait(true) when awaiting, to avoid continuations being scheduled onto a ThreadPool thread, which may only be injected too slowly in high-volume tests.
+        public void SignalStateChange()
+        {
+            _testOutputHelper.WriteLine("--signalled--");
+            _statusChanged.Set();
+        }
 
         public Task ExecuteOnBulkhead(BulkheadPolicy bulkhead)
+        {
+            return ExecuteThroughSyncBulkheadOuter(
+                () => bulkhead.Execute(ct => ExecuteThroughSyncBulkheadInner(), CancellationSource.Token)
+                );
+        }
+
+        public Task ExecuteOnBulkhead<TResult>(BulkheadPolicy<TResult> bulkhead)
+        {
+            return ExecuteThroughSyncBulkheadOuter(
+                () => bulkhead.Execute(ct => { ExecuteThroughSyncBulkheadInner(); return default; }, CancellationSource.Token)
+                );
+        }
+
+        // Note re TaskCreationOptions.LongRunning: Testing the parallelization of the bulkhead policy efficiently requires the ability to start large numbers of parallel tasks in a short space of time.  The ThreadPool's algorithm of only injecting extra threads (when necessary) at a rate of two-per-second however makes high-volume tests using the ThreadPool both slow and flaky.  For PCL tests further, ThreadPool.SetMinThreads(...) is not available, to mitigate this.  Using TaskCreationOptions.LongRunning allows us to force tasks to be started near-instantly on non-ThreadPool threads.
+        private Task ExecuteThroughSyncBulkheadOuter(Action executeThroughBulkheadInner)
         {
             if (Status != TraceableActionStatus.Unstarted)
             {
@@ -55,14 +74,7 @@ namespace Polly.Specs.Helpers.Bulkhead
                 {
                     Status = TraceableActionStatus.QueueingForSemaphore;
 
-                    bulkhead.Execute(ct =>
-                    {
-                        Status = TraceableActionStatus.Executing;
-
-                        _tcsProxyForRealWork.Task.ContinueWith(CaptureCompletion()).Wait();
-
-                        _testOutputHelper.WriteLine(_id + "Exiting execution.");
-                    }, CancellationSource.Token);
+                    executeThroughBulkheadInner();
                 }
                 catch (BulkheadRejectedException)
                 {
@@ -74,7 +86,7 @@ namespace Polly.Specs.Helpers.Bulkhead
                     {
                         _testOutputHelper.WriteLine(_id + "Caught queue cancellation.");
                         Status = TraceableActionStatus.Canceled;
-                    } // else: was execution cancellation rethrown: ignore
+                    }  // else: was execution cancellation rethrown: ignore
                 }
                 catch (AggregateException ae)
                 {
@@ -94,11 +106,40 @@ namespace Polly.Specs.Helpers.Bulkhead
 
                     Status = TraceableActionStatus.Faulted;
                 }
-            }, 
-            TaskCreationOptions.LongRunning); 
+                finally
+                {
+                    // Exiting the execution successfully is also a change of state (on which assertions may be occurring) in that it releases a semaphore slot sucessfully.
+                    // There can also be races between assertions and executions-responding-to-previous-state-changes, so a second signal presents another opportunity for assertions to be run.
+                    SignalStateChange();
+                }
+            },
+            TaskCreationOptions.LongRunning);
         }
 
-        public Task<TResult> ExecuteOnBulkhead<TResult>(BulkheadPolicy<TResult> bulkhead)
+        private void ExecuteThroughSyncBulkheadInner()
+        {
+            Status = TraceableActionStatus.Executing;
+
+            _tcsProxyForRealWork.Task.ContinueWith(CaptureCompletion(), TaskContinuationOptions.ExecuteSynchronously).Wait();
+
+            _testOutputHelper.WriteLine(_id + "Exiting execution.");
+        }
+
+        public Task ExecuteOnBulkheadAsync(AsyncBulkheadPolicy bulkhead)
+        {
+            return ExecuteThroughAsyncBulkheadOuter(
+                () => bulkhead.ExecuteAsync(async ct => await ExecuteThroughAsyncBulkheadInner(), CancellationSource.Token)
+            );
+        }
+
+        public Task ExecuteOnBulkheadAsync<TResult>(AsyncBulkheadPolicy<TResult> bulkhead)
+        {
+            return ExecuteThroughAsyncBulkheadOuter(
+                () => bulkhead.ExecuteAsync(async ct => { await ExecuteThroughAsyncBulkheadInner(); return default; }, CancellationSource.Token)
+            );
+        }
+
+        public Task ExecuteThroughAsyncBulkheadOuter(Func<Task> executeThroughBulkheadInner)
         {
             if (Status != TraceableActionStatus.Unstarted)
             {
@@ -106,39 +147,19 @@ namespace Polly.Specs.Helpers.Bulkhead
             }
             Status = TraceableActionStatus.StartRequested;
 
-            TResult result = default(TResult);
-            return Task.Factory.StartNew(() =>
-            {
-                try
+            return Task.Factory.StartNew(async () =>
                 {
-                    Status = TraceableActionStatus.QueueingForSemaphore; 
-
-                    result = bulkhead.Execute(ct =>
+                    try
                     {
-                        Status = TraceableActionStatus.Executing;
+                        Status = TraceableActionStatus.QueueingForSemaphore;
 
-                        _tcsProxyForRealWork.Task.ContinueWith(CaptureCompletion()).Wait();
-
-                        _testOutputHelper.WriteLine(_id + "Exiting execution.");
-
-                        return default(TResult);
-                    }, CancellationSource.Token);
-                }
-                catch (BulkheadRejectedException)
-                {
-                    Status = TraceableActionStatus.Rejected; 
-                }
-                catch (OperationCanceledException)
-                {
-                    if (Status != TraceableActionStatus.Canceled)
+                        await executeThroughBulkheadInner().ConfigureAwait(false);
+                    }
+                    catch (BulkheadRejectedException)
                     {
-                        _testOutputHelper.WriteLine(_id + "Caught queue cancellation.");
-                        Status = TraceableActionStatus.Canceled;
-                    }  // else: was execution cancellation rethrown: ignore
-                }
-                catch (AggregateException ae) 
-                {
-                    if (ae.InnerExceptions.Count == 1 && ae.InnerException is OperationCanceledException)
+                        Status = TraceableActionStatus.Rejected;
+                    }
+                    catch (OperationCanceledException)
                     {
                         if (Status != TraceableActionStatus.Canceled)
                         {
@@ -146,113 +167,30 @@ namespace Polly.Specs.Helpers.Bulkhead
                             Status = TraceableActionStatus.Canceled;
                         } // else: was execution cancellation rethrown: ignore
                     }
-                    else throw;
-                }
-                catch (Exception e)
-                {
-                    _testOutputHelper.WriteLine(_id + "Caught unexpected exception during execution: " + e);
+                    catch (Exception e)
+                    {
+                        _testOutputHelper.WriteLine(_id + "Caught unexpected exception during execution: " + e);
 
-                    Status = TraceableActionStatus.Faulted;
-                }
-                return result;
-            }, 
-            TaskCreationOptions.LongRunning);
-
+                        Status = TraceableActionStatus.Faulted;
+                    }
+                    finally
+                    {
+                        // Exiting the execution successfully is also a change of state (on which assertions may be occurring) in that it releases a semaphore slot sucessfully.
+                        // There can also be races between assertions and executions-responding-to-previous-state-changes, so a second signal presents another opportunity for assertions to be run.
+                        SignalStateChange();
+                    }
+                },
+                TaskCreationOptions.LongRunning).Unwrap();
         }
 
-        public Task ExecuteOnBulkheadAsync(AsyncBulkheadPolicy bulkhead)
+        private async Task ExecuteThroughAsyncBulkheadInner()
         {
-            if (Status != TraceableActionStatus.Unstarted)
-            {
-                throw new InvalidOperationException(_id + "Action has previously been started.");
-            }
-            Status = TraceableActionStatus.StartRequested;
-            
-            return Task.Factory.StartNew(async () =>
-            {
-                try
-                {
-                    Status = TraceableActionStatus.QueueingForSemaphore; 
+            Status = TraceableActionStatus.Executing;
 
-                    await bulkhead.ExecuteAsync(async ct =>
-                    {
-                        Status = TraceableActionStatus.Executing;
+            await _tcsProxyForRealWork.Task.ContinueWith(CaptureCompletion(), TaskContinuationOptions.ExecuteSynchronously)
+                .ConfigureAwait(false);
 
-                        await _tcsProxyForRealWork.Task.ContinueWith(CaptureCompletion()).ConfigureAwait(true);
-
-                        _testOutputHelper.WriteLine(_id + "Exiting execution.");
-
-                    }, CancellationSource.Token).ConfigureAwait(true);
-                }
-                catch (BulkheadRejectedException)
-                {
-                    Status = TraceableActionStatus.Rejected; 
-                }
-                catch (OperationCanceledException)
-                {
-                    if (Status != TraceableActionStatus.Canceled)
-                    {
-                        _testOutputHelper.WriteLine(_id + "Caught queue cancellation.");
-                        Status = TraceableActionStatus.Canceled;
-                    } // else: was execution cancellation rethrown: ignore
-                }
-                catch (Exception e)
-                {
-                    _testOutputHelper.WriteLine(_id + "Caught unexpected exception during execution: " + e);
-
-                    Status = TraceableActionStatus.Faulted; 
-                }
-            }, 
-            TaskCreationOptions.LongRunning).Unwrap();
-        }
-
-        public Task<TResult> ExecuteOnBulkheadAsync<TResult>(AsyncBulkheadPolicy<TResult> bulkhead)
-        {
-            if (Status != TraceableActionStatus.Unstarted)
-            {
-                throw new InvalidOperationException(_id + "Action has previously been started.");
-            }
-            Status = TraceableActionStatus.StartRequested;
-
-            TResult result = default(TResult);
-            return Task.Factory.StartNew(async () =>
-            {
-                try
-                {
-                    Status = TraceableActionStatus.QueueingForSemaphore;
-
-                    result = await bulkhead.ExecuteAsync(async ct =>
-                    {
-                        Status = TraceableActionStatus.Executing;
-
-                        await _tcsProxyForRealWork.Task.ContinueWith(CaptureCompletion()).ConfigureAwait(true);
-
-                        _testOutputHelper.WriteLine(_id + "Exiting execution.");
-
-                        return default(TResult);
-                    }, CancellationSource.Token).ConfigureAwait(true); 
-                }
-                catch (BulkheadRejectedException)
-                {
-                    Status = TraceableActionStatus.Rejected;
-                }
-                catch (OperationCanceledException)  
-                {
-                    if (Status != TraceableActionStatus.Canceled)
-                    {
-                        _testOutputHelper.WriteLine(_id + "Caught queue cancellation.");
-                        Status = TraceableActionStatus.Canceled;
-                    } // else: was execution cancellation rethrown: ignore
-                }
-                catch (Exception e)
-                {
-                    _testOutputHelper.WriteLine(_id + "Caught unexpected exception during execution: " + e);
-
-                    Status = TraceableActionStatus.Faulted; 
-                }
-                return result;
-            }
-            , TaskCreationOptions.LongRunning).Unwrap();
+            _testOutputHelper.WriteLine(_id + "Exiting execution.");
         }
 
         private Action<Task<object>> CaptureCompletion() => t =>
@@ -297,20 +235,5 @@ namespace Polly.Specs.Helpers.Bulkhead
         {
             CancellationSource.Dispose();
         }
-    }
-
-    /// <summary>
-    /// States of a <see cref="TraceableAction"/> that can be tracked during testing.
-    /// </summary>
-    internal enum TraceableActionStatus
-    {
-        Unstarted,
-        StartRequested,
-        QueueingForSemaphore,
-        Executing,
-        Rejected,
-        Canceled,
-        Faulted,
-        Completed,
     }
 }

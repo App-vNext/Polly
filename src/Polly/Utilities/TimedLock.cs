@@ -36,7 +36,7 @@ namespace Polly.Utilities
             if (!Monitor.TryEnter(o, timeout))
             {
 #if DEBUG
-                System.GC.SuppressFinalize(tl.leakDetector);
+                GC.SuppressFinalize(tl.leakDetector);
 #endif
                 throw new LockTimeoutException();
             }
