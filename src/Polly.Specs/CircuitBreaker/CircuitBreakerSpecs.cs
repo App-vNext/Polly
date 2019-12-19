@@ -16,35 +16,37 @@ namespace Polly.Specs.CircuitBreaker
     {
         #region Configuration tests
 
-        [Fact]
-        public void Should_be_able_to_handle_a_duration_of_timespan_maxvalue()
+        [Theory, InlineData(true), InlineData(false)]
+        public void Should_be_able_to_handle_a_duration_of_timespan_maxvalue(bool timespanIsDynamic)
         {
             CircuitBreakerPolicy breaker = Policy
                             .Handle<DivideByZeroException>()
-                            .CircuitBreaker(1, TimeSpan.MaxValue);
+                            .CircuitBreaker_WithConditionalTimespan(1, TimeSpan.MaxValue, timespanIsDynamic);
 
             breaker.Invoking(x => x.RaiseException<DivideByZeroException>())
                   .Should().Throw<DivideByZeroException>();
         }
 
-        [Fact]
-        public void Should_throw_if_exceptions_allowed_before_breaking_is_less_than_one()
+        [Theory, InlineData(true), InlineData(false)]
+        public void Should_throw_if_exceptions_allowed_before_breaking_is_less_than_one(bool timespanIsDynamic)
         {
            Action action = () => Policy
                                     .Handle<DivideByZeroException>()
-                                    .CircuitBreaker(0, TimeSpan.FromSeconds(10));
+                                    .CircuitBreaker_WithConditionalTimespan(0, TimeSpan.FromSeconds(10), timespanIsDynamic);
 
             action.Should().Throw<ArgumentOutOfRangeException>()
                   .And.ParamName.Should()
                   .Be("exceptionsAllowedBeforeBreaking");
         }
 
+        #region duration non-positive
+        //Note that these are some of the few tests that vary based on static vs dynamic delay duration.
         [Fact]
-        public void Should_throw_if_duration_of_break_is_less_than_zero()
+        public void Should_throw_if_duration_of_break_is_less_than_zero_and_duration_is_static()
         {
             Action action = () => Policy
-                                     .Handle<DivideByZeroException>()
-                                     .CircuitBreaker(1, -TimeSpan.FromSeconds(1));
+                .Handle<DivideByZeroException>()
+                .CircuitBreaker(1, -TimeSpan.FromSeconds(1));
 
             action.Should().Throw<ArgumentOutOfRangeException>()
                 .And.ParamName.Should()
@@ -52,22 +54,34 @@ namespace Polly.Specs.CircuitBreaker
         }
 
         [Fact]
-        public void Should_be_able_to_handle_a_duration_of_break_of_zero()
+        public void Should_be_able_to_handle_dynamically_defined_durations_less_than_zero()
         {
             Action action = () => Policy
-                                     .Handle<DivideByZeroException>()
-                                     .CircuitBreaker(1, TimeSpan.Zero);
+                .Handle<DivideByZeroException>()
+                .CircuitBreaker(1, (_) => -TimeSpan.FromSeconds(1));
+
             action.Should().NotThrow();
         }
 
-        [Fact]
-        public void Should_initialise_to_closed_state()
+
+        [Theory, InlineData(true), InlineData(false)]
+        public void Should_be_able_to_handle_a_duration_of_break_of_zero(bool timespanIsDynamic)
+        {
+            Action action = () => Policy
+                                     .Handle<DivideByZeroException>()
+                                     .CircuitBreaker_WithConditionalTimespan(1, TimeSpan.Zero, timespanIsDynamic);
+            action.Should().NotThrow();
+        }
+        #endregion
+
+        [Theory, InlineData(true), InlineData(false)]
+        public void Should_initialise_to_closed_state(bool timespanIsDynamic)
         {
             var durationOfBreak = TimeSpan.FromMinutes(1);
 
             CircuitBreakerPolicy breaker = Policy
                 .Handle<DivideByZeroException>()
-                .CircuitBreaker(2, durationOfBreak);
+                .CircuitBreaker_WithConditionalTimespan(2, durationOfBreak, timespanIsDynamic);
 
             breaker.CircuitState.Should().Be(CircuitState.Closed);
         }
@@ -76,12 +90,12 @@ namespace Polly.Specs.CircuitBreaker
 
         #region Circuit-breaker threshold-to-break tests
 
-        [Fact]
-        public void Should_not_open_circuit_if_specified_number_of_specified_exception_are_not_raised_consecutively()
+        [Theory, InlineData(true), InlineData(false)]
+        public void Should_not_open_circuit_if_specified_number_of_specified_exception_are_not_raised_consecutively(bool timespanIsDynamic)
         {
             CircuitBreakerPolicy breaker = Policy
                 .Handle<DivideByZeroException>()
-                .CircuitBreaker(2, TimeSpan.FromMinutes(1));
+                .CircuitBreaker_WithConditionalTimespan(2, TimeSpan.FromMinutes(1), timespanIsDynamic);
 
             breaker.Invoking(x => x.RaiseException<DivideByZeroException>())
                 .Should().Throw<DivideByZeroException>();
@@ -95,12 +109,12 @@ namespace Polly.Specs.CircuitBreaker
             breaker.CircuitState.Should().Be(CircuitState.Closed);
         }
 
-        [Fact]
-        public void Should_open_circuit_blocking_executions_and_noting_the_last_raised_exception_after_specified_number_of_specified_exception_have_been_raised()
+        [Theory, InlineData(true), InlineData(false)]
+        public void Should_open_circuit_blocking_executions_and_noting_the_last_raised_exception_after_specified_number_of_specified_exception_have_been_raised(bool timespanIsDynamic)
         {
             CircuitBreakerPolicy breaker = Policy
                             .Handle<DivideByZeroException>()
-                            .CircuitBreaker(2, TimeSpan.FromMinutes(1));
+                            .CircuitBreaker_WithConditionalTimespan(2, TimeSpan.FromMinutes(1), timespanIsDynamic);
 
             breaker.Invoking(x => x.RaiseException<DivideByZeroException>())
                   .Should().Throw<DivideByZeroException>();
@@ -119,13 +133,13 @@ namespace Polly.Specs.CircuitBreaker
             delegateExecutedWhenBroken.Should().BeFalse();
         }
 
-        [Fact]
-        public void Should_open_circuit_blocking_executions_and_noting_the_last_raised_exception_after_specified_number_of_one_of_the_specified_exceptions_have_been_raised()
+        [Theory, InlineData(true), InlineData(false)]
+        public void Should_open_circuit_blocking_executions_and_noting_the_last_raised_exception_after_specified_number_of_one_of_the_specified_exceptions_have_been_raised(bool timespanIsDynamic)
         {
             CircuitBreakerPolicy breaker = Policy
                             .Handle<DivideByZeroException>()
                             .Or<ArgumentOutOfRangeException>()
-                            .CircuitBreaker(2, TimeSpan.FromMinutes(1));
+                            .CircuitBreaker_WithConditionalTimespan(2, TimeSpan.FromMinutes(1), timespanIsDynamic);
 
             breaker.Invoking(x => x.RaiseException<DivideByZeroException>())
                   .Should().Throw<DivideByZeroException>();
@@ -145,12 +159,12 @@ namespace Polly.Specs.CircuitBreaker
             delegateExecutedWhenBroken.Should().BeFalse();
         }
 
-        [Fact]
-        public void Should_not_open_circuit_if_exception_raised_is_not_the_specified_exception()
+        [Theory, InlineData(true), InlineData(false)]
+        public void Should_not_open_circuit_if_exception_raised_is_not_the_specified_exception(bool timespanIsDynamic)
         {
             CircuitBreakerPolicy breaker = Policy
                             .Handle<DivideByZeroException>()
-                            .CircuitBreaker(2, TimeSpan.FromMinutes(1));
+                            .CircuitBreaker_WithConditionalTimespan(2, TimeSpan.FromMinutes(1), timespanIsDynamic);
 
             breaker.Invoking(x => x.RaiseException<ArgumentNullException>())
                   .Should().Throw<ArgumentNullException>();
@@ -165,13 +179,13 @@ namespace Polly.Specs.CircuitBreaker
             breaker.CircuitState.Should().Be(CircuitState.Closed);
         }
 
-        [Fact]
-        public void Should_not_open_circuit_if_exception_raised_is_not_one_of_the_specified_exceptions()
+        [Theory, InlineData(true), InlineData(false)]
+        public void Should_not_open_circuit_if_exception_raised_is_not_one_of_the_specified_exceptions(bool timespanIsDynamic)
         {
             CircuitBreakerPolicy breaker = Policy
                             .Handle<DivideByZeroException>()
                             .Or<ArgumentOutOfRangeException>()
-                            .CircuitBreaker(2, TimeSpan.FromMinutes(1));
+                            .CircuitBreaker_WithConditionalTimespan(2, TimeSpan.FromMinutes(1), timespanIsDynamic);
 
             breaker.Invoking(x => x.RaiseException<ArgumentNullException>())
                   .Should().Throw<ArgumentNullException>();
@@ -190,8 +204,8 @@ namespace Polly.Specs.CircuitBreaker
 
         #region Circuit-breaker open->half-open->open/closed tests
 
-        [Fact]
-        public void Should_halfopen_circuit_after_the_specified_duration_has_passed()
+        [Theory, InlineData(true), InlineData(false)]
+        public void Should_halfopen_circuit_after_the_specified_duration_has_passed(bool timespanIsDynamic)
         {
             var time = 1.January(2000);
             SystemClock.UtcNow = () => time;
@@ -200,7 +214,7 @@ namespace Polly.Specs.CircuitBreaker
 
             CircuitBreakerPolicy breaker = Policy
                             .Handle<DivideByZeroException>()
-                            .CircuitBreaker(2, durationOfBreak);
+                            .CircuitBreaker_WithConditionalTimespan(2, durationOfBreak, timespanIsDynamic);
 
             breaker.Invoking(x => x.RaiseException<DivideByZeroException>())
                   .Should().Throw<DivideByZeroException>();
@@ -223,8 +237,8 @@ namespace Polly.Specs.CircuitBreaker
                   .Should().Throw<DivideByZeroException>();
         }
 
-        [Fact]
-        public void Should_open_circuit_again_after_the_specified_duration_has_passed_if_the_next_call_raises_an_exception()
+        [Theory, InlineData(true), InlineData(false)]
+        public void Should_open_circuit_again_after_the_specified_duration_has_passed_if_the_next_call_raises_an_exception(bool timespanIsDynamic)
         {
             var time = 1.January(2000);
             SystemClock.UtcNow = () => time;
@@ -233,7 +247,7 @@ namespace Polly.Specs.CircuitBreaker
 
             CircuitBreakerPolicy breaker = Policy
                             .Handle<DivideByZeroException>()
-                            .CircuitBreaker(2, durationOfBreak);
+                            .CircuitBreaker_WithConditionalTimespan(2, durationOfBreak, timespanIsDynamic);
 
             breaker.Invoking(x => x.RaiseException<DivideByZeroException>())
                   .Should().Throw<DivideByZeroException>();
@@ -261,8 +275,8 @@ namespace Polly.Specs.CircuitBreaker
             
         }
 
-        [Fact]
-        public void Should_reset_circuit_after_the_specified_duration_has_passed_if_the_next_call_does_not_raise_an_exception()
+        [Theory, InlineData(true), InlineData(false)]
+        public void Should_reset_circuit_after_the_specified_duration_has_passed_if_the_next_call_does_not_raise_an_exception(bool timespanIsDynamic)
         {
             var time = 1.January(2000);
             SystemClock.UtcNow = () => time;
@@ -271,7 +285,7 @@ namespace Polly.Specs.CircuitBreaker
 
             CircuitBreakerPolicy breaker = Policy
                             .Handle<DivideByZeroException>()
-                            .CircuitBreaker(2, durationOfBreak);
+                            .CircuitBreaker_WithConditionalTimespan(2, durationOfBreak, timespanIsDynamic);
 
             breaker.Invoking(x => x.RaiseException<DivideByZeroException>())
                   .Should().Throw<DivideByZeroException>();
@@ -308,8 +322,8 @@ namespace Polly.Specs.CircuitBreaker
             breaker.CircuitState.Should().Be(CircuitState.Open);
         }
 
-        [Fact]
-        public void Should_only_allow_single_execution_on_first_entering_halfopen_state__test_execution_permit_directly()
+        [Theory, InlineData(true), InlineData(false)]
+        public void Should_only_allow_single_execution_on_first_entering_halfopen_state__test_execution_permit_directly(bool timespanIsDynamic)
         {
             var time = 1.January(2000);
             SystemClock.UtcNow = () => time;
@@ -317,7 +331,7 @@ namespace Polly.Specs.CircuitBreaker
             var durationOfBreak = TimeSpan.FromMinutes(1);
             CircuitBreakerPolicy breaker = Policy
                             .Handle<DivideByZeroException>()
-                            .CircuitBreaker(1, durationOfBreak);
+                            .CircuitBreaker_WithConditionalTimespan(1, durationOfBreak, timespanIsDynamic);
 
             breaker.Invoking(x => x.RaiseException<DivideByZeroException>())
                   .Should().Throw<DivideByZeroException>();
@@ -339,8 +353,8 @@ namespace Polly.Specs.CircuitBreaker
             breaker.CircuitState.Should().Be(CircuitState.HalfOpen);
         }
 
-        [Fact]
-        public void Should_allow_single_execution_per_break_duration_in_halfopen_state__test_execution_permit_directly()
+        [Theory, InlineData(true), InlineData(false)]
+        public void Should_allow_single_execution_per_break_duration_in_halfopen_state__test_execution_permit_directly(bool timespanIsDynamic)
         {
             var time = 1.January(2000);
             SystemClock.UtcNow = () => time;
@@ -348,7 +362,7 @@ namespace Polly.Specs.CircuitBreaker
             var durationOfBreak = TimeSpan.FromMinutes(1);
             CircuitBreakerPolicy breaker = Policy
                             .Handle<DivideByZeroException>()
-                            .CircuitBreaker(1, durationOfBreak);
+                            .CircuitBreaker_WithConditionalTimespan(1, durationOfBreak, timespanIsDynamic);
 
             breaker.Invoking(x => x.RaiseException<DivideByZeroException>())
                   .Should().Throw<DivideByZeroException>();
@@ -378,8 +392,8 @@ namespace Polly.Specs.CircuitBreaker
             breaker.CircuitState.Should().Be(CircuitState.HalfOpen);
         }
 
-        [Fact]
-        public void Should_only_allow_single_execution_on_first_entering_halfopen_state__integration_test()
+        [Theory, InlineData(true), InlineData(false)]
+        public void Should_only_allow_single_execution_on_first_entering_halfopen_state__integration_test(bool timespanIsDynamic)
         {
             var time = 1.January(2000);
             SystemClock.UtcNow = () => time;
@@ -387,7 +401,7 @@ namespace Polly.Specs.CircuitBreaker
             var durationOfBreak = TimeSpan.FromMinutes(1);
             CircuitBreakerPolicy breaker = Policy
                             .Handle<DivideByZeroException>()
-                            .CircuitBreaker(1, durationOfBreak);
+                            .CircuitBreaker_WithConditionalTimespan(1, durationOfBreak, timespanIsDynamic);
 
             breaker.Invoking(x => x.RaiseException<DivideByZeroException>())
                   .Should().Throw<DivideByZeroException>();
@@ -476,8 +490,8 @@ namespace Polly.Specs.CircuitBreaker
             }
         }
 
-        [Fact]
-        public void Should_allow_single_execution_per_break_duration_in_halfopen_state__integration_test()
+        [Theory, InlineData(true), InlineData(false)]
+        public void Should_allow_single_execution_per_break_duration_in_halfopen_state__integration_test(bool timespanIsDynamic)
         {
             var time = 1.January(2000);
             SystemClock.UtcNow = () => time;
@@ -485,7 +499,7 @@ namespace Polly.Specs.CircuitBreaker
             var durationOfBreak = TimeSpan.FromMinutes(1);
             CircuitBreakerPolicy breaker = Policy
                             .Handle<DivideByZeroException>()
-                            .CircuitBreaker(1, durationOfBreak);
+                            .CircuitBreaker_WithConditionalTimespan(1, durationOfBreak, timespanIsDynamic);
 
             breaker.Invoking(x => x.RaiseException<DivideByZeroException>())
                   .Should().Throw<DivideByZeroException>();
@@ -579,8 +593,8 @@ namespace Polly.Specs.CircuitBreaker
 
         #region Isolate and reset tests
 
-        [Fact]
-        public void Should_open_circuit_and_block_calls_if_manual_override_open()
+        [Theory, InlineData(true), InlineData(false)]
+        public void Should_open_circuit_and_block_calls_if_manual_override_open(bool timespanIsDynamic)
         {
             var time = 1.January(2000);
             SystemClock.UtcNow = () => time;
@@ -589,7 +603,7 @@ namespace Polly.Specs.CircuitBreaker
 
             CircuitBreakerPolicy breaker = Policy
                 .Handle<DivideByZeroException>()
-                .CircuitBreaker(2, durationOfBreak);
+                .CircuitBreaker_WithConditionalTimespan(2, durationOfBreak, timespanIsDynamic);
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             // manually break circuit
@@ -605,8 +619,8 @@ namespace Polly.Specs.CircuitBreaker
             delegateExecutedWhenBroken.Should().BeFalse();
         }
 
-        [Fact]
-        public void Should_hold_circuit_open_despite_elapsed_time_if_manual_override_open()
+        [Theory, InlineData(true), InlineData(false)]
+        public void Should_hold_circuit_open_despite_elapsed_time_if_manual_override_open(bool timespanIsDynamic)
         {
             var time = 1.January(2000);
             SystemClock.UtcNow = () => time;
@@ -615,7 +629,7 @@ namespace Polly.Specs.CircuitBreaker
 
             CircuitBreakerPolicy breaker = Policy
                 .Handle<DivideByZeroException>()
-                .CircuitBreaker(2, durationOfBreak);
+                .CircuitBreaker_WithConditionalTimespan(2, durationOfBreak, timespanIsDynamic);
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             breaker.Isolate();
@@ -629,8 +643,8 @@ namespace Polly.Specs.CircuitBreaker
             delegateExecutedWhenBroken.Should().BeFalse();
         }
 
-        [Fact]
-        public void Should_close_circuit_again_on_reset_after_manual_override()
+        [Theory, InlineData(true), InlineData(false)]
+        public void Should_close_circuit_again_on_reset_after_manual_override(bool timespanIsDynamic)
         {
             var time = 1.January(2000);
             SystemClock.UtcNow = () => time;
@@ -639,7 +653,7 @@ namespace Polly.Specs.CircuitBreaker
 
             CircuitBreakerPolicy breaker = Policy
                 .Handle<DivideByZeroException>()
-                .CircuitBreaker(2, durationOfBreak);
+                .CircuitBreaker_WithConditionalTimespan(2, durationOfBreak, timespanIsDynamic);
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             breaker.Isolate();
@@ -652,8 +666,8 @@ namespace Polly.Specs.CircuitBreaker
             breaker.Invoking(x => x.Execute(() => { })).Should().NotThrow();
         }
 
-        [Fact]
-        public void Should_be_able_to_reset_automatically_opened_circuit_without_specified_duration_passing()
+        [Theory, InlineData(true), InlineData(false)]
+        public void Should_be_able_to_reset_automatically_opened_circuit_without_specified_duration_passing(bool timespanIsDynamic)
         {
             var time = 1.January(2000);
             SystemClock.UtcNow = () => time;
@@ -662,7 +676,7 @@ namespace Polly.Specs.CircuitBreaker
 
             CircuitBreakerPolicy breaker = Policy
                             .Handle<DivideByZeroException>()
-                            .CircuitBreaker(2, durationOfBreak);
+                            .CircuitBreaker_WithConditionalTimespan(2, durationOfBreak, timespanIsDynamic);
 
             breaker.Invoking(x => x.RaiseException<DivideByZeroException>())
                   .Should().Throw<DivideByZeroException>();
@@ -688,8 +702,8 @@ namespace Polly.Specs.CircuitBreaker
 
         #region State-change delegate tests
 
-        [Fact]
-        public void Should_not_call_onreset_on_initialise()
+        [Theory, InlineData(true), InlineData(false)]
+        public void Should_not_call_onreset_on_initialise(bool timespanIsDynamic)
         {
             Action<Exception, TimeSpan> onBreak = (_, __) => { };
             bool onResetCalled = false;
@@ -697,13 +711,13 @@ namespace Polly.Specs.CircuitBreaker
 
             Policy
                 .Handle<DivideByZeroException>()
-                .CircuitBreaker(2, TimeSpan.FromMinutes(1), onBreak, onReset);
+                .CircuitBreaker_WithConditionalTimespan(2, TimeSpan.FromMinutes(1), onBreak, onReset, timespanIsDynamic);
 
             onResetCalled.Should().BeFalse();
         }
 
-        [Fact]
-        public void Should_call_onbreak_when_breaking_circuit_automatically()
+        [Theory, InlineData(true), InlineData(false)]
+        public void Should_call_onbreak_when_breaking_circuit_automatically(bool timespanIsDynamic)
         {
             bool onBreakCalled = false;
             Action<Exception, TimeSpan> onBreak = (_, __) => { onBreakCalled = true; };
@@ -711,7 +725,7 @@ namespace Polly.Specs.CircuitBreaker
 
             CircuitBreakerPolicy breaker = Policy
                             .Handle<DivideByZeroException>()
-                            .CircuitBreaker(2, TimeSpan.FromMinutes(1), onBreak, onReset);
+                            .CircuitBreaker_WithConditionalTimespan(2, TimeSpan.FromMinutes(1), onBreak, onReset, timespanIsDynamic);
 
             breaker.Invoking(x => x.RaiseException<DivideByZeroException>())
                   .Should().Throw<DivideByZeroException>();
@@ -726,8 +740,8 @@ namespace Polly.Specs.CircuitBreaker
             onBreakCalled.Should().BeTrue();
         }
 
-        [Fact]
-        public void Should_call_onbreak_when_breaking_circuit_manually()
+        [Theory, InlineData(true), InlineData(false)]
+        public void Should_call_onbreak_when_breaking_circuit_manually(bool timespanIsDynamic)
         {
             bool onBreakCalled = false;
             Action<Exception, TimeSpan> onBreak = (_, __) => { onBreakCalled = true; };
@@ -735,7 +749,7 @@ namespace Polly.Specs.CircuitBreaker
 
             CircuitBreakerPolicy breaker = Policy
                 .Handle<DivideByZeroException>()
-                .CircuitBreaker(2, TimeSpan.FromMinutes(1), onBreak, onReset);
+                .CircuitBreaker_WithConditionalTimespan(2, TimeSpan.FromMinutes(1), onBreak, onReset, timespanIsDynamic);
             onBreakCalled.Should().BeFalse();
 
             breaker.Isolate();
@@ -743,8 +757,8 @@ namespace Polly.Specs.CircuitBreaker
             onBreakCalled.Should().BeTrue();
         }
 
-        [Fact]
-        public void Should_call_onbreak_when_breaking_circuit_first_time_but_not_for_subsequent_calls_placed_through_open_circuit()
+        [Theory, InlineData(true), InlineData(false)]
+        public void Should_call_onbreak_when_breaking_circuit_first_time_but_not_for_subsequent_calls_placed_through_open_circuit(bool timespanIsDynamic)
         {
             int onBreakCalled = 0;
             Action<Exception, TimeSpan> onBreak = (_, __) => { onBreakCalled++; };
@@ -752,7 +766,7 @@ namespace Polly.Specs.CircuitBreaker
 
             CircuitBreakerPolicy breaker = Policy
                             .Handle<DivideByZeroException>()
-                            .CircuitBreaker(2, TimeSpan.FromMinutes(1), onBreak, onReset);
+                            .CircuitBreaker_WithConditionalTimespan(2, TimeSpan.FromMinutes(1), onBreak, onReset, timespanIsDynamic);
 
             breaker.Invoking(x => x.RaiseException<DivideByZeroException>())
                   .Should().Throw<DivideByZeroException>();
@@ -774,8 +788,8 @@ namespace Polly.Specs.CircuitBreaker
             onBreakCalled.Should().Be(1);
         }
 
-        [Fact]
-        public void Should_call_onbreak_when_breaking_circuit_first_time_but_not_for_subsequent_call_failure_which_arrives_on_open_state_though_started_on_closed_state()
+        [Theory, InlineData(true), InlineData(false)]
+        public void Should_call_onbreak_when_breaking_circuit_first_time_but_not_for_subsequent_call_failure_which_arrives_on_open_state_though_started_on_closed_state(bool timespanIsDynamic)
         {
             int onBreakCalled = 0;
             Action<Exception, TimeSpan> onBreak = (_, __) => { onBreakCalled++; };
@@ -783,7 +797,7 @@ namespace Polly.Specs.CircuitBreaker
 
             CircuitBreakerPolicy breaker = Policy
                             .Handle<DivideByZeroException>()
-                            .CircuitBreaker(1, TimeSpan.FromMinutes(1), onBreak, onReset);
+                            .CircuitBreaker_WithConditionalTimespan(1, TimeSpan.FromMinutes(1), onBreak, onReset, timespanIsDynamic);
 
             // Start an execution when the breaker is in the closed state, but hold it from returning (its failure) until the breaker has opened.  This call, a failure hitting an already open breaker, should indicate its fail, but should not cause onBreak() to be called a second time.
             TimeSpan testTimeoutToExposeDeadlocks = TimeSpan.FromSeconds(5);
@@ -832,8 +846,8 @@ namespace Polly.Specs.CircuitBreaker
             }
         }
 
-        [Fact]
-        public void Should_call_onreset_when_automatically_closing_circuit_but_not_when_halfopen() 
+        [Theory, InlineData(true), InlineData(false)]
+        public void Should_call_onreset_when_automatically_closing_circuit_but_not_when_halfopen(bool timespanIsDynamic) 
         {
             int onBreakCalled = 0;
             int onResetCalled = 0;
@@ -847,7 +861,7 @@ namespace Polly.Specs.CircuitBreaker
 
             CircuitBreakerPolicy breaker = Policy
                             .Handle<DivideByZeroException>()
-                            .CircuitBreaker(2, durationOfBreak, onBreak, onReset);
+                            .CircuitBreaker_WithConditionalTimespan(2, durationOfBreak, onBreak, onReset, timespanIsDynamic);
 
             onBreakCalled.Should().Be(0);
 
@@ -878,8 +892,8 @@ namespace Polly.Specs.CircuitBreaker
             onResetCalled.Should().Be(1);
         }
 
-        [Fact]
-        public void Should_not_call_onreset_on_successive_successful_calls()
+        [Theory, InlineData(true), InlineData(false)]
+        public void Should_not_call_onreset_on_successive_successful_calls(bool timespanIsDynamic)
         {
             Action<Exception, TimeSpan> onBreak = (_, __) => { };
             bool onResetCalled = false;
@@ -887,7 +901,7 @@ namespace Polly.Specs.CircuitBreaker
 
             CircuitBreakerPolicy breaker = Policy
                 .Handle<DivideByZeroException>()
-                .CircuitBreaker(2, TimeSpan.FromMinutes(1), onBreak, onReset);
+                .CircuitBreaker_WithConditionalTimespan(2, TimeSpan.FromMinutes(1), onBreak, onReset, timespanIsDynamic);
 
             onResetCalled.Should().BeFalse();
 
@@ -900,8 +914,8 @@ namespace Polly.Specs.CircuitBreaker
             onResetCalled.Should().BeFalse();
         }
 
-        [Fact]
-        public void Should_call_onhalfopen_when_automatically_transitioning_to_halfopen_due_to_subsequent_execution()
+        [Theory, InlineData(true), InlineData(false)]
+        public void Should_call_onhalfopen_when_automatically_transitioning_to_halfopen_due_to_subsequent_execution(bool timespanIsDynamic)
         {
             int onBreakCalled = 0;
             int onResetCalled = 0;
@@ -917,7 +931,7 @@ namespace Polly.Specs.CircuitBreaker
 
             CircuitBreakerPolicy breaker = Policy
                             .Handle<DivideByZeroException>()
-                            .CircuitBreaker(2, durationOfBreak, onBreak, onReset, onHalfOpen);
+                            .CircuitBreaker_WithConditionalTimespan(2, durationOfBreak, onBreak, onReset, onHalfOpen, timespanIsDynamic);
 
             onBreakCalled.Should().Be(0);
 
@@ -946,8 +960,8 @@ namespace Polly.Specs.CircuitBreaker
             onResetCalled.Should().Be(1);
         }
 
-        [Fact]
-        public void Should_call_onhalfopen_when_automatically_transitioning_to_halfopen_due_to_state_read()
+        [Theory, InlineData(true), InlineData(false)]
+        public void Should_call_onhalfopen_when_automatically_transitioning_to_halfopen_due_to_state_read(bool timespanIsDynamic)
         {
             int onBreakCalled = 0;
             int onResetCalled = 0;
@@ -963,7 +977,7 @@ namespace Polly.Specs.CircuitBreaker
 
             CircuitBreakerPolicy breaker = Policy
                             .Handle<DivideByZeroException>()
-                            .CircuitBreaker(2, durationOfBreak, onBreak, onReset, onHalfOpen);
+                            .CircuitBreaker_WithConditionalTimespan(2, durationOfBreak, onBreak, onReset, onHalfOpen, timespanIsDynamic);
 
             onBreakCalled.Should().Be(0);
 
@@ -987,8 +1001,8 @@ namespace Polly.Specs.CircuitBreaker
             onHalfOpenCalled.Should().Be(1);
         }
 
-        [Fact]
-        public void Should_call_onreset_when_manually_resetting_circuit()
+        [Theory, InlineData(true), InlineData(false)]
+        public void Should_call_onreset_when_manually_resetting_circuit(bool timespanIsDynamic)
         {
             int onBreakCalled = 0;
             int onResetCalled = 0;
@@ -1002,7 +1016,7 @@ namespace Polly.Specs.CircuitBreaker
 
             CircuitBreakerPolicy breaker = Policy
                             .Handle<DivideByZeroException>()
-                            .CircuitBreaker(2, durationOfBreak, onBreak, onReset);
+                            .CircuitBreaker_WithConditionalTimespan(2, durationOfBreak, onBreak, onReset, timespanIsDynamic);
 
             onBreakCalled.Should().Be(0);
             breaker.Isolate();
@@ -1022,8 +1036,8 @@ namespace Polly.Specs.CircuitBreaker
 
         #region Tests of supplied parameters to onBreak delegate
 
-        [Fact]
-        public void Should_call_onbreak_with_the_last_raised_exception()
+        [Theory, InlineData(true), InlineData(false)]
+        public void Should_call_onbreak_with_the_last_raised_exception(bool timespanIsDynamic)
         {
             Exception passedException = null;
 
@@ -1034,7 +1048,7 @@ namespace Polly.Specs.CircuitBreaker
 
             CircuitBreakerPolicy breaker = Policy
                 .Handle<DivideByZeroException>()
-                .CircuitBreaker(2, durationOfBreak, onBreak, onReset);
+                .CircuitBreaker_WithConditionalTimespan(2, durationOfBreak, onBreak, onReset, timespanIsDynamic);
 
             breaker.Invoking(x => x.RaiseException<DivideByZeroException>())
                 .Should().Throw<DivideByZeroException>();
@@ -1047,8 +1061,8 @@ namespace Polly.Specs.CircuitBreaker
             passedException?.Should().BeOfType<DivideByZeroException>();
         }
 
-        [Fact]
-        public void Should_call_onbreak_with_a_state_of_closed()
+        [Theory, InlineData(true), InlineData(false)]
+        public void Should_call_onbreak_with_a_state_of_closed(bool timespanIsDynamic)
         {
             CircuitState? transitionedState = null;
 
@@ -1058,7 +1072,7 @@ namespace Polly.Specs.CircuitBreaker
 
             CircuitBreakerPolicy breaker = Policy
                 .Handle<DivideByZeroException>()
-                .CircuitBreaker(2, TimeSpan.FromMinutes(1), onBreak, onReset, onHalfOpen);
+                .CircuitBreaker_WithConditionalTimespan(2, TimeSpan.FromMinutes(1), onBreak, onReset, onHalfOpen, timespanIsDynamic);
 
             breaker.Invoking(x => x.RaiseException<DivideByZeroException>())
                 .Should().Throw<DivideByZeroException>();
@@ -1071,8 +1085,8 @@ namespace Polly.Specs.CircuitBreaker
             transitionedState?.Should().Be(CircuitState.Closed);
         }
 
-        [Fact]
-        public void Should_call_onbreak_with_a_state_of_half_open()
+        [Theory, InlineData(true), InlineData(false)]
+        public void Should_call_onbreak_with_a_state_of_half_open(bool timespanIsDynamic)
         {
             List<CircuitState> transitionedStates = new List<CircuitState>();
 
@@ -1087,7 +1101,7 @@ namespace Polly.Specs.CircuitBreaker
 
             CircuitBreakerPolicy breaker = Policy
                             .Handle<DivideByZeroException>()
-                            .CircuitBreaker(2, TimeSpan.FromMinutes(1), onBreak, onReset, onHalfOpen);
+                            .CircuitBreaker_WithConditionalTimespan(2, TimeSpan.FromMinutes(1), onBreak, onReset, onHalfOpen, timespanIsDynamic);
 
             breaker.Invoking(x => x.RaiseException<DivideByZeroException>())
                   .Should().Throw<DivideByZeroException>();
@@ -1117,8 +1131,8 @@ namespace Polly.Specs.CircuitBreaker
             transitionedStates[1].Should().Be(CircuitState.HalfOpen);
         }
 
-        [Fact]
-        public void Should_rethrow_and_call_onbreak_with_the_last_raised_exception_unwrapped_if_matched_as_inner()
+        [Theory, InlineData(true), InlineData(false)]
+        public void Should_rethrow_and_call_onbreak_with_the_last_raised_exception_unwrapped_if_matched_as_inner(bool timespanIsDynamic)
         {
             Exception passedException = null;
 
@@ -1130,7 +1144,7 @@ namespace Polly.Specs.CircuitBreaker
             CircuitBreakerPolicy breaker = Policy
                 .HandleInner<DivideByZeroException>()
                 .Or<DivideByZeroException>()
-                .CircuitBreaker(2, durationOfBreak, onBreak, onReset);
+                .CircuitBreaker_WithConditionalTimespan(2, durationOfBreak, onBreak, onReset, timespanIsDynamic);
 
             Exception toRaiseAsInner = new DivideByZeroException();
             Exception withInner = new AggregateException(toRaiseAsInner);
@@ -1146,8 +1160,8 @@ namespace Polly.Specs.CircuitBreaker
             passedException?.Should().BeSameAs(toRaiseAsInner);
         }
 
-        [Fact]
-        public void Should_call_onbreak_with_the_correct_timespan()
+        [Theory, InlineData(true), InlineData(false)]
+        public void Should_call_onbreak_with_the_correct_timespan(bool timespanIsDynamic)
         {
             TimeSpan? passedBreakTimespan = null;
 
@@ -1158,7 +1172,7 @@ namespace Polly.Specs.CircuitBreaker
 
             CircuitBreakerPolicy breaker = Policy
                 .Handle<DivideByZeroException>()
-                .CircuitBreaker(2, durationOfBreak, onBreak, onReset);
+                .CircuitBreaker_WithConditionalTimespan(2, durationOfBreak, onBreak, onReset, timespanIsDynamic);
 
             breaker.Invoking(x => x.RaiseException<DivideByZeroException>())
                 .Should().Throw<DivideByZeroException>();
@@ -1171,8 +1185,8 @@ namespace Polly.Specs.CircuitBreaker
             passedBreakTimespan.Should().Be(durationOfBreak);
         }
 
-        [Fact]
-        public void Should_open_circuit_with_timespan_maxvalue_if_manual_override_open()
+        [Theory, InlineData(true), InlineData(false)]
+        public void Should_open_circuit_with_timespan_maxvalue_if_manual_override_open(bool timespanIsDynamic)
         {
             TimeSpan? passedBreakTimespan = null;
             Action<Exception, TimeSpan, Context> onBreak = (_, timespan, __) => { passedBreakTimespan = timespan; };
@@ -1185,7 +1199,7 @@ namespace Polly.Specs.CircuitBreaker
 
             CircuitBreakerPolicy breaker = Policy
                 .Handle<DivideByZeroException>()
-                .CircuitBreaker(2, durationOfBreak, onBreak, onReset);
+                .CircuitBreaker_WithConditionalTimespan(2, durationOfBreak, onBreak, onReset, timespanIsDynamic);
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             // manually break circuit
@@ -1199,8 +1213,8 @@ namespace Polly.Specs.CircuitBreaker
 
         #region Tests that supplied context is passed to stage-change delegates
 
-        [Fact]
-        public void Should_call_onbreak_with_the_passed_context()
+        [Theory, InlineData(true), InlineData(false)]
+        public void Should_call_onbreak_with_the_passed_context(bool timespanIsDynamic)
         {
             IDictionary<string, object> contextData = null;
 
@@ -1209,7 +1223,7 @@ namespace Polly.Specs.CircuitBreaker
 
             CircuitBreakerPolicy breaker = Policy
                 .Handle<DivideByZeroException>()
-                .CircuitBreaker(2, TimeSpan.FromMinutes(1), onBreak, onReset);
+                .CircuitBreaker_WithConditionalTimespan(2, TimeSpan.FromMinutes(1), onBreak, onReset, timespanIsDynamic);
 
             breaker.Invoking(x => x.RaiseException<DivideByZeroException>())
                 .Should().Throw<DivideByZeroException>();
@@ -1225,8 +1239,8 @@ namespace Polly.Specs.CircuitBreaker
                 .ContainValues("value1", "value2");
         }
 
-        [Fact]
-        public void Should_call_onreset_with_the_passed_context()
+        [Theory, InlineData(true), InlineData(false)]
+        public void Should_call_onreset_with_the_passed_context(bool timespanIsDynamic)
         {
             IDictionary<string, object> contextData = null;
 
@@ -1240,7 +1254,7 @@ namespace Polly.Specs.CircuitBreaker
 
             CircuitBreakerPolicy breaker = Policy
                 .Handle<DivideByZeroException>()
-                .CircuitBreaker(2, durationOfBreak, onBreak, onReset);
+                .CircuitBreaker_WithConditionalTimespan(2, durationOfBreak, onBreak, onReset, timespanIsDynamic);
 
             breaker.Invoking(x => x.RaiseException<DivideByZeroException>())
                 .Should().Throw<DivideByZeroException>();
@@ -1259,8 +1273,8 @@ namespace Polly.Specs.CircuitBreaker
                 .ContainValues("value1", "value2");
         }
 
-        [Fact]
-        public void Context_should_be_empty_if_execute_not_called_with_any_context_data()
+        [Theory, InlineData(true), InlineData(false)]
+        public void Context_should_be_empty_if_execute_not_called_with_any_context_data(bool timespanIsDynamic)
         {
             IDictionary<string, object> contextData = new {key1 = "value1", key2 = "value2"}.AsDictionary();
 
@@ -1269,7 +1283,7 @@ namespace Polly.Specs.CircuitBreaker
 
             CircuitBreakerPolicy breaker = Policy
                 .Handle<DivideByZeroException>()
-                .CircuitBreaker(2, TimeSpan.FromMinutes(1), onBreak, onReset);
+                .CircuitBreaker_WithConditionalTimespan(2, TimeSpan.FromMinutes(1), onBreak, onReset, timespanIsDynamic);
 
             breaker.Invoking(x => x.RaiseException<DivideByZeroException>())
                 .Should().Throw<DivideByZeroException>();
@@ -1282,8 +1296,8 @@ namespace Polly.Specs.CircuitBreaker
             contextData.Should().BeEmpty();
         }
 
-        [Fact]
-        public void Should_create_new_context_for_each_call_to_execute()
+        [Theory, InlineData(true), InlineData(false)]
+        public void Should_create_new_context_for_each_call_to_execute(bool timespanIsDynamic)
         {
             string contextValue = null;
 
@@ -1292,7 +1306,7 @@ namespace Polly.Specs.CircuitBreaker
 
             CircuitBreakerPolicy breaker = Policy
                 .Handle<DivideByZeroException>()
-                .CircuitBreaker(2, TimeSpan.FromMinutes(1), onBreak, onReset);
+                .CircuitBreaker_WithConditionalTimespan(2, TimeSpan.FromMinutes(1), onBreak, onReset, timespanIsDynamic);
 
             var time = 1.January(2000);
             SystemClock.UtcNow = () => time;
@@ -1326,22 +1340,22 @@ namespace Polly.Specs.CircuitBreaker
 
         #region LastException property
 
-        [Fact]
-        public void Should_initialise_LastException_to_null_on_creation()
+        [Theory, InlineData(true), InlineData(false)]
+        public void Should_initialise_LastException_to_null_on_creation(bool timespanIsDynamic)
         {
             var breaker = Policy
                 .Handle<DivideByZeroException>()
-                .CircuitBreaker(2, TimeSpan.FromMinutes(1));
+                .CircuitBreaker_WithConditionalTimespan(2, TimeSpan.FromMinutes(1), timespanIsDynamic);
 
             breaker.LastException.Should().BeNull();
         }
 
-        [Fact]
-        public void Should_set_LastException_on_handling_exception_even_when_not_breaking()
+        [Theory, InlineData(true), InlineData(false)]
+        public void Should_set_LastException_on_handling_exception_even_when_not_breaking(bool timespanIsDynamic)
         {
             CircuitBreakerPolicy breaker = Policy
                 .Handle<DivideByZeroException>()
-                .CircuitBreaker(2, TimeSpan.FromMinutes(1));
+                .CircuitBreaker_WithConditionalTimespan(2, TimeSpan.FromMinutes(1), timespanIsDynamic);
 
             breaker.Invoking(x => x.RaiseException<DivideByZeroException>())
                 .Should().Throw<DivideByZeroException>();
@@ -1351,12 +1365,12 @@ namespace Polly.Specs.CircuitBreaker
             breaker.LastException.Should().BeOfType<DivideByZeroException>();
         }
 
-        [Fact]
-        public void Should_set_LastException_on_handling_inner_exception_even_when_not_breaking()
+        [Theory, InlineData(true), InlineData(false)]
+        public void Should_set_LastException_on_handling_inner_exception_even_when_not_breaking(bool timespanIsDynamic)
         {
             CircuitBreakerPolicy breaker = Policy
                 .HandleInner<DivideByZeroException>()
-                .CircuitBreaker(2, TimeSpan.FromMinutes(1));
+                .CircuitBreaker_WithConditionalTimespan(2, TimeSpan.FromMinutes(1), timespanIsDynamic);
 
 
             Exception toRaiseAsInner = new DivideByZeroException();
@@ -1370,12 +1384,12 @@ namespace Polly.Specs.CircuitBreaker
             breaker.LastException.Should().BeSameAs(toRaiseAsInner);
         }
 
-        [Fact]
-        public void Should_set_LastException_to_last_raised_exception_when_breaking()
+        [Theory, InlineData(true), InlineData(false)]
+        public void Should_set_LastException_to_last_raised_exception_when_breaking(bool timespanIsDynamic)
         {
             CircuitBreakerPolicy breaker = Policy
                 .Handle<DivideByZeroException>()
-                .CircuitBreaker(2, TimeSpan.FromMinutes(1));
+                .CircuitBreaker_WithConditionalTimespan(2, TimeSpan.FromMinutes(1), timespanIsDynamic);
 
             breaker.Invoking(x => x.RaiseException<DivideByZeroException>())
                 .Should().Throw<DivideByZeroException>();
@@ -1388,12 +1402,12 @@ namespace Polly.Specs.CircuitBreaker
             breaker.LastException.Should().BeOfType<DivideByZeroException>();
         }
 
-        [Fact]
-        public void Should_set_LastException_to_null_on_circuit_reset()
+        [Theory, InlineData(true), InlineData(false)]
+        public void Should_set_LastException_to_null_on_circuit_reset(bool timespanIsDynamic)
         {
             CircuitBreakerPolicy breaker = Policy
                 .Handle<DivideByZeroException>()
-                .CircuitBreaker(2, TimeSpan.FromMinutes(1));
+                .CircuitBreaker_WithConditionalTimespan(2, TimeSpan.FromMinutes(1), timespanIsDynamic);
 
             breaker.Invoking(x => x.RaiseException<DivideByZeroException>())
                 .Should().Throw<DivideByZeroException>();
@@ -1414,12 +1428,12 @@ namespace Polly.Specs.CircuitBreaker
 
         #region ExecuteAndCapture with HandleInner
 
-        [Fact]
-        public void Should_set_PolicyResult_on_handling_inner_exception()
+        [Theory, InlineData(true), InlineData(false)]
+        public void Should_set_PolicyResult_on_handling_inner_exception(bool timespanIsDynamic)
         {
             CircuitBreakerPolicy breaker = Policy
                 .HandleInner<DivideByZeroException>()
-                .CircuitBreaker(2, TimeSpan.FromMinutes(1));
+                .CircuitBreaker_WithConditionalTimespan(2, TimeSpan.FromMinutes(1), timespanIsDynamic);
 
 
             Exception toRaiseAsInner = new DivideByZeroException();
@@ -1435,13 +1449,13 @@ namespace Polly.Specs.CircuitBreaker
 
         #region Cancellation support
 
-        [Fact]
-        public void Should_execute_action_when_non_faulting_and_cancellationToken_not_cancelled()
+        [Theory, InlineData(true), InlineData(false)]
+        public void Should_execute_action_when_non_faulting_and_cancellationToken_not_cancelled(bool timespanIsDynamic)
         {
             var durationOfBreak = TimeSpan.FromMinutes(1);
             CircuitBreakerPolicy breaker = Policy
                             .Handle<DivideByZeroException>()
-                            .CircuitBreaker(2, durationOfBreak);
+                            .CircuitBreaker_WithConditionalTimespan(2, durationOfBreak, timespanIsDynamic);
 
             CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
 
@@ -1460,13 +1474,13 @@ namespace Polly.Specs.CircuitBreaker
             attemptsInvoked.Should().Be(1);
         }
 
-        [Fact]
-        public void Should_not_execute_action_when_cancellationToken_cancelled_before_execute()
+        [Theory, InlineData(true), InlineData(false)]
+        public void Should_not_execute_action_when_cancellationToken_cancelled_before_execute(bool timespanIsDynamic)
         {
             var durationOfBreak = TimeSpan.FromMinutes(1);
             CircuitBreakerPolicy breaker = Policy
                             .Handle<DivideByZeroException>()
-                            .CircuitBreaker(2, durationOfBreak);
+                            .CircuitBreaker_WithConditionalTimespan(2, durationOfBreak, timespanIsDynamic);
 
             CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
             CancellationToken cancellationToken = cancellationTokenSource.Token;
@@ -1489,13 +1503,13 @@ namespace Polly.Specs.CircuitBreaker
             attemptsInvoked.Should().Be(0);
         }
 
-        [Fact]
-        public void Should_report_cancellation_during_otherwise_non_faulting_action_execution_when_user_delegate_observes_cancellationToken()
+        [Theory, InlineData(true), InlineData(false)]
+        public void Should_report_cancellation_during_otherwise_non_faulting_action_execution_when_user_delegate_observes_cancellationToken(bool timespanIsDynamic)
         {
             var durationOfBreak = TimeSpan.FromMinutes(1);
             CircuitBreakerPolicy breaker = Policy
                             .Handle<DivideByZeroException>()
-                            .CircuitBreaker(2, durationOfBreak);
+                            .CircuitBreaker_WithConditionalTimespan(2, durationOfBreak, timespanIsDynamic);
 
             CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
             CancellationToken cancellationToken = cancellationTokenSource.Token;
@@ -1517,13 +1531,13 @@ namespace Polly.Specs.CircuitBreaker
             attemptsInvoked.Should().Be(1);
         }
 
-        [Fact]
-        public void Should_report_cancellation_during_faulting_action_execution_when_user_delegate_observes_cancellationToken()
+        [Theory, InlineData(true), InlineData(false)]
+        public void Should_report_cancellation_during_faulting_action_execution_when_user_delegate_observes_cancellationToken(bool timespanIsDynamic)
         {
             var durationOfBreak = TimeSpan.FromMinutes(1);
             CircuitBreakerPolicy breaker = Policy
                             .Handle<DivideByZeroException>()
-                            .CircuitBreaker(2, durationOfBreak);
+                            .CircuitBreaker_WithConditionalTimespan(2, durationOfBreak, timespanIsDynamic);
 
             CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
             CancellationToken cancellationToken = cancellationTokenSource.Token;
@@ -1545,13 +1559,13 @@ namespace Polly.Specs.CircuitBreaker
             attemptsInvoked.Should().Be(1);
         }
 
-        [Fact]
-        public void Should_report_faulting_from_faulting_action_execution_when_user_delegate_does_not_observe_cancellation()
+        [Theory, InlineData(true), InlineData(false)]
+        public void Should_report_faulting_from_faulting_action_execution_when_user_delegate_does_not_observe_cancellation(bool timespanIsDynamic)
         {
             var durationOfBreak = TimeSpan.FromMinutes(1);
             CircuitBreakerPolicy breaker = Policy
                             .Handle<DivideByZeroException>()
-                            .CircuitBreaker(2, durationOfBreak);
+                            .CircuitBreaker_WithConditionalTimespan(2, durationOfBreak, timespanIsDynamic);
 
             CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
 
@@ -1571,12 +1585,12 @@ namespace Polly.Specs.CircuitBreaker
             attemptsInvoked.Should().Be(1);
         }
 
-        [Fact]
-        public void Should_report_cancellation_when_both_open_circuit_and_cancellation()
+        [Theory, InlineData(true), InlineData(false)]
+        public void Should_report_cancellation_when_both_open_circuit_and_cancellation(bool timespanIsDynamic)
         {
             CircuitBreakerPolicy breaker = Policy
                 .Handle<DivideByZeroException>()
-                .CircuitBreaker(1, TimeSpan.FromMinutes(1));
+                .CircuitBreaker_WithConditionalTimespan(1, TimeSpan.FromMinutes(1), timespanIsDynamic);
 
             breaker.Invoking(x => x.RaiseException<DivideByZeroException>())
                 .Should().Throw<DivideByZeroException>();
@@ -1609,15 +1623,15 @@ namespace Polly.Specs.CircuitBreaker
             attemptsInvoked.Should().Be(0);
         }
 
-        [Fact]
-        public void Should_honour_different_cancellationToken_captured_implicitly_by_action()
+        [Theory, InlineData(true), InlineData(false)]
+        public void Should_honour_different_cancellationToken_captured_implicitly_by_action(bool timespanIsDynamic)
         {
             // Before CancellationToken support was built in to Polly, users of the library may have implicitly captured a CancellationToken and used it to cancel actions.  For backwards compatibility, Polly should not confuse these with its own CancellationToken; it should distinguish OperationCanceledExceptions thrown with different CancellationTokens.
 
             var durationOfBreak = TimeSpan.FromMinutes(1);
             CircuitBreakerPolicy breaker = Policy
                             .Handle<DivideByZeroException>()
-                            .CircuitBreaker(2, durationOfBreak);
+                            .CircuitBreaker_WithConditionalTimespan(2, durationOfBreak, timespanIsDynamic);
 
             CancellationTokenSource policyCancellationTokenSource = new CancellationTokenSource();
             CancellationToken policyCancellationToken = policyCancellationTokenSource.Token;
@@ -1640,13 +1654,13 @@ namespace Polly.Specs.CircuitBreaker
             attemptsInvoked.Should().Be(1);
         }
 
-        [Fact]
-        public void Should_execute_func_returning_value_when_cancellationToken_not_cancelled()
+        [Theory, InlineData(true), InlineData(false)]
+        public void Should_execute_func_returning_value_when_cancellationToken_not_cancelled(bool timespanIsDynamic)
         {
             var durationOfBreak = TimeSpan.FromMinutes(1);
             CircuitBreakerPolicy breaker = Policy
                             .Handle<DivideByZeroException>()
-                            .CircuitBreaker(2, durationOfBreak);
+                            .CircuitBreaker_WithConditionalTimespan(2, durationOfBreak, timespanIsDynamic);
 
             CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
             CancellationToken cancellationToken = cancellationTokenSource.Token;
@@ -1670,12 +1684,12 @@ namespace Polly.Specs.CircuitBreaker
             attemptsInvoked.Should().Be(1);
         }
 
-        [Fact]
-        public void Should_honour_and_report_cancellation_during_func_execution()
+        [Theory, InlineData(true), InlineData(false)]
+        public void Should_honour_and_report_cancellation_during_func_execution(bool timespanIsDynamic)
         {
             CircuitBreakerPolicy breaker = Policy
                              .Handle<DivideByZeroException>()
-                             .CircuitBreaker(2, TimeSpan.FromMinutes(1));
+                             .CircuitBreaker_WithConditionalTimespan(2, TimeSpan.FromMinutes(1), timespanIsDynamic);
 
             CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
             CancellationToken cancellationToken = cancellationTokenSource.Token;
@@ -1702,10 +1716,102 @@ namespace Polly.Specs.CircuitBreaker
 
         #endregion
 
-
         public void Dispose()
         {
             SystemClock.Reset();
+        }
+    }
+
+    internal static class PolicyBuilderBExtension
+    {
+        internal static CircuitBreakerPolicy CircuitBreaker_WithConditionalTimespan(
+            this PolicyBuilder builder,
+            int exceptionsAllowedBeforeBreaking,
+            TimeSpan durationOfBreak,
+            bool timespanIsDynamic)
+        {
+            if (timespanIsDynamic)
+            {
+                return builder.CircuitBreaker(exceptionsAllowedBeforeBreaking, durationOfBreak);
+            }
+            else
+            {
+                return builder.CircuitBreaker(exceptionsAllowedBeforeBreaking, (_) => durationOfBreak);
+            }
+        }
+
+        internal static CircuitBreakerPolicy CircuitBreaker_WithConditionalTimespan(
+            this PolicyBuilder builder,
+            int exceptionsAllowedBeforeBreaking,
+            TimeSpan durationOfBreak,
+            Action<Exception, TimeSpan> onBreak,
+            Action onReset,
+            bool timespanIsDynamic)
+        {
+            if (timespanIsDynamic)
+            {
+                return builder.CircuitBreaker(exceptionsAllowedBeforeBreaking, durationOfBreak, onBreak, onReset);
+            }
+            else
+            {
+                return builder.CircuitBreaker(exceptionsAllowedBeforeBreaking, (_) => durationOfBreak, onBreak, onReset);
+            }
+        }
+
+        internal static CircuitBreakerPolicy CircuitBreaker_WithConditionalTimespan(
+            this PolicyBuilder builder,
+            int exceptionsAllowedBeforeBreaking,
+            TimeSpan durationOfBreak,
+            Action<Exception, TimeSpan, Context> onBreak,
+            Action<Context> onReset,
+            bool timespanIsDynamic)
+        {
+            if (timespanIsDynamic)
+            {
+                return builder.CircuitBreaker(exceptionsAllowedBeforeBreaking, durationOfBreak, onBreak, onReset);
+            }
+            else
+            {
+                return builder.CircuitBreaker(exceptionsAllowedBeforeBreaking, (_) => durationOfBreak, onBreak, onReset);
+            }
+        }
+
+        internal static CircuitBreakerPolicy CircuitBreaker_WithConditionalTimespan(
+            this PolicyBuilder builder,
+            int exceptionsAllowedBeforeBreaking,
+            TimeSpan durationOfBreak,
+            Action<Exception, TimeSpan> onBreak,
+            Action onReset,
+            Action onHalfOpen,
+            bool timespanIsDynamic)
+        {
+            if (timespanIsDynamic)
+            {
+                return builder.CircuitBreaker(exceptionsAllowedBeforeBreaking, durationOfBreak, onBreak, onReset, onHalfOpen);
+            }
+            else
+            {
+                return builder.CircuitBreaker(exceptionsAllowedBeforeBreaking, (_) => durationOfBreak, onBreak, onReset, onHalfOpen);
+            }
+        }
+
+        internal static CircuitBreakerPolicy CircuitBreaker_WithConditionalTimespan(
+            this PolicyBuilder builder,
+            int exceptionsAllowedBeforeBreaking,
+            TimeSpan durationOfBreak,
+            Action<Exception, CircuitState, TimeSpan, Context> onBreak,
+            Action<Context> onReset,
+            Action onHalfOpen,
+            bool timespanIsDynamic)
+        {
+            if (timespanIsDynamic)
+            {
+                return builder.CircuitBreaker(exceptionsAllowedBeforeBreaking, durationOfBreak, onBreak, onReset, onHalfOpen);
+            }
+            else
+            {
+                return builder.CircuitBreaker(exceptionsAllowedBeforeBreaking, (_) => durationOfBreak, onBreak, onReset, onHalfOpen);
+            }
         }
     }
 }
