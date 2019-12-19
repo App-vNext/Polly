@@ -20,7 +20,7 @@ namespace Polly.CircuitBreaker
             Action<DelegateResult<TResult>, CircuitState, TimeSpan, Context> onBreak, 
             Action<Context> onReset, 
             Action onHalfOpen
-            ) : base(durationOfBreak, onBreak, onReset, onHalfOpen)
+            ) : base((_) => durationOfBreak, onBreak, onReset, onHalfOpen)
         {
             _metrics = samplingDuration.Ticks < ResolutionOfCircuitTimer * NumberOfWindows
                 ? (IHealthMetrics)new SingleHealthMetrics(samplingDuration)
@@ -77,7 +77,7 @@ namespace Polly.CircuitBreaker
                 switch (_circuitState)
                 {
                     case CircuitState.HalfOpen:
-                        Break_NeedsLock(context);
+                        Break_NeedsLock(0, context);
                         return;
 
                     case CircuitState.Closed:
@@ -87,7 +87,7 @@ namespace Polly.CircuitBreaker
                         int throughput = healthCount.Total;
                         if (throughput >= _minimumThroughput && ((double)healthCount.Failures) / throughput >= _failureThreshold)
                         {
-                            Break_NeedsLock(context);
+                            Break_NeedsLock(0, context);
                         }
                         break;
 

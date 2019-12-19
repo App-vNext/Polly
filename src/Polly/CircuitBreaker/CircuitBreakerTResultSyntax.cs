@@ -204,7 +204,7 @@ namespace Polly
 
             ICircuitController<TResult> breakerController = new ConsecutiveCountCircuitController<TResult>(
                 handledEventsAllowedBeforeBreaking,
-                durationOfBreak,
+                (_) => durationOfBreak,
                 onBreak,
                 onReset,
                 onHalfOpen);

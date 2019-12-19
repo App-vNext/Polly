@@ -203,7 +203,7 @@ namespace Polly
 
             var breakerController = new ConsecutiveCountCircuitController<TResult>(
                 handledEventsAllowedBeforeBreaking,
-                durationOfBreak,
+                (_) => durationOfBreak,
                 onBreak,
                 onReset,
                 onHalfOpen);
