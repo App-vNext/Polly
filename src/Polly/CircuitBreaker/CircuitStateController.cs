@@ -6,7 +6,7 @@ namespace Polly.CircuitBreaker
 {
     internal abstract class CircuitStateController<TResult> : ICircuitController<TResult>
     {
-        protected readonly TimeSpan _durationOfBreak;
+        protected readonly Func<int, TimeSpan> _factoryForNextBreakDuration;
         protected long _blockedTill;
         protected CircuitState _circuitState;
         protected DelegateResult<TResult> _lastOutcome;
@@ -18,12 +18,12 @@ namespace Polly.CircuitBreaker
         protected readonly object _lock = new object();
 
         protected CircuitStateController(
-            TimeSpan durationOfBreak, 
+            Func<int, TimeSpan> factoryForNextBreakDuration,
             Action<DelegateResult<TResult>, CircuitState, TimeSpan, Context> onBreak, 
             Action<Context> onReset, 
             Action onHalfOpen)
         {
-            _durationOfBreak = durationOfBreak;
+            _factoryForNextBreakDuration = factoryForNextBreakDuration;
             _onBreak = onBreak;
             _onReset = onReset;
             _onHalfOpen = onHalfOpen;
@@ -94,10 +94,16 @@ namespace Polly.CircuitBreaker
             }
         }
 
-        protected void Break_NeedsLock(Context context) => BreakFor_NeedsLock(_durationOfBreak, context);
+        protected void Break_NeedsLock(int consecutiveHalfOpenFailures, Context context)
+        {
+            var nextBreakDuration = _factoryForNextBreakDuration(consecutiveHalfOpenFailures);
+            BreakFor_NeedsLock(nextBreakDuration, context);
+        }
 
         private void BreakFor_NeedsLock(TimeSpan durationOfBreak, Context context)
         {
+            if (durationOfBreak < TimeSpan.Zero) throw new ArgumentOutOfRangeException(nameof(durationOfBreak), "Value must be greater than zero.");
+
             bool willDurationTakeUsPastDateTimeMaxValue = durationOfBreak > DateTime.MaxValue - SystemClock.UtcNow();
             _blockedTill = willDurationTakeUsPastDateTimeMaxValue
                 ? DateTime.MaxValue.Ticks
@@ -126,14 +132,32 @@ namespace Polly.CircuitBreaker
 
         protected bool PermitHalfOpenCircuitTest()
         {
-            long currentlyBlockedUntil = _blockedTill;
-            if (SystemClock.UtcNow().Ticks >= currentlyBlockedUntil)
+            long initialBlockedTill = _blockedTill;
+            if (SystemClock.UtcNow().Ticks < initialBlockedTill)
             {
-                // It's time to permit a / another trial call in the half-open state ...
-                // ... but to prevent race conditions/multiple calls, we have to ensure only _one_ thread wins the race to own this next call.
-                return Interlocked.CompareExchange(ref _blockedTill, SystemClock.UtcNow().Ticks + _durationOfBreak.Ticks, currentlyBlockedUntil) == currentlyBlockedUntil;
+                return false;
             }
-            return false;
+
+            // It's time to permit a / another trial call in the half-open state ...
+            // ... but to prevent race conditions/multiple calls, we have to ensure only _one_ thread wins the race to own this next call.
+            // If "we" are the thread that wins that races, then we also want to update the BlockedTill date, so that no other thread / call tries to execute before this Test has reached *it's* conclusion.
+            //
+            // So combine doing those two things into an Interlocked.CompareExchange call.
+            // Attempt to update _blockedTill. Then examine the return value to determine whether someone else had beaten us to the punch.
+            // If not, then that tells us that we won the race, and we can permit the Circuit Test.
+            // If someone had already modified _blockedTil, then we lost the race and thus aren't going to be doing the Test.
+            //
+            // Note that if the Circuit Test is a failure, it will re-configure the Break limit, using the updated number of Test failures.
+            // Which means that it doesn't really matter what delay we put in here as long as no other attempts get made before this Test completes.
+            // This is helpful, since we don't have convenient access to the number of Test Failures here, and thus can't calculate the *correct* next delay.
+            //
+            // Lastly note that the conceptual edge case of _blockedTil being equal to DateTime.MaxValue.Ticks, is not a concern, since in that case the
+            // if-check above will not have passed, so we won't have gotten here in the first place.
+
+            var blockedTil_AtAtomicStartOfExchangeCall = Interlocked.CompareExchange(ref _blockedTill, DateTime.MaxValue.Ticks, initialBlockedTill);
+            var blockedTil_HadNotChangedPriorToExchangeCall = blockedTil_AtAtomicStartOfExchangeCall == initialBlockedTill;
+
+            return blockedTil_HadNotChangedPriorToExchangeCall;
         }
 
         private BrokenCircuitException GetBreakingException()
