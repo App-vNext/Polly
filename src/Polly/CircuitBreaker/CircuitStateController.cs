@@ -8,6 +8,7 @@ namespace Polly.CircuitBreaker
     {
         protected readonly Func<int, TimeSpan> _factoryForNextBreakDuration;
         protected long _blockedTill;
+        protected TimeSpan _currentBlockDuration;
         protected CircuitState _circuitState;
         protected DelegateResult<TResult> _lastOutcome;
 
@@ -102,7 +103,7 @@ namespace Polly.CircuitBreaker
 
         private void BreakFor_NeedsLock(TimeSpan durationOfBreak, Context context)
         {
-            if (durationOfBreak < TimeSpan.Zero) throw new ArgumentOutOfRangeException(nameof(durationOfBreak), "Value must be greater than zero.");
+            _currentBlockDuration = durationOfBreak;
 
             bool willDurationTakeUsPastDateTimeMaxValue = durationOfBreak > DateTime.MaxValue - SystemClock.UtcNow();
             _blockedTill = willDurationTakeUsPastDateTimeMaxValue
@@ -153,8 +154,8 @@ namespace Polly.CircuitBreaker
             //
             // Lastly note that the conceptual edge case of _blockedTil being equal to DateTime.MaxValue.Ticks, is not a concern, since in that case the
             // if-check above will not have passed, so we won't have gotten here in the first place.
-
-            var blockedTil_AtAtomicStartOfExchangeCall = Interlocked.CompareExchange(ref _blockedTill, DateTime.MaxValue.Ticks, initialBlockedTill);
+            var proposedNewBlockDeadline = initialBlockedTill + _currentBlockDuration.Ticks;
+            var blockedTil_AtAtomicStartOfExchangeCall = Interlocked.CompareExchange(ref _blockedTill, proposedNewBlockDeadline, initialBlockedTill);
             var blockedTil_HadNotChangedPriorToExchangeCall = blockedTil_AtAtomicStartOfExchangeCall == initialBlockedTill;
 
             return blockedTil_HadNotChangedPriorToExchangeCall;
