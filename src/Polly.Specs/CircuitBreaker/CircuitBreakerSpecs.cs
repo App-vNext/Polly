@@ -14,6 +14,14 @@ namespace Polly.Specs.CircuitBreaker
     [Collection(Constants.SystemClockDependentTestCollection)]
     public class CircuitBreakerSpecs : IDisposable
     {
+        #region TODO: Tests for dynamic Duration that actually changes Duration.
+
+        // Check that the right duration is calculated.
+        // Check that the changing duration works as expected.
+        // Check that the right consec. error count is passed into the function.
+
+        #endregion
+
         #region Configuration tests
 
         [Theory, InlineData(true), InlineData(false)]

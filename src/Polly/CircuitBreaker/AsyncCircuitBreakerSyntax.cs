@@ -9,6 +9,8 @@ namespace Polly
     /// </summary>
     public static class AsyncCircuitBreakerSyntax
     {
+        //TODO: Add support for dynamic BreakDuration
+
         /// <summary>
         /// <para> Builds a <see cref="AsyncPolicy"/> that will function like a Circuit Breaker.</para>
         /// <para>The circuit will break if <paramref name="exceptionsAllowedBeforeBreaking"/>

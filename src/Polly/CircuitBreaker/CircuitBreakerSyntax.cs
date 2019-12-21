@@ -17,6 +17,8 @@ namespace Polly
             }
         }
 
+        //TODO: I assume that this Func<int,TimeSpan> form needs to be documented somewhere other than here in the XML Docs?
+
         /// <summary>
         /// <para> Builds a <see cref="Policy"/> that will function like a Circuit Breaker.</para>
         /// <para>The circuit will break if <paramref name="exceptionsAllowedBeforeBreaking"/>

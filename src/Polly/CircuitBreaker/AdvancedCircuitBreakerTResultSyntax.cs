@@ -9,6 +9,8 @@ namespace Polly
     /// </summary>
     public static class AdvancedCircuitBreakerTResultSyntax
     {
+        //TODO: Consider support for dynamic BreakDuration
+
         /// <summary>
         /// <para> Builds a <see cref="Policy{TResult}"/> that will function like a Circuit Breaker.</para>
         /// <para>The circuit will break if, within any timeslice of duration <paramref name="samplingDuration"/>, the proportion of actions resulting in a handled exception or result exceeds <paramref name="failureThreshold"/>, provided also that the number of actions through the circuit in the timeslice is at least <paramref name="minimumThroughput" />. </para>
