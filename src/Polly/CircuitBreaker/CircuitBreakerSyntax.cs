@@ -9,6 +9,14 @@ namespace Polly
     /// </summary>
     public static class CircuitBreakerSyntax
     {
+        private static void ValidateStaticDurationIsNonNegative(TimeSpan duration)
+        {
+            if (duration < TimeSpan.Zero)
+            {
+                throw new ArgumentOutOfRangeException("durationOfBreak", "Value must be greater than zero.");
+            }
+        }
+
         /// <summary>
         /// <para> Builds a <see cref="Policy"/> that will function like a Circuit Breaker.</para>
         /// <para>The circuit will break if <paramref name="exceptionsAllowedBeforeBreaking"/>
@@ -27,10 +35,14 @@ namespace Polly
         /// <returns>The policy instance.</returns>
         /// <remarks>(see "Release It!" by Michael T. Nygard fi)</remarks>
         /// <exception cref="ArgumentOutOfRangeException">exceptionsAllowedBeforeBreaking;Value must be greater than zero.</exception>
+        /// <exception cref="ArgumentOutOfRangeException">durationOfBreak;Value must be greater than or equal to zero.</exception>
         /// <exception cref="ArgumentNullException">onBreak</exception>
         /// <exception cref="ArgumentNullException">onReset</exception>
         public static CircuitBreakerPolicy CircuitBreaker(this PolicyBuilder policyBuilder, int exceptionsAllowedBeforeBreaking, TimeSpan durationOfBreak)
-            => policyBuilder.CircuitBreaker(exceptionsAllowedBeforeBreaking, (_) => durationOfBreak);
+        {
+            ValidateStaticDurationIsNonNegative(durationOfBreak);
+            return policyBuilder.CircuitBreaker(exceptionsAllowedBeforeBreaking, (_) => durationOfBreak);
+        }
         
         /// <summary>
         /// <para> Builds a <see cref="Policy"/> that will function like a Circuit Breaker.</para>
@@ -85,10 +97,14 @@ namespace Polly
         /// <returns>The policy instance.</returns>
         /// <remarks>(see "Release It!" by Michael T. Nygard fi)</remarks>
         /// <exception cref="ArgumentOutOfRangeException">exceptionsAllowedBeforeBreaking;Value must be greater than zero.</exception>
+        /// <exception cref="ArgumentOutOfRangeException">durationOfBreak;Value must be greater than or equal to zero.</exception>
         /// <exception cref="ArgumentNullException">onBreak</exception>
         /// <exception cref="ArgumentNullException">onReset</exception>
         public static CircuitBreakerPolicy CircuitBreaker(this PolicyBuilder policyBuilder, int exceptionsAllowedBeforeBreaking, TimeSpan durationOfBreak, Action<Exception, TimeSpan> onBreak, Action onReset)
-            => policyBuilder.CircuitBreaker(exceptionsAllowedBeforeBreaking, (_) => durationOfBreak, onBreak, onReset);
+        {
+            ValidateStaticDurationIsNonNegative(durationOfBreak);
+            return policyBuilder.CircuitBreaker(exceptionsAllowedBeforeBreaking, (_) => durationOfBreak, onBreak, onReset);
+        }
 
         /// <summary>
         /// <para> Builds a <see cref="Policy"/> that will function like a Circuit Breaker.</para>
@@ -140,10 +156,14 @@ namespace Polly
         /// <returns>The policy instance.</returns>
         /// <remarks>(see "Release It!" by Michael T. Nygard fi)</remarks>
         /// <exception cref="ArgumentOutOfRangeException">exceptionsAllowedBeforeBreaking;Value must be greater than zero.</exception>
+        /// <exception cref="ArgumentOutOfRangeException">durationOfBreak;Value must be greater than or equal to zero.</exception>
         /// <exception cref="ArgumentNullException">onBreak</exception>
         /// <exception cref="ArgumentNullException">onReset</exception>
         public static CircuitBreakerPolicy CircuitBreaker(this PolicyBuilder policyBuilder, int exceptionsAllowedBeforeBreaking, TimeSpan durationOfBreak, Action<Exception, TimeSpan, Context> onBreak, Action<Context> onReset)
-            => policyBuilder.CircuitBreaker(exceptionsAllowedBeforeBreaking, (_) => durationOfBreak, onBreak, onReset);
+        {
+            ValidateStaticDurationIsNonNegative(durationOfBreak);
+            return policyBuilder.CircuitBreaker(exceptionsAllowedBeforeBreaking, (_) => durationOfBreak, onBreak, onReset);
+        }
 
         /// <summary>
         /// <para> Builds a <see cref="Policy"/> that will function like a Circuit Breaker.</para>
@@ -199,10 +219,14 @@ namespace Polly
         /// <returns>The policy instance.</returns>
         /// <remarks>(see "Release It!" by Michael T. Nygard fi)</remarks>
         /// <exception cref="ArgumentOutOfRangeException">exceptionsAllowedBeforeBreaking;Value must be greater than zero.</exception>
+        /// <exception cref="ArgumentOutOfRangeException">durationOfBreak;Value must be greater than or equal to zero.</exception>
         /// <exception cref="ArgumentNullException">onBreak</exception>
         /// <exception cref="ArgumentNullException">onReset</exception>
         public static CircuitBreakerPolicy CircuitBreaker(this PolicyBuilder policyBuilder, int exceptionsAllowedBeforeBreaking, TimeSpan durationOfBreak, Action<Exception, TimeSpan> onBreak, Action onReset, Action onHalfOpen)
-            => policyBuilder.CircuitBreaker(exceptionsAllowedBeforeBreaking, (_) => durationOfBreak, onBreak, onReset, onHalfOpen);
+        {
+            ValidateStaticDurationIsNonNegative(durationOfBreak);
+            return policyBuilder.CircuitBreaker(exceptionsAllowedBeforeBreaking, (_) => durationOfBreak, onBreak, onReset, onHalfOpen);
+        }
 
         /// <summary>
         /// <para> Builds a <see cref="Policy"/> that will function like a Circuit Breaker.</para>
@@ -257,11 +281,15 @@ namespace Polly
         /// <returns>The policy instance.</returns>
         /// <remarks>(see "Release It!" by Michael T. Nygard fi)</remarks>
         /// <exception cref="ArgumentOutOfRangeException">exceptionsAllowedBeforeBreaking;Value must be greater than zero.</exception>
+        /// <exception cref="ArgumentOutOfRangeException">durationOfBreak;Value must be greater than or equal to zero.</exception>
         /// <exception cref="ArgumentNullException">onBreak</exception>
         /// <exception cref="ArgumentNullException">onReset</exception>
         /// <exception cref="ArgumentNullException">onHalfOpen</exception>
         public static CircuitBreakerPolicy CircuitBreaker(this PolicyBuilder policyBuilder, int exceptionsAllowedBeforeBreaking, TimeSpan durationOfBreak, Action<Exception, TimeSpan, Context> onBreak, Action<Context> onReset, Action onHalfOpen)
-            => policyBuilder.CircuitBreaker(exceptionsAllowedBeforeBreaking, (_) => durationOfBreak, onBreak, onReset, onHalfOpen);
+        {
+            ValidateStaticDurationIsNonNegative(durationOfBreak);
+            return policyBuilder.CircuitBreaker(exceptionsAllowedBeforeBreaking, (_) => durationOfBreak, onBreak, onReset, onHalfOpen);
+        }
 
         /// <summary>
         /// <para> Builds a <see cref="Policy"/> that will function like a Circuit Breaker.</para>
@@ -317,11 +345,15 @@ namespace Polly
         /// <returns>The policy instance.</returns>
         /// <remarks>(see "Release It!" by Michael T. Nygard fi)</remarks>
         /// <exception cref="ArgumentOutOfRangeException">exceptionsAllowedBeforeBreaking;Value must be greater than zero.</exception>
+        /// <exception cref="ArgumentOutOfRangeException">durationOfBreak;Value must be greater than or equal to zero.</exception>
         /// <exception cref="ArgumentNullException">onBreak</exception>
         /// <exception cref="ArgumentNullException">onReset</exception>
         /// <exception cref="ArgumentNullException">onHalfOpen</exception>
         public static CircuitBreakerPolicy CircuitBreaker(this PolicyBuilder policyBuilder, int exceptionsAllowedBeforeBreaking, TimeSpan durationOfBreak, Action<Exception, CircuitState, TimeSpan, Context> onBreak, Action<Context> onReset, Action onHalfOpen)
-            => policyBuilder.CircuitBreaker(exceptionsAllowedBeforeBreaking, (_) => durationOfBreak, onBreak, onReset, onHalfOpen);
+        {
+            ValidateStaticDurationIsNonNegative(durationOfBreak);
+            return policyBuilder.CircuitBreaker(exceptionsAllowedBeforeBreaking, (_) => durationOfBreak, onBreak, onReset, onHalfOpen);
+        }
 
         /// <summary>
         /// <para> Builds a <see cref="Policy"/> that will function like a Circuit Breaker.</para>
@@ -349,11 +381,11 @@ namespace Polly
         /// <exception cref="ArgumentNullException">onHalfOpen</exception>
         public static CircuitBreakerPolicy CircuitBreaker(this PolicyBuilder policyBuilder, int exceptionsAllowedBeforeBreaking, Func<int, TimeSpan> factoryForNextBreakDuration, Action<Exception, CircuitState, TimeSpan, Context> onBreak, Action<Context> onReset, Action onHalfOpen)
         {
-            if (exceptionsAllowedBeforeBreaking <= 0) throw new ArgumentOutOfRangeException(nameof(exceptionsAllowedBeforeBreaking), "Value must be greater than zero.");
+            if (exceptionsAllowedBeforeBreaking <= 0) { throw new ArgumentOutOfRangeException(nameof(exceptionsAllowedBeforeBreaking), "Value must be greater than zero."); }
 
-            if (onBreak == null) throw new ArgumentNullException(nameof(onBreak));
-            if (onReset == null) throw new ArgumentNullException(nameof(onReset));
-            if (onHalfOpen == null) throw new ArgumentNullException(nameof(onHalfOpen));
+            if (onBreak == null) { throw new ArgumentNullException(nameof(onBreak)); }
+            if (onReset == null) { throw new ArgumentNullException(nameof(onReset)); }
+            if (onHalfOpen == null) { throw new ArgumentNullException(nameof(onHalfOpen)); }
 
             var breakerController = new ConsecutiveCountCircuitController<EmptyStruct>(
                 exceptionsAllowedBeforeBreaking,
