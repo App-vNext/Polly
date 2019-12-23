@@ -143,7 +143,7 @@ Policy
     .Handle<SomeExceptionType>()
     .Retry(3, onRetry: (exception, retryCount) =>
     {
-        // do something 
+        // Add logic to be executed before each retry, such as logging
     });
 
 // Retry multiple times, calling an action on each retry 
@@ -153,7 +153,7 @@ Policy
     .Handle<SomeExceptionType>()
     .Retry(3, onRetry: (exception, retryCount, context) =>
     {
-        // do something 
+        // Add logic to be executed before each retry, such as logging 
     });
 ```
 
@@ -172,7 +172,7 @@ Policy
   .Handle<SomeExceptionType>()
   .RetryForever(onRetry: exception =>
   {
-        // do something       
+        // Add logic to be executed before each retry, such as logging       
   });
 
 // Retry forever, calling an action on each retry with the
@@ -181,7 +181,7 @@ Policy
   .Handle<SomeExceptionType>()
   .RetryForever(onRetry: (exception, context) =>
   {
-        // do something       
+        // Add logic to be executed before each retry, such as logging       
   });
 ```
 
@@ -210,7 +210,7 @@ Policy
     TimeSpan.FromSeconds(2),
     TimeSpan.FromSeconds(3)
   }, (exception, timeSpan) => {
-    // do something    
+    // Add logic to be executed before each retry, such as logging    
   }); 
 
 // Retry, waiting a specified duration between each retry, 
@@ -224,7 +224,7 @@ Policy
     TimeSpan.FromSeconds(2),
     TimeSpan.FromSeconds(3)
   }, (exception, timeSpan, context) => {
-    // do something    
+    // Add logic to be executed before each retry, such as logging    
   });
 
 // Retry, waiting a specified duration between each retry, 
@@ -238,7 +238,7 @@ Policy
     TimeSpan.FromSeconds(2),
     TimeSpan.FromSeconds(3)
   }, (exception, timeSpan, retryCount, context) => {
-    // do something    
+    // Add logic to be executed before each retry, such as logging    
   });
 
 // Retry a specified number of times, using a function to 
@@ -267,7 +267,7 @@ Policy
     5, 
     retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)), 
     (exception, timeSpan, context) => {
-      // do something
+      // Add logic to be executed before each retry, such as logging
     }
   );
 
@@ -282,7 +282,7 @@ Policy
     5, 
     retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)), 
     (exception, timeSpan, retryCount, context) => {
-      // do something
+      // Add logic to be executed before each retry, such as logging
     }
   );
 ```
@@ -310,7 +310,7 @@ Policy
     retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),    
     (exception, timespan) =>
     {
-        // do something       
+        // Add logic to be executed before each retry, such as logging       
     });
 
 // Wait and retry forever, calling an action on each retry with the
@@ -321,7 +321,7 @@ Policy
     retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),    
     (exception, timespan, context) =>
     {
-        // do something       
+        // Add logic to be executed before each retry, such as logging       
     });
 ```
 
@@ -430,14 +430,18 @@ Policy<UserAvatar>
    .Handle<FooException>()
    .Fallback<UserAvatar>(UserAvatar.Blank, onFallback: (exception, context) => 
     {
-        // do something
+        // Add extra logic to be called when the fallback is invoked, such as logging
     });
 
 ```
 
 For more detail see: [Fallback policy documentation](https://github.com/App-vNext/Polly/wiki/Fallback) on wiki.
 
-## Step 3 : Execute the policy
+## Step 3 : Execute code through the policy
+
+Execute an `Action`, `Func`, or lambda delegate equivalent, through the policy.  The policy governs execution of the code passed to the `.Execute()` (or similar) method.
+
+> _Note: The code examples below show defining the policy and executing code through it in the same scope, for simplicity. See the notes after the code examples for other usage patterns_.
 
 ```csharp
 // Execute an action
@@ -490,11 +494,31 @@ Policy
   .Execute(() => DoSomething());
 ```
 
-The above examples show policy definition immediately followed by policy execution, for simplicity.  Policy definition and execution may just as often be separated in the codebase and application lifecycle.  You may choose for example to define policies on start-up, then provide them to point-of-use by dependency injection (perhaps using [`PolicyRegistry`](#policyregistry)).
+### Richer policy consumption patterns
+
+Defining and consuming the policy in the same scope, as shown above, is the most immediate way to use Polly.  Consider also:
+
++ Separate policy definition from policy consumption, and inject policies into the code which will consume them. This [enables many unit-testing scenarios](https://github.com/App-vNext/Polly/wiki/Unit-testing-with-Polly---with-examples).
++ If your application uses Polly in a number of locations, define all policies at startup, and place them in a [`PolicyRegistry`](https://github.com/App-vNext/Polly/wiki/PolicyRegistry).  This is a common pattern in .NET Core applications.  For instance, you might define your own extension method on `IServiceCollection` to configure the policies you will consume elsewhere in the application.  PolicyRegistry also [combines well with DI to support unit-testing](https://github.com/App-vNext/Polly/wiki/Unit-testing-with-Polly---with-examples#use-policyregistry-with-di-to-work-with-policy-collections).  
+  
+```csharp
+public static ConfigurePollyPolicies(this IServiceCollection services)
+{
+    PolicyRegistry registry = new PolicyRegistry()
+    {
+        { "RepositoryResilienceStrategy", /* define Policy or PolicyWrap strategy */ },
+        { "CollaboratingMicroserviceResilienceStrategy", /* define Policy or PolicyWrap strategy */ },
+	{ "ThirdPartyApiResilienceStrategy", /* define Policy or PolicyWrap strategy */ },
+	/* etc */
+    };
+
+    services.AddSingleton<IReadOnlyPolicyRegistry<string>>(registry);
+}
+```
 
 # Usage &ndash; proactive policies
 
-The proactive policies add resilience strategies that not based on handling faults which delegates may throw or return.
+The proactive policies add resilience strategies that are not based on handling faults which the governed code may throw or return.
 
 ## Step 1 : Configure
 
@@ -522,7 +546,7 @@ Policy
 Policy
   .Timeout(30, onTimeout: (context, timespan, task) => 
     {
-        // do something 
+        // Add extra logic to be invoked when a timeout occurs, such as logging 
     });
 
 // Eg timeout, logging that the execution timed out:
@@ -595,7 +619,7 @@ Policy
 Policy
   .Bulkhead(12, context => 
     {
-        // do something 
+        // Add callback logic for when the bulkhead rejects execution, such as logging 
     });
 
 // Monitor the bulkhead available capacity, for example for health/load reporting.
