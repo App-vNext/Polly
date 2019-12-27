@@ -144,7 +144,7 @@ Task("__UpdateAssemblyVersionInformation")
     Information("FullSemVer -> {0}", gitVersionOutput["FullSemVer"]);
     Information("AssemblySemVer -> {0}", gitVersionOutput["AssemblySemVer"]);
 
-    appveyorBuildNumber = gitVersionOutput["BranchName"].ToString().Equals("master")
+    appveyorBuildNumber = gitVersionOutput["BranchName"].ToString().Equals("master", StringComparison.OrdinalIgnoreCase)
         ? gitVersionOutput["FullSemVer"].ToString() 
         : gitVersionOutput["InformationalVersion"].ToString();
     nugetVersion = gitVersionOutput["NuGetVersion"].ToString();
