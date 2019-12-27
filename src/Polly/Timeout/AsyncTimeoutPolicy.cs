@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 namespace Polly.Timeout
 {
     /// <summary>
-    /// A timeout policy which can be applied to async delegates.
+    /// A timeout policy that can be applied to asynchronous delegate executions.
     /// </summary>
-    public class AsyncTimeoutPolicy : AsyncPolicy, ITimeoutPolicy
+    public class AsyncTimeoutPolicy : AsyncPolicy, IAsyncTimeoutPolicy
     {
         private readonly Func<Context, TimeSpan> _timeoutProvider;
         private readonly TimeoutStrategy _timeoutStrategy;
@@ -45,10 +45,10 @@ namespace Polly.Timeout
     }
 
     /// <summary>
-    /// A timeout policy which can be applied to async delegates.
+    /// A timeout policy that can be applied to asynchronous delegate executions returning a value of type <typeparamref name="TResult"/>.
     /// </summary>
     /// <typeparam name="TResult">The return type of delegates which may be executed through the policy.</typeparam>
-    public class AsyncTimeoutPolicy<TResult> : AsyncPolicy<TResult>, ITimeoutPolicy<TResult>
+    public class AsyncTimeoutPolicy<TResult> : AsyncPolicy<TResult>, IAsyncTimeoutPolicy<TResult>
     {
         private Func<Context, TimeSpan> _timeoutProvider;
         private TimeoutStrategy _timeoutStrategy;
