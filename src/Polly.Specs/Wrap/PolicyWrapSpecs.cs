@@ -36,8 +36,8 @@ namespace Polly.Specs.Wrap
         [Fact]
         public void Nongeneric_wraps_nongeneric_using_instance_wrap_syntax_should_set_outer_inner()
         {
-            Policy policyA = Policy.NoOp();
-            Policy policyB = Policy.NoOp();
+            ISyncPolicy policyA = Policy.NoOp();
+            ISyncPolicy policyB = Policy.NoOp();
 
             PolicyWrap wrap = policyA.Wrap(policyB);
 
@@ -48,8 +48,8 @@ namespace Polly.Specs.Wrap
         [Fact]
         public void Nongeneric_wraps_generic_using_instance_wrap_syntax_should_set_outer_inner()
         {
-            Policy policyA = Policy.NoOp();
-            Policy<int> policyB = Policy.NoOp<int>();
+            ISyncPolicy policyA = Policy.NoOp();
+            ISyncPolicy<int> policyB = Policy.NoOp<int>();
 
             PolicyWrap<int> wrap = policyA.Wrap(policyB);
 
@@ -85,8 +85,8 @@ namespace Polly.Specs.Wrap
         [Fact]
         public void Generic_wraps_nongeneric_using_instance_wrap_syntax_should_set_outer_inner()
         {
-            Policy<int> policyA = Policy.NoOp<int>();
-            Policy policyB = Policy.NoOp();
+            ISyncPolicy<int> policyA = Policy.NoOp<int>();
+            ISyncPolicy policyB = Policy.NoOp();
 
             PolicyWrap<int> wrap = policyA.Wrap(policyB);
 
@@ -97,8 +97,8 @@ namespace Polly.Specs.Wrap
         [Fact]
         public void Generic_wraps_generic_using_instance_wrap_syntax_should_set_outer_inner()
         {
-            Policy<int> policyA = Policy.NoOp<int>();
-            Policy<int> policyB = Policy.NoOp<int>();
+            ISyncPolicy<int> policyA = Policy.NoOp<int>();
+            ISyncPolicy<int> policyB = Policy.NoOp<int>();
 
             PolicyWrap<int> wrap = policyA.Wrap(policyB);
 
@@ -261,7 +261,7 @@ namespace Polly.Specs.Wrap
         [Fact]
         public void Wrapping_only_one_policy_using_static_wrap_syntax_should_throw()
         {
-            Policy singlePolicy = Policy.Handle<Exception>().Retry();
+            ISyncPolicy singlePolicy = Policy.Handle<Exception>().Retry();
             Action config = () => Policy.Wrap(new[] {singlePolicy});
 
             config.Should().Throw<ArgumentException>().And.ParamName.Should().Be("policies");
@@ -270,7 +270,7 @@ namespace Polly.Specs.Wrap
         [Fact]
         public void Wrapping_two_policies_using_static_wrap_syntax_should_not_throw()
         {
-            Policy retry = Policy.Handle<Exception>().Retry();
+            ISyncPolicy retry = Policy.Handle<Exception>().Retry();
             ISyncPolicy breaker = Policy.Handle<Exception>().CircuitBreaker(1, TimeSpan.FromSeconds(10));
             Action config = () => Policy.Wrap(new[] {retry, breaker});
 
@@ -280,8 +280,8 @@ namespace Polly.Specs.Wrap
         [Fact]
         public void Wrapping_more_than_two_policies_using_static_wrap_syntax_should_not_throw()
         {
-            Policy retry = Policy.Handle<Exception>().Retry(1);
-            Policy divideByZeroRetry = Policy.Handle<DivideByZeroException>().Retry(2);
+            ISyncPolicy retry = Policy.Handle<Exception>().Retry(1);
+            ISyncPolicy divideByZeroRetry = Policy.Handle<DivideByZeroException>().Retry(2);
             ISyncPolicy breaker = Policy.Handle<Exception>().CircuitBreaker(1, TimeSpan.FromSeconds(10));
 
             Action config = () => Policy.Wrap(new[] {divideByZeroRetry, retry, breaker});
@@ -292,8 +292,8 @@ namespace Polly.Specs.Wrap
         [Fact]
         public void Wrapping_policies_using_static_wrap_syntax_should_set_outer_inner()
         {
-            Policy policyA = Policy.NoOp();
-            Policy policyB = Policy.NoOp();
+            ISyncPolicy policyA = Policy.NoOp();
+            ISyncPolicy policyB = Policy.NoOp();
 
             PolicyWrap wrap = Policy.Wrap(policyA, policyB);
 
@@ -316,7 +316,7 @@ namespace Polly.Specs.Wrap
         [Fact]
         public void Wrapping_only_one_policy_using_static_wrap_strongly_typed_syntax_should_throw()
         {
-            Policy<int> singlePolicy = Policy<int>.Handle<Exception>().Retry();
+            ISyncPolicy<int> singlePolicy = Policy<int>.Handle<Exception>().Retry();
             Action config = () => Policy.Wrap<int>(new[] { singlePolicy });
 
             config.Should().Throw<ArgumentException>().And.ParamName.Should().Be("policies");
@@ -325,7 +325,7 @@ namespace Polly.Specs.Wrap
         [Fact]
         public void Wrapping_two_policies_using_static_wrap_strongly_typed_syntax_should_not_throw()
         {
-            Policy<int> retry = Policy<int>.Handle<Exception>().Retry();
+            ISyncPolicy<int> retry = Policy<int>.Handle<Exception>().Retry();
             ISyncPolicy<int> breaker = Policy<int>.Handle<Exception>().CircuitBreaker(1, TimeSpan.FromSeconds(10));
             Action config = () => Policy.Wrap<int>(new[] { retry, breaker });
 
@@ -335,8 +335,8 @@ namespace Polly.Specs.Wrap
         [Fact]
         public void Wrapping_more_than_two_policies_using_static_wrap_strongly_typed_syntax_should_not_throw()
         {
-            Policy<int> retry = Policy<int>.Handle<Exception>().Retry();
-            Policy<int> divideByZeroRetry = Policy<int>.Handle<DivideByZeroException>().Retry(2);
+            ISyncPolicy<int> retry = Policy<int>.Handle<Exception>().Retry();
+            ISyncPolicy<int> divideByZeroRetry = Policy<int>.Handle<DivideByZeroException>().Retry(2);
             ISyncPolicy<int> breaker = Policy<int>.Handle<Exception>().CircuitBreaker(1, TimeSpan.FromSeconds(10));
 
             Action config = () => Policy.Wrap<int>(new[] { divideByZeroRetry, retry, breaker });
@@ -347,8 +347,8 @@ namespace Polly.Specs.Wrap
         [Fact]
         public void Wrapping_policies_using_static_wrap_strongly_typed_syntax_should_set_outer_inner()
         {
-            Policy<int> policyA = Policy.NoOp<int>();
-            Policy<int> policyB = Policy.NoOp<int>();
+            ISyncPolicy<int> policyA = Policy.NoOp<int>();
+            ISyncPolicy<int> policyB = Policy.NoOp<int>();
 
             PolicyWrap<int> wrap = Policy.Wrap(policyA, policyB);
 

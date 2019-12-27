@@ -124,7 +124,7 @@ namespace Polly.Specs
             Context executionContext = new Context(operationKey);
             Context capturedContext = null;
 
-            Policy<ResultPrimitive> policy = Policy.NoOp<ResultPrimitive>();
+            ISyncPolicy<ResultPrimitive> policy = Policy.NoOp<ResultPrimitive>();
 
             policy.Execute(context => { capturedContext = context; return ResultPrimitive.Good; }, executionContext);
 
@@ -161,7 +161,7 @@ namespace Polly.Specs
             Context executionContext = new Context(operationKey);
             Context capturedContext = null;
 
-            Policy<ResultPrimitive> policy = Policy.NoOp<ResultPrimitive>();
+            ISyncPolicy<ResultPrimitive> policy = Policy.NoOp<ResultPrimitive>();
 
             policy.ExecuteAndCapture(context => { capturedContext = context; return ResultPrimitive.Good; }, executionContext);
 
@@ -174,7 +174,7 @@ namespace Polly.Specs
             string operationKey = "SomeKey";
             Context executionContext = new Context(operationKey);
 
-            Policy<ResultPrimitive> policy = Policy.NoOp<ResultPrimitive>();
+            ISyncPolicy<ResultPrimitive> policy = Policy.NoOp<ResultPrimitive>();
 
             policy.ExecuteAndCapture(context => ResultPrimitive.Good, executionContext)
                 .Context.Should().BeSameAs(executionContext);

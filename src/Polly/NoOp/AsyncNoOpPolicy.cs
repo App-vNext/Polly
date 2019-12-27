@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 namespace Polly.NoOp
 {
     /// <summary>
-    /// A noop policy that can be applied to asynchronous delegates.
+    /// A no-op policy that can be applied to asynchronous delegate executions.  Code executed through the policy is executed as if no policy was applied.
     /// </summary>
-    public class AsyncNoOpPolicy : AsyncPolicy, INoOpPolicy
+    public class AsyncNoOpPolicy : AsyncPolicy, IAsyncNoOpPolicy
     {
         internal AsyncNoOpPolicy() 
         {
@@ -22,9 +22,10 @@ namespace Polly.NoOp
     }
 
     /// <summary>
-    /// A noop policy that can be applied to asynchronous delegates returning a value of type <typeparamref name="TResult"/>.
+    /// A no-op policy that can be applied to asynchronous delegate executions returning a value of type <typeparamref name="TResult"/>.  Code executed through the policy is executed as if no policy was applied.
     /// </summary>
-    public class AsyncNoOpPolicy<TResult> : AsyncPolicy<TResult>, INoOpPolicy<TResult>
+    /// <typeparam name="TResult">The return type of delegates which may be executed through the policy.</typeparam>
+    public class AsyncNoOpPolicy<TResult> : AsyncPolicy<TResult>, IAsyncNoOpPolicy<TResult>
     {
         internal AsyncNoOpPolicy() 
         {

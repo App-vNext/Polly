@@ -36,8 +36,8 @@ namespace Polly.Specs.Wrap
         [Fact]
         public void Nongeneric_wraps_nongeneric_using_instance_wrap_syntax_should_set_outer_inner()
         {
-            AsyncPolicy policyA = Policy.NoOpAsync();
-            AsyncPolicy policyB = Policy.NoOpAsync();
+            IAsyncPolicy policyA = Policy.NoOpAsync();
+            IAsyncPolicy policyB = Policy.NoOpAsync();
 
             AsyncPolicyWrap wrap = policyA.WrapAsync(policyB);
 
@@ -48,8 +48,8 @@ namespace Polly.Specs.Wrap
         [Fact]
         public void Nongeneric_wraps_generic_using_instance_wrap_syntax_should_set_outer_inner()
         {
-            AsyncPolicy policyA = Policy.NoOpAsync();
-            AsyncPolicy<int> policyB = Policy.NoOpAsync<int>();
+            IAsyncPolicy policyA = Policy.NoOpAsync();
+            IAsyncPolicy<int> policyB = Policy.NoOpAsync<int>();
 
             AsyncPolicyWrap<int> wrap = policyA.WrapAsync(policyB);
 
@@ -84,8 +84,8 @@ namespace Polly.Specs.Wrap
         [Fact]
         public void Generic_wraps_nongeneric_using_instance_wrap_syntax_should_set_outer_inner()
         {
-            AsyncPolicy<int> policyA = Policy.NoOpAsync<int>();
-            AsyncPolicy policyB = Policy.NoOpAsync();
+            IAsyncPolicy<int> policyA = Policy.NoOpAsync<int>();
+            IAsyncPolicy policyB = Policy.NoOpAsync();
 
             AsyncPolicyWrap<int> wrap = policyA.WrapAsync(policyB);
 
@@ -96,8 +96,8 @@ namespace Polly.Specs.Wrap
         [Fact]
         public void Generic_wraps_generic_using_instance_wrap_syntax_should_set_outer_inner()
         {
-            AsyncPolicy<int> policyA = Policy.NoOpAsync<int>();
-            AsyncPolicy<int> policyB = Policy.NoOpAsync<int>();
+            IAsyncPolicy<int> policyA = Policy.NoOpAsync<int>();
+            IAsyncPolicy<int> policyB = Policy.NoOpAsync<int>();
 
             AsyncPolicyWrap<int> wrap = policyA.WrapAsync(policyB);
 
@@ -291,8 +291,8 @@ namespace Polly.Specs.Wrap
         [Fact]
         public void Wrapping_policies_using_static_wrap_syntax_should_set_outer_inner()
         {
-            AsyncPolicy policyA = Policy.NoOpAsync();
-            AsyncPolicy policyB = Policy.NoOpAsync();
+            IAsyncPolicy policyA = Policy.NoOpAsync();
+            IAsyncPolicy policyB = Policy.NoOpAsync();
 
             AsyncPolicyWrap wrap = Policy.WrapAsync(policyA, policyB);
 
@@ -346,8 +346,8 @@ namespace Polly.Specs.Wrap
         [Fact]
         public void Wrapping_policies_using_static_wrap_strongly_typed_syntax_should_set_outer_inner()
         {
-            AsyncPolicy<int> policyA = Policy.NoOpAsync<int>();
-            AsyncPolicy<int> policyB = Policy.NoOpAsync<int>();
+            IAsyncPolicy<int> policyA = Policy.NoOpAsync<int>();
+            IAsyncPolicy<int> policyB = Policy.NoOpAsync<int>();
 
             AsyncPolicyWrap<int> wrap = Policy.WrapAsync(policyA, policyB);
 
