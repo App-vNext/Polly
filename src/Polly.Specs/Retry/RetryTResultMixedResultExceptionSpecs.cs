@@ -1,5 +1,6 @@
 ﻿using System;
 using FluentAssertions;
+using Polly.Retry;
 using Polly.Specs.Helpers;
 using Xunit;
 
@@ -10,7 +11,7 @@ namespace Polly.Specs.Retry
         [Fact]
         public void Should_handle_exception_when_TResult_policy_handling_exceptions_only()
         {
-            Policy<ResultPrimitive> policy = Policy<ResultPrimitive>
+            ISyncRetryPolicy<ResultPrimitive> policy = Policy<ResultPrimitive>
                 .Handle<DivideByZeroException>().Retry(1);
 
             ResultPrimitive result = policy.RaiseResultAndOrExceptionSequence(new DivideByZeroException(), ResultPrimitive.Good);
@@ -20,7 +21,7 @@ namespace Polly.Specs.Retry
         [Fact]
         public void Should_throw_unhandled_exception_when_TResult_policy_handling_exceptions_only()
         {
-            Policy<ResultPrimitive> policy = Policy<ResultPrimitive>
+            ISyncRetryPolicy<ResultPrimitive> policy = Policy<ResultPrimitive>
                 .Handle<DivideByZeroException>().Retry(1);
 
             policy.Invoking(p => p.RaiseResultAndOrExceptionSequence(new ArgumentException(), ResultPrimitive.Good))
@@ -30,7 +31,7 @@ namespace Polly.Specs.Retry
         [Fact]
         public void Should_handle_both_exception_and_specified_result_if_raised_same_number_of_times_as_retry_count__when_configuring_results_before_exceptions()
         {
-            Policy<ResultPrimitive> policy = Policy
+            ISyncRetryPolicy<ResultPrimitive> policy = Policy
                 .HandleResult(ResultPrimitive.Fault)
                 .Or<DivideByZeroException>()
                 .Retry(2);
@@ -42,7 +43,7 @@ namespace Polly.Specs.Retry
         [Fact]
         public void Should_handle_both_exception_and_specified_result_if_raised_same_number_of_times_as_retry_count__when_configuring_exception_before_result()
         {
-            Policy<ResultPrimitive> policy = Policy
+            ISyncRetryPolicy<ResultPrimitive> policy = Policy
                 .Handle<DivideByZeroException>()
                 .OrResult(ResultPrimitive.Fault)
                 .Retry(2);
@@ -54,7 +55,7 @@ namespace Polly.Specs.Retry
         [Fact]
         public void Should_handle_both_exceptions_and_specified_results_if_raised_same_number_of_times_as_retry_count__mixing_exceptions_and_results_specifying_exceptions_first()
         {
-            Policy<ResultPrimitive> policy = Policy
+            ISyncRetryPolicy<ResultPrimitive> policy = Policy
                 .Handle<DivideByZeroException>()
                 .OrResult(ResultPrimitive.Fault)
                 .Or<ArgumentException>()
@@ -68,7 +69,7 @@ namespace Polly.Specs.Retry
         [Fact]
         public void Should_handle_both_exceptions_and_specified_results_if_raised_same_number_of_times_as_retry_count__mixing_exceptions_and_results_specifying_results_first()
         {
-            Policy<ResultPrimitive> policy = Policy
+            ISyncRetryPolicy<ResultPrimitive> policy = Policy
                 .HandleResult(ResultPrimitive.Fault)
                 .Or<DivideByZeroException>()
                 .OrResult(ResultPrimitive.FaultAgain)
@@ -82,7 +83,7 @@ namespace Polly.Specs.Retry
         [Fact]
         public void Should_return_handled_result_when_handled_result_returned_next_after_retries_exhaust_handling_both_exceptions_and_specified_results__mixing_exceptions_and_results_specifying_results_first()
         {
-            Policy<ResultPrimitive> policy = Policy
+            ISyncRetryPolicy<ResultPrimitive> policy = Policy
                 .HandleResult(ResultPrimitive.Fault)
                 .Or<DivideByZeroException>()
                 .OrResult(ResultPrimitive.FaultAgain)
@@ -96,7 +97,7 @@ namespace Polly.Specs.Retry
         [Fact]
         public void Should_throw_when_exception_thrown_next_after_retries_exhaust_handling_both_exceptions_and_specified_results__mixing_exceptions_and_results_specifying_results_first()
         {
-            Policy<ResultPrimitive> policy = Policy
+            ISyncRetryPolicy<ResultPrimitive> policy = Policy
                 .HandleResult(ResultPrimitive.Fault)
                 .Or<DivideByZeroException>()
                 .OrResult(ResultPrimitive.FaultAgain)
@@ -110,7 +111,7 @@ namespace Polly.Specs.Retry
         [Fact]
         public void Should_return_handled_result_when_handled_result_returned_next_after_retries_exhaust_handling_both_exceptions_and_specified_results__mixing_exceptions_and_results_specifying_exceptions_first()
         {
-            Policy<ResultPrimitive> policy = Policy
+            ISyncRetryPolicy<ResultPrimitive> policy = Policy
                 .Handle<DivideByZeroException>()
                 .OrResult(ResultPrimitive.Fault)
                 .Or<ArgumentException>()
@@ -124,7 +125,7 @@ namespace Polly.Specs.Retry
         [Fact]
         public void Should_throw_when_exception_thrown_next_after_retries_exhaust_handling_both_exceptions_and_specified_results__mixing_exceptions_and_results_specifying_exceptions_first()
         {
-            Policy<ResultPrimitive> policy = Policy
+            ISyncRetryPolicy<ResultPrimitive> policy = Policy
                 .Handle<DivideByZeroException>()
                 .OrResult(ResultPrimitive.Fault)
                 .Or<ArgumentException>()
@@ -138,7 +139,7 @@ namespace Polly.Specs.Retry
         [Fact]
         public void Should_return_unhandled_result_if_not_one_of_results_or_exceptions_specified()
         {
-            Policy<ResultPrimitive> policy = Policy
+            ISyncRetryPolicy<ResultPrimitive> policy = Policy
                 .HandleResult(ResultPrimitive.Fault)
                 .Or<DivideByZeroException>()
                 .Retry(2);
@@ -150,7 +151,7 @@ namespace Polly.Specs.Retry
         [Fact]
         public void Should_throw_if_not_one_of_results_or_exceptions_handled()
         {
-            Policy<ResultPrimitive> policy = Policy
+            ISyncRetryPolicy<ResultPrimitive> policy = Policy
                 .Handle<DivideByZeroException>()
                 .OrResult(ResultPrimitive.Fault)
                 .Retry(2);
@@ -162,7 +163,7 @@ namespace Polly.Specs.Retry
         [Fact]
         public void Should_handle_both_exceptions_and_specified_results_with_predicates()
         {
-            Policy<ResultClass> policy = Policy
+            ISyncRetryPolicy<ResultClass> policy = Policy
                 .Handle<ArgumentException>(e => e.ParamName == "key")
                 .OrResult<ResultClass>(r => r.ResultCode == ResultPrimitive.Fault)
                 .Retry(2);
@@ -174,7 +175,7 @@ namespace Polly.Specs.Retry
         [Fact]
         public void Should_throw_if_exception_predicate_not_matched()
         {
-            Policy<ResultClass> policy = Policy
+            ISyncRetryPolicy<ResultClass> policy = Policy
                 .Handle<ArgumentException>(e => e.ParamName == "key")
                 .OrResult<ResultClass>(r => r.ResultCode == ResultPrimitive.Fault)
                 .Retry(2);
@@ -186,7 +187,7 @@ namespace Polly.Specs.Retry
         [Fact]
         public void Should_return_unhandled_result_if_result_predicate_not_matched()
         {
-            Policy<ResultClass> policy = Policy
+            ISyncRetryPolicy<ResultClass> policy = Policy
                 .Handle<ArgumentException>(e => e.ParamName == "key")
                 .OrResult<ResultClass>(r => r.ResultCode == ResultPrimitive.Fault)
                 .Retry(2);

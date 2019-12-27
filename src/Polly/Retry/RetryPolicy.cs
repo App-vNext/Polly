@@ -6,9 +6,9 @@ using System.Threading;
 namespace Polly.Retry
 {
     /// <summary>
-    /// A retry policy that can be applied to synchronous delegates.
+    /// A retry policy that can be applied to synchronous executions.
     /// </summary>
-    public class RetryPolicy : Policy, IRetryPolicy
+    public class RetryPolicy : Policy, ISyncRetryPolicy
     {
         private readonly Action<Exception, TimeSpan, int, Context> _onRetry;
         private readonly int _permittedRetryCount;
@@ -48,9 +48,10 @@ namespace Polly.Retry
     }
 
     /// <summary>
-    /// A retry policy that can be applied to synchronous delegates returning a value of type <typeparamref name="TResult"/>.
+    /// A retry policy that can be applied to synchronous executions returning a value of type <typeparamref name="TResult"/>.
     /// </summary>
-    public class RetryPolicy<TResult> : Policy<TResult>, IRetryPolicy<TResult>
+    /// <typeparam name="TResult">The return type of delegates which may be executed through the policy.</typeparam>
+    public class RetryPolicy<TResult> : Policy<TResult>, ISyncRetryPolicy<TResult>
     {
         private readonly Action<DelegateResult<TResult>, TimeSpan, int, Context> _onRetry;
         private readonly int _permittedRetryCount;

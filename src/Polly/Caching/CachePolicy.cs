@@ -5,9 +5,9 @@ using System.Threading;
 namespace Polly.Caching
 {
     /// <summary>
-    /// A cache policy that can be applied to the results of delegate executions.
+    /// A cache policy that can be applied to synchronous executions.
     /// </summary>
-    public class CachePolicy : Policy, ICachePolicy
+    public class CachePolicy : Policy, ISyncCachePolicy
     {
         private readonly ISyncCacheProvider _syncCacheProvider;
         private readonly ITtlStrategy _ttlStrategy;
@@ -65,9 +65,10 @@ namespace Polly.Caching
     }
 
     /// <summary>
-    /// A cache policy that can be applied to the results of delegate executions.
+    /// A cache policy that can be applied to synchronous executions returning a value of type <typeparamref name="TResult"/>.
     /// </summary>
-    public class CachePolicy<TResult> : Policy<TResult>, ICachePolicy<TResult>
+    /// <typeparam name="TResult">The return type of delegates which may be executed through the policy.</typeparam>
+    public class CachePolicy<TResult> : Policy<TResult>, ISyncCachePolicy<TResult>
     {
         private ISyncCacheProvider<TResult> _syncCacheProvider;
         private ITtlStrategy<TResult> _ttlStrategy;

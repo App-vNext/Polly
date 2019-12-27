@@ -161,7 +161,7 @@ namespace Polly.Specs
         [Fact]
         public void Executing_the_policy_action_should_throw_when_context_data_is_null()
         {
-            Policy policy = Policy
+            ISyncPolicy policy = Policy
                 .Handle<DivideByZeroException>()
                 .Retry((_, __, ___) => { });
 
@@ -172,7 +172,7 @@ namespace Polly.Specs
         [Fact]
         public void Executing_the_policy_action_should_throw_when_context_is_null()
         {
-            Policy policy = Policy
+            ISyncPolicy policy = Policy
                 .Handle<DivideByZeroException>()
                 .Retry((_, __, ___) => { });
 
@@ -184,7 +184,7 @@ namespace Polly.Specs
         [Fact]
         public void Executing_the_policy_function_should_throw_when_context_data_is_null()
         {
-            Policy policy = Policy
+            ISyncPolicy policy = Policy
                 .Handle<DivideByZeroException>()
                 .Retry((_, __, ___) => { });
 
@@ -195,7 +195,7 @@ namespace Polly.Specs
         [Fact]
         public void Executing_the_policy_function_should_throw_when_context_is_null()
         {
-            Policy policy = Policy
+            ISyncPolicy policy = Policy
                 .Handle<DivideByZeroException>()
                 .Retry((_, __, ___) => { });
 
@@ -211,7 +211,7 @@ namespace Polly.Specs
             Context executionContext = new Context(operationKey);
             Context capturedContext = null;
 
-            Policy policy = Policy.NoOp();
+            ISyncPolicy policy = Policy.NoOp();
 
             policy.Execute(context => { capturedContext = context; }, executionContext);
 
@@ -221,7 +221,7 @@ namespace Polly.Specs
         [Fact]
         public void Execute_and_capturing_the_policy_action_should_throw_when_context_data_is_null()
         {
-            Policy policy = Policy
+            ISyncPolicy policy = Policy
                 .Handle<DivideByZeroException>()
                 .Retry((_, __, ___) => { });
 
@@ -232,7 +232,7 @@ namespace Polly.Specs
         [Fact]
         public void Execute_and_capturing_the_policy_action_should_throw_when_context_is_null()
         {
-            Policy policy = Policy
+            ISyncPolicy policy = Policy
                 .Handle<DivideByZeroException>()
                 .Retry((_, __, ___) => { });
 
@@ -244,7 +244,7 @@ namespace Polly.Specs
         [Fact]
         public void Execute_and_capturing_the_policy_function_should_throw_when_context_data_is_null()
         {
-            Policy policy = Policy
+            ISyncPolicy policy = Policy
                 .Handle<DivideByZeroException>()
                 .Retry((_, __, ___) => { });
 
@@ -255,7 +255,7 @@ namespace Polly.Specs
         [Fact]
         public void Execute_and_capturing_the_policy_function_should_throw_when_context_is_null()
         {
-            Policy policy = Policy
+            ISyncPolicy policy = Policy
                 .Handle<DivideByZeroException>()
                 .Retry((_, __, ___) => { });
 
@@ -271,7 +271,7 @@ namespace Polly.Specs
             Context executionContext = new Context(operationKey);
             Context capturedContext = null;
 
-            Policy policy = Policy.NoOp();
+            ISyncPolicy policy = Policy.NoOp();
 
             policy.ExecuteAndCapture(context => { capturedContext = context; }, executionContext);
 
@@ -284,7 +284,7 @@ namespace Polly.Specs
             string operationKey = "SomeKey";
             Context executionContext = new Context(operationKey);
 
-            Policy policy = Policy.NoOp();
+            ISyncPolicy policy = Policy.NoOp();
 
             policy.ExecuteAndCapture(context => { }, executionContext)
                 .Context.Should().BeSameAs(executionContext);

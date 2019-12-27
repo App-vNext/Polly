@@ -4,28 +4,42 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Scenario = Polly.Specs.Helpers.PolicyTResultExtensionsAsync.ResultAndOrCancellationScenario;
+using Scenario = Polly.Specs.Helpers.IAsyncPolicyTResultExtensions.ResultAndOrCancellationScenario;
 
 namespace Polly.Specs.Helpers
 {
-    public static class PolicyTResultExtensionsAsync
+    public static class IAsyncPolicyTResultExtensions
     {
-        public static Task<TResult> RaiseResultSequenceAsync<TResult>(this AsyncPolicy<TResult> policy, params TResult[] resultsToRaise)
+        public static Task<TResult> RaiseResultSequenceAsync<TResult>(this IAsyncPolicy<TResult> policy, params TResult[] resultsToRaise)
         {
             return policy.RaiseResultSequenceAsync(resultsToRaise.ToList());
         }
 
-        public static Task<TResult> RaiseResultSequenceAsync<TResult>(this AsyncPolicy<TResult> policy, IEnumerable<TResult> resultsToRaise)
+        public static Task<TResult> RaiseResultSequenceAsync<TResult>(this IAsyncPolicy<TResult> policy, IEnumerable<TResult> resultsToRaise)
         {
             return policy.RaiseResultSequenceAsync(default, resultsToRaise);
         }
 
-        public static async Task<TResult> RaiseResultSequenceAsync<TResult>(this AsyncPolicy<TResult> policy,
+        public static Task<TResult> RaiseResultSequenceAsync<TResult>(this IAsyncPolicy<TResult> policy,
             CancellationToken cancellationToken, IEnumerable<TResult> resultsToRaise)
+        {
+            return policy.RaiseResultSequenceAsync(new Dictionary<string, object>(0), cancellationToken, resultsToRaise);
+        }
+
+        public static Task<TResult> RaiseResultSequenceAsync<TResult>(this IAsyncPolicy<TResult> policy,
+            IDictionary<string, object> contextData,
+            params TResult[] resultsToRaise)
+        {
+            return policy.RaiseResultSequenceAsync(contextData, CancellationToken.None, resultsToRaise.ToList());
+        }
+
+        public static Task<TResult> RaiseResultSequenceAsync<TResult>(this IAsyncPolicy<TResult> policy,
+            IDictionary<string, object> contextData, CancellationToken cancellationToken,
+            IEnumerable<TResult> resultsToRaise)
         {
             using (var enumerator = resultsToRaise.GetEnumerator())
             {
-                return await policy.ExecuteAsync(ct =>
+                return policy.ExecuteAsync((ctx, ct) =>
                 {
                     if (!enumerator.MoveNext())
                     {
@@ -33,22 +47,22 @@ namespace Polly.Specs.Helpers
                     }
 
                     return Task.FromResult(enumerator.Current);
-                }, cancellationToken);
+                }, contextData, cancellationToken);
             }
         }
 
-        public static Task<TResult> RaiseResultAndOrExceptionSequenceAsync<TResult>(this AsyncPolicy<TResult> policy, params object[] resultsOrExceptionsToRaise)
+        public static Task<TResult> RaiseResultAndOrExceptionSequenceAsync<TResult>(this IAsyncPolicy<TResult> policy, params object[] resultsOrExceptionsToRaise)
         {
             return policy.RaiseResultAndOrExceptionSequenceAsync(resultsOrExceptionsToRaise.ToList());
         }
 
-        public static Task<TResult> RaiseResultAndOrExceptionSequenceAsync<TResult>(this AsyncPolicy<TResult> policy,
+        public static Task<TResult> RaiseResultAndOrExceptionSequenceAsync<TResult>(this IAsyncPolicy<TResult> policy,
             IEnumerable<object> resultsOrExceptionsToRaise)
         {
             return policy.RaiseResultAndOrExceptionSequenceAsync(CancellationToken.None, resultsOrExceptionsToRaise);
         }
 
-        public static async Task<TResult> RaiseResultAndOrExceptionSequenceAsync<TResult>(this AsyncPolicy<TResult> policy,
+        public static async Task<TResult> RaiseResultAndOrExceptionSequenceAsync<TResult>(this IAsyncPolicy<TResult> policy,
             CancellationToken cancellationToken, IEnumerable<object> resultsOrExceptionsToRaise)
         {
             using (var enumerator = resultsOrExceptionsToRaise.GetEnumerator())
@@ -85,7 +99,7 @@ namespace Polly.Specs.Helpers
             public bool ActionObservesCancellation = true;
         }
 
-        public static Task<TResult> RaiseResultSequenceAndOrCancellationAsync<TResult>(this AsyncPolicy<TResult> policy,
+        public static Task<TResult> RaiseResultSequenceAndOrCancellationAsync<TResult>(this IAsyncPolicy<TResult> policy,
             Scenario scenario, CancellationTokenSource cancellationTokenSource, Action onExecute,
             params TResult[] resultsToRaise)
         {
@@ -94,7 +108,7 @@ namespace Polly.Specs.Helpers
         }
 
         public static async Task<TResult> RaiseResultSequenceAndOrCancellationAsync<TResult>(
-            this AsyncPolicy<TResult> policy, Scenario scenario, CancellationTokenSource cancellationTokenSource,
+            this IAsyncPolicy<TResult> policy, Scenario scenario, CancellationTokenSource cancellationTokenSource,
             Action onExecute, IEnumerable<TResult> resultsToRaise)
         {
             int counter = 0;
@@ -126,6 +140,30 @@ namespace Polly.Specs.Helpers
 
                     return Task.FromResult(enumerator.Current);
                 }, cancellationToken);
+            }
+        }
+            
+        public static Task<PolicyResult<TResult>> RaiseResultSequenceOnExecuteAndCaptureAsync<TResult>(this IAsyncPolicy<TResult> policy, IDictionary<string, object> contextData, params TResult[] resultsToRaise)
+        {
+            return policy.RaiseResultSequenceOnExecuteAndCaptureAsync(contextData, resultsToRaise.ToList());
+        }
+
+        public static Task<PolicyResult<TResult>> RaiseResultSequenceOnExecuteAndCaptureAsync<TResult>(
+            this IAsyncPolicy<TResult> policy, IDictionary<string, object> contextData,
+            IEnumerable<TResult> resultsToRaise)
+        {
+            using (var enumerator = resultsToRaise.GetEnumerator())
+            {
+                return policy.ExecuteAndCaptureAsync(ctx =>
+                {
+                    if (!enumerator.MoveNext())
+                    {
+                        throw new ArgumentOutOfRangeException(nameof(resultsToRaise),
+                            "Not enough TResult values in resultsToRaise.");
+                    }
+
+                    return Task.FromResult(enumerator.Current);
+                }, contextData);
             }
         }
     }

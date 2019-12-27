@@ -5,9 +5,9 @@ using System.Threading;
 namespace Polly.Wrap
 {
     /// <summary>
-    /// A policy that allows two (and by recursion more) Polly policies to wrap executions of delegates.
+    /// A wrapper for composing policies that can be applied to synchronous executions.
     /// </summary>
-    public partial class PolicyWrap : Policy, IPolicyWrap
+    public partial class PolicyWrap : Policy, ISyncPolicyWrap
     {
         private ISyncPolicy _outer;
         private ISyncPolicy _inner;
@@ -43,7 +43,7 @@ namespace Polly.Wrap
         /// <inheritdoc/>
         [DebuggerStepThrough]
         protected override TResult Implementation<TResult>(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken)
-            =>  PolicyWrapEngine.Implementation<TResult>(
+            => PolicyWrapEngine.Implementation<TResult>(
                 action,
                 context,
                 cancellationToken,
@@ -53,10 +53,10 @@ namespace Polly.Wrap
     }
 
     /// <summary>
-    /// A policy that allows two (and by recursion more) Polly policies to wrap executions of delegates.
+    /// A wrapper for composing policies that can be applied to synchronous executions returning a value of type <typeparamref name="TResult"/>.
     /// </summary>
     /// <typeparam name="TResult">The return type of delegates which may be executed through the policy.</typeparam>
-    public partial class PolicyWrap<TResult> : Policy<TResult>, IPolicyWrap<TResult>
+    public partial class PolicyWrap<TResult> : Policy<TResult>, ISyncPolicyWrap<TResult>
     {
         private ISyncPolicy _outerNonGeneric;
         private ISyncPolicy _innerNonGeneric;

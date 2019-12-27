@@ -22,7 +22,7 @@ namespace Polly.Specs
         {
             // Use a CircuitBreaker as a policy which we can easily manipulate to demonstrate that the executions are passing through the underlying non-generic policy.
 
-            CircuitBreakerPolicy breaker = Policy.Handle<Exception>().CircuitBreaker(1, TimeSpan.Zero);
+            ISyncCircuitBreakerPolicy breaker = Policy.Handle<Exception>().CircuitBreaker(1, TimeSpan.Zero);
             ISyncPolicy nonGenericPolicy = breaker;
             var genericPolicy = nonGenericPolicy.AsPolicy<ResultPrimitive>();
             Func<ResultPrimitive> deleg = () => ResultPrimitive.Good;

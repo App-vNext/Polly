@@ -13,7 +13,7 @@ namespace Polly
         /// <param name="seconds">The number of seconds after which to timeout.</param>
         /// <exception cref="ArgumentOutOfRangeException">seconds;Value must be greater than zero.</exception>
         /// <returns>The policy instance.</returns>
-        public static TimeoutPolicy<TResult> Timeout<TResult>(int seconds)
+        public static ISyncTimeoutPolicy<TResult> Timeout<TResult>(int seconds)
         {
             TimeoutValidator.ValidateSecondsTimeout(seconds);
             Action<Context, TimeSpan, Task, Exception> doNothing = (_, __, ___, ____) => { };
@@ -29,7 +29,7 @@ namespace Polly
         /// <param name="timeoutStrategy">The timeout strategy.</param>
         /// <returns>The policy instance.</returns>
         /// <exception cref="ArgumentOutOfRangeException">seconds;Value must be greater than zero.</exception>
-        public static TimeoutPolicy<TResult> Timeout<TResult>(int seconds, TimeoutStrategy timeoutStrategy)
+        public static ISyncTimeoutPolicy<TResult> Timeout<TResult>(int seconds, TimeoutStrategy timeoutStrategy)
         {
             TimeoutValidator.ValidateSecondsTimeout(seconds);
             Action<Context, TimeSpan, Task, Exception> doNothing = (_, __, ___, ____) => { };
@@ -46,7 +46,7 @@ namespace Polly
         /// <returns>The policy instance.</returns>
         /// <exception cref="ArgumentOutOfRangeException">seconds;Value must be greater than zero.</exception>
         /// <exception cref="ArgumentNullException">onTimeout</exception>
-        public static TimeoutPolicy<TResult> Timeout<TResult>(int seconds, Action<Context, TimeSpan, Task> onTimeout)
+        public static ISyncTimeoutPolicy<TResult> Timeout<TResult>(int seconds, Action<Context, TimeSpan, Task> onTimeout)
         {
             TimeoutValidator.ValidateSecondsTimeout(seconds);
             return Timeout<TResult>(ctx => TimeSpan.FromSeconds(seconds), TimeoutStrategy.Optimistic, onTimeout);
@@ -61,7 +61,7 @@ namespace Polly
         /// <returns>The policy instance.</returns>
         /// <exception cref="ArgumentOutOfRangeException">seconds;Value must be greater than zero.</exception>
         /// <exception cref="ArgumentNullException">onTimeout</exception>
-        public static TimeoutPolicy<TResult> Timeout<TResult>(int seconds, Action<Context, TimeSpan, Task, Exception> onTimeout)
+        public static ISyncTimeoutPolicy<TResult> Timeout<TResult>(int seconds, Action<Context, TimeSpan, Task, Exception> onTimeout)
         {
             if (seconds <= 0) throw new ArgumentOutOfRangeException(nameof(seconds));
             return Timeout<TResult>(ctx => TimeSpan.FromSeconds(seconds), TimeoutStrategy.Optimistic, onTimeout);
@@ -78,7 +78,7 @@ namespace Polly
         /// <returns>The policy instance.</returns>
         /// <exception cref="ArgumentOutOfRangeException">seconds;Value must be greater than zero.</exception>
         /// <exception cref="ArgumentNullException">onTimeout</exception>
-        public static TimeoutPolicy<TResult> Timeout<TResult>(int seconds, TimeoutStrategy timeoutStrategy, Action<Context, TimeSpan, Task> onTimeout)
+        public static ISyncTimeoutPolicy<TResult> Timeout<TResult>(int seconds, TimeoutStrategy timeoutStrategy, Action<Context, TimeSpan, Task> onTimeout)
         {
             TimeoutValidator.ValidateSecondsTimeout(seconds);
 
@@ -96,7 +96,7 @@ namespace Polly
         /// <returns>The policy instance.</returns>
         /// <exception cref="ArgumentOutOfRangeException">seconds;Value must be greater than zero.</exception>
         /// <exception cref="ArgumentNullException">onTimeout</exception>
-        public static TimeoutPolicy<TResult> Timeout<TResult>(int seconds, TimeoutStrategy timeoutStrategy, Action<Context, TimeSpan, Task, Exception> onTimeout)
+        public static ISyncTimeoutPolicy<TResult> Timeout<TResult>(int seconds, TimeoutStrategy timeoutStrategy, Action<Context, TimeSpan, Task, Exception> onTimeout)
         {
             if (seconds <= 0) throw new ArgumentOutOfRangeException(nameof(seconds));
 
@@ -109,7 +109,7 @@ namespace Polly
         /// <param name="timeout">The timeout.</param>
         /// <returns>The policy instance.</returns>
         /// <exception cref="ArgumentOutOfRangeException">timeout;Value must be a positive TimeSpan (or Timeout.InfiniteTimeSpan to indicate no timeout)</exception>
-        public static TimeoutPolicy<TResult> Timeout<TResult>(TimeSpan timeout)
+        public static ISyncTimeoutPolicy<TResult> Timeout<TResult>(TimeSpan timeout)
         {
             TimeoutValidator.ValidateTimeSpanTimeout(timeout);
             Action<Context, TimeSpan, Task, Exception> doNothing = (_, __, ___, ____) => { };
@@ -125,7 +125,7 @@ namespace Polly
         /// <param name="timeoutStrategy">The timeout strategy.</param>
         /// <returns>The policy instance.</returns>
         /// <exception cref="ArgumentOutOfRangeException">timeout;Value must be a positive TimeSpan (or Timeout.InfiniteTimeSpan to indicate no timeout)</exception>
-        public static TimeoutPolicy<TResult> Timeout<TResult>(TimeSpan timeout, TimeoutStrategy timeoutStrategy)
+        public static ISyncTimeoutPolicy<TResult> Timeout<TResult>(TimeSpan timeout, TimeoutStrategy timeoutStrategy)
         {
             TimeoutValidator.ValidateTimeSpanTimeout(timeout);
             Action<Context, TimeSpan, Task, Exception> doNothing = (_, __, ___, ____) => { };
@@ -142,7 +142,7 @@ namespace Polly
         /// <returns>The policy instance.</returns>
         /// <exception cref="ArgumentOutOfRangeException">timeout;Value must be a positive TimeSpan (or Timeout.InfiniteTimeSpan to indicate no timeout)</exception>
         /// <exception cref="ArgumentNullException">onTimeout</exception>
-        public static TimeoutPolicy<TResult> Timeout<TResult>(TimeSpan timeout, Action<Context, TimeSpan, Task> onTimeout)
+        public static ISyncTimeoutPolicy<TResult> Timeout<TResult>(TimeSpan timeout, Action<Context, TimeSpan, Task> onTimeout)
         {
             TimeoutValidator.ValidateTimeSpanTimeout(timeout);
             return Timeout<TResult>(ctx => timeout, TimeoutStrategy.Optimistic, onTimeout);
@@ -157,7 +157,7 @@ namespace Polly
         /// <returns>The policy instance.</returns>
         /// <exception cref="ArgumentOutOfRangeException">timeout;Value must be greater than zero.</exception>
         /// <exception cref="ArgumentNullException">onTimeout</exception>
-        public static TimeoutPolicy<TResult> Timeout<TResult>(TimeSpan timeout, Action<Context, TimeSpan, Task, Exception> onTimeout)
+        public static ISyncTimeoutPolicy<TResult> Timeout<TResult>(TimeSpan timeout, Action<Context, TimeSpan, Task, Exception> onTimeout)
         {
             TimeoutValidator.ValidateTimeSpanTimeout(timeout);
             return Timeout<TResult>(ctx => timeout, TimeoutStrategy.Optimistic, onTimeout);
@@ -174,7 +174,7 @@ namespace Polly
         /// <returns>The policy instance.</returns>
         /// <exception cref="ArgumentOutOfRangeException">timeout;Value must be a positive TimeSpan (or Timeout.InfiniteTimeSpan to indicate no timeout)</exception>
         /// <exception cref="ArgumentNullException">onTimeout</exception>
-        public static TimeoutPolicy<TResult> Timeout<TResult>(TimeSpan timeout, TimeoutStrategy timeoutStrategy, Action<Context, TimeSpan, Task> onTimeout)
+        public static ISyncTimeoutPolicy<TResult> Timeout<TResult>(TimeSpan timeout, TimeoutStrategy timeoutStrategy, Action<Context, TimeSpan, Task> onTimeout)
         {
             TimeoutValidator.ValidateTimeSpanTimeout(timeout);
             return Timeout<TResult>(ctx => timeout, timeoutStrategy, onTimeout);
@@ -191,7 +191,7 @@ namespace Polly
         /// <returns>The policy instance.</returns>
         /// <exception cref="ArgumentOutOfRangeException">timeout;Value must be greater than zero.</exception>
         /// <exception cref="ArgumentNullException">onTimeout</exception>
-        public static TimeoutPolicy<TResult> Timeout<TResult>(TimeSpan timeout, TimeoutStrategy timeoutStrategy, Action<Context, TimeSpan, Task, Exception> onTimeout)
+        public static ISyncTimeoutPolicy<TResult> Timeout<TResult>(TimeSpan timeout, TimeoutStrategy timeoutStrategy, Action<Context, TimeSpan, Task, Exception> onTimeout)
         {
             TimeoutValidator.ValidateTimeSpanTimeout(timeout);
             return Timeout<TResult>(ctx => timeout, timeoutStrategy, onTimeout);
@@ -203,7 +203,7 @@ namespace Polly
         /// <param name="timeoutProvider">A function to provide the timeout for this execution.</param>
         /// <exception cref="ArgumentNullException">timeoutProvider</exception>
         /// <returns>The policy instance.</returns>
-        public static TimeoutPolicy<TResult> Timeout<TResult>(Func<TimeSpan> timeoutProvider)
+        public static ISyncTimeoutPolicy<TResult> Timeout<TResult>(Func<TimeSpan> timeoutProvider)
         {
             if (timeoutProvider == null) throw new ArgumentNullException(nameof(timeoutProvider));
 
@@ -219,7 +219,7 @@ namespace Polly
         /// <param name="timeoutStrategy">The timeout strategy.</param>
         /// <returns>The policy instance.</returns>
         /// <exception cref="ArgumentNullException">timeoutProvider</exception>
-        public static TimeoutPolicy<TResult> Timeout<TResult>(Func<TimeSpan> timeoutProvider, TimeoutStrategy timeoutStrategy)
+        public static ISyncTimeoutPolicy<TResult> Timeout<TResult>(Func<TimeSpan> timeoutProvider, TimeoutStrategy timeoutStrategy)
         {
             if (timeoutProvider == null) throw new ArgumentNullException(nameof(timeoutProvider));
 
@@ -236,7 +236,7 @@ namespace Polly
         /// <returns>The policy instance.</returns>
         /// <exception cref="ArgumentNullException">timeoutProvider</exception>
         /// <exception cref="ArgumentNullException">onTimeout</exception>
-        public static TimeoutPolicy<TResult> Timeout<TResult>(Func<TimeSpan> timeoutProvider, Action<Context, TimeSpan, Task> onTimeout)
+        public static ISyncTimeoutPolicy<TResult> Timeout<TResult>(Func<TimeSpan> timeoutProvider, Action<Context, TimeSpan, Task> onTimeout)
         {
             if (timeoutProvider == null) throw new ArgumentNullException(nameof(timeoutProvider));
 
@@ -252,7 +252,7 @@ namespace Polly
         /// <returns>The policy instance.</returns>
         /// <exception cref="ArgumentNullException">timeoutProvider</exception>
         /// <exception cref="ArgumentNullException">onTimeout</exception>
-        public static TimeoutPolicy<TResult> Timeout<TResult>(Func<TimeSpan> timeoutProvider, Action<Context, TimeSpan, Task, Exception> onTimeout)
+        public static ISyncTimeoutPolicy<TResult> Timeout<TResult>(Func<TimeSpan> timeoutProvider, Action<Context, TimeSpan, Task, Exception> onTimeout)
         {
             if (timeoutProvider == null) throw new ArgumentNullException(nameof(timeoutProvider));
 
@@ -270,7 +270,7 @@ namespace Polly
         /// <returns>The policy instance.</returns>
         /// <exception cref="ArgumentNullException">timeoutProvider</exception>
         /// <exception cref="ArgumentNullException">onTimeout</exception>
-        public static TimeoutPolicy<TResult> Timeout<TResult>(Func<TimeSpan> timeoutProvider, TimeoutStrategy timeoutStrategy, Action<Context, TimeSpan, Task> onTimeout)
+        public static ISyncTimeoutPolicy<TResult> Timeout<TResult>(Func<TimeSpan> timeoutProvider, TimeoutStrategy timeoutStrategy, Action<Context, TimeSpan, Task> onTimeout)
         {
             if (timeoutProvider == null) throw new ArgumentNullException(nameof(timeoutProvider));
 
@@ -288,7 +288,7 @@ namespace Polly
         /// <returns>The policy instance.</returns>
         /// <exception cref="ArgumentNullException">timeoutProvider</exception>
         /// <exception cref="ArgumentNullException">onTimeout</exception>
-        public static TimeoutPolicy<TResult> Timeout<TResult>(Func<TimeSpan> timeoutProvider, TimeoutStrategy timeoutStrategy, Action<Context, TimeSpan, Task, Exception> onTimeout)
+        public static ISyncTimeoutPolicy<TResult> Timeout<TResult>(Func<TimeSpan> timeoutProvider, TimeoutStrategy timeoutStrategy, Action<Context, TimeSpan, Task, Exception> onTimeout)
         {
             if (timeoutProvider == null) throw new ArgumentNullException(nameof(timeoutProvider));
 
@@ -301,7 +301,7 @@ namespace Polly
         /// <param name="timeoutProvider">A function to provide the timeout for this execution.</param>
         /// <exception cref="ArgumentNullException">timeoutProvider</exception>
         /// <returns>The policy instance.</returns>
-        public static TimeoutPolicy<TResult> Timeout<TResult>(Func<Context, TimeSpan> timeoutProvider)
+        public static ISyncTimeoutPolicy<TResult> Timeout<TResult>(Func<Context, TimeSpan> timeoutProvider)
         {
             Action<Context, TimeSpan, Task, Exception> doNothing = (_, __, ___, ____) => { };
             return Timeout<TResult>(timeoutProvider, TimeoutStrategy.Optimistic, doNothing);
@@ -315,7 +315,7 @@ namespace Polly
         /// <param name="timeoutStrategy">The timeout strategy.</param>
         /// <returns>The policy instance.</returns>
         /// <exception cref="ArgumentNullException">timeoutProvider</exception>
-        public static TimeoutPolicy<TResult> Timeout<TResult>(Func<Context, TimeSpan> timeoutProvider, TimeoutStrategy timeoutStrategy)
+        public static ISyncTimeoutPolicy<TResult> Timeout<TResult>(Func<Context, TimeSpan> timeoutProvider, TimeoutStrategy timeoutStrategy)
         {
             Action<Context, TimeSpan, Task, Exception> doNothing = (_, __, ___, ____) => { };
             return Timeout<TResult>(timeoutProvider, timeoutStrategy, doNothing);
@@ -330,7 +330,7 @@ namespace Polly
         /// <returns>The policy instance.</returns>
         /// <exception cref="ArgumentNullException">timeoutProvider</exception>
         /// <exception cref="ArgumentNullException">onTimeout</exception>
-        public static TimeoutPolicy<TResult> Timeout<TResult>(Func<Context, TimeSpan> timeoutProvider, Action<Context, TimeSpan, Task> onTimeout)
+        public static ISyncTimeoutPolicy<TResult> Timeout<TResult>(Func<Context, TimeSpan> timeoutProvider, Action<Context, TimeSpan, Task> onTimeout)
             => Timeout<TResult>(timeoutProvider, TimeoutStrategy.Optimistic, onTimeout);
 
         /// <summary>
@@ -342,7 +342,7 @@ namespace Polly
         /// <returns>The policy instance.</returns>
         /// <exception cref="ArgumentNullException">timeoutProvider</exception>
         /// <exception cref="ArgumentNullException">onTimeout</exception>
-        public static TimeoutPolicy<TResult> Timeout<TResult>(Func<Context, TimeSpan> timeoutProvider, Action<Context, TimeSpan, Task, Exception> onTimeout)
+        public static ISyncTimeoutPolicy<TResult> Timeout<TResult>(Func<Context, TimeSpan> timeoutProvider, Action<Context, TimeSpan, Task, Exception> onTimeout)
             => Timeout<TResult>(timeoutProvider, TimeoutStrategy.Optimistic, onTimeout);
 
         /// <summary>
@@ -356,7 +356,7 @@ namespace Polly
         /// <returns>The policy instance.</returns>
         /// <exception cref="ArgumentNullException">timeoutProvider</exception>
         /// <exception cref="ArgumentNullException">onTimeout</exception>
-        public static TimeoutPolicy<TResult> Timeout<TResult>(Func<Context, TimeSpan> timeoutProvider, TimeoutStrategy timeoutStrategy, Action<Context, TimeSpan, Task> onTimeout)
+        public static ISyncTimeoutPolicy<TResult> Timeout<TResult>(Func<Context, TimeSpan> timeoutProvider, TimeoutStrategy timeoutStrategy, Action<Context, TimeSpan, Task> onTimeout)
         {
             if (onTimeout == null) throw new ArgumentNullException(nameof(onTimeout));
 
@@ -374,7 +374,7 @@ namespace Polly
         /// <returns>The policy instance.</returns>
         /// <exception cref="ArgumentNullException">timeoutProvider</exception>
         /// <exception cref="ArgumentNullException">onTimeout</exception>
-        public static TimeoutPolicy<TResult> Timeout<TResult>(
+        public static ISyncTimeoutPolicy<TResult> Timeout<TResult>(
             Func<Context, TimeSpan> timeoutProvider, 
             TimeoutStrategy timeoutStrategy, 
             Action<Context, TimeSpan, Task, Exception> onTimeout)

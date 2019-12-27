@@ -2,22 +2,36 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using Scenario = Polly.Specs.Helpers.PolicyTResultExtensions.ResultAndOrCancellationScenario;
+using Scenario = Polly.Specs.Helpers.ISyncPolicyTResultExtensions.ResultAndOrCancellationScenario;
 
 namespace Polly.Specs.Helpers
 {
-    public static class PolicyTResultExtensions
+    public static class ISyncPolicyTResultExtensions
     {
-        public static TResult RaiseResultSequence<TResult>(this Policy<TResult> policy, params TResult[] resultsToRaise)
+        public static TResult RaiseResultSequence<TResult>(this ISyncPolicy<TResult> policy, params TResult[] resultsToRaise)
         {
             return policy.RaiseResultSequence(resultsToRaise.ToList());
         }
 
-        public static TResult RaiseResultSequence<TResult>(this Policy<TResult> policy, IEnumerable<TResult> resultsToRaise) 
+        public static TResult RaiseResultSequence<TResult>(this ISyncPolicy<TResult> policy, IEnumerable<TResult> resultsToRaise)
+        {
+            return policy.RaiseResultSequence(new Dictionary<string, object>(0), resultsToRaise);
+        }
+
+        public static TResult RaiseResultSequence<TResult>(this ISyncPolicy<TResult> policy,
+            IDictionary<string, object> contextData,
+            params TResult[] resultsToRaise)
+        {
+            return policy.RaiseResultSequence(contextData, resultsToRaise.ToList());
+        }
+
+        public static TResult RaiseResultSequence<TResult>(this ISyncPolicy<TResult> policy,
+            IDictionary<string, object> contextData,
+            IEnumerable<TResult> resultsToRaise)
         {
             using (var enumerator = resultsToRaise.GetEnumerator())
             {
-                return policy.Execute(() =>
+                return policy.Execute(ctx =>
                 {
                     if (!enumerator.MoveNext())
                     {
@@ -25,16 +39,16 @@ namespace Polly.Specs.Helpers
                     }
 
                     return enumerator.Current;
-                });
+                }, contextData);
             }
         }
 
-        public static TResult RaiseResultAndOrExceptionSequence<TResult>(this Policy<TResult> policy, params object[] resultsOrExceptionsToRaise)
+        public static TResult RaiseResultAndOrExceptionSequence<TResult>(this ISyncPolicy<TResult> policy, params object[] resultsOrExceptionsToRaise)
         {
             return policy.RaiseResultAndOrExceptionSequence(resultsOrExceptionsToRaise.ToList());
         }
 
-        public static TResult RaiseResultAndOrExceptionSequence<TResult>(this Policy<TResult> policy,
+        public static TResult RaiseResultAndOrExceptionSequence<TResult>(this ISyncPolicy<TResult> policy,
             IEnumerable<object> resultsOrExceptionsToRaise)
         {
             using (var enumerator = resultsOrExceptionsToRaise.GetEnumerator())
@@ -71,7 +85,7 @@ namespace Polly.Specs.Helpers
             public bool ActionObservesCancellation = true;
         }
 
-        public static TResult RaiseResultSequenceAndOrCancellation<TResult>(this Policy<TResult> policy,
+        public static TResult RaiseResultSequenceAndOrCancellation<TResult>(this ISyncPolicy<TResult> policy,
             Scenario scenario, CancellationTokenSource cancellationTokenSource, Action onExecute,
             params TResult[] resultsToRaise)
         {
@@ -79,7 +93,7 @@ namespace Polly.Specs.Helpers
                 resultsToRaise.ToList());
         }
 
-        public static TResult RaiseResultSequenceAndOrCancellation<TResult>(this Policy<TResult> policy, Scenario scenario, CancellationTokenSource cancellationTokenSource, Action onExecute, IEnumerable<TResult> resultsToRaise)
+        public static TResult RaiseResultSequenceAndOrCancellation<TResult>(this ISyncPolicy<TResult> policy, Scenario scenario, CancellationTokenSource cancellationTokenSource, Action onExecute, IEnumerable<TResult> resultsToRaise)
         {
             int counter = 0;
 
@@ -110,6 +124,32 @@ namespace Polly.Specs.Helpers
 
                     return enumerator.Current;
                 }, cancellationToken);
+            }
+        }
+
+        public static PolicyResult<TResult> RaiseResultSequenceOnExecuteAndCapture<TResult>(this ISyncPolicy<TResult> policy,
+            IDictionary<string, object> contextData,
+            params TResult[] resultsToRaise)
+        {
+            return policy.RaiseResultSequenceOnExecuteAndCapture(contextData, resultsToRaise.ToList());
+        }
+
+        public static PolicyResult<TResult> RaiseResultSequenceOnExecuteAndCapture<TResult>(this ISyncPolicy<TResult> policy,
+            IDictionary<string, object> contextData,
+            IEnumerable<TResult> resultsToRaise)
+        {
+            using (var enumerator = resultsToRaise.GetEnumerator())
+            {
+                return policy.ExecuteAndCapture(ctx =>
+                {
+                    if (!enumerator.MoveNext())
+                    {
+                        throw new ArgumentOutOfRangeException(nameof(resultsToRaise),
+                            "Not enough TResult values in resultsToRaise.");
+                    }
+
+                    return enumerator.Current;
+                }, contextData);
             }
         }
     }

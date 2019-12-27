@@ -32,7 +32,7 @@ namespace Polly
         /// <exception cref="ArgumentOutOfRangeException">minimumThroughput;Value must be greater than one</exception>
         /// <exception cref="ArgumentOutOfRangeException">durationOfBreak;Value must be greater than zero</exception>
         /// <remarks>(see "Release It!" by Michael T. Nygard fi)</remarks>
-        public static CircuitBreakerPolicy<TResult> AdvancedCircuitBreaker<TResult>(this PolicyBuilder<TResult> policyBuilder, double failureThreshold, TimeSpan samplingDuration, int minimumThroughput, TimeSpan durationOfBreak)
+        public static ISyncCircuitBreakerPolicy<TResult> AdvancedCircuitBreaker<TResult>(this PolicyBuilder<TResult> policyBuilder, double failureThreshold, TimeSpan samplingDuration, int minimumThroughput, TimeSpan durationOfBreak)
         {
             Action<DelegateResult<TResult>, TimeSpan> doNothingOnBreak = (_, __) => { };
             Action doNothingOnReset = () => { };
@@ -71,7 +71,7 @@ namespace Polly
         /// <exception cref="ArgumentOutOfRangeException">durationOfBreak;Value must be greater than zero</exception>
         /// <exception cref="ArgumentNullException">onBreak</exception>
         /// <exception cref="ArgumentNullException">onReset</exception>
-        public static CircuitBreakerPolicy<TResult> AdvancedCircuitBreaker<TResult>(this PolicyBuilder<TResult> policyBuilder, double failureThreshold, TimeSpan samplingDuration, int minimumThroughput, TimeSpan durationOfBreak, Action<DelegateResult<TResult>, TimeSpan> onBreak, Action onReset)
+        public static ISyncCircuitBreakerPolicy<TResult> AdvancedCircuitBreaker<TResult>(this PolicyBuilder<TResult> policyBuilder, double failureThreshold, TimeSpan samplingDuration, int minimumThroughput, TimeSpan durationOfBreak, Action<DelegateResult<TResult>, TimeSpan> onBreak, Action onReset)
             => policyBuilder.AdvancedCircuitBreaker(
                 failureThreshold, samplingDuration, minimumThroughput,
                 durationOfBreak,
@@ -105,7 +105,7 @@ namespace Polly
         /// <exception cref="ArgumentOutOfRangeException">durationOfBreak;Value must be greater than zero</exception>
         /// <exception cref="ArgumentNullException">onBreak</exception>
         /// <exception cref="ArgumentNullException">onReset</exception>
-        public static CircuitBreakerPolicy<TResult> AdvancedCircuitBreaker<TResult>(this PolicyBuilder<TResult> policyBuilder, double failureThreshold, TimeSpan samplingDuration, int minimumThroughput, TimeSpan durationOfBreak, Action<DelegateResult<TResult>, TimeSpan, Context> onBreak, Action<Context> onReset)
+        public static ISyncCircuitBreakerPolicy<TResult> AdvancedCircuitBreaker<TResult>(this PolicyBuilder<TResult> policyBuilder, double failureThreshold, TimeSpan samplingDuration, int minimumThroughput, TimeSpan durationOfBreak, Action<DelegateResult<TResult>, TimeSpan, Context> onBreak, Action<Context> onReset)
         {
             Action doNothingOnHalfOpen = () => { };
             return policyBuilder.AdvancedCircuitBreaker(failureThreshold, samplingDuration, minimumThroughput,
@@ -144,7 +144,7 @@ namespace Polly
         /// <exception cref="ArgumentNullException">onBreak</exception>
         /// <exception cref="ArgumentNullException">onReset</exception>
         /// <exception cref="ArgumentNullException">onHalfOpen</exception>
-        public static CircuitBreakerPolicy<TResult> AdvancedCircuitBreaker<TResult>(this PolicyBuilder<TResult> policyBuilder, double failureThreshold, TimeSpan samplingDuration, int minimumThroughput, TimeSpan durationOfBreak, Action<DelegateResult<TResult>, TimeSpan> onBreak, Action onReset, Action onHalfOpen)
+        public static ISyncCircuitBreakerPolicy<TResult> AdvancedCircuitBreaker<TResult>(this PolicyBuilder<TResult> policyBuilder, double failureThreshold, TimeSpan samplingDuration, int minimumThroughput, TimeSpan durationOfBreak, Action<DelegateResult<TResult>, TimeSpan> onBreak, Action onReset, Action onHalfOpen)
             => policyBuilder.AdvancedCircuitBreaker(
                 failureThreshold, samplingDuration, minimumThroughput,
                 durationOfBreak,
@@ -183,7 +183,7 @@ namespace Polly
         /// <exception cref="ArgumentNullException">onReset</exception>
         /// <exception cref="ArgumentNullException">onHalfOpen</exception>
         /// <remarks>(see "Release It!" by Michael T. Nygard fi)</remarks>
-        public static CircuitBreakerPolicy<TResult> AdvancedCircuitBreaker<TResult>(this PolicyBuilder<TResult> policyBuilder, double failureThreshold, TimeSpan samplingDuration, int minimumThroughput, TimeSpan durationOfBreak, Action<DelegateResult<TResult>, TimeSpan, Context> onBreak, Action<Context> onReset, Action onHalfOpen)
+        public static ISyncCircuitBreakerPolicy<TResult> AdvancedCircuitBreaker<TResult>(this PolicyBuilder<TResult> policyBuilder, double failureThreshold, TimeSpan samplingDuration, int minimumThroughput, TimeSpan durationOfBreak, Action<DelegateResult<TResult>, TimeSpan, Context> onBreak, Action<Context> onReset, Action onHalfOpen)
             => policyBuilder.AdvancedCircuitBreaker(
                 failureThreshold, samplingDuration, minimumThroughput,
                 durationOfBreak,
@@ -222,7 +222,7 @@ namespace Polly
         /// <exception cref="ArgumentNullException">onReset</exception>
         /// <exception cref="ArgumentNullException">onHalfOpen</exception>
         /// <remarks>(see "Release It!" by Michael T. Nygard fi)</remarks>
-        public static CircuitBreakerPolicy<TResult> AdvancedCircuitBreaker<TResult>(this PolicyBuilder<TResult> policyBuilder, double failureThreshold, TimeSpan samplingDuration, int minimumThroughput, TimeSpan durationOfBreak, Action<DelegateResult<TResult>, CircuitState, TimeSpan, Context> onBreak, Action<Context> onReset, Action onHalfOpen)
+        public static ISyncCircuitBreakerPolicy<TResult> AdvancedCircuitBreaker<TResult>(this PolicyBuilder<TResult> policyBuilder, double failureThreshold, TimeSpan samplingDuration, int minimumThroughput, TimeSpan durationOfBreak, Action<DelegateResult<TResult>, CircuitState, TimeSpan, Context> onBreak, Action<Context> onReset, Action onHalfOpen)
         {
             var resolutionOfCircuit = TimeSpan.FromTicks(AdvancedCircuitController<EmptyStruct>.ResolutionOfCircuitTimer);
 

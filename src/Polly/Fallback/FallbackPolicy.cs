@@ -6,9 +6,9 @@ using Polly.Utilities;
 namespace Polly.Fallback
 {
     /// <summary>
-    /// A fallback policy that can be applied to delegates.
+    /// A fallback policy that can be applied to synchronous executions.
     /// </summary>
-    public class FallbackPolicy : Policy, IFallbackPolicy
+    public class FallbackPolicy : Policy, ISyncFallbackPolicy
     {
         private Action<Exception, Context> _onFallback;
         private Action<Exception, Context, CancellationToken> _fallbackAction;
@@ -41,9 +41,10 @@ namespace Polly.Fallback
     }
 
     /// <summary>
-    /// A fallback policy that can be applied to delegates returning a value of type <typeparamref name="TResult"/>.
+    /// A fallback policy that can be applied to synchronous executions returning a value of type <typeparamref name="TResult"/>.
     /// </summary>
-    public class FallbackPolicy<TResult> : Policy<TResult>, IFallbackPolicy<TResult>
+    /// <typeparam name="TResult">The return type of delegates which may be executed through the policy.</typeparam>
+    public class FallbackPolicy<TResult> : Policy<TResult>, ISyncFallbackPolicy<TResult>
     {
         private Action<DelegateResult<TResult>, Context> _onFallback;
         private Func<DelegateResult<TResult>, Context, CancellationToken, TResult> _fallbackAction;

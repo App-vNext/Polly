@@ -19,14 +19,14 @@ namespace Polly.Specs.Registry
         [Fact]
         public void Should_be_able_to_add_Policy_using_TryAdd()
         {
-            Policy policy = Policy.NoOp();
+            ISyncPolicy policy = Policy.NoOp();
             string key = Guid.NewGuid().ToString();
 
             var insert = _registry.TryAdd(key, policy);
             _registry.Count.Should().Be(1);
             insert.Should().Be(true);
 
-            Policy policy2 = Policy.NoOp();
+            ISyncPolicy policy2 = Policy.NoOp();
             string key2 = Guid.NewGuid().ToString();
 
             var insert2 = _registry.TryAdd(key2, policy2);
@@ -37,14 +37,14 @@ namespace Polly.Specs.Registry
         [Fact]
         public void Should_be_able_to_add_PolicyTResult_using_TryAdd()
         {
-            Policy policy = Policy.NoOp();
+            ISyncPolicy policy = Policy.NoOp();
             string key = Guid.NewGuid().ToString();
 
             var insert = _registry.TryAdd(key, policy);
             _registry.Count.Should().Be(1);
             insert.Should().Be(true);
 
-            Policy<ResultPrimitive> policy2 = Policy<ResultPrimitive>.HandleResult(ResultPrimitive.Fault).Retry();
+            ISyncPolicy<ResultPrimitive> policy2 = Policy<ResultPrimitive>.HandleResult(ResultPrimitive.Fault).Retry();
             string key2 = Guid.NewGuid().ToString();
 
             var insert2 = _registry.TryAdd(key2, policy2);
@@ -55,7 +55,7 @@ namespace Polly.Specs.Registry
         [Fact]
         public void Should_be_able_to_add_Policy_by_interface_using_TryAdd()
         {
-            Policy policy = Policy.NoOp();
+            ISyncPolicy policy = Policy.NoOp();
             string key = Guid.NewGuid().ToString();
 
             var insert = _registry.TryAdd(key, policy);
@@ -73,7 +73,7 @@ namespace Polly.Specs.Registry
         [Fact]
         public void Should_be_able_to_remove_policy_with_TryRemove()
         {
-            Policy policy = Policy.NoOp();
+            ISyncPolicy policy = Policy.NoOp();
             string key = Guid.NewGuid().ToString();
 
             _registry.Add(key, policy);
@@ -97,11 +97,11 @@ namespace Polly.Specs.Registry
         [Fact]
         public void Should_be_able_to_update_policy_with_TryUpdate()
         {
-            Policy existingPolicy = Policy.NoOp();
+            ISyncPolicy existingPolicy = Policy.NoOp();
             string key = Guid.NewGuid().ToString();
             _registry.Add(key, existingPolicy);
 
-            Policy<ResultClass> newPolicy = Policy.NoOp<ResultClass>();
+            ISyncPolicy<ResultClass> newPolicy = Policy.NoOp<ResultClass>();
 
             bool updated = _registry.TryUpdate<IsPolicy>(key, newPolicy, existingPolicy);
 
@@ -112,12 +112,12 @@ namespace Polly.Specs.Registry
         [Fact]
         public void Should_not_update_policy_with_TryUpdate_when_existingPolicy_mismatch()
         {
-            Policy existingPolicy = Policy.NoOp();
+            ISyncPolicy existingPolicy = Policy.NoOp();
             string key = Guid.NewGuid().ToString();
             _registry.Add(key, existingPolicy);
 
-            NoOpPolicy<ResultPrimitive> someOtherPolicy = Policy.NoOp<ResultPrimitive>();
-            Policy<ResultClass> newPolicy = Policy.NoOp<ResultClass>();
+            ISyncNoOpPolicy<ResultPrimitive> someOtherPolicy = Policy.NoOp<ResultPrimitive>();
+            ISyncPolicy<ResultClass> newPolicy = Policy.NoOp<ResultClass>();
 
             bool updated = _registry.TryUpdate<IsPolicy>(key, newPolicy, someOtherPolicy);
 
@@ -130,8 +130,8 @@ namespace Polly.Specs.Registry
         {
             string key = Guid.NewGuid().ToString();
 
-            NoOpPolicy<ResultPrimitive> someOtherPolicy = Policy.NoOp<ResultPrimitive>();
-            Policy<ResultClass> newPolicy = Policy.NoOp<ResultClass>();
+            ISyncNoOpPolicy<ResultPrimitive> someOtherPolicy = Policy.NoOp<ResultPrimitive>();
+            ISyncPolicy<ResultClass> newPolicy = Policy.NoOp<ResultClass>();
 
             bool updated = _registry.TryUpdate<IsPolicy>(key, newPolicy, someOtherPolicy);
 
@@ -142,7 +142,7 @@ namespace Polly.Specs.Registry
         [Fact]
         public void Should_add_with_GetOrAdd_with_value_when_no_existing_policy()
         {
-            Policy newPolicy = Policy.NoOp();
+            ISyncPolicy newPolicy = Policy.NoOp();
             string key = Guid.NewGuid().ToString();
 
             var returnedPolicy = _registry.GetOrAdd(key, newPolicy);
@@ -153,7 +153,7 @@ namespace Polly.Specs.Registry
         [Fact]
         public void Should_add_with_GetOrAdd_with_factory_when_no_existing_policy()
         {
-            Policy newPolicy = Policy.NoOp();
+            ISyncPolicy newPolicy = Policy.NoOp();
             string key = Guid.NewGuid().ToString();
 
             var returnedPolicy = _registry.GetOrAdd(key, k => newPolicy);
@@ -164,11 +164,11 @@ namespace Polly.Specs.Registry
         [Fact]
         public void Should_return_existing_with_GetOrAdd_with_value_when_existing_policy()
         {
-            Policy existingPolicy = Policy.NoOp();
+            ISyncPolicy existingPolicy = Policy.NoOp();
             string key = Guid.NewGuid().ToString();
             _registry.Add(key, existingPolicy);
 
-            Policy newPolicy = Policy.NoOp();
+            ISyncPolicy newPolicy = Policy.NoOp();
 
             var returnedPolicy = _registry.GetOrAdd(key, newPolicy);
 
@@ -178,11 +178,11 @@ namespace Polly.Specs.Registry
         [Fact]
         public void Should_return_existing_with_GetOrAdd_with_factory_when_existing_policy()
         {
-            Policy existingPolicy = Policy.NoOp();
+            ISyncPolicy existingPolicy = Policy.NoOp();
             string key = Guid.NewGuid().ToString();
             _registry.Add(key, existingPolicy);
 
-            Policy newPolicy = Policy.NoOp();
+            ISyncPolicy newPolicy = Policy.NoOp();
 
             var returnedPolicy = _registry.GetOrAdd(key, k => newPolicy);
 
@@ -192,7 +192,7 @@ namespace Polly.Specs.Registry
         [Fact]
         public void Should_add_with_AddOrUpdate_with_value_when_no_existing_policy()
         {
-            Policy newPolicy = Policy.NoOp();
+            ISyncPolicy newPolicy = Policy.NoOp();
             string key = Guid.NewGuid().ToString();
 
             var returnedPolicy = _registry.AddOrUpdate(
@@ -206,7 +206,7 @@ namespace Polly.Specs.Registry
         [Fact]
         public void Should_add_with_AddOrUpdate_with_addfactory_when_no_existing_policy()
         {
-            Policy newPolicy = Policy.NoOp();
+            ISyncPolicy newPolicy = Policy.NoOp();
             string key = Guid.NewGuid().ToString();
 
 
@@ -221,13 +221,13 @@ namespace Polly.Specs.Registry
         [Fact]
         public void Should_update_with_AddOrUpdate_with_updatefactory_ignoring_addvalue_when_existing_policy()
         {
-            Policy existingPolicy = Policy.NoOp();
+            ISyncPolicy existingPolicy = Policy.NoOp();
             string key = Guid.NewGuid().ToString();
             _registry.Add(key, existingPolicy);
 
             const string policyKeyToDecorate = "SomePolicyKey";
 
-            Policy otherPolicyNotExpectingToAdd = Policy.Handle<Exception>().Retry();
+            ISyncPolicy otherPolicyNotExpectingToAdd = Policy.Handle<Exception>().Retry();
 
             var returnedPolicy = _registry.AddOrUpdate(
                 key,
@@ -242,13 +242,13 @@ namespace Polly.Specs.Registry
         [Fact]
         public void Should_update_with_AddOrUpdate_with_updatefactory_ignoring_addfactory_when_existing_policy()
         {
-            Policy existingPolicy = Policy.NoOp();
+            ISyncPolicy existingPolicy = Policy.NoOp();
             string key = Guid.NewGuid().ToString();
             _registry.Add(key, existingPolicy);
 
             const string policyKeyToDecorate = "SomePolicyKey";
 
-            Policy otherPolicyNotExpectingToAdd = Policy.Handle<Exception>().Retry();
+            ISyncPolicy otherPolicyNotExpectingToAdd = Policy.Handle<Exception>().Retry();
 
             var returnedPolicy = _registry.AddOrUpdate(
                 key,

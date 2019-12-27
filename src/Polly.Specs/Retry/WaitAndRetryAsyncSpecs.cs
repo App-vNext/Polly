@@ -10,7 +10,7 @@ using Polly.Specs.Helpers;
 using Polly.Utilities;
 using Xunit;
 
-using Scenario = Polly.Specs.Helpers.PolicyExtensionsAsync.ExceptionAndOrCancellationScenario;
+using Scenario = Polly.Specs.Helpers.IAsyncPolicyExtensions.ExceptionAndOrCancellationScenario;
 
 namespace Polly.Specs.Retry
 {

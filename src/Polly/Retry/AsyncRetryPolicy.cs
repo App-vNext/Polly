@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 namespace Polly.Retry
 {
     /// <summary>
-    /// A retry policy that can be applied to asynchronous delegates.
+    /// A retry policy that can be applied to asynchronous executions.
     /// </summary>
-    public class AsyncRetryPolicy : AsyncPolicy, IRetryPolicy
+    public class AsyncRetryPolicy : AsyncPolicy, IAsyncRetryPolicy
     {
         private readonly Func<Exception, TimeSpan, int, Context, Task> _onRetryAsync;
         private readonly int _permittedRetryCount;
@@ -54,9 +54,10 @@ namespace Polly.Retry
     }
 
     /// <summary>
-    /// A retry policy that can be applied to asynchronous delegates returning a value of type <typeparamref name="TResult"/>.
+    /// A retry policy that can be applied to asynchronous executions returning a value of type <typeparamref name="TResult"/>.
     /// </summary>
-    public class AsyncRetryPolicy<TResult> : AsyncPolicy<TResult>, IRetryPolicy<TResult>
+    /// <typeparam name="TResult">The return type of delegates which may be executed through the policy.</typeparam>
+    public class AsyncRetryPolicy<TResult> : AsyncPolicy<TResult>, IAsyncRetryPolicy<TResult>
     {
         private readonly Func<DelegateResult<TResult>, TimeSpan, int, Context, Task> _onRetryAsync;
         private readonly int _permittedRetryCount;

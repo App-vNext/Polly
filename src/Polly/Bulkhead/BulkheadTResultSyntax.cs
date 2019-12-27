@@ -12,7 +12,7 @@ namespace Polly
         /// <param name="maxParallelization">The maximum number of concurrent actions that may be executing through the policy.</param>
         /// <exception cref="ArgumentOutOfRangeException">maxParallelization;Value must be greater than zero.</exception>
         /// <returns>The policy instance.</returns>
-        public static BulkheadPolicy<TResult> Bulkhead<TResult>(int maxParallelization)
+        public static ISyncBulkheadPolicy<TResult> Bulkhead<TResult>(int maxParallelization)
         {
             Action<Context> doNothing = _ => { };
             return Bulkhead<TResult>(maxParallelization, 0, doNothing);
@@ -27,7 +27,7 @@ namespace Polly
         /// <exception cref="ArgumentOutOfRangeException">maxParallelization;Value must be greater than zero.</exception>
         /// <exception cref="ArgumentNullException">onBulkheadRejected</exception>
         /// <returns>The policy instance.</returns>
-        public static BulkheadPolicy<TResult> Bulkhead<TResult>(int maxParallelization, Action<Context> onBulkheadRejected)
+        public static ISyncBulkheadPolicy<TResult> Bulkhead<TResult>(int maxParallelization, Action<Context> onBulkheadRejected)
             => Bulkhead<TResult>(maxParallelization, 0, onBulkheadRejected);
 
         /// <summary>
@@ -39,7 +39,7 @@ namespace Polly
         /// <returns>The policy instance.</returns>
         /// <exception cref="ArgumentOutOfRangeException">maxParallelization;Value must be greater than zero.</exception>
         /// <exception cref="ArgumentOutOfRangeException">maxQueuingActions;Value must be greater than or equal to zero.</exception>
-        public static BulkheadPolicy<TResult> Bulkhead<TResult>(int maxParallelization, int maxQueuingActions)
+        public static ISyncBulkheadPolicy<TResult> Bulkhead<TResult>(int maxParallelization, int maxQueuingActions)
         {
             Action<Context> doNothing = _ => { };
             return Bulkhead<TResult>(maxParallelization, maxQueuingActions, doNothing);
@@ -56,7 +56,7 @@ namespace Polly
         /// <exception cref="ArgumentOutOfRangeException">maxParallelization;Value must be greater than zero.</exception>
         /// <exception cref="ArgumentOutOfRangeException">maxQueuingActions;Value must be greater than or equal to zero.</exception>
         /// <exception cref="ArgumentNullException">onBulkheadRejected</exception>
-        public static BulkheadPolicy<TResult> Bulkhead<TResult>(int maxParallelization, int maxQueuingActions, Action<Context> onBulkheadRejected)
+        public static ISyncBulkheadPolicy<TResult> Bulkhead<TResult>(int maxParallelization, int maxQueuingActions, Action<Context> onBulkheadRejected)
         {
             if (maxParallelization <= 0) throw new ArgumentOutOfRangeException(nameof(maxParallelization), "Value must be greater than zero.");
             if (maxQueuingActions < 0) throw new ArgumentOutOfRangeException(nameof(maxQueuingActions), "Value must be greater than or equal to zero.");

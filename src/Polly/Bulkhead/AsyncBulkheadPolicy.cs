@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 namespace Polly.Bulkhead
 {
     /// <summary>
-    /// A bulkhead-isolation policy which can be applied to delegates.
+    /// A bulkhead-isolation policy which can be applied to asynchronous executions.
     /// </summary>
-    public class AsyncBulkheadPolicy : AsyncPolicy, IBulkheadPolicy
+    public class AsyncBulkheadPolicy : AsyncPolicy, IAsyncBulkheadPolicy
     {
         private readonly SemaphoreSlim _maxParallelizationSemaphore;
         private readonly SemaphoreSlim _maxQueuedActionsSemaphore;
@@ -53,10 +53,10 @@ namespace Polly.Bulkhead
     }
 
     /// <summary>
-    /// A bulkhead-isolation policy which can be applied to delegates.
+    /// A bulkhead-isolation policy which can be applied to asynchronous executions returning a value of type <typeparamref name="TResult"/>.
     /// </summary>
     /// <typeparam name="TResult">The return type of delegates which may be executed through the policy.</typeparam>
-    public class AsyncBulkheadPolicy<TResult> : AsyncPolicy<TResult>, IBulkheadPolicy<TResult>
+    public class AsyncBulkheadPolicy<TResult> : AsyncPolicy<TResult>, IAsyncBulkheadPolicy<TResult>
     {
         private readonly SemaphoreSlim _maxParallelizationSemaphore;
         private readonly SemaphoreSlim _maxQueuedActionsSemaphore;
