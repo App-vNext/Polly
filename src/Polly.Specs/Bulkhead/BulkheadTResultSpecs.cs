@@ -62,7 +62,7 @@ namespace Polly.Specs.Bulkhead
             Context contextPassedToOnRejected = null;
             Action<Context> onRejected = ctx => { contextPassedToOnRejected = ctx; };
 
-            using (BulkheadPolicy<int> bulkhead = Policy.Bulkhead<int>(1, onRejected))
+            using (var bulkhead = Policy.Bulkhead<int>(1, onRejected))
             { 
                 TaskCompletionSource<object> tcs = new TaskCompletionSource<object>();
                 using (CancellationTokenSource cancellationSource = new CancellationTokenSource())

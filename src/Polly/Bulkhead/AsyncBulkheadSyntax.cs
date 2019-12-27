@@ -13,7 +13,7 @@ namespace Polly
         /// </summary>
         /// <param name="maxParallelization">The maximum number of concurrent actions that may be executing through the policy.</param>
         /// <returns>The policy instance.</returns>
-        public static AsyncBulkheadPolicy BulkheadAsync(int maxParallelization)
+        public static IAsyncBulkheadPolicy BulkheadAsync(int maxParallelization)
         {
             Func<Context, Task> doNothingAsync = _ => TaskHelper.EmptyTask;
             return BulkheadAsync(maxParallelization, 0, doNothingAsync);
@@ -29,7 +29,7 @@ namespace Polly
         /// <exception cref="ArgumentOutOfRangeException">maxParallelization;Value must be greater than zero.</exception>
         /// <exception cref="ArgumentNullException">onBulkheadRejectedAsync</exception>
         /// <returns>The policy instance.</returns>
-        public static AsyncBulkheadPolicy BulkheadAsync(int maxParallelization, Func<Context, Task> onBulkheadRejectedAsync)
+        public static IAsyncBulkheadPolicy BulkheadAsync(int maxParallelization, Func<Context, Task> onBulkheadRejectedAsync)
             => BulkheadAsync(maxParallelization, 0, onBulkheadRejectedAsync);
 
         /// <summary>
@@ -41,7 +41,7 @@ namespace Polly
         /// <returns>The policy instance.</returns>
         /// <exception cref="ArgumentOutOfRangeException">maxParallelization;Value must be greater than zero.</exception>
         /// <exception cref="ArgumentOutOfRangeException">maxQueuingActions;Value must be greater than or equal to zero.</exception>
-        public static AsyncBulkheadPolicy BulkheadAsync(int maxParallelization, int maxQueuingActions)
+        public static IAsyncBulkheadPolicy BulkheadAsync(int maxParallelization, int maxQueuingActions)
         {
             Func<Context, Task> doNothingAsync = _ => TaskHelper.EmptyTask;
             return BulkheadAsync(maxParallelization, maxQueuingActions, doNothingAsync);
@@ -58,7 +58,7 @@ namespace Polly
         /// <exception cref="ArgumentOutOfRangeException">maxParallelization;Value must be greater than zero.</exception>
         /// <exception cref="ArgumentOutOfRangeException">maxQueuingActions;Value must be greater than or equal to zero.</exception>
         /// <exception cref="ArgumentNullException">onBulkheadRejectedAsync</exception>
-        public static AsyncBulkheadPolicy BulkheadAsync(
+        public static IAsyncBulkheadPolicy BulkheadAsync(
             int maxParallelization, 
             int maxQueuingActions, 
             Func<Context, Task> onBulkheadRejectedAsync)
