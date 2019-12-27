@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 
 namespace Polly.Specs.Helpers
@@ -48,6 +49,29 @@ namespace Polly.Specs.Helpers
             policy.RaiseExceptionAndOrCancellation(scenario, new CancellationTokenSource(), () => { }, exceptionFactory);
         }
 
+        public static void RaiseException<TException>(this ISyncPolicy policy,
+            int numberOfTimesToRaiseException,
+            IDictionary<string, object> contextData) where TException : Exception, new()
+        {
+            ExceptionAndOrCancellationScenario scenario = new ExceptionAndOrCancellationScenario
+            {
+                ActionObservesCancellation = false,
+                AttemptDuringWhichToCancel = null,
+                NumberOfTimesToRaiseException = numberOfTimesToRaiseException
+            };
+
+            Func<int, TException> exceptionFactory = i => new TException();
+
+            policy.RaiseExceptionAndOrCancellation(scenario, contextData, new CancellationTokenSource(), () => { }, exceptionFactory);
+        }
+
+        public static void RaiseException<TException>(
+            this ISyncPolicy policy,
+            IDictionary<string, object> contextData) where TException : Exception, new()
+        {
+            policy.RaiseException<TException>(1, contextData);
+        }
+
         public static void RaiseExceptionAndOrCancellation<TException>(this ISyncPolicy policy, ExceptionAndOrCancellationScenario scenario, CancellationTokenSource cancellationTokenSource, Action onExecute) where TException : Exception, new()
         {
             policy.RaiseExceptionAndOrCancellation<TException>(scenario, cancellationTokenSource, onExecute, _ => new TException());
@@ -59,13 +83,34 @@ namespace Polly.Specs.Helpers
                 _ => new TException(), successResult);
         }
 
-        public static void RaiseExceptionAndOrCancellation<TException>(this ISyncPolicy policy, ExceptionAndOrCancellationScenario scenario, CancellationTokenSource cancellationTokenSource, Action onExecute, Func<int, TException> exceptionFactory) where TException : Exception
+        public static void RaiseExceptionAndOrCancellation<TException>(
+            this ISyncPolicy policy,
+            ExceptionAndOrCancellationScenario scenario,
+            CancellationTokenSource cancellationTokenSource,
+            Action onExecute,
+            Func<int, TException> exceptionFactory) where TException : Exception
+        {
+            policy.RaiseExceptionAndOrCancellation(
+                scenario,
+                new Dictionary<string, object>(0),
+                cancellationTokenSource,
+                onExecute,
+                exceptionFactory);
+        }
+
+        public static void RaiseExceptionAndOrCancellation<TException>(
+            this ISyncPolicy policy,
+            ExceptionAndOrCancellationScenario scenario,
+            IDictionary<string, object> contextData,
+            CancellationTokenSource cancellationTokenSource,
+            Action onExecute,
+            Func<int, TException> exceptionFactory) where TException : Exception
         {
             int counter = 0;
 
             CancellationToken cancellationToken = cancellationTokenSource.Token;
 
-            policy.Execute(ct =>
+            policy.Execute((ctx, ct) =>
             {
                 onExecute();
 
@@ -86,16 +131,42 @@ namespace Polly.Specs.Helpers
                     throw exceptionFactory(counter);
                 }
 
-            }, cancellationToken);
+            }, contextData, cancellationToken);
         }
 
-        public static TResult RaiseExceptionAndOrCancellation<TException, TResult>(this ISyncPolicy policy, ExceptionAndOrCancellationScenario scenario, CancellationTokenSource cancellationTokenSource, Action onExecute, Func<int, TException> exceptionFactory, TResult successResult) where TException : Exception
+
+        public static TResult RaiseExceptionAndOrCancellation<TException, TResult>(
+            this ISyncPolicy policy,
+            ExceptionAndOrCancellationScenario scenario,
+            CancellationTokenSource cancellationTokenSource,
+            Action onExecute,
+            Func<int, TException> exceptionFactory,
+            TResult successResult)
+            where TException : Exception
+        {
+            return policy.RaiseExceptionAndOrCancellation(
+                scenario,
+                new Dictionary<string, object>(0),
+                cancellationTokenSource,
+                onExecute,
+                exceptionFactory,
+                successResult);
+        }
+
+        public static TResult RaiseExceptionAndOrCancellation<TException, TResult>(
+            this ISyncPolicy policy,
+            ExceptionAndOrCancellationScenario scenario,
+            IDictionary<string, object> contextData,
+            CancellationTokenSource cancellationTokenSource,
+            Action onExecute,
+            Func<int, TException> exceptionFactory,
+            TResult successResult) where TException : Exception
         {
             int counter = 0;
 
             CancellationToken cancellationToken = cancellationTokenSource.Token;
 
-            return policy.Execute(ct =>
+            return policy.Execute((ctx, ct) =>
             {
                 onExecute();
 
@@ -117,7 +188,7 @@ namespace Polly.Specs.Helpers
                 }
 
                 return successResult;
-            }, cancellationToken);
+            }, contextData, cancellationToken);
         }
     }
 }
