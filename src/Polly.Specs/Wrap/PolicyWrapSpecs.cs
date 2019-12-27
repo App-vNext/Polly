@@ -39,7 +39,7 @@ namespace Polly.Specs.Wrap
             ISyncPolicy policyA = Policy.NoOp();
             ISyncPolicy policyB = Policy.NoOp();
 
-            PolicyWrap wrap = policyA.Wrap(policyB);
+            ISyncPolicyWrap wrap = policyA.Wrap(policyB);
 
             wrap.Outer.Should().BeSameAs(policyA);
             wrap.Inner.Should().BeSameAs(policyB);
@@ -51,7 +51,7 @@ namespace Polly.Specs.Wrap
             ISyncPolicy policyA = Policy.NoOp();
             ISyncPolicy<int> policyB = Policy.NoOp<int>();
 
-            PolicyWrap<int> wrap = policyA.Wrap(policyB);
+            ISyncPolicyWrap<int> wrap = policyA.Wrap(policyB);
 
             wrap.Outer.Should().BeSameAs(policyA);
             wrap.Inner.Should().BeSameAs(policyB);
@@ -88,7 +88,7 @@ namespace Polly.Specs.Wrap
             ISyncPolicy<int> policyA = Policy.NoOp<int>();
             ISyncPolicy policyB = Policy.NoOp();
 
-            PolicyWrap<int> wrap = policyA.Wrap(policyB);
+            ISyncPolicyWrap<int> wrap = policyA.Wrap(policyB);
 
             wrap.Outer.Should().BeSameAs(policyA);
             wrap.Inner.Should().BeSameAs(policyB);
@@ -100,7 +100,7 @@ namespace Polly.Specs.Wrap
             ISyncPolicy<int> policyA = Policy.NoOp<int>();
             ISyncPolicy<int> policyB = Policy.NoOp<int>();
 
-            PolicyWrap<int> wrap = policyA.Wrap(policyB);
+            ISyncPolicyWrap<int> wrap = policyA.Wrap(policyB);
 
             wrap.Outer.Should().BeSameAs(policyA);
             wrap.Inner.Should().BeSameAs(policyB);
@@ -295,7 +295,7 @@ namespace Polly.Specs.Wrap
             ISyncPolicy policyA = Policy.NoOp();
             ISyncPolicy policyB = Policy.NoOp();
 
-            PolicyWrap wrap = Policy.Wrap(policyA, policyB);
+            ISyncPolicyWrap wrap = Policy.Wrap(policyA, policyB);
 
             wrap.Outer.Should().BeSameAs(policyA);
             wrap.Inner.Should().BeSameAs(policyB);
@@ -350,7 +350,7 @@ namespace Polly.Specs.Wrap
             ISyncPolicy<int> policyA = Policy.NoOp<int>();
             ISyncPolicy<int> policyB = Policy.NoOp<int>();
 
-            PolicyWrap<int> wrap = Policy.Wrap(policyA, policyB);
+            ISyncPolicyWrap<int> wrap = Policy.Wrap(policyA, policyB);
 
             wrap.Outer.Should().BeSameAs(policyA);
             wrap.Inner.Should().BeSameAs(policyB);
@@ -366,8 +366,8 @@ namespace Polly.Specs.Wrap
             RetryPolicy retry = Policy.Handle<Exception>().Retry(1); // Two tries in total: first try, plus one retry.
             ISyncCircuitBreakerPolicy breaker = Policy.Handle<Exception>().CircuitBreaker(2, TimeSpan.MaxValue);
 
-            PolicyWrap retryWrappingBreaker = retry.Wrap(breaker);
-            PolicyWrap breakerWrappingRetry = breaker.Wrap(retry);
+            ISyncPolicyWrap retryWrappingBreaker = retry.Wrap(breaker);
+            ISyncPolicyWrap breakerWrappingRetry = breaker.Wrap(retry);
 
             // When the retry wraps the breaker, the retry (being outer) should cause the call to be put through the breaker twice - causing the breaker to break.
             breaker.Reset();
@@ -414,8 +414,8 @@ namespace Polly.Specs.Wrap
             RetryPolicy retry = Policy.Handle<Exception>().Retry(1); // Two tries in total: first try, plus one retry.
             ISyncCircuitBreakerPolicy breaker = Policy.Handle<Exception>().CircuitBreaker(2, TimeSpan.MaxValue);
 
-            PolicyWrap retryWrappingBreaker = Policy.Wrap(retry, breaker);
-            PolicyWrap breakerWrappingRetry = Policy.Wrap(breaker, retry);
+            ISyncPolicyWrap retryWrappingBreaker = Policy.Wrap(retry, breaker);
+            ISyncPolicyWrap breakerWrappingRetry = Policy.Wrap(breaker, retry);
 
             // When the retry wraps the breaker, the retry (being outer) should cause the call to be put through the breaker twice - causing the breaker to break.
             breaker.Reset();
@@ -465,7 +465,7 @@ namespace Polly.Specs.Wrap
             ISyncCircuitBreakerPolicy outerHandlingANE = Policy
                 .Handle<ArgumentNullException>()
                 .CircuitBreaker(1, TimeSpan.Zero);
-            PolicyWrap wrap = outerHandlingANE.Wrap(innerHandlingDBZE);
+            ISyncPolicyWrap wrap = outerHandlingANE.Wrap(innerHandlingDBZE);
 
             PolicyResult executeAndCaptureResultOnPolicyWrap = wrap.ExecuteAndCapture(() => { throw new ArgumentNullException(); });
 
@@ -483,7 +483,7 @@ namespace Polly.Specs.Wrap
             ISyncCircuitBreakerPolicy outerHandlingANE = Policy
                 .Handle<ArgumentNullException>()
                 .CircuitBreaker(1, TimeSpan.Zero);
-            PolicyWrap wrap = outerHandlingANE.Wrap(innerHandlingDBZE);
+            ISyncPolicyWrap wrap = outerHandlingANE.Wrap(innerHandlingDBZE);
 
             PolicyResult executeAndCaptureResultOnPolicyWrap = wrap.ExecuteAndCapture(() => { throw new DivideByZeroException(); });
 
@@ -501,7 +501,7 @@ namespace Polly.Specs.Wrap
             ISyncCircuitBreakerPolicy outerHandlingANE = Policy
                 .Handle<ArgumentNullException>()
                 .CircuitBreaker(1, TimeSpan.Zero);
-            PolicyWrap<ResultPrimitive> wrap = outerHandlingANE.Wrap(innerHandlingDBZE);
+            ISyncPolicyWrap<ResultPrimitive> wrap = outerHandlingANE.Wrap(innerHandlingDBZE);
 
             PolicyResult<ResultPrimitive> executeAndCaptureResultOnPolicyWrap = wrap.ExecuteAndCapture(() => { throw new ArgumentNullException(); });
 
@@ -520,7 +520,7 @@ namespace Polly.Specs.Wrap
             ISyncCircuitBreakerPolicy outerHandlingANE = Policy
                 .Handle<ArgumentNullException>()
                 .CircuitBreaker(1, TimeSpan.Zero);
-            PolicyWrap<ResultPrimitive> wrap = outerHandlingANE.Wrap(innerHandlingDBZE);
+            ISyncPolicyWrap<ResultPrimitive> wrap = outerHandlingANE.Wrap(innerHandlingDBZE);
 
             PolicyResult<ResultPrimitive> executeAndCaptureResultOnPolicyWrap = wrap.ExecuteAndCapture(() => { throw new DivideByZeroException(); });
 
@@ -539,7 +539,7 @@ namespace Polly.Specs.Wrap
             ISyncCircuitBreakerPolicy<ResultPrimitive> outerHandlingFault = Policy
                 .HandleResult(ResultPrimitive.Fault)
                 .CircuitBreaker(1, TimeSpan.Zero);
-            PolicyWrap<ResultPrimitive> wrap = outerHandlingFault.Wrap(innerHandlingFaultAgain);
+            ISyncPolicyWrap<ResultPrimitive> wrap = outerHandlingFault.Wrap(innerHandlingFaultAgain);
 
             PolicyResult<ResultPrimitive> executeAndCaptureResultOnPolicyWrap = wrap.ExecuteAndCapture(() => ResultPrimitive.Fault);
 
@@ -559,7 +559,7 @@ namespace Polly.Specs.Wrap
             ISyncCircuitBreakerPolicy<ResultPrimitive> outerHandlingFault = Policy
                 .HandleResult(ResultPrimitive.Fault)
                 .CircuitBreaker(1, TimeSpan.Zero);
-            PolicyWrap<ResultPrimitive> wrap = outerHandlingFault.Wrap(innerHandlingFaultAgain);
+            ISyncPolicyWrap<ResultPrimitive> wrap = outerHandlingFault.Wrap(innerHandlingFaultAgain);
 
             PolicyResult<ResultPrimitive> executeAndCaptureResultOnPolicyWrap = wrap.ExecuteAndCapture(() => ResultPrimitive.FaultAgain);
 

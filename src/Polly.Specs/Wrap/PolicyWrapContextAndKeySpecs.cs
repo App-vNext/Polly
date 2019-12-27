@@ -237,7 +237,7 @@ namespace Polly.Specs.Wrap
                 })
                 .WithPolicyKey("RetryPolicy");
 
-            Policy<ResultPrimitive> policyWrap = Policy.Wrap(fallback, retry)
+            ISyncPolicy<ResultPrimitive> policyWrap = Policy.Wrap(fallback, retry)
                 .WithPolicyKey("PolicyWrap");
 
             policyWrap.Execute(() => throw new Exception());

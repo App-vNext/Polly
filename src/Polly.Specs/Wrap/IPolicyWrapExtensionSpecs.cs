@@ -20,7 +20,7 @@ namespace Polly.Specs.Wrap
             ISyncNoOpPolicy policy1 = Policy.NoOp();
             ISyncNoOpPolicy policy2 = Policy.NoOp();
 
-            PolicyWrap policyWrap = Policy.Wrap(policy0, policy1, policy2);
+            ISyncPolicyWrap policyWrap = Policy.Wrap(policy0, policy1, policy2);
 
             List<IsPolicy> policies = policyWrap.GetPolicies().ToList();
             policies.Count.Should().Be(3);
@@ -34,7 +34,7 @@ namespace Polly.Specs.Wrap
         {
             ISyncPolicy policyA = Policy.NoOp();
             ISyncPolicy policyB = Policy.NoOp();
-            PolicyWrap wrap = Policy.Wrap(policyA, policyB);
+            ISyncPolicyWrap wrap = Policy.Wrap(policyA, policyB);
 
             wrap.GetPolicies().Should().BeEquivalentTo(new[] { policyA, policyB },
                 options => options
@@ -49,7 +49,7 @@ namespace Polly.Specs.Wrap
             ISyncPolicy policyA = Policy.NoOp();
             ISyncPolicy policyB = Policy.NoOp();
             ISyncPolicy policyC = Policy.NoOp();
-            PolicyWrap wrap = Policy.Wrap(policyA, policyB, policyC);
+            ISyncPolicyWrap wrap = Policy.Wrap(policyA, policyB, policyC);
 
             wrap.GetPolicies().Should().BeEquivalentTo(new[] { policyA, policyB, policyC },
                 options => options
@@ -64,7 +64,7 @@ namespace Polly.Specs.Wrap
             ISyncPolicy policyA = Policy.NoOp();
             ISyncPolicy policyB = Policy.NoOp();
             ISyncPolicy policyC = Policy.NoOp();
-            PolicyWrap wrap = policyA.Wrap(policyB).Wrap(policyC);
+            ISyncPolicyWrap wrap = policyA.Wrap(policyB).Wrap(policyC);
 
             wrap.GetPolicies().Should().BeEquivalentTo(new[] { policyA, policyB, policyC },
                 options => options
@@ -79,7 +79,7 @@ namespace Polly.Specs.Wrap
             ISyncPolicy policyA = Policy.NoOp();
             ISyncPolicy policyB = Policy.NoOp();
             ISyncPolicy policyC = Policy.NoOp();
-            PolicyWrap wrap = policyA.Wrap(policyB.Wrap(policyC));
+            ISyncPolicyWrap wrap = policyA.Wrap(policyB.Wrap(policyC));
 
             wrap.GetPolicies().Should().BeEquivalentTo(new[] { policyA, policyB, policyC },
                 options => options
@@ -94,7 +94,7 @@ namespace Polly.Specs.Wrap
             ISyncPolicy policyA = Policy.NoOp();
             ISyncPolicy policyB = Policy.Handle<Exception>().Retry();
             ISyncPolicy policyC = Policy.NoOp();
-            PolicyWrap wrap = policyA.Wrap(policyB.Wrap(policyC));
+            ISyncPolicyWrap wrap = policyA.Wrap(policyB.Wrap(policyC));
 
             wrap.GetPolicies<RetryPolicy>().Should().BeEquivalentTo(new[] { policyB },
                 options => options
@@ -109,7 +109,7 @@ namespace Polly.Specs.Wrap
             ISyncPolicy policyA = Policy.NoOp();
             ISyncPolicy policyB = Policy.Handle<Exception>().Retry();
             ISyncPolicy policyC = Policy.NoOp();
-            PolicyWrap wrap = policyA.Wrap(policyB.Wrap(policyC));
+            ISyncPolicyWrap wrap = policyA.Wrap(policyB.Wrap(policyC));
 
             wrap.GetPolicies<CircuitBreakerPolicy>().Should().BeEmpty();
         }
@@ -120,7 +120,7 @@ namespace Polly.Specs.Wrap
             ISyncPolicy policyA = Policy.NoOp();
             ISyncPolicy policyB = Policy.Handle<Exception>().Retry();
             ISyncPolicy policyC = Policy.NoOp();
-            PolicyWrap wrap = policyA.Wrap(policyB.Wrap(policyC));
+            ISyncPolicyWrap wrap = policyA.Wrap(policyB.Wrap(policyC));
 
             wrap.GetPolicies<NoOpPolicy>().Should().BeEquivalentTo(new[] { policyA, policyC },
                 options => options
@@ -138,7 +138,7 @@ namespace Polly.Specs.Wrap
 
             policyA.Isolate();
 
-            PolicyWrap wrap = policyA.Wrap(policyB.Wrap(policyC));
+            ISyncPolicyWrap wrap = policyA.Wrap(policyB.Wrap(policyC));
 
             wrap.GetPolicies<CircuitBreakerPolicy>(p => p.CircuitState == CircuitState.Closed).Should().BeEquivalentTo(new[] { policyC },
                 options => options
@@ -154,7 +154,7 @@ namespace Polly.Specs.Wrap
             ISyncPolicy policyB = Policy.Handle<Exception>().Retry();
             ISyncCircuitBreakerPolicy policyC = Policy.Handle<Exception>().CircuitBreaker(1, TimeSpan.Zero);
 
-            PolicyWrap wrap = policyA.Wrap(policyB.Wrap(policyC));
+            ISyncPolicyWrap wrap = policyA.Wrap(policyB.Wrap(policyC));
 
             wrap.GetPolicies<CircuitBreakerPolicy>(p => p.CircuitState == CircuitState.Open).Should().BeEmpty();
         }
@@ -165,7 +165,7 @@ namespace Polly.Specs.Wrap
             ISyncPolicy policyA = Policy.NoOp();
             ISyncPolicy policyB = Policy.Handle<Exception>().Retry();
             ISyncPolicy policyC = Policy.NoOp();
-            PolicyWrap wrap = policyA.Wrap(policyB.Wrap(policyC));
+            ISyncPolicyWrap wrap = policyA.Wrap(policyB.Wrap(policyC));
 
             wrap.GetPolicies<NoOpPolicy>(_ => true).Should().BeEquivalentTo(new[] { policyA, policyC },
                 options => options
@@ -179,7 +179,7 @@ namespace Polly.Specs.Wrap
         {
             ISyncPolicy policyA = Policy.NoOp();
             ISyncPolicy policyB = Policy.NoOp();
-            PolicyWrap wrap = policyA.Wrap(policyB);
+            ISyncPolicyWrap wrap = policyA.Wrap(policyB);
 
             Action configure = () => wrap.GetPolicies<NoOpPolicy>(null);
             
@@ -192,7 +192,7 @@ namespace Polly.Specs.Wrap
             ISyncPolicy policyA = Policy.NoOp();
             ISyncPolicy policyB = Policy.Handle<Exception>().Retry();
             ISyncPolicy policyC = Policy.NoOp();
-            PolicyWrap wrap = policyA.Wrap(policyB.Wrap(policyC));
+            ISyncPolicyWrap wrap = policyA.Wrap(policyB.Wrap(policyC));
 
             wrap.GetPolicy<RetryPolicy>().Should().BeSameAs(policyB);
         }
@@ -203,7 +203,7 @@ namespace Polly.Specs.Wrap
             ISyncPolicy policyA = Policy.NoOp();
             ISyncPolicy policyB = Policy.Handle<Exception>().Retry();
             ISyncPolicy policyC = Policy.NoOp();
-            PolicyWrap wrap = policyA.Wrap(policyB.Wrap(policyC));
+            ISyncPolicyWrap wrap = policyA.Wrap(policyB.Wrap(policyC));
 
             wrap.GetPolicy<CircuitBreakerPolicy>().Should().BeNull();
         }
@@ -214,7 +214,7 @@ namespace Polly.Specs.Wrap
             ISyncPolicy policyA = Policy.NoOp();
             ISyncPolicy policyB = Policy.Handle<Exception>().Retry();
             ISyncPolicy policyC = Policy.NoOp();
-            PolicyWrap wrap = policyA.Wrap(policyB.Wrap(policyC));
+            ISyncPolicyWrap wrap = policyA.Wrap(policyB.Wrap(policyC));
 
             wrap.Invoking(p => p.GetPolicy<NoOpPolicy>()).Should().Throw<InvalidOperationException>();
         }
@@ -228,7 +228,7 @@ namespace Polly.Specs.Wrap
 
             policyA.Isolate();
 
-            PolicyWrap wrap = policyA.Wrap(policyB.Wrap(policyC));
+            ISyncPolicyWrap wrap = policyA.Wrap(policyB.Wrap(policyC));
 
             wrap.GetPolicy<CircuitBreakerPolicy>(p => p.CircuitState == CircuitState.Closed).Should().BeSameAs(policyC);
         }
@@ -240,7 +240,7 @@ namespace Polly.Specs.Wrap
             ISyncPolicy policyB = Policy.Handle<Exception>().Retry();
             ISyncCircuitBreakerPolicy policyC = Policy.Handle<Exception>().CircuitBreaker(1, TimeSpan.Zero);
 
-            PolicyWrap wrap = policyA.Wrap(policyB.Wrap(policyC));
+            ISyncPolicyWrap wrap = policyA.Wrap(policyB.Wrap(policyC));
 
             wrap.GetPolicy<CircuitBreakerPolicy>(p => p.CircuitState == CircuitState.Open).Should().BeNull();
         }
@@ -251,7 +251,7 @@ namespace Polly.Specs.Wrap
             ISyncPolicy policyA = Policy.NoOp();
             ISyncPolicy policyB = Policy.Handle<Exception>().Retry();
             ISyncPolicy policyC = Policy.NoOp();
-            PolicyWrap wrap = policyA.Wrap(policyB.Wrap(policyC));
+            ISyncPolicyWrap wrap = policyA.Wrap(policyB.Wrap(policyC));
 
             wrap.Invoking(p => p.GetPolicy<NoOpPolicy>(_ => true)).Should().Throw<InvalidOperationException>();
         }
@@ -261,7 +261,7 @@ namespace Polly.Specs.Wrap
         {
             ISyncPolicy policyA = Policy.NoOp();
             ISyncPolicy policyB = Policy.NoOp();
-            PolicyWrap wrap = policyA.Wrap(policyB);
+            ISyncPolicyWrap wrap = policyA.Wrap(policyB);
 
             Action configure = () => wrap.GetPolicy<NoOpPolicy>(null);
 

@@ -330,7 +330,7 @@ namespace Polly.Specs.Caching
             ISyncCacheProvider stubCacheProvider = new StubCacheProvider();
             var cache = Policy.Cache(stubCacheProvider, TimeSpan.MaxValue);
             ISyncPolicy noop = Policy.NoOp();
-            PolicyWrap wrap = Policy.Wrap(cache, noop);
+            ISyncPolicyWrap wrap = Policy.Wrap(cache, noop);
 
             stubCacheProvider.Put(operationKey, valueToReturnFromCache, new Ttl(TimeSpan.MaxValue));
 
@@ -356,7 +356,7 @@ namespace Polly.Specs.Caching
             ISyncCacheProvider stubCacheProvider = new StubCacheProvider();
             var cache = Policy.Cache(stubCacheProvider, TimeSpan.MaxValue);
             ISyncPolicy noop = Policy.NoOp();
-            PolicyWrap wrap = Policy.Wrap(noop, cache);
+            ISyncPolicyWrap wrap = Policy.Wrap(noop, cache);
 
             stubCacheProvider.Put(operationKey, valueToReturnFromCache, new Ttl(TimeSpan.MaxValue));
 
@@ -382,7 +382,7 @@ namespace Polly.Specs.Caching
             ISyncCacheProvider stubCacheProvider = new StubCacheProvider();
             var cache = Policy.Cache(stubCacheProvider, TimeSpan.MaxValue);
             ISyncPolicy noop = Policy.NoOp();
-            PolicyWrap wrap = Policy.Wrap(noop, cache, noop);
+            ISyncPolicyWrap wrap = Policy.Wrap(noop, cache, noop);
 
             stubCacheProvider.Put(operationKey, valueToReturnFromCache, new Ttl(TimeSpan.MaxValue));
 

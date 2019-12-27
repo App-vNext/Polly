@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 namespace Polly.Wrap
 {
     /// <summary>
-    /// A policy that allows two (and by recursion more) async Polly policies to wrap executions of async delegates.
+    /// A wrapper for composing policies that can be applied to asynchronous delegate executions.
     /// </summary>
-    public partial class AsyncPolicyWrap : AsyncPolicy, IPolicyWrap
+    public partial class AsyncPolicyWrap : AsyncPolicy, IAsyncPolicyWrap
     {
         private IAsyncPolicy _outer;
         private IAsyncPolicy _inner;
@@ -62,10 +62,10 @@ namespace Polly.Wrap
     }
 
     /// <summary>
-    /// A policy that allows two (and by recursion more) async Polly policies to wrap executions of async delegates.
+    /// A wrapper for composing policies that can be applied to asynchronous delegate executions returning a value of type <typeparamref name="TResult"/>.
     /// </summary>
     /// <typeparam name="TResult">The return type of delegates which may be executed through the policy.</typeparam>
-    public partial class AsyncPolicyWrap<TResult> : AsyncPolicy<TResult>, IPolicyWrap<TResult>
+    public partial class AsyncPolicyWrap<TResult> : AsyncPolicy<TResult>, IAsyncPolicyWrap<TResult>
     {
         private IAsyncPolicy _outerNonGeneric;
         private IAsyncPolicy _innerNonGeneric;
