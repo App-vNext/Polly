@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 namespace Polly.Bulkhead
 {
     /// <summary>
-    /// A bulkhead-isolation policy which can be applied to delegates.
+    /// A bulkhead-isolation policy which can be applied to asynchronous delegate executions.
     /// </summary>
     public class AsyncBulkheadPolicy : AsyncPolicy, IAsyncBulkheadPolicy
     {
@@ -53,7 +53,7 @@ namespace Polly.Bulkhead
     }
 
     /// <summary>
-    /// A bulkhead-isolation policy which can be applied to delegates.
+    /// A bulkhead-isolation policy which can be applied to asynchronous delegate executions returning a value of type <typeparamref name="TResult"/>.
     /// </summary>
     /// <typeparam name="TResult">The return type of delegates which may be executed through the policy.</typeparam>
     public class AsyncBulkheadPolicy<TResult> : AsyncPolicy<TResult>, IAsyncBulkheadPolicy<TResult>
