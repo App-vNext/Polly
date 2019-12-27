@@ -15,7 +15,7 @@ namespace Polly.Bulkhead
         {
             if (!maxQueuedActionsSemaphore.Wait(TimeSpan.Zero, cancellationToken))
             {
-                onBulkheadRejected(context);
+                onBulkheadRejected?.Invoke(context);
                 throw new BulkheadRejectedException();
             }
             

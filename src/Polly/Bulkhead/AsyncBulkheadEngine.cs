@@ -17,7 +17,7 @@ namespace Polly.Bulkhead
         {
             if (!await maxQueuedActionsSemaphore.WaitAsync(TimeSpan.Zero, cancellationToken).ConfigureAwait(continueOnCapturedContext))
             {
-                await onBulkheadRejectedAsync(context).ConfigureAwait(continueOnCapturedContext);
+                if (onBulkheadRejectedAsync != null) { await onBulkheadRejectedAsync(context).ConfigureAwait(continueOnCapturedContext); }
                 throw new BulkheadRejectedException();
             }
             try

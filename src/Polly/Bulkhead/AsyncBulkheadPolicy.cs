@@ -21,7 +21,7 @@ namespace Polly.Bulkhead
             Func<Context, Task> onBulkheadRejectedAsync)
         {
             _maxQueueingActions = maxQueueingActions;
-            _onBulkheadRejectedAsync = onBulkheadRejectedAsync ?? throw new ArgumentNullException(nameof(onBulkheadRejectedAsync));
+            _onBulkheadRejectedAsync = onBulkheadRejectedAsync;
 
             (_maxParallelizationSemaphore, _maxQueuedActionsSemaphore) = BulkheadSemaphoreFactory.CreateBulkheadSemaphores(maxParallelization, maxQueueingActions);
         }
@@ -69,7 +69,7 @@ namespace Polly.Bulkhead
             Func<Context, Task> onBulkheadRejectedAsync)
         {
             _maxQueueingActions = maxQueueingActions;
-            _onBulkheadRejectedAsync = onBulkheadRejectedAsync ?? throw new ArgumentNullException(nameof(onBulkheadRejectedAsync));
+            _onBulkheadRejectedAsync = onBulkheadRejectedAsync;
 
             (_maxParallelizationSemaphore, _maxQueuedActionsSemaphore) = BulkheadSemaphoreFactory.CreateBulkheadSemaphores(maxParallelization, maxQueueingActions);
         }
