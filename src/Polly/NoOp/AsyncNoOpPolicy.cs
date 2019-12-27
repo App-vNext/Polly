@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 namespace Polly.NoOp
 {
     /// <summary>
-    /// A no-op policy that can be applied to asynchronous delegate executions.  Code executed through the policy is executed as if no policy was applied.
+    /// A no-op policy that can be applied to asynchronous executions.  Code executed through the policy is executed as if no policy was applied.
     /// </summary>
     public class AsyncNoOpPolicy : AsyncPolicy, IAsyncNoOpPolicy
     {
@@ -22,7 +22,7 @@ namespace Polly.NoOp
     }
 
     /// <summary>
-    /// A no-op policy that can be applied to asynchronous delegate executions returning a value of type <typeparamref name="TResult"/>.  Code executed through the policy is executed as if no policy was applied.
+    /// A no-op policy that can be applied to asynchronous executions returning a value of type <typeparamref name="TResult"/>.  Code executed through the policy is executed as if no policy was applied.
     /// </summary>
     /// <typeparam name="TResult">The return type of delegates which may be executed through the policy.</typeparam>
     public class AsyncNoOpPolicy<TResult> : AsyncPolicy<TResult>, IAsyncNoOpPolicy<TResult>

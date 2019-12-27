@@ -5,7 +5,7 @@ using System.Threading;
 namespace Polly.Bulkhead
 {
     /// <summary>
-    /// A bulkhead-isolation policy which can be applied to synchronous delegate executions.
+    /// A bulkhead-isolation policy which can be applied to synchronous executions.
     /// </summary>
     public class BulkheadPolicy : Policy, ISyncBulkheadPolicy
     {
@@ -52,7 +52,7 @@ namespace Polly.Bulkhead
     }
 
     /// <summary>
-    /// A bulkhead-isolation policy which can be applied to synchronous delegate executions returning a value of type <typeparamref name="TResult"/>.
+    /// A bulkhead-isolation policy which can be applied to synchronous executions returning a value of type <typeparamref name="TResult"/>.
     /// </summary>
     /// <typeparam name="TResult">The return type of delegates which may be executed through the policy.</typeparam>
     public class BulkheadPolicy<TResult> : Policy<TResult>, ISyncBulkheadPolicy<TResult>

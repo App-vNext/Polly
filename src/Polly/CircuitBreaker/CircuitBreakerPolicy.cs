@@ -6,7 +6,7 @@ using System.Threading;
 namespace Polly.CircuitBreaker
 {
     /// <summary>
-    /// A circuit-breaker policy that can be applied to synchronous delegate executions.
+    /// A circuit-breaker policy that can be applied to synchronous executions.
     /// </summary>
     public class CircuitBreakerPolicy : Policy, ISyncCircuitBreakerPolicy
     {
@@ -56,7 +56,7 @@ namespace Polly.CircuitBreaker
     }
 
     /// <summary>
-    /// A circuit-breaker policy that can be applied to synchronous delegate executions returning a value of type <typeparamref name="TResult"/>.
+    /// A circuit-breaker policy that can be applied to synchronous executions returning a value of type <typeparamref name="TResult"/>.
     /// </summary>
     /// <typeparam name="TResult">The return type of delegates which may be executed through the policy.</typeparam>
     public class CircuitBreakerPolicy<TResult> : Policy<TResult>, ISyncCircuitBreakerPolicy<TResult>
