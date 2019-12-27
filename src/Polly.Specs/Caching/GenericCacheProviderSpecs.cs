@@ -20,7 +20,7 @@ namespace Polly.Specs.Caching
             Action<Context, string, Exception> onError = (ctx, key, exc) => { onErrorCalled = true; };
 
             ISyncCacheProvider stubCacheProvider = new StubCacheProvider();
-            CachePolicy cache = Policy.Cache(stubCacheProvider, TimeSpan.MaxValue, onError);
+            var cache = Policy.Cache(stubCacheProvider, TimeSpan.MaxValue, onError);
 
             (bool cacheHit, object fromCache) = stubCacheProvider.TryGet(operationKey);
             cacheHit.Should().BeFalse();
@@ -38,7 +38,7 @@ namespace Polly.Specs.Caching
             const string operationKey = "SomeOperationKey";
 
             ISyncCacheProvider stubCacheProvider = new StubCacheProvider();
-            CachePolicy cache = Policy.Cache(stubCacheProvider, TimeSpan.MaxValue);
+            var cache = Policy.Cache(stubCacheProvider, TimeSpan.MaxValue);
 
             (bool cacheHit1, object fromCache1) = stubCacheProvider.TryGet(operationKey);
 

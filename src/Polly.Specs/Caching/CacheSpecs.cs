@@ -53,7 +53,7 @@ namespace Polly.Specs.Caching
             const string operationKey = "SomeOperationKey";
 
             ISyncCacheProvider stubCacheProvider = new StubCacheProvider();
-            CachePolicy cache = Policy.Cache(stubCacheProvider, TimeSpan.MaxValue);
+            var cache = Policy.Cache(stubCacheProvider, TimeSpan.MaxValue);
             stubCacheProvider.Put(operationKey, valueToReturnFromCache, new Ttl(TimeSpan.MaxValue));
 
             bool delegateExecuted = false;
@@ -75,7 +75,7 @@ namespace Polly.Specs.Caching
             const string operationKey = "SomeOperationKey";
 
             ISyncCacheProvider stubCacheProvider = new StubCacheProvider();
-            CachePolicy cache = Policy.Cache(stubCacheProvider, TimeSpan.MaxValue);
+            var cache = Policy.Cache(stubCacheProvider, TimeSpan.MaxValue);
 
             (bool cacheHit1, object fromCache1) = stubCacheProvider.TryGet(operationKey);
             cacheHit1.Should().BeFalse();
@@ -96,7 +96,7 @@ namespace Polly.Specs.Caching
 
             ISyncCacheProvider stubCacheProvider = new StubCacheProvider();
             TimeSpan ttl = TimeSpan.FromMinutes(30);
-            CachePolicy cache = Policy.Cache(stubCacheProvider, ttl);
+            var cache = Policy.Cache(stubCacheProvider, ttl);
 
             (bool cacheHit1, object fromCache1) = stubCacheProvider.TryGet(operationKey);
             cacheHit1.Should().BeFalse();
@@ -141,7 +141,7 @@ namespace Polly.Specs.Caching
             const string operationKey = "SomeOperationKey";
 
             ISyncCacheProvider stubCacheProvider = new StubCacheProvider();
-            CachePolicy cache = Policy.Cache(stubCacheProvider, TimeSpan.Zero);
+            var cache = Policy.Cache(stubCacheProvider, TimeSpan.Zero);
 
             (bool cacheHit1, object fromCache1) = stubCacheProvider.TryGet(operationKey);
             cacheHit1.Should().BeFalse();
@@ -160,7 +160,7 @@ namespace Polly.Specs.Caching
             const string valueToReturn = "valueToReturn";
             const string operationKey = "SomeOperationKey";
 
-            CachePolicy cache = Policy.Cache(new StubCacheProvider(), TimeSpan.MaxValue);
+            var cache = Policy.Cache(new StubCacheProvider(), TimeSpan.MaxValue);
 
             int delegateInvocations = 0;
             Func<Context, string> func = ctx =>
@@ -183,7 +183,7 @@ namespace Polly.Specs.Caching
         public void Should_allow_custom_FuncCacheKeyStrategy()
         {
             ISyncCacheProvider stubCacheProvider = new StubCacheProvider();
-            CachePolicy cache = Policy.Cache(stubCacheProvider, TimeSpan.MaxValue, context => context.OperationKey + context["id"]);
+            var cache = Policy.Cache(stubCacheProvider, TimeSpan.MaxValue, context => context.OperationKey + context["id"]);
 
             object person1 = new object();
             stubCacheProvider.Put("person1", person1, new Ttl(TimeSpan.MaxValue));
@@ -208,7 +208,7 @@ namespace Polly.Specs.Caching
 
             ISyncCacheProvider stubCacheProvider = new StubCacheProvider();
             ICacheKeyStrategy cacheKeyStrategy = new StubCacheKeyStrategy(context => context.OperationKey + context["id"]);
-            CachePolicy cache = Policy.Cache(stubCacheProvider, new RelativeTtl(TimeSpan.MaxValue), cacheKeyStrategy, emptyDelegate, emptyDelegate, emptyDelegate, noErrorHandling, noErrorHandling);
+            var cache = Policy.Cache(stubCacheProvider, new RelativeTtl(TimeSpan.MaxValue), cacheKeyStrategy, emptyDelegate, emptyDelegate, emptyDelegate, noErrorHandling, noErrorHandling);
 
             object person1 = new object();
             stubCacheProvider.Put("person1", person1, new Ttl(TimeSpan.MaxValue));
@@ -236,7 +236,7 @@ namespace Polly.Specs.Caching
             const string operationKey = "SomeOperationKey";
 
             ISyncCacheProvider stubCacheProvider = new StubCacheProvider();
-            CachePolicy cache = Policy.Cache(stubCacheProvider, TimeSpan.MaxValue);
+            var cache = Policy.Cache(stubCacheProvider, TimeSpan.MaxValue);
 
             (bool cacheHit1, object fromCache1) = stubCacheProvider.TryGet(operationKey);
             cacheHit1.Should().BeFalse();
@@ -257,7 +257,7 @@ namespace Polly.Specs.Caching
             const string operationKey = "SomeOperationKey";
 
             ISyncCacheProvider stubCacheProvider = new StubCacheProvider();
-            CachePolicy cache = Policy.Cache(stubCacheProvider, TimeSpan.MaxValue);
+            var cache = Policy.Cache(stubCacheProvider, TimeSpan.MaxValue);
             stubCacheProvider.Put(operationKey, valueToReturnFromCache, new Ttl(TimeSpan.MaxValue));
 
             bool delegateExecuted = false;
@@ -279,7 +279,7 @@ namespace Polly.Specs.Caching
             const string operationKey = "SomeOperationKey";
 
             ISyncCacheProvider stubCacheProvider = new StubCacheProvider();
-            CachePolicy cache = Policy.Cache(stubCacheProvider, TimeSpan.MaxValue);
+            var cache = Policy.Cache(stubCacheProvider, TimeSpan.MaxValue);
 
             (bool cacheHit1, object fromCache1) = stubCacheProvider.TryGet(operationKey);
             cacheHit1.Should().BeFalse();
@@ -301,7 +301,7 @@ namespace Polly.Specs.Caching
             const string operationKey = "SomeOperationKey";
 
             ISyncCacheProvider stubCacheProvider = new StubCacheProvider();
-            CachePolicy cache = Policy.Cache(stubCacheProvider, TimeSpan.MaxValue);
+            var cache = Policy.Cache(stubCacheProvider, TimeSpan.MaxValue);
             stubCacheProvider.Put(operationKey, valueToReturnFromCache, new Ttl(TimeSpan.MaxValue));
 
             bool delegateExecuted = false;
@@ -328,7 +328,7 @@ namespace Polly.Specs.Caching
             const string operationKey = "SomeOperationKey";
 
             ISyncCacheProvider stubCacheProvider = new StubCacheProvider();
-            CachePolicy cache = Policy.Cache(stubCacheProvider, TimeSpan.MaxValue);
+            var cache = Policy.Cache(stubCacheProvider, TimeSpan.MaxValue);
             Policy noop = Policy.NoOp();
             PolicyWrap wrap = Policy.Wrap(cache, noop);
 
@@ -354,7 +354,7 @@ namespace Polly.Specs.Caching
             const string operationKey = "SomeOperationKey";
 
             ISyncCacheProvider stubCacheProvider = new StubCacheProvider();
-            CachePolicy cache = Policy.Cache(stubCacheProvider, TimeSpan.MaxValue);
+            var cache = Policy.Cache(stubCacheProvider, TimeSpan.MaxValue);
             Policy noop = Policy.NoOp();
             PolicyWrap wrap = Policy.Wrap(noop, cache);
 
@@ -380,7 +380,7 @@ namespace Polly.Specs.Caching
             const string operationKey = "SomeOperationKey";
 
             ISyncCacheProvider stubCacheProvider = new StubCacheProvider();
-            CachePolicy cache = Policy.Cache(stubCacheProvider, TimeSpan.MaxValue);
+            var cache = Policy.Cache(stubCacheProvider, TimeSpan.MaxValue);
             Policy noop = Policy.NoOp();
             PolicyWrap wrap = Policy.Wrap(noop, cache, noop);
 
@@ -407,7 +407,7 @@ namespace Polly.Specs.Caching
         {
             string valueToReturn = Guid.NewGuid().ToString();
 
-            CachePolicy cache = Policy.Cache(new StubCacheProvider(), TimeSpan.MaxValue);
+            var cache = Policy.Cache(new StubCacheProvider(), TimeSpan.MaxValue);
 
             int delegateInvocations = 0;
             Func<string> func = () =>
@@ -428,7 +428,7 @@ namespace Polly.Specs.Caching
         {
             string operationKey = "SomeKey";
 
-            CachePolicy cache = Policy.Cache(new StubCacheProvider(), TimeSpan.MaxValue);
+            var cache = Policy.Cache(new StubCacheProvider(), TimeSpan.MaxValue);
 
             int delegateInvocations = 0;
             Action<Context> action = ctx => { delegateInvocations++; };
@@ -450,7 +450,7 @@ namespace Polly.Specs.Caching
             const string valueToReturn = "valueToReturn";
             const string operationKey = "SomeOperationKey";
 
-            CachePolicy cache = Policy.Cache(new StubCacheProvider(), TimeSpan.MaxValue);
+            var cache = Policy.Cache(new StubCacheProvider(), TimeSpan.MaxValue);
 
             CancellationTokenSource tokenSource = new CancellationTokenSource();
 
@@ -479,7 +479,7 @@ namespace Polly.Specs.Caching
             const string operationKey = "SomeOperationKey";
 
             ISyncCacheProvider stubCacheProvider = new StubCacheProvider();
-            CachePolicy cache = Policy.Cache(stubCacheProvider, TimeSpan.MaxValue);
+            var cache = Policy.Cache(stubCacheProvider, TimeSpan.MaxValue);
 
             CancellationTokenSource tokenSource = new CancellationTokenSource();
 
@@ -516,7 +516,7 @@ namespace Polly.Specs.Caching
 
             Action<Context, string, Exception> onError = (ctx, key, exc) => { exceptionFromCacheProvider = exc; };
 
-            CachePolicy cache = Policy.Cache(stubCacheProvider, TimeSpan.MaxValue, onError);
+            var cache = Policy.Cache(stubCacheProvider, TimeSpan.MaxValue, onError);
 
             stubCacheProvider.Put(operationKey, valueToReturnFromCache, new Ttl(TimeSpan.MaxValue));
 
@@ -549,7 +549,7 @@ namespace Polly.Specs.Caching
 
             Action<Context, string, Exception> onError = (ctx, key, exc) => { exceptionFromCacheProvider = exc; };
 
-            CachePolicy cache = Policy.Cache(stubCacheProvider, TimeSpan.MaxValue, onError);
+            var cache = Policy.Cache(stubCacheProvider, TimeSpan.MaxValue, onError);
 
             (bool cacheHit1, object fromCache1) = stubCacheProvider.TryGet(operationKey);
             cacheHit1.Should().BeFalse();
@@ -584,7 +584,7 @@ namespace Polly.Specs.Caching
             Action<Context, string> onCacheAction = (ctx, key) => { contextPassedToDelegate = ctx; keyPassedToDelegate = key; };
 
             ISyncCacheProvider stubCacheProvider = new StubCacheProvider();
-            CachePolicy cache = Policy.Cache(stubCacheProvider, new RelativeTtl(TimeSpan.MaxValue), DefaultCacheKeyStrategy.Instance, onCacheAction, emptyDelegate, emptyDelegate, noErrorHandling, noErrorHandling);
+            var cache = Policy.Cache(stubCacheProvider, new RelativeTtl(TimeSpan.MaxValue), DefaultCacheKeyStrategy.Instance, onCacheAction, emptyDelegate, emptyDelegate, noErrorHandling, noErrorHandling);
             stubCacheProvider.Put(operationKey, valueToReturnFromCache, new Ttl(TimeSpan.MaxValue));
 
             bool delegateExecuted = false;
@@ -619,7 +619,7 @@ namespace Polly.Specs.Caching
             Action<Context, string> onCachePut = (ctx, key) => { contextPassedToOnCachePut = ctx; keyPassedToOnCachePut = key; };
 
             ISyncCacheProvider stubCacheProvider = new StubCacheProvider();
-            CachePolicy cache = Policy.Cache(stubCacheProvider, new RelativeTtl(TimeSpan.MaxValue), DefaultCacheKeyStrategy.Instance, emptyDelegate, onCacheMiss, onCachePut, noErrorHandling, noErrorHandling);
+            var cache = Policy.Cache(stubCacheProvider, new RelativeTtl(TimeSpan.MaxValue), DefaultCacheKeyStrategy.Instance, emptyDelegate, onCacheMiss, onCachePut, noErrorHandling, noErrorHandling);
 
             (bool cacheHit1, object fromCache1) = stubCacheProvider.TryGet(operationKey);
             cacheHit1.Should().BeFalse();
@@ -657,7 +657,7 @@ namespace Polly.Specs.Caching
             Action<Context, string> onCachePut = (ctx, key) => { contextPassedToOnCachePut = ctx; keyPassedToOnCachePut = key; };
 
             ISyncCacheProvider stubCacheProvider = new StubCacheProvider();
-            CachePolicy cache = Policy.Cache(stubCacheProvider, new RelativeTtl(TimeSpan.Zero), DefaultCacheKeyStrategy.Instance, emptyDelegate, onCacheMiss, onCachePut, noErrorHandling, noErrorHandling);
+            var cache = Policy.Cache(stubCacheProvider, new RelativeTtl(TimeSpan.Zero), DefaultCacheKeyStrategy.Instance, emptyDelegate, onCacheMiss, onCachePut, noErrorHandling, noErrorHandling);
 
             (bool cacheHit, object fromCache) = stubCacheProvider.TryGet(operationKey);
             cacheHit.Should().BeFalse();
@@ -683,7 +683,7 @@ namespace Polly.Specs.Caching
             bool onCacheMissExecuted = false;
             Action<Context, string> onCacheMiss = (ctx, key) => { onCacheMissExecuted = true; };
 
-            CachePolicy cache = Policy.Cache(new StubCacheProvider(), new RelativeTtl(TimeSpan.MaxValue), DefaultCacheKeyStrategy.Instance, emptyDelegate, onCacheMiss, emptyDelegate, noErrorHandling, noErrorHandling);
+            var cache = Policy.Cache(new StubCacheProvider(), new RelativeTtl(TimeSpan.MaxValue), DefaultCacheKeyStrategy.Instance, emptyDelegate, onCacheMiss, emptyDelegate, noErrorHandling, noErrorHandling);
 
             cache.Execute(() => valueToReturn /*, no operation key */).Should().Be(valueToReturn);
 

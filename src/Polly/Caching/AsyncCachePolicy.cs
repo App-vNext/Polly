@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 namespace Polly.Caching
 {
     /// <summary>
-    /// A cache policy that can be applied to the results of delegate executions.
+    /// A cache policy that can be applied to asynchronous delegate executions.
     /// </summary>
-    public class AsyncCachePolicy : AsyncPolicy 
+    public class AsyncCachePolicy : AsyncPolicy, IAsyncCachePolicy
     {
         private readonly IAsyncCacheProvider _asyncCacheProvider;
         private readonly ITtlStrategy _ttlStrategy;
@@ -74,10 +74,10 @@ namespace Polly.Caching
     }
 
     /// <summary>
-    /// A cache policy that can be applied to the results of delegate executions.
+    /// A cache policy that can be applied to asynchronous delegate executions.
     /// </summary>
     /// <typeparam name="TResult">The return type of delegates which may be executed through the policy.</typeparam>
-    public class AsyncCachePolicy<TResult> : AsyncPolicy<TResult>
+    public class AsyncCachePolicy<TResult> : AsyncPolicy<TResult>, IAsyncCachePolicy<TResult>
     {
         private IAsyncCacheProvider<TResult> _asyncCacheProvider;
         private readonly ITtlStrategy<TResult> _ttlStrategy;
