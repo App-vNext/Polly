@@ -118,43 +118,39 @@ namespace Polly.Specs.Timeout
         }
 
         [Fact]
-        public void Should_throw_when_onTimeout_is_null_with_timespan()
+        public void Should_not_throw_when_onTimeout_is_null_with_timespan()
         {
             Action<Context, TimeSpan, Task> onTimeout = null;
             Action policy = () => Policy.Timeout<ResultPrimitive>(TimeSpan.FromMinutes(0.5), onTimeout);
 
-            policy.Should().Throw<ArgumentNullException>()
-                .And.ParamName.Should().Be("onTimeout");
+            policy.Should().NotThrow();
         }
 
         [Fact]
-        public void Should_throw_when_onTimeout_is_null_with_timespan_and_onTimeout_is_full_argument_set()
+        public void Should_not_throw_when_onTimeout_is_null_with_timespan_and_onTimeout_is_full_argument_set()
         {
             Action<Context, TimeSpan, Task, Exception> onTimeout = null;
             Action policy = () => Policy.Timeout<ResultPrimitive>(TimeSpan.FromMinutes(0.5), onTimeout);
 
-            policy.Should().Throw<ArgumentNullException>()
-                .And.ParamName.Should().Be("onTimeout");
+            policy.Should().NotThrow();
         }
 
         [Fact]
-        public void Should_throw_when_onTimeout_is_null_with_seconds()
+        public void Should_not_throw_when_onTimeout_is_null_with_seconds()
         {
             Action<Context, TimeSpan, Task> onTimeout = null;
             Action policy = () => Policy.Timeout<ResultPrimitive>(30, onTimeout);
 
-            policy.Should().Throw<ArgumentNullException>()
-                .And.ParamName.Should().Be("onTimeout");
+            policy.Should().NotThrow();
         }
 
         [Fact]
-        public void Should_throw_when_onTimeout_is_null_with_seconds_and_onTimeout_is_full_argument_set()
+        public void Should_not_throw_when_onTimeout_is_null_with_seconds_and_onTimeout_is_full_argument_set()
         {
             Action<Context, TimeSpan, Task, Exception> onTimeout = null;
             Action policy = () => Policy.Timeout<ResultPrimitive>(30, onTimeout);
 
-            policy.Should().Throw<ArgumentNullException>()
-                .And.ParamName.Should().Be("onTimeout");
+            policy.Should().NotThrow();
         }
 
         [Fact]
@@ -167,23 +163,21 @@ namespace Polly.Specs.Timeout
         }
 
         [Fact]
-        public void Should_throw_when_onTimeout_is_null_with_timeoutprovider()
+        public void Should_not_throw_when_onTimeout_is_null_with_timeoutprovider()
         {
             Action<Context, TimeSpan, Task> onTimeout = null;
             Action policy = () => Policy.Timeout<ResultPrimitive>(() => TimeSpan.FromSeconds(30), onTimeout);
 
-            policy.Should().Throw<ArgumentNullException>()
-                .And.ParamName.Should().Be("onTimeout");
+            policy.Should().NotThrow();
         }
 
         [Fact]
-        public void Should_throw_when_onTimeout_is_null_with_timeoutprovider_and_onTimeout_is_full_argument_set()
+        public void Should_not_throw_when_onTimeout_is_null_with_timeoutprovider_and_onTimeout_is_full_argument_set()
         {
             Action<Context, TimeSpan, Task, Exception> onTimeout = null;
             Action policy = () => Policy.Timeout<ResultPrimitive>(() => TimeSpan.FromSeconds(30), onTimeout);
 
-            policy.Should().Throw<ArgumentNullException>()
-                .And.ParamName.Should().Be("onTimeout");
+            policy.Should().NotThrow();
         }
 
         [Fact]

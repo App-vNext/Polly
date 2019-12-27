@@ -51,7 +51,7 @@ namespace Polly.Timeout
                         // as either of those tokens could have been onward combined with another token by executed code, and so may not be the token expressed on operationCanceledException.CancellationToken.
                         if (ex is OperationCanceledException && timeoutCancellationTokenSource.IsCancellationRequested)
                         {
-                            await onTimeoutAsync(context, timeout, actionTask, ex).ConfigureAwait(continueOnCapturedContext);
+                            if (onTimeoutAsync != null) { await onTimeoutAsync(context, timeout, actionTask, ex).ConfigureAwait(continueOnCapturedContext);}
                             throw new TimeoutRejectedException("The delegate executed asynchronously through TimeoutPolicy did not complete within the timeout.", ex);
                         }
 
