@@ -1,3 +1,6 @@
+## 8.0.0
+- Return all configured polices as interfaces
+
 ## 7.2.0
 - Add test target for netcoreapp3.0.
 - Extend PolicyRegistry with concurrent method support, TryAdd, TryRemove, TryUpdate, GetOrAdd, AddOrUpdate; new interface IConcurrentPolicyRegistry
