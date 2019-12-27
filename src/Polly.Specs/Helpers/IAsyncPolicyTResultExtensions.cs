@@ -4,11 +4,11 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Scenario = Polly.Specs.Helpers.PolicyTResultExtensionsAsync.ResultAndOrCancellationScenario;
+using Scenario = Polly.Specs.Helpers.IAsyncPolicyTResultExtensions.ResultAndOrCancellationScenario;
 
 namespace Polly.Specs.Helpers
 {
-    public static class PolicyTResultExtensionsAsync
+    public static class IAsyncPolicyTResultExtensions
     {
         public static Task<TResult> RaiseResultSequenceAsync<TResult>(this IAsyncPolicy<TResult> policy, params TResult[] resultsToRaise)
         {

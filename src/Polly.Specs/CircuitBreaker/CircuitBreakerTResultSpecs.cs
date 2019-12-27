@@ -9,7 +9,7 @@ using Polly.Specs.Helpers;
 using Polly.Utilities;
 using Xunit;
 
-using Scenario = Polly.Specs.Helpers.PolicyTResultExtensions.ResultAndOrCancellationScenario;
+using Scenario = Polly.Specs.Helpers.ISyncPolicyTResultExtensions.ResultAndOrCancellationScenario;
 
 namespace Polly.Specs.CircuitBreaker
 {

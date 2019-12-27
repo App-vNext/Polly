@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using Scenario = Polly.Specs.Helpers.PolicyTResultExtensions.ResultAndOrCancellationScenario;
+using Scenario = Polly.Specs.Helpers.ISyncPolicyTResultExtensions.ResultAndOrCancellationScenario;
 
 namespace Polly.Specs.Helpers
 {
-    public static class PolicyTResultExtensions
+    public static class ISyncPolicyTResultExtensions
     {
         public static TResult RaiseResultSequence<TResult>(this ISyncPolicy<TResult> policy, params TResult[] resultsToRaise)
         {

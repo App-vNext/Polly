@@ -10,6 +10,8 @@ using Polly.Specs.Helpers;
 using Polly.Utilities;
 using Xunit;
 
+using Scenario = Polly.Specs.Helpers.ISyncPolicyPolicyExtensions.ExceptionAndOrCancellationScenario;
+
 namespace Polly.Specs.Retry
 {
     [Collection(Constants.SystemClockDependentTestCollection)]
@@ -856,7 +858,7 @@ namespace Polly.Specs.Retry
             int attemptsInvoked = 0;
             Action onExecute = () => attemptsInvoked++;
 
-            PolicyExtensions.ExceptionAndOrCancellationScenario scenario = new PolicyExtensions.ExceptionAndOrCancellationScenario
+            Scenario scenario = new Scenario
             {
                 NumberOfTimesToRaiseException = 1 + 3,
                 AttemptDuringWhichToCancel = null, // Cancellation token cancelled manually below - before any scenario execution.
@@ -884,7 +886,7 @@ namespace Polly.Specs.Retry
             int attemptsInvoked = 0;
             Action onExecute = () => attemptsInvoked++;
 
-            PolicyExtensions.ExceptionAndOrCancellationScenario scenario = new PolicyExtensions.ExceptionAndOrCancellationScenario
+            Scenario scenario = new Scenario
             {
                 NumberOfTimesToRaiseException = 0,
                 AttemptDuringWhichToCancel = 1,
@@ -911,7 +913,7 @@ namespace Polly.Specs.Retry
             int attemptsInvoked = 0;
             Action onExecute = () => attemptsInvoked++;
 
-            PolicyExtensions.ExceptionAndOrCancellationScenario scenario = new PolicyExtensions.ExceptionAndOrCancellationScenario
+            Scenario scenario = new Scenario
             {
                 NumberOfTimesToRaiseException = 1 + 3,
                 AttemptDuringWhichToCancel = 1,
@@ -938,7 +940,7 @@ namespace Polly.Specs.Retry
             int attemptsInvoked = 0;
             Action onExecute = () => attemptsInvoked++;
 
-            PolicyExtensions.ExceptionAndOrCancellationScenario scenario = new PolicyExtensions.ExceptionAndOrCancellationScenario
+            Scenario scenario = new Scenario
             {
                 NumberOfTimesToRaiseException = 1 + 3,
                 AttemptDuringWhichToCancel = 1,
@@ -965,7 +967,7 @@ namespace Polly.Specs.Retry
             int attemptsInvoked = 0;
             Action onExecute = () => attemptsInvoked++;
 
-            PolicyExtensions.ExceptionAndOrCancellationScenario scenario = new PolicyExtensions.ExceptionAndOrCancellationScenario
+            Scenario scenario = new Scenario
             {
                 NumberOfTimesToRaiseException = 1 + 3,
                 AttemptDuringWhichToCancel = 2,
@@ -992,7 +994,7 @@ namespace Polly.Specs.Retry
             int attemptsInvoked = 0;
             Action onExecute = () => attemptsInvoked++;
 
-            PolicyExtensions.ExceptionAndOrCancellationScenario scenario = new PolicyExtensions.ExceptionAndOrCancellationScenario
+            Scenario scenario = new Scenario
             {
                 NumberOfTimesToRaiseException = 1 + 3,
                 AttemptDuringWhichToCancel = 2,
@@ -1019,7 +1021,7 @@ namespace Polly.Specs.Retry
             int attemptsInvoked = 0;
             Action onExecute = () => attemptsInvoked++;
 
-            PolicyExtensions.ExceptionAndOrCancellationScenario scenario = new PolicyExtensions.ExceptionAndOrCancellationScenario
+            Scenario scenario = new Scenario
             {
                 NumberOfTimesToRaiseException = 1 + 3,
                 AttemptDuringWhichToCancel = 1 + 3,
@@ -1046,7 +1048,7 @@ namespace Polly.Specs.Retry
             int attemptsInvoked = 0;
             Action onExecute = () => attemptsInvoked++;
 
-            PolicyExtensions.ExceptionAndOrCancellationScenario scenario = new PolicyExtensions.ExceptionAndOrCancellationScenario
+            Scenario scenario = new Scenario
             {
                 NumberOfTimesToRaiseException = 1 + 3,
                 AttemptDuringWhichToCancel = 1 + 3,
@@ -1080,7 +1082,7 @@ namespace Polly.Specs.Retry
             Stopwatch watch = new Stopwatch();
             watch.Start();
 
-            PolicyExtensions.ExceptionAndOrCancellationScenario scenario = new PolicyExtensions.ExceptionAndOrCancellationScenario
+            Scenario scenario = new Scenario
             {
                 NumberOfTimesToRaiseException = 1 + 1,
                 AttemptDuringWhichToCancel = null, // Cancellation invoked after delay - see below.
@@ -1117,7 +1119,7 @@ namespace Polly.Specs.Retry
             int attemptsInvoked = 0;
             Action onExecute = () => attemptsInvoked++;
 
-            PolicyExtensions.ExceptionAndOrCancellationScenario scenario = new PolicyExtensions.ExceptionAndOrCancellationScenario
+            Scenario scenario = new Scenario
             {
                 NumberOfTimesToRaiseException = 1 + 3,
                 AttemptDuringWhichToCancel = null, // Cancellation during onRetry instead - see above.
@@ -1146,7 +1148,7 @@ namespace Polly.Specs.Retry
 
             bool? result = null;
 
-            PolicyExtensions.ExceptionAndOrCancellationScenario scenario = new PolicyExtensions.ExceptionAndOrCancellationScenario
+            Scenario scenario = new Scenario
             {
                 NumberOfTimesToRaiseException = 0,
                 AttemptDuringWhichToCancel = null
@@ -1175,7 +1177,7 @@ namespace Polly.Specs.Retry
 
             bool? result = null;
 
-            PolicyExtensions.ExceptionAndOrCancellationScenario scenario = new PolicyExtensions.ExceptionAndOrCancellationScenario
+            Scenario scenario = new Scenario
             {
                 NumberOfTimesToRaiseException = 0,
                 AttemptDuringWhichToCancel = 1,
