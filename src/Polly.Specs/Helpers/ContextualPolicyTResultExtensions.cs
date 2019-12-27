@@ -17,42 +17,19 @@ namespace Polly.Specs.Helpers
             IDictionary<string, object> contextData,
             IEnumerable<TResult> resultsToRaise)
         {
-            var enumerator = resultsToRaise.GetEnumerator();
-
-            return policy.Execute(ctx =>
+            using (var enumerator = resultsToRaise.GetEnumerator())
             {
-                if (!enumerator.MoveNext())
+                return policy.Execute(ctx =>
                 {
-                    throw new ArgumentOutOfRangeException(nameof(resultsToRaise), "Not enough TResult values in resultsToRaise.");
-                }
+                    if (!enumerator.MoveNext())
+                    {
+                        throw new ArgumentOutOfRangeException(nameof(resultsToRaise),
+                            "Not enough TResult values in resultsToRaise.");
+                    }
 
-                return enumerator.Current;
-            }, contextData);
+                    return enumerator.Current;
+                }, contextData);
+            }
         }
-
-        public static PolicyResult<TResult> RaiseResultSequenceOnExecuteAndCapture<TResult>(this ISyncPolicy<TResult> policy,
-          IDictionary<string, object> contextData,
-          params TResult[] resultsToRaise)
-        {
-            return policy.RaiseResultSequenceOnExecuteAndCapture(contextData, resultsToRaise.ToList());
-        }
-
-        public static PolicyResult<TResult> RaiseResultSequenceOnExecuteAndCapture<TResult>(this ISyncPolicy<TResult> policy,
-            IDictionary<string, object> contextData,
-            IEnumerable<TResult> resultsToRaise)
-        {
-            var enumerator = resultsToRaise.GetEnumerator();
-
-            return policy.ExecuteAndCapture(ctx =>
-            {
-                if (!enumerator.MoveNext())
-                {
-                    throw new ArgumentOutOfRangeException(nameof(resultsToRaise), "Not enough TResult values in resultsToRaise.");
-                }
-
-                return enumerator.Current;
-            }, contextData);
-        }
-
     }
 }

@@ -128,5 +128,29 @@ namespace Polly.Specs.Helpers
                 }, cancellationToken);
             }
         }
+            
+        public static Task<PolicyResult<TResult>> RaiseResultSequenceOnExecuteAndCaptureAsync<TResult>(this IAsyncPolicy<TResult> policy, IDictionary<string, object> contextData, params TResult[] resultsToRaise)
+        {
+            return policy.RaiseResultSequenceOnExecuteAndCaptureAsync(contextData, resultsToRaise.ToList());
+        }
+
+        public static Task<PolicyResult<TResult>> RaiseResultSequenceOnExecuteAndCaptureAsync<TResult>(
+            this IAsyncPolicy<TResult> policy, IDictionary<string, object> contextData,
+            IEnumerable<TResult> resultsToRaise)
+        {
+            using (var enumerator = resultsToRaise.GetEnumerator())
+            {
+                return policy.ExecuteAndCaptureAsync(ctx =>
+                {
+                    if (!enumerator.MoveNext())
+                    {
+                        throw new ArgumentOutOfRangeException(nameof(resultsToRaise),
+                            "Not enough TResult values in resultsToRaise.");
+                    }
+
+                    return Task.FromResult(enumerator.Current);
+                }, contextData);
+            }
+        }
     }
 }
