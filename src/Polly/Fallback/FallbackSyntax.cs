@@ -20,8 +20,7 @@ namespace Polly
         {
             if (fallbackAction == null) throw new ArgumentNullException(nameof(fallbackAction));
 
-            Action<Exception> doNothing = _ => { };
-            return policyBuilder.Fallback(fallbackAction, doNothing);
+            return policyBuilder.Fallback(fallbackAction, onFallback: null);
         }
 
         /// <summary>
@@ -35,8 +34,7 @@ namespace Polly
         {
             if (fallbackAction == null) throw new ArgumentNullException(nameof(fallbackAction));
 
-            Action<Exception> doNothing = _ => { };
-            return policyBuilder.Fallback(fallbackAction, doNothing);
+            return policyBuilder.Fallback(fallbackAction, onFallback: null);
         }
 
         /// <summary>
@@ -46,14 +44,12 @@ namespace Polly
         /// <param name="fallbackAction">The fallback action.</param>
         /// <param name="onFallback">The action to call before invoking the fallback delegate.</param>
         /// <exception cref="ArgumentNullException">fallbackAction</exception>
-        /// <exception cref="ArgumentNullException">onFallback</exception>
         /// <returns>The policy instance.</returns>
         public static ISyncFallbackPolicy Fallback(this PolicyBuilder policyBuilder, Action fallbackAction, Action<Exception> onFallback)
         {
             if (fallbackAction == null) throw new ArgumentNullException(nameof(fallbackAction));
-            if (onFallback == null) throw new ArgumentNullException(nameof(onFallback));
 
-            return policyBuilder.Fallback((outcome, ctx, ct) => fallbackAction(), (exception, ctx) => onFallback(exception));
+            return policyBuilder.Fallback((outcome, ctx, ct) => fallbackAction(), onFallback == null ? (Action<Exception, Context>)null : (exception, ctx) => onFallback(exception));
         }
 
 
@@ -64,14 +60,12 @@ namespace Polly
         /// <param name="fallbackAction">The fallback action.</param>
         /// <param name="onFallback">The action to call before invoking the fallback delegate.</param>
         /// <exception cref="ArgumentNullException">fallbackAction</exception>
-        /// <exception cref="ArgumentNullException">onFallback</exception>
         /// <returns>The policy instance.</returns>
         public static ISyncFallbackPolicy Fallback(this PolicyBuilder policyBuilder, Action<CancellationToken> fallbackAction, Action<Exception> onFallback)
         {
             if (fallbackAction == null) throw new ArgumentNullException(nameof(fallbackAction));
-            if (onFallback == null) throw new ArgumentNullException(nameof(onFallback));
 
-            return policyBuilder.Fallback((outcome, ctx, ct) => fallbackAction(ct), (exception, ctx) => onFallback(exception));
+            return policyBuilder.Fallback((outcome, ctx, ct) => fallbackAction(ct), onFallback == null ? (Action<Exception, Context>)null : (exception, ctx) => onFallback(exception));
         }
 
         /// <summary>
@@ -81,12 +75,10 @@ namespace Polly
         /// <param name="fallbackAction">The fallback action.</param>
         /// <param name="onFallback">The action to call before invoking the fallback delegate.</param>
         /// <exception cref="ArgumentNullException">fallbackAction</exception>
-        /// <exception cref="ArgumentNullException">onFallback</exception>
         /// <returns>The policy instance.</returns>
         public static ISyncFallbackPolicy Fallback(this PolicyBuilder policyBuilder, Action<Context> fallbackAction, Action<Exception, Context> onFallback)
         {
             if (fallbackAction == null) throw new ArgumentNullException(nameof(fallbackAction));
-            if (onFallback == null) throw new ArgumentNullException(nameof(onFallback));
 
             return policyBuilder.Fallback((outcome, ctx, ct) => fallbackAction(ctx), onFallback);
         }
@@ -98,12 +90,10 @@ namespace Polly
         /// <param name="fallbackAction">The fallback action.</param>
         /// <param name="onFallback">The action to call before invoking the fallback delegate.</param>
         /// <exception cref="ArgumentNullException">fallbackAction</exception>
-        /// <exception cref="ArgumentNullException">onFallback</exception>
         /// <returns>The policy instance.</returns>
         public static ISyncFallbackPolicy Fallback(this PolicyBuilder policyBuilder, Action<Context, CancellationToken> fallbackAction, Action<Exception, Context> onFallback)
         {
             if (fallbackAction == null) throw new ArgumentNullException(nameof(fallbackAction));
-            if (onFallback == null) throw new ArgumentNullException(nameof(onFallback));
 
             return policyBuilder.Fallback((outcome, ctx, ct) => fallbackAction(ctx, ct), onFallback);
         }
@@ -115,12 +105,10 @@ namespace Polly
         /// <param name="fallbackAction">The fallback action.</param>
         /// <param name="onFallback">The action to call before invoking the fallback delegate.</param>
         /// <exception cref="ArgumentNullException">fallbackAction</exception>
-        /// <exception cref="ArgumentNullException">onFallback</exception>
         /// <returns>The policy instance.</returns>
         public static ISyncFallbackPolicy Fallback(this PolicyBuilder policyBuilder, Action<Exception, Context, CancellationToken> fallbackAction, Action<Exception, Context> onFallback)
         {
             if (fallbackAction == null) throw new ArgumentNullException(nameof(fallbackAction));
-            if (onFallback == null) throw new ArgumentNullException(nameof(onFallback));
 
             return new FallbackPolicy(
                     policyBuilder,
@@ -142,8 +130,7 @@ namespace Polly
         /// <returns>The policy instance.</returns>
         public static ISyncFallbackPolicy<TResult> Fallback<TResult>(this PolicyBuilder<TResult> policyBuilder, TResult fallbackValue)
         {
-            Action<DelegateResult<TResult>> doNothing = _ => { };
-            return policyBuilder.Fallback(() => fallbackValue, doNothing);
+            return policyBuilder.Fallback(() => fallbackValue, onFallback: null);
         }
 
         /// <summary>
@@ -157,8 +144,7 @@ namespace Polly
         {
             if (fallbackAction == null) throw new ArgumentNullException(nameof(fallbackAction));
 
-            Action<DelegateResult<TResult>> doNothing = _ => { };
-            return policyBuilder.Fallback(fallbackAction, doNothing);
+            return policyBuilder.Fallback(fallbackAction, onFallback: null);
         }
 
         /// <summary>
@@ -172,8 +158,7 @@ namespace Polly
         {
             if (fallbackAction == null) throw new ArgumentNullException(nameof(fallbackAction));
 
-            Action<DelegateResult<TResult>> doNothing = _ => { };
-            return policyBuilder.Fallback(fallbackAction, doNothing);
+            return policyBuilder.Fallback(fallbackAction, onFallback: null);
         }
 
         /// <summary>
@@ -182,13 +167,10 @@ namespace Polly
         /// <param name="policyBuilder">The policy builder.</param>
         /// <param name="fallbackValue">The fallback <typeparamref name="TResult"/> value to provide.</param>
         /// <param name="onFallback">The action to call before invoking the fallback delegate.</param>
-        /// <exception cref="ArgumentNullException">onFallback</exception>
         /// <returns>The policy instance.</returns>
         public static ISyncFallbackPolicy<TResult> Fallback<TResult>(this PolicyBuilder<TResult> policyBuilder, TResult fallbackValue, Action<DelegateResult<TResult>> onFallback)
         {
-            if (onFallback == null) throw new ArgumentNullException(nameof(onFallback));
-
-            return policyBuilder.Fallback((outcome, ctx, ct) => fallbackValue, (outcome, ctx) => onFallback(outcome));
+            return policyBuilder.Fallback((outcome, ctx, ct) => fallbackValue, onFallback == null ? (Action<DelegateResult<TResult>, Context>)null : (outcome, ctx) => onFallback(outcome));
         }
 
         /// <summary>
@@ -198,14 +180,12 @@ namespace Polly
         /// <param name="fallbackAction">The fallback action.</param>
         /// <param name="onFallback">The action to call before invoking the fallback delegate.</param>
         /// <exception cref="ArgumentNullException">fallbackAction</exception>
-        /// <exception cref="ArgumentNullException">onFallback</exception>
         /// <returns>The policy instance.</returns>
         public static ISyncFallbackPolicy<TResult> Fallback<TResult>(this PolicyBuilder<TResult> policyBuilder, Func<TResult> fallbackAction, Action<DelegateResult<TResult>> onFallback)
         {
             if (fallbackAction == null) throw new ArgumentNullException(nameof(fallbackAction));
-            if (onFallback == null) throw new ArgumentNullException(nameof(onFallback));
 
-            return policyBuilder.Fallback((outcome, ctx, ct) => fallbackAction(), (outcome, ctx) => onFallback(outcome));
+            return policyBuilder.Fallback((outcome, ctx, ct) => fallbackAction(), onFallback == null ? (Action<DelegateResult<TResult>, Context>)null : (outcome, ctx) => onFallback(outcome));
         }
 
         /// <summary>
@@ -215,14 +195,12 @@ namespace Polly
         /// <param name="fallbackAction">The fallback action.</param>
         /// <param name="onFallback">The action to call before invoking the fallback delegate.</param>
         /// <exception cref="ArgumentNullException">fallbackAction</exception>
-        /// <exception cref="ArgumentNullException">onFallback</exception>
         /// <returns>The policy instance.</returns>
         public static ISyncFallbackPolicy<TResult> Fallback<TResult>(this PolicyBuilder<TResult> policyBuilder, Func<CancellationToken, TResult> fallbackAction, Action<DelegateResult<TResult>> onFallback)
         {
             if (fallbackAction == null) throw new ArgumentNullException(nameof(fallbackAction));
-            if (onFallback == null) throw new ArgumentNullException(nameof(onFallback));
 
-            return policyBuilder.Fallback((outcome, ctx, ct) => fallbackAction(ct), (outcome, ctx) => onFallback(outcome));
+            return policyBuilder.Fallback((outcome, ctx, ct) => fallbackAction(ct), onFallback == null ? (Action<DelegateResult<TResult>, Context>)null : (outcome, ctx) => onFallback(outcome));
         }
 
         /// <summary>
@@ -231,12 +209,10 @@ namespace Polly
         /// <param name="policyBuilder">The policy builder.</param>
         /// <param name="fallbackValue">The fallback <typeparamref name="TResult"/> value to provide.</param>
         /// <param name="onFallback">The action to call before invoking the fallback delegate.</param>
-        /// <exception cref="ArgumentNullException">onFallback</exception>
+        
         /// <returns>The policy instance.</returns>
         public static ISyncFallbackPolicy<TResult> Fallback<TResult>(this PolicyBuilder<TResult> policyBuilder, TResult fallbackValue, Action<DelegateResult<TResult>, Context> onFallback)
         {
-            if (onFallback == null) throw new ArgumentNullException(nameof(onFallback));
-
             return policyBuilder.Fallback((outcome, ctx, ct) => fallbackValue, onFallback);
         }
 
@@ -247,12 +223,10 @@ namespace Polly
         /// <param name="fallbackAction">The fallback action.</param>
         /// <param name="onFallback">The action to call before invoking the fallback delegate.</param>
         /// <exception cref="ArgumentNullException">fallbackAction</exception>
-        /// <exception cref="ArgumentNullException">onFallback</exception>
         /// <returns>The policy instance.</returns>
         public static ISyncFallbackPolicy<TResult> Fallback<TResult>(this PolicyBuilder<TResult> policyBuilder, Func<Context, TResult> fallbackAction, Action<DelegateResult<TResult>, Context> onFallback)
         {
             if (fallbackAction == null) throw new ArgumentNullException(nameof(fallbackAction));
-            if (onFallback == null) throw new ArgumentNullException(nameof(onFallback));
 
             return policyBuilder.Fallback((outcome, ctx, ct) => fallbackAction(ctx), onFallback);
         }
@@ -264,12 +238,10 @@ namespace Polly
         /// <param name="fallbackAction">The fallback action.</param>
         /// <param name="onFallback">The action to call before invoking the fallback delegate.</param>
         /// <exception cref="ArgumentNullException">fallbackAction</exception>
-        /// <exception cref="ArgumentNullException">onFallback</exception>
         /// <returns>The policy instance.</returns>
         public static ISyncFallbackPolicy<TResult> Fallback<TResult>(this PolicyBuilder<TResult> policyBuilder, Func<Context, CancellationToken, TResult> fallbackAction, Action<DelegateResult<TResult>, Context> onFallback)
         {
             if (fallbackAction == null) throw new ArgumentNullException(nameof(fallbackAction));
-            if (onFallback == null) throw new ArgumentNullException(nameof(onFallback));
 
             return policyBuilder.Fallback((outcome, ctx, ct) => fallbackAction(ctx, ct), onFallback);
         }
@@ -281,12 +253,10 @@ namespace Polly
         /// <param name="fallbackAction">The fallback action.</param>
         /// <param name="onFallback">The action to call before invoking the fallback delegate.</param>
         /// <exception cref="ArgumentNullException">fallbackAction</exception>
-        /// <exception cref="ArgumentNullException">onFallback</exception>
         /// <returns>The policy instance.</returns>
         public static ISyncFallbackPolicy<TResult> Fallback<TResult>(this PolicyBuilder<TResult> policyBuilder, Func<DelegateResult<TResult>, Context, CancellationToken, TResult> fallbackAction, Action<DelegateResult<TResult>, Context> onFallback)
         {
             if (fallbackAction == null) throw new ArgumentNullException(nameof(fallbackAction));
-            if (onFallback == null) throw new ArgumentNullException(nameof(onFallback));
 
             return new FallbackPolicy<TResult>(
                 policyBuilder,
