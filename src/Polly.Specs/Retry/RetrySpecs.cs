@@ -274,7 +274,7 @@ namespace Polly.Specs.Retry
         {
             IDictionary<string, object> contextData = null;
 
-            Policy policy = Policy
+            ISyncPolicy policy = Policy
                 .Handle<DivideByZeroException>()
                 .Retry((_, __, context) => contextData = context);
 
@@ -292,7 +292,7 @@ namespace Polly.Specs.Retry
         {
             IDictionary<string, object> contextData = null;
 
-            Policy policy = Policy
+            ISyncPolicy policy = Policy
                 .Handle<DivideByZeroException>()
                 .Retry((_, __, context) => contextData = context);
 
@@ -310,7 +310,7 @@ namespace Polly.Specs.Retry
         {
             Context capturedContext = null;
 
-            Policy policy = Policy
+            ISyncPolicy policy = Policy
                 .Handle<DivideByZeroException>()
                 .Retry((_, __, context) => capturedContext = context);
 
@@ -325,7 +325,7 @@ namespace Polly.Specs.Retry
         {
             string contextValue = null;
 
-            Policy policy = Policy
+            ISyncPolicy policy = Policy
                 .Handle<DivideByZeroException>()
                 .Retry((_, __, context) => contextValue = context["key"].ToString());
 
@@ -347,7 +347,7 @@ namespace Polly.Specs.Retry
         {
             string contextValue = null;
 
-            Policy policy = Policy
+            ISyncPolicy policy = Policy
                 .Handle<DivideByZeroException>()
                 .Retry((_, __, context) => contextValue = context["key"].ToString());
 

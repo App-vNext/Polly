@@ -97,7 +97,7 @@ namespace Polly.Specs
         [Fact]
         public void Executing_the_policy_function_should_throw_when_context_data_is_null()
         {
-            Policy<ResultPrimitive> policy = Policy
+            ISyncPolicy<ResultPrimitive> policy = Policy
                 .HandleResult(ResultPrimitive.Fault)
                 .Retry((_, __, ___) => { });
 
@@ -108,7 +108,7 @@ namespace Polly.Specs
         [Fact]
         public void Executing_the_policy_function_should_throw_when_context_is_null()
         {
-            Policy<ResultPrimitive> policy = Policy
+            ISyncPolicy<ResultPrimitive> policy = Policy
                 .HandleResult(ResultPrimitive.Fault)
                 .Retry((_, __, ___) => { });
 
@@ -134,7 +134,7 @@ namespace Polly.Specs
         [Fact]
         public void Execute_and_capturing_the_policy_function_should_throw_when_context_data_is_null()
         {
-            Policy<ResultPrimitive> policy = Policy
+            ISyncPolicy<ResultPrimitive> policy = Policy
                 .HandleResult(ResultPrimitive.Fault)
                 .Retry((_, __, ___) => { });
 
@@ -145,7 +145,7 @@ namespace Polly.Specs
         [Fact]
         public void Execute_and_capturing_the_policy_function_should_throw_when_context_is_null()
         {
-            Policy<ResultPrimitive> policy = Policy
+            ISyncPolicy<ResultPrimitive> policy = Policy
                 .HandleResult(ResultPrimitive.Fault)
                 .Retry((_, __, ___) => { });
 

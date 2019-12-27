@@ -816,7 +816,7 @@ namespace Polly.Specs.Retry
 
             Action<Exception, TimeSpan, Context> onRetry = (_, __, ___) => { retryInvoked = true; };
 
-            Policy policy = Policy
+            ISyncPolicy policy = Policy
                 .Handle<DivideByZeroException>()
                 .WaitAndRetry(0, retryAttempt => TimeSpan.FromSeconds(1), onRetry);
 
@@ -833,7 +833,7 @@ namespace Polly.Specs.Retry
 
             Action<Exception, TimeSpan, int, Context> onRetry = (_, __, ___, ____) => { retryInvoked = true; };
 
-            Policy policy = Policy
+            ISyncPolicy policy = Policy
                 .Handle<DivideByZeroException>()
                 .WaitAndRetry(0, retryAttempt => TimeSpan.FromSeconds(1), onRetry);
 

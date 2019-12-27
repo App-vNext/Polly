@@ -16,7 +16,7 @@ namespace Polly.Specs.Wrap
         [Fact]
         public void Nongeneric_wraps_nongeneric_instance_syntax_wrapping_null_should_throw()
         {
-            RetryPolicy retry = Policy.Handle<Exception>().Retry(1);
+            ISyncPolicy retry = Policy.Handle<Exception>().Retry(1);
 
             Action config = () => retry.Wrap((Policy)null);
 
@@ -26,7 +26,7 @@ namespace Polly.Specs.Wrap
         [Fact]
         public void Nongeneric_wraps_generic_instance_syntax_wrapping_null_should_throw()
         {
-            RetryPolicy retry = Policy.Handle<Exception>().Retry(1);
+            ISyncPolicy retry = Policy.Handle<Exception>().Retry(1);
 
             Action config = () => retry.Wrap<int>((Policy<int>)null);
 
@@ -64,7 +64,7 @@ namespace Polly.Specs.Wrap
         [Fact]
         public void Generic_wraps_nongeneric_instance_syntax_wrapping_null_should_throw()
         {
-            RetryPolicy<int> retry = Policy.HandleResult<int>(0).Retry(1);
+            ISyncPolicy<int> retry = Policy.HandleResult<int>(0).Retry(1);
 
             Action config = () => retry.Wrap((Policy)null);
 
@@ -75,7 +75,7 @@ namespace Polly.Specs.Wrap
         [Fact]
         public void Generic_wraps_generic_instance_syntax_wrapping_null_should_throw()
         {
-            RetryPolicy<int> retry = Policy.HandleResult<int>(0).Retry(1);
+            ISyncPolicy<int> retry = Policy.HandleResult<int>(0).Retry(1);
 
             Action config = () => retry.Wrap((Policy<int>)null);
 
@@ -363,7 +363,7 @@ namespace Polly.Specs.Wrap
         [Fact]
         public void Wrapping_two_policies_by_instance_syntax_and_executing_should_wrap_outer_then_inner_around_delegate()
         {
-            RetryPolicy retry = Policy.Handle<Exception>().Retry(1); // Two tries in total: first try, plus one retry.
+            ISyncRetryPolicy retry = Policy.Handle<Exception>().Retry(1); // Two tries in total: first try, plus one retry.
             ISyncCircuitBreakerPolicy breaker = Policy.Handle<Exception>().CircuitBreaker(2, TimeSpan.MaxValue);
 
             ISyncPolicyWrap retryWrappingBreaker = retry.Wrap(breaker);
@@ -385,7 +385,7 @@ namespace Polly.Specs.Wrap
         [Fact]
         public void Wrapping_two_generic_policies_by_instance_syntax_and_executing_should_wrap_outer_then_inner_around_delegate()
         {
-            RetryPolicy<ResultPrimitive> retry = Policy.HandleResult(ResultPrimitive.Fault).Retry(1); // Two tries in total: first try, plus one retry.
+            ISyncRetryPolicy<ResultPrimitive> retry = Policy.HandleResult(ResultPrimitive.Fault).Retry(1); // Two tries in total: first try, plus one retry.
             ISyncCircuitBreakerPolicy<ResultPrimitive> breaker = Policy.HandleResult(ResultPrimitive.Fault).CircuitBreaker(2, TimeSpan.MaxValue);
 
             var retryWrappingBreaker = retry.Wrap(breaker);
@@ -411,7 +411,7 @@ namespace Polly.Specs.Wrap
         [Fact]
         public void Wrapping_two_policies_by_static_syntax_and_executing_should_wrap_outer_then_inner_around_delegate()
         {
-            RetryPolicy retry = Policy.Handle<Exception>().Retry(1); // Two tries in total: first try, plus one retry.
+            ISyncRetryPolicy retry = Policy.Handle<Exception>().Retry(1); // Two tries in total: first try, plus one retry.
             ISyncCircuitBreakerPolicy breaker = Policy.Handle<Exception>().CircuitBreaker(2, TimeSpan.MaxValue);
 
             ISyncPolicyWrap retryWrappingBreaker = Policy.Wrap(retry, breaker);
@@ -433,7 +433,7 @@ namespace Polly.Specs.Wrap
         [Fact]
         public void Wrapping_two_generic_policies_by_static_syntax_and_executing_should_wrap_outer_then_inner_around_delegate()
         {
-            RetryPolicy<ResultPrimitive> retry = Policy.HandleResult(ResultPrimitive.Fault).Retry(1); // Two tries in total: first try, plus one retry.
+            ISyncRetryPolicy<ResultPrimitive> retry = Policy.HandleResult(ResultPrimitive.Fault).Retry(1); // Two tries in total: first try, plus one retry.
             ISyncCircuitBreakerPolicy<ResultPrimitive> breaker = Policy.HandleResult(ResultPrimitive.Fault).CircuitBreaker(2, TimeSpan.MaxValue);
 
             var retryWrappingBreaker = Policy.Wrap(retry, breaker);
