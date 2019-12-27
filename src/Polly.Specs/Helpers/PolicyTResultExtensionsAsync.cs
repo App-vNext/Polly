@@ -20,12 +20,26 @@ namespace Polly.Specs.Helpers
             return policy.RaiseResultSequenceAsync(default, resultsToRaise);
         }
 
-        public static async Task<TResult> RaiseResultSequenceAsync<TResult>(this IAsyncPolicy<TResult> policy,
+        public static Task<TResult> RaiseResultSequenceAsync<TResult>(this IAsyncPolicy<TResult> policy,
             CancellationToken cancellationToken, IEnumerable<TResult> resultsToRaise)
+        {
+            return policy.RaiseResultSequenceAsync(new Dictionary<string, object>(0), cancellationToken, resultsToRaise);
+        }
+
+        public static Task<TResult> RaiseResultSequenceAsync<TResult>(this IAsyncPolicy<TResult> policy,
+            IDictionary<string, object> contextData,
+            params TResult[] resultsToRaise)
+        {
+            return policy.RaiseResultSequenceAsync(contextData, CancellationToken.None, resultsToRaise.ToList());
+        }
+
+        public static Task<TResult> RaiseResultSequenceAsync<TResult>(this IAsyncPolicy<TResult> policy,
+            IDictionary<string, object> contextData, CancellationToken cancellationToken,
+            IEnumerable<TResult> resultsToRaise)
         {
             using (var enumerator = resultsToRaise.GetEnumerator())
             {
-                return await policy.ExecuteAsync(ct =>
+                return policy.ExecuteAsync((ctx, ct) =>
                 {
                     if (!enumerator.MoveNext())
                     {
@@ -33,7 +47,7 @@ namespace Polly.Specs.Helpers
                     }
 
                     return Task.FromResult(enumerator.Current);
-                }, cancellationToken);
+                }, contextData, cancellationToken);
             }
         }
 

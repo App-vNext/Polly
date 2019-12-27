@@ -13,11 +13,25 @@ namespace Polly.Specs.Helpers
             return policy.RaiseResultSequence(resultsToRaise.ToList());
         }
 
-        public static TResult RaiseResultSequence<TResult>(this ISyncPolicy<TResult> policy, IEnumerable<TResult> resultsToRaise) 
+        public static TResult RaiseResultSequence<TResult>(this ISyncPolicy<TResult> policy, IEnumerable<TResult> resultsToRaise)
+        {
+            return policy.RaiseResultSequence(new Dictionary<string, object>(0), resultsToRaise);
+        }
+
+        public static TResult RaiseResultSequence<TResult>(this ISyncPolicy<TResult> policy,
+            IDictionary<string, object> contextData,
+            params TResult[] resultsToRaise)
+        {
+            return policy.RaiseResultSequence(contextData, resultsToRaise.ToList());
+        }
+
+        public static TResult RaiseResultSequence<TResult>(this ISyncPolicy<TResult> policy,
+            IDictionary<string, object> contextData,
+            IEnumerable<TResult> resultsToRaise)
         {
             using (var enumerator = resultsToRaise.GetEnumerator())
             {
-                return policy.Execute(() =>
+                return policy.Execute(ctx =>
                 {
                     if (!enumerator.MoveNext())
                     {
@@ -25,7 +39,7 @@ namespace Polly.Specs.Helpers
                     }
 
                     return enumerator.Current;
-                });
+                }, contextData);
             }
         }
 
