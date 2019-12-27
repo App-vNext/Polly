@@ -12,7 +12,7 @@ namespace Polly.Specs.Helpers
             public bool ActionObservesCancellation = true;
         }
 
-        public static void RaiseException<TException>(this Policy policy, TException instance) where TException : Exception
+        public static void RaiseException<TException>(this ISyncPolicy policy, TException instance) where TException : Exception
         {
             ExceptionAndOrCancellationScenario scenario = new ExceptionAndOrCancellationScenario
             {
@@ -24,12 +24,12 @@ namespace Polly.Specs.Helpers
             policy.RaiseExceptionAndOrCancellation(scenario, new CancellationTokenSource(), () => { }, _ => instance);
         }
 
-        public static void RaiseException<TException>(this Policy policy, Action<TException, int> configureException = null) where TException : Exception, new()
+        public static void RaiseException<TException>(this ISyncPolicy policy, Action<TException, int> configureException = null) where TException : Exception, new()
         {
             policy.RaiseException(1, configureException);
         }
 
-        public static void RaiseException<TException>(this Policy policy, int numberOfTimesToRaiseException, Action<TException, int> configureException = null) where TException : Exception, new()
+        public static void RaiseException<TException>(this ISyncPolicy policy, int numberOfTimesToRaiseException, Action<TException, int> configureException = null) where TException : Exception, new()
         {
             ExceptionAndOrCancellationScenario scenario = new ExceptionAndOrCancellationScenario
             {
@@ -48,18 +48,18 @@ namespace Polly.Specs.Helpers
             policy.RaiseExceptionAndOrCancellation(scenario, new CancellationTokenSource(), () => { }, exceptionFactory);
         }
 
-        public static void RaiseExceptionAndOrCancellation<TException>(this Policy policy, ExceptionAndOrCancellationScenario scenario, CancellationTokenSource cancellationTokenSource, Action onExecute) where TException : Exception, new()
+        public static void RaiseExceptionAndOrCancellation<TException>(this ISyncPolicy policy, ExceptionAndOrCancellationScenario scenario, CancellationTokenSource cancellationTokenSource, Action onExecute) where TException : Exception, new()
         {
             policy.RaiseExceptionAndOrCancellation<TException>(scenario, cancellationTokenSource, onExecute, _ => new TException());
         }
 
-        public static TResult RaiseExceptionAndOrCancellation<TException, TResult>(this Policy policy, ExceptionAndOrCancellationScenario scenario, CancellationTokenSource cancellationTokenSource, Action onExecute, TResult successResult) where TException : Exception, new()
+        public static TResult RaiseExceptionAndOrCancellation<TException, TResult>(this ISyncPolicy policy, ExceptionAndOrCancellationScenario scenario, CancellationTokenSource cancellationTokenSource, Action onExecute, TResult successResult) where TException : Exception, new()
         {
             return policy.RaiseExceptionAndOrCancellation(scenario, cancellationTokenSource, onExecute,
                 _ => new TException(), successResult);
         }
 
-        public static void RaiseExceptionAndOrCancellation<TException>(this Policy policy, ExceptionAndOrCancellationScenario scenario, CancellationTokenSource cancellationTokenSource, Action onExecute, Func<int, TException> exceptionFactory) where TException : Exception
+        public static void RaiseExceptionAndOrCancellation<TException>(this ISyncPolicy policy, ExceptionAndOrCancellationScenario scenario, CancellationTokenSource cancellationTokenSource, Action onExecute, Func<int, TException> exceptionFactory) where TException : Exception
         {
             int counter = 0;
 
@@ -89,7 +89,7 @@ namespace Polly.Specs.Helpers
             }, cancellationToken);
         }
 
-        public static TResult RaiseExceptionAndOrCancellation<TException, TResult>(this Policy policy, ExceptionAndOrCancellationScenario scenario, CancellationTokenSource cancellationTokenSource, Action onExecute, Func<int, TException> exceptionFactory, TResult successResult) where TException : Exception
+        public static TResult RaiseExceptionAndOrCancellation<TException, TResult>(this ISyncPolicy policy, ExceptionAndOrCancellationScenario scenario, CancellationTokenSource cancellationTokenSource, Action onExecute, Func<int, TException> exceptionFactory, TResult successResult) where TException : Exception
         {
             int counter = 0;
 

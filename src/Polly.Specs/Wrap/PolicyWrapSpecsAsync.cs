@@ -270,7 +270,7 @@ namespace Polly.Specs.Wrap
         public void Wrapping_two_policies_using_static_wrap_syntax_should_not_throw()
         {
             AsyncPolicy retry = Policy.Handle<Exception>().RetryAsync();
-            AsyncPolicy breaker = Policy.Handle<Exception>().CircuitBreakerAsync(1, TimeSpan.FromSeconds(10));
+            IAsyncPolicy breaker = Policy.Handle<Exception>().CircuitBreakerAsync(1, TimeSpan.FromSeconds(10));
             Action config = () => Policy.WrapAsync(new[] { retry, breaker });
 
             config.Should().NotThrow();
@@ -281,7 +281,7 @@ namespace Polly.Specs.Wrap
         {
             AsyncPolicy retry = Policy.Handle<Exception>().RetryAsync(1);
             AsyncPolicy divideByZeroRetry = Policy.Handle<DivideByZeroException>().RetryAsync(2);
-            AsyncPolicy breaker = Policy.Handle<Exception>().CircuitBreakerAsync(1, TimeSpan.FromSeconds(10));
+            IAsyncPolicy breaker = Policy.Handle<Exception>().CircuitBreakerAsync(1, TimeSpan.FromSeconds(10));
 
             Action config = () => Policy.WrapAsync(new[] { divideByZeroRetry, retry, breaker });
 
@@ -325,7 +325,7 @@ namespace Polly.Specs.Wrap
         public void Wrapping_two_policies_using_static_wrap_strongly_typed_syntax_should_not_throw()
         {
             AsyncPolicy<int> retry = Policy<int>.Handle<Exception>().RetryAsync();
-            AsyncPolicy<int> breaker = Policy<int>.Handle<Exception>().CircuitBreakerAsync(1, TimeSpan.FromSeconds(10));
+            IAsyncPolicy<int> breaker = Policy<int>.Handle<Exception>().CircuitBreakerAsync(1, TimeSpan.FromSeconds(10));
             Action config = () => Policy.WrapAsync<int>(new[] { retry, breaker });
 
             config.Should().NotThrow();
@@ -336,7 +336,7 @@ namespace Polly.Specs.Wrap
         {
             AsyncPolicy<int> retry = Policy<int>.Handle<Exception>().RetryAsync();
             AsyncPolicy<int> divideByZeroRetry = Policy<int>.Handle<DivideByZeroException>().RetryAsync(2);
-            AsyncPolicy<int> breaker = Policy<int>.Handle<Exception>().CircuitBreakerAsync(1, TimeSpan.FromSeconds(10));
+            IAsyncPolicy<int> breaker = Policy<int>.Handle<Exception>().CircuitBreakerAsync(1, TimeSpan.FromSeconds(10));
 
             Action config = () => Policy.WrapAsync<int>(new[] { divideByZeroRetry, retry, breaker });
 

@@ -5,7 +5,7 @@ namespace Polly.Specs.Helpers
 {
     public static class ContextualPolicyExtensions
     {
-        public static void RaiseException<TException>(this Policy policy,
+        public static void RaiseException<TException>(this ISyncPolicy policy,
             int numberOfTimesToRaiseException,
             IDictionary<string, object> contextData,
             Action<TException, int> configureException = null) where TException : Exception, new()
@@ -28,7 +28,7 @@ namespace Polly.Specs.Helpers
         }
 
         public static void RaiseException<TException>(
-            this Policy policy,
+            this ISyncPolicy policy,
             IDictionary<string, object> contextData,
             Action<TException, int> configureException = null) where TException : Exception, new()
         {

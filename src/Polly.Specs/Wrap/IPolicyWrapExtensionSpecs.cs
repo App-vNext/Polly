@@ -132,9 +132,9 @@ namespace Polly.Specs.Wrap
         [Fact]
         public void GetPoliciesTPolicy_should_return_policies_of_type_TPolicy_matching_predicate()
         {
-            CircuitBreakerPolicy policyA = Policy.Handle<Exception>().CircuitBreaker(1, TimeSpan.Zero);
-            Policy policyB = Policy.Handle<Exception>().Retry();
-            CircuitBreakerPolicy policyC = Policy.Handle<Exception>().CircuitBreaker(1, TimeSpan.Zero);
+            ISyncCircuitBreakerPolicy policyA = Policy.Handle<Exception>().CircuitBreaker(1, TimeSpan.Zero);
+            ISyncPolicy policyB = Policy.Handle<Exception>().Retry();
+            ISyncCircuitBreakerPolicy policyC = Policy.Handle<Exception>().CircuitBreaker(1, TimeSpan.Zero);
 
             policyA.Isolate();
 
@@ -150,9 +150,9 @@ namespace Polly.Specs.Wrap
         [Fact]
         public void GetPoliciesTPolicy_should_return_empty_enumerable_if_none_match_predicate()
         {
-            CircuitBreakerPolicy policyA = Policy.Handle<Exception>().CircuitBreaker(1, TimeSpan.Zero);
-            Policy policyB = Policy.Handle<Exception>().Retry();
-            CircuitBreakerPolicy policyC = Policy.Handle<Exception>().CircuitBreaker(1, TimeSpan.Zero);
+            ISyncCircuitBreakerPolicy policyA = Policy.Handle<Exception>().CircuitBreaker(1, TimeSpan.Zero);
+            ISyncPolicy policyB = Policy.Handle<Exception>().Retry();
+            ISyncCircuitBreakerPolicy policyC = Policy.Handle<Exception>().CircuitBreaker(1, TimeSpan.Zero);
 
             PolicyWrap wrap = policyA.Wrap(policyB.Wrap(policyC));
 
@@ -222,9 +222,9 @@ namespace Polly.Specs.Wrap
         [Fact]
         public void GetPolicyTPolicy_should_return_single_policy_of_type_TPolicy_matching_predicate()
         {
-            CircuitBreakerPolicy policyA = Policy.Handle<Exception>().CircuitBreaker(1, TimeSpan.Zero);
-            Policy policyB = Policy.Handle<Exception>().Retry();
-            CircuitBreakerPolicy policyC = Policy.Handle<Exception>().CircuitBreaker(1, TimeSpan.Zero);
+            ISyncCircuitBreakerPolicy policyA = Policy.Handle<Exception>().CircuitBreaker(1, TimeSpan.Zero);
+            ISyncPolicy policyB = Policy.Handle<Exception>().Retry();
+            ISyncCircuitBreakerPolicy policyC = Policy.Handle<Exception>().CircuitBreaker(1, TimeSpan.Zero);
 
             policyA.Isolate();
 
@@ -236,9 +236,9 @@ namespace Polly.Specs.Wrap
         [Fact]
         public void GetPolicyTPolicy_should_return_null_if_none_match_predicate()
         {
-            CircuitBreakerPolicy policyA = Policy.Handle<Exception>().CircuitBreaker(1, TimeSpan.Zero);
-            Policy policyB = Policy.Handle<Exception>().Retry();
-            CircuitBreakerPolicy policyC = Policy.Handle<Exception>().CircuitBreaker(1, TimeSpan.Zero);
+            ISyncCircuitBreakerPolicy policyA = Policy.Handle<Exception>().CircuitBreaker(1, TimeSpan.Zero);
+            ISyncPolicy policyB = Policy.Handle<Exception>().Retry();
+            ISyncCircuitBreakerPolicy policyC = Policy.Handle<Exception>().CircuitBreaker(1, TimeSpan.Zero);
 
             PolicyWrap wrap = policyA.Wrap(policyB.Wrap(policyC));
 

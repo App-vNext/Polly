@@ -8,12 +8,12 @@ namespace Polly.Specs.Helpers
 {
     public static class PolicyTResultExtensions
     {
-        public static TResult RaiseResultSequence<TResult>(this Policy<TResult> policy, params TResult[] resultsToRaise)
+        public static TResult RaiseResultSequence<TResult>(this ISyncPolicy<TResult> policy, params TResult[] resultsToRaise)
         {
             return policy.RaiseResultSequence(resultsToRaise.ToList());
         }
 
-        public static TResult RaiseResultSequence<TResult>(this Policy<TResult> policy, IEnumerable<TResult> resultsToRaise) 
+        public static TResult RaiseResultSequence<TResult>(this ISyncPolicy<TResult> policy, IEnumerable<TResult> resultsToRaise) 
         {
             using (var enumerator = resultsToRaise.GetEnumerator())
             {
@@ -29,12 +29,12 @@ namespace Polly.Specs.Helpers
             }
         }
 
-        public static TResult RaiseResultAndOrExceptionSequence<TResult>(this Policy<TResult> policy, params object[] resultsOrExceptionsToRaise)
+        public static TResult RaiseResultAndOrExceptionSequence<TResult>(this ISyncPolicy<TResult> policy, params object[] resultsOrExceptionsToRaise)
         {
             return policy.RaiseResultAndOrExceptionSequence(resultsOrExceptionsToRaise.ToList());
         }
 
-        public static TResult RaiseResultAndOrExceptionSequence<TResult>(this Policy<TResult> policy,
+        public static TResult RaiseResultAndOrExceptionSequence<TResult>(this ISyncPolicy<TResult> policy,
             IEnumerable<object> resultsOrExceptionsToRaise)
         {
             using (var enumerator = resultsOrExceptionsToRaise.GetEnumerator())
@@ -71,7 +71,7 @@ namespace Polly.Specs.Helpers
             public bool ActionObservesCancellation = true;
         }
 
-        public static TResult RaiseResultSequenceAndOrCancellation<TResult>(this Policy<TResult> policy,
+        public static TResult RaiseResultSequenceAndOrCancellation<TResult>(this ISyncPolicy<TResult> policy,
             Scenario scenario, CancellationTokenSource cancellationTokenSource, Action onExecute,
             params TResult[] resultsToRaise)
         {
@@ -79,7 +79,7 @@ namespace Polly.Specs.Helpers
                 resultsToRaise.ToList());
         }
 
-        public static TResult RaiseResultSequenceAndOrCancellation<TResult>(this Policy<TResult> policy, Scenario scenario, CancellationTokenSource cancellationTokenSource, Action onExecute, IEnumerable<TResult> resultsToRaise)
+        public static TResult RaiseResultSequenceAndOrCancellation<TResult>(this ISyncPolicy<TResult> policy, Scenario scenario, CancellationTokenSource cancellationTokenSource, Action onExecute, IEnumerable<TResult> resultsToRaise)
         {
             int counter = 0;
 

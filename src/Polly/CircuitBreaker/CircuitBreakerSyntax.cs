@@ -29,7 +29,7 @@ namespace Polly
         /// <exception cref="ArgumentOutOfRangeException">exceptionsAllowedBeforeBreaking;Value must be greater than zero.</exception>
         /// <exception cref="ArgumentNullException">onBreak</exception>
         /// <exception cref="ArgumentNullException">onReset</exception>
-        public static CircuitBreakerPolicy CircuitBreaker(this PolicyBuilder policyBuilder, int exceptionsAllowedBeforeBreaking, TimeSpan durationOfBreak)
+        public static ISyncCircuitBreakerPolicy CircuitBreaker(this PolicyBuilder policyBuilder, int exceptionsAllowedBeforeBreaking, TimeSpan durationOfBreak)
         {
             Action<Exception, TimeSpan> doNothingOnBreak = (_, __) => { };
             Action doNothingOnReset = () => { };
@@ -64,7 +64,7 @@ namespace Polly
         /// <exception cref="ArgumentOutOfRangeException">exceptionsAllowedBeforeBreaking;Value must be greater than zero.</exception>
         /// <exception cref="ArgumentNullException">onBreak</exception>
         /// <exception cref="ArgumentNullException">onReset</exception>
-        public static CircuitBreakerPolicy CircuitBreaker(this PolicyBuilder policyBuilder, int exceptionsAllowedBeforeBreaking, TimeSpan durationOfBreak, Action<Exception, TimeSpan> onBreak, Action onReset)
+        public static ISyncCircuitBreakerPolicy CircuitBreaker(this PolicyBuilder policyBuilder, int exceptionsAllowedBeforeBreaking, TimeSpan durationOfBreak, Action<Exception, TimeSpan> onBreak, Action onReset)
             => policyBuilder.CircuitBreaker(
                 exceptionsAllowedBeforeBreaking, 
                 durationOfBreak, 
@@ -94,7 +94,7 @@ namespace Polly
         /// <exception cref="ArgumentOutOfRangeException">exceptionsAllowedBeforeBreaking;Value must be greater than zero.</exception>
         /// <exception cref="ArgumentNullException">onBreak</exception>
         /// <exception cref="ArgumentNullException">onReset</exception>
-        public static CircuitBreakerPolicy CircuitBreaker(this PolicyBuilder policyBuilder, int exceptionsAllowedBeforeBreaking, TimeSpan durationOfBreak, Action<Exception, TimeSpan, Context> onBreak, Action<Context> onReset)
+        public static ISyncCircuitBreakerPolicy CircuitBreaker(this PolicyBuilder policyBuilder, int exceptionsAllowedBeforeBreaking, TimeSpan durationOfBreak, Action<Exception, TimeSpan, Context> onBreak, Action<Context> onReset)
         {
             Action doNothingOnHalfOpen = () => { };
             return policyBuilder.CircuitBreaker(exceptionsAllowedBeforeBreaking, 
@@ -128,7 +128,7 @@ namespace Polly
         /// <exception cref="ArgumentOutOfRangeException">exceptionsAllowedBeforeBreaking;Value must be greater than zero.</exception>
         /// <exception cref="ArgumentNullException">onBreak</exception>
         /// <exception cref="ArgumentNullException">onReset</exception>
-        public static CircuitBreakerPolicy CircuitBreaker(this PolicyBuilder policyBuilder, int exceptionsAllowedBeforeBreaking, TimeSpan durationOfBreak, Action<Exception, TimeSpan> onBreak, Action onReset, Action onHalfOpen)
+        public static ISyncCircuitBreakerPolicy CircuitBreaker(this PolicyBuilder policyBuilder, int exceptionsAllowedBeforeBreaking, TimeSpan durationOfBreak, Action<Exception, TimeSpan> onBreak, Action onReset, Action onHalfOpen)
             => policyBuilder.CircuitBreaker(
                 exceptionsAllowedBeforeBreaking,
                 durationOfBreak,
@@ -161,7 +161,7 @@ namespace Polly
         /// <exception cref="ArgumentNullException">onBreak</exception>
         /// <exception cref="ArgumentNullException">onReset</exception>
         /// <exception cref="ArgumentNullException">onHalfOpen</exception>
-        public static CircuitBreakerPolicy CircuitBreaker(this PolicyBuilder policyBuilder, int exceptionsAllowedBeforeBreaking, TimeSpan durationOfBreak, Action<Exception, TimeSpan, Context> onBreak, Action<Context> onReset, Action onHalfOpen)
+        public static ISyncCircuitBreakerPolicy CircuitBreaker(this PolicyBuilder policyBuilder, int exceptionsAllowedBeforeBreaking, TimeSpan durationOfBreak, Action<Exception, TimeSpan, Context> onBreak, Action<Context> onReset, Action onHalfOpen)
             => policyBuilder.CircuitBreaker(
                 exceptionsAllowedBeforeBreaking,
                 durationOfBreak,
@@ -194,7 +194,7 @@ namespace Polly
         /// <exception cref="ArgumentNullException">onBreak</exception>
         /// <exception cref="ArgumentNullException">onReset</exception>
         /// <exception cref="ArgumentNullException">onHalfOpen</exception>
-        public static CircuitBreakerPolicy CircuitBreaker(this PolicyBuilder policyBuilder, int exceptionsAllowedBeforeBreaking, TimeSpan durationOfBreak, Action<Exception, CircuitState, TimeSpan, Context> onBreak, Action<Context> onReset, Action onHalfOpen)
+        public static ISyncCircuitBreakerPolicy CircuitBreaker(this PolicyBuilder policyBuilder, int exceptionsAllowedBeforeBreaking, TimeSpan durationOfBreak, Action<Exception, CircuitState, TimeSpan, Context> onBreak, Action<Context> onReset, Action onHalfOpen)
         {
             if (exceptionsAllowedBeforeBreaking <= 0) throw new ArgumentOutOfRangeException(nameof(exceptionsAllowedBeforeBreaking), "Value must be greater than zero.");
             if (durationOfBreak < TimeSpan.Zero) throw new ArgumentOutOfRangeException(nameof(durationOfBreak), "Value must be greater than zero.");

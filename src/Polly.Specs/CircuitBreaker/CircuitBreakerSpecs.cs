@@ -19,7 +19,7 @@ namespace Polly.Specs.CircuitBreaker
         [Fact]
         public void Should_be_able_to_handle_a_duration_of_timespan_maxvalue()
         {
-            CircuitBreakerPolicy breaker = Policy
+            var breaker = Policy
                             .Handle<DivideByZeroException>()
                             .CircuitBreaker(1, TimeSpan.MaxValue);
 
@@ -65,7 +65,7 @@ namespace Polly.Specs.CircuitBreaker
         {
             var durationOfBreak = TimeSpan.FromMinutes(1);
 
-            CircuitBreakerPolicy breaker = Policy
+            var breaker = Policy
                 .Handle<DivideByZeroException>()
                 .CircuitBreaker(2, durationOfBreak);
 
@@ -79,7 +79,7 @@ namespace Polly.Specs.CircuitBreaker
         [Fact]
         public void Should_not_open_circuit_if_specified_number_of_specified_exception_are_not_raised_consecutively()
         {
-            CircuitBreakerPolicy breaker = Policy
+            var breaker = Policy
                 .Handle<DivideByZeroException>()
                 .CircuitBreaker(2, TimeSpan.FromMinutes(1));
 
@@ -98,7 +98,7 @@ namespace Polly.Specs.CircuitBreaker
         [Fact]
         public void Should_open_circuit_blocking_executions_and_noting_the_last_raised_exception_after_specified_number_of_specified_exception_have_been_raised()
         {
-            CircuitBreakerPolicy breaker = Policy
+            var breaker = Policy
                             .Handle<DivideByZeroException>()
                             .CircuitBreaker(2, TimeSpan.FromMinutes(1));
 
@@ -122,7 +122,7 @@ namespace Polly.Specs.CircuitBreaker
         [Fact]
         public void Should_open_circuit_blocking_executions_and_noting_the_last_raised_exception_after_specified_number_of_one_of_the_specified_exceptions_have_been_raised()
         {
-            CircuitBreakerPolicy breaker = Policy
+            var breaker = Policy
                             .Handle<DivideByZeroException>()
                             .Or<ArgumentOutOfRangeException>()
                             .CircuitBreaker(2, TimeSpan.FromMinutes(1));
@@ -148,7 +148,7 @@ namespace Polly.Specs.CircuitBreaker
         [Fact]
         public void Should_not_open_circuit_if_exception_raised_is_not_the_specified_exception()
         {
-            CircuitBreakerPolicy breaker = Policy
+            var breaker = Policy
                             .Handle<DivideByZeroException>()
                             .CircuitBreaker(2, TimeSpan.FromMinutes(1));
 
@@ -168,7 +168,7 @@ namespace Polly.Specs.CircuitBreaker
         [Fact]
         public void Should_not_open_circuit_if_exception_raised_is_not_one_of_the_specified_exceptions()
         {
-            CircuitBreakerPolicy breaker = Policy
+            var breaker = Policy
                             .Handle<DivideByZeroException>()
                             .Or<ArgumentOutOfRangeException>()
                             .CircuitBreaker(2, TimeSpan.FromMinutes(1));
@@ -198,7 +198,7 @@ namespace Polly.Specs.CircuitBreaker
 
             var durationOfBreak = TimeSpan.FromMinutes(1);
 
-            CircuitBreakerPolicy breaker = Policy
+            var breaker = Policy
                             .Handle<DivideByZeroException>()
                             .CircuitBreaker(2, durationOfBreak);
 
@@ -231,7 +231,7 @@ namespace Polly.Specs.CircuitBreaker
 
             var durationOfBreak = TimeSpan.FromMinutes(1);
 
-            CircuitBreakerPolicy breaker = Policy
+            var breaker = Policy
                             .Handle<DivideByZeroException>()
                             .CircuitBreaker(2, durationOfBreak);
 
@@ -269,7 +269,7 @@ namespace Polly.Specs.CircuitBreaker
 
             var durationOfBreak = TimeSpan.FromMinutes(1);
 
-            CircuitBreakerPolicy breaker = Policy
+            var breaker = Policy
                             .Handle<DivideByZeroException>()
                             .CircuitBreaker(2, durationOfBreak);
 
@@ -315,7 +315,7 @@ namespace Polly.Specs.CircuitBreaker
             SystemClock.UtcNow = () => time;
 
             var durationOfBreak = TimeSpan.FromMinutes(1);
-            CircuitBreakerPolicy breaker = Policy
+            var breaker = Policy
                             .Handle<DivideByZeroException>()
                             .CircuitBreaker(1, durationOfBreak);
 
@@ -331,11 +331,11 @@ namespace Polly.Specs.CircuitBreaker
 
 
             // OnActionPreExecute() should permit first execution.
-            breaker._breakerController.Invoking(c => c.OnActionPreExecute()).Should().NotThrow();
+            (breaker as CircuitBreakerPolicy)._breakerController.Invoking(c => c.OnActionPreExecute()).Should().NotThrow();
             breaker.CircuitState.Should().Be(CircuitState.HalfOpen);
 
             // OnActionPreExecute() should reject a second execution.
-            breaker._breakerController.Invoking(c => c.OnActionPreExecute()).Should().Throw<BrokenCircuitException>();
+            (breaker as CircuitBreakerPolicy)._breakerController.Invoking(c => c.OnActionPreExecute()).Should().Throw<BrokenCircuitException>();
             breaker.CircuitState.Should().Be(CircuitState.HalfOpen);
         }
 
@@ -346,7 +346,7 @@ namespace Polly.Specs.CircuitBreaker
             SystemClock.UtcNow = () => time;
 
             var durationOfBreak = TimeSpan.FromMinutes(1);
-            CircuitBreakerPolicy breaker = Policy
+            var breaker = Policy
                             .Handle<DivideByZeroException>()
                             .CircuitBreaker(1, durationOfBreak);
 
@@ -362,11 +362,11 @@ namespace Polly.Specs.CircuitBreaker
 
 
             // OnActionPreExecute() should permit first execution.
-            breaker._breakerController.Invoking(c => c.OnActionPreExecute()).Should().NotThrow();
+            (breaker as CircuitBreakerPolicy)._breakerController.Invoking(c => c.OnActionPreExecute()).Should().NotThrow();
             breaker.CircuitState.Should().Be(CircuitState.HalfOpen);
 
             // OnActionPreExecute() should reject a second execution in the same time window.
-            breaker._breakerController.Invoking(c => c.OnActionPreExecute()).Should().Throw<BrokenCircuitException>();
+            (breaker as CircuitBreakerPolicy)._breakerController.Invoking(c => c.OnActionPreExecute()).Should().Throw<BrokenCircuitException>();
             breaker.CircuitState.Should().Be(CircuitState.HalfOpen);
 
             // Allow another time window to pass (breaker should still be HalfOpen).
@@ -374,7 +374,7 @@ namespace Polly.Specs.CircuitBreaker
             breaker.CircuitState.Should().Be(CircuitState.HalfOpen);
 
             // OnActionPreExecute() should now permit another trial execution.
-            breaker._breakerController.Invoking(c => c.OnActionPreExecute()).Should().NotThrow();
+            (breaker as CircuitBreakerPolicy)._breakerController.Invoking(c => c.OnActionPreExecute()).Should().NotThrow();
             breaker.CircuitState.Should().Be(CircuitState.HalfOpen);
         }
 
@@ -385,7 +385,7 @@ namespace Polly.Specs.CircuitBreaker
             SystemClock.UtcNow = () => time;
 
             var durationOfBreak = TimeSpan.FromMinutes(1);
-            CircuitBreakerPolicy breaker = Policy
+            var breaker = Policy
                             .Handle<DivideByZeroException>()
                             .CircuitBreaker(1, durationOfBreak);
 
@@ -483,7 +483,7 @@ namespace Polly.Specs.CircuitBreaker
             SystemClock.UtcNow = () => time;
 
             var durationOfBreak = TimeSpan.FromMinutes(1);
-            CircuitBreakerPolicy breaker = Policy
+            var breaker = Policy
                             .Handle<DivideByZeroException>()
                             .CircuitBreaker(1, durationOfBreak);
 
@@ -587,7 +587,7 @@ namespace Polly.Specs.CircuitBreaker
 
             var durationOfBreak = TimeSpan.FromMinutes(1);
 
-            CircuitBreakerPolicy breaker = Policy
+            var breaker = Policy
                 .Handle<DivideByZeroException>()
                 .CircuitBreaker(2, durationOfBreak);
             breaker.CircuitState.Should().Be(CircuitState.Closed);
@@ -613,7 +613,7 @@ namespace Polly.Specs.CircuitBreaker
 
             var durationOfBreak = TimeSpan.FromMinutes(1);
 
-            CircuitBreakerPolicy breaker = Policy
+            var breaker = Policy
                 .Handle<DivideByZeroException>()
                 .CircuitBreaker(2, durationOfBreak);
             breaker.CircuitState.Should().Be(CircuitState.Closed);
@@ -637,7 +637,7 @@ namespace Polly.Specs.CircuitBreaker
 
             var durationOfBreak = TimeSpan.FromMinutes(1);
 
-            CircuitBreakerPolicy breaker = Policy
+            var breaker = Policy
                 .Handle<DivideByZeroException>()
                 .CircuitBreaker(2, durationOfBreak);
             breaker.CircuitState.Should().Be(CircuitState.Closed);
@@ -660,7 +660,7 @@ namespace Polly.Specs.CircuitBreaker
 
             var durationOfBreak = TimeSpan.FromMinutes(1);
 
-            CircuitBreakerPolicy breaker = Policy
+            var breaker = Policy
                             .Handle<DivideByZeroException>()
                             .CircuitBreaker(2, durationOfBreak);
 
@@ -709,7 +709,7 @@ namespace Polly.Specs.CircuitBreaker
             Action<Exception, TimeSpan> onBreak = (_, __) => { onBreakCalled = true; };
             Action onReset = () => { };
 
-            CircuitBreakerPolicy breaker = Policy
+            var breaker = Policy
                             .Handle<DivideByZeroException>()
                             .CircuitBreaker(2, TimeSpan.FromMinutes(1), onBreak, onReset);
 
@@ -733,7 +733,7 @@ namespace Polly.Specs.CircuitBreaker
             Action<Exception, TimeSpan> onBreak = (_, __) => { onBreakCalled = true; };
             Action onReset = () => { };
 
-            CircuitBreakerPolicy breaker = Policy
+            var breaker = Policy
                 .Handle<DivideByZeroException>()
                 .CircuitBreaker(2, TimeSpan.FromMinutes(1), onBreak, onReset);
             onBreakCalled.Should().BeFalse();
@@ -750,7 +750,7 @@ namespace Polly.Specs.CircuitBreaker
             Action<Exception, TimeSpan> onBreak = (_, __) => { onBreakCalled++; };
             Action onReset = () => { };
 
-            CircuitBreakerPolicy breaker = Policy
+            var breaker = Policy
                             .Handle<DivideByZeroException>()
                             .CircuitBreaker(2, TimeSpan.FromMinutes(1), onBreak, onReset);
 
@@ -781,7 +781,7 @@ namespace Polly.Specs.CircuitBreaker
             Action<Exception, TimeSpan> onBreak = (_, __) => { onBreakCalled++; };
             Action onReset = () => { };
 
-            CircuitBreakerPolicy breaker = Policy
+            var breaker = Policy
                             .Handle<DivideByZeroException>()
                             .CircuitBreaker(1, TimeSpan.FromMinutes(1), onBreak, onReset);
 
@@ -845,7 +845,7 @@ namespace Polly.Specs.CircuitBreaker
 
             var durationOfBreak = TimeSpan.FromMinutes(1);
 
-            CircuitBreakerPolicy breaker = Policy
+            var breaker = Policy
                             .Handle<DivideByZeroException>()
                             .CircuitBreaker(2, durationOfBreak, onBreak, onReset);
 
@@ -885,7 +885,7 @@ namespace Polly.Specs.CircuitBreaker
             bool onResetCalled = false;
             Action onReset = () => { onResetCalled = true; };
 
-            CircuitBreakerPolicy breaker = Policy
+            var breaker = Policy
                 .Handle<DivideByZeroException>()
                 .CircuitBreaker(2, TimeSpan.FromMinutes(1), onBreak, onReset);
 
@@ -915,7 +915,7 @@ namespace Polly.Specs.CircuitBreaker
 
             var durationOfBreak = TimeSpan.FromMinutes(1);
 
-            CircuitBreakerPolicy breaker = Policy
+            var breaker = Policy
                             .Handle<DivideByZeroException>()
                             .CircuitBreaker(2, durationOfBreak, onBreak, onReset, onHalfOpen);
 
@@ -961,7 +961,7 @@ namespace Polly.Specs.CircuitBreaker
 
             var durationOfBreak = TimeSpan.FromMinutes(1);
 
-            CircuitBreakerPolicy breaker = Policy
+            var breaker = Policy
                             .Handle<DivideByZeroException>()
                             .CircuitBreaker(2, durationOfBreak, onBreak, onReset, onHalfOpen);
 
@@ -1000,7 +1000,7 @@ namespace Polly.Specs.CircuitBreaker
 
             var durationOfBreak = TimeSpan.FromMinutes(1);
 
-            CircuitBreakerPolicy breaker = Policy
+            var breaker = Policy
                             .Handle<DivideByZeroException>()
                             .CircuitBreaker(2, durationOfBreak, onBreak, onReset);
 
@@ -1032,7 +1032,7 @@ namespace Polly.Specs.CircuitBreaker
 
             TimeSpan durationOfBreak = TimeSpan.FromMinutes(1);
 
-            CircuitBreakerPolicy breaker = Policy
+            var breaker = Policy
                 .Handle<DivideByZeroException>()
                 .CircuitBreaker(2, durationOfBreak, onBreak, onReset);
 
@@ -1056,7 +1056,7 @@ namespace Polly.Specs.CircuitBreaker
             Action<Context> onReset = _ => { };
             Action onHalfOpen = () => { };
 
-            CircuitBreakerPolicy breaker = Policy
+            var breaker = Policy
                 .Handle<DivideByZeroException>()
                 .CircuitBreaker(2, TimeSpan.FromMinutes(1), onBreak, onReset, onHalfOpen);
 
@@ -1085,7 +1085,7 @@ namespace Polly.Specs.CircuitBreaker
 
             var durationOfBreak = TimeSpan.FromMinutes(1);
 
-            CircuitBreakerPolicy breaker = Policy
+            var breaker = Policy
                             .Handle<DivideByZeroException>()
                             .CircuitBreaker(2, TimeSpan.FromMinutes(1), onBreak, onReset, onHalfOpen);
 
@@ -1127,7 +1127,7 @@ namespace Polly.Specs.CircuitBreaker
 
             TimeSpan durationOfBreak = TimeSpan.FromMinutes(1);
 
-            CircuitBreakerPolicy breaker = Policy
+            var breaker = Policy
                 .HandleInner<DivideByZeroException>()
                 .Or<DivideByZeroException>()
                 .CircuitBreaker(2, durationOfBreak, onBreak, onReset);
@@ -1156,7 +1156,7 @@ namespace Polly.Specs.CircuitBreaker
 
             TimeSpan durationOfBreak = TimeSpan.FromMinutes(1);
 
-            CircuitBreakerPolicy breaker = Policy
+            var breaker = Policy
                 .Handle<DivideByZeroException>()
                 .CircuitBreaker(2, durationOfBreak, onBreak, onReset);
 
@@ -1183,7 +1183,7 @@ namespace Polly.Specs.CircuitBreaker
 
             var durationOfBreak = TimeSpan.FromMinutes(1);
 
-            CircuitBreakerPolicy breaker = Policy
+            var breaker = Policy
                 .Handle<DivideByZeroException>()
                 .CircuitBreaker(2, durationOfBreak, onBreak, onReset);
             breaker.CircuitState.Should().Be(CircuitState.Closed);
@@ -1207,7 +1207,7 @@ namespace Polly.Specs.CircuitBreaker
             Action<Exception, TimeSpan, Context> onBreak = (_, __, context) => { contextData = context; };
             Action<Context> onReset = _ => { };
 
-            CircuitBreakerPolicy breaker = Policy
+            var breaker = Policy
                 .Handle<DivideByZeroException>()
                 .CircuitBreaker(2, TimeSpan.FromMinutes(1), onBreak, onReset);
 
@@ -1238,7 +1238,7 @@ namespace Polly.Specs.CircuitBreaker
 
             var durationOfBreak = TimeSpan.FromMinutes(1);
 
-            CircuitBreakerPolicy breaker = Policy
+            var breaker = Policy
                 .Handle<DivideByZeroException>()
                 .CircuitBreaker(2, durationOfBreak, onBreak, onReset);
 
@@ -1267,7 +1267,7 @@ namespace Polly.Specs.CircuitBreaker
             Action<Exception, TimeSpan, Context> onBreak = (_, __, context) => { contextData = context; };
             Action<Context> onReset = _ => { };
 
-            CircuitBreakerPolicy breaker = Policy
+            var breaker = Policy
                 .Handle<DivideByZeroException>()
                 .CircuitBreaker(2, TimeSpan.FromMinutes(1), onBreak, onReset);
 
@@ -1290,7 +1290,7 @@ namespace Polly.Specs.CircuitBreaker
             Action<Exception, TimeSpan, Context> onBreak = (_, __, context) => { contextValue = context.ContainsKey("key") ? context["key"].ToString() : null; };
             Action<Context> onReset = context => { contextValue = context.ContainsKey("key") ? context["key"].ToString() : null; };
 
-            CircuitBreakerPolicy breaker = Policy
+            var breaker = Policy
                 .Handle<DivideByZeroException>()
                 .CircuitBreaker(2, TimeSpan.FromMinutes(1), onBreak, onReset);
 
@@ -1339,7 +1339,7 @@ namespace Polly.Specs.CircuitBreaker
         [Fact]
         public void Should_set_LastException_on_handling_exception_even_when_not_breaking()
         {
-            CircuitBreakerPolicy breaker = Policy
+            var breaker = Policy
                 .Handle<DivideByZeroException>()
                 .CircuitBreaker(2, TimeSpan.FromMinutes(1));
 
@@ -1354,7 +1354,7 @@ namespace Polly.Specs.CircuitBreaker
         [Fact]
         public void Should_set_LastException_on_handling_inner_exception_even_when_not_breaking()
         {
-            CircuitBreakerPolicy breaker = Policy
+            var breaker = Policy
                 .HandleInner<DivideByZeroException>()
                 .CircuitBreaker(2, TimeSpan.FromMinutes(1));
 
@@ -1373,7 +1373,7 @@ namespace Polly.Specs.CircuitBreaker
         [Fact]
         public void Should_set_LastException_to_last_raised_exception_when_breaking()
         {
-            CircuitBreakerPolicy breaker = Policy
+            var breaker = Policy
                 .Handle<DivideByZeroException>()
                 .CircuitBreaker(2, TimeSpan.FromMinutes(1));
 
@@ -1391,7 +1391,7 @@ namespace Polly.Specs.CircuitBreaker
         [Fact]
         public void Should_set_LastException_to_null_on_circuit_reset()
         {
-            CircuitBreakerPolicy breaker = Policy
+            var breaker = Policy
                 .Handle<DivideByZeroException>()
                 .CircuitBreaker(2, TimeSpan.FromMinutes(1));
 
@@ -1417,7 +1417,7 @@ namespace Polly.Specs.CircuitBreaker
         [Fact]
         public void Should_set_PolicyResult_on_handling_inner_exception()
         {
-            CircuitBreakerPolicy breaker = Policy
+            var breaker = Policy
                 .HandleInner<DivideByZeroException>()
                 .CircuitBreaker(2, TimeSpan.FromMinutes(1));
 
@@ -1439,7 +1439,7 @@ namespace Polly.Specs.CircuitBreaker
         public void Should_execute_action_when_non_faulting_and_cancellationToken_not_cancelled()
         {
             var durationOfBreak = TimeSpan.FromMinutes(1);
-            CircuitBreakerPolicy breaker = Policy
+            var breaker = Policy
                             .Handle<DivideByZeroException>()
                             .CircuitBreaker(2, durationOfBreak);
 
@@ -1464,7 +1464,7 @@ namespace Polly.Specs.CircuitBreaker
         public void Should_not_execute_action_when_cancellationToken_cancelled_before_execute()
         {
             var durationOfBreak = TimeSpan.FromMinutes(1);
-            CircuitBreakerPolicy breaker = Policy
+            var breaker = Policy
                             .Handle<DivideByZeroException>()
                             .CircuitBreaker(2, durationOfBreak);
 
@@ -1493,7 +1493,7 @@ namespace Polly.Specs.CircuitBreaker
         public void Should_report_cancellation_during_otherwise_non_faulting_action_execution_when_user_delegate_observes_cancellationToken()
         {
             var durationOfBreak = TimeSpan.FromMinutes(1);
-            CircuitBreakerPolicy breaker = Policy
+            var breaker = Policy
                             .Handle<DivideByZeroException>()
                             .CircuitBreaker(2, durationOfBreak);
 
@@ -1521,7 +1521,7 @@ namespace Polly.Specs.CircuitBreaker
         public void Should_report_cancellation_during_faulting_action_execution_when_user_delegate_observes_cancellationToken()
         {
             var durationOfBreak = TimeSpan.FromMinutes(1);
-            CircuitBreakerPolicy breaker = Policy
+            var breaker = Policy
                             .Handle<DivideByZeroException>()
                             .CircuitBreaker(2, durationOfBreak);
 
@@ -1549,7 +1549,7 @@ namespace Polly.Specs.CircuitBreaker
         public void Should_report_faulting_from_faulting_action_execution_when_user_delegate_does_not_observe_cancellation()
         {
             var durationOfBreak = TimeSpan.FromMinutes(1);
-            CircuitBreakerPolicy breaker = Policy
+            var breaker = Policy
                             .Handle<DivideByZeroException>()
                             .CircuitBreaker(2, durationOfBreak);
 
@@ -1574,7 +1574,7 @@ namespace Polly.Specs.CircuitBreaker
         [Fact]
         public void Should_report_cancellation_when_both_open_circuit_and_cancellation()
         {
-            CircuitBreakerPolicy breaker = Policy
+            var breaker = Policy
                 .Handle<DivideByZeroException>()
                 .CircuitBreaker(1, TimeSpan.FromMinutes(1));
 
@@ -1615,7 +1615,7 @@ namespace Polly.Specs.CircuitBreaker
             // Before CancellationToken support was built in to Polly, users of the library may have implicitly captured a CancellationToken and used it to cancel actions.  For backwards compatibility, Polly should not confuse these with its own CancellationToken; it should distinguish OperationCanceledExceptions thrown with different CancellationTokens.
 
             var durationOfBreak = TimeSpan.FromMinutes(1);
-            CircuitBreakerPolicy breaker = Policy
+            var breaker = Policy
                             .Handle<DivideByZeroException>()
                             .CircuitBreaker(2, durationOfBreak);
 
@@ -1644,7 +1644,7 @@ namespace Polly.Specs.CircuitBreaker
         public void Should_execute_func_returning_value_when_cancellationToken_not_cancelled()
         {
             var durationOfBreak = TimeSpan.FromMinutes(1);
-            CircuitBreakerPolicy breaker = Policy
+            var breaker = Policy
                             .Handle<DivideByZeroException>()
                             .CircuitBreaker(2, durationOfBreak);
 
@@ -1673,7 +1673,7 @@ namespace Polly.Specs.CircuitBreaker
         [Fact]
         public void Should_honour_and_report_cancellation_during_func_execution()
         {
-            CircuitBreakerPolicy breaker = Policy
+            var breaker = Policy
                              .Handle<DivideByZeroException>()
                              .CircuitBreaker(2, TimeSpan.FromMinutes(1));
 

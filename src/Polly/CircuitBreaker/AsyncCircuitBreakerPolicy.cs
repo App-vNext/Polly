@@ -7,9 +7,9 @@ using Polly.Utilities;
 namespace Polly.CircuitBreaker
 {
     /// <summary>
-    /// A circuit-breaker policy that can be applied to async delegates.
+    /// A circuit-breaker policy that can be applied to asynchronous delegate executions.
     /// </summary>
-    public class AsyncCircuitBreakerPolicy : AsyncPolicy, ICircuitBreakerPolicy
+    public class AsyncCircuitBreakerPolicy : AsyncPolicy, IAsyncCircuitBreakerPolicy
     {
         internal readonly ICircuitController<EmptyStruct> _breakerController;
 
@@ -60,10 +60,10 @@ namespace Polly.CircuitBreaker
     }
 
     /// <summary>
-    /// A circuit-breaker policy that can be applied to async delegates.
+    /// A circuit-breaker policy that can be applied to asynchronous delegate executions returning a value of type <typeparamref name="TResult"/>.
     /// </summary>
     /// <typeparam name="TResult">The return type of delegates which may be executed through the policy.</typeparam>
-    public class AsyncCircuitBreakerPolicy<TResult> : AsyncPolicy<TResult>, ICircuitBreakerPolicy<TResult>
+    public class AsyncCircuitBreakerPolicy<TResult> : AsyncPolicy<TResult>, IAsyncCircuitBreakerPolicy<TResult>
     {
         internal readonly ICircuitController<TResult> _breakerController;
 

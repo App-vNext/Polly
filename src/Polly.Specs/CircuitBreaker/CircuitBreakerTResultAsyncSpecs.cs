@@ -397,11 +397,11 @@ namespace Polly.Specs.CircuitBreaker
 
 
             // OnActionPreExecute() should permit first execution.
-            breaker._breakerController.Invoking(c => c.OnActionPreExecute()).Should().NotThrow();
+            (breaker as AsyncCircuitBreakerPolicy<ResultPrimitive>)._breakerController.Invoking(c => c.OnActionPreExecute()).Should().NotThrow();
             breaker.CircuitState.Should().Be(CircuitState.HalfOpen);
 
             // OnActionPreExecute() should reject a second execution.
-            breaker._breakerController.Invoking(c => c.OnActionPreExecute()).Should().Throw<BrokenCircuitException>();
+            (breaker as AsyncCircuitBreakerPolicy<ResultPrimitive>)._breakerController.Invoking(c => c.OnActionPreExecute()).Should().Throw<BrokenCircuitException>();
             breaker.CircuitState.Should().Be(CircuitState.HalfOpen);
         }
 
@@ -428,11 +428,11 @@ namespace Polly.Specs.CircuitBreaker
 
 
             // OnActionPreExecute() should permit first execution.
-            breaker._breakerController.Invoking(c => c.OnActionPreExecute()).Should().NotThrow();
+            (breaker as AsyncCircuitBreakerPolicy<ResultPrimitive>)._breakerController.Invoking(c => c.OnActionPreExecute()).Should().NotThrow();
             breaker.CircuitState.Should().Be(CircuitState.HalfOpen);
 
             // OnActionPreExecute() should reject a second execution.
-            breaker._breakerController.Invoking(c => c.OnActionPreExecute()).Should().Throw<BrokenCircuitException>();
+            (breaker as AsyncCircuitBreakerPolicy<ResultPrimitive>)._breakerController.Invoking(c => c.OnActionPreExecute()).Should().Throw<BrokenCircuitException>();
             breaker.CircuitState.Should().Be(CircuitState.HalfOpen);
 
             // Allow another time window to pass (breaker should still be HalfOpen).
@@ -440,7 +440,7 @@ namespace Polly.Specs.CircuitBreaker
             breaker.CircuitState.Should().Be(CircuitState.HalfOpen);
 
             // OnActionPreExecute() should now permit another trial execution.
-            breaker._breakerController.Invoking(c => c.OnActionPreExecute()).Should().NotThrow();
+            (breaker as AsyncCircuitBreakerPolicy<ResultPrimitive>)._breakerController.Invoking(c => c.OnActionPreExecute()).Should().NotThrow();
             breaker.CircuitState.Should().Be(CircuitState.HalfOpen);
         }
 
