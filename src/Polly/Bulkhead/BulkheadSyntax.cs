@@ -53,7 +53,6 @@ namespace Polly
         /// <returns>The policy instance.</returns>
         /// <exception cref="ArgumentOutOfRangeException">maxParallelization;Value must be greater than zero.</exception>
         /// <exception cref="ArgumentOutOfRangeException">maxParallelization;Value must be greater than zero.</exception>
-        
         public static ISyncBulkheadPolicy Bulkhead(int maxParallelization, int maxQueuingActions, Action<Context> onBulkheadRejected)
         {
             if (maxParallelization <= 0) throw new ArgumentOutOfRangeException(nameof(maxParallelization), "Value must be greater than zero.");

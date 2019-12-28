@@ -57,7 +57,6 @@ namespace Polly
         /// <returns>The policy instance.</returns>
         /// <exception cref="ArgumentOutOfRangeException">maxParallelization;Value must be greater than zero.</exception>
         /// <exception cref="ArgumentOutOfRangeException">maxQueuingActions;Value must be greater than or equal to zero.</exception>
-        
         public static IAsyncBulkheadPolicy BulkheadAsync(
             int maxParallelization, 
             int maxQueuingActions, 
@@ -65,7 +64,6 @@ namespace Polly
         {
             if (maxParallelization <= 0) throw new ArgumentOutOfRangeException(nameof(maxParallelization), "Value must be greater than zero.");
             if (maxQueuingActions < 0) throw new ArgumentOutOfRangeException(nameof(maxQueuingActions), "Value must be greater than or equal to zero.");
-            
 
             return new AsyncBulkheadPolicy(
                 maxParallelization,

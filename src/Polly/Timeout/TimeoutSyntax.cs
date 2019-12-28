@@ -43,7 +43,6 @@ namespace Polly
         /// <remarks>The Task parameter will be null if the executed action responded cooperatively to cancellation before the policy timed it out.</remarks></param>
         /// <returns>The policy instance.</returns>
         /// <exception cref="ArgumentOutOfRangeException">seconds;Value must be greater than zero.</exception>
-        
         public static ISyncTimeoutPolicy Timeout(int seconds, Action<Context, TimeSpan, Task> onTimeout)
         {
             TimeoutValidator.ValidateSecondsTimeout(seconds);
