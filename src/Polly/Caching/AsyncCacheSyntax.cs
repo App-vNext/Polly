@@ -70,10 +70,7 @@ namespace Polly
             if (ttlStrategy == null) throw new ArgumentNullException(nameof(ttlStrategy));
             if (cacheKeyStrategy == null) throw new ArgumentNullException(nameof(cacheKeyStrategy));
 
-            onCacheError = onCacheError ?? ((_, __, ___) => { });
-            Action<Context, string> emptyDelegate = (_, __) => { };
-
-            return new AsyncCachePolicy(cacheProvider, ttlStrategy, cacheKeyStrategy.GetCacheKey, emptyDelegate, emptyDelegate, emptyDelegate, onCacheError, onCacheError);
+            return new AsyncCachePolicy(cacheProvider, ttlStrategy, cacheKeyStrategy.GetCacheKey, onCacheGet: null, onCacheMiss: null, onCachePut: null, onCacheGetError: onCacheError, onCachePutError: onCacheError);
         }
 
         /// <summary>
@@ -112,10 +109,7 @@ namespace Polly
             if (ttlStrategy == null) throw new ArgumentNullException(nameof(ttlStrategy));
             if (cacheKeyStrategy == null) throw new ArgumentNullException(nameof(cacheKeyStrategy));
 
-            onCacheError = onCacheError ?? ((_, __, ___) => { });
-            Action<Context, string> emptyDelegate = (_, __) => { };
-
-            return new AsyncCachePolicy(cacheProvider, ttlStrategy, cacheKeyStrategy, emptyDelegate, emptyDelegate, emptyDelegate, onCacheError, onCacheError);
+            return new AsyncCachePolicy(cacheProvider, ttlStrategy, cacheKeyStrategy, onCacheGet: null, onCacheMiss: null, onCachePut: null, onCacheGetError: onCacheError, onCachePutError: onCacheError);
         }
 
         /// <summary>
@@ -133,11 +127,6 @@ namespace Polly
         /// <param name="onCachePutError">Delegate to call if an exception is thrown when attempting to put a value in the cache, passing the execution context, the cache key, and the exception.</param>
         /// <returns>The policy instance.</returns>
         /// <exception cref="ArgumentNullException">cacheProvider</exception>
-        /// <exception cref="ArgumentNullException">onCacheGet</exception>
-        /// <exception cref="ArgumentNullException">onCacheMiss</exception>
-        /// <exception cref="ArgumentNullException">onCachePut</exception>
-        /// <exception cref="ArgumentNullException">onCacheGetError</exception>
-        /// <exception cref="ArgumentNullException">onCachePutError</exception>
         public static IAsyncCachePolicy CacheAsync(
             IAsyncCacheProvider cacheProvider,
             TimeSpan ttl,
@@ -164,11 +153,6 @@ namespace Polly
         /// <returns>The policy instance.</returns>
         /// <exception cref="ArgumentNullException">cacheProvider</exception>
         /// <exception cref="ArgumentNullException">ttlStrategy</exception>
-        /// <exception cref="ArgumentNullException">onCacheGet</exception>
-        /// <exception cref="ArgumentNullException">onCacheMiss</exception>
-        /// <exception cref="ArgumentNullException">onCachePut</exception>
-        /// <exception cref="ArgumentNullException">onCacheGetError</exception>
-        /// <exception cref="ArgumentNullException">onCachePutError</exception>
         public static IAsyncCachePolicy CacheAsync(
             IAsyncCacheProvider cacheProvider,
             ITtlStrategy ttlStrategy,
@@ -196,11 +180,6 @@ namespace Polly
         /// <returns>The policy instance.</returns>
         /// <exception cref="ArgumentNullException">cacheProvider</exception>
         /// <exception cref="ArgumentNullException">cacheKeyStrategy</exception>
-        /// <exception cref="ArgumentNullException">onCacheGet</exception>
-        /// <exception cref="ArgumentNullException">onCacheMiss</exception>
-        /// <exception cref="ArgumentNullException">onCachePut</exception>
-        /// <exception cref="ArgumentNullException">onCacheGetError</exception>
-        /// <exception cref="ArgumentNullException">onCachePutError</exception>
         public static IAsyncCachePolicy CacheAsync(
             IAsyncCacheProvider cacheProvider, 
             TimeSpan ttl, 
@@ -230,11 +209,6 @@ namespace Polly
         /// <exception cref="ArgumentNullException">cacheProvider</exception>
         /// <exception cref="ArgumentNullException">ttlStrategy</exception>
         /// <exception cref="ArgumentNullException">cacheKeyStrategy</exception>
-        /// <exception cref="ArgumentNullException">onCacheGet</exception>
-        /// <exception cref="ArgumentNullException">onCacheMiss</exception>
-        /// <exception cref="ArgumentNullException">onCachePut</exception>
-        /// <exception cref="ArgumentNullException">onCacheGetError</exception>
-        /// <exception cref="ArgumentNullException">onCachePutError</exception>
         public static IAsyncCachePolicy CacheAsync(
             IAsyncCacheProvider cacheProvider,
             ITtlStrategy ttlStrategy,
@@ -263,11 +237,6 @@ namespace Polly
         /// <returns>The policy instance.</returns>
         /// <exception cref="ArgumentNullException">cacheProvider</exception>
         /// <exception cref="ArgumentNullException">cacheKeyStrategy</exception>
-        /// <exception cref="ArgumentNullException">onCacheGet</exception>
-        /// <exception cref="ArgumentNullException">onCacheMiss</exception>
-        /// <exception cref="ArgumentNullException">onCachePut</exception>
-        /// <exception cref="ArgumentNullException">onCacheGetError</exception>
-        /// <exception cref="ArgumentNullException">onCachePutError</exception>
         public static IAsyncCachePolicy CacheAsync(
             IAsyncCacheProvider cacheProvider,
             TimeSpan ttl,
@@ -297,11 +266,6 @@ namespace Polly
         /// <exception cref="ArgumentNullException">cacheProvider</exception>
         /// <exception cref="ArgumentNullException">ttlStrategy</exception>
         /// <exception cref="ArgumentNullException">cacheKeyStrategy</exception>
-        /// <exception cref="ArgumentNullException">onCacheGet</exception>
-        /// <exception cref="ArgumentNullException">onCacheMiss</exception>
-        /// <exception cref="ArgumentNullException">onCachePut</exception>
-        /// <exception cref="ArgumentNullException">onCacheGetError</exception>
-        /// <exception cref="ArgumentNullException">onCachePutError</exception>
         public static IAsyncCachePolicy CacheAsync(
             IAsyncCacheProvider cacheProvider,
             ITtlStrategy ttlStrategy,
@@ -315,12 +279,6 @@ namespace Polly
             if (cacheProvider == null) throw new ArgumentNullException(nameof(cacheProvider));
             if (ttlStrategy == null) throw new ArgumentNullException(nameof(ttlStrategy));
             if (cacheKeyStrategy == null) throw new ArgumentNullException(nameof(cacheKeyStrategy));
-
-            if (onCacheGet == null) throw new ArgumentNullException(nameof(onCacheGet));
-            if (onCacheMiss == null) throw new ArgumentNullException(nameof(onCacheMiss));
-            if (onCachePut == null) throw new ArgumentNullException(nameof(onCachePut));
-            if (onCachePutError == null) throw new ArgumentNullException(nameof(onCachePutError));
-            if (onCachePutError == null) throw new ArgumentNullException(nameof(onCachePutError));
 
             return new AsyncCachePolicy(cacheProvider, ttlStrategy, cacheKeyStrategy, onCacheGet, onCacheMiss, onCachePut, onCacheGetError, onCachePutError);
         }
