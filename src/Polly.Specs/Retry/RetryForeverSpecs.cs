@@ -10,7 +10,7 @@ namespace Polly.Specs.Retry
     public class RetryForeverSpecs
     {
         [Fact]
-        public void Should_throw_when_onretry_action_without_context_is_null()
+        public void Should_not_throw_when_onretry_action_without_context_is_null()
         {
             Action<Exception> nullOnRetry = null;
 
@@ -18,12 +18,11 @@ namespace Polly.Specs.Retry
                                       .Handle<DivideByZeroException>()
                                       .RetryForever(nullOnRetry);
 
-            policy.Should().Throw<ArgumentNullException>().And
-                  .ParamName.Should().Be("onRetry");
+            policy.Should().NotThrow();
         }
 
         [Fact]
-        public void Should_throw_when_onretry_action_with_context_is_null()
+        public void Should_not_throw_when_onretry_action_with_context_is_null()
         {
             Action<Exception, Context> nullOnRetry = null;
 
@@ -31,8 +30,7 @@ namespace Polly.Specs.Retry
                                       .Handle<DivideByZeroException>()
                                       .RetryForever(nullOnRetry);
 
-            policy.Should().Throw<ArgumentNullException>().And
-                  .ParamName.Should().Be("onRetry");
+            policy.Should().NotThrow();
         }
 
         [Fact]

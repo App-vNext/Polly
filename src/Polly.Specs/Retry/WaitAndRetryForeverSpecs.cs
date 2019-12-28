@@ -47,7 +47,7 @@ namespace Polly.Specs.Retry
         }
 
         [Fact]
-        public void Should_throw_when_onretry_action_is_null_without_context()
+        public void Should_not_throw_when_onretry_action_is_null_without_context()
         {
             Action<Exception, TimeSpan> nullOnRetry = null;
             Func<int, TimeSpan> provider = i => TimeSpan.Zero;
@@ -56,12 +56,11 @@ namespace Polly.Specs.Retry
                                       .Handle<DivideByZeroException>()
                                       .WaitAndRetryForever(provider, nullOnRetry);
 
-            policy.Should().Throw<ArgumentNullException>().And
-                  .ParamName.Should().Be("onRetry");
+            policy.Should().NotThrow();
         }
 
         [Fact]
-        public void Should_throw_when_onretry_action_is_null_with_context()
+        public void Should_not_throw_when_onretry_action_is_null_with_context()
         {
             Action<Exception, TimeSpan, Context> nullOnRetry = null;
             Func<int, Context, TimeSpan> provider = (i, ctx) => TimeSpan.Zero;
@@ -70,8 +69,7 @@ namespace Polly.Specs.Retry
                                       .Handle<DivideByZeroException>()
                                       .WaitAndRetryForever(provider, nullOnRetry);
 
-            policy.Should().Throw<ArgumentNullException>().And
-                  .ParamName.Should().Be("onRetry");
+            policy.Should().NotThrow();
         }
 
         [Fact]

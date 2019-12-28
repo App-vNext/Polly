@@ -28,7 +28,7 @@ namespace Polly.Retry
             _permittedRetryCount = permittedRetryCount;
             _sleepDurationsEnumerable = sleepDurationsEnumerable;
             _sleepDurationProvider = sleepDurationProvider;
-            _onRetryAsync = onRetryAsync ?? throw new ArgumentNullException(nameof(onRetryAsync));
+            _onRetryAsync = onRetryAsync;
         }
 
         /// <inheritdoc/>
@@ -42,7 +42,7 @@ namespace Polly.Retry
                 cancellationToken,
                 ExceptionPredicates,
                 ResultPredicates<TResult>.None,
-                (outcome, timespan, retryCount, ctx) => _onRetryAsync(outcome.Exception, timespan, retryCount, ctx),
+                _onRetryAsync == null ? (Func<DelegateResult<TResult>, TimeSpan, int, Context, Task>)null : (outcome, timespan, retryCount, ctx) => _onRetryAsync(outcome.Exception, timespan, retryCount, ctx),
                 _permittedRetryCount,
                 _sleepDurationsEnumerable,
                 _sleepDurationProvider != null 
@@ -76,7 +76,7 @@ namespace Polly.Retry
             _permittedRetryCount = permittedRetryCount;
             _sleepDurationsEnumerable = sleepDurationsEnumerable;
             _sleepDurationProvider = sleepDurationProvider;
-            _onRetryAsync = onRetryAsync ?? throw new ArgumentNullException(nameof(onRetryAsync));
+            _onRetryAsync = onRetryAsync;
         }
 
         /// <inheritdoc/>
