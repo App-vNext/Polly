@@ -2,7 +2,6 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Polly.Fallback;
-using Polly.Utilities;
 
 namespace Polly
 {

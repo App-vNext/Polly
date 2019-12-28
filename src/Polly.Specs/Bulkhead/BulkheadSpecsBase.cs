@@ -4,12 +4,10 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
-using FluentAssertions.Execution;
 using Polly.Bulkhead;
 using Polly.Specs.Helpers.Bulkhead;
 using Xunit;
 using Xunit.Abstractions;
-using Xunit.Sdk;
 
 namespace Polly.Specs.Bulkhead
 {
