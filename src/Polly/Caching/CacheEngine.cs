@@ -36,16 +36,16 @@ namespace Polly.Caching
             {
                 cacheHit = false;
                 valueFromCache = default;
-                onCacheGetError(context, cacheKey, ex);
+                onCacheGetError?.Invoke(context, cacheKey, ex);
             }
             if (cacheHit)
             {
-                onCacheGet(context, cacheKey);
+                onCacheGet?.Invoke(context, cacheKey);
                 return valueFromCache;
             }
             else
             {
-                onCacheMiss(context, cacheKey);
+                onCacheMiss?.Invoke(context, cacheKey);
             }
 
             TResult result = action(context, cancellationToken);
@@ -56,11 +56,11 @@ namespace Polly.Caching
                 try
                 {
                     cacheProvider.Put(cacheKey, result, ttl);
-                    onCachePut(context, cacheKey);
+                    onCachePut?.Invoke(context, cacheKey);
                 }
                 catch (Exception ex)
                 {
-                    onCachePutError(context, cacheKey, ex);
+                    onCachePutError?.Invoke(context, cacheKey, ex);
                 }
             }
 

@@ -22,7 +22,7 @@ namespace Polly.Timeout
         {
             _timeoutProvider = timeoutProvider ?? throw new ArgumentNullException(nameof(timeoutProvider));
             _timeoutStrategy = timeoutStrategy;
-            _onTimeoutAsync = onTimeoutAsync ?? throw new ArgumentNullException(nameof(onTimeoutAsync));
+            _onTimeoutAsync = onTimeoutAsync;
         }
 
         /// <inheritdoc/>
@@ -61,7 +61,7 @@ namespace Polly.Timeout
         {
             _timeoutProvider = timeoutProvider ?? throw new ArgumentNullException(nameof(timeoutProvider));
             _timeoutStrategy = timeoutStrategy;
-            _onTimeoutAsync = onTimeoutAsync ?? throw new ArgumentNullException(nameof(onTimeoutAsync));
+            _onTimeoutAsync = onTimeoutAsync;
         }
 
         /// <inheritdoc/>

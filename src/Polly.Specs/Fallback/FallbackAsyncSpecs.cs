@@ -57,7 +57,7 @@ namespace Polly.Specs.Fallback
         }
 
         [Fact]
-        public void Should_throw_when_onFallback_delegate_is_null()
+        public void Should_not_throw_when_onFallback_delegate_is_null()
         {
             Func<CancellationToken, Task> fallbackActionAsync  = ct => TaskHelper.EmptyTask;
             Func<Exception, Task> onFallbackAsync = null;
@@ -66,12 +66,11 @@ namespace Polly.Specs.Fallback
                                     .Handle<DivideByZeroException>()
                                     .FallbackAsync(fallbackActionAsync, onFallbackAsync);
 
-            policy.Should().Throw<ArgumentNullException>()
-                .And.ParamName.Should().Be("onFallbackAsync");
+            policy.Should().NotThrow();
         }
 
         [Fact]
-        public void Should_throw_when_onFallback_delegate_is_null_with_context()
+        public void Should_not_throw_when_onFallback_delegate_is_null_with_context()
         {
             Func<Context, CancellationToken, Task> fallbackActionAsync  = (_, __) => TaskHelper.EmptyTask;
             Func<Exception, Context, Task> onFallbackAsync = null;
@@ -80,8 +79,7 @@ namespace Polly.Specs.Fallback
                                     .Handle<DivideByZeroException>()
                                     .FallbackAsync(fallbackActionAsync, onFallbackAsync);
 
-            policy.Should().Throw<ArgumentNullException>()
-                .And.ParamName.Should().Be("onFallbackAsync");
+            policy.Should().NotThrow();
         }
 
         #endregion

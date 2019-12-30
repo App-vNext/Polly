@@ -71,7 +71,7 @@ namespace Polly.Retry
 
                     TimeSpan waitDuration = sleepDurationsEnumerator?.Current ?? (sleepDurationProvider?.Invoke(tryCount, outcome, context) ?? TimeSpan.Zero);
                 
-                    onRetry(outcome, waitDuration, tryCount, context);
+                    onRetry?.Invoke(outcome, waitDuration, tryCount, context);
 
                     if (waitDuration > TimeSpan.Zero)
                     {

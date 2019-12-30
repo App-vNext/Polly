@@ -42,7 +42,7 @@ namespace Polly.Fallback
                 delegateOutcome = new DelegateResult<TResult>(handledException);
             }
 
-            await onFallbackAsync(delegateOutcome, context).ConfigureAwait(continueOnCapturedContext);
+            if (onFallbackAsync != null) { await onFallbackAsync(delegateOutcome, context).ConfigureAwait(continueOnCapturedContext); }
 
             return await fallbackAction(delegateOutcome, context, cancellationToken).ConfigureAwait(continueOnCapturedContext);
         }

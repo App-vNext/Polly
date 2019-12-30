@@ -19,7 +19,7 @@ namespace Polly.Fallback
             Action<Exception, Context, CancellationToken> fallbackAction)
             : base(policyBuilder)
         {
-            _onFallback = onFallback ?? throw new ArgumentNullException(nameof(onFallback));
+            _onFallback = onFallback;
             _fallbackAction = fallbackAction ?? throw new ArgumentNullException(nameof(fallbackAction));
         }
 
@@ -32,7 +32,7 @@ namespace Polly.Fallback
                 cancellationToken, 
                 ExceptionPredicates,
                 ResultPredicates<EmptyStruct>.None,
-                (outcome, ctx) => _onFallback(outcome.Exception, ctx),
+                _onFallback == null ? (Action<DelegateResult<EmptyStruct>, Context>)null : (outcome, ctx) => _onFallback(outcome.Exception, ctx),
                 (outcome, ctx, ct) => { _fallbackAction(outcome.Exception, ctx, ct); return EmptyStruct.Instance; });
 
         /// <inheritdoc/>
@@ -55,7 +55,7 @@ namespace Polly.Fallback
             Func<DelegateResult<TResult>, Context, CancellationToken, TResult> fallbackAction
             ) : base(policyBuilder)
         {
-            _onFallback = onFallback ?? throw new ArgumentNullException(nameof(onFallback));
+            _onFallback = onFallback;
             _fallbackAction = fallbackAction ?? throw new ArgumentNullException(nameof(fallbackAction));
         }
 

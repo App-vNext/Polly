@@ -73,7 +73,7 @@ namespace Polly.Retry
 
                     TimeSpan waitDuration = sleepDurationsEnumerator?.Current ?? (sleepDurationProvider?.Invoke(tryCount, outcome, context) ?? TimeSpan.Zero);
 
-                    await onRetryAsync(outcome, waitDuration, tryCount, context).ConfigureAwait(continueOnCapturedContext);
+                    if (onRetryAsync != null) { await onRetryAsync(outcome, waitDuration, tryCount, context).ConfigureAwait(continueOnCapturedContext); }
 
                     if (waitDuration > TimeSpan.Zero)
                     {

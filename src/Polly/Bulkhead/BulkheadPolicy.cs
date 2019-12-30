@@ -20,7 +20,7 @@ namespace Polly.Bulkhead
             Action<Context> onBulkheadRejected)
         {
             _maxQueueingActions = maxQueueingActions;
-            _onBulkheadRejected = onBulkheadRejected ?? throw new ArgumentNullException(nameof(onBulkheadRejected));
+            _onBulkheadRejected = onBulkheadRejected;
 
             (_maxParallelizationSemaphore, _maxQueuedActionsSemaphore) = BulkheadSemaphoreFactory.CreateBulkheadSemaphores(maxParallelization, maxQueueingActions);
         }
@@ -69,7 +69,7 @@ namespace Polly.Bulkhead
             Action<Context> onBulkheadRejected)
         {
             _maxQueueingActions = maxQueueingActions;
-            _onBulkheadRejected = onBulkheadRejected ?? throw new ArgumentNullException(nameof(onBulkheadRejected));
+            _onBulkheadRejected = onBulkheadRejected;
 
             (_maxParallelizationSemaphore, _maxQueuedActionsSemaphore) = BulkheadSemaphoreFactory.CreateBulkheadSemaphores(maxParallelization, maxQueueingActions);
         }

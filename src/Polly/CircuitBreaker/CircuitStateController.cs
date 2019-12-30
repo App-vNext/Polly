@@ -46,7 +46,7 @@ namespace Polly.CircuitBreaker
                     if (_circuitState == CircuitState.Open && !IsInAutomatedBreak_NeedsLock)
                     {
                         _circuitState = CircuitState.HalfOpen;
-                        _onHalfOpen();
+                        _onHalfOpen?.Invoke();
                     }
                     return _circuitState;
                 }
@@ -106,7 +106,7 @@ namespace Polly.CircuitBreaker
             var transitionedState = _circuitState;
             _circuitState = CircuitState.Open;
 
-            _onBreak(_lastOutcome, transitionedState, durationOfBreak, context);
+            _onBreak?.Invoke(_lastOutcome, transitionedState, durationOfBreak, context);
         }
 
         public void Reset() => OnCircuitReset(Context.None());
@@ -120,7 +120,7 @@ namespace Polly.CircuitBreaker
             _circuitState = CircuitState.Closed;
             if (priorState != CircuitState.Closed)
             {
-                _onReset(context);
+                _onReset?.Invoke(context);
             }
         }
 

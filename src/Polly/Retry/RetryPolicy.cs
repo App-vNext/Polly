@@ -27,23 +27,24 @@ namespace Polly.Retry
             _permittedRetryCount = permittedRetryCount;
             _sleepDurationsEnumerable = sleepDurationsEnumerable;
             _sleepDurationProvider = sleepDurationProvider;
-            _onRetry = onRetry ?? throw new ArgumentNullException(nameof(onRetry));
+            _onRetry = onRetry;
         }
 
         /// <inheritdoc/>
-        protected override TResult Implementation<TResult>(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken)
+        protected override TResult Implementation<TResult>(Func<Context, CancellationToken, TResult> action,
+            Context context, CancellationToken cancellationToken)
             => RetryEngine.Implementation(
-                    action, 
-                    context, 
-                    cancellationToken,
-                    ExceptionPredicates,
-                    ResultPredicates<TResult>.None, 
-                    (outcome, timespan, retryCount, ctx) => _onRetry(outcome.Exception, timespan, retryCount, ctx),
-                    _permittedRetryCount,
-                    _sleepDurationsEnumerable,
-                    _sleepDurationProvider != null
-                        ? (retryCount, outcome, ctx) => _sleepDurationProvider(retryCount, outcome.Exception, ctx)
-                        : (Func<int, DelegateResult<TResult>, Context, TimeSpan>)null
+                action,
+                context,
+                cancellationToken,
+                ExceptionPredicates,
+                ResultPredicates<TResult>.None,
+                _onRetry == null ? (Action<DelegateResult<TResult>, TimeSpan, int, Context>)null : (outcome, timespan, retryCount, ctx) => _onRetry(outcome.Exception, timespan, retryCount, ctx),
+                _permittedRetryCount,
+                _sleepDurationsEnumerable,
+                _sleepDurationProvider != null
+                    ? (retryCount, outcome, ctx) => _sleepDurationProvider(retryCount, outcome.Exception, ctx)
+                    : (Func<int, DelegateResult<TResult>, Context, TimeSpan>)null
                 );
     }
 
@@ -70,7 +71,7 @@ namespace Polly.Retry
             _permittedRetryCount = permittedRetryCount;
             _sleepDurationsEnumerable = sleepDurationsEnumerable;
             _sleepDurationProvider = sleepDurationProvider;
-            _onRetry = onRetry ?? throw new ArgumentNullException(nameof(onRetry));
+            _onRetry = onRetry;
         }
 
         /// <inheritdoc/>

@@ -96,7 +96,7 @@ namespace Polly.Specs.Fallback
         }
 
         [Fact]
-        public void Should_throw_when_onFallback_delegate_is_null()
+        public void Should_not_throw_when_onFallback_delegate_is_null()
         {
             Action fallbackAction = () => { };
             Action<Exception> onFallback = null;
@@ -105,12 +105,11 @@ namespace Polly.Specs.Fallback
                                     .Handle<DivideByZeroException>()
                                     .Fallback(fallbackAction, onFallback);
 
-            policy.Should().Throw<ArgumentNullException>()
-                .And.ParamName.Should().Be("onFallback");
+            policy.Should().NotThrow();
         }
 
         [Fact]
-        public void Should_throw_when_onFallback_delegate_is_null_with_action_with_cancellation()
+        public void Should_not_throw_when_onFallback_delegate_is_null_with_action_with_cancellation()
         {
             Action<CancellationToken> fallbackAction = ct => { };
             Action<Exception> onFallback = null;
@@ -119,12 +118,11 @@ namespace Polly.Specs.Fallback
                 .Handle<DivideByZeroException>()
                 .Fallback(fallbackAction, onFallback);
 
-            policy.Should().Throw<ArgumentNullException>()
-                .And.ParamName.Should().Be("onFallback");
+            policy.Should().NotThrow();
         }
 
         [Fact]
-        public void Should_throw_when_onFallback_delegate_is_null_with_context()
+        public void Should_not_throw_when_onFallback_delegate_is_null_with_context()
         {
             Action<Context> fallbackAction = _ => { };
             Action<Exception, Context> onFallback = null;
@@ -133,12 +131,11 @@ namespace Polly.Specs.Fallback
                                     .Handle<DivideByZeroException>()
                                     .Fallback(fallbackAction, onFallback);
 
-            policy.Should().Throw<ArgumentNullException>()
-                .And.ParamName.Should().Be("onFallback");
+            policy.Should().NotThrow();
         }
 
         [Fact]
-        public void Should_throw_when_onFallback_delegate_is_null_with_context_with_action_with_cancellation()
+        public void Should_not_throw_when_onFallback_delegate_is_null_with_context_with_action_with_cancellation()
         {
             Action<Context, CancellationToken> fallbackAction = (_, __) => { };
             Action<Exception, Context> onFallback = null;
@@ -147,8 +144,7 @@ namespace Polly.Specs.Fallback
                                     .Handle<DivideByZeroException>()
                                     .Fallback(fallbackAction, onFallback);
 
-            policy.Should().Throw<ArgumentNullException>()
-                .And.ParamName.Should().Be("onFallback");
+            policy.Should().NotThrow();
         }
 
         #endregion

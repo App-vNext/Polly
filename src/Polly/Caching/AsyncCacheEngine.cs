@@ -38,16 +38,16 @@ namespace Polly.Caching
             {
                 cacheHit = false;
                 valueFromCache = default;
-                onCacheGetError(context, cacheKey, ex);
+                onCacheGetError?.Invoke(context, cacheKey, ex);
             }
             if (cacheHit)
             {
-                onCacheGet(context, cacheKey);
+                onCacheGet?.Invoke(context, cacheKey);
                 return valueFromCache;
             }
             else
             {
-                onCacheMiss(context, cacheKey);
+                onCacheMiss?.Invoke(context, cacheKey);
             }
 
             TResult result = await action(context, cancellationToken).ConfigureAwait(continueOnCapturedContext);
@@ -58,11 +58,11 @@ namespace Polly.Caching
                 try
                 {
                     await cacheProvider.PutAsync(cacheKey, result, ttl, cancellationToken, continueOnCapturedContext).ConfigureAwait(continueOnCapturedContext);
-                    onCachePut(context, cacheKey);
+                    onCachePut?.Invoke(context, cacheKey);
                 }
                 catch (Exception ex)
                 {
-                    onCachePutError(context, cacheKey, ex);
+                    onCachePutError?.Invoke(context, cacheKey, ex);
                 }
             }
 

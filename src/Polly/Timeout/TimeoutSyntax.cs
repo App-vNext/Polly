@@ -6,6 +6,8 @@ namespace Polly
 {
     public partial class Policy
     {
+        private const TimeoutStrategy DefaultTimeoutStrategy = TimeoutStrategy.Optimistic;
+
         /// <summary>
         /// Builds a <see cref="Policy"/> that will wait for a delegate to complete for a specified period of time. A <see cref="TimeoutRejectedException"/> will be thrown if the delegate does not complete within the configured timeout.
         /// </summary>
@@ -15,9 +17,8 @@ namespace Polly
         public static ISyncTimeoutPolicy Timeout(int seconds)
         {
             TimeoutValidator.ValidateSecondsTimeout(seconds);
-            Action<Context, TimeSpan, Task, Exception> doNothing = (_, __, ___, ____) => { };
 
-            return Timeout(ctx => TimeSpan.FromSeconds(seconds), TimeoutStrategy.Optimistic, doNothing);
+            return Timeout(ctx => TimeSpan.FromSeconds(seconds), DefaultTimeoutStrategy, onTimeout: (Action<Context, TimeSpan, Task, Exception>)null);
         }
 
         /// <summary>
@@ -30,9 +31,8 @@ namespace Polly
         public static ISyncTimeoutPolicy Timeout(int seconds, TimeoutStrategy timeoutStrategy)
         {
             TimeoutValidator.ValidateSecondsTimeout(seconds);
-            Action<Context, TimeSpan, Task, Exception> doNothing = (_, __, ___, ____) => { };
 
-            return Timeout(ctx => TimeSpan.FromSeconds(seconds), timeoutStrategy, doNothing);
+            return Timeout(ctx => TimeSpan.FromSeconds(seconds), timeoutStrategy, onTimeout: (Action<Context, TimeSpan, Task, Exception>)null);
         }
 
         /// <summary>
@@ -43,12 +43,11 @@ namespace Polly
         /// <remarks>The Task parameter will be null if the executed action responded cooperatively to cancellation before the policy timed it out.</remarks></param>
         /// <returns>The policy instance.</returns>
         /// <exception cref="ArgumentOutOfRangeException">seconds;Value must be greater than zero.</exception>
-        /// <exception cref="ArgumentNullException">onTimeout</exception>
         public static ISyncTimeoutPolicy Timeout(int seconds, Action<Context, TimeSpan, Task> onTimeout)
         {
             TimeoutValidator.ValidateSecondsTimeout(seconds);
 
-            return Timeout(ctx => TimeSpan.FromSeconds(seconds), TimeoutStrategy.Optimistic, onTimeout);
+            return Timeout(ctx => TimeSpan.FromSeconds(seconds), DefaultTimeoutStrategy, onTimeout);
         }
 
         /// <summary>
@@ -59,12 +58,11 @@ namespace Polly
         /// <remarks>The Task parameter will be null if the executed action responded cooperatively to cancellation before the policy timed it out.</remarks></param>
         /// <returns>The policy instance.</returns>
         /// <exception cref="ArgumentOutOfRangeException">seconds;Value must be greater than zero.</exception>
-        /// <exception cref="ArgumentNullException">onTimeout</exception>
         public static ISyncTimeoutPolicy Timeout(int seconds, Action<Context, TimeSpan, Task, Exception> onTimeout)
         {
-            if (seconds <= 0) throw new ArgumentOutOfRangeException(nameof(seconds));
+            TimeoutValidator.ValidateSecondsTimeout(seconds);
 
-            return Timeout(ctx => TimeSpan.FromSeconds(seconds), TimeoutStrategy.Optimistic, onTimeout);
+            return Timeout(ctx => TimeSpan.FromSeconds(seconds), DefaultTimeoutStrategy, onTimeout);
         }
 
         /// <summary>
@@ -76,7 +74,6 @@ namespace Polly
         /// <remarks>The Task parameter will be null if the executed action responded cooperatively to cancellation before the policy timed it out.</remarks></param>
         /// <returns>The policy instance.</returns>
         /// <exception cref="ArgumentOutOfRangeException">seconds;Value must be greater than zero.</exception>
-        /// <exception cref="ArgumentNullException">onTimeout</exception>
         public static ISyncTimeoutPolicy Timeout(int seconds, TimeoutStrategy timeoutStrategy, Action<Context, TimeSpan, Task> onTimeout)
         {
             TimeoutValidator.ValidateSecondsTimeout(seconds);
@@ -93,10 +90,9 @@ namespace Polly
         /// <remarks>The Task parameter will be null if the executed action responded cooperatively to cancellation before the policy timed it out.</remarks></param>
         /// <returns>The policy instance.</returns>
         /// <exception cref="ArgumentOutOfRangeException">seconds;Value must be greater than zero.</exception>
-        /// <exception cref="ArgumentNullException">onTimeout</exception>
         public static ISyncTimeoutPolicy Timeout(int seconds, TimeoutStrategy timeoutStrategy, Action<Context, TimeSpan, Task, Exception> onTimeout)
         {
-            if (seconds <= 0) throw new ArgumentOutOfRangeException(nameof(seconds));
+            TimeoutValidator.ValidateSecondsTimeout(seconds);
 
             return Timeout(ctx => TimeSpan.FromSeconds(seconds), timeoutStrategy, onTimeout);
         }
@@ -110,9 +106,8 @@ namespace Polly
         public static ISyncTimeoutPolicy Timeout(TimeSpan timeout)
         {
             TimeoutValidator.ValidateTimeSpanTimeout(timeout);
-            Action<Context, TimeSpan, Task, Exception> doNothing = (_, __, ___, ____) => { };
 
-            return Timeout(ctx => timeout, TimeoutStrategy.Optimistic, doNothing);
+            return Timeout(ctx => timeout, DefaultTimeoutStrategy, onTimeout: (Action<Context, TimeSpan, Task, Exception>)null);
         }
 
         /// <summary>
@@ -125,9 +120,8 @@ namespace Polly
         public static ISyncTimeoutPolicy Timeout(TimeSpan timeout, TimeoutStrategy timeoutStrategy)
         {
             TimeoutValidator.ValidateTimeSpanTimeout(timeout);
-            Action<Context, TimeSpan, Task, Exception> doNothing = (_, __, ___, ____) => { };
 
-            return Timeout(ctx => timeout, timeoutStrategy, doNothing);
+            return Timeout(ctx => timeout, timeoutStrategy, onTimeout: (Action<Context, TimeSpan, Task, Exception>)null);
         }
 
         /// <summary>
@@ -138,12 +132,11 @@ namespace Polly
         /// <remarks>The Task parameter will be null if the executed action responded cooperatively to cancellation before the policy timed it out.</remarks></param>
         /// <returns>The policy instance.</returns>
         /// <exception cref="ArgumentOutOfRangeException">timeout;Value must be a positive TimeSpan (or Timeout.InfiniteTimeSpan to indicate no timeout)</exception>
-        /// <exception cref="ArgumentNullException">onTimeout</exception>
         public static ISyncTimeoutPolicy Timeout(TimeSpan timeout, Action<Context, TimeSpan, Task> onTimeout)
         {
             TimeoutValidator.ValidateTimeSpanTimeout(timeout);
 
-            return Timeout(ctx => timeout, TimeoutStrategy.Optimistic, onTimeout);
+            return Timeout(ctx => timeout, DefaultTimeoutStrategy, onTimeout);
         }
 
         /// <summary>
@@ -154,12 +147,11 @@ namespace Polly
         /// <remarks>The Task parameter will be null if the executed action responded cooperatively to cancellation before the policy timed it out.</remarks></param>
         /// <returns>The policy instance.</returns>
         /// <exception cref="ArgumentOutOfRangeException">timeout;Value must be greater than zero.</exception>
-        /// <exception cref="ArgumentNullException">onTimeout</exception>
         public static ISyncTimeoutPolicy Timeout(TimeSpan timeout, Action<Context, TimeSpan, Task, Exception> onTimeout)
         {
             TimeoutValidator.ValidateTimeSpanTimeout(timeout);
 
-            return Timeout(ctx => timeout, TimeoutStrategy.Optimistic, onTimeout);
+            return Timeout(ctx => timeout, DefaultTimeoutStrategy, onTimeout);
         }
 
         /// <summary>
@@ -171,7 +163,6 @@ namespace Polly
         /// <remarks>The Task parameter will be null if the executed action responded cooperatively to cancellation before the policy timed it out.</remarks></param>
         /// <returns>The policy instance.</returns>
         /// <exception cref="ArgumentOutOfRangeException">timeout;Value must be a positive TimeSpan (or Timeout.InfiniteTimeSpan to indicate no timeout)</exception>
-        /// <exception cref="ArgumentNullException">onTimeout</exception>
         public static ISyncTimeoutPolicy Timeout(TimeSpan timeout, TimeoutStrategy timeoutStrategy, Action<Context, TimeSpan, Task> onTimeout)
         {
             TimeoutValidator.ValidateTimeSpanTimeout(timeout);
@@ -188,7 +179,6 @@ namespace Polly
         /// <remarks>The Task parameter will be null if the executed action responded cooperatively to cancellation before the policy timed it out.</remarks></param>
         /// <returns>The policy instance.</returns>
         /// <exception cref="ArgumentOutOfRangeException">timeout;Value must be greater than zero.</exception>
-        /// <exception cref="ArgumentNullException">onTimeout</exception>
         public static ISyncTimeoutPolicy Timeout(TimeSpan timeout, TimeoutStrategy timeoutStrategy, Action<Context, TimeSpan, Task, Exception> onTimeout)
         {
             TimeoutValidator.ValidateTimeSpanTimeout(timeout);
@@ -206,8 +196,7 @@ namespace Polly
         {
             if (timeoutProvider == null) throw new ArgumentNullException(nameof(timeoutProvider));
 
-            Action<Context, TimeSpan, Task, Exception> doNothing = (_, __, ___, ____) => { };
-            return Timeout(ctx => timeoutProvider(), TimeoutStrategy.Optimistic, doNothing);
+            return Timeout(ctx => timeoutProvider(), DefaultTimeoutStrategy, onTimeout: (Action<Context, TimeSpan, Task, Exception>)null);
         }
 
         /// <summary>
@@ -221,8 +210,7 @@ namespace Polly
         {
             if (timeoutProvider == null) throw new ArgumentNullException(nameof(timeoutProvider));
 
-            Action<Context, TimeSpan, Task, Exception> doNothing = (_, __, ___, ____) => { };
-            return Timeout(ctx => timeoutProvider(), timeoutStrategy, doNothing);
+            return Timeout(ctx => timeoutProvider(), timeoutStrategy, onTimeout: (Action<Context, TimeSpan, Task, Exception>)null);
         }
 
         /// <summary>
@@ -233,12 +221,11 @@ namespace Polly
         /// <remarks>The Task parameter will be null if the executed action responded cooperatively to cancellation before the policy timed it out.</remarks></param>
         /// <returns>The policy instance.</returns>
         /// <exception cref="ArgumentNullException">timeoutProvider</exception>
-        /// <exception cref="ArgumentNullException">onTimeout</exception>
         public static ISyncTimeoutPolicy Timeout(Func<TimeSpan> timeoutProvider, Action<Context, TimeSpan, Task> onTimeout)
         {
             if (timeoutProvider == null) throw new ArgumentNullException(nameof(timeoutProvider));
 
-            return Timeout(ctx => timeoutProvider(), TimeoutStrategy.Optimistic, onTimeout);
+            return Timeout(ctx => timeoutProvider(), DefaultTimeoutStrategy, onTimeout);
         }
 
         /// <summary>
@@ -249,12 +236,11 @@ namespace Polly
         /// <remarks>The Task parameter will be null if the executed action responded cooperatively to cancellation before the policy timed it out.</remarks></param>
         /// <returns>The policy instance.</returns>
         /// <exception cref="ArgumentNullException">timeoutProvider</exception>
-        /// <exception cref="ArgumentNullException">onTimeout</exception>
         public static ISyncTimeoutPolicy Timeout(Func<TimeSpan> timeoutProvider, Action<Context, TimeSpan, Task, Exception> onTimeout)
         {
             if (timeoutProvider == null) throw new ArgumentNullException(nameof(timeoutProvider));
 
-            return Timeout(ctx => timeoutProvider(), TimeoutStrategy.Optimistic, onTimeout);
+            return Timeout(ctx => timeoutProvider(), DefaultTimeoutStrategy, onTimeout);
         }
 
         /// <summary>
@@ -266,7 +252,6 @@ namespace Polly
         /// <remarks>The Task parameter will be null if the executed action responded cooperatively to cancellation before the policy timed it out.</remarks></param>
         /// <returns>The policy instance.</returns>
         /// <exception cref="ArgumentNullException">timeoutProvider</exception>
-        /// <exception cref="ArgumentNullException">onTimeout</exception>
         public static ISyncTimeoutPolicy Timeout(Func<TimeSpan> timeoutProvider, TimeoutStrategy timeoutStrategy, Action<Context, TimeSpan, Task> onTimeout)
         {
             if (timeoutProvider == null) throw new ArgumentNullException(nameof(timeoutProvider));
@@ -283,7 +268,6 @@ namespace Polly
         /// <remarks>The Task parameter will be null if the executed action responded cooperatively to cancellation before the policy timed it out.</remarks></param>
         /// <returns>The policy instance.</returns>
         /// <exception cref="ArgumentNullException">timeoutProvider</exception>
-        /// <exception cref="ArgumentNullException">onTimeout</exception>
         public static ISyncTimeoutPolicy Timeout(Func<TimeSpan> timeoutProvider, TimeoutStrategy timeoutStrategy, Action<Context, TimeSpan, Task, Exception> onTimeout)
         {
             if (timeoutProvider == null) throw new ArgumentNullException(nameof(timeoutProvider));
@@ -299,8 +283,7 @@ namespace Polly
         /// <returns>The policy instance.</returns>
         public static ISyncTimeoutPolicy Timeout(Func<Context, TimeSpan> timeoutProvider)
         {
-            Action<Context, TimeSpan, Task, Exception> doNothing = (_, __, ___, ____) => { };
-            return Timeout(timeoutProvider, TimeoutStrategy.Optimistic, doNothing);
+            return Timeout(timeoutProvider, DefaultTimeoutStrategy, onTimeout: (Action<Context, TimeSpan, Task, Exception>)null);
         }
 
         /// <summary>
@@ -312,8 +295,7 @@ namespace Polly
         /// <exception cref="ArgumentNullException">timeoutProvider</exception>
         public static ISyncTimeoutPolicy Timeout(Func<Context, TimeSpan> timeoutProvider, TimeoutStrategy timeoutStrategy)
         {
-            Action<Context, TimeSpan, Task, Exception> doNothing = (_, __, ___, ____) => { };
-            return Timeout(timeoutProvider, timeoutStrategy, doNothing);
+            return Timeout(timeoutProvider, timeoutStrategy, onTimeout: (Action<Context, TimeSpan, Task, Exception>)null);
         }
 
         /// <summary>
@@ -324,9 +306,8 @@ namespace Polly
         /// <remarks>The Task parameter will be null if the executed action responded cooperatively to cancellation before the policy timed it out.</remarks></param>
         /// <returns>The policy instance.</returns>
         /// <exception cref="ArgumentNullException">timeoutProvider</exception>
-        /// <exception cref="ArgumentNullException">onTimeout</exception>
         public static ISyncTimeoutPolicy Timeout(Func<Context, TimeSpan> timeoutProvider, Action<Context, TimeSpan, Task> onTimeout)
-            => Timeout(timeoutProvider, TimeoutStrategy.Optimistic, onTimeout);
+            => Timeout(timeoutProvider, DefaultTimeoutStrategy, onTimeout);
 
         /// <summary>
         /// Builds a <see cref="Policy" /> that will wait for a delegate to complete for a specified period of time. A <see cref="TimeoutRejectedException" /> will be thrown if the delegate does not complete within the configured timeout.
@@ -336,9 +317,8 @@ namespace Polly
         /// <remarks>The Task parameter will be null if the executed action responded cooperatively to cancellation before the policy timed it out.</remarks></param>
         /// <returns>The policy instance.</returns>
         /// <exception cref="ArgumentNullException">timeoutProvider</exception>
-        /// <exception cref="ArgumentNullException">onTimeout</exception>
         public static ISyncTimeoutPolicy Timeout(Func<Context, TimeSpan> timeoutProvider, Action<Context, TimeSpan, Task, Exception> onTimeout)
-            => Timeout(timeoutProvider, TimeoutStrategy.Optimistic, onTimeout);
+            => Timeout(timeoutProvider, DefaultTimeoutStrategy, onTimeout);
 
         /// <summary>
         /// Builds a <see cref="Policy" /> that will wait for a delegate to complete for a specified period of time. A <see cref="TimeoutRejectedException" /> will be thrown if the delegate does not complete within the configured timeout.
@@ -349,12 +329,9 @@ namespace Polly
         /// <remarks>The Task parameter will be null if the executed action responded cooperatively to cancellation before the policy timed it out.</remarks></param>
         /// <returns>The policy instance.</returns>
         /// <exception cref="ArgumentNullException">timeoutProvider</exception>
-        /// <exception cref="ArgumentNullException">onTimeout</exception>
         public static ISyncTimeoutPolicy Timeout(Func<Context, TimeSpan> timeoutProvider, TimeoutStrategy timeoutStrategy, Action<Context, TimeSpan, Task> onTimeout)
         {
-            if (onTimeout == null) throw new ArgumentNullException(nameof(onTimeout));
-
-            return Timeout(timeoutProvider, timeoutStrategy, (ctx, timeout, task, ex) => onTimeout(ctx, timeout, task));
+            return Timeout(timeoutProvider, timeoutStrategy, onTimeout == null ? (Action<Context, TimeSpan, Task, Exception>)null : (ctx, timeout, task, ex) => onTimeout(ctx, timeout, task));
         }
 
         /// <summary>
@@ -366,14 +343,12 @@ namespace Polly
         /// <remarks>The Task parameter will be null if the executed action responded cooperatively to cancellation before the policy timed it out.</remarks></param>
         /// <returns>The policy instance.</returns>
         /// <exception cref="ArgumentNullException">timeoutProvider</exception>
-        /// <exception cref="ArgumentNullException">onTimeout</exception>
         public static ISyncTimeoutPolicy Timeout(
             Func<Context, TimeSpan> timeoutProvider, 
             TimeoutStrategy timeoutStrategy, 
             Action<Context, TimeSpan, Task, Exception> onTimeout)
         {
             if (timeoutProvider == null) throw new ArgumentNullException(nameof(timeoutProvider));
-            if (onTimeout == null) throw new ArgumentNullException(nameof(onTimeout));
 
             return new TimeoutPolicy(
                     timeoutProvider,

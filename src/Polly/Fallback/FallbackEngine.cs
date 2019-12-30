@@ -40,7 +40,7 @@ namespace Polly.Fallback
                 delegateOutcome = new DelegateResult<TResult>(handledException);
             }
 
-            onFallback(delegateOutcome, context);
+            onFallback?.Invoke(delegateOutcome, context);
 
             return fallbackAction(delegateOutcome, context, cancellationToken);
         }

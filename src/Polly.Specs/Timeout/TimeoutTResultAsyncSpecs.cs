@@ -118,44 +118,40 @@ namespace Polly.Specs.Timeout
         }
 
         [Fact]
-        public void Should_throw_when_onTimeout_is_null_with_timespan()
+        public void Should_not_throw_when_onTimeout_is_null_with_timespan()
         {
             Func<Context, TimeSpan, Task, Task> onTimeout = null;
             Action policy = () => Policy.TimeoutAsync<ResultPrimitive>(TimeSpan.FromMinutes(0.5), onTimeout);
 
-            policy.Should().Throw<ArgumentNullException>()
-                .And.ParamName.Should().Be("onTimeoutAsync");
+            policy.Should().NotThrow();
         }
 
         [Fact]
-        public void Should_throw_when_onTimeout_is_null_with_timespan_with_full_argument_list_onTimeout()
+        public void Should_not_throw_when_onTimeout_is_null_with_timespan_with_full_argument_list_onTimeout()
         {
             Func<Context, TimeSpan, Task, Exception, Task> onTimeout = null;
             Action policy = () => Policy.TimeoutAsync<ResultPrimitive>(TimeSpan.FromMinutes(0.5), onTimeout);
 
-            policy.Should().Throw<ArgumentNullException>()
-                .And.ParamName.Should().Be("onTimeoutAsync");
+            policy.Should().NotThrow();
         }
 
         [Fact]
-        public void Should_throw_when_onTimeout_is_null_with_seconds()
+        public void Should_not_throw_when_onTimeout_is_null_with_seconds()
         {
             Func<Context, TimeSpan, Task, Task> onTimeout = null;
             Action policy = () => Policy.TimeoutAsync<ResultPrimitive>(30, onTimeout);
 
-            policy.Should().Throw<ArgumentNullException>()
-                .And.ParamName.Should().Be("onTimeoutAsync");
+            policy.Should().NotThrow();
         }
 
 
         [Fact]
-        public void Should_throw_when_onTimeout_is_null_with_seconds_with_full_argument_list_onTimeout()
+        public void Should_not_throw_when_onTimeout_is_null_with_seconds_with_full_argument_list_onTimeout()
         {
             Func<Context, TimeSpan, Task, Exception, Task> onTimeout = null;
             Action policy = () => Policy.TimeoutAsync<ResultPrimitive>(30, onTimeout);
 
-            policy.Should().Throw<ArgumentNullException>()
-                .And.ParamName.Should().Be("onTimeoutAsync");
+            policy.Should().NotThrow();
         }
 
         [Fact]
@@ -168,23 +164,21 @@ namespace Polly.Specs.Timeout
         }
 
         [Fact]
-        public void Should_throw_when_onTimeout_is_null_with_timeoutprovider()
+        public void Should_not_throw_when_onTimeout_is_null_with_timeoutprovider()
         {
             Func<Context, TimeSpan, Task, Task> onTimeoutAsync = null;
             Action policy = () => Policy.TimeoutAsync<ResultPrimitive>(() => TimeSpan.FromSeconds(30), onTimeoutAsync);
 
-            policy.Should().Throw<ArgumentNullException>()
-                .And.ParamName.Should().Be("onTimeoutAsync");
+            policy.Should().NotThrow();
         }
 
         [Fact]
-        public void Should_throw_when_onTimeout_is_null_with_timeoutprovider_for_full_argument_list_onTimeout()
+        public void Should_not_throw_when_onTimeout_is_null_with_timeoutprovider_for_full_argument_list_onTimeout()
         {
             Func<Context, TimeSpan, Task, Exception, Task> onTimeoutAsync = null;
             Action policy = () => Policy.TimeoutAsync<ResultPrimitive>(() => TimeSpan.FromSeconds(30), onTimeoutAsync);
 
-            policy.Should().Throw<ArgumentNullException>()
-                .And.ParamName.Should().Be("onTimeoutAsync");
+            policy.Should().NotThrow();
         }
 
         [Fact]

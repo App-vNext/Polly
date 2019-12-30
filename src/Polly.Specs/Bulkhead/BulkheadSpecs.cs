@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Threading.Tasks;
 using Polly.Bulkhead;
 using Polly.Specs.Helpers.Bulkhead;
@@ -38,13 +37,12 @@ namespace Polly.Specs.Bulkhead
         }
 
         [Fact]
-        public void Should_throw_when_onBulkheadRejected_is_null()
+        public void Should_not_throw_when_onBulkheadRejected_is_null()
         {
             Action policy = () => Policy
                 .Bulkhead(1, 0, null);
 
-            policy.Should().Throw<ArgumentNullException>().And
-                .ParamName.Should().Be("onBulkheadRejected");
+            policy.Should().NotThrow();
         }
 
         #endregion
