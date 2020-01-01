@@ -33,7 +33,7 @@ namespace Polly
             wrappedDictionary = new Dictionary<string, object>(contextData);
         }
 
-#region IDictionary<string,object> implementation
+        #region IDictionary<string,object> implementation
 
         /// <inheritdoc cref="IDictionary{TKey,Value}"/>
         public ICollection<string> Keys => WrappedDictionary.Keys;

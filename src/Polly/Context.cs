@@ -17,7 +17,10 @@ namespace Polly
         /// Initializes a new instance of the <see cref="Context"/> class, with the specified <paramref name="operationKey"/>.
         /// </summary>
         /// <param name="operationKey">The operation key.</param>
-        public Context(String operationKey) => OperationKey = operationKey;
+        public Context(String operationKey) : this()
+        {
+            OperationKey = operationKey;
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Context"/> class.
