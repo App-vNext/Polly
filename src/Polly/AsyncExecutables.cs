@@ -229,13 +229,6 @@ namespace Polly
         private readonly Func<Context, CancellationToken, bool, T1, Task<TResult>> _func;
         private readonly T1 _arg1;
 
-        /// <summary>
-        /// Creates a <see cref="AsyncExecutableFunc{T1, TResult}"/> instance combining a func and an input parameter of type <typeparamref name="T1"/> to be used when executing it. 
-        /// This func may be executed through a policy at a later point in time.
-        /// <remarks>Combining the action and its input parameter into a short-lived struct, as shown here, allows users to pass data to actions executed through Polly policies without using closures, which would result in extra heap allocations.</remarks>
-        /// </summary>
-        /// <param name="func">The function.</param>
-        /// <param name="arg1">The parameter to pass, when executing the function.</param>
         public AsyncExecutableFunc(Func<Context, CancellationToken, bool, T1, Task<TResult>> func, T1 arg1)
         {
             _func = func;
@@ -253,14 +246,6 @@ namespace Polly
         private readonly T1 _arg1;
         private readonly T2 _arg2;
 
-        /// <summary>
-        /// Creates a <see cref="AsyncExecutableFunc{T1, TResult}"/> instance combining a func and an input parameter of type <typeparamref name="T1"/> to be used when executing it. 
-        /// This func may be executed through a policy at a later point in time.
-        /// <remarks>Combining the action and its input parameter into a short-lived struct, as shown here, allows users to pass data to actions executed through Polly policies without using closures, which would result in extra heap allocations.</remarks>
-        /// </summary>
-        /// <param name="func">The function.</param>
-        /// <param name="arg1">The parameter to pass, when executing the function.</param>
-        /// <param name="arg2">The parameter to pass, when executing the action.</param>
         public AsyncExecutableFunc(Func<Context, CancellationToken, bool, T1, T2, Task<TResult>> func, T1 arg1, T2 arg2)
         {
             _func = func;
