@@ -16,12 +16,6 @@ namespace Polly.NoOp
 
         /// <inheritdoc/>
         [DebuggerStepThrough]
-        protected override Task<TResult> ImplementationAsync<TResult>( Func<Context, CancellationToken,Task<TResult>> action, Context context, CancellationToken cancellationToken,
-            bool continueOnCapturedContext)
-            => NoOpEngine.ImplementationAsync(action, context, cancellationToken, continueOnCapturedContext);
-
-        /// <inheritdoc/>
-        [DebuggerStepThrough]
         protected override Task<TResult> ImplementationAsyncV8<TExecutableAsync, TResult>(TExecutableAsync action, Context context,
             CancellationToken cancellationToken, bool continueOnCapturedContext)
             => AsyncNoOpEngineV8.ExecuteAsync<TExecutableAsync, TResult>(action, context, cancellationToken, continueOnCapturedContext);
@@ -36,12 +30,6 @@ namespace Polly.NoOp
         internal AsyncNoOpPolicy() 
         {
         }
-
-        /// <inheritdoc/>
-        [DebuggerStepThrough]
-        protected override Task<TResult> ImplementationAsync(Func<Context, CancellationToken, Task<TResult>> action, Context context, CancellationToken cancellationToken,
-            bool continueOnCapturedContext)
-            => NoOpEngine.ImplementationAsync(action, context, cancellationToken, continueOnCapturedContext);
 
         /// <inheritdoc/>
         [DebuggerStepThrough]
