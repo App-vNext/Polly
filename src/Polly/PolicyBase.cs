@@ -13,6 +13,8 @@ namespace Polly
         /// </summary>
         protected internal ExceptionPredicates ExceptionPredicates { get; }
 
+        internal Context GetDefaultExecutionContext() => new Context();
+
         /// <summary>
         /// Defines a CancellationToken to use, when none is supplied.
         /// </summary>

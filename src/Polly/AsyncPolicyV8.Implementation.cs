@@ -6,7 +6,7 @@ namespace Polly
     /// <summary>
     /// Transient exception handling policies that can be applied to asynchronous delegates
     /// </summary>
-    public abstract partial class AsyncPolicyV8 : AsyncPolicy
+    public abstract partial class AsyncPolicyV8
     {
 /*
         /// <summary>

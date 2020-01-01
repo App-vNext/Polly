@@ -6,8 +6,7 @@ namespace Polly
     /// <summary>
     /// Transient exception handling policies that can be applied to asynchronous delegates
     /// </summary>
-    /// <typeparam name="TResult">The return type of delegates which may be executed through the policy.</typeparam>
-    public abstract class AsyncPolicyV8<TResult> : AsyncPolicy<TResult>
+    public abstract partial class AsyncPolicyV8<TResult>
     {
         /// <summary>
         /// Defines the implementation of a policy for async executions returning <typeparamref name="TResult"/>.
