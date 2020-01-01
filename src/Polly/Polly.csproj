@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <TargetFrameworks>netstandard1.1;netstandard2.0;net461;net472</TargetFrameworks>
+    <LangVersion>8.0</LangVersion>
     <AssemblyName>Polly</AssemblyName>
     <RootNamespace>Polly</RootNamespace>
     <Version>7.1.1</Version>
