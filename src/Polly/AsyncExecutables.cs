@@ -16,7 +16,7 @@ namespace Polly
         }
 
         /// <inheritdoc/>
-        public async Task<EmptyStruct> ExecuteAsync(Context context, CancellationToken cancellationToken, bool continueOnCapturedContext)
+        public readonly async Task<EmptyStruct> ExecuteAsync(Context context, CancellationToken cancellationToken, bool continueOnCapturedContext)
         {
             await _action().ConfigureAwait(continueOnCapturedContext);
             return EmptyStruct.Instance;
@@ -34,7 +34,7 @@ namespace Polly
         }
 
         /// <inheritdoc/>
-        public async Task<EmptyStruct> ExecuteAsync(Context context, CancellationToken cancellationToken, bool continueOnCapturedContext)
+        public readonly async Task<EmptyStruct> ExecuteAsync(Context context, CancellationToken cancellationToken, bool continueOnCapturedContext)
         {
             await _action(context).ConfigureAwait(continueOnCapturedContext);
             return EmptyStruct.Instance;
@@ -52,7 +52,7 @@ namespace Polly
         }
 
         /// <inheritdoc/>
-        public async Task<EmptyStruct> ExecuteAsync(Context context, CancellationToken cancellationToken, bool continueOnCapturedContext)
+        public readonly async Task<EmptyStruct> ExecuteAsync(Context context, CancellationToken cancellationToken, bool continueOnCapturedContext)
         {
             await _action(cancellationToken).ConfigureAwait(continueOnCapturedContext);
             return EmptyStruct.Instance;
@@ -70,7 +70,7 @@ namespace Polly
         }
 
         /// <inheritdoc/>
-        public async Task<EmptyStruct> ExecuteAsync(Context context, CancellationToken cancellationToken, bool continueOnCapturedContext)
+        public readonly async Task<EmptyStruct> ExecuteAsync(Context context, CancellationToken cancellationToken, bool continueOnCapturedContext)
         {
             await _action(context, cancellationToken).ConfigureAwait(continueOnCapturedContext);
             return EmptyStruct.Instance;
@@ -88,7 +88,7 @@ namespace Polly
         }
 
         /// <inheritdoc/>
-        public async Task<EmptyStruct> ExecuteAsync(Context context, CancellationToken cancellationToken, bool continueOnCapturedContext)
+        public readonly async Task<EmptyStruct> ExecuteAsync(Context context, CancellationToken cancellationToken, bool continueOnCapturedContext)
         {
             await _action(context, cancellationToken, continueOnCapturedContext).ConfigureAwait(continueOnCapturedContext);
             return EmptyStruct.Instance;
@@ -106,7 +106,7 @@ namespace Polly
             _arg1 = arg1;
         }
 
-        public async Task<EmptyStruct> ExecuteAsync(Context context, CancellationToken cancellationToken, bool continueOnCapturedContext)
+        public readonly async Task<EmptyStruct> ExecuteAsync(Context context, CancellationToken cancellationToken, bool continueOnCapturedContext)
         {
             await _action(context, cancellationToken, continueOnCapturedContext, _arg1).ConfigureAwait(continueOnCapturedContext);
             return EmptyStruct.Instance;
@@ -126,7 +126,7 @@ namespace Polly
             _arg2 = arg2;
         }
 
-        public async Task<EmptyStruct> ExecuteAsync(Context context, CancellationToken cancellationToken, bool continueOnCapturedContext)
+        public readonly async Task<EmptyStruct> ExecuteAsync(Context context, CancellationToken cancellationToken, bool continueOnCapturedContext)
         {
             await _action(context, cancellationToken, continueOnCapturedContext, _arg1, _arg2).ConfigureAwait(continueOnCapturedContext);
             return EmptyStruct.Instance;
@@ -148,7 +148,7 @@ namespace Polly
         }
 
         /// <inheritdoc/>
-        public Task<TResult> ExecuteAsync(Context context, CancellationToken cancellationToken, bool continueOnCapturedContext) => _func();
+        public readonly Task<TResult> ExecuteAsync(Context context, CancellationToken cancellationToken, bool continueOnCapturedContext) => _func();
     }
 
     /// <inheritdoc/>
@@ -166,7 +166,7 @@ namespace Polly
         }
 
         /// <inheritdoc/>
-        public Task<TResult> ExecuteAsync(Context context, CancellationToken cancellationToken, bool continueOnCapturedContext) => _func(context);
+        public readonly Task<TResult> ExecuteAsync(Context context, CancellationToken cancellationToken, bool continueOnCapturedContext) => _func(context);
     }
 
     /// <inheritdoc/>
@@ -184,7 +184,7 @@ namespace Polly
         }
 
         /// <inheritdoc/>
-        public Task<TResult> ExecuteAsync(Context context, CancellationToken cancellationToken, bool continueOnCapturedContext) => _func(cancellationToken);
+        public readonly Task<TResult> ExecuteAsync(Context context, CancellationToken cancellationToken, bool continueOnCapturedContext) => _func(cancellationToken);
     }
 
     /// <inheritdoc/>
@@ -202,7 +202,7 @@ namespace Polly
         }
 
         /// <inheritdoc/>
-        public Task<TResult> ExecuteAsync(Context context, CancellationToken cancellationToken, bool continueOnCapturedContext) => _func(context, cancellationToken);
+        public readonly Task<TResult> ExecuteAsync(Context context, CancellationToken cancellationToken, bool continueOnCapturedContext) => _func(context, cancellationToken);
     }
 
     /// <inheritdoc/>
@@ -220,7 +220,7 @@ namespace Polly
         }
 
         /// <inheritdoc/>
-        public Task<TResult> ExecuteAsync(Context context, CancellationToken cancellationToken, bool continueOnCapturedContext) => _func(context, cancellationToken, continueOnCapturedContext);
+        public readonly Task<TResult> ExecuteAsync(Context context, CancellationToken cancellationToken, bool continueOnCapturedContext) => _func(context, cancellationToken, continueOnCapturedContext);
     }
 
     /// <inheritdoc/>
@@ -236,7 +236,7 @@ namespace Polly
         }
 
         /// <inheritdoc/>
-        public Task<TResult> ExecuteAsync(Context context, CancellationToken cancellationToken, bool continueOnCapturedContext) => _func(context, cancellationToken, continueOnCapturedContext, _arg1);
+        public readonly Task<TResult> ExecuteAsync(Context context, CancellationToken cancellationToken, bool continueOnCapturedContext) => _func(context, cancellationToken, continueOnCapturedContext, _arg1);
     }
 
     /// <inheritdoc/>
@@ -254,6 +254,6 @@ namespace Polly
         }
 
         /// <inheritdoc/>
-        public Task<TResult> ExecuteAsync(Context context, CancellationToken cancellationToken, bool continueOnCapturedContext) => _func(context, cancellationToken, continueOnCapturedContext, _arg1, _arg2);
+        public readonly Task<TResult> ExecuteAsync(Context context, CancellationToken cancellationToken, bool continueOnCapturedContext) => _func(context, cancellationToken, continueOnCapturedContext, _arg1, _arg2);
     }
 }
