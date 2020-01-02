@@ -57,7 +57,7 @@ namespace Polly.Specs.Executables
             AsyncNoOpPolicy policy = Policy.NoOpAsync() as AsyncNoOpPolicy;
 
             Int16 input1 = 1;
-            double captured = await policy.ExecuteAsync<Int16, Int64>(async (context, token, captureContext, input) =>
+            Int64 captured = await policy.ExecuteAsync<Int16, Int64>(async (context, token, captureContext, input) =>
                 {
                     await Task.CompletedTask;
                     return input;
@@ -76,7 +76,7 @@ namespace Polly.Specs.Executables
 
             Int16 input1 = 1;
             Int32 input2 = 2;
-            double captured = await policy.ExecuteAsync<Int16, Int32, Int64>(async (context, token, captureContext, t1, t2) =>
+            Int64 captured = await policy.ExecuteAsync<Int16, Int32, Int64>(async (context, token, captureContext, t1, t2) =>
                 {
                     await Task.CompletedTask;
                     return t1 + t2;
@@ -95,7 +95,7 @@ namespace Polly.Specs.Executables
             AsyncNoOpPolicy policy = Policy.NoOpAsync() as AsyncNoOpPolicy;
 
             Int16 input1 = 1;
-            double captured = 0;
+            Int64 captured = 0;
 
             var policyResult = await policy.ExecuteAndCaptureAsync<Int16>((context, token, captureContext, input) =>
                 {
@@ -117,7 +117,7 @@ namespace Polly.Specs.Executables
 
             Int16 input1 = 1;
             Int32 input2 = 2;
-            double captured = 0;
+            Int64 captured = 0;
 
             var policyResult = await policy.ExecuteAndCaptureAsync<Int16, Int32>((context, token, captureContext, t1, t2) =>
                 {
