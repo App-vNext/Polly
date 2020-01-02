@@ -7,7 +7,7 @@
     public abstract partial class AsyncPolicyV8<TResult> : PolicyBase<TResult>
     {
         /// <summary>
-        /// Constructs a new instance of a derived <see cref="AsyncPolicy{TResult}"/> type with the passed <paramref name="exceptionPredicates"/> and <paramref name="resultPredicates"/>. 
+        /// Constructs a new instance of a derived <see cref="AsyncPolicyV8{TResult}"/> type with the passed <paramref name="exceptionPredicates"/> and <paramref name="resultPredicates"/>. 
         /// </summary>
         /// <param name="exceptionPredicates">Predicates indicating which exceptions the policy should handle. </param>
         /// <param name="resultPredicates">Predicates indicating which results the policy should handle. </param>
@@ -19,7 +19,7 @@
         }
 
         /// <summary>
-        /// Constructs a new instance of a derived <see cref="AsyncPolicy{TResult}"/> type with the passed <paramref name="policyBuilder"/>. 
+        /// Constructs a new instance of a derived <see cref="AsyncPolicyV8{TResult}"/> type with the passed <paramref name="policyBuilder"/>. 
         /// </summary>
         /// <param name="policyBuilder">A <see cref="PolicyBuilder{TResult}"/> indicating which exceptions and results the policy should handle.</param>
         protected AsyncPolicyV8(PolicyBuilder<TResult> policyBuilder = null)

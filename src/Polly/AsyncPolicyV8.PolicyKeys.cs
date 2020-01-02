@@ -5,10 +5,10 @@ namespace Polly
     public abstract partial class AsyncPolicyV8
     {
         /// <summary>
-        /// Sets the PolicyKey for this <see cref="AsyncPolicy"/> instance.
+        /// Sets the PolicyKey for this <see cref="AsyncPolicyV8"/> instance.
         /// <remarks>Must be called before the policy is first used.  Can only be set once.</remarks>
         /// </summary>
-        /// <param name="policyKey">The unique, used-definable key to assign to this <see cref="AsyncPolicy"/> instance.</param>
+        /// <param name="policyKey">The unique, used-definable key to assign to this <see cref="AsyncPolicyV8"/> instance.</param>
         public AsyncPolicyV8 WithPolicyKey(String policyKey)
         {
             if (policyKeyInternal != null) throw PolicyKeyMustBeImmutableException;
@@ -35,10 +35,10 @@ namespace Polly
     public abstract partial class AsyncPolicyV8<TResult>
     {
         /// <summary>
-        /// Sets the PolicyKey for this <see cref="AsyncPolicy{TResult}"/> instance.
+        /// Sets the PolicyKey for this <see cref="AsyncPolicyV8{TResult}"/> instance.
         /// <remarks>Must be called before the policy is first used.  Can only be set once.</remarks>
         /// </summary>
-        /// <param name="policyKey">The unique, used-definable key to assign to this <see cref="AsyncPolicy{TResult}"/> instance.</param>
+        /// <param name="policyKey">The unique, used-definable key to assign to this <see cref="AsyncPolicyV8{TResult}"/> instance.</param>
         public AsyncPolicyV8<TResult> WithPolicyKey(String policyKey)
         {
             if (policyKeyInternal != null) throw PolicyKeyMustBeImmutableException;
