@@ -7,7 +7,7 @@ namespace Polly
 {
     public abstract partial class PolicyV8<TResult> : ISyncPolicy<TResult>
     {
-        private TResult DespatchExecutionSync<TExecutable>(in TExecutable action, Context context, CancellationToken cancellationToken)
+        private TResult DespatchExecution<TExecutable>(in TExecutable action, Context context, CancellationToken cancellationToken)
             where TExecutable : ISyncExecutable<TResult>
         {
             if (context == null) throw new ArgumentNullException(nameof(context));
@@ -31,7 +31,7 @@ namespace Polly
 
             try
             {
-                TResult result = DespatchExecutionSync(action, context, cancellationToken);
+                TResult result = DespatchExecution(action, context, cancellationToken);
 
                 if (ResultPredicates.AnyMatch(result))
                 {
@@ -56,7 +56,7 @@ namespace Polly
         [DebuggerStepThrough]
         public TResult Execute(Func<TResult> func)
         {
-            return DespatchExecutionSync(
+            return DespatchExecution(
                 new SyncExecutableFuncNoParams<TResult>(func),
                 GetDefaultExecutionContext(),
                 DefaultCancellationToken);
@@ -71,7 +71,7 @@ namespace Polly
         [DebuggerStepThrough]
         public TResult Execute(Func<Context, TResult> func, IDictionary<string, object> contextData)
         {
-            return DespatchExecutionSync(
+            return DespatchExecution(
                 new SyncExecutableFuncOnContext<TResult>(func),
                 new Context(contextData),
                 DefaultCancellationToken);
@@ -88,7 +88,7 @@ namespace Polly
         {
             if (context == null) throw new ArgumentNullException(nameof(context));
 
-            return DespatchExecutionSync(
+            return DespatchExecution(
                 new SyncExecutableFuncOnContext<TResult>(func),
                 context,
                 DefaultCancellationToken);
@@ -103,7 +103,7 @@ namespace Polly
         [DebuggerStepThrough]
         public TResult Execute(Func<CancellationToken, TResult> func, CancellationToken cancellationToken)
         {
-            return DespatchExecutionSync(
+            return DespatchExecution(
                 new SyncExecutableFuncOnCancellationToken<TResult>(func),
                 GetDefaultExecutionContext(),
                 cancellationToken);
@@ -120,7 +120,7 @@ namespace Polly
         [DebuggerStepThrough]
         public TResult Execute(Func<Context, CancellationToken, TResult> func, IDictionary<string, object> contextData, CancellationToken cancellationToken)
         {
-            return DespatchExecutionSync(
+            return DespatchExecution(
                 new SyncExecutableFunc<TResult>(func),
                 new Context(contextData),
                 cancellationToken);
@@ -138,7 +138,7 @@ namespace Polly
         {
             if (context == null) throw new ArgumentNullException(nameof(context));
 
-            return DespatchExecutionSync(
+            return DespatchExecution(
                 new SyncExecutableFunc<TResult>(func),
                 context,
                 cancellationToken);
@@ -158,7 +158,7 @@ namespace Polly
         {
             if (context == null) throw new ArgumentNullException(nameof(context));
 
-            return DespatchExecutionSync(new SyncExecutableFunc<T1, TResult>(func, input1), context, cancellationToken);
+            return DespatchExecution(new SyncExecutableFunc<T1, TResult>(func, input1), context, cancellationToken);
         }
 
         /// <summary>
@@ -177,7 +177,7 @@ namespace Polly
         {
             if (context == null) throw new ArgumentNullException(nameof(context));
 
-            return DespatchExecutionSync(new SyncExecutableFunc<T1, T2, TResult>(func, input1, input2), context, cancellationToken);
+            return DespatchExecution(new SyncExecutableFunc<T1, T2, TResult>(func, input1, input2), context, cancellationToken);
         }
 
         #endregion

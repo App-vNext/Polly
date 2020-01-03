@@ -15,9 +15,12 @@ namespace Polly.NoOp
 
         /// <inheritdoc/>
         [DebuggerStepThrough]
-        protected override Task<TResult> ImplementationAsyncV8<TExecutableAsync, TResult>(TExecutableAsync action, Context context,
-            CancellationToken cancellationToken, bool continueOnCapturedContext)
-            => AsyncNoOpEngineV8.ExecuteAsync<TExecutableAsync, TResult>(action, context, cancellationToken, continueOnCapturedContext);
+        protected override Task<TResult> ImplementationAsyncV8<TExecutableAsync, TResult>(
+            TExecutableAsync action,
+            Context context,
+            CancellationToken cancellationToken,
+            bool continueOnCapturedContext)
+            => AsyncNoOpEngineV8.ImplementationAsync<TExecutableAsync, TResult>(action, context, cancellationToken, continueOnCapturedContext);
     }
 
     /// <summary>
@@ -32,8 +35,11 @@ namespace Polly.NoOp
 
         /// <inheritdoc/>
         [DebuggerStepThrough]
-        protected override Task<TResult> ImplementationAsyncV8<TExecutableAsync>(TExecutableAsync action, Context context, CancellationToken cancellationToken,
+        protected override Task<TResult> ImplementationAsyncV8<TExecutableAsync>(
+            TExecutableAsync action,
+            Context context,
+            CancellationToken cancellationToken,
             bool continueOnCapturedContext)
-            => AsyncNoOpEngineV8.ExecuteAsync<TExecutableAsync, TResult>(action, context, cancellationToken, continueOnCapturedContext);
+            => AsyncNoOpEngineV8.ImplementationAsync<TExecutableAsync, TResult>(action, context, cancellationToken, continueOnCapturedContext);
     }
 }
