@@ -7,7 +7,7 @@ namespace Polly
 {
     public abstract partial class PolicyV8<TResult> : ISyncPolicy<TResult>
     {
-        private TResult DespatchExecutionSync<TExecutable>(TExecutable action, Context context, CancellationToken cancellationToken)
+        private TResult DespatchExecutionSync<TExecutable>(in TExecutable action, Context context, CancellationToken cancellationToken)
             where TExecutable : ISyncExecutable<TResult>
         {
             if (context == null) throw new ArgumentNullException(nameof(context));
@@ -24,7 +24,7 @@ namespace Polly
             }
         }
 
-        private PolicyResult<TResult> DespatchExecuteAndCapture<TExecutable>(TExecutable action, Context context, CancellationToken cancellationToken)
+        private PolicyResult<TResult> DespatchExecuteAndCapture<TExecutable>(in TExecutable action, Context context, CancellationToken cancellationToken)
             where TExecutable : ISyncExecutable<TResult>
         {
             if (context == null) throw new ArgumentNullException(nameof(context));

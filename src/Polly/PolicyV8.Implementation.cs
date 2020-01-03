@@ -32,7 +32,7 @@ namespace Polly
         /// <param name="cancellationToken">A token to signal that execution should be cancelled.</param>
         /// <returns>A <typeparamref name="TResult"/> result of the execution.</returns>
         protected abstract TResult ImplementationSyncV8<TExecutable, TResult>(
-            TExecutable action,
+            in TExecutable action,
             Context context,
             CancellationToken cancellationToken)
             where TExecutable : ISyncExecutable<TResult>;
