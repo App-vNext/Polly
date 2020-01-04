@@ -45,7 +45,7 @@ namespace Polly
             ValidateStaticDurationIsNonNegative(durationOfBreak);
             return policyBuilder.CircuitBreaker(exceptionsAllowedBeforeBreaking, (_) => durationOfBreak);
         }
-        
+
         /// <summary>
         /// <para> Builds a <see cref="Policy"/> that will function like a Circuit Breaker.</para>
         /// <para>The circuit will break if <paramref name="exceptionsAllowedBeforeBreaking"/>
@@ -64,6 +64,7 @@ namespace Polly
         /// <returns>The policy instance.</returns>
         /// <remarks>(see "Release It!" by Michael T. Nygard fi)</remarks>
         /// <exception cref="ArgumentOutOfRangeException">exceptionsAllowedBeforeBreaking;Value must be greater than zero.</exception>
+        /// <exception cref="InvalidOperationException">factoryForNextBreakDuration;Generated value must be always be non-negative. Exception would be thrown when invoking policy, if duration were negative.</exception>
         /// <exception cref="ArgumentNullException">onBreak</exception>
         /// <exception cref="ArgumentNullException">onReset</exception>
         public static CircuitBreakerPolicy CircuitBreaker(this PolicyBuilder policyBuilder, int exceptionsAllowedBeforeBreaking, Func<int, TimeSpan> factoryForNextBreakDuration)
@@ -128,6 +129,7 @@ namespace Polly
         /// <returns>The policy instance.</returns>
         /// <remarks>(see "Release It!" by Michael T. Nygard fi)</remarks>
         /// <exception cref="ArgumentOutOfRangeException">exceptionsAllowedBeforeBreaking;Value must be greater than zero.</exception>
+        /// <exception cref="InvalidOperationException">factoryForNextBreakDuration;Generated value must be always be non-negative. Exception would be thrown when invoking policy, if duration were negative.</exception>
         /// <exception cref="ArgumentNullException">onBreak</exception>
         /// <exception cref="ArgumentNullException">onReset</exception>
         public static CircuitBreakerPolicy CircuitBreaker(this PolicyBuilder policyBuilder, int exceptionsAllowedBeforeBreaking, Func<int,TimeSpan> factoryForNextBreakDuration, Action<Exception, TimeSpan> onBreak, Action onReset)
@@ -187,6 +189,7 @@ namespace Polly
         /// <returns>The policy instance.</returns>
         /// <remarks>(see "Release It!" by Michael T. Nygard fi)</remarks>
         /// <exception cref="ArgumentOutOfRangeException">exceptionsAllowedBeforeBreaking;Value must be greater than zero.</exception>
+        /// <exception cref="InvalidOperationException">factoryForNextBreakDuration;Generated value must be always be non-negative. Exception would be thrown when invoking policy, if duration were negative.</exception>
         /// <exception cref="ArgumentNullException">onBreak</exception>
         /// <exception cref="ArgumentNullException">onReset</exception>
         public static CircuitBreakerPolicy CircuitBreaker(this PolicyBuilder policyBuilder, int exceptionsAllowedBeforeBreaking, Func<int, TimeSpan> factoryForNextBreakDuration, Action<Exception, TimeSpan, Context> onBreak, Action<Context> onReset)
@@ -251,6 +254,7 @@ namespace Polly
         /// <returns>The policy instance.</returns>
         /// <remarks>(see "Release It!" by Michael T. Nygard fi)</remarks>
         /// <exception cref="ArgumentOutOfRangeException">exceptionsAllowedBeforeBreaking;Value must be greater than zero.</exception>
+        /// <exception cref="InvalidOperationException">factoryForNextBreakDuration;Generated value must be always be non-negative. Exception would be thrown when invoking policy, if duration were negative.</exception>
         /// <exception cref="ArgumentNullException">onBreak</exception>
         /// <exception cref="ArgumentNullException">onReset</exception>
         public static CircuitBreakerPolicy CircuitBreaker(this PolicyBuilder policyBuilder, int exceptionsAllowedBeforeBreaking, Func<int, TimeSpan> factoryForNextBreakDuration, Action<Exception, TimeSpan> onBreak, Action onReset, Action onHalfOpen)
@@ -314,6 +318,7 @@ namespace Polly
         /// <returns>The policy instance.</returns>
         /// <remarks>(see "Release It!" by Michael T. Nygard fi)</remarks>
         /// <exception cref="ArgumentOutOfRangeException">exceptionsAllowedBeforeBreaking;Value must be greater than zero.</exception>
+        /// <exception cref="InvalidOperationException">factoryForNextBreakDuration;Generated value must be always be non-negative. Exception would be thrown when invoking policy, if duration were negative.</exception>
         /// <exception cref="ArgumentNullException">onBreak</exception>
         /// <exception cref="ArgumentNullException">onReset</exception>
         /// <exception cref="ArgumentNullException">onHalfOpen</exception>
@@ -378,6 +383,7 @@ namespace Polly
         /// <returns>The policy instance.</returns>
         /// <remarks>(see "Release It!" by Michael T. Nygard fi)</remarks>
         /// <exception cref="ArgumentOutOfRangeException">exceptionsAllowedBeforeBreaking;Value must be greater than zero.</exception>
+        /// <exception cref="InvalidOperationException">factoryForNextBreakDuration;Generated value must be always be non-negative. Exception would be thrown when invoking policy, if duration were negative.</exception>
         /// <exception cref="ArgumentNullException">onBreak</exception>
         /// <exception cref="ArgumentNullException">onReset</exception>
         /// <exception cref="ArgumentNullException">onHalfOpen</exception>

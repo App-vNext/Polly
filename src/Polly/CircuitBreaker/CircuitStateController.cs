@@ -98,6 +98,11 @@ namespace Polly.CircuitBreaker
         protected void Break_NeedsLock(int consecutiveHalfOpenFailures, Context context)
         {
             var nextBreakDuration = _factoryForNextBreakDuration(consecutiveHalfOpenFailures);
+            if (nextBreakDuration < TimeSpan.Zero)
+            {
+                throw new InvalidOperationException("Dynamically calculated Break Durations must always be non-negative.");
+            }
+
             BreakFor_NeedsLock(nextBreakDuration, context);
         }
 
