@@ -240,7 +240,7 @@ namespace Polly
                 failureThreshold,
                 samplingDuration,
                 minimumThroughput,
-                durationOfBreak,
+                (_) => durationOfBreak,
                 (outcome, state, timespan, context) => onBreak(outcome.Exception, state, timespan, context),
                 onReset,
                 onHalfOpen);

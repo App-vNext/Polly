@@ -4,43 +4,24 @@ using Polly.Utilities;
 
 namespace Polly.CircuitBreaker
 {
-    internal class RollingHealthMetrics : IHealthMetrics
+    internal class RollingHealthMetrics : HealthMetrics
     {
-        private readonly long _samplingDuration;
         private readonly long _windowDuration;
         private readonly Queue<HealthCount> _windows;
 
-        private HealthCount _currentWindow;
-
-        public RollingHealthMetrics(TimeSpan samplingDuration, short numberOfWindows)
+        public RollingHealthMetrics(TimeSpan samplingDuration, short numberOfWindows) : base(samplingDuration)
         {
-            _samplingDuration = samplingDuration.Ticks;
-
             _windowDuration = _samplingDuration / numberOfWindows;
             _windows = new Queue<HealthCount>(numberOfWindows + 1);
         }
 
-        public void IncrementSuccess_NeedsLock()
+        public override void Reset_NeedsLock()
         {
-            ActualiseCurrentMetric_NeedsLock();
-
-            _currentWindow.Successes++;
-        }
-
-        public void IncrementFailure_NeedsLock()
-        {
-            ActualiseCurrentMetric_NeedsLock();
-
-            _currentWindow.Failures++;
-        }
-
-        public void Reset_NeedsLock()
-        {
-            _currentWindow = null;
+            _currentHealth = null;
             _windows.Clear();
         }
 
-        public HealthCount GetHealthCount_NeedsLock()
+        public override HealthCount GetHealthCount_NeedsLock()
         {
             ActualiseCurrentMetric_NeedsLock();
 
@@ -49,28 +30,30 @@ namespace Polly.CircuitBreaker
             foreach (var window in _windows)
             {
                 successes += window.Successes;
-                failures += window.Failures;
+                failures += window.FailuresFromClosedState;
             }
 
             return new HealthCount
             {
                 Successes = successes,
-                Failures = failures,
+                FailuresFromClosedState = failures,
                 StartedAt = _windows.Peek().StartedAt
             };
         }
 
-        private void ActualiseCurrentMetric_NeedsLock()
+        protected override void ActualiseCurrentMetric_NeedsLock()
         {
             long now = SystemClock.UtcNow().Ticks;
-            if (_currentWindow == null || now - _currentWindow.StartedAt >= _windowDuration)
+            if (_currentHealth == null || now - _currentHealth.StartedAt >= _windowDuration)
             {
-                _currentWindow = new HealthCount { StartedAt = now };
-                _windows.Enqueue(_currentWindow);
+                _currentHealth = new HealthCount { StartedAt = now };
+                _windows.Enqueue(_currentHealth);
             }
 
             while (_windows.Count > 0 && (now - _windows.Peek().StartedAt >= _samplingDuration))
+            {
                 _windows.Dequeue();
+            }
         }
     }
 }

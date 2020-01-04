@@ -242,7 +242,7 @@ namespace Polly
                 failureThreshold,
                 samplingDuration,
                 minimumThroughput,
-                durationOfBreak,
+                (_) => durationOfBreak,
                 onBreak,
                 onReset,
                 onHalfOpen);
