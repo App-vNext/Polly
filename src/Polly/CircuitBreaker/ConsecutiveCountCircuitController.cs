@@ -6,8 +6,8 @@ namespace Polly.CircuitBreaker
     internal class ConsecutiveCountCircuitController<TResult> : CircuitStateController<TResult>
     {
         private readonly int _exceptionsAllowedBeforeBreaking;
-        private int _consecutiveFailures;
-        private int _consecutiveHalfOpenFailures;
+        private int _consecutiveFailuresFromClosedState;
+        private int _consecutiveFailuresFromHalfOpenState;
 
         public ConsecutiveCountCircuitController(
             int exceptionsAllowedBeforeBreaking,
@@ -24,8 +24,8 @@ namespace Polly.CircuitBreaker
         {
             using (TimedLock.Lock(_lock))
             {
-                _consecutiveFailures = 0;
-                _consecutiveHalfOpenFailures = 0;
+                _consecutiveFailuresFromClosedState = 0;
+                _consecutiveFailuresFromHalfOpenState = 0;
 
                 ResetInternal_NeedsLock(context);
             }
@@ -42,7 +42,7 @@ namespace Polly.CircuitBreaker
                         break;
 
                     case CircuitState.Closed:
-                        _consecutiveFailures = 0;
+                        _consecutiveFailuresFromClosedState = 0;
                         break;
 
                     case CircuitState.Open:
@@ -64,13 +64,13 @@ namespace Polly.CircuitBreaker
                 switch (_circuitState)
                 {
                     case CircuitState.HalfOpen:
-                        _consecutiveHalfOpenFailures++;
-                        Break_NeedsLock(_consecutiveHalfOpenFailures, context);
+                        _consecutiveFailuresFromHalfOpenState++;
+                        Break_NeedsLock(_consecutiveFailuresFromHalfOpenState, context);
                         return;
 
                     case CircuitState.Closed:
-                        _consecutiveFailures++;
-                        if (_consecutiveFailures >= _exceptionsAllowedBeforeBreaking)
+                        _consecutiveFailuresFromClosedState++;
+                        if (_consecutiveFailuresFromClosedState >= _exceptionsAllowedBeforeBreaking)
                         {
                             Break_NeedsLock(0, context);
                         }

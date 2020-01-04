@@ -1,13 +1,13 @@
-﻿using System;
+﻿using Polly.Utilities;
+using System;
 using System.Threading;
-using Polly.Utilities;
 
 namespace Polly.CircuitBreaker
 {
     internal abstract class CircuitStateController<TResult> : ICircuitController<TResult>
     {
         protected readonly Func<int, TimeSpan> _factoryForNextBreakDuration;
-        protected long _blockedTill;
+        protected long _blockedUntil;
         protected TimeSpan _currentBlockDuration;
         protected CircuitState _circuitState;
         protected DelegateResult<TResult> _lastOutcome;
@@ -81,7 +81,7 @@ namespace Polly.CircuitBreaker
         {
             get
             {
-                return SystemClock.UtcNow().Ticks < _blockedTill;
+                return SystemClock.UtcNow().Ticks < _blockedUntil;
             }
         }
 
@@ -108,12 +108,10 @@ namespace Polly.CircuitBreaker
 
         private void BreakFor_NeedsLock(TimeSpan durationOfBreak, Context context)
         {
-            _currentBlockDuration = durationOfBreak;
+            var (breakEnd, breakLength) = ExtensionUpToMaxValue(SystemClock.UtcNow(), durationOfBreak);
 
-            bool willDurationTakeUsPastDateTimeMaxValue = durationOfBreak > DateTime.MaxValue - SystemClock.UtcNow();
-            _blockedTill = willDurationTakeUsPastDateTimeMaxValue
-                ? DateTime.MaxValue.Ticks
-                : (SystemClock.UtcNow() + durationOfBreak).Ticks;
+            _currentBlockDuration = breakLength;
+            _blockedUntil = breakEnd.Ticks;
 
             var transitionedState = _circuitState;
             _circuitState = CircuitState.Open;
@@ -121,11 +119,51 @@ namespace Polly.CircuitBreaker
             _onBreak(_lastOutcome, transitionedState, durationOfBreak, context);
         }
 
+        /// <summary>
+        /// Given a startDate <b>in Ticks</b>and a proposedExtension (and optionally an explicit end limit), <b>either</b> return
+        /// the given extension and the resultant endDate, <b>or</b> (if the proposed extension would take us
+        /// past the limit) return DateTime.MaxValue, and the appropriate extension to get to that limit.
+        /// </summary>
+        /// <param name="startPointTicks">The Ticks of the DateTime to which the proposedExtension will be added.</param>
+        /// <param name="proposedExtension">The TimeSpan to add to the startDate</param>
+        /// <param name="maxDateTime">Max DateTime value that the extension is allowed to take us up to. DateTime.MaxValue, by default.</param>
+        /// <returns>Tuple of (DateTime, TimeSpan), represent the allowed endpoint and the extension to get us there.</returns>
+        private ValueTuple<DateTime, TimeSpan> ExtensionUpToMaxValue(long startPointTicks, TimeSpan proposedExtension, DateTime? maxDateTime = null)
+        {
+            var startDate = new DateTime(startPointTicks);
+            return ExtensionUpToMaxValue(startDate, proposedExtension, maxDateTime);
+        }
+
+        /// <summary>
+        /// Given a startDate and a proposedExtension (and optionally an explicit end limit), <b>either</b> return
+        /// the given extension and the resultant endDate, <b>or</b> (if the proposed extension would take us
+        /// past the limit) return DateTime.MaxValue, and the appropriate extension to get to that limit.
+        /// </summary>
+        /// <param name="startDate">The DateTime to which the proposedExtension will be added.</param>
+        /// <param name="proposedExtension">The TimeSpan to add to the startDate</param>
+        /// <param name="maxDateTime">Max DateTime value that the extension is allowed to take us up to. DateTime.MaxValue, by default.</param>
+        /// <returns>Tuple of (DateTime, TimeSpan), represent the allowed endpoint and the extension to get us there.</returns>
+        private ValueTuple<DateTime, TimeSpan> ExtensionUpToMaxValue(DateTime startDate, TimeSpan proposedExtension, DateTime? maxDateTime = null)
+        {
+            maxDateTime = maxDateTime ?? DateTime.MaxValue;
+            var maxPossibleExtension = (maxDateTime.Value - startDate);
+            var extensionWouldTakeUsPastDateTimeMaxValue = proposedExtension > maxPossibleExtension;
+
+            if (extensionWouldTakeUsPastDateTimeMaxValue)
+            {
+                return (maxDateTime.Value, maxPossibleExtension);
+            }
+            else
+            {
+                return (startDate + proposedExtension, proposedExtension);
+            }
+        }
+
         public void Reset() => OnCircuitReset(Context.None());
 
         protected void ResetInternal_NeedsLock(Context context)
         {
-            _blockedTill = DateTime.MinValue.Ticks;
+            _blockedUntil = DateTime.MinValue.Ticks;
             _lastOutcome = null;
 
             CircuitState priorState = _circuitState;
@@ -138,32 +176,37 @@ namespace Polly.CircuitBreaker
 
         protected bool PermitHalfOpenCircuitTest()
         {
-            long initialBlockedTill = _blockedTill;
-            if (SystemClock.UtcNow().Ticks < initialBlockedTill)
+            // ReSharper disable InconsistentNaming
+            long blockedUntil_AtStartOfPermitHalfOpenCircuitTest = _blockedUntil;
+            if (SystemClock.UtcNow().Ticks < blockedUntil_AtStartOfPermitHalfOpenCircuitTest)
             {
                 return false;
             }
 
             // It's time to permit a / another trial call in the half-open state ...
             // ... but to prevent race conditions/multiple calls, we have to ensure only _one_ thread wins the race to own this next call.
-            // If "we" are the thread that wins that races, then we also want to update the BlockedTill date, so that no other thread / call tries to execute before this Test has reached *it's* conclusion.
+            // If "we" are the thread that wins that race, then we also want to update the BlockedTill date, so that no other thread / call tries
+            // to execute before this Test has reached *it's* conclusion (or is deemed to have been lost, if it has failed to return within _currentBlockDuration)
             //
             // So combine doing those two things into an Interlocked.CompareExchange call.
-            // Attempt to update _blockedTill. Then examine the return value to determine whether someone else had beaten us to the punch.
+            // Attempt to update _blockedUntil. Then examine the return value to determine whether someone else had beaten us to the punch.
             // If not, then that tells us that we won the race, and we can permit the Circuit Test.
             // If someone had already modified _blockedTil, then we lost the race and thus aren't going to be doing the Test.
             //
-            // Note that if the Circuit Test is a failure, it will re-configure the Break limit, using the updated number of Test failures.
-            // Which means that it doesn't really matter what delay we put in here as long as no other attempts get made before this Test completes.
-            // This is helpful, since we don't have convenient access to the number of Test Failures here, and thus can't calculate the *correct* next delay.
+            // Note that, in general, we want to extend the blocked period by an amount based on the number of failures in halfOpen state (tracked elsewhere, last time a failure was received).  
+            // The logic of halfOpen state is that it permits one fresh trial call per expiry of each extension-of-broken-state.
+            // This particular extension of the Open state is occurring due to the preceding Open period expiring, or a halfOpen period expiring with no call result received.
+            // i.e. it's not an extension triggered by any additional failures received.
+            // Consequently, the period to extend by is unchanged from the last period, so we can reuse _currentBlockDuration (calculated last time we saw an active failure).
             //
-            // Lastly note that the conceptual edge case of _blockedTil being equal to DateTime.MaxValue.Ticks, is not a concern, since in that case the
+            // Lastly note that the conceptual edge case of _blockedUntil being equal to DateTime.MaxValue.Ticks, is not a concern, since in that case the
             // if-check above will not have passed, so we won't have gotten here in the first place.
-            var proposedNewBlockDeadline = initialBlockedTill + _currentBlockDuration.Ticks;
-            var blockedTil_AtAtomicStartOfExchangeCall = Interlocked.CompareExchange(ref _blockedTill, proposedNewBlockDeadline, initialBlockedTill);
-            var blockedTil_HadNotChangedPriorToExchangeCall = blockedTil_AtAtomicStartOfExchangeCall == initialBlockedTill;
+            var (proposedNewBlockDeadline, _) = ExtensionUpToMaxValue(blockedUntil_AtStartOfPermitHalfOpenCircuitTest, _currentBlockDuration);
+            var blockedUntil_AtAtomicStartOfExchangeCall = Interlocked.CompareExchange(ref _blockedUntil, proposedNewBlockDeadline.Ticks, blockedUntil_AtStartOfPermitHalfOpenCircuitTest);
+            var blockedUntil_HadNotChangedPriorToExchangeCall = blockedUntil_AtAtomicStartOfExchangeCall == blockedUntil_AtStartOfPermitHalfOpenCircuitTest;
 
-            return blockedTil_HadNotChangedPriorToExchangeCall;
+            return blockedUntil_HadNotChangedPriorToExchangeCall;
+            // ReSharper restore InconsistentNaming
         }
 
         private BrokenCircuitException GetBreakingException()
