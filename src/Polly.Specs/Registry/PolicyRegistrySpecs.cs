@@ -128,7 +128,7 @@ namespace Polly.Specs.Registry
 
             _registry.Count.Should().Be(1);
 
-            _registry.Get<Policy>(key).Should().BeSameAs(policy_new);
+            _registry.Get<ISyncPolicy>(key).Should().BeSameAs(policy_new);
         }
 
         [Fact]
@@ -211,7 +211,7 @@ namespace Polly.Specs.Registry
             string key = Guid.NewGuid().ToString();
 
             _registry.Add(key, policy);
-            _registry.Get<Policy>(key).Should().BeSameAs(policy);
+            _registry.Get<ISyncPolicy>(key).Should().BeSameAs(policy);
         }
 
         [Fact]

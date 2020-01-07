@@ -64,7 +64,7 @@ namespace Polly.Specs.Registry
             string key = Guid.NewGuid().ToString();
 
             _registry.Add(key, policy);
-            ReadOnlyRegistry.Get<Policy>(key).Should().BeSameAs(policy);
+            ReadOnlyRegistry.Get<ISyncPolicy>(key).Should().BeSameAs(policy);
         }
 
         [Fact]
