@@ -22,8 +22,8 @@ namespace Polly.Wrap
         /// </summary>
         public IsPolicy Inner => _inner;
 
-        internal PolicyWrap(Policy outer, ISyncPolicy inner) 
-            : base(outer.ExceptionPredicates)
+        internal PolicyWrap(ISyncPolicy outer, ISyncPolicy inner) 
+            : base(((IExceptionPredicates)outer).PredicatesInternal)
         {
             _outer = outer;
             _inner = inner;
@@ -74,22 +74,22 @@ namespace Polly.Wrap
         /// </summary>
         public IsPolicy Inner => (IsPolicy)_innerGeneric ?? _innerNonGeneric;
 
-        internal PolicyWrap(Policy outer, ISyncPolicy<TResult> inner)
-            : base(outer.ExceptionPredicates, ResultPredicates<TResult>.None)
+        internal PolicyWrap(ISyncPolicy outer, ISyncPolicy<TResult> inner)
+            : base(((IExceptionPredicates)outer).PredicatesInternal, ResultPredicates<TResult>.None)
         {
             _outerNonGeneric = outer;
             _innerGeneric = inner;
         }
 
-        internal PolicyWrap(Policy<TResult> outer, ISyncPolicy inner)
-            : base(outer.ExceptionPredicates, outer.ResultPredicates)
+        internal PolicyWrap(ISyncPolicy<TResult> outer, ISyncPolicy inner)
+            : base(((IExceptionPredicates)outer).PredicatesInternal, ((IResultPredicates<TResult>)outer).PredicatesInternal)
         {
             _outerGeneric = outer;
             _innerNonGeneric = inner;
         }
 
-        internal PolicyWrap(Policy<TResult> outer, ISyncPolicy<TResult> inner)
-            : base(outer.ExceptionPredicates, outer.ResultPredicates)
+        internal PolicyWrap(ISyncPolicy<TResult> outer, ISyncPolicy<TResult> inner)
+            : base(((IExceptionPredicates)outer).PredicatesInternal, ((IResultPredicates<TResult>)outer).PredicatesInternal)
         {
             _outerGeneric = outer;
             _innerGeneric = inner;

@@ -24,8 +24,8 @@ namespace Polly.Wrap
         public IsPolicy Inner => _inner;
 
 
-        internal AsyncPolicyWrap(AsyncPolicy outer, IAsyncPolicy inner)
-            : base(outer.ExceptionPredicates)
+        internal AsyncPolicyWrap(IAsyncPolicy outer, IAsyncPolicy inner)
+            : base(((IExceptionPredicates)outer).PredicatesInternal)
         {
             _outer = outer;
             _inner = inner;
@@ -83,22 +83,22 @@ namespace Polly.Wrap
         /// </summary>
         public IsPolicy Inner => (IsPolicy)_innerGeneric ?? _innerNonGeneric;
 
-        internal AsyncPolicyWrap(AsyncPolicy outer, IAsyncPolicy<TResult> inner)
-            : base(outer.ExceptionPredicates, ResultPredicates<TResult>.None)
+        internal AsyncPolicyWrap(IAsyncPolicy outer, IAsyncPolicy<TResult> inner)
+            : base(((IExceptionPredicates)outer).PredicatesInternal, ResultPredicates<TResult>.None)
         {
             _outerNonGeneric = outer;
             _innerGeneric = inner;
         }
 
-        internal AsyncPolicyWrap(AsyncPolicy<TResult> outer, IAsyncPolicy inner)
-            : base(outer.ExceptionPredicates, outer.ResultPredicates)
+        internal AsyncPolicyWrap(IAsyncPolicy<TResult> outer, IAsyncPolicy inner)
+            : base(((IExceptionPredicates)outer).PredicatesInternal, ((IResultPredicates<TResult>)outer).PredicatesInternal)
         {
             _outerGeneric = outer;
             _innerNonGeneric = inner;
         }
 
-        internal AsyncPolicyWrap(AsyncPolicy<TResult> outer, IAsyncPolicy<TResult> inner)
-            : base(outer.ExceptionPredicates, outer.ResultPredicates)
+        internal AsyncPolicyWrap(IAsyncPolicy<TResult> outer, IAsyncPolicy<TResult> inner)
+            : base(((IExceptionPredicates)outer).PredicatesInternal, ((IResultPredicates<TResult>)outer).PredicatesInternal)
         {
             _outerGeneric = outer;
             _innerGeneric = inner;

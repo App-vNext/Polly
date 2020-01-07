@@ -6,12 +6,14 @@ namespace Polly
     /// <summary>
     /// Implements elements common to both non-generic and generic policies, and sync and async policies.
     /// </summary>
-    public abstract partial class PolicyBase
+    public abstract partial class PolicyBase : IExceptionPredicates
     {
         /// <summary>
         /// Predicates indicating which exceptions the policy handles.
         /// </summary>
         protected internal ExceptionPredicates ExceptionPredicates { get; }
+
+        ExceptionPredicates IExceptionPredicates.PredicatesInternal => ExceptionPredicates;
 
         internal Context GetDefaultExecutionContext() => new Context();
 
@@ -54,12 +56,14 @@ namespace Polly
     /// <summary>
     /// Implements elements common to sync and async generic policies.
     /// </summary>
-    public abstract class PolicyBase<TResult> : PolicyBase
+    public abstract class PolicyBase<TResult> : PolicyBase, IResultPredicates<TResult>
     {
         /// <summary>
         /// Predicates indicating which results the policy handles.
         /// </summary>
         protected internal ResultPredicates<TResult> ResultPredicates { get; }
+
+        ResultPredicates<TResult> IResultPredicates<TResult>.PredicatesInternal => ResultPredicates;
 
         /// <summary>
         /// Constructs a new instance of a derived type of <see cref="PolicyBase{TResult}"/>.
