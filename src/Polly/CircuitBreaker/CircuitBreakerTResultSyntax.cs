@@ -69,8 +69,8 @@ namespace Polly
             Action<DelegateResult<TResult>, TimeSpan> doNothingOnBreak = (_, __) => { };
             Action doNothingOnReset = () => { };
 
-            return policyBuilder.CircuitBreaker
-                (exceptionsAllowedBeforeBreaking,
+            return policyBuilder.CircuitBreaker(
+                exceptionsAllowedBeforeBreaking,
                 factoryForNextBreakDuration,
                 doNothingOnBreak,
                 doNothingOnReset
@@ -192,7 +192,8 @@ namespace Polly
         public static CircuitBreakerPolicy<TResult> CircuitBreaker<TResult>(this PolicyBuilder<TResult> policyBuilder, int exceptionsAllowedBeforeBreaking, Func<int, TimeSpan> factoryForNextBreakDuration, Action<DelegateResult<TResult>, TimeSpan, Context> onBreak, Action<Context> onReset)
         {
             Action doNothingOnHalfOpen = () => { };
-            return policyBuilder.CircuitBreaker(exceptionsAllowedBeforeBreaking,
+            return policyBuilder.CircuitBreaker(
+                exceptionsAllowedBeforeBreaking,
                 factoryForNextBreakDuration,
                 onBreak,
                 onReset,
