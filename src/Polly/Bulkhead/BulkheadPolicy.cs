@@ -7,7 +7,7 @@ namespace Polly.Bulkhead
     /// <summary>
     /// A bulkhead-isolation policy which can be applied to synchronous executions.
     /// </summary>
-    public class BulkheadPolicy : Policy, ISyncBulkheadPolicy
+    public class BulkheadPolicy : PolicyV8, ISyncBulkheadPolicy
     {
         private readonly SemaphoreSlim _maxParallelizationSemaphore;
         private readonly SemaphoreSlim _maxQueuedActionsSemaphore;
@@ -27,8 +27,9 @@ namespace Polly.Bulkhead
 
         /// <inheritdoc/>
         [DebuggerStepThrough]
-        protected override TResult Implementation<TResult>(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken)
-            => BulkheadEngine.Implementation(action, context, _onBulkheadRejected, _maxParallelizationSemaphore, _maxQueuedActionsSemaphore, cancellationToken);
+        protected override TResult ImplementationSyncV8<TExecutable, TResult>(in TExecutable action, Context context,
+            CancellationToken cancellationToken)
+            => BulkheadEngineV8.Implementation<TExecutable, TResult>(action, context, _onBulkheadRejected, _maxParallelizationSemaphore, _maxQueuedActionsSemaphore, cancellationToken);
 
         /// <summary>
         /// Gets the number of slots currently available for executing actions through the bulkhead.
@@ -55,7 +56,7 @@ namespace Polly.Bulkhead
     /// A bulkhead-isolation policy which can be applied to synchronous executions returning a value of type <typeparamref name="TResult"/>.
     /// </summary>
     /// <typeparam name="TResult">The return type of delegates which may be executed through the policy.</typeparam>
-    public class BulkheadPolicy<TResult> : Policy<TResult>, ISyncBulkheadPolicy<TResult>
+    public class BulkheadPolicy<TResult> : PolicyV8<TResult>, ISyncBulkheadPolicy<TResult>
     {
         private readonly SemaphoreSlim _maxParallelizationSemaphore;
         private readonly SemaphoreSlim _maxQueuedActionsSemaphore;
@@ -76,8 +77,8 @@ namespace Polly.Bulkhead
 
         /// <inheritdoc/>
         [DebuggerStepThrough]
-        protected override TResult Implementation(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken)
-            => BulkheadEngine.Implementation(action, context, _onBulkheadRejected, _maxParallelizationSemaphore, _maxQueuedActionsSemaphore, cancellationToken);
+        protected override TResult ImplementationSyncV8<TExecutable>(in TExecutable action, Context context, CancellationToken cancellationToken)
+            => BulkheadEngineV8.Implementation<TExecutable, TResult>(action, context, _onBulkheadRejected, _maxParallelizationSemaphore, _maxQueuedActionsSemaphore, cancellationToken);
 
         /// <summary>
         /// Gets the number of slots currently available for executing actions through the bulkhead.
