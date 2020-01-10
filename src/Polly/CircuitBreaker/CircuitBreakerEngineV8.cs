@@ -1,20 +1,19 @@
 ﻿using System;
+using System.Runtime.ExceptionServices;
 using System.Threading;
-using System.Threading.Tasks;
-using Polly.Utilities;
 
 namespace Polly.CircuitBreaker
 {
-    internal class AsyncCircuitBreakerEngine
+    internal class CircuitBreakerEngineV8
     {
-        internal static async Task<TResult> ImplementationAsync<TResult>(
-            Func<Context, CancellationToken, Task<TResult>> action, 
+        internal static TResult Implementation<TExecutable, TResult>(
+            in TExecutable action,
             Context context,
             CancellationToken cancellationToken,
-            bool continueOnCapturedContext,
             ExceptionPredicates shouldHandleExceptionPredicates, 
-            ResultPredicates<TResult> shouldHandleResultPredicates,
+            ResultPredicates<TResult> shouldHandleResultPredicates, 
             ICircuitController<TResult> breakerController)
+            where TExecutable : ISyncExecutable<TResult>
         {
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -22,7 +21,7 @@ namespace Polly.CircuitBreaker
 
             try
             {
-                TResult result = await action(context, cancellationToken).ConfigureAwait(continueOnCapturedContext);
+                TResult result = action.Execute(context, cancellationToken);
 
                 if (shouldHandleResultPredicates.AnyMatch(result))
                 {
@@ -45,10 +44,12 @@ namespace Polly.CircuitBreaker
 
                 breakerController.OnActionFailure(new DelegateResult<TResult>(handledException), context);
 
-                handledException.RethrowWithOriginalStackTraceIfDiffersFrom(ex);
+                if (handledException != ex)
+                {
+                    ExceptionDispatchInfo.Capture(handledException).Throw();
+                }
                 throw;
             }
         }
     }
 }
-
