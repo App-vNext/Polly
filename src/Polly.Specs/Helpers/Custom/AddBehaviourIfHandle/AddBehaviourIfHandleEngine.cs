@@ -6,17 +6,18 @@ namespace Polly.Specs.Helpers.Custom.AddBehaviourIfHandle
 {
     internal static class AddBehaviourIfHandleEngine
     {
-        internal static TResult Implementation<TResult>(
+        internal static TResult Implementation<TExecutable, TResult>(
+            in TExecutable action,
+            Context context,
+            CancellationToken cancellationToken,
             ExceptionPredicates shouldHandleExceptionPredicates,
             ResultPredicates<TResult> shouldHandleResultPredicates,
-            Action<DelegateResult<TResult>> behaviourIfHandle,
-            Func<Context, CancellationToken, TResult> action,
-            Context context,
-            CancellationToken cancellationToken)
+            Action<DelegateResult<TResult>> behaviourIfHandle)
+            where TExecutable : ISyncExecutable<TResult>
         {
             try
             {
-                TResult result = action(context, cancellationToken);
+                TResult result = action.Execute(context, cancellationToken);
 
                 if (shouldHandleResultPredicates.AnyMatch(result))
                 {

@@ -3,7 +3,7 @@ using System.Threading;
 
 namespace Polly.Specs.Helpers.Custom.PreExecute
 {
-    internal class PreExecutePolicy : Policy
+    internal class PreExecutePolicy : PolicyV8
     {
         private Action _preExecute;
 
@@ -17,13 +17,14 @@ namespace Polly.Specs.Helpers.Custom.PreExecute
             _preExecute = preExecute ?? throw new ArgumentNullException(nameof(preExecute));
         }
 
-        protected override TResult Implementation<TResult>(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken)
+        protected override TResult ImplementationSyncV8<TExecutable, TResult>(in TExecutable action, Context context,
+            CancellationToken cancellationToken)
         {
-            return PreExecuteEngine.Implementation(_preExecute, action, context, cancellationToken);
+            return PreExecuteEngine.Implementation<TExecutable, TResult>(action, context, cancellationToken, _preExecute);
         }
     }
 
-    internal class PreExecutePolicy<TResult> : Policy<TResult>
+    internal class PreExecutePolicy<TResult> : PolicyV8<TResult>
     {
         private Action _preExecute;
 
@@ -37,9 +38,9 @@ namespace Polly.Specs.Helpers.Custom.PreExecute
             _preExecute = preExecute ?? throw new ArgumentNullException(nameof(preExecute));
         }
 
-        protected override TResult Implementation(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken)
+        protected override TResult ImplementationSyncV8<TExecutable>(in TExecutable action, Context context, CancellationToken cancellationToken)
         {
-            return PreExecuteEngine.Implementation(_preExecute, action, context, cancellationToken);
+            return PreExecuteEngine.Implementation<TExecutable, TResult>(action, context, cancellationToken, _preExecute);
         }
     }
 }

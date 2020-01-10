@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace Polly.Specs.Helpers.Custom.PreExecute
 {
-    internal class AsyncPreExecutePolicy : AsyncPolicy
+    internal class AsyncPreExecutePolicy : AsyncPolicyV8
     {
         private Func<Task> _preExecute;
 
@@ -18,14 +18,14 @@ namespace Polly.Specs.Helpers.Custom.PreExecute
             _preExecute = preExecute ?? throw new ArgumentNullException(nameof(preExecute));
         }
 
-        protected override Task<TResult> ImplementationAsync<TResult>(Func<Context, CancellationToken, Task<TResult>> action, Context context, CancellationToken cancellationToken,
-            bool continueOnCapturedContext)
+        protected override Task<TResult> ImplementationAsyncV8<TExecutableAsync, TResult>(TExecutableAsync action, Context context,
+            CancellationToken cancellationToken, bool continueOnCapturedContext)
         {
-            return AsyncPreExecuteEngine.ImplementationAsync(_preExecute, action, context, cancellationToken, continueOnCapturedContext);
+            return AsyncPreExecuteEngine.ImplementationAsync<TExecutableAsync, TResult>(action, context, cancellationToken, continueOnCapturedContext, _preExecute);
         }
     }
 
-    internal class AsyncPreExecutePolicy<TResult> : AsyncPolicy<TResult>
+    internal class AsyncPreExecutePolicy<TResult> : AsyncPolicyV8<TResult>
     {
         private Func<Task> _preExecute;
 
@@ -39,10 +39,10 @@ namespace Polly.Specs.Helpers.Custom.PreExecute
             _preExecute = preExecute ?? throw new ArgumentNullException(nameof(preExecute));
         }
 
-        protected override Task<TResult> ImplementationAsync(Func<Context, CancellationToken, Task<TResult>> action, Context context, CancellationToken cancellationToken,
-            bool continueOnCapturedContext)
+        protected override Task<TResult> ImplementationAsyncV8<TExecutableAsync>(TExecutableAsync action, Context context,
+            CancellationToken cancellationToken, bool continueOnCapturedContext)
         {
-            return AsyncPreExecuteEngine.ImplementationAsync(_preExecute, action, context, cancellationToken, continueOnCapturedContext);
+            return AsyncPreExecuteEngine.ImplementationAsync<TExecutableAsync, TResult>(action, context, cancellationToken, continueOnCapturedContext, _preExecute);
         }
     }
 }

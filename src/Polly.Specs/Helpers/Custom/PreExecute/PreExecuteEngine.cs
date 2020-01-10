@@ -5,26 +5,16 @@ namespace Polly.Specs.Helpers.Custom.PreExecute
 {
     internal static class PreExecuteEngine
     {
-        internal static void Implementation(
-            Action preExecute,
-            Action<Context, CancellationToken> action, 
-            Context context, 
-            CancellationToken cancellationToken)
-        {
-            preExecute?.Invoke();
-
-            action(context, cancellationToken);
-        }
-
-        internal static TResult Implementation<TResult>(
-            Action preExecute,
-            Func<Context, CancellationToken, TResult> action,
+        internal static TResult Implementation<TExecutable, TResult>(
+            in TExecutable action,
             Context context,
-            CancellationToken cancellationToken)
+            CancellationToken cancellationToken,
+            Action preExecute)
+            where TExecutable : ISyncExecutable<TResult>
         {
             preExecute?.Invoke();
 
-            return action(context, cancellationToken);
+            return action.Execute(context, cancellationToken);
         }
     }
 }

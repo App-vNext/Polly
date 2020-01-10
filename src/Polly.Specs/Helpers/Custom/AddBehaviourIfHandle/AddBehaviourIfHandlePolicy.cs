@@ -3,7 +3,7 @@ using System.Threading;
 
 namespace Polly.Specs.Helpers.Custom.AddBehaviourIfHandle
 {
-    internal class AddBehaviourIfHandlePolicy : Policy
+    internal class AddBehaviourIfHandlePolicy : PolicyV8
     {
         private readonly Action<Exception> _behaviourIfHandle;
 
@@ -13,23 +13,21 @@ namespace Polly.Specs.Helpers.Custom.AddBehaviourIfHandle
             _behaviourIfHandle = behaviourIfHandle ?? throw new ArgumentNullException(nameof(behaviourIfHandle));
         }
 
-        protected override TResult Implementation<TResult>(
-            Func<Context, CancellationToken, TResult> action, 
-            Context context, 
+        protected override TResult ImplementationSyncV8<TExecutable, TResult>(in TExecutable action, Context context,
             CancellationToken cancellationToken)
         {
-            return AddBehaviourIfHandleEngine.Implementation(
-                ExceptionPredicates,
-                ResultPredicates<TResult>.None, 
-                outcome => _behaviourIfHandle(outcome.Exception),
+            return AddBehaviourIfHandleEngine.Implementation<TExecutable, TResult>(
                 action,
                 context,
-                cancellationToken
+                cancellationToken,
+                ExceptionPredicates,
+                ResultPredicates<TResult>.None,
+                outcome => _behaviourIfHandle(outcome.Exception)
             );
         }
     }
 
-    internal class AddBehaviourIfHandlePolicy<TResult> : Policy<TResult>
+    internal class AddBehaviourIfHandlePolicy<TResult> : PolicyV8<TResult>
     {
         private readonly Action<DelegateResult<TResult>> _behaviourIfHandle;
 
@@ -41,15 +39,15 @@ namespace Polly.Specs.Helpers.Custom.AddBehaviourIfHandle
             _behaviourIfHandle = behaviourIfHandle ?? throw new ArgumentNullException(nameof(behaviourIfHandle));
         }
 
-        protected override TResult Implementation(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken)
+        protected override TResult ImplementationSyncV8<TExecutable>(in TExecutable action, Context context, CancellationToken cancellationToken)
         {
             return AddBehaviourIfHandleEngine.Implementation(
-                ExceptionPredicates,
-                ResultPredicates,
-                _behaviourIfHandle,
                 action,
                 context,
-                cancellationToken
+                cancellationToken,
+                ExceptionPredicates,
+                ResultPredicates,
+                _behaviourIfHandle
             );
         }
     }
