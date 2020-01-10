@@ -8,7 +8,7 @@ namespace Polly.Timeout
     /// <summary>
     /// A timeout policy that can be applied to synchronous executions.
     /// </summary>
-    public class TimeoutPolicy : Policy, ISyncTimeoutPolicy
+    public class TimeoutPolicy : PolicyV8, ISyncTimeoutPolicy
     {
         private Func<Context, TimeSpan> _timeoutProvider;
         private TimeoutStrategy _timeoutStrategy;
@@ -26,8 +26,9 @@ namespace Polly.Timeout
 
         /// <inheritdoc/>
         [DebuggerStepThrough]
-        protected override TResult Implementation<TResult>(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken)
-            => TimeoutEngine.Implementation(
+        protected override TResult ImplementationSyncV8<TExecutable, TResult>(in TExecutable action, Context context,
+            CancellationToken cancellationToken)
+            => TimeoutEngineV8.Implementation<TExecutable, TResult>(
                 action,
                 context,
                 cancellationToken,
@@ -40,7 +41,7 @@ namespace Polly.Timeout
     /// A timeout policy that can be applied to synchronous executions returning a value of type <typeparamref name="TResult"/>.
     /// </summary>
     /// <typeparam name="TResult">The return type of delegates which may be executed through the policy.</typeparam>
-    public class TimeoutPolicy<TResult> : Policy<TResult>, ISyncTimeoutPolicy<TResult>
+    public class TimeoutPolicy<TResult> : PolicyV8<TResult>, ISyncTimeoutPolicy<TResult>
     {
         private Func<Context, TimeSpan> _timeoutProvider;
         private TimeoutStrategy _timeoutStrategy;
@@ -57,8 +58,8 @@ namespace Polly.Timeout
         }
 
         /// <inheritdoc/>
-        protected override TResult Implementation(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken)
-            => TimeoutEngine.Implementation(
+        protected override TResult ImplementationSyncV8<TExecutable>(in TExecutable action, Context context, CancellationToken cancellationToken)
+            => TimeoutEngineV8.Implementation<TExecutable, TResult>(
                 action,
                 context,
                 cancellationToken,

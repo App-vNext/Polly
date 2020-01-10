@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Runtime.ExceptionServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -6,15 +7,16 @@ using Polly.Utilities;
 
 namespace Polly.Timeout
 {
-    internal static class TimeoutEngine
+    internal static class TimeoutEngineV8
     {
-        internal static TResult Implementation<TResult>(
-            Func<Context, CancellationToken, TResult> action,
+        internal static TResult Implementation<TExecutable, TResult>(
+            TExecutable action,
             Context context,
             CancellationToken cancellationToken,
             Func<Context, TimeSpan> timeoutProvider,
             TimeoutStrategy timeoutStrategy,
             Action<Context, TimeSpan, Task, Exception> onTimeout)
+            where TExecutable : ISyncExecutable<TResult>
         {
             cancellationToken.ThrowIfCancellationRequested();
             TimeSpan timeout = timeoutProvider(context);
@@ -31,7 +33,7 @@ namespace Polly.Timeout
                         if (timeoutStrategy == TimeoutStrategy.Optimistic)
                         {
                             SystemClock.CancelTokenAfter(timeoutCancellationTokenSource, timeout);
-                            return action(context, combinedToken);
+                            return action.Execute(context, combinedToken);
                         }
 
                         // else: timeoutStrategy == TimeoutStrategy.Pessimistic
@@ -39,7 +41,7 @@ namespace Polly.Timeout
                         SystemClock.CancelTokenAfter(timeoutCancellationTokenSource, timeout);
 
                         actionTask = Task.Run(() =>
-                            action(context, combinedToken)       // cancellation token here allows the user delegate to react to cancellation: possibly clear up; then throw an OperationCanceledException.
+                            action.Execute(context, combinedToken)       // cancellation token here allows the user delegate to react to cancellation: possibly clear up; then throw an OperationCanceledException.
                             , combinedToken);           // cancellation token here only allows Task.Run() to not begin the passed delegate at all, if cancellation occurs prior to invoking the delegate.  
                         try
                         {
@@ -47,7 +49,7 @@ namespace Polly.Timeout
                         }
                         catch (AggregateException ex) when (ex.InnerExceptions.Count == 1) // Issue #270.  Unwrap extra AggregateException caused by the way pessimistic timeout policy for synchronous executions is necessarily constructed.
                         {
-                            ExceptionDispatchInfo.Capture(ex.InnerException).Throw();
+                            ExceptionDispatchInfo.Capture(ex.InnerExceptions.Single()).Throw();
                         }
 
                         return actionTask.Result;
