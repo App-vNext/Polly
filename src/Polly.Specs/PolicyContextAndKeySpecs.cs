@@ -14,7 +14,7 @@ namespace Polly.Specs
         {
             var policy = Policy.Handle<Exception>().Retry().WithPolicyKey(Guid.NewGuid().ToString());
 
-            policy.Should().BeAssignableTo<Policy>();
+            policy.Should().BeAssignableTo<ISyncPolicy>();
         }
 
         [Fact]
@@ -195,7 +195,7 @@ namespace Polly.Specs
         {
             var policy = Policy.HandleResult<int>(0).Retry().WithPolicyKey(Guid.NewGuid().ToString());
 
-            policy.Should().BeAssignableTo<Policy<int>>();
+            policy.Should().BeAssignableTo<ISyncPolicy<int>>();
         }
 
         [Fact]
