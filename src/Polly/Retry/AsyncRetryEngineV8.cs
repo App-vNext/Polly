@@ -6,10 +6,10 @@ using Polly.Utilities;
 
 namespace Polly.Retry
 {
-    internal static class AsyncRetryEngine
+    internal static class AsyncRetryEngineV8
     {
-        internal static async Task<TResult> ImplementationAsync<TResult>(
-            Func<Context, CancellationToken, Task<TResult>> action,
+        internal static async Task<TResult> ImplementationAsync<TExecutableAsync, TResult>(
+            TExecutableAsync action,
             Context context,
             CancellationToken cancellationToken,
             ExceptionPredicates shouldRetryExceptionPredicates,
@@ -19,6 +19,7 @@ namespace Polly.Retry
             IEnumerable<TimeSpan> sleepDurationsEnumerable = null,
             Func<int, DelegateResult<TResult>, Context, TimeSpan> sleepDurationProvider = null,
             bool continueOnCapturedContext = false)
+            where TExecutableAsync : IAsyncExecutable<TResult>
         {
             int tryCount = 0;
             IEnumerator<TimeSpan> sleepDurationsEnumerator = sleepDurationsEnumerable?.GetEnumerator();
@@ -34,7 +35,7 @@ namespace Polly.Retry
 
                     try
                     {
-                        TResult result = await action(context, cancellationToken).ConfigureAwait(continueOnCapturedContext);
+                        TResult result = await action.ExecuteAsync(context, cancellationToken, continueOnCapturedContext).ConfigureAwait(continueOnCapturedContext);
 
                         if (!shouldRetryResultPredicates.AnyMatch(result))
                         {

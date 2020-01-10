@@ -8,7 +8,7 @@ namespace Polly.Retry
     /// <summary>
     /// A retry policy that can be applied to synchronous executions.
     /// </summary>
-    public class RetryPolicy : Policy, ISyncRetryPolicy
+    public class RetryPolicy : PolicyV8, ISyncRetryPolicy
     {
         private readonly Action<Exception, TimeSpan, int, Context> _onRetry;
         private readonly int _permittedRetryCount;
@@ -31,9 +31,9 @@ namespace Polly.Retry
         }
 
         /// <inheritdoc/>
-        protected override TResult Implementation<TResult>(Func<Context, CancellationToken, TResult> action,
+        protected override TResult ImplementationSyncV8<TExecutable, TResult>(in TExecutable action,
             Context context, CancellationToken cancellationToken)
-            => RetryEngine.Implementation(
+            => RetryEngineV8.Implementation(
                 action,
                 context,
                 cancellationToken,
@@ -52,7 +52,7 @@ namespace Polly.Retry
     /// A retry policy that can be applied to synchronous executions returning a value of type <typeparamref name="TResult"/>.
     /// </summary>
     /// <typeparam name="TResult">The return type of delegates which may be executed through the policy.</typeparam>
-    public class RetryPolicy<TResult> : Policy<TResult>, ISyncRetryPolicy<TResult>
+    public class RetryPolicy<TResult> : PolicyV8<TResult>, ISyncRetryPolicy<TResult>
     {
         private readonly Action<DelegateResult<TResult>, TimeSpan, int, Context> _onRetry;
         private readonly int _permittedRetryCount;
@@ -76,8 +76,8 @@ namespace Polly.Retry
 
         /// <inheritdoc/>
         [DebuggerStepThrough]
-        protected override TResult Implementation(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken)
-            => RetryEngine.Implementation(
+        protected override TResult ImplementationSyncV8<TExecutable>(in TExecutable action, Context context, CancellationToken cancellationToken)
+            => RetryEngineV8.Implementation(
                 action,
                 context,
                 cancellationToken,

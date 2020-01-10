@@ -5,10 +5,10 @@ using Polly.Utilities;
 
 namespace Polly.Retry
 {
-    internal static class RetryEngine
+    internal static class RetryEngineV8
     {
-        internal static TResult Implementation<TResult>(
-            Func<Context, CancellationToken, TResult> action,
+        internal static TResult Implementation<TExecutable, TResult>(
+            in TExecutable action,
             Context context,
             CancellationToken cancellationToken,
             ExceptionPredicates shouldRetryExceptionPredicates,
@@ -17,6 +17,7 @@ namespace Polly.Retry
             int permittedRetryCount = Int32.MaxValue,
             IEnumerable<TimeSpan> sleepDurationsEnumerable = null,
             Func<int, DelegateResult<TResult>, Context, TimeSpan> sleepDurationProvider = null)
+            where TExecutable : ISyncExecutable<TResult>
         {
             int tryCount = 0;
             IEnumerator<TimeSpan> sleepDurationsEnumerator = sleepDurationsEnumerable?.GetEnumerator();
@@ -32,7 +33,7 @@ namespace Polly.Retry
 
                     try
                     {
-                        TResult result = action(context, cancellationToken);
+                        TResult result = action.Execute(context, cancellationToken);
 
                         if (!shouldRetryResultPredicates.AnyMatch(result))
                         {

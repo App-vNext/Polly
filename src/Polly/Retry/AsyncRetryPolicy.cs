@@ -9,7 +9,7 @@ namespace Polly.Retry
     /// <summary>
     /// A retry policy that can be applied to asynchronous executions.
     /// </summary>
-    public class AsyncRetryPolicy : AsyncPolicy, IAsyncRetryPolicy
+    public class AsyncRetryPolicy : AsyncPolicyV8, IAsyncRetryPolicy
     {
         private readonly Func<Exception, TimeSpan, int, Context, Task> _onRetryAsync;
         private readonly int _permittedRetryCount;
@@ -33,10 +33,10 @@ namespace Polly.Retry
 
         /// <inheritdoc/>
         [DebuggerStepThrough]
-        protected override Task<TResult> ImplementationAsync<TResult>(Func<Context, CancellationToken, Task<TResult>> action, Context context, CancellationToken cancellationToken,
+        protected override Task<TResult> ImplementationAsyncV8<TExecutableAsync, TResult>(TExecutableAsync action, Context context, CancellationToken cancellationToken,
             bool continueOnCapturedContext)
         {
-            return AsyncRetryEngine.ImplementationAsync(
+            return AsyncRetryEngineV8.ImplementationAsync(
                 action,
                 context,
                 cancellationToken,
@@ -57,7 +57,7 @@ namespace Polly.Retry
     /// A retry policy that can be applied to asynchronous executions returning a value of type <typeparamref name="TResult"/>.
     /// </summary>
     /// <typeparam name="TResult">The return type of delegates which may be executed through the policy.</typeparam>
-    public class AsyncRetryPolicy<TResult> : AsyncPolicy<TResult>, IAsyncRetryPolicy<TResult>
+    public class AsyncRetryPolicy<TResult> : AsyncPolicyV8<TResult>, IAsyncRetryPolicy<TResult>
     {
         private readonly Func<DelegateResult<TResult>, TimeSpan, int, Context, Task> _onRetryAsync;
         private readonly int _permittedRetryCount;
@@ -81,9 +81,9 @@ namespace Polly.Retry
 
         /// <inheritdoc/>
         [DebuggerStepThrough]
-        protected override Task<TResult> ImplementationAsync(Func<Context, CancellationToken, Task<TResult>> action, Context context, CancellationToken cancellationToken,
+        protected override Task<TResult> ImplementationAsyncV8<TExecutableAsync>(TExecutableAsync action, Context context, CancellationToken cancellationToken,
             bool continueOnCapturedContext)
-            => AsyncRetryEngine.ImplementationAsync(
+            => AsyncRetryEngineV8.ImplementationAsync(
                 action,
                 context,
                 cancellationToken,
