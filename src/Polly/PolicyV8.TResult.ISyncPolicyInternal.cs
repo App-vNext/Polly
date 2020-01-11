@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Threading;
 
 namespace Polly
 {
     public abstract partial class PolicyV8<TResult> : ISyncPolicyInternal<TResult>
     {
+        [DebuggerStepThrough]
         TResult ISyncPolicyInternal<TResult>.Execute<TExecutable>(in TExecutable action, Context context, CancellationToken cancellationToken)
         {
             if (context == null) throw new ArgumentNullException(nameof(context));
@@ -21,6 +23,7 @@ namespace Polly
             }
         }
 
+        [DebuggerStepThrough]
         PolicyResult<TResult> ISyncPolicyInternal<TResult>.ExecuteAndCapture<TExecutable>(in TExecutable action, Context context, CancellationToken cancellationToken)
         {
             if (context == null) throw new ArgumentNullException(nameof(context));
