@@ -32,7 +32,6 @@ namespace Polly
         }
 
     }
-    */
 
     public abstract partial class AsyncPolicy<TResult>
     {
@@ -62,4 +61,5 @@ namespace Polly
             return this;
         }
     }
+    */
 }

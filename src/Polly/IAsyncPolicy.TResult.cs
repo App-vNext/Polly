@@ -19,14 +19,14 @@ namespace Polly
         IAsyncPolicy<TResult> WithPolicyKey(String policyKey);
 
         /// <summary>
-        ///     Executes the specified asynchronous action within the policy and returns the result.
+        /// Executes the specified asynchronous action within the policy and returns the result.
         /// </summary>
         /// <param name="action">The action to perform.</param>
         /// <returns>The value returned by the action</returns>
         Task<TResult> ExecuteAsync(Func<Task<TResult>> action);
 
         /// <summary>
-        ///     Executes the specified asynchronous action within the policy and returns the result.
+        /// Executes the specified asynchronous action within the policy and returns the result.
         /// </summary>
         /// <param name="action">The action to perform.</param>
         /// <param name="context">Context data that is passed to the exception policy.</param>
@@ -34,7 +34,7 @@ namespace Polly
         Task<TResult> ExecuteAsync(Func<Context, Task<TResult>> action, Context context);
 
         /// <summary>
-        ///     Executes the specified asynchronous action within the policy and returns the result.
+        /// Executes the specified asynchronous action within the policy and returns the result.
         /// </summary>
         /// <param name="action">The action to perform.</param>
         /// <param name="contextData">Arbitrary data that is passed to the exception policy.</param>
@@ -42,7 +42,7 @@ namespace Polly
         Task<TResult> ExecuteAsync(Func<Context, Task<TResult>> action, IDictionary<string, object> contextData);
 
         /// <summary>
-        ///     Executes the specified asynchronous action within the policy and returns the result.
+        /// Executes the specified asynchronous action within the policy and returns the result.
         /// </summary>
         /// <param name="action">The action to perform.</param>
         /// <param name="cancellationToken">A cancellation token which can be used to cancel the action.  When a retry policy is in use, also cancels any further retries.</param>
@@ -50,7 +50,7 @@ namespace Polly
         Task<TResult> ExecuteAsync(Func<CancellationToken, Task<TResult>> action, CancellationToken cancellationToken);
 
         /// <summary>
-        ///     Executes the specified asynchronous action within the policy and returns the result.
+        /// Executes the specified asynchronous action within the policy and returns the result.
         /// </summary>
         /// <param name="action">The action to perform.</param>
         /// <param name="contextData">Arbitrary data that is passed to the exception policy.</param>
@@ -59,7 +59,7 @@ namespace Polly
         Task<TResult> ExecuteAsync(Func<Context, CancellationToken, Task<TResult>> action, IDictionary<string, object> contextData, CancellationToken cancellationToken);
 
         /// <summary>
-        ///     Executes the specified asynchronous action within the policy and returns the result.
+        /// Executes the specified asynchronous action within the policy and returns the result.
         /// </summary>
         /// <param name="action">The action to perform.</param>
         /// <param name="context">Context data that is passed to the exception policy.</param>
@@ -68,7 +68,7 @@ namespace Polly
         Task<TResult> ExecuteAsync(Func<Context, CancellationToken, Task<TResult>> action, Context context, CancellationToken cancellationToken);
 
         /// <summary>
-        ///     Executes the specified asynchronous action within the policy and returns the result.
+        /// Executes the specified asynchronous action within the policy and returns the result.
         /// </summary>
         /// <param name="action">The action to perform.</param>
         /// <param name="continueOnCapturedContext">Whether to continue on a captured synchronization context.</param>
@@ -78,7 +78,7 @@ namespace Polly
         Task<TResult> ExecuteAsync(Func<CancellationToken, Task<TResult>> action, CancellationToken cancellationToken, bool continueOnCapturedContext);
 
         /// <summary>
-        ///     Executes the specified asynchronous action within the policy and returns the result.
+        /// Executes the specified asynchronous action within the policy and returns the result.
         /// </summary>
         /// <param name="action">The action to perform.</param>
         /// <param name="contextData">Arbitrary data that is passed to the exception policy.</param>
@@ -89,7 +89,7 @@ namespace Polly
         Task<TResult> ExecuteAsync(Func<Context, CancellationToken, Task<TResult>> action, IDictionary<string, object> contextData, CancellationToken cancellationToken, bool continueOnCapturedContext);
 
         /// <summary>
-        ///     Executes the specified asynchronous action within the policy and returns the result.
+        /// Executes the specified asynchronous action within the policy and returns the result.
         /// </summary>
         /// <param name="action">The action to perform.</param>
         /// <param name="context">Context data that is passed to the exception policy.</param>
@@ -98,6 +98,32 @@ namespace Polly
         /// <returns>The value returned by the action</returns>
         /// <exception cref="InvalidOperationException">Please use asynchronous-defined policies when calling asynchronous ExecuteAsync (and similar) methods.</exception>
         Task<TResult> ExecuteAsync(Func<Context, CancellationToken, Task<TResult>> action, Context context, CancellationToken cancellationToken, bool continueOnCapturedContext);
+
+        /// <summary>
+        /// Executes the specified asynchronous function within the policy, passing an extra input of user-defined type <typeparamref name="T1"/>, and returns the result.
+        /// </summary>
+        /// <param name="func">The function to execute.</param>
+        /// <param name="context">Context data that is passed to the exception policy.</param>
+        /// <param name="continueOnCapturedContext">Whether to continue on a captured synchronization context.</param>
+        /// <param name="cancellationToken">A cancellation token which can be used to cancel the action.  When a retry policy in use, also cancels any further retries.</param>
+        /// <param name="input1">The value of the first custom input to the function.</param>
+        /// <typeparam name="T1">The type of the first custom input to the function.</typeparam>
+        /// <returns>The value returned by the function</returns>
+        Task<TResult> ExecuteAsync<T1>(Func<Context, CancellationToken, bool, T1, Task<TResult>> func, Context context, CancellationToken cancellationToken, bool continueOnCapturedContext, T1 input1);
+
+        /// <summary>
+        /// Executes the specified asynchronous function within the policy, passing two extra inputs of user-defined types <typeparamref name="T1"/> and  <typeparamref name="T2"/>, and returns the result.
+        /// </summary>
+        /// <param name="func">The function to execute.</param>
+        /// <param name="context">Context data that is passed to the exception policy.</param>
+        /// <param name="continueOnCapturedContext">Whether to continue on a captured synchronization context.</param>
+        /// <param name="cancellationToken">A cancellation token which can be used to cancel the action.  When a retry policy in use, also cancels any further retries.</param>
+        /// <param name="input1">The value of the first custom input to the function.</param>
+        /// <param name="input2">The value of the second custom input to the function.</param>
+        /// <typeparam name="T1">The type of the first custom input to the function.</typeparam>
+        /// <typeparam name="T2">The type of the second custom input to the function.</typeparam>
+        /// <returns>The value returned by the function</returns>
+        Task<TResult> ExecuteAsync<T1, T2>(Func<Context, CancellationToken, bool, T1, T2, Task<TResult>> func, Context context, CancellationToken cancellationToken, bool continueOnCapturedContext, T1 input1, T2 input2);
 
         /// <summary>
         /// Executes the specified asynchronous action within the policy and returns the result.
@@ -124,7 +150,7 @@ namespace Polly
         Task<PolicyResult<TResult>> ExecuteAndCaptureAsync(Func<Context, Task<TResult>> action, Context context);
 
         /// <summary>
-        ///     Executes the specified asynchronous action within the policy and returns the result.
+        /// Executes the specified asynchronous action within the policy and returns the result.
         /// </summary>
         /// <param name="action">The action to perform.</param>
         /// <param name="cancellationToken">A cancellation token which can be used to cancel the action.  When a retry policy in use, also cancels any further retries.</param>
@@ -132,7 +158,7 @@ namespace Polly
         Task<PolicyResult<TResult>> ExecuteAndCaptureAsync(Func<CancellationToken, Task<TResult>> action, CancellationToken cancellationToken);
 
         /// <summary>
-        ///     Executes the specified asynchronous action within the policy and returns the result.
+        /// Executes the specified asynchronous action within the policy and returns the result.
         /// </summary>
         /// <param name="action">The action to perform.</param>
         /// <param name="contextData">Arbitrary data that is passed to the exception policy.</param>
@@ -142,7 +168,7 @@ namespace Polly
         Task<PolicyResult<TResult>> ExecuteAndCaptureAsync(Func<Context, CancellationToken, Task<TResult>> action, IDictionary<string, object> contextData, CancellationToken cancellationToken);
 
         /// <summary>
-        ///     Executes the specified asynchronous action within the policy and returns the result.
+        /// Executes the specified asynchronous action within the policy and returns the result.
         /// </summary>
         /// <param name="action">The action to perform.</param>
         /// <param name="context">A cancellation token which can be used to cancel the action.  When a retry policy in use, also cancels any further retries.</param>
@@ -151,7 +177,7 @@ namespace Polly
         Task<PolicyResult<TResult>> ExecuteAndCaptureAsync(Func<Context, CancellationToken, Task<TResult>> action, Context context, CancellationToken cancellationToken);
 
         /// <summary>
-        ///     Executes the specified asynchronous action within the policy and returns the result.
+        /// Executes the specified asynchronous action within the policy and returns the result.
         /// </summary>
         /// <param name="action">The action to perform.</param>
         /// <param name="cancellationToken">A cancellation token which can be used to cancel the action.  When a retry policy in use, also cancels any further retries.</param>
@@ -161,7 +187,7 @@ namespace Polly
         Task<PolicyResult<TResult>> ExecuteAndCaptureAsync(Func<CancellationToken, Task<TResult>> action, CancellationToken cancellationToken, bool continueOnCapturedContext);
 
         /// <summary>
-        ///     Executes the specified asynchronous action within the policy and returns the result.
+        /// Executes the specified asynchronous action within the policy and returns the result.
         /// </summary>
         /// <param name="action">The action to perform.</param>
         /// <param name="contextData">Arbitrary data that is passed to the exception policy.</param>
@@ -172,7 +198,7 @@ namespace Polly
         Task<PolicyResult<TResult>> ExecuteAndCaptureAsync(Func<Context, CancellationToken, Task<TResult>> action, IDictionary<string, object> contextData, CancellationToken cancellationToken, bool continueOnCapturedContext);
 
         /// <summary>
-        ///     Executes the specified asynchronous action within the policy and returns the result.
+        /// Executes the specified asynchronous action within the policy and returns the result.
         /// </summary>
         /// <param name="action">The action to perform.</param>
         /// <param name="context">Context data that is passed to the exception policy.</param>
@@ -181,5 +207,31 @@ namespace Polly
         /// <returns>The captured result</returns>
         /// <exception cref="InvalidOperationException">Please use asynchronous-defined policies when calling asynchronous ExecuteAsync (and similar) methods.</exception>
         Task<PolicyResult<TResult>> ExecuteAndCaptureAsync(Func<Context, CancellationToken, Task<TResult>> action, Context context, CancellationToken cancellationToken, bool continueOnCapturedContext);
+
+        /// <summary>
+        /// Executes the specified asynchronous function within the policy, passing an extra input of user-defined type <typeparamref name="T1"/>, and returns the captured result.
+        /// </summary>
+        /// <param name="func">The function to execute.</param>
+        /// <param name="context">Context data that is passed to the exception policy.</param>
+        /// <param name="continueOnCapturedContext">Whether to continue on a captured synchronization context.</param>
+        /// <param name="cancellationToken">A cancellation token which can be used to cancel the action.  When a retry policy in use, also cancels any further retries.</param>
+        /// <param name="input1">The value of the first custom input to the function.</param>
+        /// <typeparam name="T1">The type of the first custom input to the function.</typeparam>
+        /// <returns>The outcome of the execution, as a promise of a captured <see cref="PolicyResult{TResult}"/></returns>
+        Task<PolicyResult<TResult>> ExecuteAndCaptureAsync<T1>(Func<Context, CancellationToken, bool, T1, Task<TResult>> func, Context context, CancellationToken cancellationToken, bool continueOnCapturedContext, T1 input1);
+
+        /// <summary>
+        /// Executes the specified asynchronous function within the policy, passing two extra inputs of user-defined types <typeparamref name="T1"/> and  <typeparamref name="T2"/>, and returns the result.
+        /// </summary>
+        /// <param name="func">The function to execute.</param>
+        /// <param name="context">Context data that is passed to the exception policy.</param>
+        /// <param name="continueOnCapturedContext">Whether to continue on a captured synchronization context.</param>
+        /// <param name="cancellationToken">A cancellation token which can be used to cancel the action.  When a retry policy in use, also cancels any further retries.</param>
+        /// <param name="input1">The value of the first custom input to the function.</param>
+        /// <param name="input2">The value of the second custom input to the function.</param>
+        /// <typeparam name="T1">The type of the first custom input to the function.</typeparam>
+        /// <typeparam name="T2">The type of the second custom input to the function.</typeparam>
+        /// <returns>The outcome of the execution, as a promise of a captured <see cref="PolicyResult{TResult}"/></returns>
+        Task<PolicyResult<TResult>> ExecuteAndCaptureAsync<T1, T2>(Func<Context, CancellationToken, bool, T1, T2, Task<TResult>> func, Context context, CancellationToken cancellationToken, bool continueOnCapturedContext, T1 input1, T2 input2);
     }
 }

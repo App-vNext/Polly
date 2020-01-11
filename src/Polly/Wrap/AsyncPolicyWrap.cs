@@ -64,7 +64,7 @@ namespace Polly.Wrap
     /// A wrapper for composing policies that can be applied to asynchronous executions returning a value of type <typeparamref name="TResult"/>.
     /// </summary>
     /// <typeparam name="TResult">The return type of delegates which may be executed through the policy.</typeparam>
-    public partial class AsyncPolicyWrap<TResult> : AsyncPolicy<TResult>, IAsyncPolicyWrap<TResult>
+    public partial class AsyncPolicyWrap<TResult> : AsyncPolicyV8<TResult>, IAsyncPolicyWrap<TResult>
     {
         private readonly IAsyncPolicy _outerNonGeneric;
         private readonly IAsyncPolicy _innerNonGeneric;
@@ -104,14 +104,14 @@ namespace Polly.Wrap
         }
 
         /// <inheritdoc/>
-        protected override Task<TResult> ImplementationAsync(Func<Context, CancellationToken, Task<TResult>> action, Context context, CancellationToken cancellationToken,
-            bool continueOnCapturedContext)
+        protected override Task<TResult> AsyncGenericImplementationV8<TExecutableAsync>(TExecutableAsync action, Context context,
+            CancellationToken cancellationToken, bool continueOnCapturedContext)
         {
             if (_outerNonGeneric != null)
             {
                 if (_innerNonGeneric != null)
                 {
-                    return AsyncPolicyWrapEngineV8.ImplementationAsync<TResult>(
+                    return AsyncPolicyWrapEngineV8.ImplementationAsync<TExecutableAsync, TResult>(
                         action,
                         context,
                         cancellationToken,
@@ -122,7 +122,7 @@ namespace Polly.Wrap
                 }
                 else if (_innerGeneric != null)
                 {
-                    return AsyncPolicyWrapEngineV8.ImplementationAsync<TResult>(
+                    return AsyncPolicyWrapEngineV8.ImplementationAsync<TExecutableAsync, TResult>(
                         action,
                         context,
                         cancellationToken,
@@ -141,7 +141,7 @@ namespace Polly.Wrap
             {
                 if (_innerNonGeneric != null)
                 {
-                    return AsyncPolicyWrapEngineV8.ImplementationAsync<TResult>(
+                    return AsyncPolicyWrapEngineV8.ImplementationAsync<TExecutableAsync, TResult>(
                         action,
                         context,
                         cancellationToken,
@@ -153,7 +153,7 @@ namespace Polly.Wrap
                 }
                 else if (_innerGeneric != null)
                 {
-                    return AsyncPolicyWrapEngineV8.ImplementationAsync<TResult>(
+                    return AsyncPolicyWrapEngineV8.ImplementationAsync<TExecutableAsync, TResult>(
                         action,
                         context,
                         cancellationToken,

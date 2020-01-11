@@ -5,7 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 
 namespace Polly
-{
+{/*
     public abstract partial class AsyncPolicy<TResult> : IAsyncPolicy<TResult>
     {
 
@@ -249,4 +249,5 @@ namespace Polly
         #endregion
 
     }
+*/
 }
