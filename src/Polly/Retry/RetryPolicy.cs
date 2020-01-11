@@ -31,7 +31,7 @@ namespace Polly.Retry
         }
 
         /// <inheritdoc/>
-        protected override TResult ImplementationSyncV8<TExecutable, TResult>(in TExecutable action,
+        protected override TResult SyncGenericImplementationV8<TExecutable, TResult>(in TExecutable action,
             Context context, CancellationToken cancellationToken)
             => RetryEngineV8.Implementation(
                 action,
@@ -76,7 +76,7 @@ namespace Polly.Retry
 
         /// <inheritdoc/>
         [DebuggerStepThrough]
-        protected override TResult ImplementationSyncV8<TExecutable>(in TExecutable action, Context context, CancellationToken cancellationToken)
+        protected override TResult SyncGenericImplementationV8<TExecutable>(in TExecutable action, Context context, CancellationToken cancellationToken)
             => RetryEngineV8.Implementation(
                 action,
                 context,

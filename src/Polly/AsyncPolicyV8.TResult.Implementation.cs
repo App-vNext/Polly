@@ -16,7 +16,7 @@ namespace Polly
         /// <param name="cancellationToken">A token to signal that execution should be cancelled.</param>
         /// <param name="continueOnCapturedContext">Whether async continuations should continue on a captured context.</param>
         /// <returns>A <see cref="Task"/> representing the result of the execution.</returns>
-        protected abstract Task<TResult> ImplementationAsyncV8<TExecutableAsync>(
+        protected abstract Task<TResult> AsyncGenericImplementationV8<TExecutableAsync>(
             TExecutableAsync action,
             Context context,
             CancellationToken cancellationToken,

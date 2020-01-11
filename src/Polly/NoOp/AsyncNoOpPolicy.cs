@@ -15,7 +15,7 @@ namespace Polly.NoOp
 
         /// <inheritdoc/>
         [DebuggerStepThrough]
-        protected override Task<TResult> ImplementationAsyncV8<TExecutableAsync, TResult>(
+        protected override Task<TResult> AsyncGenericImplementationV8<TExecutableAsync, TResult>(
             TExecutableAsync action,
             Context context,
             CancellationToken cancellationToken,
@@ -35,7 +35,7 @@ namespace Polly.NoOp
 
         /// <inheritdoc/>
         [DebuggerStepThrough]
-        protected override Task<TResult> ImplementationAsyncV8<TExecutableAsync>(
+        protected override Task<TResult> AsyncGenericImplementationV8<TExecutableAsync>(
             TExecutableAsync action,
             Context context,
             CancellationToken cancellationToken,

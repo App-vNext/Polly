@@ -16,7 +16,7 @@ namespace Polly
 
             try
             {
-                return ImplementationSyncV8(action, context, cancellationToken);
+                return SyncGenericImplementationV8(action, context, cancellationToken);
             }
             finally
             {

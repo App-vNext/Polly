@@ -16,7 +16,7 @@ namespace Polly.Specs.Helpers.Custom.AddBehaviourIfHandle
             _behaviourIfHandle = behaviourIfHandle ?? throw new ArgumentNullException(nameof(behaviourIfHandle));
         }
 
-        protected override Task<TResult> ImplementationAsyncV8<TExecutableAsync, TResult>(TExecutableAsync action, Context context,
+        protected override Task<TResult> AsyncGenericImplementationV8<TExecutableAsync, TResult>(TExecutableAsync action, Context context,
             CancellationToken cancellationToken, bool continueOnCapturedContext)
         {
             return AsyncAddBehaviourIfHandleEngine.ImplementationAsync(
@@ -44,7 +44,7 @@ namespace Polly.Specs.Helpers.Custom.AddBehaviourIfHandle
 
         }
 
-        protected override Task<TResult> ImplementationAsyncV8<TExecutableAsync>(TExecutableAsync action, Context context,
+        protected override Task<TResult> AsyncGenericImplementationV8<TExecutableAsync>(TExecutableAsync action, Context context,
             CancellationToken cancellationToken, bool continueOnCapturedContext)
         {
             return AsyncAddBehaviourIfHandleEngine.ImplementationAsync(

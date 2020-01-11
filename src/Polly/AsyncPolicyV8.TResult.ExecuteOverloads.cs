@@ -17,7 +17,7 @@ namespace Polly
 
             try
             {
-                return await ImplementationAsyncV8(action, context, cancellationToken, continueOnCapturedContext)
+                return await AsyncGenericImplementationV8(action, context, cancellationToken, continueOnCapturedContext)
                     .ConfigureAwait(continueOnCapturedContext);
             }
             finally

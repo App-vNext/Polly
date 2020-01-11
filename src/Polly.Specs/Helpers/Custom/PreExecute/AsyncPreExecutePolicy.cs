@@ -18,7 +18,7 @@ namespace Polly.Specs.Helpers.Custom.PreExecute
             _preExecute = preExecute ?? throw new ArgumentNullException(nameof(preExecute));
         }
 
-        protected override Task<TResult> ImplementationAsyncV8<TExecutableAsync, TResult>(TExecutableAsync action, Context context,
+        protected override Task<TResult> AsyncGenericImplementationV8<TExecutableAsync, TResult>(TExecutableAsync action, Context context,
             CancellationToken cancellationToken, bool continueOnCapturedContext)
         {
             return AsyncPreExecuteEngine.ImplementationAsync<TExecutableAsync, TResult>(action, context, cancellationToken, continueOnCapturedContext, _preExecute);
@@ -39,7 +39,7 @@ namespace Polly.Specs.Helpers.Custom.PreExecute
             _preExecute = preExecute ?? throw new ArgumentNullException(nameof(preExecute));
         }
 
-        protected override Task<TResult> ImplementationAsyncV8<TExecutableAsync>(TExecutableAsync action, Context context,
+        protected override Task<TResult> AsyncGenericImplementationV8<TExecutableAsync>(TExecutableAsync action, Context context,
             CancellationToken cancellationToken, bool continueOnCapturedContext)
         {
             return AsyncPreExecuteEngine.ImplementationAsync<TExecutableAsync, TResult>(action, context, cancellationToken, continueOnCapturedContext, _preExecute);

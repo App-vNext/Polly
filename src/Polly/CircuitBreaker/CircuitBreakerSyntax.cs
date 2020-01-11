@@ -181,10 +181,10 @@ namespace Polly
             if (exceptionsAllowedBeforeBreaking <= 0) throw new ArgumentOutOfRangeException(nameof(exceptionsAllowedBeforeBreaking), "Value must be greater than zero.");
             if (durationOfBreak < TimeSpan.Zero) throw new ArgumentOutOfRangeException(nameof(durationOfBreak), "Value must be greater than zero.");
 
-            var breakerController = new ConsecutiveCountCircuitController<EmptyStruct>(
+            var breakerController = new ConsecutiveCountCircuitController<object>(
                 exceptionsAllowedBeforeBreaking,
                 durationOfBreak,
-                onBreak: onBreak == null ? (Action<DelegateResult<EmptyStruct>, CircuitState, TimeSpan, Context>)null : (outcome, state, timespan, context) => onBreak(outcome.Exception, state, timespan, context),
+                onBreak: onBreak == null ? (Action<DelegateResult<object>, CircuitState, TimeSpan, Context>)null : (outcome, state, timespan, context) => onBreak(outcome.Exception, state, timespan, context),
                 onReset,
                 onHalfOpen);
             return new CircuitBreakerPolicy(

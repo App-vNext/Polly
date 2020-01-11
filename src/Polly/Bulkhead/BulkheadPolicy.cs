@@ -27,7 +27,7 @@ namespace Polly.Bulkhead
 
         /// <inheritdoc/>
         [DebuggerStepThrough]
-        protected override TResult ImplementationSyncV8<TExecutable, TResult>(in TExecutable action, Context context,
+        protected override TResult SyncGenericImplementationV8<TExecutable, TResult>(in TExecutable action, Context context,
             CancellationToken cancellationToken)
             => BulkheadEngineV8.Implementation<TExecutable, TResult>(action, context, _onBulkheadRejected, _maxParallelizationSemaphore, _maxQueuedActionsSemaphore, cancellationToken);
 
@@ -77,7 +77,7 @@ namespace Polly.Bulkhead
 
         /// <inheritdoc/>
         [DebuggerStepThrough]
-        protected override TResult ImplementationSyncV8<TExecutable>(in TExecutable action, Context context, CancellationToken cancellationToken)
+        protected override TResult SyncGenericImplementationV8<TExecutable>(in TExecutable action, Context context, CancellationToken cancellationToken)
             => BulkheadEngineV8.Implementation<TExecutable, TResult>(action, context, _onBulkheadRejected, _maxParallelizationSemaphore, _maxQueuedActionsSemaphore, cancellationToken);
 
         /// <summary>

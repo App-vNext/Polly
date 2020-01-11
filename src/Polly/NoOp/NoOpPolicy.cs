@@ -14,7 +14,7 @@ namespace Polly.NoOp
 
         /// <inheritdoc/>
         [DebuggerStepThrough]
-        protected override TResult ImplementationSyncV8<TExecutable, TResult>(in TExecutable action, Context context, CancellationToken cancellationToken)
+        protected override TResult SyncGenericImplementationV8<TExecutable, TResult>(in TExecutable action, Context context, CancellationToken cancellationToken)
         {
             return NoOpEngineV8.Implementation<TExecutable, TResult>(action, context, cancellationToken);
         }
@@ -32,7 +32,7 @@ namespace Polly.NoOp
 
         /// <inheritdoc/>
         [DebuggerStepThrough]
-        protected override TResult ImplementationSyncV8<TExecutable>(in TExecutable action, Context context, CancellationToken cancellationToken)
+        protected override TResult SyncGenericImplementationV8<TExecutable>(in TExecutable action, Context context, CancellationToken cancellationToken)
         {
             return NoOpEngineV8.Implementation<TExecutable, TResult>(action, context, cancellationToken);
         }

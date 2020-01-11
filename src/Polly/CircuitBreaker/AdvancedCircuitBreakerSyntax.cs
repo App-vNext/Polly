@@ -205,7 +205,7 @@ namespace Polly
         /// <remarks>(see "Release It!" by Michael T. Nygard fi)</remarks>
         public static ISyncCircuitBreakerPolicy AdvancedCircuitBreaker(this PolicyBuilder policyBuilder, double failureThreshold, TimeSpan samplingDuration, int minimumThroughput, TimeSpan durationOfBreak, Action<Exception, CircuitState, TimeSpan, Context> onBreak, Action<Context> onReset, Action onHalfOpen)
         {
-            var resolutionOfCircuit = TimeSpan.FromTicks(AdvancedCircuitController<EmptyStruct>.ResolutionOfCircuitTimer);
+            var resolutionOfCircuit = TimeSpan.FromTicks(AdvancedCircuitController<object>.ResolutionOfCircuitTimer);
 
             if (failureThreshold <= 0) throw new ArgumentOutOfRangeException(nameof(failureThreshold), "Value must be greater than zero.");
             if (failureThreshold > 1) throw new ArgumentOutOfRangeException(nameof(failureThreshold), "Value must be less than or equal to one.");
@@ -213,12 +213,12 @@ namespace Polly
             if (minimumThroughput <= 1) throw new ArgumentOutOfRangeException(nameof(minimumThroughput), "Value must be greater than one.");
             if (durationOfBreak < TimeSpan.Zero) throw new ArgumentOutOfRangeException(nameof(durationOfBreak), "Value must be greater than zero.");
 
-            var breakerController = new AdvancedCircuitController<EmptyStruct>(
+            var breakerController = new AdvancedCircuitController<object>(
                 failureThreshold,
                 samplingDuration,
                 minimumThroughput,
                 durationOfBreak,
-                onBreak: onBreak == null ? (Action<DelegateResult<EmptyStruct>, CircuitState, TimeSpan, Context>)null : (outcome, state, timespan, context) => onBreak(outcome.Exception, state, timespan, context),
+                onBreak: onBreak == null ? (Action<DelegateResult<object>, CircuitState, TimeSpan, Context>)null : (outcome, state, timespan, context) => onBreak(outcome.Exception, state, timespan, context),
                 onReset,
                 onHalfOpen);
             return new CircuitBreakerPolicy(

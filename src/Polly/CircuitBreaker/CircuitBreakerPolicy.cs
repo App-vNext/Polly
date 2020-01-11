@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Diagnostics;
-using Polly.Utilities;
 using System.Threading;
 
 namespace Polly.CircuitBreaker
@@ -10,11 +9,11 @@ namespace Polly.CircuitBreaker
     /// </summary>
     public class CircuitBreakerPolicy : PolicyV8, ISyncCircuitBreakerPolicy
     {
-        internal readonly ICircuitController<EmptyStruct> _breakerController;
+        internal readonly ICircuitController<object> _breakerController;
 
         internal CircuitBreakerPolicy(
             PolicyBuilder policyBuilder,
-            ICircuitController<EmptyStruct> breakerController
+            ICircuitController<object> breakerController
             ) : base(policyBuilder)
             => _breakerController = breakerController;
 
@@ -41,12 +40,12 @@ namespace Polly.CircuitBreaker
 
         /// <inheritdoc/>
         [DebuggerStepThrough]
-        protected override TResult ImplementationSyncV8<TExecutable, TResult>(in TExecutable action, Context context,
+        protected override TResult SyncGenericImplementationV8<TExecutable, TResult>(in TExecutable action, Context context,
                 CancellationToken cancellationToken)
             => ImplementationSyncV8Internal<TExecutable, TResult>(action, context, cancellationToken);
 
-        // This additional private method is necessary, because _breakerController is generic in <EmptyStruct>.
-        // We therefore have to convert the whole execution to EmptyStruct.
+        // This additional private method is necessary, because _breakerController is generic in <object>.
+        // We therefore have to convert the whole execution to object.
         // It could be removed if ICircuitController<TResult> was refactored to not be generic in TResult.
         // Which could be done by moving onBreak (and similar) out of ICircuitController<>, instead to parameters passed to CircuitBreakerEngineV8.Implementation<>() (as retry policy does)
         // and by removing the LastHandledResult property.
@@ -56,16 +55,15 @@ namespace Polly.CircuitBreaker
             where TExecutable : ISyncExecutable<TResult>
         {
             TResult result = default;
-            CircuitBreakerEngineV8.Implementation<ISyncExecutable<EmptyStruct>, EmptyStruct>(
+            CircuitBreakerEngineV8.Implementation<ISyncExecutable<object>, object>(
                 new SyncExecutableAction((ctx, ct) => result = action.Execute(ctx, ct)),
                 context,
                 cancellationToken,
                 ExceptionPredicates,
-                ResultPredicates<EmptyStruct>.None,
+                ResultPredicates<object>.None,
                 _breakerController);
             return result;
         }
-
     }
 
     /// <summary>
@@ -111,7 +109,7 @@ namespace Polly.CircuitBreaker
 
         /// <inheritdoc/>
         [DebuggerStepThrough]
-        protected override TResult ImplementationSyncV8<TExecutable>(in TExecutable action, Context context, CancellationToken cancellationToken)
+        protected override TResult SyncGenericImplementationV8<TExecutable>(in TExecutable action, Context context, CancellationToken cancellationToken)
             => CircuitBreakerEngineV8.Implementation(
                 action,
                 context,

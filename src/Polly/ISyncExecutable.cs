@@ -3,6 +3,13 @@
 namespace Polly
 {
     /// <summary>
+    /// Defines an operation that can be executed synchronously, with no return result.
+    /// </summary>
+    public interface ISyncExecutable : ISyncExecutable<object>
+    {
+    }
+
+    /// <summary>
     /// Defines an operation that can be executed synchronously to return a result of type <typeparamref name="TResult"/>
     /// </summary>
     /// <typeparam name="TResult">The return type of the operation.</typeparam>
@@ -16,5 +23,4 @@ namespace Polly
         /// <returns>A result of type <typeparamref name="TResult"/></returns>
         TResult Execute(Context context, CancellationToken cancellationToken);
     }
-
 }

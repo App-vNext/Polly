@@ -6,7 +6,7 @@ using Polly.Utilities;
 namespace Polly
 {
     /// <inheritdoc/>
-    internal readonly struct AsyncExecutableActionNoParams : IAsyncExecutable<EmptyStruct>
+    internal readonly struct AsyncExecutableActionNoParams : IAsyncExecutable
     {
         private readonly Func<Task> _action;
 
@@ -16,15 +16,15 @@ namespace Polly
         }
 
         /// <inheritdoc/>
-        public readonly async Task<EmptyStruct> ExecuteAsync(Context context, CancellationToken cancellationToken, bool continueOnCapturedContext)
+        public readonly async Task<object> ExecuteAsync(Context context, CancellationToken cancellationToken, bool continueOnCapturedContext)
         {
             await _action().ConfigureAwait(continueOnCapturedContext);
-            return EmptyStruct.Instance;
+           return null;
         }
     }
 
     /// <inheritdoc/>
-    internal readonly struct AsyncExecutableActionOnContext : IAsyncExecutable<EmptyStruct>
+    internal readonly struct AsyncExecutableActionOnContext : IAsyncExecutable
     {
         private readonly Func<Context, Task> _action;
 
@@ -34,15 +34,15 @@ namespace Polly
         }
 
         /// <inheritdoc/>
-        public readonly async Task<EmptyStruct> ExecuteAsync(Context context, CancellationToken cancellationToken, bool continueOnCapturedContext)
+        public readonly async Task<object> ExecuteAsync(Context context, CancellationToken cancellationToken, bool continueOnCapturedContext)
         {
             await _action(context).ConfigureAwait(continueOnCapturedContext);
-            return EmptyStruct.Instance;
+           return null;
         }
     }
 
     /// <inheritdoc/>
-    internal readonly struct AsyncExecutableActionOnCancellationToken : IAsyncExecutable<EmptyStruct>
+    internal readonly struct AsyncExecutableActionOnCancellationToken : IAsyncExecutable
     {
         private readonly Func<CancellationToken, Task> _action;
 
@@ -52,15 +52,15 @@ namespace Polly
         }
 
         /// <inheritdoc/>
-        public readonly async Task<EmptyStruct> ExecuteAsync(Context context, CancellationToken cancellationToken, bool continueOnCapturedContext)
+        public readonly async Task<object> ExecuteAsync(Context context, CancellationToken cancellationToken, bool continueOnCapturedContext)
         {
             await _action(cancellationToken).ConfigureAwait(continueOnCapturedContext);
-            return EmptyStruct.Instance;
+           return null;
         }
     }
 
     /// <inheritdoc/>
-    internal readonly struct AsyncExecutableActionOnContextCancellationToken : IAsyncExecutable<EmptyStruct>
+    internal readonly struct AsyncExecutableActionOnContextCancellationToken : IAsyncExecutable
     {
         private readonly Func<Context, CancellationToken, Task> _action;
 
@@ -70,15 +70,15 @@ namespace Polly
         }
 
         /// <inheritdoc/>
-        public readonly async Task<EmptyStruct> ExecuteAsync(Context context, CancellationToken cancellationToken, bool continueOnCapturedContext)
+        public readonly async Task<object> ExecuteAsync(Context context, CancellationToken cancellationToken, bool continueOnCapturedContext)
         {
             await _action(context, cancellationToken).ConfigureAwait(continueOnCapturedContext);
-            return EmptyStruct.Instance;
+           return null;
         }
     }
 
     /// <inheritdoc/>
-    internal readonly struct AsyncExecutableAction : IAsyncExecutable<EmptyStruct>
+    internal readonly struct AsyncExecutableAction : IAsyncExecutable
     {
         private readonly Func<Context, CancellationToken, bool, Task> _action;
 
@@ -88,14 +88,14 @@ namespace Polly
         }
 
         /// <inheritdoc/>
-        public readonly async Task<EmptyStruct> ExecuteAsync(Context context, CancellationToken cancellationToken, bool continueOnCapturedContext)
+        public readonly async Task<object> ExecuteAsync(Context context, CancellationToken cancellationToken, bool continueOnCapturedContext)
         {
             await _action(context, cancellationToken, continueOnCapturedContext).ConfigureAwait(continueOnCapturedContext);
-            return EmptyStruct.Instance;
+           return null;
         }
     }
 
-    internal readonly struct AsyncExecutableAction<T1> : IAsyncExecutable<EmptyStruct>
+    internal readonly struct AsyncExecutableAction<T1> : IAsyncExecutable
     {
         private readonly Func<Context, CancellationToken, bool, T1, Task> _action;
         private readonly T1 _arg1;
@@ -106,14 +106,14 @@ namespace Polly
             _arg1 = arg1;
         }
 
-        public readonly async Task<EmptyStruct> ExecuteAsync(Context context, CancellationToken cancellationToken, bool continueOnCapturedContext)
+        public readonly async Task<object> ExecuteAsync(Context context, CancellationToken cancellationToken, bool continueOnCapturedContext)
         {
             await _action(context, cancellationToken, continueOnCapturedContext, _arg1).ConfigureAwait(continueOnCapturedContext);
-            return EmptyStruct.Instance;
+           return null;
         }
     }
 
-    internal readonly struct AsyncExecutableAction<T1, T2> : IAsyncExecutable<EmptyStruct>
+    internal readonly struct AsyncExecutableAction<T1, T2> : IAsyncExecutable
     {
         private readonly Func<Context, CancellationToken, bool, T1, T2, Task> _action;
         private readonly T1 _arg1;
@@ -126,10 +126,10 @@ namespace Polly
             _arg2 = arg2;
         }
 
-        public readonly async Task<EmptyStruct> ExecuteAsync(Context context, CancellationToken cancellationToken, bool continueOnCapturedContext)
+        public readonly async Task<object> ExecuteAsync(Context context, CancellationToken cancellationToken, bool continueOnCapturedContext)
         {
             await _action(context, cancellationToken, continueOnCapturedContext, _arg1, _arg2).ConfigureAwait(continueOnCapturedContext);
-            return EmptyStruct.Instance;
+           return null;
         }
     }
 

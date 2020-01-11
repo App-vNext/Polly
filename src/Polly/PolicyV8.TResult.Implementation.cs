@@ -14,7 +14,7 @@ namespace Polly
         /// <param name="context">The policy execution context.</param>
         /// <param name="cancellationToken">A token to signal that execution should be cancelled.</param>
         /// <returns>A <typeparamref name="TResult"/> result of the execution.</returns>
-        protected abstract TResult ImplementationSyncV8<TExecutable>(
+        protected abstract TResult SyncGenericImplementationV8<TExecutable>(
             in TExecutable action,
             Context context,
             CancellationToken cancellationToken)

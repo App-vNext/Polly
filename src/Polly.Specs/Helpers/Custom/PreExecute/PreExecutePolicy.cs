@@ -17,7 +17,7 @@ namespace Polly.Specs.Helpers.Custom.PreExecute
             _preExecute = preExecute ?? throw new ArgumentNullException(nameof(preExecute));
         }
 
-        protected override TResult ImplementationSyncV8<TExecutable, TResult>(in TExecutable action, Context context,
+        protected override TResult SyncGenericImplementationV8<TExecutable, TResult>(in TExecutable action, Context context,
             CancellationToken cancellationToken)
         {
             return PreExecuteEngine.Implementation<TExecutable, TResult>(action, context, cancellationToken, _preExecute);
@@ -38,7 +38,7 @@ namespace Polly.Specs.Helpers.Custom.PreExecute
             _preExecute = preExecute ?? throw new ArgumentNullException(nameof(preExecute));
         }
 
-        protected override TResult ImplementationSyncV8<TExecutable>(in TExecutable action, Context context, CancellationToken cancellationToken)
+        protected override TResult SyncGenericImplementationV8<TExecutable>(in TExecutable action, Context context, CancellationToken cancellationToken)
         {
             return PreExecuteEngine.Implementation<TExecutable, TResult>(action, context, cancellationToken, _preExecute);
         }

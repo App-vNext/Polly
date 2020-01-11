@@ -13,7 +13,7 @@ namespace Polly.Specs.Helpers.Custom.AddBehaviourIfHandle
             _behaviourIfHandle = behaviourIfHandle ?? throw new ArgumentNullException(nameof(behaviourIfHandle));
         }
 
-        protected override TResult ImplementationSyncV8<TExecutable, TResult>(in TExecutable action, Context context,
+        protected override TResult SyncGenericImplementationV8<TExecutable, TResult>(in TExecutable action, Context context,
             CancellationToken cancellationToken)
         {
             return AddBehaviourIfHandleEngine.Implementation<TExecutable, TResult>(
@@ -39,7 +39,7 @@ namespace Polly.Specs.Helpers.Custom.AddBehaviourIfHandle
             _behaviourIfHandle = behaviourIfHandle ?? throw new ArgumentNullException(nameof(behaviourIfHandle));
         }
 
-        protected override TResult ImplementationSyncV8<TExecutable>(in TExecutable action, Context context, CancellationToken cancellationToken)
+        protected override TResult SyncGenericImplementationV8<TExecutable>(in TExecutable action, Context context, CancellationToken cancellationToken)
         {
             return AddBehaviourIfHandleEngine.Implementation(
                 action,

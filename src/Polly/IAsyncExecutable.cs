@@ -4,6 +4,13 @@ using System.Threading.Tasks;
 namespace Polly
 {
     /// <summary>
+    /// Defines an operation that can be executed asynchronously with no return value.
+    /// </summary>
+    public interface IAsyncExecutable : IAsyncExecutable<object>
+    {
+    }
+
+    /// <summary>
     /// Defines an operation that can be executed asynchronously to return a promise of a result of type <typeparamref name="TResult"/>
     /// </summary>
     /// <typeparam name="TResult">The return type of the operation.</typeparam>

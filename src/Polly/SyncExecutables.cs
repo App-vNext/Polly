@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Threading;
-using Polly.Utilities;
 
 namespace Polly
 {
     /// <inheritdoc/>
-    internal readonly struct SyncExecutableActionNoParams : ISyncExecutable<EmptyStruct>
+    internal readonly struct SyncExecutableActionNoParams : ISyncExecutable
     {
         private readonly Action _action;
 
@@ -15,15 +14,15 @@ namespace Polly
         }
 
         /// <inheritdoc/>
-        public readonly EmptyStruct Execute(Context context, CancellationToken cancellationToken)
+        public readonly object Execute(Context context, CancellationToken cancellationToken)
         {
             _action();
-            return EmptyStruct.Instance;
+            return null;
         }
     }
 
     /// <inheritdoc/>
-    internal readonly struct SyncExecutableActionOnContext : ISyncExecutable<EmptyStruct>
+    internal readonly struct SyncExecutableActionOnContext : ISyncExecutable
     {
         private readonly Action<Context> _action;
 
@@ -33,15 +32,15 @@ namespace Polly
         }
 
         /// <inheritdoc/>
-        public readonly EmptyStruct Execute(Context context, CancellationToken cancellationToken)
+        public readonly object Execute(Context context, CancellationToken cancellationToken)
         {
             _action(context);
-            return EmptyStruct.Instance;
+            return null;
         }
     }
 
     /// <inheritdoc/>
-    internal readonly struct SyncExecutableActionOnCancellationToken : ISyncExecutable<EmptyStruct>
+    internal readonly struct SyncExecutableActionOnCancellationToken : ISyncExecutable
     {
         private readonly Action<CancellationToken> _action;
 
@@ -51,15 +50,15 @@ namespace Polly
         }
 
         /// <inheritdoc/>
-        public readonly EmptyStruct Execute(Context context, CancellationToken cancellationToken)
+        public readonly object Execute(Context context, CancellationToken cancellationToken)
         {
             _action(cancellationToken);
-            return EmptyStruct.Instance;
+            return null;
         }
     }
 
     /// <inheritdoc/>
-    internal readonly struct SyncExecutableAction : ISyncExecutable<EmptyStruct>
+    internal readonly struct SyncExecutableAction : ISyncExecutable
     {
         private readonly Action<Context, CancellationToken> _action;
 
@@ -69,14 +68,14 @@ namespace Polly
         }
 
         /// <inheritdoc/>
-        public readonly EmptyStruct Execute(Context context, CancellationToken cancellationToken)
+        public readonly object Execute(Context context, CancellationToken cancellationToken)
         {
             _action(context, cancellationToken);
-            return EmptyStruct.Instance;
+            return null;
         }
     }
     
-    internal readonly struct SyncExecutableAction<T1> : ISyncExecutable<EmptyStruct>
+    internal readonly struct SyncExecutableAction<T1> : ISyncExecutable
     {
         private readonly Action<Context, CancellationToken, T1> _action;
         private readonly T1 _arg1;
@@ -87,14 +86,14 @@ namespace Polly
             _arg1 = arg1;
         }
 
-        public readonly EmptyStruct Execute(Context context, CancellationToken cancellationToken)
+        public readonly object Execute(Context context, CancellationToken cancellationToken)
         {
             _action(context, cancellationToken, _arg1);
-            return EmptyStruct.Instance;
+            return null;
         }
     }
 
-    internal readonly struct SyncExecutableAction<T1, T2> : ISyncExecutable<EmptyStruct>
+    internal readonly struct SyncExecutableAction<T1, T2> : ISyncExecutable
     {
         private readonly Action<Context, CancellationToken, T1, T2> _action;
         private readonly T1 _arg1;
@@ -107,10 +106,10 @@ namespace Polly
             _arg2 = arg2;
         }
 
-        public readonly EmptyStruct Execute(Context context, CancellationToken cancellationToken)
+        public readonly object Execute(Context context, CancellationToken cancellationToken)
         {
             _action(context, cancellationToken, _arg1, _arg2);
-            return EmptyStruct.Instance;
+            return null;
         }
     }
 
