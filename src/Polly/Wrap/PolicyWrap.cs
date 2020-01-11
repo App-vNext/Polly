@@ -57,7 +57,7 @@ namespace Polly.Wrap
     /// A wrapper for composing policies that can be applied to synchronous executions returning a value of type <typeparamref name="TResult"/>.
     /// </summary>
     /// <typeparam name="TResult">The return type of delegates which may be executed through the policy.</typeparam>
-    public partial class PolicyWrap<TResult> : Policy<TResult>, ISyncPolicyWrap<TResult>
+    public partial class PolicyWrap<TResult> : PolicyV8<TResult>, ISyncPolicyWrap<TResult>
     {
         private readonly ISyncPolicy _outerNonGeneric;
         private readonly ISyncPolicy _innerNonGeneric;
@@ -97,13 +97,13 @@ namespace Polly.Wrap
         }
 
         /// <inheritdoc/>
-        protected override TResult Implementation(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken)
+        protected override TResult SyncGenericImplementationV8<TExecutable>(in TExecutable action, Context context, CancellationToken cancellationToken)
         {
             if (_outerNonGeneric != null)
             {
                 if (_innerNonGeneric != null)
                 {
-                    return PolicyWrapEngineV8.Implementation<TResult>(
+                    return PolicyWrapEngineV8.Implementation<TExecutable, TResult>(
                         action,
                         context,
                         cancellationToken,
@@ -113,7 +113,7 @@ namespace Polly.Wrap
                 }
                 else if (_innerGeneric != null)
                 {
-                    return PolicyWrapEngineV8.Implementation<TResult>(
+                    return PolicyWrapEngineV8.Implementation<TExecutable, TResult>(
                         action,
                         context,
                         cancellationToken,
@@ -131,7 +131,7 @@ namespace Polly.Wrap
             {
                 if (_innerNonGeneric != null)
                 {
-                    return PolicyWrapEngineV8.Implementation<TResult>(
+                    return PolicyWrapEngineV8.Implementation<TExecutable, TResult>(
                         action,
                         context,
                         cancellationToken,
@@ -142,7 +142,7 @@ namespace Polly.Wrap
                 }
                 else if (_innerGeneric != null)
                 {
-                    return PolicyWrapEngineV8.Implementation<TResult>(
+                    return PolicyWrapEngineV8.Implementation<TExecutable, TResult>(
                         action,
                         context,
                         cancellationToken,

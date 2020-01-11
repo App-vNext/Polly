@@ -61,7 +61,10 @@ namespace Polly
             => HandleResult(new Func<TResult, bool>(r => (r != null && r.Equals(result)) || (r == null && result == null)));
     }
 
-    public partial class Policy<TResult>
+    /// <summary>
+    /// Transient fault handling policies that can be applied to delegates returning results of type <typeparamref name="TResult"/>
+    /// </summary>
+    public class Policy<TResult>
     {
         /// <summary>
         /// Specifies the type of exception that this policy can handle.

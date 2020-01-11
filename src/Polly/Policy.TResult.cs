@@ -1,4 +1,5 @@
-﻿namespace Polly
+﻿/*
+namespace Polly
 {
     /// <summary>
     /// Transient fault handling policies that can be applied to delegates returning results of type <typeparamref name="TResult"/>
@@ -25,3 +26,4 @@
         }
     }
 }
+*/

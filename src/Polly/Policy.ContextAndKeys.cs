@@ -33,6 +33,7 @@ namespace Polly
     }
     */
 
+    /*
     public abstract partial class Policy<TResult>
     {
         /// <summary>
@@ -61,4 +62,5 @@ namespace Polly
             return this;
         }
     }
+    */
 }

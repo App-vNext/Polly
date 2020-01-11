@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading;
 using FluentAssertions;
-using Polly.NoOp;
 using Xunit;
 
 namespace Polly.Specs.Executables
@@ -11,7 +10,7 @@ namespace Polly.Specs.Executables
         [Fact]
         public void Should_execute_user_delegate_with_input_parameter_and_return_type()
         {
-            NoOpPolicy<Int64> policy = Policy.NoOp<Int64>() as NoOpPolicy<Int64>;
+            var policy = Policy.NoOp<Int64>();
 
             Int16 input1 = 1;
             Int64 captured = policy.Execute<Int16>((context, token, input) => input, new Context(),
@@ -24,7 +23,7 @@ namespace Polly.Specs.Executables
         [Fact]
         public void Should_execute_user_delegate_with_two_input_parameters_and_return_type()
         {
-            NoOpPolicy<Int64> policy = Policy.NoOp<Int64>() as NoOpPolicy<Int64>;
+            var policy = Policy.NoOp<Int64>();
 
             Int16 input1 = 1;
             Int32 input2 = 2;
@@ -39,7 +38,7 @@ namespace Polly.Specs.Executables
         [Fact]
         public void Should_executeandcapture_user_delegate_with_input_parameter_and_return_type()
         {
-            NoOpPolicy<Int64> policy = Policy.NoOp<Int64>() as NoOpPolicy<Int64>;
+            var policy = Policy.NoOp<Int64>();
 
             Int16 input1 = 1;
             var policyResult = policy.ExecuteAndCapture<Int16>((context, token, input) => input, new Context(),
@@ -53,7 +52,7 @@ namespace Polly.Specs.Executables
         [Fact]
         public void Should_executeandcapture_user_delegate_with_two_input_parameters_and_return_type()
         {
-            NoOpPolicy<Int64> policy = Policy.NoOp<Int64>() as NoOpPolicy<Int64>;
+            var policy = Policy.NoOp<Int64>();
 
             Int16 input1 = 1;
             Int32 input2 = 2;

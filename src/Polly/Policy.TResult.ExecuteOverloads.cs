@@ -6,6 +6,7 @@ using System.Threading;
 
 namespace Polly
 {
+    /*
     public abstract partial class Policy<TResult> : ISyncPolicy<TResult>
     {
 
@@ -182,4 +183,5 @@ namespace Polly
 
         #endregion
     }
+    */
 }

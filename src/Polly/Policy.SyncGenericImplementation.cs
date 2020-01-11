@@ -1,4 +1,5 @@
-﻿using System;
+﻿/*
+using System;
 using System.Threading;
 
 namespace Polly
@@ -19,3 +20,4 @@ namespace Polly
         );
     }
 }
+*/
