@@ -25,7 +25,7 @@ namespace Polly
             }
         }
 
-        private PolicyResult DespatchExecuteAndCapture(ISyncExecutable<EmptyStruct> action, Context context, CancellationToken cancellationToken)
+        private PolicyResult DespatchExecuteAndCapture(in ISyncExecutable<EmptyStruct> action, Context context, CancellationToken cancellationToken)
         {
             if (context == null) throw new ArgumentNullException(nameof(context));
 
