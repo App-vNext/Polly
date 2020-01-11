@@ -3,13 +3,13 @@ using System.Threading;
 
 namespace Polly.Caching
 {
-    internal static class CacheEngine
+    internal static class CacheEngineV8
     {
-        internal static TResult Implementation<TResult>(
+        internal static TResult Implementation<TExecutable, TResult>(
             ISyncCacheProvider<TResult> cacheProvider,
             ITtlStrategy<TResult> ttlStrategy,
             Func<Context, string> cacheKeyStrategy,
-            Func<Context, CancellationToken, TResult> action,
+            in TExecutable action,
             Context context,
             CancellationToken cancellationToken,
             Action<Context, string> onCacheGet,
@@ -17,13 +17,14 @@ namespace Polly.Caching
             Action<Context, string> onCachePut,
             Action<Context, string, Exception> onCacheGetError,
             Action<Context, string, Exception> onCachePutError)
+            where TExecutable : ISyncExecutable<TResult>
         {
             cancellationToken.ThrowIfCancellationRequested();
 
             string cacheKey = cacheKeyStrategy(context);
             if (cacheKey == null)
             {
-                return action(context, cancellationToken);
+                return action.Execute(context, cancellationToken);
             }
 
             bool cacheHit;
@@ -48,7 +49,7 @@ namespace Polly.Caching
                 onCacheMiss?.Invoke(context, cacheKey);
             }
 
-            TResult result = action(context, cancellationToken);
+            TResult result = action.Execute(context, cancellationToken);
 
             Ttl ttl = ttlStrategy.GetTtl(context, result);
             if (ttl.Timespan > TimeSpan.Zero)

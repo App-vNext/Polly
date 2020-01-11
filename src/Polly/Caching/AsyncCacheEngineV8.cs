@@ -4,13 +4,13 @@ using System.Threading.Tasks;
 
 namespace Polly.Caching
 {
-    internal static class AsyncCacheEngine
+    internal static class AsyncCacheEngineV8
     {
-        internal static async Task<TResult> ImplementationAsync<TResult>(
+        internal static async Task<TResult> ImplementationAsync<TExecutableAsync, TResult>(
             IAsyncCacheProvider<TResult> cacheProvider,
             ITtlStrategy<TResult> ttlStrategy,
             Func<Context, string> cacheKeyStrategy,
-            Func<Context, CancellationToken, Task<TResult>> action,
+            TExecutableAsync action,
             Context context,
             CancellationToken cancellationToken,
             bool continueOnCapturedContext,
@@ -19,13 +19,14 @@ namespace Polly.Caching
             Action<Context, string> onCachePut,
             Action<Context, string, Exception> onCacheGetError,
             Action<Context, string, Exception> onCachePutError)
+            where TExecutableAsync : IAsyncExecutable<TResult>
         {
             cancellationToken.ThrowIfCancellationRequested();
 
             string cacheKey = cacheKeyStrategy(context);
             if (cacheKey == null)
             {
-                return await action(context, cancellationToken).ConfigureAwait(continueOnCapturedContext);
+                return await action.ExecuteAsync(context, cancellationToken, continueOnCapturedContext).ConfigureAwait(continueOnCapturedContext);
             }
 
             bool cacheHit;
@@ -50,7 +51,7 @@ namespace Polly.Caching
                 onCacheMiss?.Invoke(context, cacheKey);
             }
 
-            TResult result = await action(context, cancellationToken).ConfigureAwait(continueOnCapturedContext);
+            TResult result = await action.ExecuteAsync(context, cancellationToken, continueOnCapturedContext).ConfigureAwait(continueOnCapturedContext);
 
             Ttl ttl = ttlStrategy.GetTtl(context, result);
             if (ttl.Timespan > TimeSpan.Zero)

@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Threading;
+using Polly.NoOp;
 
 namespace Polly.Caching
 {
     /// <summary>
     /// A cache policy that can be applied to synchronous executions.
     /// </summary>
-    public class CachePolicy : Policy, ISyncCachePolicy
+    public class CachePolicy : PolicyV8, ISyncCachePolicy
     {
         private readonly ISyncCacheProvider _syncCacheProvider;
         private readonly ITtlStrategy _ttlStrategy;
@@ -41,15 +42,15 @@ namespace Polly.Caching
         }
 
         /// <inheritdoc/>
-        protected override void Implementation(Action<Context, CancellationToken> action, Context context, CancellationToken cancellationToken)
+        protected override void SyncNonGenericImplementationV8(in ISyncExecutable action, Context context, CancellationToken cancellationToken)
             // Pass-through/NOOP policy action, for void-returning calls through a cache policy.
-            => action(context, cancellationToken);
+            => action.Execute(context, cancellationToken);
 
         /// <inheritdoc/>
         [DebuggerStepThrough]
-        protected override TResult Implementation<TResult>(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken)
+        protected override TResult SyncGenericImplementationV8<TExecutable, TResult>(in TExecutable action, Context context, CancellationToken cancellationToken)
         {
-            return CacheEngine.Implementation<TResult>(
+            return CacheEngineV8.Implementation<TExecutable, TResult>(
                 _syncCacheProvider.For<TResult>(),
                 _ttlStrategy.For<TResult>(),
                 _cacheKeyStrategy,
@@ -68,7 +69,7 @@ namespace Polly.Caching
     /// A cache policy that can be applied to synchronous executions returning a value of type <typeparamref name="TResult"/>.
     /// </summary>
     /// <typeparam name="TResult">The return type of delegates which may be executed through the policy.</typeparam>
-    public class CachePolicy<TResult> : Policy<TResult>, ISyncCachePolicy<TResult>
+    public class CachePolicy<TResult> : PolicyV8<TResult>, ISyncCachePolicy<TResult>
     {
         private readonly ISyncCacheProvider<TResult> _syncCacheProvider;
         private readonly ITtlStrategy<TResult> _ttlStrategy;
@@ -103,8 +104,8 @@ namespace Polly.Caching
 
         /// <inheritdoc/>
         [DebuggerStepThrough]
-        protected override TResult Implementation(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken)
-            => CacheEngine.Implementation(
+        protected override TResult SyncGenericImplementationV8<TExecutable>(in TExecutable action, Context context, CancellationToken cancellationToken)
+            => CacheEngineV8.Implementation(
                 _syncCacheProvider,
                 _ttlStrategy,
                 _cacheKeyStrategy,
