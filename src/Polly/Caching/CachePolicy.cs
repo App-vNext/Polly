@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Threading;
-using Polly.NoOp;
 
 namespace Polly.Caching
 {
