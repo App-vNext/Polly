@@ -7,7 +7,7 @@ namespace Polly.Wrap
     /// <summary>
     /// A wrapper for composing policies that can be applied to synchronous executions.
     /// </summary>
-    public partial class PolicyWrap : Policy, ISyncPolicyWrap
+    public partial class PolicyWrap : PolicyV8, ISyncPolicyWrap
     {
         private readonly ISyncPolicy _outer;
         private readonly ISyncPolicy _inner;
@@ -31,8 +31,8 @@ namespace Polly.Wrap
 
         /// <inheritdoc/>
         [DebuggerStepThrough]
-        protected override void Implementation(Action<Context, CancellationToken> action, Context context, CancellationToken cancellationToken)
-            => PolicyWrapEngine.Implementation(
+        protected override void SyncNonGenericImplementationV8(in ISyncExecutable action, Context context, CancellationToken cancellationToken)
+            => PolicyWrapEngineV8.Implementation(
                 action,
                 context,
                 cancellationToken,
@@ -42,8 +42,9 @@ namespace Polly.Wrap
 
         /// <inheritdoc/>
         [DebuggerStepThrough]
-        protected override TResult Implementation<TResult>(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken)
-            => PolicyWrapEngine.Implementation<TResult>(
+        protected override TResult SyncGenericImplementationV8<TExecutable, TResult>(in TExecutable action, Context context,
+            CancellationToken cancellationToken)
+            => PolicyWrapEngineV8.Implementation<TExecutable, TResult>(
                 action,
                 context,
                 cancellationToken,
@@ -102,7 +103,7 @@ namespace Polly.Wrap
             {
                 if (_innerNonGeneric != null)
                 {
-                    return PolicyWrapEngine.Implementation<TResult>(
+                    return PolicyWrapEngineV8.Implementation<TResult>(
                         action,
                         context,
                         cancellationToken,
@@ -112,7 +113,7 @@ namespace Polly.Wrap
                 }
                 else if (_innerGeneric != null)
                 {
-                    return PolicyWrapEngine.Implementation<TResult>(
+                    return PolicyWrapEngineV8.Implementation<TResult>(
                         action,
                         context,
                         cancellationToken,
@@ -130,7 +131,7 @@ namespace Polly.Wrap
             {
                 if (_innerNonGeneric != null)
                 {
-                    return PolicyWrapEngine.Implementation<TResult>(
+                    return PolicyWrapEngineV8.Implementation<TResult>(
                         action,
                         context,
                         cancellationToken,
@@ -141,7 +142,7 @@ namespace Polly.Wrap
                 }
                 else if (_innerGeneric != null)
                 {
-                    return PolicyWrapEngine.Implementation<TResult>(
+                    return PolicyWrapEngineV8.Implementation<TResult>(
                         action,
                         context,
                         cancellationToken,

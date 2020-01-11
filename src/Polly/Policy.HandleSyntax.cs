@@ -2,6 +2,9 @@
 
 namespace Polly
 {
+    /// <summary>
+    /// Transient exception handling policies that can be applied to synchronous delegates
+    /// </summary>
     public partial class Policy
     {
 

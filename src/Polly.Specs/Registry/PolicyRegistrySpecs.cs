@@ -308,7 +308,7 @@ namespace Polly.Specs.Registry
         {
             string key = Guid.NewGuid().ToString();
             ISyncPolicy policy = null;
-            _registry.Invoking(r => policy = r.Get<Policy>(key))
+            _registry.Invoking(r => policy = r.Get<ISyncPolicy>(key))
                 .Should().Throw<KeyNotFoundException>();
         }
 
@@ -345,7 +345,7 @@ namespace Polly.Specs.Registry
         {
             string key = null;
             ISyncPolicy policy = null;
-            _registry.Invoking(r => policy = r.Get<Policy>(key))
+            _registry.Invoking(r => policy = r.Get<ISyncPolicy>(key))
                 .Should().Throw<ArgumentNullException>();
         }
 

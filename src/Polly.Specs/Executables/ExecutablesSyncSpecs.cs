@@ -11,7 +11,7 @@ namespace Polly.Specs.Executables
         [Fact]
         public void Should_execute_user_delegate_with_input_parameter()
         {
-            NoOpPolicy policy = Policy.NoOp() as NoOpPolicy;
+            var policy = Policy.NoOp();
 
             Int16 input1 = 1;
             Int64 captured = 0;
@@ -29,7 +29,7 @@ namespace Polly.Specs.Executables
         [Fact]
         public void Should_execute_user_delegate_with_two_input_parameters()
         {
-            NoOpPolicy policy = Policy.NoOp() as NoOpPolicy;
+            var policy = Policy.NoOp();
 
             Int16 input1 = 1;
             Int32 input2 = 2;
@@ -49,7 +49,7 @@ namespace Polly.Specs.Executables
         [Fact]
         public void Should_execute_user_delegate_with_input_parameter_and_return_type()
         {
-            NoOpPolicy policy = Policy.NoOp() as NoOpPolicy;
+            var policy = Policy.NoOp();
 
             Int16 input1 = 1;
             double captured = policy.Execute<Int16, Int64>((context, token, input) => input, new Context(),
@@ -62,7 +62,7 @@ namespace Polly.Specs.Executables
         [Fact]
         public void Should_execute_user_delegate_with_two_input_parameters_and_return_type()
         {
-            NoOpPolicy policy = Policy.NoOp() as NoOpPolicy;
+            var policy = Policy.NoOp();
 
             Int16 input1 = 1;
             Int32 input2 = 2;
@@ -77,7 +77,7 @@ namespace Polly.Specs.Executables
         [Fact]
         public void Should_executeandcapture_user_delegate_with_input_parameter()
         {
-            NoOpPolicy policy = Policy.NoOp() as NoOpPolicy;
+            var policy = Policy.NoOp();
 
             Int16 input1 = 1;
             double captured = 0;
@@ -96,7 +96,7 @@ namespace Polly.Specs.Executables
         [Fact]
         public void Should_executeandcapture_user_delegate_with_two_input_parameters()
         {
-            NoOpPolicy policy = Policy.NoOp() as NoOpPolicy;
+            var policy = Policy.NoOp();
 
             Int16 input1 = 1;
             Int32 input2 = 2;
@@ -117,7 +117,7 @@ namespace Polly.Specs.Executables
         [Fact]
         public void Should_executeandcapture_user_delegate_with_input_parameter_and_return_type()
         {
-            NoOpPolicy policy = Policy.NoOp() as NoOpPolicy;
+            var policy = Policy.NoOp();
 
             Int16 input1 = 1;
             var policyResult = policy.ExecuteAndCapture<Int16, Int64>((context, token, input) => input, new Context(),
@@ -131,7 +131,7 @@ namespace Polly.Specs.Executables
         [Fact]
         public void Should_executeandcapture_user_delegate_with_two_input_parameters_and_return_type()
         {
-            NoOpPolicy policy = Policy.NoOp() as NoOpPolicy;
+            var policy = Policy.NoOp();
 
             Int16 input1 = 1;
             Int32 input2 = 2;

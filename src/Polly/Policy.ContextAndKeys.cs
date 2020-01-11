@@ -2,6 +2,7 @@
 
 namespace Polly
 {
+    /*
     public abstract partial class Policy
     {
         /// <summary>
@@ -30,6 +31,7 @@ namespace Polly
             return this;
         }
     }
+    */
 
     public abstract partial class Policy<TResult>
     {

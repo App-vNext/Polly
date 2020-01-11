@@ -1,4 +1,4 @@
-﻿namespace Polly
+﻿/*namespace Polly
 {
     /// <summary>
     /// Transient exception handling policies that can be applied to synchronous delegates
@@ -23,4 +23,4 @@
         {
         }
     }
-}
+}*/

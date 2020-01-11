@@ -1,4 +1,5 @@
-﻿using System;
+﻿/*
+using System;
 using System.Diagnostics;
 using System.Threading;
 using Polly.Utilities;
@@ -28,3 +29,4 @@ namespace Polly
         protected abstract TResult Implementation<TResult>(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken);
     }
 }
+*/
