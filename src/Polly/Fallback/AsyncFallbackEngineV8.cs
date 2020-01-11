@@ -1,18 +1,21 @@
 ﻿using System;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Polly.Fallback
 {
-    internal static class FallbackEngine
+    internal class AsyncFallbackEngineV8
     {
-        internal static TResult Implementation<TResult>(
-            Func<Context, CancellationToken, TResult> action,
+        internal static async Task<TResult> ImplementationAsync<TExecutableAsync, TResult>(
+            TExecutableAsync action,
             Context context,
             CancellationToken cancellationToken,
+            bool continueOnCapturedContext,
             ExceptionPredicates shouldHandleExceptionPredicates,
             ResultPredicates<TResult> shouldHandleResultPredicates,
-            Action<DelegateResult<TResult>, Context> onFallback,
-            Func<DelegateResult<TResult>, Context, CancellationToken, TResult> fallbackAction)
+            Func<DelegateResult<TResult>, Context, Task> onFallbackAsync,
+            Func<DelegateResult<TResult>, Context, CancellationToken, Task<TResult>> fallbackAction)
+            where TExecutableAsync : IAsyncExecutable<TResult>
         {
             DelegateResult<TResult> delegateOutcome;
 
@@ -20,7 +23,7 @@ namespace Polly.Fallback
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
-                TResult result = action(context, cancellationToken);
+                TResult result = await action.ExecuteAsync(context, cancellationToken, continueOnCapturedContext).ConfigureAwait(continueOnCapturedContext);
 
                 if (!shouldHandleResultPredicates.AnyMatch(result))
                 {
@@ -40,9 +43,9 @@ namespace Polly.Fallback
                 delegateOutcome = new DelegateResult<TResult>(handledException);
             }
 
-            onFallback?.Invoke(delegateOutcome, context);
+            if (onFallbackAsync != null) { await onFallbackAsync(delegateOutcome, context).ConfigureAwait(continueOnCapturedContext); }
 
-            return fallbackAction(delegateOutcome, context, cancellationToken);
+            return await fallbackAction(delegateOutcome, context, cancellationToken).ConfigureAwait(continueOnCapturedContext);
         }
     }
 }
