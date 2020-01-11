@@ -110,8 +110,7 @@ namespace Polly
         /// <returns>The PolicyBuilder instance.</returns>
         public PolicyBuilder<TResult> OrResult(Func<TResult, bool> resultPredicate)
         {
-            ResultPredicate<TResult> predicate = result => resultPredicate(result);
-            ResultPredicates.Add(predicate);
+            ResultPredicates.Add(result => resultPredicate(result));
             return this;
         }
 
