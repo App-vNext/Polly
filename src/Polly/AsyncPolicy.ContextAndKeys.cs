@@ -2,6 +2,7 @@
 
 namespace Polly
 {
+    /*
     public abstract partial class AsyncPolicy
     {
         /// <summary>
@@ -31,6 +32,7 @@ namespace Polly
         }
 
     }
+    */
 
     public abstract partial class AsyncPolicy<TResult>
     {

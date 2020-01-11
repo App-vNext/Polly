@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace Polly.Wrap
 {
-    internal static class AsyncPolicyWrapEngine
+    internal static class AsyncPolicyWrapEngineV8
     {
         internal static async Task<TResult> ImplementationAsync<TResult>(
            Func<Context, CancellationToken, Task<TResult>> func,
@@ -64,12 +64,12 @@ namespace Polly.Wrap
                 ).ConfigureAwait(continueOnCapturedContext);
 
         internal static async Task<TResult> ImplementationAsync<TResult>(
-           Func<Context, CancellationToken, Task<TResult>> func,
-           Context context,
-           CancellationToken cancellationToken,
-           bool continueOnCapturedContext,
-           IAsyncPolicy outerPolicy,
-           IAsyncPolicy innerPolicy)
+            Func<Context, CancellationToken, Task<TResult>> func,
+            Context context,
+            CancellationToken cancellationToken,
+            bool continueOnCapturedContext,
+            IAsyncPolicy outerPolicy,
+            IAsyncPolicy innerPolicy)
             => await outerPolicy.ExecuteAsync<TResult>(
                 async (ctx, ct) => await innerPolicy.ExecuteAsync<TResult>(
                     func,
@@ -82,24 +82,51 @@ namespace Polly.Wrap
                 continueOnCapturedContext
             ).ConfigureAwait(continueOnCapturedContext);
 
-        internal static async Task ImplementationAsync(
-            Func<Context, CancellationToken, Task> action,
+        internal static async Task<TResult> ImplementationAsync<TExecutableAsync, TResult>(
+            TExecutableAsync func,
             Context context,
             CancellationToken cancellationToken,
             bool continueOnCapturedContext,
             IAsyncPolicy outerPolicy,
             IAsyncPolicy innerPolicy)
-            => await outerPolicy.ExecuteAsync(
-                async (ctx, ct) => await innerPolicy.ExecuteAsync(
-                    action,
+            where TExecutableAsync : IAsyncExecutable<TResult>
+        {
+            return await outerPolicy.ExecuteAsync<IAsyncPolicy, TExecutableAsync, TResult>(
+                async (ctx, ct, captureContext, inner, userFunc) => await ((IAsyncPolicyInternal)inner).ExecuteAsync<TExecutableAsync, TResult>(
+                    userFunc,
                     ctx,
                     ct,
-                    continueOnCapturedContext
-                    ).ConfigureAwait(continueOnCapturedContext),
+                    captureContext
+                ).ConfigureAwait(continueOnCapturedContext),
                 context,
                 cancellationToken,
-                continueOnCapturedContext
-                ).ConfigureAwait(continueOnCapturedContext);
+                continueOnCapturedContext,
+                innerPolicy,
+                func
+            ).ConfigureAwait(continueOnCapturedContext);
+        }
 
+        internal static async Task ImplementationAsync(
+            IAsyncExecutable action,
+            Context context,
+            CancellationToken cancellationToken,
+            bool continueOnCapturedContext,
+            IAsyncPolicy outerPolicy,
+            IAsyncPolicy innerPolicy)
+        {
+            await outerPolicy.ExecuteAsync<IAsyncPolicy, IAsyncExecutable>(
+                async (ctx, ct, captureContext, inner, userAction) => await ((IAsyncPolicyInternal)inner).ExecuteAsync(
+                    userAction,
+                    ctx,
+                    ct,
+                    captureContext
+                ).ConfigureAwait(continueOnCapturedContext),
+                context,
+                cancellationToken,
+                continueOnCapturedContext,
+                innerPolicy,
+                action
+            ).ConfigureAwait(continueOnCapturedContext);
+        }
     }
 }

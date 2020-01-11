@@ -1,11 +1,6 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-using Polly.Utilities;
-
-namespace Polly
+﻿namespace Polly
 {
-    public abstract partial class AsyncPolicy
+    /*public abstract partial class AsyncPolicy
     {
         /// <summary>
         /// Defines the implementation of a policy for async executions with no return value.
@@ -42,5 +37,5 @@ namespace Polly
             bool continueOnCapturedContext
         );
 
-    }
+    }*/
 }

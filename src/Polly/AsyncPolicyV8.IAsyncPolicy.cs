@@ -8,73 +8,6 @@ namespace Polly
 {
     public abstract partial class AsyncPolicyV8 : IAsyncPolicy
     {
-        private async Task DespatchNonGenericExecutionAsync(IAsyncExecutable action, Context context, CancellationToken cancellationToken, bool continueOnCapturedContext)
-        {
-            if (context == null) throw new ArgumentNullException(nameof(context));
-
-            SetPolicyContext(context, out string priorPolicyWrapKey, out string priorPolicyKey);
-
-            try
-            {
-                await AsyncNonGenericImplementationV8(action, context, cancellationToken, continueOnCapturedContext)
-                    .ConfigureAwait(continueOnCapturedContext);
-            }
-            finally
-            {
-                RestorePolicyContext(context, priorPolicyWrapKey, priorPolicyKey);
-            }
-        }
-
-        private async Task<TResult> DespatchGenericExecutionAsync<TExecutableAsync, TResult>(TExecutableAsync action, Context context, CancellationToken cancellationToken, bool continueOnCapturedContext)
-            where TExecutableAsync : IAsyncExecutable<TResult>
-        {
-            if (context == null) throw new ArgumentNullException(nameof(context));
-
-            SetPolicyContext(context, out string priorPolicyWrapKey, out string priorPolicyKey);
-
-            try
-            {
-                return await AsyncGenericImplementationV8<TExecutableAsync, TResult>(action, context, cancellationToken, continueOnCapturedContext)
-                    .ConfigureAwait(continueOnCapturedContext);
-            }
-            finally
-            {
-                RestorePolicyContext(context, priorPolicyWrapKey, priorPolicyKey);
-            }
-        }
-
-        private async Task<PolicyResult> DespatchExecuteAndCaptureAsync(IAsyncExecutable action, Context context, CancellationToken cancellationToken, bool continueOnCapturedContext)
-        {
-            if (context == null) throw new ArgumentNullException(nameof(context));
-
-            try
-            {
-                await DespatchNonGenericExecutionAsync(action, context, cancellationToken, continueOnCapturedContext).ConfigureAwait(continueOnCapturedContext);
-                return PolicyResult.Successful(context);
-            }
-            catch (Exception exception)
-            {
-                return PolicyResult.Failure(exception, GetExceptionType(ExceptionPredicates, exception), context);
-            }
-        }
-
-        private async Task<PolicyResult<TResult>> DespatchExecuteAndCaptureAsync<TExecutableAsync, TResult>(TExecutableAsync action, Context context, CancellationToken cancellationToken, bool continueOnCapturedContext)
-            where TExecutableAsync : IAsyncExecutable<TResult>
-        {
-            if (context == null) throw new ArgumentNullException(nameof(context));
-
-            try
-            {
-                return PolicyResult<TResult>.Successful(
-                    await DespatchGenericExecutionAsync<TExecutableAsync, TResult>(action, context, cancellationToken, continueOnCapturedContext).ConfigureAwait(continueOnCapturedContext), 
-                    context);
-            }
-            catch (Exception exception)
-            {
-                return PolicyResult<TResult>.Failure(exception, GetExceptionType(ExceptionPredicates, exception), context);
-            }
-        }
-
         #region ExecuteAsync overloads
 
         /// <summary>
@@ -84,7 +17,7 @@ namespace Polly
         [DebuggerStepThrough]
         public Task ExecuteAsync(Func<Task> action)
         {
-            return DespatchNonGenericExecutionAsync(new AsyncExecutableActionNoParams(action), GetDefaultExecutionContext(), DefaultCancellationToken, DefaultContinueOnCapturedContext);
+            return ((IAsyncPolicyInternal)this).ExecuteAsync(new AsyncExecutableActionNoParams(action), GetDefaultExecutionContext(), DefaultCancellationToken, DefaultContinueOnCapturedContext);
         }
 
         /// <summary>
@@ -95,7 +28,7 @@ namespace Polly
         [DebuggerStepThrough]
         public Task ExecuteAsync(Func<Context, Task> action, IDictionary<string, object> contextData)
         {
-            return DespatchNonGenericExecutionAsync(new AsyncExecutableActionOnContext(action), new Context(contextData), DefaultCancellationToken, DefaultContinueOnCapturedContext);
+            return ((IAsyncPolicyInternal)this).ExecuteAsync(new AsyncExecutableActionOnContext(action), new Context(contextData), DefaultCancellationToken, DefaultContinueOnCapturedContext);
         }
 
         /// <summary>
@@ -108,7 +41,7 @@ namespace Polly
         {
             if (context == null) throw new ArgumentNullException(nameof(context));
 
-            return DespatchNonGenericExecutionAsync(new AsyncExecutableActionOnContext(action), context, DefaultCancellationToken, DefaultContinueOnCapturedContext);
+            return ((IAsyncPolicyInternal)this).ExecuteAsync(new AsyncExecutableActionOnContext(action), context, DefaultCancellationToken, DefaultContinueOnCapturedContext);
         }
 
         /// <summary>
@@ -119,7 +52,7 @@ namespace Polly
         [DebuggerStepThrough]
         public Task ExecuteAsync(Func<CancellationToken, Task> action, CancellationToken cancellationToken)
         {
-            return DespatchNonGenericExecutionAsync(new AsyncExecutableActionOnCancellationToken(action), GetDefaultExecutionContext(), cancellationToken, DefaultContinueOnCapturedContext);
+            return ((IAsyncPolicyInternal)this).ExecuteAsync(new AsyncExecutableActionOnCancellationToken(action), GetDefaultExecutionContext(), cancellationToken, DefaultContinueOnCapturedContext);
         }
 
         /// <summary>
@@ -131,7 +64,7 @@ namespace Polly
         [DebuggerStepThrough]
         public Task ExecuteAsync(Func<Context, CancellationToken, Task> action, IDictionary<string, object> contextData, CancellationToken cancellationToken)
         {
-            return DespatchNonGenericExecutionAsync(new AsyncExecutableActionOnContextCancellationToken(action), new Context(contextData), cancellationToken, DefaultContinueOnCapturedContext);
+            return ((IAsyncPolicyInternal)this).ExecuteAsync(new AsyncExecutableActionOnContextCancellationToken(action), new Context(contextData), cancellationToken, DefaultContinueOnCapturedContext);
         }
 
         /// <summary>
@@ -145,7 +78,7 @@ namespace Polly
         {
             if (context == null) throw new ArgumentNullException(nameof(context));
 
-            return DespatchNonGenericExecutionAsync(new AsyncExecutableActionOnContextCancellationToken(action), context, cancellationToken, DefaultContinueOnCapturedContext);
+            return ((IAsyncPolicyInternal)this).ExecuteAsync(new AsyncExecutableActionOnContextCancellationToken(action), context, cancellationToken, DefaultContinueOnCapturedContext);
         }
 
         /// <summary>
@@ -157,7 +90,7 @@ namespace Polly
         [DebuggerStepThrough]
         public Task ExecuteAsync(Func<CancellationToken, Task> action, CancellationToken cancellationToken, bool continueOnCapturedContext)
         {
-            return DespatchNonGenericExecutionAsync(new AsyncExecutableActionOnCancellationToken(action), GetDefaultExecutionContext(), cancellationToken, continueOnCapturedContext);
+            return ((IAsyncPolicyInternal)this).ExecuteAsync(new AsyncExecutableActionOnCancellationToken(action), GetDefaultExecutionContext(), cancellationToken, continueOnCapturedContext);
         }
 
         /// <summary>
@@ -171,7 +104,7 @@ namespace Polly
         [DebuggerStepThrough]
         public Task ExecuteAsync(Func<Context, CancellationToken, Task> action, IDictionary<string, object> contextData, CancellationToken cancellationToken, bool continueOnCapturedContext)
         {
-            return DespatchNonGenericExecutionAsync(new AsyncExecutableActionOnContextCancellationToken(action), new Context(contextData), cancellationToken, continueOnCapturedContext);
+            return ((IAsyncPolicyInternal)this).ExecuteAsync(new AsyncExecutableActionOnContextCancellationToken(action), new Context(contextData), cancellationToken, continueOnCapturedContext);
         }
 
         /// <summary>
@@ -186,7 +119,7 @@ namespace Polly
         {
             if (context == null) throw new ArgumentNullException(nameof(context));
 
-            return DespatchNonGenericExecutionAsync(new AsyncExecutableActionOnContextCancellationToken(action), context, cancellationToken, continueOnCapturedContext);
+            return ((IAsyncPolicyInternal)this).ExecuteAsync(new AsyncExecutableActionOnContextCancellationToken(action), context, cancellationToken, continueOnCapturedContext);
         }
 
         /// <summary>
@@ -203,7 +136,7 @@ namespace Polly
         {
             if (context == null) throw new ArgumentNullException(nameof(context));
 
-            return DespatchNonGenericExecutionAsync(new AsyncExecutableAction<T1>(action, input1), context, cancellationToken, continueOnCapturedContext);
+            return ((IAsyncPolicyInternal)this).ExecuteAsync(new AsyncExecutableAction<T1>(action, input1), context, cancellationToken, continueOnCapturedContext);
         }
 
         /// <summary>
@@ -222,7 +155,7 @@ namespace Polly
         {
             if (context == null) throw new ArgumentNullException(nameof(context));
 
-            return DespatchNonGenericExecutionAsync(new AsyncExecutableAction<T1, T2>(action, input1, input2), context, cancellationToken, continueOnCapturedContext);
+            return ((IAsyncPolicyInternal)this).ExecuteAsync(new AsyncExecutableAction<T1, T2>(action, input1, input2), context, cancellationToken, continueOnCapturedContext);
         }
 
         #region Overloads method-generic in TResult
@@ -236,7 +169,7 @@ namespace Polly
         [DebuggerStepThrough]
         public Task<TResult> ExecuteAsync<TResult>(Func<Task<TResult>> func)
         {
-            return DespatchGenericExecutionAsync<AsyncExecutableFuncNoParams<TResult>, TResult>(
+            return ((IAsyncPolicyInternal)this).ExecuteAsync<AsyncExecutableFuncNoParams<TResult>, TResult>(
                 new AsyncExecutableFuncNoParams<TResult>(func),
                 GetDefaultExecutionContext(),
                 DefaultCancellationToken,
@@ -252,7 +185,7 @@ namespace Polly
         [DebuggerStepThrough]
         public Task<TResult> ExecuteAsync<TResult>(Func<Context, Task<TResult>> func, IDictionary<string, object> contextData)
         {
-            return DespatchGenericExecutionAsync<AsyncExecutableFuncOnContext<TResult>, TResult>(
+            return ((IAsyncPolicyInternal)this).ExecuteAsync<AsyncExecutableFuncOnContext<TResult>, TResult>(
                 new AsyncExecutableFuncOnContext<TResult>(func),
                 new Context(contextData),
                 DefaultCancellationToken,
@@ -271,7 +204,7 @@ namespace Polly
         {
             if (context == null) throw new ArgumentNullException(nameof(context));
 
-            return DespatchGenericExecutionAsync<AsyncExecutableFuncOnContext<TResult>, TResult>(
+            return ((IAsyncPolicyInternal)this).ExecuteAsync<AsyncExecutableFuncOnContext<TResult>, TResult>(
                 new AsyncExecutableFuncOnContext<TResult>(func),
                 context,
                 DefaultCancellationToken,
@@ -288,7 +221,7 @@ namespace Polly
         [DebuggerStepThrough]
         public Task<TResult> ExecuteAsync<TResult>(Func<CancellationToken, Task<TResult>> func, CancellationToken cancellationToken)
         {
-            return DespatchGenericExecutionAsync<AsyncExecutableFuncOnCancellationToken<TResult>, TResult>(
+            return ((IAsyncPolicyInternal)this).ExecuteAsync<AsyncExecutableFuncOnCancellationToken<TResult>, TResult>(
                 new AsyncExecutableFuncOnCancellationToken<TResult>(func),
                 GetDefaultExecutionContext(),
                 cancellationToken,
@@ -305,7 +238,7 @@ namespace Polly
         [DebuggerStepThrough]
         public Task<TResult> ExecuteAsync<TResult>(Func<Context, CancellationToken, Task<TResult>> func, IDictionary<string, object> contextData, CancellationToken cancellationToken)
         {
-            return DespatchGenericExecutionAsync<AsyncExecutableFuncOnContextCancellationToken<TResult>, TResult>(
+            return ((IAsyncPolicyInternal)this).ExecuteAsync<AsyncExecutableFuncOnContextCancellationToken<TResult>, TResult>(
                 new AsyncExecutableFuncOnContextCancellationToken<TResult>(func),
                 new Context(contextData),
                 cancellationToken,
@@ -325,7 +258,7 @@ namespace Polly
         {
             if (context == null) throw new ArgumentNullException(nameof(context));
 
-            return DespatchGenericExecutionAsync<AsyncExecutableFuncOnContextCancellationToken<TResult>, TResult>(
+            return ((IAsyncPolicyInternal)this).ExecuteAsync<AsyncExecutableFuncOnContextCancellationToken<TResult>, TResult>(
                 new AsyncExecutableFuncOnContextCancellationToken<TResult>(func),
                 context,
                 cancellationToken,
@@ -343,7 +276,7 @@ namespace Polly
         [DebuggerStepThrough]
         public Task<TResult> ExecuteAsync<TResult>(Func<CancellationToken, Task<TResult>> func, CancellationToken cancellationToken, bool continueOnCapturedContext)
         {
-            return DespatchGenericExecutionAsync<AsyncExecutableFuncOnCancellationToken<TResult>, TResult>(
+            return ((IAsyncPolicyInternal)this).ExecuteAsync<AsyncExecutableFuncOnCancellationToken<TResult>, TResult>(
                 new AsyncExecutableFuncOnCancellationToken<TResult>(func),
                 GetDefaultExecutionContext(),
                 cancellationToken,
@@ -362,7 +295,7 @@ namespace Polly
         [DebuggerStepThrough]
         public Task<TResult> ExecuteAsync<TResult>(Func<Context, CancellationToken, Task<TResult>> func, IDictionary<string, object> contextData, CancellationToken cancellationToken, bool continueOnCapturedContext)
         {
-            return DespatchGenericExecutionAsync<AsyncExecutableFuncOnContextCancellationToken<TResult>, TResult>(
+            return ((IAsyncPolicyInternal)this).ExecuteAsync<AsyncExecutableFuncOnContextCancellationToken<TResult>, TResult>(
                 new AsyncExecutableFuncOnContextCancellationToken<TResult>(func),
                 new Context(contextData),
                 cancellationToken,
@@ -383,7 +316,7 @@ namespace Polly
         {
             if (context == null) throw new ArgumentNullException(nameof(context));
 
-            return DespatchGenericExecutionAsync<AsyncExecutableFuncOnContextCancellationToken<TResult>, TResult>(
+            return ((IAsyncPolicyInternal)this).ExecuteAsync<AsyncExecutableFuncOnContextCancellationToken<TResult>, TResult>(
                 new AsyncExecutableFuncOnContextCancellationToken<TResult>(func),
                 context,
                 cancellationToken,
@@ -406,7 +339,7 @@ namespace Polly
         {
             if (context == null) throw new ArgumentNullException(nameof(context));
 
-            return DespatchGenericExecutionAsync<IAsyncExecutable<TResult>, TResult>(new AsyncExecutableFunc<T1,TResult>(func, input1), context, cancellationToken, continueOnCapturedContext);
+            return ((IAsyncPolicyInternal)this).ExecuteAsync<IAsyncExecutable<TResult>, TResult>(new AsyncExecutableFunc<T1,TResult>(func, input1), context, cancellationToken, continueOnCapturedContext);
         }
 
         /// <summary>
@@ -427,7 +360,7 @@ namespace Polly
         {
             if (context == null) throw new ArgumentNullException(nameof(context));
 
-            return DespatchGenericExecutionAsync<IAsyncExecutable<TResult>, TResult>(new AsyncExecutableFunc<T1, T2, TResult>(func, input1, input2), context, cancellationToken, continueOnCapturedContext);
+            return ((IAsyncPolicyInternal)this).ExecuteAsync<IAsyncExecutable<TResult>, TResult>(new AsyncExecutableFunc<T1, T2, TResult>(func, input1, input2), context, cancellationToken, continueOnCapturedContext);
         }
 
         #endregion
@@ -444,7 +377,7 @@ namespace Polly
         [DebuggerStepThrough]
         public Task<PolicyResult> ExecuteAndCaptureAsync(Func<Task> action)
         {
-            return DespatchExecuteAndCaptureAsync(new AsyncExecutableActionNoParams(action), GetDefaultExecutionContext(), DefaultCancellationToken, DefaultContinueOnCapturedContext);
+            return ((IAsyncPolicyInternal)this).ExecuteAndCaptureAsync(new AsyncExecutableActionNoParams(action), GetDefaultExecutionContext(), DefaultCancellationToken, DefaultContinueOnCapturedContext);
         }
 
         /// <summary>
@@ -457,7 +390,7 @@ namespace Polly
         [DebuggerStepThrough]
         public Task<PolicyResult> ExecuteAndCaptureAsync(Func<Context, Task> action, IDictionary<string, object> contextData)
         {
-            return DespatchExecuteAndCaptureAsync(new AsyncExecutableActionOnContext(action), new Context(contextData), DefaultCancellationToken, DefaultContinueOnCapturedContext);
+            return ((IAsyncPolicyInternal)this).ExecuteAndCaptureAsync(new AsyncExecutableActionOnContext(action), new Context(contextData), DefaultCancellationToken, DefaultContinueOnCapturedContext);
         }
 
         /// <summary>
@@ -471,7 +404,7 @@ namespace Polly
         {
             if (context == null) throw new ArgumentNullException(nameof(context));
 
-            return DespatchExecuteAndCaptureAsync(new AsyncExecutableActionOnContext(action), context, DefaultCancellationToken, DefaultContinueOnCapturedContext);
+            return ((IAsyncPolicyInternal)this).ExecuteAndCaptureAsync(new AsyncExecutableActionOnContext(action), context, DefaultCancellationToken, DefaultContinueOnCapturedContext);
         }
 
         /// <summary>
@@ -483,7 +416,7 @@ namespace Polly
         [DebuggerStepThrough]
         public Task<PolicyResult> ExecuteAndCaptureAsync(Func<CancellationToken, Task> action, CancellationToken cancellationToken)
         {
-            return DespatchExecuteAndCaptureAsync(new AsyncExecutableActionOnCancellationToken(action), GetDefaultExecutionContext(), cancellationToken, DefaultContinueOnCapturedContext);
+            return ((IAsyncPolicyInternal)this).ExecuteAndCaptureAsync(new AsyncExecutableActionOnCancellationToken(action), GetDefaultExecutionContext(), cancellationToken, DefaultContinueOnCapturedContext);
         }
 
         /// <summary>
@@ -497,7 +430,7 @@ namespace Polly
         [DebuggerStepThrough]
         public Task<PolicyResult> ExecuteAndCaptureAsync(Func<Context, CancellationToken, Task> action, IDictionary<string, object> contextData, CancellationToken cancellationToken)
         {
-            return DespatchExecuteAndCaptureAsync(new AsyncExecutableActionOnContextCancellationToken(action), new Context(contextData), cancellationToken, DefaultContinueOnCapturedContext);
+            return ((IAsyncPolicyInternal)this).ExecuteAndCaptureAsync(new AsyncExecutableActionOnContextCancellationToken(action), new Context(contextData), cancellationToken, DefaultContinueOnCapturedContext);
         }
 
         /// <summary>
@@ -512,7 +445,7 @@ namespace Polly
         {
             if (context == null) throw new ArgumentNullException(nameof(context));
 
-            return DespatchExecuteAndCaptureAsync(new AsyncExecutableActionOnContextCancellationToken(action), context, cancellationToken, DefaultContinueOnCapturedContext);
+            return ((IAsyncPolicyInternal)this).ExecuteAndCaptureAsync(new AsyncExecutableActionOnContextCancellationToken(action), context, cancellationToken, DefaultContinueOnCapturedContext);
         }
 
         /// <summary>
@@ -525,7 +458,7 @@ namespace Polly
         [DebuggerStepThrough]
         public Task<PolicyResult> ExecuteAndCaptureAsync(Func<CancellationToken, Task> action, CancellationToken cancellationToken, bool continueOnCapturedContext)
         {
-            return DespatchExecuteAndCaptureAsync(new AsyncExecutableActionOnCancellationToken(action), GetDefaultExecutionContext(), cancellationToken, continueOnCapturedContext);
+            return ((IAsyncPolicyInternal)this).ExecuteAndCaptureAsync(new AsyncExecutableActionOnCancellationToken(action), GetDefaultExecutionContext(), cancellationToken, continueOnCapturedContext);
         }
 
         /// <summary>
@@ -540,7 +473,7 @@ namespace Polly
         [DebuggerStepThrough]
         public Task<PolicyResult> ExecuteAndCaptureAsync(Func<Context, CancellationToken, Task> action, IDictionary<string, object> contextData, CancellationToken cancellationToken, bool continueOnCapturedContext)
         {
-            return DespatchExecuteAndCaptureAsync(new AsyncExecutableActionOnContextCancellationToken(action), new Context(contextData), cancellationToken, continueOnCapturedContext);
+            return ((IAsyncPolicyInternal)this).ExecuteAndCaptureAsync(new AsyncExecutableActionOnContextCancellationToken(action), new Context(contextData), cancellationToken, continueOnCapturedContext);
         }
 
         /// <summary>
@@ -556,7 +489,7 @@ namespace Polly
         {
             if (context == null) throw new ArgumentNullException(nameof(context));
 
-            return DespatchExecuteAndCaptureAsync(new AsyncExecutableActionOnContextCancellationToken(action), context, cancellationToken, continueOnCapturedContext);
+            return ((IAsyncPolicyInternal)this).ExecuteAndCaptureAsync(new AsyncExecutableActionOnContextCancellationToken(action), context, cancellationToken, continueOnCapturedContext);
         }
 
         /// <summary>
@@ -574,7 +507,7 @@ namespace Polly
         {
             if (context == null) throw new ArgumentNullException(nameof(context));
 
-            return DespatchExecuteAndCaptureAsync(new AsyncExecutableAction<T1>(action, input1), context, cancellationToken, continueOnCapturedContext);
+            return ((IAsyncPolicyInternal)this).ExecuteAndCaptureAsync(new AsyncExecutableAction<T1>(action, input1), context, cancellationToken, continueOnCapturedContext);
         }
 
         /// <summary>
@@ -594,7 +527,7 @@ namespace Polly
         {
             if (context == null) throw new ArgumentNullException(nameof(context));
 
-            return DespatchExecuteAndCaptureAsync(new AsyncExecutableAction<T1, T2>(action, input1, input2), context, cancellationToken, continueOnCapturedContext);
+            return ((IAsyncPolicyInternal)this).ExecuteAndCaptureAsync(new AsyncExecutableAction<T1, T2>(action, input1, input2), context, cancellationToken, continueOnCapturedContext);
         }
 
         #region Overloads method-generic in TResult
@@ -608,7 +541,7 @@ namespace Polly
         [DebuggerStepThrough]
         public Task<PolicyResult<TResult>> ExecuteAndCaptureAsync<TResult>(Func<Task<TResult>> func)
         {
-            return DespatchExecuteAndCaptureAsync<AsyncExecutableFuncNoParams<TResult>, TResult>(
+            return ((IAsyncPolicyInternal)this).ExecuteAndCaptureAsync<AsyncExecutableFuncNoParams<TResult>, TResult>(
                 new AsyncExecutableFuncNoParams<TResult>(func),
                 GetDefaultExecutionContext(),
                 DefaultCancellationToken,
@@ -626,7 +559,7 @@ namespace Polly
         [DebuggerStepThrough]
         public Task<PolicyResult<TResult>> ExecuteAndCaptureAsync<TResult>(Func<Context, Task<TResult>> func, IDictionary<string, object> contextData)
         {
-            return DespatchExecuteAndCaptureAsync<AsyncExecutableFuncOnContext<TResult>, TResult>(
+            return ((IAsyncPolicyInternal)this).ExecuteAndCaptureAsync<AsyncExecutableFuncOnContext<TResult>, TResult>(
                 new AsyncExecutableFuncOnContext<TResult>(func),
                 new Context(contextData),
                 DefaultCancellationToken,
@@ -645,7 +578,7 @@ namespace Polly
         {
             if (context == null) throw new ArgumentNullException(nameof(context));
 
-            return DespatchExecuteAndCaptureAsync<AsyncExecutableFuncOnContext<TResult>, TResult>(
+            return ((IAsyncPolicyInternal)this).ExecuteAndCaptureAsync<AsyncExecutableFuncOnContext<TResult>, TResult>(
                 new AsyncExecutableFuncOnContext<TResult>(func),
                 context,
                 DefaultCancellationToken,
@@ -662,7 +595,7 @@ namespace Polly
         [DebuggerStepThrough]
         public Task<PolicyResult<TResult>> ExecuteAndCaptureAsync<TResult>(Func<CancellationToken, Task<TResult>> func, CancellationToken cancellationToken)
         {
-            return DespatchExecuteAndCaptureAsync<AsyncExecutableFuncOnCancellationToken<TResult>, TResult>(
+            return ((IAsyncPolicyInternal)this).ExecuteAndCaptureAsync<AsyncExecutableFuncOnCancellationToken<TResult>, TResult>(
                 new AsyncExecutableFuncOnCancellationToken<TResult>(func),
                 GetDefaultExecutionContext(),
                 cancellationToken,
@@ -681,7 +614,7 @@ namespace Polly
         [DebuggerStepThrough]
         public Task<PolicyResult<TResult>> ExecuteAndCaptureAsync<TResult>(Func<Context, CancellationToken, Task<TResult>> func, IDictionary<string, object> contextData, CancellationToken cancellationToken)
         {
-            return DespatchExecuteAndCaptureAsync<AsyncExecutableFuncOnContextCancellationToken<TResult>, TResult>(
+            return ((IAsyncPolicyInternal)this).ExecuteAndCaptureAsync<AsyncExecutableFuncOnContextCancellationToken<TResult>, TResult>(
                 new AsyncExecutableFuncOnContextCancellationToken<TResult>(func),
                 new Context(contextData),
                 cancellationToken,
@@ -701,7 +634,7 @@ namespace Polly
         {
             if (context == null) throw new ArgumentNullException(nameof(context));
 
-            return DespatchExecuteAndCaptureAsync<AsyncExecutableFuncOnContextCancellationToken<TResult>, TResult>(
+            return ((IAsyncPolicyInternal)this).ExecuteAndCaptureAsync<AsyncExecutableFuncOnContextCancellationToken<TResult>, TResult>(
                 new AsyncExecutableFuncOnContextCancellationToken<TResult>(func),
                 context,
                 cancellationToken,
@@ -719,7 +652,7 @@ namespace Polly
         [DebuggerStepThrough]
         public Task<PolicyResult<TResult>> ExecuteAndCaptureAsync<TResult>(Func<CancellationToken, Task<TResult>> func, CancellationToken cancellationToken, bool continueOnCapturedContext)
         {
-            return DespatchExecuteAndCaptureAsync<AsyncExecutableFuncOnCancellationToken<TResult>, TResult>(
+            return ((IAsyncPolicyInternal)this).ExecuteAndCaptureAsync<AsyncExecutableFuncOnCancellationToken<TResult>, TResult>(
                 new AsyncExecutableFuncOnCancellationToken<TResult>(func),
                 GetDefaultExecutionContext(),
                 cancellationToken,
@@ -739,7 +672,7 @@ namespace Polly
         [DebuggerStepThrough]
         public Task<PolicyResult<TResult>> ExecuteAndCaptureAsync<TResult>(Func<Context, CancellationToken, Task<TResult>> func, IDictionary<string, object> contextData, CancellationToken cancellationToken, bool continueOnCapturedContext)
         {
-            return DespatchExecuteAndCaptureAsync<AsyncExecutableFuncOnContextCancellationToken<TResult>, TResult>(
+            return ((IAsyncPolicyInternal)this).ExecuteAndCaptureAsync<AsyncExecutableFuncOnContextCancellationToken<TResult>, TResult>(
                 new AsyncExecutableFuncOnContextCancellationToken<TResult>(func),
                 new Context(contextData),
                 cancellationToken,
@@ -760,7 +693,7 @@ namespace Polly
         {
             if (context == null) throw new ArgumentNullException(nameof(context));
 
-            return DespatchExecuteAndCaptureAsync<AsyncExecutableFuncOnContextCancellationToken<TResult>, TResult>(
+            return ((IAsyncPolicyInternal)this).ExecuteAndCaptureAsync<AsyncExecutableFuncOnContextCancellationToken<TResult>, TResult>(
                 new AsyncExecutableFuncOnContextCancellationToken<TResult>(func),
                 context,
                 cancellationToken,
@@ -783,7 +716,7 @@ namespace Polly
         {
             if (context == null) throw new ArgumentNullException(nameof(context));
 
-            return DespatchExecuteAndCaptureAsync<IAsyncExecutable<TResult>, TResult>(new AsyncExecutableFunc<T1,TResult>(func, input1), context, cancellationToken, continueOnCapturedContext);
+            return ((IAsyncPolicyInternal)this).ExecuteAndCaptureAsync<IAsyncExecutable<TResult>, TResult>(new AsyncExecutableFunc<T1,TResult>(func, input1), context, cancellationToken, continueOnCapturedContext);
         }
 
         /// <summary>
@@ -804,7 +737,7 @@ namespace Polly
         {
             if (context == null) throw new ArgumentNullException(nameof(context));
 
-            return DespatchExecuteAndCaptureAsync<IAsyncExecutable<TResult>, TResult>(new AsyncExecutableFunc<T1, T2, TResult>(func, input1, input2), context, cancellationToken, continueOnCapturedContext);
+            return ((IAsyncPolicyInternal)this).ExecuteAndCaptureAsync<IAsyncExecutable<TResult>, TResult>(new AsyncExecutableFunc<T1, T2, TResult>(func, input1, input2), context, cancellationToken, continueOnCapturedContext);
         }
 
         #endregion

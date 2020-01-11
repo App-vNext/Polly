@@ -3,8 +3,9 @@
     /// <summary>
     /// Transient exception handling policies that can be applied to asynchronous delegates
     /// </summary>
-    public abstract partial class AsyncPolicy
+    public abstract /*partial*/ class AsyncPolicy
     {
+    /*
         /// <summary>
         /// Constructs a new instance of a derived <see cref="AsyncPolicy"/> type with the passed <paramref name="exceptionPredicates"/>. 
         /// </summary>
@@ -22,5 +23,6 @@
             : base(policyBuilder)
         {
         }
+*/
     }
 }

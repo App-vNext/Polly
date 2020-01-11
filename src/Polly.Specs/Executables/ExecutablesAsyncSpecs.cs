@@ -2,7 +2,6 @@
 using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
-using Polly.NoOp;
 using Xunit;
 
 namespace Polly.Specs.Executables
@@ -12,7 +11,7 @@ namespace Polly.Specs.Executables
         [Fact]
         public async Task Should_execute_user_delegate_with_input_parameter()
         {
-            AsyncNoOpPolicy policy = Policy.NoOpAsync() as AsyncNoOpPolicy;
+            var policy = Policy.NoOpAsync();
 
             Int16 input1 = 1;
             Int64 captured = 0;
@@ -32,7 +31,7 @@ namespace Polly.Specs.Executables
         [Fact]
         public async Task Should_execute_user_delegate_with_two_input_parameters()
         {
-            AsyncNoOpPolicy policy = Policy.NoOpAsync() as AsyncNoOpPolicy;
+            var policy = Policy.NoOpAsync();
 
             Int16 input1 = 1;
             Int32 input2 = 2;
@@ -54,7 +53,7 @@ namespace Polly.Specs.Executables
         [Fact]
         public async Task Should_execute_user_delegate_with_input_parameter_and_return_type()
         {
-            AsyncNoOpPolicy policy = Policy.NoOpAsync() as AsyncNoOpPolicy;
+            var policy = Policy.NoOpAsync();
 
             Int16 input1 = 1;
             Int64 captured = await policy.ExecuteAsync<Int16, Int64>(async (context, token, captureContext, input) =>
@@ -72,7 +71,7 @@ namespace Polly.Specs.Executables
         [Fact]
         public async Task Should_execute_user_delegate_with_two_input_parameters_and_return_type()
         {
-            AsyncNoOpPolicy policy = Policy.NoOpAsync() as AsyncNoOpPolicy;
+            var policy = Policy.NoOpAsync();
 
             Int16 input1 = 1;
             Int32 input2 = 2;
@@ -92,7 +91,7 @@ namespace Polly.Specs.Executables
         [Fact]
         public async Task Should_executeandcapture_user_delegate_with_input_parameter()
         {
-            AsyncNoOpPolicy policy = Policy.NoOpAsync() as AsyncNoOpPolicy;
+            var policy = Policy.NoOpAsync();
 
             Int16 input1 = 1;
             Int64 captured = 0;
@@ -113,7 +112,7 @@ namespace Polly.Specs.Executables
         [Fact]
         public async Task Should_executeandcapture_user_delegate_with_two_input_parameters()
         {
-            AsyncNoOpPolicy policy = Policy.NoOpAsync() as AsyncNoOpPolicy;
+            var policy = Policy.NoOpAsync();
 
             Int16 input1 = 1;
             Int32 input2 = 2;
@@ -136,7 +135,7 @@ namespace Polly.Specs.Executables
         [Fact]
         public async Task Should_executeandcapture_user_delegate_with_input_parameter_and_return_type()
         {
-            AsyncNoOpPolicy policy = Policy.NoOpAsync() as AsyncNoOpPolicy;
+            var policy = Policy.NoOpAsync();
 
             Int16 input1 = 1;
             var policyResult = await policy.ExecuteAndCaptureAsync<Int16, Int64>(async (context, token, captureContext, input) =>
@@ -155,7 +154,7 @@ namespace Polly.Specs.Executables
         [Fact]
         public async Task Should_executeandcapture_user_delegate_with_two_input_parameters_and_return_type()
         {
-            AsyncNoOpPolicy policy = Policy.NoOpAsync() as AsyncNoOpPolicy;
+            var policy = Policy.NoOpAsync();
 
             Int16 input1 = 1;
             Int32 input2 = 2;

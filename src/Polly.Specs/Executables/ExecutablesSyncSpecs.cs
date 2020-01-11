@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading;
 using FluentAssertions;
-using Polly.NoOp;
 using Xunit;
 
 namespace Polly.Specs.Executables

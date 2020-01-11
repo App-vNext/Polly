@@ -40,7 +40,7 @@ namespace Polly.Specs.Wrap
         {
             IAsyncPolicy retry = Policy.Handle<Exception>().RetryAsync(1);
 
-            Action config = () => retry.WrapAsync((AsyncPolicy)null);
+            Action config = () => retry.WrapAsync((IAsyncPolicy)null);
 
             config.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be("innerPolicy");
         }
@@ -110,7 +110,7 @@ namespace Polly.Specs.Wrap
         {
             IAsyncPolicy<int> retry = Policy.HandleResult<int>(0).RetryAsync(1);
 
-            Action config = () => retry.WrapAsync((AsyncPolicy)null);
+            Action config = () => retry.WrapAsync((IAsyncPolicy)null);
 
             config.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be("innerPolicy");
         }

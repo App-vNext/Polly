@@ -8,7 +8,7 @@ namespace Polly.Wrap
     /// <summary>
     /// A wrapper for composing policies that can be applied to asynchronous executions.
     /// </summary>
-    public partial class AsyncPolicyWrap : AsyncPolicy, IAsyncPolicyWrap
+    public partial class AsyncPolicyWrap : AsyncPolicyV8, IAsyncPolicyWrap
     {
         private readonly IAsyncPolicy _outer;
         private readonly IAsyncPolicy _inner;
@@ -33,12 +33,9 @@ namespace Polly.Wrap
 
         /// <inheritdoc/>
         [DebuggerStepThrough]
-        protected override Task ImplementationAsync(
-            Func<Context, CancellationToken, Task> action,
-            Context context,
-            CancellationToken cancellationToken,
+        protected override Task AsyncNonGenericImplementationV8(in IAsyncExecutable action, Context context, CancellationToken cancellationToken,
             bool continueOnCapturedContext)
-            => AsyncPolicyWrapEngine.ImplementationAsync(
+            => AsyncPolicyWrapEngineV8.ImplementationAsync(
                 action,
                 context,
                 cancellationToken,
@@ -49,16 +46,18 @@ namespace Polly.Wrap
 
         /// <inheritdoc/>
         [DebuggerStepThrough]
-        protected override Task<TResult> ImplementationAsync<TResult>(Func<Context, CancellationToken, Task<TResult>> action, Context context, CancellationToken cancellationToken,
-            bool continueOnCapturedContext)
-            => AsyncPolicyWrapEngine.ImplementationAsync<TResult>(
+        protected override Task<TResult> AsyncGenericImplementationV8<TExecutableAsync, TResult>(TExecutableAsync action, Context context,
+            CancellationToken cancellationToken, bool continueOnCapturedContext)
+        {
+            return AsyncPolicyWrapEngineV8.ImplementationAsync<TExecutableAsync, TResult>(
                 action,
                 context,
                 cancellationToken,
-                continueOnCapturedContext, 
+                continueOnCapturedContext,
                 _outer,
                 _inner
             );
+        }
     }
 
     /// <summary>
@@ -112,7 +111,7 @@ namespace Polly.Wrap
             {
                 if (_innerNonGeneric != null)
                 {
-                    return AsyncPolicyWrapEngine.ImplementationAsync<TResult>(
+                    return AsyncPolicyWrapEngineV8.ImplementationAsync<TResult>(
                         action,
                         context,
                         cancellationToken,
@@ -123,7 +122,7 @@ namespace Polly.Wrap
                 }
                 else if (_innerGeneric != null)
                 {
-                    return AsyncPolicyWrapEngine.ImplementationAsync<TResult>(
+                    return AsyncPolicyWrapEngineV8.ImplementationAsync<TResult>(
                         action,
                         context,
                         cancellationToken,
@@ -142,7 +141,7 @@ namespace Polly.Wrap
             {
                 if (_innerNonGeneric != null)
                 {
-                    return AsyncPolicyWrapEngine.ImplementationAsync<TResult>(
+                    return AsyncPolicyWrapEngineV8.ImplementationAsync<TResult>(
                         action,
                         context,
                         cancellationToken,
@@ -154,7 +153,7 @@ namespace Polly.Wrap
                 }
                 else if (_innerGeneric != null)
                 {
-                    return AsyncPolicyWrapEngine.ImplementationAsync<TResult>(
+                    return AsyncPolicyWrapEngineV8.ImplementationAsync<TResult>(
                         action,
                         context,
                         cancellationToken,

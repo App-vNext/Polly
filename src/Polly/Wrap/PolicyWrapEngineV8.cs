@@ -41,7 +41,7 @@ namespace Polly.Wrap
             Context context,
             CancellationToken cancellationToken,
             ISyncPolicy outerPolicy,
-            ISyncPolicy<TResult> innerPolicy)
+            ISyncPolicy<TResult> innerPolicy) 
             where TExecutable : ISyncExecutable<TResult>
         {
             return outerPolicy.Execute<ISyncPolicy<TResult>, TExecutable, TResult>(
