@@ -70,9 +70,9 @@ namespace Polly.Caching
     /// <typeparam name="TResult">The return type of delegates which may be executed through the policy.</typeparam>
     public class CachePolicy<TResult> : Policy<TResult>, ISyncCachePolicy<TResult>
     {
-        private ISyncCacheProvider<TResult> _syncCacheProvider;
-        private ITtlStrategy<TResult> _ttlStrategy;
-        private Func<Context, string> _cacheKeyStrategy;
+        private readonly ISyncCacheProvider<TResult> _syncCacheProvider;
+        private readonly ITtlStrategy<TResult> _ttlStrategy;
+        private readonly Func<Context, string> _cacheKeyStrategy;
 
         private readonly Action<Context, string> _onCacheGet;
         private readonly Action<Context, string> _onCacheMiss;

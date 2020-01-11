@@ -51,7 +51,7 @@ namespace Polly.Utilities
             leakDetector = new Sentinel();
 #endif
         }
-        private object target;
+        private readonly object target;
 
         public void Dispose()
         {
@@ -81,7 +81,7 @@ namespace Polly.Utilities
 #endif
             }
         }
-        private Sentinel leakDetector;
+        private readonly Sentinel leakDetector;
 #endif
 
     }

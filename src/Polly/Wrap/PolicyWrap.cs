@@ -9,8 +9,8 @@ namespace Polly.Wrap
     /// </summary>
     public partial class PolicyWrap : Policy, ISyncPolicyWrap
     {
-        private ISyncPolicy _outer;
-        private ISyncPolicy _inner;
+        private readonly ISyncPolicy _outer;
+        private readonly ISyncPolicy _inner;
 
         /// <summary>
         /// Returns the outer <see cref="IsPolicy"/> in this <see cref="IPolicyWrap"/>
@@ -58,11 +58,11 @@ namespace Polly.Wrap
     /// <typeparam name="TResult">The return type of delegates which may be executed through the policy.</typeparam>
     public partial class PolicyWrap<TResult> : Policy<TResult>, ISyncPolicyWrap<TResult>
     {
-        private ISyncPolicy _outerNonGeneric;
-        private ISyncPolicy _innerNonGeneric;
+        private readonly ISyncPolicy _outerNonGeneric;
+        private readonly ISyncPolicy _innerNonGeneric;
 
-        private ISyncPolicy<TResult> _outerGeneric;
-        private ISyncPolicy<TResult> _innerGeneric;
+        private readonly ISyncPolicy<TResult> _outerGeneric;
+        private readonly ISyncPolicy<TResult> _innerGeneric;
 
         /// <summary>
         /// Returns the outer <see cref="IsPolicy"/> in this <see cref="IPolicyWrap{TResult}"/>

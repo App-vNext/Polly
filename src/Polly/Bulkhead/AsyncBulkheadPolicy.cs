@@ -13,7 +13,7 @@ namespace Polly.Bulkhead
         private readonly SemaphoreSlim _maxParallelizationSemaphore;
         private readonly SemaphoreSlim _maxQueuedActionsSemaphore;
         private readonly int _maxQueueingActions;
-        private Func<Context, Task> _onBulkheadRejectedAsync;
+        private readonly Func<Context, Task> _onBulkheadRejectedAsync;
 
         internal AsyncBulkheadPolicy(
             int maxParallelization,
@@ -61,7 +61,7 @@ namespace Polly.Bulkhead
         private readonly SemaphoreSlim _maxParallelizationSemaphore;
         private readonly SemaphoreSlim _maxQueuedActionsSemaphore;
         private readonly int _maxQueueingActions;
-        private Func<Context, Task> _onBulkheadRejectedAsync;
+        private readonly Func<Context, Task> _onBulkheadRejectedAsync;
 
         internal AsyncBulkheadPolicy(
             int maxParallelization,

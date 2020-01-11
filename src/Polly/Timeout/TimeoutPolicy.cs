@@ -10,9 +10,9 @@ namespace Polly.Timeout
     /// </summary>
     public class TimeoutPolicy : PolicyV8, ISyncTimeoutPolicy
     {
-        private Func<Context, TimeSpan> _timeoutProvider;
-        private TimeoutStrategy _timeoutStrategy;
-        private Action<Context, TimeSpan, Task, Exception> _onTimeout;
+        private readonly Func<Context, TimeSpan> _timeoutProvider;
+        private readonly TimeoutStrategy _timeoutStrategy;
+        private readonly Action<Context, TimeSpan, Task, Exception> _onTimeout;
 
         internal TimeoutPolicy(
             Func<Context, TimeSpan> timeoutProvider,
@@ -43,9 +43,9 @@ namespace Polly.Timeout
     /// <typeparam name="TResult">The return type of delegates which may be executed through the policy.</typeparam>
     public class TimeoutPolicy<TResult> : PolicyV8<TResult>, ISyncTimeoutPolicy<TResult>
     {
-        private Func<Context, TimeSpan> _timeoutProvider;
-        private TimeoutStrategy _timeoutStrategy;
-        private Action<Context, TimeSpan, Task, Exception> _onTimeout;
+        private readonly Func<Context, TimeSpan> _timeoutProvider;
+        private readonly TimeoutStrategy _timeoutStrategy;
+        private readonly Action<Context, TimeSpan, Task, Exception> _onTimeout;
 
         internal TimeoutPolicy(
             Func<Context, TimeSpan> timeoutProvider,

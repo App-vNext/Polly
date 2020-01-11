@@ -50,9 +50,9 @@ namespace Polly.Timeout
     /// <typeparam name="TResult">The return type of delegates which may be executed through the policy.</typeparam>
     public class AsyncTimeoutPolicy<TResult> : AsyncPolicyV8<TResult>, IAsyncTimeoutPolicy<TResult>
     {
-        private Func<Context, TimeSpan> _timeoutProvider;
-        private TimeoutStrategy _timeoutStrategy;
-        private Func<Context, TimeSpan, Task, Exception, Task> _onTimeoutAsync;
+        private readonly Func<Context, TimeSpan> _timeoutProvider;
+        private readonly TimeoutStrategy _timeoutStrategy;
+        private readonly Func<Context, TimeSpan, Task, Exception, Task> _onTimeoutAsync;
 
         internal AsyncTimeoutPolicy(
             Func<Context, TimeSpan> timeoutProvider,
