@@ -4,7 +4,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Polly.Specs.Helpers;
-using Polly.Utilities;
 using Xunit;
 
 using Scenario = Polly.Specs.Helpers.IAsyncPolicyExtensions.ExceptionAndOrCancellationScenario;

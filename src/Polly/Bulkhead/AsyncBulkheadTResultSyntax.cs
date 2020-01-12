@@ -1,5 +1,4 @@
 ﻿using Polly.Bulkhead;
-using Polly.Utilities;
 using System;
 using System.Threading.Tasks;
 

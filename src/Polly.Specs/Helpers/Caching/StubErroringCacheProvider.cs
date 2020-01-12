@@ -2,7 +2,6 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Polly.Caching;
-using Polly.Utilities;
 
 namespace Polly.Specs.Helpers.Caching
 {
