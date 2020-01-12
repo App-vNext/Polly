@@ -5,7 +5,7 @@ using Polly.Utilities;
 
 namespace Polly.Retry
 {
-    internal static class RetryEngineV8
+    internal static class RetryEngine
     {
         internal static TResult Implementation<TExecutable, TResult>(
             in TExecutable action,

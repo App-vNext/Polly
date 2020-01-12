@@ -3,7 +3,7 @@ using System.Threading;
 
 namespace Polly.Fallback
 {
-    internal static class FallbackEngineV8
+    internal static class FallbackEngine
     {
         internal static TResult Implementation<TExecutable, TResult>(
             in TExecutable action,

@@ -5,7 +5,7 @@ using System.Threading;
 
 namespace Polly
 {
-    public abstract partial class PolicyV8 : ISyncPolicy
+    public abstract partial class Policy : ISyncPolicy
     {
         #region Execute overloads
 

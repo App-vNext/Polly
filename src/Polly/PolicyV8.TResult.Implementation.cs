@@ -5,7 +5,7 @@ namespace Polly
     /// <summary>
     /// Transient exception handling policies that can be applied to synchronous delegates
     /// </summary>
-    public abstract partial class PolicyV8<TResult>
+    public abstract partial class Policy<TResult>
     {
         /// <summary>
         /// Defines the implementation of a policy for async executions returning <typeparamref name="TResult"/>.
@@ -14,7 +14,7 @@ namespace Polly
         /// <param name="context">The policy execution context.</param>
         /// <param name="cancellationToken">A token to signal that execution should be cancelled.</param>
         /// <returns>A <typeparamref name="TResult"/> result of the execution.</returns>
-        protected abstract TResult SyncGenericImplementationV8<TExecutable>(
+        protected abstract TResult SyncGenericImplementation<TExecutable>(
             in TExecutable action,
             Context context,
             CancellationToken cancellationToken)

@@ -3,7 +3,7 @@ using System.Threading;
 
 namespace Polly.Specs.Helpers.Custom.PreExecute
 {
-    internal class PreExecutePolicy : PolicyV8
+    internal class PreExecutePolicy : Policy
     {
         private Action _preExecute;
 
@@ -17,14 +17,14 @@ namespace Polly.Specs.Helpers.Custom.PreExecute
             _preExecute = preExecute ?? throw new ArgumentNullException(nameof(preExecute));
         }
 
-        protected override TResult SyncGenericImplementationV8<TExecutable, TResult>(in TExecutable action, Context context,
+        protected override TResult SyncGenericImplementation<TExecutable, TResult>(in TExecutable action, Context context,
             CancellationToken cancellationToken)
         {
             return PreExecuteEngine.Implementation<TExecutable, TResult>(action, context, cancellationToken, _preExecute);
         }
     }
 
-    internal class PreExecutePolicy<TResult> : PolicyV8<TResult>
+    internal class PreExecutePolicy<TResult> : Policy<TResult>
     {
         private Action _preExecute;
 
@@ -38,7 +38,7 @@ namespace Polly.Specs.Helpers.Custom.PreExecute
             _preExecute = preExecute ?? throw new ArgumentNullException(nameof(preExecute));
         }
 
-        protected override TResult SyncGenericImplementationV8<TExecutable>(in TExecutable action, Context context, CancellationToken cancellationToken)
+        protected override TResult SyncGenericImplementation<TExecutable>(in TExecutable action, Context context, CancellationToken cancellationToken)
         {
             return PreExecuteEngine.Implementation<TExecutable, TResult>(action, context, cancellationToken, _preExecute);
         }

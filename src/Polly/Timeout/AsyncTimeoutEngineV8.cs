@@ -5,7 +5,7 @@ using Polly.Utilities;
 
 namespace Polly.Timeout
 {
-    internal static class AsyncTimeoutEngineV8
+    internal static class AsyncTimeoutEngine
     {
         internal static async Task<TResult> ImplementationAsync<TExecutableAsync, TResult>(
             TExecutableAsync action, 

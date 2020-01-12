@@ -8,7 +8,7 @@ namespace Polly.Retry
     /// <summary>
     /// A retry policy that can be applied to synchronous executions.
     /// </summary>
-    public class RetryPolicy : PolicyV8, ISyncRetryPolicy
+    public class RetryPolicy : Policy, ISyncRetryPolicy
     {
         private readonly Action<Exception, TimeSpan, int, Context> _onRetry;
         private readonly int _permittedRetryCount;
@@ -31,9 +31,9 @@ namespace Polly.Retry
         }
 
         /// <inheritdoc/>
-        protected override TResult SyncGenericImplementationV8<TExecutable, TResult>(in TExecutable action,
+        protected override TResult SyncGenericImplementation<TExecutable, TResult>(in TExecutable action,
             Context context, CancellationToken cancellationToken)
-            => RetryEngineV8.Implementation(
+            => RetryEngine.Implementation(
                 action,
                 context,
                 cancellationToken,
@@ -52,7 +52,7 @@ namespace Polly.Retry
     /// A retry policy that can be applied to synchronous executions returning a value of type <typeparamref name="TResult"/>.
     /// </summary>
     /// <typeparam name="TResult">The return type of delegates which may be executed through the policy.</typeparam>
-    public class RetryPolicy<TResult> : PolicyV8<TResult>, ISyncRetryPolicy<TResult>
+    public class RetryPolicy<TResult> : Policy<TResult>, ISyncRetryPolicy<TResult>
     {
         private readonly Action<DelegateResult<TResult>, TimeSpan, int, Context> _onRetry;
         private readonly int _permittedRetryCount;
@@ -76,8 +76,8 @@ namespace Polly.Retry
 
         /// <inheritdoc/>
         [DebuggerStepThrough]
-        protected override TResult SyncGenericImplementationV8<TExecutable>(in TExecutable action, Context context, CancellationToken cancellationToken)
-            => RetryEngineV8.Implementation(
+        protected override TResult SyncGenericImplementation<TExecutable>(in TExecutable action, Context context, CancellationToken cancellationToken)
+            => RetryEngine.Implementation(
                 action,
                 context,
                 cancellationToken,

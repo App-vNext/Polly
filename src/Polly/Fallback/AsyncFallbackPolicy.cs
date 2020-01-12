@@ -8,7 +8,7 @@ namespace Polly.Fallback
     /// <summary>
     /// A fallback policy that can be applied to asynchronous executions.
     /// </summary>
-    public class AsyncFallbackPolicy : AsyncPolicyV8, IAsyncFallbackPolicy
+    public class AsyncFallbackPolicy : AsyncPolicy, IAsyncFallbackPolicy
     {
         private readonly Func<Exception, Context, Task> _onFallbackAsync;
         private readonly Func<Exception, Context, CancellationToken, Task> _fallbackAction;
@@ -22,10 +22,10 @@ namespace Polly.Fallback
         }
 
         /// <inheritdoc/>
-        protected override Task AsyncNonGenericImplementationV8(in IAsyncExecutable action, Context context, CancellationToken cancellationToken,
+        protected override Task AsyncNonGenericImplementation(in IAsyncExecutable action, Context context, CancellationToken cancellationToken,
             bool continueOnCapturedContext)
         {
-            return AsyncFallbackEngineV8.ImplementationAsync<IAsyncExecutable<object>, object>(
+            return AsyncFallbackEngine.ImplementationAsync<IAsyncExecutable<object>, object>(
                 action,
                 context,
                 cancellationToken,
@@ -41,7 +41,7 @@ namespace Polly.Fallback
         }
 
         /// <inheritdoc/>
-        protected override Task<TResult> AsyncGenericImplementationV8<TExecutableAsync, TResult>(TExecutableAsync action, Context context,
+        protected override Task<TResult> AsyncGenericImplementation<TExecutableAsync, TResult>(TExecutableAsync action, Context context,
             CancellationToken cancellationToken, bool continueOnCapturedContext)
             => throw new InvalidOperationException($"You have executed the generic .Execute<{nameof(TResult)}> method on a non-generic {nameof(FallbackPolicy)}.  A non-generic {nameof(FallbackPolicy)} only defines a fallback action which returns void; it can never return a substitute {nameof(TResult)} value.  To use {nameof(FallbackPolicy)} to provide fallback {nameof(TResult)} values you must define a generic fallback policy {nameof(FallbackPolicy)}<{nameof(TResult)}>.  For example, define the policy as Policy<{nameof(TResult)}>.Handle<Exception>().Fallback<{nameof(TResult)}>(/* some {nameof(TResult)} value or Func<..., {nameof(TResult)}> */);");
     }
@@ -50,7 +50,7 @@ namespace Polly.Fallback
     /// A fallback policy that can be applied to asynchronous executions returning a value of type <typeparamref name="TResult"/>.
     /// </summary>
     /// <typeparam name="TResult">The return type of delegates which may be executed through the policy.</typeparam>
-    public class AsyncFallbackPolicy<TResult> : AsyncPolicyV8<TResult>, IAsyncFallbackPolicy<TResult>
+    public class AsyncFallbackPolicy<TResult> : AsyncPolicy<TResult>, IAsyncFallbackPolicy<TResult>
     {
         private readonly Func<DelegateResult<TResult>, Context, Task> _onFallbackAsync;
         private readonly Func<DelegateResult<TResult>, Context, CancellationToken, Task<TResult>> _fallbackAction;
@@ -67,9 +67,9 @@ namespace Polly.Fallback
 
         /// <inheritdoc/>
         [DebuggerStepThrough]
-        protected override Task<TResult> AsyncGenericImplementationV8<TExecutableAsync>(TExecutableAsync action, Context context,
+        protected override Task<TResult> AsyncGenericImplementation<TExecutableAsync>(TExecutableAsync action, Context context,
             CancellationToken cancellationToken, bool continueOnCapturedContext)
-            => AsyncFallbackEngineV8.ImplementationAsync(
+            => AsyncFallbackEngine.ImplementationAsync(
                 action,
                 context,
                 cancellationToken,

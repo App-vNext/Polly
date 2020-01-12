@@ -3,22 +3,22 @@
     /// <summary>
     /// Transient exception handling policies that can be applied to synchronous delegates
     /// </summary>
-    public abstract partial class PolicyV8 : PolicyBase
+    public abstract partial class Policy : PolicyBase
     {
         /// <summary>
-        /// Constructs a new instance of a derived <see cref="PolicyV8"/> type with the passed <paramref name="exceptionPredicates"/>. 
+        /// Constructs a new instance of a derived <see cref="Policy"/> type with the passed <paramref name="exceptionPredicates"/>. 
         /// </summary>
         /// <param name="exceptionPredicates">Predicates indicating which exceptions the policy should handle. </param>
-        internal PolicyV8(ExceptionPredicates exceptionPredicates)
+        internal Policy(ExceptionPredicates exceptionPredicates)
             : base(exceptionPredicates)
         {
         }
 
         /// <summary>
-        /// Constructs a new instance of a derived <see cref="PolicyV8"/> type with the passed <paramref name="policyBuilder"/>. 
+        /// Constructs a new instance of a derived <see cref="Policy"/> type with the passed <paramref name="policyBuilder"/>. 
         /// </summary>
         /// <param name="policyBuilder">A <see cref="PolicyBuilder"/> specifying which exceptions the policy should handle. </param>
-        protected PolicyV8(PolicyBuilder policyBuilder = null)
+        protected Policy(PolicyBuilder policyBuilder = null)
             : base(policyBuilder)
         {
         }

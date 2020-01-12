@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Polly
 {
-    public abstract partial class AsyncPolicyV8<TResult> : IAsyncPolicyInternal<TResult>
+    public abstract partial class AsyncPolicy<TResult> : IAsyncPolicyInternal<TResult>
     {
         [DebuggerStepThrough]
         async Task<TResult> IAsyncPolicyInternal<TResult>.ExecuteAsync<TExecutableAsync>(TExecutableAsync action, Context context, CancellationToken cancellationToken, bool continueOnCapturedContext)
@@ -16,7 +16,7 @@ namespace Polly
 
             try
             {
-                return await AsyncGenericImplementationV8(action, context, cancellationToken, continueOnCapturedContext)
+                return await AsyncGenericImplementation(action, context, cancellationToken, continueOnCapturedContext)
                     .ConfigureAwait(continueOnCapturedContext);
             }
             finally

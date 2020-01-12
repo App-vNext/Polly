@@ -2,7 +2,7 @@
 
 namespace Polly.NoOp
 {
-    internal static class NoOpEngineV8
+    internal static class NoOpEngine
     {
         internal static TResult Implementation<TExecutable, TResult>(in TExecutable action, Context context, CancellationToken cancellationToken)
             where TExecutable : ISyncExecutable<TResult>

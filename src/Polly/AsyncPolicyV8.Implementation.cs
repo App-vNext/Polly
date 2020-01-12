@@ -6,7 +6,7 @@ namespace Polly
     /// <summary>
     /// Transient exception handling policies that can be applied to asynchronous delegates
     /// </summary>
-    public abstract partial class AsyncPolicyV8
+    public abstract partial class AsyncPolicy
     {
         /// <summary>
         /// Defines the implementation of a policy for sync executions with no return value.
@@ -16,13 +16,13 @@ namespace Polly
         /// <param name="cancellationToken">A token to signal that execution should be cancelled.</param>
         /// <param name="continueOnCapturedContext">Whether async continuations should continue on a captured context.</param>
         /// <returns>A <see cref="Task"/> representing the execution.</returns>
-        protected virtual Task AsyncNonGenericImplementationV8(
+        protected virtual Task AsyncNonGenericImplementation(
             in IAsyncExecutable action,
             Context context,
             CancellationToken cancellationToken,
             bool continueOnCapturedContext)
         {
-            return AsyncGenericImplementationV8<IAsyncExecutable<object>, object>(action, context, cancellationToken, continueOnCapturedContext);
+            return AsyncGenericImplementation<IAsyncExecutable<object>, object>(action, context, cancellationToken, continueOnCapturedContext);
         }
 
 
@@ -34,7 +34,7 @@ namespace Polly
         /// <param name="cancellationToken">A token to signal that execution should be cancelled.</param>
         /// <param name="continueOnCapturedContext">Whether async continuations should continue on a captured context.</param>
         /// <returns>A <see cref="Task"/> representing the result of the execution.</returns>
-        protected abstract Task<TResult> AsyncGenericImplementationV8<TExecutableAsync, TResult>(
+        protected abstract Task<TResult> AsyncGenericImplementation<TExecutableAsync, TResult>(
             TExecutableAsync action,
             Context context,
             CancellationToken cancellationToken,

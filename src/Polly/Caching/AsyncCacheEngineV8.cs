@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace Polly.Caching
 {
-    internal static class AsyncCacheEngineV8
+    internal static class AsyncCacheEngine
     {
         internal static async Task<TResult> ImplementationAsync<TExecutableAsync, TResult>(
             IAsyncCacheProvider<TResult> cacheProvider,

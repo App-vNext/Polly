@@ -8,7 +8,7 @@ namespace Polly.Caching
     /// <summary>
     /// A cache policy that can be applied to asynchronous executions.
     /// </summary>
-    public class AsyncCachePolicy : AsyncPolicyV8, IAsyncCachePolicy
+    public class AsyncCachePolicy : AsyncPolicy, IAsyncCachePolicy
     {
         private readonly IAsyncCacheProvider _asyncCacheProvider;
         private readonly ITtlStrategy _ttlStrategy;
@@ -42,7 +42,7 @@ namespace Polly.Caching
         }
 
         /// <inheritdoc/>
-        protected override Task AsyncNonGenericImplementationV8(in IAsyncExecutable action, Context context, CancellationToken cancellationToken,
+        protected override Task AsyncNonGenericImplementation(in IAsyncExecutable action, Context context, CancellationToken cancellationToken,
             bool continueOnCapturedContext)
         {
             // Pass-through/NOOP policy action, for void-returning executions through the cache policy.
@@ -51,9 +51,9 @@ namespace Polly.Caching
 
         /// <inheritdoc/>
         [DebuggerStepThrough]
-        protected override Task<TResult> AsyncGenericImplementationV8<TExecutableAsync, TResult>(TExecutableAsync action, Context context, CancellationToken cancellationToken, bool continueOnCapturedContext)
+        protected override Task<TResult> AsyncGenericImplementation<TExecutableAsync, TResult>(TExecutableAsync action, Context context, CancellationToken cancellationToken, bool continueOnCapturedContext)
         {
-            return AsyncCacheEngineV8.ImplementationAsync<TExecutableAsync, TResult>(
+            return AsyncCacheEngine.ImplementationAsync<TExecutableAsync, TResult>(
                 _asyncCacheProvider.AsyncFor<TResult>(),
                 _ttlStrategy.For<TResult>(),
                 _cacheKeyStrategy,
@@ -73,7 +73,7 @@ namespace Polly.Caching
     /// A cache policy that can be applied to asynchronous executions returning a value of type <typeparamref name="TResult"/>.
     /// </summary>
     /// <typeparam name="TResult">The return type of delegates which may be executed through the policy.</typeparam>
-    public class AsyncCachePolicy<TResult> : AsyncPolicyV8<TResult>, IAsyncCachePolicy<TResult>
+    public class AsyncCachePolicy<TResult> : AsyncPolicy<TResult>, IAsyncCachePolicy<TResult>
     {
         private readonly IAsyncCacheProvider<TResult> _asyncCacheProvider;
         private readonly ITtlStrategy<TResult> _ttlStrategy;
@@ -108,9 +108,9 @@ namespace Polly.Caching
 
         /// <inheritdoc/>
         [DebuggerStepThrough]
-        protected override Task<TResult> AsyncGenericImplementationV8<TExecutableAsync>(TExecutableAsync action, Context context, CancellationToken cancellationToken, bool continueOnCapturedContext)
+        protected override Task<TResult> AsyncGenericImplementation<TExecutableAsync>(TExecutableAsync action, Context context, CancellationToken cancellationToken, bool continueOnCapturedContext)
         {
-            return AsyncCacheEngineV8.ImplementationAsync<TExecutableAsync, TResult>(
+            return AsyncCacheEngine.ImplementationAsync<TExecutableAsync, TResult>(
                 _asyncCacheProvider,
                 _ttlStrategy,
                 _cacheKeyStrategy,

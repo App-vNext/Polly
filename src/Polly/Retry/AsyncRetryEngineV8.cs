@@ -6,7 +6,7 @@ using Polly.Utilities;
 
 namespace Polly.Retry
 {
-    internal static class AsyncRetryEngineV8
+    internal static class AsyncRetryEngine
     {
         internal static async Task<TResult> ImplementationAsync<TExecutableAsync, TResult>(
             TExecutableAsync action,

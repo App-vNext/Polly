@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace Polly.Wrap
 {
-    internal static class AsyncPolicyWrapEngineV8
+    internal static class AsyncPolicyWrapEngine
     {
         internal static async Task<TResult> ImplementationAsync<TExecutableAsync, TResult>(
             TExecutableAsync func,

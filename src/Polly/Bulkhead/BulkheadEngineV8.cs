@@ -3,7 +3,7 @@ using System.Threading;
 
 namespace Polly.Bulkhead
 {
-    internal static class BulkheadEngineV8
+    internal static class BulkheadEngine
     {
         internal static TResult Implementation<TExecutable, TResult>(
             in TExecutable action,

@@ -8,7 +8,7 @@ namespace Polly.Timeout
     /// <summary>
     /// A timeout policy that can be applied to asynchronous executions.
     /// </summary>
-    public class AsyncTimeoutPolicy : AsyncPolicyV8, IAsyncTimeoutPolicy
+    public class AsyncTimeoutPolicy : AsyncPolicy, IAsyncTimeoutPolicy
     {
         private readonly Func<Context, TimeSpan> _timeoutProvider;
         private readonly TimeoutStrategy _timeoutStrategy;
@@ -27,13 +27,13 @@ namespace Polly.Timeout
 
         /// <inheritdoc/>
         [DebuggerStepThrough]
-        protected override Task<TResult> AsyncGenericImplementationV8<TExecutableAsync, TResult>(
+        protected override Task<TResult> AsyncGenericImplementation<TExecutableAsync, TResult>(
             TExecutableAsync action, 
             Context context, 
             CancellationToken cancellationToken,
             bool continueOnCapturedContext)
         {
-            return AsyncTimeoutEngineV8.ImplementationAsync<TExecutableAsync, TResult>(
+            return AsyncTimeoutEngine.ImplementationAsync<TExecutableAsync, TResult>(
                 action,
                 context,
                 cancellationToken,
@@ -48,7 +48,7 @@ namespace Polly.Timeout
     /// A timeout policy that can be applied to asynchronous executions returning a value of type <typeparamref name="TResult"/>.
     /// </summary>
     /// <typeparam name="TResult">The return type of delegates which may be executed through the policy.</typeparam>
-    public class AsyncTimeoutPolicy<TResult> : AsyncPolicyV8<TResult>, IAsyncTimeoutPolicy<TResult>
+    public class AsyncTimeoutPolicy<TResult> : AsyncPolicy<TResult>, IAsyncTimeoutPolicy<TResult>
     {
         private readonly Func<Context, TimeSpan> _timeoutProvider;
         private readonly TimeoutStrategy _timeoutStrategy;
@@ -66,12 +66,12 @@ namespace Polly.Timeout
 
         /// <inheritdoc/>
         [DebuggerStepThrough]
-        protected override Task<TResult> AsyncGenericImplementationV8<TExecutableAsync>(
+        protected override Task<TResult> AsyncGenericImplementation<TExecutableAsync>(
             TExecutableAsync action,
             Context context, 
             CancellationToken cancellationToken,
             bool continueOnCapturedContext)
-            => AsyncTimeoutEngineV8.ImplementationAsync<TExecutableAsync, TResult>(
+            => AsyncTimeoutEngine.ImplementationAsync<TExecutableAsync, TResult>(
                 action,
                 context,
                 cancellationToken,

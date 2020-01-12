@@ -2,7 +2,7 @@
 
 namespace Polly
 {
-    public abstract partial class PolicyV8
+    public abstract partial class Policy
     {
         /// <summary>
         /// Defines the implementation of a policy for sync executions with no return value.
@@ -10,12 +10,12 @@ namespace Polly
         /// <param name="action">The action passed by calling code to execute through the policy.</param>
         /// <param name="context">The policy execution context.</param>
         /// <param name="cancellationToken">A token to signal that execution should be cancelled.</param>
-        protected virtual void SyncNonGenericImplementationV8(
+        protected virtual void SyncNonGenericImplementation(
             in ISyncExecutable action,
             Context context,
             CancellationToken cancellationToken)
         {
-            SyncGenericImplementationV8<ISyncExecutable<object>, object>(action, context, cancellationToken);
+            SyncGenericImplementation<ISyncExecutable<object>, object>(action, context, cancellationToken);
         }
 
         /// <summary>
@@ -25,7 +25,7 @@ namespace Polly
         /// <param name="context">The policy execution context.</param>
         /// <param name="cancellationToken">A token to signal that execution should be cancelled.</param>
         /// <returns>A <typeparamref name="TResult"/> result of the execution.</returns>
-        protected abstract TResult SyncGenericImplementationV8<TExecutable, TResult>(
+        protected abstract TResult SyncGenericImplementation<TExecutable, TResult>(
             in TExecutable action,
             Context context,
             CancellationToken cancellationToken)

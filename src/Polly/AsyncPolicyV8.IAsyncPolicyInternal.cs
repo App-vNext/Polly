@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace Polly
 {
-    public abstract partial class AsyncPolicyV8 : IAsyncPolicyInternal
+    public abstract partial class AsyncPolicy : IAsyncPolicyInternal
     {
         async Task IAsyncPolicyInternal.ExecuteAsync(IAsyncExecutable action, Context context, CancellationToken cancellationToken, bool continueOnCapturedContext)
         {
@@ -14,7 +14,7 @@ namespace Polly
 
             try
             {
-                await AsyncNonGenericImplementationV8(action, context, cancellationToken, continueOnCapturedContext)
+                await AsyncNonGenericImplementation(action, context, cancellationToken, continueOnCapturedContext)
                     .ConfigureAwait(continueOnCapturedContext);
             }
             finally
@@ -31,7 +31,7 @@ namespace Polly
 
             try
             {
-                return await AsyncGenericImplementationV8<TExecutableAsync, TResult>(action, context, cancellationToken, continueOnCapturedContext)
+                return await AsyncGenericImplementation<TExecutableAsync, TResult>(action, context, cancellationToken, continueOnCapturedContext)
                     .ConfigureAwait(continueOnCapturedContext);
             }
             finally

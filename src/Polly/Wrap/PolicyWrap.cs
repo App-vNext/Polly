@@ -7,7 +7,7 @@ namespace Polly.Wrap
     /// <summary>
     /// A wrapper for composing policies that can be applied to synchronous executions.
     /// </summary>
-    public partial class PolicyWrap : PolicyV8, ISyncPolicyWrap
+    public partial class PolicyWrap : Policy, ISyncPolicyWrap
     {
         private readonly ISyncPolicy _outer;
         private readonly ISyncPolicy _inner;
@@ -31,8 +31,8 @@ namespace Polly.Wrap
 
         /// <inheritdoc/>
         [DebuggerStepThrough]
-        protected override void SyncNonGenericImplementationV8(in ISyncExecutable action, Context context, CancellationToken cancellationToken)
-            => PolicyWrapEngineV8.Implementation(
+        protected override void SyncNonGenericImplementation(in ISyncExecutable action, Context context, CancellationToken cancellationToken)
+            => PolicyWrapEngine.Implementation(
                 action,
                 context,
                 cancellationToken,
@@ -42,9 +42,9 @@ namespace Polly.Wrap
 
         /// <inheritdoc/>
         [DebuggerStepThrough]
-        protected override TResult SyncGenericImplementationV8<TExecutable, TResult>(in TExecutable action, Context context,
+        protected override TResult SyncGenericImplementation<TExecutable, TResult>(in TExecutable action, Context context,
             CancellationToken cancellationToken)
-            => PolicyWrapEngineV8.Implementation<TExecutable, TResult>(
+            => PolicyWrapEngine.Implementation<TExecutable, TResult>(
                 action,
                 context,
                 cancellationToken,
@@ -57,7 +57,7 @@ namespace Polly.Wrap
     /// A wrapper for composing policies that can be applied to synchronous executions returning a value of type <typeparamref name="TResult"/>.
     /// </summary>
     /// <typeparam name="TResult">The return type of delegates which may be executed through the policy.</typeparam>
-    public partial class PolicyWrap<TResult> : PolicyV8<TResult>, ISyncPolicyWrap<TResult>
+    public partial class PolicyWrap<TResult> : Policy<TResult>, ISyncPolicyWrap<TResult>
     {
         private readonly ISyncPolicy _outerNonGeneric;
         private readonly ISyncPolicy _innerNonGeneric;
@@ -97,13 +97,13 @@ namespace Polly.Wrap
         }
 
         /// <inheritdoc/>
-        protected override TResult SyncGenericImplementationV8<TExecutable>(in TExecutable action, Context context, CancellationToken cancellationToken)
+        protected override TResult SyncGenericImplementation<TExecutable>(in TExecutable action, Context context, CancellationToken cancellationToken)
         {
             if (_outerNonGeneric != null)
             {
                 if (_innerNonGeneric != null)
                 {
-                    return PolicyWrapEngineV8.Implementation<TExecutable, TResult>(
+                    return PolicyWrapEngine.Implementation<TExecutable, TResult>(
                         action,
                         context,
                         cancellationToken,
@@ -113,7 +113,7 @@ namespace Polly.Wrap
                 }
                 else if (_innerGeneric != null)
                 {
-                    return PolicyWrapEngineV8.Implementation<TExecutable, TResult>(
+                    return PolicyWrapEngine.Implementation<TExecutable, TResult>(
                         action,
                         context,
                         cancellationToken,
@@ -131,7 +131,7 @@ namespace Polly.Wrap
             {
                 if (_innerNonGeneric != null)
                 {
-                    return PolicyWrapEngineV8.Implementation<TExecutable, TResult>(
+                    return PolicyWrapEngine.Implementation<TExecutable, TResult>(
                         action,
                         context,
                         cancellationToken,
@@ -142,7 +142,7 @@ namespace Polly.Wrap
                 }
                 else if (_innerGeneric != null)
                 {
-                    return PolicyWrapEngineV8.Implementation<TExecutable, TResult>(
+                    return PolicyWrapEngine.Implementation<TExecutable, TResult>(
                         action,
                         context,
                         cancellationToken,

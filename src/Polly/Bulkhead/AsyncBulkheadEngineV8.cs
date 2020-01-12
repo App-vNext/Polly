@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace Polly.Bulkhead
 {
-   internal static class AsyncBulkheadEngineV8
+   internal static class AsyncBulkheadEngine
     {
         internal static async Task<TResult> ImplementationAsync<TExecutableAsync, TResult>(
             TExecutableAsync action,

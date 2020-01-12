@@ -7,7 +7,7 @@ using Polly.Utilities;
 
 namespace Polly.Timeout
 {
-    internal static class TimeoutEngineV8
+    internal static class TimeoutEngine
     {
         internal static TResult Implementation<TExecutable, TResult>(
             TExecutable action,

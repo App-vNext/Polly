@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace Polly.Fallback
 {
-    internal class AsyncFallbackEngineV8
+    internal class AsyncFallbackEngine
     {
         internal static async Task<TResult> ImplementationAsync<TExecutableAsync, TResult>(
             TExecutableAsync action,

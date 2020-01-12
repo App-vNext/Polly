@@ -4,7 +4,7 @@ using System.Threading;
 
 namespace Polly
 {
-    public abstract partial class PolicyV8 : ISyncPolicyInternal
+    public abstract partial class Policy : ISyncPolicyInternal
     {
         [DebuggerStepThrough]
         void ISyncPolicyInternal.Execute(in ISyncExecutable action, Context context, CancellationToken cancellationToken)
@@ -15,7 +15,7 @@ namespace Polly
 
             try
             {
-                SyncNonGenericImplementationV8(action, context, cancellationToken);
+                SyncNonGenericImplementation(action, context, cancellationToken);
             }
             finally
             {
@@ -32,7 +32,7 @@ namespace Polly
 
             try
             {
-                return SyncGenericImplementationV8<TExecutable, TResult>(action, context, cancellationToken);
+                return SyncGenericImplementation<TExecutable, TResult>(action, context, cancellationToken);
             }
             finally
             {

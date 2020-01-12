@@ -4,7 +4,7 @@ using System.Threading;
 
 namespace Polly.CircuitBreaker
 {
-    internal class CircuitBreakerEngineV8
+    internal class CircuitBreakerEngine
     {
         internal static TResult Implementation<TExecutable, TResult>(
             in TExecutable action,

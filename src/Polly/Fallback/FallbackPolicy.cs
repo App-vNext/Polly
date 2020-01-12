@@ -7,7 +7,7 @@ namespace Polly.Fallback
     /// <summary>
     /// A fallback policy that can be applied to synchronous executions.
     /// </summary>
-    public class FallbackPolicy : PolicyV8, ISyncFallbackPolicy
+    public class FallbackPolicy : Policy, ISyncFallbackPolicy
     {
         private readonly Action<Exception, Context> _onFallback;
         private readonly Action<Exception, Context, CancellationToken> _fallbackAction;
@@ -24,8 +24,8 @@ namespace Polly.Fallback
 
         /// <inheritdoc/>
         [DebuggerStepThrough]
-        protected override void SyncNonGenericImplementationV8(in ISyncExecutable action, Context context, CancellationToken cancellationToken)
-            => FallbackEngineV8.Implementation<ISyncExecutable<object>, object>(
+        protected override void SyncNonGenericImplementation(in ISyncExecutable action, Context context, CancellationToken cancellationToken)
+            => FallbackEngine.Implementation<ISyncExecutable<object>, object>(
                 action,
                 context,
                 cancellationToken,
@@ -35,7 +35,7 @@ namespace Polly.Fallback
                 fallbackAction: (outcome, ctx, ct) => { _fallbackAction(outcome.Exception, ctx, ct); return null; });
 
         /// <inheritdoc/>
-        protected override TResult SyncGenericImplementationV8<TExecutable, TResult>(in TExecutable action, Context context, CancellationToken cancellationToken)
+        protected override TResult SyncGenericImplementation<TExecutable, TResult>(in TExecutable action, Context context, CancellationToken cancellationToken)
             => throw new InvalidOperationException($"You have executed the generic .Execute<{nameof(TResult)}> method on a non-generic {nameof(FallbackPolicy)}.  A non-generic {nameof(FallbackPolicy)} only defines a fallback action which returns void; it can never return a substitute {nameof(TResult)} value.  To use {nameof(FallbackPolicy)} to provide fallback {nameof(TResult)} values you must define a generic fallback policy {nameof(FallbackPolicy)}<{nameof(TResult)}>.  For example, define the policy as Policy<{nameof(TResult)}>.Handle<Exception>().Fallback<{nameof(TResult)}>(/* some {nameof(TResult)} value or Func<..., {nameof(TResult)}> */);");
     }
 
@@ -43,7 +43,7 @@ namespace Polly.Fallback
     /// A fallback policy that can be applied to synchronous executions returning a value of type <typeparamref name="TResult"/>.
     /// </summary>
     /// <typeparam name="TResult">The return type of delegates which may be executed through the policy.</typeparam>
-    public class FallbackPolicy<TResult> : PolicyV8<TResult>, ISyncFallbackPolicy<TResult>
+    public class FallbackPolicy<TResult> : Policy<TResult>, ISyncFallbackPolicy<TResult>
     {
         private readonly Action<DelegateResult<TResult>, Context> _onFallback;
         private readonly Func<DelegateResult<TResult>, Context, CancellationToken, TResult> _fallbackAction;
@@ -60,9 +60,9 @@ namespace Polly.Fallback
 
         /// <inheritdoc/>
         [DebuggerStepThrough]
-        protected override TResult SyncGenericImplementationV8<TExecutable>(in TExecutable action, Context context,
+        protected override TResult SyncGenericImplementation<TExecutable>(in TExecutable action, Context context,
             CancellationToken cancellationToken)
-            => FallbackEngineV8.Implementation(
+            => FallbackEngine.Implementation(
                 action,
                 context,
                 cancellationToken,

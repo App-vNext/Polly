@@ -3,7 +3,7 @@ using System.Threading;
 
 namespace Polly.Specs.Helpers.Custom.AddBehaviourIfHandle
 {
-    internal class AddBehaviourIfHandlePolicy : PolicyV8
+    internal class AddBehaviourIfHandlePolicy : Policy
     {
         private readonly Action<Exception> _behaviourIfHandle;
 
@@ -13,7 +13,7 @@ namespace Polly.Specs.Helpers.Custom.AddBehaviourIfHandle
             _behaviourIfHandle = behaviourIfHandle ?? throw new ArgumentNullException(nameof(behaviourIfHandle));
         }
 
-        protected override TResult SyncGenericImplementationV8<TExecutable, TResult>(in TExecutable action, Context context,
+        protected override TResult SyncGenericImplementation<TExecutable, TResult>(in TExecutable action, Context context,
             CancellationToken cancellationToken)
         {
             return AddBehaviourIfHandleEngine.Implementation<TExecutable, TResult>(
@@ -27,7 +27,7 @@ namespace Polly.Specs.Helpers.Custom.AddBehaviourIfHandle
         }
     }
 
-    internal class AddBehaviourIfHandlePolicy<TResult> : PolicyV8<TResult>
+    internal class AddBehaviourIfHandlePolicy<TResult> : Policy<TResult>
     {
         private readonly Action<DelegateResult<TResult>> _behaviourIfHandle;
 
@@ -39,7 +39,7 @@ namespace Polly.Specs.Helpers.Custom.AddBehaviourIfHandle
             _behaviourIfHandle = behaviourIfHandle ?? throw new ArgumentNullException(nameof(behaviourIfHandle));
         }
 
-        protected override TResult SyncGenericImplementationV8<TExecutable>(in TExecutable action, Context context, CancellationToken cancellationToken)
+        protected override TResult SyncGenericImplementation<TExecutable>(in TExecutable action, Context context, CancellationToken cancellationToken)
         {
             return AddBehaviourIfHandleEngine.Implementation(
                 action,

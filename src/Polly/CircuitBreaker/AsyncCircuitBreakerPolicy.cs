@@ -8,7 +8,7 @@ namespace Polly.CircuitBreaker
     /// <summary>
     /// A circuit-breaker policy that can be applied to asynchronous executions.
     /// </summary>
-    public class AsyncCircuitBreakerPolicy : AsyncPolicyV8, IAsyncCircuitBreakerPolicy
+    public class AsyncCircuitBreakerPolicy : AsyncPolicy, IAsyncCircuitBreakerPolicy
     {
         internal readonly ICircuitController<object> _breakerController;
 
@@ -42,7 +42,7 @@ namespace Polly.CircuitBreaker
         public void Reset() => _breakerController.Reset();
 
         /// <inheritdoc/>
-        protected override async Task<TResult> AsyncGenericImplementationV8<TExecutableAsync, TResult>(TExecutableAsync action, Context context, CancellationToken cancellationToken,
+        protected override async Task<TResult> AsyncGenericImplementation<TExecutableAsync, TResult>(TExecutableAsync action, Context context, CancellationToken cancellationToken,
             bool continueOnCapturedContext)
         {
             TResult result = default;
@@ -50,10 +50,10 @@ namespace Polly.CircuitBreaker
             // This additional call in <object> is necessary, because _breakerController is generic in <object>.
             // We therefore have to convert the whole execution to object.
             // It could be removed if ICircuitController<TResult> was refactored to not be generic in TResult.
-            // Which could be done by moving onBreak (and similar) out of ICircuitController<>, instead to parameters passed to CircuitBreakerEngineV8.Implementation<>() (as retry policy does)
+            // Which could be done by moving onBreak (and similar) out of ICircuitController<>, instead to parameters passed to CircuitBreakerEngine.Implementation<>() (as retry policy does)
             // and by removing the LastHandledResult property.
             // An allocation is introduced by the closure over action.
-            await AsyncCircuitBreakerEngineV8.ImplementationAsync<IAsyncExecutable<object>, object>(
+            await AsyncCircuitBreakerEngine.ImplementationAsync<IAsyncExecutable<object>, object>(
                 new AsyncExecutableAction(async (ctx, ct, cap) => { result = await action.ExecuteAsync(ctx, ct, cap).ConfigureAwait(cap); }), 
                 context,
                 cancellationToken,
@@ -70,7 +70,7 @@ namespace Polly.CircuitBreaker
     /// A circuit-breaker policy that can be applied to asynchronous executions returning a value of type <typeparamref name="TResult"/>.
     /// </summary>
     /// <typeparam name="TResult">The return type of delegates which may be executed through the policy.</typeparam>
-    public class AsyncCircuitBreakerPolicy<TResult> : AsyncPolicyV8<TResult>, IAsyncCircuitBreakerPolicy<TResult>
+    public class AsyncCircuitBreakerPolicy<TResult> : AsyncPolicy<TResult>, IAsyncCircuitBreakerPolicy<TResult>
     {
         internal readonly ICircuitController<TResult> _breakerController;
 
@@ -111,9 +111,9 @@ namespace Polly.CircuitBreaker
 
         /// <inheritdoc/>
         [DebuggerStepThrough]
-        protected override Task<TResult> AsyncGenericImplementationV8<TExecutableAsync>(TExecutableAsync action, Context context, CancellationToken cancellationToken,
+        protected override Task<TResult> AsyncGenericImplementation<TExecutableAsync>(TExecutableAsync action, Context context, CancellationToken cancellationToken,
             bool continueOnCapturedContext)
-            => AsyncCircuitBreakerEngineV8.ImplementationAsync(
+            => AsyncCircuitBreakerEngine.ImplementationAsync(
                 action,
                 context,
                 cancellationToken,

@@ -5,7 +5,7 @@ using Polly.Utilities;
 
 namespace Polly.CircuitBreaker
 {
-    internal class AsyncCircuitBreakerEngineV8
+    internal class AsyncCircuitBreakerEngine
     {
         internal static async Task<TResult> ImplementationAsync<TExecutableAsync, TResult>(
             TExecutableAsync action,

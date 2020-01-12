@@ -2,7 +2,7 @@
 
 namespace Polly.Wrap
 {
-    internal static class PolicyWrapEngineV8
+    internal static class PolicyWrapEngine
     {
         internal static TResult Implementation<TExecutable, TResult>(
             TExecutable func,

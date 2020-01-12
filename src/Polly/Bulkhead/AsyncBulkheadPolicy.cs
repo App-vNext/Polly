@@ -8,7 +8,7 @@ namespace Polly.Bulkhead
     /// <summary>
     /// A bulkhead-isolation policy which can be applied to asynchronous executions.
     /// </summary>
-    public class AsyncBulkheadPolicy : AsyncPolicyV8, IAsyncBulkheadPolicy
+    public class AsyncBulkheadPolicy : AsyncPolicy, IAsyncBulkheadPolicy
     {
         private readonly SemaphoreSlim _maxParallelizationSemaphore;
         private readonly SemaphoreSlim _maxQueuedActionsSemaphore;
@@ -38,10 +38,10 @@ namespace Polly.Bulkhead
 
         /// <inheritdoc/>
         [DebuggerStepThrough]
-        protected override Task<TResult> AsyncGenericImplementationV8<TExecutableAsync, TResult>(TExecutableAsync action, Context context,
+        protected override Task<TResult> AsyncGenericImplementation<TExecutableAsync, TResult>(TExecutableAsync action, Context context,
             CancellationToken cancellationToken, bool continueOnCapturedContext)
         {
-            return AsyncBulkheadEngineV8.ImplementationAsync<TExecutableAsync, TResult>(action, context, _onBulkheadRejectedAsync, _maxParallelizationSemaphore, _maxQueuedActionsSemaphore, cancellationToken, continueOnCapturedContext);
+            return AsyncBulkheadEngine.ImplementationAsync<TExecutableAsync, TResult>(action, context, _onBulkheadRejectedAsync, _maxParallelizationSemaphore, _maxQueuedActionsSemaphore, cancellationToken, continueOnCapturedContext);
         }
 
         /// <inheritdoc/>
@@ -56,7 +56,7 @@ namespace Polly.Bulkhead
     /// A bulkhead-isolation policy which can be applied to asynchronous executions returning a value of type <typeparamref name="TResult"/>.
     /// </summary>
     /// <typeparam name="TResult">The return type of delegates which may be executed through the policy.</typeparam>
-    public class AsyncBulkheadPolicy<TResult> : AsyncPolicyV8<TResult>, IAsyncBulkheadPolicy<TResult>
+    public class AsyncBulkheadPolicy<TResult> : AsyncPolicy<TResult>, IAsyncBulkheadPolicy<TResult>
     {
         private readonly SemaphoreSlim _maxParallelizationSemaphore;
         private readonly SemaphoreSlim _maxQueuedActionsSemaphore;
@@ -76,10 +76,10 @@ namespace Polly.Bulkhead
 
         /// <inheritdoc/>
         [DebuggerStepThrough]
-        protected override Task<TResult> AsyncGenericImplementationV8<TExecutableAsync>(TExecutableAsync action, Context context,
+        protected override Task<TResult> AsyncGenericImplementation<TExecutableAsync>(TExecutableAsync action, Context context,
             CancellationToken cancellationToken, bool continueOnCapturedContext)
         {
-            return AsyncBulkheadEngineV8.ImplementationAsync<TExecutableAsync, TResult>(action, context, _onBulkheadRejectedAsync, _maxParallelizationSemaphore, _maxQueuedActionsSemaphore, cancellationToken, continueOnCapturedContext);
+            return AsyncBulkheadEngine.ImplementationAsync<TExecutableAsync, TResult>(action, context, _onBulkheadRejectedAsync, _maxParallelizationSemaphore, _maxQueuedActionsSemaphore, cancellationToken, continueOnCapturedContext);
         }
 
         /// <summary>

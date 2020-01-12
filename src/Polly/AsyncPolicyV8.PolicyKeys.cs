@@ -2,14 +2,14 @@
 
 namespace Polly
 {
-    public abstract partial class AsyncPolicyV8
+    public abstract partial class AsyncPolicy
     {
         /// <summary>
-        /// Sets the PolicyKey for this <see cref="AsyncPolicyV8"/> instance.
+        /// Sets the PolicyKey for this <see cref="AsyncPolicy"/> instance.
         /// <remarks>Must be called before the policy is first used.  Can only be set once.</remarks>
         /// </summary>
-        /// <param name="policyKey">The unique, used-definable key to assign to this <see cref="AsyncPolicyV8"/> instance.</param>
-        public AsyncPolicyV8 WithPolicyKey(String policyKey)
+        /// <param name="policyKey">The unique, used-definable key to assign to this <see cref="AsyncPolicy"/> instance.</param>
+        public AsyncPolicy WithPolicyKey(String policyKey)
         {
             if (policyKeyInternal != null) throw PolicyKeyMustBeImmutableException;
 
@@ -32,14 +32,14 @@ namespace Polly
 
     }
 
-    public abstract partial class AsyncPolicyV8<TResult>
+    public abstract partial class AsyncPolicy<TResult>
     {
         /// <summary>
-        /// Sets the PolicyKey for this <see cref="AsyncPolicyV8{TResult}"/> instance.
+        /// Sets the PolicyKey for this <see cref="AsyncPolicy{TResult}"/> instance.
         /// <remarks>Must be called before the policy is first used.  Can only be set once.</remarks>
         /// </summary>
-        /// <param name="policyKey">The unique, used-definable key to assign to this <see cref="AsyncPolicyV8{TResult}"/> instance.</param>
-        public AsyncPolicyV8<TResult> WithPolicyKey(String policyKey)
+        /// <param name="policyKey">The unique, used-definable key to assign to this <see cref="AsyncPolicy{TResult}"/> instance.</param>
+        public AsyncPolicy<TResult> WithPolicyKey(String policyKey)
         {
             if (policyKeyInternal != null) throw PolicyKeyMustBeImmutableException;
 
