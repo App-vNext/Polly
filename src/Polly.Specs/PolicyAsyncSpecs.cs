@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using FluentAssertions;
-using Polly.Utilities;
+using Polly.Specs.Helpers;
 using Xunit;
 
 namespace Polly.Specs

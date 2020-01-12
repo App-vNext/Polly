@@ -1,6 +1,6 @@
 ﻿using System.Threading;
 using FluentAssertions;
-using Polly.Utilities;
+using Polly.Specs.Helpers;
 using Xunit;
 
 namespace Polly.Specs.NoOp

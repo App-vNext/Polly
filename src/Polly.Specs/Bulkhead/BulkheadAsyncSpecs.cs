@@ -5,7 +5,7 @@ using Polly.Bulkhead;
 using Polly.Specs.Helpers.Bulkhead;
 
 using FluentAssertions;
-using Polly.Utilities;
+using Polly.Specs.Helpers;
 using Xunit;
 using Xunit.Abstractions;
 
