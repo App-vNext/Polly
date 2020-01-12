@@ -281,8 +281,7 @@ namespace Polly
         /// <returns>The policy instance.</returns>
         public static IAsyncTimeoutPolicy<TResult> TimeoutAsync<TResult>(Func<Context, TimeSpan> timeoutProvider)
         {
-            Func<Context, TimeSpan, Task, Exception, Task> doNothingAsync = (_, __, ___, ____) => Task.FromResult(default(TResult));
-            return TimeoutAsync<TResult>(timeoutProvider, DefaultTimeoutStrategy, doNothingAsync);
+            return TimeoutAsync<TResult>(timeoutProvider, DefaultTimeoutStrategy, (Func<Context, TimeSpan, Task, Exception, Task>) null);
         }
 
         /// <summary>
