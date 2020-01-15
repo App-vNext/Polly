@@ -19,7 +19,7 @@ namespace Polly.Specs.Retry
         public WaitAndRetryForeverAsyncSpecs()
         {
             // do nothing on call to sleep
-            SystemClock.SleepAsync = (_, __) => TaskHelper.EmptyTask;
+            SystemClock.Current = new TestSystemClock();
         }
 
         [Fact]
@@ -185,17 +185,17 @@ namespace Polly.Specs.Retry
         {
             Func<int, TimeSpan> provider = i => 1.Seconds();
 
-            var totalTimeSlept = 0;
+            SystemClock.Current = new TestSystemClock();
+            var startTime = SystemClock.Current.DateTimeOffsetUtcNow;
 
             var policy = Policy
                 .Handle<DivideByZeroException>()
                 .WaitAndRetryForeverAsync(provider);
 
-            SystemClock.Sleep = (span, ct) => totalTimeSlept += span.Seconds;
-
             policy.Awaiting(async x => await x.RaiseExceptionAsync<NullReferenceException>())
                   .Should().Throw<NullReferenceException>();
 
+            var totalTimeSlept = (SystemClock.Current.DateTimeOffsetUtcNow - startTime).Seconds;
             totalTimeSlept.Should()
                           .Be(0);
         }

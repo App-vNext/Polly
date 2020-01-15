@@ -20,7 +20,7 @@ namespace Polly.Specs.Retry
         public WaitAndRetryAsyncSpecs()
         {
             // do nothing on call to sleep
-            SystemClock.SleepAsync = (_, __) => TaskHelper.EmptyTask;
+            SystemClock.Current = new TestSystemClock();
         }
 
         [Fact]
@@ -226,7 +226,8 @@ namespace Polly.Specs.Retry
         [Fact]
         public async Task Should_sleep_for_the_specified_duration_each_retry_when_specified_exception_thrown_same_number_of_times_as_there_are_sleep_durations()
         {
-            var totalTimeSlept = 0;
+            SystemClock.Current = new TestSystemClock();
+            var startTime = SystemClock.Current.DateTimeOffsetUtcNow;
 
             var policy = Policy
                 .Handle<DivideByZeroException>()
@@ -237,14 +238,9 @@ namespace Polly.Specs.Retry
                    3.Seconds()
                 });
 
-            SystemClock.SleepAsync = (span, ct) =>
-            {
-                totalTimeSlept += span.Seconds;
-                return TaskHelper.EmptyTask;
-            };
-
             await policy.RaiseExceptionAsync<DivideByZeroException>(3);
 
+            var totalTimeSlept = (SystemClock.Current.DateTimeOffsetUtcNow - startTime).Seconds;
             totalTimeSlept.Should()
                           .Be(1 + 2 + 3);
         }
@@ -252,7 +248,8 @@ namespace Polly.Specs.Retry
         [Fact]
         public void Should_sleep_for_the_specified_duration_each_retry_when_specified_exception_thrown_more_number_of_times_than_there_are_sleep_durations()
         {
-            var totalTimeSlept = 0;
+            SystemClock.Current = new TestSystemClock();
+            var startTime = SystemClock.Current.DateTimeOffsetUtcNow;
 
             var policy = Policy
                 .Handle<DivideByZeroException>()
@@ -263,15 +260,10 @@ namespace Polly.Specs.Retry
                    3.Seconds()
                 });
 
-            SystemClock.SleepAsync = (span, ct) =>
-            {
-                totalTimeSlept += span.Seconds;
-                return TaskHelper.EmptyTask;
-            };
-
             policy.Awaiting(async x => await x.RaiseExceptionAsync<DivideByZeroException>(3 + 1))
                   .Should().Throw<DivideByZeroException>();
 
+            var totalTimeSlept = (SystemClock.Current.DateTimeOffsetUtcNow - startTime).Seconds;
             totalTimeSlept.Should()
                           .Be(1 + 2 + 3);
         }
@@ -279,7 +271,8 @@ namespace Polly.Specs.Retry
         [Fact]
         public async Task Should_sleep_for_the_specified_duration_each_retry_when_specified_exception_thrown_less_number_of_times_than_there_are_sleep_durations()
         {
-            var totalTimeSlept = 0;
+            SystemClock.Current = new TestSystemClock();
+            var startTime = SystemClock.Current.DateTimeOffsetUtcNow;
 
             var policy = Policy
                 .Handle<DivideByZeroException>()
@@ -290,14 +283,11 @@ namespace Polly.Specs.Retry
                    3.Seconds()
                 });
 
-            SystemClock.SleepAsync = (span, ct) =>
-            {
-                totalTimeSlept += span.Seconds;
-                return TaskHelper.EmptyTask;
-            };
+            SystemClock.Current = new TestSystemClock();
 
             await policy.RaiseExceptionAsync<DivideByZeroException>(2);
 
+            var totalTimeSlept = (SystemClock.Current.DateTimeOffsetUtcNow - startTime).Seconds;
             totalTimeSlept.Should()
                           .Be(1 + 2);
         }
@@ -311,11 +301,7 @@ namespace Polly.Specs.Retry
                 .Handle<DivideByZeroException>()
                 .WaitAndRetryAsync(Enumerable.Empty<TimeSpan>());
 
-            SystemClock.SleepAsync = (span, ct) =>
-            {
-                totalTimeSlept += span.Seconds;
-                return TaskHelper.EmptyTask;
-            };
+            SystemClock.Current = new TestSystemClock();
 
             policy.Awaiting(async x => await x.RaiseExceptionAsync<NullReferenceException>())
                   .Should().Throw<NullReferenceException>();
@@ -971,10 +957,10 @@ namespace Polly.Specs.Retry
         [Fact]
         public void Should_honour_cancellation_immediately_during_wait_phase_of_waitandretry()
         {
+            SystemClock.Reset();
+
             CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
             CancellationToken cancellationToken = cancellationTokenSource.Token;
-
-            SystemClock.SleepAsync = Task.Delay;
 
             TimeSpan shimTimeSpan = TimeSpan.FromSeconds(1); // Consider increasing shimTimeSpan if test fails transiently in different environments.
             TimeSpan retryDelay = shimTimeSpan + shimTimeSpan + shimTimeSpan;

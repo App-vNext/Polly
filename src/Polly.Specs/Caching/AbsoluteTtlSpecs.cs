@@ -10,6 +10,10 @@ namespace Polly.Specs.Caching
     [Collection(Constants.SystemClockDependentTestCollection)]
     public class AbsoluteTtlSpecs : IDisposable
     {
+        private readonly TestSystemClock _testSystemClock = new TestSystemClock();
+
+        public AbsoluteTtlSpecs() => SystemClock.Current = _testSystemClock;
+
         [Fact]
         public void Should_be_able_to_configure_for_near_future_time()
         {
@@ -37,7 +41,7 @@ namespace Polly.Specs.Caching
         [Fact]
         public void Should_return_zero_ttl_if_configured_to_expire_in_past()
         {
-            AbsoluteTtl ttlStrategy = new AbsoluteTtl(SystemClock.DateTimeOffsetUtcNow().Subtract(TimeSpan.FromTicks(1)));
+            AbsoluteTtl ttlStrategy = new AbsoluteTtl(SystemClock.Current.DateTimeOffsetUtcNow.Subtract(TimeSpan.FromTicks(1)));
 
             ttlStrategy.GetTtl(new Context("someOperationKey"), null).Timespan.Should().Be(TimeSpan.Zero);
         }
@@ -50,7 +54,7 @@ namespace Polly.Specs.Caching
 
             AbsoluteTtl ttlStrategy = new AbsoluteTtl(tomorrow);
 
-            SystemClock.DateTimeOffsetUtcNow = () => today;
+            _testSystemClock.DateTimeOffsetUtcNow = today;
             ttlStrategy.GetTtl(new Context("someOperationKey"), null).Timespan.Should().Be(TimeSpan.FromDays(1));
         }
 

@@ -47,13 +47,13 @@ namespace Polly.Specs.Caching
         [Fact]
         public void Should_return_configured_timespan_from_time_requested()
         {
-            DateTimeOffset fixedTime = SystemClock.DateTimeOffsetUtcNow();
+            DateTimeOffset fixedTime = SystemClock.Current.DateTimeOffsetUtcNow;
             TimeSpan ttl = TimeSpan.FromSeconds(30);
             TimeSpan delay = TimeSpan.FromSeconds(5);
 
             RelativeTtl ttlStrategy = new RelativeTtl(ttl);
 
-            SystemClock.DateTimeOffsetUtcNow = () => fixedTime.Add(delay);
+            SystemClock.Current = new TestSystemClock(fixedTime.Add(delay));
 
             Ttl retrieved = ttlStrategy.GetTtl(new Context("someOperationKey"), null);
             retrieved.Timespan.Should().BeCloseTo(ttl);
