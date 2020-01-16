@@ -8,10 +8,17 @@ namespace Polly
     /// </summary>
     public static class CircuitBreakerTResultSyntax
     {
-        //TODO: Add support for dynamic BreakDuration
+        private static void ValidateStaticDurationIsNonNegative(TimeSpan duration)
+        {
+            if (duration < TimeSpan.Zero)
+            {
+                throw new ArgumentOutOfRangeException("durationOfBreak", "Value must be greater than zero.");
+            }
+        }
+
         /// <summary>
         /// <para> Builds a <see cref="Policy{TResult}"/> that will function like a Circuit Breaker.</para>
-        /// <para>The circuit will break if <paramref name="handledEventsAllowedBeforeBreaking"/>
+        /// <para>The circuit will break if <paramref name="exceptionsAllowedBeforeBreaking"/>
         /// exceptions or results that are handled by this policy are encountered consecutively. </para>
         /// <para>The circuit will stay broken for the <paramref name="durationOfBreak"/>. Any attempt to execute this policy
         /// while the circuit is broken, will immediately throw a <see cref="BrokenCircuitException"/> containing the exception or result 
@@ -22,21 +29,49 @@ namespace Polly
         /// </para>
         /// </summary>
         /// <param name="policyBuilder">The policy builder.</param>
-        /// <param name="handledEventsAllowedBeforeBreaking">The number of exceptions or handled results that are allowed before opening the circuit.</param>
+        /// <param name="exceptionsAllowedBeforeBreaking">The number of exceptions or handled results that are allowed before opening the circuit.</param>
         /// <param name="durationOfBreak">The duration the circuit will stay open before resetting.</param>
         /// <returns>The policy instance.</returns>
         /// <remarks>(see "Release It!" by Michael T. Nygard fi)</remarks>
-        /// <exception cref="ArgumentOutOfRangeException">handledEventsAllowedBeforeBreaking;Value must be greater than zero.</exception>
+        /// <exception cref="ArgumentOutOfRangeException">exceptionsAllowedBeforeBreaking;Value must be greater than zero.</exception>
+        /// <exception cref="ArgumentOutOfRangeException">durationOfBreak;Value must be greater than or equal to zero.</exception>
         /// <exception cref="ArgumentNullException">onBreak</exception>
         /// <exception cref="ArgumentNullException">onReset</exception>
-        public static CircuitBreakerPolicy<TResult> CircuitBreaker<TResult>(this PolicyBuilder<TResult> policyBuilder, int handledEventsAllowedBeforeBreaking, TimeSpan durationOfBreak)
+        public static CircuitBreakerPolicy<TResult> CircuitBreaker<TResult>(this PolicyBuilder<TResult> policyBuilder, int exceptionsAllowedBeforeBreaking, TimeSpan durationOfBreak)
+        {
+            ValidateStaticDurationIsNonNegative(durationOfBreak);
+            return policyBuilder.CircuitBreaker(exceptionsAllowedBeforeBreaking, (_) => durationOfBreak);
+        }
+
+        /// <summary>
+        /// <para> Builds a <see cref="Policy{TResult}"/> that will function like a Circuit Breaker.</para>
+        /// <para>The circuit will break if <paramref name="exceptionsAllowedBeforeBreaking"/>
+        /// exceptions or results that are handled by this policy are encountered consecutively. </para>
+        /// <para>The circuit will stay broken for a dynamically calculated duration. Any attempt to execute this policy
+        /// while the circuit is broken, will immediately throw a <see cref="BrokenCircuitException"/> containing the exception 
+        /// that broke the circuit.
+        /// </para>
+        /// <para>If the first action after the break duration period results in a handled exception, the circuit will break
+        /// again for a newly calculated duration; if no exception is thrown, the circuit will reset.
+        /// </para>
+        /// </summary>
+        /// <param name="policyBuilder">The policy builder.</param>
+        /// <param name="exceptionsAllowedBeforeBreaking">The number of exceptions or handled results that are allowed before opening the circuit.</param>
+        /// <param name="factoryForNextBreakDuration">A function to calculate the duration the circuit will stay open before resetting, based on the number of consecutive CircuitFailures. Re-evaluated each time the circuit Opens.</param>
+        /// <returns>The policy instance.</returns>
+        /// <remarks>(see "Release It!" by Michael T. Nygard fi)</remarks>
+        /// <exception cref="ArgumentOutOfRangeException">exceptionsAllowedBeforeBreaking;Value must be greater than zero.</exception>
+        /// <exception cref="InvalidOperationException">factoryForNextBreakDuration;Generated value must be always be non-negative. Exception would be thrown when invoking policy, if duration were negative.</exception>
+        /// <exception cref="ArgumentNullException">onBreak</exception>
+        /// <exception cref="ArgumentNullException">onReset</exception>
+        public static CircuitBreakerPolicy<TResult> CircuitBreaker<TResult>(this PolicyBuilder<TResult> policyBuilder, int exceptionsAllowedBeforeBreaking, Func<int, TimeSpan> factoryForNextBreakDuration)
         {
             Action<DelegateResult<TResult>, TimeSpan> doNothingOnBreak = (_, __) => { };
             Action doNothingOnReset = () => { };
 
             return policyBuilder.CircuitBreaker
-                (handledEventsAllowedBeforeBreaking,
-                durationOfBreak,
+                (exceptionsAllowedBeforeBreaking,
+                factoryForNextBreakDuration,
                 doNothingOnBreak,
                 doNothingOnReset
                 );
@@ -44,7 +79,7 @@ namespace Polly
 
         /// <summary>
         /// <para> Builds a <see cref="Policy{TResult}"/> that will function like a Circuit Breaker.</para>
-        /// <para>The circuit will break if <paramref name="handledEventsAllowedBeforeBreaking"/>
+        /// <para>The circuit will break if <paramref name="exceptionsAllowedBeforeBreaking"/>
         /// exceptions or results that are handled by this policy are encountered consecutively. </para>
         /// <para>The circuit will stay broken for the <paramref name="durationOfBreak"/>. Any attempt to execute this policy
         /// while the circuit is broken, will immediately throw a <see cref="BrokenCircuitException"/> containing the exception or result 
@@ -55,59 +90,56 @@ namespace Polly
         /// </para>
         /// </summary>
         /// <param name="policyBuilder">The policy builder.</param>
-        /// <param name="handledEventsAllowedBeforeBreaking">The number of exceptions or handled results that are allowed before opening the circuit.</param>
+        /// <param name="exceptionsAllowedBeforeBreaking">The number of exceptions or handled results that are allowed before opening the circuit.</param>
         /// <param name="durationOfBreak">The duration the circuit will stay open before resetting.</param>
+        /// <param name="onBreak">The action to call when the circuit transitions to an <see cref="CircuitState.Open"/> state.</param>
+        /// <param name="onReset">The action to call when the circuit resets to a <see cref="CircuitState.Closed"/> state.</param>
         /// <returns>The policy instance.</returns>
         /// <remarks>(see "Release It!" by Michael T. Nygard fi)</remarks>
-        /// <exception cref="ArgumentOutOfRangeException">handledEventsAllowedBeforeBreaking;Value must be greater than zero.</exception>
+        /// <exception cref="ArgumentOutOfRangeException">exceptionsAllowedBeforeBreaking;Value must be greater than zero.</exception>
+        /// <exception cref="ArgumentOutOfRangeException">durationOfBreak;Value must be greater than or equal to zero.</exception>
         /// <exception cref="ArgumentNullException">onBreak</exception>
         /// <exception cref="ArgumentNullException">onReset</exception>
-        public static CircuitBreakerPolicy<TResult> CircuitBreaker<TResult>(this PolicyBuilder<TResult> policyBuilder, int handledEventsAllowedBeforeBreaking, TimeSpan durationOfBreak)
+        public static CircuitBreakerPolicy<TResult> CircuitBreaker<TResult>(this PolicyBuilder<TResult> policyBuilder, int exceptionsAllowedBeforeBreaking, TimeSpan durationOfBreak, Action<DelegateResult<TResult>, TimeSpan> onBreak, Action onReset)
         {
-            Action<DelegateResult<TResult>, TimeSpan> doNothingOnBreak = (_, __) => { };
-            Action doNothingOnReset = () => { };
-
-            return policyBuilder.CircuitBreaker
-                (handledEventsAllowedBeforeBreaking,
-                durationOfBreak,
-                doNothingOnBreak,
-                doNothingOnReset
-                );
+            ValidateStaticDurationIsNonNegative(durationOfBreak);
+            return policyBuilder.CircuitBreaker(exceptionsAllowedBeforeBreaking, (_) => durationOfBreak, onBreak, onReset);
         }
 
         /// <summary>
         /// <para> Builds a <see cref="Policy{TResult}"/> that will function like a Circuit Breaker.</para>
-        /// <para>The circuit will break if <paramref name="handledEventsAllowedBeforeBreaking"/>
+        /// <para>The circuit will break if <paramref name="exceptionsAllowedBeforeBreaking"/>
         /// exceptions or results that are handled by this policy are encountered consecutively. </para>
-        /// <para>The circuit will stay broken for the <paramref name="durationOfBreak"/>. Any attempt to execute this policy
-        /// while the circuit is broken, will immediately throw a <see cref="BrokenCircuitException"/> containing the exception or result 
+        /// <para>The circuit will stay broken for a dynamically calculated duration. Any attempt to execute this policy
+        /// while the circuit is broken, will immediately throw a <see cref="BrokenCircuitException"/> containing the exception 
         /// that broke the circuit.
         /// </para>
-        /// <para>If the first action after the break duration period results in a handled exception or result, the circuit will break
-        /// again for another <paramref name="durationOfBreak"/>; if no exception or handled result is encountered, the circuit will reset.
+        /// <para>If the first action after the break duration period results in a handled exception, the circuit will break
+        /// again for a newly calculated duration; if no exception is thrown, the circuit will reset.
         /// </para>
         /// </summary>
         /// <param name="policyBuilder">The policy builder.</param>
-        /// <param name="handledEventsAllowedBeforeBreaking">The number of exceptions or handled results that are allowed before opening the circuit.</param>
-        /// <param name="durationOfBreak">The duration the circuit will stay open before resetting.</param>
+        /// <param name="exceptionsAllowedBeforeBreaking">The number of exceptions or handled results that are allowed before opening the circuit.</param>
+        /// <param name="factoryForNextBreakDuration">A function to calculate the duration the circuit will stay open before resetting, based on the number of consecutive CircuitFailures. Re-evaluated each time the circuit Opens.</param>
         /// <param name="onBreak">The action to call when the circuit transitions to an <see cref="CircuitState.Open"/> state.</param>
         /// <param name="onReset">The action to call when the circuit resets to a <see cref="CircuitState.Closed"/> state.</param>
         /// <returns>The policy instance.</returns>
         /// <remarks>(see "Release It!" by Michael T. Nygard fi)</remarks>
-        /// <exception cref="ArgumentOutOfRangeException">handledEventsAllowedBeforeBreaking;Value must be greater than zero.</exception>
+        /// <exception cref="ArgumentOutOfRangeException">exceptionsAllowedBeforeBreaking;Value must be greater than zero.</exception>
+        /// <exception cref="InvalidOperationException">factoryForNextBreakDuration;Generated value must be always be non-negative. Exception would be thrown when invoking policy, if duration were negative.</exception>
         /// <exception cref="ArgumentNullException">onBreak</exception>
         /// <exception cref="ArgumentNullException">onReset</exception>
-        public static CircuitBreakerPolicy<TResult> CircuitBreaker<TResult>(this PolicyBuilder<TResult> policyBuilder, int handledEventsAllowedBeforeBreaking, TimeSpan durationOfBreak, Action<DelegateResult<TResult>, TimeSpan> onBreak, Action onReset)
+        public static CircuitBreakerPolicy<TResult> CircuitBreaker<TResult>(this PolicyBuilder<TResult> policyBuilder, int exceptionsAllowedBeforeBreaking, Func<int, TimeSpan> factoryForNextBreakDuration, Action<DelegateResult<TResult>, TimeSpan> onBreak, Action onReset)
             => policyBuilder.CircuitBreaker(
-                handledEventsAllowedBeforeBreaking,
-                durationOfBreak,
+                exceptionsAllowedBeforeBreaking,
+                factoryForNextBreakDuration,
                 (outcome, timespan, context) => onBreak(outcome, timespan),
                 context => onReset()
                 );
 
         /// <summary>
         /// <para> Builds a <see cref="Policy{TResult}"/> that will function like a Circuit Breaker.</para>
-        /// <para>The circuit will break if <paramref name="handledEventsAllowedBeforeBreaking"/>
+        /// <para>The circuit will break if <paramref name="exceptionsAllowedBeforeBreaking"/>
         /// exceptions or results that are handled by this policy are encountered consecutively. </para>
         /// <para>The circuit will stay broken for the <paramref name="durationOfBreak"/>. Any attempt to execute this policy
         /// while the circuit is broken, will immediately throw a <see cref="BrokenCircuitException"/> containing the exception or result 
@@ -118,50 +150,50 @@ namespace Polly
         /// </para>
         /// </summary>
         /// <param name="policyBuilder">The policy builder.</param>
-        /// <param name="handledEventsAllowedBeforeBreaking">The number of exceptions or handled results that are allowed before opening the circuit.</param>
+        /// <param name="exceptionsAllowedBeforeBreaking">The number of exceptions or handled results that are allowed before opening the circuit.</param>
         /// <param name="durationOfBreak">The duration the circuit will stay open before resetting.</param>
         /// <param name="onBreak">The action to call when the circuit transitions to an <see cref="CircuitState.Open"/> state.</param>
         /// <param name="onReset">The action to call when the circuit resets to a <see cref="CircuitState.Closed"/> state.</param>
         /// <returns>The policy instance.</returns>
         /// <remarks>(see "Release It!" by Michael T. Nygard fi)</remarks>
-        /// <exception cref="ArgumentOutOfRangeException">handledEventsAllowedBeforeBreaking;Value must be greater than zero.</exception>
+        /// <exception cref="ArgumentOutOfRangeException">exceptionsAllowedBeforeBreaking;Value must be greater than zero.</exception>
+        /// <exception cref="ArgumentOutOfRangeException">durationOfBreak;Value must be greater than or equal to zero.</exception>
         /// <exception cref="ArgumentNullException">onBreak</exception>
         /// <exception cref="ArgumentNullException">onReset</exception>
-        public static CircuitBreakerPolicy<TResult> CircuitBreaker<TResult>(this PolicyBuilder<TResult> policyBuilder, int handledEventsAllowedBeforeBreaking, TimeSpan durationOfBreak, Action<DelegateResult<TResult>, TimeSpan> onBreak, Action onReset)
-            => policyBuilder.CircuitBreaker(
-                handledEventsAllowedBeforeBreaking,
-                durationOfBreak,
-                (outcome, timespan, context) => onBreak(outcome, timespan),
-                context => onReset()
-                );
+        public static CircuitBreakerPolicy<TResult> CircuitBreaker<TResult>(this PolicyBuilder<TResult> policyBuilder, int exceptionsAllowedBeforeBreaking, TimeSpan durationOfBreak, Action<DelegateResult<TResult>, TimeSpan, Context> onBreak, Action<Context> onReset)
+        {
+            ValidateStaticDurationIsNonNegative(durationOfBreak);
+            return policyBuilder.CircuitBreaker(exceptionsAllowedBeforeBreaking, (_) => durationOfBreak, onBreak, onReset);
+        }
 
         /// <summary>
         /// <para> Builds a <see cref="Policy{TResult}"/> that will function like a Circuit Breaker.</para>
-        /// <para>The circuit will break if <paramref name="handledEventsAllowedBeforeBreaking"/>
+        /// <para>The circuit will break if <paramref name="exceptionsAllowedBeforeBreaking"/>
         /// exceptions or results that are handled by this policy are encountered consecutively. </para>
-        /// <para>The circuit will stay broken for the <paramref name="durationOfBreak"/>. Any attempt to execute this policy
-        /// while the circuit is broken, will immediately throw a <see cref="BrokenCircuitException"/> containing the exception or result 
+        /// <para>The circuit will stay broken for a dynamically calculated duration. Any attempt to execute this policy
+        /// while the circuit is broken, will immediately throw a <see cref="BrokenCircuitException"/> containing the exception 
         /// that broke the circuit.
         /// </para>
-        /// <para>If the first action after the break duration period results in a handled exception or result, the circuit will break
-        /// again for another <paramref name="durationOfBreak"/>; if no exception or handled result is encountered, the circuit will reset.
+        /// <para>If the first action after the break duration period results in a handled exception, the circuit will break
+        /// again for a newly calculated duration; if no exception is thrown, the circuit will reset.
         /// </para>
         /// </summary>
         /// <param name="policyBuilder">The policy builder.</param>
-        /// <param name="handledEventsAllowedBeforeBreaking">The number of exceptions or handled results that are allowed before opening the circuit.</param>
-        /// <param name="durationOfBreak">The duration the circuit will stay open before resetting.</param>
+        /// <param name="exceptionsAllowedBeforeBreaking">The number of exceptions or handled results that are allowed before opening the circuit.</param>
+        /// <param name="factoryForNextBreakDuration">A function to calculate the duration the circuit will stay open before resetting, based on the number of consecutive CircuitFailures. Re-evaluated each time the circuit Opens.</param>
         /// <param name="onBreak">The action to call when the circuit transitions to an <see cref="CircuitState.Open"/> state.</param>
         /// <param name="onReset">The action to call when the circuit resets to a <see cref="CircuitState.Closed"/> state.</param>
         /// <returns>The policy instance.</returns>
         /// <remarks>(see "Release It!" by Michael T. Nygard fi)</remarks>
-        /// <exception cref="ArgumentOutOfRangeException">handledEventsAllowedBeforeBreaking;Value must be greater than zero.</exception>
+        /// <exception cref="ArgumentOutOfRangeException">exceptionsAllowedBeforeBreaking;Value must be greater than zero.</exception>
+        /// <exception cref="InvalidOperationException">factoryForNextBreakDuration;Generated value must be always be non-negative. Exception would be thrown when invoking policy, if duration were negative.</exception>
         /// <exception cref="ArgumentNullException">onBreak</exception>
         /// <exception cref="ArgumentNullException">onReset</exception>
-        public static CircuitBreakerPolicy<TResult> CircuitBreaker<TResult>(this PolicyBuilder<TResult> policyBuilder, int handledEventsAllowedBeforeBreaking, TimeSpan durationOfBreak, Action<DelegateResult<TResult>, TimeSpan, Context> onBreak, Action<Context> onReset)
+        public static CircuitBreakerPolicy<TResult> CircuitBreaker<TResult>(this PolicyBuilder<TResult> policyBuilder, int exceptionsAllowedBeforeBreaking, Func<int, TimeSpan> factoryForNextBreakDuration, Action<DelegateResult<TResult>, TimeSpan, Context> onBreak, Action<Context> onReset)
         {
             Action doNothingOnHalfOpen = () => { };
-            return policyBuilder.CircuitBreaker(handledEventsAllowedBeforeBreaking,
-                durationOfBreak,
+            return policyBuilder.CircuitBreaker(exceptionsAllowedBeforeBreaking,
+                factoryForNextBreakDuration,
                 onBreak,
                 onReset,
                 doNothingOnHalfOpen
@@ -170,7 +202,7 @@ namespace Polly
 
         /// <summary>
         /// <para> Builds a <see cref="Policy{TResult}"/> that will function like a Circuit Breaker.</para>
-        /// <para>The circuit will break if <paramref name="handledEventsAllowedBeforeBreaking"/>
+        /// <para>The circuit will break if <paramref name="exceptionsAllowedBeforeBreaking"/>
         /// exceptions or results that are handled by this policy are encountered consecutively. </para>
         /// <para>The circuit will stay broken for the <paramref name="durationOfBreak"/>. Any attempt to execute this policy
         /// while the circuit is broken, will immediately throw a <see cref="BrokenCircuitException"/> containing the exception or result 
@@ -181,118 +213,117 @@ namespace Polly
         /// </para>
         /// </summary>
         /// <param name="policyBuilder">The policy builder.</param>
-        /// <param name="handledEventsAllowedBeforeBreaking">The number of exceptions or handled results that are allowed before opening the circuit.</param>
+        /// <param name="exceptionsAllowedBeforeBreaking">The number of exceptions or handled results that are allowed before opening the circuit.</param>
         /// <param name="durationOfBreak">The duration the circuit will stay open before resetting.</param>
         /// <param name="onBreak">The action to call when the circuit transitions to an <see cref="CircuitState.Open"/> state.</param>
         /// <param name="onReset">The action to call when the circuit resets to a <see cref="CircuitState.Closed"/> state.</param>
+        /// <param name="onHalfOpen">The action to call when the circuit transitions to <see cref="CircuitState.HalfOpen"/> state, ready to try action executions again. </param>
         /// <returns>The policy instance.</returns>
         /// <remarks>(see "Release It!" by Michael T. Nygard fi)</remarks>
-        /// <exception cref="ArgumentOutOfRangeException">handledEventsAllowedBeforeBreaking;Value must be greater than zero.</exception>
+        /// <exception cref="ArgumentOutOfRangeException">exceptionsAllowedBeforeBreaking;Value must be greater than zero.</exception>
+        /// <exception cref="ArgumentOutOfRangeException">durationOfBreak;Value must be greater than or equal to zero.</exception>
         /// <exception cref="ArgumentNullException">onBreak</exception>
         /// <exception cref="ArgumentNullException">onReset</exception>
-        public static CircuitBreakerPolicy<TResult> CircuitBreaker<TResult>(this PolicyBuilder<TResult> policyBuilder, int handledEventsAllowedBeforeBreaking, TimeSpan durationOfBreak, Action<DelegateResult<TResult>, TimeSpan, Context> onBreak, Action<Context> onReset)
+        public static CircuitBreakerPolicy<TResult> CircuitBreaker<TResult>(this PolicyBuilder<TResult> policyBuilder, int exceptionsAllowedBeforeBreaking, TimeSpan durationOfBreak, Action<DelegateResult<TResult>, TimeSpan> onBreak, Action onReset, Action onHalfOpen)
         {
-            Action doNothingOnHalfOpen = () => { };
-            return policyBuilder.CircuitBreaker(handledEventsAllowedBeforeBreaking,
-                durationOfBreak,
-                onBreak,
-                onReset,
-                doNothingOnHalfOpen
+            ValidateStaticDurationIsNonNegative(durationOfBreak);
+            return policyBuilder.CircuitBreaker(exceptionsAllowedBeforeBreaking, (_) => durationOfBreak, onBreak, onReset, onHalfOpen);
+        }
+
+
+        /// <summary>
+        /// <para> Builds a <see cref="Policy{TResult}"/> that will function like a Circuit Breaker.</para>
+        /// <para>The circuit will break if <paramref name="exceptionsAllowedBeforeBreaking"/>
+        /// exceptions or results that are handled by this policy are encountered consecutively. </para>
+        /// <para>The circuit will stay broken for a dynamically calculated duration. Any attempt to execute this policy
+        /// while the circuit is broken, will immediately throw a <see cref="BrokenCircuitException"/> containing the exception 
+        /// that broke the circuit.
+        /// </para>
+        /// <para>If the first action after the break duration period results in a handled exception, the circuit will break
+        /// again for a newly calculated duration; if no exception is thrown, the circuit will reset.
+        /// </para>
+        /// </summary>
+        /// <param name="policyBuilder">The policy builder.</param>
+        /// <param name="exceptionsAllowedBeforeBreaking">The number of exceptions or handled results that are allowed before opening the circuit.</param>
+        /// <param name="factoryForNextBreakDuration">A function to calculate the duration the circuit will stay open before resetting, based on the number of consecutive CircuitFailures. Re-evaluated each time the circuit Opens.</param>
+        /// <param name="onBreak">The action to call when the circuit transitions to an <see cref="CircuitState.Open"/> state.</param>
+        /// <param name="onReset">The action to call when the circuit resets to a <see cref="CircuitState.Closed"/> state.</param>
+        /// <param name="onHalfOpen">The action to call when the circuit transitions to <see cref="CircuitState.HalfOpen"/> state, ready to try action executions again. </param>
+        /// <returns>The policy instance.</returns>
+        /// <remarks>(see "Release It!" by Michael T. Nygard fi)</remarks>
+        /// <exception cref="ArgumentOutOfRangeException">exceptionsAllowedBeforeBreaking;Value must be greater than zero.</exception>
+        /// <exception cref="InvalidOperationException">factoryForNextBreakDuration;Generated value must be always be non-negative. Exception would be thrown when invoking policy, if duration were negative.</exception>
+        /// <exception cref="ArgumentNullException">onBreak</exception>
+        /// <exception cref="ArgumentNullException">onReset</exception>
+        public static CircuitBreakerPolicy<TResult> CircuitBreaker<TResult>(this PolicyBuilder<TResult> policyBuilder, int exceptionsAllowedBeforeBreaking, Func<int, TimeSpan> factoryForNextBreakDuration, Action<DelegateResult<TResult>, TimeSpan> onBreak, Action onReset, Action onHalfOpen)
+            => policyBuilder.CircuitBreaker(
+                exceptionsAllowedBeforeBreaking,
+                factoryForNextBreakDuration,
+                (outcome, timespan, context) => onBreak(outcome, timespan),
+                context => onReset(),
+                onHalfOpen
                 );
+
+        /// <summary>
+        /// <para> Builds a <see cref="Policy{TResult}"/> that will function like a Circuit Breaker.</para>
+        /// <para>The circuit will break if <paramref name="exceptionsAllowedBeforeBreaking"/>
+        /// exceptions or results that are handled by this policy are encountered consecutively. </para>
+        /// <para>The circuit will stay broken for the <paramref name="durationOfBreak"/>. Any attempt to execute this policy
+        /// while the circuit is broken, will immediately throw a <see cref="BrokenCircuitException"/> containing the exception or result 
+        /// that broke the circuit.
+        /// </para>
+        /// <para>If the first action after the break duration period results in a handled exception or result, the circuit will break
+        /// again for another <paramref name="durationOfBreak"/>; if no exception or handled result is encountered, the circuit will reset.
+        /// </para>
+        /// </summary>
+        /// <param name="policyBuilder">The policy builder.</param>
+        /// <param name="exceptionsAllowedBeforeBreaking">The number of exceptions or handled results that are allowed before opening the circuit.</param>
+        /// <param name="durationOfBreak">The duration the circuit will stay open before resetting.</param>
+        /// <param name="onBreak">The action to call when the circuit transitions to an <see cref="CircuitState.Open"/> state.</param>
+        /// <param name="onReset">The action to call when the circuit resets to a <see cref="CircuitState.Closed"/> state.</param>
+        /// <param name="onHalfOpen">The action to call when the circuit transitions to <see cref="CircuitState.HalfOpen"/> state, ready to try action executions again. </param>
+        /// <returns>The policy instance.</returns>
+        /// <remarks>(see "Release It!" by Michael T. Nygard fi)</remarks>
+        /// <exception cref="ArgumentOutOfRangeException">exceptionsAllowedBeforeBreaking;Value must be greater than zero.</exception>
+        /// <exception cref="ArgumentOutOfRangeException">durationOfBreak;Value must be greater than or equal to zero.</exception>
+        /// <exception cref="ArgumentNullException">onBreak</exception>
+        /// <exception cref="ArgumentNullException">onReset</exception>
+        /// <exception cref="ArgumentNullException">onHalfOpen</exception>
+        public static CircuitBreakerPolicy<TResult> CircuitBreaker<TResult>(this PolicyBuilder<TResult> policyBuilder, int exceptionsAllowedBeforeBreaking, TimeSpan durationOfBreak, Action<DelegateResult<TResult>, TimeSpan, Context> onBreak, Action<Context> onReset, Action onHalfOpen)
+        {
+            ValidateStaticDurationIsNonNegative(durationOfBreak);
+            return policyBuilder.CircuitBreaker(exceptionsAllowedBeforeBreaking, (_) => durationOfBreak, onBreak, onReset, onHalfOpen);
         }
 
         /// <summary>
         /// <para> Builds a <see cref="Policy{TResult}"/> that will function like a Circuit Breaker.</para>
-        /// <para>The circuit will break if <paramref name="handledEventsAllowedBeforeBreaking"/>
+        /// <para>The circuit will break if <paramref name="exceptionsAllowedBeforeBreaking"/>
         /// exceptions or results that are handled by this policy are encountered consecutively. </para>
-        /// <para>The circuit will stay broken for the <paramref name="durationOfBreak"/>. Any attempt to execute this policy
-        /// while the circuit is broken, will immediately throw a <see cref="BrokenCircuitException"/> containing the exception or result 
+        /// <para>The circuit will stay broken for a dynamically calculated duration. Any attempt to execute this policy
+        /// while the circuit is broken, will immediately throw a <see cref="BrokenCircuitException"/> containing the exception 
         /// that broke the circuit.
         /// </para>
-        /// <para>If the first action after the break duration period results in a handled exception or result, the circuit will break
-        /// again for another <paramref name="durationOfBreak"/>; if no exception or handled result is encountered, the circuit will reset.
+        /// <para>If the first action after the break duration period results in a handled exception, the circuit will break
+        /// again for a newly calculated duration; if no exception is thrown, the circuit will reset.
         /// </para>
         /// </summary>
         /// <param name="policyBuilder">The policy builder.</param>
-        /// <param name="handledEventsAllowedBeforeBreaking">The number of exceptions or handled results that are allowed before opening the circuit.</param>
-        /// <param name="durationOfBreak">The duration the circuit will stay open before resetting.</param>
+        /// <param name="exceptionsAllowedBeforeBreaking">The number of exceptions or handled results that are allowed before opening the circuit.</param>
+        /// <param name="factoryForNextBreakDuration">A function to calculate the duration the circuit will stay open before resetting, based on the number of consecutive CircuitFailures. Re-evaluated each time the circuit Opens.</param>
         /// <param name="onBreak">The action to call when the circuit transitions to an <see cref="CircuitState.Open"/> state.</param>
         /// <param name="onReset">The action to call when the circuit resets to a <see cref="CircuitState.Closed"/> state.</param>
         /// <param name="onHalfOpen">The action to call when the circuit transitions to <see cref="CircuitState.HalfOpen"/> state, ready to try action executions again. </param>
         /// <returns>The policy instance.</returns>
         /// <remarks>(see "Release It!" by Michael T. Nygard fi)</remarks>
-        /// <exception cref="ArgumentOutOfRangeException">handledEventsAllowedBeforeBreaking;Value must be greater than zero.</exception>
-        /// <exception cref="ArgumentNullException">onBreak</exception>
-        /// <exception cref="ArgumentNullException">onReset</exception>
-        public static CircuitBreakerPolicy<TResult> CircuitBreaker<TResult>(this PolicyBuilder<TResult> policyBuilder, int handledEventsAllowedBeforeBreaking, TimeSpan durationOfBreak, Action<DelegateResult<TResult>, TimeSpan> onBreak, Action onReset, Action onHalfOpen)
-            => policyBuilder.CircuitBreaker(
-                handledEventsAllowedBeforeBreaking,
-                durationOfBreak,
-                (outcome, timespan, context) => onBreak(outcome, timespan),
-                context => onReset(),
-                onHalfOpen
-                );
-
-        /// <summary>
-        /// <para> Builds a <see cref="Policy{TResult}"/> that will function like a Circuit Breaker.</para>
-        /// <para>The circuit will break if <paramref name="handledEventsAllowedBeforeBreaking"/>
-        /// exceptions or results that are handled by this policy are encountered consecutively. </para>
-        /// <para>The circuit will stay broken for the <paramref name="durationOfBreak"/>. Any attempt to execute this policy
-        /// while the circuit is broken, will immediately throw a <see cref="BrokenCircuitException"/> containing the exception or result 
-        /// that broke the circuit.
-        /// </para>
-        /// <para>If the first action after the break duration period results in a handled exception or result, the circuit will break
-        /// again for another <paramref name="durationOfBreak"/>; if no exception or handled result is encountered, the circuit will reset.
-        /// </para>
-        /// </summary>
-        /// <param name="policyBuilder">The policy builder.</param>
-        /// <param name="handledEventsAllowedBeforeBreaking">The number of exceptions or handled results that are allowed before opening the circuit.</param>
-        /// <param name="durationOfBreak">The duration the circuit will stay open before resetting.</param>
-        /// <param name="onBreak">The action to call when the circuit transitions to an <see cref="CircuitState.Open"/> state.</param>
-        /// <param name="onReset">The action to call when the circuit resets to a <see cref="CircuitState.Closed"/> state.</param>
-        /// <param name="onHalfOpen">The action to call when the circuit transitions to <see cref="CircuitState.HalfOpen"/> state, ready to try action executions again. </param>
-        /// <returns>The policy instance.</returns>
-        /// <remarks>(see "Release It!" by Michael T. Nygard fi)</remarks>
-        /// <exception cref="ArgumentOutOfRangeException">handledEventsAllowedBeforeBreaking;Value must be greater than zero.</exception>
-        /// <exception cref="ArgumentNullException">onBreak</exception>
-        /// <exception cref="ArgumentNullException">onReset</exception>
-        public static CircuitBreakerPolicy<TResult> CircuitBreaker<TResult>(this PolicyBuilder<TResult> policyBuilder, int handledEventsAllowedBeforeBreaking, TimeSpan durationOfBreak, Action<DelegateResult<TResult>, TimeSpan> onBreak, Action onReset, Action onHalfOpen)
-            => policyBuilder.CircuitBreaker(
-                handledEventsAllowedBeforeBreaking,
-                durationOfBreak,
-                (outcome, timespan, context) => onBreak(outcome, timespan),
-                context => onReset(),
-                onHalfOpen
-                );
-
-        /// <summary>
-        /// <para> Builds a <see cref="Policy{TResult}"/> that will function like a Circuit Breaker.</para>
-        /// <para>The circuit will break if <paramref name="handledEventsAllowedBeforeBreaking"/>
-        /// exceptions or results that are handled by this policy are encountered consecutively. </para>
-        /// <para>The circuit will stay broken for the <paramref name="durationOfBreak"/>. Any attempt to execute this policy
-        /// while the circuit is broken, will immediately throw a <see cref="BrokenCircuitException"/> containing the exception or result 
-        /// that broke the circuit.
-        /// </para>
-        /// <para>If the first action after the break duration period results in a handled exception or result, the circuit will break
-        /// again for another <paramref name="durationOfBreak"/>; if no exception or handled result is encountered, the circuit will reset.
-        /// </para>
-        /// </summary>
-        /// <param name="policyBuilder">The policy builder.</param>
-        /// <param name="handledEventsAllowedBeforeBreaking">The number of exceptions or handled results that are allowed before opening the circuit.</param>
-        /// <param name="durationOfBreak">The duration the circuit will stay open before resetting.</param>
-        /// <param name="onBreak">The action to call when the circuit transitions to an <see cref="CircuitState.Open"/> state.</param>
-        /// <param name="onReset">The action to call when the circuit resets to a <see cref="CircuitState.Closed"/> state.</param>
-        /// <param name="onHalfOpen">The action to call when the circuit transitions to <see cref="CircuitState.HalfOpen"/> state, ready to try action executions again. </param>
-        /// <returns>The policy instance.</returns>
-        /// <remarks>(see "Release It!" by Michael T. Nygard fi)</remarks>
-        /// <exception cref="ArgumentOutOfRangeException">handledEventsAllowedBeforeBreaking;Value must be greater than zero.</exception>
+        /// <exception cref="ArgumentOutOfRangeException">exceptionsAllowedBeforeBreaking;Value must be greater than zero.</exception>
+        /// <exception cref="InvalidOperationException">factoryForNextBreakDuration;Generated value must be always be non-negative. Exception would be thrown when invoking policy, if duration were negative.</exception>
         /// <exception cref="ArgumentNullException">onBreak</exception>
         /// <exception cref="ArgumentNullException">onReset</exception>
         /// <exception cref="ArgumentNullException">onHalfOpen</exception>
-        public static CircuitBreakerPolicy<TResult> CircuitBreaker<TResult>(this PolicyBuilder<TResult> policyBuilder, int handledEventsAllowedBeforeBreaking, TimeSpan durationOfBreak, Action<DelegateResult<TResult>, TimeSpan, Context> onBreak, Action<Context> onReset, Action onHalfOpen)
+        public static CircuitBreakerPolicy<TResult> CircuitBreaker<TResult>(this PolicyBuilder<TResult> policyBuilder, int exceptionsAllowedBeforeBreaking, Func<int, TimeSpan> factoryForNextBreakDuration, Action<DelegateResult<TResult>, TimeSpan, Context> onBreak, Action<Context> onReset, Action onHalfOpen)
             => policyBuilder.CircuitBreaker(
-                handledEventsAllowedBeforeBreaking,
-                durationOfBreak,
+                exceptionsAllowedBeforeBreaking,
+                factoryForNextBreakDuration,
                 (outcome, state, timespan, context) => onBreak(outcome, timespan, context),
                 onReset,
                 onHalfOpen
@@ -300,7 +331,7 @@ namespace Polly
 
         /// <summary>
         /// <para> Builds a <see cref="Policy{TResult}"/> that will function like a Circuit Breaker.</para>
-        /// <para>The circuit will break if <paramref name="handledEventsAllowedBeforeBreaking"/>
+        /// <para>The circuit will break if <paramref name="exceptionsAllowedBeforeBreaking"/>
         /// exceptions or results that are handled by this policy are encountered consecutively. </para>
         /// <para>The circuit will stay broken for the <paramref name="durationOfBreak"/>. Any attempt to execute this policy
         /// while the circuit is broken, will immediately throw a <see cref="BrokenCircuitException"/> containing the exception or result 
@@ -311,106 +342,60 @@ namespace Polly
         /// </para>
         /// </summary>
         /// <param name="policyBuilder">The policy builder.</param>
-        /// <param name="handledEventsAllowedBeforeBreaking">The number of exceptions or handled results that are allowed before opening the circuit.</param>
+        /// <param name="exceptionsAllowedBeforeBreaking">The number of exceptions or handled results that are allowed before opening the circuit.</param>
         /// <param name="durationOfBreak">The duration the circuit will stay open before resetting.</param>
         /// <param name="onBreak">The action to call when the circuit transitions to an <see cref="CircuitState.Open"/> state.</param>
         /// <param name="onReset">The action to call when the circuit resets to a <see cref="CircuitState.Closed"/> state.</param>
         /// <param name="onHalfOpen">The action to call when the circuit transitions to <see cref="CircuitState.HalfOpen"/> state, ready to try action executions again. </param>
         /// <returns>The policy instance.</returns>
         /// <remarks>(see "Release It!" by Michael T. Nygard fi)</remarks>
-        /// <exception cref="ArgumentOutOfRangeException">handledEventsAllowedBeforeBreaking;Value must be greater than zero.</exception>
+        /// <exception cref="ArgumentOutOfRangeException">exceptionsAllowedBeforeBreaking;Value must be greater than zero.</exception>
+        /// <exception cref="ArgumentOutOfRangeException">durationOfBreak;Value must be greater than or equal to zero.</exception>
         /// <exception cref="ArgumentNullException">onBreak</exception>
         /// <exception cref="ArgumentNullException">onReset</exception>
         /// <exception cref="ArgumentNullException">onHalfOpen</exception>
-        public static CircuitBreakerPolicy<TResult> CircuitBreaker<TResult>(this PolicyBuilder<TResult> policyBuilder, int handledEventsAllowedBeforeBreaking, TimeSpan durationOfBreak, Action<DelegateResult<TResult>, TimeSpan, Context> onBreak, Action<Context> onReset, Action onHalfOpen)
-            => policyBuilder.CircuitBreaker(
-                handledEventsAllowedBeforeBreaking,
-                durationOfBreak,
-                (outcome, state, timespan, context) => onBreak(outcome, timespan, context),
-                onReset,
-                onHalfOpen
-            );
-
-        /// <summary>
-        /// <para> Builds a <see cref="Policy{TResult}"/> that will function like a Circuit Breaker.</para>
-        /// <para>The circuit will break if <paramref name="handledEventsAllowedBeforeBreaking"/>
-        /// exceptions or results that are handled by this policy are encountered consecutively. </para>
-        /// <para>The circuit will stay broken for the <paramref name="durationOfBreak"/>. Any attempt to execute this policy
-        /// while the circuit is broken, will immediately throw a <see cref="BrokenCircuitException"/> containing the exception or result 
-        /// that broke the circuit.
-        /// </para>
-        /// <para>If the first action after the break duration period results in a handled exception or result, the circuit will break
-        /// again for another <paramref name="durationOfBreak"/>; if no exception or handled result is encountered, the circuit will reset.
-        /// </para>
-        /// </summary>
-        /// <param name="policyBuilder">The policy builder.</param>
-        /// <param name="handledEventsAllowedBeforeBreaking">The number of exceptions or handled results that are allowed before opening the circuit.</param>
-        /// <param name="durationOfBreak">The duration the circuit will stay open before resetting.</param>
-        /// <param name="onBreak">The action to call when the circuit transitions to an <see cref="CircuitState.Open"/> state.</param>
-        /// <param name="onReset">The action to call when the circuit resets to a <see cref="CircuitState.Closed"/> state.</param>
-        /// <param name="onHalfOpen">The action to call when the circuit transitions to <see cref="CircuitState.HalfOpen"/> state, ready to try action executions again. </param>
-        /// <returns>The policy instance.</returns>
-        /// <remarks>(see "Release It!" by Michael T. Nygard fi)</remarks>
-        /// <exception cref="ArgumentOutOfRangeException">handledEventsAllowedBeforeBreaking;Value must be greater than zero.</exception>
-        /// <exception cref="ArgumentNullException">onBreak</exception>
-        /// <exception cref="ArgumentNullException">onReset</exception>
-        /// <exception cref="ArgumentNullException">onHalfOpen</exception>
-        public static CircuitBreakerPolicy<TResult> CircuitBreaker<TResult>(this PolicyBuilder<TResult> policyBuilder, int handledEventsAllowedBeforeBreaking, TimeSpan durationOfBreak, Action<DelegateResult<TResult>, CircuitState, TimeSpan, Context> onBreak, Action<Context> onReset, Action onHalfOpen)
+        public static CircuitBreakerPolicy<TResult> CircuitBreaker<TResult>(this PolicyBuilder<TResult> policyBuilder, int exceptionsAllowedBeforeBreaking, TimeSpan durationOfBreak, Action<DelegateResult<TResult>, CircuitState, TimeSpan, Context> onBreak, Action<Context> onReset, Action onHalfOpen)
         {
-            if (handledEventsAllowedBeforeBreaking <= 0) { throw new ArgumentOutOfRangeException(nameof(handledEventsAllowedBeforeBreaking), "Value must be greater than zero."); }
+            ValidateStaticDurationIsNonNegative(durationOfBreak);
+            return policyBuilder.CircuitBreaker(exceptionsAllowedBeforeBreaking, (_) => durationOfBreak, onBreak, onReset, onHalfOpen);
+        }
+
+        /// <summary>
+        /// <para> Builds a <see cref="Policy{TResult}"/> that will function like a Circuit Breaker.</para>
+        /// <para>The circuit will break if <paramref name="exceptionsAllowedBeforeBreaking"/>
+        /// exceptions or results that are handled by this policy are encountered consecutively. </para>
+        /// <para>The circuit will stay broken for a dynamically calculated duration. Any attempt to execute this policy
+        /// while the circuit is broken, will immediately throw a <see cref="BrokenCircuitException"/> containing the exception 
+        /// that broke the circuit.
+        /// </para>
+        /// <para>If the first action after the break duration period results in a handled exception, the circuit will break
+        /// again for a newly calculated duration; if no exception is thrown, the circuit will reset.
+        /// </para>
+        /// </summary>
+        /// <param name="policyBuilder">The policy builder.</param>
+        /// <param name="exceptionsAllowedBeforeBreaking">The number of exceptions or handled results that are allowed before opening the circuit.</param>
+        /// <param name="factoryForNextBreakDuration">A function to calculate the duration the circuit will stay open before resetting, based on the number of consecutive CircuitFailures. Re-evaluated each time the circuit Opens.</param>
+        /// <param name="onBreak">The action to call when the circuit transitions to an <see cref="CircuitState.Open"/> state.</param>
+        /// <param name="onReset">The action to call when the circuit resets to a <see cref="CircuitState.Closed"/> state.</param>
+        /// <param name="onHalfOpen">The action to call when the circuit transitions to <see cref="CircuitState.HalfOpen"/> state, ready to try action executions again. </param>
+        /// <returns>The policy instance.</returns>
+        /// <remarks>(see "Release It!" by Michael T. Nygard fi)</remarks>
+        /// <exception cref="ArgumentOutOfRangeException">exceptionsAllowedBeforeBreaking;Value must be greater than zero.</exception>
+        /// <exception cref="InvalidOperationException">factoryForNextBreakDuration;Generated value must be always be non-negative. Exception would be thrown when invoking policy, if duration were negative.</exception>
+        /// <exception cref="ArgumentNullException">onBreak</exception>
+        /// <exception cref="ArgumentNullException">onReset</exception>
+        /// <exception cref="ArgumentNullException">onHalfOpen</exception>
+        public static CircuitBreakerPolicy<TResult> CircuitBreaker<TResult>(this PolicyBuilder<TResult> policyBuilder, int exceptionsAllowedBeforeBreaking, Func<int, TimeSpan> factoryForNextBreakDuration, Action<DelegateResult<TResult>, CircuitState, TimeSpan, Context> onBreak, Action<Context> onReset, Action onHalfOpen)
+        {
+            if (exceptionsAllowedBeforeBreaking <= 0) { throw new ArgumentOutOfRangeException(nameof(exceptionsAllowedBeforeBreaking), "Value must be greater than zero."); }
 
             if (onBreak == null) { throw new ArgumentNullException(nameof(onBreak)); }
             if (onReset == null) { throw new ArgumentNullException(nameof(onReset)); }
-            if (onHalfOpen == null) { throw new ArgumentNullException(nameof(onHalfOpen)); }
+            if (onHalfOpen == null){ throw new ArgumentNullException(nameof(onHalfOpen)); }
 
             ICircuitController<TResult> breakerController = new ConsecutiveCountCircuitController<TResult>(
-                handledEventsAllowedBeforeBreaking,
-                (_) => durationOfBreak,
-                onBreak,
-                onReset,
-                onHalfOpen);
-            return new CircuitBreakerPolicy<TResult>(
-                policyBuilder,
-                breakerController
-                );
-        }
-
-        /// <summary>
-        /// <para> Builds a <see cref="Policy{TResult}"/> that will function like a Circuit Breaker.</para>
-        /// <para>The circuit will break if <paramref name="handledEventsAllowedBeforeBreaking"/>
-        /// exceptions or results that are handled by this policy are encountered consecutively. </para>
-        /// <para>The circuit will stay broken for the <paramref name="durationOfBreak"/>. Any attempt to execute this policy
-        /// while the circuit is broken, will immediately throw a <see cref="BrokenCircuitException"/> containing the exception or result 
-        /// that broke the circuit.
-        /// </para>
-        /// <para>If the first action after the break duration period results in a handled exception or result, the circuit will break
-        /// again for another <paramref name="durationOfBreak"/>; if no exception or handled result is encountered, the circuit will reset.
-        /// </para>
-        /// </summary>
-        /// <param name="policyBuilder">The policy builder.</param>
-        /// <param name="handledEventsAllowedBeforeBreaking">The number of exceptions or handled results that are allowed before opening the circuit.</param>
-        /// <param name="durationOfBreak">The duration the circuit will stay open before resetting.</param>
-        /// <param name="onBreak">The action to call when the circuit transitions to an <see cref="CircuitState.Open"/> state.</param>
-        /// <param name="onReset">The action to call when the circuit resets to a <see cref="CircuitState.Closed"/> state.</param>
-        /// <param name="onHalfOpen">The action to call when the circuit transitions to <see cref="CircuitState.HalfOpen"/> state, ready to try action executions again. </param>
-        /// <returns>The policy instance.</returns>
-        /// <remarks>(see "Release It!" by Michael T. Nygard fi)</remarks>
-        /// <exception cref="ArgumentOutOfRangeException">handledEventsAllowedBeforeBreaking;Value must be greater than zero.</exception>
-        /// <exception cref="ArgumentNullException">onBreak</exception>
-        /// <exception cref="ArgumentNullException">onReset</exception>
-        /// <exception cref="ArgumentNullException">onHalfOpen</exception>
-        public static CircuitBreakerPolicy<TResult> CircuitBreaker<TResult>(this PolicyBuilder<TResult> policyBuilder, int handledEventsAllowedBeforeBreaking, TimeSpan durationOfBreak, Action<DelegateResult<TResult>, CircuitState, TimeSpan, Context> onBreak, Action<Context> onReset, Action onHalfOpen)
-        {
-            if (handledEventsAllowedBeforeBreaking <= 0) throw new ArgumentOutOfRangeException(nameof(handledEventsAllowedBeforeBreaking), "Value must be greater than zero.");
-            if (durationOfBreak < TimeSpan.Zero) throw new ArgumentOutOfRangeException(nameof(durationOfBreak), "Value must be greater than zero.");
-
-            if (onBreak == null) throw new ArgumentNullException(nameof(onBreak));
-            if (onReset == null) throw new ArgumentNullException(nameof(onReset));
-            if (onHalfOpen == null) throw new ArgumentNullException(nameof(onHalfOpen));
-
-            ICircuitController<TResult> breakerController = new ConsecutiveCountCircuitController<TResult>(
-                handledEventsAllowedBeforeBreaking,
-                (_) => durationOfBreak,
+                exceptionsAllowedBeforeBreaking,
+                factoryForNextBreakDuration,
                 onBreak,
                 onReset,
                 onHalfOpen);
