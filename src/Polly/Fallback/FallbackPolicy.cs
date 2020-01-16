@@ -24,8 +24,8 @@ namespace Polly.Fallback
 
         /// <inheritdoc/>
         [DebuggerStepThrough]
-        protected override void SyncNonGenericImplementation(in ISyncExecutable action, Context context, CancellationToken cancellationToken)
-            => FallbackEngine.Implementation<ISyncExecutable<object>, object>(
+        protected override void SyncNonGenericImplementation<TExecutable>(in TExecutable action, Context context, CancellationToken cancellationToken)
+            => FallbackEngine.Implementation<TExecutable, object>(
                 action,
                 context,
                 cancellationToken,

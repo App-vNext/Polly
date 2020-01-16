@@ -42,7 +42,7 @@ namespace Polly.Caching
         }
 
         /// <inheritdoc/>
-        protected override Task AsyncNonGenericImplementation(in IAsyncExecutable action, Context context, CancellationToken cancellationToken,
+        protected override Task AsyncNonGenericImplementation<TExecutableAsync>(in TExecutableAsync action, Context context, CancellationToken cancellationToken,
             bool continueOnCapturedContext)
         {
             // Pass-through/NOOP policy action, for void-returning executions through the cache policy.

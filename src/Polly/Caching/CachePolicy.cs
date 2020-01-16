@@ -41,7 +41,7 @@ namespace Polly.Caching
         }
 
         /// <inheritdoc/>
-        protected override void SyncNonGenericImplementation(in ISyncExecutable action, Context context, CancellationToken cancellationToken)
+        protected override void SyncNonGenericImplementation<TExecutable>(in TExecutable action, Context context, CancellationToken cancellationToken)
             // Pass-through/NOOP policy action, for void-returning calls through a cache policy.
             => action.Execute(context, cancellationToken);
 

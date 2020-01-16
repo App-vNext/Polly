@@ -33,7 +33,7 @@ namespace Polly.Wrap
 
         /// <inheritdoc/>
         [DebuggerStepThrough]
-        protected override Task AsyncNonGenericImplementation(in IAsyncExecutable action, Context context, CancellationToken cancellationToken,
+        protected override Task AsyncNonGenericImplementation<TExecutableAsync>(in TExecutableAsync action, Context context, CancellationToken cancellationToken,
             bool continueOnCapturedContext)
             => AsyncPolicyWrapEngine.ImplementationAsync(
                 action,

@@ -22,10 +22,10 @@ namespace Polly.Fallback
         }
 
         /// <inheritdoc/>
-        protected override Task AsyncNonGenericImplementation(in IAsyncExecutable action, Context context, CancellationToken cancellationToken,
+        protected override Task AsyncNonGenericImplementation<TExecutableAsync>(in TExecutableAsync action, Context context, CancellationToken cancellationToken,
             bool continueOnCapturedContext)
         {
-            return AsyncFallbackEngine.ImplementationAsync<IAsyncExecutable<object>, object>(
+            return AsyncFallbackEngine.ImplementationAsync<TExecutableAsync, object>(
                 action,
                 context,
                 cancellationToken,

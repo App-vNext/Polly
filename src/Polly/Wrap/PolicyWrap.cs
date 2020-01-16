@@ -31,7 +31,7 @@ namespace Polly.Wrap
 
         /// <inheritdoc/>
         [DebuggerStepThrough]
-        protected override void SyncNonGenericImplementation(in ISyncExecutable action, Context context, CancellationToken cancellationToken)
+        protected override void SyncNonGenericImplementation<TExecutable>(in TExecutable action, Context context, CancellationToken cancellationToken)
             => PolicyWrapEngine.Implementation(
                 action,
                 context,

@@ -10,12 +10,13 @@ namespace Polly
         /// <param name="action">The action passed by calling code to execute through the policy.</param>
         /// <param name="context">The policy execution context.</param>
         /// <param name="cancellationToken">A token to signal that execution should be cancelled.</param>
-        protected virtual void SyncNonGenericImplementation(
-            in ISyncExecutable action,
+        protected virtual void SyncNonGenericImplementation<TExecutable>(
+            in TExecutable action,
             Context context,
             CancellationToken cancellationToken)
+            where TExecutable : ISyncExecutable
         {
-            SyncGenericImplementation<ISyncExecutable<object>, object>(action, context, cancellationToken);
+            SyncGenericImplementation<TExecutable, object>(action, context, cancellationToken);
         }
 
         /// <summary>

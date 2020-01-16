@@ -16,13 +16,14 @@ namespace Polly
         /// <param name="cancellationToken">A token to signal that execution should be cancelled.</param>
         /// <param name="continueOnCapturedContext">Whether async continuations should continue on a captured context.</param>
         /// <returns>A <see cref="Task"/> representing the execution.</returns>
-        protected virtual Task AsyncNonGenericImplementation(
-            in IAsyncExecutable action,
+        protected virtual Task AsyncNonGenericImplementation<TExecutableAsync>(
+            in TExecutableAsync action,
             Context context,
             CancellationToken cancellationToken,
             bool continueOnCapturedContext)
+            where TExecutableAsync : IAsyncExecutable
         {
-            return AsyncGenericImplementation<IAsyncExecutable<object>, object>(action, context, cancellationToken, continueOnCapturedContext);
+            return AsyncGenericImplementation<TExecutableAsync, object>(action, context, cancellationToken, continueOnCapturedContext);
         }
 
 

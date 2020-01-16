@@ -6,7 +6,7 @@ namespace Polly
 {
     public abstract partial class AsyncPolicy : IAsyncPolicyInternal
     {
-        async Task IAsyncPolicyInternal.ExecuteAsync(IAsyncExecutable action, Context context, CancellationToken cancellationToken, bool continueOnCapturedContext)
+        async Task IAsyncPolicyInternal.ExecuteAsync<TExecutableAsync>(TExecutableAsync action, Context context, CancellationToken cancellationToken, bool continueOnCapturedContext)
         {
             if (context == null) throw new ArgumentNullException(nameof(context));
 
@@ -40,7 +40,7 @@ namespace Polly
             }
         }
 
-        async Task<PolicyResult> IAsyncPolicyInternal.ExecuteAndCaptureAsync(IAsyncExecutable action, Context context, CancellationToken cancellationToken, bool continueOnCapturedContext)
+        async Task<PolicyResult> IAsyncPolicyInternal.ExecuteAndCaptureAsync<TExecutableAsync>(TExecutableAsync action, Context context, CancellationToken cancellationToken, bool continueOnCapturedContext)
         {
             if (context == null) throw new ArgumentNullException(nameof(context));
 

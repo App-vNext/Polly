@@ -230,7 +230,7 @@ namespace Polly
         {
             if (context == null) throw new ArgumentNullException(nameof(context));
 
-            return ((ISyncPolicyInternal) this).Execute<ISyncExecutable<TResult>, TResult>(new SyncExecutableFunc<T1,TResult>(func, input1), context, cancellationToken);
+            return ((ISyncPolicyInternal) this).Execute<SyncExecutableFunc<T1, TResult>, TResult>(new SyncExecutableFunc<T1,TResult>(func, input1), context, cancellationToken);
         }
 
         /// <summary>
@@ -250,7 +250,7 @@ namespace Polly
         {
             if (context == null) throw new ArgumentNullException(nameof(context));
 
-            return ((ISyncPolicyInternal) this).Execute<ISyncExecutable<TResult>, TResult>(new SyncExecutableFunc<T1, T2, TResult>(func, input1, input2), context, cancellationToken);
+            return ((ISyncPolicyInternal) this).Execute<SyncExecutableFunc<T1, T2, TResult>, TResult>(new SyncExecutableFunc<T1, T2, TResult>(func, input1, input2), context, cancellationToken);
         }
 
         #endregion
@@ -494,7 +494,7 @@ namespace Polly
         {
             if (context == null) throw new ArgumentNullException(nameof(context));
 
-            return ((ISyncPolicyInternal) this).ExecuteAndCapture<ISyncExecutable<TResult>, TResult>(new SyncExecutableFunc<T1,TResult>(func, input1), context, cancellationToken);
+            return ((ISyncPolicyInternal) this).ExecuteAndCapture<SyncExecutableFunc<T1, TResult>, TResult>(new SyncExecutableFunc<T1,TResult>(func, input1), context, cancellationToken);
         }
 
         /// <summary>
@@ -514,7 +514,7 @@ namespace Polly
         {
             if (context == null) throw new ArgumentNullException(nameof(context));
 
-            return ((ISyncPolicyInternal) this).ExecuteAndCapture<ISyncExecutable<TResult>, TResult>(new SyncExecutableFunc<T1, T2, TResult>(func, input1, input2), context, cancellationToken);
+            return ((ISyncPolicyInternal) this).ExecuteAndCapture<SyncExecutableFunc<T1, T2, TResult>, TResult>(new SyncExecutableFunc<T1, T2, TResult>(func, input1, input2), context, cancellationToken);
         }
 
         #endregion

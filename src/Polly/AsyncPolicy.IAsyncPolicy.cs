@@ -339,7 +339,7 @@ namespace Polly
         {
             if (context == null) throw new ArgumentNullException(nameof(context));
 
-            return ((IAsyncPolicyInternal)this).ExecuteAsync<IAsyncExecutable<TResult>, TResult>(new AsyncExecutableFunc<T1,TResult>(func, input1), context, cancellationToken, continueOnCapturedContext);
+            return ((IAsyncPolicyInternal)this).ExecuteAsync<AsyncExecutableFunc<T1, TResult>, TResult>(new AsyncExecutableFunc<T1,TResult>(func, input1), context, cancellationToken, continueOnCapturedContext);
         }
 
         /// <summary>
@@ -360,7 +360,7 @@ namespace Polly
         {
             if (context == null) throw new ArgumentNullException(nameof(context));
 
-            return ((IAsyncPolicyInternal)this).ExecuteAsync<IAsyncExecutable<TResult>, TResult>(new AsyncExecutableFunc<T1, T2, TResult>(func, input1, input2), context, cancellationToken, continueOnCapturedContext);
+            return ((IAsyncPolicyInternal)this).ExecuteAsync<AsyncExecutableFunc<T1, T2, TResult>, TResult>(new AsyncExecutableFunc<T1, T2, TResult>(func, input1, input2), context, cancellationToken, continueOnCapturedContext);
         }
 
         #endregion
@@ -716,7 +716,7 @@ namespace Polly
         {
             if (context == null) throw new ArgumentNullException(nameof(context));
 
-            return ((IAsyncPolicyInternal)this).ExecuteAndCaptureAsync<IAsyncExecutable<TResult>, TResult>(new AsyncExecutableFunc<T1,TResult>(func, input1), context, cancellationToken, continueOnCapturedContext);
+            return ((IAsyncPolicyInternal)this).ExecuteAndCaptureAsync<AsyncExecutableFunc<T1, TResult>, TResult>(new AsyncExecutableFunc<T1,TResult>(func, input1), context, cancellationToken, continueOnCapturedContext);
         }
 
         /// <summary>
@@ -737,7 +737,7 @@ namespace Polly
         {
             if (context == null) throw new ArgumentNullException(nameof(context));
 
-            return ((IAsyncPolicyInternal)this).ExecuteAndCaptureAsync<IAsyncExecutable<TResult>, TResult>(new AsyncExecutableFunc<T1, T2, TResult>(func, input1, input2), context, cancellationToken, continueOnCapturedContext);
+            return ((IAsyncPolicyInternal)this).ExecuteAndCaptureAsync<AsyncExecutableFunc<T1, T2, TResult>, TResult>(new AsyncExecutableFunc<T1, T2, TResult>(func, input1, input2), context, cancellationToken, continueOnCapturedContext);
         }
 
         #endregion

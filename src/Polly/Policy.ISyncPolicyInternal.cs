@@ -7,7 +7,7 @@ namespace Polly
     public abstract partial class Policy : ISyncPolicyInternal
     {
         [DebuggerStepThrough]
-        void ISyncPolicyInternal.Execute(in ISyncExecutable action, Context context, CancellationToken cancellationToken)
+        void ISyncPolicyInternal.Execute<TExecutable>(in TExecutable action, Context context, CancellationToken cancellationToken)
         {
             if (context == null) throw new ArgumentNullException(nameof(context));
 
@@ -41,7 +41,7 @@ namespace Polly
         }
 
         [DebuggerStepThrough]
-        PolicyResult ISyncPolicyInternal.ExecuteAndCapture(in ISyncExecutable action, Context context, CancellationToken cancellationToken)
+        PolicyResult ISyncPolicyInternal.ExecuteAndCapture<TExecutable>(in TExecutable action, Context context, CancellationToken cancellationToken)
         {
             if (context == null) throw new ArgumentNullException(nameof(context));
 

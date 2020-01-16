@@ -68,14 +68,15 @@ namespace Polly.Wrap
                 func);
         }
 
-        internal static void Implementation(
-            ISyncExecutable action,
+        internal static void Implementation<TExecutable>(
+            TExecutable action,
             Context context,
             CancellationToken cancellationToken, 
             ISyncPolicy outerPolicy,
             ISyncPolicy innerPolicy)
+            where TExecutable : ISyncExecutable
         {
-            outerPolicy.Execute<ISyncPolicy, ISyncExecutable>(
+            outerPolicy.Execute<ISyncPolicy, TExecutable>(
                 (ctx, ct, inner, userAction) => ((ISyncPolicyInternal) inner).Execute(userAction, ctx, ct),
                 context,
                 cancellationToken,
