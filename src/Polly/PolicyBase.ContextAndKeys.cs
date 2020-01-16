@@ -13,7 +13,7 @@ namespace Polly
         /// <summary>
         /// A key intended to be unique to each <see cref="IsPolicy"/> instance, which is passed with executions as the <see cref="M:Context.PolicyKey"/> property.
         /// </summary>
-        public String PolicyKey => policyKeyInternal ?? (policyKeyInternal = GetType().Name + "-" + KeyHelper.GuidPart());
+        public String PolicyKey => policyKeyInternal ??= $"{GetType().Name}-{KeyHelper.GuidPart()}";
 
         internal static ArgumentException PolicyKeyMustBeImmutableException => new ArgumentException("PolicyKey cannot be changed once set; or (when using the default value after the PolicyKey property has been accessed.", "policyKey");
 

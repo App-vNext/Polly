@@ -12,7 +12,7 @@ namespace Polly
 
         internal void Add(ResultPredicate<TResult> predicate)
         {
-            _predicates = _predicates ?? new List<ResultPredicate<TResult>>(); // The ?? pattern here is sufficient; only a deliberately contrived example would lead to the same PolicyBuilder instance being used in a multi-threaded way to define policies simultaneously on multiple threads.
+            _predicates ??= new List<ResultPredicate<TResult>>(); // The ?? pattern here is sufficient; only a deliberately contrived example would lead to the same PolicyBuilder instance being used in a multi-threaded way to define policies simultaneously on multiple threads.
 
             _predicates.Add(predicate);
         }
