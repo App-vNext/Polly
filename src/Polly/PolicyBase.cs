@@ -11,7 +11,7 @@ namespace Polly
         /// <summary>
         /// Predicates indicating which exceptions the policy handles.
         /// </summary>
-        protected internal ExceptionPredicates ExceptionPredicates { get; }
+        protected ExceptionPredicates ExceptionPredicates { get; }
 
         ExceptionPredicates IExceptionPredicates.PredicatesInternal => ExceptionPredicates;
 
@@ -61,7 +61,7 @@ namespace Polly
         /// <summary>
         /// Predicates indicating which results the policy handles.
         /// </summary>
-        protected internal ResultPredicates<TResult> ResultPredicates { get; }
+        protected ResultPredicates<TResult> ResultPredicates { get; }
 
         ResultPredicates<TResult> IResultPredicates<TResult>.PredicatesInternal => ResultPredicates;
 
