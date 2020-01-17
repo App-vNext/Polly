@@ -19,13 +19,16 @@ namespace Polly
 
         /// <summary>
         /// <para> Builds a <see cref="Policy{TResult}"/> that will function like a Circuit Breaker.</para>
-        /// <para>The circuit will break if, within any timeslice of duration <paramref name="samplingDuration"/>, the proportion of actions resulting in a handled exception or result exceeds <paramref name="failureThreshold"/>, provided also that the number of actions through the circuit in the timeslice is at least <paramref name="minimumThroughput" />. </para>
+        /// <para>
+        /// The circuit will break if, within any timeslice of duration <paramref name="samplingDuration"/>, the proportion of actions resulting in a failure exceeds <paramref name="failureThreshold"/>,
+        /// provided also that the number of actions through the circuit in the timeslice is at least <paramref name="minimumThroughput" />.
+        /// </para>
         /// <para>The circuit will stay broken for the <paramref name="durationOfBreak" />. Any attempt to execute this policy
         /// while the circuit is broken, will immediately throw a <see cref="BrokenCircuitException" /> containing the exception or result
         /// that broke the circuit.
         /// </para>
-        /// <para>If the first action after the break duration period results in a handled exception or result, the circuit will break
-        /// again for another <paramref name="durationOfBreak" />; if no exception or handled result is encountered, the circuit will reset.
+        /// <para>If the first action after the break duration period results in a failure, the circuit will break
+        /// again for another <paramref name="durationOfBreak" />; if no failure is encountered, the circuit will reset.
         /// </para>
         /// </summary>
         /// <param name="policyBuilder">The policy builder.</param>
@@ -48,12 +51,15 @@ namespace Polly
 
         /// <summary>
         /// <para> Builds a <see cref="Policy{TResult}"/> that will function like a Circuit Breaker.</para>
-        /// <para>The circuit will break if, within any timeslice of duration <paramref name="samplingDuration"/>, the proportion of actions resulting in a handled exception or result exceeds <paramref name="failureThreshold"/>, provided also that the number of actions through the circuit in the timeslice is at least <paramref name="minimumThroughput" />. </para>
+        /// <para>
+        /// The circuit will break if, within any timeslice of duration <paramref name="samplingDuration"/>, the proportion of actions resulting in a failure exceeds <paramref name="failureThreshold"/>,
+        /// provided also that the number of actions through the circuit in the timeslice is at least <paramref name="minimumThroughput" />.
+        /// </para>
         /// <para>The circuit will stay broken for a dynamically calculated duration. Any attempt to execute this policy
         /// while the circuit is broken, will immediately throw a <see cref="BrokenCircuitException"/> containing the exception 
         /// that broke the circuit.
         /// </para>
-        /// <para>If the first action after the break duration period results in a handled exception, the circuit will break
+        /// <para>If the first action after the break duration period results in a failure, the circuit will break
         /// again for a newly calculated duration; if no exception is thrown, the circuit will reset.
         /// </para>
         /// </summary>
@@ -83,13 +89,16 @@ namespace Polly
         }
 
         /// <summary>
-        /// <para>The circuit will break if, within any timeslice of duration <paramref name="samplingDuration"/>, the proportion of actions resulting in a handled exception or result exceeds <paramref name="failureThreshold"/>, provided also that the number of actions through the circuit in the timeslice is at least <paramref name="minimumThroughput" />. </para>
+        /// <para>
+        /// The circuit will break if, within any timeslice of duration <paramref name="samplingDuration"/>, the proportion of actions resulting in a failure exceeds <paramref name="failureThreshold"/>,
+        /// provided also that the number of actions through the circuit in the timeslice is at least <paramref name="minimumThroughput" />.
+        /// </para>
         /// <para>The circuit will stay broken for the <paramref name="durationOfBreak" />. Any attempt to execute this policy
         /// while the circuit is broken, will immediately throw a <see cref="BrokenCircuitException" /> containing the exception or result
         /// that broke the circuit.
         /// </para>
-        /// <para>If the first action after the break duration period results in a handled exception or result, the circuit will break
-        /// again for another <paramref name="durationOfBreak" />; if no exception or handled result is encountered, the circuit will reset.
+        /// <para>If the first action after the break duration period results in a failure, the circuit will break
+        /// again for another <paramref name="durationOfBreak" />; if no failure is encountered, the circuit will reset.
         /// </para>
         /// </summary>
         /// <param name="policyBuilder">The policy builder.</param>
@@ -115,12 +124,15 @@ namespace Polly
         }
 
         /// <summary>
-        /// <para>The circuit will break if, within any timeslice of duration <paramref name="samplingDuration"/>, the proportion of actions resulting in a handled exception or result exceeds <paramref name="failureThreshold"/>, provided also that the number of actions through the circuit in the timeslice is at least <paramref name="minimumThroughput" />. </para>
+        /// <para>
+        /// The circuit will break if, within any timeslice of duration <paramref name="samplingDuration"/>, the proportion of actions resulting in a failure exceeds <paramref name="failureThreshold"/>,
+        /// provided also that the number of actions through the circuit in the timeslice is at least <paramref name="minimumThroughput" />.
+        /// </para>
         /// <para>The circuit will stay broken for a dynamically calculated duration. Any attempt to execute this policy
         /// while the circuit is broken, will immediately throw a <see cref="BrokenCircuitException"/> containing the exception 
         /// that broke the circuit.
         /// </para>
-        /// <para>If the first action after the break duration period results in a handled exception, the circuit will break
+        /// <para>If the first action after the break duration period results in a failure, the circuit will break
         /// again for a newly calculated duration; if no exception is thrown, the circuit will reset.
         /// </para>
         /// </summary>
@@ -149,13 +161,16 @@ namespace Polly
                 );
 
         /// <summary>
-        /// <para>The circuit will break if, within any timeslice of duration <paramref name="samplingDuration"/>, the proportion of actions resulting in a handled exception or result exceeds <paramref name="failureThreshold"/>, provided also that the number of actions through the circuit in the timeslice is at least <paramref name="minimumThroughput" />. </para>
+        /// <para>
+        /// The circuit will break if, within any timeslice of duration <paramref name="samplingDuration"/>, the proportion of actions resulting in a failure exceeds <paramref name="failureThreshold"/>,
+        /// provided also that the number of actions through the circuit in the timeslice is at least <paramref name="minimumThroughput" />.
+        /// </para>
         /// <para>The circuit will stay broken for the <paramref name="durationOfBreak" />. Any attempt to execute this policy
         /// while the circuit is broken, will immediately throw a <see cref="BrokenCircuitException" /> containing the exception or result
         /// that broke the circuit.
         /// </para>
-        /// <para>If the first action after the break duration period results in a handled exception or result, the circuit will break
-        /// again for another <paramref name="durationOfBreak" />; if no exception or handled result is encountered, the circuit will reset.
+        /// <para>If the first action after the break duration period results in a failure, the circuit will break
+        /// again for another <paramref name="durationOfBreak" />; if no failure is encountered, the circuit will reset.
         /// </para>
         /// </summary>
         /// <param name="policyBuilder">The policy builder.</param>
@@ -181,12 +196,15 @@ namespace Polly
         }
 
         /// <summary>
-        /// <para>The circuit will break if, within any timeslice of duration <paramref name="samplingDuration"/>, the proportion of actions resulting in a handled exception or result exceeds <paramref name="failureThreshold"/>, provided also that the number of actions through the circuit in the timeslice is at least <paramref name="minimumThroughput" />. </para>
+        /// <para>
+        /// The circuit will break if, within any timeslice of duration <paramref name="samplingDuration"/>, the proportion of actions resulting in a failure exceeds <paramref name="failureThreshold"/>,
+        /// provided also that the number of actions through the circuit in the timeslice is at least <paramref name="minimumThroughput" />.
+        /// </para>
         /// <para>The circuit will stay broken for a dynamically calculated duration. Any attempt to execute this policy
         /// while the circuit is broken, will immediately throw a <see cref="BrokenCircuitException"/> containing the exception 
         /// that broke the circuit.
         /// </para>
-        /// <para>If the first action after the break duration period results in a handled exception, the circuit will break
+        /// <para>If the first action after the break duration period results in a failure, the circuit will break
         /// again for a newly calculated duration; if no exception is thrown, the circuit will reset.
         /// </para>
         /// </summary>
@@ -218,13 +236,16 @@ namespace Polly
         }
 
         /// <summary>
-        /// <para>The circuit will break if, within any timeslice of duration <paramref name="samplingDuration"/>, the proportion of actions resulting in a handled exception or result exceeds <paramref name="failureThreshold"/>, provided also that the number of actions through the circuit in the timeslice is at least <paramref name="minimumThroughput" />. </para>
+        /// <para>
+        /// The circuit will break if, within any timeslice of duration <paramref name="samplingDuration"/>, the proportion of actions resulting in a failure exceeds <paramref name="failureThreshold"/>,
+        /// provided also that the number of actions through the circuit in the timeslice is at least <paramref name="minimumThroughput" />.
+        /// </para>
         /// <para>The circuit will stay broken for the <paramref name="durationOfBreak" />. Any attempt to execute this policy
         /// while the circuit is broken, will immediately throw a <see cref="BrokenCircuitException" /> containing the exception or result
         /// that broke the circuit.
         /// </para>
-        /// <para>If the first action after the break duration period results in a handled exception or result, the circuit will break
-        /// again for another <paramref name="durationOfBreak" />; if no exception or handled result is encountered, the circuit will reset.
+        /// <para>If the first action after the break duration period results in a failure, the circuit will break
+        /// again for another <paramref name="durationOfBreak" />; if no failure is encountered, the circuit will reset.
         /// </para>
         /// </summary>
         /// <param name="policyBuilder">The policy builder.</param>
@@ -252,12 +273,15 @@ namespace Polly
         }
 
         /// <summary>
-        /// <para>The circuit will break if, within any timeslice of duration <paramref name="samplingDuration"/>, the proportion of actions resulting in a handled exception or result exceeds <paramref name="failureThreshold"/>, provided also that the number of actions through the circuit in the timeslice is at least <paramref name="minimumThroughput" />. </para>
+        /// <para>
+        /// The circuit will break if, within any timeslice of duration <paramref name="samplingDuration"/>, the proportion of actions resulting in a failure exceeds <paramref name="failureThreshold"/>,
+        /// provided also that the number of actions through the circuit in the timeslice is at least <paramref name="minimumThroughput" />.
+        /// </para>
         /// <para>The circuit will stay broken for a dynamically calculated duration. Any attempt to execute this policy
         /// while the circuit is broken, will immediately throw a <see cref="BrokenCircuitException"/> containing the exception 
         /// that broke the circuit.
         /// </para>
-        /// <para>If the first action after the break duration period results in a handled exception, the circuit will break
+        /// <para>If the first action after the break duration period results in a failure, the circuit will break
         /// again for a newly calculated duration; if no exception is thrown, the circuit will reset.
         /// </para>
         /// </summary>
@@ -290,13 +314,16 @@ namespace Polly
 
         /// <summary>
         /// <para> Builds a <see cref="Policy{TResult}" /> that will function like a Circuit Breaker.</para>
-        /// <para>The circuit will break if, within any timeslice of duration <paramref name="samplingDuration" />, the proportion of actions resulting in a handled exception or result exceeds <paramref name="failureThreshold" />, provided also that the number of actions through the circuit in the timeslice is at least <paramref name="minimumThroughput" />. </para>
+        /// <para>
+        /// The circuit will break if, within any timeslice of duration <paramref name="samplingDuration"/>, the proportion of actions resulting in a failure exceeds <paramref name="failureThreshold"/>,
+        /// provided also that the number of actions through the circuit in the timeslice is at least <paramref name="minimumThroughput" />.
+        /// </para>
         /// <para>The circuit will stay broken for the <paramref name="durationOfBreak" />. Any attempt to execute this policy
         /// while the circuit is broken, will immediately throw a <see cref="BrokenCircuitException" /> containing the exception or result
         /// that broke the circuit.
         /// </para>
-        /// <para>If the first action after the break duration period results in a handled exception or result, the circuit will break
-        /// again for another <paramref name="durationOfBreak" />; if no exception or handled result is encountered, the circuit will reset.
+        /// <para>If the first action after the break duration period results in a failure, the circuit will break
+        /// again for another <paramref name="durationOfBreak" />; if no failure is encountered, the circuit will reset.
         /// </para>
         /// </summary>
         /// <typeparam name="TResult">The return type of delegates which may be executed through the policy.</typeparam>
@@ -326,12 +353,15 @@ namespace Polly
 
         /// <summary>
         /// <para> Builds a <see cref="Policy{TResult}" /> that will function like a Circuit Breaker.</para>
-        /// <para>The circuit will break if, within any timeslice of duration <paramref name="samplingDuration" />, the proportion of actions resulting in a handled exception or result exceeds <paramref name="failureThreshold" />, provided also that the number of actions through the circuit in the timeslice is at least <paramref name="minimumThroughput" />. </para>
+        /// <para>
+        /// The circuit will break if, within any timeslice of duration <paramref name="samplingDuration"/>, the proportion of actions resulting in a failure exceeds <paramref name="failureThreshold"/>,
+        /// provided also that the number of actions through the circuit in the timeslice is at least <paramref name="minimumThroughput" />.
+        /// </para>
         /// <para>The circuit will stay broken for a dynamically calculated duration. Any attempt to execute this policy
         /// while the circuit is broken, will immediately throw a <see cref="BrokenCircuitException"/> containing the exception 
         /// that broke the circuit.
         /// </para>
-        /// <para>If the first action after the break duration period results in a handled exception, the circuit will break
+        /// <para>If the first action after the break duration period results in a failure, the circuit will break
         /// again for a newly calculated duration; if no exception is thrown, the circuit will reset.
         /// </para>
         /// </summary>
@@ -365,13 +395,16 @@ namespace Polly
 
         /// <summary>
         /// <para> Builds a <see cref="Policy{TResult}" /> that will function like a Circuit Breaker.</para>
-        /// <para>The circuit will break if, within any timeslice of duration <paramref name="samplingDuration" />, the proportion of actions resulting in a handled exception or result exceeds <paramref name="failureThreshold" />, provided also that the number of actions through the circuit in the timeslice is at least <paramref name="minimumThroughput" />. </para>
+        /// <para>
+        /// The circuit will break if, within any timeslice of duration <paramref name="samplingDuration"/>, the proportion of actions resulting in a failure exceeds <paramref name="failureThreshold"/>,
+        /// provided also that the number of actions through the circuit in the timeslice is at least <paramref name="minimumThroughput" />.
+        /// </para>
         /// <para>The circuit will stay broken for the <paramref name="durationOfBreak" />. Any attempt to execute this policy
         /// while the circuit is broken, will immediately throw a <see cref="BrokenCircuitException" /> containing the exception or result
         /// that broke the circuit.
         /// </para>
-        /// <para>If the first action after the break duration period results in a handled exception or result, the circuit will break
-        /// again for another <paramref name="durationOfBreak" />; if no exception or handled result is encountered, the circuit will reset.
+        /// <para>If the first action after the break duration period results in a failure, the circuit will break
+        /// again for another <paramref name="durationOfBreak" />; if no failure is encountered, the circuit will reset.
         /// </para>
         /// </summary>
         /// <typeparam name="TResult">The return type of delegates which may be executed through the policy.</typeparam>
@@ -401,12 +434,15 @@ namespace Polly
 
         /// <summary>
         /// <para> Builds a <see cref="Policy{TResult}" /> that will function like a Circuit Breaker.</para>
-        /// <para>The circuit will break if, within any timeslice of duration <paramref name="samplingDuration" />, the proportion of actions resulting in a handled exception or result exceeds <paramref name="failureThreshold" />, provided also that the number of actions through the circuit in the timeslice is at least <paramref name="minimumThroughput" />. </para>
+        /// <para>
+        /// The circuit will break if, within any timeslice of duration <paramref name="samplingDuration"/>, the proportion of actions resulting in a failure exceeds <paramref name="failureThreshold"/>,
+        /// provided also that the number of actions through the circuit in the timeslice is at least <paramref name="minimumThroughput" />.
+        /// </para>
         /// <para>The circuit will stay broken for a dynamically calculated duration. Any attempt to execute this policy
         /// while the circuit is broken, will immediately throw a <see cref="BrokenCircuitException"/> containing the exception 
         /// that broke the circuit.
         /// </para>
-        /// <para>If the first action after the break duration period results in a handled exception, the circuit will break
+        /// <para>If the first action after the break duration period results in a failure, the circuit will break
         /// again for a newly calculated duration; if no exception is thrown, the circuit will reset.
         /// </para>
         /// </summary>
