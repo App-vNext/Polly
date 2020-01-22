@@ -59,7 +59,7 @@ namespace Polly.CircuitBreaker
             {
                 using (TimedLock.Lock(_lock))
                 {
-                    return _lastOutcome?.Exception;
+                    return _lastOutcome.Exception;
                 }
             }
         }
@@ -70,8 +70,7 @@ namespace Polly.CircuitBreaker
             {
                 using (TimedLock.Lock(_lock))
                 {
-                    return _lastOutcome != null 
-                        ? _lastOutcome.Result : default;
+                    return _lastOutcome.Result;
                 }
             }
         }
@@ -114,7 +113,7 @@ namespace Polly.CircuitBreaker
         protected void ResetInternal_NeedsLock(Context context)
         {
             _blockedTill = DateTime.MinValue.Ticks;
-            _lastOutcome = null;
+            _lastOutcome = default;
 
             CircuitState priorState = _circuitState;
             _circuitState = CircuitState.Closed;

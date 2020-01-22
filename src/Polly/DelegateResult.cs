@@ -5,19 +5,27 @@ namespace Polly
     /// <summary>
     /// The captured outcome of executing an individual Func&lt;TResult&gt;
     /// </summary>
-    public class DelegateResult<TResult>
+    public struct DelegateResult<TResult>
     {
         /// <summary>
         /// Create an instance of <see cref="DelegateResult{TResult}"/> representing an execution which returned <paramref name="result"/>
         /// </summary>
         /// <param name="result">The result.</param>
-        public DelegateResult(TResult result) => Result = result;
+        public DelegateResult(TResult result)
+        {
+            Result = result;
+            Exception = null;
+        }
 
         /// <summary>
         /// Create an instance of <see cref="DelegateResult{TResult}"/> representing an execution which threw <paramref name="exception"/>
         /// </summary>
         /// <param name="exception">The exception.</param>
-        public DelegateResult(Exception exception) => Exception = exception;
+        public DelegateResult(Exception exception)
+        {
+            Result = default;
+            Exception = exception;
+        }
 
         /// <summary>
         /// The result of executing the delegate. Will be default(TResult) if an exception was thrown.

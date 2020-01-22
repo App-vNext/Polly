@@ -505,7 +505,7 @@ namespace Polly.Specs.Fallback
         [Fact]
         public async Task Should_call_fallbackAction_with_the_fault()
         {
-            DelegateResult<ResultPrimitive> fallbackOutcome = null;
+            DelegateResult<ResultPrimitive>? fallbackOutcome = null;
 
             Func<DelegateResult<ResultPrimitive>, Context, CancellationToken, Task<ResultPrimitive>> fallbackAction = 
                 (outcome, ctx, ct) => { fallbackOutcome = outcome; return Task.FromResult(ResultPrimitive.Substitute); };
@@ -520,14 +520,14 @@ namespace Polly.Specs.Fallback
             result.Should().Be(ResultPrimitive.Substitute);
 
             fallbackOutcome.Should().NotBeNull();
-            fallbackOutcome.Exception.Should().BeNull();
-            fallbackOutcome.Result.Should().Be(ResultPrimitive.Fault);
+            fallbackOutcome.Value.Exception.Should().BeNull();
+            fallbackOutcome.Value.Result.Should().Be(ResultPrimitive.Fault);
         }
 
         [Fact]
         public async Task Should_call_fallbackAction_with_the_fault_when_execute_and_capture()
         {
-            DelegateResult<ResultPrimitive> fallbackOutcome = null;
+            DelegateResult<ResultPrimitive>? fallbackOutcome = null;
 
             Func<DelegateResult<ResultPrimitive>, Context, CancellationToken, Task<ResultPrimitive>> fallbackAction =
                 (outcome, ctx, ct) => { fallbackOutcome = outcome; return Task.FromResult(ResultPrimitive.Substitute); };
@@ -543,14 +543,14 @@ namespace Polly.Specs.Fallback
             result.Result.Should().Be(ResultPrimitive.Substitute);
 
             fallbackOutcome.Should().NotBeNull();
-            fallbackOutcome.Exception.Should().BeNull();
-            fallbackOutcome.Result.Should().Be(ResultPrimitive.Fault);
+            fallbackOutcome.Value.Exception.Should().BeNull();
+            fallbackOutcome.Value.Result.Should().Be(ResultPrimitive.Fault);
         }
 
         [Fact]
         public async Task Should_not_call_fallbackAction_with_the_fault_if_fault_unhandled()
         {
-            DelegateResult<ResultPrimitive> fallbackOutcome = null;
+            DelegateResult<ResultPrimitive>? fallbackOutcome = null;
 
             Func<DelegateResult<ResultPrimitive>, Context, CancellationToken, Task<ResultPrimitive>> fallbackAction =
                 (outcome, ctx, ct) => { fallbackOutcome = outcome; return Task.FromResult(ResultPrimitive.Substitute); };
