@@ -62,6 +62,21 @@ namespace Polly.Caching
                         continueOnCapturedContext
                     ).ConfigureAwait(continueOnCapturedContext);
         }
+
+        /// <summary>
+        /// Removes the specified value from the cache.
+        /// </summary>
+        /// <param name="key">The cache key.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <param name="continueOnCapturedContext">Whether async calls should continue on a captured synchronization context.</param>
+        /// <returns>A <see cref="Task" /> which completes when the value has been removed.</returns>
+        public async Task RemoveAsync(string key, CancellationToken cancellationToken, bool continueOnCapturedContext)
+        {
+            await _wrappedCacheProvider.RemoveAsync(
+                key,
+                cancellationToken,
+                continueOnCapturedContext).ConfigureAwait(continueOnCapturedContext);
+        }
     }
 
     /// <summary>
@@ -122,6 +137,21 @@ namespace Polly.Caching
                         cancellationToken,
                         continueOnCapturedContext
                     ).ConfigureAwait(continueOnCapturedContext);
+        }
+        
+        /// <summary>
+        /// Removes the specified value from the cache.
+        /// </summary>
+        /// <param name="key">The cache key.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <param name="continueOnCapturedContext">Whether async calls should continue on a captured synchronization context.</param>
+        /// <returns>A <see cref="Task" /> which completes when the value has been removed.</returns>
+        public async Task RemoveAsync(string key, CancellationToken cancellationToken, bool continueOnCapturedContext)
+        {
+            await _wrappedCacheProvider.RemoveAsync(
+                key,
+                cancellationToken,
+                continueOnCapturedContext).ConfigureAwait(continueOnCapturedContext);
         }
     }
 }

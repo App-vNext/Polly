@@ -21,5 +21,8 @@ namespace Polly.Caching
 
         void ISyncCacheProvider<TCacheFormat>.Put(string key, TCacheFormat value, Ttl ttl)
             => _wrappedCacheProvider.Put(key, value, ttl);
+
+        void ISyncCacheProvider<TCacheFormat>.Remove(string key)
+            => _wrappedCacheProvider.Remove(key);
     }
 }

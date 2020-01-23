@@ -46,6 +46,15 @@ namespace Polly.Specs.Helpers.Caching
         {
             cachedValues[key] = new CacheItem(value, ttl);
         }
+        
+        /// <summary>
+        /// Removes the specified value from the cache.
+        /// </summary>
+        /// <param name="key">The cache key.</param>
+        public void Remove(string key)
+        {
+            cachedValues.Remove(key);
+        }
 
         #region Naive async-over-sync implementation
 
@@ -58,6 +67,12 @@ namespace Polly.Specs.Helpers.Caching
         public Task PutAsync(string key, object value, Ttl ttl, CancellationToken cancellationToken, bool continueOnCapturedContext)
         {
             Put(key, value, ttl);
+            return TaskHelper.EmptyTask;
+        }
+        
+        public Task RemoveAsync(string key, CancellationToken cancellationToken, bool continueOnCapturedContext)
+        {
+            Remove(key);
             return TaskHelper.EmptyTask;
         }
 

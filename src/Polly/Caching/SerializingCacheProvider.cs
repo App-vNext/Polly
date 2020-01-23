@@ -49,6 +49,14 @@ namespace Polly.Caching
             _wrappedCacheProvider.Put(key, _serializer.Serialize(value), ttl);
         }
 
+        /// <summary>
+        /// Removes the specified value from the cache.
+        /// </summary>
+        /// <param name="key">The cache key.</param>
+        public void Remove(string key)
+        {
+            _wrappedCacheProvider.Remove(key);
+        }
     }
 
     /// <summary>
@@ -99,5 +107,13 @@ namespace Polly.Caching
             _wrappedCacheProvider.Put(key, _serializer.Serialize(value), ttl);
         }
 
+        /// <summary>
+        /// Removes the specified value from the cache.
+        /// </summary>
+        /// <param name="key">The cache key.</param>
+        public void Remove(string key)
+        {
+            _wrappedCacheProvider.Remove(key);
+        }
     }
 }

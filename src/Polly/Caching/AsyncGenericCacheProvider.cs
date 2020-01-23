@@ -23,5 +23,8 @@ namespace Polly.Caching
 
         Task IAsyncCacheProvider<TCacheFormat>.PutAsync(string key, TCacheFormat value, Ttl ttl, CancellationToken cancellationToken, bool continueOnCapturedContext)
             => _wrappedCacheProvider.PutAsync(key, value, ttl, cancellationToken, continueOnCapturedContext);
+
+        Task IAsyncCacheProvider<TCacheFormat>.RemoveAsync(string key, CancellationToken cancellationToken, bool continueOnCapturedContext)
+            => _wrappedCacheProvider.RemoveAsync(key, cancellationToken, continueOnCapturedContext);
     }
 }

@@ -10,13 +10,15 @@ namespace Polly.Specs.Helpers.Caching
     {
         private Exception _getException;
         private Exception _putException;
+        private Exception _removeException;
 
         private StubCacheProvider innerProvider = new StubCacheProvider();
 
-        public StubErroringCacheProvider(Exception getException, Exception putException)
+        public StubErroringCacheProvider(Exception getException, Exception putException, Exception removeException)
         {
             _getException = getException;
             _putException = putException;
+            _removeException = removeException;
         }
 
         public (bool, object) TryGet(string key)
@@ -31,6 +33,12 @@ namespace Polly.Specs.Helpers.Caching
             innerProvider.Put(key, value, ttl);
         }
 
+        public void Remove(string key)
+        {
+            if (_removeException != null) throw _removeException;
+            innerProvider.Remove(key);
+        }
+
         #region Naive async-over-sync implementation
 
         // Intentionally naive async-over-sync implementation.  Its purpose is to be the simplest thing to support tests of the CachePolicyAsync and CacheEngineAsync, not to be a usable implementation of IAsyncCacheProvider.  
@@ -42,6 +50,12 @@ namespace Polly.Specs.Helpers.Caching
         public Task PutAsync(string key, object value, Ttl ttl, CancellationToken cancellationToken, bool continueOnCapturedContext)
         {
             Put(key, value, ttl);
+            return TaskHelper.EmptyTask;
+        }
+
+        public Task RemoveAsync(string key, CancellationToken cancellationToken, bool continueOnCapturedContext)
+        {
+            Remove(key);
             return TaskHelper.EmptyTask;
         }
 

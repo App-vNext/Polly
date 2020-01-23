@@ -225,6 +225,24 @@ namespace Polly.Specs.Caching
             funcExecuted.Should().BeFalse();
         }
 
+        [Fact]
+        public void Should_not_return_value_from_cache_after_removing()
+        {
+            const string cacheValue = "some_value";
+            const string cacheKey = "some_key";
+
+            var stubCacheProvider = new StubCacheProvider();
+            var cache = Policy.Cache(stubCacheProvider, TimeSpan.MaxValue);
+
+            cache.Execute( _ => cacheValue, new Context(cacheKey)).Should().Be(cacheValue);
+            
+            stubCacheProvider.Remove(cacheKey);
+
+            var (hit, valueFromCache) = stubCacheProvider.TryGet(cacheKey);
+            hit.Should().BeFalse();
+            valueFromCache.Should().BeNull();
+        }
+
         #endregion
 
         #region Caching behaviours, default(TResult)
@@ -506,7 +524,8 @@ namespace Polly.Specs.Caching
         public void Should_call_onError_delegate_if_cache_get_errors()
         {
             Exception ex = new Exception();
-            ISyncCacheProvider stubCacheProvider = new StubErroringCacheProvider(getException: ex, putException: null);
+            ISyncCacheProvider stubCacheProvider = new StubErroringCacheProvider(getException: ex, putException: null,
+                removeException: null);
 
             Exception exceptionFromCacheProvider = null;
 
@@ -540,7 +559,8 @@ namespace Polly.Specs.Caching
         public void Should_call_onError_delegate_if_cache_put_errors()
         {
             Exception ex = new Exception();
-            ISyncCacheProvider stubCacheProvider = new StubErroringCacheProvider(getException: null, putException: ex);
+            ISyncCacheProvider stubCacheProvider = new StubErroringCacheProvider(getException: null, putException: ex,
+                removeException: null);
 
             Exception exceptionFromCacheProvider = null;
 
@@ -688,6 +708,27 @@ namespace Polly.Specs.Caching
             cache.Execute(() => valueToReturn /*, no operation key */).Should().Be(valueToReturn);
 
             onCacheMissExecuted.Should().BeFalse();
+        }
+
+        [Fact]
+        public void Should_call_onError_delegate_if_cache_remove_errors()
+        {
+            const string cacheKey = "some_key";
+            const string cacheValue = "some_value";
+            var ex = new Exception();
+            ISyncCacheProvider stubCacheProvider = new StubErroringCacheProvider(getException: null, putException: null,
+                removeException: ex);
+
+            stubCacheProvider.Put(cacheKey, cacheValue, new Ttl(TimeSpan.MaxValue));
+            var beforeRemoveTuple = stubCacheProvider.TryGet(cacheKey);
+            beforeRemoveTuple.Item1.Should().BeTrue();
+            beforeRemoveTuple.Item2.Should().Be(cacheValue);
+
+            Assert.Throws<Exception>(() => stubCacheProvider.Remove(cacheKey));
+
+            var afterRemoveTuple = stubCacheProvider.TryGet(cacheKey);
+            afterRemoveTuple.Item1.Should().BeTrue();
+            afterRemoveTuple.Item2.Should().Be(cacheValue);
         }
 
         #endregion

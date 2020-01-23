@@ -323,6 +323,31 @@ namespace Polly.Specs.Caching
             delegateExecuted.Should().BeFalse();
         }
 
+        [Fact]
+        public async Task Should_not_return_value_from_cache_after_removing()
+        {
+            const string cacheValue = "some_value";
+            const string cacheKey = "some_key";
+
+            var stubCacheProvider = new StubCacheProvider();
+            var cache = Policy.CacheAsync(stubCacheProvider, TimeSpan.MaxValue);
+            
+            var executeResult = await cache.ExecuteAsync(async _ =>
+                {
+                    await TaskHelper.EmptyTask.ConfigureAwait(false);
+                    return cacheValue;
+                }, new Context(cacheKey)
+            ).ConfigureAwait(false);
+
+            executeResult.Should().Be(cacheValue);
+
+            await stubCacheProvider.RemoveAsync(cacheKey, CancellationToken.None, false).ConfigureAwait(false);
+
+            var getFromCacheTuple = await stubCacheProvider.TryGetAsync(cacheKey, CancellationToken.None, false).ConfigureAwait(false);
+            getFromCacheTuple.Item1.Should().BeFalse();
+            getFromCacheTuple.Item2.Should().BeNull();
+        }
+
         #endregion
 
         #region Non-generic CachePolicy in non-generic PolicyWrap
@@ -521,7 +546,8 @@ namespace Polly.Specs.Caching
         public async Task Should_call_onError_delegate_if_cache_get_errors()
         {
             Exception ex = new Exception();
-            IAsyncCacheProvider stubCacheProvider = new StubErroringCacheProvider(getException: ex, putException: null);
+            IAsyncCacheProvider stubCacheProvider = new StubErroringCacheProvider(getException: ex, putException: null, 
+                removeException: null);
 
             Exception exceptionFromCacheProvider = null;
 
@@ -558,7 +584,8 @@ namespace Polly.Specs.Caching
         public async Task Should_call_onError_delegate_if_cache_put_errors()
         {
             Exception ex = new Exception();
-            IAsyncCacheProvider stubCacheProvider = new StubErroringCacheProvider(getException: null, putException: ex);
+            IAsyncCacheProvider stubCacheProvider = new StubErroringCacheProvider(getException: null, putException: ex,
+                removeException: null);
 
             Exception exceptionFromCacheProvider = null;
 
@@ -706,6 +733,28 @@ namespace Polly.Specs.Caching
             .Should().Be(valueToReturn);
 
             onCacheMissExecuted.Should().BeFalse();
+        }
+
+        [Fact]
+        public async Task Should_call_onError_delegate_if_cache_remove_errors()
+        {
+            const string cacheKey = "some_key";
+            const string cacheValue = "some_value";
+            var ex = new Exception();
+            IAsyncCacheProvider stubCacheProvider = new StubErroringCacheProvider(getException: null, putException: null,
+                removeException: ex);
+
+            await stubCacheProvider.PutAsync(cacheKey, cacheValue, new Ttl(TimeSpan.MaxValue), CancellationToken.None, false);
+            var beforeRemoveTuple = await stubCacheProvider.TryGetAsync(cacheKey, CancellationToken.None, false).ConfigureAwait(false);
+            beforeRemoveTuple.Item1.Should().BeTrue();
+            beforeRemoveTuple.Item2.Should().Be(cacheValue);
+
+            await Assert.ThrowsAsync<Exception>(() =>
+                stubCacheProvider.RemoveAsync(cacheKey, CancellationToken.None, false));
+
+            var afterRemoveTuple = await stubCacheProvider.TryGetAsync(cacheKey, CancellationToken.None, false).ConfigureAwait(false);
+            afterRemoveTuple.Item1.Should().BeTrue();
+            afterRemoveTuple.Item2.Should().Be(cacheValue);
         }
 
         #endregion

@@ -24,6 +24,12 @@ namespace Polly.Caching
         /// <param name="value">The value to put into the cache.</param>
         /// <param name="ttl">The time-to-live for the cache entry.</param>
         void Put(string key, object value, Ttl ttl);
+
+        /// <summary>
+        /// Removes the specified value from the cache.
+        /// </summary>
+        /// <param name="key">The cache key.</param>
+        void Remove(string key);
     }
 
     /// <summary>
@@ -48,5 +54,11 @@ namespace Polly.Caching
         /// <param name="value">The value to put into the cache.</param>
         /// <param name="ttl">The time-to-live for the cache entry.</param>
         void Put(string key, TResult value, Ttl ttl);
+
+        /// <summary>
+        /// Removes the specified value from the cache.
+        /// </summary>
+        /// <param name="key">The cache key.</param>
+        void Remove(string key);
     }
 }
