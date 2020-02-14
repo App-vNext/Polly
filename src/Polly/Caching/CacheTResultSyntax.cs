@@ -99,6 +99,7 @@ namespace Polly
         public static CachePolicy<TResult> Cache<TResult>(ISyncCacheProvider cacheProvider, TimeSpan ttl, Func<Context, string> cacheKeyStrategy, Action<Context, string, Exception> onCacheError = null)
         {
             if (cacheProvider == null) throw new ArgumentNullException(nameof(cacheProvider));
+            if (cacheKeyStrategy == null) throw new ArgumentNullException(nameof(cacheKeyStrategy));
 
             return Cache<TResult>(cacheProvider.For<TResult>(), new RelativeTtl(ttl), cacheKeyStrategy, onCacheError);
         }
@@ -419,12 +420,7 @@ namespace Polly
         /// <exception cref="ArgumentNullException">cacheKeyStrategy</exception>
         public static CachePolicy<TResult> Cache<TResult>(ISyncCacheProvider<TResult> cacheProvider, ITtlStrategy ttlStrategy, ICacheKeyStrategy cacheKeyStrategy, Action<Context, string, Exception> onCacheError = null)
         {
-            onCacheError = onCacheError ?? ((_, __, ___) => { });
-
-            Action<Context, string> emptyDelegate = (_, __) => { };
-
-            return Cache<TResult>(cacheProvider, ttlStrategy.For<TResult>(), cacheKeyStrategy.GetCacheKey,
-                emptyDelegate, emptyDelegate, emptyDelegate, onCacheError, onCacheError);
+            return Cache(cacheProvider, ttlStrategy.For<TResult>(), cacheKeyStrategy, onCacheError);
         }
 
         /// <summary>
@@ -443,12 +439,9 @@ namespace Polly
         /// <exception cref="ArgumentNullException">cacheKeyStrategy</exception>
         public static CachePolicy<TResult> Cache<TResult>(ISyncCacheProvider<TResult> cacheProvider, ITtlStrategy<TResult> ttlStrategy, ICacheKeyStrategy cacheKeyStrategy, Action<Context, string, Exception> onCacheError = null)
         {
-            onCacheError = onCacheError ?? ((_, __, ___) => { });
+            if (cacheKeyStrategy == null) throw new ArgumentNullException(nameof(cacheKeyStrategy));
 
-            Action<Context, string> emptyDelegate = (_, __) => { };
-
-            return Cache(cacheProvider, ttlStrategy, cacheKeyStrategy, emptyDelegate, emptyDelegate, emptyDelegate,
-                onCacheError, onCacheError);
+            return Cache(cacheProvider, ttlStrategy, cacheKeyStrategy.GetCacheKey, onCacheError);
         }
 
         /// <summary>
@@ -483,12 +476,7 @@ namespace Polly
         /// <exception cref="ArgumentNullException">cacheKeyStrategy</exception>
         public static CachePolicy<TResult> Cache<TResult>(ISyncCacheProvider<TResult> cacheProvider, ITtlStrategy ttlStrategy, Func<Context, string> cacheKeyStrategy, Action<Context, string, Exception> onCacheError = null)
         {
-            onCacheError = onCacheError ?? ((_, __, ___) => { });
-
-            Action<Context, string> emptyDelegate = (_, __) => { };
-
-            return Cache<TResult>(cacheProvider, ttlStrategy.For<TResult>(), cacheKeyStrategy,
-                emptyDelegate, emptyDelegate, emptyDelegate, onCacheError, onCacheError);
+            return Cache<TResult>(cacheProvider, ttlStrategy.For<TResult>(), cacheKeyStrategy, onCacheError);
         }
 
         /// <summary>
@@ -507,12 +495,12 @@ namespace Polly
         /// <exception cref="ArgumentNullException">cacheKeyStrategy</exception>
         public static CachePolicy<TResult> Cache<TResult>(ISyncCacheProvider<TResult> cacheProvider, ITtlStrategy<TResult> ttlStrategy, Func<Context, string> cacheKeyStrategy, Action<Context, string, Exception> onCacheError = null)
         {
-            onCacheError = onCacheError ?? ((_, __, ___) => { });
-
-            Action<Context, string> emptyDelegate = (_, __) => { };
-
-            return Cache(cacheProvider, ttlStrategy, cacheKeyStrategy, emptyDelegate, emptyDelegate, emptyDelegate,
-                onCacheError, onCacheError);
+            return Cache(cacheProvider, ttlStrategy, options =>
+            {
+                options.CacheKeyStrategy = cacheKeyStrategy;
+                options.OnCacheGetError = onCacheError;
+                options.OnCachePutError = onCacheError;
+            });
         }
 
         /// <summary>
@@ -543,7 +531,7 @@ namespace Polly
             Action<Context, string> onCachePut,
             Action<Context, string, Exception> onCacheGetError,
             Action<Context, string, Exception> onCachePutError)
-            => Cache<TResult>(cacheProvider, new RelativeTtl(ttl), DefaultCacheKeyStrategy.Instance.GetCacheKey, onCacheGet, onCacheMiss,
+            => Cache(cacheProvider, new RelativeTtl(ttl).For<TResult>(), onCacheGet, onCacheMiss,
                 onCachePut, onCacheGetError, onCachePutError);
 
         /// <summary>
@@ -606,7 +594,14 @@ namespace Polly
             Action<Context, string> onCachePut,
             Action<Context, string, Exception> onCacheGetError,
             Action<Context, string, Exception> onCachePutError)
-            => Cache<TResult>(cacheProvider, ttlStrategy, DefaultCacheKeyStrategy.Instance.GetCacheKey, onCacheGet, onCacheMiss, onCachePut, onCacheGetError, onCachePutError);
+            => Cache(cacheProvider, ttlStrategy, options =>
+            {
+                options.OnCacheGet = onCacheGet;
+                options.OnCacheMiss = onCacheMiss;
+                options.OnCachePut = onCachePut;
+                options.OnCacheGetError = onCacheGetError;
+                options.OnCachePutError = onCachePutError;
+            });
 
         /// <summary>
         /// <para>Builds a <see cref="Policy{TResult}" /> that will function like a result cache for delegate executions returning a <typeparamref name="TResult"/>.</para>
@@ -674,7 +669,7 @@ namespace Polly
             Action<Context, string> onCachePut,
             Action<Context, string, Exception> onCacheGetError,
             Action<Context, string, Exception> onCachePutError)
-            => Cache<TResult>(cacheProvider, ttlStrategy, cacheKeyStrategy.GetCacheKey, onCacheGet, onCacheMiss, onCachePut, onCacheGetError, onCachePutError);
+            => Cache(cacheProvider, ttlStrategy, cacheKeyStrategy.GetCacheKey, onCacheGet, onCacheMiss, onCachePut, onCacheGetError, onCachePutError);
 
         /// <summary>
         /// <para>Builds a <see cref="Policy{TResult}" /> that will function like a result cache for delegate executions returning a <typeparamref name="TResult"/>.</para>
@@ -708,7 +703,15 @@ namespace Polly
             Action<Context, string> onCachePut,
             Action<Context, string, Exception> onCacheGetError,
             Action<Context, string, Exception> onCachePutError)
-            => Cache<TResult>(cacheProvider, ttlStrategy, cacheKeyStrategy.GetCacheKey, onCacheGet, onCacheMiss, onCachePut, onCacheGetError, onCachePutError);
+            => Cache(cacheProvider, ttlStrategy, options =>
+            {
+                options.CacheKeyStrategy = cacheKeyStrategy.GetCacheKey;
+                options.OnCacheGet = onCacheGet;
+                options.OnCacheMiss = onCacheMiss;
+                options.OnCachePut = onCachePut;
+                options.OnCacheGetError = onCacheGetError;
+                options.OnCachePutError = onCachePutError;
+            });
 
         /// <summary>
         /// <para>Builds a <see cref="Policy{TResult}" /> that will function like a result cache for delegate executions returning a <typeparamref name="TResult"/>.</para>
@@ -741,7 +744,7 @@ namespace Polly
             Action<Context, string> onCachePut,
             Action<Context, string, Exception> onCacheGetError,
             Action<Context, string, Exception> onCachePutError)
-           =>  Cache<TResult>(cacheProvider, new RelativeTtl(ttl), cacheKeyStrategy, onCacheGet, onCacheMiss,
+           => Cache(cacheProvider, new RelativeTtl(ttl), cacheKeyStrategy, onCacheGet, onCacheMiss,
                 onCachePut, onCacheGetError, onCachePutError);
 
         /// <summary>
@@ -776,53 +779,50 @@ namespace Polly
             Action<Context, string> onCachePut,
             Action<Context, string, Exception> onCacheGetError,
             Action<Context, string, Exception> onCachePutError)
-            => Cache(cacheProvider, ttlStrategy.For<TResult>(), cacheKeyStrategy, onCacheGet, onCacheMiss,
-                onCachePut, onCacheGetError, onCachePutError);
+            => Cache(cacheProvider, ttlStrategy.For<TResult>(), options =>
+            {
+                options.CacheKeyStrategy = cacheKeyStrategy;
+                options.OnCacheGet = onCacheGet;
+                options.OnCacheMiss = onCacheMiss;
+                options.OnCachePut = onCachePut;
+                options.OnCacheGetError = onCacheGetError;
+                options.OnCachePutError = onCachePutError;
+            });
 
         /// <summary>
         /// <para>Builds a <see cref="Policy{TResult}" /> that will function like a result cache for delegate executions returning a <typeparamref name="TResult"/>.</para>
-        /// <para>Before executing a delegate, checks whether the <paramref name="cacheProvider" /> holds a value for the cache key determined by applying the <paramref name="cacheKeyStrategy"/> to the execution <see cref="Context"/>.
-        /// If the <paramref name="cacheProvider" /> provides a value from cache, returns that value and does not execute the governed delegate.  If the <paramref name="cacheProvider" /> does not provide a value, executes the governed delegate, stores the value with the <paramref name="cacheProvider" />, then returns the value.
+        /// <para>Before executing a delegate, checks whether the <paramref name="cacheProvider" /> holds a value for the cache key determined by applying the cache key strategy to the execution <see cref="Context"/>.
+        /// If the <paramref name="cacheProvider" /> provides a value from cache, returns that value and does not execute the governed delegate. If the <paramref name="cacheProvider" /> does not provide a value, executes the governed delegate, stores the value with the <paramref name="cacheProvider" />, then returns the value.
         /// </para>
         /// </summary>
         /// <param name="cacheProvider">The cache provider.</param>
-        /// <param name="ttlStrategy">A strategy for specifying ttl for values to be cached.</param>
-        /// <param name="cacheKeyStrategy">The cache key strategy.</param>
-        /// <param name="onCacheGet">Delegate to call on a cache hit, when value is returned from cache.</param>
-        /// <param name="onCacheMiss">Delegate to call on a cache miss.</param>
-        /// <param name="onCachePut">Delegate to call on cache put.</param>
-        /// <param name="onCacheGetError">Delegate to call if an exception is thrown when attempting to get a value from the cache, passing the execution context, the cache key, and the exception.</param>
-        /// <param name="onCachePutError">Delegate to call if an exception is thrown when attempting to put a value in the cache, passing the execution context, the cache key, and the exception.</param>
+        /// <param name="ttlStrategy">A strategy for specifying TTL for values to be cached.</param>
+        /// <param name="configureOptions">An <see cref="Action{T}"/> to configure the provided <see cref="CachePolicyOptions"/>.</param>
         /// <returns>The policy instance.</returns>
         /// <exception cref="ArgumentNullException">cacheProvider</exception>
         /// <exception cref="ArgumentNullException">ttlStrategy</exception>
-        /// <exception cref="ArgumentNullException">cacheKeyStrategy</exception>
-        /// <exception cref="ArgumentNullException">onCacheGet</exception>
-        /// <exception cref="ArgumentNullException">onCacheMiss</exception>
-        /// <exception cref="ArgumentNullException">onCachePut</exception>
-        /// <exception cref="ArgumentNullException">onCacheGetError</exception>
-        /// <exception cref="ArgumentNullException">onCachePutError</exception>
-        public static CachePolicy<TResult> Cache<TResult>(
-            ISyncCacheProvider<TResult> cacheProvider,
-            ITtlStrategy<TResult> ttlStrategy,
-            Func<Context, string> cacheKeyStrategy,
-            Action<Context, string> onCacheGet,
-            Action<Context, string> onCacheMiss,
-            Action<Context, string> onCachePut,
-            Action<Context, string, Exception> onCacheGetError,
-            Action<Context, string, Exception> onCachePutError)
+        /// <exception cref="ArgumentNullException">configureOptions</exception>
+        public static CachePolicy<TResult> Cache<TResult>(ISyncCacheProvider<TResult> cacheProvider, ITtlStrategy<TResult> ttlStrategy, Action<CachePolicyOptions> configureOptions)
         {
             if (cacheProvider == null) throw new ArgumentNullException(nameof(cacheProvider));
             if (ttlStrategy == null) throw new ArgumentNullException(nameof(ttlStrategy));
-            if (cacheKeyStrategy == null) throw new ArgumentNullException(nameof(cacheKeyStrategy));
+            if (configureOptions == null) throw new ArgumentNullException(nameof(configureOptions));
 
-            if (onCacheGet == null) throw new ArgumentNullException(nameof(onCacheGet));
-            if (onCacheMiss == null) throw new ArgumentNullException(nameof(onCacheMiss));
-            if (onCachePut == null) throw new ArgumentNullException(nameof(onCachePut));
-            if (onCachePutError == null) throw new ArgumentNullException(nameof(onCachePutError));
-            if (onCachePutError == null) throw new ArgumentNullException(nameof(onCachePutError));
+            var options = new CachePolicyOptions();
+            configureOptions(options);
 
-            return new CachePolicy<TResult>(cacheProvider, ttlStrategy, cacheKeyStrategy, onCacheGet, onCacheMiss, onCachePut, onCacheGetError, onCachePutError);
+            Action<Context, string> emptyDelegate = (_, __) => { };
+            Action<Context, string, Exception> emptyErrorDelegate = (_, __, ___) => { };
+
+            return new CachePolicy<TResult>(
+                cacheProvider,
+                ttlStrategy,
+                options.CacheKeyStrategy ?? DefaultCacheKeyStrategy.Instance.GetCacheKey,
+                options.OnCacheGet ?? emptyDelegate,
+                options.OnCacheMiss ?? emptyDelegate,
+                options.OnCachePut ?? emptyDelegate,
+                options.OnCacheGetError ?? emptyErrorDelegate,
+                options.OnCachePutError ?? emptyErrorDelegate);
         }
     }
 }
