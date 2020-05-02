@@ -1,3 +1,7 @@
+## 7.2.1
+- Upgrade SourceLink to RTM v1 (fixes building from source for latest .NET Core 3.1.x)
+- Bug fix: rare circuit-breaker race condition causing NullReferenceException when circuit throws BrokenCircuitException.
+
 ## 7.2.0
 - Add test target for netcoreapp3.0.
 - Extend PolicyRegistry with concurrent method support, TryAdd, TryRemove, TryUpdate, GetOrAdd, AddOrUpdate; new interface IConcurrentPolicyRegistry
