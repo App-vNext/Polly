@@ -10,7 +10,7 @@
     <InformationalVersion>7.1.1.0</InformationalVersion>
     <PackageVersion>7.1.1</PackageVersion>
     <Company>App vNext</Company>
-    <Copyright>Copyright (c) 2019, App vNext</Copyright>
+    <Copyright>Copyright (c) 2020, App vNext</Copyright>
     <Description>Polly is a library that allows developers to express resilience and transient fault handling policies such as Retry, Circuit Breaker, Timeout, Bulkhead Isolation, and Fallback in a fluent and thread-safe manner.</Description>
     <DefaultLanguage>en-US</DefaultLanguage>
     <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
