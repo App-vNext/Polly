@@ -4,6 +4,7 @@
     <TargetFrameworks>netcoreapp1.1;netcoreapp2.0;netcoreapp3.0;net461;net472</TargetFrameworks>
     <!-- Disable warning about End-of-Life .NET versions -->
     <CheckEolTargetFramework>false</CheckEolTargetFramework>
+    <DisableImplicitNuGetFallbackFolder>true</DisableImplicitNuGetFallbackFolder>
   </PropertyGroup>
 
   <ItemGroup>
