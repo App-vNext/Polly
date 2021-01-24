@@ -294,6 +294,52 @@ namespace Polly.Specs.Retry
         }
 
         [Fact]
+        public void Should_call_onretry_with_handled_exception_nested_in_aggregate_inside_another_aggregate_as_first_exception()
+        {
+            Exception passedToOnRetry = null;
+
+            var policy = Policy
+                .HandleInner<DivideByZeroException>()
+                .Retry(3, (exception, _) => passedToOnRetry = exception);
+
+            Exception toRaiseAsInner = new DivideByZeroException();
+
+            Exception aggregateException = new AggregateException(
+                new AggregateException(
+                    new Exception("First: With Inner Exception",
+                        toRaiseAsInner),
+                    new Exception("Second: Without Inner Exception")),
+                new Exception("Exception"));
+
+            policy.RaiseException(aggregateException);
+
+            passedToOnRetry.Should().BeSameAs(toRaiseAsInner);
+        }
+
+        [Fact]
+        public void Should_call_onretry_with_handled_exception_nested_in_aggregate_inside_another_aggregate_as_second_exception()
+        {
+            Exception passedToOnRetry = null;
+
+            var policy = Policy
+                .HandleInner<DivideByZeroException>()
+                .Retry(3, (exception, _) => passedToOnRetry = exception);
+
+            Exception toRaiseAsInner = new DivideByZeroException();
+
+            Exception aggregateException = new AggregateException(
+                new Exception("Exception"),
+                new AggregateException(
+                    new Exception("First: Without Inner Exception"),
+                    new Exception("Second: With Inner Exception",
+                        toRaiseAsInner)));
+
+            policy.RaiseException(aggregateException);
+
+            passedToOnRetry.Should().BeSameAs(toRaiseAsInner);
+        }
+
+        [Fact]
         public void Should_not_call_onretry_when_no_retries_are_performed()
         {
             var retryCounts = new List<int>();
