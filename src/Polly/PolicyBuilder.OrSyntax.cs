@@ -58,8 +58,13 @@ namespace Polly
             {
                 if (exception is AggregateException aggregateException)
                 {
-                    Exception matchedInAggregate = aggregateException.Flatten().InnerExceptions.FirstOrDefault(predicate);
-                    if (matchedInAggregate != null) return matchedInAggregate;
+                    //search all inner exceptions wrapped inside the AggregateException recursively
+                    foreach (var innerException in aggregateException.Flatten().InnerExceptions)
+                    {
+                        var matchedInAggregate = HandleInnerNested(predicate, innerException);
+                        if (matchedInAggregate != null)
+                            return matchedInAggregate;
+                    }
                 }
 
                 return HandleInnerNested(predicate, exception);
