@@ -273,7 +273,7 @@ namespace Polly
         {
             if (timeoutProvider == null) throw new ArgumentNullException(nameof(timeoutProvider));
 
-            return TimeoutAsync<TResult>(ctx => timeoutProvider(), onTimeoutAsync);
+            return TimeoutAsync<TResult>(ctx => timeoutProvider(), timeoutStrategy, onTimeoutAsync);
         }
 
         /// <summary>
