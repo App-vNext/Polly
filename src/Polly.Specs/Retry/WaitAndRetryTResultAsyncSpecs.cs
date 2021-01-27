@@ -14,8 +14,7 @@ namespace Polly.Specs.Retry
     {
         public WaitAndRetryTResultAsyncSpecs()
         {
-            // do nothing on call to sleep
-            SystemClock.SleepAsync = (_, __) => TaskHelper.EmptyTask;
+            SystemClock.Current = new TestSystemClock();
         }
 
         [Fact]

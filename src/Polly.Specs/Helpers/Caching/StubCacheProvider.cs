@@ -16,7 +16,7 @@ namespace Polly.Specs.Helpers.Caching
         {
             public CacheItem(object value, Ttl ttl)
             {
-                Expiry = DateTimeOffset.MaxValue - SystemClock.DateTimeOffsetUtcNow() > ttl.Timespan ? SystemClock.DateTimeOffsetUtcNow().Add(ttl.Timespan) : DateTimeOffset.MaxValue;
+                Expiry = DateTimeOffset.MaxValue - SystemClock.Current.DateTimeOffsetUtcNow > ttl.Timespan ? SystemClock.Current.DateTimeOffsetUtcNow.Add(ttl.Timespan) : DateTimeOffset.MaxValue;
                 Value = value;
             }
 
@@ -30,7 +30,7 @@ namespace Polly.Specs.Helpers.Caching
         {
             if (cachedValues.ContainsKey(key))
             {
-                if (SystemClock.DateTimeOffsetUtcNow() < cachedValues[key].Expiry)
+                if (SystemClock.Current.DateTimeOffsetUtcNow < cachedValues[key].Expiry)
                 {
                     return (true, cachedValues[key].Value);
                 }

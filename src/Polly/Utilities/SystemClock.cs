@@ -4,63 +4,43 @@ using System.Threading.Tasks;
 
 namespace Polly.Utilities
 {
-    /// <summary>
-    /// Time related delegates used to support different compilation targets and to improve testability of the code.
-    /// </summary>
-    public static class SystemClock
+    /// <inheritdoc/>
+    public sealed class SystemClock : ISystemClock
     {
-        /// <summary>
-        /// Allows the setting of a custom Thread.Sleep implementation for testing.
-        /// By default this will use the <see cref="CancellationToken"/>'s <see cref="WaitHandle"/>.
-        /// </summary>
-        public static Action<TimeSpan, CancellationToken> Sleep = (timeSpan, cancellationToken) =>
-        {
-            if (cancellationToken.WaitHandle.WaitOne(timeSpan)) cancellationToken.ThrowIfCancellationRequested();
-        };
+        private SystemClock() { }
 
         /// <summary>
-        /// Allows the setting of a custom async Sleep implementation for testing.
-        /// By default this will be a call to <see cref="M:Task.Delay"/> taking a <see cref="CancellationToken"/>
+        /// Gets the default <see cref="ISystemClock"/> instance.
         /// </summary>
-        public static Func<TimeSpan, CancellationToken, Task> SleepAsync = Task.Delay;
+        public static ISystemClock Default { get; } = new SystemClock();
 
         /// <summary>
-        /// Allows the setting of a custom DateTime.UtcNow implementation for testing.
-        /// By default this will be a call to <see cref="DateTime.UtcNow"/>
+        /// Gets or sets the ambient system clock.
         /// </summary>
-        public static Func<DateTime> UtcNow = () => DateTime.UtcNow;
+        public static ISystemClock Current { get; set; } = Default;
 
         /// <summary>
-        /// Allows the setting of a custom DateTimeOffset.UtcNow implementation for testing.
-        /// By default this will be a call to <see cref="DateTime.UtcNow"/>
-        /// </summary>
-        public static Func<DateTimeOffset> DateTimeOffsetUtcNow = () => DateTimeOffset.UtcNow;
-
-        /// <summary>
-        /// Allows the setting of a custom method for cancelling tokens after a timespan, for use in testing.
-        /// By default this will be a call to CancellationTokenSource.CancelAfter(timespan)
-        /// </summary>
-        public static Action<CancellationTokenSource, TimeSpan> CancelTokenAfter = (tokenSource, timespan) => tokenSource.CancelAfter(timespan);
-
-        /// <summary>
-        /// Resets the custom implementations to their defaults. 
+        /// Resets the ambient system clock to the default.
         /// Should be called during test teardowns.
         /// </summary>
-        public static void Reset()
+        public static void Reset() => Current = Default;
+
+        /// <inheritdoc/>
+        public void Sleep(TimeSpan timeout, CancellationToken cancellationToken)
         {
-            Sleep = (timeSpan, cancellationToken) =>
-            {
-                if (cancellationToken.WaitHandle.WaitOne(timeSpan)) cancellationToken.ThrowIfCancellationRequested();
-            };
-
-            SleepAsync = Task.Delay;
-
-            UtcNow = () => DateTime.UtcNow;
-
-            DateTimeOffsetUtcNow = () => DateTimeOffset.UtcNow;
-
-            CancelTokenAfter = (tokenSource, timespan) => tokenSource.CancelAfter(timespan);
-
+            if (cancellationToken.WaitHandle.WaitOne(timeout)) cancellationToken.ThrowIfCancellationRequested();
         }
+
+        /// <inheritdoc/>
+        public Task SleepAsync(TimeSpan delay, CancellationToken cancellationToken) => Task.Delay(delay, cancellationToken);
+
+        /// <inheritdoc/>
+        public DateTime UtcNow => DateTime.UtcNow;
+
+        /// <inheritdoc/>
+        public DateTimeOffset DateTimeOffsetUtcNow => DateTimeOffset.UtcNow;
+
+        /// <inheritdoc/>
+        public void CancelTokenAfter(CancellationTokenSource tokenSource, TimeSpan delay) => tokenSource.CancelAfter(delay);
     }
 }

@@ -14,6 +14,10 @@ namespace Polly.Specs.CircuitBreaker
     [Collection(Constants.SystemClockDependentTestCollection)]
     public class CircuitBreakerSpecs : IDisposable
     {
+        private readonly TestSystemClock _testSystemClock = new TestSystemClock();
+
+        public CircuitBreakerSpecs() => SystemClock.Current = _testSystemClock;
+
         #region Configuration tests
 
         [Fact]
@@ -194,7 +198,7 @@ namespace Polly.Specs.CircuitBreaker
         public void Should_halfopen_circuit_after_the_specified_duration_has_passed()
         {
             var time = 1.January(2000);
-            SystemClock.UtcNow = () => time;
+            _testSystemClock.UtcNow = time;
 
             var durationOfBreak = TimeSpan.FromMinutes(1);
 
@@ -215,7 +219,7 @@ namespace Polly.Specs.CircuitBreaker
                   .Should().Throw<BrokenCircuitException>();
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
-            SystemClock.UtcNow = () => time.Add(durationOfBreak);
+            _testSystemClock.UtcNow = time.Add(durationOfBreak);
 
             // duration has passed, circuit now half open
             breaker.CircuitState.Should().Be(CircuitState.HalfOpen);
@@ -227,7 +231,7 @@ namespace Polly.Specs.CircuitBreaker
         public void Should_open_circuit_again_after_the_specified_duration_has_passed_if_the_next_call_raises_an_exception()
         {
             var time = 1.January(2000);
-            SystemClock.UtcNow = () => time;
+            _testSystemClock.UtcNow = time;
 
             var durationOfBreak = TimeSpan.FromMinutes(1);
 
@@ -248,7 +252,7 @@ namespace Polly.Specs.CircuitBreaker
                   .Should().Throw<BrokenCircuitException>();
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
-            SystemClock.UtcNow = () => time.Add(durationOfBreak);
+            _testSystemClock.UtcNow = time.Add(durationOfBreak);
 
             // duration has passed, circuit now half open
             breaker.CircuitState.Should().Be(CircuitState.HalfOpen);
@@ -265,7 +269,7 @@ namespace Polly.Specs.CircuitBreaker
         public void Should_reset_circuit_after_the_specified_duration_has_passed_if_the_next_call_does_not_raise_an_exception()
         {
             var time = 1.January(2000);
-            SystemClock.UtcNow = () => time;
+            _testSystemClock.UtcNow = time;
 
             var durationOfBreak = TimeSpan.FromMinutes(1);
 
@@ -286,7 +290,7 @@ namespace Polly.Specs.CircuitBreaker
                   .Should().Throw<BrokenCircuitException>();
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
-            SystemClock.UtcNow = () => time.Add(durationOfBreak);
+            _testSystemClock.UtcNow = time.Add(durationOfBreak);
 
             // duration has passed, circuit now half open
             breaker.CircuitState.Should().Be(CircuitState.HalfOpen);
@@ -312,7 +316,7 @@ namespace Polly.Specs.CircuitBreaker
         public void Should_only_allow_single_execution_on_first_entering_halfopen_state__test_execution_permit_directly()
         {
             var time = 1.January(2000);
-            SystemClock.UtcNow = () => time;
+            _testSystemClock.UtcNow = time;
 
             var durationOfBreak = TimeSpan.FromMinutes(1);
             CircuitBreakerPolicy breaker = Policy
@@ -326,7 +330,7 @@ namespace Polly.Specs.CircuitBreaker
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
             // break duration passes, circuit now half open
-            SystemClock.UtcNow = () => time.Add(durationOfBreak);
+            _testSystemClock.UtcNow = time.Add(durationOfBreak);
             breaker.CircuitState.Should().Be(CircuitState.HalfOpen);
 
 
@@ -343,7 +347,7 @@ namespace Polly.Specs.CircuitBreaker
         public void Should_allow_single_execution_per_break_duration_in_halfopen_state__test_execution_permit_directly()
         {
             var time = 1.January(2000);
-            SystemClock.UtcNow = () => time;
+            _testSystemClock.UtcNow = time;
 
             var durationOfBreak = TimeSpan.FromMinutes(1);
             CircuitBreakerPolicy breaker = Policy
@@ -357,7 +361,7 @@ namespace Polly.Specs.CircuitBreaker
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
             // break duration passes, circuit now half open
-            SystemClock.UtcNow = () => time.Add(durationOfBreak);
+            _testSystemClock.UtcNow = time.Add(durationOfBreak);
             breaker.CircuitState.Should().Be(CircuitState.HalfOpen);
 
 
@@ -370,7 +374,7 @@ namespace Polly.Specs.CircuitBreaker
             breaker.CircuitState.Should().Be(CircuitState.HalfOpen);
 
             // Allow another time window to pass (breaker should still be HalfOpen).
-            SystemClock.UtcNow = () => time.Add(durationOfBreak).Add(durationOfBreak);
+            _testSystemClock.UtcNow = time.Add(durationOfBreak).Add(durationOfBreak);
             breaker.CircuitState.Should().Be(CircuitState.HalfOpen);
 
             // OnActionPreExecute() should now permit another trial execution.
@@ -382,7 +386,7 @@ namespace Polly.Specs.CircuitBreaker
         public void Should_only_allow_single_execution_on_first_entering_halfopen_state__integration_test()
         {
             var time = 1.January(2000);
-            SystemClock.UtcNow = () => time;
+            _testSystemClock.UtcNow = time;
 
             var durationOfBreak = TimeSpan.FromMinutes(1);
             CircuitBreakerPolicy breaker = Policy
@@ -396,7 +400,7 @@ namespace Polly.Specs.CircuitBreaker
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
             // break duration passes, circuit now half open
-            SystemClock.UtcNow = () => time.Add(durationOfBreak);
+            _testSystemClock.UtcNow = time.Add(durationOfBreak);
             breaker.CircuitState.Should().Be(CircuitState.HalfOpen);
 
             // Start one execution during the HalfOpen state, and request a second execution before the first has completed (ie still during the HalfOpen state).
@@ -480,7 +484,7 @@ namespace Polly.Specs.CircuitBreaker
         public void Should_allow_single_execution_per_break_duration_in_halfopen_state__integration_test()
         {
             var time = 1.January(2000);
-            SystemClock.UtcNow = () => time;
+            _testSystemClock.UtcNow = time;
 
             var durationOfBreak = TimeSpan.FromMinutes(1);
             CircuitBreakerPolicy breaker = Policy
@@ -494,7 +498,7 @@ namespace Polly.Specs.CircuitBreaker
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
             // break duration passes, circuit now half open
-            SystemClock.UtcNow = () => time.Add(durationOfBreak);
+            _testSystemClock.UtcNow = time.Add(durationOfBreak);
             breaker.CircuitState.Should().Be(CircuitState.HalfOpen);
 
             // Start one execution during the HalfOpen state.
@@ -539,7 +543,7 @@ namespace Polly.Specs.CircuitBreaker
 
                     try
                     {
-                        SystemClock.UtcNow = () => time.Add(durationOfBreak).Add(durationOfBreak);
+                        _testSystemClock.UtcNow = time.Add(durationOfBreak).Add(durationOfBreak);
 
                         breaker.Execute(() =>
                         {
@@ -583,7 +587,7 @@ namespace Polly.Specs.CircuitBreaker
         public void Should_open_circuit_and_block_calls_if_manual_override_open()
         {
             var time = 1.January(2000);
-            SystemClock.UtcNow = () => time;
+            _testSystemClock.UtcNow = time;
 
             var durationOfBreak = TimeSpan.FromMinutes(1);
 
@@ -609,7 +613,7 @@ namespace Polly.Specs.CircuitBreaker
         public void Should_hold_circuit_open_despite_elapsed_time_if_manual_override_open()
         {
             var time = 1.January(2000);
-            SystemClock.UtcNow = () => time;
+            _testSystemClock.UtcNow = time;
 
             var durationOfBreak = TimeSpan.FromMinutes(1);
 
@@ -621,7 +625,7 @@ namespace Polly.Specs.CircuitBreaker
             breaker.Isolate();
             breaker.CircuitState.Should().Be(CircuitState.Isolated);
 
-            SystemClock.UtcNow = () => time.Add(durationOfBreak);
+            _testSystemClock.UtcNow = time.Add(durationOfBreak);
             breaker.CircuitState.Should().Be(CircuitState.Isolated);
             bool delegateExecutedWhenBroken = false;
             breaker.Invoking(x => x.Execute(() => { delegateExecutedWhenBroken = true; return ResultPrimitive.Good; }))
@@ -633,7 +637,7 @@ namespace Polly.Specs.CircuitBreaker
         public void Should_close_circuit_again_on_reset_after_manual_override()
         {
             var time = 1.January(2000);
-            SystemClock.UtcNow = () => time;
+            _testSystemClock.UtcNow = time;
 
             var durationOfBreak = TimeSpan.FromMinutes(1);
 
@@ -656,7 +660,7 @@ namespace Polly.Specs.CircuitBreaker
         public void Should_be_able_to_reset_automatically_opened_circuit_without_specified_duration_passing()
         {
             var time = 1.January(2000);
-            SystemClock.UtcNow = () => time;
+            _testSystemClock.UtcNow = time;
 
             var durationOfBreak = TimeSpan.FromMinutes(1);
 
@@ -679,7 +683,7 @@ namespace Polly.Specs.CircuitBreaker
 
             // reset circuit, with no time having passed
             breaker.Reset();
-            SystemClock.UtcNow().Should().Be(time);
+            SystemClock.Current.UtcNow.Should().Be(time);
             breaker.CircuitState.Should().Be(CircuitState.Closed);
             breaker.Invoking(x => x.Execute(() => { })).Should().NotThrow();
         }
@@ -841,7 +845,7 @@ namespace Polly.Specs.CircuitBreaker
             Action onReset = () => { onResetCalled++; };
 
             var time = 1.January(2000);
-            SystemClock.UtcNow = () => time;
+            _testSystemClock.UtcNow = time;
 
             var durationOfBreak = TimeSpan.FromMinutes(1);
 
@@ -865,7 +869,7 @@ namespace Polly.Specs.CircuitBreaker
             breaker.CircuitState.Should().Be(CircuitState.Open);
             onBreakCalled.Should().Be(1);
 
-            SystemClock.UtcNow = () => time.Add(durationOfBreak);
+            _testSystemClock.UtcNow = time.Add(durationOfBreak);
 
             // duration has passed, circuit now half open
             breaker.CircuitState.Should().Be(CircuitState.HalfOpen);
@@ -911,7 +915,7 @@ namespace Polly.Specs.CircuitBreaker
             Action onHalfOpen = () => { onHalfOpenCalled++; };
 
             var time = 1.January(2000);
-            SystemClock.UtcNow = () => time;
+            _testSystemClock.UtcNow = time;
 
             var durationOfBreak = TimeSpan.FromMinutes(1);
 
@@ -935,7 +939,7 @@ namespace Polly.Specs.CircuitBreaker
             breaker.CircuitState.Should().Be(CircuitState.Open);
             onBreakCalled.Should().Be(1);
 
-            SystemClock.UtcNow = () => time.Add(durationOfBreak);
+            _testSystemClock.UtcNow = time.Add(durationOfBreak);
             // duration has passed, circuit now half open
             onHalfOpenCalled.Should().Be(0); // not yet transitioned to half-open, because we have not queried state
 
@@ -957,7 +961,7 @@ namespace Polly.Specs.CircuitBreaker
             Action onHalfOpen = () => { onHalfOpenCalled++; };
 
             var time = 1.January(2000);
-            SystemClock.UtcNow = () => time;
+            _testSystemClock.UtcNow = time;
 
             var durationOfBreak = TimeSpan.FromMinutes(1);
 
@@ -981,7 +985,7 @@ namespace Polly.Specs.CircuitBreaker
             breaker.CircuitState.Should().Be(CircuitState.Open);
             onBreakCalled.Should().Be(1);
 
-            SystemClock.UtcNow = () => time.Add(durationOfBreak);
+            _testSystemClock.UtcNow = time.Add(durationOfBreak);
             // duration has passed, circuit now half open
             breaker.CircuitState.Should().Be(CircuitState.HalfOpen);
             onHalfOpenCalled.Should().Be(1);
@@ -996,7 +1000,7 @@ namespace Polly.Specs.CircuitBreaker
             Action onReset = () => { onResetCalled++; };
 
             var time = 1.January(2000);
-            SystemClock.UtcNow = () => time;
+            _testSystemClock.UtcNow = time;
 
             var durationOfBreak = TimeSpan.FromMinutes(1);
 
@@ -1081,7 +1085,7 @@ namespace Polly.Specs.CircuitBreaker
             Action onHalfOpen = () => { };
 
             var time = 1.January(2000);
-            SystemClock.UtcNow = () => time;
+            _testSystemClock.UtcNow = time;
 
             var durationOfBreak = TimeSpan.FromMinutes(1);
 
@@ -1102,7 +1106,7 @@ namespace Polly.Specs.CircuitBreaker
                   .Should().Throw<BrokenCircuitException>();
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
-            SystemClock.UtcNow = () => time.Add(durationOfBreak);
+            _testSystemClock.UtcNow = time.Add(durationOfBreak);
 
             // duration has passed, circuit now half open
             breaker.CircuitState.Should().Be(CircuitState.HalfOpen);
@@ -1179,7 +1183,7 @@ namespace Polly.Specs.CircuitBreaker
             Action<Context> onReset = _ => { };
 
             var time = 1.January(2000);
-            SystemClock.UtcNow = () => time;
+            _testSystemClock.UtcNow = time;
 
             var durationOfBreak = TimeSpan.FromMinutes(1);
 
@@ -1234,7 +1238,7 @@ namespace Polly.Specs.CircuitBreaker
             Action<Context> onReset = context => { contextData = context; };
 
             var time = 1.January(2000);
-            SystemClock.UtcNow = () => time;
+            _testSystemClock.UtcNow = time;
 
             var durationOfBreak = TimeSpan.FromMinutes(1);
 
@@ -1248,7 +1252,7 @@ namespace Polly.Specs.CircuitBreaker
                 .Should().Throw<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
-            SystemClock.UtcNow = () => time.Add(durationOfBreak);
+            _testSystemClock.UtcNow = time.Add(durationOfBreak);
             breaker.CircuitState.Should().Be(CircuitState.HalfOpen);
 
             // first call after duration should invoke onReset, with context
@@ -1295,7 +1299,7 @@ namespace Polly.Specs.CircuitBreaker
                 .CircuitBreaker(2, TimeSpan.FromMinutes(1), onBreak, onReset);
 
             var time = 1.January(2000);
-            SystemClock.UtcNow = () => time;
+            _testSystemClock.UtcNow = time;
 
             var durationOfBreak = TimeSpan.FromMinutes(1);
 
@@ -1308,7 +1312,7 @@ namespace Polly.Specs.CircuitBreaker
             breaker.CircuitState.Should().Be(CircuitState.Open);
             contextValue.Should().Be("original_value");
 
-            SystemClock.UtcNow = () => time.Add(durationOfBreak);
+            _testSystemClock.UtcNow = time.Add(durationOfBreak);
 
             // duration has passed, circuit now half open
             breaker.CircuitState.Should().Be(CircuitState.HalfOpen);

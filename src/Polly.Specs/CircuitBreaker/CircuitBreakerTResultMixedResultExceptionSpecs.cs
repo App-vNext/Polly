@@ -11,6 +11,10 @@ namespace Polly.Specs.CircuitBreaker
     [Collection(Constants.SystemClockDependentTestCollection)]
     public class CircuitBreakerTResultMixedResultExceptionSpecs : IDisposable
     {
+        private readonly TestSystemClock _testSystemClock = new TestSystemClock();
+
+        public CircuitBreakerTResultMixedResultExceptionSpecs() => SystemClock.Current = _testSystemClock;
+
         #region Circuit-breaker threshold-to-break tests
 
         [Fact]
@@ -340,7 +344,7 @@ namespace Polly.Specs.CircuitBreaker
         public void Should_open_circuit_again_after_the_specified_duration_has_passed_if_the_next_call_raises_a_fault()
         {
             var time = 1.January(2000);
-            SystemClock.UtcNow = () => time;
+            _testSystemClock.UtcNow = time;
 
             var durationOfBreak = TimeSpan.FromMinutes(1);
 
@@ -362,7 +366,7 @@ namespace Polly.Specs.CircuitBreaker
                   .Should().Throw<BrokenCircuitException>();
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
-            SystemClock.UtcNow = () => time.Add(durationOfBreak);
+            _testSystemClock.UtcNow = time.Add(durationOfBreak);
 
             // duration has passed, circuit now half open
             breaker.CircuitState.Should().Be(CircuitState.HalfOpen);
@@ -380,7 +384,7 @@ namespace Polly.Specs.CircuitBreaker
         public void Should_open_circuit_again_after_the_specified_duration_has_passed_if_the_next_call_raises_an_exception()
         {
             var time = 1.January(2000);
-            SystemClock.UtcNow = () => time;
+            _testSystemClock.UtcNow = time;
 
             var durationOfBreak = TimeSpan.FromMinutes(1);
 
@@ -402,7 +406,7 @@ namespace Polly.Specs.CircuitBreaker
                   .Should().Throw<BrokenCircuitException>();
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
-            SystemClock.UtcNow = () => time.Add(durationOfBreak);
+            _testSystemClock.UtcNow = time.Add(durationOfBreak);
 
             // duration has passed, circuit now half open
             breaker.CircuitState.Should().Be(CircuitState.HalfOpen);

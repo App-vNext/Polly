@@ -30,13 +30,13 @@ namespace Polly.Timeout
                     {
                         if (timeoutStrategy == TimeoutStrategy.Optimistic)
                         {
-                            SystemClock.CancelTokenAfter(timeoutCancellationTokenSource, timeout);
+                            SystemClock.Current.CancelTokenAfter(timeoutCancellationTokenSource, timeout);
                             return action(context, combinedToken);
                         }
 
                         // else: timeoutStrategy == TimeoutStrategy.Pessimistic
 
-                        SystemClock.CancelTokenAfter(timeoutCancellationTokenSource, timeout);
+                        SystemClock.Current.CancelTokenAfter(timeoutCancellationTokenSource, timeout);
 
                         actionTask = Task.Run(() =>
                             action(context, combinedToken)       // cancellation token here allows the user delegate to react to cancellation: possibly clear up; then throw an OperationCanceledException.

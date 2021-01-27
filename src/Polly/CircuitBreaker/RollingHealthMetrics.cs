@@ -62,7 +62,7 @@ namespace Polly.CircuitBreaker
 
         private void ActualiseCurrentMetric_NeedsLock()
         {
-            long now = SystemClock.UtcNow().Ticks;
+            long now = SystemClock.Current.UtcNow.Ticks;
             if (_currentWindow == null || now - _currentWindow.StartedAt >= _windowDuration)
             {
                 _currentWindow = new HealthCount { StartedAt = now };
