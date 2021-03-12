@@ -10,7 +10,7 @@ jobs:
       matrix: 
         build-configuration: [ Debug, Release ]
     env:
-      SOLUTION_PATH: /src/Polly.sln
+      SOLUTION_PATH: src/Polly.sln
       BUILD_CONFIGURATION: ${{ matrix.build-configuration }}
     steps:
       # - name: Setup MSBuild
@@ -26,6 +26,7 @@ jobs:
 
       - name: Clean .NET cache
         id: clean_dotnet_cache
+        shell: pwsh
         run: |
           dotnet clean $env:SOLUTION_PATH
           dotnet nuget locals all --clear
