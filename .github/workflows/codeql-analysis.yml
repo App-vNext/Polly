@@ -49,13 +49,16 @@ jobs:
         # with:
         #   queries: security-and-quality
 
-      - name: Build solution
-        id: build_solution
-        continue-on-error: true
-        shell: pwsh
-        run: |
-          msbuild $env:SOLUTION_PATH `
-          /p:Configuration='Debug'
+      # - name: Build solution
+      #   id: build_solution
+      #   continue-on-error: true
+      #   shell: pwsh
+      #   run: |
+      #     msbuild $env:SOLUTION_PATH `
+      #     /p:Configuration='Debug'
+
+      - name: Autobuild
+        uses: github/codeql-action/autobuild@v1
 
       - name: Perform CodeQL Analysis
         id: analyze_codeql
