@@ -15,13 +15,13 @@ jobs:
       SOLUTION_PATH: src/Polly.sln
     steps:
       # Due to the insufficient memory allocated by default, CodeQL sometimes requires more to be manually allocated
-      - name: Configure Pagefile
-        id: config_pagefile
-        uses: al-cheb/configure-pagefile-action@v1.2
-        with:
-            minimum-size: 8GB
-            maximum-size: 32GB
-            disk-root: "D:"
+      # - name: Configure Pagefile
+      #   id: config_pagefile
+      #   uses: al-cheb/configure-pagefile-action@v1.2
+      #   with:
+      #       minimum-size: 8GB
+      #       maximum-size: 32GB
+      #       disk-root: "D:"
 
       - name: Checkout repository
         id: checkout_repo
