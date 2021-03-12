@@ -10,7 +10,7 @@ on:
 jobs:
   analyze:
     name: CodeQL Analysis
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     env:
       SOLUTION_PATH: src/Polly.sln
     steps:
@@ -29,6 +29,7 @@ jobs:
 
       - name: Clean .NET cache
         id: clean_dotnet_cache
+        shell: pwsh
         run: |
           dotnet clean $env:SOLUTION_PATH
           dotnet nuget locals all --clear
