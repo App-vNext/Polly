@@ -1,0 +1,41 @@
+name: CodeQL Analysis
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 8 * * *'
+
+jobs:
+  analyze:
+    name: CodeQL Analysis
+    runs-on: ubuntu-latest
+    env:
+      SOLUTION_PATH: src/Polly.sln
+    steps:
+      - name: Checkout repository
+        id: checkout_repo
+        uses: actions/checkout@v2
+
+      - name: Clean .NET cache
+        id: clean_dotnet_cache
+        shell: pwsh
+        run: |
+          dotnet clean $env:SOLUTION_PATH
+          dotnet nuget locals all --clear
+
+      - name: Initialize CodeQL
+        id: init_codeql
+        uses: github/codeql-action/init@v1
+        with:
+          queries: security-and-quality
+
+      - name: Autobuild
+        uses: github/codeql-action/autobuild@v1
+
+      - name: Perform CodeQL Analysis
+        id: analyze_codeql
+        uses: github/codeql-action/analyze@v1
+
+# Built with ❤ by [Pipeline Foundation](https://pipeline.foundation)
