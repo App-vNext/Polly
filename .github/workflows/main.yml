@@ -10,7 +10,7 @@ jobs:
       matrix: 
         build-configuration: [ Debug, Release ]
     env:
-      SOLUTION_PATH: src/Polly.sln
+      SOLUTION_PATH: /src/Polly.sln
       BUILD_CONFIGURATION: ${{ matrix.build-configuration }}
     steps:
       # - name: Setup MSBuild
