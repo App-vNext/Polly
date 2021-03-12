@@ -9,7 +9,7 @@ on:
 
 jobs:
   analyze:
-    name: codeql-analysis
+    name: CodeQL Analysis
     runs-on: windows-latest
     env:
       SOLUTION_PATH: src/Polly.sln
@@ -46,16 +46,8 @@ jobs:
       - name: Initialize CodeQL
         id: init_codeql
         uses: github/codeql-action/init@v1
-        # with:
-        #   queries: security-and-quality
-
-      # - name: Build solution
-      #   id: build_solution
-      #   continue-on-error: true
-      #   shell: pwsh
-      #   run: |
-      #     msbuild $env:SOLUTION_PATH `
-      #     /p:Configuration='Debug'
+        with:
+          queries: security-and-quality
 
       - name: Autobuild
         uses: github/codeql-action/autobuild@v1

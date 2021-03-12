@@ -44,7 +44,6 @@ jobs:
 
       - name: Build solution
         id: build_solution
-        continue-on-error: true
         shell: pwsh
         run: |
           msbuild $env:SOLUTION_PATH `
@@ -53,6 +52,7 @@ jobs:
       - if: matrix.build-configuration == 'Release'
         name: Run unit tests
         id: run_unit_tests
+        continue-on-error: true
         shell: pwsh
         run: |
           dotnet test $env:SOLUTION_PATH
