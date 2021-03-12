@@ -23,10 +23,6 @@ jobs:
             maximum-size: 32GB
             disk-root: "D:"
 
-      - name: Setup MSBuild
-        id: setup_msbuild
-        uses: microsoft/setup-msbuild@v1.0.2
-
       - name: Checkout repository
         id: checkout_repo
         uses: actions/checkout@v2
@@ -36,12 +32,6 @@ jobs:
         run: |
           dotnet clean $env:SOLUTION_PATH
           dotnet nuget locals all --clear
-
-      - name: Run NuGet restore
-        id: run_nuget_restore
-        shell: pwsh
-        run: |
-          nuget restore $env:SOLUTION_PATH
 
       - name: Initialize CodeQL
         id: init_codeql
