@@ -55,7 +55,7 @@ jobs:
         shell: pwsh
         run: |
           msbuild $env:SOLUTION_PATH `
-          /p:Configuration='Release'
+          /p:Configuration='Debug'
 
       - name: Perform CodeQL Analysis
         id: analyze_codeql
