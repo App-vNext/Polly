@@ -17,6 +17,12 @@ jobs:
         id: setup_msbuild
         uses: microsoft/setup-msbuild@v1.0.2
 
+      - name: Install .NET Framework 1.1
+        id: instal_dotnet11
+        shell: pwsh
+        run: |
+          choco install dotnetcore --version=1.1.2 -y
+
       - name: Checkout repository
         id: checkout_repo
         uses: actions/checkout@v2
