@@ -23,6 +23,10 @@ jobs:
             maximum-size: 32GB
             disk-root: "D:"
 
+      - name: Setup MSBuild
+        id: setup_msbuild
+        uses: microsoft/setup-msbuild@v1.0.2
+
       - name: Checkout repository
         id: checkout_repo
         uses: actions/checkout@v2
