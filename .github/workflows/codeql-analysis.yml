@@ -1,0 +1,60 @@
+name: CodeQL Analysis
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 8 * * *'
+
+jobs:
+  analyze:
+    name: codeql-analysis
+    runs-on: windows-latest
+    env:
+      SOLUTION_PATH: src/Polly.sln
+    steps:
+      # Due to the insufficient memory allocated by default, CodeQL sometimes requires more to be manually allocated
+      - name: Configure Pagefile
+        id: config_pagefile
+        uses: al-cheb/configure-pagefile-action@v1.2
+        with:
+            minimum-size: 8GB
+            maximum-size: 32GB
+            disk-root: "D:"
+
+      - name: Checkout repository
+        id: checkout_repo
+        uses: actions/checkout@v2
+
+      - name: Clean .NET cache
+        id: clean_dotnet_cache
+        run: |
+          dotnet clean $env:SOLUTION_PATH
+          dotnet nuget locals all --clear
+
+      - name: Run NuGet restore
+        id: run_nuget_restore
+        shell: pwsh
+        run: |
+          nuget restore $env:SOLUTION_PATH
+
+      - name: Initialize CodeQL
+        id: init_codeql
+        uses: github/codeql-action/init@v1
+        # with:
+        #   queries: security-and-quality
+
+      - name: Build solution
+        id: build_solution
+        continue-on-error: true
+        shell: pwsh
+        run: |
+          msbuild $env:SOLUTION_PATH `
+          /p:Configuration='Release'
+
+      - name: Perform CodeQL Analysis
+        id: analyze_codeql
+        uses: github/codeql-action/analyze@v1
+
+# Built with ❤ by [Pipeline Foundation](https://pipeline.foundation)
