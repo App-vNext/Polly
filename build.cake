@@ -169,6 +169,7 @@ Task("__UpdateDotNetStandardAssemblyVersionNumber")
         { "InformationalVersion", assemblySemver },
         { "Version", nugetVersion },
         { "PackageVersion", nugetVersion },
+        { "ContinuousIntegrationBuild", "true" },
     };
 
     var csproj = File("./src/" + projectName + "/" + projectName + ".csproj");
