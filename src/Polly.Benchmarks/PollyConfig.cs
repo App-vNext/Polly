@@ -9,7 +9,6 @@ namespace Polly.Benchmarks
         {
             var job = Job.Default;
 
-            AddDiagnoser(BenchmarkDotNet.Diagnosers.EventPipeProfiler.Default);
             AddDiagnoser(BenchmarkDotNet.Diagnosers.MemoryDiagnoser.Default);
 
             AddJob(PollyJob(job, useNuGet: true).AsBaseline());
