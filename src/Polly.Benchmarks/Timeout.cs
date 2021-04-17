@@ -52,11 +52,5 @@ namespace Polly.Benchmarks
         {
             await AsyncPolicy.ExecuteAsync((token) => Workloads.ActionInfiniteAsync(token), CancellationToken.None);
         }
-
-        [Benchmark]
-        public async Task Timeout_Asynchronous_Times_Out_Pessimistic()
-        {
-            await AsyncPolicy.ExecuteAsync(() => Workloads.ActionInfiniteAsync());
-        }
     }
 }
