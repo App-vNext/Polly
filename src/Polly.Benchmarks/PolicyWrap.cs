@@ -11,12 +11,14 @@ namespace Polly.Benchmarks
         private static readonly Policy SyncPolicy = Policy.Wrap(
             Policy.Handle<InvalidOperationException>().Retry(),
             Policy.Handle<InvalidOperationException>().CircuitBreaker(2, TimeSpan.FromMinutes(1)),
-            Policy.Timeout(TimeSpan.FromMilliseconds(10)));
+            Policy.Timeout(TimeSpan.FromMilliseconds(10)),
+            Policy.Bulkhead(2));
 
         private static readonly AsyncPolicy AsyncPolicy = Policy.WrapAsync(
             Policy.Handle<InvalidOperationException>().RetryAsync(),
             Policy.Handle<InvalidOperationException>().CircuitBreakerAsync(2, TimeSpan.FromMinutes(1)),
-            Policy.TimeoutAsync(TimeSpan.FromMilliseconds(10)));
+            Policy.TimeoutAsync(TimeSpan.FromMilliseconds(10)),
+            Policy.BulkheadAsync(2));
 
         [Benchmark]
         public void PolicyWrap_Synchronous()
