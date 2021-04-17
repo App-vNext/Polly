@@ -6,7 +6,7 @@ using BenchmarkDotNet.Attributes;
 namespace Polly.Benchmarks
 {
     [Config(typeof(PollyConfig))]
-    public class RetryBenchmarks
+    public class Retry
     {
         [Benchmark]
         public void Retry_Synchronous_Succeeds()
