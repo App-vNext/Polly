@@ -14,14 +14,6 @@ namespace Polly.Benchmarks
 
         internal static Task ActionAsync(CancellationToken cancellationToken) => Task.CompletedTask;
 
-        internal static void ActionInfinite()
-        {
-            while (true)
-            {
-                Thread.Sleep(1);
-            }
-        }
-
         internal static async Task ActionInfiniteAsync()
         {
             while (true)

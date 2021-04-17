@@ -48,12 +48,6 @@ namespace Polly.Benchmarks
         }
 
         [Benchmark]
-        public void Timeout_Synchronous_Times_Out()
-        {
-            SyncPolicy.Execute(() => Workloads.ActionInfinite());
-        }
-
-        [Benchmark]
         public async Task Timeout_Asynchronous_Times_Out_Optimistic()
         {
             await AsyncPolicy.ExecuteAsync((token) => Workloads.ActionInfiniteAsync(token), CancellationToken.None);
