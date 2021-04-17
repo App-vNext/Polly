@@ -8,58 +8,51 @@ namespace Polly.Benchmarks
     [Config(typeof(PollyConfig))]
     public class Retry
     {
+        private static readonly Policy SyncPolicy = Policy.Handle<InvalidOperationException>().Retry();
+        private static readonly AsyncPolicy AsyncPolicy = Policy.Handle<InvalidOperationException>().RetryAsync();
+
         [Benchmark]
         public void Retry_Synchronous_Succeeds()
         {
-            var policy = Policy.Handle<InvalidOperationException>().Retry();
-            policy.Execute(() => Workloads.Action());
+            SyncPolicy.Execute(() => Workloads.Action());
         }
 
         [Benchmark]
         public async Task Retry_Asynchronous_Succeeds()
         {
-            var policy = Policy.Handle<InvalidOperationException>().RetryAsync();
-            await policy.ExecuteAsync(() => Workloads.ActionAsync());
+            await AsyncPolicy.ExecuteAsync(() => Workloads.ActionAsync());
         }
 
         [Benchmark]
         public async Task Retry_Asynchronous_Succeeds_With_CancellationToken()
         {
-            var cancellationToken = CancellationToken.None;
-            var policy = Policy.Handle<InvalidOperationException>().RetryAsync();
-            await policy.ExecuteAsync((token) => Workloads.ActionAsync(token), cancellationToken);
+            await AsyncPolicy.ExecuteAsync((token) => Workloads.ActionAsync(token), CancellationToken.None);
         }
 
         [Benchmark]
         public int Retry_Synchronous_With_Result_Succeeds()
         {
-            var policy = Policy.Handle<InvalidOperationException>().Retry();
-            return policy.Execute(() => Workloads.Func<int>());
+            return SyncPolicy.Execute(() => Workloads.Func<int>());
         }
 
         [Benchmark]
         public async Task<int> Retry_Asynchronous_With_Result_Succeeds()
         {
-            var policy = Policy.Handle<InvalidOperationException>().RetryAsync();
-            return await policy.ExecuteAsync(() => Workloads.FuncAsync<int>());
+            return await AsyncPolicy.ExecuteAsync(() => Workloads.FuncAsync<int>());
         }
 
         [Benchmark]
         public async Task<int> Retry_Asynchronous_With_Result_Succeeds_With_CancellationToken()
         {
-            var cancellationToken = CancellationToken.None;
-            var policy = Policy.Handle<InvalidOperationException>().RetryAsync();
-            return await policy.ExecuteAsync((token) => Workloads.FuncAsync<int>(token), cancellationToken);
+            return await AsyncPolicy.ExecuteAsync((token) => Workloads.FuncAsync<int>(token), CancellationToken.None);
         }
 
         [Benchmark]
         public void Retry_Synchronous_Throws_Then_Succeeds()
         {
-            var policy = Policy.Handle<InvalidOperationException>().Retry();
-
             int count = 0;
 
-            policy.Execute(() =>
+            SyncPolicy.Execute(() =>
             {
                 if (count++ % 2 == 0)
                 {
@@ -71,11 +64,9 @@ namespace Polly.Benchmarks
         [Benchmark]
         public async Task Retry_Asynchronous_Throws_Then_Succeeds()
         {
-            var policy = Policy.Handle<InvalidOperationException>().RetryAsync();
-
             int count = 0;
 
-            await policy.ExecuteAsync(() =>
+            await AsyncPolicy.ExecuteAsync(() =>
             {
                 if (count++ % 2 == 0)
                 {
