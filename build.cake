@@ -18,7 +18,7 @@ var configuration = Argument<string>("configuration", "Release");
 
 #addin "Cake.FileHelpers"
 #addin nuget:?package=Cake.Yaml
-#addin nuget:?package=YamlDotNet&version=5.2.1
+#addin nuget:?package=YamlDotNet&version=11.1.1
 
 ///////////////////////////////////////////////////////////////////////////////
 // GLOBAL VARIABLES
