@@ -23,7 +23,6 @@ namespace Polly.Benchmarks
                 new[]
                 {
                     new MsBuildArgument("/p:BenchmarkFromNuGet=" + useNuGet),
-                    new MsBuildArgument("/p:LangVersion=9.0"),
                     new MsBuildArgument("/p:SignAssembly=false"),
                 });
 
