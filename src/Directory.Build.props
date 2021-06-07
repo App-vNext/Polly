@@ -3,6 +3,6 @@
   <PropertyGroup>
     <AssemblyOriginatorKeyFile>..\Polly.snk</AssemblyOriginatorKeyFile>
     <SignAssembly>true</SignAssembly>
-    <LangVersion>9.0</LangVersion>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
 </Project>
