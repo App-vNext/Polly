@@ -60,14 +60,14 @@ namespace Polly.Specs.Bulkhead
             Context contextPassedToExecute = new Context(operationKey);
 
             Context contextPassedToOnRejected = null;
-            Func<Context, Task> onRejectedAsync = async ctx => { contextPassedToOnRejected = ctx; await TaskHelper.EmptyTask.ConfigureAwait(false); };
+            Func<Context, Task> onRejectedAsync = async ctx => { contextPassedToOnRejected = ctx; await TaskHelper.EmptyTask; };
 
             using (var bulkhead = Policy.BulkheadAsync(1, onRejectedAsync))
             {
                 TaskCompletionSource<object> tcs = new TaskCompletionSource<object>();
                 using (CancellationTokenSource cancellationSource = new CancellationTokenSource())
                 {
-                    Task.Run(() => { bulkhead.ExecuteAsync(async () => { await tcs.Task.ConfigureAwait(false); }); });
+                    Task.Run(() => { bulkhead.ExecuteAsync(async () => { await tcs.Task; }); });
 
                     Within(CohesionTimeLimit, () => Expect(0, () => bulkhead.BulkheadAvailableCount, nameof(bulkhead.BulkheadAvailableCount)));
 

@@ -30,7 +30,7 @@ namespace Polly.Specs.Caching
 
             ResultPrimitive result = await cache.ExecuteAsync(async ctx =>
             {
-                await TaskHelper.EmptyTask.ConfigureAwait(false);
+                await TaskHelper.EmptyTask;
                 return ResultPrimitive.Substitute;
             }, new Context(operationKey));
 
@@ -52,7 +52,7 @@ namespace Polly.Specs.Caching
 
             (await cache.ExecuteAsync(async ctx =>
             {
-                await TaskHelper.EmptyTask.ConfigureAwait(false);
+                await TaskHelper.EmptyTask;
                 return ResultPrimitive.Substitute;
             }, new Context(operationKey))).Should().Be(valueToReturn);
 

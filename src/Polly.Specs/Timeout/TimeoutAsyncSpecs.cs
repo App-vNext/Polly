@@ -207,7 +207,7 @@ namespace Polly.Specs.Timeout
 
             policy.Awaiting(async p => await p.ExecuteAsync(async () =>
             {
-                await SystemClock.SleepAsync(TimeSpan.FromSeconds(3), CancellationToken.None).ConfigureAwait(false);
+                await SystemClock.SleepAsync(TimeSpan.FromSeconds(3), CancellationToken.None);
 
             })).Should().Throw<TimeoutRejectedException>();
         }
@@ -221,8 +221,7 @@ namespace Polly.Specs.Timeout
 
             Func<Task> act = async () =>
             {
-                result = await policy.ExecuteAsync(() => Task.FromResult(ResultPrimitive.Good))
-                    .ConfigureAwait(false);
+                result = await policy.ExecuteAsync(() => Task.FromResult(ResultPrimitive.Good));
             };
 
             act.Should().NotThrow();
@@ -242,7 +241,7 @@ namespace Polly.Specs.Timeout
             watch.Start();
             policy.Awaiting(async p => await p.ExecuteAsync(async () =>
             {
-                await SystemClock.SleepAsync(TimeSpan.FromSeconds(10), CancellationToken.None).ConfigureAwait(false);
+                await SystemClock.SleepAsync(TimeSpan.FromSeconds(10), CancellationToken.None);
 
             }))
                 .Should().Throw<TimeoutRejectedException>();
@@ -274,9 +273,9 @@ namespace Polly.Specs.Timeout
 
             policy.Awaiting(async p => await p.ExecuteAsync(async ct =>
             {
-                await SystemClock.SleepAsync(TimeSpan.FromSeconds(3), ct).ConfigureAwait(false);
+                await SystemClock.SleepAsync(TimeSpan.FromSeconds(3), ct);
                 
-            }, userCancellationToken).ConfigureAwait(false))
+            }, userCancellationToken))
             .Should().Throw<TimeoutRejectedException>();
         }
 
@@ -290,10 +289,9 @@ namespace Polly.Specs.Timeout
             Func<Task> act = async () => {
                 result = await policy.ExecuteAsync(async ct =>
                     {
-                        await SystemClock.SleepAsync(TimeSpan.FromMilliseconds(500), ct).ConfigureAwait(false);
+                        await SystemClock.SleepAsync(TimeSpan.FromMilliseconds(500), ct);
                         return ResultPrimitive.Good;
-                    }, userCancellationToken)
-                    .ConfigureAwait(false);
+                    }, userCancellationToken);
             };
             
             act.Should().NotThrow<TimeoutRejectedException>();
@@ -314,9 +312,9 @@ namespace Polly.Specs.Timeout
             watch.Start();
             policy.Awaiting(async p => await p.ExecuteAsync(async ct =>
             {
-                await SystemClock.SleepAsync(TimeSpan.FromSeconds(10), ct).ConfigureAwait(false);
+                await SystemClock.SleepAsync(TimeSpan.FromSeconds(10), ct);
                 
-            }, userCancellationToken).ConfigureAwait(false))
+            }, userCancellationToken))
                 .Should().Throw<TimeoutRejectedException>();
             watch.Stop();
 
@@ -348,7 +346,7 @@ namespace Polly.Specs.Timeout
                         userTokenSource.Cancel(); // User token cancels in the middle of execution ...
                         await SystemClock.SleepAsync(TimeSpan.FromSeconds(timeout * 2), 
                             CancellationToken.None // ... but if the executed delegate does not observe it
-                            ).ConfigureAwait(false); 
+                            ); 
                     }, userTokenSource.Token)
                    ).Should().Throw<TimeoutRejectedException>(); // ... it's still the timeout we expect.
             }
@@ -474,7 +472,7 @@ namespace Polly.Specs.Timeout
 
             policy.Awaiting(async p => await p.ExecuteAsync(async () =>
             {
-                await SystemClock.SleepAsync(TimeSpan.FromSeconds(3), CancellationToken.None).ConfigureAwait(false);
+                await SystemClock.SleepAsync(TimeSpan.FromSeconds(3), CancellationToken.None);
                 
             }))
             .Should().Throw<TimeoutRejectedException>();
@@ -500,7 +498,7 @@ namespace Polly.Specs.Timeout
 
             policy.Awaiting(async p => await p.ExecuteAsync(async ctx =>
                 {
-                    await SystemClock.SleepAsync(TimeSpan.FromSeconds(3), CancellationToken.None).ConfigureAwait(false);
+                    await SystemClock.SleepAsync(TimeSpan.FromSeconds(3), CancellationToken.None);
                 
                 }, contextPassedToExecute))
                 .Should().Throw<TimeoutRejectedException>();
@@ -529,7 +527,7 @@ namespace Polly.Specs.Timeout
 
             policy.Awaiting(async p => await p.ExecuteAsync(async () =>
             {
-                await SystemClock.SleepAsync(TimeSpan.FromSeconds(3), CancellationToken.None).ConfigureAwait(false);
+                await SystemClock.SleepAsync(TimeSpan.FromSeconds(3), CancellationToken.None);
             }))
             .Should().Throw<TimeoutRejectedException>();
 
@@ -558,7 +556,7 @@ namespace Polly.Specs.Timeout
 
             policy.Awaiting(async p => await p.ExecuteAsync(async ctx =>
             {
-                await SystemClock.SleepAsync(TimeSpan.FromSeconds(3), CancellationToken.None).ConfigureAwait(false);
+                await SystemClock.SleepAsync(TimeSpan.FromSeconds(3), CancellationToken.None);
             }, context))
             .Should().Throw<TimeoutRejectedException>();
 
@@ -580,7 +578,7 @@ namespace Polly.Specs.Timeout
 
             policy.Awaiting(async p => await p.ExecuteAsync(async () =>
             {
-                await SystemClock.SleepAsync(TimeSpan.FromSeconds(3), CancellationToken.None).ConfigureAwait(false);
+                await SystemClock.SleepAsync(TimeSpan.FromSeconds(3), CancellationToken.None);
             }))
             .Should().Throw<TimeoutRejectedException>();
 
@@ -609,12 +607,12 @@ namespace Polly.Specs.Timeout
 
             policy.Awaiting(async p => await p.ExecuteAsync(async () =>
             {
-                await SystemClock.SleepAsync(thriceShimTimeSpan, CancellationToken.None).ConfigureAwait(false);
+                await SystemClock.SleepAsync(thriceShimTimeSpan, CancellationToken.None);
                 throw exceptionToThrow;
             }))
             .Should().Throw<TimeoutRejectedException>();
 
-            await SystemClock.SleepAsync(thriceShimTimeSpan, CancellationToken.None).ConfigureAwait(false);
+            await SystemClock.SleepAsync(thriceShimTimeSpan, CancellationToken.None);
             exceptionObservedFromTaskPassedToOnTimeout.Should().NotBeNull();
             exceptionObservedFromTaskPassedToOnTimeout.Should().Be(exceptionToThrow);
 
@@ -636,7 +634,7 @@ namespace Polly.Specs.Timeout
 
             policy.Awaiting(async p => await p.ExecuteAsync(async () =>
                 {
-                    await SystemClock.SleepAsync(TimeSpan.FromSeconds(3), CancellationToken.None).ConfigureAwait(false);
+                    await SystemClock.SleepAsync(TimeSpan.FromSeconds(3), CancellationToken.None);
 
                 }))
                 .Should().Throw<TimeoutRejectedException>();
@@ -666,9 +664,9 @@ namespace Polly.Specs.Timeout
 
             policy.Awaiting(async p => await p.ExecuteAsync(async ct =>
             {
-                await SystemClock.SleepAsync(TimeSpan.FromSeconds(3), ct).ConfigureAwait(false);
+                await SystemClock.SleepAsync(TimeSpan.FromSeconds(3), ct);
 
-            }, userCancellationToken).ConfigureAwait(false))
+            }, userCancellationToken))
             .Should().Throw<TimeoutRejectedException>();
 
             timeoutPassedToOnTimeout.Should().Be(timeoutPassedToConfiguration);
@@ -693,9 +691,9 @@ namespace Polly.Specs.Timeout
 
             policy.Awaiting(async p => await p.ExecuteAsync(async (ctx, ct) =>
                 {
-                    await SystemClock.SleepAsync(TimeSpan.FromSeconds(3), ct).ConfigureAwait(false);
+                    await SystemClock.SleepAsync(TimeSpan.FromSeconds(3), ct);
 
-                }, contextPassedToExecute, userCancellationToken).ConfigureAwait(false))
+                }, contextPassedToExecute, userCancellationToken))
                 .Should().Throw<TimeoutRejectedException>();
 
             contextPassedToOnTimeout.Should().NotBeNull();
@@ -723,9 +721,9 @@ namespace Polly.Specs.Timeout
 
             policy.Awaiting(async p => await p.ExecuteAsync(async ct =>
                 {
-                    await SystemClock.SleepAsync(TimeSpan.FromSeconds(3), ct).ConfigureAwait(false);
+                    await SystemClock.SleepAsync(TimeSpan.FromSeconds(3), ct);
 
-                }, userCancellationToken).ConfigureAwait(false))
+                }, userCancellationToken))
                 .Should().Throw<TimeoutRejectedException>();
 
             timeoutPassedToOnTimeout.Should().Be(timeoutFunc());
@@ -757,9 +755,9 @@ namespace Polly.Specs.Timeout
 
             policy.Awaiting(async p => await p.ExecuteAsync(async (ctx, ct) =>
             {
-                await SystemClock.SleepAsync(TimeSpan.FromSeconds(3), ct).ConfigureAwait(false);
+                await SystemClock.SleepAsync(TimeSpan.FromSeconds(3), ct);
 
-            }, context, userCancellationToken).ConfigureAwait(false))
+            }, context, userCancellationToken))
                 .Should().Throw<TimeoutRejectedException>();
 
             timeoutPassedToOnTimeout.Should().Be(timeoutProvider(context));
@@ -781,9 +779,9 @@ namespace Polly.Specs.Timeout
 
             policy.Awaiting(async p => await p.ExecuteAsync(async ct =>
             {
-                await SystemClock.SleepAsync(TimeSpan.FromSeconds(3), ct).ConfigureAwait(false);
+                await SystemClock.SleepAsync(TimeSpan.FromSeconds(3), ct);
 
-            }, userCancellationToken).ConfigureAwait(false))
+            }, userCancellationToken))
             .Should().Throw<TimeoutRejectedException>();
 
             taskPassedToOnTimeout.Should().BeNull();
@@ -806,9 +804,9 @@ namespace Polly.Specs.Timeout
 
             policy.Awaiting(async p => await p.ExecuteAsync(async ct =>
             {
-                await SystemClock.SleepAsync(TimeSpan.FromSeconds(3), ct).ConfigureAwait(false);
+                await SystemClock.SleepAsync(TimeSpan.FromSeconds(3), ct);
 
-            }, userCancellationToken).ConfigureAwait(false))
+            }, userCancellationToken))
             .Should().Throw<TimeoutRejectedException>();
 
             exceptionPassedToOnTimeout.Should().NotBeNull();

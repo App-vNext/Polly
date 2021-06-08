@@ -25,7 +25,7 @@ namespace Polly.Specs.CircuitBreaker
                             .HandleResult(ResultPrimitive.Fault)
                             .CircuitBreakerAsync(1, TimeSpan.MaxValue);
 
-            var result = await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault).ConfigureAwait(false);
+            var result = await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault);
             result.Should().Be(ResultPrimitive.Fault);
         }
 
@@ -85,15 +85,15 @@ namespace Polly.Specs.CircuitBreaker
                             .HandleResult(ResultPrimitive.Fault)
                             .CircuitBreakerAsync(2, TimeSpan.FromMinutes(1));
 
-            (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault).ConfigureAwait(false))
+            (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault))
                   .Should().Be(ResultPrimitive.Fault);
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
-            (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Good).ConfigureAwait(false))
+            (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Good))
                   .Should().Be(ResultPrimitive.Good);
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
-            (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault).ConfigureAwait(false))
+            (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault))
                   .Should().Be(ResultPrimitive.Fault);
             breaker.CircuitState.Should().Be(CircuitState.Closed);
         }
@@ -105,11 +105,11 @@ namespace Polly.Specs.CircuitBreaker
                             .HandleResult(ResultPrimitive.Fault)
                             .CircuitBreakerAsync(2, TimeSpan.FromMinutes(1));
 
-            (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault).ConfigureAwait(false))
+            (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault))
                   .Should().Be(ResultPrimitive.Fault);
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
-            (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault).ConfigureAwait(false))
+            (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault))
                   .Should().Be(ResultPrimitive.Fault);
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
@@ -129,11 +129,11 @@ namespace Polly.Specs.CircuitBreaker
                             .OrResult(ResultPrimitive.FaultAgain)
                             .CircuitBreakerAsync(2, TimeSpan.FromMinutes(1));
 
-            (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault).ConfigureAwait(false))
+            (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault))
                   .Should().Be(ResultPrimitive.Fault);
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
-            (await breaker.RaiseResultSequenceAsync(ResultPrimitive.FaultAgain).ConfigureAwait(false))
+            (await breaker.RaiseResultSequenceAsync(ResultPrimitive.FaultAgain))
                   .Should().Be(ResultPrimitive.FaultAgain);
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
@@ -152,11 +152,11 @@ namespace Polly.Specs.CircuitBreaker
                             .HandleResult<ResultClass>(r => r.ResultCode == ResultPrimitive.Fault)
                             .CircuitBreakerAsync(2, TimeSpan.FromMinutes(1));
 
-            (await breaker.RaiseResultSequenceAsync(new ResultClass(ResultPrimitive.Fault)).ConfigureAwait(false))
+            (await breaker.RaiseResultSequenceAsync(new ResultClass(ResultPrimitive.Fault)))
                   .ResultCode.Should().Be(ResultPrimitive.Fault);
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
-            (await breaker.RaiseResultSequenceAsync(new ResultClass(ResultPrimitive.Fault)).ConfigureAwait(false))
+            (await breaker.RaiseResultSequenceAsync(new ResultClass(ResultPrimitive.Fault)))
                   .ResultCode.Should().Be(ResultPrimitive.Fault);
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
@@ -175,15 +175,15 @@ namespace Polly.Specs.CircuitBreaker
                             .HandleResult(ResultPrimitive.Fault)
                             .CircuitBreakerAsync(2, TimeSpan.FromMinutes(1));
 
-            (await breaker.RaiseResultSequenceAsync(ResultPrimitive.FaultAgain).ConfigureAwait(false))
+            (await breaker.RaiseResultSequenceAsync(ResultPrimitive.FaultAgain))
                   .Should().Be(ResultPrimitive.FaultAgain);
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
-            (await breaker.RaiseResultSequenceAsync(ResultPrimitive.FaultAgain).ConfigureAwait(false))
+            (await breaker.RaiseResultSequenceAsync(ResultPrimitive.FaultAgain))
                   .Should().Be(ResultPrimitive.FaultAgain);
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
-            (await breaker.RaiseResultSequenceAsync(ResultPrimitive.FaultAgain).ConfigureAwait(false))
+            (await breaker.RaiseResultSequenceAsync(ResultPrimitive.FaultAgain))
                   .Should().Be(ResultPrimitive.FaultAgain);
             breaker.CircuitState.Should().Be(CircuitState.Closed);
         }
@@ -196,15 +196,15 @@ namespace Polly.Specs.CircuitBreaker
                             .OrResult(ResultPrimitive.FaultYetAgain)
                             .CircuitBreakerAsync(2, TimeSpan.FromMinutes(1));
 
-            (await breaker.RaiseResultSequenceAsync(ResultPrimitive.FaultAgain).ConfigureAwait(false))
+            (await breaker.RaiseResultSequenceAsync(ResultPrimitive.FaultAgain))
                 .Should().Be(ResultPrimitive.FaultAgain);
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
-            (await breaker.RaiseResultSequenceAsync(ResultPrimitive.FaultAgain).ConfigureAwait(false))
+            (await breaker.RaiseResultSequenceAsync(ResultPrimitive.FaultAgain))
                 .Should().Be(ResultPrimitive.FaultAgain);
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
-            (await breaker.RaiseResultSequenceAsync(ResultPrimitive.FaultAgain).ConfigureAwait(false))
+            (await breaker.RaiseResultSequenceAsync(ResultPrimitive.FaultAgain))
                 .Should().Be(ResultPrimitive.FaultAgain);
             breaker.CircuitState.Should().Be(CircuitState.Closed);
         }
@@ -216,15 +216,15 @@ namespace Polly.Specs.CircuitBreaker
                             .HandleResult<ResultClass>(r => r.ResultCode == ResultPrimitive.Fault)
                             .CircuitBreakerAsync(2, TimeSpan.FromMinutes(1));
 
-            (await breaker.RaiseResultSequenceAsync(new ResultClass(ResultPrimitive.FaultAgain)).ConfigureAwait(false))
+            (await breaker.RaiseResultSequenceAsync(new ResultClass(ResultPrimitive.FaultAgain)))
                 .ResultCode.Should().Be(ResultPrimitive.FaultAgain);
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
-            (await breaker.RaiseResultSequenceAsync(new ResultClass(ResultPrimitive.FaultAgain)).ConfigureAwait(false))
+            (await breaker.RaiseResultSequenceAsync(new ResultClass(ResultPrimitive.FaultAgain)))
                 .ResultCode.Should().Be(ResultPrimitive.FaultAgain);
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
-            (await breaker.RaiseResultSequenceAsync(new ResultClass(ResultPrimitive.FaultAgain)).ConfigureAwait(false))
+            (await breaker.RaiseResultSequenceAsync(new ResultClass(ResultPrimitive.FaultAgain)))
                 .ResultCode.Should().Be(ResultPrimitive.FaultAgain);
             breaker.CircuitState.Should().Be(CircuitState.Closed);
         }
@@ -237,15 +237,15 @@ namespace Polly.Specs.CircuitBreaker
                 .OrResult(r => r.ResultCode == ResultPrimitive.FaultYetAgain)
                 .CircuitBreakerAsync(2, TimeSpan.FromMinutes(1));
 
-            (await breaker.RaiseResultSequenceAsync(new ResultClass(ResultPrimitive.FaultAgain)).ConfigureAwait(false))
+            (await breaker.RaiseResultSequenceAsync(new ResultClass(ResultPrimitive.FaultAgain)))
                 .ResultCode.Should().Be(ResultPrimitive.FaultAgain);
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
-            (await breaker.RaiseResultSequenceAsync(new ResultClass(ResultPrimitive.FaultAgain)).ConfigureAwait(false))
+            (await breaker.RaiseResultSequenceAsync(new ResultClass(ResultPrimitive.FaultAgain)))
                 .ResultCode.Should().Be(ResultPrimitive.FaultAgain);
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
-            (await breaker.RaiseResultSequenceAsync(new ResultClass(ResultPrimitive.FaultAgain)).ConfigureAwait(false))
+            (await breaker.RaiseResultSequenceAsync(new ResultClass(ResultPrimitive.FaultAgain)))
                 .ResultCode.Should().Be(ResultPrimitive.FaultAgain);
             breaker.CircuitState.Should().Be(CircuitState.Closed);
         }
@@ -266,11 +266,11 @@ namespace Polly.Specs.CircuitBreaker
                             .HandleResult(ResultPrimitive.Fault)
                             .CircuitBreakerAsync(2, durationOfBreak);
 
-            (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault).ConfigureAwait(false))
+            (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault))
                   .Should().Be(ResultPrimitive.Fault);
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
-            (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault).ConfigureAwait(false))
+            (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault))
                   .Should().Be(ResultPrimitive.Fault);
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
@@ -283,7 +283,7 @@ namespace Polly.Specs.CircuitBreaker
 
             // duration has passed, circuit now half open
             breaker.CircuitState.Should().Be(CircuitState.HalfOpen);
-            (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault).ConfigureAwait(false))
+            (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault))
                   .Should().Be(ResultPrimitive.Fault);
         }
 
@@ -299,11 +299,11 @@ namespace Polly.Specs.CircuitBreaker
                             .HandleResult(ResultPrimitive.Fault)
                             .CircuitBreakerAsync(2, durationOfBreak);
 
-            (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault).ConfigureAwait(false))
+            (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault))
                   .Should().Be(ResultPrimitive.Fault);
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
-            (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault).ConfigureAwait(false))
+            (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault))
                   .Should().Be(ResultPrimitive.Fault);
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
@@ -318,7 +318,7 @@ namespace Polly.Specs.CircuitBreaker
             breaker.CircuitState.Should().Be(CircuitState.HalfOpen);
 
             // first call after duration returns a fault, so circuit should break again
-            (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault).ConfigureAwait(false))
+            (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault))
                   .Should().Be(ResultPrimitive.Fault);
             breaker.CircuitState.Should().Be(CircuitState.Open);
             breaker.Awaiting(async b => await b.RaiseResultSequenceAsync(ResultPrimitive.Fault))
@@ -338,11 +338,11 @@ namespace Polly.Specs.CircuitBreaker
                             .HandleResult(ResultPrimitive.Fault)
                             .CircuitBreakerAsync(2, durationOfBreak);
 
-            (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault).ConfigureAwait(false))
+            (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault))
                   .Should().Be(ResultPrimitive.Fault);
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
-            (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault).ConfigureAwait(false))
+            (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault))
                   .Should().Be(ResultPrimitive.Fault);
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
@@ -356,16 +356,16 @@ namespace Polly.Specs.CircuitBreaker
             // duration has passed, circuit now half open
             breaker.CircuitState.Should().Be(CircuitState.HalfOpen);
             // first call after duration is successful, so circuit should reset
-            (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Good).ConfigureAwait(false))
+            (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Good))
                 .Should().Be(ResultPrimitive.Good);
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             // circuit has been reset so should once again allow 2 faults to be raised before breaking
-            (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault).ConfigureAwait(false))
+            (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault))
                   .Should().Be(ResultPrimitive.Fault);
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
-            (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault).ConfigureAwait(false))
+            (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault))
                   .Should().Be(ResultPrimitive.Fault);
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
@@ -385,7 +385,7 @@ namespace Polly.Specs.CircuitBreaker
                 .HandleResult(ResultPrimitive.Fault)
                 .CircuitBreakerAsync(1, durationOfBreak);
 
-            (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault).ConfigureAwait(false))
+            (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault))
                   .Should().Be(ResultPrimitive.Fault);
 
             // exception raised, circuit is now open.  
@@ -416,7 +416,7 @@ namespace Polly.Specs.CircuitBreaker
                 .HandleResult(ResultPrimitive.Fault)
                 .CircuitBreakerAsync(1, durationOfBreak);
 
-            (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault).ConfigureAwait(false))
+            (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault))
                   .Should().Be(ResultPrimitive.Fault);
 
             // exception raised, circuit is now open.  
@@ -455,7 +455,7 @@ namespace Polly.Specs.CircuitBreaker
                 .HandleResult(ResultPrimitive.Fault)
                 .CircuitBreakerAsync(1, durationOfBreak);
 
-            (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault).ConfigureAwait(false))
+            (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault))
                   .Should().Be(ResultPrimitive.Fault);
 
             // exception raised, circuit is now open.  
@@ -558,7 +558,7 @@ namespace Polly.Specs.CircuitBreaker
                 .HandleResult(ResultPrimitive.Fault)
                 .CircuitBreakerAsync(1, durationOfBreak);
 
-            (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault).ConfigureAwait(false))
+            (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault))
                   .Should().Be(ResultPrimitive.Fault);
 
             // exception raised, circuit is now open.  
@@ -675,7 +675,7 @@ namespace Polly.Specs.CircuitBreaker
 
             // circuit manually broken: execution should be blocked; even non-fault-returning executions should not reset circuit
             bool delegateExecutedWhenBroken = false;
-            breaker.Awaiting(async b => await b.ExecuteAsync(() => { delegateExecutedWhenBroken = true; return Task.FromResult(ResultPrimitive.Good); }).ConfigureAwait(false))
+            breaker.Awaiting(async b => await b.ExecuteAsync(() => { delegateExecutedWhenBroken = true; return Task.FromResult(ResultPrimitive.Good); }))
                 .Should().Throw<IsolatedCircuitException>();
             breaker.CircuitState.Should().Be(CircuitState.Isolated);
             breaker.LastException.Should().BeOfType<IsolatedCircuitException>();
@@ -743,11 +743,11 @@ namespace Polly.Specs.CircuitBreaker
                             .HandleResult(ResultPrimitive.Fault)
                             .CircuitBreakerAsync(2, durationOfBreak);
 
-            (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault).ConfigureAwait(false))
+            (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault))
                   .Should().Be(ResultPrimitive.Fault);
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
-            (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault).ConfigureAwait(false))
+            (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault))
                   .Should().Be(ResultPrimitive.Fault);
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
@@ -792,13 +792,13 @@ namespace Polly.Specs.CircuitBreaker
                             .HandleResult(ResultPrimitive.Fault)
                             .CircuitBreakerAsync(2, TimeSpan.FromMinutes(1), onBreak, onReset);
 
-            (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault).ConfigureAwait(false))
+            (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault))
                   .Should().Be(ResultPrimitive.Fault);
 
             breaker.CircuitState.Should().Be(CircuitState.Closed);
             onBreakCalled.Should().BeFalse();
 
-            (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault).ConfigureAwait(false))
+            (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault))
                   .Should().Be(ResultPrimitive.Fault);
 
             breaker.CircuitState.Should().Be(CircuitState.Open);
@@ -833,13 +833,13 @@ namespace Polly.Specs.CircuitBreaker
                             .HandleResult(ResultPrimitive.Fault)
                             .CircuitBreakerAsync(2, TimeSpan.FromMinutes(1), onBreak, onReset);
 
-            (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault).ConfigureAwait(false))
+            (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault))
                   .Should().Be(ResultPrimitive.Fault);
 
             breaker.CircuitState.Should().Be(CircuitState.Closed);
             onBreakCalled.Should().Be(0);
 
-            (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault).ConfigureAwait(false))
+            (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault))
                   .Should().Be(ResultPrimitive.Fault);
 
             breaker.CircuitState.Should().Be(CircuitState.Open);
@@ -894,7 +894,7 @@ namespace Polly.Specs.CircuitBreaker
                 // Break circuit in the normal manner: onBreak() should be called once.
                 breaker.CircuitState.Should().Be(CircuitState.Closed);
                 onBreakCalled.Should().Be(0);
-                (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault).ConfigureAwait(false))
+                (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault))
                       .Should().Be(ResultPrimitive.Fault);
                 breaker.CircuitState.Should().Be(CircuitState.Open);
                 onBreakCalled.Should().Be(1);
@@ -932,11 +932,11 @@ namespace Polly.Specs.CircuitBreaker
 
             onBreakCalled.Should().Be(0);
 
-            (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault).ConfigureAwait(false))
+            (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault))
                   .Should().Be(ResultPrimitive.Fault);
             onBreakCalled.Should().Be(0);
 
-            (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault).ConfigureAwait(false))
+            (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault))
                   .Should().Be(ResultPrimitive.Fault);
             onBreakCalled.Should().Be(1);
 
@@ -1002,11 +1002,11 @@ namespace Polly.Specs.CircuitBreaker
 
             onBreakCalled.Should().Be(0);
 
-            (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault).ConfigureAwait(false))
+            (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault))
                   .Should().Be(ResultPrimitive.Fault);
             onBreakCalled.Should().Be(0);
 
-            (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault).ConfigureAwait(false))
+            (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault))
                   .Should().Be(ResultPrimitive.Fault);
             onBreakCalled.Should().Be(1);
 
@@ -1049,11 +1049,11 @@ namespace Polly.Specs.CircuitBreaker
 
             onBreakCalled.Should().Be(0);
 
-            (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault).ConfigureAwait(false))
+            (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault))
                   .Should().Be(ResultPrimitive.Fault);
             onBreakCalled.Should().Be(0);
 
-            (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault).ConfigureAwait(false))
+            (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault))
                   .Should().Be(ResultPrimitive.Fault);
             onBreakCalled.Should().Be(1);
 
@@ -1119,10 +1119,10 @@ namespace Polly.Specs.CircuitBreaker
                 .HandleResult(ResultPrimitive.Fault)
                 .CircuitBreakerAsync(2, durationOfBreak, onBreak, onReset);
 
-            (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault).ConfigureAwait(false))
+            (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault))
                 .Should().Be(ResultPrimitive.Fault);
 
-            (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault).ConfigureAwait(false))
+            (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault))
                 .Should().Be(ResultPrimitive.Fault);
 
             breaker.CircuitState.Should().Be(CircuitState.Open);
@@ -1144,10 +1144,10 @@ namespace Polly.Specs.CircuitBreaker
                 .HandleResult(ResultPrimitive.Fault)
                 .CircuitBreakerAsync(2, durationOfBreak, onBreak, onReset);
 
-            (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault).ConfigureAwait(false))
+            (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault))
                 .Should().Be(ResultPrimitive.Fault);
 
-            (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault).ConfigureAwait(false))
+            (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault))
                 .Should().Be(ResultPrimitive.Fault);
 
             breaker.CircuitState.Should().Be(CircuitState.Open);
@@ -1195,11 +1195,11 @@ namespace Polly.Specs.CircuitBreaker
                 .HandleResult(ResultPrimitive.Fault)
                 .CircuitBreakerAsync(2, TimeSpan.FromMinutes(1), onBreak, onReset);
 
-            (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault).ConfigureAwait(false))
+            (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault))
                 .Should().Be(ResultPrimitive.Fault);
 
             (await breaker.RaiseResultSequenceAsync(new { key1 = "value1", key2 = "value2" }.AsDictionary(),
-                ResultPrimitive.Fault).ConfigureAwait(false))
+                ResultPrimitive.Fault))
                 .Should().Be(ResultPrimitive.Fault);
 
             breaker.CircuitState.Should().Be(CircuitState.Open);
@@ -1226,9 +1226,9 @@ namespace Polly.Specs.CircuitBreaker
                 .HandleResult(ResultPrimitive.Fault)
                 .CircuitBreakerAsync(2, durationOfBreak, onBreak, onReset);
 
-            (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault).ConfigureAwait(false))
+            (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault))
                 .Should().Be(ResultPrimitive.Fault);
-            (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault).ConfigureAwait(false))
+            (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault))
                 .Should().Be(ResultPrimitive.Fault);
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
@@ -1236,7 +1236,7 @@ namespace Polly.Specs.CircuitBreaker
             breaker.CircuitState.Should().Be(CircuitState.HalfOpen);
 
             // first call after duration should invoke onReset, with context
-            await breaker.ExecuteAsync(ctx => Task.FromResult(ResultPrimitive.Good), new { key1 = "value1", key2 = "value2" }.AsDictionary()).ConfigureAwait(false);
+            await breaker.ExecuteAsync(ctx => Task.FromResult(ResultPrimitive.Good), new { key1 = "value1", key2 = "value2" }.AsDictionary());
 
             contextData.Should()
                 .ContainKeys("key1", "key2").And
@@ -1255,10 +1255,10 @@ namespace Polly.Specs.CircuitBreaker
                 .HandleResult(ResultPrimitive.Fault)
                 .CircuitBreakerAsync(2, TimeSpan.FromMinutes(1), onBreak, onReset);
 
-            (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault).ConfigureAwait(false))
+            (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault))
                 .Should().Be(ResultPrimitive.Fault);
 
-            (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault).ConfigureAwait(false))
+            (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault))
                 .Should().Be(ResultPrimitive.Fault);
 
             breaker.CircuitState.Should().Be(CircuitState.Open);
@@ -1283,11 +1283,11 @@ namespace Polly.Specs.CircuitBreaker
 
             var durationOfBreak = TimeSpan.FromMinutes(1);
 
-            (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault).ConfigureAwait(false))
+            (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault))
                 .Should().Be(ResultPrimitive.Fault);
 
             // 2 exception or fault raised, circuit is now open
-            (await breaker.RaiseResultSequenceAsync(new { key = "original_value" }.AsDictionary(), ResultPrimitive.Fault).ConfigureAwait(false))
+            (await breaker.RaiseResultSequenceAsync(new { key = "original_value" }.AsDictionary(), ResultPrimitive.Fault))
                 .Should().Be(ResultPrimitive.Fault);
             breaker.CircuitState.Should().Be(CircuitState.Open);
             contextValue.Should().Be("original_value");
@@ -1299,7 +1299,7 @@ namespace Polly.Specs.CircuitBreaker
             // but not yet reset
 
             // first call after duration is successful, so circuit should reset
-            await breaker.ExecuteAsync(ctx => Task.FromResult(ResultPrimitive.Good), new { key = "new_value" }.AsDictionary()).ConfigureAwait(false);
+            await breaker.ExecuteAsync(ctx => Task.FromResult(ResultPrimitive.Good), new { key = "new_value" }.AsDictionary());
             breaker.CircuitState.Should().Be(CircuitState.Closed);
             contextValue.Should().Be("new_value");
         }
@@ -1328,7 +1328,7 @@ namespace Polly.Specs.CircuitBreaker
                 .HandleResult(ResultPrimitive.Fault)
                 .CircuitBreakerAsync(2, TimeSpan.FromMinutes(1));
 
-            (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault).ConfigureAwait(false))
+            (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault))
                 .Should().Be(ResultPrimitive.Fault);
 
 
@@ -1345,10 +1345,10 @@ namespace Polly.Specs.CircuitBreaker
                 .HandleResult(ResultPrimitive.Fault)
                 .CircuitBreakerAsync(2, TimeSpan.FromMinutes(1));
 
-            (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault).ConfigureAwait(false))
+            (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault))
                 .Should().Be(ResultPrimitive.Fault);
 
-            (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault).ConfigureAwait(false))
+            (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault))
                 .Should().Be(ResultPrimitive.Fault);
 
             breaker.CircuitState.Should().Be(CircuitState.Open);
@@ -1364,10 +1364,10 @@ namespace Polly.Specs.CircuitBreaker
                 .HandleResult(ResultPrimitive.Fault)
                 .CircuitBreakerAsync(2, TimeSpan.FromMinutes(1));
 
-            (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault).ConfigureAwait(false))
+            (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault))
                 .Should().Be(ResultPrimitive.Fault);
 
-            (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault).ConfigureAwait(false))
+            (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault))
                 .Should().Be(ResultPrimitive.Fault);
 
             breaker.CircuitState.Should().Be(CircuitState.Open);
@@ -1405,7 +1405,7 @@ namespace Polly.Specs.CircuitBreaker
             };
 
             (await breaker.RaiseResultSequenceAndOrCancellationAsync(scenario, cancellationTokenSource, onExecute, 
-                ResultPrimitive.Good).ConfigureAwait(false))
+                ResultPrimitive.Good))
                 .Should().Be(ResultPrimitive.Good);
 
             attemptsInvoked.Should().Be(1);
@@ -1520,7 +1520,7 @@ namespace Polly.Specs.CircuitBreaker
                 ActionObservesCancellation = false
             };
 
-            (await breaker.RaiseResultSequenceAndOrCancellationAsync(scenario, cancellationTokenSource, onExecute, ResultPrimitive.Fault).ConfigureAwait(false))
+            (await breaker.RaiseResultSequenceAndOrCancellationAsync(scenario, cancellationTokenSource, onExecute, ResultPrimitive.Fault))
                             .Should().Be(ResultPrimitive.Fault);
 
             attemptsInvoked.Should().Be(1);
@@ -1533,7 +1533,7 @@ namespace Polly.Specs.CircuitBreaker
                 .HandleResult(ResultPrimitive.Fault)
                 .CircuitBreakerAsync(1, TimeSpan.FromMinutes(1));
 
-            (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault).ConfigureAwait(false))
+            (await breaker.RaiseResultSequenceAsync(ResultPrimitive.Fault))
                 .Should().Be(ResultPrimitive.Fault);
 
             breaker.Awaiting(async x => await x.RaiseResultSequenceAsync(ResultPrimitive.Fault))
@@ -1587,7 +1587,7 @@ namespace Polly.Specs.CircuitBreaker
             breaker.Awaiting(async x => await x.ExecuteAsync(async ct =>
             {
                 attemptsInvoked++;
-                await TaskHelper.EmptyTask.ConfigureAwait(false);
+                await TaskHelper.EmptyTask;
                 implicitlyCapturedActionCancellationToken.ThrowIfCancellationRequested();
                 return ResultPrimitive.Good;
             }, policyCancellationToken))
