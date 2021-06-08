@@ -221,7 +221,6 @@ namespace Polly.Specs.Timeout
             ResultPrimitive result = ResultPrimitive.Undefined;
 
             Func<Task> act = async () => result = await policy.ExecuteAsync(() => Task.FromResult(ResultPrimitive.Good));
-                    ;
 
             act.Should().NotThrow();
             result.Should().Be(ResultPrimitive.Good);
