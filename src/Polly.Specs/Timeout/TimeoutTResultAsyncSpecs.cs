@@ -283,7 +283,6 @@ namespace Polly.Specs.Timeout
             var userCancellationToken = CancellationToken.None;
 
             Func<Task> act = async () => result = await policy.ExecuteAsync(ct => Task.FromResult(ResultPrimitive.Good), userCancellationToken);
-                ;
             
             act.Should().NotThrow();
             result.Should().Be(ResultPrimitive.Good);
