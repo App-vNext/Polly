@@ -141,7 +141,7 @@ namespace Polly.Specs.Fallback
                                     .HandleResult(ResultPrimitive.Fault)
                                     .FallbackAsync(fallbackAction);
 
-            (await fallbackPolicy.RaiseResultSequenceAsync(ResultPrimitive.FaultAgain).ConfigureAwait(false))
+            (await fallbackPolicy.RaiseResultSequenceAsync(ResultPrimitive.FaultAgain))
                 .Should().Be(ResultPrimitive.FaultAgain);
 
             fallbackActionExecuted.Should().BeFalse();
@@ -154,7 +154,7 @@ namespace Polly.Specs.Fallback
                                     .HandleResult(ResultPrimitive.Fault)
                                     .FallbackAsync(ResultPrimitive.Substitute);
 
-            (await fallbackPolicy.RaiseResultSequenceAsync(ResultPrimitive.Fault).ConfigureAwait(false))
+            (await fallbackPolicy.RaiseResultSequenceAsync(ResultPrimitive.Fault))
                 .Should().Be(ResultPrimitive.Substitute);
         }
 
@@ -168,7 +168,7 @@ namespace Polly.Specs.Fallback
                                     .HandleResult(ResultPrimitive.Fault)
                                     .FallbackAsync(fallbackAction);
 
-            (await fallbackPolicy.RaiseResultSequenceAsync(ResultPrimitive.Fault).ConfigureAwait(false))
+            (await fallbackPolicy.RaiseResultSequenceAsync(ResultPrimitive.Fault))
                 .Should().Be(ResultPrimitive.Substitute);
 
             fallbackActionExecuted.Should().BeTrue();
@@ -185,7 +185,7 @@ namespace Polly.Specs.Fallback
                                     .OrResult(ResultPrimitive.FaultAgain)
                                     .FallbackAsync(fallbackAction);
 
-            (await fallbackPolicy.RaiseResultSequenceAsync(ResultPrimitive.FaultAgain).ConfigureAwait(false))
+            (await fallbackPolicy.RaiseResultSequenceAsync(ResultPrimitive.FaultAgain))
                 .Should().Be(ResultPrimitive.Substitute);
 
             fallbackActionExecuted.Should().BeTrue();
@@ -202,7 +202,7 @@ namespace Polly.Specs.Fallback
                                     .OrResult(ResultPrimitive.FaultAgain)
                                     .FallbackAsync(fallbackAction);
 
-            (await fallbackPolicy.RaiseResultSequenceAsync(ResultPrimitive.FaultYetAgain).ConfigureAwait(false))
+            (await fallbackPolicy.RaiseResultSequenceAsync(ResultPrimitive.FaultYetAgain))
                 .Should().Be(ResultPrimitive.FaultYetAgain);
 
             fallbackActionExecuted.Should().BeFalse();
@@ -218,7 +218,7 @@ namespace Polly.Specs.Fallback
                                     .HandleResult<ResultPrimitive>(r => false)
                                     .FallbackAsync(fallbackAction);
 
-            (await fallbackPolicy.RaiseResultSequenceAsync(ResultPrimitive.Fault).ConfigureAwait(false))
+            (await fallbackPolicy.RaiseResultSequenceAsync(ResultPrimitive.Fault))
                 .Should().Be(ResultPrimitive.Fault);
 
             fallbackActionExecuted.Should().BeFalse();
@@ -235,7 +235,7 @@ namespace Polly.Specs.Fallback
                                     .OrResult(r => r == ResultPrimitive.FaultAgain)
                                     .FallbackAsync(fallbackAction);
 
-            (await fallbackPolicy.RaiseResultSequenceAsync(ResultPrimitive.FaultYetAgain).ConfigureAwait(false))
+            (await fallbackPolicy.RaiseResultSequenceAsync(ResultPrimitive.FaultYetAgain))
                 .Should().Be(ResultPrimitive.FaultYetAgain);
 
             fallbackActionExecuted.Should().BeFalse();
@@ -251,7 +251,7 @@ namespace Polly.Specs.Fallback
                                     .HandleResult<ResultPrimitive>(r => true)
                                     .FallbackAsync(fallbackAction);
 
-            (await fallbackPolicy.RaiseResultSequenceAsync(ResultPrimitive.Undefined).ConfigureAwait(false))
+            (await fallbackPolicy.RaiseResultSequenceAsync(ResultPrimitive.Undefined))
                 .Should().Be(ResultPrimitive.Substitute);
 
             fallbackActionExecuted.Should().BeTrue();
@@ -269,7 +269,7 @@ namespace Polly.Specs.Fallback
                                     .OrResult(ResultPrimitive.FaultAgain)
                                     .FallbackAsync(fallbackAction);
 
-            (await fallbackPolicy.RaiseResultSequenceAsync(ResultPrimitive.Undefined).ConfigureAwait(false))
+            (await fallbackPolicy.RaiseResultSequenceAsync(ResultPrimitive.Undefined))
                 .Should().Be(ResultPrimitive.Substitute);
 
             fallbackActionExecuted.Should().BeTrue();
@@ -289,7 +289,7 @@ namespace Polly.Specs.Fallback
                 .HandleResult<ResultClass>(r => r.ResultCode == ResultPrimitive.Fault)
                 .FallbackAsync(fallbackAction);
 
-            (await fallbackPolicy.RaiseResultSequenceAsync(new ResultClass(ResultPrimitive.Fault, "FromExecuteDelegate")).ConfigureAwait(false))
+            (await fallbackPolicy.RaiseResultSequenceAsync(new ResultClass(ResultPrimitive.Fault, "FromExecuteDelegate")))
                 .Should().Match<ResultClass>(r => r.ResultCode == ResultPrimitive.Fault && r.SomeString == "FromFallbackAction");
 
             fallbackActionExecuted.Should().BeTrue();
@@ -378,7 +378,7 @@ namespace Polly.Specs.Fallback
                 .FallbackAsync(fallbackAction, onFallbackAsync);
 
             (await fallbackPolicy.ExecuteAndCaptureAsync(ctx => Task.FromResult(ResultPrimitive.Fault),
-                new { key1 = "value1", key2 = "value2" }.AsDictionary()).ConfigureAwait(false))
+                new { key1 = "value1", key2 = "value2" }.AsDictionary()))
                 .Result.Should().Be(ResultPrimitive.Substitute);
 
             contextData.Should()
@@ -429,7 +429,7 @@ namespace Polly.Specs.Fallback
                 .OrResult(ResultPrimitive.FaultAgain)
                 .FallbackAsync(fallbackAction, onFallbackAsync);
 
-            (await fallbackPolicy.RaiseResultSequenceAsync(ResultPrimitive.Fault).ConfigureAwait(false))
+            (await fallbackPolicy.RaiseResultSequenceAsync(ResultPrimitive.Fault))
                 .Should().Be(ResultPrimitive.Substitute);
 
             onFallbackExecuted.Should().BeTrue();
@@ -496,7 +496,7 @@ namespace Polly.Specs.Fallback
                 .OrResult(ResultPrimitive.FaultAgain)
                 .FallbackAsync(fallbackActionAsync, onFallbackAsync);
 
-            (await fallbackPolicy.RaiseResultSequenceAsync(ResultPrimitive.Fault).ConfigureAwait(false))
+            (await fallbackPolicy.RaiseResultSequenceAsync(ResultPrimitive.Fault))
                 .Should().Be(ResultPrimitive.Substitute);
 
 
@@ -599,7 +599,7 @@ namespace Polly.Specs.Fallback
                 AttemptDuringWhichToCancel = null,
             };
 
-            (await policy.RaiseResultSequenceAndOrCancellationAsync(scenario, cancellationTokenSource, onExecute, ResultPrimitive.Good).ConfigureAwait(false))
+            (await policy.RaiseResultSequenceAndOrCancellationAsync(scenario, cancellationTokenSource, onExecute, ResultPrimitive.Good))
                 .Should().Be(ResultPrimitive.Good);
             attemptsInvoked.Should().Be(1);
 
@@ -628,7 +628,7 @@ namespace Polly.Specs.Fallback
                 AttemptDuringWhichToCancel = null,
             };
 
-            (await policy.RaiseResultSequenceAndOrCancellationAsync(scenario, cancellationTokenSource, onExecute, ResultPrimitive.Fault).ConfigureAwait(false))
+            (await policy.RaiseResultSequenceAndOrCancellationAsync(scenario, cancellationTokenSource, onExecute, ResultPrimitive.Fault))
                 .Should().Be(ResultPrimitive.Substitute);
             attemptsInvoked.Should().Be(1);
 
@@ -723,7 +723,7 @@ namespace Polly.Specs.Fallback
                 ActionObservesCancellation = true
             };
 
-            (await policy.RaiseResultSequenceAndOrCancellationAsync(scenario, cancellationTokenSource, onExecute, ResultPrimitive.Good).ConfigureAwait(false))
+            (await policy.RaiseResultSequenceAndOrCancellationAsync(scenario, cancellationTokenSource, onExecute, ResultPrimitive.Good))
                 .Should().Be(ResultPrimitive.Substitute);
             attemptsInvoked.Should().Be(1);
 
@@ -753,7 +753,7 @@ namespace Polly.Specs.Fallback
                 ActionObservesCancellation = false
             };
 
-            (await policy.RaiseResultSequenceAndOrCancellationAsync(scenario, cancellationTokenSource, onExecute, ResultPrimitive.Good).ConfigureAwait(false))
+            (await policy.RaiseResultSequenceAndOrCancellationAsync(scenario, cancellationTokenSource, onExecute, ResultPrimitive.Good))
                 .Should().Be(ResultPrimitive.Good);
             attemptsInvoked.Should().Be(1);
 
@@ -783,7 +783,7 @@ namespace Polly.Specs.Fallback
                 ActionObservesCancellation = false
             };
 
-            (await policy.RaiseResultSequenceAndOrCancellationAsync(scenario, cancellationTokenSource, onExecute, ResultPrimitive.FaultYetAgain).ConfigureAwait(false))
+            (await policy.RaiseResultSequenceAndOrCancellationAsync(scenario, cancellationTokenSource, onExecute, ResultPrimitive.FaultYetAgain))
                 .Should().Be(ResultPrimitive.FaultYetAgain);
             attemptsInvoked.Should().Be(1);
 
@@ -813,7 +813,7 @@ namespace Polly.Specs.Fallback
                 ActionObservesCancellation = false
             };
 
-            (await policy.RaiseResultSequenceAndOrCancellationAsync(scenario, cancellationTokenSource, onExecute, ResultPrimitive.Fault).ConfigureAwait(false))
+            (await policy.RaiseResultSequenceAndOrCancellationAsync(scenario, cancellationTokenSource, onExecute, ResultPrimitive.Fault))
                 .Should().Be(ResultPrimitive.Substitute);
             attemptsInvoked.Should().Be(1);
 

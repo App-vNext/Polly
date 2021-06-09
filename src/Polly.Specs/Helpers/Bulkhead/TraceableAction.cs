@@ -153,7 +153,7 @@ namespace Polly.Specs.Helpers.Bulkhead
                     {
                         Status = TraceableActionStatus.QueueingForSemaphore;
 
-                        await executeThroughBulkheadInner().ConfigureAwait(false);
+                        await executeThroughBulkheadInner();
                     }
                     catch (BulkheadRejectedException)
                     {
@@ -187,8 +187,7 @@ namespace Polly.Specs.Helpers.Bulkhead
         {
             Status = TraceableActionStatus.Executing;
 
-            await _tcsProxyForRealWork.Task.ContinueWith(CaptureCompletion(), TaskContinuationOptions.ExecuteSynchronously)
-                .ConfigureAwait(false);
+            await _tcsProxyForRealWork.Task.ContinueWith(CaptureCompletion(), TaskContinuationOptions.ExecuteSynchronously);
 
             _testOutputHelper.WriteLine(_id + "Exiting execution.");
         }

@@ -60,7 +60,7 @@ namespace Polly.Specs.Bulkhead
             Context contextPassedToExecute = new Context(operationKey);
 
             Context contextPassedToOnRejected = null;
-            Func<Context, Task> onRejectedAsync = async ctx => { contextPassedToOnRejected = ctx; await TaskHelper.EmptyTask.ConfigureAwait(false); };
+            Func<Context, Task> onRejectedAsync = async ctx => { contextPassedToOnRejected = ctx; await TaskHelper.EmptyTask; };
 
             using (var bulkhead = Policy.BulkheadAsync<int>(1, onRejectedAsync))
             { 
@@ -70,7 +70,7 @@ namespace Polly.Specs.Bulkhead
                     Task.Run(() => {
                         bulkhead.ExecuteAsync(async () =>
                         {
-                            await tcs.Task.ConfigureAwait(false);
+                            await tcs.Task;
                             return 0;
                         });
                     });

@@ -128,7 +128,7 @@ namespace Polly.Specs
             bool firstExecution = true;
             await retry.ExecuteAsync(async ctx =>
             {
-                await TaskHelper.EmptyTask.ConfigureAwait(false);
+                await TaskHelper.EmptyTask;
                 if (firstExecution)
                 {
                     firstExecution = false;
@@ -151,7 +151,7 @@ namespace Polly.Specs
             bool firstExecution = true;
             await retry.ExecuteAsync<int>(async () =>
             {
-                await TaskHelper.EmptyTask.ConfigureAwait(false);
+                await TaskHelper.EmptyTask;
                 if (firstExecution)
                 {
                     firstExecution = false;
@@ -175,7 +175,7 @@ namespace Polly.Specs
             bool firstExecution = true;
             await retry.ExecuteAsync<int>(async ctx =>
             {
-                await TaskHelper.EmptyTask.ConfigureAwait(false);
+                await TaskHelper.EmptyTask;
                 if (firstExecution)
                 {
                     firstExecution = false;
@@ -311,7 +311,7 @@ namespace Polly.Specs
             bool firstExecution = true;
             await retry.ExecuteAsync(async ctx =>
             {
-                await TaskHelper.EmptyTask.ConfigureAwait(false);
+                await TaskHelper.EmptyTask;
                 if (firstExecution)
                 {
                     firstExecution = false;

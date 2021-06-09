@@ -73,7 +73,7 @@ namespace Polly.Specs.Retry
                 .HandleResult(ResultPrimitive.Fault)
                 .RetryAsync(3);
 
-            ResultPrimitive result = await policy.RaiseResultSequenceAsync(ResultPrimitive.Fault, ResultPrimitive.Fault, ResultPrimitive.Fault, ResultPrimitive.Good).ConfigureAwait(false);
+            ResultPrimitive result = await policy.RaiseResultSequenceAsync(ResultPrimitive.Fault, ResultPrimitive.Fault, ResultPrimitive.Fault, ResultPrimitive.Good);
             result.Should().Be(ResultPrimitive.Good);
         }
 
@@ -85,7 +85,7 @@ namespace Polly.Specs.Retry
                 .OrResult(ResultPrimitive.FaultAgain)
                 .RetryAsync(3);
 
-            ResultPrimitive result = await policy.RaiseResultSequenceAsync(ResultPrimitive.Fault, ResultPrimitive.FaultAgain, ResultPrimitive.Fault, ResultPrimitive.Good).ConfigureAwait(false);
+            ResultPrimitive result = await policy.RaiseResultSequenceAsync(ResultPrimitive.Fault, ResultPrimitive.FaultAgain, ResultPrimitive.Fault, ResultPrimitive.Good);
             result.Should().Be(ResultPrimitive.Good);
         }
 
@@ -96,7 +96,7 @@ namespace Polly.Specs.Retry
                 .HandleResult(ResultPrimitive.Fault)
                 .RetryAsync(3);
 
-            ResultPrimitive result = await policy.RaiseResultSequenceAsync(ResultPrimitive.Fault, ResultPrimitive.Good).ConfigureAwait(false);
+            ResultPrimitive result = await policy.RaiseResultSequenceAsync(ResultPrimitive.Fault, ResultPrimitive.Good);
             result.Should().Be(ResultPrimitive.Good);
         }
 
@@ -108,7 +108,7 @@ namespace Polly.Specs.Retry
                 .OrResult(ResultPrimitive.FaultAgain)
                 .RetryAsync(3);
 
-            ResultPrimitive result = await policy.RaiseResultSequenceAsync(ResultPrimitive.Fault, ResultPrimitive.FaultAgain, ResultPrimitive.Good).ConfigureAwait(false);
+            ResultPrimitive result = await policy.RaiseResultSequenceAsync(ResultPrimitive.Fault, ResultPrimitive.FaultAgain, ResultPrimitive.Good);
             result.Should().Be(ResultPrimitive.Good);
         }
 
@@ -119,7 +119,7 @@ namespace Polly.Specs.Retry
                 .HandleResult(ResultPrimitive.Fault)
                 .RetryAsync(3);
 
-            ResultPrimitive result = await policy.RaiseResultSequenceAsync(ResultPrimitive.Fault, ResultPrimitive.Fault, ResultPrimitive.Fault, ResultPrimitive.Fault, ResultPrimitive.Good).ConfigureAwait(false);
+            ResultPrimitive result = await policy.RaiseResultSequenceAsync(ResultPrimitive.Fault, ResultPrimitive.Fault, ResultPrimitive.Fault, ResultPrimitive.Fault, ResultPrimitive.Good);
             result.Should().Be(ResultPrimitive.Fault); // It should give up retrying after 3 retries and return the last failure, so should return Fault, not Good.
         }
 
@@ -131,7 +131,7 @@ namespace Polly.Specs.Retry
                 .OrResult(ResultPrimitive.FaultAgain)
                 .RetryAsync(3);
 
-            ResultPrimitive result = await policy.RaiseResultSequenceAsync(ResultPrimitive.FaultAgain, ResultPrimitive.FaultAgain, ResultPrimitive.FaultAgain, ResultPrimitive.FaultAgain, ResultPrimitive.Good).ConfigureAwait(false);
+            ResultPrimitive result = await policy.RaiseResultSequenceAsync(ResultPrimitive.FaultAgain, ResultPrimitive.FaultAgain, ResultPrimitive.FaultAgain, ResultPrimitive.FaultAgain, ResultPrimitive.Good);
             result.Should().Be(ResultPrimitive.FaultAgain);
         }
 
@@ -142,7 +142,7 @@ namespace Polly.Specs.Retry
                 .HandleResult(ResultPrimitive.Fault)
                 .RetryAsync();
 
-            ResultPrimitive result = await policy.RaiseResultSequenceAsync(ResultPrimitive.FaultAgain, ResultPrimitive.Good).ConfigureAwait(false);
+            ResultPrimitive result = await policy.RaiseResultSequenceAsync(ResultPrimitive.FaultAgain, ResultPrimitive.Good);
             result.Should().Be(ResultPrimitive.FaultAgain);
         }
 
@@ -154,7 +154,7 @@ namespace Polly.Specs.Retry
                 .OrResult(ResultPrimitive.FaultAgain)
                 .RetryAsync();
 
-            ResultPrimitive result = await policy.RaiseResultSequenceAsync(ResultPrimitive.FaultYetAgain, ResultPrimitive.Good).ConfigureAwait(false);
+            ResultPrimitive result = await policy.RaiseResultSequenceAsync(ResultPrimitive.FaultYetAgain, ResultPrimitive.Good);
             result.Should().Be(ResultPrimitive.FaultYetAgain);
         }
 
@@ -165,7 +165,7 @@ namespace Polly.Specs.Retry
                 .HandleResult<ResultClass>(r => r.ResultCode == ResultPrimitive.Fault)
                 .RetryAsync();
 
-            ResultClass result = await policy.RaiseResultSequenceAsync(new ResultClass(ResultPrimitive.FaultAgain), new ResultClass(ResultPrimitive.Good)).ConfigureAwait(false);
+            ResultClass result = await policy.RaiseResultSequenceAsync(new ResultClass(ResultPrimitive.FaultAgain), new ResultClass(ResultPrimitive.Good));
             result.ResultCode.Should().Be(ResultPrimitive.FaultAgain);
         }
 
@@ -177,7 +177,7 @@ namespace Polly.Specs.Retry
                 .OrResult(r => r.ResultCode == ResultPrimitive.FaultAgain)
                 .RetryAsync();
 
-            ResultClass result = await policy.RaiseResultSequenceAsync(new ResultClass(ResultPrimitive.FaultYetAgain), new ResultClass(ResultPrimitive.Good)).ConfigureAwait(false);
+            ResultClass result = await policy.RaiseResultSequenceAsync(new ResultClass(ResultPrimitive.FaultYetAgain), new ResultClass(ResultPrimitive.Good));
             result.ResultCode.Should().Be(ResultPrimitive.FaultYetAgain);
         }
 
@@ -188,7 +188,7 @@ namespace Polly.Specs.Retry
                 .HandleResult<ResultClass>(r => r.ResultCode == ResultPrimitive.Fault)
                 .RetryAsync();
 
-            ResultClass result = await policy.RaiseResultSequenceAsync(new ResultClass(ResultPrimitive.Fault), new ResultClass(ResultPrimitive.Good)).ConfigureAwait(false);
+            ResultClass result = await policy.RaiseResultSequenceAsync(new ResultClass(ResultPrimitive.Fault), new ResultClass(ResultPrimitive.Good));
             result.ResultCode.Should().Be(ResultPrimitive.Good);
         }
 
@@ -200,7 +200,7 @@ namespace Polly.Specs.Retry
                 .OrResult(r => r.ResultCode == ResultPrimitive.FaultAgain)
                 .RetryAsync();
 
-            ResultClass result = await policy.RaiseResultSequenceAsync(new ResultClass(ResultPrimitive.FaultAgain), new ResultClass(ResultPrimitive.Good)).ConfigureAwait(false);
+            ResultClass result = await policy.RaiseResultSequenceAsync(new ResultClass(ResultPrimitive.FaultAgain), new ResultClass(ResultPrimitive.Good));
             result.ResultCode.Should().Be(ResultPrimitive.Good);
         }
 
@@ -214,7 +214,7 @@ namespace Polly.Specs.Retry
                 .HandleResult(ResultPrimitive.Fault)
                 .RetryAsync(3, (_, retryCount) => retryCounts.Add(retryCount));
 
-            (await policy.RaiseResultSequenceAsync(ResultPrimitive.Fault, ResultPrimitive.Fault, ResultPrimitive.Fault, ResultPrimitive.Good).ConfigureAwait(false))
+            (await policy.RaiseResultSequenceAsync(ResultPrimitive.Fault, ResultPrimitive.Fault, ResultPrimitive.Fault, ResultPrimitive.Good))
                 .Should().Be(ResultPrimitive.Good);
 
             retryCounts.Should()
@@ -234,7 +234,7 @@ namespace Polly.Specs.Retry
             IList<ResultClass> resultsToRaise = expectedFaults.Select(s => new ResultClass(ResultPrimitive.Fault, s)).ToList();
             resultsToRaise.Add(new ResultClass(ResultPrimitive.Fault));
 
-            (await policy.RaiseResultSequenceAsync(resultsToRaise).ConfigureAwait(false))
+            (await policy.RaiseResultSequenceAsync(resultsToRaise))
                 .ResultCode.Should().Be(ResultPrimitive.Fault);
 
             retryFaults
@@ -251,7 +251,7 @@ namespace Polly.Specs.Retry
                 .HandleResult(ResultPrimitive.Fault)
                 .RetryAsync((_, retryCount) => retryCounts.Add(retryCount));
 
-            (await policy.RaiseResultSequenceAsync(ResultPrimitive.Good).ConfigureAwait(false))
+            (await policy.RaiseResultSequenceAsync(ResultPrimitive.Good))
                 .Should().Be(ResultPrimitive.Good);
 
             retryCounts.Should()
@@ -270,7 +270,7 @@ namespace Polly.Specs.Retry
             (await policy.RaiseResultSequenceAsync(
                 new { key1 = "value1", key2 = "value2" }.AsDictionary(),
                 ResultPrimitive.Fault, ResultPrimitive.Good
-                ).ConfigureAwait(false))
+                ))
                 .Should().Be(ResultPrimitive.Good);
 
             contextData.Should()
@@ -290,7 +290,7 @@ namespace Polly.Specs.Retry
             PolicyResult<ResultPrimitive> result = await policy.RaiseResultSequenceOnExecuteAndCaptureAsync(
                 new { key1 = "value1", key2 = "value2" }.AsDictionary(),
                 ResultPrimitive.Fault, ResultPrimitive.Good
-                ).ConfigureAwait(false);
+                );
 
             result.Should().BeEquivalentTo(new
             {
@@ -316,7 +316,7 @@ namespace Polly.Specs.Retry
                 .HandleResult(ResultPrimitive.Fault)
                 .RetryAsync((_, __, context) => capturedContext = context);
 
-            await policy.RaiseResultSequenceAsync(ResultPrimitive.Fault, ResultPrimitive.Good).ConfigureAwait(false);
+            await policy.RaiseResultSequenceAsync(ResultPrimitive.Fault, ResultPrimitive.Good);
 
             capturedContext.Should()
                            .BeEmpty();
@@ -334,14 +334,14 @@ namespace Polly.Specs.Retry
             await policy.RaiseResultSequenceAsync(
                 new { key = "original_value" }.AsDictionary(),
                 ResultPrimitive.Fault, ResultPrimitive.Good
-            ).ConfigureAwait(false);
+            );
 
             contextValue.Should().Be("original_value");
 
             await policy.RaiseResultSequenceAsync(
                 new { key = "new_value" }.AsDictionary(),
                 ResultPrimitive.Fault, ResultPrimitive.Good
-            ).ConfigureAwait(false);
+            );
 
             contextValue.Should().Be("new_value");
         }
@@ -358,14 +358,14 @@ namespace Polly.Specs.Retry
             await policy.RaiseResultSequenceOnExecuteAndCaptureAsync(
                 new { key = "original_value" }.AsDictionary(),
                 ResultPrimitive.Fault, ResultPrimitive.Good
-            ).ConfigureAwait(false);
+            );
 
             contextValue.Should().Be("original_value");
 
             await policy.RaiseResultSequenceOnExecuteAndCaptureAsync(
                 new { key = "new_value" }.AsDictionary(),
                 ResultPrimitive.Fault, ResultPrimitive.Good
-            ).ConfigureAwait(false);
+            );
 
             contextValue.Should().Be("new_value");
         }
@@ -377,9 +377,9 @@ namespace Polly.Specs.Retry
                 .HandleResult(ResultPrimitive.Fault)
                 .RetryAsync(1);
 
-            (await policy.RaiseResultSequenceAsync(ResultPrimitive.Fault, ResultPrimitive.Good).ConfigureAwait(false)).Should().Be(ResultPrimitive.Good);
+            (await policy.RaiseResultSequenceAsync(ResultPrimitive.Fault, ResultPrimitive.Good)).Should().Be(ResultPrimitive.Good);
 
-            (await policy.RaiseResultSequenceAsync(ResultPrimitive.Fault, ResultPrimitive.Good).ConfigureAwait(false)).Should().Be(ResultPrimitive.Good);
+            (await policy.RaiseResultSequenceAsync(ResultPrimitive.Fault, ResultPrimitive.Good)).Should().Be(ResultPrimitive.Good);
 
         }
 
@@ -394,7 +394,7 @@ namespace Polly.Specs.Retry
                 .HandleResult(ResultPrimitive.Fault)
                 .RetryAsync(0, onRetry);
 
-            (await policy.RaiseResultSequenceAsync(ResultPrimitive.Fault, ResultPrimitive.Good).ConfigureAwait(false)).Should().Be(ResultPrimitive.Fault);
+            (await policy.RaiseResultSequenceAsync(ResultPrimitive.Fault, ResultPrimitive.Good)).Should().Be(ResultPrimitive.Fault);
 
             retryInvoked.Should().BeFalse();
         }
@@ -412,7 +412,7 @@ namespace Polly.Specs.Retry
 
             (await policy.RaiseResultSequenceAsync(
                  new { key = "value" }.AsDictionary(),
-                ResultPrimitive.Fault, ResultPrimitive.Good).ConfigureAwait(false)).Should().Be(ResultPrimitive.Fault);
+                ResultPrimitive.Fault, ResultPrimitive.Good)).Should().Be(ResultPrimitive.Fault);
 
             retryInvoked.Should().BeFalse();
         }
@@ -436,16 +436,16 @@ namespace Polly.Specs.Retry
                 .HandleResult(ResultPrimitive.Fault)
                 .RetryAsync(async (ex, retry) =>
                 {
-                    await Task.Delay(shimTimeSpan).ConfigureAwait(false);
+                    await Task.Delay(shimTimeSpan);
                     executeDelegateInvocationsWhenOnRetryExits = executeDelegateInvocations;
                 });
 
             (await policy.ExecuteAsync(async () =>
             {
                 executeDelegateInvocations++;
-                await TaskHelper.EmptyTask.ConfigureAwait(false);
+                await TaskHelper.EmptyTask;
                 return ResultPrimitive.Fault;
-            }).ConfigureAwait(false)).Should().Be(ResultPrimitive.Fault);
+            })).Should().Be(ResultPrimitive.Fault);
 
             while (executeDelegateInvocationsWhenOnRetryExits == 0) { } // Wait for the onRetry delegate to complete.
 
@@ -475,7 +475,7 @@ namespace Polly.Specs.Retry
                     ResultPrimitive.Fault,
                     ResultPrimitive.Fault,
                     ResultPrimitive.Fault,
-                    ResultPrimitive.Good).ConfigureAwait(false))
+                    ResultPrimitive.Good))
                     .Should().Be(ResultPrimitive.Good);
 
             attemptsInvoked.Should().Be(1 + 3);
@@ -717,7 +717,7 @@ namespace Polly.Specs.Retry
                    ResultPrimitive.Fault,
                    ResultPrimitive.Fault,
                    ResultPrimitive.Fault,
-                   ResultPrimitive.Good).ConfigureAwait(false))
+                   ResultPrimitive.Good))
                .Should().Be(ResultPrimitive.Fault);
 
             attemptsInvoked.Should().Be(1 + 3);
