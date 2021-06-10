@@ -81,9 +81,9 @@ namespace Polly.Specs.CircuitBreaker
             Action action = () => Policy
                 .Handle<DivideByZeroException>()
                 .AdvancedCircuitBreakerAsync(
-                    0.5, 
-                    TimeSpan.FromMilliseconds(20).Add(TimeSpan.FromTicks(-1)), 
-                    4, 
+                    0.5,
+                    TimeSpan.FromMilliseconds(20).Add(TimeSpan.FromTicks(-1)),
+                    4,
                     TimeSpan.FromSeconds(30));
 
             action.Should().Throw<ArgumentOutOfRangeException>()
@@ -163,8 +163,8 @@ namespace Polly.Specs.CircuitBreaker
 
         #region Tests that are independent from health metrics implementation
 
-        // Tests on the AdvancedCircuitBreakerAsync operation typically use a breaker: 
-        // - with a failure threshold of >=50%, 
+        // Tests on the AdvancedCircuitBreakerAsync operation typically use a breaker:
+        // - with a failure threshold of >=50%,
         // - and a throughput threshold of 4
         // - across a ten-second period.
         // These provide easy values for testing for failure and throughput thresholds each being met and non-met, in combination.
@@ -243,8 +243,8 @@ namespace Polly.Specs.CircuitBreaker
 
         #region With sample duration higher than 199 ms so that multiple windows are used
 
-        // Tests on the AdvancedCircuitBreakerAsync operation typically use a breaker: 
-        // - with a failure threshold of >=50%, 
+        // Tests on the AdvancedCircuitBreakerAsync operation typically use a breaker:
+        // - with a failure threshold of >=50%,
         // - and a throughput threshold of 4
         // - across a ten-second period.
         // These provide easy values for testing for failure and throughput thresholds each being met and non-met, in combination.
@@ -837,8 +837,8 @@ namespace Polly.Specs.CircuitBreaker
             // Setting the time to just barely into the new timeslice
             SystemClock.UtcNow = () => time.Add(samplingDuration);
 
-            // A third failure occurs just at the beginning of the new timeslice making 
-            // the number of failures above the failure threshold. However, the throughput is 
+            // A third failure occurs just at the beginning of the new timeslice making
+            // the number of failures above the failure threshold. However, the throughput is
             // below the minimum threshold as to open the circuit.
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
                 .Should().Throw<DivideByZeroException>();
@@ -897,8 +897,8 @@ namespace Polly.Specs.CircuitBreaker
 
         #region With sample duration at 199 ms so that only a single window is used
 
-        // These tests on AdvancedCircuitBreakerAsync operation typically use a breaker: 
-        // - with a failure threshold of >=50%, 
+        // These tests on AdvancedCircuitBreakerAsync operation typically use a breaker:
+        // - with a failure threshold of >=50%,
         // - and a throughput threshold of 4
         // - across a 199ms period.
         // These provide easy values for testing for failure and throughput thresholds each being met and non-met, in combination.
@@ -1257,7 +1257,7 @@ namespace Polly.Specs.CircuitBreaker
             // Setting the time to just barely into the new timeslice
             SystemClock.UtcNow = () => time.Add(samplingDuration);
 
-            // This failure does not open the circuit, because a new duration should have 
+            // This failure does not open the circuit, because a new duration should have
             // started and with such low sampling duration, windows should not be used.
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
                 .Should().Throw<DivideByZeroException>();
@@ -1483,7 +1483,7 @@ namespace Polly.Specs.CircuitBreaker
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
                 .Should().Throw<DivideByZeroException>();
 
-            // exception raised, circuit is now open.  
+            // exception raised, circuit is now open.
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
             // break duration passes, circuit now half open
@@ -1521,7 +1521,7 @@ namespace Polly.Specs.CircuitBreaker
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
                 .Should().Throw<DivideByZeroException>();
 
-            // exception raised, circuit is now open.  
+            // exception raised, circuit is now open.
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
             // break duration passes, circuit now half open
@@ -1567,7 +1567,7 @@ namespace Polly.Specs.CircuitBreaker
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
                 .Should().Throw<DivideByZeroException>();
 
-            // exceptions raised, circuit is now open.  
+            // exceptions raised, circuit is now open.
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
             // break duration passes, circuit now half open
@@ -1580,7 +1580,7 @@ namespace Polly.Specs.CircuitBreaker
             TimeSpan testTimeoutToExposeDeadlocks = TimeSpan.FromSeconds(5);
             using (ManualResetEvent permitSecondExecutionAttempt = new ManualResetEvent(false))
             using (ManualResetEvent permitFirstExecutionEnd = new ManualResetEvent(false))
-            { 
+            {
                 bool? firstDelegateExecutedInHalfOpenState = null;
                 bool? secondDelegateExecutedInHalfOpenState = null;
                 bool? secondDelegateRejectedInHalfOpenState = null;
@@ -1642,7 +1642,7 @@ namespace Polly.Specs.CircuitBreaker
                 firstExecution.Status.Should().Be(TaskStatus.RanToCompletion);
                 secondExecution.Status.Should().Be(TaskStatus.RanToCompletion);
 
-                // Assert: 
+                // Assert:
                 // - First execution should have been permitted and executed under a HalfOpen state
                 // - Second overlapping execution in halfopen state should not have been permitted.
                 // - Second execution attempt should have been rejected with HalfOpen state as cause.
@@ -1673,7 +1673,7 @@ namespace Polly.Specs.CircuitBreaker
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
                 .Should().Throw<DivideByZeroException>();
 
-            // exception raised, circuit is now open.  
+            // exception raised, circuit is now open.
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
             // break duration passes, circuit now half open
@@ -1687,7 +1687,7 @@ namespace Polly.Specs.CircuitBreaker
             TimeSpan testTimeoutToExposeDeadlocks = TimeSpan.FromSeconds(5);
             using (ManualResetEvent permitSecondExecutionAttempt = new ManualResetEvent(false))
             using (ManualResetEvent permitFirstExecutionEnd = new ManualResetEvent(false))
-            { 
+            {
                 bool? firstDelegateExecutedInHalfOpenState = null;
                 bool? secondDelegateExecutedInHalfOpenState = null;
                 bool? secondDelegateRejectedInHalfOpenState = null;
@@ -1751,7 +1751,7 @@ namespace Polly.Specs.CircuitBreaker
                 firstExecution.Status.Should().Be(TaskStatus.RanToCompletion);
                 secondExecution.Status.Should().Be(TaskStatus.RanToCompletion);
 
-                // Assert: 
+                // Assert:
                 // - First execution should have been permitted and executed under a HalfOpen state
                 // - Second overlapping execution in halfopen state should have been permitted, one breakDuration later.
                 firstDelegateExecutedInHalfOpenState.Should().BeTrue();
@@ -2000,7 +2000,7 @@ namespace Polly.Specs.CircuitBreaker
 
             onBreakCalled.Should().Be(1);
 
-            // call through circuit when already broken - should not retrigger onBreak 
+            // call through circuit when already broken - should not retrigger onBreak
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
                 .Should().Throw<BrokenCircuitException>();
 
@@ -2031,7 +2031,7 @@ namespace Polly.Specs.CircuitBreaker
 
             using (ManualResetEvent permitLongRunningExecutionToReturnItsFailure = new ManualResetEvent(false))
             using (ManualResetEvent permitMainThreadToOpenCircuit = new ManualResetEvent(false))
-            { 
+            {
                 Task longRunningExecution = Task.Factory.StartNew(() =>
                 {
                     breaker.CircuitState.Should().Be(CircuitState.Closed);
@@ -3058,7 +3058,8 @@ namespace Polly.Specs.CircuitBreaker
                 AttemptDuringWhichToCancel = null,
             };
 
-            breaker.Awaiting(async x => result = await x.RaiseExceptionAndOrCancellationAsync<DivideByZeroException, bool>(scenario, cancellationTokenSource, onExecute, true))
+            Func<AsyncCircuitBreakerPolicy, Task> action = async x => result = await x.RaiseExceptionAndOrCancellationAsync<DivideByZeroException, bool>(scenario, cancellationTokenSource, onExecute, true);
+            breaker.Awaiting(action)
                 .Should().NotThrow();
 
             result.Should().BeTrue();
