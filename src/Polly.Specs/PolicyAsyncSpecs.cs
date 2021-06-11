@@ -171,7 +171,7 @@ namespace Polly.Specs
                 .Handle<DivideByZeroException>()
                 .RetryAsync((_, __, ___) => { });
 
-            policy.Awaiting(async p => await p.ExecuteAsync(ctx => TaskHelper.EmptyTask, (IDictionary<string, object>)null))
+            policy.Awaiting(p => p.ExecuteAsync(ctx => TaskHelper.EmptyTask, (IDictionary<string, object>)null))
                   .Should().Throw<ArgumentNullException>();
         }
 
@@ -182,7 +182,7 @@ namespace Polly.Specs
                 .Handle<DivideByZeroException>()
                 .RetryAsync((_, __, ___) => { });
 
-            policy.Awaiting(async p => await p.ExecuteAsync(ctx => TaskHelper.EmptyTask, (Context)null))
+            policy.Awaiting(p => p.ExecuteAsync(ctx => TaskHelper.EmptyTask, (Context)null))
                 .Should().Throw<ArgumentNullException>().And
                 .ParamName.Should().Be("context");
         }
@@ -194,7 +194,7 @@ namespace Polly.Specs
                 .Handle<DivideByZeroException>()
                 .RetryAsync((_, __, ___) => { });
 
-            policy.Awaiting(async p => await p.ExecuteAsync(ctx => Task.FromResult(2), (IDictionary<string, object>)null))
+            policy.Awaiting(p => p.ExecuteAsync(ctx => Task.FromResult(2), (IDictionary<string, object>)null))
                   .Should().Throw<ArgumentNullException>();
         }
 
@@ -205,7 +205,7 @@ namespace Polly.Specs
                 .Handle<DivideByZeroException>()
                 .RetryAsync((_, __, ___) => { });
 
-            policy.Awaiting(async p => await p.ExecuteAsync(ctx => Task.FromResult(2), (Context)null))
+            policy.Awaiting(p => p.ExecuteAsync(ctx => Task.FromResult(2), (Context)null))
                   .Should().Throw<ArgumentNullException>().And
                   .ParamName.Should().Be("context");
         }
@@ -231,7 +231,7 @@ namespace Polly.Specs
                 .Handle<DivideByZeroException>()
                 .RetryAsync((_, __, ___) => { });
 
-            policy.Awaiting(async p => await p.ExecuteAndCaptureAsync(ctx => TaskHelper.EmptyTask, (IDictionary<string, object>)null))
+            policy.Awaiting(p => p.ExecuteAndCaptureAsync(ctx => TaskHelper.EmptyTask, (IDictionary<string, object>)null))
                   .Should().Throw<ArgumentNullException>();
         }
 
@@ -242,7 +242,7 @@ namespace Polly.Specs
                 .Handle<DivideByZeroException>()
                 .RetryAsync((_, __, ___) => { });
 
-            policy.Awaiting(async p => await p.ExecuteAndCaptureAsync(ctx => TaskHelper.EmptyTask, (Context)null))
+            policy.Awaiting(p => p.ExecuteAndCaptureAsync(ctx => TaskHelper.EmptyTask, (Context)null))
                 .Should().Throw<ArgumentNullException>().And
                 .ParamName.Should().Be("context");
         }
@@ -254,7 +254,7 @@ namespace Polly.Specs
                 .Handle<DivideByZeroException>()
                 .RetryAsync((_, __, ___) => { });
 
-            policy.Awaiting(async p => await p.ExecuteAndCaptureAsync(ctx => Task.FromResult(2), (IDictionary<string, object>)null))
+            policy.Awaiting(p => p.ExecuteAndCaptureAsync(ctx => Task.FromResult(2), (IDictionary<string, object>)null))
                   .Should().Throw<ArgumentNullException>();
         }
 
@@ -265,7 +265,7 @@ namespace Polly.Specs
                 .Handle<DivideByZeroException>()
                 .RetryAsync((_, __, ___) => { });
 
-            policy.Awaiting(async p => await p.ExecuteAndCaptureAsync(ctx => Task.FromResult(2), (Context)null))
+            policy.Awaiting(p => p.ExecuteAndCaptureAsync(ctx => Task.FromResult(2), (Context)null))
                   .Should().Throw<ArgumentNullException>().And
                   .ParamName.Should().Be("context");
         }

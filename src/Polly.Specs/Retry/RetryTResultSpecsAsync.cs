@@ -501,7 +501,7 @@ namespace Polly.Specs.Retry
 
             cancellationTokenSource.Cancel();
 
-            policy.Awaiting(async x => await x.RaiseResultSequenceAndOrCancellationAsync(scenario, cancellationTokenSource, onExecute,
+            policy.Awaiting(x => x.RaiseResultSequenceAndOrCancellationAsync(scenario, cancellationTokenSource, onExecute,
                    ResultPrimitive.Fault,
                    ResultPrimitive.Fault,
                    ResultPrimitive.Fault,
@@ -531,7 +531,7 @@ namespace Polly.Specs.Retry
                 ActionObservesCancellation = true
             };
 
-            policy.Awaiting(async x => await x.RaiseResultSequenceAndOrCancellationAsync(scenario, cancellationTokenSource, onExecute,
+            policy.Awaiting(x => x.RaiseResultSequenceAndOrCancellationAsync(scenario, cancellationTokenSource, onExecute,
                    ResultPrimitive.Good,
                    ResultPrimitive.Good,
                    ResultPrimitive.Good,
@@ -561,7 +561,7 @@ namespace Polly.Specs.Retry
                 ActionObservesCancellation = true
             };
 
-            policy.Awaiting(async x => await x.RaiseResultSequenceAndOrCancellationAsync(scenario, cancellationTokenSource, onExecute,
+            policy.Awaiting(x => x.RaiseResultSequenceAndOrCancellationAsync(scenario, cancellationTokenSource, onExecute,
                    ResultPrimitive.Fault,
                    ResultPrimitive.Fault,
                    ResultPrimitive.Fault,
@@ -591,7 +591,7 @@ namespace Polly.Specs.Retry
                 ActionObservesCancellation = false
             };
 
-            policy.Awaiting(async x => await x.RaiseResultSequenceAndOrCancellationAsync(scenario, cancellationTokenSource, onExecute,
+            policy.Awaiting(x => x.RaiseResultSequenceAndOrCancellationAsync(scenario, cancellationTokenSource, onExecute,
                    ResultPrimitive.Fault,
                    ResultPrimitive.Fault,
                    ResultPrimitive.Fault,
@@ -621,7 +621,7 @@ namespace Polly.Specs.Retry
                 ActionObservesCancellation = true
             };
 
-            policy.Awaiting(async x => await x.RaiseResultSequenceAndOrCancellationAsync(scenario, cancellationTokenSource, onExecute,
+            policy.Awaiting(x => x.RaiseResultSequenceAndOrCancellationAsync(scenario, cancellationTokenSource, onExecute,
                    ResultPrimitive.Fault,
                    ResultPrimitive.Fault,
                    ResultPrimitive.Fault,
@@ -651,7 +651,7 @@ namespace Polly.Specs.Retry
                 ActionObservesCancellation = false
             };
 
-            policy.Awaiting(async x => await x.RaiseResultSequenceAndOrCancellationAsync(scenario, cancellationTokenSource, onExecute,
+            policy.Awaiting(x => x.RaiseResultSequenceAndOrCancellationAsync(scenario, cancellationTokenSource, onExecute,
                    ResultPrimitive.Fault,
                    ResultPrimitive.Fault,
                    ResultPrimitive.Fault,
@@ -681,7 +681,7 @@ namespace Polly.Specs.Retry
                 ActionObservesCancellation = true
             };
 
-            policy.Awaiting(async x => await x.RaiseResultSequenceAndOrCancellationAsync(scenario, cancellationTokenSource, onExecute,
+            policy.Awaiting(x => x.RaiseResultSequenceAndOrCancellationAsync(scenario, cancellationTokenSource, onExecute,
                    ResultPrimitive.Fault,
                    ResultPrimitive.Fault,
                    ResultPrimitive.Fault,
@@ -745,7 +745,7 @@ namespace Polly.Specs.Retry
                 ActionObservesCancellation = false
             };
 
-            policy.Awaiting(async x => await x.RaiseResultSequenceAndOrCancellationAsync(scenario, cancellationTokenSource, onExecute,
+            policy.Awaiting(x => x.RaiseResultSequenceAndOrCancellationAsync(scenario, cancellationTokenSource, onExecute,
                    ResultPrimitive.Fault,
                    ResultPrimitive.Fault,
                    ResultPrimitive.Fault,

@@ -1,6 +1,8 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
+using Polly.NoOp;
 using Xunit;
 
 namespace Polly.Specs.NoOp
@@ -13,7 +15,8 @@ namespace Polly.Specs.NoOp
             var policy = Policy.NoOpAsync<int?>();
             int? result = null;
 
-            policy.Awaiting(async p => result = await p.ExecuteAsync(() => Task.FromResult((int?)10)))
+            Func<AsyncNoOpPolicy<int?>, Task> action = async p => result = await p.ExecuteAsync(() => Task.FromResult((int?)10));
+            policy.Awaiting(action)
                 .Should().NotThrow();
 
             result.HasValue.Should().BeTrue();
@@ -30,7 +33,8 @@ namespace Polly.Specs.NoOp
             {
                 cts.Cancel();
 
-                policy.Awaiting(async p => result = await p.ExecuteAsync(ct => Task.FromResult((int?)10), cts.Token))
+                Func<AsyncNoOpPolicy<int?>, Task> action = async p => result = await p.ExecuteAsync(ct => Task.FromResult((int?)10), cts.Token);
+                policy.Awaiting(action)
                     .Should().NotThrow();
             }
 

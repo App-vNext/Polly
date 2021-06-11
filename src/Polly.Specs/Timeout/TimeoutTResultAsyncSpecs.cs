@@ -206,7 +206,7 @@ namespace Polly.Specs.Timeout
 
             var policy = Policy.TimeoutAsync<ResultPrimitive>(timeout, TimeoutStrategy.Pessimistic);
 
-            policy.Awaiting(async p => await p.ExecuteAsync(async () =>
+            policy.Awaiting(p => p.ExecuteAsync(async () =>
             {
                 await SystemClock.SleepAsync(TimeSpan.FromSeconds(3), CancellationToken.None);
                 return ResultPrimitive.WhateverButTooLate;
@@ -237,7 +237,7 @@ namespace Polly.Specs.Timeout
             TimeSpan tolerance = TimeSpan.FromSeconds(3); // Consider increasing tolerance, if test fails transiently in different test/build environments.
 
             watch.Start();
-            policy.Awaiting(async p => await p.ExecuteAsync(async () =>
+            policy.Awaiting(p => p.ExecuteAsync(async () =>
             {
                 await SystemClock.SleepAsync(TimeSpan.FromSeconds(10), CancellationToken.None);
                 return ResultPrimitive.WhateverButTooLate;
@@ -266,7 +266,7 @@ namespace Polly.Specs.Timeout
             var policy = Policy.TimeoutAsync<ResultPrimitive>(TimeSpan.FromMilliseconds(50), TimeoutStrategy.Optimistic);
             var userCancellationToken = CancellationToken.None;
 
-            policy.Awaiting(async p => await p.ExecuteAsync(async ct =>
+            policy.Awaiting(p => p.ExecuteAsync(async ct =>
             {
                 await SystemClock.SleepAsync(TimeSpan.FromSeconds(3), ct);
                 return ResultPrimitive.WhateverButTooLate;
@@ -299,7 +299,7 @@ namespace Polly.Specs.Timeout
             TimeSpan tolerance = TimeSpan.FromSeconds(3); // Consider increasing tolerance, if test fails transiently in different test/build environments.
 
             watch.Start();
-            policy.Awaiting(async p => await p.ExecuteAsync(async ct =>
+            policy.Awaiting(p => p.ExecuteAsync(async ct =>
             {
                 await SystemClock.SleepAsync(TimeSpan.FromSeconds(10), ct);
                 return ResultPrimitive.WhateverButTooLate;
@@ -330,7 +330,7 @@ namespace Polly.Specs.Timeout
 
             using (CancellationTokenSource userTokenSource = new CancellationTokenSource())
             {
-                policy.Awaiting(async p => await p.ExecuteAsync(async
+                policy.Awaiting(p => p.ExecuteAsync(async
                     _ => {
                         userTokenSource.Cancel(); // User token cancels in the middle of execution ...
                         await SystemClock.SleepAsync(TimeSpan.FromSeconds(timeout * 2),
@@ -353,7 +353,7 @@ namespace Polly.Specs.Timeout
             {
                 cts.Cancel();
 
-                policy.Awaiting(async p => await p.ExecuteAsync(async ct =>
+                policy.Awaiting(p => p.ExecuteAsync(async ct =>
                 {
                     executed = true;
                     await TaskHelper.EmptyTask;
@@ -376,7 +376,7 @@ namespace Polly.Specs.Timeout
             var policy = Policy.TimeoutAsync<ResultPrimitive>(timeout, TimeoutStrategy.Optimistic);
             using (CancellationTokenSource userTokenSource = new CancellationTokenSource())
             {
-                policy.Awaiting(async p => await p.ExecuteAsync( 
+                policy.Awaiting(p => p.ExecuteAsync( 
                     ct => {
                         userTokenSource.Cancel(); ct.ThrowIfCancellationRequested();   // Simulate cancel in the middle of execution
                         return Task.FromResult(ResultPrimitive.WhateverButTooLate);
@@ -396,7 +396,7 @@ namespace Polly.Specs.Timeout
             {
                 cts.Cancel();
 
-                policy.Awaiting(async p => await p.ExecuteAsync(async ct =>
+                policy.Awaiting(p => p.ExecuteAsync(async ct =>
                 {
                     executed = true;
                     await TaskHelper.EmptyTask;
@@ -426,7 +426,7 @@ namespace Polly.Specs.Timeout
 
             var policy = Policy.TimeoutAsync<ResultPrimitive>(timeoutPassedToConfiguration, TimeoutStrategy.Pessimistic, onTimeoutAsync);
 
-            policy.Awaiting(async p => await p.ExecuteAsync(async () =>
+            policy.Awaiting(p => p.ExecuteAsync(async () =>
             {
                 await SystemClock.SleepAsync(TimeSpan.FromSeconds(3), CancellationToken.None);
                 return ResultPrimitive.WhateverButTooLate;
@@ -452,7 +452,7 @@ namespace Polly.Specs.Timeout
             TimeSpan timeout = TimeSpan.FromMilliseconds(250);
             var policy = Policy.TimeoutAsync<ResultPrimitive>(timeout, TimeoutStrategy.Pessimistic, onTimeoutAsync);
 
-            policy.Awaiting(async p => await p.ExecuteAsync(async ctx =>
+            policy.Awaiting(p => p.ExecuteAsync(async ctx =>
                 {
                     await SystemClock.SleepAsync(TimeSpan.FromSeconds(3), CancellationToken.None);
                     return ResultPrimitive.WhateverButTooLate;
@@ -481,7 +481,7 @@ namespace Polly.Specs.Timeout
 
             var policy = Policy.TimeoutAsync<ResultPrimitive>(timeoutFunc, TimeoutStrategy.Pessimistic, onTimeoutAsync);
 
-            policy.Awaiting(async p => await p.ExecuteAsync(async () =>
+            policy.Awaiting(p => p.ExecuteAsync(async () =>
                 {
                     await SystemClock.SleepAsync(TimeSpan.FromSeconds(3), CancellationToken.None);
                     return ResultPrimitive.WhateverButTooLate;
@@ -511,7 +511,7 @@ namespace Polly.Specs.Timeout
             // Supply a programatically-controlled timeout, via the execution context.
             Context context = new Context("SomeOperationKey") { ["timeout"] = TimeSpan.FromMilliseconds(25 * programaticallyControlledDelay) };
 
-            policy.Awaiting(async p => await p.ExecuteAsync(async ctx =>
+            policy.Awaiting(p => p.ExecuteAsync(async ctx =>
             {
                 await SystemClock.SleepAsync(TimeSpan.FromSeconds(3), CancellationToken.None);
                 return ResultPrimitive.WhateverButTooLate;
@@ -534,7 +534,7 @@ namespace Polly.Specs.Timeout
             TimeSpan timeout = TimeSpan.FromMilliseconds(250);
             var policy = Policy.TimeoutAsync<ResultPrimitive>(timeout, TimeoutStrategy.Pessimistic, onTimeoutAsync);
 
-            policy.Awaiting(async p => await p.ExecuteAsync(async () =>
+            policy.Awaiting(p => p.ExecuteAsync(async () =>
             {
                 await SystemClock.SleepAsync(TimeSpan.FromSeconds(3), CancellationToken.None);
                 return ResultPrimitive.WhateverButTooLate;
@@ -564,7 +564,7 @@ namespace Polly.Specs.Timeout
             TimeSpan thriceShimTimeSpan = shimTimespan + shimTimespan + shimTimespan;
             var policy = Policy.TimeoutAsync<ResultPrimitive>(shimTimespan, TimeoutStrategy.Pessimistic, onTimeoutAsync);
 
-            policy.Awaiting(async p => await p.ExecuteAsync(async () =>
+            policy.Awaiting(p => p.ExecuteAsync(async () =>
             {
                 await SystemClock.SleepAsync(thriceShimTimeSpan, CancellationToken.None);
                 throw exceptionToThrow;
@@ -591,7 +591,7 @@ namespace Polly.Specs.Timeout
 
             var policy = Policy.TimeoutAsync<ResultPrimitive>(timeoutPassedToConfiguration, TimeoutStrategy.Pessimistic, onTimeoutAsync);
 
-            policy.Awaiting(async p => await p.ExecuteAsync(async () =>
+            policy.Awaiting(p => p.ExecuteAsync(async () =>
                 {
                     await SystemClock.SleepAsync(TimeSpan.FromSeconds(3), CancellationToken.None);
                     return ResultPrimitive.WhateverButTooLate;
@@ -621,7 +621,7 @@ namespace Polly.Specs.Timeout
             var policy = Policy.TimeoutAsync<ResultPrimitive>(timeoutPassedToConfiguration, TimeoutStrategy.Optimistic, onTimeoutAsync);
             var userCancellationToken = CancellationToken.None;
 
-            policy.Awaiting(async p => await p.ExecuteAsync(async ct =>
+            policy.Awaiting(p => p.ExecuteAsync(async ct =>
             {
                 await SystemClock.SleepAsync(TimeSpan.FromSeconds(3), ct);
                 return ResultPrimitive.WhateverButTooLate;
@@ -648,7 +648,7 @@ namespace Polly.Specs.Timeout
             var policy = Policy.TimeoutAsync<ResultPrimitive>(timeout, TimeoutStrategy.Optimistic, onTimeoutAsync);
             var userCancellationToken = CancellationToken.None;
 
-            policy.Awaiting(async p => await p.ExecuteAsync(async (ctx, ct) =>
+            policy.Awaiting(p => p.ExecuteAsync(async (ctx, ct) =>
                 {
                     await SystemClock.SleepAsync(TimeSpan.FromSeconds(3), ct);
                     return ResultPrimitive.WhateverButTooLate;
@@ -679,7 +679,7 @@ namespace Polly.Specs.Timeout
             var policy = Policy.TimeoutAsync<ResultPrimitive>(timeoutFunc, TimeoutStrategy.Optimistic, onTimeoutAsync);
             var userCancellationToken = CancellationToken.None;
 
-            policy.Awaiting(async p => await p.ExecuteAsync(async ct =>
+            policy.Awaiting(p => p.ExecuteAsync(async ct =>
                 {
                     await SystemClock.SleepAsync(TimeSpan.FromSeconds(3), ct);
                     return ResultPrimitive.WhateverButTooLate;
@@ -713,7 +713,7 @@ namespace Polly.Specs.Timeout
                 ["timeout"] = TimeSpan.FromMilliseconds(25 * programaticallyControlledDelay)
             };
 
-            policy.Awaiting(async p => await p.ExecuteAsync(async (ctx, ct) =>
+            policy.Awaiting(p => p.ExecuteAsync(async (ctx, ct) =>
             {
                 await SystemClock.SleepAsync(TimeSpan.FromSeconds(3), ct);
                 return ResultPrimitive.WhateverButTooLate;
@@ -737,7 +737,7 @@ namespace Polly.Specs.Timeout
             var policy = Policy.TimeoutAsync<ResultPrimitive>(timeout, TimeoutStrategy.Optimistic, onTimeoutAsync);
             var userCancellationToken = CancellationToken.None;
 
-            policy.Awaiting(async p => await p.ExecuteAsync(async ct =>
+            policy.Awaiting(p => p.ExecuteAsync(async ct =>
             {
                 await SystemClock.SleepAsync(TimeSpan.FromSeconds(3), ct);
                 return ResultPrimitive.WhateverButTooLate;
@@ -762,7 +762,7 @@ namespace Polly.Specs.Timeout
             var policy = Policy.TimeoutAsync<ResultPrimitive>(timeoutPassedToConfiguration, TimeoutStrategy.Optimistic, onTimeoutAsync);
             var userCancellationToken = CancellationToken.None;
 
-            policy.Awaiting(async p => await p.ExecuteAsync(async ct =>
+            policy.Awaiting(p => p.ExecuteAsync(async ct =>
                 {
                     await SystemClock.SleepAsync(TimeSpan.FromSeconds(3), ct);
                     return ResultPrimitive.WhateverButTooLate;
