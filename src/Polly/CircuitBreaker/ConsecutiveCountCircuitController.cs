@@ -5,25 +5,27 @@ namespace Polly.CircuitBreaker
 {
     internal class ConsecutiveCountCircuitController<TResult> : CircuitStateController<TResult>
     {
-        private readonly int _exceptionsAllowedBeforeBreaking;
-        private int _consecutiveFailureCount;
+        private readonly int _failureThreshold;
+        private int _consecutiveFailuresFromClosedState;
+        private int _consecutiveFailuresFromHalfOpenState;
 
         public ConsecutiveCountCircuitController(
-            int exceptionsAllowedBeforeBreaking, 
-            TimeSpan durationOfBreak, 
+            int failureThreshold,
+            Func<int, TimeSpan> factoryForNextBreakDuration, 
             Action<DelegateResult<TResult>, CircuitState, TimeSpan, Context> onBreak, 
             Action<Context> onReset, 
             Action onHalfOpen
-            ) : base(durationOfBreak, onBreak, onReset, onHalfOpen)
+            ) : base(factoryForNextBreakDuration, onBreak, onReset, onHalfOpen)
         {
-            _exceptionsAllowedBeforeBreaking = exceptionsAllowedBeforeBreaking;
+            _failureThreshold = failureThreshold;
         }
 
         public override void OnCircuitReset(Context context)
         {
             using (TimedLock.Lock(_lock))
             {
-                _consecutiveFailureCount = 0;
+                _consecutiveFailuresFromClosedState = 0;
+                _consecutiveFailuresFromHalfOpenState = 0;
 
                 ResetInternal_NeedsLock(context);
             }
@@ -40,7 +42,7 @@ namespace Polly.CircuitBreaker
                         break;
 
                     case CircuitState.Closed:
-                        _consecutiveFailureCount = 0;
+                        _consecutiveFailuresFromClosedState = 0;
                         break;
 
                     case CircuitState.Open:
@@ -62,14 +64,15 @@ namespace Polly.CircuitBreaker
                 switch (_circuitState)
                 {
                     case CircuitState.HalfOpen:
-                        Break_NeedsLock(context);
+                        _consecutiveFailuresFromHalfOpenState++;
+                        Break_NeedsLock(_consecutiveFailuresFromHalfOpenState, context);
                         return;
 
                     case CircuitState.Closed:
-                        _consecutiveFailureCount += 1;
-                        if (_consecutiveFailureCount >= _exceptionsAllowedBeforeBreaking)
+                        _consecutiveFailuresFromClosedState++;
+                        if (_consecutiveFailuresFromClosedState >= _failureThreshold)
                         {
-                            Break_NeedsLock(context);
+                            Break_NeedsLock(0, context);
                         }
                         break;
 

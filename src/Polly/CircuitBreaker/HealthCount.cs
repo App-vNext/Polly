@@ -3,10 +3,10 @@
     internal class HealthCount
     {
         public int Successes { get; set; }
+        public int FailuresFromClosedState { get; set; }
+        public int FailuresFromHalfOpenState { get; set; }
 
-        public int Failures { get; set; }
-
-        public int Total { get { return Successes + Failures; } }
+        public int Total => Successes + FailuresFromClosedState;
 
         public long StartedAt { get; set; }
     }
