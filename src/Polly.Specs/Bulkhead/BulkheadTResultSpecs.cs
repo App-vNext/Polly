@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Polly.Bulkhead;
@@ -12,7 +11,7 @@ using Xunit.Abstractions;
 
 namespace Polly.Specs.Bulkhead
 {
-    [Collection(Polly.Specs.Helpers.Constants.ParallelThreadDependentTestCollection)]
+    [Collection(Constants.ParallelThreadDependentTestCollection)]
     public class BulkheadTResultSpecs : BulkheadSpecsBase
     {
         public BulkheadTResultSpecs(ITestOutputHelper testOutputHelper) : base(testOutputHelper) { }

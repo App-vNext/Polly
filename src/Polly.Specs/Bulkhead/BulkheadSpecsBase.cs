@@ -4,16 +4,14 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
-using FluentAssertions.Execution;
 using Polly.Bulkhead;
 using Polly.Specs.Helpers.Bulkhead;
 using Xunit;
 using Xunit.Abstractions;
-using Xunit.Sdk;
 
 namespace Polly.Specs.Bulkhead
 {
-    [Collection(Polly.Specs.Helpers.Constants.ParallelThreadDependentTestCollection)]
+    [Collection(Helpers.Constants.ParallelThreadDependentTestCollection)]
     public abstract class BulkheadSpecsBase : IDisposable
     {
         #region Time constraints
@@ -343,7 +341,7 @@ namespace Polly.Specs.Bulkhead
                 {
                     // Following TraceableAction.CaptureCompletion() signalling the AutoResetEvent,
                     // there can be race conditions between on the one hand exiting the bulkhead semaphore (and potentially another execution gaining it),
-                    // and the assertion being verified here about those same facts.  
+                    // and the assertion being verified here about those same facts.
                     // If that race is lost by the real-world state change, and the AutoResetEvent signal occurred very close to timeoutTime,
                     // there might not be a second chance.
                     // We therefore permit another shim time for the condition to come good.
