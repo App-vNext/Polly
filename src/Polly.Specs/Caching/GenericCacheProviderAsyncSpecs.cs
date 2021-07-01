@@ -19,7 +19,7 @@ namespace Polly.Specs.Caching
             const string operationKey = "SomeOperationKey";
 
             bool onErrorCalled = false;
-            Action<Context, string, Exception> onError = (ctx, key, exc) => { onErrorCalled = true; };
+            Action<Context, string, Exception> onError = (_, _, _) => { onErrorCalled = true; };
 
             IAsyncCacheProvider stubCacheProvider = new StubCacheProvider();
             var cache = Policy.CacheAsync(stubCacheProvider, TimeSpan.MaxValue, onError);
@@ -28,7 +28,7 @@ namespace Polly.Specs.Caching
             cacheHit.Should().BeFalse();
             fromCache.Should().BeNull();
 
-            ResultPrimitive result = await cache.ExecuteAsync(async ctx =>
+            ResultPrimitive result = await cache.ExecuteAsync(async _ =>
             {
                 await TaskHelper.EmptyTask;
                 return ResultPrimitive.Substitute;
@@ -50,7 +50,7 @@ namespace Polly.Specs.Caching
             cacheHit1.Should().BeFalse();
             fromCache1.Should().BeNull();
 
-            (await cache.ExecuteAsync(async ctx =>
+            (await cache.ExecuteAsync(async _ =>
             {
                 await TaskHelper.EmptyTask;
                 return ResultPrimitive.Substitute;

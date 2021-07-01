@@ -17,7 +17,7 @@ namespace Polly.Specs.Retry
         [Fact]
         public void Should_throw_when_retry_count_is_less_than_zero_without_context()
         {
-            Action<DelegateResult<ResultPrimitive>, int> onRetry = (_, __) => { };
+            Action<DelegateResult<ResultPrimitive>, int> onRetry = (_, _) => { };
 
             Action policy = () => Policy
                                       .HandleResult(ResultPrimitive.Fault)
@@ -43,7 +43,7 @@ namespace Polly.Specs.Retry
         [Fact]
         public void Should_throw_when_retry_count_is_less_than_zero_with_context()
         {
-            Action<DelegateResult<ResultPrimitive>, int, Context> onRetry = (_, __, ___) => { };
+            Action<DelegateResult<ResultPrimitive>, int, Context> onRetry = (_, _, _) => { };
 
             Action policy = () => Policy
                                       .HandleResult(ResultPrimitive.Fault)
@@ -265,7 +265,7 @@ namespace Polly.Specs.Retry
 
             var policy = Policy
                 .HandleResult(ResultPrimitive.Fault)
-                .RetryAsync((_, __, context) => contextData = context);
+                .RetryAsync((_, _, context) => contextData = context);
 
             (await policy.RaiseResultSequenceAsync(
                 new { key1 = "value1", key2 = "value2" }.AsDictionary(),
@@ -285,7 +285,7 @@ namespace Polly.Specs.Retry
 
             var policy = Policy
                 .HandleResult(ResultPrimitive.Fault)
-                .RetryAsync((_, __, context) => contextData = context);
+                .RetryAsync((_, _, context) => contextData = context);
 
             PolicyResult<ResultPrimitive> result = await policy.RaiseResultSequenceOnExecuteAndCaptureAsync(
                 new { key1 = "value1", key2 = "value2" }.AsDictionary(),
@@ -314,7 +314,7 @@ namespace Polly.Specs.Retry
 
             var policy = Policy
                 .HandleResult(ResultPrimitive.Fault)
-                .RetryAsync((_, __, context) => capturedContext = context);
+                .RetryAsync((_, _, context) => capturedContext = context);
 
             await policy.RaiseResultSequenceAsync(ResultPrimitive.Fault, ResultPrimitive.Good);
 
@@ -329,7 +329,7 @@ namespace Polly.Specs.Retry
 
             var policy = Policy
                 .HandleResult(ResultPrimitive.Fault)
-                .RetryAsync((_, __, context) => contextValue = context["key"].ToString());
+                .RetryAsync((_, _, context) => contextValue = context["key"].ToString());
 
             await policy.RaiseResultSequenceAsync(
                 new { key = "original_value" }.AsDictionary(),
@@ -353,7 +353,7 @@ namespace Polly.Specs.Retry
 
             var policy = Policy
                 .HandleResult(ResultPrimitive.Fault)
-                .RetryAsync((_, __, context) => contextValue = context["key"].ToString());
+                .RetryAsync((_, _, context) => contextValue = context["key"].ToString());
 
             await policy.RaiseResultSequenceOnExecuteAndCaptureAsync(
                 new { key = "original_value" }.AsDictionary(),
@@ -388,7 +388,7 @@ namespace Polly.Specs.Retry
         {
             bool retryInvoked = false;
 
-            Action<DelegateResult<ResultPrimitive>, int> onRetry = (_, __) => { retryInvoked = true; };
+            Action<DelegateResult<ResultPrimitive>, int> onRetry = (_, _) => { retryInvoked = true; };
 
             var policy = Policy
                 .HandleResult(ResultPrimitive.Fault)
@@ -404,7 +404,7 @@ namespace Polly.Specs.Retry
         {
             bool retryInvoked = false;
 
-            Action<DelegateResult<ResultPrimitive>, int, Context> onRetry = (_, __, ___) => { retryInvoked = true; };
+            Action<DelegateResult<ResultPrimitive>, int, Context> onRetry = (_, _, _) => { retryInvoked = true; };
 
             var policy = Policy
                 .HandleResult(ResultPrimitive.Fault)
@@ -434,7 +434,7 @@ namespace Polly.Specs.Retry
 
             var policy = Policy
                 .HandleResult(ResultPrimitive.Fault)
-                .RetryAsync(async (ex, retry) =>
+                .RetryAsync(async (_, _) =>
                 {
                     await Task.Delay(shimTimeSpan);
                     executeDelegateInvocationsWhenOnRetryExits = executeDelegateInvocations;
@@ -731,7 +731,7 @@ namespace Polly.Specs.Retry
 
             var policy = Policy
            .HandleResult(ResultPrimitive.Fault)
-           .RetryAsync(3, (_, __) =>
+           .RetryAsync(3, (_, _) =>
            {
                cancellationTokenSource.Cancel();
            });

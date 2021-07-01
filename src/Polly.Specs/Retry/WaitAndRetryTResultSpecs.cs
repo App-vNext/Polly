@@ -14,7 +14,7 @@ namespace Polly.Specs.Retry
         public WaitAndRetryTResultSpecs()
         {
             // do nothing on call to sleep
-            SystemClock.Sleep = (_, __) => { };
+            SystemClock.Sleep = (_, _) => { };
         }
 
         [Fact]
@@ -32,8 +32,8 @@ namespace Polly.Specs.Retry
                 .HandleResult(ResultPrimitive.Fault)
                 .OrResult(ResultPrimitive.FaultAgain)
                 .WaitAndRetry(2,
-                    (retryAttempt, outcome, ctx) => expectedRetryWaits[outcome.Result],
-                    (_, timeSpan, __, ___) => actualRetryWaits.Add(timeSpan)
+                    (_, outcome, _) => expectedRetryWaits[outcome.Result],
+                    (_, timeSpan, _, _) => actualRetryWaits.Add(timeSpan)
                 );
 
             using (var enumerator = expectedRetryWaits.GetEnumerator())

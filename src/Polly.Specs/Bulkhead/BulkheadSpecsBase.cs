@@ -20,7 +20,6 @@ namespace Polly.Specs.Bulkhead
 
         protected readonly TimeSpan ShimTimeSpan = TimeSpan.FromMilliseconds(50); // How frequently to retry the assertions.
         protected readonly TimeSpan CohesionTimeLimit = TimeSpan.FromMilliseconds(1000); // Consider increasing CohesionTimeLimit if bulkhead specs fail transiently in slower build environments.
-        
 
         #endregion
         public BulkheadSpecsBase(ITestOutputHelper testOutputHelper)

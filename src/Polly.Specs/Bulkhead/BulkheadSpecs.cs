@@ -69,7 +69,7 @@ namespace Polly.Specs.Bulkhead
                 // Time for the other thread to kick up and take the bulkhead.
                 Within(CohesionTimeLimit, () => Expect(0, () => bulkhead.BulkheadAvailableCount, nameof(bulkhead.BulkheadAvailableCount)));
 
-                bulkhead.Invoking(b => b.Execute(ctx => { }, contextPassedToExecute)).Should()
+                bulkhead.Invoking(b => b.Execute(_ => { }, contextPassedToExecute)).Should()
                     .Throw<BulkheadRejectedException>();
 
                 tcs.SetCanceled();

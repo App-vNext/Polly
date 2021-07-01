@@ -1878,7 +1878,7 @@ namespace Polly.Specs.CircuitBreaker
         [Fact]
         public void Should_not_call_onreset_on_initialise()
         {
-            Action<Exception, TimeSpan> onBreak = (_, __) => { };
+            Action<Exception, TimeSpan> onBreak = (_, _) => { };
             bool onResetCalled = false;
             Action onReset = () => { onResetCalled = true; };
 
@@ -1894,7 +1894,7 @@ namespace Polly.Specs.CircuitBreaker
         public void Should_call_onbreak_when_breaking_circuit_automatically()
         {
             bool onBreakCalled = false;
-            Action<Exception, TimeSpan> onBreak = (_, __) => { onBreakCalled = true; };
+            Action<Exception, TimeSpan> onBreak = (_, _) => { onBreakCalled = true; };
             Action onReset = () => { };
 
             var time = 1.January(2000);
@@ -1937,7 +1937,7 @@ namespace Polly.Specs.CircuitBreaker
         public void Should_call_onbreak_when_breaking_circuit_manually()
         {
             bool onBreakCalled = false;
-            Action<Exception, TimeSpan> onBreak = (_, __) => { onBreakCalled = true; };
+            Action<Exception, TimeSpan> onBreak = (_, _) => { onBreakCalled = true; };
             Action onReset = () => { };
 
             var durationOfBreak = TimeSpan.FromSeconds(30);
@@ -1956,7 +1956,7 @@ namespace Polly.Specs.CircuitBreaker
         public void Should_call_onbreak_when_breaking_circuit_first_time_but_not_for_subsequent_calls_placed_through_open_circuit()
         {
             int onBreakCalled = 0;
-            Action<Exception, TimeSpan> onBreak = (_, __) => { onBreakCalled++; };
+            Action<Exception, TimeSpan> onBreak = (_, _) => { onBreakCalled++; };
             Action onReset = () => { };
 
             var time = 1.January(2000);
@@ -2009,7 +2009,7 @@ namespace Polly.Specs.CircuitBreaker
         public void Should_call_onbreak_when_breaking_circuit_first_time_but_not_for_subsequent_call_failure_which_arrives_on_open_state_though_started_on_closed_state()
         {
             int onBreakCalled = 0;
-            Action<Exception, TimeSpan> onBreak = (_, __) => { onBreakCalled++; };
+            Action<Exception, TimeSpan> onBreak = (_, _) => { onBreakCalled++; };
             Action onReset = () => { };
 
             CircuitBreakerPolicy breaker = Policy
@@ -2077,7 +2077,7 @@ namespace Polly.Specs.CircuitBreaker
         {
             int onBreakCalled = 0;
             int onResetCalled = 0;
-            Action<Exception, TimeSpan> onBreak = (_, __) => { onBreakCalled++; };
+            Action<Exception, TimeSpan> onBreak = (_, _) => { onBreakCalled++; };
             Action onReset = () => { onResetCalled++; };
 
             var time = 1.January(2000);
@@ -2133,7 +2133,7 @@ namespace Polly.Specs.CircuitBreaker
         [Fact]
         public void Should_not_call_onreset_on_successive_successful_calls()
         {
-            Action<Exception, TimeSpan> onBreak = (_, __) => { };
+            Action<Exception, TimeSpan> onBreak = (_, _) => { };
             bool onResetCalled = false;
             Action onReset = () => { onResetCalled = true; };
 
@@ -2159,7 +2159,7 @@ namespace Polly.Specs.CircuitBreaker
             int onBreakCalled = 0;
             int onResetCalled = 0;
             int onHalfOpenCalled = 0;
-            Action<Exception, TimeSpan> onBreak = (_, __) => { onBreakCalled++; };
+            Action<Exception, TimeSpan> onBreak = (_, _) => { onBreakCalled++; };
             Action onReset = () => { onResetCalled++; };
             Action onHalfOpen = () => { onHalfOpenCalled++; };
 
@@ -2221,7 +2221,7 @@ namespace Polly.Specs.CircuitBreaker
             int onBreakCalled = 0;
             int onResetCalled = 0;
             int onHalfOpenCalled = 0;
-            Action<Exception, TimeSpan> onBreak = (_, __) => { onBreakCalled++; };
+            Action<Exception, TimeSpan> onBreak = (_, _) => { onBreakCalled++; };
             Action onReset = () => { onResetCalled++; };
             Action onHalfOpen = () => { onHalfOpenCalled++; };
 
@@ -2277,7 +2277,7 @@ namespace Polly.Specs.CircuitBreaker
         {
             int onBreakCalled = 0;
             int onResetCalled = 0;
-            Action<Exception, TimeSpan> onBreak = (_, __) => { onBreakCalled++; };
+            Action<Exception, TimeSpan> onBreak = (_, _) => { onBreakCalled++; };
             Action onReset = () => { onResetCalled++; };
 
             var time = 1.January(2000);
@@ -2311,7 +2311,7 @@ namespace Polly.Specs.CircuitBreaker
         {
             Exception passedException = null;
 
-            Action<Exception, TimeSpan, Context> onBreak = (exception, _, __) => { passedException = exception; };
+            Action<Exception, TimeSpan, Context> onBreak = (exception, _, _) => { passedException = exception; };
             Action<Context> onReset = _ => { };
 
             CircuitBreakerPolicy breaker = Policy
@@ -2349,7 +2349,7 @@ namespace Polly.Specs.CircuitBreaker
         {
             CircuitState? transitionedState = null;
 
-            Action<Exception, CircuitState, TimeSpan, Context> onBreak = (_, state, __, ___) => { transitionedState = state; };
+            Action<Exception, CircuitState, TimeSpan, Context> onBreak = (_, state, _, _) => { transitionedState = state; };
             Action<Context> onReset = _ => { };
             Action onHalfOpen = () => { };
 
@@ -2389,7 +2389,7 @@ namespace Polly.Specs.CircuitBreaker
         {
             List<CircuitState> transitionedStates = new List<CircuitState>();
 
-            Action<Exception, CircuitState, TimeSpan, Context> onBreak = (_, state, __, ___) => { transitionedStates.Add(state); };
+            Action<Exception, CircuitState, TimeSpan, Context> onBreak = (_, state, _, _) => { transitionedStates.Add(state); };
             Action<Context> onReset = _ => { };
             Action onHalfOpen = () => { };
 
@@ -2447,7 +2447,7 @@ namespace Polly.Specs.CircuitBreaker
         {
             TimeSpan? passedBreakTimespan = null;
 
-            Action<Exception, TimeSpan, Context> onBreak = (_, timespan, __) => { passedBreakTimespan = timespan; };
+            Action<Exception, TimeSpan, Context> onBreak = (_, timespan, _) => { passedBreakTimespan = timespan; };
             Action<Context> onReset = _ => { };
 
             TimeSpan durationOfBreak = TimeSpan.FromSeconds(30);
@@ -2486,7 +2486,7 @@ namespace Polly.Specs.CircuitBreaker
         public void Should_open_circuit_with_timespan_maxvalue_if_manual_override_open()
         {
             TimeSpan? passedBreakTimespan = null;
-            Action<Exception, TimeSpan, Context> onBreak = (_, timespan, __) => { passedBreakTimespan = timespan; };
+            Action<Exception, TimeSpan, Context> onBreak = (_, timespan, _) => { passedBreakTimespan = timespan; };
             Action<Context> onReset = _ => { };
 
             var time = 1.January(2000);
@@ -2520,7 +2520,7 @@ namespace Polly.Specs.CircuitBreaker
         {
             IDictionary<string, object> contextData = null;
 
-            Action<Exception, TimeSpan, Context> onBreak = (_, __, context) => { contextData = context; };
+            Action<Exception, TimeSpan, Context> onBreak = (_, _, context) => { contextData = context; };
             Action<Context> onReset = _ => { };
 
             var time = 1.January(2000);
@@ -2565,7 +2565,7 @@ namespace Polly.Specs.CircuitBreaker
         {
             IDictionary<string, object> contextData = null;
 
-            Action<Exception, TimeSpan, Context> onBreak = (_, __, ___) => { };
+            Action<Exception, TimeSpan, Context> onBreak = (_, _, _) => { };
             Action<Context> onReset = context => { contextData = context; };
 
             var time = 1.January(2000);
@@ -2607,7 +2607,7 @@ namespace Polly.Specs.CircuitBreaker
 
 
             // first call after duration should invoke onReset, with context
-            breaker.Execute(ctx => { }, new { key1 = "value1", key2 = "value2" }.AsDictionary());
+            breaker.Execute(_ => { }, new { key1 = "value1", key2 = "value2" }.AsDictionary());
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             contextData.Should()
@@ -2620,7 +2620,7 @@ namespace Polly.Specs.CircuitBreaker
         {
             IDictionary<string, object> contextData = new { key1 = "value1", key2 = "value2" }.AsDictionary();
 
-            Action<Exception, TimeSpan, Context> onBreak = (_, __, context) => { contextData = context; };
+            Action<Exception, TimeSpan, Context> onBreak = (_, _, context) => { contextData = context; };
             Action<Context> onReset = _ => { };
 
             var time = 1.January(2000);
@@ -2664,7 +2664,7 @@ namespace Polly.Specs.CircuitBreaker
             string contextValue = null;
 
             Action<Exception, TimeSpan, Context> onBreak =
-                (_, __, context) => { contextValue = context.ContainsKey("key") ? context["key"].ToString() : null; };
+                (_, _, context) => { contextValue = context.ContainsKey("key") ? context["key"].ToString() : null; };
             Action<Context> onReset =
                 context => { contextValue = context.ContainsKey("key") ? context["key"].ToString() : null; };
 
@@ -2709,7 +2709,7 @@ namespace Polly.Specs.CircuitBreaker
             // but not yet reset
 
             // first call after duration is successful, so circuit should reset
-            breaker.Execute(ctx => { }, new { key = "new_value" }.AsDictionary());
+            breaker.Execute(_ => { }, new { key = "new_value" }.AsDictionary());
             breaker.CircuitState.Should().Be(CircuitState.Closed);
             contextValue.Should().Be("new_value");
         }
@@ -3006,7 +3006,7 @@ namespace Polly.Specs.CircuitBreaker
 
             int attemptsInvoked = 0;
 
-            breaker.Invoking(x => x.Execute(ct =>
+            breaker.Invoking(x => x.Execute(_ =>
             {
                 attemptsInvoked++;
                 implicitlyCapturedActionCancellationToken.ThrowIfCancellationRequested();

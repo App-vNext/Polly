@@ -30,7 +30,7 @@ namespace Polly
         /// <exception cref="ArgumentNullException">onReset</exception>
         public static CircuitBreakerPolicy<TResult> CircuitBreaker<TResult>(this PolicyBuilder<TResult> policyBuilder, int handledEventsAllowedBeforeBreaking, TimeSpan durationOfBreak)
         {
-            Action<DelegateResult<TResult>, TimeSpan> doNothingOnBreak = (_, __) => { };
+            Action<DelegateResult<TResult>, TimeSpan> doNothingOnBreak = (_, _) => { };
             Action doNothingOnReset = () => { };
 
             return policyBuilder.CircuitBreaker
@@ -67,8 +67,8 @@ namespace Polly
             => policyBuilder.CircuitBreaker(
                 handledEventsAllowedBeforeBreaking,
                 durationOfBreak,
-                (outcome, timespan, context) => onBreak(outcome, timespan),
-                context => onReset()
+                (outcome, timespan, _) => onBreak(outcome, timespan),
+                _ => onReset()
                 );
 
         /// <summary>
@@ -131,8 +131,8 @@ namespace Polly
             => policyBuilder.CircuitBreaker(
                 handledEventsAllowedBeforeBreaking,
                 durationOfBreak,
-                (outcome, timespan, context) => onBreak(outcome, timespan),
-                context => onReset(),
+                (outcome, timespan, _) => onBreak(outcome, timespan),
+                _ => onReset(),
                 onHalfOpen
                 );
 
@@ -164,7 +164,7 @@ namespace Polly
             => policyBuilder.CircuitBreaker(
                 handledEventsAllowedBeforeBreaking,
                 durationOfBreak,
-                (outcome, state, timespan, context) => onBreak(outcome, timespan, context),
+                (outcome, _, timespan, context) => onBreak(outcome, timespan, context),
                 onReset,
                 onHalfOpen
             );

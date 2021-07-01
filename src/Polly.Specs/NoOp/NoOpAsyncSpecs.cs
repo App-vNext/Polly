@@ -31,7 +31,7 @@ namespace Polly.Specs.NoOp
                 cts.Cancel();
 
                 policy.Awaiting(p => p.ExecuteAsync(
-                    ct => { executed = true; return TaskHelper.EmptyTask; }, cts.Token))
+                    _ => { executed = true; return TaskHelper.EmptyTask; }, cts.Token))
                     .Should().NotThrow();
             }
 

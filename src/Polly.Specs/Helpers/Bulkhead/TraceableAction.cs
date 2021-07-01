@@ -48,14 +48,14 @@ namespace Polly.Specs.Helpers.Bulkhead
         public Task ExecuteOnBulkhead(BulkheadPolicy bulkhead)
         {
             return ExecuteThroughSyncBulkheadOuter(
-                () => bulkhead.Execute(ct => ExecuteThroughSyncBulkheadInner(), CancellationSource.Token)
+                () => bulkhead.Execute(_ => ExecuteThroughSyncBulkheadInner(), CancellationSource.Token)
                 );
         }
 
         public Task ExecuteOnBulkhead<TResult>(BulkheadPolicy<TResult> bulkhead)
         {
             return ExecuteThroughSyncBulkheadOuter(
-                () => bulkhead.Execute(ct => { ExecuteThroughSyncBulkheadInner(); return default; }, CancellationSource.Token)
+                () => bulkhead.Execute(_ => { ExecuteThroughSyncBulkheadInner(); return default; }, CancellationSource.Token)
                 );
         }
 
@@ -128,14 +128,14 @@ namespace Polly.Specs.Helpers.Bulkhead
         public Task ExecuteOnBulkheadAsync(AsyncBulkheadPolicy bulkhead)
         {
             return ExecuteThroughAsyncBulkheadOuter(
-                () => bulkhead.ExecuteAsync(async ct => await ExecuteThroughAsyncBulkheadInner(), CancellationSource.Token)
+                () => bulkhead.ExecuteAsync(async _ => await ExecuteThroughAsyncBulkheadInner(), CancellationSource.Token)
             );
         }
 
         public Task ExecuteOnBulkheadAsync<TResult>(AsyncBulkheadPolicy<TResult> bulkhead)
         {
             return ExecuteThroughAsyncBulkheadOuter(
-                () => bulkhead.ExecuteAsync(async ct => { await ExecuteThroughAsyncBulkheadInner(); return default; }, CancellationSource.Token)
+                () => bulkhead.ExecuteAsync(async _ => { await ExecuteThroughAsyncBulkheadInner(); return default; }, CancellationSource.Token)
             );
         }
 

@@ -26,7 +26,7 @@ namespace Polly.Specs.Caching
         [Fact]
         public void Should_not_throw_when_func_is_set()
         {
-            Action configure = () => new ResultTtl<object>(result => new Ttl());
+            Action configure = () => new ResultTtl<object>(_ => new Ttl());
 
             configure.Should().NotThrow();
         }
@@ -34,7 +34,7 @@ namespace Polly.Specs.Caching
         [Fact]
         public void Should_not_throw_when_func_is_set_using_context()
         {
-            Action configure = () => new ResultTtl<object>((context, result) => new Ttl());
+            Action configure = () => new ResultTtl<object>((_, _) => new Ttl());
 
             configure.Should().NotThrow();
         }

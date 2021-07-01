@@ -16,7 +16,7 @@ namespace Polly.Specs
 
             var policy = Policy
                 .Handle<DivideByZeroException>()
-                .Retry((_, __) => { });
+                .Retry((_, _) => { });
 
             policy.Execute(() => executed = true);
 
@@ -29,7 +29,7 @@ namespace Polly.Specs
         {
             var policy = Policy
                 .Handle<DivideByZeroException>()
-                .Retry((_, __) => { });
+                .Retry((_, _) => { });
 
             var result = policy.Execute(() => 2);
 
@@ -46,7 +46,7 @@ namespace Polly.Specs
         {
             var result = Policy
                 .Handle<DivideByZeroException>()
-                .Retry((_, __) => { })
+                .Retry((_, _) => { })
                 .ExecuteAndCapture(() => { });
 
             result.Should().BeEquivalentTo(new
@@ -64,7 +64,7 @@ namespace Polly.Specs
 
             var result = Policy
                 .Handle<DivideByZeroException>()
-                .Retry((_, __) => { })
+                .Retry((_, _) => { })
                 .ExecuteAndCapture(() => throw handledException);
 
             result.Should().BeEquivalentTo(new
@@ -82,7 +82,7 @@ namespace Polly.Specs
 
             var result = Policy
                 .Handle<DivideByZeroException>()
-                .Retry((_, __) => { })
+                .Retry((_, _) => { })
                 .ExecuteAndCapture(() => throw unhandledException);
 
             result.Should().BeEquivalentTo(new
@@ -98,7 +98,7 @@ namespace Polly.Specs
         {
             var result = Policy
                 .Handle<DivideByZeroException>()
-                .Retry((_, __) => { })
+                .Retry((_, _) => { })
                 .ExecuteAndCapture(() => Int32.MaxValue);
 
             result.Should().BeEquivalentTo(new
@@ -119,7 +119,7 @@ namespace Polly.Specs
 
             var result = Policy
                 .Handle<DivideByZeroException>()
-                .Retry((_, __) => { })
+                .Retry((_, _) => { })
                 .ExecuteAndCapture<int>(() => throw handledException);
 
             result.Should().BeEquivalentTo(new
@@ -140,7 +140,7 @@ namespace Polly.Specs
 
             var result = Policy
                 .Handle<DivideByZeroException>()
-                .Retry((_, __) => { })
+                .Retry((_, _) => { })
                 .ExecuteAndCapture<int>(() => throw unhandledException);
 
             result.Should().BeEquivalentTo(new
@@ -163,9 +163,9 @@ namespace Polly.Specs
         {
             Policy policy = Policy
                 .Handle<DivideByZeroException>()
-                .Retry((_, __, ___) => { });
+                .Retry((_, _, _) => { });
 
-            policy.Invoking(p => p.Execute(ctx => { }, (IDictionary<string, object>)null))
+            policy.Invoking(p => p.Execute(_ => { }, (IDictionary<string, object>)null))
                   .Should().Throw<ArgumentNullException>();
         }
 
@@ -174,9 +174,9 @@ namespace Polly.Specs
         {
             Policy policy = Policy
                 .Handle<DivideByZeroException>()
-                .Retry((_, __, ___) => { });
+                .Retry((_, _, _) => { });
 
-            policy.Invoking(p => p.Execute(ctx => { }, (Context)null))
+            policy.Invoking(p => p.Execute(_ => { }, (Context)null))
                 .Should().Throw<ArgumentNullException>().And
                 .ParamName.Should().Be("context");
         }
@@ -186,9 +186,9 @@ namespace Polly.Specs
         {
             Policy policy = Policy
                 .Handle<DivideByZeroException>()
-                .Retry((_, __, ___) => { });
+                .Retry((_, _, _) => { });
 
-            policy.Invoking(p => p.Execute(ctx => 2, (IDictionary<string, object>)null))
+            policy.Invoking(p => p.Execute(_ => 2, (IDictionary<string, object>)null))
                 .Should().Throw<ArgumentNullException>();
         }
 
@@ -197,9 +197,9 @@ namespace Polly.Specs
         {
             Policy policy = Policy
                 .Handle<DivideByZeroException>()
-                .Retry((_, __, ___) => { });
+                .Retry((_, _, _) => { });
 
-            policy.Invoking(p => p.Execute(ctx => 2, (Context)null))
+            policy.Invoking(p => p.Execute(_ => 2, (Context)null))
                 .Should().Throw<ArgumentNullException>().And
                 .ParamName.Should().Be("context");
         }
@@ -223,9 +223,9 @@ namespace Polly.Specs
         {
             Policy policy = Policy
                 .Handle<DivideByZeroException>()
-                .Retry((_, __, ___) => { });
+                .Retry((_, _, _) => { });
 
-            policy.Invoking(p => p.ExecuteAndCapture(ctx => { }, (IDictionary<string, object>)null))
+            policy.Invoking(p => p.ExecuteAndCapture(_ => { }, (IDictionary<string, object>)null))
                   .Should().Throw<ArgumentNullException>();
         }
 
@@ -234,9 +234,9 @@ namespace Polly.Specs
         {
             Policy policy = Policy
                 .Handle<DivideByZeroException>()
-                .Retry((_, __, ___) => { });
+                .Retry((_, _, _) => { });
 
-            policy.Invoking(p => p.ExecuteAndCapture(ctx => { }, (Context)null))
+            policy.Invoking(p => p.ExecuteAndCapture(_ => { }, (Context)null))
                 .Should().Throw<ArgumentNullException>().And
                 .ParamName.Should().Be("context");
         }
@@ -246,9 +246,9 @@ namespace Polly.Specs
         {
             Policy policy = Policy
                 .Handle<DivideByZeroException>()
-                .Retry((_, __, ___) => { });
+                .Retry((_, _, _) => { });
 
-            policy.Invoking(p => p.ExecuteAndCapture(ctx => 2, (IDictionary<string, object>)null))
+            policy.Invoking(p => p.ExecuteAndCapture(_ => 2, (IDictionary<string, object>)null))
                   .Should().Throw<ArgumentNullException>();
         }
 
@@ -257,9 +257,9 @@ namespace Polly.Specs
         {
             Policy policy = Policy
                 .Handle<DivideByZeroException>()
-                .Retry((_, __, ___) => { });
+                .Retry((_, _, _) => { });
 
-            policy.Invoking(p => p.ExecuteAndCapture(ctx => 2, (Context)null))
+            policy.Invoking(p => p.ExecuteAndCapture(_ => 2, (Context)null))
                   .Should().Throw<ArgumentNullException>().And
                   .ParamName.Should().Be("context");
         }
@@ -286,7 +286,7 @@ namespace Polly.Specs
 
             Policy policy = Policy.NoOp();
 
-            policy.ExecuteAndCapture(context => { }, executionContext)
+            policy.ExecuteAndCapture(_ => { }, executionContext)
                 .Context.Should().BeSameAs(executionContext);
         }
 
