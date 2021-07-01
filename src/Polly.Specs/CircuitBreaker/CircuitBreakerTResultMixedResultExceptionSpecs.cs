@@ -427,7 +427,7 @@ namespace Polly.Specs.CircuitBreaker
         {
             ResultPrimitive? handledResult = null;
 
-            Action<DelegateResult<ResultPrimitive>, TimeSpan, Context> onBreak = (outcome, _, __) => { handledResult = outcome.Result; };
+            Action<DelegateResult<ResultPrimitive>, TimeSpan, Context> onBreak = (outcome, _, _) => { handledResult = outcome.Result; };
             Action<Context> onReset = _ => { };
 
             TimeSpan durationOfBreak = TimeSpan.FromMinutes(1);
@@ -453,7 +453,7 @@ namespace Polly.Specs.CircuitBreaker
         {
             Exception lastException = null;
 
-            Action<DelegateResult<ResultPrimitive>, TimeSpan, Context> onBreak = (outcome, _, __) => { lastException = outcome.Exception; };
+            Action<DelegateResult<ResultPrimitive>, TimeSpan, Context> onBreak = (outcome, _, _) => { lastException = outcome.Exception; };
             Action<Context> onReset = _ => { };
 
             TimeSpan durationOfBreak = TimeSpan.FromMinutes(1);

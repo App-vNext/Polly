@@ -16,8 +16,8 @@ namespace Polly
         {
             TimeoutValidator.ValidateSecondsTimeout(seconds);
 
-            Func<Context, TimeSpan, Task, Exception, Task> doNothingAsync = (_, __, ___, ____) => Task.FromResult(default(TResult));
-            return TimeoutAsync<TResult>(ctx => TimeSpan.FromSeconds(seconds), TimeoutStrategy.Optimistic, doNothingAsync);
+            Func<Context, TimeSpan, Task, Exception, Task> doNothingAsync = (_, _, _, _) => Task.FromResult(default(TResult));
+            return TimeoutAsync<TResult>(_ => TimeSpan.FromSeconds(seconds), TimeoutStrategy.Optimistic, doNothingAsync);
         }
 
         /// <summary>
@@ -31,8 +31,8 @@ namespace Polly
         {
             TimeoutValidator.ValidateSecondsTimeout(seconds);
 
-            Func<Context, TimeSpan, Task, Exception, Task> doNothingAsync = (_, __, ___, ____) => Task.FromResult(default(TResult));
-            return TimeoutAsync<TResult>(ctx => TimeSpan.FromSeconds(seconds), timeoutStrategy, doNothingAsync);
+            Func<Context, TimeSpan, Task, Exception, Task> doNothingAsync = (_, _, _, _) => Task.FromResult(default(TResult));
+            return TimeoutAsync<TResult>(_ => TimeSpan.FromSeconds(seconds), timeoutStrategy, doNothingAsync);
         }
 
         /// <summary>
@@ -48,7 +48,7 @@ namespace Polly
         {
             TimeoutValidator.ValidateSecondsTimeout(seconds);
 
-            return TimeoutAsync<TResult>(ctx => TimeSpan.FromSeconds(seconds), TimeoutStrategy.Optimistic, onTimeoutAsync);
+            return TimeoutAsync<TResult>(_ => TimeSpan.FromSeconds(seconds), TimeoutStrategy.Optimistic, onTimeoutAsync);
         }
 
         /// <summary>
@@ -64,7 +64,7 @@ namespace Polly
         {
             if (seconds <= 0) throw new ArgumentOutOfRangeException(nameof(seconds));
 
-            return TimeoutAsync<TResult>(ctx => TimeSpan.FromSeconds(seconds), TimeoutStrategy.Optimistic, onTimeoutAsync);
+            return TimeoutAsync<TResult>(_ => TimeSpan.FromSeconds(seconds), TimeoutStrategy.Optimistic, onTimeoutAsync);
         }
 
         /// <summary>
@@ -81,7 +81,7 @@ namespace Polly
         {
             TimeoutValidator.ValidateSecondsTimeout(seconds);
 
-            return TimeoutAsync<TResult>(ctx => TimeSpan.FromSeconds(seconds), timeoutStrategy, onTimeoutAsync);
+            return TimeoutAsync<TResult>(_ => TimeSpan.FromSeconds(seconds), timeoutStrategy, onTimeoutAsync);
         }
 
         /// <summary>
@@ -98,7 +98,7 @@ namespace Polly
         {
             if (seconds <= 0) throw new ArgumentOutOfRangeException(nameof(seconds));
 
-            return TimeoutAsync<TResult>(ctx => TimeSpan.FromSeconds(seconds), timeoutStrategy, onTimeoutAsync);
+            return TimeoutAsync<TResult>(_ => TimeSpan.FromSeconds(seconds), timeoutStrategy, onTimeoutAsync);
         }
 
         /// <summary>
@@ -111,8 +111,8 @@ namespace Polly
         {
             TimeoutValidator.ValidateTimeSpanTimeout(timeout);
 
-            Func<Context, TimeSpan, Task, Exception, Task> doNothingAsync = (_, __, ___, ____) => Task.FromResult(default(TResult));
-            return TimeoutAsync<TResult>(ctx => timeout, TimeoutStrategy.Optimistic, doNothingAsync);
+            Func<Context, TimeSpan, Task, Exception, Task> doNothingAsync = (_, _, _, _) => Task.FromResult(default(TResult));
+            return TimeoutAsync<TResult>(_ => timeout, TimeoutStrategy.Optimistic, doNothingAsync);
         }
 
         /// <summary>
@@ -126,8 +126,8 @@ namespace Polly
         {
             TimeoutValidator.ValidateTimeSpanTimeout(timeout);
 
-            Func<Context, TimeSpan, Task, Exception, Task> doNothingAsync = (_, __, ___, ____) => Task.FromResult(default(TResult));
-            return TimeoutAsync<TResult>(ctx => timeout, timeoutStrategy, doNothingAsync);
+            Func<Context, TimeSpan, Task, Exception, Task> doNothingAsync = (_, _, _, _) => Task.FromResult(default(TResult));
+            return TimeoutAsync<TResult>(_ => timeout, timeoutStrategy, doNothingAsync);
         }
 
         /// <summary>
@@ -144,7 +144,7 @@ namespace Polly
             TimeoutValidator.ValidateTimeSpanTimeout(timeout);
             if (onTimeoutAsync == null) throw new ArgumentNullException(nameof(onTimeoutAsync));
 
-            return TimeoutAsync<TResult>(ctx => timeout, TimeoutStrategy.Optimistic, onTimeoutAsync);
+            return TimeoutAsync<TResult>(_ => timeout, TimeoutStrategy.Optimistic, onTimeoutAsync);
         }
 
         /// <summary>
@@ -161,7 +161,7 @@ namespace Polly
             if (timeout <= TimeSpan.Zero) throw new ArgumentOutOfRangeException(nameof(timeout));
             if (onTimeoutAsync == null) throw new ArgumentNullException(nameof(onTimeoutAsync));
 
-            return TimeoutAsync<TResult>(ctx => timeout, TimeoutStrategy.Optimistic, onTimeoutAsync);
+            return TimeoutAsync<TResult>(_ => timeout, TimeoutStrategy.Optimistic, onTimeoutAsync);
         }
 
         /// <summary>
@@ -178,7 +178,7 @@ namespace Polly
         {
             TimeoutValidator.ValidateTimeSpanTimeout(timeout);
 
-            return TimeoutAsync<TResult>(ctx => timeout, timeoutStrategy, onTimeoutAsync);
+            return TimeoutAsync<TResult>(_ => timeout, timeoutStrategy, onTimeoutAsync);
         }
 
         /// <summary>
@@ -195,7 +195,7 @@ namespace Polly
         {
             if (timeout <= TimeSpan.Zero) throw new ArgumentOutOfRangeException(nameof(timeout));
 
-            return TimeoutAsync<TResult>(ctx => timeout, timeoutStrategy, onTimeoutAsync);
+            return TimeoutAsync<TResult>(_ => timeout, timeoutStrategy, onTimeoutAsync);
         }
 
         /// <summary>
@@ -208,8 +208,8 @@ namespace Polly
         {
             if (timeoutProvider == null) throw new ArgumentNullException(nameof(timeoutProvider));
 
-            Func<Context, TimeSpan, Task, Exception, Task> doNothingAsync = (_, __, ___, ____) => Task.FromResult(default(TResult));
-            return TimeoutAsync<TResult>(ctx => timeoutProvider(), TimeoutStrategy.Optimistic, doNothingAsync);
+            Func<Context, TimeSpan, Task, Exception, Task> doNothingAsync = (_, _, _, _) => Task.FromResult(default(TResult));
+            return TimeoutAsync<TResult>(_ => timeoutProvider(), TimeoutStrategy.Optimistic, doNothingAsync);
         }
 
         /// <summary>
@@ -223,8 +223,8 @@ namespace Polly
         {
             if (timeoutProvider == null) throw new ArgumentNullException(nameof(timeoutProvider));
 
-            Func<Context, TimeSpan, Task, Exception, Task> doNothingAsync = (_, __, ___, ____) => Task.FromResult(default(TResult));
-            return TimeoutAsync<TResult>(ctx => timeoutProvider(), timeoutStrategy, doNothingAsync);
+            Func<Context, TimeSpan, Task, Exception, Task> doNothingAsync = (_, _, _, _) => Task.FromResult(default(TResult));
+            return TimeoutAsync<TResult>(_ => timeoutProvider(), timeoutStrategy, doNothingAsync);
         }
 
         /// <summary>
@@ -240,7 +240,7 @@ namespace Polly
         {
             if (timeoutProvider == null) throw new ArgumentNullException(nameof(timeoutProvider));
 
-            return TimeoutAsync<TResult>(ctx => timeoutProvider(), TimeoutStrategy.Optimistic, onTimeoutAsync);
+            return TimeoutAsync<TResult>(_ => timeoutProvider(), TimeoutStrategy.Optimistic, onTimeoutAsync);
         }
 
         /// <summary>
@@ -256,7 +256,7 @@ namespace Polly
         {
             if (timeoutProvider == null) throw new ArgumentNullException(nameof(timeoutProvider));
 
-            return TimeoutAsync<TResult>(ctx => timeoutProvider(), TimeoutStrategy.Optimistic, onTimeoutAsync);
+            return TimeoutAsync<TResult>(_ => timeoutProvider(), TimeoutStrategy.Optimistic, onTimeoutAsync);
         }
 
         /// <summary>
@@ -273,7 +273,7 @@ namespace Polly
         {
             if (timeoutProvider == null) throw new ArgumentNullException(nameof(timeoutProvider));
 
-            return TimeoutAsync<TResult>(ctx => timeoutProvider(), timeoutStrategy, onTimeoutAsync);
+            return TimeoutAsync<TResult>(_ => timeoutProvider(), timeoutStrategy, onTimeoutAsync);
         }
 
         /// <summary>
@@ -290,7 +290,7 @@ namespace Polly
         {
             if (timeoutProvider == null) throw new ArgumentNullException(nameof(timeoutProvider));
 
-            return TimeoutAsync<TResult>(ctx => timeoutProvider(), timeoutStrategy, onTimeoutAsync);
+            return TimeoutAsync<TResult>(_ => timeoutProvider(), timeoutStrategy, onTimeoutAsync);
         }
 
         /// <summary>
@@ -301,7 +301,7 @@ namespace Polly
         /// <returns>The policy instance.</returns>
         public static AsyncTimeoutPolicy<TResult> TimeoutAsync<TResult>(Func<Context, TimeSpan> timeoutProvider)
         {
-            Func<Context, TimeSpan, Task, Exception, Task> doNothingAsync = (_, __, ___, ____) => Task.FromResult(default(TResult));
+            Func<Context, TimeSpan, Task, Exception, Task> doNothingAsync = (_, _, _, _) => Task.FromResult(default(TResult));
             return TimeoutAsync<TResult>(timeoutProvider, TimeoutStrategy.Optimistic, doNothingAsync);
         }
 
@@ -314,7 +314,7 @@ namespace Polly
         /// <returns>The policy instance.</returns>
         public static AsyncTimeoutPolicy<TResult> TimeoutAsync<TResult>(Func<Context, TimeSpan> timeoutProvider, TimeoutStrategy timeoutStrategy)
         {
-            Func<Context, TimeSpan, Task, Exception, Task> doNothingAsync = (_, __, ___, ____) => Task.FromResult(default(TResult));
+            Func<Context, TimeSpan, Task, Exception, Task> doNothingAsync = (_, _, _, _) => Task.FromResult(default(TResult));
             return TimeoutAsync<TResult>(timeoutProvider, timeoutStrategy, doNothingAsync);
         }
 
@@ -356,7 +356,7 @@ namespace Polly
         {
             if (onTimeoutAsync == null) throw new ArgumentNullException(nameof(onTimeoutAsync));
 
-            return TimeoutAsync<TResult>(timeoutProvider, timeoutStrategy, (ctx, timeout, task, ex) => onTimeoutAsync(ctx, timeout, task));
+            return TimeoutAsync<TResult>(timeoutProvider, timeoutStrategy, (ctx, timeout, task, _) => onTimeoutAsync(ctx, timeout, task));
         }
 
         /// <summary>

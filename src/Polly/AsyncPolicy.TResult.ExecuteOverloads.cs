@@ -18,8 +18,8 @@ namespace Polly
         /// <returns>The value returned by the action</returns>
         [DebuggerStepThrough]
         public Task<TResult> ExecuteAsync(Func<Task<TResult>> action)
-            => ExecuteAsync((ctx, ct) => action(), new Context(), CancellationToken.None, DefaultContinueOnCapturedContext);
-        
+            => ExecuteAsync((_, _) => action(), new Context(), CancellationToken.None, DefaultContinueOnCapturedContext);
+
         /// <summary>
         ///     Executes the specified asynchronous action within the policy and returns the result.
         /// </summary>
@@ -28,7 +28,7 @@ namespace Polly
         /// <returns>The value returned by the action</returns>
         [DebuggerStepThrough]
         public Task<TResult> ExecuteAsync(Func<Context, Task<TResult>> action, IDictionary<string, object> contextData)
-            => ExecuteAsync((ctx, ct) => action(ctx), new Context(contextData), CancellationToken.None, DefaultContinueOnCapturedContext);
+            => ExecuteAsync((ctx, _) => action(ctx), new Context(contextData), CancellationToken.None, DefaultContinueOnCapturedContext);
 
         /// <summary>
         ///     Executes the specified asynchronous action within the policy and returns the result.
@@ -38,7 +38,7 @@ namespace Polly
         /// <returns>The value returned by the action</returns>
         [DebuggerStepThrough]
         public Task<TResult> ExecuteAsync(Func<Context, Task<TResult>> action, Context context)
-            => ExecuteAsync((ctx, ct) => action(ctx), context, CancellationToken.None, DefaultContinueOnCapturedContext);
+            => ExecuteAsync((ctx, _) => action(ctx), context, CancellationToken.None, DefaultContinueOnCapturedContext);
 
         /// <summary>
         ///     Executes the specified asynchronous action within the policy and returns the result.
@@ -48,7 +48,7 @@ namespace Polly
         /// <returns>The value returned by the action</returns>
         [DebuggerStepThrough]
         public Task<TResult> ExecuteAsync(Func<CancellationToken, Task<TResult>> action, CancellationToken cancellationToken)
-            => ExecuteAsync((ctx, ct) => action(ct), new Context(), cancellationToken, DefaultContinueOnCapturedContext);
+            => ExecuteAsync((_, ct) => action(ct), new Context(), cancellationToken, DefaultContinueOnCapturedContext);
 
         /// <summary>
         ///     Executes the specified asynchronous action within the policy and returns the result.
@@ -60,7 +60,7 @@ namespace Polly
         /// <exception cref="InvalidOperationException">Please use asynchronous-defined policies when calling asynchronous ExecuteAsync (and similar) methods.</exception>
         [DebuggerStepThrough]
         public Task<TResult> ExecuteAsync(Func<CancellationToken, Task<TResult>> action, CancellationToken cancellationToken, bool continueOnCapturedContext)
-            => ExecuteAsync((ctx, ct) => action(ct), new Context(), cancellationToken, continueOnCapturedContext);
+            => ExecuteAsync((_, ct) => action(ct), new Context(), cancellationToken, continueOnCapturedContext);
 
         /// <summary>
         ///     Executes the specified asynchronous action within the policy and returns the result.
@@ -134,8 +134,8 @@ namespace Polly
         /// <returns>The captured result</returns>
         [DebuggerStepThrough]
         public Task<PolicyResult<TResult>> ExecuteAndCaptureAsync(Func<Task<TResult>> action)
-            => ExecuteAndCaptureAsync((ctx, ct) => action(), new Context(), CancellationToken.None, DefaultContinueOnCapturedContext);
-        
+            => ExecuteAndCaptureAsync((_, _) => action(), new Context(), CancellationToken.None, DefaultContinueOnCapturedContext);
+
         /// <summary>
         /// Executes the specified asynchronous action within the policy and returns the result.
         /// </summary>
@@ -145,7 +145,7 @@ namespace Polly
         /// <returns>The captured result</returns>
         [DebuggerStepThrough]
         public Task<PolicyResult<TResult>> ExecuteAndCaptureAsync(Func<Context, Task<TResult>> action, IDictionary<string, object> contextData)
-            => ExecuteAndCaptureAsync((ctx, ct) => action(ctx), new Context(contextData), CancellationToken.None, DefaultContinueOnCapturedContext);
+            => ExecuteAndCaptureAsync((ctx, _) => action(ctx), new Context(contextData), CancellationToken.None, DefaultContinueOnCapturedContext);
 
         /// <summary>
         /// Executes the specified asynchronous action within the policy and returns the result.
@@ -155,7 +155,7 @@ namespace Polly
         /// <returns>The captured result</returns>
         [DebuggerStepThrough]
         public Task<PolicyResult<TResult>> ExecuteAndCaptureAsync(Func<Context, Task<TResult>> action, Context context)
-            => ExecuteAndCaptureAsync((ctx, ct) => action(ctx), context, CancellationToken.None, DefaultContinueOnCapturedContext);
+            => ExecuteAndCaptureAsync((ctx, _) => action(ctx), context, CancellationToken.None, DefaultContinueOnCapturedContext);
 
         /// <summary>
         ///     Executes the specified asynchronous action within the policy and returns the result.
@@ -165,7 +165,7 @@ namespace Polly
         /// <returns>The captured result</returns>
         [DebuggerStepThrough]
         public Task<PolicyResult<TResult>> ExecuteAndCaptureAsync(Func<CancellationToken, Task<TResult>> action, CancellationToken cancellationToken)
-            => ExecuteAndCaptureAsync((ctx, ct) => action(ct), new Context(), cancellationToken, DefaultContinueOnCapturedContext);
+            => ExecuteAndCaptureAsync((_, ct) => action(ct), new Context(), cancellationToken, DefaultContinueOnCapturedContext);
 
         /// <summary>
         ///     Executes the specified asynchronous action within the policy and returns the result.
@@ -177,7 +177,7 @@ namespace Polly
         /// <exception cref="InvalidOperationException">Please use asynchronous-defined policies when calling asynchronous ExecuteAsync (and similar) methods.</exception>
         [DebuggerStepThrough]
         public Task<PolicyResult<TResult>> ExecuteAndCaptureAsync(Func<CancellationToken, Task<TResult>> action, CancellationToken cancellationToken, bool continueOnCapturedContext)
-            => ExecuteAndCaptureAsync((ctx, ct) => action(ct), new Context(), cancellationToken, continueOnCapturedContext);
+            => ExecuteAndCaptureAsync((_, ct) => action(ct), new Context(), cancellationToken, continueOnCapturedContext);
 
         /// <summary>
         ///     Executes the specified asynchronous action within the policy and returns the result.

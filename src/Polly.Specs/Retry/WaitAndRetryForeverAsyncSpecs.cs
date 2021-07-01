@@ -20,13 +20,13 @@ namespace Polly.Specs.Retry
         public WaitAndRetryForeverAsyncSpecs()
         {
             // do nothing on call to sleep
-            SystemClock.SleepAsync = (_, __) => TaskHelper.EmptyTask;
+            SystemClock.SleepAsync = (_, _) => TaskHelper.EmptyTask;
         }
 
         [Fact]
         public void Should_throw_when_sleep_duration_provider_is_null_without_context()
         {
-            Action<Exception, TimeSpan> onRetry = (_, __) => { };
+            Action<Exception, TimeSpan> onRetry = (_, _) => { };
 
             Action policy = () => Policy
                                       .Handle<DivideByZeroException>()
@@ -39,7 +39,7 @@ namespace Polly.Specs.Retry
         [Fact]
         public void Should_throw_when_sleep_duration_provider_is_null_with_context()
         {
-            Action<Exception, TimeSpan, Context> onRetry = (_, __, ___) => { };
+            Action<Exception, TimeSpan, Context> onRetry = (_, _, _) => { };
 
             Action policy = () => Policy
                                       .Handle<DivideByZeroException>()
@@ -53,7 +53,7 @@ namespace Polly.Specs.Retry
         public void Should_throw_when_onretry_action_is_null_without_context()
         {
             Action<Exception, TimeSpan> nullOnRetry = null;
-            Func<int, TimeSpan> provider = i => TimeSpan.Zero;
+            Func<int, TimeSpan> provider = _ => TimeSpan.Zero;
 
             Action policy = () => Policy
                                       .Handle<DivideByZeroException>()
@@ -67,7 +67,7 @@ namespace Polly.Specs.Retry
         public void Should_throw_when_onretry_action_is_null_with_context()
         {
             Action<Exception, TimeSpan, Context> nullOnRetry = null;
-            Func<int, Context, TimeSpan> provider = (i, ctx) => TimeSpan.Zero;
+            Func<int, Context, TimeSpan> provider = (_, _) => TimeSpan.Zero;
 
             Action policy = () => Policy
                                       .Handle<DivideByZeroException>()
@@ -103,7 +103,7 @@ namespace Polly.Specs.Retry
         [Fact]
         public void Should_throw_when_exception_thrown_is_not_the_specified_exception_type()
         {
-            Func<int, TimeSpan> provider = i => TimeSpan.Zero;
+            Func<int, TimeSpan> provider = _ => TimeSpan.Zero;
 
             var policy = Policy
                 .Handle<DivideByZeroException>()
@@ -116,7 +116,7 @@ namespace Polly.Specs.Retry
         [Fact]
         public void Should_throw_when_exception_thrown_is_not_one_of_the_specified_exception_types()
         {
-            Func<int, TimeSpan> provider = i => TimeSpan.Zero;
+            Func<int, TimeSpan> provider = _ => TimeSpan.Zero;
 
             var policy = Policy
                 .Handle<DivideByZeroException>()
@@ -130,10 +130,10 @@ namespace Polly.Specs.Retry
         [Fact]
         public void Should_throw_when_specified_exception_predicate_is_not_satisfied()
         {
-            Func<int, TimeSpan> provider = i => TimeSpan.Zero;
+            Func<int, TimeSpan> provider = _ => TimeSpan.Zero;
 
             var policy = Policy
-                .Handle<DivideByZeroException>(e => false)
+                .Handle<DivideByZeroException>(_ => false)
                 .WaitAndRetryForeverAsync(provider);
 
             policy.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
@@ -143,11 +143,11 @@ namespace Polly.Specs.Retry
         [Fact]
         public void Should_throw_when_none_of_the_specified_exception_predicates_are_satisfied()
         {
-            Func<int, TimeSpan> provider = i => TimeSpan.Zero;
+            Func<int, TimeSpan> provider = _ => TimeSpan.Zero;
 
             var policy = Policy
-                .Handle<DivideByZeroException>(e => false)
-                .Or<ArgumentException>(e => false)
+                .Handle<DivideByZeroException>(_ => false)
+                .Or<ArgumentException>(_ => false)
                 .WaitAndRetryForeverAsync(provider);
 
             policy.Awaiting(x => x.RaiseExceptionAsync<ArgumentException>())
@@ -157,10 +157,10 @@ namespace Polly.Specs.Retry
         [Fact]
         public void Should_not_throw_when_specified_exception_predicate_is_satisfied()
         {
-            Func<int, TimeSpan> provider = i => 1.Seconds();
+            Func<int, TimeSpan> provider = _ => 1.Seconds();
 
             var policy = Policy
-                .Handle<DivideByZeroException>(e => true)
+                .Handle<DivideByZeroException>(_ => true)
                 .WaitAndRetryForeverAsync(provider);
 
             policy.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
@@ -170,11 +170,11 @@ namespace Polly.Specs.Retry
         [Fact]
         public void Should_not_throw_when_one_of_the_specified_exception_predicates_are_satisfied()
         {
-            Func<int, TimeSpan> provider = i => 1.Seconds();
+            Func<int, TimeSpan> provider = _ => 1.Seconds();
 
             var policy = Policy
-                .Handle<DivideByZeroException>(e => true)
-                .Or<ArgumentException>(e => true)
+                .Handle<DivideByZeroException>(_ => true)
+                .Or<ArgumentException>(_ => true)
                .WaitAndRetryForeverAsync(provider);
 
             policy.Awaiting(x => x.RaiseExceptionAsync<ArgumentException>())
@@ -184,7 +184,7 @@ namespace Polly.Specs.Retry
         [Fact]
         public void Should_not_sleep_if_no_retries()
         {
-            Func<int, TimeSpan> provider = i => 1.Seconds();
+            Func<int, TimeSpan> provider = _ => 1.Seconds();
 
             var totalTimeSlept = 0;
 
@@ -192,7 +192,7 @@ namespace Polly.Specs.Retry
                 .Handle<DivideByZeroException>()
                 .WaitAndRetryForeverAsync(provider);
 
-            SystemClock.Sleep = (span, ct) => totalTimeSlept += span.Seconds;
+            SystemClock.Sleep = (span, _) => totalTimeSlept += span.Seconds;
 
             policy.Awaiting(x => x.RaiseExceptionAsync<NullReferenceException>())
                   .Should().Throw<NullReferenceException>();
@@ -206,7 +206,7 @@ namespace Polly.Specs.Retry
         {
             var expectedExceptions = new object[] { "Exception #1", "Exception #2", "Exception #3" };
             var retryExceptions = new List<Exception>();
-            Func<int, TimeSpan> provider = i => TimeSpan.Zero;
+            Func<int, TimeSpan> provider = _ => TimeSpan.Zero;
 
             var policy = Policy
                 .Handle<DivideByZeroException>()
@@ -225,11 +225,11 @@ namespace Polly.Specs.Retry
         {
             var expectedRetryCounts = new[] { 1, 2, 3 };
             var retryCounts = new List<int>();
-            Func<int, TimeSpan> provider = i => TimeSpan.Zero;
+            Func<int, TimeSpan> provider = _ => TimeSpan.Zero;
 
             var policy = Policy
                 .Handle<DivideByZeroException>()
-                .WaitAndRetryForeverAsync(provider, (_, retryCount, __) => retryCounts.Add(retryCount));
+                .WaitAndRetryForeverAsync(provider, (_, retryCount, _) => retryCounts.Add(retryCount));
 
             policy.RaiseExceptionAsync<DivideByZeroException>(3);
 
@@ -240,12 +240,12 @@ namespace Polly.Specs.Retry
         [Fact]
         public void Should_not_call_onretry_when_no_retries_are_performed()
         {
-            Func<int, TimeSpan> provider = i => 1.Seconds();
+            Func<int, TimeSpan> provider = _ => 1.Seconds();
             var retryExceptions = new List<Exception>();
 
             var policy = Policy
                 .Handle<DivideByZeroException>()
-                .WaitAndRetryForeverAsync(provider, (excpetion, _) => retryExceptions.Add(excpetion));
+                .WaitAndRetryForeverAsync(provider, (exception, _) => retryExceptions.Add(exception));
 
             policy.Awaiting(x => x.RaiseExceptionAsync<ArgumentException>())
                   .Should().Throw<ArgumentException>();
@@ -256,7 +256,7 @@ namespace Polly.Specs.Retry
         [Fact]
         public void Should_create_new_context_for_each_call_to_policy()
         {
-            Func<int, Context, TimeSpan> provider = (i, ctx) => 1.Seconds();
+            Func<int, Context, TimeSpan> provider = (_, _) => 1.Seconds();
 
             string contextValue = null;
 
@@ -264,7 +264,7 @@ namespace Polly.Specs.Retry
                 .Handle<DivideByZeroException>()
                 .WaitAndRetryForeverAsync(
                 provider,
-                (_, __, context) => contextValue = context["key"].ToString());
+                (_, _, context) => contextValue = context["key"].ToString());
 
             policy.RaiseExceptionAsync<DivideByZeroException>(
                 new { key = "original_value" }.AsDictionary()
@@ -320,8 +320,8 @@ namespace Polly.Specs.Retry
             var policy = Policy
                 .Handle<Exception>()
                 .WaitAndRetryForeverAsync(
-                    sleepDurationProvider: (retryAttempt, exc, ctx) => expectedRetryWaits[exc],
-                    onRetryAsync: (_, timeSpan, __) =>
+                    sleepDurationProvider: (_, exc, _) => expectedRetryWaits[exc],
+                    onRetryAsync: (_, timeSpan, _) =>
                     {
                         actualRetryWaits.Add(timeSpan);
                         return TaskHelper.EmptyTask;
@@ -350,12 +350,12 @@ namespace Polly.Specs.Retry
             var policy = Policy
                 .Handle<DivideByZeroException>()
                 .WaitAndRetryForeverAsync(
-                    sleepDurationProvider: (retryAttempt, context) => context.ContainsKey("RetryAfter") ? (TimeSpan)context["RetryAfter"] : defaultRetryAfter, // Set sleep duration from Context, when available.
-                    onRetry: (_, timeSpan, __) => actualRetryDuration = timeSpan // Capture the actual sleep duration that was used, for test verification purposes.
+                    sleepDurationProvider: (_, context) => context.ContainsKey("RetryAfter") ? (TimeSpan)context["RetryAfter"] : defaultRetryAfter, // Set sleep duration from Context, when available.
+                    onRetry: (_, timeSpan, _) => actualRetryDuration = timeSpan // Capture the actual sleep duration that was used, for test verification purposes.
                 );
 
             bool failedOnce = false;
-            await policy.ExecuteAsync(async (context, ct) =>
+            await policy.ExecuteAsync(async (context, _) =>
             {
                 await TaskHelper.EmptyTask; // Run some remote call; maybe it returns a RetryAfter header, which we can pass back to the sleepDurationProvider, via the context.
                 context["RetryAfter"] = expectedRetryDuration;
@@ -390,7 +390,7 @@ namespace Polly.Specs.Retry
                 .Handle<DivideByZeroException>()
                 .WaitAndRetryForeverAsync(
                 _ => TimeSpan.Zero,
-                async (ex, timespan) =>
+                async (_, _) =>
                 {
                     await Task.Delay(shimTimeSpan);
                     executeDelegateInvocationsWhenOnRetryExits = executeDelegateInvocations;
@@ -412,7 +412,7 @@ namespace Polly.Specs.Retry
         [Fact]
         public void Should_execute_action_when_non_faulting_and_cancellationToken_not_cancelled()
         {
-            Func<int, TimeSpan> provider = i => TimeSpan.Zero;
+            Func<int, TimeSpan> provider = _ => TimeSpan.Zero;
 
             var policy = Policy
                 .Handle<DivideByZeroException>()
@@ -438,7 +438,7 @@ namespace Polly.Specs.Retry
         [Fact]
         public void Should_not_execute_action_when_cancellationToken_cancelled_before_execute()
         {
-            Func<int, TimeSpan> provider = i => TimeSpan.Zero;
+            Func<int, TimeSpan> provider = _ => TimeSpan.Zero;
 
             var policy = Policy
                 .Handle<DivideByZeroException>()
@@ -468,7 +468,7 @@ namespace Polly.Specs.Retry
         [Fact]
         public void Should_report_cancellation_during_otherwise_non_faulting_action_execution_and_cancel_further_retries_when_user_delegate_observes_cancellationToken()
         {
-            Func<int, TimeSpan> provider = i => TimeSpan.Zero;
+            Func<int, TimeSpan> provider = _ => TimeSpan.Zero;
 
             var policy = Policy
                 .Handle<DivideByZeroException>()
@@ -497,7 +497,7 @@ namespace Polly.Specs.Retry
         [Fact]
         public void Should_report_cancellation_during_faulting_initial_action_execution_and_cancel_further_retries_when_user_delegate_observes_cancellationToken()
         {
-            Func<int, TimeSpan> provider = i => TimeSpan.Zero;
+            Func<int, TimeSpan> provider = _ => TimeSpan.Zero;
 
             var policy = Policy
                 .Handle<DivideByZeroException>()
@@ -526,7 +526,7 @@ namespace Polly.Specs.Retry
         [Fact]
         public void Should_report_cancellation_during_faulting_initial_action_execution_and_cancel_further_retries_when_user_delegate_does_not_observe_cancellationToken()
         {
-            Func<int, TimeSpan> provider = i => TimeSpan.Zero;
+            Func<int, TimeSpan> provider = _ => TimeSpan.Zero;
 
             var policy = Policy
                 .Handle<DivideByZeroException>()
@@ -555,7 +555,7 @@ namespace Polly.Specs.Retry
         [Fact]
         public void Should_report_cancellation_during_faulting_retried_action_execution_and_cancel_further_retries_when_user_delegate_observes_cancellationToken()
         {
-            Func<int, TimeSpan> provider = i => TimeSpan.Zero;
+            Func<int, TimeSpan> provider = _ => TimeSpan.Zero;
 
             var policy = Policy
                 .Handle<DivideByZeroException>()
@@ -584,7 +584,7 @@ namespace Polly.Specs.Retry
         [Fact]
         public void Should_report_cancellation_during_faulting_retried_action_execution_and_cancel_further_retries_when_user_delegate_does_not_observe_cancellationToken()
         {
-            Func<int, TimeSpan> provider = i => TimeSpan.Zero;
+            Func<int, TimeSpan> provider = _ => TimeSpan.Zero;
 
             var policy = Policy
                 .Handle<DivideByZeroException>()
@@ -613,7 +613,7 @@ namespace Polly.Specs.Retry
         [Fact]
         public void Should_report_cancellation_after_faulting_action_execution_and_cancel_further_retries_if_onRetry_invokes_cancellation()
         {
-            Func<int, TimeSpan> provider = i => TimeSpan.Zero;
+            Func<int, TimeSpan> provider = _ => TimeSpan.Zero;
 
             CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
             CancellationToken cancellationToken = cancellationTokenSource.Token;
@@ -621,7 +621,7 @@ namespace Polly.Specs.Retry
             var policy = Policy
                 .Handle<DivideByZeroException>()
                 .WaitAndRetryForeverAsync(provider,
-                (_, __) =>
+                (_, _) =>
                 {
                     cancellationTokenSource.Cancel();
                 });
@@ -646,7 +646,7 @@ namespace Polly.Specs.Retry
         [Fact]
         public void Should_execute_func_returning_value_when_cancellationToken_not_cancelled()
         {
-            Func<int, TimeSpan> provider = i => TimeSpan.Zero;
+            Func<int, TimeSpan> provider = _ => TimeSpan.Zero;
 
             var policy = Policy
                 .Handle<DivideByZeroException>()
@@ -676,7 +676,7 @@ namespace Polly.Specs.Retry
         [Fact]
         public void Should_honour_and_report_cancellation_during_func_execution()
         {
-            Func<int, TimeSpan> provider = i => TimeSpan.Zero;
+            Func<int, TimeSpan> provider = _ => TimeSpan.Zero;
 
             var policy = Policy
                 .Handle<DivideByZeroException>()

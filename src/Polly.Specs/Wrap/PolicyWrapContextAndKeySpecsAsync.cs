@@ -20,7 +20,7 @@ namespace Polly.Specs.Wrap
             string wrapKey = Guid.NewGuid().ToString();
 
             string policyWrapKeySetOnExecutionContext = null;
-            Action<Exception, int, Context> onRetry = (e, i, context) =>
+            Action<Exception, int, Context> onRetry = (_, _, context) =>
             {
                 policyWrapKeySetOnExecutionContext = context.PolicyWrapKey;
             };
@@ -44,7 +44,7 @@ namespace Polly.Specs.Wrap
             string wrapKey = Guid.NewGuid().ToString();
 
             string policyWrapKeySetOnExecutionContext = null;
-            Action<Exception, TimeSpan, Context> onBreak = (e, t, context) =>
+            Action<Exception, TimeSpan, Context> onBreak = (_, _, context) =>
             {
                 policyWrapKeySetOnExecutionContext = context.PolicyWrapKey;
             };
@@ -66,7 +66,7 @@ namespace Polly.Specs.Wrap
         {
             IAsyncPolicy fallback = Policy
                 .Handle<Exception>()
-                .FallbackAsync((_,__) => TaskHelper.EmptyTask, (_, context) =>
+                .FallbackAsync((_, _) => TaskHelper.EmptyTask, (_, context) =>
                 {
                     context.PolicyWrapKey.Should().Be("PolicyWrap");
                     context.PolicyKey.Should().Be("FallbackPolicy");
@@ -76,7 +76,7 @@ namespace Polly.Specs.Wrap
 
             IAsyncPolicy retry = Policy
                 .Handle<Exception>()
-                .RetryAsync(1, onRetry: (result, retryCount, context) =>
+                .RetryAsync(1, onRetry: (_, _, context) =>
                 {
                     context.PolicyWrapKey.Should().Be("PolicyWrap");
                     context.PolicyKey.Should().Be("RetryPolicy");
@@ -94,7 +94,7 @@ namespace Polly.Specs.Wrap
         {
             IAsyncPolicy fallback = Policy
                 .Handle<Exception>()
-                .FallbackAsync((_, __) => TaskHelper.EmptyTask, (_, context) =>
+                .FallbackAsync((_, _) => TaskHelper.EmptyTask, (_, context) =>
                 {
                     context.PolicyWrapKey.Should().Be("PolicyWrap");
                     context.PolicyKey.Should().Be("FallbackPolicy");
@@ -104,7 +104,7 @@ namespace Polly.Specs.Wrap
 
             IAsyncPolicy retry = Policy
                 .Handle<Exception>()
-                .RetryAsync(1, onRetry: (result, retryCount, context) =>
+                .RetryAsync(1, onRetry: (_, _, context) =>
                 {
                     context.PolicyWrapKey.Should().Be("PolicyWrap");
                     context.PolicyKey.Should().Be("RetryPolicy");
@@ -127,7 +127,7 @@ namespace Polly.Specs.Wrap
             string outerWrapKey = Guid.NewGuid().ToString();
 
             string policyWrapKeySetOnExecutionContext = null;
-            Action<Exception, TimeSpan, Context> onBreak = (e, t, context) =>
+            Action<Exception, TimeSpan, Context> onBreak = (_, _, context) =>
             {
                 policyWrapKeySetOnExecutionContext = context.PolicyWrapKey;
             };
@@ -159,7 +159,7 @@ namespace Polly.Specs.Wrap
             string outerWrapKey = Guid.NewGuid().ToString();
 
             string policyWrapKeySetOnExecutionContext = null;
-            Action<Exception, TimeSpan, Context> onBreak = (e, t, context) =>
+            Action<Exception, TimeSpan, Context> onBreak = (_, _, context) =>
             {
                 policyWrapKeySetOnExecutionContext = context.PolicyWrapKey;
             };
@@ -207,7 +207,7 @@ namespace Polly.Specs.Wrap
             string wrapKey = Guid.NewGuid().ToString();
 
             string policyWrapKeySetOnExecutionContext = null;
-            Action<DelegateResult<ResultPrimitive>, int, Context> onRetry = (e, i, context) =>
+            Action<DelegateResult<ResultPrimitive>, int, Context> onRetry = (_, _, context) =>
             {
                 policyWrapKeySetOnExecutionContext = context.PolicyWrapKey;
             };
@@ -231,7 +231,7 @@ namespace Polly.Specs.Wrap
             string wrapKey = Guid.NewGuid().ToString();
 
             string policyWrapKeySetOnExecutionContext = null;
-            Action<DelegateResult<ResultPrimitive>, TimeSpan, Context> onBreak = (e, t, context) =>
+            Action<DelegateResult<ResultPrimitive>, TimeSpan, Context> onBreak = (_, _, context) =>
             {
                 policyWrapKeySetOnExecutionContext = context.PolicyWrapKey;
             };
@@ -253,7 +253,7 @@ namespace Polly.Specs.Wrap
         {
             IAsyncPolicy<ResultPrimitive> fallback = Policy<ResultPrimitive>
                 .Handle<Exception>()
-                .FallbackAsync((_, __) => Task.FromResult(ResultPrimitive.Undefined), (_, context) =>
+                .FallbackAsync((_, _) => Task.FromResult(ResultPrimitive.Undefined), (_, context) =>
                 {
                     context.PolicyWrapKey.Should().Be("PolicyWrap");
                     context.PolicyKey.Should().Be("FallbackPolicy");
@@ -263,7 +263,7 @@ namespace Polly.Specs.Wrap
 
             IAsyncPolicy<ResultPrimitive> retry = Policy<ResultPrimitive>
                 .Handle<Exception>()
-                .RetryAsync(1, onRetry: (result, retryCount, context) =>
+                .RetryAsync(1, onRetry: (_, _, context) =>
                 {
                     context.PolicyWrapKey.Should().Be("PolicyWrap");
                     context.PolicyKey.Should().Be("RetryPolicy");
@@ -281,7 +281,7 @@ namespace Polly.Specs.Wrap
         {
             IAsyncPolicy<ResultPrimitive> fallback = Policy<ResultPrimitive>
                 .Handle<Exception>()
-                .FallbackAsync((_, __) => Task.FromResult(ResultPrimitive.Undefined), (_, context) =>
+                .FallbackAsync((_, _) => Task.FromResult(ResultPrimitive.Undefined), (_, context) =>
                 {
                     context.PolicyWrapKey.Should().Be("PolicyWrap");
                     context.PolicyKey.Should().Be("FallbackPolicy");
@@ -291,7 +291,7 @@ namespace Polly.Specs.Wrap
 
             IAsyncPolicy<ResultPrimitive> retry = Policy<ResultPrimitive>
                 .Handle<Exception>()
-                .RetryAsync(1, onRetry: (result, retryCount, context) =>
+                .RetryAsync(1, onRetry: (_, _, context) =>
                 {
                     context.PolicyWrapKey.Should().Be("PolicyWrap");
                     context.PolicyKey.Should().Be("RetryPolicy");
@@ -311,7 +311,6 @@ namespace Polly.Specs.Wrap
             }));
         }
 
-
         [Fact]
         public async Task Should_pass_outmost_PolicyWrap_Key_as_PolicyWrapKey_ignoring_inner_PolicyWrap_keys_even_when_executing_policies_in_inner_WrapAsync()
         {
@@ -322,7 +321,7 @@ namespace Polly.Specs.Wrap
             string outerWrapKey = Guid.NewGuid().ToString();
 
             string policyWrapKeySetOnExecutionContext = null;
-            Action<DelegateResult<ResultPrimitive>, TimeSpan, Context> onBreak = (e, t, context) =>
+            Action<DelegateResult<ResultPrimitive>, TimeSpan, Context> onBreak = (_, _, context) =>
             {
                 policyWrapKeySetOnExecutionContext = context.PolicyWrapKey;
             };

@@ -33,7 +33,7 @@ namespace Polly.Specs.NoOp
             {
                 cts.Cancel();
 
-                Func<AsyncNoOpPolicy<int?>, Task> action = async p => result = await p.ExecuteAsync(ct => Task.FromResult((int?)10), cts.Token);
+                Func<AsyncNoOpPolicy<int?>, Task> action = async p => result = await p.ExecuteAsync(_ => Task.FromResult((int?)10), cts.Token);
                 policy.Awaiting(action)
                     .Should().NotThrow();
             }

@@ -5,12 +5,12 @@ using Polly.Fallback;
 namespace Polly
 {
     /// <summary>
-    /// Fluent API for defining a Fallback policy. 
+    /// Fluent API for defining a Fallback policy.
     /// </summary>
     public static class FallbackSyntax
     {
         /// <summary>
-        /// Builds a <see cref="FallbackPolicy"/> which provides a fallback action if the main execution fails.  Executes the main delegate, but if this throws a handled exception, calls <paramref name="fallbackAction"/>.  
+        /// Builds a <see cref="FallbackPolicy"/> which provides a fallback action if the main execution fails.  Executes the main delegate, but if this throws a handled exception, calls <paramref name="fallbackAction"/>.
         /// </summary>
         /// <param name="policyBuilder">The policy builder.</param>
         /// <param name="fallbackAction">The fallback action.</param>
@@ -25,7 +25,7 @@ namespace Polly
         }
 
         /// <summary>
-        /// Builds a <see cref="FallbackPolicy"/> which provides a fallback action if the main execution fails.  Executes the main delegate, but if this throws a handled exception, calls <paramref name="fallbackAction"/>.  
+        /// Builds a <see cref="FallbackPolicy"/> which provides a fallback action if the main execution fails.  Executes the main delegate, but if this throws a handled exception, calls <paramref name="fallbackAction"/>.
         /// </summary>
         /// <param name="policyBuilder">The policy builder.</param>
         /// <param name="fallbackAction">The fallback action.</param>
@@ -40,7 +40,7 @@ namespace Polly
         }
 
         /// <summary>
-        /// Builds a <see cref="FallbackPolicy"/> which provides a fallback action if the main execution fails.  Executes the main delegate, but if this throws a handled exception, first calls <paramref name="onFallback"/> with details of the handled exception; then calls <paramref name="fallbackAction"/>.  
+        /// Builds a <see cref="FallbackPolicy"/> which provides a fallback action if the main execution fails.  Executes the main delegate, but if this throws a handled exception, first calls <paramref name="onFallback"/> with details of the handled exception; then calls <paramref name="fallbackAction"/>.
         /// </summary>
         /// <param name="policyBuilder">The policy builder.</param>
         /// <param name="fallbackAction">The fallback action.</param>
@@ -53,12 +53,12 @@ namespace Polly
             if (fallbackAction == null) throw new ArgumentNullException(nameof(fallbackAction));
             if (onFallback == null) throw new ArgumentNullException(nameof(onFallback));
 
-            return policyBuilder.Fallback((outcome, ctx, ct) => fallbackAction(), (exception, ctx) => onFallback(exception));
+            return policyBuilder.Fallback((_, _, _) => fallbackAction(), (exception, _) => onFallback(exception));
         }
 
 
         /// <summary>
-        /// Builds a <see cref="FallbackPolicy"/> which provides a fallback action if the main execution fails.  Executes the main delegate, but if this throws a handled exception, first calls <paramref name="onFallback"/> with details of the handled exception; then calls <paramref name="fallbackAction"/>.  
+        /// Builds a <see cref="FallbackPolicy"/> which provides a fallback action if the main execution fails.  Executes the main delegate, but if this throws a handled exception, first calls <paramref name="onFallback"/> with details of the handled exception; then calls <paramref name="fallbackAction"/>.
         /// </summary>
         /// <param name="policyBuilder">The policy builder.</param>
         /// <param name="fallbackAction">The fallback action.</param>
@@ -71,11 +71,11 @@ namespace Polly
             if (fallbackAction == null) throw new ArgumentNullException(nameof(fallbackAction));
             if (onFallback == null) throw new ArgumentNullException(nameof(onFallback));
 
-            return policyBuilder.Fallback((outcome, ctx, ct) => fallbackAction(ct), (exception, ctx) => onFallback(exception));
+            return policyBuilder.Fallback((_, _, ct) => fallbackAction(ct), (exception, _) => onFallback(exception));
         }
 
         /// <summary>
-        /// Builds a <see cref="FallbackPolicy"/> which provides a fallback action if the main execution fails.  Executes the main delegate, but if this throws a handled exception, first calls <paramref name="onFallback"/> with details of the handled exception and the execution context; then calls <paramref name="fallbackAction"/>.  
+        /// Builds a <see cref="FallbackPolicy"/> which provides a fallback action if the main execution fails.  Executes the main delegate, but if this throws a handled exception, first calls <paramref name="onFallback"/> with details of the handled exception and the execution context; then calls <paramref name="fallbackAction"/>.
         /// </summary>
         /// <param name="policyBuilder">The policy builder.</param>
         /// <param name="fallbackAction">The fallback action.</param>
@@ -88,11 +88,11 @@ namespace Polly
             if (fallbackAction == null) throw new ArgumentNullException(nameof(fallbackAction));
             if (onFallback == null) throw new ArgumentNullException(nameof(onFallback));
 
-            return policyBuilder.Fallback((outcome, ctx, ct) => fallbackAction(ctx), onFallback);
+            return policyBuilder.Fallback((_, ctx, _) => fallbackAction(ctx), onFallback);
         }
-        
+
         /// <summary>
-        /// Builds a <see cref="FallbackPolicy"/> which provides a fallback action if the main execution fails.  Executes the main delegate, but if this throws a handled exception, first calls <paramref name="onFallback"/> with details of the handled exception and the execution context; then calls <paramref name="fallbackAction"/>.  
+        /// Builds a <see cref="FallbackPolicy"/> which provides a fallback action if the main execution fails.  Executes the main delegate, but if this throws a handled exception, first calls <paramref name="onFallback"/> with details of the handled exception and the execution context; then calls <paramref name="fallbackAction"/>.
         /// </summary>
         /// <param name="policyBuilder">The policy builder.</param>
         /// <param name="fallbackAction">The fallback action.</param>
@@ -105,11 +105,11 @@ namespace Polly
             if (fallbackAction == null) throw new ArgumentNullException(nameof(fallbackAction));
             if (onFallback == null) throw new ArgumentNullException(nameof(onFallback));
 
-            return policyBuilder.Fallback((outcome, ctx, ct) => fallbackAction(ctx, ct), onFallback);
+            return policyBuilder.Fallback((_, ctx, ct) => fallbackAction(ctx, ct), onFallback);
         }
 
         /// <summary>
-        /// Builds a <see cref="FallbackPolicy"/> which provides a fallback action if the main execution fails.  Executes the main delegate, but if this throws a handled exception, first calls <paramref name="onFallback"/> with details of the handled exception and the execution context; then calls <paramref name="fallbackAction"/>.  
+        /// Builds a <see cref="FallbackPolicy"/> which provides a fallback action if the main execution fails.  Executes the main delegate, but if this throws a handled exception, first calls <paramref name="onFallback"/> with details of the handled exception and the execution context; then calls <paramref name="fallbackAction"/>.
         /// </summary>
         /// <param name="policyBuilder">The policy builder.</param>
         /// <param name="fallbackAction">The fallback action.</param>
@@ -130,12 +130,12 @@ namespace Polly
     }
 
     /// <summary>
-    /// Fluent API for defining a Fallback policy governing executions returning TResult. 
+    /// Fluent API for defining a Fallback policy governing executions returning TResult.
     /// </summary>
     public static class FallbackTResultSyntax
     {
         /// <summary>
-        /// Builds a <see cref="FallbackPolicy"/> which provides a fallback value if the main execution fails.  Executes the main delegate, but if this throws a handled exception or raises a handled result, returns <paramref name="fallbackValue"/> instead.  
+        /// Builds a <see cref="FallbackPolicy"/> which provides a fallback value if the main execution fails.  Executes the main delegate, but if this throws a handled exception or raises a handled result, returns <paramref name="fallbackValue"/> instead.
         /// </summary>
         /// <param name="policyBuilder">The policy builder.</param>
         /// <param name="fallbackValue">The fallback <typeparamref name="TResult"/> value to provide.</param>
@@ -147,7 +147,7 @@ namespace Polly
         }
 
         /// <summary>
-        /// Builds a <see cref="FallbackPolicy"/> which provides a fallback value if the main execution fails.  Executes the main delegate, but if this throws a handled exception or raises a handled result, calls <paramref name="fallbackAction"/> and returns its result.  
+        /// Builds a <see cref="FallbackPolicy"/> which provides a fallback value if the main execution fails.  Executes the main delegate, but if this throws a handled exception or raises a handled result, calls <paramref name="fallbackAction"/> and returns its result.
         /// </summary>
         /// <param name="policyBuilder">The policy builder.</param>
         /// <param name="fallbackAction">The fallback action.</param>
@@ -162,7 +162,7 @@ namespace Polly
         }
 
         /// <summary>
-        /// Builds a <see cref="FallbackPolicy"/> which provides a fallback value if the main execution fails.  Executes the main delegate, but if this throws a handled exception or raises a handled result, calls <paramref name="fallbackAction"/> and returns its result.  
+        /// Builds a <see cref="FallbackPolicy"/> which provides a fallback value if the main execution fails.  Executes the main delegate, but if this throws a handled exception or raises a handled result, calls <paramref name="fallbackAction"/> and returns its result.
         /// </summary>
         /// <param name="policyBuilder">The policy builder.</param>
         /// <param name="fallbackAction">The fallback action.</param>
@@ -177,7 +177,7 @@ namespace Polly
         }
 
         /// <summary>
-        /// Builds a <see cref="FallbackPolicy"/> which provides a fallback value if the main execution fails.  Executes the main delegate, but if this throws a handled exception or raises a handled result, first calls <paramref name="onFallback"/> with details of the handled exception or result; then returns <paramref name="fallbackValue"/>.  
+        /// Builds a <see cref="FallbackPolicy"/> which provides a fallback value if the main execution fails.  Executes the main delegate, but if this throws a handled exception or raises a handled result, first calls <paramref name="onFallback"/> with details of the handled exception or result; then returns <paramref name="fallbackValue"/>.
         /// </summary>
         /// <param name="policyBuilder">The policy builder.</param>
         /// <param name="fallbackValue">The fallback <typeparamref name="TResult"/> value to provide.</param>
@@ -188,11 +188,11 @@ namespace Polly
         {
             if (onFallback == null) throw new ArgumentNullException(nameof(onFallback));
 
-            return policyBuilder.Fallback((outcome, ctx, ct) => fallbackValue, (outcome, ctx) => onFallback(outcome));
+            return policyBuilder.Fallback((_, _, _) => fallbackValue, (outcome, _) => onFallback(outcome));
         }
 
         /// <summary>
-        /// Builds a <see cref="FallbackPolicy"/> which provides a fallback value if the main execution fails.  Executes the main delegate, but if this throws a handled exception or raises a handled result, first calls <paramref name="onFallback"/> with details of the handled exception or result; then calls <paramref name="fallbackAction"/> and returns its result.  
+        /// Builds a <see cref="FallbackPolicy"/> which provides a fallback value if the main execution fails.  Executes the main delegate, but if this throws a handled exception or raises a handled result, first calls <paramref name="onFallback"/> with details of the handled exception or result; then calls <paramref name="fallbackAction"/> and returns its result.
         /// </summary>
         /// <param name="policyBuilder">The policy builder.</param>
         /// <param name="fallbackAction">The fallback action.</param>
@@ -205,11 +205,11 @@ namespace Polly
             if (fallbackAction == null) throw new ArgumentNullException(nameof(fallbackAction));
             if (onFallback == null) throw new ArgumentNullException(nameof(onFallback));
 
-            return policyBuilder.Fallback((outcome, ctx, ct) => fallbackAction(), (outcome, ctx) => onFallback(outcome));
+            return policyBuilder.Fallback((_, _, _) => fallbackAction(), (outcome, _) => onFallback(outcome));
         }
 
         /// <summary>
-        /// Builds a <see cref="FallbackPolicy"/> which provides a fallback value if the main execution fails.  Executes the main delegate, but if this throws a handled exception or raises a handled result, first calls <paramref name="onFallback"/> with details of the handled exception or result; then calls <paramref name="fallbackAction"/> and returns its result.  
+        /// Builds a <see cref="FallbackPolicy"/> which provides a fallback value if the main execution fails.  Executes the main delegate, but if this throws a handled exception or raises a handled result, first calls <paramref name="onFallback"/> with details of the handled exception or result; then calls <paramref name="fallbackAction"/> and returns its result.
         /// </summary>
         /// <param name="policyBuilder">The policy builder.</param>
         /// <param name="fallbackAction">The fallback action.</param>
@@ -222,7 +222,7 @@ namespace Polly
             if (fallbackAction == null) throw new ArgumentNullException(nameof(fallbackAction));
             if (onFallback == null) throw new ArgumentNullException(nameof(onFallback));
 
-            return policyBuilder.Fallback((outcome, ctx, ct) => fallbackAction(ct), (outcome, ctx) => onFallback(outcome));
+            return policyBuilder.Fallback((_, _, ct) => fallbackAction(ct), (outcome, _) => onFallback(outcome));
         }
 
         /// <summary>
@@ -237,11 +237,11 @@ namespace Polly
         {
             if (onFallback == null) throw new ArgumentNullException(nameof(onFallback));
 
-            return policyBuilder.Fallback((outcome, ctx, ct) => fallbackValue, onFallback);
+            return policyBuilder.Fallback((_, _, _) => fallbackValue, onFallback);
         }
 
         /// <summary>
-        /// Builds a <see cref="FallbackPolicy"/> which provides a fallback value if the main execution fails.  Executes the main delegate, but if this throws a handled exception or raises a handled result, first calls <paramref name="onFallback"/> with details of the handled exception or result and the execution context; then calls <paramref name="fallbackAction"/> and returns its result.  
+        /// Builds a <see cref="FallbackPolicy"/> which provides a fallback value if the main execution fails.  Executes the main delegate, but if this throws a handled exception or raises a handled result, first calls <paramref name="onFallback"/> with details of the handled exception or result and the execution context; then calls <paramref name="fallbackAction"/> and returns its result.
         /// </summary>
         /// <param name="policyBuilder">The policy builder.</param>
         /// <param name="fallbackAction">The fallback action.</param>
@@ -254,11 +254,11 @@ namespace Polly
             if (fallbackAction == null) throw new ArgumentNullException(nameof(fallbackAction));
             if (onFallback == null) throw new ArgumentNullException(nameof(onFallback));
 
-            return policyBuilder.Fallback((outcome, ctx, ct) => fallbackAction(ctx), onFallback);
+            return policyBuilder.Fallback((_, ctx, _) => fallbackAction(ctx), onFallback);
         }
 
         /// <summary>
-        /// Builds a <see cref="FallbackPolicy"/> which provides a fallback value if the main execution fails.  Executes the main delegate, but if this throws a handled exception or raises a handled result, first calls <paramref name="onFallback"/> with details of the handled exception or result and the execution context; then calls <paramref name="fallbackAction"/> and returns its result.  
+        /// Builds a <see cref="FallbackPolicy"/> which provides a fallback value if the main execution fails.  Executes the main delegate, but if this throws a handled exception or raises a handled result, first calls <paramref name="onFallback"/> with details of the handled exception or result and the execution context; then calls <paramref name="fallbackAction"/> and returns its result.
         /// </summary>
         /// <param name="policyBuilder">The policy builder.</param>
         /// <param name="fallbackAction">The fallback action.</param>
@@ -271,11 +271,11 @@ namespace Polly
             if (fallbackAction == null) throw new ArgumentNullException(nameof(fallbackAction));
             if (onFallback == null) throw new ArgumentNullException(nameof(onFallback));
 
-            return policyBuilder.Fallback((outcome, ctx, ct) => fallbackAction(ctx, ct), onFallback);
+            return policyBuilder.Fallback((_, ctx, ct) => fallbackAction(ctx, ct), onFallback);
         }
 
         /// <summary>
-        /// Builds a <see cref="FallbackPolicy"/> which provides a fallback value if the main execution fails.  Executes the main delegate, but if this throws a handled exception or raises a handled result, first calls <paramref name="onFallback"/> with details of the handled exception or result and the execution context; then calls <paramref name="fallbackAction"/> and returns its result.  
+        /// Builds a <see cref="FallbackPolicy"/> which provides a fallback value if the main execution fails.  Executes the main delegate, but if this throws a handled exception or raises a handled result, first calls <paramref name="onFallback"/> with details of the handled exception or result and the execution context; then calls <paramref name="fallbackAction"/> and returns its result.
         /// </summary>
         /// <param name="policyBuilder">The policy builder.</param>
         /// <param name="fallbackAction">The fallback action.</param>

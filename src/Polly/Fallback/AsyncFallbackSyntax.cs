@@ -7,12 +7,12 @@ using Polly.Utilities;
 namespace Polly
 {
     /// <summary>
-    /// Fluent API for defining a Fallback <see cref="AsyncPolicy"/>. 
+    /// Fluent API for defining a Fallback <see cref="AsyncPolicy"/>.
     /// </summary>
     public static class AsyncFallbackSyntax
     {
         /// <summary>
-        /// Builds an <see cref="AsyncFallbackPolicy"/> which provides a fallback action if the main execution fails.  Executes the main delegate asynchronously, but if this throws a handled exception, asynchronously calls <paramref name="fallbackAction"/>.  
+        /// Builds an <see cref="AsyncFallbackPolicy"/> which provides a fallback action if the main execution fails.  Executes the main delegate asynchronously, but if this throws a handled exception, asynchronously calls <paramref name="fallbackAction"/>.
         /// </summary>
         /// <param name="policyBuilder">The policy builder.</param>
         /// <param name="fallbackAction">The fallback delegate.</param>
@@ -21,7 +21,7 @@ namespace Polly
         public static AsyncFallbackPolicy FallbackAsync(this PolicyBuilder policyBuilder, Func<CancellationToken, Task> fallbackAction)
         {
             if (fallbackAction == null) throw new ArgumentNullException(nameof(fallbackAction));
-            
+
             Func<Exception, Task> doNothing = _ => TaskHelper.EmptyTask;
             return policyBuilder.FallbackAsync(
                 fallbackAction,
@@ -30,7 +30,7 @@ namespace Polly
         }
 
         /// <summary>
-        /// Builds an <see cref="AsyncFallbackPolicy"/> which provides a fallback action if the main execution fails.  Executes the main delegate asynchronously, but if this throws a handled exception, first asynchronously calls <paramref name="onFallbackAsync"/> with details of the handled exception; then asynchronously calls <paramref name="fallbackAction"/>.  
+        /// Builds an <see cref="AsyncFallbackPolicy"/> which provides a fallback action if the main execution fails.  Executes the main delegate asynchronously, but if this throws a handled exception, first asynchronously calls <paramref name="onFallbackAsync"/> with details of the handled exception; then asynchronously calls <paramref name="fallbackAction"/>.
         /// </summary>
         /// <param name="policyBuilder">The policy builder.</param>
         /// <param name="fallbackAction">The fallback delegate.</param>
@@ -44,13 +44,13 @@ namespace Polly
             if (onFallbackAsync == null) throw new ArgumentNullException(nameof(onFallbackAsync));
 
             return policyBuilder.FallbackAsync(
-                (outcome, ctx, ct) => fallbackAction(ct),
-                (outcome, context) => onFallbackAsync(outcome)
+                (_, _, ct) => fallbackAction(ct),
+                (outcome, _) => onFallbackAsync(outcome)
                 );
         }
-        
+
         /// <summary>
-        /// Builds an <see cref="AsyncFallbackPolicy"/> which provides a fallback action if the main execution fails.  Executes the main delegate asynchronously, but if this throws a handled exception, first asynchronously calls <paramref name="onFallbackAsync"/> with details of the handled exception and execution context; then asynchronously calls <paramref name="fallbackAction"/>.  
+        /// Builds an <see cref="AsyncFallbackPolicy"/> which provides a fallback action if the main execution fails.  Executes the main delegate asynchronously, but if this throws a handled exception, first asynchronously calls <paramref name="onFallbackAsync"/> with details of the handled exception and execution context; then asynchronously calls <paramref name="fallbackAction"/>.
         /// </summary>
         /// <param name="policyBuilder">The policy builder.</param>
         /// <param name="fallbackAction">The fallback delegate.</param>
@@ -63,11 +63,11 @@ namespace Polly
             if (fallbackAction == null) throw new ArgumentNullException(nameof(fallbackAction));
             if (onFallbackAsync == null) throw new ArgumentNullException(nameof(onFallbackAsync));
 
-            return policyBuilder.FallbackAsync((outcome, ctx, ct) => fallbackAction(ctx, ct), onFallbackAsync);
+            return policyBuilder.FallbackAsync((_, ctx, ct) => fallbackAction(ctx, ct), onFallbackAsync);
         }
 
         /// <summary>
-        /// Builds an <see cref="AsyncFallbackPolicy"/> which provides a fallback action if the main execution fails.  Executes the main delegate asynchronously, but if this throws a handled exception, first asynchronously calls <paramref name="onFallbackAsync"/> with details of the handled exception and execution context; then asynchronously calls <paramref name="fallbackAction"/>.  
+        /// Builds an <see cref="AsyncFallbackPolicy"/> which provides a fallback action if the main execution fails.  Executes the main delegate asynchronously, but if this throws a handled exception, first asynchronously calls <paramref name="onFallbackAsync"/> with details of the handled exception and execution context; then asynchronously calls <paramref name="fallbackAction"/>.
         /// </summary>
         /// <param name="policyBuilder">The policy builder.</param>
         /// <param name="fallbackAction">The fallback delegate.</param>
@@ -85,7 +85,7 @@ namespace Polly
     }
 
     /// <summary>
-    /// Fluent API for defining an async Fallback policy governing executions returning TResult. 
+    /// Fluent API for defining an async Fallback policy governing executions returning TResult.
     /// </summary>
     public static class AsyncFallbackTResultSyntax
     {
@@ -99,13 +99,13 @@ namespace Polly
         {
             Func<DelegateResult<TResult>, Task> doNothing = _ => TaskHelper.EmptyTask;
             return policyBuilder.FallbackAsync(
-                ct => Task.FromResult(fallbackValue),
+                _ => Task.FromResult(fallbackValue),
                 doNothing
                 );
         }
 
         /// <summary>
-        /// Builds an <see cref="AsyncFallbackPolicy{TResult}"/> which provides a fallback value if the main execution fails.  Executes the main delegate asynchronously, but if this throws a handled exception or raises a handled result, asynchronously calls <paramref name="fallbackAction"/> and returns its result.  
+        /// Builds an <see cref="AsyncFallbackPolicy{TResult}"/> which provides a fallback value if the main execution fails.  Executes the main delegate asynchronously, but if this throws a handled exception or raises a handled result, asynchronously calls <paramref name="fallbackAction"/> and returns its result.
         /// </summary>
         /// <param name="policyBuilder">The policy builder.</param>
         /// <param name="fallbackAction">The fallback delegate.</param>
@@ -135,13 +135,13 @@ namespace Polly
             if (onFallbackAsync == null) throw new ArgumentNullException(nameof(onFallbackAsync));
 
             return policyBuilder.FallbackAsync(
-                (outcome, ctx, ct) => Task.FromResult(fallbackValue),
-                (outcome, context) => onFallbackAsync(outcome)
+                (_, _, _) => Task.FromResult(fallbackValue),
+                (outcome, _) => onFallbackAsync(outcome)
                 );
         }
 
         /// <summary>
-        /// Builds an <see cref="AsyncFallbackPolicy{TResult}"/> which provides a fallback value if the main execution fails.  Executes the main delegate asynchronously, but if this throws a handled exception or raises a handled result, first asynchronously calls <paramref name="onFallbackAsync"/> with details of the handled exception or result; then asynchronously calls <paramref name="fallbackAction"/> and returns its result.  
+        /// Builds an <see cref="AsyncFallbackPolicy{TResult}"/> which provides a fallback value if the main execution fails.  Executes the main delegate asynchronously, but if this throws a handled exception or raises a handled result, first asynchronously calls <paramref name="onFallbackAsync"/> with details of the handled exception or result; then asynchronously calls <paramref name="fallbackAction"/> and returns its result.
         /// </summary>
         /// <param name="policyBuilder">The policy builder.</param>
         /// <param name="fallbackAction">The fallback delegate.</param>
@@ -155,8 +155,8 @@ namespace Polly
             if (onFallbackAsync == null) throw new ArgumentNullException(nameof(onFallbackAsync));
 
             return policyBuilder.FallbackAsync(
-                (outcome, ctx, ct) => fallbackAction(ct),
-                (outcome, context) => onFallbackAsync(outcome)
+                (_, _, ct) => fallbackAction(ct),
+                (outcome, _) => onFallbackAsync(outcome)
                 );
         }
 
@@ -173,13 +173,13 @@ namespace Polly
             if (onFallbackAsync == null) throw new ArgumentNullException(nameof(onFallbackAsync));
 
             return policyBuilder.FallbackAsync(
-                (outcome, ctx, ct) => Task.FromResult(fallbackValue),
+                (_, _, _) => Task.FromResult(fallbackValue),
                 onFallbackAsync
                 );
         }
 
         /// <summary>
-        /// Builds an <see cref="AsyncFallbackPolicy{TResult}"/> which provides a fallback value if the main execution fails.  Executes the main delegate asynchronously, but if this throws a handled exception or raises a handled result, first asynchronously calls <paramref name="onFallbackAsync"/> with details of the handled exception or result and the execution context; then asynchronously calls <paramref name="fallbackAction"/> and returns its result.  
+        /// Builds an <see cref="AsyncFallbackPolicy{TResult}"/> which provides a fallback value if the main execution fails.  Executes the main delegate asynchronously, but if this throws a handled exception or raises a handled result, first asynchronously calls <paramref name="onFallbackAsync"/> with details of the handled exception or result and the execution context; then asynchronously calls <paramref name="fallbackAction"/> and returns its result.
         /// </summary>
         /// <param name="policyBuilder">The policy builder.</param>
         /// <param name="fallbackAction">The fallback delegate.</param>
@@ -192,11 +192,11 @@ namespace Polly
             if (fallbackAction == null) throw new ArgumentNullException(nameof(fallbackAction));
             if (onFallbackAsync == null) throw new ArgumentNullException(nameof(onFallbackAsync));
 
-            return policyBuilder.FallbackAsync((outcome, ctx, ct) => fallbackAction(ctx, ct), onFallbackAsync);
+            return policyBuilder.FallbackAsync((_, ctx, ct) => fallbackAction(ctx, ct), onFallbackAsync);
         }
 
         /// <summary>
-        /// Builds an <see cref="AsyncFallbackPolicy{TResult}"/> which provides a fallback value if the main execution fails.  Executes the main delegate asynchronously, but if this throws a handled exception or raises a handled result, first asynchronously calls <paramref name="onFallbackAsync"/> with details of the handled exception or result and the execution context; then asynchronously calls <paramref name="fallbackAction"/> and returns its result.  
+        /// Builds an <see cref="AsyncFallbackPolicy{TResult}"/> which provides a fallback value if the main execution fails.  Executes the main delegate asynchronously, but if this throws a handled exception or raises a handled result, first asynchronously calls <paramref name="onFallbackAsync"/> with details of the handled exception or result and the execution context; then asynchronously calls <paramref name="fallbackAction"/> and returns its result.
         /// </summary>
         /// <param name="policyBuilder">The policy builder.</param>
         /// <param name="fallbackAction">The fallback delegate.</param>

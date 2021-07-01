@@ -156,7 +156,7 @@ namespace Polly.Specs.Registry
             Policy newPolicy = Policy.NoOp();
             string key = Guid.NewGuid().ToString();
 
-            var returnedPolicy = _registry.GetOrAdd(key, k => newPolicy);
+            var returnedPolicy = _registry.GetOrAdd(key, _ => newPolicy);
 
             returnedPolicy.Should().BeSameAs(newPolicy);
         }
@@ -184,7 +184,7 @@ namespace Polly.Specs.Registry
 
             Policy newPolicy = Policy.NoOp();
 
-            var returnedPolicy = _registry.GetOrAdd(key, k => newPolicy);
+            var returnedPolicy = _registry.GetOrAdd(key, _ => newPolicy);
 
             returnedPolicy.Should().BeSameAs(existingPolicy);
         }
@@ -196,9 +196,9 @@ namespace Polly.Specs.Registry
             string key = Guid.NewGuid().ToString();
 
             var returnedPolicy = _registry.AddOrUpdate(
-                key, 
+                key,
                 newPolicy,
-                (k, existing) => throw new InvalidOperationException("Update factory should not be called in this test."));
+                (_, _) => throw new InvalidOperationException("Update factory should not be called in this test."));
 
             returnedPolicy.Should().BeSameAs(newPolicy);
         }
@@ -212,8 +212,8 @@ namespace Polly.Specs.Registry
 
             var returnedPolicy = _registry.AddOrUpdate(
                 key,
-                k => newPolicy, 
-                (k, existing) => throw new InvalidOperationException("Update factory should not be called in this test."));
+                _ => newPolicy,
+                (_, _) => throw new InvalidOperationException("Update factory should not be called in this test."));
 
             returnedPolicy.Should().BeSameAs(newPolicy);
         }
@@ -232,7 +232,7 @@ namespace Polly.Specs.Registry
             var returnedPolicy = _registry.AddOrUpdate(
                 key,
                 otherPolicyNotExpectingToAdd,
-                (k, existing) => existingPolicy.WithPolicyKey(policyKeyToDecorate));
+                (_, _) => existingPolicy.WithPolicyKey(policyKeyToDecorate));
 
             returnedPolicy.Should().NotBeSameAs(otherPolicyNotExpectingToAdd);
             returnedPolicy.Should().BeSameAs(existingPolicy);
@@ -252,8 +252,8 @@ namespace Polly.Specs.Registry
 
             var returnedPolicy = _registry.AddOrUpdate(
                 key,
-                k => otherPolicyNotExpectingToAdd,
-                (k, existing) => existingPolicy.WithPolicyKey(policyKeyToDecorate));
+                _ => otherPolicyNotExpectingToAdd,
+                (_, _) => existingPolicy.WithPolicyKey(policyKeyToDecorate));
 
             returnedPolicy.Should().NotBeSameAs(otherPolicyNotExpectingToAdd);
             returnedPolicy.Should().BeSameAs(existingPolicy);

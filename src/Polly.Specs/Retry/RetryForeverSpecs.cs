@@ -96,7 +96,7 @@ namespace Polly.Specs.Retry
         public void Should_throw_when_specified_exception_predicate_is_not_satisfied()
         {
             var policy = Policy
-                .Handle<DivideByZeroException>(e => false)
+                .Handle<DivideByZeroException>(_ => false)
                 .RetryForever();
 
             policy.Invoking(x => x.RaiseException<DivideByZeroException>())
@@ -107,8 +107,8 @@ namespace Polly.Specs.Retry
         public void Should_throw_when_none_of_the_specified_exception_predicates_are_satisfied()
         {
             var policy = Policy
-                .Handle<DivideByZeroException>(e => false)
-                .Or<ArgumentException>(e => false)
+                .Handle<DivideByZeroException>(_ => false)
+                .Or<ArgumentException>(_ => false)
                 .RetryForever();
 
             policy.Invoking(x => x.RaiseException<ArgumentException>())
@@ -119,7 +119,7 @@ namespace Polly.Specs.Retry
         public void Should_not_throw_when_specified_exception_predicate_is_satisfied()
         {
             var policy = Policy
-                .Handle<DivideByZeroException>(e => true)
+                .Handle<DivideByZeroException>(_ => true)
                 .RetryForever();
 
             policy.Invoking(x => x.RaiseException<DivideByZeroException>())
@@ -130,7 +130,7 @@ namespace Polly.Specs.Retry
         public void Should_not_throw_when_specified_exception_predicate_is_satisfied_async()
         {
             var policy = Policy
-                .Handle<DivideByZeroException>(e => true)
+                .Handle<DivideByZeroException>(_ => true)
                 .RetryForeverAsync();
 
             policy.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
@@ -141,8 +141,8 @@ namespace Polly.Specs.Retry
         public void Should_not_throw_when_one_of_the_specified_exception_predicates_are_satisfied()
         {
             var policy = Policy
-                .Handle<DivideByZeroException>(e => true)
-                .Or<ArgumentException>(e => true)
+                .Handle<DivideByZeroException>(_ => true)
+                .Or<ArgumentException>(_ => true)
                 .RetryForever();
 
             policy.Invoking(x => x.RaiseException<ArgumentException>())
@@ -153,8 +153,8 @@ namespace Polly.Specs.Retry
         public void Should_not_throw_when_one_of_the_specified_exception_predicates_are_satisfied_async()
         {
             var policy = Policy
-                .Handle<DivideByZeroException>(e => true)
-                .Or<ArgumentException>(e => true)
+                .Handle<DivideByZeroException>(_ => true)
+                .Or<ArgumentException>(_ => true)
                 .RetryForeverAsync();
 
             policy.Awaiting(x => x.RaiseExceptionAsync<ArgumentException>())

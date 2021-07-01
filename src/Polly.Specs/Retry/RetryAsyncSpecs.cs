@@ -18,7 +18,7 @@ namespace Polly.Specs.Retry
         [Fact]
         public void Should_throw_when_retry_count_is_less_than_zero_without_context()
         {
-            Action<Exception, int> onRetry = (_, __) => { };
+            Action<Exception, int> onRetry = (_, _) => { };
 
             Action policy = () => Policy
                                       .Handle<DivideByZeroException>()
@@ -124,7 +124,7 @@ namespace Polly.Specs.Retry
         public void Should_throw_when_specified_exception_predicate_is_not_satisfied()
         {
             var policy = Policy
-                .Handle<DivideByZeroException>(e => false)
+                .Handle<DivideByZeroException>(_ => false)
                 .RetryAsync();
 
             policy.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
@@ -135,8 +135,8 @@ namespace Polly.Specs.Retry
         public void Should_throw_when_none_of_the_specified_exception_predicates_are_satisfied()
         {
             var policy = Policy
-                .Handle<DivideByZeroException>(e => false)
-                .Or<ArgumentException>(e => false)
+                .Handle<DivideByZeroException>(_ => false)
+                .Or<ArgumentException>(_ => false)
                 .RetryAsync();
 
             policy.Awaiting(x => x.RaiseExceptionAsync<ArgumentException>())
@@ -147,7 +147,7 @@ namespace Polly.Specs.Retry
         public void Should_not_throw_when_specified_exception_predicate_is_satisfied()
         {
             var policy = Policy
-                .Handle<DivideByZeroException>(e => true)
+                .Handle<DivideByZeroException>(_ => true)
                 .RetryAsync();
 
             policy.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
@@ -158,8 +158,8 @@ namespace Polly.Specs.Retry
         public void Should_not_throw_when_one_of_the_specified_exception_predicates_are_satisfied()
         {
             var policy = Policy
-                .Handle<DivideByZeroException>(e => true)
-                .Or<ArgumentException>(e => true)
+                .Handle<DivideByZeroException>(_ => true)
+                .Or<ArgumentException>(_ => true)
                 .RetryAsync();
 
             policy.Awaiting(x => x.RaiseExceptionAsync<ArgumentException>())
@@ -254,7 +254,7 @@ namespace Polly.Specs.Retry
 
             var policy = Policy
                 .Handle<DivideByZeroException>()
-                .RetryAsync((_, __, context) => contextData = context);
+                .RetryAsync((_, _, context) => contextData = context);
 
             policy.RaiseExceptionAsync<DivideByZeroException>(
                 new { key1 = "value1", key2 = "value2" }.AsDictionary()
@@ -272,9 +272,9 @@ namespace Polly.Specs.Retry
 
             var policy = Policy
                 .Handle<DivideByZeroException>()
-                .RetryAsync((_, __, context) => contextData = context);
+                .RetryAsync((_, _, context) => contextData = context);
 
-            policy.Awaiting(p => p.ExecuteAndCaptureAsync(ctx => { throw new DivideByZeroException(); },
+            policy.Awaiting(p => p.ExecuteAndCaptureAsync(_ => { throw new DivideByZeroException(); },
                 new { key1 = "value1", key2 = "value2" }.AsDictionary()))
                 .Should().NotThrow();
 
@@ -290,7 +290,7 @@ namespace Polly.Specs.Retry
 
             var policy = Policy
                 .Handle<DivideByZeroException>()
-                .RetryAsync((_, __, context) => capturedContext = context);
+                .RetryAsync((_, _, context) => capturedContext = context);
 
             policy.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>()).Should().NotThrow();
 
@@ -305,7 +305,7 @@ namespace Polly.Specs.Retry
 
             var policy = Policy
                 .Handle<DivideByZeroException>()
-                .RetryAsync((_, __, context) => contextValue = context["key"].ToString());
+                .RetryAsync((_, _, context) => contextValue = context["key"].ToString());
 
             policy.RaiseExceptionAsync<DivideByZeroException>(
                 new { key = "original_value" }.AsDictionary()
@@ -327,15 +327,15 @@ namespace Polly.Specs.Retry
 
             var policy = Policy
                 .Handle<DivideByZeroException>()
-                .RetryAsync((_, __, context) => contextValue = context["key"].ToString());
+                .RetryAsync((_, _, context) => contextValue = context["key"].ToString());
 
-            policy.Awaiting(p => p.ExecuteAndCaptureAsync(ctx => throw new DivideByZeroException(),
+            policy.Awaiting(p => p.ExecuteAndCaptureAsync(_ => throw new DivideByZeroException(),
                 new { key = "original_value" }.AsDictionary()))
                 .Should().NotThrow();
 
             contextValue.Should().Be("original_value");
 
-            policy.Awaiting(p => p.ExecuteAndCaptureAsync(ctx => throw new DivideByZeroException(),
+            policy.Awaiting(p => p.ExecuteAndCaptureAsync(_ => throw new DivideByZeroException(),
                 new { key = "new_value" }.AsDictionary()))
                 .Should().NotThrow();
 
@@ -347,7 +347,7 @@ namespace Polly.Specs.Retry
         {
             bool retryInvoked = false;
 
-            Action<Exception, int> onRetry = (_, __) => { retryInvoked = true; };
+            Action<Exception, int> onRetry = (_, _) => { retryInvoked = true; };
 
             var policy = Policy
                 .Handle<DivideByZeroException>()
@@ -376,7 +376,7 @@ namespace Polly.Specs.Retry
 
             var policy = Policy
                 .Handle<DivideByZeroException>()
-                .RetryAsync(async (ex, retry) =>
+                .RetryAsync(async (_, _) =>
                 {
                     await Task.Delay(shimTimeSpan);
                     executeDelegateInvocationsWhenOnRetryExits = executeDelegateInvocations;
@@ -669,7 +669,7 @@ namespace Polly.Specs.Retry
 
             var policy = Policy
                 .Handle<DivideByZeroException>()
-                .RetryAsync(3, (_, __) =>
+                .RetryAsync(3, (_, _) =>
                 {
                     cancellationTokenSource.Cancel();
                 });

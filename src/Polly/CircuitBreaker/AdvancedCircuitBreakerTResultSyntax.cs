@@ -34,7 +34,7 @@ namespace Polly
         /// <remarks>(see "Release It!" by Michael T. Nygard fi)</remarks>
         public static CircuitBreakerPolicy<TResult> AdvancedCircuitBreaker<TResult>(this PolicyBuilder<TResult> policyBuilder, double failureThreshold, TimeSpan samplingDuration, int minimumThroughput, TimeSpan durationOfBreak)
         {
-            Action<DelegateResult<TResult>, TimeSpan> doNothingOnBreak = (_, __) => { };
+            Action<DelegateResult<TResult>, TimeSpan> doNothingOnBreak = (_, _) => { };
             Action doNothingOnReset = () => { };
 
             return policyBuilder.AdvancedCircuitBreaker(
@@ -75,8 +75,8 @@ namespace Polly
             => policyBuilder.AdvancedCircuitBreaker(
                 failureThreshold, samplingDuration, minimumThroughput,
                 durationOfBreak,
-                (outcome, timespan, context) => onBreak(outcome, timespan),
-                context => onReset()
+                (outcome, timespan, _) => onBreak(outcome, timespan),
+                _ => onReset()
                 );
 
         /// <summary>
@@ -148,8 +148,8 @@ namespace Polly
             => policyBuilder.AdvancedCircuitBreaker(
                 failureThreshold, samplingDuration, minimumThroughput,
                 durationOfBreak,
-                (outcome, timespan, context) => onBreak(outcome, timespan),
-                context => onReset(),
+                (outcome, timespan, _) => onBreak(outcome, timespan),
+                _ => onReset(),
                 onHalfOpen
                 );
 
@@ -187,7 +187,7 @@ namespace Polly
             => policyBuilder.AdvancedCircuitBreaker(
                 failureThreshold, samplingDuration, minimumThroughput,
                 durationOfBreak,
-                (outcome, state, timespan, context) => onBreak(outcome, timespan, context),
+                (outcome, _, timespan, context) => onBreak(outcome, timespan, context),
                 onReset,
                 onHalfOpen
             );

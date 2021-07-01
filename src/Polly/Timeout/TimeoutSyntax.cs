@@ -15,9 +15,9 @@ namespace Polly
         public static TimeoutPolicy Timeout(int seconds)
         {
             TimeoutValidator.ValidateSecondsTimeout(seconds);
-            Action<Context, TimeSpan, Task, Exception> doNothing = (_, __, ___, ____) => { };
+            Action<Context, TimeSpan, Task, Exception> doNothing = (_, _, _, _) => { };
 
-            return Timeout(ctx => TimeSpan.FromSeconds(seconds), TimeoutStrategy.Optimistic, doNothing);
+            return Timeout(_ => TimeSpan.FromSeconds(seconds), TimeoutStrategy.Optimistic, doNothing);
         }
 
         /// <summary>
@@ -30,16 +30,16 @@ namespace Polly
         public static TimeoutPolicy Timeout(int seconds, TimeoutStrategy timeoutStrategy)
         {
             TimeoutValidator.ValidateSecondsTimeout(seconds);
-            Action<Context, TimeSpan, Task, Exception> doNothing = (_, __, ___, ____) => { };
+            Action<Context, TimeSpan, Task, Exception> doNothing = (_, _, _, _) => { };
 
-            return Timeout(ctx => TimeSpan.FromSeconds(seconds), timeoutStrategy, doNothing);
+            return Timeout(_ => TimeSpan.FromSeconds(seconds), timeoutStrategy, doNothing);
         }
 
         /// <summary>
         /// Builds a <see cref="Policy"/> that will wait for a delegate to complete for a specified period of time. A <see cref="TimeoutRejectedException"/> will be thrown if the delegate does not complete within the configured timeout.
         /// </summary>
         /// <param name="seconds">The number of seconds after which to timeout.</param>
-        /// <param name="onTimeout">An action to call on timeout, passing the execution context, the timeout applied, and a <see cref="Task"/> capturing the abandoned, timed-out action. 
+        /// <param name="onTimeout">An action to call on timeout, passing the execution context, the timeout applied, and a <see cref="Task"/> capturing the abandoned, timed-out action.
         /// <remarks>The Task parameter will be null if the executed action responded cooperatively to cancellation before the policy timed it out.</remarks></param>
         /// <returns>The policy instance.</returns>
         /// <exception cref="ArgumentOutOfRangeException">seconds;Value must be greater than zero.</exception>
@@ -48,7 +48,7 @@ namespace Polly
         {
             TimeoutValidator.ValidateSecondsTimeout(seconds);
 
-            return Timeout(ctx => TimeSpan.FromSeconds(seconds), TimeoutStrategy.Optimistic, onTimeout);
+            return Timeout(_ => TimeSpan.FromSeconds(seconds), TimeoutStrategy.Optimistic, onTimeout);
         }
 
         /// <summary>
@@ -64,7 +64,7 @@ namespace Polly
         {
             if (seconds <= 0) throw new ArgumentOutOfRangeException(nameof(seconds));
 
-            return Timeout(ctx => TimeSpan.FromSeconds(seconds), TimeoutStrategy.Optimistic, onTimeout);
+            return Timeout(_ => TimeSpan.FromSeconds(seconds), TimeoutStrategy.Optimistic, onTimeout);
         }
 
         /// <summary>
@@ -81,7 +81,7 @@ namespace Polly
         {
             TimeoutValidator.ValidateSecondsTimeout(seconds);
 
-            return Timeout(ctx => TimeSpan.FromSeconds(seconds), timeoutStrategy, onTimeout);
+            return Timeout(_ => TimeSpan.FromSeconds(seconds), timeoutStrategy, onTimeout);
         }
 
         /// <summary>
@@ -98,7 +98,7 @@ namespace Polly
         {
             if (seconds <= 0) throw new ArgumentOutOfRangeException(nameof(seconds));
 
-            return Timeout(ctx => TimeSpan.FromSeconds(seconds), timeoutStrategy, onTimeout);
+            return Timeout(_ => TimeSpan.FromSeconds(seconds), timeoutStrategy, onTimeout);
         }
 
         /// <summary>
@@ -110,9 +110,9 @@ namespace Polly
         public static TimeoutPolicy Timeout(TimeSpan timeout)
         {
             TimeoutValidator.ValidateTimeSpanTimeout(timeout);
-            Action<Context, TimeSpan, Task, Exception> doNothing = (_, __, ___, ____) => { };
+            Action<Context, TimeSpan, Task, Exception> doNothing = (_, _, _, _) => { };
 
-            return Timeout(ctx => timeout, TimeoutStrategy.Optimistic, doNothing);
+            return Timeout(_ => timeout, TimeoutStrategy.Optimistic, doNothing);
         }
 
         /// <summary>
@@ -125,16 +125,16 @@ namespace Polly
         public static TimeoutPolicy Timeout(TimeSpan timeout, TimeoutStrategy timeoutStrategy)
         {
             TimeoutValidator.ValidateTimeSpanTimeout(timeout);
-            Action<Context, TimeSpan, Task, Exception> doNothing = (_, __, ___, ____) => { };
+            Action<Context, TimeSpan, Task, Exception> doNothing = (_, _, _, _) => { };
 
-            return Timeout(ctx => timeout, timeoutStrategy, doNothing);
+            return Timeout(_ => timeout, timeoutStrategy, doNothing);
         }
 
         /// <summary>
         /// Builds a <see cref="Policy"/> that will wait for a delegate to complete for a specified period of time. A <see cref="TimeoutRejectedException"/> will be thrown if the delegate does not complete within the configured timeout.
         /// </summary>
         /// <param name="timeout">The timeout.</param>
-        /// <param name="onTimeout">An action to call on timeout, passing the execution context, the timeout applied, and a <see cref="Task"/> capturing the abandoned, timed-out action. 
+        /// <param name="onTimeout">An action to call on timeout, passing the execution context, the timeout applied, and a <see cref="Task"/> capturing the abandoned, timed-out action.
         /// <remarks>The Task parameter will be null if the executed action responded cooperatively to cancellation before the policy timed it out.</remarks></param>
         /// <returns>The policy instance.</returns>
         /// <exception cref="ArgumentOutOfRangeException">timeout;Value must be a positive TimeSpan (or Timeout.InfiniteTimeSpan to indicate no timeout)</exception>
@@ -143,7 +143,7 @@ namespace Polly
         {
             TimeoutValidator.ValidateTimeSpanTimeout(timeout);
 
-            return Timeout(ctx => timeout, TimeoutStrategy.Optimistic, onTimeout);
+            return Timeout(_ => timeout, TimeoutStrategy.Optimistic, onTimeout);
         }
 
         /// <summary>
@@ -159,7 +159,7 @@ namespace Polly
         {
             TimeoutValidator.ValidateTimeSpanTimeout(timeout);
 
-            return Timeout(ctx => timeout, TimeoutStrategy.Optimistic, onTimeout);
+            return Timeout(_ => timeout, TimeoutStrategy.Optimistic, onTimeout);
         }
 
         /// <summary>
@@ -176,7 +176,7 @@ namespace Polly
         {
             TimeoutValidator.ValidateTimeSpanTimeout(timeout);
 
-            return Timeout(ctx => timeout, timeoutStrategy, onTimeout);
+            return Timeout(_ => timeout, timeoutStrategy, onTimeout);
         }
 
         /// <summary>
@@ -193,7 +193,7 @@ namespace Polly
         {
             TimeoutValidator.ValidateTimeSpanTimeout(timeout);
 
-            return Timeout(ctx => timeout, timeoutStrategy, onTimeout);
+            return Timeout(_ => timeout, timeoutStrategy, onTimeout);
         }
 
         /// <summary>
@@ -206,8 +206,8 @@ namespace Polly
         {
             if (timeoutProvider == null) throw new ArgumentNullException(nameof(timeoutProvider));
 
-            Action<Context, TimeSpan, Task, Exception> doNothing = (_, __, ___, ____) => { };
-            return Timeout(ctx => timeoutProvider(), TimeoutStrategy.Optimistic, doNothing);
+            Action<Context, TimeSpan, Task, Exception> doNothing = (_, _, _, _) => { };
+            return Timeout(_ => timeoutProvider(), TimeoutStrategy.Optimistic, doNothing);
         }
 
         /// <summary>
@@ -221,8 +221,8 @@ namespace Polly
         {
             if (timeoutProvider == null) throw new ArgumentNullException(nameof(timeoutProvider));
 
-            Action<Context, TimeSpan, Task, Exception> doNothing = (_, __, ___, ____) => { };
-            return Timeout(ctx => timeoutProvider(), timeoutStrategy, doNothing);
+            Action<Context, TimeSpan, Task, Exception> doNothing = (_, _, _, _) => { };
+            return Timeout(_ => timeoutProvider(), timeoutStrategy, doNothing);
         }
 
         /// <summary>
@@ -238,7 +238,7 @@ namespace Polly
         {
             if (timeoutProvider == null) throw new ArgumentNullException(nameof(timeoutProvider));
 
-            return Timeout(ctx => timeoutProvider(), TimeoutStrategy.Optimistic, onTimeout);
+            return Timeout(_ => timeoutProvider(), TimeoutStrategy.Optimistic, onTimeout);
         }
 
         /// <summary>
@@ -254,7 +254,7 @@ namespace Polly
         {
             if (timeoutProvider == null) throw new ArgumentNullException(nameof(timeoutProvider));
 
-            return Timeout(ctx => timeoutProvider(), TimeoutStrategy.Optimistic, onTimeout);
+            return Timeout(_ => timeoutProvider(), TimeoutStrategy.Optimistic, onTimeout);
         }
 
         /// <summary>
@@ -271,7 +271,7 @@ namespace Polly
         {
             if (timeoutProvider == null) throw new ArgumentNullException(nameof(timeoutProvider));
 
-            return Timeout(ctx => timeoutProvider(), timeoutStrategy, onTimeout);
+            return Timeout(_ => timeoutProvider(), timeoutStrategy, onTimeout);
         }
 
         /// <summary>
@@ -288,7 +288,7 @@ namespace Polly
         {
             if (timeoutProvider == null) throw new ArgumentNullException(nameof(timeoutProvider));
 
-            return Timeout(ctx => timeoutProvider(), timeoutStrategy, onTimeout);
+            return Timeout(_ => timeoutProvider(), timeoutStrategy, onTimeout);
         }
 
         /// <summary>
@@ -299,7 +299,7 @@ namespace Polly
         /// <returns>The policy instance.</returns>
         public static TimeoutPolicy Timeout(Func<Context, TimeSpan> timeoutProvider)
         {
-            Action<Context, TimeSpan, Task, Exception> doNothing = (_, __, ___, ____) => { };
+            Action<Context, TimeSpan, Task, Exception> doNothing = (_, _, _, _) => { };
             return Timeout(timeoutProvider, TimeoutStrategy.Optimistic, doNothing);
         }
 
@@ -312,7 +312,7 @@ namespace Polly
         /// <exception cref="ArgumentNullException">timeoutProvider</exception>
         public static TimeoutPolicy Timeout(Func<Context, TimeSpan> timeoutProvider, TimeoutStrategy timeoutStrategy)
         {
-            Action<Context, TimeSpan, Task, Exception> doNothing = (_, __, ___, ____) => { };
+            Action<Context, TimeSpan, Task, Exception> doNothing = (_, _, _, _) => { };
             return Timeout(timeoutProvider, timeoutStrategy, doNothing);
         }
 
@@ -354,7 +354,7 @@ namespace Polly
         {
             if (onTimeout == null) throw new ArgumentNullException(nameof(onTimeout));
 
-            return Timeout(timeoutProvider, timeoutStrategy, (ctx, timeout, task, ex) => onTimeout(ctx, timeout, task));
+            return Timeout(timeoutProvider, timeoutStrategy, (ctx, timeout, task, _) => onTimeout(ctx, timeout, task));
         }
 
         /// <summary>
@@ -368,8 +368,8 @@ namespace Polly
         /// <exception cref="ArgumentNullException">timeoutProvider</exception>
         /// <exception cref="ArgumentNullException">onTimeout</exception>
         public static TimeoutPolicy Timeout(
-            Func<Context, TimeSpan> timeoutProvider, 
-            TimeoutStrategy timeoutStrategy, 
+            Func<Context, TimeSpan> timeoutProvider,
+            TimeoutStrategy timeoutStrategy,
             Action<Context, TimeSpan, Task, Exception> onTimeout)
         {
             if (timeoutProvider == null) throw new ArgumentNullException(nameof(timeoutProvider));

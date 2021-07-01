@@ -763,7 +763,7 @@ namespace Polly.Specs.CircuitBreaker
         [Fact]
         public void Should_not_call_onreset_on_initialise()
         {
-            Action<DelegateResult<ResultPrimitive>, TimeSpan> onBreak = (_, __) => { };
+            Action<DelegateResult<ResultPrimitive>, TimeSpan> onBreak = (_, _) => { };
             bool onResetCalled = false;
             Action onReset = () => { onResetCalled = true; };
 
@@ -778,7 +778,7 @@ namespace Polly.Specs.CircuitBreaker
         public void Should_call_onbreak_when_breaking_circuit_automatically()
         {
             bool onBreakCalled = false;
-            Action<DelegateResult<ResultPrimitive>, TimeSpan> onBreak = (_, __) => { onBreakCalled = true; };
+            Action<DelegateResult<ResultPrimitive>, TimeSpan> onBreak = (_, _) => { onBreakCalled = true; };
             Action onReset = () => { };
 
             CircuitBreakerPolicy<ResultPrimitive> breaker = Policy
@@ -802,7 +802,7 @@ namespace Polly.Specs.CircuitBreaker
         public void Should_call_onbreak_when_breaking_circuit_manually()
         {
             bool onBreakCalled = false;
-            Action<DelegateResult<ResultPrimitive>, TimeSpan> onBreak = (_, __) => { onBreakCalled = true; };
+            Action<DelegateResult<ResultPrimitive>, TimeSpan> onBreak = (_, _) => { onBreakCalled = true; };
             Action onReset = () => { };
 
             CircuitBreakerPolicy<ResultPrimitive> breaker = Policy
@@ -819,7 +819,7 @@ namespace Polly.Specs.CircuitBreaker
         public void Should_call_onbreak_when_breaking_circuit_first_time_but_not_for_subsequent_calls_placed_through_open_circuit()
         {
             int onBreakCalled = 0;
-            Action<DelegateResult<ResultPrimitive>, TimeSpan> onBreak = (_, __) => { onBreakCalled++; };
+            Action<DelegateResult<ResultPrimitive>, TimeSpan> onBreak = (_, _) => { onBreakCalled++; };
             Action onReset = () => { };
 
             CircuitBreakerPolicy<ResultPrimitive> breaker = Policy
@@ -850,7 +850,7 @@ namespace Polly.Specs.CircuitBreaker
         public void Should_call_onbreak_when_breaking_circuit_first_time_but_not_for_subsequent_call_failure_which_arrives_on_open_state_though_started_on_closed_state()
         {
             int onBreakCalled = 0;
-            Action<DelegateResult<ResultPrimitive>, TimeSpan> onBreak = (_, __) => { onBreakCalled++; };
+            Action<DelegateResult<ResultPrimitive>, TimeSpan> onBreak = (_, _) => { onBreakCalled++; };
             Action onReset = () => { };
 
             CircuitBreakerPolicy<ResultPrimitive> breaker = Policy
@@ -909,7 +909,7 @@ namespace Polly.Specs.CircuitBreaker
         {
             int onBreakCalled = 0;
             int onResetCalled = 0;
-            Action<DelegateResult<ResultPrimitive>, TimeSpan> onBreak = (_, __) => { onBreakCalled++; };
+            Action<DelegateResult<ResultPrimitive>, TimeSpan> onBreak = (_, _) => { onBreakCalled++; };
             Action onReset = () => { onResetCalled++; };
 
             var time = 1.January(2000);
@@ -953,7 +953,7 @@ namespace Polly.Specs.CircuitBreaker
         [Fact]
         public void Should_not_call_onreset_on_successive_successful_calls()
         {
-            Action<DelegateResult<ResultPrimitive>, TimeSpan> onBreak = (_, __) => { };
+            Action<DelegateResult<ResultPrimitive>, TimeSpan> onBreak = (_, _) => { };
             bool onResetCalled = false;
             Action onReset = () => { onResetCalled = true; };
 
@@ -978,7 +978,7 @@ namespace Polly.Specs.CircuitBreaker
             int onBreakCalled = 0;
             int onResetCalled = 0;
             int onHalfOpenCalled = 0;
-            Action<DelegateResult<ResultPrimitive>, TimeSpan> onBreak = (_, __) => { onBreakCalled++; };
+            Action<DelegateResult<ResultPrimitive>, TimeSpan> onBreak = (_, _) => { onBreakCalled++; };
             Action onReset = () => { onResetCalled++; };
             Action onHalfOpen = () => { onHalfOpenCalled++; };
 
@@ -1024,7 +1024,7 @@ namespace Polly.Specs.CircuitBreaker
             int onBreakCalled = 0;
             int onResetCalled = 0;
             int onHalfOpenCalled = 0;
-            Action<DelegateResult<ResultPrimitive>, TimeSpan> onBreak = (_, __) => { onBreakCalled++; };
+            Action<DelegateResult<ResultPrimitive>, TimeSpan> onBreak = (_, _) => { onBreakCalled++; };
             Action onReset = () => { onResetCalled++; };
             Action onHalfOpen = () => { onHalfOpenCalled++; };
 
@@ -1064,7 +1064,7 @@ namespace Polly.Specs.CircuitBreaker
         {
             int onBreakCalled = 0;
             int onResetCalled = 0;
-            Action<DelegateResult<ResultPrimitive>, TimeSpan> onBreak = (_, __) => { onBreakCalled++; };
+            Action<DelegateResult<ResultPrimitive>, TimeSpan> onBreak = (_, _) => { onBreakCalled++; };
             Action onReset = () => { onResetCalled++; };
 
             var time = 1.January(2000);
@@ -1099,7 +1099,7 @@ namespace Polly.Specs.CircuitBreaker
         {
             ResultPrimitive? handledResult = null;
 
-            Action<DelegateResult<ResultPrimitive>, TimeSpan, Context> onBreak = (outcome, _, __) => { handledResult = outcome.Result; };
+            Action<DelegateResult<ResultPrimitive>, TimeSpan, Context> onBreak = (outcome, _, _) => { handledResult = outcome.Result; };
             Action<Context> onReset = _ => { };
 
             TimeSpan durationOfBreak = TimeSpan.FromMinutes(1);
@@ -1124,7 +1124,7 @@ namespace Polly.Specs.CircuitBreaker
         {
             TimeSpan? passedBreakTimespan = null;
 
-            Action<DelegateResult<ResultPrimitive>, TimeSpan, Context> onBreak = (_, timespan, __) => { passedBreakTimespan = timespan; };
+            Action<DelegateResult<ResultPrimitive>, TimeSpan, Context> onBreak = (_, timespan, _) => { passedBreakTimespan = timespan; };
             Action<Context> onReset = _ => { };
 
             TimeSpan durationOfBreak = TimeSpan.FromMinutes(1);
@@ -1148,7 +1148,7 @@ namespace Polly.Specs.CircuitBreaker
         public void Should_open_circuit_with_timespan_maxvalue_if_manual_override_open()
         {
             TimeSpan? passedBreakTimespan = null;
-            Action<DelegateResult<ResultPrimitive>, TimeSpan, Context> onBreak = (_, timespan, __) => { passedBreakTimespan = timespan; };
+            Action<DelegateResult<ResultPrimitive>, TimeSpan, Context> onBreak = (_, timespan, _) => { passedBreakTimespan = timespan; };
             Action<Context> onReset = _ => { };
 
             var time = 1.January(2000);
@@ -1177,7 +1177,7 @@ namespace Polly.Specs.CircuitBreaker
         {
             IDictionary<string, object> contextData = null;
 
-            Action<DelegateResult<ResultPrimitive>, TimeSpan, Context> onBreak = (_, __, context) => { contextData = context; };
+            Action<DelegateResult<ResultPrimitive>, TimeSpan, Context> onBreak = (_, _, context) => { contextData = context; };
             Action<Context> onReset = _ => { };
 
             CircuitBreakerPolicy<ResultPrimitive> breaker = Policy
@@ -1203,7 +1203,7 @@ namespace Polly.Specs.CircuitBreaker
         {
             IDictionary<string, object> contextData = null;
 
-            Action<DelegateResult<ResultPrimitive>, TimeSpan, Context> onBreak = (_, __, ___) => { };
+            Action<DelegateResult<ResultPrimitive>, TimeSpan, Context> onBreak = (_, _, _) => { };
             Action<Context> onReset = context => { contextData = context; };
 
             var time = 1.January(2000);
@@ -1225,7 +1225,7 @@ namespace Polly.Specs.CircuitBreaker
             breaker.CircuitState.Should().Be(CircuitState.HalfOpen);
 
             // first call after duration should invoke onReset, with context
-            breaker.Execute(ctx => ResultPrimitive.Good, new { key1 = "value1", key2 = "value2" }.AsDictionary());
+            breaker.Execute(_ => ResultPrimitive.Good, new { key1 = "value1", key2 = "value2" }.AsDictionary());
 
             contextData.Should()
                 .ContainKeys("key1", "key2").And
@@ -1237,7 +1237,7 @@ namespace Polly.Specs.CircuitBreaker
         {
             IDictionary<string, object> contextData = new { key1 = "value1", key2 = "value2" }.AsDictionary();
 
-            Action<DelegateResult<ResultPrimitive>, TimeSpan, Context> onBreak = (_, __, context) => { contextData = context; };
+            Action<DelegateResult<ResultPrimitive>, TimeSpan, Context> onBreak = (_, _, context) => { contextData = context; };
             Action<Context> onReset = _ => { };
 
             CircuitBreakerPolicy<ResultPrimitive> breaker = Policy
@@ -1260,7 +1260,7 @@ namespace Polly.Specs.CircuitBreaker
         {
             string contextValue = null;
 
-            Action<DelegateResult<ResultPrimitive>, TimeSpan, Context> onBreak = (_, __, context) => { contextValue = context.ContainsKey("key") ? context["key"].ToString() : null; };
+            Action<DelegateResult<ResultPrimitive>, TimeSpan, Context> onBreak = (_, _, context) => { contextValue = context.ContainsKey("key") ? context["key"].ToString() : null; };
             Action<Context> onReset = context => { contextValue = context.ContainsKey("key") ? context["key"].ToString() : null; };
 
             CircuitBreakerPolicy<ResultPrimitive> breaker = Policy
@@ -1288,7 +1288,7 @@ namespace Polly.Specs.CircuitBreaker
             // but not yet reset
 
             // first call after duration is successful, so circuit should reset
-            breaker.Execute(ctx => ResultPrimitive.Good, new { key = "new_value" }.AsDictionary());
+            breaker.Execute(_ => ResultPrimitive.Good, new { key = "new_value" }.AsDictionary());
             breaker.CircuitState.Should().Be(CircuitState.Closed);
             contextValue.Should().Be("new_value");
         }
@@ -1570,7 +1570,7 @@ namespace Polly.Specs.CircuitBreaker
 
             int attemptsInvoked = 0;
 
-            breaker.Invoking(x => x.Execute(ct =>
+            breaker.Invoking(x => x.Execute(_ =>
             {
                 attemptsInvoked++;
                 implicitlyCapturedActionCancellationToken.ThrowIfCancellationRequested();
