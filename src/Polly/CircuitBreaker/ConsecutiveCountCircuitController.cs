@@ -3,16 +3,16 @@ using Polly.Utilities;
 
 namespace Polly.CircuitBreaker
 {
-    internal class ConsecutiveCountCircuitController<TResult> : CircuitStateController<TResult>
+    public class ConsecutiveCountCircuitController<TResult> : CircuitStateController<TResult>
     {
         private readonly int _exceptionsAllowedBeforeBreaking;
         private int _consecutiveFailureCount;
 
         public ConsecutiveCountCircuitController(
-            int exceptionsAllowedBeforeBreaking, 
-            TimeSpan durationOfBreak, 
-            Action<DelegateResult<TResult>, CircuitState, TimeSpan, Context> onBreak, 
-            Action<Context> onReset, 
+            int exceptionsAllowedBeforeBreaking,
+            TimeSpan durationOfBreak,
+            Action<DelegateResult<TResult>, CircuitState, TimeSpan, Context> onBreak,
+            Action<Context> onReset,
             Action onHalfOpen
             ) : base(durationOfBreak, onBreak, onReset, onHalfOpen)
         {

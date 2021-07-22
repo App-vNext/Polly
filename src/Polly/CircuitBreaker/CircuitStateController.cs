@@ -4,7 +4,7 @@ using Polly.Utilities;
 
 namespace Polly.CircuitBreaker
 {
-    internal abstract class CircuitStateController<TResult> : ICircuitController<TResult>
+    public abstract class CircuitStateController<TResult> : ICircuitController<TResult>
     {
         protected readonly TimeSpan _durationOfBreak;
         protected long _blockedTill;
@@ -18,9 +18,9 @@ namespace Polly.CircuitBreaker
         protected readonly object _lock = new object();
 
         protected CircuitStateController(
-            TimeSpan durationOfBreak, 
-            Action<DelegateResult<TResult>, CircuitState, TimeSpan, Context> onBreak, 
-            Action<Context> onReset, 
+            TimeSpan durationOfBreak,
+            Action<DelegateResult<TResult>, CircuitState, TimeSpan, Context> onBreak,
+            Action<Context> onReset,
             Action onHalfOpen)
         {
             _durationOfBreak = durationOfBreak;
@@ -70,7 +70,7 @@ namespace Polly.CircuitBreaker
             {
                 using (TimedLock.Lock(_lock))
                 {
-                    return _lastOutcome != null 
+                    return _lastOutcome != null
                         ? _lastOutcome.Result : default;
                 }
             }
