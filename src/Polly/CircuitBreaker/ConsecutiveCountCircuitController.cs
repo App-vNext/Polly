@@ -13,7 +13,7 @@ namespace Polly.CircuitBreaker
             TimeSpan durationOfBreak, 
             Action<DelegateResult<TResult>, CircuitState, TimeSpan, Context> onBreak, 
             Action<Context> onReset, 
-            Action onHalfOpen
+            Action<Context> onHalfOpen
             ) : base(durationOfBreak, onBreak, onReset, onHalfOpen)
         {
             _exceptionsAllowedBeforeBreaking = exceptionsAllowedBeforeBreaking;

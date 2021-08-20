@@ -13,7 +13,7 @@ namespace Polly.CircuitBreaker
 
         protected readonly Action<DelegateResult<TResult>, CircuitState, TimeSpan, Context> _onBreak;
         protected readonly Action<Context> _onReset;
-        protected readonly Action _onHalfOpen;
+        protected readonly Action<Context> _onHalfOpen;
 
         protected readonly object _lock = new object();
 
@@ -21,7 +21,7 @@ namespace Polly.CircuitBreaker
             TimeSpan durationOfBreak, 
             Action<DelegateResult<TResult>, CircuitState, TimeSpan, Context> onBreak, 
             Action<Context> onReset, 
-            Action onHalfOpen)
+            Action<Context> onHalfOpen)
         {
             _durationOfBreak = durationOfBreak;
             _onBreak = onBreak;
@@ -46,7 +46,7 @@ namespace Polly.CircuitBreaker
                     if (_circuitState == CircuitState.Open && !IsInAutomatedBreak_NeedsLock)
                     {
                         _circuitState = CircuitState.HalfOpen;
-                        _onHalfOpen();
+                        _onHalfOpen(Context.None()); // TODO #882 How to thread the user's context through here?
                     }
                     return _circuitState;
                 }
