@@ -57,7 +57,7 @@ namespace Polly.Specs.RateLimit
         {
             Action invalidSyntax = () => GetPolicyViaSyntax(1, TimeSpan.Zero);
 
-            invalidSyntax.ShouldThrow<ArgumentOutOfRangeException>().And.ParamName.Should().Be("perTimeSpan");
+            invalidSyntax.Should().Throw<ArgumentOutOfRangeException>().And.ParamName.Should().Be("perTimeSpan");
         }
 
         [Fact]
@@ -65,7 +65,7 @@ namespace Polly.Specs.RateLimit
         {
             Action invalidSyntax = () => GetPolicyViaSyntax(-1, TimeSpan.FromSeconds(1));
 
-            invalidSyntax.ShouldThrow<ArgumentOutOfRangeException>().And.ParamName.Should().Be("numberOfExecutions");
+            invalidSyntax.Should().Throw<ArgumentOutOfRangeException>().And.ParamName.Should().Be("numberOfExecutions");
         }
 
         [Fact]
@@ -73,7 +73,7 @@ namespace Polly.Specs.RateLimit
         {
             Action invalidSyntax = () => GetPolicyViaSyntax(0, TimeSpan.FromSeconds(1));
 
-            invalidSyntax.ShouldThrow<ArgumentOutOfRangeException>().And.ParamName.Should().Be("numberOfExecutions");
+            invalidSyntax.Should().Throw<ArgumentOutOfRangeException>().And.ParamName.Should().Be("numberOfExecutions");
         }
 
         [Fact]
@@ -81,7 +81,7 @@ namespace Polly.Specs.RateLimit
         {
             Action invalidSyntax = () => GetPolicyViaSyntax(1, TimeSpan.FromTicks(-1));
 
-            invalidSyntax.ShouldThrow<ArgumentOutOfRangeException>().And.ParamName.Should().Be("perTimeSpan");
+            invalidSyntax.Should().Throw<ArgumentOutOfRangeException>().And.ParamName.Should().Be("perTimeSpan");
         }
 
         [Fact]
@@ -89,7 +89,7 @@ namespace Polly.Specs.RateLimit
         {
             Action invalidSyntax = () => GetPolicyViaSyntax(1, TimeSpan.FromSeconds(1), -1);
 
-            invalidSyntax.ShouldThrow<ArgumentOutOfRangeException>().And.ParamName.Should().Be("maxBurst");
+            invalidSyntax.Should().Throw<ArgumentOutOfRangeException>().And.ParamName.Should().Be("maxBurst");
         }
 
         [Fact]
@@ -97,7 +97,7 @@ namespace Polly.Specs.RateLimit
         {
             Action invalidSyntax = () => GetPolicyViaSyntax(1, TimeSpan.FromSeconds(1), 0);
 
-            invalidSyntax.ShouldThrow<ArgumentOutOfRangeException>().And.ParamName.Should().Be("maxBurst");
+            invalidSyntax.Should().Throw<ArgumentOutOfRangeException>().And.ParamName.Should().Be("maxBurst");
         }
 
         [Theory]
