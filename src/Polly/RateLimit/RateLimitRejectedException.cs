@@ -63,7 +63,7 @@ namespace Polly.RateLimit
             RetryAfter = retryAfter;
         }
 
-        private static string DefaultMessage(TimeSpan retryAfter) => $"The operation has been rate-limited and should be retried after ${retryAfter}";
+        private static string DefaultMessage(TimeSpan retryAfter) => $"The operation has been rate-limited and should be retried after {retryAfter}";
 
 #if NETSTANDARD2_0
         /// <summary>
