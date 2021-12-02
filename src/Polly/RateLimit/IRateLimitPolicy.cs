@@ -3,7 +3,6 @@
     /// <summary>
     /// Defines properties and methods common to all RateLimit policies.
     /// </summary>
-
     public interface IRateLimitPolicy : IsPolicy
     {
     }
