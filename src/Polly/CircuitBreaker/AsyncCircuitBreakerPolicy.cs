@@ -46,7 +46,7 @@ namespace Polly.CircuitBreaker
         protected override async Task<TResult> ImplementationAsync<TResult>(Func<Context, CancellationToken, Task<TResult>> action, Context context, CancellationToken cancellationToken,
             bool continueOnCapturedContext)
         {
-            TResult result = default(TResult);
+            TResult result = default;
             await AsyncCircuitBreakerEngine.ImplementationAsync<EmptyStruct>(
                 async (ctx, ct) => { result = await action(ctx, ct).ConfigureAwait(continueOnCapturedContext); return EmptyStruct.Instance; },
                 context,

@@ -1,19 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using FluentAssertions;
+using FluentAssertions.Extensions;
 using Polly.Specs.Helpers;
 using Polly.Utilities;
 using Xunit;
 
 namespace Polly.Specs.Retry
 {
-    [Collection(Polly.Specs.Helpers.Constants.SystemClockDependentTestCollection)]
+    [Collection(Constants.SystemClockDependentTestCollection)]
     public class WaitAndRetryForeverTResultSpecs : IDisposable
     {
         public WaitAndRetryForeverTResultSpecs()
         {
             // do nothing on call to sleep
-            SystemClock.Sleep = (_, __) => { };
+            SystemClock.Sleep = (_, _) => { };
         }
 
         [Fact]
@@ -31,8 +32,8 @@ namespace Polly.Specs.Retry
                 .HandleResult(ResultPrimitive.Fault)
                 .OrResult(ResultPrimitive.FaultAgain)
                 .WaitAndRetryForever(
-                    (retryAttempt, outcome, ctx) => expectedRetryWaits[outcome.Result],
-                    (_, timeSpan, __) => actualRetryWaits.Add(timeSpan)
+                    (_, outcome, _) => expectedRetryWaits[outcome.Result],
+                    (_, timeSpan, _) => actualRetryWaits.Add(timeSpan)
                 );
 
             using (var enumerator = expectedRetryWaits.GetEnumerator())

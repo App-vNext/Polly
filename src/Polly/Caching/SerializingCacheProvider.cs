@@ -16,8 +16,8 @@ namespace Polly.Caching
         /// </summary>
         /// <param name="wrappedCacheProvider">The wrapped cache provider.</param>
         /// <param name="serializer">The serializer.</param>
-        /// <exception cref="System.ArgumentNullException">wrappedCacheProvider </exception>
-        /// <exception cref="System.ArgumentNullException">serializer </exception>
+        /// <exception cref="ArgumentNullException">wrappedCacheProvider </exception>
+        /// <exception cref="ArgumentNullException">serializer </exception>
         public SerializingCacheProvider(ISyncCacheProvider<TSerialized> wrappedCacheProvider, ICacheItemSerializer<object, TSerialized> serializer)
         {
             _wrappedCacheProvider = wrappedCacheProvider ?? throw new ArgumentNullException(nameof(wrappedCacheProvider));
@@ -66,8 +66,8 @@ namespace Polly.Caching
         /// </summary>
         /// <param name="wrappedCacheProvider">The wrapped cache provider.</param>
         /// <param name="serializer">The serializer.</param>
-        /// <exception cref="System.ArgumentNullException">wrappedCacheProvider </exception>
-        /// <exception cref="System.ArgumentNullException">serializer </exception>
+        /// <exception cref="ArgumentNullException">wrappedCacheProvider </exception>
+        /// <exception cref="ArgumentNullException">serializer </exception>
         public SerializingCacheProvider(ISyncCacheProvider<TSerialized> wrappedCacheProvider, ICacheItemSerializer<TResult, TSerialized> serializer)
         {
             _wrappedCacheProvider = wrappedCacheProvider ?? throw new ArgumentNullException(nameof(wrappedCacheProvider));
@@ -85,7 +85,7 @@ namespace Polly.Caching
         public (bool, TResult) TryGet(string key)
         {
             (bool cacheHit, TSerialized objectToDeserialize) = _wrappedCacheProvider.TryGet(key);
-            return (cacheHit, cacheHit ? _serializer.Deserialize(objectToDeserialize) : default(TResult));
+            return (cacheHit, cacheHit ? _serializer.Deserialize(objectToDeserialize) : default);
         }
 
         /// <summary>

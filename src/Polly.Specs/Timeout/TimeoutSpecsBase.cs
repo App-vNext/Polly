@@ -17,7 +17,7 @@ namespace Polly.Specs.Timeout
         // xUnit creates a new class instance per test, so these variables are isolated per test.
 
         // Track a CancellationTokenSource, and when it might be cancelled at.
-        private CancellationTokenSource _trackedTokenSource = null;
+        private CancellationTokenSource _trackedTokenSource;
         private DateTimeOffset _cancelAt = DateTimeOffset.MaxValue;
 
         private DateTimeOffset _offsetUtcNow = DateTimeOffset.UtcNow;
@@ -42,10 +42,10 @@ namespace Polly.Specs.Timeout
                 SystemClock.Sleep(TimeSpan.Zero, CancellationToken.None); // Invoke our custom definition of sleep, to check for immediate cancellation.
             };
 
-            // Override SysteClock.Sleep, to manipulate our artificial clock.  And - if it means sleeping beyond the time when a tracked token should cancel - cancel it!
-            SystemClock.Sleep = (sleepTimespan, sleepCancellationtoken) =>
+            // Override SystemClock.Sleep, to manipulate our artificial clock.  And - if it means sleeping beyond the time when a tracked token should cancel - cancel it!
+            SystemClock.Sleep = (sleepTimespan, sleepCancellationToken) =>
             {
-                if (sleepCancellationtoken.IsCancellationRequested) return;
+                if (sleepCancellationToken.IsCancellationRequested) return;
 
                 if (_trackedTokenSource == null || _trackedTokenSource.IsCancellationRequested)
                 {
@@ -78,9 +78,9 @@ namespace Polly.Specs.Timeout
                 }
             };
 
-            SystemClock.SleepAsync = (sleepTimespan, cancellationtoken) =>
+            SystemClock.SleepAsync = (sleepTimespan, cancellationToken) =>
             {
-                SystemClock.Sleep(sleepTimespan, cancellationtoken);
+                SystemClock.Sleep(sleepTimespan, cancellationToken);
                 return Task.FromResult(true);
             };
         }

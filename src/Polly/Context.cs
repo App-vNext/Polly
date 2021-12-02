@@ -37,7 +37,7 @@ namespace Polly
         public string PolicyKey { get; internal set; }
 
         /// <summary>
-        /// A key unique to the call site of the current execution. 
+        /// A key unique to the call site of the current execution.
         /// <remarks>Policy instances are commonly reused across multiple call sites.  Set an OperationKey so that logging and metrics can distinguish usages of policy instances at different call sites.</remarks>
         /// <remarks>The value is set by using the <see cref="Context(String)"/> constructor taking an operationKey parameter.</remarks>
         /// </summary>
@@ -55,6 +55,5 @@ namespace Polly
                 return _correlationId.Value;
             }
         }
-        
     }
 }

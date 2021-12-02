@@ -43,9 +43,9 @@ namespace Polly.Specs
 
             Action configure = () => policy.WithPolicyKey(Guid.NewGuid().ToString());
 
-            configure.ShouldNotThrow();
+            configure.Should().NotThrow();
 
-            configure.ShouldThrow<ArgumentException>().And.ParamName.Should().Be("policyKey");
+            configure.Should().Throw<ArgumentException>().And.ParamName.Should().Be("policyKey");
         }
 
         [Fact]
@@ -94,8 +94,7 @@ namespace Polly.Specs
 
             Action configure = () => policy.WithPolicyKey(Guid.NewGuid().ToString());
 
-            configure.ShouldThrow<ArgumentException>().And.ParamName.Should().Be("p" +
-                                                                                 "olicyKey");
+            configure.Should().Throw<ArgumentException>().And.ParamName.Should().Be("policyKey");
         }
 
         #endregion
@@ -108,7 +107,7 @@ namespace Polly.Specs
             string policyKey = Guid.NewGuid().ToString();
 
             string policyKeySetOnExecutionContext = null;
-            Action<Exception, int, Context> onRetry = (e, i, context) => { policyKeySetOnExecutionContext = context.PolicyKey; };
+            Action<Exception, int, Context> onRetry = (_, _, context) => { policyKeySetOnExecutionContext = context.PolicyKey; };
             var retry = Policy.Handle<Exception>().Retry(1, onRetry).WithPolicyKey(policyKey);
 
             retry.RaiseException<Exception>(1);
@@ -122,11 +121,11 @@ namespace Polly.Specs
             string operationKey = "SomeKey";
 
             string operationKeySetOnContext = null;
-            Action<Exception, int, Context> onRetry = (e, i, context) => { operationKeySetOnContext = context.OperationKey; };
+            Action<Exception, int, Context> onRetry = (_, _, context) => { operationKeySetOnContext = context.OperationKey; };
             var retry = Policy.Handle<Exception>().Retry(1, onRetry);
 
             bool firstExecution = true;
-            retry.Execute(ctx =>
+            retry.Execute(_ =>
             {
                 if (firstExecution)
                 {
@@ -144,7 +143,7 @@ namespace Polly.Specs
             string policyKey = Guid.NewGuid().ToString();
 
             string policyKeySetOnExecutionContext = null;
-            Action<Exception, int, Context> onRetry = (e, i, context) => { policyKeySetOnExecutionContext = context.PolicyKey; };
+            Action<Exception, int, Context> onRetry = (_, _, context) => { policyKeySetOnExecutionContext = context.PolicyKey; };
             var retry = Policy.Handle<Exception>().Retry(1, onRetry).WithPolicyKey(policyKey);
 
             bool firstExecution = true;
@@ -167,11 +166,11 @@ namespace Polly.Specs
             string operationKey = "SomeKey";
 
             string operationKeySetOnContext = null;
-            Action<Exception, int, Context> onRetry = (e, i, context) => { operationKeySetOnContext = context.OperationKey; };
+            Action<Exception, int, Context> onRetry = (_, _, context) => { operationKeySetOnContext = context.OperationKey; };
             var retry = Policy.Handle<Exception>().Retry(1, onRetry);
 
             bool firstExecution = true;
-            retry.Execute<int>(ctx =>
+            retry.Execute<int>(_ =>
             {
                 if (firstExecution)
                 {
@@ -225,9 +224,9 @@ namespace Polly.Specs
 
             Action configure = () => policy.WithPolicyKey(Guid.NewGuid().ToString());
 
-            configure.ShouldNotThrow();
+            configure.Should().NotThrow();
 
-            configure.ShouldThrow<ArgumentException>().And.ParamName.Should().Be("policyKey");
+            configure.Should().Throw<ArgumentException>().And.ParamName.Should().Be("policyKey");
         }
 
         [Fact]
@@ -276,7 +275,7 @@ namespace Polly.Specs
 
             Action configure = () => policy.WithPolicyKey(Guid.NewGuid().ToString());
 
-            configure.ShouldThrow<ArgumentException>().And.ParamName.Should().Be("policyKey");
+            configure.Should().Throw<ArgumentException>().And.ParamName.Should().Be("policyKey");
         }
 
         #endregion
@@ -289,7 +288,7 @@ namespace Polly.Specs
             string policyKey = Guid.NewGuid().ToString();
 
             string policyKeySetOnExecutionContext = null;
-            Action<DelegateResult<ResultPrimitive>, int, Context> onRetry = (outcome, i, context) => { policyKeySetOnExecutionContext = context.PolicyKey; };
+            Action<DelegateResult<ResultPrimitive>, int, Context> onRetry = (_, _, context) => { policyKeySetOnExecutionContext = context.PolicyKey; };
             var retry = Policy.HandleResult(ResultPrimitive.Fault).Retry(1, onRetry).WithPolicyKey(policyKey);
 
             retry.RaiseResultSequence(ResultPrimitive.Fault, ResultPrimitive.Good);
@@ -303,11 +302,11 @@ namespace Polly.Specs
             string operationKey = "SomeKey";
 
             string operationKeySetOnContext = null;
-            Action<DelegateResult<ResultPrimitive>, int, Context> onRetry = (outcome, i, context) => { operationKeySetOnContext = context.OperationKey; };
+            Action<DelegateResult<ResultPrimitive>, int, Context> onRetry = (_, _, context) => { operationKeySetOnContext = context.OperationKey; };
             var retry = Policy.HandleResult(ResultPrimitive.Fault).Retry(1, onRetry);
 
             bool firstExecution = true;
-            retry.Execute(ctx =>
+            retry.Execute(_ =>
             {
                 if (firstExecution)
                 {

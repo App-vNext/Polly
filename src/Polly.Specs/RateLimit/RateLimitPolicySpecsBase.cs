@@ -23,10 +23,10 @@ namespace Polly.Specs.RateLimit
 
         protected void ShouldPermitAnExecution(IRateLimitPolicy policy)
         {
-            (bool permitExecution, TimeSpan retryAfter) canExecute = TryExecuteThroughPolicy(policy);
+            (bool permitExecution, TimeSpan retryAfter) = TryExecuteThroughPolicy(policy);
 
-            canExecute.permitExecution.Should().BeTrue();
-            canExecute.retryAfter.Should().Be(TimeSpan.Zero);
+            permitExecution.Should().BeTrue();
+            retryAfter.Should().Be(TimeSpan.Zero);
         }
 
         protected void ShouldPermitNExecutions(IRateLimitPolicy policy, long numberOfExecutions)
@@ -57,7 +57,7 @@ namespace Polly.Specs.RateLimit
         {
             Action invalidSyntax = () => GetPolicyViaSyntax(1, TimeSpan.Zero);
 
-            invalidSyntax.ShouldThrow<ArgumentOutOfRangeException>().And.ParamName.Should().Be("perTimeSpan");
+            invalidSyntax.Should().Throw<ArgumentOutOfRangeException>().And.ParamName.Should().Be("perTimeSpan");
         }
 
         [Fact]
@@ -65,7 +65,7 @@ namespace Polly.Specs.RateLimit
         {
             Action invalidSyntax = () => GetPolicyViaSyntax(-1, TimeSpan.FromSeconds(1));
 
-            invalidSyntax.ShouldThrow<ArgumentOutOfRangeException>().And.ParamName.Should().Be("numberOfExecutions");
+            invalidSyntax.Should().Throw<ArgumentOutOfRangeException>().And.ParamName.Should().Be("numberOfExecutions");
         }
 
         [Fact]
@@ -73,7 +73,7 @@ namespace Polly.Specs.RateLimit
         {
             Action invalidSyntax = () => GetPolicyViaSyntax(0, TimeSpan.FromSeconds(1));
 
-            invalidSyntax.ShouldThrow<ArgumentOutOfRangeException>().And.ParamName.Should().Be("numberOfExecutions");
+            invalidSyntax.Should().Throw<ArgumentOutOfRangeException>().And.ParamName.Should().Be("numberOfExecutions");
         }
 
         [Fact]
@@ -81,7 +81,7 @@ namespace Polly.Specs.RateLimit
         {
             Action invalidSyntax = () => GetPolicyViaSyntax(1, TimeSpan.FromTicks(-1));
 
-            invalidSyntax.ShouldThrow<ArgumentOutOfRangeException>().And.ParamName.Should().Be("perTimeSpan");
+            invalidSyntax.Should().Throw<ArgumentOutOfRangeException>().And.ParamName.Should().Be("perTimeSpan");
         }
 
         [Fact]
@@ -89,7 +89,7 @@ namespace Polly.Specs.RateLimit
         {
             Action invalidSyntax = () => GetPolicyViaSyntax(1, TimeSpan.FromSeconds(1), -1);
 
-            invalidSyntax.ShouldThrow<ArgumentOutOfRangeException>().And.ParamName.Should().Be("maxBurst");
+            invalidSyntax.Should().Throw<ArgumentOutOfRangeException>().And.ParamName.Should().Be("maxBurst");
         }
 
         [Fact]
@@ -97,7 +97,7 @@ namespace Polly.Specs.RateLimit
         {
             Action invalidSyntax = () => GetPolicyViaSyntax(1, TimeSpan.FromSeconds(1), 0);
 
-            invalidSyntax.ShouldThrow<ArgumentOutOfRangeException>().And.ParamName.Should().Be("maxBurst");
+            invalidSyntax.Should().Throw<ArgumentOutOfRangeException>().And.ParamName.Should().Be("maxBurst");
         }
 
         [Theory]
@@ -272,7 +272,7 @@ namespace Polly.Specs.RateLimit
             var rateLimiter = GetPolicyViaSyntax(1, onePer);
 
             // Arrange - parallel tasks all waiting on a manual reset event.
-            ManualResetEventSlim gate = new ManualResetEventSlim();
+            ManualResetEventSlim gate = new();
             Task<(bool permitExecution, TimeSpan retryAfter)>[] tasks = new Task<(bool, TimeSpan)>[parallelContention];
             for (int i = 0; i < parallelContention; i++)
             {

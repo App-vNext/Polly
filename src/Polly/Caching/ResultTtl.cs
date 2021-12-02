@@ -17,7 +17,7 @@ namespace Polly.Caching
         public ResultTtl(Func<TResult, Ttl> ttlFunc)
         {
             if (ttlFunc == null) throw new ArgumentNullException(nameof(ttlFunc));
-            _ttlFunc = (context, result) => ttlFunc(result);
+            _ttlFunc = (_, result) => ttlFunc(result);
         }
 
         /// <summary>

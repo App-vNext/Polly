@@ -30,11 +30,11 @@ namespace Polly
         /// </summary>
         /// <param name="action">The action to perform.</param>
         /// <param name="contextData">Arbitrary data that is passed to the exception policy.</param>
-        /// <exception cref="System.ArgumentNullException">contextData</exception>
+        /// <exception cref="ArgumentNullException">contextData</exception>
         /// <returns>
         /// The value returned by the action
         /// </returns>
-        /// <exception cref="System.ArgumentNullException">contextData</exception>
+        /// <exception cref="ArgumentNullException">contextData</exception>
         TResult Execute(Func<Context, TResult> action, IDictionary<string, object> contextData);
 
         /// <summary>
@@ -42,11 +42,11 @@ namespace Polly
         /// </summary>
         /// <param name="action">The action to perform.</param>
         /// <param name="context">Context data that is passed to the exception policy.</param>
-        /// <exception cref="System.ArgumentNullException">context</exception>
+        /// <exception cref="ArgumentNullException">context</exception>
         /// <returns>
         /// The value returned by the action
         /// </returns>
-        /// <exception cref="System.ArgumentNullException">contextData</exception>
+        /// <exception cref="ArgumentNullException">contextData</exception>
         TResult Execute(Func<Context, TResult> action, Context context);
 
         /// <summary>
@@ -64,7 +64,7 @@ namespace Polly
         /// <param name="contextData">Arbitrary data that is passed to the exception policy.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>The value returned by the action</returns>
-        /// <exception cref="System.ArgumentNullException">contextData</exception>
+        /// <exception cref="ArgumentNullException">contextData</exception>
         TResult Execute(Func<Context, CancellationToken, TResult> action, IDictionary<string, object> contextData, CancellationToken cancellationToken);
 
         /// <summary>
@@ -88,7 +88,7 @@ namespace Polly
         /// </summary>
         /// <param name="action">The action to perform.</param>
         /// <param name="contextData">Arbitrary data that is passed to the exception policy.</param>
-        /// <exception cref="System.ArgumentNullException">contextData</exception>
+        /// <exception cref="ArgumentNullException">contextData</exception>
         /// <returns>The captured result</returns>
         PolicyResult<TResult> ExecuteAndCapture(Func<Context, TResult> action, IDictionary<string, object> contextData);
 
@@ -97,7 +97,7 @@ namespace Polly
         /// </summary>
         /// <param name="action">The action to perform.</param>
         /// <param name="context">Context data that is passed to the exception policy.</param>
-        /// <exception cref="System.ArgumentNullException">contextData</exception>
+        /// <exception cref="ArgumentNullException">contextData</exception>
         /// <returns>The captured result</returns>
         PolicyResult<TResult> ExecuteAndCapture(Func<Context, TResult> action, Context context);
 
@@ -116,7 +116,7 @@ namespace Polly
         /// <param name="contextData">Arbitrary data that is passed to the exception policy.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>The captured result</returns>
-        /// <exception cref="System.ArgumentNullException">contextData</exception>
+        /// <exception cref="ArgumentNullException">contextData</exception>
         PolicyResult<TResult> ExecuteAndCapture(Func<Context, CancellationToken, TResult> action, IDictionary<string, object> contextData, CancellationToken cancellationToken);
 
         /// <summary>

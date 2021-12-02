@@ -17,7 +17,7 @@ namespace Polly.Specs.Helpers
 
         public static Task<TResult> RaiseResultSequenceAsync<TResult>(this AsyncPolicy<TResult> policy, IEnumerable<TResult> resultsToRaise)
         {
-            return policy.RaiseResultSequenceAsync(default(CancellationToken), resultsToRaise);
+            return policy.RaiseResultSequenceAsync(default, resultsToRaise);
         }
 
         public static async Task<TResult> RaiseResultSequenceAsync<TResult>(this AsyncPolicy<TResult> policy,
@@ -25,7 +25,7 @@ namespace Polly.Specs.Helpers
         {
             using (var enumerator = resultsToRaise.GetEnumerator())
             {
-                return await policy.ExecuteAsync(ct =>
+                return await policy.ExecuteAsync(_ =>
                 {
                     if (!enumerator.MoveNext())
                     {
@@ -53,7 +53,7 @@ namespace Polly.Specs.Helpers
         {
             using (var enumerator = resultsOrExceptionsToRaise.GetEnumerator())
             {
-                return await policy.ExecuteAsync(ct =>
+                return await policy.ExecuteAsync(_ =>
                 {
                     if (!enumerator.MoveNext())
                     {

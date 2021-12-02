@@ -5,7 +5,7 @@ using Polly.Utilities;
 namespace Polly
 {
     /// <summary>
-    /// Fluent API for defining a Circuit Breaker <see cref="Policy"/>. 
+    /// Fluent API for defining a Circuit Breaker <see cref="Policy"/>.
     /// </summary>
     public static class AdvancedCircuitBreakerSyntax
     {
@@ -34,12 +34,12 @@ namespace Polly
         /// <exception cref="ArgumentOutOfRangeException">durationOfBreak;Value must be greater than zero</exception>
         public static CircuitBreakerPolicy AdvancedCircuitBreaker(this PolicyBuilder policyBuilder, double failureThreshold, TimeSpan samplingDuration, int minimumThroughput, TimeSpan durationOfBreak)
         {
-            Action<Exception, TimeSpan> doNothingOnBreak = (_, __) => { };
+            Action<Exception, TimeSpan> doNothingOnBreak = (_, _) => { };
             Action doNothingOnReset = () => { };
 
             return policyBuilder.AdvancedCircuitBreaker(
-                failureThreshold, samplingDuration, minimumThroughput, 
-                durationOfBreak, 
+                failureThreshold, samplingDuration, minimumThroughput,
+                durationOfBreak,
                 doNothingOnBreak,
                 doNothingOnReset
                 );
@@ -73,10 +73,10 @@ namespace Polly
         /// <exception cref="ArgumentNullException">onReset</exception>
         public static CircuitBreakerPolicy AdvancedCircuitBreaker(this PolicyBuilder policyBuilder, double failureThreshold, TimeSpan samplingDuration, int minimumThroughput, TimeSpan durationOfBreak, Action<Exception, TimeSpan> onBreak, Action onReset)
             => policyBuilder.AdvancedCircuitBreaker(
-                failureThreshold, samplingDuration, minimumThroughput, 
-                durationOfBreak, 
-                (exception, timespan, context) => onBreak(exception, timespan), 
-                context => onReset()
+                failureThreshold, samplingDuration, minimumThroughput,
+                durationOfBreak,
+                (exception, timespan, _) => onBreak(exception, timespan),
+                _ => onReset()
                 );
 
         /// <summary>
@@ -108,9 +108,9 @@ namespace Polly
         public static CircuitBreakerPolicy AdvancedCircuitBreaker(this PolicyBuilder policyBuilder, double failureThreshold, TimeSpan samplingDuration, int minimumThroughput, TimeSpan durationOfBreak, Action<Exception, TimeSpan, Context> onBreak, Action<Context> onReset)
         {
             Action doNothingOnHalfOpen = () => { };
-            return policyBuilder.AdvancedCircuitBreaker(failureThreshold, samplingDuration, minimumThroughput, 
-                durationOfBreak, 
-                onBreak, 
+            return policyBuilder.AdvancedCircuitBreaker(failureThreshold, samplingDuration, minimumThroughput,
+                durationOfBreak,
+                onBreak,
                 onReset,
                 doNothingOnHalfOpen
                 );
@@ -146,10 +146,10 @@ namespace Polly
         /// <exception cref="ArgumentNullException">onHalfOpen</exception>
         public static CircuitBreakerPolicy AdvancedCircuitBreaker(this PolicyBuilder policyBuilder, double failureThreshold, TimeSpan samplingDuration, int minimumThroughput, TimeSpan durationOfBreak, Action<Exception, TimeSpan> onBreak, Action onReset, Action onHalfOpen)
             => policyBuilder.AdvancedCircuitBreaker(
-                failureThreshold, samplingDuration, minimumThroughput, 
+                failureThreshold, samplingDuration, minimumThroughput,
                 durationOfBreak,
-                (exception, timespan, context) => onBreak(exception, timespan),
-                context => onReset(),
+                (exception, timespan, _) => onBreak(exception, timespan),
+                _ => onReset(),
                 onHalfOpen
                 );
 
@@ -186,7 +186,7 @@ namespace Polly
             => policyBuilder.AdvancedCircuitBreaker(
                 failureThreshold, samplingDuration, minimumThroughput,
                 durationOfBreak,
-                (exception, state, timespan, context) => onBreak(exception, timespan, context),
+                (exception, _, timespan, context) => onBreak(exception, timespan, context),
                 onReset,
                 onHalfOpen
             );
@@ -226,7 +226,7 @@ namespace Polly
 
             if (failureThreshold <= 0) throw new ArgumentOutOfRangeException(nameof(failureThreshold), "Value must be greater than zero.");
             if (failureThreshold > 1) throw new ArgumentOutOfRangeException(nameof(failureThreshold), "Value must be less than or equal to one.");
-            if (samplingDuration < resolutionOfCircuit) throw new ArgumentOutOfRangeException(nameof(samplingDuration), String.Format("Value must be equal to or greater than {0} milliseconds. This is the minimum resolution of the CircuitBreaker timer.", resolutionOfCircuit.TotalMilliseconds));
+            if (samplingDuration < resolutionOfCircuit) throw new ArgumentOutOfRangeException(nameof(samplingDuration), $"Value must be equal to or greater than {resolutionOfCircuit.TotalMilliseconds} milliseconds. This is the minimum resolution of the CircuitBreaker timer.");
             if (minimumThroughput <= 1) throw new ArgumentOutOfRangeException(nameof(minimumThroughput), "Value must be greater than one.");
             if (durationOfBreak < TimeSpan.Zero) throw new ArgumentOutOfRangeException(nameof(durationOfBreak), "Value must be greater than zero.");
 

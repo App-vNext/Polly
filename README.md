@@ -2,11 +2,11 @@
 
 Polly is a .NET resilience and transient-fault-handling library that allows developers to express policies such as Retry, Circuit Breaker, Timeout, Bulkhead Isolation, Rate-limiting and Fallback in a fluent and thread-safe manner.  
 
-Polly targets .NET Standard 1.1 ([coverage](https://docs.microsoft.com/en-us/dotnet/standard/net-standard#net-implementation-support): .NET Framework 4.5-4.6.1, .NET Core 1.0, Mono, Xamarin, UWP, WP8.1+) and .NET Standard 2.0+  ([coverage](https://docs.microsoft.com/en-us/dotnet/standard/net-standard#net-implementation-support): .NET Framework 4.6.1, .NET Core 2.0+, and later Mono, Xamarin and UWP targets).
+Polly targets .NET Standard 1.1 ([coverage](https://docs.microsoft.com/en-us/dotnet/standard/net-standard#net-implementation-support): .NET Core 1.0, Mono, Xamarin, UWP, WP8.1+) and .NET Standard 2.0+ ([coverage](https://docs.microsoft.com/en-us/dotnet/standard/net-standard#net-implementation-support): .NET Core 2.0+, .NET Core 3.0, and later Mono, Xamarin and UWP targets). The nuget package also includes direct targets for .NET Framework 4.6.1 and 4.7.2.
 
 For versions supporting earlier targets such as .NET4.0 and .NET3.5, see the [supported targets](https://github.com/App-vNext/Polly/wiki/Supported-targets) grid.
 
-[<img align="right" src="https://github.com/dotnet/swag/raw/master/logo/dotnetfoundation_v4_small.png" width="100" />](https://www.dotnetfoundation.org/)
+[<img align="right" src="https://github.com/dotnet/swag/raw/main/logo/dotnetfoundation_v4_small.png" width="100" />](https://www.dotnetfoundation.org/)
 We are a member of the [.NET Foundation](https://www.dotnetfoundation.org/about)!
 
 **Keep up to date with new feature announcements, tips & tricks, and other news through [www.thepollyproject.org](http://www.thepollyproject.org)**
@@ -144,7 +144,7 @@ Policy
     .Handle<SomeExceptionType>()
     .Retry(3, onRetry: (exception, retryCount) =>
     {
-        // do something 
+        // Add logic to be executed before each retry, such as logging
     });
 
 // Retry multiple times, calling an action on each retry 
@@ -154,7 +154,7 @@ Policy
     .Handle<SomeExceptionType>()
     .Retry(3, onRetry: (exception, retryCount, context) =>
     {
-        // do something 
+        // Add logic to be executed before each retry, such as logging 
     });
 ```
 
@@ -173,7 +173,7 @@ Policy
   .Handle<SomeExceptionType>()
   .RetryForever(onRetry: exception =>
   {
-        // do something       
+        // Add logic to be executed before each retry, such as logging       
   });
 
 // Retry forever, calling an action on each retry with the
@@ -182,7 +182,7 @@ Policy
   .Handle<SomeExceptionType>()
   .RetryForever(onRetry: (exception, context) =>
   {
-        // do something       
+        // Add logic to be executed before each retry, such as logging       
   });
 ```
 
@@ -211,7 +211,7 @@ Policy
     TimeSpan.FromSeconds(2),
     TimeSpan.FromSeconds(3)
   }, (exception, timeSpan) => {
-    // do something    
+    // Add logic to be executed before each retry, such as logging    
   }); 
 
 // Retry, waiting a specified duration between each retry, 
@@ -225,7 +225,7 @@ Policy
     TimeSpan.FromSeconds(2),
     TimeSpan.FromSeconds(3)
   }, (exception, timeSpan, context) => {
-    // do something    
+    // Add logic to be executed before each retry, such as logging    
   });
 
 // Retry, waiting a specified duration between each retry, 
@@ -239,7 +239,7 @@ Policy
     TimeSpan.FromSeconds(2),
     TimeSpan.FromSeconds(3)
   }, (exception, timeSpan, retryCount, context) => {
-    // do something    
+    // Add logic to be executed before each retry, such as logging    
   });
 
 // Retry a specified number of times, using a function to 
@@ -268,7 +268,7 @@ Policy
     5, 
     retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)), 
     (exception, timeSpan, context) => {
-      // do something
+      // Add logic to be executed before each retry, such as logging
     }
   );
 
@@ -283,10 +283,12 @@ Policy
     5, 
     retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)), 
     (exception, timeSpan, retryCount, context) => {
-      // do something
+      // Add logic to be executed before each retry, such as logging
     }
   );
 ```
+
+The above code demonstrates how to build common wait-and-retry patterns from scratch, but our community also came up with an awesome contrib to wrap the common cases in helper methods: see [Polly.Contrib.WaitAndRetry](https://github.com/Polly-Contrib/Polly.Contrib.WaitAndRetry/).
 
 For `WaitAndRetry` policies handling Http Status Code 429 Retry-After, see [wiki documentation](https://github.com/App-vNext/Polly/wiki/Retry#retryafter-when-the-response-specifies-how-long-to-wait).
 
@@ -309,7 +311,7 @@ Policy
     retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),    
     (exception, timespan) =>
     {
-        // do something       
+        // Add logic to be executed before each retry, such as logging       
     });
 
 // Wait and retry forever, calling an action on each retry with the
@@ -320,7 +322,7 @@ Policy
     retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),    
     (exception, timespan, context) =>
     {
-        // do something       
+        // Add logic to be executed before each retry, such as logging       
     });
 ```
 
@@ -413,28 +415,34 @@ For more information on the Circuit Breaker pattern in general see:
 ### Fallback 
 ```csharp
 // Provide a substitute value, if an execution faults.
-Policy
-   .Handle<Whatever>()
+Policy<UserAvatar>
+   .Handle<FooException>()
+   .OrResult(null)
    .Fallback<UserAvatar>(UserAvatar.Blank)
 
 // Specify a func to provide a substitute value, if execution faults.
-Policy
-   .Handle<Whatever>()
+Policy<UserAvatar>
+   .Handle<FooException>()
+   .OrResult(null)
    .Fallback<UserAvatar>(() => UserAvatar.GetRandomAvatar()) // where: public UserAvatar GetRandomAvatar() { ... }
 
 // Specify a substitute value or func, calling an action (eg for logging) if the fallback is invoked.
-Policy
-   .Handle<Whatever>()
+Policy<UserAvatar>
+   .Handle<FooException>()
    .Fallback<UserAvatar>(UserAvatar.Blank, onFallback: (exception, context) => 
     {
-        // do something
+        // Add extra logic to be called when the fallback is invoked, such as logging
     });
 
 ```
 
 For more detail see: [Fallback policy documentation](https://github.com/App-vNext/Polly/wiki/Fallback) on wiki.
 
-## Step 3 : Execute the policy
+## Step 3 : Execute code through the policy
+
+Execute an `Action`, `Func`, or lambda delegate equivalent, through the policy.  The policy governs execution of the code passed to the `.Execute()` (or similar) method.
+
+> _Note: The code examples below show defining the policy and executing code through it in the same scope, for simplicity. See the notes after the code examples for other usage patterns_.
 
 ```csharp
 // Execute an action
@@ -487,11 +495,31 @@ Policy
   .Execute(() => DoSomething());
 ```
 
-The above examples show policy definition immediately followed by policy execution, for simplicity.  Policy definition and execution may just as often be separated in the codebase and application lifecycle.  You may choose for example to define policies on start-up, then provide them to point-of-use by dependency injection (perhaps using [`PolicyRegistry`](#policyregistry)).
+### Richer policy consumption patterns
+
+Defining and consuming the policy in the same scope, as shown above, is the most immediate way to use Polly.  Consider also:
+
++ Separate policy definition from policy consumption, and inject policies into the code which will consume them. This [enables many unit-testing scenarios](https://github.com/App-vNext/Polly/wiki/Unit-testing-with-Polly---with-examples).
++ If your application uses Polly in a number of locations, define all policies at startup, and place them in a [`PolicyRegistry`](https://github.com/App-vNext/Polly/wiki/PolicyRegistry).  This is a common pattern in .NET Core applications.  For instance, you might define your own extension method on `IServiceCollection` to configure the policies you will consume elsewhere in the application.  PolicyRegistry also [combines well with DI to support unit-testing](https://github.com/App-vNext/Polly/wiki/Unit-testing-with-Polly---with-examples#use-policyregistry-with-di-to-work-with-policy-collections).  
+  
+```csharp
+public static ConfigurePollyPolicies(this IServiceCollection services)
+{
+    PolicyRegistry registry = new PolicyRegistry()
+    {
+        { "RepositoryResilienceStrategy", /* define Policy or PolicyWrap strategy */ },
+        { "CollaboratingMicroserviceResilienceStrategy", /* define Policy or PolicyWrap strategy */ },
+	{ "ThirdPartyApiResilienceStrategy", /* define Policy or PolicyWrap strategy */ },
+	/* etc */
+    };
+
+    services.AddSingleton<IReadOnlyPolicyRegistry<string>>(registry);
+}
+```
 
 # Usage &ndash; proactive policies
 
-The proactive policies add resilience strategies that not based on handling faults which delegates may throw or return.
+The proactive policies add resilience strategies that are not based on handling faults which the governed code may throw or return.
 
 ## Step 1 : Configure
 
@@ -519,14 +547,14 @@ Policy
 Policy
   .Timeout(30, onTimeout: (context, timespan, task) => 
     {
-        // do something 
+        // Add extra logic to be invoked when a timeout occurs, such as logging 
     });
 
 // Eg timeout, logging that the execution timed out:
 Policy
   .Timeout(30, onTimeout: (context, timespan, task) => 
     {
-        logger.Warn($"{context.PolicyKey} at {context.ExecutionKey}: execution timed out after {timespan.TotalSeconds} seconds.");
+        logger.Warn($"{context.PolicyKey} at {context.OperationKey}: execution timed out after {timespan.TotalSeconds} seconds.");
     });
 
 // Eg timeout, capturing any exception from the timed-out task when it completes:
@@ -534,7 +562,7 @@ Policy
   .Timeout(30, onTimeout: (context, timespan, task) => 
     {
         task.ContinueWith(t => {
-            if (t.IsFaulted) logger.Error($"{context.PolicyKey} at {context.ExecutionKey}: execution timed out after {timespan.TotalSeconds} seconds, with: {t.Exception}.");
+            if (t.IsFaulted) logger.Error($"{context.PolicyKey} at {context.OperationKey}: execution timed out after {timespan.TotalSeconds} seconds, with: {t.Exception}.");
         });
     });
 ```
@@ -592,7 +620,7 @@ Policy
 Policy
   .Bulkhead(12, context => 
     {
-        // do something 
+        // Add callback logic for when the bulkhead rejects execution, such as logging 
     });
 
 // Monitor the bulkhead available capacity, for example for health/load reporting.
@@ -660,15 +688,15 @@ policyWrap.Execute(...)
 PolicyWrap commonResilience = Policy.Wrap(retry, breaker, timeout);
 
 // ... then wrap in extra policies specific to a call site, at that call site:
-Avatar avatar = Policy
-   .Handle<Whatever>()
+Avatar avatar = Policy<UserAvatar>
+   .Handle<FooException>()
    .Fallback<Avatar>(Avatar.Blank)
    .Wrap(commonResilience)
    .Execute(() => { /* get avatar */ });
 
 // Share commonResilience, but wrap different policies in at another call site:
 Reputation reps = Policy
-   .Handle<Whatever>()
+   .Handle<FooException>()
    .Fallback<Reputation>(Reputation.NotAvailable)
    .Wrap(commonResilience)
    .Execute(() => { /* get reputation */ });  
@@ -788,15 +816,15 @@ var policy = Policy
     .Handle<DataAccessException>()
     .Retry(3, onRetry: (exception, retryCount, context) =>
        {
-           logger.Error($"Retry {retryCount} of {context.PolicyKey} at {context.ExecutionKey}, due to: {exception}.");
+           logger.Error($"Retry {retryCount} of {context.PolicyKey} at {context.OperationKey}, due to: {exception}.");
        })
     .WithPolicyKey("MyDataAccessPolicy");
 
-// Identify call sites with an ExecutionKey, by passing in a Context
+// Identify call sites with an OperationKey, by passing in a Context
 var customerDetails = policy.Execute(myDelegate, new Context("GetCustomerDetails"));
 
 // "MyDataAccessPolicy" -> context.PolicyKey 
-// "GetCustomerDetails  -> context.ExecutionKey
+// "GetCustomerDetails  -> context.OperationKey
 
 
 // Pass additional custom information from call site into execution context 
@@ -804,7 +832,7 @@ var policy = Policy
     .Handle<DataAccessException>()
     .Retry(3, onRetry: (exception, retryCount, context) =>
        {
-           logger.Error($"Retry {retryCount} of {context.PolicyKey} at {context.ExecutionKey}, getting {context["Type"]} of id {context["Id"]}, due to: {exception}.");
+           logger.Error($"Retry {retryCount} of {context.PolicyKey} at {context.OperationKey}, getting {context["Type"]} of id {context["Id"]}, due to: {exception}.");
        })
     .WithPolicyKey("MyDataAccessPolicy");
 
@@ -924,8 +952,6 @@ Polly v5.2.0 adds interfaces intended to support [`PolicyRegistry`](https://gith
 
 Execution interfaces [`ISyncPolicy`](https://github.com/App-vNext/Polly/tree/master/src/Polly.Shared/ISyncPolicy.cs), [`IAsyncPolicy`](https://github.com/App-vNext/Polly/tree/master/src/Polly.Shared/IAsyncPolicy.cs), [`ISyncPolicy<TResult>`](https://github.com/App-vNext/Polly/tree/master/src/Polly.Shared/ISyncPolicyTResult.cs) and [`IAsyncPolicy<TResult>`](https://github.com/App-vNext/Polly/tree/master/src/Polly.Shared/IAsyncPolicyTResult.cs)  define the execution overloads available to policies targeting sync/async, and non-generic / generic calls respectively.
 
-See blog posts for why Polly has [both non-generic and generic policies](http://www.thepollyproject.org/2017/06/07/why-does-polly-offer-both-non-generic-and-generic-policies/) and [separate sync and async policies](http://www.thepollyproject.org/2017/06/09/polly-and-synchronous-versus-asynchronous-policies/).
-
 ## Policy-kind interfaces: `ICircuitBreakerPolicy` etc
 
 Orthogonal to the execution interfaces, interfaces specific to the kind of Policy define properties and methods common to that type of policy.  
@@ -946,6 +972,47 @@ This allows collections of similar kinds of policy to be treated as one - for ex
 
 For more detail see: [Polly and interfaces](https://github.com/App-vNext/Polly/wiki/Polly-and-interfaces) on wiki.
 
+
+# Simmy
+
+[Simmy](https://github.com/Polly-Contrib/Simmy) is a major new companion project adding a chaos-engineering and fault-injection dimension to Polly, through the provision of policies to selectively inject faults or latency.  
+
+Head over to the [Simmy](https://github.com/Polly-Contrib/Simmy) repo to find out more.
+
+# Custom policies
+
+From Polly v7.0 it is possible to [create your own custom policies](http://www.thepollyproject.org/2019/02/13/introducing-custom-polly-policies-and-polly-contrib-custom-policies-part-i/) outside Polly.  These custom policies can integrate in to all the existing goodness from Polly: the `Policy.Handle<>()` syntax; PolicyWrap; all the execution-dispatch overloads.
+
+For more info see our blog series:
+
++ [Part I: Introducing custom Polly policies and the Polly.Contrib](http://www.thepollyproject.org/2019/02/13/introducing-custom-polly-policies-and-polly-contrib-custom-policies-part-i/)
++ [Part II: Authoring a non-reactive custom policy](http://www.thepollyproject.org/2019/02/13/authoring-a-proactive-polly-policy-custom-policies-part-ii/) (a policy which acts on all executions)
++ [Part III: Authoring a reactive custom policy](http://www.thepollyproject.org/2019/02/13/authoring-a-reactive-polly-policy-custom-policies-part-iii-2/) (a policy which react to faults).
++ [Part IV: Custom policies for all execution types](http://www.thepollyproject.org/2019/02/13/custom-policies-for-all-execution-types-custom-policies-part-iv/): sync and async, generic and non-generic.
+
+We provide a [starter template for a custom policy](https://github.com/Polly-Contrib/Polly.Contrib.CustomPolicyTemplates) for developing your own custom policy. 
+
+# Polly-Contrib
+
+Polly now has a [Polly-Contrib](https://github.com/Polly-Contrib) to allow the community to contribute policies or other enhancements around Polly with a low burden of ceremony.
+
+Have a contrib you'd like to publish under Polly-Contrib? Contact us with  an issue here or on [Polly slack](http://pollytalk.slack.com), and we can set up a CI-ready Polly.Contrib repo to which you have full rights, to help you manage and deliver your awesomeness to the community!
+
+We also provide:
+
++ a blank [starter template for a custom policy](https://github.com/Polly-Contrib/Polly.Contrib.CustomPolicyTemplates) (see above for more on custom policies)
++ a [template repo for any other contrib](https://github.com/Polly-Contrib/Polly.Contrib.BlankTemplate)
+
+Both templates contain a full project structure referencing Polly, Polly's default build targets, and a build to build and test your contrib and make a nuget package.
+
+## Available via Polly-Contrib
+
++ [Polly.Contrib.WaitAndRetry](https://github.com/Polly-Contrib/Polly.Contrib.WaitAndRetry): a collection of concise helper methods for common wait-and-retry strategies; and a new jitter formula combining exponential backoff with a very even distribution of randomly-jittered retry intervals.
++ [Polly.Contrib.AzureFunctions.CircuitBreaker](https://github.com/Polly-Contrib/Polly.Contrib.AzureFunctions.CircuitBreaker): a distributed circuit-breaker implemented in Azure Functions; consumable in Azure Functions, or from anywhere over http.
++ [Simmy](https://github.com/Polly-Contrib/Simmy): our chaos engineering project.
++ [Polly.Contrib.TimingPolicy](https://github.com/Polly-Contrib/Polly.Contrib.TimingPolicy): a starter policy to publish execution timings of any call executed through Policy.
++ [Polly.Contrib.LoggingPolicy](https://github.com/Polly-Contrib/Polly.Contrib.LoggingPolicy): a policy simply to log handled exceptions/faults, and rethrow or bubble the fault outwards.
+
 # 3rd Party Libraries and Contributions
 
 * [Fluent Assertions](https://github.com/fluentassertions/fluentassertions) - A set of .NET extension methods that allow you to more naturally specify the expected outcome of a TDD or BDD-style test | [Apache License 2.0 (Apache)](https://github.com/dennisdoomen/fluentassertions/blob/develop/LICENSE)
@@ -954,7 +1021,7 @@ For more detail see: [Polly and interfaces](https://github.com/App-vNext/Polly/w
 * [Steven van Deursen's ReadOnlyDictionary](http://www.cuttingedge.it/blogs/steven/pivot/entry.php?id=29) (until Polly v5.0.6)
 * [Stephen Cleary's AsyncEx library](https://github.com/StephenCleary/AsyncEx) for AsyncSemaphore (supports BulkheadAsync policy for .NET4.0 only) (until Polly v5.9.0) | [MIT license](https://github.com/StephenCleary/AsyncEx/blob/master/LICENSE)
 * [@theraot](https://github.com/theraot)'s [ExceptionDispatchInfo implementation for .NET4.0](https://stackoverflow.com/a/31226509/) (supports Timeout policy for .NET4.0 only) (until Polly v5.9.0) including also a contribution by [@migueldeicaza](https://github.com/migueldeicaza) | Licensed under and distributed under [Creative Commons Attribution Share Alike license](https://creativecommons.org/licenses/by-sa/3.0/) per [StackExchange Terms of Service](https://stackexchange.com/legal)
-* Build powered by [Cake](http://cakebuild.net/) and [GitVersionTask](https://github.com/GitTools/GitVersion).
+* Build powered by [Cake](http://cakebuild.net/) and [GitVersionTask](https://github.com/GitTools/GitVersion).  Developers powered by [Resharper](https://www.jetbrains.com/resharper/), with thanks to JetBrains for [OSS licensing](https://www.jetbrains.com/support/community/#section=open-source).
 
 # Acknowledgements
 
@@ -1021,7 +1088,10 @@ For more detail see: [Polly and interfaces](https://github.com/App-vNext/Polly/w
 * [@cmeeren](https://github.com/cmeeren) - Enable cache policies to cache values of default(TResult).
 * [@aprooks](https://github.com/aprooks) - Build script tweaks for Mac and mono.
 * [@kesmy](https://github.com/Kesmy) - Add Soucelink support, clean up cake build.
-
+* [@simluk](https://github.com/simluk) - Fix continueOnCaptureContext not being honored in async retry implementation (bug in v7.1.0 only).
+* [@jnyrup](https://github.com/jnyrup) - Upgrade tests to Fluent Assertions v5.9.0
+* [@SimonCropp](https://github.com/SimonCropp) - Add netcoreapp3.0 target; code clean-ups.
+* [@aerotog](https://github.com/aerotog) and [@reisenberger](https://github.com/reisenberger) - IConcurrentPolicyRegistry methods on PolicyRegistry
 
 # Sample Projects
 
@@ -1043,49 +1113,13 @@ Also, we've stood up a [Slack](http://www.pollytalk.org) channel for easier real
 
 Licensed under the terms of the [New BSD License](http://opensource.org/licenses/BSD-3-Clause)
 
-# Simmy
-
-[Simmy](https://github.com/Polly-Contrib/Simmy) is a major new companion project adding a chaos-engineering and fault-injection dimension to Polly, through the provision of policies to selectively inject faults or latency.  
-
-Head over to the [Simmy](https://github.com/Polly-Contrib/Simmy) repo to find out more.
-
-# Custom policies
-
-From Polly v7.0 it is possible to [create your own custom policies](http://www.thepollyproject.org/2019/02/13/introducing-custom-polly-policies-and-polly-contrib-custom-policies-part-i/) outside Polly.  These custom policies can integrate in to all the existing goodness from Polly: the `Policy.Handle<>()` syntax; PolicyWrap; all the execution-dispatch overloads.
-
-For more info see our blog series:
-
-+ [Part I: Introducing custom Polly policies and the Polly.Contrib](http://www.thepollyproject.org/2019/02/13/introducing-custom-polly-policies-and-polly-contrib-custom-policies-part-i/)
-+ [Part II: Authoring a non-reactive custom policy](http://www.thepollyproject.org/2019/02/13/authoring-a-proactive-polly-policy-custom-policies-part-ii/) (a policy which acts on all executions)
-+ [Part III: Authoring a reactive custom policy](http://www.thepollyproject.org/2019/02/13/authoring-a-reactive-polly-policy-custom-policies-part-iii-2/) (a policy which react to faults).
-+ [Part IV: Custom policies for all execution types](http://www.thepollyproject.org/2019/02/13/custom-policies-for-all-execution-types-custom-policies-part-iv/): sync and async, generic and non-generic.
-
-We provide a [starter template for a custom policy](https://github.com/Polly-Contrib/Polly.Contrib.CustomPolicyTemplates) for developing your own custom policy. 
-
-# Polly-Contrib
-
-Polly now has a [Polly-Contrib](https://github.com/Polly-Contrib) to allow the community to contribute policies or other enhancements around Polly with a low burden of ceremony.
-
-Have a contrib you'd like to publish under Polly-Contrib? Contact us with  an issue here or on [Polly slack](http://pollytalk.slack.com), and we can set up a Polly.Contrib repo to which you have full rights, to help you manage and deliver your awesomeness to the community!
-
-We also provide:
-
-+ a blank [starter template for a custom policy](https://github.com/Polly-Contrib/Polly.Contrib.CustomPolicyTemplates) (see above for more on custom policies)
-+ a [template repo for any other contrib](https://github.com/Polly-Contrib/Polly.Contrib.BlankTemplate)
-
-Both templates contain a full project structure referencing Polly, Polly's default build targets, and a build to build and test your contrib and make a nuget package.
-
-## Available via Polly-Contrib
-
-+ [Polly.Contrib.TimingPolicy](https://github.com/Polly-Contrib/Polly.Contrib.TimingPolicy): a starter policy to publish execution timings of any call executed through Policy.
-+ [Polly.Contrib.LoggingPolicy](https://github.com/Polly-Contrib/Polly.Contrib.LoggingPolicy): a policy simply to log handled exceptions/faults, and rethrow or bubble the fault outwards.
-
 # Blogs, podcasts, courses, ebooks, architecture samples and videos around Polly
 
 When we discover an interesting write-up on Polly, we'll add it to this list. If you have a blog post you'd like to share, please submit a PR!
 
 ## Blog posts
-
+* [Try .NET Samples of Polly, the .NET Resilience Framework](https://github.com/bryanjhogan/trydotnet-polly) - by [Bryan Hogan](https://nodogmablog.bryanhogan.net/)
+* [Create exceptional interactive documentation with Try .NET - The Polly NuGet library did!](https://www.hanselman.com/blog/CreateExceptionalInteractiveDocumentationWithTryNETThePollyNuGetLibraryDid.aspx) - by [Scott Hanselman](https://www.hanselman.com/about/) (writing about the work of Bryan Hogan)
 * [Adding resilience and Transient Fault handling to your .NET Core HttpClient with Polly](https://www.hanselman.com/blog/AddingResilienceAndTransientFaultHandlingToYourNETCoreHttpClientWithPolly.aspx) - by [Scott Hanselman](https://www.hanselman.com/about/) 
 * [Reliable Event Processing in Azure Functions](https://hackernoon.com/reliable-event-processing-in-azure-functions-37054dc2d0fc) - by [Jeff Hollan](https://hackernoon.com/@jeffhollan)
 * [Optimally configuring ASPNET Core HttpClientFactory](https://rehansaeed.com/optimally-configuring-asp-net-core-httpclientfactory/) including with Polly policies - by [Muhammad Rehan Saeed](https://twitter.com/RehanSaeedUK/)
@@ -1104,6 +1138,8 @@ When we discover an interesting write-up on Polly, we'll add it to this list. If
 * [Polly is Repetitive, and I love it!](http://www.appvnext.com/blog/2015/11/19/polly-is-repetitive-and-i-love-it) - by [Joel Hulen](http://www.thepollyproject.org/author/joel/)
 * [Using the Context to Obtain the Retry Count for Diagnostics](https://www.stevejgordon.co.uk/polly-using-context-to-obtain-retry-count-diagnostics) - by [Steve Gordon](https://twitter.com/stevejgordon)
 * [Passing an ILogger to Polly Policies](https://www.stevejgordon.co.uk/passing-an-ilogger-to-polly-policies) - by [Steve Gordon](https://twitter.com/stevejgordon)
+* [Using Polly and Flurl to improve your website](https://jeremylindsayni.wordpress.com/2019/01/01/using-polly-and-flurl-to-improve-your-website/) - by Jeremy Lindsay.
+* [Exploring the Polly.Contrib.WaitAndRetry helpers](https://hyr.mn/Polly-wait-and-retry/) - by [Ben Hyrman](https://twitter.com/hyrmn), who also wrote most of the Polly.Contrib.WaitAndRetry documentation.
 
 ## Podcasts
 

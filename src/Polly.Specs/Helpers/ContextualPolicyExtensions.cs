@@ -12,7 +12,7 @@ namespace Polly.Specs.Helpers
         {
             int counter = 0;
 
-            policy.Execute(ctx =>
+            policy.Execute(_ =>
             {
                 if (counter < numberOfTimesToRaiseException)
                 {
@@ -20,10 +20,7 @@ namespace Polly.Specs.Helpers
 
                     var exception = new TException();
 
-                    if (configureException != null)
-                    {
-                        configureException(exception, counter);
-                    }
+                    configureException?.Invoke(exception, counter);
 
                     throw exception;
                 }

@@ -15,6 +15,7 @@ TestResults
 .vs/
 .vscode/
 .idea/
+.ionide/
 
 # Build results
 [Dd]ebug/
@@ -117,6 +118,7 @@ UpgradeLog*.XML
 
 artifacts
 build
+BenchmarkDotNet.Artifacts
 tools
 
 *.lock.json

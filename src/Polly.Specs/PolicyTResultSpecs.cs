@@ -15,7 +15,7 @@ namespace Polly.Specs
         {
             var policy = Policy
                 .HandleResult(ResultPrimitive.Fault)
-                .Retry((_, __) => { });
+                .Retry((_, _) => { });
 
             var result = policy.Execute(() => ResultPrimitive.Good);
 
@@ -32,10 +32,10 @@ namespace Polly.Specs
         {
             var result = Policy
                 .HandleResult(ResultPrimitive.Fault)
-                .Retry((_, __) => { })
+                .Retry((_, _) => { })
                 .ExecuteAndCapture(() => ResultPrimitive.Good);
 
-            result.ShouldBeEquivalentTo(new
+            result.Should().BeEquivalentTo(new
             {
                 Outcome = OutcomeType.Successful,
                 FinalException = (Exception)null,
@@ -43,7 +43,7 @@ namespace Polly.Specs
                 Result = ResultPrimitive.Good,
                 FinalHandledResult = default(ResultPrimitive),
                 FaultType = (FaultType?)null
-            }, options => options.Excluding(o => o.Context));
+            });
         }
 
         [Fact]
@@ -53,10 +53,10 @@ namespace Polly.Specs
 
             var result = Policy
                 .HandleResult(handledResult)
-                .Retry((_, __) => { })
+                .Retry((_, _) => { })
                 .ExecuteAndCapture(() => handledResult);
 
-            result.ShouldBeEquivalentTo(new
+            result.Should().BeEquivalentTo(new
             {
                 Outcome = OutcomeType.Failure,
                 FinalException = (Exception)null,
@@ -64,7 +64,7 @@ namespace Polly.Specs
                 FaultType = FaultType.ResultHandledByThisPolicy,
                 FinalHandledResult = handledResult,
                 Result = default(ResultPrimitive)
-            }, options => options.Excluding(o => o.Context));
+            });
         }
 
         [Fact]
@@ -75,10 +75,10 @@ namespace Polly.Specs
 
             var result = Policy
                 .HandleResult(handledResult)
-                .Retry((_, __) => { })
+                .Retry((_, _) => { })
                 .ExecuteAndCapture(() => unhandledResult);
 
-            result.ShouldBeEquivalentTo(new
+            result.Should().BeEquivalentTo(new
             {
                 Outcome = OutcomeType.Successful,
                 FinalException = (Exception)null,
@@ -86,23 +86,22 @@ namespace Polly.Specs
                 Result = unhandledResult,
                 FinalHandledResult = default(ResultPrimitive),
                 FaultType = (FaultType?)null
-            }, options => options.Excluding(o => o.Context));
+            });
         }
 
         #endregion
 
         #region Context tests
-        
 
         [Fact]
         public void Executing_the_policy_function_should_throw_when_context_data_is_null()
         {
             Policy<ResultPrimitive> policy = Policy
                 .HandleResult(ResultPrimitive.Fault)
-                .Retry((_, __, ___) => { });
+                .Retry((_, _, _) => { });
 
-            policy.Invoking(p => p.Execute(ctx => ResultPrimitive.Good, (IDictionary<string, object>)null))
-                .ShouldThrow<ArgumentNullException>();
+            policy.Invoking(p => p.Execute(_ => ResultPrimitive.Good, (IDictionary<string, object>)null))
+                .Should().Throw<ArgumentNullException>();
         }
 
         [Fact]
@@ -110,10 +109,10 @@ namespace Polly.Specs
         {
             Policy<ResultPrimitive> policy = Policy
                 .HandleResult(ResultPrimitive.Fault)
-                .Retry((_, __, ___) => { });
+                .Retry((_, _, _) => { });
 
-            policy.Invoking(p => p.Execute(ctx => ResultPrimitive.Good, (Context)null))
-                .ShouldThrow<ArgumentNullException>().And
+            policy.Invoking(p => p.Execute(_ => ResultPrimitive.Good, (Context)null))
+                .Should().Throw<ArgumentNullException>().And
                 .ParamName.Should().Be("context");
         }
 
@@ -126,7 +125,7 @@ namespace Polly.Specs
 
             Policy<ResultPrimitive> policy = Policy.NoOp<ResultPrimitive>();
 
-            policy.Execute((context) => { capturedContext = context; return ResultPrimitive.Good; }, executionContext);
+            policy.Execute(context => { capturedContext = context; return ResultPrimitive.Good; }, executionContext);
 
             capturedContext.Should().BeSameAs(executionContext);
         }
@@ -136,10 +135,10 @@ namespace Polly.Specs
         {
             Policy<ResultPrimitive> policy = Policy
                 .HandleResult(ResultPrimitive.Fault)
-                .Retry((_, __, ___) => { });
+                .Retry((_, _, _) => { });
 
-            policy.Invoking(p => p.ExecuteAndCapture(ctx => ResultPrimitive.Good, (IDictionary<string, object>)null))
-                  .ShouldThrow<ArgumentNullException>();
+            policy.Invoking(p => p.ExecuteAndCapture(_ => ResultPrimitive.Good, (IDictionary<string, object>)null))
+                  .Should().Throw<ArgumentNullException>();
         }
 
         [Fact]
@@ -147,10 +146,10 @@ namespace Polly.Specs
         {
             Policy<ResultPrimitive> policy = Policy
                 .HandleResult(ResultPrimitive.Fault)
-                .Retry((_, __, ___) => { });
+                .Retry((_, _, _) => { });
 
-            policy.Invoking(p => p.ExecuteAndCapture(ctx => ResultPrimitive.Good, (Context)null))
-                  .ShouldThrow<ArgumentNullException>().And
+            policy.Invoking(p => p.ExecuteAndCapture(_ => ResultPrimitive.Good, (Context)null))
+                  .Should().Throw<ArgumentNullException>().And
                   .ParamName.Should().Be("context");
         }
 
@@ -163,7 +162,7 @@ namespace Polly.Specs
 
             Policy<ResultPrimitive> policy = Policy.NoOp<ResultPrimitive>();
 
-            policy.ExecuteAndCapture((context) => { capturedContext = context; return ResultPrimitive.Good; }, executionContext);
+            policy.ExecuteAndCapture(context => { capturedContext = context; return ResultPrimitive.Good; }, executionContext);
 
             capturedContext.Should().BeSameAs(executionContext);
         }
@@ -176,7 +175,7 @@ namespace Polly.Specs
 
             Policy<ResultPrimitive> policy = Policy.NoOp<ResultPrimitive>();
 
-            policy.ExecuteAndCapture((context) => ResultPrimitive.Good, executionContext)
+            policy.ExecuteAndCapture(_ => ResultPrimitive.Good, executionContext)
                 .Context.Should().BeSameAs(executionContext);
         }
 

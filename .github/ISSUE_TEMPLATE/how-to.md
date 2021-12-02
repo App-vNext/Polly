@@ -2,7 +2,6 @@
 name: How to
 about: You have something specific to achieve and the existing documentation hasn't
   covered how.
-
 ---
 
 <!-- 
@@ -15,13 +14,9 @@ https://github.com/App-vNext/Polly/wiki contains detailed pages on each policy t
 
 **Summary: What are you wanting to achieve?**
 
-<br/>
-<br/>
 
 **What code or approach do you have so far?**  
 
-<br/>
-<br/>
 
 It is _always_ useful to see:
 

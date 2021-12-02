@@ -419,9 +419,9 @@ namespace Polly
         /// <exception cref="ArgumentNullException">cacheKeyStrategy</exception>
         public static AsyncCachePolicy<TResult> CacheAsync<TResult>(IAsyncCacheProvider<TResult> cacheProvider, ITtlStrategy ttlStrategy, ICacheKeyStrategy cacheKeyStrategy, Action<Context, string, Exception> onCacheError = null)
         {
-            onCacheError = onCacheError ?? ((_, __, ___) => { });
+            onCacheError = onCacheError ?? ((_, _, _) => { });
 
-            Action<Context, string> emptyDelegate = (_, __) => { };
+            Action<Context, string> emptyDelegate = (_, _) => { };
 
             return CacheAsync<TResult>(cacheProvider, ttlStrategy, cacheKeyStrategy.GetCacheKey, emptyDelegate, emptyDelegate, emptyDelegate, onCacheError, onCacheError);
         }
@@ -442,9 +442,9 @@ namespace Polly
         /// <exception cref="ArgumentNullException">cacheKeyStrategy</exception>
         public static AsyncCachePolicy<TResult> CacheAsync<TResult>(IAsyncCacheProvider<TResult> cacheProvider, ITtlStrategy<TResult> ttlStrategy, ICacheKeyStrategy cacheKeyStrategy, Action<Context, string, Exception> onCacheError = null)
         {
-            onCacheError = onCacheError ?? ((_, __, ___) => { });
+            onCacheError = onCacheError ?? ((_, _, _) => { });
 
-            Action<Context, string> emptyDelegate = (_, __) => { };
+            Action<Context, string> emptyDelegate = (_, _) => { };
 
             return CacheAsync<TResult>(cacheProvider, ttlStrategy, cacheKeyStrategy.GetCacheKey, emptyDelegate, emptyDelegate, emptyDelegate, onCacheError, onCacheError);
         }
@@ -481,9 +481,9 @@ namespace Polly
         /// <exception cref="ArgumentNullException">cacheKeyStrategy</exception>
         public static AsyncCachePolicy<TResult> CacheAsync<TResult>(IAsyncCacheProvider<TResult> cacheProvider, ITtlStrategy ttlStrategy, Func<Context, string> cacheKeyStrategy, Action<Context, string, Exception> onCacheError = null)
         {
-            onCacheError = onCacheError ?? ((_, __, ___) => { });
+            onCacheError = onCacheError ?? ((_, _, _) => { });
 
-            Action<Context, string> emptyDelegate = (_, __) => { };
+            Action<Context, string> emptyDelegate = (_, _) => { };
 
             return CacheAsync<TResult>(cacheProvider, ttlStrategy, cacheKeyStrategy, emptyDelegate, emptyDelegate, emptyDelegate, onCacheError, onCacheError);
         }
@@ -504,9 +504,9 @@ namespace Polly
         /// <exception cref="ArgumentNullException">cacheKeyStrategy</exception>
         public static AsyncCachePolicy<TResult> CacheAsync<TResult>(IAsyncCacheProvider<TResult> cacheProvider, ITtlStrategy<TResult> ttlStrategy, Func<Context, string> cacheKeyStrategy, Action<Context, string, Exception> onCacheError = null)
         {
-            onCacheError = onCacheError ?? ((_, __, ___) => { });
+            onCacheError = onCacheError ?? ((_, _, _) => { });
 
-            Action<Context, string> emptyDelegate = (_, __) => { };
+            Action<Context, string> emptyDelegate = (_, _) => { };
 
             return CacheAsync<TResult>(cacheProvider, ttlStrategy, cacheKeyStrategy, emptyDelegate, emptyDelegate, emptyDelegate, onCacheError, onCacheError);
         }

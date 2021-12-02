@@ -43,7 +43,7 @@ namespace Polly.CircuitBreaker
         [DebuggerStepThrough]
         protected override TResult Implementation<TResult>(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken)
         {
-            TResult result = default(TResult);
+            TResult result = default;
             CircuitBreakerEngine.Implementation<EmptyStruct>(
                 (ctx, ct) => { result = action(ctx, ct); return EmptyStruct.Instance; },
                 context,

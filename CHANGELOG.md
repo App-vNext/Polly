@@ -1,9 +1,32 @@
+## 7.3.0
+
+- Add RateLimit policy - Thanks to [@reisenberger](https://github.com/reisenberger)
+
+## 7.2.2
+
+- Recursively search all `AggregateException` inner exceptions for predicate matches when using `HandleInner()` ([#818](https://github.com/App-vNext/Polly/issues/818)) - Thanks to [@sideproject](https://github.com/sideproject)
+- Polly now builds deterministically - Thanks to [@304NotModified](https://github.com/304NotModified)
+- Bug fix: the `timeoutStrategy` parameter was not being used by the `TimeoutAsync(Func<TimeSpan>, TimeoutStrategy, Func<Context, TimeSpan, Task, Task>)` method - Thanks to [@martincostello](https://github.com/martincostello)
+- Bug fix: the solution can now be built with the .NET 5.0 SDK - Thanks to [@martincostello](https://github.com/martincostello)
+
+## 7.2.1
+- Upgrade SourceLink to RTM v1 (fixes building from source for latest .NET Core 3.1.x)
+- Bug fix: rare circuit-breaker race condition causing NullReferenceException when circuit throws BrokenCircuitException.
+
 ## 7.2.0
-- Add RateLimit policy
+- Add test target for netcoreapp3.0.
+- Extend PolicyRegistry with concurrent method support, TryAdd, TryRemove, TryUpdate, GetOrAdd, AddOrUpdate; new interface IConcurrentPolicyRegistry
+- Improve .NET Framework support: Add explicit targets for .NET Framework 4.6.1 and 4.7.2.
+- TimeoutPolicy: if timeout occurs while a user exception is being marshalled (edge case race condition), do not mask user exception (fix issue 620)
+- Enhance debugging/stacktrace experience for some contexts: Include pdb symbols in package again.
+
+## 7.1.1
+- Bug fix: ensure async retry policies honor continueOnCapturedContext setting (affected v7.1.0 only).
+- Remove deprecated cake add-in from build
 
 ## 7.1.0
 - Add SourceLink debugger support.
-- Bug fix: PolicyRegistry with .NET Core services.AddPolicyRegistry() overload (affects Polly v7.0.1-3 only)
+- Bug fix: PolicyRegistry with .NET Core services.AddPolicyRegistry() overload (affected Polly v7.0.1-3 only)
 - Rationalise solution layout
 - Add explicit .NET framework 4.6.2 and 4.7.2 test runs
 
@@ -44,7 +67,7 @@
 - Remove methods marked as deprecated in v5.9.0
 
 ## 5.9.0
-- Allow Timeout.InfiniteTimeSpan (no timeout) for TimeoutPolicy. 
+- Allow Timeout.InfiniteTimeSpan (no timeout) for TimeoutPolicy.
 - Add .AsPolicy&lt;TResult&gt; and .AsAsyncPolicy&lt;TResult&gt; methods for converting non-generic policies to generic policies.
 - Per Semver, indicates deprecation of overloads and properties intended to be removed or renamed in Polly v6.
 
@@ -55,7 +78,7 @@
 ## 5.7.0
 - Minor cache fixes
 - Add ability to calculate cache Ttl based on item to cache
-- Allow user-created custom policies 
+- Allow user-created custom policies
 
 ## 5.6.1
 - Extend PolicyWrap syntax with interfaces
@@ -93,7 +116,7 @@
 - Add PolicyRegistry for storing and retrieving policies.
 - Add interfaces by policy type and execution type.
 - Change .NetStandard minimum support to NetStandard1.1.
-     
+
 ## 5.1.0
 - Allow different parts of a policy execution to exchange data via a mutable Context travelling with each execution.
 
@@ -108,22 +131,22 @@
 - Add NoOpPolicy: NoOpPolicy executes delegates without intervention; for eg stubbing out Polly in unit testing.
 
 ## 5.0.4 pre
-- Fix Microsoft.Bcl and Nito.AsyncEx dependencies for Polly.Net40Async. 
-     
+- Fix Microsoft.Bcl and Nito.AsyncEx dependencies for Polly.Net40Async.
+
 ## 5.0.3 RTM
 - Refine implementation of cancellable synchronous WaitAndRetry
 - Minor breaking change: Where a user delegate does not observe cancellation, Polly will now honour the delegate's outcome rather than throw for the unobserved cancellation (issue 188).
 
 ## 5.0.2 alpha
 
-- .NETStandard1.0 target: Correctly state dependencies. 
+- .NETStandard1.0 target: Correctly state dependencies.
 - .NETStandard1.0 target: Fix SemVer stamping of Polly.dll.
 - PCL259 project and target: Remove, in favour of .NETStandard1.0 target.  PCL259 is supported via .NETStandard1.0 target, going forward.
 - Mark Polly.dll as CLSCompliant.
 - Tidy build around GitVersionTask and ReferenceGenerator.
 - Update FluentAssertions dependency.
 - Added Polly.Net40Async specs project.
-- Fix issue 179: Make Net4.0 async implementation for Bulkhead truly async. 
+- Fix issue 179: Make Net4.0 async implementation for Bulkhead truly async.
 
 ## 5.0.1 alpha
 
@@ -147,15 +170,15 @@ Other changes include:
 - Provide .NET4.0 support uniquely through Polly.NET40Async package
 - Retire ContextualPolicy (not part of documented API; support now in Policy base class)
 - Discontinue .NET3.5 support
- 
+
 ## 4.3.0
 
 - Added ability for policies to handle returned results.  Optimised circuit-breaker hot path.  Fixed circuit-breaker threshold bug.  Thanks to [@reisenberger](https://github.com/reisenberger), [@christopherbahr](https://github.com/christopherbahr) and [@Finity](https://github.com/Finity) respectively.
 
 ## 4.2.4
 
-- Added overloads to WaitAndRetry and WaitAndRetryAsync methods that accept an onRetry delegate which includes the attempt count.  Thanks to [@SteveCote](https://github.com/steveCote) 
-     
+- Added overloads to WaitAndRetry and WaitAndRetryAsync methods that accept an onRetry delegate which includes the attempt count.  Thanks to [@SteveCote](https://github.com/steveCote)
+
 ## 4.2.3
 
 - Updated the Polly.Net40Async NuGet package to enable async via the SUPPORTSASYNC constant. Cleaned up the build scripts in order to ensure unnecessary DLL references are not included within each of the framework targets.  Thanks to [@reisenberger](https://github.com/reisenberger) and [@joelhulen](https://github.com/joelhulen)
@@ -234,7 +257,7 @@ Other changes include:
 ## 2.2.1
 
 - Replaced non-blocking sleep implementation with a blocking one for PCL
-       
+
 ## 2.2.0
 
 - Added Async Support (PCL)
@@ -248,9 +271,9 @@ Other changes include:
 ## 2.0.0
 
 - Added Portable Class Library ([Issue #4](https://github.com/michael-wolfenden/Polly/issues/4)) - Thanks to  [@ghuntley](https://github.com/ghuntley) for the implementation
-- The `Polly` NuGet package is now no longer strongly named. The strongly named NuGet package is now `Polly-Signed` ([Issue #5](https://github.com/michael-wolfenden/Polly/issues/5)) 
+- The `Polly` NuGet package is now no longer strongly named. The strongly named NuGet package is now `Polly-Signed` ([Issue #5](https://github.com/michael-wolfenden/Polly/issues/5))
 
 ## 1.1.0
 
 - Added additional overloads to Retry
-- Allow arbitrary data to be passed to policy execution ([Issue #1](https://github.com/michael-wolfenden/Polly/issues/1)) 
+- Allow arbitrary data to be passed to policy execution ([Issue #1](https://github.com/michael-wolfenden/Polly/issues/1))

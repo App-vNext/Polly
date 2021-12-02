@@ -1,23 +1,14 @@
 ---
 name: Bug?
 about: "... or something not behaving as expected?"
-
 ---
 
 **Summary**: 
 
-<br/>
-<br/>
-
 **Expected behavior**: 
 
-<br/>
-<br/>
 
 **Actual behaviour**:
-
-<br/>
-<br/>
 
 **Steps / Code to reproduce the problem**: 
 

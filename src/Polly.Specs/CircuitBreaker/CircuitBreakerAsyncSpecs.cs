@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
+using FluentAssertions.Extensions;
 using Polly.CircuitBreaker;
 using Polly.Specs.Helpers;
 using Polly.Utilities;
@@ -12,7 +13,7 @@ using Scenario = Polly.Specs.Helpers.PolicyExtensionsAsync.ExceptionAndOrCancell
 
 namespace Polly.Specs.CircuitBreaker
 {
-    [Collection(Polly.Specs.Helpers.Constants.SystemClockDependentTestCollection)]
+    [Collection(Constants.SystemClockDependentTestCollection)]
     public class CircuitBreakerAsyncSpecs : IDisposable
     {
         #region Configuration tests
@@ -24,8 +25,8 @@ namespace Polly.Specs.CircuitBreaker
                             .Handle<DivideByZeroException>()
                             .CircuitBreakerAsync(1, TimeSpan.MaxValue);
 
-            breaker.Awaiting(async x => await x.RaiseExceptionAsync<DivideByZeroException>())
-                  .ShouldThrow<DivideByZeroException>();
+            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                  .Should().Throw<DivideByZeroException>();
         }
 
         [Fact]
@@ -35,7 +36,7 @@ namespace Polly.Specs.CircuitBreaker
                                     .Handle<DivideByZeroException>()
                                     .CircuitBreakerAsync(0, TimeSpan.FromSeconds(10));
 
-            action.ShouldThrow<ArgumentOutOfRangeException>()
+            action.Should().Throw<ArgumentOutOfRangeException>()
                   .And.ParamName.Should()
                   .Be("exceptionsAllowedBeforeBreaking");
         }
@@ -47,7 +48,7 @@ namespace Polly.Specs.CircuitBreaker
                                      .Handle<DivideByZeroException>()
                                      .CircuitBreakerAsync(1, -TimeSpan.FromSeconds(1));
 
-            action.ShouldThrow<ArgumentOutOfRangeException>()
+            action.Should().Throw<ArgumentOutOfRangeException>()
                 .And.ParamName.Should()
                 .Be("durationOfBreak");
         }
@@ -58,7 +59,7 @@ namespace Polly.Specs.CircuitBreaker
             Action action = () => Policy
                                      .Handle<DivideByZeroException>()
                                      .CircuitBreakerAsync(1, TimeSpan.Zero);
-            action.ShouldNotThrow();
+            action.Should().NotThrow();
         }
 
         [Fact]
@@ -84,15 +85,15 @@ namespace Polly.Specs.CircuitBreaker
                             .Handle<DivideByZeroException>()
                             .CircuitBreakerAsync(2, TimeSpan.FromMinutes(1));
 
-            breaker.Awaiting(async x => await x.RaiseExceptionAsync<DivideByZeroException>())
-                  .ShouldThrow<DivideByZeroException>();
+            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                  .Should().Throw<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
-            breaker.Awaiting(async b => await b.ExecuteAsync(() => TaskHelper.EmptyTask)).ShouldNotThrow();
+            breaker.Awaiting(b => b.ExecuteAsync(() => TaskHelper.EmptyTask)).Should().NotThrow();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
-            breaker.Awaiting(async x => await x.RaiseExceptionAsync<DivideByZeroException>())
-                  .ShouldThrow<DivideByZeroException>();
+            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                  .Should().Throw<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
         }
 
@@ -103,17 +104,17 @@ namespace Polly.Specs.CircuitBreaker
                             .Handle<DivideByZeroException>()
                             .CircuitBreakerAsync(2, TimeSpan.FromMinutes(1));
 
-            breaker.Awaiting(async x => await x.RaiseExceptionAsync<DivideByZeroException>())
-                  .ShouldThrow<DivideByZeroException>();
+            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                  .Should().Throw<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
-            breaker.Awaiting(async x => await x.RaiseExceptionAsync<DivideByZeroException>())
-                  .ShouldThrow<DivideByZeroException>();
+            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                  .Should().Throw<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
             bool delegateExecutedWhenBroken = false;
-            breaker.Awaiting(async x => await x.ExecuteAsync(() => { delegateExecutedWhenBroken = true; return TaskHelper.EmptyTask; }))
-                  .ShouldThrow<BrokenCircuitException>()
+            breaker.Awaiting(x => x.ExecuteAsync(() => { delegateExecutedWhenBroken = true; return TaskHelper.EmptyTask; }))
+                  .Should().Throw<BrokenCircuitException>()
                   .WithMessage("The circuit is now open and is not allowing calls.")
                   .WithInnerException<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Open);
@@ -129,18 +130,18 @@ namespace Polly.Specs.CircuitBreaker
                             .Or<ArgumentOutOfRangeException>()
                             .CircuitBreakerAsync(2, TimeSpan.FromMinutes(1));
 
-            breaker.Awaiting(async x => await x.RaiseExceptionAsync<DivideByZeroException>())
-                  .ShouldThrow<DivideByZeroException>();
+            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                  .Should().Throw<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
-            breaker.Awaiting(async x => await x.RaiseExceptionAsync<ArgumentOutOfRangeException>())
-                  .ShouldThrow<ArgumentOutOfRangeException>();
+            breaker.Awaiting(x => x.RaiseExceptionAsync<ArgumentOutOfRangeException>())
+                  .Should().Throw<ArgumentOutOfRangeException>();
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
             // 2 exception raised, circuit is now open
             bool delegateExecutedWhenBroken = false;
-            breaker.Awaiting(async x => await x.ExecuteAsync(() => { delegateExecutedWhenBroken = true; return TaskHelper.EmptyTask; }))
-                  .ShouldThrow<BrokenCircuitException>()
+            breaker.Awaiting(x => x.ExecuteAsync(() => { delegateExecutedWhenBroken = true; return TaskHelper.EmptyTask; }))
+                  .Should().Throw<BrokenCircuitException>()
                   .WithMessage("The circuit is now open and is not allowing calls.")
                   .WithInnerException<ArgumentOutOfRangeException>();
             breaker.CircuitState.Should().Be(CircuitState.Open);
@@ -154,16 +155,16 @@ namespace Polly.Specs.CircuitBreaker
                             .Handle<DivideByZeroException>()
                             .CircuitBreakerAsync(2, TimeSpan.FromMinutes(1));
 
-            breaker.Awaiting(async x => await x.RaiseExceptionAsync<ArgumentNullException>())
-                  .ShouldThrow<ArgumentNullException>();
+            breaker.Awaiting(x => x.RaiseExceptionAsync<ArgumentNullException>())
+                  .Should().Throw<ArgumentNullException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
-            breaker.Awaiting(async x => await x.RaiseExceptionAsync<ArgumentNullException>())
-                  .ShouldThrow<ArgumentNullException>();
+            breaker.Awaiting(x => x.RaiseExceptionAsync<ArgumentNullException>())
+                  .Should().Throw<ArgumentNullException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
-            breaker.Awaiting(async x => await x.RaiseExceptionAsync<ArgumentNullException>())
-                  .ShouldThrow<ArgumentNullException>();
+            breaker.Awaiting(x => x.RaiseExceptionAsync<ArgumentNullException>())
+                  .Should().Throw<ArgumentNullException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
         }
 
@@ -175,16 +176,16 @@ namespace Polly.Specs.CircuitBreaker
                             .Or<ArgumentOutOfRangeException>()
                             .CircuitBreakerAsync(2, TimeSpan.FromMinutes(1));
 
-            breaker.Awaiting(async x => await x.RaiseExceptionAsync<ArgumentNullException>())
-                  .ShouldThrow<ArgumentNullException>();
+            breaker.Awaiting(x => x.RaiseExceptionAsync<ArgumentNullException>())
+                  .Should().Throw<ArgumentNullException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
-            breaker.Awaiting(async x => await x.RaiseExceptionAsync<ArgumentNullException>())
-                  .ShouldThrow<ArgumentNullException>();
+            breaker.Awaiting(x => x.RaiseExceptionAsync<ArgumentNullException>())
+                  .Should().Throw<ArgumentNullException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
-            breaker.Awaiting(async x => await x.RaiseExceptionAsync<ArgumentNullException>())
-                  .ShouldThrow<ArgumentNullException>();
+            breaker.Awaiting(x => x.RaiseExceptionAsync<ArgumentNullException>())
+                  .Should().Throw<ArgumentNullException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
         }
 
@@ -204,25 +205,25 @@ namespace Polly.Specs.CircuitBreaker
                             .Handle<DivideByZeroException>()
                             .CircuitBreakerAsync(2, durationOfBreak);
 
-            breaker.Awaiting(async x => await x.RaiseExceptionAsync<DivideByZeroException>())
-                  .ShouldThrow<DivideByZeroException>();
+            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                  .Should().Throw<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
-            breaker.Awaiting(async x => await x.RaiseExceptionAsync<DivideByZeroException>())
-                  .ShouldThrow<DivideByZeroException>();
+            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                  .Should().Throw<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
             // 2 exception raised, circuit is now open
-            breaker.Awaiting(async x => await x.RaiseExceptionAsync<DivideByZeroException>())
-                  .ShouldThrow<BrokenCircuitException>();
+            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                  .Should().Throw<BrokenCircuitException>();
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
             SystemClock.UtcNow = () => time.Add(durationOfBreak);
 
             // duration has passed, circuit now half open
             breaker.CircuitState.Should().Be(CircuitState.HalfOpen);
-            breaker.Awaiting(async x => await x.RaiseExceptionAsync<DivideByZeroException>())
-                  .ShouldThrow<DivideByZeroException>();
+            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                  .Should().Throw<DivideByZeroException>();
         }
 
         [Fact]
@@ -237,17 +238,17 @@ namespace Polly.Specs.CircuitBreaker
                             .Handle<DivideByZeroException>()
                             .CircuitBreakerAsync(2, durationOfBreak);
 
-            breaker.Awaiting(async x => await x.RaiseExceptionAsync<DivideByZeroException>())
-                  .ShouldThrow<DivideByZeroException>();
+            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                  .Should().Throw<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
-            breaker.Awaiting(async x => await x.RaiseExceptionAsync<DivideByZeroException>())
-                  .ShouldThrow<DivideByZeroException>();
+            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                  .Should().Throw<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
             // 2 exception raised, circuit is now open
-            breaker.Awaiting(async x => await x.RaiseExceptionAsync<DivideByZeroException>())
-                  .ShouldThrow<BrokenCircuitException>();
+            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                  .Should().Throw<BrokenCircuitException>();
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
             SystemClock.UtcNow = () => time.Add(durationOfBreak);
@@ -255,11 +256,11 @@ namespace Polly.Specs.CircuitBreaker
             // duration has passed, circuit now half open
             breaker.CircuitState.Should().Be(CircuitState.HalfOpen);
             // first call after duration raises an exception, so circuit should break again
-            breaker.Awaiting(async x => await x.RaiseExceptionAsync<DivideByZeroException>())
-                  .ShouldThrow<DivideByZeroException>();
+            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                  .Should().Throw<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Open);
-            breaker.Awaiting(async x => await x.RaiseExceptionAsync<DivideByZeroException>())
-                  .ShouldThrow<BrokenCircuitException>();
+            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                  .Should().Throw<BrokenCircuitException>();
 
         }
 
@@ -275,17 +276,17 @@ namespace Polly.Specs.CircuitBreaker
                             .Handle<DivideByZeroException>()
                             .CircuitBreakerAsync(2, durationOfBreak);
 
-            breaker.Awaiting(async x => await x.RaiseExceptionAsync<DivideByZeroException>())
-                  .ShouldThrow<DivideByZeroException>();
+            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                  .Should().Throw<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
-            breaker.Awaiting(async x => await x.RaiseExceptionAsync<DivideByZeroException>())
-                  .ShouldThrow<DivideByZeroException>();
+            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                  .Should().Throw<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
             // 2 exception raised, circuit is now open
-            breaker.Awaiting(async x => await x.RaiseExceptionAsync<DivideByZeroException>())
-                  .ShouldThrow<BrokenCircuitException>();
+            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                  .Should().Throw<BrokenCircuitException>();
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
             SystemClock.UtcNow = () => time.Add(durationOfBreak);
@@ -297,16 +298,16 @@ namespace Polly.Specs.CircuitBreaker
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             // circuit has been reset so should once again allow 2 exceptions to be raised before breaking
-            breaker.Awaiting(async x => await x.RaiseExceptionAsync<DivideByZeroException>())
-                  .ShouldThrow<DivideByZeroException>();
+            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                  .Should().Throw<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
-            breaker.Awaiting(async x => await x.RaiseExceptionAsync<DivideByZeroException>())
-                  .ShouldThrow<DivideByZeroException>();
+            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                  .Should().Throw<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
-            breaker.Awaiting(async x => await x.RaiseExceptionAsync<DivideByZeroException>())
-                  .ShouldThrow<BrokenCircuitException>();
+            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                  .Should().Throw<BrokenCircuitException>();
             breaker.CircuitState.Should().Be(CircuitState.Open);
         }
 
@@ -321,8 +322,8 @@ namespace Polly.Specs.CircuitBreaker
                             .Handle<DivideByZeroException>()
                             .CircuitBreakerAsync(1, durationOfBreak);
 
-            breaker.Awaiting(async x => await x.RaiseExceptionAsync<DivideByZeroException>())
-                  .ShouldThrow<DivideByZeroException>();
+            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                  .Should().Throw<DivideByZeroException>();
 
             // exception raised, circuit is now open.  
             breaker.CircuitState.Should().Be(CircuitState.Open);
@@ -333,11 +334,11 @@ namespace Polly.Specs.CircuitBreaker
 
 
             // OnActionPreExecute() should permit first execution.
-            breaker._breakerController.Invoking(c => c.OnActionPreExecute()).ShouldNotThrow();
+            breaker._breakerController.Invoking(c => c.OnActionPreExecute()).Should().NotThrow();
             breaker.CircuitState.Should().Be(CircuitState.HalfOpen);
 
             // OnActionPreExecute() should reject a second execution.
-            breaker._breakerController.Invoking(c => c.OnActionPreExecute()).ShouldThrow<BrokenCircuitException>();
+            breaker._breakerController.Invoking(c => c.OnActionPreExecute()).Should().Throw<BrokenCircuitException>();
             breaker.CircuitState.Should().Be(CircuitState.HalfOpen);
         }
 
@@ -352,8 +353,8 @@ namespace Polly.Specs.CircuitBreaker
                             .Handle<DivideByZeroException>()
                             .CircuitBreakerAsync(1, durationOfBreak);
 
-            breaker.Awaiting(async x => await x.RaiseExceptionAsync<DivideByZeroException>())
-                  .ShouldThrow<DivideByZeroException>();
+            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                  .Should().Throw<DivideByZeroException>();
 
             // exception raised, circuit is now open.  
             breaker.CircuitState.Should().Be(CircuitState.Open);
@@ -364,11 +365,11 @@ namespace Polly.Specs.CircuitBreaker
             
 
             // OnActionPreExecute() should permit first execution.
-            breaker._breakerController.Invoking(c => c.OnActionPreExecute()).ShouldNotThrow();
+            breaker._breakerController.Invoking(c => c.OnActionPreExecute()).Should().NotThrow();
             breaker.CircuitState.Should().Be(CircuitState.HalfOpen);
 
             // OnActionPreExecute() should reject a second execution.
-            breaker._breakerController.Invoking(c => c.OnActionPreExecute()).ShouldThrow<BrokenCircuitException>();
+            breaker._breakerController.Invoking(c => c.OnActionPreExecute()).Should().Throw<BrokenCircuitException>();
             breaker.CircuitState.Should().Be(CircuitState.HalfOpen);
 
             // Allow another time window to pass (breaker should still be HalfOpen).
@@ -376,7 +377,7 @@ namespace Polly.Specs.CircuitBreaker
             breaker.CircuitState.Should().Be(CircuitState.HalfOpen);
 
             // OnActionPreExecute() should now permit another trial execution.
-            breaker._breakerController.Invoking(c => c.OnActionPreExecute()).ShouldNotThrow();
+            breaker._breakerController.Invoking(c => c.OnActionPreExecute()).Should().NotThrow();
             breaker.CircuitState.Should().Be(CircuitState.HalfOpen);
         }
 
@@ -391,8 +392,8 @@ namespace Polly.Specs.CircuitBreaker
                             .Handle<DivideByZeroException>()
                             .CircuitBreakerAsync(1, durationOfBreak);
 
-            breaker.Awaiting(async x => await x.RaiseExceptionAsync<DivideByZeroException>())
-                  .ShouldThrow<DivideByZeroException>();
+            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                  .Should().Throw<DivideByZeroException>();
 
             // exception raised, circuit is now open.  
             breaker.CircuitState.Should().Be(CircuitState.Open);
@@ -405,77 +406,78 @@ namespace Polly.Specs.CircuitBreaker
             // The second execution should be rejected due to the halfopen state.
 
             TimeSpan testTimeoutToExposeDeadlocks = TimeSpan.FromSeconds(5);
-            ManualResetEvent permitSecondExecutionAttempt = new ManualResetEvent(false);
-            ManualResetEvent permitFirstExecutionEnd = new ManualResetEvent(false);
-
-            bool? firstDelegateExecutedInHalfOpenState = null;
-            bool? secondDelegateExecutedInHalfOpenState = null;
-            bool? secondDelegateRejectedInHalfOpenState = null;
-
-            bool firstExecutionActive = false;
-            // First execution in HalfOpen state: we should be able to verify state is HalfOpen as it executes.
-            Task firstExecution = Task.Factory.StartNew(() =>
+            using (ManualResetEvent permitSecondExecutionAttempt = new ManualResetEvent(false))
+            using (ManualResetEvent permitFirstExecutionEnd = new ManualResetEvent(false))
             {
-                breaker.Awaiting(x => x.ExecuteAsync(async () =>
+                bool? firstDelegateExecutedInHalfOpenState = null;
+                bool? secondDelegateExecutedInHalfOpenState = null;
+                bool? secondDelegateRejectedInHalfOpenState = null;
+
+                bool firstExecutionActive = false;
+                // First execution in HalfOpen state: we should be able to verify state is HalfOpen as it executes.
+                Task firstExecution = Task.Factory.StartNew(() =>
                 {
-                    firstDelegateExecutedInHalfOpenState = breaker.CircuitState == CircuitState.HalfOpen; // For readability of test results, we assert on this at test end rather than nested in Task and breaker here.
-
-                    // Signal the second execution can start, overlapping with this (the first) execution.
-                    firstExecutionActive = true;
-                    permitSecondExecutionAttempt.Set();
-
-                    // Hold first execution open until second indicates it is no longer needed, or time out.
-                    permitFirstExecutionEnd.WaitOne(testTimeoutToExposeDeadlocks);
-                    await TaskHelper.EmptyTask;
-                    firstExecutionActive = false;
-
-                })).ShouldNotThrow();
-            }, TaskCreationOptions.LongRunning);
-
-            // Attempt a second execution, signalled by the first execution to ensure they overlap: we should be able to verify it doesn't execute, and is rejected by a breaker in a HalfOpen state.
-            permitSecondExecutionAttempt.WaitOne(testTimeoutToExposeDeadlocks);
-
-            Task secondExecution = Task.Factory.StartNew(async () =>
-            {
-                // Validation of correct sequencing and overlapping of tasks in test (guard against erroneous test refactorings/operation).
-                firstExecutionActive.Should().BeTrue();
-                breaker.CircuitState.Should().Be(CircuitState.HalfOpen);
-
-                try
-                {
-                    await breaker.ExecuteAsync(async () =>
+                    breaker.Awaiting(x => x.ExecuteAsync(async () =>
                     {
-                        secondDelegateRejectedInHalfOpenState = false;
-                        secondDelegateExecutedInHalfOpenState = breaker.CircuitState == CircuitState.HalfOpen; // For readability of test results, we assert on this at test end rather than nested in Task and breaker here.
+                        firstDelegateExecutedInHalfOpenState = breaker.CircuitState == CircuitState.HalfOpen; // For readability of test results, we assert on this at test end rather than nested in Task and breaker here.
+
+                        // Signal the second execution can start, overlapping with this (the first) execution.
+                        firstExecutionActive = true;
+                        permitSecondExecutionAttempt.Set();
+
+                        // Hold first execution open until second indicates it is no longer needed, or time out.
+                        permitFirstExecutionEnd.WaitOne(testTimeoutToExposeDeadlocks);
                         await TaskHelper.EmptyTask;
-                    });
-                }
-                catch (BrokenCircuitException)
+                        firstExecutionActive = false;
+
+                    })).Should().NotThrow();
+                }, TaskCreationOptions.LongRunning);
+
+                // Attempt a second execution, signalled by the first execution to ensure they overlap: we should be able to verify it doesn't execute, and is rejected by a breaker in a HalfOpen state.
+                permitSecondExecutionAttempt.WaitOne(testTimeoutToExposeDeadlocks);
+
+                Task secondExecution = Task.Factory.StartNew(async () =>
                 {
-                    secondDelegateExecutedInHalfOpenState = false;
-                    secondDelegateRejectedInHalfOpenState = breaker.CircuitState == CircuitState.HalfOpen; // For readability of test results, we assert on this at test end rather than nested here.
-                }
+                    // Validation of correct sequencing and overlapping of tasks in test (guard against erroneous test refactorings/operation).
+                    firstExecutionActive.Should().BeTrue();
+                    breaker.CircuitState.Should().Be(CircuitState.HalfOpen);
 
-                // Release first execution soon as second overlapping execution is done gathering data.
+                    try
+                    {
+                        await breaker.ExecuteAsync(async () =>
+                        {
+                            secondDelegateRejectedInHalfOpenState = false;
+                            secondDelegateExecutedInHalfOpenState = breaker.CircuitState == CircuitState.HalfOpen; // For readability of test results, we assert on this at test end rather than nested in Task and breaker here.
+                            await TaskHelper.EmptyTask;
+                        });
+                    }
+                    catch (BrokenCircuitException)
+                    {
+                        secondDelegateExecutedInHalfOpenState = false;
+                        secondDelegateRejectedInHalfOpenState = breaker.CircuitState == CircuitState.HalfOpen; // For readability of test results, we assert on this at test end rather than nested here.
+                    }
+
+                    // Release first execution soon as second overlapping execution is done gathering data.
+                    permitFirstExecutionEnd.Set();
+                }, TaskCreationOptions.LongRunning);
+
+                // Graceful cleanup: allow executions time to end naturally; signal them to end if not; timeout any deadlocks; expose any execution faults. This validates the test ran as expected (and background delegates are complete) before we assert on outcomes.
+                permitFirstExecutionEnd.WaitOne(testTimeoutToExposeDeadlocks);
                 permitFirstExecutionEnd.Set();
-            }, TaskCreationOptions.LongRunning);
+                Task.WaitAll(new[] { firstExecution, secondExecution }, testTimeoutToExposeDeadlocks).Should().BeTrue();
+                if (firstExecution.IsFaulted) throw firstExecution.Exception;
+                if (secondExecution.IsFaulted) throw secondExecution.Exception;
+                firstExecution.Status.Should().Be(TaskStatus.RanToCompletion);
+                secondExecution.Status.Should().Be(TaskStatus.RanToCompletion);
 
-            // Graceful cleanup: allow executions time to end naturally; signal them to end if not; timeout any deadlocks; expose any execution faults. This validates the test ran as expected (and background delegates are complete) before we assert on outcomes.
-            permitFirstExecutionEnd.WaitOne(testTimeoutToExposeDeadlocks);
-            permitFirstExecutionEnd.Set();
-            Task.WaitAll(new[] { firstExecution, secondExecution }, testTimeoutToExposeDeadlocks).Should().BeTrue();
-            if (firstExecution.IsFaulted) throw firstExecution.Exception;
-            if (secondExecution.IsFaulted) throw secondExecution.Exception;
-            firstExecution.Status.Should().Be(TaskStatus.RanToCompletion);
-            secondExecution.Status.Should().Be(TaskStatus.RanToCompletion);
-
-            // Assert: 
-            // - First execution should have been permitted and executed under a HalfOpen state
-            // - Second overlapping execution in halfopen state should not have been permitted.
-            // - Second execution attempt should have been rejected with HalfOpen state as cause.
-            firstDelegateExecutedInHalfOpenState.Should().BeTrue();
-            secondDelegateExecutedInHalfOpenState.Should().BeFalse();
-            secondDelegateRejectedInHalfOpenState.Should().BeTrue();
+                // Assert: 
+                // - First execution should have been permitted and executed under a HalfOpen state
+                // - Second overlapping execution in halfopen state should not have been permitted.
+                // - Second execution attempt should have been rejected with HalfOpen state as cause.
+                firstDelegateExecutedInHalfOpenState.Should().BeTrue();
+                secondDelegateExecutedInHalfOpenState.Should().BeFalse();
+                secondDelegateRejectedInHalfOpenState.Should().BeTrue();
+            }
         }
 
         [Fact]
@@ -489,8 +491,8 @@ namespace Polly.Specs.CircuitBreaker
                             .Handle<DivideByZeroException>()
                             .CircuitBreakerAsync(1, durationOfBreak);
 
-            breaker.Awaiting(async x => await x.RaiseExceptionAsync<DivideByZeroException>())
-                  .ShouldThrow<DivideByZeroException>();
+            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                  .Should().Throw<DivideByZeroException>();
 
             // exception raised, circuit is now open.  
             breaker.CircuitState.Should().Be(CircuitState.Open);
@@ -504,78 +506,79 @@ namespace Polly.Specs.CircuitBreaker
             // The second execution should be accepted in the halfopen state due to being requested after one breakDuration later.
 
             TimeSpan testTimeoutToExposeDeadlocks = TimeSpan.FromSeconds(5);
-            ManualResetEvent permitSecondExecutionAttempt = new ManualResetEvent(false);
-            ManualResetEvent permitFirstExecutionEnd = new ManualResetEvent(false);
-
-            bool? firstDelegateExecutedInHalfOpenState = null;
-            bool? secondDelegateExecutedInHalfOpenState = null;
-            bool? secondDelegateRejectedInHalfOpenState = null;
-
-            bool firstExecutionActive = false;
-            // First execution in HalfOpen state: we should be able to verify state is HalfOpen as it executes.
-            Task firstExecution = Task.Factory.StartNew(() =>
+            using (ManualResetEvent permitSecondExecutionAttempt = new ManualResetEvent(false))
+            using (ManualResetEvent permitFirstExecutionEnd = new ManualResetEvent(false))
             {
-                breaker.Awaiting(x => x.ExecuteAsync(async () =>
+                bool? firstDelegateExecutedInHalfOpenState = null;
+                bool? secondDelegateExecutedInHalfOpenState = null;
+                bool? secondDelegateRejectedInHalfOpenState = null;
+
+                bool firstExecutionActive = false;
+                // First execution in HalfOpen state: we should be able to verify state is HalfOpen as it executes.
+                Task firstExecution = Task.Factory.StartNew(() =>
                 {
-                    firstDelegateExecutedInHalfOpenState = breaker.CircuitState == CircuitState.HalfOpen; // For readability of test results, we assert on this at test end rather than nested in Task and breaker here.
-
-                    // Signal the second execution can start, overlapping with this (the first) execution.
-                    firstExecutionActive = true;
-                    permitSecondExecutionAttempt.Set();
-
-                    // Hold first execution open until second indicates it is no longer needed, or time out.
-                    permitFirstExecutionEnd.WaitOne(testTimeoutToExposeDeadlocks);
-                    await TaskHelper.EmptyTask;
-                    firstExecutionActive = false;
-                })).ShouldNotThrow();
-            }, TaskCreationOptions.LongRunning);
-
-            // Attempt a second execution, signalled by the first execution to ensure they overlap; start it one breakDuration later.  We should be able to verify it does execute, though the breaker is still in a HalfOpen state.
-            permitSecondExecutionAttempt.WaitOne(testTimeoutToExposeDeadlocks);
-
-            Task secondExecution = Task.Factory.StartNew(async () =>
-            {
-                // Validation of correct sequencing and overlapping of tasks in test (guard against erroneous test refactorings/operation).
-                firstExecutionActive.Should().BeTrue();
-                breaker.CircuitState.Should().Be(CircuitState.HalfOpen);
-
-                try
-                {
-                    SystemClock.UtcNow = () => time.Add(durationOfBreak).Add(durationOfBreak);
-
-                    await breaker.ExecuteAsync(async () =>
+                    breaker.Awaiting(x => x.ExecuteAsync(async () =>
                     {
-                        secondDelegateRejectedInHalfOpenState = false;
-                        secondDelegateExecutedInHalfOpenState = breaker.CircuitState == CircuitState.HalfOpen; // For readability of test results, we assert on this at test end rather than nested in Task and breaker here.
+                        firstDelegateExecutedInHalfOpenState = breaker.CircuitState == CircuitState.HalfOpen; // For readability of test results, we assert on this at test end rather than nested in Task and breaker here.
 
+                        // Signal the second execution can start, overlapping with this (the first) execution.
+                        firstExecutionActive = true;
+                        permitSecondExecutionAttempt.Set();
+
+                        // Hold first execution open until second indicates it is no longer needed, or time out.
+                        permitFirstExecutionEnd.WaitOne(testTimeoutToExposeDeadlocks);
                         await TaskHelper.EmptyTask;
-                    });
-                }
-                catch (BrokenCircuitException)
+                        firstExecutionActive = false;
+                    })).Should().NotThrow();
+                }, TaskCreationOptions.LongRunning);
+
+                // Attempt a second execution, signalled by the first execution to ensure they overlap; start it one breakDuration later.  We should be able to verify it does execute, though the breaker is still in a HalfOpen state.
+                permitSecondExecutionAttempt.WaitOne(testTimeoutToExposeDeadlocks);
+
+                Task secondExecution = Task.Factory.StartNew(async () =>
                 {
-                    secondDelegateExecutedInHalfOpenState = false;
-                    secondDelegateRejectedInHalfOpenState = breaker.CircuitState == CircuitState.HalfOpen; // For readability of test results, we assert on this at test end rather than nested here.
-                }
+                    // Validation of correct sequencing and overlapping of tasks in test (guard against erroneous test refactorings/operation).
+                    firstExecutionActive.Should().BeTrue();
+                    breaker.CircuitState.Should().Be(CircuitState.HalfOpen);
 
-                // Release first execution soon as second overlapping execution is done gathering data.
+                    try
+                    {
+                        SystemClock.UtcNow = () => time.Add(durationOfBreak).Add(durationOfBreak);
+
+                        await breaker.ExecuteAsync(async () =>
+                        {
+                            secondDelegateRejectedInHalfOpenState = false;
+                            secondDelegateExecutedInHalfOpenState = breaker.CircuitState == CircuitState.HalfOpen; // For readability of test results, we assert on this at test end rather than nested in Task and breaker here.
+
+                            await TaskHelper.EmptyTask;
+                        });
+                    }
+                    catch (BrokenCircuitException)
+                    {
+                        secondDelegateExecutedInHalfOpenState = false;
+                        secondDelegateRejectedInHalfOpenState = breaker.CircuitState == CircuitState.HalfOpen; // For readability of test results, we assert on this at test end rather than nested here.
+                    }
+
+                    // Release first execution soon as second overlapping execution is done gathering data.
+                    permitFirstExecutionEnd.Set();
+                }, TaskCreationOptions.LongRunning);
+
+                // Graceful cleanup: allow executions time to end naturally; signal them to end if not; timeout any deadlocks; expose any execution faults. This validates the test ran as expected (and background delegates are complete) before we assert on outcomes.
+                permitFirstExecutionEnd.WaitOne(testTimeoutToExposeDeadlocks);
                 permitFirstExecutionEnd.Set();
-            }, TaskCreationOptions.LongRunning);
+                Task.WaitAll(new[] { firstExecution, secondExecution }, testTimeoutToExposeDeadlocks).Should().BeTrue();
+                if (firstExecution.IsFaulted) throw firstExecution.Exception;
+                if (secondExecution.IsFaulted) throw secondExecution.Exception;
+                firstExecution.Status.Should().Be(TaskStatus.RanToCompletion);
+                secondExecution.Status.Should().Be(TaskStatus.RanToCompletion);
 
-            // Graceful cleanup: allow executions time to end naturally; signal them to end if not; timeout any deadlocks; expose any execution faults. This validates the test ran as expected (and background delegates are complete) before we assert on outcomes.
-            permitFirstExecutionEnd.WaitOne(testTimeoutToExposeDeadlocks);
-            permitFirstExecutionEnd.Set();
-            Task.WaitAll(new[] { firstExecution, secondExecution }, testTimeoutToExposeDeadlocks).Should().BeTrue();
-            if (firstExecution.IsFaulted) throw firstExecution.Exception;
-            if (secondExecution.IsFaulted) throw secondExecution.Exception;
-            firstExecution.Status.Should().Be(TaskStatus.RanToCompletion);
-            secondExecution.Status.Should().Be(TaskStatus.RanToCompletion);
-
-            // Assert: 
-            // - First execution should have been permitted and executed under a HalfOpen state
-            // - Second overlapping execution in halfopen state should have been permitted, one breakDuration later.
-            firstDelegateExecutedInHalfOpenState.Should().BeTrue();
-            secondDelegateExecutedInHalfOpenState.Should().BeTrue();
-            secondDelegateRejectedInHalfOpenState.Should().BeFalse();
+                // Assert: 
+                // - First execution should have been permitted and executed under a HalfOpen state
+                // - Second overlapping execution in halfopen state should have been permitted, one breakDuration later.
+                firstDelegateExecutedInHalfOpenState.Should().BeTrue();
+                secondDelegateExecutedInHalfOpenState.Should().BeTrue();
+                secondDelegateRejectedInHalfOpenState.Should().BeFalse();
+            }
         }
 
         #endregion
@@ -601,8 +604,8 @@ namespace Polly.Specs.CircuitBreaker
 
             // circuit manually broken: execution should be blocked; even non-exception-throwing executions should not reset circuit
             bool delegateExecutedWhenBroken = false;
-            breaker.Awaiting(async x => await x.ExecuteAsync(() => { delegateExecutedWhenBroken = true; return TaskHelper.EmptyTask; }))
-                .ShouldThrow<IsolatedCircuitException>();
+            breaker.Awaiting(x => x.ExecuteAsync(() => { delegateExecutedWhenBroken = true; return TaskHelper.EmptyTask; }))
+                .Should().Throw<IsolatedCircuitException>();
             breaker.CircuitState.Should().Be(CircuitState.Isolated);
             breaker.LastException.Should().BeOfType<IsolatedCircuitException>();
             delegateExecutedWhenBroken.Should().BeFalse();
@@ -628,8 +631,8 @@ namespace Polly.Specs.CircuitBreaker
             SystemClock.UtcNow = () => time.Add(durationOfBreak);
             breaker.CircuitState.Should().Be(CircuitState.Isolated);
             bool delegateExecutedWhenBroken = false;
-            breaker.Awaiting(async x => await x.ExecuteAsync(() => { delegateExecutedWhenBroken = true; return TaskHelper.EmptyTask; }))
-                .ShouldThrow<IsolatedCircuitException>();
+            breaker.Awaiting(x => x.ExecuteAsync(() => { delegateExecutedWhenBroken = true; return TaskHelper.EmptyTask; }))
+                .Should().Throw<IsolatedCircuitException>();
             delegateExecutedWhenBroken.Should().BeFalse();
         }
 
@@ -648,12 +651,12 @@ namespace Polly.Specs.CircuitBreaker
 
             breaker.Isolate();
             breaker.CircuitState.Should().Be(CircuitState.Isolated);
-            breaker.Awaiting(async x => await x.ExecuteAsync(() => TaskHelper.EmptyTask))
-                .ShouldThrow<IsolatedCircuitException>();
+            breaker.Awaiting(x => x.ExecuteAsync(() => TaskHelper.EmptyTask))
+                .Should().Throw<IsolatedCircuitException>();
 
             breaker.Reset();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
-            breaker.Awaiting(async x => await x.ExecuteAsync(() => TaskHelper.EmptyTask)).ShouldNotThrow();
+            breaker.Awaiting(x => x.ExecuteAsync(() => TaskHelper.EmptyTask)).Should().NotThrow();
         }
 
         [Fact]
@@ -668,24 +671,24 @@ namespace Polly.Specs.CircuitBreaker
                             .Handle<DivideByZeroException>()
                             .CircuitBreakerAsync(2, durationOfBreak);
 
-            breaker.Awaiting(async x => await x.RaiseExceptionAsync<DivideByZeroException>())
-                  .ShouldThrow<DivideByZeroException>();
+            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                  .Should().Throw<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
-            breaker.Awaiting(async x => await x.RaiseExceptionAsync<DivideByZeroException>())
-                  .ShouldThrow<DivideByZeroException>();
+            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                  .Should().Throw<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
             // 2 exception raised, circuit is now open
-            breaker.Awaiting(async x => await x.RaiseExceptionAsync<DivideByZeroException>())
-                  .ShouldThrow<BrokenCircuitException>();
+            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                  .Should().Throw<BrokenCircuitException>();
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
             // reset circuit, with no time having passed
             breaker.Reset();
             SystemClock.UtcNow().Should().Be(time);
             breaker.CircuitState.Should().Be(CircuitState.Closed);
-            breaker.Awaiting(async x => await x.ExecuteAsync(() => TaskHelper.EmptyTask)).ShouldNotThrow();
+            breaker.Awaiting(x => x.ExecuteAsync(() => TaskHelper.EmptyTask)).Should().NotThrow();
         }
 
         #endregion
@@ -695,7 +698,7 @@ namespace Polly.Specs.CircuitBreaker
         [Fact]
         public void Should_not_call_onreset_on_initialise()
         {
-            Action<Exception, TimeSpan> onBreak = (_, __) => { };
+            Action<Exception, TimeSpan> onBreak = (_, _) => { };
             bool onResetCalled = false;
             Action onReset = () => { onResetCalled = true; };
 
@@ -710,21 +713,21 @@ namespace Polly.Specs.CircuitBreaker
         public void Should_call_onbreak_when_breaking_circuit_automatically()
         {
             bool onBreakCalled = false;
-            Action<Exception, TimeSpan> onBreak = (_, __) => { onBreakCalled = true; };
+            Action<Exception, TimeSpan> onBreak = (_, _) => { onBreakCalled = true; };
             Action onReset = () => { };
 
             var breaker = Policy
                             .Handle<DivideByZeroException>()
                             .CircuitBreakerAsync(2, TimeSpan.FromMinutes(1), onBreak, onReset);
 
-            breaker.Awaiting(async x => await x.RaiseExceptionAsync<DivideByZeroException>())
-                  .ShouldThrow<DivideByZeroException>();
+            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                  .Should().Throw<DivideByZeroException>();
 
             breaker.CircuitState.Should().Be(CircuitState.Closed);
             onBreakCalled.Should().BeFalse();
 
-            breaker.Awaiting(async x => await x.RaiseExceptionAsync<DivideByZeroException>())
-                  .ShouldThrow<DivideByZeroException>();
+            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                  .Should().Throw<DivideByZeroException>();
 
             breaker.CircuitState.Should().Be(CircuitState.Open);
             onBreakCalled.Should().BeTrue();
@@ -734,7 +737,7 @@ namespace Polly.Specs.CircuitBreaker
         public void Should_call_onbreak_when_breaking_circuit_manually()
         {
             bool onBreakCalled = false;
-            Action<Exception, TimeSpan> onBreak = (_, __) => { onBreakCalled = true; };
+            Action<Exception, TimeSpan> onBreak = (_, _) => { onBreakCalled = true; };
             Action onReset = () => { };
 
             var breaker = Policy
@@ -751,28 +754,28 @@ namespace Polly.Specs.CircuitBreaker
         public void Should_call_onbreak_when_breaking_circuit_first_time_but_not_for_subsequent_calls_placed_through_open_circuit()
         {
             int onBreakCalled = 0;
-            Action<Exception, TimeSpan> onBreak = (_, __) => { onBreakCalled++; };
+            Action<Exception, TimeSpan> onBreak = (_, _) => { onBreakCalled++; };
             Action onReset = () => { };
 
             var breaker = Policy
                             .Handle<DivideByZeroException>()
                             .CircuitBreakerAsync(2, TimeSpan.FromMinutes(1), onBreak, onReset);
 
-            breaker.Awaiting(async x => await x.RaiseExceptionAsync<DivideByZeroException>())
-                  .ShouldThrow<DivideByZeroException>();
+            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                  .Should().Throw<DivideByZeroException>();
 
             breaker.CircuitState.Should().Be(CircuitState.Closed);
             onBreakCalled.Should().Be(0);
 
-            breaker.Awaiting(async x => await x.RaiseExceptionAsync<DivideByZeroException>())
-                  .ShouldThrow<DivideByZeroException>();
+            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                  .Should().Throw<DivideByZeroException>();
 
             breaker.CircuitState.Should().Be(CircuitState.Open);
             onBreakCalled.Should().Be(1);
 
             // call through circuit when already broken - should not retrigger onBreak 
-            breaker.Awaiting(async x => await x.RaiseExceptionAsync<DivideByZeroException>())
-                  .ShouldThrow<BrokenCircuitException>();
+            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                  .Should().Throw<BrokenCircuitException>();
 
             breaker.CircuitState.Should().Be(CircuitState.Open);
             onBreakCalled.Should().Be(1);
@@ -782,7 +785,7 @@ namespace Polly.Specs.CircuitBreaker
         public void Should_call_onbreak_when_breaking_circuit_first_time_but_not_for_subsequent_call_failure_which_arrives_on_open_state_though_started_on_closed_state()
         {
             int onBreakCalled = 0;
-            Action<Exception, TimeSpan> onBreak = (_, __) => { onBreakCalled++; };
+            Action<Exception, TimeSpan> onBreak = (_, _) => { onBreakCalled++; };
             Action onReset = () => { };
 
             var breaker = Policy
@@ -791,50 +794,51 @@ namespace Polly.Specs.CircuitBreaker
 
             // Start an execution when the breaker is in the closed state, but hold it from returning (its failure) until the breaker has opened.  This call, a failure hitting an already open breaker, should indicate its fail, but should not cause onBreak() to be called a second time.
             TimeSpan testTimeoutToExposeDeadlocks = TimeSpan.FromSeconds(5);
-            ManualResetEvent permitLongRunningExecutionToReturnItsFailure = new ManualResetEvent(false);
-            ManualResetEvent permitMainThreadToOpenCircuit = new ManualResetEvent(false);
-
-            Task longRunningExecution = Task.Factory.StartNew(() =>
+            using (ManualResetEvent permitLongRunningExecutionToReturnItsFailure = new ManualResetEvent(false))
+            using (ManualResetEvent permitMainThreadToOpenCircuit = new ManualResetEvent(false))
             {
-                breaker.CircuitState.Should().Be(CircuitState.Closed);
-
-                breaker.Awaiting(x => x.ExecuteAsync(async () =>
+                Task longRunningExecution = Task.Factory.StartNew(() =>
                 {
-                    await TaskHelper.EmptyTask;
+                    breaker.CircuitState.Should().Be(CircuitState.Closed);
 
-                    permitMainThreadToOpenCircuit.Set();
+                    breaker.Awaiting(x => x.ExecuteAsync(async () =>
+                    {
+                        await TaskHelper.EmptyTask;
+
+                        permitMainThreadToOpenCircuit.Set();
 
                     // Hold this execution until rest of the test indicates it can proceed (or timeout, to expose deadlocks).
                     permitLongRunningExecutionToReturnItsFailure.WaitOne(testTimeoutToExposeDeadlocks);
 
                     // Throw a further failure when rest of test has already broken the circuit.
                     breaker.CircuitState.Should().Be(CircuitState.Open);
-                    throw new DivideByZeroException();
+                        throw new DivideByZeroException();
 
-                })).ShouldThrow<DivideByZeroException>(); // However, since execution started when circuit was closed, BrokenCircuitException will not have been thrown on entry; the original exception will still be thrown.
-            }, TaskCreationOptions.LongRunning);
+                    })).Should().Throw<DivideByZeroException>(); // However, since execution started when circuit was closed, BrokenCircuitException will not have been thrown on entry; the original exception will still be thrown.
+                }, TaskCreationOptions.LongRunning);
 
-            permitMainThreadToOpenCircuit.WaitOne(testTimeoutToExposeDeadlocks).Should().BeTrue();
+                permitMainThreadToOpenCircuit.WaitOne(testTimeoutToExposeDeadlocks).Should().BeTrue();
 
-            // Break circuit in the normal manner: onBreak() should be called once.
-            breaker.CircuitState.Should().Be(CircuitState.Closed);
-            onBreakCalled.Should().Be(0);
-            breaker.Awaiting(async x => await x.RaiseExceptionAsync<DivideByZeroException>())
-                  .ShouldThrow<DivideByZeroException>();
-            breaker.CircuitState.Should().Be(CircuitState.Open);
-            onBreakCalled.Should().Be(1);
+                // Break circuit in the normal manner: onBreak() should be called once.
+                breaker.CircuitState.Should().Be(CircuitState.Closed);
+                onBreakCalled.Should().Be(0);
+                breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                      .Should().Throw<DivideByZeroException>();
+                breaker.CircuitState.Should().Be(CircuitState.Open);
+                onBreakCalled.Should().Be(1);
 
-            // Permit the second (long-running) execution to hit the open circuit with its failure.
-            permitLongRunningExecutionToReturnItsFailure.Set();
+                // Permit the second (long-running) execution to hit the open circuit with its failure.
+                permitLongRunningExecutionToReturnItsFailure.Set();
 
-            // Graceful cleanup: allow executions time to end naturally; timeout if any deadlocks; expose any execution faults.  This validates the test ran as expected (and background delegates are complete) before we assert on outcomes.
-            longRunningExecution.Wait(testTimeoutToExposeDeadlocks).Should().BeTrue();
-            if (longRunningExecution.IsFaulted) throw longRunningExecution.Exception;
-            longRunningExecution.Status.Should().Be(TaskStatus.RanToCompletion);
+                // Graceful cleanup: allow executions time to end naturally; timeout if any deadlocks; expose any execution faults.  This validates the test ran as expected (and background delegates are complete) before we assert on outcomes.
+                longRunningExecution.Wait(testTimeoutToExposeDeadlocks).Should().BeTrue();
+                if (longRunningExecution.IsFaulted) throw longRunningExecution.Exception;
+                longRunningExecution.Status.Should().Be(TaskStatus.RanToCompletion);
 
-            // onBreak() should still only have been called once.
-            breaker.CircuitState.Should().Be(CircuitState.Open);
-            onBreakCalled.Should().Be(1);
+                // onBreak() should still only have been called once.
+                breaker.CircuitState.Should().Be(CircuitState.Open);
+                onBreakCalled.Should().Be(1);
+            }
         }
 
         [Fact]
@@ -842,7 +846,7 @@ namespace Polly.Specs.CircuitBreaker
         {
             int onBreakCalled = 0;
             int onResetCalled = 0;
-            Action<Exception, TimeSpan> onBreak = (_, __) => { onBreakCalled++; };
+            Action<Exception, TimeSpan> onBreak = (_, _) => { onBreakCalled++; };
             Action onReset = () => { onResetCalled++; };
 
             var time = 1.January(2000);
@@ -856,17 +860,17 @@ namespace Polly.Specs.CircuitBreaker
 
             onBreakCalled.Should().Be(0);
 
-            breaker.Awaiting(async x => await x.RaiseExceptionAsync<DivideByZeroException>())
-                  .ShouldThrow<DivideByZeroException>();
+            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                  .Should().Throw<DivideByZeroException>();
             onBreakCalled.Should().Be(0);
 
-            breaker.Awaiting(async x => await x.RaiseExceptionAsync<DivideByZeroException>())
-                  .ShouldThrow<DivideByZeroException>();
+            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                  .Should().Throw<DivideByZeroException>();
             onBreakCalled.Should().Be(1);
 
             // 2 exception raised, circuit is now open
-            breaker.Awaiting(async x => await x.RaiseExceptionAsync<DivideByZeroException>())
-                  .ShouldThrow<BrokenCircuitException>();
+            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                  .Should().Throw<BrokenCircuitException>();
             breaker.CircuitState.Should().Be(CircuitState.Open);
             onBreakCalled.Should().Be(1);
 
@@ -886,7 +890,7 @@ namespace Polly.Specs.CircuitBreaker
         [Fact]
         public void Should_not_call_onreset_on_successive_successful_calls()
         {
-            Action<Exception, TimeSpan> onBreak = (_, __) => { };
+            Action<Exception, TimeSpan> onBreak = (_, _) => { };
             bool onResetCalled = false;
             Action onReset = () => { onResetCalled = true; };
 
@@ -911,7 +915,7 @@ namespace Polly.Specs.CircuitBreaker
             int onBreakCalled = 0;
             int onResetCalled = 0;
             int onHalfOpenCalled = 0;
-            Action<Exception, TimeSpan> onBreak = (_, __) => { onBreakCalled++; };
+            Action<Exception, TimeSpan> onBreak = (_, _) => { onBreakCalled++; };
             Action onReset = () => { onResetCalled++; };
             Action onHalfOpen = () => { onHalfOpenCalled++; };
 
@@ -926,17 +930,17 @@ namespace Polly.Specs.CircuitBreaker
 
             onBreakCalled.Should().Be(0);
 
-            breaker.Awaiting(async x => await x.RaiseExceptionAsync<DivideByZeroException>())
-                  .ShouldThrow<DivideByZeroException>();
+            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                  .Should().Throw<DivideByZeroException>();
             onBreakCalled.Should().Be(0);
 
-            breaker.Awaiting(async x => await x.RaiseExceptionAsync<DivideByZeroException>())
-                  .ShouldThrow<DivideByZeroException>();
+            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                  .Should().Throw<DivideByZeroException>();
             onBreakCalled.Should().Be(1);
 
             // 2 exception raised, circuit is now open
-            breaker.Awaiting(async x => await x.RaiseExceptionAsync<DivideByZeroException>())
-                  .ShouldThrow<BrokenCircuitException>();
+            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                  .Should().Throw<BrokenCircuitException>();
             breaker.CircuitState.Should().Be(CircuitState.Open);
             onBreakCalled.Should().Be(1);
 
@@ -957,7 +961,7 @@ namespace Polly.Specs.CircuitBreaker
             int onBreakCalled = 0;
             int onResetCalled = 0;
             int onHalfOpenCalled = 0;
-            Action<Exception, TimeSpan> onBreak = (_, __) => { onBreakCalled++; };
+            Action<Exception, TimeSpan> onBreak = (_, _) => { onBreakCalled++; };
             Action onReset = () => { onResetCalled++; };
             Action onHalfOpen = () => { onHalfOpenCalled++; };
 
@@ -972,17 +976,17 @@ namespace Polly.Specs.CircuitBreaker
 
             onBreakCalled.Should().Be(0);
 
-            breaker.Awaiting(async x => await x.RaiseExceptionAsync<DivideByZeroException>())
-                  .ShouldThrow<DivideByZeroException>();
+            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                  .Should().Throw<DivideByZeroException>();
             onBreakCalled.Should().Be(0);
 
-            breaker.Awaiting(async x => await x.RaiseExceptionAsync<DivideByZeroException>())
-                  .ShouldThrow<DivideByZeroException>();
+            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                  .Should().Throw<DivideByZeroException>();
             onBreakCalled.Should().Be(1);
 
             // 2 exception raised, circuit is now open
-            breaker.Awaiting(async x => await x.RaiseExceptionAsync<DivideByZeroException>())
-                  .ShouldThrow<BrokenCircuitException>();
+            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                  .Should().Throw<BrokenCircuitException>();
             breaker.CircuitState.Should().Be(CircuitState.Open);
             onBreakCalled.Should().Be(1);
 
@@ -997,7 +1001,7 @@ namespace Polly.Specs.CircuitBreaker
         {
             int onBreakCalled = 0;
             int onResetCalled = 0;
-            Action<Exception, TimeSpan> onBreak = (_, __) => { onBreakCalled++; };
+            Action<Exception, TimeSpan> onBreak = (_, _) => { onBreakCalled++; };
             Action onReset = () => { onResetCalled++; };
 
             var time = 1.January(2000);
@@ -1014,15 +1018,15 @@ namespace Polly.Specs.CircuitBreaker
             onBreakCalled.Should().Be(1);
 
             breaker.CircuitState.Should().Be(CircuitState.Isolated);
-            breaker.Awaiting(async x => await x.ExecuteAsync(() => TaskHelper.EmptyTask))
-                .ShouldThrow<IsolatedCircuitException>();
+            breaker.Awaiting(x => x.ExecuteAsync(() => TaskHelper.EmptyTask))
+                .Should().Throw<IsolatedCircuitException>();
 
             onResetCalled.Should().Be(0);
             breaker.Reset();
             onResetCalled.Should().Be(1);
 
             breaker.CircuitState.Should().Be(CircuitState.Closed);
-            breaker.Awaiting(async x => await x.ExecuteAsync(() => TaskHelper.EmptyTask)).ShouldNotThrow();
+            breaker.Awaiting(x => x.ExecuteAsync(() => TaskHelper.EmptyTask)).Should().NotThrow();
         }
 
         #region Tests of supplied parameters to onBreak delegate
@@ -1032,19 +1036,19 @@ namespace Polly.Specs.CircuitBreaker
         {
             Exception passedException = null;
 
-            Action<Exception, TimeSpan, Context> onBreak = (exception, _, __) => { passedException = exception; };
+            Action<Exception, TimeSpan, Context> onBreak = (exception, _, _) => { passedException = exception; };
             Action<Context> onReset = _ => { };
 
             var breaker = Policy
                             .Handle<DivideByZeroException>()
                             .CircuitBreakerAsync(2, TimeSpan.FromMinutes(1), onBreak, onReset);
 
-            breaker.Awaiting(async x => await x.RaiseExceptionAsync<DivideByZeroException>())
-                  .ShouldThrow<DivideByZeroException>();
+            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                  .Should().Throw<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
-            breaker.Awaiting(async x => await x.RaiseExceptionAsync<DivideByZeroException>())
-                  .ShouldThrow<DivideByZeroException>();
+            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                  .Should().Throw<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
             passedException?.Should().BeOfType<DivideByZeroException>();
@@ -1055,7 +1059,7 @@ namespace Polly.Specs.CircuitBreaker
         {
             CircuitState? transitionedState = null;
 
-            Action<Exception, CircuitState, TimeSpan, Context> onBreak = (_, state, __, ___) => { transitionedState = state; };
+            Action<Exception, CircuitState, TimeSpan, Context> onBreak = (_, state, _, _) => { transitionedState = state; };
             Action<Context> onReset = _ => { };
             Action onHalfOpen = () => { };
 
@@ -1063,12 +1067,12 @@ namespace Polly.Specs.CircuitBreaker
                 .Handle<DivideByZeroException>()
                 .CircuitBreakerAsync(2, TimeSpan.FromMinutes(1), onBreak, onReset, onHalfOpen);
 
-            breaker.Awaiting(async x => await x.RaiseExceptionAsync<DivideByZeroException>())
-                  .ShouldThrow<DivideByZeroException>();
+            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                  .Should().Throw<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
-            breaker.Awaiting(async x => await x.RaiseExceptionAsync<DivideByZeroException>())
-                  .ShouldThrow<DivideByZeroException>();
+            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                  .Should().Throw<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
             transitionedState?.Should().Be(CircuitState.Closed);
@@ -1079,7 +1083,7 @@ namespace Polly.Specs.CircuitBreaker
         {
             List<CircuitState> transitionedStates = new List<CircuitState>();
 
-            Action<Exception, CircuitState, TimeSpan, Context> onBreak = (_, state, __, ___) => { transitionedStates.Add(state); };
+            Action<Exception, CircuitState, TimeSpan, Context> onBreak = (_, state, _, _) => { transitionedStates.Add(state); };
             Action<Context> onReset = _ => { };
             Action onHalfOpen = () => { };
 
@@ -1092,17 +1096,17 @@ namespace Polly.Specs.CircuitBreaker
                             .Handle<DivideByZeroException>()
                             .CircuitBreakerAsync(2, TimeSpan.FromMinutes(1), onBreak, onReset, onHalfOpen);
 
-            breaker.Awaiting(async x => await x.RaiseExceptionAsync<DivideByZeroException>())
-                  .ShouldThrow<DivideByZeroException>();
+            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                  .Should().Throw<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
-            breaker.Awaiting(async x => await x.RaiseExceptionAsync<DivideByZeroException>())
-                  .ShouldThrow<DivideByZeroException>();
+            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                  .Should().Throw<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
             // 2 exception raised, circuit is now open
-            breaker.Awaiting(async x => await x.RaiseExceptionAsync<DivideByZeroException>())
-                  .ShouldThrow<BrokenCircuitException>();
+            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                  .Should().Throw<BrokenCircuitException>();
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
             SystemClock.UtcNow = () => time.Add(durationOfBreak);
@@ -1110,11 +1114,11 @@ namespace Polly.Specs.CircuitBreaker
             // duration has passed, circuit now half open
             breaker.CircuitState.Should().Be(CircuitState.HalfOpen);
             // first call after duration raises an exception, so circuit should break again
-            breaker.Awaiting(async x => await x.RaiseExceptionAsync<DivideByZeroException>())
-                  .ShouldThrow<DivideByZeroException>();
+            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                  .Should().Throw<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Open);
-            breaker.Awaiting(async x => await x.RaiseExceptionAsync<DivideByZeroException>())
-                  .ShouldThrow<BrokenCircuitException>();
+            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                  .Should().Throw<BrokenCircuitException>();
 
             transitionedStates[0].Should().Be(CircuitState.Closed);
             transitionedStates[1].Should().Be(CircuitState.HalfOpen);
@@ -1125,7 +1129,7 @@ namespace Polly.Specs.CircuitBreaker
         {
             Exception passedException = null;
 
-            Action<Exception, TimeSpan, Context> onBreak = (exception, _, __) => { passedException = exception; };
+            Action<Exception, TimeSpan, Context> onBreak = (exception, _, _) => { passedException = exception; };
             Action<Context> onReset = _ => { };
 
             TimeSpan durationOfBreak = TimeSpan.FromMinutes(1);
@@ -1139,10 +1143,10 @@ namespace Polly.Specs.CircuitBreaker
             Exception withInner = new AggregateException(toRaiseAsInner);
 
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .ShouldThrow<DivideByZeroException>();
+                .Should().Throw<DivideByZeroException>();
 
             breaker.Awaiting(x => x.RaiseExceptionAsync(withInner))
-                .ShouldThrow<DivideByZeroException>().Which.Should().BeSameAs(toRaiseAsInner);
+                .Should().Throw<DivideByZeroException>().Which.Should().BeSameAs(toRaiseAsInner);
 
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
@@ -1154,7 +1158,7 @@ namespace Polly.Specs.CircuitBreaker
         {
             TimeSpan? passedBreakTimespan = null;
 
-            Action<Exception, TimeSpan, Context> onBreak = (_, timespan, __) => { passedBreakTimespan = timespan; };
+            Action<Exception, TimeSpan, Context> onBreak = (_, timespan, _) => { passedBreakTimespan = timespan; };
             Action<Context> onReset = _ => { };
 
             TimeSpan durationOfBreak = TimeSpan.FromMinutes(1);
@@ -1163,12 +1167,12 @@ namespace Polly.Specs.CircuitBreaker
                             .Handle<DivideByZeroException>()
                             .CircuitBreakerAsync(2, durationOfBreak, onBreak, onReset);
 
-            breaker.Awaiting(async x => await x.RaiseExceptionAsync<DivideByZeroException>())
-                  .ShouldThrow<DivideByZeroException>();
+            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                  .Should().Throw<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
-            breaker.Awaiting(async x => await x.RaiseExceptionAsync<DivideByZeroException>())
-                  .ShouldThrow<DivideByZeroException>();
+            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                  .Should().Throw<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
             passedBreakTimespan.Should().Be(durationOfBreak);
@@ -1178,7 +1182,7 @@ namespace Polly.Specs.CircuitBreaker
         public void Should_open_circuit_with_timespan_maxvalue_if_manual_override_open()
         {
             TimeSpan? passedBreakTimespan = null;
-            Action<Exception, TimeSpan, Context> onBreak = (_, timespan, __) => { passedBreakTimespan = timespan; };
+            Action<Exception, TimeSpan, Context> onBreak = (_, timespan, _) => { passedBreakTimespan = timespan; };
             Action<Context> onReset = _ => { };
 
             var time = 1.January(2000);
@@ -1205,19 +1209,19 @@ namespace Polly.Specs.CircuitBreaker
         {
             IDictionary<string, object> contextData = null;
 
-            Action<Exception, TimeSpan, Context> onBreak = (_, __, context) => { contextData = context; };
+            Action<Exception, TimeSpan, Context> onBreak = (_, _, context) => { contextData = context; };
             Action<Context> onReset = _ => { };
 
             var breaker = Policy
                             .Handle<DivideByZeroException>()
                             .CircuitBreakerAsync(2, TimeSpan.FromMinutes(1), onBreak, onReset);
 
-            breaker.Awaiting(async x => await x.RaiseExceptionAsync<DivideByZeroException>())
-                  .ShouldThrow<DivideByZeroException>();
+            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                  .Should().Throw<DivideByZeroException>();
 
-            breaker.Awaiting(async x => await x.RaiseExceptionAsync<DivideByZeroException>(
+            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>(
                 new { key1 = "value1", key2 = "value2" }.AsDictionary()
-                )).ShouldThrow<DivideByZeroException>();
+                )).Should().Throw<DivideByZeroException>();
 
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
@@ -1231,7 +1235,7 @@ namespace Polly.Specs.CircuitBreaker
         {
             IDictionary<string, object> contextData = null;
 
-            Action<Exception, TimeSpan, Context> onBreak = (_, __, ___) => { };
+            Action<Exception, TimeSpan, Context> onBreak = (_, _, _) => { };
             Action<Context> onReset = context => { contextData = context; };
 
             var time = 1.January(2000);
@@ -1243,17 +1247,17 @@ namespace Polly.Specs.CircuitBreaker
                             .Handle<DivideByZeroException>()
                             .CircuitBreakerAsync(2, durationOfBreak, onBreak, onReset);
 
-            breaker.Awaiting(async x => await x.RaiseExceptionAsync<DivideByZeroException>())
-                  .ShouldThrow<DivideByZeroException>();
-            breaker.Awaiting(async x => await x.RaiseExceptionAsync<DivideByZeroException>())
-                  .ShouldThrow<DivideByZeroException>();
+            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                  .Should().Throw<DivideByZeroException>();
+            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                  .Should().Throw<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
             SystemClock.UtcNow = () => time.Add(durationOfBreak);
             breaker.CircuitState.Should().Be(CircuitState.HalfOpen);
 
             // first call after duration should invoke onReset, with context
-            await breaker.ExecuteAsync(ctx => TaskHelper.EmptyTask, new { key1 = "value1", key2 = "value2" }.AsDictionary());
+            await breaker.ExecuteAsync(_ => TaskHelper.EmptyTask, new { key1 = "value1", key2 = "value2" }.AsDictionary());
 
             contextData.Should()
                 .ContainKeys("key1", "key2").And
@@ -1265,18 +1269,18 @@ namespace Polly.Specs.CircuitBreaker
         {
             IDictionary<string, object> contextData = new { key1 = "value1", key2 = "value2" }.AsDictionary();
 
-            Action<Exception, TimeSpan, Context> onBreak = (_, __, context) => { contextData = context; };
+            Action<Exception, TimeSpan, Context> onBreak = (_, _, context) => { contextData = context; };
             Action<Context> onReset = _ => { };
 
             var breaker = Policy
                             .Handle<DivideByZeroException>()
                             .CircuitBreakerAsync(2, TimeSpan.FromMinutes(1), onBreak, onReset);
 
-            breaker.Awaiting(async x => await x.RaiseExceptionAsync<DivideByZeroException>())
-                  .ShouldThrow<DivideByZeroException>();
+            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                  .Should().Throw<DivideByZeroException>();
 
-            breaker.Awaiting(async x => await x.RaiseExceptionAsync<DivideByZeroException>())
-                  .ShouldThrow<DivideByZeroException>();
+            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                  .Should().Throw<DivideByZeroException>();
 
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
@@ -1288,7 +1292,7 @@ namespace Polly.Specs.CircuitBreaker
         {
             string contextValue = null;
 
-            Action<Exception, TimeSpan, Context> onBreak = (_, __, context) => { contextValue = context.ContainsKey("key") ? context["key"].ToString() : null; };
+            Action<Exception, TimeSpan, Context> onBreak = (_, _, context) => { contextValue = context.ContainsKey("key") ? context["key"].ToString() : null; };
             Action<Context> onReset = context => { contextValue = context.ContainsKey("key") ? context["key"].ToString() : null; };
 
             var breaker = Policy
@@ -1300,12 +1304,12 @@ namespace Polly.Specs.CircuitBreaker
 
             var durationOfBreak = TimeSpan.FromMinutes(1);
 
-            breaker.Awaiting(async x => await x.RaiseExceptionAsync<DivideByZeroException>())
-                  .ShouldThrow<DivideByZeroException>();
+            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                  .Should().Throw<DivideByZeroException>();
 
             // 2 exception raised, circuit is now open
-            breaker.Awaiting(async x => await x.RaiseExceptionAsync<DivideByZeroException>(new { key = "original_value" }.AsDictionary()))
-                  .ShouldThrow<DivideByZeroException>();
+            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>(new { key = "original_value" }.AsDictionary()))
+                  .Should().Throw<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Open);
             contextValue.Should().Be("original_value");
 
@@ -1316,7 +1320,7 @@ namespace Polly.Specs.CircuitBreaker
             // but not yet reset
 
             // first call after duration is successful, so circuit should reset
-            breaker.ExecuteAsync(ctx => TaskHelper.EmptyTask, new { key = "new_value" }.AsDictionary());
+            breaker.ExecuteAsync(_ => TaskHelper.EmptyTask, new { key = "new_value" }.AsDictionary());
             breaker.CircuitState.Should().Be(CircuitState.Closed);
             contextValue.Should().Be("new_value");
         }
@@ -1344,8 +1348,8 @@ namespace Polly.Specs.CircuitBreaker
                 .Handle<DivideByZeroException>()
                 .CircuitBreakerAsync(2, TimeSpan.FromMinutes(1));
 
-            breaker.Awaiting(async x => await x.RaiseExceptionAsync<DivideByZeroException>())
-                  .ShouldThrow<DivideByZeroException>();
+            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                  .Should().Throw<DivideByZeroException>();
 
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
@@ -1363,7 +1367,7 @@ namespace Polly.Specs.CircuitBreaker
             Exception withInner = new AggregateException(toRaiseAsInner);
 
             breaker.Awaiting(x => x.RaiseExceptionAsync(withInner))
-                .ShouldThrow<DivideByZeroException>().Which.Should().BeSameAs(toRaiseAsInner);
+                .Should().Throw<DivideByZeroException>().Which.Should().BeSameAs(toRaiseAsInner);
 
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
@@ -1377,11 +1381,11 @@ namespace Polly.Specs.CircuitBreaker
                 .Handle<DivideByZeroException>()
                 .CircuitBreakerAsync(2, TimeSpan.FromMinutes(1));
 
-            breaker.Awaiting(async x => await x.RaiseExceptionAsync<DivideByZeroException>())
-                  .ShouldThrow<DivideByZeroException>();
+            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                  .Should().Throw<DivideByZeroException>();
 
-            breaker.Awaiting(async x => await x.RaiseExceptionAsync<DivideByZeroException>())
-                  .ShouldThrow<DivideByZeroException>();
+            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                  .Should().Throw<DivideByZeroException>();
 
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
@@ -1395,11 +1399,11 @@ namespace Polly.Specs.CircuitBreaker
                 .Handle<DivideByZeroException>()
                 .CircuitBreakerAsync(2, TimeSpan.FromMinutes(1));
 
-            breaker.Awaiting(async x => await x.RaiseExceptionAsync<DivideByZeroException>())
-                  .ShouldThrow<DivideByZeroException>();
+            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                  .Should().Throw<DivideByZeroException>();
 
-            breaker.Awaiting(async x => await x.RaiseExceptionAsync<DivideByZeroException>())
-                  .ShouldThrow<DivideByZeroException>();
+            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                  .Should().Throw<DivideByZeroException>();
 
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
@@ -1415,7 +1419,7 @@ namespace Polly.Specs.CircuitBreaker
         #region Cancellation support
 
         [Fact]
-        public void Should_execute_action_when_non_faulting_and_cancellationtoken_not_cancelled()
+        public void Should_execute_action_when_non_faulting_and_cancellationToken_not_cancelled()
         {
             var durationOfBreak = TimeSpan.FromMinutes(1);
             var breaker = Policy
@@ -1423,7 +1427,6 @@ namespace Polly.Specs.CircuitBreaker
                             .CircuitBreakerAsync(2, durationOfBreak);
 
             CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-            CancellationToken cancellationToken = cancellationTokenSource.Token;
 
             int attemptsInvoked = 0;
             Action onExecute = () => attemptsInvoked++;
@@ -1434,14 +1437,14 @@ namespace Polly.Specs.CircuitBreaker
                 AttemptDuringWhichToCancel = null,
             };
 
-            breaker.Awaiting(async x => await x.RaiseExceptionAndOrCancellationAsync<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
-                .ShouldNotThrow();
+            breaker.Awaiting(x => x.RaiseExceptionAndOrCancellationAsync<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
+                .Should().NotThrow();
 
             attemptsInvoked.Should().Be(1);
         }
 
         [Fact]
-        public void Should_not_execute_action_when_cancellationtoken_cancelled_before_execute()
+        public void Should_not_execute_action_when_cancellationToken_cancelled_before_execute()
         {
             var durationOfBreak = TimeSpan.FromMinutes(1);
             var breaker = Policy
@@ -1462,15 +1465,15 @@ namespace Polly.Specs.CircuitBreaker
 
             cancellationTokenSource.Cancel();
 
-            breaker.Awaiting(async x => await x.RaiseExceptionAndOrCancellationAsync<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
-                .ShouldThrow<TaskCanceledException>()
+            breaker.Awaiting(x => x.RaiseExceptionAndOrCancellationAsync<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
+                .Should().Throw<OperationCanceledException>()
                 .And.CancellationToken.Should().Be(cancellationToken);
 
             attemptsInvoked.Should().Be(0);
         }
 
         [Fact]
-        public void Should_report_cancellation_during_otherwise_non_faulting_action_execution_when_user_delegate_observes_cancellationtoken()
+        public void Should_report_cancellation_during_otherwise_non_faulting_action_execution_when_user_delegate_observes_cancellationToken()
         {
             var durationOfBreak = TimeSpan.FromMinutes(1);
             var breaker = Policy
@@ -1490,15 +1493,15 @@ namespace Polly.Specs.CircuitBreaker
                 ActionObservesCancellation = true
             };
 
-            breaker.Awaiting(async x => await x.RaiseExceptionAndOrCancellationAsync<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
-                .ShouldThrow<TaskCanceledException>()
+            breaker.Awaiting(x => x.RaiseExceptionAndOrCancellationAsync<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
+                .Should().Throw<OperationCanceledException>()
                 .And.CancellationToken.Should().Be(cancellationToken);
 
             attemptsInvoked.Should().Be(1);
         }
 
         [Fact]
-        public void Should_report_cancellation_during_faulting_action_execution_when_user_delegate_observes_cancellationtoken()
+        public void Should_report_cancellation_during_faulting_action_execution_when_user_delegate_observes_cancellationToken()
         {
             var durationOfBreak = TimeSpan.FromMinutes(1);
             var breaker = Policy
@@ -1518,8 +1521,8 @@ namespace Polly.Specs.CircuitBreaker
                 ActionObservesCancellation = true
             };
 
-            breaker.Awaiting(async x => await x.RaiseExceptionAndOrCancellationAsync<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
-                .ShouldThrow<TaskCanceledException>()
+            breaker.Awaiting(x => x.RaiseExceptionAndOrCancellationAsync<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
+                .Should().Throw<OperationCanceledException>()
                 .And.CancellationToken.Should().Be(cancellationToken);
 
             attemptsInvoked.Should().Be(1);
@@ -1534,7 +1537,6 @@ namespace Polly.Specs.CircuitBreaker
                             .CircuitBreakerAsync(2, durationOfBreak);
 
             CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-            CancellationToken cancellationToken = cancellationTokenSource.Token;
 
             int attemptsInvoked = 0;
             Action onExecute = () => attemptsInvoked++;
@@ -1546,8 +1548,8 @@ namespace Polly.Specs.CircuitBreaker
                 ActionObservesCancellation = false
             };
 
-            breaker.Awaiting(async x => await x.RaiseExceptionAndOrCancellationAsync<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
-                .ShouldThrow<DivideByZeroException>();
+            breaker.Awaiting(x => x.RaiseExceptionAndOrCancellationAsync<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
+                .Should().Throw<DivideByZeroException>();
 
             attemptsInvoked.Should().Be(1);
         }
@@ -1559,11 +1561,11 @@ namespace Polly.Specs.CircuitBreaker
                 .Handle<DivideByZeroException>()
                 .CircuitBreakerAsync(1, TimeSpan.FromMinutes(1));
 
-            breaker.Awaiting(async x => await x.RaiseExceptionAsync<DivideByZeroException>())
-                .ShouldThrow<DivideByZeroException>();
+            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                .Should().Throw<DivideByZeroException>();
 
-            breaker.Awaiting(async x => await x.RaiseExceptionAsync<DivideByZeroException>())
-                .ShouldThrow<BrokenCircuitException>()
+            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                .Should().Throw<BrokenCircuitException>()
                 .WithMessage("The circuit is now open and is not allowing calls.")
                 .WithInnerException<DivideByZeroException>();
             // Circuit is now broken.
@@ -1583,15 +1585,15 @@ namespace Polly.Specs.CircuitBreaker
                 ActionObservesCancellation = false
             };
 
-            breaker.Awaiting(async x => await x.RaiseExceptionAndOrCancellationAsync<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
-                .ShouldThrow<TaskCanceledException>()
+            breaker.Awaiting(x => x.RaiseExceptionAndOrCancellationAsync<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
+                .Should().Throw<OperationCanceledException>()
                 .And.CancellationToken.Should().Be(cancellationToken);
 
             attemptsInvoked.Should().Be(0);
         }
 
         [Fact]
-        public void Should_honour_different_cancellationtoken_captured_implicitly_by_action()
+        public void Should_honour_different_cancellationToken_captured_implicitly_by_action()
         {
             // Before CancellationToken support was built in to Polly, users of the library may have implicitly captured a CancellationToken and used it to cancel actions.  For backwards compatibility, Polly should not confuse these with its own CancellationToken; it should distinguish TaskCanceledExceptions thrown with different CancellationTokens.
 
@@ -1610,20 +1612,20 @@ namespace Polly.Specs.CircuitBreaker
 
             int attemptsInvoked = 0;
 
-            breaker.Awaiting(async x => await x.ExecuteAsync(async ct =>
+            breaker.Awaiting(x => x.ExecuteAsync(async _ =>
             {
                 attemptsInvoked++;
                 await TaskHelper.EmptyTask;
                 implicitlyCapturedActionCancellationToken.ThrowIfCancellationRequested();
             }, policyCancellationToken))
-                .ShouldThrow<TaskCanceledException>()
+                .Should().Throw<OperationCanceledException>()
                 .And.CancellationToken.Should().Be(implicitlyCapturedActionCancellationToken);
 
             attemptsInvoked.Should().Be(1);
         }
 
         [Fact]
-        public void Should_execute_func_returning_value_when_cancellationtoken_not_cancelled()
+        public void Should_execute_func_returning_value_when_cancellationToken_not_cancelled()
         {
             var durationOfBreak = TimeSpan.FromMinutes(1);
             var breaker = Policy
@@ -1644,8 +1646,9 @@ namespace Polly.Specs.CircuitBreaker
                 AttemptDuringWhichToCancel = null,
             };
 
-            breaker.Awaiting(async x => result = await x.RaiseExceptionAndOrCancellationAsync<DivideByZeroException, bool>(scenario, cancellationTokenSource, onExecute, true).ConfigureAwait(false))
-                .ShouldNotThrow();
+            Func<AsyncCircuitBreakerPolicy, Task> action = async x => result = await x.RaiseExceptionAndOrCancellationAsync<DivideByZeroException, bool>(scenario, cancellationTokenSource, onExecute, true);
+            breaker.Awaiting(action)
+                .Should().NotThrow();
 
             result.Should().BeTrue();
 
@@ -1674,8 +1677,9 @@ namespace Polly.Specs.CircuitBreaker
                 ActionObservesCancellation = true
             };
 
-            breaker.Awaiting(async x => result = await x.RaiseExceptionAndOrCancellationAsync<DivideByZeroException, bool>(scenario, cancellationTokenSource, onExecute, true).ConfigureAwait(false))
-                .ShouldThrow<TaskCanceledException>().And.CancellationToken.Should().Be(cancellationToken);
+            Func<AsyncCircuitBreakerPolicy, Task> action = async x => result = await x.RaiseExceptionAndOrCancellationAsync<DivideByZeroException, bool>(scenario, cancellationTokenSource, onExecute, true);
+            breaker.Awaiting(action)
+                .Should().Throw<OperationCanceledException>().And.CancellationToken.Should().Be(cancellationToken);
 
             result.Should().Be(null);
 
