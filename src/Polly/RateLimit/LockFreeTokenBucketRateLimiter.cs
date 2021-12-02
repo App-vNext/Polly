@@ -29,8 +29,8 @@ namespace Polly.RateLimit
         /// </param>
         public LockFreeTokenBucketRateLimiter(TimeSpan onePer, long bucketCapacity)
         {
-            if (onePer <= TimeSpan.Zero) throw new ArgumentOutOfRangeException(nameof(onePer), $"The ${nameof(LockFreeTokenBucketRateLimiter)} must specify a positive TimeSpan for how often an execution is permitted.");
-            if (bucketCapacity <= 0) throw new ArgumentOutOfRangeException(nameof(bucketCapacity), $"The ${bucketCapacity} must be greater than or equal to 1.");
+            if (onePer <= TimeSpan.Zero) throw new ArgumentOutOfRangeException(nameof(onePer), onePer, $"The ${nameof(LockFreeTokenBucketRateLimiter)} must specify a positive TimeSpan for how often an execution is permitted.");
+            if (bucketCapacity <= 0) throw new ArgumentOutOfRangeException(nameof(bucketCapacity), bucketCapacity, $"The ${bucketCapacity} must be greater than or equal to 1.");
 
             addTokenTickInterval = onePer.Ticks;
             this.bucketCapacity = bucketCapacity;

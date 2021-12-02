@@ -59,7 +59,7 @@ namespace Polly.RateLimit
 
         private void SetRetryAfter(TimeSpan retryAfter)
         {
-            if (retryAfter < TimeSpan.Zero) throw new ArgumentOutOfRangeException(nameof(retryAfter), $"The {nameof(retryAfter)} parameter must be a TimeSpan greater than or equal to TimeSpan.Zero.");
+            if (retryAfter < TimeSpan.Zero) throw new ArgumentOutOfRangeException(nameof(retryAfter), retryAfter, $"The {nameof(retryAfter)} parameter must be a TimeSpan greater than or equal to TimeSpan.Zero.");
             RetryAfter = retryAfter;
         }
 
