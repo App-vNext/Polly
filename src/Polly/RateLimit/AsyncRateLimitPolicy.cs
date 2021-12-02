@@ -14,7 +14,7 @@ namespace Polly.RateLimit
 
         internal AsyncRateLimitPolicy(IRateLimiter rateLimiter)
         {
-            _rateLimiter = rateLimiter ?? throw new NullReferenceException(nameof(rateLimiter));
+            _rateLimiter = rateLimiter ?? throw new ArgumentNullException(nameof(rateLimiter));
         }
 
         /// <inheritdoc/>
@@ -36,7 +36,7 @@ namespace Polly.RateLimit
             IRateLimiter rateLimiter,
             Func<TimeSpan, Context, TResult> retryAfterFactory)
         {
-            _rateLimiter = rateLimiter ?? throw new NullReferenceException(nameof(rateLimiter));
+            _rateLimiter = rateLimiter ?? throw new ArgumentNullException(nameof(rateLimiter));
             _retryAfterFactory = retryAfterFactory;
         }
 
