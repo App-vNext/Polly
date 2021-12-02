@@ -2,7 +2,7 @@
 
 namespace Polly.RateLimit
 {
-    internal class RateLimiterFactory
+    internal static class RateLimiterFactory
     {
         public static IRateLimiter Create(TimeSpan onePer, int bucketCapacity)
             => new LockFreeTokenBucketRateLimiter(onePer, bucketCapacity);
