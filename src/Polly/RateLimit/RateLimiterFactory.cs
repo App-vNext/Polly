@@ -6,8 +6,5 @@ namespace Polly.RateLimit
     {
         public static IRateLimiter Create(TimeSpan onePer, int bucketCapacity)
             => new LockFreeTokenBucketRateLimiter(onePer, bucketCapacity);
-/*
-            => new LockBasedTokenBucketRateLimiter(onePer, bucketCapacity);
-*/
     }
 }
