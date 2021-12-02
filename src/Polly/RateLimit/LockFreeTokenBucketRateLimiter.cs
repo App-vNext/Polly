@@ -79,7 +79,7 @@ namespace Polly.RateLimit
                 long tokensToAdd = Math.Min(bucketCapacity, tokensMissedAdding);
 
                 // Work out when tokens would next be due to be added, if we add these tokens.
-                long newAddNextTokenAtTicks = currentAddNextTokenAtTicks + tokensToAdd * addTokenTickInterval;
+                long newAddNextTokenAtTicks = currentAddNextTokenAtTicks + (tokensToAdd * addTokenTickInterval);
                 // But if we were way overdue refilling the bucket (there was inactivity for a while), that value would be out-of-date: the next time we add tokens must be at least addTokenTickInterval from now.
                 newAddNextTokenAtTicks = Math.Max(newAddNextTokenAtTicks, now + addTokenTickInterval);
 
