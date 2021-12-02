@@ -7,7 +7,7 @@ namespace Polly.Registry
 {
     /// <inheritdoc />
     /// <summary>
-    /// Stores a registry of <see cref="T:System.String" /> and policy pairs.
+    /// Stores a registry of <see cref="string" /> and policy pairs.
     /// </summary>
     /// <remarks>Uses ConcurrentDictionary to store the collection.</remarks>
     public class PolicyRegistry : IPolicyRegistry<string>
@@ -15,7 +15,7 @@ namespace Polly.Registry
         private readonly IDictionary<string, IsPolicy> _registry = new ConcurrentDictionary<string, IsPolicy>();
 
         /// <summary>
-        /// A registry of policy policies with <see cref="System.String"/> keys.
+        /// A registry of policy policies with <see cref="string"/> keys.
         /// </summary>
         public PolicyRegistry()
         {
@@ -26,7 +26,7 @@ namespace Polly.Registry
         }
 
         /// <summary>
-        /// A registry of policy policies with <see cref="System.String"/> keys.
+        /// A registry of policy policies with <see cref="string"/> keys.
         /// </summary>
         /// <param name="registry">a dictionary containing keys and policies used for testing.</param>
         internal PolicyRegistry(IDictionary<string, IsPolicy> registry) 

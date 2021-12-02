@@ -24,7 +24,7 @@ namespace Polly.Timeout
         /// Initializes a new instance of the <see cref="TimeoutRejectedException"/> class.
         /// </summary>
         /// <param name="message">The message.</param>
-        public TimeoutRejectedException(String message) : base(message)
+        public TimeoutRejectedException(string message) : base(message)
         {
         }
 
@@ -33,7 +33,7 @@ namespace Polly.Timeout
         /// </summary>
         /// <param name="message">The message.</param>
         /// <param name="innerException">The inner exception.</param>
-        public TimeoutRejectedException(String message, Exception innerException) : base(message, innerException)
+        public TimeoutRejectedException(string message, Exception innerException) : base(message, innerException)
         {
         }
 

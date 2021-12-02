@@ -41,7 +41,7 @@ namespace Polly.RateLimit
         /// </summary>
         /// <param name="retryAfter">The timespan after which the operation may be retried.</param>
         /// <param name="message">The message.</param>
-        public RateLimitRejectedException(TimeSpan retryAfter, String message) : base(message)
+        public RateLimitRejectedException(TimeSpan retryAfter, string message) : base(message)
         {
             SetRetryAfter(retryAfter);
         }
@@ -52,7 +52,7 @@ namespace Polly.RateLimit
         /// <param name="message">The message.</param>
         /// <param name="retryAfter">The timespan after which the operation may be retried.</param>
         /// <param name="innerException">The inner exception.</param>
-        public RateLimitRejectedException(TimeSpan retryAfter, String message, Exception innerException) : base(message, innerException)
+        public RateLimitRejectedException(TimeSpan retryAfter, string message, Exception innerException) : base(message, innerException)
         {
             SetRetryAfter(retryAfter);
         }

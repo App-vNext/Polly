@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Polly.Caching
+﻿namespace Polly.Caching
 {
     /// <summary>
     /// Defines methods for classes providing synchronous cache functionality for Polly <see cref="CachePolicy"/>s.
@@ -15,7 +13,7 @@ namespace Polly.Caching
         /// A tuple whose first element is a value indicating whether the key was found in the cache,
         /// and whose second element is the value from the cache (null if not found).
         /// </returns>
-        (bool, object) TryGet(String key);
+        (bool, object) TryGet(string key);
 
         /// <summary>
         /// Puts the specified value in the cache.
@@ -39,7 +37,7 @@ namespace Polly.Caching
         /// A tuple whose first element is a value indicating whether the key was found in the cache,
         /// and whose second element is the value from the cache (default(TResult) if not found).
         /// </returns>
-        (bool, TResult) TryGet(String key);
+        (bool, TResult) TryGet(string key);
 
         /// <summary>
         /// Puts the specified value in the cache.
