@@ -638,7 +638,61 @@ For more detail see: [Bulkhead policy documentation](https://github.com/App-vNex
 
 ### Rate-Limit
 
-**TODO: Documentation to be completed**
+```csharp
+// Allow up to 20 executions per second.
+Policy.RateLimit(20, TimeSpan.FromSeconds(1));
+
+// Allow up to 20 executions per second with a burst of 10 executions.
+Policy.RateLimit(20, TimeSpan.FromSeconds(1), 10);
+
+// Allow up to 20 executions per second, with a delegate to return the
+// retry-after value to use if the rate limit is exceeded.
+Policy.RateLimit(20, TimeSpan.FromSeconds(1), (retryAfter, context) =>
+{
+    return retryAfter.Add(TimeSpan.FromSeconds(2));
+});
+
+// Allow up to 20 executions per second with a burst of 10 executions,
+// with a delegate to return the retry-after value to use if the rate
+// limit is exceeded.
+Policy.RateLimit(20, TimeSpan.FromSeconds(1), 10, (retryAfter, context) =>
+{
+    return retryAfter.Add(TimeSpan.FromSeconds(2));
+});
+```
+
+Example execution:
+
+```csharp
+public async Task SearchAsync(string query, HttpContext httpContext)
+{
+    var rateLimit = Policy.RateLimitAsync(20, TimeSpan.FromSeconds(1), 10);
+
+    try
+    {
+        var result = await rateLimit.ExecuteAsync(() => TextSearchAsync(query));
+
+        var json = JsonConvert.SerializeObject(result);
+
+        httpContext.Response.ContentType = "application/json";
+        await httpContext.Response.WriteAsync(json);
+    }
+    catch (RateLimitRejectedException ex)
+    {
+        string retryAfter = DateTimeOffset.UtcNow
+            .Add(ex.RetryAfter)
+            .ToUnixTimeSeconds()
+            .ToString(CultureInfo.InvariantCulture);
+
+        httpContext.Response.StatusCode = 429;
+        httpContext.Response.Headers["Retry-After"] = retryAfter;
+    }
+}
+```
+
+Rate-limit policies throw `RateLimitRejectedException` if too many requests are executed within the configured timespan.
+
+For more detail see: [Rate-limit policy documentation](https://github.com/App-vNext/Polly/wiki/Rate-Limit) in the wiki.
 
 <br/>
 
