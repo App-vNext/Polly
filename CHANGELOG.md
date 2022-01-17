@@ -1,4 +1,4 @@
-## 7.3.0
+## 7.2.3
 
 - Add RateLimit policy - Thanks to [@reisenberger](https://github.com/reisenberger)
 - Various codebase health updates - Thanks to [@SimonCropp](https://github.com/SimonCropp)
