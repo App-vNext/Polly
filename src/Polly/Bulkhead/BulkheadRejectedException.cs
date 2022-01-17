@@ -24,7 +24,7 @@ namespace Polly.Bulkhead
         /// Initializes a new instance of the <see cref="BulkheadRejectedException"/> class.
         /// </summary>
         /// <param name="message">The message.</param>
-        public BulkheadRejectedException(String message) : base(message)
+        public BulkheadRejectedException(string message) : base(message)
         {
         }
 
@@ -33,7 +33,7 @@ namespace Polly.Bulkhead
         /// </summary>
         /// <param name="message">The message.</param>
         /// <param name="innerException">The inner exception.</param>
-        public BulkheadRejectedException(String message, Exception innerException) : base(message, innerException)
+        public BulkheadRejectedException(string message, Exception innerException) : base(message, innerException)
         {
         }
 

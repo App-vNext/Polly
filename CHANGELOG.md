@@ -1,3 +1,7 @@
+## 7.3.0
+
+- Add RateLimit policy - Thanks to [@reisenberger](https://github.com/reisenberger)
+
 ## 7.2.2
 
 - Recursively search all `AggregateException` inner exceptions for predicate matches when using `HandleInner()` ([#818](https://github.com/App-vNext/Polly/issues/818)) - Thanks to [@sideproject](https://github.com/sideproject)

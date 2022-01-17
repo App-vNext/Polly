@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Polly.Caching
+﻿namespace Polly.Caching
 {
     /// <summary>
     /// The default cache key strategy for <see cref="CachePolicy"/>.  Returns the property <see cref="M:Context.OperationKey"/>.
@@ -12,7 +10,7 @@ namespace Polly.Caching
         /// </summary>
         /// <param name="context">The execution context.</param>
         /// <returns>The cache key</returns>
-        public String GetCacheKey(Context context) => context.OperationKey;
+        public string GetCacheKey(Context context) => context.OperationKey;
 
         /// <summary>
         /// Gets an instance of the <see cref="DefaultCacheKeyStrategy"/>.

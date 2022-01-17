@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Polly
+﻿namespace Polly
 {
     public abstract partial class Policy
     {
@@ -9,7 +7,7 @@ namespace Polly
         /// <remarks>Must be called before the policy is first used.  Can only be set once.</remarks>
         /// </summary>
         /// <param name="policyKey">The unique, used-definable key to assign to this <see cref="Policy"/> instance.</param>
-        public Policy WithPolicyKey(String policyKey)
+        public Policy WithPolicyKey(string policyKey)
         {
             if (policyKeyInternal != null) throw PolicyKeyMustBeImmutableException;
 
@@ -22,7 +20,7 @@ namespace Polly
         /// <remarks>Must be called before the policy is first used.  Can only be set once.</remarks>
         /// </summary>
         /// <param name="policyKey">The unique, used-definable key to assign to this <see cref="Policy"/> instance.</param>
-        ISyncPolicy ISyncPolicy.WithPolicyKey(String policyKey)
+        ISyncPolicy ISyncPolicy.WithPolicyKey(string policyKey)
         {
             if (policyKeyInternal != null) throw PolicyKeyMustBeImmutableException;
 
@@ -38,7 +36,7 @@ namespace Polly
         /// <remarks>Must be called before the policy is first used.  Can only be set once.</remarks>
         /// </summary>
         /// <param name="policyKey">The unique, used-definable key to assign to this <see cref="Policy{TResult}"/> instance.</param>
-        public Policy<TResult> WithPolicyKey(String policyKey)
+        public Policy<TResult> WithPolicyKey(string policyKey)
         {
             if (policyKeyInternal != null) throw PolicyKeyMustBeImmutableException;
 
@@ -51,7 +49,7 @@ namespace Polly
         /// <remarks>Must be called before the policy is first used.  Can only be set once.</remarks>
         /// </summary>
         /// <param name="policyKey">The unique, used-definable key to assign to this <see cref="Policy{TResult}"/> instance.</param>
-        ISyncPolicy<TResult> ISyncPolicy<TResult>.WithPolicyKey(String policyKey)
+        ISyncPolicy<TResult> ISyncPolicy<TResult>.WithPolicyKey(string policyKey)
         {
             if (policyKeyInternal != null) throw PolicyKeyMustBeImmutableException;
 

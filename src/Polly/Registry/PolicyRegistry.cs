@@ -7,7 +7,7 @@ namespace Polly.Registry
 {
     /// <inheritdoc />
     /// <summary>
-    /// Stores a registry of <see cref="T:System.String" /> and policy pairs.
+    /// Stores a registry of <see cref="string" /> and policy pairs.
     /// </summary>
     /// <remarks>Uses ConcurrentDictionary to store the collection.</remarks>
     public class PolicyRegistry : IConcurrentPolicyRegistry<string>
@@ -15,7 +15,7 @@ namespace Polly.Registry
         private readonly IDictionary<string, IsPolicy> _registry = new ConcurrentDictionary<string, IsPolicy>();
 
         /// <summary>
-        /// Creates a registry of policies with <see cref="String"/> keys.
+        /// Creates a registry of policies with <see cref="string"/> keys.
         /// </summary>
         public PolicyRegistry()
         {
@@ -26,7 +26,7 @@ namespace Polly.Registry
         }
 
         /// <summary>
-        /// Creates a registry of policies with <see cref="String"/> keys.
+        /// Creates a registry of policies with <see cref="string"/> keys.
         /// <remarks>This internal constructor exists solely to facilitate testing of the GetEnumerator() methods, which allow us to support collection initialisation syntax.</remarks>
         /// </summary>
         /// <param name="registry">a dictionary containing keys and policies used for testing.</param>
