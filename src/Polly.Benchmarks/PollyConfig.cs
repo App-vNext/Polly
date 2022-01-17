@@ -28,7 +28,7 @@ namespace Polly.Benchmarks
 
             if (useNuGet)
             {
-                result = result.WithNuGet("Polly", "7.3.0");
+                result = result.WithNuGet("Polly", "7.2.3");
             }
 
             return result;
