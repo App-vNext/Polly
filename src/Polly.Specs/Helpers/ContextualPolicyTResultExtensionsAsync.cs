@@ -20,7 +20,7 @@ namespace Polly.Specs.Helpers
         {
             var enumerator = resultsToRaise.GetEnumerator();
 
-            return policy.ExecuteAsync((ctx, ct) =>
+            return policy.ExecuteAsync((_, _) =>
             {
                 if (!enumerator.MoveNext())
                 {
@@ -40,7 +40,7 @@ namespace Polly.Specs.Helpers
         {
             var enumerator = resultsToRaise.GetEnumerator();
 
-            return policy.ExecuteAndCaptureAsync(ctx =>
+            return policy.ExecuteAndCaptureAsync(_ =>
             {
                 if (!enumerator.MoveNext())
                 {

@@ -16,7 +16,7 @@ namespace Polly
         /// <remarks>Must be called before the policy is first used.  Can only be set once.</remarks>
         /// </summary>
         /// <param name="policyKey">The unique, used-definable key to assign to this <see cref="IAsyncPolicy{TResult}"/> instance.</param>
-        IAsyncPolicy<TResult> WithPolicyKey(String policyKey);
+        IAsyncPolicy<TResult> WithPolicyKey(string policyKey);
 
         /// <summary>
         ///     Executes the specified asynchronous action within the policy and returns the result.

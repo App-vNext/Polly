@@ -70,8 +70,8 @@ namespace Polly
             if (ttlStrategy == null) throw new ArgumentNullException(nameof(ttlStrategy));
             if (cacheKeyStrategy == null) throw new ArgumentNullException(nameof(cacheKeyStrategy));
 
-            onCacheError = onCacheError ?? ((_, __, ___) => { });
-            Action<Context, string> emptyDelegate = (_, __) => { };
+            onCacheError = onCacheError ?? ((_, _, _) => { });
+            Action<Context, string> emptyDelegate = (_, _) => { };
 
             return new AsyncCachePolicy(cacheProvider, ttlStrategy, cacheKeyStrategy.GetCacheKey, emptyDelegate, emptyDelegate, emptyDelegate, onCacheError, onCacheError);
         }
@@ -112,8 +112,8 @@ namespace Polly
             if (ttlStrategy == null) throw new ArgumentNullException(nameof(ttlStrategy));
             if (cacheKeyStrategy == null) throw new ArgumentNullException(nameof(cacheKeyStrategy));
 
-            onCacheError = onCacheError ?? ((_, __, ___) => { });
-            Action<Context, string> emptyDelegate = (_, __) => { };
+            onCacheError = onCacheError ?? ((_, _, _) => { });
+            Action<Context, string> emptyDelegate = (_, _) => { };
 
             return new AsyncCachePolicy(cacheProvider, ttlStrategy, cacheKeyStrategy, emptyDelegate, emptyDelegate, emptyDelegate, onCacheError, onCacheError);
         }

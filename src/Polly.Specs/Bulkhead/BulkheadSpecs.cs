@@ -1,16 +1,14 @@
 ﻿using System;
-using System.Linq;
 using System.Threading.Tasks;
 using Polly.Bulkhead;
 using Polly.Specs.Helpers.Bulkhead;
-
 using FluentAssertions;
 using Xunit;
 using Xunit.Abstractions;
 
 namespace Polly.Specs.Bulkhead
 {
-    [Collection(Polly.Specs.Helpers.Constants.ParallelThreadDependentTestCollection)]
+    [Collection(Helpers.Constants.ParallelThreadDependentTestCollection)]
     public class BulkheadSpecs : BulkheadSpecsBase
     {
         public BulkheadSpecs(ITestOutputHelper testOutputHelper) : base(testOutputHelper) { }
@@ -69,7 +67,7 @@ namespace Polly.Specs.Bulkhead
                 // Time for the other thread to kick up and take the bulkhead.
                 Within(CohesionTimeLimit, () => Expect(0, () => bulkhead.BulkheadAvailableCount, nameof(bulkhead.BulkheadAvailableCount)));
 
-                bulkhead.Invoking(b => b.Execute(ctx => { }, contextPassedToExecute)).Should()
+                bulkhead.Invoking(b => b.Execute(_ => { }, contextPassedToExecute)).Should()
                     .Throw<BulkheadRejectedException>();
 
                 tcs.SetCanceled();

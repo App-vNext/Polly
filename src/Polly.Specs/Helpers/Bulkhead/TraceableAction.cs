@@ -7,7 +7,7 @@ using Xunit.Abstractions;
 namespace Polly.Specs.Helpers.Bulkhead
 {
     /// <summary>
-    /// A traceable action that can be executed on a <see cref="BulkheadPolicy"/>, to support specs. 
+    /// A traceable action that can be executed on a <see cref="BulkheadPolicy"/>, to support specs.
     /// <remarks>We can execute multiple instances of <see cref="TraceableAction"/> in parallel on a bulkhead, and manually control the cancellation and completion of each, to provide determinate tests on the bulkhead operation.  The status of this <see cref="TraceableAction"/> as it executes is fully traceable through the <see cref="TraceableActionStatus"/> property.</remarks>
     /// </summary>
     public class TraceableAction : IDisposable
@@ -48,14 +48,14 @@ namespace Polly.Specs.Helpers.Bulkhead
         public Task ExecuteOnBulkhead(BulkheadPolicy bulkhead)
         {
             return ExecuteThroughSyncBulkheadOuter(
-                () => bulkhead.Execute(ct => ExecuteThroughSyncBulkheadInner(), CancellationSource.Token)
+                () => bulkhead.Execute(_ => ExecuteThroughSyncBulkheadInner(), CancellationSource.Token)
                 );
         }
 
         public Task ExecuteOnBulkhead<TResult>(BulkheadPolicy<TResult> bulkhead)
         {
             return ExecuteThroughSyncBulkheadOuter(
-                () => bulkhead.Execute(ct => { ExecuteThroughSyncBulkheadInner(); return default; }, CancellationSource.Token)
+                () => bulkhead.Execute(_ => { ExecuteThroughSyncBulkheadInner(); return default; }, CancellationSource.Token)
                 );
         }
 
@@ -128,14 +128,14 @@ namespace Polly.Specs.Helpers.Bulkhead
         public Task ExecuteOnBulkheadAsync(AsyncBulkheadPolicy bulkhead)
         {
             return ExecuteThroughAsyncBulkheadOuter(
-                () => bulkhead.ExecuteAsync(async ct => await ExecuteThroughAsyncBulkheadInner(), CancellationSource.Token)
+                () => bulkhead.ExecuteAsync(async _ => await ExecuteThroughAsyncBulkheadInner(), CancellationSource.Token)
             );
         }
 
         public Task ExecuteOnBulkheadAsync<TResult>(AsyncBulkheadPolicy<TResult> bulkhead)
         {
             return ExecuteThroughAsyncBulkheadOuter(
-                () => bulkhead.ExecuteAsync(async ct => { await ExecuteThroughAsyncBulkheadInner(); return default; }, CancellationSource.Token)
+                () => bulkhead.ExecuteAsync(async _ => { await ExecuteThroughAsyncBulkheadInner(); return default; }, CancellationSource.Token)
             );
         }
 
@@ -153,7 +153,7 @@ namespace Polly.Specs.Helpers.Bulkhead
                     {
                         Status = TraceableActionStatus.QueueingForSemaphore;
 
-                        await executeThroughBulkheadInner().ConfigureAwait(false);
+                        await executeThroughBulkheadInner();
                     }
                     catch (BulkheadRejectedException)
                     {
@@ -187,8 +187,7 @@ namespace Polly.Specs.Helpers.Bulkhead
         {
             Status = TraceableActionStatus.Executing;
 
-            await _tcsProxyForRealWork.Task.ContinueWith(CaptureCompletion(), TaskContinuationOptions.ExecuteSynchronously)
-                .ConfigureAwait(false);
+            await _tcsProxyForRealWork.Task.ContinueWith(CaptureCompletion(), TaskContinuationOptions.ExecuteSynchronously);
 
             _testOutputHelper.WriteLine(_id + "Exiting execution.");
         }
@@ -220,7 +219,7 @@ namespace Polly.Specs.Helpers.Bulkhead
 
         public void AllowCompletion()
         {
-            _tcsProxyForRealWork.SetResult(null); 
+            _tcsProxyForRealWork.SetResult(null);
         }
 
         public void Cancel()

@@ -14,7 +14,7 @@ namespace Polly
         /// <remarks>Must be called before the policy is first used.  Can only be set once.</remarks>
         /// </summary>
         /// <param name="policyKey">The unique, used-definable key to assign to this <see cref="Policy"/> instance.</param>
-        ISyncPolicy WithPolicyKey(String policyKey);
+        ISyncPolicy WithPolicyKey(string policyKey);
 
         /// <summary>
         /// Executes the specified action within the policy.

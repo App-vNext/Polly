@@ -1,3 +1,10 @@
+## 7.3.0
+
+- Add RateLimit policy - Thanks to [@reisenberger](https://github.com/reisenberger)
+- Various codebase health updates - Thanks to [@SimonCropp](https://github.com/SimonCropp)
+- Add benchmarks project - Thanks to [@martincostello](https://github.com/martincostello)
+- Fix broken README image - Thanks to [@GitHubPang](https://github.com/GitHubPang)
+
 ## 7.2.2
 
 - Recursively search all `AggregateException` inner exceptions for predicate matches when using `HandleInner()` ([#818](https://github.com/App-vNext/Polly/issues/818)) - Thanks to [@sideproject](https://github.com/sideproject)

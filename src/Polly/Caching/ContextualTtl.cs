@@ -29,7 +29,14 @@ namespace Polly.Caching
         public Ttl GetTtl(Context context, object result)
         {
             if (!context.ContainsKey(TimeSpanKey)) return _noTtl;
-            bool sliding = context.ContainsKey(SlidingExpirationKey) ? context[SlidingExpirationKey] as bool? ?? false : false;
+
+            bool sliding = false;
+
+            if (context.TryGetValue(SlidingExpirationKey, out object objValue))
+            {
+                sliding = objValue as bool? ?? false;
+            }
+
             return new Ttl(context[TimeSpanKey] as TimeSpan? ?? TimeSpan.Zero, sliding);
         }
 

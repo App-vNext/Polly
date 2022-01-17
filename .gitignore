@@ -118,6 +118,7 @@ UpgradeLog*.XML
 
 artifacts
 build
+BenchmarkDotNet.Artifacts
 tools
 
 *.lock.json

@@ -29,7 +29,7 @@ namespace Polly
         /// <exception cref="ArgumentOutOfRangeException">exceptionsAllowedBeforeBreaking;Value must be greater than zero.</exception>
         public static AsyncCircuitBreakerPolicy CircuitBreakerAsync(this PolicyBuilder policyBuilder, int exceptionsAllowedBeforeBreaking, TimeSpan durationOfBreak)
         {
-            Action<Exception, TimeSpan> doNothingOnBreak = (_, __) => { };
+            Action<Exception, TimeSpan> doNothingOnBreak = (_, _) => { };
             Action doNothingOnReset = () => { };
 
             return policyBuilder.CircuitBreakerAsync(
@@ -66,8 +66,8 @@ namespace Polly
             => policyBuilder.CircuitBreakerAsync(
                 exceptionsAllowedBeforeBreaking,
                 durationOfBreak,
-                (exception, timespan, context) => onBreak(exception, timespan),
-                context => onReset()
+                (exception, timespan, _) => onBreak(exception, timespan),
+                _ => onReset()
                 );
 
         /// <summary>
@@ -131,8 +131,8 @@ namespace Polly
             => policyBuilder.CircuitBreakerAsync(
                 exceptionsAllowedBeforeBreaking,
                 durationOfBreak,
-                (exception, timespan, context) => onBreak(exception, timespan),
-                context => onReset(),
+                (exception, timespan, _) => onBreak(exception, timespan),
+                _ => onReset(),
                 onHalfOpen
                 );
 
@@ -164,7 +164,7 @@ namespace Polly
             => policyBuilder.CircuitBreakerAsync(
                 exceptionsAllowedBeforeBreaking,
                 durationOfBreak,
-                (exception, state, timespan, context) => onBreak(exception, timespan, context),
+                (exception, _, timespan, context) => onBreak(exception, timespan, context),
                 onReset,
                 onHalfOpen
             );

@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Polly
+﻿namespace Polly
 {
     public abstract partial class AsyncPolicy
     {
@@ -9,7 +7,7 @@ namespace Polly
         /// <remarks>Must be called before the policy is first used.  Can only be set once.</remarks>
         /// </summary>
         /// <param name="policyKey">The unique, used-definable key to assign to this <see cref="AsyncPolicy"/> instance.</param>
-        public AsyncPolicy WithPolicyKey(String policyKey)
+        public AsyncPolicy WithPolicyKey(string policyKey)
         {
             if (policyKeyInternal != null) throw PolicyKeyMustBeImmutableException;
 
@@ -22,7 +20,7 @@ namespace Polly
         /// <remarks>Must be called before the policy is first used.  Can only be set once.</remarks>
         /// </summary>
         /// <param name="policyKey">The unique, used-definable key to assign to this <see cref="IAsyncPolicy"/> instance.</param>
-        IAsyncPolicy IAsyncPolicy.WithPolicyKey(String policyKey)
+        IAsyncPolicy IAsyncPolicy.WithPolicyKey(string policyKey)
         {
             if (policyKeyInternal != null) throw PolicyKeyMustBeImmutableException;
 
@@ -39,7 +37,7 @@ namespace Polly
         /// <remarks>Must be called before the policy is first used.  Can only be set once.</remarks>
         /// </summary>
         /// <param name="policyKey">The unique, used-definable key to assign to this <see cref="AsyncPolicy{TResult}"/> instance.</param>
-        public AsyncPolicy<TResult> WithPolicyKey(String policyKey)
+        public AsyncPolicy<TResult> WithPolicyKey(string policyKey)
         {
             if (policyKeyInternal != null) throw PolicyKeyMustBeImmutableException;
 
@@ -52,7 +50,7 @@ namespace Polly
         /// <remarks>Must be called before the policy is first used.  Can only be set once.</remarks>
         /// </summary>
         /// <param name="policyKey">The unique, used-definable key to assign to this <see cref="IAsyncPolicy{TResult}"/> instance.</param>
-        IAsyncPolicy<TResult> IAsyncPolicy<TResult>.WithPolicyKey(String policyKey)
+        IAsyncPolicy<TResult> IAsyncPolicy<TResult>.WithPolicyKey(string policyKey)
         {
             if (policyKeyInternal != null) throw PolicyKeyMustBeImmutableException;
 

@@ -53,17 +53,16 @@ namespace Polly.Specs.Caching
 
             IAsyncCacheProvider stubCacheProvider = new StubCacheProvider();
             var cache = Policy.CacheAsync<string>(stubCacheProvider, TimeSpan.MaxValue);
-            await stubCacheProvider.PutAsync(operationKey, valueToReturnFromCache, new Ttl(TimeSpan.MaxValue), CancellationToken.None, false).ConfigureAwait(false);
+            await stubCacheProvider.PutAsync(operationKey, valueToReturnFromCache, new Ttl(TimeSpan.MaxValue), CancellationToken.None, false);
 
             bool delegateExecuted = false;
 
-            (await cache.ExecuteAsync(async ctx =>
+            (await cache.ExecuteAsync(async _ =>
             {
                 delegateExecuted = true;
-                await TaskHelper.EmptyTask.ConfigureAwait(false);
+                await TaskHelper.EmptyTask;
                 return valueToReturnFromExecution;
-            }, new Context(operationKey))
-                .ConfigureAwait(false))
+            }, new Context(operationKey)))
                 .Should().Be(valueToReturnFromCache);
 
             delegateExecuted.Should().BeFalse();
@@ -78,13 +77,13 @@ namespace Polly.Specs.Caching
             IAsyncCacheProvider stubCacheProvider = new StubCacheProvider();
             var cache = Policy.CacheAsync<string>(stubCacheProvider, TimeSpan.MaxValue);
 
-            (bool cacheHit1, object fromCache1) = await stubCacheProvider.TryGetAsync(operationKey, CancellationToken.None, false).ConfigureAwait(false);
+            (bool cacheHit1, object fromCache1) = await stubCacheProvider.TryGetAsync(operationKey, CancellationToken.None, false);
             cacheHit1.Should().BeFalse();
             fromCache1.Should().BeNull();
 
-            (await cache.ExecuteAsync(async ctx => { await TaskHelper.EmptyTask.ConfigureAwait(false); return valueToReturn; }, new Context(operationKey)).ConfigureAwait(false)).Should().Be(valueToReturn);
+            (await cache.ExecuteAsync(async _ => { await TaskHelper.EmptyTask; return valueToReturn; }, new Context(operationKey))).Should().Be(valueToReturn);
 
-            (bool cacheHit2, object fromCache2) = await stubCacheProvider.TryGetAsync(operationKey, CancellationToken.None, false).ConfigureAwait(false);
+            (bool cacheHit2, object fromCache2) = await stubCacheProvider.TryGetAsync(operationKey, CancellationToken.None, false);
             cacheHit2.Should().BeTrue();
             fromCache2.Should().Be(valueToReturn);
         }
@@ -99,15 +98,15 @@ namespace Polly.Specs.Caching
             TimeSpan ttl = TimeSpan.FromMinutes(30);
             var cache = Policy.CacheAsync<string>(stubCacheProvider, ttl);
 
-            (bool cacheHit1, object fromCache1) = await stubCacheProvider.TryGetAsync(operationKey, CancellationToken.None, false).ConfigureAwait(false);
+            (bool cacheHit1, object fromCache1) = await stubCacheProvider.TryGetAsync(operationKey, CancellationToken.None, false);
             cacheHit1.Should().BeFalse();
             fromCache1.Should().BeNull();
 
             int delegateInvocations = 0;
-            Func<Context, Task<string>> func = async ctx =>
+            Func<Context, Task<string>> func = async _ =>
             {
                 delegateInvocations++;
-                await TaskHelper.EmptyTask.ConfigureAwait(false);
+                await TaskHelper.EmptyTask;
                 return valueToReturn;
             };
 
@@ -115,24 +114,24 @@ namespace Polly.Specs.Caching
             SystemClock.DateTimeOffsetUtcNow = () => fixedTime;
 
             // First execution should execute delegate and put result in the cache.
-            (await cache.ExecuteAsync(func, new Context(operationKey)).ConfigureAwait(false)).Should().Be(valueToReturn);
+            (await cache.ExecuteAsync(func, new Context(operationKey))).Should().Be(valueToReturn);
             delegateInvocations.Should().Be(1);
 
-            (bool cacheHit2, object fromCache2) = await stubCacheProvider.TryGetAsync(operationKey, CancellationToken.None, false).ConfigureAwait(false);
+            (bool cacheHit2, object fromCache2) = await stubCacheProvider.TryGetAsync(operationKey, CancellationToken.None, false);
             cacheHit2.Should().BeTrue();
             fromCache2.Should().Be(valueToReturn);
 
             // Second execution (before cache expires) should get it from the cache - no further delegate execution.
             // (Manipulate time so just prior cache expiry).
             SystemClock.DateTimeOffsetUtcNow = () => fixedTime.Add(ttl).AddSeconds(-1);
-            (await cache.ExecuteAsync(func, new Context(operationKey)).ConfigureAwait(false)).Should().Be(valueToReturn);
+            (await cache.ExecuteAsync(func, new Context(operationKey))).Should().Be(valueToReturn);
             delegateInvocations.Should().Be(1);
 
             // Manipulate time to force cache expiry.
             SystemClock.DateTimeOffsetUtcNow = () => fixedTime.Add(ttl).AddSeconds(1);
 
             // Third execution (cache expired) should not get it from the cache - should cause further delegate execution.
-            (await cache.ExecuteAsync(func, new Context(operationKey)).ConfigureAwait(false)).Should().Be(valueToReturn);
+            (await cache.ExecuteAsync(func, new Context(operationKey))).Should().Be(valueToReturn);
             delegateInvocations.Should().Be(2);
         }
 
@@ -145,13 +144,13 @@ namespace Polly.Specs.Caching
             IAsyncCacheProvider stubCacheProvider = new StubCacheProvider();
             var cache = Policy.CacheAsync<string>(stubCacheProvider, TimeSpan.Zero);
 
-            (bool cacheHit1, object fromCache1) = await stubCacheProvider.TryGetAsync(operationKey, CancellationToken.None, false).ConfigureAwait(false);
+            (bool cacheHit1, object fromCache1) = await stubCacheProvider.TryGetAsync(operationKey, CancellationToken.None, false);
             cacheHit1.Should().BeFalse();
             fromCache1.Should().BeNull();
 
-            (await cache.ExecuteAsync(async ctx => { await TaskHelper.EmptyTask.ConfigureAwait(false); return valueToReturn; }, new Context(operationKey)).ConfigureAwait(false)).Should().Be(valueToReturn);
+            (await cache.ExecuteAsync(async _ => { await TaskHelper.EmptyTask; return valueToReturn; }, new Context(operationKey))).Should().Be(valueToReturn);
 
-            (bool cacheHit2, object fromCache2) = await stubCacheProvider.TryGetAsync(operationKey, CancellationToken.None, false).ConfigureAwait(false);
+            (bool cacheHit2, object fromCache2) = await stubCacheProvider.TryGetAsync(operationKey, CancellationToken.None, false);
             cacheHit2.Should().BeFalse();
             fromCache2.Should().BeNull();
         }
@@ -165,20 +164,20 @@ namespace Polly.Specs.Caching
             var cache = Policy.CacheAsync<string>(new StubCacheProvider(), TimeSpan.MaxValue);
 
             int delegateInvocations = 0;
-            Func<Context, Task<string>> func = async ctx =>
+            Func<Context, Task<string>> func = async _ =>
             {
                 delegateInvocations++;
-                await TaskHelper.EmptyTask.ConfigureAwait(false);
+                await TaskHelper.EmptyTask;
                 return valueToReturn;
             };
 
-            (await cache.ExecuteAsync(func, new Context(operationKey)).ConfigureAwait(false)).Should().Be(valueToReturn);
+            (await cache.ExecuteAsync(func, new Context(operationKey))).Should().Be(valueToReturn);
             delegateInvocations.Should().Be(1);
 
-            (await cache.ExecuteAsync(func, new Context(operationKey)).ConfigureAwait(false)).Should().Be(valueToReturn);
+            (await cache.ExecuteAsync(func, new Context(operationKey))).Should().Be(valueToReturn);
             delegateInvocations.Should().Be(1);
 
-            (await cache.ExecuteAsync(func, new Context(operationKey)).ConfigureAwait(false)).Should().Be(valueToReturn);
+            (await cache.ExecuteAsync(func, new Context(operationKey))).Should().Be(valueToReturn);
             delegateInvocations.Should().Be(1);
         }
 
@@ -189,25 +188,25 @@ namespace Polly.Specs.Caching
             var cache = Policy.CacheAsync<ResultClass>(stubCacheProvider, TimeSpan.MaxValue, context => context.OperationKey + context["id"]);
 
             object person1 = new ResultClass(ResultPrimitive.Good, "person1");
-            await stubCacheProvider.PutAsync("person1", person1, new Ttl(TimeSpan.MaxValue), CancellationToken.None, false).ConfigureAwait(false);
+            await stubCacheProvider.PutAsync("person1", person1, new Ttl(TimeSpan.MaxValue), CancellationToken.None, false);
             object person2 = new ResultClass(ResultPrimitive.Good, "person2");
-            await stubCacheProvider.PutAsync("person2", person2, new Ttl(TimeSpan.MaxValue), CancellationToken.None, false).ConfigureAwait(false);
+            await stubCacheProvider.PutAsync("person2", person2, new Ttl(TimeSpan.MaxValue), CancellationToken.None, false);
 
             bool funcExecuted = false;
-            Func<Context, Task<ResultClass>> func = async ctx => { funcExecuted = true; await TaskHelper.EmptyTask.ConfigureAwait(false); return new ResultClass(ResultPrimitive.Fault, "should never return this one"); };
+            Func<Context, Task<ResultClass>> func = async _ => { funcExecuted = true; await TaskHelper.EmptyTask; return new ResultClass(ResultPrimitive.Fault, "should never return this one"); };
 
-            (await cache.ExecuteAsync(func, new Context("person", new { id = "1" }.AsDictionary())).ConfigureAwait(false)).Should().BeSameAs(person1);
+            (await cache.ExecuteAsync(func, new Context("person", new { id = "1" }.AsDictionary()))).Should().BeSameAs(person1);
             funcExecuted.Should().BeFalse();
 
-            (await cache.ExecuteAsync(func, new Context("person", new { id = "2" }.AsDictionary())).ConfigureAwait(false)).Should().BeSameAs(person2);
+            (await cache.ExecuteAsync(func, new Context("person", new { id = "2" }.AsDictionary()))).Should().BeSameAs(person2);
             funcExecuted.Should().BeFalse();
         }
 
         [Fact]
         public async Task Should_allow_custom_ICacheKeyStrategy()
         {
-            Action<Context, string, Exception> noErrorHandling = (_, __, ___) => { };
-            Action<Context, string> emptyDelegate = (_, __) => { };
+            Action<Context, string, Exception> noErrorHandling = (_, _, _) => { };
+            Action<Context, string> emptyDelegate = (_, _) => { };
 
             IAsyncCacheProvider stubCacheProvider = new StubCacheProvider();
             ICacheKeyStrategy cacheKeyStrategy = new StubCacheKeyStrategy(context => context.OperationKey + context["id"]);
@@ -215,17 +214,17 @@ namespace Polly.Specs.Caching
             var cache = Policy.CacheAsync<ResultClass>(stubCacheProvider.AsyncFor<ResultClass>(), new RelativeTtl(TimeSpan.MaxValue), cacheKeyStrategy, emptyDelegate, emptyDelegate, emptyDelegate, noErrorHandling, noErrorHandling);
 
             object person1 = new ResultClass(ResultPrimitive.Good, "person1");
-            await stubCacheProvider.PutAsync("person1", person1, new Ttl(TimeSpan.MaxValue), CancellationToken.None, false).ConfigureAwait(false);
+            await stubCacheProvider.PutAsync("person1", person1, new Ttl(TimeSpan.MaxValue), CancellationToken.None, false);
             object person2 = new ResultClass(ResultPrimitive.Good, "person2");
-            await stubCacheProvider.PutAsync("person2", person2, new Ttl(TimeSpan.MaxValue), CancellationToken.None, false).ConfigureAwait(false);
+            await stubCacheProvider.PutAsync("person2", person2, new Ttl(TimeSpan.MaxValue), CancellationToken.None, false);
 
             bool funcExecuted = false;
-            Func<Context, Task<ResultClass>> func = async ctx => { funcExecuted = true; await TaskHelper.EmptyTask.ConfigureAwait(false); return new ResultClass(ResultPrimitive.Fault, "should never return this one"); };
+            Func<Context, Task<ResultClass>> func = async _ => { funcExecuted = true; await TaskHelper.EmptyTask; return new ResultClass(ResultPrimitive.Fault, "should never return this one"); };
 
-            (await cache.ExecuteAsync(func, new Context("person", new { id = "1" }.AsDictionary())).ConfigureAwait(false)).Should().BeSameAs(person1);
+            (await cache.ExecuteAsync(func, new Context("person", new { id = "1" }.AsDictionary()))).Should().BeSameAs(person1);
             funcExecuted.Should().BeFalse();
 
-            (await cache.ExecuteAsync(func, new Context("person", new { id = "2" }.AsDictionary())).ConfigureAwait(false)).Should().BeSameAs(person2);
+            (await cache.ExecuteAsync(func, new Context("person", new { id = "2" }.AsDictionary()))).Should().BeSameAs(person2);
             funcExecuted.Should().BeFalse();
         }
 
@@ -242,13 +241,13 @@ namespace Polly.Specs.Caching
             IAsyncCacheProvider stubCacheProvider = new StubCacheProvider();
             var cache = Policy.CacheAsync<ResultClass>(stubCacheProvider, TimeSpan.MaxValue);
 
-            (bool cacheHit1, object fromCache1) = await stubCacheProvider.TryGetAsync(operationKey, CancellationToken.None, false).ConfigureAwait(false);
+            (bool cacheHit1, object fromCache1) = await stubCacheProvider.TryGetAsync(operationKey, CancellationToken.None, false);
             cacheHit1.Should().BeFalse();
             fromCache1.Should().BeNull();
 
-            (await cache.ExecuteAsync(async ctx => { await TaskHelper.EmptyTask.ConfigureAwait(false); return valueToReturn; }, new Context(operationKey)).ConfigureAwait(false)).Should().Be(valueToReturn);
+            (await cache.ExecuteAsync(async _ => { await TaskHelper.EmptyTask; return valueToReturn; }, new Context(operationKey))).Should().Be(valueToReturn);
 
-            (bool cacheHit2, object fromCache2) = await stubCacheProvider.TryGetAsync(operationKey, CancellationToken.None, false).ConfigureAwait(false);
+            (bool cacheHit2, object fromCache2) = await stubCacheProvider.TryGetAsync(operationKey, CancellationToken.None, false);
             cacheHit2.Should().BeTrue();
             fromCache2.Should().Be(valueToReturn);
         }
@@ -262,17 +261,16 @@ namespace Polly.Specs.Caching
 
             IAsyncCacheProvider stubCacheProvider = new StubCacheProvider();
             var cache = Policy.CacheAsync<ResultClass>(stubCacheProvider, TimeSpan.MaxValue);
-            await stubCacheProvider.PutAsync(operationKey, valueToReturnFromCache, new Ttl(TimeSpan.MaxValue), CancellationToken.None, false).ConfigureAwait(false);
+            await stubCacheProvider.PutAsync(operationKey, valueToReturnFromCache, new Ttl(TimeSpan.MaxValue), CancellationToken.None, false);
 
             bool delegateExecuted = false;
 
-            (await cache.ExecuteAsync(async ctx =>
+            (await cache.ExecuteAsync(async _ =>
             {
                 delegateExecuted = true;
-                await TaskHelper.EmptyTask.ConfigureAwait(false);
+                await TaskHelper.EmptyTask;
                 return valueToReturnFromExecution;
-            }, new Context(operationKey))
-                    .ConfigureAwait(false))
+            }, new Context(operationKey)))
                 .Should().Be(valueToReturnFromCache);
 
             delegateExecuted.Should().BeFalse();
@@ -287,13 +285,13 @@ namespace Polly.Specs.Caching
             IAsyncCacheProvider stubCacheProvider = new StubCacheProvider();
             var cache = Policy.CacheAsync<ResultPrimitive>(stubCacheProvider, TimeSpan.MaxValue);
 
-            (bool cacheHit1, object fromCache1) = await stubCacheProvider.TryGetAsync(operationKey, CancellationToken.None, false).ConfigureAwait(false);
+            (bool cacheHit1, object fromCache1) = await stubCacheProvider.TryGetAsync(operationKey, CancellationToken.None, false);
             cacheHit1.Should().BeFalse();
             fromCache1.Should().BeNull();
 
-            (await cache.ExecuteAsync(async ctx => { await TaskHelper.EmptyTask.ConfigureAwait(false); return valueToReturn; }, new Context(operationKey)).ConfigureAwait(false)).Should().Be(valueToReturn);
+            (await cache.ExecuteAsync(async _ => { await TaskHelper.EmptyTask; return valueToReturn; }, new Context(operationKey))).Should().Be(valueToReturn);
 
-            (bool cacheHit2, object fromCache2) = await stubCacheProvider.TryGetAsync(operationKey, CancellationToken.None, false).ConfigureAwait(false);
+            (bool cacheHit2, object fromCache2) = await stubCacheProvider.TryGetAsync(operationKey, CancellationToken.None, false);
             cacheHit2.Should().BeTrue();
             fromCache2.Should().Be(valueToReturn);
         }
@@ -308,17 +306,16 @@ namespace Polly.Specs.Caching
 
             IAsyncCacheProvider stubCacheProvider = new StubCacheProvider();
             var cache = Policy.CacheAsync<ResultPrimitive>(stubCacheProvider, TimeSpan.MaxValue);
-            await stubCacheProvider.PutAsync(operationKey, valueToReturnFromCache, new Ttl(TimeSpan.MaxValue), CancellationToken.None, false).ConfigureAwait(false);
+            await stubCacheProvider.PutAsync(operationKey, valueToReturnFromCache, new Ttl(TimeSpan.MaxValue), CancellationToken.None, false);
 
             bool delegateExecuted = false;
 
-            (await cache.ExecuteAsync(async ctx =>
+            (await cache.ExecuteAsync(async _ =>
             {
                 delegateExecuted = true;
-                await TaskHelper.EmptyTask.ConfigureAwait(false);
+                await TaskHelper.EmptyTask;
                 return valueToReturnFromExecution;
-            }, new Context(operationKey))
-                    .ConfigureAwait(false))
+            }, new Context(operationKey)))
                 .Should().Be(valueToReturnFromCache);
 
             delegateExecuted.Should().BeFalse();
@@ -340,17 +337,16 @@ namespace Polly.Specs.Caching
             var noop = Policy.NoOpAsync();
             var wrap = cache.WrapAsync(noop);
 
-            await stubCacheProvider.PutAsync(operationKey, valueToReturnFromCache, new Ttl(TimeSpan.MaxValue), CancellationToken.None, false).ConfigureAwait(false);
+            await stubCacheProvider.PutAsync(operationKey, valueToReturnFromCache, new Ttl(TimeSpan.MaxValue), CancellationToken.None, false);
 
             bool delegateExecuted = false;
 
-            (await wrap.ExecuteAsync(async ctx =>
+            (await wrap.ExecuteAsync(async _ =>
             {
                 delegateExecuted = true;
-                await TaskHelper.EmptyTask.ConfigureAwait(false);
+                await TaskHelper.EmptyTask;
                 return valueToReturnFromExecution;
-            }, new Context(operationKey))
-                .ConfigureAwait(false))
+            }, new Context(operationKey)))
                 .Should().Be(valueToReturnFromCache);
 
             delegateExecuted.Should().BeFalse();
@@ -368,17 +364,16 @@ namespace Polly.Specs.Caching
             var noop = Policy.NoOpAsync();
             var wrap = noop.WrapAsync(cache);
 
-            await stubCacheProvider.PutAsync(operationKey, valueToReturnFromCache, new Ttl(TimeSpan.MaxValue), CancellationToken.None, false).ConfigureAwait(false);
+            await stubCacheProvider.PutAsync(operationKey, valueToReturnFromCache, new Ttl(TimeSpan.MaxValue), CancellationToken.None, false);
 
             bool delegateExecuted = false;
 
-            (await wrap.ExecuteAsync(async ctx =>
+            (await wrap.ExecuteAsync(async _ =>
             {
                 delegateExecuted = true;
-                await TaskHelper.EmptyTask.ConfigureAwait(false);
+                await TaskHelper.EmptyTask;
                 return valueToReturnFromExecution;
-            }, new Context(operationKey))
-                .ConfigureAwait(false))
+            }, new Context(operationKey)))
                 .Should().Be(valueToReturnFromCache);
 
             delegateExecuted.Should().BeFalse();
@@ -396,17 +391,16 @@ namespace Polly.Specs.Caching
             var noop = Policy.NoOpAsync<string>();
             var wrap = Policy.WrapAsync(noop, cache, noop);
 
-            await stubCacheProvider.PutAsync(operationKey, valueToReturnFromCache, new Ttl(TimeSpan.MaxValue), CancellationToken.None, false).ConfigureAwait(false);
+            await stubCacheProvider.PutAsync(operationKey, valueToReturnFromCache, new Ttl(TimeSpan.MaxValue), CancellationToken.None, false);
 
             bool delegateExecuted = false;
 
-            (await wrap.ExecuteAsync(async ctx =>
+            (await wrap.ExecuteAsync(async _ =>
             {
                 delegateExecuted = true;
-                await TaskHelper.EmptyTask.ConfigureAwait(false);
+                await TaskHelper.EmptyTask;
                 return valueToReturnFromExecution;
-            }, new Context(operationKey))
-                .ConfigureAwait(false))
+            }, new Context(operationKey)))
                 .Should().Be(valueToReturnFromCache);
 
             delegateExecuted.Should().BeFalse();
@@ -426,14 +420,14 @@ namespace Polly.Specs.Caching
             int delegateInvocations = 0;
             Func<Task<string>> func = async () => {
                 delegateInvocations++;
-                await TaskHelper.EmptyTask.ConfigureAwait(false);
+                await TaskHelper.EmptyTask;
                 return valueToReturn;
             };
 
-            (await cache.ExecuteAsync(func /*, no operation key */).ConfigureAwait(false)).Should().Be(valueToReturn);
+            (await cache.ExecuteAsync(func /*, no operation key */)).Should().Be(valueToReturn);
             delegateInvocations.Should().Be(1);
 
-            (await cache.ExecuteAsync(func /*, no operation key */).ConfigureAwait(false)).Should().Be(valueToReturn);
+            (await cache.ExecuteAsync(func /*, no operation key */)).Should().Be(valueToReturn);
             delegateInvocations.Should().Be(2);
         }
 
@@ -452,15 +446,15 @@ namespace Polly.Specs.Caching
             CancellationTokenSource tokenSource = new CancellationTokenSource();
 
             int delegateInvocations = 0;
-            Func<Context, CancellationToken, Task<string>> func = async (ctx, ct) =>
+            Func<Context, CancellationToken, Task<string>> func = async (_, _) =>
             {
                 // delegate does not observe cancellation token; test is whether CacheEngine does.
                 delegateInvocations++;
-                await TaskHelper.EmptyTask.ConfigureAwait(false);
+                await TaskHelper.EmptyTask;
                 return valueToReturn;
             };
 
-            (await cache.ExecuteAsync(func, new Context(operationKey), tokenSource.Token).ConfigureAwait(false)).Should().Be(valueToReturn);
+            (await cache.ExecuteAsync(func, new Context(operationKey), tokenSource.Token)).Should().Be(valueToReturn);
             delegateInvocations.Should().Be(1);
 
             tokenSource.Cancel();
@@ -481,18 +475,18 @@ namespace Polly.Specs.Caching
 
             CancellationTokenSource tokenSource = new CancellationTokenSource();
 
-            Func<Context, CancellationToken, Task<string>> func = async (ctx, ct) =>
+            Func<Context, CancellationToken, Task<string>> func = async (_, ct) =>
             {
                 tokenSource.Cancel(); // simulate cancellation raised during delegate execution
                 ct.ThrowIfCancellationRequested();
-                await TaskHelper.EmptyTask.ConfigureAwait(false);
+                await TaskHelper.EmptyTask;
                 return valueToReturn;
             };
 
             cache.Awaiting(policy => policy.ExecuteAsync(func, new Context(operationKey), tokenSource.Token))
                 .Should().Throw<OperationCanceledException>();
 
-            (bool cacheHit, object fromCache) = await stubCacheProvider.TryGetAsync(operationKey, CancellationToken.None, false).ConfigureAwait(false);
+            (bool cacheHit, object fromCache) = await stubCacheProvider.TryGetAsync(operationKey, CancellationToken.None, false);
             cacheHit.Should().BeFalse();
             fromCache.Should().BeNull();
         }

@@ -16,8 +16,8 @@ var configuration = Argument<string>("configuration", "Release");
 // EXTERNAL NUGET LIBRARIES
 //////////////////////////////////////////////////////////////////////
 
-#addin "Cake.FileHelpers"
-#addin nuget:?package=Cake.Yaml
+#addin nuget:?package=Cake.FileHelpers&version=3.3.0
+#addin nuget:?package=Cake.Yaml&version=3.1.1
 #addin nuget:?package=YamlDotNet&version=5.2.1
 
 ///////////////////////////////////////////////////////////////////////////////

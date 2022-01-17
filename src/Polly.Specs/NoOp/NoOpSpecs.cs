@@ -29,7 +29,7 @@ namespace Polly.Specs.NoOp
             {
                 cts.Cancel();
 
-                policy.Invoking(p => p.Execute(ct => { executed = true; }, cts.Token))
+                policy.Invoking(p => p.Execute(_ => { executed = true; }, cts.Token))
                     .Should().NotThrow();
             }
 

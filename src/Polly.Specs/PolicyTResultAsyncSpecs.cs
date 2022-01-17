@@ -16,7 +16,7 @@ namespace Polly.Specs
         {
             var policy = Policy
                 .HandleResult(ResultPrimitive.Fault)
-                .RetryAsync((_, __) => { });
+                .RetryAsync((_, _) => { });
 
             var result = await policy.ExecuteAsync(() => Task.FromResult(ResultPrimitive.Good));
 
@@ -33,7 +33,7 @@ namespace Polly.Specs
         {
             var result = await Policy
                 .HandleResult(ResultPrimitive.Fault)
-                .RetryAsync((_, __) => { })
+                .RetryAsync((_, _) => { })
                 .ExecuteAndCaptureAsync(() => Task.FromResult(ResultPrimitive.Good));
 
             result.Should().BeEquivalentTo(new
@@ -54,7 +54,7 @@ namespace Polly.Specs
 
             var result = await Policy
                 .HandleResult(handledResult)
-                .RetryAsync((_, __) => { })
+                .RetryAsync((_, _) => { })
                 .ExecuteAndCaptureAsync(() => Task.FromResult(handledResult));
 
             result.Should().BeEquivalentTo(new
@@ -76,7 +76,7 @@ namespace Polly.Specs
 
             var result = await Policy
                 .HandleResult(handledResult)
-                .RetryAsync((_, __) => { })
+                .RetryAsync((_, _) => { })
                 .ExecuteAndCaptureAsync(() => Task.FromResult(unhandledResult));
 
             result.Should().BeEquivalentTo(new
@@ -100,9 +100,9 @@ namespace Polly.Specs
         {
             var policy = Policy
                 .HandleResult(ResultPrimitive.Fault)
-                .RetryAsync((_, __, ___) => { });
+                .RetryAsync((_, _, _) => { });
 
-            policy.Awaiting(async p => await p.ExecuteAsync(ctx => Task.FromResult(ResultPrimitive.Good), (IDictionary<string, object>)null))
+            policy.Awaiting(p => p.ExecuteAsync(_ => Task.FromResult(ResultPrimitive.Good), (IDictionary<string, object>)null))
                   .Should().Throw<ArgumentNullException>();
         }
 
@@ -111,9 +111,9 @@ namespace Polly.Specs
         {
             var policy = Policy
                 .HandleResult(ResultPrimitive.Fault)
-                .RetryAsync((_, __, ___) => { });
+                .RetryAsync((_, _, _) => { });
 
-            policy.Awaiting(async p => await p.ExecuteAsync(ctx => Task.FromResult(ResultPrimitive.Good), (Context)null))
+            policy.Awaiting(p => p.ExecuteAsync(_ => Task.FromResult(ResultPrimitive.Good), (Context)null))
                   .Should().Throw<ArgumentNullException>().And
                   .ParamName.Should().Be("context");
         }
@@ -123,9 +123,9 @@ namespace Polly.Specs
         {
             var policy = Policy
                 .HandleResult(ResultPrimitive.Fault)
-                .RetryAsync((_, __, ___) => { });
+                .RetryAsync((_, _, _) => { });
 
-            policy.Awaiting(async p => await p.ExecuteAndCaptureAsync(ctx => Task.FromResult(ResultPrimitive.Good), (Context)null))
+            policy.Awaiting(p => p.ExecuteAndCaptureAsync(_ => Task.FromResult(ResultPrimitive.Good), (Context)null))
                   .Should().Throw<ArgumentNullException>().And
                   .ParamName.Should().Be("context");
         }
@@ -149,9 +149,9 @@ namespace Polly.Specs
         {
             var policy = Policy
                 .HandleResult(ResultPrimitive.Fault)
-                .RetryAsync((_, __, ___) => { });
+                .RetryAsync((_, _, _) => { });
 
-            policy.Awaiting(async p => await p.ExecuteAndCaptureAsync(ctx => Task.FromResult(ResultPrimitive.Good), (Context)null))
+            policy.Awaiting(p => p.ExecuteAndCaptureAsync(_ => Task.FromResult(ResultPrimitive.Good), (Context)null))
                   .Should().Throw<ArgumentNullException>().And
                   .ParamName.Should().Be("context");
         }
@@ -178,7 +178,7 @@ namespace Polly.Specs
 
             var policy = Policy.NoOpAsync<ResultPrimitive>();
 
-            (await policy.ExecuteAndCaptureAsync(context => Task.FromResult(ResultPrimitive.Good), executionContext))
+            (await policy.ExecuteAndCaptureAsync(_ => Task.FromResult(ResultPrimitive.Good), executionContext))
                 .Context.Should().BeSameAs(executionContext);
         }
 

@@ -17,7 +17,7 @@ namespace Polly.Specs.Caching
             const string operationKey = "SomeOperationKey";
 
             bool onErrorCalled = false;
-            Action<Context, string, Exception> onError = (ctx, key, exc) => { onErrorCalled = true; };
+            Action<Context, string, Exception> onError = (_, _, _) => { onErrorCalled = true; };
 
             ISyncCacheProvider stubCacheProvider = new StubCacheProvider();
             CachePolicy cache = Policy.Cache(stubCacheProvider, TimeSpan.MaxValue, onError);
@@ -26,7 +26,7 @@ namespace Polly.Specs.Caching
             cacheHit.Should().BeFalse();
             fromCache.Should().BeNull();
 
-            ResultPrimitive result = cache.Execute(ctx => ResultPrimitive.Substitute, new Context(operationKey));
+            ResultPrimitive result = cache.Execute(_ => ResultPrimitive.Substitute, new Context(operationKey));
 
             onErrorCalled.Should().BeFalse();
         }
@@ -45,7 +45,7 @@ namespace Polly.Specs.Caching
             cacheHit1.Should().BeFalse();
             fromCache1.Should().BeNull();
 
-            cache.Execute(ctx => valueToReturn, new Context(operationKey)).Should().Be(valueToReturn);
+            cache.Execute(_ => valueToReturn, new Context(operationKey)).Should().Be(valueToReturn);
 
             (bool cacheHit2, object fromCache2) = stubCacheProvider.TryGet(operationKey);
 

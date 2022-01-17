@@ -25,7 +25,7 @@ namespace Polly.Specs.Helpers
         {
             using (var enumerator = resultsToRaise.GetEnumerator())
             {
-                return await policy.ExecuteAsync(ct =>
+                return await policy.ExecuteAsync(_ =>
                 {
                     if (!enumerator.MoveNext())
                     {
@@ -53,7 +53,7 @@ namespace Polly.Specs.Helpers
         {
             using (var enumerator = resultsOrExceptionsToRaise.GetEnumerator())
             {
-                return await policy.ExecuteAsync(ct =>
+                return await policy.ExecuteAsync(_ =>
                 {
                     if (!enumerator.MoveNext())
                     {

@@ -15,7 +15,7 @@ namespace Polly.Specs.Retry
         public WaitAndRetryTResultAsyncSpecs()
         {
             // do nothing on call to sleep
-            SystemClock.SleepAsync = (_, __) => TaskHelper.EmptyTask;
+            SystemClock.SleepAsync = (_, _) => TaskHelper.EmptyTask;
         }
 
         [Fact]
@@ -33,8 +33,8 @@ namespace Polly.Specs.Retry
                 .HandleResult(ResultPrimitive.Fault)
                 .OrResult(ResultPrimitive.FaultAgain)
                 .WaitAndRetryAsync(2,
-                    (retryAttempt, outcome, ctx) => expectedRetryWaits[outcome.Result],
-                    (_, timeSpan, __, ___) =>
+                    (_, outcome, _) => expectedRetryWaits[outcome.Result],
+                    (_, timeSpan, _, _) =>
                     {
                         actualRetryWaits.Add(timeSpan);
                         return TaskHelper.EmptyTask;

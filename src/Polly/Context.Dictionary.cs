@@ -22,7 +22,7 @@ namespace Polly
         /// </summary>
         /// <param name="operationKey">The operation key.</param>
         /// <param name="contextData">The context data.</param>
-        public Context(String operationKey, IDictionary<string, object> contextData) : this(contextData)
+        public Context(string operationKey, IDictionary<string, object> contextData) : this(contextData)
         {
             OperationKey = operationKey;
         }

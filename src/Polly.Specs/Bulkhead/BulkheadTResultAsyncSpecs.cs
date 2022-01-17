@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Polly.Bulkhead;
@@ -12,7 +11,7 @@ using Xunit.Abstractions;
 
 namespace Polly.Specs.Bulkhead
 {
-    [Collection(Polly.Specs.Helpers.Constants.ParallelThreadDependentTestCollection)]
+    [Collection(Constants.ParallelThreadDependentTestCollection)]
     public class BulkheadTResultAsyncSpecs : BulkheadSpecsBase
     {
         public BulkheadTResultAsyncSpecs(ITestOutputHelper testOutputHelper) : base(testOutputHelper) { }
@@ -60,7 +59,7 @@ namespace Polly.Specs.Bulkhead
             Context contextPassedToExecute = new Context(operationKey);
 
             Context contextPassedToOnRejected = null;
-            Func<Context, Task> onRejectedAsync = async ctx => { contextPassedToOnRejected = ctx; await TaskHelper.EmptyTask.ConfigureAwait(false); };
+            Func<Context, Task> onRejectedAsync = async ctx => { contextPassedToOnRejected = ctx; await TaskHelper.EmptyTask; };
 
             using (var bulkhead = Policy.BulkheadAsync<int>(1, onRejectedAsync))
             { 
@@ -70,14 +69,14 @@ namespace Polly.Specs.Bulkhead
                     Task.Run(() => {
                         bulkhead.ExecuteAsync(async () =>
                         {
-                            await tcs.Task.ConfigureAwait(false);
+                            await tcs.Task;
                             return 0;
                         });
                     });
 
                     Within(CohesionTimeLimit, () => Expect(0, () => bulkhead.BulkheadAvailableCount, nameof(bulkhead.BulkheadAvailableCount)));
 
-                    bulkhead.Awaiting(async b => await b.ExecuteAsync(ctx => Task.FromResult(1), contextPassedToExecute)).Should().Throw<BulkheadRejectedException>();
+                    bulkhead.Awaiting(b => b.ExecuteAsync(_ => Task.FromResult(1), contextPassedToExecute)).Should().Throw<BulkheadRejectedException>();
 
                     cancellationSource.Cancel();
                     tcs.SetCanceled();
