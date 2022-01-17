@@ -61,6 +61,23 @@ namespace Polly.Specs.RateLimit
         }
 
         [Fact]
+        public void Syntax_should_throw_for_perTimeSpan_infinite()
+        {
+            Action invalidSyntax = () => GetPolicyViaSyntax(1, System.Threading.Timeout.InfiniteTimeSpan);
+
+            invalidSyntax.Should().Throw<ArgumentOutOfRangeException>().And.ParamName.Should().Be("perTimeSpan");
+        }
+
+        [Fact]
+        public void Syntax_should_throw_for_perTimeSpan_too_small()
+        {
+            Action invalidSyntax = () => GetPolicyViaSyntax(int.MaxValue, TimeSpan.FromSeconds(1));
+
+            invalidSyntax.Should().Throw<ArgumentOutOfRangeException>().And.ParamName.Should().Be("perTimeSpan");
+            invalidSyntax.Should().Throw<ArgumentOutOfRangeException>().And.Message.Should().StartWith("The number of executions per timespan must be positive.");
+        }
+
+        [Fact]
         public void Syntax_should_throw_for_numberOfExecutions_negative()
         {
             Action invalidSyntax = () => GetPolicyViaSyntax(-1, TimeSpan.FromSeconds(1));
