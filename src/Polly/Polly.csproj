@@ -2,11 +2,11 @@
 
   <PropertyGroup>
     <TargetFrameworks>netstandard1.1;netstandard2.0;net461;net472</TargetFrameworks>
-    <Version>7.3.1</Version>
+    <Version>7.2.4</Version>
     <AssemblyVersion>7.0.0.0</AssemblyVersion>
-    <FileVersion>7.3.1.0</FileVersion>
-    <InformationalVersion>7.3.1.0</InformationalVersion>
-    <PackageVersion>7.3.1</PackageVersion>
+    <FileVersion>7.2.4.0</FileVersion>
+    <InformationalVersion>7.2.4.0</InformationalVersion>
+    <PackageVersion>7.2.4</PackageVersion>
     <Company>App vNext</Company>
     <Copyright>Copyright (c) $([System.DateTime]::Now.ToString(yyyy)), App vNext</Copyright>
     <Description>Polly is a library that allows developers to express resilience and transient fault handling policies such as Retry, Circuit Breaker, Timeout, Bulkhead Isolation, and Fallback in a fluent and thread-safe manner.</Description>
