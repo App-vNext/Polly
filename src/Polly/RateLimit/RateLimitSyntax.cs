@@ -35,7 +35,14 @@ namespace Polly
             if (perTimeSpan <= TimeSpan.Zero) throw new ArgumentOutOfRangeException(nameof(perTimeSpan), perTimeSpan, $"{nameof(perTimeSpan)} must be a positive timespan.");
             if (maxBurst < 1) throw new ArgumentOutOfRangeException(nameof(maxBurst), maxBurst, $"{nameof(maxBurst)} must be an integer greater than or equal to 1.");
 
-            IRateLimiter rateLimiter = RateLimiterFactory.Create(TimeSpan.FromTicks(perTimeSpan.Ticks / numberOfExecutions), maxBurst);
+            var onePer = TimeSpan.FromTicks(perTimeSpan.Ticks / numberOfExecutions);
+
+            if (onePer <= TimeSpan.Zero)
+            {
+                throw new ArgumentOutOfRangeException(nameof(perTimeSpan), perTimeSpan, "The number of executions per timespan must be positive.");
+            }
+
+            IRateLimiter rateLimiter = RateLimiterFactory.Create(onePer, maxBurst);
 
             return new RateLimitPolicy(rateLimiter);
         }
