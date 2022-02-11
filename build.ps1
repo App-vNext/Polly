@@ -51,8 +51,9 @@ if($Verbose.IsPresent)
 
 $TOOLS_DIR = Join-Path $PSScriptRoot "tools"
 $NUGET_EXE = Join-Path $TOOLS_DIR "nuget.exe"
-$CAKE_EXE = Join-Path $TOOLS_DIR "Cake/Cake.exe"
+$CAKE_EXE = "dotnet dotnet-cake"
 $PACKAGES_CONFIG = Join-Path $TOOLS_DIR "packages.config"
+$DOTNET = "dotnet.exe"
 
 # Should we use mono?
 $UseMono = "";
@@ -111,7 +112,7 @@ if(-Not $SkipToolPackageRestore.IsPresent)
     # Install just Cake if missing config
     else
     {
-        $NuGetOutput = Invoke-Expression "&`"$NUGET_EXE`" install Cake -Version 0.38.5 -ExcludeVersion" # Pin Cake version to 0.38.5; see https://github.com/App-vNext/Polly/issues/416 
+        $NuGetOutput = Invoke-Expression "&`"$DOTNET`" tool install Cake.Tool --version 2.0.0" # Pin Cake version to 0.38.5; see https://github.com/App-vNext/Polly/issues/416 
         Write-Verbose ($NuGetOutput | Out-String)
     }
     Pop-Location
@@ -121,12 +122,12 @@ if(-Not $SkipToolPackageRestore.IsPresent)
     }
 }
 
-# Make sure that Cake has been installed.
-if (!(Test-Path $CAKE_EXE)) {
-    Throw "Could not find Cake.exe"
-}
+# # Make sure that Cake has been installed.
+# if (!(Test-Path $CAKE_EXE)) {
+#     Throw "Could not find Cake.exe"
+# }
 
 # Start Cake
 Write-Host "Running build script..."
-Invoke-Expression "$CAKE_EXE `"$Script`" -target=`"$Target`" -configuration=`"$Configuration`" -verbosity=`"$Verbosity`" $UseMono $UseDryRun $UseExperimental"
+Invoke-Expression "$CAKE_EXE `"$Script`" --target=`"$Target`" --configuration=`"$Configuration`" --verbosity=`"$Verbosity`" $UseMono $UseDryRun $UseExperimental"
 exit $LASTEXITCODE
