@@ -122,10 +122,6 @@ if(-Not $SkipToolPackageRestore.IsPresent)
     }
 }
 
-# # Make sure that Cake has been installed.
-# if (!(Test-Path $CAKE_EXE)) {
-#     Throw "Could not find Cake.exe"
-# }
 
 # Start Cake
 Write-Host "Running build script..."
