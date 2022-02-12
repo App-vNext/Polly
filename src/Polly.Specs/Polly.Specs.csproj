@@ -12,6 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="coverlet.msbuild" Version="3.1.2"  PrivateAssets="all" />
     <PackageReference Include="FluentAssertions" Version="5.10.3" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.0.0" />
     <PackageReference Include="Moq" Version="4.16.1" />
@@ -22,5 +23,12 @@
   <ItemGroup Condition="'$(TargetFramework)'=='net461' or '$(TargetFramework)'=='net472'">
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
+
+  <PropertyGroup Condition="'$(TargetFramework)'!='net461' and '$(TargetFramework)'!='net472'">
+    <CollectCoverage>true</CollectCoverage>
+    <Exclude>[xunit.*]*</Exclude>
+    <ExcludeByAttribute>System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute</ExcludeByAttribute>
+    <Threshold>75,60,70</Threshold>
+  </PropertyGroup>
 
 </Project>
