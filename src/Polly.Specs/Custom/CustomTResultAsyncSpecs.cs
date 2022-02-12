@@ -34,7 +34,7 @@ namespace Polly.Specs.Custom
 
             bool executed = false;
             policy.Awaiting(x => x.ExecuteAsync(async () => { executed = true; await Task.CompletedTask; return ResultPrimitive.Undefined; }))
-                .Should().NotThrow();
+                .Should().NotThrowAsync();
 
             executed.Should().BeTrue();
             preExecuted.Should().BeTrue();

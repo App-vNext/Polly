@@ -282,7 +282,7 @@ namespace Polly.Specs.Registry
                 {key, policy}
             };
 
-            testRegistry.Should().Equal(new KeyValuePair<string, IsPolicy>(key, policy));
+            testRegistry.Should().Equals(new KeyValuePair<string, IsPolicy>(key, policy));
         }
         #endregion
     }

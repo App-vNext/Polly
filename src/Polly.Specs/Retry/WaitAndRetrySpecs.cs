@@ -217,7 +217,7 @@ namespace Polly.Specs.Retry
                 .WaitAndRetryAsync(Enumerable.Empty<TimeSpan>());
 
             policy.Awaiting(x => x.RaiseExceptionAsync<NullReferenceException>())
-                  .Should().Throw<NullReferenceException>();
+                  .Should().ThrowAsync<NullReferenceException>();
         }
 
         [Fact]
@@ -241,7 +241,7 @@ namespace Polly.Specs.Retry
                 .WaitAndRetryAsync(Enumerable.Empty<TimeSpan>());
 
             policy.Awaiting(x => x.RaiseExceptionAsync<NullReferenceException>())
-                  .Should().Throw<NullReferenceException>();
+                  .Should().ThrowAsync<NullReferenceException>();
         }
 
         [Fact]
@@ -292,7 +292,7 @@ namespace Polly.Specs.Retry
                 });
 
             policy.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                  .Should().NotThrow();
+                  .Should().NotThrowAsync();
         }
 
         [Fact]
@@ -322,7 +322,7 @@ namespace Polly.Specs.Retry
                 });
 
             policy.Awaiting(x => x.RaiseExceptionAsync<ArgumentException>())
-                  .Should().NotThrow();
+                  .Should().NotThrowAsync();
         }
 
         [Fact]
@@ -440,7 +440,7 @@ namespace Polly.Specs.Retry
         [Fact]
         public void Should_call_onretry_on_each_retry_with_the_current_exception()
         {
-            var expectedExceptions = new object[] { "Exception #1", "Exception #2", "Exception #3" };
+            var expectedExceptions = new string[] { "Exception #1", "Exception #2", "Exception #3" };
             var retryExceptions = new List<Exception>();
 
             var policy = Policy
@@ -1097,7 +1097,7 @@ namespace Polly.Specs.Retry
             attemptsInvoked.Should().Be(1);
 
             watch.Elapsed.Should().BeLessThan(retryDelay);
-            watch.Elapsed.Should().BeCloseTo(shimTimeSpan, precision: (int)(shimTimeSpan.TotalMilliseconds) / 2);  // Consider increasing shimTimeSpan, or loosening precision, if test fails transiently in different environments.
+            watch.Elapsed.Should().BeCloseTo(shimTimeSpan, precision: TimeSpan.FromMilliseconds((int)shimTimeSpan.TotalMilliseconds / 2));  // Consider increasing shimTimeSpan, or loosening precision, if test fails transiently in different environments.
         }
 
         [Fact]

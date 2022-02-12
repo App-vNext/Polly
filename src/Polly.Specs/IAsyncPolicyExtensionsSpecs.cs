@@ -30,7 +30,7 @@ namespace Polly.Specs
 
             (await genericPolicy.ExecuteAsync(deleg)).Should().Be(ResultPrimitive.Good);
             breaker.Isolate();
-            genericPolicy.Awaiting(p => p.ExecuteAsync(deleg)).Should().Throw<BrokenCircuitException>();
+            await genericPolicy.Awaiting(p => p.ExecuteAsync(deleg)).Should().ThrowAsync<BrokenCircuitException>();
         }
     }
 

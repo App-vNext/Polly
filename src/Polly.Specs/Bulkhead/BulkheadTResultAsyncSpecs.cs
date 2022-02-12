@@ -76,7 +76,7 @@ namespace Polly.Specs.Bulkhead
 
                     Within(CohesionTimeLimit, () => Expect(0, () => bulkhead.BulkheadAvailableCount, nameof(bulkhead.BulkheadAvailableCount)));
 
-                    bulkhead.Awaiting(b => b.ExecuteAsync(_ => Task.FromResult(1), contextPassedToExecute)).Should().Throw<BulkheadRejectedException>();
+                    bulkhead.Awaiting(b => b.ExecuteAsync(_ => Task.FromResult(1), contextPassedToExecute)).Should().ThrowAsync<BulkheadRejectedException>();
 
                     cancellationSource.Cancel();
                     tcs.SetCanceled();

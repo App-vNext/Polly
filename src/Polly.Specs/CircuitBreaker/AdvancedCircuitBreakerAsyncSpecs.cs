@@ -26,7 +26,7 @@ namespace Polly.Specs.CircuitBreaker
                 .AdvancedCircuitBreakerAsync(0.5, TimeSpan.FromSeconds(10), 4, TimeSpan.MaxValue);
 
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+                .Should().ThrowAsync<DivideByZeroException>();
         }
 
         [Fact]
@@ -186,21 +186,21 @@ namespace Polly.Specs.CircuitBreaker
 
             // Three of three actions in this test throw handled failures.
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
             // Failure threshold exceeded, but throughput threshold not yet.
 
             // Throughput threshold will be exceeded by the below successful call, but we never break on a successful call; hence don't break on this.
             breaker.Awaiting(x => x.ExecuteAsync(() => TaskHelper.EmptyTask))
-                .Should().NotThrow();
+                .Should().NotThrowAsync();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
             // No adjustment to SystemClock.UtcNow, so all exceptions were raised within same timeslice
         }
@@ -223,19 +223,19 @@ namespace Polly.Specs.CircuitBreaker
 
             // Four of four actions in this test throw unhandled failures.
             breaker.Awaiting(x => x.RaiseExceptionAsync<ArgumentNullException>())
-                .Should().Throw<ArgumentNullException>();
+                .Should().ThrowAsync<ArgumentNullException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             breaker.Awaiting(x => x.RaiseExceptionAsync<ArgumentNullException>())
-                .Should().Throw<ArgumentNullException>();
+                .Should().ThrowAsync<ArgumentNullException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             breaker.Awaiting(x => x.RaiseExceptionAsync<ArgumentNullException>())
-                .Should().Throw<ArgumentNullException>();
+                .Should().ThrowAsync<ArgumentNullException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             breaker.Awaiting(x => x.RaiseExceptionAsync<ArgumentNullException>())
-                .Should().Throw<ArgumentNullException>();
+                .Should().ThrowAsync<ArgumentNullException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
         }
 
@@ -250,7 +250,7 @@ namespace Polly.Specs.CircuitBreaker
         // These provide easy values for testing for failure and throughput thresholds each being met and non-met, in combination.
 
         [Fact]
-        public void Should_open_circuit_blocking_executions_and_noting_the_last_raised_exception_if_failure_threshold_exceeded_and_throughput_threshold_equalled_within_timeslice_in_same_window()
+        public async Task Should_open_circuit_blocking_executions_and_noting_the_last_raised_exception_if_failure_threshold_exceeded_and_throughput_threshold_equalled_within_timeslice_in_same_window()
         {
             var time = 1.January(2000);
             SystemClock.UtcNow = () => time;
@@ -265,36 +265,36 @@ namespace Polly.Specs.CircuitBreaker
                 );
 
             // Four of four actions in this test throw handled failures.
-            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+            await breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
-            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+            await breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
-            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+            await breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             // No adjustment to SystemClock.UtcNow, so all exceptions raised within same timeslice
 
-            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+            await breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
             bool delegateExecutedWhenBroken = false;
-            breaker.Awaiting(x => x.ExecuteAsync(() => { delegateExecutedWhenBroken = true; return TaskHelper.EmptyTask; }))
-                .Should().Throw<BrokenCircuitException>()
-                .WithMessage("The circuit is now open and is not allowing calls.")
-                .WithInnerException<DivideByZeroException>();
+            var ex = await breaker.Awaiting(x => x.ExecuteAsync(() => { delegateExecutedWhenBroken = true; return TaskHelper.EmptyTask; }))
+                .Should().ThrowAsync<BrokenCircuitException>()
+                .WithMessage("The circuit is now open and is not allowing calls.");
+            ex.WithInnerException<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Open);
             delegateExecutedWhenBroken.Should().BeFalse();
 
         }
 
         [Fact]
-        public void Should_open_circuit_with_the_last_raised_exception_if_failure_threshold_exceeded_and_throughput_threshold_equalled_within_timeslice_in_different_windows()
+        public async Task Should_open_circuit_with_the_last_raised_exception_if_failure_threshold_exceeded_and_throughput_threshold_equalled_within_timeslice_in_different_windows()
         {
             var time = 1.January(2000);
             SystemClock.UtcNow = () => time;
@@ -311,16 +311,16 @@ namespace Polly.Specs.CircuitBreaker
                 );
 
             // Four of four actions in this test throw handled failures.
-            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+            await breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
-            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+            await breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
-            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+            await breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             // Placing the rest of the invocations ('samplingDuration' / 2) + 1 seconds later
@@ -328,20 +328,20 @@ namespace Polly.Specs.CircuitBreaker
             // They are still placed within same timeslice.
             SystemClock.UtcNow = () => time.AddSeconds(samplingDuration.Seconds / 2d + 1);
 
-            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+            await breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
-            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<BrokenCircuitException>()
-                .WithMessage("The circuit is now open and is not allowing calls.")
-                .WithInnerException<DivideByZeroException>();
+            var ex = await breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                .Should().ThrowAsync<BrokenCircuitException>()
+                .WithMessage("The circuit is now open and is not allowing calls.");
+            ex.WithInnerException<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
         }
 
         [Fact]
-        public void Should_open_circuit_with_the_last_raised_exception_if_failure_threshold_exceeded_though_not_all_are_failures_and_throughput_threshold_equalled_within_timeslice_in_same_window()
+        public async Task Should_open_circuit_with_the_last_raised_exception_if_failure_threshold_exceeded_though_not_all_are_failures_and_throughput_threshold_equalled_within_timeslice_in_same_window()
         {
             var time = 1.January(2000);
             SystemClock.UtcNow = () => time;
@@ -356,33 +356,33 @@ namespace Polly.Specs.CircuitBreaker
                 );
 
             // Three of four actions in this test throw handled failures.
-            breaker.Awaiting(x => x.ExecuteAsync(() => TaskHelper.EmptyTask))
-                .Should().NotThrow();
+            await breaker.Awaiting(x => x.ExecuteAsync(() => TaskHelper.EmptyTask))
+                .Should().NotThrowAsync();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
-            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+            await breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
-            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+            await breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
-            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+            await breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Open);
             // No adjustment to SystemClock.UtcNow, so all exceptions were raised within same timeslice
 
-            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<BrokenCircuitException>()
-                .WithMessage("The circuit is now open and is not allowing calls.")
-                .WithInnerException<DivideByZeroException>();
+            var ex = await breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                .Should().ThrowAsync<BrokenCircuitException>()
+                .WithMessage("The circuit is now open and is not allowing calls.");
+            ex.WithInnerException<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
         }
 
         [Fact]
-        public void Should_open_circuit_with_the_last_raised_exception_if_failure_threshold_exceeded_though_not_all_are_failures_and_throughput_threshold_equalled_within_timeslice_in_different_windows()
+        public async Task Should_open_circuit_with_the_last_raised_exception_if_failure_threshold_exceeded_though_not_all_are_failures_and_throughput_threshold_equalled_within_timeslice_in_different_windows()
         {
             var time = 1.January(2000);
             SystemClock.UtcNow = () => time;
@@ -399,20 +399,20 @@ namespace Polly.Specs.CircuitBreaker
                 );
 
             // Three of four actions in this test throw handled failures.
-            breaker.Awaiting(x => x.ExecuteAsync(() => TaskHelper.EmptyTask))
-                .Should().NotThrow();
+            await breaker.Awaiting(x => x.ExecuteAsync(() => TaskHelper.EmptyTask))
+                .Should().NotThrowAsync();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
-            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+            await breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
-            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+            await breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
-            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+            await breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
             // Placing the rest of the invocations ('samplingDuration' / 2) + 1 seconds later
@@ -420,16 +420,16 @@ namespace Polly.Specs.CircuitBreaker
             // They are still placed within same timeslice
             SystemClock.UtcNow = () => time.AddSeconds(samplingDuration.Seconds / 2d + 1);
 
-            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<BrokenCircuitException>()
-                .WithMessage("The circuit is now open and is not allowing calls.")
-                .WithInnerException<DivideByZeroException>();
+            var ex = await breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                .Should().ThrowAsync<BrokenCircuitException>()
+                .WithMessage("The circuit is now open and is not allowing calls.");
+            ex.WithInnerException<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
         }
 
         [Fact]
-        public void Should_open_circuit_with_the_last_raised_exception_if_failure_threshold_equalled_and_throughput_threshold_equalled_within_timeslice_in_same_window()
+        public async Task Should_open_circuit_with_the_last_raised_exception_if_failure_threshold_equalled_and_throughput_threshold_equalled_within_timeslice_in_same_window()
         {
             var time = 1.January(2000);
             SystemClock.UtcNow = () => time;
@@ -444,33 +444,33 @@ namespace Polly.Specs.CircuitBreaker
                 );
 
             // Two of four actions in this test throw handled failures.
-            breaker.Awaiting(x => x.ExecuteAsync(() => TaskHelper.EmptyTask))
-                .Should().NotThrow();
+            await breaker.Awaiting(x => x.ExecuteAsync(() => TaskHelper.EmptyTask))
+                .Should().NotThrowAsync();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
-            breaker.Awaiting(x => x.ExecuteAsync(() => TaskHelper.EmptyTask))
-                .Should().NotThrow();
+            await breaker.Awaiting(x => x.ExecuteAsync(() => TaskHelper.EmptyTask))
+                .Should().NotThrowAsync();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
-            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+            await breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
-            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+            await breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Open);
             // No adjustment to SystemClock.UtcNow, so all exceptions were raised within same timeslice
 
-            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<BrokenCircuitException>()
-                .WithMessage("The circuit is now open and is not allowing calls.")
-                .WithInnerException<DivideByZeroException>();
+            var ex = await breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                .Should().ThrowAsync<BrokenCircuitException>()
+                .WithMessage("The circuit is now open and is not allowing calls.");
+            ex.WithInnerException<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
         }
 
         [Fact]
-        public void Should_open_circuit_with_the_last_raised_exception_if_failure_threshold_equalled_and_throughput_threshold_equalled_within_timeslice_in_different_windows()
+        public async Task Should_open_circuit_with_the_last_raised_exception_if_failure_threshold_equalled_and_throughput_threshold_equalled_within_timeslice_in_different_windows()
         {
             var time = 1.January(2000);
             SystemClock.UtcNow = () => time;
@@ -487,20 +487,20 @@ namespace Polly.Specs.CircuitBreaker
                 );
 
             // Two of four actions in this test throw handled failures.
-            breaker.Awaiting(x => x.ExecuteAsync(() => TaskHelper.EmptyTask))
-                .Should().NotThrow();
+            await breaker.Awaiting(x => x.ExecuteAsync(() => TaskHelper.EmptyTask))
+                .Should().NotThrowAsync();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
-            breaker.Awaiting(x => x.ExecuteAsync(() => TaskHelper.EmptyTask))
-                .Should().NotThrow();
+            await breaker.Awaiting(x => x.ExecuteAsync(() => TaskHelper.EmptyTask))
+                .Should().NotThrowAsync();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
-            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+            await breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
-            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+            await breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
             // Placing the rest of the invocations ('samplingDuration' / 2) + 1 seconds later
@@ -508,10 +508,10 @@ namespace Polly.Specs.CircuitBreaker
             // They are still placed within same timeslice
             SystemClock.UtcNow = () => time.AddSeconds(samplingDuration.Seconds / 2d + 1);
 
-            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<BrokenCircuitException>()
-                .WithMessage("The circuit is now open and is not allowing calls.")
-                .WithInnerException<DivideByZeroException>();
+            var ex = await breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                .Should().ThrowAsync<BrokenCircuitException>()
+                .WithMessage("The circuit is now open and is not allowing calls.");
+            ex.WithInnerException<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
         }
@@ -535,22 +535,22 @@ namespace Polly.Specs.CircuitBreaker
 
             // Four of four actions in this test throw handled failures; but only the first three within the timeslice.
             breaker.Awaiting(x => x.ExecuteAsync(() => TaskHelper.EmptyTask))
-                .Should().NotThrow();
+                .Should().NotThrowAsync();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             breaker.Awaiting(x => x.ExecuteAsync(() => TaskHelper.EmptyTask))
-                .Should().NotThrow();
+                .Should().NotThrowAsync();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             // Adjust SystemClock so that timeslice (clearly) expires; fourth exception thrown in next-recorded timeslice.
             SystemClock.UtcNow = () => time.Add(samplingDuration).Add(samplingDuration);
 
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
         }
@@ -574,22 +574,22 @@ namespace Polly.Specs.CircuitBreaker
 
             // Four of four actions in this test throw handled failures; but only the first three within the timeslice.
             breaker.Awaiting(x => x.ExecuteAsync(() => TaskHelper.EmptyTask))
-                .Should().NotThrow();
+                .Should().NotThrowAsync();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             breaker.Awaiting(x => x.ExecuteAsync(() => TaskHelper.EmptyTask))
-                .Should().NotThrow();
+                .Should().NotThrowAsync();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             // Adjust SystemClock so that timeslice (just) expires; fourth exception thrown in following timeslice.
             SystemClock.UtcNow = () => time.Add(samplingDuration);
 
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
         }
@@ -615,31 +615,31 @@ namespace Polly.Specs.CircuitBreaker
 
             // Two actions at the start of the original timeslice.
             breaker.Awaiting(x => x.ExecuteAsync(() => TaskHelper.EmptyTask))
-                .Should().NotThrow();
+                .Should().NotThrowAsync();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             breaker.Awaiting(x => x.ExecuteAsync(() => TaskHelper.EmptyTask))
-                .Should().NotThrow();
+                .Should().NotThrowAsync();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             // Creates a new window right at the end of the original timeslice.
             SystemClock.UtcNow = () => time.AddTicks(samplingDuration.Ticks - 1);
 
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             // Adjust SystemClock so that timeslice (just) expires; fourth exception thrown in following timeslice.  If timeslice/window rollover is precisely defined, this should cause first two actions to be forgotten from statistics (rolled out of the window of relevance), and thus the circuit not to break.
             SystemClock.UtcNow = () => time.Add(samplingDuration);
 
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
         }
 
         [Fact]
-        public void Should_open_circuit_with_the_last_raised_exception_if_failure_threshold_equalled_and_throughput_threshold_equalled_even_if_only_just_within_timeslice()
+        public async Task Should_open_circuit_with_the_last_raised_exception_if_failure_threshold_equalled_and_throughput_threshold_equalled_even_if_only_just_within_timeslice()
         {
             var time = 1.January(2000);
             SystemClock.UtcNow = () => time;
@@ -656,29 +656,29 @@ namespace Polly.Specs.CircuitBreaker
                 );
 
             // Four of four actions in this test throw handled failures.
-            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+            await breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
-            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+            await breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
-            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+            await breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             // Adjust SystemClock so that timeslice doesn't quite expire; fourth exception thrown in same timeslice.
             SystemClock.UtcNow = () => time.AddTicks(samplingDuration.Ticks - 1);
 
-            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+            await breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
-            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<BrokenCircuitException>()
-                .WithMessage("The circuit is now open and is not allowing calls.")
-                .WithInnerException<DivideByZeroException>();
+            var ex = await breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                .Should().ThrowAsync<BrokenCircuitException>()
+                .WithMessage("The circuit is now open and is not allowing calls.");
+            ex.WithInnerException<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
         }
@@ -700,15 +700,15 @@ namespace Polly.Specs.CircuitBreaker
 
             // One of three actions in this test throw handled failures.
             breaker.Awaiting(x => x.ExecuteAsync(() => TaskHelper.EmptyTask))
-                .Should().NotThrow();
+                .Should().NotThrowAsync();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             breaker.Awaiting(x => x.ExecuteAsync(() => TaskHelper.EmptyTask))
-                .Should().NotThrow();
+                .Should().NotThrowAsync();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
             // No adjustment to SystemClock.UtcNow, so all exceptions were raised within same timeslice
         }
@@ -730,19 +730,19 @@ namespace Polly.Specs.CircuitBreaker
 
             // One of four actions in this test throw handled failures.
             breaker.Awaiting(x => x.ExecuteAsync(() => TaskHelper.EmptyTask))
-                .Should().NotThrow();
+                .Should().NotThrowAsync();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             breaker.Awaiting(x => x.ExecuteAsync(() => TaskHelper.EmptyTask))
-                .Should().NotThrow();
+                .Should().NotThrowAsync();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             breaker.Awaiting(x => x.ExecuteAsync(() => TaskHelper.EmptyTask))
-                .Should().NotThrow();
+                .Should().NotThrowAsync();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
             // No adjustment to SystemClock.UtcNow, so all exceptions were raised within same timeslice
         }
@@ -767,7 +767,7 @@ namespace Polly.Specs.CircuitBreaker
             // Executing a single invocation to ensure timeslice is created
             // This invocation is not be counted against the threshold
             breaker.Awaiting(x => x.ExecuteAsync(() => TaskHelper.EmptyTask))
-                .Should().NotThrow();
+                .Should().NotThrowAsync();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             // The time is set to just at the end of the sampling duration ensuring
@@ -776,15 +776,15 @@ namespace Polly.Specs.CircuitBreaker
 
             // Three of four actions in this test occur within the first timeslice.
             breaker.Awaiting(x => x.ExecuteAsync(() => TaskHelper.EmptyTask))
-                .Should().NotThrow();
+                .Should().NotThrowAsync();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             breaker.Awaiting(x => x.ExecuteAsync(() => TaskHelper.EmptyTask))
-                .Should().NotThrow();
+                .Should().NotThrowAsync();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             // Setting the time to just barely into the new timeslice
@@ -794,7 +794,7 @@ namespace Polly.Specs.CircuitBreaker
             // equalling the failure threshold. The minimum threshold within the defined
             // sampling duration is met, when using rolling windows.
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Open);
         }
 
@@ -818,7 +818,7 @@ namespace Polly.Specs.CircuitBreaker
             // Executing a single invocation to ensure timeslice is created
             // This invocation is not be counted against the threshold
             breaker.Awaiting(x => x.ExecuteAsync(() => TaskHelper.EmptyTask))
-                .Should().NotThrow();
+                .Should().NotThrowAsync();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             // The time is set to just at the end of the sampling duration ensuring
@@ -827,11 +827,11 @@ namespace Polly.Specs.CircuitBreaker
 
             // Two of three actions in this test occur within the first timeslice.
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             // Setting the time to just barely into the new timeslice
@@ -841,7 +841,7 @@ namespace Polly.Specs.CircuitBreaker
             // the number of failures above the failure threshold. However, the throughput is
             // below the minimum threshold as to open the circuit.
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
         }
 
@@ -866,7 +866,7 @@ namespace Polly.Specs.CircuitBreaker
             // Executing a single invocation to ensure timeslice is created
             // This invocation is not be counted against the threshold
             breaker.Awaiting(x => x.ExecuteAsync(() => TaskHelper.EmptyTask))
-                .Should().NotThrow();
+                .Should().NotThrowAsync();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             // Setting the time to the second window in the rolling metrics
@@ -874,22 +874,22 @@ namespace Polly.Specs.CircuitBreaker
 
             // Three actions occur in the second window of the first timeslice
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             breaker.Awaiting(x => x.ExecuteAsync(() => TaskHelper.EmptyTask))
-                .Should().NotThrow();
+                .Should().NotThrowAsync();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             // Setting the time to just barely into the new timeslice
             SystemClock.UtcNow = () => time.Add(samplingDuration);
 
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Open);
         }
 
@@ -904,7 +904,7 @@ namespace Polly.Specs.CircuitBreaker
         // These provide easy values for testing for failure and throughput thresholds each being met and non-met, in combination.
 
         [Fact]
-        public void Should_open_circuit_with_the_last_raised_exception_if_failure_threshold_exceeded_and_throughput_threshold_equalled_within_timeslice_low_sampling_duration()
+        public async Task Should_open_circuit_with_the_last_raised_exception_if_failure_threshold_exceeded_and_throughput_threshold_equalled_within_timeslice_low_sampling_duration()
         {
             var time = 1.January(2000);
             SystemClock.UtcNow = () => time;
@@ -919,34 +919,34 @@ namespace Polly.Specs.CircuitBreaker
                 );
 
             // Four of four actions in this test throw handled failures.
-            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+            await breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
-            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+            await breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
-            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+            await breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             // No adjustment to SystemClock.UtcNow, so all exceptions raised within same timeslice
 
-            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+            await breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
-            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<BrokenCircuitException>()
-                .WithMessage("The circuit is now open and is not allowing calls.")
-                .WithInnerException<DivideByZeroException>();
+            var ex = await breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                .Should().ThrowAsync<BrokenCircuitException>()
+                .WithMessage("The circuit is now open and is not allowing calls.");
+            ex.WithInnerException<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
         }
 
         [Fact]
-        public void Should_open_circuit_with_the_last_raised_exception_if_failure_threshold_exceeded_though_not_all_are_failures_and_throughput_threshold_equalled_within_timeslice_low_sampling_duration()
+        public async Task Should_open_circuit_with_the_last_raised_exception_if_failure_threshold_exceeded_though_not_all_are_failures_and_throughput_threshold_equalled_within_timeslice_low_sampling_duration()
         {
             var time = 1.January(2000);
             SystemClock.UtcNow = () => time;
@@ -961,33 +961,33 @@ namespace Polly.Specs.CircuitBreaker
                 );
 
             // Three of four actions in this test throw handled failures.
-            breaker.Awaiting(x => x.ExecuteAsync(() => TaskHelper.EmptyTask))
-                .Should().NotThrow();
+            await breaker.Awaiting(x => x.ExecuteAsync(() => TaskHelper.EmptyTask))
+                .Should().NotThrowAsync();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
-            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+            await breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
-            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+            await breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
-            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+            await breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Open);
             // No adjustment to SystemClock.UtcNow, so all exceptions were raised within same timeslice
 
-            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<BrokenCircuitException>()
-                .WithMessage("The circuit is now open and is not allowing calls.")
-                .WithInnerException<DivideByZeroException>();
+            var ex = await breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                .Should().ThrowAsync<BrokenCircuitException>()
+                .WithMessage("The circuit is now open and is not allowing calls.");
+            ex.WithInnerException<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
         }
 
         [Fact]
-        public void Should_open_circuit_with_the_last_raised_exception_if_failure_threshold_equalled_and_throughput_threshold_equalled_within_timeslice_low_sampling_duration()
+        public async Task Should_open_circuit_with_the_last_raised_exception_if_failure_threshold_equalled_and_throughput_threshold_equalled_within_timeslice_low_sampling_duration()
         {
             var time = 1.January(2000);
             SystemClock.UtcNow = () => time;
@@ -1002,27 +1002,27 @@ namespace Polly.Specs.CircuitBreaker
                 );
 
             // Two of four actions in this test throw handled failures.
-            breaker.Awaiting(x => x.ExecuteAsync(() => TaskHelper.EmptyTask))
-                .Should().NotThrow();
+            await breaker.Awaiting(x => x.ExecuteAsync(() => TaskHelper.EmptyTask))
+                .Should().NotThrowAsync();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
-            breaker.Awaiting(x => x.ExecuteAsync(() => TaskHelper.EmptyTask))
-                .Should().NotThrow();
+            await breaker.Awaiting(x => x.ExecuteAsync(() => TaskHelper.EmptyTask))
+                .Should().NotThrowAsync();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
-            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+            await breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
-            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+            await breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Open);
             // No adjustment to SystemClock.UtcNow, so all exceptions were raised within same timeslice
 
-            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<BrokenCircuitException>()
-                .WithMessage("The circuit is now open and is not allowing calls.")
-                .WithInnerException<DivideByZeroException>();
+            var ex = await breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                .Should().ThrowAsync<BrokenCircuitException>()
+                .WithMessage("The circuit is now open and is not allowing calls.");
+            ex.WithInnerException<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
         }
@@ -1046,22 +1046,22 @@ namespace Polly.Specs.CircuitBreaker
 
             // Four of four actions in this test throw handled failures; but only the first within the timeslice.
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             // Adjust SystemClock so that timeslice (clearly) expires; fourth exception thrown in next-recorded timeslice.
             SystemClock.UtcNow = () => time.Add(samplingDuration).Add(samplingDuration);
 
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
         }
@@ -1085,28 +1085,28 @@ namespace Polly.Specs.CircuitBreaker
 
             // Two of four actions in this test throw handled failures; but only the first within the timeslice.
             breaker.Awaiting(x => x.ExecuteAsync(() => TaskHelper.EmptyTask))
-                .Should().NotThrow();
+                .Should().NotThrowAsync();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             breaker.Awaiting(x => x.ExecuteAsync(() => TaskHelper.EmptyTask))
-                .Should().NotThrow();
+                .Should().NotThrowAsync();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             // Adjust SystemClock so that timeslice (just) expires; fourth exception thrown in following timeslice.
             SystemClock.UtcNow = () => time.Add(samplingDuration);
 
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
         }
 
         [Fact]
-        public void Should_open_circuit_with_the_last_raised_exception_if_failure_threshold_equalled_and_throughput_threshold_equalled_even_if_only_just_within_timeslice_low_sampling_duration()
+        public async Task Should_open_circuit_with_the_last_raised_exception_if_failure_threshold_equalled_and_throughput_threshold_equalled_even_if_only_just_within_timeslice_low_sampling_duration()
         {
             var time = 1.January(2000);
             SystemClock.UtcNow = () => time;
@@ -1123,29 +1123,29 @@ namespace Polly.Specs.CircuitBreaker
                 );
 
             // Four of four actions in this test throw handled failures.
-            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+            await breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
-            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+            await breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
-            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+            await breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             // Adjust SystemClock so that timeslice doesn't quite expire; fourth exception thrown in same timeslice.
             SystemClock.UtcNow = () => time.AddTicks(samplingDuration.Ticks - 1);
 
-            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+            await breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
-            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<BrokenCircuitException>()
-                .WithMessage("The circuit is now open and is not allowing calls.")
-                .WithInnerException<DivideByZeroException>();
+            var ex = await breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                .Should().ThrowAsync<BrokenCircuitException>()
+                .WithMessage("The circuit is now open and is not allowing calls.");
+            ex.WithInnerException<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
         }
@@ -1167,15 +1167,15 @@ namespace Polly.Specs.CircuitBreaker
 
             // One of three actions in this test throw handled failures.
             breaker.Awaiting(x => x.ExecuteAsync(() => TaskHelper.EmptyTask))
-                .Should().NotThrow();
+                .Should().NotThrowAsync();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             breaker.Awaiting(x => x.ExecuteAsync(() => TaskHelper.EmptyTask))
-                .Should().NotThrow();
+                .Should().NotThrowAsync();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
             // No adjustment to SystemClock.UtcNow, so all exceptions were raised within same timeslice
         }
@@ -1197,19 +1197,19 @@ namespace Polly.Specs.CircuitBreaker
 
             // One of four actions in this test throw handled failures.
             breaker.Awaiting(x => x.ExecuteAsync(() => TaskHelper.EmptyTask))
-                .Should().NotThrow();
+                .Should().NotThrowAsync();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             breaker.Awaiting(x => x.ExecuteAsync(() => TaskHelper.EmptyTask))
-                .Should().NotThrow();
+                .Should().NotThrowAsync();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             breaker.Awaiting(x => x.ExecuteAsync(() => TaskHelper.EmptyTask))
-                .Should().NotThrow();
+                .Should().NotThrowAsync();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
             // No adjustment to SystemClock.UtcNow, so all exceptions were raised within same timeslice
         }
@@ -1234,7 +1234,7 @@ namespace Polly.Specs.CircuitBreaker
             // Executing a single invocation to ensure timeslice is created
             // This invocation is not be counted against the threshold
             breaker.Awaiting(x => x.ExecuteAsync(() => TaskHelper.EmptyTask))
-                .Should().NotThrow();
+                .Should().NotThrowAsync();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             // The time is set to just at the end of the sampling duration ensuring
@@ -1243,15 +1243,15 @@ namespace Polly.Specs.CircuitBreaker
 
             // Three of four actions in this test occur within the first timeslice.
             breaker.Awaiting(x => x.ExecuteAsync(() => TaskHelper.EmptyTask))
-                .Should().NotThrow();
+                .Should().NotThrowAsync();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             breaker.Awaiting(x => x.ExecuteAsync(() => TaskHelper.EmptyTask))
-                .Should().NotThrow();
+                .Should().NotThrowAsync();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             // Setting the time to just barely into the new timeslice
@@ -1260,7 +1260,7 @@ namespace Polly.Specs.CircuitBreaker
             // This failure does not open the circuit, because a new duration should have
             // started and with such low sampling duration, windows should not be used.
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
         }
 
@@ -1289,19 +1289,19 @@ namespace Polly.Specs.CircuitBreaker
 
             // Four of four actions in this test throw handled failures.
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+                .Should().ThrowAsync<DivideByZeroException>();
 
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
@@ -1310,7 +1310,7 @@ namespace Polly.Specs.CircuitBreaker
             // duration has passed, circuit now half open
             breaker.CircuitState.Should().Be(CircuitState.HalfOpen);
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+                .Should().ThrowAsync<DivideByZeroException>();
         }
 
         [Fact]
@@ -1333,15 +1333,15 @@ namespace Polly.Specs.CircuitBreaker
 
             // Four of four actions in this test throw handled failures.
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             // Placing the rest of the invocations ('samplingDuration' / 2) + 1 seconds later
@@ -1351,7 +1351,7 @@ namespace Polly.Specs.CircuitBreaker
             SystemClock.UtcNow = () => time.AddSeconds(anotherWindowDuration);
 
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+                .Should().ThrowAsync<DivideByZeroException>();
 
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
@@ -1365,7 +1365,7 @@ namespace Polly.Specs.CircuitBreaker
             // duration has passed, circuit now half open
             breaker.CircuitState.Should().Be(CircuitState.HalfOpen);
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+                .Should().ThrowAsync<DivideByZeroException>();
         }
 
         [Fact]
@@ -1387,19 +1387,19 @@ namespace Polly.Specs.CircuitBreaker
 
             // Four of four actions in this test throw handled failures.
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+                .Should().ThrowAsync<DivideByZeroException>();
 
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
@@ -1410,10 +1410,10 @@ namespace Polly.Specs.CircuitBreaker
 
             // first call after duration raises an exception, so circuit should open again
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Open);
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<BrokenCircuitException>();
+                .Should().ThrowAsync<BrokenCircuitException>();
 
         }
 
@@ -1435,20 +1435,20 @@ namespace Polly.Specs.CircuitBreaker
                 );
 
             // Four of four actions in this test throw handled failures.
-            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+            await breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
-            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+            await breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
-            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+            await breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
-            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+            await breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                .Should().ThrowAsync<DivideByZeroException>();
 
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
@@ -1479,9 +1479,9 @@ namespace Polly.Specs.CircuitBreaker
                 );
 
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                  .Should().Throw<DivideByZeroException>();
+                  .Should().ThrowAsync<DivideByZeroException>();
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+                .Should().ThrowAsync<DivideByZeroException>();
 
             // exception raised, circuit is now open.
             breaker.CircuitState.Should().Be(CircuitState.Open);
@@ -1517,9 +1517,9 @@ namespace Polly.Specs.CircuitBreaker
                 );
 
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                  .Should().Throw<DivideByZeroException>();
+                  .Should().ThrowAsync<DivideByZeroException>();
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+                .Should().ThrowAsync<DivideByZeroException>();
 
             // exception raised, circuit is now open.
             breaker.CircuitState.Should().Be(CircuitState.Open);
@@ -1563,9 +1563,9 @@ namespace Polly.Specs.CircuitBreaker
                 );
 
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                  .Should().Throw<DivideByZeroException>();
+                  .Should().ThrowAsync<DivideByZeroException>();
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+                .Should().ThrowAsync<DivideByZeroException>();
 
             // exceptions raised, circuit is now open.
             breaker.CircuitState.Should().Be(CircuitState.Open);
@@ -1602,7 +1602,7 @@ namespace Polly.Specs.CircuitBreaker
                         await TaskHelper.EmptyTask;
                         firstExecutionActive = false;
 
-                    })).Should().NotThrow();
+                    })).Should().NotThrowAsync();
                 }, TaskCreationOptions.LongRunning);
 
                 // Attempt a second execution, signalled by the first execution to ensure they overlap: we should be able to verify it doesn't execute, and is rejected by a breaker in a HalfOpen state.
@@ -1669,9 +1669,9 @@ namespace Polly.Specs.CircuitBreaker
                 );
 
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                  .Should().Throw<DivideByZeroException>();
+                  .Should().ThrowAsync<DivideByZeroException>();
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+                .Should().ThrowAsync<DivideByZeroException>();
 
             // exception raised, circuit is now open.
             breaker.CircuitState.Should().Be(CircuitState.Open);
@@ -1708,7 +1708,7 @@ namespace Polly.Specs.CircuitBreaker
                         permitFirstExecutionEnd.WaitOne(testTimeoutToExposeDeadlocks);
                         await TaskHelper.EmptyTask;
                         firstExecutionActive = false;
-                    })).Should().NotThrow();
+                    })).Should().NotThrowAsync();
                 }, TaskCreationOptions.LongRunning);
 
                 // Attempt a second execution, signalled by the first execution to ensure they overlap; start it one breakDuration later.  We should be able to verify it does execute, though the breaker is still in a HalfOpen state.
@@ -1779,7 +1779,7 @@ namespace Polly.Specs.CircuitBreaker
             // circuit manually broken: execution should be blocked; even non-exception-throwing executions should not reset circuit
             bool delegateExecutedWhenBroken = false;
             breaker.Awaiting(x => x.ExecuteAsync(() => { delegateExecutedWhenBroken = true; return TaskHelper.EmptyTask; }))
-                .Should().Throw<IsolatedCircuitException>();
+                .Should().ThrowAsync<IsolatedCircuitException>();
             breaker.CircuitState.Should().Be(CircuitState.Isolated);
             breaker.LastException.Should().BeOfType<IsolatedCircuitException>();
             delegateExecutedWhenBroken.Should().BeFalse();
@@ -1805,7 +1805,7 @@ namespace Polly.Specs.CircuitBreaker
 
             bool delegateExecutedWhenBroken = false;
             breaker.Awaiting(x => x.ExecuteAsync(() => { delegateExecutedWhenBroken = true; return TaskHelper.EmptyTask; }))
-                .Should().Throw<IsolatedCircuitException>();
+                .Should().ThrowAsync<IsolatedCircuitException>();
             delegateExecutedWhenBroken.Should().BeFalse();
         }
 
@@ -1824,12 +1824,12 @@ namespace Polly.Specs.CircuitBreaker
             breaker.Isolate();
             breaker.CircuitState.Should().Be(CircuitState.Isolated);
             breaker.Awaiting(x => x.ExecuteAsync(() => TaskHelper.EmptyTask))
-                .Should().Throw<IsolatedCircuitException>();
+                .Should().ThrowAsync<IsolatedCircuitException>();
 
             breaker.Reset();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
             breaker.Awaiting(x => x.ExecuteAsync(() => TaskHelper.EmptyTask))
-                .Should().NotThrow();
+                .Should().NotThrowAsync();
         }
 
         [Fact]
@@ -1851,19 +1851,19 @@ namespace Polly.Specs.CircuitBreaker
 
             // Four of four actions in this test throw handled failures.
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
             // reset circuit, with no time having passed
@@ -1871,7 +1871,7 @@ namespace Polly.Specs.CircuitBreaker
             SystemClock.UtcNow().Should().Be(time);
             breaker.CircuitState.Should().Be(CircuitState.Closed);
             breaker.Awaiting(x => x.ExecuteAsync(() => TaskHelper.EmptyTask))
-                .Should().NotThrow();
+                .Should().NotThrowAsync();
         }
 
         #endregion
@@ -1916,21 +1916,21 @@ namespace Polly.Specs.CircuitBreaker
 
             // Four of four actions in this test throw handled failures.
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             // No adjustment to SystemClock.UtcNow, so all exceptions raised within same timeslice
 
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
             onBreakCalled.Should().BeTrue();
@@ -1978,31 +1978,31 @@ namespace Polly.Specs.CircuitBreaker
 
             // Four of four actions in this test throw handled failures.
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
             onBreakCalled.Should().Be(0);
 
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
             onBreakCalled.Should().Be(0);
 
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
             onBreakCalled.Should().Be(0);
 
             // No adjustment to SystemClock.UtcNow, so all exceptions raised within same timeslice
 
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
             onBreakCalled.Should().Be(1);
 
             // call through circuit when already broken - should not retrigger onBreak
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<BrokenCircuitException>();
+                .Should().ThrowAsync<BrokenCircuitException>();
 
             breaker.CircuitState.Should().Be(CircuitState.Open);
             onBreakCalled.Should().Be(1);
@@ -2049,7 +2049,7 @@ namespace Polly.Specs.CircuitBreaker
                     breaker.CircuitState.Should().Be(CircuitState.Open);
                         throw new DivideByZeroException();
 
-                    })).Should().Throw<DivideByZeroException>(); // However, since execution started when circuit was closed, BrokenCircuitException will not have been thrown on entry; the original exception will still be thrown.
+                    })).Should().ThrowAsync<DivideByZeroException>(); // However, since execution started when circuit was closed, BrokenCircuitException will not have been thrown on entry; the original exception will still be thrown.
                 }, TaskCreationOptions.LongRunning);
 
                 permitMainThreadToOpenCircuit.WaitOne(testTimeoutToExposeDeadlocks).Should().BeTrue();
@@ -2058,9 +2058,9 @@ namespace Polly.Specs.CircuitBreaker
                 breaker.CircuitState.Should().Be(CircuitState.Closed);
                 onBreakCalled.Should().Be(0);
                 breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                      .Should().Throw<DivideByZeroException>();
+                      .Should().ThrowAsync<DivideByZeroException>();
                 breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                      .Should().Throw<DivideByZeroException>();
+                      .Should().ThrowAsync<DivideByZeroException>();
                 breaker.CircuitState.Should().Be(CircuitState.Open);
                 onBreakCalled.Should().Be(1);
 
@@ -2103,22 +2103,22 @@ namespace Polly.Specs.CircuitBreaker
                 );
 
             // Four of four actions in this test throw handled failures.
-            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+            await breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
-            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+            await breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
-            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+            await breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             // No adjustment to SystemClock.UtcNow, so all exceptions raised within same timeslice
 
-            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+            await breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
             onBreakCalled.Should().Be(1);
@@ -2187,25 +2187,25 @@ namespace Polly.Specs.CircuitBreaker
                 );
 
             // Four of four actions in this test throw handled failures.
-            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+            await breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
             onBreakCalled.Should().Be(0);
 
-            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+            await breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
             onBreakCalled.Should().Be(0);
 
-            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+            await breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
             onBreakCalled.Should().Be(0);
 
             // No adjustment to SystemClock.UtcNow, so all exceptions raised within same timeslice
 
-            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+            await breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
             onBreakCalled.Should().Be(1);
@@ -2250,24 +2250,24 @@ namespace Polly.Specs.CircuitBreaker
 
             // Four of four actions in this test throw handled failures.
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
             onBreakCalled.Should().Be(0);
 
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
             onBreakCalled.Should().Be(0);
 
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
             onBreakCalled.Should().Be(0);
 
             // No adjustment to SystemClock.UtcNow, so all exceptions raised within same timeslice
 
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
             onBreakCalled.Should().Be(1);
@@ -2300,7 +2300,7 @@ namespace Polly.Specs.CircuitBreaker
 
             breaker.CircuitState.Should().Be(CircuitState.Isolated);
             breaker.Awaiting(x => x.ExecuteAsync(() => TaskHelper.EmptyTask))
-                .Should().Throw<IsolatedCircuitException>();
+                .Should().ThrowAsync<IsolatedCircuitException>();
 
             onResetCalled.Should().Be(0);
             breaker.Reset();
@@ -2308,7 +2308,7 @@ namespace Polly.Specs.CircuitBreaker
 
             breaker.CircuitState.Should().Be(CircuitState.Closed);
             breaker.Awaiting(x => x.ExecuteAsync(() => TaskHelper.EmptyTask))
-                .Should().NotThrow();
+                .Should().NotThrowAsync();
         }
 
         #region Tests of supplied parameters to onBreak delegate
@@ -2334,21 +2334,21 @@ namespace Polly.Specs.CircuitBreaker
 
             // Four of four actions in this test throw handled failures.
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             // No adjustment to SystemClock.UtcNow, so all exceptions raised within same timeslice
 
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
             passedException?.Should().BeOfType<DivideByZeroException>();
@@ -2376,21 +2376,21 @@ namespace Polly.Specs.CircuitBreaker
                 );
 
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             // No adjustment to SystemClock.UtcNow, so all exceptions raised within same timeslice
 
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
             transitionedState?.Should().Be(CircuitState.Closed);
@@ -2424,19 +2424,19 @@ namespace Polly.Specs.CircuitBreaker
 
             // Four of four actions in this test throw handled failures.
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+                .Should().ThrowAsync<DivideByZeroException>();
 
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
@@ -2447,10 +2447,10 @@ namespace Polly.Specs.CircuitBreaker
 
             // first call after duration raises an exception, so circuit should open again
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Open);
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<BrokenCircuitException>();
+                .Should().ThrowAsync<BrokenCircuitException>();
 
             transitionedStates[0].Should().Be(CircuitState.Closed);
             transitionedStates[1].Should().Be(CircuitState.HalfOpen);
@@ -2479,21 +2479,21 @@ namespace Polly.Specs.CircuitBreaker
 
             // Four of four actions in this test throw handled failures.
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             // No adjustment to SystemClock.UtcNow, so all exceptions raised within same timeslice
 
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
             passedBreakTimespan.Should().Be(durationOfBreak);
@@ -2556,20 +2556,20 @@ namespace Polly.Specs.CircuitBreaker
 
             // Four of four actions in this test throw handled failures.
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>(
                 new { key1 = "value1", key2 = "value2" }.AsDictionary()
-                )).Should().Throw<DivideByZeroException>();
+                )).Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
             contextData.Should()
@@ -2602,20 +2602,20 @@ namespace Polly.Specs.CircuitBreaker
                 );
 
             // Four of four actions in this test throw handled failures.
-            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+            await breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
-            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+            await breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
-            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+            await breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
-            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+            await breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                .Should().ThrowAsync<DivideByZeroException>();
 
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
@@ -2656,19 +2656,19 @@ namespace Polly.Specs.CircuitBreaker
 
             // Four of four actions in this test throw handled failures.
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+                .Should().ThrowAsync<DivideByZeroException>();
 
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
@@ -2702,20 +2702,20 @@ namespace Polly.Specs.CircuitBreaker
                 );
 
             // Four of four actions in this test throw handled failures.
-            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+            await breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
-            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+            await breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
-            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+            await breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
-            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>(new { key = "original_value" }.AsDictionary()))
-                .Should().Throw<DivideByZeroException>();
+            await breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>(new { key = "original_value" }.AsDictionary()))
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Open);
             contextValue.Should().Be("original_value");
 
@@ -2766,7 +2766,7 @@ namespace Polly.Specs.CircuitBreaker
                 );
 
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             breaker.LastException.Should().BeOfType<DivideByZeroException>();
@@ -2785,11 +2785,11 @@ namespace Polly.Specs.CircuitBreaker
                 );
 
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
             breaker.LastException.Should().BeOfType<DivideByZeroException>();
@@ -2808,11 +2808,11 @@ namespace Polly.Specs.CircuitBreaker
                 );
 
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
 
             breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+                .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
             breaker.LastException.Should().BeOfType<DivideByZeroException>();
@@ -2846,13 +2846,13 @@ namespace Polly.Specs.CircuitBreaker
             };
 
             breaker.Awaiting(x => x.RaiseExceptionAndOrCancellationAsync<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
-                .Should().NotThrow();
+                .Should().NotThrowAsync();
 
             attemptsInvoked.Should().Be(1);
         }
 
         [Fact]
-        public void Should_not_execute_action_when_cancellationToken_cancelled_before_execute()
+        public async Task Should_not_execute_action_when_cancellationToken_cancelled_before_execute()
         {
             var durationOfBreak = TimeSpan.FromMinutes(1);
             var breaker = Policy
@@ -2873,15 +2873,15 @@ namespace Polly.Specs.CircuitBreaker
 
             cancellationTokenSource.Cancel();
 
-            breaker.Awaiting(x => x.RaiseExceptionAndOrCancellationAsync<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
-                .Should().Throw<OperationCanceledException>()
-                .And.CancellationToken.Should().Be(cancellationToken);
+            var ex = await breaker.Awaiting(x => x.RaiseExceptionAndOrCancellationAsync<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
+                .Should().ThrowAsync<OperationCanceledException>();
+            ex.And.CancellationToken.Should().Be(cancellationToken);
 
             attemptsInvoked.Should().Be(0);
         }
 
         [Fact]
-        public void Should_report_cancellation_during_otherwise_non_faulting_action_execution_when_user_delegate_observes_cancellationToken()
+        public async Task Should_report_cancellation_during_otherwise_non_faulting_action_execution_when_user_delegate_observes_cancellationToken()
         {
             var durationOfBreak = TimeSpan.FromMinutes(1);
             var breaker = Policy
@@ -2901,15 +2901,15 @@ namespace Polly.Specs.CircuitBreaker
                 ActionObservesCancellation = true
             };
 
-            breaker.Awaiting(x => x.RaiseExceptionAndOrCancellationAsync<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
-                .Should().Throw<OperationCanceledException>()
-                .And.CancellationToken.Should().Be(cancellationToken);
+            var ex = await breaker.Awaiting(x => x.RaiseExceptionAndOrCancellationAsync<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
+                .Should().ThrowAsync<OperationCanceledException>();
+            ex.And.CancellationToken.Should().Be(cancellationToken);
 
             attemptsInvoked.Should().Be(1);
         }
 
         [Fact]
-        public void Should_report_cancellation_during_faulting_action_execution_when_user_delegate_observes_cancellationToken()
+        public async Task Should_report_cancellation_during_faulting_action_execution_when_user_delegate_observes_cancellationToken()
         {
             var durationOfBreak = TimeSpan.FromMinutes(1);
             var breaker = Policy
@@ -2929,9 +2929,9 @@ namespace Polly.Specs.CircuitBreaker
                 ActionObservesCancellation = true
             };
 
-            breaker.Awaiting(x => x.RaiseExceptionAndOrCancellationAsync<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
-                .Should().Throw<OperationCanceledException>()
-                .And.CancellationToken.Should().Be(cancellationToken);
+            var ex = await breaker.Awaiting(x => x.RaiseExceptionAndOrCancellationAsync<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
+                .Should().ThrowAsync<OperationCanceledException>();
+            ex.And.CancellationToken.Should().Be(cancellationToken);
 
             attemptsInvoked.Should().Be(1);
         }
@@ -2957,29 +2957,29 @@ namespace Polly.Specs.CircuitBreaker
             };
 
             breaker.Awaiting(x => x.RaiseExceptionAndOrCancellationAsync<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
-                .Should().Throw<DivideByZeroException>();
+                .Should().ThrowAsync<DivideByZeroException>();
 
             attemptsInvoked.Should().Be(1);
         }
 
         [Fact]
-        public void Should_report_cancellation_when_both_open_circuit_and_cancellation()
+        public async Task Should_report_cancellation_when_both_open_circuit_and_cancellation()
         {
             var durationOfBreak = TimeSpan.FromMinutes(1);
             var breaker = Policy
                 .Handle<DivideByZeroException>()
                 .AdvancedCircuitBreakerAsync(0.5, TimeSpan.FromSeconds(10), 2, durationOfBreak);
 
-            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+            await breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                .Should().ThrowAsync<DivideByZeroException>();
 
-            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<DivideByZeroException>();
+            await breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                .Should().ThrowAsync<DivideByZeroException>();
 
-            breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                .Should().Throw<BrokenCircuitException>()
-                .WithMessage("The circuit is now open and is not allowing calls.")
-                .WithInnerException<DivideByZeroException>();
+            var ex = await breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                .Should().ThrowAsync<BrokenCircuitException>()
+                .WithMessage("The circuit is now open and is not allowing calls.");
+            ex.WithInnerException<DivideByZeroException>();
             // Circuit is now broken.
 
             CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
@@ -2997,15 +2997,15 @@ namespace Polly.Specs.CircuitBreaker
                 ActionObservesCancellation = false
             };
 
-            breaker.Awaiting(x => x.RaiseExceptionAndOrCancellationAsync<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
-                .Should().Throw<OperationCanceledException>()
-                .And.CancellationToken.Should().Be(cancellationToken);
+            var ex2 = await breaker.Awaiting(x => x.RaiseExceptionAndOrCancellationAsync<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
+                .Should().ThrowAsync<OperationCanceledException>();
+            ex2.And.CancellationToken.Should().Be(cancellationToken);
 
             attemptsInvoked.Should().Be(0);
         }
 
         [Fact]
-        public void Should_honour_different_cancellationToken_captured_implicitly_by_action()
+        public async Task Should_honour_different_cancellationToken_captured_implicitly_by_action()
         {
             // Before CancellationToken support was built in to Polly, users of the library may have implicitly captured a CancellationToken and used it to cancel actions.  For backwards compatibility, Polly should not confuse these with its own CancellationToken; it should distinguish TaskCanceledExceptions thrown with different CancellationTokens.
 
@@ -3024,14 +3024,15 @@ namespace Polly.Specs.CircuitBreaker
 
             int attemptsInvoked = 0;
 
-            breaker.Awaiting(x => x.ExecuteAsync(async _ =>
+            var ex = await breaker.Awaiting(x => x.ExecuteAsync(async _ =>
             {
                 attemptsInvoked++;
                 await TaskHelper.EmptyTask;
                 implicitlyCapturedActionCancellationToken.ThrowIfCancellationRequested();
             }, policyCancellationToken))
-                .Should().Throw<OperationCanceledException>()
-                .And.CancellationToken.Should().Be(implicitlyCapturedActionCancellationToken);
+                .Should().ThrowAsync<OperationCanceledException>();
+
+            ex.And.CancellationToken.Should().Be(implicitlyCapturedActionCancellationToken);
 
             attemptsInvoked.Should().Be(1);
         }
@@ -3060,7 +3061,7 @@ namespace Polly.Specs.CircuitBreaker
 
             Func<AsyncCircuitBreakerPolicy, Task> action = async x => result = await x.RaiseExceptionAndOrCancellationAsync<DivideByZeroException, bool>(scenario, cancellationTokenSource, onExecute, true);
             breaker.Awaiting(action)
-                .Should().NotThrow();
+                .Should().NotThrowAsync();
 
             result.Should().BeTrue();
 
@@ -3068,7 +3069,7 @@ namespace Polly.Specs.CircuitBreaker
         }
 
         [Fact]
-        public void Should_honour_and_report_cancellation_during_func_execution()
+        public async Task Should_honour_and_report_cancellation_during_func_execution()
         {
             var durationOfBreak = TimeSpan.FromMinutes(1);
             var breaker = Policy
@@ -3091,8 +3092,9 @@ namespace Polly.Specs.CircuitBreaker
             };
 
             Func<AsyncCircuitBreakerPolicy, Task> action = async x => result = await x.RaiseExceptionAndOrCancellationAsync<DivideByZeroException, bool>(scenario, cancellationTokenSource, onExecute, true);
-            breaker.Awaiting(action)
-                .Should().Throw<OperationCanceledException>().And.CancellationToken.Should().Be(cancellationToken);
+            var ex  = await breaker.Awaiting(action)
+                .Should().ThrowAsync<OperationCanceledException>();
+            ex.And.CancellationToken.Should().Be(cancellationToken);
 
             result.Should().Be(null);
 

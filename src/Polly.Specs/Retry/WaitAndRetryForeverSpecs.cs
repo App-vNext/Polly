@@ -201,7 +201,7 @@ namespace Polly.Specs.Retry
         [Fact]
         public void Should_call_onretry_on_each_retry_with_the_current_exception()
         {
-            var expectedExceptions = new object[] { "Exception #1", "Exception #2", "Exception #3" };
+            var expectedExceptions = new string[] { "Exception #1", "Exception #2", "Exception #3" };
             var retryExceptions = new List<Exception>();
             Func<int, TimeSpan> provider = _ => TimeSpan.Zero;
 

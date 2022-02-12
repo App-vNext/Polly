@@ -77,7 +77,7 @@ namespace Polly.Specs.Retry
                 .RetryForeverAsync();
 
             policy.Awaiting(x => x.RaiseExceptionAsync<NullReferenceException>())
-                  .Should().Throw<NullReferenceException>();
+                  .Should().ThrowAsync<NullReferenceException>();
         }
 
         [Fact]
@@ -134,7 +134,7 @@ namespace Polly.Specs.Retry
                 .RetryForeverAsync();
 
             policy.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                  .Should().NotThrow();
+                  .Should().NotThrowAsync();
         }
 
         [Fact]
@@ -158,13 +158,13 @@ namespace Polly.Specs.Retry
                 .RetryForeverAsync();
 
             policy.Awaiting(x => x.RaiseExceptionAsync<ArgumentException>())
-                  .Should().NotThrow();
+                  .Should().NotThrowAsync();
         }
 
         [Fact]
         public void Should_call_onretry_on_each_retry_with_the_current_exception()
         {
-            var expectedExceptions = new object[] {"Exception #1", "Exception #2", "Exception #3"};
+            var expectedExceptions = new string[] {"Exception #1", "Exception #2", "Exception #3"};
             var retryExceptions = new List<Exception>();
 
             var policy = Policy
