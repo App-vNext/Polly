@@ -53,7 +53,7 @@ $TOOLS_DIR = Join-Path $PSScriptRoot "tools"
 $NUGET_EXE = Join-Path $TOOLS_DIR "nuget.exe"
 $CAKE_EXE = "dotnet dotnet-cake"
 $PACKAGES_CONFIG = Join-Path $TOOLS_DIR "packages.config"
-$DOTNET = "dotnet.exe"
+$DOTNET = "dotnet.exe tool install Cake.Tool "
 
 # Should we use mono?
 $UseMono = "";
@@ -112,7 +112,7 @@ if(-Not $SkipToolPackageRestore.IsPresent)
     # Install just Cake if missing config
     else
     {
-        $NuGetOutput = Invoke-Expression "&`"$DOTNET`" tool install Cake.Tool --version 2.0.0"
+        $NuGetOutput = Invoke-Expression "&`"$DOTNET`" --version 2.0.0"
         Write-Verbose ($NuGetOutput | Out-String)
     }
     Pop-Location
