@@ -282,7 +282,10 @@ namespace Polly.Specs.Registry
                 {key, policy}
             };
 
-            testRegistry.Should().Equals(new KeyValuePair<string, IsPolicy>(key, policy));
+            testRegistry.Should().Equal(new Dictionary<string, IsPolicy>
+            {
+                {key, policy}
+            });
         }
         #endregion
     }

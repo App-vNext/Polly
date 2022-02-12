@@ -418,13 +418,13 @@ namespace Polly.Specs.Timeout
         }
 
         [Fact]
-        public void Should_not_mask_user_exception_if_user_exception_overlaps_with_timeout()
+        public async Task Should_not_mask_user_exception_if_user_exception_overlaps_with_timeout()
         {
             var userException = new Exception();
             var shimTimeSpan = TimeSpan.FromSeconds(0.2);
             var policy = Policy.TimeoutAsync(shimTimeSpan, TimeoutStrategy.Optimistic);
 
-            var thrown = policy.Awaiting(p => p.ExecuteAsync(async _ =>
+            var thrown = await policy.Awaiting(p => p.ExecuteAsync(async _ =>
                 {
                     try
                     {
@@ -445,10 +445,10 @@ namespace Polly.Specs.Timeout
                 .Should()
                 .ThrowAsync<Exception>();
 
-            thrown.Should().NotBeOfType<OperationCanceledException>();
-            thrown.Should().NotBeOfType<TimeoutRejectedException>();
-            thrown.Should().NotBeOfType<InvalidOperationException>();
-            thrown.Should().BeSameAs(userException);
+            thrown.NotBeOfType<OperationCanceledException>();
+            thrown.NotBeOfType<TimeoutRejectedException>();
+            thrown.NotBeOfType<InvalidOperationException>();
+            thrown.Which.Should().BeSameAs(userException);
         }
 
         #endregion

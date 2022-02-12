@@ -1,12 +1,12 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFrameworks>netstandard1.1;netstandard2.0;net461;net472</TargetFrameworks>
-    <Version>7.2.4</Version>
+    <Version>7.2.4-upgrade-fluentas0001</Version>
     <AssemblyVersion>7.0.0.0</AssemblyVersion>
     <FileVersion>7.2.4.0</FileVersion>
     <InformationalVersion>7.2.4.0</InformationalVersion>
-    <PackageVersion>7.2.4</PackageVersion>
+    <PackageVersion>7.2.4-upgrade-fluentas0001</PackageVersion>
     <Company>App vNext</Company>
     <Copyright>Copyright (c) $([System.DateTime]::Now.ToString(yyyy)), App vNext</Copyright>
     <Description>Polly is a library that allows developers to express resilience and transient fault handling policies such as Retry, Circuit Breaker, Timeout, Bulkhead Isolation, and Fallback in a fluent and thread-safe manner.</Description>
@@ -16,7 +16,7 @@
     <Authors>Michael Wolfenden, App vNext</Authors>
     <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
     <EmbedUntrackedSources>true</EmbedUntrackedSources> <!-- EmbedUntrackedSources for deterministic build -->
-    <ContinuousIntegrationBuild>false</ContinuousIntegrationBuild>
+    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
   </PropertyGroup>
   <PropertyGroup Label="SourceLink">
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
