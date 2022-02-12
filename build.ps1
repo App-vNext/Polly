@@ -125,5 +125,5 @@ if(-Not $SkipToolPackageRestore.IsPresent)
 
 # Start Cake
 Write-Host "Running build script..."
-Invoke-Expression "$CAKE_EXE `"$Script`" --target=`"$Target`" --IGNORE_NORMALISATION_GIT_HEAD_MOVE=`"1`" --configuration=`"$Configuration`" --verbosity=`"$Verbosity`" $UseMono $UseDryRun $UseExperimental"
+Invoke-Expression "$CAKE_EXE `"$Script`" --target=`"$Target`" --configuration=`"$Configuration`" --verbosity=`"$Verbosity`" $UseMono $UseDryRun $UseExperimental"
 exit $LASTEXITCODE

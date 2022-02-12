@@ -118,14 +118,12 @@ Task("__UpdateAssemblyVersionInformation")
     try {
         IEnumerable<string> outputLines;
         StartProcess(gitVersionPath, gitVersionSettings, out outputLines);
-        Information(outputLines);
 
         var output = string.Join("\n", outputLines);
         gitVersionOutput = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, object>>(output);
     }
     catch(Exception ex)
     {
-        Information(ex);
         Information("Error reading git version information. Build may be running outside of a git repo. Falling back to version specified in " + gitVersionConfigFilePath);
 
         string gitVersionYamlString = System.IO.File.ReadAllText(gitVersionConfigFilePath);
