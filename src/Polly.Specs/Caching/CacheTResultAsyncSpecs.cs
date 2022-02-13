@@ -459,8 +459,8 @@ namespace Polly.Specs.Caching
 
             tokenSource.Cancel();
 
-            cache.Awaiting(policy => policy.ExecuteAsync(func, new Context(operationKey), tokenSource.Token))
-                .Should().Throw<OperationCanceledException>();
+            await cache.Awaiting(policy => policy.ExecuteAsync(func, new Context(operationKey), tokenSource.Token))
+                .Should().ThrowAsync<OperationCanceledException>();
             delegateInvocations.Should().Be(1);
         }
 
@@ -483,8 +483,8 @@ namespace Polly.Specs.Caching
                 return valueToReturn;
             };
 
-            cache.Awaiting(policy => policy.ExecuteAsync(func, new Context(operationKey), tokenSource.Token))
-                .Should().Throw<OperationCanceledException>();
+            await cache.Awaiting(policy => policy.ExecuteAsync(func, new Context(operationKey), tokenSource.Token))
+                .Should().ThrowAsync<OperationCanceledException>();
 
             (bool cacheHit, object fromCache) = await stubCacheProvider.TryGetAsync(operationKey, CancellationToken.None, false);
             cacheHit.Should().BeFalse();

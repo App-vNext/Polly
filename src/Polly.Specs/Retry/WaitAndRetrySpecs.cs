@@ -210,14 +210,14 @@ namespace Polly.Specs.Retry
         }
 
         [Fact]
-        public void Should_throw_when_exception_thrown_is_not_the_specified_exception_type_async()
+        public async Task Should_throw_when_exception_thrown_is_not_the_specified_exception_type_async()
         {
             var policy = Policy
                 .Handle<DivideByZeroException>()
                 .WaitAndRetryAsync(Enumerable.Empty<TimeSpan>());
 
-            policy.Awaiting(x => x.RaiseExceptionAsync<NullReferenceException>())
-                  .Should().Throw<NullReferenceException>();
+            await policy.Awaiting(x => x.RaiseExceptionAsync<NullReferenceException>())
+                  .Should().ThrowAsync<NullReferenceException>();
         }
 
         [Fact]
@@ -233,15 +233,15 @@ namespace Polly.Specs.Retry
         }
 
         [Fact]
-        public void Should_throw_when_exception_thrown_is_not_one_of_the_specified_exception_types_async()
+        public async Task Should_throw_when_exception_thrown_is_not_one_of_the_specified_exception_types_async()
         {
             var policy = Policy
                 .Handle<DivideByZeroException>()
                 .Or<ArgumentException>()
                 .WaitAndRetryAsync(Enumerable.Empty<TimeSpan>());
 
-            policy.Awaiting(x => x.RaiseExceptionAsync<NullReferenceException>())
-                  .Should().Throw<NullReferenceException>();
+            await policy.Awaiting(x => x.RaiseExceptionAsync<NullReferenceException>())
+                  .Should().ThrowAsync<NullReferenceException>();
         }
 
         [Fact]
@@ -282,7 +282,7 @@ namespace Polly.Specs.Retry
         }
 
         [Fact]
-        public void Should_not_throw_when_specified_exception_predicate_is_satisfied_async()
+        public async Task Should_not_throw_when_specified_exception_predicate_is_satisfied_async()
         {
             var policy = Policy
                 .Handle<DivideByZeroException>(_ => true)
@@ -291,8 +291,8 @@ namespace Polly.Specs.Retry
                    1.Seconds()
                 });
 
-            policy.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-                  .Should().NotThrow();
+            await policy.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+                  .Should().NotThrowAsync();
         }
 
         [Fact]
@@ -311,7 +311,7 @@ namespace Polly.Specs.Retry
         }
 
         [Fact]
-        public void Should_not_throw_when_one_of_the_specified_exception_predicates_are_satisfied_async()
+        public async Task Should_not_throw_when_one_of_the_specified_exception_predicates_are_satisfied_async()
         {
             var policy = Policy
                 .Handle<DivideByZeroException>(_ => true)
@@ -321,8 +321,8 @@ namespace Polly.Specs.Retry
                    1.Seconds()
                 });
 
-            policy.Awaiting(x => x.RaiseExceptionAsync<ArgumentException>())
-                  .Should().NotThrow();
+            await policy.Awaiting(x => x.RaiseExceptionAsync<ArgumentException>())
+                  .Should().NotThrowAsync();
         }
 
         [Fact]
@@ -440,7 +440,7 @@ namespace Polly.Specs.Retry
         [Fact]
         public void Should_call_onretry_on_each_retry_with_the_current_exception()
         {
-            var expectedExceptions = new object[] { "Exception #1", "Exception #2", "Exception #3" };
+            var expectedExceptions = new string[] { "Exception #1", "Exception #2", "Exception #3" };
             var retryExceptions = new List<Exception>();
 
             var policy = Policy
@@ -1097,7 +1097,7 @@ namespace Polly.Specs.Retry
             attemptsInvoked.Should().Be(1);
 
             watch.Elapsed.Should().BeLessThan(retryDelay);
-            watch.Elapsed.Should().BeCloseTo(shimTimeSpan, precision: (int)(shimTimeSpan.TotalMilliseconds) / 2);  // Consider increasing shimTimeSpan, or loosening precision, if test fails transiently in different environments.
+            watch.Elapsed.Should().BeCloseTo(shimTimeSpan, precision: TimeSpan.FromMilliseconds((int)shimTimeSpan.TotalMilliseconds / 2));  // Consider increasing shimTimeSpan, or loosening precision, if test fails transiently in different environments.
         }
 
         [Fact]

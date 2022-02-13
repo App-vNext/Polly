@@ -482,7 +482,7 @@ namespace Polly.Specs.Retry
         }
 
         [Fact]
-        public void Should_not_execute_action_when_cancellationToken_cancelled_before_execute()
+        public async Task Should_not_execute_action_when_cancellationToken_cancelled_before_execute()
         {
             var policy = Policy
                 .HandleResult(ResultPrimitive.Fault)
@@ -501,19 +501,19 @@ namespace Polly.Specs.Retry
 
             cancellationTokenSource.Cancel();
 
-            policy.Awaiting(x => x.RaiseResultSequenceAndOrCancellationAsync(scenario, cancellationTokenSource, onExecute,
+            var ex = await policy.Awaiting(x => x.RaiseResultSequenceAndOrCancellationAsync(scenario, cancellationTokenSource, onExecute,
                    ResultPrimitive.Fault,
                    ResultPrimitive.Fault,
                    ResultPrimitive.Fault,
                    ResultPrimitive.Good))
-                .Should().Throw<OperationCanceledException>()
-                .And.CancellationToken.Should().Be(cancellationToken);
+                .Should().ThrowAsync<OperationCanceledException>();
+            ex.And.CancellationToken.Should().Be(cancellationToken);
 
             attemptsInvoked.Should().Be(0);
         }
 
         [Fact]
-        public void Should_report_cancellation_during_otherwise_non_faulting_action_execution_and_cancel_further_retries_when_user_delegate_observes_cancellationToken()
+        public async Task Should_report_cancellation_during_otherwise_non_faulting_action_execution_and_cancel_further_retries_when_user_delegate_observes_cancellationToken()
         {
             var policy = Policy
                 .HandleResult(ResultPrimitive.Fault)
@@ -531,19 +531,19 @@ namespace Polly.Specs.Retry
                 ActionObservesCancellation = true
             };
 
-            policy.Awaiting(x => x.RaiseResultSequenceAndOrCancellationAsync(scenario, cancellationTokenSource, onExecute,
+            var ex = await policy.Awaiting(x => x.RaiseResultSequenceAndOrCancellationAsync(scenario, cancellationTokenSource, onExecute,
                    ResultPrimitive.Good,
                    ResultPrimitive.Good,
                    ResultPrimitive.Good,
                    ResultPrimitive.Good))
-                .Should().Throw<OperationCanceledException>()
-                .And.CancellationToken.Should().Be(cancellationToken);
+                .Should().ThrowAsync<OperationCanceledException>();
+            ex.And.CancellationToken.Should().Be(cancellationToken);
 
             attemptsInvoked.Should().Be(1);
         }
 
         [Fact]
-        public void Should_report_cancellation_during_faulting_initial_action_execution_and_cancel_further_retries_when_user_delegate_observes_cancellationToken()
+        public async Task Should_report_cancellation_during_faulting_initial_action_execution_and_cancel_further_retries_when_user_delegate_observes_cancellationToken()
         {
             var policy = Policy
                .HandleResult(ResultPrimitive.Fault)
@@ -561,19 +561,19 @@ namespace Polly.Specs.Retry
                 ActionObservesCancellation = true
             };
 
-            policy.Awaiting(x => x.RaiseResultSequenceAndOrCancellationAsync(scenario, cancellationTokenSource, onExecute,
+            var ex = await policy.Awaiting(x => x.RaiseResultSequenceAndOrCancellationAsync(scenario, cancellationTokenSource, onExecute,
                    ResultPrimitive.Fault,
                    ResultPrimitive.Fault,
                    ResultPrimitive.Fault,
                    ResultPrimitive.Good))
-                .Should().Throw<OperationCanceledException>()
-                .And.CancellationToken.Should().Be(cancellationToken);
+                .Should().ThrowAsync<OperationCanceledException>();
+            ex.And.CancellationToken.Should().Be(cancellationToken);
 
             attemptsInvoked.Should().Be(1);
         }
 
         [Fact]
-        public void Should_report_cancellation_during_faulting_initial_action_execution_and_cancel_further_retries_when_user_delegate_does_not_observe_cancellationToken()
+        public async Task Should_report_cancellation_during_faulting_initial_action_execution_and_cancel_further_retries_when_user_delegate_does_not_observe_cancellationToken()
         {
             var policy = Policy
               .HandleResult(ResultPrimitive.Fault)
@@ -591,19 +591,19 @@ namespace Polly.Specs.Retry
                 ActionObservesCancellation = false
             };
 
-            policy.Awaiting(x => x.RaiseResultSequenceAndOrCancellationAsync(scenario, cancellationTokenSource, onExecute,
+            var ex = await policy.Awaiting(x => x.RaiseResultSequenceAndOrCancellationAsync(scenario, cancellationTokenSource, onExecute,
                    ResultPrimitive.Fault,
                    ResultPrimitive.Fault,
                    ResultPrimitive.Fault,
                    ResultPrimitive.Good))
-                .Should().Throw<OperationCanceledException>()
-                .And.CancellationToken.Should().Be(cancellationToken);
+                .Should().ThrowAsync<OperationCanceledException>();
+            ex.And.CancellationToken.Should().Be(cancellationToken);
 
             attemptsInvoked.Should().Be(1);
         }
 
         [Fact]
-        public void Should_report_cancellation_during_faulting_retried_action_execution_and_cancel_further_retries_when_user_delegate_observes_cancellationToken()
+        public async Task Should_report_cancellation_during_faulting_retried_action_execution_and_cancel_further_retries_when_user_delegate_observes_cancellationToken()
         {
             var policy = Policy
               .HandleResult(ResultPrimitive.Fault)
@@ -621,19 +621,19 @@ namespace Polly.Specs.Retry
                 ActionObservesCancellation = true
             };
 
-            policy.Awaiting(x => x.RaiseResultSequenceAndOrCancellationAsync(scenario, cancellationTokenSource, onExecute,
+            var ex = await policy.Awaiting(x => x.RaiseResultSequenceAndOrCancellationAsync(scenario, cancellationTokenSource, onExecute,
                    ResultPrimitive.Fault,
                    ResultPrimitive.Fault,
                    ResultPrimitive.Fault,
                    ResultPrimitive.Good))
-                .Should().Throw<OperationCanceledException>()
-                .And.CancellationToken.Should().Be(cancellationToken);
+                .Should().ThrowAsync<OperationCanceledException>();
+            ex.And.CancellationToken.Should().Be(cancellationToken);
 
             attemptsInvoked.Should().Be(2);
         }
 
         [Fact]
-        public void Should_report_cancellation_during_faulting_retried_action_execution_and_cancel_further_retries_when_user_delegate_does_not_observe_cancellationToken()
+        public async Task Should_report_cancellation_during_faulting_retried_action_execution_and_cancel_further_retries_when_user_delegate_does_not_observe_cancellationToken()
         {
             var policy = Policy
               .HandleResult(ResultPrimitive.Fault)
@@ -651,19 +651,19 @@ namespace Polly.Specs.Retry
                 ActionObservesCancellation = false
             };
 
-            policy.Awaiting(x => x.RaiseResultSequenceAndOrCancellationAsync(scenario, cancellationTokenSource, onExecute,
+            var ex = await policy.Awaiting(x => x.RaiseResultSequenceAndOrCancellationAsync(scenario, cancellationTokenSource, onExecute,
                    ResultPrimitive.Fault,
                    ResultPrimitive.Fault,
                    ResultPrimitive.Fault,
                    ResultPrimitive.Good))
-                .Should().Throw<OperationCanceledException>()
-                .And.CancellationToken.Should().Be(cancellationToken);
+                .Should().ThrowAsync<OperationCanceledException>();
+            ex.And.CancellationToken.Should().Be(cancellationToken);
 
             attemptsInvoked.Should().Be(2);
         }
 
         [Fact]
-        public void Should_report_cancellation_during_faulting_last_retry_execution_when_user_delegate_does_observe_cancellationToken()
+        public async Task Should_report_cancellation_during_faulting_last_retry_execution_when_user_delegate_does_observe_cancellationToken()
         {
             var policy = Policy
                        .HandleResult(ResultPrimitive.Fault)
@@ -681,14 +681,14 @@ namespace Polly.Specs.Retry
                 ActionObservesCancellation = true
             };
 
-            policy.Awaiting(x => x.RaiseResultSequenceAndOrCancellationAsync(scenario, cancellationTokenSource, onExecute,
+            var ex = await policy.Awaiting(x => x.RaiseResultSequenceAndOrCancellationAsync(scenario, cancellationTokenSource, onExecute,
                    ResultPrimitive.Fault,
                    ResultPrimitive.Fault,
                    ResultPrimitive.Fault,
                    ResultPrimitive.Fault,
                    ResultPrimitive.Good))
-                .Should().Throw<OperationCanceledException>()
-                .And.CancellationToken.Should().Be(cancellationToken);
+                .Should().ThrowAsync<OperationCanceledException>();
+            ex.And.CancellationToken.Should().Be(cancellationToken);
 
             attemptsInvoked.Should().Be(1 + 3);
         }
@@ -724,7 +724,7 @@ namespace Polly.Specs.Retry
         }
 
         [Fact]
-        public void Should_report_cancellation_after_faulting_action_execution_and_cancel_further_retries_if_onRetry_invokes_cancellation()
+        public async Task Should_report_cancellation_after_faulting_action_execution_and_cancel_further_retries_if_onRetry_invokes_cancellation()
         {
             CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
             CancellationToken cancellationToken = cancellationTokenSource.Token;
@@ -745,13 +745,13 @@ namespace Polly.Specs.Retry
                 ActionObservesCancellation = false
             };
 
-            policy.Awaiting(x => x.RaiseResultSequenceAndOrCancellationAsync(scenario, cancellationTokenSource, onExecute,
+            var ex = await policy.Awaiting(x => x.RaiseResultSequenceAndOrCancellationAsync(scenario, cancellationTokenSource, onExecute,
                    ResultPrimitive.Fault,
                    ResultPrimitive.Fault,
                    ResultPrimitive.Fault,
                    ResultPrimitive.Good))
-                .Should().Throw<OperationCanceledException>()
-                .And.CancellationToken.Should().Be(cancellationToken);
+                .Should().ThrowAsync<OperationCanceledException>();
+            ex.And.CancellationToken.Should().Be(cancellationToken);
 
             attemptsInvoked.Should().Be(1);
         }

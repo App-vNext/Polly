@@ -96,38 +96,38 @@ namespace Polly.Specs
 
 
         [Fact]
-        public void Executing_the_policy_function_should_throw_when_context_data_is_null()
+        public async Task Executing_the_policy_function_should_throw_when_context_data_is_null()
         {
             var policy = Policy
                 .HandleResult(ResultPrimitive.Fault)
                 .RetryAsync((_, _, _) => { });
 
-            policy.Awaiting(p => p.ExecuteAsync(_ => Task.FromResult(ResultPrimitive.Good), (IDictionary<string, object>)null))
-                  .Should().Throw<ArgumentNullException>();
+            await policy.Awaiting(p => p.ExecuteAsync(_ => Task.FromResult(ResultPrimitive.Good), (IDictionary<string, object>)null))
+                  .Should().ThrowAsync<ArgumentNullException>();
         }
 
         [Fact]
-        public void Executing_the_policy_function_should_throw_when_context_is_null()
+        public async Task Executing_the_policy_function_should_throw_when_context_is_null()
         {
             var policy = Policy
                 .HandleResult(ResultPrimitive.Fault)
                 .RetryAsync((_, _, _) => { });
 
-            policy.Awaiting(p => p.ExecuteAsync(_ => Task.FromResult(ResultPrimitive.Good), (Context)null))
-                  .Should().Throw<ArgumentNullException>().And
-                  .ParamName.Should().Be("context");
+            var ex = await policy.Awaiting(p => p.ExecuteAsync(_ => Task.FromResult(ResultPrimitive.Good), (Context)null))
+                  .Should().ThrowAsync<ArgumentNullException>();
+            ex.And.ParamName.Should().Be("context");
         }
 
         [Fact]
-        public void Execute_and_capturing_the_policy_function_should_throw_when_context_data_is_null()
+        public async Task Execute_and_capturing_the_policy_function_should_throw_when_context_data_is_null()
         {
             var policy = Policy
                 .HandleResult(ResultPrimitive.Fault)
                 .RetryAsync((_, _, _) => { });
 
-            policy.Awaiting(p => p.ExecuteAndCaptureAsync(_ => Task.FromResult(ResultPrimitive.Good), (Context)null))
-                  .Should().Throw<ArgumentNullException>().And
-                  .ParamName.Should().Be("context");
+            var ex = await policy.Awaiting(p => p.ExecuteAndCaptureAsync(_ => Task.FromResult(ResultPrimitive.Good), (Context)null))
+                  .Should().ThrowAsync<ArgumentNullException>();
+            ex.And.ParamName.Should().Be("context");
         }
 
         [Fact]
@@ -145,15 +145,15 @@ namespace Polly.Specs
         }
 
         [Fact]
-        public void Execute_and_capturing_the_policy_function_should_throw_when_context_is_null()
+        public async Task Execute_and_capturing_the_policy_function_should_throw_when_context_is_null()
         {
             var policy = Policy
                 .HandleResult(ResultPrimitive.Fault)
                 .RetryAsync((_, _, _) => { });
 
-            policy.Awaiting(p => p.ExecuteAndCaptureAsync(_ => Task.FromResult(ResultPrimitive.Good), (Context)null))
-                  .Should().Throw<ArgumentNullException>().And
-                  .ParamName.Should().Be("context");
+            var ex = await policy.Awaiting(p => p.ExecuteAndCaptureAsync(_ => Task.FromResult(ResultPrimitive.Good), (Context)null))
+                  .Should().ThrowAsync<ArgumentNullException>();
+            ex.And.ParamName.Should().Be("context");
         }
 
         [Fact]
