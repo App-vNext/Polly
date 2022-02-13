@@ -9,8 +9,8 @@ var configuration = Argument<string>("configuration", "Release");
 // EXTERNAL NUGET TOOLS
 //////////////////////////////////////////////////////////////////////
 
-#Tool "xunit.runner.console"
-#Tool "GitVersion.CommandLine"
+#Tool "xunit.runner.console&version=2.4.1"
+#Tool "GitVersion.CommandLine&version=5.8.1"
 
 //////////////////////////////////////////////////////////////////////
 // EXTERNAL NUGET LIBRARIES
@@ -95,7 +95,7 @@ Task("__Clean")
     foreach(var path in solutionPaths)
     {
         Information("Cleaning {0}", path);
-        DotNetCoreClean(path.ToString());
+        DotNetClean(path.ToString());
     }
 });
 
@@ -105,7 +105,7 @@ Task("__RestoreNugetPackages")
     foreach(var solution in solutions)
     {
         Information("Restoring NuGet Packages for {0}", solution);
-        DotNetCoreRestore(solution.ToString());
+        DotNetRestore(solution.ToString());
     }
 });
 
@@ -202,14 +202,14 @@ Task("__BuildSolutions")
     {
         Information("Building {0}", solution);
 
-        var dotNetCoreBuildSettings = new DotNetCoreBuildSettings {
+        var dotNetCoreBuildSettings = new DotNetBuildSettings {
          Configuration = configuration,
          Verbosity = DotNetCoreVerbosity.Minimal,
          NoRestore = true,
-         MSBuildSettings = new DotNetCoreMSBuildSettings { TreatAllWarningsAs = MSBuildTreatAllWarningsAs.Error }
+         MSBuildSettings = new DotNetMSBuildSettings { TreatAllWarningsAs = MSBuildTreatAllWarningsAs.Error }
         };
 
-        DotNetCoreBuild(solution.ToString(), dotNetCoreBuildSettings);
+        DotNetBuild(solution.ToString(), dotNetCoreBuildSettings);
     }
 });
 
@@ -217,7 +217,7 @@ Task("__RunTests")
     .Does(() =>
 {
     foreach(var specsProj in GetFiles("./src/**/*.Specs.csproj")) {
-        DotNetCoreTest(specsProj.FullPath, new DotNetCoreTestSettings {
+        DotNetTest(specsProj.FullPath, new DotNetTestSettings {
             Configuration = configuration,
             NoBuild = true
         });
@@ -231,13 +231,13 @@ Task("__CreateSignedNugetPackage")
 
     Information("Building {0}.{1}.nupkg", packageName, nugetVersion);
 
-    var dotNetCorePackSettings = new DotNetCorePackSettings {
+    var dotNetCorePackSettings = new DotNetPackSettings {
         Configuration = configuration,
         NoBuild = true,
         OutputDirectory = nupkgDestDir
     };
 
-    DotNetCorePack($@"{srcDir}\{projectName}.sln", dotNetCorePackSettings);
+    DotNetPack($@"{srcDir}\{projectName}.sln", dotNetCorePackSettings);
 });
 
 //////////////////////////////////////////////////////////////////////
