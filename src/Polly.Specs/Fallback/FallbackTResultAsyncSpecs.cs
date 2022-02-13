@@ -460,7 +460,7 @@ namespace Polly.Specs.Fallback
         }
 
         [Fact]
-        public void Should_call_fallbackAction_with_the_passed_context_when_execute_and_capture()
+        public async Task Should_call_fallbackAction_with_the_passed_context_when_execute_and_capture()
         {
             IDictionary<string, object> contextData = null;
 
@@ -472,9 +472,9 @@ namespace Polly.Specs.Fallback
                 .HandleResult(ResultPrimitive.Fault)
                 .FallbackAsync(fallbackActionAsync, onFallbackAsync);
 
-            fallbackPolicy.Awaiting(p => p.ExecuteAndCaptureAsync(_ => Task.FromResult(ResultPrimitive.Fault),
+            await fallbackPolicy.Awaiting(p => p.ExecuteAndCaptureAsync(_ => Task.FromResult(ResultPrimitive.Fault),
                     new { key1 = "value1", key2 = "value2" }.AsDictionary()))
-                .Should().NotThrow();
+                .Should().NotThrowAsync();
 
             contextData.Should()
                 .ContainKeys("key1", "key2").And
@@ -636,7 +636,7 @@ namespace Polly.Specs.Fallback
         }
 
         [Fact]
-        public void Should_not_execute_action_when_cancellationToken_cancelled_before_execute()
+        public async Task Should_not_execute_action_when_cancellationToken_cancelled_before_execute()
         {
             bool fallbackActionExecuted = false;
             Func<CancellationToken, Task<ResultPrimitive>> fallbackAction = _ => { fallbackActionExecuted = true; return Task.FromResult(ResultPrimitive.Substitute); };
@@ -659,9 +659,9 @@ namespace Polly.Specs.Fallback
 
             cancellationTokenSource.Cancel();
 
-            policy.Awaiting(x => x.RaiseResultSequenceAndOrCancellationAsync(scenario, cancellationTokenSource, onExecute, ResultPrimitive.Fault))
-                .Should().Throw<OperationCanceledException>()
-                .And.CancellationToken.Should().Be(cancellationToken);
+            var ex = await policy.Awaiting(x => x.RaiseResultSequenceAndOrCancellationAsync(scenario, cancellationTokenSource, onExecute, ResultPrimitive.Fault))
+                .Should().ThrowAsync<OperationCanceledException>();
+            ex.And.CancellationToken.Should().Be(cancellationToken);
             attemptsInvoked.Should().Be(0);
 
             fallbackActionExecuted.Should().BeFalse();
@@ -669,7 +669,7 @@ namespace Polly.Specs.Fallback
         }
 
         [Fact]
-        public void Should_report_cancellation_and_not_execute_fallback_during_otherwise_non_faulting_action_execution_when_user_delegate_observes_cancellationToken_and_fallback_does_not_handle_cancellations()
+        public async Task Should_report_cancellation_and_not_execute_fallback_during_otherwise_non_faulting_action_execution_when_user_delegate_observes_cancellationToken_and_fallback_does_not_handle_cancellations()
         {
             bool fallbackActionExecuted = false;
             Func<CancellationToken, Task<ResultPrimitive>> fallbackAction = _ => { fallbackActionExecuted = true; return Task.FromResult(ResultPrimitive.Substitute); };
@@ -691,9 +691,9 @@ namespace Polly.Specs.Fallback
                 ActionObservesCancellation = true
             };
 
-            policy.Awaiting(x => x.RaiseResultSequenceAndOrCancellationAsync(scenario, cancellationTokenSource, onExecute, ResultPrimitive.Good))
-                .Should().Throw<OperationCanceledException>()
-                .And.CancellationToken.Should().Be(cancellationToken);
+            var ex = await policy.Awaiting(x => x.RaiseResultSequenceAndOrCancellationAsync(scenario, cancellationTokenSource, onExecute, ResultPrimitive.Good))
+                .Should().ThrowAsync<OperationCanceledException>();
+            ex.And.CancellationToken.Should().Be(cancellationToken);
             attemptsInvoked.Should().Be(1);
 
             fallbackActionExecuted.Should().BeFalse();

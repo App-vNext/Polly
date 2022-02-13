@@ -251,7 +251,7 @@ namespace Polly.Specs.Timeout
                 .Should().Throw<TimeoutRejectedException>();
             watch.Stop();
 
-            watch.Elapsed.Should().BeCloseTo(timeout, ((int)tolerance.TotalMilliseconds));
+            watch.Elapsed.Should().BeCloseTo(timeout, TimeSpan.FromMilliseconds(tolerance.TotalMilliseconds));
         }
 
         [Fact]
@@ -402,7 +402,7 @@ namespace Polly.Specs.Timeout
                 .Should().Throw<TimeoutRejectedException>();
             watch.Stop();
 
-            watch.Elapsed.Should().BeCloseTo(timeout, ((int)tolerance.TotalMilliseconds));
+            watch.Elapsed.Should().BeCloseTo(timeout, TimeSpan.FromMilliseconds(tolerance.TotalMilliseconds));
         }
 
         [Fact]
