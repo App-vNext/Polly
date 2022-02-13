@@ -13,7 +13,6 @@ TestResults
 *.user
 *.sln.docstates
 .vs/
-.vscode/
 .idea/
 .ionide/
 
