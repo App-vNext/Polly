@@ -42,6 +42,9 @@ Param(
     [switch]$Verbose
 )
 
+$ErrorActionPreference = "Stop"
+$ProgressPreference = "SilentlyContinue"
+
 Write-Host "Preparing to run build script..."
 
 # Should we show verbose messages?
