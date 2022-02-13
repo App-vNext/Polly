@@ -12,5 +12,7 @@ artifacts:
   - path: artifacts\nuget-package\*.snupkg
 
 environment:
-  # Skip dotnet package caching on build servers
-  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+  DOTNET_GENERATE_ASPNET_CERTIFICATE: false
+  DOTNET_NOLOGO: true
+  NUGET_XMLDOC_MODE: skip
