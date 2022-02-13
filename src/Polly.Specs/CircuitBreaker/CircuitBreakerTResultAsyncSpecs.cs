@@ -477,9 +477,9 @@ namespace Polly.Specs.CircuitBreaker
 
                 bool firstExecutionActive = false;
                 // First execution in HalfOpen state: we should be able to verify state is HalfOpen as it executes.
-                Task firstExecution = Task.Factory.StartNew(() =>
+                Task firstExecution = Task.Factory.StartNew(async () =>
                 {
-                    breaker.Awaiting(x => x.ExecuteAsync(async () =>
+                    await breaker.Awaiting(x => x.ExecuteAsync(async () =>
                     {
                         firstDelegateExecutedInHalfOpenState = breaker.CircuitState == CircuitState.HalfOpen; // For readability of test results, we assert on this at test end rather than nested in Task and breaker here.
 
@@ -581,9 +581,9 @@ namespace Polly.Specs.CircuitBreaker
 
                 bool firstExecutionActive = false;
                 // First execution in HalfOpen state: we should be able to verify state is HalfOpen as it executes.
-                Task firstExecution = Task.Factory.StartNew(() =>
+                Task firstExecution = Task.Factory.StartNew(async () =>
                 {
-                    breaker.Awaiting(x => x.ExecuteAsync(async () =>
+                    await breaker.Awaiting(x => x.ExecuteAsync(async () =>
                     {
                         firstDelegateExecutedInHalfOpenState = breaker.CircuitState == CircuitState.HalfOpen; // For readability of test results, we assert on this at test end rather than nested in Task and breaker here.
 
@@ -656,7 +656,7 @@ namespace Polly.Specs.CircuitBreaker
         #region Isolate and reset tests
 
         [Fact]
-        public void Should_open_circuit_and_block_calls_if_manual_override_open()
+        public async Task Should_open_circuit_and_block_calls_if_manual_override_open()
         {
             var time = 1.January(2000);
             SystemClock.UtcNow = () => time;
@@ -674,7 +674,7 @@ namespace Polly.Specs.CircuitBreaker
 
             // circuit manually broken: execution should be blocked; even non-fault-returning executions should not reset circuit
             bool delegateExecutedWhenBroken = false;
-            breaker.Awaiting(b => b.ExecuteAsync(() => { delegateExecutedWhenBroken = true; return Task.FromResult(ResultPrimitive.Good); }))
+            await breaker.Awaiting(b => b.ExecuteAsync(() => { delegateExecutedWhenBroken = true; return Task.FromResult(ResultPrimitive.Good); }))
                 .Should().ThrowAsync<IsolatedCircuitException>();
             breaker.CircuitState.Should().Be(CircuitState.Isolated);
             breaker.LastException.Should().BeOfType<IsolatedCircuitException>();
@@ -683,7 +683,7 @@ namespace Polly.Specs.CircuitBreaker
         }
 
         [Fact]
-        public void Should_hold_circuit_open_despite_elapsed_time_if_manual_override_open()
+        public async Task Should_hold_circuit_open_despite_elapsed_time_if_manual_override_open()
         {
             var time = 1.January(2000);
             SystemClock.UtcNow = () => time;
@@ -702,13 +702,13 @@ namespace Polly.Specs.CircuitBreaker
             breaker.CircuitState.Should().Be(CircuitState.Isolated);
 
             bool delegateExecutedWhenBroken = false;
-            breaker.Awaiting(x => x.ExecuteAsync(() => { delegateExecutedWhenBroken = true; return Task.FromResult(ResultPrimitive.Good); }))
+            await breaker.Awaiting(x => x.ExecuteAsync(() => { delegateExecutedWhenBroken = true; return Task.FromResult(ResultPrimitive.Good); }))
                 .Should().ThrowAsync<IsolatedCircuitException>();
             delegateExecutedWhenBroken.Should().BeFalse();
         }
 
         [Fact]
-        public void Should_close_circuit_again_on_reset_after_manual_override()
+        public async Task Should_close_circuit_again_on_reset_after_manual_override()
         {
             var time = 1.January(2000);
             SystemClock.UtcNow = () => time;
@@ -722,12 +722,12 @@ namespace Polly.Specs.CircuitBreaker
 
             breaker.Isolate();
             breaker.CircuitState.Should().Be(CircuitState.Isolated);
-            breaker.Awaiting(x => x.ExecuteAsync(() => Task.FromResult(ResultPrimitive.Good)))
+            await breaker.Awaiting(x => x.ExecuteAsync(() => Task.FromResult(ResultPrimitive.Good)))
                 .Should().ThrowAsync<IsolatedCircuitException>();
 
             breaker.Reset();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
-            breaker.Awaiting(x => x.ExecuteAsync(() => Task.FromResult(ResultPrimitive.Good))).Should().NotThrowAsync();
+            await breaker.Awaiting(x => x.ExecuteAsync(() => Task.FromResult(ResultPrimitive.Good))).Should().NotThrowAsync();
         }
 
         [Fact]
@@ -959,7 +959,7 @@ namespace Polly.Specs.CircuitBreaker
         }
 
         [Fact]
-        public void Should_not_call_onreset_on_successive_successful_calls()
+        public async Task Should_not_call_onreset_on_successive_successful_calls()
         {
             Action<DelegateResult<ResultPrimitive>, TimeSpan> onBreak = (_, _) => { };
             bool onResetCalled = false;
@@ -971,11 +971,11 @@ namespace Polly.Specs.CircuitBreaker
 
             onResetCalled.Should().BeFalse();
 
-            breaker.Awaiting(x => x.ExecuteAsync(() => Task.FromResult(ResultPrimitive.Good))).Should().NotThrowAsync();
+            await breaker.Awaiting(x => x.ExecuteAsync(() => Task.FromResult(ResultPrimitive.Good))).Should().NotThrowAsync();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
             onResetCalled.Should().BeFalse();
 
-            breaker.Awaiting(x => x.ExecuteAsync(() => Task.FromResult(ResultPrimitive.Good))).Should().NotThrowAsync();
+            await breaker.Awaiting(x => x.ExecuteAsync(() => Task.FromResult(ResultPrimitive.Good))).Should().NotThrowAsync();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
             onResetCalled.Should().BeFalse();
         }
@@ -1069,7 +1069,7 @@ namespace Polly.Specs.CircuitBreaker
         }
 
         [Fact]
-        public void Should_call_onreset_when_manually_resetting_circuit()
+        public async Task Should_call_onreset_when_manually_resetting_circuit()
         {
             int onBreakCalled = 0;
             int onResetCalled = 0;
@@ -1090,7 +1090,7 @@ namespace Polly.Specs.CircuitBreaker
             onBreakCalled.Should().Be(1);
 
             breaker.CircuitState.Should().Be(CircuitState.Isolated);
-            breaker.Awaiting(x => x.ExecuteAsync(() => Task.FromResult(ResultPrimitive.Good)))
+            await breaker.Awaiting(x => x.ExecuteAsync(() => Task.FromResult(ResultPrimitive.Good)))
                 .Should().ThrowAsync<IsolatedCircuitException>();
 
             onResetCalled.Should().Be(0);
@@ -1098,7 +1098,7 @@ namespace Polly.Specs.CircuitBreaker
             onResetCalled.Should().Be(1);
 
             breaker.CircuitState.Should().Be(CircuitState.Closed);
-            breaker.Awaiting(x => x.ExecuteAsync(() => Task.FromResult(ResultPrimitive.Good)))
+            await breaker.Awaiting(x => x.ExecuteAsync(() => Task.FromResult(ResultPrimitive.Good)))
                 .Should().NotThrowAsync();
         }
 

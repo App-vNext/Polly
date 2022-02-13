@@ -26,14 +26,14 @@ namespace Polly.Specs.Custom
         }
 
         [Fact]
-        public void Active_policy_should_execute()
+        public async Task Active_policy_should_execute()
         {
             bool preExecuted = false;
             AsyncPreExecutePolicy policy = AsyncPreExecutePolicy.CreateAsync(() => { preExecuted = true; return Task.CompletedTask; });
 
             bool executed = false;
 
-            policy.Awaiting(x => x.ExecuteAsync(() => { executed = true; return Task.CompletedTask; }))
+            await policy.Awaiting(x => x.ExecuteAsync(() => { executed = true; return Task.CompletedTask; }))
                 .Should().NotThrowAsync();
 
             executed.Should().BeTrue();

@@ -210,13 +210,13 @@ namespace Polly.Specs.Retry
         }
 
         [Fact]
-        public void Should_throw_when_exception_thrown_is_not_the_specified_exception_type_async()
+        public async Task Should_throw_when_exception_thrown_is_not_the_specified_exception_type_async()
         {
             var policy = Policy
                 .Handle<DivideByZeroException>()
                 .WaitAndRetryAsync(Enumerable.Empty<TimeSpan>());
 
-            policy.Awaiting(x => x.RaiseExceptionAsync<NullReferenceException>())
+            await policy.Awaiting(x => x.RaiseExceptionAsync<NullReferenceException>())
                   .Should().ThrowAsync<NullReferenceException>();
         }
 
@@ -233,14 +233,14 @@ namespace Polly.Specs.Retry
         }
 
         [Fact]
-        public void Should_throw_when_exception_thrown_is_not_one_of_the_specified_exception_types_async()
+        public async Task Should_throw_when_exception_thrown_is_not_one_of_the_specified_exception_types_async()
         {
             var policy = Policy
                 .Handle<DivideByZeroException>()
                 .Or<ArgumentException>()
                 .WaitAndRetryAsync(Enumerable.Empty<TimeSpan>());
 
-            policy.Awaiting(x => x.RaiseExceptionAsync<NullReferenceException>())
+            await policy.Awaiting(x => x.RaiseExceptionAsync<NullReferenceException>())
                   .Should().ThrowAsync<NullReferenceException>();
         }
 
@@ -282,7 +282,7 @@ namespace Polly.Specs.Retry
         }
 
         [Fact]
-        public void Should_not_throw_when_specified_exception_predicate_is_satisfied_async()
+        public async Task Should_not_throw_when_specified_exception_predicate_is_satisfied_async()
         {
             var policy = Policy
                 .Handle<DivideByZeroException>(_ => true)
@@ -291,7 +291,7 @@ namespace Polly.Specs.Retry
                    1.Seconds()
                 });
 
-            policy.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+            await policy.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
                   .Should().NotThrowAsync();
         }
 
@@ -311,7 +311,7 @@ namespace Polly.Specs.Retry
         }
 
         [Fact]
-        public void Should_not_throw_when_one_of_the_specified_exception_predicates_are_satisfied_async()
+        public async Task Should_not_throw_when_one_of_the_specified_exception_predicates_are_satisfied_async()
         {
             var policy = Policy
                 .Handle<DivideByZeroException>(_ => true)
@@ -321,7 +321,7 @@ namespace Polly.Specs.Retry
                    1.Seconds()
                 });
 
-            policy.Awaiting(x => x.RaiseExceptionAsync<ArgumentException>())
+            await policy.Awaiting(x => x.RaiseExceptionAsync<ArgumentException>())
                   .Should().NotThrowAsync();
         }
 

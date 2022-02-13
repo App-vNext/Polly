@@ -53,7 +53,7 @@ namespace Polly.Specs.Bulkhead
         #region onBulkheadRejected delegate
 
         [Fact]
-        public void Should_call_onBulkheadRejected_with_passed_context()
+        public async Task Should_call_onBulkheadRejected_with_passed_context()
         {
             string operationKey = "SomeKey";
             Context contextPassedToExecute = new Context(operationKey);
@@ -66,7 +66,7 @@ namespace Polly.Specs.Bulkhead
                 TaskCompletionSource<object> tcs = new TaskCompletionSource<object>();
                 using (CancellationTokenSource cancellationSource = new CancellationTokenSource())
                 {
-                    Task.Run(() => {
+                    _ = Task.Run(() => {
                         bulkhead.ExecuteAsync(async () =>
                         {
                             await tcs.Task;
@@ -76,7 +76,7 @@ namespace Polly.Specs.Bulkhead
 
                     Within(CohesionTimeLimit, () => Expect(0, () => bulkhead.BulkheadAvailableCount, nameof(bulkhead.BulkheadAvailableCount)));
 
-                    bulkhead.Awaiting(b => b.ExecuteAsync(_ => Task.FromResult(1), contextPassedToExecute)).Should().ThrowAsync<BulkheadRejectedException>();
+                    await bulkhead.Awaiting(b => b.ExecuteAsync(_ => Task.FromResult(1), contextPassedToExecute)).Should().ThrowAsync<BulkheadRejectedException>();
 
                     cancellationSource.Cancel();
                     tcs.SetCanceled();

@@ -360,7 +360,7 @@ namespace Polly.Specs.Wrap
         #region Instance-configured: execution tests
 
         [Fact]
-        public void Wrapping_two_policies_by_instance_syntax_and_executing_should_wrap_outer_then_inner_around_delegate()
+        public async Task Wrapping_two_policies_by_instance_syntax_and_executing_should_wrap_outer_then_inner_around_delegate()
         {
             var retry = Policy.Handle<Exception>().RetryAsync(1); // Two tries in total: first try, plus one retry.
             var breaker = Policy.Handle<Exception>().CircuitBreakerAsync(2, TimeSpan.MaxValue);
@@ -370,13 +370,13 @@ namespace Polly.Specs.Wrap
 
             // When the retry wraps the breaker, the retry (being outer) should cause the call to be put through the breaker twice - causing the breaker to break.
             breaker.Reset();
-            retryWrappingBreaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>(2))
+            await retryWrappingBreaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>(2))
                 .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
             // When the breaker wraps the retry, the retry (being inner) should retry twice before throwing the exception back on the breaker - the exception only hits the breaker once - so the breaker should not break.
             breaker.Reset();
-            breakerWrappingRetry.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>(2))
+            await breakerWrappingRetry.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>(2))
                 .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
         }
@@ -408,7 +408,7 @@ namespace Polly.Specs.Wrap
         #region Static-configured: execution tests
 
         [Fact]
-        public void Wrapping_two_policies_by_static_syntax_and_executing_should_wrap_outer_then_inner_around_delegate()
+        public async Task Wrapping_two_policies_by_static_syntax_and_executing_should_wrap_outer_then_inner_around_delegate()
         {
             var retry = Policy.Handle<Exception>().RetryAsync(1); // Two tries in total: first try, plus one retry.
             var breaker = Policy.Handle<Exception>().CircuitBreakerAsync(2, TimeSpan.MaxValue);
@@ -418,13 +418,13 @@ namespace Polly.Specs.Wrap
 
             // When the retry wraps the breaker, the retry (being outer) should cause the call to be put through the breaker twice - causing the breaker to break.
             breaker.Reset();
-            retryWrappingBreaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>(2))
+            await retryWrappingBreaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>(2))
                 .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
             // When the breaker wraps the retry, the retry (being inner) should retry twice before throwing the exception back on the breaker - the exception only hits the breaker once - so the breaker should not break.
             breaker.Reset();
-            breakerWrappingRetry.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>(2))
+            await breakerWrappingRetry.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>(2))
                 .Should().ThrowAsync<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Closed);
         }

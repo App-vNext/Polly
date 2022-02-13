@@ -200,13 +200,13 @@ namespace Polly.Specs.Timeout
         #region Timeout operation - pessimistic
 
         [Fact]
-        public void Should_throw_when_timeout_is_less_than_execution_duration__pessimistic()
+        public async Task Should_throw_when_timeout_is_less_than_execution_duration__pessimistic()
         {
             TimeSpan timeout = TimeSpan.FromMilliseconds(50);
 
             var policy = Policy.TimeoutAsync<ResultPrimitive>(timeout, TimeoutStrategy.Pessimistic);
 
-            policy.Awaiting(p => p.ExecuteAsync(async () =>
+            await policy.Awaiting(p => p.ExecuteAsync(async () =>
             {
                 await SystemClock.SleepAsync(TimeSpan.FromSeconds(3), CancellationToken.None);
                 return ResultPrimitive.WhateverButTooLate;
@@ -227,7 +227,7 @@ namespace Polly.Specs.Timeout
         }
 
         [Fact]
-        public void Should_throw_timeout_after_correct_duration__pessimistic()
+        public async Task Should_throw_timeout_after_correct_duration__pessimistic()
         {
             Stopwatch watch = new Stopwatch();
 
@@ -237,7 +237,7 @@ namespace Polly.Specs.Timeout
             TimeSpan tolerance = TimeSpan.FromSeconds(3); // Consider increasing tolerance, if test fails transiently in different test/build environments.
 
             watch.Start();
-            policy.Awaiting(p => p.ExecuteAsync(async () =>
+            await policy.Awaiting(p => p.ExecuteAsync(async () =>
             {
                 await SystemClock.SleepAsync(TimeSpan.FromSeconds(10), CancellationToken.None);
                 return ResultPrimitive.WhateverButTooLate;
@@ -249,11 +249,11 @@ namespace Polly.Specs.Timeout
         }
 
         [Fact]
-        public void Should_rethrow_exception_from_inside_delegate__pessimistic()
+        public async Task Should_rethrow_exception_from_inside_delegate__pessimistic()
         {
             var policy = Policy.TimeoutAsync<ResultPrimitive>(TimeSpan.FromSeconds(10), TimeoutStrategy.Pessimistic);
 
-            policy.Awaiting(p => p.ExecuteAsync(() => throw new NotImplementedException())).Should().ThrowAsync<NotImplementedException>();
+            await policy.Awaiting(p => p.ExecuteAsync(() => throw new NotImplementedException())).Should().ThrowAsync<NotImplementedException>();
         }
 
         #endregion
@@ -261,12 +261,12 @@ namespace Polly.Specs.Timeout
         #region Timeout operation - optimistic
 
         [Fact]
-        public void Should_throw_when_timeout_is_less_than_execution_duration__optimistic()
+        public async Task Should_throw_when_timeout_is_less_than_execution_duration__optimistic()
         {
             var policy = Policy.TimeoutAsync<ResultPrimitive>(TimeSpan.FromMilliseconds(50), TimeoutStrategy.Optimistic);
             var userCancellationToken = CancellationToken.None;
 
-            policy.Awaiting(p => p.ExecuteAsync(async ct =>
+            await policy.Awaiting(p => p.ExecuteAsync(async ct =>
             {
                 await SystemClock.SleepAsync(TimeSpan.FromSeconds(3), ct);
                 return ResultPrimitive.WhateverButTooLate;
@@ -288,7 +288,7 @@ namespace Polly.Specs.Timeout
         }
 
         [Fact]
-        public void Should_throw_timeout_after_correct_duration__optimistic()
+        public async Task Should_throw_timeout_after_correct_duration__optimistic()
         {
             Stopwatch watch = new Stopwatch();
 
@@ -299,7 +299,7 @@ namespace Polly.Specs.Timeout
             TimeSpan tolerance = TimeSpan.FromSeconds(3); // Consider increasing tolerance, if test fails transiently in different test/build environments.
 
             watch.Start();
-            policy.Awaiting(p => p.ExecuteAsync(async ct =>
+            await policy.Awaiting(p => p.ExecuteAsync(async ct =>
             {
                 await SystemClock.SleepAsync(TimeSpan.FromSeconds(10), ct);
                 return ResultPrimitive.WhateverButTooLate;
@@ -311,11 +311,11 @@ namespace Polly.Specs.Timeout
         }
 
         [Fact]
-        public void Should_rethrow_exception_from_inside_delegate__optimistic()
+        public async Task Should_rethrow_exception_from_inside_delegate__optimistic()
         {
             var policy = Policy.TimeoutAsync<ResultPrimitive>(TimeSpan.FromSeconds(10), TimeoutStrategy.Optimistic);
 
-            policy.Awaiting(p => p.ExecuteAsync(() => throw new NotImplementedException())).Should().ThrowAsync<NotImplementedException>();
+            await policy.Awaiting(p => p.ExecuteAsync(() => throw new NotImplementedException())).Should().ThrowAsync<NotImplementedException>();
         }
 
         #endregion
@@ -323,14 +323,14 @@ namespace Polly.Specs.Timeout
         #region Non-timeout cancellation - pessimistic (user-delegate does not observe cancellation)
 
         [Fact]
-        public void Should_not_be_able_to_cancel_with_unobserved_user_cancellation_token_before_timeout__pessimistic()
+        public async Task Should_not_be_able_to_cancel_with_unobserved_user_cancellation_token_before_timeout__pessimistic()
         {
             int timeout = 5;
             var policy = Policy.TimeoutAsync<ResultPrimitive>(timeout, TimeoutStrategy.Pessimistic);
 
             using (CancellationTokenSource userTokenSource = new CancellationTokenSource())
             {
-                policy.Awaiting(p => p.ExecuteAsync(async
+                await policy.Awaiting(p => p.ExecuteAsync(async
                     _ => {
                         userTokenSource.Cancel(); // User token cancels in the middle of execution ...
                         await SystemClock.SleepAsync(TimeSpan.FromSeconds(timeout * 2),
@@ -343,7 +343,7 @@ namespace Polly.Specs.Timeout
         }
 
         [Fact]
-        public void Should_not_execute_user_delegate_if_user_cancellationToken_cancelled_before_delegate_reached__pessimistic()
+        public async Task Should_not_execute_user_delegate_if_user_cancellationToken_cancelled_before_delegate_reached__pessimistic()
         {
             var policy = Policy.TimeoutAsync<ResultPrimitive>(10, TimeoutStrategy.Pessimistic);
 
@@ -353,7 +353,7 @@ namespace Polly.Specs.Timeout
             {
                 cts.Cancel();
 
-                policy.Awaiting(p => p.ExecuteAsync(async _ =>
+                await policy.Awaiting(p => p.ExecuteAsync(async _ =>
                 {
                     executed = true;
                     await TaskHelper.EmptyTask;
@@ -370,13 +370,13 @@ namespace Polly.Specs.Timeout
         #region Non-timeout cancellation - optimistic (user-delegate observes cancellation)
 
         [Fact]
-        public void Should_be_able_to_cancel_with_user_cancellation_token_before_timeout__optimistic()
+        public async Task Should_be_able_to_cancel_with_user_cancellation_token_before_timeout__optimistic()
         {
             int timeout = 10;
             var policy = Policy.TimeoutAsync<ResultPrimitive>(timeout, TimeoutStrategy.Optimistic);
             using (CancellationTokenSource userTokenSource = new CancellationTokenSource())
             {
-                policy.Awaiting(p => p.ExecuteAsync(
+                await policy.Awaiting(p => p.ExecuteAsync(
                     ct => {
                         userTokenSource.Cancel(); ct.ThrowIfCancellationRequested();   // Simulate cancel in the middle of execution
                         return Task.FromResult(ResultPrimitive.WhateverButTooLate);
@@ -386,7 +386,7 @@ namespace Polly.Specs.Timeout
         }
 
         [Fact]
-        public void Should_not_execute_user_delegate_if_user_cancellationToken_cancelled_before_delegate_reached__optimistic()
+        public async Task Should_not_execute_user_delegate_if_user_cancellationToken_cancelled_before_delegate_reached__optimistic()
         {
             var policy = Policy.TimeoutAsync<ResultPrimitive>(10, TimeoutStrategy.Optimistic);
 
@@ -396,7 +396,7 @@ namespace Polly.Specs.Timeout
             {
                 cts.Cancel();
 
-                policy.Awaiting(p => p.ExecuteAsync(async _ =>
+                await policy.Awaiting(p => p.ExecuteAsync(async _ =>
                 {
                     executed = true;
                     await TaskHelper.EmptyTask;
@@ -413,7 +413,7 @@ namespace Polly.Specs.Timeout
         #region onTimeout overload - pessimistic
 
         [Fact]
-        public void Should_call_ontimeout_with_configured_timeout__pessimistic()
+        public async Task Should_call_ontimeout_with_configured_timeout__pessimistic()
         {
             TimeSpan timeoutPassedToConfiguration = TimeSpan.FromMilliseconds(250);
 
@@ -426,7 +426,7 @@ namespace Polly.Specs.Timeout
 
             var policy = Policy.TimeoutAsync<ResultPrimitive>(timeoutPassedToConfiguration, TimeoutStrategy.Pessimistic, onTimeoutAsync);
 
-            policy.Awaiting(p => p.ExecuteAsync(async () =>
+            await policy.Awaiting(p => p.ExecuteAsync(async () =>
             {
                 await SystemClock.SleepAsync(TimeSpan.FromSeconds(3), CancellationToken.None);
                 return ResultPrimitive.WhateverButTooLate;
@@ -437,7 +437,7 @@ namespace Polly.Specs.Timeout
         }
 
         [Fact]
-        public void Should_call_ontimeout_with_passed_context__pessimistic()
+        public async Task Should_call_ontimeout_with_passed_context__pessimistic()
         {
             string operationKey = "SomeKey";
             Context contextPassedToExecute = new Context(operationKey);
@@ -452,7 +452,7 @@ namespace Polly.Specs.Timeout
             TimeSpan timeout = TimeSpan.FromMilliseconds(250);
             var policy = Policy.TimeoutAsync<ResultPrimitive>(timeout, TimeoutStrategy.Pessimistic, onTimeoutAsync);
 
-            policy.Awaiting(p => p.ExecuteAsync(async _ =>
+            await policy.Awaiting(p => p.ExecuteAsync(async _ =>
                 {
                     await SystemClock.SleepAsync(TimeSpan.FromSeconds(3), CancellationToken.None);
                     return ResultPrimitive.WhateverButTooLate;
@@ -468,7 +468,7 @@ namespace Polly.Specs.Timeout
         [InlineData(1)]
         [InlineData(2)]
         [InlineData(3)]
-        public void Should_call_ontimeout_with_timeout_supplied_different_for_each_execution_by_evaluating_func__pessimistic(int programaticallyControlledDelay)
+        public async Task Should_call_ontimeout_with_timeout_supplied_different_for_each_execution_by_evaluating_func__pessimistic(int programaticallyControlledDelay)
         {
             Func<TimeSpan> timeoutFunc = () => TimeSpan.FromMilliseconds(25* programaticallyControlledDelay);
 
@@ -481,7 +481,7 @@ namespace Polly.Specs.Timeout
 
             var policy = Policy.TimeoutAsync<ResultPrimitive>(timeoutFunc, TimeoutStrategy.Pessimistic, onTimeoutAsync);
 
-            policy.Awaiting(p => p.ExecuteAsync(async () =>
+            await policy.Awaiting(p => p.ExecuteAsync(async () =>
                 {
                     await SystemClock.SleepAsync(TimeSpan.FromSeconds(3), CancellationToken.None);
                     return ResultPrimitive.WhateverButTooLate;
@@ -495,7 +495,7 @@ namespace Polly.Specs.Timeout
         [InlineData(1)]
         [InlineData(2)]
         [InlineData(3)]
-        public void Should_call_ontimeout_with_timeout_supplied_different_for_each_execution_by_evaluating_func_influenced_by_context__pessimistic(int programaticallyControlledDelay)
+        public async Task Should_call_ontimeout_with_timeout_supplied_different_for_each_execution_by_evaluating_func_influenced_by_context__pessimistic(int programaticallyControlledDelay)
         {
             Func<Context, TimeSpan> timeoutProvider = ctx => (TimeSpan)ctx["timeout"];
 
@@ -511,7 +511,7 @@ namespace Polly.Specs.Timeout
             // Supply a programatically-controlled timeout, via the execution context.
             Context context = new Context("SomeOperationKey") { ["timeout"] = TimeSpan.FromMilliseconds(25 * programaticallyControlledDelay) };
 
-            policy.Awaiting(p => p.ExecuteAsync(async _ =>
+            await policy.Awaiting(p => p.ExecuteAsync(async _ =>
             {
                 await SystemClock.SleepAsync(TimeSpan.FromSeconds(3), CancellationToken.None);
                 return ResultPrimitive.WhateverButTooLate;
@@ -522,7 +522,7 @@ namespace Polly.Specs.Timeout
         }
 
         [Fact]
-        public void Should_call_ontimeout_with_task_wrapping_abandoned_action__pessimistic()
+        public async Task Should_call_ontimeout_with_task_wrapping_abandoned_action__pessimistic()
         {
             Task taskPassedToOnTimeout = null;
             Func<Context, TimeSpan, Task, Task> onTimeoutAsync = (_, _, task) =>
@@ -534,7 +534,7 @@ namespace Polly.Specs.Timeout
             TimeSpan timeout = TimeSpan.FromMilliseconds(250);
             var policy = Policy.TimeoutAsync<ResultPrimitive>(timeout, TimeoutStrategy.Pessimistic, onTimeoutAsync);
 
-            policy.Awaiting(p => p.ExecuteAsync(async () =>
+            await policy.Awaiting(p => p.ExecuteAsync(async () =>
             {
                 await SystemClock.SleepAsync(TimeSpan.FromSeconds(3), CancellationToken.None);
                 return ResultPrimitive.WhateverButTooLate;
@@ -578,7 +578,7 @@ namespace Polly.Specs.Timeout
         }
 
         [Fact]
-        public void Should_call_ontimeout_with_timing_out_exception__pessimistic()
+        public async Task Should_call_ontimeout_with_timing_out_exception__pessimistic()
         {
             TimeSpan timeoutPassedToConfiguration = TimeSpan.FromMilliseconds(250);
 
@@ -591,7 +591,7 @@ namespace Polly.Specs.Timeout
 
             var policy = Policy.TimeoutAsync<ResultPrimitive>(timeoutPassedToConfiguration, TimeoutStrategy.Pessimistic, onTimeoutAsync);
 
-            policy.Awaiting(p => p.ExecuteAsync(async () =>
+            await policy.Awaiting(p => p.ExecuteAsync(async () =>
                 {
                     await SystemClock.SleepAsync(TimeSpan.FromSeconds(3), CancellationToken.None);
                     return ResultPrimitive.WhateverButTooLate;
@@ -607,7 +607,7 @@ namespace Polly.Specs.Timeout
         #region onTimeout overload - optimistic
 
         [Fact]
-        public void Should_call_ontimeout_with_configured_timeout__optimistic()
+        public async Task Should_call_ontimeout_with_configured_timeout__optimistic()
         {
             TimeSpan timeoutPassedToConfiguration = TimeSpan.FromMilliseconds(250);
 
@@ -621,7 +621,7 @@ namespace Polly.Specs.Timeout
             var policy = Policy.TimeoutAsync<ResultPrimitive>(timeoutPassedToConfiguration, TimeoutStrategy.Optimistic, onTimeoutAsync);
             var userCancellationToken = CancellationToken.None;
 
-            policy.Awaiting(p => p.ExecuteAsync(async ct =>
+            await policy.Awaiting(p => p.ExecuteAsync(async ct =>
             {
                 await SystemClock.SleepAsync(TimeSpan.FromSeconds(3), ct);
                 return ResultPrimitive.WhateverButTooLate;
@@ -632,7 +632,7 @@ namespace Polly.Specs.Timeout
         }
 
         [Fact]
-        public void Should_call_ontimeout_with_passed_context__optimistic()
+        public async Task Should_call_ontimeout_with_passed_context__optimistic()
         {
             string operationKey = "SomeKey";
             Context contextPassedToExecute = new Context(operationKey);
@@ -648,7 +648,7 @@ namespace Polly.Specs.Timeout
             var policy = Policy.TimeoutAsync<ResultPrimitive>(timeout, TimeoutStrategy.Optimistic, onTimeoutAsync);
             var userCancellationToken = CancellationToken.None;
 
-            policy.Awaiting(p => p.ExecuteAsync(async (_, ct) =>
+            await policy.Awaiting(p => p.ExecuteAsync(async (_, ct) =>
                 {
                     await SystemClock.SleepAsync(TimeSpan.FromSeconds(3), ct);
                     return ResultPrimitive.WhateverButTooLate;
@@ -664,7 +664,7 @@ namespace Polly.Specs.Timeout
         [InlineData(1)]
         [InlineData(2)]
         [InlineData(3)]
-        public void Should_call_ontimeout_with_timeout_supplied_different_for_each_execution_by_evaluating_func__optimistic(int programaticallyControlledDelay)
+        public async Task Should_call_ontimeout_with_timeout_supplied_different_for_each_execution_by_evaluating_func__optimistic(int programaticallyControlledDelay)
         {
 
             Func<TimeSpan> timeoutFunc = () => TimeSpan.FromMilliseconds(25*programaticallyControlledDelay);
@@ -679,7 +679,7 @@ namespace Polly.Specs.Timeout
             var policy = Policy.TimeoutAsync<ResultPrimitive>(timeoutFunc, TimeoutStrategy.Optimistic, onTimeoutAsync);
             var userCancellationToken = CancellationToken.None;
 
-            policy.Awaiting(p => p.ExecuteAsync(async ct =>
+            await policy.Awaiting(p => p.ExecuteAsync(async ct =>
                 {
                     await SystemClock.SleepAsync(TimeSpan.FromSeconds(3), ct);
                     return ResultPrimitive.WhateverButTooLate;
@@ -693,7 +693,7 @@ namespace Polly.Specs.Timeout
         [InlineData(1)]
         [InlineData(2)]
         [InlineData(3)]
-        public void Should_call_ontimeout_with_timeout_supplied_different_for_each_execution_by_evaluating_func_influenced_by_context__optimistic(int programaticallyControlledDelay)
+        public async Task Should_call_ontimeout_with_timeout_supplied_different_for_each_execution_by_evaluating_func_influenced_by_context__optimistic(int programaticallyControlledDelay)
         {
             Func<Context, TimeSpan> timeoutProvider = ctx => (TimeSpan)ctx["timeout"];
 
@@ -713,7 +713,7 @@ namespace Polly.Specs.Timeout
                 ["timeout"] = TimeSpan.FromMilliseconds(25 * programaticallyControlledDelay)
             };
 
-            policy.Awaiting(p => p.ExecuteAsync(async (_, ct) =>
+            await policy.Awaiting(p => p.ExecuteAsync(async (_, ct) =>
             {
                 await SystemClock.SleepAsync(TimeSpan.FromSeconds(3), ct);
                 return ResultPrimitive.WhateverButTooLate;
@@ -724,7 +724,7 @@ namespace Polly.Specs.Timeout
         }
 
         [Fact]
-        public void Should_call_ontimeout_but_not_with_task_wrapping_abandoned_action__optimistic()
+        public async Task Should_call_ontimeout_but_not_with_task_wrapping_abandoned_action__optimistic()
         {
             Task taskPassedToOnTimeout = null;
             Func<Context, TimeSpan, Task, Task> onTimeoutAsync = (_, _, task) =>
@@ -737,7 +737,7 @@ namespace Polly.Specs.Timeout
             var policy = Policy.TimeoutAsync<ResultPrimitive>(timeout, TimeoutStrategy.Optimistic, onTimeoutAsync);
             var userCancellationToken = CancellationToken.None;
 
-            policy.Awaiting(p => p.ExecuteAsync(async ct =>
+            await policy.Awaiting(p => p.ExecuteAsync(async ct =>
             {
                 await SystemClock.SleepAsync(TimeSpan.FromSeconds(3), ct);
                 return ResultPrimitive.WhateverButTooLate;
@@ -748,7 +748,7 @@ namespace Polly.Specs.Timeout
         }
 
         [Fact]
-        public void Should_call_ontimeout_with_timing_out_exception__optimistic()
+        public async Task Should_call_ontimeout_with_timing_out_exception__optimistic()
         {
             TimeSpan timeoutPassedToConfiguration = TimeSpan.FromMilliseconds(250);
 
@@ -762,7 +762,7 @@ namespace Polly.Specs.Timeout
             var policy = Policy.TimeoutAsync<ResultPrimitive>(timeoutPassedToConfiguration, TimeoutStrategy.Optimistic, onTimeoutAsync);
             var userCancellationToken = CancellationToken.None;
 
-            policy.Awaiting(p => p.ExecuteAsync(async ct =>
+            await policy.Awaiting(p => p.ExecuteAsync(async ct =>
                 {
                     await SystemClock.SleepAsync(TimeSpan.FromSeconds(3), ct);
                     return ResultPrimitive.WhateverButTooLate;

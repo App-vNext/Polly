@@ -460,7 +460,7 @@ namespace Polly.Specs.Fallback
         }
 
         [Fact]
-        public void Should_call_fallbackAction_with_the_passed_context_when_execute_and_capture()
+        public async Task Should_call_fallbackAction_with_the_passed_context_when_execute_and_capture()
         {
             IDictionary<string, object> contextData = null;
 
@@ -472,7 +472,7 @@ namespace Polly.Specs.Fallback
                 .HandleResult(ResultPrimitive.Fault)
                 .FallbackAsync(fallbackActionAsync, onFallbackAsync);
 
-            fallbackPolicy.Awaiting(p => p.ExecuteAndCaptureAsync(_ => Task.FromResult(ResultPrimitive.Fault),
+            await fallbackPolicy.Awaiting(p => p.ExecuteAndCaptureAsync(_ => Task.FromResult(ResultPrimitive.Fault),
                     new { key1 = "value1", key2 = "value2" }.AsDictionary()))
                 .Should().NotThrowAsync();
 

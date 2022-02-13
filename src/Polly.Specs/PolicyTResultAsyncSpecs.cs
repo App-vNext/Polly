@@ -96,13 +96,13 @@ namespace Polly.Specs
 
 
         [Fact]
-        public void Executing_the_policy_function_should_throw_when_context_data_is_null()
+        public async Task Executing_the_policy_function_should_throw_when_context_data_is_null()
         {
             var policy = Policy
                 .HandleResult(ResultPrimitive.Fault)
                 .RetryAsync((_, _, _) => { });
 
-            policy.Awaiting(p => p.ExecuteAsync(_ => Task.FromResult(ResultPrimitive.Good), (IDictionary<string, object>)null))
+            await policy.Awaiting(p => p.ExecuteAsync(_ => Task.FromResult(ResultPrimitive.Good), (IDictionary<string, object>)null))
                   .Should().ThrowAsync<ArgumentNullException>();
         }
 
