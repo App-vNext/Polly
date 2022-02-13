@@ -1,3 +1,4 @@
+#! /usr/bin/env pwsh
 <#
 
 .SYNOPSIS
@@ -44,34 +45,33 @@ Param(
 Write-Host "Preparing to run build script..."
 
 # Should we show verbose messages?
-if($Verbose.IsPresent)
+if ($Verbose.IsPresent)
 {
     $VerbosePreference = "continue"
 }
 
 $TOOLS_DIR = Join-Path $PSScriptRoot "tools"
 $NUGET_EXE = Join-Path $TOOLS_DIR "nuget.exe"
-$CAKE_EXE = "dotnet dotnet-cake"
 $PACKAGES_CONFIG = Join-Path $TOOLS_DIR "packages.config"
 $DOTNET = "dotnet.exe"
 
 # Should we use mono?
 $UseMono = "";
-if($Mono.IsPresent) {
+if ($Mono.IsPresent) {
     Write-Verbose -Message "Using the Mono based scripting engine."
     $UseMono = "-mono"
 }
 
 # Should we use the new Roslyn?
 $UseExperimental = "";
-if($Experimental.IsPresent -and !($Mono.IsPresent)) {
+if ($Experimental.IsPresent -and !($Mono.IsPresent)) {
     Write-Verbose -Message "Using experimental version of Roslyn."
     $UseExperimental = "-experimental"
 }
 
 # Is this a dry run?
 $UseDryRun = "";
-if($WhatIf.IsPresent) {
+if ($WhatIf.IsPresent) {
     $UseDryRun = "-dryrun"
 }
 
@@ -95,7 +95,7 @@ if (!(Test-Path $NUGET_EXE)) {
 $ENV:NUGET_EXE = $NUGET_EXE
 
 # Restore tools from NuGet?
-if(-Not $SkipToolPackageRestore.IsPresent)
+if (-Not $SkipToolPackageRestore.IsPresent)
 {
     # Restore tools from NuGet.
     Push-Location
@@ -122,8 +122,7 @@ if(-Not $SkipToolPackageRestore.IsPresent)
     }
 }
 
-
 # Start Cake
 Write-Host "Running build script..."
-Invoke-Expression "$CAKE_EXE `"$Script`" --target=`"$Target`" --configuration=`"$Configuration`" --verbosity=`"$Verbosity`" $UseMono $UseDryRun $UseExperimental"
+Invoke-Expression "dotnet dotnet-cake `"$Script`" --target=`"$Target`" --configuration=`"$Configuration`" --verbosity=`"$Verbosity`" $UseMono $UseDryRun $UseExperimental"
 exit $LASTEXITCODE

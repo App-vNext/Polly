@@ -9,8 +9,8 @@ var configuration = Argument<string>("configuration", "Release");
 // EXTERNAL NUGET TOOLS
 //////////////////////////////////////////////////////////////////////
 
-#Tool "xunit.runner.console&version=2.4.1"
 #Tool "GitVersion.CommandLine&version=5.8.1"
+#Tool "xunit.runner.console&version=2.4.1"
 
 //////////////////////////////////////////////////////////////////////
 // EXTERNAL NUGET LIBRARIES
@@ -32,15 +32,15 @@ var solutionPaths = solutions.Select(solution => solution.GetDirectory());
 
 var srcDir = Directory("./src");
 var artifactsDir = Directory("./artifacts");
-var testResultsDir = artifactsDir + Directory("test-results");
+var testResultsDir = System.IO.Path.Combine(artifactsDir, Directory("test-results"));
 
 // NuGet
-var nupkgDestDir = artifactsDir + Directory("nuget-package");
+var nupkgDestDir = System.IO.Path.Combine(artifactsDir, Directory("nuget-package"));
 
-// Gitversion
+// GitVersion
 var gitVersionPath = ToolsExePath("GitVersion.exe");
-Dictionary<string, object> gitVersionOutput;
 var gitVersionConfigFilePath = "./GitVersionConfig.yaml";
+Dictionary<string, object> gitVersionOutput;
 
 // Versioning
 string nugetVersion;
@@ -82,7 +82,8 @@ Teardown(_ =>
 Task("__Clean")
     .Does(() =>
 {
-    DirectoryPath[] cleanDirectories = new DirectoryPath[] {
+    DirectoryPath[] cleanDirectories = new DirectoryPath[]
+    {
         testResultsDir,
         nupkgDestDir,
         artifactsDir
@@ -99,7 +100,7 @@ Task("__Clean")
     }
 });
 
-Task("__RestoreNugetPackages")
+Task("__RestoreNuGetPackages")
     .Does(() =>
 {
     foreach(var solution in solutions)
@@ -115,7 +116,8 @@ Task("__UpdateAssemblyVersionInformation")
     var gitVersionSettings = new ProcessSettings()
         .SetRedirectStandardOutput(true);
 
-    try {
+    try
+    {
         IEnumerable<string> outputLines;
         StartProcess(gitVersionPath, gitVersionSettings, out outputLines);
 
@@ -130,13 +132,13 @@ Task("__UpdateAssemblyVersionInformation")
         GitVersionConfigYaml deserialized = DeserializeYaml<GitVersionConfigYaml>(gitVersionYamlString.Replace("next-version", "NextVersion"));
         string gitVersionConfig = deserialized.NextVersion;
 
-        gitVersionOutput = new Dictionary<string, object>{
+        gitVersionOutput = new Dictionary<string, object>
+        {
             { "NuGetVersion", gitVersionConfig + "-NotFromGitRepo" },
             { "FullSemVer", gitVersionConfig },
             { "AssemblySemVer", gitVersionConfig },
             { "Major", gitVersionConfig.Split('.')[0] },
         };
-
     }
 
     Information("");
@@ -152,19 +154,21 @@ Task("__UpdateAssemblyVersionInformation")
 
     Information("");
     Information("Mapping versioning information to:");
-    Information("Appveyor build number -> {0}", appveyorBuildNumber);
-    Information("Nuget package version -> {0}", nugetVersion);
+    Information("AppVeyor build number -> {0}", appveyorBuildNumber);
+    Information("NuGet package version -> {0}", nugetVersion);
     Information("AssemblyVersion -> {0}", assemblyVersion);
     Information("AssemblyFileVersion -> {0}", assemblySemver);
     Information("AssemblyInformationalVersion -> {0}", assemblySemver);
 });
 
 Task("__UpdateDotNetStandardAssemblyVersionNumber")
+    .WithCriteria(() => AppVeyor.IsRunningOnAppVeyor)
     .Does(() =>
 {
     Information("Updating Assembly Version Information");
 
-    var attributeToValueMap = new Dictionary<string, string>() {
+    var attributeToValueMap = new Dictionary<string, string>()
+    {
         { "AssemblyVersion", assemblyVersion },
         { "FileVersion", assemblySemver },
         { "InformationalVersion", assemblySemver },
@@ -175,7 +179,8 @@ Task("__UpdateDotNetStandardAssemblyVersionNumber")
 
     var csproj = File("./src/" + projectName + "/" + projectName + ".csproj");
 
-    foreach(var attributeMap in attributeToValueMap) {
+    foreach(var attributeMap in attributeToValueMap)
+    {
         var attribute = attributeMap.Key;
         var value = attributeMap.Value;
 
@@ -185,7 +190,6 @@ Task("__UpdateDotNetStandardAssemblyVersionNumber")
             throw new Exception($"{attribute} version could not be updated in {csproj}.");
         }
     }
-
 });
 
 Task("__UpdateAppVeyorBuildNumber")
@@ -202,11 +206,12 @@ Task("__BuildSolutions")
     {
         Information("Building {0}", solution);
 
-        var dotNetCoreBuildSettings = new DotNetBuildSettings {
-         Configuration = configuration,
-         Verbosity = DotNetCoreVerbosity.Minimal,
-         NoRestore = true,
-         MSBuildSettings = new DotNetMSBuildSettings { TreatAllWarningsAs = MSBuildTreatAllWarningsAs.Error }
+        var dotNetCoreBuildSettings = new DotNetBuildSettings
+        {
+            Configuration = configuration,
+            Verbosity = DotNetCoreVerbosity.Minimal,
+            NoRestore = true,
+            MSBuildSettings = new DotNetMSBuildSettings { TreatAllWarningsAs = MSBuildTreatAllWarningsAs.Error },
         };
 
         DotNetBuild(solution.ToString(), dotNetCoreBuildSettings);
@@ -216,28 +221,31 @@ Task("__BuildSolutions")
 Task("__RunTests")
     .Does(() =>
 {
-    foreach(var specsProj in GetFiles("./src/**/*.Specs.csproj")) {
-        DotNetTest(specsProj.FullPath, new DotNetTestSettings {
+    foreach(var specsProj in GetFiles("./src/**/*.Specs.csproj"))
+    {
+        DotNetTest(specsProj.FullPath, new DotNetTestSettings
+        {
             Configuration = configuration,
-            NoBuild = true
+            NoBuild = true,
         });
     }
 });
 
-Task("__CreateSignedNugetPackage")
+Task("__CreateSignedNuGetPackage")
     .Does(() =>
 {
     var packageName = projectName;
 
     Information("Building {0}.{1}.nupkg", packageName, nugetVersion);
 
-    var dotNetCorePackSettings = new DotNetPackSettings {
+    var dotNetCorePackSettings = new DotNetPackSettings
+    {
         Configuration = configuration,
         NoBuild = true,
-        OutputDirectory = nupkgDestDir
+        OutputDirectory = nupkgDestDir,
     };
 
-    DotNetPack($@"{srcDir}\{projectName}.sln", dotNetCorePackSettings);
+    DotNetPack(System.IO.Path.Combine(srcDir, projectName + ".sln"), dotNetCorePackSettings);
 });
 
 //////////////////////////////////////////////////////////////////////
@@ -246,13 +254,13 @@ Task("__CreateSignedNugetPackage")
 
 Task("Build")
     .IsDependentOn("__Clean")
-    .IsDependentOn("__RestoreNugetPackages")
+    .IsDependentOn("__RestoreNuGetPackages")
     .IsDependentOn("__UpdateAssemblyVersionInformation")
     .IsDependentOn("__UpdateDotNetStandardAssemblyVersionNumber")
     .IsDependentOn("__UpdateAppVeyorBuildNumber")
     .IsDependentOn("__BuildSolutions")
     .IsDependentOn("__RunTests")
-    .IsDependentOn("__CreateSignedNugetPackage");
+    .IsDependentOn("__CreateSignedNuGetPackage");
 
 ///////////////////////////////////////////////////////////////////////////////
 // PRIMARY TARGETS
@@ -272,6 +280,6 @@ RunTarget(target);
 //////////////////////////////////////////////////////////////////////
 
 string ToolsExePath(string exeFileName) {
-    var exePath = System.IO.Directory.GetFiles(@"./tools", exeFileName, SearchOption.AllDirectories).FirstOrDefault();
+    var exePath = System.IO.Directory.GetFiles("./tools", exeFileName, SearchOption.AllDirectories).FirstOrDefault();
     return exePath;
 }
