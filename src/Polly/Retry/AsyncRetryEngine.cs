@@ -41,7 +41,7 @@ namespace Polly.Retry
                             return result;
                         }
 
-                        canRetry = tryCount < permittedRetryCount && (sleepDurationsEnumerable == null || sleepDurationsEnumerator.MoveNext());
+                        canRetry = tryCount < permittedRetryCount && (sleepDurationsEnumerator == null || sleepDurationsEnumerator.MoveNext());
 
                         if (!canRetry)
                         {
@@ -58,7 +58,7 @@ namespace Polly.Retry
                             throw;
                         }
 
-                        canRetry = tryCount < permittedRetryCount && (sleepDurationsEnumerable == null || sleepDurationsEnumerator.MoveNext());
+                        canRetry = tryCount < permittedRetryCount && (sleepDurationsEnumerator == null || sleepDurationsEnumerator.MoveNext());
 
                         if (!canRetry)
                         {
