@@ -89,9 +89,18 @@ namespace Polly.Utilities
     /// <summary>
     /// Exception caused by if a lock cannot be obtained within the Lock Timeout.
     /// </summary>
-    public class LockTimeoutException : Exception
+    public sealed class LockTimeoutException : Exception
     {
         internal LockTimeoutException() : base("Timeout waiting for lock")
+        {
+        }
+
+        internal LockTimeoutException(string message) : base(message)
+        {
+        }
+
+        internal LockTimeoutException(string message, Exception innerException) :
+            base(message, innerException)
         {
         }
     }
