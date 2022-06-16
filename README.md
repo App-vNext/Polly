@@ -44,7 +44,7 @@ For using Polly with HttpClient factory from ASP.NET Core 2.1, see our [detailed
 ### Release notes
 
 + The [change log](https://github.com/App-vNext/Polly/blob/master/CHANGELOG.md) describes changes by release.
-+ We tag Pull Requests and Issues with [milestones](https://github.com/App-vNext/Polly/milestones) which match to NuGet package release numbers.
++ We tag Pull Requests and Issues with [milestones](https://github.com/App-vNext/Polly/milestones) which match NuGet package release numbers.
 + Breaking changes are called out in the wiki ([v7](https://github.com/App-vNext/Polly/wiki/Polly-v7-breaking-changes) ; [v6](https://github.com/App-vNext/Polly/wiki/Polly-v6-breaking-changes)) with simple notes on any necessary steps to upgrade.
 
 ### Supported targets
@@ -53,7 +53,7 @@ For details of supported compilation targets by version, see the [supported targ
 
 ### Role of the readme and the wiki
 
-This ReadMe aims to give a quick overview of all Polly features - including enough to get you started with any policy.  For deeper detail on any policy, and many other aspects of Polly, be sure also to check out the [wiki documentation](https://github.com/App-vNext/Polly/wiki).
+This ReadMe aims to give a quick overview of all Polly features - including enough to get you started with any policy.  For details on any policy, and many other aspects of Polly, be sure also to check out the [wiki documentation](https://github.com/App-vNext/Polly/wiki).
 
 # Usage &ndash; fault-handling, reactive policies
 
@@ -722,7 +722,7 @@ var cachePolicy = Policy.Cache(myCacheProvider, TimeSpan.FromMinutes(5),
 
 // Execute through the cache as a read-through cache: check the cache first; if not found, execute underlying delegate and store the result in the cache.
 // The key to use for caching, for a particular execution, is specified by setting the OperationKey (before v6: ExecutionKey) on a Context instance passed to the execution. Use an overload of the form shown below (or a richer overload including the same elements).
-// Example: "FooKey" is the cache key that will be used in the below execution.
+// Example: "FooKey" is the cache key that will be used in the execution below.
 TResult result = cachePolicy.Execute(context => getFoo(), new Context("FooKey"));
 
 ```
@@ -791,7 +791,7 @@ policyResult.Result - if executing a func, the result if the call succeeded or t
 */
 ```
 
-# Handing return values, and Policy&lt;TResult&gt;
+# Handling return values, and Policy&lt;TResult&gt;
 
 As described at step 1b, from Polly v4.3.0 onwards, policies can handle return values and exceptions in combination:
 
@@ -836,7 +836,7 @@ policyResult.Result - if executing a func, the result if the call succeeded; oth
 `.ExecuteAndCapture<TResult>(Func<TResult>)` on strongly-typed policies adds two properties:
 
 ```
-policyResult.FaultType - was the final fault handled an exception or a result handled by the policy? Will be null if the delegate execution succeeded.
+policyResult.FaultType - was the final fault handled by an exception or a result handled by the policy? Will be null if the delegate execution succeeded.
 policyResult.FinalHandledResult - the final fault result handled; will be null or the type's default value, if the call succeeded
 ```
 
@@ -1008,7 +1008,7 @@ Execution interfaces [`ISyncPolicy`](https://github.com/App-vNext/Polly/tree/mas
 
 ## Policy-kind interfaces: `ICircuitBreakerPolicy` etc
 
-Orthogonal to the execution interfaces, interfaces specific to the kind of Policy define properties and methods common to that type of policy.  
+Orthogonal to the execution interfaces, interfaces specific to the kind of policy define properties and methods common to that type of policy.  
 
 For example, [`ICircuitBreakerPolicy`](https://github.com/App-vNext/Polly/tree/master/src/Polly.Shared/CircuitBreaker/ICircuitBreakerPolicy.cs) defines
 
@@ -1035,7 +1035,7 @@ Head over to the [Simmy](https://github.com/Polly-Contrib/Simmy) repo to find ou
 
 # Custom policies
 
-From Polly v7.0 it is possible to [create your own custom policies](http://www.thepollyproject.org/2019/02/13/introducing-custom-polly-policies-and-polly-contrib-custom-policies-part-i/) outside Polly.  These custom policies can integrate in to all the existing goodness from Polly: the `Policy.Handle<>()` syntax; PolicyWrap; all the execution-dispatch overloads.
+From Polly v7.0 it is possible to [create your own custom policies](http://www.thepollyproject.org/2019/02/13/introducing-custom-polly-policies-and-polly-contrib-custom-policies-part-i/) outside Polly.  These custom policies can integrate into all the existing goodness from Polly: the `Policy.Handle<>()` syntax; PolicyWrap; all the execution-dispatch overloads.
 
 For more info see our blog series:
 
@@ -1050,7 +1050,7 @@ We provide a [starter template for a custom policy](https://github.com/Polly-Con
 
 Polly now has a [Polly-Contrib](https://github.com/Polly-Contrib) to allow the community to contribute policies or other enhancements around Polly with a low burden of ceremony.
 
-Have a contrib you'd like to publish under Polly-Contrib? Contact us with  an issue here or on [Polly slack](http://pollytalk.slack.com), and we can set up a CI-ready Polly.Contrib repo to which you have full rights, to help you manage and deliver your awesomeness to the community!
+Have a contrib you'd like to publish under Polly-Contrib? Contact us with  an issue here or on [Polly slack](http://pollytalk.slack.com), and we can set up a CI-ready Polly. Contrib repo to which you have full rights, to help you manage and deliver your awesomeness to the community!
 
 We also provide:
 
