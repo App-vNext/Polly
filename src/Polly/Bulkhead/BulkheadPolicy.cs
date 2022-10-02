@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Threading;
+using Polly.Bulkhead.Settings;
 
 namespace Polly.Bulkhead
 {
@@ -12,15 +13,15 @@ namespace Polly.Bulkhead
         private readonly SemaphoreSlim _maxParallelizationSemaphore;
         private readonly SemaphoreSlim _maxQueuedActionsSemaphore;
         private readonly int _maxQueueingActions;
-        private readonly Action<Context> _onBulkheadRejected;
+        private readonly IBulkheadRejectedCallback _bulkheadRejectedCallback;
 
-        internal BulkheadPolicy(
-            int maxParallelization,
-            int maxQueueingActions,
-            Action<Context> onBulkheadRejected)
+        internal BulkheadPolicy(BulkheadPolicySettings settings)
         {
-            _maxQueueingActions = maxQueueingActions;
-            _onBulkheadRejected = onBulkheadRejected ?? throw new ArgumentNullException(nameof(onBulkheadRejected));
+            settings = settings ?? throw new ArgumentNullException(nameof(settings));
+            
+            var maxParallelization = settings.MaxParallelization;
+            var maxQueueingActions =_maxQueueingActions = settings.MaxQueuingActions ?? 0;
+            _bulkheadRejectedCallback = settings.OnBulkheadRejectedCallback;
 
             (_maxParallelizationSemaphore, _maxQueuedActionsSemaphore) = BulkheadSemaphoreFactory.CreateBulkheadSemaphores(maxParallelization, maxQueueingActions);
         }
@@ -28,7 +29,7 @@ namespace Polly.Bulkhead
         /// <inheritdoc/>
         [DebuggerStepThrough]
         protected override TResult Implementation<TResult>(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken)
-            => BulkheadEngine.Implementation(action, context, _onBulkheadRejected, _maxParallelizationSemaphore, _maxQueuedActionsSemaphore, cancellationToken);
+            => BulkheadEngine.Implementation(action, context, _bulkheadRejectedCallback, _maxParallelizationSemaphore, _maxQueuedActionsSemaphore, cancellationToken);
 
         /// <summary>
         /// Gets the number of slots currently available for executing actions through the bulkhead.
@@ -59,16 +60,16 @@ namespace Polly.Bulkhead
         private readonly SemaphoreSlim _maxParallelizationSemaphore;
         private readonly SemaphoreSlim _maxQueuedActionsSemaphore;
         private readonly int _maxQueueingActions;
-        private readonly Action<Context> _onBulkheadRejected;
+        private readonly IBulkheadRejectedCallback _bulkheadRejectedCallback;
 
         /// <inheritdoc/>
-        internal BulkheadPolicy(
-            int maxParallelization,
-            int maxQueueingActions,
-            Action<Context> onBulkheadRejected)
+        internal BulkheadPolicy(BulkheadPolicySettings settings)
         {
-            _maxQueueingActions = maxQueueingActions;
-            _onBulkheadRejected = onBulkheadRejected ?? throw new ArgumentNullException(nameof(onBulkheadRejected));
+            settings = settings ?? throw new ArgumentNullException(nameof(settings));
+            
+            var maxParallelization = settings.MaxParallelization;
+            var maxQueueingActions =_maxQueueingActions = settings.MaxQueuingActions ?? 0;
+            _bulkheadRejectedCallback = settings.OnBulkheadRejectedCallback;
 
             (_maxParallelizationSemaphore, _maxQueuedActionsSemaphore) = BulkheadSemaphoreFactory.CreateBulkheadSemaphores(maxParallelization, maxQueueingActions);
         }
@@ -76,7 +77,7 @@ namespace Polly.Bulkhead
         /// <inheritdoc/>
         [DebuggerStepThrough]
         protected override TResult Implementation(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken)
-            => BulkheadEngine.Implementation(action, context, _onBulkheadRejected, _maxParallelizationSemaphore, _maxQueuedActionsSemaphore, cancellationToken);
+            => BulkheadEngine.Implementation(action, context, _bulkheadRejectedCallback, _maxParallelizationSemaphore, _maxQueuedActionsSemaphore, cancellationToken);
 
         /// <summary>
         /// Gets the number of slots currently available for executing actions through the bulkhead.

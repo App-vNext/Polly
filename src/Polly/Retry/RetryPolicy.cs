@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
+using Polly.Retry.Settings;
 
 namespace Polly.Retry
 {
@@ -10,14 +11,14 @@ namespace Polly.Retry
     /// </summary>
     public class RetryPolicy : Policy, IRetryPolicy
     {
-        private readonly Action<Exception, TimeSpan, int, Context> _onRetry;
+        private readonly IOnRetryCallback _onRetry;
         private readonly int _permittedRetryCount;
         private readonly IEnumerable<TimeSpan> _sleepDurationsEnumerable;
         private readonly Func<int, Exception, Context, TimeSpan> _sleepDurationProvider;
 
         internal RetryPolicy(
             PolicyBuilder policyBuilder,
-            Action<Exception, TimeSpan, int, Context> onRetry, 
+            IOnRetryCallback onRetry, 
             int permittedRetryCount = Int32.MaxValue,
             IEnumerable<TimeSpan> sleepDurationsEnumerable = null,
             Func<int, Exception, Context, TimeSpan> sleepDurationProvider = null
@@ -38,7 +39,7 @@ namespace Polly.Retry
                     cancellationToken,
                     ExceptionPredicates,
                     ResultPredicates<TResult>.None, 
-                    (outcome, timespan, retryCount, ctx) => _onRetry(outcome.Exception, timespan, retryCount, ctx),
+                    new OnRetryCallbackAdapter<TResult>(_onRetry),
                     _permittedRetryCount,
                     _sleepDurationsEnumerable,
                     _sleepDurationProvider != null
@@ -52,14 +53,14 @@ namespace Polly.Retry
     /// </summary>
     public class RetryPolicy<TResult> : Policy<TResult>, IRetryPolicy<TResult>
     {
-        private readonly Action<DelegateResult<TResult>, TimeSpan, int, Context> _onRetry;
+        private readonly IOnRetryCallback<TResult> _onRetry;
         private readonly int _permittedRetryCount;
         private readonly IEnumerable<TimeSpan> _sleepDurationsEnumerable;
         private readonly Func<int, DelegateResult<TResult>, Context, TimeSpan> _sleepDurationProvider;
 
         internal RetryPolicy(
             PolicyBuilder<TResult> policyBuilder,
-            Action<DelegateResult<TResult>, TimeSpan, int, Context> onRetry,
+            IOnRetryCallback<TResult> onRetry,
             int permittedRetryCount = Int32.MaxValue,
             IEnumerable<TimeSpan> sleepDurationsEnumerable = null,
             Func<int, DelegateResult<TResult>, Context, TimeSpan> sleepDurationProvider = null

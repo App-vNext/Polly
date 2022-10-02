@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
+using Polly.Retry.Settings;
 using Polly.Utilities;
 
 namespace Polly.Retry
@@ -13,7 +14,7 @@ namespace Polly.Retry
             CancellationToken cancellationToken,
             ExceptionPredicates shouldRetryExceptionPredicates,
             ResultPredicates<TResult> shouldRetryResultPredicates,
-            Action<DelegateResult<TResult>, TimeSpan, int, Context> onRetry,
+            IOnRetryCallback<TResult> onRetry,
             int permittedRetryCount = Int32.MaxValue,
             IEnumerable<TimeSpan> sleepDurationsEnumerable = null,
             Func<int, DelegateResult<TResult>, Context, TimeSpan> sleepDurationProvider = null)
@@ -71,7 +72,7 @@ namespace Polly.Retry
 
                     TimeSpan waitDuration = sleepDurationsEnumerator?.Current ?? (sleepDurationProvider?.Invoke(tryCount, outcome, context) ?? TimeSpan.Zero);
                 
-                    onRetry(outcome, waitDuration, tryCount, context);
+                    onRetry?.OnRetry(outcome, waitDuration, tryCount, context);
 
                     if (waitDuration > TimeSpan.Zero)
                     {

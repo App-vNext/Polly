@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading;
+using Polly.Bulkhead.Settings;
 
 namespace Polly.Bulkhead
 {
@@ -8,14 +9,14 @@ namespace Polly.Bulkhead
         internal static TResult Implementation<TResult>(
             Func<Context, CancellationToken, TResult> action,
             Context context,
-            Action<Context> onBulkheadRejected,
+            IBulkheadRejectedCallback onBulkheadRejectedCallback,
             SemaphoreSlim maxParallelizationSemaphore,
             SemaphoreSlim maxQueuedActionsSemaphore,
             CancellationToken cancellationToken)
         {
             if (!maxQueuedActionsSemaphore.Wait(TimeSpan.Zero, cancellationToken))
             {
-                onBulkheadRejected(context);
+                onBulkheadRejectedCallback?.OnBulkheadRejected(context);
                 throw new BulkheadRejectedException();
             }
             

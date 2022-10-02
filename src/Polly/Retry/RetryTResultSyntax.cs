@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Polly.Retry;
 using System.Linq;
+using Polly.Retry.Settings;
 
 namespace Polly
 {
@@ -88,7 +89,7 @@ namespace Polly
 
             return new RetryPolicy<TResult>(
                 policyBuilder,
-                (outcome, _, i, ctx) => onRetry(outcome, i, ctx),
+                new DelegateOnRetryCallback<TResult>(onRetry),
                 retryCount);
         }
 
@@ -148,7 +149,7 @@ namespace Polly
 
             return new RetryPolicy<TResult>(
                 policyBuilder,
-                (outcome, _, _, ctx) => onRetry(outcome, ctx)
+                new DelegateOnRetryCallback<TResult>(onRetry)
                 );
         }
 
@@ -166,7 +167,7 @@ namespace Polly
 
             return new RetryPolicy<TResult>(
                 policyBuilder,
-                (outcome, _, i, ctx) => onRetry(outcome, i, ctx)
+                new DelegateOnRetryCallback<TResult>(onRetry)
             );
         }
 
@@ -270,7 +271,7 @@ namespace Polly
 
             return new RetryPolicy<TResult>(
                 policyBuilder,
-                onRetry,
+                new DelegateOnRetryCallback<TResult>(onRetry),
                 retryCount,
                 sleepDurationsEnumerable: sleepDurations
             );
@@ -413,7 +414,7 @@ namespace Polly
 
             return new RetryPolicy<TResult>(
                 policyBuilder,
-                onRetry,
+                new DelegateOnRetryCallback<TResult>(onRetry),
                 retryCount,
                 sleepDurationProvider: sleepDurationProvider
             );
@@ -496,7 +497,7 @@ namespace Polly
 
             return new RetryPolicy<TResult>(
                 policyBuilder,
-                onRetry,
+                new DelegateOnRetryCallback<TResult>(onRetry),
                 sleepDurationsEnumerable: sleepDurations
             );
         }
@@ -644,7 +645,7 @@ namespace Polly
 
             return new RetryPolicy<TResult>(
                 policyBuilder,
-                (outcome, timespan, _, ctx) => onRetry(outcome, timespan, ctx),
+                new DelegateOnRetryCallback<TResult>(onRetry),
                 sleepDurationProvider: sleepDurationProvider);
         }
 
@@ -667,7 +668,7 @@ namespace Polly
 
             return new RetryPolicy<TResult>(
                 policyBuilder,
-                (exception, timespan, i, ctx) => onRetry(exception, i, timespan, ctx),
+                new DelegateOnRetryCallback<TResult>(onRetry),
                 sleepDurationProvider: sleepDurationProvider
                 );
         }

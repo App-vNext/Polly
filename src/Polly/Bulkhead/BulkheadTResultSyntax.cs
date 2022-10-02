@@ -1,5 +1,6 @@
 ﻿using Polly.Bulkhead;
 using System;
+using Polly.Bulkhead.Settings;
 
 namespace Polly
 {
@@ -62,12 +63,18 @@ namespace Polly
             if (maxQueuingActions < 0) throw new ArgumentOutOfRangeException(nameof(maxQueuingActions), "Value must be greater than or equal to zero.");
             if (onBulkheadRejected == null) throw new ArgumentNullException(nameof(onBulkheadRejected));
 
-            return new BulkheadPolicy<TResult>(
-                maxParallelization,
-                maxQueuingActions,
-                onBulkheadRejected
-                );
+            var settings = new BulkheadPolicySettings(maxParallelization)
+            {
+                MaxQueuingActions = maxQueuingActions,
+                OnBulkheadRejectedCallback = new DelegateBulkheadRejectedCallback(onBulkheadRejected)
+            };
+            return Bulkhead<TResult>(settings);
         }
-
+        
+        public static BulkheadPolicy<TResult> Bulkhead<TResult>(BulkheadPolicySettings settings)
+        {
+            settings = settings ?? throw new ArgumentNullException(nameof(settings));
+            return new BulkheadPolicy<TResult>(settings);
+        }
     }
 }
