@@ -1,7 +1,9 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
+using Polly.Bulkhead.Options;
 
 namespace Polly.Bulkhead
 {
@@ -13,17 +15,17 @@ namespace Polly.Bulkhead
         private readonly SemaphoreSlim _maxParallelizationSemaphore;
         private readonly SemaphoreSlim _maxQueuedActionsSemaphore;
         private readonly int _maxQueueingActions;
-        private Func<Context, Task> _onBulkheadRejectedAsync;
+        private readonly AsyncBulkheadRejectionHandlerBase? _asyncBulkheadRejectionHandler;
 
-        internal AsyncBulkheadPolicy(
-            int maxParallelization,
-            int maxQueueingActions,
-            Func<Context, Task> onBulkheadRejectedAsync)
+        internal AsyncBulkheadPolicy(AsyncBulkheadPolicyOptions options)
         {
-            _maxQueueingActions = maxQueueingActions;
-            _onBulkheadRejectedAsync = onBulkheadRejectedAsync ?? throw new ArgumentNullException(nameof(onBulkheadRejectedAsync));
+            if (options is null) throw new ArgumentNullException(nameof(options));
 
-            (_maxParallelizationSemaphore, _maxQueuedActionsSemaphore) = BulkheadSemaphoreFactory.CreateBulkheadSemaphores(maxParallelization, maxQueueingActions);
+            var maxParallelization = options.MaxParallelization;
+            _maxQueueingActions = options.MaxQueuingActions;
+            _asyncBulkheadRejectionHandler = options.BulkheadRejectionHandler;
+
+            (_maxParallelizationSemaphore, _maxQueuedActionsSemaphore) = BulkheadSemaphoreFactory.CreateBulkheadSemaphores(maxParallelization, _maxQueueingActions);
         }
 
         /// <summary>
@@ -41,7 +43,7 @@ namespace Polly.Bulkhead
         protected override Task<TResult> ImplementationAsync<TResult>(Func<Context, CancellationToken, Task<TResult>> action, Context context, CancellationToken cancellationToken,
             bool continueOnCapturedContext)
         {
-            return AsyncBulkheadEngine.ImplementationAsync(action, context, _onBulkheadRejectedAsync, _maxParallelizationSemaphore, _maxQueuedActionsSemaphore, cancellationToken, continueOnCapturedContext);
+            return AsyncBulkheadEngine.ImplementationAsync(action, context, _asyncBulkheadRejectionHandler, _maxParallelizationSemaphore, _maxQueuedActionsSemaphore, cancellationToken, continueOnCapturedContext);
         }
 
         /// <inheritdoc/>
@@ -61,24 +63,22 @@ namespace Polly.Bulkhead
         private readonly SemaphoreSlim _maxParallelizationSemaphore;
         private readonly SemaphoreSlim _maxQueuedActionsSemaphore;
         private readonly int _maxQueueingActions;
-        private Func<Context, Task> _onBulkheadRejectedAsync;
+        private readonly AsyncBulkheadRejectionHandlerBase? _asyncBulkheadRejectionHandler;
 
-        internal AsyncBulkheadPolicy(
-            int maxParallelization,
-            int maxQueueingActions,
-            Func<Context, Task> onBulkheadRejectedAsync)
+        internal AsyncBulkheadPolicy(AsyncBulkheadPolicyOptions options)
         {
-            _maxQueueingActions = maxQueueingActions;
-            _onBulkheadRejectedAsync = onBulkheadRejectedAsync ?? throw new ArgumentNullException(nameof(onBulkheadRejectedAsync));
+            var maxParallelization = options.MaxParallelization;
+            _maxQueueingActions = options.MaxQueuingActions;
+            _asyncBulkheadRejectionHandler = options.BulkheadRejectionHandler;
 
-            (_maxParallelizationSemaphore, _maxQueuedActionsSemaphore) = BulkheadSemaphoreFactory.CreateBulkheadSemaphores(maxParallelization, maxQueueingActions);
+            (_maxParallelizationSemaphore, _maxQueuedActionsSemaphore) = BulkheadSemaphoreFactory.CreateBulkheadSemaphores(maxParallelization, _maxQueueingActions);
         }
 
         /// <inheritdoc/>
         [DebuggerStepThrough]
         protected override Task<TResult> ImplementationAsync(Func<Context, CancellationToken, Task<TResult>> action, Context context, CancellationToken cancellationToken, bool continueOnCapturedContext)
         {
-            return AsyncBulkheadEngine.ImplementationAsync(action, context, _onBulkheadRejectedAsync, _maxParallelizationSemaphore, _maxQueuedActionsSemaphore, cancellationToken, continueOnCapturedContext);
+            return AsyncBulkheadEngine.ImplementationAsync(action, context, _asyncBulkheadRejectionHandler, _maxParallelizationSemaphore, _maxQueuedActionsSemaphore, cancellationToken, continueOnCapturedContext);
         }
 
         /// <summary>

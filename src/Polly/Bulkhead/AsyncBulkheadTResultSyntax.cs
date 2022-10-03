@@ -2,6 +2,7 @@
 using Polly.Utilities;
 using System;
 using System.Threading.Tasks;
+using Polly.Bulkhead.Options;
 
 namespace Polly
 {
@@ -62,13 +63,27 @@ namespace Polly
         {
             if (maxParallelization <= 0) throw new ArgumentOutOfRangeException(nameof(maxParallelization), "Value must be greater than zero.");
             if (maxQueuingActions < 0) throw new ArgumentOutOfRangeException(nameof(maxQueuingActions), "Value must be greater than or equal to zero.");
-            if (onBulkheadRejectedAsync == null) throw new ArgumentNullException(nameof(onBulkheadRejectedAsync));
+            if (onBulkheadRejectedAsync is null) throw new ArgumentNullException(nameof(onBulkheadRejectedAsync));
 
-            return new AsyncBulkheadPolicy<TResult>(
-                maxParallelization,
-                maxQueuingActions,
-                onBulkheadRejectedAsync
-                );
+            var options = new AsyncBulkheadPolicyOptions(maxParallelization)
+            {
+                MaxQueuingActions = maxQueuingActions,
+                BulkheadRejectionHandler = new DelegateAsyncBulkheadRejectionHandler(onBulkheadRejectedAsync)
+            };
+            
+            return BulkheadAsync<TResult>(options);
+        }
+        
+        /// <summary>
+        /// Builds a bulkhead isolation <see cref="AsyncPolicy{TResult}" />, which limits the maximum concurrency of actions executed through the policy.  Imposing a maximum concurrency limits the potential of governed actions, when faulting, to bring down the system.
+        /// </summary>
+        /// <param name="options">The options for the settings of the policy</param>
+        /// <returns>The policy instance</returns>
+        /// <exception cref="ArgumentNullException">options</exception>
+        public static AsyncBulkheadPolicy<TResult> BulkheadAsync<TResult>(AsyncBulkheadPolicyOptions options)
+        {
+            if (options is null) throw new ArgumentNullException(nameof(options));
+            return new AsyncBulkheadPolicy<TResult>(options);
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Polly.Bulkhead.Options;
 
 namespace Polly.Bulkhead
 {
@@ -9,7 +10,7 @@ namespace Polly.Bulkhead
        internal static async Task<TResult> ImplementationAsync<TResult>(
             Func<Context, CancellationToken, Task<TResult>> action,
             Context context,
-            Func<Context, Task> onBulkheadRejectedAsync,
+            AsyncBulkheadRejectionHandlerBase asyncBulkheadRejectionHandler,
             SemaphoreSlim maxParallelizationSemaphore,
             SemaphoreSlim maxQueuedActionsSemaphore,
             CancellationToken cancellationToken, 
@@ -17,7 +18,8 @@ namespace Polly.Bulkhead
         {
             if (!await maxQueuedActionsSemaphore.WaitAsync(TimeSpan.Zero, cancellationToken).ConfigureAwait(continueOnCapturedContext))
             {
-                await onBulkheadRejectedAsync(context).ConfigureAwait(continueOnCapturedContext);
+                var handlerTask = asyncBulkheadRejectionHandler?.OnBulkheadRejected(context);
+                if (handlerTask is not null) await handlerTask.ConfigureAwait(continueOnCapturedContext);
                 throw new BulkheadRejectedException();
             }
             try

@@ -1,8 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿#nullable enable
+using System;
 using System.Diagnostics;
 using System.Threading;
-using Polly.Retry.Settings;
+using Polly.Retry.Options;
 
 namespace Polly.Retry
 {
@@ -11,24 +11,15 @@ namespace Polly.Retry
     /// </summary>
     public class RetryPolicy : Policy, IRetryPolicy
     {
-        private readonly IOnRetryCallback _onRetry;
-        private readonly int _permittedRetryCount;
-        private readonly IEnumerable<TimeSpan> _sleepDurationsEnumerable;
-        private readonly Func<int, Exception, Context, TimeSpan> _sleepDurationProvider;
+        private readonly RetryInvocationHandlerBase? _retryInvocationHandler;
+        private readonly RetryCountValue _permittedRetryCount;
+        private readonly SleepDurationProviderBase? _sleepDurationProvider;
 
-        internal RetryPolicy(
-            PolicyBuilder policyBuilder,
-            IOnRetryCallback onRetry, 
-            int permittedRetryCount = Int32.MaxValue,
-            IEnumerable<TimeSpan> sleepDurationsEnumerable = null,
-            Func<int, Exception, Context, TimeSpan> sleepDurationProvider = null
-            ) 
-            : base(policyBuilder)
+        internal RetryPolicy(PolicyBuilder policyBuilder, RetryPolicyOptions options) : base(policyBuilder)
         {
-            _permittedRetryCount = permittedRetryCount;
-            _sleepDurationsEnumerable = sleepDurationsEnumerable;
-            _sleepDurationProvider = sleepDurationProvider;
-            _onRetry = onRetry ?? throw new ArgumentNullException(nameof(onRetry));
+            _permittedRetryCount = options.PermittedRetryCount;
+            _sleepDurationProvider = options.SleepDurationProvider;
+            _retryInvocationHandler = options.RetryInvocationHandler;
         }
 
         /// <inheritdoc/>
@@ -39,12 +30,10 @@ namespace Polly.Retry
                     cancellationToken,
                     ExceptionPredicates,
                     ResultPredicates<TResult>.None, 
-                    new OnRetryCallbackAdapter<TResult>(_onRetry),
+                    new RetryInvocationHandlerAdapter<TResult>(_retryInvocationHandler),
                     _permittedRetryCount,
-                    _sleepDurationsEnumerable,
-                    _sleepDurationProvider != null
-                        ? (retryCount, outcome, ctx) => _sleepDurationProvider(retryCount, outcome.Exception, ctx)
-                        : (Func<int, DelegateResult<TResult>, Context, TimeSpan>)null
+                    _sleepDurationProvider is not null ? 
+                        new SleepDurationProviderAdapter<TResult>(_sleepDurationProvider) : default
                 );
     }
 
@@ -53,24 +42,16 @@ namespace Polly.Retry
     /// </summary>
     public class RetryPolicy<TResult> : Policy<TResult>, IRetryPolicy<TResult>
     {
-        private readonly IOnRetryCallback<TResult> _onRetry;
-        private readonly int _permittedRetryCount;
-        private readonly IEnumerable<TimeSpan> _sleepDurationsEnumerable;
-        private readonly Func<int, DelegateResult<TResult>, Context, TimeSpan> _sleepDurationProvider;
+        private readonly RetryInvocationHandlerBase<TResult>? _retryInvocationHandler;
+        private readonly RetryCountValue _permittedRetryCount;
+        private readonly SleepDurationProviderBase<TResult>? _sleepDurationProvider;
 
-        internal RetryPolicy(
-            PolicyBuilder<TResult> policyBuilder,
-            IOnRetryCallback<TResult> onRetry,
-            int permittedRetryCount = Int32.MaxValue,
-            IEnumerable<TimeSpan> sleepDurationsEnumerable = null,
-            Func<int, DelegateResult<TResult>, Context, TimeSpan> sleepDurationProvider = null
-        )
+        internal RetryPolicy(PolicyBuilder<TResult> policyBuilder, RetryPolicyOptions<TResult> options)
             : base(policyBuilder)
         {
-            _permittedRetryCount = permittedRetryCount;
-            _sleepDurationsEnumerable = sleepDurationsEnumerable;
-            _sleepDurationProvider = sleepDurationProvider;
-            _onRetry = onRetry ?? throw new ArgumentNullException(nameof(onRetry));
+            _permittedRetryCount = options.PermittedRetryCount;
+            _sleepDurationProvider = options.SleepDurationProvider;
+            _retryInvocationHandler = options.RetryInvocationHandler;
         }
 
         /// <inheritdoc/>
@@ -82,9 +63,8 @@ namespace Polly.Retry
                 cancellationToken,
                 ExceptionPredicates,
                 ResultPredicates,
-                _onRetry,
+                _retryInvocationHandler,
                 _permittedRetryCount,
-                _sleepDurationsEnumerable, 
                 _sleepDurationProvider
             );
     }

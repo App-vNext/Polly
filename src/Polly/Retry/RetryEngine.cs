@@ -1,7 +1,8 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.Collections.Generic;
 using System.Threading;
-using Polly.Retry.Settings;
+using Polly.Retry.Options;
 using Polly.Utilities;
 
 namespace Polly.Retry
@@ -14,13 +15,11 @@ namespace Polly.Retry
             CancellationToken cancellationToken,
             ExceptionPredicates shouldRetryExceptionPredicates,
             ResultPredicates<TResult> shouldRetryResultPredicates,
-            IOnRetryCallback<TResult> onRetry,
-            int permittedRetryCount = Int32.MaxValue,
-            IEnumerable<TimeSpan> sleepDurationsEnumerable = null,
-            Func<int, DelegateResult<TResult>, Context, TimeSpan> sleepDurationProvider = null)
+            RetryInvocationHandlerBase<TResult>? retryInvocationHandler,
+            RetryCountValue permittedRetryCount,
+            SleepDurationProviderBase<TResult>? sleepDurationProvider = null)
         {
             int tryCount = 0;
-            IEnumerator<TimeSpan> sleepDurationsEnumerator = sleepDurationsEnumerable?.GetEnumerator();
 
             try
             {
@@ -40,7 +39,7 @@ namespace Polly.Retry
                             return result;
                         }
 
-                        canRetry = tryCount < permittedRetryCount && (sleepDurationsEnumerable == null || sleepDurationsEnumerator.MoveNext());
+                        canRetry = tryCount < permittedRetryCount;
                     
                         if (!canRetry)
                         {
@@ -57,7 +56,7 @@ namespace Polly.Retry
                             throw;
                         }
 
-                        canRetry = tryCount < permittedRetryCount && (sleepDurationsEnumerable == null || sleepDurationsEnumerator.MoveNext());
+                        canRetry = tryCount < permittedRetryCount;
 
                         if (!canRetry)
                         {
@@ -70,9 +69,9 @@ namespace Polly.Retry
 
                     if (tryCount < int.MaxValue) { tryCount++; }
 
-                    TimeSpan waitDuration = sleepDurationsEnumerator?.Current ?? (sleepDurationProvider?.Invoke(tryCount, outcome, context) ?? TimeSpan.Zero);
+                    TimeSpan waitDuration = sleepDurationProvider?.GetNext(tryCount, outcome, context) ?? TimeSpan.Zero;
                 
-                    onRetry?.OnRetry(outcome, waitDuration, tryCount, context);
+                    retryInvocationHandler?.OnRetry(outcome, waitDuration, tryCount, context);
 
                     if (waitDuration > TimeSpan.Zero)
                     {
@@ -83,7 +82,7 @@ namespace Polly.Retry
             }
             finally
             {
-                sleepDurationsEnumerator?.Dispose();
+                sleepDurationProvider?.Dispose();
             }
         }
     }
