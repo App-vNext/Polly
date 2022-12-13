@@ -24,7 +24,7 @@ internal class CircuitBreakerEngine
 
             if (shouldHandleResultPredicates.AnyMatch(result))
             {
-                breakerController.OnActionFailure(new(result), context);
+                breakerController.OnActionFailure(new DelegateResult<TResult>(result), context);
             }
             else
             {
@@ -41,7 +41,7 @@ internal class CircuitBreakerEngine
                 throw;
             }
 
-            breakerController.OnActionFailure(new(handledException), context);
+            breakerController.OnActionFailure(new DelegateResult<TResult>(handledException), context);
 
             if (handledException != ex)
             {

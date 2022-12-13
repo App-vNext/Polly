@@ -242,7 +242,7 @@ public static class AdvancedCircuitBreakerSyntax
             (outcome, state, timespan, context) => onBreak(outcome.Exception, state, timespan, context),
             onReset,
             onHalfOpen);
-        return new(
+        return new CircuitBreakerPolicy(
             policyBuilder,
             breakerController
         );

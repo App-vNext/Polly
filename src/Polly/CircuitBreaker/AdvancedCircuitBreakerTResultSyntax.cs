@@ -244,7 +244,7 @@ public static class AdvancedCircuitBreakerTResultSyntax
             onBreak,
             onReset,
             onHalfOpen);
-        return new(
+        return new CircuitBreakerPolicy<TResult>(
             policyBuilder,
             breakerController
         );

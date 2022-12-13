@@ -17,7 +17,7 @@ internal class RollingHealthMetrics : IHealthMetrics
         _samplingDuration = samplingDuration.Ticks;
 
         _windowDuration = _samplingDuration / numberOfWindows;
-        _windows = new(numberOfWindows + 1);
+        _windows = new Queue<HealthCount>(numberOfWindows + 1);
     }
 
     public void IncrementSuccess_NeedsLock()
@@ -52,7 +52,7 @@ internal class RollingHealthMetrics : IHealthMetrics
             failures += window.Failures;
         }
 
-        return new()
+        return new HealthCount
         {
             Successes = successes,
             Failures = failures,
@@ -65,8 +65,7 @@ internal class RollingHealthMetrics : IHealthMetrics
         var now = SystemClock.UtcNow().Ticks;
         if (_currentWindow == null || now - _currentWindow.StartedAt >= _windowDuration)
         {
-            _currentWindow = new()
-                { StartedAt = now };
+            _currentWindow = new HealthCount { StartedAt = now };
             _windows.Enqueue(_currentWindow);
         }
 

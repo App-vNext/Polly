@@ -11,7 +11,7 @@ internal static class AsyncAddBehaviourIfHandleSyntax
     {
         if (behaviourIfHandle == null) throw new ArgumentNullException(nameof(behaviourIfHandle));
 
-        return new(behaviourIfHandle, policyBuilder);
+        return new AsyncAddBehaviourIfHandlePolicy(behaviourIfHandle, policyBuilder);
     }
 
     internal static AsyncAddBehaviourIfHandlePolicy<TResult> WithBehaviourAsync<TResult>(
@@ -20,6 +20,6 @@ internal static class AsyncAddBehaviourIfHandleSyntax
     {
         if (behaviourIfHandle == null) throw new ArgumentNullException(nameof(behaviourIfHandle));
 
-        return new(behaviourIfHandle, policyBuilder);
+        return new AsyncAddBehaviourIfHandlePolicy<TResult>(behaviourIfHandle, policyBuilder);
     }
 }

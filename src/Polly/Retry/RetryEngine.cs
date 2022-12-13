@@ -46,7 +46,7 @@ internal static class RetryEngine
                         return result;
                     }
 
-                    outcome = new(result);
+                    outcome = new DelegateResult<TResult>(result);
                 }
                 catch (Exception ex)
                 {
@@ -64,7 +64,7 @@ internal static class RetryEngine
                         throw;
                     }
 
-                    outcome = new(handledException);
+                    outcome = new DelegateResult<TResult>(handledException);
                 }
 
                 if (tryCount < int.MaxValue) { tryCount++; }

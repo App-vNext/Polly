@@ -232,7 +232,7 @@ public class RetryTResultSpecsAsync
             .RetryAsync(3, (outcome, _) => retryFaults.Add(outcome.Result.SomeString));
 
         IList<ResultClass> resultsToRaise = expectedFaults.Select(s => new ResultClass(ResultPrimitive.Fault, s)).ToList();
-        resultsToRaise.Add(new(ResultPrimitive.Fault));
+        resultsToRaise.Add(new ResultClass(ResultPrimitive.Fault));
 
         (await policy.RaiseResultSequenceAsync(resultsToRaise))
             .ResultCode.Should().Be(ResultPrimitive.Fault);

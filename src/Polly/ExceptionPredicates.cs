@@ -29,5 +29,5 @@ public class ExceptionPredicates
     /// <summary>
     /// Specifies that no Exception-handling filters are applied or are required.
     /// </summary>
-    public static readonly ExceptionPredicates None = new();
+    public static readonly ExceptionPredicates None = new ExceptionPredicates();
 }

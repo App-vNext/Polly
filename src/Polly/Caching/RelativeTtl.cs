@@ -26,5 +26,5 @@ public class RelativeTtl : ITtlStrategy
     /// <param name="context">The execution context.</param>
     /// <param name="result">The execution result.</param>
     /// <returns>A <see cref="Ttl"/> representing the remaining Ttl of the cached item.</returns>
-    public Ttl GetTtl(Context context, object result) => new(ttl);
+    public Ttl GetTtl(Context context, object result) => new Ttl(ttl);
 }

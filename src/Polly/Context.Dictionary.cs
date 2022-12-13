@@ -15,7 +15,7 @@ public partial class Context : IDictionary<string, object>, IDictionary, IReadOn
 
     private Dictionary<string, object> wrappedDictionary;
 
-    private Dictionary<string, object> WrappedDictionary => wrappedDictionary ?? (wrappedDictionary = new());
+    private Dictionary<string, object> WrappedDictionary => wrappedDictionary ?? (wrappedDictionary = new Dictionary<string, object>());
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Context"/> class, with the specified <paramref name="operationKey" /> and the supplied <paramref name="contextData"/>.
@@ -30,7 +30,7 @@ public partial class Context : IDictionary<string, object>, IDictionary, IReadOn
     internal Context(IDictionary<string, object> contextData) : this()
     {
         if (contextData == null) throw new ArgumentNullException(nameof(contextData));
-        wrappedDictionary = new(contextData);
+        wrappedDictionary = new Dictionary<string, object>(contextData);
     }
 
     #region IDictionary<string,object> implementation

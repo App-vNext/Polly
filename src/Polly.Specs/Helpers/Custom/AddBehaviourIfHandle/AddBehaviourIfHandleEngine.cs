@@ -20,7 +20,7 @@ internal static class AddBehaviourIfHandleEngine
 
             if (shouldHandleResultPredicates.AnyMatch(result))
             {
-                behaviourIfHandle(new(result));
+                behaviourIfHandle(new DelegateResult<TResult>(result));
             }
 
             return result;
@@ -33,7 +33,7 @@ internal static class AddBehaviourIfHandleEngine
                 throw;
             }
 
-            behaviourIfHandle(new(handledException));
+            behaviourIfHandle(new DelegateResult<TResult>(handledException));
 
             handledException.RethrowWithOriginalStackTraceIfDiffersFrom(ex);
             throw;

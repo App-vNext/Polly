@@ -31,7 +31,7 @@ public class RateLimitPolicyTResultSpecs : RateLimitPolicyTResultSpecsBase, IDis
         {
             try
             {
-                typedPolicy.Execute(() => new(ResultPrimitive.Good));
+                typedPolicy.Execute(() => new ResultClassWithRetryAfter(ResultPrimitive.Good));
                 return (true, TimeSpan.Zero);
             }
             catch (RateLimitRejectedException e)

@@ -8,13 +8,13 @@ internal static class AddBehaviourIfHandleSyntax
     {
         if (behaviourIfHandle == null) throw new ArgumentNullException(nameof(behaviourIfHandle));
 
-        return new(behaviourIfHandle, policyBuilder);
+        return new AddBehaviourIfHandlePolicy(behaviourIfHandle, policyBuilder);
     }
 
     internal static AddBehaviourIfHandlePolicy<TResult> WithBehaviour<TResult>(this PolicyBuilder<TResult> policyBuilder, Action<DelegateResult<TResult>> behaviourIfHandle)
     {
         if (behaviourIfHandle == null) throw new ArgumentNullException(nameof(behaviourIfHandle));
 
-        return new(behaviourIfHandle, policyBuilder);
+        return new AddBehaviourIfHandlePolicy<TResult>(behaviourIfHandle, policyBuilder);
     }
 }

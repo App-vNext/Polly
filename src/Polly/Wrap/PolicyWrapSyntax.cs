@@ -15,7 +15,7 @@ public partial class Policy
     {
         if (innerPolicy == null) throw new ArgumentNullException(nameof(innerPolicy));
 
-        return new(
+        return new PolicyWrap(
             this,
             innerPolicy
         );
@@ -31,7 +31,7 @@ public partial class Policy
     {
         if (innerPolicy == null) throw new ArgumentNullException(nameof(innerPolicy));
 
-        return new(
+        return new PolicyWrap<TResult>(
             this,
             innerPolicy
         );
@@ -49,7 +49,7 @@ public partial class Policy<TResult>
     {
         if (innerPolicy == null) throw new ArgumentNullException(nameof(innerPolicy));
 
-        return new(
+        return new PolicyWrap<TResult>(
             this,
             innerPolicy
         );
@@ -64,7 +64,7 @@ public partial class Policy<TResult>
     {
         if (innerPolicy == null) throw new ArgumentNullException(nameof(innerPolicy));
 
-        return new(
+        return new PolicyWrap<TResult>(
             this,
             innerPolicy
         );
@@ -87,7 +87,7 @@ public partial class Policy
             case 1:
                 throw new ArgumentException("The enumerable of policies to form the wrap must contain at least two policies.", nameof(policies));
             case 2:
-                return new((Policy)policies[0], policies[1]);
+                return new PolicyWrap((Policy)policies[0], policies[1]);
 
             default:
                 return Wrap(policies[0], Wrap(policies.Skip(1).ToArray()));
@@ -109,7 +109,7 @@ public partial class Policy
             case 1:
                 throw new ArgumentException("The enumerable of policies to form the wrap must contain at least two policies.", nameof(policies));
             case 2:
-                return new((Policy<TResult>)policies[0], policies[1]);
+                return new PolicyWrap<TResult>((Policy<TResult>)policies[0], policies[1]);
 
             default:
                 return Wrap(policies[0], Wrap(policies.Skip(1).ToArray()));

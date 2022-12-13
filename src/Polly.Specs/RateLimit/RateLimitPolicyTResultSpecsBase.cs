@@ -31,7 +31,7 @@ public abstract class RateLimitPolicyTResultSpecsBase : RateLimitPolicySpecsBase
         Func<TimeSpan, Context, ResultClassWithRetryAfter> retryAfterFactory = (t, ctx) =>
         {
             contextPassedToRetryAfter = ctx;
-            return new(t);
+            return new ResultClassWithRetryAfter(t);
         };
         var rateLimiter = GetPolicyViaSyntax<ResultClassWithRetryAfter>(1, onePer, 1, retryAfterFactory);
 
@@ -43,7 +43,7 @@ public abstract class RateLimitPolicyTResultSpecsBase : RateLimitPolicySpecsBase
 
         // Act - try another execution.
         var contextToPassIn = new Context();
-        var resultExpectedBlocked = TryExecuteThroughPolicy(rateLimiter, contextToPassIn, new(ResultPrimitive.Good));
+        var resultExpectedBlocked = TryExecuteThroughPolicy(rateLimiter, contextToPassIn, new ResultClassWithRetryAfter(ResultPrimitive.Good));
 
         // Assert - should be blocked - time not advanced.
         resultExpectedBlocked.ResultCode.Should().NotBe(ResultPrimitive.Good);

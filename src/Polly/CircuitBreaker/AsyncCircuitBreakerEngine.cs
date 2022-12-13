@@ -26,7 +26,7 @@ internal class AsyncCircuitBreakerEngine
 
             if (shouldHandleResultPredicates.AnyMatch(result))
             {
-                breakerController.OnActionFailure(new(result), context);
+                breakerController.OnActionFailure(new DelegateResult<TResult>(result), context);
             }
             else
             {
@@ -43,7 +43,7 @@ internal class AsyncCircuitBreakerEngine
                 throw;
             }
 
-            breakerController.OnActionFailure(new(handledException), context);
+            breakerController.OnActionFailure(new DelegateResult<TResult>(handledException), context);
 
             handledException.RethrowWithOriginalStackTraceIfDiffersFrom(ex);
             throw;

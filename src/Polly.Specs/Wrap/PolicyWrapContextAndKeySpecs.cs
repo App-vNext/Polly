@@ -83,7 +83,7 @@ public class PolicyWrapContextAndKeySpecs
         ISyncPolicy policyWrap = Policy.Wrap(fallback, retry)
             .WithPolicyKey("PolicyWrap");
 
-        policyWrap.Execute(() => throw new());
+        policyWrap.Execute(() => throw new Exception());
     }
 
     [Fact]
@@ -147,7 +147,7 @@ public class PolicyWrapContextAndKeySpecs
             if (!doneOnceOnly)
             {
                 doneOnceOnly = true;
-                throw new();
+                throw new Exception();
             }
         });
 
@@ -240,7 +240,7 @@ public class PolicyWrapTResultContextAndKeySpecs
         var policyWrap = Policy.Wrap(fallback, retry)
             .WithPolicyKey("PolicyWrap");
 
-        policyWrap.Execute(() => throw new());
+        policyWrap.Execute(() => throw new Exception());
     }
 
     [Fact]

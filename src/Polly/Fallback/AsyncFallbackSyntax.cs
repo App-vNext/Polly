@@ -80,7 +80,7 @@ public static class AsyncFallbackSyntax
         if (fallbackAction == null) throw new ArgumentNullException(nameof(fallbackAction));
         if (onFallbackAsync == null) throw new ArgumentNullException(nameof(onFallbackAsync));
 
-        return new(policyBuilder, onFallbackAsync, fallbackAction);
+        return new AsyncFallbackPolicy(policyBuilder, onFallbackAsync, fallbackAction);
     }
 }
 
@@ -209,7 +209,7 @@ public static class AsyncFallbackTResultSyntax
         if (fallbackAction == null) throw new ArgumentNullException(nameof(fallbackAction));
         if (onFallbackAsync == null) throw new ArgumentNullException(nameof(onFallbackAsync));
 
-        return new(
+        return new AsyncFallbackPolicy<TResult>(
             policyBuilder,
             onFallbackAsync,
             fallbackAction);

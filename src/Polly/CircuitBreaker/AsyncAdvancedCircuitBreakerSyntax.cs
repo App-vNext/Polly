@@ -246,7 +246,7 @@ public static class AsyncAdvancedCircuitBreakerSyntax
             (outcome, state, timespan, context) => onBreak(outcome.Exception, state, timespan, context),
             onReset,
             onHalfOpen);
-        return new(
+        return new AsyncCircuitBreakerPolicy(
             policyBuilder,
             breakerController
         );

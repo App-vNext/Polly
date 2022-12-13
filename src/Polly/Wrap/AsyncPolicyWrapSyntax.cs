@@ -15,7 +15,7 @@ public partial class AsyncPolicy
     {
         if (innerPolicy == null) throw new ArgumentNullException(nameof(innerPolicy));
 
-        return new(
+        return new AsyncPolicyWrap(
             this,
             innerPolicy
         );
@@ -31,7 +31,7 @@ public partial class AsyncPolicy
     {
         if (innerPolicy == null) throw new ArgumentNullException(nameof(innerPolicy));
 
-        return new(
+        return new AsyncPolicyWrap<TResult>(
             this,
             innerPolicy
         );
@@ -49,7 +49,7 @@ public partial class AsyncPolicy<TResult>
     {
         if (innerPolicy == null) throw new ArgumentNullException(nameof(innerPolicy));
 
-        return new(
+        return new AsyncPolicyWrap<TResult>(
             this,
             innerPolicy
         );
@@ -64,7 +64,7 @@ public partial class AsyncPolicy<TResult>
     {
         if (innerPolicy == null) throw new ArgumentNullException(nameof(innerPolicy));
 
-        return new(
+        return new AsyncPolicyWrap<TResult>(
             this,
             innerPolicy
         );
@@ -87,7 +87,7 @@ public partial class Policy
             case 1:
                 throw new ArgumentException("The enumerable of policies to form the wrap must contain at least two policies.", nameof(policies));
             case 2:
-                return new((AsyncPolicy)policies[0], policies[1]);
+                return new AsyncPolicyWrap((AsyncPolicy)policies[0], policies[1]);
 
             default:
                 return WrapAsync(policies[0], WrapAsync(policies.Skip(1).ToArray()));
@@ -109,7 +109,7 @@ public partial class Policy
             case 1:
                 throw new ArgumentException("The enumerable of policies to form the wrap must contain at least two policies.", nameof(policies));
             case 2:
-                return new((AsyncPolicy<TResult>)policies[0], policies[1]);
+                return new AsyncPolicyWrap<TResult>((AsyncPolicy<TResult>)policies[0], policies[1]);
 
             default:
                 return WrapAsync(policies[0], WrapAsync(policies.Skip(1).ToArray()));

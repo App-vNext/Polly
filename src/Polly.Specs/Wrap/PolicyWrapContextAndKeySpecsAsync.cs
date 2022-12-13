@@ -86,7 +86,7 @@ public class PolicyWrapContextAndKeySpecsAsync
         IAsyncPolicy policyWrap = Policy.WrapAsync(fallback, retry)
             .WithPolicyKey("PolicyWrap");
 
-        await policyWrap.ExecuteAsync(() => throw new());
+        await policyWrap.ExecuteAsync(() => throw new Exception());
     }
 
     [Fact]
@@ -114,7 +114,7 @@ public class PolicyWrapContextAndKeySpecsAsync
         IAsyncPolicy policyWrap = Policy.WrapAsync(fallback, retry)
             .WithPolicyKey("PolicyWrap");
 
-        await policyWrap.ExecuteAsync(async () => await Task.Run(() => throw new())); // Regression test for issue 510
+        await policyWrap.ExecuteAsync(async () => await Task.Run(() => throw new Exception())); // Regression test for issue 510
     }
 
     [Fact]
@@ -178,7 +178,7 @@ public class PolicyWrapContextAndKeySpecsAsync
             if (!doneOnceOnly)
             {
                 doneOnceOnly = true;
-                throw new();
+                throw new Exception();
             }
             return TaskHelper.EmptyTask;
         });
@@ -273,7 +273,7 @@ public class PolicyWrapTResultContextAndKeySpecsAsync
         IAsyncPolicy<ResultPrimitive> policyWrap = Policy.WrapAsync(fallback, retry)
             .WithPolicyKey("PolicyWrap");
 
-        await policyWrap.ExecuteAsync(() => throw new());
+        await policyWrap.ExecuteAsync(() => throw new Exception());
     }
 
     [Fact]
@@ -303,7 +303,7 @@ public class PolicyWrapTResultContextAndKeySpecsAsync
 
         await policyWrap.ExecuteAsync(async () => await Task.Run(() => // Regression test for issue 510
         {
-            throw new();
+            throw new Exception();
 #pragma warning disable 0162 // unreachable code detected
             return ResultPrimitive.WhateverButTooLate;
 #pragma warning restore 0162

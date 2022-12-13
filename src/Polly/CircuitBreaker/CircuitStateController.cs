@@ -15,7 +15,7 @@ internal abstract class CircuitStateController<TResult> : ICircuitController<TRe
     protected readonly Action<Context> _onReset;
     protected readonly Action _onHalfOpen;
 
-    protected readonly object _lock = new();
+    protected readonly object _lock = new object();
 
     protected CircuitStateController(
         TimeSpan durationOfBreak,
@@ -83,7 +83,7 @@ internal abstract class CircuitStateController<TResult> : ICircuitController<TRe
     {
         using (TimedLock.Lock(_lock))
         {
-            _lastOutcome = new(new IsolatedCircuitException("The circuit is manually held open and is not allowing calls."));
+            _lastOutcome = new DelegateResult<TResult>(new IsolatedCircuitException("The circuit is manually held open and is not allowing calls."));
             BreakFor_NeedsLock(TimeSpan.MaxValue, Context.None());
             _circuitState = CircuitState.Isolated;
         }
@@ -138,12 +138,12 @@ internal abstract class CircuitStateController<TResult> : ICircuitController<TRe
         var lastOutcome = _lastOutcome;
         if (lastOutcome == null)
         {
-            return new(BrokenCircuitMessage);
+            return new BrokenCircuitException(BrokenCircuitMessage);
         }
 
         if (lastOutcome.Exception != null)
         {
-            return new(BrokenCircuitMessage, lastOutcome.Exception);
+            return new BrokenCircuitException(BrokenCircuitMessage, lastOutcome.Exception);
         }
 
         return new BrokenCircuitException<TResult>(BrokenCircuitMessage, lastOutcome.Result);

@@ -73,7 +73,7 @@ public partial class Policy
         onCacheError = onCacheError ?? ((_, _, _) => { });
         Action<Context, string> emptyDelegate = (_, _) => { };
 
-        return new(cacheProvider, ttlStrategy, cacheKeyStrategy.GetCacheKey, emptyDelegate, emptyDelegate, emptyDelegate, onCacheError, onCacheError);
+        return new AsyncCachePolicy(cacheProvider, ttlStrategy, cacheKeyStrategy.GetCacheKey, emptyDelegate, emptyDelegate, emptyDelegate, onCacheError, onCacheError);
     }
 
     /// <summary>
@@ -115,7 +115,7 @@ public partial class Policy
         onCacheError = onCacheError ?? ((_, _, _) => { });
         Action<Context, string> emptyDelegate = (_, _) => { };
 
-        return new(cacheProvider, ttlStrategy, cacheKeyStrategy, emptyDelegate, emptyDelegate, emptyDelegate, onCacheError, onCacheError);
+        return new AsyncCachePolicy(cacheProvider, ttlStrategy, cacheKeyStrategy, emptyDelegate, emptyDelegate, emptyDelegate, onCacheError, onCacheError);
     }
 
     /// <summary>
@@ -322,6 +322,6 @@ public partial class Policy
         if (onCachePutError == null) throw new ArgumentNullException(nameof(onCachePutError));
         if (onCachePutError == null) throw new ArgumentNullException(nameof(onCachePutError));
 
-        return new(cacheProvider, ttlStrategy, cacheKeyStrategy, onCacheGet, onCacheMiss, onCachePut, onCacheGetError, onCachePutError);
+        return new AsyncCachePolicy(cacheProvider, ttlStrategy, cacheKeyStrategy, onCacheGet, onCacheMiss, onCachePut, onCacheGetError, onCachePutError);
     }
 }
