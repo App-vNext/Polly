@@ -81,9 +81,9 @@ public class AdvancedCircuitBreakerSpecs : IDisposable
         Action action = () => Policy
             .Handle<DivideByZeroException>()
             .AdvancedCircuitBreaker(
-                0.5,
-                TimeSpan.FromMilliseconds(20).Add(TimeSpan.FromTicks(-1)),
-                4,
+                0.5, 
+                TimeSpan.FromMilliseconds(20).Add(TimeSpan.FromTicks(-1)), 
+                4, 
                 TimeSpan.FromSeconds(30));
 
         action.Should().Throw<ArgumentOutOfRangeException>()
@@ -163,8 +163,8 @@ public class AdvancedCircuitBreakerSpecs : IDisposable
 
     #region Tests that are independent from health metrics implementation
 
-    // Tests on the AdvancedCircuitBreaker operation typically use a breaker:
-    // - with a failure threshold of >=50%,
+    // Tests on the AdvancedCircuitBreaker operation typically use a breaker: 
+    // - with a failure threshold of >=50%, 
     // - and a throughput threshold of 4
     // - across a ten-second period.
     // These provide easy values for testing for failure and throughput thresholds each being met and non-met, in combination.
@@ -243,8 +243,8 @@ public class AdvancedCircuitBreakerSpecs : IDisposable
 
     #region With sample duration higher than 199 ms so that multiple windows are used
 
-    // Tests on the AdvancedCircuitBreaker operation typically use a breaker:
-    // - with a failure threshold of >=50%,
+    // Tests on the AdvancedCircuitBreaker operation typically use a breaker: 
+    // - with a failure threshold of >=50%, 
     // - and a throughput threshold of 4
     // - across a ten-second period.
     // These provide easy values for testing for failure and throughput thresholds each being met and non-met, in combination.
@@ -837,8 +837,8 @@ public class AdvancedCircuitBreakerSpecs : IDisposable
         // Setting the time to just barely into the new timeslice
         SystemClock.UtcNow = () => time.Add(samplingDuration);
 
-        // A third failure occurs just at the beginning of the new timeslice making
-        // the number of failures above the failure threshold. However, the throughput is
+        // A third failure occurs just at the beginning of the new timeslice making 
+        // the number of failures above the failure threshold. However, the throughput is 
         // below the minimum threshold as to open the circuit.
         breaker.Invoking(x => x.RaiseException<DivideByZeroException>())
             .Should().Throw<DivideByZeroException>();
@@ -897,8 +897,8 @@ public class AdvancedCircuitBreakerSpecs : IDisposable
 
     #region With sample duration at 199 ms so that only a single window is used
 
-    // These tests on AdvancedCircuitBreaker operation typically use a breaker:
-    // - with a failure threshold of >=50%,
+    // These tests on AdvancedCircuitBreaker operation typically use a breaker: 
+    // - with a failure threshold of >=50%, 
     // - and a throughput threshold of 4
     // - across a 199ms period.
     // These provide easy values for testing for failure and throughput thresholds each being met and non-met, in combination.
@@ -1257,7 +1257,7 @@ public class AdvancedCircuitBreakerSpecs : IDisposable
         // Setting the time to just barely into the new timeslice
         SystemClock.UtcNow = () => time.Add(samplingDuration);
 
-        // This failure does not open the circuit, because a new duration should have
+        // This failure does not open the circuit, because a new duration should have 
         // started and with such low sampling duration, windows should not be used.
         breaker.Invoking(x => x.RaiseException<DivideByZeroException>())
             .Should().Throw<DivideByZeroException>();
@@ -1482,7 +1482,7 @@ public class AdvancedCircuitBreakerSpecs : IDisposable
         breaker.Invoking(x => x.RaiseException<DivideByZeroException>())
             .Should().Throw<DivideByZeroException>();
 
-        // exception raised, circuit is now open.
+        // exception raised, circuit is now open.  
         breaker.CircuitState.Should().Be(CircuitState.Open);
 
         // break duration passes, circuit now half open
@@ -1521,7 +1521,7 @@ public class AdvancedCircuitBreakerSpecs : IDisposable
         breaker.Invoking(x => x.RaiseException<DivideByZeroException>())
             .Should().Throw<DivideByZeroException>();
 
-        // exception raised, circuit is now open.
+        // exception raised, circuit is now open.  
         breaker.CircuitState.Should().Be(CircuitState.Open);
 
         // break duration passes, circuit now half open
@@ -1568,7 +1568,7 @@ public class AdvancedCircuitBreakerSpecs : IDisposable
         breaker.Invoking(x => x.RaiseException<DivideByZeroException>())
             .Should().Throw<DivideByZeroException>();
 
-        // exceptions raised, circuit is now open.
+        // exceptions raised, circuit is now open.  
         breaker.CircuitState.Should().Be(CircuitState.Open);
 
         // break duration passes, circuit now half open
@@ -1581,7 +1581,7 @@ public class AdvancedCircuitBreakerSpecs : IDisposable
         var testTimeoutToExposeDeadlocks = TimeSpan.FromSeconds(5);
         using (var permitSecondExecutionAttempt = new ManualResetEvent(false))
         using (var permitFirstExecutionEnd = new ManualResetEvent(false))
-        {
+        { 
             bool? firstDelegateExecutedInHalfOpenState = null;
             bool? secondDelegateExecutedInHalfOpenState = null;
             bool? secondDelegateRejectedInHalfOpenState = null;
@@ -1641,7 +1641,7 @@ public class AdvancedCircuitBreakerSpecs : IDisposable
             firstExecution.Status.Should().Be(TaskStatus.RanToCompletion);
             secondExecution.Status.Should().Be(TaskStatus.RanToCompletion);
 
-            // Assert:
+            // Assert: 
             // - First execution should have been permitted and executed under a HalfOpen state
             // - Second overlapping execution in halfopen state should not have been permitted.
             // - Second execution attempt should have been rejected with HalfOpen state as cause.
@@ -1673,7 +1673,7 @@ public class AdvancedCircuitBreakerSpecs : IDisposable
         breaker.Invoking(x => x.RaiseException<DivideByZeroException>())
             .Should().Throw<DivideByZeroException>();
 
-        // exception raised, circuit is now open.
+        // exception raised, circuit is now open.  
         breaker.CircuitState.Should().Be(CircuitState.Open);
 
         // break duration passes, circuit now half open
@@ -1687,7 +1687,7 @@ public class AdvancedCircuitBreakerSpecs : IDisposable
         var testTimeoutToExposeDeadlocks = TimeSpan.FromSeconds(5);
         using (var permitSecondExecutionAttempt = new ManualResetEvent(false))
         using (var permitFirstExecutionEnd = new ManualResetEvent(false))
-        {
+        { 
             bool? firstDelegateExecutedInHalfOpenState = null;
             bool? secondDelegateExecutedInHalfOpenState = null;
             bool? secondDelegateRejectedInHalfOpenState = null;
@@ -1749,7 +1749,7 @@ public class AdvancedCircuitBreakerSpecs : IDisposable
             firstExecution.Status.Should().Be(TaskStatus.RanToCompletion);
             secondExecution.Status.Should().Be(TaskStatus.RanToCompletion);
 
-            // Assert:
+            // Assert: 
             // - First execution should have been permitted and executed under a HalfOpen state
             // - Second overlapping execution in halfopen state should have been permitted, one breakDuration later.
             firstDelegateExecutedInHalfOpenState.Should().BeTrue();
@@ -1996,7 +1996,7 @@ public class AdvancedCircuitBreakerSpecs : IDisposable
 
         onBreakCalled.Should().Be(1);
 
-        // call through circuit when already broken - should not retrigger onBreak
+        // call through circuit when already broken - should not retrigger onBreak 
         breaker.Invoking(x => x.RaiseException<DivideByZeroException>())
             .Should().Throw<BrokenCircuitException>();
 

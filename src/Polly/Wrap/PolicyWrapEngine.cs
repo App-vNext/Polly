@@ -40,7 +40,7 @@ internal static class PolicyWrapEngine
     internal static void Implementation(
         Action<Context, CancellationToken> action,
         Context context,
-        CancellationToken cancellationToken,
+        CancellationToken cancellationToken, 
         ISyncPolicy outerPolicy,
         ISyncPolicy innerPolicy)
         => outerPolicy.Execute((ctx, ct) => innerPolicy.Execute(action, ctx, ct), context, cancellationToken);

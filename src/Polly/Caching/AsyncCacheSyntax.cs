@@ -202,8 +202,8 @@ public partial class Policy
     /// <exception cref="ArgumentNullException">onCacheGetError</exception>
     /// <exception cref="ArgumentNullException">onCachePutError</exception>
     public static AsyncCachePolicy CacheAsync(
-        IAsyncCacheProvider cacheProvider,
-        TimeSpan ttl,
+        IAsyncCacheProvider cacheProvider, 
+        TimeSpan ttl, 
         ICacheKeyStrategy cacheKeyStrategy,
         Action<Context, string> onCacheGet,
         Action<Context, string> onCacheMiss,

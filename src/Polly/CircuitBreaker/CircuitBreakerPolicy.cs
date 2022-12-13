@@ -63,7 +63,7 @@ public class CircuitBreakerPolicy<TResult> : Policy<TResult>, ICircuitBreakerPol
     internal readonly ICircuitController<TResult> _breakerController;
 
     internal CircuitBreakerPolicy(
-        PolicyBuilder<TResult> policyBuilder,
+        PolicyBuilder<TResult> policyBuilder, 
         ICircuitController<TResult> breakerController
     ) : base(policyBuilder)
         => _breakerController = breakerController;

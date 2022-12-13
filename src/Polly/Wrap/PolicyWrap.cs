@@ -22,7 +22,7 @@ public partial class PolicyWrap : Policy, IPolicyWrap
     /// </summary>
     public IsPolicy Inner => _inner;
 
-    internal PolicyWrap(Policy outer, ISyncPolicy inner)
+    internal PolicyWrap(Policy outer, ISyncPolicy inner) 
         : base(outer.ExceptionPredicates)
     {
         _outer = outer;

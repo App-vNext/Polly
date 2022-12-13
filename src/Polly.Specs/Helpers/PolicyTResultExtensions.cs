@@ -11,7 +11,7 @@ public static class PolicyTResultExtensions
     public static TResult RaiseResultSequence<TResult>(this Policy<TResult> policy, params TResult[] resultsToRaise) =>
         policy.RaiseResultSequence(resultsToRaise.ToList());
 
-    public static TResult RaiseResultSequence<TResult>(this Policy<TResult> policy, IEnumerable<TResult> resultsToRaise)
+    public static TResult RaiseResultSequence<TResult>(this Policy<TResult> policy, IEnumerable<TResult> resultsToRaise) 
     {
         using (var enumerator = resultsToRaise.GetEnumerator())
         {

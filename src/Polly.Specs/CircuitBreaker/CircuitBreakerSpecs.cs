@@ -322,7 +322,7 @@ public class CircuitBreakerSpecs : IDisposable
         breaker.Invoking(x => x.RaiseException<DivideByZeroException>())
             .Should().Throw<DivideByZeroException>();
 
-        // exception raised, circuit is now open.
+        // exception raised, circuit is now open.  
         breaker.CircuitState.Should().Be(CircuitState.Open);
 
         // break duration passes, circuit now half open
@@ -353,7 +353,7 @@ public class CircuitBreakerSpecs : IDisposable
         breaker.Invoking(x => x.RaiseException<DivideByZeroException>())
             .Should().Throw<DivideByZeroException>();
 
-        // exception raised, circuit is now open.
+        // exception raised, circuit is now open.  
         breaker.CircuitState.Should().Be(CircuitState.Open);
 
         // break duration passes, circuit now half open
@@ -392,7 +392,7 @@ public class CircuitBreakerSpecs : IDisposable
         breaker.Invoking(x => x.RaiseException<DivideByZeroException>())
             .Should().Throw<DivideByZeroException>();
 
-        // exception raised, circuit is now open.
+        // exception raised, circuit is now open.  
         breaker.CircuitState.Should().Be(CircuitState.Open);
 
         // break duration passes, circuit now half open
@@ -405,7 +405,7 @@ public class CircuitBreakerSpecs : IDisposable
         var testTimeoutToExposeDeadlocks = TimeSpan.FromSeconds(5);
         using (var permitSecondExecutionAttempt = new ManualResetEvent(false))
         using (var permitFirstExecutionEnd = new ManualResetEvent(false))
-        {
+        { 
             bool? firstDelegateExecutedInHalfOpenState = null;
             bool? secondDelegateExecutedInHalfOpenState = null;
             bool? secondDelegateRejectedInHalfOpenState = null;
@@ -465,7 +465,7 @@ public class CircuitBreakerSpecs : IDisposable
             firstExecution.Status.Should().Be(TaskStatus.RanToCompletion);
             secondExecution.Status.Should().Be(TaskStatus.RanToCompletion);
 
-            // Assert:
+            // Assert: 
             // - First execution should have been permitted and executed under a HalfOpen state
             // - Second overlapping execution in halfopen state should not have been permitted.
             // - Second execution attempt should have been rejected with HalfOpen state as cause.
@@ -490,7 +490,7 @@ public class CircuitBreakerSpecs : IDisposable
         breaker.Invoking(x => x.RaiseException<DivideByZeroException>())
             .Should().Throw<DivideByZeroException>();
 
-        // exception raised, circuit is now open.
+        // exception raised, circuit is now open.  
         breaker.CircuitState.Should().Be(CircuitState.Open);
 
         // break duration passes, circuit now half open
@@ -566,7 +566,7 @@ public class CircuitBreakerSpecs : IDisposable
             firstExecution.Status.Should().Be(TaskStatus.RanToCompletion);
             secondExecution.Status.Should().Be(TaskStatus.RanToCompletion);
 
-            // Assert:
+            // Assert: 
             // - First execution should have been permitted and executed under a HalfOpen state
             // - Second overlapping execution in halfopen state should have been permitted, one breakDuration later.
             firstDelegateExecutedInHalfOpenState.Should().BeTrue();
@@ -766,7 +766,7 @@ public class CircuitBreakerSpecs : IDisposable
         breaker.CircuitState.Should().Be(CircuitState.Open);
         onBreakCalled.Should().Be(1);
 
-        // call through circuit when already broken - should not retrigger onBreak
+        // call through circuit when already broken - should not retrigger onBreak 
         breaker.Invoking(x => x.RaiseException<DivideByZeroException>())
             .Should().Throw<BrokenCircuitException>();
 
@@ -789,7 +789,7 @@ public class CircuitBreakerSpecs : IDisposable
         var testTimeoutToExposeDeadlocks = TimeSpan.FromSeconds(5);
         using (var permitLongRunningExecutionToReturnItsFailure = new ManualResetEvent(false))
         using (var permitMainThreadToOpenCircuit = new ManualResetEvent(false))
-        {
+        { 
             var longRunningExecution = Task.Factory.StartNew(() =>
             {
                 breaker.CircuitState.Should().Be(CircuitState.Closed);
@@ -833,7 +833,7 @@ public class CircuitBreakerSpecs : IDisposable
     }
 
     [Fact]
-    public void Should_call_onreset_when_automatically_closing_circuit_but_not_when_halfopen()
+    public void Should_call_onreset_when_automatically_closing_circuit_but_not_when_halfopen() 
     {
         var onBreakCalled = 0;
         var onResetCalled = 0;

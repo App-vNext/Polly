@@ -68,7 +68,7 @@ public class PolicyRegistrySpecs
         _registry.Add<ISyncPolicy<ResultPrimitive>>(key2, policy2);
         _registry.Count.Should().Be(2);
     }
-
+        
     [Fact]
     public void Should_be_able_to_add_Policy_using_Indexer()
     {
@@ -100,7 +100,7 @@ public class PolicyRegistrySpecs
         _registry[key2] = policy2;
         _registry.Count.Should().Be(2);
     }
-
+        
     [Fact]
     public void Should_not_be_able_to_add_Policy_with_duplicate_key_using_Add()
     {
@@ -145,7 +145,7 @@ public class PolicyRegistrySpecs
 
         _registry.Get<Policy<ResultPrimitive>>(key).Should().BeSameAs(policy_new);
     }
-
+        
     [Fact]
     public void Should_throw_when_adding_Policy_using_Add_when_key_is_null()
     {
@@ -443,7 +443,7 @@ public class PolicyRegistrySpecs
     }
     #endregion
 
-    #region Tests for the constructor
+    #region Tests for the constructor        
     [Fact]
     public void Constructor_Called_With_A_Registry_Parameter_Should_Assign_The_Passed_In_Registry_To_The_Registry_Field()
     {

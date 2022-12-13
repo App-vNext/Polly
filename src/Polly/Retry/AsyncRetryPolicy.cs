@@ -45,8 +45,8 @@ public class AsyncRetryPolicy : AsyncPolicy, IRetryPolicy
             (outcome, timespan, retryCount, ctx) => _onRetryAsync(outcome.Exception, timespan, retryCount, ctx),
             _permittedRetryCount,
             _sleepDurationsEnumerable,
-            _sleepDurationProvider != null
-                ? (retryCount, outcome, ctx) =>  _sleepDurationProvider(retryCount, outcome.Exception, ctx)
+            _sleepDurationProvider != null 
+                ? (retryCount, outcome, ctx) =>  _sleepDurationProvider(retryCount, outcome.Exception, ctx) 
                 : (Func<int, DelegateResult<TResult>, Context, TimeSpan>)null,
             continueOnCapturedContext
         );

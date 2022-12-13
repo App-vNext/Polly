@@ -62,7 +62,7 @@ public class BulkheadTResultSpecs : BulkheadSpecsBase
         Action<Context> onRejected = ctx => { contextPassedToOnRejected = ctx; };
 
         using (var bulkhead = Policy.Bulkhead<int>(1, onRejected))
-        {
+        { 
             var tcs = new TaskCompletionSource<object>();
             using (var cancellationSource = new CancellationTokenSource())
             {

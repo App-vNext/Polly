@@ -59,8 +59,8 @@ public partial class Policy
     /// <exception cref="ArgumentOutOfRangeException">maxQueuingActions;Value must be greater than or equal to zero.</exception>
     /// <exception cref="ArgumentNullException">onBulkheadRejectedAsync</exception>
     public static AsyncBulkheadPolicy BulkheadAsync(
-        int maxParallelization,
-        int maxQueuingActions,
+        int maxParallelization, 
+        int maxQueuingActions, 
         Func<Context, Task> onBulkheadRejectedAsync)
     {
         if (maxParallelization <= 0) throw new ArgumentOutOfRangeException(nameof(maxParallelization), "Value must be greater than zero.");

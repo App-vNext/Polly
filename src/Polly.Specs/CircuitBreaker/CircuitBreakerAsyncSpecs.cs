@@ -325,7 +325,7 @@ public class CircuitBreakerAsyncSpecs : IDisposable
         breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
             .Should().Throw<DivideByZeroException>();
 
-        // exception raised, circuit is now open.
+        // exception raised, circuit is now open.  
         breaker.CircuitState.Should().Be(CircuitState.Open);
 
         // break duration passes, circuit now half open
@@ -356,13 +356,13 @@ public class CircuitBreakerAsyncSpecs : IDisposable
         breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
             .Should().Throw<DivideByZeroException>();
 
-        // exception raised, circuit is now open.
+        // exception raised, circuit is now open.  
         breaker.CircuitState.Should().Be(CircuitState.Open);
 
         // break duration passes, circuit now half open
         SystemClock.UtcNow = () => time.Add(durationOfBreak);
         breaker.CircuitState.Should().Be(CircuitState.HalfOpen);
-
+            
 
         // OnActionPreExecute() should permit first execution.
         breaker._breakerController.Invoking(c => c.OnActionPreExecute()).Should().NotThrow();
@@ -395,7 +395,7 @@ public class CircuitBreakerAsyncSpecs : IDisposable
         breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
             .Should().Throw<DivideByZeroException>();
 
-        // exception raised, circuit is now open.
+        // exception raised, circuit is now open.  
         breaker.CircuitState.Should().Be(CircuitState.Open);
 
         // break duration passes, circuit now half open
@@ -470,7 +470,7 @@ public class CircuitBreakerAsyncSpecs : IDisposable
             firstExecution.Status.Should().Be(TaskStatus.RanToCompletion);
             secondExecution.Status.Should().Be(TaskStatus.RanToCompletion);
 
-            // Assert:
+            // Assert: 
             // - First execution should have been permitted and executed under a HalfOpen state
             // - Second overlapping execution in halfopen state should not have been permitted.
             // - Second execution attempt should have been rejected with HalfOpen state as cause.
@@ -494,7 +494,7 @@ public class CircuitBreakerAsyncSpecs : IDisposable
         breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
             .Should().Throw<DivideByZeroException>();
 
-        // exception raised, circuit is now open.
+        // exception raised, circuit is now open.  
         breaker.CircuitState.Should().Be(CircuitState.Open);
 
         // break duration passes, circuit now half open
@@ -572,7 +572,7 @@ public class CircuitBreakerAsyncSpecs : IDisposable
             firstExecution.Status.Should().Be(TaskStatus.RanToCompletion);
             secondExecution.Status.Should().Be(TaskStatus.RanToCompletion);
 
-            // Assert:
+            // Assert: 
             // - First execution should have been permitted and executed under a HalfOpen state
             // - Second overlapping execution in halfopen state should have been permitted, one breakDuration later.
             firstDelegateExecutedInHalfOpenState.Should().BeTrue();
@@ -773,7 +773,7 @@ public class CircuitBreakerAsyncSpecs : IDisposable
         breaker.CircuitState.Should().Be(CircuitState.Open);
         onBreakCalled.Should().Be(1);
 
-        // call through circuit when already broken - should not retrigger onBreak
+        // call through circuit when already broken - should not retrigger onBreak 
         breaker.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
             .Should().Throw<BrokenCircuitException>();
 

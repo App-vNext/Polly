@@ -136,9 +136,9 @@ public class PolicyResult<TResult>
     /// A <see cref="PolicyResult" /> representing a failed execution through the policy.
     /// </returns>
     public static PolicyResult<TResult> Failure(Exception exception, ExceptionType exceptionType, Context context)
-        => new PolicyResult<TResult>(default, OutcomeType.Failure, exception, exceptionType, default,
-            exceptionType == Polly.ExceptionType.HandledByThisPolicy
-                ? Polly.FaultType.ExceptionHandledByThisPolicy
+        => new PolicyResult<TResult>(default, OutcomeType.Failure, exception, exceptionType, default, 
+            exceptionType == Polly.ExceptionType.HandledByThisPolicy 
+                ? Polly.FaultType.ExceptionHandledByThisPolicy 
                 : Polly.FaultType.UnhandledException,
             context);
 

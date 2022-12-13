@@ -10,7 +10,7 @@ namespace Polly.NoOp;
 /// </summary>
 public class AsyncNoOpPolicy : AsyncPolicy, INoOpPolicy
 {
-    internal AsyncNoOpPolicy()
+    internal AsyncNoOpPolicy() 
     {
     }
 
@@ -26,7 +26,7 @@ public class AsyncNoOpPolicy : AsyncPolicy, INoOpPolicy
 /// </summary>
 public class AsyncNoOpPolicy<TResult> : AsyncPolicy<TResult>, INoOpPolicy<TResult>
 {
-    internal AsyncNoOpPolicy()
+    internal AsyncNoOpPolicy() 
     {
     }
 

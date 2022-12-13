@@ -17,11 +17,11 @@ public class RetryPolicy : Policy, IRetryPolicy
 
     internal RetryPolicy(
         PolicyBuilder policyBuilder,
-        Action<Exception, TimeSpan, int, Context> onRetry,
+        Action<Exception, TimeSpan, int, Context> onRetry, 
         int permittedRetryCount = Int32.MaxValue,
         IEnumerable<TimeSpan> sleepDurationsEnumerable = null,
         Func<int, Exception, Context, TimeSpan> sleepDurationProvider = null
-    )
+    ) 
         : base(policyBuilder)
     {
         _permittedRetryCount = permittedRetryCount;
@@ -33,11 +33,11 @@ public class RetryPolicy : Policy, IRetryPolicy
     /// <inheritdoc/>
     protected override TResult Implementation<TResult>(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken)
         => RetryEngine.Implementation(
-            action,
-            context,
+            action, 
+            context, 
             cancellationToken,
             ExceptionPredicates,
-            ResultPredicates<TResult>.None,
+            ResultPredicates<TResult>.None, 
             (outcome, timespan, retryCount, ctx) => _onRetry(outcome.Exception, timespan, retryCount, ctx),
             _permittedRetryCount,
             _sleepDurationsEnumerable,
@@ -83,7 +83,7 @@ public class RetryPolicy<TResult> : Policy<TResult>, IRetryPolicy<TResult>
             ResultPredicates,
             _onRetry,
             _permittedRetryCount,
-            _sleepDurationsEnumerable,
+            _sleepDurationsEnumerable, 
             _sleepDurationProvider
         );
 }

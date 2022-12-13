@@ -362,7 +362,7 @@ public class TimeoutSpecs : TimeoutSpecsBase
         var policy = Policy.Timeout(TimeSpan.FromMilliseconds(50), TimeoutStrategy.Optimistic);
         var userCancellationToken = CancellationToken.None;
 
-        policy.Invoking(p => p.Execute(ct => SystemClock.Sleep(TimeSpan.FromSeconds(3), ct), userCancellationToken)) // Delegate observes cancellation token, so permitting optimistic cancellation.
+        policy.Invoking(p => p.Execute(ct => SystemClock.Sleep(TimeSpan.FromSeconds(3), ct), userCancellationToken)) // Delegate observes cancellation token, so permitting optimistic cancellation. 
             .Should().Throw<TimeoutRejectedException>();
     }
 
@@ -397,7 +397,7 @@ public class TimeoutSpecs : TimeoutSpecsBase
         var tolerance = TimeSpan.FromSeconds(3); // Consider increasing tolerance, if test fails transiently in different test/build environments.
 
         watch.Start();
-        policy.Invoking(p => p.Execute(ct => SystemClock.Sleep(TimeSpan.FromSeconds(10), ct), userCancellationToken)) // Delegate observes cancellation token, so permitting optimistic cancellation.
+        policy.Invoking(p => p.Execute(ct => SystemClock.Sleep(TimeSpan.FromSeconds(10), ct), userCancellationToken)) // Delegate observes cancellation token, so permitting optimistic cancellation. 
             .Should().Throw<TimeoutRejectedException>();
         watch.Stop();
 
@@ -626,7 +626,7 @@ public class TimeoutSpecs : TimeoutSpecsBase
     [Fact]
     public void Should_call_ontimeout_with_task_wrapping_abandoned_action_allowing_capture_of_otherwise_unobserved_exception__pessimistic()
     {
-        SystemClock.Reset(); // This is the only test which cannot work with the artificial SystemClock of TimeoutSpecsBase.  We want the invoked delegate to continue as far as: throw exceptionToThrow, to genuinely check that the walked-away-from task throws that, and that we pass it to onTimeout.
+        SystemClock.Reset(); // This is the only test which cannot work with the artificial SystemClock of TimeoutSpecsBase.  We want the invoked delegate to continue as far as: throw exceptionToThrow, to genuinely check that the walked-away-from task throws that, and that we pass it to onTimeout.  
         // That means we can't use the SystemClock.Sleep(...) within the executed delegate to artificially trigger the timeout cancellation (as for example the test above does).
         // In real execution, it is the .Wait(timeoutCancellationTokenSource.Token) in the timeout implementation which throws for the timeout.  We don't want to go as far as abstracting Task.Wait() out into SystemClock, so we let this test run at real-world speed, not abstracted-clock speed.
 

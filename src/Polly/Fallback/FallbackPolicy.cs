@@ -27,9 +27,9 @@ public class FallbackPolicy : Policy, IFallbackPolicy
     [DebuggerStepThrough]
     protected override void Implementation(Action<Context, CancellationToken> action, Context context, CancellationToken cancellationToken)
         => FallbackEngine.Implementation<EmptyStruct>(
-            (ctx, token) => { action(ctx, token); return EmptyStruct.Instance; },
-            context,
-            cancellationToken,
+            (ctx, token) => { action(ctx, token); return EmptyStruct.Instance; }, 
+            context, 
+            cancellationToken, 
             ExceptionPredicates,
             ResultPredicates<EmptyStruct>.None,
             (outcome, ctx) => _onFallback(outcome.Exception, ctx),

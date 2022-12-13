@@ -5,7 +5,7 @@ using Polly.Utilities;
 namespace Polly;
 
 /// <summary>
-/// Fluent API for defining a Circuit Breaker <see cref="AsyncPolicy{TResult}"/>.
+/// Fluent API for defining a Circuit Breaker <see cref="AsyncPolicy{TResult}"/>. 
 /// </summary>
 public static class AsyncAdvancedCircuitBreakerTResultSyntax
 {

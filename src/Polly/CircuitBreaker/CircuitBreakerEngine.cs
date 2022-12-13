@@ -10,8 +10,8 @@ internal class CircuitBreakerEngine
         Func<Context, CancellationToken, TResult> action,
         Context context,
         CancellationToken cancellationToken,
-        ExceptionPredicates shouldHandleExceptionPredicates,
-        ResultPredicates<TResult> shouldHandleResultPredicates,
+        ExceptionPredicates shouldHandleExceptionPredicates, 
+        ResultPredicates<TResult> shouldHandleResultPredicates, 
         ICircuitController<TResult> breakerController)
     {
         cancellationToken.ThrowIfCancellationRequested();

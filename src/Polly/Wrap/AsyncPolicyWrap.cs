@@ -55,7 +55,7 @@ public partial class AsyncPolicyWrap : AsyncPolicy, IPolicyWrap
             action,
             context,
             cancellationToken,
-            continueOnCapturedContext,
+            continueOnCapturedContext, 
             _outer,
             _inner
         );

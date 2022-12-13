@@ -54,7 +54,7 @@ public partial class Policy
     /// <param name="result">The TResult value this policy will handle.</param>
     /// <remarks>This policy filter matches the <paramref name="result"/> value returned using .Equals(), ideally suited for value types such as int and enum.  To match characteristics of class return types, consider the overload taking a result predicate.</remarks>
     /// <returns>The PolicyBuilder instance.</returns>
-    public static PolicyBuilder<TResult> HandleResult<TResult>(TResult result)
+    public static PolicyBuilder<TResult> HandleResult<TResult>(TResult result) 
         => HandleResult(new Func<TResult, bool>(r => (r != null && r.Equals(result)) || (r == null && result == null)));
 }
 

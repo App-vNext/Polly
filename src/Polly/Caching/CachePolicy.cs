@@ -20,7 +20,7 @@ public class CachePolicy : Policy, ICachePolicy
     private readonly Action<Context, string, Exception> _onCachePutError;
 
     internal CachePolicy(
-        ISyncCacheProvider syncCacheProvider,
+        ISyncCacheProvider syncCacheProvider, 
         ITtlStrategy ttlStrategy,
         Func<Context, string> cacheKeyStrategy,
         Action<Context, string> onCacheGet,

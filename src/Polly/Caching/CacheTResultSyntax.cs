@@ -330,7 +330,7 @@ public partial class Policy
     /// <exception cref="ArgumentNullException">onCachePutError</exception>
     public static CachePolicy<TResult> Cache<TResult>(
         ISyncCacheProvider cacheProvider,
-        ITtlStrategy ttlStrategy,
+        ITtlStrategy ttlStrategy, 
         Func<Context, string> cacheKeyStrategy,
         Action<Context, string> onCacheGet,
         Action<Context, string> onCacheMiss,
