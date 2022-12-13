@@ -5,107 +5,106 @@ using BenchmarkDotNet.Attributes;
 using Microsoft.Extensions.Caching.Memory;
 using Polly.Caching;
 
-namespace Polly.Benchmarks
+namespace Polly.Benchmarks;
+
+[Config(typeof(PollyConfig))]
+public class Cache
 {
-    [Config(typeof(PollyConfig))]
-    public class Cache
+    private static readonly MemoryCache MemoryCache = new MemoryCache(new MemoryCacheOptions());
+    private static readonly MemoryCacheProvider CacheProvider = new MemoryCacheProvider(MemoryCache);
+
+    private static readonly Policy SyncPolicyMiss = Policy.Cache(CacheProvider, TimeSpan.Zero);
+    private static readonly AsyncPolicy AsyncPolicyMiss = Policy.CacheAsync(CacheProvider, TimeSpan.Zero);
+
+    private static readonly Policy SyncPolicyHit = Policy.Cache(CacheProvider, TimeSpan.MaxValue);
+    private static readonly AsyncPolicy AsyncPolicyHit = Policy.CacheAsync(CacheProvider, TimeSpan.MaxValue);
+
+    private static readonly Context HitContext = new Context(nameof(HitContext));
+    private static readonly Context MissContext = new Context(nameof(MissContext));
+
+    [GlobalSetup]
+    public async Task GlobalSetup()
     {
-        private static readonly MemoryCache MemoryCache = new MemoryCache(new MemoryCacheOptions());
-        private static readonly MemoryCacheProvider CacheProvider = new MemoryCacheProvider(MemoryCache);
+        SyncPolicyHit.Execute((context) => GetObject(), HitContext);
+        await AsyncPolicyHit.ExecuteAsync((context, token) => GetObjectAsync(token), HitContext, CancellationToken.None);
+    }
 
-        private static readonly Policy SyncPolicyMiss = Policy.Cache(CacheProvider, TimeSpan.Zero);
-        private static readonly AsyncPolicy AsyncPolicyMiss = Policy.CacheAsync(CacheProvider, TimeSpan.Zero);
+    [Benchmark]
+    public object Cache_Synchronous_Hit()
+    {
+        return SyncPolicyHit.Execute((context) => GetObject(), HitContext);
+    }
 
-        private static readonly Policy SyncPolicyHit = Policy.Cache(CacheProvider, TimeSpan.MaxValue);
-        private static readonly AsyncPolicy AsyncPolicyHit = Policy.CacheAsync(CacheProvider, TimeSpan.MaxValue);
+    [Benchmark]
+    public async Task<object> Cache_Asynchronous_Hit()
+    {
+        return await AsyncPolicyHit.ExecuteAsync((context, token) => GetObjectAsync(token), HitContext, CancellationToken.None);
+    }
 
-        private static readonly Context HitContext = new Context(nameof(HitContext));
-        private static readonly Context MissContext = new Context(nameof(MissContext));
+    [Benchmark]
+    public object Cache_Synchronous_Miss()
+    {
+        return SyncPolicyMiss.Execute((context) => GetObject(), MissContext);
+    }
 
-        [GlobalSetup]
-        public async Task GlobalSetup()
+    [Benchmark]
+    public async Task<object> Cache_Asynchronous_Miss()
+    {
+        return await AsyncPolicyMiss.ExecuteAsync((context, token) => GetObjectAsync(token), MissContext, CancellationToken.None);
+    }
+
+    private static object GetObject() => new object();
+
+    private static Task<object> GetObjectAsync(CancellationToken cancellationToken) => Task.FromResult(new object());
+
+    private sealed class MemoryCacheProvider : ISyncCacheProvider, IAsyncCacheProvider
+    {
+        private readonly IMemoryCache _cache;
+
+        public MemoryCacheProvider(IMemoryCache memoryCache)
         {
-            SyncPolicyHit.Execute((context) => GetObject(), HitContext);
-            await AsyncPolicyHit.ExecuteAsync((context, token) => GetObjectAsync(token), HitContext, CancellationToken.None);
+            _cache = memoryCache;
         }
 
-        [Benchmark]
-        public object Cache_Synchronous_Hit()
+        public (bool, object) TryGet(string key)
         {
-            return SyncPolicyHit.Execute((context) => GetObject(), HitContext);
+            var cacheHit = _cache.TryGetValue(key, out var value);
+            return (cacheHit, value);
         }
 
-        [Benchmark]
-        public async Task<object> Cache_Asynchronous_Hit()
+        public void Put(string key, object value, Ttl ttl)
         {
-            return await AsyncPolicyHit.ExecuteAsync((context, token) => GetObjectAsync(token), HitContext, CancellationToken.None);
-        }
+            var remaining = DateTimeOffset.MaxValue - DateTimeOffset.UtcNow;
+            var options = new MemoryCacheEntryOptions();
 
-        [Benchmark]
-        public object Cache_Synchronous_Miss()
-        {
-            return SyncPolicyMiss.Execute((context) => GetObject(), MissContext);
-        }
-
-        [Benchmark]
-        public async Task<object> Cache_Asynchronous_Miss()
-        {
-            return await AsyncPolicyMiss.ExecuteAsync((context, token) => GetObjectAsync(token), MissContext, CancellationToken.None);
-        }
-
-        private static object GetObject() => new object();
-
-        private static Task<object> GetObjectAsync(CancellationToken cancellationToken) => Task.FromResult(new object());
-
-        private sealed class MemoryCacheProvider : ISyncCacheProvider, IAsyncCacheProvider
-        {
-            private readonly IMemoryCache _cache;
-
-            public MemoryCacheProvider(IMemoryCache memoryCache)
+            if (ttl.SlidingExpiration)
             {
-                _cache = memoryCache;
+                options.SlidingExpiration = ttl.Timespan < remaining ? ttl.Timespan : remaining;
             }
-
-            public (bool, object) TryGet(string key)
+            else
             {
-                var cacheHit = _cache.TryGetValue(key, out var value);
-                return (cacheHit, value);
-            }
-
-            public void Put(string key, object value, Ttl ttl)
-            {
-                var remaining = DateTimeOffset.MaxValue - DateTimeOffset.UtcNow;
-                var options = new MemoryCacheEntryOptions();
-
-                if (ttl.SlidingExpiration)
+                if (ttl.Timespan == TimeSpan.MaxValue)
                 {
-                    options.SlidingExpiration = ttl.Timespan < remaining ? ttl.Timespan : remaining;
+                    options.AbsoluteExpiration = DateTimeOffset.MaxValue;
                 }
                 else
                 {
-                    if (ttl.Timespan == TimeSpan.MaxValue)
-                    {
-                        options.AbsoluteExpiration = DateTimeOffset.MaxValue;
-                    }
-                    else
-                    {
-                        options.AbsoluteExpirationRelativeToNow = ttl.Timespan < remaining ? ttl.Timespan : remaining;
-                    }
+                    options.AbsoluteExpirationRelativeToNow = ttl.Timespan < remaining ? ttl.Timespan : remaining;
                 }
-
-                _cache.Set(key, value, options);
             }
 
-            public Task<(bool, object)> TryGetAsync(string key, CancellationToken cancellationToken, bool continueOnCapturedContext)
-            {
-                return Task.FromResult(TryGet(key));
-            }
+            _cache.Set(key, value, options);
+        }
 
-            public Task PutAsync(string key, object value, Ttl ttl, CancellationToken cancellationToken, bool continueOnCapturedContext)
-            {
-                Put(key, value, ttl);
-                return Task.CompletedTask;
-            }
+        public Task<(bool, object)> TryGetAsync(string key, CancellationToken cancellationToken, bool continueOnCapturedContext)
+        {
+            return Task.FromResult(TryGet(key));
+        }
+
+        public Task PutAsync(string key, object value, Ttl ttl, CancellationToken cancellationToken, bool continueOnCapturedContext)
+        {
+            Put(key, value, ttl);
+            return Task.CompletedTask;
         }
     }
 }

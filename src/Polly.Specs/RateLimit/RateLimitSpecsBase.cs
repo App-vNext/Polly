@@ -5,50 +5,49 @@ using FluentAssertions.Execution;
 using Polly.Utilities;
 using Xunit.Sdk;
 
-namespace Polly.Specs.RateLimit
+namespace Polly.Specs.RateLimit;
+
+public abstract class RateLimitSpecsBase
 {
-    public abstract class RateLimitSpecsBase
+    /// <summary>
+    /// Asserts that the actionContainingAssertions will succeed without <see cref="AssertionFailedException"/> or <see cref="XunitException"/>, within the given timespan.  Checks are made each time a status-change pulse is received from the <see cref="TraceableAction"/>s executing through the bulkhead.
+    /// </summary>
+    /// <param name="timeSpan">The allowable timespan.</param>
+    /// <param name="actionContainingAssertions">The action containing fluent assertions, which must succeed within the timespan.</param>
+    protected void Within(TimeSpan timeSpan, Action actionContainingAssertions)
     {
-        /// <summary>
-        /// Asserts that the actionContainingAssertions will succeed without <see cref="AssertionFailedException"/> or <see cref="XunitException"/>, within the given timespan.  Checks are made each time a status-change pulse is received from the <see cref="TraceableAction"/>s executing through the bulkhead.
-        /// </summary>
-        /// <param name="timeSpan">The allowable timespan.</param>
-        /// <param name="actionContainingAssertions">The action containing fluent assertions, which must succeed within the timespan.</param>
-        protected void Within(TimeSpan timeSpan, Action actionContainingAssertions)
+        var retryInterval = TimeSpan.FromSeconds(0.2);
+
+        var watch = Stopwatch.StartNew();
+        while (true)
         {
-            var retryInterval = TimeSpan.FromSeconds(0.2);
-
-            var watch = Stopwatch.StartNew();
-            while (true)
+            try
             {
-                try
-                {
-                    actionContainingAssertions.Invoke();
-                    break;
-                }
-                catch (Exception e)
-                {
-                    if (!(e is AssertionFailedException || e is XunitException)) { throw; }
+                actionContainingAssertions.Invoke();
+                break;
+            }
+            catch (Exception e)
+            {
+                if (!(e is AssertionFailedException || e is XunitException)) { throw; }
 
-                    if (watch.Elapsed > timeSpan) { throw; }
+                if (watch.Elapsed > timeSpan) { throw; }
 
-                    Thread.Sleep(retryInterval);
-                }
+                Thread.Sleep(retryInterval);
             }
         }
-
-        protected static void FixClock()
-        {
-            var now = DateTimeOffset.UtcNow;
-            SystemClock.DateTimeOffsetUtcNow = () => now;
-        }
-
-        protected static void AdvanceClock(TimeSpan advance)
-        {
-            var now = SystemClock.DateTimeOffsetUtcNow();
-            SystemClock.DateTimeOffsetUtcNow = () => now + advance;
-        }
-
-        protected static void AdvanceClock(long advanceTicks) => AdvanceClock(TimeSpan.FromTicks(advanceTicks));
     }
+
+    protected static void FixClock()
+    {
+        var now = DateTimeOffset.UtcNow;
+        SystemClock.DateTimeOffsetUtcNow = () => now;
+    }
+
+    protected static void AdvanceClock(TimeSpan advance)
+    {
+        var now = SystemClock.DateTimeOffsetUtcNow();
+        SystemClock.DateTimeOffsetUtcNow = () => now + advance;
+    }
+
+    protected static void AdvanceClock(long advanceTicks) => AdvanceClock(TimeSpan.FromTicks(advanceTicks));
 }

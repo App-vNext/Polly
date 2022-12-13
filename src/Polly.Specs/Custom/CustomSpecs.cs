@@ -4,83 +4,82 @@ using Polly.Specs.Helpers.Custom.AddBehaviourIfHandle;
 using Polly.Specs.Helpers.Custom.PreExecute;
 using Xunit;
 
-namespace Polly.Specs.Custom
+namespace Polly.Specs.Custom;
+
+public class CustomSpecs
 {
-    public class CustomSpecs
+    [Fact]
+    public void Should_be_able_to_construct_active_policy()
     {
-        [Fact]
-        public void Should_be_able_to_construct_active_policy()
+        var construct = () =>
         {
-            var construct = () =>
-            {
-                var policy = PreExecutePolicy.Create(() => Console.WriteLine("Do something"));
-            };
+            var policy = PreExecutePolicy.Create(() => Console.WriteLine("Do something"));
+        };
 
-            construct.Should().NotThrow();
-        }
+        construct.Should().NotThrow();
+    }
 
-        [Fact]
-        public void Active_policy_should_execute()
+    [Fact]
+    public void Active_policy_should_execute()
+    {
+        var preExecuted = false;
+        var policy = PreExecutePolicy.Create(() => preExecuted = true);
+
+        var executed = false;
+
+        policy.Invoking(x => x.Execute(() => { executed = true; }))
+            .Should().NotThrow();
+
+        executed.Should().BeTrue();
+        preExecuted.Should().BeTrue();
+    }
+
+    [Fact]
+    public void Should_be_able_to_construct_reactive_policy()
+    {
+        var construct = () =>
         {
-            var preExecuted = false;
-            var policy = PreExecutePolicy.Create(() => preExecuted = true);
+            var policy = Policy.Handle<Exception>().WithBehaviour(ex => Console.WriteLine("Handling " + ex.Message));
+        };
 
-            var executed = false;
+        construct.Should().NotThrow();
+    }
 
-            policy.Invoking(x => x.Execute(() => { executed = true; }))
-                .Should().NotThrow();
+    [Fact]
+    public void Reactive_policy_should_handle_exception()
+    {
+        Exception handled = null;
+        var policy = Policy.Handle<InvalidOperationException>().WithBehaviour(ex => handled = ex);
 
-            executed.Should().BeTrue();
-            preExecuted.Should().BeTrue();
-        }
+        Exception toThrow = new InvalidOperationException();
+        var executed = false;
 
-        [Fact]
-        public void Should_be_able_to_construct_reactive_policy()
-        {
-            var construct = () =>
-            {
-                var policy = Policy.Handle<Exception>().WithBehaviour(ex => Console.WriteLine("Handling " + ex.Message));
-            };
+        policy.Invoking(x => x.Execute(() => {
+                executed = true;
+                throw toThrow;
+            }))
+            .Should().Throw<Exception>().Which.Should().Be(toThrow);
 
-            construct.Should().NotThrow();
-        }
+        executed.Should().BeTrue();
+        handled.Should().Be(toThrow);
+    }
 
-        [Fact]
-        public void Reactive_policy_should_handle_exception()
-        {
-            Exception handled = null;
-            var policy = Policy.Handle<InvalidOperationException>().WithBehaviour(ex => handled = ex);
+    [Fact]
+    public void Reactive_policy_should_be_able_to_ignore_unhandled_exception()
+    {
+        Exception handled = null;
+        var policy = Policy.Handle<InvalidOperationException>().WithBehaviour(ex => handled = ex);
 
-            Exception toThrow = new InvalidOperationException();
-            var executed = false;
+        Exception toThrow = new NotImplementedException();
+        var executed = false;
 
-            policy.Invoking(x => x.Execute(() => {
-                    executed = true;
-                    throw toThrow;
-                }))
-                .Should().Throw<Exception>().Which.Should().Be(toThrow);
+        policy.Invoking(x => x.Execute(() => {
+                executed = true;
+                throw toThrow;
+            }))
+            .Should().Throw<Exception>().Which.Should().Be(toThrow);
 
-            executed.Should().BeTrue();
-            handled.Should().Be(toThrow);
-        }
-
-        [Fact]
-        public void Reactive_policy_should_be_able_to_ignore_unhandled_exception()
-        {
-            Exception handled = null;
-            var policy = Policy.Handle<InvalidOperationException>().WithBehaviour(ex => handled = ex);
-
-            Exception toThrow = new NotImplementedException();
-            var executed = false;
-
-            policy.Invoking(x => x.Execute(() => {
-                    executed = true;
-                    throw toThrow;
-                }))
-                .Should().Throw<Exception>().Which.Should().Be(toThrow);
-
-            executed.Should().BeTrue();
-            handled.Should().Be(null);
-        }
+        executed.Should().BeTrue();
+        handled.Should().Be(null);
     }
 }

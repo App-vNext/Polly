@@ -6,44 +6,43 @@ using Polly.Specs.Helpers.RateLimit;
 using Polly.Utilities;
 using Xunit;
 
-namespace Polly.Specs.RateLimit
+namespace Polly.Specs.RateLimit;
+
+[Collection(Polly.Specs.Helpers.Constants.SystemClockDependentTestCollection)]
+public class AsyncRateLimitPolicySpecs : RateLimitPolicySpecsBase, IDisposable
 {
-    [Collection(Polly.Specs.Helpers.Constants.SystemClockDependentTestCollection)]
-    public class AsyncRateLimitPolicySpecs : RateLimitPolicySpecsBase, IDisposable
+    public void Dispose()
     {
-        public void Dispose()
-        {
-            SystemClock.Reset();
-        }
+        SystemClock.Reset();
+    }
 
-        protected override IRateLimitPolicy GetPolicyViaSyntax(int numberOfExecutions, TimeSpan perTimeSpan)
-        {
-            return Policy.RateLimitAsync(numberOfExecutions, perTimeSpan);
-        }
+    protected override IRateLimitPolicy GetPolicyViaSyntax(int numberOfExecutions, TimeSpan perTimeSpan)
+    {
+        return Policy.RateLimitAsync(numberOfExecutions, perTimeSpan);
+    }
 
-        protected override IRateLimitPolicy GetPolicyViaSyntax(int numberOfExecutions, TimeSpan perTimeSpan, int maxBurst)
-        {
-            return Policy.RateLimitAsync(numberOfExecutions, perTimeSpan, maxBurst);
-        }
+    protected override IRateLimitPolicy GetPolicyViaSyntax(int numberOfExecutions, TimeSpan perTimeSpan, int maxBurst)
+    {
+        return Policy.RateLimitAsync(numberOfExecutions, perTimeSpan, maxBurst);
+    }
         
-        protected override (bool, TimeSpan) TryExecuteThroughPolicy(IRateLimitPolicy policy)
+    protected override (bool, TimeSpan) TryExecuteThroughPolicy(IRateLimitPolicy policy)
+    {
+        if (policy is AsyncRateLimitPolicy typedPolicy)
         {
-            if (policy is AsyncRateLimitPolicy typedPolicy)
+            try
             {
-                try
-                {
-                    typedPolicy.ExecuteAsync(() => Task.FromResult(new ResultClassWithRetryAfter(ResultPrimitive.Good))).GetAwaiter().GetResult();
-                    return (true, TimeSpan.Zero);
-                }
-                catch (RateLimitRejectedException e)
-                {
-                    return (false, e.RetryAfter);
-                }
+                typedPolicy.ExecuteAsync(() => Task.FromResult(new ResultClassWithRetryAfter(ResultPrimitive.Good))).GetAwaiter().GetResult();
+                return (true, TimeSpan.Zero);
             }
-            else
+            catch (RateLimitRejectedException e)
             {
-                throw new InvalidOperationException("Unexpected policy type in test construction.");
+                return (false, e.RetryAfter);
             }
+        }
+        else
+        {
+            throw new InvalidOperationException("Unexpected policy type in test construction.");
         }
     }
 }

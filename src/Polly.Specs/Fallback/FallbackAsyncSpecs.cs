@@ -9,819 +9,818 @@ using Xunit;
 
 using Scenario = Polly.Specs.Helpers.PolicyExtensionsAsync.ExceptionAndOrCancellationScenario;
 
-namespace Polly.Specs.Fallback
+namespace Polly.Specs.Fallback;
+
+public class FallbackAsyncSpecs
 {
-    public class FallbackAsyncSpecs
+    #region Configuration guard condition tests
+
+    [Fact]
+    public void Should_throw_when_fallback_func_is_null()
     {
-        #region Configuration guard condition tests
+        Func<CancellationToken, Task> fallbackActionAsync  = null;
 
-        [Fact]
-        public void Should_throw_when_fallback_func_is_null()
+        Action policy = () => Policy
+            .Handle<DivideByZeroException>()
+            .FallbackAsync(fallbackActionAsync);
+
+        policy.Should().Throw<ArgumentNullException>()
+            .And.ParamName.Should().Be("fallbackAction");
+    }
+
+    [Fact]
+    public void Should_throw_when_fallback_func_is_null_with_onFallback()
+    {
+        Func<CancellationToken, Task> fallbackActionAsync  = null;
+        Func<Exception, Task> onFallbackAsync = _ => TaskHelper.EmptyTask;
+
+        Action policy = () => Policy
+            .Handle<DivideByZeroException>()
+            .FallbackAsync(fallbackActionAsync, onFallbackAsync);
+
+        policy.Should().Throw<ArgumentNullException>()
+            .And.ParamName.Should().Be("fallbackAction");
+    }
+
+    [Fact]
+    public void Should_throw_when_fallback_func_is_null_with_onFallback_with_context()
+    {
+        Func<Context, CancellationToken, Task> fallbackActionAsync  = null;
+        Func<Exception, Context, Task> onFallbackAsync = (_, _) => TaskHelper.EmptyTask;
+
+        Action policy = () => Policy
+            .Handle<DivideByZeroException>()
+            .FallbackAsync(fallbackActionAsync, onFallbackAsync);
+
+        policy.Should().Throw<ArgumentNullException>()
+            .And.ParamName.Should().Be("fallbackAction");
+    }
+
+    [Fact]
+    public void Should_throw_when_onFallback_delegate_is_null()
+    {
+        Func<CancellationToken, Task> fallbackActionAsync = _ => TaskHelper.EmptyTask;
+        Func<Exception, Task> onFallbackAsync = null;
+
+        Action policy = () => Policy
+            .Handle<DivideByZeroException>()
+            .FallbackAsync(fallbackActionAsync, onFallbackAsync);
+
+        policy.Should().Throw<ArgumentNullException>()
+            .And.ParamName.Should().Be("onFallbackAsync");
+    }
+
+    [Fact]
+    public void Should_throw_when_onFallback_delegate_is_null_with_context()
+    {
+        Func<Context, CancellationToken, Task> fallbackActionAsync  = (_, _) => TaskHelper.EmptyTask;
+        Func<Exception, Context, Task> onFallbackAsync = null;
+
+        Action policy = () => Policy
+            .Handle<DivideByZeroException>()
+            .FallbackAsync(fallbackActionAsync, onFallbackAsync);
+
+        policy.Should().Throw<ArgumentNullException>()
+            .And.ParamName.Should().Be("onFallbackAsync");
+    }
+
+    #endregion
+
+    #region Policy operation tests
+
+    [Fact]
+    public async Task Should_not_execute_fallback_when_executed_delegate_does_not_throw()
+    {
+        var fallbackActionExecuted = false;
+        Func<CancellationToken, Task> fallbackActionAsync  = _ => { fallbackActionExecuted = true; return TaskHelper.EmptyTask; };
+
+        var fallbackPolicy = Policy
+            .Handle<DivideByZeroException>()
+            .FallbackAsync(fallbackActionAsync);
+
+        await fallbackPolicy.ExecuteAsync(() => TaskHelper.EmptyTask);
+
+        fallbackActionExecuted.Should().BeFalse();
+    }
+
+    [Fact]
+    public void Should_not_execute_fallback_when_executed_delegate_throws_exception_not_handled_by_policy()
+    {
+        var fallbackActionExecuted = false;
+        Func<CancellationToken, Task> fallbackActionAsync  = _ => { fallbackActionExecuted = true; return TaskHelper.EmptyTask; };
+
+        var fallbackPolicy = Policy
+            .Handle<DivideByZeroException>()
+            .FallbackAsync(fallbackActionAsync);
+
+        fallbackPolicy.Awaiting(x => x.RaiseExceptionAsync<ArgumentNullException>()).Should().Throw<ArgumentNullException>();
+
+        fallbackActionExecuted.Should().BeFalse();
+    }
+
+    [Fact]
+    public void Should_execute_fallback_when_executed_delegate_throws_exception_handled_by_policy()
+    {
+        var fallbackActionExecuted = false;
+        Func<CancellationToken, Task> fallbackActionAsync  = _ => { fallbackActionExecuted = true; return TaskHelper.EmptyTask; };
+
+        var fallbackPolicy = Policy
+            .Handle<DivideByZeroException>()
+            .FallbackAsync(fallbackActionAsync);
+
+        fallbackPolicy.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>()).Should().NotThrow();
+
+        fallbackActionExecuted.Should().BeTrue();
+    }
+
+
+    [Fact]
+    public void Should_execute_fallback_when_executed_delegate_throws_one_of_exceptions_handled_by_policy()
+    {
+        var fallbackActionExecuted = false;
+        Func<CancellationToken, Task> fallbackActionAsync  = _ => { fallbackActionExecuted = true; return TaskHelper.EmptyTask; };
+
+        var fallbackPolicy = Policy
+            .Handle<DivideByZeroException>()
+            .Or<ArgumentException>()
+            .FallbackAsync(fallbackActionAsync);
+
+        fallbackPolicy.Awaiting(x => x.RaiseExceptionAsync<ArgumentException>()).Should().NotThrow();
+
+        fallbackActionExecuted.Should().BeTrue();
+    }
+
+
+    [Fact]
+    public void Should_not_execute_fallback_when_executed_delegate_throws_exception_not_one_of_exceptions_handled_by_policy()
+    {
+        var fallbackActionExecuted = false;
+        Func<CancellationToken, Task> fallbackActionAsync  = _ => { fallbackActionExecuted = true; return TaskHelper.EmptyTask; };
+
+        var fallbackPolicy = Policy
+            .Handle<DivideByZeroException>()
+            .Or<NullReferenceException>()
+            .FallbackAsync(fallbackActionAsync);
+
+        fallbackPolicy.Awaiting(x => x.RaiseExceptionAsync<ArgumentNullException>()).Should().Throw<ArgumentNullException>();
+
+        fallbackActionExecuted.Should().BeFalse();
+    }
+
+    [Fact]
+    public void Should_not_execute_fallback_when_exception_thrown_does_not_match_handling_predicates()
+    {
+        var fallbackActionExecuted = false;
+        Func<CancellationToken, Task> fallbackActionAsync  = _ => { fallbackActionExecuted = true; return TaskHelper.EmptyTask; };
+
+        var fallbackPolicy = Policy
+            .Handle<DivideByZeroException>(_ => false)
+            .FallbackAsync(fallbackActionAsync);
+
+        fallbackPolicy.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>()).Should().Throw<DivideByZeroException>();
+
+        fallbackActionExecuted.Should().BeFalse();
+    }
+
+    [Fact]
+    public void Should_not_execute_fallback_when_exception_thrown_does_not_match_any_of_handling_predicates()
+    {
+        var fallbackActionExecuted = false;
+        Func<CancellationToken, Task> fallbackActionAsync  = _ => { fallbackActionExecuted = true; return TaskHelper.EmptyTask; };
+
+        var fallbackPolicy = Policy
+            .Handle<DivideByZeroException>(_ => false)
+            .Or<ArgumentNullException>(_ => false)
+            .FallbackAsync(fallbackActionAsync);
+
+        fallbackPolicy.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>()).Should().Throw<DivideByZeroException>();
+
+        fallbackActionExecuted.Should().BeFalse();
+    }
+
+    [Fact]
+    public void Should_execute_fallback_when_exception_thrown_matches_handling_predicates()
+    {
+        var fallbackActionExecuted = false;
+        Func<CancellationToken, Task> fallbackActionAsync  = _ => { fallbackActionExecuted = true; return TaskHelper.EmptyTask; };
+
+        var fallbackPolicy = Policy
+            .Handle<DivideByZeroException>(_ => true)
+            .FallbackAsync(fallbackActionAsync);
+
+        fallbackPolicy.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>()).Should().NotThrow();
+
+        fallbackActionExecuted.Should().BeTrue();
+    }
+
+
+    [Fact]
+    public void Should_execute_fallback_when_exception_thrown_matches_one_of_handling_predicates()
+    {
+        var fallbackActionExecuted = false;
+        Func<CancellationToken, Task> fallbackActionAsync  = _ => { fallbackActionExecuted = true; return TaskHelper.EmptyTask; };
+
+        var fallbackPolicy = Policy
+            .Handle<DivideByZeroException>(_ => true)
+            .Or<ArgumentNullException>()
+            .FallbackAsync(fallbackActionAsync);
+
+        fallbackPolicy.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>()).Should().NotThrow();
+
+        fallbackActionExecuted.Should().BeTrue();
+    }
+
+    [Fact]
+    public void Should_not_handle_exception_thrown_by_fallback_delegate_even_if_is_exception_handled_by_policy()
+    {
+        var fallbackActionExecuted = false;
+        Func<CancellationToken, Task> fallbackActionAsync  = _ =>
         {
-            Func<CancellationToken, Task> fallbackActionAsync  = null;
-
-            Action policy = () => Policy
-                .Handle<DivideByZeroException>()
-                .FallbackAsync(fallbackActionAsync);
-
-            policy.Should().Throw<ArgumentNullException>()
-                .And.ParamName.Should().Be("fallbackAction");
-        }
-
-        [Fact]
-        public void Should_throw_when_fallback_func_is_null_with_onFallback()
-        {
-            Func<CancellationToken, Task> fallbackActionAsync  = null;
-            Func<Exception, Task> onFallbackAsync = _ => TaskHelper.EmptyTask;
+            fallbackActionExecuted = true;
+            throw new DivideByZeroException { HelpLink = "FromFallbackAction" };
+        };
 
-            Action policy = () => Policy
-                .Handle<DivideByZeroException>()
-                .FallbackAsync(fallbackActionAsync, onFallbackAsync);
+        var fallbackPolicy = Policy
+            .Handle<DivideByZeroException>()
+            .FallbackAsync(fallbackActionAsync);
 
-            policy.Should().Throw<ArgumentNullException>()
-                .And.ParamName.Should().Be("fallbackAction");
-        }
+        fallbackPolicy.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>((e, _) => e.HelpLink = "FromExecuteDelegate"))
+            .Should().Throw<DivideByZeroException>().And.HelpLink.Should().Be("FromFallbackAction");
 
-        [Fact]
-        public void Should_throw_when_fallback_func_is_null_with_onFallback_with_context()
-        {
-            Func<Context, CancellationToken, Task> fallbackActionAsync  = null;
-            Func<Exception, Context, Task> onFallbackAsync = (_, _) => TaskHelper.EmptyTask;
+        fallbackActionExecuted.Should().BeTrue();
+    }
 
-            Action policy = () => Policy
-                                    .Handle<DivideByZeroException>()
-                                    .FallbackAsync(fallbackActionAsync, onFallbackAsync);
+    [Fact]
+    public void Should_throw_for_generic_method_execution_on_non_generic_policy()
+    {
+        var fallbackPolicy = Policy
+            .Handle<DivideByZeroException>()
+            .FallbackAsync(_ => TaskHelper.EmptyTask);
 
-            policy.Should().Throw<ArgumentNullException>()
-                .And.ParamName.Should().Be("fallbackAction");
-        }
+        fallbackPolicy.Awaiting(p => p.ExecuteAsync<int>(() => Task.FromResult(0))).Should().Throw<InvalidOperationException>();
+    }
 
-        [Fact]
-        public void Should_throw_when_onFallback_delegate_is_null()
-        {
-            Func<CancellationToken, Task> fallbackActionAsync = _ => TaskHelper.EmptyTask;
-            Func<Exception, Task> onFallbackAsync = null;
+    #endregion
 
-            Action policy = () => Policy
-                                    .Handle<DivideByZeroException>()
-                                    .FallbackAsync(fallbackActionAsync, onFallbackAsync);
+    #region onPolicyEvent delegate tests
 
-            policy.Should().Throw<ArgumentNullException>()
-                .And.ParamName.Should().Be("onFallbackAsync");
-        }
+    [Fact]
+    public async Task Should_call_onFallback_passing_exception_triggering_fallback()
+    {
+        var fallbackActionExecuted = false;
+        Func<CancellationToken, Task> fallbackActionAsync = _ => { fallbackActionExecuted = true; return TaskHelper.EmptyTask; };
 
-        [Fact]
-        public void Should_throw_when_onFallback_delegate_is_null_with_context()
-        {
-            Func<Context, CancellationToken, Task> fallbackActionAsync  = (_, _) => TaskHelper.EmptyTask;
-            Func<Exception, Context, Task> onFallbackAsync = null;
+        Exception exceptionPassedToOnFallback = null;
+        Func<Exception, Task> onFallbackAsync = ex => { exceptionPassedToOnFallback = ex; return TaskHelper.EmptyTask; };
 
-            Action policy = () => Policy
-                                    .Handle<DivideByZeroException>()
-                                    .FallbackAsync(fallbackActionAsync, onFallbackAsync);
+        var fallbackPolicy = Policy
+            .Handle<ArgumentNullException>()
+            .FallbackAsync(fallbackActionAsync, onFallbackAsync);
 
-            policy.Should().Throw<ArgumentNullException>()
-                .And.ParamName.Should().Be("onFallbackAsync");
-        }
+        Exception instanceToThrow = new ArgumentNullException("myParam");
+        await fallbackPolicy.RaiseExceptionAsync(instanceToThrow);
 
-        #endregion
+        fallbackActionExecuted.Should().BeTrue();
+        exceptionPassedToOnFallback.Should().BeOfType<ArgumentNullException>();
+        exceptionPassedToOnFallback.Should().Be(instanceToThrow);
+    }
 
-        #region Policy operation tests
+    [Fact]
+    public async Task Should_not_call_onFallback_when_executed_delegate_does_not_throw()
+    {
+        Func<CancellationToken, Task> fallbackActionAsync = _ => TaskHelper.EmptyTask;
 
-        [Fact]
-        public async Task Should_not_execute_fallback_when_executed_delegate_does_not_throw()
-        {
-            var fallbackActionExecuted = false;
-            Func<CancellationToken, Task> fallbackActionAsync  = _ => { fallbackActionExecuted = true; return TaskHelper.EmptyTask; };
+        var onFallbackExecuted = false;
+        Func<Exception, Task> onFallbackAsync = _ => { onFallbackExecuted = true; return TaskHelper.EmptyTask; };
 
-            var fallbackPolicy = Policy
-                                    .Handle<DivideByZeroException>()
-                                    .FallbackAsync(fallbackActionAsync);
+        var fallbackPolicy = Policy
+            .Handle<DivideByZeroException>()
+            .FallbackAsync(fallbackActionAsync, onFallbackAsync);
 
-            await fallbackPolicy.ExecuteAsync(() => TaskHelper.EmptyTask);
+        await fallbackPolicy.ExecuteAsync(() => TaskHelper.EmptyTask);
 
-            fallbackActionExecuted.Should().BeFalse();
-        }
+        onFallbackExecuted.Should().BeFalse();
+    }
 
-        [Fact]
-        public void Should_not_execute_fallback_when_executed_delegate_throws_exception_not_handled_by_policy()
-        {
-            var fallbackActionExecuted = false;
-            Func<CancellationToken, Task> fallbackActionAsync  = _ => { fallbackActionExecuted = true; return TaskHelper.EmptyTask; };
+    #endregion
 
-            var fallbackPolicy = Policy
-                                    .Handle<DivideByZeroException>()
-                                    .FallbackAsync(fallbackActionAsync);
+    #region Context passing tests
 
-            fallbackPolicy.Awaiting(x => x.RaiseExceptionAsync<ArgumentNullException>()).Should().Throw<ArgumentNullException>();
+    [Fact]
+    public void Should_call_onFallback_with_the_passed_context()
+    {
+        Func<Context, CancellationToken, Task> fallbackActionAsync = (_, _) => TaskHelper.EmptyTask;
 
-            fallbackActionExecuted.Should().BeFalse();
-        }
+        IDictionary<string, object> contextData = null;
 
-        [Fact]
-        public void Should_execute_fallback_when_executed_delegate_throws_exception_handled_by_policy()
-        {
-            var fallbackActionExecuted = false;
-            Func<CancellationToken, Task> fallbackActionAsync  = _ => { fallbackActionExecuted = true; return TaskHelper.EmptyTask; };
+        Func<Exception, Context, Task> onFallbackAsync = (_, ctx) => { contextData = ctx; return TaskHelper.EmptyTask; };
 
-            var fallbackPolicy = Policy
-                                    .Handle<DivideByZeroException>()
-                                    .FallbackAsync(fallbackActionAsync);
+        var fallbackPolicy = Policy
+            .Handle<ArgumentNullException>()
+            .FallbackAsync(fallbackActionAsync, onFallbackAsync);
 
-            fallbackPolicy.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>()).Should().NotThrow();
-
-            fallbackActionExecuted.Should().BeTrue();
-        }
-
-
-        [Fact]
-        public void Should_execute_fallback_when_executed_delegate_throws_one_of_exceptions_handled_by_policy()
-        {
-            var fallbackActionExecuted = false;
-            Func<CancellationToken, Task> fallbackActionAsync  = _ => { fallbackActionExecuted = true; return TaskHelper.EmptyTask; };
-
-            var fallbackPolicy = Policy
-                                    .Handle<DivideByZeroException>()
-                                    .Or<ArgumentException>()
-                                    .FallbackAsync(fallbackActionAsync);
-
-            fallbackPolicy.Awaiting(x => x.RaiseExceptionAsync<ArgumentException>()).Should().NotThrow();
-
-            fallbackActionExecuted.Should().BeTrue();
-        }
-
-
-        [Fact]
-        public void Should_not_execute_fallback_when_executed_delegate_throws_exception_not_one_of_exceptions_handled_by_policy()
-        {
-            var fallbackActionExecuted = false;
-            Func<CancellationToken, Task> fallbackActionAsync  = _ => { fallbackActionExecuted = true; return TaskHelper.EmptyTask; };
-
-            var fallbackPolicy = Policy
-                                    .Handle<DivideByZeroException>()
-                                    .Or<NullReferenceException>()
-                                    .FallbackAsync(fallbackActionAsync);
-
-            fallbackPolicy.Awaiting(x => x.RaiseExceptionAsync<ArgumentNullException>()).Should().Throw<ArgumentNullException>();
-
-            fallbackActionExecuted.Should().BeFalse();
-        }
-
-        [Fact]
-        public void Should_not_execute_fallback_when_exception_thrown_does_not_match_handling_predicates()
-        {
-            var fallbackActionExecuted = false;
-            Func<CancellationToken, Task> fallbackActionAsync  = _ => { fallbackActionExecuted = true; return TaskHelper.EmptyTask; };
-
-            var fallbackPolicy = Policy
-                                    .Handle<DivideByZeroException>(_ => false)
-                                    .FallbackAsync(fallbackActionAsync);
-
-            fallbackPolicy.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>()).Should().Throw<DivideByZeroException>();
-
-            fallbackActionExecuted.Should().BeFalse();
-        }
-
-        [Fact]
-        public void Should_not_execute_fallback_when_exception_thrown_does_not_match_any_of_handling_predicates()
-        {
-            var fallbackActionExecuted = false;
-            Func<CancellationToken, Task> fallbackActionAsync  = _ => { fallbackActionExecuted = true; return TaskHelper.EmptyTask; };
-
-            var fallbackPolicy = Policy
-                                    .Handle<DivideByZeroException>(_ => false)
-                                    .Or<ArgumentNullException>(_ => false)
-                                    .FallbackAsync(fallbackActionAsync);
-
-            fallbackPolicy.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>()).Should().Throw<DivideByZeroException>();
-
-            fallbackActionExecuted.Should().BeFalse();
-        }
-
-        [Fact]
-        public void Should_execute_fallback_when_exception_thrown_matches_handling_predicates()
-        {
-            var fallbackActionExecuted = false;
-            Func<CancellationToken, Task> fallbackActionAsync  = _ => { fallbackActionExecuted = true; return TaskHelper.EmptyTask; };
-
-            var fallbackPolicy = Policy
-                                    .Handle<DivideByZeroException>(_ => true)
-                                    .FallbackAsync(fallbackActionAsync);
-
-            fallbackPolicy.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>()).Should().NotThrow();
-
-            fallbackActionExecuted.Should().BeTrue();
-        }
-
-
-        [Fact]
-        public void Should_execute_fallback_when_exception_thrown_matches_one_of_handling_predicates()
-        {
-            var fallbackActionExecuted = false;
-            Func<CancellationToken, Task> fallbackActionAsync  = _ => { fallbackActionExecuted = true; return TaskHelper.EmptyTask; };
-
-            var fallbackPolicy = Policy
-                                    .Handle<DivideByZeroException>(_ => true)
-                                    .Or<ArgumentNullException>()
-                                    .FallbackAsync(fallbackActionAsync);
-
-            fallbackPolicy.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>()).Should().NotThrow();
-
-            fallbackActionExecuted.Should().BeTrue();
-        }
-
-        [Fact]
-        public void Should_not_handle_exception_thrown_by_fallback_delegate_even_if_is_exception_handled_by_policy()
-        {
-            var fallbackActionExecuted = false;
-            Func<CancellationToken, Task> fallbackActionAsync  = _ =>
-            {
-                fallbackActionExecuted = true;
-                throw new DivideByZeroException { HelpLink = "FromFallbackAction" };
-            };
-
-            var fallbackPolicy = Policy
-                .Handle<DivideByZeroException>()
-                .FallbackAsync(fallbackActionAsync);
-
-            fallbackPolicy.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>((e, _) => e.HelpLink = "FromExecuteDelegate"))
-                .Should().Throw<DivideByZeroException>().And.HelpLink.Should().Be("FromFallbackAction");
-
-            fallbackActionExecuted.Should().BeTrue();
-        }
-
-        [Fact]
-        public void Should_throw_for_generic_method_execution_on_non_generic_policy()
-        {
-            var fallbackPolicy = Policy
-                .Handle<DivideByZeroException>()
-                .FallbackAsync(_ => TaskHelper.EmptyTask);
-
-            fallbackPolicy.Awaiting(p => p.ExecuteAsync<int>(() => Task.FromResult(0))).Should().Throw<InvalidOperationException>();
-        }
-
-        #endregion
-
-        #region onPolicyEvent delegate tests
-
-        [Fact]
-        public async Task Should_call_onFallback_passing_exception_triggering_fallback()
-        {
-            var fallbackActionExecuted = false;
-            Func<CancellationToken, Task> fallbackActionAsync = _ => { fallbackActionExecuted = true; return TaskHelper.EmptyTask; };
-
-            Exception exceptionPassedToOnFallback = null;
-            Func<Exception, Task> onFallbackAsync = ex => { exceptionPassedToOnFallback = ex; return TaskHelper.EmptyTask; };
-
-            var fallbackPolicy = Policy
-                .Handle<ArgumentNullException>()
-                .FallbackAsync(fallbackActionAsync, onFallbackAsync);
-
-            Exception instanceToThrow = new ArgumentNullException("myParam");
-            await fallbackPolicy.RaiseExceptionAsync(instanceToThrow);
-
-            fallbackActionExecuted.Should().BeTrue();
-            exceptionPassedToOnFallback.Should().BeOfType<ArgumentNullException>();
-            exceptionPassedToOnFallback.Should().Be(instanceToThrow);
-        }
-
-        [Fact]
-        public async Task Should_not_call_onFallback_when_executed_delegate_does_not_throw()
-        {
-            Func<CancellationToken, Task> fallbackActionAsync = _ => TaskHelper.EmptyTask;
-
-            var onFallbackExecuted = false;
-            Func<Exception, Task> onFallbackAsync = _ => { onFallbackExecuted = true; return TaskHelper.EmptyTask; };
-
-            var fallbackPolicy = Policy
-                .Handle<DivideByZeroException>()
-                .FallbackAsync(fallbackActionAsync, onFallbackAsync);
-
-            await fallbackPolicy.ExecuteAsync(() => TaskHelper.EmptyTask);
-
-            onFallbackExecuted.Should().BeFalse();
-        }
-
-        #endregion
-
-        #region Context passing tests
-
-        [Fact]
-        public void Should_call_onFallback_with_the_passed_context()
-        {
-            Func<Context, CancellationToken, Task> fallbackActionAsync = (_, _) => TaskHelper.EmptyTask;
-
-            IDictionary<string, object> contextData = null;
-
-            Func<Exception, Context, Task> onFallbackAsync = (_, ctx) => { contextData = ctx; return TaskHelper.EmptyTask; };
-
-            var fallbackPolicy = Policy
-                .Handle<ArgumentNullException>()
-                .FallbackAsync(fallbackActionAsync, onFallbackAsync);
-
-            fallbackPolicy.Awaiting(p => p.ExecuteAsync(_ => throw new ArgumentNullException(),
+        fallbackPolicy.Awaiting(p => p.ExecuteAsync(_ => throw new ArgumentNullException(),
                 new { key1 = "value1", key2 = "value2" }.AsDictionary()))
-                .Should().NotThrow();
+            .Should().NotThrow();
 
-            contextData.Should()
-                .ContainKeys("key1", "key2").And
-                .ContainValues("value1", "value2");
-        }
+        contextData.Should()
+            .ContainKeys("key1", "key2").And
+            .ContainValues("value1", "value2");
+    }
 
-        [Fact]
-        public void Should_call_onFallback_with_the_passed_context_when_execute_and_capture()
-        {
-            Func<Context, CancellationToken, Task> fallbackActionAsync = (_, _) => TaskHelper.EmptyTask;
+    [Fact]
+    public void Should_call_onFallback_with_the_passed_context_when_execute_and_capture()
+    {
+        Func<Context, CancellationToken, Task> fallbackActionAsync = (_, _) => TaskHelper.EmptyTask;
 
-            IDictionary<string, object> contextData = null;
+        IDictionary<string, object> contextData = null;
 
-            Func<Exception, Context, Task> onFallbackAsync = (_, ctx) => { contextData = ctx; return TaskHelper.EmptyTask; };
+        Func<Exception, Context, Task> onFallbackAsync = (_, ctx) => { contextData = ctx; return TaskHelper.EmptyTask; };
 
-            var fallbackPolicy = Policy
-                .Handle<ArgumentNullException>()
-                .FallbackAsync(fallbackActionAsync, onFallbackAsync);
+        var fallbackPolicy = Policy
+            .Handle<ArgumentNullException>()
+            .FallbackAsync(fallbackActionAsync, onFallbackAsync);
 
-            fallbackPolicy.Awaiting(p => p.ExecuteAndCaptureAsync(_ => throw new ArgumentNullException(),
+        fallbackPolicy.Awaiting(p => p.ExecuteAndCaptureAsync(_ => throw new ArgumentNullException(),
                 new { key1 = "value1", key2 = "value2" }.AsDictionary()))
-                .Should().NotThrow();
+            .Should().NotThrow();
 
-            contextData.Should()
-                .ContainKeys("key1", "key2").And
-                .ContainValues("value1", "value2");
-        }
+        contextData.Should()
+            .ContainKeys("key1", "key2").And
+            .ContainValues("value1", "value2");
+    }
 
-        [Fact]
-        public void Should_call_onFallback_with_independent_context_for_independent_calls()
-        {
-            Func<Context, CancellationToken, Task> fallbackActionAsync = (_, _) => TaskHelper.EmptyTask;
+    [Fact]
+    public void Should_call_onFallback_with_independent_context_for_independent_calls()
+    {
+        Func<Context, CancellationToken, Task> fallbackActionAsync = (_, _) => TaskHelper.EmptyTask;
 
-            IDictionary<Type, object> contextData = new Dictionary<Type, object>();
+        IDictionary<Type, object> contextData = new Dictionary<Type, object>();
 
-            Func<Exception, Context, Task> onFallbackAsync = (ex, ctx) => { contextData[ex.GetType()] = ctx["key"]; return TaskHelper.EmptyTask; };
+        Func<Exception, Context, Task> onFallbackAsync = (ex, ctx) => { contextData[ex.GetType()] = ctx["key"]; return TaskHelper.EmptyTask; };
 
-            var fallbackPolicy = Policy
-                .Handle<ArgumentNullException>()
-                .Or<DivideByZeroException>()
-                .FallbackAsync(fallbackActionAsync, onFallbackAsync);
+        var fallbackPolicy = Policy
+            .Handle<ArgumentNullException>()
+            .Or<DivideByZeroException>()
+            .FallbackAsync(fallbackActionAsync, onFallbackAsync);
 
-            fallbackPolicy.Awaiting(p => p.ExecuteAsync(_ => throw new ArgumentNullException(), new { key = "value1" }.AsDictionary()))
-                .Should().NotThrow();
+        fallbackPolicy.Awaiting(p => p.ExecuteAsync(_ => throw new ArgumentNullException(), new { key = "value1" }.AsDictionary()))
+            .Should().NotThrow();
 
-            fallbackPolicy.Awaiting(p => p.ExecuteAsync(_ => throw new DivideByZeroException(), new { key = "value2" }.AsDictionary()))
-                .Should().NotThrow();
+        fallbackPolicy.Awaiting(p => p.ExecuteAsync(_ => throw new DivideByZeroException(), new { key = "value2" }.AsDictionary()))
+            .Should().NotThrow();
 
-            contextData.Count.Should().Be(2);
-            contextData.Keys.Should().Contain(typeof(ArgumentNullException));
-            contextData.Keys.Should().Contain(typeof(DivideByZeroException));
-            contextData[typeof(ArgumentNullException)].Should().Be("value1");
-            contextData[typeof(DivideByZeroException)].Should().Be("value2");
-
-        }
-
-        [Fact]
-        public async Task Context_should_be_empty_if_execute_not_called_with_any_context_data()
-        {
-            Context capturedContext = null;
-            var onFallbackExecuted = false;
-
-            Func<Context, CancellationToken, Task> fallbackActionAsync = (_, _) => TaskHelper.EmptyTask;
-            Func<Exception, Context, Task> onFallbackAsync = (_, ctx) => { onFallbackExecuted = true; capturedContext = ctx; return TaskHelper.EmptyTask; };
-
-            var fallbackPolicy = Policy
-                .Handle<ArgumentNullException>()
-                .Or<DivideByZeroException>()
-                .FallbackAsync(fallbackActionAsync, onFallbackAsync);
-
-            await fallbackPolicy.RaiseExceptionAsync<DivideByZeroException>();
-
-            onFallbackExecuted.Should().BeTrue();
-            capturedContext.Should().BeEmpty();
-        }
-
-        [Fact]
-        public void Should_call_fallbackAction_with_the_passed_context()
-        {
-            IDictionary<string, object> contextData = null;
-
-            Func<Context, CancellationToken, Task> fallbackActionAsync = (ctx, _) => { contextData = ctx; return TaskHelper.EmptyTask; };
-
-            Func<Exception, Context, Task> onFallbackAsync = (_, _) => TaskHelper.EmptyTask;
-
-            var fallbackPolicy = Policy
-                .Handle<ArgumentNullException>()
-                .FallbackAsync(fallbackActionAsync, onFallbackAsync);
-
-            fallbackPolicy.Awaiting(p => p.ExecuteAsync(_ => throw new ArgumentNullException(),
-                    new { key1 = "value1", key2 = "value2" }.AsDictionary()))
-                .Should().NotThrow();
-
-            contextData.Should()
-                .ContainKeys("key1", "key2").And
-                .ContainValues("value1", "value2");
-        }
-
-        [Fact]
-        public void Should_call_fallbackAction_with_the_passed_context_when_execute_and_capture()
-        {
-            IDictionary<string, object> contextData = null;
-
-            Func<Context, CancellationToken, Task> fallbackActionAsync = (ctx, _) => { contextData = ctx; return TaskHelper.EmptyTask; };
-
-            Func<Exception, Context, Task> onFallbackAsync = (_, _) => TaskHelper.EmptyTask;
-
-            var fallbackPolicy = Policy
-                .Handle<ArgumentNullException>()
-                .FallbackAsync(fallbackActionAsync, onFallbackAsync);
-
-            fallbackPolicy.Awaiting(p => p.ExecuteAndCaptureAsync(_ => throw new ArgumentNullException(),
-                    new { key1 = "value1", key2 = "value2" }.AsDictionary()))
-                .Should().NotThrow();
-
-            contextData.Should()
-                .ContainKeys("key1", "key2").And
-                .ContainValues("value1", "value2");
-        }
-
-        [Fact]
-        public async Task Context_should_be_empty_at_fallbackAction_if_execute_not_called_with_any_context_data()
-        {
-            Context capturedContext = null;
-            var fallbackExecuted = false;
-
-            Func<Context, CancellationToken, Task> fallbackActionAsync = (ctx, _) => { fallbackExecuted = true; capturedContext = ctx; return TaskHelper.EmptyTask; };
-
-            Func<Exception, Context, Task> onFallbackAsync = (_, _) => TaskHelper.EmptyTask;
-
-            var fallbackPolicy = Policy
-                .Handle<ArgumentNullException>()
-                .Or<DivideByZeroException>()
-                .FallbackAsync(fallbackActionAsync, onFallbackAsync);
-
-            await fallbackPolicy.RaiseExceptionAsync<DivideByZeroException>();
-
-            fallbackExecuted.Should().BeTrue();
-            capturedContext.Should().BeEmpty();
-        }
-
-        #endregion
-
-        #region Exception passing tests
-
-        [Fact]
-        public void Should_call_fallbackAction_with_the_exception()
-        {
-            Exception fallbackException = null;
-
-            Func<Exception, Context, CancellationToken, Task> fallbackFunc = (ex, _, _) => { fallbackException = ex; return TaskHelper.EmptyTask; };
-
-            Func<Exception, Context, Task> onFallback = (_, _) => TaskHelper.EmptyTask;
-
-            var fallbackPolicy = Policy
-                .Handle<ArgumentNullException>()
-                .FallbackAsync(fallbackFunc, onFallback);
-
-            Exception instanceToThrow = new ArgumentNullException("myParam");
-            fallbackPolicy.Awaiting(p => p.RaiseExceptionAsync(instanceToThrow))
-                .Should().NotThrow();
-
-            fallbackException.Should().Be(instanceToThrow);
-        }
-
-        [Fact]
-        public void Should_call_fallbackAction_with_the_exception_when_execute_and_capture()
-        {
-            Exception fallbackException = null;
-
-            Func<Exception, Context, CancellationToken, Task> fallbackFunc = (ex, _, _) => { fallbackException = ex; return TaskHelper.EmptyTask; };
-
-            Func<Exception, Context, Task> onFallback = (_, _) => TaskHelper.EmptyTask;
-
-            var fallbackPolicy = Policy
-                .Handle<ArgumentNullException>()
-                .FallbackAsync(fallbackFunc, onFallback);
-
-            fallbackPolicy.Awaiting(p => p.ExecuteAndCaptureAsync(() => throw new ArgumentNullException()))
-                .Should().NotThrow();
-
-            fallbackException.Should().NotBeNull()
-                .And.BeOfType(typeof(ArgumentNullException));
-        }
-
-        [Fact]
-        public void Should_call_fallbackAction_with_the_matched_inner_exception_unwrapped()
-        {
-            Exception fallbackException = null;
-
-            Func<Exception, Context, CancellationToken, Task> fallbackFunc = (ex, _, _) => { fallbackException = ex; return TaskHelper.EmptyTask; };
-
-            Func<Exception, Context, Task> onFallback = (_, _) => TaskHelper.EmptyTask;
-
-            var fallbackPolicy = Policy
-                .HandleInner<ArgumentNullException>()
-                .FallbackAsync(fallbackFunc, onFallback);
-
-            Exception instanceToCapture = new ArgumentNullException("myParam");
-            var instanceToThrow = new Exception(String.Empty, instanceToCapture);
-            fallbackPolicy.Awaiting(p => p.RaiseExceptionAsync(instanceToThrow))
-                .Should().NotThrow();
-
-            fallbackException.Should().Be(instanceToCapture);
-        }
-
-        [Fact]
-        public void Should_call_fallbackAction_with_the_matched_inner_of_aggregate_exception_unwrapped()
-        {
-            Exception fallbackException = null;
-
-            Func<Exception, Context, CancellationToken, Task> fallbackFunc = (ex, _, _) => { fallbackException = ex; return TaskHelper.EmptyTask; };
-
-            Func<Exception, Context, Task> onFallback = (_, _) => TaskHelper.EmptyTask;
-
-            var fallbackPolicy = Policy
-                .HandleInner<ArgumentNullException>()
-                .FallbackAsync(fallbackFunc, onFallback);
-
-            Exception instanceToCapture = new ArgumentNullException("myParam");
-            Exception instanceToThrow = new AggregateException(instanceToCapture);
-            fallbackPolicy.Awaiting(p => p.RaiseExceptionAsync(instanceToThrow))
-                .Should().NotThrow();
-
-            fallbackException.Should().Be(instanceToCapture);
-        }
-
-        [Fact]
-        public void Should_not_call_fallbackAction_with_the_exception_if_exception_unhandled()
-        {
-            Exception fallbackException = null;
-
-            Func<Exception, Context, CancellationToken, Task> fallbackFunc = (ex, _, _) => { fallbackException = ex; return TaskHelper.EmptyTask; };
-
-            Func<Exception, Context, Task> onFallback = (_, _) => TaskHelper.EmptyTask;
-
-            var fallbackPolicy = Policy
-                .Handle<DivideByZeroException>()
-                .FallbackAsync(fallbackFunc, onFallback);
-
-            fallbackPolicy.Awaiting(p => p.ExecuteAsync(() => throw new ArgumentNullException()))
-                .Should().Throw<ArgumentNullException>();
-
-            fallbackException.Should().BeNull();
-        }
-
-        #endregion
-
-        #region Cancellation tests
-
-        [Fact]
-        public void Should_execute_action_when_non_faulting_and_cancellationToken_not_cancelled()
-        {
-            var fallbackActionExecuted = false;
-            Func<CancellationToken, Task> fallbackActionAsync = _ => { fallbackActionExecuted = true; return TaskHelper.EmptyTask; };
-
-            var policy = Policy
-                                    .Handle<DivideByZeroException>()
-                                    .FallbackAsync(fallbackActionAsync);
-
-            var cancellationTokenSource = new CancellationTokenSource();
-            var cancellationToken = cancellationTokenSource.Token;
-
-            var attemptsInvoked = 0;
-            Action onExecute = () => attemptsInvoked++;
-
-            var scenario = new Scenario
-            {
-                NumberOfTimesToRaiseException = 0,
-                AttemptDuringWhichToCancel = null,
-            };
-
-            policy.Awaiting(x => x.RaiseExceptionAndOrCancellationAsync<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
-                .Should().NotThrow();
-            attemptsInvoked.Should().Be(1);
-
-            fallbackActionExecuted.Should().BeFalse();
-        }
-
-        [Fact]
-        public void Should_execute_fallback_when_faulting_and_cancellationToken_not_cancelled()
-        {
-            var fallbackActionExecuted = false;
-            Func<CancellationToken, Task> fallbackActionAsync = _ => { fallbackActionExecuted = true; return TaskHelper.EmptyTask; };
-
-            var policy = Policy
-                                    .Handle<DivideByZeroException>()
-                                    .FallbackAsync(fallbackActionAsync);
-
-            var cancellationTokenSource = new CancellationTokenSource();
-            var cancellationToken = cancellationTokenSource.Token;
-
-            var attemptsInvoked = 0;
-            Action onExecute = () => attemptsInvoked++;
-
-            var scenario = new Scenario
-            {
-                NumberOfTimesToRaiseException = 1,
-                AttemptDuringWhichToCancel = null,
-            };
-
-            policy.Awaiting(x => x.RaiseExceptionAndOrCancellationAsync<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
-                .Should().NotThrow();
-            attemptsInvoked.Should().Be(1);
-
-            fallbackActionExecuted.Should().BeTrue();
-        }
-
-        [Fact]
-        public void Should_not_execute_action_when_cancellationToken_cancelled_before_execute()
-        {
-            var fallbackActionExecuted = false;
-            Func<CancellationToken, Task> fallbackActionAsync = _ => { fallbackActionExecuted = true; return TaskHelper.EmptyTask; };
-
-            var policy = Policy
-                                    .Handle<DivideByZeroException>()
-                                    .FallbackAsync(fallbackActionAsync);
-
-            var cancellationTokenSource = new CancellationTokenSource();
-            var cancellationToken = cancellationTokenSource.Token;
-
-            var attemptsInvoked = 0;
-            Action onExecute = () => attemptsInvoked++;
-
-            var scenario = new Scenario
-            {
-                NumberOfTimesToRaiseException = 1,
-                AttemptDuringWhichToCancel = null, // Cancellation token cancelled manually below - before any scenario execution.
-            };
-
-            cancellationTokenSource.Cancel();
-
-            policy.Awaiting(x => x.RaiseExceptionAndOrCancellationAsync<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
-                .Should().Throw<OperationCanceledException>()
-                .And.CancellationToken.Should().Be(cancellationToken);
-            attemptsInvoked.Should().Be(0);
-
-            fallbackActionExecuted.Should().BeFalse();
-
-        }
-
-        [Fact]
-        public void Should_report_cancellation_and_not_execute_fallback_during_otherwise_non_faulting_action_execution_when_user_delegate_observes_cancellationToken_and_fallback_does_not_handle_cancellations()
-        {
-            var fallbackActionExecuted = false;
-            Func<CancellationToken, Task> fallbackActionAsync = _ => { fallbackActionExecuted = true; return TaskHelper.EmptyTask; };
-
-            var policy = Policy
-                                    .Handle<DivideByZeroException>()
-                                    .FallbackAsync(fallbackActionAsync);
-
-            var cancellationTokenSource = new CancellationTokenSource();
-            var cancellationToken = cancellationTokenSource.Token;
-
-            var attemptsInvoked = 0;
-            Action onExecute = () => attemptsInvoked++;
-
-            var scenario = new Scenario
-            {
-                NumberOfTimesToRaiseException = 0,
-                AttemptDuringWhichToCancel = 1,
-                ActionObservesCancellation = true
-            };
-
-            policy.Awaiting(x => x.RaiseExceptionAndOrCancellationAsync<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
-                .Should().Throw<OperationCanceledException>()
-                .And.CancellationToken.Should().Be(cancellationToken);
-            attemptsInvoked.Should().Be(1);
-
-            fallbackActionExecuted.Should().BeFalse();
-        }
-
-        [Fact]
-        public void Should_handle_cancellation_and_execute_fallback_during_otherwise_non_faulting_action_execution_when_user_delegate_observes_cancellationToken_and_fallback_handles_cancellations()
-        {
-            var fallbackActionExecuted = false;
-            Func<CancellationToken, Task> fallbackActionAsync = _ => { fallbackActionExecuted = true; return TaskHelper.EmptyTask; };
-
-            var policy = Policy
-                                    .Handle<DivideByZeroException>()
-                                    .Or<OperationCanceledException>()
-                                    .FallbackAsync(fallbackActionAsync);
-
-            var cancellationTokenSource = new CancellationTokenSource();
-            var cancellationToken = cancellationTokenSource.Token;
-
-            var attemptsInvoked = 0;
-            Action onExecute = () => attemptsInvoked++;
-
-            var scenario = new Scenario
-            {
-                NumberOfTimesToRaiseException = 0,
-                AttemptDuringWhichToCancel = 1,
-                ActionObservesCancellation = true
-            };
-
-            policy.Awaiting(x => x.RaiseExceptionAndOrCancellationAsync<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
-                .Should().NotThrow();
-            attemptsInvoked.Should().Be(1);
-
-            fallbackActionExecuted.Should().BeTrue();
-        }
-
-        [Fact]
-        public void Should_not_report_cancellation_and_not_execute_fallback_if_non_faulting_action_execution_completes_and_user_delegate_does_not_observe_the_set_cancellationToken()
-        {
-
-            var fallbackActionExecuted = false;
-            Func<CancellationToken, Task> fallbackActionAsync = _ => { fallbackActionExecuted = true; return TaskHelper.EmptyTask; };
-
-            var policy = Policy
-                                    .Handle<DivideByZeroException>()
-                                    .FallbackAsync(fallbackActionAsync);
-
-            var cancellationTokenSource = new CancellationTokenSource();
-            var cancellationToken = cancellationTokenSource.Token;
-
-            var attemptsInvoked = 0;
-            Action onExecute = () => attemptsInvoked++;
-
-            var scenario = new Scenario
-            {
-                NumberOfTimesToRaiseException = 0,
-                AttemptDuringWhichToCancel = 1,
-                ActionObservesCancellation = false
-            };
-
-            policy.Awaiting(x => x.RaiseExceptionAndOrCancellationAsync<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
-                .Should().NotThrow();
-            attemptsInvoked.Should().Be(1);
-
-            fallbackActionExecuted.Should().BeFalse();
-        }
-
-        [Fact]
-        public void Should_report_unhandled_fault_and_not_execute_fallback_if_action_execution_raises_unhandled_fault_and_user_delegate_does_not_observe_the_set_cancellationToken()
-        {
-
-            var fallbackActionExecuted = false;
-            Func<CancellationToken, Task> fallbackActionAsync = _ => { fallbackActionExecuted = true; return TaskHelper.EmptyTask; };
-
-
-            var cancellationTokenSource = new CancellationTokenSource();
-            var cancellationToken = cancellationTokenSource.Token;
-
-            var policy = Policy
-                                    .Handle<DivideByZeroException>()
-                                    .FallbackAsync(fallbackActionAsync);
-
-            var attemptsInvoked = 0;
-            Action onExecute = () => attemptsInvoked++;
-
-            var scenario = new Scenario
-            {
-                NumberOfTimesToRaiseException = 1,
-                AttemptDuringWhichToCancel = 1,
-                ActionObservesCancellation = false
-            };
-
-            policy.Awaiting(x => x.RaiseExceptionAndOrCancellationAsync<NullReferenceException>(scenario, cancellationTokenSource, onExecute))
-                .Should().Throw<NullReferenceException>();
-            attemptsInvoked.Should().Be(1);
-
-            fallbackActionExecuted.Should().BeFalse();
-        }
-
-        [Fact]
-        public void Should_handle_handled_fault_and_execute_fallback_following_faulting_action_execution_when_user_delegate_does_not_observe_cancellationToken()
-        {
-
-            var fallbackActionExecuted = false;
-            Func<CancellationToken, Task> fallbackActionAsync = _ => { fallbackActionExecuted = true; return TaskHelper.EmptyTask; };
-
-
-            var cancellationTokenSource = new CancellationTokenSource();
-            var cancellationToken = cancellationTokenSource.Token;
-
-            var policy = Policy
-                                    .Handle<DivideByZeroException>()
-                                    .FallbackAsync(fallbackActionAsync);
-
-            var attemptsInvoked = 0;
-            Action onExecute = () => attemptsInvoked++;
-
-            var scenario = new Scenario
-            {
-                NumberOfTimesToRaiseException = 1,
-                AttemptDuringWhichToCancel = 1,
-                ActionObservesCancellation = false
-            };
-
-            policy.Awaiting(x => x.RaiseExceptionAndOrCancellationAsync<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
-                .Should().NotThrow();
-            attemptsInvoked.Should().Be(1);
-
-            fallbackActionExecuted.Should().BeTrue();
-        }
-
-        #endregion
-
+        contextData.Count.Should().Be(2);
+        contextData.Keys.Should().Contain(typeof(ArgumentNullException));
+        contextData.Keys.Should().Contain(typeof(DivideByZeroException));
+        contextData[typeof(ArgumentNullException)].Should().Be("value1");
+        contextData[typeof(DivideByZeroException)].Should().Be("value2");
 
     }
+
+    [Fact]
+    public async Task Context_should_be_empty_if_execute_not_called_with_any_context_data()
+    {
+        Context capturedContext = null;
+        var onFallbackExecuted = false;
+
+        Func<Context, CancellationToken, Task> fallbackActionAsync = (_, _) => TaskHelper.EmptyTask;
+        Func<Exception, Context, Task> onFallbackAsync = (_, ctx) => { onFallbackExecuted = true; capturedContext = ctx; return TaskHelper.EmptyTask; };
+
+        var fallbackPolicy = Policy
+            .Handle<ArgumentNullException>()
+            .Or<DivideByZeroException>()
+            .FallbackAsync(fallbackActionAsync, onFallbackAsync);
+
+        await fallbackPolicy.RaiseExceptionAsync<DivideByZeroException>();
+
+        onFallbackExecuted.Should().BeTrue();
+        capturedContext.Should().BeEmpty();
+    }
+
+    [Fact]
+    public void Should_call_fallbackAction_with_the_passed_context()
+    {
+        IDictionary<string, object> contextData = null;
+
+        Func<Context, CancellationToken, Task> fallbackActionAsync = (ctx, _) => { contextData = ctx; return TaskHelper.EmptyTask; };
+
+        Func<Exception, Context, Task> onFallbackAsync = (_, _) => TaskHelper.EmptyTask;
+
+        var fallbackPolicy = Policy
+            .Handle<ArgumentNullException>()
+            .FallbackAsync(fallbackActionAsync, onFallbackAsync);
+
+        fallbackPolicy.Awaiting(p => p.ExecuteAsync(_ => throw new ArgumentNullException(),
+                new { key1 = "value1", key2 = "value2" }.AsDictionary()))
+            .Should().NotThrow();
+
+        contextData.Should()
+            .ContainKeys("key1", "key2").And
+            .ContainValues("value1", "value2");
+    }
+
+    [Fact]
+    public void Should_call_fallbackAction_with_the_passed_context_when_execute_and_capture()
+    {
+        IDictionary<string, object> contextData = null;
+
+        Func<Context, CancellationToken, Task> fallbackActionAsync = (ctx, _) => { contextData = ctx; return TaskHelper.EmptyTask; };
+
+        Func<Exception, Context, Task> onFallbackAsync = (_, _) => TaskHelper.EmptyTask;
+
+        var fallbackPolicy = Policy
+            .Handle<ArgumentNullException>()
+            .FallbackAsync(fallbackActionAsync, onFallbackAsync);
+
+        fallbackPolicy.Awaiting(p => p.ExecuteAndCaptureAsync(_ => throw new ArgumentNullException(),
+                new { key1 = "value1", key2 = "value2" }.AsDictionary()))
+            .Should().NotThrow();
+
+        contextData.Should()
+            .ContainKeys("key1", "key2").And
+            .ContainValues("value1", "value2");
+    }
+
+    [Fact]
+    public async Task Context_should_be_empty_at_fallbackAction_if_execute_not_called_with_any_context_data()
+    {
+        Context capturedContext = null;
+        var fallbackExecuted = false;
+
+        Func<Context, CancellationToken, Task> fallbackActionAsync = (ctx, _) => { fallbackExecuted = true; capturedContext = ctx; return TaskHelper.EmptyTask; };
+
+        Func<Exception, Context, Task> onFallbackAsync = (_, _) => TaskHelper.EmptyTask;
+
+        var fallbackPolicy = Policy
+            .Handle<ArgumentNullException>()
+            .Or<DivideByZeroException>()
+            .FallbackAsync(fallbackActionAsync, onFallbackAsync);
+
+        await fallbackPolicy.RaiseExceptionAsync<DivideByZeroException>();
+
+        fallbackExecuted.Should().BeTrue();
+        capturedContext.Should().BeEmpty();
+    }
+
+    #endregion
+
+    #region Exception passing tests
+
+    [Fact]
+    public void Should_call_fallbackAction_with_the_exception()
+    {
+        Exception fallbackException = null;
+
+        Func<Exception, Context, CancellationToken, Task> fallbackFunc = (ex, _, _) => { fallbackException = ex; return TaskHelper.EmptyTask; };
+
+        Func<Exception, Context, Task> onFallback = (_, _) => TaskHelper.EmptyTask;
+
+        var fallbackPolicy = Policy
+            .Handle<ArgumentNullException>()
+            .FallbackAsync(fallbackFunc, onFallback);
+
+        Exception instanceToThrow = new ArgumentNullException("myParam");
+        fallbackPolicy.Awaiting(p => p.RaiseExceptionAsync(instanceToThrow))
+            .Should().NotThrow();
+
+        fallbackException.Should().Be(instanceToThrow);
+    }
+
+    [Fact]
+    public void Should_call_fallbackAction_with_the_exception_when_execute_and_capture()
+    {
+        Exception fallbackException = null;
+
+        Func<Exception, Context, CancellationToken, Task> fallbackFunc = (ex, _, _) => { fallbackException = ex; return TaskHelper.EmptyTask; };
+
+        Func<Exception, Context, Task> onFallback = (_, _) => TaskHelper.EmptyTask;
+
+        var fallbackPolicy = Policy
+            .Handle<ArgumentNullException>()
+            .FallbackAsync(fallbackFunc, onFallback);
+
+        fallbackPolicy.Awaiting(p => p.ExecuteAndCaptureAsync(() => throw new ArgumentNullException()))
+            .Should().NotThrow();
+
+        fallbackException.Should().NotBeNull()
+            .And.BeOfType(typeof(ArgumentNullException));
+    }
+
+    [Fact]
+    public void Should_call_fallbackAction_with_the_matched_inner_exception_unwrapped()
+    {
+        Exception fallbackException = null;
+
+        Func<Exception, Context, CancellationToken, Task> fallbackFunc = (ex, _, _) => { fallbackException = ex; return TaskHelper.EmptyTask; };
+
+        Func<Exception, Context, Task> onFallback = (_, _) => TaskHelper.EmptyTask;
+
+        var fallbackPolicy = Policy
+            .HandleInner<ArgumentNullException>()
+            .FallbackAsync(fallbackFunc, onFallback);
+
+        Exception instanceToCapture = new ArgumentNullException("myParam");
+        var instanceToThrow = new Exception(String.Empty, instanceToCapture);
+        fallbackPolicy.Awaiting(p => p.RaiseExceptionAsync(instanceToThrow))
+            .Should().NotThrow();
+
+        fallbackException.Should().Be(instanceToCapture);
+    }
+
+    [Fact]
+    public void Should_call_fallbackAction_with_the_matched_inner_of_aggregate_exception_unwrapped()
+    {
+        Exception fallbackException = null;
+
+        Func<Exception, Context, CancellationToken, Task> fallbackFunc = (ex, _, _) => { fallbackException = ex; return TaskHelper.EmptyTask; };
+
+        Func<Exception, Context, Task> onFallback = (_, _) => TaskHelper.EmptyTask;
+
+        var fallbackPolicy = Policy
+            .HandleInner<ArgumentNullException>()
+            .FallbackAsync(fallbackFunc, onFallback);
+
+        Exception instanceToCapture = new ArgumentNullException("myParam");
+        Exception instanceToThrow = new AggregateException(instanceToCapture);
+        fallbackPolicy.Awaiting(p => p.RaiseExceptionAsync(instanceToThrow))
+            .Should().NotThrow();
+
+        fallbackException.Should().Be(instanceToCapture);
+    }
+
+    [Fact]
+    public void Should_not_call_fallbackAction_with_the_exception_if_exception_unhandled()
+    {
+        Exception fallbackException = null;
+
+        Func<Exception, Context, CancellationToken, Task> fallbackFunc = (ex, _, _) => { fallbackException = ex; return TaskHelper.EmptyTask; };
+
+        Func<Exception, Context, Task> onFallback = (_, _) => TaskHelper.EmptyTask;
+
+        var fallbackPolicy = Policy
+            .Handle<DivideByZeroException>()
+            .FallbackAsync(fallbackFunc, onFallback);
+
+        fallbackPolicy.Awaiting(p => p.ExecuteAsync(() => throw new ArgumentNullException()))
+            .Should().Throw<ArgumentNullException>();
+
+        fallbackException.Should().BeNull();
+    }
+
+    #endregion
+
+    #region Cancellation tests
+
+    [Fact]
+    public void Should_execute_action_when_non_faulting_and_cancellationToken_not_cancelled()
+    {
+        var fallbackActionExecuted = false;
+        Func<CancellationToken, Task> fallbackActionAsync = _ => { fallbackActionExecuted = true; return TaskHelper.EmptyTask; };
+
+        var policy = Policy
+            .Handle<DivideByZeroException>()
+            .FallbackAsync(fallbackActionAsync);
+
+        var cancellationTokenSource = new CancellationTokenSource();
+        var cancellationToken = cancellationTokenSource.Token;
+
+        var attemptsInvoked = 0;
+        Action onExecute = () => attemptsInvoked++;
+
+        var scenario = new Scenario
+        {
+            NumberOfTimesToRaiseException = 0,
+            AttemptDuringWhichToCancel = null,
+        };
+
+        policy.Awaiting(x => x.RaiseExceptionAndOrCancellationAsync<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
+            .Should().NotThrow();
+        attemptsInvoked.Should().Be(1);
+
+        fallbackActionExecuted.Should().BeFalse();
+    }
+
+    [Fact]
+    public void Should_execute_fallback_when_faulting_and_cancellationToken_not_cancelled()
+    {
+        var fallbackActionExecuted = false;
+        Func<CancellationToken, Task> fallbackActionAsync = _ => { fallbackActionExecuted = true; return TaskHelper.EmptyTask; };
+
+        var policy = Policy
+            .Handle<DivideByZeroException>()
+            .FallbackAsync(fallbackActionAsync);
+
+        var cancellationTokenSource = new CancellationTokenSource();
+        var cancellationToken = cancellationTokenSource.Token;
+
+        var attemptsInvoked = 0;
+        Action onExecute = () => attemptsInvoked++;
+
+        var scenario = new Scenario
+        {
+            NumberOfTimesToRaiseException = 1,
+            AttemptDuringWhichToCancel = null,
+        };
+
+        policy.Awaiting(x => x.RaiseExceptionAndOrCancellationAsync<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
+            .Should().NotThrow();
+        attemptsInvoked.Should().Be(1);
+
+        fallbackActionExecuted.Should().BeTrue();
+    }
+
+    [Fact]
+    public void Should_not_execute_action_when_cancellationToken_cancelled_before_execute()
+    {
+        var fallbackActionExecuted = false;
+        Func<CancellationToken, Task> fallbackActionAsync = _ => { fallbackActionExecuted = true; return TaskHelper.EmptyTask; };
+
+        var policy = Policy
+            .Handle<DivideByZeroException>()
+            .FallbackAsync(fallbackActionAsync);
+
+        var cancellationTokenSource = new CancellationTokenSource();
+        var cancellationToken = cancellationTokenSource.Token;
+
+        var attemptsInvoked = 0;
+        Action onExecute = () => attemptsInvoked++;
+
+        var scenario = new Scenario
+        {
+            NumberOfTimesToRaiseException = 1,
+            AttemptDuringWhichToCancel = null, // Cancellation token cancelled manually below - before any scenario execution.
+        };
+
+        cancellationTokenSource.Cancel();
+
+        policy.Awaiting(x => x.RaiseExceptionAndOrCancellationAsync<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
+            .Should().Throw<OperationCanceledException>()
+            .And.CancellationToken.Should().Be(cancellationToken);
+        attemptsInvoked.Should().Be(0);
+
+        fallbackActionExecuted.Should().BeFalse();
+
+    }
+
+    [Fact]
+    public void Should_report_cancellation_and_not_execute_fallback_during_otherwise_non_faulting_action_execution_when_user_delegate_observes_cancellationToken_and_fallback_does_not_handle_cancellations()
+    {
+        var fallbackActionExecuted = false;
+        Func<CancellationToken, Task> fallbackActionAsync = _ => { fallbackActionExecuted = true; return TaskHelper.EmptyTask; };
+
+        var policy = Policy
+            .Handle<DivideByZeroException>()
+            .FallbackAsync(fallbackActionAsync);
+
+        var cancellationTokenSource = new CancellationTokenSource();
+        var cancellationToken = cancellationTokenSource.Token;
+
+        var attemptsInvoked = 0;
+        Action onExecute = () => attemptsInvoked++;
+
+        var scenario = new Scenario
+        {
+            NumberOfTimesToRaiseException = 0,
+            AttemptDuringWhichToCancel = 1,
+            ActionObservesCancellation = true
+        };
+
+        policy.Awaiting(x => x.RaiseExceptionAndOrCancellationAsync<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
+            .Should().Throw<OperationCanceledException>()
+            .And.CancellationToken.Should().Be(cancellationToken);
+        attemptsInvoked.Should().Be(1);
+
+        fallbackActionExecuted.Should().BeFalse();
+    }
+
+    [Fact]
+    public void Should_handle_cancellation_and_execute_fallback_during_otherwise_non_faulting_action_execution_when_user_delegate_observes_cancellationToken_and_fallback_handles_cancellations()
+    {
+        var fallbackActionExecuted = false;
+        Func<CancellationToken, Task> fallbackActionAsync = _ => { fallbackActionExecuted = true; return TaskHelper.EmptyTask; };
+
+        var policy = Policy
+            .Handle<DivideByZeroException>()
+            .Or<OperationCanceledException>()
+            .FallbackAsync(fallbackActionAsync);
+
+        var cancellationTokenSource = new CancellationTokenSource();
+        var cancellationToken = cancellationTokenSource.Token;
+
+        var attemptsInvoked = 0;
+        Action onExecute = () => attemptsInvoked++;
+
+        var scenario = new Scenario
+        {
+            NumberOfTimesToRaiseException = 0,
+            AttemptDuringWhichToCancel = 1,
+            ActionObservesCancellation = true
+        };
+
+        policy.Awaiting(x => x.RaiseExceptionAndOrCancellationAsync<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
+            .Should().NotThrow();
+        attemptsInvoked.Should().Be(1);
+
+        fallbackActionExecuted.Should().BeTrue();
+    }
+
+    [Fact]
+    public void Should_not_report_cancellation_and_not_execute_fallback_if_non_faulting_action_execution_completes_and_user_delegate_does_not_observe_the_set_cancellationToken()
+    {
+
+        var fallbackActionExecuted = false;
+        Func<CancellationToken, Task> fallbackActionAsync = _ => { fallbackActionExecuted = true; return TaskHelper.EmptyTask; };
+
+        var policy = Policy
+            .Handle<DivideByZeroException>()
+            .FallbackAsync(fallbackActionAsync);
+
+        var cancellationTokenSource = new CancellationTokenSource();
+        var cancellationToken = cancellationTokenSource.Token;
+
+        var attemptsInvoked = 0;
+        Action onExecute = () => attemptsInvoked++;
+
+        var scenario = new Scenario
+        {
+            NumberOfTimesToRaiseException = 0,
+            AttemptDuringWhichToCancel = 1,
+            ActionObservesCancellation = false
+        };
+
+        policy.Awaiting(x => x.RaiseExceptionAndOrCancellationAsync<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
+            .Should().NotThrow();
+        attemptsInvoked.Should().Be(1);
+
+        fallbackActionExecuted.Should().BeFalse();
+    }
+
+    [Fact]
+    public void Should_report_unhandled_fault_and_not_execute_fallback_if_action_execution_raises_unhandled_fault_and_user_delegate_does_not_observe_the_set_cancellationToken()
+    {
+
+        var fallbackActionExecuted = false;
+        Func<CancellationToken, Task> fallbackActionAsync = _ => { fallbackActionExecuted = true; return TaskHelper.EmptyTask; };
+
+
+        var cancellationTokenSource = new CancellationTokenSource();
+        var cancellationToken = cancellationTokenSource.Token;
+
+        var policy = Policy
+            .Handle<DivideByZeroException>()
+            .FallbackAsync(fallbackActionAsync);
+
+        var attemptsInvoked = 0;
+        Action onExecute = () => attemptsInvoked++;
+
+        var scenario = new Scenario
+        {
+            NumberOfTimesToRaiseException = 1,
+            AttemptDuringWhichToCancel = 1,
+            ActionObservesCancellation = false
+        };
+
+        policy.Awaiting(x => x.RaiseExceptionAndOrCancellationAsync<NullReferenceException>(scenario, cancellationTokenSource, onExecute))
+            .Should().Throw<NullReferenceException>();
+        attemptsInvoked.Should().Be(1);
+
+        fallbackActionExecuted.Should().BeFalse();
+    }
+
+    [Fact]
+    public void Should_handle_handled_fault_and_execute_fallback_following_faulting_action_execution_when_user_delegate_does_not_observe_cancellationToken()
+    {
+
+        var fallbackActionExecuted = false;
+        Func<CancellationToken, Task> fallbackActionAsync = _ => { fallbackActionExecuted = true; return TaskHelper.EmptyTask; };
+
+
+        var cancellationTokenSource = new CancellationTokenSource();
+        var cancellationToken = cancellationTokenSource.Token;
+
+        var policy = Policy
+            .Handle<DivideByZeroException>()
+            .FallbackAsync(fallbackActionAsync);
+
+        var attemptsInvoked = 0;
+        Action onExecute = () => attemptsInvoked++;
+
+        var scenario = new Scenario
+        {
+            NumberOfTimesToRaiseException = 1,
+            AttemptDuringWhichToCancel = 1,
+            ActionObservesCancellation = false
+        };
+
+        policy.Awaiting(x => x.RaiseExceptionAndOrCancellationAsync<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
+            .Should().NotThrow();
+        attemptsInvoked.Should().Be(1);
+
+        fallbackActionExecuted.Should().BeTrue();
+    }
+
+    #endregion
+
+
 }

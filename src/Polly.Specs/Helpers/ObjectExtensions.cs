@@ -2,17 +2,16 @@
 using System.Reflection;
 using System.Linq;
 
-namespace Polly.Specs.Helpers
+namespace Polly.Specs.Helpers;
+
+public static class ObjectExtensions
 {
-    public static class ObjectExtensions
+    public static IDictionary<string, object> AsDictionary(this object source)
     {
-        public static IDictionary<string, object> AsDictionary(this object source)
-        {
-            return source.GetType().GetRuntimeProperties().ToDictionary
-            (
-                propInfo => propInfo.Name,
-                propInfo => propInfo.GetValue(source, null)
-            );
-        }
+        return source.GetType().GetRuntimeProperties().ToDictionary
+        (
+            propInfo => propInfo.Name,
+            propInfo => propInfo.GetValue(source, null)
+        );
     }
 }
