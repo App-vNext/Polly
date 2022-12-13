@@ -85,7 +85,6 @@ public class BulkheadTResultAsyncSpecs : BulkheadSpecsBase
             contextPassedToOnRejected.Should().NotBeNull();
             contextPassedToOnRejected.OperationKey.Should().Be(operationKey);
             contextPassedToOnRejected.Should().BeSameAs(contextPassedToExecute);
-
         }
     }
 
@@ -94,15 +93,11 @@ public class BulkheadTResultAsyncSpecs : BulkheadSpecsBase
 
     #region Bulkhead behaviour
 
-    protected override IBulkheadPolicy GetBulkhead(int maxParallelization, int maxQueuingActions)
-    {
-        return Policy.BulkheadAsync<ResultPrimitive>(maxParallelization, maxQueuingActions);
-    }
+    protected override IBulkheadPolicy GetBulkhead(int maxParallelization, int maxQueuingActions) =>
+        Policy.BulkheadAsync<ResultPrimitive>(maxParallelization, maxQueuingActions);
 
-    protected override Task ExecuteOnBulkhead(IBulkheadPolicy bulkhead, TraceableAction action)
-    {
-        return action.ExecuteOnBulkheadAsync<ResultPrimitive>((AsyncBulkheadPolicy<ResultPrimitive>)bulkhead);
-    }
+    protected override Task ExecuteOnBulkhead(IBulkheadPolicy bulkhead, TraceableAction action) =>
+        action.ExecuteOnBulkheadAsync<ResultPrimitive>((AsyncBulkheadPolicy<ResultPrimitive>)bulkhead);
 
     #endregion
 

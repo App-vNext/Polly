@@ -46,18 +46,15 @@ public class AsyncCachePolicy : AsyncPolicy
         Func<Context, CancellationToken, Task> action,
         Context context,
         CancellationToken cancellationToken,
-        bool continueOnCapturedContext)
-    {
+        bool continueOnCapturedContext) =>
         // Pass-through/NOOP policy action, for void-returning executions through the cache policy.
-        return action(context, cancellationToken);
-    }
+        action(context, cancellationToken);
 
     /// <inheritdoc/>
     [DebuggerStepThrough]
     protected override Task<TResult> ImplementationAsync<TResult>(Func<Context, CancellationToken, Task<TResult>> action, Context context, CancellationToken cancellationToken,
-        bool continueOnCapturedContext)
-    {
-        return AsyncCacheEngine.ImplementationAsync<TResult>(
+        bool continueOnCapturedContext) =>
+        AsyncCacheEngine.ImplementationAsync<TResult>(
             _asyncCacheProvider.AsyncFor<TResult>(), 
             _ttlStrategy.For<TResult>(), 
             _cacheKeyStrategy, 
@@ -70,7 +67,6 @@ public class AsyncCachePolicy : AsyncPolicy
             _onCachePut, 
             _onCacheGetError,
             _onCachePutError);
-    }
 }
 
 /// <summary>
@@ -113,9 +109,8 @@ public class AsyncCachePolicy<TResult> : AsyncPolicy<TResult>
     /// <inheritdoc/>
     [DebuggerStepThrough]
     protected override Task<TResult> ImplementationAsync(Func<Context, CancellationToken, Task<TResult>> action, Context context, CancellationToken cancellationToken,
-        bool continueOnCapturedContext)
-    {
-        return AsyncCacheEngine.ImplementationAsync<TResult>(
+        bool continueOnCapturedContext) =>
+        AsyncCacheEngine.ImplementationAsync<TResult>(
             _asyncCacheProvider,
             _ttlStrategy,
             _cacheKeyStrategy,
@@ -128,5 +123,4 @@ public class AsyncCachePolicy<TResult> : AsyncPolicy<TResult>
             _onCachePut,
             _onCacheGetError,
             _onCachePutError);
-    }
 }

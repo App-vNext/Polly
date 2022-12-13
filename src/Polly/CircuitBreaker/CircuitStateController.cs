@@ -18,9 +18,9 @@ internal abstract class CircuitStateController<TResult> : ICircuitController<TRe
     protected readonly object _lock = new object();
 
     protected CircuitStateController(
-        TimeSpan durationOfBreak, 
-        Action<DelegateResult<TResult>, CircuitState, TimeSpan, Context> onBreak, 
-        Action<Context> onReset, 
+        TimeSpan durationOfBreak,
+        Action<DelegateResult<TResult>, CircuitState, TimeSpan, Context> onBreak,
+        Action<Context> onReset,
         Action onHalfOpen)
     {
         _durationOfBreak = durationOfBreak;
@@ -76,13 +76,8 @@ internal abstract class CircuitStateController<TResult> : ICircuitController<TRe
         }
     }
 
-    protected bool IsInAutomatedBreak_NeedsLock
-    {
-        get
-        {
-            return SystemClock.UtcNow().Ticks < _blockedTill;
-        }
-    }
+    protected bool IsInAutomatedBreak_NeedsLock =>
+        SystemClock.UtcNow().Ticks < _blockedTill;
 
     public void Isolate()
     {

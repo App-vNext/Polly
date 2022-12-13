@@ -23,7 +23,7 @@ public class TraceableAction : IDisposable
 
     public TraceableActionStatus Status
     {
-        get { return _status; }
+        get => _status;
         set
         {
             _status = value;

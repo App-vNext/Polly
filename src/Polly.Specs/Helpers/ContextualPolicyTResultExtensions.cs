@@ -8,10 +8,8 @@ public static class ContextualPolicyTResultExtensions
 {
     public static TResult RaiseResultSequence<TResult>(this Policy<TResult> policy,
         IDictionary<string, object> contextData,
-        params TResult[] resultsToRaise)
-    {
-        return policy.RaiseResultSequence(contextData, resultsToRaise.ToList());
-    }
+        params TResult[] resultsToRaise) =>
+        policy.RaiseResultSequence(contextData, resultsToRaise.ToList());
 
     public static TResult RaiseResultSequence<TResult>(this Policy<TResult> policy,
         IDictionary<string, object> contextData,
@@ -32,10 +30,8 @@ public static class ContextualPolicyTResultExtensions
 
     public static PolicyResult<TResult> RaiseResultSequenceOnExecuteAndCapture<TResult>(this Policy<TResult> policy,
         IDictionary<string, object> contextData,
-        params TResult[] resultsToRaise)
-    {
-        return policy.RaiseResultSequenceOnExecuteAndCapture(contextData, resultsToRaise.ToList());
-    }
+        params TResult[] resultsToRaise) =>
+        policy.RaiseResultSequenceOnExecuteAndCapture(contextData, resultsToRaise.ToList());
 
     public static PolicyResult<TResult> RaiseResultSequenceOnExecuteAndCapture<TResult>(this Policy<TResult> policy,
         IDictionary<string, object> contextData,
