@@ -30,7 +30,7 @@ namespace Polly
         public static AsyncCircuitBreakerPolicy CircuitBreakerAsync(this PolicyBuilder policyBuilder, int exceptionsAllowedBeforeBreaking, TimeSpan durationOfBreak)
         {
             Action<Exception, TimeSpan> doNothingOnBreak = (_, _) => { };
-            Action doNothingOnReset = () => { };
+            var doNothingOnReset = () => { };
 
             return policyBuilder.CircuitBreakerAsync(
                exceptionsAllowedBeforeBreaking,
@@ -94,7 +94,7 @@ namespace Polly
         /// <exception cref="ArgumentNullException">onReset</exception>
         public static AsyncCircuitBreakerPolicy CircuitBreakerAsync(this PolicyBuilder policyBuilder, int exceptionsAllowedBeforeBreaking, TimeSpan durationOfBreak, Action<Exception, TimeSpan, Context> onBreak, Action<Context> onReset)
         {
-            Action doNothingOnHalfOpen = () => { };
+            var doNothingOnHalfOpen = () => { };
             return policyBuilder.CircuitBreakerAsync(
                 exceptionsAllowedBeforeBreaking, 
                 durationOfBreak, 

@@ -25,7 +25,7 @@ namespace Polly
 
         internal static ExceptionType GetExceptionType(ExceptionPredicates exceptionPredicates, Exception exception)
         {
-            bool isExceptionTypeHandledByThisPolicy = exceptionPredicates.FirstMatchOrDefault(exception) != null;
+            var isExceptionTypeHandledByThisPolicy = exceptionPredicates.FirstMatchOrDefault(exception) != null;
 
             return isExceptionTypeHandledByThisPolicy
                 ? ExceptionType.HandledByThisPolicy

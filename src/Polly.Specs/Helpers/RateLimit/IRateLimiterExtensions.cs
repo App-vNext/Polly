@@ -8,7 +8,7 @@ namespace Polly.Specs.Helpers.RateLimit
     {
         public static void ShouldPermitAnExecution(this IRateLimiter rateLimiter)
         {
-            (bool permitExecution, TimeSpan retryAfter) canExecute = rateLimiter.PermitExecution();
+            var canExecute = rateLimiter.PermitExecution();
 
             canExecute.permitExecution.Should().BeTrue();
             canExecute.retryAfter.Should().Be(TimeSpan.Zero);
@@ -16,7 +16,7 @@ namespace Polly.Specs.Helpers.RateLimit
 
         public static void ShouldPermitNExecutions(this IRateLimiter rateLimiter, long numberOfExecutions)
         {
-            for (int execution = 0; execution < numberOfExecutions; execution++)
+            for (var execution = 0; execution < numberOfExecutions; execution++)
             {
                 rateLimiter.ShouldPermitAnExecution();
             }
@@ -24,7 +24,7 @@ namespace Polly.Specs.Helpers.RateLimit
 
         public static void ShouldNotPermitAnExecution(this IRateLimiter rateLimiter, TimeSpan? retryAfter = null)
         {
-            (bool permitExecution, TimeSpan retryAfter) canExecute = rateLimiter.PermitExecution();
+            var canExecute = rateLimiter.PermitExecution();
 
             canExecute.permitExecution.Should().BeFalse();
             if (retryAfter == null)

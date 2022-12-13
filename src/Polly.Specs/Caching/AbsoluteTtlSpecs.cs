@@ -37,7 +37,7 @@ namespace Polly.Specs.Caching
         [Fact]
         public void Should_return_zero_ttl_if_configured_to_expire_in_past()
         {
-            AbsoluteTtl ttlStrategy = new AbsoluteTtl(SystemClock.DateTimeOffsetUtcNow().Subtract(TimeSpan.FromTicks(1)));
+            var ttlStrategy = new AbsoluteTtl(SystemClock.DateTimeOffsetUtcNow().Subtract(TimeSpan.FromTicks(1)));
 
             ttlStrategy.GetTtl(new Context("someOperationKey"), null).Timespan.Should().Be(TimeSpan.Zero);
         }
@@ -45,10 +45,10 @@ namespace Polly.Specs.Caching
         [Fact]
         public void Should_return_timespan_reflecting_time_until_expiry()
         {
-            DateTime today = DateTime.Today;
-            DateTime tomorrow = today.AddDays(1);
+            var today = DateTime.Today;
+            var tomorrow = today.AddDays(1);
 
-            AbsoluteTtl ttlStrategy = new AbsoluteTtl(tomorrow);
+            var ttlStrategy = new AbsoluteTtl(tomorrow);
 
             SystemClock.DateTimeOffsetUtcNow = () => today;
             ttlStrategy.GetTtl(new Context("someOperationKey"), null).Timespan.Should().Be(TimeSpan.FromDays(1));

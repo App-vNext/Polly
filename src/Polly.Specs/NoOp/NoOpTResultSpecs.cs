@@ -10,7 +10,7 @@ namespace Polly.Specs.NoOp
         [Fact]
         public void Should_execute_user_delegate()
         {
-            NoOpPolicy<int> policy = Policy.NoOp<int>();
+            var policy = Policy.NoOp<int>();
             int? result = null;
 
             policy.Invoking(x => result = x.Execute(() => 10))
@@ -23,10 +23,10 @@ namespace Polly.Specs.NoOp
         [Fact]
         public void Should_execute_user_delegate_without_adding_extra_cancellation_behaviour()
         {
-            NoOpPolicy<int> policy = Policy.NoOp<int>();
+            var policy = Policy.NoOp<int>();
             int? result = null;
 
-            using (CancellationTokenSource cts = new CancellationTokenSource())
+            using (var cts = new CancellationTokenSource())
             {
                 cts.Cancel();
 

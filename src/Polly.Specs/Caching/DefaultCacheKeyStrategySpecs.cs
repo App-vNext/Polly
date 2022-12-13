@@ -9,9 +9,9 @@ namespace Polly.Specs.Caching
         [Fact]
         public void Should_return_Context_OperationKey_as_cache_key()
         {
-            string operationKey = "SomeKey";
+            var operationKey = "SomeKey";
 
-            Context context = new Context(operationKey);
+            var context = new Context(operationKey);
 
             DefaultCacheKeyStrategy.Instance.GetCacheKey(context)
                 .Should().Be(operationKey);

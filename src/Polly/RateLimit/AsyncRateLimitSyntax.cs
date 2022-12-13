@@ -42,7 +42,7 @@ namespace Polly
                 throw new ArgumentOutOfRangeException(nameof(perTimeSpan), perTimeSpan, "The number of executions per timespan must be positive.");
             }
 
-            IRateLimiter rateLimiter = RateLimiterFactory.Create(onePer, maxBurst);
+            var rateLimiter = RateLimiterFactory.Create(onePer, maxBurst);
 
             return new AsyncRateLimitPolicy(rateLimiter);
         }

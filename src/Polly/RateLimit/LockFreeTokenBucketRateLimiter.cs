@@ -47,7 +47,7 @@ namespace Polly.RateLimit
             while (true)
             {
                 // Try to get a token.
-                long tokensAfterGrabOne = Interlocked.Decrement(ref currentTokens);
+                var tokensAfterGrabOne = Interlocked.Decrement(ref currentTokens);
 
                 if (tokensAfterGrabOne >= 0)
                 {
@@ -56,9 +56,9 @@ namespace Polly.RateLimit
                 }
 
                 // No tokens! We're rate-limited - unless we can refill the bucket.
-                long now = SystemClock.DateTimeOffsetUtcNow().Ticks;
-                long currentAddNextTokenAtTicks = Interlocked.Read(ref addNextTokenAtTicks);
-                long ticksTillAddNextToken = currentAddNextTokenAtTicks - now;
+                var now = SystemClock.DateTimeOffsetUtcNow().Ticks;
+                var currentAddNextTokenAtTicks = Interlocked.Read(ref addNextTokenAtTicks);
+                var ticksTillAddNextToken = currentAddNextTokenAtTicks - now;
 
                 if (ticksTillAddNextToken > 0)
                 {
@@ -69,17 +69,17 @@ namespace Polly.RateLimit
                 // Time to add tokens to the bucket!
 
                 // We definitely need to add one token.  In fact, if we haven't hit this bit of code for a while, we might be due to add a bunch of tokens.
-                long tokensMissedAdding =
+                var tokensMissedAdding =
                     // Passing addNextTokenAtTicks merits one token
                     1 +
                     // And any whole token tick intervals further each merit another.
                     (-ticksTillAddNextToken / addTokenTickInterval);
 
                 // We mustn't exceed bucket capacity though. 
-                long tokensToAdd = Math.Min(bucketCapacity, tokensMissedAdding);
+                var tokensToAdd = Math.Min(bucketCapacity, tokensMissedAdding);
 
                 // Work out when tokens would next be due to be added, if we add these tokens.
-                long newAddNextTokenAtTicks = currentAddNextTokenAtTicks + (tokensToAdd * addTokenTickInterval);
+                var newAddNextTokenAtTicks = currentAddNextTokenAtTicks + (tokensToAdd * addTokenTickInterval);
                 // But if we were way overdue refilling the bucket (there was inactivity for a while), that value would be out-of-date: the next time we add tokens must be at least addTokenTickInterval from now.
                 newAddNextTokenAtTicks = Math.Max(newAddNextTokenAtTicks, now + addTokenTickInterval);
 

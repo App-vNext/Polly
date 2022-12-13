@@ -101,7 +101,7 @@ namespace Polly
         {
             if (context == null) throw new ArgumentNullException(nameof(context));
 
-            SetPolicyContext(context, out string priorPolicyWrapKey, out string priorPolicyKey);
+            SetPolicyContext(context, out var priorPolicyWrapKey, out var priorPolicyKey);
 
             try
             {
@@ -221,7 +221,7 @@ namespace Polly
         {
             if (context == null) throw new ArgumentNullException(nameof(context));
 
-            SetPolicyContext(context, out string priorPolicyWrapKey, out string priorPolicyKey);
+            SetPolicyContext(context, out var priorPolicyWrapKey, out var priorPolicyKey);
 
             try
             {

@@ -68,13 +68,13 @@ namespace Polly.Benchmarks
 
             public (bool, object) TryGet(string key)
             {
-                bool cacheHit = _cache.TryGetValue(key, out var value);
+                var cacheHit = _cache.TryGetValue(key, out var value);
                 return (cacheHit, value);
             }
 
             public void Put(string key, object value, Ttl ttl)
             {
-                TimeSpan remaining = DateTimeOffset.MaxValue - DateTimeOffset.UtcNow;
+                var remaining = DateTimeOffset.MaxValue - DateTimeOffset.UtcNow;
                 var options = new MemoryCacheEntryOptions();
 
                 if (ttl.SlidingExpiration)

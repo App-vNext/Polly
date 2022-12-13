@@ -34,11 +34,11 @@ namespace Polly.Specs.Caching
         [Fact]
         public void Should_return_configured_timespan()
         {
-            TimeSpan ttl = TimeSpan.FromSeconds(30);
+            var ttl = TimeSpan.FromSeconds(30);
 
-            SlidingTtl ttlStrategy = new SlidingTtl(ttl);
+            var ttlStrategy = new SlidingTtl(ttl);
 
-            Ttl retrieved = ttlStrategy.GetTtl(new Context("someOperationKey"), null);
+            var retrieved = ttlStrategy.GetTtl(new Context("someOperationKey"), null);
             retrieved.Timespan.Should().Be(ttl);
             retrieved.SlidingExpiration.Should().BeTrue();
         }

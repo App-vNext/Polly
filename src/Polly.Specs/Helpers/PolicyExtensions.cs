@@ -14,7 +14,7 @@ namespace Polly.Specs.Helpers
 
         public static void RaiseException<TException>(this Policy policy, TException instance) where TException : Exception
         {
-            ExceptionAndOrCancellationScenario scenario = new ExceptionAndOrCancellationScenario
+            var scenario = new ExceptionAndOrCancellationScenario
             {
                 ActionObservesCancellation = false,
                 AttemptDuringWhichToCancel = null,
@@ -31,7 +31,7 @@ namespace Polly.Specs.Helpers
 
         public static void RaiseException<TException>(this Policy policy, int numberOfTimesToRaiseException, Action<TException, int> configureException = null) where TException : Exception, new()
         {
-            ExceptionAndOrCancellationScenario scenario = new ExceptionAndOrCancellationScenario
+            var scenario = new ExceptionAndOrCancellationScenario
             {
                 ActionObservesCancellation = false,
                 AttemptDuringWhichToCancel = null,
@@ -61,9 +61,9 @@ namespace Polly.Specs.Helpers
 
         public static void RaiseExceptionAndOrCancellation<TException>(this Policy policy, ExceptionAndOrCancellationScenario scenario, CancellationTokenSource cancellationTokenSource, Action onExecute, Func<int, TException> exceptionFactory) where TException : Exception
         {
-            int counter = 0;
+            var counter = 0;
 
-            CancellationToken cancellationToken = cancellationTokenSource.Token;
+            var cancellationToken = cancellationTokenSource.Token;
 
             policy.Execute(ct =>
             {
@@ -91,9 +91,9 @@ namespace Polly.Specs.Helpers
 
         public static TResult RaiseExceptionAndOrCancellation<TException, TResult>(this Policy policy, ExceptionAndOrCancellationScenario scenario, CancellationTokenSource cancellationTokenSource, Action onExecute, Func<int, TException> exceptionFactory, TResult successResult) where TException : Exception
         {
-            int counter = 0;
+            var counter = 0;
 
-            CancellationToken cancellationToken = cancellationTokenSource.Token;
+            var cancellationToken = cancellationTokenSource.Token;
 
             return policy.Execute(ct =>
             {

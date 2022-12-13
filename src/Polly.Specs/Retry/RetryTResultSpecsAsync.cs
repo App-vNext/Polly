@@ -73,7 +73,7 @@ namespace Polly.Specs.Retry
                 .HandleResult(ResultPrimitive.Fault)
                 .RetryAsync(3);
 
-            ResultPrimitive result = await policy.RaiseResultSequenceAsync(ResultPrimitive.Fault, ResultPrimitive.Fault, ResultPrimitive.Fault, ResultPrimitive.Good);
+            var result = await policy.RaiseResultSequenceAsync(ResultPrimitive.Fault, ResultPrimitive.Fault, ResultPrimitive.Fault, ResultPrimitive.Good);
             result.Should().Be(ResultPrimitive.Good);
         }
 
@@ -85,7 +85,7 @@ namespace Polly.Specs.Retry
                 .OrResult(ResultPrimitive.FaultAgain)
                 .RetryAsync(3);
 
-            ResultPrimitive result = await policy.RaiseResultSequenceAsync(ResultPrimitive.Fault, ResultPrimitive.FaultAgain, ResultPrimitive.Fault, ResultPrimitive.Good);
+            var result = await policy.RaiseResultSequenceAsync(ResultPrimitive.Fault, ResultPrimitive.FaultAgain, ResultPrimitive.Fault, ResultPrimitive.Good);
             result.Should().Be(ResultPrimitive.Good);
         }
 
@@ -96,7 +96,7 @@ namespace Polly.Specs.Retry
                 .HandleResult(ResultPrimitive.Fault)
                 .RetryAsync(3);
 
-            ResultPrimitive result = await policy.RaiseResultSequenceAsync(ResultPrimitive.Fault, ResultPrimitive.Good);
+            var result = await policy.RaiseResultSequenceAsync(ResultPrimitive.Fault, ResultPrimitive.Good);
             result.Should().Be(ResultPrimitive.Good);
         }
 
@@ -108,7 +108,7 @@ namespace Polly.Specs.Retry
                 .OrResult(ResultPrimitive.FaultAgain)
                 .RetryAsync(3);
 
-            ResultPrimitive result = await policy.RaiseResultSequenceAsync(ResultPrimitive.Fault, ResultPrimitive.FaultAgain, ResultPrimitive.Good);
+            var result = await policy.RaiseResultSequenceAsync(ResultPrimitive.Fault, ResultPrimitive.FaultAgain, ResultPrimitive.Good);
             result.Should().Be(ResultPrimitive.Good);
         }
 
@@ -119,7 +119,7 @@ namespace Polly.Specs.Retry
                 .HandleResult(ResultPrimitive.Fault)
                 .RetryAsync(3);
 
-            ResultPrimitive result = await policy.RaiseResultSequenceAsync(ResultPrimitive.Fault, ResultPrimitive.Fault, ResultPrimitive.Fault, ResultPrimitive.Fault, ResultPrimitive.Good);
+            var result = await policy.RaiseResultSequenceAsync(ResultPrimitive.Fault, ResultPrimitive.Fault, ResultPrimitive.Fault, ResultPrimitive.Fault, ResultPrimitive.Good);
             result.Should().Be(ResultPrimitive.Fault); // It should give up retrying after 3 retries and return the last failure, so should return Fault, not Good.
         }
 
@@ -131,7 +131,7 @@ namespace Polly.Specs.Retry
                 .OrResult(ResultPrimitive.FaultAgain)
                 .RetryAsync(3);
 
-            ResultPrimitive result = await policy.RaiseResultSequenceAsync(ResultPrimitive.FaultAgain, ResultPrimitive.FaultAgain, ResultPrimitive.FaultAgain, ResultPrimitive.FaultAgain, ResultPrimitive.Good);
+            var result = await policy.RaiseResultSequenceAsync(ResultPrimitive.FaultAgain, ResultPrimitive.FaultAgain, ResultPrimitive.FaultAgain, ResultPrimitive.FaultAgain, ResultPrimitive.Good);
             result.Should().Be(ResultPrimitive.FaultAgain);
         }
 
@@ -142,7 +142,7 @@ namespace Polly.Specs.Retry
                 .HandleResult(ResultPrimitive.Fault)
                 .RetryAsync();
 
-            ResultPrimitive result = await policy.RaiseResultSequenceAsync(ResultPrimitive.FaultAgain, ResultPrimitive.Good);
+            var result = await policy.RaiseResultSequenceAsync(ResultPrimitive.FaultAgain, ResultPrimitive.Good);
             result.Should().Be(ResultPrimitive.FaultAgain);
         }
 
@@ -154,7 +154,7 @@ namespace Polly.Specs.Retry
                 .OrResult(ResultPrimitive.FaultAgain)
                 .RetryAsync();
 
-            ResultPrimitive result = await policy.RaiseResultSequenceAsync(ResultPrimitive.FaultYetAgain, ResultPrimitive.Good);
+            var result = await policy.RaiseResultSequenceAsync(ResultPrimitive.FaultYetAgain, ResultPrimitive.Good);
             result.Should().Be(ResultPrimitive.FaultYetAgain);
         }
 
@@ -165,7 +165,7 @@ namespace Polly.Specs.Retry
                 .HandleResult<ResultClass>(r => r.ResultCode == ResultPrimitive.Fault)
                 .RetryAsync();
 
-            ResultClass result = await policy.RaiseResultSequenceAsync(new ResultClass(ResultPrimitive.FaultAgain), new ResultClass(ResultPrimitive.Good));
+            var result = await policy.RaiseResultSequenceAsync(new ResultClass(ResultPrimitive.FaultAgain), new ResultClass(ResultPrimitive.Good));
             result.ResultCode.Should().Be(ResultPrimitive.FaultAgain);
         }
 
@@ -177,7 +177,7 @@ namespace Polly.Specs.Retry
                 .OrResult(r => r.ResultCode == ResultPrimitive.FaultAgain)
                 .RetryAsync();
 
-            ResultClass result = await policy.RaiseResultSequenceAsync(new ResultClass(ResultPrimitive.FaultYetAgain), new ResultClass(ResultPrimitive.Good));
+            var result = await policy.RaiseResultSequenceAsync(new ResultClass(ResultPrimitive.FaultYetAgain), new ResultClass(ResultPrimitive.Good));
             result.ResultCode.Should().Be(ResultPrimitive.FaultYetAgain);
         }
 
@@ -188,7 +188,7 @@ namespace Polly.Specs.Retry
                 .HandleResult<ResultClass>(r => r.ResultCode == ResultPrimitive.Fault)
                 .RetryAsync();
 
-            ResultClass result = await policy.RaiseResultSequenceAsync(new ResultClass(ResultPrimitive.Fault), new ResultClass(ResultPrimitive.Good));
+            var result = await policy.RaiseResultSequenceAsync(new ResultClass(ResultPrimitive.Fault), new ResultClass(ResultPrimitive.Good));
             result.ResultCode.Should().Be(ResultPrimitive.Good);
         }
 
@@ -200,7 +200,7 @@ namespace Polly.Specs.Retry
                 .OrResult(r => r.ResultCode == ResultPrimitive.FaultAgain)
                 .RetryAsync();
 
-            ResultClass result = await policy.RaiseResultSequenceAsync(new ResultClass(ResultPrimitive.FaultAgain), new ResultClass(ResultPrimitive.Good));
+            var result = await policy.RaiseResultSequenceAsync(new ResultClass(ResultPrimitive.FaultAgain), new ResultClass(ResultPrimitive.Good));
             result.ResultCode.Should().Be(ResultPrimitive.Good);
         }
 
@@ -287,7 +287,7 @@ namespace Polly.Specs.Retry
                 .HandleResult(ResultPrimitive.Fault)
                 .RetryAsync((_, _, context) => contextData = context);
 
-            PolicyResult<ResultPrimitive> result = await policy.RaiseResultSequenceOnExecuteAndCaptureAsync(
+            var result = await policy.RaiseResultSequenceOnExecuteAndCaptureAsync(
                 new { key1 = "value1", key2 = "value2" }.AsDictionary(),
                 ResultPrimitive.Fault, ResultPrimitive.Good
                 );
@@ -386,7 +386,7 @@ namespace Polly.Specs.Retry
         [Fact]
         public async Task Should_not_call_onretry_when_retry_count_is_zero_without_context()
         {
-            bool retryInvoked = false;
+            var retryInvoked = false;
 
             Action<DelegateResult<ResultPrimitive>, int> onRetry = (_, _) => { retryInvoked = true; };
 
@@ -402,7 +402,7 @@ namespace Polly.Specs.Retry
         [Fact]
         public async Task Should_not_call_onretry_when_retry_count_is_zero_with_context()
         {
-            bool retryInvoked = false;
+            var retryInvoked = false;
 
             Action<DelegateResult<ResultPrimitive>, int, Context> onRetry = (_, _, _) => { retryInvoked = true; };
 
@@ -427,10 +427,10 @@ namespace Polly.Specs.Retry
             // If Polly were to declare only an Action<...> delegate for onRetry - but users declared async () => { } onRetry delegates - the compiler would happily assign them to the Action<...>, but the next 'try' would/could occur before onRetry execution had completed.
             // This test ensures the relevant retry policy does have a Func<..., Task> form for onRetry, and that it is awaited before the next try commences.
 
-            TimeSpan shimTimeSpan = TimeSpan.FromSeconds(0.2); // Consider increasing shimTimeSpan if test fails transiently in different environments.
+            var shimTimeSpan = TimeSpan.FromSeconds(0.2); // Consider increasing shimTimeSpan if test fails transiently in different environments.
 
-            int executeDelegateInvocations = 0;
-            int executeDelegateInvocationsWhenOnRetryExits = 0;
+            var executeDelegateInvocations = 0;
+            var executeDelegateInvocationsWhenOnRetryExits = 0;
 
             var policy = Policy
                 .HandleResult(ResultPrimitive.Fault)
@@ -460,13 +460,13 @@ namespace Polly.Specs.Retry
                 .HandleResult(ResultPrimitive.Fault)
                 .RetryAsync(3);
 
-            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-            CancellationToken cancellationToken = cancellationTokenSource.Token;
+            var cancellationTokenSource = new CancellationTokenSource();
+            var cancellationToken = cancellationTokenSource.Token;
 
-            int attemptsInvoked = 0;
+            var attemptsInvoked = 0;
             Action onExecute = () => attemptsInvoked++;
 
-            Scenario scenario = new Scenario
+            var scenario = new Scenario
             {
                 AttemptDuringWhichToCancel = null,
             };
@@ -488,13 +488,13 @@ namespace Polly.Specs.Retry
                 .HandleResult(ResultPrimitive.Fault)
                 .RetryAsync(3);
 
-            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-            CancellationToken cancellationToken = cancellationTokenSource.Token;
+            var cancellationTokenSource = new CancellationTokenSource();
+            var cancellationToken = cancellationTokenSource.Token;
 
-            int attemptsInvoked = 0;
+            var attemptsInvoked = 0;
             Action onExecute = () => attemptsInvoked++;
 
-            Scenario scenario = new Scenario
+            var scenario = new Scenario
             {
                 AttemptDuringWhichToCancel = null, // Cancellation token cancelled manually below - before any scenario execution.
             };
@@ -519,13 +519,13 @@ namespace Polly.Specs.Retry
                 .HandleResult(ResultPrimitive.Fault)
                 .RetryAsync(3);
 
-            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-            CancellationToken cancellationToken = cancellationTokenSource.Token;
+            var cancellationTokenSource = new CancellationTokenSource();
+            var cancellationToken = cancellationTokenSource.Token;
 
-            int attemptsInvoked = 0;
+            var attemptsInvoked = 0;
             Action onExecute = () => attemptsInvoked++;
 
-            Scenario scenario = new Scenario
+            var scenario = new Scenario
             {
                 AttemptDuringWhichToCancel = 1,
                 ActionObservesCancellation = true
@@ -549,13 +549,13 @@ namespace Polly.Specs.Retry
                .HandleResult(ResultPrimitive.Fault)
                .RetryAsync(3);
 
-            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-            CancellationToken cancellationToken = cancellationTokenSource.Token;
+            var cancellationTokenSource = new CancellationTokenSource();
+            var cancellationToken = cancellationTokenSource.Token;
 
-            int attemptsInvoked = 0;
+            var attemptsInvoked = 0;
             Action onExecute = () => attemptsInvoked++;
 
-            Scenario scenario = new Scenario
+            var scenario = new Scenario
             {
                 AttemptDuringWhichToCancel = 1,
                 ActionObservesCancellation = true
@@ -579,13 +579,13 @@ namespace Polly.Specs.Retry
               .HandleResult(ResultPrimitive.Fault)
               .RetryAsync(3);
 
-            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-            CancellationToken cancellationToken = cancellationTokenSource.Token;
+            var cancellationTokenSource = new CancellationTokenSource();
+            var cancellationToken = cancellationTokenSource.Token;
 
-            int attemptsInvoked = 0;
+            var attemptsInvoked = 0;
             Action onExecute = () => attemptsInvoked++;
 
-            Scenario scenario = new Scenario
+            var scenario = new Scenario
             {
                 AttemptDuringWhichToCancel = 1,
                 ActionObservesCancellation = false
@@ -609,13 +609,13 @@ namespace Polly.Specs.Retry
               .HandleResult(ResultPrimitive.Fault)
               .RetryAsync(3);
 
-            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-            CancellationToken cancellationToken = cancellationTokenSource.Token;
+            var cancellationTokenSource = new CancellationTokenSource();
+            var cancellationToken = cancellationTokenSource.Token;
 
-            int attemptsInvoked = 0;
+            var attemptsInvoked = 0;
             Action onExecute = () => attemptsInvoked++;
 
-            Scenario scenario = new Scenario
+            var scenario = new Scenario
             {
                 AttemptDuringWhichToCancel = 2,
                 ActionObservesCancellation = true
@@ -639,13 +639,13 @@ namespace Polly.Specs.Retry
               .HandleResult(ResultPrimitive.Fault)
               .RetryAsync(3);
 
-            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-            CancellationToken cancellationToken = cancellationTokenSource.Token;
+            var cancellationTokenSource = new CancellationTokenSource();
+            var cancellationToken = cancellationTokenSource.Token;
 
-            int attemptsInvoked = 0;
+            var attemptsInvoked = 0;
             Action onExecute = () => attemptsInvoked++;
 
-            Scenario scenario = new Scenario
+            var scenario = new Scenario
             {
                 AttemptDuringWhichToCancel = 2,
                 ActionObservesCancellation = false
@@ -669,13 +669,13 @@ namespace Polly.Specs.Retry
                        .HandleResult(ResultPrimitive.Fault)
                        .RetryAsync(3);
 
-            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-            CancellationToken cancellationToken = cancellationTokenSource.Token;
+            var cancellationTokenSource = new CancellationTokenSource();
+            var cancellationToken = cancellationTokenSource.Token;
 
-            int attemptsInvoked = 0;
+            var attemptsInvoked = 0;
             Action onExecute = () => attemptsInvoked++;
 
-            Scenario scenario = new Scenario
+            var scenario = new Scenario
             {
                 AttemptDuringWhichToCancel = 1 + 3,
                 ActionObservesCancellation = true
@@ -700,13 +700,13 @@ namespace Polly.Specs.Retry
                        .HandleResult(ResultPrimitive.Fault)
                        .RetryAsync(3);
 
-            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-            CancellationToken cancellationToken = cancellationTokenSource.Token;
+            var cancellationTokenSource = new CancellationTokenSource();
+            var cancellationToken = cancellationTokenSource.Token;
 
-            int attemptsInvoked = 0;
+            var attemptsInvoked = 0;
             Action onExecute = () => attemptsInvoked++;
 
-            Scenario scenario = new Scenario
+            var scenario = new Scenario
             {
                 AttemptDuringWhichToCancel = 1 + 3,
                 ActionObservesCancellation = false
@@ -726,8 +726,8 @@ namespace Polly.Specs.Retry
         [Fact]
         public void Should_report_cancellation_after_faulting_action_execution_and_cancel_further_retries_if_onRetry_invokes_cancellation()
         {
-            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-            CancellationToken cancellationToken = cancellationTokenSource.Token;
+            var cancellationTokenSource = new CancellationTokenSource();
+            var cancellationToken = cancellationTokenSource.Token;
 
             var policy = Policy
            .HandleResult(ResultPrimitive.Fault)
@@ -736,10 +736,10 @@ namespace Polly.Specs.Retry
                cancellationTokenSource.Cancel();
            });
 
-            int attemptsInvoked = 0;
+            var attemptsInvoked = 0;
             Action onExecute = () => attemptsInvoked++;
 
-            Scenario scenario = new Scenario
+            var scenario = new Scenario
             {
                 AttemptDuringWhichToCancel = null, // Cancellation during onRetry instead - see above.
                 ActionObservesCancellation = false

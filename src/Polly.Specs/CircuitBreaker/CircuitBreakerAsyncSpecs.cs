@@ -112,7 +112,7 @@ namespace Polly.Specs.CircuitBreaker
                   .Should().Throw<DivideByZeroException>();
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
-            bool delegateExecutedWhenBroken = false;
+            var delegateExecutedWhenBroken = false;
             breaker.Awaiting(x => x.ExecuteAsync(() => { delegateExecutedWhenBroken = true; return TaskHelper.EmptyTask; }))
                   .Should().Throw<BrokenCircuitException>()
                   .WithMessage("The circuit is now open and is not allowing calls.")
@@ -139,7 +139,7 @@ namespace Polly.Specs.CircuitBreaker
             breaker.CircuitState.Should().Be(CircuitState.Open);
 
             // 2 exception raised, circuit is now open
-            bool delegateExecutedWhenBroken = false;
+            var delegateExecutedWhenBroken = false;
             breaker.Awaiting(x => x.ExecuteAsync(() => { delegateExecutedWhenBroken = true; return TaskHelper.EmptyTask; }))
                   .Should().Throw<BrokenCircuitException>()
                   .WithMessage("The circuit is now open and is not allowing calls.")
@@ -405,17 +405,17 @@ namespace Polly.Specs.CircuitBreaker
             // Start one execution during the HalfOpen state, and request a second execution before the first has completed (ie still during the HalfOpen state).
             // The second execution should be rejected due to the halfopen state.
 
-            TimeSpan testTimeoutToExposeDeadlocks = TimeSpan.FromSeconds(5);
-            using (ManualResetEvent permitSecondExecutionAttempt = new ManualResetEvent(false))
-            using (ManualResetEvent permitFirstExecutionEnd = new ManualResetEvent(false))
+            var testTimeoutToExposeDeadlocks = TimeSpan.FromSeconds(5);
+            using (var permitSecondExecutionAttempt = new ManualResetEvent(false))
+            using (var permitFirstExecutionEnd = new ManualResetEvent(false))
             {
                 bool? firstDelegateExecutedInHalfOpenState = null;
                 bool? secondDelegateExecutedInHalfOpenState = null;
                 bool? secondDelegateRejectedInHalfOpenState = null;
 
-                bool firstExecutionActive = false;
+                var firstExecutionActive = false;
                 // First execution in HalfOpen state: we should be able to verify state is HalfOpen as it executes.
-                Task firstExecution = Task.Factory.StartNew(() =>
+                var firstExecution = Task.Factory.StartNew(() =>
                 {
                     breaker.Awaiting(x => x.ExecuteAsync(async () =>
                     {
@@ -505,17 +505,17 @@ namespace Polly.Specs.CircuitBreaker
             // Request a second execution while the first is still in flight (not completed), while still during the HalfOpen state, but after one breakDuration later.
             // The second execution should be accepted in the halfopen state due to being requested after one breakDuration later.
 
-            TimeSpan testTimeoutToExposeDeadlocks = TimeSpan.FromSeconds(5);
-            using (ManualResetEvent permitSecondExecutionAttempt = new ManualResetEvent(false))
-            using (ManualResetEvent permitFirstExecutionEnd = new ManualResetEvent(false))
+            var testTimeoutToExposeDeadlocks = TimeSpan.FromSeconds(5);
+            using (var permitSecondExecutionAttempt = new ManualResetEvent(false))
+            using (var permitFirstExecutionEnd = new ManualResetEvent(false))
             {
                 bool? firstDelegateExecutedInHalfOpenState = null;
                 bool? secondDelegateExecutedInHalfOpenState = null;
                 bool? secondDelegateRejectedInHalfOpenState = null;
 
-                bool firstExecutionActive = false;
+                var firstExecutionActive = false;
                 // First execution in HalfOpen state: we should be able to verify state is HalfOpen as it executes.
-                Task firstExecution = Task.Factory.StartNew(() =>
+                var firstExecution = Task.Factory.StartNew(() =>
                 {
                     breaker.Awaiting(x => x.ExecuteAsync(async () =>
                     {
@@ -603,7 +603,7 @@ namespace Polly.Specs.CircuitBreaker
             breaker.CircuitState.Should().Be(CircuitState.Isolated);
 
             // circuit manually broken: execution should be blocked; even non-exception-throwing executions should not reset circuit
-            bool delegateExecutedWhenBroken = false;
+            var delegateExecutedWhenBroken = false;
             breaker.Awaiting(x => x.ExecuteAsync(() => { delegateExecutedWhenBroken = true; return TaskHelper.EmptyTask; }))
                 .Should().Throw<IsolatedCircuitException>();
             breaker.CircuitState.Should().Be(CircuitState.Isolated);
@@ -630,7 +630,7 @@ namespace Polly.Specs.CircuitBreaker
 
             SystemClock.UtcNow = () => time.Add(durationOfBreak);
             breaker.CircuitState.Should().Be(CircuitState.Isolated);
-            bool delegateExecutedWhenBroken = false;
+            var delegateExecutedWhenBroken = false;
             breaker.Awaiting(x => x.ExecuteAsync(() => { delegateExecutedWhenBroken = true; return TaskHelper.EmptyTask; }))
                 .Should().Throw<IsolatedCircuitException>();
             delegateExecutedWhenBroken.Should().BeFalse();
@@ -699,8 +699,8 @@ namespace Polly.Specs.CircuitBreaker
         public void Should_not_call_onreset_on_initialise()
         {
             Action<Exception, TimeSpan> onBreak = (_, _) => { };
-            bool onResetCalled = false;
-            Action onReset = () => { onResetCalled = true; };
+            var onResetCalled = false;
+            var onReset = () => { onResetCalled = true; };
 
             Policy
                 .Handle<DivideByZeroException>()
@@ -712,9 +712,9 @@ namespace Polly.Specs.CircuitBreaker
         [Fact]
         public void Should_call_onbreak_when_breaking_circuit_automatically()
         {
-            bool onBreakCalled = false;
+            var onBreakCalled = false;
             Action<Exception, TimeSpan> onBreak = (_, _) => { onBreakCalled = true; };
-            Action onReset = () => { };
+            var onReset = () => { };
 
             var breaker = Policy
                             .Handle<DivideByZeroException>()
@@ -736,9 +736,9 @@ namespace Polly.Specs.CircuitBreaker
         [Fact]
         public void Should_call_onbreak_when_breaking_circuit_manually()
         {
-            bool onBreakCalled = false;
+            var onBreakCalled = false;
             Action<Exception, TimeSpan> onBreak = (_, _) => { onBreakCalled = true; };
-            Action onReset = () => { };
+            var onReset = () => { };
 
             var breaker = Policy
                 .Handle<DivideByZeroException>()
@@ -753,9 +753,9 @@ namespace Polly.Specs.CircuitBreaker
         [Fact]
         public void Should_call_onbreak_when_breaking_circuit_first_time_but_not_for_subsequent_calls_placed_through_open_circuit()
         {
-            int onBreakCalled = 0;
+            var onBreakCalled = 0;
             Action<Exception, TimeSpan> onBreak = (_, _) => { onBreakCalled++; };
-            Action onReset = () => { };
+            var onReset = () => { };
 
             var breaker = Policy
                             .Handle<DivideByZeroException>()
@@ -784,20 +784,20 @@ namespace Polly.Specs.CircuitBreaker
         [Fact]
         public void Should_call_onbreak_when_breaking_circuit_first_time_but_not_for_subsequent_call_failure_which_arrives_on_open_state_though_started_on_closed_state()
         {
-            int onBreakCalled = 0;
+            var onBreakCalled = 0;
             Action<Exception, TimeSpan> onBreak = (_, _) => { onBreakCalled++; };
-            Action onReset = () => { };
+            var onReset = () => { };
 
             var breaker = Policy
                             .Handle<DivideByZeroException>()
                             .CircuitBreakerAsync(1, TimeSpan.FromMinutes(1), onBreak, onReset);
 
             // Start an execution when the breaker is in the closed state, but hold it from returning (its failure) until the breaker has opened.  This call, a failure hitting an already open breaker, should indicate its fail, but should not cause onBreak() to be called a second time.
-            TimeSpan testTimeoutToExposeDeadlocks = TimeSpan.FromSeconds(5);
-            using (ManualResetEvent permitLongRunningExecutionToReturnItsFailure = new ManualResetEvent(false))
-            using (ManualResetEvent permitMainThreadToOpenCircuit = new ManualResetEvent(false))
+            var testTimeoutToExposeDeadlocks = TimeSpan.FromSeconds(5);
+            using (var permitLongRunningExecutionToReturnItsFailure = new ManualResetEvent(false))
+            using (var permitMainThreadToOpenCircuit = new ManualResetEvent(false))
             {
-                Task longRunningExecution = Task.Factory.StartNew(() =>
+                var longRunningExecution = Task.Factory.StartNew(() =>
                 {
                     breaker.CircuitState.Should().Be(CircuitState.Closed);
 
@@ -844,10 +844,10 @@ namespace Polly.Specs.CircuitBreaker
         [Fact]
         public void Should_call_onreset_when_automatically_closing_circuit_but_not_when_halfopen()
         {
-            int onBreakCalled = 0;
-            int onResetCalled = 0;
+            var onBreakCalled = 0;
+            var onResetCalled = 0;
             Action<Exception, TimeSpan> onBreak = (_, _) => { onBreakCalled++; };
-            Action onReset = () => { onResetCalled++; };
+            var onReset = () => { onResetCalled++; };
 
             var time = 1.January(2000);
             SystemClock.UtcNow = () => time;
@@ -891,8 +891,8 @@ namespace Polly.Specs.CircuitBreaker
         public void Should_not_call_onreset_on_successive_successful_calls()
         {
             Action<Exception, TimeSpan> onBreak = (_, _) => { };
-            bool onResetCalled = false;
-            Action onReset = () => { onResetCalled = true; };
+            var onResetCalled = false;
+            var onReset = () => { onResetCalled = true; };
 
             var breaker = Policy
                 .Handle<DivideByZeroException>()
@@ -912,12 +912,12 @@ namespace Polly.Specs.CircuitBreaker
         [Fact]
         public void Should_call_onhalfopen_when_automatically_transitioning_to_halfopen_due_to_subsequent_execution()
         {
-            int onBreakCalled = 0;
-            int onResetCalled = 0;
-            int onHalfOpenCalled = 0;
+            var onBreakCalled = 0;
+            var onResetCalled = 0;
+            var onHalfOpenCalled = 0;
             Action<Exception, TimeSpan> onBreak = (_, _) => { onBreakCalled++; };
-            Action onReset = () => { onResetCalled++; };
-            Action onHalfOpen = () => { onHalfOpenCalled++; };
+            var onReset = () => { onResetCalled++; };
+            var onHalfOpen = () => { onHalfOpenCalled++; };
 
             var time = 1.January(2000);
             SystemClock.UtcNow = () => time;
@@ -958,12 +958,12 @@ namespace Polly.Specs.CircuitBreaker
         [Fact]
         public void Should_call_onhalfopen_when_automatically_transitioning_to_halfopen_due_to_state_read()
         {
-            int onBreakCalled = 0;
-            int onResetCalled = 0;
-            int onHalfOpenCalled = 0;
+            var onBreakCalled = 0;
+            var onResetCalled = 0;
+            var onHalfOpenCalled = 0;
             Action<Exception, TimeSpan> onBreak = (_, _) => { onBreakCalled++; };
-            Action onReset = () => { onResetCalled++; };
-            Action onHalfOpen = () => { onHalfOpenCalled++; };
+            var onReset = () => { onResetCalled++; };
+            var onHalfOpen = () => { onHalfOpenCalled++; };
 
             var time = 1.January(2000);
             SystemClock.UtcNow = () => time;
@@ -999,10 +999,10 @@ namespace Polly.Specs.CircuitBreaker
         [Fact]
         public void Should_call_onreset_when_manually_resetting_circuit()
         {
-            int onBreakCalled = 0;
-            int onResetCalled = 0;
+            var onBreakCalled = 0;
+            var onResetCalled = 0;
             Action<Exception, TimeSpan> onBreak = (_, _) => { onBreakCalled++; };
-            Action onReset = () => { onResetCalled++; };
+            var onReset = () => { onResetCalled++; };
 
             var time = 1.January(2000);
             SystemClock.UtcNow = () => time;
@@ -1061,7 +1061,7 @@ namespace Polly.Specs.CircuitBreaker
 
             Action<Exception, CircuitState, TimeSpan, Context> onBreak = (_, state, _, _) => { transitionedState = state; };
             Action<Context> onReset = _ => { };
-            Action onHalfOpen = () => { };
+            var onHalfOpen = () => { };
 
             var breaker = Policy
                 .Handle<DivideByZeroException>()
@@ -1081,11 +1081,11 @@ namespace Polly.Specs.CircuitBreaker
         [Fact]
         public void Should_call_onbreak_with_a_state_of_half_open()
         {
-            List<CircuitState> transitionedStates = new List<CircuitState>();
+            var transitionedStates = new List<CircuitState>();
 
             Action<Exception, CircuitState, TimeSpan, Context> onBreak = (_, state, _, _) => { transitionedStates.Add(state); };
             Action<Context> onReset = _ => { };
-            Action onHalfOpen = () => { };
+            var onHalfOpen = () => { };
 
             var time = 1.January(2000);
             SystemClock.UtcNow = () => time;
@@ -1132,7 +1132,7 @@ namespace Polly.Specs.CircuitBreaker
             Action<Exception, TimeSpan, Context> onBreak = (exception, _, _) => { passedException = exception; };
             Action<Context> onReset = _ => { };
 
-            TimeSpan durationOfBreak = TimeSpan.FromMinutes(1);
+            var durationOfBreak = TimeSpan.FromMinutes(1);
 
             var breaker = Policy
                 .HandleInner<DivideByZeroException>()
@@ -1161,7 +1161,7 @@ namespace Polly.Specs.CircuitBreaker
             Action<Exception, TimeSpan, Context> onBreak = (_, timespan, _) => { passedBreakTimespan = timespan; };
             Action<Context> onReset = _ => { };
 
-            TimeSpan durationOfBreak = TimeSpan.FromMinutes(1);
+            var durationOfBreak = TimeSpan.FromMinutes(1);
 
             var breaker = Policy
                             .Handle<DivideByZeroException>()
@@ -1267,7 +1267,7 @@ namespace Polly.Specs.CircuitBreaker
         [Fact]
         public void Context_should_be_empty_if_execute_not_called_with_any_context_data()
         {
-            IDictionary<string, object> contextData = new { key1 = "value1", key2 = "value2" }.AsDictionary();
+            var contextData = new { key1 = "value1", key2 = "value2" }.AsDictionary();
 
             Action<Exception, TimeSpan, Context> onBreak = (_, _, context) => { contextData = context; };
             Action<Context> onReset = _ => { };
@@ -1426,12 +1426,12 @@ namespace Polly.Specs.CircuitBreaker
                             .Handle<DivideByZeroException>()
                             .CircuitBreakerAsync(2, durationOfBreak);
 
-            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+            var cancellationTokenSource = new CancellationTokenSource();
 
-            int attemptsInvoked = 0;
+            var attemptsInvoked = 0;
             Action onExecute = () => attemptsInvoked++;
 
-            Scenario scenario = new Scenario
+            var scenario = new Scenario
             {
                 NumberOfTimesToRaiseException = 0,
                 AttemptDuringWhichToCancel = null,
@@ -1451,13 +1451,13 @@ namespace Polly.Specs.CircuitBreaker
                             .Handle<DivideByZeroException>()
                             .CircuitBreakerAsync(2, durationOfBreak);
 
-            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-            CancellationToken cancellationToken = cancellationTokenSource.Token;
+            var cancellationTokenSource = new CancellationTokenSource();
+            var cancellationToken = cancellationTokenSource.Token;
 
-            int attemptsInvoked = 0;
+            var attemptsInvoked = 0;
             Action onExecute = () => attemptsInvoked++;
 
-            Scenario scenario = new Scenario
+            var scenario = new Scenario
             {
                 NumberOfTimesToRaiseException = 0,
                 AttemptDuringWhichToCancel = null, // Cancellation token cancelled manually below - before any scenario execution.
@@ -1480,13 +1480,13 @@ namespace Polly.Specs.CircuitBreaker
                             .Handle<DivideByZeroException>()
                             .CircuitBreakerAsync(2, durationOfBreak);
 
-            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-            CancellationToken cancellationToken = cancellationTokenSource.Token;
+            var cancellationTokenSource = new CancellationTokenSource();
+            var cancellationToken = cancellationTokenSource.Token;
 
-            int attemptsInvoked = 0;
+            var attemptsInvoked = 0;
             Action onExecute = () => attemptsInvoked++;
 
-            Scenario scenario = new Scenario
+            var scenario = new Scenario
             {
                 NumberOfTimesToRaiseException = 0,
                 AttemptDuringWhichToCancel = 1,
@@ -1508,13 +1508,13 @@ namespace Polly.Specs.CircuitBreaker
                             .Handle<DivideByZeroException>()
                             .CircuitBreakerAsync(2, durationOfBreak);
 
-            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-            CancellationToken cancellationToken = cancellationTokenSource.Token;
+            var cancellationTokenSource = new CancellationTokenSource();
+            var cancellationToken = cancellationTokenSource.Token;
 
-            int attemptsInvoked = 0;
+            var attemptsInvoked = 0;
             Action onExecute = () => attemptsInvoked++;
 
-            Scenario scenario = new Scenario
+            var scenario = new Scenario
             {
                 NumberOfTimesToRaiseException = 1,
                 AttemptDuringWhichToCancel = 1,
@@ -1536,12 +1536,12 @@ namespace Polly.Specs.CircuitBreaker
                             .Handle<DivideByZeroException>()
                             .CircuitBreakerAsync(2, durationOfBreak);
 
-            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+            var cancellationTokenSource = new CancellationTokenSource();
 
-            int attemptsInvoked = 0;
+            var attemptsInvoked = 0;
             Action onExecute = () => attemptsInvoked++;
 
-            Scenario scenario = new Scenario
+            var scenario = new Scenario
             {
                 NumberOfTimesToRaiseException = 1,
                 AttemptDuringWhichToCancel = 1,
@@ -1570,15 +1570,15 @@ namespace Polly.Specs.CircuitBreaker
                 .WithInnerException<DivideByZeroException>();
             // Circuit is now broken.
 
-            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-            CancellationToken cancellationToken = cancellationTokenSource.Token;
+            var cancellationTokenSource = new CancellationTokenSource();
+            var cancellationToken = cancellationTokenSource.Token;
 
-            int attemptsInvoked = 0;
+            var attemptsInvoked = 0;
             Action onExecute = () => attemptsInvoked++;
 
             cancellationTokenSource.Cancel();
 
-            Scenario scenario = new Scenario
+            var scenario = new Scenario
             {
                 NumberOfTimesToRaiseException = 1,
                 AttemptDuringWhichToCancel = null, // Cancelled manually instead - see above.
@@ -1602,15 +1602,15 @@ namespace Polly.Specs.CircuitBreaker
                             .Handle<DivideByZeroException>()
                             .CircuitBreakerAsync(2, durationOfBreak);
 
-            CancellationTokenSource policyCancellationTokenSource = new CancellationTokenSource();
-            CancellationToken policyCancellationToken = policyCancellationTokenSource.Token;
+            var policyCancellationTokenSource = new CancellationTokenSource();
+            var policyCancellationToken = policyCancellationTokenSource.Token;
 
-            CancellationTokenSource implicitlyCapturedActionCancellationTokenSource = new CancellationTokenSource();
-            CancellationToken implicitlyCapturedActionCancellationToken = implicitlyCapturedActionCancellationTokenSource.Token;
+            var implicitlyCapturedActionCancellationTokenSource = new CancellationTokenSource();
+            var implicitlyCapturedActionCancellationToken = implicitlyCapturedActionCancellationTokenSource.Token;
 
             implicitlyCapturedActionCancellationTokenSource.Cancel();
 
-            int attemptsInvoked = 0;
+            var attemptsInvoked = 0;
 
             breaker.Awaiting(x => x.ExecuteAsync(async _ =>
             {
@@ -1632,15 +1632,15 @@ namespace Polly.Specs.CircuitBreaker
                             .Handle<DivideByZeroException>()
                             .CircuitBreakerAsync(2, durationOfBreak);
 
-            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-            CancellationToken cancellationToken = cancellationTokenSource.Token;
+            var cancellationTokenSource = new CancellationTokenSource();
+            var cancellationToken = cancellationTokenSource.Token;
 
-            int attemptsInvoked = 0;
+            var attemptsInvoked = 0;
             Action onExecute = () => attemptsInvoked++;
 
             bool? result = null;
 
-            Scenario scenario = new Scenario
+            var scenario = new Scenario
             {
                 NumberOfTimesToRaiseException = 0,
                 AttemptDuringWhichToCancel = null,
@@ -1662,15 +1662,15 @@ namespace Polly.Specs.CircuitBreaker
                              .Handle<DivideByZeroException>()
                              .CircuitBreakerAsync(2, TimeSpan.FromMinutes(1));
 
-            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-            CancellationToken cancellationToken = cancellationTokenSource.Token;
+            var cancellationTokenSource = new CancellationTokenSource();
+            var cancellationToken = cancellationTokenSource.Token;
 
-            int attemptsInvoked = 0;
+            var attemptsInvoked = 0;
             Action onExecute = () => attemptsInvoked++;
 
             bool? result = null;
 
-            Scenario scenario = new Scenario
+            var scenario = new Scenario
             {
                 NumberOfTimesToRaiseException = 0,
                 AttemptDuringWhichToCancel = 1,

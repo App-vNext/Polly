@@ -712,7 +712,7 @@ namespace Polly.Specs.Retry
         {
             object capturedExceptionInstance = null;
 
-            DivideByZeroException exceptionInstance = new DivideByZeroException();
+            var exceptionInstance = new DivideByZeroException();
 
             var policy = Policy
                 .Handle<DivideByZeroException>()
@@ -735,7 +735,7 @@ namespace Polly.Specs.Retry
         [Fact]
         public void Should_be_able_to_calculate_retry_timespans_based_on_the_handled_fault()
         {
-            Dictionary<Exception, TimeSpan> expectedRetryWaits = new Dictionary<Exception, TimeSpan>(){
+            var expectedRetryWaits = new Dictionary<Exception, TimeSpan>(){
 
                 {new DivideByZeroException(), 2.Seconds()},
                 {new ArgumentNullException(), 4.Seconds()},
@@ -764,7 +764,7 @@ namespace Polly.Specs.Retry
             var expectedRetryDuration = 1.Seconds();
             TimeSpan? actualRetryDuration = null;
 
-            TimeSpan defaultRetryAfter = 30.Seconds();
+            var defaultRetryAfter = 30.Seconds();
 
             var policy = Policy
                 .Handle<DivideByZeroException>()
@@ -773,7 +773,7 @@ namespace Polly.Specs.Retry
                     onRetry: (_, timeSpan, _) => actualRetryDuration = timeSpan // Capture the actual sleep duration that was used, for test verification purposes.
                 );
 
-            bool failedOnce = false;
+            var failedOnce = false;
             policy.Execute(context =>
             {
                 // Run some remote call; maybe it returns a RetryAfter header, which we can pass back to the sleepDurationProvider, via the context.
@@ -793,7 +793,7 @@ namespace Polly.Specs.Retry
         [Fact]
         public void Should_not_call_onretry_when_retry_count_is_zero_without_context()
         {
-            bool retryInvoked = false;
+            var retryInvoked = false;
 
             Action<Exception, TimeSpan> onRetry = (_, _) => { retryInvoked = true; };
 
@@ -810,7 +810,7 @@ namespace Polly.Specs.Retry
         [Fact]
         public void Should_not_call_onretry_when_retry_count_is_zero_with_context()
         {
-            bool retryInvoked = false;
+            var retryInvoked = false;
 
             Action<Exception, TimeSpan, Context> onRetry = (_, _, _) => { retryInvoked = true; };
 
@@ -827,7 +827,7 @@ namespace Polly.Specs.Retry
         [Fact]
         public void Should_not_call_onretry_when_retry_count_is_zero_with_attempts_with_context()
         {
-            bool retryInvoked = false;
+            var retryInvoked = false;
 
             Action<Exception, TimeSpan, int, Context> onRetry = (_, _, _, _) => { retryInvoked = true; };
 
@@ -850,13 +850,13 @@ namespace Polly.Specs.Retry
                 .Handle<DivideByZeroException>()
                 .WaitAndRetry(new[] { 1.Seconds(), 2.Seconds(), 3.Seconds() });
 
-            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-            CancellationToken cancellationToken = cancellationTokenSource.Token;
+            var cancellationTokenSource = new CancellationTokenSource();
+            var cancellationToken = cancellationTokenSource.Token;
 
-            int attemptsInvoked = 0;
+            var attemptsInvoked = 0;
             Action onExecute = () => attemptsInvoked++;
 
-            PolicyExtensions.ExceptionAndOrCancellationScenario scenario = new PolicyExtensions.ExceptionAndOrCancellationScenario
+            var scenario = new PolicyExtensions.ExceptionAndOrCancellationScenario
             {
                 NumberOfTimesToRaiseException = 1 + 3,
                 AttemptDuringWhichToCancel = null, // Cancellation token cancelled manually below - before any scenario execution.
@@ -878,13 +878,13 @@ namespace Polly.Specs.Retry
                 .Handle<DivideByZeroException>()
                 .WaitAndRetry(new[] { 1.Seconds(), 2.Seconds(), 3.Seconds() });
 
-            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-            CancellationToken cancellationToken = cancellationTokenSource.Token;
+            var cancellationTokenSource = new CancellationTokenSource();
+            var cancellationToken = cancellationTokenSource.Token;
 
-            int attemptsInvoked = 0;
+            var attemptsInvoked = 0;
             Action onExecute = () => attemptsInvoked++;
 
-            PolicyExtensions.ExceptionAndOrCancellationScenario scenario = new PolicyExtensions.ExceptionAndOrCancellationScenario
+            var scenario = new PolicyExtensions.ExceptionAndOrCancellationScenario
             {
                 NumberOfTimesToRaiseException = 0,
                 AttemptDuringWhichToCancel = 1,
@@ -905,13 +905,13 @@ namespace Polly.Specs.Retry
                 .Handle<DivideByZeroException>()
                 .WaitAndRetry(new[] { 1.Seconds(), 2.Seconds(), 3.Seconds() });
 
-            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-            CancellationToken cancellationToken = cancellationTokenSource.Token;
+            var cancellationTokenSource = new CancellationTokenSource();
+            var cancellationToken = cancellationTokenSource.Token;
 
-            int attemptsInvoked = 0;
+            var attemptsInvoked = 0;
             Action onExecute = () => attemptsInvoked++;
 
-            PolicyExtensions.ExceptionAndOrCancellationScenario scenario = new PolicyExtensions.ExceptionAndOrCancellationScenario
+            var scenario = new PolicyExtensions.ExceptionAndOrCancellationScenario
             {
                 NumberOfTimesToRaiseException = 1 + 3,
                 AttemptDuringWhichToCancel = 1,
@@ -932,13 +932,13 @@ namespace Polly.Specs.Retry
                 .Handle<DivideByZeroException>()
                 .WaitAndRetry(new[] { 1.Seconds(), 2.Seconds(), 3.Seconds() });
 
-            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-            CancellationToken cancellationToken = cancellationTokenSource.Token;
+            var cancellationTokenSource = new CancellationTokenSource();
+            var cancellationToken = cancellationTokenSource.Token;
 
-            int attemptsInvoked = 0;
+            var attemptsInvoked = 0;
             Action onExecute = () => attemptsInvoked++;
 
-            PolicyExtensions.ExceptionAndOrCancellationScenario scenario = new PolicyExtensions.ExceptionAndOrCancellationScenario
+            var scenario = new PolicyExtensions.ExceptionAndOrCancellationScenario
             {
                 NumberOfTimesToRaiseException = 1 + 3,
                 AttemptDuringWhichToCancel = 1,
@@ -959,13 +959,13 @@ namespace Polly.Specs.Retry
                 .Handle<DivideByZeroException>()
                 .WaitAndRetry(new[] { 1.Seconds(), 2.Seconds(), 3.Seconds() });
 
-            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-            CancellationToken cancellationToken = cancellationTokenSource.Token;
+            var cancellationTokenSource = new CancellationTokenSource();
+            var cancellationToken = cancellationTokenSource.Token;
 
-            int attemptsInvoked = 0;
+            var attemptsInvoked = 0;
             Action onExecute = () => attemptsInvoked++;
 
-            PolicyExtensions.ExceptionAndOrCancellationScenario scenario = new PolicyExtensions.ExceptionAndOrCancellationScenario
+            var scenario = new PolicyExtensions.ExceptionAndOrCancellationScenario
             {
                 NumberOfTimesToRaiseException = 1 + 3,
                 AttemptDuringWhichToCancel = 2,
@@ -986,13 +986,13 @@ namespace Polly.Specs.Retry
                 .Handle<DivideByZeroException>()
                 .WaitAndRetry(new[] { 1.Seconds(), 2.Seconds(), 3.Seconds() });
 
-            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-            CancellationToken cancellationToken = cancellationTokenSource.Token;
+            var cancellationTokenSource = new CancellationTokenSource();
+            var cancellationToken = cancellationTokenSource.Token;
 
-            int attemptsInvoked = 0;
+            var attemptsInvoked = 0;
             Action onExecute = () => attemptsInvoked++;
 
-            PolicyExtensions.ExceptionAndOrCancellationScenario scenario = new PolicyExtensions.ExceptionAndOrCancellationScenario
+            var scenario = new PolicyExtensions.ExceptionAndOrCancellationScenario
             {
                 NumberOfTimesToRaiseException = 1 + 3,
                 AttemptDuringWhichToCancel = 2,
@@ -1013,13 +1013,13 @@ namespace Polly.Specs.Retry
                 .Handle<DivideByZeroException>()
                 .WaitAndRetry(new[] { 1.Seconds(), 2.Seconds(), 3.Seconds() });
 
-            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-            CancellationToken cancellationToken = cancellationTokenSource.Token;
+            var cancellationTokenSource = new CancellationTokenSource();
+            var cancellationToken = cancellationTokenSource.Token;
 
-            int attemptsInvoked = 0;
+            var attemptsInvoked = 0;
             Action onExecute = () => attemptsInvoked++;
 
-            PolicyExtensions.ExceptionAndOrCancellationScenario scenario = new PolicyExtensions.ExceptionAndOrCancellationScenario
+            var scenario = new PolicyExtensions.ExceptionAndOrCancellationScenario
             {
                 NumberOfTimesToRaiseException = 1 + 3,
                 AttemptDuringWhichToCancel = 1 + 3,
@@ -1040,13 +1040,13 @@ namespace Polly.Specs.Retry
                 .Handle<DivideByZeroException>()
                 .WaitAndRetry(new[] { 1.Seconds(), 2.Seconds(), 3.Seconds() });
 
-            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-            CancellationToken cancellationToken = cancellationTokenSource.Token;
+            var cancellationTokenSource = new CancellationTokenSource();
+            var cancellationToken = cancellationTokenSource.Token;
 
-            int attemptsInvoked = 0;
+            var attemptsInvoked = 0;
             Action onExecute = () => attemptsInvoked++;
 
-            PolicyExtensions.ExceptionAndOrCancellationScenario scenario = new PolicyExtensions.ExceptionAndOrCancellationScenario
+            var scenario = new PolicyExtensions.ExceptionAndOrCancellationScenario
             {
                 NumberOfTimesToRaiseException = 1 + 3,
                 AttemptDuringWhichToCancel = 1 + 3,
@@ -1062,25 +1062,25 @@ namespace Polly.Specs.Retry
         [Fact]
         public void Should_honour_cancellation_immediately_during_wait_phase_of_waitandretry()
         {
-            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-            CancellationToken cancellationToken = cancellationTokenSource.Token;
+            var cancellationTokenSource = new CancellationTokenSource();
+            var cancellationToken = cancellationTokenSource.Token;
 
             SystemClock.Sleep = (timeSpan, ct) => Task.Delay(timeSpan, ct).Wait(ct);
 
-            TimeSpan shimTimeSpan = TimeSpan.FromSeconds(1); // Consider increasing shimTimeSpan if test fails transiently in different environments.
-            TimeSpan retryDelay = shimTimeSpan + shimTimeSpan + shimTimeSpan;
+            var shimTimeSpan = TimeSpan.FromSeconds(1); // Consider increasing shimTimeSpan if test fails transiently in different environments.
+            var retryDelay = shimTimeSpan + shimTimeSpan + shimTimeSpan;
 
             var policy = Policy
                 .Handle<DivideByZeroException>()
                 .WaitAndRetry(new[] { retryDelay });
 
-            int attemptsInvoked = 0;
+            var attemptsInvoked = 0;
             Action onExecute = () => attemptsInvoked++;
 
-            Stopwatch watch = new Stopwatch();
+            var watch = new Stopwatch();
             watch.Start();
 
-            PolicyExtensions.ExceptionAndOrCancellationScenario scenario = new PolicyExtensions.ExceptionAndOrCancellationScenario
+            var scenario = new PolicyExtensions.ExceptionAndOrCancellationScenario
             {
                 NumberOfTimesToRaiseException = 1 + 1,
                 AttemptDuringWhichToCancel = null, // Cancellation invoked after delay - see below.
@@ -1103,8 +1103,8 @@ namespace Polly.Specs.Retry
         [Fact]
         public void Should_report_cancellation_after_faulting_action_execution_and_cancel_further_retries_if_onRetry_invokes_cancellation()
         {
-            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-            CancellationToken cancellationToken = cancellationTokenSource.Token;
+            var cancellationTokenSource = new CancellationTokenSource();
+            var cancellationToken = cancellationTokenSource.Token;
 
             var policy = Policy
                 .Handle<DivideByZeroException>()
@@ -1114,10 +1114,10 @@ namespace Polly.Specs.Retry
                     cancellationTokenSource.Cancel();
                 });
 
-            int attemptsInvoked = 0;
+            var attemptsInvoked = 0;
             Action onExecute = () => attemptsInvoked++;
 
-            PolicyExtensions.ExceptionAndOrCancellationScenario scenario = new PolicyExtensions.ExceptionAndOrCancellationScenario
+            var scenario = new PolicyExtensions.ExceptionAndOrCancellationScenario
             {
                 NumberOfTimesToRaiseException = 1 + 3,
                 AttemptDuringWhichToCancel = null, // Cancellation during onRetry instead - see above.
@@ -1138,15 +1138,15 @@ namespace Polly.Specs.Retry
                .Handle<DivideByZeroException>()
                .WaitAndRetry(new[] { 1.Seconds(), 2.Seconds(), 3.Seconds() });
 
-            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-            CancellationToken cancellationToken = cancellationTokenSource.Token;
+            var cancellationTokenSource = new CancellationTokenSource();
+            var cancellationToken = cancellationTokenSource.Token;
 
-            int attemptsInvoked = 0;
+            var attemptsInvoked = 0;
             Action onExecute = () => attemptsInvoked++;
 
             bool? result = null;
 
-            PolicyExtensions.ExceptionAndOrCancellationScenario scenario = new PolicyExtensions.ExceptionAndOrCancellationScenario
+            var scenario = new PolicyExtensions.ExceptionAndOrCancellationScenario
             {
                 NumberOfTimesToRaiseException = 0,
                 AttemptDuringWhichToCancel = null
@@ -1167,15 +1167,15 @@ namespace Polly.Specs.Retry
                .Handle<DivideByZeroException>()
                .WaitAndRetry(new[] { 1.Seconds(), 2.Seconds(), 3.Seconds() });
 
-            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-            CancellationToken cancellationToken = cancellationTokenSource.Token;
+            var cancellationTokenSource = new CancellationTokenSource();
+            var cancellationToken = cancellationTokenSource.Token;
 
-            int attemptsInvoked = 0;
+            var attemptsInvoked = 0;
             Action onExecute = () => attemptsInvoked++;
 
             bool? result = null;
 
-            PolicyExtensions.ExceptionAndOrCancellationScenario scenario = new PolicyExtensions.ExceptionAndOrCancellationScenario
+            var scenario = new PolicyExtensions.ExceptionAndOrCancellationScenario
             {
                 NumberOfTimesToRaiseException = 0,
                 AttemptDuringWhichToCancel = 1,

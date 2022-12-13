@@ -18,7 +18,7 @@ namespace Polly.Specs.Helpers
 
         public static Task RaiseExceptionAsync<TException>(this AsyncPolicy policy, TException instance) where TException : Exception
         {
-            ExceptionAndOrCancellationScenario scenario = new ExceptionAndOrCancellationScenario
+            var scenario = new ExceptionAndOrCancellationScenario
             {
                 ActionObservesCancellation = false,
                 AttemptDuringWhichToCancel = null,
@@ -35,7 +35,7 @@ namespace Polly.Specs.Helpers
 
         public static Task RaiseExceptionAsync<TException>(this AsyncPolicy policy, int numberOfTimesToRaiseException, Action<TException, int> configureException = null, CancellationToken cancellationToken = default) where TException : Exception, new()
         {
-            ExceptionAndOrCancellationScenario scenario = new ExceptionAndOrCancellationScenario
+            var scenario = new ExceptionAndOrCancellationScenario
             {
                 ActionObservesCancellation = false,
                 AttemptDuringWhichToCancel = null,
@@ -65,9 +65,9 @@ namespace Polly.Specs.Helpers
 
         public static Task RaiseExceptionAndOrCancellationAsync<TException>(this AsyncPolicy policy, ExceptionAndOrCancellationScenario scenario, CancellationTokenSource cancellationTokenSource, Action onExecute, Func<int, TException> exceptionFactory) where TException : Exception
         {
-            int counter = 0;
+            var counter = 0;
 
-            CancellationToken cancellationToken = cancellationTokenSource.Token;
+            var cancellationToken = cancellationTokenSource.Token;
 
             return policy.ExecuteAsync(ct =>
             {
@@ -96,9 +96,9 @@ namespace Polly.Specs.Helpers
 
         public static Task<TResult> RaiseExceptionAndOrCancellationAsync<TException, TResult>(this AsyncPolicy policy, ExceptionAndOrCancellationScenario scenario, CancellationTokenSource cancellationTokenSource, Action onExecute, Func<int, TException> exceptionFactory, TResult successResult) where TException : Exception
         {
-            int counter = 0;
+            var counter = 0;
 
-            CancellationToken cancellationToken = cancellationTokenSource.Token;
+            var cancellationToken = cancellationTokenSource.Token;
 
             return policy.ExecuteAsync(ct =>
             {

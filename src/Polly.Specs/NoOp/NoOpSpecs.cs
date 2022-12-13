@@ -10,8 +10,8 @@ namespace Polly.Specs.NoOp
         [Fact]
         public void Should_execute_user_delegate()
         {
-            NoOpPolicy policy = Policy.NoOp();
-            bool executed = false;
+            var policy = Policy.NoOp();
+            var executed = false;
 
             policy.Invoking(x => x.Execute(() => { executed = true; }))
                 .Should().NotThrow();
@@ -22,10 +22,10 @@ namespace Polly.Specs.NoOp
         [Fact]
         public void Should_execute_user_delegate_without_adding_extra_cancellation_behaviour()
         {
-            NoOpPolicy policy = Policy.NoOp();
-            bool executed = false;
+            var policy = Policy.NoOp();
+            var executed = false;
 
-            using (CancellationTokenSource cts = new CancellationTokenSource())
+            using (var cts = new CancellationTokenSource())
             {
                 cts.Cancel();
 

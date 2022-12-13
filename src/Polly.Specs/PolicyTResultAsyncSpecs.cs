@@ -133,8 +133,8 @@ namespace Polly.Specs
         [Fact]
         public async Task Executing_the_policy_function_should_pass_context_to_executed_delegate()
         {
-            string operationKey = "SomeKey";
-            Context executionContext = new Context(operationKey);
+            var operationKey = "SomeKey";
+            var executionContext = new Context(operationKey);
             Context capturedContext = null;
 
             var policy = Policy.NoOpAsync<ResultPrimitive>();
@@ -159,8 +159,8 @@ namespace Polly.Specs
         [Fact]
         public async Task Execute_and_capturing_the_policy_function_should_pass_context_to_executed_delegate()
         {
-            string operationKey = "SomeKey";
-            Context executionContext = new Context(operationKey);
+            var operationKey = "SomeKey";
+            var executionContext = new Context(operationKey);
             Context capturedContext = null;
 
             var policy = Policy.NoOpAsync<ResultPrimitive>();
@@ -173,8 +173,8 @@ namespace Polly.Specs
         [Fact]
         public async Task Execute_and_capturing_the_policy_function_should_pass_context_to_PolicyResult()
         {
-            string operationKey = "SomeKey";
-            Context executionContext = new Context(operationKey);
+            var operationKey = "SomeKey";
+            var executionContext = new Context(operationKey);
 
             var policy = Policy.NoOpAsync<ResultPrimitive>();
 

@@ -13,7 +13,7 @@ namespace Polly.RateLimit
             CancellationToken cancellationToken
         )
         {
-            (bool permit, TimeSpan retryAfter) = rateLimiter.PermitExecution();
+            (var permit, var retryAfter) = rateLimiter.PermitExecution();
 
             if (permit)
             {

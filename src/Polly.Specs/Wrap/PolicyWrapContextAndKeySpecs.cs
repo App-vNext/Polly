@@ -13,9 +13,9 @@ namespace Polly.Specs.Wrap
         [Fact]
         public void Should_pass_PolicyKey_to_execution_context_of_outer_policy_as_PolicyWrapKey()
         {
-            string retryKey = Guid.NewGuid().ToString();
-            string breakerKey = Guid.NewGuid().ToString();
-            string wrapKey = Guid.NewGuid().ToString();
+            var retryKey = Guid.NewGuid().ToString();
+            var breakerKey = Guid.NewGuid().ToString();
+            var wrapKey = Guid.NewGuid().ToString();
 
             string policyWrapKeySetOnExecutionContext = null;
             Action<Exception, int, Context> onRetry = (_, _, context) =>
@@ -37,9 +37,9 @@ namespace Polly.Specs.Wrap
         [Fact]
         public void Should_pass_PolicyKey_to_execution_context_of_inner_policy_as_PolicyWrapKey()
         {
-            string retryKey = Guid.NewGuid().ToString();
-            string breakerKey = Guid.NewGuid().ToString();
-            string wrapKey = Guid.NewGuid().ToString();
+            var retryKey = Guid.NewGuid().ToString();
+            var breakerKey = Guid.NewGuid().ToString();
+            var wrapKey = Guid.NewGuid().ToString();
 
             string policyWrapKeySetOnExecutionContext = null;
             Action<Exception, TimeSpan, Context> onBreak = (_, _, context) =>
@@ -89,11 +89,11 @@ namespace Polly.Specs.Wrap
         [Fact]
         public void Should_pass_outmost_PolicyWrap_Key_as_PolicyWrapKey_ignoring_inner_PolicyWrap_keys_even_when_executing_policies_in_inner_wrap()
         {
-            string retryKey = Guid.NewGuid().ToString();
-            string breakerKey = Guid.NewGuid().ToString();
-            string fallbackKey = Guid.NewGuid().ToString();
-            string innerWrapKey = Guid.NewGuid().ToString();
-            string outerWrapKey = Guid.NewGuid().ToString();
+            var retryKey = Guid.NewGuid().ToString();
+            var breakerKey = Guid.NewGuid().ToString();
+            var fallbackKey = Guid.NewGuid().ToString();
+            var innerWrapKey = Guid.NewGuid().ToString();
+            var outerWrapKey = Guid.NewGuid().ToString();
 
             string policyWrapKeySetOnExecutionContext = null;
             Action<Exception, TimeSpan, Context> onBreak = (_, _, context) =>
@@ -121,11 +121,11 @@ namespace Polly.Specs.Wrap
         [Fact]
         public void Should_pass_outmost_PolicyWrap_Key_as_PolicyWrapKey_to_innermost_Policy_when_execute_method_generic()
         {
-            string retryKey = Guid.NewGuid().ToString();
-            string breakerKey = Guid.NewGuid().ToString();
-            string fallbackKey = Guid.NewGuid().ToString();
-            string innerWrapKey = Guid.NewGuid().ToString();
-            string outerWrapKey = Guid.NewGuid().ToString();
+            var retryKey = Guid.NewGuid().ToString();
+            var breakerKey = Guid.NewGuid().ToString();
+            var fallbackKey = Guid.NewGuid().ToString();
+            var innerWrapKey = Guid.NewGuid().ToString();
+            var outerWrapKey = Guid.NewGuid().ToString();
 
             string policyWrapKeySetOnExecutionContext = null;
             Action<Exception, TimeSpan, Context> onBreak = (_, _, context) =>
@@ -141,7 +141,7 @@ namespace Polly.Specs.Wrap
             var innerWrap = retry.Wrap(breaker).WithPolicyKey(innerWrapKey);
             var outerWrap = fallback.Wrap(innerWrap).WithPolicyKey(outerWrapKey);
 
-            bool doneOnceOnly = false;
+            var doneOnceOnly = false;
             outerWrap.Execute(() =>
             {
                 if (!doneOnceOnly)
@@ -170,9 +170,9 @@ namespace Polly.Specs.Wrap
         [Fact]
         public void Should_pass_PolicyKey_to_execution_context_of_outer_policy_as_PolicyWrapKey()
         {
-            string retryKey = Guid.NewGuid().ToString();
-            string breakerKey = Guid.NewGuid().ToString();
-            string wrapKey = Guid.NewGuid().ToString();
+            var retryKey = Guid.NewGuid().ToString();
+            var breakerKey = Guid.NewGuid().ToString();
+            var wrapKey = Guid.NewGuid().ToString();
 
             string policyWrapKeySetOnExecutionContext = null;
             Action<DelegateResult<ResultPrimitive>, int, Context> onRetry = (_, _, context) =>
@@ -194,9 +194,9 @@ namespace Polly.Specs.Wrap
         [Fact]
         public void Should_pass_PolicyKey_to_execution_context_of_inner_policy_as_PolicyWrapKey()
         {
-            string retryKey = Guid.NewGuid().ToString();
-            string breakerKey = Guid.NewGuid().ToString();
-            string wrapKey = Guid.NewGuid().ToString();
+            var retryKey = Guid.NewGuid().ToString();
+            var breakerKey = Guid.NewGuid().ToString();
+            var wrapKey = Guid.NewGuid().ToString();
 
             string policyWrapKeySetOnExecutionContext = null;
             Action<DelegateResult<ResultPrimitive>, TimeSpan, Context> onBreak = (_, _, context) =>
@@ -237,7 +237,7 @@ namespace Polly.Specs.Wrap
                 })
                 .WithPolicyKey("RetryPolicy");
 
-            Policy<ResultPrimitive> policyWrap = Policy.Wrap(fallback, retry)
+            var policyWrap = Policy.Wrap(fallback, retry)
                 .WithPolicyKey("PolicyWrap");
 
             policyWrap.Execute(() => throw new Exception());
@@ -246,11 +246,11 @@ namespace Polly.Specs.Wrap
         [Fact]
         public void Should_pass_outmost_PolicyWrap_Key_as_PolicyWrapKey_ignoring_inner_PolicyWrap_keys_even_when_executing_policies_in_inner_wrap()
         {
-            string retryKey = Guid.NewGuid().ToString();
-            string breakerKey = Guid.NewGuid().ToString();
-            string fallbackKey = Guid.NewGuid().ToString();
-            string innerWrapKey = Guid.NewGuid().ToString();
-            string outerWrapKey = Guid.NewGuid().ToString();
+            var retryKey = Guid.NewGuid().ToString();
+            var breakerKey = Guid.NewGuid().ToString();
+            var fallbackKey = Guid.NewGuid().ToString();
+            var innerWrapKey = Guid.NewGuid().ToString();
+            var outerWrapKey = Guid.NewGuid().ToString();
 
             string policyWrapKeySetOnExecutionContext = null;
             Action<DelegateResult<ResultPrimitive>, TimeSpan, Context> onBreak = (_, _, context) =>

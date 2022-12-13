@@ -505,7 +505,7 @@ namespace Polly
             if (sleepDurationProvider == null) throw new ArgumentNullException(nameof(sleepDurationProvider));
             if (onRetryAsync == null) throw new ArgumentNullException(nameof(onRetryAsync));
 
-            IEnumerable<TimeSpan> sleepDurations = Enumerable.Range(1, retryCount)
+            var sleepDurations = Enumerable.Range(1, retryCount)
                 .Select(sleepDurationProvider);
 
             return new AsyncRetryPolicy<TResult>(

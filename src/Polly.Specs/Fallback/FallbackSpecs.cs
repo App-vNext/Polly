@@ -99,7 +99,7 @@ namespace Polly.Specs.Fallback
         [Fact]
         public void Should_throw_when_onFallback_delegate_is_null()
         {
-            Action fallbackAction = () => { };
+            var fallbackAction = () => { };
             Action<Exception> onFallback = null;
 
             Action policy = () => Policy
@@ -159,10 +159,10 @@ namespace Polly.Specs.Fallback
         [Fact]
         public void Should_not_execute_fallback_when_executed_delegate_does_not_throw()
         {
-            bool fallbackActionExecuted = false;
-            Action fallbackAction = () => { fallbackActionExecuted = true; };
+            var fallbackActionExecuted = false;
+            var fallbackAction = () => { fallbackActionExecuted = true; };
 
-            FallbackPolicy fallbackPolicy = Policy
+            var fallbackPolicy = Policy
                                     .Handle<DivideByZeroException>()
                                     .Fallback(fallbackAction);
 
@@ -174,10 +174,10 @@ namespace Polly.Specs.Fallback
         [Fact]
         public void Should_not_execute_fallback_when_executed_delegate_throws_exception_not_handled_by_policy()
         {
-            bool fallbackActionExecuted = false;
-            Action fallbackAction = () => { fallbackActionExecuted = true; };
+            var fallbackActionExecuted = false;
+            var fallbackAction = () => { fallbackActionExecuted = true; };
 
-            FallbackPolicy fallbackPolicy = Policy
+            var fallbackPolicy = Policy
                                     .Handle<DivideByZeroException>()
                                     .Fallback(fallbackAction);
 
@@ -190,10 +190,10 @@ namespace Polly.Specs.Fallback
         [Fact]
         public void Should_execute_fallback_when_executed_delegate_throws_exception_handled_by_policy()
         {
-            bool fallbackActionExecuted = false;
-            Action fallbackAction = () => { fallbackActionExecuted = true; };
+            var fallbackActionExecuted = false;
+            var fallbackAction = () => { fallbackActionExecuted = true; };
 
-            FallbackPolicy fallbackPolicy = Policy
+            var fallbackPolicy = Policy
                 .Handle<DivideByZeroException>()
                 .Fallback(fallbackAction);
 
@@ -205,10 +205,10 @@ namespace Polly.Specs.Fallback
         [Fact]
         public void Should_execute_fallback_when_executed_delegate_throws_one_of_exceptions_handled_by_policy()
         {
-            bool fallbackActionExecuted = false;
-            Action fallbackAction = () => { fallbackActionExecuted = true; };
+            var fallbackActionExecuted = false;
+            var fallbackAction = () => { fallbackActionExecuted = true; };
 
-            FallbackPolicy fallbackPolicy = Policy
+            var fallbackPolicy = Policy
                 .Handle<DivideByZeroException>()
                 .Or<ArgumentException>()
                 .Fallback(fallbackAction);
@@ -221,10 +221,10 @@ namespace Polly.Specs.Fallback
         [Fact]
         public void Should_not_execute_fallback_when_executed_delegate_throws_exception_not_one_of_exceptions_handled_by_policy()
         {
-            bool fallbackActionExecuted = false;
-            Action fallbackAction = () => { fallbackActionExecuted = true; };
+            var fallbackActionExecuted = false;
+            var fallbackAction = () => { fallbackActionExecuted = true; };
 
-            FallbackPolicy fallbackPolicy = Policy
+            var fallbackPolicy = Policy
                                     .Handle<DivideByZeroException>()
                                     .Or<NullReferenceException>()
                                     .Fallback(fallbackAction);
@@ -237,10 +237,10 @@ namespace Polly.Specs.Fallback
         [Fact]
         public void Should_not_execute_fallback_when_exception_thrown_does_not_match_handling_predicates()
         {
-            bool fallbackActionExecuted = false;
-            Action fallbackAction = () => { fallbackActionExecuted = true; };
+            var fallbackActionExecuted = false;
+            var fallbackAction = () => { fallbackActionExecuted = true; };
 
-            FallbackPolicy fallbackPolicy = Policy
+            var fallbackPolicy = Policy
                                     .Handle<DivideByZeroException>(_ => false)
                                     .Fallback(fallbackAction);
 
@@ -252,10 +252,10 @@ namespace Polly.Specs.Fallback
         [Fact]
         public void Should_not_execute_fallback_when_exception_thrown_does_not_match_any_of_handling_predicates()
         {
-            bool fallbackActionExecuted = false;
-            Action fallbackAction = () => { fallbackActionExecuted = true; };
+            var fallbackActionExecuted = false;
+            var fallbackAction = () => { fallbackActionExecuted = true; };
 
-            FallbackPolicy fallbackPolicy = Policy
+            var fallbackPolicy = Policy
                                     .Handle<DivideByZeroException>(_ => false)
                                     .Or<ArgumentNullException>(_ => false)
                                     .Fallback(fallbackAction);
@@ -268,10 +268,10 @@ namespace Polly.Specs.Fallback
         [Fact]
         public void Should_execute_fallback_when_exception_thrown_matches_handling_predicates()
         {
-            bool fallbackActionExecuted = false;
-            Action fallbackAction = () => { fallbackActionExecuted = true; };
+            var fallbackActionExecuted = false;
+            var fallbackAction = () => { fallbackActionExecuted = true; };
 
-            FallbackPolicy fallbackPolicy = Policy
+            var fallbackPolicy = Policy
                 .Handle<DivideByZeroException>(_ => true)
                 .Fallback(fallbackAction);
 
@@ -283,10 +283,10 @@ namespace Polly.Specs.Fallback
         [Fact]
         public void Should_execute_fallback_when_exception_thrown_matches_one_of_handling_predicates()
         {
-            bool fallbackActionExecuted = false;
-            Action fallbackAction = () => { fallbackActionExecuted = true; };
+            var fallbackActionExecuted = false;
+            var fallbackAction = () => { fallbackActionExecuted = true; };
 
-            FallbackPolicy fallbackPolicy = Policy
+            var fallbackPolicy = Policy
                 .Handle<DivideByZeroException>(_ => true)
                 .Or<ArgumentNullException>()
                 .Fallback(fallbackAction);
@@ -299,14 +299,14 @@ namespace Polly.Specs.Fallback
         [Fact]
         public void Should_not_handle_exception_thrown_by_fallback_delegate_even_if_is_exception_handled_by_policy()
         {
-            bool fallbackActionExecuted = false;
-            Action fallbackAction = () =>
+            var fallbackActionExecuted = false;
+            var fallbackAction = () =>
             {
                 fallbackActionExecuted = true;
                 throw new DivideByZeroException {HelpLink = "FromFallbackAction"};
             };
 
-            FallbackPolicy fallbackPolicy = Policy
+            var fallbackPolicy = Policy
                 .Handle<DivideByZeroException>()
                 .Fallback(fallbackAction);
 
@@ -319,7 +319,7 @@ namespace Polly.Specs.Fallback
         [Fact]
         public void Should_throw_for_generic_method_execution_on_non_generic_policy()
         {
-            FallbackPolicy fallbackPolicy = Policy
+            var fallbackPolicy = Policy
                 .Handle<DivideByZeroException>()
                 .Fallback(() => {});
 
@@ -333,14 +333,14 @@ namespace Polly.Specs.Fallback
         [Fact]
         public void Should_not_execute_fallback_when_executed_delegate_throws_inner_exception_where_policy_doesnt_handle_inner()
         {
-            bool fallbackActionExecuted = false;
-            Action fallbackAction = () => { fallbackActionExecuted = true; };
+            var fallbackActionExecuted = false;
+            var fallbackAction = () => { fallbackActionExecuted = true; };
 
-            FallbackPolicy fallbackPolicy = Policy
+            var fallbackPolicy = Policy
                 .Handle<DivideByZeroException>()
                 .Fallback(fallbackAction);
 
-            Exception withInner = new Exception(String.Empty, new DivideByZeroException());
+            var withInner = new Exception(String.Empty, new DivideByZeroException());
 
             fallbackPolicy.Invoking(x => x.RaiseException(withInner)).Should().Throw<Exception>().And.InnerException.Should().BeOfType<DivideByZeroException>();
 
@@ -350,10 +350,10 @@ namespace Polly.Specs.Fallback
         [Fact]
         public void Should_execute_fallback_when_policy_handles_inner_and_executed_delegate_throws_as_non_inner()
         {
-            bool fallbackActionExecuted = false;
-            Action fallbackAction = () => { fallbackActionExecuted = true; };
+            var fallbackActionExecuted = false;
+            var fallbackAction = () => { fallbackActionExecuted = true; };
 
-            FallbackPolicy fallbackPolicy = Policy
+            var fallbackPolicy = Policy
                 .HandleInner<DivideByZeroException>()
                 .Fallback(fallbackAction);
 
@@ -367,14 +367,14 @@ namespace Polly.Specs.Fallback
         [Fact]
         public void Should_execute_fallback_when_executed_delegate_throws_inner_exception_handled_by_policy()
         {
-            bool fallbackActionExecuted = false;
-            Action fallbackAction = () => { fallbackActionExecuted = true; };
+            var fallbackActionExecuted = false;
+            var fallbackAction = () => { fallbackActionExecuted = true; };
 
-            FallbackPolicy fallbackPolicy = Policy
+            var fallbackPolicy = Policy
                 .HandleInner<DivideByZeroException>()
                 .Fallback(fallbackAction);
 
-            Exception withInner = new Exception(String.Empty, new DivideByZeroException());
+            var withInner = new Exception(String.Empty, new DivideByZeroException());
 
             fallbackPolicy.Invoking(x => x.RaiseException(withInner)).Should().NotThrow();
 
@@ -384,15 +384,15 @@ namespace Polly.Specs.Fallback
         [Fact]
         public void Should_execute_fallback_when_executed_delegate_throws_one_of_inner_exceptions_handled_by_policy()
         {
-            bool fallbackActionExecuted = false;
-            Action fallbackAction = () => { fallbackActionExecuted = true; };
+            var fallbackActionExecuted = false;
+            var fallbackAction = () => { fallbackActionExecuted = true; };
 
-            FallbackPolicy fallbackPolicy = Policy
+            var fallbackPolicy = Policy
                 .Handle<DivideByZeroException>()
                 .OrInner<ArgumentException>()
                 .Fallback(fallbackAction);
 
-            Exception withInner = new Exception(String.Empty, new ArgumentException());
+            var withInner = new Exception(String.Empty, new ArgumentException());
 
             fallbackPolicy.Invoking(x => x.RaiseException(withInner)).Should().NotThrow();
 
@@ -402,14 +402,14 @@ namespace Polly.Specs.Fallback
         [Fact]
         public void Should_execute_fallback_when_executed_delegate_throws_nested_inner_exception_handled_by_policy()
         {
-            bool fallbackActionExecuted = false;
-            Action fallbackAction = () => { fallbackActionExecuted = true; };
+            var fallbackActionExecuted = false;
+            var fallbackAction = () => { fallbackActionExecuted = true; };
 
-            FallbackPolicy fallbackPolicy = Policy
+            var fallbackPolicy = Policy
                 .HandleInner<DivideByZeroException>()
                 .Fallback(fallbackAction);
 
-            Exception withInner = new Exception(String.Empty, new Exception(String.Empty, new Exception(String.Empty, new DivideByZeroException())));
+            var withInner = new Exception(String.Empty, new Exception(String.Empty, new Exception(String.Empty, new DivideByZeroException())));
 
             fallbackPolicy.Invoking(x => x.RaiseException(withInner)).Should().NotThrow();
 
@@ -420,14 +420,14 @@ namespace Polly.Specs.Fallback
         [Fact]
         public void Should_not_execute_fallback_when_executed_delegate_throws_inner_exception_not_handled_by_policy()
         {
-            bool fallbackActionExecuted = false;
-            Action fallbackAction = () => { fallbackActionExecuted = true; };
+            var fallbackActionExecuted = false;
+            var fallbackAction = () => { fallbackActionExecuted = true; };
 
-            FallbackPolicy fallbackPolicy = Policy
+            var fallbackPolicy = Policy
                                     .HandleInner<DivideByZeroException>()
                                     .Fallback(fallbackAction);
 
-            Exception withInner = new Exception(String.Empty, new ArgumentException());
+            var withInner = new Exception(String.Empty, new ArgumentException());
 
             fallbackPolicy.Invoking(x => x.RaiseException(withInner)).Should().Throw<Exception>().And.InnerException.Should().BeOfType<ArgumentException>();
 
@@ -437,14 +437,14 @@ namespace Polly.Specs.Fallback
         [Fact]
         public void Should_execute_fallback_when_inner_exception_thrown_matches_handling_predicates()
         {
-            bool fallbackActionExecuted = false;
-            Action fallbackAction = () => { fallbackActionExecuted = true; };
+            var fallbackActionExecuted = false;
+            var fallbackAction = () => { fallbackActionExecuted = true; };
 
-            FallbackPolicy fallbackPolicy = Policy
+            var fallbackPolicy = Policy
                 .HandleInner<DivideByZeroException>(_ => true)
                 .Fallback(fallbackAction);
 
-            Exception withInner = new Exception(String.Empty, new DivideByZeroException());
+            var withInner = new Exception(String.Empty, new DivideByZeroException());
 
             fallbackPolicy.Invoking(x => x.RaiseException(withInner)).Should().NotThrow();
 
@@ -454,14 +454,14 @@ namespace Polly.Specs.Fallback
         [Fact]
         public void Should_execute_fallback_when_inner_nested_exception_thrown_matches_handling_predicates()
         {
-            bool fallbackActionExecuted = false;
-            Action fallbackAction = () => { fallbackActionExecuted = true; };
+            var fallbackActionExecuted = false;
+            var fallbackAction = () => { fallbackActionExecuted = true; };
 
-            FallbackPolicy fallbackPolicy = Policy
+            var fallbackPolicy = Policy
                 .HandleInner<DivideByZeroException>(_ => true)
                 .Fallback(fallbackAction);
 
-            Exception withInner = new Exception(String.Empty, new Exception(String.Empty, new Exception(String.Empty, new DivideByZeroException())));
+            var withInner = new Exception(String.Empty, new Exception(String.Empty, new Exception(String.Empty, new DivideByZeroException())));
 
             fallbackPolicy.Invoking(x => x.RaiseException(withInner)).Should().NotThrow();
 
@@ -472,15 +472,15 @@ namespace Polly.Specs.Fallback
         [Fact]
         public void Should_execute_fallback_when_inner_exception_thrown_matches_one_of_handling_predicates()
         {
-            bool fallbackActionExecuted = false;
-            Action fallbackAction = () => { fallbackActionExecuted = true; };
+            var fallbackActionExecuted = false;
+            var fallbackAction = () => { fallbackActionExecuted = true; };
 
-            FallbackPolicy fallbackPolicy = Policy
+            var fallbackPolicy = Policy
                 .HandleInner<DivideByZeroException>(_ => true)
                 .OrInner<ArgumentNullException>(_ => true)
                 .Fallback(fallbackAction);
 
-            Exception withInner = new Exception(String.Empty, new ArgumentNullException());
+            var withInner = new Exception(String.Empty, new ArgumentNullException());
 
             fallbackPolicy.Invoking(x => x.RaiseException(withInner)).Should().NotThrow();
 
@@ -490,14 +490,14 @@ namespace Polly.Specs.Fallback
         [Fact]
         public void Should_not_execute_fallback_when_inner_exception_thrown_does_not_match_handling_predicates()
         {
-            bool fallbackActionExecuted = false;
-            Action fallbackAction = () => { fallbackActionExecuted = true; };
+            var fallbackActionExecuted = false;
+            var fallbackAction = () => { fallbackActionExecuted = true; };
 
-            FallbackPolicy fallbackPolicy = Policy
+            var fallbackPolicy = Policy
                                     .HandleInner<DivideByZeroException>(_ => false)
                                     .Fallback(fallbackAction);
 
-            Exception withInner = new Exception(String.Empty, new DivideByZeroException());
+            var withInner = new Exception(String.Empty, new DivideByZeroException());
 
             fallbackPolicy.Invoking(x => x.RaiseException(withInner)).Should().Throw<Exception>().And.InnerException.Should().BeOfType<DivideByZeroException>();
 
@@ -507,15 +507,15 @@ namespace Polly.Specs.Fallback
         [Fact]
         public void Should_not_execute_fallback_when_inner_exception_thrown_does_not_match_any_of_handling_predicates()
         {
-            bool fallbackActionExecuted = false;
-            Action fallbackAction = () => { fallbackActionExecuted = true; };
+            var fallbackActionExecuted = false;
+            var fallbackAction = () => { fallbackActionExecuted = true; };
 
-            FallbackPolicy fallbackPolicy = Policy
+            var fallbackPolicy = Policy
                                     .HandleInner<DivideByZeroException>(_ => false)
                                     .OrInner<ArgumentNullException>(_ => false)
                                     .Fallback(fallbackAction);
 
-            Exception withInner = new Exception(String.Empty, new ArgumentNullException());
+            var withInner = new Exception(String.Empty, new ArgumentNullException());
 
             fallbackPolicy.Invoking(x => x.RaiseException(withInner)).Should().Throw<Exception>().And.InnerException.Should().BeOfType<ArgumentNullException>();
 
@@ -530,10 +530,10 @@ namespace Polly.Specs.Fallback
         [Fact]
         public void Should_not_execute_fallback_when_executed_delegate_throws_inner_of_aggregate_exception_where_policy_doesnt_handle_inner()
         {
-            bool fallbackActionExecuted = false;
-            Action fallbackAction = () => { fallbackActionExecuted = true; };
+            var fallbackActionExecuted = false;
+            var fallbackAction = () => { fallbackActionExecuted = true; };
 
-            FallbackPolicy fallbackPolicy = Policy
+            var fallbackPolicy = Policy
                 .Handle<DivideByZeroException>()
                 .Fallback(fallbackAction);
 
@@ -547,10 +547,10 @@ namespace Polly.Specs.Fallback
         [Fact]
         public void Should_execute_fallback_when_executed_delegate_throws_inner_of_aggregate_exception_handled_by_policy()
         {
-            bool fallbackActionExecuted = false;
-            Action fallbackAction = () => { fallbackActionExecuted = true; };
+            var fallbackActionExecuted = false;
+            var fallbackAction = () => { fallbackActionExecuted = true; };
 
-            FallbackPolicy fallbackPolicy = Policy
+            var fallbackPolicy = Policy
                 .HandleInner<DivideByZeroException>()
                 .Fallback(fallbackAction);
 
@@ -564,10 +564,10 @@ namespace Polly.Specs.Fallback
         [Fact]
         public void Should_execute_fallback_when_executed_delegate_throws_one_of_inner_of_aggregate_exceptions_handled_by_policy()
         {
-            bool fallbackActionExecuted = false;
-            Action fallbackAction = () => { fallbackActionExecuted = true; };
+            var fallbackActionExecuted = false;
+            var fallbackAction = () => { fallbackActionExecuted = true; };
 
-            FallbackPolicy fallbackPolicy = Policy
+            var fallbackPolicy = Policy
                 .Handle<DivideByZeroException>()
                 .OrInner<ArgumentException>()
                 .Fallback(fallbackAction);
@@ -582,10 +582,10 @@ namespace Polly.Specs.Fallback
         [Fact]
         public void Should_execute_fallback_when_executed_delegate_throws_aggregate_exception_with_inner_handled_by_policy_amongst_other_inners()
         {
-            bool fallbackActionExecuted = false;
-            Action fallbackAction = () => { fallbackActionExecuted = true; };
+            var fallbackActionExecuted = false;
+            var fallbackAction = () => { fallbackActionExecuted = true; };
 
-            FallbackPolicy fallbackPolicy = Policy
+            var fallbackPolicy = Policy
                 .HandleInner<DivideByZeroException>()
                 .Fallback(fallbackAction);
 
@@ -599,10 +599,10 @@ namespace Polly.Specs.Fallback
         [Fact]
         public void Should_execute_fallback_when_executed_delegate_throws_nested_inner_of_aggregate_exception_handled_by_policy()
         {
-            bool fallbackActionExecuted = false;
-            Action fallbackAction = () => { fallbackActionExecuted = true; };
+            var fallbackActionExecuted = false;
+            var fallbackAction = () => { fallbackActionExecuted = true; };
 
-            FallbackPolicy fallbackPolicy = Policy
+            var fallbackPolicy = Policy
                 .HandleInner<DivideByZeroException>()
                 .Fallback(fallbackAction);
 
@@ -616,10 +616,10 @@ namespace Polly.Specs.Fallback
         [Fact]
         public void Should_not_execute_fallback_when_executed_delegate_throws_inner_of_aggregate_exception_not_handled_by_policy()
         {
-            bool fallbackActionExecuted = false;
-            Action fallbackAction = () => { fallbackActionExecuted = true; };
+            var fallbackActionExecuted = false;
+            var fallbackAction = () => { fallbackActionExecuted = true; };
 
-            FallbackPolicy fallbackPolicy = Policy
+            var fallbackPolicy = Policy
                                     .HandleInner<DivideByZeroException>()
                                     .Fallback(fallbackAction);
 
@@ -633,10 +633,10 @@ namespace Polly.Specs.Fallback
         [Fact]
         public void Should_execute_fallback_when_inner_of_aggregate_exception_thrown_matches_handling_predicates()
         {
-            bool fallbackActionExecuted = false;
-            Action fallbackAction = () => { fallbackActionExecuted = true; };
+            var fallbackActionExecuted = false;
+            var fallbackAction = () => { fallbackActionExecuted = true; };
 
-            FallbackPolicy fallbackPolicy = Policy
+            var fallbackPolicy = Policy
                 .HandleInner<DivideByZeroException>(_ => true)
                 .Fallback(fallbackAction);
 
@@ -650,10 +650,10 @@ namespace Polly.Specs.Fallback
         [Fact]
         public void Should_execute_fallback_when_inner_of_aggregate_nested_exception_thrown_matches_handling_predicates()
         {
-            bool fallbackActionExecuted = false;
-            Action fallbackAction = () => { fallbackActionExecuted = true; };
+            var fallbackActionExecuted = false;
+            var fallbackAction = () => { fallbackActionExecuted = true; };
 
-            FallbackPolicy fallbackPolicy = Policy
+            var fallbackPolicy = Policy
                 .HandleInner<DivideByZeroException>(_ => true)
                 .Fallback(fallbackAction);
 
@@ -668,10 +668,10 @@ namespace Polly.Specs.Fallback
         [Fact]
         public void Should_execute_fallback_when_inner_of_aggregate_exception_thrown_matches_one_of_handling_predicates()
         {
-            bool fallbackActionExecuted = false;
-            Action fallbackAction = () => { fallbackActionExecuted = true; };
+            var fallbackActionExecuted = false;
+            var fallbackAction = () => { fallbackActionExecuted = true; };
 
-            FallbackPolicy fallbackPolicy = Policy
+            var fallbackPolicy = Policy
                 .HandleInner<DivideByZeroException>(_ => true)
                 .OrInner<ArgumentNullException>(_ => true)
                 .Fallback(fallbackAction);
@@ -686,10 +686,10 @@ namespace Polly.Specs.Fallback
         [Fact]
         public void Should_not_execute_fallback_when_inner_of_aggregate_exception_thrown_does_not_match_handling_predicates()
         {
-            bool fallbackActionExecuted = false;
-            Action fallbackAction = () => { fallbackActionExecuted = true; };
+            var fallbackActionExecuted = false;
+            var fallbackAction = () => { fallbackActionExecuted = true; };
 
-            FallbackPolicy fallbackPolicy = Policy
+            var fallbackPolicy = Policy
                                     .HandleInner<DivideByZeroException>(_ => false)
                                     .Fallback(fallbackAction);
 
@@ -703,10 +703,10 @@ namespace Polly.Specs.Fallback
         [Fact]
         public void Should_not_execute_fallback_when_inner_of_aggregate_exception_thrown_does_not_match_any_of_handling_predicates()
         {
-            bool fallbackActionExecuted = false;
-            Action fallbackAction = () => { fallbackActionExecuted = true; };
+            var fallbackActionExecuted = false;
+            var fallbackAction = () => { fallbackActionExecuted = true; };
 
-            FallbackPolicy fallbackPolicy = Policy
+            var fallbackPolicy = Policy
                                     .HandleInner<DivideByZeroException>(_ => false)
                                     .OrInner<ArgumentNullException>(_ => false)
                                     .Fallback(fallbackAction);
@@ -725,13 +725,13 @@ namespace Polly.Specs.Fallback
         [Fact]
         public void Should_call_onFallback_passing_exception_triggering_fallback()
         {
-            bool fallbackActionExecuted = false;
-            Action fallbackAction = () => { fallbackActionExecuted = true; };
+            var fallbackActionExecuted = false;
+            var fallbackAction = () => { fallbackActionExecuted = true; };
 
             Exception exceptionPassedToOnFallback = null;
             Action<Exception> onFallback = ex => { exceptionPassedToOnFallback = ex; };
 
-            FallbackPolicy fallbackPolicy = Policy
+            var fallbackPolicy = Policy
                 .Handle<ArgumentNullException>()
                 .Fallback(fallbackAction, onFallback);
 
@@ -746,12 +746,12 @@ namespace Polly.Specs.Fallback
         [Fact]
         public void Should_not_call_onFallback_when_executed_delegate_does_not_throw()
         {
-            Action fallbackAction = () => { };
+            var fallbackAction = () => { };
 
-            bool onFallbackExecuted = false;
+            var onFallbackExecuted = false;
             Action<Exception> onFallback = _ => { onFallbackExecuted = true; };
 
-            FallbackPolicy fallbackPolicy = Policy
+            var fallbackPolicy = Policy
                 .Handle<DivideByZeroException>()
                 .Fallback(fallbackAction, onFallback);
 
@@ -773,7 +773,7 @@ namespace Polly.Specs.Fallback
 
             Action<Exception, Context> onFallback = (_, ctx) => { contextData = ctx; };
 
-            FallbackPolicy fallbackPolicy = Policy
+            var fallbackPolicy = Policy
                 .Handle<ArgumentNullException>()
                 .Fallback(fallbackAction, onFallback);
 
@@ -795,7 +795,7 @@ namespace Polly.Specs.Fallback
 
             Action<Exception, Context> onFallback = (_, ctx) => { contextData = ctx; };
 
-            FallbackPolicy fallbackPolicy = Policy
+            var fallbackPolicy = Policy
                 .Handle<ArgumentNullException>()
                 .Fallback(fallbackAction, onFallback);
 
@@ -817,7 +817,7 @@ namespace Polly.Specs.Fallback
 
             Action<Exception, Context> onFallback = (ex, ctx) => { contextData[ex.GetType()] = ctx["key"]; };
 
-            FallbackPolicy fallbackPolicy = Policy
+            var fallbackPolicy = Policy
                 .Handle<ArgumentNullException>()
                 .Or<DivideByZeroException>()
                 .Fallback(fallbackAction, onFallback);
@@ -842,12 +842,12 @@ namespace Polly.Specs.Fallback
         public void Context_should_be_empty_if_execute_not_called_with_any_context_data()
         {
             Context capturedContext = null;
-            bool onFallbackExecuted = false;
+            var onFallbackExecuted = false;
 
             Action<Context> fallbackAction = _ => { };
             Action<Exception, Context> onFallback = (_, ctx) => { onFallbackExecuted = true; capturedContext = ctx; };
 
-            FallbackPolicy fallbackPolicy = Policy
+            var fallbackPolicy = Policy
                 .Handle<ArgumentNullException>()
                 .Or<DivideByZeroException>()
                 .Fallback(fallbackAction, onFallback);
@@ -867,7 +867,7 @@ namespace Polly.Specs.Fallback
 
             Action<Exception, Context> onFallback = (_, _) => {  };
 
-            FallbackPolicy fallbackPolicy = Policy
+            var fallbackPolicy = Policy
                 .Handle<ArgumentNullException>()
                 .Fallback(fallbackAction, onFallback);
 
@@ -889,7 +889,7 @@ namespace Polly.Specs.Fallback
 
             Action<Exception, Context> onFallback = (_, _) => { };
 
-            FallbackPolicy fallbackPolicy = Policy
+            var fallbackPolicy = Policy
                 .Handle<ArgumentNullException>()
                 .Fallback(fallbackAction, onFallback);
 
@@ -906,12 +906,12 @@ namespace Polly.Specs.Fallback
         public void Context_should_be_empty_at_fallbackAction_if_execute_not_called_with_any_context_data()
         {
             Context capturedContext = null;
-            bool fallbackExecuted = false;
+            var fallbackExecuted = false;
 
             Action<Context, CancellationToken> fallbackAction = (ctx, _) => { fallbackExecuted = true; capturedContext = ctx;  };
             Action<Exception, Context> onFallback = (_, _) => {};
 
-            FallbackPolicy fallbackPolicy = Policy
+            var fallbackPolicy = Policy
                 .Handle<ArgumentNullException>()
                 .Or<DivideByZeroException>()
                 .Fallback(fallbackAction, onFallback);
@@ -935,7 +935,7 @@ namespace Polly.Specs.Fallback
 
             Action<Exception, Context> onFallback = (_, _) => { };
 
-            FallbackPolicy fallbackPolicy = Policy
+            var fallbackPolicy = Policy
                 .Handle<ArgumentNullException>()
                 .Fallback(fallbackAction, onFallback);
 
@@ -955,7 +955,7 @@ namespace Polly.Specs.Fallback
 
             Action<Exception, Context> onFallback = (_, _) => { };
 
-            FallbackPolicy fallbackPolicy = Policy
+            var fallbackPolicy = Policy
                 .Handle<ArgumentNullException>()
                 .Fallback(fallbackAction, onFallback);
             fallbackPolicy.Invoking(p => p.ExecuteAndCapture(() => throw new ArgumentNullException()))
@@ -974,12 +974,12 @@ namespace Polly.Specs.Fallback
 
             Action<Exception, Context> onFallback = (_, _) => { };
 
-            FallbackPolicy fallbackPolicy = Policy
+            var fallbackPolicy = Policy
                 .HandleInner<ArgumentNullException>()
                 .Fallback(fallbackAction, onFallback);
 
             Exception instanceToCapture = new ArgumentNullException("myParam");
-            Exception instanceToThrow = new Exception(String.Empty, instanceToCapture);
+            var instanceToThrow = new Exception(String.Empty, instanceToCapture);
             fallbackPolicy.Invoking(p => p.RaiseException(instanceToThrow))
                 .Should().NotThrow();
 
@@ -995,7 +995,7 @@ namespace Polly.Specs.Fallback
 
             Action<Exception, Context> onFallback = (_, _) => { };
 
-            FallbackPolicy fallbackPolicy = Policy
+            var fallbackPolicy = Policy
                 .HandleInner<ArgumentNullException>()
                 .Fallback(fallbackAction, onFallback);
 
@@ -1017,7 +1017,7 @@ namespace Polly.Specs.Fallback
 
             Action<Exception, Context> onFallback = (_, _) => { };
 
-            FallbackPolicy fallbackPolicy = Policy
+            var fallbackPolicy = Policy
                 .Handle<DivideByZeroException>()
                 .Fallback(fallbackAction, onFallback);
 
@@ -1034,19 +1034,19 @@ namespace Polly.Specs.Fallback
         [Fact]
         public void Should_execute_action_when_non_faulting_and_cancellationToken_not_cancelled()
         {
-            bool fallbackActionExecuted = false;
-            Action fallbackAction = () => { fallbackActionExecuted = true; };
+            var fallbackActionExecuted = false;
+            var fallbackAction = () => { fallbackActionExecuted = true; };
 
-            FallbackPolicy policy = Policy
+            var policy = Policy
                                     .Handle<DivideByZeroException>()
                                     .Fallback(fallbackAction);
 
-            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+            var cancellationTokenSource = new CancellationTokenSource();
 
-            int attemptsInvoked = 0;
+            var attemptsInvoked = 0;
             Action onExecute = () => attemptsInvoked++;
 
-            Scenario scenario = new Scenario
+            var scenario = new Scenario
             {
                 NumberOfTimesToRaiseException = 0,
                 AttemptDuringWhichToCancel = null,
@@ -1062,19 +1062,19 @@ namespace Polly.Specs.Fallback
         [Fact]
         public void Should_execute_fallback_when_faulting_and_cancellationToken_not_cancelled()
         {
-            bool fallbackActionExecuted = false;
-            Action fallbackAction = () => { fallbackActionExecuted = true; };
+            var fallbackActionExecuted = false;
+            var fallbackAction = () => { fallbackActionExecuted = true; };
 
-            FallbackPolicy policy = Policy
+            var policy = Policy
                                     .Handle<DivideByZeroException>()
                                     .Fallback(fallbackAction);
 
-            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+            var cancellationTokenSource = new CancellationTokenSource();
 
-            int attemptsInvoked = 0;
+            var attemptsInvoked = 0;
             Action onExecute = () => attemptsInvoked++;
 
-            Scenario scenario = new Scenario
+            var scenario = new Scenario
             {
                 NumberOfTimesToRaiseException = 1,
                 AttemptDuringWhichToCancel = null,
@@ -1090,20 +1090,20 @@ namespace Polly.Specs.Fallback
         [Fact]
         public void Should_not_execute_action_when_cancellationToken_cancelled_before_execute()
         {
-            bool fallbackActionExecuted = false;
-            Action fallbackAction = () => { fallbackActionExecuted = true; };
+            var fallbackActionExecuted = false;
+            var fallbackAction = () => { fallbackActionExecuted = true; };
 
-            FallbackPolicy policy = Policy
+            var policy = Policy
                                     .Handle<DivideByZeroException>()
                                     .Fallback(fallbackAction);
 
-            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-            CancellationToken cancellationToken = cancellationTokenSource.Token;
+            var cancellationTokenSource = new CancellationTokenSource();
+            var cancellationToken = cancellationTokenSource.Token;
 
-            int attemptsInvoked = 0;
+            var attemptsInvoked = 0;
             Action onExecute = () => attemptsInvoked++;
 
-            Scenario scenario = new Scenario
+            var scenario = new Scenario
             {
                 NumberOfTimesToRaiseException = 1,
                 AttemptDuringWhichToCancel = null, // Cancellation token cancelled manually below - before any scenario execution.
@@ -1123,20 +1123,20 @@ namespace Polly.Specs.Fallback
         [Fact]
         public void Should_report_cancellation_and_not_execute_fallback_during_otherwise_non_faulting_action_execution_when_user_delegate_observes_cancellationToken_and_fallback_does_not_handle_cancellations()
         {
-            bool fallbackActionExecuted = false;
-            Action fallbackAction = () => { fallbackActionExecuted = true; };
+            var fallbackActionExecuted = false;
+            var fallbackAction = () => { fallbackActionExecuted = true; };
 
-            FallbackPolicy policy = Policy
+            var policy = Policy
                                     .Handle<DivideByZeroException>()
                                     .Fallback(fallbackAction);
 
-            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-            CancellationToken cancellationToken = cancellationTokenSource.Token;
+            var cancellationTokenSource = new CancellationTokenSource();
+            var cancellationToken = cancellationTokenSource.Token;
 
-            int attemptsInvoked = 0;
+            var attemptsInvoked = 0;
             Action onExecute = () => attemptsInvoked++;
 
-            Scenario scenario = new Scenario
+            var scenario = new Scenario
             {
                 NumberOfTimesToRaiseException = 0,
                 AttemptDuringWhichToCancel = 1,
@@ -1154,20 +1154,20 @@ namespace Polly.Specs.Fallback
         [Fact]
         public void Should_handle_cancellation_and_execute_fallback_during_otherwise_non_faulting_action_execution_when_user_delegate_observes_cancellationToken_and_fallback_handles_cancellations()
         {
-            bool fallbackActionExecuted = false;
-            Action fallbackAction = () => { fallbackActionExecuted = true; };
+            var fallbackActionExecuted = false;
+            var fallbackAction = () => { fallbackActionExecuted = true; };
 
-            FallbackPolicy policy = Policy
+            var policy = Policy
                                     .Handle<DivideByZeroException>()
                                     .Or<OperationCanceledException>()
                                     .Fallback(fallbackAction);
 
-            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+            var cancellationTokenSource = new CancellationTokenSource();
 
-            int attemptsInvoked = 0;
+            var attemptsInvoked = 0;
             Action onExecute = () => attemptsInvoked++;
 
-            Scenario scenario = new Scenario
+            var scenario = new Scenario
             {
                 NumberOfTimesToRaiseException = 0,
                 AttemptDuringWhichToCancel = 1,
@@ -1184,19 +1184,19 @@ namespace Polly.Specs.Fallback
         [Fact]
         public void Should_not_report_cancellation_and_not_execute_fallback_if_non_faulting_action_execution_completes_and_user_delegate_does_not_observe_the_set_cancellationToken()
         {
-            bool fallbackActionExecuted = false;
-            Action fallbackAction = () => { fallbackActionExecuted = true; };
+            var fallbackActionExecuted = false;
+            var fallbackAction = () => { fallbackActionExecuted = true; };
 
-            FallbackPolicy policy = Policy
+            var policy = Policy
                                     .Handle<DivideByZeroException>()
                                     .Fallback(fallbackAction);
 
-            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+            var cancellationTokenSource = new CancellationTokenSource();
 
-            int attemptsInvoked = 0;
+            var attemptsInvoked = 0;
             Action onExecute = () => attemptsInvoked++;
 
-            Scenario scenario = new Scenario
+            var scenario = new Scenario
             {
                 NumberOfTimesToRaiseException = 0,
                 AttemptDuringWhichToCancel = 1,
@@ -1213,19 +1213,19 @@ namespace Polly.Specs.Fallback
         [Fact]
         public void Should_report_unhandled_fault_and_not_execute_fallback_if_action_execution_raises_unhandled_fault_and_user_delegate_does_not_observe_the_set_cancellationToken()
         {
-            bool fallbackActionExecuted = false;
-            Action fallbackAction = () => { fallbackActionExecuted = true; };
+            var fallbackActionExecuted = false;
+            var fallbackAction = () => { fallbackActionExecuted = true; };
 
-            FallbackPolicy policy = Policy
+            var policy = Policy
                                     .Handle<DivideByZeroException>()
                                     .Fallback(fallbackAction);
 
-            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+            var cancellationTokenSource = new CancellationTokenSource();
 
-            int attemptsInvoked = 0;
+            var attemptsInvoked = 0;
             Action onExecute = () => attemptsInvoked++;
 
-            Scenario scenario = new Scenario
+            var scenario = new Scenario
             {
                 NumberOfTimesToRaiseException = 1,
                 AttemptDuringWhichToCancel = 1,
@@ -1242,19 +1242,19 @@ namespace Polly.Specs.Fallback
         [Fact]
         public void Should_handle_handled_fault_and_execute_fallback_following_faulting_action_execution_when_user_delegate_does_not_observe_cancellationToken()
         {
-            bool fallbackActionExecuted = false;
-            Action fallbackAction = () => { fallbackActionExecuted = true; };
+            var fallbackActionExecuted = false;
+            var fallbackAction = () => { fallbackActionExecuted = true; };
 
-            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+            var cancellationTokenSource = new CancellationTokenSource();
 
-            FallbackPolicy policy = Policy
+            var policy = Policy
                                     .Handle<DivideByZeroException>()
                                     .Fallback(fallbackAction);
 
-            int attemptsInvoked = 0;
+            var attemptsInvoked = 0;
             Action onExecute = () => attemptsInvoked++;
 
-            Scenario scenario = new Scenario
+            var scenario = new Scenario
             {
                 NumberOfTimesToRaiseException = 1,
                 AttemptDuringWhichToCancel = 1,

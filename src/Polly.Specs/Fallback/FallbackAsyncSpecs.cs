@@ -91,7 +91,7 @@ namespace Polly.Specs.Fallback
         [Fact]
         public async Task Should_not_execute_fallback_when_executed_delegate_does_not_throw()
         {
-            bool fallbackActionExecuted = false;
+            var fallbackActionExecuted = false;
             Func<CancellationToken, Task> fallbackActionAsync  = _ => { fallbackActionExecuted = true; return TaskHelper.EmptyTask; };
 
             var fallbackPolicy = Policy
@@ -106,7 +106,7 @@ namespace Polly.Specs.Fallback
         [Fact]
         public void Should_not_execute_fallback_when_executed_delegate_throws_exception_not_handled_by_policy()
         {
-            bool fallbackActionExecuted = false;
+            var fallbackActionExecuted = false;
             Func<CancellationToken, Task> fallbackActionAsync  = _ => { fallbackActionExecuted = true; return TaskHelper.EmptyTask; };
 
             var fallbackPolicy = Policy
@@ -121,7 +121,7 @@ namespace Polly.Specs.Fallback
         [Fact]
         public void Should_execute_fallback_when_executed_delegate_throws_exception_handled_by_policy()
         {
-            bool fallbackActionExecuted = false;
+            var fallbackActionExecuted = false;
             Func<CancellationToken, Task> fallbackActionAsync  = _ => { fallbackActionExecuted = true; return TaskHelper.EmptyTask; };
 
             var fallbackPolicy = Policy
@@ -137,7 +137,7 @@ namespace Polly.Specs.Fallback
         [Fact]
         public void Should_execute_fallback_when_executed_delegate_throws_one_of_exceptions_handled_by_policy()
         {
-            bool fallbackActionExecuted = false;
+            var fallbackActionExecuted = false;
             Func<CancellationToken, Task> fallbackActionAsync  = _ => { fallbackActionExecuted = true; return TaskHelper.EmptyTask; };
 
             var fallbackPolicy = Policy
@@ -154,7 +154,7 @@ namespace Polly.Specs.Fallback
         [Fact]
         public void Should_not_execute_fallback_when_executed_delegate_throws_exception_not_one_of_exceptions_handled_by_policy()
         {
-            bool fallbackActionExecuted = false;
+            var fallbackActionExecuted = false;
             Func<CancellationToken, Task> fallbackActionAsync  = _ => { fallbackActionExecuted = true; return TaskHelper.EmptyTask; };
 
             var fallbackPolicy = Policy
@@ -170,7 +170,7 @@ namespace Polly.Specs.Fallback
         [Fact]
         public void Should_not_execute_fallback_when_exception_thrown_does_not_match_handling_predicates()
         {
-            bool fallbackActionExecuted = false;
+            var fallbackActionExecuted = false;
             Func<CancellationToken, Task> fallbackActionAsync  = _ => { fallbackActionExecuted = true; return TaskHelper.EmptyTask; };
 
             var fallbackPolicy = Policy
@@ -185,7 +185,7 @@ namespace Polly.Specs.Fallback
         [Fact]
         public void Should_not_execute_fallback_when_exception_thrown_does_not_match_any_of_handling_predicates()
         {
-            bool fallbackActionExecuted = false;
+            var fallbackActionExecuted = false;
             Func<CancellationToken, Task> fallbackActionAsync  = _ => { fallbackActionExecuted = true; return TaskHelper.EmptyTask; };
 
             var fallbackPolicy = Policy
@@ -201,7 +201,7 @@ namespace Polly.Specs.Fallback
         [Fact]
         public void Should_execute_fallback_when_exception_thrown_matches_handling_predicates()
         {
-            bool fallbackActionExecuted = false;
+            var fallbackActionExecuted = false;
             Func<CancellationToken, Task> fallbackActionAsync  = _ => { fallbackActionExecuted = true; return TaskHelper.EmptyTask; };
 
             var fallbackPolicy = Policy
@@ -217,7 +217,7 @@ namespace Polly.Specs.Fallback
         [Fact]
         public void Should_execute_fallback_when_exception_thrown_matches_one_of_handling_predicates()
         {
-            bool fallbackActionExecuted = false;
+            var fallbackActionExecuted = false;
             Func<CancellationToken, Task> fallbackActionAsync  = _ => { fallbackActionExecuted = true; return TaskHelper.EmptyTask; };
 
             var fallbackPolicy = Policy
@@ -233,7 +233,7 @@ namespace Polly.Specs.Fallback
         [Fact]
         public void Should_not_handle_exception_thrown_by_fallback_delegate_even_if_is_exception_handled_by_policy()
         {
-            bool fallbackActionExecuted = false;
+            var fallbackActionExecuted = false;
             Func<CancellationToken, Task> fallbackActionAsync  = _ =>
             {
                 fallbackActionExecuted = true;
@@ -267,7 +267,7 @@ namespace Polly.Specs.Fallback
         [Fact]
         public async Task Should_call_onFallback_passing_exception_triggering_fallback()
         {
-            bool fallbackActionExecuted = false;
+            var fallbackActionExecuted = false;
             Func<CancellationToken, Task> fallbackActionAsync = _ => { fallbackActionExecuted = true; return TaskHelper.EmptyTask; };
 
             Exception exceptionPassedToOnFallback = null;
@@ -290,7 +290,7 @@ namespace Polly.Specs.Fallback
         {
             Func<CancellationToken, Task> fallbackActionAsync = _ => TaskHelper.EmptyTask;
 
-            bool onFallbackExecuted = false;
+            var onFallbackExecuted = false;
             Func<Exception, Task> onFallbackAsync = _ => { onFallbackExecuted = true; return TaskHelper.EmptyTask; };
 
             var fallbackPolicy = Policy
@@ -382,7 +382,7 @@ namespace Polly.Specs.Fallback
         public async Task Context_should_be_empty_if_execute_not_called_with_any_context_data()
         {
             Context capturedContext = null;
-            bool onFallbackExecuted = false;
+            var onFallbackExecuted = false;
 
             Func<Context, CancellationToken, Task> fallbackActionAsync = (_, _) => TaskHelper.EmptyTask;
             Func<Exception, Context, Task> onFallbackAsync = (_, ctx) => { onFallbackExecuted = true; capturedContext = ctx; return TaskHelper.EmptyTask; };
@@ -446,7 +446,7 @@ namespace Polly.Specs.Fallback
         public async Task Context_should_be_empty_at_fallbackAction_if_execute_not_called_with_any_context_data()
         {
             Context capturedContext = null;
-            bool fallbackExecuted = false;
+            var fallbackExecuted = false;
 
             Func<Context, CancellationToken, Task> fallbackActionAsync = (ctx, _) => { fallbackExecuted = true; capturedContext = ctx; return TaskHelper.EmptyTask; };
 
@@ -521,7 +521,7 @@ namespace Polly.Specs.Fallback
                 .FallbackAsync(fallbackFunc, onFallback);
 
             Exception instanceToCapture = new ArgumentNullException("myParam");
-            Exception instanceToThrow = new Exception(String.Empty, instanceToCapture);
+            var instanceToThrow = new Exception(String.Empty, instanceToCapture);
             fallbackPolicy.Awaiting(p => p.RaiseExceptionAsync(instanceToThrow))
                 .Should().NotThrow();
 
@@ -575,20 +575,20 @@ namespace Polly.Specs.Fallback
         [Fact]
         public void Should_execute_action_when_non_faulting_and_cancellationToken_not_cancelled()
         {
-            bool fallbackActionExecuted = false;
+            var fallbackActionExecuted = false;
             Func<CancellationToken, Task> fallbackActionAsync = _ => { fallbackActionExecuted = true; return TaskHelper.EmptyTask; };
 
             var policy = Policy
                                     .Handle<DivideByZeroException>()
                                     .FallbackAsync(fallbackActionAsync);
 
-            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-            CancellationToken cancellationToken = cancellationTokenSource.Token;
+            var cancellationTokenSource = new CancellationTokenSource();
+            var cancellationToken = cancellationTokenSource.Token;
 
-            int attemptsInvoked = 0;
+            var attemptsInvoked = 0;
             Action onExecute = () => attemptsInvoked++;
 
-            Scenario scenario = new Scenario
+            var scenario = new Scenario
             {
                 NumberOfTimesToRaiseException = 0,
                 AttemptDuringWhichToCancel = null,
@@ -604,20 +604,20 @@ namespace Polly.Specs.Fallback
         [Fact]
         public void Should_execute_fallback_when_faulting_and_cancellationToken_not_cancelled()
         {
-            bool fallbackActionExecuted = false;
+            var fallbackActionExecuted = false;
             Func<CancellationToken, Task> fallbackActionAsync = _ => { fallbackActionExecuted = true; return TaskHelper.EmptyTask; };
 
             var policy = Policy
                                     .Handle<DivideByZeroException>()
                                     .FallbackAsync(fallbackActionAsync);
 
-            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-            CancellationToken cancellationToken = cancellationTokenSource.Token;
+            var cancellationTokenSource = new CancellationTokenSource();
+            var cancellationToken = cancellationTokenSource.Token;
 
-            int attemptsInvoked = 0;
+            var attemptsInvoked = 0;
             Action onExecute = () => attemptsInvoked++;
 
-            Scenario scenario = new Scenario
+            var scenario = new Scenario
             {
                 NumberOfTimesToRaiseException = 1,
                 AttemptDuringWhichToCancel = null,
@@ -633,20 +633,20 @@ namespace Polly.Specs.Fallback
         [Fact]
         public void Should_not_execute_action_when_cancellationToken_cancelled_before_execute()
         {
-            bool fallbackActionExecuted = false;
+            var fallbackActionExecuted = false;
             Func<CancellationToken, Task> fallbackActionAsync = _ => { fallbackActionExecuted = true; return TaskHelper.EmptyTask; };
 
             var policy = Policy
                                     .Handle<DivideByZeroException>()
                                     .FallbackAsync(fallbackActionAsync);
 
-            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-            CancellationToken cancellationToken = cancellationTokenSource.Token;
+            var cancellationTokenSource = new CancellationTokenSource();
+            var cancellationToken = cancellationTokenSource.Token;
 
-            int attemptsInvoked = 0;
+            var attemptsInvoked = 0;
             Action onExecute = () => attemptsInvoked++;
 
-            Scenario scenario = new Scenario
+            var scenario = new Scenario
             {
                 NumberOfTimesToRaiseException = 1,
                 AttemptDuringWhichToCancel = null, // Cancellation token cancelled manually below - before any scenario execution.
@@ -666,20 +666,20 @@ namespace Polly.Specs.Fallback
         [Fact]
         public void Should_report_cancellation_and_not_execute_fallback_during_otherwise_non_faulting_action_execution_when_user_delegate_observes_cancellationToken_and_fallback_does_not_handle_cancellations()
         {
-            bool fallbackActionExecuted = false;
+            var fallbackActionExecuted = false;
             Func<CancellationToken, Task> fallbackActionAsync = _ => { fallbackActionExecuted = true; return TaskHelper.EmptyTask; };
 
             var policy = Policy
                                     .Handle<DivideByZeroException>()
                                     .FallbackAsync(fallbackActionAsync);
 
-            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-            CancellationToken cancellationToken = cancellationTokenSource.Token;
+            var cancellationTokenSource = new CancellationTokenSource();
+            var cancellationToken = cancellationTokenSource.Token;
 
-            int attemptsInvoked = 0;
+            var attemptsInvoked = 0;
             Action onExecute = () => attemptsInvoked++;
 
-            Scenario scenario = new Scenario
+            var scenario = new Scenario
             {
                 NumberOfTimesToRaiseException = 0,
                 AttemptDuringWhichToCancel = 1,
@@ -697,7 +697,7 @@ namespace Polly.Specs.Fallback
         [Fact]
         public void Should_handle_cancellation_and_execute_fallback_during_otherwise_non_faulting_action_execution_when_user_delegate_observes_cancellationToken_and_fallback_handles_cancellations()
         {
-            bool fallbackActionExecuted = false;
+            var fallbackActionExecuted = false;
             Func<CancellationToken, Task> fallbackActionAsync = _ => { fallbackActionExecuted = true; return TaskHelper.EmptyTask; };
 
             var policy = Policy
@@ -705,13 +705,13 @@ namespace Polly.Specs.Fallback
                                     .Or<OperationCanceledException>()
                                     .FallbackAsync(fallbackActionAsync);
 
-            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-            CancellationToken cancellationToken = cancellationTokenSource.Token;
+            var cancellationTokenSource = new CancellationTokenSource();
+            var cancellationToken = cancellationTokenSource.Token;
 
-            int attemptsInvoked = 0;
+            var attemptsInvoked = 0;
             Action onExecute = () => attemptsInvoked++;
 
-            Scenario scenario = new Scenario
+            var scenario = new Scenario
             {
                 NumberOfTimesToRaiseException = 0,
                 AttemptDuringWhichToCancel = 1,
@@ -729,20 +729,20 @@ namespace Polly.Specs.Fallback
         public void Should_not_report_cancellation_and_not_execute_fallback_if_non_faulting_action_execution_completes_and_user_delegate_does_not_observe_the_set_cancellationToken()
         {
 
-            bool fallbackActionExecuted = false;
+            var fallbackActionExecuted = false;
             Func<CancellationToken, Task> fallbackActionAsync = _ => { fallbackActionExecuted = true; return TaskHelper.EmptyTask; };
 
             var policy = Policy
                                     .Handle<DivideByZeroException>()
                                     .FallbackAsync(fallbackActionAsync);
 
-            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-            CancellationToken cancellationToken = cancellationTokenSource.Token;
+            var cancellationTokenSource = new CancellationTokenSource();
+            var cancellationToken = cancellationTokenSource.Token;
 
-            int attemptsInvoked = 0;
+            var attemptsInvoked = 0;
             Action onExecute = () => attemptsInvoked++;
 
-            Scenario scenario = new Scenario
+            var scenario = new Scenario
             {
                 NumberOfTimesToRaiseException = 0,
                 AttemptDuringWhichToCancel = 1,
@@ -760,21 +760,21 @@ namespace Polly.Specs.Fallback
         public void Should_report_unhandled_fault_and_not_execute_fallback_if_action_execution_raises_unhandled_fault_and_user_delegate_does_not_observe_the_set_cancellationToken()
         {
 
-            bool fallbackActionExecuted = false;
+            var fallbackActionExecuted = false;
             Func<CancellationToken, Task> fallbackActionAsync = _ => { fallbackActionExecuted = true; return TaskHelper.EmptyTask; };
 
 
-            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-            CancellationToken cancellationToken = cancellationTokenSource.Token;
+            var cancellationTokenSource = new CancellationTokenSource();
+            var cancellationToken = cancellationTokenSource.Token;
 
             var policy = Policy
                                     .Handle<DivideByZeroException>()
                                     .FallbackAsync(fallbackActionAsync);
 
-            int attemptsInvoked = 0;
+            var attemptsInvoked = 0;
             Action onExecute = () => attemptsInvoked++;
 
-            Scenario scenario = new Scenario
+            var scenario = new Scenario
             {
                 NumberOfTimesToRaiseException = 1,
                 AttemptDuringWhichToCancel = 1,
@@ -792,21 +792,21 @@ namespace Polly.Specs.Fallback
         public void Should_handle_handled_fault_and_execute_fallback_following_faulting_action_execution_when_user_delegate_does_not_observe_cancellationToken()
         {
 
-            bool fallbackActionExecuted = false;
+            var fallbackActionExecuted = false;
             Func<CancellationToken, Task> fallbackActionAsync = _ => { fallbackActionExecuted = true; return TaskHelper.EmptyTask; };
 
 
-            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-            CancellationToken cancellationToken = cancellationTokenSource.Token;
+            var cancellationTokenSource = new CancellationTokenSource();
+            var cancellationToken = cancellationTokenSource.Token;
 
             var policy = Policy
                                     .Handle<DivideByZeroException>()
                                     .FallbackAsync(fallbackActionAsync);
 
-            int attemptsInvoked = 0;
+            var attemptsInvoked = 0;
             Action onExecute = () => attemptsInvoked++;
 
-            Scenario scenario = new Scenario
+            var scenario = new Scenario
             {
                 NumberOfTimesToRaiseException = 1,
                 AttemptDuringWhichToCancel = 1,

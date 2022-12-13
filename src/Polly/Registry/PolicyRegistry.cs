@@ -112,7 +112,7 @@ namespace Polly.Registry
         /// <returns>True if Policy exists for the provided Key. False otherwise.</returns>
         public bool TryGet<TPolicy>(string key, out TPolicy policy) where TPolicy : IsPolicy
         {
-            bool got = _registry.TryGetValue(key, out IsPolicy value);
+            var got = _registry.TryGetValue(key, out var value);
             policy = got ? (TPolicy)value : default;
             return got;
         }
@@ -156,7 +156,7 @@ namespace Polly.Registry
         {
             var registry = ThrowIfNotConcurrentImplementation();
 
-            bool got = registry.TryRemove(key, out IsPolicy value);
+            var got = registry.TryRemove(key, out var value);
             policy = got ? (TPolicy) value : default;
             return got;
         }

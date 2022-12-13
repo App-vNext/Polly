@@ -10,7 +10,7 @@ namespace Polly.Specs
         [Fact]
         public void Should_assign_OperationKey_from_constructor()
         {
-            Context context = new Context("SomeKey");
+            var context = new Context("SomeKey");
 
             context.OperationKey.Should().Be("SomeKey");
 
@@ -20,7 +20,7 @@ namespace Polly.Specs
         [Fact]
         public void Should_assign_OperationKey_and_context_data_from_constructor()
         {
-            Context context = new Context("SomeKey", new { key1 = "value1", key2 = "value2" }.AsDictionary());
+            var context = new Context("SomeKey", new { key1 = "value1", key2 = "value2" }.AsDictionary());
 
             context.OperationKey.Should().Be("SomeKey");
             context["key1"].Should().Be("value1");
@@ -30,7 +30,7 @@ namespace Polly.Specs
         [Fact]
         public void NoArgsCtor_should_assign_no_OperationKey()
         {
-            Context context = new Context();
+            var context = new Context();
 
             context.OperationKey.Should().BeNull();
         }
@@ -38,7 +38,7 @@ namespace Polly.Specs
         [Fact]
         public void Should_assign_CorrelationId_when_accessed()
         {
-            Context context = new Context("SomeKey");
+            var context = new Context("SomeKey");
 
             context.CorrelationId.Should().NotBeEmpty();
         }
@@ -46,10 +46,10 @@ namespace Polly.Specs
         [Fact]
         public void Should_return_consistent_CorrelationId()
         {
-            Context context = new Context("SomeKey");
+            var context = new Context("SomeKey");
 
-            Guid retrieved1 = context.CorrelationId;
-            Guid retrieved2 = context.CorrelationId;
+            var retrieved1 = context.CorrelationId;
+            var retrieved2 = context.CorrelationId;
 
             retrieved1.Should().Be(retrieved2);
         }

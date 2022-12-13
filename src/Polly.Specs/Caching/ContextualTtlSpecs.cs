@@ -17,22 +17,22 @@ namespace Polly.Specs.Caching
         [Fact]
         public void Should_return_zero_if_invalid_value_set_on_context()
         {
-            Dictionary<string, object> contextData = new Dictionary<string, object>();
+            var contextData = new Dictionary<string, object>();
             contextData[ContextualTtl.TimeSpanKey] = new object();
 
-            Context context = new Context(String.Empty, contextData);
+            var context = new Context(String.Empty, contextData);
             new ContextualTtl().GetTtl(context, null).Timespan.Should().Be(TimeSpan.Zero);
         }
 
         [Fact]
         public void Should_return_value_set_on_context()
         {
-            TimeSpan ttl = TimeSpan.FromSeconds(30);
-            Dictionary<string, object> contextData = new Dictionary<string, object>();
+            var ttl = TimeSpan.FromSeconds(30);
+            var contextData = new Dictionary<string, object>();
             contextData[ContextualTtl.TimeSpanKey] = ttl;
 
-            Context context = new Context(String.Empty, contextData);
-            Ttl gotTtl = new ContextualTtl().GetTtl(context, null);
+            var context = new Context(String.Empty, contextData);
+            var gotTtl = new ContextualTtl().GetTtl(context, null);
             gotTtl.Timespan.Should().Be(ttl);
             gotTtl.SlidingExpiration.Should().BeFalse();
         }
@@ -40,12 +40,12 @@ namespace Polly.Specs.Caching
         [Fact]
         public void Should_return_negative_value_set_on_context()
         {
-            TimeSpan ttl = TimeSpan.FromTicks(-1);
-            Dictionary<string, object> contextData = new Dictionary<string, object>();
+            var ttl = TimeSpan.FromTicks(-1);
+            var contextData = new Dictionary<string, object>();
             contextData[ContextualTtl.TimeSpanKey] = ttl;
 
-            Context context = new Context(String.Empty, contextData);
-            Ttl gotTtl = new ContextualTtl().GetTtl(context, null);
+            var context = new Context(String.Empty, contextData);
+            var gotTtl = new ContextualTtl().GetTtl(context, null);
             gotTtl.Timespan.Should().Be(ttl);
             gotTtl.SlidingExpiration.Should().BeFalse();
         }

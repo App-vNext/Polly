@@ -111,7 +111,7 @@ namespace Polly
         {
             if (context == null) throw new ArgumentNullException(nameof(context));
 
-            SetPolicyContext(context, out string priorPolicyWrapKey, out string priorPolicyKey);
+            SetPolicyContext(context, out var priorPolicyWrapKey, out var priorPolicyKey);
 
             try
             {
@@ -231,7 +231,7 @@ namespace Polly
 
             try
             {
-                TResult result = await ExecuteAsync(action, context, cancellationToken, continueOnCapturedContext).ConfigureAwait(continueOnCapturedContext);
+                var result = await ExecuteAsync(action, context, cancellationToken, continueOnCapturedContext).ConfigureAwait(continueOnCapturedContext);
 
                 if (ResultPredicates.AnyMatch(result))
                 {

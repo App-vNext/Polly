@@ -306,7 +306,7 @@ namespace Polly.Specs.Retry
         [Fact]
         public void Should_be_able_to_calculate_retry_timespans_based_on_the_handled_fault()
         {
-            Dictionary<Exception, TimeSpan> expectedRetryWaits = new Dictionary<Exception, TimeSpan>(){
+            var expectedRetryWaits = new Dictionary<Exception, TimeSpan>(){
 
                 {new DivideByZeroException(), 2.Seconds()},
                 {new ArgumentNullException(), 4.Seconds()},
@@ -335,7 +335,7 @@ namespace Polly.Specs.Retry
             var expectedRetryDuration = 1.Seconds();
             TimeSpan? actualRetryDuration = null;
 
-            TimeSpan defaultRetryAfter = 30.Seconds();
+            var defaultRetryAfter = 30.Seconds();
 
             var policy = Policy
                 .Handle<DivideByZeroException>()
@@ -344,7 +344,7 @@ namespace Polly.Specs.Retry
                     onRetry: (_, timeSpan, _) => actualRetryDuration = timeSpan // Capture the actual sleep duration that was used, for test verification purposes.
                 );
 
-            bool failedOnce = false;
+            var failedOnce = false;
             policy.Execute(context =>
                 {
                     // Run some remote call; maybe it returns a RetryAfter header, which we can pass back to the sleepDurationProvider, via the context.

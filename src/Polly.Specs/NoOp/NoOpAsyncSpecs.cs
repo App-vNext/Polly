@@ -11,7 +11,7 @@ namespace Polly.Specs.NoOp
         public void Should_execute_user_delegate()
         {
             var policy = Policy.NoOpAsync();
-            bool executed = false;
+            var executed = false;
 
             policy.Awaiting(p => p.ExecuteAsync(() => { executed = true; return TaskHelper.EmptyTask; }))
                 .Should().NotThrow();
@@ -24,9 +24,9 @@ namespace Polly.Specs.NoOp
         {
             var policy = Policy.NoOpAsync();
 
-            bool executed = false;
+            var executed = false;
 
-            using (CancellationTokenSource cts = new CancellationTokenSource())
+            using (var cts = new CancellationTokenSource())
             {
                 cts.Cancel();
 

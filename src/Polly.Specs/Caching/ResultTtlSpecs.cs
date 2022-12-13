@@ -42,12 +42,12 @@ namespace Polly.Specs.Caching
         [Fact]
         public void Should_return_func_result()
         {
-            TimeSpan ttl = TimeSpan.FromMinutes(1);
+            var ttl = TimeSpan.FromMinutes(1);
             Func<dynamic, Ttl> func = result => new Ttl(result.Ttl);
 
-            ResultTtl<dynamic> ttlStrategy = new ResultTtl<dynamic>(func);
+            var ttlStrategy = new ResultTtl<dynamic>(func);
 
-            Ttl retrieved = ttlStrategy.GetTtl(new Context("someOperationKey"), new { Ttl = ttl });
+            var retrieved = ttlStrategy.GetTtl(new Context("someOperationKey"), new { Ttl = ttl });
             retrieved.Timespan.Should().Be(ttl);
             retrieved.SlidingExpiration.Should().BeFalse();
         }
@@ -57,10 +57,10 @@ namespace Polly.Specs.Caching
         {
             const string specialKey = "specialKey";
 
-            TimeSpan ttl = TimeSpan.FromMinutes(1);
+            var ttl = TimeSpan.FromMinutes(1);
             Func<Context, dynamic, Ttl> func = (context, result) => context.OperationKey == specialKey ? new Ttl(TimeSpan.Zero) : new Ttl(result.Ttl);
 
-            ResultTtl<dynamic> ttlStrategy = new ResultTtl<dynamic>(func);
+            var ttlStrategy = new ResultTtl<dynamic>(func);
 
             ttlStrategy.GetTtl(new Context("someOperationKey"), new { Ttl = ttl }).Timespan.Should().Be(ttl);
             ttlStrategy.GetTtl(new Context(specialKey), new { Ttl = ttl }).Timespan.Should().Be(TimeSpan.Zero);

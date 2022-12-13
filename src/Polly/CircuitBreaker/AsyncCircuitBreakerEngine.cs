@@ -22,7 +22,7 @@ namespace Polly.CircuitBreaker
 
             try
             {
-                TResult result = await action(context, cancellationToken).ConfigureAwait(continueOnCapturedContext);
+                var result = await action(context, cancellationToken).ConfigureAwait(continueOnCapturedContext);
 
                 if (shouldHandleResultPredicates.AnyMatch(result))
                 {
@@ -37,7 +37,7 @@ namespace Polly.CircuitBreaker
             }
             catch (Exception ex)
             {
-                Exception handledException = shouldHandleExceptionPredicates.FirstMatchOrDefault(ex);
+                var handledException = shouldHandleExceptionPredicates.FirstMatchOrDefault(ex);
                 if (handledException == null)
                 {
                     throw;

@@ -11,9 +11,9 @@ namespace Polly.Specs.Custom
         [Fact]
         public void Should_be_able_to_construct_active_policy()
         {
-            Action construct = () =>
+            var construct = () =>
             {
-                PreExecutePolicy policy = PreExecutePolicy.Create(() => Console.WriteLine("Do something"));
+                var policy = PreExecutePolicy.Create(() => Console.WriteLine("Do something"));
             };
 
             construct.Should().NotThrow();
@@ -22,10 +22,10 @@ namespace Polly.Specs.Custom
         [Fact]
         public void Active_policy_should_execute()
         {
-            bool preExecuted = false;
-            PreExecutePolicy policy = PreExecutePolicy.Create(() => preExecuted = true);
+            var preExecuted = false;
+            var policy = PreExecutePolicy.Create(() => preExecuted = true);
 
-            bool executed = false;
+            var executed = false;
 
             policy.Invoking(x => x.Execute(() => { executed = true; }))
                 .Should().NotThrow();
@@ -37,9 +37,9 @@ namespace Polly.Specs.Custom
         [Fact]
         public void Should_be_able_to_construct_reactive_policy()
         {
-            Action construct = () =>
+            var construct = () =>
             {
-                AddBehaviourIfHandlePolicy policy = Policy.Handle<Exception>().WithBehaviour(ex => Console.WriteLine("Handling " + ex.Message));
+                var policy = Policy.Handle<Exception>().WithBehaviour(ex => Console.WriteLine("Handling " + ex.Message));
             };
 
             construct.Should().NotThrow();
@@ -49,10 +49,10 @@ namespace Polly.Specs.Custom
         public void Reactive_policy_should_handle_exception()
         {
             Exception handled = null;
-            AddBehaviourIfHandlePolicy policy = Policy.Handle<InvalidOperationException>().WithBehaviour(ex => handled = ex);
+            var policy = Policy.Handle<InvalidOperationException>().WithBehaviour(ex => handled = ex);
 
             Exception toThrow = new InvalidOperationException();
-            bool executed = false;
+            var executed = false;
 
             policy.Invoking(x => x.Execute(() => {
                     executed = true;
@@ -68,10 +68,10 @@ namespace Polly.Specs.Custom
         public void Reactive_policy_should_be_able_to_ignore_unhandled_exception()
         {
             Exception handled = null;
-            AddBehaviourIfHandlePolicy policy = Policy.Handle<InvalidOperationException>().WithBehaviour(ex => handled = ex);
+            var policy = Policy.Handle<InvalidOperationException>().WithBehaviour(ex => handled = ex);
 
             Exception toThrow = new NotImplementedException();
-            bool executed = false;
+            var executed = false;
 
             policy.Invoking(x => x.Execute(() => {
                     executed = true;

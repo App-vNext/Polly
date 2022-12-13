@@ -90,7 +90,7 @@ namespace Polly.Specs
         {
             var policy = Policy.Handle<Exception>().Retry();
 
-            string retrieveKeyWhenNotExplicitlyConfigured = policy.PolicyKey;
+            var retrieveKeyWhenNotExplicitlyConfigured = policy.PolicyKey;
 
             Action configure = () => policy.WithPolicyKey(Guid.NewGuid().ToString());
 
@@ -104,7 +104,7 @@ namespace Polly.Specs
         [Fact]
         public void Should_pass_PolicyKey_to_execution_context()
         {
-            string policyKey = Guid.NewGuid().ToString();
+            var policyKey = Guid.NewGuid().ToString();
 
             string policyKeySetOnExecutionContext = null;
             Action<Exception, int, Context> onRetry = (_, _, context) => { policyKeySetOnExecutionContext = context.PolicyKey; };
@@ -118,13 +118,13 @@ namespace Polly.Specs
         [Fact]
         public void Should_pass_OperationKey_to_execution_context()
         {
-            string operationKey = "SomeKey";
+            var operationKey = "SomeKey";
 
             string operationKeySetOnContext = null;
             Action<Exception, int, Context> onRetry = (_, _, context) => { operationKeySetOnContext = context.OperationKey; };
             var retry = Policy.Handle<Exception>().Retry(1, onRetry);
 
-            bool firstExecution = true;
+            var firstExecution = true;
             retry.Execute(_ =>
             {
                 if (firstExecution)
@@ -140,13 +140,13 @@ namespace Polly.Specs
         [Fact]
         public void Should_pass_PolicyKey_to_execution_context_in_generic_execution_on_non_generic_policy()
         {
-            string policyKey = Guid.NewGuid().ToString();
+            var policyKey = Guid.NewGuid().ToString();
 
             string policyKeySetOnExecutionContext = null;
             Action<Exception, int, Context> onRetry = (_, _, context) => { policyKeySetOnExecutionContext = context.PolicyKey; };
             var retry = Policy.Handle<Exception>().Retry(1, onRetry).WithPolicyKey(policyKey);
 
-            bool firstExecution = true;
+            var firstExecution = true;
             retry.Execute<int>(() =>
             {
                 if (firstExecution)
@@ -163,13 +163,13 @@ namespace Polly.Specs
         [Fact]
         public void Should_pass_OperationKey_to_execution_context_in_generic_execution_on_non_generic_policy()
         {
-            string operationKey = "SomeKey";
+            var operationKey = "SomeKey";
 
             string operationKeySetOnContext = null;
             Action<Exception, int, Context> onRetry = (_, _, context) => { operationKeySetOnContext = context.OperationKey; };
             var retry = Policy.Handle<Exception>().Retry(1, onRetry);
 
-            bool firstExecution = true;
+            var firstExecution = true;
             retry.Execute<int>(_ =>
             {
                 if (firstExecution)
@@ -271,7 +271,7 @@ namespace Polly.Specs
         {
             var policy = Policy.HandleResult(0).Retry();
 
-            string retrieveKeyWhenNotExplicitlyConfigured = policy.PolicyKey;
+            var retrieveKeyWhenNotExplicitlyConfigured = policy.PolicyKey;
 
             Action configure = () => policy.WithPolicyKey(Guid.NewGuid().ToString());
 
@@ -285,7 +285,7 @@ namespace Polly.Specs
         [Fact]
         public void Should_pass_PolicyKey_to_execution_context()
         {
-            string policyKey = Guid.NewGuid().ToString();
+            var policyKey = Guid.NewGuid().ToString();
 
             string policyKeySetOnExecutionContext = null;
             Action<DelegateResult<ResultPrimitive>, int, Context> onRetry = (_, _, context) => { policyKeySetOnExecutionContext = context.PolicyKey; };
@@ -299,13 +299,13 @@ namespace Polly.Specs
         [Fact]
         public void Should_pass_OperationKey_to_execution_context()
         {
-            string operationKey = "SomeKey";
+            var operationKey = "SomeKey";
 
             string operationKeySetOnContext = null;
             Action<DelegateResult<ResultPrimitive>, int, Context> onRetry = (_, _, context) => { operationKeySetOnContext = context.OperationKey; };
             var retry = Policy.HandleResult(ResultPrimitive.Fault).Retry(1, onRetry);
 
-            bool firstExecution = true;
+            var firstExecution = true;
             retry.Execute(_ =>
             {
                 if (firstExecution)

@@ -18,7 +18,7 @@ namespace Polly.Specs.Helpers.Custom.AddBehaviourIfHandle
         {
             try
             {
-                TResult result = await action(context, cancellationToken).ConfigureAwait(continueOnCapturedContext);
+                var result = await action(context, cancellationToken).ConfigureAwait(continueOnCapturedContext);
 
                 if (shouldHandleResultPredicates.AnyMatch(result))
                 {
@@ -29,7 +29,7 @@ namespace Polly.Specs.Helpers.Custom.AddBehaviourIfHandle
             }
             catch (Exception ex)
             {
-                Exception handledException = shouldHandleExceptionPredicates.FirstMatchOrDefault(ex);
+                var handledException = shouldHandleExceptionPredicates.FirstMatchOrDefault(ex);
                 if (handledException == null)
                 {
                     throw;

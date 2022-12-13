@@ -10,7 +10,7 @@ namespace Polly.Specs.Helpers
             IDictionary<string, object> contextData,
             Action<TException, int> configureException = null) where TException : Exception, new()
         {
-            int counter = 0;
+            var counter = 0;
 
             policy.Execute(_ =>
             {
