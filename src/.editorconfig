@@ -1,0 +1,168 @@
+root = true
+# EditorConfig: http://EditorConfig.org
+
+# top-most EditorConfig file
+
+[*]
+indent_style = space
+
+
+[*.cs]
+indent_size = 4
+charset = utf-8
+
+
+# Microsoft .NET properties
+csharp_preferred_modifier_order = public, private, protected, internal, new, static, abstract, virtual, sealed, readonly, override, extern, unsafe, volatile, async:suggestion
+csharp_style_namespace_declarations = file_scoped:error
+dotnet_naming_rule.private_constants_rule.import_to_resharper = as_predefined
+dotnet_naming_rule.private_constants_rule.severity = warning
+dotnet_naming_rule.private_constants_rule.style = upper_camel_case_style
+dotnet_naming_rule.private_constants_rule.symbols = private_constants_symbols
+dotnet_naming_rule.private_instance_fields_rule.import_to_resharper = as_predefined
+dotnet_naming_rule.private_instance_fields_rule.severity = warning
+dotnet_naming_rule.private_instance_fields_rule.style = lower_camel_case_style
+dotnet_naming_rule.private_instance_fields_rule.symbols = private_instance_fields_symbols
+dotnet_naming_rule.private_static_fields_rule.import_to_resharper = as_predefined
+dotnet_naming_rule.private_static_fields_rule.severity = warning
+dotnet_naming_rule.private_static_fields_rule.style = lower_camel_case_style
+dotnet_naming_rule.private_static_fields_rule.symbols = private_static_fields_symbols
+dotnet_naming_rule.private_static_readonly_rule.import_to_resharper = as_predefined
+dotnet_naming_rule.private_static_readonly_rule.severity = warning
+dotnet_naming_rule.private_static_readonly_rule.style = upper_camel_case_style
+dotnet_naming_rule.private_static_readonly_rule.symbols = private_static_readonly_symbols
+dotnet_naming_style.lower_camel_case_style.capitalization = camel_case
+dotnet_naming_style.upper_camel_case_style.capitalization = pascal_case
+dotnet_naming_symbols.private_constants_symbols.applicable_accessibilities = private
+dotnet_naming_symbols.private_constants_symbols.applicable_kinds = field
+dotnet_naming_symbols.private_constants_symbols.required_modifiers = const
+dotnet_naming_symbols.private_instance_fields_symbols.applicable_accessibilities = private
+dotnet_naming_symbols.private_instance_fields_symbols.applicable_kinds = field
+dotnet_naming_symbols.private_static_fields_symbols.applicable_accessibilities = private
+dotnet_naming_symbols.private_static_fields_symbols.applicable_kinds = field
+dotnet_naming_symbols.private_static_fields_symbols.required_modifiers = static
+dotnet_naming_symbols.private_static_readonly_symbols.applicable_accessibilities = private
+dotnet_naming_symbols.private_static_readonly_symbols.applicable_kinds = field
+dotnet_naming_symbols.private_static_readonly_symbols.required_modifiers = static, readonly
+dotnet_style_parentheses_in_arithmetic_binary_operators = never_if_unnecessary:none
+dotnet_style_parentheses_in_other_binary_operators = always_for_clarity:none
+dotnet_style_parentheses_in_relational_binary_operators = never_if_unnecessary:none
+
+# ReSharper properties
+resharper_apply_on_completion = true
+resharper_csharp_wrap_lines = false
+resharper_object_creation_when_type_not_evident = target_typed
+
+# ReSharper inspection severities
+resharper_arrange_object_creation_when_type_evident_highlighting = error
+resharper_arrange_object_creation_when_type_not_evident_highlighting = error
+resharper_arrange_redundant_parentheses_highlighting = error
+resharper_arrange_static_member_qualifier_highlighting = error
+resharper_arrange_this_qualifier_highlighting = hint
+resharper_arrange_type_member_modifiers_highlighting = none
+resharper_built_in_type_reference_style_for_member_access_highlighting = hint
+resharper_built_in_type_reference_style_highlighting = hint
+resharper_check_namespace_highlighting = none
+resharper_convert_to_using_declaration_highlighting = error
+resharper_css_not_resolved_highlighting = warning
+resharper_field_can_be_made_read_only_local_highlighting = none
+resharper_merge_into_logical_pattern_highlighting = warning
+resharper_merge_into_pattern_highlighting = error
+resharper_method_has_async_overload_highlighting = warning
+resharper_partial_type_with_single_part_highlighting = error
+resharper_redundant_base_qualifier_highlighting = warning
+resharper_redundant_cast_highlighting = error
+resharper_redundant_empty_object_creation_argument_list_highlighting = error
+resharper_redundant_empty_object_or_collection_initializer_highlighting = error
+resharper_redundant_name_qualifier_highlighting = error
+resharper_redundant_suppress_nullable_warning_expression_highlighting = error
+resharper_redundant_using_directive_highlighting = error
+resharper_redundant_verbatim_string_prefix_highlighting = error
+resharper_replace_substring_with_range_indexer_highlighting = warning
+resharper_suggest_var_or_type_built_in_types_highlighting = hint
+resharper_suggest_var_or_type_elsewhere_highlighting = hint
+resharper_suggest_var_or_type_simple_types_highlighting = hint
+resharper_unnecessary_whitespace_highlighting = error
+resharper_use_await_using_highlighting = warning
+resharper_use_deconstruction_highlighting = warning
+
+# Sort using and Import directives with System.* appearing first
+dotnet_sort_system_directives_first = true
+
+# Avoid "this." and "Me." if not necessary
+dotnet_style_qualification_for_field = false:error
+dotnet_style_qualification_for_property = false:error
+dotnet_style_qualification_for_method = false:error
+dotnet_style_qualification_for_event = false:error
+
+# Use language keywords instead of framework type names for type references
+dotnet_style_predefined_type_for_locals_parameters_members = true:error
+dotnet_style_predefined_type_for_member_access = true:error
+
+# Suggest more modern language features when available
+dotnet_style_object_initializer = true:suggestion
+dotnet_style_collection_initializer = true:suggestion
+dotnet_style_coalesce_expression = false:suggestion
+dotnet_style_null_propagation = true:suggestion
+dotnet_style_explicit_tuple_names = true:suggestion
+
+# Prefer "var" everywhere
+csharp_style_var_for_built_in_types = true:error
+csharp_style_var_when_type_is_apparent = true:error
+csharp_style_var_elsewhere = true:error
+
+# Prefer method-like constructs to have a block body
+csharp_style_expression_bodied_methods = true:error
+csharp_style_expression_bodied_constructors = true:error
+csharp_style_expression_bodied_operators = true:error
+csharp_place_expr_method_on_single_line = false
+
+# Prefer property-like constructs to have an expression-body
+csharp_style_expression_bodied_properties = true:error
+csharp_style_expression_bodied_indexers = true:error
+csharp_style_expression_bodied_accessors = true:error
+
+# Suggest more modern language features when available
+csharp_style_pattern_matching_over_is_with_cast_check = true:error
+csharp_style_pattern_matching_over_as_with_null_check = true:error
+csharp_style_inlined_variable_declaration = true:suggestion
+csharp_style_throw_expression = true:suggestion
+csharp_style_conditional_delegate_call = true:suggestion
+
+# Newline settings
+#csharp_new_line_before_open_brace = all:error
+max_array_initializer_elements_on_line = 1
+csharp_new_line_before_else = true
+csharp_new_line_before_catch = true
+csharp_new_line_before_finally = true
+csharp_new_line_before_members_in_object_initializers = true
+csharp_new_line_before_members_in_anonymous_types = true
+csharp_place_type_constraints_on_same_line = false:error
+csharp_wrap_before_first_type_parameter_constraint = true:error
+csharp_wrap_extends_list_style = true:error
+csharp_wrap_after_dot_in_method_calls false
+csharp_wrap_before_binary_pattern_op false
+resharper_csharp_wrap_object_and_collection_initializer_style = chop_always
+resharper_csharp_place_simple_initializer_on_single_line = false
+
+dotnet_style_require_accessibility_modifiers = never:error
+resharper_place_type_constraints_on_same_line = false
+
+#braces https://www.jetbrains.com/help/resharper/EditorConfig_CSHARP_CSharpCodeStylePageImplSchema.html#Braces
+braces_for_ifelse = required
+braces_for_foreach = required
+braces_for_while = required
+braces_for_dowhile = required
+braces_for_lock = required
+braces_for_fixed = required
+braces_for_for = required
+
+# Xml files
+[*.{xml,config,nuspec,resx,vsixmanifest,csproj,targets,props}]
+indent_size = 2
+# https://www.jetbrains.com/help/resharper/EditorConfig_XML_XmlCodeStylePageSchema.html#resharper_xml_blank_line_after_pi
+blank_line_after_pi = false
+space_before_self_closing = true
+
+[*.json]
+indent_size = 2
