@@ -47,7 +47,7 @@ public class AsyncFallbackPolicy : AsyncPolicy, IFallbackPolicy
     /// <inheritdoc/>
     protected override Task<TResult> ImplementationAsync<TResult>(Func<Context, CancellationToken, Task<TResult>> action, Context context, CancellationToken cancellationToken,
         bool continueOnCapturedContext)
-        => 
+        =>
             throw new InvalidOperationException($"You have executed the generic .Execute<{nameof(TResult)}> method on a non-generic {nameof(FallbackPolicy)}.  A non-generic {nameof(FallbackPolicy)} only defines a fallback action which returns void; it can never return a substitute {nameof(TResult)} value.  To use {nameof(FallbackPolicy)} to provide fallback {nameof(TResult)} values you must define a generic fallback policy {nameof(FallbackPolicy)}<{nameof(TResult)}>.  For example, define the policy as Policy<{nameof(TResult)}>.Handle<Whatever>.Fallback<{nameof(TResult)}>(/* some {nameof(TResult)} value or Func<..., {nameof(TResult)}> */);");
 }
 
@@ -62,7 +62,7 @@ public class AsyncFallbackPolicy<TResult> : AsyncPolicy<TResult>, IFallbackPolic
 
     internal AsyncFallbackPolicy(
         PolicyBuilder<TResult> policyBuilder,
-        Func<DelegateResult<TResult>, Context, Task> onFallbackAsync, 
+        Func<DelegateResult<TResult>, Context, Task> onFallbackAsync,
         Func<DelegateResult<TResult>, Context, CancellationToken, Task<TResult>> fallbackAction
     ) : base(policyBuilder)
     {

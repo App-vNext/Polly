@@ -9,7 +9,7 @@ namespace Polly.Specs.Caching;
 
 public class SerializingCacheProviderSpecs
 {
-    #region Object-to-TSerialized serializer 
+    #region Object-to-TSerialized serializer
 
     [Fact]
     public void Single_generic_constructor_should_throw_on_no_wrapped_cache_provider()

@@ -108,7 +108,7 @@ public class WaitAndRetryForeverSpecs : IDisposable
 
         policy.Invoking(x => x.RaiseException<NullReferenceException>())
             .Should().Throw<NullReferenceException>();
-    } 
+    }
 
     [Fact]
     public void Should_throw_when_exception_thrown_is_not_one_of_the_specified_exception_types()
@@ -123,7 +123,7 @@ public class WaitAndRetryForeverSpecs : IDisposable
         policy.Invoking(x => x.RaiseException<NullReferenceException>())
             .Should().Throw<NullReferenceException>();
     }
-       
+
     [Fact]
     public void Should_throw_when_specified_exception_predicate_is_not_satisfied()
     {
@@ -163,7 +163,7 @@ public class WaitAndRetryForeverSpecs : IDisposable
         policy.Invoking(x => x.RaiseException<DivideByZeroException>())
             .Should().NotThrow();
     }
-        
+
     [Fact]
     public void Should_not_throw_when_one_of_the_specified_exception_predicates_are_satisfied()
     {
@@ -260,7 +260,7 @@ public class WaitAndRetryForeverSpecs : IDisposable
         var policy = Policy
             .Handle<DivideByZeroException>()
             .WaitAndRetryForever(
-                provider, 
+                provider,
                 (_, _, context) => contextValue = context["key"].ToString());
 
         policy.RaiseException<DivideByZeroException>(
@@ -355,7 +355,7 @@ public class WaitAndRetryForeverSpecs : IDisposable
                     failedOnce = true;
                     throw new DivideByZeroException();
                 }
-            }, 
+            },
             new {RetryAfter = defaultRetryAfter}.AsDictionary() // Can also set an initial value for RetryAfter, in the Context passed into the call.
         );
 

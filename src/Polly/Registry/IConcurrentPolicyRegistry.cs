@@ -57,33 +57,33 @@ public interface IConcurrentPolicyRegistry<TKey> : IPolicyRegistry<TKey>
     /// </summary>
     /// <param name="key">The key of the policy to add.</param>
     /// <param name="policy">the value to be added, if the key does not already exist</param>
-    /// <returns>The policy for the key.  This will be either the existing policy for the key if the 
+    /// <returns>The policy for the key.  This will be either the existing policy for the key if the
     /// key is already in the registry, or the new policy if the key was not in the registry.</returns>
     TPolicy GetOrAdd<TPolicy>(TKey key, TPolicy policy) where TPolicy : IsPolicy;
 
     /// <summary>
-    /// Adds a key/policy pair to the registry if the key does not already 
-    /// exist, or updates a key/policy pair in the registry if the key 
+    /// Adds a key/policy pair to the registry if the key does not already
+    /// exist, or updates a key/policy pair in the registry if the key
     /// already exists.
     /// </summary>
     /// <param name="key">The key to be added or whose policy should be updated</param>
     /// <param name="addPolicyFactory">The function used to generate a policy for an absent key</param>
     /// <param name="updatePolicyFactory">The function used to generate a new policy for an existing key
     /// based on the key's existing value</param>
-    /// <returns>The new policy for the key.  This will be either be the result of addPolicyFactory (if the key was 
+    /// <returns>The new policy for the key.  This will be either be the result of addPolicyFactory (if the key was
     /// absent) or the result of updatePolicyFactory (if the key was present).</returns>
     TPolicy AddOrUpdate<TPolicy>(TKey key, Func<TKey, TPolicy> addPolicyFactory, Func<TKey, TPolicy, TPolicy> updatePolicyFactory) where TPolicy : IsPolicy;
 
     /// <summary>
-    /// Adds a key/policy pair to the registry if the key does not already 
-    /// exist, or updates a key/policy pair in the registry if the key 
+    /// Adds a key/policy pair to the registry if the key does not already
+    /// exist, or updates a key/policy pair in the registry if the key
     /// already exists.
     /// </summary>
     /// <param name="key">The key to be added or whose policy should be updated</param>
     /// <param name="addPolicy">The policy to be added for an absent key</param>
-    /// <param name="updatePolicyFactory">The function used to generate a new policy for an existing key based on 
+    /// <param name="updatePolicyFactory">The function used to generate a new policy for an existing key based on
     /// the key's existing value</param>
-    /// <returns>The new policy for the key.  This will be either be addPolicy (if the key was 
+    /// <returns>The new policy for the key.  This will be either be addPolicy (if the key was
     /// absent) or the result of updatePolicyFactory (if the key was present).</returns>
     TPolicy AddOrUpdate<TPolicy>(TKey key, TPolicy addPolicy, Func<TKey, TPolicy, TPolicy> updatePolicyFactory) where TPolicy : IsPolicy;
 }

@@ -208,8 +208,8 @@ public partial class Policy
     /// <exception cref="ArgumentNullException">onCacheGetError</exception>
     /// <exception cref="ArgumentNullException">onCachePutError</exception>
     public static CachePolicy Cache(
-        ISyncCacheProvider cacheProvider, 
-        TimeSpan ttl, 
+        ISyncCacheProvider cacheProvider,
+        TimeSpan ttl,
         ICacheKeyStrategy cacheKeyStrategy,
         Action<Context, string> onCacheGet,
         Action<Context, string> onCacheMiss,
@@ -280,7 +280,7 @@ public partial class Policy
     /// <exception cref="ArgumentNullException">onCachePutError</exception>
     public static CachePolicy Cache(
         ISyncCacheProvider cacheProvider,
-        TimeSpan ttl, 
+        TimeSpan ttl,
         Func<Context, string> cacheKeyStrategy,
         Action<Context, string> onCacheGet,
         Action<Context, string> onCacheMiss,
@@ -315,13 +315,13 @@ public partial class Policy
     /// <exception cref="ArgumentNullException">onCacheGetError</exception>
     /// <exception cref="ArgumentNullException">onCachePutError</exception>
     public static CachePolicy Cache(
-        ISyncCacheProvider cacheProvider, 
+        ISyncCacheProvider cacheProvider,
         ITtlStrategy ttlStrategy,
         Func<Context, string> cacheKeyStrategy,
         Action<Context, string> onCacheGet,
         Action<Context, string> onCacheMiss,
         Action<Context, string> onCachePut,
-        Action<Context, string, Exception> onCacheGetError, 
+        Action<Context, string, Exception> onCacheGetError,
         Action<Context, string, Exception> onCachePutError)
     {
         if (cacheProvider == null) throw new ArgumentNullException(nameof(cacheProvider));

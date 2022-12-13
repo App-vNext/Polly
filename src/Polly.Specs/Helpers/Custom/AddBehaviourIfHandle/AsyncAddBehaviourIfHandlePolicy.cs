@@ -8,7 +8,7 @@ internal class AsyncAddBehaviourIfHandlePolicy : AsyncPolicy
     private readonly Func<Exception, Task> _behaviourIfHandle;
 
     internal AsyncAddBehaviourIfHandlePolicy(
-        Func<Exception, Task> behaviourIfHandle, 
+        Func<Exception, Task> behaviourIfHandle,
         PolicyBuilder policyBuilder)
         : base(policyBuilder)
     {

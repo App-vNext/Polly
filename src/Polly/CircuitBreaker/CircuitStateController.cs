@@ -70,7 +70,7 @@ internal abstract class CircuitStateController<TResult> : ICircuitController<TRe
         {
             using (TimedLock.Lock(_lock))
             {
-                return _lastOutcome != null 
+                return _lastOutcome != null
                     ? _lastOutcome.Result : default;
             }
         }

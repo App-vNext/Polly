@@ -15,13 +15,13 @@ internal static class AsyncPolicyWrapEngine
         IAsyncPolicy<TResult> innerPolicy)
         => await outerPolicy.ExecuteAsync(
             async (ctx, ct) => await innerPolicy.ExecuteAsync(
-                func, 
-                ctx, 
-                ct, 
+                func,
+                ctx,
+                ct,
                 continueOnCapturedContext
-            ).ConfigureAwait(continueOnCapturedContext), 
-            context, 
-            cancellationToken, 
+            ).ConfigureAwait(continueOnCapturedContext),
+            context,
+            cancellationToken,
             continueOnCapturedContext
         ).ConfigureAwait(continueOnCapturedContext);
 

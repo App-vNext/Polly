@@ -6,7 +6,7 @@ using System.Runtime.Serialization;
 namespace Polly
 {
     /// <summary>
-    /// Exception thrown when a policy rejects execution of a delegate.  
+    /// Exception thrown when a policy rejects execution of a delegate.
     /// <remarks>More specific exceptions which derive from this type, are generally thrown.</remarks>
     /// </summary>
     public abstract class ExecutionRejectedException : Exception

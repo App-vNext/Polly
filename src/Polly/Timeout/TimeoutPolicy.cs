@@ -17,7 +17,7 @@ public class TimeoutPolicy : Policy, ITimeoutPolicy
     internal TimeoutPolicy(
         Func<Context, TimeSpan> timeoutProvider,
         TimeoutStrategy timeoutStrategy,
-        Action<Context, TimeSpan, Task, Exception> onTimeout) 
+        Action<Context, TimeSpan, Task, Exception> onTimeout)
     {
         _timeoutProvider = timeoutProvider ?? throw new ArgumentNullException(nameof(timeoutProvider));
         _timeoutStrategy = timeoutStrategy;

@@ -306,7 +306,7 @@ public class CircuitBreakerTResultMixedResultExceptionSpecs : IDisposable
 
         breaker.CircuitState.Should().Be(CircuitState.Open);
     }
-        
+
     [Fact]
     public void Should_not_open_circuit_if_result_raised_or_exception_thrown_is_not_one_of_the_handled_results_or_exceptions()
     {

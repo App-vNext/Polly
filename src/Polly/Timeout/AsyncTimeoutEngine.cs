@@ -8,12 +8,12 @@ namespace Polly.Timeout;
 internal static class AsyncTimeoutEngine
 {
     internal static async Task<TResult> ImplementationAsync<TResult>(
-        Func<Context, CancellationToken, Task<TResult>> action, 
-        Context context, 
-        CancellationToken cancellationToken, 
+        Func<Context, CancellationToken, Task<TResult>> action,
+        Context context,
+        CancellationToken cancellationToken,
         Func<Context, TimeSpan> timeoutProvider,
         TimeoutStrategy timeoutStrategy,
-        Func<Context, TimeSpan, Task, Exception, Task> onTimeoutAsync, 
+        Func<Context, TimeSpan, Task, Exception, Task> onTimeoutAsync,
         bool continueOnCapturedContext)
     {
         cancellationToken.ThrowIfCancellationRequested();

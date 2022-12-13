@@ -8,11 +8,11 @@ namespace Polly.CircuitBreaker;
 internal class AsyncCircuitBreakerEngine
 {
     internal static async Task<TResult> ImplementationAsync<TResult>(
-        Func<Context, CancellationToken, Task<TResult>> action, 
+        Func<Context, CancellationToken, Task<TResult>> action,
         Context context,
         CancellationToken cancellationToken,
         bool continueOnCapturedContext,
-        ExceptionPredicates shouldHandleExceptionPredicates, 
+        ExceptionPredicates shouldHandleExceptionPredicates,
         ResultPredicates<TResult> shouldHandleResultPredicates,
         ICircuitController<TResult> breakerController)
     {
