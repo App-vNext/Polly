@@ -154,7 +154,7 @@ public static class AsyncRetryTResultSyntax
         if (retryCount < 0) throw new ArgumentOutOfRangeException(nameof(retryCount), "Value must be greater than or equal to zero.");
         if (onRetryAsync == null) throw new ArgumentNullException(nameof(onRetryAsync));
 
-        return new AsyncRetryPolicy<TResult>(
+        return new(
             policyBuilder,
             (outcome, _, i, ctx) => onRetryAsync(outcome, i, ctx),
             retryCount
@@ -291,7 +291,7 @@ public static class AsyncRetryTResultSyntax
     {
         if (onRetryAsync == null) throw new ArgumentNullException(nameof(onRetryAsync));
 
-        return new AsyncRetryPolicy<TResult>(
+        return new(
             policyBuilder,
             (outcome, _, _, ctx) => onRetryAsync(outcome, ctx)
         );
@@ -309,7 +309,7 @@ public static class AsyncRetryTResultSyntax
     {
         if (onRetryAsync == null) throw new ArgumentNullException(nameof(onRetryAsync));
 
-        return new AsyncRetryPolicy<TResult>(
+        return new(
             policyBuilder,
             (outcome, _, i, ctx) => onRetryAsync(outcome, i, ctx)
         );
@@ -508,7 +508,7 @@ public static class AsyncRetryTResultSyntax
         var sleepDurations = Enumerable.Range(1, retryCount)
             .Select(sleepDurationProvider);
 
-        return new AsyncRetryPolicy<TResult>(
+        return new(
             policyBuilder,
             onRetryAsync,
             retryCount,
@@ -656,7 +656,7 @@ public static class AsyncRetryTResultSyntax
         if (sleepDurationProvider == null) throw new ArgumentNullException(nameof(sleepDurationProvider));
         if (onRetryAsync == null) throw new ArgumentNullException(nameof(onRetryAsync));
 
-        return new AsyncRetryPolicy<TResult>(
+        return new(
             policyBuilder,
             onRetryAsync,
             retryCount,
@@ -831,7 +831,7 @@ public static class AsyncRetryTResultSyntax
         if (sleepDurations == null) throw new ArgumentNullException(nameof(sleepDurations));
         if (onRetryAsync == null) throw new ArgumentNullException(nameof(onRetryAsync));
 
-        return new AsyncRetryPolicy<TResult>(
+        return new(
             policyBuilder,
             onRetryAsync,
             sleepDurationsEnumerable: sleepDurations
@@ -1073,7 +1073,7 @@ public static class AsyncRetryTResultSyntax
         if (sleepDurationProvider == null) throw new ArgumentNullException(nameof(sleepDurationProvider));
         if (onRetryAsync == null) throw new ArgumentNullException(nameof(onRetryAsync));
 
-        return new AsyncRetryPolicy<TResult>(
+        return new(
             policyBuilder,
             (outcome, timespan, _, ctx) => onRetryAsync(outcome, timespan, ctx),
             sleepDurationProvider: sleepDurationProvider);
@@ -1096,7 +1096,7 @@ public static class AsyncRetryTResultSyntax
         if (sleepDurationProvider == null) throw new ArgumentNullException(nameof(sleepDurationProvider));
         if (onRetryAsync == null) throw new ArgumentNullException(nameof(onRetryAsync));
 
-        return new AsyncRetryPolicy<TResult>(
+        return new(
             policyBuilder,
             (exception, timespan, i, ctx) => onRetryAsync(exception, i, timespan, ctx),
             sleepDurationProvider: sleepDurationProvider

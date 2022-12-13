@@ -11,7 +11,7 @@ internal class StubErroringCacheProvider : ISyncCacheProvider, IAsyncCacheProvid
     private Exception _getException;
     private Exception _putException;
 
-    private StubCacheProvider innerProvider = new StubCacheProvider();
+    private StubCacheProvider innerProvider = new();
 
     public StubErroringCacheProvider(Exception getException, Exception putException)
     {

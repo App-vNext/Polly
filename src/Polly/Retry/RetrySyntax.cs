@@ -86,7 +86,7 @@ public static class RetrySyntax
         if (retryCount < 0) throw new ArgumentOutOfRangeException(nameof(retryCount), "Value must be greater than or equal to zero.");
         if (onRetry == null) throw new ArgumentNullException(nameof(onRetry));
 
-        return new RetryPolicy(
+        return new(
             policyBuilder,
             (outcome, _, i, ctx) => onRetry(outcome, i, ctx),
             retryCount);
@@ -146,7 +146,7 @@ public static class RetrySyntax
     {
         if (onRetry == null) throw new ArgumentNullException(nameof(onRetry));
 
-        return new RetryPolicy(
+        return new(
             policyBuilder,
             (outcome, _, _, ctx) => onRetry(outcome, ctx)
         );
@@ -164,7 +164,7 @@ public static class RetrySyntax
     {
         if (onRetry == null) throw new ArgumentNullException(nameof(onRetry));
 
-        return new RetryPolicy(
+        return new(
             policyBuilder,
             (outcome, _, i, ctx) => onRetry(outcome, i, ctx)
         );
@@ -268,7 +268,7 @@ public static class RetrySyntax
         var sleepDurations = Enumerable.Range(1, retryCount)
             .Select(sleepDurationProvider);
 
-        return new RetryPolicy(
+        return new(
             policyBuilder,
             onRetry,
             retryCount,
@@ -370,7 +370,7 @@ public static class RetrySyntax
         if (sleepDurationProvider == null) throw new ArgumentNullException(nameof(sleepDurationProvider));
         if (onRetry == null) throw new ArgumentNullException(nameof(onRetry));
 
-        return new RetryPolicy(
+        return new(
             policyBuilder,
             onRetry,
             retryCount,
@@ -453,7 +453,7 @@ public static class RetrySyntax
         if (sleepDurations == null) throw new ArgumentNullException(nameof(sleepDurations));
         if (onRetry == null) throw new ArgumentNullException(nameof(onRetry));
 
-        return new RetryPolicy(
+        return new(
             policyBuilder,
             onRetry,
             sleepDurationsEnumerable: sleepDurations
@@ -601,7 +601,7 @@ public static class RetrySyntax
         if (sleepDurationProvider == null) throw new ArgumentNullException(nameof(sleepDurationProvider));
         if (onRetry == null) throw new ArgumentNullException(nameof(onRetry));
 
-        return new RetryPolicy(
+        return new(
             policyBuilder,
             (outcome, timespan, _, ctx) => onRetry(outcome, timespan, ctx),
             sleepDurationProvider: sleepDurationProvider);
@@ -624,7 +624,7 @@ public static class RetrySyntax
         if (sleepDurationProvider == null) throw new ArgumentNullException(nameof(sleepDurationProvider));
         if (onRetry == null) throw new ArgumentNullException(nameof(onRetry));
 
-        return new RetryPolicy(
+        return new(
             policyBuilder,
             (exception, timespan, i, ctx) => onRetry(exception, i, timespan, ctx),
             sleepDurationProvider: sleepDurationProvider

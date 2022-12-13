@@ -22,7 +22,7 @@ internal static class AsyncAddBehaviourIfHandleEngine
 
             if (shouldHandleResultPredicates.AnyMatch(result))
             {
-                await behaviourIfHandle(new DelegateResult<TResult>(result)).ConfigureAwait(continueOnCapturedContext);
+                await behaviourIfHandle(new(result)).ConfigureAwait(continueOnCapturedContext);
             }
 
             return result;
@@ -35,7 +35,7 @@ internal static class AsyncAddBehaviourIfHandleEngine
                 throw;
             }
 
-            await behaviourIfHandle(new DelegateResult<TResult>(ex)).ConfigureAwait(continueOnCapturedContext);
+            await behaviourIfHandle(new(ex)).ConfigureAwait(continueOnCapturedContext);
 
             handledException.RethrowWithOriginalStackTraceIfDiffersFrom(ex);
             throw;

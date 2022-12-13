@@ -207,7 +207,7 @@ public static class AsyncCircuitBreakerTResultSyntax
             onBreak,
             onReset,
             onHalfOpen);
-        return new AsyncCircuitBreakerPolicy<TResult>(
+        return new(
             policyBuilder,
             breakerController
         );

@@ -382,7 +382,7 @@ public partial class Policy
         if (timeoutProvider == null) throw new ArgumentNullException(nameof(timeoutProvider));
         if (onTimeout == null) throw new ArgumentNullException(nameof(onTimeout));
 
-        return new TimeoutPolicy<TResult>(
+        return new(
             timeoutProvider,
             timeoutStrategy,
             onTimeout);

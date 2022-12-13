@@ -41,7 +41,7 @@ public abstract class BulkheadSpecsBase : IDisposable
 
     protected Task[] Tasks { get; set; }
 
-    protected readonly AutoResetEvent StatusChangedEvent = new AutoResetEvent(false);
+    protected readonly AutoResetEvent StatusChangedEvent = new(false);
 
     #endregion
 
@@ -100,7 +100,7 @@ public abstract class BulkheadSpecsBase : IDisposable
 
             // Set up delegates which we can track whether they've started; and control when we allow them to complete (to release their semaphore slot).
             Actions = new TraceableAction[totalActions];
-            for (var i = 0; i < totalActions; i++) { Actions[i] = new TraceableAction(i, StatusChangedEvent, TestOutputHelper); }
+            for (var i = 0; i < totalActions; i++) { Actions[i] = new(i, StatusChangedEvent, TestOutputHelper); }
 
             // Throw all the delegates at the bulkhead simultaneously.
             Tasks = new Task[totalActions];
@@ -242,42 +242,42 @@ public abstract class BulkheadSpecsBase : IDisposable
 
         if (ExpectedFaulted != ActualFaulted)
         {
-            return new AssertionFailure(ExpectedFaulted, ActualFaulted, nameof(ExpectedFaulted));
+            return new(ExpectedFaulted, ActualFaulted, nameof(ExpectedFaulted));
         }
 
         if (ExpectedRejects != ActualRejects)
         {
-            return new AssertionFailure(ExpectedRejects, ActualRejects, nameof(ExpectedRejects));
+            return new(ExpectedRejects, ActualRejects, nameof(ExpectedRejects));
         }
 
         if (ExpectedCancelled != ActualCancelled)
         {
-            return new AssertionFailure(ExpectedCancelled, ActualCancelled, nameof(ExpectedCancelled));
+            return new(ExpectedCancelled, ActualCancelled, nameof(ExpectedCancelled));
         }
 
         if (ExpectedCompleted != ActualCompleted)
         {
-            return new AssertionFailure(ExpectedCompleted, ActualCompleted, nameof(ExpectedCompleted));
+            return new(ExpectedCompleted, ActualCompleted, nameof(ExpectedCompleted));
         }
 
         if (ExpectedExecuting != ActualExecuting)
         {
-            return new AssertionFailure(ExpectedExecuting, ActualExecuting, nameof(ExpectedExecuting));
+            return new(ExpectedExecuting, ActualExecuting, nameof(ExpectedExecuting));
         }
 
         if (ExpectedQueuing != ActualQueuing)
         {
-            return new AssertionFailure(ExpectedQueuing, ActualQueuing, nameof(ExpectedQueuing));
+            return new(ExpectedQueuing, ActualQueuing, nameof(ExpectedQueuing));
         }
 
         if (ExpectedBulkheadFree != ActualBulkheadFree)
         {
-            return new AssertionFailure(ExpectedBulkheadFree, ActualBulkheadFree, nameof(ExpectedBulkheadFree));
+            return new(ExpectedBulkheadFree, ActualBulkheadFree, nameof(ExpectedBulkheadFree));
         }
 
         if (ExpectedQueueFree != ActualQueueFree)
         {
-            return new AssertionFailure(ExpectedQueueFree, ActualQueueFree, nameof(ExpectedQueueFree));
+            return new(ExpectedQueueFree, ActualQueueFree, nameof(ExpectedQueueFree));
         }
 
         return null;
@@ -288,7 +288,7 @@ public abstract class BulkheadSpecsBase : IDisposable
         var countTasksCompleted = Tasks.Count(t => t.IsCompleted);
         if (countTasksCompleted < TotalActions)
         {
-            return new AssertionFailure(TotalActions, countTasksCompleted, nameof(countTasksCompleted));
+            return new(TotalActions, countTasksCompleted, nameof(countTasksCompleted));
         }
 
         return null;
@@ -304,7 +304,7 @@ public abstract class BulkheadSpecsBase : IDisposable
             }
             catch (Exception e)
             {
-                throw new Exception("Task " + i + " raised the following unobserved task exception: ", e);
+                throw new("Task " + i + " raised the following unobserved task exception: ", e);
             }
         }
     }

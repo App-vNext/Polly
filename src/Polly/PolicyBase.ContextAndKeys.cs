@@ -15,7 +15,7 @@ public abstract partial class PolicyBase
     /// </summary>
     public string PolicyKey => policyKeyInternal ?? (policyKeyInternal = GetType().Name + "-" + KeyHelper.GuidPart());
 
-    internal static ArgumentException PolicyKeyMustBeImmutableException => new ArgumentException("PolicyKey cannot be changed once set; or (when using the default value after the PolicyKey property has been accessed.", "policyKey");
+    internal static ArgumentException PolicyKeyMustBeImmutableException => new("PolicyKey cannot be changed once set; or (when using the default value after the PolicyKey property has been accessed.", "policyKey");
 
     /// <summary>
     /// Updates the execution <see cref="Context"/> with context from the executing policy.

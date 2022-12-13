@@ -230,7 +230,7 @@ public class RetryTResultSpecs
             .Retry(3, (outcome, _) => retryFaults.Add(outcome.Result.SomeString));
 
         IList<ResultClass> resultsToRaise = expectedFaults.Select(s => new ResultClass(ResultPrimitive.Fault, s)).ToList();
-        resultsToRaise.Add(new ResultClass(ResultPrimitive.Fault));
+        resultsToRaise.Add(new(ResultPrimitive.Fault));
 
         policy.RaiseResultSequence(resultsToRaise);
 

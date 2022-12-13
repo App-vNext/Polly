@@ -381,7 +381,7 @@ public partial class Policy
         if (timeoutProvider == null) throw new ArgumentNullException(nameof(timeoutProvider));
         if (onTimeoutAsync == null) throw new ArgumentNullException(nameof(onTimeoutAsync));
 
-        return new AsyncTimeoutPolicy(
+        return new(
             timeoutProvider,
             timeoutStrategy,
             onTimeoutAsync

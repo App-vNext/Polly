@@ -11,14 +11,14 @@ public class ContextualTtlSpecs
     [Fact]
     public void Should_return_zero_if_no_value_set_on_context()
     {
-        new ContextualTtl().GetTtl(new Context("someOperationKey"), null).Timespan.Should().Be(TimeSpan.Zero);
+        new ContextualTtl().GetTtl(new("someOperationKey"), null).Timespan.Should().Be(TimeSpan.Zero);
     }
 
     [Fact]
     public void Should_return_zero_if_invalid_value_set_on_context()
     {
         var contextData = new Dictionary<string, object>();
-        contextData[ContextualTtl.TimeSpanKey] = new object();
+        contextData[ContextualTtl.TimeSpanKey] = new();
 
         var context = new Context(String.Empty, contextData);
         new ContextualTtl().GetTtl(context, null).Timespan.Should().Be(TimeSpan.Zero);

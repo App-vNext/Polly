@@ -21,7 +21,7 @@ public static class PolicyExtensions
             NumberOfTimesToRaiseException = 1
         };
 
-        policy.RaiseExceptionAndOrCancellation(scenario, new CancellationTokenSource(), () => { }, _ => instance);
+        policy.RaiseExceptionAndOrCancellation(scenario, new(), () => { }, _ => instance);
     }
 
     public static void RaiseException<TException>(this Policy policy, Action<TException, int> configureException = null) where TException : Exception, new()
@@ -45,12 +45,12 @@ public static class PolicyExtensions
             return exception;
         };
 
-        policy.RaiseExceptionAndOrCancellation(scenario, new CancellationTokenSource(), () => { }, exceptionFactory);
+        policy.RaiseExceptionAndOrCancellation(scenario, new(), () => { }, exceptionFactory);
     }
 
     public static void RaiseExceptionAndOrCancellation<TException>(this Policy policy, ExceptionAndOrCancellationScenario scenario, CancellationTokenSource cancellationTokenSource, Action onExecute) where TException : Exception, new()
     {
-        policy.RaiseExceptionAndOrCancellation<TException>(scenario, cancellationTokenSource, onExecute, _ => new TException());
+        policy.RaiseExceptionAndOrCancellation<TException>(scenario, cancellationTokenSource, onExecute, _ => new());
     }
 
     public static TResult RaiseExceptionAndOrCancellation<TException, TResult>(this Policy policy, ExceptionAndOrCancellationScenario scenario, CancellationTokenSource cancellationTokenSource, Action onExecute, TResult successResult) where TException : Exception, new()

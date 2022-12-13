@@ -39,7 +39,8 @@ internal class SingleHealthMetrics : IHealthMetrics
         var now = SystemClock.UtcNow().Ticks;
         if (_current == null || now - _current.StartedAt >= _samplingDuration)
         {
-            _current = new HealthCount { StartedAt = now };
+            _current = new()
+                { StartedAt = now };
         }
     }
 }

@@ -122,7 +122,7 @@ public static class FallbackSyntax
         if (fallbackAction == null) throw new ArgumentNullException(nameof(fallbackAction));
         if (onFallback == null) throw new ArgumentNullException(nameof(onFallback));
 
-        return new FallbackPolicy(
+        return new(
             policyBuilder,
             onFallback,
             fallbackAction);
@@ -288,7 +288,7 @@ public static class FallbackTResultSyntax
         if (fallbackAction == null) throw new ArgumentNullException(nameof(fallbackAction));
         if (onFallback == null) throw new ArgumentNullException(nameof(onFallback));
 
-        return new FallbackPolicy<TResult>(
+        return new(
             policyBuilder,
             onFallback,
             fallbackAction);

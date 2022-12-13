@@ -208,7 +208,7 @@ public static class CircuitBreakerTResultSyntax
             onBreak,
             onReset,
             onHalfOpen);
-        return new CircuitBreakerPolicy<TResult>(
+        return new(
             policyBuilder,
             breakerController
         );

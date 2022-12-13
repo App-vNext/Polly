@@ -17,7 +17,7 @@ public class SlidingTtl : ITtlStrategy
     {
         if (slidingTtl < TimeSpan.Zero) throw new ArgumentOutOfRangeException(nameof(slidingTtl), "The ttl for items to cache must be greater than zero.");
 
-        ttl = new Ttl(slidingTtl, true);
+        ttl = new(slidingTtl, true);
     }
 
     /// <summary>

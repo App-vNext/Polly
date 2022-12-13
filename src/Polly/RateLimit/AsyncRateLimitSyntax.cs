@@ -42,6 +42,6 @@ public partial class Policy
 
         var rateLimiter = RateLimiterFactory.Create(onePer, maxBurst);
 
-        return new AsyncRateLimitPolicy(rateLimiter);
+        return new(rateLimiter);
     }
 }

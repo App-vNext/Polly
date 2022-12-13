@@ -30,6 +30,6 @@ public abstract class NonSlidingTtl : ITtlStrategy
     {
         var untilPointInTime = absoluteExpirationTime.Subtract(SystemClock.DateTimeOffsetUtcNow());
         var remaining = untilPointInTime > TimeSpan.Zero ? untilPointInTime : TimeSpan.Zero;
-        return new Ttl(remaining, false);
+        return new(remaining, false);
     }
 }

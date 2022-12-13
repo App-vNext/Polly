@@ -10,7 +10,7 @@ public sealed partial class PolicyBuilder
 {
     internal PolicyBuilder(ExceptionPredicate exceptionPredicate)
     {
-        ExceptionPredicates = new ExceptionPredicates();
+        ExceptionPredicates = new();
         ExceptionPredicates.Add(exceptionPredicate);
     }
 
@@ -72,8 +72,8 @@ public sealed partial class PolicyBuilder<TResult>
 {
     private PolicyBuilder()
     {
-        ExceptionPredicates = new ExceptionPredicates();
-        ResultPredicates = new ResultPredicates<TResult>();
+        ExceptionPredicates = new();
+        ResultPredicates = new();
     }
 
     internal PolicyBuilder(Func<TResult, bool> resultPredicate) : this()

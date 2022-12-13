@@ -45,7 +45,7 @@ internal struct TimedLock : IDisposable
     {
         target = o;
 #if DEBUG
-        leakDetector = new Sentinel();
+        leakDetector = new();
 #endif
     }
     private object target;

@@ -21,8 +21,7 @@ internal class PreExecutePolicy<TResult> : Policy<TResult>
 {
     private Action _preExecute;
 
-    public static PreExecutePolicy<TResult> Create(Action preExecute) =>
-        new PreExecutePolicy<TResult>(preExecute);
+    public static PreExecutePolicy<TResult> Create(Action preExecute) => new(preExecute);
 
     internal PreExecutePolicy(Action preExecute) =>
         _preExecute = preExecute ?? throw new ArgumentNullException(nameof(preExecute));

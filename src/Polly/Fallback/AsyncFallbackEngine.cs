@@ -29,7 +29,7 @@ internal class AsyncFallbackEngine
                 return result;
             }
 
-            delegateOutcome = new DelegateResult<TResult>(result);
+            delegateOutcome = new(result);
         }
         catch (Exception ex)
         {
@@ -39,7 +39,7 @@ internal class AsyncFallbackEngine
                 throw;
             }
 
-            delegateOutcome = new DelegateResult<TResult>(handledException);
+            delegateOutcome = new(handledException);
         }
 
         await onFallbackAsync(delegateOutcome, context).ConfigureAwait(continueOnCapturedContext);

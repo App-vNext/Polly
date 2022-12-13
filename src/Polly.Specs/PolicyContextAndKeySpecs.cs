@@ -130,7 +130,7 @@ public class PolicyKeySpecs
             if (firstExecution)
             {
                 firstExecution = false;
-                throw new Exception();
+                throw new();
             }
         }, new Context(operationKey));
 
@@ -152,7 +152,7 @@ public class PolicyKeySpecs
             if (firstExecution)
             {
                 firstExecution = false;
-                throw new Exception();
+                throw new();
             }
             return 0;
         });
@@ -175,7 +175,7 @@ public class PolicyKeySpecs
             if (firstExecution)
             {
                 firstExecution = false;
-                throw new Exception();
+                throw new();
             }
             return 0;
         }, new Context(operationKey));

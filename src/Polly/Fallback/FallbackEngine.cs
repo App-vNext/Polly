@@ -27,7 +27,7 @@ internal static class FallbackEngine
                 return result;
             }
 
-            delegateOutcome = new DelegateResult<TResult>(result);
+            delegateOutcome = new(result);
         }
         catch (Exception ex)
         {
@@ -37,7 +37,7 @@ internal static class FallbackEngine
                 throw;
             }
 
-            delegateOutcome = new DelegateResult<TResult>(handledException);
+            delegateOutcome = new(handledException);
         }
 
         onFallback(delegateOutcome, context);

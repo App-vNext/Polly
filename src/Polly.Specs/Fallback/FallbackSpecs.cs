@@ -409,7 +409,7 @@ public class FallbackSpecs
             .HandleInner<DivideByZeroException>()
             .Fallback(fallbackAction);
 
-        var withInner = new Exception(String.Empty, new Exception(String.Empty, new Exception(String.Empty, new DivideByZeroException())));
+        var withInner = new Exception(String.Empty, new(String.Empty, new(String.Empty, new DivideByZeroException())));
 
         fallbackPolicy.Invoking(x => x.RaiseException(withInner)).Should().NotThrow();
 
@@ -461,7 +461,7 @@ public class FallbackSpecs
             .HandleInner<DivideByZeroException>(_ => true)
             .Fallback(fallbackAction);
 
-        var withInner = new Exception(String.Empty, new Exception(String.Empty, new Exception(String.Empty, new DivideByZeroException())));
+        var withInner = new Exception(String.Empty, new(String.Empty, new(String.Empty, new DivideByZeroException())));
 
         fallbackPolicy.Invoking(x => x.RaiseException(withInner)).Should().NotThrow();
 

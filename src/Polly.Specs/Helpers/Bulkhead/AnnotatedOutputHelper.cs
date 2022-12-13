@@ -27,7 +27,7 @@ public class AnnotatedOutputHelper : ITestOutputHelper
         public object[] Args { get; }
     }
 
-    private readonly ConcurrentDictionary<Guid, Item> items = new ConcurrentDictionary<Guid, Item>();
+    private readonly ConcurrentDictionary<Guid, Item> items = new();
 
     private readonly object[] noArgs = Array.Empty<object>();
 
@@ -52,11 +52,11 @@ public class AnnotatedOutputHelper : ITestOutputHelper
 
     public void WriteLine(string message)
     {
-        items.TryAdd(Guid.NewGuid(), new Item(message ?? string.Empty, noArgs));
+        items.TryAdd(Guid.NewGuid(), new(message ?? string.Empty, noArgs));
     }
 
     public void WriteLine(string format, params object[] args)
     {
-        items.TryAdd(Guid.NewGuid(), new Item(format ?? string.Empty, args == null || args.Length == 0 ? noArgs : args));
+        items.TryAdd(Guid.NewGuid(), new(format ?? string.Empty, args == null || args.Length == 0 ? noArgs : args));
     }
 }

@@ -26,7 +26,7 @@ public class ResultTtlSpecs
     [Fact]
     public void Should_not_throw_when_func_is_set()
     {
-        Action configure = () => new ResultTtl<object>(_ => new Ttl());
+        Action configure = () => new ResultTtl<object>(_ => new());
 
         configure.Should().NotThrow();
     }
@@ -34,7 +34,7 @@ public class ResultTtlSpecs
     [Fact]
     public void Should_not_throw_when_func_is_set_using_context()
     {
-        Action configure = () => new ResultTtl<object>((_, _) => new Ttl());
+        Action configure = () => new ResultTtl<object>((_, _) => new());
 
         configure.Should().NotThrow();
     }
@@ -47,7 +47,7 @@ public class ResultTtlSpecs
 
         var ttlStrategy = new ResultTtl<dynamic>(func);
 
-        var retrieved = ttlStrategy.GetTtl(new Context("someOperationKey"), new { Ttl = ttl });
+        var retrieved = ttlStrategy.GetTtl(new("someOperationKey"), new { Ttl = ttl });
         retrieved.Timespan.Should().Be(ttl);
         retrieved.SlidingExpiration.Should().BeFalse();
     }
@@ -58,11 +58,11 @@ public class ResultTtlSpecs
         const string specialKey = "specialKey";
 
         var ttl = TimeSpan.FromMinutes(1);
-        Func<Context, dynamic, Ttl> func = (context, result) => context.OperationKey == specialKey ? new Ttl(TimeSpan.Zero) : new Ttl(result.Ttl);
+        Func<Context, dynamic, Ttl> func = (context, result) => context.OperationKey == specialKey ? new(TimeSpan.Zero) : new Ttl(result.Ttl);
 
         var ttlStrategy = new ResultTtl<dynamic>(func);
 
-        ttlStrategy.GetTtl(new Context("someOperationKey"), new { Ttl = ttl }).Timespan.Should().Be(ttl);
-        ttlStrategy.GetTtl(new Context(specialKey), new { Ttl = ttl }).Timespan.Should().Be(TimeSpan.Zero);
+        ttlStrategy.GetTtl(new("someOperationKey"), new { Ttl = ttl }).Timespan.Should().Be(ttl);
+        ttlStrategy.GetTtl(new(specialKey), new { Ttl = ttl }).Timespan.Should().Be(TimeSpan.Zero);
     }
 }
