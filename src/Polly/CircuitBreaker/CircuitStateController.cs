@@ -18,9 +18,9 @@ internal abstract class CircuitStateController<TResult> : ICircuitController<TRe
     protected readonly object _lock = new object();
 
     protected CircuitStateController(
-        TimeSpan durationOfBreak,
-        Action<DelegateResult<TResult>, CircuitState, TimeSpan, Context> onBreak,
-        Action<Context> onReset,
+        TimeSpan durationOfBreak, 
+        Action<DelegateResult<TResult>, CircuitState, TimeSpan, Context> onBreak, 
+        Action<Context> onReset, 
         Action onHalfOpen)
     {
         _durationOfBreak = durationOfBreak;
@@ -76,8 +76,13 @@ internal abstract class CircuitStateController<TResult> : ICircuitController<TRe
         }
     }
 
-    protected bool IsInAutomatedBreak_NeedsLock =>
-        SystemClock.UtcNow().Ticks < _blockedTill;
+    protected bool IsInAutomatedBreak_NeedsLock
+    {
+        get
+        {
+            return SystemClock.UtcNow().Ticks < _blockedTill;
+        }
+    }
 
     public void Isolate()
     {
@@ -93,7 +98,7 @@ internal abstract class CircuitStateController<TResult> : ICircuitController<TRe
 
     private void BreakFor_NeedsLock(TimeSpan durationOfBreak, Context context)
     {
-        var willDurationTakeUsPastDateTimeMaxValue = durationOfBreak > DateTime.MaxValue - SystemClock.UtcNow();
+        bool willDurationTakeUsPastDateTimeMaxValue = durationOfBreak > DateTime.MaxValue - SystemClock.UtcNow();
         _blockedTill = willDurationTakeUsPastDateTimeMaxValue
             ? DateTime.MaxValue.Ticks
             : (SystemClock.UtcNow() + durationOfBreak).Ticks;
@@ -111,7 +116,7 @@ internal abstract class CircuitStateController<TResult> : ICircuitController<TRe
         _blockedTill = DateTime.MinValue.Ticks;
         _lastOutcome = null;
 
-        var priorState = _circuitState;
+        CircuitState priorState = _circuitState;
         _circuitState = CircuitState.Closed;
         if (priorState != CircuitState.Closed)
         {
@@ -121,7 +126,7 @@ internal abstract class CircuitStateController<TResult> : ICircuitController<TRe
 
     protected bool PermitHalfOpenCircuitTest()
     {
-        var currentlyBlockedUntil = _blockedTill;
+        long currentlyBlockedUntil = _blockedTill;
         if (SystemClock.UtcNow().Ticks >= currentlyBlockedUntil)
         {
             // It's time to permit a / another trial call in the half-open state ...
@@ -173,3 +178,4 @@ internal abstract class CircuitStateController<TResult> : ICircuitController<TRe
 
     public abstract void OnCircuitReset(Context context);
 }
+

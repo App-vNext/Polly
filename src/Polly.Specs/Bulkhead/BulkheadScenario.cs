@@ -11,12 +11,12 @@ internal struct BulkheadScenario
 
     public BulkheadScenario(int maxParallelization, int maxQueuingActions, int totalTestLoad, bool cancelQueuing, bool cancelExecuting, string scenario)
     {
-        _maxParallelization = maxParallelization;
-        _maxQueuingActions = maxQueuingActions;
-        _totalTestLoad = totalTestLoad;
-        _scenario = scenario;
-        _cancelQueuing = cancelQueuing;
-        _cancelExecuting = cancelExecuting;
+         _maxParallelization = maxParallelization;
+         _maxQueuingActions = maxQueuingActions;
+         _totalTestLoad = totalTestLoad;
+         _scenario = scenario;
+         _cancelQueuing = cancelQueuing;
+         _cancelExecuting = cancelExecuting;
     }
 
     public object[] ToTheoryData()

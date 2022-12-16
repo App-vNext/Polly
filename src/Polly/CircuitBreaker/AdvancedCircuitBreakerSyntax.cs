@@ -35,14 +35,14 @@ public static class AdvancedCircuitBreakerSyntax
     public static CircuitBreakerPolicy AdvancedCircuitBreaker(this PolicyBuilder policyBuilder, double failureThreshold, TimeSpan samplingDuration, int minimumThroughput, TimeSpan durationOfBreak)
     {
         Action<Exception, TimeSpan> doNothingOnBreak = (_, _) => { };
-        var doNothingOnReset = () => { };
+        Action doNothingOnReset = () => { };
 
         return policyBuilder.AdvancedCircuitBreaker(
             failureThreshold, samplingDuration, minimumThroughput,
             durationOfBreak,
             doNothingOnBreak,
             doNothingOnReset
-        );
+            );
     }
 
     /// <summary>
@@ -77,7 +77,7 @@ public static class AdvancedCircuitBreakerSyntax
             durationOfBreak,
             (exception, timespan, _) => onBreak(exception, timespan),
             _ => onReset()
-        );
+            );
 
     /// <summary>
     /// <para>The circuit will break if, within any timeslice of duration <paramref name="samplingDuration"/>, the proportion of actions resulting in a handled exception exceeds <paramref name="failureThreshold"/>, provided also that the number of actions through the circuit in the timeslice is at least <paramref name="minimumThroughput" />. </para>
@@ -107,13 +107,13 @@ public static class AdvancedCircuitBreakerSyntax
     /// <exception cref="ArgumentNullException">onReset</exception>
     public static CircuitBreakerPolicy AdvancedCircuitBreaker(this PolicyBuilder policyBuilder, double failureThreshold, TimeSpan samplingDuration, int minimumThroughput, TimeSpan durationOfBreak, Action<Exception, TimeSpan, Context> onBreak, Action<Context> onReset)
     {
-        var doNothingOnHalfOpen = () => { };
+        Action doNothingOnHalfOpen = () => { };
         return policyBuilder.AdvancedCircuitBreaker(failureThreshold, samplingDuration, minimumThroughput,
             durationOfBreak,
             onBreak,
             onReset,
             doNothingOnHalfOpen
-        );
+            );
     }
 
     /// <summary>
@@ -151,7 +151,7 @@ public static class AdvancedCircuitBreakerSyntax
             (exception, timespan, _) => onBreak(exception, timespan),
             _ => onReset(),
             onHalfOpen
-        );
+            );
 
     /// <summary>
     /// <para> Builds a <see cref="Policy" /> that will function like a Circuit Breaker.</para>
@@ -245,6 +245,6 @@ public static class AdvancedCircuitBreakerSyntax
         return new CircuitBreakerPolicy(
             policyBuilder,
             breakerController
-        );
+            );
     }
 }

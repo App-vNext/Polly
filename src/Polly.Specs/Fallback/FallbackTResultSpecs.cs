@@ -20,8 +20,8 @@ public class FallbackTResultSpecs
         Func<ResultPrimitive> fallbackAction = null;
 
         Action policy = () => Policy
-            .HandleResult(ResultPrimitive.Fault)
-            .Fallback(fallbackAction);
+                                .HandleResult(ResultPrimitive.Fault)
+                                .Fallback(fallbackAction);
 
         policy.Should().Throw<ArgumentNullException>()
             .And.ParamName.Should().Be("fallbackAction");
@@ -47,8 +47,8 @@ public class FallbackTResultSpecs
         Action<DelegateResult<ResultPrimitive>> onFallback = _ => { };
 
         Action policy = () => Policy
-            .HandleResult(ResultPrimitive.Fault)
-            .Fallback(fallbackAction, onFallback);
+                                .HandleResult(ResultPrimitive.Fault)
+                                .Fallback(fallbackAction, onFallback);
 
         policy.Should().Throw<ArgumentNullException>()
             .And.ParamName.Should().Be("fallbackAction");
@@ -75,8 +75,8 @@ public class FallbackTResultSpecs
         Action<DelegateResult<ResultPrimitive>, Context> onFallback = (_, _) => { };
 
         Action policy = () => Policy
-            .HandleResult(ResultPrimitive.Fault)
-            .Fallback(fallbackAction, onFallback);
+                                .HandleResult(ResultPrimitive.Fault)
+                                .Fallback(fallbackAction, onFallback);
 
         policy.Should().Throw<ArgumentNullException>()
             .And.ParamName.Should().Be("fallbackAction");
@@ -89,8 +89,8 @@ public class FallbackTResultSpecs
         Action<DelegateResult<ResultPrimitive>, Context> onFallback = (_, _) => { };
 
         Action policy = () => Policy
-            .HandleResult(ResultPrimitive.Fault)
-            .Fallback(fallbackAction, onFallback);
+                                .HandleResult(ResultPrimitive.Fault)
+                                .Fallback(fallbackAction, onFallback);
 
         policy.Should().Throw<ArgumentNullException>()
             .And.ParamName.Should().Be("fallbackAction");
@@ -99,12 +99,12 @@ public class FallbackTResultSpecs
     [Fact]
     public void Should_throw_when_onFallback_delegate_is_null()
     {
-        var fallbackAction = () => ResultPrimitive.Substitute;
+        Func<ResultPrimitive> fallbackAction = () => ResultPrimitive.Substitute;
         Action<DelegateResult<ResultPrimitive>> onFallback = null;
 
         Action policy = () => Policy
-            .HandleResult(ResultPrimitive.Fault)
-            .Fallback(fallbackAction, onFallback);
+                                .HandleResult(ResultPrimitive.Fault)
+                                .Fallback(fallbackAction, onFallback);
 
         policy.Should().Throw<ArgumentNullException>()
             .And.ParamName.Should().Be("onFallback");
@@ -131,8 +131,8 @@ public class FallbackTResultSpecs
         Action<DelegateResult<ResultPrimitive>, Context> onFallback = null;
 
         Action policy = () => Policy
-            .HandleResult(ResultPrimitive.Fault)
-            .Fallback(fallbackAction, onFallback);
+                                .HandleResult(ResultPrimitive.Fault)
+                                .Fallback(fallbackAction, onFallback);
 
         policy.Should().Throw<ArgumentNullException>()
             .And.ParamName.Should().Be("onFallback");
@@ -145,8 +145,8 @@ public class FallbackTResultSpecs
         Action<DelegateResult<ResultPrimitive>, Context> onFallback = null;
 
         Action policy = () => Policy
-            .HandleResult(ResultPrimitive.Fault)
-            .Fallback(fallbackAction, onFallback);
+                                .HandleResult(ResultPrimitive.Fault)
+                                .Fallback(fallbackAction, onFallback);
 
         policy.Should().Throw<ArgumentNullException>()
             .And.ParamName.Should().Be("onFallback");
@@ -159,12 +159,12 @@ public class FallbackTResultSpecs
     [Fact]
     public void Should_not_execute_fallback_when_executed_delegate_does_not_raise_fault()
     {
-        var fallbackActionExecuted = false;
-        var fallbackAction = () => { fallbackActionExecuted = true; return ResultPrimitive.Substitute; };
+        bool fallbackActionExecuted = false;
+        Func<ResultPrimitive> fallbackAction = () => { fallbackActionExecuted = true; return ResultPrimitive.Substitute; };
 
-        var fallbackPolicy = Policy
-            .HandleResult(ResultPrimitive.Fault)
-            .Fallback(fallbackAction);
+        FallbackPolicy<ResultPrimitive> fallbackPolicy = Policy
+                                .HandleResult(ResultPrimitive.Fault)
+                                .Fallback(fallbackAction);
 
         fallbackPolicy.Execute(() => ResultPrimitive.Good);
 
@@ -174,12 +174,12 @@ public class FallbackTResultSpecs
     [Fact]
     public void Should_not_execute_fallback_when_executed_delegate_raises_fault_not_handled_by_policy()
     {
-        var fallbackActionExecuted = false;
-        var fallbackAction = () => { fallbackActionExecuted = true; return ResultPrimitive.Substitute; };
+        bool fallbackActionExecuted = false;
+        Func<ResultPrimitive> fallbackAction = () => { fallbackActionExecuted = true; return ResultPrimitive.Substitute; };
 
-        var fallbackPolicy = Policy
-            .HandleResult(ResultPrimitive.Fault)
-            .Fallback(fallbackAction);
+        FallbackPolicy<ResultPrimitive> fallbackPolicy = Policy
+                                .HandleResult(ResultPrimitive.Fault)
+                                .Fallback(fallbackAction);
 
         fallbackPolicy.RaiseResultSequence(ResultPrimitive.FaultAgain).Should().Be(ResultPrimitive.FaultAgain);
 
@@ -189,9 +189,9 @@ public class FallbackTResultSpecs
     [Fact]
     public void Should_return_fallback_value_when_executed_delegate_raises_fault_handled_by_policy()
     {
-        var fallbackPolicy = Policy
-            .HandleResult(ResultPrimitive.Fault)
-            .Fallback(ResultPrimitive.Substitute);
+        FallbackPolicy<ResultPrimitive> fallbackPolicy = Policy
+                                .HandleResult(ResultPrimitive.Fault)
+                                .Fallback(ResultPrimitive.Substitute);
 
         fallbackPolicy.RaiseResultSequence(ResultPrimitive.Fault).Should().Be(ResultPrimitive.Substitute);
     }
@@ -199,12 +199,12 @@ public class FallbackTResultSpecs
     [Fact]
     public void Should_execute_fallback_when_executed_delegate_raises_fault_handled_by_policy()
     {
-        var fallbackActionExecuted = false;
-        var fallbackAction = () => { fallbackActionExecuted = true; return ResultPrimitive.Substitute; };
+        bool fallbackActionExecuted = false;
+        Func<ResultPrimitive> fallbackAction = () => { fallbackActionExecuted = true; return ResultPrimitive.Substitute; };
 
-        var fallbackPolicy = Policy
-            .HandleResult(ResultPrimitive.Fault)
-            .Fallback(fallbackAction);
+        FallbackPolicy<ResultPrimitive> fallbackPolicy = Policy
+                                .HandleResult(ResultPrimitive.Fault)
+                                .Fallback(fallbackAction);
 
         fallbackPolicy.RaiseResultSequence(ResultPrimitive.Fault).Should().Be(ResultPrimitive.Substitute);
 
@@ -214,13 +214,13 @@ public class FallbackTResultSpecs
     [Fact]
     public void Should_execute_fallback_when_executed_delegate_raises_one_of_results_handled_by_policy()
     {
-        var fallbackActionExecuted = false;
-        var fallbackAction = () => { fallbackActionExecuted = true; return ResultPrimitive.Substitute; };
+        bool fallbackActionExecuted = false;
+        Func<ResultPrimitive> fallbackAction = () => { fallbackActionExecuted = true; return ResultPrimitive.Substitute; };
 
-        var fallbackPolicy = Policy
-            .HandleResult(ResultPrimitive.Fault)
-            .OrResult(ResultPrimitive.FaultAgain)
-            .Fallback(fallbackAction);
+        FallbackPolicy<ResultPrimitive> fallbackPolicy = Policy
+                                .HandleResult(ResultPrimitive.Fault)
+                                .OrResult(ResultPrimitive.FaultAgain)
+                                .Fallback(fallbackAction);
 
         fallbackPolicy.RaiseResultSequence(ResultPrimitive.FaultAgain).Should().Be(ResultPrimitive.Substitute);
 
@@ -230,13 +230,13 @@ public class FallbackTResultSpecs
     [Fact]
     public void Should_not_execute_fallback_when_executed_delegate_raises_fault_not_one_of_faults_handled_by_policy()
     {
-        var fallbackActionExecuted = false;
-        var fallbackAction = () => { fallbackActionExecuted = true; return ResultPrimitive.Substitute; };
+        bool fallbackActionExecuted = false;
+        Func<ResultPrimitive> fallbackAction = () => { fallbackActionExecuted = true; return ResultPrimitive.Substitute; };
 
-        var fallbackPolicy = Policy
-            .HandleResult(ResultPrimitive.Fault)
-            .OrResult(ResultPrimitive.FaultAgain)
-            .Fallback(fallbackAction);
+        FallbackPolicy<ResultPrimitive> fallbackPolicy = Policy
+                                .HandleResult(ResultPrimitive.Fault)
+                                .OrResult(ResultPrimitive.FaultAgain)
+                                .Fallback(fallbackAction);
 
         fallbackPolicy.RaiseResultSequence(ResultPrimitive.FaultYetAgain).Should().Be(ResultPrimitive.FaultYetAgain);
 
@@ -246,12 +246,12 @@ public class FallbackTResultSpecs
     [Fact]
     public void Should_not_execute_fallback_when_result_raised_does_not_match_handling_predicates()
     {
-        var fallbackActionExecuted = false;
-        var fallbackAction = () => { fallbackActionExecuted = true; return ResultPrimitive.Substitute; };
+        bool fallbackActionExecuted = false;
+        Func<ResultPrimitive> fallbackAction = () => { fallbackActionExecuted = true; return ResultPrimitive.Substitute; };
 
-        var fallbackPolicy = Policy
-            .HandleResult<ResultPrimitive>(_ => false)
-            .Fallback(fallbackAction);
+        FallbackPolicy<ResultPrimitive> fallbackPolicy = Policy
+                                .HandleResult<ResultPrimitive>(_ => false)
+                                .Fallback(fallbackAction);
 
         fallbackPolicy.RaiseResultSequence(ResultPrimitive.Fault).Should().Be(ResultPrimitive.Fault);
 
@@ -261,13 +261,13 @@ public class FallbackTResultSpecs
     [Fact]
     public void Should_not_execute_fallback_when_executed_delegate_raises_fault_not_handled_by_any_of_predicates()
     {
-        var fallbackActionExecuted = false;
-        var fallbackAction = () => { fallbackActionExecuted = true; return ResultPrimitive.Substitute; };
+        bool fallbackActionExecuted = false;
+        Func<ResultPrimitive> fallbackAction = () => { fallbackActionExecuted = true; return ResultPrimitive.Substitute; };
 
-        var fallbackPolicy = Policy
-            .HandleResult<ResultPrimitive>(r => r == ResultPrimitive.Fault)
-            .OrResult(r => r == ResultPrimitive.FaultAgain)
-            .Fallback(fallbackAction);
+        FallbackPolicy<ResultPrimitive> fallbackPolicy = Policy
+                                .HandleResult<ResultPrimitive>(r => r == ResultPrimitive.Fault)
+                                .OrResult(r => r == ResultPrimitive.FaultAgain)
+                                .Fallback(fallbackAction);
 
         fallbackPolicy.RaiseResultSequence(ResultPrimitive.FaultYetAgain).Should().Be(ResultPrimitive.FaultYetAgain);
 
@@ -277,12 +277,12 @@ public class FallbackTResultSpecs
     [Fact]
     public void Should_execute_fallback_when_result_raised_matches_handling_predicates()
     {
-        var fallbackActionExecuted = false;
-        var fallbackAction = () => { fallbackActionExecuted = true; return ResultPrimitive.Substitute; };
+        bool fallbackActionExecuted = false;
+        Func<ResultPrimitive> fallbackAction = () => { fallbackActionExecuted = true; return ResultPrimitive.Substitute; };
 
-        var fallbackPolicy = Policy
-            .HandleResult<ResultPrimitive>(_ => true)
-            .Fallback(fallbackAction);
+        FallbackPolicy<ResultPrimitive> fallbackPolicy = Policy
+                                .HandleResult<ResultPrimitive>(_ => true)
+                                .Fallback(fallbackAction);
 
         fallbackPolicy.RaiseResultSequence(ResultPrimitive.Undefined).Should().Be(ResultPrimitive.Substitute);
 
@@ -293,13 +293,13 @@ public class FallbackTResultSpecs
     [Fact]
     public void Should_execute_fallback_when_result_raised_matches_one_of_handling_predicates()
     {
-        var fallbackActionExecuted = false;
-        var fallbackAction = () => { fallbackActionExecuted = true; return ResultPrimitive.Substitute; };
+        bool fallbackActionExecuted = false;
+        Func<ResultPrimitive> fallbackAction = () => { fallbackActionExecuted = true; return ResultPrimitive.Substitute; };
 
-        var fallbackPolicy = Policy
-            .HandleResult<ResultPrimitive>(_ => true)
-            .OrResult(ResultPrimitive.FaultAgain)
-            .Fallback(fallbackAction);
+        FallbackPolicy<ResultPrimitive> fallbackPolicy = Policy
+                                .HandleResult<ResultPrimitive>(_ => true)
+                                .OrResult(ResultPrimitive.FaultAgain)
+                                .Fallback(fallbackAction);
 
         fallbackPolicy.RaiseResultSequence(ResultPrimitive.Undefined).Should().Be(ResultPrimitive.Substitute);
 
@@ -309,14 +309,14 @@ public class FallbackTResultSpecs
     [Fact]
     public void Should_not_handle_result_raised_by_fallback_delegate_even_if_is_result_handled_by_policy()
     {
-        var fallbackActionExecuted = false;
-        var fallbackAction = () =>
+        bool fallbackActionExecuted = false;
+        Func<ResultClass> fallbackAction = () =>
         {
             fallbackActionExecuted = true;
             return new ResultClass(ResultPrimitive.Fault, "FromFallbackAction");
         };
 
-        var fallbackPolicy = Policy
+        FallbackPolicy<ResultClass> fallbackPolicy = Policy
             .HandleResult<ResultClass>(r => r.ResultCode == ResultPrimitive.Fault)
             .Fallback(fallbackAction);
 
@@ -333,17 +333,17 @@ public class FallbackTResultSpecs
     [Fact]
     public void Should_call_onFallback_passing_result_triggering_fallback()
     {
-        var fallbackActionExecuted = false;
-        var fallbackAction = () => { fallbackActionExecuted = true; return new ResultClass(ResultPrimitive.Substitute); };
+        bool fallbackActionExecuted = false;
+        Func<ResultClass> fallbackAction = () => { fallbackActionExecuted = true; return new ResultClass(ResultPrimitive.Substitute); };
 
         ResultClass resultPassedToOnFallback = null;
         Action<DelegateResult<ResultClass>> onFallback = r => { resultPassedToOnFallback = r.Result; };
 
-        var fallbackPolicy = Policy
+        FallbackPolicy<ResultClass> fallbackPolicy = Policy
             .HandleResult<ResultClass>(r => r.ResultCode == ResultPrimitive.Fault)
             .Fallback(fallbackAction, onFallback);
 
-        var resultFromDelegate = new ResultClass(ResultPrimitive.Fault);
+        ResultClass resultFromDelegate = new ResultClass(ResultPrimitive.Fault);
         fallbackPolicy.Execute(() => resultFromDelegate);
 
         fallbackActionExecuted.Should().BeTrue();
@@ -354,12 +354,12 @@ public class FallbackTResultSpecs
     [Fact]
     public void Should_not_call_onFallback_when_executed_delegate_does_not_raise_fault()
     {
-        var fallbackAction = () => ResultPrimitive.Substitute;
+        Func<ResultPrimitive> fallbackAction = () => ResultPrimitive.Substitute;
 
-        var onFallbackExecuted = false;
+        bool onFallbackExecuted = false;
         Action<DelegateResult<ResultPrimitive>> onFallback = _ => { onFallbackExecuted = true; };
 
-        var fallbackPolicy = Policy
+        FallbackPolicy<ResultPrimitive> fallbackPolicy = Policy
             .HandleResult(ResultPrimitive.Fault)
             .Fallback(fallbackAction, onFallback);
 
@@ -381,12 +381,12 @@ public class FallbackTResultSpecs
 
         Action<DelegateResult<ResultPrimitive>, Context> onFallback = (_, ctx) => { contextData = ctx; };
 
-        var fallbackPolicy = Policy
+        FallbackPolicy<ResultPrimitive> fallbackPolicy = Policy
             .HandleResult(ResultPrimitive.Fault)
             .Fallback(fallbackAction, onFallback);
 
         fallbackPolicy.Execute(_ => ResultPrimitive.Fault,
-                new { key1 = "value1", key2 = "value2" }.AsDictionary())
+            new { key1 = "value1", key2 = "value2" }.AsDictionary())
             .Should().Be(ResultPrimitive.Substitute);
 
         contextData.Should()
@@ -403,12 +403,12 @@ public class FallbackTResultSpecs
 
         Action<DelegateResult<ResultPrimitive>, Context> onFallback = (_, ctx) => { contextData = ctx; };
 
-        var fallbackPolicy = Policy
+        FallbackPolicy<ResultPrimitive> fallbackPolicy = Policy
             .HandleResult(ResultPrimitive.Fault)
             .Fallback(fallbackAction, onFallback);
 
         fallbackPolicy.ExecuteAndCapture(_ => ResultPrimitive.Fault,
-                new { key1 = "value1", key2 = "value2" }.AsDictionary())
+            new { key1 = "value1", key2 = "value2" }.AsDictionary())
             .Result.Should().Be(ResultPrimitive.Substitute);
 
         contextData.Should()
@@ -425,7 +425,7 @@ public class FallbackTResultSpecs
 
         Action<DelegateResult<ResultPrimitive>, Context> onFallback = (dr, ctx) => { contextData[dr.Result] = ctx["key"]; };
 
-        var fallbackPolicy = Policy
+        FallbackPolicy<ResultPrimitive> fallbackPolicy = Policy
             .HandleResult(ResultPrimitive.Fault)
             .OrResult(ResultPrimitive.FaultAgain)
             .Fallback(fallbackAction, onFallback);
@@ -447,12 +447,12 @@ public class FallbackTResultSpecs
     public void Context_should_be_empty_if_execute_not_called_with_any_context_data()
     {
         Context capturedContext = null;
-        var onFallbackExecuted = false;
+        bool onFallbackExecuted = false;
 
         Func<Context, ResultPrimitive> fallbackAction = _ => ResultPrimitive.Substitute;
         Action<DelegateResult<ResultPrimitive>, Context> onFallback = (_, ctx) => { onFallbackExecuted = true; capturedContext = ctx; };
 
-        var fallbackPolicy = Policy
+        FallbackPolicy<ResultPrimitive> fallbackPolicy = Policy
             .HandleResult(ResultPrimitive.Fault)
             .OrResult(ResultPrimitive.FaultAgain)
             .Fallback(fallbackAction, onFallback);
@@ -472,7 +472,7 @@ public class FallbackTResultSpecs
 
         Action<DelegateResult<ResultPrimitive>, Context> onFallback = (_, _) => { };
 
-        var fallbackPolicy = Policy<ResultPrimitive>
+        FallbackPolicy<ResultPrimitive> fallbackPolicy = Policy<ResultPrimitive>
             .HandleResult(ResultPrimitive.Fault)
             .Fallback(fallbackAction, onFallback);
 
@@ -494,7 +494,7 @@ public class FallbackTResultSpecs
 
         Action<DelegateResult<ResultPrimitive>, Context> onFallback = (_, _) => { };
 
-        var fallbackPolicy = Policy
+        FallbackPolicy<ResultPrimitive> fallbackPolicy = Policy
             .HandleResult(ResultPrimitive.Fault)
             .Fallback(fallbackAction, onFallback);
 
@@ -511,13 +511,13 @@ public class FallbackTResultSpecs
     public void Context_should_be_empty_at_fallbackAction_if_execute_not_called_with_any_context_data()
     {
         Context capturedContext = null;
-        var fallbackExecuted = false;
+        bool fallbackExecuted = false;
 
         Func<Context, CancellationToken, ResultPrimitive> fallbackAction = (ctx, _) => { fallbackExecuted = true; capturedContext = ctx; return ResultPrimitive.Substitute; };
 
         Action<DelegateResult<ResultPrimitive>, Context> onFallback = (_, _) => {  };
 
-        var fallbackPolicy = Policy
+        FallbackPolicy<ResultPrimitive> fallbackPolicy = Policy
             .HandleResult(ResultPrimitive.Fault)
             .OrResult(ResultPrimitive.FaultAgain)
             .Fallback(fallbackAction, onFallback);
@@ -541,7 +541,7 @@ public class FallbackTResultSpecs
 
         Action<DelegateResult<ResultPrimitive>, Context> onFallback = (_, _) => { };
 
-        var fallbackPolicy = Policy<ResultPrimitive>
+        FallbackPolicy<ResultPrimitive> fallbackPolicy = Policy<ResultPrimitive>
             .HandleResult(ResultPrimitive.Fault)
             .Fallback(fallbackAction, onFallback);
 
@@ -563,7 +563,7 @@ public class FallbackTResultSpecs
 
         Action<DelegateResult<ResultPrimitive>, Context> onFallback = (_, _) => { };
 
-        var fallbackPolicy = Policy<ResultPrimitive>
+        FallbackPolicy<ResultPrimitive> fallbackPolicy = Policy<ResultPrimitive>
             .HandleResult(ResultPrimitive.Fault)
             .Fallback(fallbackAction, onFallback);
 
@@ -586,7 +586,7 @@ public class FallbackTResultSpecs
 
         Action<DelegateResult<ResultPrimitive>, Context> onFallback = (_, _) => { };
 
-        var fallbackPolicy = Policy<ResultPrimitive>
+        FallbackPolicy<ResultPrimitive> fallbackPolicy = Policy<ResultPrimitive>
             .HandleResult(ResultPrimitive.Fault)
             .Fallback(fallbackAction, onFallback);
 
@@ -603,20 +603,20 @@ public class FallbackTResultSpecs
     [Fact]
     public void Should_execute_action_when_non_faulting_and_cancellationToken_not_cancelled()
     {
-        var fallbackActionExecuted = false;
-        var fallbackAction = () => { fallbackActionExecuted = true; return ResultPrimitive.Substitute; };
+        bool fallbackActionExecuted = false;
+        Func<ResultPrimitive> fallbackAction = () => { fallbackActionExecuted = true; return ResultPrimitive.Substitute; };
 
-        var policy = Policy
+        FallbackPolicy<ResultPrimitive> policy = Policy
             .HandleResult(ResultPrimitive.Fault)
             .OrResult(ResultPrimitive.FaultAgain)
             .Fallback(fallbackAction);
 
-        var cancellationTokenSource = new CancellationTokenSource();
+        CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
 
-        var attemptsInvoked = 0;
+        int attemptsInvoked = 0;
         Action onExecute = () => attemptsInvoked++;
 
-        var scenario = new Scenario
+        Scenario scenario = new Scenario
         {
             AttemptDuringWhichToCancel = null,
         };
@@ -631,20 +631,20 @@ public class FallbackTResultSpecs
     [Fact]
     public void Should_execute_fallback_when_faulting_and_cancellationToken_not_cancelled()
     {
-        var fallbackActionExecuted = false;
-        var fallbackAction = () => { fallbackActionExecuted = true; return ResultPrimitive.Substitute; };
+        bool fallbackActionExecuted = false;
+        Func<ResultPrimitive> fallbackAction = () => { fallbackActionExecuted = true; return ResultPrimitive.Substitute; };
 
-        var policy = Policy
+        FallbackPolicy<ResultPrimitive> policy = Policy
             .HandleResult(ResultPrimitive.Fault)
             .OrResult(ResultPrimitive.FaultAgain)
             .Fallback(fallbackAction);
 
-        var cancellationTokenSource = new CancellationTokenSource();
+        CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
 
-        var attemptsInvoked = 0;
+        int attemptsInvoked = 0;
         Action onExecute = () => attemptsInvoked++;
 
-        var scenario = new Scenario
+        Scenario scenario = new Scenario
         {
             AttemptDuringWhichToCancel = null,
         };
@@ -659,21 +659,21 @@ public class FallbackTResultSpecs
     [Fact]
     public void Should_not_execute_action_when_cancellationToken_cancelled_before_execute()
     {
-        var fallbackActionExecuted = false;
-        var fallbackAction = () => { fallbackActionExecuted = true; return ResultPrimitive.Substitute; };
+        bool fallbackActionExecuted = false;
+        Func<ResultPrimitive> fallbackAction = () => { fallbackActionExecuted = true; return ResultPrimitive.Substitute; };
 
-        var policy = Policy
+        FallbackPolicy<ResultPrimitive> policy = Policy
             .HandleResult(ResultPrimitive.Fault)
             .OrResult(ResultPrimitive.FaultAgain)
             .Fallback(fallbackAction);
 
-        var cancellationTokenSource = new CancellationTokenSource();
-        var cancellationToken = cancellationTokenSource.Token;
+        CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+        CancellationToken cancellationToken = cancellationTokenSource.Token;
 
-        var attemptsInvoked = 0;
+        int attemptsInvoked = 0;
         Action onExecute = () => attemptsInvoked++;
 
-        var scenario = new Scenario
+        Scenario scenario = new Scenario
         {
             AttemptDuringWhichToCancel = null, // Cancellation token cancelled manually below - before any scenario execution.
         };
@@ -692,21 +692,21 @@ public class FallbackTResultSpecs
     [Fact]
     public void Should_report_cancellation_and_not_execute_fallback_during_otherwise_non_faulting_action_execution_when_user_delegate_observes_cancellationToken_and_fallback_does_not_handle_cancellations()
     {
-        var fallbackActionExecuted = false;
-        var fallbackAction = () => { fallbackActionExecuted = true; return ResultPrimitive.Substitute; };
+        bool fallbackActionExecuted = false;
+        Func<ResultPrimitive> fallbackAction = () => { fallbackActionExecuted = true; return ResultPrimitive.Substitute; };
 
-        var policy = Policy
+        FallbackPolicy<ResultPrimitive> policy = Policy
             .HandleResult(ResultPrimitive.Fault)
             .OrResult(ResultPrimitive.FaultAgain)
             .Fallback(fallbackAction);
 
-        var cancellationTokenSource = new CancellationTokenSource();
-        var cancellationToken = cancellationTokenSource.Token;
+        CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+        CancellationToken cancellationToken = cancellationTokenSource.Token;
 
-        var attemptsInvoked = 0;
+        int attemptsInvoked = 0;
         Action onExecute = () => attemptsInvoked++;
 
-        var scenario = new Scenario
+        Scenario scenario = new Scenario
         {
             AttemptDuringWhichToCancel = 1,
             ActionObservesCancellation = true
@@ -723,21 +723,21 @@ public class FallbackTResultSpecs
     [Fact]
     public void Should_handle_cancellation_and_execute_fallback_during_otherwise_non_faulting_action_execution_when_user_delegate_observes_cancellationToken_and_fallback_handles_cancellations()
     {
-        var fallbackActionExecuted = false;
-        var fallbackAction = () => { fallbackActionExecuted = true; return ResultPrimitive.Substitute; };
+        bool fallbackActionExecuted = false;
+        Func<ResultPrimitive> fallbackAction = () => { fallbackActionExecuted = true; return ResultPrimitive.Substitute; };
 
-        var policy = Policy
+        FallbackPolicy<ResultPrimitive> policy = Policy
             .HandleResult(ResultPrimitive.Fault)
             .OrResult(ResultPrimitive.FaultAgain)
             .Or<OperationCanceledException>()
             .Fallback(fallbackAction);
 
-        var cancellationTokenSource = new CancellationTokenSource();
+        CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
 
-        var attemptsInvoked = 0;
+        int attemptsInvoked = 0;
         Action onExecute = () => attemptsInvoked++;
 
-        var scenario = new Scenario
+        Scenario scenario = new Scenario
         {
             AttemptDuringWhichToCancel = 1,
             ActionObservesCancellation = true
@@ -753,20 +753,20 @@ public class FallbackTResultSpecs
     [Fact]
     public void Should_not_report_cancellation_and_not_execute_fallback_if_non_faulting_action_execution_completes_and_user_delegate_does_not_observe_the_set_cancellationToken()
     {
-        var fallbackActionExecuted = false;
-        var fallbackAction = () => { fallbackActionExecuted = true; return ResultPrimitive.Substitute; };
+        bool fallbackActionExecuted = false;
+        Func<ResultPrimitive> fallbackAction = () => { fallbackActionExecuted = true; return ResultPrimitive.Substitute; };
 
-        var policy = Policy
+        FallbackPolicy<ResultPrimitive> policy = Policy
             .HandleResult(ResultPrimitive.Fault)
             .OrResult(ResultPrimitive.FaultAgain)
             .Fallback(fallbackAction);
 
-        var cancellationTokenSource = new CancellationTokenSource();
+        CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
 
-        var attemptsInvoked = 0;
+        int attemptsInvoked = 0;
         Action onExecute = () => attemptsInvoked++;
 
-        var scenario = new Scenario
+        Scenario scenario = new Scenario
         {
             AttemptDuringWhichToCancel = 1,
             ActionObservesCancellation = false
@@ -782,20 +782,20 @@ public class FallbackTResultSpecs
     [Fact]
     public void Should_report_unhandled_fault_and_not_execute_fallback_if_action_execution_raises_unhandled_fault_and_user_delegate_does_not_observe_the_set_cancellationToken()
     {
-        var fallbackActionExecuted = false;
-        var fallbackAction = () => { fallbackActionExecuted = true; return ResultPrimitive.Substitute; };
+        bool fallbackActionExecuted = false;
+        Func<ResultPrimitive> fallbackAction = () => { fallbackActionExecuted = true; return ResultPrimitive.Substitute; };
 
-        var policy = Policy
+        FallbackPolicy<ResultPrimitive> policy = Policy
             .HandleResult(ResultPrimitive.Fault)
             .OrResult(ResultPrimitive.FaultAgain)
             .Fallback(fallbackAction);
 
-        var cancellationTokenSource = new CancellationTokenSource();
+        CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
 
-        var attemptsInvoked = 0;
+        int attemptsInvoked = 0;
         Action onExecute = () => attemptsInvoked++;
 
-        var scenario = new Scenario
+        Scenario scenario = new Scenario
         {
             AttemptDuringWhichToCancel = 1,
             ActionObservesCancellation = false
@@ -811,21 +811,21 @@ public class FallbackTResultSpecs
     [Fact]
     public void Should_handle_handled_fault_and_execute_fallback_following_faulting_action_execution_when_user_delegate_does_not_observe_cancellationToken()
     {
-        var fallbackActionExecuted = false;
-        var fallbackAction = () => { fallbackActionExecuted = true; return ResultPrimitive.Substitute; };
+        bool fallbackActionExecuted = false;
+        Func<ResultPrimitive> fallbackAction = () => { fallbackActionExecuted = true; return ResultPrimitive.Substitute; };
 
-        var cancellationTokenSource = new CancellationTokenSource();
-        var cancellationToken = cancellationTokenSource.Token;
+        CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+        CancellationToken cancellationToken = cancellationTokenSource.Token;
 
-        var policy = Policy
+        FallbackPolicy<ResultPrimitive> policy = Policy
             .HandleResult(ResultPrimitive.Fault)
             .OrResult(ResultPrimitive.FaultAgain)
             .Fallback(fallbackAction);
 
-        var attemptsInvoked = 0;
+        int attemptsInvoked = 0;
         Action onExecute = () => attemptsInvoked++;
 
-        var scenario = new Scenario
+        Scenario scenario = new Scenario
         {
             AttemptDuringWhichToCancel = 1,
             ActionObservesCancellation = false

@@ -149,7 +149,7 @@ public static class RetryTResultSyntax
         return new RetryPolicy<TResult>(
             policyBuilder,
             (outcome, _, _, ctx) => onRetry(outcome, ctx)
-        );
+            );
     }
 
     /// <summary>
@@ -239,7 +239,7 @@ public static class RetryTResultSyntax
             retryCount,
             sleepDurationProvider,
             (outcome, span, _, ctx) => onRetry(outcome, span, ctx)
-        );
+            );
     }
 
     /// <summary>
@@ -266,7 +266,7 @@ public static class RetryTResultSyntax
         if (onRetry == null) throw new ArgumentNullException(nameof(onRetry));
 
         var sleepDurations = Enumerable.Range(1, retryCount)
-            .Select(sleepDurationProvider);
+                                       .Select(sleepDurationProvider);
 
         return new RetryPolicy<TResult>(
             policyBuilder,
@@ -317,7 +317,7 @@ public static class RetryTResultSyntax
             retryCount,
             sleepDurationProvider,
             (outcome, span, _, ctx) => onRetry(outcome, span, ctx)
-        );
+            );
     }
 
     /// <summary>
@@ -385,7 +385,7 @@ public static class RetryTResultSyntax
             retryCount,
             sleepDurationProvider,
             (outcome, span, _, ctx) => onRetry(outcome, span, ctx)
-        );
+            );
     }
 
     /// <summary>
@@ -669,6 +669,6 @@ public static class RetryTResultSyntax
             policyBuilder,
             (exception, timespan, i, ctx) => onRetry(exception, i, timespan, ctx),
             sleepDurationProvider: sleepDurationProvider
-        );
+            );
     }
 }

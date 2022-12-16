@@ -68,13 +68,13 @@ public class Cache
 
         public (bool, object) TryGet(string key)
         {
-            var cacheHit = _cache.TryGetValue(key, out var value);
+            bool cacheHit = _cache.TryGetValue(key, out var value);
             return (cacheHit, value);
         }
 
         public void Put(string key, object value, Ttl ttl)
         {
-            var remaining = DateTimeOffset.MaxValue - DateTimeOffset.UtcNow;
+            TimeSpan remaining = DateTimeOffset.MaxValue - DateTimeOffset.UtcNow;
             var options = new MemoryCacheEntryOptions();
 
             if (ttl.SlidingExpiration)
@@ -96,8 +96,10 @@ public class Cache
             _cache.Set(key, value, options);
         }
 
-        public Task<(bool, object)> TryGetAsync(string key, CancellationToken cancellationToken, bool continueOnCapturedContext) =>
-            Task.FromResult(TryGet(key));
+        public Task<(bool, object)> TryGetAsync(string key, CancellationToken cancellationToken, bool continueOnCapturedContext)
+        {
+            return Task.FromResult(TryGet(key));
+        }
 
         public Task PutAsync(string key, object value, Ttl ttl, CancellationToken cancellationToken, bool continueOnCapturedContext)
         {

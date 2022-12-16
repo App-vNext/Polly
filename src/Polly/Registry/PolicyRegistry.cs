@@ -112,7 +112,7 @@ public class PolicyRegistry : IConcurrentPolicyRegistry<string>
     /// <returns>True if Policy exists for the provided Key. False otherwise.</returns>
     public bool TryGet<TPolicy>(string key, out TPolicy policy) where TPolicy : IsPolicy
     {
-        var got = _registry.TryGetValue(key, out var value);
+        bool got = _registry.TryGetValue(key, out IsPolicy value);
         policy = got ? (TPolicy)value : default;
         return got;
     }
@@ -156,7 +156,7 @@ public class PolicyRegistry : IConcurrentPolicyRegistry<string>
     {
         var registry = ThrowIfNotConcurrentImplementation();
 
-        var got = registry.TryRemove(key, out var value);
+        bool got = registry.TryRemove(key, out IsPolicy value);
         policy = got ? (TPolicy) value : default;
         return got;
     }

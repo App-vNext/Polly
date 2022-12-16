@@ -18,7 +18,7 @@ public static class PolicyExtensionsAsync
 
     public static Task RaiseExceptionAsync<TException>(this AsyncPolicy policy, TException instance) where TException : Exception
     {
-        var scenario = new ExceptionAndOrCancellationScenario
+        ExceptionAndOrCancellationScenario scenario = new ExceptionAndOrCancellationScenario
         {
             ActionObservesCancellation = false,
             AttemptDuringWhichToCancel = null,
@@ -28,12 +28,14 @@ public static class PolicyExtensionsAsync
         return policy.RaiseExceptionAndOrCancellationAsync(scenario, new CancellationTokenSource(), () => { }, _ => instance);
     }
 
-    public static Task RaiseExceptionAsync<TException>(this AsyncPolicy policy, Action<TException, int> configureException = null) where TException : Exception, new() =>
-        policy.RaiseExceptionAsync(1, configureException);
+    public static Task RaiseExceptionAsync<TException>(this AsyncPolicy policy, Action<TException, int> configureException = null) where TException : Exception, new()
+    {
+        return policy.RaiseExceptionAsync(1, configureException);
+    }
 
     public static Task RaiseExceptionAsync<TException>(this AsyncPolicy policy, int numberOfTimesToRaiseException, Action<TException, int> configureException = null, CancellationToken cancellationToken = default) where TException : Exception, new()
     {
-        var scenario = new ExceptionAndOrCancellationScenario
+        ExceptionAndOrCancellationScenario scenario = new ExceptionAndOrCancellationScenario
         {
             ActionObservesCancellation = false,
             AttemptDuringWhichToCancel = null,
@@ -63,9 +65,9 @@ public static class PolicyExtensionsAsync
 
     public static Task RaiseExceptionAndOrCancellationAsync<TException>(this AsyncPolicy policy, ExceptionAndOrCancellationScenario scenario, CancellationTokenSource cancellationTokenSource, Action onExecute, Func<int, TException> exceptionFactory) where TException : Exception
     {
-        var counter = 0;
+        int counter = 0;
 
-        var cancellationToken = cancellationTokenSource.Token;
+        CancellationToken cancellationToken = cancellationTokenSource.Token;
 
         return policy.ExecuteAsync(ct =>
         {
@@ -94,9 +96,9 @@ public static class PolicyExtensionsAsync
 
     public static Task<TResult> RaiseExceptionAndOrCancellationAsync<TException, TResult>(this AsyncPolicy policy, ExceptionAndOrCancellationScenario scenario, CancellationTokenSource cancellationTokenSource, Action onExecute, Func<int, TException> exceptionFactory, TResult successResult) where TException : Exception
     {
-        var counter = 0;
+        int counter = 0;
 
-        var cancellationToken = cancellationTokenSource.Token;
+        CancellationToken cancellationToken = cancellationTokenSource.Token;
 
         return policy.ExecuteAsync(ct =>
         {

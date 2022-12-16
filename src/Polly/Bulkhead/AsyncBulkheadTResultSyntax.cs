@@ -68,6 +68,6 @@ public partial class Policy
             maxParallelization,
             maxQueuingActions,
             onBulkheadRejectedAsync
-        );
+            );
     }
 }

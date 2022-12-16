@@ -20,11 +20,11 @@ public class RetryTResultSpecsAsync
         Action<DelegateResult<ResultPrimitive>, int> onRetry = (_, _) => { };
 
         Action policy = () => Policy
-            .HandleResult(ResultPrimitive.Fault)
-            .RetryAsync(-1, onRetry);
+                                  .HandleResult(ResultPrimitive.Fault)
+                                  .RetryAsync(-1, onRetry);
 
         policy.Should().Throw<ArgumentOutOfRangeException>().And
-            .ParamName.Should().Be("retryCount");
+              .ParamName.Should().Be("retryCount");
     }
 
     [Fact]
@@ -33,11 +33,11 @@ public class RetryTResultSpecsAsync
         Action<DelegateResult<ResultPrimitive>, int> nullOnRetry = null;
 
         Action policy = () => Policy
-            .HandleResult(ResultPrimitive.Fault)
-            .RetryAsync(1, nullOnRetry);
+                                  .HandleResult(ResultPrimitive.Fault)
+                                  .RetryAsync(1, nullOnRetry);
 
         policy.Should().Throw<ArgumentNullException>().And
-            .ParamName.Should().Be("onRetry");
+              .ParamName.Should().Be("onRetry");
     }
 
     [Fact]
@@ -46,11 +46,11 @@ public class RetryTResultSpecsAsync
         Action<DelegateResult<ResultPrimitive>, int, Context> onRetry = (_, _, _) => { };
 
         Action policy = () => Policy
-            .HandleResult(ResultPrimitive.Fault)
-            .RetryAsync(-1, onRetry);
+                                  .HandleResult(ResultPrimitive.Fault)
+                                  .RetryAsync(-1, onRetry);
 
         policy.Should().Throw<ArgumentOutOfRangeException>().And
-            .ParamName.Should().Be("retryCount");
+              .ParamName.Should().Be("retryCount");
     }
 
     [Fact]
@@ -59,11 +59,11 @@ public class RetryTResultSpecsAsync
         Action<DelegateResult<ResultPrimitive>, int, Context> nullOnRetry = null;
 
         Action policy = () => Policy
-            .HandleResult(ResultPrimitive.Fault)
-            .RetryAsync(1, nullOnRetry);
+                                  .HandleResult(ResultPrimitive.Fault)
+                                  .RetryAsync(1, nullOnRetry);
 
         policy.Should().Throw<ArgumentNullException>().And
-            .ParamName.Should().Be("onRetry");
+              .ParamName.Should().Be("onRetry");
     }
 
     [Fact]
@@ -73,7 +73,7 @@ public class RetryTResultSpecsAsync
             .HandleResult(ResultPrimitive.Fault)
             .RetryAsync(3);
 
-        var result = await policy.RaiseResultSequenceAsync(ResultPrimitive.Fault, ResultPrimitive.Fault, ResultPrimitive.Fault, ResultPrimitive.Good);
+        ResultPrimitive result = await policy.RaiseResultSequenceAsync(ResultPrimitive.Fault, ResultPrimitive.Fault, ResultPrimitive.Fault, ResultPrimitive.Good);
         result.Should().Be(ResultPrimitive.Good);
     }
 
@@ -85,7 +85,7 @@ public class RetryTResultSpecsAsync
             .OrResult(ResultPrimitive.FaultAgain)
             .RetryAsync(3);
 
-        var result = await policy.RaiseResultSequenceAsync(ResultPrimitive.Fault, ResultPrimitive.FaultAgain, ResultPrimitive.Fault, ResultPrimitive.Good);
+        ResultPrimitive result = await policy.RaiseResultSequenceAsync(ResultPrimitive.Fault, ResultPrimitive.FaultAgain, ResultPrimitive.Fault, ResultPrimitive.Good);
         result.Should().Be(ResultPrimitive.Good);
     }
 
@@ -96,7 +96,7 @@ public class RetryTResultSpecsAsync
             .HandleResult(ResultPrimitive.Fault)
             .RetryAsync(3);
 
-        var result = await policy.RaiseResultSequenceAsync(ResultPrimitive.Fault, ResultPrimitive.Good);
+        ResultPrimitive result = await policy.RaiseResultSequenceAsync(ResultPrimitive.Fault, ResultPrimitive.Good);
         result.Should().Be(ResultPrimitive.Good);
     }
 
@@ -108,7 +108,7 @@ public class RetryTResultSpecsAsync
             .OrResult(ResultPrimitive.FaultAgain)
             .RetryAsync(3);
 
-        var result = await policy.RaiseResultSequenceAsync(ResultPrimitive.Fault, ResultPrimitive.FaultAgain, ResultPrimitive.Good);
+        ResultPrimitive result = await policy.RaiseResultSequenceAsync(ResultPrimitive.Fault, ResultPrimitive.FaultAgain, ResultPrimitive.Good);
         result.Should().Be(ResultPrimitive.Good);
     }
 
@@ -119,7 +119,7 @@ public class RetryTResultSpecsAsync
             .HandleResult(ResultPrimitive.Fault)
             .RetryAsync(3);
 
-        var result = await policy.RaiseResultSequenceAsync(ResultPrimitive.Fault, ResultPrimitive.Fault, ResultPrimitive.Fault, ResultPrimitive.Fault, ResultPrimitive.Good);
+        ResultPrimitive result = await policy.RaiseResultSequenceAsync(ResultPrimitive.Fault, ResultPrimitive.Fault, ResultPrimitive.Fault, ResultPrimitive.Fault, ResultPrimitive.Good);
         result.Should().Be(ResultPrimitive.Fault); // It should give up retrying after 3 retries and return the last failure, so should return Fault, not Good.
     }
 
@@ -131,7 +131,7 @@ public class RetryTResultSpecsAsync
             .OrResult(ResultPrimitive.FaultAgain)
             .RetryAsync(3);
 
-        var result = await policy.RaiseResultSequenceAsync(ResultPrimitive.FaultAgain, ResultPrimitive.FaultAgain, ResultPrimitive.FaultAgain, ResultPrimitive.FaultAgain, ResultPrimitive.Good);
+        ResultPrimitive result = await policy.RaiseResultSequenceAsync(ResultPrimitive.FaultAgain, ResultPrimitive.FaultAgain, ResultPrimitive.FaultAgain, ResultPrimitive.FaultAgain, ResultPrimitive.Good);
         result.Should().Be(ResultPrimitive.FaultAgain);
     }
 
@@ -142,7 +142,7 @@ public class RetryTResultSpecsAsync
             .HandleResult(ResultPrimitive.Fault)
             .RetryAsync();
 
-        var result = await policy.RaiseResultSequenceAsync(ResultPrimitive.FaultAgain, ResultPrimitive.Good);
+        ResultPrimitive result = await policy.RaiseResultSequenceAsync(ResultPrimitive.FaultAgain, ResultPrimitive.Good);
         result.Should().Be(ResultPrimitive.FaultAgain);
     }
 
@@ -154,7 +154,7 @@ public class RetryTResultSpecsAsync
             .OrResult(ResultPrimitive.FaultAgain)
             .RetryAsync();
 
-        var result = await policy.RaiseResultSequenceAsync(ResultPrimitive.FaultYetAgain, ResultPrimitive.Good);
+        ResultPrimitive result = await policy.RaiseResultSequenceAsync(ResultPrimitive.FaultYetAgain, ResultPrimitive.Good);
         result.Should().Be(ResultPrimitive.FaultYetAgain);
     }
 
@@ -165,7 +165,7 @@ public class RetryTResultSpecsAsync
             .HandleResult<ResultClass>(r => r.ResultCode == ResultPrimitive.Fault)
             .RetryAsync();
 
-        var result = await policy.RaiseResultSequenceAsync(new ResultClass(ResultPrimitive.FaultAgain), new ResultClass(ResultPrimitive.Good));
+        ResultClass result = await policy.RaiseResultSequenceAsync(new ResultClass(ResultPrimitive.FaultAgain), new ResultClass(ResultPrimitive.Good));
         result.ResultCode.Should().Be(ResultPrimitive.FaultAgain);
     }
 
@@ -177,7 +177,7 @@ public class RetryTResultSpecsAsync
             .OrResult(r => r.ResultCode == ResultPrimitive.FaultAgain)
             .RetryAsync();
 
-        var result = await policy.RaiseResultSequenceAsync(new ResultClass(ResultPrimitive.FaultYetAgain), new ResultClass(ResultPrimitive.Good));
+        ResultClass result = await policy.RaiseResultSequenceAsync(new ResultClass(ResultPrimitive.FaultYetAgain), new ResultClass(ResultPrimitive.Good));
         result.ResultCode.Should().Be(ResultPrimitive.FaultYetAgain);
     }
 
@@ -188,7 +188,7 @@ public class RetryTResultSpecsAsync
             .HandleResult<ResultClass>(r => r.ResultCode == ResultPrimitive.Fault)
             .RetryAsync();
 
-        var result = await policy.RaiseResultSequenceAsync(new ResultClass(ResultPrimitive.Fault), new ResultClass(ResultPrimitive.Good));
+        ResultClass result = await policy.RaiseResultSequenceAsync(new ResultClass(ResultPrimitive.Fault), new ResultClass(ResultPrimitive.Good));
         result.ResultCode.Should().Be(ResultPrimitive.Good);
     }
 
@@ -200,7 +200,7 @@ public class RetryTResultSpecsAsync
             .OrResult(r => r.ResultCode == ResultPrimitive.FaultAgain)
             .RetryAsync();
 
-        var result = await policy.RaiseResultSequenceAsync(new ResultClass(ResultPrimitive.FaultAgain), new ResultClass(ResultPrimitive.Good));
+        ResultClass result = await policy.RaiseResultSequenceAsync(new ResultClass(ResultPrimitive.FaultAgain), new ResultClass(ResultPrimitive.Good));
         result.ResultCode.Should().Be(ResultPrimitive.Good);
     }
 
@@ -218,7 +218,7 @@ public class RetryTResultSpecsAsync
             .Should().Be(ResultPrimitive.Good);
 
         retryCounts.Should()
-            .ContainInOrder(expectedRetryCounts);
+                   .ContainInOrder(expectedRetryCounts);
     }
 
     [Fact]
@@ -268,8 +268,8 @@ public class RetryTResultSpecsAsync
             .RetryAsync((_, _, context) => contextData = context);
 
         (await policy.RaiseResultSequenceAsync(
-                new { key1 = "value1", key2 = "value2" }.AsDictionary(),
-                ResultPrimitive.Fault, ResultPrimitive.Good
+            new { key1 = "value1", key2 = "value2" }.AsDictionary(),
+            ResultPrimitive.Fault, ResultPrimitive.Good
             ))
             .Should().Be(ResultPrimitive.Good);
 
@@ -287,10 +287,10 @@ public class RetryTResultSpecsAsync
             .HandleResult(ResultPrimitive.Fault)
             .RetryAsync((_, _, context) => contextData = context);
 
-        var result = await policy.RaiseResultSequenceOnExecuteAndCaptureAsync(
+        PolicyResult<ResultPrimitive> result = await policy.RaiseResultSequenceOnExecuteAndCaptureAsync(
             new { key1 = "value1", key2 = "value2" }.AsDictionary(),
             ResultPrimitive.Fault, ResultPrimitive.Good
-        );
+            );
 
         result.Should().BeEquivalentTo(new
         {
@@ -319,7 +319,7 @@ public class RetryTResultSpecsAsync
         await policy.RaiseResultSequenceAsync(ResultPrimitive.Fault, ResultPrimitive.Good);
 
         capturedContext.Should()
-            .BeEmpty();
+                       .BeEmpty();
     }
 
     [Fact]
@@ -386,7 +386,7 @@ public class RetryTResultSpecsAsync
     [Fact]
     public async Task Should_not_call_onretry_when_retry_count_is_zero_without_context()
     {
-        var retryInvoked = false;
+        bool retryInvoked = false;
 
         Action<DelegateResult<ResultPrimitive>, int> onRetry = (_, _) => { retryInvoked = true; };
 
@@ -402,7 +402,7 @@ public class RetryTResultSpecsAsync
     [Fact]
     public async Task Should_not_call_onretry_when_retry_count_is_zero_with_context()
     {
-        var retryInvoked = false;
+        bool retryInvoked = false;
 
         Action<DelegateResult<ResultPrimitive>, int, Context> onRetry = (_, _, _) => { retryInvoked = true; };
 
@@ -411,7 +411,7 @@ public class RetryTResultSpecsAsync
             .RetryAsync(0, onRetry);
 
         (await policy.RaiseResultSequenceAsync(
-            new { key = "value" }.AsDictionary(),
+             new { key = "value" }.AsDictionary(),
             ResultPrimitive.Fault, ResultPrimitive.Good)).Should().Be(ResultPrimitive.Fault);
 
         retryInvoked.Should().BeFalse();
@@ -427,10 +427,10 @@ public class RetryTResultSpecsAsync
         // If Polly were to declare only an Action<...> delegate for onRetry - but users declared async () => { } onRetry delegates - the compiler would happily assign them to the Action<...>, but the next 'try' would/could occur before onRetry execution had completed.
         // This test ensures the relevant retry policy does have a Func<..., Task> form for onRetry, and that it is awaited before the next try commences.
 
-        var shimTimeSpan = TimeSpan.FromSeconds(0.2); // Consider increasing shimTimeSpan if test fails transiently in different environments.
+        TimeSpan shimTimeSpan = TimeSpan.FromSeconds(0.2); // Consider increasing shimTimeSpan if test fails transiently in different environments.
 
-        var executeDelegateInvocations = 0;
-        var executeDelegateInvocationsWhenOnRetryExits = 0;
+        int executeDelegateInvocations = 0;
+        int executeDelegateInvocationsWhenOnRetryExits = 0;
 
         var policy = Policy
             .HandleResult(ResultPrimitive.Fault)
@@ -460,13 +460,13 @@ public class RetryTResultSpecsAsync
             .HandleResult(ResultPrimitive.Fault)
             .RetryAsync(3);
 
-        var cancellationTokenSource = new CancellationTokenSource();
-        var cancellationToken = cancellationTokenSource.Token;
+        CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+        CancellationToken cancellationToken = cancellationTokenSource.Token;
 
-        var attemptsInvoked = 0;
+        int attemptsInvoked = 0;
         Action onExecute = () => attemptsInvoked++;
 
-        var scenario = new Scenario
+        Scenario scenario = new Scenario
         {
             AttemptDuringWhichToCancel = null,
         };
@@ -476,219 +476,219 @@ public class RetryTResultSpecsAsync
                 ResultPrimitive.Fault,
                 ResultPrimitive.Fault,
                 ResultPrimitive.Good))
-            .Should().Be(ResultPrimitive.Good);
+                .Should().Be(ResultPrimitive.Good);
 
         attemptsInvoked.Should().Be(1 + 3);
     }
 
     [Fact]
-    public void Should_not_execute_action_when_cancellationToken_cancelled_before_execute()
+    public async Task Should_not_execute_action_when_cancellationToken_cancelled_before_execute()
     {
         var policy = Policy
             .HandleResult(ResultPrimitive.Fault)
             .RetryAsync(3);
 
-        var cancellationTokenSource = new CancellationTokenSource();
-        var cancellationToken = cancellationTokenSource.Token;
+        CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+        CancellationToken cancellationToken = cancellationTokenSource.Token;
 
-        var attemptsInvoked = 0;
+        int attemptsInvoked = 0;
         Action onExecute = () => attemptsInvoked++;
 
-        var scenario = new Scenario
+        Scenario scenario = new Scenario
         {
             AttemptDuringWhichToCancel = null, // Cancellation token cancelled manually below - before any scenario execution.
         };
 
         cancellationTokenSource.Cancel();
 
-        policy.Awaiting(x => x.RaiseResultSequenceAndOrCancellationAsync(scenario, cancellationTokenSource, onExecute,
-                ResultPrimitive.Fault,
-                ResultPrimitive.Fault,
-                ResultPrimitive.Fault,
-                ResultPrimitive.Good))
-            .Should().Throw<OperationCanceledException>()
-            .And.CancellationToken.Should().Be(cancellationToken);
+        var ex = await policy.Awaiting(x => x.RaiseResultSequenceAndOrCancellationAsync(scenario, cancellationTokenSource, onExecute,
+               ResultPrimitive.Fault,
+               ResultPrimitive.Fault,
+               ResultPrimitive.Fault,
+               ResultPrimitive.Good))
+            .Should().ThrowAsync<OperationCanceledException>();
+        ex.And.CancellationToken.Should().Be(cancellationToken);
 
         attemptsInvoked.Should().Be(0);
     }
 
     [Fact]
-    public void Should_report_cancellation_during_otherwise_non_faulting_action_execution_and_cancel_further_retries_when_user_delegate_observes_cancellationToken()
+    public async Task Should_report_cancellation_during_otherwise_non_faulting_action_execution_and_cancel_further_retries_when_user_delegate_observes_cancellationToken()
     {
         var policy = Policy
             .HandleResult(ResultPrimitive.Fault)
             .RetryAsync(3);
 
-        var cancellationTokenSource = new CancellationTokenSource();
-        var cancellationToken = cancellationTokenSource.Token;
+        CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+        CancellationToken cancellationToken = cancellationTokenSource.Token;
 
-        var attemptsInvoked = 0;
+        int attemptsInvoked = 0;
         Action onExecute = () => attemptsInvoked++;
 
-        var scenario = new Scenario
+        Scenario scenario = new Scenario
         {
             AttemptDuringWhichToCancel = 1,
             ActionObservesCancellation = true
         };
 
-        policy.Awaiting(x => x.RaiseResultSequenceAndOrCancellationAsync(scenario, cancellationTokenSource, onExecute,
-                ResultPrimitive.Good,
-                ResultPrimitive.Good,
-                ResultPrimitive.Good,
-                ResultPrimitive.Good))
-            .Should().Throw<OperationCanceledException>()
-            .And.CancellationToken.Should().Be(cancellationToken);
+        var ex = await policy.Awaiting(x => x.RaiseResultSequenceAndOrCancellationAsync(scenario, cancellationTokenSource, onExecute,
+               ResultPrimitive.Good,
+               ResultPrimitive.Good,
+               ResultPrimitive.Good,
+               ResultPrimitive.Good))
+            .Should().ThrowAsync<OperationCanceledException>();
+        ex.And.CancellationToken.Should().Be(cancellationToken);
 
         attemptsInvoked.Should().Be(1);
     }
 
     [Fact]
-    public void Should_report_cancellation_during_faulting_initial_action_execution_and_cancel_further_retries_when_user_delegate_observes_cancellationToken()
+    public async Task Should_report_cancellation_during_faulting_initial_action_execution_and_cancel_further_retries_when_user_delegate_observes_cancellationToken()
     {
         var policy = Policy
-            .HandleResult(ResultPrimitive.Fault)
-            .RetryAsync(3);
+           .HandleResult(ResultPrimitive.Fault)
+           .RetryAsync(3);
 
-        var cancellationTokenSource = new CancellationTokenSource();
-        var cancellationToken = cancellationTokenSource.Token;
+        CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+        CancellationToken cancellationToken = cancellationTokenSource.Token;
 
-        var attemptsInvoked = 0;
+        int attemptsInvoked = 0;
         Action onExecute = () => attemptsInvoked++;
 
-        var scenario = new Scenario
+        Scenario scenario = new Scenario
         {
             AttemptDuringWhichToCancel = 1,
             ActionObservesCancellation = true
         };
 
-        policy.Awaiting(x => x.RaiseResultSequenceAndOrCancellationAsync(scenario, cancellationTokenSource, onExecute,
-                ResultPrimitive.Fault,
-                ResultPrimitive.Fault,
-                ResultPrimitive.Fault,
-                ResultPrimitive.Good))
-            .Should().Throw<OperationCanceledException>()
-            .And.CancellationToken.Should().Be(cancellationToken);
+        var ex = await policy.Awaiting(x => x.RaiseResultSequenceAndOrCancellationAsync(scenario, cancellationTokenSource, onExecute,
+               ResultPrimitive.Fault,
+               ResultPrimitive.Fault,
+               ResultPrimitive.Fault,
+               ResultPrimitive.Good))
+            .Should().ThrowAsync<OperationCanceledException>();
+        ex.And.CancellationToken.Should().Be(cancellationToken);
 
         attemptsInvoked.Should().Be(1);
     }
 
     [Fact]
-    public void Should_report_cancellation_during_faulting_initial_action_execution_and_cancel_further_retries_when_user_delegate_does_not_observe_cancellationToken()
+    public async Task Should_report_cancellation_during_faulting_initial_action_execution_and_cancel_further_retries_when_user_delegate_does_not_observe_cancellationToken()
     {
         var policy = Policy
-            .HandleResult(ResultPrimitive.Fault)
-            .RetryAsync(3);
+          .HandleResult(ResultPrimitive.Fault)
+          .RetryAsync(3);
 
-        var cancellationTokenSource = new CancellationTokenSource();
-        var cancellationToken = cancellationTokenSource.Token;
+        CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+        CancellationToken cancellationToken = cancellationTokenSource.Token;
 
-        var attemptsInvoked = 0;
+        int attemptsInvoked = 0;
         Action onExecute = () => attemptsInvoked++;
 
-        var scenario = new Scenario
+        Scenario scenario = new Scenario
         {
             AttemptDuringWhichToCancel = 1,
             ActionObservesCancellation = false
         };
 
-        policy.Awaiting(x => x.RaiseResultSequenceAndOrCancellationAsync(scenario, cancellationTokenSource, onExecute,
-                ResultPrimitive.Fault,
-                ResultPrimitive.Fault,
-                ResultPrimitive.Fault,
-                ResultPrimitive.Good))
-            .Should().Throw<OperationCanceledException>()
-            .And.CancellationToken.Should().Be(cancellationToken);
+        var ex = await policy.Awaiting(x => x.RaiseResultSequenceAndOrCancellationAsync(scenario, cancellationTokenSource, onExecute,
+               ResultPrimitive.Fault,
+               ResultPrimitive.Fault,
+               ResultPrimitive.Fault,
+               ResultPrimitive.Good))
+            .Should().ThrowAsync<OperationCanceledException>();
+        ex.And.CancellationToken.Should().Be(cancellationToken);
 
         attemptsInvoked.Should().Be(1);
     }
 
     [Fact]
-    public void Should_report_cancellation_during_faulting_retried_action_execution_and_cancel_further_retries_when_user_delegate_observes_cancellationToken()
+    public async Task Should_report_cancellation_during_faulting_retried_action_execution_and_cancel_further_retries_when_user_delegate_observes_cancellationToken()
     {
         var policy = Policy
-            .HandleResult(ResultPrimitive.Fault)
-            .RetryAsync(3);
+          .HandleResult(ResultPrimitive.Fault)
+          .RetryAsync(3);
 
-        var cancellationTokenSource = new CancellationTokenSource();
-        var cancellationToken = cancellationTokenSource.Token;
+        CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+        CancellationToken cancellationToken = cancellationTokenSource.Token;
 
-        var attemptsInvoked = 0;
+        int attemptsInvoked = 0;
         Action onExecute = () => attemptsInvoked++;
 
-        var scenario = new Scenario
+        Scenario scenario = new Scenario
         {
             AttemptDuringWhichToCancel = 2,
             ActionObservesCancellation = true
         };
 
-        policy.Awaiting(x => x.RaiseResultSequenceAndOrCancellationAsync(scenario, cancellationTokenSource, onExecute,
-                ResultPrimitive.Fault,
-                ResultPrimitive.Fault,
-                ResultPrimitive.Fault,
-                ResultPrimitive.Good))
-            .Should().Throw<OperationCanceledException>()
-            .And.CancellationToken.Should().Be(cancellationToken);
+        var ex = await policy.Awaiting(x => x.RaiseResultSequenceAndOrCancellationAsync(scenario, cancellationTokenSource, onExecute,
+               ResultPrimitive.Fault,
+               ResultPrimitive.Fault,
+               ResultPrimitive.Fault,
+               ResultPrimitive.Good))
+            .Should().ThrowAsync<OperationCanceledException>();
+        ex.And.CancellationToken.Should().Be(cancellationToken);
 
         attemptsInvoked.Should().Be(2);
     }
 
     [Fact]
-    public void Should_report_cancellation_during_faulting_retried_action_execution_and_cancel_further_retries_when_user_delegate_does_not_observe_cancellationToken()
+    public async Task Should_report_cancellation_during_faulting_retried_action_execution_and_cancel_further_retries_when_user_delegate_does_not_observe_cancellationToken()
     {
         var policy = Policy
-            .HandleResult(ResultPrimitive.Fault)
-            .RetryAsync(3);
+          .HandleResult(ResultPrimitive.Fault)
+          .RetryAsync(3);
 
-        var cancellationTokenSource = new CancellationTokenSource();
-        var cancellationToken = cancellationTokenSource.Token;
+        CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+        CancellationToken cancellationToken = cancellationTokenSource.Token;
 
-        var attemptsInvoked = 0;
+        int attemptsInvoked = 0;
         Action onExecute = () => attemptsInvoked++;
 
-        var scenario = new Scenario
+        Scenario scenario = new Scenario
         {
             AttemptDuringWhichToCancel = 2,
             ActionObservesCancellation = false
         };
 
-        policy.Awaiting(x => x.RaiseResultSequenceAndOrCancellationAsync(scenario, cancellationTokenSource, onExecute,
-                ResultPrimitive.Fault,
-                ResultPrimitive.Fault,
-                ResultPrimitive.Fault,
-                ResultPrimitive.Good))
-            .Should().Throw<OperationCanceledException>()
-            .And.CancellationToken.Should().Be(cancellationToken);
+        var ex = await policy.Awaiting(x => x.RaiseResultSequenceAndOrCancellationAsync(scenario, cancellationTokenSource, onExecute,
+               ResultPrimitive.Fault,
+               ResultPrimitive.Fault,
+               ResultPrimitive.Fault,
+               ResultPrimitive.Good))
+            .Should().ThrowAsync<OperationCanceledException>();
+        ex.And.CancellationToken.Should().Be(cancellationToken);
 
         attemptsInvoked.Should().Be(2);
     }
 
     [Fact]
-    public void Should_report_cancellation_during_faulting_last_retry_execution_when_user_delegate_does_observe_cancellationToken()
+    public async Task Should_report_cancellation_during_faulting_last_retry_execution_when_user_delegate_does_observe_cancellationToken()
     {
         var policy = Policy
-            .HandleResult(ResultPrimitive.Fault)
-            .RetryAsync(3);
+                   .HandleResult(ResultPrimitive.Fault)
+                   .RetryAsync(3);
 
-        var cancellationTokenSource = new CancellationTokenSource();
-        var cancellationToken = cancellationTokenSource.Token;
+        CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+        CancellationToken cancellationToken = cancellationTokenSource.Token;
 
-        var attemptsInvoked = 0;
+        int attemptsInvoked = 0;
         Action onExecute = () => attemptsInvoked++;
 
-        var scenario = new Scenario
+        Scenario scenario = new Scenario
         {
             AttemptDuringWhichToCancel = 1 + 3,
             ActionObservesCancellation = true
         };
 
-        policy.Awaiting(x => x.RaiseResultSequenceAndOrCancellationAsync(scenario, cancellationTokenSource, onExecute,
-                ResultPrimitive.Fault,
-                ResultPrimitive.Fault,
-                ResultPrimitive.Fault,
-                ResultPrimitive.Fault,
-                ResultPrimitive.Good))
-            .Should().Throw<OperationCanceledException>()
-            .And.CancellationToken.Should().Be(cancellationToken);
+        var ex = await policy.Awaiting(x => x.RaiseResultSequenceAndOrCancellationAsync(scenario, cancellationTokenSource, onExecute,
+               ResultPrimitive.Fault,
+               ResultPrimitive.Fault,
+               ResultPrimitive.Fault,
+               ResultPrimitive.Fault,
+               ResultPrimitive.Good))
+            .Should().ThrowAsync<OperationCanceledException>();
+        ex.And.CancellationToken.Should().Be(cancellationToken);
 
         attemptsInvoked.Should().Be(1 + 3);
     }
@@ -697,64 +697,64 @@ public class RetryTResultSpecsAsync
     public async Task Should_report_faulting_from_faulting_last_retry_execution_when_user_delegate_does_not_observe_cancellation_raised_during_last_retry()
     {
         var policy = Policy
-            .HandleResult(ResultPrimitive.Fault)
-            .RetryAsync(3);
+                   .HandleResult(ResultPrimitive.Fault)
+                   .RetryAsync(3);
 
-        var cancellationTokenSource = new CancellationTokenSource();
-        var cancellationToken = cancellationTokenSource.Token;
+        CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+        CancellationToken cancellationToken = cancellationTokenSource.Token;
 
-        var attemptsInvoked = 0;
+        int attemptsInvoked = 0;
         Action onExecute = () => attemptsInvoked++;
 
-        var scenario = new Scenario
+        Scenario scenario = new Scenario
         {
             AttemptDuringWhichToCancel = 1 + 3,
             ActionObservesCancellation = false
         };
 
         (await policy.RaiseResultSequenceAndOrCancellationAsync(scenario, cancellationTokenSource, onExecute,
-                ResultPrimitive.Fault,
-                ResultPrimitive.Fault,
-                ResultPrimitive.Fault,
-                ResultPrimitive.Fault,
-                ResultPrimitive.Good))
-            .Should().Be(ResultPrimitive.Fault);
+               ResultPrimitive.Fault,
+               ResultPrimitive.Fault,
+               ResultPrimitive.Fault,
+               ResultPrimitive.Fault,
+               ResultPrimitive.Good))
+           .Should().Be(ResultPrimitive.Fault);
 
         attemptsInvoked.Should().Be(1 + 3);
     }
 
     [Fact]
-    public void Should_report_cancellation_after_faulting_action_execution_and_cancel_further_retries_if_onRetry_invokes_cancellation()
+    public async Task Should_report_cancellation_after_faulting_action_execution_and_cancel_further_retries_if_onRetry_invokes_cancellation()
     {
-        var cancellationTokenSource = new CancellationTokenSource();
-        var cancellationToken = cancellationTokenSource.Token;
+        CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+        CancellationToken cancellationToken = cancellationTokenSource.Token;
 
         var policy = Policy
-            .HandleResult(ResultPrimitive.Fault)
-            .RetryAsync(3, (_, _) =>
-            {
-                cancellationTokenSource.Cancel();
-            });
+       .HandleResult(ResultPrimitive.Fault)
+       .RetryAsync(3, (_, _) =>
+       {
+           cancellationTokenSource.Cancel();
+       });
 
-        var attemptsInvoked = 0;
+        int attemptsInvoked = 0;
         Action onExecute = () => attemptsInvoked++;
 
-        var scenario = new Scenario
+        Scenario scenario = new Scenario
         {
             AttemptDuringWhichToCancel = null, // Cancellation during onRetry instead - see above.
             ActionObservesCancellation = false
         };
 
-        policy.Awaiting(x => x.RaiseResultSequenceAndOrCancellationAsync(scenario, cancellationTokenSource, onExecute,
-                ResultPrimitive.Fault,
-                ResultPrimitive.Fault,
-                ResultPrimitive.Fault,
-                ResultPrimitive.Good))
-            .Should().Throw<OperationCanceledException>()
-            .And.CancellationToken.Should().Be(cancellationToken);
+        var ex = await policy.Awaiting(x => x.RaiseResultSequenceAndOrCancellationAsync(scenario, cancellationTokenSource, onExecute,
+               ResultPrimitive.Fault,
+               ResultPrimitive.Fault,
+               ResultPrimitive.Fault,
+               ResultPrimitive.Good))
+            .Should().ThrowAsync<OperationCanceledException>();
+        ex.And.CancellationToken.Should().Be(cancellationToken);
 
         attemptsInvoked.Should().Be(1);
     }
-        
+    
     #endregion
 }

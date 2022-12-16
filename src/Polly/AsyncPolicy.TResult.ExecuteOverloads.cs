@@ -111,7 +111,7 @@ public abstract partial class AsyncPolicy<TResult> : IAsyncPolicy<TResult>
     {
         if (context == null) throw new ArgumentNullException(nameof(context));
 
-        SetPolicyContext(context, out var priorPolicyWrapKey, out var priorPolicyKey);
+        SetPolicyContext(context, out string priorPolicyWrapKey, out string priorPolicyKey);
 
         try
         {
@@ -231,7 +231,7 @@ public abstract partial class AsyncPolicy<TResult> : IAsyncPolicy<TResult>
 
         try
         {
-            var result = await ExecuteAsync(action, context, cancellationToken, continueOnCapturedContext).ConfigureAwait(continueOnCapturedContext);
+            TResult result = await ExecuteAsync(action, context, cancellationToken, continueOnCapturedContext).ConfigureAwait(continueOnCapturedContext);
 
             if (ResultPredicates.AnyMatch(result))
             {

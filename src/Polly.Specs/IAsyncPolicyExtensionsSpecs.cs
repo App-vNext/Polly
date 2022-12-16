@@ -26,10 +26,11 @@ public class IAsyncPolicyExtensionsSpecs
         var breaker = Policy.Handle<Exception>().CircuitBreakerAsync(1, TimeSpan.Zero);
         IAsyncPolicy nonGenericPolicy = breaker;
         var genericPolicy = nonGenericPolicy.AsAsyncPolicy<ResultPrimitive>();
-        var deleg = () => Task.FromResult(ResultPrimitive.Good);
+        Func<Task<ResultPrimitive>> deleg = () => Task.FromResult(ResultPrimitive.Good);
 
         (await genericPolicy.ExecuteAsync(deleg)).Should().Be(ResultPrimitive.Good);
         breaker.Isolate();
-        genericPolicy.Awaiting(p => p.ExecuteAsync(deleg)).Should().Throw<BrokenCircuitException>();
+        await genericPolicy.Awaiting(p => p.ExecuteAsync(deleg)).Should().ThrowAsync<BrokenCircuitException>();
     }
 }
+

@@ -15,7 +15,7 @@ public class CircuitBreakerPolicy : Policy, ICircuitBreakerPolicy
     internal CircuitBreakerPolicy(
         PolicyBuilder policyBuilder,
         ICircuitController<EmptyStruct> breakerController
-    ) : base(policyBuilder)
+        ) : base(policyBuilder)
         => _breakerController = breakerController;
 
     /// <summary>
@@ -65,7 +65,7 @@ public class CircuitBreakerPolicy<TResult> : Policy<TResult>, ICircuitBreakerPol
     internal CircuitBreakerPolicy(
         PolicyBuilder<TResult> policyBuilder, 
         ICircuitController<TResult> breakerController
-    ) : base(policyBuilder)
+        ) : base(policyBuilder)
         => _breakerController = breakerController;
 
     /// <summary>

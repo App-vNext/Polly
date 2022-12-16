@@ -62,7 +62,7 @@ public class PolicyKeyAsyncSpecs
     public void PolicyKey_property_should_start_with_policy_type_if_not_explicitly_configured()
     {
         var policy = Policy.Handle<Exception>().RetryAsync();
-            
+        
         policy.PolicyKey.Should().StartWith("AsyncRetry");
     }
 
@@ -91,7 +91,7 @@ public class PolicyKeyAsyncSpecs
     {
         var policy = Policy.Handle<Exception>().RetryAsync();
 
-        var retrieveKeyWhenNotExplicitlyConfigured = policy.PolicyKey;
+        string retrieveKeyWhenNotExplicitlyConfigured = policy.PolicyKey;
 
         Action configure = () => policy.WithPolicyKey(Guid.NewGuid().ToString());
 
@@ -105,7 +105,7 @@ public class PolicyKeyAsyncSpecs
     [Fact]
     public async Task Should_pass_PolicyKey_to_execution_context()
     {
-        var policyKey = Guid.NewGuid().ToString();
+        string policyKey = Guid.NewGuid().ToString();
 
         string policyKeySetOnExecutionContext = null;
         Action<Exception, int, Context> onRetry = (_, _, context) => { policyKeySetOnExecutionContext = context.PolicyKey; };
@@ -119,13 +119,13 @@ public class PolicyKeyAsyncSpecs
     [Fact]
     public async Task Should_pass_OperationKey_to_execution_context()
     {
-        var operationKey = "SomeKey";
+        string operationKey = "SomeKey";
 
         string operationKeySetOnContext = null;
         Action<Exception, int, Context> onRetry = (_, _, context) => { operationKeySetOnContext = context.OperationKey; };
         var retry = Policy.Handle<Exception>().RetryAsync(1, onRetry);
 
-        var firstExecution = true;
+        bool firstExecution = true;
         await retry.ExecuteAsync(async _ =>
         {
             await TaskHelper.EmptyTask;
@@ -142,13 +142,13 @@ public class PolicyKeyAsyncSpecs
     [Fact]
     public async Task Should_pass_PolicyKey_to_execution_context_in_generic_execution_on_non_generic_policy()
     {
-        var policyKey = Guid.NewGuid().ToString();
+        string policyKey = Guid.NewGuid().ToString();
 
         string policyKeySetOnExecutionContext = null;
         Action<Exception, int, Context> onRetry = (_, _, context) => { policyKeySetOnExecutionContext = context.PolicyKey; };
         var retry = Policy.Handle<Exception>().RetryAsync(1, onRetry).WithPolicyKey(policyKey);
 
-        var firstExecution = true;
+        bool firstExecution = true;
         await retry.ExecuteAsync<int>(async () =>
         {
             await TaskHelper.EmptyTask;
@@ -166,13 +166,13 @@ public class PolicyKeyAsyncSpecs
     [Fact]
     public async Task Should_pass_OperationKey_to_execution_context_in_generic_execution_on_non_generic_policy()
     {
-        var operationKey = "SomeKey";
+        string operationKey = "SomeKey";
 
         string operationKeySetOnContext = null;
         Action<Exception, int, Context> onRetry = (_, _, context) => { operationKeySetOnContext = context.OperationKey; };
         var retry = Policy.Handle<Exception>().RetryAsync(1, onRetry);
 
-        var firstExecution = true;
+        bool firstExecution = true;
         await retry.ExecuteAsync<int>(async _ =>
         {
             await TaskHelper.EmptyTask;
@@ -274,7 +274,7 @@ public class PolicyTResultKeyAsyncSpecs
     {
         var policy = Policy.HandleResult(0).RetryAsync();
 
-        var retrieveKeyWhenNotExplicitlyConfigured = policy.PolicyKey;
+        string retrieveKeyWhenNotExplicitlyConfigured = policy.PolicyKey;
 
         Action configure = () => policy.WithPolicyKey(Guid.NewGuid().ToString());
 
@@ -288,7 +288,7 @@ public class PolicyTResultKeyAsyncSpecs
     [Fact]
     public async Task Should_pass_PolicyKey_to_execution_context()
     {
-        var policyKey = Guid.NewGuid().ToString();
+        string policyKey = Guid.NewGuid().ToString();
 
         string policyKeySetOnExecutionContext = null;
         Action<DelegateResult<ResultPrimitive>, int, Context> onRetry = (_, _, context) => { policyKeySetOnExecutionContext = context.PolicyKey; };
@@ -302,13 +302,13 @@ public class PolicyTResultKeyAsyncSpecs
     [Fact]
     public async Task Should_pass_OperationKey_to_execution_context()
     {
-        var operationKey = "SomeKey";
+        string operationKey = "SomeKey";
 
         string operationKeySetOnContext = null;
         Action<DelegateResult<ResultPrimitive>, int, Context> onRetry = (_, _, context) => { operationKeySetOnContext = context.OperationKey; };
         var retry = Policy.HandleResult(ResultPrimitive.Fault).RetryAsync(1, onRetry);
 
-        var firstExecution = true;
+        bool firstExecution = true;
         await retry.ExecuteAsync(async _ =>
         {
             await TaskHelper.EmptyTask;

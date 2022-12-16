@@ -14,3 +14,4 @@ public static class IAsyncPolicyExtensions
     public static IAsyncPolicy<TResult> AsAsyncPolicy<TResult>(this IAsyncPolicy policy)
         => policy.WrapAsync(Policy.NoOpAsync<TResult>());
 }
+

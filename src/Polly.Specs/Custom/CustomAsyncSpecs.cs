@@ -12,9 +12,9 @@ public class CustomAsyncSpecs
     [Fact]
     public void Should_be_able_to_construct_active_policy()
     {
-        var construct = () =>
+        Action construct = () =>
         {
-            var policy = AsyncPreExecutePolicy.CreateAsync(async () =>
+            AsyncPreExecutePolicy policy = AsyncPreExecutePolicy.CreateAsync(async () =>
             {
                 // Placeholder for more substantive async work.
                 Console.WriteLine("Do something");
@@ -26,15 +26,15 @@ public class CustomAsyncSpecs
     }
 
     [Fact]
-    public void Active_policy_should_execute()
+    public async Task Active_policy_should_execute()
     {
-        var preExecuted = false;
-        var policy = AsyncPreExecutePolicy.CreateAsync(() => { preExecuted = true; return Task.CompletedTask; });
+        bool preExecuted = false;
+        AsyncPreExecutePolicy policy = AsyncPreExecutePolicy.CreateAsync(() => { preExecuted = true; return Task.CompletedTask; });
 
-        var executed = false;
+        bool executed = false;
 
-        policy.Awaiting(x => x.ExecuteAsync(() => { executed = true; return Task.CompletedTask; }))
-            .Should().NotThrow();
+        await policy.Awaiting(x => x.ExecuteAsync(() => { executed = true; return Task.CompletedTask; }))
+            .Should().NotThrowAsync();
 
         executed.Should().BeTrue();
         preExecuted.Should().BeTrue();
@@ -43,9 +43,9 @@ public class CustomAsyncSpecs
     [Fact]
     public void Should_be_able_to_construct_reactive_policy()
     {
-        var construct = () =>
+        Action construct = () =>
         {
-            var policy = Policy.Handle<Exception>().WithBehaviourAsync(async ex =>
+            AsyncAddBehaviourIfHandlePolicy policy = Policy.Handle<Exception>().WithBehaviourAsync(async ex =>
             {
                 // Placeholder for more substantive async work.
                 Console.WriteLine("Handling " + ex.Message);
@@ -57,40 +57,42 @@ public class CustomAsyncSpecs
     }
 
     [Fact]
-    public void Reactive_policy_should_handle_exception()
+    public async Task Reactive_policy_should_handle_exception()
     {
         Exception handled = null;
-        var policy = Policy.Handle<InvalidOperationException>().WithBehaviourAsync(async ex => { handled = ex; await Task.CompletedTask; });
+        AsyncAddBehaviourIfHandlePolicy policy = Policy.Handle<InvalidOperationException>().WithBehaviourAsync(async ex => { handled = ex; await Task.CompletedTask; });
 
         Exception toThrow = new InvalidOperationException();
-        var executed = false;
+        bool executed = false;
 
-        policy.Awaiting(x => x.ExecuteAsync(() =>
-            {
-                executed = true;
-                throw toThrow;
-            }))
-            .Should().Throw<Exception>().Which.Should().Be(toThrow);
+        var ex = await policy.Awaiting(x => x.ExecuteAsync(() =>
+        {
+            executed = true;
+            throw toThrow;
+        }))
+            .Should().ThrowAsync<Exception>();
+        ex.Which.Should().Be(toThrow);
 
         executed.Should().BeTrue();
         handled.Should().Be(toThrow);
     }
 
     [Fact]
-    public void Reactive_policy_should_be_able_to_ignore_unhandled_exception()
+    public async Task Reactive_policy_should_be_able_to_ignore_unhandled_exception()
     {
         Exception handled = null;
-        var policy = Policy.Handle<InvalidOperationException>().WithBehaviourAsync(async ex => { handled = ex; await Task.CompletedTask; });
+        AsyncAddBehaviourIfHandlePolicy policy = Policy.Handle<InvalidOperationException>().WithBehaviourAsync(async ex => { handled = ex; await Task.CompletedTask; });
 
         Exception toThrow = new NotImplementedException();
-        var executed = false;
+        bool executed = false;
 
-        policy.Awaiting(x => x.ExecuteAsync(() =>
+        var ex = await policy.Awaiting(x => x.ExecuteAsync(() =>
             {
                 executed = true;
                 throw toThrow;
             }))
-            .Should().Throw<Exception>().Which.Should().Be(toThrow);
+            .Should().ThrowAsync<Exception>();
+        ex.Which.Should().Be(toThrow);
 
         executed.Should().BeTrue();
         handled.Should().Be(null);

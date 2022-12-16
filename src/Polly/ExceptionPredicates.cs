@@ -31,3 +31,4 @@ public class ExceptionPredicates
     /// </summary>
     public static readonly ExceptionPredicates None = new ExceptionPredicates();
 }
+

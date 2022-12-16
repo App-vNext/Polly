@@ -13,9 +13,9 @@ public class CustomTResultAsyncSpecs
     [Fact]
     public void Should_be_able_to_construct_active_policy()
     {
-        var construct = () =>
+        Action construct = () =>
         {
-            var policy = AsyncPreExecutePolicy<ResultPrimitive>.CreateAsync(async () =>
+            AsyncPreExecutePolicy<ResultPrimitive> policy = AsyncPreExecutePolicy<ResultPrimitive>.CreateAsync(async () =>
             {
                 // Placeholder for more substantive async work.
                 Console.WriteLine("Do something");
@@ -27,14 +27,14 @@ public class CustomTResultAsyncSpecs
     }
 
     [Fact]
-    public void Active_policy_should_execute()
+    public async Task Active_policy_should_execute()
     {
-        var preExecuted = false;
-        var policy = AsyncPreExecutePolicy<ResultPrimitive>.CreateAsync(() => { preExecuted = true; return Task.CompletedTask; });
+        bool preExecuted = false;
+        AsyncPreExecutePolicy<ResultPrimitive> policy = AsyncPreExecutePolicy<ResultPrimitive>.CreateAsync(() => { preExecuted = true; return Task.CompletedTask; });
 
-        var executed = false;
-        policy.Awaiting(x => x.ExecuteAsync(async () => { executed = true; await Task.CompletedTask; return ResultPrimitive.Undefined; }))
-            .Should().NotThrow();
+        bool executed = false;
+        await policy.Awaiting(x => x.ExecuteAsync(async () => { executed = true; await Task.CompletedTask; return ResultPrimitive.Undefined; }))
+            .Should().NotThrowAsync();
 
         executed.Should().BeTrue();
         preExecuted.Should().BeTrue();
@@ -43,9 +43,9 @@ public class CustomTResultAsyncSpecs
     [Fact]
     public void Should_be_able_to_construct_reactive_policy()
     {
-        var construct = () =>
+        Action construct = () =>
         {
-            var policy = Policy.HandleResult<ResultPrimitive>(ResultPrimitive.Fault).WithBehaviourAsync(async outcome =>
+            AsyncAddBehaviourIfHandlePolicy<ResultPrimitive> policy = Policy.HandleResult<ResultPrimitive>(ResultPrimitive.Fault).WithBehaviourAsync(async outcome =>
             {
                 // Placeholder for more substantive async work.
                 Console.WriteLine("Handling " + outcome.Result);
@@ -59,13 +59,13 @@ public class CustomTResultAsyncSpecs
     [Fact]
     public async Task Reactive_policy_should_handle_result()
     {
-        var handled = ResultPrimitive.Undefined;
-        var policy = Policy
+        ResultPrimitive handled = ResultPrimitive.Undefined;
+        AsyncAddBehaviourIfHandlePolicy<ResultPrimitive> policy = Policy
             .HandleResult<ResultPrimitive>(ResultPrimitive.Fault)
             .WithBehaviourAsync(async outcome => { handled = outcome.Result; await Task.CompletedTask; });
 
-        var toReturn = ResultPrimitive.Fault;
-        var executed = false;
+        ResultPrimitive toReturn = ResultPrimitive.Fault;
+        bool executed = false;
 
         (await policy.ExecuteAsync(async () =>
             {
@@ -83,12 +83,12 @@ public class CustomTResultAsyncSpecs
     public async Task Reactive_policy_should_be_able_to_ignore_unhandled_result()
     {
         ResultPrimitive? handled = null;
-        var policy = Policy
+        AsyncAddBehaviourIfHandlePolicy<ResultPrimitive> policy = Policy
             .HandleResult<ResultPrimitive>(ResultPrimitive.Fault)
             .WithBehaviourAsync(async outcome => { handled = outcome.Result; await Task.CompletedTask; });
 
-        var toReturn = ResultPrimitive.FaultYetAgain;
-        var executed = false;
+        ResultPrimitive toReturn = ResultPrimitive.FaultYetAgain;
+        bool executed = false;
 
         (await policy.ExecuteAsync(async () =>
             {

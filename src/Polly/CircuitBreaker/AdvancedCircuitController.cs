@@ -20,7 +20,7 @@ internal class AdvancedCircuitController<TResult> : CircuitStateController<TResu
         Action<DelegateResult<TResult>, CircuitState, TimeSpan, Context> onBreak, 
         Action<Context> onReset, 
         Action onHalfOpen
-    ) : base(durationOfBreak, onBreak, onReset, onHalfOpen)
+        ) : base(durationOfBreak, onBreak, onReset, onHalfOpen)
     {
         _metrics = samplingDuration.Ticks < ResolutionOfCircuitTimer * NumberOfWindows
             ? (IHealthMetrics)new SingleHealthMetrics(samplingDuration)
@@ -84,7 +84,7 @@ internal class AdvancedCircuitController<TResult> : CircuitStateController<TResu
                     _metrics.IncrementFailure_NeedsLock();
                     var healthCount = _metrics.GetHealthCount_NeedsLock();
 
-                    var throughput = healthCount.Total;
+                    int throughput = healthCount.Total;
                     if (throughput >= _minimumThroughput && ((double)healthCount.Failures) / throughput >= _failureThreshold)
                     {
                         Break_NeedsLock(context);

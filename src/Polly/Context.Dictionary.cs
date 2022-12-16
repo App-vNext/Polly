@@ -33,7 +33,7 @@ public partial class Context : IDictionary<string, object>, IDictionary, IReadOn
         wrappedDictionary = new Dictionary<string, object>(contextData);
     }
 
-    #region IDictionary<string,object> implementation
+#region IDictionary<string,object> implementation
 
     /// <inheritdoc cref="IDictionary{TKey,Value}"/>
     public ICollection<string> Keys => WrappedDictionary.Keys;
@@ -134,5 +134,5 @@ public partial class Context : IDictionary<string, object>, IDictionary, IReadOn
     /// <inheritdoc cref="IDictionary"/> 
     object IDictionary.this[object key] { get => ((IDictionary)WrappedDictionary)[key]; set => ((IDictionary)WrappedDictionary)[key] = value; }
 
-    #endregion
+#endregion
 }

@@ -20,15 +20,15 @@ internal class PollyConfig : ManualConfig
         var result = job
             .WithId("Polly" + (useNuGet ? string.Empty : "-dev"))
             .WithArguments(
-                new[]
-                {
-                    new MsBuildArgument("/p:BenchmarkFromNuGet=" + useNuGet),
-                    new MsBuildArgument("/p:SignAssembly=false"),
-                });
+            new[]
+            {
+                new MsBuildArgument("/p:BenchmarkFromNuGet=" + useNuGet),
+                new MsBuildArgument("/p:SignAssembly=false"),
+            });
 
         if (useNuGet)
         {
-            result = result.WithNuGet("Polly", "7.2.1");
+            result = result.WithNuGet("Polly", "7.2.3");
         }
 
         return result;

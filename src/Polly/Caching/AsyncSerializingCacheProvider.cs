@@ -38,7 +38,7 @@ public class AsyncSerializingCacheProvider<TSerialized> : IAsyncCacheProvider
     /// </returns>
     public async Task<(bool, object)> TryGetAsync(string key, CancellationToken cancellationToken, bool continueOnCapturedContext)
     {
-        (var cacheHit, var objectToDeserialize) = await _wrappedCacheProvider.TryGetAsync(key, cancellationToken, continueOnCapturedContext).ConfigureAwait(continueOnCapturedContext);
+        (bool cacheHit, TSerialized objectToDeserialize) = await _wrappedCacheProvider.TryGetAsync(key, cancellationToken, continueOnCapturedContext).ConfigureAwait(continueOnCapturedContext);
         return (cacheHit, cacheHit ? _serializer.Deserialize(objectToDeserialize) : null);
     }
 
@@ -55,12 +55,12 @@ public class AsyncSerializingCacheProvider<TSerialized> : IAsyncCacheProvider
         bool continueOnCapturedContext)
     {
         await _wrappedCacheProvider.PutAsync(
-            key,
-            _serializer.Serialize(value),
-            ttl,
-            cancellationToken,
-            continueOnCapturedContext
-        ).ConfigureAwait(continueOnCapturedContext);
+                    key,
+                    _serializer.Serialize(value),
+                    ttl,
+                    cancellationToken,
+                    continueOnCapturedContext
+                ).ConfigureAwait(continueOnCapturedContext);
     }
 }
 
@@ -99,7 +99,7 @@ public class AsyncSerializingCacheProvider<TResult, TSerialized> : IAsyncCachePr
     /// </returns>
     public async Task<(bool, TResult)> TryGetAsync(string key, CancellationToken cancellationToken, bool continueOnCapturedContext)
     {
-        (var cacheHit, var objectToDeserialize) = await _wrappedCacheProvider.TryGetAsync(key, cancellationToken, continueOnCapturedContext).ConfigureAwait(continueOnCapturedContext);
+        (bool cacheHit, TSerialized objectToDeserialize) = await _wrappedCacheProvider.TryGetAsync(key, cancellationToken, continueOnCapturedContext).ConfigureAwait(continueOnCapturedContext);
         return (cacheHit, cacheHit ? _serializer.Deserialize(objectToDeserialize) : default);
     }
 
@@ -116,11 +116,11 @@ public class AsyncSerializingCacheProvider<TResult, TSerialized> : IAsyncCachePr
         bool continueOnCapturedContext)
     {
         await _wrappedCacheProvider.PutAsync(
-            key,
-            _serializer.Serialize(value),
-            ttl,
-            cancellationToken,
-            continueOnCapturedContext
-        ).ConfigureAwait(continueOnCapturedContext);
+                    key,
+                    _serializer.Serialize(value),
+                    ttl,
+                    cancellationToken,
+                    continueOnCapturedContext
+                ).ConfigureAwait(continueOnCapturedContext);
     }
 }

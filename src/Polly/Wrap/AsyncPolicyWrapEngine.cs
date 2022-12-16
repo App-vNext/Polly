@@ -7,7 +7,7 @@ namespace Polly.Wrap;
 internal static class AsyncPolicyWrapEngine
 {
     internal static async Task<TResult> ImplementationAsync<TResult>(
-        Func<Context, CancellationToken, Task<TResult>> func,
+       Func<Context, CancellationToken, Task<TResult>> func,
         Context context,
         CancellationToken cancellationToken,
         bool continueOnCapturedContext,
@@ -19,14 +19,14 @@ internal static class AsyncPolicyWrapEngine
                 ctx, 
                 ct, 
                 continueOnCapturedContext
-            ).ConfigureAwait(continueOnCapturedContext), 
+                ).ConfigureAwait(continueOnCapturedContext), 
             context, 
             cancellationToken, 
             continueOnCapturedContext
-        ).ConfigureAwait(continueOnCapturedContext);
+            ).ConfigureAwait(continueOnCapturedContext);
 
     internal static async Task<TResult> ImplementationAsync<TResult>(
-        Func<Context, CancellationToken, Task<TResult>> func,
+       Func<Context, CancellationToken, Task<TResult>> func,
         Context context,
         CancellationToken cancellationToken,
         bool continueOnCapturedContext,
@@ -38,11 +38,11 @@ internal static class AsyncPolicyWrapEngine
                 ctx,
                 ct,
                 continueOnCapturedContext
-            ).ConfigureAwait(continueOnCapturedContext),
+                ).ConfigureAwait(continueOnCapturedContext),
             context,
             cancellationToken,
             continueOnCapturedContext
-        ).ConfigureAwait(continueOnCapturedContext);
+            ).ConfigureAwait(continueOnCapturedContext);
 
     internal static async Task<TResult> ImplementationAsync<TResult>(
         Func<Context, CancellationToken, Task<TResult>> func,
@@ -57,19 +57,19 @@ internal static class AsyncPolicyWrapEngine
                 ctx,
                 ct,
                 continueOnCapturedContext
-            ).ConfigureAwait(continueOnCapturedContext),
+                ).ConfigureAwait(continueOnCapturedContext),
             context,
             cancellationToken,
             continueOnCapturedContext
-        ).ConfigureAwait(continueOnCapturedContext);
+            ).ConfigureAwait(continueOnCapturedContext);
 
     internal static async Task<TResult> ImplementationAsync<TResult>(
-        Func<Context, CancellationToken, Task<TResult>> func,
-        Context context,
-        CancellationToken cancellationToken,
-        bool continueOnCapturedContext,
-        IAsyncPolicy outerPolicy,
-        IAsyncPolicy innerPolicy)
+       Func<Context, CancellationToken, Task<TResult>> func,
+       Context context,
+       CancellationToken cancellationToken,
+       bool continueOnCapturedContext,
+       IAsyncPolicy outerPolicy,
+       IAsyncPolicy innerPolicy)
         => await outerPolicy.ExecuteAsync<TResult>(
             async (ctx, ct) => await innerPolicy.ExecuteAsync<TResult>(
                 func,
@@ -95,10 +95,10 @@ internal static class AsyncPolicyWrapEngine
                 ctx,
                 ct,
                 continueOnCapturedContext
-            ).ConfigureAwait(continueOnCapturedContext),
+                ).ConfigureAwait(continueOnCapturedContext),
             context,
             cancellationToken,
             continueOnCapturedContext
-        ).ConfigureAwait(continueOnCapturedContext);
+            ).ConfigureAwait(continueOnCapturedContext);
 
 }

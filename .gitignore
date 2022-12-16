@@ -13,7 +13,6 @@ TestResults
 *.user
 *.sln.docstates
 .vs/
-.vscode/
 .idea/
 .ionide/
 
@@ -124,3 +123,4 @@ tools
 *.lock.json
 *.nuget.targets
 *.nuget.props
+coverage.*.json

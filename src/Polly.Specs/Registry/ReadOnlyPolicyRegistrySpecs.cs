@@ -12,10 +12,12 @@ public class ReadOnlyPolicyRegistrySpecs
 {
     IPolicyRegistry<string> _registry;
 
-    IReadOnlyPolicyRegistry<string> ReadOnlyRegistry => _registry;
+    IReadOnlyPolicyRegistry<string> ReadOnlyRegistry { get{ return _registry; } }
 
-    public ReadOnlyPolicyRegistrySpecs() =>
+    public ReadOnlyPolicyRegistrySpecs()
+    {
         _registry = new PolicyRegistry();
+    }
 
     #region Tests for retrieving policy
 
@@ -23,7 +25,7 @@ public class ReadOnlyPolicyRegistrySpecs
     public void Should_be_able_to_retrieve_stored_Policy_using_TryGet()
     {
         Policy policy = Policy.NoOp();
-        var key = Guid.NewGuid().ToString();
+        string key = Guid.NewGuid().ToString();
         Policy outPolicy = null;
 
         _registry.Add(key, policy);
@@ -35,7 +37,7 @@ public class ReadOnlyPolicyRegistrySpecs
     public void Should_be_able_to_retrieve_stored_PolicyTResult_using_TryGet()
     {
         Policy<ResultPrimitive> policy = Policy<ResultPrimitive>.HandleResult(ResultPrimitive.Fault).Retry();
-        var key = Guid.NewGuid().ToString();
+        string key = Guid.NewGuid().ToString();
         Policy<ResultPrimitive> outPolicy = null;
 
         _registry.Add(key, policy);
@@ -47,7 +49,7 @@ public class ReadOnlyPolicyRegistrySpecs
     public void Should_be_able_to_retrieve_stored_Policy_by_interface_using_TryGet()
     {
         ISyncPolicy<ResultPrimitive> policy = Policy<ResultPrimitive>.HandleResult(ResultPrimitive.Fault).Retry();
-        var key = Guid.NewGuid().ToString();
+        string key = Guid.NewGuid().ToString();
         ISyncPolicy<ResultPrimitive> outPolicy = null;
 
         _registry.Add(key, policy);
@@ -59,7 +61,7 @@ public class ReadOnlyPolicyRegistrySpecs
     public void Should_be_able_to_retrieve_stored_Policy_using_Get()
     {
         Policy policy = Policy.NoOp();
-        var key = Guid.NewGuid().ToString();
+        string key = Guid.NewGuid().ToString();
 
         _registry.Add(key, policy);
         ReadOnlyRegistry.Get<Policy>(key).Should().BeSameAs(policy);
@@ -69,7 +71,7 @@ public class ReadOnlyPolicyRegistrySpecs
     public void Should_be_able_to_retrieve_stored_PolicyTResult_using_Get()
     {
         Policy<ResultPrimitive> policy = Policy<ResultPrimitive>.HandleResult(ResultPrimitive.Fault).Retry();
-        var key = Guid.NewGuid().ToString();
+        string key = Guid.NewGuid().ToString();
 
         _registry.Add(key, policy);
         ReadOnlyRegistry.Get<Policy<ResultPrimitive>>(key).Should().BeSameAs(policy);
@@ -79,7 +81,7 @@ public class ReadOnlyPolicyRegistrySpecs
     public void Should_be_able_to_retrieve_stored_Policy_by_interface_using_Get()
     {
         ISyncPolicy<ResultPrimitive> policy = Policy<ResultPrimitive>.HandleResult(ResultPrimitive.Fault).Retry();
-        var key = Guid.NewGuid().ToString();
+        string key = Guid.NewGuid().ToString();
 
         _registry.Add(key, policy);
         ReadOnlyRegistry.Get<ISyncPolicy<ResultPrimitive>>(key).Should().BeSameAs(policy);
@@ -89,7 +91,7 @@ public class ReadOnlyPolicyRegistrySpecs
     public void Should_be_able_to_retrieve_stored_Policy_using_Indexer()
     {
         Policy policy = Policy.NoOp();
-        var key = Guid.NewGuid().ToString();
+        string key = Guid.NewGuid().ToString();
 
         _registry.Add(key, policy);
         ReadOnlyRegistry[key].Should().BeSameAs(policy);
@@ -99,7 +101,7 @@ public class ReadOnlyPolicyRegistrySpecs
     public void Should_be_able_to_retrieve_stored_PolicyTResult_using_Indexer()
     {
         Policy<ResultPrimitive> policy = Policy<ResultPrimitive>.HandleResult(ResultPrimitive.Fault).Retry();
-        var key = Guid.NewGuid().ToString();
+        string key = Guid.NewGuid().ToString();
 
         _registry.Add(key, policy);
         ReadOnlyRegistry[key].Should().BeSameAs(policy);
@@ -109,7 +111,7 @@ public class ReadOnlyPolicyRegistrySpecs
     public void Should_be_able_to_retrieve_stored_Policy_by_interface_using_Indexer()
     {
         ISyncPolicy<ResultPrimitive> policy = Policy<ResultPrimitive>.HandleResult(ResultPrimitive.Fault).Retry();
-        var key = Guid.NewGuid().ToString();
+        string key = Guid.NewGuid().ToString();
 
         _registry.Add(key, policy);
         ReadOnlyRegistry[key].Should().BeSameAs(policy);
@@ -118,9 +120,9 @@ public class ReadOnlyPolicyRegistrySpecs
     [Fact]
     public void Should_not_throw_while_retrieving_when_key_does_not_exist_using_TryGet()
     {
-        var key = Guid.NewGuid().ToString();
+        string key = Guid.NewGuid().ToString();
         Policy outPolicy = null;
-        var result = false;
+        bool result = false;
 
         ReadOnlyRegistry.Invoking(r => result = r.TryGet(key, out outPolicy))
             .Should().NotThrow();
@@ -131,9 +133,9 @@ public class ReadOnlyPolicyRegistrySpecs
     [Fact]
     public void Should_not_throw_while_retrieving_when_key_does_not_exist_using_TryGetPolicyTResult()
     {
-        var key = Guid.NewGuid().ToString();
+        string key = Guid.NewGuid().ToString();
         Policy<ResultPrimitive> outPolicy = null;
-        var result = false;
+        bool result = false;
 
         ReadOnlyRegistry.Invoking(r => result = r.TryGet(key, out outPolicy))
             .Should().NotThrow();
@@ -144,9 +146,9 @@ public class ReadOnlyPolicyRegistrySpecs
     [Fact]
     public void Should_not_throw_while_retrieving_when_key_does_not_exist_using_TryGetPolicy_by_interface()
     {
-        var key = Guid.NewGuid().ToString();
+        string key = Guid.NewGuid().ToString();
         ISyncPolicy<ResultPrimitive> outPolicy = null;
-        var result = false;
+        bool result = false;
 
         ReadOnlyRegistry.Invoking(r => result = r.TryGet<ISyncPolicy<ResultPrimitive>>(key, out outPolicy))
             .Should().NotThrow();
@@ -157,7 +159,7 @@ public class ReadOnlyPolicyRegistrySpecs
     [Fact]
     public void Should_throw_while_retrieving_using_Get_when_key_does_not_exist()
     {
-        var key = Guid.NewGuid().ToString();
+        string key = Guid.NewGuid().ToString();
         Policy policy = null;
         ReadOnlyRegistry.Invoking(r => policy = r.Get<Policy>(key))
             .Should().Throw<KeyNotFoundException>();
@@ -166,7 +168,7 @@ public class ReadOnlyPolicyRegistrySpecs
     [Fact]
     public void Should_throw_while_retrieving_using_GetTResult_when_key_does_not_exist()
     {
-        var key = Guid.NewGuid().ToString();
+        string key = Guid.NewGuid().ToString();
         Policy<ResultPrimitive> policy = null;
         ReadOnlyRegistry.Invoking(r => policy = r.Get<Policy<ResultPrimitive>>(key))
             .Should().Throw<KeyNotFoundException>();
@@ -175,7 +177,7 @@ public class ReadOnlyPolicyRegistrySpecs
     [Fact]
     public void Should_throw_while_retrieving_using_Get_by_interface_when_key_does_not_exist()
     {
-        var key = Guid.NewGuid().ToString();
+        string key = Guid.NewGuid().ToString();
         ISyncPolicy<ResultPrimitive> policy = null;
         ReadOnlyRegistry.Invoking(r => policy = r.Get<ISyncPolicy<ResultPrimitive>>(key))
             .Should().Throw<KeyNotFoundException>();
@@ -184,7 +186,7 @@ public class ReadOnlyPolicyRegistrySpecs
     [Fact]
     public void Should_throw_while_retrieving_when_key_does_not_exist_using_Indexer()
     {
-        var key = Guid.NewGuid().ToString();
+        string key = Guid.NewGuid().ToString();
         IsPolicy outPolicy = null;
         ReadOnlyRegistry.Invoking(r => outPolicy = r[key])
             .Should().Throw<KeyNotFoundException>();
@@ -234,12 +236,12 @@ public class ReadOnlyPolicyRegistrySpecs
     public void Should_be_able_to_check_if_key_exists()
     {
         Policy policy = Policy.NoOp();
-        var key = Guid.NewGuid().ToString();
+        string key = Guid.NewGuid().ToString();
 
         _registry.Add(key, policy);
         ReadOnlyRegistry.ContainsKey(key).Should().BeTrue();
 
-        var key2 = Guid.NewGuid().ToString();
+        string key2 = Guid.NewGuid().ToString();
         ReadOnlyRegistry.ContainsKey(key2).Should().BeFalse();
     }
 
@@ -251,7 +253,7 @@ public class ReadOnlyPolicyRegistrySpecs
             .Should().Throw<ArgumentNullException>();
     }
     #endregion
-        
+    
     #region Tests for the GetEnumerator method
 
     [Fact]
@@ -272,7 +274,7 @@ public class ReadOnlyPolicyRegistrySpecs
     [Fact]
     public void Policies_Should_Be_Added_To_The_Registry_When_Using_Collection_Initializer_Syntax()
     {
-        var key = Guid.NewGuid().ToString();
+        string key = Guid.NewGuid().ToString();
         var policy = Policy.NoOp();
 
         var testRegistry = new PolicyRegistry
@@ -280,7 +282,10 @@ public class ReadOnlyPolicyRegistrySpecs
             {key, policy}
         };
 
-        testRegistry.Should().Equal(new KeyValuePair<string, IsPolicy>(key, policy));
+        testRegistry.Should().Equal(new Dictionary<string, IsPolicy>
+        {
+            {key, policy}
+        });
     }
     #endregion
 }

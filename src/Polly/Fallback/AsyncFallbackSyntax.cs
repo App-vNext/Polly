@@ -26,7 +26,7 @@ public static class AsyncFallbackSyntax
         return policyBuilder.FallbackAsync(
             fallbackAction,
             doNothing
-        );
+            );
     }
 
     /// <summary>
@@ -46,7 +46,7 @@ public static class AsyncFallbackSyntax
         return policyBuilder.FallbackAsync(
             (_, _, ct) => fallbackAction(ct),
             (outcome, _) => onFallbackAsync(outcome)
-        );
+            );
     }
 
     /// <summary>
@@ -101,7 +101,7 @@ public static class AsyncFallbackTResultSyntax
         return policyBuilder.FallbackAsync(
             _ => Task.FromResult(fallbackValue),
             doNothing
-        );
+            );
     }
 
     /// <summary>
@@ -119,7 +119,7 @@ public static class AsyncFallbackTResultSyntax
         return policyBuilder.FallbackAsync(
             fallbackAction,
             doNothing
-        );
+            );
     }
 
     /// <summary>
@@ -137,7 +137,7 @@ public static class AsyncFallbackTResultSyntax
         return policyBuilder.FallbackAsync(
             (_, _, _) => Task.FromResult(fallbackValue),
             (outcome, _) => onFallbackAsync(outcome)
-        );
+            );
     }
 
     /// <summary>
@@ -157,7 +157,7 @@ public static class AsyncFallbackTResultSyntax
         return policyBuilder.FallbackAsync(
             (_, _, ct) => fallbackAction(ct),
             (outcome, _) => onFallbackAsync(outcome)
-        );
+            );
     }
 
     /// <summary>
@@ -175,7 +175,7 @@ public static class AsyncFallbackTResultSyntax
         return policyBuilder.FallbackAsync(
             (_, _, _) => Task.FromResult(fallbackValue),
             onFallbackAsync
-        );
+            );
     }
 
     /// <summary>
@@ -210,8 +210,8 @@ public static class AsyncFallbackTResultSyntax
         if (onFallbackAsync == null) throw new ArgumentNullException(nameof(onFallbackAsync));
 
         return new AsyncFallbackPolicy<TResult>(
-            policyBuilder,
-            onFallbackAsync,
-            fallbackAction);
+                policyBuilder,
+                onFallbackAsync,
+                fallbackAction);
     }
 }

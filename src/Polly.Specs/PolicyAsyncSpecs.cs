@@ -14,7 +14,7 @@ public class PolicyAsyncSpecs
     [Fact]
     public async Task Executing_the_policy_action_should_execute_the_specified_async_action()
     {
-        var executed = false;
+        bool executed = false;
 
         var policy = Policy
             .Handle<DivideByZeroException>()
@@ -37,7 +37,7 @@ public class PolicyAsyncSpecs
             .Handle<DivideByZeroException>()
             .RetryAsync((_, _) => { });
 
-        var result = await policy.ExecuteAsync(() => Task.FromResult(2));
+        int result = await policy.ExecuteAsync(() => Task.FromResult(2));
 
         result.Should()
             .Be(2);
@@ -165,56 +165,56 @@ public class PolicyAsyncSpecs
     #region Context tests
 
     [Fact]
-    public void Executing_the_policy_action_should_throw_when_context_data_is_null()
+    public async Task Executing_the_policy_action_should_throw_when_context_data_is_null()
     {
         var policy = Policy
             .Handle<DivideByZeroException>()
             .RetryAsync((_, _, _) => { });
 
-        policy.Awaiting(p => p.ExecuteAsync(_ => TaskHelper.EmptyTask, (IDictionary<string, object>)null))
-            .Should().Throw<ArgumentNullException>();
+        await policy.Awaiting(p => p.ExecuteAsync(_ => TaskHelper.EmptyTask, (IDictionary<string, object>)null))
+              .Should().ThrowAsync<ArgumentNullException>();
     }
 
     [Fact]
-    public void Executing_the_policy_action_should_throw_when_context_is_null()
+    public async Task Executing_the_policy_action_should_throw_when_context_is_null()
     {
         var policy = Policy
             .Handle<DivideByZeroException>()
             .RetryAsync((_, _, _) => { });
 
-        policy.Awaiting(p => p.ExecuteAsync(_ => TaskHelper.EmptyTask, (Context)null))
-            .Should().Throw<ArgumentNullException>().And
-            .ParamName.Should().Be("context");
+        var ex = await policy.Awaiting(p => p.ExecuteAsync(_ => TaskHelper.EmptyTask, (Context)null))
+            .Should().ThrowAsync<ArgumentNullException>();
+        ex.And.ParamName.Should().Be("context");
     }
 
     [Fact]
-    public void Executing_the_policy_function_should_throw_when_context_data_is_null()
+    public async Task Executing_the_policy_function_should_throw_when_context_data_is_null()
     {
         var policy = Policy
             .Handle<DivideByZeroException>()
             .RetryAsync((_, _, _) => { });
 
-        policy.Awaiting(p => p.ExecuteAsync(_ => Task.FromResult(2), (IDictionary<string, object>)null))
-            .Should().Throw<ArgumentNullException>();
+        await policy.Awaiting(p => p.ExecuteAsync(_ => Task.FromResult(2), (IDictionary<string, object>)null))
+              .Should().ThrowAsync<ArgumentNullException>();
     }
 
     [Fact]
-    public void Executing_the_policy_function_should_throw_when_context_is_null()
+    public async Task Executing_the_policy_function_should_throw_when_context_is_null()
     {
         var policy = Policy
             .Handle<DivideByZeroException>()
             .RetryAsync((_, _, _) => { });
 
-        policy.Awaiting(p => p.ExecuteAsync(_ => Task.FromResult(2), (Context)null))
-            .Should().Throw<ArgumentNullException>().And
-            .ParamName.Should().Be("context");
+        var ex = await policy.Awaiting(p => p.ExecuteAsync(_ => Task.FromResult(2), (Context)null))
+              .Should().ThrowAsync<ArgumentNullException>();
+        ex.And.ParamName.Should().Be("context");
     }
 
     [Fact]
     public async Task Executing_the_policy_function_should_pass_context_to_executed_delegate()
     {
-        var operationKey = "SomeKey";
-        var executionContext = new Context(operationKey);
+        string operationKey = "SomeKey";
+        Context executionContext = new Context(operationKey);
         Context capturedContext = null;
 
         var policy = Policy.NoOpAsync();
@@ -225,56 +225,56 @@ public class PolicyAsyncSpecs
     }
 
     [Fact]
-    public void Execute_and_capturing_the_policy_action_should_throw_when_context_data_is_null()
+    public async Task Execute_and_capturing_the_policy_action_should_throw_when_context_data_is_null()
     {
         var policy = Policy
             .Handle<DivideByZeroException>()
             .RetryAsync((_, _, _) => { });
 
-        policy.Awaiting(p => p.ExecuteAndCaptureAsync(_ => TaskHelper.EmptyTask, (IDictionary<string, object>)null))
-            .Should().Throw<ArgumentNullException>();
+        await policy.Awaiting(p => p.ExecuteAndCaptureAsync(_ => TaskHelper.EmptyTask, (IDictionary<string, object>)null))
+              .Should().ThrowAsync<ArgumentNullException>();
     }
 
     [Fact]
-    public void Execute_and_capturing_the_policy_action_should_throw_when_context_is_null()
+    public async Task Execute_and_capturing_the_policy_action_should_throw_when_context_is_null()
     {
         var policy = Policy
             .Handle<DivideByZeroException>()
             .RetryAsync((_, _, _) => { });
 
-        policy.Awaiting(p => p.ExecuteAndCaptureAsync(_ => TaskHelper.EmptyTask, (Context)null))
-            .Should().Throw<ArgumentNullException>().And
-            .ParamName.Should().Be("context");
+        var ex = await policy.Awaiting(p => p.ExecuteAndCaptureAsync(_ => TaskHelper.EmptyTask, (Context)null))
+            .Should().ThrowAsync<ArgumentNullException>();
+        ex.And.ParamName.Should().Be("context");
     }
 
     [Fact]
-    public void Execute_and_capturing_the_policy_function_should_throw_when_context_data_is_null()
+    public async Task Execute_and_capturing_the_policy_function_should_throw_when_context_data_is_null()
     {
         var policy = Policy
             .Handle<DivideByZeroException>()
             .RetryAsync((_, _, _) => { });
 
-        policy.Awaiting(p => p.ExecuteAndCaptureAsync(_ => Task.FromResult(2), (IDictionary<string, object>)null))
-            .Should().Throw<ArgumentNullException>();
+        await policy.Awaiting(p => p.ExecuteAndCaptureAsync(_ => Task.FromResult(2), (IDictionary<string, object>)null))
+              .Should().ThrowAsync<ArgumentNullException>();
     }
 
     [Fact]
-    public void Execute_and_capturing_the_policy_function_should_throw_when_context_is_null()
+    public async Task Execute_and_capturing_the_policy_function_should_throw_when_context_is_null()
     {
         var policy = Policy
             .Handle<DivideByZeroException>()
             .RetryAsync((_, _, _) => { });
 
-        policy.Awaiting(p => p.ExecuteAndCaptureAsync(_ => Task.FromResult(2), (Context)null))
-            .Should().Throw<ArgumentNullException>().And
-            .ParamName.Should().Be("context");
+        var ex = await policy.Awaiting(p => p.ExecuteAndCaptureAsync(_ => Task.FromResult(2), (Context)null))
+              .Should().ThrowAsync<ArgumentNullException>();
+        ex.And.ParamName.Should().Be("context");
     }
 
     [Fact]
     public async Task Execute_and_capturing_the_policy_function_should_pass_context_to_executed_delegate()
     {
-        var operationKey = "SomeKey";
-        var executionContext = new Context(operationKey);
+        string operationKey = "SomeKey";
+        Context executionContext = new Context(operationKey);
         Context capturedContext = null;
 
         var policy = Policy.NoOpAsync();
@@ -287,8 +287,8 @@ public class PolicyAsyncSpecs
     [Fact]
     public async Task Execute_and_capturing_the_policy_function_should_pass_context_to_PolicyResult()
     {
-        var operationKey = "SomeKey";
-        var executionContext = new Context(operationKey);
+        string operationKey = "SomeKey";
+        Context executionContext = new Context(operationKey);
 
         var policy = Policy.NoOpAsync();
 

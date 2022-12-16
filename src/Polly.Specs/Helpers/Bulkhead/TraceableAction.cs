@@ -23,7 +23,7 @@ public class TraceableAction : IDisposable
 
     public TraceableActionStatus Status
     {
-        get => _status;
+        get { return _status; }
         set
         {
             _status = value;
@@ -49,14 +49,14 @@ public class TraceableAction : IDisposable
     {
         return ExecuteThroughSyncBulkheadOuter(
             () => bulkhead.Execute(_ => ExecuteThroughSyncBulkheadInner(), CancellationSource.Token)
-        );
+            );
     }
 
     public Task ExecuteOnBulkhead<TResult>(BulkheadPolicy<TResult> bulkhead)
     {
         return ExecuteThroughSyncBulkheadOuter(
             () => bulkhead.Execute(_ => { ExecuteThroughSyncBulkheadInner(); return default; }, CancellationSource.Token)
-        );
+            );
     }
 
     // Note re TaskCreationOptions.LongRunning: Testing the parallelization of the bulkhead policy efficiently requires the ability to start large numbers of parallel tasks in a short space of time.  The ThreadPool's algorithm of only injecting extra threads (when necessary) at a rate of two-per-second however makes high-volume tests using the ThreadPool both slow and flaky.  For PCL tests further, ThreadPool.SetMinThreads(...) is not available, to mitigate this.  Using TaskCreationOptions.LongRunning allows us to force tasks to be started near-instantly on non-ThreadPool threads.
@@ -69,51 +69,51 @@ public class TraceableAction : IDisposable
         Status = TraceableActionStatus.StartRequested;
 
         return Task.Factory.StartNew(() =>
+        {
+            try
             {
-                try
-                {
-                    Status = TraceableActionStatus.QueueingForSemaphore;
+                Status = TraceableActionStatus.QueueingForSemaphore;
 
-                    executeThroughBulkheadInner();
-                }
-                catch (BulkheadRejectedException)
+                executeThroughBulkheadInner();
+            }
+            catch (BulkheadRejectedException)
+            {
+                Status = TraceableActionStatus.Rejected;
+            }
+            catch (OperationCanceledException)
+            {
+                if (Status != TraceableActionStatus.Canceled)
                 {
-                    Status = TraceableActionStatus.Rejected;
-                }
-                catch (OperationCanceledException)
+                    _testOutputHelper.WriteLine(_id + "Caught queue cancellation.");
+                    Status = TraceableActionStatus.Canceled;
+                }  // else: was execution cancellation rethrown: ignore
+            }
+            catch (AggregateException ae)
+            {
+                if (ae.InnerExceptions.Count == 1 && ae.InnerException is OperationCanceledException)
                 {
                     if (Status != TraceableActionStatus.Canceled)
                     {
                         _testOutputHelper.WriteLine(_id + "Caught queue cancellation.");
                         Status = TraceableActionStatus.Canceled;
-                    }  // else: was execution cancellation rethrown: ignore
+                    } // else: was execution cancellation rethrown: ignore
                 }
-                catch (AggregateException ae)
-                {
-                    if (ae.InnerExceptions.Count == 1 && ae.InnerException is OperationCanceledException)
-                    {
-                        if (Status != TraceableActionStatus.Canceled)
-                        {
-                            _testOutputHelper.WriteLine(_id + "Caught queue cancellation.");
-                            Status = TraceableActionStatus.Canceled;
-                        } // else: was execution cancellation rethrown: ignore
-                    }
-                    else throw;
-                }
-                catch (Exception e)
-                {
-                    _testOutputHelper.WriteLine(_id + "Caught unexpected exception during execution: " + e);
+                else throw;
+            }
+            catch (Exception e)
+            {
+                _testOutputHelper.WriteLine(_id + "Caught unexpected exception during execution: " + e);
 
-                    Status = TraceableActionStatus.Faulted;
-                }
-                finally
-                {
-                    // Exiting the execution successfully is also a change of state (on which assertions may be occurring) in that it releases a semaphore slot sucessfully.
-                    // There can also be races between assertions and executions-responding-to-previous-state-changes, so a second signal presents another opportunity for assertions to be run.
-                    SignalStateChange();
-                }
-            },
-            TaskCreationOptions.LongRunning);
+                Status = TraceableActionStatus.Faulted;
+            }
+            finally
+            {
+                // Exiting the execution successfully is also a change of state (on which assertions may be occurring) in that it releases a semaphore slot sucessfully.
+                // There can also be races between assertions and executions-responding-to-previous-state-changes, so a second signal presents another opportunity for assertions to be run.
+                SignalStateChange();
+            }
+        },
+        TaskCreationOptions.LongRunning);
     }
 
     private void ExecuteThroughSyncBulkheadInner()

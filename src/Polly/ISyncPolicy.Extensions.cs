@@ -14,3 +14,4 @@ public static class ISyncPolicyExtensions
     public static ISyncPolicy<TResult> AsPolicy<TResult>(this ISyncPolicy policy)
         => policy.Wrap(Policy.NoOp<TResult>());
 }
+

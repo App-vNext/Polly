@@ -33,3 +33,4 @@ public class ResultPredicates<TResult>
     /// </summary>
     public static readonly ResultPredicates<TResult> None = new ResultPredicates<TResult>();
 }
+

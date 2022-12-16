@@ -52,15 +52,15 @@ public class BulkheadSpecs : BulkheadSpecsBase
     [Fact]
     public void Should_call_onBulkheadRejected_with_passed_context()
     {
-        var operationKey = "SomeKey";
-        var contextPassedToExecute = new Context(operationKey);
+        string operationKey = "SomeKey";
+        Context contextPassedToExecute = new Context(operationKey);
 
         Context contextPassedToOnRejected = null;
         Action<Context> onRejected = ctx => { contextPassedToOnRejected = ctx; };
 
-        using (var bulkhead = Policy.Bulkhead(1, onRejected))
+        using (BulkheadPolicy bulkhead = Policy.Bulkhead(1, onRejected))
         {
-            var tcs = new TaskCompletionSource<object>();
+            TaskCompletionSource<object> tcs = new TaskCompletionSource<object>();
 
             Task.Run(() => { bulkhead.Execute(() => { tcs.Task.Wait(); }); });
 
@@ -82,11 +82,15 @@ public class BulkheadSpecs : BulkheadSpecsBase
 
     #region Bulkhead behaviour
 
-    protected override IBulkheadPolicy GetBulkhead(int maxParallelization, int maxQueuingActions) =>
-        Policy.Bulkhead(maxParallelization, maxQueuingActions);
+    protected override IBulkheadPolicy GetBulkhead(int maxParallelization, int maxQueuingActions)
+    {
+        return Policy.Bulkhead(maxParallelization, maxQueuingActions);
+    }
 
-    protected override Task ExecuteOnBulkhead(IBulkheadPolicy bulkhead, TraceableAction action) =>
-        action.ExecuteOnBulkhead((BulkheadPolicy) bulkhead);
+    protected override Task ExecuteOnBulkhead(IBulkheadPolicy bulkhead, TraceableAction action)
+    {
+        return action.ExecuteOnBulkhead((BulkheadPolicy) bulkhead);
+    }
 
     #endregion
 

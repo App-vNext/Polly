@@ -21,149 +21,149 @@ public class RetryAsyncSpecs
         Action<Exception, int> onRetry = (_, _) => { };
 
         Action policy = () => Policy
-            .Handle<DivideByZeroException>()
-            .RetryAsync(-1, onRetry);
+                                  .Handle<DivideByZeroException>()
+                                  .RetryAsync(-1, onRetry);
 
         policy.Should().Throw<ArgumentOutOfRangeException>().And
-            .ParamName.Should().Be("retryCount");
+              .ParamName.Should().Be("retryCount");
     }
 
     [Fact]
-    public void Should_not_throw_when_specified_exception_thrown_same_number_of_times_as_retry_count()
+    public async Task Should_not_throw_when_specified_exception_thrown_same_number_of_times_as_retry_count()
     {
         var policy = Policy
             .Handle<DivideByZeroException>()
             .RetryAsync(3);
 
-        policy.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>(3))
-            .Should().NotThrow();
+        await policy.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>(3))
+              .Should().NotThrowAsync();
     }
 
     [Fact]
-    public void Should_not_throw_when_one_of_the_specified_exceptions_thrown_same_number_of_times_as_retry_count()
-    {
-        var policy = Policy
-            .Handle<DivideByZeroException>()
-            .Or<ArgumentException>()
-            .RetryAsync(3);
-
-        policy.Awaiting(x => x.RaiseExceptionAsync<ArgumentException>(3))
-            .Should().NotThrow();
-    }
-
-    [Fact]
-    public void Should_not_throw_when_specified_exception_thrown_less_number_of_times_than_retry_count()
-    {
-        var policy = Policy
-            .Handle<DivideByZeroException>()
-            .RetryAsync(3);
-
-        policy.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-            .Should().NotThrow();
-    }
-
-    [Fact]
-    public void Should_not_throw_when_one_of_the_specified_exceptions_thrown_less_number_of_times_than_retry_count()
+    public async Task Should_not_throw_when_one_of_the_specified_exceptions_thrown_same_number_of_times_as_retry_count()
     {
         var policy = Policy
             .Handle<DivideByZeroException>()
             .Or<ArgumentException>()
             .RetryAsync(3);
 
-        policy.Awaiting(x => x.RaiseExceptionAsync<ArgumentException>())
-            .Should().NotThrow();
+        await policy.Awaiting(x => x.RaiseExceptionAsync<ArgumentException>(3))
+              .Should().NotThrowAsync();
     }
 
     [Fact]
-    public void Should_throw_when_specified_exception_thrown_more_times_then_retry_count()
+    public async Task Should_not_throw_when_specified_exception_thrown_less_number_of_times_than_retry_count()
     {
         var policy = Policy
             .Handle<DivideByZeroException>()
             .RetryAsync(3);
 
-        policy.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>(3 + 1))
-            .Should().Throw<DivideByZeroException>();
+        await policy.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+              .Should().NotThrowAsync();
     }
 
     [Fact]
-    public void Should_throw_when_one_of_the_specified_exceptions_are_thrown_more_times_then_retry_count()
+    public async Task Should_not_throw_when_one_of_the_specified_exceptions_thrown_less_number_of_times_than_retry_count()
     {
         var policy = Policy
             .Handle<DivideByZeroException>()
             .Or<ArgumentException>()
             .RetryAsync(3);
 
-        policy.Awaiting(x => x.RaiseExceptionAsync<ArgumentException>(3 + 1))
-            .Should().Throw<ArgumentException>();
+        await policy.Awaiting(x => x.RaiseExceptionAsync<ArgumentException>())
+              .Should().NotThrowAsync();
     }
 
     [Fact]
-    public void Should_throw_when_exception_thrown_is_not_the_specified_exception_type()
+    public async Task Should_throw_when_specified_exception_thrown_more_times_then_retry_count()
+    {
+        var policy = Policy
+            .Handle<DivideByZeroException>()
+            .RetryAsync(3);
+
+        await policy.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>(3 + 1))
+              .Should().ThrowAsync<DivideByZeroException>();
+    }
+
+    [Fact]
+    public async Task Should_throw_when_one_of_the_specified_exceptions_are_thrown_more_times_then_retry_count()
+    {
+        var policy = Policy
+            .Handle<DivideByZeroException>()
+            .Or<ArgumentException>()
+            .RetryAsync(3);
+
+        await policy.Awaiting(x => x.RaiseExceptionAsync<ArgumentException>(3 + 1))
+              .Should().ThrowAsync<ArgumentException>();
+    }
+
+    [Fact]
+    public async Task Should_throw_when_exception_thrown_is_not_the_specified_exception_type()
     {
         var policy = Policy
             .Handle<DivideByZeroException>()
             .RetryAsync();
 
-        policy.Awaiting(x => x.RaiseExceptionAsync<NullReferenceException>())
-            .Should().Throw<NullReferenceException>();
+        await policy.Awaiting(x => x.RaiseExceptionAsync<NullReferenceException>())
+              .Should().ThrowAsync<NullReferenceException>();
     }
 
     [Fact]
-    public void Should_throw_when_exception_thrown_is_not_one_of_the_specified_exception_types()
+    public async Task Should_throw_when_exception_thrown_is_not_one_of_the_specified_exception_types()
     {
         var policy = Policy
             .Handle<DivideByZeroException>()
             .Or<ArgumentException>()
             .RetryAsync();
 
-        policy.Awaiting(x => x.RaiseExceptionAsync<NullReferenceException>())
-            .Should().Throw<NullReferenceException>();
+        await policy.Awaiting(x => x.RaiseExceptionAsync<NullReferenceException>())
+              .Should().ThrowAsync<NullReferenceException>();
     }
 
     [Fact]
-    public void Should_throw_when_specified_exception_predicate_is_not_satisfied()
+    public async Task Should_throw_when_specified_exception_predicate_is_not_satisfied()
     {
         var policy = Policy
             .Handle<DivideByZeroException>(_ => false)
             .RetryAsync();
 
-        policy.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-            .Should().Throw<DivideByZeroException>();
+        await policy.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+              .Should().ThrowAsync<DivideByZeroException>();
     }
 
     [Fact]
-    public void Should_throw_when_none_of_the_specified_exception_predicates_are_satisfied()
+    public async Task Should_throw_when_none_of_the_specified_exception_predicates_are_satisfied()
     {
         var policy = Policy
             .Handle<DivideByZeroException>(_ => false)
             .Or<ArgumentException>(_ => false)
             .RetryAsync();
 
-        policy.Awaiting(x => x.RaiseExceptionAsync<ArgumentException>())
-            .Should().Throw<ArgumentException>();
+        await policy.Awaiting(x => x.RaiseExceptionAsync<ArgumentException>())
+              .Should().ThrowAsync<ArgumentException>();
     }
 
     [Fact]
-    public void Should_not_throw_when_specified_exception_predicate_is_satisfied()
+    public async Task Should_not_throw_when_specified_exception_predicate_is_satisfied()
     {
         var policy = Policy
             .Handle<DivideByZeroException>(_ => true)
             .RetryAsync();
 
-        policy.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-            .Should().NotThrow();
+        await policy.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+              .Should().NotThrowAsync();
     }
 
     [Fact]
-    public void Should_not_throw_when_one_of_the_specified_exception_predicates_are_satisfied()
+    public async Task Should_not_throw_when_one_of_the_specified_exception_predicates_are_satisfied()
     {
         var policy = Policy
             .Handle<DivideByZeroException>(_ => true)
             .Or<ArgumentException>(_ => true)
             .RetryAsync();
 
-        policy.Awaiting(x => x.RaiseExceptionAsync<ArgumentException>())
-            .Should().NotThrow();
+        await policy.Awaiting(x => x.RaiseExceptionAsync<ArgumentException>())
+              .Should().NotThrowAsync();
     }
 
     [Fact]
@@ -179,13 +179,13 @@ public class RetryAsyncSpecs
         await policy.RaiseExceptionAsync<DivideByZeroException>(3);
 
         retryCounts.Should()
-            .ContainInOrder(expectedRetryCounts);
+                   .ContainInOrder(expectedRetryCounts);
     }
 
     [Fact]
     public async Task Should_call_onretry_on_each_retry_with_the_current_exception()
     {
-        var expectedExceptions = new object[] { "Exception #1", "Exception #2", "Exception #3" };
+        var expectedExceptions = new string[] { "Exception #1", "Exception #2", "Exception #3" };
         var retryExceptions = new List<Exception>();
 
         var policy = Policy
@@ -218,7 +218,7 @@ public class RetryAsyncSpecs
     }
 
     [Fact]
-    public void Should_not_call_onretry_when_no_retries_are_performed()
+    public async Task Should_not_call_onretry_when_no_retries_are_performed()
     {
         var retryCounts = new List<int>();
 
@@ -226,25 +226,25 @@ public class RetryAsyncSpecs
             .Handle<DivideByZeroException>()
             .RetryAsync((_, retryCount) => retryCounts.Add(retryCount));
 
-        policy.Awaiting(x => x.RaiseExceptionAsync<ArgumentException>())
-            .Should().Throw<ArgumentException>();
+        await policy.Awaiting(x => x.RaiseExceptionAsync<ArgumentException>())
+              .Should().ThrowAsync<ArgumentException>();
 
         retryCounts.Should()
-            .BeEmpty();
+                   .BeEmpty();
     }
 
     [Fact]
-    public void Should_create_new_state_for_each_call_to_policy()
+    public async Task Should_create_new_state_for_each_call_to_policy()
     {
         var policy = Policy
             .Handle<DivideByZeroException>()
             .RetryAsync();
 
-        policy.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-            .Should().NotThrow();
+        await policy.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+              .Should().NotThrowAsync();
 
-        policy.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-            .Should().NotThrow();
+        await policy.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+              .Should().NotThrowAsync();
     }
 
     [Fact]
@@ -258,7 +258,7 @@ public class RetryAsyncSpecs
 
         policy.RaiseExceptionAsync<DivideByZeroException>(
             new { key1 = "value1", key2 = "value2" }.AsDictionary()
-        );
+            );
 
         contextData.Should()
             .ContainKeys("key1", "key2").And
@@ -266,7 +266,7 @@ public class RetryAsyncSpecs
     }
 
     [Fact]
-    public void Should_call_onretry_with_the_passed_context_when_execute_and_capture()
+    public async Task Should_call_onretry_with_the_passed_context_when_execute_and_capture()
     {
         IDictionary<string, object> contextData = null;
 
@@ -274,9 +274,9 @@ public class RetryAsyncSpecs
             .Handle<DivideByZeroException>()
             .RetryAsync((_, _, context) => contextData = context);
 
-        policy.Awaiting(p => p.ExecuteAndCaptureAsync(_ => { throw new DivideByZeroException(); },
-                new { key1 = "value1", key2 = "value2" }.AsDictionary()))
-            .Should().NotThrow();
+        await policy.Awaiting(p => p.ExecuteAndCaptureAsync(_ => { throw new DivideByZeroException(); },
+            new { key1 = "value1", key2 = "value2" }.AsDictionary()))
+            .Should().NotThrowAsync();
 
         contextData.Should()
             .ContainKeys("key1", "key2").And
@@ -284,7 +284,7 @@ public class RetryAsyncSpecs
     }
 
     [Fact]
-    public void Context_should_be_empty_if_execute_not_called_with_any_data()
+    public async Task Context_should_be_empty_if_execute_not_called_with_any_data()
     {
         Context capturedContext = null;
 
@@ -292,10 +292,10 @@ public class RetryAsyncSpecs
             .Handle<DivideByZeroException>()
             .RetryAsync((_, _, context) => capturedContext = context);
 
-        policy.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>()).Should().NotThrow();
+        await policy.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>()).Should().NotThrowAsync();
 
         capturedContext.Should()
-            .BeEmpty();
+                       .BeEmpty();
     }
 
     [Fact]
@@ -321,7 +321,7 @@ public class RetryAsyncSpecs
     }
 
     [Fact]
-    public void Should_create_new_context_for_each_call_to_execute_and_capture()
+    public async Task Should_create_new_context_for_each_call_to_execute_and_capture()
     {
         string contextValue = null;
 
@@ -329,23 +329,23 @@ public class RetryAsyncSpecs
             .Handle<DivideByZeroException>()
             .RetryAsync((_, _, context) => contextValue = context["key"].ToString());
 
-        policy.Awaiting(p => p.ExecuteAndCaptureAsync(_ => throw new DivideByZeroException(),
-                new { key = "original_value" }.AsDictionary()))
-            .Should().NotThrow();
+        await policy.Awaiting(p => p.ExecuteAndCaptureAsync(_ => throw new DivideByZeroException(),
+            new { key = "original_value" }.AsDictionary()))
+            .Should().NotThrowAsync();
 
         contextValue.Should().Be("original_value");
 
-        policy.Awaiting(p => p.ExecuteAndCaptureAsync(_ => throw new DivideByZeroException(),
-                new { key = "new_value" }.AsDictionary()))
-            .Should().NotThrow();
+        await policy.Awaiting(p => p.ExecuteAndCaptureAsync(_ => throw new DivideByZeroException(),
+            new { key = "new_value" }.AsDictionary()))
+            .Should().NotThrowAsync();
 
         contextValue.Should().Be("new_value");
     }
 
     [Fact]
-    public void Should_not_call_onretry_when_retry_count_is_zero()
+    public async Task Should_not_call_onretry_when_retry_count_is_zero()
     {
-        var retryInvoked = false;
+        bool retryInvoked = false;
 
         Action<Exception, int> onRetry = (_, _) => { retryInvoked = true; };
 
@@ -353,8 +353,8 @@ public class RetryAsyncSpecs
             .Handle<DivideByZeroException>()
             .RetryAsync(0, onRetry);
 
-        policy.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-            .Should().Throw<DivideByZeroException>();
+        await policy.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+              .Should().ThrowAsync<DivideByZeroException>();
 
         retryInvoked.Should().BeFalse();
     }
@@ -362,17 +362,17 @@ public class RetryAsyncSpecs
     #region Async and cancellation tests
 
     [Fact]
-    public void Should_wait_asynchronously_for_async_onretry_delegate()
+    public async Task Should_wait_asynchronously_for_async_onretry_delegate()
     {
         // This test relates to https://github.com/App-vNext/Polly/issues/107.
         // An async (...) => { ... } anonymous delegate with no return type may compile to either an async void or an async Task method; which assign to an Action<...> or Func<..., Task> respectively.  However, if it compiles to async void (assigning to Action<...>), then the delegate, when run, will return at the first await, and execution continues without waiting for the Action to complete, as described by Stephen Toub: http://blogs.msdn.com/b/pfxteam/archive/2012/02/08/10265476.aspx
         // If Polly were to declare only an Action<...> delegate for onRetry - but users declared async () => { } onRetry delegates - the compiler would happily assign them to the Action<...>, but the next 'try' of the retry policy would/could occur before onRetry execution had completed.
         // This test ensures the relevant retry policy does have a Func<..., Task> form for onRetry, and that it is awaited before the next try commences.
 
-        var shimTimeSpan = TimeSpan.FromSeconds(0.2); // Consider increasing shimTimeSpan if test fails transiently in different environments.
+        TimeSpan shimTimeSpan = TimeSpan.FromSeconds(0.2); // Consider increasing shimTimeSpan if test fails transiently in different environments.
 
-        var executeDelegateInvocations = 0;
-        var executeDelegateInvocationsWhenOnRetryExits = 0;
+        int executeDelegateInvocations = 0;
+        int executeDelegateInvocationsWhenOnRetryExits = 0;
 
         var policy = Policy
             .Handle<DivideByZeroException>()
@@ -382,12 +382,12 @@ public class RetryAsyncSpecs
                 executeDelegateInvocationsWhenOnRetryExits = executeDelegateInvocations;
             });
 
-        policy.Awaiting(p => p.ExecuteAsync(async () =>
+        await policy.Awaiting(p => p.ExecuteAsync(async () =>
         {
             executeDelegateInvocations++;
             await TaskHelper.EmptyTask;
             throw new DivideByZeroException();
-        })).Should().Throw<DivideByZeroException>();
+        })).Should().ThrowAsync<DivideByZeroException>();
 
         while (executeDelegateInvocationsWhenOnRetryExits == 0) { } // Wait for the onRetry delegate to complete.
 
@@ -396,69 +396,69 @@ public class RetryAsyncSpecs
     }
 
     [Fact]
-    public void Should_execute_action_when_non_faulting_and_cancellationToken_not_cancelled()
+    public async Task Should_execute_action_when_non_faulting_and_cancellationToken_not_cancelled()
     {
         var policy = Policy
             .Handle<DivideByZeroException>()
             .RetryAsync(3);
 
-        var cancellationTokenSource = new CancellationTokenSource();
-        var cancellationToken = cancellationTokenSource.Token;
+        CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+        CancellationToken cancellationToken = cancellationTokenSource.Token;
 
-        var attemptsInvoked = 0;
+        int attemptsInvoked = 0;
         Action onExecute = () => attemptsInvoked++;
 
-        var scenario = new Scenario
+        Scenario scenario = new Scenario
         {
             NumberOfTimesToRaiseException = 0,
             AttemptDuringWhichToCancel = null,
         };
 
-        policy.Awaiting(x => x.RaiseExceptionAndOrCancellationAsync<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
-            .Should().NotThrow();
+        await policy.Awaiting(x => x.RaiseExceptionAndOrCancellationAsync<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
+            .Should().NotThrowAsync();
 
         attemptsInvoked.Should().Be(1);
     }
 
     [Fact]
-    public void Should_execute_all_tries_when_faulting_and_cancellationToken_not_cancelled()
+    public async Task Should_execute_all_tries_when_faulting_and_cancellationToken_not_cancelled()
     {
         var policy = Policy
             .Handle<DivideByZeroException>()
             .RetryAsync(3);
 
-        var cancellationTokenSource = new CancellationTokenSource();
-        var cancellationToken = cancellationTokenSource.Token;
+        CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+        CancellationToken cancellationToken = cancellationTokenSource.Token;
 
-        var attemptsInvoked = 0;
+        int attemptsInvoked = 0;
         Action onExecute = () => attemptsInvoked++;
 
-        var scenario = new Scenario
+        Scenario scenario = new Scenario
         {
             NumberOfTimesToRaiseException = 1 + 3,
             AttemptDuringWhichToCancel = null,
         };
 
-        policy.Awaiting(x => x.RaiseExceptionAndOrCancellationAsync<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
-            .Should().Throw<DivideByZeroException>();
+        await policy.Awaiting(x => x.RaiseExceptionAndOrCancellationAsync<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
+            .Should().ThrowAsync<DivideByZeroException>();
 
         attemptsInvoked.Should().Be(1 + 3);
     }
 
     [Fact]
-    public void Should_not_execute_action_when_cancellationToken_cancelled_before_execute()
+    public async Task Should_not_execute_action_when_cancellationToken_cancelled_before_execute()
     {
         var policy = Policy
             .Handle<DivideByZeroException>()
             .RetryAsync(3);
 
-        var cancellationTokenSource = new CancellationTokenSource();
-        var cancellationToken = cancellationTokenSource.Token;
+        CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+        CancellationToken cancellationToken = cancellationTokenSource.Token;
 
-        var attemptsInvoked = 0;
+        int attemptsInvoked = 0;
         Action onExecute = () => attemptsInvoked++;
 
-        var scenario = new Scenario
+        Scenario scenario = new Scenario
         {
             NumberOfTimesToRaiseException = 1 + 3,
             AttemptDuringWhichToCancel = null, // Cancellation token cancelled manually below - before any scenario execution.
@@ -466,206 +466,206 @@ public class RetryAsyncSpecs
 
         cancellationTokenSource.Cancel();
 
-        policy.Awaiting(x => x.RaiseExceptionAndOrCancellationAsync<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
-            .Should().Throw<OperationCanceledException>()
-            .And.CancellationToken.Should().Be(cancellationToken);
+        var ex = await policy.Awaiting(x => x.RaiseExceptionAndOrCancellationAsync<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
+            .Should().ThrowAsync<OperationCanceledException>();
+        ex.And.CancellationToken.Should().Be(cancellationToken);
 
         attemptsInvoked.Should().Be(0);
     }
 
     [Fact]
-    public void Should_report_cancellation_during_otherwise_non_faulting_action_execution_and_cancel_further_retries_when_user_delegate_observes_cancellationToken()
+    public async Task Should_report_cancellation_during_otherwise_non_faulting_action_execution_and_cancel_further_retries_when_user_delegate_observes_cancellationToken()
     {
         var policy = Policy
             .Handle<DivideByZeroException>()
             .RetryAsync(3);
 
-        var cancellationTokenSource = new CancellationTokenSource();
-        var cancellationToken = cancellationTokenSource.Token;
+        CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+        CancellationToken cancellationToken = cancellationTokenSource.Token;
 
-        var attemptsInvoked = 0;
+        int attemptsInvoked = 0;
         Action onExecute = () => attemptsInvoked++;
 
-        var scenario = new Scenario
+        Scenario scenario = new Scenario
         {
             NumberOfTimesToRaiseException = 0,
             AttemptDuringWhichToCancel = 1,
             ActionObservesCancellation = true
         };
 
-        policy.Awaiting(x => x.RaiseExceptionAndOrCancellationAsync<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
-            .Should().Throw<OperationCanceledException>()
-            .And.CancellationToken.Should().Be(cancellationToken);
+        var ex = await policy.Awaiting(x => x.RaiseExceptionAndOrCancellationAsync<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
+            .Should().ThrowAsync<OperationCanceledException>();
+        ex.And.CancellationToken.Should().Be(cancellationToken);
 
         attemptsInvoked.Should().Be(1);
     }
 
     [Fact]
-    public void Should_report_cancellation_during_faulting_initial_action_execution_and_cancel_further_retries_when_user_delegate_observes_cancellationToken()
+    public async Task Should_report_cancellation_during_faulting_initial_action_execution_and_cancel_further_retries_when_user_delegate_observes_cancellationToken()
     {
         var policy = Policy
             .Handle<DivideByZeroException>()
             .RetryAsync(3);
 
-        var cancellationTokenSource = new CancellationTokenSource();
-        var cancellationToken = cancellationTokenSource.Token;
+        CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+        CancellationToken cancellationToken = cancellationTokenSource.Token;
 
-        var attemptsInvoked = 0;
+        int attemptsInvoked = 0;
         Action onExecute = () => attemptsInvoked++;
 
-        var scenario = new Scenario
+        Scenario scenario = new Scenario
         {
             NumberOfTimesToRaiseException = 1 + 3,
             AttemptDuringWhichToCancel = 1,
             ActionObservesCancellation = true
         };
 
-        policy.Awaiting(x => x.RaiseExceptionAndOrCancellationAsync<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
-            .Should().Throw<OperationCanceledException>()
-            .And.CancellationToken.Should().Be(cancellationToken);
+        var ex = await policy.Awaiting(x => x.RaiseExceptionAndOrCancellationAsync<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
+            .Should().ThrowAsync<OperationCanceledException>();
+        ex.And.CancellationToken.Should().Be(cancellationToken);
 
         attemptsInvoked.Should().Be(1);
     }
 
     [Fact]
-    public void Should_report_cancellation_during_faulting_initial_action_execution_and_cancel_further_retries_when_user_delegate_does_not_observe_cancellationToken()
+    public async Task Should_report_cancellation_during_faulting_initial_action_execution_and_cancel_further_retries_when_user_delegate_does_not_observe_cancellationToken()
     {
         var policy = Policy
             .Handle<DivideByZeroException>()
             .RetryAsync(3);
 
-        var cancellationTokenSource = new CancellationTokenSource();
-        var cancellationToken = cancellationTokenSource.Token;
+        CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+        CancellationToken cancellationToken = cancellationTokenSource.Token;
 
-        var attemptsInvoked = 0;
+        int attemptsInvoked = 0;
         Action onExecute = () => attemptsInvoked++;
 
-        var scenario = new Scenario
+        Scenario scenario = new Scenario
         {
             NumberOfTimesToRaiseException = 1 + 3,
             AttemptDuringWhichToCancel = 1,
             ActionObservesCancellation = false
         };
 
-        policy.Awaiting(x => x.RaiseExceptionAndOrCancellationAsync<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
-            .Should().Throw<OperationCanceledException>()
-            .And.CancellationToken.Should().Be(cancellationToken);
+        var ex = await policy.Awaiting(x => x.RaiseExceptionAndOrCancellationAsync<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
+            .Should().ThrowAsync<OperationCanceledException>();
+        ex.And.CancellationToken.Should().Be(cancellationToken);
 
         attemptsInvoked.Should().Be(1);
     }
 
     [Fact]
-    public void Should_report_cancellation_during_faulting_retried_action_execution_and_cancel_further_retries_when_user_delegate_observes_cancellationToken()
+    public async Task Should_report_cancellation_during_faulting_retried_action_execution_and_cancel_further_retries_when_user_delegate_observes_cancellationToken()
     {
         var policy = Policy
             .Handle<DivideByZeroException>()
             .RetryAsync(3);
 
-        var cancellationTokenSource = new CancellationTokenSource();
-        var cancellationToken = cancellationTokenSource.Token;
+        CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+        CancellationToken cancellationToken = cancellationTokenSource.Token;
 
-        var attemptsInvoked = 0;
+        int attemptsInvoked = 0;
         Action onExecute = () => attemptsInvoked++;
 
-        var scenario = new Scenario
+        Scenario scenario = new Scenario
         {
             NumberOfTimesToRaiseException = 1 + 3,
             AttemptDuringWhichToCancel = 2,
             ActionObservesCancellation = true
         };
 
-        policy.Awaiting(x => x.RaiseExceptionAndOrCancellationAsync<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
-            .Should().Throw<OperationCanceledException>()
-            .And.CancellationToken.Should().Be(cancellationToken);
+        var ex = await policy.Awaiting(x => x.RaiseExceptionAndOrCancellationAsync<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
+            .Should().ThrowAsync<OperationCanceledException>();
+        ex.And.CancellationToken.Should().Be(cancellationToken);
 
         attemptsInvoked.Should().Be(2);
     }
 
     [Fact]
-    public void Should_report_cancellation_during_faulting_retried_action_execution_and_cancel_further_retries_when_user_delegate_does_not_observe_cancellationToken()
+    public async Task Should_report_cancellation_during_faulting_retried_action_execution_and_cancel_further_retries_when_user_delegate_does_not_observe_cancellationToken()
     {
         var policy = Policy
             .Handle<DivideByZeroException>()
             .RetryAsync(3);
 
-        var cancellationTokenSource = new CancellationTokenSource();
-        var cancellationToken = cancellationTokenSource.Token;
+        CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+        CancellationToken cancellationToken = cancellationTokenSource.Token;
 
-        var attemptsInvoked = 0;
+        int attemptsInvoked = 0;
         Action onExecute = () => attemptsInvoked++;
 
-        var scenario = new Scenario
+        Scenario scenario = new Scenario
         {
             NumberOfTimesToRaiseException = 1 + 3,
             AttemptDuringWhichToCancel = 2,
             ActionObservesCancellation = false
         };
 
-        policy.Awaiting(x => x.RaiseExceptionAndOrCancellationAsync<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
-            .Should().Throw<OperationCanceledException>()
-            .And.CancellationToken.Should().Be(cancellationToken);
+        var ex = await policy.Awaiting(x => x.RaiseExceptionAndOrCancellationAsync<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
+            .Should().ThrowAsync<OperationCanceledException>();
+        ex.And.CancellationToken.Should().Be(cancellationToken);
 
         attemptsInvoked.Should().Be(2);
     }
 
     [Fact]
-    public void Should_report_cancellation_during_faulting_last_retry_execution_when_user_delegate_does_observe_cancellationToken()
+    public async Task Should_report_cancellation_during_faulting_last_retry_execution_when_user_delegate_does_observe_cancellationToken()
     {
         var policy = Policy
             .Handle<DivideByZeroException>()
             .RetryAsync(3);
 
-        var cancellationTokenSource = new CancellationTokenSource();
-        var cancellationToken = cancellationTokenSource.Token;
+        CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+        CancellationToken cancellationToken = cancellationTokenSource.Token;
 
-        var attemptsInvoked = 0;
+        int attemptsInvoked = 0;
         Action onExecute = () => attemptsInvoked++;
 
-        var scenario = new Scenario
+        Scenario scenario = new Scenario
         {
             NumberOfTimesToRaiseException = 1 + 3,
             AttemptDuringWhichToCancel = 1 + 3,
             ActionObservesCancellation = true
         };
 
-        policy.Awaiting(x => x.RaiseExceptionAndOrCancellationAsync<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
-            .Should().Throw<OperationCanceledException>()
-            .And.CancellationToken.Should().Be(cancellationToken);
+        var ex = await policy.Awaiting(x => x.RaiseExceptionAndOrCancellationAsync<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
+            .Should().ThrowAsync<OperationCanceledException>();
+        ex.And.CancellationToken.Should().Be(cancellationToken);
 
         attemptsInvoked.Should().Be(1 + 3);
     }
 
     [Fact]
-    public void Should_report_faulting_from_faulting_last_retry_execution_when_user_delegate_does_not_observe_cancellation_raised_during_last_retry()
+    public async Task Should_report_faulting_from_faulting_last_retry_execution_when_user_delegate_does_not_observe_cancellation_raised_during_last_retry()
     {
         var policy = Policy
             .Handle<DivideByZeroException>()
             .RetryAsync(3);
 
-        var cancellationTokenSource = new CancellationTokenSource();
-        var cancellationToken = cancellationTokenSource.Token;
+        CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+        CancellationToken cancellationToken = cancellationTokenSource.Token;
 
-        var attemptsInvoked = 0;
+        int attemptsInvoked = 0;
         Action onExecute = () => attemptsInvoked++;
 
-        var scenario = new Scenario
+        Scenario scenario = new Scenario
         {
             NumberOfTimesToRaiseException = 1 + 3,
             AttemptDuringWhichToCancel = 1 + 3,
             ActionObservesCancellation = false
         };
 
-        policy.Awaiting(x => x.RaiseExceptionAndOrCancellationAsync<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
-            .Should().Throw<DivideByZeroException>();
+        await policy.Awaiting(x => x.RaiseExceptionAndOrCancellationAsync<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
+            .Should().ThrowAsync<DivideByZeroException>();
 
         attemptsInvoked.Should().Be(1 + 3);
     }
 
     [Fact]
-    public void Should_report_cancellation_after_faulting_action_execution_and_cancel_further_retries_if_onRetry_invokes_cancellation()
+    public async Task Should_report_cancellation_after_faulting_action_execution_and_cancel_further_retries_if_onRetry_invokes_cancellation()
     {
-        var cancellationTokenSource = new CancellationTokenSource();
-        var cancellationToken = cancellationTokenSource.Token;
+        CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+        CancellationToken cancellationToken = cancellationTokenSource.Token;
 
         var policy = Policy
             .Handle<DivideByZeroException>()
@@ -674,47 +674,47 @@ public class RetryAsyncSpecs
                 cancellationTokenSource.Cancel();
             });
 
-        var attemptsInvoked = 0;
+        int attemptsInvoked = 0;
         Action onExecute = () => attemptsInvoked++;
 
-        var scenario = new Scenario
+        Scenario scenario = new Scenario
         {
             NumberOfTimesToRaiseException = 1 + 3,
             AttemptDuringWhichToCancel = null, // Cancellation during onRetry instead - see above.
             ActionObservesCancellation = false
         };
 
-        policy.Awaiting(x => x.RaiseExceptionAndOrCancellationAsync<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
-            .Should().Throw<OperationCanceledException>()
-            .And.CancellationToken.Should().Be(cancellationToken);
+        var ex = await policy.Awaiting(x => x.RaiseExceptionAndOrCancellationAsync<DivideByZeroException>(scenario, cancellationTokenSource, onExecute))
+            .Should().ThrowAsync<OperationCanceledException>();
+        ex.And.CancellationToken.Should().Be(cancellationToken);
 
         attemptsInvoked.Should().Be(1);
     }
 
     [Fact]
-    public void Should_execute_func_returning_value_when_cancellationToken_not_cancelled()
+    public async Task Should_execute_func_returning_value_when_cancellationToken_not_cancelled()
     {
         var policy = Policy
             .Handle<DivideByZeroException>()
             .RetryAsync(3);
 
-        var cancellationTokenSource = new CancellationTokenSource();
-        var cancellationToken = cancellationTokenSource.Token;
+        CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+        CancellationToken cancellationToken = cancellationTokenSource.Token;
 
-        var attemptsInvoked = 0;
+        int attemptsInvoked = 0;
         Action onExecute = () => attemptsInvoked++;
 
         bool? result = null;
 
-        var scenario = new Scenario
+        Scenario scenario = new Scenario
         {
             NumberOfTimesToRaiseException = 0,
             AttemptDuringWhichToCancel = null,
         };
 
         Func<AsyncRetryPolicy, Task> action = async x => result = await x.RaiseExceptionAndOrCancellationAsync<DivideByZeroException, bool>(scenario, cancellationTokenSource, onExecute, true);
-        policy.Awaiting(action)
-            .Should().NotThrow();
+        await policy.Awaiting(action)
+            .Should().NotThrowAsync();
 
         result.Should().BeTrue();
 
@@ -722,21 +722,21 @@ public class RetryAsyncSpecs
     }
 
     [Fact]
-    public void Should_honour_and_report_cancellation_during_func_execution()
+    public async Task Should_honour_and_report_cancellation_during_func_execution()
     {
         var policy = Policy
             .Handle<DivideByZeroException>()
             .RetryAsync(3);
 
-        var cancellationTokenSource = new CancellationTokenSource();
-        var cancellationToken = cancellationTokenSource.Token;
+        CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+        CancellationToken cancellationToken = cancellationTokenSource.Token;
 
-        var attemptsInvoked = 0;
+        int attemptsInvoked = 0;
         Action onExecute = () => attemptsInvoked++;
 
         bool? result = null;
 
-        var scenario = new Scenario
+        Scenario scenario = new Scenario
         {
             NumberOfTimesToRaiseException = 0,
             AttemptDuringWhichToCancel = 1,
@@ -744,8 +744,8 @@ public class RetryAsyncSpecs
         };
 
         Func<AsyncRetryPolicy, Task> action = async x => result = await x.RaiseExceptionAndOrCancellationAsync<DivideByZeroException, bool>(scenario, cancellationTokenSource, onExecute, true);
-        policy.Awaiting(action)
-            .Should().Throw<OperationCanceledException>().And.CancellationToken.Should().Be(cancellationToken);
+        var ex = await policy.Awaiting(action).Should().ThrowAsync<OperationCanceledException>();
+        ex.And.CancellationToken.Should().Be(cancellationToken);
 
         result.Should().Be(null);
 

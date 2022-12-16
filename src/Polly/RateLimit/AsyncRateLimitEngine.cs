@@ -13,9 +13,9 @@ internal static class AsyncRateLimitEngine
         Context context,
         CancellationToken cancellationToken,
         bool continueOnCapturedContext
-    )
+        )
     {
-        (var permit, var retryAfter) = rateLimiter.PermitExecution();
+        (bool permit, TimeSpan retryAfter) = rateLimiter.PermitExecution();
 
         if (permit)
         {
