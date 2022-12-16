@@ -1,11 +1,12 @@
-﻿namespace Polly.CircuitBreaker;
-
-internal interface IHealthMetrics
+﻿namespace Polly.CircuitBreaker
 {
-    void IncrementSuccess_NeedsLock();
-    void IncrementFailure_NeedsLock();
+    internal interface IHealthMetrics
+    {
+        void IncrementSuccess_NeedsLock();
+        void IncrementFailure_NeedsLock();
 
-    void Reset_NeedsLock();
+        void Reset_NeedsLock();
 
-    HealthCount GetHealthCount_NeedsLock();
+        HealthCount GetHealthCount_NeedsLock();
+    }
 }

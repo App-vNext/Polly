@@ -1,25 +1,26 @@
-﻿namespace Polly.Wrap;
-
-/// <summary>
-/// Defines properties and methods common to all PolicyWrap policies.
-/// </summary>
-public interface IPolicyWrap : IsPolicy
+﻿namespace Polly.Wrap
 {
     /// <summary>
-    /// Returns the outer <see cref="IsPolicy"/> in this <see cref="IPolicyWrap"/>
+    /// Defines properties and methods common to all PolicyWrap policies.
     /// </summary>
-    IsPolicy Outer { get; }
+    public interface IPolicyWrap : IsPolicy
+    {
+        /// <summary>
+        /// Returns the outer <see cref="IsPolicy"/> in this <see cref="IPolicyWrap"/>
+        /// </summary>
+        IsPolicy Outer { get; }
+
+        /// <summary>
+        /// Returns the next inner <see cref="IsPolicy"/> in this <see cref="IPolicyWrap"/>
+        /// </summary>
+        IsPolicy Inner { get; }
+    }
 
     /// <summary>
-    /// Returns the next inner <see cref="IsPolicy"/> in this <see cref="IPolicyWrap"/>
+    /// Defines properties and methods common to all PolicyWrap policies generic-typed for executions returning results of type <typeparamref name="TResult"/>.
     /// </summary>
-    IsPolicy Inner { get; }
-}
+    public interface IPolicyWrap<TResult> : IPolicyWrap
+    {
 
-/// <summary>
-/// Defines properties and methods common to all PolicyWrap policies generic-typed for executions returning results of type <typeparamref name="TResult"/>.
-/// </summary>
-public interface IPolicyWrap<TResult> : IPolicyWrap
-{
-
+    }
 }

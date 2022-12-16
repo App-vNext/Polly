@@ -8,811 +8,812 @@ using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace Polly.Specs.Timeout;
-
-[Collection(Constants.SystemClockDependentTestCollection)]
-public class TimeoutAsyncSpecs : TimeoutSpecsBase
+namespace Polly.Specs.Timeout
 {
-    #region Configuration
-
-    [Fact]
-    public void Should_throw_when_timeout_is_zero_by_timespan()
+    [Collection(Constants.SystemClockDependentTestCollection)]
+    public class TimeoutAsyncSpecs : TimeoutSpecsBase
     {
-        Action policy = () => Policy.TimeoutAsync(TimeSpan.Zero);
+        #region Configuration
 
-        policy.Should().Throw<ArgumentOutOfRangeException>().And
-            .ParamName.Should().Be("timeout");
-    }
-
-    [Fact]
-    public void Should_throw_when_timeout_is_zero_by_seconds()
-    {
-        Action policy = () => Policy.TimeoutAsync(0);
-
-        policy.Should().Throw<ArgumentOutOfRangeException>().And
-            .ParamName.Should().Be("seconds");
-    }
-
-    [Fact]
-    public void Should_throw_when_timeout_is_less_than_zero_by_timespan()
-    {
-        Action policy = () => Policy.TimeoutAsync(-TimeSpan.FromHours(1));
-
-        policy.Should().Throw<ArgumentOutOfRangeException>().And
-            .ParamName.Should().Be("timeout");
-    }
-
-    [Fact]
-    public void Should_throw_when_timeout_is_less_than_zero_by_seconds()
-    {
-        Action policy = () => Policy.TimeoutAsync(-10);
-
-        policy.Should().Throw<ArgumentOutOfRangeException>().And
-            .ParamName.Should().Be("seconds");
-    }
-
-    [Fact]
-    public void Should_not_throw_when_timeout_is_greater_than_zero_by_timespan()
-    {
-        Action policy = () => Policy.TimeoutAsync(TimeSpan.FromMilliseconds(1));
-
-        policy.Should().NotThrow();
-    }
-
-    [Fact]
-    public void Should_not_throw_when_timeout_is_greater_than_zero_by_seconds()
-    {
-        Action policy = () => Policy.TimeoutAsync(3);
-
-        policy.Should().NotThrow();
-    }
-
-    [Fact]
-    public void Should_not_throw_when_timeout_is_maxvalue()
-    {
-        Action policy = () => Policy.TimeoutAsync(TimeSpan.MaxValue);
-
-        policy.Should().NotThrow();
-    }
-
-    [Fact]
-    public void Should_not_throw_when_timeout_seconds_is_maxvalue()
-    {
-        Action policy = () => Policy.TimeoutAsync(int.MaxValue);
-
-        policy.Should().NotThrow();
-    }
-
-    [Fact]
-    public void Should_not_throw_when_timeout_is_infinitetimespan()
-    {
-        Action policy = () => Policy.TimeoutAsync(System.Threading.Timeout.InfiniteTimeSpan);
-
-        policy.Should().NotThrow();
-    }
-
-    [Fact]
-    public void Should_not_throw_when_timeout_is_infinitetimespan_with_timeoutstrategy()
-    {
-        Action policy = () => Policy.TimeoutAsync(System.Threading.Timeout.InfiniteTimeSpan, TimeoutStrategy.Optimistic);
-
-        policy.Should().NotThrow();
-    }
-
-    [Fact]
-    public void Should_not_throw_when_timeout_is_infinitetimespan_with_ontimeout()
-    {
-        Func<Context, TimeSpan, Task, Task> doNothingAsync = (_, _, _) => TaskHelper.EmptyTask;
-        Action policy = () => Policy.TimeoutAsync(System.Threading.Timeout.InfiniteTimeSpan, doNothingAsync);
-
-        policy.Should().NotThrow();
-    }
-
-    [Fact]
-    public void Should_not_throw_when_timeout_is_infinitetimespan_with_timeoutstrategy_and_ontimeout()
-    {
-        Func<Context, TimeSpan, Task, Task> doNothingAsync = (_, _, _) => TaskHelper.EmptyTask;
-        Action policy = () => Policy.TimeoutAsync(System.Threading.Timeout.InfiniteTimeSpan, TimeoutStrategy.Optimistic, doNothingAsync);
-
-        policy.Should().NotThrow();
-    }
-
-    [Fact]
-    public void Should_throw_when_onTimeout_is_null_with_timespan()
-    {
-        Func<Context, TimeSpan, Task, Task> onTimeout = null;
-        Action policy = () => Policy.TimeoutAsync(TimeSpan.FromMinutes(0.5), onTimeout);
-
-        policy.Should().Throw<ArgumentNullException>()
-            .And.ParamName.Should().Be("onTimeoutAsync");
-    }
-
-    [Fact]
-    public void Should_throw_when_onTimeout_is_null_with_timespan_with_full_argument_list_onTimeout()
-    {
-        Func<Context, TimeSpan, Task, Exception, Task> onTimeout = null;
-        Action policy = () => Policy.TimeoutAsync(TimeSpan.FromMinutes(0.5), onTimeout);
-
-        policy.Should().Throw<ArgumentNullException>()
-            .And.ParamName.Should().Be("onTimeoutAsync");
-    }
-
-    [Fact]
-    public void Should_throw_when_onTimeout_is_null_with_seconds()
-    {
-        Func<Context, TimeSpan, Task, Task> onTimeout = null;
-        Action policy = () => Policy.TimeoutAsync(30, onTimeout);
-
-        policy.Should().Throw<ArgumentNullException>()
-            .And.ParamName.Should().Be("onTimeoutAsync");
-    }
-
-    [Fact]
-    public void Should_throw_when_onTimeout_is_null_with_seconds_with_full_argument_list_onTimeout()
-    {
-        Func<Context, TimeSpan, Task, Exception, Task> onTimeout = null;
-        Action policy = () => Policy.TimeoutAsync(30, onTimeout);
-
-        policy.Should().Throw<ArgumentNullException>()
-            .And.ParamName.Should().Be("onTimeoutAsync");
-    }
-
-    [Fact]
-    public void Should_throw_when_timeoutProvider_is_null()
-    {
-        Action policy = () => Policy.TimeoutAsync((Func<TimeSpan>)null);
-
-        policy.Should().Throw<ArgumentNullException>()
-            .And.ParamName.Should().Be("timeoutProvider");
-    }
-
-    [Fact]
-    public void Should_throw_when_onTimeout_is_null_with_timeoutprovider()
-    {
-        Func<Context, TimeSpan, Task, Task> onTimeout = null;
-        Action policy = () => Policy.TimeoutAsync(() => TimeSpan.FromSeconds(30), onTimeout);
-
-        policy.Should().Throw<ArgumentNullException>()
-            .And.ParamName.Should().Be("onTimeoutAsync");
-    }
-
-    [Fact]
-    public void Should_throw_when_onTimeout_is_null_with_timeoutprovider_with_full_argument_list_onTimeout()
-    {
-        Func<Context, TimeSpan, Task, Exception, Task> onTimeout = null;
-        Action policy = () => Policy.TimeoutAsync(() => TimeSpan.FromSeconds(30), onTimeout);
-
-        policy.Should().Throw<ArgumentNullException>()
-            .And.ParamName.Should().Be("onTimeoutAsync");
-    }
-
-    [Fact]
-    public void Should_be_able_to_configure_with_timeout_func()
-    {
-        Action policy = () => Policy.TimeoutAsync(() => TimeSpan.FromSeconds(1));
-
-        policy.Should().NotThrow();
-    }
-
-    #endregion
-
-    #region Timeout operation - pessimistic
-
-    [Fact]
-    public void Should_throw_when_timeout_is_less_than_execution_duration__pessimistic()
-    {
-        var timeout = TimeSpan.FromMilliseconds(50);
-
-        var policy = Policy.TimeoutAsync(timeout, TimeoutStrategy.Pessimistic);
-
-        policy.Awaiting(p => p.ExecuteAsync(async () =>
+        [Fact]
+        public void Should_throw_when_timeout_is_zero_by_timespan()
         {
-            await SystemClock.SleepAsync(TimeSpan.FromSeconds(3), CancellationToken.None);
+            Action policy = () => Policy.TimeoutAsync(TimeSpan.Zero);
 
-        })).Should().Throw<TimeoutRejectedException>();
-    }
+            policy.Should().Throw<ArgumentOutOfRangeException>().And
+                .ParamName.Should().Be("timeout");
+        }
 
-    [Fact]
-    public void Should_not_throw_when_timeout_is_greater_than_execution_duration__pessimistic()
-    {
-        var policy = Policy.TimeoutAsync(TimeSpan.FromSeconds(1), TimeoutStrategy.Pessimistic);
-
-        var result = ResultPrimitive.Undefined;
-
-        var act = async () =>
+        [Fact]
+        public void Should_throw_when_timeout_is_zero_by_seconds()
         {
-            result = await policy.ExecuteAsync(() => Task.FromResult(ResultPrimitive.Good));
-        };
+            Action policy = () => Policy.TimeoutAsync(0);
 
-        act.Should().NotThrow();
-        result.Should().Be(ResultPrimitive.Good);
-    }
+            policy.Should().Throw<ArgumentOutOfRangeException>().And
+                .ParamName.Should().Be("seconds");
+        }
 
-    [Fact]
-    public void Should_throw_timeout_after_correct_duration__pessimistic()
-    {
-        var watch = new Stopwatch();
+        [Fact]
+        public void Should_throw_when_timeout_is_less_than_zero_by_timespan()
+        {
+            Action policy = () => Policy.TimeoutAsync(-TimeSpan.FromHours(1));
 
-        var timeout = TimeSpan.FromSeconds(1);
-        var policy = Policy.TimeoutAsync(timeout, TimeoutStrategy.Pessimistic);
+            policy.Should().Throw<ArgumentOutOfRangeException>().And
+                .ParamName.Should().Be("timeout");
+        }
 
-        var tolerance = TimeSpan.FromSeconds(3); // Consider increasing tolerance, if test fails transiently in different test/build environments.
+        [Fact]
+        public void Should_throw_when_timeout_is_less_than_zero_by_seconds()
+        {
+            Action policy = () => Policy.TimeoutAsync(-10);
 
-        watch.Start();
-        policy.Awaiting(p => p.ExecuteAsync(async () =>
+            policy.Should().Throw<ArgumentOutOfRangeException>().And
+                .ParamName.Should().Be("seconds");
+        }
+
+        [Fact]
+        public void Should_not_throw_when_timeout_is_greater_than_zero_by_timespan()
+        {
+            Action policy = () => Policy.TimeoutAsync(TimeSpan.FromMilliseconds(1));
+
+            policy.Should().NotThrow();
+        }
+
+        [Fact]
+        public void Should_not_throw_when_timeout_is_greater_than_zero_by_seconds()
+        {
+            Action policy = () => Policy.TimeoutAsync(3);
+
+            policy.Should().NotThrow();
+        }
+
+        [Fact]
+        public void Should_not_throw_when_timeout_is_maxvalue()
+        {
+            Action policy = () => Policy.TimeoutAsync(TimeSpan.MaxValue);
+
+            policy.Should().NotThrow();
+        }
+
+        [Fact]
+        public void Should_not_throw_when_timeout_seconds_is_maxvalue()
+        {
+            Action policy = () => Policy.TimeoutAsync(int.MaxValue);
+
+            policy.Should().NotThrow();
+        }
+
+        [Fact]
+        public void Should_not_throw_when_timeout_is_infinitetimespan()
+        {
+            Action policy = () => Policy.TimeoutAsync(System.Threading.Timeout.InfiniteTimeSpan);
+
+            policy.Should().NotThrow();
+        }
+
+        [Fact]
+        public void Should_not_throw_when_timeout_is_infinitetimespan_with_timeoutstrategy()
+        {
+            Action policy = () => Policy.TimeoutAsync(System.Threading.Timeout.InfiniteTimeSpan, TimeoutStrategy.Optimistic);
+
+            policy.Should().NotThrow();
+        }
+
+        [Fact]
+        public void Should_not_throw_when_timeout_is_infinitetimespan_with_ontimeout()
+        {
+            Func<Context, TimeSpan, Task, Task> doNothingAsync = (_, _, _) => TaskHelper.EmptyTask;
+            Action policy = () => Policy.TimeoutAsync(System.Threading.Timeout.InfiniteTimeSpan, doNothingAsync);
+
+            policy.Should().NotThrow();
+        }
+
+        [Fact]
+        public void Should_not_throw_when_timeout_is_infinitetimespan_with_timeoutstrategy_and_ontimeout()
+        {
+            Func<Context, TimeSpan, Task, Task> doNothingAsync = (_, _, _) => TaskHelper.EmptyTask;
+            Action policy = () => Policy.TimeoutAsync(System.Threading.Timeout.InfiniteTimeSpan, TimeoutStrategy.Optimistic, doNothingAsync);
+
+            policy.Should().NotThrow();
+        }
+
+        [Fact]
+        public void Should_throw_when_onTimeout_is_null_with_timespan()
+        {
+            Func<Context, TimeSpan, Task, Task> onTimeout = null;
+            Action policy = () => Policy.TimeoutAsync(TimeSpan.FromMinutes(0.5), onTimeout);
+
+            policy.Should().Throw<ArgumentNullException>()
+                .And.ParamName.Should().Be("onTimeoutAsync");
+        }
+
+        [Fact]
+        public void Should_throw_when_onTimeout_is_null_with_timespan_with_full_argument_list_onTimeout()
+        {
+            Func<Context, TimeSpan, Task, Exception, Task> onTimeout = null;
+            Action policy = () => Policy.TimeoutAsync(TimeSpan.FromMinutes(0.5), onTimeout);
+
+            policy.Should().Throw<ArgumentNullException>()
+                .And.ParamName.Should().Be("onTimeoutAsync");
+        }
+
+        [Fact]
+        public void Should_throw_when_onTimeout_is_null_with_seconds()
+        {
+            Func<Context, TimeSpan, Task, Task> onTimeout = null;
+            Action policy = () => Policy.TimeoutAsync(30, onTimeout);
+
+            policy.Should().Throw<ArgumentNullException>()
+                .And.ParamName.Should().Be("onTimeoutAsync");
+        }
+
+        [Fact]
+        public void Should_throw_when_onTimeout_is_null_with_seconds_with_full_argument_list_onTimeout()
+        {
+            Func<Context, TimeSpan, Task, Exception, Task> onTimeout = null;
+            Action policy = () => Policy.TimeoutAsync(30, onTimeout);
+
+            policy.Should().Throw<ArgumentNullException>()
+                .And.ParamName.Should().Be("onTimeoutAsync");
+        }
+
+        [Fact]
+        public void Should_throw_when_timeoutProvider_is_null()
+        {
+            Action policy = () => Policy.TimeoutAsync((Func<TimeSpan>)null);
+
+            policy.Should().Throw<ArgumentNullException>()
+                .And.ParamName.Should().Be("timeoutProvider");
+        }
+
+        [Fact]
+        public void Should_throw_when_onTimeout_is_null_with_timeoutprovider()
+        {
+            Func<Context, TimeSpan, Task, Task> onTimeout = null;
+            Action policy = () => Policy.TimeoutAsync(() => TimeSpan.FromSeconds(30), onTimeout);
+
+            policy.Should().Throw<ArgumentNullException>()
+                .And.ParamName.Should().Be("onTimeoutAsync");
+        }
+
+        [Fact]
+        public void Should_throw_when_onTimeout_is_null_with_timeoutprovider_with_full_argument_list_onTimeout()
+        {
+            Func<Context, TimeSpan, Task, Exception, Task> onTimeout = null;
+            Action policy = () => Policy.TimeoutAsync(() => TimeSpan.FromSeconds(30), onTimeout);
+
+            policy.Should().Throw<ArgumentNullException>()
+                .And.ParamName.Should().Be("onTimeoutAsync");
+        }
+
+        [Fact]
+        public void Should_be_able_to_configure_with_timeout_func()
+        {
+            Action policy = () => Policy.TimeoutAsync(() => TimeSpan.FromSeconds(1));
+
+            policy.Should().NotThrow();
+        }
+
+        #endregion
+
+        #region Timeout operation - pessimistic
+
+        [Fact]
+        public void Should_throw_when_timeout_is_less_than_execution_duration__pessimistic()
+        {
+            var timeout = TimeSpan.FromMilliseconds(50);
+
+            var policy = Policy.TimeoutAsync(timeout, TimeoutStrategy.Pessimistic);
+
+            policy.Awaiting(p => p.ExecuteAsync(async () =>
+            {
+                await SystemClock.SleepAsync(TimeSpan.FromSeconds(3), CancellationToken.None);
+
+            })).Should().Throw<TimeoutRejectedException>();
+        }
+
+        [Fact]
+        public void Should_not_throw_when_timeout_is_greater_than_execution_duration__pessimistic()
+        {
+            var policy = Policy.TimeoutAsync(TimeSpan.FromSeconds(1), TimeoutStrategy.Pessimistic);
+
+            var result = ResultPrimitive.Undefined;
+
+            var act = async () =>
+            {
+                result = await policy.ExecuteAsync(() => Task.FromResult(ResultPrimitive.Good));
+            };
+
+            act.Should().NotThrow();
+            result.Should().Be(ResultPrimitive.Good);
+        }
+
+        [Fact]
+        public void Should_throw_timeout_after_correct_duration__pessimistic()
+        {
+            var watch = new Stopwatch();
+
+            var timeout = TimeSpan.FromSeconds(1);
+            var policy = Policy.TimeoutAsync(timeout, TimeoutStrategy.Pessimistic);
+
+            var tolerance = TimeSpan.FromSeconds(3); // Consider increasing tolerance, if test fails transiently in different test/build environments.
+
+            watch.Start();
+            policy.Awaiting(p => p.ExecuteAsync(async () =>
             {
                 await SystemClock.SleepAsync(TimeSpan.FromSeconds(10), CancellationToken.None);
 
             }))
-            .Should().Throw<TimeoutRejectedException>();
-        watch.Stop();
+                .Should().Throw<TimeoutRejectedException>();
+            watch.Stop();
 
-        watch.Elapsed.Should().BeCloseTo(timeout, ((int)tolerance.TotalMilliseconds));
-    }
+            watch.Elapsed.Should().BeCloseTo(timeout, ((int)tolerance.TotalMilliseconds));
+        }
 
-    [Fact]
-    public void Should_rethrow_exception_from_inside_delegate__pessimistic()
-    {
-        var policy = Policy.TimeoutAsync(TimeSpan.FromSeconds(10), TimeoutStrategy.Pessimistic);
+        [Fact]
+        public void Should_rethrow_exception_from_inside_delegate__pessimistic()
+        {
+            var policy = Policy.TimeoutAsync(TimeSpan.FromSeconds(10), TimeoutStrategy.Pessimistic);
 
-        policy.Awaiting(p => p.ExecuteAsync(() => throw new NotImplementedException())).Should().Throw<NotImplementedException>();
-    }
+            policy.Awaiting(p => p.ExecuteAsync(() => throw new NotImplementedException())).Should().Throw<NotImplementedException>();
+        }
 
-    #endregion
+        #endregion
 
 
-    #region Timeout operation - optimistic
+        #region Timeout operation - optimistic
 
-    [Fact]
-    public void Should_throw_when_timeout_is_less_than_execution_duration__optimistic()
-    {
-        var timeout = TimeSpan.FromMilliseconds(50);
+        [Fact]
+        public void Should_throw_when_timeout_is_less_than_execution_duration__optimistic()
+        {
+            var timeout = TimeSpan.FromMilliseconds(50);
 
-        var policy = Policy.TimeoutAsync(timeout, TimeoutStrategy.Optimistic);
-        var userCancellationToken = CancellationToken.None;
+            var policy = Policy.TimeoutAsync(timeout, TimeoutStrategy.Optimistic);
+            var userCancellationToken = CancellationToken.None;
 
-        policy.Awaiting(p => p.ExecuteAsync(async ct =>
+            policy.Awaiting(p => p.ExecuteAsync(async ct =>
             {
                 await SystemClock.SleepAsync(TimeSpan.FromSeconds(3), ct);
 
             }, userCancellationToken))
             .Should().Throw<TimeoutRejectedException>();
-    }
+        }
 
-    [Fact]
-    public void Should_not_throw_when_timeout_is_greater_than_execution_duration__optimistic()
-    {
-        var policy = Policy.TimeoutAsync(TimeSpan.FromSeconds(1), TimeoutStrategy.Optimistic);
-        var result = ResultPrimitive.Undefined;
-        var userCancellationToken = CancellationToken.None;
+        [Fact]
+        public void Should_not_throw_when_timeout_is_greater_than_execution_duration__optimistic()
+        {
+            var policy = Policy.TimeoutAsync(TimeSpan.FromSeconds(1), TimeoutStrategy.Optimistic);
+            var result = ResultPrimitive.Undefined;
+            var userCancellationToken = CancellationToken.None;
 
-        var act = async () => {
-            result = await policy.ExecuteAsync(async ct =>
-            {
-                await SystemClock.SleepAsync(TimeSpan.FromMilliseconds(500), ct);
-                return ResultPrimitive.Good;
-            }, userCancellationToken);
-        };
+            var act = async () => {
+                result = await policy.ExecuteAsync(async ct =>
+                    {
+                        await SystemClock.SleepAsync(TimeSpan.FromMilliseconds(500), ct);
+                        return ResultPrimitive.Good;
+                    }, userCancellationToken);
+            };
 
-        act.Should().NotThrow<TimeoutRejectedException>();
-        result.Should().Be(ResultPrimitive.Good);
-    }
+            act.Should().NotThrow<TimeoutRejectedException>();
+            result.Should().Be(ResultPrimitive.Good);
+        }
 
-    [Fact]
-    public void Should_throw_timeout_after_correct_duration__optimistic()
-    {
-        var watch = new Stopwatch();
+        [Fact]
+        public void Should_throw_timeout_after_correct_duration__optimistic()
+        {
+            var watch = new Stopwatch();
 
-        var timeout = TimeSpan.FromSeconds(1);
-        var policy = Policy.TimeoutAsync(timeout, TimeoutStrategy.Optimistic);
-        var userCancellationToken = CancellationToken.None;
+            var timeout = TimeSpan.FromSeconds(1);
+            var policy = Policy.TimeoutAsync(timeout, TimeoutStrategy.Optimistic);
+            var userCancellationToken = CancellationToken.None;
 
-        var tolerance = TimeSpan.FromSeconds(3); // Consider increasing tolerance, if test fails transiently in different test/build environments.
+            var tolerance = TimeSpan.FromSeconds(3); // Consider increasing tolerance, if test fails transiently in different test/build environments.
 
-        watch.Start();
-        policy.Awaiting(p => p.ExecuteAsync(async ct =>
+            watch.Start();
+            policy.Awaiting(p => p.ExecuteAsync(async ct =>
             {
                 await SystemClock.SleepAsync(TimeSpan.FromSeconds(10), ct);
 
             }, userCancellationToken))
-            .Should().Throw<TimeoutRejectedException>();
-        watch.Stop();
+                .Should().Throw<TimeoutRejectedException>();
+            watch.Stop();
 
-        watch.Elapsed.Should().BeCloseTo(timeout, ((int)tolerance.TotalMilliseconds));
-    }
-
-    [Fact]
-    public void Should_rethrow_exception_from_inside_delegate__optimistic()
-    {
-        var policy = Policy.TimeoutAsync(TimeSpan.FromSeconds(10), TimeoutStrategy.Optimistic);
-
-        policy.Awaiting(p => p.ExecuteAsync(() => throw new NotImplementedException())).Should().Throw<NotImplementedException>();
-    }
-
-    #endregion
-
-    #region Non-timeout cancellation - pessimistic (user-delegate does not observe cancellation)
-
-    [Fact]
-    public void Should_not_be_able_to_cancel_with_unobserved_user_cancellation_token_before_timeout__pessimistic()
-    {
-        var timeout = 5;
-        var policy = Policy.TimeoutAsync(timeout, TimeoutStrategy.Pessimistic);
-
-        using (var userTokenSource = new CancellationTokenSource())
-        {
-            policy.Awaiting(p => p.ExecuteAsync(async
-                    _ => {
-                    userTokenSource.Cancel(); // User token cancels in the middle of execution ...
-                    await SystemClock.SleepAsync(TimeSpan.FromSeconds(timeout * 2),
-                        CancellationToken.None // ... but if the executed delegate does not observe it
-                    );
-                }, userTokenSource.Token)
-            ).Should().Throw<TimeoutRejectedException>(); // ... it's still the timeout we expect.
+            watch.Elapsed.Should().BeCloseTo(timeout, ((int)tolerance.TotalMilliseconds));
         }
-    }
 
-    [Fact]
-    public void Should_not_execute_user_delegate_if_user_cancellationToken_cancelled_before_delegate_reached__pessimistic()
-    {
-        var policy = Policy.TimeoutAsync(10, TimeoutStrategy.Pessimistic);
-
-        var executed = false;
-
-        using (var cts = new CancellationTokenSource())
+        [Fact]
+        public void Should_rethrow_exception_from_inside_delegate__optimistic()
         {
-            cts.Cancel();
+            var policy = Policy.TimeoutAsync(TimeSpan.FromSeconds(10), TimeoutStrategy.Optimistic);
 
-            policy.Awaiting(p => p.ExecuteAsync(_ =>
+            policy.Awaiting(p => p.ExecuteAsync(() => throw new NotImplementedException())).Should().Throw<NotImplementedException>();
+        }
+
+        #endregion
+
+        #region Non-timeout cancellation - pessimistic (user-delegate does not observe cancellation)
+
+        [Fact]
+        public void Should_not_be_able_to_cancel_with_unobserved_user_cancellation_token_before_timeout__pessimistic()
+        {
+            var timeout = 5;
+            var policy = Policy.TimeoutAsync(timeout, TimeoutStrategy.Pessimistic);
+
+            using (var userTokenSource = new CancellationTokenSource())
+            {
+                policy.Awaiting(p => p.ExecuteAsync(async
+                    _ => {
+                        userTokenSource.Cancel(); // User token cancels in the middle of execution ...
+                        await SystemClock.SleepAsync(TimeSpan.FromSeconds(timeout * 2),
+                            CancellationToken.None // ... but if the executed delegate does not observe it
+                            );
+                    }, userTokenSource.Token)
+                   ).Should().Throw<TimeoutRejectedException>(); // ... it's still the timeout we expect.
+            }
+        }
+
+        [Fact]
+        public void Should_not_execute_user_delegate_if_user_cancellationToken_cancelled_before_delegate_reached__pessimistic()
+        {
+            var policy = Policy.TimeoutAsync(10, TimeoutStrategy.Pessimistic);
+
+            var executed = false;
+
+            using (var cts = new CancellationTokenSource())
+            {
+                cts.Cancel();
+
+                policy.Awaiting(p => p.ExecuteAsync(_ =>
                 {
                     executed = true;
                     return TaskHelper.EmptyTask;
                 }, cts.Token))
                 .Should().Throw<OperationCanceledException>();
+            }
+
+            executed.Should().BeFalse();
         }
 
-        executed.Should().BeFalse();
-    }
+        #endregion
 
-    #endregion
+        #region Non-timeout cancellation - optimistic (user-delegate observes cancellation)
 
-    #region Non-timeout cancellation - optimistic (user-delegate observes cancellation)
-
-    [Fact]
-    public void Should_be_able_to_cancel_with_user_cancellation_token_before_timeout__optimistic()
-    {
-        var timeout = 10;
-        var policy = Policy.TimeoutAsync(timeout, TimeoutStrategy.Optimistic);
-
-        using (var userTokenSource = new CancellationTokenSource())
+        [Fact]
+        public void Should_be_able_to_cancel_with_user_cancellation_token_before_timeout__optimistic()
         {
-            policy.Awaiting(p => p.ExecuteAsync(
+            var timeout = 10;
+            var policy = Policy.TimeoutAsync(timeout, TimeoutStrategy.Optimistic);
+
+            using (var userTokenSource = new CancellationTokenSource())
+            {
+                policy.Awaiting(p => p.ExecuteAsync(
                     ct => {
                         userTokenSource.Cancel(); ct.ThrowIfCancellationRequested();   // Simulate cancel in the middle of execution
                         return TaskHelper.EmptyTask;
                     }, userTokenSource.Token) // ... with user token.
-            ).Should().Throw<OperationCanceledException>();
+                   ).Should().Throw<OperationCanceledException>();
+            }
         }
-    }
 
-    [Fact]
-    public void Should_not_execute_user_delegate_if_user_cancellationToken_cancelled_before_delegate_reached__optimistic()
-    {
-        var policy = Policy.TimeoutAsync(10, TimeoutStrategy.Optimistic);
-
-        var executed = false;
-
-        using (var cts = new CancellationTokenSource())
+        [Fact]
+        public void Should_not_execute_user_delegate_if_user_cancellationToken_cancelled_before_delegate_reached__optimistic()
         {
-            cts.Cancel();
+            var policy = Policy.TimeoutAsync(10, TimeoutStrategy.Optimistic);
 
-            policy.Awaiting(p => p.ExecuteAsync(_ =>
+            var executed = false;
+
+            using (var cts = new CancellationTokenSource())
+            {
+                cts.Cancel();
+
+                policy.Awaiting(p => p.ExecuteAsync(_ =>
                 {
                     executed = true;
                     return TaskHelper.EmptyTask;
                 }, cts.Token))
                 .Should().Throw<OperationCanceledException>();
+            }
+
+            executed.Should().BeFalse();
         }
 
-        executed.Should().BeFalse();
-    }
-
-    [Fact]
-    public void Should_not_mask_user_exception_if_user_exception_overlaps_with_timeout()
-    {
-        var userException = new Exception();
-        var shimTimeSpan = TimeSpan.FromSeconds(0.2);
-        var policy = Policy.TimeoutAsync(shimTimeSpan, TimeoutStrategy.Optimistic);
-
-        var thrown = policy.Awaiting(p => p.ExecuteAsync(async _ =>
-            {
-                try
-                {
-                    await SystemClock.SleepAsync(shimTimeSpan + shimTimeSpan, CancellationToken.None);
-                }
-                catch
-                {
-                    // Throw a different exception - this exception should not be masked.
-                    // The issue of more interest for issue 620 is an edge-case race condition where a user exception is thrown
-                    // quasi-simultaneously to timeout (rather than in a manual catch of a timeout as here), but this is a good way to simulate it.
-                    // A real-world case can be if timeout occurs while code is marshalling a user-exception into or through the catch block in TimeoutEngine.
-                    throw userException;
-                }
-
-                throw new InvalidOperationException("This exception should not be thrown. Test should throw for timeout earlier.");
-
-            }, CancellationToken.None))
-            .Should()
-            .Throw<Exception>()
-            .Which;
-
-        thrown.Should().NotBeOfType<OperationCanceledException>();
-        thrown.Should().NotBeOfType<TimeoutRejectedException>();
-        thrown.Should().NotBeOfType<InvalidOperationException>();
-        thrown.Should().BeSameAs(userException);
-    }
-
-    #endregion
-
-    #region onTimeout overload - pessimistic
-
-    [Fact]
-    public void Should_call_ontimeout_with_configured_timeout__pessimistic()
-    {
-        var timeoutPassedToConfiguration = TimeSpan.FromMilliseconds(250);
-
-        TimeSpan? timeoutPassedToOnTimeout = null;
-        Func<Context, TimeSpan, Task, Task> onTimeoutAsync = (_, span, _) =>
+        [Fact]
+        public void Should_not_mask_user_exception_if_user_exception_overlaps_with_timeout()
         {
-            timeoutPassedToOnTimeout = span;
-            return TaskHelper.EmptyTask;
-        };
+            var userException = new Exception();
+            var shimTimeSpan = TimeSpan.FromSeconds(0.2);
+            var policy = Policy.TimeoutAsync(shimTimeSpan, TimeoutStrategy.Optimistic);
 
-        var policy = Policy.TimeoutAsync(timeoutPassedToConfiguration, TimeoutStrategy.Pessimistic, onTimeoutAsync);
+            var thrown = policy.Awaiting(p => p.ExecuteAsync(async _ =>
+                {
+                    try
+                    {
+                        await SystemClock.SleepAsync(shimTimeSpan + shimTimeSpan, CancellationToken.None);
+                    }
+                    catch
+                    {
+                        // Throw a different exception - this exception should not be masked.
+                        // The issue of more interest for issue 620 is an edge-case race condition where a user exception is thrown
+                        // quasi-simultaneously to timeout (rather than in a manual catch of a timeout as here), but this is a good way to simulate it.
+                        // A real-world case can be if timeout occurs while code is marshalling a user-exception into or through the catch block in TimeoutEngine.
+                        throw userException;
+                    }
 
-        policy.Awaiting(p => p.ExecuteAsync(async () =>
+                    throw new InvalidOperationException("This exception should not be thrown. Test should throw for timeout earlier.");
+
+                }, CancellationToken.None))
+                .Should()
+                .Throw<Exception>()
+                .Which;
+
+            thrown.Should().NotBeOfType<OperationCanceledException>();
+            thrown.Should().NotBeOfType<TimeoutRejectedException>();
+            thrown.Should().NotBeOfType<InvalidOperationException>();
+            thrown.Should().BeSameAs(userException);
+        }
+
+        #endregion
+
+        #region onTimeout overload - pessimistic
+
+        [Fact]
+        public void Should_call_ontimeout_with_configured_timeout__pessimistic()
+        {
+            var timeoutPassedToConfiguration = TimeSpan.FromMilliseconds(250);
+
+            TimeSpan? timeoutPassedToOnTimeout = null;
+            Func<Context, TimeSpan, Task, Task> onTimeoutAsync = (_, span, _) =>
+            {
+                timeoutPassedToOnTimeout = span;
+                return TaskHelper.EmptyTask;
+            };
+
+            var policy = Policy.TimeoutAsync(timeoutPassedToConfiguration, TimeoutStrategy.Pessimistic, onTimeoutAsync);
+
+            policy.Awaiting(p => p.ExecuteAsync(async () =>
             {
                 await SystemClock.SleepAsync(TimeSpan.FromSeconds(3), CancellationToken.None);
 
             }))
             .Should().Throw<TimeoutRejectedException>();
 
-        timeoutPassedToOnTimeout.Should().Be(timeoutPassedToConfiguration);
-    }
+            timeoutPassedToOnTimeout.Should().Be(timeoutPassedToConfiguration);
+        }
 
-    [Fact]
-    public void Should_call_ontimeout_with_passed_context__pessimistic()
-    {
-        var operationKey = "SomeKey";
-        var contextPassedToExecute = new Context(operationKey);
-
-        Context contextPassedToOnTimeout = null;
-        Func<Context, TimeSpan, Task, Task> onTimeoutAsync = (ctx, _, _) =>
+        [Fact]
+        public void Should_call_ontimeout_with_passed_context__pessimistic()
         {
-            contextPassedToOnTimeout = ctx;
-            return TaskHelper.EmptyTask;
-        };
+            var operationKey = "SomeKey";
+            var contextPassedToExecute = new Context(operationKey);
 
-        var timeout = TimeSpan.FromMilliseconds(250);
-        var policy = Policy.TimeoutAsync(timeout, TimeoutStrategy.Pessimistic, onTimeoutAsync);
-
-        policy.Awaiting(p => p.ExecuteAsync(async _ =>
+            Context contextPassedToOnTimeout = null;
+            Func<Context, TimeSpan, Task, Task> onTimeoutAsync = (ctx, _, _) =>
             {
-                await SystemClock.SleepAsync(TimeSpan.FromSeconds(3), CancellationToken.None);
+                contextPassedToOnTimeout = ctx;
+                return TaskHelper.EmptyTask;
+            };
 
-            }, contextPassedToExecute))
-            .Should().Throw<TimeoutRejectedException>();
+            var timeout = TimeSpan.FromMilliseconds(250);
+            var policy = Policy.TimeoutAsync(timeout, TimeoutStrategy.Pessimistic, onTimeoutAsync);
 
-        contextPassedToOnTimeout.Should().NotBeNull();
-        contextPassedToOnTimeout.OperationKey.Should().Be(operationKey);
-        contextPassedToOnTimeout.Should().BeSameAs(contextPassedToExecute);
-    }
+            policy.Awaiting(p => p.ExecuteAsync(async _ =>
+                {
+                    await SystemClock.SleepAsync(TimeSpan.FromSeconds(3), CancellationToken.None);
 
-    [Theory]
-    [InlineData(1)]
-    [InlineData(2)]
-    [InlineData(3)]
-    public void Should_call_ontimeout_with_timeout_supplied_different_for_each_execution_by_evaluating_func__pessimistic(int programaticallyControlledDelay)
-    {
-        var timeoutFunc = () => TimeSpan.FromMilliseconds(25*programaticallyControlledDelay);
+                }, contextPassedToExecute))
+                .Should().Throw<TimeoutRejectedException>();
 
-        TimeSpan? timeoutPassedToOnTimeout = null;
-        Func<Context, TimeSpan, Task, Task> onTimeoutAsync = (_, span, _) =>
+            contextPassedToOnTimeout.Should().NotBeNull();
+            contextPassedToOnTimeout.OperationKey.Should().Be(operationKey);
+            contextPassedToOnTimeout.Should().BeSameAs(contextPassedToExecute);
+        }
+
+        [Theory]
+        [InlineData(1)]
+        [InlineData(2)]
+        [InlineData(3)]
+        public void Should_call_ontimeout_with_timeout_supplied_different_for_each_execution_by_evaluating_func__pessimistic(int programaticallyControlledDelay)
         {
-            timeoutPassedToOnTimeout = span;
-            return TaskHelper.EmptyTask;
-        };
+            var timeoutFunc = () => TimeSpan.FromMilliseconds(25*programaticallyControlledDelay);
 
-        var policy = Policy.TimeoutAsync(timeoutFunc, TimeoutStrategy.Pessimistic, onTimeoutAsync);
+            TimeSpan? timeoutPassedToOnTimeout = null;
+            Func<Context, TimeSpan, Task, Task> onTimeoutAsync = (_, span, _) =>
+            {
+                timeoutPassedToOnTimeout = span;
+                return TaskHelper.EmptyTask;
+            };
 
-        policy.Awaiting(p => p.ExecuteAsync(async () =>
+            var policy = Policy.TimeoutAsync(timeoutFunc, TimeoutStrategy.Pessimistic, onTimeoutAsync);
+
+            policy.Awaiting(p => p.ExecuteAsync(async () =>
             {
                 await SystemClock.SleepAsync(TimeSpan.FromSeconds(3), CancellationToken.None);
             }))
             .Should().Throw<TimeoutRejectedException>();
 
-        timeoutPassedToOnTimeout.Should().Be(timeoutFunc());
-    }
+            timeoutPassedToOnTimeout.Should().Be(timeoutFunc());
+        }
 
-    [Theory]
-    [InlineData(1)]
-    [InlineData(2)]
-    [InlineData(3)]
-    public void Should_call_ontimeout_with_timeout_supplied_different_for_each_execution_by_evaluating_func_influenced_by_context__pessimistic(int programaticallyControlledDelay)
-    {
-        Func<Context, TimeSpan> timeoutProvider = ctx => (TimeSpan)ctx["timeout"];
-
-        TimeSpan? timeoutPassedToOnTimeout = null;
-        Func<Context, TimeSpan, Task, Task> onTimeoutAsync = (_, span, _) =>
+        [Theory]
+        [InlineData(1)]
+        [InlineData(2)]
+        [InlineData(3)]
+        public void Should_call_ontimeout_with_timeout_supplied_different_for_each_execution_by_evaluating_func_influenced_by_context__pessimistic(int programaticallyControlledDelay)
         {
-            timeoutPassedToOnTimeout = span;
-            return TaskHelper.EmptyTask;
-        };
+            Func<Context, TimeSpan> timeoutProvider = ctx => (TimeSpan)ctx["timeout"];
 
-        var policy = Policy.TimeoutAsync(timeoutProvider, TimeoutStrategy.Pessimistic, onTimeoutAsync);
+            TimeSpan? timeoutPassedToOnTimeout = null;
+            Func<Context, TimeSpan, Task, Task> onTimeoutAsync = (_, span, _) =>
+            {
+                timeoutPassedToOnTimeout = span;
+                return TaskHelper.EmptyTask;
+            };
 
-        // Supply a programatically-controlled timeout, via the execution context.
-        var context = new Context("SomeOperationKey") { ["timeout"] = TimeSpan.FromMilliseconds(25 * programaticallyControlledDelay) };
+            var policy = Policy.TimeoutAsync(timeoutProvider, TimeoutStrategy.Pessimistic, onTimeoutAsync);
 
-        policy.Awaiting(p => p.ExecuteAsync(async _ =>
+            // Supply a programatically-controlled timeout, via the execution context.
+            var context = new Context("SomeOperationKey") { ["timeout"] = TimeSpan.FromMilliseconds(25 * programaticallyControlledDelay) };
+
+            policy.Awaiting(p => p.ExecuteAsync(async _ =>
             {
                 await SystemClock.SleepAsync(TimeSpan.FromSeconds(3), CancellationToken.None);
             }, context))
             .Should().Throw<TimeoutRejectedException>();
 
-        timeoutPassedToOnTimeout.Should().Be(timeoutProvider(context));
-    }
+            timeoutPassedToOnTimeout.Should().Be(timeoutProvider(context));
+        }
 
-    [Fact]
-    public void Should_call_ontimeout_with_task_wrapping_abandoned_action__pessimistic()
-    {
-        Task taskPassedToOnTimeout = null;
-        Func<Context, TimeSpan, Task, Task> onTimeoutAsync = (_, _, task) =>
+        [Fact]
+        public void Should_call_ontimeout_with_task_wrapping_abandoned_action__pessimistic()
         {
-            taskPassedToOnTimeout = task;
-            return TaskHelper.EmptyTask;
-        };
+            Task taskPassedToOnTimeout = null;
+            Func<Context, TimeSpan, Task, Task> onTimeoutAsync = (_, _, task) =>
+            {
+                taskPassedToOnTimeout = task;
+                return TaskHelper.EmptyTask;
+            };
 
-        var timeout = TimeSpan.FromMilliseconds(250);
-        var policy = Policy.TimeoutAsync(timeout, TimeoutStrategy.Pessimistic, onTimeoutAsync);
+            var timeout = TimeSpan.FromMilliseconds(250);
+            var policy = Policy.TimeoutAsync(timeout, TimeoutStrategy.Pessimistic, onTimeoutAsync);
 
-        policy.Awaiting(p => p.ExecuteAsync(async () =>
+            policy.Awaiting(p => p.ExecuteAsync(async () =>
             {
                 await SystemClock.SleepAsync(TimeSpan.FromSeconds(3), CancellationToken.None);
             }))
             .Should().Throw<TimeoutRejectedException>();
 
-        taskPassedToOnTimeout.Should().NotBeNull();
-    }
+            taskPassedToOnTimeout.Should().NotBeNull();
+        }
 
-    [Fact]
-    public async Task Should_call_ontimeout_with_task_wrapping_abandoned_action_allowing_capture_of_otherwise_unobserved_exception__pessimistic()
-    {
-        SystemClock.Reset(); // This is the only test which cannot work with the artificial SystemClock of TimeoutSpecsBase.  We want the invoked delegate to continue as far as: throw exceptionToThrow, to genuinely check that the walked-away-from task throws that, and that we pass it to onTimeoutAsync.
-        // That means we can't use the SystemClock.SleepAsync(...) within the executed delegate to artificially trigger the timeout cancellation (as for example the test above does).
-        // In real execution, it is the .WhenAny() in the timeout implementation which throws for the timeout.  We don't want to go as far as abstracting Task.WhenAny() out into SystemClock, so we let this test run at real-world speed, not abstracted-clock speed.
-
-        Exception exceptionToThrow = new DivideByZeroException();
-
-        Exception exceptionObservedFromTaskPassedToOnTimeout = null;
-        Func<Context, TimeSpan, Task, Task> onTimeoutAsync = (_, _, task) =>
+        [Fact]
+        public async Task Should_call_ontimeout_with_task_wrapping_abandoned_action_allowing_capture_of_otherwise_unobserved_exception__pessimistic()
         {
-            task.ContinueWith(t => exceptionObservedFromTaskPassedToOnTimeout = t.Exception.InnerException); // Intentionally not awaited: we want to assign the continuation, but let it run in its own time when the executed delegate eventually completes.
-            return TaskHelper.EmptyTask;
-        };
+            SystemClock.Reset(); // This is the only test which cannot work with the artificial SystemClock of TimeoutSpecsBase.  We want the invoked delegate to continue as far as: throw exceptionToThrow, to genuinely check that the walked-away-from task throws that, and that we pass it to onTimeoutAsync.
+            // That means we can't use the SystemClock.SleepAsync(...) within the executed delegate to artificially trigger the timeout cancellation (as for example the test above does).
+            // In real execution, it is the .WhenAny() in the timeout implementation which throws for the timeout.  We don't want to go as far as abstracting Task.WhenAny() out into SystemClock, so we let this test run at real-world speed, not abstracted-clock speed.
 
-        var shimTimespan = TimeSpan.FromSeconds(1); // Consider increasing shimTimeSpan if test fails transiently in different environments.
-        var thriceShimTimeSpan = shimTimespan + shimTimespan + shimTimespan;
-        var policy = Policy.TimeoutAsync(shimTimespan, TimeoutStrategy.Pessimistic, onTimeoutAsync);
+            Exception exceptionToThrow = new DivideByZeroException();
 
-        policy.Awaiting(p => p.ExecuteAsync(async () =>
+            Exception exceptionObservedFromTaskPassedToOnTimeout = null;
+            Func<Context, TimeSpan, Task, Task> onTimeoutAsync = (_, _, task) =>
+            {
+                task.ContinueWith(t => exceptionObservedFromTaskPassedToOnTimeout = t.Exception.InnerException); // Intentionally not awaited: we want to assign the continuation, but let it run in its own time when the executed delegate eventually completes.
+                return TaskHelper.EmptyTask;
+            };
+
+            var shimTimespan = TimeSpan.FromSeconds(1); // Consider increasing shimTimeSpan if test fails transiently in different environments.
+            var thriceShimTimeSpan = shimTimespan + shimTimespan + shimTimespan;
+            var policy = Policy.TimeoutAsync(shimTimespan, TimeoutStrategy.Pessimistic, onTimeoutAsync);
+
+            policy.Awaiting(p => p.ExecuteAsync(async () =>
             {
                 await SystemClock.SleepAsync(thriceShimTimeSpan, CancellationToken.None);
                 throw exceptionToThrow;
             }))
             .Should().Throw<TimeoutRejectedException>();
 
-        await SystemClock.SleepAsync(thriceShimTimeSpan, CancellationToken.None);
-        exceptionObservedFromTaskPassedToOnTimeout.Should().NotBeNull();
-        exceptionObservedFromTaskPassedToOnTimeout.Should().Be(exceptionToThrow);
+            await SystemClock.SleepAsync(thriceShimTimeSpan, CancellationToken.None);
+            exceptionObservedFromTaskPassedToOnTimeout.Should().NotBeNull();
+            exceptionObservedFromTaskPassedToOnTimeout.Should().Be(exceptionToThrow);
 
-    }
+        }
 
-    [Fact]
-    public void Should_call_ontimeout_with_timing_out_exception__pessimistic()
-    {
-        var timeoutPassedToConfiguration = TimeSpan.FromMilliseconds(250);
-
-        Exception exceptionPassedToOnTimeout = null;
-        Func<Context, TimeSpan, Task, Exception, Task> onTimeoutAsync = (_, _, _, exception) =>
+        [Fact]
+        public void Should_call_ontimeout_with_timing_out_exception__pessimistic()
         {
-            exceptionPassedToOnTimeout = exception;
-            return TaskHelper.EmptyTask;
-        };
+            var timeoutPassedToConfiguration = TimeSpan.FromMilliseconds(250);
 
-        var policy = Policy.TimeoutAsync(timeoutPassedToConfiguration, TimeoutStrategy.Pessimistic, onTimeoutAsync);
-
-        policy.Awaiting(p => p.ExecuteAsync(async () =>
+            Exception exceptionPassedToOnTimeout = null;
+            Func<Context, TimeSpan, Task, Exception, Task> onTimeoutAsync = (_, _, _, exception) =>
             {
-                await SystemClock.SleepAsync(TimeSpan.FromSeconds(3), CancellationToken.None);
+                exceptionPassedToOnTimeout = exception;
+                return TaskHelper.EmptyTask;
+            };
 
-            }))
-            .Should().Throw<TimeoutRejectedException>();
+            var policy = Policy.TimeoutAsync(timeoutPassedToConfiguration, TimeoutStrategy.Pessimistic, onTimeoutAsync);
 
-        exceptionPassedToOnTimeout.Should().NotBeNull();
-        exceptionPassedToOnTimeout.Should().BeOfType(typeof(OperationCanceledException));
-    }
+            policy.Awaiting(p => p.ExecuteAsync(async () =>
+                {
+                    await SystemClock.SleepAsync(TimeSpan.FromSeconds(3), CancellationToken.None);
 
-    #endregion
+                }))
+                .Should().Throw<TimeoutRejectedException>();
 
-    #region onTimeout overload - optimistic
+            exceptionPassedToOnTimeout.Should().NotBeNull();
+            exceptionPassedToOnTimeout.Should().BeOfType(typeof(OperationCanceledException));
+        }
 
-    [Fact]
-    public void Should_call_ontimeout_with_configured_timeout__optimistic()
-    {
-        var timeoutPassedToConfiguration = TimeSpan.FromMilliseconds(250);
+        #endregion
 
-        TimeSpan? timeoutPassedToOnTimeout = null;
-        Func<Context, TimeSpan, Task, Task> onTimeoutAsync = (_, span, _) =>
+        #region onTimeout overload - optimistic
+
+        [Fact]
+        public void Should_call_ontimeout_with_configured_timeout__optimistic()
         {
-            timeoutPassedToOnTimeout = span;
-            return TaskHelper.EmptyTask;
-        };
+            var timeoutPassedToConfiguration = TimeSpan.FromMilliseconds(250);
 
-        var policy = Policy.TimeoutAsync(timeoutPassedToConfiguration, TimeoutStrategy.Optimistic, onTimeoutAsync);
-        var userCancellationToken = CancellationToken.None;
-
-        policy.Awaiting(p => p.ExecuteAsync(async ct =>
+            TimeSpan? timeoutPassedToOnTimeout = null;
+            Func<Context, TimeSpan, Task, Task> onTimeoutAsync = (_, span, _) =>
             {
-                await SystemClock.SleepAsync(TimeSpan.FromSeconds(3), ct);
+                timeoutPassedToOnTimeout = span;
+                return TaskHelper.EmptyTask;
+            };
 
-            }, userCancellationToken))
-            .Should().Throw<TimeoutRejectedException>();
+            var policy = Policy.TimeoutAsync(timeoutPassedToConfiguration, TimeoutStrategy.Optimistic, onTimeoutAsync);
+            var userCancellationToken = CancellationToken.None;
 
-        timeoutPassedToOnTimeout.Should().Be(timeoutPassedToConfiguration);
-    }
-
-    [Fact]
-    public void Should_call_ontimeout_with_passed_context__optimistic()
-    {
-        var operationKey = "SomeKey";
-        var contextPassedToExecute = new Context(operationKey);
-
-        Context contextPassedToOnTimeout = null;
-        Func<Context, TimeSpan, Task, Task> onTimeoutAsync = (ctx, _, _) =>
-        {
-            contextPassedToOnTimeout = ctx;
-            return TaskHelper.EmptyTask;
-        };
-
-        var timeout = TimeSpan.FromMilliseconds(250);
-        var policy = Policy.TimeoutAsync(timeout, TimeoutStrategy.Optimistic, onTimeoutAsync);
-        var userCancellationToken = CancellationToken.None;
-
-        policy.Awaiting(p => p.ExecuteAsync(async (_, ct) =>
-            {
-                await SystemClock.SleepAsync(TimeSpan.FromSeconds(3), ct);
-
-            }, contextPassedToExecute, userCancellationToken))
-            .Should().Throw<TimeoutRejectedException>();
-
-        contextPassedToOnTimeout.Should().NotBeNull();
-        contextPassedToOnTimeout.OperationKey.Should().Be(operationKey);
-        contextPassedToOnTimeout.Should().BeSameAs(contextPassedToExecute);
-    }
-
-    [Theory]
-    [InlineData(1)]
-    [InlineData(2)]
-    [InlineData(3)]
-    public void Should_call_ontimeout_with_timeout_supplied_different_for_each_execution_by_evaluating_func__optimistic(int programaticallyControlledDelay)
-    {
-        var timeoutFunc = () => TimeSpan.FromMilliseconds(25* programaticallyControlledDelay);
-
-        TimeSpan? timeoutPassedToOnTimeout = null;
-        Func<Context, TimeSpan, Task, Task> onTimeoutAsync = (_, span, _) =>
-        {
-            timeoutPassedToOnTimeout = span;
-            return TaskHelper.EmptyTask;
-        };
-
-        var policy = Policy.TimeoutAsync(timeoutFunc, TimeoutStrategy.Optimistic, onTimeoutAsync);
-        var userCancellationToken = CancellationToken.None;
-
-        policy.Awaiting(p => p.ExecuteAsync(async ct =>
+            policy.Awaiting(p => p.ExecuteAsync(async ct =>
             {
                 await SystemClock.SleepAsync(TimeSpan.FromSeconds(3), ct);
 
             }, userCancellationToken))
             .Should().Throw<TimeoutRejectedException>();
 
-        timeoutPassedToOnTimeout.Should().Be(timeoutFunc());
-    }
+            timeoutPassedToOnTimeout.Should().Be(timeoutPassedToConfiguration);
+        }
 
-    [Theory]
-    [InlineData(1)]
-    [InlineData(2)]
-    [InlineData(3)]
-    public void Should_call_ontimeout_with_timeout_supplied_different_for_each_execution_by_evaluating_func_influenced_by_context__optimistic(int programaticallyControlledDelay)
-    {
-        Func<Context, TimeSpan> timeoutProvider = ctx => (TimeSpan)ctx["timeout"];
-
-        TimeSpan? timeoutPassedToOnTimeout = null;
-        Func<Context, TimeSpan, Task, Task> onTimeoutAsync = (_, span, _) =>
+        [Fact]
+        public void Should_call_ontimeout_with_passed_context__optimistic()
         {
-            timeoutPassedToOnTimeout = span;
-            return TaskHelper.EmptyTask;
-        };
+            var operationKey = "SomeKey";
+            var contextPassedToExecute = new Context(operationKey);
 
-        var policy = Policy.TimeoutAsync(timeoutProvider, TimeoutStrategy.Optimistic, onTimeoutAsync);
-        var userCancellationToken = CancellationToken.None;
+            Context contextPassedToOnTimeout = null;
+            Func<Context, TimeSpan, Task, Task> onTimeoutAsync = (ctx, _, _) =>
+            {
+                contextPassedToOnTimeout = ctx;
+                return TaskHelper.EmptyTask;
+            };
 
-        // Supply a programatically-controlled timeout, via the execution context.
-        var context = new Context("SomeOperationKey")
+            var timeout = TimeSpan.FromMilliseconds(250);
+            var policy = Policy.TimeoutAsync(timeout, TimeoutStrategy.Optimistic, onTimeoutAsync);
+            var userCancellationToken = CancellationToken.None;
+
+            policy.Awaiting(p => p.ExecuteAsync(async (_, ct) =>
+                {
+                    await SystemClock.SleepAsync(TimeSpan.FromSeconds(3), ct);
+
+                }, contextPassedToExecute, userCancellationToken))
+                .Should().Throw<TimeoutRejectedException>();
+
+            contextPassedToOnTimeout.Should().NotBeNull();
+            contextPassedToOnTimeout.OperationKey.Should().Be(operationKey);
+            contextPassedToOnTimeout.Should().BeSameAs(contextPassedToExecute);
+        }
+
+        [Theory]
+        [InlineData(1)]
+        [InlineData(2)]
+        [InlineData(3)]
+        public void Should_call_ontimeout_with_timeout_supplied_different_for_each_execution_by_evaluating_func__optimistic(int programaticallyControlledDelay)
         {
-            ["timeout"] = TimeSpan.FromMilliseconds(25 * programaticallyControlledDelay)
-        };
+            var timeoutFunc = () => TimeSpan.FromMilliseconds(25* programaticallyControlledDelay);
 
-        policy.Awaiting(p => p.ExecuteAsync(async (_, ct) =>
+            TimeSpan? timeoutPassedToOnTimeout = null;
+            Func<Context, TimeSpan, Task, Task> onTimeoutAsync = (_, span, _) =>
+            {
+                timeoutPassedToOnTimeout = span;
+                return TaskHelper.EmptyTask;
+            };
+
+            var policy = Policy.TimeoutAsync(timeoutFunc, TimeoutStrategy.Optimistic, onTimeoutAsync);
+            var userCancellationToken = CancellationToken.None;
+
+            policy.Awaiting(p => p.ExecuteAsync(async ct =>
+                {
+                    await SystemClock.SleepAsync(TimeSpan.FromSeconds(3), ct);
+
+                }, userCancellationToken))
+                .Should().Throw<TimeoutRejectedException>();
+
+            timeoutPassedToOnTimeout.Should().Be(timeoutFunc());
+        }
+
+        [Theory]
+        [InlineData(1)]
+        [InlineData(2)]
+        [InlineData(3)]
+        public void Should_call_ontimeout_with_timeout_supplied_different_for_each_execution_by_evaluating_func_influenced_by_context__optimistic(int programaticallyControlledDelay)
+        {
+            Func<Context, TimeSpan> timeoutProvider = ctx => (TimeSpan)ctx["timeout"];
+
+            TimeSpan? timeoutPassedToOnTimeout = null;
+            Func<Context, TimeSpan, Task, Task> onTimeoutAsync = (_, span, _) =>
+            {
+                timeoutPassedToOnTimeout = span;
+                return TaskHelper.EmptyTask;
+            };
+
+            var policy = Policy.TimeoutAsync(timeoutProvider, TimeoutStrategy.Optimistic, onTimeoutAsync);
+            var userCancellationToken = CancellationToken.None;
+
+            // Supply a programatically-controlled timeout, via the execution context.
+            var context = new Context("SomeOperationKey")
+            {
+                ["timeout"] = TimeSpan.FromMilliseconds(25 * programaticallyControlledDelay)
+            };
+
+            policy.Awaiting(p => p.ExecuteAsync(async (_, ct) =>
             {
                 await SystemClock.SleepAsync(TimeSpan.FromSeconds(3), ct);
 
             }, context, userCancellationToken))
-            .Should().Throw<TimeoutRejectedException>();
+                .Should().Throw<TimeoutRejectedException>();
 
-        timeoutPassedToOnTimeout.Should().Be(timeoutProvider(context));
-    }
+            timeoutPassedToOnTimeout.Should().Be(timeoutProvider(context));
+        }
 
-    [Fact]
-    public void Should_call_ontimeout_but_not_with_task_wrapping_abandoned_action__optimistic()
-    {
-        Task taskPassedToOnTimeout = null;
-        Func<Context, TimeSpan, Task, Task> onTimeoutAsync = (_, _, task) =>
+        [Fact]
+        public void Should_call_ontimeout_but_not_with_task_wrapping_abandoned_action__optimistic()
         {
-            taskPassedToOnTimeout = task;
-            return TaskHelper.EmptyTask;
-        };
+            Task taskPassedToOnTimeout = null;
+            Func<Context, TimeSpan, Task, Task> onTimeoutAsync = (_, _, task) =>
+            {
+                taskPassedToOnTimeout = task;
+                return TaskHelper.EmptyTask;
+            };
 
-        var timeout = TimeSpan.FromMilliseconds(250);
-        var policy = Policy.TimeoutAsync(timeout, TimeoutStrategy.Optimistic, onTimeoutAsync);
-        var userCancellationToken = CancellationToken.None;
+            var timeout = TimeSpan.FromMilliseconds(250);
+            var policy = Policy.TimeoutAsync(timeout, TimeoutStrategy.Optimistic, onTimeoutAsync);
+            var userCancellationToken = CancellationToken.None;
 
-        policy.Awaiting(p => p.ExecuteAsync(async ct =>
+            policy.Awaiting(p => p.ExecuteAsync(async ct =>
             {
                 await SystemClock.SleepAsync(TimeSpan.FromSeconds(3), ct);
 
             }, userCancellationToken))
             .Should().Throw<TimeoutRejectedException>();
 
-        taskPassedToOnTimeout.Should().BeNull();
-    }
+            taskPassedToOnTimeout.Should().BeNull();
+        }
 
-    [Fact]
-    public void Should_call_ontimeout_with_timing_out_exception__optimistic()
-    {
-        var timeoutPassedToConfiguration = TimeSpan.FromMilliseconds(250);
-
-        Exception exceptionPassedToOnTimeout = null;
-        Func<Context, TimeSpan, Task, Exception, Task> onTimeoutAsync = (_, _, _, exception) =>
+        [Fact]
+        public void Should_call_ontimeout_with_timing_out_exception__optimistic()
         {
-            exceptionPassedToOnTimeout = exception;
-            return TaskHelper.EmptyTask;
-        };
+            var timeoutPassedToConfiguration = TimeSpan.FromMilliseconds(250);
 
-        var policy = Policy.TimeoutAsync(timeoutPassedToConfiguration, TimeoutStrategy.Optimistic, onTimeoutAsync);
-        var userCancellationToken = CancellationToken.None;
+            Exception exceptionPassedToOnTimeout = null;
+            Func<Context, TimeSpan, Task, Exception, Task> onTimeoutAsync = (_, _, _, exception) =>
+            {
+                exceptionPassedToOnTimeout = exception;
+                return TaskHelper.EmptyTask;
+            };
 
-        policy.Awaiting(p => p.ExecuteAsync(async ct =>
+            var policy = Policy.TimeoutAsync(timeoutPassedToConfiguration, TimeoutStrategy.Optimistic, onTimeoutAsync);
+            var userCancellationToken = CancellationToken.None;
+
+            policy.Awaiting(p => p.ExecuteAsync(async ct =>
             {
                 await SystemClock.SleepAsync(TimeSpan.FromSeconds(3), ct);
 
             }, userCancellationToken))
             .Should().Throw<TimeoutRejectedException>();
 
-        exceptionPassedToOnTimeout.Should().NotBeNull();
-        exceptionPassedToOnTimeout.Should().BeOfType(typeof(OperationCanceledException));
+            exceptionPassedToOnTimeout.Should().NotBeNull();
+            exceptionPassedToOnTimeout.Should().BeOfType(typeof(OperationCanceledException));
+        }
+
+        #endregion
+
     }
-
-    #endregion
-
 }

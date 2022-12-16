@@ -3,38 +3,39 @@ using FluentAssertions;
 using Polly.Utilities;
 using Xunit;
 
-namespace Polly.Specs.NoOp;
-
-public class NoOpAsyncSpecs
+namespace Polly.Specs.NoOp
 {
-    [Fact]
-    public void Should_execute_user_delegate()
+    public class NoOpAsyncSpecs
     {
-        var policy = Policy.NoOpAsync();
-        var executed = false;
-
-        policy.Awaiting(p => p.ExecuteAsync(() => { executed = true; return TaskHelper.EmptyTask; }))
-            .Should().NotThrow();
-
-        executed.Should().BeTrue();
-    }
-
-    [Fact]
-    public void Should_execute_user_delegate_without_adding_extra_cancellation_behaviour()
-    {
-        var policy = Policy.NoOpAsync();
-
-        var executed = false;
-
-        using (var cts = new CancellationTokenSource())
+        [Fact]
+        public void Should_execute_user_delegate()
         {
-            cts.Cancel();
+            var policy = Policy.NoOpAsync();
+            var executed = false;
 
-            policy.Awaiting(p => p.ExecuteAsync(
-                    _ => { executed = true; return TaskHelper.EmptyTask; }, cts.Token))
+            policy.Awaiting(p => p.ExecuteAsync(() => { executed = true; return TaskHelper.EmptyTask; }))
                 .Should().NotThrow();
+
+            executed.Should().BeTrue();
         }
 
-        executed.Should().BeTrue();
+        [Fact]
+        public void Should_execute_user_delegate_without_adding_extra_cancellation_behaviour()
+        {
+            var policy = Policy.NoOpAsync();
+
+            var executed = false;
+
+            using (var cts = new CancellationTokenSource())
+            {
+                cts.Cancel();
+
+                policy.Awaiting(p => p.ExecuteAsync(
+                    _ => { executed = true; return TaskHelper.EmptyTask; }, cts.Token))
+                    .Should().NotThrow();
+            }
+
+            executed.Should().BeTrue();
+        }
     }
 }

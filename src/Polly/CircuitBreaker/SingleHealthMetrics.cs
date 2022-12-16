@@ -1,45 +1,46 @@
 ﻿using System;
 using Polly.Utilities;
 
-namespace Polly.CircuitBreaker;
-
-internal class SingleHealthMetrics : IHealthMetrics
+namespace Polly.CircuitBreaker
 {
-    private readonly long _samplingDuration;
-
-    private HealthCount _current;
-
-    public SingleHealthMetrics(TimeSpan samplingDuration) => _samplingDuration = samplingDuration.Ticks;
-
-    public void IncrementSuccess_NeedsLock()
+    internal class SingleHealthMetrics : IHealthMetrics
     {
-        ActualiseCurrentMetric_NeedsLock();
+        private readonly long _samplingDuration;
 
-        _current.Successes++;
-    }
+        private HealthCount _current;
 
-    public void IncrementFailure_NeedsLock()
-    {
-        ActualiseCurrentMetric_NeedsLock();
+        public SingleHealthMetrics(TimeSpan samplingDuration) => _samplingDuration = samplingDuration.Ticks;
 
-        _current.Failures++;
-    }
-
-    public void Reset_NeedsLock() => _current = null;
-
-    public HealthCount GetHealthCount_NeedsLock()
-    {
-        ActualiseCurrentMetric_NeedsLock();
-
-        return _current;
-    }
-
-    private void ActualiseCurrentMetric_NeedsLock()
-    {
-        var now = SystemClock.UtcNow().Ticks;
-        if (_current == null || now - _current.StartedAt >= _samplingDuration)
+        public void IncrementSuccess_NeedsLock()
         {
-            _current = new HealthCount { StartedAt = now };
+            ActualiseCurrentMetric_NeedsLock();
+
+            _current.Successes++;
+        }
+
+        public void IncrementFailure_NeedsLock()
+        {
+            ActualiseCurrentMetric_NeedsLock();
+
+            _current.Failures++;
+        }
+
+        public void Reset_NeedsLock() => _current = null;
+
+        public HealthCount GetHealthCount_NeedsLock()
+        {
+            ActualiseCurrentMetric_NeedsLock();
+
+            return _current;
+        }
+
+        private void ActualiseCurrentMetric_NeedsLock()
+        {
+            var now = SystemClock.UtcNow().Ticks;
+            if (_current == null || now - _current.StartedAt >= _samplingDuration)
+            {
+                _current = new HealthCount { StartedAt = now };
+            }
         }
     }
 }

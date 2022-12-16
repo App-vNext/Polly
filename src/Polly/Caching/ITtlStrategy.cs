@@ -1,23 +1,24 @@
-﻿namespace Polly.Caching;
-
-/// <summary>
-/// Defines a strategy for providing time-to-live durations for cacheable results.
-/// </summary>
-public interface ITtlStrategy : ITtlStrategy<object>
-{
-        
-}
-
-/// <summary>
-/// Defines a strategy for providing time-to-live durations for cacheable results.
-/// </summary>
-public interface ITtlStrategy<TResult>
+﻿namespace Polly.Caching
 {
     /// <summary>
-    /// Gets a TTL for a cacheable item, given the current execution context.
+    /// Defines a strategy for providing time-to-live durations for cacheable results.
     /// </summary>
-    /// <param name="context">The execution context.</param>
-    /// <param name="result">The execution result.</param>
-    /// <returns>A <see cref="Ttl"/> representing the remaining Ttl of the cached item.</returns>
-    Ttl GetTtl(Context context, TResult result);
+    public interface ITtlStrategy : ITtlStrategy<object>
+    {
+        
+    }
+
+    /// <summary>
+    /// Defines a strategy for providing time-to-live durations for cacheable results.
+    /// </summary>
+    public interface ITtlStrategy<TResult>
+    {
+        /// <summary>
+        /// Gets a TTL for a cacheable item, given the current execution context.
+        /// </summary>
+        /// <param name="context">The execution context.</param>
+        /// <param name="result">The execution result.</param>
+        /// <returns>A <see cref="Ttl"/> representing the remaining Ttl of the cached item.</returns>
+        Ttl GetTtl(Context context, TResult result);
+    }
 }

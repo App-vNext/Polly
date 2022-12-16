@@ -2,70 +2,71 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Polly.Caching;
-
-internal static class AsyncCacheEngine
+namespace Polly.Caching
 {
-    internal static async Task<TResult> ImplementationAsync<TResult>(
-        IAsyncCacheProvider<TResult> cacheProvider,
-        ITtlStrategy<TResult> ttlStrategy,
-        Func<Context, string> cacheKeyStrategy,
-        Func<Context, CancellationToken, Task<TResult>> action,
-        Context context,
-        CancellationToken cancellationToken,
-        bool continueOnCapturedContext,
-        Action<Context, string> onCacheGet,
-        Action<Context, string> onCacheMiss,
-        Action<Context, string> onCachePut,
-        Action<Context, string, Exception> onCacheGetError,
-        Action<Context, string, Exception> onCachePutError)
+    internal static class AsyncCacheEngine
     {
-        cancellationToken.ThrowIfCancellationRequested();
+        internal static async Task<TResult> ImplementationAsync<TResult>(
+            IAsyncCacheProvider<TResult> cacheProvider,
+            ITtlStrategy<TResult> ttlStrategy,
+            Func<Context, string> cacheKeyStrategy,
+            Func<Context, CancellationToken, Task<TResult>> action,
+            Context context,
+            CancellationToken cancellationToken,
+            bool continueOnCapturedContext,
+            Action<Context, string> onCacheGet,
+            Action<Context, string> onCacheMiss,
+            Action<Context, string> onCachePut,
+            Action<Context, string, Exception> onCacheGetError,
+            Action<Context, string, Exception> onCachePutError)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
 
-        var cacheKey = cacheKeyStrategy(context);
-        if (cacheKey == null)
-        {
-            return await action(context, cancellationToken).ConfigureAwait(continueOnCapturedContext);
-        }
+            var cacheKey = cacheKeyStrategy(context);
+            if (cacheKey == null)
+            {
+                return await action(context, cancellationToken).ConfigureAwait(continueOnCapturedContext);
+            }
 
-        bool cacheHit;
-        TResult valueFromCache;
-        try
-        {
-            (cacheHit, valueFromCache) = await cacheProvider.TryGetAsync(cacheKey, cancellationToken, continueOnCapturedContext).ConfigureAwait(continueOnCapturedContext);
-        }
-        catch (Exception ex)
-        {
-            cacheHit = false;
-            valueFromCache = default;
-            onCacheGetError(context, cacheKey, ex);
-        }
-        if (cacheHit)
-        {
-            onCacheGet(context, cacheKey);
-            return valueFromCache;
-        }
-        else
-        {
-            onCacheMiss(context, cacheKey);
-        }
-
-        var result = await action(context, cancellationToken).ConfigureAwait(continueOnCapturedContext);
-
-        var ttl = ttlStrategy.GetTtl(context, result);
-        if (ttl.Timespan > TimeSpan.Zero)
-        {
+            bool cacheHit;
+            TResult valueFromCache;
             try
             {
-                await cacheProvider.PutAsync(cacheKey, result, ttl, cancellationToken, continueOnCapturedContext).ConfigureAwait(continueOnCapturedContext);
-                onCachePut(context, cacheKey);
+                (cacheHit, valueFromCache) = await cacheProvider.TryGetAsync(cacheKey, cancellationToken, continueOnCapturedContext).ConfigureAwait(continueOnCapturedContext);
             }
             catch (Exception ex)
             {
-                onCachePutError(context, cacheKey, ex);
+                cacheHit = false;
+                valueFromCache = default;
+                onCacheGetError(context, cacheKey, ex);
             }
-        }
+            if (cacheHit)
+            {
+                onCacheGet(context, cacheKey);
+                return valueFromCache;
+            }
+            else
+            {
+                onCacheMiss(context, cacheKey);
+            }
 
-        return result;
+            var result = await action(context, cancellationToken).ConfigureAwait(continueOnCapturedContext);
+
+            var ttl = ttlStrategy.GetTtl(context, result);
+            if (ttl.Timespan > TimeSpan.Zero)
+            {
+                try
+                {
+                    await cacheProvider.PutAsync(cacheKey, result, ttl, cancellationToken, continueOnCapturedContext).ConfigureAwait(continueOnCapturedContext);
+                    onCachePut(context, cacheKey);
+                }
+                catch (Exception ex)
+                {
+                    onCachePutError(context, cacheKey, ex);
+                }
+            }
+
+            return result;
+        }
     }
 }

@@ -6,126 +6,127 @@ using System.Threading.Tasks;
 
 using Scenario = Polly.Specs.Helpers.PolicyTResultExtensionsAsync.ResultAndOrCancellationScenario;
 
-namespace Polly.Specs.Helpers;
-
-public static class PolicyTResultExtensionsAsync
+namespace Polly.Specs.Helpers
 {
-    public static Task<TResult> RaiseResultSequenceAsync<TResult>(this AsyncPolicy<TResult> policy, params TResult[] resultsToRaise)
+    public static class PolicyTResultExtensionsAsync
     {
-        return policy.RaiseResultSequenceAsync(resultsToRaise.ToList());
-    }
-
-    public static Task<TResult> RaiseResultSequenceAsync<TResult>(this AsyncPolicy<TResult> policy, IEnumerable<TResult> resultsToRaise)
-    {
-        return policy.RaiseResultSequenceAsync(default, resultsToRaise);
-    }
-
-    public static async Task<TResult> RaiseResultSequenceAsync<TResult>(this AsyncPolicy<TResult> policy,
-        CancellationToken cancellationToken, IEnumerable<TResult> resultsToRaise)
-    {
-        using (var enumerator = resultsToRaise.GetEnumerator())
+        public static Task<TResult> RaiseResultSequenceAsync<TResult>(this AsyncPolicy<TResult> policy, params TResult[] resultsToRaise)
         {
-            return await policy.ExecuteAsync(_ =>
-            {
-                if (!enumerator.MoveNext())
-                {
-                    throw new ArgumentOutOfRangeException(nameof(resultsToRaise), $"Not enough {typeof(TResult).Name}  values in {nameof(resultsToRaise)}.");
-                }
-
-                return Task.FromResult(enumerator.Current);
-            }, cancellationToken);
+            return policy.RaiseResultSequenceAsync(resultsToRaise.ToList());
         }
-    }
 
-    public static Task<TResult> RaiseResultAndOrExceptionSequenceAsync<TResult>(this AsyncPolicy<TResult> policy, params object[] resultsOrExceptionsToRaise)
-    {
-        return policy.RaiseResultAndOrExceptionSequenceAsync(resultsOrExceptionsToRaise.ToList());
-    }
-
-    public static Task<TResult> RaiseResultAndOrExceptionSequenceAsync<TResult>(this AsyncPolicy<TResult> policy,
-        IEnumerable<object> resultsOrExceptionsToRaise)
-    {
-        return policy.RaiseResultAndOrExceptionSequenceAsync(CancellationToken.None, resultsOrExceptionsToRaise);
-    }
-
-    public static async Task<TResult> RaiseResultAndOrExceptionSequenceAsync<TResult>(this AsyncPolicy<TResult> policy,
-        CancellationToken cancellationToken, IEnumerable<object> resultsOrExceptionsToRaise)
-    {
-        using (var enumerator = resultsOrExceptionsToRaise.GetEnumerator())
+        public static Task<TResult> RaiseResultSequenceAsync<TResult>(this AsyncPolicy<TResult> policy, IEnumerable<TResult> resultsToRaise)
         {
-            return await policy.ExecuteAsync(_ =>
-            {
-                if (!enumerator.MoveNext())
-                {
-                    throw new ArgumentOutOfRangeException(nameof(resultsOrExceptionsToRaise), $"Not enough {typeof(TResult).Name} values in {nameof(resultsOrExceptionsToRaise)}.");
-                }
-
-                var current = enumerator.Current;
-                if (current is Exception)
-                {
-                    throw (Exception) current;
-                }
-                else if (current is TResult)
-                {
-                    return Task.FromResult((TResult) current);
-                }
-                else
-                {
-                    throw new ArgumentOutOfRangeException(nameof(resultsOrExceptionsToRaise),
-                        $"Value is not either an {typeof(Exception).Name} or {typeof(TResult).Name}.");
-                }
-            }, cancellationToken);
+            return policy.RaiseResultSequenceAsync(default, resultsToRaise);
         }
-    }
 
-    public class ResultAndOrCancellationScenario
-    {
-        public int? AttemptDuringWhichToCancel = null;
-
-        public bool ActionObservesCancellation = true;
-    }
-
-    public static Task<TResult> RaiseResultSequenceAndOrCancellationAsync<TResult>(this AsyncPolicy<TResult> policy,
-        Scenario scenario, CancellationTokenSource cancellationTokenSource, Action onExecute,
-        params TResult[] resultsToRaise)
-    {
-        return policy.RaiseResultSequenceAndOrCancellationAsync(scenario, cancellationTokenSource, onExecute,
-            resultsToRaise.ToList());
-    }
-
-    public static async Task<TResult> RaiseResultSequenceAndOrCancellationAsync<TResult>(
-        this AsyncPolicy<TResult> policy, Scenario scenario, CancellationTokenSource cancellationTokenSource,
-        Action onExecute, IEnumerable<TResult> resultsToRaise)
-    {
-        var counter = 0;
-
-        var cancellationToken = cancellationTokenSource.Token;
-
-        using (var enumerator = resultsToRaise.GetEnumerator())
+        public static async Task<TResult> RaiseResultSequenceAsync<TResult>(this AsyncPolicy<TResult> policy,
+            CancellationToken cancellationToken, IEnumerable<TResult> resultsToRaise)
         {
-            return await policy.ExecuteAsync(ct =>
+            using (var enumerator = resultsToRaise.GetEnumerator())
             {
-                onExecute();
-
-                counter++;
-
-                if (!enumerator.MoveNext())
+                return await policy.ExecuteAsync(_ =>
                 {
-                    throw new ArgumentOutOfRangeException(nameof(resultsToRaise), $"Not enough {typeof(TResult).Name}  values in {nameof(resultsToRaise)}.");
-                }
+                    if (!enumerator.MoveNext())
+                    {
+                        throw new ArgumentOutOfRangeException(nameof(resultsToRaise), $"Not enough {typeof(TResult).Name}  values in {nameof(resultsToRaise)}.");
+                    }
 
-                if (scenario.AttemptDuringWhichToCancel.HasValue && counter >= scenario.AttemptDuringWhichToCancel.Value)
+                    return Task.FromResult(enumerator.Current);
+                }, cancellationToken);
+            }
+        }
+
+        public static Task<TResult> RaiseResultAndOrExceptionSequenceAsync<TResult>(this AsyncPolicy<TResult> policy, params object[] resultsOrExceptionsToRaise)
+        {
+            return policy.RaiseResultAndOrExceptionSequenceAsync(resultsOrExceptionsToRaise.ToList());
+        }
+
+        public static Task<TResult> RaiseResultAndOrExceptionSequenceAsync<TResult>(this AsyncPolicy<TResult> policy,
+            IEnumerable<object> resultsOrExceptionsToRaise)
+        {
+            return policy.RaiseResultAndOrExceptionSequenceAsync(CancellationToken.None, resultsOrExceptionsToRaise);
+        }
+
+        public static async Task<TResult> RaiseResultAndOrExceptionSequenceAsync<TResult>(this AsyncPolicy<TResult> policy,
+            CancellationToken cancellationToken, IEnumerable<object> resultsOrExceptionsToRaise)
+        {
+            using (var enumerator = resultsOrExceptionsToRaise.GetEnumerator())
+            {
+                return await policy.ExecuteAsync(_ =>
                 {
-                    cancellationTokenSource.Cancel();
-                }
+                    if (!enumerator.MoveNext())
+                    {
+                        throw new ArgumentOutOfRangeException(nameof(resultsOrExceptionsToRaise), $"Not enough {typeof(TResult).Name} values in {nameof(resultsOrExceptionsToRaise)}.");
+                    }
 
-                if (scenario.ActionObservesCancellation)
+                    var current = enumerator.Current;
+                    if (current is Exception)
+                    {
+                        throw (Exception) current;
+                    }
+                    else if (current is TResult)
+                    {
+                        return Task.FromResult((TResult) current);
+                    }
+                    else
+                    {
+                        throw new ArgumentOutOfRangeException(nameof(resultsOrExceptionsToRaise),
+                            $"Value is not either an {typeof(Exception).Name} or {typeof(TResult).Name}.");
+                    }
+                }, cancellationToken);
+            }
+        }
+
+        public class ResultAndOrCancellationScenario
+        {
+            public int? AttemptDuringWhichToCancel = null;
+
+            public bool ActionObservesCancellation = true;
+        }
+
+        public static Task<TResult> RaiseResultSequenceAndOrCancellationAsync<TResult>(this AsyncPolicy<TResult> policy,
+            Scenario scenario, CancellationTokenSource cancellationTokenSource, Action onExecute,
+            params TResult[] resultsToRaise)
+        {
+            return policy.RaiseResultSequenceAndOrCancellationAsync(scenario, cancellationTokenSource, onExecute,
+                resultsToRaise.ToList());
+        }
+
+        public static async Task<TResult> RaiseResultSequenceAndOrCancellationAsync<TResult>(
+            this AsyncPolicy<TResult> policy, Scenario scenario, CancellationTokenSource cancellationTokenSource,
+            Action onExecute, IEnumerable<TResult> resultsToRaise)
+        {
+            var counter = 0;
+
+            var cancellationToken = cancellationTokenSource.Token;
+
+            using (var enumerator = resultsToRaise.GetEnumerator())
+            {
+                return await policy.ExecuteAsync(ct =>
                 {
-                    ct.ThrowIfCancellationRequested();
-                }
+                    onExecute();
 
-                return Task.FromResult(enumerator.Current);
-            }, cancellationToken);
+                    counter++;
+
+                    if (!enumerator.MoveNext())
+                    {
+                        throw new ArgumentOutOfRangeException(nameof(resultsToRaise), $"Not enough {typeof(TResult).Name}  values in {nameof(resultsToRaise)}.");
+                    }
+
+                    if (scenario.AttemptDuringWhichToCancel.HasValue && counter >= scenario.AttemptDuringWhichToCancel.Value)
+                    {
+                        cancellationTokenSource.Cancel();
+                    }
+
+                    if (scenario.ActionObservesCancellation)
+                    {
+                        ct.ThrowIfCancellationRequested();
+                    }
+
+                    return Task.FromResult(enumerator.Current);
+                }, cancellationToken);
+            }
         }
     }
 }

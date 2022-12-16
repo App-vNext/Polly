@@ -2,38 +2,39 @@
 using FluentAssertions;
 using Polly.RateLimit;
 
-namespace Polly.Specs.Helpers.RateLimit;
-
-internal static class IRateLimiterExtensions
+namespace Polly.Specs.Helpers.RateLimit
 {
-    public static void ShouldPermitAnExecution(this IRateLimiter rateLimiter)
+    internal static class IRateLimiterExtensions
     {
-        var canExecute = rateLimiter.PermitExecution();
-
-        canExecute.permitExecution.Should().BeTrue();
-        canExecute.retryAfter.Should().Be(TimeSpan.Zero);
-    }
-
-    public static void ShouldPermitNExecutions(this IRateLimiter rateLimiter, long numberOfExecutions)
-    {
-        for (var execution = 0; execution < numberOfExecutions; execution++)
+        public static void ShouldPermitAnExecution(this IRateLimiter rateLimiter)
         {
-            rateLimiter.ShouldPermitAnExecution();
+            var canExecute = rateLimiter.PermitExecution();
+
+            canExecute.permitExecution.Should().BeTrue();
+            canExecute.retryAfter.Should().Be(TimeSpan.Zero);
         }
-    }
 
-    public static void ShouldNotPermitAnExecution(this IRateLimiter rateLimiter, TimeSpan? retryAfter = null)
-    {
-        var canExecute = rateLimiter.PermitExecution();
-
-        canExecute.permitExecution.Should().BeFalse();
-        if (retryAfter == null)
+        public static void ShouldPermitNExecutions(this IRateLimiter rateLimiter, long numberOfExecutions)
         {
-            canExecute.retryAfter.Should().BeGreaterThan(TimeSpan.Zero);
+            for (var execution = 0; execution < numberOfExecutions; execution++)
+            {
+                rateLimiter.ShouldPermitAnExecution();
+            }
         }
-        else
+
+        public static void ShouldNotPermitAnExecution(this IRateLimiter rateLimiter, TimeSpan? retryAfter = null)
         {
-            canExecute.retryAfter.Should().Be(retryAfter.Value);
+            var canExecute = rateLimiter.PermitExecution();
+
+            canExecute.permitExecution.Should().BeFalse();
+            if (retryAfter == null)
+            {
+                canExecute.retryAfter.Should().BeGreaterThan(TimeSpan.Zero);
+            }
+            else
+            {
+                canExecute.retryAfter.Should().Be(retryAfter.Value);
+            }
         }
     }
 }

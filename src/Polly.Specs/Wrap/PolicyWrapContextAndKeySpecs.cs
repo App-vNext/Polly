@@ -3,278 +3,280 @@ using FluentAssertions;
 using Polly.Specs.Helpers;
 using Xunit;
 
-namespace Polly.Specs.Wrap;
-
-[Collection(Constants.SystemClockDependentTestCollection)]
-public class PolicyWrapContextAndKeySpecs
+namespace Polly.Specs.Wrap
 {
-    #region PolicyKey and execution Context tests
-
-    [Fact]
-    public void Should_pass_PolicyKey_to_execution_context_of_outer_policy_as_PolicyWrapKey()
+    [Collection(Constants.SystemClockDependentTestCollection)]
+    public class PolicyWrapContextAndKeySpecs
     {
-        var retryKey = Guid.NewGuid().ToString();
-        var breakerKey = Guid.NewGuid().ToString();
-        var wrapKey = Guid.NewGuid().ToString();
+        #region PolicyKey and execution Context tests
 
-        string policyWrapKeySetOnExecutionContext = null;
-        Action<Exception, int, Context> onRetry = (_, _, context) =>
+        [Fact]
+        public void Should_pass_PolicyKey_to_execution_context_of_outer_policy_as_PolicyWrapKey()
         {
-            policyWrapKeySetOnExecutionContext = context.PolicyWrapKey;
-        };
+            var retryKey = Guid.NewGuid().ToString();
+            var breakerKey = Guid.NewGuid().ToString();
+            var wrapKey = Guid.NewGuid().ToString();
 
-        var retry = Policy.Handle<Exception>().Retry(1, onRetry).WithPolicyKey(retryKey);
-        var breaker = Policy.Handle<Exception>().CircuitBreaker(1, TimeSpan.Zero).WithPolicyKey(breakerKey);
-        var wrap = retry.Wrap(breaker).WithPolicyKey(wrapKey);
-
-        wrap.RaiseException<Exception>(1);
-
-        policyWrapKeySetOnExecutionContext.Should().NotBe(retryKey);
-        policyWrapKeySetOnExecutionContext.Should().NotBe(breakerKey);
-        policyWrapKeySetOnExecutionContext.Should().Be(wrapKey);
-    }
-
-    [Fact]
-    public void Should_pass_PolicyKey_to_execution_context_of_inner_policy_as_PolicyWrapKey()
-    {
-        var retryKey = Guid.NewGuid().ToString();
-        var breakerKey = Guid.NewGuid().ToString();
-        var wrapKey = Guid.NewGuid().ToString();
-
-        string policyWrapKeySetOnExecutionContext = null;
-        Action<Exception, TimeSpan, Context> onBreak = (_, _, context) =>
-        {
-            policyWrapKeySetOnExecutionContext = context.PolicyWrapKey;
-        };
-        Action<Context> onReset = _ => {};
-
-        var retry = Policy.Handle<Exception>().Retry(1).WithPolicyKey(retryKey);
-        var breaker = Policy.Handle<Exception>().CircuitBreaker(1, TimeSpan.Zero, onBreak, onReset).WithPolicyKey(breakerKey);
-        var wrap = retry.Wrap(breaker).WithPolicyKey(wrapKey);
-
-        wrap.RaiseException<Exception>(1);
-
-        policyWrapKeySetOnExecutionContext.Should().NotBe(retryKey);
-        policyWrapKeySetOnExecutionContext.Should().NotBe(breakerKey);
-        policyWrapKeySetOnExecutionContext.Should().Be(wrapKey);
-    }
-
-    [Fact]
-    public void Should_restore_PolicyKey_of_outer_policy_to_execution_context_as_move_outwards_through_PolicyWrap()
-    {
-        ISyncPolicy fallback = Policy
-            .Handle<Exception>()
-            .Fallback(_ => {}, onFallback: (_, context) =>
+            string policyWrapKeySetOnExecutionContext = null;
+            Action<Exception, int, Context> onRetry = (_, _, context) =>
             {
-                context.PolicyWrapKey.Should().Be("PolicyWrap");
-                context.PolicyKey.Should().Be("FallbackPolicy");
-            })
-            .WithPolicyKey("FallbackPolicy");
+                policyWrapKeySetOnExecutionContext = context.PolicyWrapKey;
+            };
 
-        ISyncPolicy retry = Policy
-            .Handle<Exception>()
-            .Retry(1, onRetry: (_, _, context) =>
+            var retry = Policy.Handle<Exception>().Retry(1, onRetry).WithPolicyKey(retryKey);
+            var breaker = Policy.Handle<Exception>().CircuitBreaker(1, TimeSpan.Zero).WithPolicyKey(breakerKey);
+            var wrap = retry.Wrap(breaker).WithPolicyKey(wrapKey);
+
+            wrap.RaiseException<Exception>(1);
+
+            policyWrapKeySetOnExecutionContext.Should().NotBe(retryKey);
+            policyWrapKeySetOnExecutionContext.Should().NotBe(breakerKey);
+            policyWrapKeySetOnExecutionContext.Should().Be(wrapKey);
+        }
+
+        [Fact]
+        public void Should_pass_PolicyKey_to_execution_context_of_inner_policy_as_PolicyWrapKey()
+        {
+            var retryKey = Guid.NewGuid().ToString();
+            var breakerKey = Guid.NewGuid().ToString();
+            var wrapKey = Guid.NewGuid().ToString();
+
+            string policyWrapKeySetOnExecutionContext = null;
+            Action<Exception, TimeSpan, Context> onBreak = (_, _, context) =>
             {
-                context.PolicyWrapKey.Should().Be("PolicyWrap");
-                context.PolicyKey.Should().Be("RetryPolicy");
-            })
-            .WithPolicyKey("RetryPolicy");
+                policyWrapKeySetOnExecutionContext = context.PolicyWrapKey;
+            };
+            Action<Context> onReset = _ => {};
 
-        ISyncPolicy policyWrap = Policy.Wrap(fallback, retry)
-            .WithPolicyKey("PolicyWrap");
+            var retry = Policy.Handle<Exception>().Retry(1).WithPolicyKey(retryKey);
+            var breaker = Policy.Handle<Exception>().CircuitBreaker(1, TimeSpan.Zero, onBreak, onReset).WithPolicyKey(breakerKey);
+            var wrap = retry.Wrap(breaker).WithPolicyKey(wrapKey);
 
-        policyWrap.Execute(() => throw new Exception());
-    }
+            wrap.RaiseException<Exception>(1);
 
-    [Fact]
-    public void Should_pass_outmost_PolicyWrap_Key_as_PolicyWrapKey_ignoring_inner_PolicyWrap_keys_even_when_executing_policies_in_inner_wrap()
-    {
-        var retryKey = Guid.NewGuid().ToString();
-        var breakerKey = Guid.NewGuid().ToString();
-        var fallbackKey = Guid.NewGuid().ToString();
-        var innerWrapKey = Guid.NewGuid().ToString();
-        var outerWrapKey = Guid.NewGuid().ToString();
+            policyWrapKeySetOnExecutionContext.Should().NotBe(retryKey);
+            policyWrapKeySetOnExecutionContext.Should().NotBe(breakerKey);
+            policyWrapKeySetOnExecutionContext.Should().Be(wrapKey);
+        }
 
-        string policyWrapKeySetOnExecutionContext = null;
-        Action<Exception, TimeSpan, Context> onBreak = (_, _, context) =>
+        [Fact]
+        public void Should_restore_PolicyKey_of_outer_policy_to_execution_context_as_move_outwards_through_PolicyWrap()
         {
-            policyWrapKeySetOnExecutionContext = context.PolicyWrapKey;
-        };
-        Action<Context> doNothingOnReset = _ => { };
+            ISyncPolicy fallback = Policy
+                .Handle<Exception>()
+                .Fallback(_ => {}, onFallback: (_, context) =>
+                {
+                    context.PolicyWrapKey.Should().Be("PolicyWrap");
+                    context.PolicyKey.Should().Be("FallbackPolicy");
+                })
+                .WithPolicyKey("FallbackPolicy");
 
-        var retry = Policy.Handle<Exception>().Retry(1).WithPolicyKey(retryKey);
-        var breaker = Policy.Handle<Exception>().CircuitBreaker(1, TimeSpan.Zero, onBreak, doNothingOnReset).WithPolicyKey(breakerKey);
-        var fallback = Policy.Handle<Exception>().Fallback(() => { }).WithPolicyKey(fallbackKey);
+            ISyncPolicy retry = Policy
+                .Handle<Exception>()
+                .Retry(1, onRetry: (_, _, context) =>
+                {
+                    context.PolicyWrapKey.Should().Be("PolicyWrap");
+                    context.PolicyKey.Should().Be("RetryPolicy");
+                })
+                .WithPolicyKey("RetryPolicy");
 
-        var innerWrap = retry.Wrap(breaker).WithPolicyKey(innerWrapKey);
-        var outerWrap = fallback.Wrap(innerWrap).WithPolicyKey(outerWrapKey);
+            ISyncPolicy policyWrap = Policy.Wrap(fallback, retry)
+                .WithPolicyKey("PolicyWrap");
 
-        outerWrap.RaiseException<Exception>(1);
+            policyWrap.Execute(() => throw new Exception());
+        }
 
-        policyWrapKeySetOnExecutionContext.Should().NotBe(retryKey);
-        policyWrapKeySetOnExecutionContext.Should().NotBe(breakerKey);
-        policyWrapKeySetOnExecutionContext.Should().NotBe(fallbackKey);
-        policyWrapKeySetOnExecutionContext.Should().NotBe(innerWrapKey);
-        policyWrapKeySetOnExecutionContext.Should().Be(outerWrapKey);
-    }
-
-    [Fact]
-    public void Should_pass_outmost_PolicyWrap_Key_as_PolicyWrapKey_to_innermost_Policy_when_execute_method_generic()
-    {
-        var retryKey = Guid.NewGuid().ToString();
-        var breakerKey = Guid.NewGuid().ToString();
-        var fallbackKey = Guid.NewGuid().ToString();
-        var innerWrapKey = Guid.NewGuid().ToString();
-        var outerWrapKey = Guid.NewGuid().ToString();
-
-        string policyWrapKeySetOnExecutionContext = null;
-        Action<Exception, TimeSpan, Context> onBreak = (_, _, context) =>
+        [Fact]
+        public void Should_pass_outmost_PolicyWrap_Key_as_PolicyWrapKey_ignoring_inner_PolicyWrap_keys_even_when_executing_policies_in_inner_wrap()
         {
-            policyWrapKeySetOnExecutionContext = context.PolicyWrapKey;
-        };
-        Action<Context> doNothingOnReset = _ => { };
+            var retryKey = Guid.NewGuid().ToString();
+            var breakerKey = Guid.NewGuid().ToString();
+            var fallbackKey = Guid.NewGuid().ToString();
+            var innerWrapKey = Guid.NewGuid().ToString();
+            var outerWrapKey = Guid.NewGuid().ToString();
 
-        var retry = Policy.Handle<Exception>().Retry(1).WithPolicyKey(retryKey);
-        var breaker = Policy.Handle<Exception>().CircuitBreaker(1, TimeSpan.Zero, onBreak, doNothingOnReset).WithPolicyKey(breakerKey);
-        var fallback = Policy.Handle<Exception>().Fallback(() => { }).WithPolicyKey(fallbackKey);
-
-        var innerWrap = retry.Wrap(breaker).WithPolicyKey(innerWrapKey);
-        var outerWrap = fallback.Wrap(innerWrap).WithPolicyKey(outerWrapKey);
-
-        var doneOnceOnly = false;
-        outerWrap.Execute(() =>
-        {
-            if (!doneOnceOnly)
+            string policyWrapKeySetOnExecutionContext = null;
+            Action<Exception, TimeSpan, Context> onBreak = (_, _, context) =>
             {
-                doneOnceOnly = true;
-                throw new Exception();
-            }
-        });
+                policyWrapKeySetOnExecutionContext = context.PolicyWrapKey;
+            };
+            Action<Context> doNothingOnReset = _ => { };
 
-        policyWrapKeySetOnExecutionContext.Should().NotBe(retryKey);
-        policyWrapKeySetOnExecutionContext.Should().NotBe(breakerKey);
-        policyWrapKeySetOnExecutionContext.Should().NotBe(fallbackKey);
-        policyWrapKeySetOnExecutionContext.Should().NotBe(innerWrapKey);
-        policyWrapKeySetOnExecutionContext.Should().Be(outerWrapKey);
-    }
+            var retry = Policy.Handle<Exception>().Retry(1).WithPolicyKey(retryKey);
+            var breaker = Policy.Handle<Exception>().CircuitBreaker(1, TimeSpan.Zero, onBreak, doNothingOnReset).WithPolicyKey(breakerKey);
+            var fallback = Policy.Handle<Exception>().Fallback(() => { }).WithPolicyKey(fallbackKey);
 
-    #endregion
+            var innerWrap = retry.Wrap(breaker).WithPolicyKey(innerWrapKey);
+            var outerWrap = fallback.Wrap(innerWrap).WithPolicyKey(outerWrapKey);
 
-}
+            outerWrap.RaiseException<Exception>(1);
 
-[Collection(Constants.SystemClockDependentTestCollection)]
-public class PolicyWrapTResultContextAndKeySpecs
-{
-    #region PolicyKey and execution Context tests
+            policyWrapKeySetOnExecutionContext.Should().NotBe(retryKey);
+            policyWrapKeySetOnExecutionContext.Should().NotBe(breakerKey);
+            policyWrapKeySetOnExecutionContext.Should().NotBe(fallbackKey);
+            policyWrapKeySetOnExecutionContext.Should().NotBe(innerWrapKey);
+            policyWrapKeySetOnExecutionContext.Should().Be(outerWrapKey);
+        }
 
-    [Fact]
-    public void Should_pass_PolicyKey_to_execution_context_of_outer_policy_as_PolicyWrapKey()
-    {
-        var retryKey = Guid.NewGuid().ToString();
-        var breakerKey = Guid.NewGuid().ToString();
-        var wrapKey = Guid.NewGuid().ToString();
-
-        string policyWrapKeySetOnExecutionContext = null;
-        Action<DelegateResult<ResultPrimitive>, int, Context> onRetry = (_, _, context) =>
+        [Fact]
+        public void Should_pass_outmost_PolicyWrap_Key_as_PolicyWrapKey_to_innermost_Policy_when_execute_method_generic()
         {
-            policyWrapKeySetOnExecutionContext = context.PolicyWrapKey;
-        };
+            var retryKey = Guid.NewGuid().ToString();
+            var breakerKey = Guid.NewGuid().ToString();
+            var fallbackKey = Guid.NewGuid().ToString();
+            var innerWrapKey = Guid.NewGuid().ToString();
+            var outerWrapKey = Guid.NewGuid().ToString();
 
-        var retry = Policy.HandleResult(ResultPrimitive.Fault).Retry(1, onRetry).WithPolicyKey(retryKey);
-        var breaker = Policy.HandleResult(ResultPrimitive.Fault).CircuitBreaker(1, TimeSpan.Zero).WithPolicyKey(breakerKey);
-        var wrap = retry.Wrap(breaker).WithPolicyKey(wrapKey);
-
-        wrap.RaiseResultSequence(ResultPrimitive.Fault, ResultPrimitive.Good);
-
-        policyWrapKeySetOnExecutionContext.Should().NotBe(retryKey);
-        policyWrapKeySetOnExecutionContext.Should().NotBe(breakerKey);
-        policyWrapKeySetOnExecutionContext.Should().Be(wrapKey);
-    }
-
-    [Fact]
-    public void Should_pass_PolicyKey_to_execution_context_of_inner_policy_as_PolicyWrapKey()
-    {
-        var retryKey = Guid.NewGuid().ToString();
-        var breakerKey = Guid.NewGuid().ToString();
-        var wrapKey = Guid.NewGuid().ToString();
-
-        string policyWrapKeySetOnExecutionContext = null;
-        Action<DelegateResult<ResultPrimitive>, TimeSpan, Context> onBreak = (_, _, context) =>
-        {
-            policyWrapKeySetOnExecutionContext = context.PolicyWrapKey;
-        };
-        Action<Context> onReset = _ => { };
-
-        var retry = Policy.HandleResult(ResultPrimitive.Fault).Retry(1).WithPolicyKey(retryKey);
-        var breaker = Policy.HandleResult(ResultPrimitive.Fault).CircuitBreaker(1, TimeSpan.Zero, onBreak, onReset).WithPolicyKey(breakerKey);
-        var wrap = retry.Wrap(breaker).WithPolicyKey(wrapKey);
-
-        wrap.RaiseResultSequence(ResultPrimitive.Fault, ResultPrimitive.Good);
-
-        policyWrapKeySetOnExecutionContext.Should().NotBe(retryKey);
-        policyWrapKeySetOnExecutionContext.Should().NotBe(breakerKey);
-        policyWrapKeySetOnExecutionContext.Should().Be(wrapKey);
-    }
-
-    [Fact]
-    public void Should_restore_PolicyKey_of_outer_policy_to_execution_context_as_move_outwards_through_PolicyWrap()
-    {
-        ISyncPolicy<ResultPrimitive> fallback = Policy<ResultPrimitive>
-            .Handle<Exception>()
-            .Fallback<ResultPrimitive>(ResultPrimitive.Undefined, onFallback: (_, context) =>
+            string policyWrapKeySetOnExecutionContext = null;
+            Action<Exception, TimeSpan, Context> onBreak = (_, _, context) =>
             {
-                context.PolicyWrapKey.Should().Be("PolicyWrap");
-                context.PolicyKey.Should().Be("FallbackPolicy");
-            })
-            .WithPolicyKey("FallbackPolicy");
+                policyWrapKeySetOnExecutionContext = context.PolicyWrapKey;
+            };
+            Action<Context> doNothingOnReset = _ => { };
 
-        ISyncPolicy<ResultPrimitive> retry = Policy<ResultPrimitive>
-            .Handle<Exception>()
-            .Retry(1, onRetry: (_, _, context) =>
+            var retry = Policy.Handle<Exception>().Retry(1).WithPolicyKey(retryKey);
+            var breaker = Policy.Handle<Exception>().CircuitBreaker(1, TimeSpan.Zero, onBreak, doNothingOnReset).WithPolicyKey(breakerKey);
+            var fallback = Policy.Handle<Exception>().Fallback(() => { }).WithPolicyKey(fallbackKey);
+
+            var innerWrap = retry.Wrap(breaker).WithPolicyKey(innerWrapKey);
+            var outerWrap = fallback.Wrap(innerWrap).WithPolicyKey(outerWrapKey);
+
+            var doneOnceOnly = false;
+            outerWrap.Execute(() =>
             {
-                context.PolicyWrapKey.Should().Be("PolicyWrap");
-                context.PolicyKey.Should().Be("RetryPolicy");
-            })
-            .WithPolicyKey("RetryPolicy");
+                if (!doneOnceOnly)
+                {
+                    doneOnceOnly = true;
+                    throw new Exception();
+                }
+            });
 
-        var policyWrap = Policy.Wrap(fallback, retry)
-            .WithPolicyKey("PolicyWrap");
+            policyWrapKeySetOnExecutionContext.Should().NotBe(retryKey);
+            policyWrapKeySetOnExecutionContext.Should().NotBe(breakerKey);
+            policyWrapKeySetOnExecutionContext.Should().NotBe(fallbackKey);
+            policyWrapKeySetOnExecutionContext.Should().NotBe(innerWrapKey);
+            policyWrapKeySetOnExecutionContext.Should().Be(outerWrapKey);
+        }
 
-        policyWrap.Execute(() => throw new Exception());
+        #endregion
+
     }
 
-    [Fact]
-    public void Should_pass_outmost_PolicyWrap_Key_as_PolicyWrapKey_ignoring_inner_PolicyWrap_keys_even_when_executing_policies_in_inner_wrap()
+    [Collection(Constants.SystemClockDependentTestCollection)]
+    public class PolicyWrapTResultContextAndKeySpecs
     {
-        var retryKey = Guid.NewGuid().ToString();
-        var breakerKey = Guid.NewGuid().ToString();
-        var fallbackKey = Guid.NewGuid().ToString();
-        var innerWrapKey = Guid.NewGuid().ToString();
-        var outerWrapKey = Guid.NewGuid().ToString();
+        #region PolicyKey and execution Context tests
 
-        string policyWrapKeySetOnExecutionContext = null;
-        Action<DelegateResult<ResultPrimitive>, TimeSpan, Context> onBreak = (_, _, context) =>
+        [Fact]
+        public void Should_pass_PolicyKey_to_execution_context_of_outer_policy_as_PolicyWrapKey()
         {
-            policyWrapKeySetOnExecutionContext = context.PolicyWrapKey;
-        };
-        Action<Context> doNothingOnReset = _ => { };
+            var retryKey = Guid.NewGuid().ToString();
+            var breakerKey = Guid.NewGuid().ToString();
+            var wrapKey = Guid.NewGuid().ToString();
 
-        var retry = Policy.HandleResult(ResultPrimitive.Fault).Retry(1).WithPolicyKey(retryKey);
-        var breaker = Policy.HandleResult(ResultPrimitive.Fault).CircuitBreaker(1, TimeSpan.Zero, onBreak, doNothingOnReset).WithPolicyKey(breakerKey);
-        var fallback = Policy.HandleResult(ResultPrimitive.Fault).Fallback(ResultPrimitive.Substitute).WithPolicyKey(fallbackKey);
+            string policyWrapKeySetOnExecutionContext = null;
+            Action<DelegateResult<ResultPrimitive>, int, Context> onRetry = (_, _, context) =>
+            {
+                policyWrapKeySetOnExecutionContext = context.PolicyWrapKey;
+            };
 
-        var innerWrap = retry.Wrap(breaker).WithPolicyKey(innerWrapKey);
-        var outerWrap = fallback.Wrap(innerWrap).WithPolicyKey(outerWrapKey);
+            var retry = Policy.HandleResult(ResultPrimitive.Fault).Retry(1, onRetry).WithPolicyKey(retryKey);
+            var breaker = Policy.HandleResult(ResultPrimitive.Fault).CircuitBreaker(1, TimeSpan.Zero).WithPolicyKey(breakerKey);
+            var wrap = retry.Wrap(breaker).WithPolicyKey(wrapKey);
 
-        outerWrap.RaiseResultSequence(ResultPrimitive.Fault, ResultPrimitive.Good);
+            wrap.RaiseResultSequence(ResultPrimitive.Fault, ResultPrimitive.Good);
 
-        policyWrapKeySetOnExecutionContext.Should().NotBe(retryKey);
-        policyWrapKeySetOnExecutionContext.Should().NotBe(breakerKey);
-        policyWrapKeySetOnExecutionContext.Should().NotBe(fallbackKey);
-        policyWrapKeySetOnExecutionContext.Should().NotBe(innerWrapKey);
-        policyWrapKeySetOnExecutionContext.Should().Be(outerWrapKey);
+            policyWrapKeySetOnExecutionContext.Should().NotBe(retryKey);
+            policyWrapKeySetOnExecutionContext.Should().NotBe(breakerKey);
+            policyWrapKeySetOnExecutionContext.Should().Be(wrapKey);
+        }
+
+        [Fact]
+        public void Should_pass_PolicyKey_to_execution_context_of_inner_policy_as_PolicyWrapKey()
+        {
+            var retryKey = Guid.NewGuid().ToString();
+            var breakerKey = Guid.NewGuid().ToString();
+            var wrapKey = Guid.NewGuid().ToString();
+
+            string policyWrapKeySetOnExecutionContext = null;
+            Action<DelegateResult<ResultPrimitive>, TimeSpan, Context> onBreak = (_, _, context) =>
+            {
+                policyWrapKeySetOnExecutionContext = context.PolicyWrapKey;
+            };
+            Action<Context> onReset = _ => { };
+
+            var retry = Policy.HandleResult(ResultPrimitive.Fault).Retry(1).WithPolicyKey(retryKey);
+            var breaker = Policy.HandleResult(ResultPrimitive.Fault).CircuitBreaker(1, TimeSpan.Zero, onBreak, onReset).WithPolicyKey(breakerKey);
+            var wrap = retry.Wrap(breaker).WithPolicyKey(wrapKey);
+
+            wrap.RaiseResultSequence(ResultPrimitive.Fault, ResultPrimitive.Good);
+
+            policyWrapKeySetOnExecutionContext.Should().NotBe(retryKey);
+            policyWrapKeySetOnExecutionContext.Should().NotBe(breakerKey);
+            policyWrapKeySetOnExecutionContext.Should().Be(wrapKey);
+        }
+
+        [Fact]
+        public void Should_restore_PolicyKey_of_outer_policy_to_execution_context_as_move_outwards_through_PolicyWrap()
+        {
+            ISyncPolicy<ResultPrimitive> fallback = Policy<ResultPrimitive>
+                .Handle<Exception>()
+                .Fallback<ResultPrimitive>(ResultPrimitive.Undefined, onFallback: (_, context) =>
+                {
+                    context.PolicyWrapKey.Should().Be("PolicyWrap");
+                    context.PolicyKey.Should().Be("FallbackPolicy");
+                })
+                .WithPolicyKey("FallbackPolicy");
+
+            ISyncPolicy<ResultPrimitive> retry = Policy<ResultPrimitive>
+                .Handle<Exception>()
+                .Retry(1, onRetry: (_, _, context) =>
+                {
+                    context.PolicyWrapKey.Should().Be("PolicyWrap");
+                    context.PolicyKey.Should().Be("RetryPolicy");
+                })
+                .WithPolicyKey("RetryPolicy");
+
+            var policyWrap = Policy.Wrap(fallback, retry)
+                .WithPolicyKey("PolicyWrap");
+
+            policyWrap.Execute(() => throw new Exception());
+        }
+
+        [Fact]
+        public void Should_pass_outmost_PolicyWrap_Key_as_PolicyWrapKey_ignoring_inner_PolicyWrap_keys_even_when_executing_policies_in_inner_wrap()
+        {
+            var retryKey = Guid.NewGuid().ToString();
+            var breakerKey = Guid.NewGuid().ToString();
+            var fallbackKey = Guid.NewGuid().ToString();
+            var innerWrapKey = Guid.NewGuid().ToString();
+            var outerWrapKey = Guid.NewGuid().ToString();
+
+            string policyWrapKeySetOnExecutionContext = null;
+            Action<DelegateResult<ResultPrimitive>, TimeSpan, Context> onBreak = (_, _, context) =>
+            {
+                policyWrapKeySetOnExecutionContext = context.PolicyWrapKey;
+            };
+            Action<Context> doNothingOnReset = _ => { };
+
+            var retry = Policy.HandleResult(ResultPrimitive.Fault).Retry(1).WithPolicyKey(retryKey);
+            var breaker = Policy.HandleResult(ResultPrimitive.Fault).CircuitBreaker(1, TimeSpan.Zero, onBreak, doNothingOnReset).WithPolicyKey(breakerKey);
+            var fallback = Policy.HandleResult(ResultPrimitive.Fault).Fallback(ResultPrimitive.Substitute).WithPolicyKey(fallbackKey);
+
+            var innerWrap = retry.Wrap(breaker).WithPolicyKey(innerWrapKey);
+            var outerWrap = fallback.Wrap(innerWrap).WithPolicyKey(outerWrapKey);
+
+            outerWrap.RaiseResultSequence(ResultPrimitive.Fault, ResultPrimitive.Good);
+
+            policyWrapKeySetOnExecutionContext.Should().NotBe(retryKey);
+            policyWrapKeySetOnExecutionContext.Should().NotBe(breakerKey);
+            policyWrapKeySetOnExecutionContext.Should().NotBe(fallbackKey);
+            policyWrapKeySetOnExecutionContext.Should().NotBe(innerWrapKey);
+            policyWrapKeySetOnExecutionContext.Should().Be(outerWrapKey);
+        }
+
+        #endregion
+
     }
-
-    #endregion
 
 }

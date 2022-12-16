@@ -1,19 +1,20 @@
 ﻿using System;
 
-namespace Polly.Timeout;
-
-internal static class TimeoutValidator
+namespace Polly.Timeout
 {
-    internal static void ValidateSecondsTimeout(int seconds)
+    internal static class TimeoutValidator
     {
-        if (seconds <= 0) throw new ArgumentOutOfRangeException(nameof(seconds));
-    }
+        internal static void ValidateSecondsTimeout(int seconds)
+        {
+            if (seconds <= 0) throw new ArgumentOutOfRangeException(nameof(seconds));
+        }
 
-    internal static void ValidateTimeSpanTimeout(TimeSpan timeout)
-    {
-        if (timeout <= TimeSpan.Zero && timeout != System.Threading.Timeout.InfiniteTimeSpan)
-            throw new ArgumentOutOfRangeException(nameof(timeout), timeout,
-                $"{nameof(timeout)} must be a positive TimeSpan (or Timeout.InfiniteTimeSpan to indicate no timeout)");
-    }
+        internal static void ValidateTimeSpanTimeout(TimeSpan timeout)
+        {
+            if (timeout <= TimeSpan.Zero && timeout != System.Threading.Timeout.InfiniteTimeSpan)
+                throw new ArgumentOutOfRangeException(nameof(timeout), timeout,
+                    $"{nameof(timeout)} must be a positive TimeSpan (or Timeout.InfiniteTimeSpan to indicate no timeout)");
+        }
 
+    }
 }

@@ -1,25 +1,26 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace Polly.Specs.Helpers.Custom.AddBehaviourIfHandle;
-
-internal static class AsyncAddBehaviourIfHandleSyntax
+namespace Polly.Specs.Helpers.Custom.AddBehaviourIfHandle
 {
-    internal static AsyncAddBehaviourIfHandlePolicy WithBehaviourAsync(
-        this PolicyBuilder policyBuilder, 
-        Func<Exception, Task> behaviourIfHandle)
+    internal static class AsyncAddBehaviourIfHandleSyntax
     {
-        if (behaviourIfHandle == null) throw new ArgumentNullException(nameof(behaviourIfHandle));
+        internal static AsyncAddBehaviourIfHandlePolicy WithBehaviourAsync(
+            this PolicyBuilder policyBuilder, 
+            Func<Exception, Task> behaviourIfHandle)
+        {
+            if (behaviourIfHandle == null) throw new ArgumentNullException(nameof(behaviourIfHandle));
 
-        return new AsyncAddBehaviourIfHandlePolicy(behaviourIfHandle, policyBuilder);
-    }
+            return new AsyncAddBehaviourIfHandlePolicy(behaviourIfHandle, policyBuilder);
+        }
 
-    internal static AsyncAddBehaviourIfHandlePolicy<TResult> WithBehaviourAsync<TResult>(
-        this PolicyBuilder<TResult> policyBuilder,
-        Func<DelegateResult<TResult>, Task> behaviourIfHandle)
-    {
-        if (behaviourIfHandle == null) throw new ArgumentNullException(nameof(behaviourIfHandle));
+        internal static AsyncAddBehaviourIfHandlePolicy<TResult> WithBehaviourAsync<TResult>(
+            this PolicyBuilder<TResult> policyBuilder,
+            Func<DelegateResult<TResult>, Task> behaviourIfHandle)
+        {
+            if (behaviourIfHandle == null) throw new ArgumentNullException(nameof(behaviourIfHandle));
 
-        return new AsyncAddBehaviourIfHandlePolicy<TResult>(behaviourIfHandle, policyBuilder);
+            return new AsyncAddBehaviourIfHandlePolicy<TResult>(behaviourIfHandle, policyBuilder);
+        }
     }
 }

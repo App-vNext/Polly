@@ -1,30 +1,31 @@
 ﻿using System;
 using System.Threading;
 
-namespace Polly.RateLimit;
-
-internal static class RateLimitEngine
+namespace Polly.RateLimit
 {
-    internal static TResult Implementation<TResult>(
-        IRateLimiter rateLimiter,
-        Func<TimeSpan, Context, TResult> retryAfterFactory,
-        Func<Context, CancellationToken, TResult> action,
-        Context context,
-        CancellationToken cancellationToken
-    )
+    internal static class RateLimitEngine
     {
-        (var permit, var retryAfter) = rateLimiter.PermitExecution();
-
-        if (permit)
+        internal static TResult Implementation<TResult>(
+            IRateLimiter rateLimiter,
+            Func<TimeSpan, Context, TResult> retryAfterFactory,
+            Func<Context, CancellationToken, TResult> action,
+            Context context,
+            CancellationToken cancellationToken
+        )
         {
-            return action(context, cancellationToken);
-        }
+            (var permit, var retryAfter) = rateLimiter.PermitExecution();
 
-        if (retryAfterFactory != null)
-        {
-            return retryAfterFactory(retryAfter, context);
-        }
+            if (permit)
+            {
+                return action(context, cancellationToken);
+            }
 
-        throw new RateLimitRejectedException(retryAfter);
+            if (retryAfterFactory != null)
+            {
+                return retryAfterFactory(retryAfter, context);
+            }
+
+            throw new RateLimitRejectedException(retryAfter);
+        }
     }
 }

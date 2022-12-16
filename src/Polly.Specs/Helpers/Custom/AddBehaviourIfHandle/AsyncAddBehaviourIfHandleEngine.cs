@@ -3,42 +3,43 @@ using System.Threading;
 using System.Threading.Tasks;
 using Polly.Utilities;
 
-namespace Polly.Specs.Helpers.Custom.AddBehaviourIfHandle;
-
-internal static class AsyncAddBehaviourIfHandleEngine
+namespace Polly.Specs.Helpers.Custom.AddBehaviourIfHandle
 {
-    internal static async Task<TResult> ImplementationAsync<TResult>(
-        ExceptionPredicates shouldHandleExceptionPredicates,
-        ResultPredicates<TResult> shouldHandleResultPredicates,
-        Func<DelegateResult<TResult>, Task> behaviourIfHandle,
-        Func<Context, CancellationToken, Task<TResult>> action,
-        Context context,
-        CancellationToken cancellationToken,
-        bool continueOnCapturedContext)
+    internal static class AsyncAddBehaviourIfHandleEngine
     {
-        try
+        internal static async Task<TResult> ImplementationAsync<TResult>(
+            ExceptionPredicates shouldHandleExceptionPredicates,
+            ResultPredicates<TResult> shouldHandleResultPredicates,
+            Func<DelegateResult<TResult>, Task> behaviourIfHandle,
+            Func<Context, CancellationToken, Task<TResult>> action,
+            Context context,
+            CancellationToken cancellationToken,
+            bool continueOnCapturedContext)
         {
-            var result = await action(context, cancellationToken).ConfigureAwait(continueOnCapturedContext);
-
-            if (shouldHandleResultPredicates.AnyMatch(result))
+            try
             {
-                await behaviourIfHandle(new DelegateResult<TResult>(result)).ConfigureAwait(continueOnCapturedContext);
+                var result = await action(context, cancellationToken).ConfigureAwait(continueOnCapturedContext);
+
+                if (shouldHandleResultPredicates.AnyMatch(result))
+                {
+                    await behaviourIfHandle(new DelegateResult<TResult>(result)).ConfigureAwait(continueOnCapturedContext);
+                }
+
+                return result;
             }
-
-            return result;
-        }
-        catch (Exception ex)
-        {
-            var handledException = shouldHandleExceptionPredicates.FirstMatchOrDefault(ex);
-            if (handledException == null)
+            catch (Exception ex)
             {
+                var handledException = shouldHandleExceptionPredicates.FirstMatchOrDefault(ex);
+                if (handledException == null)
+                {
+                    throw;
+                }
+
+                await behaviourIfHandle(new DelegateResult<TResult>(ex)).ConfigureAwait(continueOnCapturedContext);
+
+                handledException.RethrowWithOriginalStackTraceIfDiffersFrom(ex);
                 throw;
             }
-
-            await behaviourIfHandle(new DelegateResult<TResult>(ex)).ConfigureAwait(continueOnCapturedContext);
-
-            handledException.RethrowWithOriginalStackTraceIfDiffersFrom(ex);
-            throw;
         }
     }
 }

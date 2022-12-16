@@ -3,292 +3,293 @@ using System.Collections.Generic;
 using FluentAssertions;
 using Xunit;
 
-namespace Polly.Specs;
-
-public class PolicySpecs
+namespace Polly.Specs
 {
-    #region Execute tests
-
-    [Fact]
-    public void Executing_the_policy_action_should_execute_the_specified_action()
+    public class PolicySpecs
     {
-        var executed = false;
+        #region Execute tests
 
-        var policy = Policy
-            .Handle<DivideByZeroException>()
-            .Retry((_, _) => { });
-
-        policy.Execute(() => executed = true);
-
-        executed.Should()
-            .BeTrue();
-    }
-
-    [Fact]
-    public void Executing_the_policy_function_should_execute_the_specified_function_and_return_the_result()
-    {
-        var policy = Policy
-            .Handle<DivideByZeroException>()
-            .Retry((_, _) => { });
-
-        var result = policy.Execute(() => 2);
-
-        result.Should()
-            .Be(2);
-    }
-
-    #endregion
-
-    #region ExecuteAndCapture tests
-
-    [Fact]
-    public void Executing_the_policy_action_successfully_should_return_success_result()
-    {
-        var result = Policy
-            .Handle<DivideByZeroException>()
-            .Retry((_, _) => { })
-            .ExecuteAndCapture(() => { });
-
-        result.Should().BeEquivalentTo(new
+        [Fact]
+        public void Executing_the_policy_action_should_execute_the_specified_action()
         {
-            Outcome = OutcomeType.Successful,
-            FinalException = (Exception) null,
-            ExceptionType = (ExceptionType?) null,
-        });
-    }
+            var executed = false;
 
-    [Fact]
-    public void Executing_the_policy_action_and_failing_with_a_handled_exception_type_should_return_failure_result_indicating_that_exception_type_is_one_handled_by_this_policy()
-    {
-        var handledException = new DivideByZeroException();
+            var policy = Policy
+                .Handle<DivideByZeroException>()
+                .Retry((_, _) => { });
 
-        var result = Policy
-            .Handle<DivideByZeroException>()
-            .Retry((_, _) => { })
-            .ExecuteAndCapture(() => throw handledException);
+            policy.Execute(() => executed = true);
 
-        result.Should().BeEquivalentTo(new
+            executed.Should()
+                .BeTrue();
+        }
+
+        [Fact]
+        public void Executing_the_policy_function_should_execute_the_specified_function_and_return_the_result()
         {
-            Outcome = OutcomeType.Failure,
-            FinalException = handledException,
-            ExceptionType = ExceptionType.HandledByThisPolicy
-        });
-    }
+            var policy = Policy
+                .Handle<DivideByZeroException>()
+                .Retry((_, _) => { });
 
-    [Fact]
-    public void Executing_the_policy_action_and_failing_with_an_unhandled_exception_type_should_return_failure_result_indicating_that_exception_type_is_unhandled_by_this_policy()
-    {
-        var unhandledException = new Exception();
+            var result = policy.Execute(() => 2);
 
-        var result = Policy
-            .Handle<DivideByZeroException>()
-            .Retry((_, _) => { })
-            .ExecuteAndCapture(() => throw unhandledException);
+            result.Should()
+                .Be(2);
+        }
 
-        result.Should().BeEquivalentTo(new
+        #endregion
+
+        #region ExecuteAndCapture tests
+
+        [Fact]
+        public void Executing_the_policy_action_successfully_should_return_success_result()
         {
-            Outcome = OutcomeType.Failure,
-            FinalException = unhandledException,
-            ExceptionType = ExceptionType.Unhandled
-        });
-    }
+            var result = Policy
+                .Handle<DivideByZeroException>()
+                .Retry((_, _) => { })
+                .ExecuteAndCapture(() => { });
 
-    [Fact]
-    public void Executing_the_policy_function_successfully_should_return_success_result()
-    {
-        var result = Policy
-            .Handle<DivideByZeroException>()
-            .Retry((_, _) => { })
-            .ExecuteAndCapture(() => Int32.MaxValue);
+            result.Should().BeEquivalentTo(new
+            {
+                Outcome = OutcomeType.Successful,
+                FinalException = (Exception) null,
+                ExceptionType = (ExceptionType?) null,
+            });
+        }
 
-        result.Should().BeEquivalentTo(new
+        [Fact]
+        public void Executing_the_policy_action_and_failing_with_a_handled_exception_type_should_return_failure_result_indicating_that_exception_type_is_one_handled_by_this_policy()
         {
-            Outcome = OutcomeType.Successful,
-            FinalException = (Exception)null,
-            ExceptionType = (ExceptionType?)null,
-            FaultType = (FaultType?)null,
-            FinalHandledResult = default(int),
-            Result = Int32.MaxValue
-        });
-    }
+            var handledException = new DivideByZeroException();
 
-    [Fact]
-    public void Executing_the_policy_function_and_failing_with_a_handled_exception_type_should_return_failure_result_indicating_that_exception_type_is_one_handled_by_this_policy()
-    {
-        var handledException = new DivideByZeroException();
+            var result = Policy
+                .Handle<DivideByZeroException>()
+                .Retry((_, _) => { })
+                .ExecuteAndCapture(() => throw handledException);
 
-        var result = Policy
-            .Handle<DivideByZeroException>()
-            .Retry((_, _) => { })
-            .ExecuteAndCapture<int>(() => throw handledException);
+            result.Should().BeEquivalentTo(new
+            {
+                Outcome = OutcomeType.Failure,
+                FinalException = handledException,
+                ExceptionType = ExceptionType.HandledByThisPolicy
+            });
+        }
 
-        result.Should().BeEquivalentTo(new
+        [Fact]
+        public void Executing_the_policy_action_and_failing_with_an_unhandled_exception_type_should_return_failure_result_indicating_that_exception_type_is_unhandled_by_this_policy()
         {
-            Outcome = OutcomeType.Failure,
-            FinalException = handledException,
-            ExceptionType = ExceptionType.HandledByThisPolicy,
-            FaultType = FaultType.ExceptionHandledByThisPolicy,
-            FinalHandledResult = default(int),
-            Result = default(int)
-        });
-    }
+            var unhandledException = new Exception();
 
-    [Fact]
-    public void Executing_the_policy_function_and_failing_with_an_unhandled_exception_type_should_return_failure_result_indicating_that_exception_type_is_unhandled_by_this_policy()
-    {
-        var unhandledException = new Exception();
+            var result = Policy
+                .Handle<DivideByZeroException>()
+                .Retry((_, _) => { })
+                .ExecuteAndCapture(() => throw unhandledException);
 
-        var result = Policy
-            .Handle<DivideByZeroException>()
-            .Retry((_, _) => { })
-            .ExecuteAndCapture<int>(() => throw unhandledException);
+            result.Should().BeEquivalentTo(new
+            {
+                Outcome = OutcomeType.Failure,
+                FinalException = unhandledException,
+                ExceptionType = ExceptionType.Unhandled
+            });
+        }
 
-        result.Should().BeEquivalentTo(new
+        [Fact]
+        public void Executing_the_policy_function_successfully_should_return_success_result()
         {
-            Outcome = OutcomeType.Failure,
-            FinalException = unhandledException,
-            ExceptionType = ExceptionType.Unhandled,
-            FaultType = FaultType.UnhandledException,
-            FinalHandledResult = default(int),
-            Result = default(int)
-        });
+            var result = Policy
+                .Handle<DivideByZeroException>()
+                .Retry((_, _) => { })
+                .ExecuteAndCapture(() => Int32.MaxValue);
+
+            result.Should().BeEquivalentTo(new
+            {
+                Outcome = OutcomeType.Successful,
+                FinalException = (Exception)null,
+                ExceptionType = (ExceptionType?)null,
+                FaultType = (FaultType?)null,
+                FinalHandledResult = default(int),
+                Result = Int32.MaxValue
+            });
+        }
+
+        [Fact]
+        public void Executing_the_policy_function_and_failing_with_a_handled_exception_type_should_return_failure_result_indicating_that_exception_type_is_one_handled_by_this_policy()
+        {
+            var handledException = new DivideByZeroException();
+
+            var result = Policy
+                .Handle<DivideByZeroException>()
+                .Retry((_, _) => { })
+                .ExecuteAndCapture<int>(() => throw handledException);
+
+            result.Should().BeEquivalentTo(new
+            {
+                Outcome = OutcomeType.Failure,
+                FinalException = handledException,
+                ExceptionType = ExceptionType.HandledByThisPolicy,
+                FaultType = FaultType.ExceptionHandledByThisPolicy,
+                FinalHandledResult = default(int),
+                Result = default(int)
+            });
+        }
+
+        [Fact]
+        public void Executing_the_policy_function_and_failing_with_an_unhandled_exception_type_should_return_failure_result_indicating_that_exception_type_is_unhandled_by_this_policy()
+        {
+            var unhandledException = new Exception();
+
+            var result = Policy
+                .Handle<DivideByZeroException>()
+                .Retry((_, _) => { })
+                .ExecuteAndCapture<int>(() => throw unhandledException);
+
+            result.Should().BeEquivalentTo(new
+            {
+                Outcome = OutcomeType.Failure,
+                FinalException = unhandledException,
+                ExceptionType = ExceptionType.Unhandled,
+                FaultType = FaultType.UnhandledException,
+                FinalHandledResult = default(int),
+                Result = default(int)
+            });
+        }
+
+        #endregion
+
+        #region Context tests
+
+        [Fact]
+        public void Executing_the_policy_action_should_throw_when_context_data_is_null()
+        {
+            Policy policy = Policy
+                .Handle<DivideByZeroException>()
+                .Retry((_, _, _) => { });
+
+            policy.Invoking(p => p.Execute(_ => { }, (IDictionary<string, object>)null))
+                  .Should().Throw<ArgumentNullException>();
+        }
+
+        [Fact]
+        public void Executing_the_policy_action_should_throw_when_context_is_null()
+        {
+            Policy policy = Policy
+                .Handle<DivideByZeroException>()
+                .Retry((_, _, _) => { });
+
+            policy.Invoking(p => p.Execute(_ => { }, (Context)null))
+                .Should().Throw<ArgumentNullException>().And
+                .ParamName.Should().Be("context");
+        }
+
+        [Fact]
+        public void Executing_the_policy_function_should_throw_when_context_data_is_null()
+        {
+            Policy policy = Policy
+                .Handle<DivideByZeroException>()
+                .Retry((_, _, _) => { });
+
+            policy.Invoking(p => p.Execute(_ => 2, (IDictionary<string, object>)null))
+                .Should().Throw<ArgumentNullException>();
+        }
+
+        [Fact]
+        public void Executing_the_policy_function_should_throw_when_context_is_null()
+        {
+            Policy policy = Policy
+                .Handle<DivideByZeroException>()
+                .Retry((_, _, _) => { });
+
+            policy.Invoking(p => p.Execute(_ => 2, (Context)null))
+                .Should().Throw<ArgumentNullException>().And
+                .ParamName.Should().Be("context");
+        }
+
+        [Fact]
+        public void Executing_the_policy_function_should_pass_context_to_executed_delegate()
+        {
+            var operationKey = "SomeKey";
+            var executionContext = new Context(operationKey);
+            Context capturedContext = null;
+
+            Policy policy = Policy.NoOp();
+
+            policy.Execute(context => { capturedContext = context; }, executionContext);
+
+            capturedContext.Should().BeSameAs(executionContext);
+        }
+
+        [Fact]
+        public void Execute_and_capturing_the_policy_action_should_throw_when_context_data_is_null()
+        {
+            Policy policy = Policy
+                .Handle<DivideByZeroException>()
+                .Retry((_, _, _) => { });
+
+            policy.Invoking(p => p.ExecuteAndCapture(_ => { }, (IDictionary<string, object>)null))
+                  .Should().Throw<ArgumentNullException>();
+        }
+
+        [Fact]
+        public void Execute_and_capturing_the_policy_action_should_throw_when_context_is_null()
+        {
+            Policy policy = Policy
+                .Handle<DivideByZeroException>()
+                .Retry((_, _, _) => { });
+
+            policy.Invoking(p => p.ExecuteAndCapture(_ => { }, (Context)null))
+                .Should().Throw<ArgumentNullException>().And
+                .ParamName.Should().Be("context");
+        }
+
+        [Fact]
+        public void Execute_and_capturing_the_policy_function_should_throw_when_context_data_is_null()
+        {
+            Policy policy = Policy
+                .Handle<DivideByZeroException>()
+                .Retry((_, _, _) => { });
+
+            policy.Invoking(p => p.ExecuteAndCapture(_ => 2, (IDictionary<string, object>)null))
+                  .Should().Throw<ArgumentNullException>();
+        }
+
+        [Fact]
+        public void Execute_and_capturing_the_policy_function_should_throw_when_context_is_null()
+        {
+            Policy policy = Policy
+                .Handle<DivideByZeroException>()
+                .Retry((_, _, _) => { });
+
+            policy.Invoking(p => p.ExecuteAndCapture(_ => 2, (Context)null))
+                  .Should().Throw<ArgumentNullException>().And
+                  .ParamName.Should().Be("context");
+        }
+
+        [Fact]
+        public void Execute_and_capturing_the_policy_function_should_pass_context_to_executed_delegate()
+        {
+            var operationKey = "SomeKey";
+            var executionContext = new Context(operationKey);
+            Context capturedContext = null;
+
+            Policy policy = Policy.NoOp();
+
+            policy.ExecuteAndCapture(context => { capturedContext = context; }, executionContext);
+
+            capturedContext.Should().BeSameAs(executionContext);
+        }
+
+        [Fact]
+        public void Execute_and_capturing_the_policy_function_should_pass_context_to_PolicyResult()
+        {
+            var operationKey = "SomeKey";
+            var executionContext = new Context(operationKey);
+
+            Policy policy = Policy.NoOp();
+
+            policy.ExecuteAndCapture(_ => { }, executionContext)
+                .Context.Should().BeSameAs(executionContext);
+        }
+
+        #endregion
     }
-
-    #endregion
-
-    #region Context tests
-
-    [Fact]
-    public void Executing_the_policy_action_should_throw_when_context_data_is_null()
-    {
-        Policy policy = Policy
-            .Handle<DivideByZeroException>()
-            .Retry((_, _, _) => { });
-
-        policy.Invoking(p => p.Execute(_ => { }, (IDictionary<string, object>)null))
-            .Should().Throw<ArgumentNullException>();
-    }
-
-    [Fact]
-    public void Executing_the_policy_action_should_throw_when_context_is_null()
-    {
-        Policy policy = Policy
-            .Handle<DivideByZeroException>()
-            .Retry((_, _, _) => { });
-
-        policy.Invoking(p => p.Execute(_ => { }, (Context)null))
-            .Should().Throw<ArgumentNullException>().And
-            .ParamName.Should().Be("context");
-    }
-
-    [Fact]
-    public void Executing_the_policy_function_should_throw_when_context_data_is_null()
-    {
-        Policy policy = Policy
-            .Handle<DivideByZeroException>()
-            .Retry((_, _, _) => { });
-
-        policy.Invoking(p => p.Execute(_ => 2, (IDictionary<string, object>)null))
-            .Should().Throw<ArgumentNullException>();
-    }
-
-    [Fact]
-    public void Executing_the_policy_function_should_throw_when_context_is_null()
-    {
-        Policy policy = Policy
-            .Handle<DivideByZeroException>()
-            .Retry((_, _, _) => { });
-
-        policy.Invoking(p => p.Execute(_ => 2, (Context)null))
-            .Should().Throw<ArgumentNullException>().And
-            .ParamName.Should().Be("context");
-    }
-
-    [Fact]
-    public void Executing_the_policy_function_should_pass_context_to_executed_delegate()
-    {
-        var operationKey = "SomeKey";
-        var executionContext = new Context(operationKey);
-        Context capturedContext = null;
-
-        Policy policy = Policy.NoOp();
-
-        policy.Execute(context => { capturedContext = context; }, executionContext);
-
-        capturedContext.Should().BeSameAs(executionContext);
-    }
-
-    [Fact]
-    public void Execute_and_capturing_the_policy_action_should_throw_when_context_data_is_null()
-    {
-        Policy policy = Policy
-            .Handle<DivideByZeroException>()
-            .Retry((_, _, _) => { });
-
-        policy.Invoking(p => p.ExecuteAndCapture(_ => { }, (IDictionary<string, object>)null))
-            .Should().Throw<ArgumentNullException>();
-    }
-
-    [Fact]
-    public void Execute_and_capturing_the_policy_action_should_throw_when_context_is_null()
-    {
-        Policy policy = Policy
-            .Handle<DivideByZeroException>()
-            .Retry((_, _, _) => { });
-
-        policy.Invoking(p => p.ExecuteAndCapture(_ => { }, (Context)null))
-            .Should().Throw<ArgumentNullException>().And
-            .ParamName.Should().Be("context");
-    }
-
-    [Fact]
-    public void Execute_and_capturing_the_policy_function_should_throw_when_context_data_is_null()
-    {
-        Policy policy = Policy
-            .Handle<DivideByZeroException>()
-            .Retry((_, _, _) => { });
-
-        policy.Invoking(p => p.ExecuteAndCapture(_ => 2, (IDictionary<string, object>)null))
-            .Should().Throw<ArgumentNullException>();
-    }
-
-    [Fact]
-    public void Execute_and_capturing_the_policy_function_should_throw_when_context_is_null()
-    {
-        Policy policy = Policy
-            .Handle<DivideByZeroException>()
-            .Retry((_, _, _) => { });
-
-        policy.Invoking(p => p.ExecuteAndCapture(_ => 2, (Context)null))
-            .Should().Throw<ArgumentNullException>().And
-            .ParamName.Should().Be("context");
-    }
-
-    [Fact]
-    public void Execute_and_capturing_the_policy_function_should_pass_context_to_executed_delegate()
-    {
-        var operationKey = "SomeKey";
-        var executionContext = new Context(operationKey);
-        Context capturedContext = null;
-
-        Policy policy = Policy.NoOp();
-
-        policy.ExecuteAndCapture(context => { capturedContext = context; }, executionContext);
-
-        capturedContext.Should().BeSameAs(executionContext);
-    }
-
-    [Fact]
-    public void Execute_and_capturing_the_policy_function_should_pass_context_to_PolicyResult()
-    {
-        var operationKey = "SomeKey";
-        var executionContext = new Context(operationKey);
-
-        Policy policy = Policy.NoOp();
-
-        policy.ExecuteAndCapture(_ => { }, executionContext)
-            .Context.Should().BeSameAs(executionContext);
-    }
-
-    #endregion
 }

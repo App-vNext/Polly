@@ -6,51 +6,52 @@ using Polly.Specs.Helpers;
 using Polly.Utilities;
 using Xunit;
 
-namespace Polly.Specs.Retry;
-
-[Collection(Constants.SystemClockDependentTestCollection)]
-public class WaitAndRetryForeverTResultSpecs : IDisposable
+namespace Polly.Specs.Retry
 {
-    public WaitAndRetryForeverTResultSpecs()
+    [Collection(Constants.SystemClockDependentTestCollection)]
+    public class WaitAndRetryForeverTResultSpecs : IDisposable
     {
-        // do nothing on call to sleep
-        SystemClock.Sleep = (_, _) => { };
-    }
-
-    [Fact]
-    public void Should_be_able_to_calculate_retry_timespans_based_on_the_handled_fault()
-    {
-        var expectedRetryWaits = new Dictionary<ResultPrimitive, TimeSpan>(){
-
-            {ResultPrimitive.Fault, 2.Seconds()},
-            {ResultPrimitive.FaultAgain, 4.Seconds()},
-        };
-
-        var actualRetryWaits = new List<TimeSpan>();
-
-        var policy = Policy
-            .HandleResult(ResultPrimitive.Fault)
-            .OrResult(ResultPrimitive.FaultAgain)
-            .WaitAndRetryForever(
-                (_, outcome, _) => expectedRetryWaits[outcome.Result],
-                (_, timeSpan, _) => actualRetryWaits.Add(timeSpan)
-            );
-
-        using (var enumerator = expectedRetryWaits.GetEnumerator())
+        public WaitAndRetryForeverTResultSpecs()
         {
-            policy.Execute(() =>
-            {
-                if (enumerator.MoveNext()) return enumerator.Current.Key;
-                else return ResultPrimitive.Undefined;
-            });
+            // do nothing on call to sleep
+            SystemClock.Sleep = (_, _) => { };
         }
 
-        actualRetryWaits.Should().ContainInOrder(expectedRetryWaits.Values);
-    }
+        [Fact]
+        public void Should_be_able_to_calculate_retry_timespans_based_on_the_handled_fault()
+        {
+            var expectedRetryWaits = new Dictionary<ResultPrimitive, TimeSpan>(){
 
-    public void Dispose()
-    {
-        SystemClock.Reset();
-    }
+                {ResultPrimitive.Fault, 2.Seconds()},
+                {ResultPrimitive.FaultAgain, 4.Seconds()},
+            };
 
+            var actualRetryWaits = new List<TimeSpan>();
+
+            var policy = Policy
+                .HandleResult(ResultPrimitive.Fault)
+                .OrResult(ResultPrimitive.FaultAgain)
+                .WaitAndRetryForever(
+                    (_, outcome, _) => expectedRetryWaits[outcome.Result],
+                    (_, timeSpan, _) => actualRetryWaits.Add(timeSpan)
+                );
+
+            using (var enumerator = expectedRetryWaits.GetEnumerator())
+            {
+                policy.Execute(() =>
+                {
+                    if (enumerator.MoveNext()) return enumerator.Current.Key;
+                    else return ResultPrimitive.Undefined;
+                });
+            }
+
+            actualRetryWaits.Should().ContainInOrder(expectedRetryWaits.Values);
+        }
+
+        public void Dispose()
+        {
+            SystemClock.Reset();
+        }
+
+    }
 }

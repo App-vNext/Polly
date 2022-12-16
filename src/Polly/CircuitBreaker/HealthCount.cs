@@ -1,12 +1,13 @@
-﻿namespace Polly.CircuitBreaker;
-
-internal class HealthCount
+﻿namespace Polly.CircuitBreaker
 {
-    public int Successes { get; set; }
+    internal class HealthCount
+    {
+        public int Successes { get; set; }
 
-    public int Failures { get; set; }
+        public int Failures { get; set; }
 
-    public int Total { get { return Successes + Failures; } }
+        public int Total { get { return Successes + Failures; } }
 
-    public long StartedAt { get; set; }
+        public long StartedAt { get; set; }
+    }
 }

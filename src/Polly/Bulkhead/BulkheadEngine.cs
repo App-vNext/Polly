@@ -1,39 +1,40 @@
 ﻿using System;
 using System.Threading;
 
-namespace Polly.Bulkhead;
-
-internal static class BulkheadEngine
+namespace Polly.Bulkhead
 {
-    internal static TResult Implementation<TResult>(
-        Func<Context, CancellationToken, TResult> action,
-        Context context,
-        Action<Context> onBulkheadRejected,
-        SemaphoreSlim maxParallelizationSemaphore,
-        SemaphoreSlim maxQueuedActionsSemaphore,
-        CancellationToken cancellationToken)
+    internal static class BulkheadEngine
     {
-        if (!maxQueuedActionsSemaphore.Wait(TimeSpan.Zero, cancellationToken))
+        internal static TResult Implementation<TResult>(
+            Func<Context, CancellationToken, TResult> action,
+            Context context,
+            Action<Context> onBulkheadRejected,
+            SemaphoreSlim maxParallelizationSemaphore,
+            SemaphoreSlim maxQueuedActionsSemaphore,
+            CancellationToken cancellationToken)
         {
-            onBulkheadRejected(context);
-            throw new BulkheadRejectedException();
-        }
+            if (!maxQueuedActionsSemaphore.Wait(TimeSpan.Zero, cancellationToken))
+            {
+                onBulkheadRejected(context);
+                throw new BulkheadRejectedException();
+            }
             
-        try
-        {
-            maxParallelizationSemaphore.Wait(cancellationToken);
             try
             {
-                return action(context, cancellationToken);
+                maxParallelizationSemaphore.Wait(cancellationToken);
+                try
+                {
+                    return action(context, cancellationToken);
+                }
+                finally
+                {
+                    maxParallelizationSemaphore.Release();
+                }
             }
             finally
             {
-                maxParallelizationSemaphore.Release();
+                maxQueuedActionsSemaphore.Release();
             }
-        }
-        finally
-        {
-            maxQueuedActionsSemaphore.Release();
         }
     }
 }

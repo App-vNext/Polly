@@ -1,22 +1,23 @@
 ﻿using System;
 using Polly.Caching;
 
-namespace Polly.Specs.Helpers.Caching;
-
-/// <summary>
-/// A configurable stub ICacheKeyStrategy, to support tests..
-/// </summary>
-internal class StubCacheKeyStrategy : ICacheKeyStrategy
+namespace Polly.Specs.Helpers.Caching
 {
-    private readonly Func<Context, string> strategy;
-
-    public StubCacheKeyStrategy(Func<Context, string> strategy)
+    /// <summary>
+    /// A configurable stub ICacheKeyStrategy, to support tests..
+    /// </summary>
+    internal class StubCacheKeyStrategy : ICacheKeyStrategy
     {
-        this.strategy = strategy;
-    }
+        private readonly Func<Context, string> strategy;
 
-    public string GetCacheKey(Context context)
-    {
-        return strategy(context);
+        public StubCacheKeyStrategy(Func<Context, string> strategy)
+        {
+            this.strategy = strategy;
+        }
+
+        public string GetCacheKey(Context context)
+        {
+            return strategy(context);
+        }
     }
 }

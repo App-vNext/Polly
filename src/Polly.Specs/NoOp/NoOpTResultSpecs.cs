@@ -3,38 +3,39 @@ using FluentAssertions;
 using Polly.NoOp;
 using Xunit;
 
-namespace Polly.Specs.NoOp;
-
-public class NoOpTResultSpecs
+namespace Polly.Specs.NoOp
 {
-    [Fact]
-    public void Should_execute_user_delegate()
+    public class NoOpTResultSpecs
     {
-        var policy = Policy.NoOp<int>();
-        int? result = null;
-
-        policy.Invoking(x => result = x.Execute(() => 10))
-            .Should().NotThrow();
-
-        result.HasValue.Should().BeTrue();
-        result.Should().Be(10);
-    }
-
-    [Fact]
-    public void Should_execute_user_delegate_without_adding_extra_cancellation_behaviour()
-    {
-        var policy = Policy.NoOp<int>();
-        int? result = null;
-
-        using (var cts = new CancellationTokenSource())
+        [Fact]
+        public void Should_execute_user_delegate()
         {
-            cts.Cancel();
+            var policy = Policy.NoOp<int>();
+            int? result = null;
 
-            policy.Invoking(p => result = p.Execute(_ => 10, cts.Token))
+            policy.Invoking(x => result = x.Execute(() => 10))
                 .Should().NotThrow();
+
+            result.HasValue.Should().BeTrue();
+            result.Should().Be(10);
         }
 
-        result.HasValue.Should().BeTrue();
-        result.Should().Be(10);
+        [Fact]
+        public void Should_execute_user_delegate_without_adding_extra_cancellation_behaviour()
+        {
+            var policy = Policy.NoOp<int>();
+            int? result = null;
+
+            using (var cts = new CancellationTokenSource())
+            {
+                cts.Cancel();
+
+                policy.Invoking(p => result = p.Execute(_ => 10, cts.Token))
+                   .Should().NotThrow();
+            }
+
+            result.HasValue.Should().BeTrue();
+            result.Should().Be(10);
+        }
     }
 }

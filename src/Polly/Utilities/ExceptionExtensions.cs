@@ -1,23 +1,24 @@
 ﻿using System;
 using System.Runtime.ExceptionServices;
 
-namespace Polly.Utilities;
-
-/// <summary>
-/// Contains extension methods on the <see cref="Exception"/> class.
-/// </summary>
-public static class ExceptionExtensions
+namespace Polly.Utilities
 {
     /// <summary>
-    /// Rethrows the extended <see cref="Exception"/>, <paramref name="exceptionPossiblyToThrow"/>, using the <see cref="ExceptionDispatchInfo"/> class to rethrow it with its original stack trace, if <paramref name="exceptionPossiblyToThrow"/> differs from <paramref name="exceptionToCompare"/>.
+    /// Contains extension methods on the <see cref="Exception"/> class.
     /// </summary>
-    /// <param name="exceptionPossiblyToThrow">The exception to throw, if it differs from <paramref name="exceptionToCompare"/></param>
-    /// <param name="exceptionToCompare">The exception to compare against.</param>
-    public static void RethrowWithOriginalStackTraceIfDiffersFrom(this Exception exceptionPossiblyToThrow, Exception exceptionToCompare)
+    public static class ExceptionExtensions
     {
-        if (exceptionPossiblyToThrow != exceptionToCompare)
+        /// <summary>
+        /// Rethrows the extended <see cref="Exception"/>, <paramref name="exceptionPossiblyToThrow"/>, using the <see cref="ExceptionDispatchInfo"/> class to rethrow it with its original stack trace, if <paramref name="exceptionPossiblyToThrow"/> differs from <paramref name="exceptionToCompare"/>.
+        /// </summary>
+        /// <param name="exceptionPossiblyToThrow">The exception to throw, if it differs from <paramref name="exceptionToCompare"/></param>
+        /// <param name="exceptionToCompare">The exception to compare against.</param>
+        public static void RethrowWithOriginalStackTraceIfDiffersFrom(this Exception exceptionPossiblyToThrow, Exception exceptionToCompare)
         {
-            ExceptionDispatchInfo.Capture(exceptionPossiblyToThrow).Throw();
+            if (exceptionPossiblyToThrow != exceptionToCompare)
+            {
+                ExceptionDispatchInfo.Capture(exceptionPossiblyToThrow).Throw();
+            }
         }
     }
 }

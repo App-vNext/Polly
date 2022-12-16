@@ -9,739 +9,740 @@ using Xunit;
 
 using Scenario = Polly.Specs.Helpers.PolicyTResultExtensions.ResultAndOrCancellationScenario;
 
-namespace Polly.Specs.Retry;
-
-public class RetryTResultSpecs
+namespace Polly.Specs.Retry
 {
-    [Fact]
-    public void Should_throw_when_retry_count_is_less_than_zero_without_context()
+    public class RetryTResultSpecs
     {
-        Action<DelegateResult<ResultPrimitive>, int> onRetry = (_, _) => { };
+        [Fact]
+        public void Should_throw_when_retry_count_is_less_than_zero_without_context()
+        {
+            Action<DelegateResult<ResultPrimitive>, int> onRetry = (_, _) => { };
 
-        Action policy = () => Policy
-            .HandleResult(ResultPrimitive.Fault)
-            .Retry(-1, onRetry);
+            Action policy = () => Policy
+                                      .HandleResult(ResultPrimitive.Fault)
+                                      .Retry(-1, onRetry);
 
-        policy.Should().Throw<ArgumentOutOfRangeException>().And
-            .ParamName.Should().Be("retryCount");
-    }
+            policy.Should().Throw<ArgumentOutOfRangeException>().And
+                  .ParamName.Should().Be("retryCount");
+        }
 
-    [Fact]
-    public void Should_throw_when_onretry_action_without_context_is_null()
-    {
-        Action<DelegateResult<ResultPrimitive>, int> nullOnRetry = null;
+        [Fact]
+        public void Should_throw_when_onretry_action_without_context_is_null()
+        {
+            Action<DelegateResult<ResultPrimitive>, int> nullOnRetry = null;
 
-        Action policy = () => Policy
-            .HandleResult(ResultPrimitive.Fault)
-            .Retry(1, nullOnRetry);
+            Action policy = () => Policy
+                                      .HandleResult(ResultPrimitive.Fault)
+                                      .Retry(1, nullOnRetry);
 
-        policy.Should().Throw<ArgumentNullException>().And
-            .ParamName.Should().Be("onRetry");
-    }
+            policy.Should().Throw<ArgumentNullException>().And
+                  .ParamName.Should().Be("onRetry");
+        }
 
-    [Fact]
-    public void Should_throw_when_retry_count_is_less_than_zero_with_context()
-    {
-        Action<DelegateResult<ResultPrimitive>, int, Context> onRetry = (_, _, _) => { };
+        [Fact]
+        public void Should_throw_when_retry_count_is_less_than_zero_with_context()
+        {
+            Action<DelegateResult<ResultPrimitive>, int, Context> onRetry = (_, _, _) => { };
 
-        Action policy = () => Policy
-            .HandleResult(ResultPrimitive.Fault)
-            .Retry(-1, onRetry);
+            Action policy = () => Policy
+                                      .HandleResult(ResultPrimitive.Fault)
+                                      .Retry(-1, onRetry);
 
-        policy.Should().Throw<ArgumentOutOfRangeException>().And
-            .ParamName.Should().Be("retryCount");
-    }
+            policy.Should().Throw<ArgumentOutOfRangeException>().And
+                  .ParamName.Should().Be("retryCount");
+        }
 
-    [Fact]
-    public void Should_throw_when_onretry_action_with_context_is_null()
-    {
-        Action<DelegateResult<ResultPrimitive>, int, Context> nullOnRetry = null;
+        [Fact]
+        public void Should_throw_when_onretry_action_with_context_is_null()
+        {
+            Action<DelegateResult<ResultPrimitive>, int, Context> nullOnRetry = null;
 
-        Action policy = () => Policy
-            .HandleResult(ResultPrimitive.Fault)
-            .Retry(1, nullOnRetry);
+            Action policy = () => Policy
+                                      .HandleResult(ResultPrimitive.Fault)
+                                      .Retry(1, nullOnRetry);
 
-        policy.Should().Throw<ArgumentNullException>().And
-            .ParamName.Should().Be("onRetry");
-    }
+            policy.Should().Throw<ArgumentNullException>().And
+                  .ParamName.Should().Be("onRetry");
+        }
 
-    [Fact]
-    public void Should_not_return_handled_result_when_handled_result_raised_same_number_of_times_as_retry_count()
-    {
-        var policy = Policy
-            .HandleResult(ResultPrimitive.Fault)
-            .Retry(3);
+        [Fact]
+        public void Should_not_return_handled_result_when_handled_result_raised_same_number_of_times_as_retry_count()
+        {
+            var policy = Policy
+                .HandleResult(ResultPrimitive.Fault)
+                .Retry(3);
 
-        var result = policy.RaiseResultSequence(ResultPrimitive.Fault, ResultPrimitive.Fault, ResultPrimitive.Fault, ResultPrimitive.Good);
-        result.Should().Be(ResultPrimitive.Good);
-    }
+            var result = policy.RaiseResultSequence(ResultPrimitive.Fault, ResultPrimitive.Fault, ResultPrimitive.Fault, ResultPrimitive.Good);
+            result.Should().Be(ResultPrimitive.Good);
+        }
 
-    [Fact]
-    public void Should_not_return_handled_result_when_one_of_the_handled_results_raised_same_number_of_times_as_retry_count()
-    {
-        var policy = Policy
-            .HandleResult(ResultPrimitive.Fault)
-            .OrResult(ResultPrimitive.FaultAgain)
-            .Retry(3);
+        [Fact]
+        public void Should_not_return_handled_result_when_one_of_the_handled_results_raised_same_number_of_times_as_retry_count()
+        {
+            var policy = Policy
+                .HandleResult(ResultPrimitive.Fault)
+                .OrResult(ResultPrimitive.FaultAgain)
+                .Retry(3);
 
-        var result = policy.RaiseResultSequence(ResultPrimitive.Fault, ResultPrimitive.FaultAgain, ResultPrimitive.Fault, ResultPrimitive.Good);
-        result.Should().Be(ResultPrimitive.Good);
-    }
+            var result = policy.RaiseResultSequence(ResultPrimitive.Fault, ResultPrimitive.FaultAgain, ResultPrimitive.Fault, ResultPrimitive.Good);
+            result.Should().Be(ResultPrimitive.Good);
+        }
 
-    [Fact]
-    public void Should_not_return_handled_result_when_handled_result_raised_less_number_of_times_than_retry_count()
-    {
-        var policy = Policy
-            .HandleResult(ResultPrimitive.Fault)
-            .Retry(3);
+        [Fact]
+        public void Should_not_return_handled_result_when_handled_result_raised_less_number_of_times_than_retry_count()
+        {
+            var policy = Policy
+                .HandleResult(ResultPrimitive.Fault)
+                .Retry(3);
 
-        var result = policy.RaiseResultSequence(ResultPrimitive.Fault, ResultPrimitive.Good);
-        result.Should().Be(ResultPrimitive.Good);
-    }
+            var result = policy.RaiseResultSequence(ResultPrimitive.Fault, ResultPrimitive.Good);
+            result.Should().Be(ResultPrimitive.Good);
+        }
 
-    [Fact]
-    public void Should_not_return_handled_result_when_all_of_the_handled_results_raised_less_number_of_times_than_retry_count()
-    {
-        var policy = Policy
-            .HandleResult(ResultPrimitive.Fault)
-            .OrResult(ResultPrimitive.FaultAgain)
-            .Retry(3);
+        [Fact]
+        public void Should_not_return_handled_result_when_all_of_the_handled_results_raised_less_number_of_times_than_retry_count()
+        {
+            var policy = Policy
+                .HandleResult(ResultPrimitive.Fault)
+                .OrResult(ResultPrimitive.FaultAgain)
+                .Retry(3);
 
-        var result = policy.RaiseResultSequence(ResultPrimitive.Fault, ResultPrimitive.FaultAgain, ResultPrimitive.Good);
-        result.Should().Be(ResultPrimitive.Good);
-    }
+            var result = policy.RaiseResultSequence(ResultPrimitive.Fault, ResultPrimitive.FaultAgain, ResultPrimitive.Good);
+            result.Should().Be(ResultPrimitive.Good);
+        }
 
-    [Fact]
-    public void Should_return_handled_result_when_handled_result_raised_more_times_then_retry_count()
-    {
-        var policy = Policy
-            .HandleResult(ResultPrimitive.Fault)
-            .Retry(3);
+        [Fact]
+        public void Should_return_handled_result_when_handled_result_raised_more_times_then_retry_count()
+        {
+            var policy = Policy
+                .HandleResult(ResultPrimitive.Fault)
+                .Retry(3);
 
-        var result = policy.RaiseResultSequence(ResultPrimitive.Fault, ResultPrimitive.Fault, ResultPrimitive.Fault, ResultPrimitive.Fault, ResultPrimitive.Good);
-        result.Should().Be(ResultPrimitive.Fault); // It should give up retrying after 3 retries and return the last failure, so should return Fault, not Good.
-    }
+            var result = policy.RaiseResultSequence(ResultPrimitive.Fault, ResultPrimitive.Fault, ResultPrimitive.Fault, ResultPrimitive.Fault, ResultPrimitive.Good);
+            result.Should().Be(ResultPrimitive.Fault); // It should give up retrying after 3 retries and return the last failure, so should return Fault, not Good.
+        }
 
-    [Fact]
-    public void Should_return_handled_result_when_one_of_the_handled_results_is_raised_more_times_then_retry_count()
-    {
-        var policy = Policy
-            .HandleResult(ResultPrimitive.Fault)
-            .OrResult(ResultPrimitive.FaultAgain)
-            .Retry(3);
+        [Fact]
+        public void Should_return_handled_result_when_one_of_the_handled_results_is_raised_more_times_then_retry_count()
+        {
+            var policy = Policy
+                .HandleResult(ResultPrimitive.Fault)
+                .OrResult(ResultPrimitive.FaultAgain)
+                .Retry(3);
 
-        var result = policy.RaiseResultSequence(ResultPrimitive.FaultAgain, ResultPrimitive.FaultAgain, ResultPrimitive.FaultAgain, ResultPrimitive.FaultAgain, ResultPrimitive.Good);
-        result.Should().Be(ResultPrimitive.FaultAgain);
-    }
+            var result = policy.RaiseResultSequence(ResultPrimitive.FaultAgain, ResultPrimitive.FaultAgain, ResultPrimitive.FaultAgain, ResultPrimitive.FaultAgain, ResultPrimitive.Good);
+            result.Should().Be(ResultPrimitive.FaultAgain);
+        }
 
-    [Fact]
-    public void Should_return_result_when_result_is_not_the_specified_handled_result()
-    {
-        var policy = Policy
-            .HandleResult(ResultPrimitive.Fault)
-            .Retry();
+        [Fact]
+        public void Should_return_result_when_result_is_not_the_specified_handled_result()
+        {
+            var policy = Policy
+                .HandleResult(ResultPrimitive.Fault)
+                .Retry();
 
-        var result = policy.RaiseResultSequence(ResultPrimitive.FaultAgain, ResultPrimitive.Good);
-        result.Should().Be(ResultPrimitive.FaultAgain);
-    }
+            var result = policy.RaiseResultSequence(ResultPrimitive.FaultAgain, ResultPrimitive.Good);
+            result.Should().Be(ResultPrimitive.FaultAgain);
+        }
 
-    [Fact]
-    public void Should_return_result_when_result_is_not_one_of_the_specified_handled_results()
-    {
-        var policy = Policy
-            .HandleResult(ResultPrimitive.Fault)
-            .OrResult(ResultPrimitive.FaultAgain)
-            .Retry();
+        [Fact]
+        public void Should_return_result_when_result_is_not_one_of_the_specified_handled_results()
+        {
+            var policy = Policy
+                .HandleResult(ResultPrimitive.Fault)
+                .OrResult(ResultPrimitive.FaultAgain)
+                .Retry();
 
-        var result = policy.RaiseResultSequence(ResultPrimitive.FaultYetAgain, ResultPrimitive.Good);
-        result.Should().Be(ResultPrimitive.FaultYetAgain);
-    }
+            var result = policy.RaiseResultSequence(ResultPrimitive.FaultYetAgain, ResultPrimitive.Good);
+            result.Should().Be(ResultPrimitive.FaultYetAgain);
+        }
 
-    [Fact]
-    public void Should_return_result_when_specified_result_predicate_is_not_satisfied()
-    {
-        Policy<ResultClass> policy = Policy
-            .HandleResult<ResultClass>(r => r.ResultCode == ResultPrimitive.Fault)
-            .Retry();
+        [Fact]
+        public void Should_return_result_when_specified_result_predicate_is_not_satisfied()
+        {
+            Policy<ResultClass> policy = Policy
+                .HandleResult<ResultClass>(r => r.ResultCode == ResultPrimitive.Fault)
+                .Retry();
 
-        var result = policy.RaiseResultSequence(new ResultClass(ResultPrimitive.FaultAgain), new ResultClass(ResultPrimitive.Good));
-        result.ResultCode.Should().Be(ResultPrimitive.FaultAgain);
-    }
+            var result = policy.RaiseResultSequence(new ResultClass(ResultPrimitive.FaultAgain), new ResultClass(ResultPrimitive.Good));
+            result.ResultCode.Should().Be(ResultPrimitive.FaultAgain);
+        }
 
-    [Fact]
-    public void Should_return_result_when_none_of_the_specified_result_predicates_are_satisfied()
-    {
-        Policy<ResultClass> policy = Policy
-            .HandleResult<ResultClass>(r => r.ResultCode == ResultPrimitive.Fault)
-            .OrResult(r => r.ResultCode == ResultPrimitive.FaultAgain)
-            .Retry();
+        [Fact]
+        public void Should_return_result_when_none_of_the_specified_result_predicates_are_satisfied()
+        {
+            Policy<ResultClass> policy = Policy
+                .HandleResult<ResultClass>(r => r.ResultCode == ResultPrimitive.Fault)
+                .OrResult(r => r.ResultCode == ResultPrimitive.FaultAgain)
+                .Retry();
 
-        var result = policy.RaiseResultSequence(new ResultClass(ResultPrimitive.FaultYetAgain), new ResultClass(ResultPrimitive.Good));
-        result.ResultCode.Should().Be(ResultPrimitive.FaultYetAgain);
-    }
+            var result = policy.RaiseResultSequence(new ResultClass(ResultPrimitive.FaultYetAgain), new ResultClass(ResultPrimitive.Good));
+            result.ResultCode.Should().Be(ResultPrimitive.FaultYetAgain);
+        }
 
-    [Fact]
-    public void Should_not_return_handled_result_when_specified_result_predicate_is_satisfied()
-    {
-        Policy<ResultClass> policy = Policy
-            .HandleResult<ResultClass>(r => r.ResultCode == ResultPrimitive.Fault)
-            .Retry();
+        [Fact]
+        public void Should_not_return_handled_result_when_specified_result_predicate_is_satisfied()
+        {
+            Policy<ResultClass> policy = Policy
+                .HandleResult<ResultClass>(r => r.ResultCode == ResultPrimitive.Fault)
+                .Retry();
 
-        var result = policy.RaiseResultSequence(new ResultClass(ResultPrimitive.Fault), new ResultClass(ResultPrimitive.Good));
-        result.ResultCode.Should().Be(ResultPrimitive.Good);
-    }
+            var result = policy.RaiseResultSequence(new ResultClass(ResultPrimitive.Fault), new ResultClass(ResultPrimitive.Good));
+            result.ResultCode.Should().Be(ResultPrimitive.Good);
+        }
 
-    [Fact]
-    public void Should_not_return_handled_result_when_one_of_the_specified_result_predicates_is_satisfied()
-    {
-        Policy<ResultClass> policy = Policy
-            .HandleResult<ResultClass>(r => r.ResultCode == ResultPrimitive.Fault)
-            .OrResult(r => r.ResultCode == ResultPrimitive.FaultAgain)
-            .Retry();
+        [Fact]
+        public void Should_not_return_handled_result_when_one_of_the_specified_result_predicates_is_satisfied()
+        {
+            Policy<ResultClass> policy = Policy
+                .HandleResult<ResultClass>(r => r.ResultCode == ResultPrimitive.Fault)
+                .OrResult(r => r.ResultCode == ResultPrimitive.FaultAgain)
+                .Retry();
 
-        var result = policy.RaiseResultSequence(new ResultClass(ResultPrimitive.FaultAgain), new ResultClass(ResultPrimitive.Good));
-        result.ResultCode.Should().Be(ResultPrimitive.Good);
-    }
+            var result = policy.RaiseResultSequence(new ResultClass(ResultPrimitive.FaultAgain), new ResultClass(ResultPrimitive.Good));
+            result.ResultCode.Should().Be(ResultPrimitive.Good);
+        }
 
-    [Fact]
-    public void Should_call_onretry_on_each_retry_with_the_current_retry_count()
-    {
-        var expectedRetryCounts = new[] { 1, 2, 3 };
-        var retryCounts = new List<int>();
+        [Fact]
+        public void Should_call_onretry_on_each_retry_with_the_current_retry_count()
+        {
+            var expectedRetryCounts = new[] { 1, 2, 3 };
+            var retryCounts = new List<int>();
 
-        var policy = Policy
-            .HandleResult(ResultPrimitive.Fault)
-            .Retry(3, (_, retryCount) => retryCounts.Add(retryCount));
+            var policy = Policy
+                .HandleResult(ResultPrimitive.Fault)
+                .Retry(3, (_, retryCount) => retryCounts.Add(retryCount));
 
-        policy.RaiseResultSequence(ResultPrimitive.Fault, ResultPrimitive.Fault, ResultPrimitive.Fault, ResultPrimitive.Good);
+            policy.RaiseResultSequence(ResultPrimitive.Fault, ResultPrimitive.Fault, ResultPrimitive.Fault, ResultPrimitive.Good);
 
-        retryCounts.Should()
-            .ContainInOrder(expectedRetryCounts);
-    }
+            retryCounts.Should()
+                       .ContainInOrder(expectedRetryCounts);
+        }
 
-    [Fact]
-    public void Should_call_onretry_on_each_retry_with_the_current_handled_result()
-    {
-        var expectedFaults = new [] { "Fault #1", "Fault #2", "Fault #3" };
-        var retryFaults = new List<string>(); 
+        [Fact]
+        public void Should_call_onretry_on_each_retry_with_the_current_handled_result()
+        {
+            var expectedFaults = new [] { "Fault #1", "Fault #2", "Fault #3" };
+            var retryFaults = new List<string>(); 
 
-        Policy<ResultClass> policy = Policy
-            .HandleResult<ResultClass>(r => r.ResultCode == ResultPrimitive.Fault)
-            .Retry(3, (outcome, _) => retryFaults.Add(outcome.Result.SomeString));
+            Policy<ResultClass> policy = Policy
+                .HandleResult<ResultClass>(r => r.ResultCode == ResultPrimitive.Fault)
+                .Retry(3, (outcome, _) => retryFaults.Add(outcome.Result.SomeString));
 
-        IList<ResultClass> resultsToRaise = expectedFaults.Select(s => new ResultClass(ResultPrimitive.Fault, s)).ToList();
-        resultsToRaise.Add(new ResultClass(ResultPrimitive.Fault));
+            IList<ResultClass> resultsToRaise = expectedFaults.Select(s => new ResultClass(ResultPrimitive.Fault, s)).ToList();
+            resultsToRaise.Add(new ResultClass(ResultPrimitive.Fault));
 
-        policy.RaiseResultSequence(resultsToRaise);
+            policy.RaiseResultSequence(resultsToRaise);
 
-        retryFaults
-            .Should()
-            .ContainInOrder(expectedFaults);
-    }
+            retryFaults
+                .Should()
+                .ContainInOrder(expectedFaults);
+        }
 
-    [Fact]
-    public void Should_not_call_onretry_when_no_retries_are_performed()
-    {
-        var retryCounts = new List<int>();
+        [Fact]
+        public void Should_not_call_onretry_when_no_retries_are_performed()
+        {
+            var retryCounts = new List<int>();
 
-        var policy = Policy
-            .HandleResult(ResultPrimitive.Fault)
-            .Retry((_, retryCount) => retryCounts.Add(retryCount));
+            var policy = Policy
+                .HandleResult(ResultPrimitive.Fault)
+                .Retry((_, retryCount) => retryCounts.Add(retryCount));
 
-        policy.RaiseResultSequence(ResultPrimitive.Good);
+            policy.RaiseResultSequence(ResultPrimitive.Good);
 
-        retryCounts.Should()
-            .BeEmpty();
-    }
+            retryCounts.Should()
+                .BeEmpty();
+        }
 
-    [Fact]
-    public void Should_call_onretry_with_the_passed_context()
-    {
-        IDictionary<string, object> contextData = null;
+        [Fact]
+        public void Should_call_onretry_with_the_passed_context()
+        {
+            IDictionary<string, object> contextData = null;
 
-        var policy = Policy
-            .HandleResult(ResultPrimitive.Fault)
-            .Retry((_, _, context) => contextData = context);
+            var policy = Policy
+                .HandleResult(ResultPrimitive.Fault)
+                .Retry((_, _, context) => contextData = context);
 
-        policy.RaiseResultSequence(
+            policy.RaiseResultSequence(
                 new { key1 = "value1", key2 = "value2" }.AsDictionary(), 
                 ResultPrimitive.Fault, ResultPrimitive.Good
-            )
-            .Should().Be(ResultPrimitive.Good);
+                )
+                .Should().Be(ResultPrimitive.Good);
 
-        contextData.Should()
-            .ContainKeys("key1", "key2").And
-            .ContainValues("value1", "value2");
-    }
+            contextData.Should()
+                .ContainKeys("key1", "key2").And
+                .ContainValues("value1", "value2");
+        }
 
-    [Fact]
-    public void Should_call_onretry_with_the_passed_context_when_execute_and_capture()
-    {
-        IDictionary<string, object> contextData = null;
-
-        var policy = Policy
-            .HandleResult(ResultPrimitive.Fault)
-            .Retry((_, _, context) => contextData = context);
-
-        var result = policy.RaiseResultSequenceOnExecuteAndCapture(
-            new { key1 = "value1", key2 = "value2" }.AsDictionary(),
-            ResultPrimitive.Fault, ResultPrimitive.Good
-        );
-
-        result.Should().BeEquivalentTo(new 
-        {                   
-            Outcome = OutcomeType.Successful,
-            FinalException = (Exception)null,
-            ExceptionType = (ExceptionType?)null,
-            FaultType = (FaultType?)null,
-            FinalHandledResult = default(ResultPrimitive),
-            Result = ResultPrimitive.Good
-        });
-
-        contextData.Should()
-            .ContainKeys("key1", "key2").And
-            .ContainValues("value1", "value2");
-    }
-
-    [Fact]
-    public void Context_should_be_empty_if_execute_not_called_with_any_context_data()
-    {
-        Context capturedContext = null;
-
-        var policy = Policy
-            .HandleResult(ResultPrimitive.Fault)
-            .Retry((_, _, context) => capturedContext = context);
-
-        policy.RaiseResultSequence(ResultPrimitive.Fault, ResultPrimitive.Good);
-
-        capturedContext.Should()
-            .BeEmpty();
-    }
-
-    [Fact]
-    public void Should_create_new_context_for_each_call_to_execute()
-    {
-        string contextValue = null;
-
-        var policy = Policy
-            .HandleResult(ResultPrimitive.Fault)
-            .Retry((_, _, context) => contextValue = context["key"].ToString());
-
-        policy.RaiseResultSequence(
-            new { key = "original_value" }.AsDictionary(),
-            ResultPrimitive.Fault, ResultPrimitive.Good
-        );
-
-        contextValue.Should().Be("original_value");
-
-        policy.RaiseResultSequence(
-            new { key = "new_value" }.AsDictionary(),
-            ResultPrimitive.Fault, ResultPrimitive.Good
-        );
-
-        contextValue.Should().Be("new_value");
-    }
-
-    [Fact]
-    public void Should_create_new_context_for_each_call_to_execute_and_capture()
-    {
-        string contextValue = null;
-
-        var policy = Policy
-            .HandleResult(ResultPrimitive.Fault)
-            .Retry((_, _, context) => contextValue = context["key"].ToString());
-
-        policy.RaiseResultSequenceOnExecuteAndCapture(
-            new { key = "original_value" }.AsDictionary(),
-            ResultPrimitive.Fault, ResultPrimitive.Good
-        );
-
-        contextValue.Should().Be("original_value");
-
-        policy.RaiseResultSequenceOnExecuteAndCapture(
-            new { key = "new_value" }.AsDictionary(),
-            ResultPrimitive.Fault, ResultPrimitive.Good
-        );
-
-        contextValue.Should().Be("new_value");
-    }
-
-    [Fact]
-    public void Should_create_new_state_for_each_call_to_policy()
-    {
-        var policy = Policy
-            .HandleResult(ResultPrimitive.Fault)
-            .Retry(1);
-
-        policy.RaiseResultSequence(ResultPrimitive.Fault, ResultPrimitive.Good).Should().Be(ResultPrimitive.Good);
-
-        policy.RaiseResultSequence(ResultPrimitive.Fault, ResultPrimitive.Good).Should().Be(ResultPrimitive.Good);
-
-    }
-
-    [Fact]
-    public void Should_not_call_onretry_when_retry_count_is_zero_without_context()
-    {
-        var retryInvoked = false;
-
-        Action<DelegateResult<ResultPrimitive>, int> onRetry = (_, _) => { retryInvoked = true; };
-
-        var policy = Policy
-            .HandleResult(ResultPrimitive.Fault)
-            .Retry(0, onRetry);
-
-        policy.RaiseResultSequence(ResultPrimitive.Fault, ResultPrimitive.Good).Should().Be(ResultPrimitive.Fault);
-
-        retryInvoked.Should().BeFalse();
-    }
-
-    [Fact]
-    public void Should_not_call_onretry_when_retry_count_is_zero_with_context()
-    {
-        var retryInvoked = false;
-
-        Action<DelegateResult<ResultPrimitive>, int, Context> onRetry = (_, _, _) => { retryInvoked = true; };
-
-        var policy = Policy
-            .HandleResult(ResultPrimitive.Fault)
-            .Retry(0, onRetry);
-
-        policy.RaiseResultSequence(
-            new { key = "value" }.AsDictionary(),
-            ResultPrimitive.Fault, ResultPrimitive.Good).Should().Be(ResultPrimitive.Fault);
-
-        retryInvoked.Should().BeFalse();
-    }
-
-    #region Sync cancellation tests
-
-    [Fact]
-    public void Should_execute_action_when_non_faulting_and_cancellationToken_not_cancelled()
-    {
-        var policy = Policy
-            .HandleResult(ResultPrimitive.Fault)
-            .Retry(3);
-
-        var cancellationTokenSource = new CancellationTokenSource();
-        var cancellationToken = cancellationTokenSource.Token;
-
-        var attemptsInvoked = 0;
-        Action onExecute = () => attemptsInvoked++;
-
-        var scenario = new Scenario
+        [Fact]
+        public void Should_call_onretry_with_the_passed_context_when_execute_and_capture()
         {
-            AttemptDuringWhichToCancel = null,
-        };
+            IDictionary<string, object> contextData = null;
 
-        policy.RaiseResultSequenceAndOrCancellation(scenario, cancellationTokenSource, onExecute, ResultPrimitive.Good)
-            .Should().Be(ResultPrimitive.Good);
+            var policy = Policy
+                .HandleResult(ResultPrimitive.Fault)
+                .Retry((_, _, context) => contextData = context);
 
-        attemptsInvoked.Should().Be(1);
-    }
+            var result = policy.RaiseResultSequenceOnExecuteAndCapture(
+                new { key1 = "value1", key2 = "value2" }.AsDictionary(),
+                ResultPrimitive.Fault, ResultPrimitive.Good
+                );
 
-    [Fact]
-    public void Should_execute_all_tries_when_faulting_and_cancellationToken_not_cancelled()
-    {
-        var policy = Policy
-            .HandleResult(ResultPrimitive.Fault)
-            .Retry(3);
-
-        var cancellationTokenSource = new CancellationTokenSource();
-        var cancellationToken = cancellationTokenSource.Token;
-
-        var attemptsInvoked = 0;
-        Action onExecute = () => attemptsInvoked++;
-
-        var scenario = new Scenario
-        {
-            AttemptDuringWhichToCancel = null,
-        };
-
-        policy.RaiseResultSequenceAndOrCancellation(scenario, cancellationTokenSource, onExecute,
-                ResultPrimitive.Fault,
-                ResultPrimitive.Fault,
-                ResultPrimitive.Fault,
-                ResultPrimitive.Good)
-            .Should().Be(ResultPrimitive.Good);
-
-        attemptsInvoked.Should().Be(1 + 3);
-    }
-
-    [Fact]
-    public void Should_not_execute_action_when_cancellationToken_cancelled_before_execute()
-    {
-        var policy = Policy
-            .HandleResult(ResultPrimitive.Fault)
-            .Retry(3);
-
-        var cancellationTokenSource = new CancellationTokenSource();
-        var cancellationToken = cancellationTokenSource.Token;
-
-        var attemptsInvoked = 0;
-        Action onExecute = () => attemptsInvoked++;
-
-        var scenario = new Scenario
-        {
-            AttemptDuringWhichToCancel = null, // Cancellation token cancelled manually below - before any scenario execution.
-        };
-
-        cancellationTokenSource.Cancel();
-
-        policy.Invoking(x => x.RaiseResultSequenceAndOrCancellation(scenario, cancellationTokenSource, onExecute,
-                ResultPrimitive.Fault,
-                ResultPrimitive.Fault,
-                ResultPrimitive.Fault,
-                ResultPrimitive.Good))
-            .Should().Throw<OperationCanceledException>()
-            .And.CancellationToken.Should().Be(cancellationToken);
-
-        attemptsInvoked.Should().Be(0);
-    }
-
-    [Fact]
-    public void Should_report_cancellation_during_otherwise_non_faulting_action_execution_and_cancel_further_retries_when_user_delegate_observes_cancellationToken()
-    {
-        var policy = Policy
-            .HandleResult(ResultPrimitive.Fault)
-            .Retry(3);
-
-        var cancellationTokenSource = new CancellationTokenSource();
-        var cancellationToken = cancellationTokenSource.Token;
-
-        var attemptsInvoked = 0;
-        Action onExecute = () => attemptsInvoked++;
-
-        var scenario = new Scenario
-        {
-            AttemptDuringWhichToCancel = 1,
-            ActionObservesCancellation = true
-        };
-
-        policy.Invoking(x => x.RaiseResultSequenceAndOrCancellation(scenario, cancellationTokenSource, onExecute,
-                ResultPrimitive.Good,
-                ResultPrimitive.Good,
-                ResultPrimitive.Good,
-                ResultPrimitive.Good))
-            .Should().Throw<OperationCanceledException>()
-            .And.CancellationToken.Should().Be(cancellationToken);
-
-        attemptsInvoked.Should().Be(1);
-    }
-
-    [Fact]
-    public void Should_report_cancellation_during_faulting_initial_action_execution_and_cancel_further_retries_when_user_delegate_observes_cancellationToken()
-    {
-        var policy = Policy
-            .HandleResult(ResultPrimitive.Fault)
-            .Retry(3);
-
-        var cancellationTokenSource = new CancellationTokenSource();
-        var cancellationToken = cancellationTokenSource.Token;
-
-        var attemptsInvoked = 0;
-        Action onExecute = () => attemptsInvoked++;
-
-        var scenario = new Scenario
-        {
-            AttemptDuringWhichToCancel = 1,
-            ActionObservesCancellation = true
-        };
-
-        policy.Invoking(x => x.RaiseResultSequenceAndOrCancellation(scenario, cancellationTokenSource, onExecute,
-                ResultPrimitive.Fault,
-                ResultPrimitive.Fault,
-                ResultPrimitive.Fault,
-                ResultPrimitive.Good))
-            .Should().Throw<OperationCanceledException>()
-            .And.CancellationToken.Should().Be(cancellationToken);
-
-        attemptsInvoked.Should().Be(1);
-    }
-
-    [Fact]
-    public void Should_report_cancellation_during_faulting_initial_action_execution_and_cancel_further_retries_when_user_delegate_does_not_observe_cancellationToken()
-    {
-        var policy = Policy
-            .HandleResult(ResultPrimitive.Fault)
-            .Retry(3);
-
-        var cancellationTokenSource = new CancellationTokenSource();
-        var cancellationToken = cancellationTokenSource.Token;
-
-        var attemptsInvoked = 0;
-        Action onExecute = () => attemptsInvoked++;
-
-        var scenario = new Scenario
-        {
-            AttemptDuringWhichToCancel = 1,
-            ActionObservesCancellation = false
-        };
-
-        policy.Invoking(x => x.RaiseResultSequenceAndOrCancellation(scenario, cancellationTokenSource, onExecute,
-                ResultPrimitive.Fault,
-                ResultPrimitive.Fault,
-                ResultPrimitive.Fault,
-                ResultPrimitive.Good))
-            .Should().Throw<OperationCanceledException>()
-            .And.CancellationToken.Should().Be(cancellationToken);
-
-        attemptsInvoked.Should().Be(1);
-    }
-
-    [Fact]
-    public void Should_report_cancellation_during_faulting_retried_action_execution_and_cancel_further_retries_when_user_delegate_observes_cancellationToken()
-    {
-        var policy = Policy
-            .HandleResult(ResultPrimitive.Fault)
-            .Retry(3);
-
-        var cancellationTokenSource = new CancellationTokenSource();
-        var cancellationToken = cancellationTokenSource.Token;
-
-        var attemptsInvoked = 0;
-        Action onExecute = () => attemptsInvoked++;
-
-        var scenario = new Scenario
-        {
-            AttemptDuringWhichToCancel = 2,
-            ActionObservesCancellation = true
-        };
-
-        policy.Invoking(x => x.RaiseResultSequenceAndOrCancellation(scenario, cancellationTokenSource, onExecute,
-                ResultPrimitive.Fault,
-                ResultPrimitive.Fault,
-                ResultPrimitive.Fault,
-                ResultPrimitive.Good))
-            .Should().Throw<OperationCanceledException>()
-            .And.CancellationToken.Should().Be(cancellationToken);
-
-        attemptsInvoked.Should().Be(2);
-    }
-
-    [Fact]
-    public void Should_report_cancellation_during_faulting_retried_action_execution_and_cancel_further_retries_when_user_delegate_does_not_observe_cancellationToken()
-    {
-        var policy = Policy
-            .HandleResult(ResultPrimitive.Fault)
-            .Retry(3);
-
-        var cancellationTokenSource = new CancellationTokenSource();
-        var cancellationToken = cancellationTokenSource.Token;
-
-        var attemptsInvoked = 0;
-        Action onExecute = () => attemptsInvoked++;
-
-        var scenario = new Scenario
-        {
-            AttemptDuringWhichToCancel = 2,
-            ActionObservesCancellation = false
-        };
-
-        policy.Invoking(x => x.RaiseResultSequenceAndOrCancellation(scenario, cancellationTokenSource, onExecute,
-                ResultPrimitive.Fault,
-                ResultPrimitive.Fault,
-                ResultPrimitive.Fault,
-                ResultPrimitive.Good))
-            .Should().Throw<OperationCanceledException>()
-            .And.CancellationToken.Should().Be(cancellationToken);
-
-        attemptsInvoked.Should().Be(2);
-    }
-
-    [Fact]
-    public void Should_report_cancellation_during_faulting_last_retry_execution_when_user_delegate_does_observe_cancellationToken()
-    {
-        var policy = Policy
-            .HandleResult(ResultPrimitive.Fault)
-            .Retry(3);
-
-        var cancellationTokenSource = new CancellationTokenSource();
-        var cancellationToken = cancellationTokenSource.Token;
-
-        var attemptsInvoked = 0;
-        Action onExecute = () => attemptsInvoked++;
-
-        var scenario = new Scenario
-        {
-            AttemptDuringWhichToCancel = 1 + 3,
-            ActionObservesCancellation = true
-        };
-
-        policy.Invoking(x => x.RaiseResultSequenceAndOrCancellation(scenario, cancellationTokenSource, onExecute,
-                ResultPrimitive.Fault,
-                ResultPrimitive.Fault,
-                ResultPrimitive.Fault,
-                ResultPrimitive.Fault,
-                ResultPrimitive.Good))
-            .Should().Throw<OperationCanceledException>()
-            .And.CancellationToken.Should().Be(cancellationToken);
-
-        attemptsInvoked.Should().Be(1 + 3);
-    }
-
-    [Fact]
-    public void Should_report_faulting_from_faulting_last_retry_execution_when_user_delegate_does_not_observe_cancellation_raised_during_last_retry()
-    {
-        var policy = Policy
-            .HandleResult(ResultPrimitive.Fault)
-            .Retry(3);
-
-        var cancellationTokenSource = new CancellationTokenSource();
-        var cancellationToken = cancellationTokenSource.Token;
-
-        var attemptsInvoked = 0;
-        Action onExecute = () => attemptsInvoked++;
-
-        var scenario = new Scenario
-        {
-            AttemptDuringWhichToCancel = 1 + 3,
-            ActionObservesCancellation = false
-        };
-
-        policy.RaiseResultSequenceAndOrCancellation(scenario, cancellationTokenSource, onExecute,
-                ResultPrimitive.Fault,
-                ResultPrimitive.Fault,
-                ResultPrimitive.Fault,
-                ResultPrimitive.Fault,
-                ResultPrimitive.Good)
-            .Should().Be(ResultPrimitive.Fault);
-
-        attemptsInvoked.Should().Be(1 + 3);
-    }
-
-    [Fact]
-    public void Should_report_cancellation_after_faulting_action_execution_and_cancel_further_retries_if_onRetry_invokes_cancellation()
-    {
-        var cancellationTokenSource = new CancellationTokenSource();
-        var cancellationToken = cancellationTokenSource.Token;
-
-        var policy = Policy
-            .HandleResult(ResultPrimitive.Fault)
-            .Retry(3, (_, _) =>
-            {
-                cancellationTokenSource.Cancel();
+            result.Should().BeEquivalentTo(new 
+            {                   
+                Outcome = OutcomeType.Successful,
+                FinalException = (Exception)null,
+                ExceptionType = (ExceptionType?)null,
+                FaultType = (FaultType?)null,
+                FinalHandledResult = default(ResultPrimitive),
+                Result = ResultPrimitive.Good
             });
 
-        var attemptsInvoked = 0;
-        Action onExecute = () => attemptsInvoked++;
+            contextData.Should()
+                .ContainKeys("key1", "key2").And
+                .ContainValues("value1", "value2");
+        }
 
-        var scenario = new Scenario
+        [Fact]
+        public void Context_should_be_empty_if_execute_not_called_with_any_context_data()
         {
-            AttemptDuringWhichToCancel = null, // Cancellation during onRetry instead - see above.
-            ActionObservesCancellation = false
-        };
+            Context capturedContext = null;
 
-        policy.Invoking(x => x.RaiseResultSequenceAndOrCancellation(scenario, cancellationTokenSource, onExecute,
-                ResultPrimitive.Fault,
-                ResultPrimitive.Fault,
-                ResultPrimitive.Fault,
-                ResultPrimitive.Good))
-            .Should().Throw<OperationCanceledException>()
-            .And.CancellationToken.Should().Be(cancellationToken);
+            var policy = Policy
+                .HandleResult(ResultPrimitive.Fault)
+                .Retry((_, _, context) => capturedContext = context);
 
-        attemptsInvoked.Should().Be(1);
+            policy.RaiseResultSequence(ResultPrimitive.Fault, ResultPrimitive.Good);
+
+            capturedContext.Should()
+                           .BeEmpty();
+        }
+
+        [Fact]
+        public void Should_create_new_context_for_each_call_to_execute()
+        {
+            string contextValue = null;
+
+            var policy = Policy
+                .HandleResult(ResultPrimitive.Fault)
+                .Retry((_, _, context) => contextValue = context["key"].ToString());
+
+            policy.RaiseResultSequence(
+                new { key = "original_value" }.AsDictionary(),
+                ResultPrimitive.Fault, ResultPrimitive.Good
+            );
+
+            contextValue.Should().Be("original_value");
+
+            policy.RaiseResultSequence(
+                new { key = "new_value" }.AsDictionary(),
+                ResultPrimitive.Fault, ResultPrimitive.Good
+            );
+
+            contextValue.Should().Be("new_value");
+        }
+
+        [Fact]
+        public void Should_create_new_context_for_each_call_to_execute_and_capture()
+        {
+            string contextValue = null;
+
+            var policy = Policy
+                .HandleResult(ResultPrimitive.Fault)
+                .Retry((_, _, context) => contextValue = context["key"].ToString());
+
+            policy.RaiseResultSequenceOnExecuteAndCapture(
+                new { key = "original_value" }.AsDictionary(),
+                ResultPrimitive.Fault, ResultPrimitive.Good
+            );
+
+            contextValue.Should().Be("original_value");
+
+            policy.RaiseResultSequenceOnExecuteAndCapture(
+                new { key = "new_value" }.AsDictionary(),
+                ResultPrimitive.Fault, ResultPrimitive.Good
+            );
+
+            contextValue.Should().Be("new_value");
+        }
+
+        [Fact]
+        public void Should_create_new_state_for_each_call_to_policy()
+        {
+            var policy = Policy
+                .HandleResult(ResultPrimitive.Fault)
+                .Retry(1);
+
+            policy.RaiseResultSequence(ResultPrimitive.Fault, ResultPrimitive.Good).Should().Be(ResultPrimitive.Good);
+
+            policy.RaiseResultSequence(ResultPrimitive.Fault, ResultPrimitive.Good).Should().Be(ResultPrimitive.Good);
+
+        }
+
+        [Fact]
+        public void Should_not_call_onretry_when_retry_count_is_zero_without_context()
+        {
+            var retryInvoked = false;
+
+            Action<DelegateResult<ResultPrimitive>, int> onRetry = (_, _) => { retryInvoked = true; };
+
+            var policy = Policy
+                .HandleResult(ResultPrimitive.Fault)
+                .Retry(0, onRetry);
+
+            policy.RaiseResultSequence(ResultPrimitive.Fault, ResultPrimitive.Good).Should().Be(ResultPrimitive.Fault);
+
+            retryInvoked.Should().BeFalse();
+        }
+
+        [Fact]
+        public void Should_not_call_onretry_when_retry_count_is_zero_with_context()
+        {
+            var retryInvoked = false;
+
+            Action<DelegateResult<ResultPrimitive>, int, Context> onRetry = (_, _, _) => { retryInvoked = true; };
+
+            var policy = Policy
+                .HandleResult(ResultPrimitive.Fault)
+                .Retry(0, onRetry);
+
+            policy.RaiseResultSequence(
+                 new { key = "value" }.AsDictionary(),
+                ResultPrimitive.Fault, ResultPrimitive.Good).Should().Be(ResultPrimitive.Fault);
+
+            retryInvoked.Should().BeFalse();
+        }
+
+        #region Sync cancellation tests
+
+        [Fact]
+        public void Should_execute_action_when_non_faulting_and_cancellationToken_not_cancelled()
+        {
+            var policy = Policy
+                .HandleResult(ResultPrimitive.Fault)
+                .Retry(3);
+
+            var cancellationTokenSource = new CancellationTokenSource();
+            var cancellationToken = cancellationTokenSource.Token;
+
+            var attemptsInvoked = 0;
+            Action onExecute = () => attemptsInvoked++;
+
+            var scenario = new Scenario
+            {
+                AttemptDuringWhichToCancel = null,
+            };
+
+            policy.RaiseResultSequenceAndOrCancellation(scenario, cancellationTokenSource, onExecute, ResultPrimitive.Good)
+                .Should().Be(ResultPrimitive.Good);
+
+            attemptsInvoked.Should().Be(1);
+        }
+
+        [Fact]
+        public void Should_execute_all_tries_when_faulting_and_cancellationToken_not_cancelled()
+        {
+            var policy = Policy
+                .HandleResult(ResultPrimitive.Fault)
+                .Retry(3);
+
+            var cancellationTokenSource = new CancellationTokenSource();
+            var cancellationToken = cancellationTokenSource.Token;
+
+            var attemptsInvoked = 0;
+            Action onExecute = () => attemptsInvoked++;
+
+            var scenario = new Scenario
+            {
+                AttemptDuringWhichToCancel = null,
+            };
+
+            policy.RaiseResultSequenceAndOrCancellation(scenario, cancellationTokenSource, onExecute,
+                    ResultPrimitive.Fault,
+                    ResultPrimitive.Fault,
+                    ResultPrimitive.Fault,
+                    ResultPrimitive.Good)
+                    .Should().Be(ResultPrimitive.Good);
+
+            attemptsInvoked.Should().Be(1 + 3);
+        }
+
+        [Fact]
+        public void Should_not_execute_action_when_cancellationToken_cancelled_before_execute()
+        {
+            var policy = Policy
+                .HandleResult(ResultPrimitive.Fault)
+                .Retry(3);
+
+            var cancellationTokenSource = new CancellationTokenSource();
+            var cancellationToken = cancellationTokenSource.Token;
+
+            var attemptsInvoked = 0;
+            Action onExecute = () => attemptsInvoked++;
+
+            var scenario = new Scenario
+            {
+                AttemptDuringWhichToCancel = null, // Cancellation token cancelled manually below - before any scenario execution.
+            };
+
+            cancellationTokenSource.Cancel();
+
+            policy.Invoking(x => x.RaiseResultSequenceAndOrCancellation(scenario, cancellationTokenSource, onExecute,
+                   ResultPrimitive.Fault,
+                   ResultPrimitive.Fault,
+                   ResultPrimitive.Fault,
+                   ResultPrimitive.Good))
+                .Should().Throw<OperationCanceledException>()
+                .And.CancellationToken.Should().Be(cancellationToken);
+
+            attemptsInvoked.Should().Be(0);
+        }
+
+        [Fact]
+        public void Should_report_cancellation_during_otherwise_non_faulting_action_execution_and_cancel_further_retries_when_user_delegate_observes_cancellationToken()
+        {
+            var policy = Policy
+                .HandleResult(ResultPrimitive.Fault)
+                .Retry(3);
+
+            var cancellationTokenSource = new CancellationTokenSource();
+            var cancellationToken = cancellationTokenSource.Token;
+
+            var attemptsInvoked = 0;
+            Action onExecute = () => attemptsInvoked++;
+
+            var scenario = new Scenario
+            {
+                AttemptDuringWhichToCancel = 1,
+                ActionObservesCancellation = true
+            };
+
+            policy.Invoking(x => x.RaiseResultSequenceAndOrCancellation(scenario, cancellationTokenSource, onExecute,
+                   ResultPrimitive.Good,
+                   ResultPrimitive.Good,
+                   ResultPrimitive.Good,
+                   ResultPrimitive.Good))
+                .Should().Throw<OperationCanceledException>()
+                .And.CancellationToken.Should().Be(cancellationToken);
+
+            attemptsInvoked.Should().Be(1);
+        }
+
+        [Fact]
+        public void Should_report_cancellation_during_faulting_initial_action_execution_and_cancel_further_retries_when_user_delegate_observes_cancellationToken()
+        {
+            var policy = Policy
+               .HandleResult(ResultPrimitive.Fault)
+               .Retry(3);
+
+            var cancellationTokenSource = new CancellationTokenSource();
+            var cancellationToken = cancellationTokenSource.Token;
+
+            var attemptsInvoked = 0;
+            Action onExecute = () => attemptsInvoked++;
+
+            var scenario = new Scenario
+            {
+                AttemptDuringWhichToCancel = 1,
+                ActionObservesCancellation = true
+            };
+
+            policy.Invoking(x => x.RaiseResultSequenceAndOrCancellation(scenario, cancellationTokenSource, onExecute,
+                   ResultPrimitive.Fault,
+                   ResultPrimitive.Fault,
+                   ResultPrimitive.Fault,
+                   ResultPrimitive.Good))
+                .Should().Throw<OperationCanceledException>()
+                .And.CancellationToken.Should().Be(cancellationToken);
+
+            attemptsInvoked.Should().Be(1);
+        }
+
+        [Fact]
+        public void Should_report_cancellation_during_faulting_initial_action_execution_and_cancel_further_retries_when_user_delegate_does_not_observe_cancellationToken()
+        {
+            var policy = Policy
+              .HandleResult(ResultPrimitive.Fault)
+              .Retry(3);
+
+            var cancellationTokenSource = new CancellationTokenSource();
+            var cancellationToken = cancellationTokenSource.Token;
+
+            var attemptsInvoked = 0;
+            Action onExecute = () => attemptsInvoked++;
+
+            var scenario = new Scenario
+            {
+                AttemptDuringWhichToCancel = 1,
+                ActionObservesCancellation = false
+            };
+
+            policy.Invoking(x => x.RaiseResultSequenceAndOrCancellation(scenario, cancellationTokenSource, onExecute,
+                   ResultPrimitive.Fault,
+                   ResultPrimitive.Fault,
+                   ResultPrimitive.Fault,
+                   ResultPrimitive.Good))
+                .Should().Throw<OperationCanceledException>()
+                .And.CancellationToken.Should().Be(cancellationToken);
+
+            attemptsInvoked.Should().Be(1);
+        }
+
+        [Fact]
+        public void Should_report_cancellation_during_faulting_retried_action_execution_and_cancel_further_retries_when_user_delegate_observes_cancellationToken()
+        {
+            var policy = Policy
+              .HandleResult(ResultPrimitive.Fault)
+              .Retry(3);
+
+            var cancellationTokenSource = new CancellationTokenSource();
+            var cancellationToken = cancellationTokenSource.Token;
+
+            var attemptsInvoked = 0;
+            Action onExecute = () => attemptsInvoked++;
+
+            var scenario = new Scenario
+            {
+                AttemptDuringWhichToCancel = 2,
+                ActionObservesCancellation = true
+            };
+
+            policy.Invoking(x => x.RaiseResultSequenceAndOrCancellation(scenario, cancellationTokenSource, onExecute,
+                   ResultPrimitive.Fault,
+                   ResultPrimitive.Fault,
+                   ResultPrimitive.Fault,
+                   ResultPrimitive.Good))
+                .Should().Throw<OperationCanceledException>()
+                .And.CancellationToken.Should().Be(cancellationToken);
+
+            attemptsInvoked.Should().Be(2);
+        }
+
+        [Fact]
+        public void Should_report_cancellation_during_faulting_retried_action_execution_and_cancel_further_retries_when_user_delegate_does_not_observe_cancellationToken()
+        {
+            var policy = Policy
+              .HandleResult(ResultPrimitive.Fault)
+              .Retry(3);
+
+            var cancellationTokenSource = new CancellationTokenSource();
+            var cancellationToken = cancellationTokenSource.Token;
+
+            var attemptsInvoked = 0;
+            Action onExecute = () => attemptsInvoked++;
+
+            var scenario = new Scenario
+            {
+                AttemptDuringWhichToCancel = 2,
+                ActionObservesCancellation = false
+            };
+
+            policy.Invoking(x => x.RaiseResultSequenceAndOrCancellation(scenario, cancellationTokenSource, onExecute,
+                   ResultPrimitive.Fault,
+                   ResultPrimitive.Fault,
+                   ResultPrimitive.Fault,
+                   ResultPrimitive.Good))
+                .Should().Throw<OperationCanceledException>()
+                .And.CancellationToken.Should().Be(cancellationToken);
+
+            attemptsInvoked.Should().Be(2);
+        }
+
+        [Fact]
+        public void Should_report_cancellation_during_faulting_last_retry_execution_when_user_delegate_does_observe_cancellationToken()
+        {
+            var policy = Policy
+                       .HandleResult(ResultPrimitive.Fault)
+                       .Retry(3);
+
+            var cancellationTokenSource = new CancellationTokenSource();
+            var cancellationToken = cancellationTokenSource.Token;
+
+            var attemptsInvoked = 0;
+            Action onExecute = () => attemptsInvoked++;
+
+            var scenario = new Scenario
+            {
+                AttemptDuringWhichToCancel = 1 + 3,
+                ActionObservesCancellation = true
+            };
+
+            policy.Invoking(x => x.RaiseResultSequenceAndOrCancellation(scenario, cancellationTokenSource, onExecute,
+                   ResultPrimitive.Fault,
+                   ResultPrimitive.Fault,
+                   ResultPrimitive.Fault,
+                   ResultPrimitive.Fault,
+                   ResultPrimitive.Good))
+                .Should().Throw<OperationCanceledException>()
+                .And.CancellationToken.Should().Be(cancellationToken);
+
+            attemptsInvoked.Should().Be(1 + 3);
+        }
+
+        [Fact]
+        public void Should_report_faulting_from_faulting_last_retry_execution_when_user_delegate_does_not_observe_cancellation_raised_during_last_retry()
+        {
+            var policy = Policy
+                       .HandleResult(ResultPrimitive.Fault)
+                       .Retry(3);
+
+            var cancellationTokenSource = new CancellationTokenSource();
+            var cancellationToken = cancellationTokenSource.Token;
+
+            var attemptsInvoked = 0;
+            Action onExecute = () => attemptsInvoked++;
+
+            var scenario = new Scenario
+            {
+                AttemptDuringWhichToCancel = 1 + 3,
+                ActionObservesCancellation = false
+            };
+
+            policy.RaiseResultSequenceAndOrCancellation(scenario, cancellationTokenSource, onExecute,
+                   ResultPrimitive.Fault,
+                   ResultPrimitive.Fault,
+                   ResultPrimitive.Fault,
+                   ResultPrimitive.Fault,
+                   ResultPrimitive.Good)
+               .Should().Be(ResultPrimitive.Fault);
+
+            attemptsInvoked.Should().Be(1 + 3);
+        }
+
+        [Fact]
+        public void Should_report_cancellation_after_faulting_action_execution_and_cancel_further_retries_if_onRetry_invokes_cancellation()
+        {
+            var cancellationTokenSource = new CancellationTokenSource();
+            var cancellationToken = cancellationTokenSource.Token;
+
+            var policy = Policy
+           .HandleResult(ResultPrimitive.Fault)
+           .Retry(3, (_, _) =>
+           {
+               cancellationTokenSource.Cancel();
+           });
+
+            var attemptsInvoked = 0;
+            Action onExecute = () => attemptsInvoked++;
+
+            var scenario = new Scenario
+            {
+                AttemptDuringWhichToCancel = null, // Cancellation during onRetry instead - see above.
+                ActionObservesCancellation = false
+            };
+
+            policy.Invoking(x => x.RaiseResultSequenceAndOrCancellation(scenario, cancellationTokenSource, onExecute,
+                   ResultPrimitive.Fault,
+                   ResultPrimitive.Fault,
+                   ResultPrimitive.Fault,
+                   ResultPrimitive.Good))
+                .Should().Throw<OperationCanceledException>()
+                .And.CancellationToken.Should().Be(cancellationToken);
+
+            attemptsInvoked.Should().Be(1);
+        }
+
+        #endregion
+
     }
-
-    #endregion
-
 }

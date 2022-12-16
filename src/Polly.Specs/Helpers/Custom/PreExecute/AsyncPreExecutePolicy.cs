@@ -2,46 +2,47 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Polly.Specs.Helpers.Custom.PreExecute;
-
-internal class AsyncPreExecutePolicy : AsyncPolicy
+namespace Polly.Specs.Helpers.Custom.PreExecute
 {
-    private Func<Task> _preExecute;
-
-    public static AsyncPreExecutePolicy CreateAsync(Func<Task> preExecute)
+    internal class AsyncPreExecutePolicy : AsyncPolicy
     {
-        return new AsyncPreExecutePolicy(preExecute);
+        private Func<Task> _preExecute;
+
+        public static AsyncPreExecutePolicy CreateAsync(Func<Task> preExecute)
+        {
+            return new AsyncPreExecutePolicy(preExecute);
+        }
+
+        internal AsyncPreExecutePolicy(Func<Task> preExecute)
+        {
+            _preExecute = preExecute ?? throw new ArgumentNullException(nameof(preExecute));
+        }
+
+        protected override Task<TResult> ImplementationAsync<TResult>(Func<Context, CancellationToken, Task<TResult>> action, Context context, CancellationToken cancellationToken,
+            bool continueOnCapturedContext)
+        {
+            return AsyncPreExecuteEngine.ImplementationAsync(_preExecute, action, context, cancellationToken, continueOnCapturedContext);
+        }
     }
 
-    internal AsyncPreExecutePolicy(Func<Task> preExecute)
+    internal class AsyncPreExecutePolicy<TResult> : AsyncPolicy<TResult>
     {
-        _preExecute = preExecute ?? throw new ArgumentNullException(nameof(preExecute));
-    }
+        private Func<Task> _preExecute;
 
-    protected override Task<TResult> ImplementationAsync<TResult>(Func<Context, CancellationToken, Task<TResult>> action, Context context, CancellationToken cancellationToken,
-        bool continueOnCapturedContext)
-    {
-        return AsyncPreExecuteEngine.ImplementationAsync(_preExecute, action, context, cancellationToken, continueOnCapturedContext);
-    }
-}
+        public static AsyncPreExecutePolicy<TResult> CreateAsync(Func<Task> preExecute)
+        {
+            return new AsyncPreExecutePolicy<TResult>(preExecute);
+        }
 
-internal class AsyncPreExecutePolicy<TResult> : AsyncPolicy<TResult>
-{
-    private Func<Task> _preExecute;
+        internal AsyncPreExecutePolicy(Func<Task> preExecute)
+        {
+            _preExecute = preExecute ?? throw new ArgumentNullException(nameof(preExecute));
+        }
 
-    public static AsyncPreExecutePolicy<TResult> CreateAsync(Func<Task> preExecute)
-    {
-        return new AsyncPreExecutePolicy<TResult>(preExecute);
-    }
-
-    internal AsyncPreExecutePolicy(Func<Task> preExecute)
-    {
-        _preExecute = preExecute ?? throw new ArgumentNullException(nameof(preExecute));
-    }
-
-    protected override Task<TResult> ImplementationAsync(Func<Context, CancellationToken, Task<TResult>> action, Context context, CancellationToken cancellationToken,
-        bool continueOnCapturedContext)
-    {
-        return AsyncPreExecuteEngine.ImplementationAsync(_preExecute, action, context, cancellationToken, continueOnCapturedContext);
+        protected override Task<TResult> ImplementationAsync(Func<Context, CancellationToken, Task<TResult>> action, Context context, CancellationToken cancellationToken,
+            bool continueOnCapturedContext)
+        {
+            return AsyncPreExecuteEngine.ImplementationAsync(_preExecute, action, context, cancellationToken, continueOnCapturedContext);
+        }
     }
 }

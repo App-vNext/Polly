@@ -2,74 +2,75 @@
 using System.Collections.Generic;
 using Polly.Utilities;
 
-namespace Polly.CircuitBreaker;
-
-internal class RollingHealthMetrics : IHealthMetrics
+namespace Polly.CircuitBreaker
 {
-    private readonly long _samplingDuration;
-    private readonly long _windowDuration;
-    private readonly Queue<HealthCount> _windows;
-
-    private HealthCount _currentWindow;
-
-    public RollingHealthMetrics(TimeSpan samplingDuration, short numberOfWindows)
+    internal class RollingHealthMetrics : IHealthMetrics
     {
-        _samplingDuration = samplingDuration.Ticks;
+        private readonly long _samplingDuration;
+        private readonly long _windowDuration;
+        private readonly Queue<HealthCount> _windows;
 
-        _windowDuration = _samplingDuration / numberOfWindows;
-        _windows = new Queue<HealthCount>(numberOfWindows + 1);
-    }
+        private HealthCount _currentWindow;
 
-    public void IncrementSuccess_NeedsLock()
-    {
-        ActualiseCurrentMetric_NeedsLock();
-
-        _currentWindow.Successes++;
-    }
-
-    public void IncrementFailure_NeedsLock()
-    {
-        ActualiseCurrentMetric_NeedsLock();
-
-        _currentWindow.Failures++;
-    }
-
-    public void Reset_NeedsLock()
-    {
-        _currentWindow = null;
-        _windows.Clear();
-    }
-
-    public HealthCount GetHealthCount_NeedsLock()
-    {
-        ActualiseCurrentMetric_NeedsLock();
-
-        var successes = 0;
-        var failures = 0;
-        foreach (var window in _windows)
+        public RollingHealthMetrics(TimeSpan samplingDuration, short numberOfWindows)
         {
-            successes += window.Successes;
-            failures += window.Failures;
+            _samplingDuration = samplingDuration.Ticks;
+
+            _windowDuration = _samplingDuration / numberOfWindows;
+            _windows = new Queue<HealthCount>(numberOfWindows + 1);
         }
 
-        return new HealthCount
+        public void IncrementSuccess_NeedsLock()
         {
-            Successes = successes,
-            Failures = failures,
-            StartedAt = _windows.Peek().StartedAt
-        };
-    }
+            ActualiseCurrentMetric_NeedsLock();
 
-    private void ActualiseCurrentMetric_NeedsLock()
-    {
-        var now = SystemClock.UtcNow().Ticks;
-        if (_currentWindow == null || now - _currentWindow.StartedAt >= _windowDuration)
-        {
-            _currentWindow = new HealthCount { StartedAt = now };
-            _windows.Enqueue(_currentWindow);
+            _currentWindow.Successes++;
         }
 
-        while (_windows.Count > 0 && (now - _windows.Peek().StartedAt >= _samplingDuration))
-            _windows.Dequeue();
+        public void IncrementFailure_NeedsLock()
+        {
+            ActualiseCurrentMetric_NeedsLock();
+
+            _currentWindow.Failures++;
+        }
+
+        public void Reset_NeedsLock()
+        {
+            _currentWindow = null;
+            _windows.Clear();
+        }
+
+        public HealthCount GetHealthCount_NeedsLock()
+        {
+            ActualiseCurrentMetric_NeedsLock();
+
+            var successes = 0;
+            var failures = 0;
+            foreach (var window in _windows)
+            {
+                successes += window.Successes;
+                failures += window.Failures;
+            }
+
+            return new HealthCount
+            {
+                Successes = successes,
+                Failures = failures,
+                StartedAt = _windows.Peek().StartedAt
+            };
+        }
+
+        private void ActualiseCurrentMetric_NeedsLock()
+        {
+            var now = SystemClock.UtcNow().Ticks;
+            if (_currentWindow == null || now - _currentWindow.StartedAt >= _windowDuration)
+            {
+                _currentWindow = new HealthCount { StartedAt = now };
+                _windows.Enqueue(_currentWindow);
+            }
+
+            while (_windows.Count > 0 && (now - _windows.Peek().StartedAt >= _samplingDuration))
+                _windows.Dequeue();
+        }
     }
 }

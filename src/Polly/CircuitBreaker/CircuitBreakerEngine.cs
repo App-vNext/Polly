@@ -2,52 +2,53 @@
 using System.Runtime.ExceptionServices;
 using System.Threading;
 
-namespace Polly.CircuitBreaker;
-
-internal class CircuitBreakerEngine
+namespace Polly.CircuitBreaker
 {
-    internal static TResult Implementation<TResult>(
-        Func<Context, CancellationToken, TResult> action,
-        Context context,
-        CancellationToken cancellationToken,
-        ExceptionPredicates shouldHandleExceptionPredicates, 
-        ResultPredicates<TResult> shouldHandleResultPredicates, 
-        ICircuitController<TResult> breakerController)
+    internal class CircuitBreakerEngine
     {
-        cancellationToken.ThrowIfCancellationRequested();
-
-        breakerController.OnActionPreExecute();
-
-        try
+        internal static TResult Implementation<TResult>(
+            Func<Context, CancellationToken, TResult> action,
+            Context context,
+            CancellationToken cancellationToken,
+            ExceptionPredicates shouldHandleExceptionPredicates, 
+            ResultPredicates<TResult> shouldHandleResultPredicates, 
+            ICircuitController<TResult> breakerController)
         {
-            var result = action(context, cancellationToken);
+            cancellationToken.ThrowIfCancellationRequested();
 
-            if (shouldHandleResultPredicates.AnyMatch(result))
-            {
-                breakerController.OnActionFailure(new DelegateResult<TResult>(result), context);
-            }
-            else
-            {
-                breakerController.OnActionSuccess(context);
-            }
+            breakerController.OnActionPreExecute();
 
-            return result;
-        }
-        catch (Exception ex)
-        {
-            var handledException = shouldHandleExceptionPredicates.FirstMatchOrDefault(ex);
-            if (handledException == null)
+            try
             {
+                var result = action(context, cancellationToken);
+
+                if (shouldHandleResultPredicates.AnyMatch(result))
+                {
+                    breakerController.OnActionFailure(new DelegateResult<TResult>(result), context);
+                }
+                else
+                {
+                    breakerController.OnActionSuccess(context);
+                }
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                var handledException = shouldHandleExceptionPredicates.FirstMatchOrDefault(ex);
+                if (handledException == null)
+                {
+                    throw;
+                }
+
+                breakerController.OnActionFailure(new DelegateResult<TResult>(handledException), context);
+
+                if (handledException != ex)
+                {
+                    ExceptionDispatchInfo.Capture(handledException).Throw();
+                }
                 throw;
             }
-
-            breakerController.OnActionFailure(new DelegateResult<TResult>(handledException), context);
-
-            if (handledException != ex)
-            {
-                ExceptionDispatchInfo.Capture(handledException).Throw();
-            }
-            throw;
         }
     }
 }

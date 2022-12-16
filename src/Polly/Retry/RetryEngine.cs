@@ -3,86 +3,87 @@ using System.Collections.Generic;
 using System.Threading;
 using Polly.Utilities;
 
-namespace Polly.Retry;
-
-internal static class RetryEngine
+namespace Polly.Retry
 {
-    internal static TResult Implementation<TResult>(
-        Func<Context, CancellationToken, TResult> action,
-        Context context,
-        CancellationToken cancellationToken,
-        ExceptionPredicates shouldRetryExceptionPredicates,
-        ResultPredicates<TResult> shouldRetryResultPredicates,
-        Action<DelegateResult<TResult>, TimeSpan, int, Context> onRetry,
-        int permittedRetryCount = Int32.MaxValue,
-        IEnumerable<TimeSpan> sleepDurationsEnumerable = null,
-        Func<int, DelegateResult<TResult>, Context, TimeSpan> sleepDurationProvider = null)
+    internal static class RetryEngine
     {
-        var tryCount = 0;
-        var sleepDurationsEnumerator = sleepDurationsEnumerable?.GetEnumerator();
-
-        try
+        internal static TResult Implementation<TResult>(
+            Func<Context, CancellationToken, TResult> action,
+            Context context,
+            CancellationToken cancellationToken,
+            ExceptionPredicates shouldRetryExceptionPredicates,
+            ResultPredicates<TResult> shouldRetryResultPredicates,
+            Action<DelegateResult<TResult>, TimeSpan, int, Context> onRetry,
+            int permittedRetryCount = Int32.MaxValue,
+            IEnumerable<TimeSpan> sleepDurationsEnumerable = null,
+            Func<int, DelegateResult<TResult>, Context, TimeSpan> sleepDurationProvider = null)
         {
-            while (true)
+            var tryCount = 0;
+            var sleepDurationsEnumerator = sleepDurationsEnumerable?.GetEnumerator();
+
+            try
             {
-                cancellationToken.ThrowIfCancellationRequested();
-
-                bool canRetry;
-                DelegateResult<TResult> outcome;
-
-                try
+                while (true)
                 {
-                    var result = action(context, cancellationToken);
+                    cancellationToken.ThrowIfCancellationRequested();
 
-                    if (!shouldRetryResultPredicates.AnyMatch(result))
+                    bool canRetry;
+                    DelegateResult<TResult> outcome;
+
+                    try
                     {
-                        return result;
-                    }
+                        var result = action(context, cancellationToken);
 
-                    canRetry = tryCount < permittedRetryCount && (sleepDurationsEnumerable == null || sleepDurationsEnumerator.MoveNext());
+                        if (!shouldRetryResultPredicates.AnyMatch(result))
+                        {
+                            return result;
+                        }
+
+                        canRetry = tryCount < permittedRetryCount && (sleepDurationsEnumerable == null || sleepDurationsEnumerator.MoveNext());
                     
-                    if (!canRetry)
+                        if (!canRetry)
+                        {
+                            return result;
+                        }
+
+                        outcome = new DelegateResult<TResult>(result);
+                    }
+                    catch (Exception ex)
                     {
-                        return result;
+                        var handledException = shouldRetryExceptionPredicates.FirstMatchOrDefault(ex);
+                        if (handledException == null)
+                        {
+                            throw;
+                        }
+
+                        canRetry = tryCount < permittedRetryCount && (sleepDurationsEnumerable == null || sleepDurationsEnumerator.MoveNext());
+
+                        if (!canRetry)
+                        {
+                            handledException.RethrowWithOriginalStackTraceIfDiffersFrom(ex);
+                            throw;
+                        }
+
+                        outcome = new DelegateResult<TResult>(handledException);
                     }
 
-                    outcome = new DelegateResult<TResult>(result);
-                }
-                catch (Exception ex)
-                {
-                    var handledException = shouldRetryExceptionPredicates.FirstMatchOrDefault(ex);
-                    if (handledException == null)
-                    {
-                        throw;
-                    }
+                    if (tryCount < int.MaxValue) { tryCount++; }
 
-                    canRetry = tryCount < permittedRetryCount && (sleepDurationsEnumerable == null || sleepDurationsEnumerator.MoveNext());
-
-                    if (!canRetry)
-                    {
-                        handledException.RethrowWithOriginalStackTraceIfDiffersFrom(ex);
-                        throw;
-                    }
-
-                    outcome = new DelegateResult<TResult>(handledException);
-                }
-
-                if (tryCount < int.MaxValue) { tryCount++; }
-
-                var waitDuration = sleepDurationsEnumerator?.Current ?? (sleepDurationProvider?.Invoke(tryCount, outcome, context) ?? TimeSpan.Zero);
+                    var waitDuration = sleepDurationsEnumerator?.Current ?? (sleepDurationProvider?.Invoke(tryCount, outcome, context) ?? TimeSpan.Zero);
                 
-                onRetry(outcome, waitDuration, tryCount, context);
+                    onRetry(outcome, waitDuration, tryCount, context);
 
-                if (waitDuration > TimeSpan.Zero)
-                {
-                    SystemClock.Sleep(waitDuration, cancellationToken);
+                    if (waitDuration > TimeSpan.Zero)
+                    {
+                        SystemClock.Sleep(waitDuration, cancellationToken);
+                    }
                 }
-            }
 
-        }
-        finally
-        {
-            sleepDurationsEnumerator?.Dispose();
+            }
+            finally
+            {
+                sleepDurationsEnumerator?.Dispose();
+            }
         }
     }
 }

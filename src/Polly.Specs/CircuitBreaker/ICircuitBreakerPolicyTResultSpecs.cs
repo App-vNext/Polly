@@ -4,19 +4,20 @@ using Polly.CircuitBreaker;
 using Polly.Specs.Helpers;
 using Xunit;
 
-namespace Polly.Specs.CircuitBreaker;
-
-public class ICircuitBreakerTResultPolicySpecs
+namespace Polly.Specs.CircuitBreaker
 {
-    [Fact]
-    public void Should_be_able_to_use_LastHandledResult_via_interface()
+    public class ICircuitBreakerTResultPolicySpecs
     {
-        ICircuitBreakerPolicy<ResultPrimitive> breaker = Policy
-            .HandleResult(ResultPrimitive.Fault)
-            .CircuitBreaker(2, TimeSpan.FromMinutes(1));
+        [Fact]
+        public void Should_be_able_to_use_LastHandledResult_via_interface()
+        {
+            ICircuitBreakerPolicy<ResultPrimitive> breaker = Policy
+                .HandleResult(ResultPrimitive.Fault)
+                .CircuitBreaker(2, TimeSpan.FromMinutes(1));
 
-        breaker.LastHandledResult.Should().Be(default(ResultPrimitive));
+            breaker.LastHandledResult.Should().Be(default(ResultPrimitive));
+
+        }
 
     }
-
 }

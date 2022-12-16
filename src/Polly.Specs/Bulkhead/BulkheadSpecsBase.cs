@@ -9,178 +9,113 @@ using Polly.Specs.Helpers.Bulkhead;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace Polly.Specs.Bulkhead;
-
-[Collection(Helpers.Constants.ParallelThreadDependentTestCollection)]
-public abstract class BulkheadSpecsBase : IDisposable
+namespace Polly.Specs.Bulkhead
 {
-    #region Time constraints
-
-    protected readonly TimeSpan ShimTimeSpan = TimeSpan.FromMilliseconds(50); // How frequently to retry the assertions.
-    protected readonly TimeSpan CohesionTimeLimit = TimeSpan.FromMilliseconds(1000); // Consider increasing CohesionTimeLimit if bulkhead specs fail transiently in slower build environments.
-
-    #endregion
-    public BulkheadSpecsBase(ITestOutputHelper testOutputHelper)
+    [Collection(Helpers.Constants.ParallelThreadDependentTestCollection)]
+    public abstract class BulkheadSpecsBase : IDisposable
     {
+        #region Time constraints
+
+        protected readonly TimeSpan ShimTimeSpan = TimeSpan.FromMilliseconds(50); // How frequently to retry the assertions.
+        protected readonly TimeSpan CohesionTimeLimit = TimeSpan.FromMilliseconds(1000); // Consider increasing CohesionTimeLimit if bulkhead specs fail transiently in slower build environments.
+
+        #endregion
+        public BulkheadSpecsBase(ITestOutputHelper testOutputHelper)
+        {
 #if !DEBUG
             TestOutputHelper = new SilentOutputHelper();
 #else
-        TestOutputHelper = new AnnotatedOutputHelper(testOutputHelper);
+            TestOutputHelper = new AnnotatedOutputHelper(testOutputHelper);
 #endif
 
 #if !NETCOREAPP1_1
-        ThreadPool.SetMinThreads(50, 20);
+            ThreadPool.SetMinThreads(50, 20);
 #endif
-    }
+        }
 
-    #region Operating variables
+        #region Operating variables
 
-    protected IBulkheadPolicy BulkheadForStats { get; set; }
+        protected IBulkheadPolicy BulkheadForStats { get; set; }
 
-    internal TraceableAction[] Actions { get; set; }
+        internal TraceableAction[] Actions { get; set; }
 
-    protected Task[] Tasks { get; set; }
+        protected Task[] Tasks { get; set; }
 
-    protected readonly AutoResetEvent StatusChangedEvent = new AutoResetEvent(false);
+        protected readonly AutoResetEvent StatusChangedEvent = new AutoResetEvent(false);
 
-    #endregion
+        #endregion
 
-    #region Scenario
+        #region Scenario
 
-    protected string Scenario { get; set; }
+        protected string Scenario { get; set; }
 
-    protected int MaxParallelization { get; set; }
-    protected int MaxQueuingActions { get; set; }
-    protected int TotalActions { get; set; }
+        protected int MaxParallelization { get; set; }
+        protected int MaxQueuingActions { get; set; }
+        protected int TotalActions { get; set; }
 
-    #endregion
+        #endregion
 
-    #region Tracked metrics
+        #region Tracked metrics
 
-    protected int ExpectedCompleted { get; set; }
-    protected int ExpectedCancelled  { get; set; }
-    protected int ExpectedExecuting  { get; set; }
-    protected int ExpectedRejects  { get; set; }
-    protected int ExpectedQueuing { get; set; }
-    protected int ExpectedFaulted { get; set; } = 0;
-    protected int ExpectedBulkheadFree { get; set; }
-    protected int ExpectedQueueFree { get; set; }
+        protected int ExpectedCompleted { get; set; }
+        protected int ExpectedCancelled  { get; set; }
+        protected int ExpectedExecuting  { get; set; }
+        protected int ExpectedRejects  { get; set; }
+        protected int ExpectedQueuing { get; set; }
+        protected int ExpectedFaulted { get; set; } = 0;
+        protected int ExpectedBulkheadFree { get; set; }
+        protected int ExpectedQueueFree { get; set; }
 
-    protected int ActualCompleted { get; set; }
-    protected int ActualCancelled { get; set; }
-    protected int ActualExecuting { get; set; }
-    protected int ActualRejects { get; set; }
-    protected int ActualQueuing { get; set; }
-    protected int ActualFaulted { get; set; }
-    protected int ActualBulkheadFree => BulkheadForStats.BulkheadAvailableCount;
-    protected int ActualQueueFree => BulkheadForStats.QueueAvailableCount;
+        protected int ActualCompleted { get; set; }
+        protected int ActualCancelled { get; set; }
+        protected int ActualExecuting { get; set; }
+        protected int ActualRejects { get; set; }
+        protected int ActualQueuing { get; set; }
+        protected int ActualFaulted { get; set; }
+        protected int ActualBulkheadFree => BulkheadForStats.BulkheadAvailableCount;
+        protected int ActualQueueFree => BulkheadForStats.QueueAvailableCount;
 
-    #endregion
+        #endregion
 
-    #region Bulkhead behaviour
+        #region Bulkhead behaviour
 
-    protected abstract IBulkheadPolicy GetBulkhead(int maxParallelization, int maxQueuingActions);
+        protected abstract IBulkheadPolicy GetBulkhead(int maxParallelization, int maxQueuingActions);
 
-    protected abstract Task ExecuteOnBulkhead(IBulkheadPolicy bulkhead, TraceableAction action);
+        protected abstract Task ExecuteOnBulkhead(IBulkheadPolicy bulkhead, TraceableAction action);
 
-    [Theory, ClassData(typeof(BulkheadScenarios))]
-    public void Should_control_executions_per_specification(int maxParallelization, int maxQueuingActions, int totalActions, bool cancelQueuing, bool cancelExecuting, string scenario)
-    {
-        if (totalActions < 0) throw new ArgumentOutOfRangeException(nameof(totalActions));
-
-        MaxParallelization = maxParallelization;
-        MaxQueuingActions = maxQueuingActions;
-        TotalActions = totalActions;
-        Scenario = $"MaxParallelization {maxParallelization}; MaxQueuing {maxQueuingActions}; TotalActions {totalActions}; CancelQueuing {cancelQueuing}; CancelExecuting {cancelExecuting}: {scenario}";
-
-        var bulkhead = GetBulkhead(maxParallelization, maxQueuingActions);
-        using (bulkhead)
+        [Theory, ClassData(typeof(BulkheadScenarios))]
+        public void Should_control_executions_per_specification(int maxParallelization, int maxQueuingActions, int totalActions, bool cancelQueuing, bool cancelExecuting, string scenario)
         {
-            BulkheadForStats = bulkhead;
+            if (totalActions < 0) throw new ArgumentOutOfRangeException(nameof(totalActions));
 
-            // Set up delegates which we can track whether they've started; and control when we allow them to complete (to release their semaphore slot).
-            Actions = new TraceableAction[totalActions];
-            for (var i = 0; i < totalActions; i++) { Actions[i] = new TraceableAction(i, StatusChangedEvent, TestOutputHelper); }
+            MaxParallelization = maxParallelization;
+            MaxQueuingActions = maxQueuingActions;
+            TotalActions = totalActions;
+            Scenario = $"MaxParallelization {maxParallelization}; MaxQueuing {maxQueuingActions}; TotalActions {totalActions}; CancelQueuing {cancelQueuing}; CancelExecuting {cancelExecuting}: {scenario}";
 
-            // Throw all the delegates at the bulkhead simultaneously.
-            Tasks = new Task[totalActions];
-            for (var i = 0; i < totalActions; i++) { Tasks[i] = ExecuteOnBulkhead(bulkhead, Actions[i]); }
-
-            OutputStatus("Immediately after queueing...");
-
-            // Assert the expected distributions of executing, queuing, rejected and completed - when all delegates thrown at bulkhead.
-            ExpectedCompleted = 0;
-            ExpectedCancelled = 0;
-            ExpectedExecuting = Math.Min(totalActions, maxParallelization);
-            ExpectedRejects = Math.Max(0, totalActions - maxParallelization - maxQueuingActions);
-            ExpectedQueuing = Math.Min(maxQueuingActions, Math.Max(0, totalActions - maxParallelization));
-            ExpectedBulkheadFree = maxParallelization - ExpectedExecuting;
-            ExpectedQueueFree = maxQueuingActions - ExpectedQueuing;
-
-            try
+            var bulkhead = GetBulkhead(maxParallelization, maxQueuingActions);
+            using (bulkhead)
             {
-                Within(CohesionTimeLimit, ActualsMatchExpecteds);
-            }
-            finally
-            {
-                OutputStatus("Expected initial state verified...");
-            }
+                BulkheadForStats = bulkhead;
 
-            // Complete or cancel delegates one by one, and expect others to take their place (if a slot released and others remain queueing); until all work is done.
-            while (ExpectedExecuting > 0)
-            {
-                if (cancelQueuing)
-                {
-                    TestOutputHelper.WriteLine("Cancelling a queueing task...");
+                // Set up delegates which we can track whether they've started; and control when we allow them to complete (to release their semaphore slot).
+                Actions = new TraceableAction[totalActions];
+                for (var i = 0; i < totalActions; i++) { Actions[i] = new TraceableAction(i, StatusChangedEvent, TestOutputHelper); }
 
-                    Actions.First(a => a.Status == TraceableActionStatus.QueueingForSemaphore).Cancel();
+                // Throw all the delegates at the bulkhead simultaneously.
+                Tasks = new Task[totalActions];
+                for (var i = 0; i < totalActions; i++) { Tasks[i] = ExecuteOnBulkhead(bulkhead, Actions[i]); }
 
-                    ExpectedCancelled++;
-                    ExpectedQueuing--;
-                    ExpectedQueueFree++;
+                OutputStatus("Immediately after queueing...");
 
-                    cancelQueuing = false;
-                }
-                else if (cancelExecuting)
-                {
-                    TestOutputHelper.WriteLine("Cancelling an executing task...");
-
-                    Actions.First(a => a.Status == TraceableActionStatus.Executing).Cancel();
-
-                    ExpectedCancelled++;
-                    if (ExpectedQueuing > 0)
-                    {
-                        ExpectedQueuing--;
-                        ExpectedQueueFree++;
-                    }
-                    else
-                    {
-                        ExpectedExecuting--;
-                        ExpectedBulkheadFree++;
-                    }
-
-                    cancelExecuting = false;
-                }
-                else // Complete an executing delegate.
-                {
-                    TestOutputHelper.WriteLine("Completing a task...");
-
-                    Actions.First(a => a.Status == TraceableActionStatus.Executing).AllowCompletion();
-
-                    ExpectedCompleted++;
-
-                    if (ExpectedQueuing > 0)
-                    {
-                        ExpectedQueuing--;
-                        ExpectedQueueFree++;
-                    }
-                    else
-                    {
-                        ExpectedExecuting--;
-                        ExpectedBulkheadFree++;
-                    }
-
-                }
+                // Assert the expected distributions of executing, queuing, rejected and completed - when all delegates thrown at bulkhead.
+                ExpectedCompleted = 0;
+                ExpectedCancelled = 0;
+                ExpectedExecuting = Math.Min(totalActions, maxParallelization);
+                ExpectedRejects = Math.Max(0, totalActions - maxParallelization - maxQueuingActions);
+                ExpectedQueuing = Math.Min(maxQueuingActions, Math.Max(0, totalActions - maxParallelization));
+                ExpectedBulkheadFree = maxParallelization - ExpectedExecuting;
+                ExpectedQueueFree = maxQueuingActions - ExpectedQueuing;
 
                 try
                 {
@@ -188,206 +123,272 @@ public abstract class BulkheadSpecsBase : IDisposable
                 }
                 finally
                 {
-                    OutputStatus("End of next loop iteration...");
+                    OutputStatus("Expected initial state verified...");
                 }
 
-            }
+                // Complete or cancel delegates one by one, and expect others to take their place (if a slot released and others remain queueing); until all work is done.
+                while (ExpectedExecuting > 0)
+                {
+                    if (cancelQueuing)
+                    {
+                        TestOutputHelper.WriteLine("Cancelling a queueing task...");
 
-            EnsureNoUnbservedTaskExceptions();
+                        Actions.First(a => a.Status == TraceableActionStatus.QueueingForSemaphore).Cancel();
 
-            TestOutputHelper.WriteLine("Verifying all tasks completed...");
-            Within(CohesionTimeLimit, AllTasksCompleted);
-        }
-    }
+                        ExpectedCancelled++;
+                        ExpectedQueuing--;
+                        ExpectedQueueFree++;
 
-    protected void UpdateActuals()
-    {
-        ActualCompleted = ActualCancelled = ActualExecuting = ActualRejects = ActualQueuing = ActualFaulted = 0;
+                        cancelQueuing = false;
+                    }
+                    else if (cancelExecuting)
+                    {
+                        TestOutputHelper.WriteLine("Cancelling an executing task...");
 
-        foreach (var action in Actions)
-        {
-            switch (action.Status)
-            {
-                case TraceableActionStatus.Canceled:
-                    ActualCancelled++;
-                    break;
-                case TraceableActionStatus.Completed:
-                    ActualCompleted++;
-                    break;
-                case TraceableActionStatus.Executing:
-                    ActualExecuting++;
-                    break;
-                case TraceableActionStatus.Faulted:
-                    ActualFaulted++;
-                    break;
-                case TraceableActionStatus.QueueingForSemaphore:
-                    ActualQueuing++;
-                    break;
-                case TraceableActionStatus.Rejected:
-                    ActualRejects++;
-                    break;
-                case TraceableActionStatus.StartRequested:
-                case TraceableActionStatus.Unstarted:
-                    // We do not care to count these.
-                    break;
-                default:
-                    throw new InvalidOperationException($"Unaccounted for {nameof(TraceableActionStatus)}: {action.Status}.");
-            }
-        }
-    }
+                        Actions.First(a => a.Status == TraceableActionStatus.Executing).Cancel();
 
-    protected AssertionFailure ActualsMatchExpecteds()
-    {
-        UpdateActuals();
+                        ExpectedCancelled++;
+                        if (ExpectedQueuing > 0)
+                        {
+                            ExpectedQueuing--;
+                            ExpectedQueueFree++;
+                        }
+                        else
+                        {
+                            ExpectedExecuting--;
+                            ExpectedBulkheadFree++;
+                        }
 
-        if (ExpectedFaulted != ActualFaulted)
-        {
-            return new AssertionFailure(ExpectedFaulted, ActualFaulted, nameof(ExpectedFaulted));
-        }
+                        cancelExecuting = false;
+                    }
+                    else // Complete an executing delegate.
+                    {
+                        TestOutputHelper.WriteLine("Completing a task...");
 
-        if (ExpectedRejects != ActualRejects)
-        {
-            return new AssertionFailure(ExpectedRejects, ActualRejects, nameof(ExpectedRejects));
-        }
+                        Actions.First(a => a.Status == TraceableActionStatus.Executing).AllowCompletion();
 
-        if (ExpectedCancelled != ActualCancelled)
-        {
-            return new AssertionFailure(ExpectedCancelled, ActualCancelled, nameof(ExpectedCancelled));
-        }
+                        ExpectedCompleted++;
 
-        if (ExpectedCompleted != ActualCompleted)
-        {
-            return new AssertionFailure(ExpectedCompleted, ActualCompleted, nameof(ExpectedCompleted));
-        }
+                        if (ExpectedQueuing > 0)
+                        {
+                            ExpectedQueuing--;
+                            ExpectedQueueFree++;
+                        }
+                        else
+                        {
+                            ExpectedExecuting--;
+                            ExpectedBulkheadFree++;
+                        }
 
-        if (ExpectedExecuting != ActualExecuting)
-        {
-            return new AssertionFailure(ExpectedExecuting, ActualExecuting, nameof(ExpectedExecuting));
-        }
+                    }
 
-        if (ExpectedQueuing != ActualQueuing)
-        {
-            return new AssertionFailure(ExpectedQueuing, ActualQueuing, nameof(ExpectedQueuing));
-        }
+                    try
+                    {
+                        Within(CohesionTimeLimit, ActualsMatchExpecteds);
+                    }
+                    finally
+                    {
+                        OutputStatus("End of next loop iteration...");
+                    }
 
-        if (ExpectedBulkheadFree != ActualBulkheadFree)
-        {
-            return new AssertionFailure(ExpectedBulkheadFree, ActualBulkheadFree, nameof(ExpectedBulkheadFree));
-        }
+                }
 
-        if (ExpectedQueueFree != ActualQueueFree)
-        {
-            return new AssertionFailure(ExpectedQueueFree, ActualQueueFree, nameof(ExpectedQueueFree));
-        }
+                EnsureNoUnbservedTaskExceptions();
 
-        return null;
-    }
-
-    protected AssertionFailure AllTasksCompleted()
-    {
-        var countTasksCompleted = Tasks.Count(t => t.IsCompleted);
-        if (countTasksCompleted < TotalActions)
-        {
-            return new AssertionFailure(TotalActions, countTasksCompleted, nameof(countTasksCompleted));
-        }
-
-        return null;
-    }
-
-    protected void EnsureNoUnbservedTaskExceptions()
-    {
-        for (var i = 0; i < Tasks.Length; i++)
-        {
-            try
-            {
-                Tasks[i].Wait();
-            }
-            catch (Exception e)
-            {
-                throw new Exception("Task " + i + " raised the following unobserved task exception: ", e);
+                TestOutputHelper.WriteLine("Verifying all tasks completed...");
+                Within(CohesionTimeLimit, AllTasksCompleted);
             }
         }
-    }
 
-    #endregion
-
-    protected AssertionFailure Expect(int expected, Func<int> actualFunc, string measure)
-    {
-        var actual = actualFunc();
-        return actual != expected ? new AssertionFailure(expected, actual, measure) : null;
-    }
-
-    protected void Within(TimeSpan timeSpan, Func<AssertionFailure> actionContainingAssertions)
-    {
-        var permitted = timeSpan;
-        var watch = Stopwatch.StartNew();
-        while (true)
+        protected void UpdateActuals()
         {
-            var potentialFailure = actionContainingAssertions();
-            if (potentialFailure == null)
-            {
-                break;
-            }
+            ActualCompleted = ActualCancelled = ActualExecuting = ActualRejects = ActualQueuing = ActualFaulted = 0;
 
-            if (watch.Elapsed > permitted)
-            {
-                TestOutputHelper.WriteLine("Failing assertion on: {0}", potentialFailure.Measure);
-                potentialFailure.Actual.Should().Be(potentialFailure.Expected, $"for '{potentialFailure.Measure}', in scenario: {Scenario}");
-                throw new InvalidOperationException("Code should never reach here. Preceding assertion should fail.");
-            }
-
-            var signaled = StatusChangedEvent.WaitOne(ShimTimeSpan);
-            if (signaled)
-            {
-                // Following TraceableAction.CaptureCompletion() signalling the AutoResetEvent,
-                // there can be race conditions between on the one hand exiting the bulkhead semaphore (and potentially another execution gaining it),
-                // and the assertion being verified here about those same facts.
-                // If that race is lost by the real-world state change, and the AutoResetEvent signal occurred very close to timeoutTime,
-                // there might not be a second chance.
-                // We therefore permit another shim time for the condition to come good.
-                permitted += CohesionTimeLimit;
-            }
-        }
-    }
-
-    #region Output helpers
-
-    protected readonly ITestOutputHelper TestOutputHelper;
-
-    protected void OutputStatus(string statusHeading)
-    {
-        TestOutputHelper.WriteLine(statusHeading);
-        TestOutputHelper.WriteLine("Bulkhead: {0} slots out of {1} available.", ActualBulkheadFree, MaxParallelization);
-        TestOutputHelper.WriteLine("Bulkhead queue: {0} slots out of {1} available.", ActualQueueFree, MaxQueuingActions);
-
-        for (var i = 0; i < Actions.Length; i++)
-        {
-            TestOutputHelper.WriteLine("Action {0}: {1}", i, Actions[i].Status);
-        }
-        TestOutputHelper.WriteLine(String.Empty);
-    }
-
-    private void ShowTestOutput()
-    {
-        ((AnnotatedOutputHelper) TestOutputHelper).Flush();
-    }
-
-    #endregion
-
-    public void Dispose()
-    {
-#if DEBUG
-        ShowTestOutput();
-#endif
-
-        if (Actions != null)
-        {
             foreach (var action in Actions)
             {
-                action.Dispose();
+                switch (action.Status)
+                {
+                    case TraceableActionStatus.Canceled:
+                        ActualCancelled++;
+                        break;
+                    case TraceableActionStatus.Completed:
+                        ActualCompleted++;
+                        break;
+                    case TraceableActionStatus.Executing:
+                        ActualExecuting++;
+                        break;
+                    case TraceableActionStatus.Faulted:
+                        ActualFaulted++;
+                        break;
+                    case TraceableActionStatus.QueueingForSemaphore:
+                        ActualQueuing++;
+                        break;
+                    case TraceableActionStatus.Rejected:
+                        ActualRejects++;
+                        break;
+                    case TraceableActionStatus.StartRequested:
+                    case TraceableActionStatus.Unstarted:
+                        // We do not care to count these.
+                        break;
+                    default:
+                        throw new InvalidOperationException($"Unaccounted for {nameof(TraceableActionStatus)}: {action.Status}.");
+                }
             }
         }
 
-        StatusChangedEvent.Dispose();
+        protected AssertionFailure ActualsMatchExpecteds()
+        {
+            UpdateActuals();
+
+            if (ExpectedFaulted != ActualFaulted)
+            {
+                return new AssertionFailure(ExpectedFaulted, ActualFaulted, nameof(ExpectedFaulted));
+            }
+
+            if (ExpectedRejects != ActualRejects)
+            {
+                return new AssertionFailure(ExpectedRejects, ActualRejects, nameof(ExpectedRejects));
+            }
+
+            if (ExpectedCancelled != ActualCancelled)
+            {
+                return new AssertionFailure(ExpectedCancelled, ActualCancelled, nameof(ExpectedCancelled));
+            }
+
+            if (ExpectedCompleted != ActualCompleted)
+            {
+                return new AssertionFailure(ExpectedCompleted, ActualCompleted, nameof(ExpectedCompleted));
+            }
+
+            if (ExpectedExecuting != ActualExecuting)
+            {
+                return new AssertionFailure(ExpectedExecuting, ActualExecuting, nameof(ExpectedExecuting));
+            }
+
+            if (ExpectedQueuing != ActualQueuing)
+            {
+                return new AssertionFailure(ExpectedQueuing, ActualQueuing, nameof(ExpectedQueuing));
+            }
+
+            if (ExpectedBulkheadFree != ActualBulkheadFree)
+            {
+                return new AssertionFailure(ExpectedBulkheadFree, ActualBulkheadFree, nameof(ExpectedBulkheadFree));
+            }
+
+            if (ExpectedQueueFree != ActualQueueFree)
+            {
+                return new AssertionFailure(ExpectedQueueFree, ActualQueueFree, nameof(ExpectedQueueFree));
+            }
+
+            return null;
+        }
+
+        protected AssertionFailure AllTasksCompleted()
+        {
+            var countTasksCompleted = Tasks.Count(t => t.IsCompleted);
+            if (countTasksCompleted < TotalActions)
+            {
+                return new AssertionFailure(TotalActions, countTasksCompleted, nameof(countTasksCompleted));
+            }
+
+            return null;
+        }
+
+        protected void EnsureNoUnbservedTaskExceptions()
+        {
+            for (var i = 0; i < Tasks.Length; i++)
+            {
+                try
+                {
+                    Tasks[i].Wait();
+                }
+                catch (Exception e)
+                {
+                    throw new Exception("Task " + i + " raised the following unobserved task exception: ", e);
+                }
+            }
+        }
+
+        #endregion
+
+        protected AssertionFailure Expect(int expected, Func<int> actualFunc, string measure)
+        {
+            var actual = actualFunc();
+            return actual != expected ? new AssertionFailure(expected, actual, measure) : null;
+        }
+
+        protected void Within(TimeSpan timeSpan, Func<AssertionFailure> actionContainingAssertions)
+        {
+            var permitted = timeSpan;
+            var watch = Stopwatch.StartNew();
+            while (true)
+            {
+                var potentialFailure = actionContainingAssertions();
+                if (potentialFailure == null)
+                {
+                    break;
+                }
+
+                if (watch.Elapsed > permitted)
+                {
+                    TestOutputHelper.WriteLine("Failing assertion on: {0}", potentialFailure.Measure);
+                    potentialFailure.Actual.Should().Be(potentialFailure.Expected, $"for '{potentialFailure.Measure}', in scenario: {Scenario}");
+                    throw new InvalidOperationException("Code should never reach here. Preceding assertion should fail.");
+                }
+
+                var signaled = StatusChangedEvent.WaitOne(ShimTimeSpan);
+                if (signaled)
+                {
+                    // Following TraceableAction.CaptureCompletion() signalling the AutoResetEvent,
+                    // there can be race conditions between on the one hand exiting the bulkhead semaphore (and potentially another execution gaining it),
+                    // and the assertion being verified here about those same facts.
+                    // If that race is lost by the real-world state change, and the AutoResetEvent signal occurred very close to timeoutTime,
+                    // there might not be a second chance.
+                    // We therefore permit another shim time for the condition to come good.
+                    permitted += CohesionTimeLimit;
+                }
+            }
+        }
+
+        #region Output helpers
+
+        protected readonly ITestOutputHelper TestOutputHelper;
+
+        protected void OutputStatus(string statusHeading)
+        {
+            TestOutputHelper.WriteLine(statusHeading);
+            TestOutputHelper.WriteLine("Bulkhead: {0} slots out of {1} available.", ActualBulkheadFree, MaxParallelization);
+            TestOutputHelper.WriteLine("Bulkhead queue: {0} slots out of {1} available.", ActualQueueFree, MaxQueuingActions);
+
+            for (var i = 0; i < Actions.Length; i++)
+            {
+                TestOutputHelper.WriteLine("Action {0}: {1}", i, Actions[i].Status);
+            }
+            TestOutputHelper.WriteLine(String.Empty);
+        }
+
+        private void ShowTestOutput()
+        {
+            ((AnnotatedOutputHelper) TestOutputHelper).Flush();
+        }
+
+        #endregion
+
+        public void Dispose()
+        {
+#if DEBUG
+            ShowTestOutput();
+#endif
+
+            if (Actions != null)
+            {
+                foreach (var action in Actions)
+                {
+                    action.Dispose();
+                }
+            }
+
+            StatusChangedEvent.Dispose();
+        }
     }
 }

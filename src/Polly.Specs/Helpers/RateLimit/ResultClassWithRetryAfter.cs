@@ -1,20 +1,21 @@
 ﻿using System;
 
-namespace Polly.Specs.Helpers.RateLimit;
-
-internal class ResultClassWithRetryAfter : ResultClass
+namespace Polly.Specs.Helpers.RateLimit
 {
-    public TimeSpan RetryAfter { get; }
+    internal class ResultClassWithRetryAfter : ResultClass
+    {
+        public TimeSpan RetryAfter { get; }
 
-    public ResultClassWithRetryAfter(ResultPrimitive result)
+        public ResultClassWithRetryAfter(ResultPrimitive result)
         : base(result)
-    {
-        RetryAfter = TimeSpan.Zero;
-    }
+        {
+            RetryAfter = TimeSpan.Zero;
+        }
 
-    public ResultClassWithRetryAfter(TimeSpan retryAfter)
+        public ResultClassWithRetryAfter(TimeSpan retryAfter)
         : base(ResultPrimitive.Undefined)
-    {
-        RetryAfter = retryAfter;
+        {
+            RetryAfter = retryAfter;
+        }
     }
 }

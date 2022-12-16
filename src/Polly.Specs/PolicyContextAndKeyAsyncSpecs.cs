@@ -5,324 +5,325 @@ using Polly.Specs.Helpers;
 using Polly.Utilities;
 using Xunit;
 
-namespace Polly.Specs;
-
-public class PolicyKeyAsyncSpecs
+namespace Polly.Specs
 {
-    #region Configuration
-
-    [Fact]
-    public void Should_be_able_fluently_to_configure_the_policy_key()
+    public class PolicyKeyAsyncSpecs
     {
-        var policy = Policy.Handle<Exception>().RetryAsync().WithPolicyKey(Guid.NewGuid().ToString());
+        #region Configuration
 
-        policy.Should().BeAssignableTo<AsyncPolicy>();
-    }
+        [Fact]
+        public void Should_be_able_fluently_to_configure_the_policy_key()
+        {
+            var policy = Policy.Handle<Exception>().RetryAsync().WithPolicyKey(Guid.NewGuid().ToString());
 
-    [Fact]
-    public void Should_be_able_fluently_to_configure_the_policy_key_via_interface()
-    {
-        IAsyncPolicy policyAsInterface = Policy.Handle<Exception>().RetryAsync();
-        var policyAsInterfaceAfterWithPolicyKey = policyAsInterface.WithPolicyKey(Guid.NewGuid().ToString());
+            policy.Should().BeAssignableTo<AsyncPolicy>();
+        }
 
-        policyAsInterfaceAfterWithPolicyKey.Should().BeAssignableTo<IAsyncPolicy>();
-    }
+        [Fact]
+        public void Should_be_able_fluently_to_configure_the_policy_key_via_interface()
+        {
+            IAsyncPolicy policyAsInterface = Policy.Handle<Exception>().RetryAsync();
+            var policyAsInterfaceAfterWithPolicyKey = policyAsInterface.WithPolicyKey(Guid.NewGuid().ToString());
 
-    [Fact]
-    public void PolicyKey_property_should_be_the_fluently_configured_policy_key()
-    {
-        const string key = "SomePolicyKey";
+            policyAsInterfaceAfterWithPolicyKey.Should().BeAssignableTo<IAsyncPolicy>();
+        }
 
-        var policy = Policy.Handle<Exception>().RetryAsync().WithPolicyKey(key);
+        [Fact]
+        public void PolicyKey_property_should_be_the_fluently_configured_policy_key()
+        {
+            const string key = "SomePolicyKey";
 
-        policy.PolicyKey.Should().Be(key);
-    }
+            var policy = Policy.Handle<Exception>().RetryAsync().WithPolicyKey(key);
 
-    [Fact]
-    public void Should_not_be_able_to_configure_the_policy_key_explicitly_more_than_once()
-    {
-        var policy = Policy.Handle<Exception>().RetryAsync();
+            policy.PolicyKey.Should().Be(key);
+        }
 
-        Action configure = () => policy.WithPolicyKey(Guid.NewGuid().ToString());
+        [Fact]
+        public void Should_not_be_able_to_configure_the_policy_key_explicitly_more_than_once()
+        {
+            var policy = Policy.Handle<Exception>().RetryAsync();
 
-        configure.Should().NotThrow();
+            Action configure = () => policy.WithPolicyKey(Guid.NewGuid().ToString());
 
-        configure.Should().Throw<ArgumentException>().And.ParamName.Should().Be("policyKey");
-    }
+            configure.Should().NotThrow();
 
-    [Fact]
-    public void PolicyKey_property_should_be_non_null_or_empty_if_not_explicitly_configured()
-    {
-        var policy = Policy.Handle<Exception>().RetryAsync();
+            configure.Should().Throw<ArgumentException>().And.ParamName.Should().Be("policyKey");
+        }
 
-        policy.PolicyKey.Should().NotBeNullOrEmpty();
-    }
+        [Fact]
+        public void PolicyKey_property_should_be_non_null_or_empty_if_not_explicitly_configured()
+        {
+            var policy = Policy.Handle<Exception>().RetryAsync();
 
-    [Fact]
-    public void PolicyKey_property_should_start_with_policy_type_if_not_explicitly_configured()
-    {
-        var policy = Policy.Handle<Exception>().RetryAsync();
+            policy.PolicyKey.Should().NotBeNullOrEmpty();
+        }
+
+        [Fact]
+        public void PolicyKey_property_should_start_with_policy_type_if_not_explicitly_configured()
+        {
+            var policy = Policy.Handle<Exception>().RetryAsync();
             
-        policy.PolicyKey.Should().StartWith("AsyncRetry");
-    }
+            policy.PolicyKey.Should().StartWith("AsyncRetry");
+        }
 
-    [Fact]
-    public void PolicyKey_property_should_be_unique_for_different_instances_if_not_explicitly_configured()
-    {
-        var policy1 = Policy.Handle<Exception>().RetryAsync();
-        var policy2 = Policy.Handle<Exception>().RetryAsync();
-
-        policy1.PolicyKey.Should().NotBe(policy2.PolicyKey);
-    }
-
-    [Fact]
-    public void PolicyKey_property_should_return_consistent_value_for_same_policy_instance_if_not_explicitly_configured()
-    {
-        var policy = Policy.Handle<Exception>().RetryAsync();
-
-        var keyRetrievedFirst = policy.PolicyKey;
-        var keyRetrievedSecond = policy.PolicyKey;
-
-        keyRetrievedSecond.Should().Be(keyRetrievedFirst);
-    }
-
-    [Fact]
-    public void Should_not_be_able_to_configure_the_policy_key_explicitly_after_retrieving_default_value()
-    {
-        var policy = Policy.Handle<Exception>().RetryAsync();
-
-        var retrieveKeyWhenNotExplicitlyConfigured = policy.PolicyKey;
-
-        Action configure = () => policy.WithPolicyKey(Guid.NewGuid().ToString());
-
-        configure.Should().Throw<ArgumentException>().And.ParamName.Should().Be("policyKey");
-    }
-
-    #endregion
-
-    #region PolicyKey and execution Context tests
-
-    [Fact]
-    public async Task Should_pass_PolicyKey_to_execution_context()
-    {
-        var policyKey = Guid.NewGuid().ToString();
-
-        string policyKeySetOnExecutionContext = null;
-        Action<Exception, int, Context> onRetry = (_, _, context) => { policyKeySetOnExecutionContext = context.PolicyKey; };
-        var retry = Policy.Handle<Exception>().RetryAsync(1, onRetry).WithPolicyKey(policyKey);
-
-        await retry.RaiseExceptionAsync<Exception>(1);
-
-        policyKeySetOnExecutionContext.Should().Be(policyKey);
-    }
-
-    [Fact]
-    public async Task Should_pass_OperationKey_to_execution_context()
-    {
-        var operationKey = "SomeKey";
-
-        string operationKeySetOnContext = null;
-        Action<Exception, int, Context> onRetry = (_, _, context) => { operationKeySetOnContext = context.OperationKey; };
-        var retry = Policy.Handle<Exception>().RetryAsync(1, onRetry);
-
-        var firstExecution = true;
-        await retry.ExecuteAsync(async _ =>
+        [Fact]
+        public void PolicyKey_property_should_be_unique_for_different_instances_if_not_explicitly_configured()
         {
-            await TaskHelper.EmptyTask;
-            if (firstExecution)
-            {
-                firstExecution = false;
-                throw new Exception();
-            }
-        }, new Context(operationKey));
+            var policy1 = Policy.Handle<Exception>().RetryAsync();
+            var policy2 = Policy.Handle<Exception>().RetryAsync();
 
-        operationKeySetOnContext.Should().Be(operationKey);
-    }
+            policy1.PolicyKey.Should().NotBe(policy2.PolicyKey);
+        }
 
-    [Fact]
-    public async Task Should_pass_PolicyKey_to_execution_context_in_generic_execution_on_non_generic_policy()
-    {
-        var policyKey = Guid.NewGuid().ToString();
-
-        string policyKeySetOnExecutionContext = null;
-        Action<Exception, int, Context> onRetry = (_, _, context) => { policyKeySetOnExecutionContext = context.PolicyKey; };
-        var retry = Policy.Handle<Exception>().RetryAsync(1, onRetry).WithPolicyKey(policyKey);
-
-        var firstExecution = true;
-        await retry.ExecuteAsync<int>(async () =>
+        [Fact]
+        public void PolicyKey_property_should_return_consistent_value_for_same_policy_instance_if_not_explicitly_configured()
         {
-            await TaskHelper.EmptyTask;
-            if (firstExecution)
-            {
-                firstExecution = false;
-                throw new Exception();
-            }
-            return 0;
-        });
+            var policy = Policy.Handle<Exception>().RetryAsync();
 
-        policyKeySetOnExecutionContext.Should().Be(policyKey);
-    }
+            var keyRetrievedFirst = policy.PolicyKey;
+            var keyRetrievedSecond = policy.PolicyKey;
 
-    [Fact]
-    public async Task Should_pass_OperationKey_to_execution_context_in_generic_execution_on_non_generic_policy()
-    {
-        var operationKey = "SomeKey";
+            keyRetrievedSecond.Should().Be(keyRetrievedFirst);
+        }
 
-        string operationKeySetOnContext = null;
-        Action<Exception, int, Context> onRetry = (_, _, context) => { operationKeySetOnContext = context.OperationKey; };
-        var retry = Policy.Handle<Exception>().RetryAsync(1, onRetry);
-
-        var firstExecution = true;
-        await retry.ExecuteAsync<int>(async _ =>
+        [Fact]
+        public void Should_not_be_able_to_configure_the_policy_key_explicitly_after_retrieving_default_value()
         {
-            await TaskHelper.EmptyTask;
-            if (firstExecution)
-            {
-                firstExecution = false;
-                throw new Exception();
-            }
-            return 0;
-        }, new Context(operationKey));
+            var policy = Policy.Handle<Exception>().RetryAsync();
 
-        operationKeySetOnContext.Should().Be(operationKey);
-    }
-    #endregion
+            var retrieveKeyWhenNotExplicitlyConfigured = policy.PolicyKey;
 
-}
+            Action configure = () => policy.WithPolicyKey(Guid.NewGuid().ToString());
 
-public class PolicyTResultKeyAsyncSpecs
-{
-    #region Configuration
+            configure.Should().Throw<ArgumentException>().And.ParamName.Should().Be("policyKey");
+        }
 
-    [Fact]
-    public void Should_be_able_fluently_to_configure_the_policy_key()
-    {
-        var policy = Policy.HandleResult<int>(0).RetryAsync().WithPolicyKey(Guid.NewGuid().ToString());
+        #endregion
 
-        policy.Should().BeAssignableTo<AsyncPolicy<int>>();
-    }
+        #region PolicyKey and execution Context tests
 
-    [Fact]
-    public void Should_be_able_fluently_to_configure_the_policy_key_via_interface()
-    {
-        IAsyncPolicy<int> policyAsInterface = Policy.HandleResult<int>(0).RetryAsync();
-        var policyAsInterfaceAfterWithPolicyKey = policyAsInterface.WithPolicyKey(Guid.NewGuid().ToString());
-
-        policyAsInterfaceAfterWithPolicyKey.Should().BeAssignableTo<IAsyncPolicy<int>>();
-    }
-
-    [Fact]
-    public void PolicyKey_property_should_be_the_fluently_configured_policy_key()
-    {
-        const string key = "SomePolicyKey";
-
-        var policy = Policy.HandleResult(0).RetryAsync().WithPolicyKey(key);
-
-        policy.PolicyKey.Should().Be(key);
-    }
-
-    [Fact]
-    public void Should_not_be_able_to_configure_the_policy_key_explicitly_more_than_once()
-    {
-        var policy = Policy.HandleResult(0).RetryAsync();
-
-        Action configure = () => policy.WithPolicyKey(Guid.NewGuid().ToString());
-
-        configure.Should().NotThrow();
-
-        configure.Should().Throw<ArgumentException>().And.ParamName.Should().Be("policyKey");
-    }
-
-    [Fact]
-    public void PolicyKey_property_should_be_non_null_or_empty_if_not_explicitly_configured()
-    {
-        var policy = Policy.HandleResult(0).RetryAsync();
-
-        policy.PolicyKey.Should().NotBeNullOrEmpty();
-    }
-
-    [Fact]
-    public void PolicyKey_property_should_start_with_policy_type_if_not_explicitly_configured()
-    {
-        var policy = Policy.HandleResult(0).RetryAsync();
-
-        policy.PolicyKey.Should().StartWith("AsyncRetry");
-    }
-
-    [Fact]
-    public void PolicyKey_property_should_be_unique_for_different_instances_if_not_explicitly_configured()
-    {
-        var policy1 = Policy.HandleResult(0).RetryAsync();
-        var policy2 = Policy.HandleResult(0).RetryAsync();
-
-        policy1.PolicyKey.Should().NotBe(policy2.PolicyKey);
-    }
-
-    [Fact]
-    public void PolicyKey_property_should_return_consistent_value_for_same_policy_instance_if_not_explicitly_configured()
-    {
-        var policy = Policy.HandleResult(0).RetryAsync();
-
-        var keyRetrievedFirst = policy.PolicyKey;
-        var keyRetrievedSecond = policy.PolicyKey;
-
-        keyRetrievedSecond.Should().Be(keyRetrievedFirst);
-    }
-
-    [Fact]
-    public void Should_not_be_able_to_configure_the_policy_key_explicitly_after_retrieving_default_value()
-    {
-        var policy = Policy.HandleResult(0).RetryAsync();
-
-        var retrieveKeyWhenNotExplicitlyConfigured = policy.PolicyKey;
-
-        Action configure = () => policy.WithPolicyKey(Guid.NewGuid().ToString());
-
-        configure.Should().Throw<ArgumentException>().And.ParamName.Should().Be("policyKey");
-    }
-
-    #endregion
-
-    #region PolicyKey and execution Context tests
-
-    [Fact]
-    public async Task Should_pass_PolicyKey_to_execution_context()
-    {
-        var policyKey = Guid.NewGuid().ToString();
-
-        string policyKeySetOnExecutionContext = null;
-        Action<DelegateResult<ResultPrimitive>, int, Context> onRetry = (_, _, context) => { policyKeySetOnExecutionContext = context.PolicyKey; };
-        var retry = Policy.HandleResult(ResultPrimitive.Fault).RetryAsync(1, onRetry).WithPolicyKey(policyKey);
-
-        await retry.RaiseResultSequenceAsync(ResultPrimitive.Fault, ResultPrimitive.Good);
-
-        policyKeySetOnExecutionContext.Should().Be(policyKey);
-    }
-
-    [Fact]
-    public async Task Should_pass_OperationKey_to_execution_context()
-    {
-        var operationKey = "SomeKey";
-
-        string operationKeySetOnContext = null;
-        Action<DelegateResult<ResultPrimitive>, int, Context> onRetry = (_, _, context) => { operationKeySetOnContext = context.OperationKey; };
-        var retry = Policy.HandleResult(ResultPrimitive.Fault).RetryAsync(1, onRetry);
-
-        var firstExecution = true;
-        await retry.ExecuteAsync(async _ =>
+        [Fact]
+        public async Task Should_pass_PolicyKey_to_execution_context()
         {
-            await TaskHelper.EmptyTask;
-            if (firstExecution)
-            {
-                firstExecution = false;
-                return ResultPrimitive.Fault;
-            }
-            return ResultPrimitive.Good;
-        }, new Context(operationKey));
+            var policyKey = Guid.NewGuid().ToString();
 
-        operationKeySetOnContext.Should().Be(operationKey);
+            string policyKeySetOnExecutionContext = null;
+            Action<Exception, int, Context> onRetry = (_, _, context) => { policyKeySetOnExecutionContext = context.PolicyKey; };
+            var retry = Policy.Handle<Exception>().RetryAsync(1, onRetry).WithPolicyKey(policyKey);
+
+            await retry.RaiseExceptionAsync<Exception>(1);
+
+            policyKeySetOnExecutionContext.Should().Be(policyKey);
+        }
+
+        [Fact]
+        public async Task Should_pass_OperationKey_to_execution_context()
+        {
+            var operationKey = "SomeKey";
+
+            string operationKeySetOnContext = null;
+            Action<Exception, int, Context> onRetry = (_, _, context) => { operationKeySetOnContext = context.OperationKey; };
+            var retry = Policy.Handle<Exception>().RetryAsync(1, onRetry);
+
+            var firstExecution = true;
+            await retry.ExecuteAsync(async _ =>
+            {
+                await TaskHelper.EmptyTask;
+                if (firstExecution)
+                {
+                    firstExecution = false;
+                    throw new Exception();
+                }
+            }, new Context(operationKey));
+
+            operationKeySetOnContext.Should().Be(operationKey);
+        }
+
+        [Fact]
+        public async Task Should_pass_PolicyKey_to_execution_context_in_generic_execution_on_non_generic_policy()
+        {
+            var policyKey = Guid.NewGuid().ToString();
+
+            string policyKeySetOnExecutionContext = null;
+            Action<Exception, int, Context> onRetry = (_, _, context) => { policyKeySetOnExecutionContext = context.PolicyKey; };
+            var retry = Policy.Handle<Exception>().RetryAsync(1, onRetry).WithPolicyKey(policyKey);
+
+            var firstExecution = true;
+            await retry.ExecuteAsync<int>(async () =>
+            {
+                await TaskHelper.EmptyTask;
+                if (firstExecution)
+                {
+                    firstExecution = false;
+                    throw new Exception();
+                }
+                return 0;
+            });
+
+            policyKeySetOnExecutionContext.Should().Be(policyKey);
+        }
+
+        [Fact]
+        public async Task Should_pass_OperationKey_to_execution_context_in_generic_execution_on_non_generic_policy()
+        {
+            var operationKey = "SomeKey";
+
+            string operationKeySetOnContext = null;
+            Action<Exception, int, Context> onRetry = (_, _, context) => { operationKeySetOnContext = context.OperationKey; };
+            var retry = Policy.Handle<Exception>().RetryAsync(1, onRetry);
+
+            var firstExecution = true;
+            await retry.ExecuteAsync<int>(async _ =>
+            {
+                await TaskHelper.EmptyTask;
+                if (firstExecution)
+                {
+                    firstExecution = false;
+                    throw new Exception();
+                }
+                return 0;
+            }, new Context(operationKey));
+
+            operationKeySetOnContext.Should().Be(operationKey);
+        }
+        #endregion
+
     }
 
-    #endregion
+    public class PolicyTResultKeyAsyncSpecs
+    {
+        #region Configuration
 
+        [Fact]
+        public void Should_be_able_fluently_to_configure_the_policy_key()
+        {
+            var policy = Policy.HandleResult<int>(0).RetryAsync().WithPolicyKey(Guid.NewGuid().ToString());
+
+            policy.Should().BeAssignableTo<AsyncPolicy<int>>();
+        }
+
+        [Fact]
+        public void Should_be_able_fluently_to_configure_the_policy_key_via_interface()
+        {
+            IAsyncPolicy<int> policyAsInterface = Policy.HandleResult<int>(0).RetryAsync();
+            var policyAsInterfaceAfterWithPolicyKey = policyAsInterface.WithPolicyKey(Guid.NewGuid().ToString());
+
+            policyAsInterfaceAfterWithPolicyKey.Should().BeAssignableTo<IAsyncPolicy<int>>();
+        }
+
+        [Fact]
+        public void PolicyKey_property_should_be_the_fluently_configured_policy_key()
+        {
+            const string key = "SomePolicyKey";
+
+            var policy = Policy.HandleResult(0).RetryAsync().WithPolicyKey(key);
+
+            policy.PolicyKey.Should().Be(key);
+        }
+
+        [Fact]
+        public void Should_not_be_able_to_configure_the_policy_key_explicitly_more_than_once()
+        {
+            var policy = Policy.HandleResult(0).RetryAsync();
+
+            Action configure = () => policy.WithPolicyKey(Guid.NewGuid().ToString());
+
+            configure.Should().NotThrow();
+
+            configure.Should().Throw<ArgumentException>().And.ParamName.Should().Be("policyKey");
+        }
+
+        [Fact]
+        public void PolicyKey_property_should_be_non_null_or_empty_if_not_explicitly_configured()
+        {
+            var policy = Policy.HandleResult(0).RetryAsync();
+
+            policy.PolicyKey.Should().NotBeNullOrEmpty();
+        }
+
+        [Fact]
+        public void PolicyKey_property_should_start_with_policy_type_if_not_explicitly_configured()
+        {
+            var policy = Policy.HandleResult(0).RetryAsync();
+
+            policy.PolicyKey.Should().StartWith("AsyncRetry");
+        }
+
+        [Fact]
+        public void PolicyKey_property_should_be_unique_for_different_instances_if_not_explicitly_configured()
+        {
+            var policy1 = Policy.HandleResult(0).RetryAsync();
+            var policy2 = Policy.HandleResult(0).RetryAsync();
+
+            policy1.PolicyKey.Should().NotBe(policy2.PolicyKey);
+        }
+
+        [Fact]
+        public void PolicyKey_property_should_return_consistent_value_for_same_policy_instance_if_not_explicitly_configured()
+        {
+            var policy = Policy.HandleResult(0).RetryAsync();
+
+            var keyRetrievedFirst = policy.PolicyKey;
+            var keyRetrievedSecond = policy.PolicyKey;
+
+            keyRetrievedSecond.Should().Be(keyRetrievedFirst);
+        }
+
+        [Fact]
+        public void Should_not_be_able_to_configure_the_policy_key_explicitly_after_retrieving_default_value()
+        {
+            var policy = Policy.HandleResult(0).RetryAsync();
+
+            var retrieveKeyWhenNotExplicitlyConfigured = policy.PolicyKey;
+
+            Action configure = () => policy.WithPolicyKey(Guid.NewGuid().ToString());
+
+            configure.Should().Throw<ArgumentException>().And.ParamName.Should().Be("policyKey");
+        }
+
+        #endregion
+
+        #region PolicyKey and execution Context tests
+
+        [Fact]
+        public async Task Should_pass_PolicyKey_to_execution_context()
+        {
+            var policyKey = Guid.NewGuid().ToString();
+
+            string policyKeySetOnExecutionContext = null;
+            Action<DelegateResult<ResultPrimitive>, int, Context> onRetry = (_, _, context) => { policyKeySetOnExecutionContext = context.PolicyKey; };
+            var retry = Policy.HandleResult(ResultPrimitive.Fault).RetryAsync(1, onRetry).WithPolicyKey(policyKey);
+
+            await retry.RaiseResultSequenceAsync(ResultPrimitive.Fault, ResultPrimitive.Good);
+
+            policyKeySetOnExecutionContext.Should().Be(policyKey);
+        }
+
+        [Fact]
+        public async Task Should_pass_OperationKey_to_execution_context()
+        {
+            var operationKey = "SomeKey";
+
+            string operationKeySetOnContext = null;
+            Action<DelegateResult<ResultPrimitive>, int, Context> onRetry = (_, _, context) => { operationKeySetOnContext = context.OperationKey; };
+            var retry = Policy.HandleResult(ResultPrimitive.Fault).RetryAsync(1, onRetry);
+
+            var firstExecution = true;
+            await retry.ExecuteAsync(async _ =>
+            {
+                await TaskHelper.EmptyTask;
+                if (firstExecution)
+                {
+                    firstExecution = false;
+                    return ResultPrimitive.Fault;
+                }
+                return ResultPrimitive.Good;
+            }, new Context(operationKey));
+
+            operationKeySetOnContext.Should().Be(operationKey);
+        }
+
+        #endregion
+
+    }
 }

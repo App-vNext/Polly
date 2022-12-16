@@ -1,18 +1,19 @@
 ﻿using System.Threading;
 
-namespace Polly.Bulkhead;
-
-internal static class BulkheadSemaphoreFactory
+namespace Polly.Bulkhead
 {
-    public static (SemaphoreSlim, SemaphoreSlim) CreateBulkheadSemaphores(int maxParallelization, int maxQueueingActions)
+    internal static class BulkheadSemaphoreFactory
     {
-        var maxParallelizationSemaphore = new SemaphoreSlim(maxParallelization, maxParallelization);
+        public static (SemaphoreSlim, SemaphoreSlim) CreateBulkheadSemaphores(int maxParallelization, int maxQueueingActions)
+        {
+            var maxParallelizationSemaphore = new SemaphoreSlim(maxParallelization, maxParallelization);
 
-        var maxQueuingCompounded = maxQueueingActions <= int.MaxValue - maxParallelization
-            ? maxQueueingActions + maxParallelization
-            : int.MaxValue;
-        var maxQueuedActionsSemaphore = new SemaphoreSlim(maxQueuingCompounded, maxQueuingCompounded);
+            var maxQueuingCompounded = maxQueueingActions <= int.MaxValue - maxParallelization
+                ? maxQueueingActions + maxParallelization
+                : int.MaxValue;
+            var maxQueuedActionsSemaphore = new SemaphoreSlim(maxQueuingCompounded, maxQueuingCompounded);
 
-        return (maxParallelizationSemaphore, maxQueuedActionsSemaphore);
+            return (maxParallelizationSemaphore, maxQueuedActionsSemaphore);
+        }
     }
 }

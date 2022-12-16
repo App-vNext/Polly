@@ -1,19 +1,20 @@
 ﻿using System;
 
-namespace Polly.Specs.Helpers.Bulkhead;
-
-public class AssertionFailure
+namespace Polly.Specs.Helpers.Bulkhead
 {
-    public AssertionFailure(int expected, int actual, string measure)
+    public class AssertionFailure
     {
-        if (string.IsNullOrWhiteSpace(measure)) throw new ArgumentNullException(nameof(measure));
+        public AssertionFailure(int expected, int actual, string measure)
+        {
+            if (string.IsNullOrWhiteSpace(measure)) throw new ArgumentNullException(nameof(measure));
 
-        Expected = expected;
-        Actual = actual;
-        Measure = measure;
+            Expected = expected;
+            Actual = actual;
+            Measure = measure;
+        }
+
+        public int Expected { get; }
+        public int Actual { get; }
+        public string Measure { get; }
     }
-
-    public int Expected { get; }
-    public int Actual { get; }
-    public string Measure { get; }
 }

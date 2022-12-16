@@ -1,21 +1,22 @@
-﻿namespace Polly.Specs.Helpers;
-
-/// <summary>
-/// A helper class supporting tests on how Policy&lt;TResult&gt; policies handle return results which are class types (as opposed to primitive types).
-/// </summary>
-internal class ResultClass
+﻿namespace Polly.Specs.Helpers
 {
-    public ResultClass(ResultPrimitive resultCode)
+    /// <summary>
+    /// A helper class supporting tests on how Policy&lt;TResult&gt; policies handle return results which are class types (as opposed to primitive types).
+    /// </summary>
+    internal class ResultClass
     {
-        ResultCode = resultCode;
+        public ResultClass(ResultPrimitive resultCode)
+        {
+            ResultCode = resultCode;
+        }
+
+        public ResultClass(ResultPrimitive resultCode, string someString) : this(resultCode)
+        {
+            SomeString = someString;
+        }
+
+        public ResultPrimitive ResultCode { get; set; }
+
+        public string SomeString { get; set; }
     }
-
-    public ResultClass(ResultPrimitive resultCode, string someString) : this(resultCode)
-    {
-        SomeString = someString;
-    }
-
-    public ResultPrimitive ResultCode { get; set; }
-
-    public string SomeString { get; set; }
 }

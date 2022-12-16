@@ -5,182 +5,183 @@ using FluentAssertions;
 using Polly.Specs.Helpers;
 using Xunit;
 
-namespace Polly.Specs;
-
-public class PolicyTResultAsyncSpecs
+namespace Polly.Specs
 {
-    #region Execute tests
-
-    [Fact]
-    public async Task Executing_the_policy_function_should_execute_the_specified_function_and_return_the_result()
+    public class PolicyTResultAsyncSpecs
     {
-        var policy = Policy
-            .HandleResult(ResultPrimitive.Fault)
-            .RetryAsync((_, _) => { });
+        #region Execute tests
 
-        var result = await policy.ExecuteAsync(() => Task.FromResult(ResultPrimitive.Good));
-
-        result.Should()
-            .Be(ResultPrimitive.Good);
-    }
-
-    #endregion
-
-    #region ExecuteAndCapture tests
-
-    [Fact]
-    public async Task Executing_the_policy_function_successfully_should_return_success_result()
-    {
-        var result = await Policy
-            .HandleResult(ResultPrimitive.Fault)
-            .RetryAsync((_, _) => { })
-            .ExecuteAndCaptureAsync(() => Task.FromResult(ResultPrimitive.Good));
-
-        result.Should().BeEquivalentTo(new
+        [Fact]
+        public async Task Executing_the_policy_function_should_execute_the_specified_function_and_return_the_result()
         {
-            Outcome = OutcomeType.Successful,
-            FinalException = (Exception)null,
-            ExceptionType = (ExceptionType?)null,
-            Result = ResultPrimitive.Good,
-            FinalHandledResult = default(ResultPrimitive),
-            FaultType = (FaultType?)null
-        });
-    }
+            var policy = Policy
+                .HandleResult(ResultPrimitive.Fault)
+                .RetryAsync((_, _) => { });
 
-    [Fact]
-    public async Task Executing_the_policy_function_and_failing_with_a_handled_result_should_return_failure_result_indicating_that_result_is_one_handled_by_this_policy()
-    {
-        var handledResult = ResultPrimitive.Fault;
+            var result = await policy.ExecuteAsync(() => Task.FromResult(ResultPrimitive.Good));
 
-        var result = await Policy
-            .HandleResult(handledResult)
-            .RetryAsync((_, _) => { })
-            .ExecuteAndCaptureAsync(() => Task.FromResult(handledResult));
+            result.Should()
+                .Be(ResultPrimitive.Good);
+        }
 
-        result.Should().BeEquivalentTo(new
+        #endregion
+
+        #region ExecuteAndCapture tests
+
+        [Fact]
+        public async Task Executing_the_policy_function_successfully_should_return_success_result()
         {
-            Outcome = OutcomeType.Failure,
-            FinalException = (Exception)null,
-            ExceptionType = (ExceptionType?)null,
-            FaultType = FaultType.ResultHandledByThisPolicy,
-            FinalHandledResult = handledResult,
-            Result = default(ResultPrimitive)
-        });
-    }
+            var result = await Policy
+                .HandleResult(ResultPrimitive.Fault)
+                .RetryAsync((_, _) => { })
+                .ExecuteAndCaptureAsync(() => Task.FromResult(ResultPrimitive.Good));
 
-    [Fact]
-    public async Task Executing_the_policy_function_and_returning_an_unhandled_result_should_return_result_not_indicating_any_failure()
-    {
-        var handledResult = ResultPrimitive.Fault;
-        var unhandledResult = ResultPrimitive.Good;
+            result.Should().BeEquivalentTo(new
+            {
+                Outcome = OutcomeType.Successful,
+                FinalException = (Exception)null,
+                ExceptionType = (ExceptionType?)null,
+                Result = ResultPrimitive.Good,
+                FinalHandledResult = default(ResultPrimitive),
+                FaultType = (FaultType?)null
+            });
+        }
 
-        var result = await Policy
-            .HandleResult(handledResult)
-            .RetryAsync((_, _) => { })
-            .ExecuteAndCaptureAsync(() => Task.FromResult(unhandledResult));
-
-        result.Should().BeEquivalentTo(new
+        [Fact]
+        public async Task Executing_the_policy_function_and_failing_with_a_handled_result_should_return_failure_result_indicating_that_result_is_one_handled_by_this_policy()
         {
-            Outcome = OutcomeType.Successful,
-            FinalException = (Exception)null,
-            ExceptionType = (ExceptionType?)null,
-            Result = unhandledResult,
-            FinalHandledResult = default(ResultPrimitive),
-            FaultType = (FaultType?)null
-        });
+            var handledResult = ResultPrimitive.Fault;
+
+            var result = await Policy
+                .HandleResult(handledResult)
+                .RetryAsync((_, _) => { })
+                .ExecuteAndCaptureAsync(() => Task.FromResult(handledResult));
+
+            result.Should().BeEquivalentTo(new
+            {
+                Outcome = OutcomeType.Failure,
+                FinalException = (Exception)null,
+                ExceptionType = (ExceptionType?)null,
+                FaultType = FaultType.ResultHandledByThisPolicy,
+                FinalHandledResult = handledResult,
+                Result = default(ResultPrimitive)
+            });
+        }
+
+        [Fact]
+        public async Task Executing_the_policy_function_and_returning_an_unhandled_result_should_return_result_not_indicating_any_failure()
+        {
+            var handledResult = ResultPrimitive.Fault;
+            var unhandledResult = ResultPrimitive.Good;
+
+            var result = await Policy
+                .HandleResult(handledResult)
+                .RetryAsync((_, _) => { })
+                .ExecuteAndCaptureAsync(() => Task.FromResult(unhandledResult));
+
+            result.Should().BeEquivalentTo(new
+            {
+                Outcome = OutcomeType.Successful,
+                FinalException = (Exception)null,
+                ExceptionType = (ExceptionType?)null,
+                Result = unhandledResult,
+                FinalHandledResult = default(ResultPrimitive),
+                FaultType = (FaultType?)null
+            });
+        }
+
+        #endregion
+
+        #region Context tests
+
+
+        [Fact]
+        public void Executing_the_policy_function_should_throw_when_context_data_is_null()
+        {
+            var policy = Policy
+                .HandleResult(ResultPrimitive.Fault)
+                .RetryAsync((_, _, _) => { });
+
+            policy.Awaiting(p => p.ExecuteAsync(_ => Task.FromResult(ResultPrimitive.Good), (IDictionary<string, object>)null))
+                  .Should().Throw<ArgumentNullException>();
+        }
+
+        [Fact]
+        public void Executing_the_policy_function_should_throw_when_context_is_null()
+        {
+            var policy = Policy
+                .HandleResult(ResultPrimitive.Fault)
+                .RetryAsync((_, _, _) => { });
+
+            policy.Awaiting(p => p.ExecuteAsync(_ => Task.FromResult(ResultPrimitive.Good), (Context)null))
+                  .Should().Throw<ArgumentNullException>().And
+                  .ParamName.Should().Be("context");
+        }
+
+        [Fact]
+        public void Execute_and_capturing_the_policy_function_should_throw_when_context_data_is_null()
+        {
+            var policy = Policy
+                .HandleResult(ResultPrimitive.Fault)
+                .RetryAsync((_, _, _) => { });
+
+            policy.Awaiting(p => p.ExecuteAndCaptureAsync(_ => Task.FromResult(ResultPrimitive.Good), (Context)null))
+                  .Should().Throw<ArgumentNullException>().And
+                  .ParamName.Should().Be("context");
+        }
+
+        [Fact]
+        public async Task Executing_the_policy_function_should_pass_context_to_executed_delegate()
+        {
+            var operationKey = "SomeKey";
+            var executionContext = new Context(operationKey);
+            Context capturedContext = null;
+
+            var policy = Policy.NoOpAsync<ResultPrimitive>();
+
+            await policy.ExecuteAsync(context => { capturedContext = context; return Task.FromResult(ResultPrimitive.Good); }, executionContext);
+
+            capturedContext.Should().BeSameAs(executionContext);
+        }
+
+        [Fact]
+        public void Execute_and_capturing_the_policy_function_should_throw_when_context_is_null()
+        {
+            var policy = Policy
+                .HandleResult(ResultPrimitive.Fault)
+                .RetryAsync((_, _, _) => { });
+
+            policy.Awaiting(p => p.ExecuteAndCaptureAsync(_ => Task.FromResult(ResultPrimitive.Good), (Context)null))
+                  .Should().Throw<ArgumentNullException>().And
+                  .ParamName.Should().Be("context");
+        }
+
+        [Fact]
+        public async Task Execute_and_capturing_the_policy_function_should_pass_context_to_executed_delegate()
+        {
+            var operationKey = "SomeKey";
+            var executionContext = new Context(operationKey);
+            Context capturedContext = null;
+
+            var policy = Policy.NoOpAsync<ResultPrimitive>();
+
+            await policy.ExecuteAndCaptureAsync(context => { capturedContext = context; return Task.FromResult(ResultPrimitive.Good); }, executionContext);
+
+            capturedContext.Should().BeSameAs(executionContext);
+        }
+
+        [Fact]
+        public async Task Execute_and_capturing_the_policy_function_should_pass_context_to_PolicyResult()
+        {
+            var operationKey = "SomeKey";
+            var executionContext = new Context(operationKey);
+
+            var policy = Policy.NoOpAsync<ResultPrimitive>();
+
+            (await policy.ExecuteAndCaptureAsync(_ => Task.FromResult(ResultPrimitive.Good), executionContext))
+                .Context.Should().BeSameAs(executionContext);
+        }
+
+        #endregion
     }
-
-    #endregion
-
-    #region Context tests
-
-
-    [Fact]
-    public void Executing_the_policy_function_should_throw_when_context_data_is_null()
-    {
-        var policy = Policy
-            .HandleResult(ResultPrimitive.Fault)
-            .RetryAsync((_, _, _) => { });
-
-        policy.Awaiting(p => p.ExecuteAsync(_ => Task.FromResult(ResultPrimitive.Good), (IDictionary<string, object>)null))
-            .Should().Throw<ArgumentNullException>();
-    }
-
-    [Fact]
-    public void Executing_the_policy_function_should_throw_when_context_is_null()
-    {
-        var policy = Policy
-            .HandleResult(ResultPrimitive.Fault)
-            .RetryAsync((_, _, _) => { });
-
-        policy.Awaiting(p => p.ExecuteAsync(_ => Task.FromResult(ResultPrimitive.Good), (Context)null))
-            .Should().Throw<ArgumentNullException>().And
-            .ParamName.Should().Be("context");
-    }
-
-    [Fact]
-    public void Execute_and_capturing_the_policy_function_should_throw_when_context_data_is_null()
-    {
-        var policy = Policy
-            .HandleResult(ResultPrimitive.Fault)
-            .RetryAsync((_, _, _) => { });
-
-        policy.Awaiting(p => p.ExecuteAndCaptureAsync(_ => Task.FromResult(ResultPrimitive.Good), (Context)null))
-            .Should().Throw<ArgumentNullException>().And
-            .ParamName.Should().Be("context");
-    }
-
-    [Fact]
-    public async Task Executing_the_policy_function_should_pass_context_to_executed_delegate()
-    {
-        var operationKey = "SomeKey";
-        var executionContext = new Context(operationKey);
-        Context capturedContext = null;
-
-        var policy = Policy.NoOpAsync<ResultPrimitive>();
-
-        await policy.ExecuteAsync(context => { capturedContext = context; return Task.FromResult(ResultPrimitive.Good); }, executionContext);
-
-        capturedContext.Should().BeSameAs(executionContext);
-    }
-
-    [Fact]
-    public void Execute_and_capturing_the_policy_function_should_throw_when_context_is_null()
-    {
-        var policy = Policy
-            .HandleResult(ResultPrimitive.Fault)
-            .RetryAsync((_, _, _) => { });
-
-        policy.Awaiting(p => p.ExecuteAndCaptureAsync(_ => Task.FromResult(ResultPrimitive.Good), (Context)null))
-            .Should().Throw<ArgumentNullException>().And
-            .ParamName.Should().Be("context");
-    }
-
-    [Fact]
-    public async Task Execute_and_capturing_the_policy_function_should_pass_context_to_executed_delegate()
-    {
-        var operationKey = "SomeKey";
-        var executionContext = new Context(operationKey);
-        Context capturedContext = null;
-
-        var policy = Policy.NoOpAsync<ResultPrimitive>();
-
-        await policy.ExecuteAndCaptureAsync(context => { capturedContext = context; return Task.FromResult(ResultPrimitive.Good); }, executionContext);
-
-        capturedContext.Should().BeSameAs(executionContext);
-    }
-
-    [Fact]
-    public async Task Execute_and_capturing_the_policy_function_should_pass_context_to_PolicyResult()
-    {
-        var operationKey = "SomeKey";
-        var executionContext = new Context(operationKey);
-
-        var policy = Policy.NoOpAsync<ResultPrimitive>();
-
-        (await policy.ExecuteAndCaptureAsync(_ => Task.FromResult(ResultPrimitive.Good), executionContext))
-            .Context.Should().BeSameAs(executionContext);
-    }
-
-    #endregion
 }

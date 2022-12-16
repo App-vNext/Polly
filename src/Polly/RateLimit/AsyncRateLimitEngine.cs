@@ -2,31 +2,32 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Polly.RateLimit;
-
-internal static class AsyncRateLimitEngine
+namespace Polly.RateLimit
 {
-    internal static async Task<TResult> ImplementationAsync<TResult>(
-        IRateLimiter rateLimiter,
-        Func<TimeSpan, Context, TResult> retryAfterFactory,
-        Func<Context, CancellationToken, Task<TResult>> action,
-        Context context,
-        CancellationToken cancellationToken,
-        bool continueOnCapturedContext
-    )
+    internal static class AsyncRateLimitEngine
     {
-        (var permit, var retryAfter) = rateLimiter.PermitExecution();
-
-        if (permit)
+        internal static async Task<TResult> ImplementationAsync<TResult>(
+            IRateLimiter rateLimiter,
+            Func<TimeSpan, Context, TResult> retryAfterFactory,
+            Func<Context, CancellationToken, Task<TResult>> action,
+            Context context,
+            CancellationToken cancellationToken,
+            bool continueOnCapturedContext
+            )
         {
-            return await action(context, cancellationToken).ConfigureAwait(continueOnCapturedContext);
-        }
+            (var permit, var retryAfter) = rateLimiter.PermitExecution();
 
-        if (retryAfterFactory != null)
-        {
-            return retryAfterFactory(retryAfter, context);
-        }
+            if (permit)
+            {
+                return await action(context, cancellationToken).ConfigureAwait(continueOnCapturedContext);
+            }
 
-        throw new RateLimitRejectedException(retryAfter);
+            if (retryAfterFactory != null)
+            {
+                return retryAfterFactory(retryAfter, context);
+            }
+
+            throw new RateLimitRejectedException(retryAfter);
+        }
     }
 }
