@@ -20,8 +20,8 @@ namespace Polly.Retry
             Func<int, DelegateResult<TResult>, Context, TimeSpan> sleepDurationProvider = null,
             bool continueOnCapturedContext = false)
         {
-            var tryCount = 0;
-            var sleepDurationsEnumerator = sleepDurationsEnumerable?.GetEnumerator();
+            int tryCount = 0;
+            IEnumerator<TimeSpan> sleepDurationsEnumerator = sleepDurationsEnumerable?.GetEnumerator();
 
             try
             {
@@ -34,7 +34,7 @@ namespace Polly.Retry
 
                     try
                     {
-                        var result = await action(context, cancellationToken).ConfigureAwait(continueOnCapturedContext);
+                        TResult result = await action(context, cancellationToken).ConfigureAwait(continueOnCapturedContext);
 
                         if (!shouldRetryResultPredicates.AnyMatch(result))
                         {
@@ -52,7 +52,7 @@ namespace Polly.Retry
                     }
                     catch (Exception ex)
                     {
-                        var handledException = shouldRetryExceptionPredicates.FirstMatchOrDefault(ex);
+                        Exception handledException = shouldRetryExceptionPredicates.FirstMatchOrDefault(ex);
                         if (handledException == null)
                         {
                             throw;
@@ -71,7 +71,7 @@ namespace Polly.Retry
 
                     if (tryCount < int.MaxValue) { tryCount++; }
 
-                    var waitDuration = sleepDurationsEnumerator?.Current ?? (sleepDurationProvider?.Invoke(tryCount, outcome, context) ?? TimeSpan.Zero);
+                    TimeSpan waitDuration = sleepDurationsEnumerator?.Current ?? (sleepDurationProvider?.Invoke(tryCount, outcome, context) ?? TimeSpan.Zero);
 
                     await onRetryAsync(outcome, waitDuration, tryCount, context).ConfigureAwait(continueOnCapturedContext);
 

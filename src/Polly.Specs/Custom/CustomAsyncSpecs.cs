@@ -12,9 +12,9 @@ namespace Polly.Specs.Custom
         [Fact]
         public void Should_be_able_to_construct_active_policy()
         {
-            var construct = () =>
+            Action construct = () =>
             {
-                var policy = AsyncPreExecutePolicy.CreateAsync(async () =>
+                AsyncPreExecutePolicy policy = AsyncPreExecutePolicy.CreateAsync(async () =>
                 {
                     // Placeholder for more substantive async work.
                     Console.WriteLine("Do something");
@@ -28,10 +28,10 @@ namespace Polly.Specs.Custom
         [Fact]
         public void Active_policy_should_execute()
         {
-            var preExecuted = false;
-            var policy = AsyncPreExecutePolicy.CreateAsync(() => { preExecuted = true; return Task.CompletedTask; });
+            bool preExecuted = false;
+            AsyncPreExecutePolicy policy = AsyncPreExecutePolicy.CreateAsync(() => { preExecuted = true; return Task.CompletedTask; });
 
-            var executed = false;
+            bool executed = false;
 
             policy.Awaiting(x => x.ExecuteAsync(() => { executed = true; return Task.CompletedTask; }))
                 .Should().NotThrow();
@@ -43,9 +43,9 @@ namespace Polly.Specs.Custom
         [Fact]
         public void Should_be_able_to_construct_reactive_policy()
         {
-            var construct = () =>
+            Action construct = () =>
             {
-                var policy = Policy.Handle<Exception>().WithBehaviourAsync(async ex =>
+                AsyncAddBehaviourIfHandlePolicy policy = Policy.Handle<Exception>().WithBehaviourAsync(async ex =>
                 {
                     // Placeholder for more substantive async work.
                     Console.WriteLine("Handling " + ex.Message);
@@ -60,10 +60,10 @@ namespace Polly.Specs.Custom
         public void Reactive_policy_should_handle_exception()
         {
             Exception handled = null;
-            var policy = Policy.Handle<InvalidOperationException>().WithBehaviourAsync(async ex => { handled = ex; await Task.CompletedTask; });
+            AsyncAddBehaviourIfHandlePolicy policy = Policy.Handle<InvalidOperationException>().WithBehaviourAsync(async ex => { handled = ex; await Task.CompletedTask; });
 
             Exception toThrow = new InvalidOperationException();
-            var executed = false;
+            bool executed = false;
 
             policy.Awaiting(x => x.ExecuteAsync(() =>
             {
@@ -80,10 +80,10 @@ namespace Polly.Specs.Custom
         public void Reactive_policy_should_be_able_to_ignore_unhandled_exception()
         {
             Exception handled = null;
-            var policy = Policy.Handle<InvalidOperationException>().WithBehaviourAsync(async ex => { handled = ex; await Task.CompletedTask; });
+            AsyncAddBehaviourIfHandlePolicy policy = Policy.Handle<InvalidOperationException>().WithBehaviourAsync(async ex => { handled = ex; await Task.CompletedTask; });
 
             Exception toThrow = new NotImplementedException();
-            var executed = false;
+            bool executed = false;
 
             policy.Awaiting(x => x.ExecuteAsync(() =>
                 {

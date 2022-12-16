@@ -44,8 +44,8 @@ namespace Polly.CircuitBreaker
         {
             ActualiseCurrentMetric_NeedsLock();
 
-            var successes = 0;
-            var failures = 0;
+            int successes = 0;
+            int failures = 0;
             foreach (var window in _windows)
             {
                 successes += window.Successes;
@@ -62,7 +62,7 @@ namespace Polly.CircuitBreaker
 
         private void ActualiseCurrentMetric_NeedsLock()
         {
-            var now = SystemClock.UtcNow().Ticks;
+            long now = SystemClock.UtcNow().Ticks;
             if (_currentWindow == null || now - _currentWindow.StartedAt >= _windowDuration)
             {
                 _currentWindow = new HealthCount { StartedAt = now };

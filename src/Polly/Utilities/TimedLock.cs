@@ -32,7 +32,7 @@ namespace Polly.Utilities
 
         private static TimedLock Lock(object o, TimeSpan timeout)
         {
-            var tl = new TimedLock(o);
+            TimedLock tl = new TimedLock(o);
             if (!Monitor.TryEnter(o, timeout))
             {
 #if DEBUG

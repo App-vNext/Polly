@@ -36,7 +36,7 @@ namespace Polly.Specs.Timeout
 
                 _trackedTokenSource = tokenSource;
 
-                var newCancelAt = _offsetUtcNow.Add(timespan);
+                DateTimeOffset newCancelAt = _offsetUtcNow.Add(timespan);
                 _cancelAt = newCancelAt < _cancelAt ? newCancelAt : _cancelAt;
 
                 SystemClock.Sleep(TimeSpan.Zero, CancellationToken.None); // Invoke our custom definition of sleep, to check for immediate cancellation.
@@ -56,7 +56,7 @@ namespace Polly.Specs.Timeout
                 else
                 {
                     // Tracking something to cancel - does this sleep hit time to cancel?
-                    var timeToCancellation = _cancelAt - _offsetUtcNow;
+                    TimeSpan timeToCancellation = _cancelAt - _offsetUtcNow;
                     if (sleepTimespan >= timeToCancellation)
                     {
                         // Cancel!  (And advance time only to the instant of cancellation)
@@ -64,7 +64,7 @@ namespace Polly.Specs.Timeout
                         _utcNow += timeToCancellation;
 
                         // (and stop tracking it after cancelling; it can't be cancelled twice, so there is no need, and the owner may dispose it)
-                        var copySource = _trackedTokenSource;
+                        CancellationTokenSource copySource = _trackedTokenSource;
                         _trackedTokenSource = null;
                         copySource.Cancel();
                         copySource.Token.ThrowIfCancellationRequested();

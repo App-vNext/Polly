@@ -20,7 +20,7 @@ namespace Polly.CircuitBreaker
 
             try
             {
-                var result = action(context, cancellationToken);
+                TResult result = action(context, cancellationToken);
 
                 if (shouldHandleResultPredicates.AnyMatch(result))
                 {
@@ -35,7 +35,7 @@ namespace Polly.CircuitBreaker
             }
             catch (Exception ex)
             {
-                var handledException = shouldHandleExceptionPredicates.FirstMatchOrDefault(ex);
+                Exception handledException = shouldHandleExceptionPredicates.FirstMatchOrDefault(ex);
                 if (handledException == null)
                 {
                     throw;

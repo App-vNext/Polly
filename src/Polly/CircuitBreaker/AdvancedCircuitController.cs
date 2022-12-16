@@ -84,7 +84,7 @@ namespace Polly.CircuitBreaker
                         _metrics.IncrementFailure_NeedsLock();
                         var healthCount = _metrics.GetHealthCount_NeedsLock();
 
-                        var throughput = healthCount.Total;
+                        int throughput = healthCount.Total;
                         if (throughput >= _minimumThroughput && ((double)healthCount.Failures) / throughput >= _failureThreshold)
                         {
                             Break_NeedsLock(context);

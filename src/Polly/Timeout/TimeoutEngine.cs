@@ -17,13 +17,13 @@ namespace Polly.Timeout
             Action<Context, TimeSpan, Task, Exception> onTimeout)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            var timeout = timeoutProvider(context);
+            TimeSpan timeout = timeoutProvider(context);
 
-            using (var timeoutCancellationTokenSource = new CancellationTokenSource())
+            using (CancellationTokenSource timeoutCancellationTokenSource = new CancellationTokenSource())
             {
-                using (var combinedTokenSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, timeoutCancellationTokenSource.Token))
+                using (CancellationTokenSource combinedTokenSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, timeoutCancellationTokenSource.Token))
                 {
-                    var combinedToken = combinedTokenSource.Token;
+                    CancellationToken combinedToken = combinedTokenSource.Token;
 
                     Task<TResult> actionTask = null;
                     try

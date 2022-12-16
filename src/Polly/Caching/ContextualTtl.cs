@@ -30,9 +30,9 @@ namespace Polly.Caching
         {
             if (!context.ContainsKey(TimeSpanKey)) return _noTtl;
 
-            var sliding = false;
+            bool sliding = false;
 
-            if (context.TryGetValue(SlidingExpirationKey, out var objValue))
+            if (context.TryGetValue(SlidingExpirationKey, out object objValue))
             {
                 sliding = objValue as bool? ?? false;
             }

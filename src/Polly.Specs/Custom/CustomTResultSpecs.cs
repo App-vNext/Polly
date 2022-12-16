@@ -12,9 +12,9 @@ namespace Polly.Specs.Custom
         [Fact]
         public void Should_be_able_to_construct_active_policy()
         {
-            var construct = () =>
+            Action construct = () =>
             {
-                var policy = PreExecutePolicy<ResultPrimitive>.Create(() => Console.WriteLine("Do something"));
+                PreExecutePolicy<ResultPrimitive> policy = PreExecutePolicy<ResultPrimitive>.Create(() => Console.WriteLine("Do something"));
             };
 
             construct.Should().NotThrow();
@@ -23,10 +23,10 @@ namespace Polly.Specs.Custom
         [Fact]
         public void Active_policy_should_execute()
         {
-            var preExecuted = false;
-            var policy = PreExecutePolicy<ResultPrimitive>.Create(() => preExecuted = true);
+            bool preExecuted = false;
+            PreExecutePolicy<ResultPrimitive> policy = PreExecutePolicy<ResultPrimitive>.Create(() => preExecuted = true);
 
-            var executed = false;
+            bool executed = false;
 
             policy.Invoking(x => x.Execute(() => {
                     executed = true;
@@ -41,9 +41,9 @@ namespace Polly.Specs.Custom
         [Fact]
         public void Should_be_able_to_construct_reactive_policy()
         {
-            var construct = () =>
+            Action construct = () =>
             {
-                var policy = Policy.HandleResult<ResultPrimitive>(ResultPrimitive.Fault).WithBehaviour(outcome => Console.WriteLine("Handling " + outcome.Result));
+                AddBehaviourIfHandlePolicy<ResultPrimitive> policy = Policy.HandleResult<ResultPrimitive>(ResultPrimitive.Fault).WithBehaviour(outcome => Console.WriteLine("Handling " + outcome.Result));
             };
 
             construct.Should().NotThrow();
@@ -52,11 +52,11 @@ namespace Polly.Specs.Custom
         [Fact]
         public void Reactive_policy_should_handle_result()
         {
-            var handled = ResultPrimitive.Undefined;
-            var policy = Policy.HandleResult<ResultPrimitive>(ResultPrimitive.Fault).WithBehaviour(outcome => handled = outcome.Result);
+            ResultPrimitive handled = ResultPrimitive.Undefined;
+            AddBehaviourIfHandlePolicy<ResultPrimitive> policy = Policy.HandleResult<ResultPrimitive>(ResultPrimitive.Fault).WithBehaviour(outcome => handled = outcome.Result);
 
-            var toReturn = ResultPrimitive.Fault;
-            var executed = false;
+            ResultPrimitive toReturn = ResultPrimitive.Fault;
+            bool executed = false;
 
             policy.Execute(() =>
                 {
@@ -73,10 +73,10 @@ namespace Polly.Specs.Custom
         public void Reactive_policy_should_be_able_to_ignore_unhandled_result()
         {
             ResultPrimitive? handled = null;
-            var policy = Policy.HandleResult<ResultPrimitive>(ResultPrimitive.Fault).WithBehaviour(outcome => handled = outcome.Result);
+            AddBehaviourIfHandlePolicy<ResultPrimitive> policy = Policy.HandleResult<ResultPrimitive>(ResultPrimitive.Fault).WithBehaviour(outcome => handled = outcome.Result);
 
-            var toReturn = ResultPrimitive.FaultYetAgain;
-            var executed = false;
+            ResultPrimitive toReturn = ResultPrimitive.FaultYetAgain;
+            bool executed = false;
 
             policy.Execute(() =>
                 {

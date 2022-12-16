@@ -82,7 +82,7 @@ namespace Polly
         {
             if (context == null) throw new ArgumentNullException(nameof(context));
 
-            SetPolicyContext(context, out var priorPolicyWrapKey, out var priorPolicyKey);
+            SetPolicyContext(context, out string priorPolicyWrapKey, out string priorPolicyKey);
 
             try
             {
@@ -165,7 +165,7 @@ namespace Polly
 
             try
             {
-                var result = Execute(action, context, cancellationToken);
+                TResult result = Execute(action, context, cancellationToken);
 
                 if (ResultPredicates.AnyMatch(result))
                 {

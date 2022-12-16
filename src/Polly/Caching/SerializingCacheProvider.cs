@@ -34,7 +34,7 @@ namespace Polly.Caching
         /// </returns>
         public (bool, object) TryGet(string key)
         {
-            (var cacheHit, var objectToDeserialize) = _wrappedCacheProvider.TryGet(key);
+            (bool cacheHit, TSerialized objectToDeserialize) = _wrappedCacheProvider.TryGet(key);
             return (cacheHit, cacheHit ? _serializer.Deserialize(objectToDeserialize) : null);
         }
 
@@ -84,7 +84,7 @@ namespace Polly.Caching
         /// </returns>
         public (bool, TResult) TryGet(string key)
         {
-            (var cacheHit, var objectToDeserialize) = _wrappedCacheProvider.TryGet(key);
+            (bool cacheHit, TSerialized objectToDeserialize) = _wrappedCacheProvider.TryGet(key);
             return (cacheHit, cacheHit ? _serializer.Deserialize(objectToDeserialize) : default);
         }
 

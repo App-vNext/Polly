@@ -54,16 +54,16 @@ namespace Polly.Specs.Bulkhead
         [Fact]
         public void Should_call_onBulkheadRejected_with_passed_context()
         {
-            var operationKey = "SomeKey";
-            var contextPassedToExecute = new Context(operationKey);
+            string operationKey = "SomeKey";
+            Context contextPassedToExecute = new Context(operationKey);
 
             Context contextPassedToOnRejected = null;
             Func<Context, Task> onRejectedAsync = async ctx => { contextPassedToOnRejected = ctx; await TaskHelper.EmptyTask; };
 
             using (var bulkhead = Policy.BulkheadAsync(1, onRejectedAsync))
             {
-                var tcs = new TaskCompletionSource<object>();
-                using (var cancellationSource = new CancellationTokenSource())
+                TaskCompletionSource<object> tcs = new TaskCompletionSource<object>();
+                using (CancellationTokenSource cancellationSource = new CancellationTokenSource())
                 {
                     Task.Run(() => { bulkhead.ExecuteAsync(async () => { await tcs.Task; }); });
 

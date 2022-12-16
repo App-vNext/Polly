@@ -22,7 +22,7 @@ namespace Polly.Caching
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            var cacheKey = cacheKeyStrategy(context);
+            string cacheKey = cacheKeyStrategy(context);
             if (cacheKey == null)
             {
                 return await action(context, cancellationToken).ConfigureAwait(continueOnCapturedContext);
@@ -50,9 +50,9 @@ namespace Polly.Caching
                 onCacheMiss(context, cacheKey);
             }
 
-            var result = await action(context, cancellationToken).ConfigureAwait(continueOnCapturedContext);
+            TResult result = await action(context, cancellationToken).ConfigureAwait(continueOnCapturedContext);
 
-            var ttl = ttlStrategy.GetTtl(context, result);
+            Ttl ttl = ttlStrategy.GetTtl(context, result);
             if (ttl.Timespan > TimeSpan.Zero)
             {
                 try

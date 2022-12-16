@@ -38,7 +38,7 @@ namespace Polly.Caching
         /// </returns>
         public async Task<(bool, object)> TryGetAsync(string key, CancellationToken cancellationToken, bool continueOnCapturedContext)
         {
-            (var cacheHit, var objectToDeserialize) = await _wrappedCacheProvider.TryGetAsync(key, cancellationToken, continueOnCapturedContext).ConfigureAwait(continueOnCapturedContext);
+            (bool cacheHit, TSerialized objectToDeserialize) = await _wrappedCacheProvider.TryGetAsync(key, cancellationToken, continueOnCapturedContext).ConfigureAwait(continueOnCapturedContext);
             return (cacheHit, cacheHit ? _serializer.Deserialize(objectToDeserialize) : null);
         }
 
@@ -99,7 +99,7 @@ namespace Polly.Caching
         /// </returns>
         public async Task<(bool, TResult)> TryGetAsync(string key, CancellationToken cancellationToken, bool continueOnCapturedContext)
         {
-            (var cacheHit, var objectToDeserialize) = await _wrappedCacheProvider.TryGetAsync(key, cancellationToken, continueOnCapturedContext).ConfigureAwait(continueOnCapturedContext);
+            (bool cacheHit, TSerialized objectToDeserialize) = await _wrappedCacheProvider.TryGetAsync(key, cancellationToken, continueOnCapturedContext).ConfigureAwait(continueOnCapturedContext);
             return (cacheHit, cacheHit ? _serializer.Deserialize(objectToDeserialize) : default);
         }
 

@@ -36,7 +36,7 @@ namespace Polly
         public static AsyncCircuitBreakerPolicy AdvancedCircuitBreakerAsync(this PolicyBuilder policyBuilder, double failureThreshold, TimeSpan samplingDuration, int minimumThroughput, TimeSpan durationOfBreak)
         {
             Action<Exception, TimeSpan> doNothingOnBreak = (_, _) => { };
-            var doNothingOnReset = () => { };
+            Action doNothingOnReset = () => { };
 
             return policyBuilder.AdvancedCircuitBreakerAsync(
                failureThreshold, samplingDuration, minimumThroughput,
@@ -110,7 +110,7 @@ namespace Polly
         /// <exception cref="ArgumentNullException">onReset</exception>
         public static AsyncCircuitBreakerPolicy AdvancedCircuitBreakerAsync(this PolicyBuilder policyBuilder, double failureThreshold, TimeSpan samplingDuration, int minimumThroughput, TimeSpan durationOfBreak, Action<Exception, TimeSpan, Context> onBreak, Action<Context> onReset)
         {
-            var doNothingOnHalfOpen = () => { };
+            Action doNothingOnHalfOpen = () => { };
             return policyBuilder.AdvancedCircuitBreakerAsync(
                 failureThreshold, samplingDuration, minimumThroughput,
                 durationOfBreak,

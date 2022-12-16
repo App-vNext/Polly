@@ -16,7 +16,7 @@ namespace Polly.Specs.CircuitBreaker
         [Fact]
         public void Should_open_circuit_with_exception_after_specified_number_of_specified_exception_have_been_returned_when_result_policy_handling_exceptions_only()
         {
-            var breaker = Policy<ResultPrimitive>
+            CircuitBreakerPolicy<ResultPrimitive> breaker = Policy<ResultPrimitive>
                             .Handle<DivideByZeroException>()
                             .CircuitBreaker(2, TimeSpan.FromMinutes(1));
 
@@ -39,7 +39,7 @@ namespace Polly.Specs.CircuitBreaker
         [Fact]
         public void Should_open_circuit_with_the_last_exception_after_specified_number_of_exceptions_and_results_have_been_raised__breaking_on_result__when_configuring_result_first()
         {
-            var breaker = Policy
+            CircuitBreakerPolicy<ResultPrimitive> breaker = Policy
                             .HandleResult(ResultPrimitive.Fault)
                             .Or<DivideByZeroException>()
                             .CircuitBreaker(2, TimeSpan.FromMinutes(1));
@@ -64,7 +64,7 @@ namespace Polly.Specs.CircuitBreaker
         [Fact]
         public void Should_open_circuit_with_the_last_handled_result_after_specified_number_of_exceptions_and_results_have_been_raised__breaking_on_result__when_configuring_result_first()
         {
-            var breaker = Policy
+            CircuitBreakerPolicy<ResultPrimitive> breaker = Policy
                             .HandleResult(ResultPrimitive.Fault)
                             .Or<DivideByZeroException>()
                             .CircuitBreaker(2, TimeSpan.FromMinutes(1));
@@ -89,7 +89,7 @@ namespace Polly.Specs.CircuitBreaker
         [Fact]
         public void Should_open_circuit_with_the_last_exception_after_specified_number_of_exceptions_and_results_have_been_raised__breaking_on_result__when_configuring_exception_first()
         {
-            var breaker = Policy
+            CircuitBreakerPolicy<ResultPrimitive> breaker = Policy
                 .Handle<DivideByZeroException>()
                 .OrResult(ResultPrimitive.Fault)
                 .CircuitBreaker(2, TimeSpan.FromMinutes(1));
@@ -114,7 +114,7 @@ namespace Polly.Specs.CircuitBreaker
         [Fact]
         public void Should_open_circuit_with_the_last_handled_result_after_specified_number_of_exceptions_and_results_have_been_raised__breaking_on_result__when_configuring_exception_first()
         {
-            var breaker = Policy
+            CircuitBreakerPolicy<ResultPrimitive> breaker = Policy
                 .Handle<DivideByZeroException>()
                 .OrResult(ResultPrimitive.Fault)
                 .CircuitBreaker(2, TimeSpan.FromMinutes(1));
@@ -139,7 +139,7 @@ namespace Polly.Specs.CircuitBreaker
         [Fact]
         public void Should_open_circuit_if_results_and_exceptions_returned_match_combination_of_the_result_and_exception_predicates()
         {
-            var breaker = Policy
+            CircuitBreakerPolicy<ResultClass> breaker = Policy
                 .Handle<ArgumentException>(e => e.ParamName == "key")
                 .OrResult<ResultClass>(r => r.ResultCode == ResultPrimitive.Fault)
                 .CircuitBreaker(2, TimeSpan.FromMinutes(1));
@@ -164,7 +164,7 @@ namespace Polly.Specs.CircuitBreaker
         [Fact]
         public void Should_not_open_circuit_if_result_returned_is_not_one_of_the_configured_results_or_exceptions()
         {
-            var breaker = Policy
+            CircuitBreakerPolicy<ResultPrimitive> breaker = Policy
                 .Handle<DivideByZeroException>()
                 .OrResult(ResultPrimitive.Fault)
                 .CircuitBreaker(2, TimeSpan.FromMinutes(1));
@@ -185,7 +185,7 @@ namespace Polly.Specs.CircuitBreaker
         [Fact]
         public void Should_not_open_circuit_if_exception_thrown_is_not_one_of_the_configured_results_or_exceptions()
         {
-            var breaker = Policy
+            CircuitBreakerPolicy<ResultPrimitive> breaker = Policy
                 .Handle<DivideByZeroException>()
                 .OrResult(ResultPrimitive.Fault)
                 .CircuitBreaker(2, TimeSpan.FromMinutes(1));
@@ -206,7 +206,7 @@ namespace Polly.Specs.CircuitBreaker
         [Fact]
         public void Should_not_open_circuit_if_result_returned_does_not_match_any_of_the_result_predicates()
         {
-            var breaker = Policy
+            CircuitBreakerPolicy<ResultClass> breaker = Policy
                 .Handle<ArgumentException>(e => e.ParamName == "key")
                 .OrResult<ResultClass>(r => r.ResultCode == ResultPrimitive.Fault)
                 .CircuitBreaker(2, TimeSpan.FromMinutes(1));
@@ -240,7 +240,7 @@ namespace Polly.Specs.CircuitBreaker
 
         [Fact] public void Should_open_circuit_with_the_last_exception_after_specified_number_of_exceptions_and_results_have_been_raised__configuring_multiple_results_and_exceptions()
         {
-            var breaker = Policy
+            CircuitBreakerPolicy<ResultPrimitive> breaker = Policy
                 .Handle<DivideByZeroException>()
                 .OrResult(ResultPrimitive.Fault)
                 .Or<ArgumentException>()
@@ -275,7 +275,7 @@ namespace Polly.Specs.CircuitBreaker
         [Fact]
         public void Should_open_circuit_with_the_last_handled_result_after_specified_number_of_exceptions_and_results_have_been_raised__when_configuring_multiple_results_and_exceptions()
         {
-            var breaker = Policy
+            CircuitBreakerPolicy<ResultPrimitive> breaker = Policy
                 .Handle<DivideByZeroException>()
                 .OrResult(ResultPrimitive.Fault)
                 .Or<ArgumentException>()
@@ -310,7 +310,7 @@ namespace Polly.Specs.CircuitBreaker
         [Fact]
         public void Should_not_open_circuit_if_result_raised_or_exception_thrown_is_not_one_of_the_handled_results_or_exceptions()
         {
-            var breaker = Policy
+            CircuitBreakerPolicy<ResultPrimitive> breaker = Policy
                             .HandleResult(ResultPrimitive.Fault)
                             .Or<DivideByZeroException>()
                             .CircuitBreaker(2, TimeSpan.FromMinutes(1));
@@ -344,7 +344,7 @@ namespace Polly.Specs.CircuitBreaker
 
             var durationOfBreak = TimeSpan.FromMinutes(1);
 
-            var breaker = Policy
+            CircuitBreakerPolicy<ResultPrimitive> breaker = Policy
                             .HandleResult(ResultPrimitive.Fault)
                             .Or<DivideByZeroException>()
                             .CircuitBreaker(2, TimeSpan.FromMinutes(1));
@@ -384,7 +384,7 @@ namespace Polly.Specs.CircuitBreaker
 
             var durationOfBreak = TimeSpan.FromMinutes(1);
 
-            var breaker = Policy
+            CircuitBreakerPolicy<ResultPrimitive> breaker = Policy
                             .HandleResult(ResultPrimitive.Fault)
                             .Or<DivideByZeroException>()
                             .CircuitBreaker(2, TimeSpan.FromMinutes(1));
@@ -430,9 +430,9 @@ namespace Polly.Specs.CircuitBreaker
             Action<DelegateResult<ResultPrimitive>, TimeSpan, Context> onBreak = (outcome, _, _) => { handledResult = outcome.Result; };
             Action<Context> onReset = _ => { };
 
-            var durationOfBreak = TimeSpan.FromMinutes(1);
+            TimeSpan durationOfBreak = TimeSpan.FromMinutes(1);
 
-            var breaker = Policy
+            CircuitBreakerPolicy<ResultPrimitive> breaker = Policy
                 .Handle<DivideByZeroException>()
                 .OrResult(ResultPrimitive.Fault)
                 .CircuitBreaker(2, durationOfBreak, onBreak, onReset);
@@ -456,9 +456,9 @@ namespace Polly.Specs.CircuitBreaker
             Action<DelegateResult<ResultPrimitive>, TimeSpan, Context> onBreak = (outcome, _, _) => { lastException = outcome.Exception; };
             Action<Context> onReset = _ => { };
 
-            var durationOfBreak = TimeSpan.FromMinutes(1);
+            TimeSpan durationOfBreak = TimeSpan.FromMinutes(1);
 
-            var breaker = Policy
+            CircuitBreakerPolicy<ResultPrimitive> breaker = Policy
                 .Handle<DivideByZeroException>()
                 .OrResult(ResultPrimitive.Fault)
                 .CircuitBreaker(2, durationOfBreak, onBreak, onReset);
@@ -483,7 +483,7 @@ namespace Polly.Specs.CircuitBreaker
         [Fact]
         public void Should_initialise_LastHandledResult_and_LastResult_to_default_on_creation()
         {
-            var breaker = Policy
+            CircuitBreakerPolicy<ResultPrimitive> breaker = Policy
                 .Handle<DivideByZeroException>()
                 .OrResult(ResultPrimitive.Fault)
                 .CircuitBreaker(2, TimeSpan.FromMinutes(1));
@@ -495,7 +495,7 @@ namespace Polly.Specs.CircuitBreaker
         [Fact]
         public void Should_set_LastHandledResult_on_handling_result_even_when_not_breaking()
         {
-            var breaker = Policy
+            CircuitBreakerPolicy<ResultPrimitive> breaker = Policy
                 .Handle<DivideByZeroException>()
                 .OrResult(ResultPrimitive.Fault)
                 .CircuitBreaker(2, TimeSpan.FromMinutes(1));
@@ -512,7 +512,7 @@ namespace Polly.Specs.CircuitBreaker
         [Fact]
         public void Should_set_LastException_on_exception_even_when_not_breaking()
         {
-            var breaker = Policy
+            CircuitBreakerPolicy<ResultPrimitive> breaker = Policy
                 .Handle<DivideByZeroException>()
                 .OrResult(ResultPrimitive.Fault)
                 .CircuitBreaker(2, TimeSpan.FromMinutes(1));
@@ -529,7 +529,7 @@ namespace Polly.Specs.CircuitBreaker
         [Fact]
         public void Should_set_LastHandledResult_to_last_handled_result_when_breaking()
         {
-            var breaker = Policy
+            CircuitBreakerPolicy<ResultPrimitive> breaker = Policy
                 .Handle<DivideByZeroException>()
                 .OrResult(ResultPrimitive.Fault)
                 .CircuitBreaker(2, TimeSpan.FromMinutes(1));
@@ -549,7 +549,7 @@ namespace Polly.Specs.CircuitBreaker
         [Fact]
         public void Should_set_LastException_to_last_exception_when_breaking()
         {
-            var breaker = Policy
+            CircuitBreakerPolicy<ResultPrimitive> breaker = Policy
                 .Handle<DivideByZeroException>()
                 .OrResult(ResultPrimitive.Fault)
                 .CircuitBreaker(2, TimeSpan.FromMinutes(1));
@@ -569,7 +569,7 @@ namespace Polly.Specs.CircuitBreaker
         [Fact]
         public void Should_set_LastHandledResult_and_LastException_to_default_on_circuit_reset()
         {
-            var breaker = Policy
+            CircuitBreakerPolicy<ResultPrimitive> breaker = Policy
                 .Handle<DivideByZeroException>()
                 .OrResult(ResultPrimitive.Fault)
                 .CircuitBreaker(2, TimeSpan.FromMinutes(1));

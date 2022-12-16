@@ -15,7 +15,7 @@ namespace Polly.Caching
 
         (bool, TCacheFormat) ISyncCacheProvider<TCacheFormat>.TryGet(string key)
         {
-            (var cacheHit, var result) = _wrappedCacheProvider.TryGet(key);
+            (bool cacheHit, object result) = _wrappedCacheProvider.TryGet(key);
             return (cacheHit, (TCacheFormat) (result ?? default(TCacheFormat)));
         }
 

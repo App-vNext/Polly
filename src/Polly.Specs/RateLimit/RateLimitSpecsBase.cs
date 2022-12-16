@@ -16,9 +16,9 @@ namespace Polly.Specs.RateLimit
         /// <param name="actionContainingAssertions">The action containing fluent assertions, which must succeed within the timespan.</param>
         protected void Within(TimeSpan timeSpan, Action actionContainingAssertions)
         {
-            var retryInterval = TimeSpan.FromSeconds(0.2);
+            TimeSpan retryInterval = TimeSpan.FromSeconds(0.2);
 
-            var watch = Stopwatch.StartNew();
+            Stopwatch watch = Stopwatch.StartNew();
             while (true)
             {
                 try
@@ -39,13 +39,13 @@ namespace Polly.Specs.RateLimit
 
         protected static void FixClock()
         {
-            var now = DateTimeOffset.UtcNow;
+            DateTimeOffset now = DateTimeOffset.UtcNow;
             SystemClock.DateTimeOffsetUtcNow = () => now;
         }
 
         protected static void AdvanceClock(TimeSpan advance)
         {
-            var now = SystemClock.DateTimeOffsetUtcNow();
+            DateTimeOffset now = SystemClock.DateTimeOffsetUtcNow();
             SystemClock.DateTimeOffsetUtcNow = () => now + advance;
         }
 

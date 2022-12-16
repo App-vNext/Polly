@@ -14,7 +14,7 @@ namespace Polly.Specs
         [Fact]
         public async Task Executing_the_policy_action_should_execute_the_specified_async_action()
         {
-            var executed = false;
+            bool executed = false;
 
             var policy = Policy
                 .Handle<DivideByZeroException>()
@@ -37,7 +37,7 @@ namespace Polly.Specs
                 .Handle<DivideByZeroException>()
                 .RetryAsync((_, _) => { });
 
-            var result = await policy.ExecuteAsync(() => Task.FromResult(2));
+            int result = await policy.ExecuteAsync(() => Task.FromResult(2));
 
             result.Should()
                 .Be(2);
@@ -213,8 +213,8 @@ namespace Polly.Specs
         [Fact]
         public async Task Executing_the_policy_function_should_pass_context_to_executed_delegate()
         {
-            var operationKey = "SomeKey";
-            var executionContext = new Context(operationKey);
+            string operationKey = "SomeKey";
+            Context executionContext = new Context(operationKey);
             Context capturedContext = null;
 
             var policy = Policy.NoOpAsync();
@@ -273,8 +273,8 @@ namespace Polly.Specs
         [Fact]
         public async Task Execute_and_capturing_the_policy_function_should_pass_context_to_executed_delegate()
         {
-            var operationKey = "SomeKey";
-            var executionContext = new Context(operationKey);
+            string operationKey = "SomeKey";
+            Context executionContext = new Context(operationKey);
             Context capturedContext = null;
 
             var policy = Policy.NoOpAsync();
@@ -287,8 +287,8 @@ namespace Polly.Specs
         [Fact]
         public async Task Execute_and_capturing_the_policy_function_should_pass_context_to_PolicyResult()
         {
-            var operationKey = "SomeKey";
-            var executionContext = new Context(operationKey);
+            string operationKey = "SomeKey";
+            Context executionContext = new Context(operationKey);
 
             var policy = Policy.NoOpAsync();
 

@@ -15,7 +15,7 @@ namespace Polly.RateLimit
             bool continueOnCapturedContext
             )
         {
-            (var permit, var retryAfter) = rateLimiter.PermitExecution();
+            (bool permit, TimeSpan retryAfter) = rateLimiter.PermitExecution();
 
             if (permit)
             {

@@ -20,7 +20,7 @@ namespace Polly.Caching
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            var cacheKey = cacheKeyStrategy(context);
+            string cacheKey = cacheKeyStrategy(context);
             if (cacheKey == null)
             {
                 return action(context, cancellationToken);
@@ -48,9 +48,9 @@ namespace Polly.Caching
                 onCacheMiss(context, cacheKey);
             }
 
-            var result = action(context, cancellationToken);
+            TResult result = action(context, cancellationToken);
 
-            var ttl = ttlStrategy.GetTtl(context, result);
+            Ttl ttl = ttlStrategy.GetTtl(context, result);
             if (ttl.Timespan > TimeSpan.Zero)
             {
                 try

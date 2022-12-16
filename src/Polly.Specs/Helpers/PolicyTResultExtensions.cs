@@ -47,7 +47,7 @@ namespace Polly.Specs.Helpers
                         throw new ArgumentOutOfRangeException(nameof(resultsOrExceptionsToRaise), $"Not enough {typeof(TResult).Name} values in {nameof(resultsOrExceptionsToRaise)}.");
                     }
 
-                    var current = enumerator.Current;
+                    object current = enumerator.Current;
                     if (current is Exception)
                     {
                         throw (Exception) current;
@@ -81,9 +81,9 @@ namespace Polly.Specs.Helpers
 
         public static TResult RaiseResultSequenceAndOrCancellation<TResult>(this Policy<TResult> policy, Scenario scenario, CancellationTokenSource cancellationTokenSource, Action onExecute, IEnumerable<TResult> resultsToRaise)
         {
-            var counter = 0;
+            int counter = 0;
 
-            var cancellationToken = cancellationTokenSource.Token;
+            CancellationToken cancellationToken = cancellationTokenSource.Token;
 
             using (var enumerator = resultsToRaise.GetEnumerator())
             {

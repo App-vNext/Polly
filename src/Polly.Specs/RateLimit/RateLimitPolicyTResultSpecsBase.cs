@@ -26,7 +26,7 @@ namespace Polly.Specs.RateLimit
             FixClock();
 
             // Arrange
-            var onePer = TimeSpan.FromSeconds(onePerSeconds);
+            TimeSpan onePer = TimeSpan.FromSeconds(onePerSeconds);
             Context contextPassedToRetryAfter = null;
             Func<TimeSpan, Context, ResultClassWithRetryAfter> retryAfterFactory = (t, ctx) =>
             {
@@ -42,7 +42,7 @@ namespace Polly.Specs.RateLimit
             // (do nothing - time not advanced)
 
             // Act - try another execution.
-            var contextToPassIn = new Context();
+            Context contextToPassIn = new Context();
             var resultExpectedBlocked = TryExecuteThroughPolicy(rateLimiter, contextToPassIn, new ResultClassWithRetryAfter(ResultPrimitive.Good));
 
             // Assert - should be blocked - time not advanced.

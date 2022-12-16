@@ -29,7 +29,7 @@ namespace Polly.Specs.NoOp
             var policy = Policy.NoOpAsync<int?>();
             int? result = null;
 
-            using (var cts = new CancellationTokenSource())
+            using (CancellationTokenSource cts = new CancellationTokenSource())
             {
                 cts.Cancel();
 

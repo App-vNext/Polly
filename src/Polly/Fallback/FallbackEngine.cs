@@ -20,7 +20,7 @@ namespace Polly.Fallback
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
-                var result = action(context, cancellationToken);
+                TResult result = action(context, cancellationToken);
 
                 if (!shouldHandleResultPredicates.AnyMatch(result))
                 {
@@ -31,7 +31,7 @@ namespace Polly.Fallback
             }
             catch (Exception ex)
             {
-                var handledException = shouldHandleExceptionPredicates.FirstMatchOrDefault(ex);
+                Exception handledException = shouldHandleExceptionPredicates.FirstMatchOrDefault(ex);
                 if (handledException == null)
                 {
                     throw;

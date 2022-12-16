@@ -17,7 +17,7 @@ namespace Polly.Caching
 
         async Task<(bool, TCacheFormat)> IAsyncCacheProvider<TCacheFormat>.TryGetAsync(string key, CancellationToken cancellationToken, bool continueOnCapturedContext)
         {
-            (var cacheHit, var result) = await _wrappedCacheProvider.TryGetAsync(key, cancellationToken, continueOnCapturedContext).ConfigureAwait(continueOnCapturedContext);
+            (bool cacheHit, object result) = await _wrappedCacheProvider.TryGetAsync(key, cancellationToken, continueOnCapturedContext).ConfigureAwait(continueOnCapturedContext);
             return (cacheHit, (TCacheFormat)(result ?? default(TCacheFormat)));
         }
 

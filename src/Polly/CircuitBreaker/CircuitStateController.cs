@@ -98,7 +98,7 @@ namespace Polly.CircuitBreaker
 
         private void BreakFor_NeedsLock(TimeSpan durationOfBreak, Context context)
         {
-            var willDurationTakeUsPastDateTimeMaxValue = durationOfBreak > DateTime.MaxValue - SystemClock.UtcNow();
+            bool willDurationTakeUsPastDateTimeMaxValue = durationOfBreak > DateTime.MaxValue - SystemClock.UtcNow();
             _blockedTill = willDurationTakeUsPastDateTimeMaxValue
                 ? DateTime.MaxValue.Ticks
                 : (SystemClock.UtcNow() + durationOfBreak).Ticks;
@@ -116,7 +116,7 @@ namespace Polly.CircuitBreaker
             _blockedTill = DateTime.MinValue.Ticks;
             _lastOutcome = null;
 
-            var priorState = _circuitState;
+            CircuitState priorState = _circuitState;
             _circuitState = CircuitState.Closed;
             if (priorState != CircuitState.Closed)
             {
@@ -126,7 +126,7 @@ namespace Polly.CircuitBreaker
 
         protected bool PermitHalfOpenCircuitTest()
         {
-            var currentlyBlockedUntil = _blockedTill;
+            long currentlyBlockedUntil = _blockedTill;
             if (SystemClock.UtcNow().Ticks >= currentlyBlockedUntil)
             {
                 // It's time to permit a / another trial call in the half-open state ...

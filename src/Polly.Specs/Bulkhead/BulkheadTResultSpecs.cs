@@ -55,16 +55,16 @@ namespace Polly.Specs.Bulkhead
         [Fact]
         public void Should_call_onBulkheadRejected_with_passed_context()
         {
-            var operationKey = "SomeKey";
-            var contextPassedToExecute = new Context(operationKey);
+            string operationKey = "SomeKey";
+            Context contextPassedToExecute = new Context(operationKey);
 
             Context contextPassedToOnRejected = null;
             Action<Context> onRejected = ctx => { contextPassedToOnRejected = ctx; };
 
-            using (var bulkhead = Policy.Bulkhead<int>(1, onRejected))
+            using (BulkheadPolicy<int> bulkhead = Policy.Bulkhead<int>(1, onRejected))
             { 
-                var tcs = new TaskCompletionSource<object>();
-                using (var cancellationSource = new CancellationTokenSource())
+                TaskCompletionSource<object> tcs = new TaskCompletionSource<object>();
+                using (CancellationTokenSource cancellationSource = new CancellationTokenSource())
                 {
                     Task.Run(() => {
                         bulkhead.Execute(() =>

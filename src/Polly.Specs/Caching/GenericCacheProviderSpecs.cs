@@ -16,17 +16,17 @@ namespace Polly.Specs.Caching
         {
             const string operationKey = "SomeOperationKey";
 
-            var onErrorCalled = false;
+            bool onErrorCalled = false;
             Action<Context, string, Exception> onError = (_, _, _) => { onErrorCalled = true; };
 
             ISyncCacheProvider stubCacheProvider = new StubCacheProvider();
-            var cache = Policy.Cache(stubCacheProvider, TimeSpan.MaxValue, onError);
+            CachePolicy cache = Policy.Cache(stubCacheProvider, TimeSpan.MaxValue, onError);
 
-            (var cacheHit, var fromCache) = stubCacheProvider.TryGet(operationKey);
+            (bool cacheHit, object fromCache) = stubCacheProvider.TryGet(operationKey);
             cacheHit.Should().BeFalse();
             fromCache.Should().BeNull();
 
-            var result = cache.Execute(_ => ResultPrimitive.Substitute, new Context(operationKey));
+            ResultPrimitive result = cache.Execute(_ => ResultPrimitive.Substitute, new Context(operationKey));
 
             onErrorCalled.Should().BeFalse();
         }
@@ -38,16 +38,16 @@ namespace Polly.Specs.Caching
             const string operationKey = "SomeOperationKey";
 
             ISyncCacheProvider stubCacheProvider = new StubCacheProvider();
-            var cache = Policy.Cache(stubCacheProvider, TimeSpan.MaxValue);
+            CachePolicy cache = Policy.Cache(stubCacheProvider, TimeSpan.MaxValue);
 
-            (var cacheHit1, var fromCache1) = stubCacheProvider.TryGet(operationKey);
+            (bool cacheHit1, object fromCache1) = stubCacheProvider.TryGet(operationKey);
 
             cacheHit1.Should().BeFalse();
             fromCache1.Should().BeNull();
 
             cache.Execute(_ => valueToReturn, new Context(operationKey)).Should().Be(valueToReturn);
 
-            (var cacheHit2, var fromCache2) = stubCacheProvider.TryGet(operationKey);
+            (bool cacheHit2, object fromCache2) = stubCacheProvider.TryGet(operationKey);
 
             cacheHit2.Should().BeTrue();
             fromCache2.Should().Be(valueToReturn);
