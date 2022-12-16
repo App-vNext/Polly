@@ -13,7 +13,7 @@ internal static class RateLimitEngine
         CancellationToken cancellationToken
     )
     {
-        (var permit, var retryAfter) = rateLimiter.PermitExecution();
+        (bool permit, TimeSpan retryAfter) = rateLimiter.PermitExecution();
 
         if (permit)
         {

@@ -376,8 +376,8 @@ public partial class Policy
         if (onTimeout == null) throw new ArgumentNullException(nameof(onTimeout));
 
         return new TimeoutPolicy(
-            timeoutProvider,
-            timeoutStrategy,
-            onTimeout);
+                timeoutProvider,
+                timeoutStrategy,
+                onTimeout);
     }
 }

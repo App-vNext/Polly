@@ -8,7 +8,7 @@ internal static class IRateLimiterExtensions
 {
     public static void ShouldPermitAnExecution(this IRateLimiter rateLimiter)
     {
-        var canExecute = rateLimiter.PermitExecution();
+        (bool permitExecution, TimeSpan retryAfter) canExecute = rateLimiter.PermitExecution();
 
         canExecute.permitExecution.Should().BeTrue();
         canExecute.retryAfter.Should().Be(TimeSpan.Zero);
@@ -16,7 +16,7 @@ internal static class IRateLimiterExtensions
 
     public static void ShouldPermitNExecutions(this IRateLimiter rateLimiter, long numberOfExecutions)
     {
-        for (var execution = 0; execution < numberOfExecutions; execution++)
+        for (int execution = 0; execution < numberOfExecutions; execution++)
         {
             rateLimiter.ShouldPermitAnExecution();
         }
@@ -24,7 +24,7 @@ internal static class IRateLimiterExtensions
 
     public static void ShouldNotPermitAnExecution(this IRateLimiter rateLimiter, TimeSpan? retryAfter = null)
     {
-        var canExecute = rateLimiter.PermitExecution();
+        (bool permitExecution, TimeSpan retryAfter) canExecute = rateLimiter.PermitExecution();
 
         canExecute.permitExecution.Should().BeFalse();
         if (retryAfter == null)

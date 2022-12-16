@@ -3,6 +3,7 @@
 /// <summary>
 /// Defines properties and methods common to all Retry policies.
 /// </summary>
+
 public interface IRetryPolicy : IsPolicy
 {
 }

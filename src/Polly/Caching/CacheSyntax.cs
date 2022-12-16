@@ -252,7 +252,7 @@ public partial class Policy
         Action<Context, string> onCachePut,
         Action<Context, string, Exception> onCacheGetError,
         Action<Context, string, Exception> onCachePutError)
-        => Cache(cacheProvider, ttlStrategy, cacheKeyStrategy.GetCacheKey, onCacheGet, onCacheMiss, onCachePut, onCacheGetError, onCachePutError);
+       => Cache(cacheProvider, ttlStrategy, cacheKeyStrategy.GetCacheKey, onCacheGet, onCacheMiss, onCachePut, onCacheGetError, onCachePutError);
 
     /// <summary>
     /// <para>Builds a <see cref="Policy"/> that will function like a result cache for delegate executions returning a result.</para>
@@ -331,7 +331,7 @@ public partial class Policy
         if (onCacheGet == null) throw new ArgumentNullException(nameof(onCacheGet));
         if (onCacheMiss == null) throw new ArgumentNullException(nameof(onCacheMiss));
         if (onCachePut == null) throw new ArgumentNullException(nameof(onCachePut));
-        if (onCachePutError == null) throw new ArgumentNullException(nameof(onCachePutError));
+        if (onCacheGetError == null) throw new ArgumentNullException(nameof(onCacheGetError));
         if (onCachePutError == null) throw new ArgumentNullException(nameof(onCachePutError));
 
         return new CachePolicy(cacheProvider, ttlStrategy, cacheKeyStrategy, onCacheGet, onCacheMiss, onCachePut, onCacheGetError, onCachePutError);

@@ -20,14 +20,14 @@ public class ConcurrentPolicyRegistrySpecs
     public void Should_be_able_to_add_Policy_using_TryAdd()
     {
         Policy policy = Policy.NoOp();
-        var key = Guid.NewGuid().ToString();
+        string key = Guid.NewGuid().ToString();
 
         var insert = _registry.TryAdd(key, policy);
         _registry.Count.Should().Be(1);
         insert.Should().Be(true);
 
         Policy policy2 = Policy.NoOp();
-        var key2 = Guid.NewGuid().ToString();
+        string key2 = Guid.NewGuid().ToString();
 
         var insert2 = _registry.TryAdd(key2, policy2);
         _registry.Count.Should().Be(2);
@@ -38,14 +38,14 @@ public class ConcurrentPolicyRegistrySpecs
     public void Should_be_able_to_add_PolicyTResult_using_TryAdd()
     {
         Policy policy = Policy.NoOp();
-        var key = Guid.NewGuid().ToString();
+        string key = Guid.NewGuid().ToString();
 
         var insert = _registry.TryAdd(key, policy);
         _registry.Count.Should().Be(1);
         insert.Should().Be(true);
 
         Policy<ResultPrimitive> policy2 = Policy<ResultPrimitive>.HandleResult(ResultPrimitive.Fault).Retry();
-        var key2 = Guid.NewGuid().ToString();
+        string key2 = Guid.NewGuid().ToString();
 
         var insert2 = _registry.TryAdd(key2, policy2);
         _registry.Count.Should().Be(2);
@@ -56,14 +56,14 @@ public class ConcurrentPolicyRegistrySpecs
     public void Should_be_able_to_add_Policy_by_interface_using_TryAdd()
     {
         Policy policy = Policy.NoOp();
-        var key = Guid.NewGuid().ToString();
+        string key = Guid.NewGuid().ToString();
 
         var insert = _registry.TryAdd(key, policy);
         _registry.Count.Should().Be(1);
         insert.Should().Be(true);
 
         ISyncPolicy<ResultPrimitive> policy2 = Policy<ResultPrimitive>.HandleResult(ResultPrimitive.Fault).Retry();
-        var key2 = Guid.NewGuid().ToString();
+        string key2 = Guid.NewGuid().ToString();
 
         var insert2 = _registry.TryAdd(key2, policy2);
         _registry.Count.Should().Be(2);
@@ -74,12 +74,12 @@ public class ConcurrentPolicyRegistrySpecs
     public void Should_be_able_to_remove_policy_with_TryRemove()
     {
         Policy policy = Policy.NoOp();
-        var key = Guid.NewGuid().ToString();
+        string key = Guid.NewGuid().ToString();
 
         _registry.Add(key, policy);
         _registry.Count.Should().Be(1);
 
-        var removed = _registry.TryRemove(key, out IsPolicy removedPolicy);
+        bool removed = _registry.TryRemove(key, out IsPolicy removedPolicy);
         _registry.Count.Should().Be(0);
         removedPolicy.Should().BeSameAs(policy);
         removed.Should().BeTrue();
@@ -88,9 +88,9 @@ public class ConcurrentPolicyRegistrySpecs
     [Fact]
     public void Should_report_false_from_TryRemove_if_no_Policy()
     {
-        var key = Guid.NewGuid().ToString();
+        string key = Guid.NewGuid().ToString();
 
-        var removed = _registry.TryRemove(key, out IsPolicy removedPolicy);
+        bool removed = _registry.TryRemove(key, out IsPolicy removedPolicy);
         removed.Should().BeFalse();
     }
 
@@ -98,12 +98,12 @@ public class ConcurrentPolicyRegistrySpecs
     public void Should_be_able_to_update_policy_with_TryUpdate()
     {
         Policy existingPolicy = Policy.NoOp();
-        var key = Guid.NewGuid().ToString();
+        string key = Guid.NewGuid().ToString();
         _registry.Add(key, existingPolicy);
 
         Policy<ResultClass> newPolicy = Policy.NoOp<ResultClass>();
 
-        var updated = _registry.TryUpdate<IsPolicy>(key, newPolicy, existingPolicy);
+        bool updated = _registry.TryUpdate<IsPolicy>(key, newPolicy, existingPolicy);
 
         updated.Should().BeTrue();
         _registry[key].Should().BeSameAs(newPolicy);
@@ -113,13 +113,13 @@ public class ConcurrentPolicyRegistrySpecs
     public void Should_not_update_policy_with_TryUpdate_when_existingPolicy_mismatch()
     {
         Policy existingPolicy = Policy.NoOp();
-        var key = Guid.NewGuid().ToString();
+        string key = Guid.NewGuid().ToString();
         _registry.Add(key, existingPolicy);
 
-        var someOtherPolicy = Policy.NoOp<ResultPrimitive>();
+        NoOpPolicy<ResultPrimitive> someOtherPolicy = Policy.NoOp<ResultPrimitive>();
         Policy<ResultClass> newPolicy = Policy.NoOp<ResultClass>();
 
-        var updated = _registry.TryUpdate<IsPolicy>(key, newPolicy, someOtherPolicy);
+        bool updated = _registry.TryUpdate<IsPolicy>(key, newPolicy, someOtherPolicy);
 
         updated.Should().BeFalse();
         _registry[key].Should().BeSameAs(existingPolicy);
@@ -128,12 +128,12 @@ public class ConcurrentPolicyRegistrySpecs
     [Fact]
     public void Should_not_update_policy_with_TryUpdate_when_no_existing_value()
     {
-        var key = Guid.NewGuid().ToString();
+        string key = Guid.NewGuid().ToString();
 
-        var someOtherPolicy = Policy.NoOp<ResultPrimitive>();
+        NoOpPolicy<ResultPrimitive> someOtherPolicy = Policy.NoOp<ResultPrimitive>();
         Policy<ResultClass> newPolicy = Policy.NoOp<ResultClass>();
 
-        var updated = _registry.TryUpdate<IsPolicy>(key, newPolicy, someOtherPolicy);
+        bool updated = _registry.TryUpdate<IsPolicy>(key, newPolicy, someOtherPolicy);
 
         updated.Should().BeFalse();
         _registry.ContainsKey(key).Should().BeFalse();
@@ -143,7 +143,7 @@ public class ConcurrentPolicyRegistrySpecs
     public void Should_add_with_GetOrAdd_with_value_when_no_existing_policy()
     {
         Policy newPolicy = Policy.NoOp();
-        var key = Guid.NewGuid().ToString();
+        string key = Guid.NewGuid().ToString();
 
         var returnedPolicy = _registry.GetOrAdd(key, newPolicy);
 
@@ -154,7 +154,7 @@ public class ConcurrentPolicyRegistrySpecs
     public void Should_add_with_GetOrAdd_with_factory_when_no_existing_policy()
     {
         Policy newPolicy = Policy.NoOp();
-        var key = Guid.NewGuid().ToString();
+        string key = Guid.NewGuid().ToString();
 
         var returnedPolicy = _registry.GetOrAdd(key, _ => newPolicy);
 
@@ -165,7 +165,7 @@ public class ConcurrentPolicyRegistrySpecs
     public void Should_return_existing_with_GetOrAdd_with_value_when_existing_policy()
     {
         Policy existingPolicy = Policy.NoOp();
-        var key = Guid.NewGuid().ToString();
+        string key = Guid.NewGuid().ToString();
         _registry.Add(key, existingPolicy);
 
         Policy newPolicy = Policy.NoOp();
@@ -179,7 +179,7 @@ public class ConcurrentPolicyRegistrySpecs
     public void Should_return_existing_with_GetOrAdd_with_factory_when_existing_policy()
     {
         Policy existingPolicy = Policy.NoOp();
-        var key = Guid.NewGuid().ToString();
+        string key = Guid.NewGuid().ToString();
         _registry.Add(key, existingPolicy);
 
         Policy newPolicy = Policy.NoOp();
@@ -193,7 +193,7 @@ public class ConcurrentPolicyRegistrySpecs
     public void Should_add_with_AddOrUpdate_with_value_when_no_existing_policy()
     {
         Policy newPolicy = Policy.NoOp();
-        var key = Guid.NewGuid().ToString();
+        string key = Guid.NewGuid().ToString();
 
         var returnedPolicy = _registry.AddOrUpdate(
             key,
@@ -207,7 +207,7 @@ public class ConcurrentPolicyRegistrySpecs
     public void Should_add_with_AddOrUpdate_with_addfactory_when_no_existing_policy()
     {
         Policy newPolicy = Policy.NoOp();
-        var key = Guid.NewGuid().ToString();
+        string key = Guid.NewGuid().ToString();
 
 
         var returnedPolicy = _registry.AddOrUpdate(
@@ -222,7 +222,7 @@ public class ConcurrentPolicyRegistrySpecs
     public void Should_update_with_AddOrUpdate_with_updatefactory_ignoring_addvalue_when_existing_policy()
     {
         Policy existingPolicy = Policy.NoOp();
-        var key = Guid.NewGuid().ToString();
+        string key = Guid.NewGuid().ToString();
         _registry.Add(key, existingPolicy);
 
         const string policyKeyToDecorate = "SomePolicyKey";
@@ -243,7 +243,7 @@ public class ConcurrentPolicyRegistrySpecs
     public void Should_update_with_AddOrUpdate_with_updatefactory_ignoring_addfactory_when_existing_policy()
     {
         Policy existingPolicy = Policy.NoOp();
-        var key = Guid.NewGuid().ToString();
+        string key = Guid.NewGuid().ToString();
         _registry.Add(key, existingPolicy);
 
         const string policyKeyToDecorate = "SomePolicyKey";

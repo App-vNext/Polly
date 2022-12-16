@@ -42,12 +42,12 @@ public class ResultTtlSpecs
     [Fact]
     public void Should_return_func_result()
     {
-        var ttl = TimeSpan.FromMinutes(1);
+        TimeSpan ttl = TimeSpan.FromMinutes(1);
         Func<dynamic, Ttl> func = result => new Ttl(result.Ttl);
 
-        var ttlStrategy = new ResultTtl<dynamic>(func);
+        ResultTtl<dynamic> ttlStrategy = new ResultTtl<dynamic>(func);
 
-        var retrieved = ttlStrategy.GetTtl(new Context("someOperationKey"), new { Ttl = ttl });
+        Ttl retrieved = ttlStrategy.GetTtl(new Context("someOperationKey"), new { Ttl = ttl });
         retrieved.Timespan.Should().Be(ttl);
         retrieved.SlidingExpiration.Should().BeFalse();
     }
@@ -57,10 +57,10 @@ public class ResultTtlSpecs
     {
         const string specialKey = "specialKey";
 
-        var ttl = TimeSpan.FromMinutes(1);
+        TimeSpan ttl = TimeSpan.FromMinutes(1);
         Func<Context, dynamic, Ttl> func = (context, result) => context.OperationKey == specialKey ? new Ttl(TimeSpan.Zero) : new Ttl(result.Ttl);
 
-        var ttlStrategy = new ResultTtl<dynamic>(func);
+        ResultTtl<dynamic> ttlStrategy = new ResultTtl<dynamic>(func);
 
         ttlStrategy.GetTtl(new Context("someOperationKey"), new { Ttl = ttl }).Timespan.Should().Be(ttl);
         ttlStrategy.GetTtl(new Context(specialKey), new { Ttl = ttl }).Timespan.Should().Be(TimeSpan.Zero);

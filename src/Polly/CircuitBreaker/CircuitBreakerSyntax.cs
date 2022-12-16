@@ -32,14 +32,14 @@ public static class CircuitBreakerSyntax
     public static CircuitBreakerPolicy CircuitBreaker(this PolicyBuilder policyBuilder, int exceptionsAllowedBeforeBreaking, TimeSpan durationOfBreak)
     {
         Action<Exception, TimeSpan> doNothingOnBreak = (_, _) => { };
-        var doNothingOnReset = () => { };
+        Action doNothingOnReset = () => { };
 
         return policyBuilder.CircuitBreaker
-        (exceptionsAllowedBeforeBreaking,
+            (exceptionsAllowedBeforeBreaking,
             durationOfBreak,
             doNothingOnBreak,
             doNothingOnReset
-        );
+            );
     }
 
     /// <summary>
@@ -70,7 +70,7 @@ public static class CircuitBreakerSyntax
             durationOfBreak,
             (exception, timespan, _) => onBreak(exception, timespan),
             _ => onReset()
-        );
+            );
 
     /// <summary>
     /// <para> Builds a <see cref="Policy"/> that will function like a Circuit Breaker.</para>
@@ -96,13 +96,13 @@ public static class CircuitBreakerSyntax
     /// <exception cref="ArgumentNullException">onReset</exception>
     public static CircuitBreakerPolicy CircuitBreaker(this PolicyBuilder policyBuilder, int exceptionsAllowedBeforeBreaking, TimeSpan durationOfBreak, Action<Exception, TimeSpan, Context> onBreak, Action<Context> onReset)
     {
-        var doNothingOnHalfOpen = () => { };
+        Action doNothingOnHalfOpen = () => { };
         return policyBuilder.CircuitBreaker(exceptionsAllowedBeforeBreaking,
             durationOfBreak,
             onBreak,
             onReset,
             doNothingOnHalfOpen
-        );
+            );
     }
 
     /// <summary>
@@ -135,7 +135,7 @@ public static class CircuitBreakerSyntax
             (exception, timespan, _) => onBreak(exception, timespan),
             _ => onReset(),
             onHalfOpen
-        );
+            );
 
     /// <summary>
     /// <para> Builds a <see cref="Policy"/> that will function like a Circuit Breaker.</para>
@@ -212,6 +212,6 @@ public static class CircuitBreakerSyntax
         return new CircuitBreakerPolicy(
             policyBuilder,
             breakerController
-        );
+            );
     }
 }

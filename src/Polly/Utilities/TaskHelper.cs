@@ -12,9 +12,9 @@ public static class TaskHelper
     /// </summary>
     public static Task EmptyTask =
 #if NETSTANDARD1_1
-            Task.FromResult(true)
+        Task.FromResult(true)
 #else
-            Task.CompletedTask
+        Task.CompletedTask
 #endif
         ;
 }

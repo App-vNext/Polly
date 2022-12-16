@@ -66,7 +66,7 @@ public abstract partial class Policy : ISyncPolicy
     {
         if (context == null) throw new ArgumentNullException(nameof(context));
 
-        SetPolicyContext(context, out var priorPolicyWrapKey, out var priorPolicyKey);
+        SetPolicyContext(context, out string priorPolicyWrapKey, out string priorPolicyKey);
 
         try
         {
@@ -157,7 +157,7 @@ public abstract partial class Policy : ISyncPolicy
     {
         if (context == null) throw new ArgumentNullException(nameof(context));
 
-        SetPolicyContext(context, out var priorPolicyWrapKey, out var priorPolicyKey);
+        SetPolicyContext(context, out string priorPolicyWrapKey, out string priorPolicyKey);
 
         try
         {

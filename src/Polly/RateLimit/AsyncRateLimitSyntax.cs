@@ -13,8 +13,10 @@ public partial class Policy
     /// <returns>The policy instance.</returns>
     public static AsyncRateLimitPolicy RateLimitAsync(
         int numberOfExecutions,
-        TimeSpan perTimeSpan) =>
-        RateLimitAsync(numberOfExecutions, perTimeSpan, 1);
+        TimeSpan perTimeSpan)
+    {
+        return RateLimitAsync(numberOfExecutions, perTimeSpan, 1);
+    }
 
     /// <summary>
     /// Builds a RateLimit <see cref="AsyncPolicy"/> that will rate-limit executions to <paramref name="numberOfExecutions"/> per the timespan given.
@@ -40,7 +42,7 @@ public partial class Policy
             throw new ArgumentOutOfRangeException(nameof(perTimeSpan), perTimeSpan, "The number of executions per timespan must be positive.");
         }
 
-        var rateLimiter = RateLimiterFactory.Create(onePer, maxBurst);
+        IRateLimiter rateLimiter = RateLimiterFactory.Create(onePer, maxBurst);
 
         return new AsyncRateLimitPolicy(rateLimiter);
     }

@@ -18,7 +18,7 @@ internal static class BulkheadEngine
             onBulkheadRejected(context);
             throw new BulkheadRejectedException();
         }
-            
+        
         try
         {
             maxParallelizationSemaphore.Wait(cancellationToken);

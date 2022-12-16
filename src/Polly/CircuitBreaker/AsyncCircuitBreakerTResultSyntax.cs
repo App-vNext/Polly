@@ -29,14 +29,14 @@ public static class AsyncCircuitBreakerTResultSyntax
     public static AsyncCircuitBreakerPolicy<TResult> CircuitBreakerAsync<TResult>(this PolicyBuilder<TResult> policyBuilder, int handledEventsAllowedBeforeBreaking, TimeSpan durationOfBreak)
     {
         Action<DelegateResult<TResult>, TimeSpan> doNothingOnBreak = (_, _) => { };
-        var doNothingOnReset = () => { };
+        Action doNothingOnReset = () => { };
 
         return policyBuilder.CircuitBreakerAsync(
-            handledEventsAllowedBeforeBreaking,
-            durationOfBreak,
-            doNothingOnBreak,
-            doNothingOnReset
-        );
+           handledEventsAllowedBeforeBreaking,
+           durationOfBreak,
+           doNothingOnBreak,
+           doNothingOnReset
+           );
     }
 
     /// <summary>
@@ -67,7 +67,7 @@ public static class AsyncCircuitBreakerTResultSyntax
             durationOfBreak,
             (outcome, timespan, _) => onBreak(outcome, timespan),
             _ => onReset()
-        );
+            );
 
     /// <summary>
     /// <para> Builds a <see cref="AsyncPolicy{TResult}"/> that will function like a Circuit Breaker.</para>
@@ -93,14 +93,14 @@ public static class AsyncCircuitBreakerTResultSyntax
     /// <exception cref="ArgumentNullException">onReset</exception>
     public static AsyncCircuitBreakerPolicy<TResult> CircuitBreakerAsync<TResult>(this PolicyBuilder<TResult> policyBuilder, int handledEventsAllowedBeforeBreaking, TimeSpan durationOfBreak, Action<DelegateResult<TResult>, TimeSpan, Context> onBreak, Action<Context> onReset)
     {
-        var doNothingOnHalfOpen = () => { };
+        Action doNothingOnHalfOpen = () => { };
         return policyBuilder.CircuitBreakerAsync(
             handledEventsAllowedBeforeBreaking, 
             durationOfBreak, 
             onBreak, 
             onReset,
             doNothingOnHalfOpen
-        );
+            );
     }
 
     /// <summary>
@@ -133,7 +133,7 @@ public static class AsyncCircuitBreakerTResultSyntax
             (outcome, timespan, _) => onBreak(outcome, timespan),
             _ => onReset(),
             onHalfOpen
-        );
+            );
 
     /// <summary>
     /// <para> Builds a <see cref="AsyncPolicy{TResult}"/> that will function like a Circuit Breaker.</para>
@@ -213,3 +213,4 @@ public static class AsyncCircuitBreakerTResultSyntax
         );
     }
 }
+

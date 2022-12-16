@@ -18,8 +18,8 @@ internal static class RetryEngine
         IEnumerable<TimeSpan> sleepDurationsEnumerable = null,
         Func<int, DelegateResult<TResult>, Context, TimeSpan> sleepDurationProvider = null)
     {
-        var tryCount = 0;
-        var sleepDurationsEnumerator = sleepDurationsEnumerable?.GetEnumerator();
+        int tryCount = 0;
+        IEnumerator<TimeSpan> sleepDurationsEnumerator = sleepDurationsEnumerable?.GetEnumerator();
 
         try
         {
@@ -32,15 +32,15 @@ internal static class RetryEngine
 
                 try
                 {
-                    var result = action(context, cancellationToken);
+                    TResult result = action(context, cancellationToken);
 
                     if (!shouldRetryResultPredicates.AnyMatch(result))
                     {
                         return result;
                     }
 
-                    canRetry = tryCount < permittedRetryCount && (sleepDurationsEnumerable == null || sleepDurationsEnumerator.MoveNext());
-                    
+                    canRetry = tryCount < permittedRetryCount && (sleepDurationsEnumerator == null || sleepDurationsEnumerator.MoveNext());
+                
                     if (!canRetry)
                     {
                         return result;
@@ -50,13 +50,13 @@ internal static class RetryEngine
                 }
                 catch (Exception ex)
                 {
-                    var handledException = shouldRetryExceptionPredicates.FirstMatchOrDefault(ex);
+                    Exception handledException = shouldRetryExceptionPredicates.FirstMatchOrDefault(ex);
                     if (handledException == null)
                     {
                         throw;
                     }
 
-                    canRetry = tryCount < permittedRetryCount && (sleepDurationsEnumerable == null || sleepDurationsEnumerator.MoveNext());
+                    canRetry = tryCount < permittedRetryCount && (sleepDurationsEnumerator == null || sleepDurationsEnumerator.MoveNext());
 
                     if (!canRetry)
                     {
@@ -69,8 +69,8 @@ internal static class RetryEngine
 
                 if (tryCount < int.MaxValue) { tryCount++; }
 
-                var waitDuration = sleepDurationsEnumerator?.Current ?? (sleepDurationProvider?.Invoke(tryCount, outcome, context) ?? TimeSpan.Zero);
-                
+                TimeSpan waitDuration = sleepDurationsEnumerator?.Current ?? (sleepDurationProvider?.Invoke(tryCount, outcome, context) ?? TimeSpan.Zero);
+            
                 onRetry(outcome, waitDuration, tryCount, context);
 
                 if (waitDuration > TimeSpan.Zero)

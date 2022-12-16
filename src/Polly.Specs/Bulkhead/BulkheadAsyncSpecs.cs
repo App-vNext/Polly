@@ -52,24 +52,24 @@ public class BulkheadAsyncSpecs : BulkheadSpecsBase
     #region onBulkheadRejected delegate
 
     [Fact]
-    public void Should_call_onBulkheadRejected_with_passed_context()
+    public async Task Should_call_onBulkheadRejected_with_passed_context()
     {
-        var operationKey = "SomeKey";
-        var contextPassedToExecute = new Context(operationKey);
+        string operationKey = "SomeKey";
+        Context contextPassedToExecute = new Context(operationKey);
 
         Context contextPassedToOnRejected = null;
         Func<Context, Task> onRejectedAsync = async ctx => { contextPassedToOnRejected = ctx; await TaskHelper.EmptyTask; };
 
         using (var bulkhead = Policy.BulkheadAsync(1, onRejectedAsync))
         {
-            var tcs = new TaskCompletionSource<object>();
-            using (var cancellationSource = new CancellationTokenSource())
+            TaskCompletionSource<object> tcs = new TaskCompletionSource<object>();
+            using (CancellationTokenSource cancellationSource = new CancellationTokenSource())
             {
-                Task.Run(() => { bulkhead.ExecuteAsync(async () => { await tcs.Task; }); });
+                _ = Task.Run(() => { bulkhead.ExecuteAsync(async () => { await tcs.Task; }); });
 
                 Within(CohesionTimeLimit, () => Expect(0, () => bulkhead.BulkheadAvailableCount, nameof(bulkhead.BulkheadAvailableCount)));
 
-                bulkhead.Awaiting(b => b.ExecuteAsync(_ => TaskHelper.EmptyTask, contextPassedToExecute)).Should().Throw<BulkheadRejectedException>();
+                await bulkhead.Awaiting(b => b.ExecuteAsync(_ => TaskHelper.EmptyTask, contextPassedToExecute)).Should().ThrowAsync<BulkheadRejectedException>();
 
                 cancellationSource.Cancel();
                 tcs.SetCanceled();
@@ -85,11 +85,15 @@ public class BulkheadAsyncSpecs : BulkheadSpecsBase
 
     #region Bulkhead behaviour
 
-    protected override IBulkheadPolicy GetBulkhead(int maxParallelization, int maxQueuingActions) =>
-        Policy.BulkheadAsync(maxParallelization, maxQueuingActions);
+    protected override IBulkheadPolicy GetBulkhead(int maxParallelization, int maxQueuingActions)
+    {
+        return Policy.BulkheadAsync(maxParallelization, maxQueuingActions);
+    }
 
-    protected override Task ExecuteOnBulkhead(IBulkheadPolicy bulkhead, TraceableAction action) =>
-        action.ExecuteOnBulkheadAsync((AsyncBulkheadPolicy)bulkhead);
+    protected override Task ExecuteOnBulkhead(IBulkheadPolicy bulkhead, TraceableAction action)
+    {
+        return action.ExecuteOnBulkheadAsync((AsyncBulkheadPolicy)bulkhead);
+    }
 
     #endregion
 

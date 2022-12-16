@@ -31,14 +31,14 @@ public static class CircuitBreakerTResultSyntax
     public static CircuitBreakerPolicy<TResult> CircuitBreaker<TResult>(this PolicyBuilder<TResult> policyBuilder, int handledEventsAllowedBeforeBreaking, TimeSpan durationOfBreak)
     {
         Action<DelegateResult<TResult>, TimeSpan> doNothingOnBreak = (_, _) => { };
-        var doNothingOnReset = () => { };
+        Action doNothingOnReset = () => { };
 
         return policyBuilder.CircuitBreaker
-        (handledEventsAllowedBeforeBreaking,
+            (handledEventsAllowedBeforeBreaking,
             durationOfBreak,
             doNothingOnBreak,
             doNothingOnReset
-        );
+            );
     }
 
     /// <summary>
@@ -69,7 +69,7 @@ public static class CircuitBreakerTResultSyntax
             durationOfBreak,
             (outcome, timespan, _) => onBreak(outcome, timespan),
             _ => onReset()
-        );
+            );
 
     /// <summary>
     /// <para> Builds a <see cref="Policy{TResult}"/> that will function like a Circuit Breaker.</para>
@@ -95,13 +95,13 @@ public static class CircuitBreakerTResultSyntax
     /// <exception cref="ArgumentNullException">onReset</exception>
     public static CircuitBreakerPolicy<TResult> CircuitBreaker<TResult>(this PolicyBuilder<TResult> policyBuilder, int handledEventsAllowedBeforeBreaking, TimeSpan durationOfBreak, Action<DelegateResult<TResult>, TimeSpan, Context> onBreak, Action<Context> onReset)
     {
-        var doNothingOnHalfOpen = () => { };
+        Action doNothingOnHalfOpen = () => { };
         return policyBuilder.CircuitBreaker(handledEventsAllowedBeforeBreaking,
             durationOfBreak,
             onBreak,
             onReset,
             doNothingOnHalfOpen
-        );
+            );
     }
 
     /// <summary>
@@ -134,7 +134,7 @@ public static class CircuitBreakerTResultSyntax
             (outcome, timespan, _) => onBreak(outcome, timespan),
             _ => onReset(),
             onHalfOpen
-        );
+            );
 
     /// <summary>
     /// <para> Builds a <see cref="Policy{TResult}"/> that will function like a Circuit Breaker.</para>
@@ -211,6 +211,6 @@ public static class CircuitBreakerTResultSyntax
         return new CircuitBreakerPolicy<TResult>(
             policyBuilder,
             breakerController
-        );
+            );
     }
 }

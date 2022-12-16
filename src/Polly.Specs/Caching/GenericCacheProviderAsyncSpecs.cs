@@ -18,17 +18,17 @@ public class GenericCacheProviderAsyncSpecs : IDisposable
     {
         const string operationKey = "SomeOperationKey";
 
-        var onErrorCalled = false;
+        bool onErrorCalled = false;
         Action<Context, string, Exception> onError = (_, _, _) => { onErrorCalled = true; };
 
         IAsyncCacheProvider stubCacheProvider = new StubCacheProvider();
         var cache = Policy.CacheAsync(stubCacheProvider, TimeSpan.MaxValue, onError);
 
-        (var cacheHit, var fromCache) = await stubCacheProvider.TryGetAsync(operationKey, CancellationToken.None, false);
+        (bool cacheHit, object fromCache) = await stubCacheProvider.TryGetAsync(operationKey, CancellationToken.None, false);
         cacheHit.Should().BeFalse();
         fromCache.Should().BeNull();
 
-        var result = await cache.ExecuteAsync(async _ =>
+        ResultPrimitive result = await cache.ExecuteAsync(async _ =>
         {
             await TaskHelper.EmptyTask;
             return ResultPrimitive.Substitute;
@@ -46,7 +46,7 @@ public class GenericCacheProviderAsyncSpecs : IDisposable
         IAsyncCacheProvider stubCacheProvider = new StubCacheProvider();
         var cache = Policy.CacheAsync(stubCacheProvider, TimeSpan.MaxValue);
 
-        (var cacheHit1, var fromCache1) = await stubCacheProvider.TryGetAsync(operationKey, CancellationToken.None, false);
+        (bool cacheHit1, object fromCache1) = await stubCacheProvider.TryGetAsync(operationKey, CancellationToken.None, false);
         cacheHit1.Should().BeFalse();
         fromCache1.Should().BeNull();
 
@@ -56,7 +56,7 @@ public class GenericCacheProviderAsyncSpecs : IDisposable
             return ResultPrimitive.Substitute;
         }, new Context(operationKey))).Should().Be(valueToReturn);
 
-        (var cacheHit2, var fromCache2) = await stubCacheProvider.TryGetAsync(operationKey, CancellationToken.None, false);
+        (bool cacheHit2, object fromCache2) = await stubCacheProvider.TryGetAsync(operationKey, CancellationToken.None, false);
         cacheHit2.Should().BeTrue();
         fromCache2.Should().Be(valueToReturn);
     }

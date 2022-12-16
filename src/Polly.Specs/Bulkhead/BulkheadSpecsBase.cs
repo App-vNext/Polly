@@ -23,7 +23,7 @@ public abstract class BulkheadSpecsBase : IDisposable
     public BulkheadSpecsBase(ITestOutputHelper testOutputHelper)
     {
 #if !DEBUG
-            TestOutputHelper = new SilentOutputHelper();
+        TestOutputHelper = new SilentOutputHelper();
 #else
         TestOutputHelper = new AnnotatedOutputHelper(testOutputHelper);
 #endif
@@ -93,18 +93,18 @@ public abstract class BulkheadSpecsBase : IDisposable
         TotalActions = totalActions;
         Scenario = $"MaxParallelization {maxParallelization}; MaxQueuing {maxQueuingActions}; TotalActions {totalActions}; CancelQueuing {cancelQueuing}; CancelExecuting {cancelExecuting}: {scenario}";
 
-        var bulkhead = GetBulkhead(maxParallelization, maxQueuingActions);
+        IBulkheadPolicy bulkhead = GetBulkhead(maxParallelization, maxQueuingActions);
         using (bulkhead)
         {
             BulkheadForStats = bulkhead;
 
             // Set up delegates which we can track whether they've started; and control when we allow them to complete (to release their semaphore slot).
             Actions = new TraceableAction[totalActions];
-            for (var i = 0; i < totalActions; i++) { Actions[i] = new TraceableAction(i, StatusChangedEvent, TestOutputHelper); }
+            for (int i = 0; i < totalActions; i++) { Actions[i] = new TraceableAction(i, StatusChangedEvent, TestOutputHelper); }
 
             // Throw all the delegates at the bulkhead simultaneously.
             Tasks = new Task[totalActions];
-            for (var i = 0; i < totalActions; i++) { Tasks[i] = ExecuteOnBulkhead(bulkhead, Actions[i]); }
+            for (int i = 0; i < totalActions; i++) { Tasks[i] = ExecuteOnBulkhead(bulkhead, Actions[i]); }
 
             OutputStatus("Immediately after queueing...");
 
@@ -204,7 +204,7 @@ public abstract class BulkheadSpecsBase : IDisposable
     {
         ActualCompleted = ActualCancelled = ActualExecuting = ActualRejects = ActualQueuing = ActualFaulted = 0;
 
-        foreach (var action in Actions)
+        foreach (TraceableAction action in Actions)
         {
             switch (action.Status)
             {
@@ -285,7 +285,7 @@ public abstract class BulkheadSpecsBase : IDisposable
 
     protected AssertionFailure AllTasksCompleted()
     {
-        var countTasksCompleted = Tasks.Count(t => t.IsCompleted);
+        int countTasksCompleted = Tasks.Count(t => t.IsCompleted);
         if (countTasksCompleted < TotalActions)
         {
             return new AssertionFailure(TotalActions, countTasksCompleted, nameof(countTasksCompleted));
@@ -296,7 +296,7 @@ public abstract class BulkheadSpecsBase : IDisposable
 
     protected void EnsureNoUnbservedTaskExceptions()
     {
-        for (var i = 0; i < Tasks.Length; i++)
+        for (int i = 0; i < Tasks.Length; i++)
         {
             try
             {
@@ -313,14 +313,14 @@ public abstract class BulkheadSpecsBase : IDisposable
 
     protected AssertionFailure Expect(int expected, Func<int> actualFunc, string measure)
     {
-        var actual = actualFunc();
+        int actual = actualFunc();
         return actual != expected ? new AssertionFailure(expected, actual, measure) : null;
     }
 
     protected void Within(TimeSpan timeSpan, Func<AssertionFailure> actionContainingAssertions)
     {
-        var permitted = timeSpan;
-        var watch = Stopwatch.StartNew();
+        TimeSpan permitted = timeSpan;
+        Stopwatch watch = Stopwatch.StartNew();
         while (true)
         {
             var potentialFailure = actionContainingAssertions();
@@ -336,7 +336,7 @@ public abstract class BulkheadSpecsBase : IDisposable
                 throw new InvalidOperationException("Code should never reach here. Preceding assertion should fail.");
             }
 
-            var signaled = StatusChangedEvent.WaitOne(ShimTimeSpan);
+            bool signaled = StatusChangedEvent.WaitOne(ShimTimeSpan);
             if (signaled)
             {
                 // Following TraceableAction.CaptureCompletion() signalling the AutoResetEvent,
@@ -360,7 +360,7 @@ public abstract class BulkheadSpecsBase : IDisposable
         TestOutputHelper.WriteLine("Bulkhead: {0} slots out of {1} available.", ActualBulkheadFree, MaxParallelization);
         TestOutputHelper.WriteLine("Bulkhead queue: {0} slots out of {1} available.", ActualQueueFree, MaxQueuingActions);
 
-        for (var i = 0; i < Actions.Length; i++)
+        for (int i = 0; i < Actions.Length; i++)
         {
             TestOutputHelper.WriteLine("Action {0}: {1}", i, Actions[i].Status);
         }
@@ -382,7 +382,7 @@ public abstract class BulkheadSpecsBase : IDisposable
 
         if (Actions != null)
         {
-            foreach (var action in Actions)
+            foreach (TraceableAction action in Actions)
             {
                 action.Dispose();
             }

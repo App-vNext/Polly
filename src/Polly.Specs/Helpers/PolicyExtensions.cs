@@ -14,7 +14,7 @@ public static class PolicyExtensions
 
     public static void RaiseException<TException>(this Policy policy, TException instance) where TException : Exception
     {
-        var scenario = new ExceptionAndOrCancellationScenario
+        ExceptionAndOrCancellationScenario scenario = new ExceptionAndOrCancellationScenario
         {
             ActionObservesCancellation = false,
             AttemptDuringWhichToCancel = null,
@@ -31,7 +31,7 @@ public static class PolicyExtensions
 
     public static void RaiseException<TException>(this Policy policy, int numberOfTimesToRaiseException, Action<TException, int> configureException = null) where TException : Exception, new()
     {
-        var scenario = new ExceptionAndOrCancellationScenario
+        ExceptionAndOrCancellationScenario scenario = new ExceptionAndOrCancellationScenario
         {
             ActionObservesCancellation = false,
             AttemptDuringWhichToCancel = null,
@@ -61,9 +61,9 @@ public static class PolicyExtensions
 
     public static void RaiseExceptionAndOrCancellation<TException>(this Policy policy, ExceptionAndOrCancellationScenario scenario, CancellationTokenSource cancellationTokenSource, Action onExecute, Func<int, TException> exceptionFactory) where TException : Exception
     {
-        var counter = 0;
+        int counter = 0;
 
-        var cancellationToken = cancellationTokenSource.Token;
+        CancellationToken cancellationToken = cancellationTokenSource.Token;
 
         policy.Execute(ct =>
         {
@@ -91,9 +91,9 @@ public static class PolicyExtensions
 
     public static TResult RaiseExceptionAndOrCancellation<TException, TResult>(this Policy policy, ExceptionAndOrCancellationScenario scenario, CancellationTokenSource cancellationTokenSource, Action onExecute, Func<int, TException> exceptionFactory, TResult successResult) where TException : Exception
     {
-        var counter = 0;
+        int counter = 0;
 
-        var cancellationToken = cancellationTokenSource.Token;
+        CancellationToken cancellationToken = cancellationTokenSource.Token;
 
         return policy.Execute(ct =>
         {

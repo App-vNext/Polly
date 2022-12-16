@@ -17,13 +17,13 @@ internal static class TimeoutEngine
         Action<Context, TimeSpan, Task, Exception> onTimeout)
     {
         cancellationToken.ThrowIfCancellationRequested();
-        var timeout = timeoutProvider(context);
+        TimeSpan timeout = timeoutProvider(context);
 
-        using (var timeoutCancellationTokenSource = new CancellationTokenSource())
+        using (CancellationTokenSource timeoutCancellationTokenSource = new CancellationTokenSource())
         {
-            using (var combinedTokenSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, timeoutCancellationTokenSource.Token))
+            using (CancellationTokenSource combinedTokenSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, timeoutCancellationTokenSource.Token))
             {
-                var combinedToken = combinedTokenSource.Token;
+                CancellationToken combinedToken = combinedTokenSource.Token;
 
                 Task<TResult> actionTask = null;
                 try
@@ -39,7 +39,7 @@ internal static class TimeoutEngine
                     SystemClock.CancelTokenAfter(timeoutCancellationTokenSource, timeout);
 
                     actionTask = Task.Run(() =>
-                            action(context, combinedToken)       // cancellation token here allows the user delegate to react to cancellation: possibly clear up; then throw an OperationCanceledException.
+                        action(context, combinedToken)       // cancellation token here allows the user delegate to react to cancellation: possibly clear up; then throw an OperationCanceledException.
                         , combinedToken);           // cancellation token here only allows Task.Run() to not begin the passed delegate at all, if cancellation occurs prior to invoking the delegate.  
                     try
                     {

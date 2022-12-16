@@ -22,13 +22,14 @@ public class ISyncPolicyExtensionsSpecs
     {
         // Use a CircuitBreaker as a policy which we can easily manipulate to demonstrate that the executions are passing through the underlying non-generic policy.
 
-        var breaker = Policy.Handle<Exception>().CircuitBreaker(1, TimeSpan.Zero);
+        CircuitBreakerPolicy breaker = Policy.Handle<Exception>().CircuitBreaker(1, TimeSpan.Zero);
         ISyncPolicy nonGenericPolicy = breaker;
         var genericPolicy = nonGenericPolicy.AsPolicy<ResultPrimitive>();
-        var deleg = () => ResultPrimitive.Good;
+        Func<ResultPrimitive> deleg = () => ResultPrimitive.Good;
 
         genericPolicy.Execute(deleg).Should().Be(ResultPrimitive.Good);
         breaker.Isolate();
         genericPolicy.Invoking(p => p.Execute(deleg)).Should().Throw<BrokenCircuitException>();
     }
 }
+

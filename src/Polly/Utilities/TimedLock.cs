@@ -2,6 +2,7 @@
 using System.Threading;
 
 namespace Polly.Utilities;
+
 // Adapted from the link below, with slight modifications.
 
 // http://www.interact-sw.co.uk/iangblog/2004/04/26/yetmoretimedlocking
@@ -21,15 +22,17 @@ internal struct TimedLock : IDisposable
 #if DEBUG
     private static readonly TimeSpan LockTimeout = TimeSpan.FromSeconds(5);
 #else
-        private static readonly TimeSpan LockTimeout = TimeSpan.FromMilliseconds(int.MaxValue);
+    private static readonly TimeSpan LockTimeout = TimeSpan.FromMilliseconds(int.MaxValue);
 #endif
 
-    public static TimedLock Lock(object o) =>
-        Lock(o, LockTimeout);
+    public static TimedLock Lock(object o)
+    {
+        return Lock(o, LockTimeout);
+    }
 
     private static TimedLock Lock(object o, TimeSpan timeout)
     {
-        var tl = new TimedLock(o);
+        TimedLock tl = new TimedLock(o);
         if (!Monitor.TryEnter(o, timeout))
         {
 #if DEBUG
@@ -74,7 +77,7 @@ internal struct TimedLock : IDisposable
             // call Dispose, which means we've failed to leave
             // a monitor!
 #if NETSTANDARD2_0
-                System.Diagnostics.Debug.Fail("Undisposed lock");
+            System.Diagnostics.Debug.Fail("Undisposed lock");
 #endif
         }
     }

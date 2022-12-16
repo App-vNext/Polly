@@ -16,12 +16,16 @@ public class AsyncRateLimitPolicySpecs : RateLimitPolicySpecsBase, IDisposable
         SystemClock.Reset();
     }
 
-    protected override IRateLimitPolicy GetPolicyViaSyntax(int numberOfExecutions, TimeSpan perTimeSpan) =>
-        Policy.RateLimitAsync(numberOfExecutions, perTimeSpan);
+    protected override IRateLimitPolicy GetPolicyViaSyntax(int numberOfExecutions, TimeSpan perTimeSpan)
+    {
+        return Policy.RateLimitAsync(numberOfExecutions, perTimeSpan);
+    }
 
-    protected override IRateLimitPolicy GetPolicyViaSyntax(int numberOfExecutions, TimeSpan perTimeSpan, int maxBurst) =>
-        Policy.RateLimitAsync(numberOfExecutions, perTimeSpan, maxBurst);
-
+    protected override IRateLimitPolicy GetPolicyViaSyntax(int numberOfExecutions, TimeSpan perTimeSpan, int maxBurst)
+    {
+        return Policy.RateLimitAsync(numberOfExecutions, perTimeSpan, maxBurst);
+    }
+    
     protected override (bool, TimeSpan) TryExecuteThroughPolicy(IRateLimitPolicy policy)
     {
         if (policy is AsyncRateLimitPolicy typedPolicy)

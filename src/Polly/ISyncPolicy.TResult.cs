@@ -8,6 +8,7 @@ namespace Polly;
 /// An interface defining all executions available on a synchronous policy generic-typed for executions returning results of type <typeparamref name="TResult"/>.
 /// </summary>
 /// <typeparam name="TResult">The type of the result of funcs executed through the Policy.</typeparam>
+
 public interface ISyncPolicy<TResult> : IsPolicy
 {
     /// <summary>

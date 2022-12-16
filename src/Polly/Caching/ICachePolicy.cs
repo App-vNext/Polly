@@ -3,6 +3,7 @@
 /// <summary>
 /// Defines properties and methods common to all Cache policies.
 /// </summary>
+
 public interface ICachePolicy : IsPolicy
 {
 }

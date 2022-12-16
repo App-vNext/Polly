@@ -30,14 +30,14 @@ public static class AsyncCircuitBreakerSyntax
     public static AsyncCircuitBreakerPolicy CircuitBreakerAsync(this PolicyBuilder policyBuilder, int exceptionsAllowedBeforeBreaking, TimeSpan durationOfBreak)
     {
         Action<Exception, TimeSpan> doNothingOnBreak = (_, _) => { };
-        var doNothingOnReset = () => { };
+        Action doNothingOnReset = () => { };
 
         return policyBuilder.CircuitBreakerAsync(
-            exceptionsAllowedBeforeBreaking,
-            durationOfBreak,
-            doNothingOnBreak,
-            doNothingOnReset
-        );
+           exceptionsAllowedBeforeBreaking,
+           durationOfBreak,
+           doNothingOnBreak,
+           doNothingOnReset
+           );
     }
 
     /// <summary>
@@ -68,7 +68,7 @@ public static class AsyncCircuitBreakerSyntax
             durationOfBreak,
             (exception, timespan, _) => onBreak(exception, timespan),
             _ => onReset()
-        );
+            );
 
     /// <summary>
     /// <para> Builds a <see cref="AsyncPolicy"/> that will function like a Circuit Breaker.</para>
@@ -94,14 +94,14 @@ public static class AsyncCircuitBreakerSyntax
     /// <exception cref="ArgumentNullException">onReset</exception>
     public static AsyncCircuitBreakerPolicy CircuitBreakerAsync(this PolicyBuilder policyBuilder, int exceptionsAllowedBeforeBreaking, TimeSpan durationOfBreak, Action<Exception, TimeSpan, Context> onBreak, Action<Context> onReset)
     {
-        var doNothingOnHalfOpen = () => { };
+        Action doNothingOnHalfOpen = () => { };
         return policyBuilder.CircuitBreakerAsync(
             exceptionsAllowedBeforeBreaking, 
             durationOfBreak, 
             onBreak, 
             onReset,
             doNothingOnHalfOpen
-        );
+            );
     }
 
     /// <summary>
@@ -134,7 +134,7 @@ public static class AsyncCircuitBreakerSyntax
             (exception, timespan, _) => onBreak(exception, timespan),
             _ => onReset(),
             onHalfOpen
-        );
+            );
 
     /// <summary>
     /// <para> Builds a <see cref="AsyncPolicy"/> that will function like a Circuit Breaker.</para>
@@ -214,3 +214,4 @@ public static class AsyncCircuitBreakerSyntax
         );
     }
 }
+

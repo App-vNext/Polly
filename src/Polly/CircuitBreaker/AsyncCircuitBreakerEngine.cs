@@ -22,7 +22,7 @@ internal class AsyncCircuitBreakerEngine
 
         try
         {
-            var result = await action(context, cancellationToken).ConfigureAwait(continueOnCapturedContext);
+            TResult result = await action(context, cancellationToken).ConfigureAwait(continueOnCapturedContext);
 
             if (shouldHandleResultPredicates.AnyMatch(result))
             {
@@ -37,7 +37,7 @@ internal class AsyncCircuitBreakerEngine
         }
         catch (Exception ex)
         {
-            var handledException = shouldHandleExceptionPredicates.FirstMatchOrDefault(ex);
+            Exception handledException = shouldHandleExceptionPredicates.FirstMatchOrDefault(ex);
             if (handledException == null)
             {
                 throw;
@@ -50,3 +50,4 @@ internal class AsyncCircuitBreakerEngine
         }
     }
 }
+

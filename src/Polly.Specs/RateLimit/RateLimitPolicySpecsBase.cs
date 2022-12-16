@@ -23,7 +23,7 @@ public abstract class RateLimitPolicySpecsBase : RateLimitSpecsBase
 
     protected void ShouldPermitAnExecution(IRateLimitPolicy policy)
     {
-        (var permitExecution, var retryAfter) = TryExecuteThroughPolicy(policy);
+        (bool permitExecution, TimeSpan retryAfter) = TryExecuteThroughPolicy(policy);
 
         permitExecution.Should().BeTrue();
         retryAfter.Should().Be(TimeSpan.Zero);
@@ -31,7 +31,7 @@ public abstract class RateLimitPolicySpecsBase : RateLimitSpecsBase
 
     protected void ShouldPermitNExecutions(IRateLimitPolicy policy, long numberOfExecutions)
     {
-        for (var execution = 0; execution < numberOfExecutions; execution++)
+        for (int execution = 0; execution < numberOfExecutions; execution++)
         {
             ShouldPermitAnExecution(policy);
         }
@@ -126,7 +126,7 @@ public abstract class RateLimitPolicySpecsBase : RateLimitSpecsBase
         FixClock();
 
         // Arrange
-        var onePer = TimeSpan.FromSeconds(onePerSeconds);
+        TimeSpan onePer = TimeSpan.FromSeconds(onePerSeconds);
         var rateLimiter = GetPolicyViaSyntax(1, onePer);
 
         // Assert - first execution after initialising should always be permitted.
@@ -148,7 +148,7 @@ public abstract class RateLimitPolicySpecsBase : RateLimitSpecsBase
         FixClock();
 
         // Arrange.
-        var onePer = TimeSpan.FromSeconds(1);
+        TimeSpan onePer = TimeSpan.FromSeconds(1);
         var rateLimiter = GetPolicyViaSyntax(1, onePer, bucketCapacity);
 
         // Act - should be able to successfully take bucketCapacity items.
@@ -170,7 +170,7 @@ public abstract class RateLimitPolicySpecsBase : RateLimitSpecsBase
         FixClock();
 
         // Arrange
-        var onePer = TimeSpan.FromSeconds(onePerSeconds);
+        TimeSpan onePer = TimeSpan.FromSeconds(onePerSeconds);
         var rateLimiter = GetPolicyViaSyntax(1, onePer, bucketCapacity);
 
         // Arrange - spend the initial bucket capacity.
@@ -178,10 +178,10 @@ public abstract class RateLimitPolicySpecsBase : RateLimitSpecsBase
         ShouldNotPermitAnExecution(rateLimiter);
 
         // Act-Assert - repeatedly advance the clock towards the interval but not quite - then to the interval
-        var experimentRepeats = bucketCapacity * 3;
-        var shortfallFromInterval = TimeSpan.FromTicks(1);
-        var notQuiteInterval = onePer - shortfallFromInterval;
-        for (var i = 0; i < experimentRepeats; i++)
+        int experimentRepeats = bucketCapacity * 3;
+        TimeSpan shortfallFromInterval = TimeSpan.FromTicks(1);
+        TimeSpan notQuiteInterval = onePer - shortfallFromInterval;
+        for (int i = 0; i < experimentRepeats; i++)
         {
             // Arrange - Advance clock not quite to the interval
             AdvanceClock(notQuiteInterval.Ticks);
@@ -208,8 +208,8 @@ public abstract class RateLimitPolicySpecsBase : RateLimitSpecsBase
         FixClock();
 
         // Arrange
-        var onePerSeconds = 1;
-        var onePer = TimeSpan.FromSeconds(onePerSeconds);
+        int onePerSeconds = 1;
+        TimeSpan onePer = TimeSpan.FromSeconds(onePerSeconds);
         var rateLimiter = GetPolicyViaSyntax(1, onePer, bucketCapacity);
 
         // Arrange - spend the initial bucket capacity.
@@ -234,8 +234,8 @@ public abstract class RateLimitPolicySpecsBase : RateLimitSpecsBase
         FixClock();
 
         // Arrange
-        var onePerSeconds = 1;
-        var onePer = TimeSpan.FromSeconds(onePerSeconds);
+        int onePerSeconds = 1;
+        TimeSpan onePer = TimeSpan.FromSeconds(onePerSeconds);
         var rateLimiter = GetPolicyViaSyntax(1, onePer, bucketCapacity);
 
         // Arrange - spend the initial bucket capacity.
@@ -260,8 +260,8 @@ public abstract class RateLimitPolicySpecsBase : RateLimitSpecsBase
         FixClock();
 
         // Arrange
-        var onePerSeconds = 1;
-        var onePer = TimeSpan.FromSeconds(onePerSeconds);
+        int onePerSeconds = 1;
+        TimeSpan onePer = TimeSpan.FromSeconds(onePerSeconds);
         var rateLimiter = GetPolicyViaSyntax(1, onePer, bucketCapacity);
 
         // Arrange - spend the initial bucket capacity.
@@ -285,13 +285,13 @@ public abstract class RateLimitPolicySpecsBase : RateLimitSpecsBase
         FixClock();
 
         // Arrange
-        var onePer = TimeSpan.FromSeconds(1);
+        TimeSpan onePer = TimeSpan.FromSeconds(1);
         var rateLimiter = GetPolicyViaSyntax(1, onePer);
 
         // Arrange - parallel tasks all waiting on a manual reset event.
         ManualResetEventSlim gate = new();
         Task<(bool permitExecution, TimeSpan retryAfter)>[] tasks = new Task<(bool, TimeSpan)>[parallelContention];
-        for (var i = 0; i < parallelContention; i++)
+        for (int i = 0; i < parallelContention; i++)
         {
             tasks[i] = Task.Run(() =>
             {

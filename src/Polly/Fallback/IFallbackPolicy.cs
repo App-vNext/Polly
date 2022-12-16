@@ -3,6 +3,7 @@
 /// <summary>
 /// Defines properties and methods common to all Fallback policies.
 /// </summary>
+
 public interface IFallbackPolicy : IsPolicy
 {
 }

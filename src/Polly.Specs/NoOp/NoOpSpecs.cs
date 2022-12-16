@@ -10,8 +10,8 @@ public class NoOpSpecs
     [Fact]
     public void Should_execute_user_delegate()
     {
-        var policy = Policy.NoOp();
-        var executed = false;
+        NoOpPolicy policy = Policy.NoOp();
+        bool executed = false;
 
         policy.Invoking(x => x.Execute(() => { executed = true; }))
             .Should().NotThrow();
@@ -22,10 +22,10 @@ public class NoOpSpecs
     [Fact]
     public void Should_execute_user_delegate_without_adding_extra_cancellation_behaviour()
     {
-        var policy = Policy.NoOp();
-        var executed = false;
+        NoOpPolicy policy = Policy.NoOp();
+        bool executed = false;
 
-        using (var cts = new CancellationTokenSource())
+        using (CancellationTokenSource cts = new CancellationTokenSource())
         {
             cts.Cancel();
 

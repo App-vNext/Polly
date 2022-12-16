@@ -17,14 +17,14 @@ internal static class AsyncTimeoutEngine
         bool continueOnCapturedContext)
     {
         cancellationToken.ThrowIfCancellationRequested();
-        var timeout = timeoutProvider(context);
+        TimeSpan timeout = timeoutProvider(context);
 
-        using (var timeoutCancellationTokenSource = new CancellationTokenSource())
+        using (CancellationTokenSource timeoutCancellationTokenSource = new CancellationTokenSource())
         {
-            using (var combinedTokenSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, timeoutCancellationTokenSource.Token))
+            using (CancellationTokenSource combinedTokenSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, timeoutCancellationTokenSource.Token))
             {
                 Task<TResult> actionTask = null;
-                var combinedToken = combinedTokenSource.Token;
+                CancellationToken combinedToken = combinedTokenSource.Token;
 
                 try
                 {
@@ -36,7 +36,7 @@ internal static class AsyncTimeoutEngine
 
                     // else: timeoutStrategy == TimeoutStrategy.Pessimistic
 
-                    var timeoutTask = timeoutCancellationTokenSource.Token.AsTask<TResult>();
+                    Task<TResult> timeoutTask = timeoutCancellationTokenSource.Token.AsTask<TResult>();
 
                     SystemClock.CancelTokenAfter(timeoutCancellationTokenSource, timeout);
 
@@ -68,11 +68,11 @@ internal static class AsyncTimeoutEngine
         // A generalised version of this method would include a hotpath returning a canceled task (rather than setting up a registration) if (cancellationToken.IsCancellationRequested) on entry.  This is omitted, since we only start the timeout countdown in the token _after calling this method.
 
         IDisposable registration = null;
-        registration = cancellationToken.Register(() =>
-        {
-            tcs.TrySetCanceled();
-            registration?.Dispose();
-        }, useSynchronizationContext: false);
+            registration = cancellationToken.Register(() =>
+            {
+                tcs.TrySetCanceled();
+                registration?.Dispose();
+            }, useSynchronizationContext: false);
 
         return tcs.Task;
     }

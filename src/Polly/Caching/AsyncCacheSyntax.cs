@@ -319,7 +319,7 @@ public partial class Policy
         if (onCacheGet == null) throw new ArgumentNullException(nameof(onCacheGet));
         if (onCacheMiss == null) throw new ArgumentNullException(nameof(onCacheMiss));
         if (onCachePut == null) throw new ArgumentNullException(nameof(onCachePut));
-        if (onCachePutError == null) throw new ArgumentNullException(nameof(onCachePutError));
+        if (onCacheGetError == null) throw new ArgumentNullException(nameof(onCacheGetError));
         if (onCachePutError == null) throw new ArgumentNullException(nameof(onCachePutError));
 
         return new AsyncCachePolicy(cacheProvider, ttlStrategy, cacheKeyStrategy, onCacheGet, onCacheMiss, onCachePut, onCacheGetError, onCachePutError);

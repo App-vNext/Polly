@@ -741,7 +741,7 @@ public partial class Policy
         Action<Context, string> onCachePut,
         Action<Context, string, Exception> onCacheGetError,
         Action<Context, string, Exception> onCachePutError)
-        =>  Cache<TResult>(cacheProvider, new RelativeTtl(ttl), cacheKeyStrategy, onCacheGet, onCacheMiss,
+       =>  Cache<TResult>(cacheProvider, new RelativeTtl(ttl), cacheKeyStrategy, onCacheGet, onCacheMiss,
             onCachePut, onCacheGetError, onCachePutError);
 
     /// <summary>
@@ -819,7 +819,7 @@ public partial class Policy
         if (onCacheGet == null) throw new ArgumentNullException(nameof(onCacheGet));
         if (onCacheMiss == null) throw new ArgumentNullException(nameof(onCacheMiss));
         if (onCachePut == null) throw new ArgumentNullException(nameof(onCachePut));
-        if (onCachePutError == null) throw new ArgumentNullException(nameof(onCachePutError));
+        if (onCacheGetError == null) throw new ArgumentNullException(nameof(onCacheGetError));
         if (onCachePutError == null) throw new ArgumentNullException(nameof(onCachePutError));
 
         return new CachePolicy<TResult>(cacheProvider, ttlStrategy, cacheKeyStrategy, onCacheGet, onCacheMiss, onCachePut, onCacheGetError, onCachePutError);

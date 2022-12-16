@@ -53,16 +53,16 @@ public class CacheSpecs : IDisposable
         const string operationKey = "SomeOperationKey";
 
         ISyncCacheProvider stubCacheProvider = new StubCacheProvider();
-        var cache = Policy.Cache(stubCacheProvider, TimeSpan.MaxValue);
+        CachePolicy cache = Policy.Cache(stubCacheProvider, TimeSpan.MaxValue);
         stubCacheProvider.Put(operationKey, valueToReturnFromCache, new Ttl(TimeSpan.MaxValue));
 
-        var delegateExecuted = false;
+        bool delegateExecuted = false;
 
         cache.Execute(_ =>
-            {
-                delegateExecuted = true;
-                return valueToReturnFromExecution;
-            }, new Context(operationKey))
+        {
+            delegateExecuted = true;
+            return valueToReturnFromExecution;
+        }, new Context(operationKey))
             .Should().Be(valueToReturnFromCache);
 
         delegateExecuted.Should().BeFalse();
@@ -75,15 +75,15 @@ public class CacheSpecs : IDisposable
         const string operationKey = "SomeOperationKey";
 
         ISyncCacheProvider stubCacheProvider = new StubCacheProvider();
-        var cache = Policy.Cache(stubCacheProvider, TimeSpan.MaxValue);
+        CachePolicy cache = Policy.Cache(stubCacheProvider, TimeSpan.MaxValue);
 
-        (var cacheHit1, var fromCache1) = stubCacheProvider.TryGet(operationKey);
+        (bool cacheHit1, object fromCache1) = stubCacheProvider.TryGet(operationKey);
         cacheHit1.Should().BeFalse();
         fromCache1.Should().BeNull();
 
         cache.Execute(_ => valueToReturn, new Context(operationKey)).Should().Be(valueToReturn);
 
-        (var cacheHit2, var fromCache2) = stubCacheProvider.TryGet(operationKey);
+        (bool cacheHit2, object fromCache2) = stubCacheProvider.TryGet(operationKey);
         cacheHit2.Should().BeTrue();
         fromCache2.Should().Be(valueToReturn);
     }
@@ -95,28 +95,28 @@ public class CacheSpecs : IDisposable
         const string operationKey = "SomeOperationKey";
 
         ISyncCacheProvider stubCacheProvider = new StubCacheProvider();
-        var ttl = TimeSpan.FromMinutes(30);
-        var cache = Policy.Cache(stubCacheProvider, ttl);
+        TimeSpan ttl = TimeSpan.FromMinutes(30);
+        CachePolicy cache = Policy.Cache(stubCacheProvider, ttl);
 
-        (var cacheHit1, var fromCache1) = stubCacheProvider.TryGet(operationKey);
+        (bool cacheHit1, object fromCache1) = stubCacheProvider.TryGet(operationKey);
         cacheHit1.Should().BeFalse();
         fromCache1.Should().BeNull();
 
-        var delegateInvocations = 0;
+        int delegateInvocations = 0;
         Func<Context, string> func = _ =>
         {
             delegateInvocations++;
             return valueToReturn;
         };
 
-        var fixedTime = SystemClock.DateTimeOffsetUtcNow();
+        DateTimeOffset fixedTime = SystemClock.DateTimeOffsetUtcNow();
         SystemClock.DateTimeOffsetUtcNow = () => fixedTime;
 
         // First execution should execute delegate and put result in the cache.
         cache.Execute(func, new Context(operationKey)).Should().Be(valueToReturn);
         delegateInvocations.Should().Be(1);
 
-        (var cacheHit2, var fromCache2) = stubCacheProvider.TryGet(operationKey);
+        (bool cacheHit2, object fromCache2) = stubCacheProvider.TryGet(operationKey);
         cacheHit2.Should().BeTrue();
         fromCache2.Should().Be(valueToReturn);
 
@@ -141,15 +141,15 @@ public class CacheSpecs : IDisposable
         const string operationKey = "SomeOperationKey";
 
         ISyncCacheProvider stubCacheProvider = new StubCacheProvider();
-        var cache = Policy.Cache(stubCacheProvider, TimeSpan.Zero);
+        CachePolicy cache = Policy.Cache(stubCacheProvider, TimeSpan.Zero);
 
-        (var cacheHit1, var fromCache1) = stubCacheProvider.TryGet(operationKey);
+        (bool cacheHit1, object fromCache1) = stubCacheProvider.TryGet(operationKey);
         cacheHit1.Should().BeFalse();
         fromCache1.Should().BeNull();
 
         cache.Execute(_ => valueToReturn, new Context(operationKey)).Should().Be(valueToReturn);
 
-        (var cacheHit2, var fromCache2) = stubCacheProvider.TryGet(operationKey);
+        (bool cacheHit2, object fromCache2) = stubCacheProvider.TryGet(operationKey);
         cacheHit2.Should().BeFalse();
         fromCache2.Should().BeNull();
     }
@@ -160,9 +160,9 @@ public class CacheSpecs : IDisposable
         const string valueToReturn = "valueToReturn";
         const string operationKey = "SomeOperationKey";
 
-        var cache = Policy.Cache(new StubCacheProvider(), TimeSpan.MaxValue);
+        CachePolicy cache = Policy.Cache(new StubCacheProvider(), TimeSpan.MaxValue);
 
-        var delegateInvocations = 0;
+        int delegateInvocations = 0;
         Func<Context, string> func = _ =>
         {
             delegateInvocations++;
@@ -183,14 +183,14 @@ public class CacheSpecs : IDisposable
     public void Should_allow_custom_FuncCacheKeyStrategy()
     {
         ISyncCacheProvider stubCacheProvider = new StubCacheProvider();
-        var cache = Policy.Cache(stubCacheProvider, TimeSpan.MaxValue, context => context.OperationKey + context["id"]);
+        CachePolicy cache = Policy.Cache(stubCacheProvider, TimeSpan.MaxValue, context => context.OperationKey + context["id"]);
 
-        var person1 = new object();
+        object person1 = new object();
         stubCacheProvider.Put("person1", person1, new Ttl(TimeSpan.MaxValue));
-        var person2 = new object();
+        object person2 = new object();
         stubCacheProvider.Put("person2", person2, new Ttl(TimeSpan.MaxValue));
 
-        var funcExecuted = false;
+        bool funcExecuted = false;
         Func<Context, object> func = _ => { funcExecuted = true; return new object(); };
 
         cache.Execute(func, new Context("person", new { id = "1" }.AsDictionary())).Should().BeSameAs(person1);
@@ -208,14 +208,14 @@ public class CacheSpecs : IDisposable
 
         ISyncCacheProvider stubCacheProvider = new StubCacheProvider();
         ICacheKeyStrategy cacheKeyStrategy = new StubCacheKeyStrategy(context => context.OperationKey + context["id"]);
-        var cache = Policy.Cache(stubCacheProvider, new RelativeTtl(TimeSpan.MaxValue), cacheKeyStrategy, emptyDelegate, emptyDelegate, emptyDelegate, noErrorHandling, noErrorHandling);
+        CachePolicy cache = Policy.Cache(stubCacheProvider, new RelativeTtl(TimeSpan.MaxValue), cacheKeyStrategy, emptyDelegate, emptyDelegate, emptyDelegate, noErrorHandling, noErrorHandling);
 
-        var person1 = new object();
+        object person1 = new object();
         stubCacheProvider.Put("person1", person1, new Ttl(TimeSpan.MaxValue));
-        var person2 = new object();
+        object person2 = new object();
         stubCacheProvider.Put("person2", person2, new Ttl(TimeSpan.MaxValue));
 
-        var funcExecuted = false;
+        bool funcExecuted = false;
         Func<Context, object> func = _ => { funcExecuted = true; return new object(); };
 
         cache.Execute(func, new Context("person", new { id = "1" }.AsDictionary())).Should().BeSameAs(person1);
@@ -236,15 +236,15 @@ public class CacheSpecs : IDisposable
         const string operationKey = "SomeOperationKey";
 
         ISyncCacheProvider stubCacheProvider = new StubCacheProvider();
-        var cache = Policy.Cache(stubCacheProvider, TimeSpan.MaxValue);
+        CachePolicy cache = Policy.Cache(stubCacheProvider, TimeSpan.MaxValue);
 
-        (var cacheHit1, var fromCache1) = stubCacheProvider.TryGet(operationKey);
+        (bool cacheHit1, object fromCache1) = stubCacheProvider.TryGet(operationKey);
         cacheHit1.Should().BeFalse();
         fromCache1.Should().BeNull();
 
         cache.Execute(_ => valueToReturn, new Context(operationKey)).Should().Be(valueToReturn);
 
-        (var cacheHit2, var fromCache2) = stubCacheProvider.TryGet(operationKey);
+        (bool cacheHit2, object fromCache2) = stubCacheProvider.TryGet(operationKey);
         cacheHit2.Should().BeTrue();
         fromCache2.Should().Be(valueToReturn);
     }
@@ -253,14 +253,14 @@ public class CacheSpecs : IDisposable
     public void Should_return_value_from_cache_and_not_execute_delegate_if_cache_holds_value__default_for_reference_type()
     {
         ResultClass valueToReturnFromCache = default;
-        var valueToReturnFromExecution = new ResultClass(ResultPrimitive.Good);
+        ResultClass valueToReturnFromExecution = new ResultClass(ResultPrimitive.Good);
         const string operationKey = "SomeOperationKey";
 
         ISyncCacheProvider stubCacheProvider = new StubCacheProvider();
-        var cache = Policy.Cache(stubCacheProvider, TimeSpan.MaxValue);
+        CachePolicy cache = Policy.Cache(stubCacheProvider, TimeSpan.MaxValue);
         stubCacheProvider.Put(operationKey, valueToReturnFromCache, new Ttl(TimeSpan.MaxValue));
 
-        var delegateExecuted = false;
+        bool delegateExecuted = false;
 
         cache.Execute(_ =>
             {
@@ -279,15 +279,15 @@ public class CacheSpecs : IDisposable
         const string operationKey = "SomeOperationKey";
 
         ISyncCacheProvider stubCacheProvider = new StubCacheProvider();
-        var cache = Policy.Cache(stubCacheProvider, TimeSpan.MaxValue);
+        CachePolicy cache = Policy.Cache(stubCacheProvider, TimeSpan.MaxValue);
 
-        (var cacheHit1, var fromCache1) = stubCacheProvider.TryGet(operationKey);
+        (bool cacheHit1, object fromCache1) = stubCacheProvider.TryGet(operationKey);
         cacheHit1.Should().BeFalse();
         fromCache1.Should().BeNull();
 
         cache.Execute(_ => valueToReturn, new Context(operationKey)).Should().Be(valueToReturn);
 
-        (var cacheHit2, var fromCache2) = stubCacheProvider.TryGet(operationKey);
+        (bool cacheHit2, object fromCache2) = stubCacheProvider.TryGet(operationKey);
         cacheHit2.Should().BeTrue();
         fromCache2.Should().Be(valueToReturn);
     }
@@ -296,15 +296,15 @@ public class CacheSpecs : IDisposable
     public void Should_return_value_from_cache_and_not_execute_delegate_if_cache_holds_value__default_for_value_type()
     {
         ResultPrimitive valueToReturnFromCache = default; 
-        var valueToReturnFromExecution = ResultPrimitive.Good;
+        ResultPrimitive valueToReturnFromExecution = ResultPrimitive.Good;
         valueToReturnFromExecution.Should().NotBe(valueToReturnFromCache);
         const string operationKey = "SomeOperationKey";
 
         ISyncCacheProvider stubCacheProvider = new StubCacheProvider();
-        var cache = Policy.Cache(stubCacheProvider, TimeSpan.MaxValue);
+        CachePolicy cache = Policy.Cache(stubCacheProvider, TimeSpan.MaxValue);
         stubCacheProvider.Put(operationKey, valueToReturnFromCache, new Ttl(TimeSpan.MaxValue));
 
-        var delegateExecuted = false;
+        bool delegateExecuted = false;
 
         cache.Execute(_ =>
             {
@@ -328,19 +328,19 @@ public class CacheSpecs : IDisposable
         const string operationKey = "SomeOperationKey";
 
         ISyncCacheProvider stubCacheProvider = new StubCacheProvider();
-        var cache = Policy.Cache(stubCacheProvider, TimeSpan.MaxValue);
+        CachePolicy cache = Policy.Cache(stubCacheProvider, TimeSpan.MaxValue);
         Policy noop = Policy.NoOp();
-        var wrap = Policy.Wrap(cache, noop);
+        PolicyWrap wrap = Policy.Wrap(cache, noop);
 
         stubCacheProvider.Put(operationKey, valueToReturnFromCache, new Ttl(TimeSpan.MaxValue));
 
-        var delegateExecuted = false;
+        bool delegateExecuted = false;
 
         wrap.Execute(_ =>
-            {
-                delegateExecuted = true;
-                return valueToReturnFromExecution;
-            }, new Context(operationKey))
+        {
+            delegateExecuted = true;
+            return valueToReturnFromExecution;
+        }, new Context(operationKey))
             .Should().Be(valueToReturnFromCache);
 
         delegateExecuted.Should().BeFalse();
@@ -354,19 +354,19 @@ public class CacheSpecs : IDisposable
         const string operationKey = "SomeOperationKey";
 
         ISyncCacheProvider stubCacheProvider = new StubCacheProvider();
-        var cache = Policy.Cache(stubCacheProvider, TimeSpan.MaxValue);
+        CachePolicy cache = Policy.Cache(stubCacheProvider, TimeSpan.MaxValue);
         Policy noop = Policy.NoOp();
-        var wrap = Policy.Wrap(noop, cache);
+        PolicyWrap wrap = Policy.Wrap(noop, cache);
 
         stubCacheProvider.Put(operationKey, valueToReturnFromCache, new Ttl(TimeSpan.MaxValue));
 
-        var delegateExecuted = false;
+        bool delegateExecuted = false;
 
         wrap.Execute(_ =>
-            {
-                delegateExecuted = true;
-                return valueToReturnFromExecution;
-            }, new Context(operationKey))
+        {
+            delegateExecuted = true;
+            return valueToReturnFromExecution;
+        }, new Context(operationKey))
             .Should().Be(valueToReturnFromCache);
 
         delegateExecuted.Should().BeFalse();
@@ -380,19 +380,19 @@ public class CacheSpecs : IDisposable
         const string operationKey = "SomeOperationKey";
 
         ISyncCacheProvider stubCacheProvider = new StubCacheProvider();
-        var cache = Policy.Cache(stubCacheProvider, TimeSpan.MaxValue);
+        CachePolicy cache = Policy.Cache(stubCacheProvider, TimeSpan.MaxValue);
         Policy noop = Policy.NoOp();
-        var wrap = Policy.Wrap(noop, cache, noop);
+        PolicyWrap wrap = Policy.Wrap(noop, cache, noop);
 
         stubCacheProvider.Put(operationKey, valueToReturnFromCache, new Ttl(TimeSpan.MaxValue));
 
-        var delegateExecuted = false;
+        bool delegateExecuted = false;
 
         wrap.Execute(_ =>
-            {
-                delegateExecuted = true;
-                return valueToReturnFromExecution;
-            }, new Context(operationKey))
+        {
+            delegateExecuted = true;
+            return valueToReturnFromExecution;
+        }, new Context(operationKey))
             .Should().Be(valueToReturnFromCache);
 
         delegateExecuted.Should().BeFalse();
@@ -405,12 +405,12 @@ public class CacheSpecs : IDisposable
     [Fact]
     public void Should_always_execute_delegate_if_execution_key_not_set()
     {
-        var valueToReturn = Guid.NewGuid().ToString();
+        string valueToReturn = Guid.NewGuid().ToString();
 
-        var cache = Policy.Cache(new StubCacheProvider(), TimeSpan.MaxValue);
+        CachePolicy cache = Policy.Cache(new StubCacheProvider(), TimeSpan.MaxValue);
 
-        var delegateInvocations = 0;
-        var func = () =>
+        int delegateInvocations = 0;
+        Func<string> func = () =>
         {
             delegateInvocations++;
             return valueToReturn;
@@ -426,11 +426,11 @@ public class CacheSpecs : IDisposable
     [Fact]
     public void Should_always_execute_delegate_if_execution_is_void_returning()
     {
-        var operationKey = "SomeKey";
+        string operationKey = "SomeKey";
 
-        var cache = Policy.Cache(new StubCacheProvider(), TimeSpan.MaxValue);
+        CachePolicy cache = Policy.Cache(new StubCacheProvider(), TimeSpan.MaxValue);
 
-        var delegateInvocations = 0;
+        int delegateInvocations = 0;
         Action<Context> action = _ => { delegateInvocations++; };
 
         cache.Execute(action, new Context(operationKey));
@@ -450,11 +450,11 @@ public class CacheSpecs : IDisposable
         const string valueToReturn = "valueToReturn";
         const string operationKey = "SomeOperationKey";
 
-        var cache = Policy.Cache(new StubCacheProvider(), TimeSpan.MaxValue);
+        CachePolicy cache = Policy.Cache(new StubCacheProvider(), TimeSpan.MaxValue);
 
-        var tokenSource = new CancellationTokenSource();
+        CancellationTokenSource tokenSource = new CancellationTokenSource();
 
-        var delegateInvocations = 0;
+        int delegateInvocations = 0;
         Func<Context, CancellationToken, string> func = (_, _) =>
         {
             // delegate does not observe cancellation token; test is whether CacheEngine does.
@@ -479,9 +479,9 @@ public class CacheSpecs : IDisposable
         const string operationKey = "SomeOperationKey";
 
         ISyncCacheProvider stubCacheProvider = new StubCacheProvider();
-        var cache = Policy.Cache(stubCacheProvider, TimeSpan.MaxValue);
+        CachePolicy cache = Policy.Cache(stubCacheProvider, TimeSpan.MaxValue);
 
-        var tokenSource = new CancellationTokenSource();
+        CancellationTokenSource tokenSource = new CancellationTokenSource();
 
         Func<Context, CancellationToken, string> func = (_, ct) =>
         {
@@ -493,7 +493,7 @@ public class CacheSpecs : IDisposable
         cache.Invoking(policy => policy.Execute(func, new Context(operationKey), tokenSource.Token))
             .Should().Throw<OperationCanceledException>();
 
-        (var cacheHit, var fromCache) = stubCacheProvider.TryGet(operationKey);
+        (bool cacheHit, object fromCache) = stubCacheProvider.TryGet(operationKey);
         cacheHit.Should().BeFalse();
         fromCache.Should().BeNull();
     }
@@ -505,7 +505,7 @@ public class CacheSpecs : IDisposable
     [Fact]
     public void Should_call_onError_delegate_if_cache_get_errors()
     {
-        var ex = new Exception();
+        Exception ex = new Exception();
         ISyncCacheProvider stubCacheProvider = new StubErroringCacheProvider(getException: ex, putException: null);
 
         Exception exceptionFromCacheProvider = null;
@@ -516,11 +516,11 @@ public class CacheSpecs : IDisposable
 
         Action<Context, string, Exception> onError = (_, _, exc) => { exceptionFromCacheProvider = exc; };
 
-        var cache = Policy.Cache(stubCacheProvider, TimeSpan.MaxValue, onError);
+        CachePolicy cache = Policy.Cache(stubCacheProvider, TimeSpan.MaxValue, onError);
 
         stubCacheProvider.Put(operationKey, valueToReturnFromCache, new Ttl(TimeSpan.MaxValue));
 
-        var delegateExecuted = false;
+        bool delegateExecuted = false;
 
 
         // Even though value is in cache, get will error; so value is returned from execution.
@@ -539,7 +539,7 @@ public class CacheSpecs : IDisposable
     [Fact]
     public void Should_call_onError_delegate_if_cache_put_errors()
     {
-        var ex = new Exception();
+        Exception ex = new Exception();
         ISyncCacheProvider stubCacheProvider = new StubErroringCacheProvider(getException: null, putException: ex);
 
         Exception exceptionFromCacheProvider = null;
@@ -549,9 +549,9 @@ public class CacheSpecs : IDisposable
 
         Action<Context, string, Exception> onError = (_, _, exc) => { exceptionFromCacheProvider = exc; };
 
-        var cache = Policy.Cache(stubCacheProvider, TimeSpan.MaxValue, onError);
+        CachePolicy cache = Policy.Cache(stubCacheProvider, TimeSpan.MaxValue, onError);
 
-        (var cacheHit1, var fromCache1) = stubCacheProvider.TryGet(operationKey);
+        (bool cacheHit1, object fromCache1) = stubCacheProvider.TryGet(operationKey);
         cacheHit1.Should().BeFalse();
         fromCache1.Should().BeNull();
 
@@ -561,7 +561,7 @@ public class CacheSpecs : IDisposable
         exceptionFromCacheProvider.Should().Be(ex);
 
         // failed to put it in the cache
-        (var cacheHit2, var fromCache2) = stubCacheProvider.TryGet(operationKey);
+        (bool cacheHit2, object fromCache2) = stubCacheProvider.TryGet(operationKey);
         cacheHit2.Should().BeFalse();
         fromCache2.Should().BeNull();
 
@@ -576,7 +576,7 @@ public class CacheSpecs : IDisposable
         const string operationKey = "SomeOperationKey";
         string keyPassedToDelegate = null;
 
-        var contextToExecute = new Context(operationKey);
+        Context contextToExecute = new Context(operationKey);
         Context contextPassedToDelegate = null;
 
         Action<Context, string, Exception> noErrorHandling = (_, _, _) => { };
@@ -584,10 +584,10 @@ public class CacheSpecs : IDisposable
         Action<Context, string> onCacheAction = (ctx, key) => { contextPassedToDelegate = ctx; keyPassedToDelegate = key; };
 
         ISyncCacheProvider stubCacheProvider = new StubCacheProvider();
-        var cache = Policy.Cache(stubCacheProvider, new RelativeTtl(TimeSpan.MaxValue), DefaultCacheKeyStrategy.Instance, onCacheAction, emptyDelegate, emptyDelegate, noErrorHandling, noErrorHandling);
+        CachePolicy cache = Policy.Cache(stubCacheProvider, new RelativeTtl(TimeSpan.MaxValue), DefaultCacheKeyStrategy.Instance, onCacheAction, emptyDelegate, emptyDelegate, noErrorHandling, noErrorHandling);
         stubCacheProvider.Put(operationKey, valueToReturnFromCache, new Ttl(TimeSpan.MaxValue));
 
-        var delegateExecuted = false;
+        bool delegateExecuted = false;
         cache.Execute(_ =>
             {
                 delegateExecuted = true;
@@ -609,7 +609,7 @@ public class CacheSpecs : IDisposable
         string keyPassedToOnCacheMiss = null;
         string keyPassedToOnCachePut = null;
 
-        var contextToExecute = new Context(operationKey);
+        Context contextToExecute = new Context(operationKey);
         Context contextPassedToOnCacheMiss = null;
         Context contextPassedToOnCachePut = null;
 
@@ -619,15 +619,15 @@ public class CacheSpecs : IDisposable
         Action<Context, string> onCachePut = (ctx, key) => { contextPassedToOnCachePut = ctx; keyPassedToOnCachePut = key; };
 
         ISyncCacheProvider stubCacheProvider = new StubCacheProvider();
-        var cache = Policy.Cache(stubCacheProvider, new RelativeTtl(TimeSpan.MaxValue), DefaultCacheKeyStrategy.Instance, emptyDelegate, onCacheMiss, onCachePut, noErrorHandling, noErrorHandling);
+        CachePolicy cache = Policy.Cache(stubCacheProvider, new RelativeTtl(TimeSpan.MaxValue), DefaultCacheKeyStrategy.Instance, emptyDelegate, onCacheMiss, onCachePut, noErrorHandling, noErrorHandling);
 
-        (var cacheHit1, var fromCache1) = stubCacheProvider.TryGet(operationKey);
+        (bool cacheHit1, object fromCache1) = stubCacheProvider.TryGet(operationKey);
         cacheHit1.Should().BeFalse();
         fromCache1.Should().BeNull();
 
         cache.Execute(_ => valueToReturn, contextToExecute).Should().Be(valueToReturn);
 
-        (var cacheHit2, var fromCache2) = stubCacheProvider.TryGet(operationKey);
+        (bool cacheHit2, object fromCache2) = stubCacheProvider.TryGet(operationKey);
         cacheHit2.Should().BeTrue();
         fromCache2.Should().Be(valueToReturn);
 
@@ -647,7 +647,7 @@ public class CacheSpecs : IDisposable
         string keyPassedToOnCacheMiss = null;
         string keyPassedToOnCachePut = null;
 
-        var contextToExecute = new Context(operationKey);
+        Context contextToExecute = new Context(operationKey);
         Context contextPassedToOnCacheMiss = null;
         Context contextPassedToOnCachePut = null;
 
@@ -657,9 +657,9 @@ public class CacheSpecs : IDisposable
         Action<Context, string> onCachePut = (ctx, key) => { contextPassedToOnCachePut = ctx; keyPassedToOnCachePut = key; };
 
         ISyncCacheProvider stubCacheProvider = new StubCacheProvider();
-        var cache = Policy.Cache(stubCacheProvider, new RelativeTtl(TimeSpan.Zero), DefaultCacheKeyStrategy.Instance, emptyDelegate, onCacheMiss, onCachePut, noErrorHandling, noErrorHandling);
+        CachePolicy cache = Policy.Cache(stubCacheProvider, new RelativeTtl(TimeSpan.Zero), DefaultCacheKeyStrategy.Instance, emptyDelegate, onCacheMiss, onCachePut, noErrorHandling, noErrorHandling);
 
-        (var cacheHit, var fromCache) = stubCacheProvider.TryGet(operationKey);
+        (bool cacheHit, object fromCache) = stubCacheProvider.TryGet(operationKey);
         cacheHit.Should().BeFalse();
         fromCache.Should().BeNull();
 
@@ -675,15 +675,15 @@ public class CacheSpecs : IDisposable
     [Fact]
     public void Should_not_execute_oncachemiss_if_dont_query_cache_because_cache_key_not_set()
     {
-        var valueToReturn = Guid.NewGuid().ToString();
+        string valueToReturn = Guid.NewGuid().ToString();
 
         Action<Context, string, Exception> noErrorHandling = (_, _, _) => { };
         Action<Context, string> emptyDelegate = (_, _) => { };
 
-        var onCacheMissExecuted = false;
+        bool onCacheMissExecuted = false;
         Action<Context, string> onCacheMiss = (_, _) => { onCacheMissExecuted = true; };
 
-        var cache = Policy.Cache(new StubCacheProvider(), new RelativeTtl(TimeSpan.MaxValue), DefaultCacheKeyStrategy.Instance, emptyDelegate, onCacheMiss, emptyDelegate, noErrorHandling, noErrorHandling);
+        CachePolicy cache = Policy.Cache(new StubCacheProvider(), new RelativeTtl(TimeSpan.MaxValue), DefaultCacheKeyStrategy.Instance, emptyDelegate, onCacheMiss, emptyDelegate, noErrorHandling, noErrorHandling);
 
         cache.Execute(() => valueToReturn /*, no operation key */).Should().Be(valueToReturn);
 

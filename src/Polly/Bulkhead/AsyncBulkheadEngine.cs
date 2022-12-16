@@ -4,9 +4,9 @@ using System.Threading.Tasks;
 
 namespace Polly.Bulkhead;
 
-internal static class AsyncBulkheadEngine
+   internal static class AsyncBulkheadEngine
 {
-    internal static async Task<TResult> ImplementationAsync<TResult>(
+   internal static async Task<TResult> ImplementationAsync<TResult>(
         Func<Context, CancellationToken, Task<TResult>> action,
         Context context,
         Func<Context, Task> onBulkheadRejectedAsync,

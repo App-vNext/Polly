@@ -123,9 +123,9 @@ public static class FallbackSyntax
         if (onFallback == null) throw new ArgumentNullException(nameof(onFallback));
 
         return new FallbackPolicy(
-            policyBuilder,
-            onFallback,
-            fallbackAction);
+                policyBuilder,
+                onFallback,
+                fallbackAction);
     }
 }
 

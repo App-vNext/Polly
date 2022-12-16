@@ -1,4 +1,5 @@
 ﻿using System.Threading;
+using System.Threading.Tasks;
 using FluentAssertions;
 using Polly.Utilities;
 using Xunit;
@@ -8,31 +9,31 @@ namespace Polly.Specs.NoOp;
 public class NoOpAsyncSpecs
 {
     [Fact]
-    public void Should_execute_user_delegate()
+    public async Task Should_execute_user_delegate()
     {
         var policy = Policy.NoOpAsync();
-        var executed = false;
+        bool executed = false;
 
-        policy.Awaiting(p => p.ExecuteAsync(() => { executed = true; return TaskHelper.EmptyTask; }))
-            .Should().NotThrow();
+        await policy.Awaiting(p => p.ExecuteAsync(() => { executed = true; return TaskHelper.EmptyTask; }))
+            .Should().NotThrowAsync();
 
         executed.Should().BeTrue();
     }
 
     [Fact]
-    public void Should_execute_user_delegate_without_adding_extra_cancellation_behaviour()
+    public async Task Should_execute_user_delegate_without_adding_extra_cancellation_behaviour()
     {
         var policy = Policy.NoOpAsync();
 
-        var executed = false;
+        bool executed = false;
 
-        using (var cts = new CancellationTokenSource())
+        using (CancellationTokenSource cts = new CancellationTokenSource())
         {
             cts.Cancel();
 
-            policy.Awaiting(p => p.ExecuteAsync(
-                    _ => { executed = true; return TaskHelper.EmptyTask; }, cts.Token))
-                .Should().NotThrow();
+            await policy.Awaiting(p => p.ExecuteAsync(
+                _ => { executed = true; return TaskHelper.EmptyTask; }, cts.Token))
+                .Should().NotThrowAsync();
         }
 
         executed.Should().BeTrue();

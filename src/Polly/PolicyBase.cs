@@ -25,7 +25,7 @@ public abstract partial class PolicyBase
 
     internal static ExceptionType GetExceptionType(ExceptionPredicates exceptionPredicates, Exception exception)
     {
-        var isExceptionTypeHandledByThisPolicy = exceptionPredicates.FirstMatchOrDefault(exception) != null;
+        bool isExceptionTypeHandledByThisPolicy = exceptionPredicates.FirstMatchOrDefault(exception) != null;
 
         return isExceptionTypeHandledByThisPolicy
             ? ExceptionType.HandledByThisPolicy
@@ -67,7 +67,7 @@ public abstract class PolicyBase<TResult> : PolicyBase
     internal PolicyBase(
         ExceptionPredicates exceptionPredicates,
         ResultPredicates<TResult> resultPredicates)
-        : base(exceptionPredicates)
+    : base(exceptionPredicates)
         => ResultPredicates = resultPredicates ?? ResultPredicates<TResult>.None;
 
     /// <summary>

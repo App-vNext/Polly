@@ -50,7 +50,7 @@ public class Retry
     [Benchmark]
     public void Retry_Synchronous_Throws_Then_Succeeds()
     {
-        var count = 0;
+        int count = 0;
 
         SyncPolicy.Execute(() =>
         {
@@ -64,7 +64,7 @@ public class Retry
     [Benchmark]
     public async Task Retry_Asynchronous_Throws_Then_Succeeds()
     {
-        var count = 0;
+        int count = 0;
 
         await AsyncPolicy.ExecuteAsync(() =>
         {

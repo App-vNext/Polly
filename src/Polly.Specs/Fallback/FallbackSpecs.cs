@@ -20,8 +20,8 @@ public class FallbackSpecs
         Action fallbackAction = null;
 
         Action policy = () => Policy
-            .Handle<DivideByZeroException>()
-            .Fallback(fallbackAction);
+                                .Handle<DivideByZeroException>()
+                                .Fallback(fallbackAction);
 
         policy.Should().Throw<ArgumentNullException>()
             .And.ParamName.Should().Be("fallbackAction");
@@ -47,8 +47,8 @@ public class FallbackSpecs
         Action<Exception> onFallback = _ => { };
 
         Action policy = () => Policy
-            .Handle<DivideByZeroException>()
-            .Fallback(fallbackAction, onFallback);
+                                .Handle<DivideByZeroException>()
+                                .Fallback(fallbackAction, onFallback);
 
         policy.Should().Throw<ArgumentNullException>()
             .And.ParamName.Should().Be("fallbackAction");
@@ -75,8 +75,8 @@ public class FallbackSpecs
         Action<Exception, Context> onFallback = (_, _) => { };
 
         Action policy = () => Policy
-            .Handle<DivideByZeroException>()
-            .Fallback(fallbackAction, onFallback);
+                                .Handle<DivideByZeroException>()
+                                .Fallback(fallbackAction, onFallback);
 
         policy.Should().Throw<ArgumentNullException>()
             .And.ParamName.Should().Be("fallbackAction");
@@ -89,8 +89,8 @@ public class FallbackSpecs
         Action<Exception, Context> onFallback = (_, _) => { };
 
         Action policy = () => Policy
-            .Handle<DivideByZeroException>()
-            .Fallback(fallbackAction, onFallback);
+                                .Handle<DivideByZeroException>()
+                                .Fallback(fallbackAction, onFallback);
 
         policy.Should().Throw<ArgumentNullException>()
             .And.ParamName.Should().Be("fallbackAction");
@@ -99,12 +99,12 @@ public class FallbackSpecs
     [Fact]
     public void Should_throw_when_onFallback_delegate_is_null()
     {
-        var fallbackAction = () => { };
+        Action fallbackAction = () => { };
         Action<Exception> onFallback = null;
 
         Action policy = () => Policy
-            .Handle<DivideByZeroException>()
-            .Fallback(fallbackAction, onFallback);
+                                .Handle<DivideByZeroException>()
+                                .Fallback(fallbackAction, onFallback);
 
         policy.Should().Throw<ArgumentNullException>()
             .And.ParamName.Should().Be("onFallback");
@@ -131,8 +131,8 @@ public class FallbackSpecs
         Action<Exception, Context> onFallback = null;
 
         Action policy = () => Policy
-            .Handle<DivideByZeroException>()
-            .Fallback(fallbackAction, onFallback);
+                                .Handle<DivideByZeroException>()
+                                .Fallback(fallbackAction, onFallback);
 
         policy.Should().Throw<ArgumentNullException>()
             .And.ParamName.Should().Be("onFallback");
@@ -145,8 +145,8 @@ public class FallbackSpecs
         Action<Exception, Context> onFallback = null;
 
         Action policy = () => Policy
-            .Handle<DivideByZeroException>()
-            .Fallback(fallbackAction, onFallback);
+                                .Handle<DivideByZeroException>()
+                                .Fallback(fallbackAction, onFallback);
 
         policy.Should().Throw<ArgumentNullException>()
             .And.ParamName.Should().Be("onFallback");
@@ -159,12 +159,12 @@ public class FallbackSpecs
     [Fact]
     public void Should_not_execute_fallback_when_executed_delegate_does_not_throw()
     {
-        var fallbackActionExecuted = false;
-        var fallbackAction = () => { fallbackActionExecuted = true; };
+        bool fallbackActionExecuted = false;
+        Action fallbackAction = () => { fallbackActionExecuted = true; };
 
-        var fallbackPolicy = Policy
-            .Handle<DivideByZeroException>()
-            .Fallback(fallbackAction);
+        FallbackPolicy fallbackPolicy = Policy
+                                .Handle<DivideByZeroException>()
+                                .Fallback(fallbackAction);
 
         fallbackPolicy.Execute(() => { });
 
@@ -174,12 +174,12 @@ public class FallbackSpecs
     [Fact]
     public void Should_not_execute_fallback_when_executed_delegate_throws_exception_not_handled_by_policy()
     {
-        var fallbackActionExecuted = false;
-        var fallbackAction = () => { fallbackActionExecuted = true; };
+        bool fallbackActionExecuted = false;
+        Action fallbackAction = () => { fallbackActionExecuted = true; };
 
-        var fallbackPolicy = Policy
-            .Handle<DivideByZeroException>()
-            .Fallback(fallbackAction);
+        FallbackPolicy fallbackPolicy = Policy
+                                .Handle<DivideByZeroException>()
+                                .Fallback(fallbackAction);
 
         fallbackPolicy.Invoking(x => x.RaiseException<ArgumentNullException>()).Should().Throw<ArgumentNullException>();
 
@@ -190,10 +190,10 @@ public class FallbackSpecs
     [Fact]
     public void Should_execute_fallback_when_executed_delegate_throws_exception_handled_by_policy()
     {
-        var fallbackActionExecuted = false;
-        var fallbackAction = () => { fallbackActionExecuted = true; };
+        bool fallbackActionExecuted = false;
+        Action fallbackAction = () => { fallbackActionExecuted = true; };
 
-        var fallbackPolicy = Policy
+        FallbackPolicy fallbackPolicy = Policy
             .Handle<DivideByZeroException>()
             .Fallback(fallbackAction);
 
@@ -205,10 +205,10 @@ public class FallbackSpecs
     [Fact]
     public void Should_execute_fallback_when_executed_delegate_throws_one_of_exceptions_handled_by_policy()
     {
-        var fallbackActionExecuted = false;
-        var fallbackAction = () => { fallbackActionExecuted = true; };
+        bool fallbackActionExecuted = false;
+        Action fallbackAction = () => { fallbackActionExecuted = true; };
 
-        var fallbackPolicy = Policy
+        FallbackPolicy fallbackPolicy = Policy
             .Handle<DivideByZeroException>()
             .Or<ArgumentException>()
             .Fallback(fallbackAction);
@@ -221,13 +221,13 @@ public class FallbackSpecs
     [Fact]
     public void Should_not_execute_fallback_when_executed_delegate_throws_exception_not_one_of_exceptions_handled_by_policy()
     {
-        var fallbackActionExecuted = false;
-        var fallbackAction = () => { fallbackActionExecuted = true; };
+        bool fallbackActionExecuted = false;
+        Action fallbackAction = () => { fallbackActionExecuted = true; };
 
-        var fallbackPolicy = Policy
-            .Handle<DivideByZeroException>()
-            .Or<NullReferenceException>()
-            .Fallback(fallbackAction);
+        FallbackPolicy fallbackPolicy = Policy
+                                .Handle<DivideByZeroException>()
+                                .Or<NullReferenceException>()
+                                .Fallback(fallbackAction);
 
         fallbackPolicy.Invoking(x => x.RaiseException<ArgumentNullException>()).Should().Throw<ArgumentNullException>();
 
@@ -237,12 +237,12 @@ public class FallbackSpecs
     [Fact]
     public void Should_not_execute_fallback_when_exception_thrown_does_not_match_handling_predicates()
     {
-        var fallbackActionExecuted = false;
-        var fallbackAction = () => { fallbackActionExecuted = true; };
+        bool fallbackActionExecuted = false;
+        Action fallbackAction = () => { fallbackActionExecuted = true; };
 
-        var fallbackPolicy = Policy
-            .Handle<DivideByZeroException>(_ => false)
-            .Fallback(fallbackAction);
+        FallbackPolicy fallbackPolicy = Policy
+                                .Handle<DivideByZeroException>(_ => false)
+                                .Fallback(fallbackAction);
 
         fallbackPolicy.Invoking(x => x.RaiseException<DivideByZeroException>()).Should().Throw<DivideByZeroException>();
 
@@ -252,13 +252,13 @@ public class FallbackSpecs
     [Fact]
     public void Should_not_execute_fallback_when_exception_thrown_does_not_match_any_of_handling_predicates()
     {
-        var fallbackActionExecuted = false;
-        var fallbackAction = () => { fallbackActionExecuted = true; };
+        bool fallbackActionExecuted = false;
+        Action fallbackAction = () => { fallbackActionExecuted = true; };
 
-        var fallbackPolicy = Policy
-            .Handle<DivideByZeroException>(_ => false)
-            .Or<ArgumentNullException>(_ => false)
-            .Fallback(fallbackAction);
+        FallbackPolicy fallbackPolicy = Policy
+                                .Handle<DivideByZeroException>(_ => false)
+                                .Or<ArgumentNullException>(_ => false)
+                                .Fallback(fallbackAction);
 
         fallbackPolicy.Invoking(x => x.RaiseException<DivideByZeroException>()).Should().Throw<DivideByZeroException>();
 
@@ -268,10 +268,10 @@ public class FallbackSpecs
     [Fact]
     public void Should_execute_fallback_when_exception_thrown_matches_handling_predicates()
     {
-        var fallbackActionExecuted = false;
-        var fallbackAction = () => { fallbackActionExecuted = true; };
+        bool fallbackActionExecuted = false;
+        Action fallbackAction = () => { fallbackActionExecuted = true; };
 
-        var fallbackPolicy = Policy
+        FallbackPolicy fallbackPolicy = Policy
             .Handle<DivideByZeroException>(_ => true)
             .Fallback(fallbackAction);
 
@@ -283,10 +283,10 @@ public class FallbackSpecs
     [Fact]
     public void Should_execute_fallback_when_exception_thrown_matches_one_of_handling_predicates()
     {
-        var fallbackActionExecuted = false;
-        var fallbackAction = () => { fallbackActionExecuted = true; };
+        bool fallbackActionExecuted = false;
+        Action fallbackAction = () => { fallbackActionExecuted = true; };
 
-        var fallbackPolicy = Policy
+        FallbackPolicy fallbackPolicy = Policy
             .Handle<DivideByZeroException>(_ => true)
             .Or<ArgumentNullException>()
             .Fallback(fallbackAction);
@@ -299,14 +299,14 @@ public class FallbackSpecs
     [Fact]
     public void Should_not_handle_exception_thrown_by_fallback_delegate_even_if_is_exception_handled_by_policy()
     {
-        var fallbackActionExecuted = false;
-        var fallbackAction = () =>
+        bool fallbackActionExecuted = false;
+        Action fallbackAction = () =>
         {
             fallbackActionExecuted = true;
             throw new DivideByZeroException {HelpLink = "FromFallbackAction"};
         };
 
-        var fallbackPolicy = Policy
+        FallbackPolicy fallbackPolicy = Policy
             .Handle<DivideByZeroException>()
             .Fallback(fallbackAction);
 
@@ -319,7 +319,7 @@ public class FallbackSpecs
     [Fact]
     public void Should_throw_for_generic_method_execution_on_non_generic_policy()
     {
-        var fallbackPolicy = Policy
+        FallbackPolicy fallbackPolicy = Policy
             .Handle<DivideByZeroException>()
             .Fallback(() => {});
 
@@ -333,14 +333,14 @@ public class FallbackSpecs
     [Fact]
     public void Should_not_execute_fallback_when_executed_delegate_throws_inner_exception_where_policy_doesnt_handle_inner()
     {
-        var fallbackActionExecuted = false;
-        var fallbackAction = () => { fallbackActionExecuted = true; };
+        bool fallbackActionExecuted = false;
+        Action fallbackAction = () => { fallbackActionExecuted = true; };
 
-        var fallbackPolicy = Policy
+        FallbackPolicy fallbackPolicy = Policy
             .Handle<DivideByZeroException>()
             .Fallback(fallbackAction);
 
-        var withInner = new Exception(String.Empty, new DivideByZeroException());
+        Exception withInner = new Exception(String.Empty, new DivideByZeroException());
 
         fallbackPolicy.Invoking(x => x.RaiseException(withInner)).Should().Throw<Exception>().And.InnerException.Should().BeOfType<DivideByZeroException>();
 
@@ -350,10 +350,10 @@ public class FallbackSpecs
     [Fact]
     public void Should_execute_fallback_when_policy_handles_inner_and_executed_delegate_throws_as_non_inner()
     {
-        var fallbackActionExecuted = false;
-        var fallbackAction = () => { fallbackActionExecuted = true; };
+        bool fallbackActionExecuted = false;
+        Action fallbackAction = () => { fallbackActionExecuted = true; };
 
-        var fallbackPolicy = Policy
+        FallbackPolicy fallbackPolicy = Policy
             .HandleInner<DivideByZeroException>()
             .Fallback(fallbackAction);
 
@@ -367,14 +367,14 @@ public class FallbackSpecs
     [Fact]
     public void Should_execute_fallback_when_executed_delegate_throws_inner_exception_handled_by_policy()
     {
-        var fallbackActionExecuted = false;
-        var fallbackAction = () => { fallbackActionExecuted = true; };
+        bool fallbackActionExecuted = false;
+        Action fallbackAction = () => { fallbackActionExecuted = true; };
 
-        var fallbackPolicy = Policy
+        FallbackPolicy fallbackPolicy = Policy
             .HandleInner<DivideByZeroException>()
             .Fallback(fallbackAction);
 
-        var withInner = new Exception(String.Empty, new DivideByZeroException());
+        Exception withInner = new Exception(String.Empty, new DivideByZeroException());
 
         fallbackPolicy.Invoking(x => x.RaiseException(withInner)).Should().NotThrow();
 
@@ -384,15 +384,15 @@ public class FallbackSpecs
     [Fact]
     public void Should_execute_fallback_when_executed_delegate_throws_one_of_inner_exceptions_handled_by_policy()
     {
-        var fallbackActionExecuted = false;
-        var fallbackAction = () => { fallbackActionExecuted = true; };
+        bool fallbackActionExecuted = false;
+        Action fallbackAction = () => { fallbackActionExecuted = true; };
 
-        var fallbackPolicy = Policy
+        FallbackPolicy fallbackPolicy = Policy
             .Handle<DivideByZeroException>()
             .OrInner<ArgumentException>()
             .Fallback(fallbackAction);
 
-        var withInner = new Exception(String.Empty, new ArgumentException());
+        Exception withInner = new Exception(String.Empty, new ArgumentException());
 
         fallbackPolicy.Invoking(x => x.RaiseException(withInner)).Should().NotThrow();
 
@@ -402,14 +402,14 @@ public class FallbackSpecs
     [Fact]
     public void Should_execute_fallback_when_executed_delegate_throws_nested_inner_exception_handled_by_policy()
     {
-        var fallbackActionExecuted = false;
-        var fallbackAction = () => { fallbackActionExecuted = true; };
+        bool fallbackActionExecuted = false;
+        Action fallbackAction = () => { fallbackActionExecuted = true; };
 
-        var fallbackPolicy = Policy
+        FallbackPolicy fallbackPolicy = Policy
             .HandleInner<DivideByZeroException>()
             .Fallback(fallbackAction);
 
-        var withInner = new Exception(String.Empty, new Exception(String.Empty, new Exception(String.Empty, new DivideByZeroException())));
+        Exception withInner = new Exception(String.Empty, new Exception(String.Empty, new Exception(String.Empty, new DivideByZeroException())));
 
         fallbackPolicy.Invoking(x => x.RaiseException(withInner)).Should().NotThrow();
 
@@ -420,14 +420,14 @@ public class FallbackSpecs
     [Fact]
     public void Should_not_execute_fallback_when_executed_delegate_throws_inner_exception_not_handled_by_policy()
     {
-        var fallbackActionExecuted = false;
-        var fallbackAction = () => { fallbackActionExecuted = true; };
+        bool fallbackActionExecuted = false;
+        Action fallbackAction = () => { fallbackActionExecuted = true; };
 
-        var fallbackPolicy = Policy
-            .HandleInner<DivideByZeroException>()
-            .Fallback(fallbackAction);
+        FallbackPolicy fallbackPolicy = Policy
+                                .HandleInner<DivideByZeroException>()
+                                .Fallback(fallbackAction);
 
-        var withInner = new Exception(String.Empty, new ArgumentException());
+        Exception withInner = new Exception(String.Empty, new ArgumentException());
 
         fallbackPolicy.Invoking(x => x.RaiseException(withInner)).Should().Throw<Exception>().And.InnerException.Should().BeOfType<ArgumentException>();
 
@@ -437,14 +437,14 @@ public class FallbackSpecs
     [Fact]
     public void Should_execute_fallback_when_inner_exception_thrown_matches_handling_predicates()
     {
-        var fallbackActionExecuted = false;
-        var fallbackAction = () => { fallbackActionExecuted = true; };
+        bool fallbackActionExecuted = false;
+        Action fallbackAction = () => { fallbackActionExecuted = true; };
 
-        var fallbackPolicy = Policy
+        FallbackPolicy fallbackPolicy = Policy
             .HandleInner<DivideByZeroException>(_ => true)
             .Fallback(fallbackAction);
 
-        var withInner = new Exception(String.Empty, new DivideByZeroException());
+        Exception withInner = new Exception(String.Empty, new DivideByZeroException());
 
         fallbackPolicy.Invoking(x => x.RaiseException(withInner)).Should().NotThrow();
 
@@ -454,14 +454,14 @@ public class FallbackSpecs
     [Fact]
     public void Should_execute_fallback_when_inner_nested_exception_thrown_matches_handling_predicates()
     {
-        var fallbackActionExecuted = false;
-        var fallbackAction = () => { fallbackActionExecuted = true; };
+        bool fallbackActionExecuted = false;
+        Action fallbackAction = () => { fallbackActionExecuted = true; };
 
-        var fallbackPolicy = Policy
+        FallbackPolicy fallbackPolicy = Policy
             .HandleInner<DivideByZeroException>(_ => true)
             .Fallback(fallbackAction);
 
-        var withInner = new Exception(String.Empty, new Exception(String.Empty, new Exception(String.Empty, new DivideByZeroException())));
+        Exception withInner = new Exception(String.Empty, new Exception(String.Empty, new Exception(String.Empty, new DivideByZeroException())));
 
         fallbackPolicy.Invoking(x => x.RaiseException(withInner)).Should().NotThrow();
 
@@ -472,15 +472,15 @@ public class FallbackSpecs
     [Fact]
     public void Should_execute_fallback_when_inner_exception_thrown_matches_one_of_handling_predicates()
     {
-        var fallbackActionExecuted = false;
-        var fallbackAction = () => { fallbackActionExecuted = true; };
+        bool fallbackActionExecuted = false;
+        Action fallbackAction = () => { fallbackActionExecuted = true; };
 
-        var fallbackPolicy = Policy
+        FallbackPolicy fallbackPolicy = Policy
             .HandleInner<DivideByZeroException>(_ => true)
             .OrInner<ArgumentNullException>(_ => true)
             .Fallback(fallbackAction);
 
-        var withInner = new Exception(String.Empty, new ArgumentNullException());
+        Exception withInner = new Exception(String.Empty, new ArgumentNullException());
 
         fallbackPolicy.Invoking(x => x.RaiseException(withInner)).Should().NotThrow();
 
@@ -490,14 +490,14 @@ public class FallbackSpecs
     [Fact]
     public void Should_not_execute_fallback_when_inner_exception_thrown_does_not_match_handling_predicates()
     {
-        var fallbackActionExecuted = false;
-        var fallbackAction = () => { fallbackActionExecuted = true; };
+        bool fallbackActionExecuted = false;
+        Action fallbackAction = () => { fallbackActionExecuted = true; };
 
-        var fallbackPolicy = Policy
-            .HandleInner<DivideByZeroException>(_ => false)
-            .Fallback(fallbackAction);
+        FallbackPolicy fallbackPolicy = Policy
+                                .HandleInner<DivideByZeroException>(_ => false)
+                                .Fallback(fallbackAction);
 
-        var withInner = new Exception(String.Empty, new DivideByZeroException());
+        Exception withInner = new Exception(String.Empty, new DivideByZeroException());
 
         fallbackPolicy.Invoking(x => x.RaiseException(withInner)).Should().Throw<Exception>().And.InnerException.Should().BeOfType<DivideByZeroException>();
 
@@ -507,15 +507,15 @@ public class FallbackSpecs
     [Fact]
     public void Should_not_execute_fallback_when_inner_exception_thrown_does_not_match_any_of_handling_predicates()
     {
-        var fallbackActionExecuted = false;
-        var fallbackAction = () => { fallbackActionExecuted = true; };
+        bool fallbackActionExecuted = false;
+        Action fallbackAction = () => { fallbackActionExecuted = true; };
 
-        var fallbackPolicy = Policy
-            .HandleInner<DivideByZeroException>(_ => false)
-            .OrInner<ArgumentNullException>(_ => false)
-            .Fallback(fallbackAction);
+        FallbackPolicy fallbackPolicy = Policy
+                                .HandleInner<DivideByZeroException>(_ => false)
+                                .OrInner<ArgumentNullException>(_ => false)
+                                .Fallback(fallbackAction);
 
-        var withInner = new Exception(String.Empty, new ArgumentNullException());
+        Exception withInner = new Exception(String.Empty, new ArgumentNullException());
 
         fallbackPolicy.Invoking(x => x.RaiseException(withInner)).Should().Throw<Exception>().And.InnerException.Should().BeOfType<ArgumentNullException>();
 
@@ -530,10 +530,10 @@ public class FallbackSpecs
     [Fact]
     public void Should_not_execute_fallback_when_executed_delegate_throws_inner_of_aggregate_exception_where_policy_doesnt_handle_inner()
     {
-        var fallbackActionExecuted = false;
-        var fallbackAction = () => { fallbackActionExecuted = true; };
+        bool fallbackActionExecuted = false;
+        Action fallbackAction = () => { fallbackActionExecuted = true; };
 
-        var fallbackPolicy = Policy
+        FallbackPolicy fallbackPolicy = Policy
             .Handle<DivideByZeroException>()
             .Fallback(fallbackAction);
 
@@ -547,10 +547,10 @@ public class FallbackSpecs
     [Fact]
     public void Should_execute_fallback_when_executed_delegate_throws_inner_of_aggregate_exception_handled_by_policy()
     {
-        var fallbackActionExecuted = false;
-        var fallbackAction = () => { fallbackActionExecuted = true; };
+        bool fallbackActionExecuted = false;
+        Action fallbackAction = () => { fallbackActionExecuted = true; };
 
-        var fallbackPolicy = Policy
+        FallbackPolicy fallbackPolicy = Policy
             .HandleInner<DivideByZeroException>()
             .Fallback(fallbackAction);
 
@@ -564,10 +564,10 @@ public class FallbackSpecs
     [Fact]
     public void Should_execute_fallback_when_executed_delegate_throws_one_of_inner_of_aggregate_exceptions_handled_by_policy()
     {
-        var fallbackActionExecuted = false;
-        var fallbackAction = () => { fallbackActionExecuted = true; };
+        bool fallbackActionExecuted = false;
+        Action fallbackAction = () => { fallbackActionExecuted = true; };
 
-        var fallbackPolicy = Policy
+        FallbackPolicy fallbackPolicy = Policy
             .Handle<DivideByZeroException>()
             .OrInner<ArgumentException>()
             .Fallback(fallbackAction);
@@ -582,10 +582,10 @@ public class FallbackSpecs
     [Fact]
     public void Should_execute_fallback_when_executed_delegate_throws_aggregate_exception_with_inner_handled_by_policy_amongst_other_inners()
     {
-        var fallbackActionExecuted = false;
-        var fallbackAction = () => { fallbackActionExecuted = true; };
+        bool fallbackActionExecuted = false;
+        Action fallbackAction = () => { fallbackActionExecuted = true; };
 
-        var fallbackPolicy = Policy
+        FallbackPolicy fallbackPolicy = Policy
             .HandleInner<DivideByZeroException>()
             .Fallback(fallbackAction);
 
@@ -599,10 +599,10 @@ public class FallbackSpecs
     [Fact]
     public void Should_execute_fallback_when_executed_delegate_throws_nested_inner_of_aggregate_exception_handled_by_policy()
     {
-        var fallbackActionExecuted = false;
-        var fallbackAction = () => { fallbackActionExecuted = true; };
+        bool fallbackActionExecuted = false;
+        Action fallbackAction = () => { fallbackActionExecuted = true; };
 
-        var fallbackPolicy = Policy
+        FallbackPolicy fallbackPolicy = Policy
             .HandleInner<DivideByZeroException>()
             .Fallback(fallbackAction);
 
@@ -616,27 +616,27 @@ public class FallbackSpecs
     [Fact]
     public void Should_not_execute_fallback_when_executed_delegate_throws_inner_of_aggregate_exception_not_handled_by_policy()
     {
-        var fallbackActionExecuted = false;
-        var fallbackAction = () => { fallbackActionExecuted = true; };
+        bool fallbackActionExecuted = false;
+        Action fallbackAction = () => { fallbackActionExecuted = true; };
 
-        var fallbackPolicy = Policy
-            .HandleInner<DivideByZeroException>()
-            .Fallback(fallbackAction);
+        FallbackPolicy fallbackPolicy = Policy
+                                .HandleInner<DivideByZeroException>()
+                                .Fallback(fallbackAction);
 
         Exception withInner = new AggregateException(new ArgumentException());
 
         fallbackPolicy.Invoking(x => x.RaiseException(withInner)).Should().Throw<AggregateException>().And.InnerExceptions.Should().ContainSingle(e => e is ArgumentException);
 
-        fallbackActionExecuted.Should().BeFalse();
+         fallbackActionExecuted.Should().BeFalse();
     }
 
     [Fact]
     public void Should_execute_fallback_when_inner_of_aggregate_exception_thrown_matches_handling_predicates()
     {
-        var fallbackActionExecuted = false;
-        var fallbackAction = () => { fallbackActionExecuted = true; };
+        bool fallbackActionExecuted = false;
+        Action fallbackAction = () => { fallbackActionExecuted = true; };
 
-        var fallbackPolicy = Policy
+        FallbackPolicy fallbackPolicy = Policy
             .HandleInner<DivideByZeroException>(_ => true)
             .Fallback(fallbackAction);
 
@@ -650,10 +650,10 @@ public class FallbackSpecs
     [Fact]
     public void Should_execute_fallback_when_inner_of_aggregate_nested_exception_thrown_matches_handling_predicates()
     {
-        var fallbackActionExecuted = false;
-        var fallbackAction = () => { fallbackActionExecuted = true; };
+        bool fallbackActionExecuted = false;
+        Action fallbackAction = () => { fallbackActionExecuted = true; };
 
-        var fallbackPolicy = Policy
+        FallbackPolicy fallbackPolicy = Policy
             .HandleInner<DivideByZeroException>(_ => true)
             .Fallback(fallbackAction);
 
@@ -668,10 +668,10 @@ public class FallbackSpecs
     [Fact]
     public void Should_execute_fallback_when_inner_of_aggregate_exception_thrown_matches_one_of_handling_predicates()
     {
-        var fallbackActionExecuted = false;
-        var fallbackAction = () => { fallbackActionExecuted = true; };
+        bool fallbackActionExecuted = false;
+        Action fallbackAction = () => { fallbackActionExecuted = true; };
 
-        var fallbackPolicy = Policy
+        FallbackPolicy fallbackPolicy = Policy
             .HandleInner<DivideByZeroException>(_ => true)
             .OrInner<ArgumentNullException>(_ => true)
             .Fallback(fallbackAction);
@@ -686,12 +686,12 @@ public class FallbackSpecs
     [Fact]
     public void Should_not_execute_fallback_when_inner_of_aggregate_exception_thrown_does_not_match_handling_predicates()
     {
-        var fallbackActionExecuted = false;
-        var fallbackAction = () => { fallbackActionExecuted = true; };
+        bool fallbackActionExecuted = false;
+        Action fallbackAction = () => { fallbackActionExecuted = true; };
 
-        var fallbackPolicy = Policy
-            .HandleInner<DivideByZeroException>(_ => false)
-            .Fallback(fallbackAction);
+        FallbackPolicy fallbackPolicy = Policy
+                                .HandleInner<DivideByZeroException>(_ => false)
+                                .Fallback(fallbackAction);
 
         Exception withInner = new AggregateException(new DivideByZeroException());
 
@@ -703,13 +703,13 @@ public class FallbackSpecs
     [Fact]
     public void Should_not_execute_fallback_when_inner_of_aggregate_exception_thrown_does_not_match_any_of_handling_predicates()
     {
-        var fallbackActionExecuted = false;
-        var fallbackAction = () => { fallbackActionExecuted = true; };
+        bool fallbackActionExecuted = false;
+        Action fallbackAction = () => { fallbackActionExecuted = true; };
 
-        var fallbackPolicy = Policy
-            .HandleInner<DivideByZeroException>(_ => false)
-            .OrInner<ArgumentNullException>(_ => false)
-            .Fallback(fallbackAction);
+        FallbackPolicy fallbackPolicy = Policy
+                                .HandleInner<DivideByZeroException>(_ => false)
+                                .OrInner<ArgumentNullException>(_ => false)
+                                .Fallback(fallbackAction);
 
         Exception withInner = new AggregateException(new ArgumentNullException());
 
@@ -725,13 +725,13 @@ public class FallbackSpecs
     [Fact]
     public void Should_call_onFallback_passing_exception_triggering_fallback()
     {
-        var fallbackActionExecuted = false;
-        var fallbackAction = () => { fallbackActionExecuted = true; };
+        bool fallbackActionExecuted = false;
+        Action fallbackAction = () => { fallbackActionExecuted = true; };
 
         Exception exceptionPassedToOnFallback = null;
         Action<Exception> onFallback = ex => { exceptionPassedToOnFallback = ex; };
 
-        var fallbackPolicy = Policy
+        FallbackPolicy fallbackPolicy = Policy
             .Handle<ArgumentNullException>()
             .Fallback(fallbackAction, onFallback);
 
@@ -746,12 +746,12 @@ public class FallbackSpecs
     [Fact]
     public void Should_not_call_onFallback_when_executed_delegate_does_not_throw()
     {
-        var fallbackAction = () => { };
+        Action fallbackAction = () => { };
 
-        var onFallbackExecuted = false;
+        bool onFallbackExecuted = false;
         Action<Exception> onFallback = _ => { onFallbackExecuted = true; };
 
-        var fallbackPolicy = Policy
+        FallbackPolicy fallbackPolicy = Policy
             .Handle<DivideByZeroException>()
             .Fallback(fallbackAction, onFallback);
 
@@ -773,12 +773,12 @@ public class FallbackSpecs
 
         Action<Exception, Context> onFallback = (_, ctx) => { contextData = ctx; };
 
-        var fallbackPolicy = Policy
+        FallbackPolicy fallbackPolicy = Policy
             .Handle<ArgumentNullException>()
             .Fallback(fallbackAction, onFallback);
 
         fallbackPolicy.Invoking(p => p.Execute(_ => throw new ArgumentNullException(),
-                new {key1 = "value1", key2 = "value2"}.AsDictionary()))
+            new {key1 = "value1", key2 = "value2"}.AsDictionary()))
             .Should().NotThrow();
 
         contextData.Should()
@@ -795,12 +795,12 @@ public class FallbackSpecs
 
         Action<Exception, Context> onFallback = (_, ctx) => { contextData = ctx; };
 
-        var fallbackPolicy = Policy
+        FallbackPolicy fallbackPolicy = Policy
             .Handle<ArgumentNullException>()
             .Fallback(fallbackAction, onFallback);
 
         fallbackPolicy.Invoking(p => p.ExecuteAndCapture(_ => throw new ArgumentNullException(),
-                new {key1 = "value1", key2 = "value2"}.AsDictionary()))
+            new {key1 = "value1", key2 = "value2"}.AsDictionary()))
             .Should().NotThrow();
 
         contextData.Should()
@@ -817,17 +817,17 @@ public class FallbackSpecs
 
         Action<Exception, Context> onFallback = (ex, ctx) => { contextData[ex.GetType()] = ctx["key"]; };
 
-        var fallbackPolicy = Policy
+        FallbackPolicy fallbackPolicy = Policy
             .Handle<ArgumentNullException>()
             .Or<DivideByZeroException>()
             .Fallback(fallbackAction, onFallback);
 
         fallbackPolicy.Invoking(
-                p => p.Execute(_ => throw new ArgumentNullException(), new {key = "value1"}.AsDictionary()))
+            p => p.Execute(_ => throw new ArgumentNullException(), new {key = "value1"}.AsDictionary()))
             .Should().NotThrow();
 
         fallbackPolicy.Invoking(
-                p => p.Execute(_ => throw new DivideByZeroException(), new {key = "value2"}.AsDictionary()))
+            p => p.Execute(_ => throw new DivideByZeroException(), new {key = "value2"}.AsDictionary()))
             .Should().NotThrow();
 
         contextData.Count.Should().Be(2);
@@ -842,12 +842,12 @@ public class FallbackSpecs
     public void Context_should_be_empty_if_execute_not_called_with_any_context_data()
     {
         Context capturedContext = null;
-        var onFallbackExecuted = false;
+        bool onFallbackExecuted = false;
 
         Action<Context> fallbackAction = _ => { };
         Action<Exception, Context> onFallback = (_, ctx) => { onFallbackExecuted = true; capturedContext = ctx; };
 
-        var fallbackPolicy = Policy
+        FallbackPolicy fallbackPolicy = Policy
             .Handle<ArgumentNullException>()
             .Or<DivideByZeroException>()
             .Fallback(fallbackAction, onFallback);
@@ -867,7 +867,7 @@ public class FallbackSpecs
 
         Action<Exception, Context> onFallback = (_, _) => {  };
 
-        var fallbackPolicy = Policy
+        FallbackPolicy fallbackPolicy = Policy
             .Handle<ArgumentNullException>()
             .Fallback(fallbackAction, onFallback);
 
@@ -889,7 +889,7 @@ public class FallbackSpecs
 
         Action<Exception, Context> onFallback = (_, _) => { };
 
-        var fallbackPolicy = Policy
+        FallbackPolicy fallbackPolicy = Policy
             .Handle<ArgumentNullException>()
             .Fallback(fallbackAction, onFallback);
 
@@ -906,12 +906,12 @@ public class FallbackSpecs
     public void Context_should_be_empty_at_fallbackAction_if_execute_not_called_with_any_context_data()
     {
         Context capturedContext = null;
-        var fallbackExecuted = false;
+        bool fallbackExecuted = false;
 
         Action<Context, CancellationToken> fallbackAction = (ctx, _) => { fallbackExecuted = true; capturedContext = ctx;  };
         Action<Exception, Context> onFallback = (_, _) => {};
 
-        var fallbackPolicy = Policy
+        FallbackPolicy fallbackPolicy = Policy
             .Handle<ArgumentNullException>()
             .Or<DivideByZeroException>()
             .Fallback(fallbackAction, onFallback);
@@ -935,7 +935,7 @@ public class FallbackSpecs
 
         Action<Exception, Context> onFallback = (_, _) => { };
 
-        var fallbackPolicy = Policy
+        FallbackPolicy fallbackPolicy = Policy
             .Handle<ArgumentNullException>()
             .Fallback(fallbackAction, onFallback);
 
@@ -955,7 +955,7 @@ public class FallbackSpecs
 
         Action<Exception, Context> onFallback = (_, _) => { };
 
-        var fallbackPolicy = Policy
+        FallbackPolicy fallbackPolicy = Policy
             .Handle<ArgumentNullException>()
             .Fallback(fallbackAction, onFallback);
         fallbackPolicy.Invoking(p => p.ExecuteAndCapture(() => throw new ArgumentNullException()))
@@ -974,12 +974,12 @@ public class FallbackSpecs
 
         Action<Exception, Context> onFallback = (_, _) => { };
 
-        var fallbackPolicy = Policy
+        FallbackPolicy fallbackPolicy = Policy
             .HandleInner<ArgumentNullException>()
             .Fallback(fallbackAction, onFallback);
 
         Exception instanceToCapture = new ArgumentNullException("myParam");
-        var instanceToThrow = new Exception(String.Empty, instanceToCapture);
+        Exception instanceToThrow = new Exception(String.Empty, instanceToCapture);
         fallbackPolicy.Invoking(p => p.RaiseException(instanceToThrow))
             .Should().NotThrow();
 
@@ -995,7 +995,7 @@ public class FallbackSpecs
 
         Action<Exception, Context> onFallback = (_, _) => { };
 
-        var fallbackPolicy = Policy
+        FallbackPolicy fallbackPolicy = Policy
             .HandleInner<ArgumentNullException>()
             .Fallback(fallbackAction, onFallback);
 
@@ -1017,7 +1017,7 @@ public class FallbackSpecs
 
         Action<Exception, Context> onFallback = (_, _) => { };
 
-        var fallbackPolicy = Policy
+        FallbackPolicy fallbackPolicy = Policy
             .Handle<DivideByZeroException>()
             .Fallback(fallbackAction, onFallback);
 
@@ -1034,19 +1034,19 @@ public class FallbackSpecs
     [Fact]
     public void Should_execute_action_when_non_faulting_and_cancellationToken_not_cancelled()
     {
-        var fallbackActionExecuted = false;
-        var fallbackAction = () => { fallbackActionExecuted = true; };
+        bool fallbackActionExecuted = false;
+        Action fallbackAction = () => { fallbackActionExecuted = true; };
 
-        var policy = Policy
-            .Handle<DivideByZeroException>()
-            .Fallback(fallbackAction);
+        FallbackPolicy policy = Policy
+                                .Handle<DivideByZeroException>()
+                                .Fallback(fallbackAction);
 
-        var cancellationTokenSource = new CancellationTokenSource();
+        CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
 
-        var attemptsInvoked = 0;
+        int attemptsInvoked = 0;
         Action onExecute = () => attemptsInvoked++;
 
-        var scenario = new Scenario
+        Scenario scenario = new Scenario
         {
             NumberOfTimesToRaiseException = 0,
             AttemptDuringWhichToCancel = null,
@@ -1062,19 +1062,19 @@ public class FallbackSpecs
     [Fact]
     public void Should_execute_fallback_when_faulting_and_cancellationToken_not_cancelled()
     {
-        var fallbackActionExecuted = false;
-        var fallbackAction = () => { fallbackActionExecuted = true; };
+        bool fallbackActionExecuted = false;
+        Action fallbackAction = () => { fallbackActionExecuted = true; };
 
-        var policy = Policy
-            .Handle<DivideByZeroException>()
-            .Fallback(fallbackAction);
+        FallbackPolicy policy = Policy
+                                .Handle<DivideByZeroException>()
+                                .Fallback(fallbackAction);
 
-        var cancellationTokenSource = new CancellationTokenSource();
+        CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
 
-        var attemptsInvoked = 0;
+        int attemptsInvoked = 0;
         Action onExecute = () => attemptsInvoked++;
 
-        var scenario = new Scenario
+        Scenario scenario = new Scenario
         {
             NumberOfTimesToRaiseException = 1,
             AttemptDuringWhichToCancel = null,
@@ -1090,20 +1090,20 @@ public class FallbackSpecs
     [Fact]
     public void Should_not_execute_action_when_cancellationToken_cancelled_before_execute()
     {
-        var fallbackActionExecuted = false;
-        var fallbackAction = () => { fallbackActionExecuted = true; };
+        bool fallbackActionExecuted = false;
+        Action fallbackAction = () => { fallbackActionExecuted = true; };
 
-        var policy = Policy
-            .Handle<DivideByZeroException>()
-            .Fallback(fallbackAction);
+        FallbackPolicy policy = Policy
+                                .Handle<DivideByZeroException>()
+                                .Fallback(fallbackAction);
 
-        var cancellationTokenSource = new CancellationTokenSource();
-        var cancellationToken = cancellationTokenSource.Token;
+        CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+        CancellationToken cancellationToken = cancellationTokenSource.Token;
 
-        var attemptsInvoked = 0;
+        int attemptsInvoked = 0;
         Action onExecute = () => attemptsInvoked++;
 
-        var scenario = new Scenario
+        Scenario scenario = new Scenario
         {
             NumberOfTimesToRaiseException = 1,
             AttemptDuringWhichToCancel = null, // Cancellation token cancelled manually below - before any scenario execution.
@@ -1123,20 +1123,20 @@ public class FallbackSpecs
     [Fact]
     public void Should_report_cancellation_and_not_execute_fallback_during_otherwise_non_faulting_action_execution_when_user_delegate_observes_cancellationToken_and_fallback_does_not_handle_cancellations()
     {
-        var fallbackActionExecuted = false;
-        var fallbackAction = () => { fallbackActionExecuted = true; };
+        bool fallbackActionExecuted = false;
+        Action fallbackAction = () => { fallbackActionExecuted = true; };
 
-        var policy = Policy
-            .Handle<DivideByZeroException>()
-            .Fallback(fallbackAction);
+        FallbackPolicy policy = Policy
+                                .Handle<DivideByZeroException>()
+                                .Fallback(fallbackAction);
 
-        var cancellationTokenSource = new CancellationTokenSource();
-        var cancellationToken = cancellationTokenSource.Token;
+        CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+        CancellationToken cancellationToken = cancellationTokenSource.Token;
 
-        var attemptsInvoked = 0;
+        int attemptsInvoked = 0;
         Action onExecute = () => attemptsInvoked++;
 
-        var scenario = new Scenario
+        Scenario scenario = new Scenario
         {
             NumberOfTimesToRaiseException = 0,
             AttemptDuringWhichToCancel = 1,
@@ -1154,20 +1154,20 @@ public class FallbackSpecs
     [Fact]
     public void Should_handle_cancellation_and_execute_fallback_during_otherwise_non_faulting_action_execution_when_user_delegate_observes_cancellationToken_and_fallback_handles_cancellations()
     {
-        var fallbackActionExecuted = false;
-        var fallbackAction = () => { fallbackActionExecuted = true; };
+        bool fallbackActionExecuted = false;
+        Action fallbackAction = () => { fallbackActionExecuted = true; };
 
-        var policy = Policy
-            .Handle<DivideByZeroException>()
-            .Or<OperationCanceledException>()
-            .Fallback(fallbackAction);
+        FallbackPolicy policy = Policy
+                                .Handle<DivideByZeroException>()
+                                .Or<OperationCanceledException>()
+                                .Fallback(fallbackAction);
 
-        var cancellationTokenSource = new CancellationTokenSource();
+        CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
 
-        var attemptsInvoked = 0;
+        int attemptsInvoked = 0;
         Action onExecute = () => attemptsInvoked++;
 
-        var scenario = new Scenario
+        Scenario scenario = new Scenario
         {
             NumberOfTimesToRaiseException = 0,
             AttemptDuringWhichToCancel = 1,
@@ -1184,19 +1184,19 @@ public class FallbackSpecs
     [Fact]
     public void Should_not_report_cancellation_and_not_execute_fallback_if_non_faulting_action_execution_completes_and_user_delegate_does_not_observe_the_set_cancellationToken()
     {
-        var fallbackActionExecuted = false;
-        var fallbackAction = () => { fallbackActionExecuted = true; };
+        bool fallbackActionExecuted = false;
+        Action fallbackAction = () => { fallbackActionExecuted = true; };
 
-        var policy = Policy
-            .Handle<DivideByZeroException>()
-            .Fallback(fallbackAction);
+        FallbackPolicy policy = Policy
+                                .Handle<DivideByZeroException>()
+                                .Fallback(fallbackAction);
 
-        var cancellationTokenSource = new CancellationTokenSource();
+        CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
 
-        var attemptsInvoked = 0;
+        int attemptsInvoked = 0;
         Action onExecute = () => attemptsInvoked++;
 
-        var scenario = new Scenario
+        Scenario scenario = new Scenario
         {
             NumberOfTimesToRaiseException = 0,
             AttemptDuringWhichToCancel = 1,
@@ -1213,19 +1213,19 @@ public class FallbackSpecs
     [Fact]
     public void Should_report_unhandled_fault_and_not_execute_fallback_if_action_execution_raises_unhandled_fault_and_user_delegate_does_not_observe_the_set_cancellationToken()
     {
-        var fallbackActionExecuted = false;
-        var fallbackAction = () => { fallbackActionExecuted = true; };
+        bool fallbackActionExecuted = false;
+        Action fallbackAction = () => { fallbackActionExecuted = true; };
 
-        var policy = Policy
-            .Handle<DivideByZeroException>()
-            .Fallback(fallbackAction);
+        FallbackPolicy policy = Policy
+                                .Handle<DivideByZeroException>()
+                                .Fallback(fallbackAction);
 
-        var cancellationTokenSource = new CancellationTokenSource();
+        CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
 
-        var attemptsInvoked = 0;
+        int attemptsInvoked = 0;
         Action onExecute = () => attemptsInvoked++;
 
-        var scenario = new Scenario
+        Scenario scenario = new Scenario
         {
             NumberOfTimesToRaiseException = 1,
             AttemptDuringWhichToCancel = 1,
@@ -1242,19 +1242,19 @@ public class FallbackSpecs
     [Fact]
     public void Should_handle_handled_fault_and_execute_fallback_following_faulting_action_execution_when_user_delegate_does_not_observe_cancellationToken()
     {
-        var fallbackActionExecuted = false;
-        var fallbackAction = () => { fallbackActionExecuted = true; };
+        bool fallbackActionExecuted = false;
+        Action fallbackAction = () => { fallbackActionExecuted = true; };
 
-        var cancellationTokenSource = new CancellationTokenSource();
+        CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
 
-        var policy = Policy
-            .Handle<DivideByZeroException>()
-            .Fallback(fallbackAction);
+        FallbackPolicy policy = Policy
+                                .Handle<DivideByZeroException>()
+                                .Fallback(fallbackAction);
 
-        var attemptsInvoked = 0;
+        int attemptsInvoked = 0;
         Action onExecute = () => attemptsInvoked++;
 
-        var scenario = new Scenario
+        Scenario scenario = new Scenario
         {
             NumberOfTimesToRaiseException = 1,
             AttemptDuringWhichToCancel = 1,

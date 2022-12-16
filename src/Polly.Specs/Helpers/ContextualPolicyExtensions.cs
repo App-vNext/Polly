@@ -10,7 +10,7 @@ public static class ContextualPolicyExtensions
         IDictionary<string, object> contextData,
         Action<TException, int> configureException = null) where TException : Exception, new()
     {
-        var counter = 0;
+        int counter = 0;
 
         policy.Execute(_ =>
         {

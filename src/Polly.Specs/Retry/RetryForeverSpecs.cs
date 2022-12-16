@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using FluentAssertions;
 using Polly.Specs.Helpers;
 using Xunit;
@@ -15,11 +16,11 @@ public class RetryForeverSpecs
         Action<Exception> nullOnRetry = null;
 
         Action policy = () => Policy
-            .Handle<DivideByZeroException>()
-            .RetryForever(nullOnRetry);
+                                  .Handle<DivideByZeroException>()
+                                  .RetryForever(nullOnRetry);
 
         policy.Should().Throw<ArgumentNullException>().And
-            .ParamName.Should().Be("onRetry");
+              .ParamName.Should().Be("onRetry");
     }
 
     [Fact]
@@ -28,11 +29,11 @@ public class RetryForeverSpecs
         Action<Exception, Context> nullOnRetry = null;
 
         Action policy = () => Policy
-            .Handle<DivideByZeroException>()
-            .RetryForever(nullOnRetry);
+                                  .Handle<DivideByZeroException>()
+                                  .RetryForever(nullOnRetry);
 
         policy.Should().Throw<ArgumentNullException>().And
-            .ParamName.Should().Be("onRetry");
+              .ParamName.Should().Be("onRetry");
     }
 
     [Fact]
@@ -43,7 +44,7 @@ public class RetryForeverSpecs
             .RetryForever();
 
         policy.Invoking(x => x.RaiseException<DivideByZeroException>(3))
-            .Should().NotThrow();
+              .Should().NotThrow();
     }
 
     [Fact]
@@ -55,7 +56,7 @@ public class RetryForeverSpecs
             .RetryForever();
 
         policy.Invoking(x => x.RaiseException<ArgumentException>(3))
-            .Should().NotThrow();
+              .Should().NotThrow();
     }
 
     [Fact]
@@ -66,18 +67,18 @@ public class RetryForeverSpecs
             .RetryForever();
 
         policy.Invoking(x => x.RaiseException<NullReferenceException>())
-            .Should().Throw<NullReferenceException>();
+              .Should().Throw<NullReferenceException>();
     }
 
     [Fact]
-    public void Should_throw_when_exception_thrown_is_not_the_specified_exception_type_async()
+    public async Task Should_throw_when_exception_thrown_is_not_the_specified_exception_type_async()
     {
         var policy = Policy
             .Handle<DivideByZeroException>()
             .RetryForeverAsync();
 
-        policy.Awaiting(x => x.RaiseExceptionAsync<NullReferenceException>())
-            .Should().Throw<NullReferenceException>();
+        await policy.Awaiting(x => x.RaiseExceptionAsync<NullReferenceException>())
+              .Should().ThrowAsync<NullReferenceException>();
     }
 
     [Fact]
@@ -89,7 +90,7 @@ public class RetryForeverSpecs
             .RetryForever();
 
         policy.Invoking(x => x.RaiseException<NullReferenceException>())
-            .Should().Throw<NullReferenceException>();
+              .Should().Throw<NullReferenceException>();
     }
 
     [Fact]
@@ -100,7 +101,7 @@ public class RetryForeverSpecs
             .RetryForever();
 
         policy.Invoking(x => x.RaiseException<DivideByZeroException>())
-            .Should().Throw<DivideByZeroException>();
+              .Should().Throw<DivideByZeroException>();
     }
 
     [Fact]
@@ -112,7 +113,7 @@ public class RetryForeverSpecs
             .RetryForever();
 
         policy.Invoking(x => x.RaiseException<ArgumentException>())
-            .Should().Throw<ArgumentException>();
+              .Should().Throw<ArgumentException>();
     }
 
     [Fact]
@@ -123,18 +124,18 @@ public class RetryForeverSpecs
             .RetryForever();
 
         policy.Invoking(x => x.RaiseException<DivideByZeroException>())
-            .Should().NotThrow();
+              .Should().NotThrow();
     }
 
     [Fact]
-    public void Should_not_throw_when_specified_exception_predicate_is_satisfied_async()
+    public async Task Should_not_throw_when_specified_exception_predicate_is_satisfied_async()
     {
         var policy = Policy
             .Handle<DivideByZeroException>(_ => true)
             .RetryForeverAsync();
 
-        policy.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
-            .Should().NotThrow();
+        await policy.Awaiting(x => x.RaiseExceptionAsync<DivideByZeroException>())
+              .Should().NotThrowAsync();
     }
 
     [Fact]
@@ -146,25 +147,25 @@ public class RetryForeverSpecs
             .RetryForever();
 
         policy.Invoking(x => x.RaiseException<ArgumentException>())
-            .Should().NotThrow();
+              .Should().NotThrow();
     }
 
     [Fact]
-    public void Should_not_throw_when_one_of_the_specified_exception_predicates_are_satisfied_async()
+    public async Task Should_not_throw_when_one_of_the_specified_exception_predicates_are_satisfied_async()
     {
         var policy = Policy
             .Handle<DivideByZeroException>(_ => true)
             .Or<ArgumentException>(_ => true)
             .RetryForeverAsync();
 
-        policy.Awaiting(x => x.RaiseExceptionAsync<ArgumentException>())
-            .Should().NotThrow();
+        await policy.Awaiting(x => x.RaiseExceptionAsync<ArgumentException>())
+              .Should().NotThrowAsync();
     }
 
     [Fact]
     public void Should_call_onretry_on_each_retry_with_the_current_exception()
     {
-        var expectedExceptions = new object[] {"Exception #1", "Exception #2", "Exception #3"};
+        var expectedExceptions = new string[] {"Exception #1", "Exception #2", "Exception #3"};
         var retryExceptions = new List<Exception>();
 
         var policy = Policy
@@ -193,8 +194,8 @@ public class RetryForeverSpecs
         );
 
         contextData.Should()
-            .ContainKeys("key1", "key2").And
-            .ContainValues("value1", "value2");
+                   .ContainKeys("key1", "key2").And
+                   .ContainValues("value1", "value2");
     }
 
     [Fact]
@@ -223,10 +224,10 @@ public class RetryForeverSpecs
             .RetryForever(exception => retryExceptions.Add(exception));
 
         policy.Invoking(x => x.RaiseException<ArgumentException>())
-            .Should().Throw<ArgumentException>();
+              .Should().Throw<ArgumentException>();
 
         retryExceptions.Should()
-            .BeEmpty();
+                       .BeEmpty();
     }
 
     [Fact]

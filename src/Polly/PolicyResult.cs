@@ -138,8 +138,8 @@ public class PolicyResult<TResult>
     public static PolicyResult<TResult> Failure(Exception exception, ExceptionType exceptionType, Context context)
         => new PolicyResult<TResult>(default, OutcomeType.Failure, exception, exceptionType, default, 
             exceptionType == Polly.ExceptionType.HandledByThisPolicy 
-                ? Polly.FaultType.ExceptionHandledByThisPolicy 
-                : Polly.FaultType.UnhandledException,
+            ? Polly.FaultType.ExceptionHandledByThisPolicy 
+            : Polly.FaultType.UnhandledException,
             context);
 
     /// <summary>

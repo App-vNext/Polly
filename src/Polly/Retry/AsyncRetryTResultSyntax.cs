@@ -136,7 +136,7 @@ public static class AsyncRetryTResultSyntax
 #pragma warning disable 1998 // async method has no awaits, will run synchronously
             onRetryAsync: async (outcome, i, ctx) => onRetry(outcome, i, ctx)
 #pragma warning restore 1998
-        );
+            );
     }
 
     /// <summary>
@@ -189,7 +189,7 @@ public static class AsyncRetryTResultSyntax
 #pragma warning disable 1998 // async method has no awaits, will run synchronously
             onRetryAsync: async (DelegateResult<TResult> outcome, Context _) => onRetry(outcome)
 #pragma warning restore 1998
-        );
+            );
     }
 
     /// <summary>
@@ -208,7 +208,7 @@ public static class AsyncRetryTResultSyntax
 #pragma warning disable 1998 // async method has no awaits, will run synchronously
             onRetryAsync: async (outcome, i, _) => onRetry(outcome, i)
 #pragma warning restore 1998
-        );
+            );
     }
 
     /// <summary>
@@ -505,7 +505,7 @@ public static class AsyncRetryTResultSyntax
         if (sleepDurationProvider == null) throw new ArgumentNullException(nameof(sleepDurationProvider));
         if (onRetryAsync == null) throw new ArgumentNullException(nameof(onRetryAsync));
 
-        var sleepDurations = Enumerable.Range(1, retryCount)
+        IEnumerable<TimeSpan> sleepDurations = Enumerable.Range(1, retryCount)
             .Select(sleepDurationProvider);
 
         return new AsyncRetryPolicy<TResult>(
@@ -1103,3 +1103,4 @@ public static class AsyncRetryTResultSyntax
         );
     }
 }
+

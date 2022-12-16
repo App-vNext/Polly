@@ -16,7 +16,7 @@ internal static class AddBehaviourIfHandleEngine
     {
         try
         {
-            var result = action(context, cancellationToken);
+            TResult result = action(context, cancellationToken);
 
             if (shouldHandleResultPredicates.AnyMatch(result))
             {
@@ -27,7 +27,7 @@ internal static class AddBehaviourIfHandleEngine
         }
         catch (Exception ex)
         {
-            var handledException = shouldHandleExceptionPredicates.FirstMatchOrDefault(ex);
+            Exception handledException = shouldHandleExceptionPredicates.FirstMatchOrDefault(ex);
             if (handledException == null)
             {
                 throw;

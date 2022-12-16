@@ -41,8 +41,9 @@ internal class AddBehaviourIfHandlePolicy<TResult> : Policy<TResult>
         _behaviourIfHandle = behaviourIfHandle ?? throw new ArgumentNullException(nameof(behaviourIfHandle));
     }
 
-    protected override TResult Implementation(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken) =>
-        AddBehaviourIfHandleEngine.Implementation(
+    protected override TResult Implementation(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken)
+    {
+        return AddBehaviourIfHandleEngine.Implementation(
             ExceptionPredicates,
             ResultPredicates,
             _behaviourIfHandle,
@@ -50,4 +51,5 @@ internal class AddBehaviourIfHandlePolicy<TResult> : Policy<TResult>
             context,
             cancellationToken
         );
+    }
 }

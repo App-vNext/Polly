@@ -119,8 +119,8 @@ public class PolicyTResultSpecs
     [Fact]
     public void Executing_the_policy_function_should_pass_context_to_executed_delegate()
     {
-        var operationKey = "SomeKey";
-        var executionContext = new Context(operationKey);
+        string operationKey = "SomeKey";
+        Context executionContext = new Context(operationKey);
         Context capturedContext = null;
 
         Policy<ResultPrimitive> policy = Policy.NoOp<ResultPrimitive>();
@@ -138,7 +138,7 @@ public class PolicyTResultSpecs
             .Retry((_, _, _) => { });
 
         policy.Invoking(p => p.ExecuteAndCapture(_ => ResultPrimitive.Good, (IDictionary<string, object>)null))
-            .Should().Throw<ArgumentNullException>();
+              .Should().Throw<ArgumentNullException>();
     }
 
     [Fact]
@@ -149,15 +149,15 @@ public class PolicyTResultSpecs
             .Retry((_, _, _) => { });
 
         policy.Invoking(p => p.ExecuteAndCapture(_ => ResultPrimitive.Good, (Context)null))
-            .Should().Throw<ArgumentNullException>().And
-            .ParamName.Should().Be("context");
+              .Should().Throw<ArgumentNullException>().And
+              .ParamName.Should().Be("context");
     }
 
     [Fact]
     public void Execute_and_capturing_the_policy_function_should_pass_context_to_executed_delegate()
     {
-        var operationKey = "SomeKey";
-        var executionContext = new Context(operationKey);
+        string operationKey = "SomeKey";
+        Context executionContext = new Context(operationKey);
         Context capturedContext = null;
 
         Policy<ResultPrimitive> policy = Policy.NoOp<ResultPrimitive>();
@@ -170,8 +170,8 @@ public class PolicyTResultSpecs
     [Fact]
     public void Execute_and_capturing_the_policy_function_should_pass_context_to_PolicyResult()
     {
-        var operationKey = "SomeKey";
-        var executionContext = new Context(operationKey);
+        string operationKey = "SomeKey";
+        Context executionContext = new Context(operationKey);
 
         Policy<ResultPrimitive> policy = Policy.NoOp<ResultPrimitive>();
 
