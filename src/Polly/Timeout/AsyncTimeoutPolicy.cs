@@ -31,8 +31,9 @@ public class AsyncTimeoutPolicy : AsyncPolicy, ITimeoutPolicy
         Func<Context, CancellationToken, Task<TResult>> action, 
         Context context, 
         CancellationToken cancellationToken,
-        bool continueOnCapturedContext) =>
-        AsyncTimeoutEngine.ImplementationAsync(
+        bool continueOnCapturedContext)
+    {
+        return AsyncTimeoutEngine.ImplementationAsync(
             action,
             context,
             cancellationToken,
@@ -40,6 +41,7 @@ public class AsyncTimeoutPolicy : AsyncPolicy, ITimeoutPolicy
             _timeoutStrategy,
             _onTimeoutAsync, 
             continueOnCapturedContext);
+    }
 }
 
 /// <summary>

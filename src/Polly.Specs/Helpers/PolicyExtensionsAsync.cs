@@ -28,8 +28,10 @@ public static class PolicyExtensionsAsync
         return policy.RaiseExceptionAndOrCancellationAsync(scenario, new CancellationTokenSource(), () => { }, _ => instance);
     }
 
-    public static Task RaiseExceptionAsync<TException>(this AsyncPolicy policy, Action<TException, int> configureException = null) where TException : Exception, new() =>
-        policy.RaiseExceptionAsync(1, configureException);
+    public static Task RaiseExceptionAsync<TException>(this AsyncPolicy policy, Action<TException, int> configureException = null) where TException : Exception, new()
+    {
+        return policy.RaiseExceptionAsync(1, configureException);
+    }
 
     public static Task RaiseExceptionAsync<TException>(this AsyncPolicy policy, int numberOfTimesToRaiseException, Action<TException, int> configureException = null, CancellationToken cancellationToken = default) where TException : Exception, new()
     {

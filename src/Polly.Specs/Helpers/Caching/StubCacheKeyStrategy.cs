@@ -10,9 +10,13 @@ internal class StubCacheKeyStrategy : ICacheKeyStrategy
 {
     private readonly Func<Context, string> strategy;
 
-    public StubCacheKeyStrategy(Func<Context, string> strategy) =>
+    public StubCacheKeyStrategy(Func<Context, string> strategy)
+    {
         this.strategy = strategy;
+    }
 
-    public string GetCacheKey(Context context) =>
-        strategy(context);
+    public string GetCacheKey(Context context)
+    {
+        return strategy(context);
+    }
 }

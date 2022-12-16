@@ -24,8 +24,10 @@ internal struct TimedLock : IDisposable
         private static readonly TimeSpan LockTimeout = TimeSpan.FromMilliseconds(int.MaxValue);
 #endif
 
-    public static TimedLock Lock(object o) =>
-        Lock(o, LockTimeout);
+    public static TimedLock Lock(object o)
+    {
+        return Lock(o, LockTimeout);
+    }
 
     private static TimedLock Lock(object o, TimeSpan timeout)
     {

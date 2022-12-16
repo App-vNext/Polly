@@ -96,8 +96,10 @@ public class Cache
             _cache.Set(key, value, options);
         }
 
-        public Task<(bool, object)> TryGetAsync(string key, CancellationToken cancellationToken, bool continueOnCapturedContext) =>
-            Task.FromResult(TryGet(key));
+        public Task<(bool, object)> TryGetAsync(string key, CancellationToken cancellationToken, bool continueOnCapturedContext)
+        {
+            return Task.FromResult(TryGet(key));
+        }
 
         public Task PutAsync(string key, object value, Ttl ttl, CancellationToken cancellationToken, bool continueOnCapturedContext)
         {

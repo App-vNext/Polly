@@ -12,10 +12,12 @@ public class ReadOnlyPolicyRegistrySpecs
 {
     IPolicyRegistry<string> _registry;
 
-    IReadOnlyPolicyRegistry<string> ReadOnlyRegistry => _registry;
+    IReadOnlyPolicyRegistry<string> ReadOnlyRegistry { get{ return _registry; } }
 
-    public ReadOnlyPolicyRegistrySpecs() =>
+    public ReadOnlyPolicyRegistrySpecs()
+    {
         _registry = new PolicyRegistry();
+    }
 
     #region Tests for retrieving policy
 
