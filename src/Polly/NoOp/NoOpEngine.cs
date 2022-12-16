@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Threading;
 
-namespace Polly.NoOp
+namespace Polly.NoOp;
+
+internal static partial class NoOpEngine
 {
-    internal static partial class NoOpEngine
-    {
-        internal static TResult Implementation<TResult>(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken)
-            => action(context, cancellationToken);
-    }
+    internal static TResult Implementation<TResult>(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken)
+        => action(context, cancellationToken);
 }

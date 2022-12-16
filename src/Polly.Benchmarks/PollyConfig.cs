@@ -1,37 +1,36 @@
 ﻿using BenchmarkDotNet.Configs;
 using BenchmarkDotNet.Jobs;
 
-namespace Polly.Benchmarks
+namespace Polly.Benchmarks;
+
+internal class PollyConfig : ManualConfig
 {
-    internal class PollyConfig : ManualConfig
+    public PollyConfig()
     {
-        public PollyConfig()
-        {
-            var job = Job.Default;
+        var job = Job.Default;
 
-            AddDiagnoser(BenchmarkDotNet.Diagnosers.MemoryDiagnoser.Default);
+        AddDiagnoser(BenchmarkDotNet.Diagnosers.MemoryDiagnoser.Default);
 
-            AddJob(PollyJob(job, useNuGet: true).AsBaseline());
-            AddJob(PollyJob(job, useNuGet: false));
-        }
+        AddJob(PollyJob(job, useNuGet: true).AsBaseline());
+        AddJob(PollyJob(job, useNuGet: false));
+    }
 
-        private static Job PollyJob(Job job, bool useNuGet)
-        {
-            var result = job
-                .WithId("Polly" + (useNuGet ? string.Empty : "-dev"))
-                .WithArguments(
-                new[]
-                {
-                    new MsBuildArgument("/p:BenchmarkFromNuGet=" + useNuGet),
-                    new MsBuildArgument("/p:SignAssembly=false"),
-                });
-
-            if (useNuGet)
+    private static Job PollyJob(Job job, bool useNuGet)
+    {
+        var result = job
+            .WithId("Polly" + (useNuGet ? string.Empty : "-dev"))
+            .WithArguments(
+            new[]
             {
-                result = result.WithNuGet("Polly", "7.2.1");
-            }
+                new MsBuildArgument("/p:BenchmarkFromNuGet=" + useNuGet),
+                new MsBuildArgument("/p:SignAssembly=false"),
+            });
 
-            return result;
+        if (useNuGet)
+        {
+            result = result.WithNuGet("Polly", "7.2.3");
         }
+
+        return result;
     }
 }

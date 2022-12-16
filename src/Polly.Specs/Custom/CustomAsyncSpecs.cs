@@ -5,95 +5,96 @@ using Polly.Specs.Helpers.Custom.AddBehaviourIfHandle;
 using Polly.Specs.Helpers.Custom.PreExecute;
 using Xunit;
 
-namespace Polly.Specs.Custom
+namespace Polly.Specs.Custom;
+
+public class CustomAsyncSpecs
 {
-    public class CustomAsyncSpecs
+    [Fact]
+    public void Should_be_able_to_construct_active_policy()
     {
-        [Fact]
-        public void Should_be_able_to_construct_active_policy()
+        Action construct = () =>
         {
-            Action construct = () =>
+            AsyncPreExecutePolicy policy = AsyncPreExecutePolicy.CreateAsync(async () =>
             {
-                AsyncPreExecutePolicy policy = AsyncPreExecutePolicy.CreateAsync(async () =>
-                {
-                    // Placeholder for more substantive async work.
-                    Console.WriteLine("Do something");
-                    await Task.CompletedTask;
-                });
-            };
+                // Placeholder for more substantive async work.
+                Console.WriteLine("Do something");
+                await Task.CompletedTask;
+            });
+        };
 
-            construct.Should().NotThrow();
-        }
+        construct.Should().NotThrow();
+    }
 
-        [Fact]
-        public void Active_policy_should_execute()
+    [Fact]
+    public async Task Active_policy_should_execute()
+    {
+        bool preExecuted = false;
+        AsyncPreExecutePolicy policy = AsyncPreExecutePolicy.CreateAsync(() => { preExecuted = true; return Task.CompletedTask; });
+
+        bool executed = false;
+
+        await policy.Awaiting(x => x.ExecuteAsync(() => { executed = true; return Task.CompletedTask; }))
+            .Should().NotThrowAsync();
+
+        executed.Should().BeTrue();
+        preExecuted.Should().BeTrue();
+    }
+
+    [Fact]
+    public void Should_be_able_to_construct_reactive_policy()
+    {
+        Action construct = () =>
         {
-            bool preExecuted = false;
-            AsyncPreExecutePolicy policy = AsyncPreExecutePolicy.CreateAsync(() => { preExecuted = true; return Task.CompletedTask; });
-
-            bool executed = false;
-
-            policy.Awaiting(x => x.ExecuteAsync(() => { executed = true; return Task.CompletedTask; }))
-                .Should().NotThrow();
-
-            executed.Should().BeTrue();
-            preExecuted.Should().BeTrue();
-        }
-
-        [Fact]
-        public void Should_be_able_to_construct_reactive_policy()
-        {
-            Action construct = () =>
+            AsyncAddBehaviourIfHandlePolicy policy = Policy.Handle<Exception>().WithBehaviourAsync(async ex =>
             {
-                AsyncAddBehaviourIfHandlePolicy policy = Policy.Handle<Exception>().WithBehaviourAsync(async ex =>
-                {
-                    // Placeholder for more substantive async work.
-                    Console.WriteLine("Handling " + ex.Message);
-                    await Task.CompletedTask;
-                });
-            };
+                // Placeholder for more substantive async work.
+                Console.WriteLine("Handling " + ex.Message);
+                await Task.CompletedTask;
+            });
+        };
 
-            construct.Should().NotThrow();
-        }
+        construct.Should().NotThrow();
+    }
 
-        [Fact]
-        public void Reactive_policy_should_handle_exception()
+    [Fact]
+    public async Task Reactive_policy_should_handle_exception()
+    {
+        Exception handled = null;
+        AsyncAddBehaviourIfHandlePolicy policy = Policy.Handle<InvalidOperationException>().WithBehaviourAsync(async ex => { handled = ex; await Task.CompletedTask; });
+
+        Exception toThrow = new InvalidOperationException();
+        bool executed = false;
+
+        var ex = await policy.Awaiting(x => x.ExecuteAsync(() =>
         {
-            Exception handled = null;
-            AsyncAddBehaviourIfHandlePolicy policy = Policy.Handle<InvalidOperationException>().WithBehaviourAsync(async ex => { handled = ex; await Task.CompletedTask; });
+            executed = true;
+            throw toThrow;
+        }))
+            .Should().ThrowAsync<Exception>();
+        ex.Which.Should().Be(toThrow);
 
-            Exception toThrow = new InvalidOperationException();
-            bool executed = false;
+        executed.Should().BeTrue();
+        handled.Should().Be(toThrow);
+    }
 
-            policy.Awaiting(x => x.ExecuteAsync(() =>
+    [Fact]
+    public async Task Reactive_policy_should_be_able_to_ignore_unhandled_exception()
+    {
+        Exception handled = null;
+        AsyncAddBehaviourIfHandlePolicy policy = Policy.Handle<InvalidOperationException>().WithBehaviourAsync(async ex => { handled = ex; await Task.CompletedTask; });
+
+        Exception toThrow = new NotImplementedException();
+        bool executed = false;
+
+        var ex = await policy.Awaiting(x => x.ExecuteAsync(() =>
             {
                 executed = true;
                 throw toThrow;
             }))
-                .Should().Throw<Exception>().Which.Should().Be(toThrow);
+            .Should().ThrowAsync<Exception>();
+        ex.Which.Should().Be(toThrow);
 
-            executed.Should().BeTrue();
-            handled.Should().Be(toThrow);
-        }
-
-        [Fact]
-        public void Reactive_policy_should_be_able_to_ignore_unhandled_exception()
-        {
-            Exception handled = null;
-            AsyncAddBehaviourIfHandlePolicy policy = Policy.Handle<InvalidOperationException>().WithBehaviourAsync(async ex => { handled = ex; await Task.CompletedTask; });
-
-            Exception toThrow = new NotImplementedException();
-            bool executed = false;
-
-            policy.Awaiting(x => x.ExecuteAsync(() =>
-                {
-                    executed = true;
-                    throw toThrow;
-                }))
-                .Should().Throw<Exception>().Which.Should().Be(toThrow);
-
-            executed.Should().BeTrue();
-            handled.Should().Be(null);
-        }
+        executed.Should().BeTrue();
+        handled.Should().Be(null);
     }
 }

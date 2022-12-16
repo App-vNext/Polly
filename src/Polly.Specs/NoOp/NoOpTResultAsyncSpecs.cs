@@ -5,41 +5,40 @@ using FluentAssertions;
 using Polly.NoOp;
 using Xunit;
 
-namespace Polly.Specs.NoOp
+namespace Polly.Specs.NoOp;
+
+public class NoOpTResultAsyncSpecs
 {
-    public class NoOpTResultAsyncSpecs
+    [Fact]
+    public async Task Should_execute_user_delegate()
     {
-        [Fact]
-        public void Should_execute_user_delegate()
+        var policy = Policy.NoOpAsync<int?>();
+        int? result = null;
+
+        Func<AsyncNoOpPolicy<int?>, Task> action = async p => result = await p.ExecuteAsync(() => Task.FromResult((int?)10));
+        await policy.Awaiting(action)
+            .Should().NotThrowAsync();
+
+        result.HasValue.Should().BeTrue();
+        result.Should().Be(10);
+    }
+
+    [Fact]
+    public async Task Should_execute_user_delegate_without_adding_extra_cancellation_behaviour()
+    {
+        var policy = Policy.NoOpAsync<int?>();
+        int? result = null;
+
+        using (CancellationTokenSource cts = new CancellationTokenSource())
         {
-            var policy = Policy.NoOpAsync<int?>();
-            int? result = null;
+            cts.Cancel();
 
-            Func<AsyncNoOpPolicy<int?>, Task> action = async p => result = await p.ExecuteAsync(() => Task.FromResult((int?)10));
-            policy.Awaiting(action)
-                .Should().NotThrow();
-
-            result.HasValue.Should().BeTrue();
-            result.Should().Be(10);
+            Func<AsyncNoOpPolicy<int?>, Task> action = async p => result = await p.ExecuteAsync(_ => Task.FromResult((int?)10), cts.Token);
+            await policy.Awaiting(action)
+                .Should().NotThrowAsync();
         }
 
-        [Fact]
-        public void Should_execute_user_delegate_without_adding_extra_cancellation_behaviour()
-        {
-            var policy = Policy.NoOpAsync<int?>();
-            int? result = null;
-
-            using (CancellationTokenSource cts = new CancellationTokenSource())
-            {
-                cts.Cancel();
-
-                Func<AsyncNoOpPolicy<int?>, Task> action = async p => result = await p.ExecuteAsync(_ => Task.FromResult((int?)10), cts.Token);
-                policy.Awaiting(action)
-                    .Should().NotThrow();
-            }
-
-            result.HasValue.Should().BeTrue();
-            result.Should().Be(10);
-        }
+        result.HasValue.Should().BeTrue();
+        result.Should().Be(10);
     }
 }

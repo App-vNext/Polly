@@ -1,41 +1,41 @@
 ﻿using System.Threading;
+using System.Threading.Tasks;
 using FluentAssertions;
 using Polly.Utilities;
 using Xunit;
 
-namespace Polly.Specs.NoOp
+namespace Polly.Specs.NoOp;
+
+public class NoOpAsyncSpecs
 {
-    public class NoOpAsyncSpecs
+    [Fact]
+    public async Task Should_execute_user_delegate()
     {
-        [Fact]
-        public void Should_execute_user_delegate()
+        var policy = Policy.NoOpAsync();
+        bool executed = false;
+
+        await policy.Awaiting(p => p.ExecuteAsync(() => { executed = true; return TaskHelper.EmptyTask; }))
+            .Should().NotThrowAsync();
+
+        executed.Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task Should_execute_user_delegate_without_adding_extra_cancellation_behaviour()
+    {
+        var policy = Policy.NoOpAsync();
+
+        bool executed = false;
+
+        using (CancellationTokenSource cts = new CancellationTokenSource())
         {
-            var policy = Policy.NoOpAsync();
-            bool executed = false;
+            cts.Cancel();
 
-            policy.Awaiting(p => p.ExecuteAsync(() => { executed = true; return TaskHelper.EmptyTask; }))
-                .Should().NotThrow();
-
-            executed.Should().BeTrue();
+            await policy.Awaiting(p => p.ExecuteAsync(
+                _ => { executed = true; return TaskHelper.EmptyTask; }, cts.Token))
+                .Should().NotThrowAsync();
         }
 
-        [Fact]
-        public void Should_execute_user_delegate_without_adding_extra_cancellation_behaviour()
-        {
-            var policy = Policy.NoOpAsync();
-
-            bool executed = false;
-
-            using (CancellationTokenSource cts = new CancellationTokenSource())
-            {
-                cts.Cancel();
-
-                policy.Awaiting(p => p.ExecuteAsync(
-                    _ => { executed = true; return TaskHelper.EmptyTask; }, cts.Token))
-                    .Should().NotThrow();
-            }
-
-            executed.Should().BeTrue();
-        }
+        executed.Should().BeTrue();
     }
 }
