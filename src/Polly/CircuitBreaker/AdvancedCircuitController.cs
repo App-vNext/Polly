@@ -1,104 +1,103 @@
 ﻿using System;
 using Polly.Utilities;
 
-namespace Polly.CircuitBreaker
+namespace Polly.CircuitBreaker;
+
+internal class AdvancedCircuitController<TResult> : CircuitStateController<TResult>
 {
-    internal class AdvancedCircuitController<TResult> : CircuitStateController<TResult>
+    private const short NumberOfWindows = 10;
+    internal static readonly long ResolutionOfCircuitTimer = TimeSpan.FromMilliseconds(20).Ticks;
+
+    private readonly IHealthMetrics _metrics;
+    private readonly double _failureThreshold;
+    private readonly int _minimumThroughput;
+
+    public AdvancedCircuitController(
+        double failureThreshold, 
+        TimeSpan samplingDuration, 
+        int minimumThroughput, 
+        TimeSpan durationOfBreak, 
+        Action<DelegateResult<TResult>, CircuitState, TimeSpan, Context> onBreak, 
+        Action<Context> onReset, 
+        Action onHalfOpen
+        ) : base(durationOfBreak, onBreak, onReset, onHalfOpen)
     {
-        private const short NumberOfWindows = 10;
-        internal static readonly long ResolutionOfCircuitTimer = TimeSpan.FromMilliseconds(20).Ticks;
+        _metrics = samplingDuration.Ticks < ResolutionOfCircuitTimer * NumberOfWindows
+            ? (IHealthMetrics)new SingleHealthMetrics(samplingDuration)
+            : (IHealthMetrics)new RollingHealthMetrics(samplingDuration, NumberOfWindows);
 
-        private readonly IHealthMetrics _metrics;
-        private readonly double _failureThreshold;
-        private readonly int _minimumThroughput;
+        _failureThreshold = failureThreshold;
+        _minimumThroughput = minimumThroughput;
+    }
 
-        public AdvancedCircuitController(
-            double failureThreshold, 
-            TimeSpan samplingDuration, 
-            int minimumThroughput, 
-            TimeSpan durationOfBreak, 
-            Action<DelegateResult<TResult>, CircuitState, TimeSpan, Context> onBreak, 
-            Action<Context> onReset, 
-            Action onHalfOpen
-            ) : base(durationOfBreak, onBreak, onReset, onHalfOpen)
+    public override void OnCircuitReset(Context context)
+    {
+        using (TimedLock.Lock(_lock))
         {
-            _metrics = samplingDuration.Ticks < ResolutionOfCircuitTimer * NumberOfWindows
-                ? (IHealthMetrics)new SingleHealthMetrics(samplingDuration)
-                : (IHealthMetrics)new RollingHealthMetrics(samplingDuration, NumberOfWindows);
+            // Is only null during initialization of the current class
+            // as the variable is not set, before the base class calls
+            // current method from constructor.
+            _metrics?.Reset_NeedsLock();
 
-            _failureThreshold = failureThreshold;
-            _minimumThroughput = minimumThroughput;
+            ResetInternal_NeedsLock(context);
         }
+    }
 
-        public override void OnCircuitReset(Context context)
+    public override void OnActionSuccess(Context context)
+    {
+        using (TimedLock.Lock(_lock))
         {
-            using (TimedLock.Lock(_lock))
+            switch (_circuitState)
             {
-                // Is only null during initialization of the current class
-                // as the variable is not set, before the base class calls
-                // current method from constructor.
-                _metrics?.Reset_NeedsLock();
+                case CircuitState.HalfOpen:
+                    OnCircuitReset(context);
+                    break;
 
-                ResetInternal_NeedsLock(context);
+                case CircuitState.Closed:
+                    break;
+
+                case CircuitState.Open:
+                case CircuitState.Isolated:
+                    break; // A successful call result may arrive when the circuit is open, if it was placed before the circuit broke.  We take no special action; only time passing governs transitioning from Open to HalfOpen state.
+
+                default:
+                    throw new InvalidOperationException("Unhandled CircuitState.");
             }
+
+            _metrics.IncrementSuccess_NeedsLock();
         }
+    }
 
-        public override void OnActionSuccess(Context context)
+    public override void OnActionFailure(DelegateResult<TResult> outcome, Context context)
+    {
+        using (TimedLock.Lock(_lock))
         {
-            using (TimedLock.Lock(_lock))
+            _lastOutcome = outcome;
+
+            switch (_circuitState)
             {
-                switch (_circuitState)
-                {
-                    case CircuitState.HalfOpen:
-                        OnCircuitReset(context);
-                        break;
+                case CircuitState.HalfOpen:
+                    Break_NeedsLock(context);
+                    return;
 
-                    case CircuitState.Closed:
-                        break;
+                case CircuitState.Closed:
+                    _metrics.IncrementFailure_NeedsLock();
+                    var healthCount = _metrics.GetHealthCount_NeedsLock();
 
-                    case CircuitState.Open:
-                    case CircuitState.Isolated:
-                        break; // A successful call result may arrive when the circuit is open, if it was placed before the circuit broke.  We take no special action; only time passing governs transitioning from Open to HalfOpen state.
-
-                    default:
-                        throw new InvalidOperationException("Unhandled CircuitState.");
-                }
-
-                _metrics.IncrementSuccess_NeedsLock();
-            }
-        }
-
-        public override void OnActionFailure(DelegateResult<TResult> outcome, Context context)
-        {
-            using (TimedLock.Lock(_lock))
-            {
-                _lastOutcome = outcome;
-
-                switch (_circuitState)
-                {
-                    case CircuitState.HalfOpen:
+                    int throughput = healthCount.Total;
+                    if (throughput >= _minimumThroughput && ((double)healthCount.Failures) / throughput >= _failureThreshold)
+                    {
                         Break_NeedsLock(context);
-                        return;
+                    }
+                    break;
 
-                    case CircuitState.Closed:
-                        _metrics.IncrementFailure_NeedsLock();
-                        var healthCount = _metrics.GetHealthCount_NeedsLock();
+                case CircuitState.Open:
+                case CircuitState.Isolated:
+                    _metrics.IncrementFailure_NeedsLock();
+                    break; // A failure call result may arrive when the circuit is open, if it was placed before the circuit broke.  We take no action beyond tracking the metric; we do not want to duplicate-signal onBreak; we do not want to extend time for which the circuit is broken.  We do not want to mask the fact that the call executed (as replacing its result with a Broken/IsolatedCircuitException would do).
 
-                        int throughput = healthCount.Total;
-                        if (throughput >= _minimumThroughput && ((double)healthCount.Failures) / throughput >= _failureThreshold)
-                        {
-                            Break_NeedsLock(context);
-                        }
-                        break;
-
-                    case CircuitState.Open:
-                    case CircuitState.Isolated:
-                        _metrics.IncrementFailure_NeedsLock();
-                        break; // A failure call result may arrive when the circuit is open, if it was placed before the circuit broke.  We take no action beyond tracking the metric; we do not want to duplicate-signal onBreak; we do not want to extend time for which the circuit is broken.  We do not want to mask the fact that the call executed (as replacing its result with a Broken/IsolatedCircuitException would do).
-
-                    default:
-                        throw new InvalidOperationException("Unhandled CircuitState.");
-                }
+                default:
+                    throw new InvalidOperationException("Unhandled CircuitState.");
             }
         }
     }

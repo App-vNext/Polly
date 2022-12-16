@@ -1,70 +1,69 @@
 ﻿using System;
 using System.Threading;
 
-namespace Polly.Caching
+namespace Polly.Caching;
+
+internal static class CacheEngine
 {
-    internal static class CacheEngine
+    internal static TResult Implementation<TResult>(
+        ISyncCacheProvider<TResult> cacheProvider,
+        ITtlStrategy<TResult> ttlStrategy,
+        Func<Context, string> cacheKeyStrategy,
+        Func<Context, CancellationToken, TResult> action,
+        Context context,
+        CancellationToken cancellationToken,
+        Action<Context, string> onCacheGet,
+        Action<Context, string> onCacheMiss,
+        Action<Context, string> onCachePut,
+        Action<Context, string, Exception> onCacheGetError,
+        Action<Context, string, Exception> onCachePutError)
     {
-        internal static TResult Implementation<TResult>(
-            ISyncCacheProvider<TResult> cacheProvider,
-            ITtlStrategy<TResult> ttlStrategy,
-            Func<Context, string> cacheKeyStrategy,
-            Func<Context, CancellationToken, TResult> action,
-            Context context,
-            CancellationToken cancellationToken,
-            Action<Context, string> onCacheGet,
-            Action<Context, string> onCacheMiss,
-            Action<Context, string> onCachePut,
-            Action<Context, string, Exception> onCacheGetError,
-            Action<Context, string, Exception> onCachePutError)
+        cancellationToken.ThrowIfCancellationRequested();
+
+        string cacheKey = cacheKeyStrategy(context);
+        if (cacheKey == null)
         {
-            cancellationToken.ThrowIfCancellationRequested();
+            return action(context, cancellationToken);
+        }
 
-            string cacheKey = cacheKeyStrategy(context);
-            if (cacheKey == null)
-            {
-                return action(context, cancellationToken);
-            }
+        bool cacheHit;
+        TResult valueFromCache;
+        try
+        {
+            (cacheHit, valueFromCache) = cacheProvider.TryGet(cacheKey);
+        }
+        catch (Exception ex)
+        {
+            cacheHit = false;
+            valueFromCache = default;
+            onCacheGetError(context, cacheKey, ex);
+        }
+        if (cacheHit)
+        {
+            onCacheGet(context, cacheKey);
+            return valueFromCache;
+        }
+        else
+        {
+            onCacheMiss(context, cacheKey);
+        }
 
-            bool cacheHit;
-            TResult valueFromCache;
+        TResult result = action(context, cancellationToken);
+
+        Ttl ttl = ttlStrategy.GetTtl(context, result);
+        if (ttl.Timespan > TimeSpan.Zero)
+        {
             try
             {
-                (cacheHit, valueFromCache) = cacheProvider.TryGet(cacheKey);
+                cacheProvider.Put(cacheKey, result, ttl);
+                onCachePut(context, cacheKey);
             }
             catch (Exception ex)
             {
-                cacheHit = false;
-                valueFromCache = default;
-                onCacheGetError(context, cacheKey, ex);
+                onCachePutError(context, cacheKey, ex);
             }
-            if (cacheHit)
-            {
-                onCacheGet(context, cacheKey);
-                return valueFromCache;
-            }
-            else
-            {
-                onCacheMiss(context, cacheKey);
-            }
-
-            TResult result = action(context, cancellationToken);
-
-            Ttl ttl = ttlStrategy.GetTtl(context, result);
-            if (ttl.Timespan > TimeSpan.Zero)
-            {
-                try
-                {
-                    cacheProvider.Put(cacheKey, result, ttl);
-                    onCachePut(context, cacheKey);
-                }
-                catch (Exception ex)
-                {
-                    onCachePutError(context, cacheKey, ex);
-                }
-            }
-
-            return result;
         }
+
+        return result;
     }
 }

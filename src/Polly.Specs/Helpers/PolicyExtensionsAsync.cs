@@ -3,126 +3,125 @@ using System.Threading;
 using System.Threading.Tasks;
 using Polly.Utilities;
 
-namespace Polly.Specs.Helpers
+namespace Polly.Specs.Helpers;
+
+public static class PolicyExtensionsAsync
 {
-    public static class PolicyExtensionsAsync
+    public class ExceptionAndOrCancellationScenario
     {
-        public class ExceptionAndOrCancellationScenario
+        public int NumberOfTimesToRaiseException;
+
+        public int? AttemptDuringWhichToCancel;
+
+        public bool ActionObservesCancellation = true;
+    }
+
+    public static Task RaiseExceptionAsync<TException>(this AsyncPolicy policy, TException instance) where TException : Exception
+    {
+        ExceptionAndOrCancellationScenario scenario = new ExceptionAndOrCancellationScenario
         {
-            public int NumberOfTimesToRaiseException;
+            ActionObservesCancellation = false,
+            AttemptDuringWhichToCancel = null,
+            NumberOfTimesToRaiseException = 1
+        };
 
-            public int? AttemptDuringWhichToCancel;
+        return policy.RaiseExceptionAndOrCancellationAsync(scenario, new CancellationTokenSource(), () => { }, _ => instance);
+    }
 
-            public bool ActionObservesCancellation = true;
-        }
+    public static Task RaiseExceptionAsync<TException>(this AsyncPolicy policy, Action<TException, int> configureException = null) where TException : Exception, new()
+    {
+        return policy.RaiseExceptionAsync(1, configureException);
+    }
 
-        public static Task RaiseExceptionAsync<TException>(this AsyncPolicy policy, TException instance) where TException : Exception
+    public static Task RaiseExceptionAsync<TException>(this AsyncPolicy policy, int numberOfTimesToRaiseException, Action<TException, int> configureException = null, CancellationToken cancellationToken = default) where TException : Exception, new()
+    {
+        ExceptionAndOrCancellationScenario scenario = new ExceptionAndOrCancellationScenario
         {
-            ExceptionAndOrCancellationScenario scenario = new ExceptionAndOrCancellationScenario
+            ActionObservesCancellation = false,
+            AttemptDuringWhichToCancel = null,
+            NumberOfTimesToRaiseException = numberOfTimesToRaiseException
+        };
+
+        Func<int, TException> exceptionFactory = i =>
+        {
+            var exception = new TException();
+            configureException?.Invoke(exception, i);
+            return exception;
+        };
+
+        return policy.RaiseExceptionAndOrCancellationAsync(scenario, new CancellationTokenSource(), () => { }, exceptionFactory);
+    }
+
+    public static Task RaiseExceptionAndOrCancellationAsync<TException>(this AsyncPolicy policy, ExceptionAndOrCancellationScenario scenario, CancellationTokenSource cancellationTokenSource, Action onExecute) where TException : Exception, new()
+    {
+        return policy.RaiseExceptionAndOrCancellationAsync<TException>(scenario, cancellationTokenSource, onExecute, _ => new TException());
+    }
+
+    public static Task<TResult> RaiseExceptionAndOrCancellationAsync<TException, TResult>(this AsyncPolicy policy, ExceptionAndOrCancellationScenario scenario, CancellationTokenSource cancellationTokenSource, Action onExecute, TResult successResult) where TException : Exception, new()
+    {
+        return policy.RaiseExceptionAndOrCancellationAsync(scenario, cancellationTokenSource, onExecute,
+            _ => new TException(), successResult);
+    }
+
+    public static Task RaiseExceptionAndOrCancellationAsync<TException>(this AsyncPolicy policy, ExceptionAndOrCancellationScenario scenario, CancellationTokenSource cancellationTokenSource, Action onExecute, Func<int, TException> exceptionFactory) where TException : Exception
+    {
+        int counter = 0;
+
+        CancellationToken cancellationToken = cancellationTokenSource.Token;
+
+        return policy.ExecuteAsync(ct =>
+        {
+            onExecute();
+
+            counter++;
+
+            if (scenario.AttemptDuringWhichToCancel.HasValue && counter >= scenario.AttemptDuringWhichToCancel.Value)
             {
-                ActionObservesCancellation = false,
-                AttemptDuringWhichToCancel = null,
-                NumberOfTimesToRaiseException = 1
-            };
+                cancellationTokenSource.Cancel();
+            }
 
-            return policy.RaiseExceptionAndOrCancellationAsync(scenario, new CancellationTokenSource(), () => { }, _ => instance);
-        }
-
-        public static Task RaiseExceptionAsync<TException>(this AsyncPolicy policy, Action<TException, int> configureException = null) where TException : Exception, new()
-        {
-            return policy.RaiseExceptionAsync(1, configureException);
-        }
-
-        public static Task RaiseExceptionAsync<TException>(this AsyncPolicy policy, int numberOfTimesToRaiseException, Action<TException, int> configureException = null, CancellationToken cancellationToken = default) where TException : Exception, new()
-        {
-            ExceptionAndOrCancellationScenario scenario = new ExceptionAndOrCancellationScenario
+            if (scenario.ActionObservesCancellation)
             {
-                ActionObservesCancellation = false,
-                AttemptDuringWhichToCancel = null,
-                NumberOfTimesToRaiseException = numberOfTimesToRaiseException
-            };
+                ct.ThrowIfCancellationRequested();
+            }
 
-            Func<int, TException> exceptionFactory = i =>
+            if (counter <= scenario.NumberOfTimesToRaiseException)
             {
-                var exception = new TException();
-                configureException?.Invoke(exception, i);
-                return exception;
-            };
+                throw exceptionFactory(counter);
+            }
 
-            return policy.RaiseExceptionAndOrCancellationAsync(scenario, new CancellationTokenSource(), () => { }, exceptionFactory);
-        }
+            return TaskHelper.EmptyTask;
+        }, cancellationToken);
+    }
 
-        public static Task RaiseExceptionAndOrCancellationAsync<TException>(this AsyncPolicy policy, ExceptionAndOrCancellationScenario scenario, CancellationTokenSource cancellationTokenSource, Action onExecute) where TException : Exception, new()
+    public static Task<TResult> RaiseExceptionAndOrCancellationAsync<TException, TResult>(this AsyncPolicy policy, ExceptionAndOrCancellationScenario scenario, CancellationTokenSource cancellationTokenSource, Action onExecute, Func<int, TException> exceptionFactory, TResult successResult) where TException : Exception
+    {
+        int counter = 0;
+
+        CancellationToken cancellationToken = cancellationTokenSource.Token;
+
+        return policy.ExecuteAsync(ct =>
         {
-            return policy.RaiseExceptionAndOrCancellationAsync<TException>(scenario, cancellationTokenSource, onExecute, _ => new TException());
-        }
+            onExecute();
 
-        public static Task<TResult> RaiseExceptionAndOrCancellationAsync<TException, TResult>(this AsyncPolicy policy, ExceptionAndOrCancellationScenario scenario, CancellationTokenSource cancellationTokenSource, Action onExecute, TResult successResult) where TException : Exception, new()
-        {
-            return policy.RaiseExceptionAndOrCancellationAsync(scenario, cancellationTokenSource, onExecute,
-                _ => new TException(), successResult);
-        }
+            counter++;
 
-        public static Task RaiseExceptionAndOrCancellationAsync<TException>(this AsyncPolicy policy, ExceptionAndOrCancellationScenario scenario, CancellationTokenSource cancellationTokenSource, Action onExecute, Func<int, TException> exceptionFactory) where TException : Exception
-        {
-            int counter = 0;
-
-            CancellationToken cancellationToken = cancellationTokenSource.Token;
-
-            return policy.ExecuteAsync(ct =>
+            if (scenario.AttemptDuringWhichToCancel.HasValue && counter >= scenario.AttemptDuringWhichToCancel.Value)
             {
-                onExecute();
+                cancellationTokenSource.Cancel();
+            }
 
-                counter++;
-
-                if (scenario.AttemptDuringWhichToCancel.HasValue && counter >= scenario.AttemptDuringWhichToCancel.Value)
-                {
-                    cancellationTokenSource.Cancel();
-                }
-
-                if (scenario.ActionObservesCancellation)
-                {
-                    ct.ThrowIfCancellationRequested();
-                }
-
-                if (counter <= scenario.NumberOfTimesToRaiseException)
-                {
-                    throw exceptionFactory(counter);
-                }
-
-                return TaskHelper.EmptyTask;
-            }, cancellationToken);
-        }
-
-        public static Task<TResult> RaiseExceptionAndOrCancellationAsync<TException, TResult>(this AsyncPolicy policy, ExceptionAndOrCancellationScenario scenario, CancellationTokenSource cancellationTokenSource, Action onExecute, Func<int, TException> exceptionFactory, TResult successResult) where TException : Exception
-        {
-            int counter = 0;
-
-            CancellationToken cancellationToken = cancellationTokenSource.Token;
-
-            return policy.ExecuteAsync(ct =>
+            if (scenario.ActionObservesCancellation)
             {
-                onExecute();
+                ct.ThrowIfCancellationRequested();
+            }
 
-                counter++;
+            if (counter <= scenario.NumberOfTimesToRaiseException)
+            {
+                throw exceptionFactory(counter);
+            }
 
-                if (scenario.AttemptDuringWhichToCancel.HasValue && counter >= scenario.AttemptDuringWhichToCancel.Value)
-                {
-                    cancellationTokenSource.Cancel();
-                }
-
-                if (scenario.ActionObservesCancellation)
-                {
-                    ct.ThrowIfCancellationRequested();
-                }
-
-                if (counter <= scenario.NumberOfTimesToRaiseException)
-                {
-                    throw exceptionFactory(counter);
-                }
-
-                return Task.FromResult(successResult);
-            }, cancellationToken);
-        }
+            return Task.FromResult(successResult);
+        }, cancellationToken);
     }
 }

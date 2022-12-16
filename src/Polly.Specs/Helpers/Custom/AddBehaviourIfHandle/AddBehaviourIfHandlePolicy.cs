@@ -1,56 +1,55 @@
 ﻿using System;
 using System.Threading;
 
-namespace Polly.Specs.Helpers.Custom.AddBehaviourIfHandle
+namespace Polly.Specs.Helpers.Custom.AddBehaviourIfHandle;
+
+internal class AddBehaviourIfHandlePolicy : Policy
 {
-    internal class AddBehaviourIfHandlePolicy : Policy
+    private readonly Action<Exception> _behaviourIfHandle;
+
+    internal AddBehaviourIfHandlePolicy(Action<Exception> behaviourIfHandle, PolicyBuilder policyBuilder)
+        : base(policyBuilder)
     {
-        private readonly Action<Exception> _behaviourIfHandle;
-
-        internal AddBehaviourIfHandlePolicy(Action<Exception> behaviourIfHandle, PolicyBuilder policyBuilder)
-            : base(policyBuilder)
-        {
-            _behaviourIfHandle = behaviourIfHandle ?? throw new ArgumentNullException(nameof(behaviourIfHandle));
-        }
-
-        protected override TResult Implementation<TResult>(
-            Func<Context, CancellationToken, TResult> action, 
-            Context context, 
-            CancellationToken cancellationToken)
-        {
-            return AddBehaviourIfHandleEngine.Implementation(
-                ExceptionPredicates,
-                ResultPredicates<TResult>.None, 
-                outcome => _behaviourIfHandle(outcome.Exception),
-                action,
-                context,
-                cancellationToken
-            );
-        }
+        _behaviourIfHandle = behaviourIfHandle ?? throw new ArgumentNullException(nameof(behaviourIfHandle));
     }
 
-    internal class AddBehaviourIfHandlePolicy<TResult> : Policy<TResult>
+    protected override TResult Implementation<TResult>(
+        Func<Context, CancellationToken, TResult> action, 
+        Context context, 
+        CancellationToken cancellationToken)
     {
-        private readonly Action<DelegateResult<TResult>> _behaviourIfHandle;
+        return AddBehaviourIfHandleEngine.Implementation(
+            ExceptionPredicates,
+            ResultPredicates<TResult>.None, 
+            outcome => _behaviourIfHandle(outcome.Exception),
+            action,
+            context,
+            cancellationToken
+        );
+    }
+}
 
-        internal AddBehaviourIfHandlePolicy(
-            Action<DelegateResult<TResult>> behaviourIfHandle,
-            PolicyBuilder<TResult> policyBuilder)
-            : base(policyBuilder)
-        {
-            _behaviourIfHandle = behaviourIfHandle ?? throw new ArgumentNullException(nameof(behaviourIfHandle));
-        }
+internal class AddBehaviourIfHandlePolicy<TResult> : Policy<TResult>
+{
+    private readonly Action<DelegateResult<TResult>> _behaviourIfHandle;
 
-        protected override TResult Implementation(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken)
-        {
-            return AddBehaviourIfHandleEngine.Implementation(
-                ExceptionPredicates,
-                ResultPredicates,
-                _behaviourIfHandle,
-                action,
-                context,
-                cancellationToken
-            );
-        }
+    internal AddBehaviourIfHandlePolicy(
+        Action<DelegateResult<TResult>> behaviourIfHandle,
+        PolicyBuilder<TResult> policyBuilder)
+        : base(policyBuilder)
+    {
+        _behaviourIfHandle = behaviourIfHandle ?? throw new ArgumentNullException(nameof(behaviourIfHandle));
+    }
+
+    protected override TResult Implementation(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken)
+    {
+        return AddBehaviourIfHandleEngine.Implementation(
+            ExceptionPredicates,
+            ResultPredicates,
+            _behaviourIfHandle,
+            action,
+            context,
+            cancellationToken
+        );
     }
 }
