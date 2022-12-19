@@ -21,7 +21,7 @@ public static class AsyncAdvancedCircuitBreakerTResultSyntax
     /// </para>
     /// </summary>
     /// <param name="policyBuilder">The policy builder.</param>
-    /// <param name="failureThreshold">The failure threshold at which the circuit will break (a number between 0 and 1; eg 0.5 represents breaking if 50% or more of actions result in a handled failure.</param>
+    /// <param name="failureThreshold">The failure threshold at which the circuit will break (a number between 0 and 1; eg 0.5 represents breaking if 50% or more of actions result in a handled failure).</param>
     /// <param name="samplingDuration">The duration of the timeslice over which failure ratios are assessed.</param>
     /// <param name="minimumThroughput">The minimum throughput: this many actions or more must pass through the circuit in the timeslice, for statistics to be considered significant and the circuit-breaker to come into action.</param>
     /// <param name="durationOfBreak">The duration the circuit will stay open before resetting.</param>
@@ -57,7 +57,7 @@ public static class AsyncAdvancedCircuitBreakerTResultSyntax
     /// </para>
     /// </summary>
     /// <param name="policyBuilder">The policy builder.</param>
-    /// <param name="failureThreshold">The failure threshold at which the circuit will break (a number between 0 and 1; eg 0.5 represents breaking if 50% or more of actions result in a handled failure.</param>
+    /// <param name="failureThreshold">The failure threshold at which the circuit will break (a number between 0 and 1; eg 0.5 represents breaking if 50% or more of actions result in a handled failure).</param>
     /// <param name="samplingDuration">The duration of the timeslice over which failure ratios are assessed.</param>
     /// <param name="minimumThroughput">The minimum throughput: this many actions or more must pass through the circuit in the timeslice, for statistics to be considered significant and the circuit-breaker to come into action.</param>
     /// <param name="durationOfBreak">The duration the circuit will stay open before resetting.</param>
@@ -92,7 +92,7 @@ public static class AsyncAdvancedCircuitBreakerTResultSyntax
     /// </para>
     /// </summary>
     /// <param name="policyBuilder">The policy builder.</param>
-    /// <param name="failureThreshold">The failure threshold at which the circuit will break (a number between 0 and 1; eg 0.5 represents breaking if 50% or more of actions result in a handled failure.</param>
+    /// <param name="failureThreshold">The failure threshold at which the circuit will break (a number between 0 and 1; eg 0.5 represents breaking if 50% or more of actions result in a handled failure).</param>
     /// <param name="samplingDuration">The duration of the timeslice over which failure ratios are assessed.</param>
     /// <param name="minimumThroughput">The minimum throughput: this many actions or more must pass through the circuit in the timeslice, for statistics to be considered significant and the circuit-breaker to come into action.</param>
     /// <param name="durationOfBreak">The duration the circuit will stay open before resetting.</param>
@@ -131,7 +131,7 @@ public static class AsyncAdvancedCircuitBreakerTResultSyntax
     /// </para>
     /// </summary>
     /// <param name="policyBuilder">The policy builder.</param>
-    /// <param name="failureThreshold">The failure threshold at which the circuit will break (a number between 0 and 1; eg 0.5 represents breaking if 50% or more of actions result in a handled failure.</param>
+    /// <param name="failureThreshold">The failure threshold at which the circuit will break (a number between 0 and 1; eg 0.5 represents breaking if 50% or more of actions result in a handled failure).</param>
     /// <param name="samplingDuration">The duration of the timeslice over which failure ratios are assessed.</param>
     /// <param name="minimumThroughput">The minimum throughput: this many actions or more must pass through the circuit in the timeslice, for statistics to be considered significant and the circuit-breaker to come into action.</param>
     /// <param name="durationOfBreak">The duration the circuit will stay open before resetting.</param>
@@ -168,7 +168,7 @@ public static class AsyncAdvancedCircuitBreakerTResultSyntax
     /// </para>
     /// </summary>
     /// <param name="policyBuilder">The policy builder.</param>
-    /// <param name="failureThreshold">The failure threshold at which the circuit will break (a number between 0 and 1; eg 0.5 represents breaking if 50% or more of actions result in a handled failure.</param>
+    /// <param name="failureThreshold">The failure threshold at which the circuit will break (a number between 0 and 1; eg 0.5 represents breaking if 50% or more of actions result in a handled failure).</param>
     /// <param name="samplingDuration">The duration of the timeslice over which failure ratios are assessed.</param>
     /// <param name="minimumThroughput">The minimum throughput: this many actions or more must pass through the circuit in the timeslice, for statistics to be considered significant and the circuit-breaker to come into action.</param>
     /// <param name="durationOfBreak">The duration the circuit will stay open before resetting.</param>
@@ -206,7 +206,7 @@ public static class AsyncAdvancedCircuitBreakerTResultSyntax
     /// </para>
     /// </summary>
     /// <param name="policyBuilder">The policy builder.</param>
-    /// <param name="failureThreshold">The failure threshold at which the circuit will break (a number between 0 and 1; eg 0.5 represents breaking if 50% or more of actions result in a handled failure.</param>
+    /// <param name="failureThreshold">The failure threshold at which the circuit will break (a number between 0 and 1; eg 0.5 represents breaking if 50% or more of actions result in a handled failure).</param>
     /// <param name="samplingDuration">The duration of the timeslice over which failure ratios are assessed.</param>
     /// <param name="minimumThroughput">The minimum throughput: this many actions or more must pass through the circuit in the timeslice, for statistics to be considered significant and the circuit-breaker to come into action.</param>
     /// <param name="durationOfBreak">The duration the circuit will stay open before resetting.</param>
