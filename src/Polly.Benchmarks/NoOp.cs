@@ -17,9 +17,9 @@ public class NoOp
     }
 
     [Benchmark]
-    public async Task NoOp_Asynchronous()
+    public Task NoOp_Asynchronous()
     {
-        await AsyncPolicy.ExecuteAsync((token) => Workloads.ActionAsync(token), CancellationToken.None);
+        return AsyncPolicy.ExecuteAsync((token) => Workloads.ActionAsync(token), CancellationToken.None);
     }
 
     [Benchmark]
@@ -29,8 +29,8 @@ public class NoOp
     }
 
     [Benchmark]
-    public async Task<int> NoOp_Asynchronous_With_Result()
+    public Task<int> NoOp_Asynchronous_With_Result()
     {
-        return await AsyncPolicy.ExecuteAsync((token) => Workloads.FuncAsync<int>(token), CancellationToken.None);
+        return AsyncPolicy.ExecuteAsync((token) => Workloads.FuncAsync<int>(token), CancellationToken.None);
     }
 }

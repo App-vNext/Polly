@@ -18,15 +18,15 @@ public class Retry
     }
 
     [Benchmark]
-    public async Task Retry_Asynchronous_Succeeds()
+    public Task Retry_Asynchronous_Succeeds()
     {
-        await AsyncPolicy.ExecuteAsync(() => Workloads.ActionAsync());
+        return AsyncPolicy.ExecuteAsync(() => Workloads.ActionAsync());
     }
 
     [Benchmark]
-    public async Task Retry_Asynchronous_Succeeds_With_CancellationToken()
+    public Task Retry_Asynchronous_Succeeds_With_CancellationToken()
     {
-        await AsyncPolicy.ExecuteAsync((token) => Workloads.ActionAsync(token), CancellationToken.None);
+        return AsyncPolicy.ExecuteAsync((token) => Workloads.ActionAsync(token), CancellationToken.None);
     }
 
     [Benchmark]
@@ -36,15 +36,15 @@ public class Retry
     }
 
     [Benchmark]
-    public async Task<int> Retry_Asynchronous_With_Result_Succeeds()
+    public Task<int> Retry_Asynchronous_With_Result_Succeeds()
     {
-        return await AsyncPolicy.ExecuteAsync(() => Workloads.FuncAsync<int>());
+        return AsyncPolicy.ExecuteAsync(() => Workloads.FuncAsync<int>());
     }
 
     [Benchmark]
-    public async Task<int> Retry_Asynchronous_With_Result_Succeeds_With_CancellationToken()
+    public Task<int> Retry_Asynchronous_With_Result_Succeeds_With_CancellationToken()
     {
-        return await AsyncPolicy.ExecuteAsync((token) => Workloads.FuncAsync<int>(token), CancellationToken.None);
+        return AsyncPolicy.ExecuteAsync((token) => Workloads.FuncAsync<int>(token), CancellationToken.None);
     }
 
     [Benchmark]
@@ -62,11 +62,11 @@ public class Retry
     }
 
     [Benchmark]
-    public async Task Retry_Asynchronous_Throws_Then_Succeeds()
+    public Task Retry_Asynchronous_Throws_Then_Succeeds()
     {
         int count = 0;
 
-        await AsyncPolicy.ExecuteAsync(() =>
+        return AsyncPolicy.ExecuteAsync(() =>
         {
             if (count++ % 2 == 0)
             {

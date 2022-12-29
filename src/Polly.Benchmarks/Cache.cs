@@ -23,10 +23,10 @@ public class Cache
     private static readonly Context MissContext = new Context(nameof(MissContext));
 
     [GlobalSetup]
-    public async Task GlobalSetup()
+    public Task GlobalSetup()
     {
         SyncPolicyHit.Execute((context) => GetObject(), HitContext);
-        await AsyncPolicyHit.ExecuteAsync((context, token) => GetObjectAsync(token), HitContext, CancellationToken.None);
+        return AsyncPolicyHit.ExecuteAsync((context, token) => GetObjectAsync(token), HitContext, CancellationToken.None);
     }
 
     [Benchmark]
@@ -36,9 +36,9 @@ public class Cache
     }
 
     [Benchmark]
-    public async Task<object> Cache_Asynchronous_Hit()
+    public Task<object> Cache_Asynchronous_Hit()
     {
-        return await AsyncPolicyHit.ExecuteAsync((context, token) => GetObjectAsync(token), HitContext, CancellationToken.None);
+        return AsyncPolicyHit.ExecuteAsync((context, token) => GetObjectAsync(token), HitContext, CancellationToken.None);
     }
 
     [Benchmark]
@@ -48,9 +48,9 @@ public class Cache
     }
 
     [Benchmark]
-    public async Task<object> Cache_Asynchronous_Miss()
+    public Task<object> Cache_Asynchronous_Miss()
     {
-        return await AsyncPolicyMiss.ExecuteAsync((context, token) => GetObjectAsync(token), MissContext, CancellationToken.None);
+        return AsyncPolicyMiss.ExecuteAsync((context, token) => GetObjectAsync(token), MissContext, CancellationToken.None);
     }
 
     private static object GetObject() => new object();

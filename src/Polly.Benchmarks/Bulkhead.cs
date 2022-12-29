@@ -17,15 +17,15 @@ public class Bulkhead
     }
 
     [Benchmark]
-    public async Task Bulkhead_Asynchronous()
+    public Task Bulkhead_Asynchronous()
     {
-        await AsyncPolicy.ExecuteAsync(() => Workloads.ActionAsync());
+        return AsyncPolicy.ExecuteAsync(() => Workloads.ActionAsync());
     }
 
     [Benchmark]
-    public async Task Bulkhead_Asynchronous_With_CancellationToken()
+    public Task Bulkhead_Asynchronous_With_CancellationToken()
     {
-        await AsyncPolicy.ExecuteAsync((token) => Workloads.ActionAsync(token), CancellationToken.None);
+        return AsyncPolicy.ExecuteAsync((token) => Workloads.ActionAsync(token), CancellationToken.None);
     }
 
     [Benchmark]
@@ -35,14 +35,14 @@ public class Bulkhead
     }
 
     [Benchmark]
-    public async Task<int> Bulkhead_Asynchronous_With_Result()
+    public Task<int> Bulkhead_Asynchronous_With_Result()
     {
-        return await AsyncPolicy.ExecuteAsync(() => Workloads.FuncAsync<int>());
+        return AsyncPolicy.ExecuteAsync(() => Workloads.FuncAsync<int>());
     }
 
     [Benchmark]
-    public async Task<int> Bulkhead_Asynchronous_With_Result_With_CancellationToken()
+    public Task<int> Bulkhead_Asynchronous_With_Result_With_CancellationToken()
     {
-        return await AsyncPolicy.ExecuteAsync((token) => Workloads.FuncAsync<int>(token), CancellationToken.None);
+        return AsyncPolicy.ExecuteAsync((token) => Workloads.FuncAsync<int>(token), CancellationToken.None);
     }
 }

@@ -17,9 +17,9 @@ public class RateLimit
     }
 
     [Benchmark]
-    public async Task RateLimit_Asynchronous_Succeeds()
+    public Task RateLimit_Asynchronous_Succeeds()
     {
-        await AsyncPolicy.ExecuteAsync(() => Workloads.ActionAsync());
+        return AsyncPolicy.ExecuteAsync(() => Workloads.ActionAsync());
     }
 
     [Benchmark]
@@ -29,8 +29,8 @@ public class RateLimit
     }
 
     [Benchmark]
-    public async Task<int> RateLimit_Asynchronous_With_Result_Succeeds()
+    public Task<int> RateLimit_Asynchronous_With_Result_Succeeds()
     {
-        return await AsyncPolicy.ExecuteAsync(() => Workloads.FuncAsync<int>());
+        return AsyncPolicy.ExecuteAsync(() => Workloads.FuncAsync<int>());
     }
 }

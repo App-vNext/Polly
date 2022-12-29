@@ -18,9 +18,9 @@ public class CircuitBreaker
     }
 
     [Benchmark]
-    public async Task CircuitBreaker_Asynchronous_Succeeds()
+    public Task CircuitBreaker_Asynchronous_Succeeds()
     {
-        await AsyncPolicy.ExecuteAsync((token) => Workloads.ActionAsync(token), CancellationToken.None);
+        return AsyncPolicy.ExecuteAsync((token) => Workloads.ActionAsync(token), CancellationToken.None);
     }
 
     [Benchmark]
@@ -30,8 +30,8 @@ public class CircuitBreaker
     }
 
     [Benchmark]
-    public async Task<int> CircuitBreaker_Asynchronous_With_Result_Succeeds()
+    public Task<int> CircuitBreaker_Asynchronous_With_Result_Succeeds()
     {
-        return await AsyncPolicy.ExecuteAsync((token) => Workloads.FuncAsync<int>(token), CancellationToken.None);
+        return AsyncPolicy.ExecuteAsync((token) => Workloads.FuncAsync<int>(token), CancellationToken.None);
     }
 }
