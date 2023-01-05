@@ -13,7 +13,7 @@ We are a member of the [.NET Foundation](https://www.dotnetfoundation.org/about)
 
 [![NuGet version](https://badge.fury.io/nu/polly.svg)](https://badge.fury.io/nu/polly) [![Build status](https://ci.appveyor.com/api/projects/status/imt7dymt50346k5u?svg=true)](https://ci.appveyor.com/project/joelhulen/polly) [![Slack Status](http://www.pollytalk.org/badge.svg)](http://www.pollytalk.org)
 
-![Polly logo](https://raw.github.com/App-vNext/Polly/master/Polly-Logo.png)
+![Polly logo](https://raw.github.com/App-vNext/Polly/main/Polly-Logo.png)
 
 ## Installing via NuGet
 
@@ -44,7 +44,7 @@ For using Polly with HttpClient factory from ASP.NET Core 2.1, see our [detailed
 
 ### Release notes
 
-+ The [change log](https://github.com/App-vNext/Polly/blob/master/CHANGELOG.md) describes changes by release.
++ The [change log](https://github.com/App-vNext/Polly/blob/main/CHANGELOG.md) describes changes by release.
 + We tag Pull Requests and Issues with [milestones](https://github.com/App-vNext/Polly/milestones) which match to NuGet package release numbers.
 + Breaking changes are called out in the wiki ([v7](https://github.com/App-vNext/Polly/wiki/Polly-v7-breaking-changes) ; [v6](https://github.com/App-vNext/Polly/wiki/Polly-v6-breaking-changes)) with simple notes on any necessary steps to upgrade.
 
@@ -992,13 +992,13 @@ Polly v5.2.0 adds interfaces intended to support [`PolicyRegistry`](https://gith
 
 ### Execution interfaces: `ISyncPolicy` etc
 
-Execution interfaces [`ISyncPolicy`](https://github.com/App-vNext/Polly/tree/master/src/Polly.Shared/ISyncPolicy.cs), [`IAsyncPolicy`](https://github.com/App-vNext/Polly/tree/master/src/Polly.Shared/IAsyncPolicy.cs), [`ISyncPolicy<TResult>`](https://github.com/App-vNext/Polly/tree/master/src/Polly.Shared/ISyncPolicyTResult.cs) and [`IAsyncPolicy<TResult>`](https://github.com/App-vNext/Polly/tree/master/src/Polly.Shared/IAsyncPolicyTResult.cs)  define the execution overloads available to policies targeting sync/async, and non-generic / generic calls respectively.
+Execution interfaces [`ISyncPolicy`](https://github.com/App-vNext/Polly/tree/main/src/Polly/ISyncPolicy.cs), [`IAsyncPolicy`](https://github.com/App-vNext/Polly/tree/main/src/Polly/IAsyncPolicy.cs), [`ISyncPolicy<TResult>`](https://github.com/App-vNext/Polly/tree/main/src/Polly/ISyncPolicyTResult.cs) and [`IAsyncPolicy<TResult>`](https://github.com/App-vNext/Polly/tree/main/src/Polly/IAsyncPolicyTResult.cs)  define the execution overloads available to policies targeting sync/async, and non-generic / generic calls respectively.
 
 ### Policy-kind interfaces: `ICircuitBreakerPolicy` etc
 
 Orthogonal to the execution interfaces, interfaces specific to the kind of Policy define properties and methods common to that type of policy.  
 
-For example, [`ICircuitBreakerPolicy`](https://github.com/App-vNext/Polly/tree/master/src/Polly.Shared/CircuitBreaker/ICircuitBreakerPolicy.cs) defines
+For example, [`ICircuitBreakerPolicy`](https://github.com/App-vNext/Polly/tree/main/src/Polly/CircuitBreaker/ICircuitBreakerPolicy.cs) defines
 
 + `CircuitState CircuitState`
 + `Exception LastException`
@@ -1056,7 +1056,7 @@ Both templates contain a full project structure referencing Polly, Polly's defau
 ## 3rd Party Libraries and Contributions
 
 + [Fluent Assertions](https://github.com/fluentassertions/fluentassertions) - A set of .NET extension methods that allow you to more naturally specify the expected outcome of a TDD or BDD-style test | [Apache License 2.0 (Apache)](https://github.com/dennisdoomen/fluentassertions/blob/develop/LICENSE)
-+ [xUnit.net](https://github.com/xunit/xunit) - Free, open source, community-focused unit testing tool for the .NET Framework | [Apache License 2.0 (Apache)](https://github.com/xunit/xunit/blob/master/license.txt)
++ [xUnit.net](https://github.com/xunit/xunit) - Free, open source, community-focused unit testing tool for the .NET Framework | [Apache License 2.0 (Apache)](https://github.com/xunit/xunit/blob/main/license.txt)
 + [Ian Griffith's TimedLock](http://www.interact-sw.co.uk/iangblog/2004/04/26/yetmoretimedlocking)
 + [Steven van Deursen's ReadOnlyDictionary](http://www.cuttingedge.it/blogs/steven/pivot/entry.php?id=29) (until Polly v5.0.6)
 + [Stephen Cleary's AsyncEx library](https://github.com/StephenCleary/AsyncEx) for AsyncSemaphore (supports BulkheadAsync policy for .NET4.0 only) (until Polly v5.9.0) | [MIT license](https://github.com/StephenCleary/AsyncEx/blob/master/LICENSE)
