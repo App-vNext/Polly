@@ -9,7 +9,6 @@ var configuration = Argument<string>("configuration", "Release");
 // EXTERNAL NUGET TOOLS
 //////////////////////////////////////////////////////////////////////
 
-#Tool "GitVersion.CommandLine&version=5.11.1"
 #Tool "xunit.runner.console&version=2.4.2"
 
 //////////////////////////////////////////////////////////////////////
@@ -113,12 +112,13 @@ Task("__UpdateAssemblyVersionInformation")
     .Does(() =>
 {
     var gitVersionSettings = new ProcessSettings()
-        .SetRedirectStandardOutput(true);
+        .SetRedirectStandardOutput(true)
+        .WithArguments(args => args.Append("gitversion"));
 
     try
     {
         IEnumerable<string> outputLines;
-        StartProcess(gitVersionPath, gitVersionSettings, out outputLines);
+        StartProcess("dotnet", gitVersionSettings, out outputLines);
 
         var output = string.Join("\n", outputLines);
         gitVersionOutput = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, object>>(output);
