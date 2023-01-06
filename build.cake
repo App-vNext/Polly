@@ -165,15 +165,21 @@ Task("__BuildSolutions")
     {
         Information("Building {0}", solution);
 
-        var dotNetCoreBuildSettings = new DotNetBuildSettings
+        var dotNetBuildSettings = new DotNetBuildSettings
         {
             Configuration = configuration,
             Verbosity = DotNetVerbosity.Minimal,
             NoRestore = true,
-            MSBuildSettings = new DotNetMSBuildSettings { TreatAllWarningsAs = MSBuildTreatAllWarningsAs.Error },
+            MSBuildSettings = new DotNetMSBuildSettings
+            {
+                AssemblyVersion = assemblyVersion,
+                FileVersion = assemblySemver,
+                TreatAllWarningsAs = MSBuildTreatAllWarningsAs.Error,
+                Version = nugetVersion,
+            },
         };
 
-        DotNetBuild(solution.ToString(), dotNetCoreBuildSettings);
+        DotNetBuild(solution.ToString(), dotNetBuildSettings);
     }
 });
 
@@ -205,14 +211,21 @@ Task("__CreateSignedNuGetPackage")
 
     Information("Building {0}.{1}.nupkg", packageName, nugetVersion);
 
-    var dotNetCorePackSettings = new DotNetPackSettings
+    var dotNetPackSettings = new DotNetPackSettings
     {
         Configuration = configuration,
         NoBuild = true,
         OutputDirectory = nupkgDestDir,
+        MSBuildSettings = new DotNetMSBuildSettings
+        {
+            AssemblyVersion = assemblyVersion,
+            FileVersion = assemblySemver,
+            TreatAllWarningsAs = MSBuildTreatAllWarningsAs.Error,
+            Version = nugetVersion,
+        },
     };
 
-    DotNetPack(System.IO.Path.Combine(srcDir, projectName + ".sln"), dotNetCorePackSettings);
+    DotNetPack(System.IO.Path.Combine(srcDir, projectName + ".sln"), dotNetPackSettings);
 });
 
 //////////////////////////////////////////////////////////////////////
