@@ -247,7 +247,6 @@ Task("Build")
     .IsDependentOn("__RestoreNuGetPackages")
     .IsDependentOn("__UpdateAssemblyVersionInformation")
     .IsDependentOn("__UpdateDotNetStandardAssemblyVersionNumber")
-    .IsDependentOn("__UpdateAppVeyorBuildNumber")
     .IsDependentOn("__BuildSolutions")
     .IsDependentOn("__RunTests")
     .IsDependentOn("__CreateSignedNuGetPackage");
