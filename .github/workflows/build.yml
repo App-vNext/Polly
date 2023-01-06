@@ -44,6 +44,12 @@ jobs:
         NUGET_XMLDOC_MODE: skip
         TERM: xterm
 
+    - uses: codecov/codecov-action@v3
+      name: Upload coverage to Codecov
+      with:
+        file: ./src/Polly.Specs/coverage-reports/Cobertura.xml
+        flags: ${{ matrix.os_name }}
+
     - name: Publish NuGet packages
       uses: actions/upload-artifact@v3
       with:

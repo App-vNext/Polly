@@ -124,3 +124,4 @@ tools
 *.nuget.targets
 *.nuget.props
 coverage.*.json
+coverage-reports/
