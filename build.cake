@@ -44,7 +44,6 @@ Dictionary<string, object> gitVersionOutput;
 
 // Versioning
 string nugetVersion;
-string appveyorBuildNumber;
 string assemblyVersion;
 string assemblySemver;
 
@@ -147,14 +146,12 @@ Task("__UpdateAssemblyVersionInformation")
     Information("FullSemVer -> {0}", gitVersionOutput["FullSemVer"]);
     Information("AssemblySemVer -> {0}", gitVersionOutput["AssemblySemVer"]);
 
-    appveyorBuildNumber = gitVersionOutput["FullSemVer"].ToString();
     nugetVersion = gitVersionOutput["NuGetVersion"].ToString();
     assemblyVersion = gitVersionOutput["Major"].ToString() + ".0.0.0";
     assemblySemver = gitVersionOutput["AssemblySemVer"].ToString();
 
     Information("");
     Information("Mapping versioning information to:");
-    Information("AppVeyor build number -> {0}", appveyorBuildNumber);
     Information("NuGet package version -> {0}", nugetVersion);
     Information("AssemblyVersion -> {0}", assemblyVersion);
     Information("AssemblyFileVersion -> {0}", assemblySemver);
@@ -190,13 +187,6 @@ Task("__UpdateDotNetStandardAssemblyVersionNumber")
             throw new Exception($"{attribute} version could not be updated in {csproj}.");
         }
     }
-});
-
-Task("__UpdateAppVeyorBuildNumber")
-    .WithCriteria(() => AppVeyor.IsRunningOnAppVeyor)
-    .Does(() =>
-{
-    AppVeyor.UpdateBuildVersion(appveyorBuildNumber);
 });
 
 Task("__BuildSolutions")
