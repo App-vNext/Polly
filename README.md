@@ -187,6 +187,8 @@ Policy
   });
 ```
 
+`RetryForever` does not actually retry forever; it will retry up to `int.MaxValue` (2147483647) times. Depending on what is done in the policy delegate this may take an exceedingly long time, but the policy will eventually hit `int.MaxValue` retries, get the last exception and stop retrying.
+
 #### Wait and retry
 
 ```csharp
@@ -322,6 +324,8 @@ Policy
         // Add logic to be executed before each retry, such as logging       
     });
 ```
+
+Similarly to `RetryForever`, `WaitAndRetryForever` only actually retries `int.MaxValue` times.
 
 If all retries fail, a retry policy rethrows the final exception back to the calling code.
 
