@@ -211,11 +211,19 @@ Task("__BuildSolutions")
 Task("__RunTests")
     .Does(() =>
 {
+    var loggers = Array.Empty<string>();
+
+    if (!string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("GITHUB_SHA")))
+    {
+        loggers = new[] { "GitHubActions;report-warnings=false" };
+    }
+
     foreach(var specsProj in GetFiles("./src/**/*.Specs.csproj"))
     {
         DotNetTest(specsProj.FullPath, new DotNetTestSettings
         {
             Configuration = configuration,
+            Loggers = loggers,
             NoBuild = true,
         });
     }
