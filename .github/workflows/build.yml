@@ -28,6 +28,8 @@ jobs:
 
     - name: Checkout code
       uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
 
     - name: Setup .NET SDK
       uses: actions/setup-dotnet@v3
@@ -43,6 +45,12 @@ jobs:
         DOTNET_SYSTEM_CONSOLE_ALLOW_ANSI_COLOR_REDIRECTION: 1
         NUGET_XMLDOC_MODE: skip
         TERM: xterm
+
+    - uses: codecov/codecov-action@v3
+      name: Upload coverage to Codecov
+      with:
+        file: ./src/Polly.Specs/coverage-reports/Cobertura.xml
+        flags: ${{ matrix.os_name }}
 
     - name: Publish NuGet packages
       uses: actions/upload-artifact@v3

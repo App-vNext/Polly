@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFrameworks>netcoreapp3.1;net6.0</TargetFrameworks>
-    <TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('Windows'))">$(TargetFrameworks);net461;net472</TargetFrameworks>
+    <TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('Windows'))">$(TargetFrameworks);net472</TargetFrameworks>
     <DisableImplicitNuGetFallbackFolder>true</DisableImplicitNuGetFallbackFolder>
   </PropertyGroup>
 
@@ -11,23 +11,32 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="coverlet.msbuild" Version="3.1.2"  PrivateAssets="all" />
-    <PackageReference Include="FluentAssertions" Version="6.5.1" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.4.0" />
-    <PackageReference Include="Moq" Version="4.18.3" />
-    <PackageReference Include="xunit" Version="2.4.1" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3" PrivateAssets="all" />
+    <PackageReference Include="coverlet.msbuild" Version="3.2.0" PrivateAssets="all" />
+    <PackageReference Include="FluentAssertions" Version="6.8.0" />
+    <PackageReference Include="GitHubActionsTestLogger" Version="2.0.1" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.4.1" />
+    <PackageReference Include="Moq" Version="4.18.4" />
+    <PackageReference Include="ReportGenerator" Version="5.1.13" PrivateAssets="all" />
+    <PackageReference Include="xunit" Version="2.4.2" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.5" PrivateAssets="all" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)'=='net461' or '$(TargetFramework)'=='net472'">
+  <ItemGroup Condition="$([MSBuild]::GetTargetFrameworkIdentifier('$(TargetFramework)')) == '.NETFramework'">
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
 
-  <PropertyGroup Condition="'$(TargetFramework)'!='net461' and '$(TargetFramework)'!='net472'">
+  <PropertyGroup Condition="$([MSBuild]::GetTargetFrameworkIdentifier('$(TargetFramework)')) != '.NETFramework'">
     <CollectCoverage>true</CollectCoverage>
+    <CoverletOutputFormat>cobertura</CoverletOutputFormat>
     <Exclude>[xunit.*]*</Exclude>
     <ExcludeByAttribute>System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute</ExcludeByAttribute>
     <Threshold>75,60,70</Threshold>
   </PropertyGroup>
+
+  <Target Name="GenerateCoverageReports" AfterTargets="GenerateCoverageResultAfterTest" Condition=" '$(CollectCoverage)' == 'true' ">
+    <ReportGenerator ReportFiles="@(CoverletReport)"
+                     ReportTypes="Cobertura;Html"
+                     TargetDirectory="$([System.IO.Path]::Combine($(MSBuildThisFileDirectory), 'coverage-reports'))" />
+  </Target>
 
 </Project>

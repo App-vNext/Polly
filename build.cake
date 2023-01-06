@@ -9,17 +9,17 @@ var configuration = Argument<string>("configuration", "Release");
 // EXTERNAL NUGET TOOLS
 //////////////////////////////////////////////////////////////////////
 
-#Tool "GitVersion.CommandLine&version=5.8.1"
-#Tool "xunit.runner.console&version=2.4.1"
+#Tool "GitVersion.CommandLine&version=5.11.1"
+#Tool "xunit.runner.console&version=2.4.2"
 
 //////////////////////////////////////////////////////////////////////
 // EXTERNAL NUGET LIBRARIES
 //////////////////////////////////////////////////////////////////////
 
-#addin nuget:?package=Cake.FileHelpers&version=5.0.0
-#addin nuget:?package=Cake.Yaml&version=4.0.0
-#addin nuget:?package=Newtonsoft.Json&version=13.0.1
-#addin nuget:?package=YamlDotNet&version=11.2.1
+#addin nuget:?package=Cake.FileHelpers&version=6.0.0
+#addin nuget:?package=Cake.Yaml&version=6.0.0
+#addin nuget:?package=Newtonsoft.Json&version=13.0.2
+#addin nuget:?package=YamlDotNet&version=12.3.1
 
 ///////////////////////////////////////////////////////////////////////////////
 // GLOBAL VARIABLES
@@ -158,37 +158,6 @@ Task("__UpdateAssemblyVersionInformation")
     Information("AssemblyInformationalVersion -> {0}", assemblySemver);
 });
 
-Task("__UpdateDotNetStandardAssemblyVersionNumber")
-    .WithCriteria(() => AppVeyor.IsRunningOnAppVeyor)
-    .Does(() =>
-{
-    Information("Updating Assembly Version Information");
-
-    var attributeToValueMap = new Dictionary<string, string>()
-    {
-        { "AssemblyVersion", assemblyVersion },
-        { "FileVersion", assemblySemver },
-        { "InformationalVersion", assemblySemver },
-        { "Version", nugetVersion },
-        { "PackageVersion", nugetVersion },
-        { "ContinuousIntegrationBuild", "true" },
-    };
-
-    var csproj = File("./src/" + projectName + "/" + projectName + ".csproj");
-
-    foreach(var attributeMap in attributeToValueMap)
-    {
-        var attribute = attributeMap.Key;
-        var value = attributeMap.Value;
-
-        var replacedFiles = ReplaceRegexInFiles(csproj, $@"\<{attribute}\>[^\<]*\</{attribute}\>", $@"<{attribute}>{value}</{attribute}>");
-        if (!replacedFiles.Any())
-        {
-            throw new Exception($"{attribute} version could not be updated in {csproj}.");
-        }
-    }
-});
-
 Task("__BuildSolutions")
     .Does(() =>
 {
@@ -196,26 +165,40 @@ Task("__BuildSolutions")
     {
         Information("Building {0}", solution);
 
-        var dotNetCoreBuildSettings = new DotNetBuildSettings
+        var dotNetBuildSettings = new DotNetBuildSettings
         {
             Configuration = configuration,
-            Verbosity = DotNetCoreVerbosity.Minimal,
+            Verbosity = DotNetVerbosity.Minimal,
             NoRestore = true,
-            MSBuildSettings = new DotNetMSBuildSettings { TreatAllWarningsAs = MSBuildTreatAllWarningsAs.Error },
+            MSBuildSettings = new DotNetMSBuildSettings
+            {
+                AssemblyVersion = assemblyVersion,
+                FileVersion = assemblySemver,
+                TreatAllWarningsAs = MSBuildTreatAllWarningsAs.Error,
+                Version = nugetVersion,
+            },
         };
 
-        DotNetBuild(solution.ToString(), dotNetCoreBuildSettings);
+        DotNetBuild(solution.ToString(), dotNetBuildSettings);
     }
 });
 
 Task("__RunTests")
     .Does(() =>
 {
+    var loggers = Array.Empty<string>();
+
+    if (!string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("GITHUB_SHA")))
+    {
+        loggers = new[] { "GitHubActions;report-warnings=false" };
+    }
+
     foreach(var specsProj in GetFiles("./src/**/*.Specs.csproj"))
     {
         DotNetTest(specsProj.FullPath, new DotNetTestSettings
         {
             Configuration = configuration,
+            Loggers = loggers,
             NoBuild = true,
         });
     }
@@ -228,14 +211,21 @@ Task("__CreateSignedNuGetPackage")
 
     Information("Building {0}.{1}.nupkg", packageName, nugetVersion);
 
-    var dotNetCorePackSettings = new DotNetPackSettings
+    var dotNetPackSettings = new DotNetPackSettings
     {
         Configuration = configuration,
         NoBuild = true,
         OutputDirectory = nupkgDestDir,
+        MSBuildSettings = new DotNetMSBuildSettings
+        {
+            AssemblyVersion = assemblyVersion,
+            FileVersion = assemblySemver,
+            TreatAllWarningsAs = MSBuildTreatAllWarningsAs.Error,
+            Version = nugetVersion,
+        },
     };
 
-    DotNetPack(System.IO.Path.Combine(srcDir, projectName + ".sln"), dotNetCorePackSettings);
+    DotNetPack(System.IO.Path.Combine(srcDir, projectName + ".sln"), dotNetPackSettings);
 });
 
 //////////////////////////////////////////////////////////////////////
@@ -246,7 +236,6 @@ Task("Build")
     .IsDependentOn("__Clean")
     .IsDependentOn("__RestoreNuGetPackages")
     .IsDependentOn("__UpdateAssemblyVersionInformation")
-    .IsDependentOn("__UpdateDotNetStandardAssemblyVersionNumber")
     .IsDependentOn("__BuildSolutions")
     .IsDependentOn("__RunTests")
     .IsDependentOn("__CreateSignedNuGetPackage");

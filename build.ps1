@@ -115,7 +115,7 @@ if (-Not $SkipToolPackageRestore.IsPresent)
     # Install just Cake if missing config
     else
     {
-        $NuGetOutput = Invoke-Expression "&`"$DOTNET`" tool install Cake.Tool --version 2.0.0"
+        $NuGetOutput = Invoke-Expression "&`"$DOTNET`" tool install Cake.Tool --version 3.0.0"
         Write-Verbose ($NuGetOutput | Out-String)
     }
     Pop-Location
