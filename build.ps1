@@ -69,7 +69,7 @@ if (-Not $SkipToolPackageRestore.IsPresent)
 
     Write-Verbose -Message "Restoring tools from NuGet..."
 
-    $NuGetOutput = Invoke-Expression "& dotnet tool install Cake.Tool --version 3.0.0"
+    $NuGetOutput = Invoke-Expression "& dotnet tool restore"
     Write-Verbose ($NuGetOutput | Out-String)
 
     Pop-Location
