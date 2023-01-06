@@ -27,6 +27,7 @@
 
   <PropertyGroup Condition="$([MSBuild]::GetTargetFrameworkIdentifier('$(TargetFramework)')) != '.NETFramework'">
     <CollectCoverage>true</CollectCoverage>
+    <CoverletOutputFormat>cobertura</CoverletOutputFormat>
     <Exclude>[xunit.*]*</Exclude>
     <ExcludeByAttribute>System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute</ExcludeByAttribute>
     <Threshold>75,60,70</Threshold>

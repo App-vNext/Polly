@@ -123,5 +123,6 @@ tools
 *.lock.json
 *.nuget.targets
 *.nuget.props
+coverage.*.cobertura.xml
 coverage.*.json
 coverage-reports/
