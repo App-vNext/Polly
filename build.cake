@@ -9,17 +9,17 @@ var configuration = Argument<string>("configuration", "Release");
 // EXTERNAL NUGET TOOLS
 //////////////////////////////////////////////////////////////////////
 
-#Tool "GitVersion.CommandLine&version=5.8.1"
-#Tool "xunit.runner.console&version=2.4.1"
+#Tool "GitVersion.CommandLine&version=5.11.1"
+#Tool "xunit.runner.console&version=2.4.2"
 
 //////////////////////////////////////////////////////////////////////
 // EXTERNAL NUGET LIBRARIES
 //////////////////////////////////////////////////////////////////////
 
-#addin nuget:?package=Cake.FileHelpers&version=5.0.0
-#addin nuget:?package=Cake.Yaml&version=4.0.0
-#addin nuget:?package=Newtonsoft.Json&version=13.0.1
-#addin nuget:?package=YamlDotNet&version=11.2.1
+#addin nuget:?package=Cake.FileHelpers&version=6.0.0
+#addin nuget:?package=Cake.Yaml&version=6.0.0
+#addin nuget:?package=Newtonsoft.Json&version=13.0.2
+#addin nuget:?package=YamlDotNet&version=12.3.1
 
 ///////////////////////////////////////////////////////////////////////////////
 // GLOBAL VARIABLES
@@ -199,7 +199,7 @@ Task("__BuildSolutions")
         var dotNetCoreBuildSettings = new DotNetBuildSettings
         {
             Configuration = configuration,
-            Verbosity = DotNetCoreVerbosity.Minimal,
+            Verbosity = DotNetVerbosity.Minimal,
             NoRestore = true,
             MSBuildSettings = new DotNetMSBuildSettings { TreatAllWarningsAs = MSBuildTreatAllWarningsAs.Error },
         };
