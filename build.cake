@@ -158,37 +158,6 @@ Task("__UpdateAssemblyVersionInformation")
     Information("AssemblyInformationalVersion -> {0}", assemblySemver);
 });
 
-Task("__UpdateDotNetStandardAssemblyVersionNumber")
-    .WithCriteria(() => AppVeyor.IsRunningOnAppVeyor)
-    .Does(() =>
-{
-    Information("Updating Assembly Version Information");
-
-    var attributeToValueMap = new Dictionary<string, string>()
-    {
-        { "AssemblyVersion", assemblyVersion },
-        { "FileVersion", assemblySemver },
-        { "InformationalVersion", assemblySemver },
-        { "Version", nugetVersion },
-        { "PackageVersion", nugetVersion },
-        { "ContinuousIntegrationBuild", "true" },
-    };
-
-    var csproj = File("./src/" + projectName + "/" + projectName + ".csproj");
-
-    foreach(var attributeMap in attributeToValueMap)
-    {
-        var attribute = attributeMap.Key;
-        var value = attributeMap.Value;
-
-        var replacedFiles = ReplaceRegexInFiles(csproj, $@"\<{attribute}\>[^\<]*\</{attribute}\>", $@"<{attribute}>{value}</{attribute}>");
-        if (!replacedFiles.Any())
-        {
-            throw new Exception($"{attribute} version could not be updated in {csproj}.");
-        }
-    }
-});
-
 Task("__BuildSolutions")
     .Does(() =>
 {
@@ -254,7 +223,6 @@ Task("Build")
     .IsDependentOn("__Clean")
     .IsDependentOn("__RestoreNuGetPackages")
     .IsDependentOn("__UpdateAssemblyVersionInformation")
-    .IsDependentOn("__UpdateDotNetStandardAssemblyVersionNumber")
     .IsDependentOn("__BuildSolutions")
     .IsDependentOn("__RunTests")
     .IsDependentOn("__CreateSignedNuGetPackage");

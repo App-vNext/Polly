@@ -16,7 +16,8 @@
     <Authors>Michael Wolfenden, App vNext</Authors>
     <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
     <EmbedUntrackedSources>true</EmbedUntrackedSources> <!-- EmbedUntrackedSources for deterministic build -->
-    <ContinuousIntegrationBuild>false</ContinuousIntegrationBuild>
+    <ContinuousIntegrationBuild Condition=" '$(CI)' != '' ">true</ContinuousIntegrationBuild>
+    <Deterministic>true</Deterministic>
   </PropertyGroup>
   <PropertyGroup Label="SourceLink">
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
