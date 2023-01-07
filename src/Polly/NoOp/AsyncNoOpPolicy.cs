@@ -18,7 +18,7 @@ public class AsyncNoOpPolicy : AsyncPolicy, INoOpPolicy
     [DebuggerStepThrough]
     protected override Task<TResult> ImplementationAsync<TResult>( Func<Context, CancellationToken,Task<TResult>> action, Context context, CancellationToken cancellationToken,
         bool continueOnCapturedContext)
-        => NoOpEngine.ImplementationAsync(action, context, cancellationToken, continueOnCapturedContext);
+        => NoOpEngine.ImplementationAsync(action, context, cancellationToken);
 }
 
 /// <summary>
@@ -34,5 +34,5 @@ public class AsyncNoOpPolicy<TResult> : AsyncPolicy<TResult>, INoOpPolicy<TResul
     [DebuggerStepThrough]
     protected override Task<TResult> ImplementationAsync(Func<Context, CancellationToken, Task<TResult>> action, Context context, CancellationToken cancellationToken,
         bool continueOnCapturedContext)
-        => NoOpEngine.ImplementationAsync(action, context, cancellationToken, continueOnCapturedContext);
+        => NoOpEngine.ImplementationAsync(action, context, cancellationToken);
 }
