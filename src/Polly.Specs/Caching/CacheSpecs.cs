@@ -27,7 +27,7 @@ public class CacheSpecs : IDisposable
     public void Should_throw_when_ttl_strategy_is_null()
     {
         ISyncCacheProvider cacheProvider = new StubCacheProvider();
-        ITtlStrategy? ttlStrategy = null;
+        ITtlStrategy ttlStrategy = null!;
         Action action = () => Policy.Cache(cacheProvider, ttlStrategy);
         action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be("ttlStrategy");
     }
