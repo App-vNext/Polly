@@ -27,7 +27,7 @@ internal static class AddBehaviourIfHandleEngine
         }
         catch (Exception ex)
         {
-            Exception handledException = shouldHandleExceptionPredicates.FirstMatchOrDefault(ex);
+            Exception? handledException = shouldHandleExceptionPredicates.FirstMatchOrDefault(ex);
             if (handledException == null)
             {
                 throw;

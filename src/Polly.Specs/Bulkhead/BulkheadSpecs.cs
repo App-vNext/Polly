@@ -39,7 +39,7 @@ public class BulkheadSpecs : BulkheadSpecsBase
     public void Should_throw_when_onBulkheadRejected_is_null()
     {
         Action policy = () => Policy
-            .Bulkhead(1, 0, null);
+            .Bulkhead(1, 0, null!);
 
         policy.Should().Throw<ArgumentNullException>().And
             .ParamName.Should().Be("onBulkheadRejected");
