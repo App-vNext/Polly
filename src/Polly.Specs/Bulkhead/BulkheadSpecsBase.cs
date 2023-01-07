@@ -236,7 +236,7 @@ public abstract class BulkheadSpecsBase : IDisposable
         }
     }
 
-    protected AssertionFailure ActualsMatchExpecteds()
+    protected AssertionFailure? ActualsMatchExpecteds()
     {
         UpdateActuals();
 
