@@ -1,0 +1,27 @@
+name: update-dotnet-sdk
+
+on:
+  schedule:
+    - cron:  '0 12 * * WED'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  update-dotnet-sdk:
+    name: Update .NET SDK
+    runs-on: ubuntu-latest
+    if: ${{ github.event.repository.fork == false }}
+
+    steps:
+
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Update .NET SDK
+      uses: martincostello/update-dotnet-sdk@v2
+      with:
+        labels: "dependencies,.NET"
+        repo-token: ${{ secrets.GITHUB_TOKEN }}
