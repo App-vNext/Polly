@@ -15,7 +15,7 @@ public class TraceableAction : IDisposable
     private readonly string _id;
     private readonly ITestOutputHelper _testOutputHelper;
 
-    private readonly TaskCompletionSource<object?> _tcsProxyForRealWork = new TaskCompletionSource<object>();
+    private readonly TaskCompletionSource<object?> _tcsProxyForRealWork = new TaskCompletionSource<object?>();
     private readonly CancellationTokenSource CancellationSource = new CancellationTokenSource();
 
     private TraceableActionStatus _status;
