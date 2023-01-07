@@ -17,9 +17,9 @@ public class Fallback
     }
 
     [Benchmark]
-    public async Task<int> Fallback_Asynchronous_Succeeds()
+    public Task<int> Fallback_Asynchronous_Succeeds()
     {
-        return await AsyncPolicy.ExecuteAsync(() => Workloads.FuncAsync<int>());
+        return AsyncPolicy.ExecuteAsync(() => Workloads.FuncAsync<int>());
     }
 
     [Benchmark]
@@ -29,8 +29,8 @@ public class Fallback
     }
 
     [Benchmark]
-    public async Task<int> Fallback_Asynchronous_Throws()
+    public Task<int> Fallback_Asynchronous_Throws()
     {
-        return await AsyncPolicy.ExecuteAsync(() => Workloads.FuncThrowsAsync<int, InvalidOperationException>());
+        return AsyncPolicy.ExecuteAsync(() => Workloads.FuncThrowsAsync<int, InvalidOperationException>());
     }
 }
