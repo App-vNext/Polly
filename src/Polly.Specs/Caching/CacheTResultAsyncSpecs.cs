@@ -18,7 +18,7 @@ public class CacheTResultAsyncSpecs : IDisposable
     [Fact]
     public void Should_throw_when_cache_provider_is_null()
     {
-        IAsyncCacheProvider cacheProvider = null;
+        IAsyncCacheProvider cacheProvider = null!;
         Action action = () => Policy.CacheAsync<ResultPrimitive>(cacheProvider, TimeSpan.MaxValue);
         action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be("cacheProvider");
     }
@@ -27,7 +27,7 @@ public class CacheTResultAsyncSpecs : IDisposable
     public void Should_throw_when_ttl_strategy_is_null()
     {
         IAsyncCacheProvider cacheProvider = new StubCacheProvider();
-        ITtlStrategy ttlStrategy = null;
+        ITtlStrategy ttlStrategy = null!;
         Action action = () => Policy.CacheAsync<ResultPrimitive>(cacheProvider, ttlStrategy);
         action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be("ttlStrategy");
     }
@@ -36,7 +36,7 @@ public class CacheTResultAsyncSpecs : IDisposable
     public void Should_throw_when_cache_key_strategy_is_null()
     {
         IAsyncCacheProvider cacheProvider = new StubCacheProvider();
-        Func<Context, string> cacheKeyStrategy = null;
+        Func<Context, string> cacheKeyStrategy = null!;
         Action action = () => Policy.CacheAsync<ResultPrimitive>(cacheProvider, TimeSpan.MaxValue, cacheKeyStrategy);
         action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be("cacheKeyStrategy");
     }

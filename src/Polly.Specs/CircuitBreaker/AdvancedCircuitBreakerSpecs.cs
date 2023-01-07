@@ -1745,8 +1745,8 @@ public class AdvancedCircuitBreakerSpecs : IDisposable
             permitFirstExecutionEnd.WaitOne(testTimeoutToExposeDeadlocks);
             permitFirstExecutionEnd.Set();
             Task.WaitAll(new[] { firstExecution, secondExecution }, testTimeoutToExposeDeadlocks).Should().BeTrue();
-            if (firstExecution.IsFaulted) throw firstExecution.Exception;
-            if (secondExecution.IsFaulted) throw secondExecution.Exception;
+            if (firstExecution.IsFaulted) throw firstExecution!.Exception!;
+            if (secondExecution.IsFaulted) throw secondExecution!.Exception!;
             firstExecution.Status.Should().Be(TaskStatus.RanToCompletion);
             secondExecution.Status.Should().Be(TaskStatus.RanToCompletion);
 
@@ -2519,7 +2519,7 @@ public class AdvancedCircuitBreakerSpecs : IDisposable
     [Fact]
     public void Should_call_onbreak_with_the_passed_context()
     {
-        IDictionary<string, object> contextData = null;
+        IDictionary<string, object>? contextData = null;
 
         Action<Exception, TimeSpan, Context> onBreak = (_, _, context) => { contextData = context; };
         Action<Context> onReset = _ => { };
@@ -2564,7 +2564,7 @@ public class AdvancedCircuitBreakerSpecs : IDisposable
     [Fact]
     public void Should_call_onreset_with_the_passed_context()
     {
-        IDictionary<string, object> contextData = null;
+        IDictionary<string, object>? contextData = null;
 
         Action<Exception, TimeSpan, Context> onBreak = (_, _, _) => { };
         Action<Context> onReset = context => { contextData = context; };

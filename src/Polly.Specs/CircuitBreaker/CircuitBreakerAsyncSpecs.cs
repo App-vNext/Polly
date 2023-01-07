@@ -566,8 +566,8 @@ public class CircuitBreakerAsyncSpecs : IDisposable
             permitFirstExecutionEnd.WaitOne(testTimeoutToExposeDeadlocks);
             permitFirstExecutionEnd.Set();
             Task.WaitAll(new[] { firstExecution, secondExecution }, testTimeoutToExposeDeadlocks).Should().BeTrue();
-            if (firstExecution.IsFaulted) throw firstExecution.Exception;
-            if (secondExecution.IsFaulted) throw secondExecution.Exception;
+            if (firstExecution.IsFaulted) throw firstExecution!.Exception!;
+            if (secondExecution.IsFaulted) throw secondExecution!.Exception!;
             firstExecution.Status.Should().Be(TaskStatus.RanToCompletion);
             secondExecution.Status.Should().Be(TaskStatus.RanToCompletion);
 

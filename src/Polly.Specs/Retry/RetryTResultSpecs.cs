@@ -321,7 +321,7 @@ public class RetryTResultSpecs
     [Fact]
     public void Should_create_new_context_for_each_call_to_execute()
     {
-        string contextValue = null;
+        string? contextValue = null;
 
         RetryPolicy<ResultPrimitive> policy = Policy
             .HandleResult(ResultPrimitive.Fault)

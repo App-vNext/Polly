@@ -1203,7 +1203,7 @@ public class CircuitBreakerSpecs : IDisposable
     [Fact]
     public void Should_call_onbreak_with_the_passed_context()
     {
-        IDictionary<string, object> contextData = null;
+        IDictionary<string, object>? contextData = null;
 
         Action<Exception, TimeSpan, Context> onBreak = (_, _, context) => { contextData = context; };
         Action<Context> onReset = _ => { };
@@ -1229,7 +1229,7 @@ public class CircuitBreakerSpecs : IDisposable
     [Fact]
     public void Should_call_onreset_with_the_passed_context()
     {
-        IDictionary<string, object> contextData = null;
+        IDictionary<string, object>? contextData = null;
 
         Action<Exception, TimeSpan, Context> onBreak = (_, _, _) => { };
         Action<Context> onReset = context => { contextData = context; };

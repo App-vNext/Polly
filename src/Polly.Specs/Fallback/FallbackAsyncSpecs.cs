@@ -74,7 +74,7 @@ public class FallbackAsyncSpecs
     public void Should_throw_when_onFallback_delegate_is_null_with_context()
     {
         Func<Context, CancellationToken, Task> fallbackActionAsync  = (_, _) => TaskHelper.EmptyTask;
-        Func<Exception, Context, Task> onFallbackAsync = null;
+        Func<Exception, Context, Task> onFallbackAsync = null!;
 
         Action policy = () => Policy
                                 .Handle<DivideByZeroException>()
@@ -312,7 +312,7 @@ public class FallbackAsyncSpecs
     {
         Func<Context, CancellationToken, Task> fallbackActionAsync = (_, _) => TaskHelper.EmptyTask;
 
-        IDictionary<string, object> contextData = null;
+        IDictionary<string, object>? contextData = null;
 
         Func<Exception, Context, Task> onFallbackAsync = (_, ctx) => { contextData = ctx; return TaskHelper.EmptyTask; };
 

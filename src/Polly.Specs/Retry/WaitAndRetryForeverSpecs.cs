@@ -49,7 +49,7 @@ public class WaitAndRetryForeverSpecs : IDisposable
     [Fact]
     public void Should_throw_when_onretry_action_is_null_without_context()
     {
-        Action<Exception, TimeSpan> nullOnRetry = null;
+        Action<Exception, TimeSpan> nullOnRetry = null!;
         Func<int, TimeSpan> provider = _ => TimeSpan.Zero;
 
         Action policy = () => Policy
@@ -63,7 +63,7 @@ public class WaitAndRetryForeverSpecs : IDisposable
     [Fact]
     public void Should_throw_when_onretry_action_is_null_with_context()
     {
-        Action<Exception, TimeSpan, Context> nullOnRetry = null;
+        Action<Exception, TimeSpan, Context> nullOnRetry = null!;
         Func<int, Context, TimeSpan> provider = (_, _) => TimeSpan.Zero;
 
         Action policy = () => Policy

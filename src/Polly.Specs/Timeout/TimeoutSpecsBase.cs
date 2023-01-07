@@ -17,7 +17,7 @@ public abstract class TimeoutSpecsBase : IDisposable
     // xUnit creates a new class instance per test, so these variables are isolated per test.
 
     // Track a CancellationTokenSource, and when it might be cancelled at.
-    private CancellationTokenSource _trackedTokenSource;
+    private CancellationTokenSource? _trackedTokenSource;
     private DateTimeOffset _cancelAt = DateTimeOffset.MaxValue;
 
     private DateTimeOffset _offsetUtcNow = DateTimeOffset.UtcNow;

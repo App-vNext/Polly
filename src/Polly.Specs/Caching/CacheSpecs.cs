@@ -18,7 +18,7 @@ public class CacheSpecs : IDisposable
     [Fact]
     public void Should_throw_when_cache_provider_is_null()
     {
-        ISyncCacheProvider cacheProvider = null;
+        ISyncCacheProvider? cacheProvider = null;
         Action action = () => Policy.Cache(cacheProvider, TimeSpan.MaxValue);
         action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be("cacheProvider");
     }
@@ -27,7 +27,7 @@ public class CacheSpecs : IDisposable
     public void Should_throw_when_ttl_strategy_is_null()
     {
         ISyncCacheProvider cacheProvider = new StubCacheProvider();
-        ITtlStrategy ttlStrategy = null;
+        ITtlStrategy? ttlStrategy = null;
         Action action = () => Policy.Cache(cacheProvider, ttlStrategy);
         action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be("ttlStrategy");
     }
@@ -542,7 +542,7 @@ public class CacheSpecs : IDisposable
         Exception ex = new Exception();
         ISyncCacheProvider stubCacheProvider = new StubErroringCacheProvider(getException: null, putException: ex);
 
-        Exception exceptionFromCacheProvider = null;
+        Exception? exceptionFromCacheProvider = null;
 
         const string valueToReturn = "valueToReturn";
         const string operationKey = "SomeOperationKey";
@@ -574,10 +574,10 @@ public class CacheSpecs : IDisposable
         const string valueToReturnFromExecution = "valueToReturnFromExecution";
 
         const string operationKey = "SomeOperationKey";
-        string keyPassedToDelegate = null;
+        string? keyPassedToDelegate = null;
 
         Context contextToExecute = new Context(operationKey);
-        Context contextPassedToDelegate = null;
+        Context? contextPassedToDelegate = null;
 
         Action<Context, string, Exception> noErrorHandling = (_, _, _) => { };
         Action<Context, string> emptyDelegate = (_, _) => { };

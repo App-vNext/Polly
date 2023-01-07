@@ -130,7 +130,7 @@ public class TimeoutAsyncSpecs : TimeoutSpecsBase
     [Fact]
     public void Should_throw_when_onTimeout_is_null_with_timespan_with_full_argument_list_onTimeout()
     {
-        Func<Context, TimeSpan, Task, Exception, Task> onTimeout = null;
+        Func<Context, TimeSpan, Task, Exception, Task> onTimeout = null!;
         Action policy = () => Policy.TimeoutAsync(TimeSpan.FromMinutes(0.5), onTimeout);
 
         policy.Should().Throw<ArgumentNullException>()
@@ -140,7 +140,7 @@ public class TimeoutAsyncSpecs : TimeoutSpecsBase
     [Fact]
     public void Should_throw_when_onTimeout_is_null_with_seconds()
     {
-        Func<Context, TimeSpan, Task, Task> onTimeout = null;
+        Func<Context, TimeSpan, Task, Task> onTimeout = null!;
         Action policy = () => Policy.TimeoutAsync(30, onTimeout);
 
         policy.Should().Throw<ArgumentNullException>()
@@ -150,7 +150,7 @@ public class TimeoutAsyncSpecs : TimeoutSpecsBase
     [Fact]
     public void Should_throw_when_onTimeout_is_null_with_seconds_with_full_argument_list_onTimeout()
     {
-        Func<Context, TimeSpan, Task, Exception, Task> onTimeout = null;
+        Func<Context, TimeSpan, Task, Exception, Task> onTimeout = null!;
         Action policy = () => Policy.TimeoutAsync(30, onTimeout);
 
         policy.Should().Throw<ArgumentNullException>()
@@ -160,7 +160,7 @@ public class TimeoutAsyncSpecs : TimeoutSpecsBase
     [Fact]
     public void Should_throw_when_timeoutProvider_is_null()
     {
-        Action policy = () => Policy.TimeoutAsync((Func<TimeSpan>)null);
+        Action policy = () => Policy.TimeoutAsync((Func<TimeSpan>)null!);
 
         policy.Should().Throw<ArgumentNullException>()
             .And.ParamName.Should().Be("timeoutProvider");
@@ -169,7 +169,7 @@ public class TimeoutAsyncSpecs : TimeoutSpecsBase
     [Fact]
     public void Should_throw_when_onTimeout_is_null_with_timeoutprovider()
     {
-        Func<Context, TimeSpan, Task, Task> onTimeout = null;
+        Func<Context, TimeSpan, Task, Task> onTimeout = null!;
         Action policy = () => Policy.TimeoutAsync(() => TimeSpan.FromSeconds(30), onTimeout);
 
         policy.Should().Throw<ArgumentNullException>()
@@ -179,7 +179,7 @@ public class TimeoutAsyncSpecs : TimeoutSpecsBase
     [Fact]
     public void Should_throw_when_onTimeout_is_null_with_timeoutprovider_with_full_argument_list_onTimeout()
     {
-        Func<Context, TimeSpan, Task, Exception, Task> onTimeout = null;
+        Func<Context, TimeSpan, Task, Exception, Task> onTimeout = null!;
         Action policy = () => Policy.TimeoutAsync(() => TimeSpan.FromSeconds(30), onTimeout);
 
         policy.Should().Throw<ArgumentNullException>()
@@ -619,7 +619,7 @@ public class TimeoutAsyncSpecs : TimeoutSpecsBase
     {
         TimeSpan timeoutPassedToConfiguration = TimeSpan.FromMilliseconds(250);
 
-        Exception exceptionPassedToOnTimeout = null;
+        Exception? exceptionPassedToOnTimeout = null;
         Func<Context, TimeSpan, Task, Exception, Task> onTimeoutAsync = (_, _, _, exception) =>
         {
             exceptionPassedToOnTimeout = exception;

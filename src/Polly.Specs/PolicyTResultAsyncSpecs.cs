@@ -82,7 +82,7 @@ public class PolicyTResultAsyncSpecs
         result.Should().BeEquivalentTo(new
         {
             Outcome = OutcomeType.Successful,
-            FinalException = (Exception)null,
+            FinalException = (Exception?)null,
             ExceptionType = (ExceptionType?)null,
             Result = unhandledResult,
             FinalHandledResult = default(ResultPrimitive),
@@ -102,7 +102,7 @@ public class PolicyTResultAsyncSpecs
             .HandleResult(ResultPrimitive.Fault)
             .RetryAsync((_, _, _) => { });
 
-        await policy.Awaiting(p => p.ExecuteAsync(_ => Task.FromResult(ResultPrimitive.Good), (IDictionary<string, object>)null))
+        await policy.Awaiting(p => p.ExecuteAsync(_ => Task.FromResult(ResultPrimitive.Good), (IDictionary<string, object>)null!))
               .Should().ThrowAsync<ArgumentNullException>();
     }
 
@@ -113,7 +113,7 @@ public class PolicyTResultAsyncSpecs
             .HandleResult(ResultPrimitive.Fault)
             .RetryAsync((_, _, _) => { });
 
-        var ex = await policy.Awaiting(p => p.ExecuteAsync(_ => Task.FromResult(ResultPrimitive.Good), (Context)null))
+        var ex = await policy.Awaiting(p => p.ExecuteAsync(_ => Task.FromResult(ResultPrimitive.Good), (Context)null!))
               .Should().ThrowAsync<ArgumentNullException>();
         ex.And.ParamName.Should().Be("context");
     }
@@ -125,7 +125,7 @@ public class PolicyTResultAsyncSpecs
             .HandleResult(ResultPrimitive.Fault)
             .RetryAsync((_, _, _) => { });
 
-        var ex = await policy.Awaiting(p => p.ExecuteAndCaptureAsync(_ => Task.FromResult(ResultPrimitive.Good), (Context)null))
+        var ex = await policy.Awaiting(p => p.ExecuteAndCaptureAsync(_ => Task.FromResult(ResultPrimitive.Good), (Context)null!))
               .Should().ThrowAsync<ArgumentNullException>();
         ex.And.ParamName.Should().Be("context");
     }
@@ -135,7 +135,7 @@ public class PolicyTResultAsyncSpecs
     {
         string operationKey = "SomeKey";
         Context executionContext = new Context(operationKey);
-        Context capturedContext = null;
+        Context? capturedContext = null;
 
         var policy = Policy.NoOpAsync<ResultPrimitive>();
 
@@ -151,7 +151,7 @@ public class PolicyTResultAsyncSpecs
             .HandleResult(ResultPrimitive.Fault)
             .RetryAsync((_, _, _) => { });
 
-        var ex = await policy.Awaiting(p => p.ExecuteAndCaptureAsync(_ => Task.FromResult(ResultPrimitive.Good), (Context)null))
+        var ex = await policy.Awaiting(p => p.ExecuteAndCaptureAsync(_ => Task.FromResult(ResultPrimitive.Good), (Context)null!))
               .Should().ThrowAsync<ArgumentNullException>();
         ex.And.ParamName.Should().Be("context");
     }
@@ -161,7 +161,7 @@ public class PolicyTResultAsyncSpecs
     {
         string operationKey = "SomeKey";
         Context executionContext = new Context(operationKey);
-        Context capturedContext = null;
+        Context? capturedContext = null;
 
         var policy = Policy.NoOpAsync<ResultPrimitive>();
 

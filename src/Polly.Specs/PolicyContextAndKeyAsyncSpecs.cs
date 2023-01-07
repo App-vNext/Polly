@@ -168,7 +168,7 @@ public class PolicyKeyAsyncSpecs
     {
         string operationKey = "SomeKey";
 
-        string operationKeySetOnContext = null;
+        string? operationKeySetOnContext = null;
         Action<Exception, int, Context> onRetry = (_, _, context) => { operationKeySetOnContext = context.OperationKey; };
         var retry = Policy.Handle<Exception>().RetryAsync(1, onRetry);
 
@@ -304,7 +304,7 @@ public class PolicyTResultKeyAsyncSpecs
     {
         string operationKey = "SomeKey";
 
-        string operationKeySetOnContext = null;
+        string? operationKeySetOnContext = null;
         Action<DelegateResult<ResultPrimitive>, int, Context> onRetry = (_, _, context) => { operationKeySetOnContext = context.OperationKey; };
         var retry = Policy.HandleResult(ResultPrimitive.Fault).RetryAsync(1, onRetry);
 

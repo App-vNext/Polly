@@ -231,7 +231,7 @@ public class PolicyAsyncSpecs
             .Handle<DivideByZeroException>()
             .RetryAsync((_, _, _) => { });
 
-        await policy.Awaiting(p => p.ExecuteAndCaptureAsync(_ => TaskHelper.EmptyTask, (IDictionary<string, object>)null))
+        await policy.Awaiting(p => p.ExecuteAndCaptureAsync(_ => TaskHelper.EmptyTask, (IDictionary<string, object>)null!))
               .Should().ThrowAsync<ArgumentNullException>();
     }
 
@@ -242,7 +242,7 @@ public class PolicyAsyncSpecs
             .Handle<DivideByZeroException>()
             .RetryAsync((_, _, _) => { });
 
-        var ex = await policy.Awaiting(p => p.ExecuteAndCaptureAsync(_ => TaskHelper.EmptyTask, (Context)null))
+        var ex = await policy.Awaiting(p => p.ExecuteAndCaptureAsync(_ => TaskHelper.EmptyTask, (Context)null!))
             .Should().ThrowAsync<ArgumentNullException>();
         ex.And.ParamName.Should().Be("context");
     }
@@ -254,7 +254,7 @@ public class PolicyAsyncSpecs
             .Handle<DivideByZeroException>()
             .RetryAsync((_, _, _) => { });
 
-        await policy.Awaiting(p => p.ExecuteAndCaptureAsync(_ => Task.FromResult(2), (IDictionary<string, object>)null))
+        await policy.Awaiting(p => p.ExecuteAndCaptureAsync(_ => Task.FromResult(2), (IDictionary<string, object>)null!))
               .Should().ThrowAsync<ArgumentNullException>();
     }
 
@@ -265,7 +265,7 @@ public class PolicyAsyncSpecs
             .Handle<DivideByZeroException>()
             .RetryAsync((_, _, _) => { });
 
-        var ex = await policy.Awaiting(p => p.ExecuteAndCaptureAsync(_ => Task.FromResult(2), (Context)null))
+        var ex = await policy.Awaiting(p => p.ExecuteAndCaptureAsync(_ => Task.FromResult(2), (Context)null!))
               .Should().ThrowAsync<ArgumentNullException>();
         ex.And.ParamName.Should().Be("context");
     }

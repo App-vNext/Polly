@@ -76,7 +76,7 @@ public class WaitAndRetrySpecs : IDisposable
     [Fact]
     public void Should_throw_when_onretry_action_is_null_with_context()
     {
-        Action<Exception, TimeSpan, Context> nullOnRetry = null;
+        Action<Exception, TimeSpan, Context> nullOnRetry = null!;
 
         Action policy = () => Policy
                                   .Handle<DivideByZeroException>()
@@ -89,7 +89,7 @@ public class WaitAndRetrySpecs : IDisposable
     [Fact]
     public void Should_throw_when_onretry_action_is_null_with_attempts_with_context()
     {
-        Action<Exception, TimeSpan, int, Context> nullOnRetry = null;
+        Action<Exception, TimeSpan, int, Context> nullOnRetry = null!;
 
         Action policy = () => Policy
                                   .Handle<DivideByZeroException>()
@@ -635,7 +635,7 @@ public class WaitAndRetrySpecs : IDisposable
 
         Action policy = () => Policy
                                   .Handle<DivideByZeroException>()
-                                  .WaitAndRetry(1, (Func<int, TimeSpan>)null, onRetry);
+                                  .WaitAndRetry(1, (Func<int, TimeSpan>)null!, onRetry);
 
         policy.Should().Throw<ArgumentNullException>().And
               .ParamName.Should().Be("sleepDurationProvider");
@@ -644,7 +644,7 @@ public class WaitAndRetrySpecs : IDisposable
     [Fact]
     public void Should_throw_when_onretry_action_is_null_without_context_when_using_provider_overload()
     {
-        Action<Exception, TimeSpan> nullOnRetry = null;
+        Action<Exception, TimeSpan> nullOnRetry = null!;
 
         Action policy = () => Policy
                                   .Handle<DivideByZeroException>()
@@ -657,7 +657,7 @@ public class WaitAndRetrySpecs : IDisposable
     [Fact]
     public void Should_throw_when_onretry_action_is_null_with_context_when_using_provider_overload()
     {
-        Action<Exception, TimeSpan, Context> nullOnRetry = null;
+        Action<Exception, TimeSpan, Context> nullOnRetry = null!;
 
         Action policy = () => Policy
                                   .Handle<DivideByZeroException>()
@@ -670,7 +670,7 @@ public class WaitAndRetrySpecs : IDisposable
     [Fact]
     public void Should_throw_when_onretry_action_is_null_with_attempts_with_context_when_using_provider_overload()
     {
-        Action<Exception, TimeSpan, int, Context> nullOnRetry = null;
+        Action<Exception, TimeSpan, int, Context> nullOnRetry = null!;
 
         Action policy = () => Policy
                                   .Handle<DivideByZeroException>()

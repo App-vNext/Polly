@@ -30,7 +30,7 @@ public class RetryTResultSpecsAsync
     [Fact]
     public void Should_throw_when_onretry_action_without_context_is_null()
     {
-        Action<DelegateResult<ResultPrimitive>, int> nullOnRetry = null;
+        Action<DelegateResult<ResultPrimitive>, int> nullOnRetry = null!;
 
         Action policy = () => Policy
                                   .HandleResult(ResultPrimitive.Fault)
@@ -325,7 +325,7 @@ public class RetryTResultSpecsAsync
     [Fact]
     public async Task Should_create_new_context_for_each_call_to_execute()
     {
-        string contextValue = null;
+        string? contextValue = null;
 
         var policy = Policy
             .HandleResult(ResultPrimitive.Fault)

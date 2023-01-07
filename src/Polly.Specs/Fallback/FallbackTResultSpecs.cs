@@ -142,7 +142,7 @@ public class FallbackTResultSpecs
     public void Should_throw_when_onFallback_delegate_is_null_with_context_with_action_with_cancellation()
     {
         Func<Context, CancellationToken, ResultPrimitive> fallbackAction = (_, _) => ResultPrimitive.Substitute;
-        Action<DelegateResult<ResultPrimitive>, Context> onFallback = null;
+        Action<DelegateResult<ResultPrimitive>, Context> onFallback = null!;
 
         Action policy = () => Policy
                                 .HandleResult(ResultPrimitive.Fault)
@@ -534,7 +534,7 @@ public class FallbackTResultSpecs
     [Fact]
     public void Should_call_fallbackAction_with_the_fault()
     {
-        DelegateResult<ResultPrimitive> fallbackOutcome = null;
+        DelegateResult<ResultPrimitive>? fallbackOutcome = null;
 
         Func<DelegateResult<ResultPrimitive>, Context, CancellationToken, ResultPrimitive> fallbackAction =
             (outcome, _, _) => { fallbackOutcome = outcome; return ResultPrimitive.Substitute; };
@@ -579,7 +579,7 @@ public class FallbackTResultSpecs
     [Fact]
     public void Should_not_call_fallbackAction_with_the_fault_if_fault_unhandled()
     {
-        DelegateResult<ResultPrimitive> fallbackOutcome = null;
+        DelegateResult<ResultPrimitive>? fallbackOutcome = null;
 
         Func<DelegateResult<ResultPrimitive>, Context, CancellationToken, ResultPrimitive> fallbackAction =
             (outcome, _, _) => { fallbackOutcome = outcome; return ResultPrimitive.Substitute; };

@@ -454,7 +454,7 @@ public class WaitAndRetryAsyncSpecs : IDisposable
     [Fact]
     public async Task Context_should_be_empty_if_execute_not_called_with_any_data()
     {
-        Context capturedContext = null;
+        Context? capturedContext = null;
 
         var policy = Policy
             .Handle<DivideByZeroException>()

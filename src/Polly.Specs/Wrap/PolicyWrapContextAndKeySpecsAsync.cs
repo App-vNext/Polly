@@ -320,7 +320,7 @@ public class PolicyWrapTResultContextAndKeySpecsAsync
         string innerWrapKey = Guid.NewGuid().ToString();
         string outerWrapKey = Guid.NewGuid().ToString();
 
-        string policyWrapKeySetOnExecutionContext = null;
+        string? policyWrapKeySetOnExecutionContext = null;
         Action<DelegateResult<ResultPrimitive>, TimeSpan, Context> onBreak = (_, _, context) =>
         {
             policyWrapKeySetOnExecutionContext = context.PolicyWrapKey;

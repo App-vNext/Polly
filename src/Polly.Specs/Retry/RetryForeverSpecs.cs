@@ -13,7 +13,7 @@ public class RetryForeverSpecs
     [Fact]
     public void Should_throw_when_onretry_action_without_context_is_null()
     {
-        Action<Exception> nullOnRetry = null;
+        Action<Exception> nullOnRetry = null!;
 
         Action policy = () => Policy
                                   .Handle<DivideByZeroException>()
@@ -26,7 +26,7 @@ public class RetryForeverSpecs
     [Fact]
     public void Should_throw_when_onretry_action_with_context_is_null()
     {
-        Action<Exception, Context> nullOnRetry = null;
+        Action<Exception, Context> nullOnRetry = null!;
 
         Action policy = () => Policy
                                   .Handle<DivideByZeroException>()

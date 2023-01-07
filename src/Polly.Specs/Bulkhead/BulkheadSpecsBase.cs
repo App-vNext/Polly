@@ -283,7 +283,7 @@ public abstract class BulkheadSpecsBase : IDisposable
         return null;
     }
 
-    protected AssertionFailure AllTasksCompleted()
+    protected AssertionFailure? AllTasksCompleted()
     {
         int countTasksCompleted = Tasks.Count(t => t.IsCompleted);
         if (countTasksCompleted < TotalActions)
