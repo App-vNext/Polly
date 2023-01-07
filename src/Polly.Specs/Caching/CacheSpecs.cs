@@ -18,7 +18,7 @@ public class CacheSpecs : IDisposable
     [Fact]
     public void Should_throw_when_cache_provider_is_null()
     {
-        ISyncCacheProvider? cacheProvider = null;
+        ISyncCacheProvider cacheProvider = null!;
         Action action = () => Policy.Cache(cacheProvider, TimeSpan.MaxValue);
         action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be("cacheProvider");
     }
