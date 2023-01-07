@@ -644,6 +644,8 @@ public class CacheAsyncSpecs : IDisposable
 
         contextPassedToOnCachePut.Should().BeSameAs(contextToExecute);
         keyPassedToOnCachePut.Should().Be(operationKey);
+        contextPassedToOnCacheMiss.Should().NotBeNull();
+        keyPassedToOnCacheMiss.Should().Be("SomeOperationKey");
     }
 
     [Fact]
@@ -675,6 +677,8 @@ public class CacheAsyncSpecs : IDisposable
 
         contextPassedToOnCachePut.Should().BeNull();
         keyPassedToOnCachePut.Should().BeNull();
+        contextPassedToOnCacheMiss.Should().BeEmpty();
+        keyPassedToOnCacheMiss.Should().Be("SomeOperationKey");
     }
 
     [Fact]
