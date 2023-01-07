@@ -81,7 +81,7 @@ public class BrokenCircuitException<TResult> : BrokenCircuitException
     /// <summary>
     /// The result value which was considered a handled fault, by the policy.
     /// </summary>
-    public TResult Result { get => result; } 
+    public TResult Result { get => result; }
 
 #if NETSTANDARD2_0
     /// <summary>

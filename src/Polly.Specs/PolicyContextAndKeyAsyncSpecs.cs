@@ -62,7 +62,7 @@ public class PolicyKeyAsyncSpecs
     public void PolicyKey_property_should_start_with_policy_type_if_not_explicitly_configured()
     {
         var policy = Policy.Handle<Exception>().RetryAsync();
-        
+
         policy.PolicyKey.Should().StartWith("AsyncRetry");
     }
 

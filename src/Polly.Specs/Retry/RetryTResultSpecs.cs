@@ -264,7 +264,7 @@ public class RetryTResultSpecs
             .Retry((_, _, context) => contextData = context);
 
         policy.RaiseResultSequence(
-            new { key1 = "value1", key2 = "value2" }.AsDictionary(), 
+            new { key1 = "value1", key2 = "value2" }.AsDictionary(),
             ResultPrimitive.Fault, ResultPrimitive.Good
             )
             .Should().Be(ResultPrimitive.Good);
@@ -288,8 +288,8 @@ public class RetryTResultSpecs
             ResultPrimitive.Fault, ResultPrimitive.Good
             );
 
-        result.Should().BeEquivalentTo(new 
-        {                   
+        result.Should().BeEquivalentTo(new
+        {
             Outcome = OutcomeType.Successful,
             FinalException = (Exception)null,
             ExceptionType = (ExceptionType?)null,

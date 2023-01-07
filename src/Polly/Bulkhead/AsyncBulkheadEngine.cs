@@ -12,7 +12,7 @@ namespace Polly.Bulkhead;
         Func<Context, Task> onBulkheadRejectedAsync,
         SemaphoreSlim maxParallelizationSemaphore,
         SemaphoreSlim maxQueuedActionsSemaphore,
-        CancellationToken cancellationToken, 
+        CancellationToken cancellationToken,
         bool continueOnCapturedContext)
     {
         if (!await maxQueuedActionsSemaphore.WaitAsync(TimeSpan.Zero, cancellationToken).ConfigureAwait(continueOnCapturedContext))
@@ -24,7 +24,7 @@ namespace Polly.Bulkhead;
         {
             await maxParallelizationSemaphore.WaitAsync(cancellationToken).ConfigureAwait(continueOnCapturedContext);
 
-            try 
+            try
             {
                 return await action(context, cancellationToken).ConfigureAwait(continueOnCapturedContext);
             }

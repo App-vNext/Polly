@@ -50,7 +50,7 @@ public sealed partial class PolicyBuilder
     /// Returns a hash code for this instance.
     /// </summary>
     /// <returns>
-    /// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table. 
+    /// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.
     /// </returns>
     [EditorBrowsable(EditorBrowsableState.Never)]
     public override int GetHashCode()
@@ -113,7 +113,7 @@ public sealed partial class PolicyBuilder<TResult>
     /// A <see cref="string" /> that represents this instance.
     /// </returns>
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public override string ToString() => base.ToString(); 
+    public override string ToString() => base.ToString();
 
     /// <summary>
     /// Determines whether the specified <see cref="object" /> is equal to this instance.
@@ -129,7 +129,7 @@ public sealed partial class PolicyBuilder<TResult>
     /// Returns a hash code for this instance.
     /// </summary>
     /// <returns>
-    /// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table. 
+    /// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.
     /// </returns>
     [EditorBrowsable(EditorBrowsableState.Never)]
     public override int GetHashCode() => base.GetHashCode();

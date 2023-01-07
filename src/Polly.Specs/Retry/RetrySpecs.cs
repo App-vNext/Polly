@@ -18,7 +18,7 @@ public class RetrySpecs
         Action policy = () => Policy
                                   .Handle<DivideByZeroException>()
                                   .Retry(-1, onRetry);
-    
+
         policy.Should().Throw<ArgumentOutOfRangeException>().And
               .ParamName.Should().Be("retryCount");
     }
@@ -95,7 +95,7 @@ public class RetrySpecs
         policy.Invoking(x => x.RaiseException<DivideByZeroException>())
               .Should().NotThrow();
     }
-    
+
     [Fact]
     public void Should_not_throw_when_one_of_the_specified_exceptions_thrown_less_number_of_times_than_retry_count()
     {
@@ -107,7 +107,7 @@ public class RetrySpecs
         policy.Invoking(x => x.RaiseException<ArgumentException>())
               .Should().NotThrow();
     }
-    
+
     [Fact]
     public void Should_throw_when_specified_exception_thrown_more_times_then_retry_count()
     {
@@ -118,7 +118,7 @@ public class RetrySpecs
         policy.Invoking(x => x.RaiseException<DivideByZeroException>(3 + 1))
               .Should().Throw<DivideByZeroException>();
     }
-    
+
     [Fact]
     public void Should_throw_when_one_of_the_specified_exceptions_are_thrown_more_times_then_retry_count()
     {
@@ -130,7 +130,7 @@ public class RetrySpecs
         policy.Invoking(x => x.RaiseException<ArgumentException>(3 + 1))
               .Should().Throw<ArgumentException>();
     }
-    
+
     [Fact]
     public void Should_throw_when_exception_thrown_is_not_the_specified_exception_type()
     {
@@ -382,7 +382,7 @@ public class RetrySpecs
             .Handle<DivideByZeroException>()
             .Retry((_, _, context) => contextData = context);
 
-        policy.Invoking(p => p.ExecuteAndCapture(_ => { throw new DivideByZeroException();}, 
+        policy.Invoking(p => p.ExecuteAndCapture(_ => { throw new DivideByZeroException();},
             new { key1 = "value1", key2 = "value2" }.AsDictionary()))
             .Should().NotThrow();
 
@@ -437,7 +437,7 @@ public class RetrySpecs
             .Handle<DivideByZeroException>()
             .Retry((_, _, context) => contextValue = context["key"].ToString());
 
-        policy.Invoking(p => p.ExecuteAndCapture(_ => throw new DivideByZeroException(), 
+        policy.Invoking(p => p.ExecuteAndCapture(_ => throw new DivideByZeroException(),
             new { key = "original_value" }.AsDictionary()))
             .Should().NotThrow();
 

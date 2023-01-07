@@ -66,7 +66,7 @@ public class Cache
             _cache = memoryCache;
         }
 
-        public (bool, object) TryGet(string key)
+        public (bool, object?) TryGet(string key)
         {
             bool cacheHit = _cache.TryGetValue(key, out var value);
             return (cacheHit, value);
@@ -96,7 +96,7 @@ public class Cache
             _cache.Set(key, value, options);
         }
 
-        public Task<(bool, object)> TryGetAsync(string key, CancellationToken cancellationToken, bool continueOnCapturedContext)
+        public Task<(bool, object?)> TryGetAsync(string key, CancellationToken cancellationToken, bool continueOnCapturedContext)
         {
             return Task.FromResult(TryGet(key));
         }

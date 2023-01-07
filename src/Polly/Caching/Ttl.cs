@@ -20,7 +20,7 @@ public struct Ttl
     /// <summary>
     /// Creates a new <see cref="Ttl"/> struct.
     /// </summary>
-    /// <param name="timeSpan">The timespan for which this cache-item remains valid.  
+    /// <param name="timeSpan">The timespan for which this cache-item remains valid.
     /// <remarks>Will be considered as not denoting sliding expiration.</remarks></param>
     public Ttl(TimeSpan timeSpan) : this(timeSpan, false)
     {

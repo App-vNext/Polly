@@ -75,7 +75,7 @@ internal sealed class LockFreeTokenBucketRateLimiter : IRateLimiter
                 // And any whole token tick intervals further each merit another.
                 (-ticksTillAddNextToken / addTokenTickInterval);
 
-            // We mustn't exceed bucket capacity though. 
+            // We mustn't exceed bucket capacity though.
             long tokensToAdd = Math.Min(bucketCapacity, tokensMissedAdding);
 
             // Work out when tokens would next be due to be added, if we add these tokens.
@@ -86,7 +86,7 @@ internal sealed class LockFreeTokenBucketRateLimiter : IRateLimiter
             // Now see if we win the race to add these tokens.  Other threads might be racing through this code at the same time: only one thread must add the tokens!
             if (Interlocked.CompareExchange(ref addNextTokenAtTicks, newAddNextTokenAtTicks, currentAddNextTokenAtTicks) == currentAddNextTokenAtTicks)
             {
-                // We won the race to add the tokens!  
+                // We won the race to add the tokens!
 
                 // Theoretically we want to add tokensToAdd tokens.  But in fact we don't do that.
                 // We want to claim one of those tokens for ourselves - there's no way we're going to add it but let another thread snatch it from under our nose.
@@ -94,9 +94,9 @@ internal sealed class LockFreeTokenBucketRateLimiter : IRateLimiter
 
                 // So in fact we add (tokensToAdd - 1) tokens (ie we consume one), and return, permitting this execution.
 
-                // The advantage of only adding tokens when the bucket is empty is that we can now hard set the new amount of tokens (Interlocked.Exchange) without caring if other threads have simultaneously been taking or adding tokens. 
+                // The advantage of only adding tokens when the bucket is empty is that we can now hard set the new amount of tokens (Interlocked.Exchange) without caring if other threads have simultaneously been taking or adding tokens.
                 // (If we added a token per addTokenTickInterval to a non-empty bucket, the reasoning about not overflowing the bucket seems harder.)
-                Interlocked.Exchange(ref currentTokens, tokensToAdd - 1); 
+                Interlocked.Exchange(ref currentTokens, tokensToAdd - 1);
                 return (true, TimeSpan.Zero);
             }
             else
