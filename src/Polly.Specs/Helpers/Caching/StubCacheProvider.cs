@@ -49,7 +49,7 @@ internal class StubCacheProvider : ISyncCacheProvider, IAsyncCacheProvider
 
     #region Naive async-over-sync implementation
 
-    // Intentionally naive async-over-sync implementation.  Its purpose is to be the simplest thing to support tests of the CachePolicyAsync and CacheEngineAsync, not to be a usable implementation of IAsyncCacheProvider.  
+    // Intentionally naive async-over-sync implementation.  Its purpose is to be the simplest thing to support tests of the CachePolicyAsync and CacheEngineAsync, not to be a usable implementation of IAsyncCacheProvider.
     public Task<(bool, object)> TryGetAsync(string key, CancellationToken cancellationToken, bool continueOnCapturedContext)
     {
         return Task.FromResult(TryGet(key));

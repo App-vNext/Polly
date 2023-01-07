@@ -13,12 +13,12 @@ internal class AdvancedCircuitController<TResult> : CircuitStateController<TResu
     private readonly int _minimumThroughput;
 
     public AdvancedCircuitController(
-        double failureThreshold, 
-        TimeSpan samplingDuration, 
-        int minimumThroughput, 
-        TimeSpan durationOfBreak, 
-        Action<DelegateResult<TResult>, CircuitState, TimeSpan, Context> onBreak, 
-        Action<Context> onReset, 
+        double failureThreshold,
+        TimeSpan samplingDuration,
+        int minimumThroughput,
+        TimeSpan durationOfBreak,
+        Action<DelegateResult<TResult>, CircuitState, TimeSpan, Context> onBreak,
+        Action<Context> onReset,
         Action onHalfOpen
         ) : base(durationOfBreak, onBreak, onReset, onHalfOpen)
     {

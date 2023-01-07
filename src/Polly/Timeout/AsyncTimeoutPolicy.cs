@@ -28,8 +28,8 @@ public class AsyncTimeoutPolicy : AsyncPolicy, ITimeoutPolicy
     /// <inheritdoc/>
     [DebuggerStepThrough]
     protected override Task<TResult> ImplementationAsync<TResult>(
-        Func<Context, CancellationToken, Task<TResult>> action, 
-        Context context, 
+        Func<Context, CancellationToken, Task<TResult>> action,
+        Context context,
         CancellationToken cancellationToken,
         bool continueOnCapturedContext)
     {
@@ -39,7 +39,7 @@ public class AsyncTimeoutPolicy : AsyncPolicy, ITimeoutPolicy
             cancellationToken,
             _timeoutProvider,
             _timeoutStrategy,
-            _onTimeoutAsync, 
+            _onTimeoutAsync,
             continueOnCapturedContext);
     }
 }
@@ -67,8 +67,8 @@ public class AsyncTimeoutPolicy<TResult> : AsyncPolicy<TResult>, ITimeoutPolicy<
     /// <inheritdoc/>
     [DebuggerStepThrough]
     protected override Task<TResult> ImplementationAsync(
-        Func<Context, CancellationToken, Task<TResult>> action, 
-        Context context, 
+        Func<Context, CancellationToken, Task<TResult>> action,
+        Context context,
         CancellationToken cancellationToken,
         bool continueOnCapturedContext)
         => AsyncTimeoutEngine.ImplementationAsync(

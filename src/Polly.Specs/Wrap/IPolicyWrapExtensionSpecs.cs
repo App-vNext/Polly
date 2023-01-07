@@ -182,7 +182,7 @@ public class IPolicyWrapExtensionSpecs
         PolicyWrap wrap = policyA.Wrap(policyB);
 
         Action configure = () => wrap.GetPolicies<NoOpPolicy>(null);
-        
+
         configure.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be("filter");
     }
 

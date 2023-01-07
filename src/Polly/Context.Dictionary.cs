@@ -10,7 +10,7 @@ namespace Polly;
 /// </summary>
 public partial class Context : IDictionary<string, object>, IDictionary, IReadOnlyDictionary<string, object>
 {
-    // For an individual execution through a policy or policywrap, it is expected that all execution steps (for example executing the user delegate, invoking policy-activity delegates such as onRetry, onBreak, onTimeout etc) execute sequentially.  
+    // For an individual execution through a policy or policywrap, it is expected that all execution steps (for example executing the user delegate, invoking policy-activity delegates such as onRetry, onBreak, onTimeout etc) execute sequentially.
     // Therefore, this class is intentionally not constructed to be safe for concurrent access from multiple threads.
 
     private Dictionary<string, object> wrappedDictionary;
@@ -87,22 +87,22 @@ public partial class Context : IDictionary<string, object>, IDictionary, IReadOn
     /// <inheritdoc cref="IDictionary{TKey,Value}"/>
     public IEnumerator<KeyValuePair<string, object>> GetEnumerator() => WrappedDictionary.GetEnumerator();
 
-    /// <inheritdoc cref="IDictionary{TKey,Value}"/> 
+    /// <inheritdoc cref="IDictionary{TKey,Value}"/>
     IEnumerator IEnumerable.GetEnumerator() => WrappedDictionary.GetEnumerator();
 
-    /// <inheritdoc cref="IDictionary"/> 
+    /// <inheritdoc cref="IDictionary"/>
     public void Add(object key, object value) => ((IDictionary)WrappedDictionary).Add(key, value);
 
-    /// <inheritdoc cref="IDictionary"/> 
+    /// <inheritdoc cref="IDictionary"/>
     public bool Contains(object key) => ((IDictionary)WrappedDictionary).Contains(key);
 
-    /// <inheritdoc cref="IDictionary"/> 
+    /// <inheritdoc cref="IDictionary"/>
     IDictionaryEnumerator IDictionary.GetEnumerator() => ((IDictionary)WrappedDictionary).GetEnumerator();
 
-    /// <inheritdoc cref="IDictionary"/> 
+    /// <inheritdoc cref="IDictionary"/>
     public void Remove(object key) => ((IDictionary)WrappedDictionary).Remove(key);
 
-    /// <inheritdoc cref="IDictionary"/> 
+    /// <inheritdoc cref="IDictionary"/>
     public void CopyTo(Array array, int index) => ((IDictionary)WrappedDictionary).CopyTo(array, index);
 
     #endregion
@@ -115,23 +115,23 @@ public partial class Context : IDictionary<string, object>, IDictionary, IReadOn
 
     #region IDictionary implementation
 
-    /// <inheritdoc cref="IDictionary"/> 
+    /// <inheritdoc cref="IDictionary"/>
     bool IDictionary.IsFixedSize => ((IDictionary)WrappedDictionary).IsFixedSize;
 
-    /// <inheritdoc cref="IDictionary"/> 
+    /// <inheritdoc cref="IDictionary"/>
     bool IDictionary.IsReadOnly => ((IDictionary)WrappedDictionary).IsReadOnly;
 
     ICollection IDictionary.Keys => ((IDictionary)WrappedDictionary).Keys;
 
     ICollection IDictionary.Values => ((IDictionary)WrappedDictionary).Values;
 
-    /// <inheritdoc cref="IDictionary"/> 
+    /// <inheritdoc cref="IDictionary"/>
     bool ICollection.IsSynchronized => ((IDictionary)WrappedDictionary).IsSynchronized;
 
-    /// <inheritdoc cref="IDictionary"/> 
+    /// <inheritdoc cref="IDictionary"/>
     object ICollection.SyncRoot => ((IDictionary)WrappedDictionary).SyncRoot;
 
-    /// <inheritdoc cref="IDictionary"/> 
+    /// <inheritdoc cref="IDictionary"/>
     object IDictionary.this[object key] { get => ((IDictionary)WrappedDictionary)[key]; set => ((IDictionary)WrappedDictionary)[key] = value; }
 
 #endregion

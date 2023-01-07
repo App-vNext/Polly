@@ -4,7 +4,7 @@ using Polly.CircuitBreaker;
 namespace Polly;
 
 /// <summary>
-/// Fluent API for defining a Circuit Breaker <see cref="Policy{TResult}"/>. 
+/// Fluent API for defining a Circuit Breaker <see cref="Policy{TResult}"/>.
 /// </summary>
 public static class CircuitBreakerTResultSyntax
 {
@@ -13,7 +13,7 @@ public static class CircuitBreakerTResultSyntax
     /// <para>The circuit will break if <paramref name="handledEventsAllowedBeforeBreaking"/>
     /// exceptions or results that are handled by this policy are encountered consecutively. </para>
     /// <para>The circuit will stay broken for the <paramref name="durationOfBreak"/>. Any attempt to execute this policy
-    /// while the circuit is broken, will immediately throw a <see cref="BrokenCircuitException"/> containing the exception or result 
+    /// while the circuit is broken, will immediately throw a <see cref="BrokenCircuitException"/> containing the exception or result
     /// that broke the circuit.
     /// </para>
     /// <para>If the first action after the break duration period results in a handled exception or result, the circuit will break
@@ -46,7 +46,7 @@ public static class CircuitBreakerTResultSyntax
     /// <para>The circuit will break if <paramref name="handledEventsAllowedBeforeBreaking"/>
     /// exceptions or results that are handled by this policy are encountered consecutively. </para>
     /// <para>The circuit will stay broken for the <paramref name="durationOfBreak"/>. Any attempt to execute this policy
-    /// while the circuit is broken, will immediately throw a <see cref="BrokenCircuitException"/> containing the exception or result 
+    /// while the circuit is broken, will immediately throw a <see cref="BrokenCircuitException"/> containing the exception or result
     /// that broke the circuit.
     /// </para>
     /// <para>If the first action after the break duration period results in a handled exception or result, the circuit will break
@@ -76,7 +76,7 @@ public static class CircuitBreakerTResultSyntax
     /// <para>The circuit will break if <paramref name="handledEventsAllowedBeforeBreaking"/>
     /// exceptions or results that are handled by this policy are encountered consecutively. </para>
     /// <para>The circuit will stay broken for the <paramref name="durationOfBreak"/>. Any attempt to execute this policy
-    /// while the circuit is broken, will immediately throw a <see cref="BrokenCircuitException"/> containing the exception or result 
+    /// while the circuit is broken, will immediately throw a <see cref="BrokenCircuitException"/> containing the exception or result
     /// that broke the circuit.
     /// </para>
     /// <para>If the first action after the break duration period results in a handled exception or result, the circuit will break
@@ -109,7 +109,7 @@ public static class CircuitBreakerTResultSyntax
     /// <para>The circuit will break if <paramref name="handledEventsAllowedBeforeBreaking"/>
     /// exceptions or results that are handled by this policy are encountered consecutively. </para>
     /// <para>The circuit will stay broken for the <paramref name="durationOfBreak"/>. Any attempt to execute this policy
-    /// while the circuit is broken, will immediately throw a <see cref="BrokenCircuitException"/> containing the exception or result 
+    /// while the circuit is broken, will immediately throw a <see cref="BrokenCircuitException"/> containing the exception or result
     /// that broke the circuit.
     /// </para>
     /// <para>If the first action after the break duration period results in a handled exception or result, the circuit will break
@@ -141,7 +141,7 @@ public static class CircuitBreakerTResultSyntax
     /// <para>The circuit will break if <paramref name="handledEventsAllowedBeforeBreaking"/>
     /// exceptions or results that are handled by this policy are encountered consecutively. </para>
     /// <para>The circuit will stay broken for the <paramref name="durationOfBreak"/>. Any attempt to execute this policy
-    /// while the circuit is broken, will immediately throw a <see cref="BrokenCircuitException"/> containing the exception or result 
+    /// while the circuit is broken, will immediately throw a <see cref="BrokenCircuitException"/> containing the exception or result
     /// that broke the circuit.
     /// </para>
     /// <para>If the first action after the break duration period results in a handled exception or result, the circuit will break
@@ -174,7 +174,7 @@ public static class CircuitBreakerTResultSyntax
     /// <para>The circuit will break if <paramref name="handledEventsAllowedBeforeBreaking"/>
     /// exceptions or results that are handled by this policy are encountered consecutively. </para>
     /// <para>The circuit will stay broken for the <paramref name="durationOfBreak"/>. Any attempt to execute this policy
-    /// while the circuit is broken, will immediately throw a <see cref="BrokenCircuitException"/> containing the exception or result 
+    /// while the circuit is broken, will immediately throw a <see cref="BrokenCircuitException"/> containing the exception or result
     /// that broke the circuit.
     /// </para>
     /// <para>If the first action after the break duration period results in a handled exception or result, the circuit will break

@@ -62,7 +62,7 @@ public class BulkheadTResultAsyncSpecs : BulkheadSpecsBase
         Func<Context, Task> onRejectedAsync = async ctx => { contextPassedToOnRejected = ctx; await TaskHelper.EmptyTask; };
 
         using (var bulkhead = Policy.BulkheadAsync<int>(1, onRejectedAsync))
-        { 
+        {
             TaskCompletionSource<object> tcs = new TaskCompletionSource<object>();
             using (CancellationTokenSource cancellationSource = new CancellationTokenSource())
             {

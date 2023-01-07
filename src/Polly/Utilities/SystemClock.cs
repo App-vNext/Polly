@@ -43,7 +43,7 @@ public static class SystemClock
     public static Action<CancellationTokenSource, TimeSpan> CancelTokenAfter = (tokenSource, timespan) => tokenSource.CancelAfter(timespan);
 
     /// <summary>
-    /// Resets the custom implementations to their defaults. 
+    /// Resets the custom implementations to their defaults.
     /// Should be called during test teardowns.
     /// </summary>
     public static void Reset()

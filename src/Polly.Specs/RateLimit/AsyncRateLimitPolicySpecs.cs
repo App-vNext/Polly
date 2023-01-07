@@ -25,7 +25,7 @@ public class AsyncRateLimitPolicySpecs : RateLimitPolicySpecsBase, IDisposable
     {
         return Policy.RateLimitAsync(numberOfExecutions, perTimeSpan, maxBurst);
     }
-    
+
     protected override (bool, TimeSpan) TryExecuteThroughPolicy(IRateLimitPolicy policy)
     {
         if (policy is AsyncRateLimitPolicy typedPolicy)

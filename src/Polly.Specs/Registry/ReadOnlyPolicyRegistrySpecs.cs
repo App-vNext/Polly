@@ -253,7 +253,7 @@ public class ReadOnlyPolicyRegistrySpecs
             .Should().Throw<ArgumentNullException>();
     }
     #endregion
-    
+
     #region Tests for the GetEnumerator method
 
     [Fact]
