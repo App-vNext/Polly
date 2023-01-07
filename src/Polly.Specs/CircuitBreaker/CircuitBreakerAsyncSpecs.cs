@@ -993,6 +993,7 @@ public class CircuitBreakerAsyncSpecs : IDisposable
         // duration has passed, circuit now half open
         breaker.CircuitState.Should().Be(CircuitState.HalfOpen);
         onHalfOpenCalled.Should().Be(1);
+        onResetCalled.Should().Be(0);
     }
 
     [Fact]
