@@ -2310,7 +2310,7 @@ public class AdvancedCircuitBreakerSpecs : IDisposable
     [Fact]
     public void Should_call_onbreak_with_the_last_raised_exception()
     {
-        Exception passedException = null;
+        Exception? passedException = null;
 
         Action<Exception, TimeSpan, Context> onBreak = (exception, _, _) => { passedException = exception; };
         Action<Context> onReset = _ => { };
@@ -2662,7 +2662,7 @@ public class AdvancedCircuitBreakerSpecs : IDisposable
     [Fact]
     public void Should_create_new_context_for_each_call_to_execute()
     {
-        string contextValue = null;
+        string? contextValue = null;
 
         Action<Exception, TimeSpan, Context> onBreak =
             (_, _, context) => { contextValue = context.ContainsKey("key") ? context["key"].ToString() : null; };

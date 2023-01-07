@@ -56,7 +56,7 @@ public class RetryTResultSpecsAsync
     [Fact]
     public void Should_throw_when_onretry_action_with_context_is_null()
     {
-        Action<DelegateResult<ResultPrimitive>, int, Context> nullOnRetry = null;
+        Action<DelegateResult<ResultPrimitive>, int, Context> nullOnRetry = null!;
 
         Action policy = () => Policy
                                   .HandleResult(ResultPrimitive.Fault)
@@ -261,7 +261,7 @@ public class RetryTResultSpecsAsync
     [Fact]
     public async Task Should_call_onretry_with_the_passed_context()
     {
-        IDictionary<string, object> contextData = null;
+        IDictionary<string, object>? contextData = null;
 
         var policy = Policy
             .HandleResult(ResultPrimitive.Fault)
@@ -281,7 +281,7 @@ public class RetryTResultSpecsAsync
     [Fact]
     public async Task Should_call_onretry_with_the_passed_context_when_execute_and_capture()
     {
-        IDictionary<string, object> contextData = null;
+        IDictionary<string, object>? contextData = null;
 
         var policy = Policy
             .HandleResult(ResultPrimitive.Fault)
@@ -295,7 +295,7 @@ public class RetryTResultSpecsAsync
         result.Should().BeEquivalentTo(new
         {
             Outcome = OutcomeType.Successful,
-            FinalException = (Exception)null,
+            FinalException = (Exception?)null,
             ExceptionType = (ExceptionType?)null,
             FaultType = (FaultType?)null,
             FinalHandledResult = default(ResultPrimitive),
@@ -310,7 +310,7 @@ public class RetryTResultSpecsAsync
     [Fact]
     public async Task Context_should_be_empty_if_execute_not_called_with_any_context_data()
     {
-        Context capturedContext = null;
+        Context? capturedContext = null;
 
         var policy = Policy
             .HandleResult(ResultPrimitive.Fault)
@@ -349,7 +349,7 @@ public class RetryTResultSpecsAsync
     [Fact]
     public async Task Should_create_new_context_for_each_call_to_execute_and_capture()
     {
-        string contextValue = null;
+        string? contextValue = null;
 
         var policy = Policy
             .HandleResult(ResultPrimitive.Fault)

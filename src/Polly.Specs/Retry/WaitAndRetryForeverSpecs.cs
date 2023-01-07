@@ -36,7 +36,7 @@ public class WaitAndRetryForeverSpecs : IDisposable
     {
         Action<Exception, TimeSpan, Context> onRetry = (_, _, _) => { };
 
-        Func<int, Context, TimeSpan> sleepDurationProvider = null;
+        Func<int, Context, TimeSpan> sleepDurationProvider = null!;
 
         Action policy = () => Policy
                                   .Handle<DivideByZeroException>()
@@ -255,7 +255,7 @@ public class WaitAndRetryForeverSpecs : IDisposable
     {
         Func<int, Context, TimeSpan> provider = (_, _) => 1.Seconds();
 
-        string contextValue = null;
+        string? contextValue = null;
 
         var policy = Policy
             .Handle<DivideByZeroException>()

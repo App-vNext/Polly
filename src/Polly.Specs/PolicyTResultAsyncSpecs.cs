@@ -39,7 +39,7 @@ public class PolicyTResultAsyncSpecs
         result.Should().BeEquivalentTo(new
         {
             Outcome = OutcomeType.Successful,
-            FinalException = (Exception)null,
+            FinalException = (Exception?)null,
             ExceptionType = (ExceptionType?)null,
             Result = ResultPrimitive.Good,
             FinalHandledResult = default(ResultPrimitive),
@@ -60,7 +60,7 @@ public class PolicyTResultAsyncSpecs
         result.Should().BeEquivalentTo(new
         {
             Outcome = OutcomeType.Failure,
-            FinalException = (Exception)null,
+            FinalException = (Exception?)null,
             ExceptionType = (ExceptionType?)null,
             FaultType = FaultType.ResultHandledByThisPolicy,
             FinalHandledResult = handledResult,

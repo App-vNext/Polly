@@ -451,7 +451,7 @@ public class CircuitBreakerTResultMixedResultExceptionSpecs : IDisposable
     [Fact]
     public void Should_call_onbreak_with_the_last_raised_exception()
     {
-        Exception lastException = null;
+        Exception? lastException = null;
 
         Action<DelegateResult<ResultPrimitive>, TimeSpan, Context> onBreak = (outcome, _, _) => { lastException = outcome.Exception; };
         Action<Context> onReset = _ => { };

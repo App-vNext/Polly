@@ -120,7 +120,7 @@ public class PolicyKeySpecs
     {
         string operationKey = "SomeKey";
 
-        string operationKeySetOnContext = null;
+        string? operationKeySetOnContext = null;
         Action<Exception, int, Context> onRetry = (_, _, context) => { operationKeySetOnContext = context.OperationKey; };
         var retry = Policy.Handle<Exception>().Retry(1, onRetry);
 
@@ -142,7 +142,7 @@ public class PolicyKeySpecs
     {
         string policyKey = Guid.NewGuid().ToString();
 
-        string policyKeySetOnExecutionContext = null;
+        string? policyKeySetOnExecutionContext = null;
         Action<Exception, int, Context> onRetry = (_, _, context) => { policyKeySetOnExecutionContext = context.PolicyKey; };
         var retry = Policy.Handle<Exception>().Retry(1, onRetry).WithPolicyKey(policyKey);
 

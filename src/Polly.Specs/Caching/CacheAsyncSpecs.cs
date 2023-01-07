@@ -18,7 +18,7 @@ public class CacheAsyncSpecs : IDisposable
     [Fact]
     public void Should_throw_when_cache_provider_is_null()
     {
-        IAsyncCacheProvider cacheProvider = null;
+        IAsyncCacheProvider cacheProvider = null!;
         Action action = () => Policy.CacheAsync(cacheProvider, TimeSpan.MaxValue);
         action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be("cacheProvider");
     }
@@ -27,7 +27,7 @@ public class CacheAsyncSpecs : IDisposable
     public void Should_throw_when_ttl_strategy_is_null()
     {
         IAsyncCacheProvider cacheProvider = new StubCacheProvider();
-        ITtlStrategy ttlStrategy = null;
+        ITtlStrategy ttlStrategy = null!;
         Action action = () => Policy.CacheAsync(cacheProvider, ttlStrategy);
         action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be("ttlStrategy");
     }
@@ -517,7 +517,7 @@ public class CacheAsyncSpecs : IDisposable
         Exception ex = new Exception();
         IAsyncCacheProvider stubCacheProvider = new StubErroringCacheProvider(getException: ex, putException: null);
 
-        Exception exceptionFromCacheProvider = null;
+        Exception? exceptionFromCacheProvider = null;
 
         const string valueToReturnFromCache = "valueToReturnFromCache";
         const string valueToReturnFromExecution = "valueToReturnFromExecution";
@@ -553,7 +553,7 @@ public class CacheAsyncSpecs : IDisposable
         Exception ex = new Exception();
         IAsyncCacheProvider stubCacheProvider = new StubErroringCacheProvider(getException: null, putException: ex);
 
-        Exception exceptionFromCacheProvider = null;
+        Exception? exceptionFromCacheProvider = null;
 
         const string valueToReturn = "valueToReturn";
         const string operationKey = "SomeOperationKey";
@@ -587,7 +587,7 @@ public class CacheAsyncSpecs : IDisposable
         string? keyPassedToDelegate = null;
 
         Context contextToExecute = new Context(operationKey);
-        Context contextPassedToDelegate = null;
+        Context? contextPassedToDelegate = null;
 
         Action<Context, string, Exception> noErrorHandling = (_, _, _) => { };
         Action<Context, string> emptyDelegate = (_, _) => { };
@@ -617,12 +617,12 @@ public class CacheAsyncSpecs : IDisposable
         const string valueToReturn = "valueToReturn";
 
         const string operationKey = "SomeOperationKey";
-        string keyPassedToOnCacheMiss = null;
-        string keyPassedToOnCachePut = null;
+        string? keyPassedToOnCacheMiss = null;
+        string? keyPassedToOnCachePut = null;
 
         Context contextToExecute = new Context(operationKey);
-        Context contextPassedToOnCacheMiss = null;
-        Context contextPassedToOnCachePut = null;
+        Context? contextPassedToOnCacheMiss = null;
+        Context? contextPassedToOnCachePut = null;
 
         Action<Context, string, Exception> noErrorHandling = (_, _, _) => { };
         Action<Context, string> emptyDelegate = (_, _) => { };
@@ -658,8 +658,8 @@ public class CacheAsyncSpecs : IDisposable
         string? keyPassedToOnCachePut = null;
 
         Context contextToExecute = new Context(operationKey);
-        Context contextPassedToOnCacheMiss = null;
-        Context contextPassedToOnCachePut = null;
+        Context? contextPassedToOnCacheMiss = null;
+        Context? contextPassedToOnCachePut = null;
 
         Action<Context, string, Exception> noErrorHandling = (_, _, _) => { };
         Action<Context, string> emptyDelegate = (_, _) => { };

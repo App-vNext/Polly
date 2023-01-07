@@ -1034,7 +1034,7 @@ public class CircuitBreakerAsyncSpecs : IDisposable
     [Fact]
     public async Task Should_call_onbreak_with_the_last_raised_exception()
     {
-        Exception passedException = null;
+        Exception? passedException = null;
 
         Action<Exception, TimeSpan, Context> onBreak = (exception, _, _) => { passedException = exception; };
         Action<Context> onReset = _ => { };
@@ -1127,7 +1127,7 @@ public class CircuitBreakerAsyncSpecs : IDisposable
     [Fact]
     public async Task Should_rethrow_and_call_onbreak_with_the_last_raised_exception_unwrapped_if_matched_as_inner()
     {
-        Exception passedException = null;
+        Exception? passedException = null;
 
         Action<Exception, TimeSpan, Context> onBreak = (exception, _, _) => { passedException = exception; };
         Action<Context> onReset = _ => { };
@@ -1208,7 +1208,7 @@ public class CircuitBreakerAsyncSpecs : IDisposable
     [Fact]
     public async Task Should_call_onbreak_with_the_passed_context()
     {
-        IDictionary<string, object> contextData = null;
+        IDictionary<string, object>? contextData = null;
 
         Action<Exception, TimeSpan, Context> onBreak = (_, _, context) => { contextData = context; };
         Action<Context> onReset = _ => { };
@@ -1234,7 +1234,7 @@ public class CircuitBreakerAsyncSpecs : IDisposable
     [Fact]
     public async Task Should_call_onreset_with_the_passed_context()
     {
-        IDictionary<string, object> contextData = null;
+        IDictionary<string, object>? contextData = null;
 
         Action<Exception, TimeSpan, Context> onBreak = (_, _, _) => { };
         Action<Context> onReset = context => { contextData = context; };
@@ -1291,7 +1291,7 @@ public class CircuitBreakerAsyncSpecs : IDisposable
     [Fact]
     public async Task Should_create_new_context_for_each_call_to_execute()
     {
-        string contextValue = null;
+        string? contextValue = null;
 
         Action<Exception, TimeSpan, Context> onBreak = (_, _, context) => { contextValue = context.ContainsKey("key") ? context["key"].ToString() : null; };
         Action<Context> onReset = context => { contextValue = context.ContainsKey("key") ? context["key"].ToString() : null; };

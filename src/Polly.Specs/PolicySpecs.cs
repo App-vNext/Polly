@@ -104,7 +104,7 @@ public class PolicySpecs
         result.Should().BeEquivalentTo(new
         {
             Outcome = OutcomeType.Successful,
-            FinalException = (Exception)null,
+            FinalException = (Exception?)null,
             ExceptionType = (ExceptionType?)null,
             FaultType = (FaultType?)null,
             FinalHandledResult = default(int),
@@ -188,7 +188,7 @@ public class PolicySpecs
             .Handle<DivideByZeroException>()
             .Retry((_, _, _) => { });
 
-        policy.Invoking(p => p.Execute(_ => 2, (IDictionary<string, object>)null))
+        policy.Invoking(p => p.Execute(_ => 2, (IDictionary<string, object>)null!))
             .Should().Throw<ArgumentNullException>();
     }
 
@@ -199,7 +199,7 @@ public class PolicySpecs
             .Handle<DivideByZeroException>()
             .Retry((_, _, _) => { });
 
-        policy.Invoking(p => p.Execute(_ => 2, (Context)null))
+        policy.Invoking(p => p.Execute(_ => 2, (Context)null!))
             .Should().Throw<ArgumentNullException>().And
             .ParamName.Should().Be("context");
     }
@@ -259,7 +259,7 @@ public class PolicySpecs
             .Handle<DivideByZeroException>()
             .Retry((_, _, _) => { });
 
-        policy.Invoking(p => p.ExecuteAndCapture(_ => 2, (Context)null))
+        policy.Invoking(p => p.ExecuteAndCapture(_ => 2, (Context)null!))
               .Should().Throw<ArgumentNullException>().And
               .ParamName.Should().Be("context");
     }

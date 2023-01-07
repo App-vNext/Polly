@@ -216,7 +216,7 @@ public class PolicyWrapSpecsAsync
     {
         IAsyncPolicy<int> retry = Policy.HandleResult<int>(0).RetryAsync(1);
 
-        Action config = () => retry.WrapAsync((AsyncPolicy<int>)null);
+        Action config = () => retry.WrapAsync((AsyncPolicy<int>)null!);
 
         config.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be("innerPolicy");
     }

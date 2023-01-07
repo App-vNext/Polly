@@ -36,7 +36,7 @@ public class CacheSpecs : IDisposable
     public void Should_throw_when_cache_key_strategy_is_null()
     {
         ISyncCacheProvider cacheProvider = new StubCacheProvider();
-        Func<Context, string> cacheKeyStrategy = null;
+        Func<Context, string> cacheKeyStrategy = null!;
         Action action = () => Policy.Cache(cacheProvider, TimeSpan.MaxValue, cacheKeyStrategy);
         action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be("cacheKeyStrategy");
     }
@@ -232,7 +232,7 @@ public class CacheSpecs : IDisposable
     [Fact]
     public void Should_execute_delegate_and_put_value_in_cache_if_cache_does_not_hold_value__default_for_reference_type()
     {
-        ResultClass valueToReturn = default;
+        ResultClass? valueToReturn = null;
         const string operationKey = "SomeOperationKey";
 
         ISyncCacheProvider stubCacheProvider = new StubCacheProvider();
@@ -252,7 +252,7 @@ public class CacheSpecs : IDisposable
     [Fact]
     public void Should_return_value_from_cache_and_not_execute_delegate_if_cache_holds_value__default_for_reference_type()
     {
-        ResultClass valueToReturnFromCache = default;
+        ResultClass? valueToReturnFromCache = null;
         ResultClass valueToReturnFromExecution = new ResultClass(ResultPrimitive.Good);
         const string operationKey = "SomeOperationKey";
 
@@ -508,7 +508,7 @@ public class CacheSpecs : IDisposable
         Exception ex = new Exception();
         ISyncCacheProvider stubCacheProvider = new StubErroringCacheProvider(getException: ex, putException: null);
 
-        Exception exceptionFromCacheProvider = null;
+        Exception? exceptionFromCacheProvider = null;
 
         const string valueToReturnFromCache = "valueToReturnFromCache";
         const string valueToReturnFromExecution = "valueToReturnFromExecution";
@@ -606,12 +606,12 @@ public class CacheSpecs : IDisposable
         const string valueToReturn = "valueToReturn";
 
         const string operationKey = "SomeOperationKey";
-        string keyPassedToOnCacheMiss = null;
-        string keyPassedToOnCachePut = null;
+        string? keyPassedToOnCacheMiss = null;
+        string? keyPassedToOnCachePut = null;
 
         Context contextToExecute = new Context(operationKey);
-        Context contextPassedToOnCacheMiss = null;
-        Context contextPassedToOnCachePut = null;
+        Context? contextPassedToOnCacheMiss = null;
+        Context? contextPassedToOnCachePut = null;
 
         Action<Context, string, Exception> noErrorHandling = (_, _, _) => { };
         Action<Context, string> emptyDelegate = (_, _) => { };
@@ -644,12 +644,12 @@ public class CacheSpecs : IDisposable
         const string valueToReturn = "valueToReturn";
 
         const string operationKey = "SomeOperationKey";
-        string keyPassedToOnCacheMiss = null;
-        string keyPassedToOnCachePut = null;
+        string? keyPassedToOnCacheMiss = null;
+        string? keyPassedToOnCachePut = null;
 
         Context contextToExecute = new Context(operationKey);
-        Context contextPassedToOnCacheMiss = null;
-        Context contextPassedToOnCachePut = null;
+        Context? contextPassedToOnCacheMiss = null;
+        Context? contextPassedToOnCachePut = null;
 
         Action<Context, string, Exception> noErrorHandling = (_, _, _) => { };
         Action<Context, string> emptyDelegate = (_, _) => { };

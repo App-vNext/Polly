@@ -26,7 +26,7 @@ public class RetrySpecs
     [Fact]
     public void Should_throw_when_onretry_action_without_context_is_null()
     {
-        Action<Exception, int> nullOnRetry = null;
+        Action<Exception, int> nullOnRetry = null!;
 
         Action policy = () => Policy
                                   .Handle<DivideByZeroException>()
@@ -52,7 +52,7 @@ public class RetrySpecs
     [Fact]
     public void Should_throw_when_onretry_action_with_context_is_null()
     {
-        Action<Exception, int, Context> nullOnRetry = null;
+        Action<Exception, int, Context> nullOnRetry = null!;
 
         Action policy = () => Policy
                                   .Handle<DivideByZeroException>()
@@ -409,7 +409,7 @@ public class RetrySpecs
     [Fact]
     public void Should_create_new_context_for_each_call_to_execute()
     {
-        string contextValue = null;
+        string? contextValue = null;
 
         Policy policy = Policy
             .Handle<DivideByZeroException>()
@@ -431,7 +431,7 @@ public class RetrySpecs
     [Fact]
     public void Should_create_new_context_for_each_call_to_execute_and_capture()
     {
-        string contextValue = null;
+        string? contextValue = null;
 
         Policy policy = Policy
             .Handle<DivideByZeroException>()

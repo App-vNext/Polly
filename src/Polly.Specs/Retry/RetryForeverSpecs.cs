@@ -183,7 +183,7 @@ public class RetryForeverSpecs
     [Fact]
     public void Should_call_onretry_on_each_retry_with_the_passed_context()
     {
-        IDictionary<string, object> contextData = null;
+        IDictionary<string, object>? contextData = null;
 
         var policy = Policy
             .Handle<DivideByZeroException>()
@@ -233,7 +233,7 @@ public class RetryForeverSpecs
     [Fact]
     public void Should_create_new_context_for_each_call_to_execute()
     {
-        string contextValue = null;
+        string? contextValue = null;
 
         var policy = Policy
             .Handle<DivideByZeroException>()

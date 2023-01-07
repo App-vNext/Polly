@@ -554,7 +554,7 @@ public class TimeoutSpecs : TimeoutSpecsBase
         string operationKey = "SomeKey";
         Context contextPassedToExecute = new Context(operationKey);
 
-        Context contextPassedToOnTimeout = null;
+        Context? contextPassedToOnTimeout = null;
         Action<Context, TimeSpan, Task> onTimeout = (ctx, _, _) => { contextPassedToOnTimeout = ctx; };
 
         TimeSpan timeout = TimeSpan.FromMilliseconds(250);
@@ -611,7 +611,7 @@ public class TimeoutSpecs : TimeoutSpecsBase
     [Fact]
     public void Should_call_ontimeout_with_task_wrapping_abandoned_action__pessimistic()
     {
-        Task taskPassedToOnTimeout = null;
+        Task? taskPassedToOnTimeout = null;
         Action<Context, TimeSpan, Task> onTimeout = (_, _, task) => { taskPassedToOnTimeout = task; };
 
         TimeSpan timeout = TimeSpan.FromMilliseconds(250);
@@ -632,10 +632,10 @@ public class TimeoutSpecs : TimeoutSpecsBase
 
         Exception exceptionToThrow = new DivideByZeroException();
 
-        Exception exceptionObservedFromTaskPassedToOnTimeout = null;
+        Exception? exceptionObservedFromTaskPassedToOnTimeout = null;
         Action<Context, TimeSpan, Task> onTimeout = (_, _, task) =>
         {
-            task.ContinueWith(t => exceptionObservedFromTaskPassedToOnTimeout = t.Exception.InnerException);
+            task.ContinueWith(t => exceptionObservedFromTaskPassedToOnTimeout = t.Exception!.InnerException);
         };
 
         TimeSpan shimTimespan = TimeSpan.FromSeconds(1); // Consider increasing shimTimeSpan if test fails transiently in different environments.
@@ -660,7 +660,7 @@ public class TimeoutSpecs : TimeoutSpecsBase
     {
         TimeSpan timeoutPassedToConfiguration = TimeSpan.FromMilliseconds(250);
 
-        Exception exceptionPassedToOnTimeout = null;
+        Exception? exceptionPassedToOnTimeout = null;
         Action<Context, TimeSpan, Task, Exception> onTimeout = (_, _, _, exception) => { exceptionPassedToOnTimeout = exception; };
 
         var policy = Policy.Timeout(timeoutPassedToConfiguration, TimeoutStrategy.Pessimistic, onTimeout);
@@ -699,7 +699,7 @@ public class TimeoutSpecs : TimeoutSpecsBase
         string operationKey = "SomeKey";
         Context contextPassedToExecute = new Context(operationKey);
 
-        Context contextPassedToOnTimeout = null;
+        Context? contextPassedToOnTimeout = null;
         Action<Context, TimeSpan, Task> onTimeout = (ctx, _, _) => { contextPassedToOnTimeout = ctx; };
 
         TimeSpan timeout = TimeSpan.FromMilliseconds(250);
@@ -781,7 +781,7 @@ public class TimeoutSpecs : TimeoutSpecsBase
     {
         TimeSpan timeoutPassedToConfiguration = TimeSpan.FromMilliseconds(250);
 
-        Exception exceptionPassedToOnTimeout = null;
+        Exception? exceptionPassedToOnTimeout = null;
         Action<Context, TimeSpan, Task, Exception> onTimeout = (_, _, _, exception) => { exceptionPassedToOnTimeout = exception; };
 
         var policy = Policy.Timeout(timeoutPassedToConfiguration, TimeoutStrategy.Optimistic, onTimeout);

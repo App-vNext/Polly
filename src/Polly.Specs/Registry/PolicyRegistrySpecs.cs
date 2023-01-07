@@ -265,7 +265,7 @@ public class PolicyRegistrySpecs
     public void Should_not_throw_while_retrieving_when_key_does_not_exist_using_TryGet()
     {
         string key = Guid.NewGuid().ToString();
-        Policy policy = null;
+        Policy? policy = null;
         bool result = false;
 
         _registry.Invoking(r => result = r.TryGet(key, out policy))
@@ -327,7 +327,7 @@ public class PolicyRegistrySpecs
     public void Should_throw_while_retrieving_using_Get_by_interface_when_key_does_not_exist()
     {
         string key = Guid.NewGuid().ToString();
-        ISyncPolicy<ResultPrimitive> policy = null;
+        ISyncPolicy<ResultPrimitive>? policy = null;
         _registry.Invoking(r => policy = r.Get<ISyncPolicy<ResultPrimitive>>(key))
             .Should().Throw<KeyNotFoundException>();
         policy.Should().BeNull();
@@ -337,7 +337,7 @@ public class PolicyRegistrySpecs
     public void Should_throw_while_retrieving_when_key_does_not_exist_using_Indexer()
     {
         string key = Guid.NewGuid().ToString();
-        IsPolicy policy = null;
+        IsPolicy? policy = null;
         _registry.Invoking(r => policy = r[key])
             .Should().Throw<KeyNotFoundException>();
         policy.Should().BeNull();
@@ -420,7 +420,7 @@ public class PolicyRegistrySpecs
     [Fact]
     public void Should_throw_when_removing_Policy_when_key_is_null()
     {
-        string key = null;
+        string key = null!;
         _registry.Invoking(r => r.Remove(key))
             .Should().Throw<ArgumentNullException>();
     }
@@ -444,7 +444,7 @@ public class PolicyRegistrySpecs
     [Fact]
     public void Should_throw_when_checking_if_key_exists_when_key_is_null()
     {
-        string key = null;
+        string key = null!;
         _registry.Invoking(r => r.ContainsKey(key))
             .Should().Throw<ArgumentNullException>();
     }

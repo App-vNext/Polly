@@ -58,7 +58,7 @@ public class BulkheadTResultSpecs : BulkheadSpecsBase
         string operationKey = "SomeKey";
         Context contextPassedToExecute = new Context(operationKey);
 
-        Context contextPassedToOnRejected = null;
+        Context? contextPassedToOnRejected = null;
         Action<Context> onRejected = ctx => { contextPassedToOnRejected = ctx; };
 
         using (BulkheadPolicy<int> bulkhead = Policy.Bulkhead<int>(1, onRejected))

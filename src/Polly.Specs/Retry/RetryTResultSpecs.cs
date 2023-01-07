@@ -29,7 +29,7 @@ public class RetryTResultSpecs
     [Fact]
     public void Should_throw_when_onretry_action_without_context_is_null()
     {
-        Action<DelegateResult<ResultPrimitive>, int> nullOnRetry = null;
+        Action<DelegateResult<ResultPrimitive>, int> nullOnRetry = null!;
 
         Action policy = () => Policy
                                   .HandleResult(ResultPrimitive.Fault)
@@ -55,7 +55,7 @@ public class RetryTResultSpecs
     [Fact]
     public void Should_throw_when_onretry_action_with_context_is_null()
     {
-        Action<DelegateResult<ResultPrimitive>, int, Context> nullOnRetry = null;
+        Action<DelegateResult<ResultPrimitive>, int, Context> nullOnRetry = null!;
 
         Action policy = () => Policy
                                   .HandleResult(ResultPrimitive.Fault)
@@ -257,7 +257,7 @@ public class RetryTResultSpecs
     [Fact]
     public void Should_call_onretry_with_the_passed_context()
     {
-        IDictionary<string, object> contextData = null;
+        IDictionary<string, object>? contextData = null;
 
         RetryPolicy<ResultPrimitive> policy = Policy
             .HandleResult(ResultPrimitive.Fault)
@@ -277,7 +277,7 @@ public class RetryTResultSpecs
     [Fact]
     public void Should_call_onretry_with_the_passed_context_when_execute_and_capture()
     {
-        IDictionary<string, object> contextData = null;
+        IDictionary<string, object>? contextData = null;
 
         RetryPolicy<ResultPrimitive> policy = Policy
             .HandleResult(ResultPrimitive.Fault)
@@ -291,7 +291,7 @@ public class RetryTResultSpecs
         result.Should().BeEquivalentTo(new
         {
             Outcome = OutcomeType.Successful,
-            FinalException = (Exception)null,
+            FinalException = (Exception?)null,
             ExceptionType = (ExceptionType?)null,
             FaultType = (FaultType?)null,
             FinalHandledResult = default(ResultPrimitive),
@@ -306,7 +306,7 @@ public class RetryTResultSpecs
     [Fact]
     public void Context_should_be_empty_if_execute_not_called_with_any_context_data()
     {
-        Context capturedContext = null;
+        Context? capturedContext = null;
 
         RetryPolicy<ResultPrimitive> policy = Policy
             .HandleResult(ResultPrimitive.Fault)
@@ -345,7 +345,7 @@ public class RetryTResultSpecs
     [Fact]
     public void Should_create_new_context_for_each_call_to_execute_and_capture()
     {
-        string contextValue = null;
+        string? contextValue = null;
 
         RetryPolicy<ResultPrimitive> policy = Policy
             .HandleResult(ResultPrimitive.Fault)

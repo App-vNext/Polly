@@ -18,7 +18,7 @@ public class PolicyWrapSpecs
     {
         RetryPolicy retry = Policy.Handle<Exception>().Retry(1);
 
-        Action config = () => retry.Wrap((Policy)null);
+        Action config = () => retry.Wrap((Policy)null!);
 
         config.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be("innerPolicy");
     }
@@ -28,7 +28,7 @@ public class PolicyWrapSpecs
     {
         RetryPolicy retry = Policy.Handle<Exception>().Retry(1);
 
-        Action config = () => retry.Wrap<int>((Policy<int>)null);
+        Action config = () => retry.Wrap<int>((Policy<int>)null!);
 
         config.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be("innerPolicy");
     }

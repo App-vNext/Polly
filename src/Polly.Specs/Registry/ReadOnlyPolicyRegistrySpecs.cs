@@ -26,7 +26,7 @@ public class ReadOnlyPolicyRegistrySpecs
     {
         Policy policy = Policy.NoOp();
         string key = Guid.NewGuid().ToString();
-        Policy outPolicy = null;
+        Policy? outPolicy = null;
 
         _registry.Add(key, policy);
         ReadOnlyRegistry.TryGet(key, out outPolicy).Should().BeTrue();
@@ -121,7 +121,7 @@ public class ReadOnlyPolicyRegistrySpecs
     public void Should_not_throw_while_retrieving_when_key_does_not_exist_using_TryGet()
     {
         string key = Guid.NewGuid().ToString();
-        Policy policy = null;
+        Policy? policy = null;
         bool result = false;
 
         ReadOnlyRegistry.Invoking(r => result = r.TryGet(key, out policy))
@@ -135,7 +135,7 @@ public class ReadOnlyPolicyRegistrySpecs
     public void Should_not_throw_while_retrieving_when_key_does_not_exist_using_TryGetPolicyTResult()
     {
         string key = Guid.NewGuid().ToString();
-        Policy<ResultPrimitive> policy = null;
+        Policy<ResultPrimitive>? policy = null;
         bool result = false;
 
         ReadOnlyRegistry.Invoking(r => result = r.TryGet(key, out policy))
@@ -149,7 +149,7 @@ public class ReadOnlyPolicyRegistrySpecs
     public void Should_not_throw_while_retrieving_when_key_does_not_exist_using_TryGetPolicy_by_interface()
     {
         string key = Guid.NewGuid().ToString();
-        ISyncPolicy<ResultPrimitive> policy = null;
+        ISyncPolicy<ResultPrimitive>? policy = null;
         bool result = false;
 
         ReadOnlyRegistry.Invoking(r => result = r.TryGet<ISyncPolicy<ResultPrimitive>>(key, out policy))
@@ -163,7 +163,7 @@ public class ReadOnlyPolicyRegistrySpecs
     public void Should_throw_while_retrieving_using_Get_when_key_does_not_exist()
     {
         string key = Guid.NewGuid().ToString();
-        Policy policy = null;
+        Policy? policy = null;
         ReadOnlyRegistry.Invoking(r => policy = r.Get<Policy>(key))
             .Should().Throw<KeyNotFoundException>();
         policy.Should().BeNull();

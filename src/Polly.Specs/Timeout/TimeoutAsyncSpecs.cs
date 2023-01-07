@@ -120,7 +120,7 @@ public class TimeoutAsyncSpecs : TimeoutSpecsBase
     [Fact]
     public void Should_throw_when_onTimeout_is_null_with_timespan()
     {
-        Func<Context, TimeSpan, Task, Task> onTimeout = null;
+        Func<Context, TimeSpan, Task, Task> onTimeout = null!;
         Action policy = () => Policy.TimeoutAsync(TimeSpan.FromMinutes(0.5), onTimeout);
 
         policy.Should().Throw<ArgumentNullException>()
@@ -483,7 +483,7 @@ public class TimeoutAsyncSpecs : TimeoutSpecsBase
         string operationKey = "SomeKey";
         Context contextPassedToExecute = new Context(operationKey);
 
-        Context contextPassedToOnTimeout = null;
+        Context? contextPassedToOnTimeout = null;
         Func<Context, TimeSpan, Task, Task> onTimeoutAsync = (ctx, _, _) =>
         {
             contextPassedToOnTimeout = ctx;
@@ -562,7 +562,7 @@ public class TimeoutAsyncSpecs : TimeoutSpecsBase
     [Fact]
     public async Task Should_call_ontimeout_with_task_wrapping_abandoned_action__pessimistic()
     {
-        Task taskPassedToOnTimeout = null;
+        Task? taskPassedToOnTimeout = null;
         Func<Context, TimeSpan, Task, Task> onTimeoutAsync = (_, _, task) =>
         {
             taskPassedToOnTimeout = task;
@@ -590,10 +590,10 @@ public class TimeoutAsyncSpecs : TimeoutSpecsBase
 
         Exception exceptionToThrow = new DivideByZeroException();
 
-        Exception exceptionObservedFromTaskPassedToOnTimeout = null;
+        Exception? exceptionObservedFromTaskPassedToOnTimeout = null;
         Func<Context, TimeSpan, Task, Task> onTimeoutAsync = (_, _, task) =>
         {
-            task.ContinueWith(t => exceptionObservedFromTaskPassedToOnTimeout = t.Exception.InnerException); // Intentionally not awaited: we want to assign the continuation, but let it run in its own time when the executed delegate eventually completes.
+            task.ContinueWith(t => exceptionObservedFromTaskPassedToOnTimeout = t.Exception!.InnerException); // Intentionally not awaited: we want to assign the continuation, but let it run in its own time when the executed delegate eventually completes.
             return TaskHelper.EmptyTask;
         };
 
@@ -672,7 +672,7 @@ public class TimeoutAsyncSpecs : TimeoutSpecsBase
         string operationKey = "SomeKey";
         Context contextPassedToExecute = new Context(operationKey);
 
-        Context contextPassedToOnTimeout = null;
+        Context? contextPassedToOnTimeout = null;
         Func<Context, TimeSpan, Task, Task> onTimeoutAsync = (ctx, _, _) =>
         {
             contextPassedToOnTimeout = ctx;
@@ -758,7 +758,7 @@ public class TimeoutAsyncSpecs : TimeoutSpecsBase
     [Fact]
     public async Task Should_call_ontimeout_but_not_with_task_wrapping_abandoned_action__optimistic()
     {
-        Task taskPassedToOnTimeout = null;
+        Task? taskPassedToOnTimeout = null;
         Func<Context, TimeSpan, Task, Task> onTimeoutAsync = (_, _, task) =>
         {
             taskPassedToOnTimeout = task;
@@ -783,7 +783,7 @@ public class TimeoutAsyncSpecs : TimeoutSpecsBase
     {
         TimeSpan timeoutPassedToConfiguration = TimeSpan.FromMilliseconds(250);
 
-        Exception exceptionPassedToOnTimeout = null;
+        Exception? exceptionPassedToOnTimeout = null;
         Func<Context, TimeSpan, Task, Exception, Task> onTimeoutAsync = (_, _, _, exception) =>
         {
             exceptionPassedToOnTimeout = exception;

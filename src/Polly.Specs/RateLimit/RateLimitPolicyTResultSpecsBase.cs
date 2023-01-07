@@ -27,7 +27,7 @@ public abstract class RateLimitPolicyTResultSpecsBase : RateLimitPolicySpecsBase
 
         // Arrange
         TimeSpan onePer = TimeSpan.FromSeconds(onePerSeconds);
-        Context contextPassedToRetryAfter = null;
+        Context? contextPassedToRetryAfter = null;
         Func<TimeSpan, Context, ResultClassWithRetryAfter> retryAfterFactory = (t, ctx) =>
         {
             contextPassedToRetryAfter = ctx;

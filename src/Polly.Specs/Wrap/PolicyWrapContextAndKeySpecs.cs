@@ -17,7 +17,7 @@ public class PolicyWrapContextAndKeySpecs
         string breakerKey = Guid.NewGuid().ToString();
         string wrapKey = Guid.NewGuid().ToString();
 
-        string policyWrapKeySetOnExecutionContext = null;
+        string? policyWrapKeySetOnExecutionContext = null;
         Action<Exception, int, Context> onRetry = (_, _, context) =>
         {
             policyWrapKeySetOnExecutionContext = context.PolicyWrapKey;
@@ -41,7 +41,7 @@ public class PolicyWrapContextAndKeySpecs
         string breakerKey = Guid.NewGuid().ToString();
         string wrapKey = Guid.NewGuid().ToString();
 
-        string policyWrapKeySetOnExecutionContext = null;
+        string? policyWrapKeySetOnExecutionContext = null;
         Action<Exception, TimeSpan, Context> onBreak = (_, _, context) =>
         {
             policyWrapKeySetOnExecutionContext = context.PolicyWrapKey;
@@ -95,7 +95,7 @@ public class PolicyWrapContextAndKeySpecs
         string innerWrapKey = Guid.NewGuid().ToString();
         string outerWrapKey = Guid.NewGuid().ToString();
 
-        string policyWrapKeySetOnExecutionContext = null;
+        string? policyWrapKeySetOnExecutionContext = null;
         Action<Exception, TimeSpan, Context> onBreak = (_, _, context) =>
         {
             policyWrapKeySetOnExecutionContext = context.PolicyWrapKey;
@@ -127,7 +127,7 @@ public class PolicyWrapContextAndKeySpecs
         string innerWrapKey = Guid.NewGuid().ToString();
         string outerWrapKey = Guid.NewGuid().ToString();
 
-        string policyWrapKeySetOnExecutionContext = null;
+        string? policyWrapKeySetOnExecutionContext = null;
         Action<Exception, TimeSpan, Context> onBreak = (_, _, context) =>
         {
             policyWrapKeySetOnExecutionContext = context.PolicyWrapKey;
@@ -174,7 +174,7 @@ public class PolicyWrapTResultContextAndKeySpecs
         string breakerKey = Guid.NewGuid().ToString();
         string wrapKey = Guid.NewGuid().ToString();
 
-        string policyWrapKeySetOnExecutionContext = null;
+        string? policyWrapKeySetOnExecutionContext = null;
         Action<DelegateResult<ResultPrimitive>, int, Context> onRetry = (_, _, context) =>
         {
             policyWrapKeySetOnExecutionContext = context.PolicyWrapKey;
@@ -198,7 +198,7 @@ public class PolicyWrapTResultContextAndKeySpecs
         string breakerKey = Guid.NewGuid().ToString();
         string wrapKey = Guid.NewGuid().ToString();
 
-        string policyWrapKeySetOnExecutionContext = null;
+        string? policyWrapKeySetOnExecutionContext = null;
         Action<DelegateResult<ResultPrimitive>, TimeSpan, Context> onBreak = (_, _, context) =>
         {
             policyWrapKeySetOnExecutionContext = context.PolicyWrapKey;
@@ -252,7 +252,7 @@ public class PolicyWrapTResultContextAndKeySpecs
         string innerWrapKey = Guid.NewGuid().ToString();
         string outerWrapKey = Guid.NewGuid().ToString();
 
-        string policyWrapKeySetOnExecutionContext = null;
+        string? policyWrapKeySetOnExecutionContext = null;
         Action<DelegateResult<ResultPrimitive>, TimeSpan, Context> onBreak = (_, _, context) =>
         {
             policyWrapKeySetOnExecutionContext = context.PolicyWrapKey;
