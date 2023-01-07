@@ -77,13 +77,13 @@ public class CacheSpecs : IDisposable
         ISyncCacheProvider stubCacheProvider = new StubCacheProvider();
         CachePolicy cache = Policy.Cache(stubCacheProvider, TimeSpan.MaxValue);
 
-        (bool cacheHit1, object fromCache1) = stubCacheProvider.TryGet(operationKey);
+        (bool cacheHit1, object? fromCache1) = stubCacheProvider.TryGet(operationKey);
         cacheHit1.Should().BeFalse();
         fromCache1.Should().BeNull();
 
         cache.Execute(_ => valueToReturn, new Context(operationKey)).Should().Be(valueToReturn);
 
-        (bool cacheHit2, object fromCache2) = stubCacheProvider.TryGet(operationKey);
+        (bool cacheHit2, object? fromCache2) = stubCacheProvider.TryGet(operationKey);
         cacheHit2.Should().BeTrue();
         fromCache2.Should().Be(valueToReturn);
     }
@@ -98,7 +98,7 @@ public class CacheSpecs : IDisposable
         TimeSpan ttl = TimeSpan.FromMinutes(30);
         CachePolicy cache = Policy.Cache(stubCacheProvider, ttl);
 
-        (bool cacheHit1, object fromCache1) = stubCacheProvider.TryGet(operationKey);
+        (bool cacheHit1, object? fromCache1) = stubCacheProvider.TryGet(operationKey);
         cacheHit1.Should().BeFalse();
         fromCache1.Should().BeNull();
 
@@ -116,7 +116,7 @@ public class CacheSpecs : IDisposable
         cache.Execute(func, new Context(operationKey)).Should().Be(valueToReturn);
         delegateInvocations.Should().Be(1);
 
-        (bool cacheHit2, object fromCache2) = stubCacheProvider.TryGet(operationKey);
+        (bool cacheHit2, object? fromCache2) = stubCacheProvider.TryGet(operationKey);
         cacheHit2.Should().BeTrue();
         fromCache2.Should().Be(valueToReturn);
 
@@ -143,13 +143,13 @@ public class CacheSpecs : IDisposable
         ISyncCacheProvider stubCacheProvider = new StubCacheProvider();
         CachePolicy cache = Policy.Cache(stubCacheProvider, TimeSpan.Zero);
 
-        (bool cacheHit1, object fromCache1) = stubCacheProvider.TryGet(operationKey);
+        (bool cacheHit1, object? fromCache1) = stubCacheProvider.TryGet(operationKey);
         cacheHit1.Should().BeFalse();
         fromCache1.Should().BeNull();
 
         cache.Execute(_ => valueToReturn, new Context(operationKey)).Should().Be(valueToReturn);
 
-        (bool cacheHit2, object fromCache2) = stubCacheProvider.TryGet(operationKey);
+        (bool cacheHit2, object? fromCache2) = stubCacheProvider.TryGet(operationKey);
         cacheHit2.Should().BeFalse();
         fromCache2.Should().BeNull();
     }
@@ -238,13 +238,13 @@ public class CacheSpecs : IDisposable
         ISyncCacheProvider stubCacheProvider = new StubCacheProvider();
         CachePolicy cache = Policy.Cache(stubCacheProvider, TimeSpan.MaxValue);
 
-        (bool cacheHit1, object fromCache1) = stubCacheProvider.TryGet(operationKey);
+        (bool cacheHit1, object? fromCache1) = stubCacheProvider.TryGet(operationKey);
         cacheHit1.Should().BeFalse();
         fromCache1.Should().BeNull();
 
         cache.Execute(_ => valueToReturn, new Context(operationKey)).Should().Be(valueToReturn);
 
-        (bool cacheHit2, object fromCache2) = stubCacheProvider.TryGet(operationKey);
+        (bool cacheHit2, object? fromCache2) = stubCacheProvider.TryGet(operationKey);
         cacheHit2.Should().BeTrue();
         fromCache2.Should().Be(valueToReturn);
     }
@@ -281,13 +281,13 @@ public class CacheSpecs : IDisposable
         ISyncCacheProvider stubCacheProvider = new StubCacheProvider();
         CachePolicy cache = Policy.Cache(stubCacheProvider, TimeSpan.MaxValue);
 
-        (bool cacheHit1, object fromCache1) = stubCacheProvider.TryGet(operationKey);
+        (bool cacheHit1, object? fromCache1) = stubCacheProvider.TryGet(operationKey);
         cacheHit1.Should().BeFalse();
         fromCache1.Should().BeNull();
 
         cache.Execute(_ => valueToReturn, new Context(operationKey)).Should().Be(valueToReturn);
 
-        (bool cacheHit2, object fromCache2) = stubCacheProvider.TryGet(operationKey);
+        (bool cacheHit2, object? fromCache2) = stubCacheProvider.TryGet(operationKey);
         cacheHit2.Should().BeTrue();
         fromCache2.Should().Be(valueToReturn);
     }
@@ -493,7 +493,7 @@ public class CacheSpecs : IDisposable
         cache.Invoking(policy => policy.Execute(func, new Context(operationKey), tokenSource.Token))
             .Should().Throw<OperationCanceledException>();
 
-        (bool cacheHit, object fromCache) = stubCacheProvider.TryGet(operationKey);
+        (bool cacheHit, object? fromCache) = stubCacheProvider.TryGet(operationKey);
         cacheHit.Should().BeFalse();
         fromCache.Should().BeNull();
     }
@@ -551,7 +551,7 @@ public class CacheSpecs : IDisposable
 
         CachePolicy cache = Policy.Cache(stubCacheProvider, TimeSpan.MaxValue, onError);
 
-        (bool cacheHit1, object fromCache1) = stubCacheProvider.TryGet(operationKey);
+        (bool cacheHit1, object? fromCache1) = stubCacheProvider.TryGet(operationKey);
         cacheHit1.Should().BeFalse();
         fromCache1.Should().BeNull();
 
@@ -561,7 +561,7 @@ public class CacheSpecs : IDisposable
         exceptionFromCacheProvider.Should().Be(ex);
 
         // failed to put it in the cache
-        (bool cacheHit2, object fromCache2) = stubCacheProvider.TryGet(operationKey);
+        (bool cacheHit2, object? fromCache2) = stubCacheProvider.TryGet(operationKey);
         cacheHit2.Should().BeFalse();
         fromCache2.Should().BeNull();
 
@@ -621,13 +621,13 @@ public class CacheSpecs : IDisposable
         ISyncCacheProvider stubCacheProvider = new StubCacheProvider();
         CachePolicy cache = Policy.Cache(stubCacheProvider, new RelativeTtl(TimeSpan.MaxValue), DefaultCacheKeyStrategy.Instance, emptyDelegate, onCacheMiss, onCachePut, noErrorHandling, noErrorHandling);
 
-        (bool cacheHit1, object fromCache1) = stubCacheProvider.TryGet(operationKey);
+        (bool cacheHit1, object? fromCache1) = stubCacheProvider.TryGet(operationKey);
         cacheHit1.Should().BeFalse();
         fromCache1.Should().BeNull();
 
         cache.Execute(_ => valueToReturn, contextToExecute).Should().Be(valueToReturn);
 
-        (bool cacheHit2, object fromCache2) = stubCacheProvider.TryGet(operationKey);
+        (bool cacheHit2, object? fromCache2) = stubCacheProvider.TryGet(operationKey);
         cacheHit2.Should().BeTrue();
         fromCache2.Should().Be(valueToReturn);
 
@@ -659,7 +659,7 @@ public class CacheSpecs : IDisposable
         ISyncCacheProvider stubCacheProvider = new StubCacheProvider();
         CachePolicy cache = Policy.Cache(stubCacheProvider, new RelativeTtl(TimeSpan.Zero), DefaultCacheKeyStrategy.Instance, emptyDelegate, onCacheMiss, onCachePut, noErrorHandling, noErrorHandling);
 
-        (bool cacheHit, object fromCache) = stubCacheProvider.TryGet(operationKey);
+        (bool cacheHit, object? fromCache) = stubCacheProvider.TryGet(operationKey);
         cacheHit.Should().BeFalse();
         fromCache.Should().BeNull();
 

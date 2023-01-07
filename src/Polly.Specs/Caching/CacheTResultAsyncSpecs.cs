@@ -77,13 +77,13 @@ public class CacheTResultAsyncSpecs : IDisposable
         IAsyncCacheProvider stubCacheProvider = new StubCacheProvider();
         var cache = Policy.CacheAsync<string>(stubCacheProvider, TimeSpan.MaxValue);
 
-        (bool cacheHit1, object fromCache1) = await stubCacheProvider.TryGetAsync(operationKey, CancellationToken.None, false);
+        (bool cacheHit1, object? fromCache1) = await stubCacheProvider.TryGetAsync(operationKey, CancellationToken.None, false);
         cacheHit1.Should().BeFalse();
         fromCache1.Should().BeNull();
 
         (await cache.ExecuteAsync(async _ => { await TaskHelper.EmptyTask; return valueToReturn; }, new Context(operationKey))).Should().Be(valueToReturn);
 
-        (bool cacheHit2, object fromCache2) = await stubCacheProvider.TryGetAsync(operationKey, CancellationToken.None, false);
+        (bool cacheHit2, object? fromCache2) = await stubCacheProvider.TryGetAsync(operationKey, CancellationToken.None, false);
         cacheHit2.Should().BeTrue();
         fromCache2.Should().Be(valueToReturn);
     }
@@ -98,7 +98,7 @@ public class CacheTResultAsyncSpecs : IDisposable
         TimeSpan ttl = TimeSpan.FromMinutes(30);
         var cache = Policy.CacheAsync<string>(stubCacheProvider, ttl);
 
-        (bool cacheHit1, object fromCache1) = await stubCacheProvider.TryGetAsync(operationKey, CancellationToken.None, false);
+        (bool cacheHit1, object? fromCache1) = await stubCacheProvider.TryGetAsync(operationKey, CancellationToken.None, false);
         cacheHit1.Should().BeFalse();
         fromCache1.Should().BeNull();
 
@@ -117,7 +117,7 @@ public class CacheTResultAsyncSpecs : IDisposable
         (await cache.ExecuteAsync(func, new Context(operationKey))).Should().Be(valueToReturn);
         delegateInvocations.Should().Be(1);
 
-        (bool cacheHit2, object fromCache2) = await stubCacheProvider.TryGetAsync(operationKey, CancellationToken.None, false);
+        (bool cacheHit2, object? fromCache2) = await stubCacheProvider.TryGetAsync(operationKey, CancellationToken.None, false);
         cacheHit2.Should().BeTrue();
         fromCache2.Should().Be(valueToReturn);
 
@@ -144,13 +144,13 @@ public class CacheTResultAsyncSpecs : IDisposable
         IAsyncCacheProvider stubCacheProvider = new StubCacheProvider();
         var cache = Policy.CacheAsync<string>(stubCacheProvider, TimeSpan.Zero);
 
-        (bool cacheHit1, object fromCache1) = await stubCacheProvider.TryGetAsync(operationKey, CancellationToken.None, false);
+        (bool cacheHit1, object? fromCache1) = await stubCacheProvider.TryGetAsync(operationKey, CancellationToken.None, false);
         cacheHit1.Should().BeFalse();
         fromCache1.Should().BeNull();
 
         (await cache.ExecuteAsync(async _ => { await TaskHelper.EmptyTask; return valueToReturn; }, new Context(operationKey))).Should().Be(valueToReturn);
 
-        (bool cacheHit2, object fromCache2) = await stubCacheProvider.TryGetAsync(operationKey, CancellationToken.None, false);
+        (bool cacheHit2, object? fromCache2) = await stubCacheProvider.TryGetAsync(operationKey, CancellationToken.None, false);
         cacheHit2.Should().BeFalse();
         fromCache2.Should().BeNull();
     }
@@ -241,13 +241,13 @@ public class CacheTResultAsyncSpecs : IDisposable
         IAsyncCacheProvider stubCacheProvider = new StubCacheProvider();
         var cache = Policy.CacheAsync<ResultClass?>(stubCacheProvider, TimeSpan.MaxValue);
 
-        (bool cacheHit1, object fromCache1) = await stubCacheProvider.TryGetAsync(operationKey, CancellationToken.None, false);
+        (bool cacheHit1, object? fromCache1) = await stubCacheProvider.TryGetAsync(operationKey, CancellationToken.None, false);
         cacheHit1.Should().BeFalse();
         fromCache1.Should().BeNull();
 
         (await cache.ExecuteAsync(async _ => { await TaskHelper.EmptyTask; return valueToReturn; }, new Context(operationKey))).Should().Be(valueToReturn);
 
-        (bool cacheHit2, object fromCache2) = await stubCacheProvider.TryGetAsync(operationKey, CancellationToken.None, false);
+        (bool cacheHit2, object? fromCache2) = await stubCacheProvider.TryGetAsync(operationKey, CancellationToken.None, false);
         cacheHit2.Should().BeTrue();
         fromCache2.Should().Be(valueToReturn);
     }
@@ -285,13 +285,13 @@ public class CacheTResultAsyncSpecs : IDisposable
         IAsyncCacheProvider stubCacheProvider = new StubCacheProvider();
         var cache = Policy.CacheAsync<ResultPrimitive>(stubCacheProvider, TimeSpan.MaxValue);
 
-        (bool cacheHit1, object fromCache1) = await stubCacheProvider.TryGetAsync(operationKey, CancellationToken.None, false);
+        (bool cacheHit1, object? fromCache1) = await stubCacheProvider.TryGetAsync(operationKey, CancellationToken.None, false);
         cacheHit1.Should().BeFalse();
         fromCache1.Should().BeNull();
 
         (await cache.ExecuteAsync(async _ => { await TaskHelper.EmptyTask; return valueToReturn; }, new Context(operationKey))).Should().Be(valueToReturn);
 
-        (bool cacheHit2, object fromCache2) = await stubCacheProvider.TryGetAsync(operationKey, CancellationToken.None, false);
+        (bool cacheHit2, object? fromCache2) = await stubCacheProvider.TryGetAsync(operationKey, CancellationToken.None, false);
         cacheHit2.Should().BeTrue();
         fromCache2.Should().Be(valueToReturn);
     }
@@ -486,7 +486,7 @@ public class CacheTResultAsyncSpecs : IDisposable
         await cache.Awaiting(policy => policy.ExecuteAsync(func, new Context(operationKey), tokenSource.Token))
             .Should().ThrowAsync<OperationCanceledException>();
 
-        (bool cacheHit, object fromCache) = await stubCacheProvider.TryGetAsync(operationKey, CancellationToken.None, false);
+        (bool cacheHit, object? fromCache) = await stubCacheProvider.TryGetAsync(operationKey, CancellationToken.None, false);
         cacheHit.Should().BeFalse();
         fromCache.Should().BeNull();
     }

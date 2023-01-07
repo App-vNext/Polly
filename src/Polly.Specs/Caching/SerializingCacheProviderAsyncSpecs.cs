@@ -21,7 +21,7 @@ public class AsyncSerializingCacheProviderSpecs
             deserialize: s => s.Original
         );
 
-        Action configure = () => new AsyncSerializingCacheProvider<StubSerialized>(null, stubObjectSerializer);
+        Action configure = () => new AsyncSerializingCacheProvider<StubSerialized>(null!, stubObjectSerializer);
 
         configure.Should().Throw<ArgumentNullException>()
             .And.ParamName.Should().Be("wrappedCacheProvider");
@@ -30,7 +30,7 @@ public class AsyncSerializingCacheProviderSpecs
     [Fact]
     public void Single_generic_constructor_should_throw_on_no_serializer()
     {
-        Action configure = () => new AsyncSerializingCacheProvider<object>(new StubCacheProvider().AsyncFor<object>(), null);
+        Action configure = () => new AsyncSerializingCacheProvider<object>(new StubCacheProvider().AsyncFor<object>(), null!);
 
         configure.Should().Throw<ArgumentNullException>()
             .And.ParamName.Should().Be("serializer");
@@ -39,7 +39,7 @@ public class AsyncSerializingCacheProviderSpecs
     [Fact]
     public void Single_generic_extension_syntax_should_throw_on_no_serializer()
     {
-        Action configure = () => new StubCacheProvider().AsyncFor<object>().WithSerializer(null);
+        Action configure = () => new StubCacheProvider().AsyncFor<object>().WithSerializer(null!);
 
         configure.Should().Throw<ArgumentNullException>()
             .And.ParamName.Should().Be("serializer");
@@ -109,7 +109,7 @@ public class AsyncSerializingCacheProviderSpecs
         await stubCacheProvider.PutAsync(key, new StubSerialized(objectToCache), new Ttl(TimeSpan.FromMinutes(1)), CancellationToken.None, false);
 
         AsyncSerializingCacheProvider<StubSerialized> serializingCacheProvider = new AsyncSerializingCacheProvider<StubSerialized>(stubCacheProvider.AsyncFor<StubSerialized>(), stubSerializer);
-        (bool cacheHit, object fromCache) = await serializingCacheProvider.TryGetAsync(key, CancellationToken.None, false);
+        (bool cacheHit, object? fromCache) = await serializingCacheProvider.TryGetAsync(key, CancellationToken.None, false);
 
         cacheHit.Should().BeTrue();
         deserializeInvoked.Should().BeTrue();
@@ -130,7 +130,7 @@ public class AsyncSerializingCacheProviderSpecs
         stubCacheProvider.TryGet(key).Item1.Should().BeFalse();
 
         AsyncSerializingCacheProvider<StubSerialized> serializingCacheProvider = new AsyncSerializingCacheProvider<StubSerialized>(stubCacheProvider.AsyncFor<StubSerialized>(), stubSerializer);
-        (bool cacheHit, object fromCache) = await serializingCacheProvider.TryGetAsync(key, CancellationToken.None, false);
+        (bool cacheHit, object? fromCache) = await serializingCacheProvider.TryGetAsync(key, CancellationToken.None, false);
 
         cacheHit.Should().BeFalse();
         deserializeInvoked.Should().BeFalse();
@@ -200,7 +200,7 @@ public class AsyncSerializingCacheProviderSpecs
         await stubCacheProvider.PutAsync(key, new StubSerialized(objectToCache), new Ttl(TimeSpan.FromMinutes(1)), CancellationToken.None, false);
 
         AsyncSerializingCacheProvider<StubSerialized> serializingCacheProvider = stubCacheProvider.AsyncFor<StubSerialized>().WithSerializer(stubSerializer);
-        (bool cacheHit, object fromCache) = await serializingCacheProvider.TryGetAsync(key, CancellationToken.None, false);
+        (bool cacheHit, object? fromCache) = await serializingCacheProvider.TryGetAsync(key, CancellationToken.None, false);
 
         cacheHit.Should().BeTrue();
         deserializeInvoked.Should().BeTrue();
@@ -221,7 +221,7 @@ public class AsyncSerializingCacheProviderSpecs
         stubCacheProvider.TryGet(key).Item1.Should().BeFalse();
 
         AsyncSerializingCacheProvider<StubSerialized> serializingCacheProvider = stubCacheProvider.AsyncFor<StubSerialized>().WithSerializer(stubSerializer);
-        (bool cacheHit, object fromCache) = await serializingCacheProvider.TryGetAsync(key, CancellationToken.None, false);
+        (bool cacheHit, object? fromCache) = await serializingCacheProvider.TryGetAsync(key, CancellationToken.None, false);
 
         cacheHit.Should().BeFalse();
         deserializeInvoked.Should().BeFalse();
@@ -240,7 +240,7 @@ public class AsyncSerializingCacheProviderSpecs
             deserialize: s => s.Original
         );
 
-        Action configure = () => new AsyncSerializingCacheProvider<ResultPrimitive, StubSerialized<ResultPrimitive>>(null, stubTResultSerializer);
+        Action configure = () => new AsyncSerializingCacheProvider<ResultPrimitive, StubSerialized<ResultPrimitive>>(null!, stubTResultSerializer);
 
         configure.Should().Throw<ArgumentNullException>()
             .And.ParamName.Should().Be("wrappedCacheProvider");
@@ -249,7 +249,7 @@ public class AsyncSerializingCacheProviderSpecs
     [Fact]
     public void Double_generic_constructor_should_throw_on_no_serializer()
     {
-        Action configure = () => new AsyncSerializingCacheProvider<object, object>(new StubCacheProvider().AsyncFor<object>(), null);
+        Action configure = () => new AsyncSerializingCacheProvider<object, object>(new StubCacheProvider().AsyncFor<object>(), null!);
 
         configure.Should().Throw<ArgumentNullException>()
             .And.ParamName.Should().Be("serializer");
@@ -258,7 +258,7 @@ public class AsyncSerializingCacheProviderSpecs
     [Fact]
     public void Double_generic_extension_syntax_should_throw_on_no_serializer()
     {
-        Action configure = () => new StubCacheProvider().AsyncFor<object>().WithSerializer<object, object>(null);
+        Action configure = () => new StubCacheProvider().AsyncFor<object>().WithSerializer<object, object>(null!);
 
         configure.Should().Throw<ArgumentNullException>()
             .And.ParamName.Should().Be("serializer");
