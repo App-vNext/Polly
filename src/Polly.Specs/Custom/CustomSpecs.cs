@@ -48,7 +48,7 @@ public class CustomSpecs
     [Fact]
     public void Reactive_policy_should_handle_exception()
     {
-        Exception handled = null;
+        Exception? handled = null;
         AddBehaviourIfHandlePolicy policy = Policy.Handle<InvalidOperationException>().WithBehaviour(ex => handled = ex);
 
         Exception toThrow = new InvalidOperationException();
@@ -67,7 +67,7 @@ public class CustomSpecs
     [Fact]
     public void Reactive_policy_should_be_able_to_ignore_unhandled_exception()
     {
-        Exception handled = null;
+        Exception? handled = null;
         AddBehaviourIfHandlePolicy policy = Policy.Handle<InvalidOperationException>().WithBehaviour(ex => handled = ex);
 
         Exception toThrow = new NotImplementedException();

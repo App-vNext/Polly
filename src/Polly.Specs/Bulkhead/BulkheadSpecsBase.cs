@@ -35,11 +35,11 @@ public abstract class BulkheadSpecsBase : IDisposable
 
     #region Operating variables
 
-    protected IBulkheadPolicy BulkheadForStats { get; set; }
+    protected IBulkheadPolicy BulkheadForStats { get; set; } = null!;
 
-    internal TraceableAction[] Actions { get; set; }
+    internal TraceableAction[] Actions { get; set; } = { };
 
-    protected Task[] Tasks { get; set; }
+    protected Task[] Tasks { get; set; } = { };
 
     protected readonly AutoResetEvent StatusChangedEvent = new AutoResetEvent(false);
 
@@ -47,7 +47,7 @@ public abstract class BulkheadSpecsBase : IDisposable
 
     #region Scenario
 
-    protected string Scenario { get; set; }
+    protected string? Scenario { get; set; }
 
     protected int MaxParallelization { get; set; }
     protected int MaxQueuingActions { get; set; }
@@ -236,7 +236,7 @@ public abstract class BulkheadSpecsBase : IDisposable
         }
     }
 
-    protected AssertionFailure ActualsMatchExpecteds()
+    protected AssertionFailure? ActualsMatchExpecteds()
     {
         UpdateActuals();
 
@@ -283,7 +283,7 @@ public abstract class BulkheadSpecsBase : IDisposable
         return null;
     }
 
-    protected AssertionFailure AllTasksCompleted()
+    protected AssertionFailure? AllTasksCompleted()
     {
         int countTasksCompleted = Tasks.Count(t => t.IsCompleted);
         if (countTasksCompleted < TotalActions)
@@ -311,13 +311,13 @@ public abstract class BulkheadSpecsBase : IDisposable
 
     #endregion
 
-    protected AssertionFailure Expect(int expected, Func<int> actualFunc, string measure)
+    protected AssertionFailure? Expect(int expected, Func<int> actualFunc, string measure)
     {
         int actual = actualFunc();
         return actual != expected ? new AssertionFailure(expected, actual, measure) : null;
     }
 
-    protected void Within(TimeSpan timeSpan, Func<AssertionFailure> actionContainingAssertions)
+    protected void Within(TimeSpan timeSpan, Func<AssertionFailure?> actionContainingAssertions)
     {
         TimeSpan permitted = timeSpan;
         Stopwatch watch = Stopwatch.StartNew();

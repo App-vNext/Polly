@@ -26,7 +26,7 @@ public class RetrySpecs
     [Fact]
     public void Should_throw_when_onretry_action_without_context_is_null()
     {
-        Action<Exception, int> nullOnRetry = null;
+        Action<Exception, int> nullOnRetry = null!;
 
         Action policy = () => Policy
                                   .Handle<DivideByZeroException>()
@@ -52,7 +52,7 @@ public class RetrySpecs
     [Fact]
     public void Should_throw_when_onretry_action_with_context_is_null()
     {
-        Action<Exception, int, Context> nullOnRetry = null;
+        Action<Exception, int, Context> nullOnRetry = null!;
 
         Action policy = () => Policy
                                   .Handle<DivideByZeroException>()
@@ -237,7 +237,7 @@ public class RetrySpecs
     [Fact]
     public void Should_call_onretry_with_a_handled_innerexception()
     {
-        Exception passedToOnRetry = null;
+        Exception? passedToOnRetry = null;
 
         var policy = Policy
             .HandleInner<DivideByZeroException>()
@@ -254,7 +254,7 @@ public class RetrySpecs
     [Fact]
     public void Should_call_onretry_with_handled_exception_nested_in_aggregate_as_first_exception()
     {
-        Exception passedToOnRetry = null;
+        Exception? passedToOnRetry = null;
 
         var policy = Policy
             .HandleInner<DivideByZeroException>()
@@ -275,7 +275,7 @@ public class RetrySpecs
     [Fact]
     public void Should_call_onretry_with_handled_exception_nested_in_aggregate_as_second_exception()
     {
-        Exception passedToOnRetry = null;
+        Exception? passedToOnRetry = null;
 
         var policy = Policy
             .HandleInner<DivideByZeroException>()
@@ -296,7 +296,7 @@ public class RetrySpecs
     [Fact]
     public void Should_call_onretry_with_handled_exception_nested_in_aggregate_inside_another_aggregate_as_first_exception()
     {
-        Exception passedToOnRetry = null;
+        Exception? passedToOnRetry = null;
 
         var policy = Policy
             .HandleInner<DivideByZeroException>()
@@ -319,7 +319,7 @@ public class RetrySpecs
     [Fact]
     public void Should_call_onretry_with_handled_exception_nested_in_aggregate_inside_another_aggregate_as_second_exception()
     {
-        Exception passedToOnRetry = null;
+        Exception? passedToOnRetry = null;
 
         var policy = Policy
             .HandleInner<DivideByZeroException>()
@@ -358,7 +358,7 @@ public class RetrySpecs
     [Fact]
     public void Should_call_onretry_with_the_passed_context()
     {
-        IDictionary<string, object> contextData = null;
+        IDictionary<string, object>? contextData = null;
 
         Policy policy = Policy
             .Handle<DivideByZeroException>()
@@ -376,7 +376,7 @@ public class RetrySpecs
     [Fact]
     public void Should_call_onretry_with_the_passed_context_when_execute_and_capture()
     {
-        IDictionary<string, object> contextData = null;
+        IDictionary<string, object>? contextData = null;
 
         Policy policy = Policy
             .Handle<DivideByZeroException>()
@@ -394,7 +394,7 @@ public class RetrySpecs
     [Fact]
     public void Context_should_be_empty_if_execute_not_called_with_any_context_data()
     {
-        Context capturedContext = null;
+        Context? capturedContext = null;
 
         Policy policy = Policy
             .Handle<DivideByZeroException>()
@@ -409,7 +409,7 @@ public class RetrySpecs
     [Fact]
     public void Should_create_new_context_for_each_call_to_execute()
     {
-        string contextValue = null;
+        string? contextValue = null;
 
         Policy policy = Policy
             .Handle<DivideByZeroException>()
@@ -431,7 +431,7 @@ public class RetrySpecs
     [Fact]
     public void Should_create_new_context_for_each_call_to_execute_and_capture()
     {
-        string contextValue = null;
+        string? contextValue = null;
 
         Policy policy = Policy
             .Handle<DivideByZeroException>()

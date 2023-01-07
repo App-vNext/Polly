@@ -17,7 +17,7 @@ public class FallbackSpecs
     [Fact]
     public void Should_throw_when_fallback_action_is_null()
     {
-        Action fallbackAction = null;
+        Action fallbackAction = null!;
 
         Action policy = () => Policy
                                 .Handle<DivideByZeroException>()
@@ -30,7 +30,7 @@ public class FallbackSpecs
     [Fact]
     public void Should_throw_when_fallback_action_with_cancellation_is_null()
     {
-        Action<CancellationToken> fallbackAction = null;
+        Action<CancellationToken> fallbackAction = null!;
 
         Action policy = () => Policy
             .Handle<DivideByZeroException>()
@@ -43,7 +43,7 @@ public class FallbackSpecs
     [Fact]
     public void Should_throw_when_fallback_action_is_null_with_onFallback()
     {
-        Action fallbackAction = null;
+        Action fallbackAction = null!;
         Action<Exception> onFallback = _ => { };
 
         Action policy = () => Policy
@@ -57,7 +57,7 @@ public class FallbackSpecs
     [Fact]
     public void Should_throw_when_fallback_action_with_cancellation_is_null_with_onFallback()
     {
-        Action<CancellationToken> fallbackAction = null;
+        Action<CancellationToken> fallbackAction = null!;
         Action<Exception> onFallback = _ => { };
 
         Action policy = () => Policy
@@ -71,7 +71,7 @@ public class FallbackSpecs
     [Fact]
     public void Should_throw_when_fallback_action_is_null_with_onFallback_with_context()
     {
-        Action<Context> fallbackAction = null;
+        Action<Context> fallbackAction = null!;
         Action<Exception, Context> onFallback = (_, _) => { };
 
         Action policy = () => Policy
@@ -85,7 +85,7 @@ public class FallbackSpecs
     [Fact]
     public void Should_throw_when_fallback_action_with_cancellation_is_null_with_onFallback_with_context()
     {
-        Action<Context, CancellationToken> fallbackAction = null;
+        Action<Context, CancellationToken> fallbackAction = null!;
         Action<Exception, Context> onFallback = (_, _) => { };
 
         Action policy = () => Policy
@@ -100,7 +100,7 @@ public class FallbackSpecs
     public void Should_throw_when_onFallback_delegate_is_null()
     {
         Action fallbackAction = () => { };
-        Action<Exception> onFallback = null;
+        Action<Exception> onFallback = null!;
 
         Action policy = () => Policy
                                 .Handle<DivideByZeroException>()
@@ -114,7 +114,7 @@ public class FallbackSpecs
     public void Should_throw_when_onFallback_delegate_is_null_with_action_with_cancellation()
     {
         Action<CancellationToken> fallbackAction = _ => { };
-        Action<Exception> onFallback = null;
+        Action<Exception> onFallback = null!;
 
         Action policy = () => Policy
             .Handle<DivideByZeroException>()
@@ -128,7 +128,7 @@ public class FallbackSpecs
     public void Should_throw_when_onFallback_delegate_is_null_with_context()
     {
         Action<Context> fallbackAction = _ => { };
-        Action<Exception, Context> onFallback = null;
+        Action<Exception, Context> onFallback = null!;
 
         Action policy = () => Policy
                                 .Handle<DivideByZeroException>()
@@ -142,7 +142,7 @@ public class FallbackSpecs
     public void Should_throw_when_onFallback_delegate_is_null_with_context_with_action_with_cancellation()
     {
         Action<Context, CancellationToken> fallbackAction = (_, _) => { };
-        Action<Exception, Context> onFallback = null;
+        Action<Exception, Context> onFallback = null!;
 
         Action policy = () => Policy
                                 .Handle<DivideByZeroException>()
@@ -728,7 +728,7 @@ public class FallbackSpecs
         bool fallbackActionExecuted = false;
         Action fallbackAction = () => { fallbackActionExecuted = true; };
 
-        Exception exceptionPassedToOnFallback = null;
+        Exception? exceptionPassedToOnFallback = null;
         Action<Exception> onFallback = ex => { exceptionPassedToOnFallback = ex; };
 
         FallbackPolicy fallbackPolicy = Policy
@@ -769,7 +769,7 @@ public class FallbackSpecs
     {
         Action<Context> fallbackAction = _ => { };
 
-        IDictionary<string, object> contextData = null;
+        IDictionary<string, object>? contextData = null;
 
         Action<Exception, Context> onFallback = (_, ctx) => { contextData = ctx; };
 
@@ -791,7 +791,7 @@ public class FallbackSpecs
     {
         Action<Context> fallbackAction = _ => { };
 
-        IDictionary<string, object> contextData = null;
+        IDictionary<string, object>? contextData = null;
 
         Action<Exception, Context> onFallback = (_, ctx) => { contextData = ctx; };
 
@@ -841,7 +841,7 @@ public class FallbackSpecs
     [Fact]
     public void Context_should_be_empty_if_execute_not_called_with_any_context_data()
     {
-        Context capturedContext = null;
+        Context? capturedContext = null;
         bool onFallbackExecuted = false;
 
         Action<Context> fallbackAction = _ => { };
@@ -861,7 +861,7 @@ public class FallbackSpecs
     [Fact]
     public void Should_call_fallbackAction_with_the_passed_context()
     {
-        IDictionary<string, object> contextData = null;
+        IDictionary<string, object>? contextData = null;
 
         Action<Context, CancellationToken> fallbackAction = (ctx, _) => { contextData = ctx;};
 
@@ -883,7 +883,7 @@ public class FallbackSpecs
     [Fact]
     public void Should_call_fallbackAction_with_the_passed_context_when_execute_and_capture()
     {
-        IDictionary<string, object> contextData = null;
+        IDictionary<string, object>? contextData = null;
 
         Action<Context, CancellationToken> fallbackAction = (ctx, _) => { contextData = ctx; };
 
@@ -905,7 +905,7 @@ public class FallbackSpecs
     [Fact]
     public void Context_should_be_empty_at_fallbackAction_if_execute_not_called_with_any_context_data()
     {
-        Context capturedContext = null;
+        Context? capturedContext = null;
         bool fallbackExecuted = false;
 
         Action<Context, CancellationToken> fallbackAction = (ctx, _) => { fallbackExecuted = true; capturedContext = ctx;  };
@@ -929,7 +929,7 @@ public class FallbackSpecs
     [Fact]
     public void Should_call_fallbackAction_with_the_exception()
     {
-        Exception fallbackException = null;
+        Exception? fallbackException = null;
 
         Action<Exception, Context, CancellationToken> fallbackAction = (ex, _, _) => { fallbackException = ex; };
 
@@ -949,7 +949,7 @@ public class FallbackSpecs
     [Fact]
     public void Should_call_fallbackAction_with_the_exception_when_execute_and_capture()
     {
-        Exception fallbackException = null;
+        Exception? fallbackException = null;
 
         Action<Exception, Context, CancellationToken> fallbackAction = (ex, _, _) => { fallbackException = ex; };
 
@@ -968,7 +968,7 @@ public class FallbackSpecs
     [Fact]
     public void Should_call_fallbackAction_with_the_matched_inner_exception_unwrapped()
     {
-        Exception fallbackException = null;
+        Exception? fallbackException = null;
 
         Action<Exception, Context, CancellationToken> fallbackAction = (ex, _, _) => { fallbackException = ex; };
 
@@ -989,7 +989,7 @@ public class FallbackSpecs
     [Fact]
     public void Should_call_fallbackAction_with_the_matched_inner_of_aggregate_exception_unwrapped()
     {
-        Exception fallbackException = null;
+        Exception? fallbackException = null;
 
         Action<Exception, Context, CancellationToken> fallbackAction = (ex, _, _) => { fallbackException = ex; };
 
@@ -1010,7 +1010,7 @@ public class FallbackSpecs
     [Fact]
     public void Should_not_call_fallbackAction_with_the_exception_if_exception_unhandled()
     {
-        Exception fallbackException = null;
+        Exception? fallbackException = null;
 
         Action<Exception, Context, CancellationToken> fallbackAction = (ex, _, _) => {
             fallbackException = ex; };

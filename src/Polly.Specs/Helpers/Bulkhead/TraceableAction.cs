@@ -15,7 +15,7 @@ public class TraceableAction : IDisposable
     private readonly string _id;
     private readonly ITestOutputHelper _testOutputHelper;
 
-    private readonly TaskCompletionSource<object> _tcsProxyForRealWork = new TaskCompletionSource<object>();
+    private readonly TaskCompletionSource<object?> _tcsProxyForRealWork = new TaskCompletionSource<object?>();
     private readonly CancellationTokenSource CancellationSource = new CancellationTokenSource();
 
     private TraceableActionStatus _status;
@@ -52,7 +52,7 @@ public class TraceableAction : IDisposable
             );
     }
 
-    public Task ExecuteOnBulkhead<TResult>(BulkheadPolicy<TResult> bulkhead)
+    public Task ExecuteOnBulkhead<TResult>(BulkheadPolicy<TResult?> bulkhead)
     {
         return ExecuteThroughSyncBulkheadOuter(
             () => bulkhead.Execute(_ => { ExecuteThroughSyncBulkheadInner(); return default; }, CancellationSource.Token)
@@ -132,7 +132,7 @@ public class TraceableAction : IDisposable
         );
     }
 
-    public Task ExecuteOnBulkheadAsync<TResult>(AsyncBulkheadPolicy<TResult> bulkhead)
+    public Task ExecuteOnBulkheadAsync<TResult>(AsyncBulkheadPolicy<TResult?> bulkhead)
     {
         return ExecuteThroughAsyncBulkheadOuter(
             () => bulkhead.ExecuteAsync(async _ => { await ExecuteThroughAsyncBulkheadInner(); return default; }, CancellationSource.Token)
@@ -192,7 +192,7 @@ public class TraceableAction : IDisposable
         _testOutputHelper.WriteLine(_id + "Exiting execution.");
     }
 
-    private Action<Task<object>> CaptureCompletion() => t =>
+    private Action<Task<object?>> CaptureCompletion() => t =>
     {
         if (t.IsCanceled)
         {

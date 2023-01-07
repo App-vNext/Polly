@@ -138,7 +138,7 @@ public class TimeoutSpecs : TimeoutSpecsBase
     [Fact]
     public void Should_throw_when_onTimeout_is_null_with_timespan()
     {
-        Action<Context, TimeSpan, Task> onTimeout = null;
+        Action<Context, TimeSpan, Task> onTimeout = null!;
         Action policy = () => Policy.Timeout(TimeSpan.FromMinutes(0.5), onTimeout);
 
         policy.Should().Throw<ArgumentNullException>()
@@ -148,7 +148,7 @@ public class TimeoutSpecs : TimeoutSpecsBase
     [Fact]
     public void Should_throw_when_onTimeout_overload_is_null_with_timespan()
     {
-        Action<Context, TimeSpan, Task, Exception> onTimeout = null;
+        Action<Context, TimeSpan, Task, Exception> onTimeout = null!;
         Action policy = () => Policy.Timeout(TimeSpan.FromMinutes(0.5), onTimeout);
 
         policy.Should().Throw<ArgumentNullException>()
@@ -158,7 +158,7 @@ public class TimeoutSpecs : TimeoutSpecsBase
     [Fact]
     public void Should_throw_when_onTimeout_is_null_with_seconds()
     {
-        Action<Context, TimeSpan, Task> onTimeout = null;
+        Action<Context, TimeSpan, Task> onTimeout = null!;
         Action policy = () => Policy.Timeout(30, onTimeout);
 
         policy.Should().Throw<ArgumentNullException>()
@@ -168,7 +168,7 @@ public class TimeoutSpecs : TimeoutSpecsBase
     [Fact]
     public void Should_throw_when_onTimeout_overload_is_null_with_seconds()
     {
-        Action<Context, TimeSpan, Task, Exception> onTimeout = null;
+        Action<Context, TimeSpan, Task, Exception> onTimeout = null!;
         Action policy = () => Policy.Timeout(30, onTimeout);
 
         policy.Should().Throw<ArgumentNullException>()
@@ -178,7 +178,7 @@ public class TimeoutSpecs : TimeoutSpecsBase
     [Fact]
     public void Should_throw_when_timeoutProvider_is_null()
     {
-        Action policy = () => Policy.Timeout((Func<TimeSpan>)null);
+        Action policy = () => Policy.Timeout((Func<TimeSpan>)null!);
 
         policy.Should().Throw<ArgumentNullException>()
             .And.ParamName.Should().Be("timeoutProvider");
@@ -187,7 +187,7 @@ public class TimeoutSpecs : TimeoutSpecsBase
     [Fact]
     public void Should_throw_when_onTimeout_is_null_with_timeoutprovider()
     {
-        Action<Context, TimeSpan, Task> onTimeout = null;
+        Action<Context, TimeSpan, Task> onTimeout = null!;
         Action policy = () => Policy.Timeout(() => TimeSpan.FromSeconds(30), onTimeout);
 
         policy.Should().Throw<ArgumentNullException>()
@@ -197,7 +197,7 @@ public class TimeoutSpecs : TimeoutSpecsBase
     [Fact]
     public void Should_throw_when_onTimeout_overload_is_null_with_timeoutprovider()
     {
-        Action<Context, TimeSpan, Task, Exception> onTimeout = null;
+        Action<Context, TimeSpan, Task, Exception> onTimeout = null!;
         Action policy = () => Policy.Timeout(() => TimeSpan.FromSeconds(30), onTimeout);
 
         policy.Should().Throw<ArgumentNullException>()
@@ -554,7 +554,7 @@ public class TimeoutSpecs : TimeoutSpecsBase
         string operationKey = "SomeKey";
         Context contextPassedToExecute = new Context(operationKey);
 
-        Context contextPassedToOnTimeout = null;
+        Context? contextPassedToOnTimeout = null;
         Action<Context, TimeSpan, Task> onTimeout = (ctx, _, _) => { contextPassedToOnTimeout = ctx; };
 
         TimeSpan timeout = TimeSpan.FromMilliseconds(250);
@@ -563,9 +563,9 @@ public class TimeoutSpecs : TimeoutSpecsBase
         policy.Invoking(p => p.Execute(_ => SystemClock.Sleep(TimeSpan.FromSeconds(3), CancellationToken.None), contextPassedToExecute))
             .Should().Throw<TimeoutRejectedException>();
 
-        contextPassedToOnTimeout.Should().NotBeNull();
-        contextPassedToOnTimeout.OperationKey.Should().Be(operationKey);
-        contextPassedToOnTimeout.Should().BeSameAs(contextPassedToExecute);
+        contextPassedToOnTimeout!.Should().NotBeNull();
+        contextPassedToOnTimeout!.OperationKey.Should().Be(operationKey);
+        contextPassedToOnTimeout!.Should().BeSameAs(contextPassedToExecute);
     }
 
     [Theory]
@@ -611,7 +611,7 @@ public class TimeoutSpecs : TimeoutSpecsBase
     [Fact]
     public void Should_call_ontimeout_with_task_wrapping_abandoned_action__pessimistic()
     {
-        Task taskPassedToOnTimeout = null;
+        Task? taskPassedToOnTimeout = null;
         Action<Context, TimeSpan, Task> onTimeout = (_, _, task) => { taskPassedToOnTimeout = task; };
 
         TimeSpan timeout = TimeSpan.FromMilliseconds(250);
@@ -632,10 +632,10 @@ public class TimeoutSpecs : TimeoutSpecsBase
 
         Exception exceptionToThrow = new DivideByZeroException();
 
-        Exception exceptionObservedFromTaskPassedToOnTimeout = null;
+        Exception? exceptionObservedFromTaskPassedToOnTimeout = null;
         Action<Context, TimeSpan, Task> onTimeout = (_, _, task) =>
         {
-            task.ContinueWith(t => exceptionObservedFromTaskPassedToOnTimeout = t.Exception.InnerException);
+            task.ContinueWith(t => exceptionObservedFromTaskPassedToOnTimeout = t.Exception!.InnerException);
         };
 
         TimeSpan shimTimespan = TimeSpan.FromSeconds(1); // Consider increasing shimTimeSpan if test fails transiently in different environments.
@@ -660,7 +660,7 @@ public class TimeoutSpecs : TimeoutSpecsBase
     {
         TimeSpan timeoutPassedToConfiguration = TimeSpan.FromMilliseconds(250);
 
-        Exception exceptionPassedToOnTimeout = null;
+        Exception? exceptionPassedToOnTimeout = null;
         Action<Context, TimeSpan, Task, Exception> onTimeout = (_, _, _, exception) => { exceptionPassedToOnTimeout = exception; };
 
         var policy = Policy.Timeout(timeoutPassedToConfiguration, TimeoutStrategy.Pessimistic, onTimeout);
@@ -699,7 +699,7 @@ public class TimeoutSpecs : TimeoutSpecsBase
         string operationKey = "SomeKey";
         Context contextPassedToExecute = new Context(operationKey);
 
-        Context contextPassedToOnTimeout = null;
+        Context? contextPassedToOnTimeout = null;
         Action<Context, TimeSpan, Task> onTimeout = (ctx, _, _) => { contextPassedToOnTimeout = ctx; };
 
         TimeSpan timeout = TimeSpan.FromMilliseconds(250);
@@ -709,9 +709,9 @@ public class TimeoutSpecs : TimeoutSpecsBase
         policy.Invoking(p => p.Execute((_, ct) => SystemClock.Sleep(TimeSpan.FromSeconds(3), ct), contextPassedToExecute, userCancellationToken))
             .Should().Throw<TimeoutRejectedException>();
 
-        contextPassedToOnTimeout.Should().NotBeNull();
-        contextPassedToOnTimeout.OperationKey.Should().Be(operationKey);
-        contextPassedToOnTimeout.Should().BeSameAs(contextPassedToExecute);
+        contextPassedToOnTimeout!.Should().NotBeNull();
+        contextPassedToOnTimeout!.OperationKey.Should().Be(operationKey);
+        contextPassedToOnTimeout!.Should().BeSameAs(contextPassedToExecute);
     }
 
     [Theory]
@@ -763,7 +763,7 @@ public class TimeoutSpecs : TimeoutSpecsBase
     [Fact]
     public void Should_call_ontimeout_but_not_with_task_wrapping_abandoned_action__optimistic()
     {
-        Task taskPassedToOnTimeout = null;
+        Task? taskPassedToOnTimeout = null;
         Action<Context, TimeSpan, Task> onTimeout = (_, _, task) => { taskPassedToOnTimeout = task; };
 
         TimeSpan timeout = TimeSpan.FromMilliseconds(250);
@@ -781,7 +781,7 @@ public class TimeoutSpecs : TimeoutSpecsBase
     {
         TimeSpan timeoutPassedToConfiguration = TimeSpan.FromMilliseconds(250);
 
-        Exception exceptionPassedToOnTimeout = null;
+        Exception? exceptionPassedToOnTimeout = null;
         Action<Context, TimeSpan, Task, Exception> onTimeout = (_, _, _, exception) => { exceptionPassedToOnTimeout = exception; };
 
         var policy = Policy.Timeout(timeoutPassedToConfiguration, TimeoutStrategy.Optimistic, onTimeout);

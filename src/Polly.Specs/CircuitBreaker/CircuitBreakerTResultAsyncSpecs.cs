@@ -531,8 +531,8 @@ public class CircuitBreakerTResultAsyncSpecs : IDisposable
             permitFirstExecutionEnd.WaitOne(testTimeoutToExposeDeadlocks);
             permitFirstExecutionEnd.Set();
             Task.WaitAll(new[] { firstExecution, secondExecution }, testTimeoutToExposeDeadlocks).Should().BeTrue();
-            if (firstExecution.IsFaulted) throw firstExecution.Exception;
-            if (secondExecution.IsFaulted) throw secondExecution.Exception;
+            if (firstExecution.IsFaulted) throw firstExecution!.Exception!;
+            if (secondExecution.IsFaulted) throw secondExecution!.Exception!;
             firstExecution.Status.Should().Be(TaskStatus.RanToCompletion);
             secondExecution.Status.Should().Be(TaskStatus.RanToCompletion);
 
@@ -637,8 +637,8 @@ public class CircuitBreakerTResultAsyncSpecs : IDisposable
             permitFirstExecutionEnd.WaitOne(testTimeoutToExposeDeadlocks);
             permitFirstExecutionEnd.Set();
             Task.WaitAll(new[] { firstExecution, secondExecution }, testTimeoutToExposeDeadlocks).Should().BeTrue();
-            if (firstExecution.IsFaulted) throw firstExecution.Exception;
-            if (secondExecution.IsFaulted) throw secondExecution.Exception;
+            if (firstExecution.IsFaulted) throw firstExecution!.Exception!;
+            if (secondExecution.IsFaulted) throw secondExecution!.Exception!;
             firstExecution.Status.Should().Be(TaskStatus.RanToCompletion);
             secondExecution.Status.Should().Be(TaskStatus.RanToCompletion);
 
@@ -903,7 +903,7 @@ public class CircuitBreakerTResultAsyncSpecs : IDisposable
 
             // Graceful cleanup: allow executions time to end naturally; timeout if any deadlocks; expose any execution faults.  This validates the test ran as expected (and background delegates are complete) before we assert on outcomes.
             longRunningExecution.Wait(testTimeoutToExposeDeadlocks).Should().BeTrue();
-            if (longRunningExecution.IsFaulted) throw longRunningExecution.Exception;
+            if (longRunningExecution.IsFaulted) throw longRunningExecution!.Exception!;
             longRunningExecution.Status.Should().Be(TaskStatus.RanToCompletion);
 
             // onBreak() should still only have been called once.
@@ -1186,7 +1186,7 @@ public class CircuitBreakerTResultAsyncSpecs : IDisposable
     [Fact]
     public async Task Should_call_onbreak_with_the_passed_context()
     {
-        IDictionary<string, object> contextData = null;
+        IDictionary<string, object>? contextData = null;
 
         Action<DelegateResult<ResultPrimitive>, TimeSpan, Context> onBreak = (_, _, context) => { contextData = context; };
         Action<Context> onReset = _ => { };
@@ -1212,7 +1212,7 @@ public class CircuitBreakerTResultAsyncSpecs : IDisposable
     [Fact]
     public async Task Should_call_onreset_with_the_passed_context()
     {
-        IDictionary<string, object> contextData = null;
+        IDictionary<string, object>? contextData = null;
 
         Action<DelegateResult<ResultPrimitive>, TimeSpan, Context> onBreak = (_, _, _) => { };
         Action<Context> onReset = context => { contextData = context; };
@@ -1269,7 +1269,7 @@ public class CircuitBreakerTResultAsyncSpecs : IDisposable
     [Fact]
     public async Task Should_create_new_context_for_each_call_to_execute()
     {
-        string contextValue = null;
+        string? contextValue = null;
 
         Action<DelegateResult<ResultPrimitive>, TimeSpan, Context> onBreak = (_, _, context) => { contextValue = context.ContainsKey("key") ? context["key"].ToString() : null; };
         Action<Context> onReset = context => { contextValue = context.ContainsKey("key") ? context["key"].ToString() : null; };

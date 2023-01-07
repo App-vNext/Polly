@@ -128,7 +128,7 @@ public class RetryForeverAsyncSpecs
     [Fact]
     public void Should_call_onretry_on_each_retry_with_the_passed_context()
     {
-        IDictionary<string, object> contextData = null;
+        IDictionary<string, object>? contextData = null;
 
         var policy = Policy
             .Handle<DivideByZeroException>()
@@ -162,7 +162,7 @@ public class RetryForeverAsyncSpecs
     [Fact]
     public async Task Context_should_be_empty_if_execute_not_called_with_any_data()
     {
-        Context capturedContext = null;
+        Context? capturedContext = null;
 
         var policy = Policy
             .Handle<DivideByZeroException>()
@@ -177,7 +177,7 @@ public class RetryForeverAsyncSpecs
     [Fact]
     public void Should_create_new_context_for_each_call_to_execute()
     {
-        string contextValue = null;
+        string? contextValue = null;
 
         var policy = Policy
             .Handle<DivideByZeroException>()

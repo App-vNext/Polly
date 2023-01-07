@@ -18,7 +18,7 @@ public class PolicyWrapSpecs
     {
         RetryPolicy retry = Policy.Handle<Exception>().Retry(1);
 
-        Action config = () => retry.Wrap((Policy)null);
+        Action config = () => retry.Wrap((Policy)null!);
 
         config.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be("innerPolicy");
     }
@@ -28,7 +28,7 @@ public class PolicyWrapSpecs
     {
         RetryPolicy retry = Policy.Handle<Exception>().Retry(1);
 
-        Action config = () => retry.Wrap<int>((Policy<int>)null);
+        Action config = () => retry.Wrap<int>((Policy<int>)null!);
 
         config.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be("innerPolicy");
     }
@@ -66,7 +66,7 @@ public class PolicyWrapSpecs
     {
         RetryPolicy<int> retry = Policy.HandleResult<int>(0).Retry(1);
 
-        Action config = () => retry.Wrap((Policy)null);
+        Action config = () => retry.Wrap((Policy)null!);
 
         config.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be("innerPolicy");
     }
@@ -77,7 +77,7 @@ public class PolicyWrapSpecs
     {
         RetryPolicy<int> retry = Policy.HandleResult<int>(0).Retry(1);
 
-        Action config = () => retry.Wrap((Policy<int>)null);
+        Action config = () => retry.Wrap((Policy<int>)null!);
 
         config.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be("innerPolicy");
     }
@@ -113,7 +113,7 @@ public class PolicyWrapSpecs
     [Fact]
     public void Nongeneric_interface_wraps_nongeneric_instance_syntax_null_wrapping_should_throw()
     {
-        ISyncPolicy outerNull = null;
+        ISyncPolicy outerNull = null!;
         ISyncPolicy retry = Policy.Handle<Exception>().Retry(1);
 
         Action config = () => outerNull.Wrap(retry);
@@ -124,7 +124,7 @@ public class PolicyWrapSpecs
     [Fact]
     public void Nongeneric_interface_wraps_generic_instance_syntax_null_wrapping_should_throw()
     {
-        ISyncPolicy outerNull = null;
+        ISyncPolicy outerNull = null!;
         ISyncPolicy<int> retry = Policy.HandleResult<int>(0).Retry(1);
 
         Action config = () => outerNull.Wrap<int>(retry);
@@ -137,7 +137,7 @@ public class PolicyWrapSpecs
     {
         ISyncPolicy retry = Policy.Handle<Exception>().Retry(1);
 
-        Action config = () => retry.Wrap((Policy)null);
+        Action config = () => retry.Wrap((Policy)null!);
 
         config.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be("innerPolicy");
     }
@@ -147,7 +147,7 @@ public class PolicyWrapSpecs
     {
         ISyncPolicy retry = Policy.Handle<Exception>().Retry(1);
 
-        Action config = () => retry.Wrap<int>((Policy<int>)null);
+        Action config = () => retry.Wrap<int>((Policy<int>)null!);
 
         config.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be("innerPolicy");
     }
@@ -183,7 +183,7 @@ public class PolicyWrapSpecs
     [Fact]
     public void Generic_interface_wraps_nongeneric_instance_syntax_null_wrapping_should_throw()
     {
-        ISyncPolicy<int> outerNull = null;
+        ISyncPolicy<int> outerNull = null!;
         ISyncPolicy retry = Policy.Handle<Exception>().Retry(1);
 
         Action config = () => outerNull.Wrap(retry);
@@ -194,7 +194,7 @@ public class PolicyWrapSpecs
     [Fact]
     public void Generic_interface_wraps_generic_instance_syntax_null_wrapping_should_throw()
     {
-        ISyncPolicy<int> outerNull = null;
+        ISyncPolicy<int> outerNull = null!;
         ISyncPolicy<int> retry = Policy.HandleResult<int>(0).Retry(1);
 
         Action config = () => outerNull.Wrap<int>(retry);
@@ -207,7 +207,7 @@ public class PolicyWrapSpecs
     {
         ISyncPolicy<int> retry = Policy.HandleResult<int>(0).Retry(1);
 
-        Action config = () => retry.Wrap((Policy)null);
+        Action config = () => retry.Wrap((Policy)null!);
 
         config.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be("innerPolicy");
     }
@@ -217,7 +217,7 @@ public class PolicyWrapSpecs
     {
         ISyncPolicy<int> retry = Policy.HandleResult<int>(0).Retry(1);
 
-        Action config = () => retry.Wrap((Policy<int>)null);
+        Action config = () => retry.Wrap((Policy<int>)null!);
 
         config.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be("innerPolicy");
     }

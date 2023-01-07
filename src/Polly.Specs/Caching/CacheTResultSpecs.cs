@@ -18,7 +18,7 @@ public class CacheTResultSpecs : IDisposable
     [Fact]
     public void Should_throw_when_cache_provider_is_null()
     {
-        ISyncCacheProvider cacheProvider = null;
+        ISyncCacheProvider cacheProvider = null!;
         Action action = () => Policy.Cache<ResultPrimitive>(cacheProvider, TimeSpan.MaxValue);
         action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be("cacheProvider");
     }
@@ -27,7 +27,7 @@ public class CacheTResultSpecs : IDisposable
     public void Should_throw_when_ttl_strategy_is_null()
     {
         ISyncCacheProvider cacheProvider = new StubCacheProvider();
-        ITtlStrategy ttlStrategy = null;
+        ITtlStrategy ttlStrategy = null!;
         Action action = () => Policy.Cache<ResultPrimitive>(cacheProvider, ttlStrategy);
         action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be("ttlStrategy");
     }
@@ -35,7 +35,7 @@ public class CacheTResultSpecs : IDisposable
     public void Should_throw_when_cache_key_strategy_is_null()
     {
         ISyncCacheProvider cacheProvider = new StubCacheProvider();
-        Func<Context, string> cacheKeyStrategy = null;
+        Func<Context, string> cacheKeyStrategy = null!;
         Action action = () => Policy.Cache<ResultPrimitive>(cacheProvider, TimeSpan.MaxValue, cacheKeyStrategy);
         action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be("cacheKeyStrategy");
     }
@@ -232,11 +232,11 @@ public class CacheTResultSpecs : IDisposable
     [Fact]
     public void Should_execute_delegate_and_put_value_in_cache_if_cache_does_not_hold_value__default_for_reference_type()
     {
-        ResultClass valueToReturn = default;
+        ResultClass? valueToReturn = null;
         const string operationKey = "SomeOperationKey";
 
         ISyncCacheProvider stubCacheProvider = new StubCacheProvider();
-        CachePolicy<ResultClass> cache = Policy.Cache<ResultClass>(stubCacheProvider, TimeSpan.MaxValue);
+        CachePolicy<ResultClass?> cache = Policy.Cache<ResultClass?>(stubCacheProvider, TimeSpan.MaxValue);
 
         (bool cacheHit1, object fromCache1) = stubCacheProvider.TryGet(operationKey);
         cacheHit1.Should().BeFalse();
@@ -252,7 +252,7 @@ public class CacheTResultSpecs : IDisposable
     [Fact]
     public void Should_return_value_from_cache_and_not_execute_delegate_if_cache_holds_value__default_for_reference_type()
     {
-        ResultClass valueToReturnFromCache = default;
+        ResultClass? valueToReturnFromCache = null;
         ResultClass valueToReturnFromExecution = new ResultClass(ResultPrimitive.Good);
         const string operationKey = "SomeOperationKey";
 

@@ -40,7 +40,7 @@ public class WaitAndRetryAsyncSpecs : IDisposable
     [Fact]
     public void Should_throw_when_onretry_action_is_null_without_context()
     {
-        Action<Exception, TimeSpan> nullOnRetry = null;
+        Action<Exception, TimeSpan> nullOnRetry = null!;
 
         Action policy = () => Policy
                                   .Handle<DivideByZeroException>()
@@ -431,7 +431,7 @@ public class WaitAndRetryAsyncSpecs : IDisposable
     [Fact]
     public async Task Should_call_onretry_with_the_passed_context()
     {
-        IDictionary<string, object> contextData = null;
+        IDictionary<string, object>? contextData = null;
 
         var policy = Policy
             .Handle<DivideByZeroException>()
@@ -454,7 +454,7 @@ public class WaitAndRetryAsyncSpecs : IDisposable
     [Fact]
     public async Task Context_should_be_empty_if_execute_not_called_with_any_data()
     {
-        Context capturedContext = null;
+        Context? capturedContext = null;
 
         var policy = Policy
             .Handle<DivideByZeroException>()
@@ -473,7 +473,7 @@ public class WaitAndRetryAsyncSpecs : IDisposable
     [Fact]
     public async Task Should_create_new_context_for_each_call_to_execute()
     {
-        string contextValue = null;
+        string? contextValue = null;
 
         var policy = Policy
             .Handle<DivideByZeroException>()
@@ -525,7 +525,7 @@ public class WaitAndRetryAsyncSpecs : IDisposable
     [Fact]
     public void Should_throw_when_onretry_action_is_null_without_context_when_using_provider_overload()
     {
-        Action<Exception, TimeSpan> nullOnRetry = null;
+        Action<Exception, TimeSpan> nullOnRetry = null!;
 
         Action policy = () => Policy
                                   .Handle<DivideByZeroException>()
@@ -565,7 +565,7 @@ public class WaitAndRetryAsyncSpecs : IDisposable
     [Fact]
     public async Task Should_be_able_to_pass_handled_exception_to_sleepdurationprovider()
     {
-        object capturedExceptionInstance = null;
+        object? capturedExceptionInstance = null;
 
         DivideByZeroException exceptionInstance = new DivideByZeroException();
 

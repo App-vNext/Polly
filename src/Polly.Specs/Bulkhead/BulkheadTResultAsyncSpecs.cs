@@ -58,7 +58,7 @@ public class BulkheadTResultAsyncSpecs : BulkheadSpecsBase
         string operationKey = "SomeKey";
         Context contextPassedToExecute = new Context(operationKey);
 
-        Context contextPassedToOnRejected = null;
+        Context? contextPassedToOnRejected = null;
         Func<Context, Task> onRejectedAsync = async ctx => { contextPassedToOnRejected = ctx; await TaskHelper.EmptyTask; };
 
         using (var bulkhead = Policy.BulkheadAsync<int>(1, onRejectedAsync))
@@ -82,10 +82,9 @@ public class BulkheadTResultAsyncSpecs : BulkheadSpecsBase
                 tcs.SetCanceled();
             }
 
-            contextPassedToOnRejected.Should().NotBeNull();
-            contextPassedToOnRejected.OperationKey.Should().Be(operationKey);
-            contextPassedToOnRejected.Should().BeSameAs(contextPassedToExecute);
-
+            contextPassedToOnRejected!.Should().NotBeNull();
+            contextPassedToOnRejected!.OperationKey.Should().Be(operationKey);
+            contextPassedToOnRejected!.Should().BeSameAs(contextPassedToExecute);
         }
     }
 

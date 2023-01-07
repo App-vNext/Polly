@@ -55,7 +55,7 @@ public class BulkheadSpecs : BulkheadSpecsBase
         string operationKey = "SomeKey";
         Context contextPassedToExecute = new Context(operationKey);
 
-        Context contextPassedToOnRejected = null;
+        Context? contextPassedToOnRejected = null;
         Action<Context> onRejected = ctx => { contextPassedToOnRejected = ctx; };
 
         using (BulkheadPolicy bulkhead = Policy.Bulkhead(1, onRejected))
@@ -72,9 +72,9 @@ public class BulkheadSpecs : BulkheadSpecsBase
 
             tcs.SetCanceled();
 
-            contextPassedToOnRejected.Should().NotBeNull();
-            contextPassedToOnRejected.OperationKey.Should().Be(operationKey);
-            contextPassedToOnRejected.Should().BeSameAs(contextPassedToExecute);
+            contextPassedToOnRejected!.Should().NotBeNull();
+            contextPassedToOnRejected!.OperationKey.Should().Be(operationKey);
+            contextPassedToOnRejected!.Should().BeSameAs(contextPassedToExecute);
         }
     }
 

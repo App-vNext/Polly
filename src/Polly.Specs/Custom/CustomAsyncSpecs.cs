@@ -59,7 +59,7 @@ public class CustomAsyncSpecs
     [Fact]
     public async Task Reactive_policy_should_handle_exception()
     {
-        Exception handled = null;
+        Exception? handled = null;
         AsyncAddBehaviourIfHandlePolicy policy = Policy.Handle<InvalidOperationException>().WithBehaviourAsync(async ex => { handled = ex; await Task.CompletedTask; });
 
         Exception toThrow = new InvalidOperationException();
@@ -80,7 +80,7 @@ public class CustomAsyncSpecs
     [Fact]
     public async Task Reactive_policy_should_be_able_to_ignore_unhandled_exception()
     {
-        Exception handled = null;
+        Exception? handled = null;
         AsyncAddBehaviourIfHandlePolicy policy = Policy.Handle<InvalidOperationException>().WithBehaviourAsync(async ex => { handled = ex; await Task.CompletedTask; });
 
         Exception toThrow = new NotImplementedException();

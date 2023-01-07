@@ -11,7 +11,7 @@ public static class ObjectExtensions
         return source.GetType().GetRuntimeProperties().ToDictionary
         (
             propInfo => propInfo.Name,
-            propInfo => propInfo.GetValue(source, null)
+            propInfo => propInfo.GetValue(source, null)!
         );
     }
 }

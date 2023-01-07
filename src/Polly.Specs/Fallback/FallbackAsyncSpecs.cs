@@ -18,7 +18,7 @@ public class FallbackAsyncSpecs
     [Fact]
     public void Should_throw_when_fallback_func_is_null()
     {
-        Func<CancellationToken, Task> fallbackActionAsync  = null;
+        Func<CancellationToken, Task> fallbackActionAsync = null!;
 
         Action policy = () => Policy
             .Handle<DivideByZeroException>()
@@ -31,7 +31,7 @@ public class FallbackAsyncSpecs
     [Fact]
     public void Should_throw_when_fallback_func_is_null_with_onFallback()
     {
-        Func<CancellationToken, Task> fallbackActionAsync  = null;
+        Func<CancellationToken, Task> fallbackActionAsync = null!;
         Func<Exception, Task> onFallbackAsync = _ => TaskHelper.EmptyTask;
 
         Action policy = () => Policy
@@ -45,7 +45,7 @@ public class FallbackAsyncSpecs
     [Fact]
     public void Should_throw_when_fallback_func_is_null_with_onFallback_with_context()
     {
-        Func<Context, CancellationToken, Task> fallbackActionAsync  = null;
+        Func<Context, CancellationToken, Task> fallbackActionAsync  = null!;
         Func<Exception, Context, Task> onFallbackAsync = (_, _) => TaskHelper.EmptyTask;
 
         Action policy = () => Policy
@@ -60,7 +60,7 @@ public class FallbackAsyncSpecs
     public void Should_throw_when_onFallback_delegate_is_null()
     {
         Func<CancellationToken, Task> fallbackActionAsync = _ => TaskHelper.EmptyTask;
-        Func<Exception, Task> onFallbackAsync = null;
+        Func<Exception, Task> onFallbackAsync = null!;
 
         Action policy = () => Policy
                                 .Handle<DivideByZeroException>()
@@ -74,7 +74,7 @@ public class FallbackAsyncSpecs
     public void Should_throw_when_onFallback_delegate_is_null_with_context()
     {
         Func<Context, CancellationToken, Task> fallbackActionAsync  = (_, _) => TaskHelper.EmptyTask;
-        Func<Exception, Context, Task> onFallbackAsync = null;
+        Func<Exception, Context, Task> onFallbackAsync = null!;
 
         Action policy = () => Policy
                                 .Handle<DivideByZeroException>()
@@ -271,7 +271,7 @@ public class FallbackAsyncSpecs
         bool fallbackActionExecuted = false;
         Func<CancellationToken, Task> fallbackActionAsync = _ => { fallbackActionExecuted = true; return TaskHelper.EmptyTask; };
 
-        Exception exceptionPassedToOnFallback = null;
+        Exception? exceptionPassedToOnFallback = null;
         Func<Exception, Task> onFallbackAsync = ex => { exceptionPassedToOnFallback = ex; return TaskHelper.EmptyTask; };
 
         var fallbackPolicy = Policy
@@ -312,7 +312,7 @@ public class FallbackAsyncSpecs
     {
         Func<Context, CancellationToken, Task> fallbackActionAsync = (_, _) => TaskHelper.EmptyTask;
 
-        IDictionary<string, object> contextData = null;
+        IDictionary<string, object>? contextData = null;
 
         Func<Exception, Context, Task> onFallbackAsync = (_, ctx) => { contextData = ctx; return TaskHelper.EmptyTask; };
 
@@ -334,7 +334,7 @@ public class FallbackAsyncSpecs
     {
         Func<Context, CancellationToken, Task> fallbackActionAsync = (_, _) => TaskHelper.EmptyTask;
 
-        IDictionary<string, object> contextData = null;
+        IDictionary<string, object>? contextData = null;
 
         Func<Exception, Context, Task> onFallbackAsync = (_, ctx) => { contextData = ctx; return TaskHelper.EmptyTask; };
 
@@ -382,7 +382,7 @@ public class FallbackAsyncSpecs
     [Fact]
     public async Task Context_should_be_empty_if_execute_not_called_with_any_context_data()
     {
-        Context capturedContext = null;
+        Context? capturedContext = null;
         bool onFallbackExecuted = false;
 
         Func<Context, CancellationToken, Task> fallbackActionAsync = (_, _) => TaskHelper.EmptyTask;
@@ -402,7 +402,7 @@ public class FallbackAsyncSpecs
     [Fact]
     public async Task Should_call_fallbackAction_with_the_passed_context()
     {
-        IDictionary<string, object> contextData = null;
+        IDictionary<string, object>? contextData = null;
 
         Func<Context, CancellationToken, Task> fallbackActionAsync = (ctx, _) => { contextData = ctx; return TaskHelper.EmptyTask; };
 
@@ -424,7 +424,7 @@ public class FallbackAsyncSpecs
     [Fact]
     public async Task Should_call_fallbackAction_with_the_passed_context_when_execute_and_capture()
     {
-        IDictionary<string, object> contextData = null;
+        IDictionary<string, object>? contextData = null;
 
         Func<Context, CancellationToken, Task> fallbackActionAsync = (ctx, _) => { contextData = ctx; return TaskHelper.EmptyTask; };
 
@@ -446,7 +446,7 @@ public class FallbackAsyncSpecs
     [Fact]
     public async Task Context_should_be_empty_at_fallbackAction_if_execute_not_called_with_any_context_data()
     {
-        Context capturedContext = null;
+        Context? capturedContext = null;
         bool fallbackExecuted = false;
 
         Func<Context, CancellationToken, Task> fallbackActionAsync = (ctx, _) => { fallbackExecuted = true; capturedContext = ctx; return TaskHelper.EmptyTask; };
@@ -471,7 +471,7 @@ public class FallbackAsyncSpecs
     [Fact]
     public async Task Should_call_fallbackAction_with_the_exception()
     {
-        Exception fallbackException = null;
+        Exception? fallbackException = null;
 
         Func<Exception, Context, CancellationToken, Task> fallbackFunc = (ex, _, _) => { fallbackException = ex; return TaskHelper.EmptyTask; };
 
@@ -491,7 +491,7 @@ public class FallbackAsyncSpecs
     [Fact]
     public async Task Should_call_fallbackAction_with_the_exception_when_execute_and_capture()
     {
-        Exception fallbackException = null;
+        Exception? fallbackException = null;
 
         Func<Exception, Context, CancellationToken, Task> fallbackFunc = (ex, _, _) => { fallbackException = ex; return TaskHelper.EmptyTask; };
 
@@ -511,7 +511,7 @@ public class FallbackAsyncSpecs
     [Fact]
     public async Task Should_call_fallbackAction_with_the_matched_inner_exception_unwrapped()
     {
-        Exception fallbackException = null;
+        Exception? fallbackException = null;
 
         Func<Exception, Context, CancellationToken, Task> fallbackFunc = (ex, _, _) => { fallbackException = ex; return TaskHelper.EmptyTask; };
 
@@ -532,7 +532,7 @@ public class FallbackAsyncSpecs
     [Fact]
     public async Task Should_call_fallbackAction_with_the_matched_inner_of_aggregate_exception_unwrapped()
     {
-        Exception fallbackException = null;
+        Exception? fallbackException = null;
 
         Func<Exception, Context, CancellationToken, Task> fallbackFunc = (ex, _, _) => { fallbackException = ex; return TaskHelper.EmptyTask; };
 
@@ -553,7 +553,7 @@ public class FallbackAsyncSpecs
     [Fact]
     public async Task Should_not_call_fallbackAction_with_the_exception_if_exception_unhandled()
     {
-        Exception fallbackException = null;
+        Exception? fallbackException = null;
 
         Func<Exception, Context, CancellationToken, Task> fallbackFunc = (ex, _, _) => { fallbackException = ex; return TaskHelper.EmptyTask; };
 

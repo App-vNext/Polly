@@ -60,7 +60,7 @@ public class SerializingCacheProviderSpecs
 
         serializeInvoked.Should().BeTrue();
 
-        (bool cacheHit, object fromCache) = stubCacheProvider.TryGet(key);
+        (bool cacheHit, object? fromCache) = stubCacheProvider.TryGet(key);
 
         cacheHit.Should().BeTrue();
         fromCache.Should().BeOfType<StubSerialized>()
@@ -76,7 +76,7 @@ public class SerializingCacheProviderSpecs
             deserialize: s => s.Original
         );
         StubCacheProvider stubCacheProvider = new StubCacheProvider();
-        object objectToCache = default;
+        object? objectToCache = null;
         string key = "some key";
 
         SerializingCacheProvider<StubSerialized> serializingCacheProvider = new SerializingCacheProvider<StubSerialized>(stubCacheProvider.For<StubSerialized>(), stubSerializer);
@@ -84,7 +84,7 @@ public class SerializingCacheProviderSpecs
 
         serializeInvoked.Should().BeTrue();
 
-        (bool cacheHit, object fromCache) = stubCacheProvider.TryGet(key);
+        (bool cacheHit, object? fromCache) = stubCacheProvider.TryGet(key);
 
         cacheHit.Should().BeTrue();
         fromCache.Should().BeOfType<StubSerialized>()
@@ -152,7 +152,7 @@ public class SerializingCacheProviderSpecs
 
         serializeInvoked.Should().BeTrue();
 
-        (bool cacheHit, object fromCache) = stubCacheProvider.TryGet(key);
+        (bool cacheHit, object? fromCache) = stubCacheProvider.TryGet(key);
 
         cacheHit.Should().BeTrue();
         fromCache.Should().BeOfType<StubSerialized>()
@@ -168,7 +168,7 @@ public class SerializingCacheProviderSpecs
             deserialize: s => s.Original
         );
         StubCacheProvider stubCacheProvider = new StubCacheProvider();
-        object objectToCache = default;
+        object? objectToCache = null;
         string key = "some key";
 
         SerializingCacheProvider<StubSerialized> serializingCacheProvider = stubCacheProvider.For<StubSerialized>().WithSerializer(stubSerializer);
@@ -176,7 +176,7 @@ public class SerializingCacheProviderSpecs
 
         serializeInvoked.Should().BeTrue();
 
-        (bool cacheHit, object fromCache) = stubCacheProvider.TryGet(key);
+        (bool cacheHit, object? fromCache) = stubCacheProvider.TryGet(key);
 
         cacheHit.Should().BeTrue();
         fromCache.Should().BeOfType<StubSerialized>()
@@ -279,7 +279,7 @@ public class SerializingCacheProviderSpecs
 
         serializeInvoked.Should().BeTrue();
 
-        (bool cacheHit, object fromCache) = stubCacheProvider.TryGet(key);
+        (bool cacheHit, object? fromCache) = stubCacheProvider.TryGet(key);
 
         cacheHit.Should().BeTrue();
         fromCache.Should().BeOfType<StubSerialized<ResultPrimitive>>()
@@ -303,7 +303,7 @@ public class SerializingCacheProviderSpecs
 
         serializeInvoked.Should().BeTrue();
 
-        (bool cacheHit, object fromCache) = stubCacheProvider.TryGet(key);
+        (bool cacheHit, object? fromCache) = stubCacheProvider.TryGet(key);
 
         cacheHit.Should().BeTrue();
         fromCache.Should().BeOfType<StubSerialized<ResultPrimitive>>()
@@ -371,7 +371,7 @@ public class SerializingCacheProviderSpecs
 
         serializeInvoked.Should().BeTrue();
 
-        (bool cacheHit, object fromCache) = stubCacheProvider.TryGet(key);
+        (bool cacheHit, object? fromCache) = stubCacheProvider.TryGet(key);
 
         cacheHit.Should().BeTrue();
         fromCache.Should().BeOfType<StubSerialized<ResultPrimitive>>()
@@ -397,7 +397,7 @@ public class SerializingCacheProviderSpecs
 
         serializeInvoked.Should().BeTrue();
 
-        (bool cacheHit, object fromCache) = stubCacheProvider.TryGet(key);
+        (bool cacheHit, object? fromCache) = stubCacheProvider.TryGet(key);
 
         cacheHit.Should().BeTrue();
         fromCache.Should().BeOfType<StubSerialized<ResultPrimitive>>()

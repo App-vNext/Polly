@@ -24,12 +24,12 @@ public static class PolicyExtensions
         policy.RaiseExceptionAndOrCancellation(scenario, new CancellationTokenSource(), () => { }, _ => instance);
     }
 
-    public static void RaiseException<TException>(this Policy policy, Action<TException, int> configureException = null) where TException : Exception, new()
+    public static void RaiseException<TException>(this Policy policy, Action<TException, int>? configureException = null) where TException : Exception, new()
     {
         policy.RaiseException(1, configureException);
     }
 
-    public static void RaiseException<TException>(this Policy policy, int numberOfTimesToRaiseException, Action<TException, int> configureException = null) where TException : Exception, new()
+    public static void RaiseException<TException>(this Policy policy, int numberOfTimesToRaiseException, Action<TException, int>? configureException = null) where TException : Exception, new()
     {
         ExceptionAndOrCancellationScenario scenario = new ExceptionAndOrCancellationScenario
         {

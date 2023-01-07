@@ -17,5 +17,5 @@ internal class ResultClass
 
     public ResultPrimitive ResultCode { get; set; }
 
-    public string SomeString { get; set; }
+    public string? SomeString { get; set; }
 }

@@ -38,7 +38,7 @@ public class PolicyTResultSpecs
         result.Should().BeEquivalentTo(new
         {
             Outcome = OutcomeType.Successful,
-            FinalException = (Exception)null,
+            FinalException = (Exception?)null,
             ExceptionType = (ExceptionType?)null,
             Result = ResultPrimitive.Good,
             FinalHandledResult = default(ResultPrimitive),
@@ -59,7 +59,7 @@ public class PolicyTResultSpecs
         result.Should().BeEquivalentTo(new
         {
             Outcome = OutcomeType.Failure,
-            FinalException = (Exception)null,
+            FinalException = (Exception?)null,
             ExceptionType = (ExceptionType?)null,
             FaultType = FaultType.ResultHandledByThisPolicy,
             FinalHandledResult = handledResult,
@@ -81,7 +81,7 @@ public class PolicyTResultSpecs
         result.Should().BeEquivalentTo(new
         {
             Outcome = OutcomeType.Successful,
-            FinalException = (Exception)null,
+            FinalException = (Exception?)null,
             ExceptionType = (ExceptionType?)null,
             Result = unhandledResult,
             FinalHandledResult = default(ResultPrimitive),
@@ -100,7 +100,7 @@ public class PolicyTResultSpecs
             .HandleResult(ResultPrimitive.Fault)
             .Retry((_, _, _) => { });
 
-        policy.Invoking(p => p.Execute(_ => ResultPrimitive.Good, (IDictionary<string, object>)null))
+        policy.Invoking(p => p.Execute(_ => ResultPrimitive.Good, (IDictionary<string, object>)null!))
             .Should().Throw<ArgumentNullException>();
     }
 
@@ -111,7 +111,7 @@ public class PolicyTResultSpecs
             .HandleResult(ResultPrimitive.Fault)
             .Retry((_, _, _) => { });
 
-        policy.Invoking(p => p.Execute(_ => ResultPrimitive.Good, (Context)null))
+        policy.Invoking(p => p.Execute(_ => ResultPrimitive.Good, (Context)null!))
             .Should().Throw<ArgumentNullException>().And
             .ParamName.Should().Be("context");
     }
@@ -121,7 +121,7 @@ public class PolicyTResultSpecs
     {
         string operationKey = "SomeKey";
         Context executionContext = new Context(operationKey);
-        Context capturedContext = null;
+        Context? capturedContext = null;
 
         Policy<ResultPrimitive> policy = Policy.NoOp<ResultPrimitive>();
 
@@ -137,7 +137,7 @@ public class PolicyTResultSpecs
             .HandleResult(ResultPrimitive.Fault)
             .Retry((_, _, _) => { });
 
-        policy.Invoking(p => p.ExecuteAndCapture(_ => ResultPrimitive.Good, (IDictionary<string, object>)null))
+        policy.Invoking(p => p.ExecuteAndCapture(_ => ResultPrimitive.Good, (IDictionary<string, object>)null!))
               .Should().Throw<ArgumentNullException>();
     }
 
@@ -148,7 +148,7 @@ public class PolicyTResultSpecs
             .HandleResult(ResultPrimitive.Fault)
             .Retry((_, _, _) => { });
 
-        policy.Invoking(p => p.ExecuteAndCapture(_ => ResultPrimitive.Good, (Context)null))
+        policy.Invoking(p => p.ExecuteAndCapture(_ => ResultPrimitive.Good, (Context)null!))
               .Should().Throw<ArgumentNullException>().And
               .ParamName.Should().Be("context");
     }
@@ -158,7 +158,7 @@ public class PolicyTResultSpecs
     {
         string operationKey = "SomeKey";
         Context executionContext = new Context(operationKey);
-        Context capturedContext = null;
+        Context? capturedContext = null;
 
         Policy<ResultPrimitive> policy = Policy.NoOp<ResultPrimitive>();
 

@@ -203,7 +203,7 @@ public class RetryAsyncSpecs
     [Fact]
     public async Task Should_call_onretry_with_a_handled_innerexception()
     {
-        Exception passedToOnRetry = null;
+        Exception? passedToOnRetry = null;
 
         var policy = Policy
             .HandleInner<DivideByZeroException>()
@@ -250,7 +250,7 @@ public class RetryAsyncSpecs
     [Fact]
     public void Should_call_onretry_with_the_passed_context()
     {
-        IDictionary<string, object> contextData = null;
+        IDictionary<string, object>? contextData = null;
 
         var policy = Policy
             .Handle<DivideByZeroException>()
@@ -268,7 +268,7 @@ public class RetryAsyncSpecs
     [Fact]
     public async Task Should_call_onretry_with_the_passed_context_when_execute_and_capture()
     {
-        IDictionary<string, object> contextData = null;
+        IDictionary<string, object>? contextData = null;
 
         var policy = Policy
             .Handle<DivideByZeroException>()
@@ -286,7 +286,7 @@ public class RetryAsyncSpecs
     [Fact]
     public async Task Context_should_be_empty_if_execute_not_called_with_any_data()
     {
-        Context capturedContext = null;
+        Context? capturedContext = null;
 
         var policy = Policy
             .Handle<DivideByZeroException>()
@@ -301,7 +301,7 @@ public class RetryAsyncSpecs
     [Fact]
     public void Should_create_new_context_for_each_call_to_execute()
     {
-        string contextValue = null;
+        string? contextValue = null;
 
         var policy = Policy
             .Handle<DivideByZeroException>()
@@ -323,7 +323,7 @@ public class RetryAsyncSpecs
     [Fact]
     public async Task Should_create_new_context_for_each_call_to_execute_and_capture()
     {
-        string contextValue = null;
+        string? contextValue = null;
 
         var policy = Policy
             .Handle<DivideByZeroException>()

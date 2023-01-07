@@ -460,8 +460,8 @@ public class CircuitBreakerSpecs : IDisposable
             permitFirstExecutionEnd.WaitOne(testTimeoutToExposeDeadlocks);
             permitFirstExecutionEnd.Set();
             Task.WaitAll(new[] { firstExecution, secondExecution }, testTimeoutToExposeDeadlocks).Should().BeTrue();
-            if (firstExecution.IsFaulted) throw firstExecution.Exception;
-            if (secondExecution.IsFaulted) throw secondExecution.Exception;
+            if (firstExecution.IsFaulted) throw firstExecution!.Exception!;
+            if (secondExecution.IsFaulted) throw secondExecution!.Exception!;
             firstExecution.Status.Should().Be(TaskStatus.RanToCompletion);
             secondExecution.Status.Should().Be(TaskStatus.RanToCompletion);
 
@@ -561,8 +561,8 @@ public class CircuitBreakerSpecs : IDisposable
             permitFirstExecutionEnd.WaitOne(testTimeoutToExposeDeadlocks);
             permitFirstExecutionEnd.Set();
             Task.WaitAll(new[] {firstExecution, secondExecution}, testTimeoutToExposeDeadlocks).Should().BeTrue();
-            if (firstExecution.IsFaulted) throw firstExecution.Exception;
-            if (secondExecution.IsFaulted) throw secondExecution.Exception;
+            if (firstExecution.IsFaulted) throw firstExecution!.Exception!;
+            if (secondExecution.IsFaulted) throw secondExecution!.Exception!;
             firstExecution.Status.Should().Be(TaskStatus.RanToCompletion);
             secondExecution.Status.Should().Be(TaskStatus.RanToCompletion);
 
@@ -823,7 +823,7 @@ public class CircuitBreakerSpecs : IDisposable
 
             // Graceful cleanup: allow executions time to end naturally; timeout if any deadlocks; expose any execution faults.  This validates the test ran as expected (and background delegates are complete) before we assert on outcomes.
             longRunningExecution.Wait(testTimeoutToExposeDeadlocks).Should().BeTrue();
-            if (longRunningExecution.IsFaulted) throw longRunningExecution.Exception;
+            if (longRunningExecution.IsFaulted) throw longRunningExecution!.Exception!;
             longRunningExecution.Status.Should().Be(TaskStatus.RanToCompletion);
 
             // onBreak() should still only have been called once.
@@ -1026,7 +1026,7 @@ public class CircuitBreakerSpecs : IDisposable
     [Fact]
     public void Should_call_onbreak_with_the_last_raised_exception()
     {
-        Exception passedException = null;
+        Exception? passedException = null;
 
         Action<Exception, TimeSpan, Context> onBreak = (exception, _, _) => { passedException = exception; };
         Action<Context> onReset = _ => { };
@@ -1121,7 +1121,7 @@ public class CircuitBreakerSpecs : IDisposable
     [Fact]
     public void Should_rethrow_and_call_onbreak_with_the_last_raised_exception_unwrapped_if_matched_as_inner()
     {
-        Exception passedException = null;
+        Exception? passedException = null;
 
         Action<Exception, TimeSpan, Context> onBreak = (exception, _, _) => { passedException = exception; };
         Action<Context> onReset = _ => { };
@@ -1203,7 +1203,7 @@ public class CircuitBreakerSpecs : IDisposable
     [Fact]
     public void Should_call_onbreak_with_the_passed_context()
     {
-        IDictionary<string, object> contextData = null;
+        IDictionary<string, object>? contextData = null;
 
         Action<Exception, TimeSpan, Context> onBreak = (_, _, context) => { contextData = context; };
         Action<Context> onReset = _ => { };
@@ -1229,7 +1229,7 @@ public class CircuitBreakerSpecs : IDisposable
     [Fact]
     public void Should_call_onreset_with_the_passed_context()
     {
-        IDictionary<string, object> contextData = null;
+        IDictionary<string, object>? contextData = null;
 
         Action<Exception, TimeSpan, Context> onBreak = (_, _, _) => { };
         Action<Context> onReset = context => { contextData = context; };
@@ -1286,7 +1286,7 @@ public class CircuitBreakerSpecs : IDisposable
     [Fact]
     public void Should_create_new_context_for_each_call_to_execute()
     {
-        string contextValue = null;
+        string? contextValue = null;
 
         Action<Exception, TimeSpan, Context> onBreak = (_, _, context) => { contextValue = context.ContainsKey("key") ? context["key"].ToString() : null; };
         Action<Context> onReset = context => { contextValue = context.ContainsKey("key") ? context["key"].ToString() : null; };
