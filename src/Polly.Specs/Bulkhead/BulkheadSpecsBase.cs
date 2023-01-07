@@ -317,7 +317,7 @@ public abstract class BulkheadSpecsBase : IDisposable
         return actual != expected ? new AssertionFailure(expected, actual, measure) : null;
     }
 
-    protected void Within(TimeSpan timeSpan, Func<AssertionFailure> actionContainingAssertions)
+    protected void Within(TimeSpan timeSpan, Func<AssertionFailure?> actionContainingAssertions)
     {
         TimeSpan permitted = timeSpan;
         Stopwatch watch = Stopwatch.StartNew();
