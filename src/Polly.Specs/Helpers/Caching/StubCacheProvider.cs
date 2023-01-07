@@ -26,7 +26,7 @@ internal class StubCacheProvider : ISyncCacheProvider, IAsyncCacheProvider
 
     private readonly Dictionary<string, CacheItem> cachedValues = new Dictionary<string, CacheItem>();
 
-    public (bool, object) TryGet(string key)
+    public (bool, object?) TryGet(string key)
     {
         if (cachedValues.ContainsKey(key))
         {

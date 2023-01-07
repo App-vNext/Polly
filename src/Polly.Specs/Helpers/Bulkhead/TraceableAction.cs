@@ -15,7 +15,7 @@ public class TraceableAction : IDisposable
     private readonly string _id;
     private readonly ITestOutputHelper _testOutputHelper;
 
-    private readonly TaskCompletionSource<object> _tcsProxyForRealWork = new TaskCompletionSource<object>();
+    private readonly TaskCompletionSource<object?> _tcsProxyForRealWork = new TaskCompletionSource<object>();
     private readonly CancellationTokenSource CancellationSource = new CancellationTokenSource();
 
     private TraceableActionStatus _status;
@@ -52,7 +52,7 @@ public class TraceableAction : IDisposable
             );
     }
 
-    public Task ExecuteOnBulkhead<TResult>(BulkheadPolicy<TResult> bulkhead)
+    public Task ExecuteOnBulkhead<TResult>(BulkheadPolicy<TResult?> bulkhead)
     {
         return ExecuteThroughSyncBulkheadOuter(
             () => bulkhead.Execute(_ => { ExecuteThroughSyncBulkheadInner(); return default; }, CancellationSource.Token)
