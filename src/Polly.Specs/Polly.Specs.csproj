@@ -21,10 +21,6 @@
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.5" PrivateAssets="all" />
   </ItemGroup>
 
-  <ItemGroup Condition="$([MSBuild]::GetTargetFrameworkIdentifier('$(TargetFramework)')) == '.NETFramework'">
-    <Reference Include="Microsoft.CSharp" />
-  </ItemGroup>
-
   <PropertyGroup Condition="$([MSBuild]::GetTargetFrameworkIdentifier('$(TargetFramework)')) != '.NETFramework'">
     <CollectCoverage>true</CollectCoverage>
     <CoverletOutputFormat>cobertura</CoverletOutputFormat>
