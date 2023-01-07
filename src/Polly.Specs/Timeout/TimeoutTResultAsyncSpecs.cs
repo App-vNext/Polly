@@ -459,9 +459,9 @@ public class TimeoutTResultAsyncSpecs : TimeoutSpecsBase
             }, contextPassedToExecute))
             .Should().ThrowAsync<TimeoutRejectedException>();
 
-        contextPassedToOnTimeout.Should().NotBeNull();
-        contextPassedToOnTimeout.OperationKey.Should().Be(operationKey);
-        contextPassedToOnTimeout.Should().BeSameAs(contextPassedToExecute);
+        contextPassedToOnTimeout!.Should().NotBeNull();
+        contextPassedToOnTimeout!.OperationKey.Should().Be(operationKey);
+        contextPassedToOnTimeout!.Should().BeSameAs(contextPassedToExecute);
     }
 
     [Theory]
@@ -556,7 +556,7 @@ public class TimeoutTResultAsyncSpecs : TimeoutSpecsBase
         Exception? exceptionObservedFromTaskPassedToOnTimeout = null;
         Func<Context, TimeSpan, Task, Task> onTimeoutAsync = (_, _, task) =>
         {
-            task.ContinueWith(t => exceptionObservedFromTaskPassedToOnTimeout = t.Exception.InnerException); // Intentionally not awaited: we want to assign the continuation, but let it run in its own time when the executed delegate eventually completes.
+            task.ContinueWith(t => exceptionObservedFromTaskPassedToOnTimeout = t.Exception!.InnerException); // Intentionally not awaited: we want to assign the continuation, but let it run in its own time when the executed delegate eventually completes.
             return TaskHelper.EmptyTask;
         };
 
@@ -655,9 +655,9 @@ public class TimeoutTResultAsyncSpecs : TimeoutSpecsBase
             }, contextPassedToExecute, userCancellationToken))
             .Should().ThrowAsync<TimeoutRejectedException>();
 
-        contextPassedToOnTimeout.Should().NotBeNull();
-        contextPassedToOnTimeout.OperationKey.Should().Be(operationKey);
-        contextPassedToOnTimeout.Should().BeSameAs(contextPassedToExecute);
+        contextPassedToOnTimeout!.Should().NotBeNull();
+        contextPassedToOnTimeout!.OperationKey.Should().Be(operationKey);
+        contextPassedToOnTimeout!.Should().BeSameAs(contextPassedToExecute);
     }
 
     [Theory]

@@ -458,7 +458,7 @@ public class PolicyRegistrySpecs
         var testRegistry = new PolicyRegistry(testDictionary.Object);
 
         //Generally, using reflection is a bad practice, but we are accepting it given we own the implementation.
-        var registryField = typeof(PolicyRegistry).GetField("_registry", BindingFlags.NonPublic | BindingFlags.GetField | BindingFlags.Instance);
+        var registryField = typeof(PolicyRegistry).GetField("_registry", BindingFlags.NonPublic | BindingFlags.GetField | BindingFlags.Instance)!;
         var registryFieldValue = registryField.GetValue(testRegistry);
         registryFieldValue.Should().Be(testDictionary.Object);
     }
@@ -470,7 +470,7 @@ public class PolicyRegistrySpecs
         var testRegistry = new PolicyRegistry();
 
         //Generally, using reflection is a bad practice, but we are accepting it given we own the implementation.
-        var registryField = typeof(PolicyRegistry).GetField("_registry", BindingFlags.NonPublic | BindingFlags.GetField | BindingFlags.Instance);
+        var registryField = typeof(PolicyRegistry).GetField("_registry", BindingFlags.NonPublic | BindingFlags.GetField | BindingFlags.Instance)!;
         var registryFieldValue = registryField.GetValue(testRegistry);
         registryFieldValue.Should().BeOfType(expectedDictionaryType);
     }

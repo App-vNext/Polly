@@ -524,9 +524,9 @@ public class FallbackTResultAsyncSpecs
         var result = await fallbackPolicy.ExecuteAsync(() => Task.FromResult(ResultPrimitive.Fault));
         result.Should().Be(ResultPrimitive.Substitute);
 
-        fallbackOutcome.Should().NotBeNull();
-        fallbackOutcome.Exception.Should().BeNull();
-        fallbackOutcome.Result.Should().Be(ResultPrimitive.Fault);
+        fallbackOutcome!.Should().NotBeNull();
+        fallbackOutcome!.Exception.Should().BeNull();
+        fallbackOutcome!.Result.Should().Be(ResultPrimitive.Fault);
     }
 
     [Fact]
@@ -547,9 +547,9 @@ public class FallbackTResultAsyncSpecs
         result.Should().NotBeNull();
         result.Result.Should().Be(ResultPrimitive.Substitute);
 
-        fallbackOutcome.Should().NotBeNull();
-        fallbackOutcome.Exception.Should().BeNull();
-        fallbackOutcome.Result.Should().Be(ResultPrimitive.Fault);
+        fallbackOutcome!.Should().NotBeNull();
+        fallbackOutcome!.Exception.Should().BeNull();
+        fallbackOutcome!.Result.Should().Be(ResultPrimitive.Fault);
     }
 
     [Fact]

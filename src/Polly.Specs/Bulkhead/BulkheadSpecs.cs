@@ -72,9 +72,9 @@ public class BulkheadSpecs : BulkheadSpecsBase
 
             tcs.SetCanceled();
 
-            contextPassedToOnRejected.Should().NotBeNull();
-            contextPassedToOnRejected.OperationKey.Should().Be(operationKey);
-            contextPassedToOnRejected.Should().BeSameAs(contextPassedToExecute);
+            contextPassedToOnRejected!.Should().NotBeNull();
+            contextPassedToOnRejected!.OperationKey.Should().Be(operationKey);
+            contextPassedToOnRejected!.Should().BeSameAs(contextPassedToExecute);
         }
     }
 

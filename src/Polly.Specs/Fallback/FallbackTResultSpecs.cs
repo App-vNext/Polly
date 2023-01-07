@@ -548,9 +548,9 @@ public class FallbackTResultSpecs
         fallbackPolicy.Execute(() => ResultPrimitive.Fault)
             .Should().Be(ResultPrimitive.Substitute);
 
-        fallbackOutcome.Should().NotBeNull();
-        fallbackOutcome.Exception.Should().BeNull();
-        fallbackOutcome.Result.Should().Be(ResultPrimitive.Fault);
+        fallbackOutcome!.Should().NotBeNull();
+        fallbackOutcome!.Exception.Should().BeNull();
+        fallbackOutcome!.Result.Should().Be(ResultPrimitive.Fault);
     }
 
     [Fact]
@@ -571,9 +571,9 @@ public class FallbackTResultSpecs
         result.Should().NotBeNull();
         result.Result.Should().Be(ResultPrimitive.Substitute);
 
-        fallbackOutcome.Should().NotBeNull();
-        fallbackOutcome.Exception.Should().BeNull();
-        fallbackOutcome.Result.Should().Be(ResultPrimitive.Fault);
+        fallbackOutcome!.Should().NotBeNull();
+        fallbackOutcome!.Exception.Should().BeNull();
+        fallbackOutcome!.Result.Should().Be(ResultPrimitive.Fault);
     }
 
     [Fact]

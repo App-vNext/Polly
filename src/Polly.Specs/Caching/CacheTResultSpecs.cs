@@ -236,7 +236,7 @@ public class CacheTResultSpecs : IDisposable
         const string operationKey = "SomeOperationKey";
 
         ISyncCacheProvider stubCacheProvider = new StubCacheProvider();
-        CachePolicy<ResultClass> cache = Policy.Cache<ResultClass>(stubCacheProvider, TimeSpan.MaxValue);
+        CachePolicy<ResultClass?> cache = Policy.Cache<ResultClass?>(stubCacheProvider, TimeSpan.MaxValue);
 
         (bool cacheHit1, object fromCache1) = stubCacheProvider.TryGet(operationKey);
         cacheHit1.Should().BeFalse();

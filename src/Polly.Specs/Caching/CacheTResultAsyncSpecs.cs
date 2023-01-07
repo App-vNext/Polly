@@ -239,7 +239,7 @@ public class CacheTResultAsyncSpecs : IDisposable
         const string operationKey = "SomeOperationKey";
 
         IAsyncCacheProvider stubCacheProvider = new StubCacheProvider();
-        var cache = Policy.CacheAsync<ResultClass>(stubCacheProvider, TimeSpan.MaxValue);
+        var cache = Policy.CacheAsync<ResultClass?>(stubCacheProvider, TimeSpan.MaxValue);
 
         (bool cacheHit1, object fromCache1) = await stubCacheProvider.TryGetAsync(operationKey, CancellationToken.None, false);
         cacheHit1.Should().BeFalse();

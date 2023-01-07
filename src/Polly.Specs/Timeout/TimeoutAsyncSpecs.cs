@@ -499,9 +499,9 @@ public class TimeoutAsyncSpecs : TimeoutSpecsBase
             }, contextPassedToExecute))
             .Should().ThrowAsync<TimeoutRejectedException>();
 
-        contextPassedToOnTimeout.Should().NotBeNull();
-        contextPassedToOnTimeout.OperationKey.Should().Be(operationKey);
-        contextPassedToOnTimeout.Should().BeSameAs(contextPassedToExecute);
+        contextPassedToOnTimeout!.Should().NotBeNull();
+        contextPassedToOnTimeout!.OperationKey.Should().Be(operationKey);
+        contextPassedToOnTimeout!.Should().BeSameAs(contextPassedToExecute);
     }
 
     [Theory]
@@ -689,9 +689,9 @@ public class TimeoutAsyncSpecs : TimeoutSpecsBase
             }, contextPassedToExecute, userCancellationToken))
             .Should().ThrowAsync<TimeoutRejectedException>();
 
-        contextPassedToOnTimeout.Should().NotBeNull();
-        contextPassedToOnTimeout.OperationKey.Should().Be(operationKey);
-        contextPassedToOnTimeout.Should().BeSameAs(contextPassedToExecute);
+        contextPassedToOnTimeout!.Should().NotBeNull();
+        contextPassedToOnTimeout!.OperationKey.Should().Be(operationKey);
+        contextPassedToOnTimeout!.Should().BeSameAs(contextPassedToExecute);
     }
 
     [Theory]

@@ -563,9 +563,9 @@ public class TimeoutSpecs : TimeoutSpecsBase
         policy.Invoking(p => p.Execute(_ => SystemClock.Sleep(TimeSpan.FromSeconds(3), CancellationToken.None), contextPassedToExecute))
             .Should().Throw<TimeoutRejectedException>();
 
-        contextPassedToOnTimeout.Should().NotBeNull();
-        contextPassedToOnTimeout.OperationKey.Should().Be(operationKey);
-        contextPassedToOnTimeout.Should().BeSameAs(contextPassedToExecute);
+        contextPassedToOnTimeout!.Should().NotBeNull();
+        contextPassedToOnTimeout!.OperationKey.Should().Be(operationKey);
+        contextPassedToOnTimeout!.Should().BeSameAs(contextPassedToExecute);
     }
 
     [Theory]
@@ -709,9 +709,9 @@ public class TimeoutSpecs : TimeoutSpecsBase
         policy.Invoking(p => p.Execute((_, ct) => SystemClock.Sleep(TimeSpan.FromSeconds(3), ct), contextPassedToExecute, userCancellationToken))
             .Should().Throw<TimeoutRejectedException>();
 
-        contextPassedToOnTimeout.Should().NotBeNull();
-        contextPassedToOnTimeout.OperationKey.Should().Be(operationKey);
-        contextPassedToOnTimeout.Should().BeSameAs(contextPassedToExecute);
+        contextPassedToOnTimeout!.Should().NotBeNull();
+        contextPassedToOnTimeout!.OperationKey.Should().Be(operationKey);
+        contextPassedToOnTimeout!.Should().BeSameAs(contextPassedToExecute);
     }
 
     [Theory]
