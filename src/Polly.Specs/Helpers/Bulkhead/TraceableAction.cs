@@ -132,7 +132,7 @@ public class TraceableAction : IDisposable
         );
     }
 
-    public Task ExecuteOnBulkheadAsync<TResult>(AsyncBulkheadPolicy<TResult> bulkhead)
+    public Task ExecuteOnBulkheadAsync<TResult>(AsyncBulkheadPolicy<TResult?> bulkhead)
     {
         return ExecuteThroughAsyncBulkheadOuter(
             () => bulkhead.ExecuteAsync(async _ => { await ExecuteThroughAsyncBulkheadInner(); return default; }, CancellationSource.Token)
@@ -192,7 +192,7 @@ public class TraceableAction : IDisposable
         _testOutputHelper.WriteLine(_id + "Exiting execution.");
     }
 
-    private Action<Task<object>> CaptureCompletion() => t =>
+    private Action<Task<object?>> CaptureCompletion() => t =>
     {
         if (t.IsCanceled)
         {
