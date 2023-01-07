@@ -8,12 +8,12 @@ namespace Polly.Specs.Helpers.Caching;
 
 internal class StubErroringCacheProvider : ISyncCacheProvider, IAsyncCacheProvider
 {
-    private Exception _getException;
+    private Exception? _getException;
     private Exception? _putException;
 
     private StubCacheProvider innerProvider = new StubCacheProvider();
 
-    public StubErroringCacheProvider(Exception getException, Exception? putException)
+    public StubErroringCacheProvider(Exception? getException, Exception? putException)
     {
         _getException = getException;
         _putException = putException;
