@@ -30,21 +30,23 @@ internal static class Workloads
         }
     }
 
-    internal static T Func<T>() => default;
+    internal static T Func<T>()
+        where T : struct
+        => default;
 
-    internal static Task<T> FuncAsync<T>() => Task.FromResult<T>(default);
+    internal static Task<T> FuncAsync<T>()
+        where T : struct
+        => Task.FromResult<T>(default);
 
-    internal static Task<T> FuncAsync<T>(CancellationToken cancellationToken) => Task.FromResult<T>(default);
+    internal static Task<T> FuncAsync<T>(CancellationToken cancellationToken)
+        where T : struct
+        => Task.FromResult<T>(default);
 
     internal static TResult FuncThrows<TResult, TException>()
         where TException : Exception, new()
-    {
-        throw new TException();
-    }
+        => throw new TException();
 
     internal static Task<TResult> FuncThrowsAsync<TResult, TException>()
         where TException : Exception, new()
-    {
-        throw new TException();
-    }
+        => throw new TException();
 }
