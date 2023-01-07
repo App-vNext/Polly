@@ -225,7 +225,7 @@ public class RetryTResultSpecsAsync
     public async Task Should_call_onretry_on_each_retry_with_the_current_handled_result()
     {
         var expectedFaults = new[] { "Fault #1", "Fault #2", "Fault #3" };
-        var retryFaults = new List<string>();
+        var retryFaults = new List<string?>();
 
         var policy = Policy
             .HandleResult<ResultClass>(r => r.ResultCode == ResultPrimitive.Fault)
