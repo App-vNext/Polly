@@ -6,7 +6,6 @@
     <AssemblyVersion>7.0.0.0</AssemblyVersion>
     <FileVersion>7.2.4.0</FileVersion>
     <InformationalVersion>7.2.4.0</InformationalVersion>
-    <PackageVersion>7.2.4</PackageVersion>
     <Company>App vNext</Company>
     <Copyright>Copyright (c) $([System.DateTime]::Now.ToString(yyyy)), App vNext</Copyright>
     <Description>Polly is a library that allows developers to express resilience and transient fault handling policies such as Retry, Circuit Breaker, Timeout, Bulkhead Isolation, and Fallback in a fluent and thread-safe manner.</Description>
@@ -16,7 +15,8 @@
     <Authors>Michael Wolfenden, App vNext</Authors>
     <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
     <EmbedUntrackedSources>true</EmbedUntrackedSources> <!-- EmbedUntrackedSources for deterministic build -->
-    <ContinuousIntegrationBuild>false</ContinuousIntegrationBuild>
+    <ContinuousIntegrationBuild Condition=" '$(CI)' != '' ">true</ContinuousIntegrationBuild>
+    <Deterministic>true</Deterministic>
   </PropertyGroup>
   <PropertyGroup Label="SourceLink">
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
@@ -45,6 +45,6 @@
     <PackageLicenseExpression>BSD-3-Clause</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/App-vNext/Polly</PackageProjectUrl>
     <PackageTags>Exception Handling Resilience Transient Fault Policy Circuit Breaker CircuitBreaker Retry Wait Cache Cache-aside Bulkhead Rate-limit Fallback Timeout Throttle Parallelization</PackageTags>
-    <PackageReleaseNotes>See https://github.com/App-vNext/Polly/blob/master/CHANGELOG.md for details</PackageReleaseNotes>
+    <PackageReleaseNotes>See https://github.com/App-vNext/Polly/blob/main/CHANGELOG.md for details</PackageReleaseNotes>
   </PropertyGroup>
 </Project>

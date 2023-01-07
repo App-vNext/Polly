@@ -3,9 +3,15 @@
   "isRoot": true,
   "tools": {
     "cake.tool": {
-      "version": "2.0.0",
+      "version": "3.0.0",
       "commands": [
         "dotnet-cake"
+      ]
+    },
+    "GitVersion.Tool": {
+      "version": "5.11.1",
+      "commands": [
+        "dotnet-gitversion"
       ]
     }
   }
