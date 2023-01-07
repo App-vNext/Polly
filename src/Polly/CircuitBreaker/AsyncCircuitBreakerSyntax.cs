@@ -5,7 +5,7 @@ using Polly.Utilities;
 namespace Polly;
 
 /// <summary>
-/// Fluent API for defining a Circuit Breaker <see cref="AsyncPolicy"/>. 
+/// Fluent API for defining a Circuit Breaker <see cref="AsyncPolicy"/>.
 /// </summary>
 public static class AsyncCircuitBreakerSyntax
 {
@@ -14,7 +14,7 @@ public static class AsyncCircuitBreakerSyntax
     /// <para>The circuit will break if <paramref name="exceptionsAllowedBeforeBreaking"/>
     /// exceptions that are handled by this policy are raised consecutively. </para>
     /// <para>The circuit will stay broken for the <paramref name="durationOfBreak"/>. Any attempt to execute this policy
-    /// while the circuit is broken, will immediately throw a <see cref="BrokenCircuitException"/> containing the exception 
+    /// while the circuit is broken, will immediately throw a <see cref="BrokenCircuitException"/> containing the exception
     /// that broke the circuit.
     /// </para>
     /// <para>If the first action after the break duration period results in a handled exception, the circuit will break
@@ -45,7 +45,7 @@ public static class AsyncCircuitBreakerSyntax
     /// <para>The circuit will break if <paramref name="exceptionsAllowedBeforeBreaking"/>
     /// exceptions that are handled by this policy are raised consecutively. </para>
     /// <para>The circuit will stay broken for the <paramref name="durationOfBreak"/>. Any attempt to execute this policy
-    /// while the circuit is broken, will immediately throw a <see cref="BrokenCircuitException"/> containing the exception 
+    /// while the circuit is broken, will immediately throw a <see cref="BrokenCircuitException"/> containing the exception
     /// that broke the circuit.
     /// </para>
     /// <para>If the first action after the break duration period results in a handled exception, the circuit will break
@@ -75,7 +75,7 @@ public static class AsyncCircuitBreakerSyntax
     /// <para>The circuit will break if <paramref name="exceptionsAllowedBeforeBreaking"/>
     /// exceptions that are handled by this policy are raised consecutively. </para>
     /// <para>The circuit will stay broken for the <paramref name="durationOfBreak"/>. Any attempt to execute this policy
-    /// while the circuit is broken, will immediately throw a <see cref="BrokenCircuitException"/> containing the exception 
+    /// while the circuit is broken, will immediately throw a <see cref="BrokenCircuitException"/> containing the exception
     /// that broke the circuit.
     /// </para>
     /// <para>If the first action after the break duration period results in a handled exception, the circuit will break
@@ -96,9 +96,9 @@ public static class AsyncCircuitBreakerSyntax
     {
         Action doNothingOnHalfOpen = () => { };
         return policyBuilder.CircuitBreakerAsync(
-            exceptionsAllowedBeforeBreaking, 
-            durationOfBreak, 
-            onBreak, 
+            exceptionsAllowedBeforeBreaking,
+            durationOfBreak,
+            onBreak,
             onReset,
             doNothingOnHalfOpen
             );
@@ -109,7 +109,7 @@ public static class AsyncCircuitBreakerSyntax
     /// <para>The circuit will break if <paramref name="exceptionsAllowedBeforeBreaking"/>
     /// exceptions that are handled by this policy are raised consecutively. </para>
     /// <para>The circuit will stay broken for the <paramref name="durationOfBreak"/>. Any attempt to execute this policy
-    /// while the circuit is broken, will immediately throw a <see cref="BrokenCircuitException"/> containing the exception 
+    /// while the circuit is broken, will immediately throw a <see cref="BrokenCircuitException"/> containing the exception
     /// that broke the circuit.
     /// </para>
     /// <para>If the first action after the break duration period results in a handled exception, the circuit will break
@@ -141,7 +141,7 @@ public static class AsyncCircuitBreakerSyntax
     /// <para>The circuit will break if <paramref name="exceptionsAllowedBeforeBreaking"/>
     /// exceptions that are handled by this policy are raised consecutively. </para>
     /// <para>The circuit will stay broken for the <paramref name="durationOfBreak"/>. Any attempt to execute this policy
-    /// while the circuit is broken, will immediately throw a <see cref="BrokenCircuitException"/> containing the exception 
+    /// while the circuit is broken, will immediately throw a <see cref="BrokenCircuitException"/> containing the exception
     /// that broke the circuit.
     /// </para>
     /// <para>If the first action after the break duration period results in a handled exception, the circuit will break
@@ -174,7 +174,7 @@ public static class AsyncCircuitBreakerSyntax
     /// <para>The circuit will break if <paramref name="exceptionsAllowedBeforeBreaking"/>
     /// exceptions that are handled by this policy are raised consecutively. </para>
     /// <para>The circuit will stay broken for the <paramref name="durationOfBreak"/>. Any attempt to execute this policy
-    /// while the circuit is broken, will immediately throw a <see cref="BrokenCircuitException"/> containing the exception 
+    /// while the circuit is broken, will immediately throw a <see cref="BrokenCircuitException"/> containing the exception
     /// that broke the circuit.
     /// </para>
     /// <para>If the first action after the break duration period results in a handled exception, the circuit will break

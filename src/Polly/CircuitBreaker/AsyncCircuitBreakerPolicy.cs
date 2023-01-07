@@ -14,7 +14,7 @@ public class AsyncCircuitBreakerPolicy : AsyncPolicy, ICircuitBreakerPolicy
     internal readonly ICircuitController<EmptyStruct> _breakerController;
 
     internal AsyncCircuitBreakerPolicy(
-        PolicyBuilder policyBuilder, 
+        PolicyBuilder policyBuilder,
         ICircuitController<EmptyStruct> breakerController
         ) : base(policyBuilder)
     {
@@ -68,7 +68,7 @@ public class AsyncCircuitBreakerPolicy<TResult> : AsyncPolicy<TResult>, ICircuit
     internal readonly ICircuitController<TResult> _breakerController;
 
     internal AsyncCircuitBreakerPolicy(
-        PolicyBuilder<TResult> policyBuilder, 
+        PolicyBuilder<TResult> policyBuilder,
         ICircuitController<TResult> breakerController
         ) : base(policyBuilder)
     {

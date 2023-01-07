@@ -9,10 +9,10 @@ internal class ConsecutiveCountCircuitController<TResult> : CircuitStateControll
     private int _consecutiveFailureCount;
 
     public ConsecutiveCountCircuitController(
-        int exceptionsAllowedBeforeBreaking, 
-        TimeSpan durationOfBreak, 
-        Action<DelegateResult<TResult>, CircuitState, TimeSpan, Context> onBreak, 
-        Action<Context> onReset, 
+        int exceptionsAllowedBeforeBreaking,
+        TimeSpan durationOfBreak,
+        Action<DelegateResult<TResult>, CircuitState, TimeSpan, Context> onBreak,
+        Action<Context> onReset,
         Action onHalfOpen
         ) : base(durationOfBreak, onBreak, onReset, onHalfOpen)
     {

@@ -13,7 +13,7 @@ public static class PolicyTResultExtensions
         return policy.RaiseResultSequence(resultsToRaise.ToList());
     }
 
-    public static TResult RaiseResultSequence<TResult>(this Policy<TResult> policy, IEnumerable<TResult> resultsToRaise) 
+    public static TResult RaiseResultSequence<TResult>(this Policy<TResult> policy, IEnumerable<TResult> resultsToRaise)
     {
         using (var enumerator = resultsToRaise.GetEnumerator())
         {

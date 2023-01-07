@@ -24,5 +24,5 @@ public interface IBulkheadPolicy : IsPolicy, IDisposable
 /// </summary>
 public interface IBulkheadPolicy<TResult> : IBulkheadPolicy
 {
-    
+
 }

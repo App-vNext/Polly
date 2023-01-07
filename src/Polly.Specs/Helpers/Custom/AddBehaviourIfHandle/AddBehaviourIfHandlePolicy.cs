@@ -14,13 +14,13 @@ internal class AddBehaviourIfHandlePolicy : Policy
     }
 
     protected override TResult Implementation<TResult>(
-        Func<Context, CancellationToken, TResult> action, 
-        Context context, 
+        Func<Context, CancellationToken, TResult> action,
+        Context context,
         CancellationToken cancellationToken)
     {
         return AddBehaviourIfHandleEngine.Implementation(
             ExceptionPredicates,
-            ResultPredicates<TResult>.None, 
+            ResultPredicates<TResult>.None,
             outcome => _behaviourIfHandle(outcome.Exception),
             action,
             context,
