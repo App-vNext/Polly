@@ -203,7 +203,7 @@ public class CacheTResultSpecs : IDisposable
     [Fact]
     public void Should_allow_custom_ICacheKeyStrategy()
     {
-        Action<Context, string, Exception> noErrorHandling = (_, _, _) => { };
+        Action<Context, string, Exception>? noErrorHandling = (_, _, _) => { };
         Action<Context, string> emptyDelegate = (_, _) => { };
 
         ISyncCacheProvider stubCacheProvider = new StubCacheProvider();
