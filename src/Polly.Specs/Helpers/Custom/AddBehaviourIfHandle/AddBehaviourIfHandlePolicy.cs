@@ -7,7 +7,7 @@ internal class AddBehaviourIfHandlePolicy : Policy
 {
     private readonly Action<Exception> _behaviourIfHandle;
 
-    internal AddBehaviourIfHandlePolicy(Action<Exception> behaviourIfHandle, PolicyBuilder policyBuilder)
+    internal AddBehaviourIfHandlePolicy(Action<Exception> behaviourIfHandle, PolicyBuilder? policyBuilder)
         : base(policyBuilder)
     {
         _behaviourIfHandle = behaviourIfHandle ?? throw new ArgumentNullException(nameof(behaviourIfHandle));
@@ -35,7 +35,7 @@ internal class AddBehaviourIfHandlePolicy<TResult> : Policy<TResult>
 
     internal AddBehaviourIfHandlePolicy(
         Action<DelegateResult<TResult>> behaviourIfHandle,
-        PolicyBuilder<TResult> policyBuilder)
+        PolicyBuilder<TResult>? policyBuilder)
         : base(policyBuilder)
     {
         _behaviourIfHandle = behaviourIfHandle ?? throw new ArgumentNullException(nameof(behaviourIfHandle));

@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
@@ -46,7 +47,7 @@ public class AsyncCircuitBreakerPolicy : AsyncPolicy, ICircuitBreakerPolicy
     protected override async Task<TResult> ImplementationAsync<TResult>(Func<Context, CancellationToken, Task<TResult>> action, Context context, CancellationToken cancellationToken,
         bool continueOnCapturedContext)
     {
-        TResult result = default;
+        TResult? result = default;
         await AsyncCircuitBreakerEngine.ImplementationAsync<EmptyStruct>(
             async (ctx, ct) => { result = await action(ctx, ct).ConfigureAwait(continueOnCapturedContext); return EmptyStruct.Instance; },
             context,
@@ -55,7 +56,7 @@ public class AsyncCircuitBreakerPolicy : AsyncPolicy, ICircuitBreakerPolicy
             ExceptionPredicates,
             ResultPredicates<EmptyStruct>.None,
             _breakerController).ConfigureAwait(continueOnCapturedContext);
-        return result;
+        return result!;
     }
 }
 
@@ -68,7 +69,7 @@ public class AsyncCircuitBreakerPolicy<TResult> : AsyncPolicy<TResult>, ICircuit
     internal readonly ICircuitController<TResult> _breakerController;
 
     internal AsyncCircuitBreakerPolicy(
-        PolicyBuilder<TResult> policyBuilder,
+        PolicyBuilder<TResult>? policyBuilder,
         ICircuitController<TResult> breakerController
         ) : base(policyBuilder)
     {

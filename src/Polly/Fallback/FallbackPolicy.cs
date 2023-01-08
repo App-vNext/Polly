@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.Diagnostics;
 using System.Threading;
 using Polly.Utilities;
@@ -49,7 +50,7 @@ public class FallbackPolicy<TResult> : Policy<TResult>, IFallbackPolicy<TResult>
     private Func<DelegateResult<TResult>, Context, CancellationToken, TResult> _fallbackAction;
 
     internal FallbackPolicy(
-        PolicyBuilder<TResult> policyBuilder,
+        PolicyBuilder<TResult>? policyBuilder,
         Action<DelegateResult<TResult>, Context> onFallback,
         Func<DelegateResult<TResult>, Context, CancellationToken, TResult> fallbackAction
         ) : base(policyBuilder)

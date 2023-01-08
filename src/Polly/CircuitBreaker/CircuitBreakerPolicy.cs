@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.Diagnostics;
 using Polly.Utilities;
 using System.Threading;
@@ -43,7 +44,7 @@ public class CircuitBreakerPolicy : Policy, ICircuitBreakerPolicy
     [DebuggerStepThrough]
     protected override TResult Implementation<TResult>(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken)
     {
-        TResult result = default;
+        TResult? result = default;
         CircuitBreakerEngine.Implementation<EmptyStruct>(
             (ctx, ct) => { result = action(ctx, ct); return EmptyStruct.Instance; },
             context,
@@ -51,7 +52,7 @@ public class CircuitBreakerPolicy : Policy, ICircuitBreakerPolicy
             ExceptionPredicates,
             ResultPredicates<EmptyStruct>.None,
             _breakerController);
-        return result;
+        return result!;
     }
 }
 
@@ -63,7 +64,7 @@ public class CircuitBreakerPolicy<TResult> : Policy<TResult>, ICircuitBreakerPol
     internal readonly ICircuitController<TResult> _breakerController;
 
     internal CircuitBreakerPolicy(
-        PolicyBuilder<TResult> policyBuilder,
+        PolicyBuilder<TResult>? policyBuilder,
         ICircuitController<TResult> breakerController
         ) : base(policyBuilder)
         => _breakerController = breakerController;

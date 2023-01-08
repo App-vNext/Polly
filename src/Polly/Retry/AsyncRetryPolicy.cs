@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
@@ -13,15 +14,15 @@ public class AsyncRetryPolicy : AsyncPolicy, IRetryPolicy
 {
     private readonly Func<Exception, TimeSpan, int, Context, Task> _onRetryAsync;
     private readonly int _permittedRetryCount;
-    private readonly IEnumerable<TimeSpan> _sleepDurationsEnumerable;
-    private readonly Func<int, Exception, Context, TimeSpan> _sleepDurationProvider;
+    private readonly IEnumerable<TimeSpan>? _sleepDurationsEnumerable;
+    private readonly Func<int, Exception, Context, TimeSpan>? _sleepDurationProvider;
 
     internal AsyncRetryPolicy(
-        PolicyBuilder policyBuilder,
+        PolicyBuilder? policyBuilder,
         Func<Exception, TimeSpan, int, Context, Task> onRetryAsync,
         int permittedRetryCount = Int32.MaxValue,
-        IEnumerable<TimeSpan> sleepDurationsEnumerable = null,
-        Func<int, Exception, Context, TimeSpan> sleepDurationProvider = null
+        IEnumerable<TimeSpan>? sleepDurationsEnumerable = null,
+        Func<int, Exception, Context, TimeSpan>? sleepDurationProvider = null
     )
         : base(policyBuilder)
     {
@@ -47,7 +48,7 @@ public class AsyncRetryPolicy : AsyncPolicy, IRetryPolicy
             _sleepDurationsEnumerable,
             _sleepDurationProvider != null
                 ? (retryCount, outcome, ctx) =>  _sleepDurationProvider(retryCount, outcome.Exception, ctx)
-                : (Func<int, DelegateResult<TResult>, Context, TimeSpan>)null,
+                : (Func<int, DelegateResult<TResult>, Context, TimeSpan>?)null,
             continueOnCapturedContext
         );
     }
@@ -60,15 +61,15 @@ public class AsyncRetryPolicy<TResult> : AsyncPolicy<TResult>, IRetryPolicy<TRes
 {
     private readonly Func<DelegateResult<TResult>, TimeSpan, int, Context, Task> _onRetryAsync;
     private readonly int _permittedRetryCount;
-    private readonly IEnumerable<TimeSpan> _sleepDurationsEnumerable;
-    private readonly Func<int, DelegateResult<TResult>, Context, TimeSpan> _sleepDurationProvider;
+    private readonly IEnumerable<TimeSpan>? _sleepDurationsEnumerable;
+    private readonly Func<int, DelegateResult<TResult>, Context, TimeSpan>? _sleepDurationProvider;
 
     internal AsyncRetryPolicy(
-        PolicyBuilder<TResult> policyBuilder,
+        PolicyBuilder<TResult>? policyBuilder,
         Func<DelegateResult<TResult>, TimeSpan, int, Context, Task> onRetryAsync,
         int permittedRetryCount = Int32.MaxValue,
-        IEnumerable<TimeSpan> sleepDurationsEnumerable = null,
-        Func<int, DelegateResult<TResult>, Context, TimeSpan> sleepDurationProvider = null
+        IEnumerable<TimeSpan>? sleepDurationsEnumerable = null,
+        Func<int, DelegateResult<TResult>, Context, TimeSpan>? sleepDurationProvider = null
     )
         : base(policyBuilder)
     {

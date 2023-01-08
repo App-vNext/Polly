@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
@@ -61,7 +62,7 @@ public class AsyncFallbackPolicy<TResult> : AsyncPolicy<TResult>, IFallbackPolic
     private Func<DelegateResult<TResult>, Context, CancellationToken, Task<TResult>> _fallbackAction;
 
     internal AsyncFallbackPolicy(
-        PolicyBuilder<TResult> policyBuilder,
+        PolicyBuilder<TResult>? policyBuilder,
         Func<DelegateResult<TResult>, Context, Task> onFallbackAsync,
         Func<DelegateResult<TResult>, Context, CancellationToken, Task<TResult>> fallbackAction
         ) : base(policyBuilder)
