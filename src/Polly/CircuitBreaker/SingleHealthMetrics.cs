@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using Polly.Utilities;
 
 namespace Polly.CircuitBreaker;
@@ -7,7 +8,7 @@ internal class SingleHealthMetrics : IHealthMetrics
 {
     private readonly long _samplingDuration;
 
-    private HealthCount _current;
+    private HealthCount? _current;
 
     public SingleHealthMetrics(TimeSpan samplingDuration) => _samplingDuration = samplingDuration.Ticks;
 
@@ -15,14 +16,14 @@ internal class SingleHealthMetrics : IHealthMetrics
     {
         ActualiseCurrentMetric_NeedsLock();
 
-        _current.Successes++;
+        _current!.Successes++;
     }
 
     public void IncrementFailure_NeedsLock()
     {
         ActualiseCurrentMetric_NeedsLock();
 
-        _current.Failures++;
+        _current!.Failures++;
     }
 
     public void Reset_NeedsLock() => _current = null;
@@ -31,7 +32,7 @@ internal class SingleHealthMetrics : IHealthMetrics
     {
         ActualiseCurrentMetric_NeedsLock();
 
-        return _current;
+        return _current!;
     }
 
     private void ActualiseCurrentMetric_NeedsLock()

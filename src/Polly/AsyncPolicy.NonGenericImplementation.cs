@@ -40,5 +40,6 @@ public abstract partial class AsyncPolicy
         Context context,
         CancellationToken cancellationToken,
         bool continueOnCapturedContext
-    );
+    )
+        where TResult : notnull;
 }

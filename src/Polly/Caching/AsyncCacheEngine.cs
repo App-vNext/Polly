@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -19,6 +20,7 @@ internal static class AsyncCacheEngine
         Action<Context, string> onCachePut,
         Action<Context, string, Exception> onCacheGetError,
         Action<Context, string, Exception> onCachePutError)
+        where TResult : notnull
     {
         cancellationToken.ThrowIfCancellationRequested();
 
@@ -29,7 +31,7 @@ internal static class AsyncCacheEngine
         }
 
         bool cacheHit;
-        TResult valueFromCache;
+        TResult? valueFromCache;
         try
         {
             (cacheHit, valueFromCache) = await cacheProvider.TryGetAsync(cacheKey, cancellationToken, continueOnCapturedContext).ConfigureAwait(continueOnCapturedContext);
@@ -43,7 +45,7 @@ internal static class AsyncCacheEngine
         if (cacheHit)
         {
             onCacheGet(context, cacheKey);
-            return valueFromCache;
+            return valueFromCache!;
         }
         else
         {

@@ -25,5 +25,6 @@ public abstract partial class Policy
     /// <param name="context">The policy execution context.</param>
     /// <param name="cancellationToken">A token to signal that execution should be cancelled.</param>
     /// <returns>A <typeparamref name="TResult"/> result of the execution.</returns>
-    protected abstract TResult Implementation<TResult>(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken);
+    protected abstract TResult Implementation<TResult>(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken)
+        where TResult : notnull;
 }

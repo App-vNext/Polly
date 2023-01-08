@@ -51,7 +51,7 @@ internal static class RetryEngine
                 }
                 catch (Exception ex)
                 {
-                    Exception handledException = shouldRetryExceptionPredicates.FirstMatchOrDefault(ex);
+                    Exception? handledException = shouldRetryExceptionPredicates.FirstMatchOrDefault(ex);
                     if (handledException == null)
                     {
                         throw;
