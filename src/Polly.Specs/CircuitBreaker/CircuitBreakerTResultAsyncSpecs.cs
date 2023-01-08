@@ -163,7 +163,7 @@ public class CircuitBreakerTResultAsyncSpecs : IDisposable
         await breaker.Awaiting(b => b.RaiseResultSequenceAsync(new ResultClass(ResultPrimitive.Good)))
             .Should().ThrowAsync<BrokenCircuitException<ResultClass>>()
             .WithMessage("The circuit is now open and is not allowing calls.")
-            .Where(e => e.Result.ResultCode == ResultPrimitive.Fault);
+            .Where(e => e.Result!.ResultCode == ResultPrimitive.Fault);
 
         breaker.CircuitState.Should().Be(CircuitState.Open);
     }

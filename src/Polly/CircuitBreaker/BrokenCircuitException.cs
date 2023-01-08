@@ -63,14 +63,12 @@ public class BrokenCircuitException : ExecutionRejectedException
 public class BrokenCircuitException<TResult> : BrokenCircuitException
     where TResult : notnull
 {
-    private readonly TResult result;
-
     /// <summary>
     /// Initializes a new instance of the <see cref="BrokenCircuitException{TResult}"/> class.
     /// </summary>
     /// <param name="result">The result which caused the circuit to break.</param>
     public BrokenCircuitException(TResult result) : base()
-        => this.result = result;
+        => this.Result = result;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="BrokenCircuitException{TResult}"/> class.
@@ -78,14 +76,15 @@ public class BrokenCircuitException<TResult> : BrokenCircuitException
     /// <param name="message">The message that describes the error.</param>
     /// <param name="result">The result which caused the circuit to break.</param>
     public BrokenCircuitException(string message, TResult result) : base(message)
-        => this.result = result;
+        => this.Result = result;
+
+#if NETSTANDARD2_0
 
     /// <summary>
     /// The result value which was considered a handled fault, by the policy.
     /// </summary>
-    public TResult Result { get => result; }
+    public TResult? Result { get; }
 
-#if NETSTANDARD2_0
     /// <summary>
     /// Initializes a new instance of the <see cref="BrokenCircuitException"/> class.
     /// </summary>
@@ -96,5 +95,13 @@ public class BrokenCircuitException<TResult> : BrokenCircuitException
         StreamingContext context) : base(info, context)
     {
     }
+
+#else
+
+    /// <summary>
+    /// The result value which was considered a handled fault, by the policy.
+    /// </summary>
+    public TResult Result { get; }
+
 #endif
 }
