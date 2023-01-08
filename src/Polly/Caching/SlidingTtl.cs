@@ -5,7 +5,6 @@ namespace Polly.Caching;
 /// <summary>
 /// Defines a ttl strategy which will cache items with a sliding ttl.
 /// </summary>
-
 public class SlidingTtl : ITtlStrategy
 {
     private readonly Ttl ttl;
@@ -27,6 +26,5 @@ public class SlidingTtl : ITtlStrategy
     /// <param name="context">The execution context.</param>
     /// <param name="result">The execution result.</param>
     /// <returns>A <see cref="Ttl"/> representing the remaining Ttl of the cached item.</returns>
-
     public Ttl GetTtl(Context context, object result) => ttl;
 }

@@ -3,7 +3,6 @@
 /// <summary>
 /// Defines properties and methods common to all Timeout policies.
 /// </summary>
-
 public interface ITimeoutPolicy : IsPolicy
 {
 }
@@ -13,5 +12,4 @@ public interface ITimeoutPolicy : IsPolicy
 /// </summary>
 public interface ITimeoutPolicy<TResult> : ITimeoutPolicy
 {
-
 }

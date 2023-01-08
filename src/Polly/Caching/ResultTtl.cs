@@ -33,6 +33,5 @@ public class ResultTtl<TResult> : ITtlStrategy<TResult>
     /// <param name="context">The execution context.</param>
     /// <param name="result">The execution result.</param>
     /// <returns>A <see cref="Ttl"/> representing the remaining Ttl of the cached item.</returns>
-
     public Ttl GetTtl(Context context, TResult result) => _ttlFunc(context, result);
 }

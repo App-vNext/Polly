@@ -3,7 +3,6 @@
 /// <summary>
 /// Defines properties and methods common to all NoOp policies.
 /// </summary>
-
 public interface INoOpPolicy : IsPolicy
 {
 }

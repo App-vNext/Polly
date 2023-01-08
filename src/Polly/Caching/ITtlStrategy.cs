@@ -5,7 +5,6 @@
 /// </summary>
 public interface ITtlStrategy : ITtlStrategy<object>
 {
-
 }
 
 /// <summary>

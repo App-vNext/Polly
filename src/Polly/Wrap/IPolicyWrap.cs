@@ -21,5 +21,4 @@ public interface IPolicyWrap : IsPolicy
 /// </summary>
 public interface IPolicyWrap<TResult> : IPolicyWrap
 {
-
 }
