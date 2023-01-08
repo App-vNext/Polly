@@ -247,5 +247,4 @@ public abstract partial class AsyncPolicy<TResult> : IAsyncPolicy<TResult>
     }
 
     #endregion
-
 }

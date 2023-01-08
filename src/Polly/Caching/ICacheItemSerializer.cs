@@ -20,5 +20,4 @@ public interface ICacheItemSerializer<TResult, TSerialized>
     /// <param name="objectToDeserialize">The object to deserialize.</param>
     /// <returns>The deserialized object</returns>
     TResult Deserialize(TSerialized objectToDeserialize);
-
 }

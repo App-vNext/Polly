@@ -48,7 +48,6 @@ public class SerializingCacheProvider<TSerialized> : ISyncCacheProvider
     {
         _wrappedCacheProvider.Put(key, _serializer.Serialize(value), ttl);
     }
-
 }
 
 /// <summary>
@@ -98,5 +97,4 @@ public class SerializingCacheProvider<TResult, TSerialized> : ISyncCacheProvider
     {
         _wrappedCacheProvider.Put(key, _serializer.Serialize(value), ttl);
     }
-
 }

@@ -15,5 +15,4 @@ internal static class TimeoutValidator
             throw new ArgumentOutOfRangeException(nameof(timeout), timeout,
                 $"{nameof(timeout)} must be a positive TimeSpan (or Timeout.InfiniteTimeSpan to indicate no timeout)");
     }
-
 }

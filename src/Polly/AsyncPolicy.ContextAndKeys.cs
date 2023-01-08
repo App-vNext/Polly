@@ -27,7 +27,6 @@ public abstract partial class AsyncPolicy
         policyKeyInternal = policyKey;
         return this;
     }
-
 }
 
 public abstract partial class AsyncPolicy<TResult>

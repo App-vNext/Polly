@@ -39,5 +39,4 @@ public class ContextualTtl : ITtlStrategy
 
         return new Ttl(context[TimeSpanKey] as TimeSpan? ?? TimeSpan.Zero, sliding);
     }
-
 }

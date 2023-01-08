@@ -41,5 +41,4 @@ public abstract partial class AsyncPolicy
         CancellationToken cancellationToken,
         bool continueOnCapturedContext
     );
-
 }

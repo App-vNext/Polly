@@ -34,5 +34,4 @@ public static class ContextualPolicyExtensions
     {
         policy.RaiseException(1, contextData, configureException);
     }
-
 }

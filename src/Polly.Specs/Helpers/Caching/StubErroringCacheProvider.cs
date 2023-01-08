@@ -46,5 +46,4 @@ internal class StubErroringCacheProvider : ISyncCacheProvider, IAsyncCacheProvid
     }
 
     #endregion
-
 }

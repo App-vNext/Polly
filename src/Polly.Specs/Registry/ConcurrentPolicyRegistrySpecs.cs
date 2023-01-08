@@ -259,5 +259,4 @@ public class ConcurrentPolicyRegistrySpecs
         returnedPolicy.Should().BeSameAs(existingPolicy);
         returnedPolicy.PolicyKey.Should().Be(policyKeyToDecorate);
     }
-
 }

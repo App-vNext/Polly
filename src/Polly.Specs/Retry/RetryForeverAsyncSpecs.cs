@@ -525,5 +525,4 @@ public class RetryForeverAsyncSpecs
 
         attemptsInvoked.Should().Be(1);
     }
-
 }

@@ -52,5 +52,4 @@ public class WaitAndRetryTResultSpecs : IDisposable
     {
         SystemClock.Reset();
     }
-
 }

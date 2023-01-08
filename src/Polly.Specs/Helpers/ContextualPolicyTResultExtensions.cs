@@ -53,5 +53,4 @@ public static class ContextualPolicyTResultExtensions
             return enumerator.Current;
         }, contextData);
     }
-
 }

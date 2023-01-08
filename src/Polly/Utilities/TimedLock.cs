@@ -83,7 +83,6 @@ internal struct TimedLock : IDisposable
     }
     private Sentinel leakDetector;
 #endif
-
 }
 
 internal class LockTimeoutException : Exception
