@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.Runtime.ExceptionServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -14,7 +15,7 @@ internal static class TimeoutEngine
         CancellationToken cancellationToken,
         Func<Context, TimeSpan> timeoutProvider,
         TimeoutStrategy timeoutStrategy,
-        Action<Context, TimeSpan, Task, Exception> onTimeout)
+        Action<Context, TimeSpan, Task?, Exception> onTimeout)
     {
         cancellationToken.ThrowIfCancellationRequested();
         TimeSpan timeout = timeoutProvider(context);
@@ -25,7 +26,7 @@ internal static class TimeoutEngine
             {
                 CancellationToken combinedToken = combinedTokenSource.Token;
 
-                Task<TResult> actionTask = null;
+                Task<TResult>? actionTask = null;
                 try
                 {
                     if (timeoutStrategy == TimeoutStrategy.Optimistic)
@@ -47,7 +48,7 @@ internal static class TimeoutEngine
                     }
                     catch (AggregateException ex) when (ex.InnerExceptions.Count == 1) // Issue #270.  Unwrap extra AggregateException caused by the way pessimistic timeout policy for synchronous executions is necessarily constructed.
                     {
-                        ExceptionDispatchInfo.Capture(ex.InnerException).Throw();
+                        ExceptionDispatchInfo.Capture(ex.InnerException!).Throw();
                     }
 
                     return actionTask.Result;

@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.Collections.Generic;
 using Polly.Utilities;
 
@@ -10,7 +11,7 @@ internal class RollingHealthMetrics : IHealthMetrics
     private readonly long _windowDuration;
     private readonly Queue<HealthCount> _windows;
 
-    private HealthCount _currentWindow;
+    private HealthCount? _currentWindow;
 
     public RollingHealthMetrics(TimeSpan samplingDuration, short numberOfWindows)
     {
@@ -24,14 +25,14 @@ internal class RollingHealthMetrics : IHealthMetrics
     {
         ActualiseCurrentMetric_NeedsLock();
 
-        _currentWindow.Successes++;
+        _currentWindow!.Successes++;
     }
 
     public void IncrementFailure_NeedsLock()
     {
         ActualiseCurrentMetric_NeedsLock();
 
-        _currentWindow.Failures++;
+        _currentWindow!.Failures++;
     }
 
     public void Reset_NeedsLock()

@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.Threading;
 
 namespace Polly.Caching;
@@ -17,6 +18,7 @@ internal static class CacheEngine
         Action<Context, string> onCachePut,
         Action<Context, string, Exception> onCacheGetError,
         Action<Context, string, Exception> onCachePutError)
+        where TResult : notnull
     {
         cancellationToken.ThrowIfCancellationRequested();
 
@@ -27,7 +29,7 @@ internal static class CacheEngine
         }
 
         bool cacheHit;
-        TResult valueFromCache;
+        TResult? valueFromCache;
         try
         {
             (cacheHit, valueFromCache) = cacheProvider.TryGet(cacheKey);
@@ -41,7 +43,7 @@ internal static class CacheEngine
         if (cacheHit)
         {
             onCacheGet(context, cacheKey);
-            return valueFromCache;
+            return valueFromCache!;
         }
         else
         {
