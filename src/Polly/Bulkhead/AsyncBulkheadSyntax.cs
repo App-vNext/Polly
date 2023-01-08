@@ -1,3 +1,4 @@
+#nullable enable
 using Polly.Bulkhead;
 using Polly.Utilities;
 using System;

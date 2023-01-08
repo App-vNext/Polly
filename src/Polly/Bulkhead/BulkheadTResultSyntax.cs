@@ -1,4 +1,5 @@
-﻿using Polly.Bulkhead;
+﻿#nullable enable
+using Polly.Bulkhead;
 using System;
 
 namespace Polly;
