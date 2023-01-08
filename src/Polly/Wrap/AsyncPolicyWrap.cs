@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
@@ -67,21 +68,21 @@ public partial class AsyncPolicyWrap : AsyncPolicy, IPolicyWrap
 /// <typeparam name="TResult">The return type of delegates which may be executed through the policy.</typeparam>
 public partial class AsyncPolicyWrap<TResult> : AsyncPolicy<TResult>, IPolicyWrap<TResult>
 {
-    private IAsyncPolicy _outerNonGeneric;
-    private IAsyncPolicy _innerNonGeneric;
+    private IAsyncPolicy? _outerNonGeneric;
+    private IAsyncPolicy? _innerNonGeneric;
 
-    private IAsyncPolicy<TResult> _outerGeneric;
-    private IAsyncPolicy<TResult> _innerGeneric;
+    private IAsyncPolicy<TResult>? _outerGeneric;
+    private IAsyncPolicy<TResult>? _innerGeneric;
 
     /// <summary>
     /// Returns the outer <see cref="IsPolicy"/> in this <see cref="IPolicyWrap{TResult}"/>
     /// </summary>
-    public IsPolicy Outer => (IsPolicy)_outerGeneric ?? _outerNonGeneric;
+    public IsPolicy Outer => _outerGeneric != null ? _outerGeneric : _outerNonGeneric!;
 
     /// <summary>
     /// Returns the next inner <see cref="IsPolicy"/> in this <see cref="IPolicyWrap{TResult}"/>
     /// </summary>
-    public IsPolicy Inner => (IsPolicy)_innerGeneric ?? _innerNonGeneric;
+    public IsPolicy Inner => _innerGeneric == null ? _innerNonGeneric! : _innerGeneric;
 
     internal AsyncPolicyWrap(AsyncPolicy outer, IAsyncPolicy<TResult> inner)
         : base(outer.ExceptionPredicates, ResultPredicates<TResult>.None)
@@ -90,15 +91,15 @@ public partial class AsyncPolicyWrap<TResult> : AsyncPolicy<TResult>, IPolicyWra
         _innerGeneric = inner;
     }
 
-    internal AsyncPolicyWrap(AsyncPolicy<TResult> outer, IAsyncPolicy inner)
-        : base(outer.ExceptionPredicates, outer.ResultPredicates)
+    internal AsyncPolicyWrap(AsyncPolicy<TResult>? outer, IAsyncPolicy? inner)
+        : base(outer?.ExceptionPredicates, outer?.ResultPredicates)
     {
         _outerGeneric = outer;
         _innerNonGeneric = inner;
     }
 
-    internal AsyncPolicyWrap(AsyncPolicy<TResult> outer, IAsyncPolicy<TResult> inner)
-        : base(outer.ExceptionPredicates, outer.ResultPredicates)
+    internal AsyncPolicyWrap(AsyncPolicy<TResult>? outer, IAsyncPolicy<TResult>? inner)
+        : base(outer?.ExceptionPredicates, outer?.ResultPredicates)
     {
         _outerGeneric = outer;
         _innerGeneric = inner;

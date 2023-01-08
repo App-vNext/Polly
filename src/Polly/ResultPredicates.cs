@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿#nullable enable
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Polly;
@@ -8,7 +9,7 @@ namespace Polly;
 /// </summary>
 public class ResultPredicates<TResult>
 {
-    private List<ResultPredicate<TResult>> _predicates;
+    private List<ResultPredicate<TResult>>? _predicates;
 
     internal void Add(ResultPredicate<TResult> predicate)
     {
