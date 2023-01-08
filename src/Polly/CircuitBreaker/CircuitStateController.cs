@@ -1,15 +1,17 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.Threading;
 using Polly.Utilities;
 
 namespace Polly.CircuitBreaker;
 
 internal abstract class CircuitStateController<TResult> : ICircuitController<TResult>
+    where TResult : notnull
 {
     protected readonly TimeSpan _durationOfBreak;
     protected long _blockedTill;
     protected CircuitState _circuitState;
-    protected DelegateResult<TResult> _lastOutcome;
+    protected DelegateResult<TResult>? _lastOutcome;
 
     protected readonly Action<DelegateResult<TResult>, CircuitState, TimeSpan, Context> _onBreak;
     protected readonly Action<Context> _onReset;
@@ -53,7 +55,7 @@ internal abstract class CircuitStateController<TResult> : ICircuitController<TRe
         }
     }
 
-    public Exception LastException
+    public Exception? LastException
     {
         get
         {
@@ -64,7 +66,7 @@ internal abstract class CircuitStateController<TResult> : ICircuitController<TRe
         }
     }
 
-    public TResult LastHandledResult
+    public TResult? LastHandledResult
     {
         get
         {
@@ -106,7 +108,7 @@ internal abstract class CircuitStateController<TResult> : ICircuitController<TRe
         var transitionedState = _circuitState;
         _circuitState = CircuitState.Open;
 
-        _onBreak(_lastOutcome, transitionedState, durationOfBreak, context);
+        _onBreak(_lastOutcome!, transitionedState, durationOfBreak, context);
     }
 
     public void Reset() => OnCircuitReset(Context.None());

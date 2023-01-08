@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -33,7 +34,7 @@ internal class AsyncFallbackEngine
         }
         catch (Exception ex)
         {
-            Exception handledException = shouldHandleExceptionPredicates.FirstMatchOrDefault(ex);
+            Exception? handledException = shouldHandleExceptionPredicates.FirstMatchOrDefault(ex);
             if (handledException == null)
             {
                 throw;

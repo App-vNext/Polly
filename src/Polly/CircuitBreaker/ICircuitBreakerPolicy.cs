@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable enable
+using System;
 
 namespace Polly.CircuitBreaker;
 
@@ -16,7 +17,7 @@ public interface ICircuitBreakerPolicy : IsPolicy
     /// Gets the last exception handled by the circuit-breaker.
     /// <remarks>This will be null if no exceptions have been handled by the circuit-breaker since the circuit last closed.</remarks>
     /// </summary>
-    Exception LastException { get; }
+    Exception? LastException { get; }
 
     /// <summary>
     /// Isolates (opens) the circuit manually, and holds it in this state until a call to <see cref="CircuitBreakerPolicy.Reset"/> is made.
@@ -38,5 +39,5 @@ public interface ICircuitBreakerPolicy<TResult> : ICircuitBreakerPolicy
     /// Gets the last result returned from a user delegate which the circuit-breaker handled.
     /// <remarks>This will be default(<typeparamref name="TResult"/>) if no results have been handled by the circuit-breaker since the circuit last closed, or if the last event handled by the circuit was an exception.</remarks>
     /// </summary>
-    TResult LastHandledResult { get; }
+    TResult? LastHandledResult { get; }
 }

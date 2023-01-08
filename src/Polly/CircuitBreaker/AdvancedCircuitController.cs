@@ -5,6 +5,7 @@ using Polly.Utilities;
 namespace Polly.CircuitBreaker;
 
 internal class AdvancedCircuitController<TResult> : CircuitStateController<TResult>
+    where TResult : notnull
 {
     private const short NumberOfWindows = 10;
     internal static readonly long ResolutionOfCircuitTimer = TimeSpan.FromMilliseconds(20).Ticks;

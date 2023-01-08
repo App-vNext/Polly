@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.Threading;
 
 namespace Polly.Fallback;
@@ -31,7 +32,7 @@ internal static class FallbackEngine
         }
         catch (Exception ex)
         {
-            Exception handledException = shouldHandleExceptionPredicates.FirstMatchOrDefault(ex);
+            Exception? handledException = shouldHandleExceptionPredicates.FirstMatchOrDefault(ex);
             if (handledException == null)
             {
                 throw;
