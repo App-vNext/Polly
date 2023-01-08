@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable enable
+using System;
 
 namespace Polly.Caching;
 
@@ -7,16 +8,17 @@ namespace Polly.Caching;
 /// </summary>
 /// <typeparam name="TCacheFormat">The type of the objects in the cache.</typeparam>
 internal class GenericCacheProvider<TCacheFormat> : ISyncCacheProvider<TCacheFormat>
+    where TCacheFormat : notnull
 {
     private readonly ISyncCacheProvider _wrappedCacheProvider;
 
     internal GenericCacheProvider(ISyncCacheProvider nonGenericCacheProvider)
         => _wrappedCacheProvider = nonGenericCacheProvider ?? throw new ArgumentNullException(nameof(nonGenericCacheProvider));
 
-    (bool, TCacheFormat) ISyncCacheProvider<TCacheFormat>.TryGet(string key)
+    (bool, TCacheFormat?) ISyncCacheProvider<TCacheFormat>.TryGet(string key)
     {
-        (bool cacheHit, object result) = _wrappedCacheProvider.TryGet(key);
-        return (cacheHit, (TCacheFormat) (result ?? default(TCacheFormat)));
+        (bool cacheHit, object? result) = _wrappedCacheProvider.TryGet(key);
+        return (cacheHit, (TCacheFormat?) (result ?? default(TCacheFormat)));
     }
 
     void ISyncCacheProvider<TCacheFormat>.Put(string key, TCacheFormat value, Ttl ttl)

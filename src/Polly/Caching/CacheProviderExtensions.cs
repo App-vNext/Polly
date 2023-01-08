@@ -1,4 +1,5 @@
-﻿namespace Polly.Caching;
+﻿#nullable enable
+namespace Polly.Caching;
 
 /// <summary>
 /// Class that provides helper methods for configuring CacheProviders.
@@ -12,6 +13,7 @@ public static class CacheProviderExtensions
     /// <param name="nonGenericCacheProvider">The non-generic cache provider to wrap.</param>
     /// <returns>ISyncCacheProvider{TCacheFormat}.</returns>
     public static ISyncCacheProvider<TCacheFormat> For<TCacheFormat>(this ISyncCacheProvider nonGenericCacheProvider)
+        where TCacheFormat : notnull
         => new GenericCacheProvider<TCacheFormat>(nonGenericCacheProvider);
 
     /// <summary>
@@ -21,6 +23,7 @@ public static class CacheProviderExtensions
     /// <param name="nonGenericCacheProvider">The non-generic cache provider to wrap.</param>
     /// <returns>IAsyncCacheProvider{TCacheFormat}.</returns>
     public static IAsyncCacheProvider<TCacheFormat> AsyncFor<TCacheFormat>(this IAsyncCacheProvider nonGenericCacheProvider)
+        where TCacheFormat : notnull
         => new AsyncGenericCacheProvider<TCacheFormat>(nonGenericCacheProvider);
 
     /// <summary>
@@ -32,6 +35,7 @@ public static class CacheProviderExtensions
     /// <returns>SerializingCacheProvider&lt;TResult, TSerialized&gt;.</returns>
     public static SerializingCacheProvider<TSerialized> WithSerializer<TSerialized>(
         this ISyncCacheProvider<TSerialized> cacheProvider, ICacheItemSerializer<object, TSerialized> serializer)
+        where TSerialized : notnull
         => new SerializingCacheProvider<TSerialized>(cacheProvider, serializer);
 
     /// <summary>
@@ -44,6 +48,8 @@ public static class CacheProviderExtensions
     /// <returns>SerializingCacheProvider&lt;TResult, TSerialized&gt;.</returns>
     public static SerializingCacheProvider<TResult, TSerialized> WithSerializer<TResult, TSerialized>(
         this ISyncCacheProvider<TSerialized> cacheProvider, ICacheItemSerializer<TResult, TSerialized> serializer)
+        where TSerialized : notnull
+        where TResult : notnull
         => new SerializingCacheProvider<TResult, TSerialized>(cacheProvider, serializer);
 
     /// <summary>
@@ -55,6 +61,7 @@ public static class CacheProviderExtensions
     /// <returns>SerializingCacheProvider&lt;TResult, TSerialized&gt;.</returns>
     public static AsyncSerializingCacheProvider<TSerialized> WithSerializer<TSerialized>(
         this IAsyncCacheProvider<TSerialized> cacheProvider, ICacheItemSerializer<object, TSerialized> serializer)
+        where TSerialized : notnull
         => new AsyncSerializingCacheProvider<TSerialized>(cacheProvider, serializer);
 
     /// <summary>
@@ -67,5 +74,7 @@ public static class CacheProviderExtensions
     /// <returns>SerializingCacheProvider&lt;TResult, TSerialized&gt;.</returns>
     public static AsyncSerializingCacheProvider<TResult, TSerialized> WithSerializer<TResult, TSerialized>(
         this IAsyncCacheProvider<TSerialized> cacheProvider, ICacheItemSerializer<TResult, TSerialized> serializer)
+        where TResult : notnull
+        where TSerialized : notnull
         => new AsyncSerializingCacheProvider<TResult, TSerialized>(cacheProvider, serializer);
 }

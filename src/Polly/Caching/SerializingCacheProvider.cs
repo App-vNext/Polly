@@ -8,6 +8,7 @@ namespace Polly.Caching;
 /// </summary>
 /// <typeparam name="TSerialized">The type of serialized objects to be placed in the cache.</typeparam>
 public class SerializingCacheProvider<TSerialized> : ISyncCacheProvider
+    where TSerialized : notnull
 {
     private readonly ISyncCacheProvider<TSerialized> _wrappedCacheProvider;
     private readonly ICacheItemSerializer<object, TSerialized> _serializer;
@@ -57,6 +58,8 @@ public class SerializingCacheProvider<TSerialized> : ISyncCacheProvider
 /// <typeparam name="TResult">The return type of delegates which may be executed through the policy.</typeparam>
 /// <typeparam name="TSerialized">The type of serialized objects to be placed in the cache.</typeparam>
 public class SerializingCacheProvider<TResult, TSerialized> : ISyncCacheProvider<TResult>
+    where TSerialized : notnull
+    where TResult : notnull
 {
     private readonly ISyncCacheProvider<TSerialized> _wrappedCacheProvider;
     private readonly ICacheItemSerializer<TResult, TSerialized> _serializer;

@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.Diagnostics;
 using System.Threading;
 
@@ -68,6 +69,7 @@ public class CachePolicy : Policy, ICachePolicy
 /// A cache policy that can be applied to the results of delegate executions.
 /// </summary>
 public class CachePolicy<TResult> : Policy<TResult>, ICachePolicy<TResult>
+    where TResult : notnull
 {
     private ISyncCacheProvider<TResult> _syncCacheProvider;
     private ITtlStrategy<TResult> _ttlStrategy;
