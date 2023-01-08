@@ -1,5 +1,4 @@
-﻿using System;
-using FluentAssertions;
+﻿using FluentAssertions;
 using Polly.Specs.Helpers;
 using Polly.Specs.Helpers.Custom.AddBehaviourIfHandle;
 using Polly.Specs.Helpers.Custom.PreExecute;

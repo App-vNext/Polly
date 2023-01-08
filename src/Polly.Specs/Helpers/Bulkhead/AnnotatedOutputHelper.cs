@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Linq;
-using System.Threading;
+﻿using System.Collections.Concurrent;
 using Xunit.Abstractions;
 
 namespace Polly.Specs.Helpers.Bulkhead;

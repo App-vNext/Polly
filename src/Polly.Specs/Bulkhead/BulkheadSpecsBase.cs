@@ -1,8 +1,4 @@
-﻿using System;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using System.Diagnostics;
 using FluentAssertions;
 using Polly.Bulkhead;
 using Polly.Specs.Helpers.Bulkhead;

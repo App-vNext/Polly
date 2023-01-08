@@ -1,6 +1,4 @@
-﻿using System;
-using System.Threading;
-using FluentAssertions;
+﻿using FluentAssertions;
 using Polly.Caching;
 using Polly.Specs.Helpers;
 using Polly.Specs.Helpers.Caching;

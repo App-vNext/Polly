@@ -1,7 +1,4 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-using Polly.Bulkhead;
+﻿using Polly.Bulkhead;
 using Polly.Specs.Helpers;
 using Polly.Specs.Helpers.Bulkhead;
 

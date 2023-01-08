@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Polly.Caching;
+﻿namespace Polly.Caching;
 
 /// <summary>
 /// Defines an <see cref="ISyncCacheProvider"/> which serializes objects of any type in and out of an underlying cache which caches as type <typeparamref name="TSerialized"/>.  For use with synchronous <see cref="CachePolicy" />.

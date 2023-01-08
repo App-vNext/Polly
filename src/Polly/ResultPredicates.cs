@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-
-namespace Polly;
+﻿namespace Polly;
 
 /// <summary>
 /// A collection of predicates used to define whether a policy handles a given <typeparamref name="TResult"/> value.

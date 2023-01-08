@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Polly.Specs.Helpers.Bulkhead;
+﻿namespace Polly.Specs.Helpers.Bulkhead;
 
 public class AssertionFailure
 {

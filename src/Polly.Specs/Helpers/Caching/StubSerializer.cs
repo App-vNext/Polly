@@ -1,5 +1,4 @@
-﻿using System;
-using Polly.Caching;
+﻿using Polly.Caching;
 
 namespace Polly.Specs.Helpers.Caching;
 

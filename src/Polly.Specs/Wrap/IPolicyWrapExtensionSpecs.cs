@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using Xunit;
+﻿using Xunit;
 using Polly.Wrap;
-using System.Linq;
 using FluentAssertions;
 using Polly.CircuitBreaker;
 using Polly.NoOp;

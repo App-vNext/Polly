@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Polly;
+﻿namespace Polly;
 
 /// <summary>
 /// A predicate that can be run against a passed <see cref="Exception"/> <paramref name="ex"/>.

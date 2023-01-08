@@ -1,5 +1,4 @@
-﻿using System;
-using FluentAssertions;
+﻿using FluentAssertions;
 using Polly.CircuitBreaker;
 using Polly.Specs.Helpers;
 using Xunit;

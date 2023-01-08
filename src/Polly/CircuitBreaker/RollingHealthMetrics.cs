@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Polly.Utilities;
+﻿using Polly.Utilities;
 
 namespace Polly.CircuitBreaker;
 

@@ -4,5 +4,6 @@
     <AssemblyOriginatorKeyFile>..\Polly.snk</AssemblyOriginatorKeyFile>
     <SignAssembly>true</SignAssembly>
     <LangVersion>latest</LangVersion>
+    <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 </Project>

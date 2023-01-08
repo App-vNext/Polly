@@ -1,5 +1,4 @@
-﻿using System.Threading;
-using FluentAssertions;
+﻿using FluentAssertions;
 using Polly.NoOp;
 using Xunit;
 

@@ -1,6 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-using Polly.Bulkhead;
+﻿using Polly.Bulkhead;
 using Polly.Specs.Helpers.Bulkhead;
 using FluentAssertions;
 using Xunit;

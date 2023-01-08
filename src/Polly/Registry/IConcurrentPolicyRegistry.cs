@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Polly.Registry;
+﻿namespace Polly.Registry;
 
 /// <summary>
 /// Represents a collection of policies keyed by <typeparamref name="TKey"/> which can be updated and consumed in a thread-safe manner.

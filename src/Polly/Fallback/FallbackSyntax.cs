@@ -1,6 +1,4 @@
-﻿using System;
-using System.Threading;
-using Polly.Fallback;
+﻿using Polly.Fallback;
 
 namespace Polly;
 

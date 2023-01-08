@@ -1,8 +1,5 @@
-﻿using System;
-using System.Runtime.CompilerServices;
+﻿using System.Runtime.CompilerServices;
 using Polly.Utilities;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Polly.Specs.Timeout;
 

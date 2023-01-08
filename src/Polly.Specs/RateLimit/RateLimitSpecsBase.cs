@@ -1,6 +1,4 @@
-﻿using System;
-using System.Diagnostics;
-using System.Threading;
+﻿using System.Diagnostics;
 using FluentAssertions.Execution;
 using Polly.Utilities;
 using Xunit.Sdk;

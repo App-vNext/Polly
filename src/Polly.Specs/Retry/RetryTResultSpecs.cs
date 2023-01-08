@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using FluentAssertions;
+﻿using FluentAssertions;
 using Polly.Retry;
 using Polly.Specs.Helpers;
 using Xunit;

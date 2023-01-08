@@ -1,5 +1,4 @@
-﻿using System;
-using Polly.RateLimit;
+﻿using Polly.RateLimit;
 
 namespace Polly;
 

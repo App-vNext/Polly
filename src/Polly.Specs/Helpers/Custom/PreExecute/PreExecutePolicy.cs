@@ -1,7 +1,4 @@
-﻿using System;
-using System.Threading;
-
-namespace Polly.Specs.Helpers.Custom.PreExecute;
+﻿namespace Polly.Specs.Helpers.Custom.PreExecute;
 
 internal class PreExecutePolicy : Policy
 {

@@ -1,7 +1,5 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using Polly.Utilities;
-using System.Threading;
 
 namespace Polly.CircuitBreaker;
 

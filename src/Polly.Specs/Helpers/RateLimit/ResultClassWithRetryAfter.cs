@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Polly.Specs.Helpers.RateLimit;
+﻿namespace Polly.Specs.Helpers.RateLimit;
 
 internal class ResultClassWithRetryAfter : ResultClass
 {

@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using FluentAssertions;
+﻿using FluentAssertions;
 using Moq;
 using Polly.Registry;
 using Polly.Specs.Helpers;

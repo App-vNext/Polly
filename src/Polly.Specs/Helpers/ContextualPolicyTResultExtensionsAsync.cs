@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-
-namespace Polly.Specs.Helpers;
+﻿namespace Polly.Specs.Helpers;
 
 public static class ContextualPolicyTResultExtensionsAsync
 {

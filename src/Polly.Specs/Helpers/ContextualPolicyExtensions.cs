@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Polly.Specs.Helpers;
+﻿namespace Polly.Specs.Helpers;
 
 public static class ContextualPolicyExtensions
 {

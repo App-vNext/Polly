@@ -1,6 +1,4 @@
-﻿using System;
-using System.Linq;
-using Polly.Wrap;
+﻿using Polly.Wrap;
 
 namespace Polly;
 

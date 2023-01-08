@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
-using Polly.Caching;
+﻿using Polly.Caching;
 using Polly.Utilities;
 
 namespace Polly.Specs.Helpers.Caching;

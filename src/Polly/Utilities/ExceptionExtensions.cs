@@ -1,5 +1,4 @@
-﻿using System;
-using System.Runtime.ExceptionServices;
+﻿using System.Runtime.ExceptionServices;
 
 namespace Polly.Utilities;
 

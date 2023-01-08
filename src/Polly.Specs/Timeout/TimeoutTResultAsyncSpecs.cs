@@ -1,8 +1,5 @@
 ﻿using FluentAssertions;
-using System;
 using System.Diagnostics;
-using System.Threading;
-using System.Threading.Tasks;
 using Polly.Specs.Helpers;
 using Polly.Timeout;
 using Polly.Utilities;

@@ -1,6 +1,4 @@
 ﻿using Polly.Timeout;
-using System;
-using System.Threading.Tasks;
 
 namespace Polly;
 

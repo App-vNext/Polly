@@ -1,8 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using FluentAssertions;
+﻿using FluentAssertions;
 using Polly.RateLimit;
 using Polly.Specs.Helpers.RateLimit;
 using Polly.Utilities;

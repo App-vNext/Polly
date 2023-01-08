@@ -1,6 +1,4 @@
-﻿using System;
-using System.Threading;
-using Polly.Utilities;
+﻿using Polly.Utilities;
 
 namespace Polly.Specs.Helpers.Custom.AddBehaviourIfHandle;
 

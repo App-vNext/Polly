@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
-using FluentAssertions;
+﻿using FluentAssertions;
 using FluentAssertions.Extensions;
 using Polly.CircuitBreaker;
 using Polly.Specs.Helpers;

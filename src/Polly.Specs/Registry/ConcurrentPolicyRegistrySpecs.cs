@@ -1,5 +1,4 @@
-﻿using System;
-using FluentAssertions;
+﻿using FluentAssertions;
 using Polly.NoOp;
 using Polly.Registry;
 using Polly.Specs.Helpers;
