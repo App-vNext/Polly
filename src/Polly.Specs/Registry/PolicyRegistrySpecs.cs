@@ -1,5 +1,4 @@
 ﻿using System.Collections.Concurrent;
-using System.Reflection;
 using Moq;
 
 namespace Polly.Specs.Registry;

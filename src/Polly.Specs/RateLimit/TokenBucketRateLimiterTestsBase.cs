@@ -1,5 +1,4 @@
-﻿using Polly.RateLimit;
-using Polly.Specs.Helpers.RateLimit;
+﻿using Polly.Specs.Helpers.RateLimit;
 
 namespace Polly.Specs.RateLimit;
 

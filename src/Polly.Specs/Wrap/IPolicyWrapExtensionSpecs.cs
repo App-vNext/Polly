@@ -1,6 +1,4 @@
-﻿using Polly.Retry;
-
-namespace Polly.Specs.Wrap;
+﻿namespace Polly.Specs.Wrap;
 
 public class IPolicyWrapExtensionSpecs
 {

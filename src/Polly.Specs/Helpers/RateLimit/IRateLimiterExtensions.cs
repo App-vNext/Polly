@@ -1,6 +1,4 @@
-﻿using Polly.RateLimit;
-
-namespace Polly.Specs.Helpers.RateLimit;
+﻿namespace Polly.Specs.Helpers.RateLimit;
 
 internal static class IRateLimiterExtensions
 {

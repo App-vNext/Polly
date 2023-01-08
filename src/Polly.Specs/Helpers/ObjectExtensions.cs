@@ -1,6 +1,4 @@
-﻿using System.Reflection;
-
-namespace Polly.Specs.Helpers;
+﻿namespace Polly.Specs.Helpers;
 
 public static class ObjectExtensions
 {

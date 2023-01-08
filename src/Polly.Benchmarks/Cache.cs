@@ -1,6 +1,4 @@
-﻿using BenchmarkDotNet.Attributes;
-using Microsoft.Extensions.Caching.Memory;
-using Polly.Caching;
+﻿using Microsoft.Extensions.Caching.Memory;
 
 namespace Polly.Benchmarks;
 
