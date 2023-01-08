@@ -69,5 +69,4 @@ public partial class Policy
             onBulkheadRejected
         );
     }
-
 }

@@ -159,7 +159,6 @@ public class PolicyWrapContextAndKeySpecs
     }
 
     #endregion
-
 }
 
 [Collection(Constants.SystemClockDependentTestCollection)]
@@ -276,6 +275,5 @@ public class PolicyWrapTResultContextAndKeySpecs
     }
 
     #endregion
-
 }
 

@@ -33,5 +33,4 @@ public static class ContextualPolicyExtensionsAsync
     {
         return policy.RaiseExceptionAsync(1, contextData, configureException, cancellationToken);
     }
-
 }

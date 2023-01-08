@@ -101,5 +101,4 @@ public class CustomTResultAsyncSpecs
         executed.Should().BeTrue();
         handled.Should().Be(null);
     }
-
 }

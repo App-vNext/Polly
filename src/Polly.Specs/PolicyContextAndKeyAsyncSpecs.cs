@@ -187,7 +187,6 @@ public class PolicyKeyAsyncSpecs
         operationKeySetOnContext.Should().Be(operationKey);
     }
     #endregion
-
 }
 
 public class PolicyTResultKeyAsyncSpecs
@@ -324,5 +323,4 @@ public class PolicyTResultKeyAsyncSpecs
     }
 
     #endregion
-
 }

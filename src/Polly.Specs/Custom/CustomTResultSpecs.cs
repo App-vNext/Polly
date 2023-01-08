@@ -88,5 +88,4 @@ public class CustomTResultSpecs
         executed.Should().BeTrue();
         handled.Should().Be(null);
     }
-
 }

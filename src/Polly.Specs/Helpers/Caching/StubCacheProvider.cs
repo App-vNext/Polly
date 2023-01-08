@@ -62,5 +62,4 @@ internal class StubCacheProvider : ISyncCacheProvider, IAsyncCacheProvider
     }
 
     #endregion
-
 }

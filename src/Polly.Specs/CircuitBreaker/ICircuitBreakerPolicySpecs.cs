@@ -51,7 +51,5 @@ public class ICircuitBreakerPolicySpecs
             .CircuitBreaker(2, TimeSpan.FromMinutes(1));
 
         breaker.LastException.Should().BeNull();
-
     }
-
 }

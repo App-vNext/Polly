@@ -16,7 +16,5 @@ public class ICircuitBreakerTResultPolicySpecs
             .CircuitBreaker(2, TimeSpan.FromMinutes(1));
 
         breaker.LastHandledResult.Should().Be(default(ResultPrimitive));
-
     }
-
 }
