@@ -6,7 +6,6 @@ namespace Polly.Bulkhead;
 /// <summary>
 /// Defines properties and methods common to all bulkhead policies.
 /// </summary>
-
 public interface IBulkheadPolicy : IsPolicy, IDisposable
 {
     /// <summary>
@@ -25,5 +24,4 @@ public interface IBulkheadPolicy : IsPolicy, IDisposable
 /// </summary>
 public interface IBulkheadPolicy<TResult> : IBulkheadPolicy
 {
-
 }
