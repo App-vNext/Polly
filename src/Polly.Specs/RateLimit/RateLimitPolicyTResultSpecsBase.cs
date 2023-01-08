@@ -1,6 +1,4 @@
-﻿using Polly.Specs.Helpers.RateLimit;
-
-namespace Polly.Specs.RateLimit;
+﻿namespace Polly.Specs.RateLimit;
 
 public abstract class RateLimitPolicyTResultSpecsBase : RateLimitPolicySpecsBase
 {

@@ -1,7 +1,4 @@
-﻿using System.Collections.Concurrent;
-using Moq;
-
-namespace Polly.Specs.Registry;
+﻿namespace Polly.Specs.Registry;
 
 public class PolicyRegistrySpecs
 {

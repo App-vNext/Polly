@@ -1,6 +1,4 @@
-﻿using Polly.Specs.Helpers.RateLimit;
-
-namespace Polly.Specs.RateLimit;
+﻿namespace Polly.Specs.RateLimit;
 
 [Collection(Polly.Specs.Helpers.Constants.SystemClockDependentTestCollection)]
 public class RateLimitPolicySpecs : RateLimitPolicySpecsBase, IDisposable

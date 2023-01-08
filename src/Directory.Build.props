@@ -8,6 +8,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Using Include="System.Collections" />
+    <Using Include="System.Collections.Concurrent" />
     <Using Include="System.Diagnostics" />
     <Using Include="System.Reflection" />
     <Using Include="Polly.Bulkhead" />
@@ -40,6 +41,7 @@
   <ItemGroup Condition="'$(ProjectName)' == 'Polly.Benchmarks'">
     <Using Include="BenchmarkDotNet.Attributes" />
     <Using Include="BenchmarkDotNet.Configs" />
+    <Using Include="BenchmarkDotNet.Jobs" />
     <Using Include="BenchmarkDotNet.Running" />
   </ItemGroup>
 </Project>

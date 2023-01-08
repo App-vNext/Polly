@@ -1,6 +1,4 @@
-﻿using Moq;
-
-namespace Polly.Specs.Registry;
+﻿namespace Polly.Specs.Registry;
 
 public class ReadOnlyPolicyRegistrySpecs
 {

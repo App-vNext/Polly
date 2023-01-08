@@ -1,6 +1,4 @@
-﻿using System.Collections.Concurrent;
-
-namespace Polly.Registry;
+﻿namespace Polly.Registry;
 
 /// <inheritdoc />
 /// <summary>
