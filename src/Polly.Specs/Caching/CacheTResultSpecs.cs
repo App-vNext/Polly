@@ -232,11 +232,11 @@ public class CacheTResultSpecs : IDisposable
     [Fact]
     public void Should_execute_delegate_and_put_value_in_cache_if_cache_does_not_hold_value__default_for_reference_type()
     {
-        ResultClass? valueToReturn = null;
+        ResultClass valueToReturn = new ResultClass(ResultPrimitive.Fault);
         const string operationKey = "SomeOperationKey";
 
         ISyncCacheProvider stubCacheProvider = new StubCacheProvider();
-        CachePolicy<ResultClass?> cache = Policy.Cache<ResultClass?>(stubCacheProvider, TimeSpan.MaxValue);
+        CachePolicy<ResultClass> cache = Policy.Cache<ResultClass>(stubCacheProvider, TimeSpan.MaxValue);
 
         (bool cacheHit1, object? fromCache1) = stubCacheProvider.TryGet(operationKey);
         cacheHit1.Should().BeFalse();

@@ -39,7 +39,7 @@ public class AbsoluteTtlSpecs : IDisposable
     {
         AbsoluteTtl ttlStrategy = new AbsoluteTtl(SystemClock.DateTimeOffsetUtcNow().Subtract(TimeSpan.FromTicks(1)));
 
-        ttlStrategy.GetTtl(new Context("someOperationKey"), null).Timespan.Should().Be(TimeSpan.Zero);
+        ttlStrategy.GetTtl(new Context("someOperationKey"), new ()).Timespan.Should().Be(TimeSpan.Zero);
     }
 
     [Fact]
@@ -51,7 +51,7 @@ public class AbsoluteTtlSpecs : IDisposable
         AbsoluteTtl ttlStrategy = new AbsoluteTtl(tomorrow);
 
         SystemClock.DateTimeOffsetUtcNow = () => today;
-        ttlStrategy.GetTtl(new Context("someOperationKey"), null).Timespan.Should().Be(TimeSpan.FromDays(1));
+        ttlStrategy.GetTtl(new Context("someOperationKey"), new ()).Timespan.Should().Be(TimeSpan.FromDays(1));
     }
 
     public void Dispose()
