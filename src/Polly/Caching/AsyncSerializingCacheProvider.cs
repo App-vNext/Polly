@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -36,10 +37,10 @@ public class AsyncSerializingCacheProvider<TSerialized> : IAsyncCacheProvider
     /// A <see cref="Task{TResult}" /> promising as Result a tuple whose first element is a value indicating whether
     /// the key was found in the cache, and whose second element is the value from the cache (null if not found).
     /// </returns>
-    public async Task<(bool, object)> TryGetAsync(string key, CancellationToken cancellationToken, bool continueOnCapturedContext)
+    public async Task<(bool, object?)> TryGetAsync(string key, CancellationToken cancellationToken, bool continueOnCapturedContext)
     {
-        (bool cacheHit, TSerialized objectToDeserialize) = await _wrappedCacheProvider.TryGetAsync(key, cancellationToken, continueOnCapturedContext).ConfigureAwait(continueOnCapturedContext);
-        return (cacheHit, cacheHit ? _serializer.Deserialize(objectToDeserialize) : null);
+        (bool cacheHit, TSerialized? objectToDeserialize) = await _wrappedCacheProvider.TryGetAsync(key, cancellationToken, continueOnCapturedContext).ConfigureAwait(continueOnCapturedContext);
+        return (cacheHit, cacheHit ? _serializer.Deserialize(objectToDeserialize!) : null);
     }
 
     /// <summary>
@@ -97,10 +98,10 @@ public class AsyncSerializingCacheProvider<TResult, TSerialized> : IAsyncCachePr
     /// A <see cref="Task{TResult}" /> promising as Result a tuple whose first element is a value indicating whether
     /// the key was found in the cache, and whose second element is the value from the cache (default(TResult) if not found).
     /// </returns>
-    public async Task<(bool, TResult)> TryGetAsync(string key, CancellationToken cancellationToken, bool continueOnCapturedContext)
+    public async Task<(bool, TResult?)> TryGetAsync(string key, CancellationToken cancellationToken, bool continueOnCapturedContext)
     {
-        (bool cacheHit, TSerialized objectToDeserialize) = await _wrappedCacheProvider.TryGetAsync(key, cancellationToken, continueOnCapturedContext).ConfigureAwait(continueOnCapturedContext);
-        return (cacheHit, cacheHit ? _serializer.Deserialize(objectToDeserialize) : default);
+        (bool cacheHit, TSerialized? objectToDeserialize) = await _wrappedCacheProvider.TryGetAsync(key, cancellationToken, continueOnCapturedContext).ConfigureAwait(continueOnCapturedContext);
+        return (cacheHit, cacheHit ? _serializer.Deserialize(objectToDeserialize!) : default);
     }
 
     /// <summary>

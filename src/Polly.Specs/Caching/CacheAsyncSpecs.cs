@@ -260,7 +260,7 @@ public class CacheAsyncSpecs : IDisposable
 
         IAsyncCacheProvider stubCacheProvider = new StubCacheProvider();
         var cache = Policy.CacheAsync(stubCacheProvider, TimeSpan.MaxValue);
-        await stubCacheProvider.PutAsync(operationKey, valueToReturnFromCache, new Ttl(TimeSpan.MaxValue), CancellationToken.None, false);
+        await stubCacheProvider.PutAsync(operationKey, valueToReturnFromCache!, new Ttl(TimeSpan.MaxValue), CancellationToken.None, false);
 
         bool delegateExecuted = false;
 

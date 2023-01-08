@@ -82,7 +82,7 @@ public class AsyncSerializingCacheProviderSpecs
         string key = "some key";
 
         AsyncSerializingCacheProvider<StubSerialized> serializingCacheProvider = new AsyncSerializingCacheProvider<StubSerialized>(stubCacheProvider.AsyncFor<StubSerialized>(), stubSerializer);
-        await serializingCacheProvider.PutAsync(key, objectToCache, new Ttl(TimeSpan.FromMinutes(1)), CancellationToken.None, false);
+        await serializingCacheProvider.PutAsync(key, objectToCache!, new Ttl(TimeSpan.FromMinutes(1)), CancellationToken.None, false);
 
         serializeInvoked.Should().BeTrue();
 
@@ -174,7 +174,7 @@ public class AsyncSerializingCacheProviderSpecs
         string key = "some key";
 
         AsyncSerializingCacheProvider<StubSerialized> serializingCacheProvider = stubCacheProvider.AsyncFor<StubSerialized>().WithSerializer(stubSerializer);
-        await serializingCacheProvider.PutAsync(key, objectToCache, new Ttl(TimeSpan.FromMinutes(1)), CancellationToken.None, false);
+        await serializingCacheProvider.PutAsync(key, objectToCache!, new Ttl(TimeSpan.FromMinutes(1)), CancellationToken.None, false);
 
         serializeInvoked.Should().BeTrue();
 
