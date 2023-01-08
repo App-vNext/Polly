@@ -1,5 +1,4 @@
 ﻿using System.Runtime.ExceptionServices;
-using Polly.Utilities;
 
 namespace Polly.Timeout;
 

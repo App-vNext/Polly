@@ -1,6 +1,4 @@
-﻿using Polly.Wrap;
-
-namespace Polly;
+﻿namespace Polly;
 
 public partial class AsyncPolicy
 {

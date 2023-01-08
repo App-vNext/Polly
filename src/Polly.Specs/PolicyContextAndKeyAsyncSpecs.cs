@@ -1,9 +1,4 @@
-﻿using FluentAssertions;
-using Polly.Specs.Helpers;
-using Polly.Utilities;
-using Xunit;
-
-namespace Polly.Specs;
+﻿namespace Polly.Specs;
 
 public class PolicyKeyAsyncSpecs
 {

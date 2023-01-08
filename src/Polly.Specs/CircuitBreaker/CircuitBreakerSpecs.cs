@@ -1,11 +1,4 @@
-﻿using FluentAssertions;
-using FluentAssertions.Extensions;
-using Polly.CircuitBreaker;
-using Polly.Specs.Helpers;
-using Polly.Utilities;
-using Xunit;
-
-namespace Polly.Specs.CircuitBreaker;
+﻿namespace Polly.Specs.CircuitBreaker;
 
 [Collection(Constants.SystemClockDependentTestCollection)]
 public class CircuitBreakerSpecs : IDisposable

@@ -1,8 +1,4 @@
-﻿using FluentAssertions;
-using Polly.Retry;
-using Polly.Specs.Helpers;
-using Xunit;
-
+﻿using Polly.Retry;
 using Scenario = Polly.Specs.Helpers.PolicyTResultExtensions.ResultAndOrCancellationScenario;
 
 namespace Polly.Specs.Retry;

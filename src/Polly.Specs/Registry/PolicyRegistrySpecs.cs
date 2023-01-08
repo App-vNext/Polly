@@ -1,9 +1,5 @@
 ﻿using System.Collections.Concurrent;
 using System.Reflection;
-using Xunit;
-using FluentAssertions;
-using Polly.Registry;
-using Polly.Specs.Helpers;
 using Moq;
 
 namespace Polly.Specs.Registry;

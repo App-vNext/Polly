@@ -1,11 +1,4 @@
-﻿using FluentAssertions;
-using Polly.Caching;
-using Polly.Specs.Helpers;
-using Polly.Specs.Helpers.Caching;
-using Polly.Utilities;
-using Xunit;
-
-namespace Polly.Specs.Caching;
+﻿namespace Polly.Specs.Caching;
 
 [Collection(Constants.SystemClockDependentTestCollection)]
 public class GenericCacheProviderAsyncSpecs : IDisposable

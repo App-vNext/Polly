@@ -1,6 +1,4 @@
-﻿using Polly.Utilities;
-
-namespace Polly.Caching;
+﻿namespace Polly.Caching;
 
 /// <summary>
 /// Represents an <see cref="ITtlStrategy"/> expiring at an absolute time, not with sliding expiration.

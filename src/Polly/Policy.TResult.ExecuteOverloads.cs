@@ -1,7 +1,4 @@
-﻿using System.Diagnostics;
-
-
-namespace Polly;
+﻿namespace Polly;
 
 public abstract partial class Policy<TResult> : ISyncPolicy<TResult>
 {

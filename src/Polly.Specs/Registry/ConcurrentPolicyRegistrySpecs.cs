@@ -1,10 +1,4 @@
-﻿using FluentAssertions;
-using Polly.NoOp;
-using Polly.Registry;
-using Polly.Specs.Helpers;
-using Xunit;
-
-namespace Polly.Specs.Registry;
+﻿namespace Polly.Specs.Registry;
 
 public class ConcurrentPolicyRegistrySpecs
 {

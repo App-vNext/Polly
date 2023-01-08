@@ -1,7 +1,4 @@
-﻿using System.Diagnostics;
-using Polly.Utilities;
-
-namespace Polly;
+﻿namespace Polly;
 
 public abstract partial class Policy
 {

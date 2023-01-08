@@ -1,7 +1,4 @@
-﻿using Polly.Fallback;
-using Polly.Utilities;
-
-namespace Polly;
+﻿namespace Polly;
 
 /// <summary>
 /// Fluent API for defining a Fallback <see cref="AsyncPolicy"/>.

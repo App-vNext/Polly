@@ -1,6 +1,4 @@
-﻿using Polly.Retry;
-
-namespace Polly;
+﻿namespace Polly;
 
 /// <summary>
 ///     Fluent API for defining an <see cref="AsyncRetryPolicy{TResult}" />.

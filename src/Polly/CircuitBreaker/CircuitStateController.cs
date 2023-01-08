@@ -1,6 +1,4 @@
-﻿using Polly.Utilities;
-
-namespace Polly.CircuitBreaker;
+﻿namespace Polly.CircuitBreaker;
 
 internal abstract class CircuitStateController<TResult> : ICircuitController<TResult>
 {

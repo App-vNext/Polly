@@ -1,6 +1,4 @@
-﻿using Polly.Utilities;
-
-namespace Polly;
+﻿namespace Polly;
 
 public abstract partial class PolicyBase
 {

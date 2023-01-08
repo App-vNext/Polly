@@ -1,6 +1,4 @@
-﻿using System.Diagnostics;
-
-namespace Polly;
+﻿namespace Polly;
 
 public abstract partial class AsyncPolicy : PolicyBase, IAsyncPolicy
 {

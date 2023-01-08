@@ -1,8 +1,4 @@
-﻿using FluentAssertions;
-using Polly.Utilities;
-using Xunit;
-
-namespace Polly.Specs;
+﻿namespace Polly.Specs;
 
 public class PolicyAsyncSpecs
 {

@@ -1,6 +1,4 @@
-﻿using System.Diagnostics;
-
-namespace Polly.NoOp;
+﻿namespace Polly.NoOp;
 
 /// <summary>
 /// A no op policy that can be applied to delegates.

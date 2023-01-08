@@ -1,10 +1,4 @@
-﻿using Polly.Bulkhead;
-using Polly.Specs.Helpers.Bulkhead;
-using FluentAssertions;
-using Xunit;
-using Xunit.Abstractions;
-
-namespace Polly.Specs.Bulkhead;
+﻿namespace Polly.Specs.Bulkhead;
 
 [Collection(Helpers.Constants.ParallelThreadDependentTestCollection)]
 public class BulkheadSpecs : BulkheadSpecsBase

@@ -1,8 +1,4 @@
-﻿using FluentAssertions;
-using Polly.NoOp;
-using Xunit;
-
-namespace Polly.Specs.NoOp;
+﻿namespace Polly.Specs.NoOp;
 
 public class NoOpTResultSpecs
 {

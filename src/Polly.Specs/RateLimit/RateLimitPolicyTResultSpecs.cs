@@ -1,8 +1,5 @@
 ﻿using Polly.RateLimit;
-using Polly.Specs.Helpers;
 using Polly.Specs.Helpers.RateLimit;
-using Polly.Utilities;
-using Xunit;
 
 namespace Polly.Specs.RateLimit;
 

@@ -1,6 +1,4 @@
-﻿using Polly.RateLimit;
-
-namespace Polly;
+﻿namespace Polly;
 
 public partial class Policy
 {

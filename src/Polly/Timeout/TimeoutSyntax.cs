@@ -1,6 +1,4 @@
-﻿using Polly.Timeout;
-
-namespace Polly;
+﻿namespace Polly;
 
 public partial class Policy
 {

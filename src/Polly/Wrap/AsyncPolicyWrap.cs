@@ -1,6 +1,4 @@
-﻿using System.Diagnostics;
-
-namespace Polly.Wrap;
+﻿namespace Polly.Wrap;
 
 /// <summary>
 /// A policy that allows two (and by recursion more) async Polly policies to wrap executions of async delegates.

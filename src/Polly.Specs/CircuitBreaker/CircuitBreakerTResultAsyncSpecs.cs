@@ -1,11 +1,4 @@
-﻿using FluentAssertions;
-using FluentAssertions.Extensions;
-using Polly.CircuitBreaker;
-using Polly.Specs.Helpers;
-using Polly.Utilities;
-using Xunit;
-
-using Scenario = Polly.Specs.Helpers.PolicyTResultExtensionsAsync.ResultAndOrCancellationScenario;
+﻿using Scenario = Polly.Specs.Helpers.PolicyTResultExtensionsAsync.ResultAndOrCancellationScenario;
 
 namespace Polly.Specs.CircuitBreaker;
 

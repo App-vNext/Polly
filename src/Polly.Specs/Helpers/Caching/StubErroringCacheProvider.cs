@@ -1,7 +1,4 @@
-﻿using Polly.Caching;
-using Polly.Utilities;
-
-namespace Polly.Specs.Helpers.Caching;
+﻿namespace Polly.Specs.Helpers.Caching;
 
 internal class StubErroringCacheProvider : ISyncCacheProvider, IAsyncCacheProvider
 {

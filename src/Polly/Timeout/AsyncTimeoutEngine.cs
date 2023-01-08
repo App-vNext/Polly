@@ -1,6 +1,4 @@
-﻿using Polly.Utilities;
-
-namespace Polly.Timeout;
+﻿namespace Polly.Timeout;
 
 internal static class AsyncTimeoutEngine
 {

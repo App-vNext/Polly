@@ -1,7 +1,5 @@
-﻿using FluentAssertions;
-using Polly.Specs.Helpers.Custom.AddBehaviourIfHandle;
+﻿using Polly.Specs.Helpers.Custom.AddBehaviourIfHandle;
 using Polly.Specs.Helpers.Custom.PreExecute;
-using Xunit;
 
 namespace Polly.Specs.Custom;
 

@@ -1,7 +1,4 @@
-﻿using Polly.Bulkhead;
-using Polly.Utilities;
-
-namespace Polly;
+﻿namespace Polly;
 
 public partial class Policy
 {

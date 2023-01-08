@@ -1,6 +1,4 @@
-﻿using System.Diagnostics;
-
-namespace Polly.Timeout;
+﻿namespace Polly.Timeout;
 
 /// <summary>
 /// A timeout policy which can be applied to async delegates.

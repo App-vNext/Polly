@@ -1,9 +1,4 @@
-﻿using FluentAssertions;
-using System.Diagnostics;
-using Polly.Specs.Helpers;
-using Polly.Timeout;
-using Polly.Utilities;
-using Xunit;
+﻿using Polly.Timeout;
 
 namespace Polly.Specs.Timeout;
 

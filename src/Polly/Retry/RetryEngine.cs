@@ -1,6 +1,4 @@
-﻿using Polly.Utilities;
-
-namespace Polly.Retry;
+﻿namespace Polly.Retry;
 
 internal static class RetryEngine
 {

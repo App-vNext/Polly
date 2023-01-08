@@ -1,9 +1,4 @@
-﻿using System.Diagnostics;
-using FluentAssertions.Execution;
-using Polly.Utilities;
-using Xunit.Sdk;
-
-namespace Polly.Specs.RateLimit;
+﻿namespace Polly.Specs.RateLimit;
 
 public abstract class RateLimitSpecsBase
 {

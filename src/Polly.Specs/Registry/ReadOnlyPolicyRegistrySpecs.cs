@@ -1,8 +1,4 @@
-﻿using FluentAssertions;
-using Moq;
-using Polly.Registry;
-using Polly.Specs.Helpers;
-using Xunit;
+﻿using Moq;
 
 namespace Polly.Specs.Registry;
 

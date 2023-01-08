@@ -1,6 +1,4 @@
-﻿using System.Diagnostics;
-
-namespace Polly.NoOp;
+﻿namespace Polly.NoOp;
 
 /// <summary>
 /// A noop policy that can be applied to asynchronous delegates.

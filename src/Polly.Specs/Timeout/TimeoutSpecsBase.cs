@@ -1,5 +1,4 @@
 ﻿using System.Runtime.CompilerServices;
-using Polly.Utilities;
 
 namespace Polly.Specs.Timeout;
 

@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Concurrent;
+﻿using System.Collections.Concurrent;
 
 namespace Polly.Registry;
 

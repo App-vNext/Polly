@@ -1,12 +1,4 @@
-﻿using Polly.Bulkhead;
-using Polly.Specs.Helpers;
-using Polly.Specs.Helpers.Bulkhead;
-using FluentAssertions;
-using Polly.Utilities;
-using Xunit;
-using Xunit.Abstractions;
-
-namespace Polly.Specs.Bulkhead;
+﻿namespace Polly.Specs.Bulkhead;
 
 [Collection(Constants.ParallelThreadDependentTestCollection)]
 public class BulkheadTResultAsyncSpecs : BulkheadSpecsBase

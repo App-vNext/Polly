@@ -1,6 +1,4 @@
-﻿using FluentAssertions;
-using Polly.RateLimit;
-using Xunit;
+﻿using Polly.RateLimit;
 
 namespace Polly.Specs.RateLimit;
 

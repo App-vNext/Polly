@@ -1,8 +1,4 @@
-﻿using FluentAssertions;
-using Polly.Specs.Helpers;
-using Xunit;
-
-namespace Polly.Specs.Retry;
+﻿namespace Polly.Specs.Retry;
 
 public class RetryForeverSpecs
 {

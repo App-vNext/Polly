@@ -1,6 +1,4 @@
-﻿using Polly.Caching;
-
-namespace Polly;
+﻿namespace Polly;
 
 public partial class Policy
 {

@@ -1,9 +1,4 @@
-﻿using Xunit;
-using Polly.Wrap;
-using FluentAssertions;
-using Polly.CircuitBreaker;
-using Polly.NoOp;
-using Polly.Retry;
+﻿using Polly.Retry;
 
 namespace Polly.Specs.Wrap;
 

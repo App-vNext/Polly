@@ -1,6 +1,4 @@
-﻿using Polly.Caching;
-
-namespace Polly.Specs.Helpers.Caching;
+﻿namespace Polly.Specs.Helpers.Caching;
 
 /// <summary>
 /// A configurable stub ICacheKeyStrategy, to support tests..

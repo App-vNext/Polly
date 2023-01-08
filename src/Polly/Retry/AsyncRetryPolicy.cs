@@ -1,6 +1,4 @@
-﻿using System.Diagnostics;
-
-namespace Polly.Retry;
+﻿namespace Polly.Retry;
 
 /// <summary>
 /// A retry policy that can be applied to asynchronous delegates.

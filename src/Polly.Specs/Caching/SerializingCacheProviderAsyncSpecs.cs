@@ -1,10 +1,4 @@
-﻿using FluentAssertions;
-using Polly.Caching;
-using Polly.Specs.Helpers;
-using Polly.Specs.Helpers.Caching;
-using Xunit;
-
-namespace Polly.Specs.Caching;
+﻿namespace Polly.Specs.Caching;
 
 public class AsyncSerializingCacheProviderSpecs
 {
