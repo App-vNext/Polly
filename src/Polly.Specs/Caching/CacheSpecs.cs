@@ -203,7 +203,7 @@ public class CacheSpecs : IDisposable
     [Fact]
     public void Should_allow_custom_ICacheKeyStrategy()
     {
-        Action<Context, string, Exception> noErrorHandling = (_, _, _) => { };
+        Action<Context, string, Exception>? noErrorHandling = (_, _, _) => { };
         Action<Context, string> emptyDelegate = (_, _) => { };
 
         ISyncCacheProvider stubCacheProvider = new StubCacheProvider();
@@ -579,7 +579,7 @@ public class CacheSpecs : IDisposable
         Context contextToExecute = new Context(operationKey);
         Context? contextPassedToDelegate = null;
 
-        Action<Context, string, Exception> noErrorHandling = (_, _, _) => { };
+        Action<Context, string, Exception>? noErrorHandling = (_, _, _) => { };
         Action<Context, string> emptyDelegate = (_, _) => { };
         Action<Context, string> onCacheAction = (ctx, key) => { contextPassedToDelegate = ctx; keyPassedToDelegate = key; };
 
@@ -613,7 +613,7 @@ public class CacheSpecs : IDisposable
         Context? contextPassedToOnCacheMiss = null;
         Context? contextPassedToOnCachePut = null;
 
-        Action<Context, string, Exception> noErrorHandling = (_, _, _) => { };
+        Action<Context, string, Exception>? noErrorHandling = (_, _, _) => { };
         Action<Context, string> emptyDelegate = (_, _) => { };
         Action<Context, string> onCacheMiss = (ctx, key) => { contextPassedToOnCacheMiss = ctx; keyPassedToOnCacheMiss = key; };
         Action<Context, string> onCachePut = (ctx, key) => { contextPassedToOnCachePut = ctx; keyPassedToOnCachePut = key; };
@@ -651,7 +651,7 @@ public class CacheSpecs : IDisposable
         Context? contextPassedToOnCacheMiss = null;
         Context? contextPassedToOnCachePut = null;
 
-        Action<Context, string, Exception> noErrorHandling = (_, _, _) => { };
+        Action<Context, string, Exception>? noErrorHandling = (_, _, _) => { };
         Action<Context, string> emptyDelegate = (_, _) => { };
         Action<Context, string> onCacheMiss = (ctx, key) => { contextPassedToOnCacheMiss = ctx; keyPassedToOnCacheMiss = key; };
         Action<Context, string> onCachePut = (ctx, key) => { contextPassedToOnCachePut = ctx; keyPassedToOnCachePut = key; };
@@ -677,7 +677,7 @@ public class CacheSpecs : IDisposable
     {
         string valueToReturn = Guid.NewGuid().ToString();
 
-        Action<Context, string, Exception> noErrorHandling = (_, _, _) => { };
+        Action<Context, string, Exception>? noErrorHandling = (_, _, _) => { };
         Action<Context, string> emptyDelegate = (_, _) => { };
 
         bool onCacheMissExecuted = false;
