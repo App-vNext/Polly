@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using Polly.Utilities;
@@ -15,11 +16,11 @@ internal static class RetryEngine
         ResultPredicates<TResult> shouldRetryResultPredicates,
         Action<DelegateResult<TResult>, TimeSpan, int, Context> onRetry,
         int permittedRetryCount = Int32.MaxValue,
-        IEnumerable<TimeSpan> sleepDurationsEnumerable = null,
-        Func<int, DelegateResult<TResult>, Context, TimeSpan> sleepDurationProvider = null)
+        IEnumerable<TimeSpan>? sleepDurationsEnumerable = null,
+        Func<int, DelegateResult<TResult>, Context, TimeSpan>? sleepDurationProvider = null)
     {
         int tryCount = 0;
-        IEnumerator<TimeSpan> sleepDurationsEnumerator = sleepDurationsEnumerable?.GetEnumerator();
+        IEnumerator<TimeSpan>? sleepDurationsEnumerator = sleepDurationsEnumerable?.GetEnumerator();
 
         try
         {
