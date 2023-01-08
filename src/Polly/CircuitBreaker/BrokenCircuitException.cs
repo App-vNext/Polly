@@ -61,6 +61,7 @@ public class BrokenCircuitException : ExecutionRejectedException
 [Serializable]
 #endif
 public class BrokenCircuitException<TResult> : BrokenCircuitException
+    where TResult : notnull
 {
     private readonly TResult result;
 

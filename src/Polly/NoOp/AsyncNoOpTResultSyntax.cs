@@ -1,4 +1,5 @@
-﻿using Polly.NoOp;
+﻿#nullable enable
+using Polly.NoOp;
 
 namespace Polly;
 

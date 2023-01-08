@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.Diagnostics;
 using System.Threading;
 
@@ -28,11 +29,11 @@ public class RateLimitPolicy : Policy, IRateLimitPolicy
 public class RateLimitPolicy<TResult> : Policy<TResult>, IRateLimitPolicy<TResult>
 {
     private readonly IRateLimiter _rateLimiter;
-    private readonly Func<TimeSpan, Context, TResult> _retryAfterFactory;
+    private readonly Func<TimeSpan, Context, TResult>? _retryAfterFactory;
 
     internal RateLimitPolicy(
         IRateLimiter rateLimiter,
-        Func<TimeSpan, Context, TResult> retryAfterFactory)
+        Func<TimeSpan, Context, TResult>? retryAfterFactory)
     {
         _rateLimiter = rateLimiter ?? throw new ArgumentNullException(nameof(rateLimiter));
         _retryAfterFactory = retryAfterFactory;

@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.Threading;
 
 namespace Polly.RateLimit;
@@ -7,7 +8,7 @@ internal static class RateLimitEngine
 {
     internal static TResult Implementation<TResult>(
         IRateLimiter rateLimiter,
-        Func<TimeSpan, Context, TResult> retryAfterFactory,
+        Func<TimeSpan, Context, TResult>? retryAfterFactory,
         Func<Context, CancellationToken, TResult> action,
         Context context,
         CancellationToken cancellationToken

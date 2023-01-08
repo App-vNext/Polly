@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -8,7 +9,7 @@ internal static class AsyncRateLimitEngine
 {
     internal static async Task<TResult> ImplementationAsync<TResult>(
         IRateLimiter rateLimiter,
-        Func<TimeSpan, Context, TResult> retryAfterFactory,
+        Func<TimeSpan, Context, TResult>? retryAfterFactory,
         Func<Context, CancellationToken, Task<TResult>> action,
         Context context,
         CancellationToken cancellationToken,

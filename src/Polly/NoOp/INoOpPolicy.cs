@@ -1,4 +1,5 @@
-﻿namespace Polly.NoOp;
+﻿#nullable enable
+namespace Polly.NoOp;
 
 /// <summary>
 /// Defines properties and methods common to all NoOp policies.
