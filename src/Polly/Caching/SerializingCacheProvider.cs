@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable enable
+using System;
 
 namespace Polly.Caching;
 
@@ -32,10 +33,10 @@ public class SerializingCacheProvider<TSerialized> : ISyncCacheProvider
     /// A tuple whose first element is a value indicating whether the key was found in the cache,
     /// and whose second element is the value from the cache (null if not found).
     /// </returns>
-    public (bool, object) TryGet(string key)
+    public (bool, object?) TryGet(string key)
     {
-        (bool cacheHit, TSerialized objectToDeserialize) = _wrappedCacheProvider.TryGet(key);
-        return (cacheHit, cacheHit ? _serializer.Deserialize(objectToDeserialize) : null);
+        (bool cacheHit, TSerialized? objectToDeserialize) = _wrappedCacheProvider.TryGet(key);
+        return (cacheHit, cacheHit ? _serializer.Deserialize(objectToDeserialize!) : null);
     }
 
     /// <summary>
@@ -81,10 +82,10 @@ public class SerializingCacheProvider<TResult, TSerialized> : ISyncCacheProvider
     /// A tuple whose first element is a value indicating whether the key was found in the cache,
     /// and whose second element is the value from the cache (default(TResult) if not found).
     /// </returns>
-    public (bool, TResult) TryGet(string key)
+    public (bool, TResult?) TryGet(string key)
     {
-        (bool cacheHit, TSerialized objectToDeserialize) = _wrappedCacheProvider.TryGet(key);
-        return (cacheHit, cacheHit ? _serializer.Deserialize(objectToDeserialize) : default);
+        (bool cacheHit, TSerialized? objectToDeserialize) = _wrappedCacheProvider.TryGet(key);
+        return (cacheHit, cacheHit ? _serializer.Deserialize(objectToDeserialize!) : default);
     }
 
     /// <summary>

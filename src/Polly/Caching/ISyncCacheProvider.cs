@@ -1,4 +1,5 @@
-﻿namespace Polly.Caching;
+﻿#nullable enable
+namespace Polly.Caching;
 
 /// <summary>
 /// Defines methods for classes providing synchronous cache functionality for Polly <see cref="CachePolicy"/>s.
@@ -13,7 +14,7 @@ public interface ISyncCacheProvider
     /// A tuple whose first element is a value indicating whether the key was found in the cache,
     /// and whose second element is the value from the cache (null if not found).
     /// </returns>
-    (bool, object) TryGet(string key);
+    (bool, object?) TryGet(string key);
 
     /// <summary>
     /// Puts the specified value in the cache.
@@ -37,7 +38,7 @@ public interface ISyncCacheProvider<TResult>
     /// A tuple whose first element is a value indicating whether the key was found in the cache,
     /// and whose second element is the value from the cache (default(TResult) if not found).
     /// </returns>
-    (bool, TResult) TryGet(string key);
+    (bool, TResult?) TryGet(string key);
 
     /// <summary>
     /// Puts the specified value in the cache.

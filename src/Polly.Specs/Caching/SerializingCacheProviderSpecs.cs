@@ -76,7 +76,7 @@ public class SerializingCacheProviderSpecs
             deserialize: s => s.Original
         );
         StubCacheProvider stubCacheProvider = new StubCacheProvider();
-        object? objectToCache = null;
+        object objectToCache = new object();
         string key = "some key";
 
         SerializingCacheProvider<StubSerialized> serializingCacheProvider = new SerializingCacheProvider<StubSerialized>(stubCacheProvider.For<StubSerialized>(), stubSerializer);
@@ -168,7 +168,7 @@ public class SerializingCacheProviderSpecs
             deserialize: s => s.Original
         );
         StubCacheProvider stubCacheProvider = new StubCacheProvider();
-        object? objectToCache = null;
+        object objectToCache = new();
         string key = "some key";
 
         SerializingCacheProvider<StubSerialized> serializingCacheProvider = stubCacheProvider.For<StubSerialized>().WithSerializer(stubSerializer);

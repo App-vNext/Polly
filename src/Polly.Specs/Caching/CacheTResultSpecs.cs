@@ -252,7 +252,7 @@ public class CacheTResultSpecs : IDisposable
     [Fact]
     public void Should_return_value_from_cache_and_not_execute_delegate_if_cache_holds_value__default_for_reference_type()
     {
-        ResultClass? valueToReturnFromCache = null;
+        ResultClass valueToReturnFromCache = new ResultClass(ResultPrimitive.Fault);
         ResultClass valueToReturnFromExecution = new ResultClass(ResultPrimitive.Good);
         const string operationKey = "SomeOperationKey";
 
