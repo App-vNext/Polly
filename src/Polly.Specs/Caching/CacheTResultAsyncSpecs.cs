@@ -235,11 +235,11 @@ public class CacheTResultAsyncSpecs : IDisposable
     [Fact]
     public async Task Should_execute_delegate_and_put_value_in_cache_if_cache_does_not_hold_value__default_for_reference_type()
     {
-        ResultClass? valueToReturn = null;
+        ResultClass valueToReturn = new ResultClass(ResultPrimitive.Good);
         const string operationKey = "SomeOperationKey";
 
         IAsyncCacheProvider stubCacheProvider = new StubCacheProvider();
-        var cache = Policy.CacheAsync<ResultClass?>(stubCacheProvider, TimeSpan.MaxValue);
+        var cache = Policy.CacheAsync<ResultClass>(stubCacheProvider, TimeSpan.MaxValue);
 
         (bool cacheHit1, object? fromCache1) = await stubCacheProvider.TryGetAsync(operationKey, CancellationToken.None, false);
         cacheHit1.Should().BeFalse();

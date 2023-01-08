@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using Polly.CircuitBreaker;
 using Polly.Utilities;
 

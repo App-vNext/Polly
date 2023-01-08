@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -9,16 +10,17 @@ namespace Polly.Caching;
 /// </summary>
 /// <typeparam name="TCacheFormat">The type of the objects in the cache.</typeparam>
 internal class AsyncGenericCacheProvider<TCacheFormat> : IAsyncCacheProvider<TCacheFormat>
+    where TCacheFormat : notnull
 {
     private readonly IAsyncCacheProvider _wrappedCacheProvider;
 
     internal AsyncGenericCacheProvider(IAsyncCacheProvider nonGenericCacheProvider)
         => _wrappedCacheProvider = nonGenericCacheProvider ?? throw new ArgumentNullException(nameof(nonGenericCacheProvider));
 
-    async Task<(bool, TCacheFormat)> IAsyncCacheProvider<TCacheFormat>.TryGetAsync(string key, CancellationToken cancellationToken, bool continueOnCapturedContext)
+    async Task<(bool, TCacheFormat?)> IAsyncCacheProvider<TCacheFormat>.TryGetAsync(string key, CancellationToken cancellationToken, bool continueOnCapturedContext)
     {
-        (bool cacheHit, object result) = await _wrappedCacheProvider.TryGetAsync(key, cancellationToken, continueOnCapturedContext).ConfigureAwait(continueOnCapturedContext);
-        return (cacheHit, (TCacheFormat)(result ?? default(TCacheFormat)));
+        (bool cacheHit, object? result) = await _wrappedCacheProvider.TryGetAsync(key, cancellationToken, continueOnCapturedContext).ConfigureAwait(continueOnCapturedContext);
+        return (cacheHit, (TCacheFormat?)(result ?? default(TCacheFormat)));
     }
 
     Task IAsyncCacheProvider<TCacheFormat>.PutAsync(string key, TCacheFormat value, Ttl ttl, CancellationToken cancellationToken, bool continueOnCapturedContext)
