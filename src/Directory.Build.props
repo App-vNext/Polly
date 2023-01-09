@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project>
+  
   <PropertyGroup>
     <AssemblyOriginatorKeyFile>..\Polly.snk</AssemblyOriginatorKeyFile>
     <SignAssembly>true</SignAssembly>
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
+
+  <Import Project="Polly.props" Condition= "$(UsePollyTarget) == 'true'" />
+  
 </Project>

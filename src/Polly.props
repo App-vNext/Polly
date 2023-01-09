@@ -1,0 +1,59 @@
+<Project>
+
+  <PropertyGroup>
+    <Version>8.0.0</Version>
+    <AssemblyVersion>8.0.0.0</AssemblyVersion>
+    <FileVersion>8.0.0.0</FileVersion>
+    <InformationalVersion>8.0.0.0</InformationalVersion>
+    <Company>App vNext</Company>
+    <Copyright>Copyright (c) $([System.DateTime]::Now.ToString(yyyy)), App vNext</Copyright>
+    <Description>Polly is a library that allows developers to express resilience and transient fault handling policies such as Retry, Circuit Breaker, Timeout, Bulkhead Isolation, and Fallback in a fluent and thread-safe manner.</Description>
+    <DefaultLanguage>en-US</DefaultLanguage>
+    <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <Authors>Michael Wolfenden, App vNext</Authors>
+    <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources> <!-- EmbedUntrackedSources for deterministic build -->
+    <ContinuousIntegrationBuild Condition=" '$(CI)' != '' ">true</ContinuousIntegrationBuild>
+    <Deterministic>true</Deterministic>
+    <ImplicitUsings>true</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <RootNamespace>Polly</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup Label="Namespaces">
+    <Using Remove="System.Net.Http" />
+  </ItemGroup>
+
+  <PropertyGroup Label="SourceLink">
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+  </PropertyGroup>
+
+  <ItemGroup Label="SourceLink">
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
+  </ItemGroup>
+  
+  <ItemGroup Condition="'$(TargetFramework)'=='net461' or '$(TargetFramework)' == 'netstandard1.1'">
+    <PackageReference Include="System.ValueTuple" Version="4.5.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="$(MSBuildThisFileDirectory)..\..\Polly.png" Pack="true" PackagePath="\" />
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
+      <_Parameter1>Polly.Specs, PublicKey=0024000004800000940000000602000000240000525341310004000001000100150819e3494f97263a3abdd18e5e0c47b04e6c0ede44a6c51d50b545d403ceeb7cbb32d18dbbbcdd1d88a87d7b73206b126be134b0609c36aa3cb31dd2e47e393293102809b8d77f192f3188618a42e651c14ebf05f8f5b76aa91b431642b23497ed82b65d63791cdaa31d4282a2d6cbabc3fe0745b6b6690c417cabf6a1349c</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
+
+  <PropertyGroup Label="NuspecProperties">
+    <PackageIcon>Polly.png</PackageIcon>
+    <NeutralLanguage>en-US</NeutralLanguage>
+    <AssemblyTitle>Polly.Abstractions</AssemblyTitle>
+    <PackageLicenseExpression>BSD-3-Clause</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/App-vNext/Polly</PackageProjectUrl>
+    <PackageTags>Exception Handling Resilience Transient Fault Policy Circuit Breaker CircuitBreaker Retry Wait Cache Cache-aside Bulkhead Rate-limit Fallback Timeout Throttle Parallelization</PackageTags>
+    <PackageReleaseNotes>See https://github.com/App-vNext/Polly/blob/main/CHANGELOG.md for details</PackageReleaseNotes>
+  </PropertyGroup>
+  
+</Project>

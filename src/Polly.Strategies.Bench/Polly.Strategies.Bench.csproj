@@ -8,10 +8,6 @@
     <OutputType>Exe</OutputType>
   </PropertyGroup>
   
-  <ItemGroup Label="Namespaces">
-    <Using Remove="System.Net.Http" />
-  </ItemGroup>
-  
   <ItemGroup>
     <PackageReference Include="BenchmarkDotNet" Version="0.13.3" />
   </ItemGroup>
