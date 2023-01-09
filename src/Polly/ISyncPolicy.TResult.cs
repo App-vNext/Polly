@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading;
-
-namespace Polly;
+﻿namespace Polly;
 
 /// <summary>
 /// An interface defining all executions available on a synchronous policy generic-typed for executions returning results of type <typeparamref name="TResult"/>.

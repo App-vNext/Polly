@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using FluentAssertions;
-using Polly.Caching;
-using Xunit;
-
-namespace Polly.Specs.Caching;
+﻿namespace Polly.Specs.Caching;
 
 public class ContextualTtlSpecs
 {

@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using FluentAssertions;
-using FluentAssertions.Extensions;
-using Polly.Specs.Helpers;
-using Polly.Utilities;
-using Xunit;
-
-namespace Polly.Specs.Retry;
+﻿namespace Polly.Specs.Retry;
 
 [Collection(Constants.SystemClockDependentTestCollection)]
 public class WaitAndRetryForeverTResultSpecs : IDisposable

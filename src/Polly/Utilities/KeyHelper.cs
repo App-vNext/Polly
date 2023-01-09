@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Polly.Utilities;
+﻿namespace Polly.Utilities;
 
 internal static class KeyHelper
 {

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using FluentAssertions;
-using Xunit;
-
-namespace Polly.Specs;
+﻿namespace Polly.Specs;
 
 public class PolicySpecs
 {

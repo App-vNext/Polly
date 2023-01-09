@@ -1,12 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-using Polly.RateLimit;
-using Polly.Specs.Helpers;
-using Polly.Specs.Helpers.RateLimit;
-using Polly.Utilities;
-using Xunit;
-
-namespace Polly.Specs.RateLimit;
+﻿namespace Polly.Specs.RateLimit;
 
 [Collection(Polly.Specs.Helpers.Constants.SystemClockDependentTestCollection)]
 public class AsyncRateLimitPolicySpecs : RateLimitPolicySpecsBase, IDisposable

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Threading;
-
-namespace Polly.NoOp;
+﻿namespace Polly.NoOp;
 
 internal static partial class NoOpEngine
 {

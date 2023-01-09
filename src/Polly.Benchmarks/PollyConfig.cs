@@ -1,7 +1,4 @@
-﻿using BenchmarkDotNet.Configs;
-using BenchmarkDotNet.Jobs;
-
-namespace Polly.Benchmarks;
+﻿namespace Polly.Benchmarks;
 
 internal class PollyConfig : ManualConfig
 {

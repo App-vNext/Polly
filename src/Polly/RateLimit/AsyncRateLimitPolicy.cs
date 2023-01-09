@@ -1,9 +1,4 @@
-﻿using System;
-using System.Diagnostics;
-using System.Threading;
-using System.Threading.Tasks;
-
-namespace Polly.RateLimit;
+﻿namespace Polly.RateLimit;
 
 /// <summary>
 /// A rate-limit policy that can be applied to asynchronous delegates.

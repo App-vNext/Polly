@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading;
-using FluentAssertions;
-using Polly.Fallback;
-using Polly.Specs.Helpers;
-using Xunit;
-
-using Scenario = Polly.Specs.Helpers.PolicyTResultExtensions.ResultAndOrCancellationScenario;
+﻿using Scenario = Polly.Specs.Helpers.PolicyTResultExtensions.ResultAndOrCancellationScenario;
 
 namespace Polly.Specs.Fallback;
 

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Linq;
-using System.Threading;
-using Xunit.Abstractions;
-
-namespace Polly.Specs.Helpers.Bulkhead;
+﻿namespace Polly.Specs.Helpers.Bulkhead;
 
 public class AnnotatedOutputHelper : ITestOutputHelper
 {

@@ -1,7 +1,4 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-
-namespace Polly.Caching;
+﻿namespace Polly.Caching;
 
 /// <summary>
 /// Defines methods for classes providing asynchronous cache functionality for Polly <see cref="CachePolicy" />s.

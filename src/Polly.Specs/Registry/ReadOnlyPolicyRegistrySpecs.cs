@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using FluentAssertions;
-using Moq;
-using Polly.Registry;
-using Polly.Specs.Helpers;
-using Xunit;
-
-namespace Polly.Specs.Registry;
+﻿namespace Polly.Specs.Registry;
 
 public class ReadOnlyPolicyRegistrySpecs
 {

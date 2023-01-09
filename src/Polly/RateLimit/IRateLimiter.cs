@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Polly.RateLimit;
+﻿namespace Polly.RateLimit;
 
 /// <summary>
 /// Defines methods to be provided by a rate-limiter used in a Polly <see cref="IRateLimitPolicy"/>

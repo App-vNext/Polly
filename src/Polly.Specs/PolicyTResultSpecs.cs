@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using FluentAssertions;
-using Polly.Specs.Helpers;
-using Xunit;
-
-namespace Polly.Specs;
+﻿namespace Polly.Specs;
 
 public class PolicyTResultSpecs
 {

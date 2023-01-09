@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Polly.Bulkhead;
+﻿namespace Polly.Bulkhead;
 
 /// <summary>
 /// Defines properties and methods common to all bulkhead policies.

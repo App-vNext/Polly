@@ -1,8 +1,4 @@
-﻿using System;
-using Polly.CircuitBreaker;
-using Polly.Utilities;
-
-namespace Polly;
+﻿namespace Polly;
 
 /// <summary>
 /// Fluent API for defining a Circuit Breaker <see cref="Policy{TResult}"/>.

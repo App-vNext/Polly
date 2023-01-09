@@ -1,8 +1,4 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-
-namespace Polly.Benchmarks;
+﻿namespace Polly.Benchmarks;
 
 internal static class Workloads
 {

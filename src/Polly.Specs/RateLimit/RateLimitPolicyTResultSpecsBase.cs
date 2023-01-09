@@ -1,11 +1,4 @@
-﻿using System;
-using FluentAssertions;
-using Polly.RateLimit;
-using Polly.Specs.Helpers;
-using Polly.Specs.Helpers.RateLimit;
-using Xunit;
-
-namespace Polly.Specs.RateLimit;
+﻿namespace Polly.Specs.RateLimit;
 
 public abstract class RateLimitPolicyTResultSpecsBase : RateLimitPolicySpecsBase
 {
