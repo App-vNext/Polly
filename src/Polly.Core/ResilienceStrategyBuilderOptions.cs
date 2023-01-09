@@ -5,7 +5,7 @@ namespace Polly;
 
 public class ResilienceStrategyBuilderOptions
 {
-    public string StrategyName { get; set; } = string.Empty;
+    public string Name { get; set; } = string.Empty;
 
     public ILoggerFactory LoggerFactory { get; set; } = NullLoggerFactory.Instance;
 }

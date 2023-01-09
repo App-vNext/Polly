@@ -28,7 +28,7 @@ internal static partial class Helper
                 {
                    TimeoutInterval = outerTimeout,
                    OnTimeout = new Events<TimeoutTaskArguments>().Add(args => new ValueTask()),
-                   StartegyName = "outer-timeout"
+                   StrategyName = "outer-timeout"
                 });
 
                 builder.AddRetry(new RetryStrategyOptions
@@ -39,14 +39,14 @@ internal static partial class Helper
                     RetryCount = 3,
                     RetryDelayGenerator = attempt => delay,
                     OnRetry = new Events<RetryActionArguments>().Add((args) => default(ValueTask)),
-                    StartegyName = "retries"
+                    StrategyName = "retries"
                 });
 
                 builder.AddTimeout(new TimeoutStrategyOptions
                 {
                     TimeoutInterval = innerTimeout,
                     OnTimeout = new Events<TimeoutTaskArguments>().Add(args => new ValueTask()),
-                    StartegyName = "inner-timeout"
+                    StrategyName = "inner-timeout"
                 });
             }),
             _ => throw new NotImplementedException()

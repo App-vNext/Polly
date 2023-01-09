@@ -8,11 +8,11 @@ public class ResilienceStrategyBuilder : IResilienceStrategyBuilder
 
     public ResilienceStrategyBuilderOptions Options { get; set; } = new();
 
-    public IResilienceStrategyBuilder AddStrategy(IResilienceStrategy strategy, ResilienceStrategyOptions? properties = null) => AddStrategy(_ => strategy, properties);
+    public IResilienceStrategyBuilder AddStrategy(IResilienceStrategy strategy, ResilienceStrategyOptions? options = null) => AddStrategy(_ => strategy, options);
 
-    public IResilienceStrategyBuilder AddStrategy(Func<ResilienceStrategyBuilderContext, IResilienceStrategy> factory, ResilienceStrategyOptions? properties = null)
+    public IResilienceStrategyBuilder AddStrategy(Func<ResilienceStrategyBuilderContext, IResilienceStrategy> factory, ResilienceStrategyOptions? options = null)
     {
-        _entries.Add(new Entry(factory, properties ?? new ResilienceStrategyOptions()));
+        _entries.Add(new Entry(factory, options ?? new ResilienceStrategyOptions()));
 
         return this;
     }

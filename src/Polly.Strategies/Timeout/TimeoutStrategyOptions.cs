@@ -2,7 +2,7 @@ namespace Polly.Timeout;
 
 public class TimeoutStrategyOptions : ResilienceStrategyOptions
 {
-    public TimeoutStrategyOptions() => StrategyType = "Retry";
+    public TimeoutStrategyOptions() => StrategyType = "Timeout";
 
     public TimeSpan TimeoutInterval { get; set; } = TimeSpan.FromSeconds(30);
 
