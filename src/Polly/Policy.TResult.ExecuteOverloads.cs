@@ -2,7 +2,6 @@
 
 public abstract partial class Policy<TResult> : ISyncPolicy<TResult>
 {
-
     #region Execute overloads
 
     /// <summary>

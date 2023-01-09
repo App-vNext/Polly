@@ -2,7 +2,6 @@
 
 public class IPolicyWrapExtensionSpecs
 {
-
     [Fact]
     public void Should_pass_all_nested_policies_from_PolicyWrap_in_same_order_they_were_added()
     {

@@ -64,7 +64,6 @@ public class PolicyResult<TResult>
     internal PolicyResult(TResult result, OutcomeType outcome, Exception finalException, ExceptionType? exceptionType, Context context)
         : this(result, outcome, finalException, exceptionType, default, null, context)
     {
-
     }
 
     internal PolicyResult(TResult result, OutcomeType outcome, Exception finalException, ExceptionType? exceptionType, TResult finalHandledResult, FaultType? faultType, Context context)

@@ -723,8 +723,8 @@ public class WaitAndRetrySpecs : IDisposable
     [Fact]
     public void Should_be_able_to_calculate_retry_timespans_based_on_the_handled_fault()
     {
-        Dictionary<Exception, TimeSpan> expectedRetryWaits = new Dictionary<Exception, TimeSpan>(){
-
+        Dictionary<Exception, TimeSpan> expectedRetryWaits = new Dictionary<Exception, TimeSpan>
+        {
             {new DivideByZeroException(), 2.Seconds()},
             {new ArgumentNullException(), 4.Seconds()},
         };
