@@ -1,4 +1,5 @@
-﻿namespace Polly.Retry;
+﻿#nullable enable
+namespace Polly.Retry;
 
 internal static class AsyncRetryEngine
 {
@@ -10,12 +11,12 @@ internal static class AsyncRetryEngine
         ResultPredicates<TResult> shouldRetryResultPredicates,
         Func<DelegateResult<TResult>, TimeSpan, int, Context, Task> onRetryAsync,
         int permittedRetryCount = Int32.MaxValue,
-        IEnumerable<TimeSpan> sleepDurationsEnumerable = null,
-        Func<int, DelegateResult<TResult>, Context, TimeSpan> sleepDurationProvider = null,
+        IEnumerable<TimeSpan>? sleepDurationsEnumerable = null,
+        Func<int, DelegateResult<TResult>, Context, TimeSpan>? sleepDurationProvider = null,
         bool continueOnCapturedContext = false)
     {
         int tryCount = 0;
-        IEnumerator<TimeSpan> sleepDurationsEnumerator = sleepDurationsEnumerable?.GetEnumerator();
+        IEnumerator<TimeSpan>? sleepDurationsEnumerator = sleepDurationsEnumerable?.GetEnumerator();
 
         try
         {

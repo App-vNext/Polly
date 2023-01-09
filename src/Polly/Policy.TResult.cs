@@ -1,4 +1,5 @@
-﻿namespace Polly;
+﻿#nullable enable
+namespace Polly;
 
 /// <summary>
 /// Transient fault handling policies that can be applied to delegates returning results of type <typeparamref name="TResult"/>
@@ -19,7 +20,7 @@ public abstract partial class Policy<TResult> : PolicyBase<TResult>
     /// Constructs a new instance of a derived <see cref="Policy{TResult}"/> type with the passed <paramref name="policyBuilder"/>.
     /// </summary>
     /// <param name="policyBuilder">A <see cref="PolicyBuilder{TResult}"/> indicating which exceptions and results the policy should handle.</param>
-    protected Policy(PolicyBuilder<TResult> policyBuilder = null)
+    protected Policy(PolicyBuilder<TResult>? policyBuilder = null)
         : base(policyBuilder)
     {
     }
