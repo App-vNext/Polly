@@ -1,9 +1,4 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-using BenchmarkDotNet.Attributes;
-using Microsoft.Extensions.Caching.Memory;
-using Polly.Caching;
+﻿using Microsoft.Extensions.Caching.Memory;
 
 namespace Polly.Benchmarks;
 

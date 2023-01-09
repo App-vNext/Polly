@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
-using Polly.Utilities;
-
-namespace Polly.Retry;
+﻿namespace Polly.Retry;
 
 internal static class AsyncRetryEngine
 {

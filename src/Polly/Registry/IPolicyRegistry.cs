@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Polly.Registry;
+﻿namespace Polly.Registry;
 
 /// <summary>
 /// Represents a collection of policies keyed by <typeparamref name="TKey"/>.

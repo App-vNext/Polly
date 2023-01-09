@@ -1,9 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-using Polly.Timeout;
-using Polly.Utilities;
-
-namespace Polly;
+﻿namespace Polly;
 
 public partial class Policy
 {

@@ -1,8 +1,4 @@
-﻿using FluentAssertions;
-using Polly.Bulkhead;
-using Xunit;
-
-namespace Polly.Specs.Bulkhead;
+﻿namespace Polly.Specs.Bulkhead;
 
 public class IBulkheadPolicySpecs
 {

@@ -1,11 +1,4 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-using FluentAssertions;
-using Polly.NoOp;
-using Xunit;
-
-namespace Polly.Specs.NoOp;
+﻿namespace Polly.Specs.NoOp;
 
 public class NoOpTResultAsyncSpecs
 {

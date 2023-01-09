@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Polly.Caching;
+﻿namespace Polly.Caching;
 
 /// <summary>
 /// Represents a time-to-live for a given cache item.

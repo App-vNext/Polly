@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Polly.CircuitBreaker;
+﻿namespace Polly.CircuitBreaker;
 
 /// <summary>
 /// Defines properties and methods common to all circuit-breaker policies.

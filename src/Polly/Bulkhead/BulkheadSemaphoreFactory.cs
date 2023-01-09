@@ -1,6 +1,4 @@
-﻿using System.Threading;
-
-namespace Polly.Bulkhead;
+﻿namespace Polly.Bulkhead;
 
 internal static class BulkheadSemaphoreFactory
 {

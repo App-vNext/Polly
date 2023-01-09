@@ -1,5 +1,4 @@
 ﻿#if NETSTANDARD2_0
-using System;
 using System.Runtime.Serialization;
 #endif
 

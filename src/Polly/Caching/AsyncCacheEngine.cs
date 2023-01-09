@@ -1,8 +1,4 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-
-namespace Polly.Caching;
+﻿namespace Polly.Caching;
 
 internal static class AsyncCacheEngine
 {

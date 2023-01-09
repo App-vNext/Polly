@@ -1,8 +1,4 @@
-﻿using System;
-using System.Runtime.ExceptionServices;
-using System.Threading;
-using System.Threading.Tasks;
-using Polly.Utilities;
+﻿using System.Runtime.ExceptionServices;
 
 namespace Polly.Timeout;
 

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Threading;
-
-namespace Polly.RateLimit;
+﻿namespace Polly.RateLimit;
 
 internal static class RateLimitEngine
 {

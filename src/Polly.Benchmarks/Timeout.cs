@@ -1,9 +1,4 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-using BenchmarkDotNet.Attributes;
-
-namespace Polly.Benchmarks;
+﻿namespace Polly.Benchmarks;
 
 [Config(typeof(PollyConfig))]
 public class Timeout

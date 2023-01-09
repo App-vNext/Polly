@@ -1,8 +1,4 @@
-﻿using System;
-using System.Diagnostics;
-using System.Threading;
-
-namespace Polly.NoOp;
+﻿namespace Polly.NoOp;
 
 /// <summary>
 /// A no op policy that can be applied to delegates.

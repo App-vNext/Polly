@@ -1,8 +1,4 @@
-﻿using System;
-using System.Diagnostics;
-using System.Threading;
-
-namespace Polly.Bulkhead;
+﻿namespace Polly.Bulkhead;
 
 /// <summary>
 /// A bulkhead-isolation policy which can be applied to delegates.

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Threading;
-using Polly.Fallback;
-
-namespace Polly;
+﻿namespace Polly;
 
 /// <summary>
 /// Fluent API for defining a Fallback policy.

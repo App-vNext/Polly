@@ -1,7 +1,4 @@
-﻿using System;
-using System.Threading;
-
-namespace Polly;
+﻿namespace Polly;
 
 public abstract partial class Policy<TResult>
 {

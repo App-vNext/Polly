@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Polly.Caching;
+﻿namespace Polly.Caching;
 
 /// <summary>
 /// Provides a strongly-typed wrapper over a non-generic CacheProvider.

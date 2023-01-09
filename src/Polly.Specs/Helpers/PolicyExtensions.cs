@@ -1,7 +1,4 @@
-﻿using System;
-using System.Threading;
-
-namespace Polly.Specs.Helpers;
+﻿namespace Polly.Specs.Helpers;
 
 public static class PolicyExtensions
 {
