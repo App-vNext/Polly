@@ -1,11 +1,11 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;net461;net472</TargetFrameworks>
-    <Version>7.2.4</Version>
-    <AssemblyVersion>7.0.0.0</AssemblyVersion>
-    <FileVersion>7.2.4.0</FileVersion>
-    <InformationalVersion>7.2.4.0</InformationalVersion>
+    <TargetFrameworks>netstandard2.0;net70</TargetFrameworks>
+    <Version>8.0.0</Version>
+    <AssemblyVersion>8.0.0.0</AssemblyVersion>
+    <FileVersion>8.0.0.0</FileVersion>
+    <InformationalVersion>8.0.0.0</InformationalVersion>
     <Company>App vNext</Company>
     <Copyright>Copyright (c) $([System.DateTime]::Now.ToString(yyyy)), App vNext</Copyright>
     <Description>Polly is a library that allows developers to express resilience and transient fault handling policies such as Retry, Circuit Breaker, Timeout, Bulkhead Isolation, and Fallback in a fluent and thread-safe manner.</Description>
@@ -17,7 +17,14 @@
     <EmbedUntrackedSources>true</EmbedUntrackedSources> <!-- EmbedUntrackedSources for deterministic build -->
     <ContinuousIntegrationBuild Condition=" '$(CI)' != '' ">true</ContinuousIntegrationBuild>
     <Deterministic>true</Deterministic>
+    <RootNamespace>Polly</RootNamespace>
+    <ImplicitUsings>true</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <NoWarn>$(NoWarn);CS1591</NoWarn>
   </PropertyGroup>
+  <ItemGroup Label="Namespaces">
+    <Using Remove="System.Net.Http" />
+  </ItemGroup>
   <PropertyGroup Label="SourceLink">
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <IncludeSymbols>true</IncludeSymbols>
@@ -39,15 +46,12 @@
     </AssemblyAttribute>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Polly.Abstractions\Polly.Abstractions.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Strategies\" />
+    <ProjectReference Include="..\Polly.Core\Polly.Core.csproj" />
   </ItemGroup>
   <PropertyGroup Label="NuspecProperties">
     <PackageIcon>Polly.png</PackageIcon>
     <NeutralLanguage>en-US</NeutralLanguage>
-    <AssemblyTitle>Polly</AssemblyTitle>
+    <AssemblyTitle>Polly.Core</AssemblyTitle>
     <PackageLicenseExpression>BSD-3-Clause</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/App-vNext/Polly</PackageProjectUrl>
     <PackageTags>Exception Handling Resilience Transient Fault Policy Circuit Breaker CircuitBreaker Retry Wait Cache Cache-aside Bulkhead Rate-limit Fallback Timeout Throttle Parallelization</PackageTags>
