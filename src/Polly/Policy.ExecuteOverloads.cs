@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Threading;
-
-namespace Polly;
+﻿namespace Polly;
 
 public abstract partial class Policy : ISyncPolicy
 {

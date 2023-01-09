@@ -1,8 +1,4 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-using BenchmarkDotNet.Attributes;
-
-namespace Polly.Benchmarks;
+﻿namespace Polly.Benchmarks;
 
 [Config(typeof(PollyConfig))]
 public class Bulkhead
@@ -25,7 +21,7 @@ public class Bulkhead
     [Benchmark]
     public Task Bulkhead_Asynchronous_With_CancellationToken()
     {
-        return AsyncPolicy.ExecuteAsync((token) => Workloads.ActionAsync(token), CancellationToken.None);
+        return AsyncPolicy.ExecuteAsync(token => Workloads.ActionAsync(token), CancellationToken.None);
     }
 
     [Benchmark]
@@ -43,6 +39,6 @@ public class Bulkhead
     [Benchmark]
     public Task<int> Bulkhead_Asynchronous_With_Result_With_CancellationToken()
     {
-        return AsyncPolicy.ExecuteAsync((token) => Workloads.FuncAsync<int>(token), CancellationToken.None);
+        return AsyncPolicy.ExecuteAsync(token => Workloads.FuncAsync<int>(token), CancellationToken.None);
     }
 }

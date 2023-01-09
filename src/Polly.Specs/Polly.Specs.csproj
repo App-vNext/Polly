@@ -31,9 +31,7 @@
   </PropertyGroup>
 
   <Target Name="GenerateCoverageReports" AfterTargets="GenerateCoverageResultAfterTest" Condition=" '$(CollectCoverage)' == 'true' ">
-    <ReportGenerator ReportFiles="@(CoverletReport)"
-                     ReportTypes="Cobertura;Html"
-                     TargetDirectory="$([System.IO.Path]::Combine($(MSBuildThisFileDirectory), 'coverage-reports'))" />
+    <ReportGenerator ReportFiles="@(CoverletReport)" ReportTypes="Cobertura;Html" TargetDirectory="$([System.IO.Path]::Combine($(MSBuildThisFileDirectory), 'coverage-reports'))" />
   </Target>
 
 </Project>

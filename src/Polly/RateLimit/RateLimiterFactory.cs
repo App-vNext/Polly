@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Polly.RateLimit;
+﻿namespace Polly.RateLimit;
 
 internal static class RateLimiterFactory
 {

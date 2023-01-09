@@ -1,8 +1,4 @@
-﻿using System;
-using System.Diagnostics;
-using System.Threading;
-
-namespace Polly.Wrap;
+﻿namespace Polly.Wrap;
 
 /// <summary>
 /// A policy that allows two (and by recursion more) Polly policies to wrap executions of delegates.

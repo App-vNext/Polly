@@ -1,9 +1,4 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-using BenchmarkDotNet.Attributes;
-
-namespace Polly.Benchmarks;
+﻿namespace Polly.Benchmarks;
 
 [Config(typeof(PollyConfig))]
 public class CircuitBreaker
@@ -20,7 +15,7 @@ public class CircuitBreaker
     [Benchmark]
     public Task CircuitBreaker_Asynchronous_Succeeds()
     {
-        return AsyncPolicy.ExecuteAsync((token) => Workloads.ActionAsync(token), CancellationToken.None);
+        return AsyncPolicy.ExecuteAsync(token => Workloads.ActionAsync(token), CancellationToken.None);
     }
 
     [Benchmark]
@@ -32,6 +27,6 @@ public class CircuitBreaker
     [Benchmark]
     public Task<int> CircuitBreaker_Asynchronous_With_Result_Succeeds()
     {
-        return AsyncPolicy.ExecuteAsync((token) => Workloads.FuncAsync<int>(token), CancellationToken.None);
+        return AsyncPolicy.ExecuteAsync(token => Workloads.FuncAsync<int>(token), CancellationToken.None);
     }
 }

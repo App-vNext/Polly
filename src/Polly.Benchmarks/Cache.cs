@@ -1,9 +1,4 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-using BenchmarkDotNet.Attributes;
-using Microsoft.Extensions.Caching.Memory;
-using Polly.Caching;
+﻿using Microsoft.Extensions.Caching.Memory;
 
 namespace Polly.Benchmarks;
 
@@ -25,14 +20,14 @@ public class Cache
     [GlobalSetup]
     public Task GlobalSetup()
     {
-        SyncPolicyHit.Execute((context) => GetObject(), HitContext);
+        SyncPolicyHit.Execute(context => GetObject(), HitContext);
         return AsyncPolicyHit.ExecuteAsync((context, token) => GetObjectAsync(token), HitContext, CancellationToken.None);
     }
 
     [Benchmark]
     public object Cache_Synchronous_Hit()
     {
-        return SyncPolicyHit.Execute((context) => GetObject(), HitContext);
+        return SyncPolicyHit.Execute(context => GetObject(), HitContext);
     }
 
     [Benchmark]
@@ -44,7 +39,7 @@ public class Cache
     [Benchmark]
     public object Cache_Synchronous_Miss()
     {
-        return SyncPolicyMiss.Execute((context) => GetObject(), MissContext);
+        return SyncPolicyMiss.Execute(context => GetObject(), MissContext);
     }
 
     [Benchmark]

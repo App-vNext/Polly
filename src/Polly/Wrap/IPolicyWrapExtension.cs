@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-
-namespace Polly.Wrap;
+﻿namespace Polly.Wrap;
 
 /// <summary>
 /// Extension methods for IPolicyWrap.

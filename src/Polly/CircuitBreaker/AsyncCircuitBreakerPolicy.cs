@@ -1,10 +1,4 @@
-﻿using System;
-using System.Diagnostics;
-using System.Threading;
-using System.Threading.Tasks;
-using Polly.Utilities;
-
-namespace Polly.CircuitBreaker;
+﻿namespace Polly.CircuitBreaker;
 
 /// <summary>
 /// A circuit-breaker policy that can be applied to async delegates.

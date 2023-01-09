@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
-using Polly.Caching;
-using Polly.Utilities;
-
-namespace Polly.Specs.Helpers.Caching;
+﻿namespace Polly.Specs.Helpers.Caching;
 
 /// <summary>
 /// An intentionally naive stub cache implementation.  Its purpose is to be the simplest thing possible to support tests of the CachePolicy and CacheEngine, not a production-usable implementation.

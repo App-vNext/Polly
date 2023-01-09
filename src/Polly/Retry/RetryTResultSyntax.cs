@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Polly.Retry;
-using System.Linq;
-
-namespace Polly;
+﻿namespace Polly;
 
 /// <summary>
 /// Fluent API for defining a Retry <see cref="Policy{TResult}"/>.

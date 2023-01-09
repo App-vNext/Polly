@@ -1,9 +1,4 @@
-﻿using System;
-using System.Diagnostics;
-using System.Threading;
-using Polly.Utilities;
-
-namespace Polly.Fallback;
+﻿namespace Polly.Fallback;
 
 /// <summary>
 /// A fallback policy that can be applied to delegates.

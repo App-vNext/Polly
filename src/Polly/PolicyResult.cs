@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Polly;
+﻿namespace Polly;
 
 /// <summary>
 /// The captured result of executing a policy

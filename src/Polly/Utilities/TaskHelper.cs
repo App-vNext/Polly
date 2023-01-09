@@ -1,6 +1,4 @@
-﻿using System.Threading.Tasks;
-
-namespace Polly.Utilities;
+﻿namespace Polly.Utilities;
 
 /// <summary>
 /// Task helpers.

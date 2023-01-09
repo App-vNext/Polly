@@ -1,7 +1,4 @@
-﻿using System;
-using System.Threading;
-
-namespace Polly;
+﻿namespace Polly;
 
 /// <summary>
 /// Implements elements common to both non-generic and generic policies, and sync and async policies.

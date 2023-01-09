@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Polly;
+﻿namespace Polly;
 
 /// <summary>
 /// The captured outcome of executing an individual Func&lt;TResult&gt;

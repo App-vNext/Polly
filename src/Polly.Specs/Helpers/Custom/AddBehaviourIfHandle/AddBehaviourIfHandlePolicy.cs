@@ -1,7 +1,4 @@
-﻿using System;
-using System.Threading;
-
-namespace Polly.Specs.Helpers.Custom.AddBehaviourIfHandle;
+﻿namespace Polly.Specs.Helpers.Custom.AddBehaviourIfHandle;
 
 internal class AddBehaviourIfHandlePolicy : Policy
 {

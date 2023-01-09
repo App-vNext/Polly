@@ -1,6 +1,4 @@
-﻿using Xunit.Abstractions;
-
-namespace Polly.Specs.Helpers.Bulkhead;
+﻿namespace Polly.Specs.Helpers.Bulkhead;
 
 public class SilentOutputHelper : ITestOutputHelper
 {

@@ -1,10 +1,4 @@
-﻿using System;
-using FluentAssertions;
-using Polly.Caching;
-using Polly.Utilities;
-using Xunit;
-
-namespace Polly.Specs.Caching;
+﻿namespace Polly.Specs.Caching;
 
 public class RelativeTtlSpecs
 {

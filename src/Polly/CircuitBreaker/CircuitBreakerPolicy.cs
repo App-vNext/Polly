@@ -1,9 +1,4 @@
-﻿using System;
-using System.Diagnostics;
-using Polly.Utilities;
-using System.Threading;
-
-namespace Polly.CircuitBreaker;
+﻿namespace Polly.CircuitBreaker;
 
 /// <summary>
 /// A circuit-breaker policy that can be applied to delegates.

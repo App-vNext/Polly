@@ -1,7 +1,4 @@
-﻿using System;
-using System.Threading;
-
-namespace Polly.Fallback;
+﻿namespace Polly.Fallback;
 
 internal static class FallbackEngine
 {

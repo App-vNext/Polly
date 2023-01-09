@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Polly.Caching;
+﻿namespace Polly.Caching;
 
 /// <summary>
 /// Defines a ttl strategy which will cache items for the specified time.

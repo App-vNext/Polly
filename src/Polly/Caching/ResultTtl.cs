@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Polly.Caching;
+﻿namespace Polly.Caching;
 
 /// <summary>
 /// Defines a ttl strategy which can calculate a duration to cache items dynamically based on the execution context and result of the execution.

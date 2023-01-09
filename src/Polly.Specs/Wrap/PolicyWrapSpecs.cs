@@ -1,12 +1,4 @@
-﻿using System;
-using FluentAssertions;
-using Polly.CircuitBreaker;
-using Polly.Retry;
-using Polly.Specs.Helpers;
-using Polly.Wrap;
-using Xunit;
-
-namespace Polly.Specs.Wrap;
+﻿namespace Polly.Specs.Wrap;
 
 [Collection(Constants.SystemClockDependentTestCollection)]
 public class PolicyWrapSpecs

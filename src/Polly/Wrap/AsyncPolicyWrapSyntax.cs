@@ -1,8 +1,4 @@
-﻿using System;
-using System.Linq;
-using Polly.Wrap;
-
-namespace Polly;
+﻿namespace Polly;
 
 public partial class AsyncPolicy
 {
