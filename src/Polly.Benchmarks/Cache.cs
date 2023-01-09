@@ -25,14 +25,14 @@ public class Cache
     [GlobalSetup]
     public Task GlobalSetup()
     {
-        SyncPolicyHit.Execute((context) => GetObject(), HitContext);
+        SyncPolicyHit.Execute(context => GetObject(), HitContext);
         return AsyncPolicyHit.ExecuteAsync((context, token) => GetObjectAsync(token), HitContext, CancellationToken.None);
     }
 
     [Benchmark]
     public object Cache_Synchronous_Hit()
     {
-        return SyncPolicyHit.Execute((context) => GetObject(), HitContext);
+        return SyncPolicyHit.Execute(context => GetObject(), HitContext);
     }
 
     [Benchmark]
@@ -44,7 +44,7 @@ public class Cache
     [Benchmark]
     public object Cache_Synchronous_Miss()
     {
-        return SyncPolicyMiss.Execute((context) => GetObject(), MissContext);
+        return SyncPolicyMiss.Execute(context => GetObject(), MissContext);
     }
 
     [Benchmark]

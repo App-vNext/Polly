@@ -26,7 +26,7 @@ public class Retry
     [Benchmark]
     public Task Retry_Asynchronous_Succeeds_With_CancellationToken()
     {
-        return AsyncPolicy.ExecuteAsync((token) => Workloads.ActionAsync(token), CancellationToken.None);
+        return AsyncPolicy.ExecuteAsync(token => Workloads.ActionAsync(token), CancellationToken.None);
     }
 
     [Benchmark]
@@ -44,7 +44,7 @@ public class Retry
     [Benchmark]
     public Task<int> Retry_Asynchronous_With_Result_Succeeds_With_CancellationToken()
     {
-        return AsyncPolicy.ExecuteAsync((token) => Workloads.FuncAsync<int>(token), CancellationToken.None);
+        return AsyncPolicy.ExecuteAsync(token => Workloads.FuncAsync<int>(token), CancellationToken.None);
     }
 
     [Benchmark]

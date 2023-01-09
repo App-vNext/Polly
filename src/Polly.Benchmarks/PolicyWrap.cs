@@ -29,7 +29,7 @@ public class PolicyWrap
     [Benchmark]
     public Task PolicyWrap_Asynchronous()
     {
-        return AsyncPolicy.ExecuteAsync((token) => Workloads.ActionAsync(token), CancellationToken.None);
+        return AsyncPolicy.ExecuteAsync(token => Workloads.ActionAsync(token), CancellationToken.None);
     }
 
     [Benchmark]
@@ -41,6 +41,6 @@ public class PolicyWrap
     [Benchmark]
     public Task<int> PolicyWrap_Asynchronous_With_Result()
     {
-        return AsyncPolicy.ExecuteAsync((token) => Workloads.FuncAsync<int>(token), CancellationToken.None);
+        return AsyncPolicy.ExecuteAsync(token => Workloads.FuncAsync<int>(token), CancellationToken.None);
     }
 }
