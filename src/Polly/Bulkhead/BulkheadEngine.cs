@@ -1,7 +1,3 @@
-﻿#nullable enable
-using System;
-using System.Threading;
-
 namespace Polly.Bulkhead;
 
 internal static class BulkheadEngine

@@ -1,15 +1,4 @@
-﻿using System;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using FluentAssertions;
-using Polly.Bulkhead;
-using Polly.Specs.Helpers.Bulkhead;
-using Xunit;
-using Xunit.Abstractions;
-
-namespace Polly.Specs.Bulkhead;
+﻿namespace Polly.Specs.Bulkhead;
 
 [Collection(Helpers.Constants.ParallelThreadDependentTestCollection)]
 public abstract class BulkheadSpecsBase : IDisposable

@@ -1,6 +1,3 @@
-﻿#nullable enable
-using Polly.NoOp;
-
 namespace Polly;
 
 public partial class Policy

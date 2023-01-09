@@ -1,8 +1,4 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-using BenchmarkDotNet.Attributes;
-
-namespace Polly.Benchmarks;
+﻿namespace Polly.Benchmarks;
 
 [Config(typeof(PollyConfig))]
 public class NoOp
@@ -19,7 +15,7 @@ public class NoOp
     [Benchmark]
     public Task NoOp_Asynchronous()
     {
-        return AsyncPolicy.ExecuteAsync((token) => Workloads.ActionAsync(token), CancellationToken.None);
+        return AsyncPolicy.ExecuteAsync(token => Workloads.ActionAsync(token), CancellationToken.None);
     }
 
     [Benchmark]
@@ -31,6 +27,6 @@ public class NoOp
     [Benchmark]
     public Task<int> NoOp_Asynchronous_With_Result()
     {
-        return AsyncPolicy.ExecuteAsync((token) => Workloads.FuncAsync<int>(token), CancellationToken.None);
+        return AsyncPolicy.ExecuteAsync(token => Workloads.FuncAsync<int>(token), CancellationToken.None);
     }
 }

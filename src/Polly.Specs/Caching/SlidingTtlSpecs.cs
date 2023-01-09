@@ -1,9 +1,4 @@
-﻿using System;
-using FluentAssertions;
-using Polly.Caching;
-using Xunit;
-
-namespace Polly.Specs.Caching;
+﻿namespace Polly.Specs.Caching;
 
 public class SlidingTtlSpecs
 {

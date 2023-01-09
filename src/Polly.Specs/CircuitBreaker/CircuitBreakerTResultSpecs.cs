@@ -1,15 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
-using FluentAssertions;
-using FluentAssertions.Extensions;
-using Polly.CircuitBreaker;
-using Polly.Specs.Helpers;
-using Polly.Utilities;
-using Xunit;
-
-using Scenario = Polly.Specs.Helpers.PolicyTResultExtensions.ResultAndOrCancellationScenario;
+﻿using Scenario = Polly.Specs.Helpers.PolicyTResultExtensions.ResultAndOrCancellationScenario;
 
 namespace Polly.Specs.CircuitBreaker;
 

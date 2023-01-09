@@ -1,10 +1,3 @@
-﻿#nullable enable
-using System;
-using System.Runtime.ExceptionServices;
-using System.Threading;
-using System.Threading.Tasks;
-using Polly.Utilities;
-
 namespace Polly.Timeout;
 
 internal static class TimeoutEngine

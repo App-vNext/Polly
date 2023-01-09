@@ -1,7 +1,4 @@
-﻿using System;
-using System.Threading;
-
-namespace Polly.Utilities;
+﻿namespace Polly.Utilities;
 
 // Adapted from the link below, with slight modifications.
 

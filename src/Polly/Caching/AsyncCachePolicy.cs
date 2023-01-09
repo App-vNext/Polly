@@ -1,9 +1,4 @@
-﻿using System;
-using System.Diagnostics;
-using System.Threading;
-using System.Threading.Tasks;
-
-namespace Polly.Caching;
+﻿namespace Polly.Caching;
 
 /// <summary>
 /// A cache policy that can be applied to the results of delegate executions.

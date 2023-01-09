@@ -1,9 +1,4 @@
-﻿using System;
-using FluentAssertions;
-using Polly.Specs.Helpers;
-using Xunit;
-
-namespace Polly.Specs;
+﻿namespace Polly.Specs;
 
 public class ContextSpecs
 {

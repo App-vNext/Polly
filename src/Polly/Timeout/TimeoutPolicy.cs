@@ -1,9 +1,4 @@
-﻿using System;
-using System.Diagnostics;
-using System.Threading;
-using System.Threading.Tasks;
-
-namespace Polly.Timeout;
+﻿namespace Polly.Timeout;
 
 /// <summary>
 /// A timeout policy which can be applied to delegates.

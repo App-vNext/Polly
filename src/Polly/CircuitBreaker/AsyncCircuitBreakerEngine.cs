@@ -1,9 +1,3 @@
-﻿#nullable enable
-using System;
-using System.Threading;
-using System.Threading.Tasks;
-using Polly.Utilities;
-
 namespace Polly.CircuitBreaker;
 
 internal class AsyncCircuitBreakerEngine

@@ -1,7 +1,3 @@
-﻿#nullable enable
-using System.Threading;
-using System.Threading.Tasks;
-
 namespace Polly.Caching;
 
 /// <summary>

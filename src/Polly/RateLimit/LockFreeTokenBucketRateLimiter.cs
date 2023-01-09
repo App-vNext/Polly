@@ -1,8 +1,3 @@
-﻿#nullable enable
-using System;
-using System.Threading;
-using Polly.Utilities;
-
 namespace Polly.RateLimit;
 
 /// <summary>

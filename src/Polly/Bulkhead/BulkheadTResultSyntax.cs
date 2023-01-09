@@ -1,7 +1,3 @@
-﻿#nullable enable
-using Polly.Bulkhead;
-using System;
-
 namespace Polly;
 
 public partial class Policy

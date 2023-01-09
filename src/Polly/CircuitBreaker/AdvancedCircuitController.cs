@@ -1,7 +1,3 @@
-﻿#nullable enable
-using System;
-using Polly.Utilities;
-
 namespace Polly.CircuitBreaker;
 
 internal class AdvancedCircuitController<TResult> : CircuitStateController<TResult>

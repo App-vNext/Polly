@@ -1,7 +1,3 @@
-﻿#nullable enable
-using Polly.Caching;
-using System;
-
 namespace Polly;
 
 public partial class Policy

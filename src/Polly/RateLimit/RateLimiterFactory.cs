@@ -1,6 +1,3 @@
-﻿#nullable enable
-using System;
-
 namespace Polly.RateLimit;
 
 internal static class RateLimiterFactory

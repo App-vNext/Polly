@@ -1,6 +1,3 @@
-﻿#nullable enable
-using System;
-
 namespace Polly.Caching;
 
 /// <summary>

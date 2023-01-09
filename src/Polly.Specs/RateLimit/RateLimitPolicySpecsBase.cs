@@ -1,12 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using FluentAssertions;
-using Polly.RateLimit;
-using Xunit;
-
-namespace Polly.Specs.RateLimit;
+﻿namespace Polly.Specs.RateLimit;
 
 public abstract class RateLimitPolicySpecsBase : RateLimitSpecsBase
 {

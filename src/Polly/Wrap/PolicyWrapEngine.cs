@@ -1,7 +1,4 @@
-﻿using System;
-using System.Threading;
-
-namespace Polly.Wrap;
+﻿namespace Polly.Wrap;
 
 internal static class PolicyWrapEngine
 {

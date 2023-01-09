@@ -1,10 +1,4 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-using Polly.Bulkhead;
-using Xunit.Abstractions;
-
-namespace Polly.Specs.Helpers.Bulkhead;
+﻿namespace Polly.Specs.Helpers.Bulkhead;
 
 /// <summary>
 /// A traceable action that can be executed on a <see cref="BulkheadPolicy"/>, to support specs.

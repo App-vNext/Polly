@@ -1,7 +1,3 @@
-﻿#nullable enable
-using System;
-using System.Threading;
-
 namespace Polly.Fallback;
 
 internal static class FallbackEngine

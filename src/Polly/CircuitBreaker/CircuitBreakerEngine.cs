@@ -1,8 +1,3 @@
-﻿#nullable enable
-using System;
-using System.Runtime.ExceptionServices;
-using System.Threading;
-
 namespace Polly.CircuitBreaker;
 
 internal class CircuitBreakerEngine

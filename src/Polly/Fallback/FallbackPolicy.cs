@@ -1,9 +1,3 @@
-﻿#nullable enable
-using System;
-using System.Diagnostics;
-using System.Threading;
-using Polly.Utilities;
-
 namespace Polly.Fallback;
 
 /// <summary>

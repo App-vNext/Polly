@@ -1,8 +1,3 @@
-﻿#nullable enable
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
 namespace Polly;
 
 /// <summary>
@@ -32,4 +27,3 @@ public class ExceptionPredicates
     /// </summary>
     public static readonly ExceptionPredicates None = new ExceptionPredicates();
 }
-

@@ -1,7 +1,3 @@
-﻿#nullable enable
-using System;
-using Polly.RateLimit;
-
 namespace Polly;
 
 public partial class Policy

@@ -1,7 +1,3 @@
-﻿#nullable enable
-using System;
-using Polly.CircuitBreaker;
-
 namespace Polly;
 
 /// <summary>
