@@ -26,7 +26,7 @@ public class Timeout
     [Benchmark]
     public Task Timeout_Asynchronous_Succeeds_With_CancellationToken()
     {
-        return AsyncPolicy.ExecuteAsync((token) => Workloads.ActionAsync(token), CancellationToken.None);
+        return AsyncPolicy.ExecuteAsync(token => Workloads.ActionAsync(token), CancellationToken.None);
     }
 
     [Benchmark]
@@ -44,12 +44,12 @@ public class Timeout
     [Benchmark]
     public Task<int> Timeout_Asynchronous_With_Result_Succeeds_With_CancellationToken()
     {
-        return AsyncPolicy.ExecuteAsync((token) => Workloads.FuncAsync<int>(token), CancellationToken.None);
+        return AsyncPolicy.ExecuteAsync(token => Workloads.FuncAsync<int>(token), CancellationToken.None);
     }
 
     [Benchmark]
     public Task Timeout_Asynchronous_Times_Out_Optimistic()
     {
-        return AsyncPolicy.ExecuteAsync((token) => Workloads.ActionInfiniteAsync(token), CancellationToken.None);
+        return AsyncPolicy.ExecuteAsync(token => Workloads.ActionInfiniteAsync(token), CancellationToken.None);
     }
 }
