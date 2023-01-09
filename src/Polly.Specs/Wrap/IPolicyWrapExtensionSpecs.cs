@@ -1,14 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Xunit;
-using Polly.Wrap;
-using System.Linq;
-using FluentAssertions;
-using Polly.CircuitBreaker;
-using Polly.NoOp;
-using Polly.Retry;
-
-namespace Polly.Specs.Wrap;
+﻿namespace Polly.Specs.Wrap;
 
 public class IPolicyWrapExtensionSpecs
 {

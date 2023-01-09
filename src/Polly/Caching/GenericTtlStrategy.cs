@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Polly.Caching;
+﻿namespace Polly.Caching;
 
 /// <summary>
 /// Represents a strongly-typed <see cref="ITtlStrategy"/> wrapper of a non-generic strategy.

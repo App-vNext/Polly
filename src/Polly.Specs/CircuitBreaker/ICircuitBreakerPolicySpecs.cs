@@ -1,9 +1,4 @@
-﻿using System;
-using FluentAssertions;
-using Polly.CircuitBreaker;
-using Xunit;
-
-namespace Polly.Specs.CircuitBreaker;
+﻿namespace Polly.Specs.CircuitBreaker;
 
 public class ICircuitBreakerPolicySpecs
 {

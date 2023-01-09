@@ -1,6 +1,4 @@
-﻿using System.Threading;
-
-namespace Polly.Timeout;
+﻿namespace Polly.Timeout;
 
 /// <summary>
 /// Defines strategies used by <see cref="TimeoutPolicy"/>s to enforce timeouts.

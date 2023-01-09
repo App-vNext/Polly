@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Polly.Utilities;
-
-namespace Polly.CircuitBreaker;
+﻿namespace Polly.CircuitBreaker;
 
 internal class RollingHealthMetrics : IHealthMetrics
 {

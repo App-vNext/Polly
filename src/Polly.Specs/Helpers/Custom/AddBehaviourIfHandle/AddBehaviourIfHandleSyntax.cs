@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Polly.Specs.Helpers.Custom.AddBehaviourIfHandle;
+﻿namespace Polly.Specs.Helpers.Custom.AddBehaviourIfHandle;
 
 internal static class AddBehaviourIfHandleSyntax
 {

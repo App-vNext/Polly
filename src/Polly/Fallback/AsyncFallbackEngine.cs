@@ -1,8 +1,4 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-
-namespace Polly.Fallback;
+﻿namespace Polly.Fallback;
 
 internal class AsyncFallbackEngine
 {

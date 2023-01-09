@@ -1,8 +1,4 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-
-namespace Polly.Specs.Helpers.Custom.PreExecute;
+﻿namespace Polly.Specs.Helpers.Custom.PreExecute;
 
 internal class AsyncPreExecutePolicy : AsyncPolicy
 {

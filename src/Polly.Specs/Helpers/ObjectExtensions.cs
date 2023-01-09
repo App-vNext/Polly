@@ -1,8 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Reflection;
-using System.Linq;
-
-namespace Polly.Specs.Helpers;
+﻿namespace Polly.Specs.Helpers;
 
 public static class ObjectExtensions
 {

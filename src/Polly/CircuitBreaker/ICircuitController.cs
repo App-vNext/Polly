@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Polly.CircuitBreaker;
+﻿namespace Polly.CircuitBreaker;
 
 internal interface ICircuitController<TResult>
 {

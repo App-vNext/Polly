@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Polly.Retry;
-
-namespace Polly;
+﻿namespace Polly;
 
 /// <summary>
 ///     Fluent API for defining a <see cref="AsyncRetryPolicy" />.

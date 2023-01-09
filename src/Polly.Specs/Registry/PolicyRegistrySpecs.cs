@@ -1,14 +1,4 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Reflection;
-using Xunit;
-using FluentAssertions;
-using Polly.Registry;
-using Polly.Specs.Helpers;
-using Moq;
-
-namespace Polly.Specs.Registry;
+﻿namespace Polly.Specs.Registry;
 
 public class PolicyRegistrySpecs
 {

@@ -1,6 +1,4 @@
-﻿using Polly.NoOp;
-
-namespace Polly;
+﻿namespace Polly;
 
 public partial class Policy
 {

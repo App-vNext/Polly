@@ -1,9 +1,4 @@
-﻿using System;
-using System.Diagnostics;
-using System.Threading;
-using System.Threading.Tasks;
-
-namespace Polly.NoOp;
+﻿namespace Polly.NoOp;
 
 /// <summary>
 /// A noop policy that can be applied to asynchronous delegates.

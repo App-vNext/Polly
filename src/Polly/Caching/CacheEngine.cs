@@ -1,7 +1,4 @@
-﻿using System;
-using System.Threading;
-
-namespace Polly.Caching;
+﻿namespace Polly.Caching;
 
 internal static class CacheEngine
 {
