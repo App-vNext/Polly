@@ -1,4 +1,5 @@
 #if NETSTANDARD2_0
+#nullable enable
 using System.Runtime.Serialization;
 #endif
 

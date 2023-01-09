@@ -1,3 +1,4 @@
+#nullable enable
 namespace Polly.CircuitBreaker;
 
 internal interface ICircuitController<TResult>

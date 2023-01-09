@@ -1,3 +1,4 @@
+#nullable enable
 namespace Polly.RateLimit;
 
 internal static class AsyncRateLimitEngine

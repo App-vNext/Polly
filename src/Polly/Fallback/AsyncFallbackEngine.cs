@@ -1,3 +1,4 @@
+#nullable enable
 namespace Polly.Fallback;
 
 internal class AsyncFallbackEngine

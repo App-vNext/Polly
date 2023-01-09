@@ -1,3 +1,4 @@
+#nullable enable
 namespace Polly.Retry;
 
 internal static class RetryEngine

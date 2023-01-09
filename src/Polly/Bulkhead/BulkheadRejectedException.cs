@@ -1,4 +1,6 @@
+#if NETSTANDARD2_0
 using System.Runtime.Serialization;
+#endif
 
 namespace Polly.Bulkhead;
 
