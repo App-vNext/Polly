@@ -545,7 +545,6 @@ public class TimeoutTResultSpecs : TimeoutSpecsBase
     [InlineData(3)]
     public void Should_call_ontimeout_with_timeout_supplied_different_for_each_execution_by_evaluating_func__pessimistic(int programaticallyControlledDelay)
     {
-
         Func<TimeSpan> timeoutFunc = () => TimeSpan.FromMilliseconds(25*programaticallyControlledDelay);
 
         TimeSpan? timeoutPassedToOnTimeout = null;

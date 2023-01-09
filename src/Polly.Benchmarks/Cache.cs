@@ -20,32 +20,32 @@ public class Cache
     [GlobalSetup]
     public Task GlobalSetup()
     {
-        SyncPolicyHit.Execute(context => GetObject(), HitContext);
-        return AsyncPolicyHit.ExecuteAsync((context, token) => GetObjectAsync(token), HitContext, CancellationToken.None);
+        SyncPolicyHit.Execute(_ => GetObject(), HitContext);
+        return AsyncPolicyHit.ExecuteAsync((_, token) => GetObjectAsync(token), HitContext, CancellationToken.None);
     }
 
     [Benchmark]
     public object Cache_Synchronous_Hit()
     {
-        return SyncPolicyHit.Execute(context => GetObject(), HitContext);
+        return SyncPolicyHit.Execute(_ => GetObject(), HitContext);
     }
 
     [Benchmark]
     public Task<object> Cache_Asynchronous_Hit()
     {
-        return AsyncPolicyHit.ExecuteAsync((context, token) => GetObjectAsync(token), HitContext, CancellationToken.None);
+        return AsyncPolicyHit.ExecuteAsync((_, token) => GetObjectAsync(token), HitContext, CancellationToken.None);
     }
 
     [Benchmark]
     public object Cache_Synchronous_Miss()
     {
-        return SyncPolicyMiss.Execute(context => GetObject(), MissContext);
+        return SyncPolicyMiss.Execute(_ => GetObject(), MissContext);
     }
 
     [Benchmark]
     public Task<object> Cache_Asynchronous_Miss()
     {
-        return AsyncPolicyMiss.ExecuteAsync((context, token) => GetObjectAsync(token), MissContext, CancellationToken.None);
+        return AsyncPolicyMiss.ExecuteAsync((_, token) => GetObjectAsync(token), MissContext, CancellationToken.None);
     }
 
     private static object GetObject() => new object();

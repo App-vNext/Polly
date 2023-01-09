@@ -35,7 +35,6 @@ public static class PolicyTResultExtensions
     {
         using (var enumerator = resultsOrExceptionsToRaise.GetEnumerator())
         {
-
             return policy.Execute(() =>
             {
                 if (!enumerator.MoveNext())

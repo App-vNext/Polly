@@ -12,8 +12,8 @@ public class WaitAndRetryTResultSpecs : IDisposable
     [Fact]
     public void Should_be_able_to_calculate_retry_timespans_based_on_the_handled_fault()
     {
-        Dictionary<ResultPrimitive, TimeSpan> expectedRetryWaits = new Dictionary<ResultPrimitive, TimeSpan>(){
-
+        Dictionary<ResultPrimitive, TimeSpan> expectedRetryWaits = new Dictionary<ResultPrimitive, TimeSpan>
+        {
             {ResultPrimitive.Fault, 2.Seconds()},
             {ResultPrimitive.FaultAgain, 4.Seconds()},
         };
