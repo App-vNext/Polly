@@ -1,4 +1,5 @@
-﻿namespace Polly;
+﻿#nullable enable
+namespace Polly;
 
 /// <summary>
 /// Transient exception handling policies that can be applied to asynchronous delegates
@@ -22,7 +23,7 @@ public abstract partial class AsyncPolicy<TResult> : PolicyBase<TResult>
     /// Constructs a new instance of a derived <see cref="AsyncPolicy{TResult}"/> type with the passed <paramref name="policyBuilder"/>.
     /// </summary>
     /// <param name="policyBuilder">A <see cref="PolicyBuilder{TResult}"/> indicating which exceptions and results the policy should handle.</param>
-    protected AsyncPolicy(PolicyBuilder<TResult> policyBuilder = null)
+    protected AsyncPolicy(PolicyBuilder<TResult>? policyBuilder = null)
         : base(policyBuilder)
     {
     }
