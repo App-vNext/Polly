@@ -48,7 +48,7 @@ public class AsyncRateLimitPolicyTResultSpecs : RateLimitPolicyTResultSpecsBase,
     {
         if (policy is AsyncRateLimitPolicy<TResult> typedPolicy)
         {
-            return typedPolicy.ExecuteAsync(ctx => Task.FromResult(resultIfExecutionPermitted), context).GetAwaiter().GetResult();
+            return typedPolicy.ExecuteAsync(_ => Task.FromResult(resultIfExecutionPermitted), context).GetAwaiter().GetResult();
         }
         else
         {

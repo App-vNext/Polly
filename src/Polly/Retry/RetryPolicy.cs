@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 namespace Polly.Retry;
 
 /// <summary>
@@ -12,7 +12,7 @@ public class RetryPolicy : Policy, IRetryPolicy
     private readonly Func<int, Exception, Context, TimeSpan>? _sleepDurationProvider;
 
     internal RetryPolicy(
-        PolicyBuilder? policyBuilder,
+        PolicyBuilder policyBuilder,
         Action<Exception, TimeSpan, int, Context> onRetry,
         int permittedRetryCount = Int32.MaxValue,
         IEnumerable<TimeSpan>? sleepDurationsEnumerable = null,
@@ -54,7 +54,7 @@ public class RetryPolicy<TResult> : Policy<TResult>, IRetryPolicy<TResult>
     private readonly Func<int, DelegateResult<TResult>, Context, TimeSpan>? _sleepDurationProvider;
 
     internal RetryPolicy(
-        PolicyBuilder<TResult>? policyBuilder,
+        PolicyBuilder<TResult> policyBuilder,
         Action<DelegateResult<TResult>, TimeSpan, int, Context> onRetry,
         int permittedRetryCount = Int32.MaxValue,
         IEnumerable<TimeSpan>? sleepDurationsEnumerable = null,

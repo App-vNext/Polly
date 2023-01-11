@@ -2,7 +2,6 @@
 
 public static class ContextualPolicyExtensionsAsync
 {
-
     public static Task RaiseExceptionAsync<TException>(this AsyncPolicy policy, int numberOfTimesToRaiseException, IDictionary<string, object> contextData, Action<TException, int>? configureException = null, CancellationToken cancellationToken = default) where TException : Exception, new()
     {
         int counter = 0;

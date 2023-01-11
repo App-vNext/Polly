@@ -720,7 +720,6 @@ public class FallbackAsyncSpecs
     [Fact]
     public async Task Should_not_report_cancellation_and_not_execute_fallback_if_non_faulting_action_execution_completes_and_user_delegate_does_not_observe_the_set_cancellationToken()
     {
-
         bool fallbackActionExecuted = false;
         Func<CancellationToken, Task> fallbackActionAsync = _ => { fallbackActionExecuted = true; return TaskHelper.EmptyTask; };
 
@@ -751,7 +750,6 @@ public class FallbackAsyncSpecs
     [Fact]
     public async Task Should_report_unhandled_fault_and_not_execute_fallback_if_action_execution_raises_unhandled_fault_and_user_delegate_does_not_observe_the_set_cancellationToken()
     {
-
         bool fallbackActionExecuted = false;
         Func<CancellationToken, Task> fallbackActionAsync = _ => { fallbackActionExecuted = true; return TaskHelper.EmptyTask; };
 
@@ -783,7 +781,6 @@ public class FallbackAsyncSpecs
     [Fact]
     public async Task Should_handle_handled_fault_and_execute_fallback_following_faulting_action_execution_when_user_delegate_does_not_observe_cancellationToken()
     {
-
         bool fallbackActionExecuted = false;
         Func<CancellationToken, Task> fallbackActionAsync = _ => { fallbackActionExecuted = true; return TaskHelper.EmptyTask; };
 

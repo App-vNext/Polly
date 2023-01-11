@@ -100,9 +100,9 @@ public partial class PolicyBuilder
 
     #endregion
 }
+
 public partial class PolicyBuilder<TResult>
 {
-
     #region Add result predicates to result-filtering policy
 
     /// <summary>

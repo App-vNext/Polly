@@ -171,7 +171,6 @@ public class CacheTResultSpecs : IDisposable
     [Fact]
     public void Should_allow_custom_FuncICacheKeyStrategy()
     {
-
         ISyncCacheProvider stubCacheProvider = new StubCacheProvider();
         CachePolicy<ResultClass> cache = Policy.Cache<ResultClass>(stubCacheProvider, TimeSpan.MaxValue, context => context.OperationKey + context["id"]);
 

@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 namespace Polly.Retry;
 
 internal static class RetryEngine
@@ -46,7 +46,7 @@ internal static class RetryEngine
                 }
                 catch (Exception ex)
                 {
-                    Exception? handledException = shouldRetryExceptionPredicates.FirstMatchOrDefault(ex);
+                    Exception handledException = shouldRetryExceptionPredicates.FirstMatchOrDefault(ex);
                     if (handledException == null)
                     {
                         throw;

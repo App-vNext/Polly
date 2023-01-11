@@ -48,7 +48,7 @@ public class RateLimitPolicyTResultSpecs : RateLimitPolicyTResultSpecsBase, IDis
     {
         if (policy is RateLimitPolicy<TResult> typedPolicy)
         {
-            return typedPolicy.Execute(ctx => resultIfExecutionPermitted, context);
+            return typedPolicy.Execute(_ => resultIfExecutionPermitted, context);
         }
         else
         {

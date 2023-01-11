@@ -2,7 +2,6 @@
 
 public static class ContextualPolicyTResultExtensionsAsync
 {
-
     public static Task<TResult> RaiseResultSequenceAsync<TResult>(this AsyncPolicy<TResult> policy,
 IDictionary<string, object> contextData,
 params TResult[] resultsToRaise)
