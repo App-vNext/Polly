@@ -15,10 +15,10 @@ We are a member of the [.NET Foundation](https://www.dotnetfoundation.org/about)
 
 ![Polly logo](https://raw.github.com/App-vNext/Polly/main/Polly-Logo.png)
 
-## Installing via NuGet
+## Installing via the .NET SDK
 
-```text
-Install-Package Polly
+```sh
+dotnet add package Polly
 ```
 
 ## Resilience policies
