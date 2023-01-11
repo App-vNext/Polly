@@ -1,4 +1,5 @@
-﻿namespace Polly.Caching;
+﻿#nullable enable
+namespace Polly.Caching;
 
 /// <summary>
 /// Defines methods for classes providing asynchronous cache functionality for Polly <see cref="CachePolicy" />s.
@@ -44,7 +45,7 @@ public interface IAsyncCacheProvider<TResult>
     /// A <see cref="Task{TResult}" /> promising as Result a tuple whose first element is a value indicating whether
     /// the key was found in the cache, and whose second element is the value from the cache (default(TResult) if not found).
     /// </returns>
-    Task<(bool, TResult)> TryGetAsync(string key, CancellationToken cancellationToken, bool continueOnCapturedContext);
+    Task<(bool, TResult?)> TryGetAsync(string key, CancellationToken cancellationToken, bool continueOnCapturedContext);
 
     /// <summary>
     /// Puts the specified value in the cache asynchronously.
