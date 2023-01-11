@@ -3,14 +3,14 @@ using Polly.Internals;
 
 namespace Polly.Timeout;
 
-internal class TimeoutStrategy : DelegatingResilienceStrategy
+internal class TimeoutResilienceStrategy : DelegatingResilienceStrategy
 {
     private static readonly ObjectPool<CancellationTokenSource> _cancellations = ObjectPool.Create<CancellationTokenSource>();
 
     private readonly TimeoutStrategyOptions _options;
     private readonly EventsHandler<TimeoutTaskArguments> _onTimeout;
 
-    public TimeoutStrategy(TimeoutStrategyOptions options)
+    public TimeoutResilienceStrategy(TimeoutStrategyOptions options)
     {
         _options = options;
         _onTimeout = EventsHandler<TimeoutTaskArguments>.Create(_options.OnTimeout);
@@ -50,3 +50,5 @@ internal class TimeoutStrategy : DelegatingResilienceStrategy
         }
     }
 }
+
+
