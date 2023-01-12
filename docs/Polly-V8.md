@@ -169,8 +169,66 @@ In the preceding sample retry strategy handles 3 different types of results. Thi
 
 ### Packages
 
-The POC exposes the following resilience packages:
+All packages have the same `Polly` root namespace.
 
-- `Polly.Abstractions`: contains `IResilienceStrategy` + extensions.
-- `Polly.Core`: contains implementations, `IResiliencePipelineBuilder` + extensions.
-- `Polly.Strategies`: contains implementations of built-in strategies (retry, bulkhead, timeout, hedging).
+#### Polly.Abstractions
+
+Contains core primitives for consumers that just want to accept the core `IResilienceStrategy` in their APIs.
+
+**Dependencies:** None
+
+**Types**:
+
+- `IResilienceStrategy`
+- `ResilienceStrategyExtensions`
+- `Context`
+- `NullResilienceStrategy`
+- `DelegatingResilienceStrategy`
+
+#### Polly.Core
+
+Contains the builder for resilience strategies and core primitives that can be reused across various strategies.
+
+**Dependencies:**
+
+- `Poly.Abstractions`
+- `Microsoft.Extensions.Logging.Abstractions`
+
+**Types**:
+
+- `IResilienceStrategyBuilder`
+- `ResilienceStrategyBuilder`
+- `ResilienceStrategyOptions`
+- `ResilienceStrategyBuilderOptions`
+- `ResilienceStrategyBuilderContext`
+
+#### Polly.Strategies
+
+Contains individual built-in strategies.
+
+**Dependencies:**
+
+- `Poly.Core`
+
+**Types**:
+
+- `RetryStrategyOptions`
+- `TimeoutStrategyOptions`
+- `RetryExtensions`
+- `TimeoutExtensions`
+
+#### Polly.DependencyInjection
+
+Contains DI support for the `IServiceCollection`.
+
+**Dependencies:**
+
+- `Poly.Core`
+- `Microsoft.Extensions.DependencyInjection.Abstractions`
+- `Microsoft.Extensions.Options`
+
+**Types**:
+
+- `ResilienceServiceCollectionExtensions`
+- `ResilienceStrategyContext`
+- `IResilienceStrategyProvider`
