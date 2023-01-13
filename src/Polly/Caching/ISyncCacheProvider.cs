@@ -1,4 +1,5 @@
-﻿namespace Polly.Caching;
+﻿#nullable enable
+namespace Polly.Caching;
 
 /// <summary>
 /// Defines methods for classes providing synchronous cache functionality for Polly <see cref="CachePolicy"/>s.
@@ -13,7 +14,7 @@ public interface ISyncCacheProvider
     /// A tuple whose first element is a value indicating whether the key was found in the cache,
     /// and whose second element is the value from the cache (null if not found).
     /// </returns>
-    (bool, object) TryGet(string key);
+    (bool, object?) TryGet(string key);
 
     /// <summary>
     /// Puts the specified value in the cache.
@@ -21,7 +22,7 @@ public interface ISyncCacheProvider
     /// <param name="key">The cache key.</param>
     /// <param name="value">The value to put into the cache.</param>
     /// <param name="ttl">The time-to-live for the cache entry.</param>
-    void Put(string key, object value, Ttl ttl);
+    void Put(string key, object? value, Ttl ttl);
 }
 
 /// <summary>
@@ -37,7 +38,7 @@ public interface ISyncCacheProvider<TResult>
     /// A tuple whose first element is a value indicating whether the key was found in the cache,
     /// and whose second element is the value from the cache (default(TResult) if not found).
     /// </returns>
-    (bool, TResult) TryGet(string key);
+    (bool, TResult?) TryGet(string key);
 
     /// <summary>
     /// Puts the specified value in the cache.
@@ -45,5 +46,5 @@ public interface ISyncCacheProvider<TResult>
     /// <param name="key">The cache key.</param>
     /// <param name="value">The value to put into the cache.</param>
     /// <param name="ttl">The time-to-live for the cache entry.</param>
-    void Put(string key, TResult value, Ttl ttl);
+    void Put(string key, TResult? value, Ttl ttl);
 }
