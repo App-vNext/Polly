@@ -62,6 +62,7 @@ public abstract class BulkheadSpecsBase : IDisposable
     protected int ActualQueuing { get; set; }
     protected int ActualFaulted { get; set; }
     protected int ActualBulkheadFree => BulkheadForStats.BulkheadAvailableCount;
+
     protected int ActualQueueFree => BulkheadForStats.QueueAvailableCount;
 
     #endregion
@@ -356,10 +357,8 @@ public abstract class BulkheadSpecsBase : IDisposable
         TestOutputHelper.WriteLine(String.Empty);
     }
 
-    private void ShowTestOutput()
-    {
+    private void ShowTestOutput() =>
         ((AnnotatedOutputHelper) TestOutputHelper).Flush();
-    }
 
     #endregion
 

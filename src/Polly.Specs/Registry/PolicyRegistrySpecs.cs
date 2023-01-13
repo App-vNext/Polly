@@ -4,10 +4,8 @@ public class PolicyRegistrySpecs
 {
     IPolicyRegistry<string> _registry;
 
-    public PolicyRegistrySpecs()
-    {
+    public PolicyRegistrySpecs() =>
         _registry = new PolicyRegistry();
-    }
 
     #region Tests for adding Policy
 

@@ -3,10 +3,8 @@
 public class ContextualTtlSpecs
 {
     [Fact]
-    public void Should_return_zero_if_no_value_set_on_context()
-    {
+    public void Should_return_zero_if_no_value_set_on_context() =>
         new ContextualTtl().GetTtl(new Context("someOperationKey"), null).Timespan.Should().Be(TimeSpan.Zero);
-    }
 
     [Fact]
     public void Should_return_zero_if_invalid_value_set_on_context()

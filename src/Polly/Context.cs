@@ -6,7 +6,8 @@
 /// </summary>
 public partial class Context
 {
-    internal static Context None() => new Context();
+    internal static Context None() =>
+        new Context();
 
     private Guid? _correlationId;
 
@@ -14,7 +15,8 @@ public partial class Context
     /// Initializes a new instance of the <see cref="Context"/> class, with the specified <paramref name="operationKey"/>.
     /// </summary>
     /// <param name="operationKey">The operation key.</param>
-    public Context(string operationKey) => OperationKey = operationKey;
+    public Context(string operationKey) =>
+        OperationKey = operationKey;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Context"/> class.

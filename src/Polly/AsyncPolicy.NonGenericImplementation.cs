@@ -14,8 +14,8 @@ public abstract partial class AsyncPolicy
         Func<Context, CancellationToken, Task> action,
         Context context,
         CancellationToken cancellationToken,
-        bool continueOnCapturedContext)
-        => ImplementationAsync<EmptyStruct>(async (ctx, token) =>
+        bool continueOnCapturedContext) =>
+        ImplementationAsync<EmptyStruct>(async (ctx, token) =>
         {
             await action(ctx, token).ConfigureAwait(continueOnCapturedContext);
             return EmptyStruct.Instance;

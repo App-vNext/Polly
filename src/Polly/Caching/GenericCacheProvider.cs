@@ -8,8 +8,8 @@ internal class GenericCacheProvider<TCacheFormat> : ISyncCacheProvider<TCacheFor
 {
     private readonly ISyncCacheProvider _wrappedCacheProvider;
 
-    internal GenericCacheProvider(ISyncCacheProvider nonGenericCacheProvider)
-        => _wrappedCacheProvider = nonGenericCacheProvider ?? throw new ArgumentNullException(nameof(nonGenericCacheProvider));
+    internal GenericCacheProvider(ISyncCacheProvider nonGenericCacheProvider) =>
+        _wrappedCacheProvider = nonGenericCacheProvider ?? throw new ArgumentNullException(nameof(nonGenericCacheProvider));
 
     (bool, TCacheFormat) ISyncCacheProvider<TCacheFormat>.TryGet(string key)
     {
@@ -17,6 +17,6 @@ internal class GenericCacheProvider<TCacheFormat> : ISyncCacheProvider<TCacheFor
         return (cacheHit, (TCacheFormat) (result ?? default(TCacheFormat)));
     }
 
-    void ISyncCacheProvider<TCacheFormat>.Put(string key, TCacheFormat value, Ttl ttl)
-        => _wrappedCacheProvider.Put(key, value, ttl);
+    void ISyncCacheProvider<TCacheFormat>.Put(string key, TCacheFormat value, Ttl ttl) =>
+        _wrappedCacheProvider.Put(key, value, ttl);
 }

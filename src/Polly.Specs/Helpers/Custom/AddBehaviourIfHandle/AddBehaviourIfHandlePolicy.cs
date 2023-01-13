@@ -5,17 +5,14 @@ internal class AddBehaviourIfHandlePolicy : Policy
     private readonly Action<Exception> _behaviourIfHandle;
 
     internal AddBehaviourIfHandlePolicy(Action<Exception> behaviourIfHandle, PolicyBuilder policyBuilder)
-        : base(policyBuilder)
-    {
+        : base(policyBuilder) =>
         _behaviourIfHandle = behaviourIfHandle ?? throw new ArgumentNullException(nameof(behaviourIfHandle));
-    }
 
     protected override TResult Implementation<TResult>(
         Func<Context, CancellationToken, TResult> action,
         Context context,
-        CancellationToken cancellationToken)
-    {
-        return AddBehaviourIfHandleEngine.Implementation(
+        CancellationToken cancellationToken) =>
+        AddBehaviourIfHandleEngine.Implementation(
             ExceptionPredicates,
             ResultPredicates<TResult>.None,
             outcome => _behaviourIfHandle(outcome.Exception),
@@ -23,7 +20,6 @@ internal class AddBehaviourIfHandlePolicy : Policy
             context,
             cancellationToken
         );
-    }
 }
 
 internal class AddBehaviourIfHandlePolicy<TResult> : Policy<TResult>
@@ -33,14 +29,11 @@ internal class AddBehaviourIfHandlePolicy<TResult> : Policy<TResult>
     internal AddBehaviourIfHandlePolicy(
         Action<DelegateResult<TResult>> behaviourIfHandle,
         PolicyBuilder<TResult> policyBuilder)
-        : base(policyBuilder)
-    {
+        : base(policyBuilder) =>
         _behaviourIfHandle = behaviourIfHandle ?? throw new ArgumentNullException(nameof(behaviourIfHandle));
-    }
 
-    protected override TResult Implementation(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken)
-    {
-        return AddBehaviourIfHandleEngine.Implementation(
+    protected override TResult Implementation(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken) =>
+        AddBehaviourIfHandleEngine.Implementation(
             ExceptionPredicates,
             ResultPredicates,
             _behaviourIfHandle,
@@ -48,5 +41,4 @@ internal class AddBehaviourIfHandlePolicy<TResult> : Policy<TResult>
             context,
             cancellationToken
         );
-    }
 }

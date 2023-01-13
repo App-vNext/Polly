@@ -6,7 +6,8 @@ internal class SingleHealthMetrics : IHealthMetrics
 
     private HealthCount _current;
 
-    public SingleHealthMetrics(TimeSpan samplingDuration) => _samplingDuration = samplingDuration.Ticks;
+    public SingleHealthMetrics(TimeSpan samplingDuration) =>
+        _samplingDuration = samplingDuration.Ticks;
 
     public void IncrementSuccess_NeedsLock()
     {
@@ -22,7 +23,8 @@ internal class SingleHealthMetrics : IHealthMetrics
         _current.Failures++;
     }
 
-    public void Reset_NeedsLock() => _current = null;
+    public void Reset_NeedsLock() =>
+        _current = null;
 
     public HealthCount GetHealthCount_NeedsLock()
     {

@@ -8,8 +8,8 @@ internal static class AsyncPolicyWrapEngine
         CancellationToken cancellationToken,
         bool continueOnCapturedContext,
         IAsyncPolicy<TResult> outerPolicy,
-        IAsyncPolicy<TResult> innerPolicy)
-        => outerPolicy.ExecuteAsync(
+        IAsyncPolicy<TResult> innerPolicy) =>
+        outerPolicy.ExecuteAsync(
             (ctx, ct) => innerPolicy.ExecuteAsync(
                 func,
                 ctx,
@@ -25,8 +25,8 @@ internal static class AsyncPolicyWrapEngine
         CancellationToken cancellationToken,
         bool continueOnCapturedContext,
         IAsyncPolicy<TResult> outerPolicy,
-        IAsyncPolicy innerPolicy)
-        => outerPolicy.ExecuteAsync(
+        IAsyncPolicy innerPolicy) =>
+        outerPolicy.ExecuteAsync(
             (ctx, ct) => innerPolicy.ExecuteAsync<TResult>(
                 func,
                 ctx,
@@ -42,8 +42,8 @@ internal static class AsyncPolicyWrapEngine
         CancellationToken cancellationToken,
         bool continueOnCapturedContext,
         IAsyncPolicy outerPolicy,
-        IAsyncPolicy<TResult> innerPolicy)
-        => outerPolicy.ExecuteAsync<TResult>(
+        IAsyncPolicy<TResult> innerPolicy) =>
+        outerPolicy.ExecuteAsync<TResult>(
             (ctx, ct) => innerPolicy.ExecuteAsync(
                 func,
                 ctx,
@@ -59,8 +59,8 @@ internal static class AsyncPolicyWrapEngine
        CancellationToken cancellationToken,
        bool continueOnCapturedContext,
        IAsyncPolicy outerPolicy,
-       IAsyncPolicy innerPolicy)
-        => outerPolicy.ExecuteAsync<TResult>(
+       IAsyncPolicy innerPolicy) =>
+        outerPolicy.ExecuteAsync<TResult>(
             (ctx, ct) => innerPolicy.ExecuteAsync<TResult>(
                 func,
                 ctx,
@@ -76,8 +76,8 @@ internal static class AsyncPolicyWrapEngine
         CancellationToken cancellationToken,
         bool continueOnCapturedContext,
         IAsyncPolicy outerPolicy,
-        IAsyncPolicy innerPolicy)
-        => outerPolicy.ExecuteAsync(
+        IAsyncPolicy innerPolicy) =>
+        outerPolicy.ExecuteAsync(
             (ctx, ct) => innerPolicy.ExecuteAsync(
                 action,
                 ctx,

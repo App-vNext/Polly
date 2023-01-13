@@ -72,13 +72,7 @@ internal abstract class CircuitStateController<TResult> : ICircuitController<TRe
         }
     }
 
-    protected bool IsInAutomatedBreak_NeedsLock
-    {
-        get
-        {
-            return SystemClock.UtcNow().Ticks < _blockedTill;
-        }
-    }
+    protected bool IsInAutomatedBreak_NeedsLock => SystemClock.UtcNow().Ticks < _blockedTill;
 
     public void Isolate()
     {
@@ -90,7 +84,8 @@ internal abstract class CircuitStateController<TResult> : ICircuitController<TRe
         }
     }
 
-    protected void Break_NeedsLock(Context context) => BreakFor_NeedsLock(_durationOfBreak, context);
+    protected void Break_NeedsLock(Context context) =>
+        BreakFor_NeedsLock(_durationOfBreak, context);
 
     private void BreakFor_NeedsLock(TimeSpan durationOfBreak, Context context)
     {
@@ -105,7 +100,8 @@ internal abstract class CircuitStateController<TResult> : ICircuitController<TRe
         _onBreak(_lastOutcome, transitionedState, durationOfBreak, context);
     }
 
-    public void Reset() => OnCircuitReset(Context.None());
+    public void Reset() =>
+        OnCircuitReset(Context.None());
 
     protected void ResetInternal_NeedsLock(Context context)
     {

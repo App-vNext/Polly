@@ -42,5 +42,6 @@ public abstract class RateLimitSpecsBase
         SystemClock.DateTimeOffsetUtcNow = () => now + advance;
     }
 
-    protected static void AdvanceClock(long advanceTicks) => AdvanceClock(TimeSpan.FromTicks(advanceTicks));
+    protected static void AdvanceClock(long advanceTicks) =>
+        AdvanceClock(TimeSpan.FromTicks(advanceTicks));
 }

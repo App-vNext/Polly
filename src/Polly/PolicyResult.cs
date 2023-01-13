@@ -40,8 +40,8 @@ public class PolicyResult
     /// <returns>
     /// A <see cref="PolicyResult" /> representing a successful execution through the policy.
     /// </returns>
-    public static PolicyResult Successful(Context context)
-        => new PolicyResult(OutcomeType.Successful, null, null, context);
+    public static PolicyResult Successful(Context context) =>
+        new PolicyResult(OutcomeType.Successful, null, null, context);
 
     /// <summary>
     /// Builds a <see cref="PolicyResult" /> representing a failed execution through the policy. />
@@ -52,8 +52,8 @@ public class PolicyResult
     /// <returns>
     /// A <see cref="PolicyResult" /> representing a failed execution through the policy.
     /// </returns>
-    public static PolicyResult Failure(Exception exception, ExceptionType exceptionType, Context context)
-        => new PolicyResult(OutcomeType.Failure, exception, exceptionType, context);
+    public static PolicyResult Failure(Exception exception, ExceptionType exceptionType, Context context) =>
+        new PolicyResult(OutcomeType.Failure, exception, exceptionType, context);
 }
 
 /// <summary>
@@ -120,8 +120,8 @@ public class PolicyResult<TResult>
     /// <returns>
     /// A <see cref="PolicyResult" /> representing a successful execution through the policy.
     /// </returns>
-    public static PolicyResult<TResult> Successful(TResult result, Context context)
-        => new PolicyResult<TResult>(result, OutcomeType.Successful, null, null, context);
+    public static PolicyResult<TResult> Successful(TResult result, Context context) =>
+        new PolicyResult<TResult>(result, OutcomeType.Successful, null, null, context);
 
     /// <summary>
     /// Builds a <see cref="PolicyResult" /> representing a failed execution through the policy.
@@ -132,11 +132,11 @@ public class PolicyResult<TResult>
     /// <returns>
     /// A <see cref="PolicyResult" /> representing a failed execution through the policy.
     /// </returns>
-    public static PolicyResult<TResult> Failure(Exception exception, ExceptionType exceptionType, Context context)
-        => new PolicyResult<TResult>(default, OutcomeType.Failure, exception, exceptionType, default,
+    public static PolicyResult<TResult> Failure(Exception exception, ExceptionType exceptionType, Context context) =>
+        new PolicyResult<TResult>(default, OutcomeType.Failure, exception, exceptionType, default,
             exceptionType == Polly.ExceptionType.HandledByThisPolicy
-            ? Polly.FaultType.ExceptionHandledByThisPolicy
-            : Polly.FaultType.UnhandledException,
+                ? Polly.FaultType.ExceptionHandledByThisPolicy
+                : Polly.FaultType.UnhandledException,
             context);
 
     /// <summary>
@@ -147,8 +147,8 @@ public class PolicyResult<TResult>
     /// <returns>
     /// A <see cref="PolicyResult" /> representing a failed execution through the policy.
     /// </returns>
-    public static PolicyResult<TResult> Failure(TResult handledResult, Context context)
-        => new PolicyResult<TResult>(default, OutcomeType.Failure, null, null, handledResult, Polly.FaultType.ResultHandledByThisPolicy, context);
+    public static PolicyResult<TResult> Failure(TResult handledResult, Context context) =>
+        new PolicyResult<TResult>(default, OutcomeType.Failure, null, null, handledResult, Polly.FaultType.ResultHandledByThisPolicy, context);
 }
 
 /// <summary>

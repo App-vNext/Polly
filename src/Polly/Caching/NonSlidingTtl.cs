@@ -14,8 +14,8 @@ public abstract class NonSlidingTtl : ITtlStrategy
     /// Constructs a new instance of the <see cref="NonSlidingTtl"/> strategy.
     /// </summary>
     /// <param name="absoluteExpirationTime">The absolute expiration time for cache items, represented by this strategy.</param>
-    protected NonSlidingTtl(DateTimeOffset absoluteExpirationTime)
-        => this.absoluteExpirationTime = absoluteExpirationTime;
+    protected NonSlidingTtl(DateTimeOffset absoluteExpirationTime) =>
+        this.absoluteExpirationTime = absoluteExpirationTime;
 
     /// <summary>
     /// Gets a TTL for a cacheable item, given the current execution context.

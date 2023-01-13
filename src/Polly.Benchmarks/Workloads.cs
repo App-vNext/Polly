@@ -6,9 +6,11 @@ internal static class Workloads
     {
     }
 
-    internal static Task ActionAsync() => Task.CompletedTask;
+    internal static Task ActionAsync() =>
+        Task.CompletedTask;
 
-    internal static Task ActionAsync(CancellationToken cancellationToken) => Task.CompletedTask;
+    internal static Task ActionAsync(CancellationToken cancellationToken) =>
+        Task.CompletedTask;
 
     internal static async Task ActionInfiniteAsync()
     {
@@ -27,22 +29,22 @@ internal static class Workloads
     }
 
     internal static T Func<T>()
-        where T : struct
-        => default;
+        where T : struct =>
+        default;
 
     internal static Task<T> FuncAsync<T>()
-        where T : struct
-        => Task.FromResult<T>(default);
+        where T : struct =>
+        Task.FromResult<T>(default);
 
     internal static Task<T> FuncAsync<T>(CancellationToken cancellationToken)
-        where T : struct
-        => Task.FromResult<T>(default);
+        where T : struct =>
+        Task.FromResult<T>(default);
 
     internal static TResult FuncThrows<TResult, TException>()
-        where TException : Exception, new()
-        => throw new TException();
+        where TException : Exception, new() =>
+        throw new TException();
 
     internal static Task<TResult> FuncThrowsAsync<TResult, TException>()
-        where TException : Exception, new()
-        => throw new TException();
+        where TException : Exception, new() =>
+        throw new TException();
 }

@@ -49,9 +49,8 @@ public partial class PolicyBuilder
         return this;
     }
 
-    internal static ExceptionPredicate HandleInner(Func<Exception, bool> predicate)
-    {
-        return exception =>
+    internal static ExceptionPredicate HandleInner(Func<Exception, bool> predicate) =>
+        exception =>
         {
             if (exception is AggregateException aggregateException)
             {
@@ -66,7 +65,6 @@ public partial class PolicyBuilder
 
             return HandleInnerNested(predicate, exception);
         };
-    }
 
     private static Exception HandleInnerNested(Func<Exception, bool> predicate, Exception current)
     {
@@ -85,8 +83,8 @@ public partial class PolicyBuilder
     /// <typeparam name="TResult">The type of return values this policy will handle.</typeparam>
     /// <param name="resultPredicate">The predicate to filter the results this policy will handle.</param>
     /// <returns>The PolicyBuilder instance.</returns>
-    public PolicyBuilder<TResult> OrResult<TResult>(Func<TResult, bool> resultPredicate)
-        => new PolicyBuilder<TResult>(ExceptionPredicates).OrResult(resultPredicate);
+    public PolicyBuilder<TResult> OrResult<TResult>(Func<TResult, bool> resultPredicate) =>
+        new PolicyBuilder<TResult>(ExceptionPredicates).OrResult(resultPredicate);
 
     /// <summary>
     /// Specifies a result value which the policy will handle.
@@ -95,8 +93,8 @@ public partial class PolicyBuilder
     /// <param name="result">The TResult value this policy will handle.</param>
     /// <remarks>This policy filter matches the <paramref name="result"/> value returned using .Equals(), ideally suited for value types such as int and enum.  To match characteristics of class return types, consider the overload taking a result predicate.</remarks>
     /// <returns>The PolicyBuilder instance.</returns>
-    public PolicyBuilder<TResult> OrResult<TResult>(TResult result)
-        => OrResult<TResult>(r => (r != null && r.Equals(result)) || (r == null && result == null));
+    public PolicyBuilder<TResult> OrResult<TResult>(TResult result) =>
+        OrResult<TResult>(r => (r != null && r.Equals(result)) || (r == null && result == null));
 
     #endregion
 }
@@ -123,8 +121,8 @@ public partial class PolicyBuilder<TResult>
     /// <param name="result">The TResult value this policy will handle.</param>
     /// <remarks>This policy filter matches the <paramref name="result"/> value returned using .Equals(), ideally suited for value types such as int and enum.  To match characteristics of class return types, consider the overload taking a result predicate.</remarks>
     /// <returns>The PolicyBuilder instance.</returns>
-    public PolicyBuilder<TResult> OrResult(TResult result)
-        => OrResult(r => (r != null && r.Equals(result)) || (r == null && result == null));
+    public PolicyBuilder<TResult> OrResult(TResult result) =>
+        OrResult(r => (r != null && r.Equals(result)) || (r == null && result == null));
 
     #endregion
 

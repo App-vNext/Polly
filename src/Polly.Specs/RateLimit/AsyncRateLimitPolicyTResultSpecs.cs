@@ -3,26 +3,18 @@
 [Collection(Polly.Specs.Helpers.Constants.SystemClockDependentTestCollection)]
 public class AsyncRateLimitPolicyTResultSpecs : RateLimitPolicyTResultSpecsBase, IDisposable
 {
-    public void Dispose()
-    {
+    public void Dispose() =>
         SystemClock.Reset();
-    }
 
-    protected override IRateLimitPolicy GetPolicyViaSyntax(int numberOfExecutions, TimeSpan perTimeSpan)
-    {
-        return Policy.RateLimitAsync<ResultClassWithRetryAfter>(numberOfExecutions, perTimeSpan);
-    }
+    protected override IRateLimitPolicy GetPolicyViaSyntax(int numberOfExecutions, TimeSpan perTimeSpan) =>
+        Policy.RateLimitAsync<ResultClassWithRetryAfter>(numberOfExecutions, perTimeSpan);
 
-    protected override IRateLimitPolicy GetPolicyViaSyntax(int numberOfExecutions, TimeSpan perTimeSpan, int maxBurst)
-    {
-        return Policy.RateLimitAsync<ResultClassWithRetryAfter>(numberOfExecutions, perTimeSpan, maxBurst);
-    }
+    protected override IRateLimitPolicy GetPolicyViaSyntax(int numberOfExecutions, TimeSpan perTimeSpan, int maxBurst) =>
+        Policy.RateLimitAsync<ResultClassWithRetryAfter>(numberOfExecutions, perTimeSpan, maxBurst);
 
     protected override IRateLimitPolicy<TResult> GetPolicyViaSyntax<TResult>(int numberOfExecutions, TimeSpan perTimeSpan, int maxBurst,
-        Func<TimeSpan, Context, TResult> retryAfterFactory)
-    {
-        return Policy.RateLimitAsync<TResult>(numberOfExecutions, perTimeSpan, maxBurst, retryAfterFactory);
-    }
+        Func<TimeSpan, Context, TResult> retryAfterFactory) =>
+        Policy.RateLimitAsync<TResult>(numberOfExecutions, perTimeSpan, maxBurst, retryAfterFactory);
 
     protected override (bool, TimeSpan) TryExecuteThroughPolicy(IRateLimitPolicy policy)
     {

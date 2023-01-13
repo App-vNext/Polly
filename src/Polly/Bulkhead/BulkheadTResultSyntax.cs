@@ -24,8 +24,8 @@ public partial class Policy
     /// <exception cref="ArgumentOutOfRangeException">maxParallelization;Value must be greater than zero.</exception>
     /// <exception cref="ArgumentNullException">onBulkheadRejected</exception>
     /// <returns>The policy instance.</returns>
-    public static BulkheadPolicy<TResult> Bulkhead<TResult>(int maxParallelization, Action<Context> onBulkheadRejected)
-        => Bulkhead<TResult>(maxParallelization, 0, onBulkheadRejected);
+    public static BulkheadPolicy<TResult> Bulkhead<TResult>(int maxParallelization, Action<Context> onBulkheadRejected) =>
+        Bulkhead<TResult>(maxParallelization, 0, onBulkheadRejected);
 
     /// <summary>
     /// Builds a bulkhead isolation <see cref="Policy{TResult}" />, which limits the maximum concurrency of actions executed through the policy.  Imposing a maximum concurrency limits the potential of governed actions, when faulting, to bring down the system.

@@ -25,10 +25,8 @@ public class PolicyRegistry : IConcurrentPolicyRegistry<string>
     /// <remarks>This internal constructor exists solely to facilitate testing of the GetEnumerator() methods, which allow us to support collection initialisation syntax.</remarks>
     /// </summary>
     /// <param name="registry">a dictionary containing keys and policies used for testing.</param>
-    internal PolicyRegistry(IDictionary<string, IsPolicy> registry)
-    {
+    internal PolicyRegistry(IDictionary<string, IsPolicy> registry) =>
         _registry = registry ?? throw new NullReferenceException(nameof(registry));
-    }
 
     private ConcurrentDictionary<string, IsPolicy> ThrowIfNotConcurrentImplementation()
     {
@@ -249,7 +247,8 @@ public class PolicyRegistry : IConcurrentPolicyRegistry<string>
     /// This is not considered a significant issue as typical usage of PolicyRegistry is for bulk population at app startup,
     /// with only infrequent changes to the PolicyRegistry during app running, if using PolicyRegistry for dynamic updates during running.
     /// </remarks>
-    public IEnumerator<KeyValuePair<string, IsPolicy>> GetEnumerator() => _registry.GetEnumerator();
+    public IEnumerator<KeyValuePair<string, IsPolicy>> GetEnumerator() =>
+        _registry.GetEnumerator();
 
     /// <summary>Returns an enumerator that iterates through the policy objects in the <see
     /// cref="PolicyRegistry"/>.</summary>
@@ -262,5 +261,6 @@ public class PolicyRegistry : IConcurrentPolicyRegistry<string>
     /// This is not considered a significant issue as typical usage of PolicyRegistry is for bulk population at app startup,
     /// with only infrequent changes to the PolicyRegistry during app running, if using PolicyRegistry for dynamic updates during running.
     /// </remarks>
-    IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
+    IEnumerator IEnumerable.GetEnumerator() =>
+        this.GetEnumerator();
 }

@@ -4,10 +4,8 @@ namespace Polly.Specs.Helpers;
 
 public static class PolicyTResultExtensions
 {
-    public static TResult RaiseResultSequence<TResult>(this Policy<TResult> policy, params TResult[] resultsToRaise)
-    {
-        return policy.RaiseResultSequence(resultsToRaise.ToList());
-    }
+    public static TResult RaiseResultSequence<TResult>(this Policy<TResult> policy, params TResult[] resultsToRaise) =>
+        policy.RaiseResultSequence(resultsToRaise.ToList());
 
     public static TResult RaiseResultSequence<TResult>(this Policy<TResult> policy, IEnumerable<TResult> resultsToRaise)
     {
@@ -25,10 +23,8 @@ public static class PolicyTResultExtensions
         }
     }
 
-    public static TResult RaiseResultAndOrExceptionSequence<TResult>(this Policy<TResult> policy, params object[] resultsOrExceptionsToRaise)
-    {
-        return policy.RaiseResultAndOrExceptionSequence(resultsOrExceptionsToRaise.ToList());
-    }
+    public static TResult RaiseResultAndOrExceptionSequence<TResult>(this Policy<TResult> policy, params object[] resultsOrExceptionsToRaise) =>
+        policy.RaiseResultAndOrExceptionSequence(resultsOrExceptionsToRaise.ToList());
 
     public static TResult RaiseResultAndOrExceptionSequence<TResult>(this Policy<TResult> policy,
         IEnumerable<object> resultsOrExceptionsToRaise)
@@ -68,11 +64,9 @@ public static class PolicyTResultExtensions
 
     public static TResult RaiseResultSequenceAndOrCancellation<TResult>(this Policy<TResult> policy,
         Scenario scenario, CancellationTokenSource cancellationTokenSource, Action onExecute,
-        params TResult[] resultsToRaise)
-    {
-        return policy.RaiseResultSequenceAndOrCancellation(scenario, cancellationTokenSource, onExecute,
+        params TResult[] resultsToRaise) =>
+        policy.RaiseResultSequenceAndOrCancellation(scenario, cancellationTokenSource, onExecute,
             resultsToRaise.ToList());
-    }
 
     public static TResult RaiseResultSequenceAndOrCancellation<TResult>(this Policy<TResult> policy, Scenario scenario, CancellationTokenSource cancellationTokenSource, Action onExecute, IEnumerable<TResult> resultsToRaise)
     {

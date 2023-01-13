@@ -10,10 +10,8 @@ public class AsyncCircuitBreakerPolicy : AsyncPolicy, ICircuitBreakerPolicy
     internal AsyncCircuitBreakerPolicy(
         PolicyBuilder policyBuilder,
         ICircuitController<EmptyStruct> breakerController
-        ) : base(policyBuilder)
-    {
+        ) : base(policyBuilder) =>
         _breakerController = breakerController;
-    }
 
     /// <summary>
     /// Gets the state of the underlying circuit.
@@ -29,12 +27,14 @@ public class AsyncCircuitBreakerPolicy : AsyncPolicy, ICircuitBreakerPolicy
     /// <summary>
     /// Isolates (opens) the circuit manually, and holds it in this state until a call to <see cref="Reset()"/> is made.
     /// </summary>
-    public void Isolate() => _breakerController.Isolate();
+    public void Isolate() =>
+        _breakerController.Isolate();
 
     /// <summary>
     /// Closes the circuit, and resets any statistics controlling automated circuit-breaking.
     /// </summary>
-    public void Reset() => _breakerController.Reset();
+    public void Reset() =>
+        _breakerController.Reset();
 
     /// <inheritdoc/>
     protected override async Task<TResult> ImplementationAsync<TResult>(Func<Context, CancellationToken, Task<TResult>> action, Context context, CancellationToken cancellationToken,
@@ -64,10 +64,8 @@ public class AsyncCircuitBreakerPolicy<TResult> : AsyncPolicy<TResult>, ICircuit
     internal AsyncCircuitBreakerPolicy(
         PolicyBuilder<TResult> policyBuilder,
         ICircuitController<TResult> breakerController
-        ) : base(policyBuilder)
-    {
+        ) : base(policyBuilder) =>
         _breakerController = breakerController;
-    }
 
     /// <summary>
     /// Gets the state of the underlying circuit.
@@ -89,18 +87,20 @@ public class AsyncCircuitBreakerPolicy<TResult> : AsyncPolicy<TResult>, ICircuit
     /// <summary>
     /// Isolates (opens) the circuit manually, and holds it in this state until a call to <see cref="Reset()"/> is made.
     /// </summary>
-    public void Isolate() => _breakerController.Isolate();
+    public void Isolate() =>
+        _breakerController.Isolate();
 
     /// <summary>
     /// Closes the circuit, and resets any statistics controlling automated circuit-breaking.
     /// </summary>
-    public void Reset() => _breakerController.Reset();
+    public void Reset() =>
+        _breakerController.Reset();
 
     /// <inheritdoc/>
     [DebuggerStepThrough]
     protected override Task<TResult> ImplementationAsync(Func<Context, CancellationToken, Task<TResult>> action, Context context, CancellationToken cancellationToken,
-        bool continueOnCapturedContext)
-        => AsyncCircuitBreakerEngine.ImplementationAsync(
+        bool continueOnCapturedContext) =>
+        AsyncCircuitBreakerEngine.ImplementationAsync(
             action,
             context,
             cancellationToken,

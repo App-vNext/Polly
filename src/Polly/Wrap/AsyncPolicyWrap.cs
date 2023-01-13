@@ -32,8 +32,8 @@ public partial class AsyncPolicyWrap : AsyncPolicy, IPolicyWrap
         Func<Context, CancellationToken, Task> action,
         Context context,
         CancellationToken cancellationToken,
-        bool continueOnCapturedContext)
-        => AsyncPolicyWrapEngine.ImplementationAsync(
+        bool continueOnCapturedContext) =>
+        AsyncPolicyWrapEngine.ImplementationAsync(
             action,
             context,
             cancellationToken,
@@ -45,8 +45,8 @@ public partial class AsyncPolicyWrap : AsyncPolicy, IPolicyWrap
     /// <inheritdoc/>
     [DebuggerStepThrough]
     protected override Task<TResult> ImplementationAsync<TResult>(Func<Context, CancellationToken, Task<TResult>> action, Context context, CancellationToken cancellationToken,
-        bool continueOnCapturedContext)
-        => AsyncPolicyWrapEngine.ImplementationAsync<TResult>(
+        bool continueOnCapturedContext) =>
+        AsyncPolicyWrapEngine.ImplementationAsync<TResult>(
             action,
             context,
             cancellationToken,
@@ -71,12 +71,12 @@ public partial class AsyncPolicyWrap<TResult> : AsyncPolicy<TResult>, IPolicyWra
     /// <summary>
     /// Returns the outer <see cref="IsPolicy"/> in this <see cref="IPolicyWrap{TResult}"/>
     /// </summary>
-    public IsPolicy Outer => (IsPolicy)_outerGeneric ?? _outerNonGeneric;
+    public IsPolicy Outer => (IsPolicy) _outerGeneric ?? _outerNonGeneric;
 
     /// <summary>
     /// Returns the next inner <see cref="IsPolicy"/> in this <see cref="IPolicyWrap{TResult}"/>
     /// </summary>
-    public IsPolicy Inner => (IsPolicy)_innerGeneric ?? _innerNonGeneric;
+    public IsPolicy Inner => (IsPolicy) _innerGeneric ?? _innerNonGeneric;
 
     internal AsyncPolicyWrap(AsyncPolicy outer, IAsyncPolicy<TResult> inner)
         : base(outer.ExceptionPredicates, ResultPredicates<TResult>.None)
