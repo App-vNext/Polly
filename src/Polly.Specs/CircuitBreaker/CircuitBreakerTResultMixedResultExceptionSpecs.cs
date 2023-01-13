@@ -480,7 +480,7 @@ public class CircuitBreakerTResultMixedResultExceptionSpecs : IDisposable
             .OrResult(ResultPrimitive.Fault)
             .CircuitBreaker(2, TimeSpan.FromMinutes(1));
 
-        breaker.LastHandledResult.Should().Be(default(ResultPrimitive));
+        breaker.LastHandledResult.Should().Be(default);
         breaker.LastException.Should().BeNull();
     }
 
@@ -514,7 +514,7 @@ public class CircuitBreakerTResultMixedResultExceptionSpecs : IDisposable
 
         breaker.CircuitState.Should().Be(CircuitState.Closed);
 
-        breaker.LastHandledResult.Should().Be(default(ResultPrimitive));
+        breaker.LastHandledResult.Should().Be(default);
         breaker.LastException.Should().BeOfType<DivideByZeroException>();
     }
 
@@ -554,7 +554,7 @@ public class CircuitBreakerTResultMixedResultExceptionSpecs : IDisposable
 
         breaker.CircuitState.Should().Be(CircuitState.Open);
 
-        breaker.LastHandledResult.Should().Be(default(ResultPrimitive));
+        breaker.LastHandledResult.Should().Be(default);
         breaker.LastException.Should().BeOfType<DivideByZeroException>();
     }
 
@@ -579,7 +579,7 @@ public class CircuitBreakerTResultMixedResultExceptionSpecs : IDisposable
 
         breaker.Reset();
 
-        breaker.LastHandledResult.Should().Be(default(ResultPrimitive));
+        breaker.LastHandledResult.Should().Be(default);
         breaker.LastException.Should().BeNull();
     }
 

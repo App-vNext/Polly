@@ -556,7 +556,7 @@ public class PolicyWrapSpecs
         PolicyResult<ResultPrimitive> executeAndCaptureResultOnPolicyWrap = wrap.ExecuteAndCapture(() => ResultPrimitive.FaultAgain);
 
         executeAndCaptureResultOnPolicyWrap.Outcome.Should().Be(OutcomeType.Successful);
-        executeAndCaptureResultOnPolicyWrap.FinalHandledResult.Should().Be(default(ResultPrimitive));
+        executeAndCaptureResultOnPolicyWrap.FinalHandledResult.Should().Be(default);
         executeAndCaptureResultOnPolicyWrap.FaultType.Should().BeNull();
         executeAndCaptureResultOnPolicyWrap.FinalException.Should().BeNull();
         executeAndCaptureResultOnPolicyWrap.ExceptionType.Should().BeNull();

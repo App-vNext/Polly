@@ -1306,7 +1306,7 @@ public class CircuitBreakerTResultAsyncSpecs : IDisposable
             .HandleResult(ResultPrimitive.Fault)
             .CircuitBreakerAsync(2, TimeSpan.FromMinutes(1));
 
-        breaker.LastHandledResult.Should().Be(default(ResultPrimitive));
+        breaker.LastHandledResult.Should().Be(default);
         breaker.LastException.Should().BeNull();
     }
 
@@ -1366,7 +1366,7 @@ public class CircuitBreakerTResultAsyncSpecs : IDisposable
 
         breaker.Reset();
 
-        breaker.LastHandledResult.Should().Be(default(ResultPrimitive));
+        breaker.LastHandledResult.Should().Be(default);
         breaker.LastException.Should().BeNull();
     }
 

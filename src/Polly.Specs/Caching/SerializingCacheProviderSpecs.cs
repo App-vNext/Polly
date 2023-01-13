@@ -343,7 +343,7 @@ public class SerializingCacheProviderSpecs
 
         cacheHit.Should().BeFalse();
         deserializeInvoked.Should().BeFalse();
-        fromCache.Should().Be(default(ResultPrimitive));
+        fromCache.Should().Be(default);
     }
 
     [Fact]
@@ -439,7 +439,7 @@ public class SerializingCacheProviderSpecs
 
         cacheHit.Should().BeFalse();
         deserializeInvoked.Should().BeFalse();
-        fromCache.Should().Be(default(ResultPrimitive));
+        fromCache.Should().Be(default);
     }
 
     #endregion

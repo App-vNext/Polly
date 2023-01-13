@@ -1296,7 +1296,7 @@ public class CircuitBreakerTResultSpecs : IDisposable
             .HandleResult(ResultPrimitive.Fault)
             .CircuitBreaker(2, TimeSpan.FromMinutes(1));
 
-        breaker.LastHandledResult.Should().Be(default(ResultPrimitive));
+        breaker.LastHandledResult.Should().Be(default);
         breaker.LastException.Should().BeNull();
     }
 
@@ -1355,7 +1355,7 @@ public class CircuitBreakerTResultSpecs : IDisposable
 
         breaker.Reset();
 
-        breaker.LastHandledResult.Should().Be(default(ResultPrimitive));
+        breaker.LastHandledResult.Should().Be(default);
         breaker.LastException.Should().BeNull();
     }
 
