@@ -68,7 +68,7 @@ public partial class Policy
         if (ttlStrategy == null) throw new ArgumentNullException(nameof(ttlStrategy));
         if (cacheKeyStrategy == null) throw new ArgumentNullException(nameof(cacheKeyStrategy));
 
-        onCacheError = onCacheError ?? ((_, _, _) => { });
+        onCacheError ??= (_, _, _) => { };
         Action<Context, string> emptyDelegate = (_, _) => { };
 
         return Cache(cacheProvider, ttlStrategy, cacheKeyStrategy.GetCacheKey, emptyDelegate, emptyDelegate, emptyDelegate, onCacheError, onCacheError);
@@ -110,7 +110,7 @@ public partial class Policy
         if (ttlStrategy == null) throw new ArgumentNullException(nameof(ttlStrategy));
         if (cacheKeyStrategy == null) throw new ArgumentNullException(nameof(cacheKeyStrategy));
 
-        onCacheError = onCacheError ?? ((_, _, _) => { });
+        onCacheError ??= (_, _, _) => { };
         Action<Context, string> emptyDelegate = (_, _) => { };
 
         return Cache(cacheProvider, ttlStrategy, cacheKeyStrategy, emptyDelegate, emptyDelegate, emptyDelegate, onCacheError, onCacheError);

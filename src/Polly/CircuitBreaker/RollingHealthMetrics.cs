@@ -65,7 +65,7 @@ internal class RollingHealthMetrics : IHealthMetrics
             _windows.Enqueue(_currentWindow);
         }
 
-        while (_windows.Count > 0 && (now - _windows.Peek().StartedAt >= _samplingDuration))
+        while (_windows.Count > 0 && now - _windows.Peek().StartedAt >= _samplingDuration)
             _windows.Dequeue();
     }
 }

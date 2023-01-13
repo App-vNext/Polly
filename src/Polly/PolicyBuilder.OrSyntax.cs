@@ -34,7 +34,7 @@ public partial class PolicyBuilder
     /// <returns>The PolicyBuilder instance, for fluent chaining.</returns>
     public PolicyBuilder OrInner<TException>() where TException : Exception
     {
-        ExceptionPredicates.Add((HandleInner(ex => ex is TException)));
+        ExceptionPredicates.Add(HandleInner(ex => ex is TException));
         return this;
     }
 
@@ -160,7 +160,7 @@ public partial class PolicyBuilder<TResult>
     /// <returns>The PolicyBuilder instance, for fluent chaining.</returns>
     public PolicyBuilder<TResult> OrInner<TException>() where TException : Exception
     {
-        ExceptionPredicates.Add((PolicyBuilder.HandleInner(ex => ex is TException)));
+        ExceptionPredicates.Add(PolicyBuilder.HandleInner(ex => ex is TException));
         return this;
     }
 
