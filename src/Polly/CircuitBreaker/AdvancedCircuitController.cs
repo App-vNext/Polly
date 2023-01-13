@@ -82,7 +82,7 @@ internal class AdvancedCircuitController<TResult> : CircuitStateController<TResu
                     var healthCount = _metrics.GetHealthCount_NeedsLock();
 
                     int throughput = healthCount.Total;
-                    if (throughput >= _minimumThroughput && ((double)healthCount.Failures) / throughput >= _failureThreshold)
+                    if (throughput >= _minimumThroughput && (double)healthCount.Failures / throughput >= _failureThreshold)
                     {
                         Break_NeedsLock(context);
                     }

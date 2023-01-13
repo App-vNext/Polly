@@ -417,7 +417,7 @@ public partial class Policy
     /// <exception cref="ArgumentNullException">cacheKeyStrategy</exception>
     public static AsyncCachePolicy<TResult> CacheAsync<TResult>(IAsyncCacheProvider<TResult> cacheProvider, ITtlStrategy ttlStrategy, ICacheKeyStrategy cacheKeyStrategy, Action<Context, string, Exception>? onCacheError = null)
     {
-        onCacheError = onCacheError ?? ((_, _, _) => { });
+        onCacheError ??= (_, _, _) => { };
 
         Action<Context, string> emptyDelegate = (_, _) => { };
 
@@ -440,7 +440,7 @@ public partial class Policy
     /// <exception cref="ArgumentNullException">cacheKeyStrategy</exception>
     public static AsyncCachePolicy<TResult> CacheAsync<TResult>(IAsyncCacheProvider<TResult> cacheProvider, ITtlStrategy<TResult> ttlStrategy, ICacheKeyStrategy cacheKeyStrategy, Action<Context, string, Exception>? onCacheError = null)
     {
-        onCacheError = onCacheError ?? ((_, _, _) => { });
+        onCacheError ??= (_, _, _) => { };
 
         Action<Context, string> emptyDelegate = (_, _) => { };
 
@@ -479,7 +479,7 @@ public partial class Policy
     /// <exception cref="ArgumentNullException">cacheKeyStrategy</exception>
     public static AsyncCachePolicy<TResult> CacheAsync<TResult>(IAsyncCacheProvider<TResult> cacheProvider, ITtlStrategy ttlStrategy, Func<Context, string> cacheKeyStrategy, Action<Context, string, Exception>? onCacheError = null)
     {
-        onCacheError = onCacheError ?? ((_, _, _) => { });
+        onCacheError ??= (_, _, _) => { };
 
         Action<Context, string> emptyDelegate = (_, _) => { };
 
@@ -502,7 +502,7 @@ public partial class Policy
     /// <exception cref="ArgumentNullException">cacheKeyStrategy</exception>
     public static AsyncCachePolicy<TResult> CacheAsync<TResult>(IAsyncCacheProvider<TResult> cacheProvider, ITtlStrategy<TResult> ttlStrategy, Func<Context, string> cacheKeyStrategy, Action<Context, string, Exception>? onCacheError = null)
     {
-        onCacheError = onCacheError ?? ((_, _, _) => { });
+        onCacheError ??= (_, _, _) => { };
 
         Action<Context, string> emptyDelegate = (_, _) => { };
 
