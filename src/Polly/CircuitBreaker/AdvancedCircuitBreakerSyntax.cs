@@ -67,13 +67,13 @@ public static class AdvancedCircuitBreakerSyntax
     /// <exception cref="ArgumentOutOfRangeException">durationOfBreak;Value must be greater than zero</exception>
     /// <exception cref="ArgumentNullException">onBreak</exception>
     /// <exception cref="ArgumentNullException">onReset</exception>
-    public static CircuitBreakerPolicy AdvancedCircuitBreaker(this PolicyBuilder policyBuilder, double failureThreshold, TimeSpan samplingDuration, int minimumThroughput, TimeSpan durationOfBreak, Action<Exception, TimeSpan> onBreak, Action onReset)
-        => policyBuilder.AdvancedCircuitBreaker(
+    public static CircuitBreakerPolicy AdvancedCircuitBreaker(this PolicyBuilder policyBuilder, double failureThreshold, TimeSpan samplingDuration, int minimumThroughput, TimeSpan durationOfBreak, Action<Exception, TimeSpan> onBreak, Action onReset) =>
+        policyBuilder.AdvancedCircuitBreaker(
             failureThreshold, samplingDuration, minimumThroughput,
             durationOfBreak,
             (exception, timespan, _) => onBreak(exception, timespan),
             _ => onReset()
-            );
+        );
 
     /// <summary>
     /// <para>The circuit will break if, within any timeslice of duration <paramref name="samplingDuration"/>, the proportion of actions resulting in a handled exception exceeds <paramref name="failureThreshold"/>, provided also that the number of actions through the circuit in the timeslice is at least <paramref name="minimumThroughput" />. </para>
@@ -140,14 +140,14 @@ public static class AdvancedCircuitBreakerSyntax
     /// <exception cref="ArgumentNullException">onBreak</exception>
     /// <exception cref="ArgumentNullException">onReset</exception>
     /// <exception cref="ArgumentNullException">onHalfOpen</exception>
-    public static CircuitBreakerPolicy AdvancedCircuitBreaker(this PolicyBuilder policyBuilder, double failureThreshold, TimeSpan samplingDuration, int minimumThroughput, TimeSpan durationOfBreak, Action<Exception, TimeSpan> onBreak, Action onReset, Action onHalfOpen)
-        => policyBuilder.AdvancedCircuitBreaker(
+    public static CircuitBreakerPolicy AdvancedCircuitBreaker(this PolicyBuilder policyBuilder, double failureThreshold, TimeSpan samplingDuration, int minimumThroughput, TimeSpan durationOfBreak, Action<Exception, TimeSpan> onBreak, Action onReset, Action onHalfOpen) =>
+        policyBuilder.AdvancedCircuitBreaker(
             failureThreshold, samplingDuration, minimumThroughput,
             durationOfBreak,
             (exception, timespan, _) => onBreak(exception, timespan),
             _ => onReset(),
             onHalfOpen
-            );
+        );
 
     /// <summary>
     /// <para> Builds a <see cref="Policy" /> that will function like a Circuit Breaker.</para>
@@ -178,8 +178,8 @@ public static class AdvancedCircuitBreakerSyntax
     /// <exception cref="ArgumentNullException">onReset</exception>
     /// <exception cref="ArgumentNullException">onHalfOpen</exception>
     /// <remarks>(see "Release It!" by Michael T. Nygard fi)</remarks>
-    public static CircuitBreakerPolicy AdvancedCircuitBreaker(this PolicyBuilder policyBuilder, double failureThreshold, TimeSpan samplingDuration, int minimumThroughput, TimeSpan durationOfBreak, Action<Exception, TimeSpan, Context> onBreak, Action<Context> onReset, Action onHalfOpen)
-        => policyBuilder.AdvancedCircuitBreaker(
+    public static CircuitBreakerPolicy AdvancedCircuitBreaker(this PolicyBuilder policyBuilder, double failureThreshold, TimeSpan samplingDuration, int minimumThroughput, TimeSpan durationOfBreak, Action<Exception, TimeSpan, Context> onBreak, Action<Context> onReset, Action onHalfOpen) =>
+        policyBuilder.AdvancedCircuitBreaker(
             failureThreshold, samplingDuration, minimumThroughput,
             durationOfBreak,
             (exception, _, timespan, context) => onBreak(exception, timespan, context),

@@ -9,7 +9,7 @@ public class ExceptionPredicates
 
     internal void Add(ExceptionPredicate predicate)
     {
-        _predicates = _predicates ?? new List<ExceptionPredicate>(); // The ?? pattern here is sufficient; only a deliberately contrived example would lead to the same PolicyBuilder instance being used in a multi-threaded way to define policies simultaneously on multiple threads.
+        _predicates ??= new List<ExceptionPredicate>(); // The ?? pattern here is sufficient; only a deliberately contrived example would lead to the same PolicyBuilder instance being used in a multi-threaded way to define policies simultaneously on multiple threads.
 
         _predicates.Add(predicate);
     }
@@ -20,7 +20,8 @@ public class ExceptionPredicates
     /// </summary>
     /// <param name="ex">The exception to assess against the predicates.</param>
     /// <returns>The first exception to match a predicate; or null, if no match is found.</returns>
-    public Exception FirstMatchOrDefault(Exception ex) => _predicates?.Select(predicate => predicate(ex)).FirstOrDefault(e => e != null);
+    public Exception FirstMatchOrDefault(Exception ex) =>
+        _predicates?.Select(predicate => predicate(ex)).FirstOrDefault(e => e != null);
 
     /// <summary>
     /// Specifies that no Exception-handling filters are applied or are required.

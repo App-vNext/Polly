@@ -2,6 +2,6 @@
 
 public class LockFreeTokenBucketRateLimiterTests : TokenBucketRateLimiterTestsBase
 {
-    internal override IRateLimiter GetRateLimiter(TimeSpan onePer, long bucketCapacity)
-        => new LockFreeTokenBucketRateLimiter(onePer, bucketCapacity);
+    internal override IRateLimiter GetRateLimiter(TimeSpan onePer, long bucketCapacity) =>
+        new LockFreeTokenBucketRateLimiter(onePer, bucketCapacity);
 }

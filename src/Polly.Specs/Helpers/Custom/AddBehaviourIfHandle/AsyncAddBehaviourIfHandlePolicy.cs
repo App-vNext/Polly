@@ -7,15 +7,12 @@ internal class AsyncAddBehaviourIfHandlePolicy : AsyncPolicy
     internal AsyncAddBehaviourIfHandlePolicy(
         Func<Exception, Task> behaviourIfHandle,
         PolicyBuilder policyBuilder)
-        : base(policyBuilder)
-    {
+        : base(policyBuilder) =>
         _behaviourIfHandle = behaviourIfHandle ?? throw new ArgumentNullException(nameof(behaviourIfHandle));
-    }
 
     protected override Task<TResult> ImplementationAsync<TResult>(Func<Context, System.Threading.CancellationToken, Task<TResult>> action, Context context, System.Threading.CancellationToken cancellationToken,
-        bool continueOnCapturedContext)
-    {
-        return AsyncAddBehaviourIfHandleEngine.ImplementationAsync(
+        bool continueOnCapturedContext) =>
+        AsyncAddBehaviourIfHandleEngine.ImplementationAsync(
             ExceptionPredicates,
             ResultPredicates<TResult>.None,
             outcome => _behaviourIfHandle(outcome.Exception),
@@ -24,7 +21,6 @@ internal class AsyncAddBehaviourIfHandlePolicy : AsyncPolicy
             cancellationToken,
             continueOnCapturedContext
         );
-    }
 }
 
 internal class AsyncAddBehaviourIfHandlePolicy<TResult> : AsyncPolicy<TResult>
@@ -34,16 +30,12 @@ internal class AsyncAddBehaviourIfHandlePolicy<TResult> : AsyncPolicy<TResult>
     internal AsyncAddBehaviourIfHandlePolicy(
         Func<DelegateResult<TResult>, Task> behaviourIfHandle,
         PolicyBuilder<TResult> policyBuilder)
-        : base(policyBuilder)
-    {
+        : base(policyBuilder) =>
         _behaviourIfHandle = behaviourIfHandle ?? throw new ArgumentNullException(nameof(behaviourIfHandle));
 
-    }
-
     protected override Task<TResult> ImplementationAsync(Func<Context, System.Threading.CancellationToken, Task<TResult>> action, Context context, System.Threading.CancellationToken cancellationToken,
-        bool continueOnCapturedContext)
-    {
-        return AsyncAddBehaviourIfHandleEngine.ImplementationAsync(
+        bool continueOnCapturedContext) =>
+        AsyncAddBehaviourIfHandleEngine.ImplementationAsync(
             ExceptionPredicates,
             ResultPredicates,
             _behaviourIfHandle,
@@ -52,5 +44,4 @@ internal class AsyncAddBehaviourIfHandlePolicy<TResult> : AsyncPolicy<TResult>
             cancellationToken,
             continueOnCapturedContext
         );
-    }
 }

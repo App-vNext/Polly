@@ -472,8 +472,6 @@ public class CacheTResultSpecs : IDisposable
 
     #endregion
 
-    public void Dispose()
-    {
+    public void Dispose() =>
         SystemClock.Reset();
-    }
 }

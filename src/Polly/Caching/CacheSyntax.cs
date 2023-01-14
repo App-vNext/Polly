@@ -14,8 +14,8 @@ public partial class Policy
     /// <param name="onCacheError">Delegate to call if an exception is thrown when attempting to get a value from or put a value into the cache, passing the execution context, the cache key, and the exception.</param>
     /// <returns>The policy instance.</returns>
     /// <exception cref="ArgumentNullException">cacheProvider</exception>
-    public static CachePolicy Cache(ISyncCacheProvider cacheProvider, TimeSpan ttl, Action<Context, string, Exception>? onCacheError = null)
-        => Cache(cacheProvider, new RelativeTtl(ttl), DefaultCacheKeyStrategy.Instance.GetCacheKey, onCacheError);
+    public static CachePolicy Cache(ISyncCacheProvider cacheProvider, TimeSpan ttl, Action<Context, string, Exception>? onCacheError = null) =>
+        Cache(cacheProvider, new RelativeTtl(ttl), DefaultCacheKeyStrategy.Instance.GetCacheKey, onCacheError);
 
     /// <summary>
     /// <para>Builds a <see cref="Policy" /> that will function like a result cache for delegate executions returning a result.</para>
@@ -29,8 +29,8 @@ public partial class Policy
     /// <returns>The policy instance.</returns>
     /// <exception cref="ArgumentNullException">cacheProvider</exception>
     /// <exception cref="ArgumentNullException">ttlStrategy</exception>
-    public static CachePolicy Cache(ISyncCacheProvider cacheProvider, ITtlStrategy ttlStrategy, Action<Context, string, Exception>? onCacheError = null)
-        => Cache(cacheProvider, ttlStrategy, DefaultCacheKeyStrategy.Instance.GetCacheKey, onCacheError);
+    public static CachePolicy Cache(ISyncCacheProvider cacheProvider, ITtlStrategy ttlStrategy, Action<Context, string, Exception>? onCacheError = null) =>
+        Cache(cacheProvider, ttlStrategy, DefaultCacheKeyStrategy.Instance.GetCacheKey, onCacheError);
 
     /// <summary>
     /// <para>Builds a <see cref="Policy"/> that will function like a result cache for delegate executions returning a result.</para>
@@ -45,8 +45,8 @@ public partial class Policy
     /// <returns>The policy instance.</returns>
     /// <exception cref="ArgumentNullException">cacheProvider</exception>
     /// <exception cref="ArgumentNullException">cacheKeyStrategy</exception>
-    public static CachePolicy Cache(ISyncCacheProvider cacheProvider, TimeSpan ttl, ICacheKeyStrategy cacheKeyStrategy, Action<Context, string, Exception>? onCacheError = null)
-        => Cache(cacheProvider, new RelativeTtl(ttl), cacheKeyStrategy.GetCacheKey, onCacheError);
+    public static CachePolicy Cache(ISyncCacheProvider cacheProvider, TimeSpan ttl, ICacheKeyStrategy cacheKeyStrategy, Action<Context, string, Exception>? onCacheError = null) =>
+        Cache(cacheProvider, new RelativeTtl(ttl), cacheKeyStrategy.GetCacheKey, onCacheError);
 
     /// <summary>
     /// <para>Builds a <see cref="Policy"/> that will function like a result cache for delegate executions returning a result.</para>
@@ -68,7 +68,7 @@ public partial class Policy
         if (ttlStrategy == null) throw new ArgumentNullException(nameof(ttlStrategy));
         if (cacheKeyStrategy == null) throw new ArgumentNullException(nameof(cacheKeyStrategy));
 
-        onCacheError = onCacheError ?? ((_, _, _) => { });
+        onCacheError ??= (_, _, _) => { };
         Action<Context, string> emptyDelegate = (_, _) => { };
 
         return Cache(cacheProvider, ttlStrategy, cacheKeyStrategy.GetCacheKey, emptyDelegate, emptyDelegate, emptyDelegate, onCacheError, onCacheError);
@@ -87,8 +87,8 @@ public partial class Policy
     /// <returns>The policy instance.</returns>
     /// <exception cref="ArgumentNullException">cacheProvider</exception>
     /// <exception cref="ArgumentNullException">cacheKeyStrategy</exception>
-    public static CachePolicy Cache(ISyncCacheProvider cacheProvider, TimeSpan ttl, Func<Context, string> cacheKeyStrategy, Action<Context, string, Exception>? onCacheError = null)
-        => Cache(cacheProvider, new RelativeTtl(ttl), cacheKeyStrategy, onCacheError);
+    public static CachePolicy Cache(ISyncCacheProvider cacheProvider, TimeSpan ttl, Func<Context, string> cacheKeyStrategy, Action<Context, string, Exception>? onCacheError = null) =>
+        Cache(cacheProvider, new RelativeTtl(ttl), cacheKeyStrategy, onCacheError);
 
     /// <summary>
     /// <para>Builds a <see cref="Policy"/> that will function like a result cache for delegate executions returning a result.</para>
@@ -110,7 +110,7 @@ public partial class Policy
         if (ttlStrategy == null) throw new ArgumentNullException(nameof(ttlStrategy));
         if (cacheKeyStrategy == null) throw new ArgumentNullException(nameof(cacheKeyStrategy));
 
-        onCacheError = onCacheError ?? ((_, _, _) => { });
+        onCacheError ??= (_, _, _) => { };
         Action<Context, string> emptyDelegate = (_, _) => { };
 
         return Cache(cacheProvider, ttlStrategy, cacheKeyStrategy, emptyDelegate, emptyDelegate, emptyDelegate, onCacheError, onCacheError);
@@ -145,8 +145,8 @@ public partial class Policy
         Action<Context, string> onCacheMiss,
         Action<Context, string> onCachePut,
         Action<Context, string, Exception> onCacheGetError,
-        Action<Context, string, Exception> onCachePutError)
-        => Cache(cacheProvider, new RelativeTtl(ttl), DefaultCacheKeyStrategy.Instance.GetCacheKey, onCacheGet, onCacheMiss, onCachePut, onCacheGetError, onCachePutError);
+        Action<Context, string, Exception> onCachePutError) =>
+        Cache(cacheProvider, new RelativeTtl(ttl), DefaultCacheKeyStrategy.Instance.GetCacheKey, onCacheGet, onCacheMiss, onCachePut, onCacheGetError, onCachePutError);
 
     /// <summary>
     /// <para>Builds a <see cref="Policy"/> that will function like a result cache for delegate executions returning a result.</para>
@@ -178,8 +178,8 @@ public partial class Policy
         Action<Context, string> onCacheMiss,
         Action<Context, string> onCachePut,
         Action<Context, string, Exception> onCacheGetError,
-        Action<Context, string, Exception> onCachePutError)
-        => Cache(cacheProvider, ttlStrategy, DefaultCacheKeyStrategy.Instance.GetCacheKey, onCacheGet, onCacheMiss, onCachePut, onCacheGetError, onCachePutError);
+        Action<Context, string, Exception> onCachePutError) =>
+        Cache(cacheProvider, ttlStrategy, DefaultCacheKeyStrategy.Instance.GetCacheKey, onCacheGet, onCacheMiss, onCachePut, onCacheGetError, onCachePutError);
 
     /// <summary>
     /// <para>Builds a <see cref="Policy"/> that will function like a result cache for delegate executions returning a result.</para>
@@ -213,8 +213,8 @@ public partial class Policy
         Action<Context, string> onCacheMiss,
         Action<Context, string> onCachePut,
         Action<Context, string, Exception> onCacheGetError,
-        Action<Context, string, Exception> onCachePutError)
-        => Cache(cacheProvider, new RelativeTtl(ttl), cacheKeyStrategy.GetCacheKey, onCacheGet, onCacheMiss, onCachePut, onCacheGetError, onCachePutError);
+        Action<Context, string, Exception> onCachePutError) =>
+        Cache(cacheProvider, new RelativeTtl(ttl), cacheKeyStrategy.GetCacheKey, onCacheGet, onCacheMiss, onCachePut, onCacheGetError, onCachePutError);
 
     /// <summary>
     /// <para>Builds a <see cref="Policy"/> that will function like a result cache for delegate executions returning a result.</para>
@@ -249,8 +249,8 @@ public partial class Policy
         Action<Context, string> onCacheMiss,
         Action<Context, string> onCachePut,
         Action<Context, string, Exception> onCacheGetError,
-        Action<Context, string, Exception> onCachePutError)
-       => Cache(cacheProvider, ttlStrategy, cacheKeyStrategy.GetCacheKey, onCacheGet, onCacheMiss, onCachePut, onCacheGetError, onCachePutError);
+        Action<Context, string, Exception> onCachePutError) =>
+        Cache(cacheProvider, ttlStrategy, cacheKeyStrategy.GetCacheKey, onCacheGet, onCacheMiss, onCachePut, onCacheGetError, onCachePutError);
 
     /// <summary>
     /// <para>Builds a <see cref="Policy"/> that will function like a result cache for delegate executions returning a result.</para>
@@ -284,8 +284,8 @@ public partial class Policy
         Action<Context, string> onCacheMiss,
         Action<Context, string> onCachePut,
         Action<Context, string, Exception> onCacheGetError,
-        Action<Context, string, Exception> onCachePutError)
-        => Cache(cacheProvider, new RelativeTtl(ttl), cacheKeyStrategy, onCacheGet, onCacheMiss, onCachePut, onCacheGetError, onCachePutError);
+        Action<Context, string, Exception> onCachePutError) =>
+        Cache(cacheProvider, new RelativeTtl(ttl), cacheKeyStrategy, onCacheGet, onCacheMiss, onCachePut, onCacheGetError, onCachePutError);
 
     /// <summary>
     /// <para>Builds a <see cref="Policy"/> that will function like a result cache for delegate executions returning a result.</para>

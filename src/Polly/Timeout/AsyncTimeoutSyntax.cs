@@ -326,8 +326,8 @@ public partial class Policy
     /// <returns>The policy instance.</returns>
     /// <exception cref="ArgumentNullException">timeoutProvider</exception>
     /// <exception cref="ArgumentNullException">onTimeoutAsync</exception>
-    public static AsyncTimeoutPolicy TimeoutAsync(Func<Context, TimeSpan> timeoutProvider, Func<Context, TimeSpan, Task, Task> onTimeoutAsync)
-        => TimeoutAsync(timeoutProvider, TimeoutStrategy.Optimistic, onTimeoutAsync);
+    public static AsyncTimeoutPolicy TimeoutAsync(Func<Context, TimeSpan> timeoutProvider, Func<Context, TimeSpan, Task, Task> onTimeoutAsync) =>
+        TimeoutAsync(timeoutProvider, TimeoutStrategy.Optimistic, onTimeoutAsync);
 
     /// <summary>
     /// Builds an <see cref="AsyncPolicy"/> that will wait asynchronously for a delegate to complete for a specified period of time. A <see cref="TimeoutRejectedException"/> will be thrown if the delegate does not complete within the configured timeout.
@@ -338,8 +338,8 @@ public partial class Policy
     /// <returns>The policy instance.</returns>
     /// <exception cref="ArgumentNullException">timeoutProvider</exception>
     /// <exception cref="ArgumentNullException">onTimeoutAsync</exception>
-    public static AsyncTimeoutPolicy TimeoutAsync(Func<Context, TimeSpan> timeoutProvider, Func<Context, TimeSpan, Task, Exception, Task> onTimeoutAsync)
-        => TimeoutAsync(timeoutProvider, TimeoutStrategy.Optimistic, onTimeoutAsync);
+    public static AsyncTimeoutPolicy TimeoutAsync(Func<Context, TimeSpan> timeoutProvider, Func<Context, TimeSpan, Task, Exception, Task> onTimeoutAsync) =>
+        TimeoutAsync(timeoutProvider, TimeoutStrategy.Optimistic, onTimeoutAsync);
 
     /// <summary>
     /// Builds an <see cref="AsyncPolicy" /> that will wait asynchronously for a delegate to complete for a specified period of time. A <see cref="TimeoutRejectedException" /> will be thrown if the delegate does not complete within the configured timeout.

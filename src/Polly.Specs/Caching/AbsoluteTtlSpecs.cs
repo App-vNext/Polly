@@ -47,8 +47,6 @@ public class AbsoluteTtlSpecs : IDisposable
         ttlStrategy.GetTtl(new Context("someOperationKey"), null).Timespan.Should().Be(TimeSpan.FromDays(1));
     }
 
-    public void Dispose()
-    {
+    public void Dispose() =>
         SystemClock.Reset();
-    }
 }

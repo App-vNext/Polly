@@ -326,8 +326,8 @@ public partial class Policy
     /// <returns>The policy instance.</returns>
     /// <exception cref="ArgumentNullException">timeoutProvider</exception>
     /// <exception cref="ArgumentNullException">onTimeout</exception>
-    public static TimeoutPolicy<TResult> Timeout<TResult>(Func<Context, TimeSpan> timeoutProvider, Action<Context, TimeSpan, Task> onTimeout)
-        => Timeout<TResult>(timeoutProvider, TimeoutStrategy.Optimistic, onTimeout);
+    public static TimeoutPolicy<TResult> Timeout<TResult>(Func<Context, TimeSpan> timeoutProvider, Action<Context, TimeSpan, Task> onTimeout) =>
+        Timeout<TResult>(timeoutProvider, TimeoutStrategy.Optimistic, onTimeout);
 
     /// <summary>
     /// Builds a <see cref="Policy{TResult}"/> that will wait for a delegate to complete for a specified period of time. A <see cref="TimeoutRejectedException"/> will be thrown if the delegate does not complete within the configured timeout.
@@ -338,8 +338,8 @@ public partial class Policy
     /// <returns>The policy instance.</returns>
     /// <exception cref="ArgumentNullException">timeoutProvider</exception>
     /// <exception cref="ArgumentNullException">onTimeout</exception>
-    public static TimeoutPolicy<TResult> Timeout<TResult>(Func<Context, TimeSpan> timeoutProvider, Action<Context, TimeSpan, Task, Exception> onTimeout)
-        => Timeout<TResult>(timeoutProvider, TimeoutStrategy.Optimistic, onTimeout);
+    public static TimeoutPolicy<TResult> Timeout<TResult>(Func<Context, TimeSpan> timeoutProvider, Action<Context, TimeSpan, Task, Exception> onTimeout) =>
+        Timeout<TResult>(timeoutProvider, TimeoutStrategy.Optimistic, onTimeout);
 
     /// <summary>
     /// Builds a <see cref="Policy{TResult}" /> that will wait for a delegate to complete for a specified period of time. A <see cref="TimeoutRejectedException" /> will be thrown if the delegate does not complete within the configured timeout.

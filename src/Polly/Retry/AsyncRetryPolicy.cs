@@ -28,9 +28,8 @@ public class AsyncRetryPolicy : AsyncPolicy, IRetryPolicy
     /// <inheritdoc/>
     [DebuggerStepThrough]
     protected override Task<TResult> ImplementationAsync<TResult>(Func<Context, CancellationToken, Task<TResult>> action, Context context, CancellationToken cancellationToken,
-        bool continueOnCapturedContext)
-    {
-        return AsyncRetryEngine.ImplementationAsync(
+        bool continueOnCapturedContext) =>
+        AsyncRetryEngine.ImplementationAsync(
             action,
             context,
             cancellationToken,
@@ -44,7 +43,6 @@ public class AsyncRetryPolicy : AsyncPolicy, IRetryPolicy
                 : (Func<int, DelegateResult<TResult>, Context, TimeSpan>)null,
             continueOnCapturedContext
         );
-    }
 }
 
 /// <summary>
@@ -75,8 +73,8 @@ public class AsyncRetryPolicy<TResult> : AsyncPolicy<TResult>, IRetryPolicy<TRes
     /// <inheritdoc/>
     [DebuggerStepThrough]
     protected override Task<TResult> ImplementationAsync(Func<Context, CancellationToken, Task<TResult>> action, Context context, CancellationToken cancellationToken,
-        bool continueOnCapturedContext)
-        => AsyncRetryEngine.ImplementationAsync(
+        bool continueOnCapturedContext) =>
+        AsyncRetryEngine.ImplementationAsync(
             action,
             context,
             cancellationToken,

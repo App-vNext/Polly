@@ -19,8 +19,6 @@ internal struct BulkheadScenario
          _cancelExecuting = cancelExecuting;
     }
 
-    public object[] ToTheoryData()
-    {
-        return new object[] {_maxParallelization, _maxQueuingActions, _totalTestLoad, _cancelQueuing, _cancelExecuting, _scenario };
-    }
+    public object[] ToTheoryData() =>
+        new object[] {_maxParallelization, _maxQueuingActions, _totalTestLoad, _cancelQueuing, _cancelExecuting, _scenario };
 }

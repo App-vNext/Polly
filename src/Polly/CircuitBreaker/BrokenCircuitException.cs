@@ -65,21 +65,21 @@ public class BrokenCircuitException<TResult> : BrokenCircuitException
     /// Initializes a new instance of the <see cref="BrokenCircuitException{TResult}"/> class.
     /// </summary>
     /// <param name="result">The result which caused the circuit to break.</param>
-    public BrokenCircuitException(TResult result) : base()
-        => this.result = result;
+    public BrokenCircuitException(TResult result) : base() =>
+        this.result = result;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="BrokenCircuitException{TResult}"/> class.
     /// </summary>
     /// <param name="message">The message that describes the error.</param>
     /// <param name="result">The result which caused the circuit to break.</param>
-    public BrokenCircuitException(string message, TResult result) : base(message)
-        => this.result = result;
+    public BrokenCircuitException(string message, TResult result) : base(message) =>
+        this.result = result;
 
     /// <summary>
     /// The result value which was considered a handled fault, by the policy.
     /// </summary>
-    public TResult Result { get => result; }
+    public TResult Result => result;
 
 #if NETSTANDARD2_0
     /// <summary>

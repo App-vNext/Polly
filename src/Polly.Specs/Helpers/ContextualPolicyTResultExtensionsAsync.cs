@@ -4,10 +4,8 @@ public static class ContextualPolicyTResultExtensionsAsync
 {
     public static Task<TResult> RaiseResultSequenceAsync<TResult>(this AsyncPolicy<TResult> policy,
 IDictionary<string, object> contextData,
-params TResult[] resultsToRaise)
-    {
-        return policy.RaiseResultSequenceAsync(contextData, CancellationToken.None, resultsToRaise.ToList());
-    }
+params TResult[] resultsToRaise) =>
+        policy.RaiseResultSequenceAsync(contextData, CancellationToken.None, resultsToRaise.ToList());
 
     public static Task<TResult> RaiseResultSequenceAsync<TResult>(this AsyncPolicy<TResult> policy, IDictionary<string, object> contextData, CancellationToken cancellationToken, IEnumerable<TResult> resultsToRaise)
     {
@@ -24,10 +22,8 @@ params TResult[] resultsToRaise)
         }, contextData, cancellationToken);
     }
 
-    public static Task<PolicyResult<TResult>> RaiseResultSequenceOnExecuteAndCaptureAsync<TResult>(this AsyncPolicy<TResult> policy, IDictionary<string, object> contextData, params TResult[] resultsToRaise)
-    {
-        return policy.RaiseResultSequenceOnExecuteAndCaptureAsync(contextData, resultsToRaise.ToList());
-    }
+    public static Task<PolicyResult<TResult>> RaiseResultSequenceOnExecuteAndCaptureAsync<TResult>(this AsyncPolicy<TResult> policy, IDictionary<string, object> contextData, params TResult[] resultsToRaise) =>
+        policy.RaiseResultSequenceOnExecuteAndCaptureAsync(contextData, resultsToRaise.ToList());
 
     public static Task<PolicyResult<TResult>> RaiseResultSequenceOnExecuteAndCaptureAsync<TResult>(this AsyncPolicy<TResult> policy, IDictionary<string, object> contextData, IEnumerable<TResult> resultsToRaise)
     {

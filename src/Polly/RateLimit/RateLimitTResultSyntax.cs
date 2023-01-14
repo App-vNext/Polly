@@ -11,10 +11,8 @@ public partial class Policy
     /// <returns>The policy instance.</returns>
     public static RateLimitPolicy<TResult> RateLimit<TResult>(
         int numberOfExecutions,
-        TimeSpan perTimeSpan)
-    {
-        return RateLimit<TResult>(numberOfExecutions, perTimeSpan, null);
-    }
+        TimeSpan perTimeSpan) =>
+        RateLimit<TResult>(numberOfExecutions, perTimeSpan, null);
 
     /// <summary>
     /// Builds a RateLimit <see cref="Policy{TResult}"/> that will rate-limit executions to <paramref name="numberOfExecutions"/> per the timespan given.
@@ -28,10 +26,8 @@ public partial class Policy
     public static RateLimitPolicy<TResult> RateLimit<TResult>(
         int numberOfExecutions,
         TimeSpan perTimeSpan,
-        Func<TimeSpan, Context, TResult> retryAfterFactory)
-    {
-        return RateLimit(numberOfExecutions, perTimeSpan, 1, retryAfterFactory);
-    }
+        Func<TimeSpan, Context, TResult> retryAfterFactory) =>
+        RateLimit(numberOfExecutions, perTimeSpan, 1, retryAfterFactory);
 
     /// <summary>
     /// Builds a RateLimit <see cref="Policy{TResult}"/> that will rate-limit executions to <paramref name="numberOfExecutions"/> per the timespan given.
@@ -45,10 +41,8 @@ public partial class Policy
     public static RateLimitPolicy<TResult> RateLimit<TResult>(
         int numberOfExecutions,
         TimeSpan perTimeSpan,
-        int maxBurst)
-    {
-        return RateLimit<TResult>(numberOfExecutions, perTimeSpan, maxBurst, null);
-    }
+        int maxBurst) =>
+        RateLimit<TResult>(numberOfExecutions, perTimeSpan, maxBurst, null);
 
     /// <summary>
     /// Builds a RateLimit <see cref="Policy{TResult}"/> that will rate-limit executions to <paramref name="numberOfExecutions"/> per the timespan given,

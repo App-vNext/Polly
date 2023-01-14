@@ -22,8 +22,8 @@ public class ResultTtl<TResult> : ITtlStrategy<TResult>
     /// Constructs a new instance of the <see cref="ResultTtl{TResult}"/> ttl strategy, with a func calculating <see cref="Ttl"/> based on the execution <see cref="Context"/> and <typeparamref name="TResult"/> value to cache.
     /// </summary>
     /// <param name="ttlFunc">The function to calculate the TTL for which cache items should be considered valid.</param>
-    public ResultTtl(Func<Context, TResult, Ttl> ttlFunc)
-        => _ttlFunc = ttlFunc ?? throw new ArgumentNullException(nameof(ttlFunc));
+    public ResultTtl(Func<Context, TResult, Ttl> ttlFunc) =>
+        _ttlFunc = ttlFunc ?? throw new ArgumentNullException(nameof(ttlFunc));
 
     /// <summary>
     /// Gets a TTL for the cacheable item.
@@ -31,5 +31,6 @@ public class ResultTtl<TResult> : ITtlStrategy<TResult>
     /// <param name="context">The execution context.</param>
     /// <param name="result">The execution result.</param>
     /// <returns>A <see cref="Ttl"/> representing the remaining Ttl of the cached item.</returns>
-    public Ttl GetTtl(Context context, TResult result) => _ttlFunc(context, result);
+    public Ttl GetTtl(Context context, TResult result) =>
+        _ttlFunc(context, result);
 }

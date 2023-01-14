@@ -696,8 +696,6 @@ public class CacheAsyncSpecs : IDisposable
 
     #endregion
 
-    public void Dispose()
-    {
+    public void Dispose() =>
         SystemClock.Reset();
-    }
 }

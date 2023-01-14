@@ -6,7 +6,7 @@ internal class HealthCount
 
     public int Failures { get; set; }
 
-    public int Total { get { return Successes + Failures; } }
+    public int Total => Successes + Failures;
 
     public long StartedAt { get; set; }
 }

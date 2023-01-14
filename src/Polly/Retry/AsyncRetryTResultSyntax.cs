@@ -10,8 +10,8 @@ public static class AsyncRetryTResultSyntax
     /// </summary>
     /// <param name="policyBuilder">The policy builder.</param>
     /// <returns>The policy instance.</returns>
-    public static AsyncRetryPolicy<TResult> RetryAsync<TResult>(this PolicyBuilder<TResult> policyBuilder)
-        => policyBuilder.RetryAsync(1);
+    public static AsyncRetryPolicy<TResult> RetryAsync<TResult>(this PolicyBuilder<TResult> policyBuilder) =>
+        policyBuilder.RetryAsync(1);
 
     /// <summary>
     ///     Builds an <see cref="AsyncRetryPolicy{TResult}" /> that will retry <paramref name="retryCount" /> times.
@@ -35,11 +35,13 @@ public static class AsyncRetryTResultSyntax
     /// <returns>The policy instance.</returns>
     /// <exception cref="ArgumentNullException">onRetry</exception>
     public static AsyncRetryPolicy<TResult> RetryAsync<TResult>(this PolicyBuilder<TResult> policyBuilder, Action<DelegateResult<TResult>, int> onRetry)
-        => policyBuilder.RetryAsync(1,
+    {
+        return policyBuilder.RetryAsync(1,
 #pragma warning disable 1998 // async method has no awaits, will run synchronously
             onRetryAsync: async (outcome, i, _) => onRetry(outcome, i)
 #pragma warning restore 1998
         );
+    }
 
     /// <summary>
     ///     Builds an <see cref="AsyncRetryPolicy{TResult}" /> that will retry once
@@ -49,8 +51,8 @@ public static class AsyncRetryTResultSyntax
     /// <param name="onRetryAsync">The action to call asynchronously on each retry.</param>
     /// <returns>The policy instance.</returns>
     /// <exception cref="ArgumentNullException">onRetry</exception>
-    public static AsyncRetryPolicy<TResult> RetryAsync<TResult>(this PolicyBuilder<TResult> policyBuilder, Func<DelegateResult<TResult>, int, Task> onRetryAsync)
-        => policyBuilder.RetryAsync(1, onRetryAsync: (outcome, i, _) => onRetryAsync(outcome, i));
+    public static AsyncRetryPolicy<TResult> RetryAsync<TResult>(this PolicyBuilder<TResult> policyBuilder, Func<DelegateResult<TResult>, int, Task> onRetryAsync) =>
+        policyBuilder.RetryAsync(1, onRetryAsync: (outcome, i, _) => onRetryAsync(outcome, i));
 
     /// <summary>
     ///     Builds an <see cref="AsyncRetryPolicy{TResult}" /> that will retry <paramref name="retryCount" /> times
@@ -98,8 +100,8 @@ public static class AsyncRetryTResultSyntax
     /// <param name="onRetry">The action to call on each retry.</param>
     /// <returns>The policy instance.</returns>
     /// <exception cref="ArgumentNullException">onRetry</exception>
-    public static AsyncRetryPolicy<TResult> RetryAsync<TResult>(this PolicyBuilder<TResult> policyBuilder, Action<DelegateResult<TResult>, int, Context> onRetry)
-        => policyBuilder.RetryAsync(1, onRetry);
+    public static AsyncRetryPolicy<TResult> RetryAsync<TResult>(this PolicyBuilder<TResult> policyBuilder, Action<DelegateResult<TResult>, int, Context> onRetry) =>
+        policyBuilder.RetryAsync(1, onRetry);
 
     /// <summary>
     /// Builds an <see cref="AsyncRetryPolicy{TResult}"/> that will retry once
@@ -109,8 +111,8 @@ public static class AsyncRetryTResultSyntax
     /// <param name="onRetryAsync">The action to call asynchronously on each retry.</param>
     /// <returns>The policy instance.</returns>
     /// <exception cref="ArgumentNullException">onRetry</exception>
-    public static AsyncRetryPolicy<TResult> RetryAsync<TResult>(this PolicyBuilder<TResult> policyBuilder, Func<DelegateResult<TResult>, int, Context, Task> onRetryAsync)
-        => policyBuilder.RetryAsync(1, onRetryAsync);
+    public static AsyncRetryPolicy<TResult> RetryAsync<TResult>(this PolicyBuilder<TResult> policyBuilder, Func<DelegateResult<TResult>, int, Context, Task> onRetryAsync) =>
+        policyBuilder.RetryAsync(1, onRetryAsync);
 
     /// <summary>
     /// Builds an <see cref="AsyncRetryPolicy{TResult}"/> that will retry <paramref name="retryCount"/> times

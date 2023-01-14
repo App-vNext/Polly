@@ -3,11 +3,9 @@
 [Collection(Constants.SystemClockDependentTestCollection)]
 public class WaitAndRetrySpecs : IDisposable
 {
-    public WaitAndRetrySpecs()
-    {
+    public WaitAndRetrySpecs() =>
         // do nothing on call to sleep
         SystemClock.Sleep = (_, _) => { };
-    }
 
     [Fact]
     public void Should_throw_when_sleep_durations_is_null_without_context()
@@ -1180,8 +1178,6 @@ public class WaitAndRetrySpecs : IDisposable
 
     #endregion
 
-    public void Dispose()
-    {
+    public void Dispose() =>
         SystemClock.Reset();
-    }
 }

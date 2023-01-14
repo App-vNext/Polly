@@ -74,15 +74,11 @@ public class BulkheadSpecs : BulkheadSpecsBase
 
     #region Bulkhead behaviour
 
-    protected override IBulkheadPolicy GetBulkhead(int maxParallelization, int maxQueuingActions)
-    {
-        return Policy.Bulkhead(maxParallelization, maxQueuingActions);
-    }
+    protected override IBulkheadPolicy GetBulkhead(int maxParallelization, int maxQueuingActions) =>
+        Policy.Bulkhead(maxParallelization, maxQueuingActions);
 
-    protected override Task ExecuteOnBulkhead(IBulkheadPolicy bulkhead, TraceableAction action)
-    {
-        return action.ExecuteOnBulkhead((BulkheadPolicy) bulkhead);
-    }
+    protected override Task ExecuteOnBulkhead(IBulkheadPolicy bulkhead, TraceableAction action) =>
+        action.ExecuteOnBulkhead((BulkheadPolicy) bulkhead);
 
     #endregion
 }

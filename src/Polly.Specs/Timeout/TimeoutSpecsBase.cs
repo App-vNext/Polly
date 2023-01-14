@@ -81,18 +81,14 @@ public abstract class TimeoutSpecsBase : IDisposable
         };
     }
 
-    public void Dispose()
-    {
+    public void Dispose() =>
         SystemClock.Reset();
-    }
 
     /// <summary>
     /// A helper method which simply throws the passed exception.  Supports tests verifying the stack trace of where an exception was thrown, by throwing that exception from a specific (other) location.
     /// </summary>
     /// <param name="ex">The exception to throw.</param>
     [MethodImpl(MethodImplOptions.NoInlining)] // Tests that use this method assert that the exception was thrown from within this method; therefore, it is essential that
-    protected void Helper_ThrowException(Exception ex)
-    {
+    protected void Helper_ThrowException(Exception ex) =>
         throw ex;
-    }
 }

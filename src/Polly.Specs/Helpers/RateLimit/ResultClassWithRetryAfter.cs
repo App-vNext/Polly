@@ -5,14 +5,10 @@ internal class ResultClassWithRetryAfter : ResultClass
     public TimeSpan RetryAfter { get; }
 
     public ResultClassWithRetryAfter(ResultPrimitive result)
-    : base(result)
-    {
+    : base(result) =>
         RetryAfter = TimeSpan.Zero;
-    }
 
     public ResultClassWithRetryAfter(TimeSpan retryAfter)
-    : base(ResultPrimitive.Undefined)
-    {
+    : base(ResultPrimitive.Undefined) =>
         RetryAfter = retryAfter;
-    }
 }

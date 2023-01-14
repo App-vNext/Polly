@@ -22,8 +22,6 @@ public static class ContextualPolicyExtensionsAsync
         }, contextData, cancellationToken);
     }
 
-    public static Task RaiseExceptionAsync<TException>(this AsyncPolicy policy, IDictionary<string, object> contextData, Action<TException, int>? configureException = null, CancellationToken cancellationToken = default) where TException : Exception, new()
-    {
-        return policy.RaiseExceptionAsync(1, contextData, configureException, cancellationToken);
-    }
+    public static Task RaiseExceptionAsync<TException>(this AsyncPolicy policy, IDictionary<string, object> contextData, Action<TException, int>? configureException = null, CancellationToken cancellationToken = default) where TException : Exception, new() =>
+        policy.RaiseExceptionAsync(1, contextData, configureException, cancellationToken);
 }

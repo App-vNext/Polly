@@ -7,26 +7,18 @@ public class Fallback
     private static readonly AsyncPolicy<int> AsyncPolicy = Policy<int>.Handle<InvalidOperationException>().FallbackAsync(0);
 
     [Benchmark]
-    public int Fallback_Synchronous_Succeeds()
-    {
-        return SyncPolicy.Execute(() => Workloads.Func<int>());
-    }
+    public int Fallback_Synchronous_Succeeds() =>
+        SyncPolicy.Execute(() => Workloads.Func<int>());
 
     [Benchmark]
-    public Task<int> Fallback_Asynchronous_Succeeds()
-    {
-        return AsyncPolicy.ExecuteAsync(() => Workloads.FuncAsync<int>());
-    }
+    public Task<int> Fallback_Asynchronous_Succeeds() =>
+        AsyncPolicy.ExecuteAsync(() => Workloads.FuncAsync<int>());
 
     [Benchmark]
-    public int Fallback_Synchronous_Throws()
-    {
-        return SyncPolicy.Execute(() => Workloads.FuncThrows<int, InvalidOperationException>());
-    }
+    public int Fallback_Synchronous_Throws() =>
+        SyncPolicy.Execute(() => Workloads.FuncThrows<int, InvalidOperationException>());
 
     [Benchmark]
-    public Task<int> Fallback_Asynchronous_Throws()
-    {
-        return AsyncPolicy.ExecuteAsync(() => Workloads.FuncThrowsAsync<int, InvalidOperationException>());
-    }
+    public Task<int> Fallback_Asynchronous_Throws() =>
+        AsyncPolicy.ExecuteAsync(() => Workloads.FuncThrowsAsync<int, InvalidOperationException>());
 }
