@@ -1,4 +1,5 @@
-﻿namespace Polly.Caching;
+﻿#nullable enable
+namespace Polly.Caching;
 
 /// <summary>
 /// A cache policy that can be applied to the results of delegate executions.
@@ -12,8 +13,8 @@ public class AsyncCachePolicy : AsyncPolicy
     private readonly Action<Context, string> _onCacheGet;
     private readonly Action<Context, string> _onCacheMiss;
     private readonly Action<Context, string> _onCachePut;
-    private readonly Action<Context, string, Exception> _onCacheGetError;
-    private readonly Action<Context, string, Exception> _onCachePutError;
+    private readonly Action<Context, string, Exception>? _onCacheGetError;
+    private readonly Action<Context, string, Exception>? _onCachePutError;
 
     internal AsyncCachePolicy(
         IAsyncCacheProvider asyncCacheProvider,
@@ -22,8 +23,8 @@ public class AsyncCachePolicy : AsyncPolicy
         Action<Context, string> onCacheGet,
         Action<Context, string> onCacheMiss,
         Action<Context, string> onCachePut,
-        Action<Context, string, Exception> onCacheGetError,
-        Action<Context, string, Exception> onCachePutError)
+        Action<Context, string, Exception>? onCacheGetError,
+        Action<Context, string, Exception>? onCachePutError)
     {
         _asyncCacheProvider = asyncCacheProvider;
         _ttlStrategy = ttlStrategy;
@@ -77,8 +78,8 @@ public class AsyncCachePolicy<TResult> : AsyncPolicy<TResult>
     private readonly Action<Context, string> _onCacheGet;
     private readonly Action<Context, string> _onCacheMiss;
     private readonly Action<Context, string> _onCachePut;
-    private readonly Action<Context, string, Exception> _onCacheGetError;
-    private readonly Action<Context, string, Exception> _onCachePutError;
+    private readonly Action<Context, string, Exception>? _onCacheGetError;
+    private readonly Action<Context, string, Exception>? _onCachePutError;
 
     internal AsyncCachePolicy(
         IAsyncCacheProvider<TResult> asyncCacheProvider,
@@ -87,8 +88,8 @@ public class AsyncCachePolicy<TResult> : AsyncPolicy<TResult>
         Action<Context, string> onCacheGet,
         Action<Context, string> onCacheMiss,
         Action<Context, string> onCachePut,
-        Action<Context, string, Exception> onCacheGetError,
-        Action<Context, string, Exception> onCachePutError)
+        Action<Context, string, Exception>? onCacheGetError,
+        Action<Context, string, Exception>? onCachePutError)
     {
         _asyncCacheProvider = asyncCacheProvider;
         _ttlStrategy = ttlStrategy;
