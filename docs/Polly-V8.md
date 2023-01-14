@@ -21,7 +21,7 @@ public interface IResilienceStrategy
 The `ResilienceContext` is defined as:
 
 ``` csharp
-public class ResilienceContext
+public sealed class ResilienceContext
 {
     public CancellationToken CancellationToken { get; set; }
 
@@ -122,11 +122,11 @@ public interface IResilienceStrategyBuilder
 
     IResilienceStrategyBuilder AddStrategy(Func<ResilienceStrategyBuilderContext, IResilienceStrategy> factory, ResilienceStrategyOptions? options = null);
 
-    IResilienceStrategy Create();
+    IResilienceStrategy Build();
 }
 ```
 
-To create a strategy you chain various extensions for `IResilienceStrategyBuilder` followed by the `Create` call:
+To create a strategy you chain various extensions for `IResilienceStrategyBuilder` followed by the `Build` call:
 
 Single strategy:
 
@@ -141,7 +141,7 @@ var resilienceStrategy = new ResilienceStrategyBuilder()
     .AddRetry()
     .AddCircuitBreaker()
     .AddTimeout(new TimeoutStrategyOptions() { ... })
-    .Create();
+    .Build();
 ```
 
 ### Extensibility
@@ -150,7 +150,23 @@ The resilience extensibility is simple. You just expose new extensions for `IRes
 
 ### Handling of different result types
 
-The resilience strategy can handle many different result types and exceptions as retry strategy sample demonstrates:
+Various implementations of `IResilienceStrategy` use callbacks to provide or request information from user. The callbacks are generic and support any type of result. Most strategies will use the following types of callbacks:
+
+- **Predicates**: These return `true` or `false` values based on the input. The input can be the result of user delegate or some exception. For example, determine whether we should retry the user delegate for specific result.
+- **Events**: These are just events raised when something important happens. For example when timeout occurs.
+- **Generators**: These generate a value based on the input. For example, retry delay before the next retry attempt.
+
+All callbacks are asynchronous and return `ValueTask`. They flow the following information to the user:
+
+- `ResilienceContext`: the context of the operation.
+- Result type: for which result type is strategy being executed.
+- Callback arguments: Additional information about the event.
+
+Each callback type has associated class that can be reused across various strategies. For example the `Predicates` class and the usage in the `RetryStrategyOptions.ShouldRetry`:
+
+``` csharp
+public Predicates ShouldRetry { get; set; } = new();
+```
 
 ``` csharp
 var options = new RetryStrategyOptions();
@@ -162,10 +178,18 @@ options
     .Add<MyResult>((v, context) => IsError(context)) // retrieve data from context for evaluation
     .AddException<InvalidOperationException>() // exceptions
     .AddException<HttpRequestMessageException>() // more exceptions
+    .AddException(e => IsError(e)) // exception predicates
     .Add<MyResult>((v, context) => await IsErrorAsync(v, context)); // async predicates
 ```
 
-In the preceding sample retry strategy handles 3 different types of results. This allows sharing of the retry strategy across the different result types. It is also possible to retrieve additional details from the `ResilienceContext` when handling the result.
+In the preceding sample you can see that with `ShouldRetry` you can handle the following scenarios:
+
+- Asynchronous predicates.
+- Synchronous predicates.
+- Concrete value results.
+- Custom function based callbacks.
+- Multiple result types.
+- Exception types or predicates based on exceptions.
 
 ### Packages
 

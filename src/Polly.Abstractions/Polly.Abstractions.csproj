@@ -1,14 +1,22 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;net7.0</TargetFrameworks>
+    <TargetFrameworks>net462;netstandard2.0;netcoreapp3.1;net6.0;net7.0</TargetFrameworks>
     <UsePollyTarget>true</UsePollyTarget>
     <AssemblyTitle>Polly.Abstractions</AssemblyTitle>
   </PropertyGroup>
 
   <ItemGroup Label="PackageReferences">
+    <!-- This reference is just in demo, Won't be included in real code. -->
     <PackageReference Include="Microsoft.Extensions.ObjectPool" Version="7.0.1" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'net462' or '$(TargetFramework)' == 'netstandard2.0'">
     <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.4" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'net462'">
+    <PackageReference Include="System.ValueTuple" Version="4.5.0" />
   </ItemGroup>
 
 </Project>

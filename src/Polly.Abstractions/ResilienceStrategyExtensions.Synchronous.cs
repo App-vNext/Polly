@@ -1,4 +1,4 @@
-﻿using System.Diagnostics;
+using System.Diagnostics;
 using Polly;
 
 namespace Resilience;
@@ -51,14 +51,14 @@ public static partial class ResilienceStrategyExtensions
         }
     }
 
-    public static T Execute<T>(this IResilienceStrategy strategy, Func<T> execute)
+    public static TResult Execute<TResult>(this IResilienceStrategy strategy, Func<TResult> execute)
     {
         var context = ResilienceContext.Get();
         context.IsSynchronous = true;
 
         try
         {
-            return strategy.ExecuteAsync(static (_, state) => new ValueTask<T>(state()), context, execute).GetResult();
+            return strategy.ExecuteAsync(static (_, state) => new ValueTask<TResult>(state()), context, execute).GetResult();
         }
         finally
         {
@@ -66,14 +66,14 @@ public static partial class ResilienceStrategyExtensions
         }
     }
 
-    public static T Execute<T, TState>(this IResilienceStrategy strategy, Func<TState, T> execute, TState state)
+    public static TResult Execute<TResult, TState>(this IResilienceStrategy strategy, Func<TState, TResult> execute, TState state)
     {
         var context = ResilienceContext.Get();
         context.IsSynchronous = true;
 
         try
         {
-            return strategy.ExecuteAsync(static (_, state) => new ValueTask<T>(state.execute(state.state)), context, (execute, state)).GetResult();
+            return strategy.ExecuteAsync(static (_, state) => new ValueTask<TResult>(state.execute(state.state)), context, (execute, state)).GetResult();
         }
         finally
         {
@@ -81,7 +81,7 @@ public static partial class ResilienceStrategyExtensions
         }
     }
 
-    private static T GetResult<T>(this ValueTask<T> task)
+    private static TResult GetResult<TResult>(this ValueTask<TResult> task)
     {
         Debug.Assert(
             task.IsCompleted,

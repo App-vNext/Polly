@@ -8,5 +8,5 @@ public interface IResilienceStrategyBuilder
 
     IResilienceStrategyBuilder AddStrategy(Func<ResilienceStrategyBuilderContext, IResilienceStrategy> factory, ResilienceStrategyOptions? options = null);
 
-    IResilienceStrategy Create();
+    IResilienceStrategy Build();
 }

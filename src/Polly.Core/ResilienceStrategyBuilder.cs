@@ -17,7 +17,7 @@ public class ResilienceStrategyBuilder : IResilienceStrategyBuilder
         return this;
     }
 
-    public IResilienceStrategy Create()
+    public IResilienceStrategy Build()
     {
         var strategies = new List<DelegatingResilienceStrategy>();
 
@@ -44,7 +44,7 @@ public class ResilienceStrategyBuilder : IResilienceStrategyBuilder
         return strategies[0];
     }
 
-    private class Entry
+    private sealed class Entry
     {
         public Entry(Func<ResilienceStrategyBuilderContext, IResilienceStrategy> factory, ResilienceStrategyOptions properties)
         {

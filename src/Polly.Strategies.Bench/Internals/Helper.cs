@@ -44,6 +44,6 @@ internal static partial class Helper
     {
         var builder = new ResilienceStrategyBuilder();
         configure(builder);
-        return builder.Create();
+        return builder.Build();
     }
 }

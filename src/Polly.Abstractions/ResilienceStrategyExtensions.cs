@@ -1,4 +1,4 @@
-﻿using Polly;
+using Polly;
 
 namespace Resilience;
 
@@ -54,7 +54,7 @@ public static partial class ResilienceStrategyExtensions
             execute);
     }
 
-    public static async ValueTask<T> ExecuteAsync<T>(this IResilienceStrategy strategy, Func<CancellationToken, ValueTask<T>> execute, CancellationToken cancellationToken = default)
+    public static async ValueTask<TResult> ExecuteAsync<TResult>(this IResilienceStrategy strategy, Func<CancellationToken, ValueTask<TResult>> execute, CancellationToken cancellationToken = default)
     {
         var context = ResilienceContext.Get(cancellationToken);
 
@@ -68,12 +68,12 @@ public static partial class ResilienceStrategyExtensions
         }
     }
 
-    public static ValueTask<T> ExecuteAsync<T>(this IResilienceStrategy strategy, Func<ResilienceContext, ValueTask<T>> execute, ResilienceContext context)
+    public static ValueTask<TResult> ExecuteAsync<TResult>(this IResilienceStrategy strategy, Func<ResilienceContext, ValueTask<TResult>> execute, ResilienceContext context)
     {
         return strategy.ExecuteAsync(static (context, state) => state(context), context, execute);
     }
 
-    public static async ValueTask<T> ExecuteAsync<T, TState>(this IResilienceStrategy strategy, Func<TState, CancellationToken, ValueTask<T>> execute, TState state, CancellationToken cancellationToken)
+    public static async ValueTask<TResult> ExecuteAsync<TResult, TState>(this IResilienceStrategy strategy, Func<TState, CancellationToken, ValueTask<TResult>> execute, TState state, CancellationToken cancellationToken)
     {
         var context = ResilienceContext.Get(cancellationToken);
 
