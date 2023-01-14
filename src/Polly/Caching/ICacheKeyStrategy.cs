@@ -1,4 +1,5 @@
-﻿namespace Polly.Caching;
+﻿#nullable enable
+namespace Polly.Caching;
 
 /// <summary>
 /// Defines how a <see cref="CachePolicy"/> should get a string cache key from an execution <see cref="Context"/>

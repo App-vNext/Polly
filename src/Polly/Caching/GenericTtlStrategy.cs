@@ -1,4 +1,5 @@
-﻿namespace Polly.Caching;
+﻿#nullable enable
+namespace Polly.Caching;
 
 /// <summary>
 /// Represents a strongly-typed <see cref="ITtlStrategy"/> wrapper of a non-generic strategy.
@@ -16,6 +17,6 @@ internal class GenericTtlStrategy<TResult> : ITtlStrategy<TResult>
     /// <param name="context">The execution context.</param>
     /// <param name="result">The execution result.</param>
     /// <returns>A <see cref="Ttl"/> representing the remaining Ttl of the cached item.</returns>
-    public Ttl GetTtl(Context context, TResult result) =>
+    public Ttl GetTtl(Context context, TResult? result) =>
         _wrappedTtlStrategy.GetTtl(context, result);
 }

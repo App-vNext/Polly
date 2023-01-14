@@ -1,4 +1,5 @@
-﻿namespace Polly.Caching;
+﻿#nullable enable
+namespace Polly.Caching;
 
 /// <summary>
 /// Represents an <see cref="ITtlStrategy"/> expiring at an absolute time, not with sliding expiration.
@@ -23,7 +24,7 @@ public abstract class NonSlidingTtl : ITtlStrategy
     /// <param name="context">The execution context.</param>
     /// <param name="result">The execution result.</param>
     /// <returns>A <see cref="Ttl"/> representing the remaining Ttl of the cached item.</returns>
-    public Ttl GetTtl(Context context, object result)
+    public Ttl GetTtl(Context context, object? result)
     {
         TimeSpan untilPointInTime = absoluteExpirationTime.Subtract(SystemClock.DateTimeOffsetUtcNow());
         TimeSpan remaining = untilPointInTime > TimeSpan.Zero ? untilPointInTime : TimeSpan.Zero;

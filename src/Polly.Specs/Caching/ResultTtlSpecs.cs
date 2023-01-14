@@ -5,7 +5,7 @@ public class ResultTtlSpecs
     [Fact]
     public void Should_throw_when_func_is_null()
     {
-        Action configure = () => new ResultTtl<object>((Func<object, Ttl>)null!);
+        Action configure = () => new ResultTtl<object>((Func<object?, Ttl>)null!);
 
         configure.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be("ttlFunc");
     }
@@ -13,7 +13,7 @@ public class ResultTtlSpecs
     [Fact]
     public void Should_throw_when_func_is_null_using_context()
     {
-        Action configure = () => new ResultTtl<object>((Func<Context, object, Ttl>)null!);
+        Action configure = () => new ResultTtl<object>((Func<Context, object?, Ttl>)null!);
 
         configure.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be("ttlFunc");
     }
@@ -38,7 +38,7 @@ public class ResultTtlSpecs
     public void Should_return_func_result()
     {
         TimeSpan ttl = TimeSpan.FromMinutes(1);
-        Func<dynamic, Ttl> func = result => new Ttl(result.Ttl);
+        Func<dynamic?, Ttl> func = result => new Ttl(result!.Ttl);
 
         ResultTtl<dynamic> ttlStrategy = new ResultTtl<dynamic>(func);
 
@@ -53,7 +53,7 @@ public class ResultTtlSpecs
         const string specialKey = "specialKey";
 
         TimeSpan ttl = TimeSpan.FromMinutes(1);
-        Func<Context, dynamic, Ttl> func = (context, result) => context.OperationKey == specialKey ? new Ttl(TimeSpan.Zero) : new Ttl(result.Ttl);
+        Func<Context, dynamic?, Ttl> func = (context, result) => context.OperationKey == specialKey ? new Ttl(TimeSpan.Zero) : new Ttl(result!.Ttl);
 
         ResultTtl<dynamic> ttlStrategy = new ResultTtl<dynamic>(func);
 

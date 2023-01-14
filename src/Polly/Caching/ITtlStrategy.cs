@@ -1,4 +1,5 @@
-﻿namespace Polly.Caching;
+﻿#nullable enable
+namespace Polly.Caching;
 
 /// <summary>
 /// Defines a strategy for providing time-to-live durations for cacheable results.
@@ -18,5 +19,5 @@ public interface ITtlStrategy<TResult>
     /// <param name="context">The execution context.</param>
     /// <param name="result">The execution result.</param>
     /// <returns>A <see cref="Ttl"/> representing the remaining Ttl of the cached item.</returns>
-    Ttl GetTtl(Context context, TResult result);
+    Ttl GetTtl(Context context, TResult? result);
 }
