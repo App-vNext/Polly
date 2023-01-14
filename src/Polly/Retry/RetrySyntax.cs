@@ -10,8 +10,8 @@ public static class RetrySyntax
     /// </summary>
     /// <param name="policyBuilder">The policy builder.</param>
     /// <returns>The policy instance.</returns>
-    public static RetryPolicy Retry(this PolicyBuilder policyBuilder)
-        => policyBuilder.Retry(1);
+    public static RetryPolicy Retry(this PolicyBuilder policyBuilder) =>
+        policyBuilder.Retry(1);
 
     /// <summary>
     /// Builds a <see cref="Policy"/> that will retry <paramref name="retryCount"/> times.
@@ -34,8 +34,8 @@ public static class RetrySyntax
     /// <param name="onRetry">The action to call on each retry.</param>
     /// <returns>The policy instance.</returns>
     /// <exception cref="ArgumentNullException">onRetry</exception>
-    public static RetryPolicy Retry(this PolicyBuilder policyBuilder, Action<Exception, int> onRetry)
-        => policyBuilder.Retry(1, onRetry);
+    public static RetryPolicy Retry(this PolicyBuilder policyBuilder, Action<Exception, int> onRetry) =>
+        policyBuilder.Retry(1, onRetry);
 
     /// <summary>
     /// Builds a <see cref="Policy"/> that will retry <paramref name="retryCount"/> times
@@ -63,8 +63,8 @@ public static class RetrySyntax
     /// <param name="onRetry">The action to call on each retry.</param>
     /// <returns>The policy instance.</returns>
     /// <exception cref="ArgumentNullException">onRetry</exception>
-    public static RetryPolicy Retry(this PolicyBuilder policyBuilder, Action<Exception, int, Context> onRetry)
-        => policyBuilder.Retry(1, onRetry);
+    public static RetryPolicy Retry(this PolicyBuilder policyBuilder, Action<Exception, int, Context> onRetry) =>
+        policyBuilder.Retry(1, onRetry);
 
     /// <summary>
     /// Builds a <see cref="Policy"/> that will retry <paramref name="retryCount"/> times

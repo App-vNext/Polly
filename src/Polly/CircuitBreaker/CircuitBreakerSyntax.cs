@@ -60,13 +60,13 @@ public static class CircuitBreakerSyntax
     /// <exception cref="ArgumentOutOfRangeException">exceptionsAllowedBeforeBreaking;Value must be greater than zero.</exception>
     /// <exception cref="ArgumentNullException">onBreak</exception>
     /// <exception cref="ArgumentNullException">onReset</exception>
-    public static CircuitBreakerPolicy CircuitBreaker(this PolicyBuilder policyBuilder, int exceptionsAllowedBeforeBreaking, TimeSpan durationOfBreak, Action<Exception, TimeSpan> onBreak, Action onReset)
-        => policyBuilder.CircuitBreaker(
+    public static CircuitBreakerPolicy CircuitBreaker(this PolicyBuilder policyBuilder, int exceptionsAllowedBeforeBreaking, TimeSpan durationOfBreak, Action<Exception, TimeSpan> onBreak, Action onReset) =>
+        policyBuilder.CircuitBreaker(
             exceptionsAllowedBeforeBreaking,
             durationOfBreak,
             (exception, timespan, _) => onBreak(exception, timespan),
             _ => onReset()
-            );
+        );
 
     /// <summary>
     /// <para> Builds a <see cref="Policy"/> that will function like a Circuit Breaker.</para>
@@ -124,14 +124,14 @@ public static class CircuitBreakerSyntax
     /// <exception cref="ArgumentOutOfRangeException">exceptionsAllowedBeforeBreaking;Value must be greater than zero.</exception>
     /// <exception cref="ArgumentNullException">onBreak</exception>
     /// <exception cref="ArgumentNullException">onReset</exception>
-    public static CircuitBreakerPolicy CircuitBreaker(this PolicyBuilder policyBuilder, int exceptionsAllowedBeforeBreaking, TimeSpan durationOfBreak, Action<Exception, TimeSpan> onBreak, Action onReset, Action onHalfOpen)
-        => policyBuilder.CircuitBreaker(
+    public static CircuitBreakerPolicy CircuitBreaker(this PolicyBuilder policyBuilder, int exceptionsAllowedBeforeBreaking, TimeSpan durationOfBreak, Action<Exception, TimeSpan> onBreak, Action onReset, Action onHalfOpen) =>
+        policyBuilder.CircuitBreaker(
             exceptionsAllowedBeforeBreaking,
             durationOfBreak,
             (exception, timespan, _) => onBreak(exception, timespan),
             _ => onReset(),
             onHalfOpen
-            );
+        );
 
     /// <summary>
     /// <para> Builds a <see cref="Policy"/> that will function like a Circuit Breaker.</para>
@@ -157,8 +157,8 @@ public static class CircuitBreakerSyntax
     /// <exception cref="ArgumentNullException">onBreak</exception>
     /// <exception cref="ArgumentNullException">onReset</exception>
     /// <exception cref="ArgumentNullException">onHalfOpen</exception>
-    public static CircuitBreakerPolicy CircuitBreaker(this PolicyBuilder policyBuilder, int exceptionsAllowedBeforeBreaking, TimeSpan durationOfBreak, Action<Exception, TimeSpan, Context> onBreak, Action<Context> onReset, Action onHalfOpen)
-        => policyBuilder.CircuitBreaker(
+    public static CircuitBreakerPolicy CircuitBreaker(this PolicyBuilder policyBuilder, int exceptionsAllowedBeforeBreaking, TimeSpan durationOfBreak, Action<Exception, TimeSpan, Context> onBreak, Action<Context> onReset, Action onHalfOpen) =>
+        policyBuilder.CircuitBreaker(
             exceptionsAllowedBeforeBreaking,
             durationOfBreak,
             (exception, _, timespan, context) => onBreak(exception, timespan, context),

@@ -35,8 +35,8 @@ public static class IPolicyWrapExtension
     /// <param name="policyWrap">The <see cref="IPolicyWrap"/> for which to return policies.</param>
     /// <typeparam name="TPolicy">The type of policies to return.</typeparam>
     /// <returns>An <see cref="IEnumerable{TPolicy}"/> of all the policies of the given type.</returns>
-    public static IEnumerable<TPolicy> GetPolicies<TPolicy>(this IPolicyWrap policyWrap)
-        => policyWrap.GetPolicies().OfType<TPolicy>();
+    public static IEnumerable<TPolicy> GetPolicies<TPolicy>(this IPolicyWrap policyWrap) =>
+        policyWrap.GetPolicies().OfType<TPolicy>();
 
     /// <summary>
     /// Returns all the policies in this <see cref="IPolicyWrap"/> of type <typeparamref name="TPolicy"/> matching the filter, in Outer-to-Inner order.
@@ -58,8 +58,8 @@ public static class IPolicyWrapExtension
     /// <typeparam name="TPolicy">The type of policy to return.</typeparam>
     /// <returns>A <typeparamref name="TPolicy"/> if one is found; else null.</returns>
     /// <throws>InvalidOperationException, if more than one policy of the type is found in the wrap.</throws>
-    public static TPolicy GetPolicy<TPolicy>(this IPolicyWrap policyWrap)
-        => policyWrap.GetPolicies().OfType<TPolicy>().SingleOrDefault();
+    public static TPolicy GetPolicy<TPolicy>(this IPolicyWrap policyWrap) =>
+        policyWrap.GetPolicies().OfType<TPolicy>().SingleOrDefault();
 
     /// <summary>
     /// Returns the single policy in this <see cref="IPolicyWrap"/> of type <typeparamref name="TPolicy"/> matching the filter.

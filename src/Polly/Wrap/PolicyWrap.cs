@@ -27,8 +27,8 @@ public partial class PolicyWrap : Policy, IPolicyWrap
 
     /// <inheritdoc/>
     [DebuggerStepThrough]
-    protected override void Implementation(Action<Context, CancellationToken> action, Context context, CancellationToken cancellationToken)
-        => PolicyWrapEngine.Implementation(
+    protected override void Implementation(Action<Context, CancellationToken> action, Context context, CancellationToken cancellationToken) =>
+        PolicyWrapEngine.Implementation(
             action,
             context,
             cancellationToken,
@@ -38,8 +38,8 @@ public partial class PolicyWrap : Policy, IPolicyWrap
 
     /// <inheritdoc/>
     [DebuggerStepThrough]
-    protected override TResult Implementation<TResult>(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken)
-        =>  PolicyWrapEngine.Implementation<TResult>(
+    protected override TResult Implementation<TResult>(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken) =>
+        PolicyWrapEngine.Implementation<TResult>(
             action,
             context,
             cancellationToken,
@@ -63,12 +63,12 @@ public partial class PolicyWrap<TResult> : Policy<TResult>, IPolicyWrap<TResult>
     /// <summary>
     /// Returns the outer <see cref="IsPolicy"/> in this <see cref="IPolicyWrap{TResult}"/>
     /// </summary>
-    public IsPolicy Outer => (IsPolicy)_outerGeneric ?? _outerNonGeneric;
+    public IsPolicy Outer => (IsPolicy) _outerGeneric ?? _outerNonGeneric;
 
     /// <summary>
     /// Returns the next inner <see cref="IsPolicy"/> in this <see cref="IPolicyWrap{TResult}"/>
     /// </summary>
-    public IsPolicy Inner => (IsPolicy)_innerGeneric ?? _innerNonGeneric;
+    public IsPolicy Inner => (IsPolicy) _innerGeneric ?? _innerNonGeneric;
 
     internal PolicyWrap(Policy outer, ISyncPolicy<TResult> inner)
         : base(outer.ExceptionPredicates, ResultPredicates<TResult>.None)

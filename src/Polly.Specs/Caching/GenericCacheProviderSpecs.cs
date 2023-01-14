@@ -45,8 +45,6 @@ public class GenericCacheProviderSpecs : IDisposable
         fromCache2.Should().Be(valueToReturn);
     }
 
-    public void Dispose()
-    {
+    public void Dispose() =>
         SystemClock.Reset();
-    }
 }

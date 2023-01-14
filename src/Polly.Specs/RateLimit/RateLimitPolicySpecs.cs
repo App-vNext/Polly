@@ -3,20 +3,14 @@
 [Collection(Polly.Specs.Helpers.Constants.SystemClockDependentTestCollection)]
 public class RateLimitPolicySpecs : RateLimitPolicySpecsBase, IDisposable
 {
-    public void Dispose()
-    {
+    public void Dispose() =>
         SystemClock.Reset();
-    }
 
-    protected override IRateLimitPolicy GetPolicyViaSyntax(int numberOfExecutions, TimeSpan perTimeSpan)
-    {
-        return Policy.RateLimit(numberOfExecutions, perTimeSpan);
-    }
+    protected override IRateLimitPolicy GetPolicyViaSyntax(int numberOfExecutions, TimeSpan perTimeSpan) =>
+        Policy.RateLimit(numberOfExecutions, perTimeSpan);
 
-    protected override IRateLimitPolicy GetPolicyViaSyntax(int numberOfExecutions, TimeSpan perTimeSpan, int maxBurst)
-    {
-        return Policy.RateLimit(numberOfExecutions, perTimeSpan, maxBurst);
-    }
+    protected override IRateLimitPolicy GetPolicyViaSyntax(int numberOfExecutions, TimeSpan perTimeSpan, int maxBurst) =>
+        Policy.RateLimit(numberOfExecutions, perTimeSpan, maxBurst);
 
     protected override (bool, TimeSpan) TryExecuteThroughPolicy(IRateLimitPolicy policy)
     {

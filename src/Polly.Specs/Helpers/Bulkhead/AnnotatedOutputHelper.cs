@@ -27,10 +27,8 @@ public class AnnotatedOutputHelper : ITestOutputHelper
 
     private readonly ITestOutputHelper innerOutputHelper;
 
-    public AnnotatedOutputHelper(ITestOutputHelper innerOutputHelper)
-    {
+    public AnnotatedOutputHelper(ITestOutputHelper innerOutputHelper) =>
         this.innerOutputHelper = innerOutputHelper ?? throw new ArgumentNullException(nameof(innerOutputHelper));
-    }
 
     public void Flush()
     {
@@ -44,13 +42,9 @@ public class AnnotatedOutputHelper : ITestOutputHelper
         items.Clear();
     }
 
-    public void WriteLine(string message)
-    {
+    public void WriteLine(string message) =>
         items.TryAdd(Guid.NewGuid(), new Item(message ?? string.Empty, noArgs));
-    }
 
-    public void WriteLine(string format, params object[] args)
-    {
+    public void WriteLine(string format, params object[] args) =>
         items.TryAdd(Guid.NewGuid(), new Item(format ?? string.Empty, args == null || args.Length == 0 ? noArgs : args));
-    }
 }

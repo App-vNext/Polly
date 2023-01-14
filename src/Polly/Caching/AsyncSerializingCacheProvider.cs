@@ -48,16 +48,14 @@ public class AsyncSerializingCacheProvider<TSerialized> : IAsyncCacheProvider
     /// <param name="continueOnCapturedContext">Whether async calls should continue on a captured synchronization context.</param>
     /// <returns>A <see cref="Task" /> which completes when the value has been cached.</returns>
     public Task PutAsync(string key, object value, Ttl ttl, CancellationToken cancellationToken,
-        bool continueOnCapturedContext)
-    {
-        return _wrappedCacheProvider.PutAsync(
-                    key,
-                    _serializer.Serialize(value),
-                    ttl,
-                    cancellationToken,
-                    continueOnCapturedContext
-                );
-    }
+        bool continueOnCapturedContext) =>
+        _wrappedCacheProvider.PutAsync(
+            key,
+            _serializer.Serialize(value),
+            ttl,
+            cancellationToken,
+            continueOnCapturedContext
+        );
 }
 
 /// <summary>
@@ -109,14 +107,12 @@ public class AsyncSerializingCacheProvider<TResult, TSerialized> : IAsyncCachePr
     /// <param name="continueOnCapturedContext">Whether async calls should continue on a captured synchronization context.</param>
     /// <returns>A <see cref="Task" /> which completes when the value has been cached.</returns>
     public Task PutAsync(string key, TResult value, Ttl ttl, CancellationToken cancellationToken,
-        bool continueOnCapturedContext)
-    {
-        return _wrappedCacheProvider.PutAsync(
-                    key,
-                    _serializer.Serialize(value),
-                    ttl,
-                    cancellationToken,
-                    continueOnCapturedContext
-                );
-    }
+        bool continueOnCapturedContext) =>
+        _wrappedCacheProvider.PutAsync(
+            key,
+            _serializer.Serialize(value),
+            ttl,
+            cancellationToken,
+            continueOnCapturedContext
+        );
 }

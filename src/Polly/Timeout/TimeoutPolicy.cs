@@ -21,8 +21,8 @@ public class TimeoutPolicy : Policy, ITimeoutPolicy
 
     /// <inheritdoc/>
     [DebuggerStepThrough]
-    protected override TResult Implementation<TResult>(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken)
-        => TimeoutEngine.Implementation(
+    protected override TResult Implementation<TResult>(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken) =>
+        TimeoutEngine.Implementation(
             action,
             context,
             cancellationToken,
@@ -51,8 +51,8 @@ public class TimeoutPolicy<TResult> : Policy<TResult>, ITimeoutPolicy<TResult>
     }
 
     /// <inheritdoc/>
-    protected override TResult Implementation(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken)
-        => TimeoutEngine.Implementation(
+    protected override TResult Implementation(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken) =>
+        TimeoutEngine.Implementation(
             action,
             context,
             cancellationToken,

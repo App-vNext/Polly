@@ -10,10 +10,8 @@ public partial class Policy
     /// <returns>The policy instance.</returns>
     public static RateLimitPolicy RateLimit(
         int numberOfExecutions,
-        TimeSpan perTimeSpan)
-    {
-        return RateLimit(numberOfExecutions, perTimeSpan, 1);
-    }
+        TimeSpan perTimeSpan) =>
+        RateLimit(numberOfExecutions, perTimeSpan, 1);
 
     /// <summary>
     /// Builds a RateLimit <see cref="Policy"/> that will rate-limit executions to <paramref name="numberOfExecutions"/> per the timespan given.

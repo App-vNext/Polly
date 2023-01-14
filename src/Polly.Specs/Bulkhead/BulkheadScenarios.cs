@@ -17,5 +17,6 @@ internal class BulkheadScenarios : IEnumerable<object[]>
         yield return new BulkheadScenario(maxParallelization: 1, maxQueuingActions: 6, totalTestLoad: 5, cancelQueuing: true, cancelExecuting: true, scenario: "A very tight capacity bulkhead, but which allows a huge queue; enough for all actions to be gradually processed; cancel some queuing, and some executing.").ToTheoryData();
     }
 
-    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+    IEnumerator IEnumerable.GetEnumerator() =>
+        GetEnumerator();
 }

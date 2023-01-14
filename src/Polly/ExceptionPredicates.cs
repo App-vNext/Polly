@@ -20,7 +20,8 @@ public class ExceptionPredicates
     /// </summary>
     /// <param name="ex">The exception to assess against the predicates.</param>
     /// <returns>The first exception to match a predicate; or null, if no match is found.</returns>
-    public Exception FirstMatchOrDefault(Exception ex) => _predicates?.Select(predicate => predicate(ex)).FirstOrDefault(e => e != null);
+    public Exception FirstMatchOrDefault(Exception ex) =>
+        _predicates?.Select(predicate => predicate(ex)).FirstOrDefault(e => e != null);
 
     /// <summary>
     /// Specifies that no Exception-handling filters are applied or are required.

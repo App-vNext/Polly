@@ -3093,8 +3093,6 @@ public class AdvancedCircuitBreakerAsyncSpecs : IDisposable
 
     #endregion
 
-    public void Dispose()
-    {
+    public void Dispose() =>
         SystemClock.Reset();
-    }
 }

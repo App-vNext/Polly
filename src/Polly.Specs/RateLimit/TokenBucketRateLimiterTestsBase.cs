@@ -5,10 +5,8 @@ public abstract class TokenBucketRateLimiterTestsBase : RateLimitSpecsBase, IDis
 {
     internal abstract IRateLimiter GetRateLimiter(TimeSpan onePer, long bucketCapacity);
 
-    public void Dispose()
-    {
+    public void Dispose() =>
         SystemClock.Reset();
-    }
 
     [Theory]
     [InlineData(1)]

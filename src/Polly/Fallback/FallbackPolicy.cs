@@ -20,19 +20,27 @@ public class FallbackPolicy : Policy, IFallbackPolicy
 
     /// <inheritdoc/>
     [DebuggerStepThrough]
-    protected override void Implementation(Action<Context, CancellationToken> action, Context context, CancellationToken cancellationToken)
-        => FallbackEngine.Implementation<EmptyStruct>(
-            (ctx, token) => { action(ctx, token); return EmptyStruct.Instance; },
+    protected override void Implementation(Action<Context, CancellationToken> action, Context context, CancellationToken cancellationToken) =>
+        FallbackEngine.Implementation<EmptyStruct>(
+            (ctx, token) =>
+            {
+                action(ctx, token);
+                return EmptyStruct.Instance;
+            },
             context,
             cancellationToken,
             ExceptionPredicates,
             ResultPredicates<EmptyStruct>.None,
             (outcome, ctx) => _onFallback(outcome.Exception, ctx),
-            (outcome, ctx, ct) => { _fallbackAction(outcome.Exception, ctx, ct); return EmptyStruct.Instance; });
+            (outcome, ctx, ct) =>
+            {
+                _fallbackAction(outcome.Exception, ctx, ct);
+                return EmptyStruct.Instance;
+            });
 
     /// <inheritdoc/>
-    protected override TResult Implementation<TResult>(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken)
-        => throw new InvalidOperationException($"You have executed the generic .Execute<{nameof(TResult)}> method on a non-generic {nameof(FallbackPolicy)}.  A non-generic {nameof(FallbackPolicy)} only defines a fallback action which returns void; it can never return a substitute {nameof(TResult)} value.  To use {nameof(FallbackPolicy)} to provide fallback {nameof(TResult)} values you must define a generic fallback policy {nameof(FallbackPolicy)}<{nameof(TResult)}>.  For example, define the policy as Policy<{nameof(TResult)}>.Handle<Whatever>.Fallback<{nameof(TResult)}>(/* some {nameof(TResult)} value or Func<..., {nameof(TResult)}> */);");
+    protected override TResult Implementation<TResult>(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken) =>
+        throw new InvalidOperationException($"You have executed the generic .Execute<{nameof(TResult)}> method on a non-generic {nameof(FallbackPolicy)}.  A non-generic {nameof(FallbackPolicy)} only defines a fallback action which returns void; it can never return a substitute {nameof(TResult)} value.  To use {nameof(FallbackPolicy)} to provide fallback {nameof(TResult)} values you must define a generic fallback policy {nameof(FallbackPolicy)}<{nameof(TResult)}>.  For example, define the policy as Policy<{nameof(TResult)}>.Handle<Whatever>.Fallback<{nameof(TResult)}>(/* some {nameof(TResult)} value or Func<..., {nameof(TResult)}> */);");
 }
 
 /// <summary>
@@ -55,8 +63,8 @@ public class FallbackPolicy<TResult> : Policy<TResult>, IFallbackPolicy<TResult>
 
     /// <inheritdoc/>
     [DebuggerStepThrough]
-    protected override TResult Implementation(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken)
-        => FallbackEngine.Implementation(
+    protected override TResult Implementation(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken) =>
+        FallbackEngine.Implementation(
             action,
             context,
             cancellationToken,

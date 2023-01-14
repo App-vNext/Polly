@@ -10,8 +10,8 @@ public class CircuitBreakerPolicy : Policy, ICircuitBreakerPolicy
     internal CircuitBreakerPolicy(
         PolicyBuilder policyBuilder,
         ICircuitController<EmptyStruct> breakerController
-        ) : base(policyBuilder)
-        => _breakerController = breakerController;
+        ) : base(policyBuilder) =>
+        _breakerController = breakerController;
 
     /// <summary>
     /// Gets the state of the underlying circuit.
@@ -27,12 +27,14 @@ public class CircuitBreakerPolicy : Policy, ICircuitBreakerPolicy
     /// <summary>
     /// Isolates (opens) the circuit manually, and holds it in this state until a call to <see cref="Reset()"/> is made.
     /// </summary>
-    public void Isolate() => _breakerController.Isolate();
+    public void Isolate() =>
+        _breakerController.Isolate();
 
     /// <summary>
     /// Closes the circuit, and resets any statistics controlling automated circuit-breaking.
     /// </summary>
-    public void Reset() => _breakerController.Reset();
+    public void Reset() =>
+        _breakerController.Reset();
 
     /// <inheritdoc/>
     [DebuggerStepThrough]
@@ -60,8 +62,8 @@ public class CircuitBreakerPolicy<TResult> : Policy<TResult>, ICircuitBreakerPol
     internal CircuitBreakerPolicy(
         PolicyBuilder<TResult> policyBuilder,
         ICircuitController<TResult> breakerController
-        ) : base(policyBuilder)
-        => _breakerController = breakerController;
+        ) : base(policyBuilder) =>
+        _breakerController = breakerController;
 
     /// <summary>
     /// Gets the state of the underlying circuit.
@@ -83,17 +85,19 @@ public class CircuitBreakerPolicy<TResult> : Policy<TResult>, ICircuitBreakerPol
     /// <summary>
     /// Isolates (opens) the circuit manually, and holds it in this state until a call to <see cref="Reset()"/> is made.
     /// </summary>
-    public void Isolate() => _breakerController.Isolate();
+    public void Isolate() =>
+        _breakerController.Isolate();
 
     /// <summary>
     /// Closes the circuit, and resets any statistics controlling automated circuit-breaking.
     /// </summary>
-    public void Reset() => _breakerController.Reset();
+    public void Reset() =>
+        _breakerController.Reset();
 
     /// <inheritdoc/>
     [DebuggerStepThrough]
-    protected override TResult Implementation(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken)
-        => CircuitBreakerEngine.Implementation(
+    protected override TResult Implementation(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken) =>
+        CircuitBreakerEngine.Implementation(
             action,
             context,
             cancellationToken,

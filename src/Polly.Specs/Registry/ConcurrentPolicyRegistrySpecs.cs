@@ -4,10 +4,8 @@ public class ConcurrentPolicyRegistrySpecs
 {
     IConcurrentPolicyRegistry<string> _registry;
 
-    public ConcurrentPolicyRegistrySpecs()
-    {
+    public ConcurrentPolicyRegistrySpecs() =>
         _registry = new PolicyRegistry();
-    }
 
     [Fact]
     public void Should_be_able_to_add_Policy_using_TryAdd()

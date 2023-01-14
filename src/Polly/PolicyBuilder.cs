@@ -27,10 +27,8 @@ public sealed partial class PolicyBuilder
     /// A <see cref="string" /> that represents this instance.
     /// </returns>
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public override string ToString()
-    {
-        return base.ToString();
-    }
+    public override string ToString() =>
+        base.ToString();
 
     /// <summary>
     /// Determines whether the specified <see cref="object" /> is equal to this instance.
@@ -40,10 +38,8 @@ public sealed partial class PolicyBuilder
     ///   <c>true</c> if the specified <see cref="object" /> is equal to this instance; otherwise, <c>false</c>.
     /// </returns>
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public override bool Equals(object obj)
-    {
-        return base.Equals(obj);
-    }
+    public override bool Equals(object obj) =>
+        base.Equals(obj);
 
     /// <summary>
     /// Returns a hash code for this instance.
@@ -52,10 +48,8 @@ public sealed partial class PolicyBuilder
     /// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.
     /// </returns>
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public override int GetHashCode()
-    {
-        return base.GetHashCode();
-    }
+    public override int GetHashCode() =>
+        base.GetHashCode();
 
     /// <summary>
     /// Gets the <see cref="T:System.Type" /> of the current instance.
@@ -64,10 +58,8 @@ public sealed partial class PolicyBuilder
     /// The <see cref="T:System.Type" /> instance that represents the exact runtime type of the current instance.
     /// </returns>
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public new Type GetType()
-    {
-        return base.GetType();
-    }
+    public new Type GetType() =>
+        base.GetType();
 
     #endregion
 }
@@ -83,15 +75,15 @@ public sealed partial class PolicyBuilder<TResult>
         ResultPredicates = new ResultPredicates<TResult>();
     }
 
-    internal PolicyBuilder(Func<TResult, bool> resultPredicate) : this()
-        => OrResult(resultPredicate);
+    internal PolicyBuilder(Func<TResult, bool> resultPredicate) : this() =>
+        OrResult(resultPredicate);
 
-    internal PolicyBuilder(ExceptionPredicate predicate) : this()
-        => ExceptionPredicates.Add(predicate);
+    internal PolicyBuilder(ExceptionPredicate predicate) : this() =>
+        ExceptionPredicates.Add(predicate);
 
     internal PolicyBuilder(ExceptionPredicates exceptionPredicates)
-        : this()
-        => ExceptionPredicates = exceptionPredicates;
+        : this() =>
+        ExceptionPredicates = exceptionPredicates;
 
     /// <summary>
     /// Predicates specifying exceptions that the policy is being configured to handle.
@@ -112,7 +104,8 @@ public sealed partial class PolicyBuilder<TResult>
     /// A <see cref="string" /> that represents this instance.
     /// </returns>
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public override string ToString() => base.ToString();
+    public override string ToString() =>
+        base.ToString();
 
     /// <summary>
     /// Determines whether the specified <see cref="object" /> is equal to this instance.
@@ -122,7 +115,8 @@ public sealed partial class PolicyBuilder<TResult>
     ///   <c>true</c> if the specified <see cref="object" /> is equal to this instance; otherwise, <c>false</c>.
     /// </returns>
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public override bool Equals(object obj) => base.Equals(obj);
+    public override bool Equals(object obj) =>
+        base.Equals(obj);
 
     /// <summary>
     /// Returns a hash code for this instance.
@@ -131,7 +125,8 @@ public sealed partial class PolicyBuilder<TResult>
     /// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.
     /// </returns>
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public override int GetHashCode() => base.GetHashCode();
+    public override int GetHashCode() =>
+        base.GetHashCode();
 
     /// <summary>
     /// Gets the <see cref="T:System.Type" /> of the current instance.
@@ -140,7 +135,8 @@ public sealed partial class PolicyBuilder<TResult>
     /// The <see cref="T:System.Type" /> instance that represents the exact runtime type of the current instance.
     /// </returns>
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public new Type GetType() => base.GetType();
+    public new Type GetType() =>
+        base.GetType();
 
     #endregion
 }

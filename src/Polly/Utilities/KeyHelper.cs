@@ -2,5 +2,6 @@
 
 internal static class KeyHelper
 {
-    public static string GuidPart() => Guid.NewGuid().ToString().Substring(0, 8);
+    public static string GuidPart() =>
+        Guid.NewGuid().ToString().Substring(0, 8);
 }

@@ -2,12 +2,10 @@
 
 public static class ObjectExtensions
 {
-    public static IDictionary<string, object> AsDictionary(this object source)
-    {
-        return source.GetType().GetRuntimeProperties().ToDictionary
+    public static IDictionary<string, object> AsDictionary(this object source) =>
+        source.GetType().GetRuntimeProperties().ToDictionary
         (
             propInfo => propInfo.Name,
             propInfo => propInfo.GetValue(source, null)!
         );
-    }
 }

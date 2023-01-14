@@ -16,26 +16,18 @@ public class PolicyWrap
         Policy.BulkheadAsync(2));
 
     [Benchmark]
-    public void PolicyWrap_Synchronous()
-    {
+    public void PolicyWrap_Synchronous() =>
         SyncPolicy.Execute(() => Workloads.Action());
-    }
 
     [Benchmark]
-    public Task PolicyWrap_Asynchronous()
-    {
-        return AsyncPolicy.ExecuteAsync(token => Workloads.ActionAsync(token), CancellationToken.None);
-    }
+    public Task PolicyWrap_Asynchronous() =>
+        AsyncPolicy.ExecuteAsync(token => Workloads.ActionAsync(token), CancellationToken.None);
 
     [Benchmark]
-    public int PolicyWrap_Synchronous_With_Result()
-    {
-        return SyncPolicy.Execute(() => Workloads.Func<int>());
-    }
+    public int PolicyWrap_Synchronous_With_Result() =>
+        SyncPolicy.Execute(() => Workloads.Func<int>());
 
     [Benchmark]
-    public Task<int> PolicyWrap_Asynchronous_With_Result()
-    {
-        return AsyncPolicy.ExecuteAsync(token => Workloads.FuncAsync<int>(token), CancellationToken.None);
-    }
+    public Task<int> PolicyWrap_Asynchronous_With_Result() =>
+        AsyncPolicy.ExecuteAsync(token => Workloads.FuncAsync<int>(token), CancellationToken.None);
 }

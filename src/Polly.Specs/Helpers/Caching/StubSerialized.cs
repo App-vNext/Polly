@@ -8,10 +8,8 @@ internal class StubSerialized<TOriginal>
 {
     public TOriginal Original;
 
-    public StubSerialized(TOriginal original)
-    {
+    public StubSerialized(TOriginal original) =>
         Original = original;
-    }
 }
 
 /// <summary>

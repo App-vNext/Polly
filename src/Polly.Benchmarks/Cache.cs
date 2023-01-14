@@ -25,41 +25,33 @@ public class Cache
     }
 
     [Benchmark]
-    public object Cache_Synchronous_Hit()
-    {
-        return SyncPolicyHit.Execute(_ => GetObject(), HitContext);
-    }
+    public object Cache_Synchronous_Hit() =>
+        SyncPolicyHit.Execute(_ => GetObject(), HitContext);
 
     [Benchmark]
-    public Task<object> Cache_Asynchronous_Hit()
-    {
-        return AsyncPolicyHit.ExecuteAsync((_, token) => GetObjectAsync(token), HitContext, CancellationToken.None);
-    }
+    public Task<object> Cache_Asynchronous_Hit() =>
+        AsyncPolicyHit.ExecuteAsync((_, token) => GetObjectAsync(token), HitContext, CancellationToken.None);
 
     [Benchmark]
-    public object Cache_Synchronous_Miss()
-    {
-        return SyncPolicyMiss.Execute(_ => GetObject(), MissContext);
-    }
+    public object Cache_Synchronous_Miss() =>
+        SyncPolicyMiss.Execute(_ => GetObject(), MissContext);
 
     [Benchmark]
-    public Task<object> Cache_Asynchronous_Miss()
-    {
-        return AsyncPolicyMiss.ExecuteAsync((_, token) => GetObjectAsync(token), MissContext, CancellationToken.None);
-    }
+    public Task<object> Cache_Asynchronous_Miss() =>
+        AsyncPolicyMiss.ExecuteAsync((_, token) => GetObjectAsync(token), MissContext, CancellationToken.None);
 
-    private static object GetObject() => new object();
+    private static object GetObject() =>
+        new object();
 
-    private static Task<object> GetObjectAsync(CancellationToken cancellationToken) => Task.FromResult(new object());
+    private static Task<object> GetObjectAsync(CancellationToken cancellationToken) =>
+        Task.FromResult(new object());
 
     private sealed class MemoryCacheProvider : ISyncCacheProvider, IAsyncCacheProvider
     {
         private readonly IMemoryCache _cache;
 
-        public MemoryCacheProvider(IMemoryCache memoryCache)
-        {
+        public MemoryCacheProvider(IMemoryCache memoryCache) =>
             _cache = memoryCache;
-        }
 
         public (bool, object?) TryGet(string key)
         {
@@ -91,10 +83,8 @@ public class Cache
             _cache.Set(key, value, options);
         }
 
-        public Task<(bool, object?)> TryGetAsync(string key, CancellationToken cancellationToken, bool continueOnCapturedContext)
-        {
-            return Task.FromResult(TryGet(key));
-        }
+        public Task<(bool, object?)> TryGetAsync(string key, CancellationToken cancellationToken, bool continueOnCapturedContext) =>
+            Task.FromResult(TryGet(key));
 
         public Task PutAsync(string key, object value, Ttl ttl, CancellationToken cancellationToken, bool continueOnCapturedContext)
         {

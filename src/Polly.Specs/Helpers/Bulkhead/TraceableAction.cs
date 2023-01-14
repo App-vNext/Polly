@@ -17,7 +17,7 @@ public class TraceableAction : IDisposable
 
     public TraceableActionStatus Status
     {
-        get { return _status; }
+        get => _status;
         set
         {
             _status = value;
@@ -39,19 +39,15 @@ public class TraceableAction : IDisposable
         _statusChanged.Set();
     }
 
-    public Task ExecuteOnBulkhead(BulkheadPolicy bulkhead)
-    {
-        return ExecuteThroughSyncBulkheadOuter(
+    public Task ExecuteOnBulkhead(BulkheadPolicy bulkhead) =>
+        ExecuteThroughSyncBulkheadOuter(
             () => bulkhead.Execute(_ => ExecuteThroughSyncBulkheadInner(), CancellationSource.Token)
-            );
-    }
+        );
 
-    public Task ExecuteOnBulkhead<TResult>(BulkheadPolicy<TResult?> bulkhead)
-    {
-        return ExecuteThroughSyncBulkheadOuter(
+    public Task ExecuteOnBulkhead<TResult>(BulkheadPolicy<TResult?> bulkhead) =>
+        ExecuteThroughSyncBulkheadOuter(
             () => bulkhead.Execute(_ => { ExecuteThroughSyncBulkheadInner(); return default; }, CancellationSource.Token)
-            );
-    }
+        );
 
     // Note re TaskCreationOptions.LongRunning: Testing the parallelization of the bulkhead policy efficiently requires the ability to start large numbers of parallel tasks in a short space of time.  The ThreadPool's algorithm of only injecting extra threads (when necessary) at a rate of two-per-second however makes high-volume tests using the ThreadPool both slow and flaky.  For PCL tests further, ThreadPool.SetMinThreads(...) is not available, to mitigate this.  Using TaskCreationOptions.LongRunning allows us to force tasks to be started near-instantly on non-ThreadPool threads.
     private Task ExecuteThroughSyncBulkheadOuter(Action executeThroughBulkheadInner)
@@ -119,19 +115,15 @@ public class TraceableAction : IDisposable
         _testOutputHelper.WriteLine(_id + "Exiting execution.");
     }
 
-    public Task ExecuteOnBulkheadAsync(AsyncBulkheadPolicy bulkhead)
-    {
-        return ExecuteThroughAsyncBulkheadOuter(
+    public Task ExecuteOnBulkheadAsync(AsyncBulkheadPolicy bulkhead) =>
+        ExecuteThroughAsyncBulkheadOuter(
             () => bulkhead.ExecuteAsync(async _ => await ExecuteThroughAsyncBulkheadInner(), CancellationSource.Token)
         );
-    }
 
-    public Task ExecuteOnBulkheadAsync<TResult>(AsyncBulkheadPolicy<TResult?> bulkhead)
-    {
-        return ExecuteThroughAsyncBulkheadOuter(
+    public Task ExecuteOnBulkheadAsync<TResult>(AsyncBulkheadPolicy<TResult?> bulkhead) =>
+        ExecuteThroughAsyncBulkheadOuter(
             () => bulkhead.ExecuteAsync(async _ => { await ExecuteThroughAsyncBulkheadInner(); return default; }, CancellationSource.Token)
         );
-    }
 
     public Task ExecuteThroughAsyncBulkheadOuter(Func<Task> executeThroughBulkheadInner)
     {
@@ -186,35 +178,36 @@ public class TraceableAction : IDisposable
         _testOutputHelper.WriteLine(_id + "Exiting execution.");
     }
 
-    private Action<Task<object?>> CaptureCompletion() => t =>
-    {
-        if (t.IsCanceled)
+    private Action<Task<object?>> CaptureCompletion() =>
+        t =>
         {
-            _testOutputHelper.WriteLine(_id + "Cancelling execution.");
+            if (t.IsCanceled)
+            {
+                _testOutputHelper.WriteLine(_id + "Cancelling execution.");
 
-            Status = TraceableActionStatus.Canceled;
-            throw new OperationCanceledException(CancellationSource.Token); // Exception rethrown for the purpose of testing exceptions thrown through the BulkheadEngine.
-        }
-        else if (t.IsFaulted)
-        {
-            _testOutputHelper.WriteLine(_id + "Execution faulted.");
-            if (t.Exception != null) { _testOutputHelper.WriteLine(_id + "Exception: " + t.Exception); }
+                Status = TraceableActionStatus.Canceled;
+                throw new OperationCanceledException(CancellationSource.Token); // Exception rethrown for the purpose of testing exceptions thrown through the BulkheadEngine.
+            }
+            else if (t.IsFaulted)
+            {
+                _testOutputHelper.WriteLine(_id + "Execution faulted.");
+                if (t.Exception != null)
+                {
+                    _testOutputHelper.WriteLine(_id + "Exception: " + t.Exception);
+                }
 
-            Status = TraceableActionStatus.Faulted;
-        }
-        else
-        {
-            _testOutputHelper.WriteLine(_id + "Completing execution.");
+                Status = TraceableActionStatus.Faulted;
+            }
+            else
+            {
+                _testOutputHelper.WriteLine(_id + "Completing execution.");
 
-            Status = TraceableActionStatus.Completed;
-        }
+                Status = TraceableActionStatus.Completed;
+            }
+        };
 
-    };
-
-    public void AllowCompletion()
-    {
+    public void AllowCompletion() =>
         _tcsProxyForRealWork.SetResult(null);
-    }
 
     public void Cancel()
     {
@@ -224,8 +217,6 @@ public class TraceableAction : IDisposable
         _tcsProxyForRealWork.SetCanceled();
     }
 
-    public void Dispose()
-    {
+    public void Dispose() =>
         CancellationSource.Dispose();
-    }
 }

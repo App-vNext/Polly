@@ -35,18 +35,14 @@ internal class StubCacheProvider : ISyncCacheProvider, IAsyncCacheProvider
         return (false, null);
     }
 
-    public void Put(string key, object value, Ttl ttl)
-    {
+    public void Put(string key, object value, Ttl ttl) =>
         cachedValues[key] = new CacheItem(value, ttl);
-    }
 
     #region Naive async-over-sync implementation
 
     // Intentionally naive async-over-sync implementation.  Its purpose is to be the simplest thing to support tests of the CachePolicyAsync and CacheEngineAsync, not to be a usable implementation of IAsyncCacheProvider.
-    public Task<(bool, object?)> TryGetAsync(string key, CancellationToken cancellationToken, bool continueOnCapturedContext)
-    {
-        return Task.FromResult(TryGet(key));
-    }
+    public Task<(bool, object?)> TryGetAsync(string key, CancellationToken cancellationToken, bool continueOnCapturedContext) =>
+        Task.FromResult(TryGet(key));
 
     public Task PutAsync(string key, object value, Ttl ttl, CancellationToken cancellationToken, bool continueOnCapturedContext)
     {
