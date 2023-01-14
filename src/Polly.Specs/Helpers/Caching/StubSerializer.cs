@@ -7,17 +7,17 @@
 /// <typeparam name="TSerialized">The type of the serialized values.</typeparam>
 internal class StubSerializer<TResult, TSerialized> : ICacheItemSerializer<TResult, TSerialized>
 {
-    private readonly Func<TResult, TSerialized> _serialize;
-    private readonly Func<TSerialized, TResult> _deserialize;
+    private readonly Func<TResult?, TSerialized?> _serialize;
+    private readonly Func<TSerialized?, TResult?> _deserialize;
 
-    public StubSerializer(Func<TResult, TSerialized> serialize, Func<TSerialized, TResult> deserialize)
+    public StubSerializer(Func<TResult?, TSerialized?> serialize, Func<TSerialized?, TResult?> deserialize)
     {
         _serialize = serialize;
         _deserialize = deserialize;
     }
-    public TSerialized Serialize(TResult objectToSerialize) =>
+    public TSerialized? Serialize(TResult? objectToSerialize) =>
         _serialize(objectToSerialize);
 
-    public TResult Deserialize(TSerialized objectToDeserialize) =>
+    public TResult? Deserialize(TSerialized? objectToDeserialize) =>
         _deserialize(objectToDeserialize);
 }

@@ -59,7 +59,7 @@ public class Cache
             return (cacheHit, value);
         }
 
-        public void Put(string key, object value, Ttl ttl)
+        public void Put(string key, object? value, Ttl ttl)
         {
             TimeSpan remaining = DateTimeOffset.MaxValue - DateTimeOffset.UtcNow;
             var options = new MemoryCacheEntryOptions();
@@ -86,7 +86,7 @@ public class Cache
         public Task<(bool, object?)> TryGetAsync(string key, CancellationToken cancellationToken, bool continueOnCapturedContext) =>
             Task.FromResult(TryGet(key));
 
-        public Task PutAsync(string key, object value, Ttl ttl, CancellationToken cancellationToken, bool continueOnCapturedContext)
+        public Task PutAsync(string key, object? value, Ttl ttl, CancellationToken cancellationToken, bool continueOnCapturedContext)
         {
             Put(key, value, ttl);
             return Task.CompletedTask;

@@ -7,14 +7,14 @@ internal class StubCacheProvider : ISyncCacheProvider, IAsyncCacheProvider
 {
     class CacheItem
     {
-        public CacheItem(object value, Ttl ttl)
+        public CacheItem(object? value, Ttl ttl)
         {
             Expiry = DateTimeOffset.MaxValue - SystemClock.DateTimeOffsetUtcNow() > ttl.Timespan ? SystemClock.DateTimeOffsetUtcNow().Add(ttl.Timespan) : DateTimeOffset.MaxValue;
             Value = value;
         }
 
         public readonly DateTimeOffset Expiry;
-        public readonly object Value;
+        public readonly object? Value;
     }
 
     private readonly Dictionary<string, CacheItem> cachedValues = new Dictionary<string, CacheItem>();
@@ -35,7 +35,7 @@ internal class StubCacheProvider : ISyncCacheProvider, IAsyncCacheProvider
         return (false, null);
     }
 
-    public void Put(string key, object value, Ttl ttl) =>
+    public void Put(string key, object? value, Ttl ttl) =>
         cachedValues[key] = new CacheItem(value, ttl);
 
     #region Naive async-over-sync implementation
@@ -44,7 +44,7 @@ internal class StubCacheProvider : ISyncCacheProvider, IAsyncCacheProvider
     public Task<(bool, object?)> TryGetAsync(string key, CancellationToken cancellationToken, bool continueOnCapturedContext) =>
         Task.FromResult(TryGet(key));
 
-    public Task PutAsync(string key, object value, Ttl ttl, CancellationToken cancellationToken, bool continueOnCapturedContext)
+    public Task PutAsync(string key, object? value, Ttl ttl, CancellationToken cancellationToken, bool continueOnCapturedContext)
     {
         Put(key, value, ttl);
         return TaskHelper.EmptyTask;

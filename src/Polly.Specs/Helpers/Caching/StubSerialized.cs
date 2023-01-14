@@ -6,9 +6,9 @@ namespace Polly.Specs.Helpers.Caching;
 /// <typeparam name="TOriginal">The type of the item being 'serialized'.</typeparam>
 internal class StubSerialized<TOriginal>
 {
-    public TOriginal Original;
+    public TOriginal? Original;
 
-    public StubSerialized(TOriginal original) =>
+    public StubSerialized(TOriginal? original) =>
         Original = original;
 }
 
@@ -17,5 +17,5 @@ internal class StubSerialized<TOriginal>
 /// </summary>
 internal class StubSerialized : StubSerialized<object>
 {
-    public StubSerialized(object obj) : base(obj) { }
+    public StubSerialized(object? obj) : base(obj) { }
 }

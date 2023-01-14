@@ -1,4 +1,5 @@
-﻿namespace Polly.Caching;
+﻿#nullable enable
+namespace Polly.Caching;
 
 internal static class AsyncCacheEngine
 {
@@ -25,7 +26,7 @@ internal static class AsyncCacheEngine
         }
 
         bool cacheHit;
-        TResult valueFromCache;
+        TResult? valueFromCache;
         try
         {
             (cacheHit, valueFromCache) = await cacheProvider.TryGetAsync(cacheKey, cancellationToken, continueOnCapturedContext).ConfigureAwait(continueOnCapturedContext);
@@ -39,7 +40,7 @@ internal static class AsyncCacheEngine
         if (cacheHit)
         {
             onCacheGet(context, cacheKey);
-            return valueFromCache;
+            return valueFromCache!;
         }
         else
         {

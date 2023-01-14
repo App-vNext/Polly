@@ -19,7 +19,7 @@ internal class StubErroringCacheProvider : ISyncCacheProvider, IAsyncCacheProvid
         return innerProvider.TryGet(key);
     }
 
-    public void Put(string key, object value, Ttl ttl)
+    public void Put(string key, object? value, Ttl ttl)
     {
         if (_putException != null) throw _putException;
         innerProvider.Put(key, value, ttl);
@@ -31,7 +31,7 @@ internal class StubErroringCacheProvider : ISyncCacheProvider, IAsyncCacheProvid
     public Task<(bool, object?)> TryGetAsync(string key, CancellationToken cancellationToken, bool continueOnCapturedContext) =>
         Task.FromResult(TryGet(key));
 
-    public Task PutAsync(string key, object value, Ttl ttl, CancellationToken cancellationToken, bool continueOnCapturedContext)
+    public Task PutAsync(string key, object? value, Ttl ttl, CancellationToken cancellationToken, bool continueOnCapturedContext)
     {
         Put(key, value, ttl);
         return TaskHelper.EmptyTask;

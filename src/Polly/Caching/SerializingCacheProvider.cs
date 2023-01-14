@@ -1,4 +1,5 @@
-﻿namespace Polly.Caching;
+﻿#nullable enable
+namespace Polly.Caching;
 
 /// <summary>
 /// Defines an <see cref="ISyncCacheProvider"/> which serializes objects of any type in and out of an underlying cache which caches as type <typeparamref name="TSerialized"/>.  For use with synchronous <see cref="CachePolicy" />.
@@ -30,9 +31,9 @@ public class SerializingCacheProvider<TSerialized> : ISyncCacheProvider
     /// A tuple whose first element is a value indicating whether the key was found in the cache,
     /// and whose second element is the value from the cache (null if not found).
     /// </returns>
-    public (bool, object) TryGet(string key)
+    public (bool, object?) TryGet(string key)
     {
-        (bool cacheHit, TSerialized objectToDeserialize) = _wrappedCacheProvider.TryGet(key);
+        (bool cacheHit, TSerialized? objectToDeserialize) = _wrappedCacheProvider.TryGet(key);
         return (cacheHit, cacheHit ? _serializer.Deserialize(objectToDeserialize) : null);
     }
 
@@ -42,7 +43,7 @@ public class SerializingCacheProvider<TSerialized> : ISyncCacheProvider
     /// <param name="key">The cache key.</param>
     /// <param name="value">The value to put into the cache.</param>
     /// <param name="ttl">The time-to-live for the cache entry.</param>
-    public void Put(string key, object value, Ttl ttl) =>
+    public void Put(string key, object? value, Ttl ttl) =>
         _wrappedCacheProvider.Put(key, _serializer.Serialize(value), ttl);
 }
 
@@ -77,9 +78,9 @@ public class SerializingCacheProvider<TResult, TSerialized> : ISyncCacheProvider
     /// A tuple whose first element is a value indicating whether the key was found in the cache,
     /// and whose second element is the value from the cache (default(TResult) if not found).
     /// </returns>
-    public (bool, TResult) TryGet(string key)
+    public (bool, TResult?) TryGet(string key)
     {
-        (bool cacheHit, TSerialized objectToDeserialize) = _wrappedCacheProvider.TryGet(key);
+        (bool cacheHit, TSerialized? objectToDeserialize) = _wrappedCacheProvider.TryGet(key);
         return (cacheHit, cacheHit ? _serializer.Deserialize(objectToDeserialize) : default);
     }
 
@@ -89,6 +90,6 @@ public class SerializingCacheProvider<TResult, TSerialized> : ISyncCacheProvider
     /// <param name="key">The cache key.</param>
     /// <param name="value">The value to put into the cache.</param>
     /// <param name="ttl">The time-to-live for the cache entry.</param>
-    public void Put(string key, TResult value, Ttl ttl) =>
+    public void Put(string key, TResult? value, Ttl ttl) =>
         _wrappedCacheProvider.Put(key, _serializer.Serialize(value), ttl);
 }
