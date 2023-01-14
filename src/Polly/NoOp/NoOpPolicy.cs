@@ -1,4 +1,6 @@
-﻿namespace Polly.NoOp;
+﻿#nullable enable
+
+namespace Polly.NoOp;
 
 /// <summary>
 /// A no op policy that can be applied to delegates.
