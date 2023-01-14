@@ -86,7 +86,7 @@ public class BulkheadTResultAsyncSpecs : BulkheadSpecsBase
         Policy.BulkheadAsync<ResultPrimitive>(maxParallelization, maxQueuingActions);
 
     protected override Task ExecuteOnBulkhead(IBulkheadPolicy bulkhead, TraceableAction action) =>
-        action.ExecuteOnBulkheadAsync<ResultPrimitive>((AsyncBulkheadPolicy<ResultPrimitive>)bulkhead);
+        action.ExecuteOnBulkheadAsync<ResultPrimitive>((AsyncBulkheadPolicy<ResultPrimitive>) bulkhead);
 
     #endregion
 }

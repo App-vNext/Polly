@@ -9,8 +9,8 @@ internal class AsyncGenericCacheProvider<TCacheFormat> : IAsyncCacheProvider<TCa
 {
     private readonly IAsyncCacheProvider _wrappedCacheProvider;
 
-    internal AsyncGenericCacheProvider(IAsyncCacheProvider nonGenericCacheProvider)
-        => _wrappedCacheProvider = nonGenericCacheProvider ?? throw new ArgumentNullException(nameof(nonGenericCacheProvider));
+    internal AsyncGenericCacheProvider(IAsyncCacheProvider nonGenericCacheProvider) =>
+        _wrappedCacheProvider = nonGenericCacheProvider ?? throw new ArgumentNullException(nameof(nonGenericCacheProvider));
 
     async Task<(bool, TCacheFormat?)> IAsyncCacheProvider<TCacheFormat>.TryGetAsync(string key, CancellationToken cancellationToken, bool continueOnCapturedContext)
     {
@@ -18,6 +18,6 @@ internal class AsyncGenericCacheProvider<TCacheFormat> : IAsyncCacheProvider<TCa
         return (cacheHit, (TCacheFormat?)(result ?? default(TCacheFormat)));
     }
 
-    Task IAsyncCacheProvider<TCacheFormat>.PutAsync(string key, TCacheFormat? value, Ttl ttl, CancellationToken cancellationToken, bool continueOnCapturedContext)
-        => _wrappedCacheProvider.PutAsync(key, value, ttl, cancellationToken, continueOnCapturedContext);
+    Task IAsyncCacheProvider<TCacheFormat>.PutAsync(string key, TCacheFormat? value, Ttl ttl, CancellationToken cancellationToken, bool continueOnCapturedContext) =>
+        _wrappedCacheProvider.PutAsync(key, value, ttl, cancellationToken, continueOnCapturedContext);
 }

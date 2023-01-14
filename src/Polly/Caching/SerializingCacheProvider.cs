@@ -43,10 +43,8 @@ public class SerializingCacheProvider<TSerialized> : ISyncCacheProvider
     /// <param name="key">The cache key.</param>
     /// <param name="value">The value to put into the cache.</param>
     /// <param name="ttl">The time-to-live for the cache entry.</param>
-    public void Put(string key, object? value, Ttl ttl)
-    {
+    public void Put(string key, object? value, Ttl ttl) =>
         _wrappedCacheProvider.Put(key, _serializer.Serialize(value), ttl);
-    }
 }
 
 /// <summary>
@@ -92,8 +90,6 @@ public class SerializingCacheProvider<TResult, TSerialized> : ISyncCacheProvider
     /// <param name="key">The cache key.</param>
     /// <param name="value">The value to put into the cache.</param>
     /// <param name="ttl">The time-to-live for the cache entry.</param>
-    public void Put(string key, TResult? value, Ttl ttl)
-    {
+    public void Put(string key, TResult? value, Ttl ttl) =>
         _wrappedCacheProvider.Put(key, _serializer.Serialize(value), ttl);
-    }
 }

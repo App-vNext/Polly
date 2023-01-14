@@ -20,5 +20,13 @@ internal struct BulkheadScenario
     }
 
     public object[] ToTheoryData() =>
-        new object[] {_maxParallelization, _maxQueuingActions, _totalTestLoad, _cancelQueuing, _cancelExecuting, _scenario };
+        new object[]
+        {
+            _maxParallelization,
+            _maxQueuingActions,
+            _totalTestLoad,
+            _cancelQueuing,
+            _cancelExecuting,
+            _scenario
+        };
 }

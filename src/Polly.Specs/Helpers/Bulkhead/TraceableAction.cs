@@ -46,7 +46,11 @@ public class TraceableAction : IDisposable
 
     public Task ExecuteOnBulkhead<TResult>(BulkheadPolicy<TResult?> bulkhead) =>
         ExecuteThroughSyncBulkheadOuter(
-            () => bulkhead.Execute(_ => { ExecuteThroughSyncBulkheadInner(); return default; }, CancellationSource.Token)
+            () => bulkhead.Execute(_ =>
+            {
+                ExecuteThroughSyncBulkheadInner();
+                return default;
+            }, CancellationSource.Token)
         );
 
     // Note re TaskCreationOptions.LongRunning: Testing the parallelization of the bulkhead policy efficiently requires the ability to start large numbers of parallel tasks in a short space of time.  The ThreadPool's algorithm of only injecting extra threads (when necessary) at a rate of two-per-second however makes high-volume tests using the ThreadPool both slow and flaky.  For PCL tests further, ThreadPool.SetMinThreads(...) is not available, to mitigate this.  Using TaskCreationOptions.LongRunning allows us to force tasks to be started near-instantly on non-ThreadPool threads.
@@ -122,7 +126,11 @@ public class TraceableAction : IDisposable
 
     public Task ExecuteOnBulkheadAsync<TResult>(AsyncBulkheadPolicy<TResult?> bulkhead) =>
         ExecuteThroughAsyncBulkheadOuter(
-            () => bulkhead.ExecuteAsync(async _ => { await ExecuteThroughAsyncBulkheadInner(); return default; }, CancellationSource.Token)
+            () => bulkhead.ExecuteAsync(async _ =>
+            {
+                await ExecuteThroughAsyncBulkheadInner();
+                return default;
+            }, CancellationSource.Token)
         );
 
     public Task ExecuteThroughAsyncBulkheadOuter(Func<Task> executeThroughBulkheadInner)
