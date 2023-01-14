@@ -1,4 +1,5 @@
-﻿namespace Polly.CircuitBreaker;
+﻿#nullable enable
+namespace Polly.CircuitBreaker;
 
 internal class RollingHealthMetrics : IHealthMetrics
 {
@@ -6,28 +7,28 @@ internal class RollingHealthMetrics : IHealthMetrics
     private readonly long _windowDuration;
     private readonly Queue<HealthCount> _windows;
 
-    private HealthCount _currentWindow;
+    private HealthCount? _currentWindow;
 
     public RollingHealthMetrics(TimeSpan samplingDuration, short numberOfWindows)
     {
         _samplingDuration = samplingDuration.Ticks;
 
         _windowDuration = _samplingDuration / numberOfWindows;
-        _windows = new Queue<HealthCount>(numberOfWindows + 1);
+        _windows = new(numberOfWindows + 1);
     }
 
     public void IncrementSuccess_NeedsLock()
     {
-        ActualiseCurrentMetric_NeedsLock();
+        var currentWindow = ActualiseCurrentMetric_NeedsLock();
 
-        _currentWindow.Successes++;
+        currentWindow.Successes++;
     }
 
     public void IncrementFailure_NeedsLock()
     {
-        ActualiseCurrentMetric_NeedsLock();
+        var currentWindow = ActualiseCurrentMetric_NeedsLock();
 
-        _currentWindow.Failures++;
+        currentWindow.Failures++;
     }
 
     public void Reset_NeedsLock()
@@ -48,7 +49,7 @@ internal class RollingHealthMetrics : IHealthMetrics
             failures += window.Failures;
         }
 
-        return new HealthCount
+        return new()
         {
             Successes = successes,
             Failures = failures,
@@ -56,16 +57,21 @@ internal class RollingHealthMetrics : IHealthMetrics
         };
     }
 
-    private void ActualiseCurrentMetric_NeedsLock()
+    private HealthCount ActualiseCurrentMetric_NeedsLock()
     {
-        long now = SystemClock.UtcNow().Ticks;
+        var now = SystemClock.UtcNow().Ticks;
         if (_currentWindow == null || now - _currentWindow.StartedAt >= _windowDuration)
         {
-            _currentWindow = new HealthCount { StartedAt = now };
+            _currentWindow = new()
+            {
+                StartedAt = now
+            };
             _windows.Enqueue(_currentWindow);
         }
 
         while (_windows.Count > 0 && now - _windows.Peek().StartedAt >= _samplingDuration)
             _windows.Dequeue();
+
+        return _currentWindow;
     }
 }
