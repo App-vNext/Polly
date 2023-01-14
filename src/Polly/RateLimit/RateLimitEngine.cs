@@ -1,10 +1,12 @@
-﻿namespace Polly.RateLimit;
+﻿#nullable enable
+
+namespace Polly.RateLimit;
 
 internal static class RateLimitEngine
 {
     internal static TResult Implementation<TResult>(
         IRateLimiter rateLimiter,
-        Func<TimeSpan, Context, TResult> retryAfterFactory,
+        Func<TimeSpan, Context, TResult>? retryAfterFactory,
         Func<Context, CancellationToken, TResult> action,
         Context context,
         CancellationToken cancellationToken

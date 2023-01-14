@@ -1,4 +1,6 @@
-﻿namespace Polly.RateLimit;
+﻿#nullable enable
+
+namespace Polly.RateLimit;
 
 /// <summary>
 /// Defines methods to be provided by a rate-limiter used in a Polly <see cref="IRateLimitPolicy"/>

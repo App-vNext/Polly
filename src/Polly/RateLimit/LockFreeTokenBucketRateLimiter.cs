@@ -1,4 +1,6 @@
-﻿namespace Polly.RateLimit;
+﻿#nullable enable
+
+namespace Polly.RateLimit;
 
 /// <summary>
 /// A lock-free token-bucket rate-limiter for a Polly <see cref="IRateLimitPolicy"/>.

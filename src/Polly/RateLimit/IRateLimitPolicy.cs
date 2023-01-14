@@ -1,4 +1,6 @@
-﻿namespace Polly.RateLimit;
+﻿#nullable enable
+
+namespace Polly.RateLimit;
 
 /// <summary>
 /// Defines properties and methods common to all RateLimit policies.

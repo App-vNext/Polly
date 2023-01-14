@@ -1,4 +1,6 @@
-﻿namespace Polly.RateLimit;
+﻿#nullable enable
+
+namespace Polly.RateLimit;
 
 /// <summary>
 /// A rate-limit policy that can be applied to asynchronous delegates.
@@ -23,11 +25,11 @@ public class AsyncRateLimitPolicy : AsyncPolicy, IRateLimitPolicy
 public class AsyncRateLimitPolicy<TResult> : AsyncPolicy<TResult>, IRateLimitPolicy<TResult>
 {
     private readonly IRateLimiter _rateLimiter;
-    private readonly Func<TimeSpan, Context, TResult> _retryAfterFactory;
+    private readonly Func<TimeSpan, Context, TResult>? _retryAfterFactory;
 
     internal AsyncRateLimitPolicy(
         IRateLimiter rateLimiter,
-        Func<TimeSpan, Context, TResult> retryAfterFactory)
+        Func<TimeSpan, Context, TResult>? retryAfterFactory)
     {
         _rateLimiter = rateLimiter ?? throw new ArgumentNullException(nameof(rateLimiter));
         _retryAfterFactory = retryAfterFactory;
