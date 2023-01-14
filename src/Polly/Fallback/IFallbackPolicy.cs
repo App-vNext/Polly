@@ -1,4 +1,6 @@
-﻿namespace Polly.Fallback;
+﻿#nullable enable
+
+namespace Polly.Fallback;
 
 /// <summary>
 /// Defines properties and methods common to all Fallback policies.

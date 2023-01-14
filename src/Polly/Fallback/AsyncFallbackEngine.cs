@@ -1,4 +1,5 @@
-﻿namespace Polly.Fallback;
+﻿#nullable enable
+namespace Polly.Fallback;
 
 internal class AsyncFallbackEngine
 {

@@ -1,4 +1,6 @@
-﻿namespace Polly;
+﻿#nullable enable
+
+namespace Polly;
 
 /// <summary>
 /// Fluent API for defining a Fallback <see cref="AsyncPolicy"/>.

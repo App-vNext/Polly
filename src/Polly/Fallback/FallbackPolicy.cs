@@ -1,4 +1,6 @@
-﻿namespace Polly.Fallback;
+﻿#nullable enable
+
+namespace Polly.Fallback;
 
 /// <summary>
 /// A fallback policy that can be applied to delegates.

@@ -1,4 +1,6 @@
-﻿namespace Polly.Fallback;
+﻿#nullable enable
+
+namespace Polly.Fallback;
 
 internal static class FallbackEngine
 {
