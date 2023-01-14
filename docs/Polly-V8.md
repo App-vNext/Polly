@@ -104,7 +104,7 @@ In the preceding example:
 
 This way, the responsibility of how to execute method is lifted from the user and instead passed to the policy. User knows only the `IResilienceStrategy` interface. User uses only a single strategy to execute all scenarios. Previously, user had to decide whether to use sync vs async, typed vs non-typed policies.
 
-The life of extensibility author is also simplified as he only maintains one implementation of strategy instead of multiple ones. See the duplications in [`Polly.Retry`](https://github.com/App-vNext/Polly/tree/master/src/Polly/Retry).
+The life of extensibility author is also simplified as they only maintain one implementation of strategy instead of multiple ones. See the duplications in [`Polly.Retry`](https://github.com/App-vNext/Polly/tree/main/src/Polly/Retry).
 
 ### Creation of `IResilienceStrategy`
 
@@ -156,13 +156,13 @@ Various implementations of `IResilienceStrategy` use callbacks to provide or req
 - **Events**: These are just events raised when something important happens. For example when timeout occurs.
 - **Generators**: These generate a value based on the input. For example, retry delay before the next retry attempt.
 
-All callbacks are asynchronous and return `ValueTask`. They flow the following information to the user:
+All callbacks are asynchronous and return `ValueTask`. They provide the following information to the user:
 
 - `ResilienceContext`: the context of the operation.
-- Result type: for which result type is strategy being executed.
-- Callback arguments: Additional information about the event.
+- Result type: for what result type is the strategy being executed.
+- Callback arguments: Additional information about the event. Using arguments is preferable because it makes the API more stable. If we decide to add a new member to the arguments, the call sites won't break.
 
-Each callback type has associated class that can be reused across various strategies. For example the `Predicates` class and the usage in the `RetryStrategyOptions.ShouldRetry`:
+Each callback type has associated class that can be reused across various strategies. For example see the `Predicates` class and the usage in the `RetryStrategyOptions.ShouldRetry`:
 
 ``` csharp
 public Predicates ShouldRetry { get; set; } = new();
@@ -182,14 +182,14 @@ options
     .Add<MyResult>((v, context) => await IsErrorAsync(v, context)); // async predicates
 ```
 
-In the preceding sample you can see that with `ShouldRetry` you can handle the following scenarios:
+In the preceding sample you see that `ShouldRetry` handles the following scenarios:
 
 - Asynchronous predicates.
 - Synchronous predicates.
 - Concrete value results.
-- Custom function based callbacks.
-- Multiple result types.
-- Exception types or predicates based on exceptions.
+- Custom function-based callbacks.
+- Different result types.
+- Exception types or exception-based predicates.
 
 ### Packages
 
@@ -197,7 +197,7 @@ All packages have the same `Polly` root namespace.
 
 #### Polly.Abstractions
 
-Contains core primitives for consumers that just want to accept the core `IResilienceStrategy` in their APIs.
+Contains core primitives for consumers that just want to accept the `IResilienceStrategy` in their APIs and aren't interested in individual strategies.
 
 **Dependencies:** None
 
@@ -215,7 +215,7 @@ Contains the builder for resilience strategies and core primitives that can be r
 
 **Dependencies:**
 
-- `Poly.Abstractions`
+- `Polly.Abstractions`
 - `Microsoft.Extensions.Logging.Abstractions`
 
 **Types**:
@@ -228,11 +228,11 @@ Contains the builder for resilience strategies and core primitives that can be r
 
 #### Polly.Strategies
 
-Contains individual built-in strategies.
+Contains individual built-in strategies. Optionally, we can merge it with `Polly.Core`.
 
 **Dependencies:**
 
-- `Poly.Core`
+- `Polly.Core`
 
 **Types**:
 
@@ -240,19 +240,4 @@ Contains individual built-in strategies.
 - `TimeoutStrategyOptions`
 - `RetryExtensions`
 - `TimeoutExtensions`
-
-#### Polly.DependencyInjection
-
-Contains DI support for the `IServiceCollection`.
-
-**Dependencies:**
-
-- `Poly.Core`
-- `Microsoft.Extensions.DependencyInjection.Abstractions`
-- `Microsoft.Extensions.Options`
-
-**Types**:
-
-- `ResilienceServiceCollectionExtensions`
-- `ResilienceStrategyContext`
-- `IResilienceStrategyProvider`
+- and more (bulkhead, caching, circuit breaker)

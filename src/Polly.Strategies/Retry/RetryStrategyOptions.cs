@@ -1,4 +1,5 @@
-﻿namespace Polly.Retry;
+namespace Polly.Retry;
+
 public class RetryStrategyOptions : ResilienceStrategyOptions
 {
     public Predicates<ShouldRetryArguments> ShouldRetry { get; set; } = new();

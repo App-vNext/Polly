@@ -24,7 +24,7 @@ internal abstract class PredicatesHandler<TContext>
 
             foreach (var predicate in predicates)
             {
-                var outcomePredicate = (PredicatesDelegate<T, TContext>)predicate;
+                var outcomePredicate = (PredicatesCallback<T, TContext>)predicate;
 
                 if (await outcomePredicate(outcome, context).ConfigureAwait(resilienceContext.ContinueOnCapturedContext))
                 {

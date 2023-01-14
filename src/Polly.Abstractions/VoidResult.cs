@@ -1,6 +1,6 @@
 namespace Polly;
 
-internal class VoidResult
+internal sealed class VoidResult
 {
     private VoidResult()
     {

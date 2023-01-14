@@ -1,36 +1,30 @@
-﻿namespace Polly;
+namespace Polly;
 
-public delegate ValueTask EventsDelegate<T, TContext>(Outcome<T> outcome, TContext context);
+public delegate ValueTask EventsCallback<T, TContext>(Outcome<T> outcome, TContext context);
 
 public class Events<TContext>
 {
     internal Dictionary<Type, List<object>> Callbacks { get; } = new();
 
-    public Events<TContext> Add<T>(Action<Outcome<T>, TContext> callback)
+    public Events<TContext> Add<T>(Action<Outcome<T>, TContext> callback) => Add<T>((o, c) =>
     {
-        return Add<T>((o, c) =>
-        {
-            callback(o, c);
-            return default;
-        });
-    }
+        callback(o, c);
+        return default;
+    });
 
     public Events<TContext> Add(Action<TContext> callback) => Add((_, args) => callback(args));
 
     public Events<TContext> Add(Func<TContext, ValueTask> callback) => Add((_, args) => callback(args));
 
-    public Events<TContext> Add(EventsDelegate<object, TContext> callback) => Add<object>(callback);
+    public Events<TContext> Add(EventsCallback<object, TContext> callback) => Add<object>(callback);
 
-    public Events<TContext> Add(Action<Outcome<object>, TContext> callback)
+    public Events<TContext> Add(Action<Outcome<object>, TContext> callback) => Add<object>((o, c) =>
     {
-        return Add<object>((o, c) =>
-        {
-            callback(o, c);
-            return default;
-        });
-    }
+        callback(o, c);
+        return default;
+    });
 
-    public Events<TContext> Add<T>(EventsDelegate<T, TContext> callback)
+    public Events<TContext> Add<T>(EventsCallback<T, TContext> callback)
     {
         var type = typeof(T);
 

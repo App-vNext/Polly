@@ -3,17 +3,17 @@ using Polly.Internals;
 
 namespace Polly.Timeout;
 
-internal class TimeoutResilienceStrategy : DelegatingResilienceStrategy
+internal sealed class TimeoutResilienceStrategy : DelegatingResilienceStrategy
 {
     private static readonly ObjectPool<CancellationTokenSource> _cancellations = ObjectPool.Create<CancellationTokenSource>();
 
     private readonly TimeoutStrategyOptions _options;
-    private readonly EventsHandler<TimeoutTaskArguments> _onTimeout;
+    private readonly EventsHandler<OnTimeoutArguments> _onTimeout;
 
     public TimeoutResilienceStrategy(TimeoutStrategyOptions options)
     {
         _options = options;
-        _onTimeout = EventsHandler<TimeoutTaskArguments>.Create(_options.OnTimeout);
+        _onTimeout = EventsHandler<OnTimeoutArguments>.Create(_options.OnTimeout);
     }
 
     public override async ValueTask<T> ExecuteAsync<T, TState>(Func<ResilienceContext, TState, ValueTask<T>> execution, ResilienceContext context, TState state)
@@ -33,7 +33,7 @@ internal class TimeoutResilienceStrategy : DelegatingResilienceStrategy
             }
             catch (Exception e) when (source.IsCancellationRequested && !previous.IsCancellationRequested)
             {
-                await _onTimeout.HandleAsync(new Outcome<T>(e), new TimeoutTaskArguments(context), context).ConfigureAwait(false);
+                await _onTimeout.HandleAsync(new Outcome<T>(e), new OnTimeoutArguments(context), context).ConfigureAwait(false);
 
                 throw new TimeoutException();
             }

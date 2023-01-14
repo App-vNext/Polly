@@ -1,5 +1,3 @@
-// © Microsoft Corporation. All rights reserved.
-
 using BenchmarkDotNet.Configs;
 using BenchmarkDotNet.Diagnosers;
 using BenchmarkDotNet.Jobs;
@@ -10,7 +8,5 @@ var config = ManualConfig
     .Create(DefaultConfig.Instance)
     .AddJob(Job.MediumRun.WithToolchain(InProcessEmitToolchain.Instance))
     .AddDiagnoser(MemoryDiagnoser.Default);
-
-// BenchmarkSwitcher.FromAssembly(typeof(Program).Assembly).Run(args, config);
 
 BenchmarkRunner.Run(typeof(Program).Assembly, config);

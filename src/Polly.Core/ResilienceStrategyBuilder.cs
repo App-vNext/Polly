@@ -19,7 +19,7 @@ public class ResilienceStrategyBuilder : IResilienceStrategyBuilder
 
     public IResilienceStrategy Build()
     {
-        var strategies = new List<DelegatingResilienceStrategy>();
+        var strategies = new List<DelegatingResilienceStrategy>(_entries.Count);
 
         foreach (var entry in _entries)
         {

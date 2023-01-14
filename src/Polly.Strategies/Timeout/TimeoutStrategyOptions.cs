@@ -6,5 +6,5 @@ public class TimeoutStrategyOptions : ResilienceStrategyOptions
 
     public TimeSpan TimeoutInterval { get; set; } = TimeSpan.FromSeconds(30);
 
-    public Events<TimeoutTaskArguments> OnTimeout { get; set; } = new();
+    public Events<OnTimeoutArguments> OnTimeout { get; set; } = new();
 }

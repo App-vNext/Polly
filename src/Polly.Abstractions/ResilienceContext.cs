@@ -1,4 +1,3 @@
-
 using Microsoft.Extensions.ObjectPool;
 
 namespace Polly;
@@ -40,5 +39,6 @@ public sealed class ResilienceContext
         IsVoid = false;
         IsSynchronous = false;
         ContinueOnCapturedContext = false;
+        CancellationToken = default;
     }
 }

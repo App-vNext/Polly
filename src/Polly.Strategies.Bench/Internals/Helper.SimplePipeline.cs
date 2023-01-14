@@ -27,7 +27,7 @@ internal static partial class Helper
                 builder.AddTimeout(new TimeoutStrategyOptions
                 {
                    TimeoutInterval = outerTimeout,
-                   OnTimeout = new Events<TimeoutTaskArguments>().Add(args => new ValueTask()),
+                   OnTimeout = new Events<OnTimeoutArguments>().Add(args => new ValueTask()),
                    StrategyName = "outer-timeout"
                 });
 
@@ -45,7 +45,7 @@ internal static partial class Helper
                 builder.AddTimeout(new TimeoutStrategyOptions
                 {
                     TimeoutInterval = innerTimeout,
-                    OnTimeout = new Events<TimeoutTaskArguments>().Add(args => new ValueTask()),
+                    OnTimeout = new Events<OnTimeoutArguments>().Add(args => new ValueTask()),
                     StrategyName = "inner-timeout"
                 });
             }),

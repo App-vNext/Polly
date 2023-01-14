@@ -16,7 +16,7 @@ internal static partial class Helper
                 builder.AddTimeout(new TimeoutStrategyOptions
                 {
                     TimeoutInterval = timeout,
-                    OnTimeout = new Events<TimeoutTaskArguments>().Add(args => new ValueTask())
+                    OnTimeout = new Events<OnTimeoutArguments>().Add(args => new ValueTask())
                 });
             }),
             _ => throw new NotImplementedException()

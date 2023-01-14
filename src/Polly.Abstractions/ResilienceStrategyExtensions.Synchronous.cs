@@ -85,10 +85,7 @@ public static partial class ResilienceStrategyExtensions
     {
         Debug.Assert(
             task.IsCompleted,
-            "The value task should be already completed at this point. If not, its and indication that the strategy does not respect the ResilienceContext.IsSynchronous value.");
-
-#pragma warning disable S5034 // "ValueTask" should be consumed correctly
-#pragma warning disable VSTHRD002 // Avoid problematic synchronous waits
+            "The value task should be already completed at this point. If not, it's an indication that the strategy does not respect the ResilienceContext.IsSynchronous value.");
 
         if (task.IsCompleted)
         {
@@ -96,8 +93,5 @@ public static partial class ResilienceStrategyExtensions
         }
 
         return task.Preserve().Result;
-
-#pragma warning restore S5034 // "ValueTask" should be consumed correctly
-#pragma warning restore VSTHRD002 // Avoid problematic synchronous waits
     }
 }

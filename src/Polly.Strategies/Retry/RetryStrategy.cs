@@ -2,7 +2,7 @@ using Polly.Internals;
 
 namespace Polly.Retry;
 
-internal class RetryStrategy : DelegatingResilienceStrategy
+internal sealed class RetryStrategy : DelegatingResilienceStrategy
 {
     private readonly RetryStrategyOptions _options;
     private readonly PredicatesHandler<ShouldRetryArguments> _shouldRetry;

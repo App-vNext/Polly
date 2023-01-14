@@ -9,17 +9,17 @@ internal abstract class EventsHandler<TContext>
     private class Many : EventsHandler<TContext>
     {
         private readonly Dictionary<Type, List<object>> _callbacks;
-        private readonly List<EventsDelegate<object, TContext>> _genericCallback;
+        private readonly List<EventsCallback<object, TContext>> _genericCallback;
 
         public Many(Dictionary<Type, List<object>> callbacks)
         {
             if (callbacks.TryGetValue(typeof(object), out var val))
             {
-                _genericCallback = val.Select(v => (EventsDelegate<object, TContext>)v).ToList();
+                _genericCallback = val.Select(v => (EventsCallback<object, TContext>)v).ToList();
             }
             else
             {
-                _genericCallback = new List<EventsDelegate<object, TContext>>();
+                _genericCallback = new List<EventsCallback<object, TContext>>();
             }
 
             _callbacks = callbacks;
@@ -41,7 +41,7 @@ internal abstract class EventsHandler<TContext>
 
             foreach (var callback in callbacks)
             {
-                var outcomeCallback = (EventsDelegate<T, TContext>)callback;
+                var outcomeCallback = (EventsCallback<T, TContext>)callback;
 
                 await outcomeCallback(outcome, context).ConfigureAwait(resilienceContext.ContinueOnCapturedContext);
             }

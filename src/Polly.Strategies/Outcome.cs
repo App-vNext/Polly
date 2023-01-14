@@ -1,11 +1,8 @@
-﻿namespace Polly;
+namespace Polly;
 
-public struct Outcome<T>
+public readonly struct Outcome<T>
 {
-    public Outcome(T result) : this()
-    {
-        Result = result;
-    }
+    public Outcome(T result) : this() => Result = result;
 
     public Outcome(Exception? exception) : this()
     {
@@ -13,7 +10,7 @@ public struct Outcome<T>
         Result = default!;
     }
 
-    public T Result;
+    public T Result { get; }
 
     public Exception? Exception { get; }
 }
