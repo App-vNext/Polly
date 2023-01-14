@@ -1,4 +1,5 @@
-﻿namespace Polly.Bulkhead;
+﻿#nullable enable
+namespace Polly.Bulkhead;
 
 /// <summary>
 /// A bulkhead-isolation policy which can be applied to delegates.

@@ -1,4 +1,5 @@
-﻿namespace Polly.Bulkhead;
+﻿#nullable enable
+namespace Polly.Bulkhead;
 
 /// <summary>
 /// Defines properties and methods common to all bulkhead policies.

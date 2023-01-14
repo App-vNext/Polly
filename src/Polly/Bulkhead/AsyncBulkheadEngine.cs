@@ -1,6 +1,7 @@
-﻿namespace Polly.Bulkhead;
+﻿#nullable enable
+namespace Polly.Bulkhead;
 
-   internal static class AsyncBulkheadEngine
+internal static class AsyncBulkheadEngine
 {
    internal static async Task<TResult> ImplementationAsync<TResult>(
         Func<Context, CancellationToken, Task<TResult>> action,

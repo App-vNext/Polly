@@ -1,4 +1,5 @@
-﻿namespace Polly.Bulkhead;
+﻿#nullable enable
+namespace Polly.Bulkhead;
 
 internal static class BulkheadEngine
 {
@@ -15,7 +16,7 @@ internal static class BulkheadEngine
             onBulkheadRejected(context);
             throw new BulkheadRejectedException();
         }
-        
+
         try
         {
             maxParallelizationSemaphore.Wait(cancellationToken);

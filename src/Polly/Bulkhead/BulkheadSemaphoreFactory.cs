@@ -1,4 +1,5 @@
-﻿namespace Polly.Bulkhead;
+﻿#nullable enable
+namespace Polly.Bulkhead;
 
 internal static class BulkheadSemaphoreFactory
 {
