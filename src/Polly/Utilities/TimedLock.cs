@@ -1,4 +1,5 @@
-﻿namespace Polly.Utilities;
+﻿#nullable enable
+namespace Polly.Utilities;
 
 // Adapted from the link below, with slight modifications.
 
@@ -27,7 +28,7 @@ internal struct TimedLock : IDisposable
 
     private static TimedLock Lock(object o, TimeSpan timeout)
     {
-        TimedLock tl = new TimedLock(o);
+        var tl = new TimedLock(o);
         if (!Monitor.TryEnter(o, timeout))
         {
 #if DEBUG

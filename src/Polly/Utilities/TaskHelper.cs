@@ -1,4 +1,5 @@
-﻿namespace Polly.Utilities;
+﻿#nullable enable
+namespace Polly.Utilities;
 
 /// <summary>
 /// Task helpers.

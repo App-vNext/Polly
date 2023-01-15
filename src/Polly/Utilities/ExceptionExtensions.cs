@@ -1,4 +1,5 @@
-﻿using System.Runtime.ExceptionServices;
+﻿#nullable enable
+using System.Runtime.ExceptionServices;
 
 namespace Polly.Utilities;
 

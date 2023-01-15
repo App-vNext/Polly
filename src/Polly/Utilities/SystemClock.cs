@@ -1,4 +1,5 @@
-﻿namespace Polly.Utilities;
+﻿#nullable enable
+namespace Polly.Utilities;
 
 /// <summary>
 /// Time related delegates used to support different compilation targets and to improve testability of the code.
