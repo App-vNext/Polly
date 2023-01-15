@@ -4,8 +4,7 @@ internal class AsyncPreExecutePolicy : AsyncPolicy
 {
     private Func<Task> _preExecute;
 
-    public static AsyncPreExecutePolicy CreateAsync(Func<Task> preExecute) =>
-        new AsyncPreExecutePolicy(preExecute);
+    public static AsyncPreExecutePolicy CreateAsync(Func<Task> preExecute) => new(preExecute);
 
     internal AsyncPreExecutePolicy(Func<Task> preExecute) =>
         _preExecute = preExecute ?? throw new ArgumentNullException(nameof(preExecute));

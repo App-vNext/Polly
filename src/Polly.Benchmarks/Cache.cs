@@ -5,8 +5,8 @@ namespace Polly.Benchmarks;
 [Config(typeof(PollyConfig))]
 public class Cache
 {
-    private static readonly MemoryCache MemoryCache = new MemoryCache(new MemoryCacheOptions());
-    private static readonly MemoryCacheProvider CacheProvider = new MemoryCacheProvider(MemoryCache);
+    private static readonly MemoryCache MemoryCache = new(new MemoryCacheOptions());
+    private static readonly MemoryCacheProvider CacheProvider = new(MemoryCache);
 
     private static readonly Policy SyncPolicyMiss = Policy.Cache(CacheProvider, TimeSpan.Zero);
     private static readonly AsyncPolicy AsyncPolicyMiss = Policy.CacheAsync(CacheProvider, TimeSpan.Zero);
@@ -14,8 +14,8 @@ public class Cache
     private static readonly Policy SyncPolicyHit = Policy.Cache(CacheProvider, TimeSpan.MaxValue);
     private static readonly AsyncPolicy AsyncPolicyHit = Policy.CacheAsync(CacheProvider, TimeSpan.MaxValue);
 
-    private static readonly Context HitContext = new Context(nameof(HitContext));
-    private static readonly Context MissContext = new Context(nameof(MissContext));
+    private static readonly Context HitContext = new(nameof(HitContext));
+    private static readonly Context MissContext = new(nameof(MissContext));
 
     [GlobalSetup]
     public Task GlobalSetup()
@@ -40,8 +40,7 @@ public class Cache
     public Task<object> Cache_Asynchronous_Miss() =>
         AsyncPolicyMiss.ExecuteAsync((_, token) => GetObjectAsync(token), MissContext, CancellationToken.None);
 
-    private static object GetObject() =>
-        new object();
+    private static object GetObject() => new();
 
     private static Task<object> GetObjectAsync(CancellationToken cancellationToken) =>
         Task.FromResult(new object());

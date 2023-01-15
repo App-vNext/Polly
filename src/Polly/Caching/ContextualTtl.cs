@@ -17,7 +17,7 @@ public class ContextualTtl : ITtlStrategy
     /// </summary>
     public static readonly string SlidingExpirationKey = "ContextualTtlSliding";
 
-    private static readonly Ttl _noTtl = new Ttl(TimeSpan.Zero, false);
+    private static readonly Ttl _noTtl = new(TimeSpan.Zero, false);
 
     /// <summary>
     /// Gets the TimeSpan for which to keep an item about to be cached, which may be influenced by data in the execution context.

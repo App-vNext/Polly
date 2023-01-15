@@ -28,6 +28,6 @@ public class ResultPredicates<TResult>
     /// <summary>
     /// Specifies that no result-handling filters are applied or are required.
     /// </summary>
-    public static readonly ResultPredicates<TResult> None = new ResultPredicates<TResult>();
+    public static readonly ResultPredicates<TResult> None = new();
 }
 

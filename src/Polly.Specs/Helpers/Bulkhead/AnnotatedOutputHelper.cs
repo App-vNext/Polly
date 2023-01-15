@@ -21,7 +21,7 @@ public class AnnotatedOutputHelper : ITestOutputHelper
         public object[] Args { get; }
     }
 
-    private readonly ConcurrentDictionary<Guid, Item> items = new ConcurrentDictionary<Guid, Item>();
+    private readonly ConcurrentDictionary<Guid, Item> items = new();
 
     private readonly object[] noArgs = Array.Empty<object>();
 

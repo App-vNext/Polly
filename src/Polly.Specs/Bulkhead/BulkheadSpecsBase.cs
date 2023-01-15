@@ -30,7 +30,7 @@ public abstract class BulkheadSpecsBase : IDisposable
 
     protected Task[] Tasks { get; set; } = { };
 
-    protected readonly AutoResetEvent StatusChangedEvent = new AutoResetEvent(false);
+    protected readonly AutoResetEvent StatusChangedEvent = new(false);
 
     #endregion
 

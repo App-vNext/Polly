@@ -5,5 +5,5 @@
 /// </summary>
 internal struct EmptyStruct
 {
-    internal static readonly EmptyStruct Instance = new EmptyStruct();
+    internal static readonly EmptyStruct Instance = new();
 }

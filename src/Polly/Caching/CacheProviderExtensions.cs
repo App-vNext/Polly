@@ -33,7 +33,7 @@ public static class CacheProviderExtensions
     /// <returns>SerializingCacheProvider&lt;TResult, TSerialized&gt;.</returns>
     public static SerializingCacheProvider<TSerialized> WithSerializer<TSerialized>(
         this ISyncCacheProvider<TSerialized> cacheProvider, ICacheItemSerializer<object, TSerialized> serializer) =>
-        new SerializingCacheProvider<TSerialized>(cacheProvider, serializer);
+        new(cacheProvider, serializer);
 
     /// <summary>
     /// Wraps the <paramref name="serializer"/> around the <paramref name="cacheProvider"/> so that delegate return values of type <typeparamref name="TResult"/> can be stored in the cache as type <typeparamref name="TSerialized"/>.
@@ -45,7 +45,7 @@ public static class CacheProviderExtensions
     /// <returns>SerializingCacheProvider&lt;TResult, TSerialized&gt;.</returns>
     public static SerializingCacheProvider<TResult, TSerialized> WithSerializer<TResult, TSerialized>(
         this ISyncCacheProvider<TSerialized> cacheProvider, ICacheItemSerializer<TResult, TSerialized> serializer) =>
-        new SerializingCacheProvider<TResult, TSerialized>(cacheProvider, serializer);
+        new(cacheProvider, serializer);
 
     /// <summary>
     /// Wraps the <paramref name="serializer"/> around the asynchronous <paramref name="cacheProvider"/> so that delegate return values of any type can be stored in the cache as type <typeparamref name="TSerialized"/>.
@@ -56,7 +56,7 @@ public static class CacheProviderExtensions
     /// <returns>SerializingCacheProvider&lt;TResult, TSerialized&gt;.</returns>
     public static AsyncSerializingCacheProvider<TSerialized> WithSerializer<TSerialized>(
         this IAsyncCacheProvider<TSerialized> cacheProvider, ICacheItemSerializer<object, TSerialized> serializer) =>
-        new AsyncSerializingCacheProvider<TSerialized>(cacheProvider, serializer);
+        new(cacheProvider, serializer);
 
     /// <summary>
     /// Wraps the <paramref name="serializer"/> around the asynchronous <paramref name="cacheProvider"/> so that delegate return values of type <typeparamref name="TResult"/> can be stored in the cache as type <typeparamref name="TSerialized"/>.
@@ -68,5 +68,5 @@ public static class CacheProviderExtensions
     /// <returns>SerializingCacheProvider&lt;TResult, TSerialized&gt;.</returns>
     public static AsyncSerializingCacheProvider<TResult, TSerialized> WithSerializer<TResult, TSerialized>(
         this IAsyncCacheProvider<TSerialized> cacheProvider, ICacheItemSerializer<TResult, TSerialized> serializer) =>
-        new AsyncSerializingCacheProvider<TResult, TSerialized>(cacheProvider, serializer);
+        new(cacheProvider, serializer);
 }

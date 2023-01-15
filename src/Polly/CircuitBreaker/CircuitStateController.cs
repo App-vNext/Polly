@@ -11,7 +11,7 @@ internal abstract class CircuitStateController<TResult> : ICircuitController<TRe
     protected readonly Action<Context> _onReset;
     protected readonly Action _onHalfOpen;
 
-    protected readonly object _lock = new object();
+    protected readonly object _lock = new();
 
     protected CircuitStateController(
         TimeSpan durationOfBreak,
