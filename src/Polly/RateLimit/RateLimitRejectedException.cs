@@ -1,17 +1,10 @@
 ﻿#nullable enable
 
-#if NETSTANDARD2_0
-using System.Runtime.Serialization;
-#endif
-
 namespace Polly.RateLimit;
 
 /// <summary>
 /// Exception thrown when a delegate executed through a <see cref="IRateLimitPolicy"/> is rate-limited.
 /// </summary>
-#if NETSTANDARD2_0
-[Serializable]
-#endif
 public class RateLimitRejectedException : ExecutionRejectedException
 {
     /// <summary>
@@ -60,15 +53,4 @@ public class RateLimitRejectedException : ExecutionRejectedException
 
     private static string DefaultMessage(TimeSpan retryAfter) =>
         $"The operation has been rate-limited and should be retried after {retryAfter}";
-
-#if NETSTANDARD2_0
-    /// <summary>
-    /// Initializes a new instance of the <see cref="RateLimitRejectedException"/> class.
-    /// </summary>
-    /// <param name="info">The information.</param>
-    /// <param name="context">The context.</param>
-    protected RateLimitRejectedException(SerializationInfo info, StreamingContext context) : base(info, context)
-    {
-    }
-#endif
 }

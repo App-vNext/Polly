@@ -1,8 +1,4 @@
-﻿#if NETSTANDARD2_0
-using System.Runtime.Serialization;
-#endif
-
-namespace Polly;
+﻿namespace Polly;
 
 /// <summary>
 /// Exception thrown when a policy rejects execution of a delegate.
@@ -33,17 +29,4 @@ public abstract class ExecutionRejectedException : Exception
     protected ExecutionRejectedException(string message, Exception inner) : base(message, inner)
     {
     }
-
-#if NETSTANDARD2_0
-    /// <summary>
-    /// Initializes a new instance of the <see cref="ExecutionRejectedException"/> class.
-    /// </summary>
-    /// <param name="info">The <see cref="T:System.Runtime.Serialization.SerializationInfo" /> that holds the serialized object data about the exception being thrown.</param>
-    /// <param name="context">The <see cref="T:System.Runtime.Serialization.StreamingContext" /> that contains contextual information about the source or destination.</param>
-    protected ExecutionRejectedException(
-        SerializationInfo info,
-        StreamingContext context) : base(info, context)
-    {
-    }
-#endif
 }

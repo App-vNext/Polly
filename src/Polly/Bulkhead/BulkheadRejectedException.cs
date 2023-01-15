@@ -1,16 +1,10 @@
 ﻿#nullable enable
-#if NETSTANDARD2_0
-using System.Runtime.Serialization;
-#endif
 
 namespace Polly.Bulkhead;
 
 /// <summary>
 /// Exception thrown when a bulkhead's semaphore and queue are full.
 /// </summary>
-#if NETSTANDARD2_0
-[Serializable]
-#endif
 public class BulkheadRejectedException : ExecutionRejectedException
 {
     /// <summary>
@@ -36,15 +30,4 @@ public class BulkheadRejectedException : ExecutionRejectedException
     public BulkheadRejectedException(string message, Exception innerException) : base(message, innerException)
     {
     }
-
-#if NETSTANDARD2_0
-    /// <summary>
-    /// Initializes a new instance of the <see cref="BulkheadRejectedException"/> class.
-    /// </summary>
-    /// <param name="info">The information.</param>
-    /// <param name="context">The context.</param>
-    protected BulkheadRejectedException(SerializationInfo info, StreamingContext context) : base(info, context)
-    {
-    }
-#endif
 }
