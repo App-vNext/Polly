@@ -34,7 +34,7 @@ internal sealed class RetryStrategy : DelegatingResilienceStrategy
                 var result = await base.ExecuteAsync(execution, context, state).ConfigureAwait(context.ContinueOnCapturedContext);
                 outcome = new Outcome<T>(result);
 
-                if (!await _shouldRetry.HandleAsync(outcome, new ShouldRetryArguments(tryCount, context), context).ConfigureAwait(false))
+                if (!await _shouldRetry.HandleAsync(outcome, new ShouldRetryArguments(tryCount, context), context).ConfigureAwait(context.ContinueOnCapturedContext))
                 {
                     return result;
                 }
@@ -70,7 +70,7 @@ internal sealed class RetryStrategy : DelegatingResilienceStrategy
 
             var waitDuration = _options.RetryDelayGenerator(tryCount);
 
-            await _onRetry.HandleAsync(outcome, new RetryActionArguments(tryCount, context, waitDuration), context).ConfigureAwait(false);
+            await _onRetry.HandleAsync(outcome, new RetryActionArguments(tryCount, context, waitDuration), context).ConfigureAwait(context.ContinueOnCapturedContext);
 
             await SleepAsync(context, waitDuration).ConfigureAwait(context.ContinueOnCapturedContext);
         }

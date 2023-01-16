@@ -18,7 +18,7 @@ public static partial class ResilienceStrategyExtensions
                     return VoidResult.Instance;
                 },
                 context,
-                (execute, state));
+                (execute, state)).ConfigureAwait(context.ContinueOnCapturedContext);
         }
         finally
         {
@@ -37,7 +37,7 @@ public static partial class ResilienceStrategyExtensions
                 return VoidResult.Instance;
             },
             context,
-            (execute, state));
+            (execute, state)).ConfigureAwait(context.ContinueOnCapturedContext);
     }
 
     public static async ValueTask ExecuteAsync(this IResilienceStrategy strategy, Func<ResilienceContext, ValueTask> execute, ResilienceContext context)
@@ -51,7 +51,7 @@ public static partial class ResilienceStrategyExtensions
                 return VoidResult.Instance;
             },
             context,
-            execute);
+            execute).ConfigureAwait(context.ContinueOnCapturedContext);
     }
 
     public static async ValueTask<TResult> ExecuteAsync<TResult>(this IResilienceStrategy strategy, Func<CancellationToken, ValueTask<TResult>> execute, CancellationToken cancellationToken = default)
@@ -68,10 +68,7 @@ public static partial class ResilienceStrategyExtensions
         }
     }
 
-    public static ValueTask<TResult> ExecuteAsync<TResult>(this IResilienceStrategy strategy, Func<ResilienceContext, ValueTask<TResult>> execute, ResilienceContext context)
-    {
-        return strategy.ExecuteAsync(static (context, state) => state(context), context, execute);
-    }
+    public static ValueTask<TResult> ExecuteAsync<TResult>(this IResilienceStrategy strategy, Func<ResilienceContext, ValueTask<TResult>> execute, ResilienceContext context) => strategy.ExecuteAsync(static (context, state) => state(context), context, execute);
 
     public static async ValueTask<TResult> ExecuteAsync<TResult, TState>(this IResilienceStrategy strategy, Func<TState, CancellationToken, ValueTask<TResult>> execute, TState state, CancellationToken cancellationToken)
     {

@@ -29,11 +29,11 @@ internal sealed class TimeoutResilienceStrategy : DelegatingResilienceStrategy
 
             try
             {
-                return await base.ExecuteAsync(execution, context, state).ConfigureAwait(false);
+                return await base.ExecuteAsync(execution, context, state).ConfigureAwait(context.ContinueOnCapturedContext);
             }
             catch (Exception e) when (source.IsCancellationRequested && !previous.IsCancellationRequested)
             {
-                await _onTimeout.HandleAsync(new Outcome<T>(e), new OnTimeoutArguments(context), context).ConfigureAwait(false);
+                await _onTimeout.HandleAsync(new Outcome<T>(e), new OnTimeoutArguments(context), context).ConfigureAwait(context.ContinueOnCapturedContext);
 
                 throw new TimeoutException();
             }
