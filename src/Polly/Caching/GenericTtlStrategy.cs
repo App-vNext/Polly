@@ -9,7 +9,7 @@ internal class GenericTtlStrategy<TResult> : ITtlStrategy<TResult>
     private readonly ITtlStrategy _wrappedTtlStrategy;
 
     internal GenericTtlStrategy(ITtlStrategy ttlStrategy) =>
-        _wrappedTtlStrategy = Guard.AgainstNull(ttlStrategy);
+        _wrappedTtlStrategy = Guard.NotNull(ttlStrategy);
 
     /// <summary>
     /// Gets a TTL for a cacheable item, given the current execution context and result.

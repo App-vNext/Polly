@@ -7,7 +7,7 @@ internal class AsyncPreExecutePolicy : AsyncPolicy
     public static AsyncPreExecutePolicy CreateAsync(Func<Task> preExecute) => new(preExecute);
 
     internal AsyncPreExecutePolicy(Func<Task> preExecute) =>
-        _preExecute = Guard.AgainstNull(preExecute);
+        _preExecute = Guard.NotNull(preExecute);
 
     protected override Task<TResult> ImplementationAsync<TResult>(Func<Context, CancellationToken, Task<TResult>> action, Context context, CancellationToken cancellationToken,
         bool continueOnCapturedContext) =>
@@ -22,7 +22,7 @@ internal class AsyncPreExecutePolicy<TResult> : AsyncPolicy<TResult>
         new AsyncPreExecutePolicy<TResult>(preExecute);
 
     internal AsyncPreExecutePolicy(Func<Task> preExecute) =>
-        _preExecute = Guard.AgainstNull(preExecute);
+        _preExecute = Guard.NotNull(preExecute);
 
     protected override Task<TResult> ImplementationAsync(Func<Context, CancellationToken, Task<TResult>> action, Context context, CancellationToken cancellationToken,
         bool continueOnCapturedContext) =>

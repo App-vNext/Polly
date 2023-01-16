@@ -2,7 +2,7 @@
 
 static class Guard
 {
-    public static T AgainstNull<T>(T value, [CallerArgumentExpression("value")] string argumentName = "")
+    public static T NotNull<T>(T value, [CallerArgumentExpression("value")] string argumentName = "")
     where T : class
     {
         if (value is null)

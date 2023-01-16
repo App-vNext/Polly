@@ -24,7 +24,7 @@ public class ResultTtl<TResult> : ITtlStrategy<TResult>
     /// </summary>
     /// <param name="ttlFunc">The function to calculate the TTL for which cache items should be considered valid.</param>
     public ResultTtl(Func<Context, TResult?, Ttl> ttlFunc) =>
-        _ttlFunc = Guard.AgainstNull(ttlFunc);
+        _ttlFunc = Guard.NotNull(ttlFunc);
 
     /// <summary>
     /// Gets a TTL for the cacheable item.

@@ -14,9 +14,9 @@ public class TimeoutPolicy : Policy, ITimeoutPolicy
         TimeoutStrategy timeoutStrategy,
         Action<Context, TimeSpan, Task, Exception> onTimeout)
     {
-        _timeoutProvider = Guard.AgainstNull(timeoutProvider);
+        _timeoutProvider = Guard.NotNull(timeoutProvider);
         _timeoutStrategy = timeoutStrategy;
-        _onTimeout = Guard.AgainstNull(onTimeout);
+        _onTimeout = Guard.NotNull(onTimeout);
     }
 
     /// <inheritdoc/>
@@ -45,9 +45,9 @@ public class TimeoutPolicy<TResult> : Policy<TResult>, ITimeoutPolicy<TResult>
         TimeoutStrategy timeoutStrategy,
         Action<Context, TimeSpan, Task, Exception> onTimeout)
     {
-        _timeoutProvider = Guard.AgainstNull(timeoutProvider);
+        _timeoutProvider = Guard.NotNull(timeoutProvider);
         _timeoutStrategy = timeoutStrategy;
-        _onTimeout = Guard.AgainstNull(onTimeout);
+        _onTimeout = Guard.NotNull(onTimeout);
     }
 
     /// <inheritdoc/>

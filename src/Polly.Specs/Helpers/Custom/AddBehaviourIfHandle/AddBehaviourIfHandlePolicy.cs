@@ -6,7 +6,7 @@ internal class AddBehaviourIfHandlePolicy : Policy
 
     internal AddBehaviourIfHandlePolicy(Action<Exception> behaviourIfHandle, PolicyBuilder policyBuilder)
         : base(policyBuilder) =>
-        _behaviourIfHandle = Guard.AgainstNull(behaviourIfHandle);
+        _behaviourIfHandle = Guard.NotNull(behaviourIfHandle);
 
     protected override TResult Implementation<TResult>(
         Func<Context, CancellationToken, TResult> action,
@@ -30,7 +30,7 @@ internal class AddBehaviourIfHandlePolicy<TResult> : Policy<TResult>
         Action<DelegateResult<TResult>> behaviourIfHandle,
         PolicyBuilder<TResult> policyBuilder)
         : base(policyBuilder) =>
-        _behaviourIfHandle = Guard.AgainstNull(behaviourIfHandle);
+        _behaviourIfHandle = Guard.NotNull(behaviourIfHandle);
 
     protected override TResult Implementation(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken) =>
         AddBehaviourIfHandleEngine.Implementation(

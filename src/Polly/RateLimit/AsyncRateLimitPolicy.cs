@@ -10,7 +10,7 @@ public class AsyncRateLimitPolicy : AsyncPolicy, IRateLimitPolicy
     private readonly IRateLimiter _rateLimiter;
 
     internal AsyncRateLimitPolicy(IRateLimiter rateLimiter) =>
-        _rateLimiter = Guard.AgainstNull(rateLimiter);
+        _rateLimiter = Guard.NotNull(rateLimiter);
 
     /// <inheritdoc/>
     [DebuggerStepThrough]
@@ -31,7 +31,7 @@ public class AsyncRateLimitPolicy<TResult> : AsyncPolicy<TResult>, IRateLimitPol
         IRateLimiter rateLimiter,
         Func<TimeSpan, Context, TResult>? retryAfterFactory)
     {
-        _rateLimiter = Guard.AgainstNull(rateLimiter);
+        _rateLimiter = Guard.NotNull(rateLimiter);
         _retryAfterFactory = retryAfterFactory;
     }
 

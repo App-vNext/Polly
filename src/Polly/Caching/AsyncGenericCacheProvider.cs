@@ -10,7 +10,7 @@ internal class AsyncGenericCacheProvider<TCacheFormat> : IAsyncCacheProvider<TCa
     private readonly IAsyncCacheProvider _wrappedCacheProvider;
 
     internal AsyncGenericCacheProvider(IAsyncCacheProvider nonGenericCacheProvider) =>
-        _wrappedCacheProvider = Guard.AgainstNull(nonGenericCacheProvider);
+        _wrappedCacheProvider = Guard.NotNull(nonGenericCacheProvider);
 
     async Task<(bool, TCacheFormat?)> IAsyncCacheProvider<TCacheFormat>.TryGetAsync(string key, CancellationToken cancellationToken, bool continueOnCapturedContext)
     {

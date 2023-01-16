@@ -16,8 +16,8 @@ public class FallbackPolicy : Policy, IFallbackPolicy
         Action<Exception, Context, CancellationToken> fallbackAction)
         : base(policyBuilder)
     {
-        _onFallback = Guard.AgainstNull(onFallback);
-        _fallbackAction = Guard.AgainstNull(fallbackAction);
+        _onFallback = Guard.NotNull(onFallback);
+        _fallbackAction = Guard.NotNull(fallbackAction);
     }
 
     /// <inheritdoc/>
@@ -59,8 +59,8 @@ public class FallbackPolicy<TResult> : Policy<TResult>, IFallbackPolicy<TResult>
         Func<DelegateResult<TResult>, Context, CancellationToken, TResult> fallbackAction
         ) : base(policyBuilder)
     {
-        _onFallback = Guard.AgainstNull(onFallback);
-        _fallbackAction = Guard.AgainstNull(fallbackAction);
+        _onFallback = Guard.NotNull(onFallback);
+        _fallbackAction = Guard.NotNull(fallbackAction);
     }
 
     /// <inheritdoc/>

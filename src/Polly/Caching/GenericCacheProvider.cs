@@ -10,7 +10,7 @@ internal class GenericCacheProvider<TCacheFormat> : ISyncCacheProvider<TCacheFor
     private readonly ISyncCacheProvider _wrappedCacheProvider;
 
     internal GenericCacheProvider(ISyncCacheProvider nonGenericCacheProvider) =>
-        _wrappedCacheProvider = Guard.AgainstNull(nonGenericCacheProvider);
+        _wrappedCacheProvider = Guard.NotNull(nonGenericCacheProvider);
 
     (bool, TCacheFormat?) ISyncCacheProvider<TCacheFormat>.TryGet(string key)
     {

@@ -15,9 +15,9 @@ public class AsyncTimeoutPolicy : AsyncPolicy, ITimeoutPolicy
         Func<Context, TimeSpan, Task, Exception, Task> onTimeoutAsync
         )
     {
-        _timeoutProvider = Guard.AgainstNull(timeoutProvider);
+        _timeoutProvider = Guard.NotNull(timeoutProvider);
         _timeoutStrategy = timeoutStrategy;
-        _onTimeoutAsync = Guard.AgainstNull(onTimeoutAsync);
+        _onTimeoutAsync = Guard.NotNull(onTimeoutAsync);
     }
 
     /// <inheritdoc/>
@@ -52,9 +52,9 @@ public class AsyncTimeoutPolicy<TResult> : AsyncPolicy<TResult>, ITimeoutPolicy<
         TimeoutStrategy timeoutStrategy,
         Func<Context, TimeSpan, Task, Exception, Task> onTimeoutAsync)
     {
-        _timeoutProvider = Guard.AgainstNull(timeoutProvider);
+        _timeoutProvider = Guard.NotNull(timeoutProvider);
         _timeoutStrategy = timeoutStrategy;
-        _onTimeoutAsync = Guard.AgainstNull(onTimeoutAsync);
+        _onTimeoutAsync = Guard.NotNull(onTimeoutAsync);
     }
 
     /// <inheritdoc/>
