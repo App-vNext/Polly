@@ -3,7 +3,7 @@
 static class Guard
 {
     public static T NotNull<T>(T value, [CallerArgumentExpression("value")] string argumentName = "")
-    where T : class
+        where T : class
     {
         if (value is null)
         {
@@ -13,7 +13,6 @@ static class Guard
         return value;
     }
 }
-
 
 #if(NETFRAMEWORK || NETSTANDARD)
 namespace System.Runtime.CompilerServices
