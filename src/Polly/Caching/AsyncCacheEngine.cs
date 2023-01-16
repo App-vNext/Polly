@@ -14,8 +14,8 @@ internal static class AsyncCacheEngine
         Action<Context, string> onCacheGet,
         Action<Context, string> onCacheMiss,
         Action<Context, string> onCachePut,
-        Action<Context, string, Exception>? onCacheGetError,
-        Action<Context, string, Exception>? onCachePutError)
+        Action<Context, string, Exception>? onCacheGetError = null,
+        Action<Context, string, Exception>? onCachePutError = null)
     {
         cancellationToken.ThrowIfCancellationRequested();
 

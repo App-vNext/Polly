@@ -23,8 +23,8 @@ public class AsyncCachePolicy : AsyncPolicy
         Action<Context, string> onCacheGet,
         Action<Context, string> onCacheMiss,
         Action<Context, string> onCachePut,
-        Action<Context, string, Exception>? onCacheGetError,
-        Action<Context, string, Exception>? onCachePutError)
+        Action<Context, string, Exception>? onCacheGetError = null,
+        Action<Context, string, Exception>? onCachePutError = null)
     {
         _asyncCacheProvider = asyncCacheProvider;
         _ttlStrategy = ttlStrategy;
@@ -88,8 +88,8 @@ public class AsyncCachePolicy<TResult> : AsyncPolicy<TResult>
         Action<Context, string> onCacheGet,
         Action<Context, string> onCacheMiss,
         Action<Context, string> onCachePut,
-        Action<Context, string, Exception>? onCacheGetError,
-        Action<Context, string, Exception>? onCachePutError)
+        Action<Context, string, Exception>? onCacheGetError = null,
+        Action<Context, string, Exception>? onCachePutError = null)
     {
         _asyncCacheProvider = asyncCacheProvider;
         _ttlStrategy = ttlStrategy;

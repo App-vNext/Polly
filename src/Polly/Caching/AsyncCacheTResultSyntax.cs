@@ -146,8 +146,8 @@ public partial class Policy
         Action<Context, string> onCacheGet,
         Action<Context, string> onCacheMiss,
         Action<Context, string> onCachePut,
-        Action<Context, string, Exception>? onCacheGetError,
-        Action<Context, string, Exception>? onCachePutError)
+        Action<Context, string, Exception>? onCacheGetError = null,
+        Action<Context, string, Exception>? onCachePutError = null)
     {
         if (cacheProvider == null) throw new ArgumentNullException(nameof(cacheProvider));
 
@@ -179,8 +179,8 @@ public partial class Policy
         Action<Context, string> onCacheGet,
         Action<Context, string> onCacheMiss,
         Action<Context, string> onCachePut,
-        Action<Context, string, Exception>? onCacheGetError,
-        Action<Context, string, Exception>? onCachePutError)
+        Action<Context, string, Exception>? onCacheGetError = null,
+        Action<Context, string, Exception>? onCachePutError = null)
     {
         if (cacheProvider == null) throw new ArgumentNullException(nameof(cacheProvider));
 
@@ -214,8 +214,8 @@ public partial class Policy
         Action<Context, string> onCacheGet,
         Action<Context, string> onCacheMiss,
         Action<Context, string> onCachePut,
-        Action<Context, string, Exception>? onCacheGetError,
-        Action<Context, string, Exception>? onCachePutError)
+        Action<Context, string, Exception>? onCacheGetError = null,
+        Action<Context, string, Exception>? onCachePutError = null)
     {
         if (cacheProvider == null) throw new ArgumentNullException(nameof(cacheProvider));
 
@@ -250,8 +250,8 @@ public partial class Policy
         Action<Context, string> onCacheGet,
         Action<Context, string> onCacheMiss,
         Action<Context, string> onCachePut,
-        Action<Context, string, Exception>? onCacheGetError,
-        Action<Context, string, Exception>? onCachePutError)
+        Action<Context, string, Exception>? onCacheGetError = null,
+        Action<Context, string, Exception>? onCachePutError = null)
     {
         if (cacheProvider == null) throw new ArgumentNullException(nameof(cacheProvider));
 
@@ -285,8 +285,8 @@ public partial class Policy
         Action<Context, string> onCacheGet,
         Action<Context, string> onCacheMiss,
         Action<Context, string> onCachePut,
-        Action<Context, string, Exception>? onCacheGetError,
-        Action<Context, string, Exception>? onCachePutError)
+        Action<Context, string, Exception>? onCacheGetError = null,
+        Action<Context, string, Exception>? onCachePutError = null)
     {
         if (cacheProvider == null) throw new ArgumentNullException(nameof(cacheProvider));
 
@@ -321,8 +321,8 @@ public partial class Policy
         Action<Context, string> onCacheGet,
         Action<Context, string> onCacheMiss,
         Action<Context, string> onCachePut,
-        Action<Context, string, Exception>? onCacheGetError,
-        Action<Context, string, Exception>? onCachePutError)
+        Action<Context, string, Exception>? onCacheGetError = null,
+        Action<Context, string, Exception>? onCachePutError = null)
     {
         if (cacheProvider == null) throw new ArgumentNullException(nameof(cacheProvider));
 
@@ -513,8 +513,8 @@ public partial class Policy
         Action<Context, string> onCacheGet,
         Action<Context, string> onCacheMiss,
         Action<Context, string> onCachePut,
-        Action<Context, string, Exception>? onCacheGetError,
-        Action<Context, string, Exception>? onCachePutError) =>
+        Action<Context, string, Exception>? onCacheGetError = null,
+        Action<Context, string, Exception>? onCachePutError = null) =>
         CacheAsync<TResult>(cacheProvider, new RelativeTtl(ttl), DefaultCacheKeyStrategy.Instance.GetCacheKey, onCacheGet, onCacheMiss,
             onCachePut, onCacheGetError, onCachePutError);
 
@@ -543,8 +543,8 @@ public partial class Policy
         Action<Context, string> onCacheGet,
         Action<Context, string> onCacheMiss,
         Action<Context, string> onCachePut,
-        Action<Context, string, Exception>? onCacheGetError,
-        Action<Context, string, Exception>? onCachePutError) =>
+        Action<Context, string, Exception>? onCacheGetError = null,
+        Action<Context, string, Exception>? onCachePutError = null) =>
         CacheAsync<TResult>(cacheProvider, ttlStrategy.For<TResult>(), DefaultCacheKeyStrategy.Instance.GetCacheKey, onCacheGet, onCacheMiss, onCachePut, onCacheGetError, onCachePutError);
 
     /// <summary>
@@ -572,8 +572,8 @@ public partial class Policy
         Action<Context, string> onCacheGet,
         Action<Context, string> onCacheMiss,
         Action<Context, string> onCachePut,
-        Action<Context, string, Exception>? onCacheGetError,
-        Action<Context, string, Exception>? onCachePutError) =>
+        Action<Context, string, Exception>? onCacheGetError = null,
+        Action<Context, string, Exception>? onCachePutError = null) =>
         CacheAsync<TResult>(cacheProvider, ttlStrategy, DefaultCacheKeyStrategy.Instance.GetCacheKey, onCacheGet, onCacheMiss, onCachePut, onCacheGetError, onCachePutError);
 
     /// <summary>
@@ -603,8 +603,8 @@ public partial class Policy
         Action<Context, string> onCacheGet,
         Action<Context, string> onCacheMiss,
         Action<Context, string> onCachePut,
-        Action<Context, string, Exception>? onCacheGetError,
-        Action<Context, string, Exception>? onCachePutError) =>
+        Action<Context, string, Exception>? onCacheGetError = null,
+        Action<Context, string, Exception>? onCachePutError = null) =>
         CacheAsync<TResult>(cacheProvider, new RelativeTtl(ttl), cacheKeyStrategy.GetCacheKey, onCacheGet, onCacheMiss,
             onCachePut, onCacheGetError, onCachePutError);
 
@@ -636,8 +636,8 @@ public partial class Policy
         Action<Context, string> onCacheGet,
         Action<Context, string> onCacheMiss,
         Action<Context, string> onCachePut,
-        Action<Context, string, Exception>? onCacheGetError,
-        Action<Context, string, Exception>? onCachePutError) =>
+        Action<Context, string, Exception>? onCacheGetError = null,
+        Action<Context, string, Exception>? onCachePutError = null) =>
         CacheAsync<TResult>(cacheProvider, ttlStrategy.For<TResult>(), cacheKeyStrategy.GetCacheKey, onCacheGet, onCacheMiss, onCachePut, onCacheGetError, onCachePutError);
 
     /// <summary>
@@ -668,8 +668,8 @@ public partial class Policy
         Action<Context, string> onCacheGet,
         Action<Context, string> onCacheMiss,
         Action<Context, string> onCachePut,
-        Action<Context, string, Exception>? onCacheGetError,
-        Action<Context, string, Exception>? onCachePutError) =>
+        Action<Context, string, Exception>? onCacheGetError = null,
+        Action<Context, string, Exception>? onCachePutError = null) =>
         CacheAsync<TResult>(cacheProvider, ttlStrategy, cacheKeyStrategy.GetCacheKey, onCacheGet, onCacheMiss, onCachePut, onCacheGetError, onCachePutError);
 
     /// <summary>
@@ -699,8 +699,8 @@ public partial class Policy
         Action<Context, string> onCacheGet,
         Action<Context, string> onCacheMiss,
         Action<Context, string> onCachePut,
-        Action<Context, string, Exception>? onCacheGetError,
-        Action<Context, string, Exception>? onCachePutError) =>
+        Action<Context, string, Exception>? onCacheGetError = null,
+        Action<Context, string, Exception>? onCachePutError = null) =>
         CacheAsync<TResult>(cacheProvider, new RelativeTtl(ttl), cacheKeyStrategy, onCacheGet, onCacheMiss,
             onCachePut, onCacheGetError, onCachePutError);
 
@@ -732,8 +732,8 @@ public partial class Policy
         Action<Context, string> onCacheGet,
         Action<Context, string> onCacheMiss,
         Action<Context, string> onCachePut,
-        Action<Context, string, Exception>? onCacheGetError,
-        Action<Context, string, Exception>? onCachePutError) =>
+        Action<Context, string, Exception>? onCacheGetError = null,
+        Action<Context, string, Exception>? onCachePutError = null) =>
         CacheAsync<TResult>(cacheProvider, ttlStrategy.For<TResult>(), cacheKeyStrategy, onCacheGet, onCacheMiss, onCachePut, onCacheGetError, onCachePutError);
 
     /// <summary>
@@ -764,8 +764,8 @@ public partial class Policy
         Action<Context, string> onCacheGet,
         Action<Context, string> onCacheMiss,
         Action<Context, string> onCachePut,
-        Action<Context, string, Exception>? onCacheGetError,
-        Action<Context, string, Exception>? onCachePutError)
+        Action<Context, string, Exception>? onCacheGetError = null,
+        Action<Context, string, Exception>? onCachePutError = null)
     {
         if (cacheProvider == null) throw new ArgumentNullException(nameof(cacheProvider));
         if (ttlStrategy == null) throw new ArgumentNullException(nameof(ttlStrategy));
