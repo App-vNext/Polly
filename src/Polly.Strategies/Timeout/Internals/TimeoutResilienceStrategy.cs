@@ -1,16 +1,16 @@
 using Microsoft.Extensions.ObjectPool;
 using Polly.Internals;
 
-namespace Polly.Timeout;
+namespace Polly.Timeout.Internals;
 
-internal sealed class TimeoutResilienceStrategy : DelegatingResilienceStrategy
+internal sealed class TimeoutStrategy : DelegatingResilienceStrategy
 {
     private static readonly ObjectPool<CancellationTokenSource> _cancellations = ObjectPool.Create<CancellationTokenSource>();
 
     private readonly TimeoutStrategyOptions _options;
     private readonly EventsHandler<OnTimeoutArguments> _onTimeout;
 
-    public TimeoutResilienceStrategy(TimeoutStrategyOptions options)
+    public TimeoutStrategy(TimeoutStrategyOptions options)
     {
         _options = options;
         _onTimeout = EventsHandler<OnTimeoutArguments>.Create(_options.OnTimeout);
