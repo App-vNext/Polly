@@ -4,7 +4,7 @@ namespace Polly;
 
 public sealed class ResilienceContext
 {
-    private static readonly ObjectPool<ResilienceContext> s_pool = ObjectPool.Create<ResilienceContext>();
+    private static readonly ObjectPool<ResilienceContext> _pool = ObjectPool.Create<ResilienceContext>();
 
     public ResilienceContext()
     {
@@ -22,7 +22,7 @@ public sealed class ResilienceContext
 
     public static ResilienceContext Get(CancellationToken cancellationToken = default)
     {
-        var context = s_pool.Get();
+        var context = _pool.Get();
         context.CancellationToken = cancellationToken;
         return context;
     }
@@ -31,7 +31,7 @@ public sealed class ResilienceContext
     {
         context.Reset();
 
-        s_pool.Return(context);
+        _pool.Return(context);
     }
 
     private void Reset()
