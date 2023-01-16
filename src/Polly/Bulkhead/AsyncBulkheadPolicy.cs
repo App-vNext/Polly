@@ -17,7 +17,7 @@ public class AsyncBulkheadPolicy : AsyncPolicy, IBulkheadPolicy
         Func<Context, Task> onBulkheadRejectedAsync)
     {
         _maxQueueingActions = maxQueueingActions;
-        _onBulkheadRejectedAsync = onBulkheadRejectedAsync ?? throw new ArgumentNullException(nameof(onBulkheadRejectedAsync));
+        _onBulkheadRejectedAsync = Guard.AgainstNull(onBulkheadRejectedAsync);
 
         (_maxParallelizationSemaphore, _maxQueuedActionsSemaphore) = BulkheadSemaphoreFactory.CreateBulkheadSemaphores(maxParallelization, maxQueueingActions);
     }
@@ -63,7 +63,7 @@ public class AsyncBulkheadPolicy<TResult> : AsyncPolicy<TResult>, IBulkheadPolic
         Func<Context, Task> onBulkheadRejectedAsync)
     {
         _maxQueueingActions = maxQueueingActions;
-        _onBulkheadRejectedAsync = onBulkheadRejectedAsync ?? throw new ArgumentNullException(nameof(onBulkheadRejectedAsync));
+        _onBulkheadRejectedAsync = Guard.AgainstNull(onBulkheadRejectedAsync);
 
         (_maxParallelizationSemaphore, _maxQueuedActionsSemaphore) = BulkheadSemaphoreFactory.CreateBulkheadSemaphores(maxParallelization, maxQueueingActions);
     }

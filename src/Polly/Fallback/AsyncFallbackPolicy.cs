@@ -14,8 +14,8 @@ public class AsyncFallbackPolicy : AsyncPolicy, IFallbackPolicy
         Func<Exception, Context, CancellationToken, Task> fallbackAction)
        : base(policyBuilder)
     {
-        _onFallbackAsync = onFallbackAsync ?? throw new ArgumentNullException(nameof(onFallbackAsync));
-        _fallbackAction = fallbackAction ?? throw new ArgumentNullException(nameof(fallbackAction));
+        _onFallbackAsync = Guard.AgainstNull(onFallbackAsync);
+        _fallbackAction = Guard.AgainstNull(fallbackAction);
     }
 
     /// <inheritdoc/>
@@ -63,8 +63,8 @@ public class AsyncFallbackPolicy<TResult> : AsyncPolicy<TResult>, IFallbackPolic
         Func<DelegateResult<TResult>, Context, CancellationToken, Task<TResult>> fallbackAction
         ) : base(policyBuilder)
     {
-        _onFallbackAsync = onFallbackAsync ?? throw new ArgumentNullException(nameof(onFallbackAsync));
-        _fallbackAction = fallbackAction ?? throw new ArgumentNullException(nameof(fallbackAction));
+        _onFallbackAsync = Guard.AgainstNull(onFallbackAsync);
+        _fallbackAction = Guard.AgainstNull(fallbackAction);
     }
 
     /// <inheritdoc/>

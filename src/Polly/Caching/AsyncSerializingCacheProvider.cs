@@ -19,8 +19,8 @@ public class AsyncSerializingCacheProvider<TSerialized> : IAsyncCacheProvider
     /// <exception cref="ArgumentNullException">serializer </exception>
     public AsyncSerializingCacheProvider(IAsyncCacheProvider<TSerialized> wrappedCacheProvider, ICacheItemSerializer<object, TSerialized> serializer)
     {
-        _wrappedCacheProvider = wrappedCacheProvider ?? throw new ArgumentNullException(nameof(wrappedCacheProvider));
-        _serializer = serializer ?? throw new ArgumentNullException(nameof(serializer));
+        _wrappedCacheProvider = Guard.AgainstNull(wrappedCacheProvider);
+        _serializer = Guard.AgainstNull(serializer);
     }
 
     /// <summary>
@@ -78,8 +78,8 @@ public class AsyncSerializingCacheProvider<TResult, TSerialized> : IAsyncCachePr
     /// <exception cref="ArgumentNullException">serializer </exception>
     public AsyncSerializingCacheProvider(IAsyncCacheProvider<TSerialized> wrappedCacheProvider, ICacheItemSerializer<TResult, TSerialized> serializer)
     {
-        _wrappedCacheProvider = wrappedCacheProvider ?? throw new ArgumentNullException(nameof(wrappedCacheProvider));
-        _serializer = serializer ?? throw new ArgumentNullException(nameof(serializer));
+        _wrappedCacheProvider = Guard.AgainstNull(wrappedCacheProvider);
+        _serializer = Guard.AgainstNull(serializer);
     }
 
     /// <summary>

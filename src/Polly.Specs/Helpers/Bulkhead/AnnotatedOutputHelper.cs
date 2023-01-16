@@ -28,7 +28,7 @@ public class AnnotatedOutputHelper : ITestOutputHelper
     private readonly ITestOutputHelper innerOutputHelper;
 
     public AnnotatedOutputHelper(ITestOutputHelper innerOutputHelper) =>
-        this.innerOutputHelper = innerOutputHelper ?? throw new ArgumentNullException(nameof(innerOutputHelper));
+        this.innerOutputHelper = Guard.AgainstNull(innerOutputHelper);
 
     public void Flush()
     {

@@ -7,7 +7,7 @@ internal class PreExecutePolicy : Policy
     public static PreExecutePolicy Create(Action preExecute) => new(preExecute);
 
     internal PreExecutePolicy(Action preExecute) =>
-        _preExecute = preExecute ?? throw new ArgumentNullException(nameof(preExecute));
+        _preExecute = Guard.AgainstNull(preExecute);
 
     protected override TResult Implementation<TResult>(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken) =>
         PreExecuteEngine.Implementation(_preExecute, action, context, cancellationToken);
@@ -20,7 +20,7 @@ internal class PreExecutePolicy<TResult> : Policy<TResult>
     public static PreExecutePolicy<TResult> Create(Action preExecute) => new(preExecute);
 
     internal PreExecutePolicy(Action preExecute) =>
-        _preExecute = preExecute ?? throw new ArgumentNullException(nameof(preExecute));
+        _preExecute = Guard.AgainstNull(preExecute);
 
     protected override TResult Implementation(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken) =>
         PreExecuteEngine.Implementation(_preExecute, action, context, cancellationToken);

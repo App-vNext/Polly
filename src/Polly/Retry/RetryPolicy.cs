@@ -23,7 +23,7 @@ public class RetryPolicy : Policy, IRetryPolicy
         _permittedRetryCount = permittedRetryCount;
         _sleepDurationsEnumerable = sleepDurationsEnumerable;
         _sleepDurationProvider = sleepDurationProvider;
-        _onRetry = onRetry ?? throw new ArgumentNullException(nameof(onRetry));
+        _onRetry = Guard.AgainstNull(onRetry);
     }
 
     /// <inheritdoc/>
@@ -65,7 +65,7 @@ public class RetryPolicy<TResult> : Policy<TResult>, IRetryPolicy<TResult>
         _permittedRetryCount = permittedRetryCount;
         _sleepDurationsEnumerable = sleepDurationsEnumerable;
         _sleepDurationProvider = sleepDurationProvider;
-        _onRetry = onRetry ?? throw new ArgumentNullException(nameof(onRetry));
+        _onRetry = Guard.AgainstNull(onRetry);
     }
 
     /// <inheritdoc/>

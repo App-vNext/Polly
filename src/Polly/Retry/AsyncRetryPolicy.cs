@@ -22,7 +22,7 @@ public class AsyncRetryPolicy : AsyncPolicy, IRetryPolicy
         _permittedRetryCount = permittedRetryCount;
         _sleepDurationsEnumerable = sleepDurationsEnumerable;
         _sleepDurationProvider = sleepDurationProvider;
-        _onRetryAsync = onRetryAsync ?? throw new ArgumentNullException(nameof(onRetryAsync));
+        _onRetryAsync = Guard.AgainstNull(onRetryAsync);
     }
 
     /// <inheritdoc/>
@@ -67,7 +67,7 @@ public class AsyncRetryPolicy<TResult> : AsyncPolicy<TResult>, IRetryPolicy<TRes
         _permittedRetryCount = permittedRetryCount;
         _sleepDurationsEnumerable = sleepDurationsEnumerable;
         _sleepDurationProvider = sleepDurationProvider;
-        _onRetryAsync = onRetryAsync ?? throw new ArgumentNullException(nameof(onRetryAsync));
+        _onRetryAsync = Guard.AgainstNull(onRetryAsync);
     }
 
     /// <inheritdoc/>
