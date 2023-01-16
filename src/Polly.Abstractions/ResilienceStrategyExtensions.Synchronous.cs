@@ -5,7 +5,10 @@ namespace Resilience;
 
 public static partial class ResilienceStrategyExtensions
 {
-    public static void Execute<TState>(this IResilienceStrategy strategy, Action<TState> execute, TState state)
+    public static void Execute<TState>(
+        this IResilienceStrategy strategy,
+        Action<TState> execute,
+        TState state)
     {
         var context = ResilienceContext.Get();
         context.IsSynchronous = true;
@@ -66,7 +69,10 @@ public static partial class ResilienceStrategyExtensions
         }
     }
 
-    public static TResult Execute<TResult, TState>(this IResilienceStrategy strategy, Func<TState, TResult> execute, TState state)
+    public static TResult Execute<TResult, TState>(
+        this IResilienceStrategy strategy,
+        Func<TState, TResult> execute,
+        TState state)
     {
         var context = ResilienceContext.Get();
         context.IsSynchronous = true;

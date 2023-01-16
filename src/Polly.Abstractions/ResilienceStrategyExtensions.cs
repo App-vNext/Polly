@@ -4,7 +4,11 @@ namespace Resilience;
 
 public static partial class ResilienceStrategyExtensions
 {
-    public static async ValueTask ExecuteAsync<TState>(this IResilienceStrategy strategy, Func<TState, CancellationToken, ValueTask> execute, TState state, CancellationToken cancellationToken = default)
+    public static async ValueTask ExecuteAsync<TState>(
+        this IResilienceStrategy strategy,
+        Func<TState, CancellationToken, ValueTask> execute,
+        TState state,
+        CancellationToken cancellationToken = default)
     {
         var context = ResilienceContext.Get(cancellationToken);
         context.IsVoid = true;
@@ -26,7 +30,11 @@ public static partial class ResilienceStrategyExtensions
         }
     }
 
-    public static async ValueTask ExecuteAsync<TState>(this IResilienceStrategy strategy, Func<ResilienceContext, TState, ValueTask> execute, ResilienceContext context, TState state)
+    public static async ValueTask ExecuteAsync<TState>(
+        this IResilienceStrategy strategy,
+        Func<ResilienceContext, TState, ValueTask> execute,
+        ResilienceContext context,
+        TState state)
     {
         context.IsVoid = true;
 
@@ -40,7 +48,10 @@ public static partial class ResilienceStrategyExtensions
             (execute, state)).ConfigureAwait(context.ContinueOnCapturedContext);
     }
 
-    public static async ValueTask ExecuteAsync(this IResilienceStrategy strategy, Func<ResilienceContext, ValueTask> execute, ResilienceContext context)
+    public static async ValueTask ExecuteAsync(
+        this IResilienceStrategy strategy,
+        Func<ResilienceContext, ValueTask> execute,
+        ResilienceContext context)
     {
         context.IsVoid = true;
 
@@ -54,7 +65,10 @@ public static partial class ResilienceStrategyExtensions
             execute).ConfigureAwait(context.ContinueOnCapturedContext);
     }
 
-    public static async ValueTask<TResult> ExecuteAsync<TResult>(this IResilienceStrategy strategy, Func<CancellationToken, ValueTask<TResult>> execute, CancellationToken cancellationToken = default)
+    public static async ValueTask<TResult> ExecuteAsync<TResult>(
+        this IResilienceStrategy strategy,
+        Func<CancellationToken, ValueTask<TResult>> execute,
+        CancellationToken cancellationToken = default)
     {
         var context = ResilienceContext.Get(cancellationToken);
 
@@ -68,9 +82,16 @@ public static partial class ResilienceStrategyExtensions
         }
     }
 
-    public static ValueTask<TResult> ExecuteAsync<TResult>(this IResilienceStrategy strategy, Func<ResilienceContext, ValueTask<TResult>> execute, ResilienceContext context) => strategy.ExecuteAsync(static (context, state) => state(context), context, execute);
+    public static ValueTask<TResult> ExecuteAsync<TResult>(
+        this IResilienceStrategy strategy,
+        Func<ResilienceContext, ValueTask<TResult>> execute,
+        ResilienceContext context) => strategy.ExecuteAsync(static (context, state) => state(context), context, execute);
 
-    public static async ValueTask<TResult> ExecuteAsync<TResult, TState>(this IResilienceStrategy strategy, Func<TState, CancellationToken, ValueTask<TResult>> execute, TState state, CancellationToken cancellationToken)
+    public static async ValueTask<TResult> ExecuteAsync<TResult, TState>(
+        this IResilienceStrategy strategy,
+        Func<TState, CancellationToken, ValueTask<TResult>> execute,
+        TState state,
+        CancellationToken cancellationToken)
     {
         var context = ResilienceContext.Get(cancellationToken);
 

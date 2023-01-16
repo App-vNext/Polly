@@ -16,6 +16,6 @@ public static class ResilienceStrategyExtensions
     public static ISyncPolicy<T> AsSyncPolicy<T>(this IResilienceStrategy strategy) => new StrategySyncPolicy<T>(strategy);
 
     public static ResilienceContext Update(this ResilienceContext context, Context pollyContext) =>
-        // we will probably just use the Context directly
+        // TODO: add the conversion logic
         context;
 }
