@@ -1,6 +1,6 @@
 ﻿using System.Runtime.CompilerServices;
 
-static class Guard
+internal static class Guard
 {
     public static T NotNull<T>(T value, [CallerArgumentExpression("value")] string argumentName = "")
         where T : class
