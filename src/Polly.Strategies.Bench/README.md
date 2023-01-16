@@ -9,32 +9,34 @@ Intel Core i9-10885H CPU 2.40GHz, 1 CPU, 16 logical and 8 physical cores
 
 ## PIPELINES
 
-|          Method | Components | PollyVersion |        Mean |     Error |    StdDev |   Gen0 | Allocated |
-|---------------- |----------- |------------- |------------:|----------:|----------:|-------:|----------:|
-| ExecutePipeline |          2 |           V7 |   195.94 ns |  1.682 ns |  2.466 ns | 0.0467 |     392 B |
-| ExecutePipeline |          2 |           V8 |    67.65 ns |  0.282 ns |  0.404 ns |      - |         - |
-| ExecutePipeline |          5 |           V7 |   599.27 ns |  6.370 ns |  9.337 ns | 0.1354 |    1136 B |
-| ExecutePipeline |          5 |           V8 |   103.66 ns |  0.319 ns |  0.447 ns |      - |         - |
-| ExecutePipeline |         10 |           V7 | 1,251.22 ns | 14.295 ns | 20.954 ns | 0.2823 |    2376 B |
-| ExecutePipeline |         10 |           V8 |   126.08 ns |  0.765 ns |  1.098 ns |      - |         - |
+|             Method | Components |        Mean |     Error |    StdDev | Ratio | RatioSD |   Gen0 | Allocated | Alloc Ratio |
+|------------------- |----------- |------------:|----------:|----------:|------:|--------:|-------:|----------:|------------:|
+| ExecutePipeline_V7 |          2 |   187.95 ns |  9.763 ns | 13.687 ns |  1.00 |    0.00 | 0.0467 |     392 B |        1.00 |
+| ExecutePipeline_V8 |          2 |    65.52 ns |  0.867 ns |  1.271 ns |  0.35 |    0.03 |      - |         - |        0.00 |
+|                    |            |             |           |           |       |         |        |           |             |
+| ExecutePipeline_V7 |          5 |   531.91 ns |  3.662 ns |  5.481 ns |  1.00 |    0.00 | 0.1354 |    1136 B |        1.00 |
+| ExecutePipeline_V8 |          5 |    94.90 ns |  0.823 ns |  1.232 ns |  0.18 |    0.00 |      - |         - |        0.00 |
+|                    |            |             |           |           |       |         |        |           |             |
+| ExecutePipeline_V7 |         10 | 1,131.76 ns | 23.483 ns | 34.421 ns |  1.00 |    0.00 | 0.2823 |    2376 B |        1.00 |
+| ExecutePipeline_V8 |         10 |   119.36 ns |  0.791 ns |  1.159 ns |  0.11 |    0.00 |      - |         - |        0.00 |
 
 ## RETRIES
 
-|       Method | PollyVersion |     Mean |   Error |  StdDev |   Gen0 | Allocated |
-|------------- |------------- |---------:|--------:|--------:|-------:|----------:|
-| ExecuteRetry |           V7 | 179.0 ns | 1.26 ns | 1.80 ns | 0.0496 |     416 B |
-| ExecuteRetry |           V8 | 169.3 ns | 0.50 ns | 0.71 ns |      - |         - |
+|          Method |     Mean |   Error |  StdDev | Ratio | RatioSD |   Gen0 | Allocated | Alloc Ratio |
+|---------------- |---------:|--------:|--------:|------:|--------:|-------:|----------:|------------:|
+| ExecuteRetry_V7 | 179.5 ns | 2.06 ns | 2.89 ns |  1.00 |    0.00 | 0.0496 |     416 B |        1.00 |
+| ExecuteRetry_V8 | 165.3 ns | 3.80 ns | 5.69 ns |  0.93 |    0.03 |      - |         - |        0.00 |
 
 ## TIMEOUT
 
-|         Method | PollyVersion |     Mean |   Error |   StdDev |   Gen0 | Allocated |
-|--------------- |------------- |---------:|--------:|---------:|-------:|----------:|
-| ExecuteTimeout |           V7 | 457.1 ns | 8.17 ns | 11.72 ns | 0.0973 |     816 B |
-| ExecuteTimeout |           V8 | 191.5 ns | 0.68 ns |  0.96 ns |      - |         - |
+|            Method |     Mean |    Error |   StdDev | Ratio | RatioSD |   Gen0 | Allocated | Alloc Ratio |
+|------------------ |---------:|---------:|---------:|------:|--------:|-------:|----------:|------------:|
+| ExecuteTimeout_V7 | 389.8 ns |  2.62 ns |  3.92 ns |  1.00 |    0.00 | 0.0973 |     816 B |        1.00 |
+| ExecuteTimeout_V8 | 191.0 ns | 14.29 ns | 20.94 ns |  0.49 |    0.05 |      - |         - |        0.00 |
 
 ## SIMPLE PIPELINE (Outer Timeout - Retries - Inner Timeout)
 
-|                Method | PollyVersion |       Mean |    Error |    StdDev |   Gen0 | Allocated |
-|---------------------- |------------- |-----------:|---------:|----------:|-------:|----------:|
-| ExecuteSimplePipeline |           V7 | 1,690.5 ns | 81.64 ns | 117.09 ns | 0.2880 |    2416 B |
-| ExecuteSimplePipeline |           V8 |   577.9 ns | 11.26 ns |  16.85 ns |      - |         - |
+|                   Method |       Mean |    Error |   StdDev | Ratio |   Gen0 | Allocated | Alloc Ratio |
+|------------------------- |-----------:|---------:|---------:|------:|-------:|----------:|------------:|
+| ExecuteSimplePipeline_V7 | 1,227.8 ns | 17.63 ns | 25.83 ns |  1.00 | 0.2880 |    2416 B |        1.00 |
+| ExecuteSimplePipeline_V8 |   465.3 ns |  4.73 ns |  7.09 ns |  0.38 |      - |         - |        0.00 |
