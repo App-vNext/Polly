@@ -200,7 +200,7 @@ public partial class Policy
     /// <returns>The policy instance.</returns>
     public static TimeoutPolicy Timeout(Func<TimeSpan> timeoutProvider)
     {
-        if (timeoutProvider == null) throw new ArgumentNullException(nameof(timeoutProvider));
+        Guard.NotNull(timeoutProvider);
 
         Action<Context, TimeSpan, Task, Exception> doNothing = (_, _, _, _) => { };
         return Timeout(_ => timeoutProvider(), TimeoutStrategy.Optimistic, doNothing);
@@ -215,7 +215,7 @@ public partial class Policy
     /// <exception cref="ArgumentNullException">timeoutProvider</exception>
     public static TimeoutPolicy Timeout(Func<TimeSpan> timeoutProvider, TimeoutStrategy timeoutStrategy)
     {
-        if (timeoutProvider == null) throw new ArgumentNullException(nameof(timeoutProvider));
+        Guard.NotNull(timeoutProvider);
 
         Action<Context, TimeSpan, Task, Exception> doNothing = (_, _, _, _) => { };
         return Timeout(_ => timeoutProvider(), timeoutStrategy, doNothing);
@@ -232,7 +232,7 @@ public partial class Policy
     /// <exception cref="ArgumentNullException">onTimeout</exception>
     public static TimeoutPolicy Timeout(Func<TimeSpan> timeoutProvider, Action<Context, TimeSpan, Task> onTimeout)
     {
-        if (timeoutProvider == null) throw new ArgumentNullException(nameof(timeoutProvider));
+        Guard.NotNull(timeoutProvider);
 
         return Timeout(_ => timeoutProvider(), TimeoutStrategy.Optimistic, onTimeout);
     }
@@ -248,7 +248,7 @@ public partial class Policy
     /// <exception cref="ArgumentNullException">onTimeout</exception>
     public static TimeoutPolicy Timeout(Func<TimeSpan> timeoutProvider, Action<Context, TimeSpan, Task, Exception> onTimeout)
     {
-        if (timeoutProvider == null) throw new ArgumentNullException(nameof(timeoutProvider));
+        Guard.NotNull(timeoutProvider);
 
         return Timeout(_ => timeoutProvider(), TimeoutStrategy.Optimistic, onTimeout);
     }
@@ -265,7 +265,7 @@ public partial class Policy
     /// <exception cref="ArgumentNullException">onTimeout</exception>
     public static TimeoutPolicy Timeout(Func<TimeSpan> timeoutProvider, TimeoutStrategy timeoutStrategy, Action<Context, TimeSpan, Task> onTimeout)
     {
-        if (timeoutProvider == null) throw new ArgumentNullException(nameof(timeoutProvider));
+        Guard.NotNull(timeoutProvider);
 
         return Timeout(_ => timeoutProvider(), timeoutStrategy, onTimeout);
     }
@@ -282,7 +282,7 @@ public partial class Policy
     /// <exception cref="ArgumentNullException">onTimeout</exception>
     public static TimeoutPolicy Timeout(Func<TimeSpan> timeoutProvider, TimeoutStrategy timeoutStrategy, Action<Context, TimeSpan, Task, Exception> onTimeout)
     {
-        if (timeoutProvider == null) throw new ArgumentNullException(nameof(timeoutProvider));
+        Guard.NotNull(timeoutProvider);
 
         return Timeout(_ => timeoutProvider(), timeoutStrategy, onTimeout);
     }
@@ -348,7 +348,7 @@ public partial class Policy
     /// <exception cref="ArgumentNullException">onTimeout</exception>
     public static TimeoutPolicy Timeout(Func<Context, TimeSpan> timeoutProvider, TimeoutStrategy timeoutStrategy, Action<Context, TimeSpan, Task> onTimeout)
     {
-        if (onTimeout == null) throw new ArgumentNullException(nameof(onTimeout));
+        Guard.NotNull(onTimeout);
 
         return Timeout(timeoutProvider, timeoutStrategy, (ctx, timeout, task, _) => onTimeout(ctx, timeout, task));
     }
@@ -368,8 +368,8 @@ public partial class Policy
         TimeoutStrategy timeoutStrategy,
         Action<Context, TimeSpan, Task, Exception> onTimeout)
     {
-        if (timeoutProvider == null) throw new ArgumentNullException(nameof(timeoutProvider));
-        if (onTimeout == null) throw new ArgumentNullException(nameof(onTimeout));
+        Guard.NotNull(timeoutProvider);
+        Guard.NotNull(onTimeout);
 
         return new TimeoutPolicy(
                 timeoutProvider,

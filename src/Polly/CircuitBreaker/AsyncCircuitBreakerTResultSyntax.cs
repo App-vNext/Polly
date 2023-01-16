@@ -194,9 +194,9 @@ public static class AsyncCircuitBreakerTResultSyntax
         if (handledEventsAllowedBeforeBreaking <= 0) throw new ArgumentOutOfRangeException(nameof(handledEventsAllowedBeforeBreaking), "Value must be greater than zero.");
         if (durationOfBreak < TimeSpan.Zero) throw new ArgumentOutOfRangeException(nameof(durationOfBreak), "Value must be greater than zero.");
 
-        if (onBreak == null) throw new ArgumentNullException(nameof(onBreak));
-        if (onReset == null) throw new ArgumentNullException(nameof(onReset));
-        if (onHalfOpen == null) throw new ArgumentNullException(nameof(onHalfOpen));
+        Guard.NotNull(onBreak);
+        Guard.NotNull(onReset);
+        Guard.NotNull(onHalfOpen);
 
         var breakerController = new ConsecutiveCountCircuitController<TResult>(
             handledEventsAllowedBeforeBreaking,

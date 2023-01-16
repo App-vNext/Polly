@@ -16,7 +16,7 @@ public static class AsyncFallbackSyntax
     /// <returns>The policy instance.</returns>
     public static AsyncFallbackPolicy FallbackAsync(this PolicyBuilder policyBuilder, Func<CancellationToken, Task> fallbackAction)
     {
-        if (fallbackAction == null) throw new ArgumentNullException(nameof(fallbackAction));
+        Guard.NotNull(fallbackAction);
 
         Func<Exception, Task> doNothing = _ => TaskHelper.EmptyTask;
         return policyBuilder.FallbackAsync(
@@ -36,8 +36,8 @@ public static class AsyncFallbackSyntax
     /// <returns>The policy instance.</returns>
     public static AsyncFallbackPolicy FallbackAsync(this PolicyBuilder policyBuilder, Func<CancellationToken, Task> fallbackAction, Func<Exception, Task> onFallbackAsync)
     {
-        if (fallbackAction == null) throw new ArgumentNullException(nameof(fallbackAction));
-        if (onFallbackAsync == null) throw new ArgumentNullException(nameof(onFallbackAsync));
+        Guard.NotNull(fallbackAction);
+        Guard.NotNull(onFallbackAsync);
 
         return policyBuilder.FallbackAsync(
             (_, _, ct) => fallbackAction(ct),
@@ -56,8 +56,8 @@ public static class AsyncFallbackSyntax
     /// <returns>The policy instance.</returns>
     public static AsyncFallbackPolicy FallbackAsync(this PolicyBuilder policyBuilder, Func<Context, CancellationToken, Task> fallbackAction, Func<Exception, Context, Task> onFallbackAsync)
     {
-        if (fallbackAction == null) throw new ArgumentNullException(nameof(fallbackAction));
-        if (onFallbackAsync == null) throw new ArgumentNullException(nameof(onFallbackAsync));
+        Guard.NotNull(fallbackAction);
+        Guard.NotNull(onFallbackAsync);
 
         return policyBuilder.FallbackAsync((_, ctx, ct) => fallbackAction(ctx, ct), onFallbackAsync);
     }
@@ -73,8 +73,8 @@ public static class AsyncFallbackSyntax
     /// <returns>The policy instance.</returns>
     public static AsyncFallbackPolicy FallbackAsync(this PolicyBuilder policyBuilder, Func<Exception, Context, CancellationToken, Task> fallbackAction, Func<Exception, Context, Task> onFallbackAsync)
     {
-        if (fallbackAction == null) throw new ArgumentNullException(nameof(fallbackAction));
-        if (onFallbackAsync == null) throw new ArgumentNullException(nameof(onFallbackAsync));
+        Guard.NotNull(fallbackAction);
+        Guard.NotNull(onFallbackAsync);
 
         return new AsyncFallbackPolicy(policyBuilder, onFallbackAsync, fallbackAction);
     }
@@ -109,7 +109,7 @@ public static class AsyncFallbackTResultSyntax
     /// <returns>The policy instance.</returns>
     public static AsyncFallbackPolicy<TResult> FallbackAsync<TResult>(this PolicyBuilder<TResult> policyBuilder, Func<CancellationToken, Task<TResult>> fallbackAction)
     {
-        if (fallbackAction == null) throw new ArgumentNullException(nameof(fallbackAction));
+        Guard.NotNull(fallbackAction);
 
         Func<DelegateResult<TResult>, Task> doNothing = _ => TaskHelper.EmptyTask;
         return policyBuilder.FallbackAsync(
@@ -128,7 +128,7 @@ public static class AsyncFallbackTResultSyntax
     /// <returns>The policy instance.</returns>
     public static AsyncFallbackPolicy<TResult> FallbackAsync<TResult>(this PolicyBuilder<TResult> policyBuilder, TResult fallbackValue, Func<DelegateResult<TResult>, Task> onFallbackAsync)
     {
-        if (onFallbackAsync == null) throw new ArgumentNullException(nameof(onFallbackAsync));
+        Guard.NotNull(onFallbackAsync);
 
         return policyBuilder.FallbackAsync(
             (_, _, _) => Task.FromResult(fallbackValue),
@@ -147,8 +147,8 @@ public static class AsyncFallbackTResultSyntax
     /// <returns>The policy instance.</returns>
     public static AsyncFallbackPolicy<TResult> FallbackAsync<TResult>(this PolicyBuilder<TResult> policyBuilder, Func<CancellationToken, Task<TResult>> fallbackAction, Func<DelegateResult<TResult>, Task> onFallbackAsync)
     {
-        if (fallbackAction == null) throw new ArgumentNullException(nameof(fallbackAction));
-        if (onFallbackAsync == null) throw new ArgumentNullException(nameof(onFallbackAsync));
+        Guard.NotNull(fallbackAction);
+        Guard.NotNull(onFallbackAsync);
 
         return policyBuilder.FallbackAsync(
             (_, _, ct) => fallbackAction(ct),
@@ -166,7 +166,7 @@ public static class AsyncFallbackTResultSyntax
     /// <returns>The policy instance.</returns>
     public static AsyncFallbackPolicy<TResult> FallbackAsync<TResult>(this PolicyBuilder<TResult> policyBuilder, TResult fallbackValue, Func<DelegateResult<TResult>, Context, Task> onFallbackAsync)
     {
-        if (onFallbackAsync == null) throw new ArgumentNullException(nameof(onFallbackAsync));
+        Guard.NotNull(onFallbackAsync);
 
         return policyBuilder.FallbackAsync(
             (_, _, _) => Task.FromResult(fallbackValue),
@@ -185,8 +185,8 @@ public static class AsyncFallbackTResultSyntax
     /// <returns>The policy instance.</returns>
     public static AsyncFallbackPolicy<TResult> FallbackAsync<TResult>(this PolicyBuilder<TResult> policyBuilder, Func<Context, CancellationToken, Task<TResult>> fallbackAction, Func<DelegateResult<TResult>, Context, Task> onFallbackAsync)
     {
-        if (fallbackAction == null) throw new ArgumentNullException(nameof(fallbackAction));
-        if (onFallbackAsync == null) throw new ArgumentNullException(nameof(onFallbackAsync));
+        Guard.NotNull(fallbackAction);
+        Guard.NotNull(onFallbackAsync);
 
         return policyBuilder.FallbackAsync((_, ctx, ct) => fallbackAction(ctx, ct), onFallbackAsync);
     }
@@ -202,8 +202,8 @@ public static class AsyncFallbackTResultSyntax
     /// <returns>The policy instance.</returns>
     public static AsyncFallbackPolicy<TResult> FallbackAsync<TResult>(this PolicyBuilder<TResult> policyBuilder, Func<DelegateResult<TResult>, Context, CancellationToken, Task<TResult>> fallbackAction, Func<DelegateResult<TResult>, Context, Task> onFallbackAsync)
     {
-        if (fallbackAction == null) throw new ArgumentNullException(nameof(fallbackAction));
-        if (onFallbackAsync == null) throw new ArgumentNullException(nameof(onFallbackAsync));
+        Guard.NotNull(fallbackAction);
+        Guard.NotNull(onFallbackAsync);
 
         return new AsyncFallbackPolicy<TResult>(
                 policyBuilder,

@@ -58,7 +58,7 @@ public partial class Policy
     {
         if (maxParallelization <= 0) throw new ArgumentOutOfRangeException(nameof(maxParallelization), "Value must be greater than zero.");
         if (maxQueuingActions < 0) throw new ArgumentOutOfRangeException(nameof(maxQueuingActions), "Value must be greater than or equal to zero.");
-        if (onBulkheadRejected == null) throw new ArgumentNullException(nameof(onBulkheadRejected));
+        Guard.NotNull(onBulkheadRejected);
 
         return new BulkheadPolicy(
             maxParallelization,

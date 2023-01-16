@@ -23,7 +23,7 @@ public partial class Context : IDictionary<string, object>, IDictionary, IReadOn
 
     internal Context(IDictionary<string, object> contextData) : this()
     {
-        if (contextData == null) throw new ArgumentNullException(nameof(contextData));
+        Guard.NotNull(contextData);
         wrappedDictionary = new Dictionary<string, object>(contextData);
     }
 

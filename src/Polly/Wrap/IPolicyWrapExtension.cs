@@ -47,7 +47,7 @@ public static class IPolicyWrapExtension
     /// <returns>An <see cref="IEnumerable{TPolicy}"/> of all the policies of the given type, matching the filter.</returns>
     public static IEnumerable<TPolicy> GetPolicies<TPolicy>(this IPolicyWrap policyWrap, Func<TPolicy, bool> filter)
     {
-        if (filter == null) throw new ArgumentNullException(nameof(filter));
+        Guard.NotNull(filter);
         return policyWrap.GetPolicies().OfType<TPolicy>().Where(filter);
     }
 
@@ -71,7 +71,7 @@ public static class IPolicyWrapExtension
     /// <throws>InvalidOperationException, if more than one policy of the type is found in the wrap.</throws>
     public static TPolicy GetPolicy<TPolicy>(this IPolicyWrap policyWrap, Func<TPolicy, bool> filter)
     {
-        if (filter == null) throw new ArgumentNullException(nameof(filter));
+        Guard.NotNull(filter);
         return policyWrap.GetPolicies().OfType<TPolicy>().SingleOrDefault(filter);
     }
 }

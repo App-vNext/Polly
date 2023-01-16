@@ -6,7 +6,7 @@ internal static class AsyncAddBehaviourIfHandleSyntax
         this PolicyBuilder policyBuilder,
         Func<Exception, Task> behaviourIfHandle)
     {
-        if (behaviourIfHandle == null) throw new ArgumentNullException(nameof(behaviourIfHandle));
+        Guard.NotNull(behaviourIfHandle);
 
         return new AsyncAddBehaviourIfHandlePolicy(behaviourIfHandle, policyBuilder);
     }
@@ -15,7 +15,7 @@ internal static class AsyncAddBehaviourIfHandleSyntax
         this PolicyBuilder<TResult> policyBuilder,
         Func<DelegateResult<TResult>, Task> behaviourIfHandle)
     {
-        if (behaviourIfHandle == null) throw new ArgumentNullException(nameof(behaviourIfHandle));
+        Guard.NotNull(behaviourIfHandle);
 
         return new AsyncAddBehaviourIfHandlePolicy<TResult>(behaviourIfHandle, policyBuilder);
     }

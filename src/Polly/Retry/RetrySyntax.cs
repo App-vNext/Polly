@@ -50,7 +50,7 @@ public static class RetrySyntax
     public static RetryPolicy Retry(this PolicyBuilder policyBuilder, int retryCount, Action<Exception, int> onRetry)
     {
         if (retryCount < 0) throw new ArgumentOutOfRangeException(nameof(retryCount), "Value must be greater than or equal to zero.");
-        if (onRetry == null) throw new ArgumentNullException(nameof(onRetry));
+        Guard.NotNull(onRetry);
 
         return policyBuilder.Retry(retryCount, (outcome, i, _) => onRetry(outcome, i));
     }
@@ -79,7 +79,7 @@ public static class RetrySyntax
     public static RetryPolicy Retry(this PolicyBuilder policyBuilder, int retryCount, Action<Exception, int, Context> onRetry)
     {
         if (retryCount < 0) throw new ArgumentOutOfRangeException(nameof(retryCount), "Value must be greater than or equal to zero.");
-        if (onRetry == null) throw new ArgumentNullException(nameof(onRetry));
+        Guard.NotNull(onRetry);
 
         return new RetryPolicy(
             policyBuilder,
@@ -109,7 +109,7 @@ public static class RetrySyntax
     /// <exception cref="ArgumentNullException">onRetry</exception>
     public static RetryPolicy RetryForever(this PolicyBuilder policyBuilder, Action<Exception> onRetry)
     {
-        if (onRetry == null) throw new ArgumentNullException(nameof(onRetry));
+        Guard.NotNull(onRetry);
 
         return policyBuilder.RetryForever((Exception outcome, Context _) => onRetry(outcome));
     }
@@ -124,7 +124,7 @@ public static class RetrySyntax
     /// <exception cref="ArgumentNullException">onRetry</exception>
     public static RetryPolicy RetryForever(this PolicyBuilder policyBuilder, Action<Exception, int> onRetry)
     {
-        if (onRetry == null) throw new ArgumentNullException(nameof(onRetry));
+        Guard.NotNull(onRetry);
 
         return policyBuilder.RetryForever((outcome, i, _) => onRetry(outcome, i));
     }
@@ -139,7 +139,7 @@ public static class RetrySyntax
     /// <exception cref="ArgumentNullException">onRetry</exception>
     public static RetryPolicy RetryForever(this PolicyBuilder policyBuilder, Action<Exception, Context> onRetry)
     {
-        if (onRetry == null) throw new ArgumentNullException(nameof(onRetry));
+        Guard.NotNull(onRetry);
 
             return new RetryPolicy(
                 policyBuilder,
@@ -157,7 +157,7 @@ public static class RetrySyntax
     /// <exception cref="ArgumentNullException">onRetry</exception>
     public static RetryPolicy RetryForever(this PolicyBuilder policyBuilder, Action<Exception, int, Context> onRetry)
     {
-        if (onRetry == null) throw new ArgumentNullException(nameof(onRetry));
+        Guard.NotNull(onRetry);
 
         return new RetryPolicy(
             policyBuilder,
@@ -200,7 +200,7 @@ public static class RetrySyntax
     /// </exception>
     public static RetryPolicy  WaitAndRetry(this PolicyBuilder policyBuilder, int retryCount, Func<int, TimeSpan> sleepDurationProvider, Action<Exception, TimeSpan> onRetry)
     {
-        if (onRetry == null) throw new ArgumentNullException(nameof(onRetry));
+        Guard.NotNull(onRetry);
 
         return policyBuilder.WaitAndRetry(
             retryCount,
@@ -228,7 +228,7 @@ public static class RetrySyntax
     /// </exception>
     public static RetryPolicy WaitAndRetry(this PolicyBuilder policyBuilder, int retryCount, Func<int, TimeSpan> sleepDurationProvider, Action<Exception, TimeSpan, Context> onRetry)
     {
-        if (onRetry == null) throw new ArgumentNullException(nameof(onRetry));
+        Guard.NotNull(onRetry);
 
         return policyBuilder.WaitAndRetry(
             retryCount,
@@ -257,8 +257,8 @@ public static class RetrySyntax
     public static RetryPolicy WaitAndRetry(this PolicyBuilder policyBuilder, int retryCount, Func<int, TimeSpan> sleepDurationProvider, Action<Exception, TimeSpan, int, Context> onRetry)
     {
         if (retryCount < 0) throw new ArgumentOutOfRangeException(nameof(retryCount), "Value must be greater than or equal to zero.");
-        if (sleepDurationProvider == null) throw new ArgumentNullException(nameof(sleepDurationProvider));
-        if (onRetry == null) throw new ArgumentNullException(nameof(onRetry));
+        Guard.NotNull(sleepDurationProvider);
+        Guard.NotNull(onRetry);
 
         var sleepDurations = Enumerable.Range(1, retryCount)
                                        .Select(sleepDurationProvider);
@@ -306,7 +306,7 @@ public static class RetrySyntax
     /// </exception>
     public static RetryPolicy WaitAndRetry(this PolicyBuilder policyBuilder, int retryCount, Func<int, Context, TimeSpan> sleepDurationProvider, Action<Exception, TimeSpan, Context> onRetry)
     {
-        if (onRetry == null) throw new ArgumentNullException(nameof(onRetry));
+        Guard.NotNull(onRetry);
 
         return policyBuilder.WaitAndRetry(
             retryCount,
@@ -335,7 +335,7 @@ public static class RetrySyntax
     /// </exception>
     public static RetryPolicy WaitAndRetry(this PolicyBuilder policyBuilder, int retryCount, Func<int, Context, TimeSpan> sleepDurationProvider, Action<Exception, TimeSpan, int, Context> onRetry)
     {
-        if (sleepDurationProvider == null) throw new ArgumentNullException(nameof(sleepDurationProvider));
+        Guard.NotNull(sleepDurationProvider);
         return policyBuilder.WaitAndRetry(
             retryCount,
             (i, _, ctx) => sleepDurationProvider(i, ctx),
@@ -362,8 +362,8 @@ public static class RetrySyntax
     public static RetryPolicy WaitAndRetry(this PolicyBuilder policyBuilder, int retryCount, Func<int, Exception, Context, TimeSpan> sleepDurationProvider, Action<Exception, TimeSpan, int, Context> onRetry)
     {
         if (retryCount < 0) throw new ArgumentOutOfRangeException(nameof(retryCount), "Value must be greater than or equal to zero.");
-        if (sleepDurationProvider == null) throw new ArgumentNullException(nameof(sleepDurationProvider));
-        if (onRetry == null) throw new ArgumentNullException(nameof(onRetry));
+        Guard.NotNull(sleepDurationProvider);
+        Guard.NotNull(onRetry);
 
             return new RetryPolicy(
                 policyBuilder,
@@ -403,7 +403,7 @@ public static class RetrySyntax
     /// </exception>
     public static RetryPolicy  WaitAndRetry(this PolicyBuilder policyBuilder, IEnumerable<TimeSpan> sleepDurations, Action<Exception, TimeSpan> onRetry)
     {
-        if (onRetry == null) throw new ArgumentNullException(nameof(onRetry));
+        Guard.NotNull(onRetry);
 
         return policyBuilder.WaitAndRetry(sleepDurations, (outcome, span, _, _) => onRetry(outcome, span));
     }
@@ -424,7 +424,7 @@ public static class RetrySyntax
     /// </exception>
     public static RetryPolicy WaitAndRetry(this PolicyBuilder policyBuilder, IEnumerable<TimeSpan> sleepDurations, Action<Exception, TimeSpan, Context> onRetry)
     {
-        if (onRetry == null) throw new ArgumentNullException(nameof(onRetry));
+        Guard.NotNull(onRetry);
 
         return policyBuilder.WaitAndRetry(sleepDurations, (outcome, span, _, ctx) => onRetry(outcome, span, ctx));
     }
@@ -445,8 +445,8 @@ public static class RetrySyntax
     /// </exception>
     public static RetryPolicy WaitAndRetry(this PolicyBuilder policyBuilder, IEnumerable<TimeSpan> sleepDurations, Action<Exception, TimeSpan, int, Context> onRetry)
     {
-        if (sleepDurations == null) throw new ArgumentNullException(nameof(sleepDurations));
-        if (onRetry == null) throw new ArgumentNullException(nameof(onRetry));
+        Guard.NotNull(sleepDurations);
+        Guard.NotNull(onRetry);
 
         return new RetryPolicy(
             policyBuilder,
@@ -466,7 +466,7 @@ public static class RetrySyntax
     /// <exception cref="ArgumentNullException">sleepDurationProvider</exception>
     public static RetryPolicy WaitAndRetryForever(this PolicyBuilder policyBuilder, Func<int, TimeSpan> sleepDurationProvider)
     {
-        if (sleepDurationProvider == null) throw new ArgumentNullException(nameof(sleepDurationProvider));
+        Guard.NotNull(sleepDurationProvider);
 
         Action<Exception, TimeSpan> doNothing = (_, _) => { };
 
@@ -484,7 +484,7 @@ public static class RetrySyntax
     /// <exception cref="ArgumentNullException">sleepDurationProvider</exception>
     public static RetryPolicy WaitAndRetryForever(this PolicyBuilder policyBuilder, Func<int, Context, TimeSpan> sleepDurationProvider)
     {
-        if (sleepDurationProvider == null) throw new ArgumentNullException(nameof(sleepDurationProvider));
+        Guard.NotNull(sleepDurationProvider);
 
         Action<Exception, TimeSpan, Context> doNothing = (_, _, _) => { };
 
@@ -505,8 +505,8 @@ public static class RetrySyntax
     /// <exception cref="ArgumentNullException">onRetry</exception>
     public static RetryPolicy WaitAndRetryForever(this PolicyBuilder policyBuilder, Func<int, TimeSpan> sleepDurationProvider, Action<Exception, TimeSpan> onRetry)
     {
-        if (sleepDurationProvider == null) throw new ArgumentNullException(nameof(sleepDurationProvider));
-        if (onRetry == null) throw new ArgumentNullException(nameof(onRetry));
+        Guard.NotNull(sleepDurationProvider);
+        Guard.NotNull(onRetry);
 
         return policyBuilder.WaitAndRetryForever(
             (retryCount, _) => sleepDurationProvider(retryCount),
@@ -528,8 +528,8 @@ public static class RetrySyntax
     /// <exception cref="ArgumentNullException">onRetry</exception>
     public static RetryPolicy WaitAndRetryForever(this PolicyBuilder policyBuilder, Func<int, TimeSpan> sleepDurationProvider, Action<Exception, int, TimeSpan> onRetry)
     {
-        if (sleepDurationProvider == null) throw new ArgumentNullException(nameof(sleepDurationProvider));
-        if (onRetry == null) throw new ArgumentNullException(nameof(onRetry));
+        Guard.NotNull(sleepDurationProvider);
+        Guard.NotNull(onRetry);
 
         return policyBuilder.WaitAndRetryForever(
             (retryCount, _, _) => sleepDurationProvider(retryCount),
@@ -551,7 +551,7 @@ public static class RetrySyntax
     /// <exception cref="ArgumentNullException">onRetry</exception>
     public static RetryPolicy WaitAndRetryForever(this PolicyBuilder policyBuilder, Func<int, Context, TimeSpan> sleepDurationProvider, Action<Exception, TimeSpan, Context> onRetry)
     {
-        if (sleepDurationProvider == null) throw new ArgumentNullException(nameof(sleepDurationProvider));
+        Guard.NotNull(sleepDurationProvider);
         return policyBuilder.WaitAndRetryForever(
             (i, _, ctx) => sleepDurationProvider(i, ctx),
             onRetry
@@ -572,7 +572,7 @@ public static class RetrySyntax
     /// <exception cref="ArgumentNullException">onRetry</exception>
     public static RetryPolicy WaitAndRetryForever(this PolicyBuilder policyBuilder, Func<int, Context, TimeSpan> sleepDurationProvider, Action<Exception, int, TimeSpan, Context> onRetry)
     {
-        if (sleepDurationProvider == null) throw new ArgumentNullException(nameof(sleepDurationProvider));
+        Guard.NotNull(sleepDurationProvider);
         return policyBuilder.WaitAndRetryForever(
             (i, _, ctx) => sleepDurationProvider(i, ctx),
             onRetry
@@ -593,8 +593,8 @@ public static class RetrySyntax
     /// <exception cref="ArgumentNullException">onRetry</exception>
     public static RetryPolicy WaitAndRetryForever(this PolicyBuilder policyBuilder, Func<int, Exception, Context, TimeSpan> sleepDurationProvider, Action<Exception, TimeSpan, Context> onRetry)
     {
-        if (sleepDurationProvider == null) throw new ArgumentNullException(nameof(sleepDurationProvider));
-        if (onRetry == null) throw new ArgumentNullException(nameof(onRetry));
+        Guard.NotNull(sleepDurationProvider);
+        Guard.NotNull(onRetry);
 
         return new RetryPolicy(
             policyBuilder,
@@ -616,8 +616,8 @@ public static class RetrySyntax
     /// <exception cref="ArgumentNullException">onRetry</exception>
     public static RetryPolicy WaitAndRetryForever(this PolicyBuilder policyBuilder, Func<int, Exception, Context, TimeSpan> sleepDurationProvider, Action<Exception, int, TimeSpan, Context> onRetry)
     {
-        if (sleepDurationProvider == null) throw new ArgumentNullException(nameof(sleepDurationProvider));
-        if (onRetry == null) throw new ArgumentNullException(nameof(onRetry));
+        Guard.NotNull(sleepDurationProvider);
+        Guard.NotNull(onRetry);
 
         return new RetryPolicy(
             policyBuilder,

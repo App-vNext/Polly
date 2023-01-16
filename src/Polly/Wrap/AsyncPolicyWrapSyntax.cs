@@ -9,7 +9,7 @@ public partial class AsyncPolicy
     /// <returns>PolicyWrap.PolicyWrap.</returns>
     public AsyncPolicyWrap WrapAsync(IAsyncPolicy innerPolicy)
     {
-        if (innerPolicy == null) throw new ArgumentNullException(nameof(innerPolicy));
+        Guard.NotNull(innerPolicy);
 
         return new AsyncPolicyWrap(
             this,
@@ -25,7 +25,7 @@ public partial class AsyncPolicy
     /// <returns>PolicyWrap.PolicyWrap.</returns>
     public AsyncPolicyWrap<TResult> WrapAsync<TResult>(IAsyncPolicy<TResult> innerPolicy)
     {
-        if (innerPolicy == null) throw new ArgumentNullException(nameof(innerPolicy));
+        Guard.NotNull(innerPolicy);
 
         return new AsyncPolicyWrap<TResult>(
             this,
@@ -43,7 +43,7 @@ public partial class AsyncPolicy<TResult>
     /// <returns>PolicyWrap.PolicyWrap.</returns>
     public AsyncPolicyWrap<TResult> WrapAsync(IAsyncPolicy innerPolicy)
     {
-        if (innerPolicy == null) throw new ArgumentNullException(nameof(innerPolicy));
+        Guard.NotNull(innerPolicy);
 
         return new AsyncPolicyWrap<TResult>(
             this,
@@ -58,7 +58,7 @@ public partial class AsyncPolicy<TResult>
     /// <returns>PolicyWrap.PolicyWrap.</returns>
     public AsyncPolicyWrap<TResult> WrapAsync(IAsyncPolicy<TResult> innerPolicy)
     {
-        if (innerPolicy == null) throw new ArgumentNullException(nameof(innerPolicy));
+        Guard.NotNull(innerPolicy);
 
         return new AsyncPolicyWrap<TResult>(
             this,
@@ -126,7 +126,7 @@ public static class IAsyncPolicyPolicyWrapExtensions
     /// <returns>A <see cref="PolicyWrap"/> instance representing the combined wrap.</returns>
     public static AsyncPolicyWrap WrapAsync(this IAsyncPolicy outerPolicy, IAsyncPolicy innerPolicy)
     {
-        if (outerPolicy == null) throw new ArgumentNullException(nameof(outerPolicy));
+        Guard.NotNull(outerPolicy);
         return ((AsyncPolicy)outerPolicy).WrapAsync(innerPolicy);
     }
 
@@ -138,7 +138,7 @@ public static class IAsyncPolicyPolicyWrapExtensions
     /// <returns>A <see cref="PolicyWrap"/> instance representing the combined wrap.</returns>
     public  static AsyncPolicyWrap<TResult> WrapAsync<TResult>(this IAsyncPolicy outerPolicy, IAsyncPolicy<TResult> innerPolicy)
     {
-        if (outerPolicy == null) throw new ArgumentNullException(nameof(outerPolicy));
+        Guard.NotNull(outerPolicy);
         return ((AsyncPolicy)outerPolicy).WrapAsync(innerPolicy);
     }
 
@@ -150,7 +150,7 @@ public static class IAsyncPolicyPolicyWrapExtensions
     /// <returns>A <see cref="PolicyWrap"/> instance representing the combined wrap.</returns>
     public  static AsyncPolicyWrap<TResult> WrapAsync<TResult>(this IAsyncPolicy<TResult> outerPolicy, IAsyncPolicy innerPolicy)
     {
-        if (outerPolicy == null) throw new ArgumentNullException(nameof(outerPolicy));
+        Guard.NotNull(outerPolicy);
         return ((AsyncPolicy<TResult>)outerPolicy).WrapAsync(innerPolicy);
     }
 
@@ -162,7 +162,7 @@ public static class IAsyncPolicyPolicyWrapExtensions
     /// <returns>A <see cref="PolicyWrap"/> instance representing the combined wrap.</returns>
     public  static AsyncPolicyWrap<TResult> WrapAsync<TResult>(this IAsyncPolicy<TResult> outerPolicy, IAsyncPolicy<TResult> innerPolicy)
     {
-        if (outerPolicy == null) throw new ArgumentNullException(nameof(outerPolicy));
+        Guard.NotNull(outerPolicy);
         return ((AsyncPolicy<TResult>)outerPolicy).WrapAsync(innerPolicy);
     }
 }
