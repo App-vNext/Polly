@@ -77,17 +77,12 @@ public partial class Policy
     /// <exception cref="ArgumentException">The enumerable of policies to form the wrap must contain at least two policies.</exception>
     public static AsyncPolicyWrap WrapAsync(params IAsyncPolicy[] policies)
     {
-        switch (policies.Length)
+        return policies.Length switch
         {
-            case 0:
-            case 1:
-                throw new ArgumentException("The enumerable of policies to form the wrap must contain at least two policies.", nameof(policies));
-            case 2:
-                return new AsyncPolicyWrap((AsyncPolicy)policies[0], policies[1]);
-
-            default:
-                return WrapAsync(policies[0], WrapAsync(policies.Skip(1).ToArray()));
-        }
+            0 or 1 => throw new ArgumentException("The enumerable of policies to form the wrap must contain at least two policies.", nameof(policies)),
+            2 => new AsyncPolicyWrap((AsyncPolicy)policies[0], policies[1]),
+            _ => WrapAsync(policies[0], WrapAsync(policies.Skip(1).ToArray())),
+        };
     }
 
     /// <summary>

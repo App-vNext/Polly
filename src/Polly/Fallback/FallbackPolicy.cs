@@ -7,8 +7,8 @@ namespace Polly.Fallback;
 /// </summary>
 public class FallbackPolicy : Policy, IFallbackPolicy
 {
-    private Action<Exception, Context> _onFallback;
-    private Action<Exception, Context, CancellationToken> _fallbackAction;
+    private readonly Action<Exception, Context> _onFallback;
+    private readonly Action<Exception, Context, CancellationToken> _fallbackAction;
 
     internal FallbackPolicy(
         PolicyBuilder policyBuilder,

@@ -36,9 +36,9 @@ public class TimeoutPolicy : Policy, ITimeoutPolicy
 /// </summary>
 public class TimeoutPolicy<TResult> : Policy<TResult>, ITimeoutPolicy<TResult>
 {
-    private Func<Context, TimeSpan> _timeoutProvider;
-    private TimeoutStrategy _timeoutStrategy;
-    private Action<Context, TimeSpan, Task, Exception> _onTimeout;
+    private readonly Func<Context, TimeSpan> _timeoutProvider;
+    private readonly TimeoutStrategy _timeoutStrategy;
+    private readonly Action<Context, TimeSpan, Task, Exception> _onTimeout;
 
     internal TimeoutPolicy(
         Func<Context, TimeSpan> timeoutProvider,

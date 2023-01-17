@@ -71,7 +71,7 @@ public class AsyncCachePolicy : AsyncPolicy
 /// <typeparam name="TResult">The return type of delegates which may be executed through the policy.</typeparam>
 public class AsyncCachePolicy<TResult> : AsyncPolicy<TResult>
 {
-    private IAsyncCacheProvider<TResult> _asyncCacheProvider;
+    private readonly IAsyncCacheProvider<TResult> _asyncCacheProvider;
     private readonly ITtlStrategy<TResult> _ttlStrategy;
     private readonly Func<Context, string> _cacheKeyStrategy;
 

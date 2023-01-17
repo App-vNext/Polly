@@ -5,11 +5,11 @@ internal class AsyncCircuitBreakerEngine
     internal static async Task<TResult> ImplementationAsync<TResult>(
         Func<Context, CancellationToken, Task<TResult>> action,
         Context context,
-        CancellationToken cancellationToken,
         bool continueOnCapturedContext,
         ExceptionPredicates shouldHandleExceptionPredicates,
         ResultPredicates<TResult> shouldHandleResultPredicates,
-        ICircuitController<TResult> breakerController)
+        ICircuitController<TResult> breakerController,
+        CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
 
@@ -17,7 +17,7 @@ internal class AsyncCircuitBreakerEngine
 
         try
         {
-            TResult result = await action(context, cancellationToken).ConfigureAwait(continueOnCapturedContext);
+            var result = await action(context, cancellationToken).ConfigureAwait(continueOnCapturedContext);
 
             if (shouldHandleResultPredicates.AnyMatch(result))
             {
@@ -32,7 +32,7 @@ internal class AsyncCircuitBreakerEngine
         }
         catch (Exception ex)
         {
-            Exception handledException = shouldHandleExceptionPredicates.FirstMatchOrDefault(ex);
+            var handledException = shouldHandleExceptionPredicates.FirstMatchOrDefault(ex);
             if (handledException == null)
             {
                 throw;

@@ -47,7 +47,7 @@ internal struct TimedLock : IDisposable
         leakDetector = new Sentinel();
 #endif
     }
-    private object target;
+    private readonly object target;
 
     public void Dispose()
     {
@@ -67,6 +67,7 @@ internal struct TimedLock : IDisposable
     // in order to detect when the object is not freed.)
     private class Sentinel
     {
+#pragma warning disable CA1821 // Remove empty Finalizers
         ~Sentinel()
         {
             // If this finalizer runs, someone somewhere failed to
@@ -76,8 +77,9 @@ internal struct TimedLock : IDisposable
             System.Diagnostics.Debug.Fail("Undisposed lock");
 #endif
         }
+#pragma warning restore CA1821 // Remove empty Finalizers
     }
-    private Sentinel leakDetector;
+    private readonly Sentinel leakDetector;
 #endif
 }
 

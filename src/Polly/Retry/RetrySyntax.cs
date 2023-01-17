@@ -141,10 +141,9 @@ public static class RetrySyntax
     {
         if (onRetry == null) throw new ArgumentNullException(nameof(onRetry));
 
-            return new RetryPolicy(
-                policyBuilder,
-                (outcome, _, _, ctx) => onRetry(outcome, ctx)
-                );
+        return new RetryPolicy(
+            policyBuilder,
+            (outcome, _, _, ctx) => onRetry(outcome, ctx));
     }
 
     /// <summary>
@@ -365,12 +364,11 @@ public static class RetrySyntax
         if (sleepDurationProvider == null) throw new ArgumentNullException(nameof(sleepDurationProvider));
         if (onRetry == null) throw new ArgumentNullException(nameof(onRetry));
 
-            return new RetryPolicy(
-                policyBuilder,
-                onRetry,
-                retryCount,
-                sleepDurationProvider: sleepDurationProvider
-                );
+        return new RetryPolicy(
+            policyBuilder,
+            onRetry,
+            retryCount,
+            sleepDurationProvider: sleepDurationProvider);
     }
 
     /// <summary>
