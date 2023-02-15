@@ -225,7 +225,7 @@ Task("__CreateSignedNuGetPackage")
         },
     };
 
-    DotNetPack(System.IO.Path.Combine(srcDir, projectName + ".sln"), dotNetPackSettings);
+    DotNetPack(System.IO.Path.Combine(srcDir, projectName, projectName + ".csproj"), dotNetPackSettings);
 });
 
 //////////////////////////////////////////////////////////////////////
