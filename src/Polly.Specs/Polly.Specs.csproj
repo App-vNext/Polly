@@ -35,7 +35,7 @@
     <ReportGeneratorReportTypes>HTML</ReportGeneratorReportTypes>
     <ReportGeneratorReportTypes Condition=" '$(ReportGeneratorOutputMarkdown)' == 'true' ">$(ReportGeneratorReportTypes);MarkdownSummaryGitHub</ReportGeneratorReportTypes>
     <ReportGeneratorTargetDirectory>$([System.IO.Path]::Combine($(OutputPath), 'coverage-reports'))</ReportGeneratorTargetDirectory>
-    <_MarkdownSummaryPrefix>&lt;details&gt;&lt;summary&gt;:chart_with_upwards_trend: &lt;b&gt;$(AssemblyName) Code Coverage report&lt;/b&gt; %40$(TargetFramework)%41&lt;/summary&gt;</_MarkdownSummaryPrefix>
+    <_MarkdownSummaryPrefix>&lt;details&gt;&lt;summary&gt;:chart_with_upwards_trend: &lt;b&gt;$(AssemblyName) Code Coverage report&lt;/b&gt; %28$(TargetFramework)%29&lt;/summary&gt;</_MarkdownSummaryPrefix>
     <_MarkdownSummarySuffix>&lt;/details&gt;</_MarkdownSummarySuffix>
   </PropertyGroup>
 
