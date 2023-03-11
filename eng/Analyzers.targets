@@ -1,0 +1,20 @@
+<Project>
+  <ItemGroup Label="Analyzers" Condition="$(UseDefaultAnalyzers) == 'true'">
+    <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="7.0.1" PrivateAssets="All" />
+    <PackageReference Include="SonarAnalyzer.CSharp" Version="8.51.0.59060" PrivateAssets="All" />
+    <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.435">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <AdditionalFiles Include="$(MsBuildThisFileDirectory)analyzers\Stylecop.json" Visible="false" />
+    <EditorConfigFiles Include="$(MsBuildThisFileDirectory)analyzers\Stylecop.globalconfig" />
+    <EditorConfigFiles Include="$(MsBuildThisFileDirectory)analyzers\$(ProjectType).globalconfig" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <RunAnalyzers>true</RunAnalyzers>
+    <RunAnalyzersDuringBuild>true</RunAnalyzersDuringBuild>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    <AnalysisLevel>latest</AnalysisLevel>
+  </PropertyGroup>
+</Project>

@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net6.0;net7.0</TargetFrameworks>
+    <TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('Windows'))">$(TargetFrameworks);net481</TargetFrameworks>
+    <CheckEolTargetFramework>false</CheckEolTargetFramework>
+    <DisableImplicitNuGetFallbackFolder>true</DisableImplicitNuGetFallbackFolder>
+    <ProjectType>Test</ProjectType>
+    <UseDefaultAnalyzers>true</UseDefaultAnalyzers>
+    <Nullable>enable</Nullable>
+    <SkipPollyUsings>true</SkipPollyUsings>
+    <Threshold>100,100,100</Threshold>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Polly.Core\Polly.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)'=='net461' or '$(TargetFramework)'=='net472'">
+    <Reference Include="Microsoft.CSharp" />
+  </ItemGroup>
+
+</Project>

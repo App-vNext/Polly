@@ -1,0 +1,40 @@
+<Project>
+  <Import Project="..\Version.props" />
+
+  <PropertyGroup>
+    <Company>App vNext</Company>
+    <Copyright>Copyright (c) $([System.DateTime]::Now.ToString(yyyy)), App vNext</Copyright>
+    <DefaultLanguage>en-US</DefaultLanguage>
+    <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <Authors>Michael Wolfenden, App vNext</Authors>
+    <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources> <!-- EmbedUntrackedSources for deterministic build -->
+    <PollyPublicKeySuffix>, PublicKey=0024000004800000940000000602000000240000525341310004000001000100150819e3494f97263a3abdd18e5e0c47b04e6c0ede44a6c51d50b545d403ceeb7cbb32d18dbbbcdd1d88a87d7b73206b126be134b0609c36aa3cb31dd2e47e393293102809b8d77f192f3188618a42e651c14ebf05f8f5b76aa91b431642b23497ed82b65d63791cdaa31d4282a2d6cbabc3fe0745b6b6690c417cabf6a1349c</PollyPublicKeySuffix>
+  </PropertyGroup>
+
+  <PropertyGroup Label="SourceLink">
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+  </PropertyGroup>
+
+  <ItemGroup Label="SourceLink">
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
+  </ItemGroup>
+
+  <PropertyGroup Label="SharedNuspecProperties">
+    <PackageIcon>Polly.png</PackageIcon>
+    <NeutralLanguage>en-US</NeutralLanguage>
+    <PackageLicenseExpression>BSD-3-Clause</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/App-vNext/Polly</PackageProjectUrl>
+    <PackageTags>Exception Handling Resilience Transient Fault Policy Circuit Breaker CircuitBreaker Retry Wait Cache Cache-aside Bulkhead Rate-limit Fallback Timeout Throttle Parallelization</PackageTags>
+    <PackageReleaseNotes>See https://github.com/App-vNext/Polly/blob/master/CHANGELOG.md for details</PackageReleaseNotes>
+  </PropertyGroup>
+
+  <Target Name="AddInternalsVisibleToTest" BeforeTargets="BeforeCompile">
+    <ItemGroup>
+      <InternalsVisibleTo Include="%(InternalsVisibleToTest.Identity)$(PollyPublicKeySuffix)" />
+    </ItemGroup>
+  </Target>
+</Project>

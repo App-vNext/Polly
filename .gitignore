@@ -126,3 +126,5 @@ tools
 coverage.*.cobertura.xml
 coverage.*.json
 coverage-reports/
+
+!eng/**

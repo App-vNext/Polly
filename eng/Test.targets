@@ -1,0 +1,33 @@
+<Project>  
+  <ItemGroup>
+    <PackageReference Include="coverlet.msbuild" Version="3.2.0" PrivateAssets="all" />
+    <PackageReference Include="FluentAssertions" Version="6.10.0" />
+    <PackageReference Include="GitHubActionsTestLogger" Version="2.0.1" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.5.0" />
+    <PackageReference Include="Moq" Version="4.18.4" />
+    <PackageReference Include="ReportGenerator" Version="5.1.19" PrivateAssets="all" />
+    <PackageReference Include="xunit" Version="2.4.2" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.5" PrivateAssets="all" />
+  </ItemGroup>
+
+  <PropertyGroup Condition="$([MSBuild]::GetTargetFrameworkIdentifier('$(TargetFramework)')) != '.NETFramework'">
+    <CollectCoverage>true</CollectCoverage>
+    <CoverletOutputFormat>cobertura</CoverletOutputFormat>
+    <Exclude>[xunit.*]*</Exclude>
+    <ExcludeByAttribute>System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute</ExcludeByAttribute>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(CollectCoverage)' == 'true' ">
+    <ReportGeneratorOutputMarkdown Condition=" '$(ReportGeneratorOutputMarkdown)' == '' AND '$(GITHUB_SHA)' != '' ">true</ReportGeneratorOutputMarkdown>
+    <ReportGeneratorReportTypes>HTML</ReportGeneratorReportTypes>
+    <ReportGeneratorReportTypes Condition=" '$(ReportGeneratorOutputMarkdown)' == 'true' ">$(ReportGeneratorReportTypes);MarkdownSummaryGitHub</ReportGeneratorReportTypes>
+    <ReportGeneratorTargetDirectory>$([System.IO.Path]::Combine($(OutputPath), 'coverage-reports'))</ReportGeneratorTargetDirectory>
+    <_MarkdownSummaryPrefix>&lt;details&gt;&lt;summary&gt;:chart_with_upwards_trend: &lt;b&gt;$(AssemblyName) Code Coverage report&lt;/b&gt; %28$(TargetFramework)%29&lt;/summary&gt;</_MarkdownSummaryPrefix>
+    <_MarkdownSummarySuffix>&lt;/details&gt;</_MarkdownSummarySuffix>
+  </PropertyGroup>
+
+  <Target Name="GenerateCoverageReports" AfterTargets="GenerateCoverageResultAfterTest" Condition=" '$(CollectCoverage)' == 'true' ">
+    <ReportGenerator ReportFiles="@(CoverletReport)" ReportTypes="$(ReportGeneratorReportTypes)" Tag="$(TargetFramework)" TargetDirectory="$(ReportGeneratorTargetDirectory)" Title="$(AssemblyName)" VerbosityLevel="Warning" />
+    <Exec Condition=" '$(ReportGeneratorOutputMarkdown)' == 'true' " Command="pwsh -Command %22('$(_MarkdownSummaryPrefix)' + [System.Environment]::NewLine + [System.Environment]::NewLine + (Get-Content $([System.IO.Path]::Combine($(ReportGeneratorTargetDirectory), 'SummaryGithub.md')) | Out-String) + [System.Environment]::NewLine + [System.Environment]::NewLine + '$(_MarkdownSummarySuffix)') >> $(GITHUB_STEP_SUMMARY)%22" />
+  </Target>
+</Project>
