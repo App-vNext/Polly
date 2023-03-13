@@ -1,18 +1,5 @@
 <Project>
-  <PropertyGroup>
-    <AssemblyOriginatorKeyFile>..\Polly.snk</AssemblyOriginatorKeyFile>
-    <SignAssembly>true</SignAssembly>
-    <LangVersion>latest</LangVersion>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <RootDir>$(MSBuildThisFileDirectory)..\</RootDir>
-    <ContinuousIntegrationBuild Condition=" '$(CI)' != '' ">true</ContinuousIntegrationBuild>
-  </PropertyGroup>
-
-  <Import Project="$(RootDir)eng/Analyzers.targets" />
-
-  <ItemGroup>
-    <None Include="$(RootDir)Polly.png" Pack="true" PackagePath="\" />
-  </ItemGroup>
+  <Import Project="../eng/Common.targets" />
 
   <ItemGroup>
     <Using Include="System.Collections" />
