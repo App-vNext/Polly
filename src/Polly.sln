@@ -29,8 +29,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polly.Core.Specs", "Polly.C
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "eng", "eng", "{04E3C7C5-31F7-4CD6-8BEC-C1032527D231}"
 	ProjectSection(SolutionItems) = preProject
-		..\eng\Library.props = ..\eng\Library.props
-		..\eng\Test.props = ..\eng\Test.props
+		..\eng\Analyzers.targets = ..\eng\Analyzers.targets
+		..\eng\Library.targets = ..\eng\Library.targets
+		..\eng\Test.targets = ..\eng\Test.targets
 	EndProjectSection
 EndProject
 Global
