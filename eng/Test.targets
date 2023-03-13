@@ -1,4 +1,10 @@
-<Project>  
+<Project>
+  <PropertyGroup>
+    <DisableImplicitNuGetFallbackFolder>true</DisableImplicitNuGetFallbackFolder>
+    <CheckEolTargetFramework>false</CheckEolTargetFramework>
+    <DisableImplicitNuGetFallbackFolder>true</DisableImplicitNuGetFallbackFolder>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="coverlet.msbuild" Version="3.2.0" PrivateAssets="all" />
     <PackageReference Include="FluentAssertions" Version="6.10.0" />
