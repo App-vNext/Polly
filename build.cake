@@ -193,9 +193,11 @@ Task("__RunTests")
         loggers = new[] { "GitHubActions;report-warnings=false" };
     }
 
-    foreach(var specsProj in GetFiles("./src/**/*.Specs.csproj"))
+    var projects = GetFiles("./src/**/*.Specs.csproj").Concat(GetFiles("./src/**/*.Tests.csproj"));
+
+    foreach(var proj in projects)
     {
-        DotNetTest(specsProj.FullPath, new DotNetTestSettings
+        DotNetTest(proj.FullPath, new DotNetTestSettings
         {
             Configuration = configuration,
             Loggers = loggers,

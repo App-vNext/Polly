@@ -49,7 +49,7 @@ jobs:
     - uses: codecov/codecov-action@v3
       name: Upload coverage to Codecov
       with:
-        file: ./src/Polly.Specs/coverage-reports/Cobertura.xml
+        files: ./src/Polly.Specs/coverage-reports/Cobertura.xml,./src/Polly.Core.Tests/coverage-reports/Cobertura.xml
         flags: ${{ matrix.os_name }}
 
     - name: Publish NuGet packages

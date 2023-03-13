@@ -25,7 +25,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polly.Benchmarks", "Polly.B
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polly.Core", "Polly.Core\Polly.Core.csproj", "{E3831CE2-795D-4979-BB48-1C88CBF66651}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polly.Core.Specs", "Polly.Core.Specs\Polly.Core.Specs.csproj", "{AF1383E7-BABF-492A-91C8-F2789AE7B3B4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polly.Core.Tests", "Polly.Core.Tests\Polly.Core.Tests.csproj", "{AF1383E7-BABF-492A-91C8-F2789AE7B3B4}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "eng", "eng", "{04E3C7C5-31F7-4CD6-8BEC-C1032527D231}"
 	ProjectSection(SolutionItems) = preProject

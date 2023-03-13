@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;net461;net472;net6.0;net7.0</TargetFrameworks>
+    <TargetFrameworks>net7.0;net6.0;netstandard2.0;net461</TargetFrameworks>
     <AssemblyTitle>Polly.Core</AssemblyTitle>
     <RootNamespace>Polly</RootNamespace>
     <Nullable>enable</Nullable>
@@ -13,7 +13,7 @@
 
   <ItemGroup>
     <Using Remove="System.Net.Http"/>
-    <InternalsVisibleToTest Include="Polly.Core.Specs"/>
+    <InternalsVisibleToTest Include="Polly.Core.Tests"/>
   </ItemGroup>
   
 </Project>
