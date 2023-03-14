@@ -193,9 +193,11 @@ Task("__RunTests")
         loggers = new[] { "GitHubActions;report-warnings=false" };
     }
 
-    foreach(var specsProj in GetFiles("./src/**/*.Specs.csproj"))
+    var projects = GetFiles("./src/**/*.Specs.csproj").Concat(GetFiles("./src/**/*.Tests.csproj"));
+
+    foreach(var proj in projects)
     {
-        DotNetTest(specsProj.FullPath, new DotNetTestSettings
+        DotNetTest(proj.FullPath, new DotNetTestSettings
         {
             Configuration = configuration,
             Loggers = loggers,
@@ -204,13 +206,9 @@ Task("__RunTests")
     }
 });
 
-Task("__CreateSignedNuGetPackage")
+Task("__CreateSignedNuGetPackages")
     .Does(() =>
 {
-    var packageName = projectName;
-
-    Information("Building {0}.{1}.nupkg", packageName, nugetVersion);
-
     var dotNetPackSettings = new DotNetPackSettings
     {
         Configuration = configuration,
@@ -225,7 +223,11 @@ Task("__CreateSignedNuGetPackage")
         },
     };
 
-    DotNetPack(System.IO.Path.Combine(srcDir, projectName, projectName + ".csproj"), dotNetPackSettings);
+    Information("Building Polly.{0}.nupkg", nugetVersion);
+    DotNetPack(System.IO.Path.Combine(srcDir, "Polly", "Polly.csproj"), dotNetPackSettings);
+
+    Information("Building Polly.Core.{0}.nupkg", nugetVersion);
+    DotNetPack(System.IO.Path.Combine(srcDir, "Polly.Core", "Polly.Core.csproj"), dotNetPackSettings);
 });
 
 //////////////////////////////////////////////////////////////////////
@@ -238,7 +240,7 @@ Task("Build")
     .IsDependentOn("__UpdateAssemblyVersionInformation")
     .IsDependentOn("__BuildSolutions")
     .IsDependentOn("__RunTests")
-    .IsDependentOn("__CreateSignedNuGetPackage");
+    .IsDependentOn("__CreateSignedNuGetPackages");
 
 ///////////////////////////////////////////////////////////////////////////////
 // PRIMARY TARGETS

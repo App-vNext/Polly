@@ -1,16 +1,14 @@
-<?xml version="1.0" encoding="utf-8"?>
 <Project>
-  <PropertyGroup>
-    <AssemblyOriginatorKeyFile>..\Polly.snk</AssemblyOriginatorKeyFile>
-    <SignAssembly>true</SignAssembly>
-    <LangVersion>latest</LangVersion>
-    <ImplicitUsings>enable</ImplicitUsings>
-  </PropertyGroup>
+  <Import Project="../eng/Common.targets" />
+
   <ItemGroup>
     <Using Include="System.Collections" />
     <Using Include="System.Collections.Concurrent" />
     <Using Include="System.Diagnostics" />
     <Using Include="System.Reflection" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(SkipPollyUsings)' != 'true'">
     <Using Include="Polly.Bulkhead" />
     <Using Include="Polly.Caching" />
     <Using Include="Polly.CircuitBreaker" />
@@ -23,6 +21,7 @@
     <Using Include="Polly.Utilities" />
     <Using Include="Polly.Wrap" />
   </ItemGroup>
+
   <ItemGroup Condition="'$(ProjectName)' == 'Polly.Specs'">
     <Using Include="FluentAssertions" />
     <Using Include="FluentAssertions.Execution" />
@@ -38,6 +37,7 @@
     <Using Include="Xunit.Abstractions" />
     <Using Include="Xunit.Sdk" />
   </ItemGroup>
+
   <ItemGroup Condition="'$(ProjectName)' == 'Polly.Benchmarks'">
     <Using Include="BenchmarkDotNet.Attributes" />
     <Using Include="BenchmarkDotNet.Configs" />

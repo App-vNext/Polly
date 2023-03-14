@@ -1,0 +1,4 @@
+<Project>
+  <Import Project="$(RootDir)eng/Test.targets" Condition="$(ProjectType) == 'Test'" />
+  <Import Project="$(RootDir)eng/Library.targets" Condition="$(ProjectType) == 'Library'" />
+</Project>
