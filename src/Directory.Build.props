@@ -1,6 +1,4 @@
 <Project>
-  <Import Project="../eng/Common.targets" />
-
   <ItemGroup>
     <Using Include="System.Collections" />
     <Using Include="System.Collections.Concurrent" />

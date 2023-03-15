@@ -10,6 +10,7 @@ var configuration = Argument<string>("configuration", "Release");
 //////////////////////////////////////////////////////////////////////
 
 #Tool "xunit.runner.console&version=2.4.2"
+#Tool "dotnet-stryker&version=3.6.1"
 
 //////////////////////////////////////////////////////////////////////
 // EXTERNAL NUGET LIBRARIES
@@ -45,6 +46,10 @@ Dictionary<string, object> gitVersionOutput;
 string nugetVersion;
 string assemblyVersion;
 string assemblySemver;
+
+// Stryker / Mutation Testing
+var strykerConfig = File("./eng/stryker-config.json");
+var strykerOutput = Directory("StrykerOutput");
 
 ///////////////////////////////////////////////////////////////////////////////
 // INNER CLASSES
@@ -84,7 +89,8 @@ Task("__Clean")
     {
         testResultsDir,
         nupkgDestDir,
-        artifactsDir
+        artifactsDir,
+        strykerOutput
   	};
 
     CleanDirectories(cleanDirectories);
@@ -206,6 +212,27 @@ Task("__RunTests")
     }
 });
 
+Task("__RunMutationTests")
+    .Does(() =>
+{
+    TestProject(File("./src/Polly/Polly.csproj"), File("./src/Polly.Specs/Polly.Specs.csproj"), "Polly");
+    TestProject(File("./src/Polly.Core/Polly.Core.csproj"), File("./src/Polly.Core.Tests/Polly.Core.Tests.csproj"), "Polly.Core");
+
+    void TestProject(FilePath proj, FilePath testProj, string project)
+    {
+        var strykerPath = Context.Tools.Resolve("Stryker.CLI.dll");
+        var mutationScore = XmlPeek(proj, "/Project/PropertyGroup/MutationScore/text()", new XmlPeekSettings { SuppressWarning = true });
+        var score = int.Parse(mutationScore);
+
+        Information($"Running mutation tests for '{proj}'. Test Project: '{testProj}'");
+        var result = StartProcess("dotnet", $"{strykerPath} --project {project} --test-project {testProj} --break-at {score} --config-file {strykerConfig} --output {strykerOutput}/{project}");
+        if (result != 0)
+        {
+            throw new InvalidOperationException($"The mutation testing of '{project}' project failed.");
+        }
+    }
+});
+
 Task("__CreateSignedNuGetPackages")
     .Does(() =>
 {
@@ -240,6 +267,7 @@ Task("Build")
     .IsDependentOn("__UpdateAssemblyVersionInformation")
     .IsDependentOn("__BuildSolutions")
     .IsDependentOn("__RunTests")
+    .IsDependentOn("__RunMutationTests")
     .IsDependentOn("__CreateSignedNuGetPackages");
 
 ///////////////////////////////////////////////////////////////////////////////

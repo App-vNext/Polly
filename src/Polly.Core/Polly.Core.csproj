@@ -9,6 +9,7 @@
     <ProjectType>Library</ProjectType>
     <UseDefaultAnalyzers>true</UseDefaultAnalyzers>
     <SkipPollyUsings>true</SkipPollyUsings>
+    <MutationScore>100</MutationScore>
   </PropertyGroup>
 
   <ItemGroup>

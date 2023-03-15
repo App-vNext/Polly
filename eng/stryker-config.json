@@ -1,0 +1,26 @@
+{
+  "stryker-config": {
+    "reporters": [
+      "json",
+      "html",
+      "markdown"
+    ],
+    "ignore-methods": [
+      "*Exception.ctor",
+      "AddError",
+      "ConfigureAwait",
+      "Dispose",
+      "LogError",
+      "LogInformation"
+    ],
+    "ignore-mutations": [
+      "block",
+      "statement"
+    ],
+    "target-framework": "net7.0",
+    "thresholds": {
+      "high": 100,
+      "low": 100
+    }
+  }
+}
