@@ -4,7 +4,6 @@
     <SignAssembly>true</SignAssembly>
     <LangVersion>latest</LangVersion>
     <ImplicitUsings>enable</ImplicitUsings>
-    <RootDir>$(MSBuildThisFileDirectory)..\</RootDir>
     <ContinuousIntegrationBuild Condition=" '$(CI)' != '' ">true</ContinuousIntegrationBuild>
   </PropertyGroup>
 

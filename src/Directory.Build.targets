@@ -1,4 +1,5 @@
 <Project>
-  <Import Project="$(RootDir)eng/Test.targets" Condition="$(ProjectType) == 'Test'" />
-  <Import Project="$(RootDir)eng/Library.targets" Condition="$(ProjectType) == 'Library'" />
+  <Import Project="$(MsBuildThisFileDirectory)../eng/Common.targets" />
+  <Import Project="$(MsBuildThisFileDirectory)../eng/Test.targets" Condition="$(ProjectType) == 'Test'" />
+  <Import Project="$(MsBuildThisFileDirectory)../eng/Library.targets" Condition="$(ProjectType) == 'Library'" />
 </Project>
