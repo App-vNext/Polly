@@ -28,7 +28,7 @@ public class DelegatingResilienceStrategy : IResilienceStrategy
 
             if (_executed)
             {
-                throw new InvalidOperationException("The delegating resilience strategy has already been executed and changing the value of 'Next' property is not allowed.");
+                throw new InvalidOperationException($"The delegating resilience strategy has already been executed and changing the value of '{nameof(Next)}' property is not allowed.");
             }
 
             _next = value;
