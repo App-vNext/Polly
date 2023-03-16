@@ -11,12 +11,12 @@ public interface IResilienceStrategy
     /// <summary>
     /// Executes the specified callback.
     /// </summary>
-    /// <typeparam name="TResult">The type of result returned by the execution callback.</typeparam>
-    /// <typeparam name="TState">The type of state associated with the execution.</typeparam>
-    /// <param name="execution">The execution callback.</param>
-    /// <param name="context">The context associated with the execution.</param>
-    /// <param name="state">The state associated with the execution.</param>
-    /// <returns>An instance of <see cref="ValueTask"/> that represents an asynchronous execution.</returns>
+    /// <typeparam name="TResult">The type of result returned by the callback.</typeparam>
+    /// <typeparam name="TState">The type of state associated with the callback.</typeparam>
+    /// <param name="callback">The user-provided callback.</param>
+    /// <param name="context">The context associated with the callback.</param>
+    /// <param name="state">The state associated with the callback.</param>
+    /// <returns>An instance of <see cref="ValueTask"/> that represents an asynchronous callback.</returns>
     /// <remarks>This method should not be used directly. Instead, use the dedicated extensions to execute user-provided callback.</remarks>
-    internal ValueTask<TResult> ExecuteInternalAsync<TResult, TState>(Func<ResilienceContext, TState, ValueTask<TResult>> execution, ResilienceContext context, TState state);
+    internal ValueTask<TResult> ExecuteInternalAsync<TResult, TState>(Func<ResilienceContext, TState, ValueTask<TResult>> callback, ResilienceContext context, TState state);
 }

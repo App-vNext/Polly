@@ -15,13 +15,13 @@ public sealed class NullResilienceStrategy : IResilienceStrategy
     }
 
     /// <inheritdoc/>
-    ValueTask<TResult> IResilienceStrategy.ExecuteInternalAsync<TResult, TState>(Func<ResilienceContext, TState, ValueTask<TResult>> execution, ResilienceContext context, TState state)
+    ValueTask<TResult> IResilienceStrategy.ExecuteInternalAsync<TResult, TState>(Func<ResilienceContext, TState, ValueTask<TResult>> callback, ResilienceContext context, TState state)
     {
-        Guard.NotNull(execution);
+        Guard.NotNull(callback);
         Guard.NotNull(context);
 
         context.AssertInitialized();
 
-        return execution(context, state);
+        return callback(context, state);
     }
 }

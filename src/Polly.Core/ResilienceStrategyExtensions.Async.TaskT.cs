@@ -5,51 +5,61 @@ public static partial class ResilienceStrategyExtensions
     /// <summary>
     /// Executes the specified callback.
     /// </summary>
-    /// <typeparam name="TResult">The type of result returned by the execution callback.</typeparam>
-    /// <typeparam name="TState">The type of s associated with the execution.</typeparam>
+    /// <typeparam name="TResult">The type of result returned by the callback.</typeparam>
+    /// <typeparam name="TState">The type of state associated with the callback.</typeparam>
     /// <param name="strategy">The instance of <see cref="IResilienceStrategy"/>.</param>
-    /// <param name="execution">The execution callback.</param>
-    /// <param name="context">The context associated with the execution.</param>
-    /// <param name="state">The state associated with the execution.</param>
+    /// <param name="callback">The user-provided callback.</param>
+    /// <param name="context">The context associated with the callback.</param>
+    /// <param name="state">The state associated with the callback.</param>
     /// <returns>The instance of <see cref="Task"/> that represents the asynchronous execution.</returns>
     public static async Task<TResult> ExecuteAsTaskAsync<TResult, TState>(
         this IResilienceStrategy strategy,
-        Func<ResilienceContext, TState, Task<TResult>> execution,
+        Func<ResilienceContext, TState, Task<TResult>> callback,
         ResilienceContext context,
         TState state)
     {
         Guard.NotNull(strategy);
-        Guard.NotNull(execution);
+        Guard.NotNull(callback);
         Guard.NotNull(context);
 
         InitializeAsyncContext<TResult>(context);
 
-        return await strategy.ExecuteInternalAsync(static async (c, s) => await s.execution(c, s.state).ConfigureAwait(c.ContinueOnCapturedContext), context, (execution, state))
-                             .ConfigureAwait(context.ContinueOnCapturedContext);
+        return await strategy.ExecuteInternalAsync(
+            static async (context, state) =>
+            {
+                return await state.callback(context, state.state).ConfigureAwait(context.ContinueOnCapturedContext);
+            },
+            context,
+            (callback, state)).ConfigureAwait(context.ContinueOnCapturedContext);
     }
 
     /// <summary>
     /// Executes the specified callback.
     /// </summary>
-    /// <typeparam name="TResult">The type of result returned by the execution callback.</typeparam>
+    /// <typeparam name="TResult">The type of result returned by the callback.</typeparam>
     /// <param name="strategy">The instance of <see cref="IResilienceStrategy"/>.</param>
-    /// <param name="execution">The execution callback.</param>
-    /// <param name="cancellationToken">The <see cref="CancellationToken"/> associated with the execution.</param>
+    /// <param name="callback">The user-provided callback.</param>
+    /// <param name="cancellationToken">The <see cref="CancellationToken"/> associated with the callback.</param>
     /// <returns>The instance of <see cref="ValueTask"/> that represents the asynchronous execution.</returns>
     public static async Task<TResult> ExecuteAsTaskAsync<TResult>(
         this IResilienceStrategy strategy,
-        Func<CancellationToken, Task<TResult>> execution,
+        Func<CancellationToken, Task<TResult>> callback,
         CancellationToken cancellationToken = default)
     {
         Guard.NotNull(strategy);
-        Guard.NotNull(execution);
+        Guard.NotNull(callback);
 
         var context = GetAsyncContext<TResult>(cancellationToken);
 
         try
         {
-            return await strategy.ExecuteInternalAsync(static async (c, s) => await s(c.CancellationToken).ConfigureAwait(c.ContinueOnCapturedContext), context, execution)
-                                 .ConfigureAwait(context.ContinueOnCapturedContext);
+            return await strategy.ExecuteInternalAsync(
+                static async (context, state) =>
+                {
+                    return await state(context.CancellationToken).ConfigureAwait(context.ContinueOnCapturedContext);
+                },
+                context,
+                callback).ConfigureAwait(context.ContinueOnCapturedContext);
         }
         finally
         {

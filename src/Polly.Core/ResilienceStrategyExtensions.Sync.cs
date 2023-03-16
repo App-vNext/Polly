@@ -7,46 +7,46 @@ public static partial class ResilienceStrategyExtensions
     /// <summary>
     /// Executes the specified callback.
     /// </summary>
-    /// <typeparam name="TState">The type of state associated with the execution.</typeparam>
+    /// <typeparam name="TState">The type of state associated with the callback.</typeparam>
     /// <param name="strategy">The instance of <see cref="IResilienceStrategy"/>.</param>
-    /// <param name="execution">The execution callback.</param>
-    /// <param name="context">The context associated with the execution.</param>
-    /// <param name="state">The state associated with the execution.</param>
+    /// <param name="callback">The user-provided callback.</param>
+    /// <param name="context">The context associated with the callback.</param>
+    /// <param name="state">The state associated with the callback.</param>
     public static void Execute<TState>(
         this IResilienceStrategy strategy,
-        Action<ResilienceContext, TState> execution,
+        Action<ResilienceContext, TState> callback,
         ResilienceContext context,
         TState state)
     {
         Guard.NotNull(strategy);
-        Guard.NotNull(execution);
+        Guard.NotNull(callback);
         Guard.NotNull(context);
 
         InitializeSyncContext(context);
 
         strategy.ExecuteInternalAsync(
-            static (c, s) =>
+            static (context, state) =>
             {
-                s.execution(c, s.state);
+                state.callback(context, state.state);
                 return new ValueTask<VoidResult>(VoidResult.Instance);
             },
             context,
-            (execution, state)).GetResult();
+            (callback, state)).GetResult();
     }
 
     /// <summary>
     /// Executes the specified callback.
     /// </summary>
     /// <param name="strategy">The instance of <see cref="IResilienceStrategy"/>.</param>
-    /// <param name="execution">The execution callback.</param>
-    /// <param name="cancellationToken">The <see cref="CancellationToken"/> associated with the execution.</param>
+    /// <param name="callback">The user-provided callback.</param>
+    /// <param name="cancellationToken">The <see cref="CancellationToken"/> associated with the callback.</param>
     public static void Execute(
         this IResilienceStrategy strategy,
-        Action<CancellationToken> execution,
+        Action<CancellationToken> callback,
         CancellationToken cancellationToken = default)
     {
         Guard.NotNull(strategy);
-        Guard.NotNull(execution);
+        Guard.NotNull(callback);
 
         var context = GetSyncContext(cancellationToken);
 
@@ -59,7 +59,7 @@ public static partial class ResilienceStrategyExtensions
                     return new ValueTask<VoidResult>(VoidResult.Instance);
                 },
                 context,
-                execution).GetResult();
+                callback).GetResult();
         }
         finally
         {

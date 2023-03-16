@@ -39,13 +39,13 @@ public class DelegatingResilienceStrategy : IResilienceStrategy
 #pragma warning disable S4039 // Interface methods should be callable by derived types
     /// <inheritdoc/>
     ValueTask<TResult> IResilienceStrategy.ExecuteInternalAsync<TResult, TState>(
-        Func<ResilienceContext, TState, ValueTask<TResult>> execution,
+        Func<ResilienceContext, TState, ValueTask<TResult>> callback,
         ResilienceContext context,
         TState state)
     {
         context.AssertInitialized();
 
-        return ExecuteCoreAsync(execution, context, state);
+        return ExecuteCoreAsync(callback, context, state);
     }
 #pragma warning restore CA1033 // Interface methods should be callable by child types
 #pragma warning restore S4039 // Interface methods should be callable by derived types
@@ -53,19 +53,19 @@ public class DelegatingResilienceStrategy : IResilienceStrategy
     /// <summary>
     /// Executes the specified callback.
     /// </summary>
-    /// <typeparam name="TResult">The type of result returned by the execution callback.</typeparam>
-    /// <typeparam name="TState">The type of state associated with the execution.</typeparam>
-    /// <param name="execution">The execution callback.</param>
-    /// <param name="context">The context associated with the execution.</param>
-    /// <param name="state">The state associated with the execution.</param>
-    /// <returns>An instance of <see cref="ValueTask"/> that represents an asynchronous execution.</returns>
+    /// <typeparam name="TResult">The type of result returned by the callback.</typeparam>
+    /// <typeparam name="TState">The type of state associated with the callback.</typeparam>
+    /// <param name="callback">The user-provided callback.</param>
+    /// <param name="context">The context associated with the callback.</param>
+    /// <param name="state">The state associated with the callback.</param>
+    /// <returns>An instance of <see cref="ValueTask"/> that represents an asynchronous callback.</returns>
     protected virtual ValueTask<TResult> ExecuteCoreAsync<TResult, TState>(
-        Func<ResilienceContext, TState, ValueTask<TResult>> execution,
+        Func<ResilienceContext, TState, ValueTask<TResult>> callback,
         ResilienceContext context,
         TState state)
     {
         _executed = true;
-        return Next.ExecuteInternalAsync(execution, context, state);
+        return Next.ExecuteInternalAsync(callback, context, state);
     }
 }
 
