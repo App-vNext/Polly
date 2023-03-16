@@ -4,42 +4,43 @@ using Xunit;
 
 namespace Polly.Core.Tests;
 
-#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
-
-public partial class ResilienceStrategyExtensionsTests
+public partial class ResilienceStrategyTests
 {
-    public static IEnumerable<object[]> ExecuteAsync_EnsureCorrectBehavior_Data()
+    public static IEnumerable<object[]> ExecuteT_EnsureCorrectBehavior_Data()
     {
-        return ConvertExecuteParameters(ExecuteAsync_EnsureCorrectBehavior_ExecuteParameters);
+        return ConvertExecuteParameters(ExecuteT_EnsureCorrectBehavior_ExecuteParameters);
     }
 
-    private static IEnumerable<ExecuteParameters> ExecuteAsync_EnsureCorrectBehavior_ExecuteParameters()
+    private static IEnumerable<ExecuteParameters> ExecuteT_EnsureCorrectBehavior_ExecuteParameters()
     {
-        yield return new ExecuteParameters(r => r.ExecuteAsync(async _ => { }))
+        long result = 12345;
+
+        yield return new ExecuteParameters<long>(r => r.Execute(t => result), result)
         {
-            Caption = "ExecuteAsync_NoCancellation",
+            Caption = "ExecuteT_NoCancellation",
             AssertContext = AssertResilienceContext,
             AssertContextAfter = AssertContextNotInitialized,
         };
 
-        yield return new ExecuteParameters(r => r.ExecuteAsync(async t => { t.Should().Be(CancellationToken); }, CancellationToken))
+        yield return new ExecuteParameters<long>(r => r.Execute(t => { t.Should().Be(CancellationToken); return result; }, CancellationToken), result)
         {
-            Caption = "ExecuteAsync_Cancellation",
+            Caption = "ExecuteT_Cancellation",
             AssertContext = AssertResilienceContextAndToken,
             AssertContextAfter = AssertContextNotInitialized,
         };
 
-        yield return new ExecuteParameters(r => r.ExecuteAsync(async (_, s) => { s.Should().Be("dummy-state"); }, ResilienceContext.Get(), "dummy-state"))
+        yield return new ExecuteParameters<long>(r => r.Execute((_, s) => { s.Should().Be("dummy-state"); return result; }, ResilienceContext.Get(), "dummy-state"), result)
         {
-            Caption = "ExecuteAsync_ResilienceContextAndState",
+            Caption = "ExecuteT_ResilienceContextAndState",
             AssertContext = AssertResilienceContext,
             AssertContextAfter = AssertContextInitialized,
         };
 
         static void AssertResilienceContext(ResilienceContext context)
         {
-            context.IsSynchronous.Should().BeFalse();
-            context.IsVoid.Should().BeTrue();
+            context.IsSynchronous.Should().BeTrue();
+            context.IsVoid.Should().BeFalse();
+            context.ResultType.Should().Be(typeof(long));
             context.ContinueOnCapturedContext.Should().BeFalse();
         }
 
@@ -54,9 +55,9 @@ public partial class ResilienceStrategyExtensionsTests
         static void AssertContextInitialized(ResilienceContext context) => context.IsInitialized.Should().BeTrue();
     }
 
-    [MemberData(nameof(ExecuteAsync_EnsureCorrectBehavior_Data))]
+    [MemberData(nameof(ExecuteT_EnsureCorrectBehavior_Data))]
     [Theory]
-    public async Task ExecuteAsync_Ok(ExecuteParameters parameters)
+    public async Task ExecuteT_Ok(ExecuteParameters parameters)
     {
         ResilienceContext? context = null;
 

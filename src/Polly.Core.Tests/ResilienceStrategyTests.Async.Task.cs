@@ -6,7 +6,7 @@ namespace Polly.Core.Tests;
 
 #pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
 
-public partial class ResilienceStrategyExtensionsTests
+public partial class ResilienceStrategyTests
 {
     public static IEnumerable<object[]> ExecuteAsTaskAsync_EnsureCorrectBehavior_Data()
     {

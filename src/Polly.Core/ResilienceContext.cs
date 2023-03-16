@@ -3,8 +3,8 @@ using System.Diagnostics.CodeAnalysis;
 namespace Polly;
 
 /// <summary>
-/// A context assigned to a single execution of <see cref="IResilienceStrategy"/>. It is created manually or automatically
-/// when the user calls the various extensions on top of <see cref="IResilienceStrategy"/>. After every execution the context should be discarded and returned to the pool.
+/// A context assigned to a single execution of <see cref="ResilienceStrategy"/>. It is created manually or automatically
+/// when the user calls the various extensions on top of <see cref="ResilienceStrategy"/>. After every execution the context should be discarded and returned to the pool.
 /// </summary>
 /// <remarks>
 /// Do not re-use an instance of <see cref="ResilienceContext"/> across more than one execution. The <see cref="ResilienceContext"/> is retrieved from the pool
