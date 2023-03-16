@@ -1,5 +1,3 @@
-using System.ComponentModel.DataAnnotations;
-
 namespace Polly.Builder;
 
 /// <summary>
@@ -49,7 +47,7 @@ public class ResilienceStrategyBuilder
 
         if (options is not null)
         {
-            Validator.ValidateObject(options, new ValidationContext(options), validateAllProperties: true);
+            ValidationHelper.ValidateObject(options, $"The '{nameof(ResilienceStrategyOptions)}' options are not valid.");
         }
 
         _entries.Add(new Entry(factory, options ?? new ResilienceStrategyOptions()));
@@ -63,7 +61,7 @@ public class ResilienceStrategyBuilder
     /// <returns>An instance of <see cref="IResilienceStrategy"/>.</returns>
     public IResilienceStrategy Build()
     {
-        Validator.ValidateObject(Options, new ValidationContext(Options), validateAllProperties: true);
+        ValidationHelper.ValidateObject(Options, $"The '{nameof(ResilienceStrategyBuilderOptions)}' options are not valid.");
 
         if (_entries.Count == 0)
         {

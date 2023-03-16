@@ -89,7 +89,16 @@ public class ResilienceStrategyBuilderTests
         var builder = new ResilienceStrategyBuilder();
         builder.Options.BuilderName = null!;
 
-        builder.Invoking(b => b.Build()).Should().Throw<ValidationException>();
+        builder.Invoking(b => b.Build())
+            .Should()
+            .Throw<ValidationException>()
+            .WithMessage(
+"""
+The 'ResilienceStrategyBuilderOptions' options are not valid.
+
+Validation Errors:
+The BuilderName field is required.
+""");
     }
 
     [Fact]
@@ -101,7 +110,14 @@ public class ResilienceStrategyBuilderTests
             .Invoking(b => b.AddStrategy(NullResilienceStrategy.Instance, new ResilienceStrategyOptions { StrategyName = null!, StrategyType = null! }))
             .Should()
             .Throw<ValidationException>()
-            .WithMessage("The StrategyName field is required.");
+            .WithMessage(
+"""
+The 'ResilienceStrategyOptions' options are not valid.
+
+Validation Errors:
+The StrategyName field is required.
+The StrategyType field is required.
+""");
     }
 
     [Fact]
@@ -110,7 +126,7 @@ public class ResilienceStrategyBuilderTests
         var builder = new ResilienceStrategyBuilder();
 
         builder
-            .Invoking(b => b.AddStrategy(null!))
+            .Invoking(b => b.AddStrategy((Func<ResilienceStrategyBuilderContext, IResilienceStrategy>)null!))
             .Should()
             .Throw<ArgumentNullException>()
             .And.ParamName
