@@ -3,14 +3,14 @@ namespace Polly;
 public static partial class ResilienceStrategyExtensions
 {
     /// <summary>
-    /// Executes the <paramref name="execution"/> callback.
+    /// Executes the specified callback.
     /// </summary>
     /// <typeparam name="TResult">The type of result returned by the execution callback.</typeparam>
     /// <typeparam name="TState">The type of s associated with the execution.</typeparam>
     /// <param name="strategy">The instance of <see cref="IResilienceStrategy"/>.</param>
     /// <param name="execution">The execution callback.</param>
     /// <param name="context">The context associated with the execution.</param>
-    /// <param name="state">The s associated with the execution.</param>
+    /// <param name="state">The state associated with the execution.</param>
     /// <returns>The instance of <see cref="Task"/> that represents the asynchronous execution.</returns>
     public static async Task<TResult> ExecuteAsTaskAsync<TResult, TState>(
         this IResilienceStrategy strategy,
@@ -29,7 +29,7 @@ public static partial class ResilienceStrategyExtensions
     }
 
     /// <summary>
-    /// Executes the <paramref name="execution"/> callback.
+    /// Executes the specified callback.
     /// </summary>
     /// <typeparam name="TResult">The type of result returned by the execution callback.</typeparam>
     /// <param name="strategy">The instance of <see cref="IResilienceStrategy"/>.</param>

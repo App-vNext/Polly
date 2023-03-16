@@ -4,20 +4,20 @@ using Polly;
 namespace Polly;
 
 /// <summary>
-/// The extensions for <see cref="IResilienceStrategy"/>. These extensions are used to execute the user callbacks in various execution modes.
+/// Extensions for <see cref="IResilienceStrategy"/>. These extension methods are used to execute the user callbacks in various execution modes.
 /// For example, you can use the same <see cref="IResilienceStrategy"/> instance to execute a synchronous callback,
 /// an asynchronous callback, or a callback that returns a void result.
 /// </summary>
 public static partial class ResilienceStrategyExtensions
 {
     /// <summary>
-    /// Executes the <paramref name="execution"/> callback.
+    /// Executes the specified callback.
     /// </summary>
     /// <typeparam name="TState">The type of s associated with the execution.</typeparam>
     /// <param name="strategy">Instance of <see cref="IResilienceStrategy"/>.</param>
     /// <param name="execution">The execution callback.</param>
-    /// <param name="context">The c associated with the execution.</param>
-    /// <param name="state">The s associated with the execution.</param>
+    /// <param name="context">The context associated with the execution.</param>
+    /// <param name="state">The state associated with the execution.</param>
     /// <returns>The instance of <see cref="ValueTask"/> that represents the asynchronous execution.</returns>
     public static async ValueTask ExecuteAsync<TState>(
         this IResilienceStrategy strategy,
@@ -42,7 +42,7 @@ public static partial class ResilienceStrategyExtensions
     }
 
     /// <summary>
-    /// Executes the <paramref name="execution"/> callback.
+    /// Executes the specified callback.
     /// </summary>
     /// <param name="strategy">Instance of <see cref="IResilienceStrategy"/>.</param>
     /// <param name="execution">The execution callback.</param>

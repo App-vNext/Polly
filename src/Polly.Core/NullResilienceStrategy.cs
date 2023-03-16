@@ -1,7 +1,7 @@
 namespace Polly;
 
 /// <summary>
-/// A resilience strategy that just executes the execution callback without any additional logic.
+/// A resilience strategy that executes an user-provided callback without any additional logic.
 /// </summary>
 public sealed class NullResilienceStrategy : IResilienceStrategy
 {

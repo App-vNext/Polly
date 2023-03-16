@@ -51,7 +51,7 @@ public class DelegatingResilienceStrategy : IResilienceStrategy
 #pragma warning restore S4039 // Interface methods should be callable by derived types
 
     /// <summary>
-    /// Executes the <paramref name="execution"/> callback.
+    /// Executes the specified callback.
     /// </summary>
     /// <typeparam name="TResult">The type of result returned by the execution callback.</typeparam>
     /// <typeparam name="TState">The type of state associated with the execution.</typeparam>

@@ -5,7 +5,7 @@ namespace Polly;
 public static partial class ResilienceStrategyExtensions
 {
     /// <summary>
-    /// Executes the <paramref name="execution"/> callback.
+    /// Executes the specified callback.
     /// </summary>
     /// <typeparam name="TResult">The type of result returned by the execution callback.</typeparam>
     /// <typeparam name="TState">The type of state associated with the execution.</typeparam>
@@ -31,7 +31,7 @@ public static partial class ResilienceStrategyExtensions
     }
 
     /// <summary>
-    /// Executes the <paramref name="execution"/> callback.
+    /// Executes the specified callback.
     /// </summary>
     /// <typeparam name="TResult">The type of result returned by the execution callback.</typeparam>
     /// <param name="strategy">The instance of <see cref="IResilienceStrategy"/>.</param>
