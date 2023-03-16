@@ -2,21 +2,48 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Polly.Builder;
 
-/// <inheritdoc/>
-public class ResilienceStrategyBuilder : IResilienceStrategyBuilder
+/// <summary>
+/// A builder that is used to create an instance of <see cref="IResilienceStrategy"/>.
+/// </summary>
+/// <remarks>
+/// The builder supports chaining multiple strategies into a pipeline of strategies.
+/// The resulting instance of <see cref="IResilienceStrategy"/> created by the <see cref="Build"/> call will execute the strategies in the same order they were added to the builder.
+/// The order of the strategies is important.
+/// </remarks>
+public class ResilienceStrategyBuilder
 {
     private readonly List<Entry> _entries = new();
     private ResilienceStrategyBuilderOptions _options = new();
 
-    /// <inheritdoc/>
+    /// <summary>
+    /// Gets or sets the builder options.
+    /// </summary>
     public ResilienceStrategyBuilderOptions Options
     {
         get => _options;
         set => _options = Guard.NotNull(value);
     }
 
-    /// <inheritdoc/>
-    public IResilienceStrategyBuilder AddStrategy(Func<ResilienceStrategyBuilderContext, IResilienceStrategy> factory, ResilienceStrategyOptions? options = null)
+    /// <summary>
+    /// Adds an already created strategy instance to the builder.
+    /// </summary>
+    /// <param name="strategy">The strategy instance.</param>
+    /// <param name="options">The options associated with the strategy. If none are provided the default instance of <see cref="ResilienceStrategyOptions"/> is created.</param>
+    /// <returns>The same builder instance.</returns>
+    public ResilienceStrategyBuilder AddStrategy(IResilienceStrategy strategy, ResilienceStrategyOptions? options = null)
+    {
+        Guard.NotNull(strategy);
+
+        return AddStrategy(_ => strategy, options);
+    }
+
+    /// <summary>
+    /// Adds a strategy to the builder.
+    /// </summary>
+    /// <param name="factory">The factory that creates a resilience strategy.</param>
+    /// <param name="options">The options associated with the strategy. If none are provided the default instance of <see cref="ResilienceStrategyOptions"/> is created.</param>
+    /// <returns>The same builder instance.</returns>
+    public ResilienceStrategyBuilder AddStrategy(Func<ResilienceStrategyBuilderContext, IResilienceStrategy> factory, ResilienceStrategyOptions? options = null)
     {
         Guard.NotNull(factory);
 
@@ -30,7 +57,10 @@ public class ResilienceStrategyBuilder : IResilienceStrategyBuilder
         return this;
     }
 
-    /// <inheritdoc/>
+    /// <summary>
+    /// Builds the resilience strategy.
+    /// </summary>
+    /// <returns>An instance of <see cref="IResilienceStrategy"/>.</returns>
     public IResilienceStrategy Build()
     {
         Validator.ValidateObject(Options, new ValidationContext(Options), validateAllProperties: true);

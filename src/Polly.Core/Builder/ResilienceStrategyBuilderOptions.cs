@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 namespace Polly.Builder;
 
 /// <summary>
-/// The builder options used by <see cref="IResilienceStrategyBuilder"/>.
+/// The builder options used by <see cref="ResilienceStrategyBuilder"/>.
 /// </summary>
 public class ResilienceStrategyBuilderOptions
 {
