@@ -8,7 +8,7 @@ public class TestResilienceStrategy : DelegatingResilienceStrategy
 
     public Func<ResilienceContext, object?, Task>? OnExecute { get; set; }
 
-    protected override async ValueTask<TResult> ExecuteCoreAsync<TResult, TState>(Func<ResilienceContext, TState, ValueTask<TResult>> execution, ResilienceContext context, TState state)
+    protected override async ValueTask<TResult> ExecuteCoreAsync<TResult, TState>(Func<ResilienceContext, TState, ValueTask<TResult>> callback, ResilienceContext context, TState state)
     {
         Before?.Invoke(context, state);
 
@@ -19,7 +19,7 @@ public class TestResilienceStrategy : DelegatingResilienceStrategy
                 await OnExecute(context, state);
             }
 
-            var result = await base.ExecuteCoreAsync(execution, context, state);
+            var result = await base.ExecuteCoreAsync(callback, context, state);
 
             After?.Invoke(result, null);
 
