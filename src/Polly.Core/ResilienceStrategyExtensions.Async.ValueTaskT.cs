@@ -12,7 +12,6 @@ public static partial class ResilienceStrategyExtensions
     /// <param name="context">The context associated with the execution.</param>
     /// <param name="state">The s associated with the execution.</param>
     /// <returns>The instance of <see cref="ValueTask"/> that represents the asynchronous execution.</returns>
-    /// <remarks>This method should not be used directly. Instead, use the dedicated extensions to execute the user provided callback.</remarks>
     public static ValueTask<TResult> ExecuteAsync<TResult, TState>(
         this IResilienceStrategy strategy,
         Func<ResilienceContext, TState, ValueTask<TResult>> execution,
@@ -36,7 +35,6 @@ public static partial class ResilienceStrategyExtensions
     /// <param name="execution">The execution callback.</param>
     /// <param name="cancellationToken">The <see cref="CancellationToken"/> associated with the execution.</param>
     /// <returns>The instance of <see cref="ValueTask"/> that represents the asynchronous execution.</returns>
-    /// <remarks>This method should not be used directly. Instead, use the dedicated extensions to execute the user provided callback.</remarks>
     public static async ValueTask<TResult> ExecuteAsync<TResult>(
         this IResilienceStrategy strategy,
         Func<CancellationToken, ValueTask<TResult>> execution,

@@ -12,7 +12,6 @@ public static partial class ResilienceStrategyExtensions
     /// <param name="execution">The execution callback.</param>
     /// <param name="context">The context associated with the execution.</param>
     /// <param name="state">The state associated with the execution.</param>
-    /// <remarks>This method should not be used directly. Instead, use the dedicated extensions to execute the user provided callback.</remarks>
     public static void Execute<TState>(
         this IResilienceStrategy strategy,
         Action<ResilienceContext, TState> execution,
@@ -40,7 +39,6 @@ public static partial class ResilienceStrategyExtensions
     /// </summary>
     /// <param name="strategy">The instance of <see cref="IResilienceStrategy"/>.</param>
     /// <param name="execution">The execution callback.</param>
-    /// <remarks>This method should not be used directly. Instead, use the dedicated extensions to execute the user provided callback.</remarks>
     /// <param name="cancellationToken">The <see cref="CancellationToken"/> associated with the execution.</param>
     public static void Execute(
         this IResilienceStrategy strategy,

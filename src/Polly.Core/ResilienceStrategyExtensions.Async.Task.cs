@@ -14,7 +14,6 @@ public static partial class ResilienceStrategyExtensions
     /// <param name="context">The context associated with the execution.</param>
     /// <param name="state">The state associated with the execution.</param>
     /// <returns>The instance of <see cref="Task"/> that represents the asynchronous execution.</returns>
-    /// <remarks>This method should not be used directly. Instead, use the dedicated extensions to execute the user provided callback.</remarks>
     public static async Task ExecuteAsTaskAsync<TState>(
         this IResilienceStrategy strategy,
         Func<ResilienceContext, TState, Task> execution,
