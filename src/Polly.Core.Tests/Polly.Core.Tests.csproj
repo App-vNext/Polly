@@ -7,6 +7,7 @@
     <Nullable>enable</Nullable>
     <SkipPollyUsings>true</SkipPollyUsings>
     <Threshold>100</Threshold>
+    <NoWarn>$(NoWarn);SA1600</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>

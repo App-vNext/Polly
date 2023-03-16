@@ -13,8 +13,14 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Using Remove="System.Net.Http"/>
-    <InternalsVisibleToTest Include="Polly.Core.Tests"/>
+    <Using Include="Polly.Utils" />
+    <Using Remove="System.Net.Http" />
+    <InternalsVisibleToTest Include="Polly.Core.Tests" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.4" Condition="!$([MSBuild]::IsTargetFrameworkCompatible($(TargetFramework), 'netcoreapp3.1'))" />
+    <PackageReference Include="System.ValueTuple" Version="4.5.0" Condition="$([MSBuild]::GetTargetFrameworkIdentifier('$(TargetFramework)')) == '.NETFramework'" />
   </ItemGroup>
   
 </Project>

@@ -1529,7 +1529,7 @@ dotnet_diagnostic.SA1600.severity = warning
 # Title    : Partial elements should be documented
 # Category : StyleCop.CSharp.DocumentationRules
 # Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1601.md
-dotnet_diagnostic.SA1601.severity = warning
+dotnet_diagnostic.SA1601.severity = none
 
 # Title    : Enumeration items should be documented
 # Category : StyleCop.CSharp.DocumentationRules
