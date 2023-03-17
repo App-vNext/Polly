@@ -7,9 +7,9 @@ namespace Polly.Builder;
 /// </summary>
 internal sealed class ResilienceStrategyPipeline : DelegatingResilienceStrategy
 {
-    private readonly IResilienceStrategy _pipeline;
+    private readonly ResilienceStrategy _pipeline;
 
-    public static ResilienceStrategyPipeline CreatePipelineAndFreezeStrategies(IReadOnlyList<IResilienceStrategy> strategies)
+    public static ResilienceStrategyPipeline CreatePipelineAndFreezeStrategies(IReadOnlyList<ResilienceStrategy> strategies)
     {
         Guard.NotNull(strategies);
 
@@ -53,35 +53,35 @@ internal sealed class ResilienceStrategyPipeline : DelegatingResilienceStrategy
         return new ResilienceStrategyPipeline(delegatingStrategies[0], strategies);
     }
 
-    private ResilienceStrategyPipeline(IResilienceStrategy pipeline, IReadOnlyList<IResilienceStrategy> strategies)
+    private ResilienceStrategyPipeline(ResilienceStrategy pipeline, IReadOnlyList<ResilienceStrategy> strategies)
     {
         Strategies = strategies;
         _pipeline = pipeline;
     }
 
-    public IReadOnlyList<IResilienceStrategy> Strategies { get; }
+    public IReadOnlyList<ResilienceStrategy> Strategies { get; }
 
-    protected override ValueTask<TResult> ExecuteCoreAsync<TResult, TState>(Func<ResilienceContext, TState, ValueTask<TResult>> callback, ResilienceContext context, TState state)
+    protected internal override ValueTask<TResult> ExecuteCoreAsync<TResult, TState>(Func<ResilienceContext, TState, ValueTask<TResult>> callback, ResilienceContext context, TState state)
     {
-        return _pipeline.ExecuteAsync(
-            static (context, state) => state.Next.ExecuteAsync(state.callback, context, state.state),
+        return _pipeline.ExecuteCoreAsync(
+            static (context, state) => state.Next.ExecuteCoreAsync(state.callback, context, state.state),
             context,
             (Next, callback, state));
     }
 
     /// <summary>
-    /// A wrapper that converts a <see cref="IResilienceStrategy"/> into a <see cref="DelegatingResilienceStrategy"/>.
+    /// A wrapper that converts a <see cref="ResilienceStrategy"/> into a <see cref="DelegatingResilienceStrategy"/>.
     /// </summary>
     private sealed class DelegatingStrategyWrapper : DelegatingResilienceStrategy
     {
-        private readonly IResilienceStrategy _strategy;
+        private readonly ResilienceStrategy _strategy;
 
-        public DelegatingStrategyWrapper(IResilienceStrategy strategy) => _strategy = strategy;
+        public DelegatingStrategyWrapper(ResilienceStrategy strategy) => _strategy = strategy;
 
-        protected override ValueTask<TResult> ExecuteCoreAsync<TResult, TState>(Func<ResilienceContext, TState, ValueTask<TResult>> callback, ResilienceContext context, TState state)
+        protected internal override ValueTask<TResult> ExecuteCoreAsync<TResult, TState>(Func<ResilienceContext, TState, ValueTask<TResult>> callback, ResilienceContext context, TState state)
         {
-            return _strategy.ExecuteAsync(
-                static (context, state) => state.Next.ExecuteAsync(state.callback, context, state.state),
+            return _strategy.ExecuteCoreAsync(
+                static (context, state) => state.Next.ExecuteCoreAsync(state.callback, context, state.state),
                 context,
                 (Next, callback, state));
         }

@@ -1,11 +1,11 @@
 namespace Polly.Builder;
 
 /// <summary>
-/// A builder that is used to create an instance of <see cref="IResilienceStrategy"/>.
+/// A builder that is used to create an instance of <see cref="ResilienceStrategy"/>.
 /// </summary>
 /// <remarks>
 /// The builder supports chaining multiple strategies into a pipeline of strategies.
-/// The resulting instance of <see cref="IResilienceStrategy"/> created by the <see cref="Build"/> call will execute the strategies in the same order they were added to the builder.
+/// The resulting instance of <see cref="ResilienceStrategy"/> created by the <see cref="Build"/> call will execute the strategies in the same order they were added to the builder.
 /// The order of the strategies is important.
 /// </remarks>
 public class ResilienceStrategyBuilder
@@ -29,7 +29,7 @@ public class ResilienceStrategyBuilder
     /// <param name="strategy">The strategy instance.</param>
     /// <param name="options">The options associated with the strategy. If none are provided the default instance of <see cref="ResilienceStrategyOptions"/> is created.</param>
     /// <returns>The same builder instance.</returns>
-    public ResilienceStrategyBuilder AddStrategy(IResilienceStrategy strategy, ResilienceStrategyOptions? options = null)
+    public ResilienceStrategyBuilder AddStrategy(ResilienceStrategy strategy, ResilienceStrategyOptions? options = null)
     {
         Guard.NotNull(strategy);
 
@@ -42,7 +42,7 @@ public class ResilienceStrategyBuilder
     /// <param name="factory">The factory that creates a resilience strategy.</param>
     /// <param name="options">The options associated with the strategy. If none are provided the default instance of <see cref="ResilienceStrategyOptions"/> is created.</param>
     /// <returns>The same builder instance.</returns>
-    public ResilienceStrategyBuilder AddStrategy(Func<ResilienceStrategyBuilderContext, IResilienceStrategy> factory, ResilienceStrategyOptions? options = null)
+    public ResilienceStrategyBuilder AddStrategy(Func<ResilienceStrategyBuilderContext, ResilienceStrategy> factory, ResilienceStrategyOptions? options = null)
     {
         Guard.NotNull(factory);
 
@@ -64,8 +64,8 @@ public class ResilienceStrategyBuilder
     /// <summary>
     /// Builds the resilience strategy.
     /// </summary>
-    /// <returns>An instance of <see cref="IResilienceStrategy"/>.</returns>
-    public IResilienceStrategy Build()
+    /// <returns>An instance of <see cref="ResilienceStrategy"/>.</returns>
+    public ResilienceStrategy Build()
     {
         ValidationHelper.ValidateObject(Options, $"The '{nameof(ResilienceStrategyBuilderOptions)}' options are not valid.");
 
@@ -86,7 +86,7 @@ public class ResilienceStrategyBuilder
         return ResilienceStrategyPipeline.CreatePipelineAndFreezeStrategies(strategies);
     }
 
-    private IResilienceStrategy CreateResilienceStrategy(Entry entry)
+    private ResilienceStrategy CreateResilienceStrategy(Entry entry)
     {
         var context = new ResilienceStrategyBuilderContext(
             builderName: Options.BuilderName,
@@ -98,13 +98,13 @@ public class ResilienceStrategyBuilder
 
     private sealed class Entry
     {
-        public Entry(Func<ResilienceStrategyBuilderContext, IResilienceStrategy> factory, ResilienceStrategyOptions properties)
+        public Entry(Func<ResilienceStrategyBuilderContext, ResilienceStrategy> factory, ResilienceStrategyOptions properties)
         {
             Factory = factory;
             Properties = properties;
         }
 
-        public Func<ResilienceStrategyBuilderContext, IResilienceStrategy> Factory { get; }
+        public Func<ResilienceStrategyBuilderContext, ResilienceStrategy> Factory { get; }
 
         public ResilienceStrategyOptions Properties { get; }
     }

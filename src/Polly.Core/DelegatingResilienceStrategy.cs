@@ -6,7 +6,7 @@ namespace Polly;
 public class DelegatingResilienceStrategy : ResilienceStrategy
 {
     private bool _frozen;
-    private IResilienceStrategy _next = NullResilienceStrategy.Instance;
+    private ResilienceStrategy _next = NullResilienceStrategy.Instance;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="DelegatingResilienceStrategy"/> class.
