@@ -136,6 +136,8 @@ public class ResilienceStrategyBuilderTests
     {
         var builder = new ResilienceStrategyBuilder();
 
+        builder.Build();
+
         builder
             .Invoking(b => b.AddStrategy(NullResilienceStrategy.Instance))
             .Should()
