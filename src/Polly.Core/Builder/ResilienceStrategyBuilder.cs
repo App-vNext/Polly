@@ -12,7 +12,8 @@ public class ResilienceStrategyBuilder
 {
     private readonly List<Entry> _entries = new();
     private ResilienceStrategyBuilderOptions _options = new();
-
+    private bool _used;
+    
     /// <summary>
     /// Gets or sets the builder options.
     /// </summary>
@@ -50,6 +51,11 @@ public class ResilienceStrategyBuilder
             ValidationHelper.ValidateObject(options, $"The '{nameof(ResilienceStrategyOptions)}' options are not valid.");
         }
 
+        if (_used)
+        {
+            throw new InvalidOperationException("Unable to add any more resilience strategies to the builder after it has been used to build a strategy.");
+        }
+
         _entries.Add(new Entry(factory, options ?? new ResilienceStrategyOptions()));
 
         return this;
@@ -62,6 +68,8 @@ public class ResilienceStrategyBuilder
     public IResilienceStrategy Build()
     {
         ValidationHelper.ValidateObject(Options, $"The '{nameof(ResilienceStrategyBuilderOptions)}' options are not valid.");
+
+        _used = true;
 
         if (_entries.Count == 0)
         {

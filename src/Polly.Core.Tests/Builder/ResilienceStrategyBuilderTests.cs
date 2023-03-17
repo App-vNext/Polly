@@ -132,6 +132,18 @@ public class ResilienceStrategyBuilderTests
     }
 
     [Fact]
+    public void AddStrategy_AfterUsed_Throws()
+    {
+        var builder = new ResilienceStrategyBuilder();
+
+        builder
+            .Invoking(b => b.AddStrategy(NullResilienceStrategy.Instance))
+            .Should()
+            .Throw<InvalidOperationException>()
+            .WithMessage("Unable to add any more resilience strategies to the builder after it has been used to build a strategy.");
+    }
+
+    [Fact]
     public void Options_SetNull_Throws()
     {
         var builder = new ResilienceStrategyBuilder();
