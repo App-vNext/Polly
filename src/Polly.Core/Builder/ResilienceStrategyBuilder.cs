@@ -68,16 +68,16 @@ public class ResilienceStrategyBuilder
             return NullResilienceStrategy.Instance;
         }
 
+        if (_entries.Count == 1)
+        {
+            return CreateResilienceStrategy(_entries[0]);
+        }
+
         var strategies = new List<DelegatingResilienceStrategy>(_entries.Count);
 
         foreach (var entry in _entries)
         {
-            var context = new ResilienceStrategyBuilderContext(
-                builderName: Options.BuilderName,
-                strategyName: entry.Properties.StrategyName,
-                strategyType: entry.Properties.StrategyType);
-
-            var strategy = entry.Factory(context);
+            var strategy = CreateResilienceStrategy(entry);
 
             if (strategy is DelegatingResilienceStrategy delegatingStrategy)
             {
@@ -89,12 +89,17 @@ public class ResilienceStrategyBuilder
             }
         }
 
-        if (strategies.Count == 1)
-        {
-            return strategies[0];
-        }
-
         return ResilienceStrategyPipeline.CreateAndFreezeStrategies(strategies);
+    }
+
+    private IResilienceStrategy CreateResilienceStrategy(Entry entry)
+    {
+        var context = new ResilienceStrategyBuilderContext(
+            builderName: Options.BuilderName,
+            strategyName: entry.Properties.StrategyName,
+            strategyType: entry.Properties.StrategyType);
+
+        return entry.Factory(context);
     }
 
     private sealed class Entry
