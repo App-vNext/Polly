@@ -9,7 +9,7 @@ internal sealed class ResilienceStrategyPipeline : DelegatingResilienceStrategy
 {
     private readonly IResilienceStrategy _strategy;
 
-    public static ResilienceStrategyPipeline CreateAndFreezeStrategies(IReadOnlyList<DelegatingResilienceStrategy> strategies)
+    public static ResilienceStrategyPipeline CreateAndFreezeStrategies(IReadOnlyList<IResilienceStrategy> strategies)
     {
         Guard.NotNull(strategies);
 
@@ -18,18 +18,30 @@ internal sealed class ResilienceStrategyPipeline : DelegatingResilienceStrategy
             throw new ArgumentException("The pipeline must contain at least two strategies.", nameof(strategies));
         }
 
-        for (var i = 0; i < strategies.Count - 1; i++)
+        var delegatingStrategies = strategies.Select(strategy =>
         {
-            strategies[i].Next = strategies[i + 1];
+            if (strategy is DelegatingResilienceStrategy delegatingStrategy)
+            {
+                return delegatingStrategy;
+            }
+            else
+            {
+                return new DelegatingStrategyWrapper(strategy);
+            }
+        }).ToList();
+
+        for (var i = 0; i < delegatingStrategies.Count - 1; i++)
+        {
+            delegatingStrategies[i].Next = delegatingStrategies[i + 1];
         }
 
         // now, freeze the strategies so any further modifications are not allowed
-        foreach (var strategy in strategies)
+        foreach (var strategy in delegatingStrategies)
         {
             strategy.Freeze();
         }
 
-        return new ResilienceStrategyPipeline(strategies);
+        return new ResilienceStrategyPipeline(delegatingStrategies);
     }
 
     private ResilienceStrategyPipeline(IReadOnlyList<DelegatingResilienceStrategy> strategies)

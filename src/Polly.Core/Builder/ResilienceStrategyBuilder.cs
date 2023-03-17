@@ -73,21 +73,7 @@ public class ResilienceStrategyBuilder
             return CreateResilienceStrategy(_entries[0]);
         }
 
-        var strategies = new List<DelegatingResilienceStrategy>(_entries.Count);
-
-        foreach (var entry in _entries)
-        {
-            var strategy = CreateResilienceStrategy(entry);
-
-            if (strategy is DelegatingResilienceStrategy delegatingStrategy)
-            {
-                strategies.Add(delegatingStrategy);
-            }
-            else
-            {
-                strategies.Add(new DelegatingStrategyWrapper(strategy));
-            }
-        }
+        var strategies = _entries.Select(CreateResilienceStrategy).ToList();
 
         return ResilienceStrategyPipeline.CreateAndFreezeStrategies(strategies);
     }
