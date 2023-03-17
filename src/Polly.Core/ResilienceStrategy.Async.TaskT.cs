@@ -1,36 +1,30 @@
-using System.Threading;
-using Polly;
-
 namespace Polly;
 
-public static partial class ResilienceStrategyExtensions
+public abstract partial class ResilienceStrategy
 {
     /// <summary>
     /// Executes the specified callback.
     /// </summary>
+    /// <typeparam name="TResult">The type of result returned by the callback.</typeparam>
     /// <typeparam name="TState">The type of state associated with the callback.</typeparam>
-    /// <param name="strategy">Instance of <see cref="IResilienceStrategy"/>.</param>
     /// <param name="callback">The user-provided callback.</param>
     /// <param name="context">The context associated with the callback.</param>
     /// <param name="state">The state associated with the callback.</param>
     /// <returns>The instance of <see cref="Task"/> that represents the asynchronous execution.</returns>
-    public static async Task ExecuteAsTaskAsync<TState>(
-        this IResilienceStrategy strategy,
-        Func<ResilienceContext, TState, Task> callback,
+    public async Task<TResult> ExecuteTaskAsync<TResult, TState>(
+        Func<ResilienceContext, TState, Task<TResult>> callback,
         ResilienceContext context,
         TState state)
     {
-        Guard.NotNull(strategy);
         Guard.NotNull(callback);
         Guard.NotNull(context);
 
-        InitializeAsyncContext(context);
+        InitializeAsyncContext<TResult>(context);
 
-        await strategy.ExecuteInternalAsync(
+        return await ExecuteCoreAsync(
             static async (context, state) =>
             {
-                await state.callback(context, state.state).ConfigureAwait(context.ContinueOnCapturedContext);
-                return VoidResult.Instance;
+                return await state.callback(context, state.state).ConfigureAwait(context.ContinueOnCapturedContext);
             },
             context,
             (callback, state)).ConfigureAwait(context.ContinueOnCapturedContext);
@@ -39,27 +33,24 @@ public static partial class ResilienceStrategyExtensions
     /// <summary>
     /// Executes the specified callback.
     /// </summary>
-    /// <param name="strategy">Instance of <see cref="IResilienceStrategy"/>.</param>
+    /// <typeparam name="TResult">The type of result returned by the callback.</typeparam>
     /// <param name="callback">The user-provided callback.</param>
     /// <param name="cancellationToken">The <see cref="CancellationToken"/> associated with the callback.</param>
-    /// <returns>The instance of <see cref="Task"/> that represents an asynchronous callback.</returns>
-    public static async Task ExecuteAsTaskAsync(
-        this IResilienceStrategy strategy,
-        Func<CancellationToken, Task> callback,
+    /// <returns>The instance of <see cref="ValueTask"/> that represents the asynchronous execution.</returns>
+    public async Task<TResult> ExecuteTaskAsync<TResult>(
+        Func<CancellationToken, Task<TResult>> callback,
         CancellationToken cancellationToken = default)
     {
-        Guard.NotNull(strategy);
         Guard.NotNull(callback);
 
-        var context = GetAsyncContext(cancellationToken);
+        var context = GetAsyncContext<TResult>(cancellationToken);
 
         try
         {
-            await strategy.ExecuteInternalAsync(
+            return await ExecuteCoreAsync(
                 static async (context, state) =>
                 {
-                    await state(context.CancellationToken).ConfigureAwait(context.ContinueOnCapturedContext);
-                    return VoidResult.Instance;
+                    return await state(context.CancellationToken).ConfigureAwait(context.ContinueOnCapturedContext);
                 },
                 context,
                 callback).ConfigureAwait(context.ContinueOnCapturedContext);

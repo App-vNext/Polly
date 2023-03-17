@@ -12,9 +12,9 @@ public class ResilienceStrategyPipelineTests
     public void CreateAndFreezeStrategies_ArgValidation()
     {
         Assert.Throws<ArgumentNullException>(() => ResilienceStrategyPipeline.CreatePipelineAndFreezeStrategies(null!));
-        Assert.Throws<InvalidOperationException>(() => ResilienceStrategyPipeline.CreatePipelineAndFreezeStrategies(Array.Empty<IResilienceStrategy>()));
-        Assert.Throws<InvalidOperationException>(() => ResilienceStrategyPipeline.CreatePipelineAndFreezeStrategies(new IResilienceStrategy[] { new TestResilienceStrategy() }));
-        Assert.Throws<InvalidOperationException>(() => ResilienceStrategyPipeline.CreatePipelineAndFreezeStrategies(new IResilienceStrategy[]
+        Assert.Throws<InvalidOperationException>(() => ResilienceStrategyPipeline.CreatePipelineAndFreezeStrategies(Array.Empty<ResilienceStrategy>()));
+        Assert.Throws<InvalidOperationException>(() => ResilienceStrategyPipeline.CreatePipelineAndFreezeStrategies(new ResilienceStrategy[] { new TestResilienceStrategy() }));
+        Assert.Throws<InvalidOperationException>(() => ResilienceStrategyPipeline.CreatePipelineAndFreezeStrategies(new ResilienceStrategy[]
         {
             NullResilienceStrategy.Instance,
             NullResilienceStrategy.Instance
@@ -56,7 +56,7 @@ public class ResilienceStrategyPipelineTests
     [Fact]
     public void Create_EnsureOriginalStrategiesPreserved()
     {
-        var strategies = new IResilienceStrategy[]
+        var strategies = new ResilienceStrategy[]
         {
             new TestResilienceStrategy(),
             new Strategy(),
@@ -73,9 +73,9 @@ public class ResilienceStrategyPipelineTests
         pipeline.Strategies.SequenceEqual(strategies).Should().BeTrue();
     }
 
-    private class Strategy : IResilienceStrategy
+    private class Strategy : ResilienceStrategy
     {
-        ValueTask<TResult> IResilienceStrategy.ExecuteInternalAsync<TResult, TState>(Func<ResilienceContext, TState, ValueTask<TResult>> callback, ResilienceContext context, TState state)
+        protected internal override ValueTask<TResult> ExecuteCoreAsync<TResult, TState>(Func<ResilienceContext, TState, ValueTask<TResult>> callback, ResilienceContext context, TState state)
         {
             throw new NotSupportedException();
         }

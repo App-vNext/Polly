@@ -2,13 +2,13 @@ using FluentAssertions;
 
 namespace Polly.Core.Tests;
 
-public partial class ResilienceStrategyExtensionsTests
+public partial class ResilienceStrategyTests
 {
     public static readonly CancellationToken CancellationToken = new CancellationTokenSource().Token;
 
     public class ExecuteParameters<T> : ExecuteParameters
     {
-        public ExecuteParameters(Func<IResilienceStrategy, Task<T>> execute, T resultValue)
+        public ExecuteParameters(Func<ResilienceStrategy, Task<T>> execute, T resultValue)
         {
             Execute = async strategy =>
             {
@@ -19,7 +19,7 @@ public partial class ResilienceStrategyExtensionsTests
             AssertResult = result => result.Should().BeOfType<T>().And.Be(resultValue);
         }
 
-        public ExecuteParameters(Func<IResilienceStrategy, ValueTask<T>> execute, T resultValue)
+        public ExecuteParameters(Func<ResilienceStrategy, ValueTask<T>> execute, T resultValue)
         {
             Execute = async strategy =>
             {
@@ -30,7 +30,7 @@ public partial class ResilienceStrategyExtensionsTests
             AssertResult = result => result.Should().BeOfType<T>().And.Be(resultValue);
         }
 
-        public ExecuteParameters(Func<IResilienceStrategy, T> execute, T resultValue)
+        public ExecuteParameters(Func<ResilienceStrategy, T> execute, T resultValue)
         {
             Execute = strategy => new ValueTask<object>(execute(strategy)!);
             AssertResult = result => result.Should().BeOfType<T>().And.Be(resultValue);
@@ -43,7 +43,7 @@ public partial class ResilienceStrategyExtensionsTests
         {
         }
 
-        public ExecuteParameters(Func<IResilienceStrategy, ValueTask> execute)
+        public ExecuteParameters(Func<ResilienceStrategy, ValueTask> execute)
         {
             Execute = async r =>
             {
@@ -54,7 +54,7 @@ public partial class ResilienceStrategyExtensionsTests
             AssertResult = r => r.Should().Be(VoidResult.Instance);
         }
 
-        public ExecuteParameters(Func<IResilienceStrategy, Task> execute)
+        public ExecuteParameters(Func<ResilienceStrategy, Task> execute)
         {
             Execute = async r =>
             {
@@ -65,7 +65,7 @@ public partial class ResilienceStrategyExtensionsTests
             AssertResult = r => r.Should().Be(VoidResult.Instance);
         }
 
-        public ExecuteParameters(Action<IResilienceStrategy> execute)
+        public ExecuteParameters(Action<ResilienceStrategy> execute)
         {
             Execute = r =>
             {
@@ -76,7 +76,7 @@ public partial class ResilienceStrategyExtensionsTests
             AssertResult = r => r.Should().Be(VoidResult.Instance);
         }
 
-        public Func<IResilienceStrategy, ValueTask<object>> Execute { get; set; } = r => new ValueTask<object>(VoidResult.Instance);
+        public Func<ResilienceStrategy, ValueTask<object>> Execute { get; set; } = r => new ValueTask<object>(VoidResult.Instance);
 
         public Action<ResilienceContext> AssertContext { get; set; } = _ => { };
 

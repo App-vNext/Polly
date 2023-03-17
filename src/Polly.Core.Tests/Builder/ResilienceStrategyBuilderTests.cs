@@ -196,7 +196,7 @@ The StrategyType field is required.
         var builder = new ResilienceStrategyBuilder();
 
         builder
-            .Invoking(b => b.AddStrategy((Func<ResilienceStrategyBuilderContext, IResilienceStrategy>)null!))
+            .Invoking(b => b.AddStrategy((Func<ResilienceStrategyBuilderContext, ResilienceStrategy>)null!))
             .Should()
             .Throw<ArgumentNullException>()
             .And.ParamName
@@ -286,13 +286,13 @@ The StrategyType field is required.
         verified2.Should().BeTrue();
     }
 
-    private class Strategy : IResilienceStrategy
+    private class Strategy : ResilienceStrategy
     {
         public Action? Before { get; set; }
 
         public Action? After { get; set; }
 
-        async ValueTask<TResult> IResilienceStrategy.ExecuteInternalAsync<TResult, TState>(Func<ResilienceContext, TState, ValueTask<TResult>> callback, ResilienceContext context, TState state)
+        protected internal override async ValueTask<TResult> ExecuteCoreAsync<TResult, TState>(Func<ResilienceContext, TState, ValueTask<TResult>> callback, ResilienceContext context, TState state)
         {
             try
             {
