@@ -17,21 +17,21 @@ public partial class ResilienceStrategyTests
     {
         long result = 12345;
 
-        yield return new ExecuteParameters<long>(r => r.ExecuteAsync(async t => result), result)
+        yield return new ExecuteParameters<long>(r => r.ExecuteValueTaskAsync(async t => result), result)
         {
             Caption = "ExecuteAsyncT_NoCancellation",
             AssertContext = AssertResilienceContext,
             AssertContextAfter = AssertContextNotInitialized,
         };
 
-        yield return new ExecuteParameters<long>(r => r.ExecuteAsync(async t => { t.Should().Be(CancellationToken); return result; }, CancellationToken), result)
+        yield return new ExecuteParameters<long>(r => r.ExecuteValueTaskAsync(async t => { t.Should().Be(CancellationToken); return result; }, CancellationToken), result)
         {
             Caption = "ExecuteAsyncT_Cancellation",
             AssertContext = AssertResilienceContextAndToken,
             AssertContextAfter = AssertContextNotInitialized,
         };
 
-        yield return new ExecuteParameters<long>(r => r.ExecuteAsync(async (_, s) => { s.Should().Be("dummy-state"); return result; }, ResilienceContext.Get(), "dummy-state"), result)
+        yield return new ExecuteParameters<long>(r => r.ExecuteValueTaskAsync(async (_, s) => { s.Should().Be("dummy-state"); return result; }, ResilienceContext.Get(), "dummy-state"), result)
         {
             Caption = "ExecuteAsyncT_ResilienceContextAndState",
             AssertContext = AssertResilienceContext,
