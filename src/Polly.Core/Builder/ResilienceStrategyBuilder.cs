@@ -89,12 +89,12 @@ public class ResilienceStrategyBuilder
             }
         }
 
-        for (var i = 0; i < strategies.Count - 1; i++)
+        if (strategies.Count == 1)
         {
-            strategies[i].Next = strategies[i + 1];
+            return strategies[0];
         }
 
-        return new DelegatingStrategyWrapper(strategies[0]);
+        return ResilienceStrategyPipeline.CreateAndFreezeStrategies(strategies);
     }
 
     private sealed class Entry

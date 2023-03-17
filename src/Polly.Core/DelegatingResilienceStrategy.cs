@@ -5,7 +5,7 @@ namespace Polly;
 /// </summary>
 public class DelegatingResilienceStrategy : IResilienceStrategy
 {
-    private bool _executed;
+    private bool _frozen;
     private IResilienceStrategy _next = NullResilienceStrategy.Instance;
 
     /// <summary>
@@ -26,9 +26,9 @@ public class DelegatingResilienceStrategy : IResilienceStrategy
         {
             Guard.NotNull(value);
 
-            if (_executed)
+            if (_frozen)
             {
-                throw new InvalidOperationException($"The delegating resilience strategy has already been executed and changing the value of '{nameof(Next)}' property is not allowed.");
+                throw new InvalidOperationException($"The delegating resilience strategy is already frozen and changing the value of '{nameof(Next)}' property is not allowed.");
             }
 
             _next = value;
@@ -64,8 +64,10 @@ public class DelegatingResilienceStrategy : IResilienceStrategy
         ResilienceContext context,
         TState state)
     {
-        _executed = true;
+        _frozen = true;
         return Next.ExecuteInternalAsync(callback, context, state);
     }
+
+    internal void Freeze() => _frozen = true;
 }
 

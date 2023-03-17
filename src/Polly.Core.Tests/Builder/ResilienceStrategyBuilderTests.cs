@@ -28,7 +28,7 @@ public class ResilienceStrategyBuilderTests
 
         // assert
         strategy.Execute(_ => executions.Add(2));
-
+        strategy.Should().BeOfType<TestResilienceStrategy>();
         executions.Should().BeInAscendingOrder();
         executions.Should().HaveCount(3);
     }
@@ -53,6 +53,47 @@ public class ResilienceStrategyBuilderTests
         {
             Before = (_, _) => executions.Add(3),
             After = (_, _) => executions.Add(5),
+        };
+
+        builder.AddStrategy(first);
+        builder.AddStrategy(second);
+        builder.AddStrategy(third);
+
+        // act
+        var strategy = builder.Build();
+        strategy
+            .Should()
+            .BeOfType<ResilienceStrategyPipeline>()
+            .Subject
+            .Strategies.Should().HaveCount(3);
+
+        // assert
+        strategy.Execute(_ => executions.Add(4));
+
+        executions.Should().BeInAscendingOrder();
+        executions.Should().HaveCount(7);
+    }
+
+    [Fact]
+    public void AddStrategy_MultipleNonDelegating_Ok()
+    {
+        // arrange
+        var executions = new List<int>();
+        var builder = new ResilienceStrategyBuilder();
+        var first = new Strategy
+        {
+            Before = () => executions.Add(1),
+            After = () => executions.Add(7),
+        };
+        var second = new Strategy
+        {
+            Before = () => executions.Add(2),
+            After = () => executions.Add(6),
+        };
+        var third = new Strategy
+        {
+            Before = () => executions.Add(3),
+            After = () => executions.Add(5),
         };
 
         builder.AddStrategy(first);
@@ -214,5 +255,25 @@ The StrategyType field is required.
         // assert
         verified1.Should().BeTrue();
         verified2.Should().BeTrue();
+    }
+
+    private class Strategy : IResilienceStrategy
+    {
+        public Action? Before { get; set; }
+
+        public Action? After { get; set; }
+
+        async ValueTask<TResult> IResilienceStrategy.ExecuteInternalAsync<TResult, TState>(Func<ResilienceContext, TState, ValueTask<TResult>> callback, ResilienceContext context, TState state)
+        {
+            try
+            {
+                Before?.Invoke();
+                return await callback(context, state);
+            }
+            finally
+            {
+                After?.Invoke();
+            }
+        }
     }
 }
