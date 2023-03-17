@@ -13,7 +13,7 @@ public class ResilienceStrategyBuilder
     private readonly List<Entry> _entries = new();
     private ResilienceStrategyBuilderOptions _options = new();
     private bool _used;
-    
+
     /// <summary>
     /// Gets or sets the builder options.
     /// </summary>
