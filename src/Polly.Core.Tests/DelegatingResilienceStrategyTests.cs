@@ -37,7 +37,7 @@ public class DelegatingResilienceStrategyTests
             .Invoking(s => s.Next = NullResilienceStrategy.Instance)
             .Should()
             .Throw<InvalidOperationException>()
-            .WithMessage("The delegating resilience strategy has already been executed and changing the value of 'Next' property is not allowed.");
+            .WithMessage("The delegating resilience strategy is already frozen and changing the value of 'Next' property is not allowed.");
     }
 
     [Fact]
