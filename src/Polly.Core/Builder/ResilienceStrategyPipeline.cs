@@ -7,15 +7,24 @@ namespace Polly.Builder;
 /// </summary>
 internal sealed class ResilienceStrategyPipeline : DelegatingResilienceStrategy
 {
-    private readonly IResilienceStrategy _strategy;
+    private readonly IResilienceStrategy _pipeline;
 
-    public static ResilienceStrategyPipeline CreateAndFreezeStrategies(IReadOnlyList<IResilienceStrategy> strategies)
+    public static ResilienceStrategyPipeline CreatePipelineAndFreezeStrategies(IReadOnlyList<IResilienceStrategy> strategies)
     {
         Guard.NotNull(strategies);
 
         if (strategies.Count < 2)
         {
-            throw new ArgumentException("The pipeline must contain at least two strategies.", nameof(strategies));
+#pragma warning disable S2302 // "nameof" should be used
+            throw new InvalidOperationException("The resilience pipeline must contain at least two resilience strategies.");
+#pragma warning restore S2302 // "nameof" should be used
+        }
+
+        if (strategies.Distinct().Count() != strategies.Count)
+        {
+#pragma warning disable S2302 // "nameof" should be used
+            throw new InvalidOperationException("The resilience pipeline must contain unique resilience strategies.");
+#pragma warning restore S2302 // "nameof" should be used
         }
 
         var delegatingStrategies = strategies.Select(strategy =>
@@ -41,22 +50,40 @@ internal sealed class ResilienceStrategyPipeline : DelegatingResilienceStrategy
             strategy.Freeze();
         }
 
-        return new ResilienceStrategyPipeline(delegatingStrategies);
+        return new ResilienceStrategyPipeline(delegatingStrategies[0], strategies);
     }
 
-    private ResilienceStrategyPipeline(IReadOnlyList<DelegatingResilienceStrategy> strategies)
+    private ResilienceStrategyPipeline(IResilienceStrategy pipeline, IReadOnlyList<IResilienceStrategy> strategies)
     {
         Strategies = strategies;
-        _strategy = strategies[0];
+        _pipeline = pipeline;
     }
 
     public IReadOnlyList<IResilienceStrategy> Strategies { get; }
 
     protected override ValueTask<TResult> ExecuteCoreAsync<TResult, TState>(Func<ResilienceContext, TState, ValueTask<TResult>> callback, ResilienceContext context, TState state)
     {
-        return _strategy.ExecuteAsync(
+        return _pipeline.ExecuteAsync(
             static (context, state) => state.Next.ExecuteAsync(state.callback, context, state.state),
             context,
             (Next, callback, state));
+    }
+
+    /// <summary>
+    /// A wrapper that converts a <see cref="IResilienceStrategy"/> into a <see cref="DelegatingResilienceStrategy"/>.
+    /// </summary>
+    private sealed class DelegatingStrategyWrapper : DelegatingResilienceStrategy
+    {
+        private readonly IResilienceStrategy _strategy;
+
+        public DelegatingStrategyWrapper(IResilienceStrategy strategy) => _strategy = strategy;
+
+        protected override ValueTask<TResult> ExecuteCoreAsync<TResult, TState>(Func<ResilienceContext, TState, ValueTask<TResult>> callback, ResilienceContext context, TState state)
+        {
+            return _strategy.ExecuteAsync(
+                static (context, state) => state.Next.ExecuteAsync(state.callback, context, state.state),
+                context,
+                (Next, callback, state));
+        }
     }
 }

@@ -75,7 +75,7 @@ public class ResilienceStrategyBuilder
 
         var strategies = _entries.Select(CreateResilienceStrategy).ToList();
 
-        return ResilienceStrategyPipeline.CreateAndFreezeStrategies(strategies);
+        return ResilienceStrategyPipeline.CreatePipelineAndFreezeStrategies(strategies);
     }
 
     private IResilienceStrategy CreateResilienceStrategy(Entry entry)

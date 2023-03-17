@@ -75,6 +75,21 @@ public class ResilienceStrategyBuilderTests
     }
 
     [Fact]
+    public void AddStrategy_Duplicate_Throws()
+    {
+        // arrange
+        var executions = new List<int>();
+        var builder = new ResilienceStrategyBuilder()
+            .AddStrategy(NullResilienceStrategy.Instance)
+            .AddStrategy(NullResilienceStrategy.Instance);
+
+        builder.Invoking(b => b.Build())
+            .Should()
+            .Throw<InvalidOperationException>()
+            .WithMessage("The resilience pipeline must contain unique resilience strategies.");
+    }
+
+    [Fact]
     public void AddStrategy_MultipleNonDelegating_Ok()
     {
         // arrange
@@ -233,7 +248,7 @@ The StrategyType field is required.
                 context.StrategyType.Should().Be("strategy-type");
                 verified1 = true;
 
-                return NullResilienceStrategy.Instance;
+                return new TestResilienceStrategy();
             },
             new ResilienceStrategyOptions { StrategyName = "strategy-name", StrategyType = "strategy-type" });
 
@@ -245,7 +260,7 @@ The StrategyType field is required.
                 context.StrategyType.Should().Be("strategy-type-2");
                 verified2 = true;
 
-                return NullResilienceStrategy.Instance;
+                return new TestResilienceStrategy();
             },
             new ResilienceStrategyOptions { StrategyName = "strategy-name-2", StrategyType = "strategy-type-2" });
 
