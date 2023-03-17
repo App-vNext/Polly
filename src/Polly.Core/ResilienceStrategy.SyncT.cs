@@ -24,10 +24,7 @@ public abstract partial class ResilienceStrategy
         InitializeSyncContext<TResult>(context);
 
         return ExecuteCoreAsync(
-            (context, state) =>
-            {
-                return new ValueTask<TResult>(state.callback(context, state.state));
-            },
+            static (context, state) => new ValueTask<TResult>(state.callback(context, state.state)),
             context,
             (callback, state)).GetResult();
     }
@@ -50,10 +47,7 @@ public abstract partial class ResilienceStrategy
         try
         {
             return ExecuteCoreAsync(
-                (context, state) =>
-                {
-                    return new ValueTask<TResult>(state(context.CancellationToken));
-                },
+                static (context, state) => new ValueTask<TResult>(state(context.CancellationToken)),
                 context,
                 callback).GetResult();
         }
