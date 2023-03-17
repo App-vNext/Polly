@@ -3,6 +3,7 @@ using Polly.Builder;
 using Xunit;
 
 namespace Polly.Core.Tests.Builder;
+
 public class ResilienceStrategyOptionsTests
 {
     [Fact]

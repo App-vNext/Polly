@@ -53,7 +53,7 @@ public class ResilienceStrategyBuilder
 
         if (_used)
         {
-            throw new InvalidOperationException("Unable to add any more resilience strategies to the builder after it has been used to build a strategy.");
+            throw new InvalidOperationException("Cannot add any more resilience strategies to the builder after it has been used to build a strategy once.");
         }
 
         _entries.Add(new Entry(factory, options ?? new ResilienceStrategyOptions()));

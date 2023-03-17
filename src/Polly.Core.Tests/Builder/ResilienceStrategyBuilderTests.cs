@@ -142,7 +142,7 @@ public class ResilienceStrategyBuilderTests
             .Invoking(b => b.AddStrategy(NullResilienceStrategy.Instance))
             .Should()
             .Throw<InvalidOperationException>()
-            .WithMessage("Unable to add any more resilience strategies to the builder after it has been used to build a strategy.");
+            .WithMessage("Cannot add any more resilience strategies to the builder after it has been used to build a strategy once.");
     }
 
     [Fact]
