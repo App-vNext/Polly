@@ -1,10 +1,10 @@
 # Introduction
 
-The Polly V8 API exposes unified and non-allocating resilience API that is described in the sections bellow.
+The Polly V8 API exposes unified and non-allocating resilience API that is described in the sections below.
 
 ## Core API
 
-At the heart of Polly V8 is the `ResilienceStrategy` class that is responsible for execution of user code. It's one class that handles all Polly V7 scenarios:
+At the heart of Polly V8 is the [ResilienceStrategy](ResilienceStrategy.cs) class that is responsible for execution of user code. It's one class that handles all Polly V7 scenarios:
 
 - `ISyncPolicy`
 - `IAsyncPolicy`
@@ -14,8 +14,10 @@ At the heart of Polly V8 is the `ResilienceStrategy` class that is responsible f
 ``` csharp
 public abstract class ResilienceStrategy
 {
+    // the main method that all the others call
     protected virtual ValueTask<TResult> ExecuteCoreAsync<TResult, TState>(Func<ResilienceContext, TState, ValueTask<TResult>> execution, ResilienceContext context, TState state);
 
+    // convenience methods for various types of user-callbacks
     public void Execute(Action callback);
 
     public TResult Execute<TResult>(Func<TResult> callback);
@@ -32,7 +34,7 @@ public abstract class ResilienceStrategy
 }
 ```
 
-The `ResilienceContext` is defined as:
+The [ResilienceContext](ResilienceContext.cs) is defined as:
 
 ``` csharp
 public sealed class ResilienceContext
@@ -44,6 +46,8 @@ public sealed class ResilienceContext
     public bool IsVoid { get; }
 
     public bool ContinueOnCapturedContext { get; }
+
+    public Type ResultType { get; }
 
     // omitted for simplicity
 }
@@ -57,7 +61,7 @@ exposed on this class that cover different scenarios:
 - Asynchronous void methods.
 - Asynchronous methods with result.
 
-For example, synchronous `Execute` method is implemented as:
+For example, the synchronous `Execute` method is implemented as:
 
 ``` csharp
 public void Execute(Action execute)
@@ -65,6 +69,7 @@ public void Execute(Action execute)
     var context = ResilienceContext.Get();
     context.IsSynchronous = true;
     context.IsVoid = true;
+    context.ResultType = typeof(VoidResult);
 
     try
     {
@@ -85,18 +90,18 @@ public void Execute(Action execute)
 
 In the preceding example:
 
-- We rent `ResilienceContext` from pool.
-- We store the information about the execution mode by setting the `IsSynchronous` and `IsVoid` properties to the context.
-- We pass the user delegate, and use the `State` to avoid closure allocation.
+- We rent a `ResilienceContext` from the pool.
+- We store the information about the execution mode by setting the `IsSynchronous` and `IsVoid` properties on the context.
+- We pass the user-callback, and use the `State` to avoid closure allocation.
 - We block the execution.
 - We return `ResilienceContext` to the pool.
 
-Underlying implementation decides how to execute this delegate by reading the `ResilienceContext`:
+Underlying implementation decides how to execute this user-callback by reading the `ResilienceContext`:
 
 ``` csharp
 internal class DelayStrategy : DelegatingResilienceStrategy
 {
-    protected override async ValueTask<T> ExecuteCoreAsync<T, TState>(Func<ResilienceContext, TState, ValueTask<T>> execution, ResilienceContext context, TState state)
+    protected override async ValueTask<T> ExecuteCoreAsync<T, TState>(Func<ResilienceContext, TState, ValueTask<T>> callback, ResilienceContext context, TState state)
     {
         if (context.IsSynchronous)
         {
@@ -123,7 +128,7 @@ The life of extensibility author is also simplified as they only maintain one im
 
 ## Creation of `ResilienceStrategy`
 
-This API exposes `ResilienceStrategyBuilder` that can be used to create the resilience strategy:
+This API exposes [ResilienceStrategyBuilder](Builder/ResilienceStrategyBuilder.cs) that can be used to create the resilience strategy:
 
 ``` csharp
 public interface ResilienceStrategyBuilder
@@ -143,7 +148,7 @@ To create a strategy or pipeline of strategies you chain various extensions for 
 Single strategy:
 
 ``` csharp
-var resilienceStrategy = new ResilienceStrategyBuilder().AddRetry().Create();
+var resilienceStrategy = new ResilienceStrategyBuilder().AddRetry().Build();
 ```
 
 Pipeline of strategies:
@@ -164,9 +169,9 @@ The resilience extensibility is simple. You just expose extensions for `Resilien
 
 Various implementations of `ResilienceStrategy` use callbacks to provide or request information from user. The callbacks are generic and support any type of result. Most strategies will use the following types of callbacks:
 
-- **Predicates**: These return `true` or `false` values based on the input. The input can be the result of user delegate or some exception. For example, determine whether we should retry the user delegate for specific result.
-- **Events**: These are just events raised when something important happens. For example when timeout occurs.
-- **Generators**: These generate a value based on the input. For example, retry delay before the next retry attempt.
+- **Predicates**: These return `true` or `false` values based on the input. The input can be the result of an user-callback or some exception. For example, to determine whether we should retry the user-callback for a specific result.
+- **Events**: These are events raised when something important happens. For example when a timeout occurs.
+- **Generators**: These generate a value based on the input. For example, a retry delay before the next retry attempt.
 
 All callbacks are asynchronous and return `ValueTask`. They provide the following information to the user:
 
@@ -174,7 +179,7 @@ All callbacks are asynchronous and return `ValueTask`. They provide the followin
 - Result type: for what result type is the strategy being executed.
 - Callback arguments: Additional information about the event. Using arguments is preferable because it makes the API more stable. If we decide to add a new member to the arguments, the call sites won't break.
 
-Each callback type has associated class that can be reused across various strategies. For example see the `Predicates` class and the usage in the `RetryStrategyOptions.ShouldRetry`:
+Each callback type has an associated class that can be reused across various strategies. For example, see the `Predicates` class and the usage of the `RetryStrategyOptions.ShouldRetry` property:
 
 ``` csharp
 public Predicates ShouldRetry { get; set; } = new();
@@ -184,21 +189,21 @@ public Predicates ShouldRetry { get; set; } = new();
 var options = new RetryStrategyOptions();
 options
     .ShouldRetry
-    .Add<HttpResponseMessage>(m => m.StatusCode == HttpStatusCode.InternalServerError) // inspecting the result
+    .Add<HttpResponseMessage>(result => result.StatusCode == HttpStatusCode.InternalServerError) // inspecting the result
     .Add(HttpStatusCode.InternalServerError) // particular value for other type
-    .Add<MyResult>(v => v.IsError)
-    .Add<MyResult>((v, context) => IsError(context)) // retrieve data from context for evaluation
+    .Add<MyResult>(result => result.IsError)
+    .Add<MyResult>((result, context) => IsError(context)) // retrieve data from context for evaluation
     .AddException<InvalidOperationException>() // exceptions
     .AddException<HttpRequestMessageException>() // more exceptions
-    .AddException(e => IsError(e)) // exception predicates
-    .Add<MyResult>((v, context) => await IsErrorAsync(v, context)); // async predicates
+    .AddException(error => IsError(error)) // exception predicates
+    .Add<MyResult>(async (result, context) => await IsErrorAsync(result, context)); // async predicates
 ```
 
 In the preceding sample you see that `ShouldRetry` handles the following scenarios:
 
-- Asynchronous predicates.
-- Synchronous predicates.
-- Concrete value results.
-- Custom function-based callbacks.
-- Different result types.
-- Exception types or exception-based predicates.
+- Asynchronous predicates;
+- Synchronous predicates;
+- Concrete value results;
+- Custom function-based callbacks;
+- Different result types;
+- Exception types or exception-based predicates;
