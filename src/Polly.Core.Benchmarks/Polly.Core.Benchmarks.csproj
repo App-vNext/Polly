@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net7.0</TargetFrameworks>
+    <RootNamespace>Polly</RootNamespace>
+    <ImplicitUsings>true</ImplicitUsings>
+    <ProjectType>Benchmark</ProjectType>
+    <Nullable>enable</Nullable>
+    <OutputType>Exe</OutputType>
+    <UseDefaultAnalyzers>true</UseDefaultAnalyzers>
+    <NoWarn>$(NoWarn);SA1600</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Polly.Core\Polly.Core.csproj" />
+    <ProjectReference Include="..\Polly\Polly.csproj" />
+  </ItemGroup>
+
+</Project>
