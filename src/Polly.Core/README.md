@@ -67,8 +67,8 @@ For example, the synchronous `Execute` method is implemented as:
 public void Execute(Action execute)
 {
     var context = ResilienceContext.Get();
+
     context.IsSynchronous = true;
-    context.IsVoid = true;
     context.ResultType = typeof(VoidResult);
 
     try
@@ -91,7 +91,7 @@ public void Execute(Action execute)
 In the preceding example:
 
 - We rent a `ResilienceContext` from the pool.
-- We store the information about the execution mode by setting the `IsSynchronous` and `IsVoid` properties on the context.
+- We store the information about the execution mode by setting the `IsSynchronous` and `ResultType` properties on the context. Here, we use internal `VoidResult` marker to say this user-callback returns no result.
 - We pass the user-callback, and use the `State` to avoid closure allocation.
 - We block the execution.
 - We return `ResilienceContext` to the pool.
