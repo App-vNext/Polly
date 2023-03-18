@@ -1,53 +1,44 @@
 using System;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Polly.Builder;
+
+#pragma warning disable S2302 // "nameof" should be used
 
 /// <summary>
 /// A pipeline of strategies.
 /// </summary>
-internal sealed class ResilienceStrategyPipeline : DelegatingResilienceStrategy
+internal sealed class ResilienceStrategyPipeline : ResilienceStrategy
 {
     private readonly ResilienceStrategy _pipeline;
 
-    public static ResilienceStrategyPipeline CreatePipelineAndFreezeStrategies(IReadOnlyList<ResilienceStrategy> strategies)
+    public static ResilienceStrategyPipeline CreatePipeline(IReadOnlyList<ResilienceStrategy> strategies)
     {
         Guard.NotNull(strategies);
 
         if (strategies.Count < 2)
         {
-#pragma warning disable S2302 // "nameof" should be used
             throw new InvalidOperationException("The resilience pipeline must contain at least two resilience strategies.");
-#pragma warning restore S2302 // "nameof" should be used
         }
 
         if (strategies.Distinct().Count() != strategies.Count)
         {
-#pragma warning disable S2302 // "nameof" should be used
             throw new InvalidOperationException("The resilience pipeline must contain unique resilience strategies.");
-#pragma warning restore S2302 // "nameof" should be used
         }
 
-        var delegatingStrategies = strategies.Select(strategy =>
-        {
-            if (strategy is DelegatingResilienceStrategy delegatingStrategy)
-            {
-                return delegatingStrategy;
-            }
-            else
-            {
-                return new DelegatingStrategyWrapper(strategy);
-            }
-        }).ToList();
+        // convert all strategies to delegating ones (except the last one as it's not required)
+        var delegatingStrategies = strategies
+            .Take(strategies.Count - 1)
+            .Select(strategy => new DelegatingResilienceStrategy(strategy))
+            .ToList();
 
+        // link the last one
+        delegatingStrategies.Last().Next = strategies[strategies.Count - 1];
+
+        // link the remaining ones
         for (var i = 0; i < delegatingStrategies.Count - 1; i++)
         {
             delegatingStrategies[i].Next = delegatingStrategies[i + 1];
-        }
-
-        // now, freeze the strategies so any further modifications are not allowed
-        foreach (var strategy in delegatingStrategies)
-        {
-            strategy.Freeze();
         }
 
         return new ResilienceStrategyPipeline(delegatingStrategies[0], strategies);
@@ -63,25 +54,24 @@ internal sealed class ResilienceStrategyPipeline : DelegatingResilienceStrategy
 
     protected internal override ValueTask<TResult> ExecuteCoreAsync<TResult, TState>(Func<ResilienceContext, TState, ValueTask<TResult>> callback, ResilienceContext context, TState state)
     {
-        return _pipeline.ExecuteCoreAsync(
-            static (context, state) => state.Next.ExecuteCoreAsync(state.callback, context, state.state),
-            context,
-            (Next, callback, state));
+        return _pipeline.ExecuteCoreAsync(callback, context, state);
     }
 
     /// <summary>
-    /// A wrapper that converts a <see cref="ResilienceStrategy"/> into a <see cref="DelegatingResilienceStrategy"/>.
+    /// A resilience strategy that delegates the execution to the next strategy in the chain.
     /// </summary>
-    private sealed class DelegatingStrategyWrapper : DelegatingResilienceStrategy
+    private sealed class DelegatingResilienceStrategy : ResilienceStrategy
     {
         private readonly ResilienceStrategy _strategy;
 
-        public DelegatingStrategyWrapper(ResilienceStrategy strategy) => _strategy = strategy;
+        public DelegatingResilienceStrategy(ResilienceStrategy strategy) => _strategy = strategy;
+
+        public ResilienceStrategy? Next { get; set; }
 
         protected internal override ValueTask<TResult> ExecuteCoreAsync<TResult, TState>(Func<ResilienceContext, TState, ValueTask<TResult>> callback, ResilienceContext context, TState state)
         {
             return _strategy.ExecuteCoreAsync(
-                static (context, state) => state.Next.ExecuteCoreAsync(state.callback, context, state.state),
+                static (context, state) => state.Next!.ExecuteCoreAsync(state.callback, context, state.state),
                 context,
                 (Next, callback, state));
         }
