@@ -260,6 +260,7 @@ The StrategyType field is required.
                 context.BuilderName.Should().Be("builder-name");
                 context.StrategyName.Should().Be("strategy-name");
                 context.StrategyType.Should().Be("strategy-type");
+                context.BuilderProperties.Should().BeSameAs(builder.Options.Properties);
                 verified1 = true;
 
                 return new TestResilienceStrategy();
@@ -272,6 +273,7 @@ The StrategyType field is required.
                 context.BuilderName.Should().Be("builder-name");
                 context.StrategyName.Should().Be("strategy-name-2");
                 context.StrategyType.Should().Be("strategy-type-2");
+                context.BuilderProperties.Should().BeSameAs(builder.Options.Properties);
                 verified2 = true;
 
                 return new TestResilienceStrategy();
