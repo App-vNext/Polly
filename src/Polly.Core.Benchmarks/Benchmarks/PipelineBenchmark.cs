@@ -3,7 +3,7 @@ using Polly;
 
 namespace Polly.Core.Benchmarks;
 
-public class PipelineBench
+public class PipelineBenchmark
 {
     private object? _strategyV7;
     private object? _strategyV8;
@@ -12,9 +12,9 @@ public class PipelineBench
     [GlobalSetup]
     public void Setup()
     {
-        _strategyV7 = Helper.CreatePipeline(PollyVersion.V7, Components, false);
-        _strategyV8 = Helper.CreatePipeline(PollyVersion.V8, Components, false);
-        _strategyV8Delegating = Helper.CreatePipeline(PollyVersion.V8, Components, true);
+        _strategyV7 = Helper.CreatePipeline(PollyVersion.V7, Components, delegating: false);
+        _strategyV8 = Helper.CreatePipeline(PollyVersion.V8, Components, delegating: false);
+        _strategyV8Delegating = Helper.CreatePipeline(PollyVersion.V8, Components, delegating: true);
     }
 
     [Params(1, 2, 5, 10)]
