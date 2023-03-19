@@ -1,3 +1,5 @@
+using Polly.Telemetry;
+
 namespace Polly.Builder;
 
 /// <summary>
@@ -88,11 +90,22 @@ public class ResilienceStrategyBuilder
 
     private ResilienceStrategy CreateResilienceStrategy(Entry entry)
     {
-        var context = new ResilienceStrategyBuilderContext(
-            builderName: Options.BuilderName,
-            builderProperties: Options.Properties,
-            strategyName: entry.Properties.StrategyName,
-            strategyType: entry.Properties.StrategyType);
+        var telemetryContext = new ResilienceTelemetryFactoryContext
+        {
+            BuilderName = Options.BuilderName,
+            BuilderProperties = Options.Properties,
+            StrategyName = entry.Properties.StrategyName,
+            StrategyType = entry.Properties.StrategyType
+        };
+
+        var context = new ResilienceStrategyBuilderContext
+        {
+            BuilderName = Options.BuilderName,
+            BuilderProperties = Options.Properties,
+            StrategyName = entry.Properties.StrategyName,
+            StrategyType = entry.Properties.StrategyType,
+            Telemetry = Options.TelemetryFactory.Create(telemetryContext)
+        };
 
         return entry.Factory(context);
     }
