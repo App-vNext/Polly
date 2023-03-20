@@ -17,5 +17,5 @@ public class ResilienceStrategyBuilderOptions
     /// <summary>
     /// Gets the custom properties attached to builder options.
     /// </summary>
-    public ResilienceProperties Properties { get; } = new ResilienceProperties();
+    public ResilienceProperties Properties { get; } = new();
 }

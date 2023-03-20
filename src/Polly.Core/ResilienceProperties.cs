@@ -9,15 +9,15 @@ namespace Polly;
 /// </summary>
 public sealed class ResilienceProperties : IDictionary<string, object?>
 {
-    private Dictionary<string, object?> Options { get; } = new Dictionary<string, object?>();
+    private Dictionary<string, object?> Options { get; } = new();
 
     /// <summary>
     /// Gets the value of a given property.
     /// </summary>
-    /// <param name="key">Strongly typed key to get the value of property.</param>
+    /// <param name="key">Strongly typed key to get the value of the property.</param>
     /// <param name="value">Returns the value of the property.</param>
     /// <typeparam name="TValue">The type of property value as defined by <paramref name="key"/> parameter.</typeparam>
-    /// <returns>True, if an property is retrieved.</returns>
+    /// <returns>True, if a property was retrieved.</returns>
     public bool TryGetValue<TValue>(ResiliencePropertyKey<TValue> key, [MaybeNullWhen(false)] out TValue value)
     {
         if (Options.TryGetValue(key.Key, out object? val) && val is TValue typedValue)
@@ -33,7 +33,7 @@ public sealed class ResilienceProperties : IDictionary<string, object?>
     /// <summary>
     /// Gets the value of a given property with a fallback default value.
     /// </summary>
-    /// <param name="key">Strongly typed key to get the value of property.</param>
+    /// <param name="key">Strongly typed key to get the value of the property.</param>
     /// <param name="defaultValue">The default value to use if property is not found.</param>
     /// <typeparam name="TValue">The type of property value as defined by <paramref name="key"/> parameter.</typeparam>
     /// <returns>The property value or the default value.</returns>
@@ -50,7 +50,7 @@ public sealed class ResilienceProperties : IDictionary<string, object?>
     /// <summary>
     /// Sets the value of a given property.
     /// </summary>
-    /// <param name="key">Strongly typed key to get the value of property.</param>
+    /// <param name="key">Strongly typed key to get the value of the property.</param>
     /// <param name="value">Returns the value of the property.</param>
     /// <typeparam name="TValue">The type of property value as defined by <paramref name="key"/> parameter.</typeparam>
     public void Set<TValue>(ResiliencePropertyKey<TValue> key, TValue value)

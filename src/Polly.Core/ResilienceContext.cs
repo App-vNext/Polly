@@ -51,7 +51,7 @@ public sealed class ResilienceContext
     /// <summary>
     /// Gets the custom properties attached to the context.
     /// </summary>
-    public ResilienceProperties Properties { get; } = new ResilienceProperties();
+    public ResilienceProperties Properties { get; } = new();
 
     /// <summary>
     /// Gets a <see cref="ResilienceContext"/> instance from the pool.
