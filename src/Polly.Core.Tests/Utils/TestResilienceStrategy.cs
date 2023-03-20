@@ -1,6 +1,6 @@
 namespace Polly.Core.Tests.Utils;
 
-public class TestResilienceStrategy : DelegatingResilienceStrategy
+public class TestResilienceStrategy : ResilienceStrategy
 {
     public Action<ResilienceContext, object?>? Before { get; set; }
 
@@ -19,7 +19,7 @@ public class TestResilienceStrategy : DelegatingResilienceStrategy
                 await OnExecute(context, state);
             }
 
-            var result = await base.ExecuteCoreAsync(callback, context, state);
+            var result = await callback(context, state);
 
             After?.Invoke(result, null);
 

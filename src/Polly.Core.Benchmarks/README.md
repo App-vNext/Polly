@@ -12,20 +12,16 @@ LaunchCount=2  WarmupCount=10
 
 ## PIPELINES
 
-|                       Method | Components |        Mean |     Error |    StdDev |      Median | Ratio | RatioSD |   Gen0 | Allocated | Alloc Ratio |
-|----------------------------- |----------- |------------:|----------:|----------:|------------:|------:|--------:|-------:|----------:|------------:|
-|           ExecutePipeline_V7 |          1 |    74.84 ns |  1.279 ns |  1.835 ns |    75.81 ns |  1.00 |    0.00 | 0.0362 |     304 B |        1.00 |
-|           ExecutePipeline_V8 |          1 |    72.61 ns |  0.584 ns |  0.819 ns |    72.28 ns |  0.97 |    0.02 | 0.0048 |      40 B |        0.13 |
-| ExecutePipeline_V8Delegating |          1 |    90.04 ns |  0.753 ns |  1.104 ns |    89.76 ns |  1.20 |    0.02 | 0.0048 |      40 B |        0.13 |
-|                              |            |             |           |           |             |       |         |        |           |             |
-|           ExecutePipeline_V7 |          2 |   156.67 ns |  2.810 ns |  4.119 ns |   154.12 ns |  1.00 |    0.00 | 0.0658 |     552 B |        1.00 |
-|           ExecutePipeline_V8 |          2 |   185.87 ns |  1.932 ns |  2.580 ns |   185.02 ns |  1.19 |    0.04 | 0.0048 |      40 B |        0.07 |
-| ExecutePipeline_V8Delegating |          2 |   127.92 ns |  1.264 ns |  1.772 ns |   129.00 ns |  0.82 |    0.02 | 0.0048 |      40 B |        0.07 |
-|                              |            |             |           |           |             |       |         |        |           |             |
-|           ExecutePipeline_V7 |          5 |   543.85 ns | 19.540 ns | 29.247 ns |   530.00 ns |  1.00 |    0.00 | 0.1545 |    1296 B |        1.00 |
-|           ExecutePipeline_V8 |          5 |   335.67 ns |  3.903 ns |  5.598 ns |   336.22 ns |  0.62 |    0.04 | 0.0048 |      40 B |        0.03 |
-| ExecutePipeline_V8Delegating |          5 |   189.99 ns |  4.045 ns |  5.929 ns |   189.05 ns |  0.35 |    0.02 | 0.0048 |      40 B |        0.03 |
-|                              |            |             |           |           |             |       |         |        |           |             |
-|           ExecutePipeline_V7 |         10 | 1,112.84 ns |  8.585 ns | 12.036 ns | 1,111.96 ns |  1.00 |    0.00 | 0.3014 |    2536 B |        1.00 |
-|           ExecutePipeline_V8 |         10 |   543.85 ns |  6.205 ns |  9.095 ns |   545.30 ns |  0.49 |    0.01 | 0.0048 |      40 B |        0.02 |
-| ExecutePipeline_V8Delegating |         10 |   258.11 ns |  0.881 ns |  1.318 ns |   258.30 ns |  0.23 |    0.00 | 0.0048 |      40 B |        0.02 |
+|             Method | Components |        Mean |     Error |    StdDev | Ratio | RatioSD |   Gen0 | Allocated | Alloc Ratio |
+|------------------- |----------- |------------:|----------:|----------:|------:|--------:|-------:|----------:|------------:|
+| ExecutePipeline_V7 |          1 |    81.25 ns |  1.304 ns |  1.870 ns |  1.00 |    0.00 | 0.0362 |     304 B |        1.00 |
+| ExecutePipeline_V8 |          1 |    82.25 ns |  1.414 ns |  2.073 ns |  1.01 |    0.04 | 0.0048 |      40 B |        0.13 |
+|                    |            |             |           |           |       |         |        |           |             |
+| ExecutePipeline_V7 |          2 |   166.04 ns |  2.875 ns |  4.215 ns |  1.00 |    0.00 | 0.0658 |     552 B |        1.00 |
+| ExecutePipeline_V8 |          2 |   108.29 ns |  1.504 ns |  2.251 ns |  0.65 |    0.02 | 0.0048 |      40 B |        0.07 |
+|                    |            |             |           |           |       |         |        |           |             |
+| ExecutePipeline_V7 |          5 |   531.04 ns |  4.728 ns |  6.930 ns |  1.00 |    0.00 | 0.1545 |    1296 B |        1.00 |
+| ExecutePipeline_V8 |          5 |   245.50 ns |  2.344 ns |  3.509 ns |  0.46 |    0.01 | 0.0048 |      40 B |        0.03 |
+|                    |            |             |           |           |       |         |        |           |             |
+| ExecutePipeline_V7 |         10 | 1,128.82 ns | 10.838 ns | 15.886 ns |  1.00 |    0.00 | 0.3014 |    2536 B |        1.00 |
+| ExecutePipeline_V8 |         10 |   449.31 ns |  2.926 ns |  4.379 ns |  0.40 |    0.01 | 0.0048 |      40 B |        0.02 |

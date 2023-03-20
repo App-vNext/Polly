@@ -7,14 +7,12 @@ public class PipelineBenchmark
 {
     private object? _strategyV7;
     private object? _strategyV8;
-    private object? _strategyV8Delegating;
 
     [GlobalSetup]
     public void Setup()
     {
-        _strategyV7 = Helper.CreatePipeline(PollyVersion.V7, Components, delegating: false);
-        _strategyV8 = Helper.CreatePipeline(PollyVersion.V8, Components, delegating: false);
-        _strategyV8Delegating = Helper.CreatePipeline(PollyVersion.V8, Components, delegating: true);
+        _strategyV7 = Helper.CreatePipeline(PollyVersion.V7, Components);
+        _strategyV8 = Helper.CreatePipeline(PollyVersion.V8, Components);
     }
 
     [Params(1, 2, 5, 10)]
@@ -25,7 +23,4 @@ public class PipelineBenchmark
 
     [Benchmark]
     public ValueTask ExecutePipeline_V8() => _strategyV8!.ExecuteAsync(PollyVersion.V8);
-
-    [Benchmark]
-    public ValueTask ExecutePipeline_V8Delegating() => _strategyV8Delegating!.ExecuteAsync(PollyVersion.V8);
 }
