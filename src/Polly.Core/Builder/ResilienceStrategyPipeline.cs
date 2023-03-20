@@ -32,8 +32,12 @@ internal sealed class ResilienceStrategyPipeline : ResilienceStrategy
             .Select(strategy => new DelegatingResilienceStrategy(strategy))
             .ToList();
 
+#if NET6_0_OR_GREATER
         // link the last one
-        delegatingStrategies.Last().Next = strategies[strategies.Count - 1];
+        delegatingStrategies[^1].Next = strategies[^1];
+#else
+        delegatingStrategies[delegatingStrategies.Count - 1].Next = strategies[strategies.Count - 1];
+#endif
 
         // link the remaining ones
         for (var i = 0; i < delegatingStrategies.Count - 1; i++)
