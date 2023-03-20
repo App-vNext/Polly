@@ -99,7 +99,7 @@ In the preceding example:
 Underlying implementation decides how to execute this user-callback by reading the `ResilienceContext`:
 
 ``` csharp
-internal class DelayStrategy : DelegatingResilienceStrategy
+internal class DelayStrategy : ResilienceStrategy
 {
     protected override async ValueTask<T> ExecuteCoreAsync<T, TState>(Func<ResilienceContext, TState, ValueTask<T>> callback, ResilienceContext context, TState state)
     {
@@ -109,10 +109,10 @@ internal class DelayStrategy : DelegatingResilienceStrategy
         }
         else
         {
-            await Task.Delay(1000);
+            await Task.Delay(1000).ContinueOnCapturedContext(context.ContinueOnCapturedContext);
         }
 
-        return await execution(context, state);
+        return await callback(context, state).ContinueOnCapturedContext(context.ContinueOnCapturedContext);
     }
 }
 ```
