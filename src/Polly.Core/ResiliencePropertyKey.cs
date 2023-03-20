@@ -26,7 +26,7 @@ public readonly struct ResiliencePropertyKey<TValue> : IEquatable<ResilienceProp
     public override string ToString() => Key;
 
     /// /// <inheritdoc/>
-    public override bool Equals(object obj) => obj is ResiliencePropertyKey<TValue> other && Equals(other);
+    public override bool Equals(object? obj) => obj is ResiliencePropertyKey<TValue> other && Equals(other);
 
     /// <inheritdoc/>
     public bool Equals(ResiliencePropertyKey<TValue> other) => StringComparer.Ordinal.Equals(Key, other.Key);
