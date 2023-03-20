@@ -90,6 +90,7 @@ public class ResilienceStrategyBuilder
     {
         var context = new ResilienceStrategyBuilderContext(
             builderName: Options.BuilderName,
+            builderProperties: Options.Properties,
             strategyName: entry.Properties.StrategyName,
             strategyType: entry.Properties.StrategyType);
 

@@ -5,15 +5,14 @@ namespace Polly.Builder;
 /// </summary>
 public class ResilienceStrategyBuilderContext
 {
-    /// <summary>
-    /// Initializes a new instance of the <see cref="ResilienceStrategyBuilderContext"/> class.
-    /// </summary>
-    /// <param name="builderName">The name of the builder.</param>
-    /// <param name="strategyName">The strategy name.</param>
-    /// <param name="strategyType">The strategy type.</param>
-    public ResilienceStrategyBuilderContext(string builderName, string strategyName, string strategyType)
+    internal ResilienceStrategyBuilderContext(
+        string builderName,
+        ResilienceProperties builderProperties,
+        string strategyName,
+        string strategyType)
     {
         BuilderName = Guard.NotNull(builderName);
+        BuilderProperties = Guard.NotNull(builderProperties);
         StrategyName = Guard.NotNull(strategyName);
         StrategyType = Guard.NotNull(strategyType);
     }
@@ -22,6 +21,11 @@ public class ResilienceStrategyBuilderContext
     /// Gets the name of the builder.
     /// </summary>
     public string BuilderName { get; }
+
+    /// <summary>
+    /// Gets the custom properties attached to the builder.
+    /// </summary>
+    public ResilienceProperties BuilderProperties { get; }
 
     /// <summary>
     /// Gets the name of the strategy.

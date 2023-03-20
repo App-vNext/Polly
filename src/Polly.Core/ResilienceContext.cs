@@ -49,6 +49,11 @@ public sealed class ResilienceContext
     internal bool IsInitialized => ResultType != typeof(UnknownResult);
 
     /// <summary>
+    /// Gets the custom properties attached to the context.
+    /// </summary>
+    public ResilienceProperties Properties { get; } = new();
+
+    /// <summary>
     /// Gets a <see cref="ResilienceContext"/> instance from the pool.
     /// </summary>
     /// <returns>An instance of <see cref="ResilienceContext"/>.</returns>
@@ -91,6 +96,7 @@ public sealed class ResilienceContext
         ResultType = typeof(UnknownResult);
         ContinueOnCapturedContext = false;
         CancellationToken = default;
+        ((IDictionary<string, object?>)Properties).Clear();
     }
 
     /// <summary>

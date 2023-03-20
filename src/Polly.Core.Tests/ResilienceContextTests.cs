@@ -33,7 +33,7 @@ public class ResilienceContextTests
         context.CancellationToken = cts.Token;
         context.Initialize<bool>(true);
         context.CancellationToken.Should().Be(cts.Token);
-
+        context.Properties.Set(new ResiliencePropertyKey<int>("abc"), 10);
         ResilienceContext.Return(context);
 
         AssertDefaults(context);
@@ -77,5 +77,6 @@ public class ResilienceContextTests
         context.ResultType.Name.Should().Be("UnknownResult");
         context.IsSynchronous.Should().BeFalse();
         context.CancellationToken.Should().Be(CancellationToken.None);
+        context.Properties.Should().BeEmpty();
     }
 }
