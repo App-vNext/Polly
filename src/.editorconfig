@@ -1,16 +1,9 @@
-root = true
-# EditorConfig: http://EditorConfig.org
-
-# top-most EditorConfig file
-
 [*]
 indent_style = space
-
 
 [*.cs]
 indent_size = 4
 charset = utf-8
-
 
 # Microsoft .NET properties
 csharp_preferred_modifier_order = public, private, protected, internal, new, static, abstract, virtual, sealed, readonly, override, extern, unsafe, volatile, async:suggestion
