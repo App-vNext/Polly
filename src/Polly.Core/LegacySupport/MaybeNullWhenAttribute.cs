@@ -9,4 +9,5 @@ internal sealed class MaybeNullWhenAttribute : Attribute
 
     public bool ReturnValue { get; }
 }
+
 #endif
