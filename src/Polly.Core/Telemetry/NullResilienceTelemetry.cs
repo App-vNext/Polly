@@ -20,7 +20,7 @@ public sealed class NullResilienceTelemetry : ResilienceTelemetry
     }
 
     /// <inheritdoc/>
-    public override void Report<T>(string eventName, T result, ResilienceContext context)
+    public override void Report<TResult>(string eventName, TResult result, ResilienceContext context)
     {
     }
 
