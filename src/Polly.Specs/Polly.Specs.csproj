@@ -6,7 +6,7 @@
     <Nullable>enable</Nullable>
     <ProjectType>Test</ProjectType>
     <Threshold>75,60,70</Threshold>
-    <Exclude>[Polly.Core]*</Exclude>
+    <Include>[Polly]*</Include>
   </PropertyGroup>
 
   <ItemGroup>
