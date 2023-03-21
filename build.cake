@@ -10,7 +10,7 @@ var configuration = Argument<string>("configuration", "Release");
 //////////////////////////////////////////////////////////////////////
 
 #Tool "xunit.runner.console&version=2.4.2"
-#Tool "dotnet-stryker&version=3.6.1"
+#Tool "dotnet-stryker&version=3.7.0"
 
 //////////////////////////////////////////////////////////////////////
 // EXTERNAL NUGET LIBRARIES
@@ -215,11 +215,20 @@ Task("__RunTests")
 Task("__RunMutationTests")
     .Does(() =>
 {
-    TestProject(File("./src/Polly/Polly.csproj"), File("./src/Polly.Specs/Polly.Specs.csproj"), "Polly");
-    TestProject(File("./src/Polly.Core/Polly.Core.csproj"), File("./src/Polly.Core.Tests/Polly.Core.Tests.csproj"), "Polly.Core");
+    TestProject(File("./src/Polly/Polly.csproj"), File("./src/Polly.Specs/Polly.Specs.csproj"), "Polly.csproj");
+    TestProject(File("./src/Polly.Core/Polly.Core.csproj"), File("./src/Polly.Core.Tests/Polly.Core.Tests.csproj"), "Polly.Core.csproj");
 
     void TestProject(FilePath proj, FilePath testProj, string project)
     {
+        var dotNetBuildSettings = new DotNetBuildSettings
+        {
+            Configuration = "Debug",
+            Verbosity = DotNetVerbosity.Minimal,
+            NoRestore = true
+        };
+
+        DotNetBuild(proj.ToString(), dotNetBuildSettings);
+
         var strykerPath = Context.Tools.Resolve("Stryker.CLI.dll");
         var mutationScore = XmlPeek(proj, "/Project/PropertyGroup/MutationScore/text()", new XmlPeekSettings { SuppressWarning = true });
         var score = int.Parse(mutationScore);
