@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using Polly.Telemetry;
 
 namespace Polly.Builder;
 
@@ -18,4 +19,10 @@ public class ResilienceStrategyBuilderOptions
     /// Gets the custom properties attached to builder options.
     /// </summary>
     public ResilienceProperties Properties { get; } = new();
+
+    /// <summary>
+    /// Gets or sets an instance of <see cref="TelemetryFactory"/>.
+    /// </summary>
+    [Required]
+    public ResilienceTelemetryFactory TelemetryFactory { get; set; } = NullResilienceTelemetryFactory.Instance;
 }

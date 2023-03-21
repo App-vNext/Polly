@@ -1,8 +1,10 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 using FluentAssertions;
+using Moq;
 using Polly.Builder;
 using Polly.Core.Tests.Utils;
+using Polly.Telemetry;
 using Xunit;
 
 namespace Polly.Core.Tests.Builder;
@@ -261,6 +263,8 @@ The StrategyType field is required.
                 context.StrategyName.Should().Be("strategy-name");
                 context.StrategyType.Should().Be("strategy-type");
                 context.BuilderProperties.Should().BeSameAs(builder.Options.Properties);
+                context.Telemetry.Should().NotBeNull();
+                context.Telemetry.Should().Be(NullResilienceTelemetry.Instance);
                 verified1 = true;
 
                 return new TestResilienceStrategy();
@@ -274,6 +278,8 @@ The StrategyType field is required.
                 context.StrategyName.Should().Be("strategy-name-2");
                 context.StrategyType.Should().Be("strategy-type-2");
                 context.BuilderProperties.Should().BeSameAs(builder.Options.Properties);
+                context.Telemetry.Should().NotBeNull();
+                context.Telemetry.Should().Be(NullResilienceTelemetry.Instance);
                 verified2 = true;
 
                 return new TestResilienceStrategy();
@@ -286,6 +292,45 @@ The StrategyType field is required.
         // assert
         verified1.Should().BeTrue();
         verified2.Should().BeTrue();
+    }
+
+    [Fact]
+    public void BuildStrategy_EnsureTelemetryFactoryInvoked()
+    {
+        // arrange
+        var factory = new Mock<ResilienceTelemetryFactory>(MockBehavior.Strict);
+        var builder = new ResilienceStrategyBuilder
+        {
+            Options = new ResilienceStrategyBuilderOptions
+            {
+                BuilderName = "builder-name",
+                TelemetryFactory = factory.Object
+            },
+        };
+
+        factory
+            .Setup(v => v.Create(It.IsAny<ResilienceTelemetryFactoryContext>()))
+            .Returns(NullResilienceTelemetry.Instance)
+            .Callback<ResilienceTelemetryFactoryContext>(context =>
+            {
+                context.BuilderName.Should().Be("builder-name");
+                context.StrategyName.Should().Be("strategy-name");
+                context.StrategyType.Should().Be("strategy-type");
+                context.BuilderProperties.Should().BeSameAs(builder.Options.Properties);
+            });
+
+        builder.AddStrategy(
+            context =>
+            {
+                return new TestResilienceStrategy();
+            },
+            new ResilienceStrategyOptions { StrategyName = "strategy-name", StrategyType = "strategy-type" });
+
+        // act
+        builder.Build();
+
+        // assert
+        factory.VerifyAll();
     }
 
     private class Strategy : ResilienceStrategy

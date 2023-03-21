@@ -1,3 +1,5 @@
+using Polly.Telemetry;
+
 namespace Polly.Builder;
 
 /// <summary>
@@ -5,35 +7,28 @@ namespace Polly.Builder;
 /// </summary>
 public class ResilienceStrategyBuilderContext
 {
-    internal ResilienceStrategyBuilderContext(
-        string builderName,
-        ResilienceProperties builderProperties,
-        string strategyName,
-        string strategyType)
-    {
-        BuilderName = Guard.NotNull(builderName);
-        BuilderProperties = Guard.NotNull(builderProperties);
-        StrategyName = Guard.NotNull(strategyName);
-        StrategyType = Guard.NotNull(strategyType);
-    }
-
     /// <summary>
     /// Gets the name of the builder.
     /// </summary>
-    public string BuilderName { get; }
+    public string BuilderName { get; internal set; } = string.Empty;
 
     /// <summary>
     /// Gets the custom properties attached to the builder.
     /// </summary>
-    public ResilienceProperties BuilderProperties { get; }
+    public ResilienceProperties BuilderProperties { get; internal set; } = new();
 
     /// <summary>
     /// Gets the name of the strategy.
     /// </summary>
-    public string StrategyName { get; }
+    public string StrategyName { get; internal set; } = string.Empty;
 
     /// <summary>
     /// Gets the type of the strategy.
     /// </summary>
-    public string StrategyType { get; }
+    public string StrategyType { get; internal set; } = string.Empty;
+
+    /// <summary>
+    /// Gets the resilience telemetry used to report important events.
+    /// </summary>
+    public ResilienceTelemetry Telemetry { get; internal set; } = NullResilienceTelemetry.Instance;
 }
