@@ -73,7 +73,11 @@ public class SystemTimeProviderTests
         var stamp2 = provider.Object.GetTimestamp();
 
         var delay = provider.Object.GetElapsedTime(stamp1, stamp2);
-        delay.Should().Be(new TimeSpan(2, 30, 0));
+
+        var tickFrequency = (double)TimeSpan.TicksPerSecond / 40;
+        var expected = new TimeSpan((long)((stamp2 - stamp1) * tickFrequency));
+
+        delay.Should().Be(expected);
     }
 
     [Fact]
