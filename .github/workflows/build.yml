@@ -49,7 +49,7 @@ jobs:
     - uses: codecov/codecov-action@v3
       name: Upload coverage to Codecov
       with:
-        files: ./artifacts/coverage-reports/Polly.Core.Tests/Cobertura.xml,./artifacts/coverage-reports/Polly.Specs/Cobertura.xml
+        files: ./artifacts/coverage-reports/**/Cobertura.xml
         flags: ${{ matrix.os_name }}
 
     - name: Upload Mutation Report
