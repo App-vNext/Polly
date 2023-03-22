@@ -199,7 +199,7 @@ Task("__RunTests")
         loggers = new[] { "GitHubActions;report-warnings=false" };
     }
 
-    var projects = GetFiles("./src/**/*.Specs.csproj").Concat(GetFiles("./src/**/*.Tests.csproj"));
+    var projects = GetFiles("./src/**/*.Tests.csproj").Concat(GetFiles("./src/**/*.Specs.csproj"));
 
     foreach(var proj in projects)
     {
@@ -259,11 +259,11 @@ Task("__CreateSignedNuGetPackages")
         },
     };
 
-    Information("Building Polly.{0}.nupkg", nugetVersion);
-    DotNetPack(System.IO.Path.Combine(srcDir, "Polly", "Polly.csproj"), dotNetPackSettings);
-
     Information("Building Polly.Core.{0}.nupkg", nugetVersion);
     DotNetPack(System.IO.Path.Combine(srcDir, "Polly.Core", "Polly.Core.csproj"), dotNetPackSettings);
+
+    Information("Building Polly.{0}.nupkg", nugetVersion);
+    DotNetPack(System.IO.Path.Combine(srcDir, "Polly", "Polly.csproj"), dotNetPackSettings);
 });
 
 //////////////////////////////////////////////////////////////////////
