@@ -215,8 +215,8 @@ Task("__RunTests")
 Task("__RunMutationTests")
     .Does(() =>
 {
-    TestProject(File("./src/Polly/Polly.csproj"), File("./src/Polly.Specs/Polly.Specs.csproj"), "Polly.csproj");
     TestProject(File("./src/Polly.Core/Polly.Core.csproj"), File("./src/Polly.Core.Tests/Polly.Core.Tests.csproj"), "Polly.Core.csproj");
+    TestProject(File("./src/Polly/Polly.csproj"), File("./src/Polly.Specs/Polly.Specs.csproj"), "Polly.csproj");
 
     void TestProject(FilePath proj, FilePath testProj, string project)
     {
