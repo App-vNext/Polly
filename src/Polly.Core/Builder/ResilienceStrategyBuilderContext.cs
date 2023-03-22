@@ -31,4 +31,9 @@ public class ResilienceStrategyBuilderContext
     /// Gets the resilience telemetry used to report important events.
     /// </summary>
     public ResilienceTelemetry Telemetry { get; internal set; } = NullResilienceTelemetry.Instance;
+
+    /// <summary>
+    /// Gets or sets the <see cref="TimeProvider"/> used by this strategy.
+    /// </summary>
+    internal TimeProvider TimeProvider { get; set; } = TimeProvider.System;
 }

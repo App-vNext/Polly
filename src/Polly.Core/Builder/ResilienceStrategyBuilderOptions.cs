@@ -25,4 +25,13 @@ public class ResilienceStrategyBuilderOptions
     /// </summary>
     [Required]
     public ResilienceTelemetryFactory TelemetryFactory { get; set; } = NullResilienceTelemetryFactory.Instance;
+
+    /// <summary>
+    /// Gets or sets a <see cref="TimeProvider"/> that is used by strategies that work with time.
+    /// </summary>
+    /// <remarks>
+    /// This property is internal until we switch to official System.TimeProvider.
+    /// </remarks>
+    [Required]
+    internal TimeProvider TimeProvider { get; set; } = TimeProvider.System;
 }

@@ -252,7 +252,8 @@ The StrategyType field is required.
         {
             Options = new ResilienceStrategyBuilderOptions
             {
-                BuilderName = "builder-name"
+                BuilderName = "builder-name",
+                TimeProvider = new FakeTimeProvider().Object
             }
         };
 
@@ -265,6 +266,7 @@ The StrategyType field is required.
                 context.BuilderProperties.Should().BeSameAs(builder.Options.Properties);
                 context.Telemetry.Should().NotBeNull();
                 context.Telemetry.Should().Be(NullResilienceTelemetry.Instance);
+                context.TimeProvider.Should().Be(builder.Options.TimeProvider);
                 verified1 = true;
 
                 return new TestResilienceStrategy();
@@ -280,6 +282,7 @@ The StrategyType field is required.
                 context.BuilderProperties.Should().BeSameAs(builder.Options.Properties);
                 context.Telemetry.Should().NotBeNull();
                 context.Telemetry.Should().Be(NullResilienceTelemetry.Instance);
+                context.TimeProvider.Should().Be(builder.Options.TimeProvider);
                 verified2 = true;
 
                 return new TestResilienceStrategy();
