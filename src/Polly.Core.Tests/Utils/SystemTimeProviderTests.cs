@@ -64,6 +64,19 @@ public class SystemTimeProviderTests
     }
 
     [Fact]
+    public void GetElapsedTime_Mocked_Ok()
+    {
+        var provider = new FakeTimeProvider();
+        provider.SetupSequence(v => v.GetTimestamp()).Returns(120000).Returns(480000);
+
+        var stamp1 = provider.Object.GetTimestamp();
+        var stamp2 = provider.Object.GetTimestamp();
+
+        var delay = provider.Object.GetElapsedTime(stamp1, stamp2);
+        delay.Should().Be(TimeSpan.FromMilliseconds(36));
+    }
+
+    [Fact]
     public async Task UtcNow_Ok()
     {
         await TestUtils.AssertWithTimeoutAsync(() =>
@@ -72,4 +85,5 @@ public class SystemTimeProviderTests
             (DateTimeOffset.UtcNow - now).Should().BeLessThanOrEqualTo(TimeSpan.FromMilliseconds(10));
         });
     }
+
 }
