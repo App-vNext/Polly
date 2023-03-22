@@ -7,7 +7,7 @@ namespace Polly.Utils;
 /// <summary>
 /// TEMPORARY ONLY, to be replaced with System.TimeProvider - https://github.com/dotnet/runtime/issues/36617 later.
 /// </summary>
-/// <remarks>We trimmed some of the API that's not relevant for us to.</remarks>
+/// <remarks>We trimmed some of the API that's not relevant for us too.</remarks>
 internal abstract class TimeProvider
 {
     private readonly double _tickFrequency;

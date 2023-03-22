@@ -5,8 +5,13 @@ namespace Polly.Core.Tests.Utils;
 
 internal class FakeTimeProvider : Mock<TimeProvider>
 {
+    public FakeTimeProvider(long frequency)
+    : base(MockBehavior.Strict, frequency)
+    {
+    }
+
     public FakeTimeProvider()
-        : base(MockBehavior.Strict, Stopwatch.Frequency)
+        : this(Stopwatch.Frequency)
     {
     }
 
