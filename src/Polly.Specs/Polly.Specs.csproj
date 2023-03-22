@@ -6,6 +6,7 @@
     <Nullable>enable</Nullable>
     <ProjectType>Test</ProjectType>
     <Threshold>75,60,70</Threshold>
+    <Include>[Polly]*</Include>
   </PropertyGroup>
 
   <ItemGroup>
