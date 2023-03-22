@@ -104,7 +104,8 @@ public class ResilienceStrategyBuilder
             BuilderProperties = Options.Properties,
             StrategyName = entry.Properties.StrategyName,
             StrategyType = entry.Properties.StrategyType,
-            Telemetry = Options.TelemetryFactory.Create(telemetryContext)
+            Telemetry = Options.TelemetryFactory.Create(telemetryContext),
+            TimeProvider = Options.TimeProvider
         };
 
         return entry.Factory(context);
