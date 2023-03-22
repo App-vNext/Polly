@@ -24,9 +24,9 @@
 
   <PropertyGroup Condition=" '$(CollectCoverage)' == 'true' ">
     <ReportGeneratorOutputMarkdown Condition=" '$(ReportGeneratorOutputMarkdown)' == '' AND '$(GITHUB_SHA)' != '' ">true</ReportGeneratorOutputMarkdown>
-    <ReportGeneratorReportTypes>HTML</ReportGeneratorReportTypes>
+    <ReportGeneratorReportTypes>Cobertura;HTML</ReportGeneratorReportTypes>
     <ReportGeneratorReportTypes Condition=" '$(ReportGeneratorOutputMarkdown)' == 'true' ">$(ReportGeneratorReportTypes);MarkdownSummaryGitHub</ReportGeneratorReportTypes>
-    <ReportGeneratorTargetDirectory>$([System.IO.Path]::Combine($(OutputPath), 'coverage-reports'))</ReportGeneratorTargetDirectory>
+    <ReportGeneratorTargetDirectory>$([System.IO.Path]::Combine('$(MSBuildThisFileDirectory)', '../artifacts/', 'coverage-reports', '$(MSBuildProjectName)'))</ReportGeneratorTargetDirectory>
     <_MarkdownSummaryPrefix>&lt;details&gt;&lt;summary&gt;:chart_with_upwards_trend: &lt;b&gt;$(AssemblyName) Code Coverage report&lt;/b&gt; %28$(TargetFramework)%29&lt;/summary&gt;</_MarkdownSummaryPrefix>
     <_MarkdownSummarySuffix>&lt;/details&gt;</_MarkdownSummarySuffix>
   </PropertyGroup>

@@ -199,7 +199,7 @@ Task("__RunTests")
         loggers = new[] { "GitHubActions;report-warnings=false" };
     }
 
-    var projects = GetFiles("./src/**/*.Specs.csproj").Concat(GetFiles("./src/**/*.Tests.csproj"));
+    var projects = GetFiles("./src/**/*.Tests.csproj").Concat(GetFiles("./src/**/*.Specs.csproj"));
 
     foreach(var proj in projects)
     {
@@ -215,8 +215,8 @@ Task("__RunTests")
 Task("__RunMutationTests")
     .Does(() =>
 {
-    TestProject(File("./src/Polly/Polly.csproj"), File("./src/Polly.Specs/Polly.Specs.csproj"), "Polly.csproj");
     TestProject(File("./src/Polly.Core/Polly.Core.csproj"), File("./src/Polly.Core.Tests/Polly.Core.Tests.csproj"), "Polly.Core.csproj");
+    TestProject(File("./src/Polly/Polly.csproj"), File("./src/Polly.Specs/Polly.Specs.csproj"), "Polly.csproj");
 
     void TestProject(FilePath proj, FilePath testProj, string project)
     {
@@ -259,11 +259,11 @@ Task("__CreateSignedNuGetPackages")
         },
     };
 
-    Information("Building Polly.{0}.nupkg", nugetVersion);
-    DotNetPack(System.IO.Path.Combine(srcDir, "Polly", "Polly.csproj"), dotNetPackSettings);
-
     Information("Building Polly.Core.{0}.nupkg", nugetVersion);
     DotNetPack(System.IO.Path.Combine(srcDir, "Polly.Core", "Polly.Core.csproj"), dotNetPackSettings);
+
+    Information("Building Polly.{0}.nupkg", nugetVersion);
+    DotNetPack(System.IO.Path.Combine(srcDir, "Polly", "Polly.csproj"), dotNetPackSettings);
 });
 
 //////////////////////////////////////////////////////////////////////
