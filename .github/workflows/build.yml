@@ -53,6 +53,7 @@ jobs:
         flags: ${{ matrix.os_name }}
 
     - name: Upload Mutation Report
+      if: always()
       uses: actions/upload-artifact@v3
       with:
         name: mutation-report-${{ matrix.os_name }}
