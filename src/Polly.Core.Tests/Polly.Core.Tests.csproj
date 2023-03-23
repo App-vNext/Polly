@@ -7,11 +7,15 @@
     <Nullable>enable</Nullable>
     <SkipPollyUsings>true</SkipPollyUsings>
     <Threshold>100</Threshold>
-    <NoWarn>$(NoWarn);SA1600</NoWarn>
+    <NoWarn>$(NoWarn);SA1600;SA1204</NoWarn>
     <Include>[Polly.Core]*</Include>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Polly.Core\Polly.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="Polly.Core.Tests.Utils"/>
   </ItemGroup>
 </Project>

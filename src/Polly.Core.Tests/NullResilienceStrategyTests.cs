@@ -1,6 +1,3 @@
-using FluentAssertions;
-using Xunit;
-
 namespace Polly.Core.Tests;
 
 public class NullResilienceStrategyTests

@@ -1,11 +1,7 @@
-using System;
 using System.ComponentModel.DataAnnotations;
-using FluentAssertions;
 using Moq;
 using Polly.Builder;
-using Polly.Core.Tests.Utils;
 using Polly.Telemetry;
-using Xunit;
 
 namespace Polly.Core.Tests.Builder;
 

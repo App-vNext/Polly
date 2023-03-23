@@ -1,5 +1,3 @@
-using System;
-
 namespace Polly.Core.Tests.Utils;
 
 #pragma warning disable CA1031 // Do not catch general exception types

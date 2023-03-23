@@ -2937,7 +2937,7 @@ dotnet_diagnostic.S1659.severity = warning
 # Category : Minor Code Smell
 # Help Link: https://rules.sonarsource.com/csharp/RSPEC-1694
 # Tags     : C#, MainSourceScope
-dotnet_diagnostic.S1694.severity = warning
+dotnet_diagnostic.S1694.severity = suggestion
 
 # Title    : NullReferenceException should not be caught
 # Category : Major Code Smell

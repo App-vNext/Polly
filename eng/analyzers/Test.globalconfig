@@ -351,7 +351,7 @@ dotnet_diagnostic.CA1062.severity = none
 # Category : Design
 # Help Link: https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1063
 # Tags     : PortedFromFxCop, Telemetry, EnabledRuleInAggressiveMode
-dotnet_diagnostic.CA1063.severity = warning
+dotnet_diagnostic.CA1063.severity = none
 
 # Title    : Exceptions should be public
 # Category : Design
@@ -713,7 +713,7 @@ dotnet_diagnostic.CA1815.severity = none
 # Category : Usage
 # Help Link: https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1816
 # Tags     : PortedFromFxCop, Telemetry, EnabledRuleInAggressiveMode
-dotnet_diagnostic.CA1816.severity = warning
+dotnet_diagnostic.CA1816.severity = none
 
 # Title    : Properties should not return arrays
 # Category : Performance
