@@ -51,12 +51,15 @@ jobs:
       with:
         files: ./artifacts/coverage-reports/Polly.Core.Tests/Cobertura.xml,./artifacts/coverage-reports/Polly.Specs/Cobertura.xml
         flags: ${{ matrix.os_name }}
+        if-no-files-found: warn
 
     - name: Upload Mutation Report
+      if: always()
       uses: actions/upload-artifact@v3
       with:
         name: mutation-report-${{ matrix.os_name }}
         path: StrykerOutput
+        if-no-files-found: warn
 
     - name: Publish NuGet packages
       uses: actions/upload-artifact@v3
