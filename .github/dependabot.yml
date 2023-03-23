@@ -14,3 +14,8 @@ updates:
     day: thursday
     time: "12:00"
     timezone: "America/New_York"
+  ignore:
+    # Ignore the libraries which are pinned
+    - dependency-name: "System.ComponentModel.Annotations"
+    - dependency-name: "System.Threading.Tasks.Extensions"
+    - dependency-name: "System.ValueTuplens"
