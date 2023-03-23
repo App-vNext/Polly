@@ -12,7 +12,7 @@
     <PackageVersion Include="ReportGenerator" Version="5.1.19" />
     <PackageVersion Include="SonarAnalyzer.CSharp" Version="8.51.0.59060" />
     <PackageVersion Include="StyleCop.Analyzers" Version="1.2.0-beta.435" />
-    <PackageVersion Include="System.ComponentModel.Annotations" Version="4.5.0" />
+    <PackageVersion Include="System.ComponentModel.Annotations" Version="5.0.0" />
     <PackageVersion Include="System.Threading.Tasks.Extensions" Version="4.5.4" />
     <PackageVersion Include="System.ValueTuple" Version="4.5.0" />
     <PackageVersion Include="xunit" Version="2.4.2" />
