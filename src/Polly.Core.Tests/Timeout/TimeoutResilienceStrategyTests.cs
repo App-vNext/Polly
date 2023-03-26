@@ -57,7 +57,7 @@ public class TimeoutResilienceStrategyTests : IDisposable
     public async Task Execute_EnsureOnTimeoutCalled()
     {
         var called = false;
-        _options.TimeoutGenerator.SetTimeout(_delay);
+        _options.TimeoutGenerator.SetTimeout(args => _delay);
         _options.OnTimeout.Add(args =>
         {
             args.Exception.Should().BeAssignableTo<OperationCanceledException>();
@@ -98,7 +98,7 @@ public class TimeoutResilienceStrategyTests : IDisposable
     {
         using var cts = new CancellationTokenSource();
         CancellationToken token = defaultCancellationToken ? default : cts.Token;
-        _options.TimeoutGenerator.SetTimeout(TimeSpan.FromSeconds(2));
+        _options.TimeoutGenerator.SetTimeout(args => TimeSpan.FromSeconds(2));
         _timeProvider.SetupCancelAfterNow(TimeSpan.FromSeconds(2));
         var sut = CreateSut();
 
@@ -117,7 +117,7 @@ public class TimeoutResilienceStrategyTests : IDisposable
 
         var onTimeoutCalled = false;
         using var cts = new CancellationTokenSource();
-        _options.TimeoutGenerator.SetTimeout(TimeSpan.FromSeconds(10));
+        _options.TimeoutGenerator.SetTimeout(args => TimeSpan.FromSeconds(10));
         _options.OnTimeout.Add(() => onTimeoutCalled = true);
         _timeProvider.Setup(v => v.CancelAfter(It.IsAny<CancellationTokenSource>(), delay));
 
@@ -138,7 +138,7 @@ public class TimeoutResilienceStrategyTests : IDisposable
         var delay = TimeSpan.FromSeconds(10);
 
         using var cts = new CancellationTokenSource();
-        _options.TimeoutGenerator.SetTimeout(TimeSpan.FromSeconds(10));
+        _options.TimeoutGenerator.SetTimeout(args => TimeSpan.FromSeconds(10));
         _timeProvider.Setup(v => v.CancelAfter(It.IsAny<CancellationTokenSource>(), delay));
 
         var sut = CreateSut();
@@ -163,7 +163,7 @@ public class TimeoutResilienceStrategyTests : IDisposable
     {
         // Arrange
         using var cts = new CancellationTokenSource();
-        _options.TimeoutGenerator.SetTimeout(TimeSpan.FromSeconds(10));
+        _options.TimeoutGenerator.SetTimeout(args => TimeSpan.FromSeconds(10));
         _timeProvider.Setup(v => v.CancelAfter(It.IsAny<CancellationTokenSource>(), TimeSpan.FromSeconds(10)));
 
         var sut = CreateSut();

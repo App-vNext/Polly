@@ -51,14 +51,14 @@ public class TimeoutResilienceStrategyBuilderExtensionsTests
 
     [MemberData(nameof(AddTimeout_Ok_Data))]
     [Theory]
-    internal async Task AddTimeout_Ok(TimeSpan timeout, Action<ResilienceStrategyBuilder> configure, Action<TimeoutResilienceStrategy> assert)
+    internal void AddTimeout_Ok(TimeSpan timeout, Action<ResilienceStrategyBuilder> configure, Action<TimeoutResilienceStrategy> assert)
     {
         var builder = new ResilienceStrategyBuilder();
         configure(builder);
         var strategy = builder.Build().Should().BeOfType<TimeoutResilienceStrategy>().Subject;
         assert(strategy);
 
-        (await strategy.TimeoutGenerator(new TimeoutGeneratorArguments(ResilienceContext.Get()))).Should().Be(timeout);
+        GetTimeout(strategy).Should().Be(timeout);
     }
 
     [Fact]
@@ -78,7 +78,7 @@ public class TimeoutResilienceStrategyBuilderExtensionsTests
             .Throw<ValidationException>().WithMessage("The timeout strategy options are invalid.*");
     }
 
-    private static TimeSpan GetTimeout(TimeoutResilienceStrategy strategy) => strategy.TimeoutGenerator(new TimeoutGeneratorArguments(ResilienceContext.Get())).Preserve().Result;
+    private static TimeSpan GetTimeout(TimeoutResilienceStrategy strategy) => strategy.GetTimeoutAsync(ResilienceContext.Get()).GetAwaiter().GetResult();
 
     private static void OnTimeout(TimeoutResilienceStrategy strategy)
     {

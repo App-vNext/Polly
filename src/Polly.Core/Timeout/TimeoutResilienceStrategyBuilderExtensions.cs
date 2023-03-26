@@ -12,7 +12,7 @@ public static class TimeoutResilienceStrategyBuilderExtensions
     /// Adds a timeout resilience strategy to the builder.
     /// </summary>
     /// <param name="builder">The builder instance.</param>
-    /// <param name="timeout">The timeout value. This value should be greater than <see cref="TimeSpan.Zero"/> and less than <see cref="System.Threading.Timeout.InfiniteTimeSpan"/>.</param>
+    /// <param name="timeout">The timeout value. This value should be greater than <see cref="TimeSpan.Zero"/> or <see cref="System.Threading.Timeout.InfiniteTimeSpan"/>.</param>
     /// <returns>The same builder instance.</returns>
     public static ResilienceStrategyBuilder AddTimeout(this ResilienceStrategyBuilder builder, TimeSpan timeout)
     {
@@ -21,7 +21,7 @@ public static class TimeoutResilienceStrategyBuilderExtensions
 
         return builder.AddTimeout(new TimeoutStrategyOptions
         {
-            TimeoutGenerator = new TimeoutGenerator(timeout)
+            Timeout = timeout
         });
     }
 
@@ -29,7 +29,7 @@ public static class TimeoutResilienceStrategyBuilderExtensions
     /// Adds a timeout resilience strategy to the builder.
     /// </summary>
     /// <param name="builder">The builder instance.</param>
-    /// <param name="timeout">The timeout value. This value should be greater than <see cref="TimeSpan.Zero"/> and less than <see cref="System.Threading.Timeout.InfiniteTimeSpan"/>.</param>
+    /// <param name="timeout">The timeout value. This value should be greater than <see cref="TimeSpan.Zero"/> or <see cref="System.Threading.Timeout.InfiniteTimeSpan"/>.</param>
     /// <param name="onTimeout">The callback that is executed when timeout happens.</param>
     /// <returns>The same builder instance.</returns>
     public static ResilienceStrategyBuilder AddTimeout(this ResilienceStrategyBuilder builder, TimeSpan timeout, Action<OnTimeoutArguments> onTimeout)
@@ -40,7 +40,7 @@ public static class TimeoutResilienceStrategyBuilderExtensions
 
         return builder.AddTimeout(new TimeoutStrategyOptions
         {
-            TimeoutGenerator = new TimeoutGenerator(timeout),
+            Timeout = timeout,
             OnTimeout = new OnTimeoutEvent().Add(onTimeout),
         });
     }

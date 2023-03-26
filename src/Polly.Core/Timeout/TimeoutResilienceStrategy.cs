@@ -11,19 +11,23 @@ internal sealed class TimeoutResilienceStrategy : ResilienceStrategy
 
     public TimeoutResilienceStrategy(TimeoutStrategyOptions options, TimeProvider timeProvider, ResilienceTelemetry telemetry)
     {
+        DefaultTimeout = options.Timeout;
         TimeoutGenerator = options.TimeoutGenerator.CreateHandler();
         OnTimeout = options.OnTimeout.CreateHandler();
         _timeProvider = timeProvider;
         _telemetry = telemetry;
     }
 
-    public Func<TimeoutGeneratorArguments, ValueTask<TimeSpan>> TimeoutGenerator { get; }
+    public TimeSpan DefaultTimeout { get; }
+
+    public Func<TimeoutGeneratorArguments, ValueTask<TimeSpan>>? TimeoutGenerator { get; }
 
     public Func<OnTimeoutArguments, ValueTask>? OnTimeout { get; }
 
     protected internal override async ValueTask<TResult> ExecuteCoreAsync<TResult, TState>(Func<ResilienceContext, TState, ValueTask<TResult>> callback, ResilienceContext context, TState state)
     {
-        var timeout = await TimeoutGenerator(new TimeoutGeneratorArguments(context)).ConfigureAwait(context.ContinueOnCapturedContext);
+        var timeout = await GetTimeoutAsync(context).ConfigureAwait(context.ContinueOnCapturedContext);
+
         if (!TimeoutUtil.ShouldApplyTimeout(timeout))
         {
             // do nothing
@@ -70,6 +74,22 @@ internal sealed class TimeoutResilienceStrategy : ResilienceStrategy
         {
             context.CancellationToken = previousToken;
         }
+    }
+
+    internal async Task<TimeSpan> GetTimeoutAsync(ResilienceContext context)
+    {
+        if (TimeoutGenerator == null)
+        {
+            return DefaultTimeout;
+        }
+
+        var timeout = await TimeoutGenerator(new TimeoutGeneratorArguments(context)).ConfigureAwait(context.ContinueOnCapturedContext);
+        if (TimeoutUtil.IsTimeoutValid(timeout))
+        {
+            return timeout;
+        }
+
+        return DefaultTimeout;
     }
 
     private static ValueTask DisposeRegistration(CancellationTokenRegistration? registration)

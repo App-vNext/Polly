@@ -5,35 +5,11 @@ namespace Polly.Core.Tests.Timeout;
 public class TimeoutGeneratorTests
 {
     [Fact]
-    public async Task Default_EnsureCorrectValue()
+    public void Default_EnsureCorrectValue()
     {
         var generator = new TimeoutGenerator();
 
-        var actualDelay = await generator.CreateHandler()(TimeoutTestUtils.TimeoutGeneratorArguments());
-
-        actualDelay.Should().Be(TimeoutConstants.InfiniteTimeout);
-    }
-
-    [Fact]
-    public async Task SetTimeout_Ok()
-    {
-        var generator = new TimeoutGenerator();
-        var delay = TimeSpan.FromSeconds(1);
-
-        generator.SetTimeout(TimeSpan.FromSeconds(1));
-
-        var actualDelay = await generator.CreateHandler()(TimeoutTestUtils.TimeoutGeneratorArguments());
-
-        actualDelay.Should().Be(delay);
-    }
-
-    [Fact]
-    public void SetTimeout_Validation_Ok()
-    {
-        var generator = new TimeoutGenerator();
-
-        Assert.Throws<ArgumentOutOfRangeException>(() => generator.SetTimeout(TimeSpan.FromSeconds(0)));
-        Assert.Throws<ArgumentOutOfRangeException>(() => generator.SetTimeout(TimeSpan.FromSeconds(-1)));
+        generator.CreateHandler().Should().BeNull();
     }
 
     [Fact]
@@ -44,7 +20,7 @@ public class TimeoutGeneratorTests
 
         generator.SetTimeout(args => delay);
 
-        var actualDelay = await generator.CreateHandler()(TimeoutTestUtils.TimeoutGeneratorArguments());
+        var actualDelay = await generator.CreateHandler()!(TimeoutTestUtils.TimeoutGeneratorArguments());
 
         actualDelay.Should().Be(delay);
     }
@@ -57,7 +33,7 @@ public class TimeoutGeneratorTests
 
         generator.SetTimeout(args => new ValueTask<TimeSpan>(delay));
 
-        var actualDelay = await generator.CreateHandler()(TimeoutTestUtils.TimeoutGeneratorArguments());
+        var actualDelay = await generator.CreateHandler()!(TimeoutTestUtils.TimeoutGeneratorArguments());
 
         actualDelay.Should().Be(delay);
     }
