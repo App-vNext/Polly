@@ -1,8 +1,4 @@
-using System;
-using System.Threading.Tasks;
-using FluentAssertions;
 using Polly.Utils;
-using Xunit;
 
 namespace Polly.Core.Tests.Utils;
 

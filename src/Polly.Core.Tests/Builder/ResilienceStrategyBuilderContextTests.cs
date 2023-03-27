@@ -1,7 +1,5 @@
-using FluentAssertions;
 using Polly.Builder;
 using Polly.Telemetry;
-using Xunit;
 
 namespace Polly.Core.Tests.Builder;
 

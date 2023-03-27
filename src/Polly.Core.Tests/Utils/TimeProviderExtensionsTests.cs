@@ -1,6 +1,4 @@
-using FluentAssertions;
 using Polly.Utils;
-using Xunit;
 
 namespace Polly.Core.Tests.Utils;
 

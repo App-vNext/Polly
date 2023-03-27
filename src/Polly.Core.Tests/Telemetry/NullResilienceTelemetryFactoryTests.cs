@@ -1,6 +1,4 @@
-using FluentAssertions;
 using Polly.Telemetry;
-using Xunit;
 
 namespace Polly.Core.Tests.Telemetry;
 

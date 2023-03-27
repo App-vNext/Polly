@@ -10,7 +10,7 @@ internal static class ValidationHelper
     {
         var errors = new List<ValidationResult>();
 
-        if (!Validator.TryValidateObject(instance, new ValidationContext(instance), errors))
+        if (!Validator.TryValidateObject(instance, new ValidationContext(instance), errors, true))
         {
             var stringBuilder = new StringBuilder(mainMessage);
             stringBuilder.AppendLine();

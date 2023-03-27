@@ -1,8 +1,4 @@
-using System;
-using FluentAssertions;
 using Polly.Builder;
-using Polly.Core.Tests.Utils;
-using Xunit;
 
 namespace Polly.Core.Tests.Builder;
 
