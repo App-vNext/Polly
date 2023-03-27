@@ -1,13 +1,10 @@
-using System;
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
-using FluentAssertions;
 using Polly.Builder;
-using Polly.Core.Tests.Utils;
 using Polly.Registry;
-using Xunit;
 
 namespace Polly.Core.Tests.Registry;
+
 public class ResilienceStrategyRegistryTests
 {
     private Action<ResilienceStrategyBuilder> _callback = _ => { };

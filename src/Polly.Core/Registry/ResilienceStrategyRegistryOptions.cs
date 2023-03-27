@@ -13,7 +13,7 @@ public class ResilienceStrategyRegistryOptions<TKey>
     /// Gets or sets the factory method that creates instances of <see cref="ResilienceStrategyBuilder"/>.
     /// </summary>
     [Required]
-    public Func<ResilienceStrategyBuilder> BuilderFactory { get; set; } = () => new ResilienceStrategyBuilder();
+    public Func<ResilienceStrategyBuilder> BuilderFactory { get; set; } = static () => new ResilienceStrategyBuilder();
 
     /// <summary>
     /// Gets or sets the comparer that is used by the registry to retrieve the resilience strategies.

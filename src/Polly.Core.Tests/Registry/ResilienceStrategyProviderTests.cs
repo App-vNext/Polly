@@ -1,10 +1,8 @@
 using System.Diagnostics.CodeAnalysis;
-using FluentAssertions;
-using Polly.Core.Tests.Utils;
 using Polly.Registry;
-using Xunit;
 
 namespace Polly.Core.Tests.Registry;
+
 public class ResilienceStrategyProviderTests
 {
     [Fact]
@@ -14,7 +12,7 @@ public class ResilienceStrategyProviderTests
             .Invoking(o => o.Get("not-exists"))
             .Should()
             .Throw<KeyNotFoundException>()
-            .WithMessage("Unable to find a resilience strategy associated with the key 'not-exists'. Please ensure the either resilience strategy or builder is registered.");
+            .WithMessage("Unable to find a resilience strategy associated with the key 'not-exists'. Please ensure that either the resilience strategy or the builder is registered.");
     }
 
     [Fact]

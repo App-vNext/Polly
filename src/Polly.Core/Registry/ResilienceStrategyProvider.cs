@@ -24,7 +24,8 @@ public abstract class ResilienceStrategyProvider<TKey>
             return strategy;
         }
 
-        throw new KeyNotFoundException($"Unable to find a resilience strategy associated with the key '{key}'. Please ensure the either resilience strategy or builder is registered.");
+        throw new KeyNotFoundException($"Unable to find a resilience strategy associated with the key '{key}'. " +
+            $"Please ensure that either the resilience strategy or the builder is registered.");
     }
 
     /// <summary>

@@ -115,7 +115,7 @@ public sealed class ResilienceStrategyRegistry<TKey> : ResilienceStrategyProvide
     }
 
     /// <summary>
-    /// Removes a resilience strategy builder  from the registry.
+    /// Removes a resilience strategy builder from the registry.
     /// </summary>
     /// <param name="key">The key used to identify the resilience strategy builder.</param>
     /// <returns>true if the builder was removed successfully, false otherwise.</returns>

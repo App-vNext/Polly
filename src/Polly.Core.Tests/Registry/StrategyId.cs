@@ -16,7 +16,7 @@ public record StrategyId(Type Type, string BuilderName, string InstanceName = ""
 
     public static readonly IEqualityComparer<StrategyId> BuilderComparer = new BuilderResilienceKeyComparer();
 
-    private class BuilderResilienceKeyComparer : IEqualityComparer<StrategyId>
+    private sealed class BuilderResilienceKeyComparer : IEqualityComparer<StrategyId>
     {
         public bool Equals(StrategyId? x, StrategyId? y) => x?.Type == y?.Type && x?.BuilderName == y?.BuilderName;
 
