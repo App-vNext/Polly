@@ -23,7 +23,7 @@ public class ResilienceStrategyRegistryTests
     {
         this.Invoking(_ => new ResilienceStrategyRegistry<string>(new ResilienceStrategyRegistryOptions<string> { BuilderFactory = null! }))
             .Should()
-            .Throw<ValidationException>();
+            .Throw<ValidationException>().WithMessage("The resilience strategy registry options are invalid.*");
     }
 
     [Fact]
