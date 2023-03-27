@@ -111,16 +111,5 @@ public class ResilienceStrategyBuilder
         return entry.Factory(context);
     }
 
-    private sealed class Entry
-    {
-        public Entry(Func<ResilienceStrategyBuilderContext, ResilienceStrategy> factory, ResilienceStrategyOptions properties)
-        {
-            Factory = factory;
-            Properties = properties;
-        }
-
-        public Func<ResilienceStrategyBuilderContext, ResilienceStrategy> Factory { get; }
-
-        public ResilienceStrategyOptions Properties { get; }
-    }
+    private sealed record Entry(Func<ResilienceStrategyBuilderContext, ResilienceStrategy> Factory, ResilienceStrategyOptions Properties);
 }

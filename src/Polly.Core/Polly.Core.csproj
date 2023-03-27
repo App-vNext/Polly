@@ -10,6 +10,7 @@
     <UseDefaultAnalyzers>true</UseDefaultAnalyzers>
     <SkipPollyUsings>true</SkipPollyUsings>
     <MutationScore>100</MutationScore>
+    <LegacySupport>true</LegacySupport>
   </PropertyGroup>
 
   <ItemGroup>

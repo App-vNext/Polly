@@ -30,6 +30,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "eng", "eng", "{04E3C7C5-31F7-4CD6-8BEC-C1032527D231}"
 	ProjectSection(SolutionItems) = preProject
 		..\eng\Analyzers.targets = ..\eng\Analyzers.targets
+		..\eng\Common.targets = ..\eng\Common.targets
 		..\eng\Library.targets = ..\eng\Library.targets
 		..\eng\Test.targets = ..\eng\Test.targets
 	EndProjectSection
