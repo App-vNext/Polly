@@ -8,7 +8,7 @@ namespace Polly.Registry;
 /// </summary>
 /// <typeparam name="TKey">The type of the key.</typeparam>
 /// <remarks>
-/// The ResilienceStrategyRegistry class provides a way to organize and manage multiple resilience strategies
+/// This class provides a way to organize and manage multiple resilience strategies
 /// using keys of type <typeparamref name="TKey"/>.
 /// <para>
 /// Additionally, it allows registration of callbacks that configure the strategy using <see cref="ResilienceStrategyBuilder"/>.
