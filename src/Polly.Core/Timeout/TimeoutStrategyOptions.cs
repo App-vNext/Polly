@@ -5,7 +5,7 @@ using Polly.Builder;
 namespace Polly.Timeout;
 
 /// <summary>
-/// Repreents the options for the timeout strategy.
+/// Represents the options for the timeout strategy.
 /// </summary>
 public class TimeoutStrategyOptions : ResilienceStrategyOptions
 {
