@@ -5,7 +5,7 @@ using Polly.Builder;
 namespace Polly.Timeout;
 
 /// <summary>
-/// The options for the timeout strategy.
+/// Repreents the options for the timeout strategy.
 /// </summary>
 public class TimeoutStrategyOptions : ResilienceStrategyOptions
 {
@@ -38,9 +38,10 @@ public class TimeoutStrategyOptions : ResilienceStrategyOptions
     /// <remarks>
     /// By default, the generator is empty and the <see cref="Timeout"/> is used by default.
     /// If generator returns a <see cref="TimeSpan"/> value that is less or equal to <see cref="TimeSpan.Zero"/>
-    /// its value is ignored and <see cref="TimeSpan"/> is used instead.
-    ///
+    /// its value is ignored and <see cref="Timeout"/> is used instead.
+    /// <para>
     /// Return <see cref="InfiniteTimeout"/> to disable the timeout for the given execution.
+    /// </para>
     /// </remarks>
     [Required]
     public TimeoutGenerator TimeoutGenerator { get; set; } = new();

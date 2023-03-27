@@ -16,6 +16,7 @@ public class TimeoutRejectedException : ExecutionRejectedException
     /// Initializes a new instance of the <see cref="TimeoutRejectedException" /> class.
     /// </summary>
     public TimeoutRejectedException()
+        : base("The operation didn't complete within the allowed timeout.")
     {
     }
 
@@ -42,7 +43,8 @@ public class TimeoutRejectedException : ExecutionRejectedException
     /// Initializes a new instance of the <see cref="TimeoutRejectedException" /> class.
     /// </summary>
     /// <param name="timeout">The timeout value that caused this exception.</param>
-    public TimeoutRejectedException(TimeSpan timeout) => Timeout = timeout;
+    public TimeoutRejectedException(TimeSpan timeout)
+        : base("The operation didn't complete within the allowed timeout.") => Timeout = timeout;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="TimeoutRejectedException"/> class.
