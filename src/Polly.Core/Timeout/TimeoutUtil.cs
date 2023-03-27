@@ -18,7 +18,7 @@ internal static class TimeoutUtil
             return true;
         }
 
-        return timeout == TimeoutConstants.InfiniteTimeout || timeout > TimeSpan.Zero;
+        return timeout == TimeoutStrategyOptions.InfiniteTimeout || timeout > TimeSpan.Zero;
     }
 
     public static void ValidateTimeout(TimeSpan timeout)

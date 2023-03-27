@@ -11,7 +11,7 @@ public class TimeoutUtilTests
         { TimeSpan.Zero, false },
         { TimeSpan.FromSeconds(1), true },
         { System.Threading.Timeout.InfiniteTimeSpan, false },
-        { TimeoutConstants.InfiniteTimeout, false },
+        { TimeoutStrategyOptions.InfiniteTimeout, false },
     };
 
     public static readonly TheoryData<TimeSpan, bool> ValidateData = new()
@@ -20,21 +20,21 @@ public class TimeoutUtilTests
         { TimeSpan.Zero, false },
         { TimeSpan.FromSeconds(1), true },
         { System.Threading.Timeout.InfiniteTimeSpan, true },
-        { TimeoutConstants.InfiniteTimeout, true },
+        { TimeoutStrategyOptions.InfiniteTimeout, true },
     };
 
-    [MemberData(nameof(ValidateData))]
+    [MemberData(nameof(TimeoutTestUtils.InvalidTimeouts), MemberType = typeof(TimeoutTestUtils))]
     [Theory]
-    public void Validate_Ok(TimeSpan timeSpan, bool valid)
+    public void ValidateTimeout_Invalid_Throws(TimeSpan timeSpan)
     {
-        if (valid)
-        {
-            TimeoutUtil.ValidateTimeout(timeSpan);
-        }
-        else
-        {
-            Assert.Throws<ArgumentOutOfRangeException>(() => TimeoutUtil.ValidateTimeout(timeSpan));
-        }
+        Assert.Throws<ArgumentOutOfRangeException>(() => TimeoutUtil.ValidateTimeout(timeSpan));
+    }
+
+    [MemberData(nameof(TimeoutTestUtils.ValidTimeouts), MemberType = typeof(TimeoutTestUtils))]
+    [Theory]
+    public void ValidateTimeout_Valid_DoesNotThrow(TimeSpan timeSpan)
+    {
+        this.Invoking(_ => TimeoutUtil.ValidateTimeout(timeSpan)).Should().NotThrow();
     }
 
     [MemberData(nameof(ShouldApplyTimeoutData))]

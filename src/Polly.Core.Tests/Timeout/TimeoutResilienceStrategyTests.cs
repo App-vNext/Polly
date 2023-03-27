@@ -30,7 +30,7 @@ public class TimeoutResilienceStrategyTests : IDisposable
     {
         TimeSpan.Zero,
         TimeSpan.FromMilliseconds(-1),
-        TimeoutConstants.InfiniteTimeout
+        TimeoutStrategyOptions.InfiniteTimeout
     };
 
     public void Dispose() => _cancellationSource.Dispose();

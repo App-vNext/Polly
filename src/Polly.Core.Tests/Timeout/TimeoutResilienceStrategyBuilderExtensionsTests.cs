@@ -32,17 +32,10 @@ public class TimeoutResilienceStrategyBuilderExtensionsTests
         };
     }
 
-    [InlineData(-1)]
-    [InlineData(0)]
+    [MemberData(nameof(TimeoutTestUtils.InvalidTimeouts), MemberType = typeof(TimeoutTestUtils))]
     [Theory]
-    public void AddTimeout_InvalidTimeout_EnsureValidated(int value)
+    public void AddTimeout_InvalidTimeout_EnsureValidated(TimeSpan timeout)
     {
-        var timeout = value switch
-        {
-            0 => TimeSpan.Zero,
-            -1 => TimeSpan.FromSeconds(-1),
-            _ => throw new NotSupportedException()
-        };
         var builder = new ResilienceStrategyBuilder();
 
         Assert.Throws<ArgumentOutOfRangeException>(() => builder.AddTimeout(timeout));

@@ -10,6 +10,15 @@ namespace Polly.Timeout;
 public class TimeoutStrategyOptions : ResilienceStrategyOptions
 {
     /// <summary>
+    /// Gets the value that represent the infinite timeout.
+    /// </summary>
+    /// <remarks>
+    /// When the timeout is set to infinite the timeout resilience strategy is effectively disabled.
+    /// This value is the same as <see cref="System.Threading.Timeout.InfiniteTimeSpan"/>.
+    /// </remarks>
+    public static readonly TimeSpan InfiniteTimeout = System.Threading.Timeout.InfiniteTimeSpan;
+
+    /// <summary>
     /// Initializes a new instance of the <see cref="TimeoutStrategyOptions"/> class.
     /// </summary>
     public TimeoutStrategyOptions() => StrategyType = TimeoutConstants.StrategyType;
@@ -18,10 +27,10 @@ public class TimeoutStrategyOptions : ResilienceStrategyOptions
     /// Gets or sets the default timeout.
     /// </summary>
     /// <remarks>
-    /// By default, the value is set to <see cref="System.Threading.Timeout.InfiniteTimeSpan"/> thus making the timeout strategy disabled.
+    /// By default, the value is set to <see cref="InfiniteTimeout"/> thus making the timeout strategy disabled.
     /// </remarks>
     [Timeout]
-    public TimeSpan Timeout { get; set; } = TimeoutConstants.InfiniteTimeout;
+    public TimeSpan Timeout { get; set; } = InfiniteTimeout;
 
     /// <summary>
     /// Gets or sets the timeout generator that generates the timeout for a given execution.
@@ -31,7 +40,7 @@ public class TimeoutStrategyOptions : ResilienceStrategyOptions
     /// If generator returns a <see cref="TimeSpan"/> value that is less or equal to <see cref="TimeSpan.Zero"/>
     /// its value is ignored and <see cref="TimeSpan"/> is used instead.
     ///
-    /// Return <see cref="System.Threading.Timeout.InfiniteTimeSpan"/> to disable the timeout for the given execution.
+    /// Return <see cref="InfiniteTimeout"/> to disable the timeout for the given execution.
     /// </remarks>
     [Required]
     public TimeoutGenerator TimeoutGenerator { get; set; } = new();

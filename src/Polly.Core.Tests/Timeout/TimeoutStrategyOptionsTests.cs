@@ -15,16 +15,12 @@ public class TimeoutStrategyOptionsTests
         options.TimeoutGenerator.Should().NotBeNull();
         options.OnTimeout.Should().NotBeNull();
         options.StrategyType.Should().Be(TimeoutConstants.StrategyType);
+        options.Timeout.Should().Be(TimeoutStrategyOptions.InfiniteTimeout);
+
+        TimeoutStrategyOptions.InfiniteTimeout.Should().Be(System.Threading.Timeout.InfiniteTimeSpan);
     }
 
-    public static readonly TheoryData<TimeSpan> InvalidTimeouts = new()
-    {
-        TimeSpan.MinValue,
-        TimeSpan.Zero,
-        TimeSpan.FromSeconds(-1)
-    };
-
-    [MemberData(nameof(InvalidTimeouts))]
+    [MemberData(nameof(TimeoutTestUtils.InvalidTimeouts), MemberType = typeof(TimeoutTestUtils))]
     [Theory]
     public void Timeout_Invalid_EnsureValidationError(TimeSpan value)
     {
@@ -39,14 +35,7 @@ public class TimeoutStrategyOptionsTests
             .Throw<ValidationException>();
     }
 
-    public static readonly TheoryData<TimeSpan> ValidTimeouts = new()
-    {
-        TimeoutConstants.InfiniteTimeout,
-        System.Threading.Timeout.InfiniteTimeSpan,
-        TimeSpan.FromSeconds(1)
-    };
-
-    [MemberData(nameof(ValidTimeouts))]
+    [MemberData(nameof(TimeoutTestUtils.ValidTimeouts), MemberType = typeof(TimeoutTestUtils))]
     [Theory]
     public void Timeout_Valid(TimeSpan value)
     {
