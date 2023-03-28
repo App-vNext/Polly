@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using Polly.Telemetry;
 
@@ -8,6 +9,33 @@ namespace Polly.Builder;
 /// </summary>
 public class ResilienceStrategyBuilderOptions
 {
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ResilienceStrategyBuilderOptions"/> class.
+    /// </summary>
+    public ResilienceStrategyBuilderOptions()
+    {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ResilienceStrategyBuilderOptions"/> class.
+    /// </summary>
+    /// <param name="other">The options to copy the values from.</param>
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public ResilienceStrategyBuilderOptions(ResilienceStrategyBuilderOptions other)
+    {
+        Guard.NotNull(other);
+
+        BuilderName = other.BuilderName;
+        TelemetryFactory = other.TelemetryFactory;
+        TimeProvider = other.TimeProvider;
+
+        var dict = (IDictionary<string, object?>)Properties;
+        foreach (KeyValuePair<string, object?> pair in other.Properties)
+        {
+            dict.Add(pair.Key, pair.Value);
+        }
+    }
+
     /// <summary>
     /// Gets or sets the name of the builder.
     /// </summary>
