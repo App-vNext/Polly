@@ -1,6 +1,6 @@
 namespace Polly.DependencyInjection;
 
-internal class ConfigureResilienceStrategyRegistryOptions<TKey>
+internal sealed class ConfigureResilienceStrategyRegistryOptions<TKey>
     where TKey : notnull
 {
     public List<Entry> Actions { get; } = new();

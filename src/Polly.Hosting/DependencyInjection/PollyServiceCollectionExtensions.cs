@@ -36,6 +36,7 @@ public static class PollyServiceCollectionExtensions
         Guard.NotNull(services);
         Guard.NotNull(configure);
 
+        services.AddOptions();
         services.Configure<ConfigureResilienceStrategyRegistryOptions<TKey>>(options =>
         {
             options.Actions.Add(new ConfigureResilienceStrategyRegistryOptions<TKey>.Entry(key, configure));
