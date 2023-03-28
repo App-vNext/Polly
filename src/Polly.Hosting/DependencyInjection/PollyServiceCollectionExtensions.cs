@@ -42,6 +42,7 @@ public static class PollyServiceCollectionExtensions
         });
 
         // check marker to ensure the APIs bellow are called only once for each TKey type
+        // this prevents polluting the service collection with unnecessary Configure calls
         if (services.Contains(RegistryMarker<TKey>.ServiceDescriptor))
         {
             return services;
@@ -65,7 +66,7 @@ public static class PollyServiceCollectionExtensions
 
             foreach (var entry in configureActions)
             {
-                // last added builder with the same key always wins, this allows to overriding the registered builders
+                // the last added builder with the same key wins, this allows overriding the builders
                 registry.RemoveBuilder(entry.Key);
                 registry.TryAddBuilder(entry.Key, (key, builder) =>
                 {
