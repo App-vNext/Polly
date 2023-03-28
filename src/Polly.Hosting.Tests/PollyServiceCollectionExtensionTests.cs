@@ -1,6 +1,4 @@
-using System;
 using System.Globalization;
-using System.Linq;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using Polly.Builder;
@@ -9,6 +7,7 @@ using Polly.Registry;
 using Polly.Telemetry;
 
 namespace Polly.Hosting.Tests;
+
 public class PollyServiceCollectionExtensionTests
 {
     private const string Key = "my-strategy";
