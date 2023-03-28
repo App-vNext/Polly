@@ -14,10 +14,10 @@
   </ItemGroup>
 
   <ItemGroup Condition="'$(LegacySupport)' == 'true' AND !$([MSBuild]::IsTargetFrameworkCompatible($(TargetFramework), 'netcoreapp3.1'))">
-    <Compile Include="$(MSBuildThisFileDirectory)\..\src\LegacySupport\*.cs" LinkBase="LegacySupport" />
+    <Compile Include="$(MSBuildThisFileDirectory)..\src\LegacySupport\*.cs" LinkBase="LegacySupport" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(InjectSharedSources)' == 'true'">
-    <Compile Include="$(MSBuildThisFileDirectory)\..\src\Shared\*.cs" LinkBase="Shared" />
+    <Compile Include="$(MSBuildThisFileDirectory)..\src\Shared\*.cs" LinkBase="Shared" />
   </ItemGroup>
 </Project>
