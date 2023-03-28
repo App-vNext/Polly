@@ -29,10 +29,11 @@ public class ResilienceStrategyBuilderOptions
         TelemetryFactory = other.TelemetryFactory;
         TimeProvider = other.TimeProvider;
 
-        var dict = (IDictionary<string, object?>)Properties;
+        IDictionary<string, object?> props = Properties;
+
         foreach (KeyValuePair<string, object?> pair in other.Properties)
         {
-            dict.Add(pair.Key, pair.Value);
+            props.Add(pair.Key, pair.Value);
         }
     }
 
