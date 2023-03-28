@@ -38,12 +38,28 @@ public class TimeProviderExtensionsTests
         }
     }
 
+    [Fact]
+    public async Task DelayAsync_SystemSynchronous_Ok()
+    {
+        var delay = TimeSpan.FromMilliseconds(5);
+        var context = ResilienceContext.Get();
+        context.Initialize<VoidResult>(isSynchronous: true);
+
+        await TestUtils.AssertWithTimeoutAsync(async () =>
+        {
+            var watch = Stopwatch.StartNew();
+            await TimeProvider.System.DelayAsync(delay, context);
+            var elapsed = watch.Elapsed;
+            elapsed.Should().BeGreaterThanOrEqualTo(delay);
+        });
+    }
+
     [InlineData(false, false)]
     [InlineData(false, true)]
     [InlineData(true, false)]
     [InlineData(true, true)]
     [Theory]
-    public async Task DelayAsync_CancellationRequestedbefore_Throws(bool synchronous, bool mocked)
+    public async Task DelayAsync_CancellationRequestedBefore_Throws(bool synchronous, bool mocked)
     {
         using var tcs = new CancellationTokenSource();
         tcs.Cancel();
