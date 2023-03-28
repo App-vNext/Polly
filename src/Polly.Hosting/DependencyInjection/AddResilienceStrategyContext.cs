@@ -1,4 +1,3 @@
-using System;
 using Polly.Builder;
 
 namespace Polly.DependencyInjection;
