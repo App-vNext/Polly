@@ -18,7 +18,7 @@ updates:
     # Ignore the libraries which are pinned
     - dependency-name: "System.ComponentModel.Annotations"
     - dependency-name: "System.Threading.Tasks.Extensions"
-    - dependency-name: "System.ValueTuplens"
+    - dependency-name: "System.ValueTuple"
     - dependency-name: "Microsoft.Extensions.Options"
     - dependency-name: "Microsoft.Extensions.Logging.Abstractions"
     - dependency-name: "System.Diagnostics.DiagnosticSource"
