@@ -2,11 +2,11 @@ using System.Globalization;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using Polly.Builder;
-using Polly.DependencyInjection;
+using Polly.Extensions.DependencyInjection;
 using Polly.Registry;
 using Polly.Telemetry;
 
-namespace Polly.Hosting.Tests;
+namespace Polly.Extensions.Tests.DependencyInjection;
 
 public class PollyServiceCollectionExtensionTests
 {
@@ -53,7 +53,7 @@ public class PollyServiceCollectionExtensionTests
     [Fact]
     public void AddResilienceStrategy_EnsureContextFilled()
     {
-        bool asserted = false;
+        var asserted = false;
 
         _services.AddResilienceStrategy(Key, context =>
         {
@@ -127,8 +127,8 @@ public class PollyServiceCollectionExtensionTests
     [Fact]
     public void AddResilienceStrategy_Twice_LastOneWins()
     {
-        bool firstCalled = false;
-        bool secondCalled = false;
+        var firstCalled = false;
+        var secondCalled = false;
 
         AddResilienceStrategy(Key, _ => firstCalled = true);
         AddResilienceStrategy(Key, _ => secondCalled = true);
@@ -142,7 +142,7 @@ public class PollyServiceCollectionExtensionTests
     [Fact]
     public void AddResilienceStrategy_Multiple_Ok()
     {
-        for (int i = 0; i < 10; i++)
+        for (var i = 0; i < 10; i++)
         {
             AddResilienceStrategy(i.ToString(CultureInfo.InvariantCulture));
         }
@@ -161,7 +161,7 @@ public class PollyServiceCollectionExtensionTests
 
         var asserted = false;
 
-        _services.AddSingleton<ResilienceTelemetryFactory>(factory.Object);
+        _services.AddSingleton(factory.Object);
         _services.AddResilienceStrategy(
             Key,
             context =>

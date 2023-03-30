@@ -1,6 +1,6 @@
 using Polly.Builder;
 
-namespace Polly.DependencyInjection;
+namespace Polly.Extensions.DependencyInjection;
 
 /// <summary>
 /// Represents the context for adding a resilience strategy with the specified key.

@@ -1,4 +1,4 @@
-namespace Polly.DependencyInjection;
+namespace Polly.Extensions.DependencyInjection;
 
 internal sealed class ConfigureResilienceStrategyRegistryOptions<TKey>
     where TKey : notnull

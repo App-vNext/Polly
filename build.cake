@@ -265,6 +265,9 @@ Task("__CreateSignedNuGetPackages")
 
     Information("Building Polly.{0}.nupkg", nugetVersion);
     DotNetPack(System.IO.Path.Combine(srcDir, "Polly", "Polly.csproj"), dotNetPackSettings);
+
+    Information("Building Polly.Extensions.{0}.nupkg", nugetVersion);
+    DotNetPack(System.IO.Path.Combine(srcDir, "Polly.Extensions", "Polly.Extensions.csproj"), dotNetPackSettings);
 });
 
 //////////////////////////////////////////////////////////////////////

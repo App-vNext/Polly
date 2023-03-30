@@ -39,9 +39,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "eng", "eng", "{04E3C7C5-31F
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polly.Core.Benchmarks", "Polly.Core.Benchmarks\Polly.Core.Benchmarks.csproj", "{CC306C35-E3BC-4F0B-AB8C-B9D4C82DC3DE}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polly.Hosting", "Polly.Hosting\Polly.Hosting.csproj", "{F2FDE6BF-DA86-4DDE-A55C-E2A064CD30D8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polly.Extensions", "Polly.Extensions\Polly.Extensions.csproj", "{F2FDE6BF-DA86-4DDE-A55C-E2A064CD30D8}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polly.Hosting.Tests", "Polly.Hosting.Tests\Polly.Hosting.Tests.csproj", "{BB2843CA-B518-48A1-BAD9-B63238F21608}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polly.Extensions.Tests", "Polly.Extensions.Tests\Polly.Extensions.Tests.csproj", "{BB2843CA-B518-48A1-BAD9-B63238F21608}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -1,6 +1,6 @@
-using Polly.DependencyInjection;
+using Polly.Extensions.DependencyInjection;
 
-namespace Polly.Hosting.Tests;
+namespace Polly.Extensions.Tests.DependencyInjection;
 
 public class PollyDependencyInjectionKeysTests
 {

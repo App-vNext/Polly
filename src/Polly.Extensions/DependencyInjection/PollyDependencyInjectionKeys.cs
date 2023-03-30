@@ -1,4 +1,4 @@
-namespace Polly.DependencyInjection;
+namespace Polly.Extensions.DependencyInjection;
 
 /// <summary>
 /// The resilience keys used in the dependency injection scenarios.
