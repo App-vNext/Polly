@@ -9,10 +9,9 @@ namespace Polly.Retry;
 /// </summary>
 public readonly struct ShouldRetryArguments : IResilienceArguments
 {
-    internal ShouldRetryArguments(ResilienceContext context, int attemptNumber, TimeSpan totalExecutionTime)
+    internal ShouldRetryArguments(ResilienceContext context, int attemptNumber)
     {
-        AttemptNumber = attemptNumber;
-        TotalExecutionTime = totalExecutionTime;
+        Attempt = attemptNumber;
         Context = context;
     }
 
@@ -22,15 +21,7 @@ public readonly struct ShouldRetryArguments : IResilienceArguments
     /// <remarks>
     /// The first attempt is 0, the second attempt is 1, and so on.
     /// </remarks>
-    public int AttemptNumber { get; }
-
-    /// <summary>
-    /// Gets the total execution time.
-    /// </summary>
-    /// <remarks>
-    /// The total execution time from the very first attempt and up to this point.
-    /// </remarks>
-    public TimeSpan TotalExecutionTime { get; }
+    public int Attempt { get; }
 
     /// <inheritdoc/>
     public ResilienceContext Context { get; }
