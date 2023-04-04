@@ -14,5 +14,8 @@ public class RetryStrategyOptionsTests
 
         options.RetryDelayGenerator.Should().NotBeNull();
         options.RetryDelayGenerator.IsEmpty.Should().BeTrue();
+
+        options.OnRetry.Should().NotBeNull();
+        options.OnRetry.IsEmpty.Should().BeTrue();
     }
 }

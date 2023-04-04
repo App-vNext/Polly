@@ -24,4 +24,13 @@ public class RetryStrategyOptions
     /// </remarks>
     [Required]
     public RetryDelayGenerator RetryDelayGenerator { get; set; } = new();
+
+    /// <summary>
+    /// Gets or sets the <see cref="OnRetryEvent"/> instance that is invoked when retry happens.
+    /// </summary>
+    /// <remarks>
+    /// By default, the event is empty and no callbacks are registered.
+    /// </remarks>
+    [Required]
+    public OnRetryEvent OnRetry { get; set; } = new();
 }
