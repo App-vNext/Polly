@@ -15,7 +15,7 @@ public abstract partial class OutcomeEvent<TArgs, TSelf>
     private readonly Dictionary<Type, List<object>> _callbacks = new();
 
     /// <summary>
-    /// Gets a value indicating whether the predicate is empty.
+    /// Gets a value indicating whether the event is empty.
     /// </summary>
     public bool IsEmpty => _callbacks.Count == 0;
 
@@ -29,7 +29,11 @@ public abstract partial class OutcomeEvent<TArgs, TSelf>
     {
         Guard.NotNull(callback);
 
-        return Add<TResult>((_, _) => { callback(); return default; });
+        return Add<TResult>((_, _) =>
+        {
+            callback();
+            return default;
+        });
     }
 
     /// <summary>
@@ -42,7 +46,11 @@ public abstract partial class OutcomeEvent<TArgs, TSelf>
     {
         Guard.NotNull(callback);
 
-        return Add<TResult>((outcome, _) => { callback(outcome); return default; });
+        return Add<TResult>((outcome, _) =>
+        {
+            callback(outcome);
+            return default;
+        });
     }
 
     /// <summary>
@@ -55,7 +63,11 @@ public abstract partial class OutcomeEvent<TArgs, TSelf>
     {
         Guard.NotNull(callback);
 
-        return Add<TResult>((outcome, args) => { callback(outcome, args); return default; });
+        return Add<TResult>((outcome, args) =>
+        {
+            callback(outcome, args);
+            return default;
+        });
     }
 
     /// <summary>
@@ -68,14 +80,14 @@ public abstract partial class OutcomeEvent<TArgs, TSelf>
     {
         Guard.NotNull(callback);
 
-        if (!_callbacks.TryGetValue(typeof(TResult), out var predicates))
+        if (!_callbacks.TryGetValue(typeof(TResult), out var callbacks))
         {
-            predicates = new List<object> { callback };
-            _callbacks.Add(typeof(TResult), predicates);
+            callbacks = new List<object> { callback };
+            _callbacks.Add(typeof(TResult), callbacks);
         }
         else
         {
-            predicates.Add(callback);
+            callbacks.Add(callback);
         }
 
         return (TSelf)this;

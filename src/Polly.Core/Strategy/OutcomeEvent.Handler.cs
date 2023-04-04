@@ -50,21 +50,21 @@ public abstract partial class OutcomeEvent<TArgs, TSelf>
         {
             if (_callbacks.Length == 1)
             {
-                var predicate = (Func<Outcome<TResult>, TArgs, ValueTask>)_callbacks[0];
+                var callback = (Func<Outcome<TResult>, TArgs, ValueTask>)_callbacks[0];
 
-                return predicate(outcome, args);
+                return callback(outcome, args);
             }
 
-            return ExecutePredicatesAsync(outcome, args);
+            return InvokeCallbacksAsync(outcome, args);
         }
 
-        private async ValueTask ExecutePredicatesAsync<TResult>(Outcome<TResult> outcome, TArgs args)
+        private async ValueTask InvokeCallbacksAsync<TResult>(Outcome<TResult> outcome, TArgs args)
         {
             foreach (var obj in _callbacks)
             {
-                var predicate = (Func<Outcome<TResult>, TArgs, ValueTask>)obj;
+                var callback = (Func<Outcome<TResult>, TArgs, ValueTask>)obj;
 
-                await predicate(outcome, args).ConfigureAwait(args.Context.ContinueOnCapturedContext);
+                await callback(outcome, args).ConfigureAwait(args.Context.ContinueOnCapturedContext);
             }
         }
     }
