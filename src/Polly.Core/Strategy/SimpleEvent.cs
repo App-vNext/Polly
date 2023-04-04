@@ -38,7 +38,12 @@ public abstract class SimpleEvent<TArgs, TSelf>
     {
         Guard.NotNull(callback);
 
-        _callbacks.Add(args => { callback(args); return default; });
+        _callbacks.Add(args =>
+        {
+            callback(args);
+            return default;
+        });
+
         return (TSelf)this;
     }
 
@@ -51,7 +56,12 @@ public abstract class SimpleEvent<TArgs, TSelf>
     {
         Guard.NotNull(callback);
 
-        _callbacks.Add(_ => { callback(); return default; });
+        _callbacks.Add(_ =>
+        {
+            callback();
+            return default;
+        });
+
         return (TSelf)this;
     }
 
