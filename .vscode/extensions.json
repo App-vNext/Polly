@@ -2,6 +2,7 @@
   "recommendations": [
     "EditorConfig.EditorConfig",
     "k--kato.docomment",
-    "ms-dotnettools.csharp"
+    "ms-dotnettools.csharp",
+    "yzhang.markdown-all-in-one"
   ]
 }

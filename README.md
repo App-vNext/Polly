@@ -1,5 +1,7 @@
-## Important Announcement: Architectural changes in v8
-
+> **Note**
+>
+> **Important Announcement: Architectural changes in v8**
+>
 > Major performance improvements are on the way! Please see our [blog post](https://www.thepollyproject.org/2023/03/03/we-want-your-feedback-introducing-polly-v8/) to learn more and provide feedback in the [related GitHub issue](https://github.com/App-vNext/Polly/issues/1048).
 
 # Polly
@@ -19,15 +21,108 @@ We are a member of the [.NET Foundation](https://www.dotnetfoundation.org/about)
 
 ![Polly logo](https://raw.github.com/App-vNext/Polly/main/Polly-Logo.png)
 
-## Installing via the .NET SDK
+---
+
+<!-- This TOC can be maintained using VS Code's 'Markdown All in One' extension -->
+<!-- Just set the Toc: Levels setting to '2..4', open the command palette,  -->
+<!-- and run 'Markdown All in One: Update Table of Contents'  -->
+* [Get Started](#get-started)
+  * [Installing via the .NET SDK](#installing-via-the-net-sdk)
+  * [Supported targets](#supported-targets)
+  * [Using Polly with HttpClient factory from ASP.NET Core 2.1](#using-polly-with-httpclient-factory-from-aspnet-core-21)
+  * [Role of the readme and the wiki](#role-of-the-readme-and-the-wiki)
+* [Release notes](#release-notes)
+* [Resilience policies](#resilience-policies)
+* [Usage – fault-handling, reactive policies](#usage--fault-handling-reactive-policies)
+  * [Step 1 : Specify the exceptions/faults you want the policy to handle](#step-1--specify-the-exceptionsfaults-you-want-the-policy-to-handle)
+  * [Step 1b: (optionally) Specify return results you want to handle](#step-1b-optionally-specify-return-results-you-want-to-handle)
+  * [Step 2 : Specify how the policy should handle those faults](#step-2--specify-how-the-policy-should-handle-those-faults)
+    * [Retry](#retry)
+    * [Retry forever (until succeeds)](#retry-forever-until-succeeds)
+    * [Wait and retry](#wait-and-retry)
+    * [Wait and retry forever (until succeeds)](#wait-and-retry-forever-until-succeeds)
+    * [Circuit Breaker](#circuit-breaker)
+    * [Advanced Circuit Breaker](#advanced-circuit-breaker)
+    * [Fallback](#fallback)
+  * [Step 3 : Execute code through the policy](#step-3--execute-code-through-the-policy)
+    * [Richer policy consumption patterns](#richer-policy-consumption-patterns)
+* [Usage – proactive policies](#usage--proactive-policies)
+  * [Step 1 : Configure](#step-1--configure)
+    * [Optimistic timeout](#optimistic-timeout)
+    * [Pessimistic timeout](#pessimistic-timeout)
+    * [Bulkhead](#bulkhead)
+    * [Rate-Limit](#rate-limit)
+    * [Cache](#cache)
+    * [PolicyWrap](#policywrap)
+    * [NoOp](#noop)
+  * [Step 2 : Execute the policy](#step-2--execute-the-policy)
+* [Usage – results and exceptions](#usage--results-and-exceptions)
+  * [Getting execution results as a PolicyResult](#getting-execution-results-as-a-policyresult)
+  * [Getting execution results and return values with a HttpResponseMessage](#getting-execution-results-and-return-values-with-a-httpresponsemessage)
+  * [Getting execution results and return values with a Policy\<TResult\>](#getting-execution-results-and-return-values-with-a-policytresult)
+  * [Getting strongly-typed results with ExecuteAndCapture\<TResult\>()](#getting-strongly-typed-results-with-executeandcapturetresult)
+  * [State-change delegates on Policy\<TResult\> policies](#state-change-delegates-on-policytresult-policies)
+  * [BrokenCircuitException\<TResult\>](#brokencircuitexceptiontresult)
+* [Policy Keys and Context data](#policy-keys-and-context-data)
+* [PolicyRegistry](#policyregistry)
+* [Asynchronous Support](#asynchronous-support)
+  * [SynchronizationContext](#synchronizationcontext)
+  * [Cancellation support](#cancellation-support)
+* [Thread safety](#thread-safety)
+* [Interfaces](#interfaces)
+  * [Execution interfaces: `ISyncPolicy` etc](#execution-interfaces-isyncpolicy-etc)
+  * [Policy-kind interfaces: `ICircuitBreakerPolicy` etc](#policy-kind-interfaces-icircuitbreakerpolicy-etc)
+* [Custom policies](#custom-policies)
+* [Chaos engineering with Simmy](#chaos-engineering-with-simmy)
+* [Polly-Contrib](#polly-contrib)
+  * [Available via Polly-Contrib](#available-via-polly-contrib)
+* [3rd Party Libraries and Contributions](#3rd-party-libraries-and-contributions)
+* [Acknowledgements](#acknowledgements)
+* [Sample Projects](#sample-projects)
+* [Instructions for Contributing](#instructions-for-contributing)
+* [License](#license)
+* [Blogs, podcasts, courses, e-books, architecture samples and videos around Polly](#blogs-podcasts-courses-e-books-architecture-samples-and-videos-around-polly)
+  * [Blog posts](#blog-posts)
+  * [Podcasts](#podcasts)
+  * [PluralSight course](#pluralsight-course)
+  * [Sample microservices architecture and e-book](#sample-microservices-architecture-and-e-book)
+    * [Sample microservices architecture](#sample-microservices-architecture)
+    * [e-book](#e-book)
+* [Videos](#videos)
+
+---
+
+## Get Started
+
+### Installing via the .NET SDK
 
 ```sh
 dotnet add package Polly
 ```
 
+### Supported targets
+
+For details of supported compilation targets by version, see the [supported targets](https://github.com/App-vNext/Polly/wiki/Supported-targets) grid.
+
+### Using Polly with HttpClient factory from ASP.NET Core 2.1
+
+For using Polly with HttpClient factory from ASP.NET Core 2.1, see our [detailed wiki page](https://github.com/App-vNext/Polly/wiki/Polly-and-HttpClientFactory), then come back here or [explore the wiki](https://github.com/App-vNext/Polly/wiki) to learn more about the operation of each policy.
+
+### Role of the readme and the wiki
+
+This ReadMe aims to give a quick overview of all Polly features - including enough to get you started with any policy.  For deeper detail on any policy, and many other aspects of Polly, be sure also to check out the [wiki documentation](https://github.com/App-vNext/Polly/wiki).
+
+## Release notes
+
+* The [changelog](https://github.com/App-vNext/Polly/blob/main/CHANGELOG.md) describes changes by release.
+* We tag Pull Requests and Issues with [milestones](https://github.com/App-vNext/Polly/milestones) which match to NuGet package release numbers.
+* Breaking changes are called out in the wiki ([v7](https://github.com/App-vNext/Polly/wiki/Polly-v7-breaking-changes); [v6](https://github.com/App-vNext/Polly/wiki/Polly-v6-breaking-changes)) with simple notes on any necessary steps to upgrade.
+
 ## Resilience policies
 
-Polly offers multiple resilience policies:
+Polly offers multiple resilience policies.
+
+In addition to the detailed pages on each policy, an [introduction to the role of each policy in resilience engineering](https://github.com/App-vNext/Polly/wiki/Transient-fault-handling-and-proactive-resilience-engineering)  is also provided in the wiki.
 
 |Policy| Premise | Aka| How does the policy mitigate?|
 | ------------- | ------------- |:-------------: |------------- |
@@ -39,26 +134,6 @@ Polly offers multiple resilience policies:
 |**Cache**<br/><sub>([quickstart](#cache)&nbsp;;&nbsp;[deep](https://github.com/App-vNext/Polly/wiki/Cache))</sub>|Some proportion of requests may be similar.| "You've asked that one before"  |Provides a response from cache if known. <br/><br/>Stores responses automatically in cache, when first retrieved. |
 |**Fallback**<br/><sub>([quickstart](#fallback)&nbsp;;&nbsp;[deep](https://github.com/App-vNext/Polly/wiki/Fallback))</sub>|Things will still fail - plan what you will do when that happens.| "Degrade gracefully"  |Defines an alternative value to be returned (or action to be executed) on failure. |
 |**PolicyWrap**<br/><sub>([quickstart](#policywrap)&nbsp;;&nbsp;[deep](https://github.com/App-vNext/Polly/wiki/PolicyWrap))</sub>|Different faults require different strategies; resilience means using a combination.| "Defence in depth"  |Allows any of the above policies to be combined flexibly. |
-
-In addition to the detailed pages on each policy, an [introduction to the role of each policy in resilience engineering](https://github.com/App-vNext/Polly/wiki/Transient-fault-handling-and-proactive-resilience-engineering)  is also provided in the wiki.
-
-### Using Polly with HttpClient factory from ASPNET Core 2.1
-
-For using Polly with HttpClient factory from ASP.NET Core 2.1, see our [detailed wiki page](https://github.com/App-vNext/Polly/wiki/Polly-and-HttpClientFactory), then come back here or [explore the wiki](https://github.com/App-vNext/Polly/wiki) to learn more about the operation of each policy.
-
-### Release notes
-
-+ The [change log](https://github.com/App-vNext/Polly/blob/main/CHANGELOG.md) describes changes by release.
-+ We tag Pull Requests and Issues with [milestones](https://github.com/App-vNext/Polly/milestones) which match to NuGet package release numbers.
-+ Breaking changes are called out in the wiki ([v7](https://github.com/App-vNext/Polly/wiki/Polly-v7-breaking-changes) ; [v6](https://github.com/App-vNext/Polly/wiki/Polly-v6-breaking-changes)) with simple notes on any necessary steps to upgrade.
-
-### Supported targets
-
-For details of supported compilation targets by version, see the [supported targets](https://github.com/App-vNext/Polly/wiki/Supported-targets) grid.
-
-### Role of the readme and the wiki
-
-This ReadMe aims to give a quick overview of all Polly features - including enough to get you started with any policy.  For deeper detail on any policy, and many other aspects of Polly, be sure also to check out the [wiki documentation](https://github.com/App-vNext/Polly/wiki).
 
 ## Usage &ndash; fault-handling, reactive policies
 
@@ -446,7 +521,9 @@ For more detail see: [Fallback policy documentation](https://github.com/App-vNex
 
 Execute an `Action`, `Func`, or lambda delegate equivalent, through the policy.  The policy governs execution of the code passed to the `.Execute()` (or similar) method.
 
-> _Note: The code examples below show defining the policy and executing code through it in the same scope, for simplicity. See the notes after the code examples for other usage patterns_.
+> **Note**
+>
+> The code examples below show defining the policy and executing code through it in the same scope, for simplicity. See the notes after the code examples for other usage patterns.
 
 ```csharp
 // Execute an action
@@ -525,9 +602,7 @@ public static ConfigurePollyPolicies(this IServiceCollection services)
 
 The proactive policies add resilience strategies that are not based on handling faults which the governed code may throw or return.
 
-## Step 1 : Configure
-
-### Timeout
+### Step 1 : Configure
 
 #### Optimistic timeout
 
@@ -580,6 +655,10 @@ HttpResponseMessage httpResponse = await timeoutPolicy
       CancellationToken.None // In this case, CancellationToken.None is passed into the execution, indicating you have no independent cancellation control you wish to add to the cancellation provided by TimeoutPolicy.  Your own independent CancellationToken can also be passed - see wiki for examples.
       );
 ```
+
+Timeout policies throw `TimeoutRejectedException` when a timeout occurs.
+
+For more detail see [Timeout policy documentation](https://github.com/App-vNext/Polly/wiki/Timeout) in the wiki.
 
 #### Pessimistic timeout
 
@@ -774,7 +853,9 @@ For more detail see: [NoOp documentation](https://github.com/App-vNext/Polly/wik
 
 As for fault-handling policies [above](#step-3--execute-code-through-the-policy).
 
-## Post-execution: capturing the result, or any final exception
+## Usage – results and exceptions
+
+### Getting execution results as a PolicyResult
 
 Using the `ExecuteAndCapture(...)` methods you can capture the outcome of an execution: the methods return a `PolicyResult` instance which describes whether the outcome was a successful execution or a fault.
 
@@ -791,7 +872,7 @@ policyResult.Result - if executing a func, the result if the call succeeded or t
 */
 ```
 
-## Handing return values, and Policy&lt;TResult&gt;
+### Getting execution results and return values with a HttpResponseMessage
 
 As described at step 1b, from Polly v4.3.0 onwards, policies can handle return values and exceptions in combination:
 
@@ -813,7 +894,7 @@ HttpResponseMessage result = await Policy
 
 The exceptions and return results to handle can be expressed fluently in any order.
 
-### Strongly-typed Policy&lt;TResult&gt;
+### Getting execution results and return values with a Policy&lt;TResult&gt;
 
 Configuring a policy with `.HandleResult<TResult>(...)` or `.OrResult<TResult>(...)` generates a strongly-typed `Policy<TResult>` of the specific policy type, eg `Retry<TResult>`, `AdvancedCircuitBreaker<TResult>`.
 
@@ -822,7 +903,7 @@ These policies must be used to execute delegates returning `TResult`, i.e.:
 + `Execute(Func<TResult>)` (and related overloads)
 + `ExecuteAsync(Func<CancellationToken, Task<TResult>>)` (and related overloads)  
 
-### ExecuteAndCapture&lt;TResult&gt;()
+### Getting strongly-typed results with ExecuteAndCapture&lt;TResult&gt;()
 
 `.ExecuteAndCapture(...)` on non-generic policies returns a `PolicyResult` with properties:
 
@@ -840,7 +921,7 @@ policyResult.FaultType - was the final fault handled an exception or a result ha
 policyResult.FinalHandledResult - the final fault result handled; will be null or the type's default value, if the call succeeded
 ```
 
-#### State-change delegates on Policy&lt;TResult&gt; policies
+### State-change delegates on Policy&lt;TResult&gt; policies
 
 In non-generic policies handling only exceptions, state-change delegates such as `onRetry` and `onBreak` take an `Exception` parameter.  
 
@@ -849,7 +930,7 @@ In generic-policies handling `TResult` return values, state-change delegates are
 + `Exception // The exception just thrown if policy is in process of handling an exception (otherwise null)`
 + `Result // The TResult just raised, if policy is in process of handling a result (otherwise default(TResult))`
 
-#### BrokenCircuitException&lt;TResult&gt;
+### BrokenCircuitException&lt;TResult&gt;
 
 Non-generic CircuitBreaker policies throw a `BrokenCircuitException` when the circuit is broken.  This `BrokenCircuitException` contains the last exception (the one which caused the circuit to break) as the `InnerException`.
 
@@ -963,7 +1044,7 @@ await Policy
 
 Async continuations and retries by default do not run on a captured synchronization context. To change this, use `.ExecuteAsync(...)` overloads taking a boolean `continueOnCapturedContext` parameter.  
 
-#### Cancellation support
+### Cancellation support
 
 Async policy execution supports cancellation via `.ExecuteAsync(...)` overloads taking a `CancellationToken`.  
 
@@ -1021,12 +1102,6 @@ This allows collections of similar kinds of policy to be treated as one - for ex
 
 For more detail see: [Polly and interfaces](https://github.com/App-vNext/Polly/wiki/Polly-and-interfaces) on wiki.
 
-## Simmy
-
-[Simmy](https://github.com/Polly-Contrib/Simmy) is a major new companion project adding a chaos-engineering and fault-injection dimension to Polly, through the provision of policies to selectively inject faults or latency.  
-
-Head over to the [Simmy](https://github.com/Polly-Contrib/Simmy) repo to find out more.
-
 ## Custom policies
 
 From Polly v7.0 it is possible to [create your own custom policies](http://www.thepollyproject.org/2019/02/13/introducing-custom-polly-policies-and-polly-contrib-custom-policies-part-i/) outside Polly.  These custom policies can integrate in to all the existing goodness from Polly: the `Policy.Handle<>()` syntax; PolicyWrap; all the execution-dispatch overloads.
@@ -1039,6 +1114,12 @@ For more info see our blog series:
 + [Part IV: Custom policies for all execution types](http://www.thepollyproject.org/2019/02/13/custom-policies-for-all-execution-types-custom-policies-part-iv/): sync and async, generic and non-generic.
 
 We provide a [starter template for a custom policy](https://github.com/Polly-Contrib/Polly.Contrib.CustomPolicyTemplates) for developing your own custom policy.
+
+## Chaos engineering with Simmy
+
+[Simmy](https://github.com/Polly-Contrib/Simmy) is a major new companion project adding a chaos-engineering and fault-injection dimension to Polly, through the provision of policies to selectively inject faults or latency.  
+
+Head over to the [Simmy](https://github.com/Polly-Contrib/Simmy) repo to find out more.
 
 ## Polly-Contrib
 
