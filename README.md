@@ -24,7 +24,7 @@ We are a member of the [.NET Foundation](https://www.dotnetfoundation.org/about)
 ---
 
 <!-- This TOC can be maintained using VS Code's 'Markdown All in One' extension -->
-<!-- Just set the Toc: Levels setting to '2..4', open the command pallette,  -->
+<!-- Just set the Toc: Levels setting to '2..4', open the command palette,  -->
 <!-- and run 'Markdown All in One: Update Table of Contents'  -->
 * [Get Started](#get-started)
   * [Installing via the .NET SDK](#installing-via-the-net-sdk)
@@ -114,9 +114,9 @@ This ReadMe aims to give a quick overview of all Polly features - including enou
 
 ## Release notes
 
-* The [change log](https://github.com/App-vNext/Polly/blob/main/CHANGELOG.md) describes changes by release.
+* The [changelog](https://github.com/App-vNext/Polly/blob/main/CHANGELOG.md) describes changes by release.
 * We tag Pull Requests and Issues with [milestones](https://github.com/App-vNext/Polly/milestones) which match to NuGet package release numbers.
-* Breaking changes are called out in the wiki ([v7](https://github.com/App-vNext/Polly/wiki/Polly-v7-breaking-changes) ; [v6](https://github.com/App-vNext/Polly/wiki/Polly-v6-breaking-changes)) with simple notes on any necessary steps to upgrade.
+* Breaking changes are called out in the wiki ([v7](https://github.com/App-vNext/Polly/wiki/Polly-v7-breaking-changes); [v6](https://github.com/App-vNext/Polly/wiki/Polly-v6-breaking-changes)) with simple notes on any necessary steps to upgrade.
 
 ## Resilience policies
 
@@ -656,9 +656,9 @@ HttpResponseMessage httpResponse = await timeoutPolicy
       );
 ```
 
-Timeout policies throw `TimeoutRejectedException` when timeout occurs.
+Timeout policies throw `TimeoutRejectedException` when a timeout occurs.
 
-For more detail see: [Timeout policy documentation](https://github.com/App-vNext/Polly/wiki/Timeout) on wiki.
+For more detail see [Timeout policy documentation](https://github.com/App-vNext/Polly/wiki/Timeout) in the wiki.
 
 #### Pessimistic timeout
 
