@@ -16,7 +16,7 @@ public class RetryStrategyOptions : ResilienceStrategyOptions
     /// <summary>
     /// Value that represents infinite retries.
     /// </summary>
-    public const int InfiniteRetry = -1;
+    public const int InfiniteRetryCount = RetryConstants.InfiniteRetryCount;
 
     /// <summary>
     /// Gets or sets the maximum number of retries to use, in addition to the original call.
@@ -24,7 +24,7 @@ public class RetryStrategyOptions : ResilienceStrategyOptions
     /// <remarks>
     /// Defaults to 3 retries. For infinite retries use <c>InfiniteRetry</c> (-1).
     /// </remarks>
-    [Range(InfiniteRetry, RetryConstants.MaxRetryCount)]
+    [Range(InfiniteRetryCount, RetryConstants.MaxRetryCount)]
     public int RetryCount { get; set; } = RetryConstants.DefaultRetryCount;
 
     /// <summary>

@@ -71,7 +71,7 @@ public class RetryResilienceStrategyTests
             calls++;
         });
         _options.ShouldRetry.Result(0);
-        _options.RetryCount = RetryStrategyOptions.InfiniteRetry;
+        _options.RetryCount = RetryStrategyOptions.InfiniteRetryCount;
         SetupNoDelay();
         var sut = CreateSut();
 

@@ -6,6 +6,16 @@ namespace Polly.Core.Tests.Retry;
 public class RetryHelperTests
 {
     [Fact]
+    public void IsValidDelay_Ok()
+    {
+        RetryHelper.IsValidDelay(TimeSpan.Zero).Should().BeTrue();
+        RetryHelper.IsValidDelay(TimeSpan.FromSeconds(1)).Should().BeTrue();
+        RetryHelper.IsValidDelay(TimeSpan.MaxValue).Should().BeTrue();
+        RetryHelper.IsValidDelay(TimeSpan.MinValue).Should().BeFalse();
+        RetryHelper.IsValidDelay(TimeSpan.FromMilliseconds(-1)).Should().BeFalse();
+    }
+
+    [Fact]
     public void UnsupportedRetryBackoffType_Throws()
     {
         RetryBackoffType type = (RetryBackoffType)99;

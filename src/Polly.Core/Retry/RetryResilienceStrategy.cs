@@ -92,7 +92,7 @@ internal class RetryResilienceStrategy : ResilienceStrategy
 
     private bool IsLastAttempt(int attempt)
     {
-        if (RetryCount == RetryStrategyOptions.InfiniteRetry)
+        if (RetryCount == RetryStrategyOptions.InfiniteRetryCount)
         {
             return false;
         }
