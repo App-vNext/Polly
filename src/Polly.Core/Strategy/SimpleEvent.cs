@@ -1,6 +1,4 @@
-using Polly.Strategy;
-
-namespace Polly.Timeout;
+namespace Polly.Strategy;
 
 /// <summary>
 /// This class holds a list of callbacks that are invoked when some event occurs.

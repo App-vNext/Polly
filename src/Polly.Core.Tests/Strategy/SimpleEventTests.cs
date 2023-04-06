@@ -1,4 +1,4 @@
-using Polly.Timeout;
+using Polly.Strategy;
 
 namespace Polly.Core.Tests.Timeout;
 
