@@ -20,7 +20,7 @@ public class RetryHelperTests
     {
         RetryBackoffType type = (RetryBackoffType)99;
 
-        Assert.Throws<NotSupportedException>(() => RetryHelper.GetRetryDelay(type, 0, TimeSpan.FromSeconds(1)));
+        Assert.Throws<ArgumentOutOfRangeException>(() => RetryHelper.GetRetryDelay(type, 0, TimeSpan.FromSeconds(1)));
     }
 
     [Fact]

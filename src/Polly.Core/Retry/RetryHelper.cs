@@ -18,9 +18,14 @@ internal static class RetryHelper
         return type switch
         {
             RetryBackoffType.Constant => baseDelay,
+#if !NETCOREAPP
             RetryBackoffType.Linear => TimeSpan.FromMilliseconds((attempt + 1) * baseDelay.TotalMilliseconds),
             RetryBackoffType.Exponential => TimeSpan.FromMilliseconds(Math.Pow(ExponentialFactor, attempt) * baseDelay.TotalMilliseconds),
-            _ => throw new NotSupportedException()
+#else
+            RetryBackoffType.Linear => (attempt + 1) * baseDelay,
+            RetryBackoffType.Exponential => Math.Pow(ExponentialFactor, attempt) * baseDelay,
+#endif
+            _ => throw new ArgumentOutOfRangeException(nameof(type), type, "The retry backoff type is not supported.")
         };
     }
 }

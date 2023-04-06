@@ -42,6 +42,8 @@ internal class RetryResilienceStrategy : ResilienceStrategy
 
         while (true)
         {
+            context.CancellationToken.ThrowIfCancellationRequested();
+
             Outcome<TResult> outcome;
 
             try

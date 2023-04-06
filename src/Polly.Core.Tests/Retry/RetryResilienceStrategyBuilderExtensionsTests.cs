@@ -4,6 +4,7 @@ using Polly.Retry;
 using Xunit;
 
 namespace Polly.Core.Tests.Retry;
+
 public class RetryResilienceStrategyBuilderExtensionsTests
 {
     public static readonly TheoryData<Action<ResilienceStrategyBuilder>> OverloadsData = new()

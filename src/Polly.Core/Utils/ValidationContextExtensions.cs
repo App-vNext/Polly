@@ -1,5 +1,3 @@
-// Copyright (c) Microsoft Corporation. All Rights Reserved.
-
 using System.ComponentModel.DataAnnotations;
 
 internal static class ValidationContextExtensions

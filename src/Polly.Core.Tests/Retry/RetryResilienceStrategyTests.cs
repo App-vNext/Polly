@@ -3,6 +3,7 @@ using Polly.Retry;
 using Polly.Telemetry;
 
 namespace Polly.Core.Tests.Retry;
+
 public class RetryResilienceStrategyTests
 {
     private readonly RetryStrategyOptions _options = new();

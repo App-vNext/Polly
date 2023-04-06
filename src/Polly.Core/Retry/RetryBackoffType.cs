@@ -12,9 +12,9 @@ public enum RetryBackoffType
     /// 200ms, 200ms, 200ms, etc.
     /// </example>
     /// <remarks>
-    /// It ensures a constant wait duration before each retry attempt.
-    /// For concurrent database access with possibility of conflicting updates,
-    /// retrying the failures in a constant manner allows consistent transient failures mitigation.
+    /// Ensures a constant wait duration before each retry attempt.
+    /// For concurrent database access with a possibility of conflicting updates,
+    /// retrying the failures in a constant manner allows for consistent transient failure mitigation.
     /// </remarks>
     Constant,
 
@@ -26,8 +26,8 @@ public enum RetryBackoffType
     /// </example>
     /// <remarks>
     /// Generates sleep durations in an linear manner.
-    /// In case randomization introduced by the jitter and exponential growth are not intended,
-    /// the linear growth allows more control over the delay intervals.
+    /// In the case randomization introduced by the jitter and exponential growth are not appropriate,
+    /// the linear growth allows for more precise control over the delay intervals.
     /// </remarks>
     Linear,
 
