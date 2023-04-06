@@ -21,13 +21,7 @@ public static class RetryResilienceStrategyBuilderExtensions
         Guard.NotNull(builder);
         Guard.NotNull(shouldRetry);
 
-        var options = new RetryStrategyOptions
-        {
-            BackoffType = RetryConstants.DefaultBackoffType,
-            RetryCount = RetryConstants.DefaultRetryCount,
-            BaseDelay = RetryConstants.DefaultBaseDelay
-        };
-
+        var options = new RetryStrategyOptions();
         shouldRetry(options.ShouldRetry);
 
         return builder.AddRetry(options);
