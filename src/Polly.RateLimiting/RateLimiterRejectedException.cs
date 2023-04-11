@@ -71,7 +71,7 @@ public sealed class RateLimiterRejectedException : ExecutionRejectedException
     /// </summary>
     /// <param name="info">The information.</param>
     /// <param name="context">The context.</param>
-    protected RateLimiterRejectedException(SerializationInfo info, StreamingContext context)
+    private RateLimiterRejectedException(SerializationInfo info, StreamingContext context)
         : base(info, context)
     {
         var value = info.GetDouble("RetryAfter");
