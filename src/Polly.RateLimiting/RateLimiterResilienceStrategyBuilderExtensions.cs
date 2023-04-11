@@ -14,6 +14,27 @@ public static class RateLimiterResilienceStrategyBuilderExtensions
     /// Adds the concurrency limiter strategy.
     /// </summary>
     /// <param name="builder">The builder instance.</param>
+    /// <param name="permitLimit">Maximum number of permits that can be leased concurrently.</param>
+    /// <param name="queueLimit">Maximum number of permits that can be queued concurrently.</param>
+    /// <returns>The builder instance with the concurrency limiter strategy added.</returns>
+    public static ResilienceStrategyBuilder AddConcurrencyLimiter(
+        this ResilienceStrategyBuilder builder,
+        int permitLimit,
+        int queueLimit = 0)
+    {
+        Guard.NotNull(builder);
+
+        return builder.AddConcurrencyLimiter(new ConcurrencyLimiterOptions
+        {
+            PermitLimit = permitLimit,
+            QueueLimit = queueLimit
+        });
+    }
+
+    /// <summary>
+    /// Adds the concurrency limiter strategy.
+    /// </summary>
+    /// <param name="builder">The builder instance.</param>
     /// <param name="options">The concurrency limiter options.</param>
     /// <returns>The builder instance with the concurrency limiter strategy added.</returns>
     public static ResilienceStrategyBuilder AddConcurrencyLimiter(
@@ -34,43 +55,22 @@ public static class RateLimiterResilienceStrategyBuilderExtensions
     /// </summary>
     /// <param name="builder">The builder instance.</param>
     /// <param name="options">The concurrency limiter options.</param>
-    /// <param name="onRejected">The action that is invoked when the execution is rejected by the rate limiter.</param>
-    /// <returns>The builder instance with the concurrency limiter strategy added.</returns>
-    public static ResilienceStrategyBuilder AddConcurrencyLimiter(
-        this ResilienceStrategyBuilder builder,
-        ConcurrencyLimiterOptions options,
-        Action onRejected)
-    {
-        Guard.NotNull(builder);
-        Guard.NotNull(options);
-        Guard.NotNull(onRejected);
-
-        return builder.AddConcurrencyLimiter(options, rejected => rejected.Add(onRejected));
-    }
-
-    /// <summary>
-    /// Adds the concurrency limiter strategy.
-    /// </summary>
-    /// <param name="builder">The builder instance.</param>
-    /// <param name="options">The concurrency limiter options.</param>
     /// <param name="onRejected">The callbacks that configures the <see cref="OnRateLimiterRejectedEvent"/>.</param>
     /// <returns>The builder instance with the concurrency limiter strategy added.</returns>
     public static ResilienceStrategyBuilder AddConcurrencyLimiter(
         this ResilienceStrategyBuilder builder,
         ConcurrencyLimiterOptions options,
-        Action<OnRateLimiterRejectedEvent> onRejected)
+        Action<OnRateLimiterRejectedArguments> onRejected)
     {
         Guard.NotNull(builder);
         Guard.NotNull(options);
         Guard.NotNull(onRejected);
 
-        var strategyOptions = new RateLimiterStrategyOptions
+        return builder.AddRateLimiter(new RateLimiterStrategyOptions
         {
-            RateLimiter = new ConcurrencyLimiter(options)
-        };
-        onRejected(strategyOptions.OnRejected);
-
-        return builder.AddRateLimiter(strategyOptions);
+            RateLimiter = new ConcurrencyLimiter(options),
+            OnRejected = new OnRateLimiterRejectedEvent().Add(onRejected)
+        });
     }
 
     /// <summary>
@@ -97,44 +97,22 @@ public static class RateLimiterResilienceStrategyBuilderExtensions
     /// </summary>
     /// <param name="builder">The builder instance.</param>
     /// <param name="limiter">The rate limiter to use.</param>
-    /// <param name="onRejected">The action that is invoked when the execution is rejected by the rate limiter.</param>
-    /// <returns>The builder instance with the rate limiter strategy added.</returns>
-    public static ResilienceStrategyBuilder AddRateLimiter(
-        this ResilienceStrategyBuilder builder,
-        RateLimiter limiter,
-        Action onRejected)
-    {
-        Guard.NotNull(builder);
-        Guard.NotNull(limiter);
-        Guard.NotNull(onRejected);
-
-        return builder.AddRateLimiter(limiter, rejected => rejected.Add(onRejected));
-    }
-
-    /// <summary>
-    /// Adds the rate limiter strategy.
-    /// </summary>
-    /// <param name="builder">The builder instance.</param>
-    /// <param name="limiter">The rate limiter to use.</param>
     /// <param name="onRejected">The callbacks that configures the <see cref="OnRateLimiterRejectedEvent"/>.</param>
     /// <returns>The builder instance with the rate limiter strategy added.</returns>
     public static ResilienceStrategyBuilder AddRateLimiter(
         this ResilienceStrategyBuilder builder,
         RateLimiter limiter,
-        Action<OnRateLimiterRejectedEvent> onRejected)
+        Action<OnRateLimiterRejectedArguments> onRejected)
     {
         Guard.NotNull(builder);
         Guard.NotNull(limiter);
         Guard.NotNull(onRejected);
 
-        var options = new RateLimiterStrategyOptions
+        return builder.AddRateLimiter(new RateLimiterStrategyOptions
         {
             RateLimiter = limiter,
-        };
-
-        onRejected(options.OnRejected);
-
-        return builder.AddRateLimiter(options);
+            OnRejected = new OnRateLimiterRejectedEvent().Add(onRejected)
+        });
     }
 
     /// <summary>
