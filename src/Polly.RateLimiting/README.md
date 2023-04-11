@@ -10,13 +10,11 @@ Example:
 
 ``` csharp
 // Convenience extension method for ConcurrencyLimiter
-builder.AddConcurrencyLimiter(
-    new ConcurrencyLimiterOptions
-    {
-        PermitLimit = 10,
-        QueueLimit = 10
-    },
-    () => Console.WriteLine("Rate limiter rejected!"));
+builder.AddConcurrencyLimiter(new ConcurrencyLimiterOptions
+{
+    PermitLimit = 10,
+    QueueLimit = 10
+});
 
 // Convenience extension method
 builder.AddRateLimiter(
@@ -25,7 +23,7 @@ builder.AddRateLimiter(
         PermitLimit = 10,
         QueueLimit = 10
     }),
-    onRejected => onRejected.Add(() => Console.WriteLine("Rate limiter rejected!")));
+    args => Console.WriteLine("Rate limiter rejected!"));
 
 // Add rate limiter using the RateLimiterStrategyOptions
 builder.AddRateLimiter(new RateLimiterStrategyOptions
