@@ -2,7 +2,7 @@
 
 using System;
 
-namespace Polly.Core.Tests.Utils;
+namespace Polly.Core.Tests.Helpers;
 
 /// <summary>
 /// Utility that serializes and deserializes the exceptions using the binary formatter.

@@ -1,4 +1,3 @@
-using System.ComponentModel.DataAnnotations;
 using Polly.Timeout;
 
 namespace Polly.Core.Tests.Timeout;

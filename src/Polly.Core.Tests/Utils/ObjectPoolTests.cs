@@ -1,6 +1,4 @@
-using System.Collections.Generic;
 using Polly.Utils;
-using Xunit;
 
 namespace Polly.Core.Tests.Utils;
 

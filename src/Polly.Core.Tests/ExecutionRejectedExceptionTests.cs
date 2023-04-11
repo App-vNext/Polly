@@ -1,4 +1,4 @@
-namespace Polly.Core.Tests.Timeout;
+namespace Polly.Core.Tests;
 
 public class ExecutionRejectedExceptionTests
 {

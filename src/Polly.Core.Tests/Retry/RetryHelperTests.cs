@@ -1,4 +1,3 @@
-using System;
 using Polly.Retry;
 
 namespace Polly.Core.Tests.Retry;

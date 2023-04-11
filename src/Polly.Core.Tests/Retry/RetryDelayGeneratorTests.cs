@@ -1,8 +1,5 @@
-using System;
-using System.Threading.Tasks;
 using Polly.Retry;
 using Polly.Strategy;
-using Xunit;
 
 namespace Polly.Core.Tests.Retry;
 

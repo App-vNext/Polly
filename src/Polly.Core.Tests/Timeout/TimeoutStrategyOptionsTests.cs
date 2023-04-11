@@ -1,7 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using Polly.Timeout;
 using Polly.Utils;
-using Xunit;
 
 namespace Polly.Core.Tests.Timeout;
 

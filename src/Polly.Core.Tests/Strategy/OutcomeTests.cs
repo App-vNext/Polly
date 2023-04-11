@@ -1,4 +1,3 @@
-using System;
 using Polly.Strategy;
 
 namespace Polly.Core.Tests.Strategy;
