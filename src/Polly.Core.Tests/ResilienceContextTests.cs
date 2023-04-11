@@ -17,6 +17,16 @@ public class ResilienceContextTests
     }
 
     [Fact]
+    public void Get_EnsurePooled()
+    {
+        var context = ResilienceContext.Get();
+
+        ResilienceContext.Return(context);
+
+        ResilienceContext.Get().Should().BeSameAs(context);
+    }
+
+    [Fact]
     public void Return_Null_Throws()
     {
         Assert.Throws<ArgumentNullException>(() => ResilienceContext.Return(null!));

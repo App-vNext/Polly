@@ -12,6 +12,8 @@ namespace Polly;
 /// </remarks>
 public sealed class ResilienceContext
 {
+    private static readonly ObjectPool<ResilienceContext> Pool = new(() => new ResilienceContext(), c => c.Reset());
+
     internal const bool ContinueOnCapturedContextDefault = false;
 
     private ResilienceContext()
@@ -61,7 +63,7 @@ public sealed class ResilienceContext
     /// After the execution is finished you should return the <see cref="ResilienceContext"/> back to the pool
     /// by calling <see cref="Return(ResilienceContext)"/> method.
     /// </remarks>
-    public static ResilienceContext Get() => new();
+    public static ResilienceContext Get() => Pool.Get();
 
     /// <summary>
     /// Returns a <paramref name="context"/> back to the pool.
@@ -71,7 +73,7 @@ public sealed class ResilienceContext
     {
         Guard.NotNull(context);
 
-        context.Reset();
+        Pool.Return(context);
     }
 
     [ExcludeFromCodeCoverage]
@@ -90,13 +92,15 @@ public sealed class ResilienceContext
         return this;
     }
 
-    private void Reset()
+    private bool Reset()
     {
         IsSynchronous = false;
         ResultType = typeof(UnknownResult);
         ContinueOnCapturedContext = false;
         CancellationToken = default;
         ((IDictionary<string, object?>)Properties).Clear();
+
+        return true;
     }
 
     /// <summary>
