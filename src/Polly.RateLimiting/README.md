@@ -12,15 +12,8 @@ Example:
 // Convenience extension method for ConcurrencyLimiter
 builder.AddConcurrencyLimiter(permitLimit: 10, queueLimit: 10);
 
-// Convenience extension method for ConcurrencyLimiter that uses ConcurrencyLimiterOptions
-builder.AddConcurrencyLimiter(new ConcurrencyLimiterOptions
-{
-    PermitLimit = 10,
-    QueueLimit = 10
-});
-
-// Convenience extension method
-builder.AddRateLimiter(
+// Convenience extension method for ConcurrencyLimiter with callback
+builder.AddConcurrencyLimiter(
     new ConcurrencyLimiter(new ConcurrencyLimiterOptions
     {
         PermitLimit = 10,
@@ -28,6 +21,15 @@ builder.AddRateLimiter(
     }),
     args => Console.WriteLine("Rate limiter rejected!"));
 
+// Convenience extension method with custom limiter creation
+builder.AddRateLimiter(
+    new ConcurrencyLimiter(new ConcurrencyLimiterOptions
+    {
+        PermitLimit = 10,
+        QueueLimit = 10
+    }),
+    args => Console.WriteLine("Rate limiter rejected!"));
+    
 // Add rate limiter using the RateLimiterStrategyOptions
 builder.AddRateLimiter(new RateLimiterStrategyOptions
 {
