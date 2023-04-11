@@ -63,7 +63,11 @@ public abstract class SimpleEvent<TArgs, TSelf>
         return (TSelf)this;
     }
 
-    internal Func<TArgs, ValueTask>? CreateHandler()
+    /// <summary>
+    /// Creates a callback handler for all registered event callbacks.
+    /// </summary>
+    /// <returns>A callback handler.</returns>
+    protected internal Func<TArgs, ValueTask>? CreateHandler()
     {
         return _callbacks.Count switch
         {
