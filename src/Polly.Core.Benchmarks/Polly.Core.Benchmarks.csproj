@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Polly.Core\Polly.Core.csproj" />
+    <ProjectReference Include="..\Polly.RateLimiting\Polly.RateLimiting.csproj" />
     <ProjectReference Include="..\Polly\Polly.csproj" />
   </ItemGroup>
 
