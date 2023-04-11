@@ -1,4 +1,4 @@
-# About Polly.Hosting
+# About Polly.RateLimiting
 
 The `Polly.RateLimiting` package adopts the [.NET Rate Limiting](https://devblogs.microsoft.com/dotnet/announcing-rate-limiting-for-dotnet/) APIs for Polly scenarios.
 
@@ -10,6 +10,9 @@ Example:
 
 ``` csharp
 // Convenience extension method for ConcurrencyLimiter
+builder.AddConcurrencyLimiter(permitLimit: 10, queueLimit: 10);
+
+// Convenience extension method for ConcurrencyLimiter that uses ConcurrencyLimiterOptions
 builder.AddConcurrencyLimiter(new ConcurrencyLimiterOptions
 {
     PermitLimit = 10,
