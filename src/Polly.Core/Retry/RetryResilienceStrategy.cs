@@ -85,7 +85,7 @@ internal class RetryResilienceStrategy : ResilienceStrategy
 
             if (delay > TimeSpan.Zero)
             {
-                await _timeProvider.DelayAsync(delay, context).ConfigureAwait(false);
+                await _timeProvider.DelayAsync(delay, context).ConfigureAwait(context.ContinueOnCapturedContext);
             }
 
             attempt++;
