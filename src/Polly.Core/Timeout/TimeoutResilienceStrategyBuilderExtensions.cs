@@ -1,7 +1,8 @@
 using System;
 using Polly.Builder;
+using Polly.Timeout;
 
-namespace Polly.Timeout;
+namespace Polly;
 
 /// <summary>
 /// Extension methods for adding timeouts to a <see cref="ResilienceStrategyBuilder"/>.

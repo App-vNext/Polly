@@ -1,8 +1,9 @@
 using System.Threading.RateLimiting;
 using Polly.Builder;
+using Polly.RateLimiting;
 using Polly.Utils;
 
-namespace Polly.RateLimiting;
+namespace Polly;
 
 /// <summary>
 /// The rate limiter extensions for <see cref="ResilienceStrategyBuilder"/>.
