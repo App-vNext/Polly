@@ -22,3 +22,4 @@ updates:
     - dependency-name: "Microsoft.Extensions.Options"
     - dependency-name: "Microsoft.Extensions.Logging.Abstractions"
     - dependency-name: "System.Diagnostics.DiagnosticSource"
+    - dependency-name: "System.Threading.RateLimiting"

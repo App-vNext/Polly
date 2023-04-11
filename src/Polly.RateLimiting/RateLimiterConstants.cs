@@ -1,6 +1,6 @@
 namespace Polly.RateLimiting;
 
-internal class RateLimiterConstants
+internal static class RateLimiterConstants
 {
     public const string StrategyType = "RateLimiter";
 

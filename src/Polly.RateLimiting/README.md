@@ -1,10 +1,10 @@
 # About Polly.Hosting
 
-The `Polly.RateLimiting` adopts the [.NET Rate Limiting](https://devblogs.microsoft.com/dotnet/announcing-rate-limiting-for-dotnet/) APIs for Polly scenarios.
+The `Polly.RateLimiting` package adopts the [.NET Rate Limiting](https://devblogs.microsoft.com/dotnet/announcing-rate-limiting-for-dotnet/) APIs for Polly scenarios.
 
 - It exposes the `AddRateLimiter` extension methods for `ResiliencePipelineBuilder`.
 - It exposes the `AddConcurrencyLimiter` convenience extension methods for `ResiliencePipelineBuilder`.
-- It exposes the `RateLimiterRejectedException` to notify the caller that the operation was rate limited.
+- It exposes the `RateLimiterRejectedException` class to notify the caller that the operation was rate limited.
 
 Example:
 

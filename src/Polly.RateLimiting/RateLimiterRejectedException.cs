@@ -11,13 +11,13 @@ namespace Polly.RateLimiting;
 #if !NETCOREAPP
 [Serializable]
 #endif
-public class RateLimiterRejectedException : ExecutionRejectedException
+public sealed class RateLimiterRejectedException : ExecutionRejectedException
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="RateLimiterRejectedException"/> class.
     /// </summary>
     public RateLimiterRejectedException()
-        : base("The operation couldn't be executed because it was rejected by the rate limiter.")
+        : base("The operation could not be executed because it was rejected by the rate limiter.")
     {
     }
 
@@ -26,7 +26,7 @@ public class RateLimiterRejectedException : ExecutionRejectedException
     /// </summary>
     /// <param name="retryAfter">The retry after value.</param>
     public RateLimiterRejectedException(TimeSpan retryAfter)
-        : base($"The operation couldn't be executed because it was rejected by the rate limiter. It can be retried after '{retryAfter}'.")
+        : base($"The operation could not be executed because it was rejected by the rate limiter. It can be retried after '{retryAfter}'.")
         => RetryAfter = retryAfter;
 
     /// <summary>

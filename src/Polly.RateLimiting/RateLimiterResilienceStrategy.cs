@@ -3,7 +3,7 @@ using Polly.Telemetry;
 
 namespace Polly.RateLimiting;
 
-internal class RateLimiterResilienceStrategy : ResilienceStrategy
+internal sealed class RateLimiterResilienceStrategy : ResilienceStrategy
 {
     private readonly ResilienceTelemetry _telemetry;
 

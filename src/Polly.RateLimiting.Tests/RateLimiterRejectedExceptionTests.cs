@@ -9,12 +9,12 @@ public class RateLimiterRejectedExceptionTests
     {
         var retryAfter = TimeSpan.FromSeconds(4);
 
-        new RateLimiterRejectedException().Message.Should().Be("The operation couldn't be executed because it was rejected by the rate limiter.");
+        new RateLimiterRejectedException().Message.Should().Be("The operation could not be executed because it was rejected by the rate limiter.");
         new RateLimiterRejectedException().RetryAfter.Should().BeNull();
         new RateLimiterRejectedException("dummy").Message.Should().Be("dummy");
         new RateLimiterRejectedException("dummy", new InvalidOperationException()).Message.Should().Be("dummy");
         new RateLimiterRejectedException(retryAfter).RetryAfter.Should().Be(retryAfter);
-        new RateLimiterRejectedException(retryAfter).Message.Should().Be($"The operation couldn't be executed because it was rejected by the rate limiter. It can be retried after '{retryAfter}'.");
+        new RateLimiterRejectedException(retryAfter).Message.Should().Be($"The operation could not be executed because it was rejected by the rate limiter. It can be retried after '{retryAfter}'.");
         new RateLimiterRejectedException("dummy", retryAfter).RetryAfter.Should().Be(retryAfter);
         new RateLimiterRejectedException("dummy", retryAfter, new InvalidOperationException()).RetryAfter.Should().Be(retryAfter);
     }
