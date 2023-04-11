@@ -9,9 +9,10 @@ namespace Polly.Retry;
 /// </summary>
 public readonly struct RetryDelayArguments : IResilienceArguments
 {
-    internal RetryDelayArguments(ResilienceContext context, int attempt)
+    internal RetryDelayArguments(ResilienceContext context, int attempt, TimeSpan delayHint)
     {
         Attempt = attempt;
+        DelayHint = delayHint;
         Context = context;
     }
 
@@ -22,6 +23,11 @@ public readonly struct RetryDelayArguments : IResilienceArguments
     /// The first attempt is 0, the second attempt is 1, and so on.
     /// </remarks>
     public int Attempt { get; }
+
+    /// <summary>
+    /// Gets the delay suggested by retry strategy.
+    /// </summary>
+    public TimeSpan DelayHint { get; }
 
     /// <inheritdoc/>
     public ResilienceContext Context { get; }

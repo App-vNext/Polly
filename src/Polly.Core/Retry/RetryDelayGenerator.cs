@@ -14,5 +14,5 @@ public sealed class RetryDelayGenerator : OutcomeGenerator<TimeSpan, RetryDelayA
     protected override TimeSpan DefaultValue => TimeSpan.MinValue;
 
     /// <inheritdoc/>
-    protected override bool IsValid(TimeSpan value) => value >= TimeSpan.Zero;
+    protected override bool IsValid(TimeSpan value) => RetryHelper.IsValidDelay(value);
 }

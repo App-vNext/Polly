@@ -1,3 +1,5 @@
+using Polly.Strategy;
+
 namespace Polly.Telemetry;
 
 /// <summary>
@@ -20,12 +22,7 @@ public sealed class NullResilienceTelemetry : ResilienceTelemetry
     }
 
     /// <inheritdoc/>
-    public override void Report<TResult>(string eventName, TResult result, ResilienceContext context)
-    {
-    }
-
-    /// <inheritdoc/>
-    public override void ReportException(string eventName, Exception exception, ResilienceContext context)
+    public override void Report<TResult>(string eventName, Outcome<TResult> outcome, ResilienceContext context)
     {
     }
 }

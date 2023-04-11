@@ -15,6 +15,12 @@ internal class FakeTimeProvider : Mock<TimeProvider>
     {
     }
 
+    public FakeTimeProvider SetupAnyDelay(CancellationToken cancellationToken = default)
+    {
+        Setup(x => x.Delay(It.IsAny<TimeSpan>(), cancellationToken)).Returns(Task.CompletedTask);
+        return this;
+    }
+
     public FakeTimeProvider SetupDelay(TimeSpan delay, CancellationToken cancellationToken = default)
     {
         Setup(x => x.Delay(delay, cancellationToken)).Returns(Task.CompletedTask);

@@ -1,3 +1,4 @@
+using Polly.Strategy;
 using Polly.Telemetry;
 
 namespace Polly.Core.Tests.Telemetry;
@@ -17,8 +18,7 @@ public class NullResilienceTelemetryTests
             .Invoking(v =>
             {
                 NullResilienceTelemetry.Instance.Report("dummy", ResilienceContext.Get());
-                NullResilienceTelemetry.Instance.Report("dummy", 10, ResilienceContext.Get());
-                NullResilienceTelemetry.Instance.ReportException("dummy", new InvalidOperationException(), ResilienceContext.Get());
+                NullResilienceTelemetry.Instance.Report("dummy", new Outcome<int>(10), ResilienceContext.Get());
             })
             .Should()
             .NotThrow();

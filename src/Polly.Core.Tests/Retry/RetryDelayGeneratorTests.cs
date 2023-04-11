@@ -14,7 +14,7 @@ public class RetryDelayGeneratorTests
         var result = await new RetryDelayGenerator()
             .SetGenerator<int>((_, _) => TimeSpan.Zero)
             .CreateHandler()!
-            .Generate(new Outcome<bool>(true), new RetryDelayArguments(ResilienceContext.Get(), 0));
+            .Generate(new Outcome<bool>(true), new RetryDelayArguments(ResilienceContext.Get(), 0, TimeSpan.FromSeconds(2)));
 
         result.Should().Be(TimeSpan.MinValue);
     }
@@ -28,7 +28,7 @@ public class RetryDelayGeneratorTests
         var result = await new RetryDelayGenerator()
             .SetGenerator<int>((_, _) => delay)
             .CreateHandler()!
-            .Generate(new Outcome<int>(0), new RetryDelayArguments(ResilienceContext.Get(), 0));
+            .Generate(new Outcome<int>(0), new RetryDelayArguments(ResilienceContext.Get(), 0, TimeSpan.FromSeconds(2)));
 
         result.Should().Be(delay);
     }
