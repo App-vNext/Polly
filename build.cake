@@ -216,7 +216,9 @@ Task("__RunMutationTests")
     .Does(() =>
 {
     TestProject(File("./src/Polly.Core/Polly.Core.csproj"), File("./src/Polly.Core.Tests/Polly.Core.Tests.csproj"), "Polly.Core.csproj");
+    TestProject(File("./src/Polly.RateLimiting/Polly.RateLimiting.csproj"), File("./src/Polly.RateLimiting.Tests/Polly.RateLimiting.Tests.csproj"), "Polly.RateLimiting.csproj");
     TestProject(File("./src/Polly.Extensions/Polly.Extensions.csproj"), File("./src/Polly.Extensions.Tests/Polly.Extensions.Tests.csproj"), "Polly.Extensions.csproj");
+
     TestProject(File("./src/Polly/Polly.csproj"), File("./src/Polly.Specs/Polly.Specs.csproj"), "Polly.csproj");
 
     void TestProject(FilePath proj, FilePath testProj, string project)
@@ -265,6 +267,9 @@ Task("__CreateSignedNuGetPackages")
 
     Information("Building Polly.{0}.nupkg", nugetVersion);
     DotNetPack(System.IO.Path.Combine(srcDir, "Polly", "Polly.csproj"), dotNetPackSettings);
+
+    Information("Building Polly.RateLimiting.{0}.nupkg", nugetVersion);
+    DotNetPack(System.IO.Path.Combine(srcDir, "Polly.RateLimiting", "Polly.RateLimiting.csproj"), dotNetPackSettings);
 
     Information("Building Polly.Extensions.{0}.nupkg", nugetVersion);
     DotNetPack(System.IO.Path.Combine(srcDir, "Polly.Extensions", "Polly.Extensions.csproj"), dotNetPackSettings);

@@ -1,7 +1,8 @@
 using System;
 using Polly.Builder;
+using Polly.Retry;
 
-namespace Polly.Retry;
+namespace Polly;
 
 /// <summary>
 /// Retry extension methods for the <see cref="ResilienceStrategyBuilder"/>.
