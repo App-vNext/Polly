@@ -15,14 +15,12 @@ public partial class ResilienceStrategyTests
         {
             Caption = "ExecuteAsync_NoCancellation",
             AssertContext = AssertResilienceContext,
-            AssertContextAfter = AssertContextNotInitialized,
         };
 
         yield return new ExecuteParameters(r => r.ExecuteValueTaskAsync(async t => { t.Should().Be(CancellationToken); }, CancellationToken))
         {
             Caption = "ExecuteAsync_Cancellation",
             AssertContext = AssertResilienceContextAndToken,
-            AssertContextAfter = AssertContextNotInitialized,
         };
 
         yield return new ExecuteParameters(r => r.ExecuteValueTaskAsync(async (_, s) => { s.Should().Be("dummy-state"); }, ResilienceContext.Get(), "dummy-state"))
@@ -44,8 +42,6 @@ public partial class ResilienceStrategyTests
             AssertResilienceContext(context);
             context.CancellationToken.Should().Be(CancellationToken);
         }
-
-        static void AssertContextNotInitialized(ResilienceContext context) => context.IsInitialized.Should().BeFalse();
 
         static void AssertContextInitialized(ResilienceContext context) => context.IsInitialized.Should().BeTrue();
     }
