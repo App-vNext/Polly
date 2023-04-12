@@ -12,9 +12,9 @@ namespace Polly;
 /// </remarks>
 public sealed class ResilienceContext
 {
-    private static readonly ObjectPool<ResilienceContext> Pool = new(() => new ResilienceContext(), c => c.Reset());
+    private const bool ContinueOnCapturedContextDefault = false;
 
-    internal const bool ContinueOnCapturedContextDefault = false;
+    private static readonly ObjectPool<ResilienceContext> Pool = new(static () => new ResilienceContext(), static c => c.Reset());
 
     private ResilienceContext()
     {
