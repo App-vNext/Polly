@@ -1,7 +1,6 @@
 name: ossf-scorecard
 
 on:
-  branch_protection_rule:
   push:
     branches: [ main ]
   schedule:
