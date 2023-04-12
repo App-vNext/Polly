@@ -4,7 +4,7 @@ using System.Threading;
 
 namespace Polly.Utils;
 
-// copied from https://raw.githubusercontent.com/dotnet/aspnetcore/main/src/ObjectPool/src/DefaultObjectPool.cs
+// copied from https://raw.githubusercontent.com/dotnet/aspnetcore/53124ab8cbf152f59120982f1c74e802e7970845/src/ObjectPool/src/DefaultObjectPool.cs
 internal sealed class ObjectPool<T>
     where T : class
 {

@@ -12,44 +12,44 @@ LaunchCount=2  WarmupCount=10
 
 ## PIPELINES
 
-|             Method | Components |        Mean |     Error |    StdDev | Ratio | RatioSD |   Gen0 | Allocated | Alloc Ratio |
-|------------------- |----------- |------------:|----------:|----------:|------:|--------:|-------:|----------:|------------:|
-| ExecutePipeline_V7 |          1 |    71.29 ns |  1.309 ns |  1.959 ns |  1.00 |    0.00 | 0.0362 |     304 B |        1.00 |
-| ExecutePipeline_V8 |          1 |    92.93 ns |  1.398 ns |  2.049 ns |  1.30 |    0.05 | 0.0181 |     152 B |        0.50 |
-|                    |            |             |           |           |       |         |        |           |             |
-| ExecutePipeline_V7 |          2 |   164.39 ns |  5.294 ns |  7.592 ns |  1.00 |    0.00 | 0.0658 |     552 B |        1.00 |
-| ExecutePipeline_V8 |          2 |   126.74 ns |  1.198 ns |  1.755 ns |  0.77 |    0.04 | 0.0181 |     152 B |        0.28 |
-|                    |            |             |           |           |       |         |        |           |             |
-| ExecutePipeline_V7 |          5 |   540.07 ns | 16.941 ns | 24.832 ns |  1.00 |    0.00 | 0.1545 |    1296 B |        1.00 |
-| ExecutePipeline_V8 |          5 |   257.13 ns |  2.748 ns |  4.114 ns |  0.48 |    0.03 | 0.0181 |     152 B |        0.12 |
-|                    |            |             |           |           |       |         |        |           |             |
-| ExecutePipeline_V7 |         10 | 1,111.72 ns | 16.405 ns | 23.527 ns |  1.00 |    0.00 | 0.3014 |    2536 B |        1.00 |
-| ExecutePipeline_V8 |         10 |   467.93 ns |  6.546 ns |  9.388 ns |  0.42 |    0.01 | 0.0181 |     152 B |        0.06 |
+|             Method | Components |        Mean |     Error |     StdDev |      Median | Ratio | RatioSD |   Gen0 | Allocated | Alloc Ratio |
+|------------------- |----------- |------------:|----------:|-----------:|------------:|------:|--------:|-------:|----------:|------------:|
+| ExecutePipeline_V7 |          1 |    74.78 ns |  1.555 ns |   2.279 ns |    75.63 ns |  1.00 |    0.00 | 0.0362 |     304 B |        1.00 |
+| ExecutePipeline_V8 |          1 |    85.69 ns |  0.500 ns |   0.732 ns |    85.36 ns |  1.15 |    0.04 |      - |         - |        0.00 |
+|                    |            |             |           |            |             |       |         |        |           |             |
+| ExecutePipeline_V7 |          2 |   165.37 ns |  1.157 ns |   1.732 ns |   165.59 ns |  1.00 |    0.00 | 0.0658 |     552 B |        1.00 |
+| ExecutePipeline_V8 |          2 |   119.10 ns |  0.653 ns |   0.915 ns |   119.63 ns |  0.72 |    0.01 |      - |         - |        0.00 |
+|                    |            |             |           |            |             |       |         |        |           |             |
+| ExecutePipeline_V7 |          5 |   533.97 ns |  7.327 ns |  10.967 ns |   536.79 ns |  1.00 |    0.00 | 0.1545 |    1296 B |        1.00 |
+| ExecutePipeline_V8 |          5 |   227.69 ns |  1.236 ns |   1.812 ns |   227.72 ns |  0.43 |    0.01 |      - |         - |        0.00 |
+|                    |            |             |           |            |             |       |         |        |           |             |
+| ExecutePipeline_V7 |         10 | 1,191.41 ns | 35.512 ns |  53.152 ns | 1,192.79 ns |  1.00 |    0.00 | 0.3014 |    2536 B |        1.00 |
+| ExecutePipeline_V8 |         10 |   557.95 ns | 76.434 ns | 112.036 ns |   505.58 ns |  0.47 |    0.09 |      - |         - |        0.00 |
 
 ## TIMEOUT
 
-|            Method |     Mean |   Error |   StdDev | Ratio | RatioSD |   Gen0 | Allocated | Alloc Ratio |
-|------------------ |---------:|--------:|---------:|------:|--------:|-------:|----------:|------------:|
-| ExecuteTimeout_V7 | 287.1 ns | 9.20 ns | 12.59 ns |  1.00 |    0.00 | 0.0868 |     728 B |        1.00 |
-| ExecuteTimeout_V8 | 272.9 ns | 3.16 ns |  4.54 ns |  0.95 |    0.04 | 0.0439 |     368 B |        0.51 |
+|            Method |     Mean |   Error |  StdDev | Ratio | RatioSD |   Gen0 | Allocated | Alloc Ratio |
+|------------------ |---------:|--------:|--------:|------:|--------:|-------:|----------:|------------:|
+| ExecuteTimeout_V7 | 281.5 ns | 5.76 ns | 8.08 ns |  1.00 |    0.00 | 0.0868 |     728 B |        1.00 |
+| ExecuteTimeout_V8 | 268.9 ns | 3.86 ns | 5.53 ns |  0.96 |    0.04 | 0.0257 |     216 B |        0.30 |
 
 ## RETRY
 
 |          Method |     Mean |   Error |  StdDev | Ratio | RatioSD |   Gen0 | Allocated | Alloc Ratio |
 |---------------- |---------:|--------:|--------:|------:|--------:|-------:|----------:|------------:|
-| ExecuteRetry_V7 | 162.5 ns | 2.33 ns | 3.34 ns |  1.00 |    0.00 | 0.0687 |     576 B |        1.00 |
-| ExecuteRetry_V8 | 152.3 ns | 1.31 ns | 1.93 ns |  0.94 |    0.02 | 0.0181 |     152 B |        0.26 |
+| ExecuteRetry_V7 | 169.8 ns | 4.98 ns | 6.98 ns |  1.00 |    0.00 | 0.0687 |     576 B |        1.00 |
+| ExecuteRetry_V8 | 144.9 ns | 2.35 ns | 3.52 ns |  0.85 |    0.04 |      - |         - |        0.00 |
 
 ## RATE LIMITER
 
-|                Method |     Mean |   Error |  StdDev | Ratio | RatioSD |   Gen0 | Allocated | Alloc Ratio |
-|---------------------- |---------:|--------:|--------:|------:|--------:|-------:|----------:|------------:|
-| ExecuteRateLimiter_V7 | 173.8 ns | 2.33 ns | 3.48 ns |  1.00 |    0.00 | 0.0448 |     376 B |        1.00 |
-| ExecuteRateLimiter_V8 | 207.9 ns | 2.06 ns | 2.89 ns |  1.19 |    0.03 | 0.0229 |     192 B |        0.51 |
+|                Method |     Mean |    Error |   StdDev | Ratio | RatioSD |   Gen0 | Allocated | Alloc Ratio |
+|---------------------- |---------:|---------:|---------:|------:|--------:|-------:|----------:|------------:|
+| ExecuteRateLimiter_V7 | 190.8 ns | 10.01 ns | 14.98 ns |  1.00 |    0.00 | 0.0448 |     376 B |        1.00 |
+| ExecuteRateLimiter_V8 | 199.6 ns |  2.54 ns |  3.64 ns |  1.05 |    0.09 | 0.0048 |      40 B |        0.11 |
 
 ## STRATEGY PIPELINE (TIMEOUT + RETRY + TIMEOUT + RATE LIMITER)
 
-|                     Method |     Mean |     Error |    StdDev |   Median | Ratio | RatioSD |   Gen0 | Allocated | Alloc Ratio |
-|--------------------------- |---------:|----------:|----------:|---------:|------:|--------:|-------:|----------:|------------:|
-| ExecuteStrategyPipeline_V7 | 1.207 us | 0.0201 us | 0.0295 us | 1.202 us |  1.00 |    0.00 | 0.2861 |    2400 B |        1.00 |
-| ExecuteStrategyPipeline_V8 | 1.117 us | 0.0297 us | 0.0407 us | 1.118 us |  0.93 |    0.05 | 0.0935 |     792 B |        0.33 |
+|                     Method |     Mean |     Error |    StdDev | Ratio | RatioSD |   Gen0 | Allocated | Alloc Ratio |
+|--------------------------- |---------:|----------:|----------:|------:|--------:|-------:|----------:|------------:|
+| ExecuteStrategyPipeline_V7 | 1.321 us | 0.0355 us | 0.0520 us |  1.00 |    0.00 | 0.2861 |    2400 B |        1.00 |
+| ExecuteStrategyPipeline_V8 | 1.126 us | 0.0193 us | 0.0283 us |  0.85 |    0.03 | 0.0763 |     640 B |        0.27 |
