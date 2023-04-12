@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-
 namespace Polly.Core.Tests.Registry;
 
 public record StrategyId(Type Type, string BuilderName, string InstanceName = "")

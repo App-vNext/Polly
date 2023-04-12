@@ -1,7 +1,7 @@
 using Moq;
 using Polly.Utils;
 
-namespace Polly.Core.Tests.Utils;
+namespace Polly.Core.Tests.Helpers;
 
 internal class FakeTimeProvider : Mock<TimeProvider>
 {

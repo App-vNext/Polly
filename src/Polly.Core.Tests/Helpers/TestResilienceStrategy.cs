@@ -1,4 +1,4 @@
-namespace Polly.Core.Tests.Utils;
+namespace Polly.Core.Tests.Helpers;
 
 public class TestResilienceStrategy : ResilienceStrategy
 {

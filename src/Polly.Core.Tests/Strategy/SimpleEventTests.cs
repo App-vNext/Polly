@@ -1,6 +1,6 @@
 using Polly.Strategy;
 
-namespace Polly.Core.Tests.Timeout;
+namespace Polly.Core.Tests.Strategy;
 
 public class SimpleEventTests
 {
@@ -8,7 +8,7 @@ public class SimpleEventTests
     public async Task Add_EnsureOrdering()
     {
         var ev = new DummyEvent();
-        List<int> raisedEvents = new List<int>();
+        var raisedEvents = new List<int>();
 
         ev.Add(() => raisedEvents.Add(1));
         ev.Add(args => raisedEvents.Add(2));
@@ -41,7 +41,7 @@ public class SimpleEventTests
         var ev = new DummyEvent();
         var events = new List<int>();
 
-        for (int i = 0; i < count; i++)
+        for (var i = 0; i < count; i++)
         {
             ev.Add(() => events.Add(i));
         }

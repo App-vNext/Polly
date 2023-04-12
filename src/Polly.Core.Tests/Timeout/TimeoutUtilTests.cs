@@ -1,6 +1,4 @@
-using System;
 using Polly.Timeout;
-using Xunit;
 
 namespace Polly.Core.Tests.Timeout;
 public class TimeoutUtilTests

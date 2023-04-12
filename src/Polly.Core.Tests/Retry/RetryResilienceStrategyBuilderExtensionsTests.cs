@@ -1,7 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using Polly.Builder;
 using Polly.Retry;
-using Xunit;
 
 namespace Polly.Core.Tests.Retry;
 

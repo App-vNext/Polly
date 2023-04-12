@@ -16,6 +16,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Using Include="Polly.Core.Tests.Utils" />
+    <Using Include="Polly.Core.Tests.Helpers" />
   </ItemGroup>
 </Project>

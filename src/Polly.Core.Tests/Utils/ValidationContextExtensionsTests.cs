@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Polly.Core.Tests.Utils;
 
-public class ValidationContextExtensions
+public class ValidationContextExtensionsTests
 {
     [Fact]
     public void GetMemberName_Ok()
