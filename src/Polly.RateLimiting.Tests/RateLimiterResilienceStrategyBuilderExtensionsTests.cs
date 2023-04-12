@@ -56,7 +56,7 @@ public class RateLimiterResilienceStrategyBuilderExtensionsTests
     };
 
     [MemberData(nameof(Data))]
-    [Theory]
+    [Theory(Skip = "https://github.com/stryker-mutator/stryker-net/issues/2144")]
     public void AddRateLimiter_Extensions_Ok(Action<ResilienceStrategyBuilder> configure)
     {
         var builder = new ResilienceStrategyBuilder();
@@ -64,6 +64,19 @@ public class RateLimiterResilienceStrategyBuilderExtensionsTests
         configure(builder);
 
         builder.Build().Should().BeOfType<RateLimiterResilienceStrategy>();
+    }
+
+    [Fact]
+    public void AddRateLimiter_AllExtensions_Ok()
+    {
+        foreach (var configure in Data.Select(v => v[0]).Cast<Action<ResilienceStrategyBuilder>>())
+        {
+            var builder = new ResilienceStrategyBuilder();
+
+            configure(builder);
+
+            builder.Build().Should().BeOfType<RateLimiterResilienceStrategy>();
+        }
     }
 
     [Fact]

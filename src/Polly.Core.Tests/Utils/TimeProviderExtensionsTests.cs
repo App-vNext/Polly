@@ -54,6 +54,24 @@ public class TimeProviderExtensionsTests
         });
     }
 
+    [Fact]
+    public async Task DelayAsync_SystemSynchronousWhenCancelled_Ok()
+    {
+        using var cts = new CancellationTokenSource(5);
+        var delay = TimeSpan.FromMilliseconds(10);
+        var context = ResilienceContext.Get();
+        context.Initialize<VoidResult>(isSynchronous: true);
+        context.CancellationToken = cts.Token;
+
+        await TestUtils.AssertWithTimeoutAsync(async () =>
+        {
+            await TimeProvider.System
+                .Invoking(p => p.DelayAsync(delay, context))
+                .Should()
+                .ThrowAsync<OperationCanceledException>();
+        });
+    }
+
     [InlineData(false, false)]
     [InlineData(false, true)]
     [InlineData(true, false)]
