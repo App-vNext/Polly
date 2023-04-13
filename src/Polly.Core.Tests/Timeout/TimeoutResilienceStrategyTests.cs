@@ -63,7 +63,7 @@ public class TimeoutResilienceStrategyTests : IDisposable
             args.Exception.Should().BeAssignableTo<OperationCanceledException>();
             args.Timeout.Should().Be(_delay);
             args.Context.Should().NotBeNull();
-            args.Context.CancellationToken.IsCancellationRequested.Should().BeTrue();
+            args.Context.CancellationToken.IsCancellationRequested.Should().BeFalse();
             called = true;
         });
 
