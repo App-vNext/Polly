@@ -35,7 +35,7 @@ internal sealed class TimeoutResilienceStrategy : ResilienceStrategy
         }
 
         var previousToken = context.CancellationToken;
-        using var cancellationSource = new CancellationTokenSource();
+        var cancellationSource = CancellationTokenSourcePool.Get();
         _timeProvider.CancelAfter(cancellationSource, timeout);
         context.CancellationToken = cancellationSource.Token;
 
@@ -56,6 +56,8 @@ internal sealed class TimeoutResilienceStrategy : ResilienceStrategy
         }
         catch (OperationCanceledException e) when (cancellationSource.IsCancellationRequested && !previousToken.IsCancellationRequested)
         {
+            context.CancellationToken = previousToken;
+
             _telemetry.Report(TimeoutConstants.OnTimeoutEvent, context);
 
             if (OnTimeout != null)
@@ -73,10 +75,11 @@ internal sealed class TimeoutResilienceStrategy : ResilienceStrategy
         finally
         {
             context.CancellationToken = previousToken;
+            CancellationTokenSourcePool.Return(cancellationSource);
         }
     }
 
-    internal async Task<TimeSpan> GetTimeoutAsync(ResilienceContext context)
+    internal async ValueTask<TimeSpan> GetTimeoutAsync(ResilienceContext context)
     {
         if (TimeoutGenerator == null)
         {

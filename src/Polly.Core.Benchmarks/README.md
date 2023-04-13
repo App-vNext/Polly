@@ -28,10 +28,10 @@ LaunchCount=2  WarmupCount=10
 
 ## TIMEOUT
 
-|            Method |     Mean |   Error |  StdDev | Ratio | RatioSD |   Gen0 | Allocated | Alloc Ratio |
-|------------------ |---------:|--------:|--------:|------:|--------:|-------:|----------:|------------:|
-| ExecuteTimeout_V7 | 281.5 ns | 5.76 ns | 8.08 ns |  1.00 |    0.00 | 0.0868 |     728 B |        1.00 |
-| ExecuteTimeout_V8 | 268.9 ns | 3.86 ns | 5.53 ns |  0.96 |    0.04 | 0.0257 |     216 B |        0.30 |
+|            Method |     Mean |   Error |   StdDev | Ratio | RatioSD |   Gen0 | Allocated | Alloc Ratio |
+|------------------ |---------:|--------:|---------:|------:|--------:|-------:|----------:|------------:|
+| ExecuteTimeout_V7 | 304.9 ns | 7.53 ns | 11.27 ns |  1.00 |    0.00 | 0.0868 |     728 B |        1.00 |
+| ExecuteTimeout_V8 | 266.5 ns | 5.95 ns |  8.72 ns |  0.88 |    0.04 |      - |         - |        0.00 |
 
 ## RETRY
 
@@ -51,5 +51,5 @@ LaunchCount=2  WarmupCount=10
 
 |                     Method |     Mean |     Error |    StdDev | Ratio | RatioSD |   Gen0 | Allocated | Alloc Ratio |
 |--------------------------- |---------:|----------:|----------:|------:|--------:|-------:|----------:|------------:|
-| ExecuteStrategyPipeline_V7 | 1.321 us | 0.0355 us | 0.0520 us |  1.00 |    0.00 | 0.2861 |    2400 B |        1.00 |
-| ExecuteStrategyPipeline_V8 | 1.126 us | 0.0193 us | 0.0283 us |  0.85 |    0.03 | 0.0763 |     640 B |        0.27 |
+| ExecuteStrategyPipeline_V7 | 1.265 us | 0.0372 us | 0.0558 us |  1.00 |    0.00 | 0.2861 |    2400 B |        1.00 |
+| ExecuteStrategyPipeline_V8 | 1.032 us | 0.0165 us | 0.0236 us |  0.82 |    0.04 | 0.0076 |      64 B |        0.03 |

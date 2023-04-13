@@ -25,6 +25,7 @@ internal static class TimeProviderExtensions
 
         if (context.IsSynchronous && timeProvider == TimeProvider.System)
         {
+            // Stryker disable once boolean : no means to test this
             if (context.CancellationToken.CanBeCanceled)
             {
                 context.CancellationToken.WaitHandle.WaitOne(delay);

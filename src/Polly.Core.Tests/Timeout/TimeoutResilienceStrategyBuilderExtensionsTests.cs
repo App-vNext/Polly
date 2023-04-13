@@ -71,7 +71,7 @@ public class TimeoutResilienceStrategyBuilderExtensionsTests
             .Throw<ValidationException>().WithMessage("The timeout strategy options are invalid.*");
     }
 
-    private static TimeSpan GetTimeout(TimeoutResilienceStrategy strategy) => strategy.GetTimeoutAsync(ResilienceContext.Get()).GetAwaiter().GetResult();
+    private static TimeSpan GetTimeout(TimeoutResilienceStrategy strategy) => strategy.GetTimeoutAsync(ResilienceContext.Get()).Preserve().GetAwaiter().GetResult();
 
     private static void OnTimeout(TimeoutResilienceStrategy strategy)
     {
