@@ -95,27 +95,16 @@ public static class PollyServiceCollectionExtensions
 
     private static void AddResilienceStrategyBuilder(this IServiceCollection services)
     {
-        services
-            .AddOptions<ResilienceStrategyBuilderOptions>()
-            .PostConfigure<IServiceProvider>((options, serviceProvider) =>
-            {
-                if (options.TelemetryFactory == NullResilienceTelemetryFactory.Instance &&
-                    serviceProvider.GetService<ResilienceTelemetryFactory>() is ResilienceTelemetryFactory factory)
-                {
-                    options.TelemetryFactory = factory;
-                }
-
-                options.Properties.Set(PollyDependencyInjectionKeys.ServiceProvider, serviceProvider);
-            });
-
         services.TryAddTransient(serviceProvider =>
         {
-            var globalOptions = serviceProvider.GetRequiredService<IOptions<ResilienceStrategyBuilderOptions>>().Value;
-
-            return new ResilienceStrategyBuilder
+            var builder = new ResilienceStrategyBuilder();
+            if (serviceProvider.GetService<ResilienceTelemetryFactory>() is ResilienceTelemetryFactory factory)
             {
-                Options = new ResilienceStrategyBuilderOptions(globalOptions)
-            };
+                builder.TelemetryFactory = factory;
+            }
+
+            builder.Properties.Set(PollyDependencyInjectionKeys.ServiceProvider, serviceProvider);
+            return builder;
         });
     }
 

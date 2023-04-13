@@ -2,11 +2,23 @@ using System.ComponentModel.DataAnnotations;
 using Moq;
 using Polly.Builder;
 using Polly.Telemetry;
+using Polly.Utils;
 
 namespace Polly.Core.Tests.Builder;
 
 public class ResilienceStrategyBuilderTests
 {
+    [Fact]
+    public void Ctor_EnsureDefaults()
+    {
+        var builder = new ResilienceStrategyBuilder();
+
+        builder.BuilderName.Should().Be("");
+        builder.Properties.Should().NotBeNull();
+        builder.TimeProvider.Should().Be(TimeProvider.System);
+        builder.TelemetryFactory.Should().Be(NullResilienceTelemetryFactory.Instance);
+    }
+
     [Fact]
     public void AddStrategy_Single_Ok()
     {
@@ -144,25 +156,19 @@ public class ResilienceStrategyBuilderTests
     }
 
     [Fact]
-    public void Options_SetNull_Throws()
-    {
-        var builder = new ResilienceStrategyBuilder();
-
-        builder.Invoking(b => b.Options = null!).Should().Throw<ArgumentNullException>();
-    }
-
-    [Fact]
     public void Build_InvalidBuilderOptions_Throw()
     {
-        var builder = new ResilienceStrategyBuilder();
-        builder.Options.BuilderName = null!;
+        var builder = new ResilienceStrategyBuilder
+        {
+            BuilderName = null!
+        };
 
         builder.Invoking(b => b.Build())
             .Should()
             .Throw<ValidationException>()
             .WithMessage(
 """
-The 'ResilienceStrategyBuilderOptions' options are not valid.
+The 'ResilienceStrategyBuilder' configuration is invalid.
 
 Validation Errors:
 The BuilderName field is required.
@@ -246,11 +252,8 @@ The StrategyType field is required.
 
         var builder = new ResilienceStrategyBuilder
         {
-            Options = new ResilienceStrategyBuilderOptions
-            {
-                BuilderName = "builder-name",
-                TimeProvider = new FakeTimeProvider().Object
-            }
+            BuilderName = "builder-name",
+            TimeProvider = new FakeTimeProvider().Object
         };
 
         builder.AddStrategy(
@@ -259,10 +262,10 @@ The StrategyType field is required.
                 context.BuilderName.Should().Be("builder-name");
                 context.StrategyName.Should().Be("strategy-name");
                 context.StrategyType.Should().Be("strategy-type");
-                context.BuilderProperties.Should().BeSameAs(builder.Options.Properties);
+                context.BuilderProperties.Should().BeSameAs(builder.Properties);
                 context.Telemetry.Should().NotBeNull();
                 context.Telemetry.Should().Be(NullResilienceTelemetry.Instance);
-                context.TimeProvider.Should().Be(builder.Options.TimeProvider);
+                context.TimeProvider.Should().Be(builder.TimeProvider);
                 verified1 = true;
 
                 return new TestResilienceStrategy();
@@ -275,10 +278,10 @@ The StrategyType field is required.
                 context.BuilderName.Should().Be("builder-name");
                 context.StrategyName.Should().Be("strategy-name-2");
                 context.StrategyType.Should().Be("strategy-type-2");
-                context.BuilderProperties.Should().BeSameAs(builder.Options.Properties);
+                context.BuilderProperties.Should().BeSameAs(builder.Properties);
                 context.Telemetry.Should().NotBeNull();
                 context.Telemetry.Should().Be(NullResilienceTelemetry.Instance);
-                context.TimeProvider.Should().Be(builder.Options.TimeProvider);
+                context.TimeProvider.Should().Be(builder.TimeProvider);
                 verified2 = true;
 
                 return new TestResilienceStrategy();
@@ -300,11 +303,8 @@ The StrategyType field is required.
         var factory = new Mock<ResilienceTelemetryFactory>(MockBehavior.Strict);
         var builder = new ResilienceStrategyBuilder
         {
-            Options = new ResilienceStrategyBuilderOptions
-            {
-                BuilderName = "builder-name",
-                TelemetryFactory = factory.Object
-            },
+            BuilderName = "builder-name",
+            TelemetryFactory = factory.Object
         };
 
         factory
@@ -315,7 +315,7 @@ The StrategyType field is required.
                 context.BuilderName.Should().Be("builder-name");
                 context.StrategyName.Should().Be("strategy-name");
                 context.StrategyType.Should().Be("strategy-type");
-                context.BuilderProperties.Should().BeSameAs(builder.Options.Properties);
+                context.BuilderProperties.Should().BeSameAs(builder.Properties);
             });
 
         builder.AddStrategy(

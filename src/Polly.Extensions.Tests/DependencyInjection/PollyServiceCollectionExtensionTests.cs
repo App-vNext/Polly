@@ -70,29 +70,18 @@ public class PollyServiceCollectionExtensionTests
     }
 
     [Fact]
-    public void AddResilienceStrategy_EnsureResilienceStrategyBuilderOptionsApplied()
+    public void AddResilienceStrategy_EnsureResilienceStrategyBuilderResolvedCorrectly()
     {
         var telemetry = Mock.Of<ResilienceTelemetry>();
         var telemetryFactory = Mock.Of<ResilienceTelemetryFactory>(v => v.Create(It.IsAny<ResilienceTelemetryFactoryContext>()) == telemetry);
         var asserted = false;
         var key = new ResiliencePropertyKey<int>("A");
-        ResilienceStrategyBuilderOptions? globalOptions = null;
 
-        _services.Configure<ResilienceStrategyBuilderOptions>(options =>
-        {
-            options.BuilderName = "dummy";
-            options.TelemetryFactory = telemetryFactory;
-            options.Properties.Set(key, 123);
-            globalOptions = options;
-        });
+        _services.AddSingleton(telemetryFactory);
 
         AddResilienceStrategy(Key, context =>
         {
-            context.BuilderProperties.Should().NotBeSameAs(globalOptions!.Properties);
-            context.BuilderName.Should().Be("dummy");
             context.Telemetry.Should().Be(telemetry);
-            context.BuilderProperties.TryGetValue(key, out var val).Should().BeTrue();
-            val.Should().Be(123);
             asserted = true;
         });
 
@@ -166,7 +155,7 @@ public class PollyServiceCollectionExtensionTests
             Key,
             context =>
             {
-                context.Builder.Options.TelemetryFactory.Should().Be(factory.Object);
+                context.Builder.TelemetryFactory.Should().Be(factory.Object);
                 context.Builder.AddStrategy(context =>
                 {
                     context.Telemetry.Should().Be(telemetry.Object);
