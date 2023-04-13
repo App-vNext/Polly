@@ -99,7 +99,7 @@ public class ResilienceStrategyRegistryTests
         registry.TryAddBuilder(StrategyId.Create("A"), (key, builder) =>
         {
             builder.AddStrategy(new TestResilienceStrategy());
-            builder.Options.Properties.Set(StrategyId.ResilienceKey, key);
+            builder.Properties.Set(StrategyId.ResilienceKey, key);
             called++;
         });
 

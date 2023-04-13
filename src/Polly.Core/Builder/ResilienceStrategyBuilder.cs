@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using Polly.Telemetry;
 
 namespace Polly.Builder;
@@ -13,17 +14,34 @@ namespace Polly.Builder;
 public class ResilienceStrategyBuilder
 {
     private readonly List<Entry> _entries = new();
-    private ResilienceStrategyBuilderOptions _options = new();
     private bool _used;
 
     /// <summary>
-    /// Gets or sets the builder options.
+    /// Gets or sets the name of the builder.
     /// </summary>
-    public ResilienceStrategyBuilderOptions Options
-    {
-        get => _options;
-        set => _options = Guard.NotNull(value);
-    }
+    /// <remarks>This property is also included in the telemetry that is produced by the individual resilience strategies.</remarks>
+    [Required(AllowEmptyStrings = true)]
+    public string BuilderName { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Gets the custom properties attached to builder options.
+    /// </summary>
+    public ResilienceProperties Properties { get; } = new();
+
+    /// <summary>
+    /// Gets or sets an instance of <see cref="TelemetryFactory"/>.
+    /// </summary>
+    [Required]
+    public ResilienceTelemetryFactory TelemetryFactory { get; set; } = NullResilienceTelemetryFactory.Instance;
+
+    /// <summary>
+    /// Gets or sets a <see cref="TimeProvider"/> that is used by strategies that work with time.
+    /// </summary>
+    /// <remarks>
+    /// This property is internal until we switch to official System.TimeProvider.
+    /// </remarks>
+    [Required]
+    internal TimeProvider TimeProvider { get; set; } = TimeProvider.System;
 
     /// <summary>
     /// Adds an already created strategy instance to the builder.
@@ -69,7 +87,7 @@ public class ResilienceStrategyBuilder
     /// <returns>An instance of <see cref="ResilienceStrategy"/>.</returns>
     public ResilienceStrategy Build()
     {
-        ValidationHelper.ValidateObject(Options, $"The '{nameof(ResilienceStrategyBuilderOptions)}' options are not valid.");
+        ValidationHelper.ValidateObject(this, $"The '{nameof(ResilienceStrategyBuilder)}' configuration is invalid.");
 
         _used = true;
 
@@ -92,20 +110,20 @@ public class ResilienceStrategyBuilder
     {
         var telemetryContext = new ResilienceTelemetryFactoryContext
         {
-            BuilderName = Options.BuilderName,
-            BuilderProperties = Options.Properties,
+            BuilderName = BuilderName,
+            BuilderProperties = Properties,
             StrategyName = entry.Properties.StrategyName,
             StrategyType = entry.Properties.StrategyType
         };
 
         var context = new ResilienceStrategyBuilderContext
         {
-            BuilderName = Options.BuilderName,
-            BuilderProperties = Options.Properties,
+            BuilderName = BuilderName,
+            BuilderProperties = Properties,
             StrategyName = entry.Properties.StrategyName,
             StrategyType = entry.Properties.StrategyType,
-            Telemetry = Options.TelemetryFactory.Create(telemetryContext),
-            TimeProvider = Options.TimeProvider
+            Telemetry = TelemetryFactory.Create(telemetryContext),
+            TimeProvider = TimeProvider
         };
 
         return entry.Factory(context);
