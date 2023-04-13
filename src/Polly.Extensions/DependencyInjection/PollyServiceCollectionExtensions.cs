@@ -3,7 +3,6 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 using Polly.Builder;
 using Polly.Registry;
-using Polly.Telemetry;
 using Polly.Utils;
 
 namespace Polly.Extensions.DependencyInjection;
@@ -98,11 +97,6 @@ public static class PollyServiceCollectionExtensions
         services.TryAddTransient(serviceProvider =>
         {
             var builder = new ResilienceStrategyBuilder();
-            if (serviceProvider.GetService<ResilienceTelemetryFactory>() is ResilienceTelemetryFactory factory)
-            {
-                builder.TelemetryFactory = factory;
-            }
-
             builder.Properties.Set(PollyDependencyInjectionKeys.ServiceProvider, serviceProvider);
             return builder;
         });

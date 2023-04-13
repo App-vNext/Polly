@@ -1,10 +1,8 @@
 using System.Globalization;
 using Microsoft.Extensions.DependencyInjection;
-using Moq;
 using Polly.Builder;
 using Polly.Extensions.DependencyInjection;
 using Polly.Registry;
-using Polly.Telemetry;
 
 namespace Polly.Extensions.Tests.DependencyInjection;
 
@@ -72,16 +70,12 @@ public class PollyServiceCollectionExtensionTests
     [Fact]
     public void AddResilienceStrategy_EnsureResilienceStrategyBuilderResolvedCorrectly()
     {
-        var telemetry = Mock.Of<ResilienceTelemetry>();
-        var telemetryFactory = Mock.Of<ResilienceTelemetryFactory>(v => v.Create(It.IsAny<ResilienceTelemetryFactoryContext>()) == telemetry);
         var asserted = false;
         var key = new ResiliencePropertyKey<int>("A");
 
-        _services.AddSingleton(telemetryFactory);
-
         AddResilienceStrategy(Key, context =>
         {
-            context.Telemetry.Should().Be(telemetry);
+            context.BuilderProperties.TryGetValue(PollyDependencyInjectionKeys.ServiceProvider, out _).Should().BeTrue();
             asserted = true;
         });
 
@@ -139,35 +133,6 @@ public class PollyServiceCollectionExtensionTests
         var provider = CreateProvider();
 
         Enumerable.Range(0, 10).Select(i => i.ToString(CultureInfo.InvariantCulture)).Distinct().Should().HaveCount(10);
-    }
-
-    [Fact]
-    public void AddResilienceStrategy_CustomTelemetryFactory_EnsureUsed()
-    {
-        var telemetry = new Mock<ResilienceTelemetry>(MockBehavior.Strict);
-        var factory = new Mock<ResilienceTelemetryFactory>(MockBehavior.Strict);
-        factory.Setup(v => v.Create(It.IsAny<ResilienceTelemetryFactoryContext>())).Returns(telemetry.Object);
-
-        var asserted = false;
-
-        _services.AddSingleton(factory.Object);
-        _services.AddResilienceStrategy(
-            Key,
-            context =>
-            {
-                context.Builder.TelemetryFactory.Should().Be(factory.Object);
-                context.Builder.AddStrategy(context =>
-                {
-                    context.Telemetry.Should().Be(telemetry.Object);
-
-                    asserted = true;
-                    return new TestStrategy();
-                });
-            });
-
-        CreateProvider().Get(Key);
-
-        asserted.Should().BeTrue();
     }
 
     private void AddResilienceStrategy(string key, Action<ResilienceStrategyBuilderContext>? onBuilding = null)

@@ -1,6 +1,5 @@
 using System.ComponentModel.DataAnnotations;
 using Polly.Strategy;
-using Polly.Telemetry;
 
 namespace Polly.Builder;
 
@@ -28,12 +27,6 @@ public class ResilienceStrategyBuilder
     /// Gets the custom properties attached to builder options.
     /// </summary>
     public ResilienceProperties Properties { get; } = new();
-
-    /// <summary>
-    /// Gets or sets an instance of <see cref="TelemetryFactory"/>.
-    /// </summary>
-    [Required]
-    public ResilienceTelemetryFactory TelemetryFactory { get; set; } = NullResilienceTelemetryFactory.Instance;
 
     /// <summary>
     /// Gets or sets a <see cref="TimeProvider"/> that is used by strategies that work with time.
@@ -109,23 +102,12 @@ public class ResilienceStrategyBuilder
 
     private ResilienceStrategy CreateResilienceStrategy(Entry entry)
     {
-        var telemetryContext = new ResilienceTelemetryFactoryContext
-        {
-            BuilderName = BuilderName,
-            BuilderProperties = Properties,
-            StrategyName = entry.Properties.StrategyName,
-            StrategyType = entry.Properties.StrategyType
-        };
-
-        var context = new ResilienceStrategyBuilderContext
-        {
-            BuilderName = BuilderName,
-            BuilderProperties = Properties,
-            StrategyName = entry.Properties.StrategyName,
-            StrategyType = entry.Properties.StrategyType,
-            Telemetry = TelemetryFactory.Create(telemetryContext),
-            TimeProvider = TimeProvider
-        };
+        var context = new ResilienceStrategyBuilderContext(
+            builderName: BuilderName,
+            builderProperties: Properties,
+            strategyName: entry.Properties.StrategyName,
+            strategyType: entry.Properties.StrategyType,
+            timeProvider: TimeProvider);
 
         return entry.Factory(context);
     }

@@ -76,11 +76,13 @@ internal class RetryResilienceStrategy : ResilienceStrategy
                 }
             }
 
-            _telemetry.Report(RetryConstants.OnRetryEvent, outcome, context);
+            var args = new OnRetryArguments(context, attempt, delay);
+
+            _telemetry.Report(RetryConstants.OnRetryEvent, outcome, args);
 
             if (_onRetry != null)
             {
-                await _onRetry.Handle(outcome, new OnRetryArguments(context, attempt, delay)).ConfigureAwait(context.ContinueOnCapturedContext);
+                await _onRetry.Handle(outcome, args).ConfigureAwait(context.ContinueOnCapturedContext);
             }
 
             if (delay > TimeSpan.Zero)

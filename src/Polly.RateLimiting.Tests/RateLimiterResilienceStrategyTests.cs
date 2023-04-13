@@ -1,7 +1,9 @@
+using System.Diagnostics;
 using System.Threading.RateLimiting;
 using Moq;
 using Moq.Protected;
-using Polly.Telemetry;
+using Polly.Builder;
+using Polly.Strategy;
 
 namespace Polly.RateLimiting.Tests;
 
@@ -10,7 +12,7 @@ public class RateLimiterResilienceStrategyTests
     private readonly Mock<RateLimiter> _limiter = new(MockBehavior.Strict);
     private readonly Mock<RateLimitLease> _lease = new(MockBehavior.Strict);
     private readonly OnRateLimiterRejectedEvent _event = new();
-    private readonly Mock<ResilienceTelemetry> _telemetry = new(MockBehavior.Strict);
+    private readonly Mock<DiagnosticSource> _diagnosticSource = new();
 
     [Fact]
     public void Ctor_Ok()
@@ -45,6 +47,9 @@ public class RateLimiterResilienceStrategyTests
     [Theory]
     public void Execute_LeaseRejected(bool hasEvents, bool hasRetryAfter)
     {
+        _diagnosticSource.Setup(v => v.IsEnabled("OnRateLimiterRejected")).Returns(true);
+        _diagnosticSource.Setup(v => v.Write("OnRateLimiterRejected", It.Is<object>(obj => obj is IResilienceArguments)));
+
         object? metadata = hasRetryAfter ? TimeSpan.FromSeconds(123) : null;
 
         using var cts = new CancellationTokenSource();
@@ -54,7 +59,6 @@ public class RateLimiterResilienceStrategyTests
         _lease.Setup(v => v.IsAcquired).Returns(false);
         _lease.Protected().Setup("Dispose", exactParameterMatch: true, new object[] { true });
         _lease.Setup(v => v.TryGetMetadata("RETRY_AFTER", out metadata)).Returns(hasRetryAfter);
-        _telemetry.Setup(v => v.Report(RateLimiterConstants.OnRateLimiterRejectedEvent, It.IsAny<ResilienceContext>()));
 
         if (hasEvents)
         {
@@ -78,8 +82,9 @@ public class RateLimiterResilienceStrategyTests
 
         _limiter.VerifyAll();
         _lease.VerifyAll();
-        _telemetry.VerifyAll();
         eventCalled.Should().Be(hasEvents);
+
+        _diagnosticSource.VerifyAll();
     }
 
     private void SetupLimiter(CancellationToken token) => _limiter
@@ -87,6 +92,17 @@ public class RateLimiterResilienceStrategyTests
                 .Setup<ValueTask<RateLimitLease>>("AcquireAsyncCore", 1, token)
                 .Returns(new ValueTask<RateLimitLease>(_lease.Object));
 
-    private RateLimiterResilienceStrategy Create() => new(_limiter.Object, _event, _telemetry.Object);
+    private RateLimiterResilienceStrategy Create()
+    {
+        var builder = new ResilienceStrategyBuilder();
+        builder.Properties.Set(new ResiliencePropertyKey<DiagnosticSource>("DiagnosticSource"), _diagnosticSource.Object);
 
+        return (RateLimiterResilienceStrategy)builder
+            .AddRateLimiter(new RateLimiterStrategyOptions
+            {
+                RateLimiter = _limiter.Object,
+                OnRejected = _event
+            })
+            .Build();
+    }
 }
