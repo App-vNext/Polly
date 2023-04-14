@@ -177,6 +177,26 @@ public sealed partial class OutcomePredicate<TArgs>
         return this;
     }
 
+    public OutcomePredicate<TArgs> SetPredicates<TResult>(OutcomePredicate<TArgs, TResult> predicate)
+    {
+        Guard.NotNull(configure);
+
+        OutcomePredicate<TArgs, TResult>? predicate = null;
+
+        if (!_predicates.ContainsKey(typeof(TResult)))
+        {
+            predicate = new OutcomePredicate<TArgs, TResult>();
+            _predicates[typeof(TResult)] = (predicate, () => predicate.CreateHandler());
+        }
+        else
+        {
+            predicate = (OutcomePredicate<TArgs, TResult>)_predicates[typeof(TResult)].predicate;
+        }
+
+        configure(predicate);
+        return this;
+    }
+
     /// <summary>
     /// Creates a handler for the specified predicates.
     /// </summary>

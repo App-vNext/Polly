@@ -115,6 +115,34 @@ public static class RetryResilienceStrategyBuilderExtensions
     /// <param name="builder">The builder instance.</param>
     /// <param name="options">The retry strategy options.</param>
     /// <returns>The builder instance with the retry strategy added.</returns>
+    public static ResilienceStrategyBuilder AddRetry<TResult>(this ResilienceStrategyBuilder builder, RetryStrategyOptions<TResult> options)
+    {
+        Guard.NotNull(builder);
+        Guard.NotNull(options);
+
+        ValidationHelper.ValidateObject(options, "The retry strategy options are invalid.");
+
+        var retryOptions = new RetryStrategyOptions
+        {
+            BackoffType = options.BackoffType,
+            BaseDelay = options.BaseDelay,
+            RetryCount = options.RetryCount,
+            OnRetry = new OutcomeEvent<OnRetryArguments>().SetCallbacks(options.OnRetry),
+            RetryDelayGenerator = new OutcomeGenerator<RetryDelayArguments, TimeSpan>().SetGenerator(options.RetryDelayGenerator),
+            ShouldRetry = new OutcomePredicate<ShouldRetryArguments>().SetPredicates(options.ShouldRetry),
+            StrategyName = options.StrategyName,
+            StrategyType = options.StrategyType
+        };
+
+        return builder.AddRetry(retryOptions);
+    }
+
+    /// <summary>
+    /// Adds a retry strategy to the builder.
+    /// </summary>
+    /// <param name="builder">The builder instance.</param>
+    /// <param name="options">The retry strategy options.</param>
+    /// <returns>The builder instance with the retry strategy added.</returns>
     public static ResilienceStrategyBuilder AddRetry(this ResilienceStrategyBuilder builder, RetryStrategyOptions options)
     {
         Guard.NotNull(builder);

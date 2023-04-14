@@ -10,7 +10,7 @@ namespace Polly.Strategy;
 public sealed partial class OutcomeEvent<TArgs>
     where TArgs : IResilienceArguments
 {
-    private readonly Dictionary<Type, List<object>> _callbacks = new();
+    private readonly Dictionary<Type, (object callback, Func<object?> handlerFactory)> _callbacks = new();
 
     /// <summary>
     /// Gets a value indicating whether the event is empty.
@@ -27,11 +27,7 @@ public sealed partial class OutcomeEvent<TArgs>
     {
         Guard.NotNull(callback);
 
-        return Register<TResult>((_, _) =>
-        {
-            callback();
-            return default;
-        });
+        return ConfigureCallbacks<TResult>(c => c.Register(callback));
     }
 
     /// <summary>
@@ -44,11 +40,7 @@ public sealed partial class OutcomeEvent<TArgs>
     {
         Guard.NotNull(callback);
 
-        return Register<TResult>((outcome, _) =>
-        {
-            callback(outcome);
-            return default;
-        });
+        return ConfigureCallbacks<TResult>(c => c.Register(callback));
     }
 
     /// <summary>
@@ -61,11 +53,7 @@ public sealed partial class OutcomeEvent<TArgs>
     {
         Guard.NotNull(callback);
 
-        return Register<TResult>((outcome, args) =>
-        {
-            callback(outcome, args);
-            return default;
-        });
+        return ConfigureCallbacks<TResult>(c => c.Register(callback));
     }
 
     /// <summary>
@@ -78,18 +66,55 @@ public sealed partial class OutcomeEvent<TArgs>
     {
         Guard.NotNull(callback);
 
-        if (!_callbacks.TryGetValue(typeof(TResult), out var callbacks))
+        return ConfigureCallbacks<TResult>(c => c.Register(callback));
+    }
+
+    /// <summary>
+    /// Adds a result predicate for the specified result type.
+    /// </summary>
+    /// <typeparam name="TResult">The result type to add a predicate for.</typeparam>
+    /// <param name="configure">Callback that configures a result predicate.</param>
+    /// <returns>The current updated instance.</returns>
+    public OutcomeEvent<TArgs> ConfigureCallbacks<TResult>(Action<OutcomeEvent<TArgs, TResult>> configure)
+    {
+        Guard.NotNull(configure);
+
+        OutcomeEvent<TArgs, TResult>? outcomeEvent = null;
+
+        if (!_callbacks.ContainsKey(typeof(TResult)))
         {
-            callbacks = new List<object> { callback };
-            _callbacks.Add(typeof(TResult), callbacks);
+            outcomeEvent = new OutcomeEvent<TArgs, TResult>();
+            _callbacks[typeof(TResult)] = (outcomeEvent, () => outcomeEvent.CreateHandler());
         }
         else
         {
-            callbacks.Add(callback);
+            outcomeEvent = (OutcomeEvent<TArgs, TResult>)_callbacks[typeof(TResult)].callback;
         }
 
+        configure(outcomeEvent);
         return this;
     }
+
+    public OutcomeEvent<TArgs> SetCallbacks<TResult>(OutcomeEvent<TArgs, TResult> callbacks)
+    {
+        Guard.NotNull(configure);
+
+        OutcomeEvent<TArgs, TResult>? outcomeEvent = null;
+
+        if (!_callbacks.ContainsKey(typeof(TResult)))
+        {
+            outcomeEvent = new OutcomeEvent<TArgs, TResult>();
+            _callbacks[typeof(TResult)] = (outcomeEvent, () => outcomeEvent.CreateHandler());
+        }
+        else
+        {
+            outcomeEvent = (OutcomeEvent<TArgs, TResult>)_callbacks[typeof(TResult)].callback;
+        }
+
+        configure(outcomeEvent);
+        return this;
+    }
+
 
     /// <summary>
     /// Creates a handler that invokes the registered event callbacks.
@@ -97,13 +122,16 @@ public sealed partial class OutcomeEvent<TArgs>
     /// <returns>Handler instance or <c>null</c> if no callbacks are registered.</returns>
     public Handler? CreateHandler()
     {
-        var pairs = _callbacks.ToArray();
+        var pairs = _callbacks
+             .Select(pair => new KeyValuePair<Type, object?>(pair.Key, pair.Value.handlerFactory()))
+             .Where(pair => pair.Value != null)
+             .ToArray();
 
         return pairs.Length switch
         {
             0 => null,
-            1 => new TypeHandler(pairs[0].Key, pairs[0].Value),
-            _ => new TypesHandler(pairs)
+            1 => new TypeHandler(pairs[0].Key, pairs[0].Value!),
+            _ => new TypesHandler(pairs!)
         };
     }
 }

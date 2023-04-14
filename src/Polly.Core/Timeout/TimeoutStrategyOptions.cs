@@ -44,7 +44,7 @@ public class TimeoutStrategyOptions : ResilienceStrategyOptions
     /// </para>
     /// </remarks>
     [Required]
-    public TimeoutGenerator TimeoutGenerator { get; set; } = new();
+    public NoOutcomeGenerator<TimeoutGeneratorArguments, TimeSpan> TimeoutGenerator { get; set; } = new();
 
     /// <summary>
     /// Gets or sets the timeout event that notifies the timeout occurred.
