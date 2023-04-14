@@ -115,7 +115,7 @@ public sealed class OutcomePredicate<TArgs, TResult>
     /// </remarks>
     public OutcomePredicate<TArgs, TResult> HandleResult(TResult value, IEqualityComparer<TResult>? comparer = null)
     {
-        return HandleResult((result, _) => new ValueTask<bool>((comparer ?? EqualityComparer<TResult>.Default).Equals(result, value)));
+        return HandleResult((result, _) => new ValueTask<bool>((comparer ?? EqualityComparer<TResult>.Default).Equals(result!, value)));
     }
 
     /// <summary>
