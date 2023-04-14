@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Polly.Strategy;
 
 namespace Polly.Strategy;
@@ -28,7 +29,7 @@ public sealed class OutcomePredicate<TArgs, TResult>
     {
         return HandleOutcome((outcome, _) =>
         {
-            if (outcome.Exception is TException typedException)
+            if (outcome.Exception is TException)
             {
                 return new ValueTask<bool>(true);
             }
@@ -107,13 +108,14 @@ public sealed class OutcomePredicate<TArgs, TResult>
     /// Adds a result predicate for the specified result value.
     /// </summary>
     /// <param name="value">The result value to be retried.</param>
+    /// <param name="comparer">The comparer to use. If null the default comparer for the type will be used.</param>
     /// <returns>The current updated instance.</returns>
     /// <remarks>
     /// By default, the default equality comparer is used to compare the result value with the value specified in this method.
     /// </remarks>
-    public OutcomePredicate<TArgs, TResult> HandleResult(TResult value)
+    public OutcomePredicate<TArgs, TResult> HandleResult(TResult value, IEqualityComparer<TResult>? comparer = null)
     {
-        return HandleResult((result, _) => new ValueTask<bool>(EqualityComparer<TResult>.Default.Equals(result!, value)));
+        return HandleResult((result, _) => new ValueTask<bool>((comparer ?? EqualityComparer<TResult>.Default).Equals(result, value)));
     }
 
     /// <summary>

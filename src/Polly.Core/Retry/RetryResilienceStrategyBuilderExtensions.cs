@@ -43,6 +43,7 @@ public static class RetryResilienceStrategyBuilderExtensions
     {
         Guard.NotNull(builder);
         Guard.NotNull(shouldRetry);
+        Guard.NotNull(retryDelayGenerator);
 
         var options = new RetryStrategyOptions();
         shouldRetry(options.ShouldRetry);

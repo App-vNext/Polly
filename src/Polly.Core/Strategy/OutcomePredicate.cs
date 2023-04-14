@@ -76,13 +76,14 @@ public sealed partial class OutcomePredicate<TArgs>
     /// </summary>
     /// <typeparam name="TResult">The result type to add a predicate for.</typeparam>
     /// <param name="value">The result value to be retried.</param>
+    /// <param name="comparer">The comparer to use. If null the default comparer for the type will be used.</param>
     /// <returns>The current updated instance.</returns>
     /// <remarks>
     /// By default, the default equality comparer is used to compare the result value with the value specified in this method.
     /// </remarks>
-    public OutcomePredicate<TArgs> HandleResult<TResult>(TResult value)
+    public OutcomePredicate<TArgs> HandleResult<TResult>(TResult value, IEqualityComparer<TResult>? comparer = null)
     {
-        return ConfigurePredicates<TResult>(p => p.HandleResult(value));
+        return ConfigurePredicates<TResult>(p => p.HandleResult(value, comparer));
     }
 
     /// <summary>
@@ -184,7 +185,7 @@ public sealed partial class OutcomePredicate<TArgs>
     {
         var pairs = _predicates
             .Select(pair => new KeyValuePair<Type, object?>(pair.Key, pair.Value.handlerFactory()))
-            .Where(pair => pair.Value != null)
+            .Where(pair => pair.Value is not null)
             .ToArray();
 
         return pairs.Length switch
