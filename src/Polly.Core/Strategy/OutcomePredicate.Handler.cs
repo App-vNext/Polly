@@ -22,7 +22,7 @@ public partial class OutcomePredicate<TArgs>
         /// <param name="outcome">The operation outcome.</param>
         /// <param name="args">The arguments.</param>
         /// <returns>The result of the handle operation.</returns>
-        public abstract ValueTask<bool> ShouldHandle<TResult>(Outcome<TResult> outcome, TArgs args);
+        public abstract ValueTask<bool> ShouldHandleAsync<TResult>(Outcome<TResult> outcome, TArgs args);
     }
 
     private sealed class TypeHandler : Handler
@@ -36,7 +36,7 @@ public partial class OutcomePredicate<TArgs>
             _predicate = predicate;
         }
 
-        public override ValueTask<bool> ShouldHandle<TResult>(Outcome<TResult> outcome, TArgs args)
+        public override ValueTask<bool> ShouldHandleAsync<TResult>(Outcome<TResult> outcome, TArgs args)
         {
             // special case for exception-based callbacks
             if (!outcome.HasResult && _type == typeof(ExceptionOutcome))
@@ -67,16 +67,16 @@ public partial class OutcomePredicate<TArgs>
         public TypesHandler(IEnumerable<KeyValuePair<Type, object>> predicates)
             => _predicates = predicates.ToDictionary(v => v.Key, v => new TypeHandler(v.Key, v.Value));
 
-        public override async ValueTask<bool> ShouldHandle<TResult>(Outcome<TResult> outcome, TArgs args)
+        public override async ValueTask<bool> ShouldHandleAsync<TResult>(Outcome<TResult> outcome, TArgs args)
         {
-            if (_predicates.TryGetValue(typeof(TResult), out var handler) && await handler.ShouldHandle(outcome, args).ConfigureAwait(args.Context.ContinueOnCapturedContext))
+            if (_predicates.TryGetValue(typeof(TResult), out var handler) && await handler.ShouldHandleAsync(outcome, args).ConfigureAwait(args.Context.ContinueOnCapturedContext))
             {
                 return true;
             }
 
             if (!outcome.HasResult && _predicates.TryGetValue(typeof(ExceptionOutcome), out var exceptionHandler))
             {
-                return await exceptionHandler.ShouldHandle(outcome, args).ConfigureAwait(args.Context.ContinueOnCapturedContext);
+                return await exceptionHandler.ShouldHandleAsync(outcome, args).ConfigureAwait(args.Context.ContinueOnCapturedContext);
             }
 
             return false;

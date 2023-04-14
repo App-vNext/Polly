@@ -22,7 +22,7 @@ public partial class OutcomeEvent<TArgs>
         /// <param name="outcome">The operation outcome.</param>
         /// <param name="args">The arguments passed to the registered callbacks.</param>
         /// <returns>The <see cref="ValueTask"/>.</returns>
-        public abstract ValueTask Handle<TResult>(Outcome<TResult> outcome, TArgs args);
+        public abstract ValueTask HandleAsync<TResult>(Outcome<TResult> outcome, TArgs args);
     }
 
     private sealed class TypeHandler : Handler
@@ -36,7 +36,7 @@ public partial class OutcomeEvent<TArgs>
             _callbacks = callbacks.ToArray();
         }
 
-        public override ValueTask Handle<TResult>(Outcome<TResult> outcome, TArgs args)
+        public override ValueTask HandleAsync<TResult>(Outcome<TResult> outcome, TArgs args)
         {
             if (typeof(TResult) != _type)
             {
@@ -76,11 +76,11 @@ public partial class OutcomeEvent<TArgs>
         public TypesHandler(IEnumerable<KeyValuePair<Type, List<object>>> callbacks)
             => _handlers = callbacks.ToDictionary(v => v.Key, v => new TypeHandler(v.Key, v.Value));
 
-        public override ValueTask Handle<TResult>(Outcome<TResult> outcome, TArgs args)
+        public override ValueTask HandleAsync<TResult>(Outcome<TResult> outcome, TArgs args)
         {
             if (_handlers.TryGetValue(typeof(TResult), out var handler))
             {
-                return handler.Handle(outcome, args);
+                return handler.HandleAsync(outcome, args);
             }
 
             return default;

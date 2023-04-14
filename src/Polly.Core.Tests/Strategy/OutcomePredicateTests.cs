@@ -316,25 +316,25 @@ public class OutcomePredicateTests
     private static void InvokeHandler<TResult>(OutcomePredicate<TestArguments> sut, Exception exception, bool expectedResult)
     {
         var args = new TestArguments();
-        sut.CreateHandler()!.ShouldHandle(new Outcome<TResult>(exception), args).AsTask().Result.Should().Be(expectedResult);
+        sut.CreateHandler()!.ShouldHandleAsync(new Outcome<TResult>(exception), args).AsTask().Result.Should().Be(expectedResult);
     }
 
     private static void InvokeHandler(OutcomePredicate<TestArguments> sut, Exception exception, bool expectedResult)
     {
         var args = new TestArguments();
 
-        sut.CreateHandler()!.ShouldHandle(new Outcome<object>(exception), args).AsTask().Result.Should().Be(expectedResult);
+        sut.CreateHandler()!.ShouldHandleAsync(new Outcome<object>(exception), args).AsTask().Result.Should().Be(expectedResult);
 
         // again with void result
-        sut.CreateHandler()!.ShouldHandle(new Outcome<VoidResult>(exception), args).AsTask().Result.Should().Be(expectedResult);
+        sut.CreateHandler()!.ShouldHandleAsync(new Outcome<VoidResult>(exception), args).AsTask().Result.Should().Be(expectedResult);
 
         // again with result
         sut.HandleResult(12345);
-        sut.CreateHandler()!.ShouldHandle(new Outcome<int>(10), args).AsTask().Result.Should().Be(false);
+        sut.CreateHandler()!.ShouldHandleAsync(new Outcome<int>(10), args).AsTask().Result.Should().Be(false);
     }
 
     private static void InvokeResultHandler<T>(OutcomePredicate<TestArguments> sut, T result, bool expectedResult)
     {
-        sut.CreateHandler()!.ShouldHandle<T>(new Outcome<T>(result), new TestArguments()).AsTask().Result.Should().Be(expectedResult);
+        sut.CreateHandler()!.ShouldHandleAsync<T>(new Outcome<T>(result), new TestArguments()).AsTask().Result.Should().Be(expectedResult);
     }
 }

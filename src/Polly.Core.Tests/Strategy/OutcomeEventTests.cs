@@ -114,6 +114,6 @@ public class OutcomeEventTests
 
     private static void InvokeHandler<T>(OutcomeEvent<TestArguments> sut, Outcome<T> outcome)
     {
-        sut.CreateHandler()!.Handle(outcome, new TestArguments()).AsTask().Wait();
+        sut.CreateHandler()!.HandleAsync(outcome, new TestArguments()).AsTask().Wait();
     }
 }
