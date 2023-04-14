@@ -116,6 +116,16 @@ public class OutcomePredicateTests
         },
         sut =>
         {
+            sut.HandleResult("A", StringComparer.OrdinalIgnoreCase);
+            InvokeResultHandler(sut, "a", true);
+        },
+        sut =>
+        {
+            sut.HandleResult("A", StringComparer.OrdinalIgnoreCase);
+            InvokeResultHandler<string>(sut, null!, false);
+        },
+        sut =>
+        {
             sut.HandleResult(11);
             InvokeResultHandler(sut, 10, false);
         },
