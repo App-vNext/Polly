@@ -28,7 +28,7 @@ public sealed partial class OutcomeGenerator<TArgs, TValue>
         /// <param name="outcome">The operation outcome.</param>
         /// <param name="args">The arguments.</param>
         /// <returns>The result of the handle operation.</returns>
-        public abstract ValueTask<TValue> Generate<TResult>(Outcome<TResult> outcome, TArgs args);
+        public abstract ValueTask<TValue> GenerateAsync<TResult>(Outcome<TResult> outcome, TArgs args);
     }
 
     private sealed class TypeHandler : Handler
@@ -47,7 +47,7 @@ public sealed partial class OutcomeGenerator<TArgs, TValue>
             _generator = generator;
         }
 
-        public override async ValueTask<TValue> Generate<TResult>(Outcome<TResult> outcome, TArgs args)
+        public override async ValueTask<TValue> GenerateAsync<TResult>(Outcome<TResult> outcome, TArgs args)
         {
             TValue value = DefaultValue;
 
@@ -80,11 +80,11 @@ public sealed partial class OutcomeGenerator<TArgs, TValue>
             : base(defaultValue, isValid)
             => _generators = generators.ToDictionary(v => v.Key, v => new TypeHandler(v.Key, v.Value, defaultValue, isValid));
 
-        public override async ValueTask<TValue> Generate<TResult>(Outcome<TResult> outcome, TArgs args)
+        public override async ValueTask<TValue> GenerateAsync<TResult>(Outcome<TResult> outcome, TArgs args)
         {
             if (_generators.TryGetValue(typeof(TResult), out var handler))
             {
-                var value = await handler.Generate(outcome, args).ConfigureAwait(args.Context.ContinueOnCapturedContext);
+                var value = await handler.GenerateAsync(outcome, args).ConfigureAwait(args.Context.ContinueOnCapturedContext);
                 if (IsValid(value))
                 {
                     return value;
@@ -93,7 +93,7 @@ public sealed partial class OutcomeGenerator<TArgs, TValue>
 
             if (_generators.TryGetValue(typeof(AnyResult), out handler))
             {
-                return await handler.Generate(outcome, args).ConfigureAwait(args.Context.ContinueOnCapturedContext);
+                return await handler.GenerateAsync(outcome, args).ConfigureAwait(args.Context.ContinueOnCapturedContext);
             }
 
             return DefaultValue;

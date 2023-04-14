@@ -33,7 +33,7 @@ public class RetryResilienceStrategyBuilderExtensionsTests
             {
                 var args = new RetryDelayArguments(ResilienceContext.Get(), 8, TimeSpan.Zero);
 
-                strategy.DelayGenerator!.Generate(new Polly.Strategy.Outcome<bool>(new InvalidOperationException()), args).Result.Should().Be(TimeSpan.FromMilliseconds(8));
+                strategy.DelayGenerator!.GenerateAsync(new Polly.Strategy.Outcome<bool>(new InvalidOperationException()), args).Result.Should().Be(TimeSpan.FromMilliseconds(8));
             });
         },
     };

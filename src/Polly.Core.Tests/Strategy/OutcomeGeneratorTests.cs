@@ -155,7 +155,7 @@ public class OutcomeGeneratorTests
 
     private static void InvokeHandler<T>(OutcomeGenerator<TestArguments, GeneratedValue> sut, Outcome<T> outcome, GeneratedValue expectedResult)
     {
-        CreateHandler(sut)!.Generate(outcome, new TestArguments()).AsTask().Result.Should().Be(expectedResult);
+        CreateHandler(sut)!.GenerateAsync(outcome, new TestArguments()).AsTask().Result.Should().Be(expectedResult);
     }
 
     private static OutcomeGenerator<TestArguments, GeneratedValue>.Handler? CreateHandler(OutcomeGenerator<TestArguments, GeneratedValue> generator)
