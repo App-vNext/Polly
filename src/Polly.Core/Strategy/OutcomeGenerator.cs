@@ -7,8 +7,8 @@ namespace Polly.Strategy;
 /// The base class for all generators that generate a value based on the <see cref="Outcome{TResult}"/>.
 /// </summary>
 /// <typeparam name="TArgs">The arguments the generator uses.</typeparam>
-/// <typeparam name="TGeneratedValue">The type of generated value.</typeparam>
-public sealed partial class OutcomeGenerator<TArgs, TGeneratedValue>
+/// <typeparam name="TValue">The type of generated value.</typeparam>
+public sealed partial class OutcomeGenerator<TArgs, TValue>
     where TArgs : IResilienceArguments
 {
     private readonly Dictionary<Type, object> _generators = new();
@@ -24,11 +24,11 @@ public sealed partial class OutcomeGenerator<TArgs, TGeneratedValue>
     /// <typeparam name="TResult">The result type to add a generator for.</typeparam>
     /// <param name="generator">The generator to determine if the result should be retried.</param>
     /// <returns>The current updated instance.</returns>
-    public OutcomeGenerator<TArgs, TGeneratedValue> SetGenerator<TResult>(Func<Outcome<TResult>, TArgs, TGeneratedValue> generator)
+    public OutcomeGenerator<TArgs, TValue> SetGenerator<TResult>(Func<Outcome<TResult>, TArgs, TValue> generator)
     {
         Guard.NotNull(generator);
 
-        return SetGenerator<TResult>((outcome, args) => new ValueTask<TGeneratedValue>(generator(outcome, args)));
+        return SetGenerator<TResult>((outcome, args) => new ValueTask<TValue>(generator(outcome, args)));
     }
 
     /// <summary>
@@ -37,7 +37,7 @@ public sealed partial class OutcomeGenerator<TArgs, TGeneratedValue>
     /// <typeparam name="TResult">The result type to add a generator for.</typeparam>
     /// <param name="generator">The generator to determine if the result should be retried.</param>
     /// <returns>The current updated instance.</returns>
-    public OutcomeGenerator<TArgs, TGeneratedValue> SetGenerator<TResult>(Func<Outcome<TResult>, TArgs, ValueTask<TGeneratedValue>> generator)
+    public OutcomeGenerator<TArgs, TValue> SetGenerator<TResult>(Func<Outcome<TResult>, TArgs, ValueTask<TValue>> generator)
     {
         Guard.NotNull(generator);
 
@@ -51,11 +51,11 @@ public sealed partial class OutcomeGenerator<TArgs, TGeneratedValue>
     /// </summary>
     /// <param name="generator">The generator to determine if the result should be retried.</param>
     /// <returns>The current updated instance.</returns>
-    public OutcomeGenerator<TArgs, TGeneratedValue> SetGenerator(Func<Outcome, TArgs, TGeneratedValue> generator)
+    public OutcomeGenerator<TArgs, TValue> SetGenerator(Func<Outcome, TArgs, TValue> generator)
     {
         Guard.NotNull(generator);
 
-        return SetGenerator((outcome, args) => new ValueTask<TGeneratedValue>(generator(outcome, args)));
+        return SetGenerator((outcome, args) => new ValueTask<TValue>(generator(outcome, args)));
     }
 
     /// <summary>
@@ -63,7 +63,7 @@ public sealed partial class OutcomeGenerator<TArgs, TGeneratedValue>
     /// </summary>
     /// <param name="generator">The generator to determine if the result should be retried.</param>
     /// <returns>The current updated instance.</returns>
-    public OutcomeGenerator<TArgs, TGeneratedValue> SetGenerator(Func<Outcome, TArgs, ValueTask<TGeneratedValue>> generator)
+    public OutcomeGenerator<TArgs, TValue> SetGenerator(Func<Outcome, TArgs, ValueTask<TValue>> generator)
     {
         Guard.NotNull(generator);
 
@@ -78,7 +78,7 @@ public sealed partial class OutcomeGenerator<TArgs, TGeneratedValue>
     /// <param name="defaultValue">The default value returned by the generator.</param>
     /// <param name="valueValidator">The validator that determines if the generated value is valid.</param>
     /// <returns>Handler instance or null if no generators are registered.</returns>
-    public Handler? CreateHandler(TGeneratedValue defaultValue, Predicate<TGeneratedValue> valueValidator)
+    public Handler? CreateHandler(TValue defaultValue, Predicate<TValue> valueValidator)
     {
         var pairs = _generators.ToArray();
 
