@@ -7,33 +7,43 @@ namespace Polly.Builder;
 /// </summary>
 public class ResilienceStrategyBuilderContext
 {
+    internal ResilienceStrategyBuilderContext(string builderName, ResilienceProperties builderProperties, string strategyName, string strategyType, TimeProvider timeProvider)
+    {
+        BuilderName = builderName;
+        BuilderProperties = builderProperties;
+        StrategyName = strategyName;
+        StrategyType = strategyType;
+        TimeProvider = timeProvider;
+        Telemetry = TelemetryUtil.CreateTelemetry(builderName, builderProperties, strategyName, strategyType);
+    }
+
     /// <summary>
     /// Gets the name of the builder.
     /// </summary>
-    public string BuilderName { get; internal set; } = string.Empty;
+    public string BuilderName { get; }
 
     /// <summary>
     /// Gets the custom properties attached to the builder.
     /// </summary>
-    public ResilienceProperties BuilderProperties { get; internal set; } = new();
+    public ResilienceProperties BuilderProperties { get; }
 
     /// <summary>
     /// Gets the name of the strategy.
     /// </summary>
-    public string StrategyName { get; internal set; } = string.Empty;
+    public string StrategyName { get; }
 
     /// <summary>
     /// Gets the type of the strategy.
     /// </summary>
-    public string StrategyType { get; internal set; } = string.Empty;
+    public string StrategyType { get; }
 
     /// <summary>
     /// Gets the resilience telemetry used to report important events.
     /// </summary>
-    public ResilienceTelemetry Telemetry { get; internal set; } = NullResilienceTelemetry.Instance;
+    public ResilienceTelemetry Telemetry { get; }
 
     /// <summary>
-    /// Gets or sets the <see cref="TimeProvider"/> used by this strategy.
+    /// Gets the <see cref="TimeProvider"/> used by this strategy.
     /// </summary>
-    internal TimeProvider TimeProvider { get; set; } = TimeProvider.System;
+    internal TimeProvider TimeProvider { get; }
 }

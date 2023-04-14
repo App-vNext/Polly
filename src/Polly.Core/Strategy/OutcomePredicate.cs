@@ -115,7 +115,7 @@ public abstract partial class OutcomePredicate<TArgs, TSelf>
     /// </remarks>
     public TSelf Result<TResult>(TResult value)
     {
-        return Result<TResult>((result, _) => new ValueTask<bool>(EqualityComparer<TResult>.Default.Equals(result, value)));
+        return Result<TResult>((result, _) => new ValueTask<bool>(EqualityComparer<TResult>.Default.Equals(result!, value)));
     }
 
     /// <summary>
@@ -124,7 +124,7 @@ public abstract partial class OutcomePredicate<TArgs, TSelf>
     /// <typeparam name="TResult">The result type to add a predicate for.</typeparam>
     /// <param name="predicate">The predicate to determine if the result should be retried.</param>
     /// <returns>The current updated instance.</returns>
-    public TSelf Result<TResult>(Func<TResult, bool> predicate)
+    public TSelf Result<TResult>(Func<TResult?, bool> predicate)
     {
         Guard.NotNull(predicate);
 
@@ -137,7 +137,7 @@ public abstract partial class OutcomePredicate<TArgs, TSelf>
     /// <typeparam name="TResult">The result type to add a predicate for.</typeparam>
     /// <param name="predicate">The predicate to determine if the result should be retried.</param>
     /// <returns>The current updated instance.</returns>
-    public TSelf Result<TResult>(Func<TResult, TArgs, bool> predicate)
+    public TSelf Result<TResult>(Func<TResult?, TArgs, bool> predicate)
     {
         Guard.NotNull(predicate);
 
@@ -153,7 +153,7 @@ public abstract partial class OutcomePredicate<TArgs, TSelf>
     /// <typeparam name="TResult">The result type to add a predicate for.</typeparam>
     /// <param name="predicate">The predicate to determine if the result should be retried.</param>
     /// <returns>The current updated instance.</returns>
-    public TSelf Result<TResult>(Func<TResult, TArgs, ValueTask<bool>> predicate)
+    public TSelf Result<TResult>(Func<TResult?, TArgs, ValueTask<bool>> predicate)
     {
         Guard.NotNull(predicate);
 

@@ -1,3 +1,5 @@
+using Polly.Telemetry;
+
 namespace Polly.Core.Tests.Helpers;
 
 #pragma warning disable CA1031 // Do not catch general exception types
@@ -31,4 +33,7 @@ public static class TestUtils
             }
         }
     }
+
+    public static ResilienceTelemetry CreateResilienceTelemetry(DiagnosticSource source)
+        => new(new ResilienceTelemetrySource("dummy-builder", new ResilienceProperties(), "strategy-name", "strategy-type"), source);
 }

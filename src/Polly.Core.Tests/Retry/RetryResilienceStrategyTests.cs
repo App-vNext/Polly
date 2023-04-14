@@ -8,7 +8,10 @@ public class RetryResilienceStrategyTests
 {
     private readonly RetryStrategyOptions _options = new();
     private readonly FakeTimeProvider _timeProvider = new();
-    private readonly Mock<ResilienceTelemetry> _telemetry = new();
+    private readonly ResilienceTelemetry _telemetry;
+    private readonly Mock<DiagnosticSource> _diagnosticSource = new();
+
+    public RetryResilienceStrategyTests() => _telemetry = TestUtils.CreateResilienceTelemetry(_diagnosticSource.Object);
 
     [Fact]
     public void ShouldRetryEmpty_Skipped()
@@ -133,6 +136,26 @@ public class RetryResilienceStrategyTests
     }
 
     [Fact]
+    public void OnRetry_EnsureTelemetry()
+    {
+        var attempts = new List<int>();
+        var delays = new List<TimeSpan>();
+
+        _diagnosticSource.Setup(v => v.IsEnabled("OnRetry")).Returns(true);
+
+        _options.ShouldRetry.Result<int>(0);
+        _options.RetryCount = 3;
+        _options.BackoffType = RetryBackoffType.Linear;
+        _timeProvider.SetupAnyDelay();
+
+        var sut = CreateSut();
+
+        sut.Execute(_ => 0, default);
+
+        _diagnosticSource.VerifyAll();
+    }
+
+    [Fact]
     public void RetryDelayGenerator_EnsureCorrectArguments()
     {
         var attempts = new List<int>();
@@ -171,6 +194,6 @@ public class RetryResilienceStrategyTests
 
     private RetryResilienceStrategy CreateSut()
     {
-        return new RetryResilienceStrategy(_options, _timeProvider.Object, _telemetry.Object);
+        return new RetryResilienceStrategy(_options, _timeProvider.Object, _telemetry);
     }
 }

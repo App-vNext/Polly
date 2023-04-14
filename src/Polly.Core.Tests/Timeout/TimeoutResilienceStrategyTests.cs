@@ -1,4 +1,5 @@
 using Moq;
+using Polly.Core.Tests.Helpers;
 using Polly.Telemetry;
 using Polly.Timeout;
 
@@ -6,24 +7,19 @@ namespace Polly.Core.Tests.Timeout;
 
 public class TimeoutResilienceStrategyTests : IDisposable
 {
-    private readonly Mock<ResilienceTelemetry> _telemetry;
+    private readonly ResilienceTelemetry _telemetry;
     private readonly FakeTimeProvider _timeProvider;
     private readonly TimeoutStrategyOptions _options;
     private readonly CancellationTokenSource _cancellationSource;
     private readonly TimeSpan _delay = TimeSpan.FromSeconds(12);
-    private bool _telemetryCalled;
+    private readonly Mock<DiagnosticSource> _diagnosticSource = new();
 
     public TimeoutResilienceStrategyTests()
     {
-        _telemetry = new Mock<ResilienceTelemetry>(MockBehavior.Strict);
+        _telemetry = TestUtils.CreateResilienceTelemetry(_diagnosticSource.Object);
         _timeProvider = new FakeTimeProvider();
         _options = new TimeoutStrategyOptions();
         _cancellationSource = new CancellationTokenSource();
-
-        _telemetry.Setup(v => v.Report(TimeoutConstants.OnTimeoutEvent, It.IsAny<ResilienceContext>())).Callback<string, ResilienceContext>((_, _) =>
-        {
-            _telemetryCalled = true;
-        });
     }
 
     public static TheoryData<TimeSpan> Execute_NoTimeout_Data() => new()
@@ -56,6 +52,8 @@ public class TimeoutResilienceStrategyTests : IDisposable
     [Fact]
     public async Task Execute_EnsureOnTimeoutCalled()
     {
+        _diagnosticSource.Setup(v => v.IsEnabled("OnTimeout")).Returns(true);
+
         var called = false;
         _options.TimeoutGenerator.SetTimeout(args => _delay);
         _options.OnTimeout.Add(args =>
@@ -73,6 +71,7 @@ public class TimeoutResilienceStrategyTests : IDisposable
         await sut.Invoking(s => sut.ExecuteAsync(token => Task.Delay(_delay, token))).Should().ThrowAsync<TimeoutRejectedException>();
 
         called.Should().BeTrue();
+        _diagnosticSource.VerifyAll();
     }
 
     [MemberData(nameof(Execute_NoTimeout_Data))]
@@ -128,8 +127,9 @@ public class TimeoutResilienceStrategyTests : IDisposable
                  .ThrowAsync<OperationCanceledException>();
 
         _timeProvider.VerifyAll();
-        _telemetryCalled.Should().BeFalse();
         onTimeoutCalled.Should().BeFalse();
+
+        _diagnosticSource.Verify(v => v.IsEnabled("OnTimeout"), Times.Never());
     }
 
     [Fact]
@@ -193,7 +193,7 @@ public class TimeoutResilienceStrategyTests : IDisposable
         mockSynchronizationContext.Verify(x => x.Post(It.IsAny<SendOrPostCallback>(), It.IsAny<object>()), Times.Never());
     }
 
-    private TimeoutResilienceStrategy CreateSut() => new(_options, _timeProvider.Object, _telemetry.Object);
+    private TimeoutResilienceStrategy CreateSut() => new(_options, _timeProvider.Object, _telemetry);
 
     private static Task Delay(CancellationToken token, Action? onWaiting = null)
     {

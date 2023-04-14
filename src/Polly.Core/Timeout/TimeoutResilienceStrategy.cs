@@ -58,11 +58,12 @@ internal sealed class TimeoutResilienceStrategy : ResilienceStrategy
         {
             context.CancellationToken = previousToken;
 
-            _telemetry.Report(TimeoutConstants.OnTimeoutEvent, context);
+            var args = new OnTimeoutArguments(context, e, timeout);
+            _telemetry.Report(TimeoutConstants.OnTimeoutEvent, args);
 
             if (OnTimeout != null)
             {
-                await OnTimeout(new OnTimeoutArguments(context, e, timeout)).ConfigureAwait(context.ContinueOnCapturedContext);
+                await OnTimeout(args).ConfigureAwait(context.ContinueOnCapturedContext);
             }
 
             await DisposeRegistration(registration).ConfigureAwait(context.ContinueOnCapturedContext);
