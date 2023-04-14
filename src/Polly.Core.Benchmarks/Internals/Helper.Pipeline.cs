@@ -17,7 +17,7 @@ internal static partial class Helper
             builder
                 .AddTimeout(TimeSpan.FromSeconds(1))
                 .AddRetry(
-                    predicate => predicate.HandleException<InvalidOperationException>().Result(10),
+                    predicate => predicate.HandleException<InvalidOperationException>().HandleResult(10),
                     RetryBackoffType.Constant,
                     3,
                     TimeSpan.FromSeconds(1))

@@ -11,7 +11,7 @@ public class RateLimiterResilienceStrategyTests
 {
     private readonly Mock<RateLimiter> _limiter = new(MockBehavior.Strict);
     private readonly Mock<RateLimitLease> _lease = new(MockBehavior.Strict);
-    private readonly OnRateLimiterRejectedEvent _event = new();
+    private readonly NoOutcomeEvent<OnRateLimiterRejectedArguments> _event = new();
     private readonly Mock<DiagnosticSource> _diagnosticSource = new();
 
     [Fact]
@@ -62,7 +62,7 @@ public class RateLimiterResilienceStrategyTests
 
         if (hasEvents)
         {
-            _event.Add(args =>
+            _event.Register(args =>
             {
                 args.Context.Should().NotBeNull();
                 args.Lease.Should().Be(_lease.Object);
