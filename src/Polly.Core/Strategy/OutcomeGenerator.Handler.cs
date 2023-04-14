@@ -3,10 +3,8 @@ using System.Collections.Generic;
 namespace Polly.Strategy;
 
 #pragma warning disable CA1034 // Nested types should not be visible
-#pragma warning disable CA1005 // Avoid excessive parameters on generic types
-#pragma warning disable S2436 // Types and methods should not have too many generic parameters
 
-public abstract partial class OutcomeGenerator<TGeneratedValue, TArgs, TSelf>
+public sealed partial class OutcomeGenerator<TArgs, TGeneratedValue>
 {
     /// <summary>
     /// The resulting handler for the outcome.
@@ -51,16 +49,20 @@ public abstract partial class OutcomeGenerator<TGeneratedValue, TArgs, TSelf>
 
         public override async ValueTask<TGeneratedValue> Generate<TResult>(Outcome<TResult> outcome, TArgs args)
         {
-            if (typeof(TResult) == _type)
+            TGeneratedValue value = DefaultValue;
+
+            if (_type == typeof(AnyResult))
             {
-                var value = await ((Func<Outcome<TResult>, TArgs, ValueTask<TGeneratedValue>>)_generator)(outcome, args).ConfigureAwait(args.Context.ContinueOnCapturedContext);
+                value = await ((Func<Outcome, TArgs, ValueTask<TGeneratedValue>>)_generator)(outcome.AsOutcome(), args).ConfigureAwait(args.Context.ContinueOnCapturedContext);
+            }
+            else if (typeof(TResult) == _type)
+            {
+                value = await ((Func<Outcome<TResult>, TArgs, ValueTask<TGeneratedValue>>)_generator)(outcome, args).ConfigureAwait(args.Context.ContinueOnCapturedContext);
+            }
 
-                if (IsValid(value))
-                {
-                    return value;
-                }
-
-                return DefaultValue;
+            if (IsValid(value))
+            {
+                return value;
             }
 
             return DefaultValue;
@@ -78,14 +80,23 @@ public abstract partial class OutcomeGenerator<TGeneratedValue, TArgs, TSelf>
             : base(defaultValue, isValid)
             => _generators = generators.ToDictionary(v => v.Key, v => new TypeHandler(v.Key, v.Value, defaultValue, isValid));
 
-        public override ValueTask<TGeneratedValue> Generate<TResult>(Outcome<TResult> outcome, TArgs args)
+        public override async ValueTask<TGeneratedValue> Generate<TResult>(Outcome<TResult> outcome, TArgs args)
         {
             if (_generators.TryGetValue(typeof(TResult), out var handler))
             {
-                return handler.Generate(outcome, args);
+                var value = await handler.Generate(outcome, args).ConfigureAwait(args.Context.ContinueOnCapturedContext);
+                if (IsValid(value))
+                {
+                    return value;
+                }
             }
 
-            return new ValueTask<TGeneratedValue>(DefaultValue);
+            if (_generators.TryGetValue(typeof(AnyResult), out handler))
+            {
+                return await handler.Generate(outcome, args).ConfigureAwait(args.Context.ContinueOnCapturedContext);
+            }
+
+            return DefaultValue;
         }
     }
 }

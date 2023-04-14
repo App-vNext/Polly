@@ -4,7 +4,7 @@ namespace Polly.Strategy;
 
 #pragma warning disable CA1034 // Nested types should not be visible
 
-public abstract partial class OutcomePredicate<TArgs, TSelf>
+public partial class OutcomePredicate<TArgs>
 {
     /// <summary>
     /// The resulting predicate handler.
@@ -28,12 +28,12 @@ public abstract partial class OutcomePredicate<TArgs, TSelf>
     private sealed class TypeHandler : Handler
     {
         private readonly Type _type;
-        private readonly object[] _predicates;
+        private readonly object _predicate;
 
-        public TypeHandler(Type type, List<object> predicates)
+        public TypeHandler(Type type, object predicate)
         {
             _type = type;
-            _predicates = predicates.ToArray();
+            _predicate = predicate;
         }
 
         public override ValueTask<bool> ShouldHandle<TResult>(Outcome<TResult> outcome, TArgs args)
@@ -54,29 +54,9 @@ public abstract partial class OutcomePredicate<TArgs, TSelf>
 
         private ValueTask<bool> ShouldHandlerCoreAsync<TResult>(Outcome<TResult> outcome, TArgs args)
         {
-            if (_predicates.Length == 1)
-            {
-                var predicate = (Func<Outcome<TResult>, TArgs, ValueTask<bool>>)_predicates[0];
+            var predicate = (Func<Outcome<TResult>, TArgs, ValueTask<bool>>)_predicate;
 
-                return predicate(outcome, args);
-            }
-
-            return ExecutePredicatesAsync(outcome, args);
-        }
-
-        private async ValueTask<bool> ExecutePredicatesAsync<TResult>(Outcome<TResult> outcome, TArgs args)
-        {
-            foreach (var obj in _predicates)
-            {
-                var predicate = (Func<Outcome<TResult>, TArgs, ValueTask<bool>>)obj;
-
-                if (await predicate(outcome, args).ConfigureAwait(args.Context.ContinueOnCapturedContext))
-                {
-                    return true;
-                }
-            }
-
-            return false;
+            return predicate(outcome, args);
         }
     }
 
@@ -84,7 +64,7 @@ public abstract partial class OutcomePredicate<TArgs, TSelf>
     {
         private readonly Dictionary<Type, TypeHandler> _predicates;
 
-        public TypesHandler(IEnumerable<KeyValuePair<Type, List<object>>> predicates)
+        public TypesHandler(IEnumerable<KeyValuePair<Type, object>> predicates)
             => _predicates = predicates.ToDictionary(v => v.Key, v => new TypeHandler(v.Key, v.Value));
 
         public override async ValueTask<bool> ShouldHandle<TResult>(Outcome<TResult> outcome, TArgs args)

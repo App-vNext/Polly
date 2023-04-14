@@ -1,6 +1,7 @@
 using System.Threading.RateLimiting;
 using Polly.Builder;
 using Polly.RateLimiting;
+using Polly.Strategy;
 using Polly.Utils;
 
 namespace Polly;
@@ -55,7 +56,7 @@ public static class RateLimiterResilienceStrategyBuilderExtensions
     /// </summary>
     /// <param name="builder">The builder instance.</param>
     /// <param name="options">The concurrency limiter options.</param>
-    /// <param name="onRejected">The callbacks that configures the <see cref="OnRateLimiterRejectedEvent"/>.</param>
+    /// <param name="onRejected">The callback that is raised when rate limiter is rejected.</param>
     /// <returns>The builder instance with the concurrency limiter strategy added.</returns>
     public static ResilienceStrategyBuilder AddConcurrencyLimiter(
         this ResilienceStrategyBuilder builder,
@@ -69,7 +70,7 @@ public static class RateLimiterResilienceStrategyBuilderExtensions
         return builder.AddRateLimiter(new RateLimiterStrategyOptions
         {
             RateLimiter = new ConcurrencyLimiter(options),
-            OnRejected = new OnRateLimiterRejectedEvent().Add(onRejected)
+            OnRejected = new NoOutcomeEvent<OnRateLimiterRejectedArguments>().Register(onRejected)
         });
     }
 
@@ -97,7 +98,7 @@ public static class RateLimiterResilienceStrategyBuilderExtensions
     /// </summary>
     /// <param name="builder">The builder instance.</param>
     /// <param name="limiter">The rate limiter to use.</param>
-    /// <param name="onRejected">The callbacks that configures the <see cref="OnRateLimiterRejectedEvent"/>.</param>
+    /// <param name="onRejected">The callback that is raised when rate limiter is rejected.</param>
     /// <returns>The builder instance with the rate limiter strategy added.</returns>
     public static ResilienceStrategyBuilder AddRateLimiter(
         this ResilienceStrategyBuilder builder,
@@ -111,7 +112,7 @@ public static class RateLimiterResilienceStrategyBuilderExtensions
         return builder.AddRateLimiter(new RateLimiterStrategyOptions
         {
             RateLimiter = limiter,
-            OnRejected = new OnRateLimiterRejectedEvent().Add(onRejected)
+            OnRejected = new NoOutcomeEvent<OnRateLimiterRejectedArguments>().Register(onRejected)
         });
     }
 

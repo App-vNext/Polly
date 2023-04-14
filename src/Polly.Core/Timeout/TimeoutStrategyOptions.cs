@@ -50,5 +50,5 @@ public class TimeoutStrategyOptions : ResilienceStrategyOptions
     /// Gets or sets the timeout event that notifies the timeout occurred.
     /// </summary>
     [Required]
-    public OnTimeoutEvent OnTimeout { get; set; } = new();
+    public NoOutcomeEvent<OnTimeoutArguments> OnTimeout { get; set; } = new();
 }

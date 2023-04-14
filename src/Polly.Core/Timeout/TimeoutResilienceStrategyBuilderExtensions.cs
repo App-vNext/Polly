@@ -1,5 +1,6 @@
 using System;
 using Polly.Builder;
+using Polly.Strategy;
 using Polly.Timeout;
 
 namespace Polly;
@@ -42,7 +43,7 @@ public static class TimeoutResilienceStrategyBuilderExtensions
         return builder.AddTimeout(new TimeoutStrategyOptions
         {
             Timeout = timeout,
-            OnTimeout = new OnTimeoutEvent().Add(onTimeout),
+            OnTimeout = new NoOutcomeEvent<OnTimeoutArguments>().Register(onTimeout),
         });
     }
 

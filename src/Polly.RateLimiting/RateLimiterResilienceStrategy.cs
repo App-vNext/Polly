@@ -1,4 +1,5 @@
 using System.Threading.RateLimiting;
+using Polly.Strategy;
 using Polly.Telemetry;
 
 namespace Polly.RateLimiting;
@@ -7,10 +8,10 @@ internal sealed class RateLimiterResilienceStrategy : ResilienceStrategy
 {
     private readonly ResilienceTelemetry _telemetry;
 
-    public RateLimiterResilienceStrategy(RateLimiter limiter, OnRateLimiterRejectedEvent @event, ResilienceTelemetry telemetry)
+    public RateLimiterResilienceStrategy(RateLimiter limiter, NoOutcomeEvent<OnRateLimiterRejectedArguments> @event, ResilienceTelemetry telemetry)
     {
         Limiter = limiter;
-        OnLeaseRejected = @event.CreateHandlerInternal();
+        OnLeaseRejected = @event.CreateHandler();
 
         _telemetry = telemetry;
     }

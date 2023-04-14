@@ -27,8 +27,8 @@ internal static partial class Helper
                     BaseDelay = delay
                 };
 
-                options.ShouldRetry.Outcome<int>((outcome, _) => outcome.Result == 10 || outcome.Exception is InvalidOperationException);
-                options.OnRetry.Add<int>(() => { });
+                options.ShouldRetry.HandleOutcome<int>((outcome, _) => outcome.Result == 10 || outcome.Exception is InvalidOperationException);
+                options.OnRetry.Register<int>(() => { });
 
                 builder.AddRetry(options);
             }),
