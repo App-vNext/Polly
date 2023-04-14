@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using Moq;
 using Polly.Builder;
+using Polly.Strategy;
 using Polly.Telemetry;
 using Polly.Utils;
 

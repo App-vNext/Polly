@@ -1,6 +1,6 @@
 using System;
 using System.ComponentModel.DataAnnotations;
-using Polly.Builder;
+using Polly.Strategy;
 
 namespace Polly.Timeout;
 

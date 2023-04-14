@@ -13,7 +13,7 @@ public abstract partial class ResilienceStrategy
     /// <param name="context">The context associated with the callback.</param>
     /// <param name="state">The state associated with the callback.</param>
     /// <returns>The instance of <see cref="Task"/> that represents the asynchronous execution.</returns>
-    public async Task ExecuteTaskAsync<TState>(
+    public async Task ExecuteAsync<TState>(
         Func<ResilienceContext, TState, Task> callback,
         ResilienceContext context,
         TState state)
@@ -39,7 +39,7 @@ public abstract partial class ResilienceStrategy
     /// <param name="callback">The user-provided callback.</param>
     /// <param name="cancellationToken">The <see cref="CancellationToken"/> associated with the callback.</param>
     /// <returns>The instance of <see cref="Task"/> that represents an asynchronous callback.</returns>
-    public async Task ExecuteTaskAsync(
+    public async Task ExecuteAsync(
         Func<CancellationToken, Task> callback,
         CancellationToken cancellationToken = default)
     {

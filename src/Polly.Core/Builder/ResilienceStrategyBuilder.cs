@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using Polly.Strategy;
 using Polly.Telemetry;
 
 namespace Polly.Builder;
