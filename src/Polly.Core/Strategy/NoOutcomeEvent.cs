@@ -7,10 +7,8 @@ namespace Polly.Strategy;
 /// <remarks>This class supports registering multiple event callbacks.
 /// The registered callbacks are executed one-by-one in the same order as they were registered.</remarks>
 /// <typeparam name="TArgs">The type of arguments the event uses.</typeparam>
-/// <typeparam name="TSelf">The class that implements <see cref="SimpleEvent{TArgs, TSelf}"/>.</typeparam>
-public abstract class SimpleEvent<TArgs, TSelf>
+public sealed class NoOutcomeEvent<TArgs>
     where TArgs : IResilienceArguments
-    where TSelf : SimpleEvent<TArgs, TSelf>
 {
     private readonly List<Func<TArgs, ValueTask>> _callbacks = new();
 
@@ -19,12 +17,12 @@ public abstract class SimpleEvent<TArgs, TSelf>
     /// </summary>
     /// <param name="callback">The specified callback.</param>
     /// <returns>This instance.</returns>
-    public TSelf Add(Func<TArgs, ValueTask> callback)
+    public NoOutcomeEvent<TArgs> Register(Func<TArgs, ValueTask> callback)
     {
         Guard.NotNull(callback);
 
         _callbacks.Add(callback);
-        return (TSelf)this;
+        return this;
     }
 
     /// <summary>
@@ -32,7 +30,7 @@ public abstract class SimpleEvent<TArgs, TSelf>
     /// </summary>
     /// <param name="callback">The specified callback.</param>
     /// <returns>This instance.</returns>
-    public TSelf Add(Action<TArgs> callback)
+    public NoOutcomeEvent<TArgs> Register(Action<TArgs> callback)
     {
         Guard.NotNull(callback);
 
@@ -42,7 +40,7 @@ public abstract class SimpleEvent<TArgs, TSelf>
             return default;
         });
 
-        return (TSelf)this;
+        return this;
     }
 
     /// <summary>
@@ -50,7 +48,7 @@ public abstract class SimpleEvent<TArgs, TSelf>
     /// </summary>
     /// <param name="callback">The specified callback.</param>
     /// <returns>This instance.</returns>
-    public TSelf Add(Action callback)
+    public NoOutcomeEvent<TArgs> Register(Action callback)
     {
         Guard.NotNull(callback);
 
@@ -60,14 +58,14 @@ public abstract class SimpleEvent<TArgs, TSelf>
             return default;
         });
 
-        return (TSelf)this;
+        return this;
     }
 
     /// <summary>
     /// Creates a callback handler for all registered event callbacks.
     /// </summary>
     /// <returns>A callback handler.</returns>
-    protected internal Func<TArgs, ValueTask>? CreateHandler()
+    public Func<TArgs, ValueTask>? CreateHandler()
     {
         return _callbacks.Count switch
         {

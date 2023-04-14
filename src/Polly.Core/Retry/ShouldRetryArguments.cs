@@ -5,7 +5,7 @@ namespace Polly.Retry;
 #pragma warning disable CA1815 // Override equals and operator equals on value types
 
 /// <summary>
-/// Represents the arguments used in <see cref="ShouldRetryPredicate"/> for determining whether a retry should be performed.
+/// Represents the arguments used by <see cref="RetryStrategyOptions.ShouldRetry"/> for determining whether a retry should be performed.
 /// </summary>
 public readonly struct ShouldRetryArguments : IResilienceArguments
 {

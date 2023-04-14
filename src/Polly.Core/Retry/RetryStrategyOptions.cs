@@ -48,13 +48,13 @@ public class RetryStrategyOptions : ResilienceStrategyOptions
     public TimeSpan BaseDelay { get; set; } = RetryConstants.DefaultBaseDelay;
 
     /// <summary>
-    /// Gets or sets the <see cref="ShouldRetryPredicate"/> instance used to determine if a retry should be performed.
+    /// Gets or sets an outcome predicate that is used to register the predicates to determine if a retry should be performed.
     /// </summary>
     /// <remarks>
     /// By default, the predicate is empty and no results or exceptions are retried.
     /// </remarks>
     [Required]
-    public ShouldRetryPredicate ShouldRetry { get; set; } = new();
+    public OutcomePredicate<ShouldRetryArguments> ShouldRetry { get; set; } = new();
 
     /// <summary>
     /// Gets or sets the <see cref="RetryDelayGenerator"/> instance that is used to generated the delay between retries.
@@ -63,14 +63,14 @@ public class RetryStrategyOptions : ResilienceStrategyOptions
     /// By default, the generator is empty and it does not affect the delay between retries.
     /// </remarks>
     [Required]
-    public RetryDelayGenerator RetryDelayGenerator { get; set; } = new();
+    public OutcomeGenerator<RetryDelayArguments, TimeSpan> RetryDelayGenerator { get; set; } = new();
 
     /// <summary>
-    /// Gets or sets the <see cref="OnRetryEvent"/> instance that is invoked when retry happens.
+    /// Gets or sets an outcome event that is used to register on-retry callbacks.
     /// </summary>
     /// <remarks>
     /// By default, the event is empty and no callbacks are registered.
     /// </remarks>
     [Required]
-    public OnRetryEvent OnRetry { get; set; } = new();
+    public OutcomeEvent<OnRetryArguments> OnRetry { get; set; } = new();
 }

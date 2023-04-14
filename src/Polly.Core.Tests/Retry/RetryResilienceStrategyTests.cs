@@ -17,7 +17,7 @@ public class RetryResilienceStrategyTests
     public void ShouldRetryEmpty_Skipped()
     {
         bool called = false;
-        _options.OnRetry.Add<int>(() => called = true);
+        _options.OnRetry.Register<int>(() => called = true);
         SetupNoDelay();
         var sut = CreateSut();
 
@@ -30,8 +30,8 @@ public class RetryResilienceStrategyTests
     public void Retry_RetryCount_Respected()
     {
         int calls = 0;
-        _options.OnRetry.Add<int>(() => calls++);
-        _options.ShouldRetry.Result<int>(0);
+        _options.OnRetry.Register<int>(() => calls++);
+        _options.ShouldRetry.HandleResult<int>(0);
         _options.RetryCount = 12;
         SetupNoDelay();
         var sut = CreateSut();
@@ -45,12 +45,12 @@ public class RetryResilienceStrategyTests
     public void RetryException_RetryCount_Respected()
     {
         int calls = 0;
-        _options.OnRetry.Add<int>((args, _) =>
+        _options.OnRetry.Register<int>((args, _) =>
         {
             args.Exception.Should().BeOfType<InvalidOperationException>();
             calls++;
         });
-        _options.ShouldRetry.Exception<InvalidOperationException>();
+        _options.ShouldRetry.HandleException<InvalidOperationException>();
         _options.RetryCount = 3;
         SetupNoDelay();
         var sut = CreateSut();
@@ -65,7 +65,7 @@ public class RetryResilienceStrategyTests
     {
         int calls = 0;
         _options.BackoffType = RetryBackoffType.Constant;
-        _options.OnRetry.Add<int>((_, args) =>
+        _options.OnRetry.Register<int>((_, args) =>
         {
             if (args.Attempt > RetryConstants.MaxRetryCount)
             {
@@ -74,7 +74,7 @@ public class RetryResilienceStrategyTests
 
             calls++;
         });
-        _options.ShouldRetry.Result(0);
+        _options.ShouldRetry.HandleResult(0);
         _options.RetryCount = RetryStrategyOptions.InfiniteRetryCount;
         SetupNoDelay();
         var sut = CreateSut();
@@ -88,8 +88,8 @@ public class RetryResilienceStrategyTests
     public void RetryDelayGenerator_Respected()
     {
         int calls = 0;
-        _options.OnRetry.Add<int>(() => calls++);
-        _options.ShouldRetry.Result<int>(0);
+        _options.OnRetry.Register<int>(() => calls++);
+        _options.ShouldRetry.HandleResult<int>(0);
         _options.RetryCount = 3;
         _options.BackoffType = RetryBackoffType.Constant;
         _options.RetryDelayGenerator.SetGenerator<int>((_, _) => TimeSpan.FromMilliseconds(123));
@@ -107,7 +107,7 @@ public class RetryResilienceStrategyTests
     {
         var attempts = new List<int>();
         var delays = new List<TimeSpan>();
-        _options.OnRetry.Add<int>((outcome, args) =>
+        _options.OnRetry.Register<int>((outcome, args) =>
         {
             attempts.Add(args.Attempt);
             delays.Add(args.RetryDelay);
@@ -116,7 +116,7 @@ public class RetryResilienceStrategyTests
             outcome.Result.Should().Be(0);
         });
 
-        _options.ShouldRetry.Result<int>(0);
+        _options.ShouldRetry.HandleResult<int>(0);
         _options.RetryCount = 3;
         _options.BackoffType = RetryBackoffType.Linear;
         _timeProvider.SetupAnyDelay();
@@ -143,7 +143,7 @@ public class RetryResilienceStrategyTests
 
         _diagnosticSource.Setup(v => v.IsEnabled("OnRetry")).Returns(true);
 
-        _options.ShouldRetry.Result<int>(0);
+        _options.ShouldRetry.HandleResult(0);
         _options.RetryCount = 3;
         _options.BackoffType = RetryBackoffType.Linear;
         _timeProvider.SetupAnyDelay();
@@ -171,7 +171,7 @@ public class RetryResilienceStrategyTests
             return TimeSpan.Zero;
         });
 
-        _options.ShouldRetry.Result<int>(0);
+        _options.ShouldRetry.HandleResult<int>(0);
         _options.RetryCount = 3;
         _options.BackoffType = RetryBackoffType.Linear;
         _timeProvider.SetupAnyDelay();

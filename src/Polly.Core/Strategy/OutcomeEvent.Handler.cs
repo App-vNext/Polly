@@ -4,7 +4,7 @@ namespace Polly.Strategy;
 
 #pragma warning disable CA1034 // Nested types should not be visible
 
-public abstract partial class OutcomeEvent<TArgs, TSelf>
+public partial class OutcomeEvent<TArgs>
 {
     /// <summary>
     /// The handler for this event.

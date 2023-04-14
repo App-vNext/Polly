@@ -1,6 +1,7 @@
 using System;
 using Polly.Builder;
 using Polly.Retry;
+using Polly.Strategy;
 
 namespace Polly;
 
@@ -17,7 +18,7 @@ public static class RetryResilienceStrategyBuilderExtensions
     /// <returns>The builder instance with the retry strategy added.</returns>
     public static ResilienceStrategyBuilder AddRetry(
         this ResilienceStrategyBuilder builder,
-        Action<ShouldRetryPredicate> shouldRetry)
+        Action<OutcomePredicate<ShouldRetryArguments>> shouldRetry)
     {
         Guard.NotNull(builder);
         Guard.NotNull(shouldRetry);
@@ -33,11 +34,34 @@ public static class RetryResilienceStrategyBuilderExtensions
     /// </summary>
     /// <param name="builder">The builder instance.</param>
     /// <param name="shouldRetry">A predicate that defines the retry conditions.</param>
+    /// <param name="retryDelayGenerator">The generator for retry delays. The argument is zero-based attempt number.</param>
+    /// <returns>The builder instance with the retry strategy added.</returns>
+    public static ResilienceStrategyBuilder AddRetry(
+        this ResilienceStrategyBuilder builder,
+        Action<OutcomePredicate<ShouldRetryArguments>> shouldRetry,
+        Func<int, TimeSpan> retryDelayGenerator)
+    {
+        Guard.NotNull(builder);
+        Guard.NotNull(shouldRetry);
+        Guard.NotNull(retryDelayGenerator);
+
+        var options = new RetryStrategyOptions();
+        shouldRetry(options.ShouldRetry);
+        options.RetryDelayGenerator.SetGenerator((_, args) => retryDelayGenerator(args.Attempt));
+
+        return builder.AddRetry(options);
+    }
+
+    /// <summary>
+    /// Adds a retry strategy to the builder.
+    /// </summary>
+    /// <param name="builder">The builder instance.</param>
+    /// <param name="shouldRetry">A predicate that defines the retry conditions.</param>
     /// <param name="backoffType">The backoff type to use for the retry strategy.</param>
     /// <returns>The builder instance with the retry strategy added.</returns>
     public static ResilienceStrategyBuilder AddRetry(
         this ResilienceStrategyBuilder builder,
-        Action<ShouldRetryPredicate> shouldRetry,
+        Action<OutcomePredicate<ShouldRetryArguments>> shouldRetry,
         RetryBackoffType backoffType)
     {
         Guard.NotNull(builder);
@@ -66,7 +90,7 @@ public static class RetryResilienceStrategyBuilderExtensions
     /// <returns>The builder instance with the retry strategy added.</returns>
     public static ResilienceStrategyBuilder AddRetry(
         this ResilienceStrategyBuilder builder,
-        Action<ShouldRetryPredicate> shouldRetry,
+        Action<OutcomePredicate<ShouldRetryArguments>> shouldRetry,
         RetryBackoffType backoffType,
         int retryCount,
         TimeSpan baseDelay)

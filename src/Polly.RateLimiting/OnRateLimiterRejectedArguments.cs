@@ -6,7 +6,7 @@ namespace Polly.RateLimiting;
 #pragma warning disable CA1815 // Override equals and operator equals on value types
 
 /// <summary>
-/// The arguments used by the <see cref="OnRateLimiterRejectedEvent"/>.
+/// The arguments used by the <see cref="RateLimiterStrategyOptions.OnRejected"/>.
 /// </summary>
 public readonly struct OnRateLimiterRejectedArguments : IResilienceArguments
 {

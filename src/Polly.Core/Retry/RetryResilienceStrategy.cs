@@ -8,17 +8,14 @@ internal class RetryResilienceStrategy : ResilienceStrategy
 {
     private readonly TimeProvider _timeProvider;
     private readonly ResilienceTelemetry _telemetry;
-    private readonly OutcomeEvent<OnRetryArguments, OnRetryEvent>.Handler? _onRetry;
-    private readonly OutcomeGenerator<TimeSpan, RetryDelayArguments, RetryDelayGenerator>.Handler? _delayGenerator;
-    private readonly OutcomePredicate<ShouldRetryArguments, ShouldRetryPredicate>.Handler? _shouldRetry;
 
     public RetryResilienceStrategy(RetryStrategyOptions options, TimeProvider timeProvider, ResilienceTelemetry telemetry)
     {
         _timeProvider = timeProvider;
         _telemetry = telemetry;
-        _onRetry = options.OnRetry.CreateHandler();
-        _delayGenerator = options.RetryDelayGenerator.CreateHandler();
-        _shouldRetry = options.ShouldRetry.CreateHandler();
+        OnRetry = options.OnRetry.CreateHandler();
+        DelayGenerator = options.RetryDelayGenerator.CreateHandler(TimeSpan.MinValue, RetryHelper.IsValidDelay);
+        ShouldRetry = options.ShouldRetry.CreateHandler();
 
         BackoffType = options.BackoffType;
         BaseDelay = options.BaseDelay;
@@ -31,9 +28,15 @@ internal class RetryResilienceStrategy : ResilienceStrategy
 
     public int RetryCount { get; }
 
+    public OutcomePredicate<ShouldRetryArguments>.Handler? ShouldRetry { get; }
+
+    public OutcomeGenerator<RetryDelayArguments, TimeSpan>.Handler? DelayGenerator { get; }
+
+    public OutcomeEvent<OnRetryArguments>.Handler? OnRetry { get; }
+
     protected internal override async ValueTask<TResult> ExecuteCoreAsync<TResult, TState>(Func<ResilienceContext, TState, ValueTask<TResult>> callback, ResilienceContext context, TState state)
     {
-        if (_shouldRetry == null)
+        if (ShouldRetry == null)
         {
             return await callback(context, state).ConfigureAwait(context.ContinueOnCapturedContext);
         }
@@ -51,7 +54,7 @@ internal class RetryResilienceStrategy : ResilienceStrategy
                 var result = await callback(context, state).ConfigureAwait(context.ContinueOnCapturedContext);
                 outcome = new Outcome<TResult>(result);
 
-                if (IsLastAttempt(attempt) || !await _shouldRetry.ShouldHandle(outcome, new ShouldRetryArguments(context, attempt)).ConfigureAwait(context.ContinueOnCapturedContext))
+                if (IsLastAttempt(attempt) || !await ShouldRetry.ShouldHandle(outcome, new ShouldRetryArguments(context, attempt)).ConfigureAwait(context.ContinueOnCapturedContext))
                 {
                     return result;
                 }
@@ -60,16 +63,16 @@ internal class RetryResilienceStrategy : ResilienceStrategy
             {
                 outcome = new Outcome<TResult>(e);
 
-                if (IsLastAttempt(attempt) || !await _shouldRetry.ShouldHandle(outcome, new ShouldRetryArguments(context, attempt)).ConfigureAwait(context.ContinueOnCapturedContext))
+                if (IsLastAttempt(attempt) || !await ShouldRetry.ShouldHandle(outcome, new ShouldRetryArguments(context, attempt)).ConfigureAwait(context.ContinueOnCapturedContext))
                 {
                     throw;
                 }
             }
 
             var delay = RetryHelper.GetRetryDelay(BackoffType, attempt, BaseDelay);
-            if (_delayGenerator != null)
+            if (DelayGenerator != null)
             {
-                var newDelay = await _delayGenerator.Generate(outcome, new RetryDelayArguments(context, attempt, delay)).ConfigureAwait(false);
+                var newDelay = await DelayGenerator.Generate(outcome, new RetryDelayArguments(context, attempt, delay)).ConfigureAwait(false);
                 if (RetryHelper.IsValidDelay(newDelay))
                 {
                     delay = newDelay;
@@ -80,9 +83,9 @@ internal class RetryResilienceStrategy : ResilienceStrategy
 
             _telemetry.Report(RetryConstants.OnRetryEvent, outcome, args);
 
-            if (_onRetry != null)
+            if (OnRetry != null)
             {
-                await _onRetry.Handle(outcome, args).ConfigureAwait(context.ContinueOnCapturedContext);
+                await OnRetry.Handle(outcome, args).ConfigureAwait(context.ContinueOnCapturedContext);
             }
 
             if (delay > TimeSpan.Zero)
