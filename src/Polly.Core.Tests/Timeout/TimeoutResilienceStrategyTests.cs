@@ -70,7 +70,7 @@ public class TimeoutResilienceStrategyTests : IDisposable
         _timeProvider.SetupCancelAfterNow(_delay);
 
         var sut = CreateSut();
-        await sut.Invoking(s => sut.ExecuteTaskAsync(token => Task.Delay(_delay, token))).Should().ThrowAsync<TimeoutRejectedException>();
+        await sut.Invoking(s => sut.ExecuteAsync(token => Task.Delay(_delay, token))).Should().ThrowAsync<TimeoutRejectedException>();
 
         called.Should().BeTrue();
     }
@@ -103,7 +103,7 @@ public class TimeoutResilienceStrategyTests : IDisposable
         var sut = CreateSut();
 
         await sut
-            .Invoking(s => s.ExecuteTaskAsync(token => Delay(token), token))
+            .Invoking(s => s.ExecuteAsync(token => Delay(token), token))
             .Should().ThrowAsync<TimeoutRejectedException>()
             .WithMessage("The operation didn't complete within the allowed timeout of '00:00:02'.");
 
@@ -123,7 +123,7 @@ public class TimeoutResilienceStrategyTests : IDisposable
 
         var sut = CreateSut();
 
-        await sut.Invoking(s => s.ExecuteTaskAsync(token => Delay(token, () => cts.Cancel()), cts.Token))
+        await sut.Invoking(s => s.ExecuteAsync(token => Delay(token, () => cts.Cancel()), cts.Token))
                  .Should()
                  .ThrowAsync<OperationCanceledException>();
 
@@ -146,7 +146,7 @@ public class TimeoutResilienceStrategyTests : IDisposable
         var context = ResilienceContext.Get();
         context.CancellationToken = cts.Token;
 
-        await sut.ExecuteTaskAsync(
+        await sut.ExecuteAsync(
             (r, _) =>
             {
                 r.CancellationToken.Should().NotBe(cts.Token);
@@ -182,7 +182,7 @@ public class TimeoutResilienceStrategyTests : IDisposable
         // Act
         try
         {
-            await sut.ExecuteTaskAsync(token => Delay(token, () => cts.Cancel()), cts.Token);
+            await sut.ExecuteAsync(token => Delay(token, () => cts.Cancel()), cts.Token);
         }
         catch (OperationCanceledException)
         {

@@ -11,19 +11,19 @@ public partial class ResilienceStrategyTests
 
     private static IEnumerable<ExecuteParameters> ExecuteAsTaskAsync_EnsureCorrectBehavior_ExecuteParameters()
     {
-        yield return new ExecuteParameters(r => r.ExecuteTaskAsync(async _ => { }))
+        yield return new ExecuteParameters(r => r.ExecuteAsync(async _ => { }))
         {
             Caption = "ExecuteAsTaskAsync_NoCancellation",
             AssertContext = AssertResilienceContext,
         };
 
-        yield return new ExecuteParameters(r => r.ExecuteTaskAsync(async t => { t.Should().Be(CancellationToken); }, CancellationToken))
+        yield return new ExecuteParameters(r => r.ExecuteAsync(async t => { t.Should().Be(CancellationToken); }, CancellationToken))
         {
             Caption = "ExecuteAsTaskAsync_Cancellation",
             AssertContext = AssertResilienceContextAndToken,
         };
 
-        yield return new ExecuteParameters(r => r.ExecuteTaskAsync(async (_, s) => { s.Should().Be("dummy-state"); }, ResilienceContext.Get(), "dummy-state"))
+        yield return new ExecuteParameters(r => r.ExecuteAsync(async (_, s) => { s.Should().Be("dummy-state"); }, ResilienceContext.Get(), "dummy-state"))
         {
             Caption = "ExecuteAsTaskAsync_ResilienceContextAndState",
             AssertContext = AssertResilienceContext,

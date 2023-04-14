@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Polly.Builder;
+namespace Polly.Strategy;
 
 /// <summary>
 /// The options associated with the <see cref="ResilienceStrategy"/>.
