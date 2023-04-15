@@ -74,4 +74,25 @@ jobs:
       uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # v3.1.2
       with:
         name: packages-${{ matrix.os_name }}
-        path: ./artifacts/nuget-package
+        path: ./artifacts/nuget-packages
+
+  publish:
+    name: publish
+    needs: build
+    runs-on: ubuntu-latest
+    #if: ${{ github.event.repository.fork == false && startsWith(github.ref, 'refs/tags/') }}
+    steps:
+
+    - name: Download packages
+      uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
+      with:
+        name: packages-windows
+
+    - name: Setup .NET SDK
+      uses: actions/setup-dotnet@607fce577a46308457984d59e4954e075820f10a # v3.0.3
+
+    - name: Push NuGet packages to NuGet.org
+      shell: pwsh
+      run: |
+        Write-Host "This is where the packages would be published to NuGet.org"
+        <# dotnet nuget push "artifacts\nuget-packages\*.nupkg" --api-key ${{ secrets.NUGET_TOKEN }} --skip-duplicate --source https://api.nuget.org/v3/index.json #>
