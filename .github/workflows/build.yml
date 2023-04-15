@@ -7,6 +7,15 @@ on:
     branches: [ main ]
   workflow_dispatch:
 
+env:
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+  DOTNET_GENERATE_ASPNET_CERTIFICATE: false
+  DOTNET_NOLOGO: true
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+  DOTNET_SYSTEM_CONSOLE_ALLOW_ANSI_COLOR_REDIRECTION: 1
+  NUGET_XMLDOC_MODE: skip
+  TERM: xterm
+
 permissions:
   contents: read
 
@@ -48,13 +57,6 @@ jobs:
       shell: pwsh
       run: ./build.ps1
       env:
-        DOTNET_CLI_TELEMETRY_OPTOUT: true
-        DOTNET_GENERATE_ASPNET_CERTIFICATE: false
-        DOTNET_NOLOGO: true
-        DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
-        DOTNET_SYSTEM_CONSOLE_ALLOW_ANSI_COLOR_REDIRECTION: 1
-        NUGET_XMLDOC_MODE: skip
-        TERM: xterm
         RUN_MUTATION_TESTS: ${{ matrix.os_name == 'linux' && 'true' || 'false' }}
 
     - uses: codecov/codecov-action@eaaf4bedf32dbdc6b720b63067d99c4d77d6047d # v3.1.4
@@ -76,11 +78,41 @@ jobs:
         name: packages-${{ matrix.os_name }}
         path: ./artifacts/nuget-packages
 
-  publish:
-    name: publish
+  validate-packages:
     needs: build
     runs-on: ubuntu-latest
-    #if: ${{ github.event.repository.fork == false && startsWith(github.ref, 'refs/tags/') }}
+    steps:
+
+    - name: Download packages
+      uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
+      with:
+        name: packages-windows
+
+    - name: Setup .NET SDK
+      uses: actions/setup-dotnet@607fce577a46308457984d59e4954e075820f10a # v3.0.3
+
+    - name: Validate NuGet packages
+      shell: pwsh
+      run: |
+        dotnet tool install --global dotnet-validate --version 0.0.1-preview.304
+        $packages = Get-ChildItem -Filter "*.nupkg" | ForEach-Object { $_.FullName }
+        $invalidPackages = 0
+        foreach ($package in $packages) {
+          dotnet validate package local $package
+          if ($LASTEXITCODE -ne 0) {
+            $invalidPackages++
+          }
+        }
+        if ($invalidPackages -gt 0) {
+          Write-Output "::error::$invalidPackages NuGet package(s) failed validation."
+        }
+
+  publish-nuget:
+    needs: validate-packages
+    runs-on: ubuntu-latest
+    if: |
+      github.event.repository.fork == false &&
+      startsWith(github.ref, 'refs/tags/')
     steps:
 
     - name: Download packages
@@ -92,8 +124,4 @@ jobs:
       uses: actions/setup-dotnet@607fce577a46308457984d59e4954e075820f10a # v3.0.3
 
     - name: Push NuGet packages to NuGet.org
-      shell: pwsh
-      run: |
-        Write-Host "This is where the packages would be published to NuGet.org"
-        ls
-        <# dotnet nuget push "*.nupkg" --api-key ${{ secrets.NUGET_TOKEN }} --skip-duplicate --source https://api.nuget.org/v3/index.json #>
+      run: dotnet nuget push "*.nupkg" --api-key ${{ secrets.NUGET_TOKEN }} --skip-duplicate --source https://api.nuget.org/v3/index.json
