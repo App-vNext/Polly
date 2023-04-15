@@ -95,4 +95,5 @@ jobs:
       shell: pwsh
       run: |
         Write-Host "This is where the packages would be published to NuGet.org"
-        <# dotnet nuget push "artifacts\nuget-packages\*.nupkg" --api-key ${{ secrets.NUGET_TOKEN }} --skip-duplicate --source https://api.nuget.org/v3/index.json #>
+        ls
+        <# dotnet nuget push "*.nupkg" --api-key ${{ secrets.NUGET_TOKEN }} --skip-duplicate --source https://api.nuget.org/v3/index.json #>
