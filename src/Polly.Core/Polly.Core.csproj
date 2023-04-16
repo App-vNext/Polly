@@ -27,8 +27,4 @@
     <PackageReference Include="System.Diagnostics.DiagnosticSource" Condition="!$([MSBuild]::IsTargetFrameworkCompatible($(TargetFramework), 'netcoreapp3.1'))" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Builder\" />
-  </ItemGroup>
-
 </Project>
