@@ -1,10 +1,9 @@
 using System.ComponentModel.DataAnnotations;
 using Moq;
-using Polly.Builder;
 using Polly.Strategy;
 using Polly.Utils;
 
-namespace Polly.Core.Tests.Builder;
+namespace Polly.Core.Tests;
 
 public class ResilienceStrategyBuilderTests
 {
@@ -246,8 +245,8 @@ The StrategyType field is required.
     public void BuildStrategy_EnsureCorrectContext()
     {
         // arrange
-        bool verified1 = false;
-        bool verified2 = false;
+        var verified1 = false;
+        var verified2 = false;
 
         var builder = new ResilienceStrategyBuilder
         {

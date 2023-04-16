@@ -1,5 +1,4 @@
 using System;
-using Polly.Builder;
 using Polly.Retry;
 using Polly.Strategy;
 

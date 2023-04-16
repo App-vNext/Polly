@@ -1,6 +1,6 @@
-using Polly.Builder;
+using Polly.Strategy;
 
-namespace Polly.Core.Tests.Builder;
+namespace Polly.Core.Tests.Strategy;
 
 public class ResilienceStrategyPipelineTests
 {
@@ -29,7 +29,7 @@ public class ResilienceStrategyPipelineTests
 
         var pipeline = ResilienceStrategyPipeline.CreatePipeline(strategies);
 
-        for (int i = 0; i < strategies.Length; i++)
+        for (var i = 0; i < strategies.Length; i++)
         {
             pipeline.Strategies[i].Should().BeSameAs(strategies[i]);
         }

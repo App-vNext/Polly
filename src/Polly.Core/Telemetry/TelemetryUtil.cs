@@ -1,3 +1,5 @@
+using Polly.Strategy;
+
 namespace Polly.Telemetry;
 
 internal static class TelemetryUtil
@@ -8,7 +10,7 @@ internal static class TelemetryUtil
 
     private static readonly ResiliencePropertyKey<DiagnosticSource> DiagnosticSourceKey = new("DiagnosticSource");
 
-    public static ResilienceTelemetry CreateTelemetry(string builderName, ResilienceProperties builderProperties, string strategyName, string strategyType)
+    public static ResilienceStrategyTelemetry CreateTelemetry(string builderName, ResilienceProperties builderProperties, string strategyName, string strategyType)
     {
         // Allows the user to override the default diagnostic source.
         if (!builderProperties.TryGetValue(DiagnosticSourceKey, out var diagnosticSource))
@@ -18,6 +20,6 @@ internal static class TelemetryUtil
 
         var telemetrySource = new ResilienceTelemetrySource(builderName, builderProperties, strategyName, strategyType);
 
-        return new ResilienceTelemetry(telemetrySource, diagnosticSource);
+        return new ResilienceStrategyTelemetry(telemetrySource, diagnosticSource);
     }
 }

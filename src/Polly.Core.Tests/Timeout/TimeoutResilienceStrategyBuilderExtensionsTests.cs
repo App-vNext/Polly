@@ -1,5 +1,4 @@
 using System.ComponentModel.DataAnnotations;
-using Polly.Builder;
 using Polly.Timeout;
 
 namespace Polly.Core.Tests.Timeout;

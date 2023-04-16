@@ -1,3 +1,4 @@
+using Polly.Strategy;
 using Polly.Telemetry;
 
 namespace Polly.Core.Tests.Helpers;
@@ -34,6 +35,6 @@ public static class TestUtils
         }
     }
 
-    public static ResilienceTelemetry CreateResilienceTelemetry(DiagnosticSource source)
+    public static ResilienceStrategyTelemetry CreateResilienceTelemetry(DiagnosticSource source)
         => new(new ResilienceTelemetrySource("dummy-builder", new ResilienceProperties(), "strategy-name", "strategy-type"), source);
 }

@@ -1,6 +1,6 @@
 using Polly.Telemetry;
 
-namespace Polly.Builder;
+namespace Polly.Strategy;
 
 /// <summary>
 /// The context used for building an individual resilience strategy.
@@ -40,7 +40,7 @@ public class ResilienceStrategyBuilderContext
     /// <summary>
     /// Gets the resilience telemetry used to report important events.
     /// </summary>
-    public ResilienceTelemetry Telemetry { get; }
+    public ResilienceStrategyTelemetry Telemetry { get; }
 
     /// <summary>
     /// Gets the <see cref="TimeProvider"/> used by this strategy.

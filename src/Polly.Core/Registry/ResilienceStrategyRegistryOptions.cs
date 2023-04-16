@@ -1,5 +1,4 @@
 using System.ComponentModel.DataAnnotations;
-using Polly.Builder;
 
 namespace Polly.Registry;
 

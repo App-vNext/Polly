@@ -1,8 +1,8 @@
 using System.Globalization;
 using Microsoft.Extensions.DependencyInjection;
-using Polly.Builder;
 using Polly.Extensions.DependencyInjection;
 using Polly.Registry;
+using Polly.Strategy;
 
 namespace Polly.Extensions.Tests.DependencyInjection;
 

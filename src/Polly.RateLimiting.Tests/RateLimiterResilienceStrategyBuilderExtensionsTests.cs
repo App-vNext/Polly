@@ -1,7 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.Threading.RateLimiting;
 using Moq;
-using Polly.Builder;
 using Xunit;
 
 namespace Polly.RateLimiting.Tests;

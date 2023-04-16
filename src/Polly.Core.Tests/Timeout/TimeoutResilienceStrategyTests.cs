@@ -1,13 +1,13 @@
 using Moq;
 using Polly.Core.Tests.Helpers;
-using Polly.Telemetry;
+using Polly.Strategy;
 using Polly.Timeout;
 
 namespace Polly.Core.Tests.Timeout;
 
 public class TimeoutResilienceStrategyTests : IDisposable
 {
-    private readonly ResilienceTelemetry _telemetry;
+    private readonly ResilienceStrategyTelemetry _telemetry;
     private readonly FakeTimeProvider _timeProvider;
     private readonly TimeoutStrategyOptions _options;
     private readonly CancellationTokenSource _cancellationSource;

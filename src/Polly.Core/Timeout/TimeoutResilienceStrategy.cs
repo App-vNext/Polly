@@ -1,15 +1,15 @@
 using System;
 using System.Threading.Tasks;
-using Polly.Telemetry;
+using Polly.Strategy;
 
 namespace Polly.Timeout;
 
 internal sealed class TimeoutResilienceStrategy : ResilienceStrategy
 {
     private readonly TimeProvider _timeProvider;
-    private readonly ResilienceTelemetry _telemetry;
+    private readonly ResilienceStrategyTelemetry _telemetry;
 
-    public TimeoutResilienceStrategy(TimeoutStrategyOptions options, TimeProvider timeProvider, ResilienceTelemetry telemetry)
+    public TimeoutResilienceStrategy(TimeoutStrategyOptions options, TimeProvider timeProvider, ResilienceStrategyTelemetry telemetry)
     {
         DefaultTimeout = options.Timeout;
         TimeoutGenerator = options.TimeoutGenerator.CreateHandler();

@@ -1,5 +1,4 @@
 using System.Diagnostics.CodeAnalysis;
-using Polly.Builder;
 
 namespace Polly.Registry;
 

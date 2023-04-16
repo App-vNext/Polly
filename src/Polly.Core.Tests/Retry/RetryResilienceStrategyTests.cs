@@ -1,6 +1,6 @@
 using Moq;
 using Polly.Retry;
-using Polly.Telemetry;
+using Polly.Strategy;
 
 namespace Polly.Core.Tests.Retry;
 
@@ -8,7 +8,7 @@ public class RetryResilienceStrategyTests
 {
     private readonly RetryStrategyOptions _options = new();
     private readonly FakeTimeProvider _timeProvider = new();
-    private readonly ResilienceTelemetry _telemetry;
+    private readonly ResilienceStrategyTelemetry _telemetry;
     private readonly Mock<DiagnosticSource> _diagnosticSource = new();
 
     public RetryResilienceStrategyTests() => _telemetry = TestUtils.CreateResilienceTelemetry(_diagnosticSource.Object);

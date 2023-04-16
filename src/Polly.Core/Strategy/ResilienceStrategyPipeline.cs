@@ -1,7 +1,7 @@
 using System;
 using static System.Net.Mime.MediaTypeNames;
 
-namespace Polly.Builder;
+namespace Polly.Strategy;
 
 #pragma warning disable S2302 // "nameof" should be used
 
