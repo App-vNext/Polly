@@ -2,6 +2,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 using Polly.Registry;
+using Polly.Strategy;
 using Polly.Utils;
 
 namespace Polly.Extensions.DependencyInjection;
