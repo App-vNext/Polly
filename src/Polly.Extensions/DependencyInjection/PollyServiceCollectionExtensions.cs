@@ -1,10 +1,15 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
+using Polly;
+using Polly.Extensions.DependencyInjection;
+using Polly.Extensions.Telemetry;
 using Polly.Registry;
 using Polly.Utils;
 
-namespace Polly.Extensions.DependencyInjection;
+namespace Microsoft.Extensions.DependencyInjection;
 
 /// <summary>
 /// Provides extension methods for registering resilience strategies using the <see cref="IServiceCollection"/>.
@@ -22,6 +27,9 @@ public static class PollyServiceCollectionExtensions
     /// <exception cref="InvalidOperationException">Thrown if the resilience strategy builder with the provided key has already been added to the registry.</exception>
     /// <remarks>
     /// You can retrieve the registered strategy by resolving the <see cref="ResilienceStrategyProvider{TKey}"/> class from the dependency injection container.
+    /// <para>
+    /// This call enables the telemetry for the registered resilience strategy.
+    /// </para>
     /// </remarks>
     public static IServiceCollection AddResilienceStrategy<TKey>(
         this IServiceCollection services,
@@ -93,10 +101,18 @@ public static class PollyServiceCollectionExtensions
 
     private static void AddResilienceStrategyBuilder(this IServiceCollection services)
     {
+        services
+            .AddOptions<ResilienceStrategyTelemetryOptions>()
+            .Configure<IServiceProvider>((options, serviceProvider) =>
+            {
+                options.LoggerFactory = serviceProvider.GetService<ILoggerFactory>() ?? NullLoggerFactory.Instance;
+            });
+
         services.TryAddTransient(serviceProvider =>
         {
             var builder = new ResilienceStrategyBuilder();
             builder.Properties.Set(PollyDependencyInjectionKeys.ServiceProvider, serviceProvider);
+            builder.EnableTelemetry(serviceProvider.GetRequiredService<IOptions<ResilienceStrategyTelemetryOptions>>().Value);
             return builder;
         });
     }

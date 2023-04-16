@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using Polly.Registry;
+using Polly.Telemetry;
 
 namespace Polly.Core.Tests.Registry;
 
@@ -115,6 +116,24 @@ public class ResilienceStrategyRegistryTests
         called.Should().Be(3);
         activatorCalls.Should().Be(3);
         strategies.Keys.Should().HaveCount(3);
+    }
+
+    [Fact]
+    public void AddBuilder_EnsureStrategyKey()
+    {
+        var called = false;
+        var registry = CreateRegistry();
+        registry.TryAddBuilder(StrategyId.Create("A"), (key, builder) =>
+        {
+            builder.AddStrategy(new TestResilienceStrategy());
+            builder.Properties.TryGetValue(TelemetryUtil.StrategyKey, out var val).Should().BeTrue();
+            val.Should().Be(key.ToString());
+            called = true;
+        });
+
+        registry.Get(StrategyId.Create("A", "Instance1"));
+
+        called.Should().BeTrue();
     }
 
     [Fact]

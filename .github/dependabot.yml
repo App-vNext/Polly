@@ -21,5 +21,6 @@ updates:
     - dependency-name: "System.ValueTuple"
     - dependency-name: "Microsoft.Extensions.Options"
     - dependency-name: "Microsoft.Extensions.Logging.Abstractions"
+    - dependency-name: "Microsoft.Extensions.Logging"
     - dependency-name: "System.Diagnostics.DiagnosticSource"
     - dependency-name: "System.Threading.RateLimiting"

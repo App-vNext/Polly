@@ -18,3 +18,4 @@ tab_width = 2
 [*.cs]
 
 # Put any C# specific settings here
+dotnet_code_quality.CA1062.null_check_validation_methods = NotNull

@@ -51,6 +51,16 @@ public class ResilienceStrategyTelemetryTests
     }
 
     [Fact]
+    public void ResilienceStrategyTelemetry_NoDiagnosticSource_Ok()
+    {
+        var source = new ResilienceTelemetrySource("builder", new ResilienceProperties(), "strategy-name", "strategy-type");
+        var sut = new ResilienceStrategyTelemetry(source, null);
+
+        sut.Invoking(s => s.Report("dummy", new TestArguments())).Should().NotThrow();
+        sut.Invoking(s => s.Report("dummy", new Outcome<int>(1), new TestArguments())).Should().NotThrow();
+    }
+
+    [Fact]
     public void Report_Outcome_OK()
     {
         _diagnosticSource.Setup(o => o.IsEnabled("dummy-event")).Returns(true);

@@ -7,6 +7,13 @@ namespace Polly.Core.Tests.Telemetry;
 public class TelemetryUtilTests
 {
     [Fact]
+    public void Ctor_Ok()
+    {
+        TelemetryUtil.DiagnosticSourceKey.Key.Should().Be("DiagnosticSource");
+        TelemetryUtil.StrategyKey.Key.Should().Be("StrategyKey");
+    }
+
+    [Fact]
     public void CreateResilienceTelemetry_Ok()
     {
         var telemetry = TelemetryUtil.CreateTelemetry("builder", new ResilienceProperties(), "strategy-name", "strategy-type");
@@ -14,9 +21,7 @@ public class TelemetryUtilTests
         telemetry.TelemetrySource.BuilderName.Should().Be("builder");
         telemetry.TelemetrySource.StrategyName.Should().Be("strategy-name");
         telemetry.TelemetrySource.StrategyType.Should().Be("strategy-type");
-        telemetry.DiagnosticSource.Should().NotBeNull();
-
-        telemetry.DiagnosticSource.Should().BeOfType<DiagnosticListener>().Subject.Name.Should().Be("Polly");
+        telemetry.DiagnosticSource.Should().BeNull();
     }
 
     [Fact]

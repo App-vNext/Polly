@@ -11,9 +11,6 @@
     <MutationScore>100</MutationScore>
     <LegacySupport>true</LegacySupport>
   </PropertyGroup>
-  <ItemGroup>
-    <Compile Include="..\Polly.Core\Utils\Guard.cs" Link="Utils\Guard.cs" />
-  </ItemGroup>
 
   <ItemGroup>
     <InternalsVisibleToTest Include="Polly.Extensions.Tests" />
