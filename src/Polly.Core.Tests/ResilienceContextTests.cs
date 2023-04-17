@@ -17,13 +17,16 @@ public class ResilienceContextTests
     }
 
     [Fact]
-    public void Get_EnsurePooled()
+    public async Task Get_EnsurePooled()
     {
-        var context = ResilienceContext.Get();
+        await TestUtils.AssertWithTimeoutAsync(() =>
+        {
+            var context = ResilienceContext.Get();
 
-        ResilienceContext.Return(context);
+            ResilienceContext.Return(context);
 
-        ResilienceContext.Get().Should().BeSameAs(context);
+            ResilienceContext.Get().Should().BeSameAs(context);
+        });
     }
 
     [Fact]
@@ -33,17 +36,20 @@ public class ResilienceContextTests
     }
 
     [Fact]
-    public void Return_EnsureDefaults()
+    public async Task Return_EnsureDefaults()
     {
-        using var cts = new CancellationTokenSource();
-        var context = ResilienceContext.Get();
-        context.CancellationToken = cts.Token;
-        context.Initialize<bool>(true);
-        context.CancellationToken.Should().Be(cts.Token);
-        context.Properties.Set(new ResiliencePropertyKey<int>("abc"), 10);
-        ResilienceContext.Return(context);
+        await TestUtils.AssertWithTimeoutAsync(() =>
+        {
+            using var cts = new CancellationTokenSource();
+            var context = ResilienceContext.Get();
+            context.CancellationToken = cts.Token;
+            context.Initialize<bool>(true);
+            context.CancellationToken.Should().Be(cts.Token);
+            context.Properties.Set(new ResiliencePropertyKey<int>("abc"), 10);
+            ResilienceContext.Return(context);
 
-        AssertDefaults(context);
+            AssertDefaults(context);
+        });
     }
 
     [InlineData(true)]

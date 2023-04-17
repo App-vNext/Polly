@@ -34,4 +34,10 @@ public class ResilienceStrategyRegistryOptions<TKey>
     /// </remarks>
     [Required]
     public IEqualityComparer<TKey> BuilderComparer { get; set; } = EqualityComparer<TKey>.Default;
+
+    /// <summary>
+    /// Gets or sets the formatter that is used by the registry to format the keys as a string.
+    /// </summary>
+    [Required]
+    public Func<TKey, string> KeyFormatter { get; set; } = (key) => key?.ToString() ?? string.Empty;
 }

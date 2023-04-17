@@ -1,6 +1,8 @@
 using System.Globalization;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging.Abstractions;
 using Polly.Extensions.DependencyInjection;
+using Polly.Extensions.Telemetry;
 using Polly.Registry;
 using Polly.Strategy;
 
@@ -65,6 +67,30 @@ public class PollyServiceCollectionExtensionTests
         CreateProvider().Get(Key);
 
         asserted.Should().BeTrue();
+    }
+
+    [Fact]
+    public void AddResilienceStrategy_EnsureTelemetryEnabled()
+    {
+        ResilienceStrategyTelemetry? telemetry = null;
+
+        _services.AddLogging();
+        _services.AddResilienceStrategy(Key, context =>
+        {
+            context.Builder.AddStrategy(context =>
+            {
+                telemetry = context.Telemetry;
+                return new TestStrategy();
+            });
+        });
+
+        CreateProvider().Get(Key);
+
+        var diagSource = telemetry!.GetType().GetProperty("DiagnosticSource", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(telemetry);
+
+        diagSource
+            .Should().BeOfType<ResilienceTelemetryDiagnosticSource>().Subject.LoggerFactory
+            .Should().NotBe(NullLoggerFactory.Instance);
     }
 
     [Fact]

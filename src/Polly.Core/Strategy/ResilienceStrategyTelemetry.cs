@@ -10,13 +10,13 @@ namespace Polly.Strategy;
 /// </remarks>
 public sealed class ResilienceStrategyTelemetry
 {
-    internal ResilienceStrategyTelemetry(ResilienceTelemetrySource source, DiagnosticSource diagnosticSource)
+    internal ResilienceStrategyTelemetry(ResilienceTelemetrySource source, DiagnosticSource? diagnosticSource)
     {
         TelemetrySource = source;
         DiagnosticSource = diagnosticSource;
     }
 
-    internal DiagnosticSource DiagnosticSource { get; }
+    internal DiagnosticSource? DiagnosticSource { get; }
 
     internal ResilienceTelemetrySource TelemetrySource { get; }
 
@@ -29,7 +29,7 @@ public sealed class ResilienceStrategyTelemetry
     public void Report<TArgs>(string eventName, TArgs args)
         where TArgs : IResilienceArguments
     {
-        if (!DiagnosticSource.IsEnabled(eventName))
+        if (DiagnosticSource is null || !DiagnosticSource.IsEnabled(eventName))
         {
             return;
         }
@@ -48,7 +48,7 @@ public sealed class ResilienceStrategyTelemetry
     public void Report<TArgs, TResult>(string eventName, Outcome<TResult> outcome, TArgs args)
         where TArgs : IResilienceArguments
     {
-        if (!DiagnosticSource.IsEnabled(eventName))
+        if (DiagnosticSource is null || !DiagnosticSource.IsEnabled(eventName))
         {
             return;
         }
