@@ -3,7 +3,7 @@ using Moq;
 using Polly.Strategy;
 using Polly.Utils;
 
-namespace Polly.Core.Tests.Strategy;
+namespace Polly.Core.Tests;
 
 public class ResilienceStrategyBuilderTests
 {

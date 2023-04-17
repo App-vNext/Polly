@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
+using Polly.Strategy;
 
-namespace Polly.Strategy;
+namespace Polly;
 
 /// <summary>
 /// A builder that is used to create an instance of <see cref="ResilienceStrategy"/>.

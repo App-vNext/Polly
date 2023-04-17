@@ -1,5 +1,3 @@
-using Polly.Strategy;
-
 namespace Polly.Extensions.DependencyInjection;
 
 /// <summary>
