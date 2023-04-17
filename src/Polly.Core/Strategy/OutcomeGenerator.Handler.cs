@@ -51,9 +51,11 @@ public sealed partial class OutcomeGenerator<TArgs, TValue>
         {
             TValue value = DefaultValue;
 
-            if (_type == typeof(AnyResult))
+            if (_type == typeof(object))
             {
-                value = await ((Func<Outcome, TArgs, ValueTask<TValue>>)_generator)(outcome.AsOutcome(), args).ConfigureAwait(args.Context.ContinueOnCapturedContext);
+                var objectOutcome = outcome.Exception != null ? new Outcome<object>(outcome.Exception) : new Outcome<object>(outcome.Result!);
+
+                value = await ((Func<Outcome<object>, TArgs, ValueTask<TValue>>)_generator)(objectOutcome, args).ConfigureAwait(args.Context.ContinueOnCapturedContext);
             }
             else if (typeof(TResult) == _type)
             {
@@ -91,7 +93,7 @@ public sealed partial class OutcomeGenerator<TArgs, TValue>
                 }
             }
 
-            if (_generators.TryGetValue(typeof(AnyResult), out handler))
+            if (_generators.TryGetValue(typeof(object), out handler))
             {
                 return await handler.GenerateAsync(outcome, args).ConfigureAwait(args.Context.ContinueOnCapturedContext);
             }

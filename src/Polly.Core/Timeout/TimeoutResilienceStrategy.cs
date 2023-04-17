@@ -12,7 +12,7 @@ internal sealed class TimeoutResilienceStrategy : ResilienceStrategy
     public TimeoutResilienceStrategy(TimeoutStrategyOptions options, TimeProvider timeProvider, ResilienceStrategyTelemetry telemetry)
     {
         DefaultTimeout = options.Timeout;
-        TimeoutGenerator = options.TimeoutGenerator.CreateHandler();
+        TimeoutGenerator = options.TimeoutGenerator.CreateHandler(DefaultTimeout, TimeoutUtil.IsTimeoutValid);
         OnTimeout = options.OnTimeout.CreateHandler();
         _timeProvider = timeProvider;
         _telemetry = telemetry;
@@ -80,20 +80,14 @@ internal sealed class TimeoutResilienceStrategy : ResilienceStrategy
         }
     }
 
-    internal async ValueTask<TimeSpan> GetTimeoutAsync(ResilienceContext context)
+    internal ValueTask<TimeSpan> GetTimeoutAsync(ResilienceContext context)
     {
         if (TimeoutGenerator == null)
         {
-            return DefaultTimeout;
+            return new ValueTask<TimeSpan>(DefaultTimeout);
         }
 
-        var timeout = await TimeoutGenerator(new TimeoutGeneratorArguments(context)).ConfigureAwait(context.ContinueOnCapturedContext);
-        if (TimeoutUtil.IsTimeoutValid(timeout))
-        {
-            return timeout;
-        }
-
-        return DefaultTimeout;
+        return TimeoutGenerator(new TimeoutGeneratorArguments(context));
     }
 
     private static ValueTask DisposeRegistration(CancellationTokenRegistration? registration)

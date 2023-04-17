@@ -28,12 +28,12 @@ public partial class OutcomeEvent<TArgs>
     private sealed class TypeHandler : Handler
     {
         private readonly Type _type;
-        private readonly object[] _callbacks;
+        private readonly object _callback;
 
-        public TypeHandler(Type type, List<object> callbacks)
+        public TypeHandler(Type type, object callback)
         {
             _type = type;
-            _callbacks = callbacks.ToArray();
+            _callback = callback;
         }
 
         public override ValueTask HandleAsync<TResult>(Outcome<TResult> outcome, TArgs args)
@@ -43,29 +43,8 @@ public partial class OutcomeEvent<TArgs>
                 return default;
             }
 
-            return HandleCoreAsync(outcome, args);
-        }
-
-        private ValueTask HandleCoreAsync<TResult>(Outcome<TResult> outcome, TArgs args)
-        {
-            if (_callbacks.Length == 1)
-            {
-                var callback = (Func<Outcome<TResult>, TArgs, ValueTask>)_callbacks[0];
-
-                return callback(outcome, args);
-            }
-
-            return InvokeCallbacksAsync(outcome, args);
-        }
-
-        private async ValueTask InvokeCallbacksAsync<TResult>(Outcome<TResult> outcome, TArgs args)
-        {
-            foreach (var obj in _callbacks)
-            {
-                var callback = (Func<Outcome<TResult>, TArgs, ValueTask>)obj;
-
-                await callback(outcome, args).ConfigureAwait(args.Context.ContinueOnCapturedContext);
-            }
+            var callback = (Func<Outcome<TResult>, TArgs, ValueTask>)_callback;
+            return callback(outcome, args);
         }
     }
 
@@ -73,7 +52,7 @@ public partial class OutcomeEvent<TArgs>
     {
         private readonly Dictionary<Type, TypeHandler> _handlers;
 
-        public TypesHandler(IEnumerable<KeyValuePair<Type, List<object>>> callbacks)
+        public TypesHandler(IEnumerable<KeyValuePair<Type, object>> callbacks)
             => _handlers = callbacks.ToDictionary(v => v.Key, v => new TypeHandler(v.Key, v.Value));
 
         public override ValueTask HandleAsync<TResult>(Outcome<TResult> outcome, TArgs args)

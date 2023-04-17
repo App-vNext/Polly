@@ -10,7 +10,7 @@ namespace Polly.Strategy;
 public sealed partial class OutcomeEvent<TArgs>
     where TArgs : IResilienceArguments
 {
-    private readonly Dictionary<Type, List<object>> _callbacks = new();
+    private readonly Dictionary<Type, (object callback, Func<object?> handlerFactory)> _callbacks = new();
 
     /// <summary>
     /// Gets a value indicating whether the event is empty.
@@ -27,11 +27,7 @@ public sealed partial class OutcomeEvent<TArgs>
     {
         Guard.NotNull(callback);
 
-        return Register<TResult>((_, _) =>
-        {
-            callback();
-            return default;
-        });
+        return ConfigureCallbacks<TResult>(c => c.Register(callback));
     }
 
     /// <summary>
@@ -44,11 +40,7 @@ public sealed partial class OutcomeEvent<TArgs>
     {
         Guard.NotNull(callback);
 
-        return Register<TResult>((outcome, _) =>
-        {
-            callback(outcome);
-            return default;
-        });
+        return ConfigureCallbacks<TResult>(c => c.Register(callback));
     }
 
     /// <summary>
@@ -61,11 +53,7 @@ public sealed partial class OutcomeEvent<TArgs>
     {
         Guard.NotNull(callback);
 
-        return Register<TResult>((outcome, args) =>
-        {
-            callback(outcome, args);
-            return default;
-        });
+        return ConfigureCallbacks<TResult>(c => c.Register(callback));
     }
 
     /// <summary>
@@ -78,16 +66,40 @@ public sealed partial class OutcomeEvent<TArgs>
     {
         Guard.NotNull(callback);
 
-        if (!_callbacks.TryGetValue(typeof(TResult), out var callbacks))
+        return ConfigureCallbacks<TResult>(c => c.Register(callback));
+    }
+
+    /// <summary>
+    /// Adds a callback for the specified result type.
+    /// </summary>
+    /// <typeparam name="TResult">The result type to add a callbacks for.</typeparam>
+    /// <param name="configure">Action that configures the callbacks.</param>
+    /// <returns>The current updated instance.</returns>
+    public OutcomeEvent<TArgs> ConfigureCallbacks<TResult>(Action<OutcomeEvent<TArgs, TResult>> configure)
+    {
+        Guard.NotNull(configure);
+
+        if (!_callbacks.TryGetValue(typeof(TResult), out var generator))
         {
-            callbacks = new List<object> { callback };
-            _callbacks.Add(typeof(TResult), callbacks);
-        }
-        else
-        {
-            callbacks.Add(callback);
+            SetCallbacks(new OutcomeEvent<TArgs, TResult>());
+            generator = _callbacks[typeof(TResult)];
         }
 
+        configure((OutcomeEvent<TArgs, TResult>)generator.callback);
+        return this;
+    }
+
+    /// <summary>
+    /// Sets callbacks for the specified result type.
+    /// </summary>
+    /// <typeparam name="TResult">The result type to add a callbacks for.</typeparam>
+    /// <param name="callbacks">The callbacks instance.</param>
+    /// <returns>The current updated instance.</returns>
+    public OutcomeEvent<TArgs> SetCallbacks<TResult>(OutcomeEvent<TArgs, TResult> callbacks)
+    {
+        Guard.NotNull(callbacks);
+
+        _callbacks[typeof(TResult)] = (callbacks, callbacks.CreateHandler);
         return this;
     }
 
@@ -97,13 +109,16 @@ public sealed partial class OutcomeEvent<TArgs>
     /// <returns>Handler instance or <c>null</c> if no callbacks are registered.</returns>
     public Handler? CreateHandler()
     {
-        var pairs = _callbacks.ToArray();
+        var pairs = _callbacks
+             .Select(pair => new KeyValuePair<Type, object?>(pair.Key, pair.Value.handlerFactory()))
+             .Where(pair => pair.Value is not null)
+             .ToArray();
 
         return pairs.Length switch
         {
             0 => null,
-            1 => new TypeHandler(pairs[0].Key, pairs[0].Value),
-            _ => new TypesHandler(pairs)
+            1 => new TypeHandler(pairs[0].Key, pairs[0].Value!),
+            _ => new TypesHandler(pairs!)
         };
     }
 }

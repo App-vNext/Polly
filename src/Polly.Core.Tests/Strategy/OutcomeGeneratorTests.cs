@@ -116,6 +116,22 @@ public class OutcomeGeneratorTests
             });
             InvokeHandler(sut, new Outcome<int>(10), GeneratedValue.Valid1);
         },
+        sut =>
+        {
+            sut.ConfigureGenerator<int>(generator => generator.IsEmpty.Should().BeTrue());
+            InvokeHandler(sut, new Outcome<int>(10), GeneratedValue.Default);
+        },
+        sut =>
+        {
+            sut.ConfigureGenerator<int>(generator => generator.SetGenerator((_, _) => GeneratedValue.Valid1));
+            sut.SetGenerator(new OutcomeGenerator<TestArguments, GeneratedValue, int>());
+            InvokeHandler(sut, new Outcome<int>(10), GeneratedValue.Default);
+        },
+        sut =>
+        {
+            sut.SetGenerator((_, _) => new ValueTask<GeneratedValue>(GeneratedValue.Valid1));
+            InvokeHandler(sut, new Outcome<int>(10), GeneratedValue.Valid1);
+        },
     };
 
     [MemberData(nameof(Data))]
@@ -155,7 +171,15 @@ public class OutcomeGeneratorTests
 
     private static void InvokeHandler<T>(OutcomeGenerator<TestArguments, GeneratedValue> sut, Outcome<T> outcome, GeneratedValue expectedResult)
     {
-        CreateHandler(sut)!.GenerateAsync(outcome, new TestArguments()).AsTask().Result.Should().Be(expectedResult);
+        OutcomeGenerator<TestArguments, GeneratedValue>.Handler? handler = CreateHandler(sut);
+
+        if (handler == null)
+        {
+            expectedResult.Should().Be(GeneratedValue.Default);
+            return;
+        }
+
+        handler.GenerateAsync(outcome, new TestArguments()).AsTask().Result.Should().Be(expectedResult);
     }
 
     private static OutcomeGenerator<TestArguments, GeneratedValue>.Handler? CreateHandler(OutcomeGenerator<TestArguments, GeneratedValue> generator)

@@ -161,19 +161,26 @@ public sealed partial class OutcomePredicate<TArgs>
     {
         Guard.NotNull(configure);
 
-        OutcomePredicate<TArgs, TResult>? predicate = null;
-
-        if (!_predicates.ContainsKey(typeof(TResult)))
+        if (!_predicates.TryGetValue(typeof(TResult), out var predicate))
         {
-            predicate = new OutcomePredicate<TArgs, TResult>();
-            _predicates[typeof(TResult)] = (predicate, () => predicate.CreateHandler());
-        }
-        else
-        {
-            predicate = (OutcomePredicate<TArgs, TResult>)_predicates[typeof(TResult)].predicate;
+            SetPredicates(new OutcomePredicate<TArgs, TResult>());
+            predicate = _predicates[typeof(TResult)];
         }
 
-        configure(predicate);
+        configure((OutcomePredicate<TArgs, TResult>)predicate.predicate);
+        return this;
+    }
+
+    /// <summary>
+    /// Sets the predicates for the specified result type.
+    /// </summary>
+    /// <typeparam name="TResult">The result type to add a predicate for.</typeparam>
+    /// <param name="predicates">The configured predicates.</param>
+    /// <returns>The current updated instance.</returns>
+    public OutcomePredicate<TArgs> SetPredicates<TResult>(OutcomePredicate<TArgs, TResult> predicates)
+    {
+        Guard.NotNull(predicates);
+        _predicates[typeof(TResult)] = (predicates, predicates.CreateHandler);
         return this;
     }
 
