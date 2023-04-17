@@ -121,6 +121,8 @@ public static class RetryResilienceStrategyBuilderExtensions
         Guard.NotNull(builder);
         Guard.NotNull(options);
 
+        ValidationHelper.ValidateObject(options, "The retry strategy options are invalid.");
+
         return builder.AddRetry(options.AsNonGenericOptions());
     }
 

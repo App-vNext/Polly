@@ -45,7 +45,7 @@ public class RetryResilienceStrategyBuilderExtensionsTests
             });
 
             AssertStrategy(builder, RetryBackoffType.Exponential, 3, TimeSpan.FromSeconds(2));
-        },
+        }
     };
 
     [MemberData(nameof(OverloadsData))]
@@ -87,6 +87,12 @@ public class RetryResilienceStrategyBuilderExtensionsTests
 
         builder
             .Invoking(b => b.AddRetry(new RetryStrategyOptions { ShouldRetry = null! }))
+            .Should()
+            .Throw<ValidationException>()
+            .WithMessage("The retry strategy options are invalid.*");
+
+        builder
+            .Invoking(b => b.AddRetry(new RetryStrategyOptions<int> { ShouldRetry = null! }))
             .Should()
             .Throw<ValidationException>()
             .WithMessage("The retry strategy options are invalid.*");
