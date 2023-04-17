@@ -10,7 +10,7 @@ namespace Polly.Strategy;
 /// A class that generates values based on the <see cref="Outcome{TResult}"/> and <typeparamref name="TArgs"/>.
 /// </summary>
 /// <typeparam name="TArgs">The arguments the generator uses.</typeparam>
-/// <typeparam name="TValue">The type of generated value.</typeparam>
+/// <typeparam name="TValue">The type of the generated value.</typeparam>
 /// <typeparam name="TResult">The result type that this event handles.</typeparam>
 public sealed class OutcomeGenerator<TArgs, TValue, TResult>
     where TArgs : IResilienceArguments
