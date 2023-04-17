@@ -77,6 +77,19 @@ public class OutcomeEventTests
             InvokeHandler(sut, new Outcome<bool>(true));
             called.Should().BeFalse();
         },
+        sut =>
+        {
+            sut.ConfigureCallbacks<double>(callbacks => callbacks.IsEmpty.Should().BeTrue());
+            InvokeHandler(sut, new Outcome<double>(1.0));
+        },
+        sut =>
+        {
+            bool called = false;
+            sut.Register<double>((_, _) => { called = true; return default; });
+            sut.SetCallbacks(new OutcomeEvent<TestArguments, double>());
+            InvokeHandler(sut, new Outcome<double>(1.0));
+            called.Should().BeFalse();
+        },
     };
 
     [MemberData(nameof(Data))]
@@ -114,6 +127,6 @@ public class OutcomeEventTests
 
     private static void InvokeHandler<T>(OutcomeEvent<TestArguments> sut, Outcome<T> outcome)
     {
-        sut.CreateHandler()!.HandleAsync(outcome, new TestArguments()).AsTask().Wait();
+        sut.CreateHandler()?.HandleAsync(outcome, new TestArguments()).AsTask().Wait();
     }
 }

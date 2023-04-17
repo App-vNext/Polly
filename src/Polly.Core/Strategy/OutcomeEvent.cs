@@ -70,51 +70,37 @@ public sealed partial class OutcomeEvent<TArgs>
     }
 
     /// <summary>
-    /// Adds a result predicate for the specified result type.
+    /// Adds a callback for the specified result type.
     /// </summary>
-    /// <typeparam name="TResult">The result type to add a predicate for.</typeparam>
-    /// <param name="configure">Callback that configures a result predicate.</param>
+    /// <typeparam name="TResult">The result type to add a callbacks for.</typeparam>
+    /// <param name="configure">Action that configures the callbacks.</param>
     /// <returns>The current updated instance.</returns>
     public OutcomeEvent<TArgs> ConfigureCallbacks<TResult>(Action<OutcomeEvent<TArgs, TResult>> configure)
     {
         Guard.NotNull(configure);
 
-        OutcomeEvent<TArgs, TResult>? outcomeEvent = null;
-
         if (!_callbacks.ContainsKey(typeof(TResult)))
         {
-            outcomeEvent = new OutcomeEvent<TArgs, TResult>();
-            _callbacks[typeof(TResult)] = (outcomeEvent, () => outcomeEvent.CreateHandler());
-        }
-        else
-        {
-            outcomeEvent = (OutcomeEvent<TArgs, TResult>)_callbacks[typeof(TResult)].callback;
+            SetCallbacks(new OutcomeEvent<TArgs, TResult>());
         }
 
-        configure(outcomeEvent);
+        configure((OutcomeEvent<TArgs, TResult>)_callbacks[typeof(TResult)].callback);
         return this;
     }
 
+    /// <summary>
+    /// Sets a callbacks for the specified result type.
+    /// </summary>
+    /// <typeparam name="TResult">The result type to add a callbacks for.</typeparam>
+    /// <param name="callbacks">The callbacks instance.</param>
+    /// <returns>The current updated instance.</returns>
     public OutcomeEvent<TArgs> SetCallbacks<TResult>(OutcomeEvent<TArgs, TResult> callbacks)
     {
-        Guard.NotNull(configure);
+        Guard.NotNull(callbacks);
 
-        OutcomeEvent<TArgs, TResult>? outcomeEvent = null;
-
-        if (!_callbacks.ContainsKey(typeof(TResult)))
-        {
-            outcomeEvent = new OutcomeEvent<TArgs, TResult>();
-            _callbacks[typeof(TResult)] = (outcomeEvent, () => outcomeEvent.CreateHandler());
-        }
-        else
-        {
-            outcomeEvent = (OutcomeEvent<TArgs, TResult>)_callbacks[typeof(TResult)].callback;
-        }
-
-        configure(outcomeEvent);
+        _callbacks[typeof(TResult)] = (callbacks, callbacks.CreateHandler);
         return this;
     }
-
 
     /// <summary>
     /// Creates a handler that invokes the registered event callbacks.

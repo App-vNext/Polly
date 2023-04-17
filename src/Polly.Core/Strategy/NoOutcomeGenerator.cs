@@ -62,7 +62,7 @@ public sealed class NoOutcomeGenerator<TArgs, TValue>
                 return defaultValue;
             }
 
-            return defaultValue;
+            return value;
         };
     }
 }

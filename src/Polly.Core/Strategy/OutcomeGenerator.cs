@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Polly.Strategy;
 
 namespace Polly.Strategy;
@@ -11,7 +12,7 @@ namespace Polly.Strategy;
 public sealed partial class OutcomeGenerator<TArgs, TValue>
     where TArgs : IResilienceArguments
 {
-    private readonly Dictionary<Type, object> _generators = new();
+    private readonly Dictionary<Type, (object generator, Func<object?> handlerFactory)> _generators = new();
 
     /// <summary>
     /// Gets a value indicating whether the generator is empty.
@@ -78,7 +79,7 @@ public sealed partial class OutcomeGenerator<TArgs, TValue>
     {
         Guard.NotNull(generator);
 
-        _generators[typeof(TResult)] = generator;
+        _generators[typeof(TResult)] = (generator, generator.CreateHandler);
 
         return this;
     }
@@ -98,7 +99,7 @@ public sealed partial class OutcomeGenerator<TArgs, TValue>
             SetGenerator(new OutcomeGenerator<TArgs, TValue, TResult>());
         }
 
-        configure((OutcomeGenerator<TArgs, TValue, TResult>)_generators[typeof(TResult)]);
+        configure((OutcomeGenerator<TArgs, TValue, TResult>)_generators[typeof(TResult)].generator);
         return this;
     }
 
@@ -110,13 +111,16 @@ public sealed partial class OutcomeGenerator<TArgs, TValue>
     /// <returns>Handler instance or null if no generators are registered.</returns>
     public Handler? CreateHandler(TValue defaultValue, Predicate<TValue> valueValidator)
     {
-        var pairs = _generators.ToArray();
+        var pairs = _generators
+            .Select(pair => new KeyValuePair<Type, object?>(pair.Key, pair.Value.handlerFactory()))
+            .Where(pair => pair.Value != null)
+            .ToArray();
 
         return pairs.Length switch
         {
             0 => null,
-            1 => new TypeHandler(pairs[0].Key, pairs[0].Value, defaultValue, valueValidator),
-            _ => new TypesHandler(pairs, defaultValue, valueValidator)
+            1 => new TypeHandler(pairs[0].Key, pairs[0].Value!, defaultValue, valueValidator),
+            _ => new TypesHandler(pairs!, defaultValue, valueValidator)
         };
     }
 }

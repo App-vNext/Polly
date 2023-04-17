@@ -69,4 +69,19 @@ public class RetryStrategyOptions<TResult> : ResilienceStrategyOptions
     /// </remarks>
     [Required]
     public OutcomeEvent<OnRetryArguments, TResult> OnRetry { get; set; } = new();
+
+    internal RetryStrategyOptions AsNonGenericOptions()
+    {
+        return new RetryStrategyOptions
+        {
+            BackoffType = BackoffType,
+            BaseDelay = BaseDelay,
+            RetryCount = RetryCount,
+            OnRetry = new OutcomeEvent<OnRetryArguments>().SetCallbacks(OnRetry),
+            RetryDelayGenerator = new OutcomeGenerator<RetryDelayArguments, TimeSpan>().SetGenerator(RetryDelayGenerator),
+            ShouldRetry = new OutcomePredicate<ShouldRetryArguments>().SetPredicates(ShouldRetry),
+            StrategyName = StrategyName,
+            StrategyType = StrategyType
+        };
+    }
 }

@@ -35,6 +35,17 @@ public class RetryResilienceStrategyBuilderExtensionsTests
                 strategy.DelayGenerator!.GenerateAsync(new Polly.Strategy.Outcome<bool>(new InvalidOperationException()), args).Result.Should().Be(TimeSpan.FromMilliseconds(8));
             });
         },
+        builder =>
+        {
+            builder.AddRetry(new RetryStrategyOptions<int>
+            {
+                BackoffType = RetryBackoffType.Exponential,
+                RetryCount = 3,
+                BaseDelay = TimeSpan.FromSeconds(2)
+            });
+
+            AssertStrategy(builder, RetryBackoffType.Exponential, 3, TimeSpan.FromSeconds(2));
+        },
     };
 
     [MemberData(nameof(OverloadsData))]

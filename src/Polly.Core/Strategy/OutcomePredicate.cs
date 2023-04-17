@@ -161,39 +161,25 @@ public sealed partial class OutcomePredicate<TArgs>
     {
         Guard.NotNull(configure);
 
-        OutcomePredicate<TArgs, TResult>? predicate = null;
-
         if (!_predicates.ContainsKey(typeof(TResult)))
         {
-            predicate = new OutcomePredicate<TArgs, TResult>();
-            _predicates[typeof(TResult)] = (predicate, () => predicate.CreateHandler());
-        }
-        else
-        {
-            predicate = (OutcomePredicate<TArgs, TResult>)_predicates[typeof(TResult)].predicate;
+            SetPredicates(new OutcomePredicate<TArgs, TResult>());
         }
 
-        configure(predicate);
+        configure((OutcomePredicate<TArgs, TResult>)_predicates[typeof(TResult)].predicate);
         return this;
     }
 
+    /// <summary>
+    /// Sets the predicates for the specified result type.
+    /// </summary>
+    /// <typeparam name="TResult">The result type to add a predicate for.</typeparam>
+    /// <param name="predicate">The configured predicates.</param>
+    /// <returns>The current updated instance.</returns>
     public OutcomePredicate<TArgs> SetPredicates<TResult>(OutcomePredicate<TArgs, TResult> predicate)
     {
-        Guard.NotNull(configure);
-
-        OutcomePredicate<TArgs, TResult>? predicate = null;
-
-        if (!_predicates.ContainsKey(typeof(TResult)))
-        {
-            predicate = new OutcomePredicate<TArgs, TResult>();
-            _predicates[typeof(TResult)] = (predicate, () => predicate.CreateHandler());
-        }
-        else
-        {
-            predicate = (OutcomePredicate<TArgs, TResult>)_predicates[typeof(TResult)].predicate;
-        }
-
-        configure(predicate);
+        Guard.NotNull(predicate);
+        _predicates[typeof(TResult)] = (predicate, predicate.CreateHandler);
         return this;
     }
 

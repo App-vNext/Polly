@@ -35,7 +35,7 @@ public class TimeoutResilienceStrategyTests : IDisposable
     public void Execute_EnsureTimeoutGeneratorCalled()
     {
         var called = false;
-        _options.TimeoutGenerator.SetTimeout(args =>
+        _options.TimeoutGenerator.SetGenerator(args =>
         {
             args.Context.Should().NotBeNull();
             called = true;
@@ -55,7 +55,7 @@ public class TimeoutResilienceStrategyTests : IDisposable
         _diagnosticSource.Setup(v => v.IsEnabled("OnTimeout")).Returns(true);
 
         var called = false;
-        _options.TimeoutGenerator.SetTimeout(args => _delay);
+        _options.TimeoutGenerator.SetGenerator(args => _delay);
         _options.OnTimeout.Register(args =>
         {
             args.Exception.Should().BeAssignableTo<OperationCanceledException>();
@@ -80,7 +80,7 @@ public class TimeoutResilienceStrategyTests : IDisposable
     {
         var called = false;
         var sut = CreateSut();
-        _options.TimeoutGenerator.SetTimeout(args =>
+        _options.TimeoutGenerator.SetGenerator(args =>
         {
             called = true;
             return timeout;
@@ -97,7 +97,7 @@ public class TimeoutResilienceStrategyTests : IDisposable
     {
         using var cts = new CancellationTokenSource();
         CancellationToken token = defaultCancellationToken ? default : cts.Token;
-        _options.TimeoutGenerator.SetTimeout(args => TimeSpan.FromSeconds(2));
+        _options.TimeoutGenerator.SetGenerator(args => TimeSpan.FromSeconds(2));
         _timeProvider.SetupCancelAfterNow(TimeSpan.FromSeconds(2));
         var sut = CreateSut();
 
@@ -116,7 +116,7 @@ public class TimeoutResilienceStrategyTests : IDisposable
 
         var onTimeoutCalled = false;
         using var cts = new CancellationTokenSource();
-        _options.TimeoutGenerator.SetTimeout(args => TimeSpan.FromSeconds(10));
+        _options.TimeoutGenerator.SetGenerator(args => TimeSpan.FromSeconds(10));
         _options.OnTimeout.Register(() => onTimeoutCalled = true);
         _timeProvider.Setup(v => v.CancelAfter(It.IsAny<CancellationTokenSource>(), delay));
 
@@ -138,7 +138,7 @@ public class TimeoutResilienceStrategyTests : IDisposable
         var delay = TimeSpan.FromSeconds(10);
 
         using var cts = new CancellationTokenSource();
-        _options.TimeoutGenerator.SetTimeout(args => TimeSpan.FromSeconds(10));
+        _options.TimeoutGenerator.SetGenerator(args => TimeSpan.FromSeconds(10));
         _timeProvider.Setup(v => v.CancelAfter(It.IsAny<CancellationTokenSource>(), delay));
 
         var sut = CreateSut();
@@ -163,7 +163,7 @@ public class TimeoutResilienceStrategyTests : IDisposable
     {
         // Arrange
         using var cts = new CancellationTokenSource();
-        _options.TimeoutGenerator.SetTimeout(args => TimeSpan.FromSeconds(10));
+        _options.TimeoutGenerator.SetGenerator(args => TimeSpan.FromSeconds(10));
         _timeProvider.Setup(v => v.CancelAfter(It.IsAny<CancellationTokenSource>(), TimeSpan.FromSeconds(10)));
 
         var sut = CreateSut();
