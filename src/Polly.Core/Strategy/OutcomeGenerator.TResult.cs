@@ -7,7 +7,7 @@ namespace Polly.Strategy;
 #pragma warning disable CA1005 // Avoid excessive parameters on generic types
 
 /// <summary>
-/// Generators that generates a value based on the <see cref="Outcome{TResult}"/>.
+/// A class that generates values based on the <see cref="Outcome{TResult}"/> and <typeparamref name="TArgs"/>.
 /// </summary>
 /// <typeparam name="TArgs">The arguments the generator uses.</typeparam>
 /// <typeparam name="TValue">The type of generated value.</typeparam>
@@ -23,7 +23,7 @@ public sealed class OutcomeGenerator<TArgs, TValue, TResult>
     public bool IsEmpty => _generator == null;
 
     /// <summary>
-    /// Adds a result generator for the specified result type.
+    /// Adds a result generator for a specific result type.
     /// </summary>
     /// <param name="generator">The value generator.</param>
     /// <returns>The current updated instance.</returns>
@@ -35,7 +35,7 @@ public sealed class OutcomeGenerator<TArgs, TValue, TResult>
     }
 
     /// <summary>
-    /// Adds a result generator for the specified result type.
+    /// Adds a result generator for a specific result type.
     /// </summary>
     /// <param name="generator">The value generator.</param>
     /// <returns>The current updated instance.</returns>

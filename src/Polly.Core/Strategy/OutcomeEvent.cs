@@ -79,17 +79,18 @@ public sealed partial class OutcomeEvent<TArgs>
     {
         Guard.NotNull(configure);
 
-        if (!_callbacks.ContainsKey(typeof(TResult)))
+        if (!_callbacks.TryGetValue(typeof(TResult), out var generator))
         {
             SetCallbacks(new OutcomeEvent<TArgs, TResult>());
+            generator = _callbacks[typeof(TResult)];
         }
 
-        configure((OutcomeEvent<TArgs, TResult>)_callbacks[typeof(TResult)].callback);
+        configure((OutcomeEvent<TArgs, TResult>)generator.callback);
         return this;
     }
 
     /// <summary>
-    /// Sets a callbacks for the specified result type.
+    /// Sets callbacks for the specified result type.
     /// </summary>
     /// <typeparam name="TResult">The result type to add a callbacks for.</typeparam>
     /// <param name="callbacks">The callbacks instance.</param>
@@ -110,7 +111,7 @@ public sealed partial class OutcomeEvent<TArgs>
     {
         var pairs = _callbacks
              .Select(pair => new KeyValuePair<Type, object?>(pair.Key, pair.Value.handlerFactory()))
-             .Where(pair => pair.Value != null)
+             .Where(pair => pair.Value is not null)
              .ToArray();
 
         return pairs.Length switch

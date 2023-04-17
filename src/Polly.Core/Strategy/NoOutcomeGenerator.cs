@@ -1,10 +1,10 @@
 namespace Polly.Strategy;
 
 /// <summary>
-/// Generator that generates value based on the <typeparamref name="TArgs"/>.
+/// Generator that generates values based on the <typeparamref name="TArgs"/>.
 /// </summary>
 /// <typeparam name="TArgs">The arguments the generator uses.</typeparam>
-/// <typeparam name="TValue">The type of generated value.</typeparam>
+/// <typeparam name="TValue">The type of the generated value.</typeparam>
 public sealed class NoOutcomeGenerator<TArgs, TValue>
     where TArgs : IResilienceArguments
 {

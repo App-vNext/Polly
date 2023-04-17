@@ -5,7 +5,7 @@ using Polly.Strategy;
 namespace Polly.Strategy;
 
 /// <summary>
-/// Generators that generates a value based on the <see cref="Outcome{TResult}"/>.
+/// A class that generates values based on the <see cref="Outcome{TResult}"/> and <typeparamref name="TArgs"/>.
 /// </summary>
 /// <typeparam name="TArgs">The arguments the generator uses.</typeparam>
 /// <typeparam name="TValue">The type of generated value.</typeparam>
@@ -20,7 +20,7 @@ public sealed partial class OutcomeGenerator<TArgs, TValue>
     public bool IsEmpty => _generators.Count == 0;
 
     /// <summary>
-    /// Adds a result generator for the specified result type.
+    /// Adds a result generator for a specific result type.
     /// </summary>
     /// <typeparam name="TResult">The result type to add a generator for.</typeparam>
     /// <param name="generator">The value generator.</param>
@@ -33,7 +33,7 @@ public sealed partial class OutcomeGenerator<TArgs, TValue>
     }
 
     /// <summary>
-    /// Adds a result generator for the specified result type.
+    /// Adds a result generator for a specific result type.
     /// </summary>
     /// <typeparam name="TResult">The result type to add a generator for.</typeparam>
     /// <param name="generator">The value generator.</param>
@@ -94,12 +94,13 @@ public sealed partial class OutcomeGenerator<TArgs, TValue>
     {
         Guard.NotNull(configure);
 
-        if (!_generators.ContainsKey(typeof(TResult)))
+        if (!_generators.TryGetValue(typeof(TResult), out var generator))
         {
             SetGenerator(new OutcomeGenerator<TArgs, TValue, TResult>());
+            generator = _generators[typeof(TResult)];
         }
 
-        configure((OutcomeGenerator<TArgs, TValue, TResult>)_generators[typeof(TResult)].generator);
+        configure((OutcomeGenerator<TArgs, TValue, TResult>)generator.generator);
         return this;
     }
 
@@ -113,7 +114,7 @@ public sealed partial class OutcomeGenerator<TArgs, TValue>
     {
         var pairs = _generators
             .Select(pair => new KeyValuePair<Type, object?>(pair.Key, pair.Value.handlerFactory()))
-            .Where(pair => pair.Value != null)
+            .Where(pair => pair.Value is not null)
             .ToArray();
 
         return pairs.Length switch
