@@ -20,7 +20,7 @@ public sealed class OutcomeGenerator<TArgs, TValue, TResult>
     /// <summary>
     /// Gets a value indicating whether the generator is empty.
     /// </summary>
-    public bool IsEmpty => _generator == null;
+    public bool IsEmpty => _generator is null;
 
     /// <summary>
     /// Adds a result generator for a specific result type.
