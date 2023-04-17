@@ -1,5 +1,4 @@
 using System;
-using Polly.Builder;
 using Polly.Strategy;
 using Polly.Timeout;
 

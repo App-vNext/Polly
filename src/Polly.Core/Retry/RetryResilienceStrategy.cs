@@ -1,15 +1,14 @@
 using System;
 using Polly.Strategy;
-using Polly.Telemetry;
 
 namespace Polly.Retry;
 
 internal class RetryResilienceStrategy : ResilienceStrategy
 {
     private readonly TimeProvider _timeProvider;
-    private readonly ResilienceTelemetry _telemetry;
+    private readonly ResilienceStrategyTelemetry _telemetry;
 
-    public RetryResilienceStrategy(RetryStrategyOptions options, TimeProvider timeProvider, ResilienceTelemetry telemetry)
+    public RetryResilienceStrategy(RetryStrategyOptions options, TimeProvider timeProvider, ResilienceStrategyTelemetry telemetry)
     {
         _timeProvider = timeProvider;
         _telemetry = telemetry;

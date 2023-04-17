@@ -1,6 +1,5 @@
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
-using Polly.Builder;
 using Polly.Registry;
 
 namespace Polly.Core.Tests.Registry;

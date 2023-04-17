@@ -2,15 +2,15 @@ using Moq;
 using Polly.Strategy;
 using Polly.Telemetry;
 
-namespace Polly.Core.Tests.Telemetry;
+namespace Polly.Core.Tests.Strategy;
 
-public class ResilienceTelemetryTests
+public class ResilienceStrategyTelemetryTests
 {
     private readonly Mock<DiagnosticSource> _diagnosticSource = new(MockBehavior.Strict);
 
-    public ResilienceTelemetryTests() => _sut = new(new ResilienceTelemetrySource("builder", new ResilienceProperties(), "strategy-name", "strategy-type"), _diagnosticSource.Object);
+    public ResilienceStrategyTelemetryTests() => _sut = new(new ResilienceTelemetrySource("builder", new ResilienceProperties(), "strategy-name", "strategy-type"), _diagnosticSource.Object);
 
-    private readonly ResilienceTelemetry _sut;
+    private readonly ResilienceStrategyTelemetry _sut;
 
     [Fact]
     public void Report_NoOutcome_OK()

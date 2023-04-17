@@ -1,7 +1,6 @@
-using Polly.Strategy;
-using static Polly.Telemetry.ResilienceTelemetry;
+using Polly.Telemetry;
 
-namespace Polly.Telemetry;
+namespace Polly.Strategy;
 
 /// <summary>
 /// Resilience telemetry is used by individual resilience strategies to report some important events.
@@ -9,9 +8,9 @@ namespace Polly.Telemetry;
 /// <remarks>
 /// For example, the timeout strategy reports "OnTimeout" event when the timeout is reached or "OnRetry" for retry strategy.
 /// </remarks>
-public sealed class ResilienceTelemetry
+public sealed class ResilienceStrategyTelemetry
 {
-    internal ResilienceTelemetry(ResilienceTelemetrySource source, DiagnosticSource diagnosticSource)
+    internal ResilienceStrategyTelemetry(ResilienceTelemetrySource source, DiagnosticSource diagnosticSource)
     {
         TelemetrySource = source;
         DiagnosticSource = diagnosticSource;
