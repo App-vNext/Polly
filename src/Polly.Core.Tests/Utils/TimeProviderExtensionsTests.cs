@@ -25,7 +25,7 @@ public class TimeProviderExtensionsTests
         context.CancellationToken = token;
         mock.SetupDelay(delay, token);
 
-        await TestUtils.AssertWithTimeoutAsync(async () =>
+        await TestUtilities.AssertWithTimeoutAsync(async () =>
         {
             var task = timeProvider.DelayAsync(delay, context);
             task.IsCompleted.Should().Be(synchronous || mocked);
@@ -45,7 +45,7 @@ public class TimeProviderExtensionsTests
         var context = ResilienceContext.Get();
         context.Initialize<VoidResult>(isSynchronous: true);
 
-        await TestUtils.AssertWithTimeoutAsync(async () =>
+        await TestUtilities.AssertWithTimeoutAsync(async () =>
         {
             var watch = Stopwatch.StartNew();
             await TimeProvider.System.DelayAsync(delay, context);
@@ -63,7 +63,7 @@ public class TimeProviderExtensionsTests
         context.Initialize<VoidResult>(isSynchronous: true);
         context.CancellationToken = cts.Token;
 
-        await TestUtils.AssertWithTimeoutAsync(async () =>
+        await TestUtilities.AssertWithTimeoutAsync(async () =>
         {
             await TimeProvider.System
                 .Invoking(p => p.DelayAsync(delay, context))
@@ -102,7 +102,7 @@ public class TimeProviderExtensionsTests
     {
         var delay = TimeSpan.FromMilliseconds(20);
 
-        await TestUtils.AssertWithTimeoutAsync(async () =>
+        await TestUtilities.AssertWithTimeoutAsync(async () =>
         {
             var mock = new FakeTimeProvider();
             using var tcs = new CancellationTokenSource();

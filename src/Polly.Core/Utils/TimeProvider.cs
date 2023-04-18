@@ -28,6 +28,8 @@ internal abstract class TimeProvider
 
     public TimeSpan GetElapsedTime(long startingTimestamp, long endingTimestamp) => new((long)((endingTimestamp - startingTimestamp) * _tickFrequency));
 
+    public TimeSpan GetElapsedTime(long startingTimestamp) => GetElapsedTime(startingTimestamp, GetTimestamp());
+
     public abstract Task Delay(TimeSpan delay, CancellationToken cancellationToken = default);
 
     public abstract void CancelAfter(CancellationTokenSource source, TimeSpan delay);

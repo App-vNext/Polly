@@ -11,7 +11,7 @@ public class RetryResilienceStrategyTests
     private readonly ResilienceStrategyTelemetry _telemetry;
     private readonly Mock<DiagnosticSource> _diagnosticSource = new();
 
-    public RetryResilienceStrategyTests() => _telemetry = TestUtils.CreateResilienceTelemetry(_diagnosticSource.Object);
+    public RetryResilienceStrategyTests() => _telemetry = TestUtilities.CreateResilienceTelemetry(_diagnosticSource.Object);
 
     [Fact]
     public void ShouldRetryEmpty_Skipped()

@@ -13,7 +13,7 @@ public class SystemTimeProviderTests
     [Fact]
     public async Task CancelAfter_Ok()
     {
-        await TestUtils.AssertWithTimeoutAsync(async () =>
+        await TestUtilities.AssertWithTimeoutAsync(async () =>
         {
             using var cts = new CancellationTokenSource();
             TimeProvider.System.CancelAfter(cts, TimeSpan.FromMilliseconds(10));
@@ -28,7 +28,7 @@ public class SystemTimeProviderTests
     {
         using var cts = new CancellationTokenSource();
 
-        await TestUtils.AssertWithTimeoutAsync(() =>
+        await TestUtilities.AssertWithTimeoutAsync(() =>
         {
             TimeProvider.System.Delay(TimeSpan.FromMilliseconds(10)).IsCompleted.Should().BeFalse();
         });
@@ -48,16 +48,20 @@ public class SystemTimeProviderTests
         var delay = TimeSpan.FromMilliseconds(10);
         var delayWithTolerance = TimeSpan.FromMilliseconds(30);
 
-        await TestUtils.AssertWithTimeoutAsync(async () =>
+        await TestUtilities.AssertWithTimeoutAsync(async () =>
         {
             var stamp1 = TimeProvider.System.GetTimestamp();
             await Task.Delay(10);
             var stamp2 = TimeProvider.System.GetTimestamp();
 
             var elapsed = TimeProvider.System.GetElapsedTime(stamp1, stamp2);
+            var elapsed2 = TimeProvider.System.GetElapsedTime(stamp1);
 
             elapsed.Should().BeGreaterThanOrEqualTo(delay);
             elapsed.Should().BeLessThan(delayWithTolerance);
+
+            elapsed2.Should().BeGreaterThanOrEqualTo(delay);
+            elapsed2.Should().BeLessThan(delayWithTolerance);
         });
     }
 
@@ -81,7 +85,7 @@ public class SystemTimeProviderTests
     [Fact]
     public async Task UtcNow_Ok()
     {
-        await TestUtils.AssertWithTimeoutAsync(() =>
+        await TestUtilities.AssertWithTimeoutAsync(() =>
         {
             var now = TimeProvider.System.UtcNow;
             (DateTimeOffset.UtcNow - now).Should().BeLessThanOrEqualTo(TimeSpan.FromMilliseconds(10));

@@ -1,6 +1,7 @@
 using System.Globalization;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging.Abstractions;
+using Microsoft.Extensions.Options;
 using Polly.Extensions.DependencyInjection;
 using Polly.Extensions.Telemetry;
 using Polly.Registry;
@@ -69,12 +70,18 @@ public class PollyServiceCollectionExtensionTests
         asserted.Should().BeTrue();
     }
 
-    [Fact]
-    public void AddResilienceStrategy_EnsureTelemetryEnabled()
+    [InlineData(true)]
+    [InlineData(false)]
+    [Theory]
+    public void AddResilienceStrategy_EnsureTelemetryEnabled(bool hasLogging)
     {
         ResilienceStrategyTelemetry? telemetry = null;
 
-        _services.AddLogging();
+        if (hasLogging)
+        {
+            _services.AddLogging();
+        }
+
         _services.AddResilienceStrategy(Key, context =>
         {
             context.Builder.AddStrategy(context =>
@@ -87,10 +94,18 @@ public class PollyServiceCollectionExtensionTests
         CreateProvider().Get(Key);
 
         var diagSource = telemetry!.GetType().GetProperty("DiagnosticSource", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(telemetry);
+        diagSource.Should().BeOfType<ResilienceTelemetryDiagnosticSource>();
 
-        diagSource
-            .Should().BeOfType<ResilienceTelemetryDiagnosticSource>().Subject.LoggerFactory
-            .Should().NotBe(NullLoggerFactory.Instance);
+        var factory = _services.BuildServiceProvider().GetRequiredService<IOptions<TelemetryResilienceStrategyOptions>>().Value.LoggerFactory;
+
+        if (hasLogging)
+        {
+            factory.Should().NotBe(NullLoggerFactory.Instance);
+        }
+        else
+        {
+            factory.Should().Be(NullLoggerFactory.Instance);
+        }
     }
 
     [Fact]
@@ -129,7 +144,6 @@ public class PollyServiceCollectionExtensionTests
         var provider = CreateProvider();
 
         var strategy = provider.Get(Key);
-        strategy.Should().BeOfType<TestStrategy>();
         provider.Get("my-strategy").Should().BeSameAs(provider.Get("my-strategy"));
     }
 

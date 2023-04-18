@@ -15,10 +15,10 @@ public partial class EnrichmentContext
             return true;
         });
 
-    internal static EnrichmentContext Get(IResilienceArguments arguments, Outcome? outcome)
+    internal static EnrichmentContext Get(ResilienceContext resilienceContext, IResilienceArguments? arguments, Outcome? outcome)
     {
         var context = ContextPool.Get();
-        context.ResilienceContext = arguments.Context;
+        context.ResilienceContext = resilienceContext;
         context.ResilienceArguments = arguments;
         context.Outcome = outcome;
 

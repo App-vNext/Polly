@@ -1,5 +1,4 @@
 using System.Diagnostics.Metrics;
-using System.Globalization;
 using Microsoft.Extensions.Logging;
 using Polly.Strategy;
 using Polly.Telemetry;
@@ -8,41 +7,19 @@ namespace Polly.Extensions.Telemetry;
 
 internal class ResilienceTelemetryDiagnosticSource : DiagnosticSource
 {
-    private const string ResilienceEventFormatString =
-        "Resilience event occurred. " +
-        "EventName: '{EventName}', " +
-        "Builder Name: '{BuilderName}', " +
-        "Strategy Name: '{StrategyName}', " +
-        "Strategy Type: '{StrategyType}', " +
-        "Strategy Key: '{StrategyKey}', " +
-        "Outcome: '{Outcome}'";
-
     internal static readonly Meter Meter = new(TelemetryUtil.PollyDiagnosticSource, "1.0");
 
-    private static readonly Action<ILogger, string, string, string, string, string, string, Exception?> ResilienceEventLog = LoggerMessage.Define<string, string, string, string, string, string>(
-            LogLevel.Warning,
-            new EventId(1, "ResilienceEvent"),
-            ResilienceEventFormatString);
-
     private readonly ILogger _logger;
+    private readonly List<Action<EnrichmentContext>> _enrichers;
 
-    public ResilienceTelemetryDiagnosticSource(ResilienceStrategyTelemetryOptions options)
+    public ResilienceTelemetryDiagnosticSource(TelemetryResilienceStrategyOptions options)
     {
-        LoggerFactory = options.LoggerFactory;
-        Enrichers = options.Enrichers.ToList();
-        OutcomeFormatter = options.OutcomeFormatter;
-
+        _enrichers = options.Enrichers.ToList();
         _logger = options.LoggerFactory.CreateLogger(TelemetryUtil.PollyDiagnosticSource);
         Counter = Meter.CreateCounter<int>(
             "resilience-events",
             description: "Tracks the number of resilience events that occurred in resilience strategies.");
     }
-
-    public ILoggerFactory LoggerFactory { get; }
-
-    public Func<Outcome, string> OutcomeFormatter { get; }
-
-    public List<Action<EnrichmentContext>> Enrichers { get; }
 
     public Counter<int> Counter { get; }
 
@@ -61,74 +38,33 @@ internal class ResilienceTelemetryDiagnosticSource : DiagnosticSource
 
     private void MeterEvent(TelemetryEventArguments args)
     {
+        var source = args.Source;
         var tags = new TagList
         {
-            { "event-name", args.EventName },
-            { "builder-name", args.Source.BuilderName },
-            { "strategy-name", args.Source.StrategyName },
-            { "strategy-type", args.Source.StrategyType },
-            { "result-type", args.Context.IsVoid ? "void" : args.Context.ResultType.Name.ToString(CultureInfo.InvariantCulture) }
+            { ResilienceTelemetryTags.EventName, args.EventName },
+            { ResilienceTelemetryTags.BuilderName, source.BuilderName },
+            { ResilienceTelemetryTags.StrategyName, source.StrategyName },
+            { ResilienceTelemetryTags.StrategyType, source.StrategyType },
+            { ResilienceTelemetryTags.StrategyKey, source.BuilderProperties.GetValue(TelemetryUtil.StrategyKey, null!) },
+            { ResilienceTelemetryTags.ResultType, args.Context.GetResultType() },
+            { ResilienceTelemetryTags.ExceptionName, args.Outcome?.Exception?.GetType().FullName }
         };
 
-        if (args.Source.BuilderProperties.TryGetValue(TelemetryUtil.StrategyKey, out var key))
-        {
-            tags.Add("strategy-key", key);
-        }
-        else
-        {
-            tags.Add("strategy-key", null);
-        }
-
-        tags.Add("exception-name", args.Outcome?.Exception?.GetType().FullName);
-
-        Enrich(args, ref tags);
-
+        EnrichmentUtil.Enrich(ref tags, _enrichers, args.Context, args.Outcome, args.Arguments);
         Counter.Add(1, tags);
-    }
-
-    private void Enrich(TelemetryEventArguments args, ref TagList tags)
-    {
-        if (Enrichers.Count == 0)
-        {
-            return;
-        }
-
-        var context = EnrichmentContext.Get(args.Arguments, args.Outcome);
-
-        foreach (var enricher in Enrichers)
-        {
-            enricher(context);
-        }
-
-        foreach (var pair in context.Tags)
-        {
-            tags.Add(pair.Key, pair.Value);
-        }
-
-        EnrichmentContext.Return(context);
     }
 
     private void LogEvent(TelemetryEventArguments args)
     {
-        string outcomeString = "null";
-
-        if (args.Outcome is Outcome outcome)
-        {
-            outcomeString = OutcomeFormatter(outcome);
-        }
-
-        if (!args.Source.BuilderProperties.TryGetValue(TelemetryUtil.StrategyKey, out var strategyKey))
-        {
-            strategyKey = "null";
-        }
+        var strategyKey = args.Source.BuilderProperties.GetValue(TelemetryUtil.StrategyKey, null!);
 
         if (args.Outcome?.Exception is Exception exception)
         {
-            ResilienceEventLog(_logger, args.EventName, args.Source.BuilderName, args.Source.StrategyName, args.Source.StrategyType, strategyKey, outcomeString, exception);
+            Log.ResilienceEvent(_logger, args.EventName, args.Source.BuilderName, args.Source.StrategyName, args.Source.StrategyType, strategyKey, exception.Message, exception);
         }
         else
         {
-            ResilienceEventLog(_logger, args.EventName, args.Source.BuilderName, args.Source.StrategyName, args.Source.StrategyType, strategyKey, outcomeString, null);
+            Log.ResilienceEvent(_logger, args.EventName, args.Source.BuilderName, args.Source.StrategyName, args.Source.StrategyType, strategyKey, args.Outcome?.Result, null);
         }
     }
 }

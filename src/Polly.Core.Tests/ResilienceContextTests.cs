@@ -1,3 +1,5 @@
+using Polly.Strategy;
+
 namespace Polly.Core.Tests;
 
 public class ResilienceContextTests
@@ -19,7 +21,7 @@ public class ResilienceContextTests
     [Fact]
     public async Task Get_EnsurePooled()
     {
-        await TestUtils.AssertWithTimeoutAsync(() =>
+        await TestUtilities.AssertWithTimeoutAsync(() =>
         {
             var context = ResilienceContext.Get();
 
@@ -36,9 +38,20 @@ public class ResilienceContextTests
     }
 
     [Fact]
+    public void AddResilienceEvent_Ok()
+    {
+        var context = ResilienceContext.Get();
+
+        context.AddResilienceEvent(new ReportedResilienceEvent("Dummy"));
+
+        context.ResilienceEvents.Should().HaveCount(1);
+        context.ResilienceEvents.Should().Contain(new ReportedResilienceEvent("Dummy"));
+    }
+
+    [Fact]
     public async Task Return_EnsureDefaults()
     {
-        await TestUtils.AssertWithTimeoutAsync(() =>
+        await TestUtilities.AssertWithTimeoutAsync(() =>
         {
             using var cts = new CancellationTokenSource();
             var context = ResilienceContext.Get();
@@ -46,6 +59,7 @@ public class ResilienceContextTests
             context.Initialize<bool>(true);
             context.CancellationToken.Should().Be(cts.Token);
             context.Properties.Set(new ResiliencePropertyKey<int>("abc"), 10);
+            context.AddResilienceEvent(new ReportedResilienceEvent("dummy"));
             ResilienceContext.Return(context);
 
             AssertDefaults(context);
@@ -91,5 +105,6 @@ public class ResilienceContextTests
         context.IsSynchronous.Should().BeFalse();
         context.CancellationToken.Should().Be(CancellationToken.None);
         context.Properties.Should().BeEmpty();
+        context.ResilienceEvents.Should().BeEmpty();
     }
 }
