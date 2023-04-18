@@ -50,7 +50,7 @@ public class TelemetryResilienceStrategyTests : IDisposable
             },
             ResilienceContext.Get(), string.Empty);
 
-        var messages = _logger.GetRecords(new EventId(1, "ExecutingStrategy")).ToList();
+        var messages = _logger.GetRecords(new EventId(1, "StrategyExecuting")).ToList();
         messages.Should().HaveCount(1);
         messages[0].Message.Should().Be("Resilience strategy executing. Builder Name: 'my-builder', Strategy Key: 'my-key', Result Type: 'void'");
         messages = _logger.GetRecords(new EventId(2, "StrategyExecuted")).ToList();
@@ -64,7 +64,7 @@ public class TelemetryResilienceStrategyTests : IDisposable
         var strategy = CreateStrategy();
         strategy.Invoking(s => s.Execute(_ => throw new InvalidOperationException("Dummy message."))).Should().Throw<InvalidOperationException>();
 
-        var messages = _logger.GetRecords(new EventId(1, "ExecutingStrategy")).ToList();
+        var messages = _logger.GetRecords(new EventId(1, "StrategyExecuting")).ToList();
         messages.Should().HaveCount(1);
         messages[0].Message.Should().Be("Resilience strategy executing. Builder Name: 'my-builder', Strategy Key: 'my-key', Result Type: 'void'");
 
