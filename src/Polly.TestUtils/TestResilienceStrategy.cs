@@ -1,4 +1,4 @@
-namespace Polly.Core.Tests.Helpers;
+namespace Polly.TestUtils;
 
 public class TestResilienceStrategy : ResilienceStrategy
 {
@@ -16,10 +16,10 @@ public class TestResilienceStrategy : ResilienceStrategy
         {
             if (OnExecute != null)
             {
-                await OnExecute(context, state);
+                await OnExecute(context, state).ConfigureAwait(false);
             }
 
-            var result = await callback(context, state);
+            var result = await callback(context, state).ConfigureAwait(false);
 
             After?.Invoke(result, null);
 

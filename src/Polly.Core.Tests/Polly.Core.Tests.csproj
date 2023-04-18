@@ -13,9 +13,11 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Polly.Core\Polly.Core.csproj" />
+    <ProjectReference Include="..\Polly.TestUtils\Polly.TestUtils.csproj" />
   </ItemGroup>
 
   <ItemGroup>
+    <Using Include="Polly.TestUtils" />
     <Using Include="Polly.Core.Tests.Helpers" />
   </ItemGroup>
 </Project>

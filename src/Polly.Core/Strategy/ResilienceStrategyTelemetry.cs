@@ -29,6 +29,8 @@ public sealed class ResilienceStrategyTelemetry
     public void Report<TArgs>(string eventName, TArgs args)
         where TArgs : IResilienceArguments
     {
+        args.Context.AddResilienceEvent(new ReportedResilienceEvent(eventName));
+
         if (DiagnosticSource is null || !DiagnosticSource.IsEnabled(eventName))
         {
             return;
@@ -48,6 +50,8 @@ public sealed class ResilienceStrategyTelemetry
     public void Report<TArgs, TResult>(string eventName, Outcome<TResult> outcome, TArgs args)
         where TArgs : IResilienceArguments
     {
+        args.Context.AddResilienceEvent(new ReportedResilienceEvent(eventName));
+
         if (DiagnosticSource is null || !DiagnosticSource.IsEnabled(eventName))
         {
             return;

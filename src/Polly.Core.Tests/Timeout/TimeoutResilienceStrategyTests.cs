@@ -1,5 +1,4 @@
 using Moq;
-using Polly.Core.Tests.Helpers;
 using Polly.Strategy;
 using Polly.Timeout;
 
@@ -16,7 +15,7 @@ public class TimeoutResilienceStrategyTests : IDisposable
 
     public TimeoutResilienceStrategyTests()
     {
-        _telemetry = TestUtils.CreateResilienceTelemetry(_diagnosticSource.Object);
+        _telemetry = TestUtilities.CreateResilienceTelemetry(_diagnosticSource.Object);
         _timeProvider = new FakeTimeProvider();
         _options = new TimeoutStrategyOptions();
         _cancellationSource = new CancellationTokenSource();

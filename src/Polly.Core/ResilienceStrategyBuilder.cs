@@ -38,6 +38,11 @@ public class ResilienceStrategyBuilder
     internal TimeProvider TimeProvider { get; set; } = TimeProvider.System;
 
     /// <summary>
+    /// Gets or sets the callback that is invoked just before the final resilience strategy is being created.
+    /// </summary>
+    internal Action<IList<ResilienceStrategy>>? OnCreatingStrategy { get; set; }
+
+    /// <summary>
     /// Adds an already created strategy instance to the builder.
     /// </summary>
     /// <param name="strategy">The strategy instance.</param>
@@ -85,17 +90,18 @@ public class ResilienceStrategyBuilder
 
         _used = true;
 
-        if (_entries.Count == 0)
+        var strategies = _entries.Select(CreateResilienceStrategy).ToList();
+        OnCreatingStrategy?.Invoke(strategies);
+
+        if (strategies.Count == 0)
         {
             return NullResilienceStrategy.Instance;
         }
 
-        if (_entries.Count == 1)
+        if (strategies.Count == 1)
         {
-            return CreateResilienceStrategy(_entries[0]);
+            return strategies[0];
         }
-
-        var strategies = _entries.Select(CreateResilienceStrategy).ToList();
 
         return ResilienceStrategyPipeline.CreatePipeline(strategies);
     }

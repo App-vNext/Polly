@@ -40,7 +40,7 @@
     </ItemGroup>
   </Target>
 
-  <Target Name="AddInternalsVisibleToTest" BeforeTargets="BeforeCompile">
+  <Target Name="AddInternalsVisibleToTest" BeforeTargets="BeforeCompile" Condition="'@(InternalsVisibleToTest)' != ''">
     <ItemGroup>
       <InternalsVisibleTo Include="%(InternalsVisibleToTest.Identity)$(PollyPublicKeySuffix)" />
     </ItemGroup>

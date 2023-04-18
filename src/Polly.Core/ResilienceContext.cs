@@ -1,4 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
+using Polly.Strategy;
 
 namespace Polly;
 
@@ -15,6 +16,8 @@ public sealed class ResilienceContext
     private const bool ContinueOnCapturedContextDefault = false;
 
     private static readonly ObjectPool<ResilienceContext> Pool = new(static () => new ResilienceContext(), static c => c.Reset());
+
+    private readonly List<ReportedResilienceEvent> _resilienceEvents = new();
 
     private ResilienceContext()
     {
@@ -56,6 +59,14 @@ public sealed class ResilienceContext
     public ResilienceProperties Properties { get; } = new();
 
     /// <summary>
+    /// Gets the collection of resilience events that occurred while executing the resilience strategy.
+    /// </summary>
+    /// <remarks>
+    /// If the number of resilience events is greater than zero it's an indication that the execution was unhealthy.
+    /// </remarks>
+    public IReadOnlyCollection<ReportedResilienceEvent> ResilienceEvents => _resilienceEvents;
+
+    /// <summary>
     /// Gets a <see cref="ResilienceContext"/> instance from the pool.
     /// </summary>
     /// <returns>An instance of <see cref="ResilienceContext"/>.</returns>
@@ -92,6 +103,11 @@ public sealed class ResilienceContext
         return this;
     }
 
+    internal void AddResilienceEvent(ReportedResilienceEvent @event)
+    {
+        _resilienceEvents.Add(@event);
+    }
+
     private bool Reset()
     {
         IsSynchronous = false;
@@ -99,7 +115,7 @@ public sealed class ResilienceContext
         ContinueOnCapturedContext = false;
         CancellationToken = default;
         ((IDictionary<string, object?>)Properties).Clear();
-
+        _resilienceEvents.Clear();
         return true;
     }
 

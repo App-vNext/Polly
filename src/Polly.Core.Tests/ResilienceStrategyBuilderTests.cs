@@ -292,6 +292,29 @@ The StrategyType field is required.
         verified2.Should().BeTrue();
     }
 
+    [Fact]
+    public void Build_OnCreatingStrategy_EnsureRespected()
+    {
+        // arrange
+        var strategy = new TestResilienceStrategy();
+        var builder = new ResilienceStrategyBuilder
+        {
+            OnCreatingStrategy = strategies =>
+            {
+                strategies.Should().ContainSingle(s => s == strategy);
+                strategies.Insert(0, new TestResilienceStrategy());
+            }
+        };
+
+        builder.AddStrategy(strategy);
+
+        // act
+        var finalStrategy = builder.Build();
+
+        // assert
+        finalStrategy.Should().BeOfType<ResilienceStrategyPipeline>();
+    }
+
     private class Strategy : ResilienceStrategy
     {
         public Action? Before { get; set; }

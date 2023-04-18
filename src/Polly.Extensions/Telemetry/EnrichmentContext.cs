@@ -4,7 +4,7 @@ using Polly.Strategy;
 namespace Polly.Extensions.Telemetry;
 
 /// <summary>
-/// Enrichment context used when reporting resilience telemetry. This context is passed to the registered enrichers in <see cref="ResilienceStrategyTelemetryOptions.Enrichers"/>.
+/// Enrichment context used when reporting resilience telemetry. This context is passed to the registered enrichers in <see cref="TelemetryResilienceStrategyOptions.Enrichers"/>.
 /// </summary>
 public partial class EnrichmentContext
 {
@@ -18,9 +18,9 @@ public partial class EnrichmentContext
     public Outcome? Outcome { get; internal set; }
 
     /// <summary>
-    /// Gets the resilience arguments associated with the resilience event.
+    /// Gets the resilience arguments associated with the resilience event, if any.
     /// </summary>
-    public IResilienceArguments ResilienceArguments { get; internal set; } = null!;
+    public IResilienceArguments? ResilienceArguments { get; internal set; }
 
     /// <summary>
     /// Gets the resilience context associated with the operation that produced the resilience event.
