@@ -37,5 +37,5 @@ public sealed class CircuitBreakerStateProvider
     /// Gets the last exception handled by the circuit-breaker.
     /// <remarks>This will be null if no exceptions have been handled by the circuit-breaker since the circuit last closed.</remarks>
     /// </summary>
-    public Exception? LastException => _lastExceptionProvider?.Invoke() ?? null;
+    public Exception? LastException => _lastExceptionProvider?.Invoke();
 }

@@ -88,11 +88,6 @@ public static class CircuitBreakerResilienceStrategyBuilderExtensions
 
     private static ResilienceStrategyBuilder AddCircuitBreakerCore(this ResilienceStrategyBuilder builder, BaseCircuitBreakerStrategyOptions options)
     {
-        Guard.NotNull(builder);
-        Guard.NotNull(options);
-
-        ValidationHelper.ValidateObject(options, "The circuit breaker strategy options are invalid.");
-
         return builder.AddStrategy(context => new CircuitBreakerResilienceStrategy(context.TimeProvider, context.Telemetry));
     }
 }
