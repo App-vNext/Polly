@@ -2,7 +2,7 @@ using Polly.Strategy;
 
 namespace Polly.CircuitBreaker;
 
-internal class CircuitBreakerResilienceStrategy : ResilienceStrategy
+internal sealed class CircuitBreakerResilienceStrategy : ResilienceStrategy
 {
 #pragma warning disable IDE0052 // Remove unread private members
     private readonly TimeProvider _timeProvider;

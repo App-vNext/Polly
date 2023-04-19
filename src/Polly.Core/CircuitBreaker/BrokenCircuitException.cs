@@ -4,8 +4,6 @@ using System.Runtime.Serialization;
 
 namespace Polly.CircuitBreaker;
 
-#pragma warning disable CA1032 // Implement standard exception constructors
-
 /// <summary>
 /// Exception thrown when a circuit is broken.
 /// </summary>

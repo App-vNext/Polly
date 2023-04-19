@@ -8,7 +8,7 @@ namespace Polly.CircuitBreaker;
 /// the proportion of actions resulting in a handled exception exceeds <see cref="FailureThreshold"/>,
 /// provided also that the number of actions through the circuit in the time-slice is at least <see cref="MinimumThroughput"/>. </para>
 /// <para>The circuit will stay broken for the <see cref="BaseCircuitBreakerStrategyOptions.BreakDuration"/>.
-/// Any attempt to execute this  while the circuit is broken, will immediately throw a <see cref="BrokenCircuitException"/> containing the exception
+/// Any attempt to execute this while the circuit is broken, will immediately throw a <see cref="BrokenCircuitException"/> containing the exception
 /// that broke the circuit.
 /// </para>
 /// <para>If the first action after the break duration period results in a handled exception, the circuit will break
@@ -21,10 +21,10 @@ public class AdvancedCircuitBreakerStrategyOptions : BaseCircuitBreakerStrategyO
     /// Gets or sets the failure threshold at which the circuit will break.
     /// </summary>
     /// <remarks>
-    /// A number between 0 and 1; eg 0.5 represents breaking if 50% or more of actions result in a handled failure.
+    /// A number between zero and one (inclusive) e.g. 0.5 represents breaking if 50% or more of actions result in a handled failure.
     /// <para>
     /// A ratio number higher than 0, up to 1.
-    /// Defaults to to 0.1.
+    /// Defaults to 0.1 (i.e. 10%).
     /// </para>
     /// </remarks>
     [Range(0, 1.0)]

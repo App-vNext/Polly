@@ -1,7 +1,7 @@
 namespace Polly.CircuitBreaker;
 
 /// <summary>
-/// Allows to retrieve the circuit breaker state.
+/// Allows retrieval of the circuit breaker state.
 /// </summary>
 public sealed class CircuitBreakerStateProvider
 {

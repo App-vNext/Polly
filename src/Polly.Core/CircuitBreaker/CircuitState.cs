@@ -1,7 +1,7 @@
 namespace Polly.CircuitBreaker;
 
 /// <summary>
-/// Describes the possible states the circuit of a CircuitBreaker may be in.
+/// Describes the possible states the circuit of a Circuit Breaker may be in.
 /// </summary>
 public enum CircuitState
 {
