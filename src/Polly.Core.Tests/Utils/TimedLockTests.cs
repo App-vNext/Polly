@@ -5,7 +5,7 @@ namespace Polly.Core.Tests.Utils;
 public class TimedLockTests
 {
     [Fact]
-    public void Lock_Ok()
+    public async void Lock_Ok()
     {
         var syncRoot = new object();
 
@@ -13,7 +13,7 @@ public class TimedLockTests
         using var inLock2 = new ManualResetEvent(false);
         using var verify = new ManualResetEvent(false);
 
-        Task.Run(() =>
+        var t1 = Task.Run(() =>
         {
             using var l = TimedLock.Lock(syncRoot);
             inLock.Set();
@@ -22,7 +22,7 @@ public class TimedLockTests
 
         inLock.WaitOne();
 
-        Task.Run(() =>
+        var t2 = Task.Run(() =>
         {
             using var l = TimedLock.Lock(syncRoot);
             inLock2.Set();
@@ -31,5 +31,8 @@ public class TimedLockTests
         inLock2.WaitOne(100).Should().BeFalse();
         verify.Set();
         inLock2.WaitOne().Should().BeTrue();
+
+        await t1;
+        await t2;
     }
 }
