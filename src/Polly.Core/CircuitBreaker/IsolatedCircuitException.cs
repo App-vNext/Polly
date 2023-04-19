@@ -16,7 +16,7 @@ public class IsolatedCircuitException : BrokenCircuitException
     /// Initializes a new instance of the <see cref="IsolatedCircuitException"/> class.
     /// </summary>
     public IsolatedCircuitException()
-        :base("The circuit is manually held open and is not allowing calls.")
+        : base("The circuit is manually held open and is not allowing calls.")
     {
     }
 
