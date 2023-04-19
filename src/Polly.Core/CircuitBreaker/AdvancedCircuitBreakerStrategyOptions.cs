@@ -38,7 +38,7 @@ public class AdvancedCircuitBreakerStrategyOptions : BaseCircuitBreakerStrategyO
     /// Value must be 2 or greater.
     /// Defaults to 100.
     /// </remarks>
-    [Range(CircuitBreakerConstants.MinMinimumThroughput, int.MaxValue)]
+    [Range(CircuitBreakerConstants.MinimumValidThroughput, int.MaxValue)]
     public int MinimumThroughput { get; set; } = CircuitBreakerConstants.DefaultMinimumThroughput;
 
     /// <summary>

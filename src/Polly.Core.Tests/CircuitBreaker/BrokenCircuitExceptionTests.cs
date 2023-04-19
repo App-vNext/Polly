@@ -16,9 +16,17 @@ public class BrokenCircuitExceptionTests
     [Fact]
     public void Ctor_Generic_Ok()
     {
-        var brokenCircuit = new BrokenCircuitException<int>(10).Result.Should().Be(10);
-        new BrokenCircuitException<int>("Dummy.", 10).Message.Should().Be("Dummy.");
-        new BrokenCircuitException<int>("Dummy.", 10).Result.Should().Be(10);
+        var exception = new BrokenCircuitException<int>(10);
+        exception.Result.Should().Be(10);
+
+        exception = new BrokenCircuitException<int>("Dummy.", 10);
+        exception.Message.Should().Be("Dummy.");
+        exception.Result.Should().Be(10);
+
+        exception = new BrokenCircuitException<int>("Dummy.", new InvalidOperationException(), 10);
+        exception.Message.Should().Be("Dummy.");
+        exception.Result.Should().Be(10);
+        exception.InnerException.Should().BeOfType<InvalidOperationException>();
     }
 
 #if !NETCOREAPP

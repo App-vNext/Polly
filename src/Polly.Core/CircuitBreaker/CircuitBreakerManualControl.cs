@@ -35,9 +35,7 @@ public sealed class CircuitBreakerManualControl
     /// </summary>
     /// <param name="context">The resilience context.</param>
     /// <returns>The instance of <see cref="Task"/> that represents the asynchronous execution.</returns>
-    /// <remarks>
-    /// This operation throws an <see cref="InvalidOperationException"/> if the manual control is not initialized.
-    /// </remarks>
+    /// <exception cref="InvalidOperationException">Thrown if manual control is not initialized.</exception>
     public Task IsolateAsync(ResilienceContext context)
     {
         Guard.NotNull(context);
@@ -56,9 +54,7 @@ public sealed class CircuitBreakerManualControl
     /// </summary>
     /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns>The instance of <see cref="Task"/> that represents the asynchronous execution.</returns>
-    /// <remarks>
-    /// This operation throws an <see cref="InvalidOperationException"/> if the manual control is not initialized.
-    /// </remarks>
+    /// <exception cref="InvalidOperationException">Thrown if manual control is not initialized.</exception>
     public async Task IsolateAsync(CancellationToken cancellationToken)
     {
         var context = ResilienceContext.Get();
@@ -79,9 +75,7 @@ public sealed class CircuitBreakerManualControl
     /// </summary>
     /// <param name="context">The resilience context.</param>
     /// <returns>The instance of <see cref="Task"/> that represents the asynchronous execution.</returns>
-    /// <remarks>
-    /// This operation throws an <see cref="InvalidOperationException"/> if the manual control is not initialized.
-    /// </remarks>
+    /// <exception cref="InvalidOperationException">Thrown if manual control is not initialized.</exception>
     public Task ResetAsync(ResilienceContext context)
     {
         Guard.NotNull(context);
@@ -100,9 +94,7 @@ public sealed class CircuitBreakerManualControl
     /// </summary>
     /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns>The instance of <see cref="Task"/> that represents the asynchronous execution.</returns>
-    /// <remarks>
-    /// This operation throws an <see cref="InvalidOperationException"/> if the manual control is not initialized.
-    /// </remarks>
+    /// <exception cref="InvalidOperationException">Thrown if manual control is not initialized.</exception>
     public async Task ResetAsync(CancellationToken cancellationToken)
     {
         var context = ResilienceContext.Get();

@@ -14,7 +14,7 @@ internal static class CircuitBreakerConstants
 
     public const int DefaultMinimumThroughput = 100;
 
-    public const int MinMinimumThroughput = 2;
+    public const int MinimumValidThroughput = 2;
 
     public const int DefaultFailureThreshold = 100;
 

@@ -30,6 +30,15 @@ public class BrokenCircuitException<TResult> : BrokenCircuitException
         : base(message) => Result = result;
 
     /// <summary>
+    /// Initializes a new instance of the <see cref="BrokenCircuitException{TResult}"/> class.
+    /// </summary>
+    /// <param name="message">The message that describes the error.</param>
+    /// <param name="inner">The inner exception.</param>
+    /// <param name="result">The result which caused the circuit to break.</param>
+    public BrokenCircuitException(string message, Exception inner, TResult result)
+        : base(message, inner) => Result = result;
+
+    /// <summary>
     /// Gets the result value which was considered a handled fault, by the policy.
     /// </summary>
     public TResult Result { get; }
