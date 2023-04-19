@@ -1,4 +1,6 @@
-﻿namespace Polly.CircuitBreaker;
+using Polly.Utils;
+
+namespace Polly.CircuitBreaker;
 
 internal class ConsecutiveCountCircuitController<TResult> : CircuitStateController<TResult>
 {

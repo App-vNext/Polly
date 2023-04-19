@@ -9,6 +9,7 @@
   
   <ItemGroup>
     <Using Remove="System.Net.Http" />
+    <Compile Include="..\Polly.Core\Utils\TimedLock.cs" Link="Utilities\TimedLock.cs" />
     <InternalsVisibleToTest Include="Polly.Specs" />
   </ItemGroup>
 
