@@ -40,19 +40,19 @@ public abstract class BaseCircuitBreakerStrategyOptions : ResilienceStrategyOpti
     /// Gets or sets the event that is raised when the circuit resets to a <see cref="CircuitState.Closed"/> state.
     /// </summary>
     [Required]
-    public OutcomeEvent<OnCircuitResetArguments> OnReset { get; set; } = new();
+    public OutcomeEvent<OnCircuitClosedArguments> OnClosed { get; set; } = new();
 
     /// <summary>
     /// Gets or sets the event that is raised when the circuit transitions to an <see cref="CircuitState.Open"/> state.
     /// </summary>
     [Required]
-    public OutcomeEvent<OnCircuitBreakArguments> OnBreak { get; set; } = new();
+    public OutcomeEvent<OnCircuitOpenedArguments> OnOpened { get; set; } = new();
 
     /// <summary>
     /// Gets or sets the event that is raised when when the circuit transitions to an <see cref="CircuitState.HalfOpen"/> state.
     /// </summary>
     [Required]
-    public NoOutcomeEvent<OnCircuitHalfOpenArguments> OnHalfOpen { get; set; } = new();
+    public NoOutcomeEvent<OnCircuitHalfOpenedArguments> OnHalfOpened { get; set; } = new();
 
     /// <summary>
     /// Gets or sets the manual control for the circuit breaker.

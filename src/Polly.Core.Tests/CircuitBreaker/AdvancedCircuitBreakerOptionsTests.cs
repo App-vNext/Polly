@@ -17,9 +17,9 @@ public class AdvancedCircuitBreakerOptionsTests
         options.FailureThreshold.Should().Be(0.1);
         options.MinimumThroughput.Should().Be(100);
         options.SamplingDuration.Should().Be(TimeSpan.FromSeconds(30));
-        options.OnBreak.IsEmpty.Should().BeTrue();
-        options.OnReset.IsEmpty.Should().BeTrue();
-        options.OnHalfOpen.IsEmpty.Should().BeTrue();
+        options.OnOpened.IsEmpty.Should().BeTrue();
+        options.OnClosed.IsEmpty.Should().BeTrue();
+        options.OnHalfOpened.IsEmpty.Should().BeTrue();
         options.ShouldHandle.IsEmpty.Should().BeTrue();
         options.StrategyType.Should().Be("CircuitBreaker");
         options.StrategyName.Should().BeEmpty();
@@ -42,9 +42,9 @@ public class AdvancedCircuitBreakerOptionsTests
         options.FailureThreshold.Should().Be(0.1);
         options.MinimumThroughput.Should().Be(100);
         options.SamplingDuration.Should().Be(TimeSpan.FromSeconds(30));
-        options.OnBreak.IsEmpty.Should().BeTrue();
-        options.OnReset.IsEmpty.Should().BeTrue();
-        options.OnHalfOpen.IsEmpty.Should().BeTrue();
+        options.OnOpened.IsEmpty.Should().BeTrue();
+        options.OnClosed.IsEmpty.Should().BeTrue();
+        options.OnHalfOpened.IsEmpty.Should().BeTrue();
         options.ShouldHandle.IsEmpty.Should().BeTrue();
         options.StrategyType.Should().Be("CircuitBreaker");
         options.StrategyName.Should().BeEmpty();
@@ -73,9 +73,9 @@ public class AdvancedCircuitBreakerOptionsTests
             MinimumThroughput = 6,
             StrategyType = "dummy-type",
             StrategyName = "dummy-name",
-            OnBreak = new OutcomeEvent<OnCircuitBreakArguments, int>().Register(() => onBreakCalled = true),
-            OnReset = new OutcomeEvent<OnCircuitResetArguments, int>().Register(() => onResetCalled = true),
-            OnHalfOpen = new NoOutcomeEvent<OnCircuitHalfOpenArguments>().Register(() => onHalfOpenCalled = true),
+            OnOpened = new OutcomeEvent<OnCircuitOpenedArguments, int>().Register(() => onBreakCalled = true),
+            OnClosed = new OutcomeEvent<OnCircuitClosedArguments, int>().Register(() => onResetCalled = true),
+            OnHalfOpened = new NoOutcomeEvent<OnCircuitHalfOpenedArguments>().Register(() => onHalfOpenCalled = true),
             ShouldHandle = new OutcomePredicate<CircuitBreakerPredicateArguments, int>().HandleException<InvalidOperationException>(),
             ManualControl = new CircuitBreakerManualControl(),
             StateProvider = new CircuitBreakerStateProvider()
@@ -97,13 +97,13 @@ public class AdvancedCircuitBreakerOptionsTests
 
         (await converted.ShouldHandle.CreateHandler()!.ShouldHandleAsync(new Outcome<int>(new InvalidOperationException()), new CircuitBreakerPredicateArguments(context))).Should().BeTrue();
 
-        await converted.OnReset.CreateHandler()!.HandleAsync(new Outcome<int>(new InvalidOperationException()), new OnCircuitResetArguments(context));
+        await converted.OnClosed.CreateHandler()!.HandleAsync(new Outcome<int>(new InvalidOperationException()), new OnCircuitClosedArguments(context));
         onResetCalled.Should().BeTrue();
 
-        await converted.OnBreak.CreateHandler()!.HandleAsync(new Outcome<int>(new InvalidOperationException()), new OnCircuitBreakArguments(context, TimeSpan.Zero));
+        await converted.OnOpened.CreateHandler()!.HandleAsync(new Outcome<int>(new InvalidOperationException()), new OnCircuitOpenedArguments(context, TimeSpan.Zero));
         onBreakCalled.Should().BeTrue();
 
-        await converted.OnHalfOpen.CreateHandler()!(new OnCircuitHalfOpenArguments(context));
+        await converted.OnHalfOpened.CreateHandler()!(new OnCircuitHalfOpenedArguments(context));
         onHalfOpenCalled.Should().BeTrue();
     }
 
@@ -116,9 +116,9 @@ public class AdvancedCircuitBreakerOptionsTests
             FailureThreshold = 0,
             SamplingDuration = TimeSpan.Zero,
             MinimumThroughput = 0,
-            OnBreak = null!,
-            OnReset = null!,
-            OnHalfOpen = null!,
+            OnOpened = null!,
+            OnClosed = null!,
+            OnHalfOpened = null!,
             ShouldHandle = null!,
         };
 
@@ -134,9 +134,9 @@ public class AdvancedCircuitBreakerOptionsTests
             The field SamplingDuration must be >= to 00:00:00.5000000.
             The field BreakDuration must be >= to 00:00:00.5000000.
             The ShouldHandle field is required.
-            The OnReset field is required.
-            The OnBreak field is required.
-            The OnHalfOpen field is required.
+            The OnClosed field is required.
+            The OnOpened field is required.
+            The OnHalfOpened field is required.
             """);
     }
 }

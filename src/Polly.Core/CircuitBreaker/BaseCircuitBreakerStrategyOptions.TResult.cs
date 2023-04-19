@@ -41,19 +41,19 @@ public abstract class BaseCircuitBreakerStrategyOptions<TResult> : ResilienceStr
     /// Gets or sets the event that is raised when the circuit resets to a <see cref="CircuitState.Closed"/> state.
     /// </summary>
     [Required]
-    public OutcomeEvent<OnCircuitResetArguments, TResult> OnReset { get; set; } = new();
+    public OutcomeEvent<OnCircuitClosedArguments, TResult> OnClosed { get; set; } = new();
 
     /// <summary>
     /// Gets or sets the event that is raised when the circuit transitions to an <see cref="CircuitState.Open"/> state.
     /// </summary>
     [Required]
-    public OutcomeEvent<OnCircuitBreakArguments, TResult> OnBreak { get; set; } = new();
+    public OutcomeEvent<OnCircuitOpenedArguments, TResult> OnOpened { get; set; } = new();
 
     /// <summary>
     /// Gets or sets the event that is raised when when the circuit transitions to an <see cref="CircuitState.HalfOpen"/> state.
     /// </summary>
     [Required]
-    public NoOutcomeEvent<OnCircuitHalfOpenArguments> OnHalfOpen { get; set; } = new();
+    public NoOutcomeEvent<OnCircuitHalfOpenedArguments> OnHalfOpened { get; set; } = new();
 
     /// <summary>
     /// Gets or sets the manual control for the circuit breaker.
@@ -77,10 +77,11 @@ public abstract class BaseCircuitBreakerStrategyOptions<TResult> : ResilienceStr
         options.StrategyName = StrategyName;
         options.StrategyType = StrategyType;
         options.ShouldHandle = new OutcomePredicate<CircuitBreakerPredicateArguments>().SetPredicates(ShouldHandle);
-        options.OnReset = new OutcomeEvent<OnCircuitResetArguments>().SetCallbacks(OnReset);
-        options.OnBreak = new OutcomeEvent<OnCircuitBreakArguments>().SetCallbacks(OnBreak);
-        options.OnHalfOpen = OnHalfOpen;
+        options.OnClosed = new OutcomeEvent<OnCircuitClosedArguments>().SetCallbacks(OnClosed);
+        options.OnOpened = new OutcomeEvent<OnCircuitOpenedArguments>().SetCallbacks(OnOpened);
+        options.OnHalfOpened = OnHalfOpened;
         options.ManualControl = ManualControl;
         options.StateProvider = StateProvider;
     }
 }
+

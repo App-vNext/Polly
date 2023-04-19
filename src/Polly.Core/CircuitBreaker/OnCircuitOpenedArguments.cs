@@ -5,11 +5,11 @@ namespace Polly.CircuitBreaker;
 #pragma warning disable CA1815 // Override equals and operator equals on value types
 
 /// <summary>
-/// Arguments used by <see cref="BaseCircuitBreakerStrategyOptions.OnBreak"/> event.
+/// Arguments used by <see cref="BaseCircuitBreakerStrategyOptions.OnOpened"/> event.
 /// </summary>
-public readonly struct OnCircuitBreakArguments : IResilienceArguments
+public readonly struct OnCircuitOpenedArguments : IResilienceArguments
 {
-    internal OnCircuitBreakArguments(ResilienceContext context, TimeSpan breakDuration)
+    internal OnCircuitOpenedArguments(ResilienceContext context, TimeSpan breakDuration)
     {
         BreakDuration = breakDuration;
         Context = context;
@@ -23,3 +23,4 @@ public readonly struct OnCircuitBreakArguments : IResilienceArguments
     /// <inheritdoc/>
     public ResilienceContext Context { get; }
 }
+
