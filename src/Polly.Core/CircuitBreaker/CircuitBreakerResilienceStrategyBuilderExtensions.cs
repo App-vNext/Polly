@@ -88,7 +88,7 @@ public static class CircuitBreakerResilienceStrategyBuilderExtensions
 
     private static ResilienceStrategyBuilder AddCircuitBreakerCore(this ResilienceStrategyBuilder builder, BaseCircuitBreakerStrategyOptions options)
     {
-        return builder.AddStrategy(context => new CircuitBreakerResilienceStrategy(context.TimeProvider, context.Telemetry));
+        return builder.AddStrategy(context => new CircuitBreakerResilienceStrategy(context.TimeProvider, context.Telemetry, options));
     }
 }
 
