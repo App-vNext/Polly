@@ -5,7 +5,7 @@ namespace Polly.Core.Tests.Utils;
 public class TimedLockTests
 {
     [Fact]
-    public async void Lock_Ok()
+    public async Task Lock_Ok()
     {
         var syncRoot = new object();
 
