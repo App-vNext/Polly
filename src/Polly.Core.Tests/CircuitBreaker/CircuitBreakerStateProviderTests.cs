@@ -1,5 +1,6 @@
 using System;
 using Polly.CircuitBreaker;
+using Polly.Strategy;
 
 namespace Polly.Core.Tests.CircuitBreaker;
 
@@ -19,16 +20,16 @@ public class CircuitBreakerStateProviderTests
         var provider = new CircuitBreakerStateProvider();
 
         provider.CircuitState.Should().Be(CircuitState.Closed);
-        provider.LastException.Should().Be(null);
+        provider.LastHandledOutcome.Should().Be(null);
     }
 
     [Fact]
     public async Task ResetAsync_NotInitialized_Throws()
     {
-        var control = new CircuitBreakerManualControl();
+        using var control = new CircuitBreakerManualControl();
 
         await control
-            .Invoking(c => c.ResetAsync(CancellationToken.None))
+            .Invoking(c => c.CloseAsync(CancellationToken.None))
             .Should()
             .ThrowAsync<InvalidOperationException>();
     }
@@ -61,11 +62,11 @@ public class CircuitBreakerStateProviderTests
             () =>
             {
                 exceptionCalled = true;
-                return new InvalidOperationException();
+                return new Outcome(typeof(string), new InvalidOperationException());
             });
 
         provider.CircuitState.Should().Be(CircuitState.HalfOpen);
-        provider.LastException.Should().BeOfType<InvalidOperationException>();
+        provider.LastHandledOutcome!.Value.Exception.Should().BeOfType<InvalidOperationException>();
 
         stateCalled.Should().BeTrue();
         exceptionCalled.Should().BeTrue();

@@ -9,8 +9,9 @@ public class OnCircuitClosedArgumentsTests
     {
         var context = ResilienceContext.Get();
 
-        var args = new OnCircuitClosedArguments(context);
+        var args = new OnCircuitClosedArguments(context, true);
 
         args.Context.Should().Be(context);
+        args.IsManual.Should().BeTrue();
     }
 }

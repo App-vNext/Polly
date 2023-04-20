@@ -9,9 +9,10 @@ public class OnCircuitOpenedArgumentsTests
     {
         var context = ResilienceContext.Get();
 
-        var args = new OnCircuitOpenedArguments(context, TimeSpan.FromSeconds(2));
+        var args = new OnCircuitOpenedArguments(context, TimeSpan.FromSeconds(2), true);
 
         args.Context.Should().Be(context);
         args.BreakDuration.Should().Be(TimeSpan.FromSeconds(2));
+        args.IsManual.Should().BeTrue();
     }
 }

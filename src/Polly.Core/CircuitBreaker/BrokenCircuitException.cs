@@ -12,10 +12,13 @@ namespace Polly.CircuitBreaker;
 #endif
 public class BrokenCircuitException : ExecutionRejectedException
 {
+    internal const string DefaultMessage = "The circuit is now open and is not allowing calls.";
+
     /// <summary>
     /// Initializes a new instance of the <see cref="BrokenCircuitException"/> class.
     /// </summary>
     public BrokenCircuitException()
+        : base(DefaultMessage)
     {
     }
 
