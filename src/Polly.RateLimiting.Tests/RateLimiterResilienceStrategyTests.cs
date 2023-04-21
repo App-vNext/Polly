@@ -27,7 +27,7 @@ public class RateLimiterResilienceStrategyTests
         SetupLimiter(cts.Token);
 
         _lease.Setup(v => v.IsAcquired).Returns(true);
-        _lease.Protected().Setup("Dispose", exactParameterMatch: true, new object[] { true });
+        _lease.Protected().Setup("Dispose", exactParameterMatch: true, true);
 
         Create().Should().NotBeNull();
 
@@ -56,7 +56,7 @@ public class RateLimiterResilienceStrategyTests
         SetupLimiter(cts.Token);
 
         _lease.Setup(v => v.IsAcquired).Returns(false);
-        _lease.Protected().Setup("Dispose", exactParameterMatch: true, new object[] { true });
+        _lease.Protected().Setup("Dispose", exactParameterMatch: true, true);
         _lease.Setup(v => v.TryGetMetadata("RETRY_AFTER", out metadata)).Returns(hasRetryAfter);
 
         if (hasEvents)
