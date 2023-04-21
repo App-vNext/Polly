@@ -55,6 +55,7 @@ jobs:
         DOTNET_SYSTEM_CONSOLE_ALLOW_ANSI_COLOR_REDIRECTION: 1
         NUGET_XMLDOC_MODE: skip
         TERM: xterm
+        RUN_MUTATION_TESTS: ${{ matrix.os_name == 'linux' && 'true' || 'false' }}
 
     - uses: codecov/codecov-action@40a12dcee2df644d47232dde008099a3e9e4f865 # v3.1.2
       name: Upload coverage to Codecov
@@ -63,10 +64,10 @@ jobs:
         flags: ${{ matrix.os_name }}
 
     - name: Upload Mutation Report
-      if: always()
+      if: always() && matrix.os_name == 'linux'
       uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # v3.1.2
       with:
-        name: mutation-report-${{ matrix.os_name }}
+        name: mutation-report
         path: StrykerOutput
 
     - name: Publish NuGet packages

@@ -218,6 +218,17 @@ Task("__RunTests")
 Task("__RunMutationTests")
     .Does(() =>
 {
+    var runMutationTests = EnvironmentVariable("RUN_MUTATION_TESTS") switch
+    {
+        "false" => false,
+        _ => true
+    };
+
+    if (!runMutationTests)
+    {
+        return;
+    }
+        
     TestProject(File("./src/Polly.Core/Polly.Core.csproj"), File("./src/Polly.Core.Tests/Polly.Core.Tests.csproj"), "Polly.Core.csproj");
     TestProject(File("./src/Polly.RateLimiting/Polly.RateLimiting.csproj"), File("./src/Polly.RateLimiting.Tests/Polly.RateLimiting.Tests.csproj"), "Polly.RateLimiting.csproj");
     TestProject(File("./src/Polly.Extensions/Polly.Extensions.csproj"), File("./src/Polly.Extensions.Tests/Polly.Extensions.Tests.csproj"), "Polly.Extensions.csproj");
