@@ -211,7 +211,7 @@ Task("__RunTests")
             Configuration = configuration,
             Loggers = loggers,
             NoBuild = true,
-            ArgumentCustomization = args => args.Append($"--blame-hang-timeout 5s")
+            ArgumentCustomization = args => args.Append($"--blame-hang-timeout 10s")
         });
     }
 });

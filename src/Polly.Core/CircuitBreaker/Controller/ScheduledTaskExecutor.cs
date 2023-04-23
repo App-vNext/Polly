@@ -14,7 +14,7 @@ internal sealed class ScheduledTaskExecutor : IDisposable
     private readonly SemaphoreSlim _semaphore = new(0);
     private bool _disposed;
 
-    public ScheduledTaskExecutor() => ProcessingTask = StartProcessingAsync();
+    public ScheduledTaskExecutor() => ProcessingTask = Task.Run(StartProcessingAsync);
 
     public Task ProcessingTask { get; }
 
@@ -52,9 +52,6 @@ internal sealed class ScheduledTaskExecutor : IDisposable
 
     private async Task StartProcessingAsync()
     {
-        // spawn task
-        await Task.Yield();
-
         while (true)
         {
             await _semaphore.WaitAsync().ConfigureAwait(false);

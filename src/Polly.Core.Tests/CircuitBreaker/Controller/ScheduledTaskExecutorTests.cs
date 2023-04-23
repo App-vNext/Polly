@@ -124,11 +124,11 @@ public class ScheduledTaskExecutorTests
             ResilienceContext.Get(),
             out var task);
 
-        ready.WaitOne();
+        ready.WaitOne(TimeSpan.FromSeconds(2)).Should().BeTrue();
         scheduler.Dispose();
         disposed.Set();
 
-        scheduler.ProcessingTask.Wait(TimeSpan.FromSeconds(1)).Should().BeTrue();
+        scheduler.ProcessingTask.Wait(TimeSpan.FromSeconds(2)).Should().BeTrue();
     }
 
     [Fact]
