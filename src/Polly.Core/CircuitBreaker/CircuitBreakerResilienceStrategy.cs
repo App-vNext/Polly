@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using Polly.Strategy;
 
 namespace Polly.CircuitBreaker;

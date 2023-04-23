@@ -1,5 +1,6 @@
 using System.Threading.RateLimiting;
 using Polly;
+using Polly.Strategy;
 
 namespace Polly.Core.Benchmarks;
 
@@ -8,24 +9,34 @@ internal static partial class Helper
     public static object CreateStrategyPipeline(PollyVersion technology) => technology switch
     {
         PollyVersion.V7 => Policy.WrapAsync(
+            Policy.HandleResult(10).Or<InvalidOperationException>().AdvancedCircuitBreakerAsync(0.5, TimeSpan.FromSeconds(30), 10, TimeSpan.FromSeconds(5)),
             Policy.TimeoutAsync<int>(TimeSpan.FromSeconds(1)),
-            Policy.Handle<InvalidOperationException>().OrResult<int>(10).WaitAndRetryAsync(3, attempt => TimeSpan.FromSeconds(1)),
+            Policy.Handle<InvalidOperationException>().OrResult(10).WaitAndRetryAsync(3, attempt => TimeSpan.FromSeconds(1)),
             Policy.TimeoutAsync<int>(TimeSpan.FromSeconds(10)),
             Policy.BulkheadAsync<int>(10, 10)),
         PollyVersion.V8 => CreateStrategy(builder =>
         {
             builder
-                .AddTimeout(TimeSpan.FromSeconds(1))
+                .AddConcurrencyLimiter(new ConcurrencyLimiterOptions
+                {
+                    QueueLimit = 10,
+                    PermitLimit = 10
+                })
+                .AddTimeout(TimeSpan.FromSeconds(10))
                 .AddRetry(
                     predicate => predicate.HandleException<InvalidOperationException>().HandleResult(10),
                     RetryBackoffType.Constant,
                     3,
                     TimeSpan.FromSeconds(1))
-                .AddTimeout(TimeSpan.FromSeconds(10))
-                .AddConcurrencyLimiter(new ConcurrencyLimiterOptions
+                .AddTimeout(TimeSpan.FromSeconds(1))
+                .AddAdvancedCircuitBreaker(new AdvancedCircuitBreakerStrategyOptions
                 {
-                    QueueLimit = 10,
-                    PermitLimit = 10
+                    FailureThreshold = 0.5,
+                    SamplingDuration = TimeSpan.FromSeconds(30),
+                    MinimumThroughput = 10,
+                    BreakDuration = TimeSpan.FromSeconds(5),
+                    ShouldHandle = new OutcomePredicate<CircuitBreakerPredicateArguments>()
+                        .HandleOutcome<int>((outcome, _) => outcome.Result == 10 || outcome.Exception is InvalidOperationException)
                 });
         }),
         _ => throw new NotSupportedException()

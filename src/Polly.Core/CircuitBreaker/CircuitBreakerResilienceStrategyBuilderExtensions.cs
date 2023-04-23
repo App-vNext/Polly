@@ -1,4 +1,5 @@
 using Polly.CircuitBreaker;
+using Polly.CircuitBreaker.Health;
 using Polly.Strategy;
 
 namespace Polly;
@@ -104,7 +105,7 @@ public static class CircuitBreakerResilienceStrategyBuilderExtensions
         {
             CircuitBehavior behavior = options switch
             {
-                AdvancedCircuitBreakerStrategyOptions => new AdvancedCircuitBehavior(),
+                AdvancedCircuitBreakerStrategyOptions o => new AdvancedCircuitBehavior(o, HealthMetrics.Create(o, context.TimeProvider)),
                 CircuitBreakerStrategyOptions o => new ConsecutiveFailuresCircuitBehavior(o),
                 _ => throw new NotSupportedException()
             };
