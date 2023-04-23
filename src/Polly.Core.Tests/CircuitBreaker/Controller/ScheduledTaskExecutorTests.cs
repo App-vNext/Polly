@@ -108,7 +108,7 @@ public class ScheduledTaskExecutorTests
     }
 
     [Fact]
-    public async Task Dispose_WhenScheduledTaskExecuting()
+    public void Dispose_WhenScheduledTaskExecuting()
     {
         using var disposed = new ManualResetEvent(false);
         using var ready = new ManualResetEvent(false);
@@ -128,7 +128,7 @@ public class ScheduledTaskExecutorTests
         scheduler.Dispose();
         disposed.Set();
 
-        await scheduler.Invoking(async s => await s.ProcessingTask).Should().NotThrowAsync();
+        scheduler.ProcessingTask.Wait(TimeSpan.FromSeconds(1)).Should().BeTrue();
     }
 
     [Fact]
