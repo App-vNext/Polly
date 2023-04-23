@@ -157,20 +157,15 @@ internal sealed class CircuitStateController : IDisposable
         {
             _behavior.OnActionSuccess(_circuitState);
 
-            switch (_circuitState)
+            // Circuit state handling:
+            //
+            // HalfOpen - close the circuit
+            // Closed - do nothing
+            // Open, Isolated -  A successful call result may arrive when the circuit is open, if it was placed before the circuit broke.
+            // We take no special action; only time passing governs transitioning from Open to HalfOpen state.
+            if (_circuitState == CircuitState.HalfOpen)
             {
-                case CircuitState.HalfOpen:
-                    CloseCircuit_NeedsLock(outcome, manual: false, context, out task);
-                    break;
-
-                case CircuitState.Closed:
-                    break;
-
-                case CircuitState.Open:
-                case CircuitState.Isolated:
-                    // A successful call result may arrive when the circuit is open, if it was placed before the circuit broke.
-                    // We take no special action; only time passing governs transitioning from Open to HalfOpen state.
-                    break;
+                CloseCircuit_NeedsLock(outcome, manual: false, context, out task);
             }
 
         }
@@ -190,28 +185,21 @@ internal sealed class CircuitStateController : IDisposable
 
             _behavior.OnActionFailure(_circuitState, out var shouldBreak);
 
-            switch (_circuitState)
+            // Circuit state handling
+            // HalfOpen - open the circuit again
+            // Closed - break the circuit if the behavior indicates it
+            // Open, Isolated - a failure call result may arrive when the circuit is open,
+            // if it was placed before the circuit broke. We take no action beyond tracking
+            // the metric; we do not want to duplicate-signal onBreak; we do not want to extend time for which the circuit is broken.
+            // We do not want to mask the fact that the call executed (as replacing its result with a Broken/IsolatedCircuitException would do).
+
+            if (_circuitState == CircuitState.HalfOpen)
             {
-                case CircuitState.HalfOpen:
-                    OpenCircuit_NeedsLock(outcome, manual: false, context, out task);
-                    break;
-
-                case CircuitState.Closed:
-
-                    if (shouldBreak)
-                    {
-                        OpenCircuit_NeedsLock(outcome, manual: false, context, out task);
-                    }
-
-                    break;
-
-                case CircuitState.Open:
-                case CircuitState.Isolated:
-                    // A failure call result may arrive when the circuit is open,
-                    // if it was placed before the circuit broke. We take no action beyond tracking
-                    // the metric; we do not want to duplicate-signal onBreak; we do not want to extend time for which the circuit is broken.
-                    // We do not want to mask the fact that the call executed (as replacing its result with a Broken/IsolatedCircuitException would do).
-                    break;
+                OpenCircuit_NeedsLock(outcome, manual: false, context, out task);
+            }
+            else if (_circuitState == CircuitState.Closed && shouldBreak)
+            {
+                OpenCircuit_NeedsLock(outcome, manual: false, context, out task);
             }
         }
 

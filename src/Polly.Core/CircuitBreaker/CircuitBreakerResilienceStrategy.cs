@@ -31,29 +31,41 @@ internal sealed class CircuitBreakerResilienceStrategy : ResilienceStrategy
         try
         {
             var result = await callback(context, state).ConfigureAwait(context.ContinueOnCapturedContext);
-            var outcome = new Outcome<TResult>(result);
 
-            if (await _handler.ShouldHandleAsync(outcome, new CircuitBreakerPredicateArguments(context)).ConfigureAwait(context.ContinueOnCapturedContext))
-            {
-                await _controller.OnActionFailureAsync(outcome, context).ConfigureAwait(context.ContinueOnCapturedContext);
-            }
-            else
-            {
-                await _controller.OnActionSuccessAsync(outcome, context).ConfigureAwait(context.ContinueOnCapturedContext);
-            }
+            await HandleResultAsync(context, result).ConfigureAwait(context.ContinueOnCapturedContext);
 
             return result;
         }
         catch (Exception e)
         {
-            var outcome = new Outcome<TResult>(e);
-
-            if (await _handler.ShouldHandleAsync(outcome, new CircuitBreakerPredicateArguments(context)).ConfigureAwait(context.ContinueOnCapturedContext))
-            {
-                await _controller.OnActionFailureAsync(outcome, context).ConfigureAwait(context.ContinueOnCapturedContext);
-            }
+            await HandleExceptionAsync<TResult>(context, e).ConfigureAwait(context.ContinueOnCapturedContext);
 
             throw;
+        }
+    }
+
+    private async Task HandleResultAsync<TResult>(ResilienceContext context, TResult result)
+    {
+        var outcome = new Outcome<TResult>(result);
+        var args = new CircuitBreakerPredicateArguments(context);
+        if (await _handler!.ShouldHandleAsync(outcome, args).ConfigureAwait(context.ContinueOnCapturedContext))
+        {
+            await _controller.OnActionFailureAsync(outcome, context).ConfigureAwait(context.ContinueOnCapturedContext);
+        }
+        else
+        {
+            await _controller.OnActionSuccessAsync(outcome, context).ConfigureAwait(context.ContinueOnCapturedContext);
+        }
+    }
+
+    private async Task HandleExceptionAsync<TResult>(ResilienceContext context, Exception e)
+    {
+        var args = new CircuitBreakerPredicateArguments(context);
+        var outcome = new Outcome<TResult>(e);
+
+        if (await _handler!.ShouldHandleAsync(outcome, args).ConfigureAwait(context.ContinueOnCapturedContext))
+        {
+            await _controller.OnActionFailureAsync(outcome, context).ConfigureAwait(context.ContinueOnCapturedContext);
         }
     }
 }
