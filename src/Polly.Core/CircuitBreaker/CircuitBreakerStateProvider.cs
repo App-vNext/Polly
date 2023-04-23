@@ -1,3 +1,5 @@
+using Polly.Strategy;
+
 namespace Polly.CircuitBreaker;
 
 /// <summary>
@@ -6,9 +8,9 @@ namespace Polly.CircuitBreaker;
 public sealed class CircuitBreakerStateProvider
 {
     private Func<CircuitState>? _circuitStateProvider;
-    private Func<Exception?>? _lastExceptionProvider;
+    private Func<Outcome?>? _lastHandledOutcomeProvider;
 
-    internal void Initialize(Func<CircuitState> circuitStateProvider, Func<Exception?> lastExceptionProvider)
+    internal void Initialize(Func<CircuitState> circuitStateProvider, Func<Outcome?> lastHandledOutcomeProvider)
     {
         if (_circuitStateProvider != null)
         {
@@ -16,7 +18,7 @@ public sealed class CircuitBreakerStateProvider
         }
 
         _circuitStateProvider = circuitStateProvider;
-        _lastExceptionProvider = lastExceptionProvider;
+        _lastHandledOutcomeProvider = lastHandledOutcomeProvider;
     }
 
     /// <summary>
@@ -34,8 +36,9 @@ public sealed class CircuitBreakerStateProvider
     public CircuitState CircuitState => _circuitStateProvider?.Invoke() ?? CircuitState.Closed;
 
     /// <summary>
-    /// Gets the last exception handled by the circuit-breaker.
-    /// <remarks>This will be null if no exceptions have been handled by the circuit-breaker since the circuit last closed.</remarks>
+    /// Gets the last outcome handled by the circuit-breaker.
+    /// <remarks>
+    /// This will be null if no exceptions or results have been handled by the circuit-breaker since the circuit last closed.</remarks>
     /// </summary>
-    public Exception? LastException => _lastExceptionProvider?.Invoke();
+    public Outcome? LastHandledOutcome => _lastHandledOutcomeProvider?.Invoke();
 }

@@ -41,6 +41,9 @@ public static class TestUtilities
     public static ResilienceStrategyTelemetry CreateResilienceTelemetry(DiagnosticSource source)
         => new(new ResilienceTelemetrySource("dummy-builder", new ResilienceProperties(), "strategy-name", "strategy-type"), source);
 
+    public static ResilienceStrategyTelemetry CreateResilienceTelemetry(Action<IResilienceArguments> callback)
+        => new(new ResilienceTelemetrySource("dummy-builder", new ResilienceProperties(), "strategy-name", "strategy-type"), new CallbackDiagnosticSource(callback));
+
     public static ILoggerFactory CreateLoggerFactory(out FakeLogger logger)
     {
         logger = new FakeLogger();
@@ -92,5 +95,16 @@ public static class TestUtilities
     {
         context.Initialize<T>(true);
         return context;
+    }
+
+    private sealed class CallbackDiagnosticSource : DiagnosticSource
+    {
+        private readonly Action<IResilienceArguments> _callback;
+
+        public CallbackDiagnosticSource(Action<IResilienceArguments> callback) => _callback = callback;
+
+        public override bool IsEnabled(string name) => true;
+
+        public override void Write(string name, object? value) => _callback((value as TelemetryEventArguments)!.Arguments);
     }
 }

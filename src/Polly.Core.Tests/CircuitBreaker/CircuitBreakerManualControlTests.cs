@@ -8,7 +8,7 @@ public class CircuitBreakerManualControlTests
     [Fact]
     public void Ctor_Ok()
     {
-        var control = new CircuitBreakerManualControl();
+        using var control = new CircuitBreakerManualControl();
 
         control.IsInitialized.Should().BeFalse();
     }
@@ -16,7 +16,7 @@ public class CircuitBreakerManualControlTests
     [Fact]
     public async Task IsolateAsync_NotInitialized_Throws()
     {
-        var control = new CircuitBreakerManualControl();
+        using var control = new CircuitBreakerManualControl();
 
         await control
             .Invoking(c => c.IsolateAsync(CancellationToken.None))
@@ -27,10 +27,10 @@ public class CircuitBreakerManualControlTests
     [Fact]
     public async Task ResetAsync_NotInitialized_Throws()
     {
-        var control = new CircuitBreakerManualControl();
+        using var control = new CircuitBreakerManualControl();
 
         await control
-            .Invoking(c => c.ResetAsync(CancellationToken.None))
+            .Invoking(c => c.CloseAsync(CancellationToken.None))
             .Should()
             .ThrowAsync<InvalidOperationException>();
     }
@@ -38,11 +38,11 @@ public class CircuitBreakerManualControlTests
     [Fact]
     public void Initialize_Twice_Throws()
     {
-        var control = new CircuitBreakerManualControl();
-        control.Initialize(_ => Task.CompletedTask, _ => Task.CompletedTask);
+        using var control = new CircuitBreakerManualControl();
+        control.Initialize(_ => Task.CompletedTask, _ => Task.CompletedTask, () => { });
 
         control
-            .Invoking(c => c.Initialize(_ => Task.CompletedTask, _ => Task.CompletedTask))
+            .Invoking(c => c.Initialize(_ => Task.CompletedTask, _ => Task.CompletedTask, () => { }))
             .Should()
             .Throw<InvalidOperationException>();
     }
@@ -53,6 +53,7 @@ public class CircuitBreakerManualControlTests
         var control = new CircuitBreakerManualControl();
         var isolateCalled = false;
         var resetCalled = false;
+        var disposeCalled = false;
 
         control.Initialize(
             context =>
@@ -68,12 +69,16 @@ public class CircuitBreakerManualControlTests
                 context.IsSynchronous.Should().BeFalse();
                 resetCalled = true;
                 return Task.CompletedTask;
-            });
+            },
+            () => disposeCalled = true);
 
         await control.IsolateAsync(CancellationToken.None);
-        await control.ResetAsync(CancellationToken.None);
+        await control.CloseAsync(CancellationToken.None);
+
+        control.Dispose();
 
         isolateCalled.Should().BeTrue();
         resetCalled.Should().BeTrue();
+        disposeCalled.Should().BeTrue();
     }
 }

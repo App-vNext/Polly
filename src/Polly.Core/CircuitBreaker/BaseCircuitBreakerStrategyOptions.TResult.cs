@@ -40,18 +40,48 @@ public abstract class BaseCircuitBreakerStrategyOptions<TResult> : ResilienceStr
     /// <summary>
     /// Gets or sets the event that is raised when the circuit resets to a <see cref="CircuitState.Closed"/> state.
     /// </summary>
+    /// <remarks>
+    /// The callbacks registered to this event are invoked with eventual consistency. There is no guarantee that the circuit breaker
+    /// doesn't change the state before the callbacks finish. If you need to know the up-to-date state of the circuit breaker use
+    /// the <see cref="CircuitBreakerStateProvider.CircuitState"/> property.
+    /// <para>
+    /// Note that these events might be executed asynchronously at a later time when the circuit state is no longer the same as at the point of invocation of the event.
+    /// However, the invocation order of the <see cref="OnOpened"/>, <see cref="OnClosed"/>, and <see cref="OnHalfOpened"/> events is always
+    /// maintained to ensure the correct sequence of state transitions.
+    /// </para>
+    /// </remarks>
     [Required]
     public OutcomeEvent<OnCircuitClosedArguments, TResult> OnClosed { get; set; } = new();
 
     /// <summary>
     /// Gets or sets the event that is raised when the circuit transitions to an <see cref="CircuitState.Open"/> state.
     /// </summary>
+    /// <remarks>
+    /// The callbacks registered to this event are invoked with eventual consistency. There is no guarantee that the circuit breaker
+    /// doesn't change the state before the callbacks finish. If you need to know the up-to-date state of the circuit breaker use
+    /// the <see cref="CircuitBreakerStateProvider.CircuitState"/> property.
+    /// <para>
+    /// Note that these events might be executed asynchronously at a later time when the circuit state is no longer the same as at the point of invocation of the event.
+    /// However, the invocation order of the <see cref="OnOpened"/>, <see cref="OnClosed"/>, and <see cref="OnHalfOpened"/> events is always
+    /// maintained to ensure the correct sequence of state transitions.
+    /// </para>
+    /// </remarks>
     [Required]
     public OutcomeEvent<OnCircuitOpenedArguments, TResult> OnOpened { get; set; } = new();
 
     /// <summary>
     /// Gets or sets the event that is raised when when the circuit transitions to an <see cref="CircuitState.HalfOpen"/> state.
     /// </summary>
+    /// <remarks>
+    /// The callbacks registered to this event are invoked with eventual consistency. There is no guarantee that the circuit breaker
+    /// doesn't change the state before the callbacks finish. If you need to know the up-to-date state of the circuit breaker use
+    /// the <see cref="CircuitBreakerStateProvider.CircuitState"/> property.
+    /// <para>
+    /// Note that these events might be executed asynchronously at a later time when the circuit state is no longer the same as at the point of invocation of the event.
+    /// However, the invocation order of the <see cref="OnOpened"/>, <see cref="OnClosed"/>, and <see cref="OnHalfOpened"/> events is always
+    /// maintained to ensure the correct sequence of state transitions.
+    /// </para>
+    /// </remarks>
     [Required]
     public NoOutcomeEvent<OnCircuitHalfOpenedArguments> OnHalfOpened { get; set; } = new();
 

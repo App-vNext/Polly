@@ -97,10 +97,10 @@ public class AdvancedCircuitBreakerOptionsTests
 
         (await converted.ShouldHandle.CreateHandler()!.ShouldHandleAsync(new Outcome<int>(new InvalidOperationException()), new CircuitBreakerPredicateArguments(context))).Should().BeTrue();
 
-        await converted.OnClosed.CreateHandler()!.HandleAsync(new Outcome<int>(new InvalidOperationException()), new OnCircuitClosedArguments(context));
+        await converted.OnClosed.CreateHandler()!.HandleAsync(new Outcome<int>(new InvalidOperationException()), new OnCircuitClosedArguments(context, true));
         onResetCalled.Should().BeTrue();
 
-        await converted.OnOpened.CreateHandler()!.HandleAsync(new Outcome<int>(new InvalidOperationException()), new OnCircuitOpenedArguments(context, TimeSpan.Zero));
+        await converted.OnOpened.CreateHandler()!.HandleAsync(new Outcome<int>(new InvalidOperationException()), new OnCircuitOpenedArguments(context, TimeSpan.Zero, true));
         onBreakCalled.Should().BeTrue();
 
         await converted.OnHalfOpened.CreateHandler()!(new OnCircuitHalfOpenedArguments(context));

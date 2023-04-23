@@ -1,4 +1,4 @@
-﻿using Polly.Strategy;
+using Polly.Strategy;
 
 namespace Polly.CircuitBreaker;
 
@@ -9,7 +9,16 @@ namespace Polly.CircuitBreaker;
 /// </summary>
 public readonly struct OnCircuitClosedArguments : IResilienceArguments
 {
-    internal OnCircuitClosedArguments(ResilienceContext context) => Context = context;
+    internal OnCircuitClosedArguments(ResilienceContext context, bool isManual)
+    {
+        Context = context;
+        IsManual = isManual;
+    }
+
+    /// <summary>
+    /// Gets a value indicating whether the circuit was closed manually by using <see cref="CircuitBreakerManualControl"/>.
+    /// </summary>
+    public bool IsManual { get; }
 
     /// <inheritdoc/>
     public ResilienceContext Context { get; }

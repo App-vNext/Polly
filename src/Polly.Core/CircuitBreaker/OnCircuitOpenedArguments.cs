@@ -9,9 +9,10 @@ namespace Polly.CircuitBreaker;
 /// </summary>
 public readonly struct OnCircuitOpenedArguments : IResilienceArguments
 {
-    internal OnCircuitOpenedArguments(ResilienceContext context, TimeSpan breakDuration)
+    internal OnCircuitOpenedArguments(ResilienceContext context, TimeSpan breakDuration, bool isManual)
     {
         BreakDuration = breakDuration;
+        IsManual = isManual;
         Context = context;
     }
 
@@ -19,6 +20,11 @@ public readonly struct OnCircuitOpenedArguments : IResilienceArguments
     /// Gets the duration of break.
     /// </summary>
     public TimeSpan BreakDuration { get; }
+
+    /// <summary>
+    /// Gets a value indicating whether the circuit was opened manually by using <see cref="CircuitBreakerManualControl"/>.
+    /// </summary>
+    public bool IsManual { get; }
 
     /// <inheritdoc/>
     public ResilienceContext Context { get; }

@@ -5,18 +5,20 @@ namespace Polly.CircuitBreaker;
 /// <summary>
 /// Allows manual control of the circuit-breaker.
 /// </summary>
-public sealed class CircuitBreakerManualControl
+public sealed class CircuitBreakerManualControl : IDisposable
 {
+    private Action? _onDispose;
     private Func<ResilienceContext, Task>? _onIsolate;
     private Func<ResilienceContext, Task>? _onReset;
 
-    internal void Initialize(Func<ResilienceContext, Task> onIsolate, Func<ResilienceContext, Task> onReset)
+    internal void Initialize(Func<ResilienceContext, Task> onIsolate, Func<ResilienceContext, Task> onReset, Action onDispose)
     {
         if (_onIsolate != null)
         {
             throw new InvalidOperationException($"This instance of '{nameof(CircuitBreakerManualControl)}' is already initialized and cannot be used in a different circuit-breaker strategy.");
         }
 
+        _onDispose = onDispose;
         _onIsolate = onIsolate;
         _onReset = onReset;
     }
@@ -31,7 +33,7 @@ public sealed class CircuitBreakerManualControl
     public bool IsInitialized => _onIsolate != null;
 
     /// <summary>
-    /// Isolates (opens) the circuit manually, and holds it in this state until a call to <see cref="ResetAsync(CancellationToken)"/> is made.
+    /// Isolates (opens) the circuit manually, and holds it in this state until a call to <see cref="CloseAsync(CancellationToken)"/> is made.
     /// </summary>
     /// <param name="context">The resilience context.</param>
     /// <returns>The instance of <see cref="Task"/> that represents the asynchronous execution.</returns>
@@ -50,7 +52,7 @@ public sealed class CircuitBreakerManualControl
     }
 
     /// <summary>
-    /// Isolates (opens) the circuit manually, and holds it in this state until a call to <see cref="ResetAsync(CancellationToken)"/> is made.
+    /// Isolates (opens) the circuit manually, and holds it in this state until a call to <see cref="CloseAsync(CancellationToken)"/> is made.
     /// </summary>
     /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns>The instance of <see cref="Task"/> that represents the asynchronous execution.</returns>
@@ -76,7 +78,7 @@ public sealed class CircuitBreakerManualControl
     /// <param name="context">The resilience context.</param>
     /// <returns>The instance of <see cref="Task"/> that represents the asynchronous execution.</returns>
     /// <exception cref="InvalidOperationException">Thrown if manual control is not initialized.</exception>
-    public Task ResetAsync(ResilienceContext context)
+    public Task CloseAsync(ResilienceContext context)
     {
         Guard.NotNull(context);
 
@@ -95,18 +97,21 @@ public sealed class CircuitBreakerManualControl
     /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns>The instance of <see cref="Task"/> that represents the asynchronous execution.</returns>
     /// <exception cref="InvalidOperationException">Thrown if manual control is not initialized.</exception>
-    public async Task ResetAsync(CancellationToken cancellationToken)
+    public async Task CloseAsync(CancellationToken cancellationToken)
     {
         var context = ResilienceContext.Get();
         context.CancellationToken = cancellationToken;
 
         try
         {
-            await ResetAsync(context).ConfigureAwait(false);
+            await CloseAsync(context).ConfigureAwait(false);
         }
         finally
         {
             ResilienceContext.Return(context);
         }
     }
+
+    /// <inheritdoc/>
+    public void Dispose() => _onDispose?.Invoke();
 }

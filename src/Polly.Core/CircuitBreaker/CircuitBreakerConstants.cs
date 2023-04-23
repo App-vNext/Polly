@@ -4,11 +4,11 @@ internal static class CircuitBreakerConstants
 {
     public const string StrategyType = "CircuitBreaker";
 
-    public const string OnResetEvent = "OnCircuitReset";
+    public const string OnCircuitClosed = "OnCircuitClosed";
 
-    public const string OnHalfOpenEvent = "OnCircuitHalfOpen";
+    public const string OnHalfOpenEvent = "OnCircuitHalfOpened";
 
-    public const string OnBreakEvent = "OnCircuitBreak";
+    public const string OnCircuitOpened = "OnCircuitOpened";
 
     public const double DefaultAdvancedFailureThreshold = 0.1;
 
