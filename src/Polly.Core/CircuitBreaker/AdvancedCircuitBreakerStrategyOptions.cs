@@ -45,8 +45,8 @@ public class AdvancedCircuitBreakerStrategyOptions : BaseCircuitBreakerStrategyO
     /// Gets or sets the duration of the sampling over which failure ratios are assessed.
     /// </summary>
     /// <remarks>
-    /// Value must be greater than 0.5 seconds. Defaults to 30 seconds.
+    /// Value must be greater than 20 milliseconds. Defaults to 30 seconds.
     /// </remarks>
-    [TimeSpan("00:00:00.500")]
+    [TimeSpan("00:00:00.020")]
     public TimeSpan SamplingDuration { get; set; } = CircuitBreakerConstants.DefaultSamplingDuration;
 }

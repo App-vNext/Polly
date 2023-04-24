@@ -18,7 +18,7 @@ public abstract class BaseCircuitBreakerStrategyOptions : ResilienceStrategyOpti
     /// <summary>
     /// Initializes a new instance of the <see cref="BaseCircuitBreakerStrategyOptions"/> class.
     /// </summary>
-    protected BaseCircuitBreakerStrategyOptions() => StrategyType = CircuitBreakerConstants.StrategyType;
+    private protected BaseCircuitBreakerStrategyOptions() => StrategyType = CircuitBreakerConstants.StrategyType;
 
     /// <summary>
     /// Gets or sets the duration of break the circuit will stay open before resetting.

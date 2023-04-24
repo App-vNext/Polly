@@ -5,14 +5,34 @@ namespace Polly.Core.Tests.Helpers;
 
 internal class FakeTimeProvider : Mock<TimeProvider>
 {
+    private DateTimeOffset? _time;
+
     public FakeTimeProvider(long frequency)
-    : base(MockBehavior.Strict, frequency)
+        : base(MockBehavior.Strict, frequency)
     {
     }
 
     public FakeTimeProvider()
         : this(Stopwatch.Frequency)
     {
+    }
+
+    public FakeTimeProvider SetupUtcNow(DateTimeOffset? time = null)
+    {
+        _time = time ?? DateTimeOffset.UtcNow;
+        Setup(x => x.UtcNow).Returns(() => _time.Value);
+        return this;
+    }
+
+    public FakeTimeProvider AdvanceTime(TimeSpan time)
+    {
+        if (_time == null)
+        {
+            SetupUtcNow(DateTimeOffset.UtcNow);
+        }
+
+        _time = _time!.Value.Add(time);
+        return this;
     }
 
     public FakeTimeProvider SetupAnyDelay(CancellationToken cancellationToken = default)

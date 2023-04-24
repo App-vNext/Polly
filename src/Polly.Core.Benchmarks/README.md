@@ -47,9 +47,16 @@ LaunchCount=2  WarmupCount=10
 | ExecuteRateLimiter_V7 | 190.8 ns | 10.01 ns | 14.98 ns |  1.00 |    0.00 | 0.0448 |     376 B |        1.00 |
 | ExecuteRateLimiter_V8 | 199.6 ns |  2.54 ns |  3.64 ns |  1.05 |    0.09 | 0.0048 |      40 B |        0.11 |
 
-## STRATEGY PIPELINE (TIMEOUT + RETRY + TIMEOUT + RATE LIMITER)
+## CIRCUIT BREAKER
 
-|                     Method |     Mean |     Error |    StdDev | Ratio | RatioSD |   Gen0 | Allocated | Alloc Ratio |
-|--------------------------- |---------:|----------:|----------:|------:|--------:|-------:|----------:|------------:|
-| ExecuteStrategyPipeline_V7 | 1.265 us | 0.0372 us | 0.0558 us |  1.00 |    0.00 | 0.2861 |    2400 B |        1.00 |
-| ExecuteStrategyPipeline_V8 | 1.032 us | 0.0165 us | 0.0236 us |  0.82 |    0.04 | 0.0076 |      64 B |        0.03 |
+|                   Method |     Mean |   Error |  StdDev | Ratio | RatioSD |   Gen0 | Allocated | Alloc Ratio |
+|------------------------- |---------:|--------:|--------:|------:|--------:|-------:|----------:|------------:|
+| ExecuteCircuitBreaker_V7 | 198.4 ns | 2.78 ns | 3.99 ns |  1.00 |    0.00 | 0.0629 |     528 B |        1.00 |
+| ExecuteCircuitBreaker_V8 | 297.9 ns | 2.63 ns | 3.77 ns |  1.50 |    0.04 | 0.0038 |      32 B |        0.06 |
+
+## STRATEGY PIPELINE (RATE LIMITER + TIMEOUT + RETRY + TIMEOUT + CIRCUIT BREAKER)
+
+|                     Method |     Mean |     Error |    StdDev | Ratio |   Gen0 | Allocated | Alloc Ratio |
+|--------------------------- |---------:|----------:|----------:|------:|-------:|----------:|------------:|
+| ExecuteStrategyPipeline_V7 | 1.523 us | 0.0092 us | 0.0137 us |  1.00 | 0.3433 |    2872 B |        1.00 |
+| ExecuteStrategyPipeline_V8 | 1.276 us | 0.0128 us | 0.0191 us |  0.84 | 0.0114 |      96 B |        0.03 |

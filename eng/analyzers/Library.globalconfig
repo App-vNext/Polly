@@ -940,7 +940,7 @@ dotnet_diagnostic.CA1851.severity = suggestion
 # Category : Performance
 # Help Link: https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1852
 # Tags     : Telemetry, EnabledRuleInAggressiveMode, CompilationEnd
-dotnet_diagnostic.CA1852.severity = none
+dotnet_diagnostic.CA1852.severity = warning
 
 # Title    : Unnecessary call to 'Dictionary.ContainsKey(key)'
 # Category : Performance

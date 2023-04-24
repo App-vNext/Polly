@@ -128,22 +128,53 @@ public class CircuitBreakerResilienceStrategyBuilderTests
     [Fact]
     public void AddAdvancedCircuitBreaker_IntegrationTest()
     {
+        int opened = 0;
+        int closed = 0;
+        int halfOpened = 0;
+
         var options = new AdvancedCircuitBreakerStrategyOptions
         {
-            BreakDuration = TimeSpan.FromMilliseconds(500),
+            FailureThreshold = 0.5,
+            MinimumThroughput = 10,
+            SamplingDuration = TimeSpan.FromSeconds(10),
+            BreakDuration = TimeSpan.FromSeconds(1),
         };
 
         options.ShouldHandle.HandleResult(-1);
-        options.OnOpened.Register<int>(() => { });
-        options.OnClosed.Register<int>(() => { });
-        options.OnHalfOpened.Register(() => { });
+        options.OnOpened.Register<int>(() => opened++);
+        options.OnClosed.Register<int>(() => closed++);
+        options.OnHalfOpened.Register(() => halfOpened++);
 
         var timeProvider = new FakeTimeProvider();
         var strategy = new ResilienceStrategyBuilder { TimeProvider = timeProvider.Object }.AddAdvancedCircuitBreaker(options).Build();
         var time = DateTime.UtcNow;
         timeProvider.Setup(v => v.UtcNow).Returns(() => time);
 
-        strategy.Should().BeOfType<CircuitBreakerResilienceStrategy>();
+        for (int i = 0; i < 10; i++)
+        {
+            strategy.Execute(_ => -1);
+        }
+
+        // Circuit opened
+        opened.Should().Be(1);
+        halfOpened.Should().Be(0);
+        closed.Should().Be(0);
+        Assert.Throws<BrokenCircuitException<int>>(() => strategy.Execute(_ => 0));
+
+        // Circuit Half Opened
+        time += options.BreakDuration;
+        strategy.Execute(_ => -1);
+        Assert.Throws<BrokenCircuitException<int>>(() => strategy.Execute(_ => 0));
+        opened.Should().Be(2);
+        halfOpened.Should().Be(1);
+        closed.Should().Be(0);
+
+        // Now close it
+        time += options.BreakDuration;
+        strategy.Execute(_ => 0);
+        opened.Should().Be(2);
+        halfOpened.Should().Be(2);
+        closed.Should().Be(1);
     }
 
     [Fact]
