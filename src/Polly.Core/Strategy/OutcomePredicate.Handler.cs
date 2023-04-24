@@ -54,9 +54,17 @@ public partial class OutcomePredicate<TArgs>
 
         private ValueTask<bool> ShouldHandlerCoreAsync<TResult>(Outcome<TResult> outcome, TArgs args)
         {
-            var predicate = (Func<Outcome<TResult>, TArgs, ValueTask<bool>>)_predicate;
+            if (typeof(TResult) == typeof(VoidResult))
+            {
+                var predicate = (Func<Outcome, TArgs, ValueTask<bool>>)_predicate;
+                return predicate(outcome.AsOutcome(), args);
+            }
+            else
+            {
+                var predicate = (Func<Outcome<TResult>, TArgs, ValueTask<bool>>)_predicate;
 
-            return predicate(outcome, args);
+                return predicate(outcome, args);
+            }
         }
     }
 

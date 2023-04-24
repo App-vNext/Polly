@@ -20,7 +20,7 @@ public sealed partial class OutcomeGenerator<TArgs, TValue>
     public bool IsEmpty => _generators.Count == 0;
 
     /// <summary>
-    /// Adds a result generator for a specific result type.
+    /// Sets a result generator for a specific result type.
     /// </summary>
     /// <typeparam name="TResult">The result type to add a generator for.</typeparam>
     /// <param name="generator">The value generator.</param>
@@ -33,7 +33,7 @@ public sealed partial class OutcomeGenerator<TArgs, TValue>
     }
 
     /// <summary>
-    /// Adds a result generator for a specific result type.
+    /// Sets a result generator for a specific result type.
     /// </summary>
     /// <typeparam name="TResult">The result type to add a generator for.</typeparam>
     /// <param name="generator">The value generator.</param>
@@ -46,7 +46,7 @@ public sealed partial class OutcomeGenerator<TArgs, TValue>
     }
 
     /// <summary>
-    /// Adds a result generator for all result types including the void-based results.
+    /// Sets a result generator for all result types including the void-based results.
     /// </summary>
     /// <param name="generator">The value generator.</param>
     /// <returns>The current updated instance.</returns>
@@ -58,7 +58,7 @@ public sealed partial class OutcomeGenerator<TArgs, TValue>
     }
 
     /// <summary>
-    /// Adds a result generator for all result types including the void-based results.
+    /// Sets a result generator for all result types including the void-based results.
     /// </summary>
     /// <param name="generator">The value generator.</param>
     /// <returns>The current updated instance.</returns>
@@ -70,7 +70,7 @@ public sealed partial class OutcomeGenerator<TArgs, TValue>
     }
 
     /// <summary>
-    /// Adds a result generator for specific result type.
+    /// Sets a result generator for specific result type.
     /// </summary>
     /// <typeparam name="TResult">The result type to add a generator for.</typeparam>
     /// <param name="generator">The generator builder.</param>
@@ -85,12 +85,12 @@ public sealed partial class OutcomeGenerator<TArgs, TValue>
     }
 
     /// <summary>
-    /// Adds a result generator for all result types including the void-based results.
+    /// Sets a result generator for all result types including the void-based results.
     /// </summary>
     /// <typeparam name="TResult">The result type to add a generator for.</typeparam>
     /// <param name="configure">The callbacks that configures the generator.</param>
     /// <returns>The current updated instance.</returns>
-    public OutcomeGenerator<TArgs, TValue> ConfigureGenerator<TResult>(Action<OutcomeGenerator<TArgs, TValue, TResult>> configure)
+    private OutcomeGenerator<TArgs, TValue> ConfigureGenerator<TResult>(Action<OutcomeGenerator<TArgs, TValue, TResult>> configure)
     {
         Guard.NotNull(configure);
 

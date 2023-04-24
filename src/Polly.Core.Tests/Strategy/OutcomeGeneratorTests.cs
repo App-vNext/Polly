@@ -118,19 +118,28 @@ public class OutcomeGeneratorTests
         },
         sut =>
         {
-            sut.ConfigureGenerator<int>(generator => generator.IsEmpty.Should().BeTrue());
-            InvokeHandler(sut, new Outcome<int>(10), GeneratedValue.Default);
-        },
-        sut =>
-        {
-            sut.ConfigureGenerator<int>(generator => generator.SetGenerator((_, _) => GeneratedValue.Valid1));
-            sut.SetGenerator(new OutcomeGenerator<TestArguments, GeneratedValue, int>());
-            InvokeHandler(sut, new Outcome<int>(10), GeneratedValue.Default);
-        },
-        sut =>
-        {
             sut.SetGenerator((_, _) => new ValueTask<GeneratedValue>(GeneratedValue.Valid1));
             InvokeHandler(sut, new Outcome<int>(10), GeneratedValue.Valid1);
+        },
+        sut =>
+        {
+            sut.SetVoidGenerator((_, _) => new ValueTask<GeneratedValue>(GeneratedValue.Valid1));
+            InvokeHandler(sut, new Outcome<VoidResult>(VoidResult.Instance), GeneratedValue.Valid1);
+        },
+        sut =>
+        {
+            sut.SetVoidGenerator((_, _) => GeneratedValue.Valid1);
+            InvokeHandler(sut, new Outcome<VoidResult>(VoidResult.Instance), GeneratedValue.Valid1);
+        },
+        sut =>
+        {
+            sut.SetVoidGenerator((_, _) => new ValueTask<GeneratedValue>(GeneratedValue.Valid1));
+            InvokeHandler(sut, new Outcome<int>(10), GeneratedValue.Default);
+        },
+        sut =>
+        {
+            sut.SetVoidGenerator((_, _) => GeneratedValue.Valid1);
+            InvokeHandler(sut, new Outcome<int>(10), GeneratedValue.Default);
         },
     };
 

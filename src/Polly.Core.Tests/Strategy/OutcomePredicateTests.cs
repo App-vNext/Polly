@@ -20,9 +20,6 @@ public class OutcomePredicateTests
     public void Empty_ConfigurePredicates_Ok()
     {
         _sut.IsEmpty.Should().BeTrue();
-        _sut.ConfigurePredicates<int>(p => p.IsEmpty.Should().BeTrue());
-        _sut.ConfigurePredicates<int>(p => p.IsEmpty.Should().BeTrue());
-        _sut.IsEmpty.Should().BeFalse();
         _sut.CreateHandler().Should().BeNull();
     }
 
@@ -88,6 +85,66 @@ public class OutcomePredicateTests
         {
             sut.HandleException<InvalidOperationException>((e, _) => new ValueTask<bool>(e.Message.Contains("dummy")));
             InvokeHandler(sut, new InvalidOperationException("dummy"), true);
+        },
+        sut =>
+        {
+            sut.HandleVoidException<InvalidOperationException>();
+            InvokeVoidHandler(sut, new InvalidOperationException("dummy"), true);
+        },
+        sut =>
+        {
+            sut.HandleVoidException<InvalidOperationException>(_=> true);
+            InvokeVoidHandler(sut, new ArgumentNullException("dummy"), false);
+        },
+        sut =>
+        {
+            sut.HandleVoidException<InvalidOperationException>((_, _)=> true);
+            InvokeVoidHandler(sut, new ArgumentNullException("dummy"), false);
+        },
+        sut =>
+        {
+            sut.HandleVoidException<InvalidOperationException>((_, _)=> new ValueTask<bool>(true));
+            InvokeVoidHandler(sut, new ArgumentNullException("dummy"), false);
+        },
+        sut =>
+        {
+            sut.HandleVoidException<InvalidOperationException>();
+            InvokeVoidHandler(sut, new ArgumentNullException("dummy"), false);
+        },
+        sut =>
+        {
+            sut.HandleVoidException<InvalidOperationException>();
+            InvokeVoidHandler(sut, new InvalidOperationException("dummy"), true);
+        },
+        sut =>
+        {
+            sut.HandleVoidException<InvalidOperationException>(e => e.Message.Contains("dummy"));
+            InvokeVoidHandler(sut, new InvalidOperationException("other message"), false);
+        },
+        sut =>
+        {
+            sut.HandleVoidException<InvalidOperationException>((e, _) => e.Message.Contains("dummy"));
+            InvokeVoidHandler(sut, new InvalidOperationException("other message"), false);
+        },
+        sut =>
+        {
+            sut.HandleVoidException<InvalidOperationException>((e, _) => e.Message.Contains("dummy"));
+            InvokeVoidHandler(sut, new InvalidOperationException("dummy"), true);
+        },
+        sut =>
+        {
+            sut.HandleVoidException<InvalidOperationException>((e, _) => new ValueTask<bool>(e.Message.Contains("dummy")));
+            InvokeVoidHandler(sut, new InvalidOperationException("other message"), false);
+        },
+        sut =>
+        {
+            sut.HandleVoidException<InvalidOperationException>((e, _) => new ValueTask<bool>(e.Message.Contains("dummy")));
+            InvokeVoidHandler(sut, new InvalidOperationException("dummy"), true);
+        },
+        sut =>
+        {
+            sut.SetVoidPredicates(new VoidOutcomePredicate<TestArguments>());
+            InvokeVoidHandler(sut, new InvalidOperationException("dummy"), false);
         },
     };
 
@@ -331,6 +388,25 @@ public class OutcomePredicateTests
         // again with result
         sut.HandleResult(12345);
         sut.CreateHandler()!.ShouldHandleAsync(new Outcome<int>(10), args).AsTask().Result.Should().Be(false);
+    }
+
+    private static void InvokeVoidHandler(OutcomePredicate<TestArguments> sut, Exception exception, bool expectedResult)
+    {
+        var args = new TestArguments();
+        var handler = sut.CreateHandler();
+
+        if (handler == null)
+        {
+            expectedResult.Should().BeFalse();
+            return;
+        }
+
+#pragma warning disable S5034 // "ValueTask" should be consumed correctly
+        handler.ShouldHandleAsync(new Outcome<int>(exception), args).AsTask().Result.Should().Be(false);
+
+        // again with void result
+        handler.ShouldHandleAsync(new Outcome<VoidResult>(exception), args).AsTask().Result.Should().Be(expectedResult);
+#pragma warning restore S5034 // "ValueTask" should be consumed correctly
     }
 
     private static void InvokeResultHandler<T>(OutcomePredicate<TestArguments> sut, T result, bool expectedResult)

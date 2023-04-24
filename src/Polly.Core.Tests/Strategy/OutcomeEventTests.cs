@@ -79,16 +79,105 @@ public class OutcomeEventTests
         },
         sut =>
         {
-            sut.ConfigureCallbacks<double>(callbacks => callbacks.IsEmpty.Should().BeTrue());
-            InvokeHandler(sut, new Outcome<double>(1.0));
-        },
-        sut =>
-        {
             bool called = false;
             sut.Register<double>((_, _) => { called = true; return default; });
             sut.SetCallbacks(new OutcomeEvent<TestArguments, double>());
             InvokeHandler(sut, new Outcome<double>(1.0));
             called.Should().BeFalse();
+        },
+        sut =>
+        {
+            int called = 0;
+            sut.Register<double>((_, _) => { called ++; return default; });
+            sut.RegisterVoid((_, _) => { called ++; return default; });
+            InvokeHandler(sut, new Outcome<VoidResult>(VoidResult.Instance));
+            called.Should().Be(1);
+        },
+        sut =>
+        {
+            int called = 0;
+            sut.RegisterVoid((_) => called ++);
+            InvokeHandler(sut, new Outcome<VoidResult>(VoidResult.Instance));
+            called.Should().Be(1);
+        },
+        sut =>
+        {
+            int called = 0;
+            sut.RegisterVoid(() => called ++);
+            InvokeHandler(sut, new Outcome<VoidResult>(VoidResult.Instance));
+            called.Should().Be(1);
+        },
+        sut =>
+        {
+            int called = 0;
+            sut.RegisterVoid((_, _) => called ++);
+            InvokeHandler(sut, new Outcome<VoidResult>(VoidResult.Instance));
+            called.Should().Be(1);
+        },
+        sut =>
+        {
+            int called = 0;
+            sut.RegisterVoid((_, _) => called ++);
+            sut.RegisterVoid((_, _) => called ++);
+            InvokeHandler(sut, new Outcome<VoidResult>(VoidResult.Instance));
+            called.Should().Be(2);
+        },
+        sut =>
+        {
+            sut.SetVoidCallbacks(new VoidOutcomeEvent<TestArguments>());
+            InvokeHandler(sut, new Outcome<VoidResult>(VoidResult.Instance));
+        },
+        sut =>
+        {
+            int called = 0;
+            sut.Register(() => called ++);
+            InvokeHandler(sut, new Outcome<int>(10));
+            called.Should().Be(1);
+        },
+        sut =>
+        {
+            int called = 0;
+            sut.Register(() => called ++);
+            sut.Register(() => called ++);
+            InvokeHandler(sut, new Outcome<int>(10));
+            called.Should().Be(2);
+        },
+        sut =>
+        {
+            int called = 0;
+            sut.Register(() => called ++);
+            sut.Register(() => called ++);
+            sut.Register<int>(() => called ++);
+            InvokeHandler(sut, new Outcome<int>(10));
+            called.Should().Be(3);
+        },
+        sut =>
+        {
+            int called = 0;
+            sut.Register(o => { o.Result.Should().Be(10); called ++; });
+            InvokeHandler(sut, new Outcome<int>(10));
+            called.Should().Be(1);
+        },
+        sut =>
+        {
+            int called = 0;
+            sut.Register(o => { o.Exception.Should().BeOfType<InvalidOperationException>(); called ++; });
+            InvokeHandler(sut, new Outcome<int>(new InvalidOperationException()));
+            called.Should().Be(1);
+        },
+        sut =>
+        {
+            int called = 0;
+            sut.Register((_, _) => called ++);
+            InvokeHandler(sut, new Outcome<int>(10));
+            called.Should().Be(1);
+        },
+        sut =>
+        {
+            int called = 0;
+            sut.Register((_, _) => { called ++; return default; });
+            InvokeHandler(sut, new Outcome<int>(10));
+            called.Should().Be(1);
         },
     };
 
