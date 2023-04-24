@@ -13,7 +13,7 @@ internal sealed class RollingHealthMetrics : HealthMetrics
     {
         _samplingDuration = samplingDuration;
         _windowDuration = TimeSpan.FromTicks(_samplingDuration.Ticks / numberOfWindows);
-        _windows = new(numberOfWindows + 1);
+        _windows = new Queue<HealthWindow>();
     }
 
     public override void IncrementSuccess() => UpdateCurrentWindow().Successes++;
