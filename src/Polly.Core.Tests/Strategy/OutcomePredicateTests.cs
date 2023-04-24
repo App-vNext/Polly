@@ -401,9 +401,12 @@ public class OutcomePredicateTests
             return;
         }
 
+#pragma warning disable S5034 // "ValueTask" should be consumed correctly
         handler.ShouldHandleAsync(new Outcome<int>(exception), args).AsTask().Result.Should().Be(false);
+
         // again with void result
         handler.ShouldHandleAsync(new Outcome<VoidResult>(exception), args).AsTask().Result.Should().Be(expectedResult);
+#pragma warning restore S5034 // "ValueTask" should be consumed correctly
     }
 
     private static void InvokeResultHandler<T>(OutcomePredicate<TestArguments> sut, T result, bool expectedResult)
