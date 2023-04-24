@@ -1,5 +1,6 @@
 namespace Polly.CircuitBreaker.Health;
 
+/// <inheritdoc/>
 internal sealed class RollingHealthMetrics : HealthMetrics
 {
     private readonly TimeSpan _samplingDuration;
@@ -61,7 +62,7 @@ internal sealed class RollingHealthMetrics : HealthMetrics
         return _currentWindow;
     }
 
-    private class HealthWindow
+    private sealed class HealthWindow
     {
         public int Successes { get; set; }
 

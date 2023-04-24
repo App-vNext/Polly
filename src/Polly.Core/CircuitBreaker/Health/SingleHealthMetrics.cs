@@ -2,6 +2,7 @@ using Polly;
 
 namespace Polly.CircuitBreaker.Health;
 
+/// <inheritdoc/>
 internal sealed class SingleHealthMetrics : HealthMetrics
 {
     private readonly TimeSpan _samplingDuration;
