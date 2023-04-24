@@ -8,7 +8,6 @@ using Polly.Core.Benchmarks;
 var config = ManualConfig
     .Create(DefaultConfig.Instance)
     .AddJob(Job.MediumRun.WithToolchain(InProcessEmitToolchain.Instance))
-    .AddDiagnoser(MemoryDiagnoser.Default)
-    .WithOption(ConfigOptions.DisableOptimizationsValidator, true);
+    .AddDiagnoser(MemoryDiagnoser.Default);
 
-BenchmarkSwitcher.FromAssembly(typeof(PollyVersion).Assembly).Run(args, config);
+BenchmarkRunner.Run(typeof(PollyVersion).Assembly, config);
