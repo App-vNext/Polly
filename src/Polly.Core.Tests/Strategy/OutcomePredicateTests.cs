@@ -141,7 +141,11 @@ public class OutcomePredicateTests
             sut.HandleVoidException<InvalidOperationException>((e, _) => new ValueTask<bool>(e.Message.Contains("dummy")));
             InvokeVoidHandler(sut, new InvalidOperationException("dummy"), true);
         },
-
+        sut =>
+        {
+            sut.SetVoidPredicates(new VoidOutcomePredicate<TestArguments>());
+            InvokeVoidHandler(sut, new InvalidOperationException("dummy"), false);
+        },
     };
 
     [MemberData(nameof(ExceptionPredicates))]
@@ -389,11 +393,17 @@ public class OutcomePredicateTests
     private static void InvokeVoidHandler(OutcomePredicate<TestArguments> sut, Exception exception, bool expectedResult)
     {
         var args = new TestArguments();
+        var handler = sut.CreateHandler();
 
-        sut.CreateHandler()!.ShouldHandleAsync(new Outcome<int>(exception), args).AsTask().Result.Should().Be(false);
+        if (handler == null)
+        {
+            expectedResult.Should().BeFalse();
+            return;
+        }
 
+        handler.ShouldHandleAsync(new Outcome<int>(exception), args).AsTask().Result.Should().Be(false);
         // again with void result
-        sut.CreateHandler()!.ShouldHandleAsync(new Outcome<VoidResult>(exception), args).AsTask().Result.Should().Be(expectedResult);
+        handler.ShouldHandleAsync(new Outcome<VoidResult>(exception), args).AsTask().Result.Should().Be(expectedResult);
     }
 
     private static void InvokeResultHandler<T>(OutcomePredicate<TestArguments> sut, T result, bool expectedResult)
