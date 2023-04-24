@@ -3,19 +3,15 @@ using Polly.Strategy;
 
 namespace Polly.Strategy;
 
-#pragma warning disable S2436 // Types and methods should not have too many generic parameters
-#pragma warning disable CA1005 // Avoid excessive parameters on generic types
-
 /// <summary>
-/// A class that generates values based on the <see cref="Outcome{TResult}"/> and <typeparamref name="TArgs"/>.
+/// A class that generates values based on the void-based <see cref="Outcome"/> and <typeparamref name="TArgs"/>.
 /// </summary>
 /// <typeparam name="TArgs">The arguments the generator uses.</typeparam>
 /// <typeparam name="TValue">The type of the generated value.</typeparam>
-/// <typeparam name="TResult">The result type that this event handles.</typeparam>
-public sealed class OutcomeGenerator<TArgs, TValue, TResult>
+public sealed class VoidOutcomeGenerator<TArgs, TValue>
     where TArgs : IResilienceArguments
 {
-    private Func<Outcome<TResult>, TArgs, ValueTask<TValue>>? _generator;
+    private Func<Outcome, TArgs, ValueTask<TValue>>? _generator;
 
     /// <summary>
     /// Gets a value indicating whether the generator is empty.
@@ -23,11 +19,11 @@ public sealed class OutcomeGenerator<TArgs, TValue, TResult>
     public bool IsEmpty => _generator is null;
 
     /// <summary>
-    /// Sets a result generator for a specific result type.
+    /// Sets a result generator.
     /// </summary>
     /// <param name="generator">The value generator.</param>
     /// <returns>The current updated instance.</returns>
-    public OutcomeGenerator<TArgs, TValue, TResult> SetGenerator(Func<Outcome<TResult>, TArgs, TValue> generator)
+    public VoidOutcomeGenerator<TArgs, TValue> SetGenerator(Func<Outcome, TArgs, TValue> generator)
     {
         Guard.NotNull(generator);
 
@@ -35,11 +31,11 @@ public sealed class OutcomeGenerator<TArgs, TValue, TResult>
     }
 
     /// <summary>
-    /// Sets a result generator for a specific result type.
+    /// Sets a result generator.
     /// </summary>
     /// <param name="generator">The value generator.</param>
     /// <returns>The current updated instance.</returns>
-    public OutcomeGenerator<TArgs, TValue, TResult> SetGenerator(Func<Outcome<TResult>, TArgs, ValueTask<TValue>> generator)
+    public VoidOutcomeGenerator<TArgs, TValue> SetGenerator(Func<Outcome, TArgs, ValueTask<TValue>> generator)
     {
         Guard.NotNull(generator);
 
@@ -52,5 +48,5 @@ public sealed class OutcomeGenerator<TArgs, TValue, TResult>
     /// Creates a generator handler.
     /// </summary>
     /// <returns>Handler instance or null if no generators are registered.</returns>
-    public Func<Outcome<TResult>, TArgs, ValueTask<TValue>>? CreateHandler() => _generator;
+    public Func<Outcome, TArgs, ValueTask<TValue>>? CreateHandler() => _generator;
 }

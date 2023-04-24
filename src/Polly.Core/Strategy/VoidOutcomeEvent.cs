@@ -4,14 +4,13 @@ using Polly.Strategy;
 namespace Polly.Strategy;
 
 /// <summary>
-/// The base class for events that use <see cref="Outcome{TResult}"/> and <typeparamref name="TArgs"/> in the registered event callbacks.
+/// Class for void-based events that use <see cref="Outcome"/> and <typeparamref name="TArgs"/> in the registered event callbacks.
 /// </summary>
 /// <typeparam name="TArgs">The type of arguments the event uses.</typeparam>
-/// <typeparam name="TResult">The result type that this event handles.</typeparam>
-public sealed class OutcomeEvent<TArgs, TResult>
+public sealed class VoidOutcomeEvent<TArgs>
     where TArgs : IResilienceArguments
 {
-    private readonly List<Func<Outcome<TResult>, TArgs, ValueTask>> _callbacks = new();
+    private readonly List<Func<Outcome, TArgs, ValueTask>> _callbacks = new();
 
     /// <summary>
     /// Gets a value indicating whether the event is empty.
@@ -19,11 +18,11 @@ public sealed class OutcomeEvent<TArgs, TResult>
     public bool IsEmpty => _callbacks.Count == 0;
 
     /// <summary>
-    /// Registers a callback for the specified result type.
+    /// Registers a callback for void-based results.
     /// </summary>
-    /// <param name="callback">The event callback associated with the result type.</param>
+    /// <param name="callback">The event callback associated with the void result type.</param>
     /// <returns>The current updated instance.</returns>
-    public OutcomeEvent<TArgs, TResult> Register(Action callback)
+    public VoidOutcomeEvent<TArgs> Register(Action callback)
     {
         Guard.NotNull(callback);
 
@@ -35,11 +34,11 @@ public sealed class OutcomeEvent<TArgs, TResult>
     }
 
     /// <summary>
-    /// Registers a callback for the specified result type.
+    /// Registers a callback for void-based results.
     /// </summary>
-    /// <param name="callback">The event callback associated with the result type.</param>
+    /// <param name="callback">The event callback associated with the void result type.</param>
     /// <returns>The current updated instance.</returns>
-    public OutcomeEvent<TArgs, TResult> Register(Action<Outcome<TResult>> callback)
+    public VoidOutcomeEvent<TArgs> Register(Action<Outcome> callback)
     {
         Guard.NotNull(callback);
 
@@ -51,11 +50,11 @@ public sealed class OutcomeEvent<TArgs, TResult>
     }
 
     /// <summary>
-    /// Registers a callback for the specified result type.
+    /// Registers a callback for void-based results.
     /// </summary>
-    /// <param name="callback">The event callback associated with the result type.</param>
+    /// <param name="callback">The event callback associated with the void result type.</param>
     /// <returns>The current updated instance.</returns>
-    public OutcomeEvent<TArgs, TResult> Register(Action<Outcome<TResult>, TArgs> callback)
+    public VoidOutcomeEvent<TArgs> Register(Action<Outcome, TArgs> callback)
     {
         Guard.NotNull(callback);
 
@@ -67,11 +66,11 @@ public sealed class OutcomeEvent<TArgs, TResult>
     }
 
     /// <summary>
-    /// Registers a callback for the specified result type.
+    /// Registers a callback for void-based results.
     /// </summary>
-    /// <param name="callback">The event callback associated with the result type.</param>
+    /// <param name="callback">The event callback associated with the void result type.</param>
     /// <returns>The current updated instance.</returns>
-    public OutcomeEvent<TArgs, TResult> Register(Func<Outcome<TResult>, TArgs, ValueTask> callback)
+    public VoidOutcomeEvent<TArgs> Register(Func<Outcome, TArgs, ValueTask> callback)
     {
         Guard.NotNull(callback);
 
@@ -84,7 +83,7 @@ public sealed class OutcomeEvent<TArgs, TResult>
     /// Creates a handler that invokes the registered event callbacks.
     /// </summary>
     /// <returns>Handler instance or <c>null</c> if no callbacks are registered.</returns>
-    public Func<Outcome<TResult>, TArgs, ValueTask>? CreateHandler()
+    public Func<Outcome, TArgs, ValueTask>? CreateHandler()
     {
         return _callbacks.Count switch
         {
@@ -94,7 +93,7 @@ public sealed class OutcomeEvent<TArgs, TResult>
         };
     }
 
-    private static Func<Outcome<TResult>, TArgs, ValueTask> CreateHandler(Func<Outcome<TResult>, TArgs, ValueTask>[] callbacks)
+    private static Func<Outcome, TArgs, ValueTask> CreateHandler(Func<Outcome, TArgs, ValueTask>[] callbacks)
     {
         return async (outcome, args) =>
         {

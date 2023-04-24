@@ -157,7 +157,7 @@ public sealed partial class OutcomePredicate<TArgs>
     /// <typeparam name="TResult">The result type to add a predicate for.</typeparam>
     /// <param name="configure">Callback that configures a result predicate.</param>
     /// <returns>The current updated instance.</returns>
-    public OutcomePredicate<TArgs> ConfigurePredicates<TResult>(Action<OutcomePredicate<TArgs, TResult>> configure)
+    private OutcomePredicate<TArgs> ConfigurePredicates<TResult>(Action<OutcomePredicate<TArgs, TResult>> configure)
     {
         Guard.NotNull(configure);
 

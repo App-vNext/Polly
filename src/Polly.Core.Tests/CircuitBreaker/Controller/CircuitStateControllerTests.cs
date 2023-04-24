@@ -30,7 +30,7 @@ public class CircuitStateControllerTests
     {
         // arrange
         bool called = false;
-        _options.OnOpened.Register<VoidResult>((outcome, args) =>
+        _options.OnOpened.RegisterVoid((outcome, args) =>
         {
             args.BreakDuration.Should().Be(TimeSpan.MaxValue);
             args.Context.IsSynchronous.Should().BeFalse();
@@ -65,7 +65,7 @@ public class CircuitStateControllerTests
     {
         // arrange
         bool called = false;
-        _options.OnClosed.Register<VoidResult>((outcome, args) =>
+        _options.OnClosed.RegisterVoid((outcome, args) =>
         {
             args.Context.IsSynchronous.Should().BeFalse();
             args.Context.IsVoid.Should().BeTrue();

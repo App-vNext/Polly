@@ -36,15 +36,28 @@ public partial class OutcomeEvent<TArgs>
             _callback = callback;
         }
 
-        public override ValueTask HandleAsync<TResult>(Outcome<TResult> outcome, TArgs args)
+        public override async ValueTask HandleAsync<TResult>(Outcome<TResult> outcome, TArgs args)
         {
-            if (typeof(TResult) != _type)
+            if (typeof(TResult) == _type)
             {
-                return default;
-            }
+                if (_type == typeof(VoidResult))
+                {
+                    var callback = (Func<Outcome, TArgs, ValueTask>)_callback;
+                    await callback(outcome.AsOutcome(), args).ConfigureAwait(args.Context.ContinueOnCapturedContext);
+                }
+                else
+                {
+                    var callback = (Func<Outcome<TResult>, TArgs, ValueTask>)_callback;
+                    await callback(outcome, args).ConfigureAwait(args.Context.ContinueOnCapturedContext);
+                }
 
-            var callback = (Func<Outcome<TResult>, TArgs, ValueTask>)_callback;
-            return callback(outcome, args);
+            }
+            else if (_type == typeof(object))
+            {
+                var callback = (Func<Outcome<object>, TArgs, ValueTask>)_callback;
+                var objectOutcome = outcome.HasResult ? new Outcome<object>(outcome.Result!) : new Outcome<object>(outcome.Exception!);
+                await callback(objectOutcome, args).ConfigureAwait(args.Context.ContinueOnCapturedContext);
+            }
         }
     }
 
@@ -55,14 +68,17 @@ public partial class OutcomeEvent<TArgs>
         public TypesHandler(IEnumerable<KeyValuePair<Type, object>> callbacks)
             => _handlers = callbacks.ToDictionary(v => v.Key, v => new TypeHandler(v.Key, v.Value));
 
-        public override ValueTask HandleAsync<TResult>(Outcome<TResult> outcome, TArgs args)
+        public override async ValueTask HandleAsync<TResult>(Outcome<TResult> outcome, TArgs args)
         {
             if (_handlers.TryGetValue(typeof(TResult), out var handler))
             {
-                return handler.HandleAsync(outcome, args);
+                await handler.HandleAsync(outcome, args).ConfigureAwait(args.Context.ContinueOnCapturedContext);
             }
 
-            return default;
+            if (_handlers.TryGetValue(typeof(object), out handler))
+            {
+                await handler.HandleAsync(outcome, args).ConfigureAwait(args.Context.ContinueOnCapturedContext);
+            }
         }
     }
 }

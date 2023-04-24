@@ -7,7 +7,7 @@ namespace Polly.Strategy;
 public sealed partial class OutcomeGenerator<TArgs, TValue>
 {
     /// <summary>
-    /// The resulting handler for the outcome.
+    /// The resulting generator handler.
     /// </summary>
     public abstract class Handler
     {
@@ -59,7 +59,14 @@ public sealed partial class OutcomeGenerator<TArgs, TValue>
             }
             else if (typeof(TResult) == _type)
             {
-                value = await ((Func<Outcome<TResult>, TArgs, ValueTask<TValue>>)_generator)(outcome, args).ConfigureAwait(args.Context.ContinueOnCapturedContext);
+                if (typeof(TResult) == typeof(VoidResult))
+                {
+                    value = await ((Func<Outcome, TArgs, ValueTask<TValue>>)_generator)(outcome.AsOutcome(), args).ConfigureAwait(args.Context.ContinueOnCapturedContext);
+                }
+                else
+                {
+                    value = await ((Func<Outcome<TResult>, TArgs, ValueTask<TValue>>)_generator)(outcome, args).ConfigureAwait(args.Context.ContinueOnCapturedContext);
+                }
             }
 
             if (IsValid(value))
