@@ -1,6 +1,4 @@
-using System.Threading.RateLimiting;
 using Polly;
-using Polly.Strategy;
 
 namespace Polly.Core.Benchmarks;
 
@@ -29,7 +27,7 @@ internal static partial class Helper
                     3,
                     TimeSpan.FromSeconds(1))
                 .AddTimeout(TimeSpan.FromSeconds(1))
-                .AddAdvancedCircuitBreaker(new AdvancedCircuitBreakerStrategyOptions
+                .AddAdvancedCircuitBreaker(new()
                 {
                     FailureThreshold = 0.5,
                     SamplingDuration = TimeSpan.FromSeconds(30),
