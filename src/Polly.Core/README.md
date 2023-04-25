@@ -167,7 +167,15 @@ The resilience extensibility is simple. You just expose extensions for `Resilien
 
 ## Callback API
 
-The core of the ResilienceStrategy callback API is includes components, such as the `IResilienceArguments` interface, the `Outcome` struct, and the `Outcome<TResult>` struct. These components allow the callback API to be used for various scenarios.
+The callback can be used by individual resilience strategies to simplify the handling of various result types. It's use is entirely optional.  It's recommended to all authors of custom resilience strategies. The core of the callback API is includes components, such as the `IResilienceArguments` interface, the `Outcome` struct, and the `Outcome<TResult>` struct.
+
+These core components are then used in the following callback types (explained in each respective section):
+
+- **Generators**
+- **Events**
+- **Predicates**
+
+All the callback types above use the following components:
 
 - **`IResilienceArguments`**: Defines the recommended structure for arguments utilized by individual strategies. It exposes a single property, `Context`, which provides the context associated with the execution of a user-provided callback.
 - **`Outcome<TResult>`**: Captures the outcome of an operation that yields a result of a specific type, `TResult`, or an exception. This struct specializes its functionality to accommodate generic results. The `TryGetResult` method, for instance, is tailored to handle the generic result type, offering additional flexibility and extensibility.
