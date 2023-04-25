@@ -1,4 +1,3 @@
-
 using Polly.Fallback;
 using Polly.Strategy;
 

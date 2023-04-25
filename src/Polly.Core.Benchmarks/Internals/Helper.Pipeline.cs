@@ -1,4 +1,6 @@
+using System.Threading.RateLimiting;
 using Polly;
+using Polly.Strategy;
 
 namespace Polly.Core.Benchmarks;
 
