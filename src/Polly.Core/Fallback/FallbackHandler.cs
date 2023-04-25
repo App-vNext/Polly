@@ -69,7 +69,7 @@ public partial class FallbackHandler
     internal Handler? CreateHandler()
     {
         var shouldHandle = _predicates.CreateHandler();
-        if (shouldHandle == null || _actions.Count == 0)
+        if (shouldHandle == null)
         {
             return null;
         }
