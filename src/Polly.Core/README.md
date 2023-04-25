@@ -267,4 +267,3 @@ The callback API is non-allocating and fast. However, the performance varies dep
 ### Registering your custom callbacks
 
 If you are registering asynchronous callbacks make sure that you respect the value of `ResilienceContext.IsSynchronous` property and execute you callbacks synchronously for synchronous executions. You should also use the `ResilienceContext.ContinueOnCapturedContext` in case your user code uses execution and synchronization context (i.e. asynchronous calls in UI applications).
-
