@@ -167,7 +167,7 @@ The resilience extensibility is simple. You just expose extensions for `Resilien
 
 ## Callback API
 
-The callback can be used by individual resilience strategies to simplify the handling of various result types. It's use is entirely optional.  It's recommended to all authors of custom resilience strategies. The core of the callback API is includes components, such as the `IResilienceArguments` interface, the `Outcome` struct, and the `Outcome<TResult>` struct.
+The callback can be used by individual resilience strategies to simplify the handling of various result types. Its use is entirely optional but it's recommended to all authors of custom resilience strategies. The core of the callback API is includes components, such as the `IResilienceArguments` interface, the `Outcome` struct, and the `Outcome<TResult>` struct.
 
 These core components are then used in the following callback types (explained in each respective section):
 
@@ -187,7 +187,7 @@ Events are designed to handle various scenarios, such as events without outcomes
 
 - **`NoOutcomeEvent<TArgs>`**: holds a list of callbacks that are invoked when some event occurs. These callbacks are executed for all result types and do not require any `Outcome`. This class supports registering multiple event callbacks. The registered callbacks are executed one-by-one in the same order as they were registered.
 - **`OutcomeEvent<TArgs>`**: is designed for events that use `Outcome<TResult>` and `TArgs` in the registered event callbacks. This class allows registering callbacks for specific result types or for all result types, including void-based results.
-- `OutcomeEvent<TArgs, TResult>`: class is  base class for events that use `Outcome<TResult>` and `TArgs` in the registered event callbacks. This class allows registering callbacks for a specific result type.
+- **`OutcomeEvent<TArgs, TResult>`**: class is  base class for events that use `Outcome<TResult>` and `TArgs` in the registered event callbacks. This class allows registering callbacks for a specific result type.
 - **`VoidOutcomeEvent<TArgs>`**: class is designed for events that use `Outcome` and `TArgs` in the registered event callbacks specifically for void-based results. This class allows registering callbacks for void-based results.
 
 API Usage:
@@ -203,7 +203,7 @@ retryEvent
     .Register(async (outcome, args) => await OnEventAsync(outcome, args)) // called asynchronously with the outcome and arguments for all result types
 ```
 
-The code above demonstrates how `OutcomeEvent<OnRetryArguments>` can be used to register multiple synchronous and asynchronous callbacks with different signature under a single unified API.
+The code above demonstrates how `OutcomeEvent<OnRetryArguments>` can be used to register multiple synchronous and asynchronous callbacks with different signatures under a single unified API.
 
 ### Predicates
 
@@ -212,13 +212,13 @@ Predicates are designed to provide the resilience strategy that uses them with t
 - Asynchronous predicates
 - Synchronous predicates
 - Exception predicates
-- Combinations of types above that take arguments or outcome in the predicate arguments
+- Combinations of the types above that take arguments or an outcome in the predicate arguments
 
-The API exposes the following built-in  predicates:
+The API exposes the following built-in predicates:
 
 - **`OutcomePredicate<TArgs>`**: holds a list of predicates for various result types. The first predicate that returns `true` wins, if no predicate returns true the result is a `false` value indicating that the result should not be handled.
 - **`OutcomePredicate<TArgs, TResult>`**: holds a list of predicates for a single result type. The first predicate that returns `true` wins, if no predicate returns true the result is a `false` value indicating that the result should not be handled.
-- **`VoidOutcomePredicate<TArgs>`**: holds a list of predicates for a void result type. The first predicate that returns `true` wins, if no predicate returns true the result is a `false` value indicating that the result should not be handled.
+- **`VoidOutcomePredicate<TArgs>`**: holds a list of predicates for a `void` result type. The first predicate that returns `true` wins, if no predicate returns true the result is a `false` value indicating that the result should not be handled.
 
 API Usage:
 
@@ -234,13 +234,13 @@ predicate
     .HandleOutcome<int>((outcome, args) => await ShouldRetryAsync(outcome, args)) // access to both outcome and arguments
 ```
 
-The code above demonstrates how `OutcomePredicate<ShouldRetryArguments>` can be used to register multiple synchronous and asynchronous fallbacks with different signature under a single unified API.
+The code above demonstrates how `OutcomePredicate<ShouldRetryArguments>` can be used to register multiple synchronous and asynchronous fallbacks with different signatures under a single unified API.
 
 ### Generators
 
-Generates are designed to generate a value of specific type for a resilience strategy that uses them. We recognize the following generator types:
+Generators are designed to generate a value of a specific type for a resilience strategy that uses them. We recognize the following generator types:
 
-- **`NoOutcomeGenerator<TArgs>`**: the generators that does not require any `Outcome` to produce a value. Used in resilience strategies that do not access the `Outcome` such as timeout strategy.
+- **`NoOutcomeGenerator<TArgs>`**: the generator that does not require any `Outcome` to produce a value. Used in resilience strategies that do not access the `Outcome` such as timeout strategy.
 - **`OutcomeGenerator<TArgs, TValue>`**: holds a list of generators for various result types. These generators produce the value of `TValue` type.
 - **`OutcomeGenerator<TArgs, TValue, TResult>`**: holds a generator for a specific result type.
 - **`VoidOutcomeGenerator<TArgs, TValue>`**: holds a generator for a void-based result type.
@@ -258,12 +258,12 @@ generator
     .SetVoidGenerator(async (outcome, args) => await GenerateDelayAsync(out, args));
 ```
 
-The code above demonstrates how `OutcomeGenerator<RetryDelayArguments, TimeSpan>` can be used to register multiple synchronous and asynchronous generators with different signature under a single unified API.
+The code above demonstrates how `OutcomeGenerator<RetryDelayArguments, TimeSpan>` can be used to register multiple synchronous and asynchronous generators with different signatures under a single unified API.
 
 ### Performance
 
-The callback API is non-allocating and fast. However, the performance varies depending on number of callbacks you register. Maximum performance is archived when your callbacks handles only a single result type with a single registered callback. In that scenario the underlying handler does not do any dictionary lookups.
+The callback API is non-allocating and fast. However, the performance varies depending on number of callbacks you register. Optimum performance is achieved when your callbacks handle only a single result type with a single registered callback. In that scenario the underlying handler does not do any dictionary lookups.
 
 ### Registering your custom callbacks
 
-If you are registering asynchronous callbacks make sure that you respect the value of `ResilienceContext.IsSynchronous` property and execute you callbacks synchronously for synchronous executions. You should also use the `ResilienceContext.ContinueOnCapturedContext` in case your user code uses execution and synchronization context (i.e. asynchronous calls in UI applications).
+If you are registering asynchronous callbacks, make sure that you respect the value of the `ResilienceContext.IsSynchronous` property and execute you callbacks synchronously for synchronous executions. You should also use the `ResilienceContext.ContinueOnCapturedContext` in case your user code uses execution and synchronization context (i.e. asynchronous calls in UI applications, such as in Windows Forms or WPF applications).
