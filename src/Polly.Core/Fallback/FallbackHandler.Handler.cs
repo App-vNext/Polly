@@ -2,7 +2,7 @@ using Polly.Strategy;
 
 namespace Polly.Fallback;
 
-public partial class FallbackHandler
+public sealed partial class FallbackHandler
 {
     internal sealed class Handler
     {
