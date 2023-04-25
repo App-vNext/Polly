@@ -211,7 +211,8 @@ Task("__RunTests")
             Configuration = configuration,
             Loggers = loggers,
             NoBuild = true,
-            ArgumentCustomization = args => args.Append($"--blame-hang-timeout 10s")
+            // Commented, because it causes random crashes on Windows
+            // ArgumentCustomization = args => args.Append($"--blame-hang-timeout 10s")
         });
     }
 });
