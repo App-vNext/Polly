@@ -37,12 +37,12 @@ jobs:
     - name: Setup .NET SDK
       uses: actions/setup-dotnet@607fce577a46308457984d59e4954e075820f10a # v3.0.3
 
-    - name: Setup NuGet cache
-      uses: actions/cache@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
-      with:
-        path: ~/.nuget/packages
-        key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj', '**/*.props') }}
-        restore-keys: ${{ runner.os }}-nuget-
+    #- name: Setup NuGet cache
+    #  uses: actions/cache@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
+    #  with:
+    #    path: ~/.nuget/packages
+    #    key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj', '**/*.props') }}
+    #    restore-keys: ${{ runner.os }}-nuget-
 
     - name: Build, Test and Package
       shell: pwsh
