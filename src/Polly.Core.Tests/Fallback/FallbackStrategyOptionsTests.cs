@@ -34,7 +34,7 @@ public class FallbackStrategyOptionsTests
             Invalid.
 
             Validation Errors:
-            The ShouldHandle field is required.
+            The Handler field is required.
             The OnFallback field is required.
             """);
     }

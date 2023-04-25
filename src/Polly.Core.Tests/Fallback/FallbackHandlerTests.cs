@@ -3,6 +3,7 @@ using Polly.Fallback;
 using Polly.Strategy;
 
 namespace Polly.Core.Tests.Fallback;
+
 public class FallbackHandlerTests
 {
     [Fact]

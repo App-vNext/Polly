@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Polly.Fallback;
 
 namespace Polly.Core.Tests.Fallback;
+
 public class FallbackResilienceStrategyBuilderExtensionsTests
 {
     private readonly ResilienceStrategyBuilder _builder = new();

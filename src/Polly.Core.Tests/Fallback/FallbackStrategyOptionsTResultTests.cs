@@ -4,6 +4,7 @@ using Polly.Strategy;
 using Polly.Utils;
 
 namespace Polly.Core.Tests.Fallback;
+
 public class FallbackStrategyOptionsTResultTests
 {
     [Fact]
