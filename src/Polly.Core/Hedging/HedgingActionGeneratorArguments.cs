@@ -9,8 +9,17 @@ namespace Polly.Hedging;
 /// </summary>
 public readonly struct HedgingActionGeneratorArguments : IResilienceArguments
 {
-    internal HedgingActionGeneratorArguments(ResilienceContext context) => Context = context;
+    internal HedgingActionGeneratorArguments(ResilienceContext context, int attempt)
+    {
+        Context = context;
+        Attempt = attempt;
+    }
 
     /// <inheritdoc/>
     public ResilienceContext Context { get; }
+
+    /// <summary>
+    /// Gets the zero-based hedging attempt number.
+    /// </summary>
+    public int Attempt { get; }
 }

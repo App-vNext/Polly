@@ -37,6 +37,6 @@ public static class HedgingResilienceStrategyBuilderExtensions
 
         ValidationHelper.ValidateObject(options, "The hedging strategy options are invalid.");
 
-        return builder.AddStrategy(context => new HedgingResilienceStrategy(options), options);
+        return builder.AddStrategy(context => new HedgingResilienceStrategy(options, context.TimeProvider, context.Telemetry), options);
     }
 }

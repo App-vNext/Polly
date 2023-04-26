@@ -56,7 +56,7 @@ public sealed class ResilienceContext
     /// <summary>
     /// Gets the custom properties attached to the context.
     /// </summary>
-    public ResilienceProperties Properties { get; } = new();
+    public ResilienceProperties Properties { get; internal set; } = new();
 
     /// <summary>
     /// Gets the collection of resilience events that occurred while executing the resilience strategy.
@@ -75,6 +75,16 @@ public sealed class ResilienceContext
     /// by calling <see cref="Return(ResilienceContext)"/> method.
     /// </remarks>
     public static ResilienceContext Get() => Pool.Get();
+
+    internal void InitializeFrom(ResilienceContext context)
+    {
+        ResultType = context.ResultType;
+        IsSynchronous = context.IsSynchronous;
+        CancellationToken = context.CancellationToken;
+        ContinueOnCapturedContext = context.ContinueOnCapturedContext;
+        _resilienceEvents.Clear();
+        _resilienceEvents.AddRange(context.ResilienceEvents);
+    }
 
     /// <summary>
     /// Returns a <paramref name="context"/> back to the pool.
@@ -108,7 +118,7 @@ public sealed class ResilienceContext
         _resilienceEvents.Add(@event);
     }
 
-    private bool Reset()
+    internal bool Reset()
     {
         IsSynchronous = false;
         ResultType = typeof(UnknownResult);

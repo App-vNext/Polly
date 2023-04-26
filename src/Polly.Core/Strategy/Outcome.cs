@@ -32,6 +32,11 @@ public readonly struct Outcome
     }
 
     /// <summary>
+    /// Gets a value indicating whether the outcome is valid.
+    /// </summary>
+    public bool IsValid => ResultType != null;
+
+    /// <summary>
     /// Gets the exception that occurred during the operation, if any.
     /// </summary>
     public Exception? Exception { get; }
@@ -86,5 +91,15 @@ public readonly struct Outcome
         }
 
         return Result?.ToString() ?? string.Empty;
+    }
+
+    internal Outcome<TResult> AsOutcome<TResult>()
+    {
+        if (Exception != null)
+        {
+            return new Outcome<TResult>(Exception);
+        }
+
+        return new Outcome<TResult>((TResult)Result!);
     }
 }

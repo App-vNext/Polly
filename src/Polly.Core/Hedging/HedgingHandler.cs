@@ -13,7 +13,7 @@ public sealed partial class HedgingHandler
     /// <summary>
     /// Gets a value indicating whether the hedging handler is empty.
     /// </summary>
-    public bool IsEmpty => _predicates.IsEmpty;
+    public bool IsEmpty => _actions.Count == 0;
 
     /// <summary>
     /// Configures a hedging handler for a specific result type.
@@ -30,11 +30,8 @@ public sealed partial class HedgingHandler
 
         ValidationHelper.ValidateObject(handler, "The hedging handler configuration is invalid.");
 
-        if (!handler.ShouldHandle.IsEmpty)
-        {
-            _predicates.SetPredicates(handler.ShouldHandle);
-            _actions[typeof(TResult)] = handler.HedgingActionGenerator!;
-        }
+        _predicates.SetPredicates(handler.ShouldHandle);
+        _actions[typeof(TResult)] = handler.HedgingActionGenerator!;
 
         return this;
     }
@@ -53,31 +50,27 @@ public sealed partial class HedgingHandler
 
         ValidationHelper.ValidateObject(handler, "The hedging handler configuration is invalid.");
 
-        if (!handler.ShouldHandle.IsEmpty)
-        {
-            _predicates.SetVoidPredicates(handler.ShouldHandle);
-            _actions[typeof(VoidResult)] = CreateGenericGenerator(handler.HedgingActionGenerator!);
-        }
+        _predicates.SetVoidPredicates(handler.ShouldHandle);
+        _actions[typeof(VoidResult)] = CreateGenericGenerator(handler.HedgingActionGenerator!);
 
         return this;
     }
 
     internal Handler? CreateHandler()
     {
-        var shouldHandle = _predicates.CreateHandler();
-        if (shouldHandle == null)
+        if (_actions.Count == 0)
         {
             return null;
         }
 
-        return new Handler(shouldHandle, _actions);
+        return new Handler(_predicates.CreateHandler(), _actions);
     }
 
     private static HedgingActionGenerator<VoidResult> CreateGenericGenerator(HedgingActionGenerator generator)
     {
         return (args) =>
         {
-            Func<Task>? action = generator(new HedgingActionGeneratorArguments(args.Context));
+            Func<Task>? action = generator(new HedgingActionGeneratorArguments(args.Context, args.Attempt));
             if (action == null)
             {
                 return null;
