@@ -5,7 +5,7 @@ namespace Polly.Hedging;
 #pragma warning disable CA1815 // Override equals and operator equals on value types
 
 /// <summary>
-/// Represents arguments used by on-hedging event.
+/// Represents arguments used by the on-hedging event.
 /// </summary>
 public readonly struct OnHedgingArguments : IResilienceArguments
 {

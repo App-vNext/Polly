@@ -8,7 +8,7 @@ internal sealed class HedgingResilienceStrategy : ResilienceStrategy
     {
         HedgingDelay = options.HedgingDelay;
         MaxHedgedAttempts = options.MaxHedgedAttempts;
-        HedgingDelayGenerator = options.HedgingDelayGenerator.CreateHandler(HedgingConstants.DefaultHedgingDelay, _ => true);
+        HedgingDelayGenerator = options.HedgingDelayGenerator.CreateHandler(HedgingConstants.DefaultHedgingDelay, static _ => true);
         HedgingHandler = options.Handler.CreateHandler();
     }
 

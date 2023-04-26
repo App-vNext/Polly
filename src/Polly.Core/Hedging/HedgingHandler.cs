@@ -30,13 +30,11 @@ public sealed partial class HedgingHandler
 
         ValidationHelper.ValidateObject(handler, "The hedging handler configuration is invalid.");
 
-        if (handler.ShouldHandle.IsEmpty)
+        if (!handler.ShouldHandle.IsEmpty)
         {
-            return this;
+            _predicates.SetPredicates(handler.ShouldHandle);
+            _actions[typeof(TResult)] = handler.HedgingActionGenerator!;
         }
-
-        _predicates.SetPredicates(handler.ShouldHandle);
-        _actions[typeof(TResult)] = handler.HedgingActionGenerator!;
 
         return this;
     }
@@ -55,13 +53,11 @@ public sealed partial class HedgingHandler
 
         ValidationHelper.ValidateObject(handler, "The hedging handler configuration is invalid.");
 
-        if (handler.ShouldHandle.IsEmpty)
+        if (!handler.ShouldHandle.IsEmpty)
         {
-            return this;
+            _predicates.SetVoidPredicates(handler.ShouldHandle);
+            _actions[typeof(VoidResult)] = CreateGenericGenerator(handler.HedgingActionGenerator!);
         }
-
-        _predicates.SetVoidPredicates(handler.ShouldHandle);
-        _actions[typeof(VoidResult)] = CreateGenericGenerator(handler.HedgingActionGenerator!);
 
         return this;
     }

@@ -16,18 +16,20 @@ public class HedgingStrategyOptions : ResilienceStrategyOptions
     /// <summary>
     /// A <see cref="TimeSpan"/> that represents the infinite hedging delay.
     /// </summary>
-    public static readonly TimeSpan InfiniteHedgingDelay = TimeSpan.FromMilliseconds(-1);
+    public static readonly TimeSpan InfiniteHedgingDelay = System.Threading.Timeout.InfiniteTimeSpan;
 
     /// <summary>
     /// Gets or sets the minimal time of waiting before spawning a new hedged call.
     /// </summary>
     /// <remarks>
     /// Default is set to 2 seconds.
-    ///
+    /// <para>
     /// You can also use <see cref="TimeSpan.Zero"/> to create all hedged tasks (value of <see cref="MaxHedgedAttempts"/>) at once
     /// or <see cref="InfiniteHedgingDelay"/> to force the hedging strategy to never create new task before the old one is finished.
-    ///
+    /// </para>
+    /// <para>
     /// If you want a greater control over hedging delay customization use <see cref="HedgingDelayGenerator"/>.
+    /// </para>
     /// </remarks>
     public TimeSpan HedgingDelay { get; set; } = HedgingConstants.DefaultHedgingDelay;
 
@@ -55,8 +57,7 @@ public class HedgingStrategyOptions : ResilienceStrategyOptions
     /// </summary>
     /// <remarks>
     /// The <see cref="HedgingDelayGenerator"/> takes precedence over <see cref="HedgingDelay"/>. If specified, the <see cref="HedgingDelay"/> is ignored.
-    ///
-    /// By default, this generator is empty and does not have on hedging delays.
+    /// <para>By default, this generator is empty and does not have any custom hedging delays.</para>
     /// </remarks>
     [Required]
     public NoOutcomeGenerator<HedgingDelayArguments, TimeSpan> HedgingDelayGenerator { get; set; } = new();
