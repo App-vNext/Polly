@@ -15,6 +15,7 @@ public class HedgingResilienceStrategyTests
         strategy.HedgingDelay.Should().Be(_options.HedgingDelay);
         strategy.HedgingDelayGenerator.Should().BeNull();
         strategy.HedgingHandler.Should().BeNull();
+        strategy.HedgingHandler.Should().BeNull();
     }
 
     [Fact]

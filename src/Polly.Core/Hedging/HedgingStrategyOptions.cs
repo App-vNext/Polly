@@ -60,4 +60,13 @@ public class HedgingStrategyOptions : ResilienceStrategyOptions
     /// </remarks>
     [Required]
     public NoOutcomeGenerator<HedgingDelayArguments, TimeSpan> HedgingDelayGenerator { get; set; } = new();
+
+    /// <summary>
+    /// Gets or sets the event that is triggered when a hedging is performed.
+    /// </summary>
+    /// <remarks>
+    /// This property is required. By default, this event is empty.
+    /// </remarks>
+    [Required]
+    public OutcomeEvent<OnHedgingArguments> OnHedging { get; set; } = new();
 }

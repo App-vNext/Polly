@@ -18,6 +18,7 @@ public class HedgingStrategyOptionsTResultTests
         options.HedgingActionGenerator.Should().BeNull();
         options.HedgingDelay.Should().Be(TimeSpan.FromSeconds(2));
         options.MaxHedgedAttempts.Should().Be(2);
+        options.OnHedging.IsEmpty.Should().BeTrue();
     }
 
     [Fact]
@@ -28,6 +29,7 @@ public class HedgingStrategyOptionsTResultTests
             HedgingDelayGenerator = null!,
             ShouldHandle = null!,
             MaxHedgedAttempts = -1,
+            OnHedging = null!,
         };
 
         options
@@ -42,12 +44,14 @@ public class HedgingStrategyOptionsTResultTests
             The ShouldHandle field is required.
             The HedgingActionGenerator field is required.
             The HedgingDelayGenerator field is required.
+            The OnHedging field is required.
             """);
     }
 
     [Fact]
     public async Task AsNonGenericOptions_Ok()
     {
+        var onHedgingCalled = false;
         var options = new HedgingStrategyOptions<int>
         {
             HedgingDelayGenerator = new NoOutcomeGenerator<HedgingDelayArguments, TimeSpan>().SetGenerator(args => TimeSpan.FromSeconds(123)),
@@ -56,7 +60,13 @@ public class HedgingStrategyOptionsTResultTests
             StrategyType = "Dummy-Hedging",
             HedgingDelay = TimeSpan.FromSeconds(3),
             MaxHedgedAttempts = 4,
-            HedgingActionGenerator = args => () => Task.FromResult(555)
+            HedgingActionGenerator = args => () => Task.FromResult(555),
+            OnHedging = new OutcomeEvent<OnHedgingArguments, int>().Register((_, args) =>
+            {
+                args.Context.Should().NotBeNull();
+                args.Attempt.Should().Be(3);
+                onHedgingCalled = true;
+            })
         };
 
         var nonGeneric = options.AsNonGenericOptions();
@@ -81,5 +91,8 @@ public class HedgingStrategyOptionsTResultTests
 
         var delay = await nonGeneric.HedgingDelayGenerator.CreateHandler(TimeSpan.Zero, _ => true)!(new HedgingDelayArguments(ResilienceContext.Get(), 4));
         delay.Should().Be(TimeSpan.FromSeconds(123));
+
+        await nonGeneric.OnHedging.CreateHandler()!.HandleAsync<int>(new Outcome<int>(10), new OnHedgingArguments(ResilienceContext.Get(), 3));
+        onHedgingCalled.Should().BeTrue();
     }
 }

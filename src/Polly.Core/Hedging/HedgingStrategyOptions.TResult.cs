@@ -63,6 +63,15 @@ public class HedgingStrategyOptions<TResult> : ResilienceStrategyOptions
     [Required]
     public NoOutcomeGenerator<HedgingDelayArguments, TimeSpan> HedgingDelayGenerator { get; set; } = new();
 
+    /// <summary>
+    /// Gets or sets the event that is triggered when a hedging is performed.
+    /// </summary>
+    /// <remarks>
+    /// This property is required. By default, this event is empty.
+    /// </remarks>
+    [Required]
+    public OutcomeEvent<OnHedgingArguments, TResult> OnHedging { get; set; } = new();
+
     internal HedgingStrategyOptions AsNonGenericOptions()
     {
         return new HedgingStrategyOptions
@@ -76,7 +85,8 @@ public class HedgingStrategyOptions<TResult> : ResilienceStrategyOptions
                 handler.ShouldHandle = ShouldHandle;
                 handler.HedgingActionGenerator = HedgingActionGenerator;
             }),
-            MaxHedgedAttempts = MaxHedgedAttempts
+            MaxHedgedAttempts = MaxHedgedAttempts,
+            OnHedging = new OutcomeEvent<OnHedgingArguments>().SetCallbacks(OnHedging)
         };
     }
 }
