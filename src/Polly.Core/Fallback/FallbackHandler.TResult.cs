@@ -20,7 +20,7 @@ public delegate ValueTask<TResult> FallbackAction<TResult>(Outcome<TResult> outc
 /// Every fallback handler requires a predicate that determines whether a fallback should be performed for a given result and also
 /// the fallback action to execute.
 /// </remarks>
-public class FallbackHandler<TResult>
+public sealed class FallbackHandler<TResult>
 {
     /// <summary>
     /// Gets or sets the predicate that determines whether a fallback should be performed for a given result.

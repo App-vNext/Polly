@@ -18,7 +18,7 @@ public delegate ValueTask FallbackAction(Outcome outcome, HandleFallbackArgument
 /// Every fallback handler requires a predicate that determines whether a fallback should be performed for a given
 /// void-based result and also the fallback action to execute.
 /// </remarks>
-public class VoidFallbackHandler
+public sealed class VoidFallbackHandler
 {
     /// <summary>
     /// Gets or sets the predicate that determines whether a fallback should be handled.
