@@ -22,7 +22,7 @@ public class HedgingStrategyOptions : ResilienceStrategyOptions
     /// Gets or sets the minimal time of waiting before spawning a new hedged call.
     /// </summary>
     /// <remarks>
-    /// Default is set to 2 seconds.
+    /// Defaults to 2 seconds.
     /// <para>
     /// You can also use <see cref="TimeSpan.Zero"/> to create all hedged tasks (value of <see cref="MaxHedgedAttempts"/>) at once
     /// or <see cref="InfiniteHedgingDelay"/> to force the hedging strategy to never create new task before the old one is finished.
@@ -37,11 +37,12 @@ public class HedgingStrategyOptions : ResilienceStrategyOptions
     /// Gets or sets the maximum hedged attempts to perform the desired task.
     /// </summary>
     /// <remarks>
-    /// Default set to 2.
+    /// Defaults to 2. The value must be bigger or equal to 2, and lower or equal to 10.
+    /// <para>
     /// The value defines how many concurrent hedged tasks will be triggered by the strategy.
     /// This includes the primary hedged task that is initially performed, and the further tasks that will
     /// be fetched from the provider and spawned in parallel.
-    /// The value must be bigger or equal to 2, and lower or equal to 10.
+    /// </para>
     /// </remarks>
     [Range(HedgingConstants.MinimumHedgedAttempts, HedgingConstants.MaximumHedgedAttempts)]
     public int MaxHedgedAttempts { get; set; } = HedgingConstants.DefaultMaxHedgedAttempts;
