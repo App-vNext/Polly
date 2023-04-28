@@ -58,6 +58,18 @@ public sealed class ResilienceProperties : IDictionary<string, object?>
         Options[key.Key] = value;
     }
 
+    internal void Replace(ResilienceProperties other)
+    {
+        Clear();
+
+        foreach (var pair in other.Options)
+        {
+            Options[pair.Key] = pair.Value;
+        }
+    }
+
+    internal void Clear() => Options.Clear();
+
     /// <inheritdoc/>
     object? IDictionary<string, object?>.this[string key]
     {

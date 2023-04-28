@@ -84,6 +84,25 @@ public class ResilienceContextTests
     [InlineData(true)]
     [InlineData(false)]
     [Theory]
+    public void Initialize_From_Ok(bool synchronous)
+    {
+        var context = ResilienceContext.Get();
+        context.Initialize<bool>(synchronous);
+        context.ContinueOnCapturedContext = true;
+
+        var other = ResilienceContext.Get();
+        other.InitializeFrom(context);
+
+        other.ResultType.Should().Be(typeof(bool));
+        other.IsVoid.Should().BeFalse();
+        other.IsInitialized.Should().BeTrue();
+        other.IsSynchronous.Should().Be(synchronous);
+        other.ContinueOnCapturedContext.Should().BeTrue();
+    }
+
+    [InlineData(true)]
+    [InlineData(false)]
+    [Theory]
     public void Initialize_Void_Ok(bool synchronous)
     {
         var context = ResilienceContext.Get();

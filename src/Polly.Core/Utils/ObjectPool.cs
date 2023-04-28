@@ -5,12 +5,12 @@ using System.Threading;
 namespace Polly.Utils;
 
 // copied from https://raw.githubusercontent.com/dotnet/aspnetcore/53124ab8cbf152f59120982f1c74e802e7970845/src/ObjectPool/src/DefaultObjectPool.cs
-internal sealed class ObjectPool<T>
+internal sealed class ObjectPool<T> : IObjectPool<T>
     where T : class
 {
     internal static readonly int MaxCapacity = (Environment.ProcessorCount * 2) - 1; // the - 1 is to account for _fastItem
 
-    private readonly Func<T> _createFunc;
+    private readonly Func<ObjectPool<T>, T> _createFunc;
     private readonly Func<T, bool> _returnFunc;
 
     private readonly ConcurrentQueue<T> _items = new();
@@ -19,6 +19,11 @@ internal sealed class ObjectPool<T>
     private int _numItems;
 
     public ObjectPool(Func<T> createFunc, Func<T, bool> returnFunc)
+        : this(_ => createFunc(), returnFunc)
+    {
+    }
+
+    public ObjectPool(Func<ObjectPool<T>, T> createFunc, Func<T, bool> returnFunc)
     {
         _createFunc = createFunc;
         _returnFunc = returnFunc;
@@ -36,7 +41,7 @@ internal sealed class ObjectPool<T>
             }
 
             // no object available, so go get a brand new one
-            return _createFunc();
+            return _createFunc(this);
         }
 
         return item;

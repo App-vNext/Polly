@@ -60,3 +60,12 @@ LaunchCount=2  WarmupCount=10
 |--------------------------- |---------:|----------:|----------:|------:|-------:|----------:|------------:|
 | ExecuteStrategyPipeline_V7 | 1.523 us | 0.0092 us | 0.0137 us |  1.00 | 0.3433 |    2872 B |        1.00 |
 | ExecuteStrategyPipeline_V8 | 1.276 us | 0.0128 us | 0.0191 us |  0.84 | 0.0114 |      96 B |        0.03 |
+
+## HEDGING
+
+|                      Method |       Mean |     Error |    StdDev | Ratio | RatioSD |   Gen0 |   Gen1 | Allocated | Alloc Ratio |
+|---------------------------- |-----------:|----------:|----------:|------:|--------:|-------:|-------:|----------:|------------:|
+|             Hedging_Primary |   891.3 ns |  39.39 ns |  58.96 ns |  1.00 |    0.00 | 0.0048 |      - |      40 B |        1.00 |
+|           Hedging_Secondary | 1,500.0 ns |   7.88 ns |  11.80 ns |  1.69 |    0.11 | 0.0229 |      - |     200 B |        5.00 |
+|   Hedging_Primary_AsyncWork | 4,250.9 ns | 140.89 ns | 206.52 ns |  4.78 |    0.34 | 0.1831 | 0.0305 |    1518 B |       37.95 |
+| Hedging_Secondary_AsyncWork | 6,544.9 ns |  99.90 ns | 143.27 ns |  7.34 |    0.39 | 0.2213 | 0.0839 |    1872 B |       46.80 |

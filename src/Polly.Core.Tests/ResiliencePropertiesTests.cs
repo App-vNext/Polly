@@ -57,6 +57,36 @@ public class ResiliencePropertiesTests
     }
 
     [Fact]
+    public void Clear_Ok()
+    {
+        var key1 = new ResiliencePropertyKey<long>("dummy");
+        var key2 = new ResiliencePropertyKey<string>("dummy");
+
+        var props = new ResilienceProperties();
+        props.Set(key1, 12345);
+        props.Clear();
+
+        props.Should().HaveCount(0);
+    }
+
+    [Fact]
+    public void Replace_Ok()
+    {
+        var key1 = new ResiliencePropertyKey<string>("A");
+        var key2 = new ResiliencePropertyKey<string>("B");
+
+        var props = new ResilienceProperties();
+        props.Set(key1, "A");
+
+        var otherProps = new ResilienceProperties();
+        otherProps.Set(key2, "B");
+
+        props.Replace(otherProps);
+        props.Should().HaveCount(1);
+        props.GetValue(key2, "").Should().Be("B");
+    }
+
+    [Fact]
     public void DictionaryOperations_Ok()
     {
         IDictionary<string, object?> dict = new ResilienceProperties();

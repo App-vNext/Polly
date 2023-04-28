@@ -81,7 +81,7 @@ public class HedgingStrategyOptionsTResultTests
         var handler = nonGeneric.Handler.CreateHandler();
         handler.Should().NotBeNull();
 
-        (await handler!.TryCreateHedgedAction<int>(ResilienceContext.Get())!()).Should().Be(555);
+        (await handler!.TryCreateHedgedAction<int>(ResilienceContext.Get(), 0)!()).Should().Be(555);
 
         var result = await handler!.ShouldHandleAsync(new Outcome<int>(-1), new HandleHedgingArguments(ResilienceContext.Get()));
         result.Should().BeTrue();

@@ -24,3 +24,4 @@ updates:
     - dependency-name: "Microsoft.Extensions.Logging"
     - dependency-name: "System.Diagnostics.DiagnosticSource"
     - dependency-name: "System.Threading.RateLimiting"
+    - dependency-name: "Microsoft.Bcl.AsyncInterfaces"
