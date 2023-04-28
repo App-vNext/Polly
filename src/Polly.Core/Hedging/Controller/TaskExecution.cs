@@ -9,6 +9,8 @@ namespace Polly.Hedging.Controller;
 /// <summary>
 /// Represents a single hedging attempt execution alongside all the necessary resources. These are:
 ///
+///  <ul>
+///  </ul>
 /// - Distinct <see cref="ResilienceContext"/> instance for this execution. One exception are primary task where the main context is reused.
 /// - The cancellation token associated with the execution.
 /// </summary>

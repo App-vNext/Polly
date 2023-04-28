@@ -329,10 +329,13 @@ public class HedgingExecutionContextTests : IDisposable
     }
 
     [Fact]
-    public void Complete_NoTasks_Throws()
+    public void Complete_NoTasks_EnsureCleaned()
     {
+        var props = _resilienceContext.Properties;
         var context = Create();
-        context.Invoking(c => c.Complete()).Should().Throw<InvalidOperationException>().WithMessage("The hedging must execute at least one task.");
+        context.Initialize(_resilienceContext);
+        context.Complete();
+        _resilienceContext.Properties.Should().BeSameAs(props);
     }
 
     [Fact]

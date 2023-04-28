@@ -50,7 +50,8 @@ internal sealed class HedgingResilienceStrategy : ResilienceStrategy
         }
 
         var continueOnCapturedContext = context.ContinueOnCapturedContext;
-        context.CancellationToken.ThrowIfCancellationRequested();
+        var cancellationToken = context.CancellationToken;
+        cancellationToken.ThrowIfCancellationRequested();
 
         // create hedging execution context
         var hedgingContext = _controller.GetContext(context);
@@ -59,6 +60,8 @@ internal sealed class HedgingResilienceStrategy : ResilienceStrategy
         {
             while (true)
             {
+                cancellationToken.ThrowIfCancellationRequested();
+
                 if ((await hedgingContext.LoadExecutionAsync(callback, state).ConfigureAwait(context.ContinueOnCapturedContext)).Outcome is Outcome<TResult> outcome)
                 {
                     return HandleOutcome(outcome);

@@ -58,6 +58,19 @@ public class HedgingResilienceStrategyTests : IDisposable
         strategy.Execute(_ => 10).Should().Be(10);
     }
 
+    [Fact]
+    public async Task Execute_CancellationRequested_Throws()
+    {
+        ConfigureHedging();
+
+        var strategy = Create();
+        _cts.Cancel();
+
+        await strategy.Invoking(s => s.ExecuteAsync(_ => Task.FromResult(Success), _cts.Token))
+            .Should()
+            .ThrowAsync<OperationCanceledException>();
+    }
+
     [InlineData(-1)]
     [InlineData(-1000)]
     [InlineData(0)]

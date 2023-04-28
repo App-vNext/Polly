@@ -89,11 +89,6 @@ internal sealed class HedgingExecutionContext
 
     public void Complete()
     {
-        if (LoadedTasks == 0)
-        {
-            throw new InvalidOperationException("The hedging must execute at least one task.");
-        }
-
         UpdateOriginalContext();
 
         // first, cancel any pending tasks
@@ -202,6 +197,11 @@ internal sealed class HedgingExecutionContext
         var originalContext = Snapshot.Context;
         originalContext.CancellationToken = Snapshot.OriginalCancellationToken;
         originalContext.Properties = Snapshot.OriginalProperties;
+
+        if (LoadedTasks == 0)
+        {
+            return;
+        }
 
         int accepted = 0;
         TaskExecution? acceptedExecution = null;
