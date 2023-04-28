@@ -52,7 +52,7 @@ internal sealed class TaskExecution
 
     public void Cancel()
     {
-        if (IsAccepted)
+        if (!IsAccepted)
         {
             _cancellationSource!.Cancel();
         }
