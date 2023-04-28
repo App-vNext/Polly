@@ -54,10 +54,8 @@ internal sealed class TaskExecution
     {
         if (IsAccepted)
         {
-            return;
+            _cancellationSource!.Cancel();
         }
-
-        _cancellationSource!.Cancel();
     }
 
     public async ValueTask<bool> InitializeAsync<TResult, TState>(

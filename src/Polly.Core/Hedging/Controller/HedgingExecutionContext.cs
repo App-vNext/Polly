@@ -26,7 +26,11 @@ internal sealed class HedgingExecutionContext
     private readonly Action<HedgingExecutionContext> _onReset;
     private readonly ResilienceProperties _replacedProperties = new();
 
-    public HedgingExecutionContext(IObjectPool<TaskExecution> executionPool, TimeProvider timeProvider, int maxAttempts, Action<HedgingExecutionContext> onReset)
+    public HedgingExecutionContext(
+        IObjectPool<TaskExecution> executionPool,
+        TimeProvider timeProvider,
+        int maxAttempts,
+        Action<HedgingExecutionContext> onReset)
     {
         _executionPool = executionPool;
         _timeProvider = timeProvider;
@@ -51,7 +55,9 @@ internal sealed class HedgingExecutionContext
 
     private bool ContinueOnCapturedContext => Snapshot.Context.ContinueOnCapturedContext;
 
-    public async ValueTask<ExecutionInfo<TResult>> LoadExecutionAsync<TResult, TState>(Func<ResilienceContext, TState, ValueTask<TResult>> primaryCallback, TState state)
+    public async ValueTask<ExecutionInfo<TResult>> LoadExecutionAsync<TResult, TState>(
+        Func<ResilienceContext, TState, ValueTask<TResult>> primaryCallback,
+        TState state)
     {
         if (LoadedTasks >= _maxAttempts)
         {
@@ -182,22 +188,9 @@ internal sealed class HedgingExecutionContext
 
     private TaskExecution? TryRemoveExecutedTask()
     {
-        int? index = null;
-
-        for (var i = 0; i < _executingTasks.Count; i++)
+        if (_executingTasks.FirstOrDefault(static v => v.ExecutionTask!.IsCompleted) is TaskExecution execution)
         {
-            var task = _executingTasks[i];
-            if (task.ExecutionTask!.IsCompleted)
-            {
-                index = i;
-                break;
-            }
-        }
-
-        if (index is not null)
-        {
-            var execution = _executingTasks[index.Value];
-            _executingTasks.RemoveAt(index.Value);
+            _executingTasks.Remove(execution);
             return execution;
         }
 

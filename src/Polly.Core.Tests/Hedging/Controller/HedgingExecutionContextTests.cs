@@ -9,6 +9,7 @@ using Polly.Strategy;
 using Polly.Utils;
 
 namespace Polly.Core.Tests.Hedging.Controller;
+
 public class HedgingExecutionContextTests : IDisposable
 {
     private const string Handled = "Handled";

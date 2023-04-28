@@ -39,7 +39,10 @@ internal sealed class HedgingResilienceStrategy : ResilienceStrategy
 
     public OutcomeEvent<OnHedgingArguments>.Handler? OnHedgingHandler { get; }
 
-    protected internal override async ValueTask<TResult> ExecuteCoreAsync<TResult, TState>(Func<ResilienceContext, TState, ValueTask<TResult>> callback, ResilienceContext context, TState state)
+    protected internal override async ValueTask<TResult> ExecuteCoreAsync<TResult, TState>(
+        Func<ResilienceContext, TState, ValueTask<TResult>> callback,
+        ResilienceContext context,
+        TState state)
     {
         if (_controller == null || !HedgingHandler!.HandlesHedging<TResult>())
         {
