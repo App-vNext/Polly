@@ -32,7 +32,7 @@ public class RetryResilienceStrategyTests
         SetupNoDelay();
         var sut = CreateSut();
 
-        var result = sut.Execute(_ => new DisposableResult(), default);
+        var result = sut.Execute(() => new DisposableResult());
         result.IsDisposed.Should().BeFalse();
     }
 
