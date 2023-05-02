@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!-- https://learn.microsoft.com/en-us/dotnet/fundamentals/package-validation/diagnostic-ids -->
+<Suppressions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Polly.CircuitBreaker.BrokenCircuitException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)</Target>
+    <Left>lib/netstandard2.0/Polly.Core.dll</Left>
+    <Right>lib/net6.0/Polly.Core.dll</Right>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Polly.CircuitBreaker.BrokenCircuitException`1.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)</Target>
+    <Left>lib/netstandard2.0/Polly.Core.dll</Left>
+    <Right>lib/net6.0/Polly.Core.dll</Right>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Polly.CircuitBreaker.IsolatedCircuitException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)</Target>
+    <Left>lib/netstandard2.0/Polly.Core.dll</Left>
+    <Right>lib/net6.0/Polly.Core.dll</Right>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Polly.ExecutionRejectedException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)</Target>
+    <Left>lib/netstandard2.0/Polly.Core.dll</Left>
+    <Right>lib/net6.0/Polly.Core.dll</Right>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Polly.Timeout.TimeoutRejectedException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)</Target>
+    <Left>lib/netstandard2.0/Polly.Core.dll</Left>
+    <Right>lib/net6.0/Polly.Core.dll</Right>
+  </Suppression>
+</Suppressions>

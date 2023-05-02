@@ -7,6 +7,7 @@
     <Nullable>enable</Nullable>
     <SkipPollyUsings>true</SkipPollyUsings>
     <NoWarn>$(NoWarn);SA1600;SA1204;SA1602;CA1062</NoWarn>
+    <IsPackable>false</IsPackable>
   </PropertyGroup>
 
   <ItemGroup>
