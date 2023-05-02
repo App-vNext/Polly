@@ -2,15 +2,8 @@ using Polly.Strategy;
 
 namespace Polly.Fallback;
 
-#pragma warning disable CA1815 // Override equals and operator equals on value types
-
 /// <summary>
-/// Represents arguments used when the fallback is about to be executed.
+/// Represents arguments used in fallback handling scenarios.
 /// </summary>
-public readonly struct OnFallbackArguments : IResilienceArguments
-{
-    internal OnFallbackArguments(ResilienceContext context) => Context = context;
-
-    /// <inheritdoc/>
-    public ResilienceContext Context { get; }
-}
+/// <param name="Context">The context associated with the execution of user-provided callback.</param>
+public readonly record struct OnFallbackArguments(ResilienceContext Context) : IResilienceArguments;

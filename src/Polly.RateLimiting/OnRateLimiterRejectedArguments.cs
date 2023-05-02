@@ -3,33 +3,10 @@ using Polly.Strategy;
 
 namespace Polly.RateLimiting;
 
-#pragma warning disable CA1815 // Override equals and operator equals on value types
-
 /// <summary>
 /// The arguments used by the <see cref="RateLimiterStrategyOptions.OnRejected"/>.
 /// </summary>
-public readonly struct OnRateLimiterRejectedArguments : IResilienceArguments
-{
-    internal OnRateLimiterRejectedArguments(ResilienceContext context, RateLimitLease lease, TimeSpan? retryAfter)
-    {
-        Context = context;
-        Lease = lease;
-        RetryAfter = retryAfter;
-    }
-
-    /// <inheritdoc/>
-    public ResilienceContext Context { get; }
-
-    /// <summary>
-    /// Gets the lease that has no permits and was rejected by the rate limiter.
-    /// </summary>
-    public RateLimitLease Lease { get; }
-
-    /// <summary>
-    /// Gets the amount of time to wait before retrying again.
-    /// </summary>
-    /// <remarks>
-    /// This value is retrieved from the <see cref="Lease"/> by reading the <see cref="MetadataName.RetryAfter"/>.
-    /// </remarks>
-    public TimeSpan? RetryAfter { get; }
-}
+/// <param name="Context">The context associated with the execution of user-provided callback.</param>
+/// <param name="Lease">The lease that has no permits and was rejected by the rate limiter.</param>
+/// <param name="RetryAfter">The amount of time to wait before retrying again. This value is retrieved from the <see cref="Lease"/> by reading the <see cref="MetadataName.RetryAfter"/>.</param>
+public readonly record struct OnRateLimiterRejectedArguments(ResilienceContext Context, RateLimitLease Lease, TimeSpan? RetryAfter) : IResilienceArguments;
