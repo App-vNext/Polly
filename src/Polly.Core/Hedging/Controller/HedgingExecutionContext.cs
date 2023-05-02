@@ -154,7 +154,7 @@ internal sealed class HedgingExecutionContext
         // if there are no more executing tasks we need to check finished ones
         if (_executingTasks.Count == 0)
         {
-            var finishedExecution = _tasks.First(static t => t.ExecutionTask!.IsCompleted);
+            var finishedExecution = _tasks.First(static t => t.ExecutionTaskSafe!.IsCompleted);
             finishedExecution.AcceptOutcome();
             return new ExecutionInfo<TResult>(null, false, finishedExecution.Outcome.AsOutcome<TResult>());
         }
@@ -168,22 +168,22 @@ internal sealed class HedgingExecutionContext
         return _executingTasks.Count switch
         {
             1 => AwaitTask(_executingTasks[0], ContinueOnCapturedContext),
-            2 => Task.WhenAny(_executingTasks[0].ExecutionTask!, _executingTasks[1].ExecutionTask!),
-            _ => Task.WhenAny(_executingTasks.Select(v => v.ExecutionTask!))
+            2 => Task.WhenAny(_executingTasks[0].ExecutionTaskSafe!, _executingTasks[1].ExecutionTaskSafe!),
+            _ => Task.WhenAny(_executingTasks.Select(v => v.ExecutionTaskSafe!))
         };
 #pragma warning restore S109 // Magic numbers should not be used
 
         static async Task<Task> AwaitTask(TaskExecution task, bool continueOnCapturedContext)
         {
             // ExecutionTask never fails
-            await task.ExecutionTask!.ConfigureAwait(continueOnCapturedContext);
+            await task.ExecutionTaskSafe!.ConfigureAwait(continueOnCapturedContext);
             return Task.FromResult(task);
         }
     }
 
     private TaskExecution? TryRemoveExecutedTask()
     {
-        if (_executingTasks.FirstOrDefault(static v => v.ExecutionTask!.IsCompleted) is TaskExecution execution)
+        if (_executingTasks.FirstOrDefault(static v => v.ExecutionTaskSafe!.IsCompleted) is TaskExecution execution)
         {
             _executingTasks.Remove(execution);
             return execution;
@@ -235,7 +235,7 @@ internal sealed class HedgingExecutionContext
     {
         foreach (var task in _tasks)
         {
-            await task.ExecutionTask!.ConfigureAwait(false);
+            await task.ExecutionTaskSafe!.ConfigureAwait(false);
             await task.ResetAsync().ConfigureAwait(false);
             _executionPool.Return(task);
         }

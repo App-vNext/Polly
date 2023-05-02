@@ -103,7 +103,7 @@ public class HedgingExecutionContextTests : IDisposable
         var task = await context.TryWaitForCompletedExecutionAsync(TimeSpan.Zero);
 
         task.Should().NotBeNull();
-        task!.ExecutionTask!.IsCompleted.Should().BeTrue();
+        task!.ExecutionTaskSafe!.IsCompleted.Should().BeTrue();
         task.Outcome.Result.Should().Be("dummy");
         task.AcceptOutcome();
         context.LoadedTasks.Should().Be(1);
@@ -128,7 +128,7 @@ public class HedgingExecutionContextTests : IDisposable
 
         _timeProvider.Advance(TimeSpan.FromDays(1));
         await context.TryWaitForCompletedExecutionAsync(TimeSpan.Zero);
-        await context.Tasks.First().ExecutionTask!;
+        await context.Tasks.First().ExecutionTaskSafe!;
         context.Tasks.First().AcceptOutcome();
     }
 
@@ -171,7 +171,7 @@ public class HedgingExecutionContextTests : IDisposable
         _timeProvider.DelayEntries.Last().Delay.Should().Be(hedgingDelay);
         _timeProvider.Advance(TimeSpan.FromDays(1));
         await task;
-        await context.Tasks.First().ExecutionTask!;
+        await context.Tasks.First().ExecutionTaskSafe!;
         context.Tasks.First().AcceptOutcome();
     }
 
@@ -385,7 +385,7 @@ public class HedgingExecutionContextTests : IDisposable
 
         await context.TryWaitForCompletedExecutionAsync(HedgingStrategyOptions.InfiniteHedgingDelay);
 
-        var pending = context.Tasks[1].ExecutionTask!;
+        var pending = context.Tasks[1].ExecutionTaskSafe!;
         pending.Wait(10).Should().BeFalse();
 
         context.Tasks[0].AcceptOutcome();
