@@ -29,7 +29,15 @@ internal sealed class TaskExecution
 
     public TaskExecution(HedgingHandler.Handler handler) => _handler = handler;
 
-    public Task? ExecutionTask { get; private set; }
+    /// <summary>
+    /// Gets the task that represents the execution of the hedged task.
+    /// </summary>
+    /// <remarks>
+    /// This property is not-null once the <see cref="TaskExecution"/> is initialized.
+    /// Awaiting this task will never throw as all exceptions are caught and stored
+    /// into <see cref="Outcome"/> property.
+    /// </remarks>
+    public Task? ExecutionTaskSafe { get; private set; }
 
     public Outcome Outcome { get; private set; }
 
@@ -47,7 +55,7 @@ internal sealed class TaskExecution
 
     public void AcceptOutcome()
     {
-        if (ExecutionTask?.IsCompleted == true)
+        if (ExecutionTaskSafe?.IsCompleted == true)
         {
             IsAccepted = true;
         }
@@ -98,15 +106,15 @@ internal sealed class TaskExecution
             }
             catch (Exception e)
             {
-                ExecutionTask = ExecuteCreateActionException<TResult>(e);
+                ExecutionTaskSafe = ExecuteCreateActionException<TResult>(e);
                 return true;
             }
 
-            ExecutionTask = ExecuteSecondaryActionAsync(action);
+            ExecutionTaskSafe = ExecuteSecondaryActionAsync(action);
         }
         else
         {
-            ExecutionTask = ExecutePrimaryActionAsync(primaryCallback, state);
+            ExecutionTaskSafe = ExecutePrimaryActionAsync(primaryCallback, state);
         }
 
         return true;

@@ -51,7 +51,7 @@ public class TaskExecutionTests : IDisposable
             "dummy-state",
             1);
 
-        await execution.ExecutionTask!;
+        await execution.ExecutionTaskSafe!;
         ((DisposableResult)execution.Outcome.Result!).Name.Should().Be(value);
         execution.IsHandled.Should().Be(handled);
         AssertPrimaryContext(execution.Context, execution);
@@ -72,7 +72,7 @@ public class TaskExecutionTests : IDisposable
 
         (await execution.InitializeAsync<DisposableResult, string>(HedgedTaskType.Secondary, _snapshot, null!, "dummy-state", 4)).Should().BeTrue();
 
-        await execution.ExecutionTask!;
+        await execution.ExecutionTaskSafe!;
 
         ((DisposableResult)execution.Outcome.Result!).Name.Should().Be(value);
         execution.IsHandled.Should().Be(handled);
@@ -124,7 +124,7 @@ public class TaskExecutionTests : IDisposable
 
         (await execution.InitializeAsync<DisposableResult, string>(HedgedTaskType.Secondary, _snapshot, null!, "dummy-state", 4)).Should().BeTrue();
 
-        await execution.ExecutionTask!;
+        await execution.ExecutionTaskSafe!;
         execution.Outcome.Exception.Should().BeOfType<FormatException>();
     }
 
@@ -136,7 +136,7 @@ public class TaskExecutionTests : IDisposable
 
         (await execution.InitializeAsync<DisposableResult, string>(HedgedTaskType.Secondary, _snapshot, null!, "dummy-state", 4)).Should().BeTrue();
 
-        await execution.ExecutionTask!.Invoking(async t => await t).Should().NotThrowAsync();
+        await execution.ExecutionTaskSafe!.Invoking(async t => await t).Should().NotThrowAsync();
     }
 
     [InlineData(true)]
@@ -167,7 +167,7 @@ public class TaskExecutionTests : IDisposable
 
         // act
         _cts.Cancel();
-        await execution.ExecutionTask!;
+        await execution.ExecutionTaskSafe!;
 
         // assert
         execution.Outcome.Exception.Should().BeAssignableTo<OperationCanceledException>();
@@ -191,7 +191,7 @@ public class TaskExecutionTests : IDisposable
         var execution = Create();
         var token = default(CancellationToken);
         await InitializePrimaryAsync(execution, result, context => token = context.CancellationToken);
-        await execution.ExecutionTask!;
+        await execution.ExecutionTaskSafe!;
 
         if (accept)
         {

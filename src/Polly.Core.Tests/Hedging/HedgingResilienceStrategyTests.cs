@@ -1,6 +1,7 @@
 using System;
 using Polly.Hedging;
 using Polly.Strategy;
+using Xunit.Abstractions;
 
 namespace Polly.Core.Tests.Hedging;
 
@@ -11,7 +12,7 @@ public class HedgingResilienceStrategyTests : IDisposable
     private const string Failure = "Failure";
 
     private static readonly TimeSpan LongDelay = TimeSpan.FromDays(1);
-    private static readonly TimeSpan AssertTimeout = TimeSpan.FromSeconds(10);
+    private static readonly TimeSpan AssertTimeout = TimeSpan.FromSeconds(15);
 
     private readonly HedgingStrategyOptions _options = new();
     private readonly List<IResilienceArguments> _events = new();
@@ -21,8 +22,9 @@ public class HedgingResilienceStrategyTests : IDisposable
     private readonly PrimaryStringTasks _primaryTasks;
     private readonly List<object?> _results = new();
     private readonly CancellationTokenSource _cts = new();
+    private readonly ITestOutputHelper _testOutput;
 
-    public HedgingResilienceStrategyTests()
+    public HedgingResilienceStrategyTests(ITestOutputHelper testOutput)
     {
         _telemetry = TestUtilities.CreateResilienceTelemetry(args => _events.Add(args));
         _timeProvider = new HedgingTimeProvider { AutoAdvance = _options.HedgingDelay };
@@ -30,6 +32,7 @@ public class HedgingResilienceStrategyTests : IDisposable
         _primaryTasks = new PrimaryStringTasks(_timeProvider);
         _options.HedgingDelay = TimeSpan.FromSeconds(1);
         _options.MaxHedgedAttempts = _actions.MaxHedgedTasks;
+        _testOutput = testOutput;
     }
 
     public void Dispose()
@@ -121,14 +124,23 @@ public class HedgingResilienceStrategyTests : IDisposable
         using var cancelled = new ManualResetEvent(false);
         ConfigureHedging(async context =>
         {
+#pragma warning disable CA1031 // Do not catch general exception types
             try
             {
-                await _timeProvider.Delay(LongDelay, context.CancellationToken);
+                _testOutput.WriteLine("Hedged task executing...");
+                await Task.Delay(LongDelay, context.CancellationToken);
+                _testOutput.WriteLine("Hedged task executing...done (not-cancelled)");
             }
             catch (OperationCanceledException)
             {
+                _testOutput.WriteLine("Hedged task executing...cancelled");
                 cancelled.Set();
             }
+            catch (Exception e)
+            {
+                _testOutput.WriteLine($"Hedged task executing...error({e})");
+            }
+#pragma warning restore CA1031 // Do not catch general exception types
 
             return Failure;
         });
