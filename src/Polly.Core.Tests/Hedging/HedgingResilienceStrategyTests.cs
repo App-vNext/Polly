@@ -2,7 +2,6 @@ using System;
 using Polly.Hedging;
 using Polly.Strategy;
 using Xunit.Abstractions;
-using Xunit.Sdk;
 
 namespace Polly.Core.Tests.Hedging;
 
