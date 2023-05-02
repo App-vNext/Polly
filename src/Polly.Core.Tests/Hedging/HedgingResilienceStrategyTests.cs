@@ -123,7 +123,7 @@ public class HedgingResilienceStrategyTests : IDisposable
         {
             try
             {
-                await _timeProvider.Delay(LongDelay, context.CancellationToken);
+                await Task.Delay(LongDelay, context.CancellationToken);
             }
             catch (OperationCanceledException)
             {
