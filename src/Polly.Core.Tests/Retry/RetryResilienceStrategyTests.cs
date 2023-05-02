@@ -27,6 +27,44 @@ public class RetryResilienceStrategyTests
     }
 
     [Fact]
+    public void ExecuteAsync_EnsureResultNotDisposed()
+    {
+        SetupNoDelay();
+        var sut = CreateSut();
+
+        var result = sut.Execute(_ => new DisposableResult(), default);
+        result.IsDisposed.Should().BeFalse();
+    }
+
+    [Fact]
+    public void ExecuteAsync_MultipleRetries_EnsureDiscardedResultsDisposed()
+    {
+        // arrange
+        _options.RetryCount = 5;
+        SetupNoDelay();
+        _timeProvider.SetupAnyDelay();
+        _options.ShouldRetry.HandleResult<DisposableResult>(_ => true);
+        var results = new List<DisposableResult>();
+        var sut = CreateSut();
+
+        // act
+        var result = sut.Execute(_ =>
+        {
+            var r = new DisposableResult();
+            results.Add(r);
+            return r;
+        });
+
+        // assert
+        result.IsDisposed.Should().BeFalse();
+        results.Count.Should().Be(_options.RetryCount + 1);
+        results.Last().IsDisposed.Should().BeFalse();
+
+        results.Remove(results.Last());
+        results.Should().AllSatisfy(r => r.IsDisposed.Should().BeTrue());
+    }
+
+    [Fact]
     public void Retry_RetryCount_Respected()
     {
         int calls = 0;

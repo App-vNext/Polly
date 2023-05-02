@@ -1,6 +1,6 @@
 namespace Polly.Core.Tests.Helpers;
 
-internal sealed class DisposableResult : IDisposable
+internal class DisposableResult : IDisposable
 {
     public readonly TaskCompletionSource<bool> OnDisposed = new();
 
