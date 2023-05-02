@@ -34,7 +34,7 @@ internal sealed class TaskExecution
     /// </summary>
     /// <remarks>
     /// This property is not-null once the <see cref="TaskExecution"/> is initialized.
-    /// Awaiting this task will never throw as all exceptions are catched and stored
+    /// Awaiting this task will never throw as all exceptions are caught and stored
     /// into <see cref="Outcome"/> property.
     /// </remarks>
     public Task? ExecutionTaskSafe { get; private set; }
