@@ -87,6 +87,11 @@ internal class RetryResilienceStrategy : ResilienceStrategy
                 await OnRetry.HandleAsync(outcome, args).ConfigureAwait(context.ContinueOnCapturedContext);
             }
 
+            if (outcome.TryGetResult(out var resultValue))
+            {
+                await DisposeHelper.TryDisposeSafeAsync(resultValue, context.IsSynchronous).ConfigureAwait(context.ContinueOnCapturedContext);
+            }
+
             if (delay > TimeSpan.Zero)
             {
                 await _timeProvider.DelayAsync(delay, context).ConfigureAwait(context.ContinueOnCapturedContext);

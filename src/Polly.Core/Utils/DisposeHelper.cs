@@ -7,17 +7,32 @@ namespace Polly.Utils;
 
 internal static class DisposeHelper
 {
-    public static async ValueTask TryDisposeSafeAsync<T>(T value)
+    public static async ValueTask TryDisposeSafeAsync<T>(T value, bool isSynchronous)
     {
         try
         {
-            if (value is IAsyncDisposable asyncDisposable)
+            // for synchronous executions we want to prefer the synchronous dispose method
+            if (isSynchronous)
             {
-                await asyncDisposable.DisposeAsync().ConfigureAwait(false);
+                if (value is IDisposable disposable)
+                {
+                    disposable.Dispose();
+                }
+                else if (value is IAsyncDisposable asyncDisposable)
+                {
+                    await asyncDisposable.DisposeAsync().ConfigureAwait(false);
+                }
             }
-            else if (value is IDisposable disposable)
+            else
             {
-                disposable.Dispose();
+                if (value is IAsyncDisposable asyncDisposable)
+                {
+                    await asyncDisposable.DisposeAsync().ConfigureAwait(false);
+                }
+                else if (value is IDisposable disposable)
+                {
+                    disposable.Dispose();
+                }
             }
         }
         catch (Exception e)

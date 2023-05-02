@@ -129,7 +129,7 @@ internal sealed class TaskExecution
 
         if (!IsAccepted)
         {
-            await DisposeHelper.TryDisposeSafeAsync(Outcome.Result!).ConfigureAwait(false);
+            await DisposeHelper.TryDisposeSafeAsync(Outcome.Result!, Context.IsSynchronous).ConfigureAwait(false);
 
             // not accepted executions are always cancelled, so the cancellation source must be
             // disposed instead of returning it to the pool

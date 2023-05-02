@@ -66,6 +66,11 @@ public class RetryStrategyOptions<TResult> : ResilienceStrategyOptions
     /// </summary>
     /// <remarks>
     /// By default, the event is empty and no callbacks are registered.
+    /// <para>
+    /// After this event, the result produced the by user-callback is discarded and disposed to prevent resource over-consumption. If
+    /// you need to preserve the result for further processing, create the copy of the result or extract and store all necessary information
+    /// from the result within the event.
+    /// </para>
     /// </remarks>
     [Required]
     public OutcomeEvent<OnRetryArguments, TResult> OnRetry { get; set; } = new();
