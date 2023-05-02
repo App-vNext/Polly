@@ -2,24 +2,9 @@ using Polly.Strategy;
 
 namespace Polly.Hedging;
 
-#pragma warning disable CA1815 // Override equals and operator equals on value types
-
 /// <summary>
 /// Represents arguments used by the on-hedging event.
 /// </summary>
-public readonly struct OnHedgingArguments : IResilienceArguments
-{
-    internal OnHedgingArguments(ResilienceContext context, int attempt)
-    {
-        Context = context;
-        Attempt = attempt;
-    }
-
-    /// <inheritdoc/>
-    public ResilienceContext Context { get; }
-
-    /// <summary>
-    /// Gets the zero-based hedging attempt number.
-    /// </summary>
-    public int Attempt { get; }
-}
+/// <param name="Context">The context associated with the execution of user-provided callback.</param>
+/// <param name="Attempt">The zero-based hedging attempt number.</param>
+public readonly record struct OnHedgingArguments(ResilienceContext Context, int Attempt) : IResilienceArguments;

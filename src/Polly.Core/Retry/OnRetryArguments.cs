@@ -2,33 +2,10 @@ using Polly.Strategy;
 
 namespace Polly.Retry;
 
-#pragma warning disable CA1815 // Override equals and operator equals on value types
-
 /// <summary>
 /// Represents the arguments used by <see cref="RetryStrategyOptions.OnRetry"/> for handling the retry event.
 /// </summary>
-public readonly struct OnRetryArguments : IResilienceArguments
-{
-    internal OnRetryArguments(ResilienceContext context, int attempt, TimeSpan retryDelay)
-    {
-        Attempt = attempt;
-        Context = context;
-        RetryDelay = retryDelay;
-    }
-
-    /// <summary>
-    /// Gets the zero-based attempt number.
-    /// </summary>
-    /// <remarks>
-    /// The first attempt is 0, the second attempt is 1, and so on.
-    /// </remarks>
-    public int Attempt { get; }
-
-    /// <summary>
-    /// Gets the delay before the next retry.
-    /// </summary>
-    public TimeSpan RetryDelay { get; }
-
-    /// <inheritdoc/>
-    public ResilienceContext Context { get; }
-}
+/// <param name="Context">The context associated with the execution of user-provided callback.</param>
+/// <param name="Attempt">The zero-based attempt number. The first attempt is 0, the second attempt is 1, and so on.</param>
+/// <param name="RetryDelay">The delay before the next retry.</param>
+public readonly record struct OnRetryArguments(ResilienceContext Context, int Attempt, TimeSpan RetryDelay) : IResilienceArguments;
