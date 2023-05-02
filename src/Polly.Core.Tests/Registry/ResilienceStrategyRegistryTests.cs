@@ -7,7 +7,24 @@ namespace Polly.Core.Tests.Registry;
 
 public class ResilienceStrategyRegistryTests
 {
+    private readonly ResilienceStrategyRegistryOptions<StrategyId> _options;
+
     private Action<ResilienceStrategyBuilder> _callback = _ => { };
+
+    public ResilienceStrategyRegistryTests()
+    {
+        _options = new()
+        {
+            BuilderFactory = () =>
+            {
+                var builder = new ResilienceStrategyBuilder();
+                _callback(builder);
+                return builder;
+            },
+            StrategyComparer = StrategyId.Comparer,
+            BuilderComparer = StrategyId.BuilderComparer
+        };
+    }
 
     [Fact]
     public void Ctor_Default_Ok()
@@ -121,18 +138,21 @@ public class ResilienceStrategyRegistryTests
     [Fact]
     public void AddBuilder_EnsureStrategyKey()
     {
+        _options.BuilderNameFormatter = k => k.BuilderName;
+        _options.StrategyKeyFormatter = k => k.InstanceName;
+
         var called = false;
         var registry = CreateRegistry();
         registry.TryAddBuilder(StrategyId.Create("A"), (key, builder) =>
         {
             builder.AddStrategy(new TestResilienceStrategy());
+            builder.BuilderName.Should().Be("A");
             builder.Properties.TryGetValue(TelemetryUtil.StrategyKey, out var val).Should().BeTrue();
-            val.Should().Be(key.ToString());
+            val.Should().Be("Instance1");
             called = true;
         });
 
         registry.Get(StrategyId.Create("A", "Instance1"));
-
         called.Should().BeTrue();
     }
 
@@ -175,16 +195,6 @@ public class ResilienceStrategyRegistryTests
 
     private ResilienceStrategyRegistry<StrategyId> CreateRegistry()
     {
-        return new ResilienceStrategyRegistry<StrategyId>(new ResilienceStrategyRegistryOptions<StrategyId>
-        {
-            BuilderFactory = () =>
-            {
-                var builder = new ResilienceStrategyBuilder();
-                _callback(builder);
-                return builder;
-            },
-            StrategyComparer = StrategyId.Comparer,
-            BuilderComparer = StrategyId.BuilderComparer
-        });
+        return new ResilienceStrategyRegistry<StrategyId>(_options);
     }
 }

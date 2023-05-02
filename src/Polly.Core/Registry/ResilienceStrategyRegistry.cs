@@ -22,6 +22,7 @@ public sealed class ResilienceStrategyRegistry<TKey> : ResilienceStrategyProvide
     private readonly ConcurrentDictionary<TKey, Action<TKey, ResilienceStrategyBuilder>> _builders;
     private readonly ConcurrentDictionary<TKey, ResilienceStrategy> _strategies;
     private readonly Func<TKey, string> _keyFormatter;
+    private readonly Func<TKey, string> _builderNameFormatter;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ResilienceStrategyRegistry{TKey}"/> class with the default comparer.
@@ -44,7 +45,8 @@ public sealed class ResilienceStrategyRegistry<TKey> : ResilienceStrategyProvide
         _activator = options.BuilderFactory;
         _builders = new ConcurrentDictionary<TKey, Action<TKey, ResilienceStrategyBuilder>>(options.BuilderComparer);
         _strategies = new ConcurrentDictionary<TKey, ResilienceStrategy>(options.StrategyComparer);
-        _keyFormatter = options.KeyFormatter;
+        _keyFormatter = options.StrategyKeyFormatter;
+        _builderNameFormatter = options.BuilderNameFormatter;
     }
 
     /// <summary>
@@ -89,6 +91,7 @@ public sealed class ResilienceStrategyRegistry<TKey> : ResilienceStrategyProvide
             strategy = _strategies.GetOrAdd(key, key =>
             {
                 var builder = _activator();
+                builder.BuilderName = _builderNameFormatter(key);
                 builder.Properties.Set(TelemetryUtil.StrategyKey, _keyFormatter(key));
                 configure(key, builder);
                 return builder.Build();
