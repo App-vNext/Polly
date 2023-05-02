@@ -23,11 +23,35 @@ public partial class ResilienceStrategyTests
             AssertContext = AssertResilienceContextAndToken,
         };
 
+        yield return new ExecuteParameters<long>(r => r.Execute(() => result), result)
+        {
+            Caption = "ExecuteT",
+            AssertContext = AssertResilienceContext,
+        };
+
+        yield return new ExecuteParameters<long>(r => r.Execute((state) => { state.Should().Be("state"); return result; }, "state"), result)
+        {
+            Caption = "ExecuteT_State",
+            AssertContext = AssertResilienceContext,
+        };
+
+        yield return new ExecuteParameters<long>(r => r.Execute(_ => result, ResilienceContext.Get()), result)
+        {
+            Caption = "ExecuteT_ResilienceContext",
+            AssertContext = AssertResilienceContext,
+            AssertContextAfter = AssertContextInitialized
+        };
+
         yield return new ExecuteParameters<long>(r => r.Execute((_, s) => { s.Should().Be("dummy-state"); return result; }, ResilienceContext.Get(), "dummy-state"), result)
         {
-            Caption = "ExecuteT_ResilienceContextAndState",
+            Caption = "ExecuteT_ResilienceContext",
             AssertContext = AssertResilienceContext,
-            AssertContextAfter = AssertContextInitialized,
+        };
+
+        yield return new ExecuteParameters<long>(r => r.Execute((state, _) => { state.Should().Be("dummy-state"); return result; }, "dummy-state", CancellationToken), result)
+        {
+            Caption = "ExecuteT_StateAndCancellation",
+            AssertContext = AssertResilienceContextAndToken,
         };
 
         static void AssertResilienceContext(ResilienceContext context)
