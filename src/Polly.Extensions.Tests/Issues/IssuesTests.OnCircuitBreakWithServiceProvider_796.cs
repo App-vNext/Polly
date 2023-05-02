@@ -5,7 +5,7 @@ using Polly.Registry;
 
 namespace Polly.Core.Tests.Issues;
 
-public class IssuesTests
+public partial class IssuesTests
 {
     [Fact]
     public async Task OnCircuitBreakWithServiceProvider_796()
@@ -66,5 +66,4 @@ public class IssuesTests
             return callback(context, state);
         }
     }
-
 }

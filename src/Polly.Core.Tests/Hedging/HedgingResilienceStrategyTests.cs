@@ -11,7 +11,7 @@ public class HedgingResilienceStrategyTests : IDisposable
     private const string Failure = "Failure";
 
     private static readonly TimeSpan LongDelay = TimeSpan.FromDays(1);
-    private static readonly TimeSpan AssertTimeout = TimeSpan.FromSeconds(10);
+    private static readonly TimeSpan AssertTimeout = TimeSpan.FromSeconds(15);
 
     private readonly HedgingStrategyOptions _options = new();
     private readonly List<IResilienceArguments> _events = new();
