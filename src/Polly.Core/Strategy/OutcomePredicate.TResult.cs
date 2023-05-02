@@ -13,6 +13,7 @@ public sealed class OutcomePredicate<TArgs, TResult>
     where TArgs : IResilienceArguments
 {
     private readonly List<Func<Outcome<TResult>, TArgs, ValueTask<bool>>> _predicates = new();
+    private Action<OutcomePredicate<TArgs, TResult>>? _configureDefaults;
 
     /// <summary>
     /// Gets a value indicating whether the predicate is empty.
@@ -196,6 +197,11 @@ public sealed class OutcomePredicate<TArgs, TResult>
     /// <returns>Handler instance or null if no predicates are registered.</returns>
     public Func<Outcome<TResult>, TArgs, ValueTask<bool>>? CreateHandler()
     {
+        if (IsEmpty)
+        {
+            _configureDefaults?.Invoke(this);
+        }
+
         var pairs = _predicates.ToArray();
 
         return pairs.Length switch
@@ -204,6 +210,21 @@ public sealed class OutcomePredicate<TArgs, TResult>
             1 => _predicates[0],
             _ => CreateHandler(_predicates.ToArray())
         };
+    }
+
+    /// <summary>
+    /// Sets the configuration callback that is invoked on this instance when there are no explicit predicates configured by the user.
+    /// </summary>
+    /// <param name="configure">The configure defaults callback.</param>
+    /// <returns>The current updated instance.</returns>
+    /// <remarks>
+    /// Use this method when you want to fallback to pre-configured default predicates if none are set by the user.
+    /// </remarks>
+    public OutcomePredicate<TArgs, TResult> SetDefaults(Action<OutcomePredicate<TArgs, TResult>> configure)
+    {
+        Guard.NotNull(configure);
+        _configureDefaults = configure;
+        return this;
     }
 
     private static Func<Outcome<TResult>, TArgs, ValueTask<bool>> CreateHandler(Func<Outcome<TResult>, TArgs, ValueTask<bool>>[] predicates)

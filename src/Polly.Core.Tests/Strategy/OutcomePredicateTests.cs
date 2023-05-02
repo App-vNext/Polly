@@ -279,6 +279,30 @@ public class OutcomePredicateTests
         {
             sut.HandleOutcome<int>((outcome, _) => new ValueTask<bool>(outcome.Exception is InvalidOperationException));
             InvokeHandler<int>(sut, new InvalidOperationException(), true);
+        },
+        sut =>
+        {
+            sut.SetPredicates(new OutcomePredicate<TestArguments, int>().SetDefaults(p => p.HandleResult(-1)).HandleResult(r => false));
+            InvokeResultHandler(sut, -1, false);
+            InvokeResultHandler(sut, 0, false);
+        },
+        sut =>
+        {
+            sut.SetPredicates(new OutcomePredicate<TestArguments, int>().SetDefaults(p => p.HandleResult(-1)));
+            InvokeResultHandler(sut, -1, true);
+            InvokeResultHandler(sut, 0, false);
+        },
+        sut =>
+        {
+            sut.SetVoidPredicates(new VoidOutcomePredicate<TestArguments>().SetDefaults(p => p.HandleException<InvalidOperationException>()).HandleException<Exception>(e => false));
+            InvokeHandler<VoidResult>(sut, new InvalidOperationException(), false);
+            InvokeHandler<VoidResult>(sut, new InvalidOperationException(), false);
+        },
+        sut =>
+        {
+            sut.SetVoidPredicates(new VoidOutcomePredicate<TestArguments>().SetDefaults(p => p.HandleException<InvalidOperationException>()));
+            InvokeHandler<VoidResult>(sut, new InvalidOperationException(), true);
+            InvokeHandler<VoidResult>(sut, new FormatException(), false);
         }
     };
 
