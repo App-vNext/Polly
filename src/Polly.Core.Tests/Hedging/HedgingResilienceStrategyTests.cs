@@ -134,6 +134,7 @@ public class HedgingResilienceStrategyTests : IDisposable
             catch (OperationCanceledException)
             {
                 _testOutput.WriteLine("Hedged task executing...cancelled");
+                cancelled.Set();
             }
             catch (Exception e)
             {
