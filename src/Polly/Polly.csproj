@@ -5,8 +5,9 @@
     <AssemblyTitle>Polly</AssemblyTitle>
     <ProjectType>Library</ProjectType>
     <MutationScore>70</MutationScore>
+    <PackageValidationBaselineVersion>7.2.3</PackageValidationBaselineVersion>
   </PropertyGroup>
-  
+
   <ItemGroup>
     <Using Remove="System.Net.Http" />
     <InternalsVisibleToTest Include="Polly.Specs" />
