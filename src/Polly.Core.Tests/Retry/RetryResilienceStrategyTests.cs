@@ -21,7 +21,7 @@ public class RetryResilienceStrategyTests
         SetupNoDelay();
         var sut = CreateSut();
 
-        sut.Execute(_ => 0, default);
+        sut.Execute(() => 0);
 
         called.Should().BeFalse();
     }
@@ -36,7 +36,7 @@ public class RetryResilienceStrategyTests
         SetupNoDelay();
         var sut = CreateSut();
 
-        sut.Execute(_ => 0, default);
+        sut.Execute(() => 0);
 
         calls.Should().Be(12);
     }
@@ -55,7 +55,7 @@ public class RetryResilienceStrategyTests
         SetupNoDelay();
         var sut = CreateSut();
 
-        Assert.Throws<InvalidOperationException>(() => sut.Execute<int>(_ => throw new InvalidOperationException(), default));
+        Assert.Throws<InvalidOperationException>(() => sut.Execute<int>(() => throw new InvalidOperationException()));
 
         calls.Should().Be(3);
     }
@@ -79,7 +79,7 @@ public class RetryResilienceStrategyTests
         SetupNoDelay();
         var sut = CreateSut();
 
-        Assert.Throws<InvalidOperationException>(() => sut.Execute(_ => 0, default));
+        Assert.Throws<InvalidOperationException>(() => sut.Execute(() => 0));
 
         calls.Should().Be(RetryConstants.MaxRetryCount + 1);
     }
@@ -97,7 +97,7 @@ public class RetryResilienceStrategyTests
 
         var sut = CreateSut();
 
-        sut.Execute(_ => 0, default);
+        sut.Execute(() => 0);
 
         _timeProvider.Verify(v => v.Delay(TimeSpan.FromMilliseconds(123), default), Times.Exactly(3));
     }
@@ -123,7 +123,7 @@ public class RetryResilienceStrategyTests
 
         var sut = CreateSut();
 
-        sut.Execute(_ => 0, default);
+        sut.Execute(() => 0);
 
         attempts.Should().HaveCount(3);
         attempts[0].Should().Be(0);
@@ -150,7 +150,7 @@ public class RetryResilienceStrategyTests
 
         var sut = CreateSut();
 
-        sut.Execute(_ => 0, default);
+        sut.Execute(() => 0);
 
         _diagnosticSource.VerifyAll();
     }
@@ -178,7 +178,7 @@ public class RetryResilienceStrategyTests
 
         var sut = CreateSut();
 
-        sut.Execute(_ => 0, default);
+        sut.Execute(() => 0);
 
         attempts.Should().HaveCount(3);
         attempts[0].Should().Be(0);
