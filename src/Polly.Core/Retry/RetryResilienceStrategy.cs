@@ -7,11 +7,13 @@ internal class RetryResilienceStrategy : ResilienceStrategy
 {
     private readonly TimeProvider _timeProvider;
     private readonly ResilienceStrategyTelemetry _telemetry;
+    private readonly RandomUtil _randomUtil;
 
-    public RetryResilienceStrategy(RetryStrategyOptions options, TimeProvider timeProvider, ResilienceStrategyTelemetry telemetry)
+    public RetryResilienceStrategy(RetryStrategyOptions options, TimeProvider timeProvider, ResilienceStrategyTelemetry telemetry, RandomUtil randomUtil)
     {
         _timeProvider = timeProvider;
         _telemetry = telemetry;
+        _randomUtil = randomUtil;
         OnRetry = options.OnRetry.CreateHandler();
         DelayGenerator = options.RetryDelayGenerator.CreateHandler(TimeSpan.MinValue, RetryHelper.IsValidDelay);
         ShouldRetry = options.ShouldRetry.CreateHandler();
@@ -35,6 +37,8 @@ internal class RetryResilienceStrategy : ResilienceStrategy
 
     protected internal override async ValueTask<TResult> ExecuteCoreAsync<TResult, TState>(Func<ResilienceContext, TState, ValueTask<TResult>> callback, ResilienceContext context, TState state)
     {
+        double retryState = 0;
+
         if (ShouldRetry == null)
         {
             return await callback(context, state).ConfigureAwait(context.ContinueOnCapturedContext);
@@ -68,7 +72,7 @@ internal class RetryResilienceStrategy : ResilienceStrategy
                 }
             }
 
-            var delay = RetryHelper.GetRetryDelay(BackoffType, attempt, BaseDelay);
+            var delay = RetryHelper.GetRetryDelay(BackoffType, attempt, BaseDelay, ref retryState, _randomUtil);
             if (DelayGenerator != null)
             {
                 var newDelay = await DelayGenerator.GenerateAsync(outcome, new RetryDelayArguments(context, attempt, delay)).ConfigureAwait(false);

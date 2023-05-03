@@ -27,18 +27,32 @@ public class RetryStrategyOptions<TResult> : ResilienceStrategyOptions
     /// Gets or sets the type of the back-off.
     /// </summary>
     /// <remarks>
-    /// Defaults to <see cref="RetryBackoffType.Exponential"/>.
+    /// Defaults to <see cref="RetryBackoffType.ExponentialWithJitter"/>.
     /// </remarks>
     public RetryBackoffType BackoffType { get; set; } = RetryConstants.DefaultBackoffType;
 
     /// <summary>
-    /// Gets or sets the delay between retries based on the backoff type, <see cref="RetryBackoffType"/>.
+    /// Gets or sets the base delay between retries.
     /// </summary>
     /// <remarks>
+    /// This value is used with the combination of <see cref="BackoffType"/> to generate the final delay for each individual retry attempt:
+    /// <list type="bullet">
+    /// <item>
+    /// <see cref="RetryBackoffType.Exponential"/>: Represents the median delay to target before the first retry.
+    /// </item>
+    /// <item>
+    /// <see cref="RetryBackoffType.ExponentialWithJitter"/>: Represents the median delay to target before the first retry.
+    /// </item>
+    /// <item>
+    /// <see cref="RetryBackoffType.Linear"/>: Represents the initial delay, the following delays increasing linearly with this value.
+    /// </item>
+    /// <item>
+    /// <see cref="RetryBackoffType.Constant"/> Represents the constant delay between retries.
+    /// </item>
+    /// </list>
+    /// <para>
     /// Defaults to 2 seconds.
-    /// For <see cref="RetryBackoffType.Exponential"/> this represents the median delay to target before the first retry.
-    /// For the <see cref="RetryBackoffType.Linear"/> it represents the initial delay, the following delays increasing linearly with this value.
-    /// In case of <see cref="RetryBackoffType.Constant"/> it represents the constant delay between retries.
+    /// </para>
     /// </remarks>
     [TimeSpan("00:00:00", "1.00:00:00")]
     public TimeSpan BaseDelay { get; set; } = RetryConstants.DefaultBaseDelay;
