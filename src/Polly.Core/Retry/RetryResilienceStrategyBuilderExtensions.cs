@@ -130,6 +130,23 @@ public static class RetryResilienceStrategyBuilderExtensions
     /// Adds a retry strategy to the builder.
     /// </summary>
     /// <param name="builder">The builder instance.</param>
+    /// <param name="configure">The action that configures the retry options.</param>
+    /// <returns>The builder instance with the retry strategy added.</returns>
+    public static ResilienceStrategyBuilder AddRetry(this ResilienceStrategyBuilder builder, Action<RetryStrategyOptions> configure)
+    {
+        Guard.NotNull(builder);
+        Guard.NotNull(configure);
+
+        var options = new RetryStrategyOptions();
+        configure(options);
+
+        return builder.AddRetry(options);
+    }
+
+    /// <summary>
+    /// Adds a retry strategy to the builder.
+    /// </summary>
+    /// <param name="builder">The builder instance.</param>
     /// <param name="options">The retry strategy options.</param>
     /// <returns>The builder instance with the retry strategy added.</returns>
     public static ResilienceStrategyBuilder AddRetry(this ResilienceStrategyBuilder builder, RetryStrategyOptions options)
