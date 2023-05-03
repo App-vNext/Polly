@@ -21,7 +21,7 @@ public sealed class ResilienceStrategyRegistry<TKey> : ResilienceStrategyProvide
     private readonly Func<ResilienceStrategyBuilder> _activator;
     private readonly ConcurrentDictionary<TKey, Action<TKey, ResilienceStrategyBuilder>> _builders;
     private readonly ConcurrentDictionary<TKey, ResilienceStrategy> _strategies;
-    private readonly Func<TKey, string> _keyFormatter;
+    private readonly Func<TKey, string> _strategyKeyFormatter;
     private readonly Func<TKey, string> _builderNameFormatter;
 
     /// <summary>
@@ -45,7 +45,7 @@ public sealed class ResilienceStrategyRegistry<TKey> : ResilienceStrategyProvide
         _activator = options.BuilderFactory;
         _builders = new ConcurrentDictionary<TKey, Action<TKey, ResilienceStrategyBuilder>>(options.BuilderComparer);
         _strategies = new ConcurrentDictionary<TKey, ResilienceStrategy>(options.StrategyComparer);
-        _keyFormatter = options.StrategyKeyFormatter;
+        _strategyKeyFormatter = options.StrategyKeyFormatter;
         _builderNameFormatter = options.BuilderNameFormatter;
     }
 
@@ -92,7 +92,7 @@ public sealed class ResilienceStrategyRegistry<TKey> : ResilienceStrategyProvide
             {
                 var builder = _activator();
                 builder.BuilderName = _builderNameFormatter(key);
-                builder.Properties.Set(TelemetryUtil.StrategyKey, _keyFormatter(key));
+                builder.Properties.Set(TelemetryUtil.StrategyKey, _strategyKeyFormatter(key));
                 configure(key, builder);
                 return builder.Build();
             });

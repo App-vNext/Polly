@@ -11,20 +11,17 @@ public class ResilienceStrategyRegistryTests
 
     private Action<ResilienceStrategyBuilder> _callback = _ => { };
 
-    public ResilienceStrategyRegistryTests()
+    public ResilienceStrategyRegistryTests() => _options = new()
     {
-        _options = new()
+        BuilderFactory = () =>
         {
-            BuilderFactory = () =>
-            {
-                var builder = new ResilienceStrategyBuilder();
-                _callback(builder);
-                return builder;
-            },
-            StrategyComparer = StrategyId.Comparer,
-            BuilderComparer = StrategyId.BuilderComparer
-        };
-    }
+            var builder = new ResilienceStrategyBuilder();
+            _callback(builder);
+            return builder;
+        },
+        StrategyComparer = StrategyId.Comparer,
+        BuilderComparer = StrategyId.BuilderComparer
+    };
 
     [Fact]
     public void Ctor_Default_Ok()
@@ -143,7 +140,7 @@ public class ResilienceStrategyRegistryTests
 
         var called = false;
         var registry = CreateRegistry();
-        registry.TryAddBuilder(StrategyId.Create("A"), (key, builder) =>
+        registry.TryAddBuilder(StrategyId.Create("A"), (_, builder) =>
         {
             builder.AddStrategy(new TestResilienceStrategy());
             builder.BuilderName.Should().Be("A");
