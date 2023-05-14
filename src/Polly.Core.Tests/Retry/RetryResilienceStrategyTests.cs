@@ -1,6 +1,7 @@
 using Moq;
 using Polly.Retry;
 using Polly.Strategy;
+using Polly.Utils;
 
 namespace Polly.Core.Tests.Retry;
 
@@ -232,6 +233,6 @@ public class RetryResilienceStrategyTests
 
     private RetryResilienceStrategy CreateSut()
     {
-        return new RetryResilienceStrategy(_options, _timeProvider.Object, _telemetry);
+        return new RetryResilienceStrategy(_options, _timeProvider.Object, _telemetry, new RandomUtil(0));
     }
 }

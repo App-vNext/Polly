@@ -6,6 +6,19 @@ namespace Polly.Retry;
 public enum RetryBackoffType
 {
     /// <summary>
+    /// Exponential delay with randomization retry type,
+    /// making sure to mitigate any correlations.
+    /// </summary>
+    /// <example>
+    /// 850ms, 1455ms, 3060ms.
+    /// </example>
+    /// <remarks>
+    /// In transient failures handling scenarios, this is the
+    /// <see href=" https://github.com/Polly-Contrib/Polly.Contrib.WaitAndRetry#new-jitter-recommendation"> recommended retry type</see>.
+    /// </remarks>
+    ExponentialWithJitter,
+
+    /// <summary>
     /// The constant retry type.
     /// </summary>
     /// <example>

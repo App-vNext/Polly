@@ -21,7 +21,7 @@ public class RetryStrategyOptionsTests
         options.OnRetry.IsEmpty.Should().BeTrue();
 
         options.RetryCount.Should().Be(3);
-        options.BackoffType.Should().Be(RetryBackoffType.Exponential);
+        options.BackoffType.Should().Be(RetryBackoffType.ExponentialWithJitter);
         options.BaseDelay.Should().Be(TimeSpan.FromSeconds(2));
     }
 

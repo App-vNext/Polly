@@ -139,6 +139,6 @@ public static class RetryResilienceStrategyBuilderExtensions
 
         ValidationHelper.ValidateObject(options, "The retry strategy options are invalid.");
 
-        return builder.AddStrategy(context => new RetryResilienceStrategy(options, context.TimeProvider, context.Telemetry));
+        return builder.AddStrategy(context => new RetryResilienceStrategy(options, context.TimeProvider, context.Telemetry, RandomUtil.Instance));
     }
 }
