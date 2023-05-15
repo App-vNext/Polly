@@ -21,7 +21,7 @@ public sealed class ResilienceStrategyTelemetry
     internal ResilienceTelemetrySource TelemetrySource { get; }
 
     /// <summary>
-    /// Reports an event that occurred in the resilience strategy.
+    /// Reports an event that occurred in a resilience strategy.
     /// </summary>
     /// <typeparam name="TArgs">The arguments associated with this event.</typeparam>
     /// <param name="eventName">The event name.</param>
@@ -40,7 +40,7 @@ public sealed class ResilienceStrategyTelemetry
     }
 
     /// <summary>
-    /// Reports an event that occurred in the resilience strategy.
+    /// Reports an event that occurred in a resilience strategy.
     /// </summary>
     /// <typeparam name="TArgs">The arguments associated with this event.</typeparam>
     /// <typeparam name="TResult">The type of the result.</typeparam>

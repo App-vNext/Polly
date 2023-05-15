@@ -63,7 +63,14 @@ public readonly struct Outcome<TResult>
         return false;
     }
 
-    /// <inheritdoc/>
+    /// <summary>
+    /// Gets the string representation of the outcome.
+    /// </summary>
+    /// <returns>A string representation of the outcome.</returns>
+    /// <remarks>
+    /// If the outcome represents an exception, then <see cref="Exception.Message"/> will be returned.
+    /// If the outcome represents a result, then <see cref="Result"/> formatted as string will be returned.
+    /// </remarks>
     public override string ToString()
     {
         if (Exception != null)
@@ -74,13 +81,9 @@ public readonly struct Outcome<TResult>
         return Result?.ToString() ?? string.Empty;
     }
 
-    internal Outcome AsOutcome()
+    internal Outcome AsOutcome() => Exception switch
     {
-        if (Exception != null)
-        {
-            return new Outcome(typeof(TResult), Exception);
-        }
-
-        return new Outcome(typeof(TResult), Result);
-    }
+        null => new Outcome(Result),
+        _ => new Outcome(Exception)
+    };
 }

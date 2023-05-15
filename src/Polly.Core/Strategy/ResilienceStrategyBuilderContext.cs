@@ -5,7 +5,7 @@ namespace Polly.Strategy;
 /// <summary>
 /// The context used for building an individual resilience strategy.
 /// </summary>
-public class ResilienceStrategyBuilderContext
+public sealed class ResilienceStrategyBuilderContext
 {
     internal ResilienceStrategyBuilderContext(string builderName, ResilienceProperties builderProperties, string strategyName, string strategyType, TimeProvider timeProvider)
     {

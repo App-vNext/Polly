@@ -6,6 +6,9 @@ namespace Polly.Strategy;
 /// <param name="EventName">The event name.</param>
 public readonly record struct ReportedResilienceEvent(string EventName)
 {
-    /// <inheritdoc/>
+    /// <summary>
+    /// Returns an <see cref="EventName"/>.
+    /// </summary>
+    /// <returns>An event name.</returns>
     public override string ToString() => EventName;
 }

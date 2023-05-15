@@ -21,7 +21,7 @@ public class HedgingStrategyOptions<TResult> : ResilienceStrategyOptions
     /// Defaults to 2 seconds.
     /// <para>
     /// You can also use <see cref="TimeSpan.Zero"/> to create all hedged tasks (value of <see cref="MaxHedgedAttempts"/>) at once
-    /// or <see cref="HedgingStrategyOptions.InfiniteHedgingDelay"/> to force the hedging strategy to never create new task before the old one is finished.
+    /// or <see cref="System.Threading.Timeout.InfiniteTimeSpan"/> to force the hedging strategy to never create new task before the old one is finished.
     /// </para>
     /// <para> If you want a greater control over hedging delay customization use <see cref="HedgingDelayGenerator"/>.</para>
     /// </remarks>
@@ -51,7 +51,7 @@ public class HedgingStrategyOptions<TResult> : ResilienceStrategyOptions
     /// Gets or sets the hedging action generator that creates hedged actions.
     /// </summary>
     [Required]
-    public HedgingActionGenerator<TResult>? HedgingActionGenerator { get; set; } = null;
+    public Func<HedgingActionGeneratorArguments<TResult>, Func<Task<TResult>>?>? HedgingActionGenerator { get; set; } = null;
 
     /// <summary>
     /// Gets or sets the generator that generates hedging delays for each hedging attempt.

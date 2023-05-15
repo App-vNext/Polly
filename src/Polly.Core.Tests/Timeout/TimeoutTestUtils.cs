@@ -17,7 +17,6 @@ public static class TimeoutTestUtils
 
     public static readonly TheoryData<TimeSpan> ValidTimeouts = new()
     {
-        TimeoutStrategyOptions.InfiniteTimeout,
         System.Threading.Timeout.InfiniteTimeSpan,
         TimeSpan.FromSeconds(1)
     };

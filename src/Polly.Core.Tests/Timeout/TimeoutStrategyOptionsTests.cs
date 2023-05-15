@@ -14,9 +14,6 @@ public class TimeoutStrategyOptionsTests
         options.TimeoutGenerator.Should().NotBeNull();
         options.OnTimeout.Should().NotBeNull();
         options.StrategyType.Should().Be(TimeoutConstants.StrategyType);
-        options.Timeout.Should().Be(TimeoutStrategyOptions.InfiniteTimeout);
-
-        TimeoutStrategyOptions.InfiniteTimeout.Should().Be(System.Threading.Timeout.InfiniteTimeSpan);
     }
 
     [MemberData(nameof(TimeoutTestUtils.InvalidTimeouts), MemberType = typeof(TimeoutTestUtils))]

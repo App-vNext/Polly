@@ -815,7 +815,7 @@ public class HedgingResilienceStrategyTests : IDisposable
         ConfigureHedging(args => () => background(args.Context));
     }
 
-    private void ConfigureHedging(HedgingActionGenerator<string> generator)
+    private void ConfigureHedging(Func<HedgingActionGeneratorArguments<string>, Func<Task<string>>?> generator)
     {
         ConfigureHedging<string>(handler =>
         {

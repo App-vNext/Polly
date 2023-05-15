@@ -23,8 +23,13 @@ public sealed class HedgingHandler<TResult>
     /// Gets or sets the hedging action generator that creates hedged actions.
     /// </summary>
     /// <remarks>
+    /// Make sure that the action returned by the generator represents a real asynchronous work, otherwise the hedging
+    /// engine will be blocked and parallel hedged actions won't ever be executed. The generator can return a <see langword="null"/> function.
+    /// In such case the hedging is not executed for that attempt.
+    /// <para>
     /// This property is required. Defaults to <see langword="null"/>.
+    /// </para>
     /// </remarks>
     [Required]
-    public HedgingActionGenerator<TResult>? HedgingActionGenerator { get; set; } = null;
+    public Func<HedgingActionGeneratorArguments<TResult>, Func<Task<TResult>>?>? HedgingActionGenerator { get; set; } = null;
 }

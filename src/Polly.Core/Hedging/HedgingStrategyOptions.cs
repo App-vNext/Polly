@@ -14,18 +14,13 @@ public class HedgingStrategyOptions : ResilienceStrategyOptions
     public HedgingStrategyOptions() => StrategyType = HedgingConstants.StrategyType;
 
     /// <summary>
-    /// A <see cref="TimeSpan"/> that represents the infinite hedging delay.
-    /// </summary>
-    public static readonly TimeSpan InfiniteHedgingDelay = System.Threading.Timeout.InfiniteTimeSpan;
-
-    /// <summary>
     /// Gets or sets the minimal time of waiting before spawning a new hedged call.
     /// </summary>
     /// <remarks>
     /// Defaults to 2 seconds.
     /// <para>
     /// You can also use <see cref="TimeSpan.Zero"/> to create all hedged tasks (value of <see cref="MaxHedgedAttempts"/>) at once
-    /// or <see cref="InfiniteHedgingDelay"/> to force the hedging strategy to never create new task before the old one is finished.
+    /// or <see cref="System.Threading.Timeout.InfiniteTimeSpan"/> to force the hedging strategy to never create new task before the old one is finished.
     /// </para>
     /// <para>
     /// If you want a greater control over hedging delay customization use <see cref="HedgingDelayGenerator"/>.

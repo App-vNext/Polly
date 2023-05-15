@@ -76,7 +76,7 @@ public class TimeoutRejectedException : ExecutionRejectedException
     /// <summary>
     /// Gets the timeout value that caused this exception.
     /// </summary>
-    public TimeSpan Timeout { get; private set; } = TimeoutStrategyOptions.InfiniteTimeout;
+    public TimeSpan Timeout { get; private set; } = System.Threading.Timeout.InfiniteTimeSpan;
 
 #if !NETCOREAPP
     /// <inheritdoc/>

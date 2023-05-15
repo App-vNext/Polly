@@ -77,7 +77,7 @@ public sealed partial class FallbackHandler
         return new Handler(shouldHandle, _actions);
     }
 
-    private static FallbackAction<VoidResult> CreateGenericAction(FallbackAction action)
+    private static Func<Outcome<VoidResult>, HandleFallbackArguments, ValueTask<VoidResult>> CreateGenericAction(Func<Outcome, HandleFallbackArguments, ValueTask> action)
     {
         return async (outcome, args) =>
         {

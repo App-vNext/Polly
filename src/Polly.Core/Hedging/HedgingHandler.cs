@@ -66,7 +66,8 @@ public sealed partial class HedgingHandler
         return new Handler(_predicates.CreateHandler(), _actions);
     }
 
-    private static HedgingActionGenerator<VoidResult> CreateGenericGenerator(HedgingActionGenerator generator)
+    private static Func<HedgingActionGeneratorArguments<VoidResult>, Func<Task<VoidResult>>?> CreateGenericGenerator(
+        Func<HedgingActionGeneratorArguments, Func<Task>?> generator)
     {
         return (args) =>
         {

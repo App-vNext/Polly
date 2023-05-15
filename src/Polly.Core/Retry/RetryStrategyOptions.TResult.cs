@@ -18,7 +18,7 @@ public class RetryStrategyOptions<TResult> : ResilienceStrategyOptions
     /// Gets or sets the maximum number of retries to use, in addition to the original call.
     /// </summary>
     /// <remarks>
-    /// Defaults to 3 retries. For infinite retries use <c>InfiniteRetry</c> (-1).
+    /// Defaults to 3 retries. For infinite retries use <see cref="RetryStrategyOptions.InfiniteRetryCount"/> (-1).
     /// </remarks>
     [Range(RetryStrategyOptions.InfiniteRetryCount, RetryConstants.MaxRetryCount)]
     public int RetryCount { get; set; } = RetryConstants.DefaultRetryCount;
