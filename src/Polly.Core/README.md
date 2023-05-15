@@ -22,9 +22,9 @@ public abstract class ResilienceStrategy
 
     public TResult Execute<TResult>(Func<TResult> callback);
 
-    public Task ExecuteTaskAsync(Func<CancellationToken, Task> callback, CancellationToken cancellationToken = default);
+    public Task ExecuteAsync(Func<CancellationToken, Task> callback, CancellationToken cancellationToken = default);
 
-    public Task<TResult> ExecuteTaskAsync(Func<CancellationToken, Task<TResult>> callback, CancellationToken cancellationToken = default);
+    public Task<TResult> ExecuteAsync(Func<CancellationToken, Task<TResult>> callback, CancellationToken cancellationToken = default);
 
     public ValueTask ExecuteValueTaskAsync(Func<CancellationToken, ValueTask> callback, CancellationToken cancellationToken = default);
 
@@ -101,26 +101,26 @@ Underlying implementation decides how to execute this user-callback by reading t
 ``` csharp
 internal class DelayStrategy : ResilienceStrategy
 {
-    protected override async ValueTask<T> ExecuteCoreAsync<T, TState>(Func<ResilienceContext, TState, ValueTask<T>> callback, ResilienceContext context, TState state)
+    private readonly TimeProvider _timeProvider;
+
+    public DelayStrategy(TimeProvider timeProvider)
     {
-        if (context.IsSynchronous)
-        {
-            Thread.Sleep(1000);
-        }
-        else
-        {
-            await Task.Delay(1000).ContinueOnCapturedContext(context.ContinueOnCapturedContext);
-        }
+        _timeProvider = timeProvider;
+    }
+
+    protected override async ValueTask<T> ExecuteCoreAsync<T, TState>(
+        Func<ResilienceContext, TState, ValueTask<T>> callback, 
+        ResilienceContext context, 
+        TState state)
+    {
+        await _timeProvider.DelayAsync(context).ContinueOnCapturedContext(context.ContinueOnCapturedContext);
 
         return await callback(context, state).ContinueOnCapturedContext(context.ContinueOnCapturedContext);
     }
 }
 ```
 
-In the preceding example:
-
-- For synchronous execution we are using `Thread.Sleep`.
-- For asynchronous execution we are using `Task.Delay`.
+In the preceding example we are calling the `DelayAsync` extension for `TimeProvider` that accepts the `ResilienceContext`. The extension is using `Thread.Sleep` for synchronous executions and `Task.Delay` for asynchronous executions.
 
 This way, the responsibility of how to execute method is lifted from the user and instead passed to the policy. User cares only about the `ResilienceStrategy` class. User uses only a single strategy to execute all scenarios. Previously, user had to decide whether to use sync vs async, typed vs non-typed policies.
 
@@ -131,9 +131,9 @@ The life of extensibility author is also simplified as they only maintain one im
 This API exposes [ResilienceStrategyBuilder](Builder/ResilienceStrategyBuilder.cs) that can be used to create the resilience strategy:
 
 ``` csharp
-public interface ResilienceStrategyBuilder
+public class ResilienceStrategyBuilder
 {
-    ResilienceStrategyBuilderOptions Options { get; set; }
+    // omitted properties for simplicity
 
     ResilienceStrategyBuilder AddStrategy(ResilienceStrategy strategy, ResilienceStrategyOptions? options = null);
 
