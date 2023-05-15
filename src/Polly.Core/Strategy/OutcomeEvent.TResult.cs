@@ -16,7 +16,7 @@ public sealed class OutcomeEvent<TArgs, TResult>
     /// <summary>
     /// Gets a value indicating whether the event is empty.
     /// </summary>
-    public bool IsEmpty => _callbacks.Count == 0;
+    internal bool IsEmpty => _callbacks.Count == 0;
 
     /// <summary>
     /// Registers a callback for the specified result type.
@@ -83,7 +83,7 @@ public sealed class OutcomeEvent<TArgs, TResult>
     /// <summary>
     /// Creates a handler that invokes the registered event callbacks.
     /// </summary>
-    /// <returns>Handler instance or <c>null</c> if no callbacks are registered.</returns>
+    /// <returns>Handler instance or <see langword="null"/> if no callbacks are registered.</returns>
     public Func<Outcome<TResult>, TArgs, ValueTask>? CreateHandler()
     {
         return _callbacks.Count switch

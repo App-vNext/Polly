@@ -27,7 +27,7 @@ public class FallbackStrategyOptions<TResult> : ResilienceStrategyOptions
     /// Gets or sets the fallback action to be executed if the <see cref="ShouldHandle"/> predicate evaluates as true.
     /// </summary>
     /// <remarks>
-    /// This property is required. Defaults to <c>null</c>.
+    /// This property is required. Defaults to <see langword="null"/>.
     /// </remarks>
     [Required]
     public FallbackAction<TResult>? FallbackAction { get; set; }

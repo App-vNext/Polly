@@ -57,7 +57,7 @@ public sealed class CircuitBreakerManualControl : IDisposable
     /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns>The instance of <see cref="Task"/> that represents the asynchronous execution.</returns>
     /// <exception cref="InvalidOperationException">Thrown if manual control is not initialized.</exception>
-    public async Task IsolateAsync(CancellationToken cancellationToken)
+    public async Task IsolateAsync(CancellationToken cancellationToken = default)
     {
         var context = ResilienceContext.Get();
         context.CancellationToken = cancellationToken;
@@ -97,7 +97,7 @@ public sealed class CircuitBreakerManualControl : IDisposable
     /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns>The instance of <see cref="Task"/> that represents the asynchronous execution.</returns>
     /// <exception cref="InvalidOperationException">Thrown if manual control is not initialized.</exception>
-    public async Task CloseAsync(CancellationToken cancellationToken)
+    public async Task CloseAsync(CancellationToken cancellationToken = default)
     {
         var context = ResilienceContext.Get();
         context.CancellationToken = cancellationToken;

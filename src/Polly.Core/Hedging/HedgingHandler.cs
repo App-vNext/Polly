@@ -13,7 +13,7 @@ public sealed partial class HedgingHandler
     /// <summary>
     /// Gets a value indicating whether the hedging handler is empty.
     /// </summary>
-    public bool IsEmpty => _actions.Count == 0;
+    internal bool IsEmpty => _actions.Count == 0;
 
     /// <summary>
     /// Configures a hedging handler for a specific result type.

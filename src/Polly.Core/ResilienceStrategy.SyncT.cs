@@ -143,7 +143,7 @@ public abstract partial class ResilienceStrategy
     public TResult Execute<TResult, TState>(
         Func<TState, CancellationToken, TResult> callback,
         TState state,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken = default)
     {
         Guard.NotNull(callback);
 

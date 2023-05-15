@@ -15,7 +15,7 @@ public sealed class NoOutcomeEvent<TArgs>
     /// <summary>
     /// Gets a value indicating whether the event is empty.
     /// </summary>
-    public bool IsEmpty => _callbacks.Count == 0;
+    internal bool IsEmpty => _callbacks.Count == 0;
 
     /// <summary>
     /// Adds an asynchronous event callback.

@@ -36,7 +36,7 @@ public readonly struct Outcome<TResult>
     /// Gets a value indicating whether the operation produced a result.
     /// </summary>
     /// <remarks>
-    /// If the operation returned a void result the value will be <c>true</c>.
+    /// If the operation returned a void result the value will be <see langword="true"/>.
     /// You can use <see cref="IsVoidResult"/> to determine if the result is a void result.
     /// </remarks>
     public bool HasResult => Exception == null;

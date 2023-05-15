@@ -16,7 +16,7 @@ public sealed partial class OutcomePredicate<TArgs>
     /// <summary>
     /// Gets a value indicating whether the predicate is empty.
     /// </summary>
-    public bool IsEmpty => _predicates.Count == 0;
+    internal bool IsEmpty => _predicates.Count == 0;
 
     /// <summary>
     /// Adds an exception predicate for the specified exception type.

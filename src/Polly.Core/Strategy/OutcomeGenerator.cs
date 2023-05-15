@@ -17,7 +17,7 @@ public sealed partial class OutcomeGenerator<TArgs, TValue>
     /// <summary>
     /// Gets a value indicating whether the generator is empty.
     /// </summary>
-    public bool IsEmpty => _generators.Count == 0;
+    internal bool IsEmpty => _generators.Count == 0;
 
     /// <summary>
     /// Sets a result generator for a specific result type.

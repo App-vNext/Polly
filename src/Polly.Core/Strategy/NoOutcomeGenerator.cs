@@ -13,7 +13,7 @@ public sealed class NoOutcomeGenerator<TArgs, TValue>
     /// <summary>
     /// Gets a value indicating whether the generator is empty.
     /// </summary>
-    public bool IsEmpty => _generator is null;
+    internal bool IsEmpty => _generator is null;
 
     /// <summary>
     /// Adds a result generator.

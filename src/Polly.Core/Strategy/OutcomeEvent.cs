@@ -15,7 +15,7 @@ public sealed partial class OutcomeEvent<TArgs>
     /// <summary>
     /// Gets a value indicating whether the event is empty.
     /// </summary>
-    public bool IsEmpty => _callbacks.Count == 0;
+    internal bool IsEmpty => _callbacks.Count == 0;
 
     /// <summary>
     /// Registers a callback for the specified result type.
@@ -157,7 +157,7 @@ public sealed partial class OutcomeEvent<TArgs>
     /// <summary>
     /// Creates an event handler.
     /// </summary>
-    /// <returns>Handler instance or <c>null</c> if no callbacks are registered.</returns>
+    /// <returns>Handler instance or <see langword="null"/> if no callbacks are registered.</returns>
     public Handler? CreateHandler()
     {
         var pairs = _callbacks
