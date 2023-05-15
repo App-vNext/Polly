@@ -30,9 +30,9 @@ public partial class IssuesTests
         options.ShouldHandle.HandleResult("error");
 
         // create the strategy
-        var serviceCollection = new ServiceCollection().AddResilienceStrategy("my-strategy", context =>
+        var serviceCollection = new ServiceCollection().AddResilienceStrategy("my-strategy", (builder, context) =>
         {
-            context.Builder
+            builder
                 .AddStrategy(new ServiceProviderStrategy(context.ServiceProvider))
                 .AddAdvancedCircuitBreaker(options);
         });

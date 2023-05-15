@@ -23,7 +23,13 @@ public class PollyServiceCollectionExtensionTests
         Assert.Throws<ArgumentNullException>(() => AddResilienceStrategy(Key));
 
         _services = new ServiceCollection();
-        Assert.Throws<ArgumentNullException>(() => _services.AddResilienceStrategy(Key, null!));
+        Assert.Throws<ArgumentNullException>(() => _services.AddResilienceStrategy(
+            Key,
+            (Action<ResilienceStrategyBuilder, AddResilienceStrategyContext<string>>)null!));
+
+        Assert.Throws<ArgumentNullException>(() => _services.AddResilienceStrategy(
+            Key,
+            (Action<ResilienceStrategyBuilder>)null!));
     }
 
     [Fact]
@@ -43,7 +49,7 @@ public class PollyServiceCollectionExtensionTests
     public void AddResilienceStrategy_MultipleRegistries_Ok()
     {
         AddResilienceStrategy(Key);
-        _services.AddResilienceStrategy(10, context => context.Builder.AddStrategy(new TestStrategy()));
+        _services.AddResilienceStrategy(10, context => context.AddStrategy(new TestStrategy()));
 
         var serviceProvider = _services.BuildServiceProvider();
 
@@ -56,12 +62,12 @@ public class PollyServiceCollectionExtensionTests
     {
         var asserted = false;
 
-        _services.AddResilienceStrategy(Key, context =>
+        _services.AddResilienceStrategy(Key, (builder, context) =>
         {
             context.Key.Should().Be(Key);
-            context.Builder.Should().NotBeNull();
+            builder.Should().NotBeNull();
             context.ServiceProvider.Should().NotBeNull();
-            context.Builder.AddStrategy(new TestStrategy());
+            builder.AddStrategy(new TestStrategy());
             asserted = true;
         });
 
@@ -82,14 +88,12 @@ public class PollyServiceCollectionExtensionTests
             _services.AddLogging();
         }
 
-        _services.AddResilienceStrategy(Key, context =>
-        {
-            context.Builder.AddStrategy(context =>
+        _services.AddResilienceStrategy(Key, builder =>
+            builder.AddStrategy(context =>
             {
                 telemetry = context.Telemetry;
                 return new TestStrategy();
-            });
-        });
+            }));
 
         CreateProvider().Get(Key);
 
@@ -177,9 +181,9 @@ public class PollyServiceCollectionExtensionTests
 
     private void AddResilienceStrategy(string key, Action<ResilienceStrategyBuilderContext>? onBuilding = null)
     {
-        _services.AddResilienceStrategy(key, context =>
+        _services.AddResilienceStrategy(key, builder =>
         {
-            context.Builder.AddStrategy(context =>
+            builder.AddStrategy(context =>
             {
                 onBuilding?.Invoke(context);
                 return new TestStrategy();

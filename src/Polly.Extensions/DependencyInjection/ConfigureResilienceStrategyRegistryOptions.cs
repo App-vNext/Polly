@@ -5,5 +5,5 @@ internal sealed class ConfigureResilienceStrategyRegistryOptions<TKey>
 {
     public List<Entry> Actions { get; } = new();
 
-    public record Entry(TKey Key, Action<AddResilienceStrategyContext<TKey>> Configure);
+    public record Entry(TKey Key, Action<ResilienceStrategyBuilder, AddResilienceStrategyContext<TKey>> Configure);
 }
