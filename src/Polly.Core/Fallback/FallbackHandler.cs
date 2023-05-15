@@ -13,7 +13,7 @@ public sealed partial class FallbackHandler
     /// <summary>
     /// Gets a value indicating whether the fallback handler is empty.
     /// </summary>
-    public bool IsEmpty => _predicates.IsEmpty;
+    internal bool IsEmpty => _predicates.IsEmpty;
 
     /// <summary>
     /// Configures a fallback handler for a specific result type.

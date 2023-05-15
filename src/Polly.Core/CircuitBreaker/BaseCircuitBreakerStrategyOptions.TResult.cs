@@ -89,7 +89,7 @@ public abstract class BaseCircuitBreakerStrategyOptions<TResult> : ResilienceStr
     /// Gets or sets the manual control for the circuit breaker.
     /// </summary>
     /// <remarks>
-    /// Defaults to <c>null</c>.
+    /// Defaults to <see langword="null"/>.
     /// </remarks>
     public CircuitBreakerManualControl? ManualControl { get; set; }
 
@@ -97,7 +97,7 @@ public abstract class BaseCircuitBreakerStrategyOptions<TResult> : ResilienceStr
     /// Gets or sets the state provider for the circuit breaker.
     /// </summary>
     /// <remarks>
-    /// Defaults to <c>null</c>.
+    /// Defaults to <see langword="null"/>.
     /// </remarks>
     public CircuitBreakerStateProvider? StateProvider { get; set; }
 

@@ -16,7 +16,7 @@ public sealed class VoidOutcomeGenerator<TArgs, TValue>
     /// <summary>
     /// Gets a value indicating whether the generator is empty.
     /// </summary>
-    public bool IsEmpty => _generator is null;
+    internal bool IsEmpty => _generator is null;
 
     /// <summary>
     /// Sets a result generator.

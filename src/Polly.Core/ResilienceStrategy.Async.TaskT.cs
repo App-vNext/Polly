@@ -69,7 +69,7 @@ public abstract partial class ResilienceStrategy
     public async Task<TResult> ExecuteAsync<TResult, TState>(
         Func<TState, CancellationToken, Task<TResult>> callback,
         TState state,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken = default)
     {
         Guard.NotNull(callback);
 
