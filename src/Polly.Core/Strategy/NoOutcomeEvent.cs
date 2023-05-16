@@ -22,6 +22,7 @@ public sealed class NoOutcomeEvent<TArgs>
     /// </summary>
     /// <param name="callback">The specified callback.</param>
     /// <returns>This instance.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="callback"/> is <see langword="null"/>.</exception>
     public NoOutcomeEvent<TArgs> Register(Func<TArgs, ValueTask> callback)
     {
         Guard.NotNull(callback);
@@ -35,6 +36,7 @@ public sealed class NoOutcomeEvent<TArgs>
     /// </summary>
     /// <param name="callback">The specified callback.</param>
     /// <returns>This instance.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="callback"/> is <see langword="null"/>.</exception>
     public NoOutcomeEvent<TArgs> Register(Action<TArgs> callback)
     {
         Guard.NotNull(callback);
@@ -53,6 +55,7 @@ public sealed class NoOutcomeEvent<TArgs>
     /// </summary>
     /// <param name="callback">The specified callback.</param>
     /// <returns>This instance.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="callback"/> is <see langword="null"/>.</exception>
     public NoOutcomeEvent<TArgs> Register(Action callback)
     {
         Guard.NotNull(callback);

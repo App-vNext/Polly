@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using System.Threading.RateLimiting;
 using Polly.RateLimiting;
 using Polly.Strategy;
@@ -17,6 +18,8 @@ public static class RateLimiterResilienceStrategyBuilderExtensions
     /// <param name="permitLimit">Maximum number of permits that can be leased concurrently.</param>
     /// <param name="queueLimit">Maximum number of permits that can be queued concurrently.</param>
     /// <returns>The builder instance with the concurrency limiter strategy added.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="builder"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ValidationException">Thrown when the options constructed from the arguments are invalid.</exception>
     public static ResilienceStrategyBuilder AddConcurrencyLimiter(
         this ResilienceStrategyBuilder builder,
         int permitLimit,
@@ -37,6 +40,8 @@ public static class RateLimiterResilienceStrategyBuilderExtensions
     /// <param name="builder">The builder instance.</param>
     /// <param name="options">The concurrency limiter options.</param>
     /// <returns>The builder instance with the concurrency limiter strategy added.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="builder"/> or <paramref name="options"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ValidationException">Thrown when the options constructed from the arguments are invalid.</exception>
     public static ResilienceStrategyBuilder AddConcurrencyLimiter(
         this ResilienceStrategyBuilder builder,
         ConcurrencyLimiterOptions options)
@@ -57,6 +62,8 @@ public static class RateLimiterResilienceStrategyBuilderExtensions
     /// <param name="options">The concurrency limiter options.</param>
     /// <param name="onRejected">The callback that is raised when rate limiter is rejected.</param>
     /// <returns>The builder instance with the concurrency limiter strategy added.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="builder"/>, <paramref name="options"/> or <paramref name="onRejected"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ValidationException">Thrown when the options constructed from the arguments are invalid.</exception>
     public static ResilienceStrategyBuilder AddConcurrencyLimiter(
         this ResilienceStrategyBuilder builder,
         ConcurrencyLimiterOptions options,
@@ -79,6 +86,8 @@ public static class RateLimiterResilienceStrategyBuilderExtensions
     /// <param name="builder">The builder instance.</param>
     /// <param name="limiter">The rate limiter to use.</param>
     /// <returns>The builder instance with the rate limiter strategy added.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="builder"/> or <paramref name="limiter"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ValidationException">Thrown when the options constructed from the arguments are invalid.</exception>
     public static ResilienceStrategyBuilder AddRateLimiter(
         this ResilienceStrategyBuilder builder,
         RateLimiter limiter)
@@ -99,6 +108,8 @@ public static class RateLimiterResilienceStrategyBuilderExtensions
     /// <param name="limiter">The rate limiter to use.</param>
     /// <param name="onRejected">The callback that is raised when rate limiter is rejected.</param>
     /// <returns>The builder instance with the rate limiter strategy added.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="builder"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ValidationException">Thrown when the options constructed from the arguments are invalid.</exception>
     public static ResilienceStrategyBuilder AddRateLimiter(
         this ResilienceStrategyBuilder builder,
         RateLimiter limiter,
@@ -121,6 +132,8 @@ public static class RateLimiterResilienceStrategyBuilderExtensions
     /// <param name="builder">The builder instance.</param>
     /// <param name="options">The rate limiter strategy options.</param>
     /// <returns>The builder instance with the rate limiter strategy added.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="builder"/> or <paramref name="options"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ValidationException">Thrown when <paramref name="options"/> are invalid.</exception>
     public static ResilienceStrategyBuilder AddRateLimiter(
         this ResilienceStrategyBuilder builder,
         RateLimiterStrategyOptions options)

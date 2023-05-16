@@ -27,6 +27,7 @@ public sealed class OutcomeGenerator<TArgs, TValue, TResult>
     /// </summary>
     /// <param name="generator">The value generator.</param>
     /// <returns>The current updated instance.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="generator"/> is <see langword="null"/>.</exception>
     public OutcomeGenerator<TArgs, TValue, TResult> SetGenerator(Func<Outcome<TResult>, TArgs, TValue> generator)
     {
         Guard.NotNull(generator);
@@ -39,6 +40,7 @@ public sealed class OutcomeGenerator<TArgs, TValue, TResult>
     /// </summary>
     /// <param name="generator">The value generator.</param>
     /// <returns>The current updated instance.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="generator"/> is <see langword="null"/>.</exception>
     public OutcomeGenerator<TArgs, TValue, TResult> SetGenerator(Func<Outcome<TResult>, TArgs, ValueTask<TValue>> generator)
     {
         Guard.NotNull(generator);

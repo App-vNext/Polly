@@ -48,6 +48,7 @@ public class ResilienceStrategyBuilder
     /// <param name="strategy">The strategy instance.</param>
     /// <param name="options">The options associated with the strategy. If none are provided the default instance of <see cref="ResilienceStrategyOptions"/> is created.</param>
     /// <returns>The same builder instance.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="strategy"/> is null.</exception>
     public ResilienceStrategyBuilder AddStrategy(ResilienceStrategy strategy, ResilienceStrategyOptions? options = null)
     {
         Guard.NotNull(strategy);
@@ -61,6 +62,7 @@ public class ResilienceStrategyBuilder
     /// <param name="factory">The factory that creates a resilience strategy.</param>
     /// <param name="options">The options associated with the strategy. If none are provided the default instance of <see cref="ResilienceStrategyOptions"/> is created.</param>
     /// <returns>The same builder instance.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="factory"/> is null.</exception>
     public ResilienceStrategyBuilder AddStrategy(Func<ResilienceStrategyBuilderContext, ResilienceStrategy> factory, ResilienceStrategyOptions? options = null)
     {
         Guard.NotNull(factory);
@@ -84,6 +86,7 @@ public class ResilienceStrategyBuilder
     /// Builds the resilience strategy.
     /// </summary>
     /// <returns>An instance of <see cref="ResilienceStrategy"/>.</returns>
+    /// <exception cref="ValidationException">Thrown when this builder has invalid configuration.</exception>
     public ResilienceStrategy Build()
     {
         ValidationHelper.ValidateObject(this, $"The '{nameof(ResilienceStrategyBuilder)}' configuration is invalid.");

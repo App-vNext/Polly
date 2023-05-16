@@ -50,6 +50,9 @@ public class HedgingStrategyOptions<TResult> : ResilienceStrategyOptions
     /// <summary>
     /// Gets or sets the hedging action generator that creates hedged actions.
     /// </summary>
+    /// <remarks>
+    /// This property is required. Defaults to <see langword="null"/>.
+    /// </remarks>
     [Required]
     public Func<HedgingActionGeneratorArguments<TResult>, Func<Task<TResult>>?>? HedgingActionGenerator { get; set; } = null;
 

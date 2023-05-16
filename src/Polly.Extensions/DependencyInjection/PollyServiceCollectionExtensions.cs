@@ -31,6 +31,7 @@ public static class PollyServiceCollectionExtensions
     /// This call enables the telemetry for the registered resilience strategy.
     /// </para>
     /// </remarks>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="services"/> or <paramref name="configure"/> is <see langword="null"/>.</exception>
     public static IServiceCollection AddResilienceStrategy<TKey>(
         this IServiceCollection services,
         TKey key,
@@ -58,6 +59,7 @@ public static class PollyServiceCollectionExtensions
     /// This call enables the telemetry for the registered resilience strategy.
     /// </para>
     /// </remarks>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="services"/> or <paramref name="configure"/> is <see langword="null"/>.</exception>
     public static IServiceCollection AddResilienceStrategy<TKey>(
         this IServiceCollection services,
         TKey key,

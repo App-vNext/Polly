@@ -44,6 +44,7 @@ public sealed class VoidOutcomePredicate<TArgs>
     /// <typeparam name="TException">The exception type to add a predicate for.</typeparam>
     /// <param name="predicate">The predicate to determine if the exception should be retried.</param>
     /// <returns>The current updated instance.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="predicate"/> is <see langword="null"/>.</exception>
     public VoidOutcomePredicate<TArgs> HandleException<TException>(Func<TException, bool> predicate)
         where TException : Exception
     {
@@ -66,6 +67,7 @@ public sealed class VoidOutcomePredicate<TArgs>
     /// <typeparam name="TException">The exception type to add a predicate for.</typeparam>
     /// <param name="predicate">The predicate to determine if the exception should be retried.</param>
     /// <returns>The current updated instance.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="predicate"/> is <see langword="null"/>.</exception>
     public VoidOutcomePredicate<TArgs> HandleException<TException>(Func<TException, TArgs, bool> predicate)
         where TException : Exception
     {
@@ -88,6 +90,7 @@ public sealed class VoidOutcomePredicate<TArgs>
     /// <typeparam name="TException">The exception type to add a predicate for.</typeparam>
     /// <param name="predicate">The predicate to determine if the exception should be retried.</param>
     /// <returns>The current updated instance.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="predicate"/> is <see langword="null"/>.</exception>
     public VoidOutcomePredicate<TArgs> HandleException<TException>(Func<TException, TArgs, ValueTask<bool>> predicate)
         where TException : Exception
     {
@@ -146,6 +149,7 @@ public sealed class VoidOutcomePredicate<TArgs>
     /// <remarks>
     /// Use this method when you want to fallback to pre-configured default predicates if none are set by the user.
     /// </remarks>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="configure"/> is <see langword="null"/>.</exception>
     public VoidOutcomePredicate<TArgs> SetDefaults(Action<VoidOutcomePredicate<TArgs>> configure)
     {
         Guard.NotNull(configure);

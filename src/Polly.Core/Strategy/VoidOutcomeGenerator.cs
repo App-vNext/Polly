@@ -23,6 +23,7 @@ public sealed class VoidOutcomeGenerator<TArgs, TValue>
     /// </summary>
     /// <param name="generator">The value generator.</param>
     /// <returns>The current updated instance.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="generator"/> is <see langword="null"/>.</exception>
     public VoidOutcomeGenerator<TArgs, TValue> SetGenerator(Func<Outcome, TArgs, TValue> generator)
     {
         Guard.NotNull(generator);
@@ -35,6 +36,7 @@ public sealed class VoidOutcomeGenerator<TArgs, TValue>
     /// </summary>
     /// <param name="generator">The value generator.</param>
     /// <returns>The current updated instance.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="generator"/> is <see langword="null"/>.</exception>
     public VoidOutcomeGenerator<TArgs, TValue> SetGenerator(Func<Outcome, TArgs, ValueTask<TValue>> generator)
     {
         Guard.NotNull(generator);

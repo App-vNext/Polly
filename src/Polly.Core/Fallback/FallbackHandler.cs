@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using Polly.Strategy;
 
 namespace Polly.Fallback;
@@ -21,6 +22,8 @@ public sealed partial class FallbackHandler
     /// <typeparam name="TResult">The result type.</typeparam>
     /// <param name="configure">An action that configures the fallback handler instance for a specific result.</param>
     /// <returns>The current instance.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="configure"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ValidationException">Thrown when the <see cref="FallbackHandler{TResult}"/> configured by <paramref name="configure"/> is invalid.</exception>
     public FallbackHandler SetFallback<TResult>(Action<FallbackHandler<TResult>> configure)
     {
         Guard.NotNull(configure);
@@ -46,6 +49,8 @@ public sealed partial class FallbackHandler
     /// </summary>
     /// <param name="configure">An action that configures the void-based fallback handler.</param>
     /// <returns>The current instance.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="configure"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ValidationException">Thrown when the <see cref="VoidFallbackHandler"/> configured by <paramref name="configure"/> is invalid.</exception>
     public FallbackHandler SetVoidFallback(Action<VoidFallbackHandler> configure)
     {
         Guard.NotNull(configure);

@@ -22,6 +22,9 @@ public sealed class FallbackHandler<TResult>
     /// <summary>
     /// Gets or sets the fallback action to be executed if <see cref="ShouldHandle"/> predicate evaluates as true.
     /// </summary>
+    /// <remarks>
+    /// This property is required. Defaults to <see langword="null"/>.
+    /// </remarks>
     [Required]
     public Func<Outcome<TResult>, HandleFallbackArguments, ValueTask<TResult>>? FallbackAction { get; set; } = null;
 }

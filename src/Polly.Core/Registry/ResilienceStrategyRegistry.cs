@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 using Polly.Telemetry;
 
@@ -36,6 +37,8 @@ public sealed class ResilienceStrategyRegistry<TKey> : ResilienceStrategyProvide
     /// Initializes a new instance of the <see cref="ResilienceStrategyRegistry{TKey}"/> class with a custom builder factory and comparer.
     /// </summary>
     /// <param name="options">The registry options.</param>
+    /// <exception cref="ValidationException">Thrown when <paramref name="options"/> are invalid.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="options"/> are <see langword="null"/>.</exception>
     public ResilienceStrategyRegistry(ResilienceStrategyRegistryOptions<TKey> options)
     {
         Guard.NotNull(options);
@@ -55,6 +58,7 @@ public sealed class ResilienceStrategyRegistry<TKey> : ResilienceStrategyProvide
     /// <param name="key">The key used to identify the resilience strategy.</param>
     /// <param name="strategy">The resilience strategy instance.</param>
     /// <returns>true if the strategy was added successfully, false otherwise.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="strategy"/> is <see langword="null"/>.</exception>
     public bool TryAdd(TKey key, ResilienceStrategy strategy)
     {
         Guard.NotNull(strategy);
@@ -113,6 +117,7 @@ public sealed class ResilienceStrategyRegistry<TKey> : ResilienceStrategyProvide
     /// <remarks>
     /// Use this method when you want to create the strategy on-demand when it's first accessed.
     /// </remarks>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="configure"/> is <see langword="null"/>.</exception>
     public bool TryAddBuilder(TKey key, Action<TKey, ResilienceStrategyBuilder> configure)
     {
         Guard.NotNull(configure);

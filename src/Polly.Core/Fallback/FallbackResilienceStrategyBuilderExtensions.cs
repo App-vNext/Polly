@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel.DataAnnotations;
 using Polly.Fallback;
 using Polly.Strategy;
 
@@ -17,6 +18,7 @@ public static class FallbackResilienceStrategyBuilderExtensions
     /// <param name="shouldHandle">An action to configure the fallback predicate.</param>
     /// <param name="fallbackAction">The fallback action to be executed.</param>
     /// <returns>The builder instance with the fallback strategy added.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="builder"/> or <paramref name="shouldHandle"/> or <paramref name="fallbackAction"/> is <see langword="null"/>.</exception>
     public static ResilienceStrategyBuilder AddFallback<TResult>(
         this ResilienceStrategyBuilder builder,
         Action<OutcomePredicate<HandleFallbackArguments, TResult>> shouldHandle,
@@ -43,6 +45,8 @@ public static class FallbackResilienceStrategyBuilderExtensions
     /// <param name="builder">The resilience strategy builder.</param>
     /// <param name="options">The options to configure the fallback resilience strategy.</param>
     /// <returns>The builder instance with the fallback strategy added.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="builder"/> or <paramref name="options"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ValidationException">Thrown when <paramref name="options"/> are invalid.</exception>
     public static ResilienceStrategyBuilder AddFallback<TResult>(this ResilienceStrategyBuilder builder, FallbackStrategyOptions<TResult> options)
     {
         Guard.NotNull(builder);
@@ -59,6 +63,8 @@ public static class FallbackResilienceStrategyBuilderExtensions
     /// <param name="builder">The resilience strategy builder.</param>
     /// <param name="options">The options to configure the fallback resilience strategy.</param>
     /// <returns>The builder instance with the fallback strategy added.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="builder"/> or <paramref name="options"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ValidationException">Thrown when <paramref name="options"/> are invalid.</exception>
     public static ResilienceStrategyBuilder AddFallback(this ResilienceStrategyBuilder builder, FallbackStrategyOptions options)
     {
         Guard.NotNull(builder);

@@ -24,5 +24,6 @@ public abstract partial class ResilienceStrategy
     /// </remarks>
     protected internal abstract ValueTask<TResult> ExecuteCoreAsync<TResult, TState>(
         Func<ResilienceContext, TState, ValueTask<TResult>> callback,
-        ResilienceContext context, TState state);
+        ResilienceContext context,
+        TState state);
 }

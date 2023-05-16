@@ -35,6 +35,7 @@ public sealed partial class OutcomePredicate<TArgs>
     /// <typeparam name="TException">The exception type to add a predicate for.</typeparam>
     /// <param name="predicate">The predicate to determine if the exception should be retried.</param>
     /// <returns>The current updated instance.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="predicate"/> is <see langword="null"/>.</exception>
     public OutcomePredicate<TArgs> HandleException<TException>(Func<TException, bool> predicate)
         where TException : Exception
     {
@@ -49,6 +50,7 @@ public sealed partial class OutcomePredicate<TArgs>
     /// <typeparam name="TException">The exception type to add a predicate for.</typeparam>
     /// <param name="predicate">The predicate to determine if the exception should be retried.</param>
     /// <returns>The current updated instance.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="predicate"/> is <see langword="null"/>.</exception>
     public OutcomePredicate<TArgs> HandleException<TException>(Func<TException, TArgs, bool> predicate)
         where TException : Exception
     {
@@ -63,6 +65,7 @@ public sealed partial class OutcomePredicate<TArgs>
     /// <typeparam name="TException">The exception type to add a predicate for.</typeparam>
     /// <param name="predicate">The predicate to determine if the exception should be retried.</param>
     /// <returns>The current updated instance.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="predicate"/> is <see langword="null"/>.</exception>
     public OutcomePredicate<TArgs> HandleException<TException>(Func<TException, TArgs, ValueTask<bool>> predicate)
         where TException : Exception
     {
@@ -92,6 +95,7 @@ public sealed partial class OutcomePredicate<TArgs>
     /// <typeparam name="TResult">The result type to add a predicate for.</typeparam>
     /// <param name="predicate">The predicate to determine if the result should be retried.</param>
     /// <returns>The current updated instance.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="predicate"/> is <see langword="null"/>.</exception>
     public OutcomePredicate<TArgs> HandleResult<TResult>(Func<TResult?, bool> predicate)
     {
         Guard.NotNull(predicate);
@@ -105,6 +109,7 @@ public sealed partial class OutcomePredicate<TArgs>
     /// <typeparam name="TResult">The result type to add a predicate for.</typeparam>
     /// <param name="predicate">The predicate to determine if the result should be retried.</param>
     /// <returns>The current updated instance.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="predicate"/> is <see langword="null"/>.</exception>
     public OutcomePredicate<TArgs> HandleResult<TResult>(Func<TResult?, TArgs, bool> predicate)
     {
         Guard.NotNull(predicate);
@@ -118,6 +123,7 @@ public sealed partial class OutcomePredicate<TArgs>
     /// <typeparam name="TResult">The result type to add a predicate for.</typeparam>
     /// <param name="predicate">The predicate to determine if the result should be retried.</param>
     /// <returns>The current updated instance.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="predicate"/> is <see langword="null"/>.</exception>
     public OutcomePredicate<TArgs> HandleResult<TResult>(Func<TResult?, TArgs, ValueTask<bool>> predicate)
     {
         Guard.NotNull(predicate);
@@ -131,6 +137,7 @@ public sealed partial class OutcomePredicate<TArgs>
     /// <typeparam name="TResult">The result type to add a predicate for.</typeparam>
     /// <param name="predicate">The predicate to determine if the result should be retried.</param>
     /// <returns>The current updated instance.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="predicate"/> is <see langword="null"/>.</exception>
     public OutcomePredicate<TArgs> HandleOutcome<TResult>(Func<Outcome<TResult>, TArgs, bool> predicate)
     {
         Guard.NotNull(predicate);
@@ -144,6 +151,7 @@ public sealed partial class OutcomePredicate<TArgs>
     /// <typeparam name="TResult">The result type to add a predicate for.</typeparam>
     /// <param name="predicate">The predicate to determine if the result should be retried.</param>
     /// <returns>The current updated instance.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="predicate"/> is <see langword="null"/>.</exception>
     public OutcomePredicate<TArgs> HandleOutcome<TResult>(Func<Outcome<TResult>, TArgs, ValueTask<bool>> predicate)
     {
         Guard.NotNull(predicate);
@@ -177,6 +185,7 @@ public sealed partial class OutcomePredicate<TArgs>
     /// <typeparam name="TResult">The result type to add a predicate for.</typeparam>
     /// <param name="predicates">The configured predicates.</param>
     /// <returns>The current updated instance.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="predicates"/> is <see langword="null"/>.</exception>
     public OutcomePredicate<TArgs> SetPredicates<TResult>(OutcomePredicate<TArgs, TResult> predicates)
     {
         Guard.NotNull(predicates);

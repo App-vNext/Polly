@@ -11,6 +11,7 @@ public sealed partial class OutcomeEvent<TArgs>
     /// </summary>
     /// <param name="callback">The event callback associated with the result type.</param>
     /// <returns>The current updated instance.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="callback"/> is <see langword="null"/>.</exception>
     public OutcomeEvent<TArgs> RegisterVoid(Action callback)
     {
         Guard.NotNull(callback);
@@ -23,6 +24,7 @@ public sealed partial class OutcomeEvent<TArgs>
     /// </summary>
     /// <param name="callback">The event callback associated with the void result type.</param>
     /// <returns>The current updated instance.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="callback"/> is <see langword="null"/>.</exception>
     public OutcomeEvent<TArgs> RegisterVoid(Action<Outcome> callback)
     {
         Guard.NotNull(callback);
@@ -35,6 +37,7 @@ public sealed partial class OutcomeEvent<TArgs>
     /// </summary>
     /// <param name="callback">The event callback associated with the void result type.</param>
     /// <returns>The current updated instance.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="callback"/> is <see langword="null"/>.</exception>
     public OutcomeEvent<TArgs> RegisterVoid(Action<Outcome, TArgs> callback)
     {
         Guard.NotNull(callback);
@@ -47,6 +50,7 @@ public sealed partial class OutcomeEvent<TArgs>
     /// </summary>
     /// <param name="callback">The event callback associated with the void result type.</param>
     /// <returns>The current updated instance.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="callback"/> is <see langword="null"/>.</exception>
     public OutcomeEvent<TArgs> RegisterVoid(Func<Outcome, TArgs, ValueTask> callback)
     {
         Guard.NotNull(callback);
@@ -81,6 +85,7 @@ public sealed partial class OutcomeEvent<TArgs>
     /// <remarks>
     /// This method replaces all previously registered callbacks for void-based results.
     /// </remarks>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="callbacks"/> is <see langword="null"/>.</exception>
     public OutcomeEvent<TArgs> SetVoidCallbacks(VoidOutcomeEvent<TArgs> callbacks)
     {
         Guard.NotNull(callbacks);

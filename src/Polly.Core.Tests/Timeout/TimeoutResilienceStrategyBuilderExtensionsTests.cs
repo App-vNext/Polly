@@ -37,8 +37,8 @@ public class TimeoutResilienceStrategyBuilderExtensionsTests
     {
         var builder = new ResilienceStrategyBuilder();
 
-        Assert.Throws<ArgumentOutOfRangeException>(() => builder.AddTimeout(timeout));
-        Assert.Throws<ArgumentOutOfRangeException>(() => builder.AddTimeout(timeout, args => { }));
+        Assert.Throws<ValidationException>(() => builder.AddTimeout(timeout));
+        Assert.Throws<ValidationException>(() => builder.AddTimeout(timeout, args => { }));
     }
 
     [MemberData(nameof(AddTimeout_Ok_Data))]

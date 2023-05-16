@@ -26,9 +26,12 @@ public sealed class ResilienceStrategyTelemetry
     /// <typeparam name="TArgs">The arguments associated with this event.</typeparam>
     /// <param name="eventName">The event name.</param>
     /// <param name="args">The event arguments.</param>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="eventName"/> is <see langword="null"/>.</exception>
     public void Report<TArgs>(string eventName, TArgs args)
         where TArgs : IResilienceArguments
     {
+        Guard.NotNull(eventName);
+
         args.Context.AddResilienceEvent(new ReportedResilienceEvent(eventName));
 
         if (DiagnosticSource is null || !DiagnosticSource.IsEnabled(eventName))
@@ -47,9 +50,12 @@ public sealed class ResilienceStrategyTelemetry
     /// <param name="eventName">The event name.</param>
     /// <param name="outcome">The outcome associated with the event.</param>
     /// <param name="args">The event arguments.</param>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="eventName"/> is <see langword="null"/>.</exception>
     public void Report<TArgs, TResult>(string eventName, Outcome<TResult> outcome, TArgs args)
         where TArgs : IResilienceArguments
     {
+        Guard.NotNull(eventName);
+
         args.Context.AddResilienceEvent(new ReportedResilienceEvent(eventName));
 
         if (DiagnosticSource is null || !DiagnosticSource.IsEnabled(eventName))

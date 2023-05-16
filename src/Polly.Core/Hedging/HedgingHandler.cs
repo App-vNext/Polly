@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using Polly.Strategy;
 
 namespace Polly.Hedging;
@@ -21,6 +22,8 @@ public sealed partial class HedgingHandler
     /// <typeparam name="TResult">The result type.</typeparam>
     /// <param name="configure">An action that configures the hedging handler instance for a specific result.</param>
     /// <returns>The current instance.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="configure"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ValidationException">Thrown when the <see cref="HedgingHandler{TResult}"/> configured by <paramref name="configure"/> is invalid.</exception>
     public HedgingHandler SetHedging<TResult>(Action<HedgingHandler<TResult>> configure)
     {
         Guard.NotNull(configure);
@@ -41,6 +44,8 @@ public sealed partial class HedgingHandler
     /// </summary>
     /// <param name="configure">An action that configures the void-based hedging handler.</param>
     /// <returns>The current instance.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="configure"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ValidationException">Thrown when the <see cref="VoidHedgingHandler"/> configured by <paramref name="configure"/> is invalid.</exception>
     public HedgingHandler SetVoidHedging(Action<VoidHedgingHandler> configure)
     {
         Guard.NotNull(configure);

@@ -8,6 +8,7 @@ public sealed partial class OutcomeGenerator<TArgs, TValue>
     /// </summary>
     /// <param name="generator">The value generator.</param>
     /// <returns>The current updated instance.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="generator"/> is <see langword="null"/>.</exception>
     public OutcomeGenerator<TArgs, TValue> SetVoidGenerator(Func<Outcome, TArgs, TValue> generator)
     {
         Guard.NotNull(generator);
@@ -20,6 +21,7 @@ public sealed partial class OutcomeGenerator<TArgs, TValue>
     /// </summary>
     /// <param name="generator">The value generator.</param>
     /// <returns>The current updated instance.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="generator"/> is <see langword="null"/>.</exception>
     public OutcomeGenerator<TArgs, TValue> SetVoidGenerator(Func<Outcome, TArgs, ValueTask<TValue>> generator)
     {
         Guard.NotNull(generator);
@@ -32,6 +34,7 @@ public sealed partial class OutcomeGenerator<TArgs, TValue>
     /// </summary>
     /// <param name="generator">The generator builder.</param>
     /// <returns>The current updated instance.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="generator"/> is <see langword="null"/>.</exception>
     public OutcomeGenerator<TArgs, TValue> SetVoidGenerator(VoidOutcomeGenerator<TArgs, TValue> generator)
     {
         Guard.NotNull(generator);
@@ -46,7 +49,8 @@ public sealed partial class OutcomeGenerator<TArgs, TValue>
     /// </summary>
     /// <param name="configure">The callbacks that configures the generator.</param>
     /// <returns>The current updated instance.</returns>
-    public OutcomeGenerator<TArgs, TValue> ConfigureVoidGenerator(Action<VoidOutcomeGenerator<TArgs, TValue>> configure)
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="configure"/> is <see langword="null"/>.</exception>
+    internal OutcomeGenerator<TArgs, TValue> ConfigureVoidGenerator(Action<VoidOutcomeGenerator<TArgs, TValue>> configure)
     {
         Guard.NotNull(configure);
 

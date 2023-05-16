@@ -20,6 +20,7 @@ public static class TelemetryResilienceStrategyBuilderExtensions
     /// By enabling the telemetry the resilience strategy will log and meter all resilience events.
     /// Additionally, the telemetry strategy that logs and meters the executions is added to the beginning of the strategy pipeline.
     /// </remarks>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="builder"/> or <paramref name="loggerFactory"/> is <see langword="null"/>.</exception>
     public static ResilienceStrategyBuilder EnableTelemetry(this ResilienceStrategyBuilder builder, ILoggerFactory loggerFactory)
     {
         Guard.NotNull(builder);
@@ -38,6 +39,7 @@ public static class TelemetryResilienceStrategyBuilderExtensions
     /// By enabling the telemetry the resilience strategy will log and meter all resilience events.
     /// Additionally, the telemetry strategy that logs and meters the executions is added to the beginning of the strategy pipeline.
     /// </remarks>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="builder"/> or <paramref name="options"/> is <see langword="null"/>.</exception>
     public static ResilienceStrategyBuilder EnableTelemetry(this ResilienceStrategyBuilder builder, TelemetryResilienceStrategyOptions options)
     {
         Guard.NotNull(builder);

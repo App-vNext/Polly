@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel.DataAnnotations;
 using Polly.Strategy;
 using Polly.Timeout;
 
@@ -15,10 +16,11 @@ public static class TimeoutResilienceStrategyBuilderExtensions
     /// <param name="builder">The builder instance.</param>
     /// <param name="timeout">The timeout value. This value should be greater than <see cref="TimeSpan.Zero"/> or <see cref="System.Threading.Timeout.InfiniteTimeSpan"/>.</param>
     /// <returns>The same builder instance.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="builder"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ValidationException">Thrown when the options produced from the arguments are invalid.</exception>
     public static ResilienceStrategyBuilder AddTimeout(this ResilienceStrategyBuilder builder, TimeSpan timeout)
     {
         Guard.NotNull(builder);
-        TimeoutUtil.ValidateTimeout(timeout);
 
         return builder.AddTimeout(new TimeoutStrategyOptions
         {
@@ -33,11 +35,12 @@ public static class TimeoutResilienceStrategyBuilderExtensions
     /// <param name="timeout">The timeout value. This value should be greater than <see cref="TimeSpan.Zero"/> or <see cref="System.Threading.Timeout.InfiniteTimeSpan"/>.</param>
     /// <param name="onTimeout">The callback that is executed when timeout happens.</param>
     /// <returns>The same builder instance.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="builder"/> or <paramref name="onTimeout"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ValidationException">Thrown when the options produced from the arguments are invalid.</exception>
     public static ResilienceStrategyBuilder AddTimeout(this ResilienceStrategyBuilder builder, TimeSpan timeout, Action<OnTimeoutArguments> onTimeout)
     {
         Guard.NotNull(builder);
         Guard.NotNull(onTimeout);
-        TimeoutUtil.ValidateTimeout(timeout);
 
         return builder.AddTimeout(new TimeoutStrategyOptions
         {
@@ -52,6 +55,8 @@ public static class TimeoutResilienceStrategyBuilderExtensions
     /// <param name="builder">The builder instance.</param>
     /// <param name="options">The timeout options.</param>
     /// <returns>The same builder instance.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="builder"/> or <paramref name="options"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ValidationException">Thrown when <paramref name="options"/> are invalid.</exception>
     public static ResilienceStrategyBuilder AddTimeout(this ResilienceStrategyBuilder builder, TimeoutStrategyOptions options)
     {
         Guard.NotNull(builder);

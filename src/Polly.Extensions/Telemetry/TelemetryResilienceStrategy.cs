@@ -8,7 +8,7 @@ using Polly.Utils;
 
 namespace Polly.Extensions.Telemetry;
 
-internal class TelemetryResilienceStrategy : ResilienceStrategy
+internal sealed class TelemetryResilienceStrategy : ResilienceStrategy
 {
     private readonly TimeProvider _timeProvider;
     private readonly string _builderName;
