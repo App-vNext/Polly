@@ -67,7 +67,7 @@ public class RetryStrategyOptions<TResult> : ResilienceStrategyOptions
     public OutcomePredicate<ShouldRetryArguments, TResult> ShouldRetry { get; set; } = new();
 
     /// <summary>
-    /// Gets or sets the <see cref="RetryDelayGenerator"/> instance that is used to generated the delay between retries.
+    /// Gets or sets the generator instance that is used to calculate the time between retries.
     /// </summary>
     /// <remarks>
     /// By default, the generator is empty and it does not affect the delay between retries.
