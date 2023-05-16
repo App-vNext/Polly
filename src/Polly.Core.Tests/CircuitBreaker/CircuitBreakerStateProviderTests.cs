@@ -62,7 +62,7 @@ public class CircuitBreakerStateProviderTests
             () =>
             {
                 exceptionCalled = true;
-                return new Outcome(typeof(string), new InvalidOperationException());
+                return new Outcome(new InvalidOperationException());
             });
 
         provider.CircuitState.Should().Be(CircuitState.HalfOpen);

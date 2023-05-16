@@ -144,7 +144,7 @@ public class HedgingExecutionContextTests : IDisposable
             await LoadExecutionAsync(context, TimeSpan.FromHours(1));
         }
 
-        var task = context.TryWaitForCompletedExecutionAsync(HedgingStrategyOptions.InfiniteHedgingDelay).AsTask();
+        var task = context.TryWaitForCompletedExecutionAsync(System.Threading.Timeout.InfiniteTimeSpan).AsTask();
         task.Wait(20).Should().BeFalse();
         _timeProvider.Advance(TimeSpan.FromDays(1));
         await task;
@@ -383,7 +383,7 @@ public class HedgingExecutionContextTests : IDisposable
             assertSecondary.Set();
         };
 
-        await context.TryWaitForCompletedExecutionAsync(HedgingStrategyOptions.InfiniteHedgingDelay);
+        await context.TryWaitForCompletedExecutionAsync(System.Threading.Timeout.InfiniteTimeSpan);
 
         var pending = context.Tasks[1].ExecutionTaskSafe!;
         pending.Wait(10).Should().BeFalse();
@@ -421,7 +421,7 @@ public class HedgingExecutionContextTests : IDisposable
         for (int i = 0; i < count; i++)
         {
             (await LoadExecutionAsync(context)).Loaded.Should().BeTrue();
-            await context.TryWaitForCompletedExecutionAsync(HedgingStrategyOptions.InfiniteHedgingDelay);
+            await context.TryWaitForCompletedExecutionAsync(System.Threading.Timeout.InfiniteTimeSpan);
         }
     }
 
@@ -467,7 +467,7 @@ public class HedgingExecutionContextTests : IDisposable
         };
     }
 
-    private HedgingActionGenerator<DisposableResult> Generator { get; set; } = args => () => Task.FromResult(new DisposableResult { Name = Handled });
+    private Func<HedgingActionGeneratorArguments<DisposableResult>, Func<Task<DisposableResult>>?> Generator { get; set; } = args => () => Task.FromResult(new DisposableResult { Name = Handled });
 
     private HedgingExecutionContext Create()
     {

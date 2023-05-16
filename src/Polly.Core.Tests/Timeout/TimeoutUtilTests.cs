@@ -9,7 +9,6 @@ public class TimeoutUtilTests
         { TimeSpan.Zero, false },
         { TimeSpan.FromSeconds(1), true },
         { System.Threading.Timeout.InfiniteTimeSpan, false },
-        { TimeoutStrategyOptions.InfiniteTimeout, false },
     };
 
     public static readonly TheoryData<TimeSpan, bool> ValidateData = new()
@@ -18,7 +17,6 @@ public class TimeoutUtilTests
         { TimeSpan.Zero, false },
         { TimeSpan.FromSeconds(1), true },
         { System.Threading.Timeout.InfiniteTimeSpan, true },
-        { TimeoutStrategyOptions.InfiniteTimeout, true },
     };
 
     [MemberData(nameof(TimeoutTestUtils.InvalidTimeouts), MemberType = typeof(TimeoutTestUtils))]

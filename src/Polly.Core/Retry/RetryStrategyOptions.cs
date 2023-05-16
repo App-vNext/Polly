@@ -22,7 +22,7 @@ public class RetryStrategyOptions : ResilienceStrategyOptions
     /// Gets or sets the maximum number of retries to use, in addition to the original call.
     /// </summary>
     /// <remarks>
-    /// Defaults to 3 retries. For infinite retries use <c>InfiniteRetry</c> (-1).
+    /// Defaults to 3 retries. For infinite retries use <see cref="InfiniteRetryCount"/> (-1).
     /// </remarks>
     [Range(InfiniteRetryCount, RetryConstants.MaxRetryCount)]
     public int RetryCount { get; set; } = RetryConstants.DefaultRetryCount;
@@ -71,7 +71,7 @@ public class RetryStrategyOptions : ResilienceStrategyOptions
     public OutcomePredicate<ShouldRetryArguments> ShouldRetry { get; set; } = new();
 
     /// <summary>
-    /// Gets or sets the <see cref="RetryDelayGenerator"/> instance that is used to generated the delay between retries.
+    /// Gets or sets the generator instance that is used to calculate the time between retries.
     /// </summary>
     /// <remarks>
     /// By default, the generator is empty and it does not affect the delay between retries.

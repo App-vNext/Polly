@@ -15,7 +15,7 @@ public sealed partial class FallbackHandler
             _actions = generators;
         }
 
-        public async ValueTask<FallbackAction<TResult>?> ShouldHandleAsync<TResult>(Outcome<TResult> outcome, HandleFallbackArguments arguments)
+        public async ValueTask<Func<Outcome<TResult>, HandleFallbackArguments, ValueTask<TResult>>?> ShouldHandleAsync<TResult>(Outcome<TResult> outcome, HandleFallbackArguments arguments)
         {
             if (!_actions.TryGetValue(typeof(TResult), out var action))
             {
@@ -27,7 +27,7 @@ public sealed partial class FallbackHandler
                 return null;
             }
 
-            return (FallbackAction<TResult>)action;
+            return (Func<Outcome<TResult>, HandleFallbackArguments, ValueTask<TResult>>?)action;
         }
     }
 }

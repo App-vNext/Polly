@@ -26,7 +26,7 @@ internal sealed class FallbackResilienceStrategy : ResilienceStrategy
 
         Outcome<TResult> outcome;
         var args = new HandleFallbackArguments(context);
-        FallbackAction<TResult>? action;
+        Func<Outcome<TResult>, HandleFallbackArguments, ValueTask<TResult>>? action;
 
         try
         {

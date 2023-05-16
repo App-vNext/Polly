@@ -10,31 +10,16 @@ public readonly struct Outcome
     /// <summary>
     /// Initializes a new instance of the <see cref="Outcome"/> struct with the specified exception.
     /// </summary>
-    /// <param name="resultType">The type of the result.</param>
     /// <param name="exception">The exception that occurred during the operation.</param>
-    public Outcome(Type resultType, Exception exception)
-        : this()
-    {
-        ResultType = Guard.NotNull(resultType);
-        Exception = Guard.NotNull(exception);
-    }
+    public Outcome(Exception exception)
+        : this() => Exception = Guard.NotNull(exception);
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Outcome"/> struct with the specified result.
     /// </summary>
-    /// <param name="resultType">The type of the result.</param>
     /// <param name="result">The result produced by the operation.</param>
-    public Outcome(Type resultType, object? result)
-        : this()
-    {
-        ResultType = Guard.NotNull(resultType);
-        Result = result;
-    }
-
-    /// <summary>
-    /// Gets a value indicating whether the outcome is valid.
-    /// </summary>
-    public bool IsValid => ResultType != null;
+    public Outcome(object? result)
+        : this() => Result = result;
 
     /// <summary>
     /// Gets the exception that occurred during the operation, if any.
@@ -45,11 +30,6 @@ public readonly struct Outcome
     /// Gets the result produced by the operation, if any.
     /// </summary>
     public object? Result { get; }
-
-    /// <summary>
-    /// Gets the result type produced by the operation.
-    /// </summary>
-    public Type ResultType { get; }
 
     /// <summary>
     /// Gets a value indicating whether the operation produced a result.
@@ -82,7 +62,14 @@ public readonly struct Outcome
         return false;
     }
 
-    /// <inheritdoc/>
+    /// <summary>
+    /// Gets the string representation of the outcome.
+    /// </summary>
+    /// <returns>A string representation of the outcome.</returns>
+    /// <remarks>
+    /// If the outcome represents an exception, then <see cref="Exception.Message"/> will be returned.
+    /// If the outcome represents a result, then <see cref="Result"/> formatted as string will be returned.
+    /// </remarks>
     public override string ToString()
     {
         if (Exception != null)

@@ -11,7 +11,6 @@ public class HedgingStrategyOptionsTests
     {
         var options = new HedgingStrategyOptions();
 
-        HedgingStrategyOptions.InfiniteHedgingDelay.Should().Be(TimeSpan.FromMilliseconds(-1));
         options.StrategyType.Should().Be("Hedging");
         options.Handler.Should().NotBeNull();
         options.Handler.IsEmpty.Should().BeTrue();

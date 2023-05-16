@@ -34,7 +34,7 @@ public partial class HedgingHandler
                 return null;
             }
 
-            return ((HedgingActionGenerator<TResult>)generator)(new HedgingActionGeneratorArguments<TResult>(context, attempt));
+            return ((Func<HedgingActionGeneratorArguments<TResult>, Func<Task<TResult>>?>)generator)(new HedgingActionGeneratorArguments<TResult>(context, attempt));
         }
     }
 }

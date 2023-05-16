@@ -18,7 +18,6 @@ public class OutcomeTResultTests
         outcome.AsOutcome().Exception.Should().BeNull();
         outcome.AsOutcome().IsVoidResult.Should().BeFalse();
         outcome.AsOutcome().TryGetResult(out var resultObj).Should().BeTrue();
-        outcome.AsOutcome().ResultType.Should().Be(typeof(int));
         resultObj.Should().Be(10);
     }
 
@@ -38,7 +37,6 @@ public class OutcomeTResultTests
         outcome.AsOutcome().IsVoidResult.Should().BeTrue();
         outcome.AsOutcome().TryGetResult(out _).Should().BeFalse();
         outcome.AsOutcome().Result.Should().Be(VoidResult.Instance);
-        outcome.AsOutcome().ResultType.Should().Be(typeof(VoidResult));
     }
 
     [Fact]
@@ -55,7 +53,6 @@ public class OutcomeTResultTests
         outcome.AsOutcome().Exception.Should().NotBeNull();
         outcome.AsOutcome().IsVoidResult.Should().BeFalse();
         outcome.AsOutcome().TryGetResult(out _).Should().BeFalse();
-        outcome.AsOutcome().ResultType.Should().Be(typeof(VoidResult));
     }
 
     [Fact]

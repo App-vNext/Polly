@@ -24,13 +24,13 @@ public class FallbackStrategyOptions<TResult> : ResilienceStrategyOptions
     public OutcomePredicate<HandleFallbackArguments, TResult> ShouldHandle { get; set; } = new();
 
     /// <summary>
-    /// Gets or sets the fallback action to be executed if the <see cref="ShouldHandle"/> predicate evaluates as true.
+    /// Gets or sets the fallback action to be executed when the <see cref="ShouldHandle"/> predicate evaluates as true.
     /// </summary>
     /// <remarks>
     /// This property is required. Defaults to <see langword="null"/>.
     /// </remarks>
     [Required]
-    public FallbackAction<TResult>? FallbackAction { get; set; }
+    public Func<Outcome<TResult>, HandleFallbackArguments, ValueTask<TResult>>? FallbackAction { get; set; }
 
     /// <summary>
     /// Gets or sets the outcome event instance responsible for triggering fallback events.

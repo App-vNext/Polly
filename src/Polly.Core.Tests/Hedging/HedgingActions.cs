@@ -32,9 +32,9 @@ internal class HedgingActions
         };
     }
 
-    public HedgingActionGenerator<string> Generator { get; }
+    public Func<HedgingActionGeneratorArguments<string>, Func<Task<string>>?> Generator { get; }
 
-    public HedgingActionGenerator<string> EmptyFunctionsProvider { get; } = args => null;
+    public Func<HedgingActionGeneratorArguments<string>, Func<Task<string>>?> EmptyFunctionsProvider { get; } = args => null;
 
     public List<Func<ResilienceContext, Task<string>>> Functions { get; }
 
@@ -56,7 +56,7 @@ internal class HedgingActions
         return "Oranges";
     }
 
-    public static HedgingActionGenerator<string> GetGenerator(Func<ResilienceContext, Task<string>> task) => args => () => task(args.Context);
+    public static Func<HedgingActionGeneratorArguments<string>, Func<Task<string>>?> GetGenerator(Func<ResilienceContext, Task<string>> task) => args => () => task(args.Context);
 
     public int MaxHedgedTasks => Functions.Count + 1;
 }

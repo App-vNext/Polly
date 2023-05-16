@@ -6,7 +6,7 @@ namespace Polly.Strategy;
 public interface IResilienceArguments
 {
     /// <summary>
-    /// Gets the context associated with the execution of user-provided callback.
+    /// Gets the context associated with the execution of a user-provided callback.
     /// </summary>
     ResilienceContext Context { get; }
 }

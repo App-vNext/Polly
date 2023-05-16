@@ -112,6 +112,8 @@ public sealed class CircuitBreakerManualControl : IDisposable
         }
     }
 
-    /// <inheritdoc/>
+    /// <summary>
+    /// Disposes the current class.
+    /// </summary>
     public void Dispose() => _onDispose?.Invoke();
 }

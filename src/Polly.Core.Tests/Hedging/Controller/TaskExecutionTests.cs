@@ -205,7 +205,6 @@ public class TaskExecutionTests : IDisposable
         execution.IsAccepted.Should().BeFalse();
         execution.IsHandled.Should().BeFalse();
         execution.Properties.Should().HaveCount(0);
-        execution.Outcome.IsValid.Should().BeFalse();
         execution.Invoking(e => e.Context).Should().Throw<InvalidOperationException>();
 #if !NETCOREAPP
         token.Invoking(t => t.WaitHandle).Should().Throw<InvalidOperationException>();
@@ -264,7 +263,7 @@ public class TaskExecutionTests : IDisposable
         _snapshot.OriginalProperties.Set(_myKey, "dummy-value");
     }
 
-    private HedgingActionGenerator<DisposableResult> Generator { get; set; } = args => () => Task.FromResult(new DisposableResult { Name = Handled });
+    private Func<HedgingActionGeneratorArguments<DisposableResult>, Func<Task<DisposableResult>>?> Generator { get; set; } = args => () => Task.FromResult(new DisposableResult { Name = Handled });
 
     private TaskExecution Create() => new(_hedgingHandler.CreateHandler()!);
 }

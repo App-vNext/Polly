@@ -57,12 +57,12 @@ internal class TelemetryResilienceStrategy : ResilienceStrategy
         try
         {
             var result = await callback(context, state).ConfigureAwait(context.ContinueOnCapturedContext);
-            outcome = new Outcome(typeof(TResult), result);
+            outcome = new Outcome(result);
             return result;
         }
         catch (Exception exception)
         {
-            outcome = new Outcome(typeof(TResult), exception);
+            outcome = new Outcome(exception);
             throw;
         }
         finally

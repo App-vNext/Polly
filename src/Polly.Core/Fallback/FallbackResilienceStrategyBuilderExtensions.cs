@@ -20,7 +20,7 @@ public static class FallbackResilienceStrategyBuilderExtensions
     public static ResilienceStrategyBuilder AddFallback<TResult>(
         this ResilienceStrategyBuilder builder,
         Action<OutcomePredicate<HandleFallbackArguments, TResult>> shouldHandle,
-        FallbackAction<TResult> fallbackAction)
+        Func<Outcome<TResult>, HandleFallbackArguments, ValueTask<TResult>> fallbackAction)
     {
         Guard.NotNull(builder);
         Guard.NotNull(shouldHandle);
