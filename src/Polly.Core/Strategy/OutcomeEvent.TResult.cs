@@ -23,6 +23,7 @@ public sealed class OutcomeEvent<TArgs, TResult>
     /// </summary>
     /// <param name="callback">The event callback associated with the result type.</param>
     /// <returns>The current updated instance.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="callback"/> is <see langword="null"/>.</exception>
     public OutcomeEvent<TArgs, TResult> Register(Action callback)
     {
         Guard.NotNull(callback);
@@ -39,6 +40,7 @@ public sealed class OutcomeEvent<TArgs, TResult>
     /// </summary>
     /// <param name="callback">The event callback associated with the result type.</param>
     /// <returns>The current updated instance.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="callback"/> is <see langword="null"/>.</exception>
     public OutcomeEvent<TArgs, TResult> Register(Action<Outcome<TResult>> callback)
     {
         Guard.NotNull(callback);
@@ -55,6 +57,7 @@ public sealed class OutcomeEvent<TArgs, TResult>
     /// </summary>
     /// <param name="callback">The event callback associated with the result type.</param>
     /// <returns>The current updated instance.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="callback"/> is <see langword="null"/>.</exception>
     public OutcomeEvent<TArgs, TResult> Register(Action<Outcome<TResult>, TArgs> callback)
     {
         Guard.NotNull(callback);
@@ -71,6 +74,7 @@ public sealed class OutcomeEvent<TArgs, TResult>
     /// </summary>
     /// <param name="callback">The event callback associated with the result type.</param>
     /// <returns>The current updated instance.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="callback"/> is <see langword="null"/>.</exception>
     public OutcomeEvent<TArgs, TResult> Register(Func<Outcome<TResult>, TArgs, ValueTask> callback)
     {
         Guard.NotNull(callback);

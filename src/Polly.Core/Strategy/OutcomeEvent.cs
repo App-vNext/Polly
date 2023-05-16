@@ -23,6 +23,7 @@ public sealed partial class OutcomeEvent<TArgs>
     /// <typeparam name="TResult">The result type to add a callback for.</typeparam>
     /// <param name="callback">The event callback associated with the result type.</param>
     /// <returns>The current updated instance.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="callback"/> is <see langword="null"/>.</exception>
     public OutcomeEvent<TArgs> Register<TResult>(Action callback)
     {
         Guard.NotNull(callback);
@@ -36,6 +37,7 @@ public sealed partial class OutcomeEvent<TArgs>
     /// <typeparam name="TResult">The result type to add a callback for.</typeparam>
     /// <param name="callback">The event callback associated with the result type.</param>
     /// <returns>The current updated instance.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="callback"/> is <see langword="null"/>.</exception>
     public OutcomeEvent<TArgs> Register<TResult>(Action<Outcome<TResult>> callback)
     {
         Guard.NotNull(callback);
@@ -49,6 +51,7 @@ public sealed partial class OutcomeEvent<TArgs>
     /// <typeparam name="TResult">The result type to add a callback for.</typeparam>
     /// <param name="callback">The event callback associated with the result type.</param>
     /// <returns>The current updated instance.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="callback"/> is <see langword="null"/>.</exception>
     public OutcomeEvent<TArgs> Register<TResult>(Action<Outcome<TResult>, TArgs> callback)
     {
         Guard.NotNull(callback);
@@ -62,6 +65,7 @@ public sealed partial class OutcomeEvent<TArgs>
     /// <typeparam name="TResult">The result type to add a callback for.</typeparam>
     /// <param name="callback">The event callback associated with the result type.</param>
     /// <returns>The current updated instance.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="callback"/> is <see langword="null"/>.</exception>
     public OutcomeEvent<TArgs> Register<TResult>(Func<Outcome<TResult>, TArgs, ValueTask> callback)
     {
         Guard.NotNull(callback);
@@ -74,6 +78,7 @@ public sealed partial class OutcomeEvent<TArgs>
     /// </summary>
     /// <param name="callback">The event callback associated with the result type.</param>
     /// <returns>The current updated instance.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="callback"/> is <see langword="null"/>.</exception>
     public OutcomeEvent<TArgs> Register(Action callback)
     {
         Guard.NotNull(callback);
@@ -86,6 +91,7 @@ public sealed partial class OutcomeEvent<TArgs>
     /// </summary>
     /// <param name="callback">The event callback associated with the result type.</param>
     /// <returns>The current updated instance.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="callback"/> is <see langword="null"/>.</exception>
     public OutcomeEvent<TArgs> Register(Action<Outcome> callback)
     {
         Guard.NotNull(callback);
@@ -98,6 +104,7 @@ public sealed partial class OutcomeEvent<TArgs>
     /// </summary>
     /// <param name="callback">The event callback associated with the result type.</param>
     /// <returns>The current updated instance.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="callback"/> is <see langword="null"/>.</exception>
     public OutcomeEvent<TArgs> Register(Action<Outcome, TArgs> callback)
     {
         Guard.NotNull(callback);
@@ -110,6 +117,7 @@ public sealed partial class OutcomeEvent<TArgs>
     /// </summary>
     /// <param name="callback">The event callback associated with the result type.</param>
     /// <returns>The current updated instance.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="callback"/> is <see langword="null"/>.</exception>
     public OutcomeEvent<TArgs> Register(Func<Outcome, TArgs, ValueTask> callback)
     {
         Guard.NotNull(callback);
@@ -146,6 +154,7 @@ public sealed partial class OutcomeEvent<TArgs>
     /// <remarks>
     /// This method replaces all previously registered callbacks for the specified result type.
     /// </remarks>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="callbacks"/> is <see langword="null"/>.</exception>
     public OutcomeEvent<TArgs> SetCallbacks<TResult>(OutcomeEvent<TArgs, TResult> callbacks)
     {
         Guard.NotNull(callbacks);

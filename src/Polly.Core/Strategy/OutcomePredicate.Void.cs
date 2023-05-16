@@ -20,6 +20,7 @@ public sealed partial class OutcomePredicate<TArgs>
     /// <typeparam name="TException">The exception type to add a predicate for.</typeparam>
     /// <param name="predicate">The predicate to determine if the exception should be retried.</param>
     /// <returns>The current updated instance.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="predicate"/> is <see langword="null"/>.</exception>
     public OutcomePredicate<TArgs> HandleVoidException<TException>(Func<TException, bool> predicate)
         where TException : Exception
     {
@@ -34,6 +35,7 @@ public sealed partial class OutcomePredicate<TArgs>
     /// <typeparam name="TException">The exception type to add a predicate for.</typeparam>
     /// <param name="predicate">The predicate to determine if the exception should be retried.</param>
     /// <returns>The current updated instance.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="predicate"/> is <see langword="null"/>.</exception>
     public OutcomePredicate<TArgs> HandleVoidException<TException>(Func<TException, TArgs, bool> predicate)
         where TException : Exception
     {
@@ -48,6 +50,7 @@ public sealed partial class OutcomePredicate<TArgs>
     /// <typeparam name="TException">The exception type to add a predicate for.</typeparam>
     /// <param name="predicate">The predicate to determine if the exception should be retried.</param>
     /// <returns>The current updated instance.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="predicate"/> is <see langword="null"/>.</exception>
     public OutcomePredicate<TArgs> HandleVoidException<TException>(Func<TException, TArgs, ValueTask<bool>> predicate)
         where TException : Exception
     {
@@ -61,6 +64,7 @@ public sealed partial class OutcomePredicate<TArgs>
     /// </summary>
     /// <param name="predicates">The configured predicates.</param>
     /// <returns>The current updated instance.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="predicates"/> is <see langword="null"/>.</exception>
     public OutcomePredicate<TArgs> SetVoidPredicates(VoidOutcomePredicate<TArgs> predicates)
     {
         Guard.NotNull(predicates);

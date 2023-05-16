@@ -30,14 +30,16 @@ public sealed class CircuitBreakerManualControl : IDisposable
     /// The initialization happens when the circuit-breaker strategy is attached to this class.
     /// This happens when the final strategy is created by the <see cref="ResilienceStrategyBuilder.Build"/> call.
     /// </remarks>
-    public bool IsInitialized => _onIsolate != null;
+    internal bool IsInitialized => _onIsolate != null;
 
     /// <summary>
     /// Isolates (opens) the circuit manually, and holds it in this state until a call to <see cref="CloseAsync(CancellationToken)"/> is made.
     /// </summary>
     /// <param name="context">The resilience context.</param>
     /// <returns>The instance of <see cref="Task"/> that represents the asynchronous execution.</returns>
-    /// <exception cref="InvalidOperationException">Thrown if manual control is not initialized.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="context"/> is <see langword="null"/>.</exception>
+    /// <exception cref="InvalidOperationException">Thrown when manual control is not initialized.</exception>
+    /// <exception cref="ObjectDisposedException">Thrown when calling this method after this object is disposed.</exception>
     public Task IsolateAsync(ResilienceContext context)
     {
         Guard.NotNull(context);
@@ -57,6 +59,7 @@ public sealed class CircuitBreakerManualControl : IDisposable
     /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns>The instance of <see cref="Task"/> that represents the asynchronous execution.</returns>
     /// <exception cref="InvalidOperationException">Thrown if manual control is not initialized.</exception>
+    /// <exception cref="ObjectDisposedException">Thrown when calling this method after this object is disposed.</exception>
     public async Task IsolateAsync(CancellationToken cancellationToken = default)
     {
         var context = ResilienceContext.Get();
@@ -77,7 +80,9 @@ public sealed class CircuitBreakerManualControl : IDisposable
     /// </summary>
     /// <param name="context">The resilience context.</param>
     /// <returns>The instance of <see cref="Task"/> that represents the asynchronous execution.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="context"/> is <see langword="null"/>.</exception>
     /// <exception cref="InvalidOperationException">Thrown if manual control is not initialized.</exception>
+    /// <exception cref="ObjectDisposedException">Thrown when calling this method after this object is disposed.</exception>
     public Task CloseAsync(ResilienceContext context)
     {
         Guard.NotNull(context);
@@ -97,6 +102,7 @@ public sealed class CircuitBreakerManualControl : IDisposable
     /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns>The instance of <see cref="Task"/> that represents the asynchronous execution.</returns>
     /// <exception cref="InvalidOperationException">Thrown if manual control is not initialized.</exception>
+    /// <exception cref="ObjectDisposedException">Thrown when calling this method after this object is disposed.</exception>
     public async Task CloseAsync(CancellationToken cancellationToken = default)
     {
         var context = ResilienceContext.Get();

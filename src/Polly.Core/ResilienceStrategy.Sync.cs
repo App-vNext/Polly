@@ -11,6 +11,7 @@ public abstract partial class ResilienceStrategy
     /// <param name="callback">The user-provided callback.</param>
     /// <param name="context">The context associated with the callback.</param>
     /// <param name="state">The state associated with the callback.</param>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="callback"/> or <paramref name="context"/> is <see langword="null"/>.</exception>
     public void Execute<TState>(
         Action<ResilienceContext, TState> callback,
         ResilienceContext context,
@@ -36,6 +37,7 @@ public abstract partial class ResilienceStrategy
     /// </summary>
     /// <param name="callback">The user-provided callback.</param>
     /// <param name="context">The context associated with the callback.</param>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="callback"/> or <paramref name="context"/> is <see langword="null"/>.</exception>
     public void Execute(
         Action<ResilienceContext> callback,
         ResilienceContext context)
@@ -62,6 +64,7 @@ public abstract partial class ResilienceStrategy
     /// <param name="callback">The user-provided callback.</param>
     /// <param name="state">The state associated with the callback.</param>
     /// <param name="cancellationToken">The <see cref="CancellationToken"/> associated with the callback.</param>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="callback"/> is <see langword="null"/>.</exception>
     public void Execute<TState>(
         Action<TState, CancellationToken> callback,
         TState state,
@@ -93,6 +96,7 @@ public abstract partial class ResilienceStrategy
     /// </summary>
     /// <param name="callback">The user-provided callback.</param>
     /// <param name="cancellationToken">The <see cref="CancellationToken"/> associated with the callback.</param>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="callback"/> is <see langword="null"/>.</exception>
     public void Execute(
         Action<CancellationToken> callback,
         CancellationToken cancellationToken = default)
@@ -124,6 +128,7 @@ public abstract partial class ResilienceStrategy
     /// <typeparam name="TState">The type of state associated with the callback.</typeparam>
     /// <param name="callback">The user-provided callback.</param>
     /// <param name="state">The state associated with the callback.</param>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="callback"/> is <see langword="null"/>.</exception>
     public void Execute<TState>(
         Action<TState> callback,
         TState state)
@@ -153,6 +158,7 @@ public abstract partial class ResilienceStrategy
     /// Executes the specified callback.
     /// </summary>
     /// <param name="callback">The user-provided callback.</param>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="callback"/> is <see langword="null"/>.</exception>
     public void Execute(Action callback)
     {
         Guard.NotNull(callback);

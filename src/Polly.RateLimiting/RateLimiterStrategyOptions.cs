@@ -24,7 +24,7 @@ public class RateLimiterStrategyOptions : ResilienceStrategyOptions
     ///  Gets or sets the rate limiter that the strategy uses.
     /// </summary>
     /// <remarks>
-    /// This property is required and defaults to <c>null</c>.
+    /// This property is required and defaults to <see langword="null"/>.
     /// </remarks>
     [Required]
     public RateLimiter? RateLimiter { get; set; }

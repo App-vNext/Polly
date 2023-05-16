@@ -25,6 +25,7 @@ public sealed partial class OutcomeGenerator<TArgs, TValue>
     /// <typeparam name="TResult">The result type to add a generator for.</typeparam>
     /// <param name="generator">The value generator.</param>
     /// <returns>The current updated instance.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="generator"/> is <see langword="null"/>.</exception>
     public OutcomeGenerator<TArgs, TValue> SetGenerator<TResult>(Func<Outcome<TResult>, TArgs, TValue> generator)
     {
         Guard.NotNull(generator);
@@ -38,6 +39,7 @@ public sealed partial class OutcomeGenerator<TArgs, TValue>
     /// <typeparam name="TResult">The result type to add a generator for.</typeparam>
     /// <param name="generator">The value generator.</param>
     /// <returns>The current updated instance.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="generator"/> is <see langword="null"/>.</exception>
     public OutcomeGenerator<TArgs, TValue> SetGenerator<TResult>(Func<Outcome<TResult>, TArgs, ValueTask<TValue>> generator)
     {
         Guard.NotNull(generator);
@@ -50,6 +52,7 @@ public sealed partial class OutcomeGenerator<TArgs, TValue>
     /// </summary>
     /// <param name="generator">The value generator.</param>
     /// <returns>The current updated instance.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="generator"/> is <see langword="null"/>.</exception>
     public OutcomeGenerator<TArgs, TValue> SetGenerator(Func<Outcome, TArgs, TValue> generator)
     {
         Guard.NotNull(generator);
@@ -62,6 +65,7 @@ public sealed partial class OutcomeGenerator<TArgs, TValue>
     /// </summary>
     /// <param name="generator">The value generator.</param>
     /// <returns>The current updated instance.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="generator"/> is <see langword="null"/>.</exception>
     public OutcomeGenerator<TArgs, TValue> SetGenerator(Func<Outcome, TArgs, ValueTask<TValue>> generator)
     {
         Guard.NotNull(generator);
@@ -75,6 +79,7 @@ public sealed partial class OutcomeGenerator<TArgs, TValue>
     /// <typeparam name="TResult">The result type to add a generator for.</typeparam>
     /// <param name="generator">The generator builder.</param>
     /// <returns>The current updated instance.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="generator"/> is <see langword="null"/>.</exception>
     public OutcomeGenerator<TArgs, TValue> SetGenerator<TResult>(OutcomeGenerator<TArgs, TValue, TResult> generator)
     {
         Guard.NotNull(generator);
@@ -110,8 +115,11 @@ public sealed partial class OutcomeGenerator<TArgs, TValue>
     /// <param name="defaultValue">The default value returned by the generator.</param>
     /// <param name="valueValidator">The validator that determines if the generated value is valid.</param>
     /// <returns>Handler instance or null if no generators are registered.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="valueValidator"/> is <see langword="null"/>.</exception>
     public Handler? CreateHandler(TValue defaultValue, Predicate<TValue> valueValidator)
     {
+        Guard.NotNull(valueValidator);
+
         var pairs = _generators
             .Select(pair => new KeyValuePair<Type, object?>(pair.Key, pair.Value.handlerFactory()))
             .Where(pair => pair.Value is not null)

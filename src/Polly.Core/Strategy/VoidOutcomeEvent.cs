@@ -22,6 +22,7 @@ public sealed class VoidOutcomeEvent<TArgs>
     /// </summary>
     /// <param name="callback">The event callback associated with the void result type.</param>
     /// <returns>The current updated instance.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="callback"/> is <see langword="null"/>.</exception>
     public VoidOutcomeEvent<TArgs> Register(Action callback)
     {
         Guard.NotNull(callback);
@@ -38,6 +39,7 @@ public sealed class VoidOutcomeEvent<TArgs>
     /// </summary>
     /// <param name="callback">The event callback associated with the void result type.</param>
     /// <returns>The current updated instance.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="callback"/> is <see langword="null"/>.</exception>
     public VoidOutcomeEvent<TArgs> Register(Action<Outcome> callback)
     {
         Guard.NotNull(callback);
@@ -54,6 +56,7 @@ public sealed class VoidOutcomeEvent<TArgs>
     /// </summary>
     /// <param name="callback">The event callback associated with the void result type.</param>
     /// <returns>The current updated instance.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="callback"/> is <see langword="null"/>.</exception>
     public VoidOutcomeEvent<TArgs> Register(Action<Outcome, TArgs> callback)
     {
         Guard.NotNull(callback);
@@ -70,6 +73,7 @@ public sealed class VoidOutcomeEvent<TArgs>
     /// </summary>
     /// <param name="callback">The event callback associated with the void result type.</param>
     /// <returns>The current updated instance.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="callback"/> is <see langword="null"/>.</exception>
     public VoidOutcomeEvent<TArgs> Register(Func<Outcome, TArgs, ValueTask> callback)
     {
         Guard.NotNull(callback);

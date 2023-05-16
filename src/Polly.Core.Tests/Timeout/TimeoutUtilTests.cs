@@ -19,20 +19,6 @@ public class TimeoutUtilTests
         { System.Threading.Timeout.InfiniteTimeSpan, true },
     };
 
-    [MemberData(nameof(TimeoutTestUtils.InvalidTimeouts), MemberType = typeof(TimeoutTestUtils))]
-    [Theory]
-    public void ValidateTimeout_Invalid_Throws(TimeSpan timeSpan)
-    {
-        Assert.Throws<ArgumentOutOfRangeException>(() => TimeoutUtil.ValidateTimeout(timeSpan));
-    }
-
-    [MemberData(nameof(TimeoutTestUtils.ValidTimeouts), MemberType = typeof(TimeoutTestUtils))]
-    [Theory]
-    public void ValidateTimeout_Valid_DoesNotThrow(TimeSpan timeSpan)
-    {
-        this.Invoking(_ => TimeoutUtil.ValidateTimeout(timeSpan)).Should().NotThrow();
-    }
-
     [MemberData(nameof(ShouldApplyTimeoutData))]
     [Theory]
     public void ShouldApplyTimeout_Ok(TimeSpan timeSpan, bool result)

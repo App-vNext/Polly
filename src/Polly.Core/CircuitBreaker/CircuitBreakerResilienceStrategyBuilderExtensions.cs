@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using Polly.CircuitBreaker;
 using Polly.CircuitBreaker.Health;
 using Polly.Strategy;
@@ -22,6 +23,8 @@ public static class CircuitBreakerResilienceStrategyBuilderExtensions
     /// If you are discarding the strategy created by this call make sure to use <see cref="CircuitBreakerManualControl"/> and dispose the manual control instance when the strategy is no longer used.
     /// </para>
     /// </remarks>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="builder"/> or <paramref name="options"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ValidationException">Thrown when <paramref name="options"/> are invalid.</exception>
     public static ResilienceStrategyBuilder AddAdvancedCircuitBreaker<TResult>(this ResilienceStrategyBuilder builder, AdvancedCircuitBreakerStrategyOptions<TResult> options)
     {
         Guard.NotNull(builder);
@@ -44,6 +47,8 @@ public static class CircuitBreakerResilienceStrategyBuilderExtensions
     /// If you are discarding the strategy created by this call make sure to use <see cref="CircuitBreakerManualControl"/> and dispose the manual control instance when the strategy is no longer used.
     /// </para>
     /// </remarks>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="builder"/> or <paramref name="options"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ValidationException">Thrown when <paramref name="options"/> are invalid.</exception>
     public static ResilienceStrategyBuilder AddAdvancedCircuitBreaker(this ResilienceStrategyBuilder builder, AdvancedCircuitBreakerStrategyOptions options)
     {
         Guard.NotNull(builder);
@@ -67,6 +72,8 @@ public static class CircuitBreakerResilienceStrategyBuilderExtensions
     /// If you are discarding the strategy created by this call make sure to use <see cref="CircuitBreakerManualControl"/> and dispose the manual control instance when the strategy is no longer used.
     /// </para>
     /// </remarks>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="builder"/> or <paramref name="options"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ValidationException">Thrown when <paramref name="options"/> are invalid.</exception>
     public static ResilienceStrategyBuilder AddSimpleCircuitBreaker<TResult>(this ResilienceStrategyBuilder builder, SimpleCircuitBreakerStrategyOptions<TResult> options)
     {
         Guard.NotNull(builder);
@@ -89,6 +96,8 @@ public static class CircuitBreakerResilienceStrategyBuilderExtensions
     /// If you are discarding the strategy created by this call make sure to use <see cref="CircuitBreakerManualControl"/> and dispose the manual control instance when the strategy is no longer used.
     /// </para>
     /// </remarks>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="builder"/> or <paramref name="options"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ValidationException">Thrown when <paramref name="options"/> are invalid.</exception>
     public static ResilienceStrategyBuilder AddSimpleCircuitBreaker(this ResilienceStrategyBuilder builder, SimpleCircuitBreakerStrategyOptions options)
     {
         Guard.NotNull(builder);

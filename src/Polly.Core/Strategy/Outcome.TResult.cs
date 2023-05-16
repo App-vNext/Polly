@@ -12,6 +12,7 @@ public readonly struct Outcome<TResult>
     /// Initializes a new instance of the <see cref="Outcome{TResult}"/> struct with the specified exception.
     /// </summary>
     /// <param name="exception">The exception that occurred during the operation.</param>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="exception"/> is <see langword="null"/>.</exception>
     public Outcome(Exception exception)
         : this() => Exception = Guard.NotNull(exception);
 

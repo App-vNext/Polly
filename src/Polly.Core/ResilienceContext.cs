@@ -90,6 +90,7 @@ public sealed class ResilienceContext
     /// Returns a <paramref name="context"/> back to the pool.
     /// </summary>
     /// <param name="context">The context instance.</param>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="context"/> is <see langword="null"/>.</exception>
     public static void Return(ResilienceContext context)
     {
         Guard.NotNull(context);

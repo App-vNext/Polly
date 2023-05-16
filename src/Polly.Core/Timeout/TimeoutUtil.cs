@@ -1,5 +1,3 @@
-using System.Globalization;
-
 namespace Polly.Timeout;
 
 internal static class TimeoutUtil
@@ -19,16 +17,5 @@ internal static class TimeoutUtil
         }
 
         return timeout == System.Threading.Timeout.InfiniteTimeSpan || timeout > TimeSpan.Zero;
-    }
-
-    public static void ValidateTimeout(TimeSpan timeout)
-    {
-        if (!IsTimeoutValid(timeout))
-        {
-            throw new ArgumentOutOfRangeException(
-                nameof(timeout),
-                timeout,
-                string.Format(CultureInfo.InvariantCulture, TimeSpanInvalidMessage, timeout));
-        }
     }
 }
