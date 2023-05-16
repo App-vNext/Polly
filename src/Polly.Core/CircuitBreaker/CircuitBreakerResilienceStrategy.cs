@@ -7,7 +7,7 @@ internal sealed class CircuitBreakerResilienceStrategy : ResilienceStrategy
     private readonly CircuitStateController _controller;
     private readonly OutcomePredicate<CircuitBreakerPredicateArguments>.Handler? _handler;
 
-    public CircuitBreakerResilienceStrategy(BaseCircuitBreakerStrategyOptions options, CircuitStateController controller)
+    public CircuitBreakerResilienceStrategy(CircuitBreakerStrategyOptions options, CircuitStateController controller)
     {
         _controller = controller;
         _handler = options.ShouldHandle.CreateHandler();

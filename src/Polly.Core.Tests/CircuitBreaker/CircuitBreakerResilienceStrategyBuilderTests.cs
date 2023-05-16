@@ -18,11 +18,11 @@ public class CircuitBreakerResilienceStrategyBuilderTests
         },
         builder =>
         {
-            builder.AddCircuitBreaker(new CircuitBreakerStrategyOptions<int>());
+            builder.AddSimpleCircuitBreaker(new SimpleCircuitBreakerStrategyOptions<int>());
         },
         builder =>
         {
-            builder.AddCircuitBreaker(new CircuitBreakerStrategyOptions());
+            builder.AddSimpleCircuitBreaker(new SimpleCircuitBreakerStrategyOptions());
         },
     };
 
@@ -45,13 +45,13 @@ public class CircuitBreakerResilienceStrategyBuilderTests
         var builder = new ResilienceStrategyBuilder();
 
         builder
-            .Invoking(b => b.AddCircuitBreaker(new CircuitBreakerStrategyOptions<int> { BreakDuration = TimeSpan.MinValue }))
+            .Invoking(b => b.AddSimpleCircuitBreaker(new SimpleCircuitBreakerStrategyOptions<int> { BreakDuration = TimeSpan.MinValue }))
             .Should()
             .Throw<ValidationException>()
             .WithMessage("The circuit breaker strategy options are invalid.*");
 
         builder
-            .Invoking(b => b.AddCircuitBreaker(new CircuitBreakerStrategyOptions { BreakDuration = TimeSpan.MinValue }))
+            .Invoking(b => b.AddSimpleCircuitBreaker(new SimpleCircuitBreakerStrategyOptions { BreakDuration = TimeSpan.MinValue }))
             .Should()
             .Throw<ValidationException>()
             .WithMessage("The circuit breaker strategy options are invalid.*");
@@ -82,7 +82,7 @@ public class CircuitBreakerResilienceStrategyBuilderTests
         int closed = 0;
         int halfOpened = 0;
 
-        var options = new CircuitBreakerStrategyOptions
+        var options = new SimpleCircuitBreakerStrategyOptions
         {
             FailureThreshold = 5,
             BreakDuration = TimeSpan.FromMilliseconds(500),
@@ -94,7 +94,7 @@ public class CircuitBreakerResilienceStrategyBuilderTests
         options.OnHalfOpened.Register(() => halfOpened++);
 
         var timeProvider = new FakeTimeProvider();
-        var strategy = new ResilienceStrategyBuilder { TimeProvider = timeProvider.Object }.AddCircuitBreaker(options).Build();
+        var strategy = new ResilienceStrategyBuilder { TimeProvider = timeProvider.Object }.AddSimpleCircuitBreaker(options).Build();
         var time = DateTime.UtcNow;
         timeProvider.Setup(v => v.UtcNow).Returns(() => time);
 
@@ -185,7 +185,7 @@ public class CircuitBreakerResilienceStrategyBuilderTests
         builder.Invoking(b => b.AddCircuitBreakerCore(new DummyOptions()).Build()).Should().Throw<NotSupportedException>();
     }
 
-    private class DummyOptions : BaseCircuitBreakerStrategyOptions
+    private class DummyOptions : CircuitBreakerStrategyOptions
     {
     }
 }

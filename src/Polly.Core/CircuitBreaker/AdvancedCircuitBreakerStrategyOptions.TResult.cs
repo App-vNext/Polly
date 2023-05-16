@@ -4,19 +4,23 @@ namespace Polly.CircuitBreaker;
 
 /// <summary>
 /// The options for advanced circuit breaker resilience strategy.
-/// <para>The circuit will break if, within any time-slice of duration <see cref="SamplingDuration"/>,
+/// </summary>
+/// <typeparam name="TResult">The type of result the circuit breaker strategy handles.</typeparam>
+/// <remarks>
+/// The circuit will break if, within any time-slice of duration <see cref="SamplingDuration"/>,
 /// the proportion of actions resulting in a handled exception exceeds <see cref="FailureThreshold"/>,
-/// provided also that the number of actions through the circuit in the time-slice is at least <see cref="MinimumThroughput"/>. </para>
-/// <para>The circuit will stay broken for the <see cref="BaseCircuitBreakerStrategyOptions.BreakDuration"/>.
+/// provided also that the number of actions through the circuit in the time-slice is at least <see cref="MinimumThroughput"/>.
+/// <para>
+/// The circuit will stay broken for the <see cref="CircuitBreakerStrategyOptions.BreakDuration"/>.
 /// Any attempt to execute this while the circuit is broken, will immediately throw a <see cref="BrokenCircuitException"/> containing the exception
 /// that broke the circuit.
 /// </para>
-/// <para>If the first action after the break duration period results in a handled exception, the circuit will break
-/// again for another <see cref="BaseCircuitBreakerStrategyOptions.BreakDuration"/>; if no exception is thrown, the circuit will reset.
+/// <para>
+/// If the first action after the break duration period results in a handled exception, the circuit will break
+/// again for another <see cref="CircuitBreakerStrategyOptions.BreakDuration"/>; if no exception is thrown, the circuit will reset.
 /// </para>
-/// </summary>
-/// <typeparam name="TResult">The type of result the circuit breaker strategy handles.</typeparam>
-public class AdvancedCircuitBreakerStrategyOptions<TResult> : BaseCircuitBreakerStrategyOptions<TResult>
+/// </remarks>
+public class AdvancedCircuitBreakerStrategyOptions<TResult> : CircuitBreakerStrategyOptions<TResult>
 {
     /// <summary>
     /// Gets or sets the failure threshold at which the circuit will break.

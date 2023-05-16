@@ -8,7 +8,7 @@ namespace Polly.Core.Tests.CircuitBreaker.Controller;
 public class CircuitStateControllerTests
 {
     private readonly FakeTimeProvider _timeProvider = new();
-    private readonly BaseCircuitBreakerStrategyOptions _options = new CircuitBreakerStrategyOptions();
+    private readonly CircuitBreakerStrategyOptions _options = new SimpleCircuitBreakerStrategyOptions();
     private readonly Mock<CircuitBehavior> _circuitBehavior = new(MockBehavior.Strict);
     private readonly Action<IResilienceArguments> _onTelemetry = _ => { };
     private DateTimeOffset _utcNow = DateTimeOffset.UtcNow;
