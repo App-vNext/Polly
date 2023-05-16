@@ -6,7 +6,7 @@ public class ConsecutiveFailuresCircuitBehaviorTests
     [Fact]
     public void OnCircuitReset_Ok()
     {
-        var behavior = new ConsecutiveFailuresCircuitBehavior(new CircuitBreakerStrategyOptions { FailureThreshold = 2 });
+        var behavior = new ConsecutiveFailuresCircuitBehavior(new SimpleCircuitBreakerStrategyOptions { FailureThreshold = 2 });
 
         behavior.OnActionFailure(CircuitState.Closed, out var shouldBreak);
         behavior.OnCircuitClosed();
@@ -20,7 +20,7 @@ public class ConsecutiveFailuresCircuitBehaviorTests
     [Theory]
     public void OnActionFailure_Ok(int threshold, int failures, bool expectedShouldBreak)
     {
-        var behavior = new ConsecutiveFailuresCircuitBehavior(new CircuitBreakerStrategyOptions { FailureThreshold = threshold });
+        var behavior = new ConsecutiveFailuresCircuitBehavior(new SimpleCircuitBreakerStrategyOptions { FailureThreshold = threshold });
 
         for (int i = 0; i < failures - 1; i++)
         {
@@ -38,7 +38,7 @@ public class ConsecutiveFailuresCircuitBehaviorTests
     [Theory]
     public void OnActionSuccess_Ok(CircuitState state, bool expected)
     {
-        var behavior = new ConsecutiveFailuresCircuitBehavior(new CircuitBreakerStrategyOptions { FailureThreshold = 2 });
+        var behavior = new ConsecutiveFailuresCircuitBehavior(new SimpleCircuitBreakerStrategyOptions { FailureThreshold = 2 });
 
         behavior.OnActionFailure(CircuitState.Closed, out var shouldBreak);
         behavior.OnActionSuccess(state);

@@ -22,7 +22,7 @@ internal sealed class CircuitStateController : IDisposable
     private BrokenCircuitException? _breakingException;
     private bool _disposed;
 
-    public CircuitStateController(BaseCircuitBreakerStrategyOptions options, CircuitBehavior behavior, TimeProvider timeProvider, ResilienceStrategyTelemetry telemetry)
+    public CircuitStateController(CircuitBreakerStrategyOptions options, CircuitBehavior behavior, TimeProvider timeProvider, ResilienceStrategyTelemetry telemetry)
     {
         _breakDuration = options.BreakDuration;
         _onOpened = options.OnOpened.CreateHandler();

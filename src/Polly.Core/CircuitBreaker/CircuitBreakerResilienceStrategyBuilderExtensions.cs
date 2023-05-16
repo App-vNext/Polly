@@ -62,12 +62,12 @@ public static class CircuitBreakerResilienceStrategyBuilderExtensions
     /// <param name="options">The options instance.</param>
     /// <returns>A builder with the circuit breaker strategy added.</returns>
     /// <remarks>
-    /// See <see cref="CircuitBreakerStrategyOptions{TResult}"/> for more details about the advanced circuit breaker strategy.
+    /// See <see cref="SimpleCircuitBreakerStrategyOptions{TResult}"/> for more details about the advanced circuit breaker strategy.
     /// <para>
     /// If you are discarding the strategy created by this call make sure to use <see cref="CircuitBreakerManualControl"/> and dispose the manual control instance when the strategy is no longer used.
     /// </para>
     /// </remarks>
-    public static ResilienceStrategyBuilder AddCircuitBreaker<TResult>(this ResilienceStrategyBuilder builder, CircuitBreakerStrategyOptions<TResult> options)
+    public static ResilienceStrategyBuilder AddSimpleCircuitBreaker<TResult>(this ResilienceStrategyBuilder builder, SimpleCircuitBreakerStrategyOptions<TResult> options)
     {
         Guard.NotNull(builder);
         Guard.NotNull(options);
@@ -84,12 +84,12 @@ public static class CircuitBreakerResilienceStrategyBuilderExtensions
     /// <param name="options">The options instance.</param>
     /// <returns>A builder with the circuit breaker strategy added.</returns>
     /// <remarks>
-    /// See <see cref="CircuitBreakerStrategyOptions"/> for more details about the advanced circuit breaker strategy.
+    /// See <see cref="SimpleCircuitBreakerStrategyOptions"/> for more details about the advanced circuit breaker strategy.
     /// <para>
     /// If you are discarding the strategy created by this call make sure to use <see cref="CircuitBreakerManualControl"/> and dispose the manual control instance when the strategy is no longer used.
     /// </para>
     /// </remarks>
-    public static ResilienceStrategyBuilder AddCircuitBreaker(this ResilienceStrategyBuilder builder, CircuitBreakerStrategyOptions options)
+    public static ResilienceStrategyBuilder AddSimpleCircuitBreaker(this ResilienceStrategyBuilder builder, SimpleCircuitBreakerStrategyOptions options)
     {
         Guard.NotNull(builder);
         Guard.NotNull(options);
@@ -99,14 +99,14 @@ public static class CircuitBreakerResilienceStrategyBuilderExtensions
         return builder.AddCircuitBreakerCore(options);
     }
 
-    internal static ResilienceStrategyBuilder AddCircuitBreakerCore(this ResilienceStrategyBuilder builder, BaseCircuitBreakerStrategyOptions options)
+    internal static ResilienceStrategyBuilder AddCircuitBreakerCore(this ResilienceStrategyBuilder builder, CircuitBreakerStrategyOptions options)
     {
         return builder.AddStrategy(context =>
         {
             CircuitBehavior behavior = options switch
             {
                 AdvancedCircuitBreakerStrategyOptions o => new AdvancedCircuitBehavior(o, HealthMetrics.Create(o, context.TimeProvider)),
-                CircuitBreakerStrategyOptions o => new ConsecutiveFailuresCircuitBehavior(o),
+                SimpleCircuitBreakerStrategyOptions o => new ConsecutiveFailuresCircuitBehavior(o),
                 _ => throw new NotSupportedException()
             };
 

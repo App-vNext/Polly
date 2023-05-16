@@ -6,12 +6,12 @@ using Xunit;
 
 namespace Polly.Core.Tests.CircuitBreaker;
 
-public class CircuitBreakerOptionsTests
+public class SimpleCircuitBreakerOptionsTests
 {
     [Fact]
     public void Ctor_Defaults()
     {
-        var options = new CircuitBreakerStrategyOptions();
+        var options = new SimpleCircuitBreakerStrategyOptions();
 
         options.BreakDuration.Should().Be(TimeSpan.FromSeconds(5));
         options.FailureThreshold.Should().Be(100);
@@ -32,7 +32,7 @@ public class CircuitBreakerOptionsTests
     [Fact]
     public void Ctor_Generic_Defaults()
     {
-        var options = new CircuitBreakerStrategyOptions<int>();
+        var options = new SimpleCircuitBreakerStrategyOptions<int>();
 
         options.BreakDuration.Should().Be(TimeSpan.FromSeconds(5));
         options.FailureThreshold.Should().Be(100);
@@ -57,7 +57,7 @@ public class CircuitBreakerOptionsTests
         bool onResetCalled = false;
         bool onHalfOpenCalled = false;
 
-        var options = new CircuitBreakerStrategyOptions<int>
+        var options = new SimpleCircuitBreakerStrategyOptions<int>
         {
             BreakDuration = TimeSpan.FromSeconds(123),
             FailureThreshold = 23,
@@ -98,7 +98,7 @@ public class CircuitBreakerOptionsTests
     [Fact]
     public void InvalidOptions_Validate()
     {
-        var options = new CircuitBreakerStrategyOptions<int>
+        var options = new SimpleCircuitBreakerStrategyOptions<int>
         {
             BreakDuration = TimeSpan.FromMilliseconds(299),
             FailureThreshold = 0,
