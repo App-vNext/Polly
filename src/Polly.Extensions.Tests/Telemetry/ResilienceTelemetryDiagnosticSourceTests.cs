@@ -60,7 +60,7 @@ public class ResilienceTelemetryDiagnosticSourceTests : IDisposable
     public void WriteEvent_LoggingWithOutcome_Ok(bool noOutcome)
     {
         var telemetry = Create();
-        ReportEvent(telemetry, noOutcome ? null : new Outcome(typeof(bool), true));
+        ReportEvent(telemetry, noOutcome ? null : new Outcome(true));
 
         var messages = _logger.GetRecords(new EventId(0, "ResilienceEvent")).ToList();
         messages.Should().HaveCount(1);
@@ -81,7 +81,7 @@ public class ResilienceTelemetryDiagnosticSourceTests : IDisposable
     public void WriteEvent_LoggingWithException_Ok(bool noOutcome)
     {
         var telemetry = Create();
-        ReportEvent(telemetry, noOutcome ? null : new Outcome(typeof(string), new InvalidOperationException("Dummy message.")));
+        ReportEvent(telemetry, noOutcome ? null : new Outcome(new InvalidOperationException("Dummy message.")));
 
         var messages = _logger.GetRecords(new EventId(0, "ResilienceEvent")).ToList();
 
@@ -124,8 +124,8 @@ public class ResilienceTelemetryDiagnosticSourceTests : IDisposable
         Outcome? outcome = noOutcome switch
         {
             false => null,
-            true when exception => new Outcome(typeof(string), new InvalidOperationException("Dummy message.")),
-            _ => new Outcome(typeof(bool), true)
+            true when exception => new Outcome(new InvalidOperationException("Dummy message.")),
+            _ => new Outcome(true)
         };
         ReportEvent(telemetry, outcome, context: ResilienceContext.Get().WithResultType<bool>());
 
@@ -180,8 +180,8 @@ public class ResilienceTelemetryDiagnosticSourceTests : IDisposable
             });
         });
 
-        ReportEvent(telemetry, noOutcome ? null : new Outcome(typeof(bool), true));
-        ReportEvent(telemetry, noOutcome ? null : new Outcome(typeof(bool), true));
+        ReportEvent(telemetry, noOutcome ? null : new Outcome(true));
+        ReportEvent(telemetry, noOutcome ? null : new Outcome(true));
 
         var events = GetEvents("resilience-events");
         var ev = events[0];

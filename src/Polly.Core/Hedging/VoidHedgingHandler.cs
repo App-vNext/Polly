@@ -24,7 +24,7 @@ public sealed class VoidHedgingHandler
     /// <remarks>
     /// Make sure that the action returned by the generator represents a real asynchronous work, otherwise the hedging
     /// engine will be blocked and parallel hedged actions won't ever be executed. The generator can return a <see langword="null"/> function.
-    /// In such case the hedging is not executed for that attempt.
+    /// In such a case the hedging is not executed for that attempt.
     /// <para>
     /// This property is required. Defaults to <see langword="null"/>.
     /// </para>
