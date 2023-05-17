@@ -6,16 +6,16 @@ namespace Polly.Timeout;
 
 internal sealed class TimeoutResilienceStrategy : ResilienceStrategy
 {
-    private readonly TimeProvider _timeProvider;
     private readonly ResilienceStrategyTelemetry _telemetry;
+    private readonly CancellationTokenSourcePool _cancellationTokenSourcePool;
 
     public TimeoutResilienceStrategy(TimeoutStrategyOptions options, TimeProvider timeProvider, ResilienceStrategyTelemetry telemetry)
     {
         DefaultTimeout = options.Timeout;
         TimeoutGenerator = options.TimeoutGenerator.CreateHandler(DefaultTimeout, TimeoutUtil.IsTimeoutValid);
         OnTimeout = options.OnTimeout.CreateHandler();
-        _timeProvider = timeProvider;
         _telemetry = telemetry;
+        _cancellationTokenSourcePool = CancellationTokenSourcePool.Create(timeProvider);
     }
 
     public TimeSpan DefaultTimeout { get; }
@@ -35,8 +35,7 @@ internal sealed class TimeoutResilienceStrategy : ResilienceStrategy
         }
 
         var previousToken = context.CancellationToken;
-        var cancellationSource = CancellationTokenSourcePool.Get();
-        _timeProvider.CancelAfter(cancellationSource, timeout);
+        var cancellationSource = _cancellationTokenSourcePool.Get(timeout);
         context.CancellationToken = cancellationSource.Token;
 
         CancellationTokenRegistration? registration = null;
@@ -76,7 +75,7 @@ internal sealed class TimeoutResilienceStrategy : ResilienceStrategy
         finally
         {
             context.CancellationToken = previousToken;
-            CancellationTokenSourcePool.Return(cancellationSource);
+            _cancellationTokenSourcePool.Return(cancellationSource);
         }
     }
 

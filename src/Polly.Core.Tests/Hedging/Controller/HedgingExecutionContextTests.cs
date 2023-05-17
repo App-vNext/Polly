@@ -475,7 +475,7 @@ public class HedgingExecutionContextTests : IDisposable
         var pool = new ObjectPool<TaskExecution>(
             () =>
             {
-                var execution = new TaskExecution(handler);
+                var execution = new TaskExecution(handler, CancellationTokenSourcePool.Create(_timeProvider));
                 _createdExecutions.Add(execution);
                 return execution;
             },

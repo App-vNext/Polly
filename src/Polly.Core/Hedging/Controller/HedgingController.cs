@@ -12,10 +12,13 @@ internal sealed class HedgingController
 
     public HedgingController(TimeProvider provider, HedgingHandler.Handler handler, int maxAttempts)
     {
+        // retrieve the cancellation pool for this time provider
+        var pool = CancellationTokenSourcePool.Create(provider);
+
         _executionPool = new ObjectPool<TaskExecution>(() =>
         {
             Interlocked.Increment(ref _rentedExecutions);
-            return new TaskExecution(handler);
+            return new TaskExecution(handler, pool);
         },
         _ =>
         {

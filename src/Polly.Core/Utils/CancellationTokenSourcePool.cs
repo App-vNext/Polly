@@ -1,31 +1,33 @@
-namespace Polly.Utils
+namespace Polly.Utils;
+
+#pragma warning disable CA1716 // Identifiers should not match keywords
+
+internal abstract partial class CancellationTokenSourcePool
 {
-    internal static class CancellationTokenSourcePool
+    public static CancellationTokenSourcePool Create(TimeProvider timeProvider)
     {
 #if NET6_0_OR_GREATER
-        private static readonly ObjectPool<CancellationTokenSource> Pool = new(
-            static () => new CancellationTokenSource(),
-            static cts => true);
-#endif
-        public static CancellationTokenSource Get()
+        if (timeProvider == TimeProvider.System)
         {
-#if NET6_0_OR_GREATER
-            return Pool.Get();
-#else
-            return new CancellationTokenSource();
+            return PooledCancellationTokenSourcePool.SystemInstance;
+        }
 #endif
+        return new DisposableCancellationTokenSourcePool(timeProvider);
+    }
+
+    public CancellationTokenSource Get(TimeSpan delay)
+    {
+        if (delay <= TimeSpan.Zero && delay != System.Threading.Timeout.InfiniteTimeSpan)
+        {
+            throw new ArgumentOutOfRangeException(nameof(delay), delay, "Invalid delay specified.");
         }
 
-        public static void Return(CancellationTokenSource source)
-        {
-#if NET6_0_OR_GREATER
-            if (source.TryReset())
-            {
-                Pool.Return(source);
-                return;
-            }
-#endif
-            source.Dispose();
-        }
+        return GetCore(delay);
     }
+
+    protected abstract CancellationTokenSource GetCore(TimeSpan delay);
+
+    public abstract void Return(CancellationTokenSource source);
+
+    protected static bool IsCancellable(TimeSpan delay) => delay != System.Threading.Timeout.InfiniteTimeSpan;
 }

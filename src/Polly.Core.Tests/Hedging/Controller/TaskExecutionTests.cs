@@ -5,6 +5,7 @@ using Polly.Hedging;
 using Polly.Hedging.Controller;
 using Polly.Hedging.Utils;
 using Polly.Strategy;
+using Polly.Utils;
 
 namespace Polly.Core.Tests.Hedging.Controller;
 
@@ -265,5 +266,5 @@ public class TaskExecutionTests : IDisposable
 
     private Func<HedgingActionGeneratorArguments<DisposableResult>, Func<Task<DisposableResult>>?> Generator { get; set; } = args => () => Task.FromResult(new DisposableResult { Name = Handled });
 
-    private TaskExecution Create() => new(_hedgingHandler.CreateHandler()!);
+    private TaskExecution Create() => new(_hedgingHandler.CreateHandler()!, CancellationTokenSourcePool.Create(TimeProvider.System));
 }

@@ -23,11 +23,16 @@ internal sealed class TaskExecution
 {
     private readonly ResilienceContext _cachedContext = ResilienceContext.Get();
     private readonly HedgingHandler.Handler _handler;
+    private readonly CancellationTokenSourcePool _cancellationTokenSourcePool;
     private CancellationTokenSource? _cancellationSource;
     private CancellationTokenRegistration? _cancellationRegistration;
     private ResilienceContext? _activeContext;
 
-    public TaskExecution(HedgingHandler.Handler handler) => _handler = handler;
+    public TaskExecution(HedgingHandler.Handler handler, CancellationTokenSourcePool cancellationTokenSourcePool)
+    {
+        _handler = handler;
+        _cancellationTokenSourcePool = cancellationTokenSourcePool;
+    }
 
     /// <summary>
     /// Gets the task that represents the execution of the hedged task.
@@ -81,7 +86,7 @@ internal sealed class TaskExecution
         int attempt)
     {
         Type = type;
-        _cancellationSource = CancellationTokenSourcePool.Get();
+        _cancellationSource = _cancellationTokenSourcePool.Get(System.Threading.Timeout.InfiniteTimeSpan);
         Properties.Replace(snapshot.OriginalProperties);
 
         if (snapshot.OriginalCancellationToken.CanBeCanceled)
@@ -147,7 +152,7 @@ internal sealed class TaskExecution
         {
             // accepted outcome means that the cancellation source can be be returned to the pool
             // since it was most likely not cancelled
-            CancellationTokenSourcePool.Return(_cancellationSource!);
+            _cancellationTokenSourcePool.Return(_cancellationSource!);
         }
 
         IsAccepted = false;
