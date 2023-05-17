@@ -19,7 +19,7 @@ internal abstract partial class CancellationTokenSourcePool
     {
         if (delay <= TimeSpan.Zero && delay != System.Threading.Timeout.InfiniteTimeSpan)
         {
-            throw new ArgumentOutOfRangeException(nameof(delay), "Invalid delay specified.");
+            throw new ArgumentOutOfRangeException(nameof(delay), delay, "Invalid delay specified.");
         }
 
         return GetCore(delay);

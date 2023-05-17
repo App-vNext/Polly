@@ -21,7 +21,9 @@ public class CancellationTokenSourcePoolTests
         var pool = CancellationTokenSourcePool.Create(TimeProvider.System);
 
         Assert.Throws<ArgumentOutOfRangeException>(() => pool.Get(TimeSpan.Zero));
-        Assert.Throws<ArgumentOutOfRangeException>(() => pool.Get(TimeSpan.FromMilliseconds(-2)));
+        var e = Assert.Throws<ArgumentOutOfRangeException>(() => pool.Get(TimeSpan.FromMilliseconds(-2)));
+        e.Message.Should().StartWith("Invalid delay specified.");
+        e.ActualValue.Should().Be(TimeSpan.FromMilliseconds(-2));
 
         pool.Get(System.Threading.Timeout.InfiniteTimeSpan).Should().NotBeNull();
     }
