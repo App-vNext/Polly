@@ -120,6 +120,8 @@ public class HedgingResilienceStrategyTests : IDisposable
     public async void ExecuteAsync_EnsureHedgedTasksCancelled_Ok()
     {
         // arrange
+        _testOutput.WriteLine("ExecuteAsync_EnsureHedgedTasksCancelled_Ok executing...");
+
         _options.MaxHedgedAttempts = 2;
         using var cancelled = new ManualResetEvent(false);
         ConfigureHedging(async context =>
@@ -155,6 +157,11 @@ public class HedgingResilienceStrategyTests : IDisposable
         });
 
         // assert
+        _timeProvider.Advance(_options.HedgingDelay);
+        await Task.Delay(20);
+        _timeProvider.Advance(_options.HedgingDelay);
+        await Task.Delay(20);
+
         _timeProvider.Advance(TimeSpan.FromHours(1));
         (await result).Should().Be(Success);
         cancelled.WaitOne(AssertTimeout).Should().BeTrue();
