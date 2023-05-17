@@ -9,7 +9,7 @@
       ]
     },
     "GitVersion.Tool": {
-      "version": "5.11.1",
+      "version": "5.12.0",
       "commands": [
         "dotnet-gitversion"
       ]

@@ -1,0 +1,27 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFrameworks>net7.0;net6.0;netstandard2.0;net472;net462</TargetFrameworks>
+    <AssemblyTitle>Polly.RateLimiting</AssemblyTitle>
+    <RootNamespace>Polly.RateLimiting</RootNamespace>
+    <Nullable>enable</Nullable>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <ProjectType>Library</ProjectType>
+    <UseDefaultAnalyzers>true</UseDefaultAnalyzers>
+    <SkipPollyUsings>true</SkipPollyUsings>
+    <MutationScore>100</MutationScore>
+    <LegacySupport>true</LegacySupport>
+  </PropertyGroup>
+  
+  <ItemGroup>
+    <Using Include="Polly.Utils" />
+    <Using Remove="System.Net.Http" />
+    <Compile Include="..\Polly.Core\Utils\Guard.cs" Link="Utils\Guard.cs" />
+    <Compile Include="..\Polly.Core\Utils\ValidationHelper.cs" Link="Utils\ValidationHelper.cs" />
+    <InternalsVisibleToTest Include="Polly.RateLimiting.Tests" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Polly.Core\Polly.Core.csproj" />
+    <PackageReference Include="System.Threading.RateLimiting" />
+  </ItemGroup>
+</Project>

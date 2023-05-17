@@ -1,0 +1,71 @@
+﻿# Benchmark results
+
+```text
+BenchmarkDotNet=v0.13.3, OS=Windows 11 (10.0.22621.1413)
+Intel Core i9-10885H CPU 2.40GHz, 1 CPU, 16 logical and 8 physical cores
+.NET SDK=7.0.202
+  [Host] : .NET 7.0.4 (7.0.423.11508), X64 RyuJIT AVX2
+
+Job=MediumRun  Toolchain=InProcessEmitToolchain  IterationCount=15
+LaunchCount=2  WarmupCount=10
+```
+
+## PIPELINES
+
+|             Method | Components |        Mean |     Error |     StdDev |      Median | Ratio | RatioSD |   Gen0 | Allocated | Alloc Ratio |
+|------------------- |----------- |------------:|----------:|-----------:|------------:|------:|--------:|-------:|----------:|------------:|
+| ExecutePipeline_V7 |          1 |    74.78 ns |  1.555 ns |   2.279 ns |    75.63 ns |  1.00 |    0.00 | 0.0362 |     304 B |        1.00 |
+| ExecutePipeline_V8 |          1 |    85.69 ns |  0.500 ns |   0.732 ns |    85.36 ns |  1.15 |    0.04 |      - |         - |        0.00 |
+|                    |            |             |           |            |             |       |         |        |           |             |
+| ExecutePipeline_V7 |          2 |   165.37 ns |  1.157 ns |   1.732 ns |   165.59 ns |  1.00 |    0.00 | 0.0658 |     552 B |        1.00 |
+| ExecutePipeline_V8 |          2 |   119.10 ns |  0.653 ns |   0.915 ns |   119.63 ns |  0.72 |    0.01 |      - |         - |        0.00 |
+|                    |            |             |           |            |             |       |         |        |           |             |
+| ExecutePipeline_V7 |          5 |   533.97 ns |  7.327 ns |  10.967 ns |   536.79 ns |  1.00 |    0.00 | 0.1545 |    1296 B |        1.00 |
+| ExecutePipeline_V8 |          5 |   227.69 ns |  1.236 ns |   1.812 ns |   227.72 ns |  0.43 |    0.01 |      - |         - |        0.00 |
+|                    |            |             |           |            |             |       |         |        |           |             |
+| ExecutePipeline_V7 |         10 | 1,191.41 ns | 35.512 ns |  53.152 ns | 1,192.79 ns |  1.00 |    0.00 | 0.3014 |    2536 B |        1.00 |
+| ExecutePipeline_V8 |         10 |   557.95 ns | 76.434 ns | 112.036 ns |   505.58 ns |  0.47 |    0.09 |      - |         - |        0.00 |
+
+## TIMEOUT
+
+|            Method |     Mean |   Error |   StdDev | Ratio | RatioSD |   Gen0 | Allocated | Alloc Ratio |
+|------------------ |---------:|--------:|---------:|------:|--------:|-------:|----------:|------------:|
+| ExecuteTimeout_V7 | 304.9 ns | 7.53 ns | 11.27 ns |  1.00 |    0.00 | 0.0868 |     728 B |        1.00 |
+| ExecuteTimeout_V8 | 266.5 ns | 5.95 ns |  8.72 ns |  0.88 |    0.04 |      - |         - |        0.00 |
+
+## RETRY
+
+|          Method |     Mean |   Error |  StdDev | Ratio | RatioSD |   Gen0 | Allocated | Alloc Ratio |
+|---------------- |---------:|--------:|--------:|------:|--------:|-------:|----------:|------------:|
+| ExecuteRetry_V7 | 169.8 ns | 4.98 ns | 6.98 ns |  1.00 |    0.00 | 0.0687 |     576 B |        1.00 |
+| ExecuteRetry_V8 | 144.9 ns | 2.35 ns | 3.52 ns |  0.85 |    0.04 |      - |         - |        0.00 |
+
+## RATE LIMITER
+
+|                Method |     Mean |    Error |   StdDev | Ratio | RatioSD |   Gen0 | Allocated | Alloc Ratio |
+|---------------------- |---------:|---------:|---------:|------:|--------:|-------:|----------:|------------:|
+| ExecuteRateLimiter_V7 | 190.8 ns | 10.01 ns | 14.98 ns |  1.00 |    0.00 | 0.0448 |     376 B |        1.00 |
+| ExecuteRateLimiter_V8 | 199.6 ns |  2.54 ns |  3.64 ns |  1.05 |    0.09 | 0.0048 |      40 B |        0.11 |
+
+## CIRCUIT BREAKER
+
+|                   Method |     Mean |   Error |  StdDev | Ratio | RatioSD |   Gen0 | Allocated | Alloc Ratio |
+|------------------------- |---------:|--------:|--------:|------:|--------:|-------:|----------:|------------:|
+| ExecuteCircuitBreaker_V7 | 198.4 ns | 2.78 ns | 3.99 ns |  1.00 |    0.00 | 0.0629 |     528 B |        1.00 |
+| ExecuteCircuitBreaker_V8 | 297.9 ns | 2.63 ns | 3.77 ns |  1.50 |    0.04 | 0.0038 |      32 B |        0.06 |
+
+## STRATEGY PIPELINE (RATE LIMITER + TIMEOUT + RETRY + TIMEOUT + CIRCUIT BREAKER)
+
+|                     Method |     Mean |     Error |    StdDev | Ratio |   Gen0 | Allocated | Alloc Ratio |
+|--------------------------- |---------:|----------:|----------:|------:|-------:|----------:|------------:|
+| ExecuteStrategyPipeline_V7 | 1.523 us | 0.0092 us | 0.0137 us |  1.00 | 0.3433 |    2872 B |        1.00 |
+| ExecuteStrategyPipeline_V8 | 1.276 us | 0.0128 us | 0.0191 us |  0.84 | 0.0114 |      96 B |        0.03 |
+
+## HEDGING
+
+|                      Method |       Mean |     Error |    StdDev | Ratio | RatioSD |   Gen0 |   Gen1 | Allocated | Alloc Ratio |
+|---------------------------- |-----------:|----------:|----------:|------:|--------:|-------:|-------:|----------:|------------:|
+|             Hedging_Primary |   891.3 ns |  39.39 ns |  58.96 ns |  1.00 |    0.00 | 0.0048 |      - |      40 B |        1.00 |
+|           Hedging_Secondary | 1,500.0 ns |   7.88 ns |  11.80 ns |  1.69 |    0.11 | 0.0229 |      - |     200 B |        5.00 |
+|   Hedging_Primary_AsyncWork | 4,250.9 ns | 140.89 ns | 206.52 ns |  4.78 |    0.34 | 0.1831 | 0.0305 |    1518 B |       37.95 |
+| Hedging_Secondary_AsyncWork | 6,544.9 ns |  99.90 ns | 143.27 ns |  7.34 |    0.39 | 0.2213 | 0.0839 |    1872 B |       46.80 |
