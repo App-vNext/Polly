@@ -4,7 +4,7 @@ public class AssertionFailure
 {
     public AssertionFailure(int expected, int actual, string measure)
     {
-        Guard.NotNull(measure);
+        Guard.NotNullOrEmpty(measure);
 
         Expected = expected;
         Actual = actual;

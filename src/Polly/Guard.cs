@@ -12,6 +12,14 @@ internal static class Guard
 
         return value;
     }
+
+    public static void NotNullOrEmpty(string value, [CallerArgumentExpression("value")] string argumentName = "")
+    {
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            throw new ArgumentNullException(argumentName);
+        }
+    }
 }
 
 #if(NETFRAMEWORK || NETSTANDARD)
