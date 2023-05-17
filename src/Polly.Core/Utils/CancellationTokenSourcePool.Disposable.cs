@@ -8,7 +8,7 @@ internal abstract partial class CancellationTokenSourcePool
 
         public DisposableCancellationTokenSourcePool(TimeProvider timeProvider) => _timeProvider = timeProvider;
 
-        public override CancellationTokenSource Get(TimeSpan delay)
+        protected override CancellationTokenSource GetCore(TimeSpan delay)
         {
             var source = new CancellationTokenSource();
 

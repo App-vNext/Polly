@@ -14,7 +14,7 @@ internal abstract partial class CancellationTokenSourcePool
             static cts => true);
         private readonly TimeProvider _timeProvider;
 
-        public override CancellationTokenSource Get(TimeSpan delay)
+        protected override CancellationTokenSource GetCore(TimeSpan delay)
         {
             var source = _pool.Get();
 

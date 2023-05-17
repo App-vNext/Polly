@@ -15,9 +15,19 @@ internal abstract partial class CancellationTokenSourcePool
         return new DisposableCancellationTokenSourcePool(timeProvider);
     }
 
-    public abstract CancellationTokenSource Get(TimeSpan delay);
+    public CancellationTokenSource Get(TimeSpan delay)
+    {
+        if (delay <= TimeSpan.Zero && delay != System.Threading.Timeout.InfiniteTimeSpan)
+        {
+            throw new ArgumentOutOfRangeException(nameof(delay), "Invalid delay specified.");
+        }
+
+        return GetCore(delay);
+    }
+
+    protected abstract CancellationTokenSource GetCore(TimeSpan delay);
 
     public abstract void Return(CancellationTokenSource source);
 
-    protected static bool IsCancellable(TimeSpan delay) => delay > TimeSpan.Zero;
+    protected static bool IsCancellable(TimeSpan delay) => delay != System.Threading.Timeout.InfiniteTimeSpan;
 }

@@ -1,3 +1,4 @@
+using System;
 using System.Threading;
 using Moq;
 using Polly.Core.Tests.Helpers;
@@ -12,6 +13,17 @@ public class CancellationTokenSourcePoolTests
     {
         yield return new object[] { TimeProvider.System };
         yield return new object[] { new FakeTimeProvider() };
+    }
+
+    [Fact]
+    public void ArgValidation_Ok()
+    {
+        var pool = CancellationTokenSourcePool.Create(TimeProvider.System);
+
+        Assert.Throws<ArgumentOutOfRangeException>(() => pool.Get(TimeSpan.Zero));
+        Assert.Throws<ArgumentOutOfRangeException>(() => pool.Get(TimeSpan.FromMilliseconds(-2)));
+
+        pool.Get(System.Threading.Timeout.InfiniteTimeSpan).Should().NotBeNull();
     }
 
     [MemberData(nameof(TimeProviders))]
