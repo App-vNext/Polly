@@ -13,12 +13,14 @@ internal static class Guard
         return value;
     }
 
-    public static void NotNullOrEmpty(string value, [CallerArgumentExpression("value")] string argumentName = "")
+    public static string NotNullOrEmpty(string value, [CallerArgumentExpression("value")] string argumentName = "")
     {
         if (string.IsNullOrWhiteSpace(value))
         {
             throw new ArgumentNullException(argumentName);
         }
+
+        return value;
     }
 }
 

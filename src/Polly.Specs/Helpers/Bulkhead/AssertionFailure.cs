@@ -4,11 +4,9 @@ public class AssertionFailure
 {
     public AssertionFailure(int expected, int actual, string measure)
     {
-        Guard.NotNullOrEmpty(measure);
-
         Expected = expected;
         Actual = actual;
-        Measure = measure;
+        Measure = Guard.NotNullOrEmpty(measure);
     }
 
     public int Expected { get; }
