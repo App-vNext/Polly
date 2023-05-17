@@ -1,0 +1,18 @@
+<Project>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>..\Polly.snk</AssemblyOriginatorKeyFile>
+    <SignAssembly>true</SignAssembly>
+    <LangVersion>latest</LangVersion>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <Import Project="$(MsBuildThisFileDirectory)Analyzers.targets" />
+
+  <ItemGroup>
+    <None Include="$(MsBuildThisFileDirectory)..\Polly.png" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(LegacySupport)' == 'true' AND !$([MSBuild]::IsTargetFrameworkCompatible($(TargetFramework), 'netcoreapp3.1'))">
+    <Compile Include="$(MSBuildThisFileDirectory)..\src\LegacySupport\*.cs" LinkBase="LegacySupport" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,33 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net7.0;net6.0;netstandard2.0;net472;net462</TargetFrameworks>
+    <AssemblyTitle>Polly.Core</AssemblyTitle>
+    <RootNamespace>Polly</RootNamespace>
+    <Nullable>enable</Nullable>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <ProjectType>Library</ProjectType>
+    <UseDefaultAnalyzers>true</UseDefaultAnalyzers>
+    <SkipPollyUsings>true</SkipPollyUsings>
+    <MutationScore>100</MutationScore>
+    <LegacySupport>true</LegacySupport>
+    <InjectSharedSources>true</InjectSharedSources>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Using Include="Polly.Utils" />
+    <Using Remove="System.Net.Http" />
+    <InternalsVisibleToTest Include="Polly.Core.Tests" />
+    <InternalsVisibleToTest Include="Polly.TestUtils" />
+    <InternalsVisibleToTest Include="Polly.Extensions" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Condition="!$([MSBuild]::IsTargetFrameworkCompatible($(TargetFramework), 'netcoreapp3.1'))" />
+    <PackageReference Include="System.Threading.Tasks.Extensions" Condition="!$([MSBuild]::IsTargetFrameworkCompatible($(TargetFramework), 'netcoreapp3.1'))" />
+    <PackageReference Include="System.ValueTuple" Condition="$([MSBuild]::GetTargetFrameworkIdentifier('$(TargetFramework)')) == '.NETFramework'" />
+    <PackageReference Include="System.ComponentModel.Annotations" Condition="!$([MSBuild]::IsTargetFrameworkCompatible($(TargetFramework), 'netcoreapp3.1'))" />
+    <PackageReference Include="System.Diagnostics.DiagnosticSource" Condition="!$([MSBuild]::IsTargetFrameworkCompatible($(TargetFramework), 'netcoreapp3.1'))" />
+  </ItemGroup>
+
+</Project>

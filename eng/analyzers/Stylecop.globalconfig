@@ -1,0 +1,1810 @@
+# Generated : 2023-02-20 04:52:20Z
+# Attributes: general, general_externalonly
+# Analyzers : Microsoft.CodeAnalysis.CodeStyle, Microsoft.CodeAnalysis.CSharp.CodeStyle, StyleCop.Analyzers
+
+is_global = true
+global_level = -1
+
+# Title    : Simplify name
+# Category : Style
+# Help Link: https://docs.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0001
+# Comment  : This diagnostic only triggers in Visual Studio, not when building from the command-line. This metadata was entered manually, since it is not exposed in the normal way from the analyzer assembly.
+dotnet_diagnostic.IDE0001.severity = silent
+
+# Title    : Simplify name
+# Category : Style
+# Help Link: https://docs.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0002
+# Comment  : This diagnostic only triggers in Visual Studio, not when building from the command-line. This metadata was entered manually, since it is not exposed in the normal way from the analyzer assembly.
+dotnet_diagnostic.IDE0002.severity = silent
+
+# Title    : Remove this or Me qualification
+# Category : Style
+# Help Link: https://docs.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0003-ide0009
+# Comment  : This diagnostic only triggers in Visual Studio, not when building from the command-line. This metadata was entered manually, since it is not exposed in the normal way from the analyzer assembly.
+dotnet_diagnostic.IDE0003.severity = silent
+dotnet_style_qualification_for_event = false
+dotnet_style_qualification_for_field = false
+dotnet_style_qualification_for_method = false
+dotnet_style_qualification_for_property = false
+
+# Title    : Remove Unnecessary Cast
+# Category : Style
+# Help Link: https://docs.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0004
+# Tags     : Telemetry, EnforceOnBuild_WhenExplicitlyEnabled, Unnecessary
+dotnet_diagnostic.IDE0004.severity = warning
+
+# Title    : Using directive is unnecessary.
+# Category : Style
+# Help Link: https://docs.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0005
+# Tags     : Telemetry, EnforceOnBuild_HighlyRecommended, Unnecessary
+dotnet_diagnostic.IDE0005.severity = none
+
+# Title    : Using directive is unnecessary.
+# Category : Style
+# Tags     : Telemetry, EnforceOnBuild_Never, NotConfigurable, Unnecessary
+dotnet_diagnostic.IDE0005_gen.severity = none
+
+# Title    : Use implicit type
+# Category : Style
+# Help Link: https://docs.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0007
+# Tags     : Telemetry, EnforceOnBuild_HighlyRecommended
+dotnet_diagnostic.IDE0007.severity = silent
+csharp_style_var_elsewhere = true
+csharp_style_var_for_built_in_types = false
+csharp_style_var_when_type_is_apparent = true
+
+# Title    : Use explicit type
+# Category : Style
+# Help Link: https://docs.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0008
+# Tags     : Telemetry, EnforceOnBuild_HighlyRecommended
+dotnet_diagnostic.IDE0008.severity = silent
+
+# Title    : Member access should be qualified.
+# Category : Style
+# Help Link: https://docs.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0009
+# Tags     : Telemetry, EnforceOnBuild_Never
+# Comment  : This diagnostic only triggers in Visual Studio, not when building from the command-line
+dotnet_diagnostic.IDE0009.severity = none
+
+# Title    : Add missing cases
+# Category : Style
+# Help Link: https://docs.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0010
+# Tags     : Telemetry, EnforceOnBuild_WhenExplicitlyEnabled
+dotnet_diagnostic.IDE0010.severity = silent
+
+# Title    : Add braces
+# Category : Style
+# Help Link: https://docs.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0011
+# Tags     : Telemetry, EnforceOnBuild_HighlyRecommended
+dotnet_diagnostic.IDE0011.severity = warning
+csharp_prefer_braces = true
+
+# Title    : Use 'throw' expression
+# Category : Style
+# Help Link: https://docs.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0016
+# Tags     : Telemetry, EnforceOnBuild_Recommended
+dotnet_diagnostic.IDE0016.severity = warning
+csharp_style_throw_expression = true
+
+# Title    : Simplify object initialization
+# Category : Style
+# Help Link: https://docs.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0017
+# Tags     : Telemetry, EnforceOnBuild_Recommended
+dotnet_diagnostic.IDE0017.severity = warning
+dotnet_style_object_initializer = true
+
+# Title    : Inline variable declaration
+# Category : Style
+# Help Link: https://docs.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0018
+# Tags     : Telemetry, EnforceOnBuild_Recommended
+dotnet_diagnostic.IDE0018.severity = warning
+csharp_style_inlined_variable_declaration = true
+
+# Title    : Use pattern matching
+# Category : Style
+# Help Link: https://docs.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0019
+# Tags     : Telemetry, EnforceOnBuild_Recommended
+dotnet_diagnostic.IDE0019.severity = silent
+csharp_style_pattern_matching_over_is_with_cast_check = true
+
+# Title    : Use pattern matching
+# Category : Style
+# Help Link: https://docs.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0020
+# Tags     : Telemetry, EnforceOnBuild_Recommended
+dotnet_diagnostic.IDE0020.severity = silent
+csharp_style_pattern_matching_over_is_with_cast_check
+
+# Title    : Use expression body for constructors
+# Category : Style
+# Help Link: https://docs.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0021
+# Tags     : Telemetry, EnforceOnBuild_Recommended
+dotnet_diagnostic.IDE0021.severity = warning
+csharp_style_expression_bodied_constructors = false
+
+# Title    : Use expression body for methods
+# Category : Style
+# Help Link: https://docs.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0022
+# Tags     : Telemetry, EnforceOnBuild_Recommended
+dotnet_diagnostic.IDE0022.severity = silent
+csharp_style_expression_bodied_methods = when_on_single_line
+
+# Title    : Use expression body for conversion operators
+# Category : Style
+# Help Link: https://docs.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0023
+# Tags     : Telemetry, EnforceOnBuild_Recommended
+dotnet_diagnostic.IDE0023.severity = warning
+csharp_style_expression_bodied_operators = false
+
+# Title    : Use expression body for operators
+# Category : Style
+# Help Link: https://docs.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0024
+# Tags     : Telemetry, EnforceOnBuild_Recommended
+dotnet_diagnostic.IDE0024.severity = warning
+csharp_style_expression_bodied_operators = false
+
+# Title    : Use expression body for properties
+# Category : Style
+# Help Link: https://docs.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0025
+# Tags     : Telemetry, EnforceOnBuild_Recommended
+dotnet_diagnostic.IDE0025.severity = warning
+csharp_style_expression_bodied_properties = true
+
+# Title    : Use expression body for indexers
+# Category : Style
+# Help Link: https://docs.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0026
+# Tags     : Telemetry, EnforceOnBuild_Recommended
+dotnet_diagnostic.IDE0026.severity = warning
+csharp_style_expression_bodied_indexers = true
+
+# Title    : Use expression body for accessors
+# Category : Style
+# Help Link: https://docs.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0027
+# Tags     : Telemetry, EnforceOnBuild_Recommended
+dotnet_diagnostic.IDE0027.severity = warning
+csharp_style_expression_bodied_accessors = true
+
+# Title    : Simplify collection initialization
+# Category : Style
+# Help Link: https://docs.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0028
+# Tags     : Telemetry, EnforceOnBuild_Recommended
+dotnet_diagnostic.IDE0028.severity = warning
+dotnet_style_collection_initializer = true
+
+# Title    : Use coalesce expression
+# Category : Style
+# Help Link: https://docs.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0029
+# Tags     : Telemetry, EnforceOnBuild_Recommended
+dotnet_diagnostic.IDE0029.severity = warning
+dotnet_style_coalesce_expression = true
+
+# Title    : Use coalesce expression
+# Category : Style
+# Help Link: https://docs.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0030
+# Tags     : Telemetry, EnforceOnBuild_Recommended
+dotnet_diagnostic.IDE0030.severity = warning
+dotnet_style_coalesce_expression = true
+
+# Title    : Use null propagation
+# Category : Style
+# Help Link: https://docs.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0031
+# Tags     : Telemetry, EnforceOnBuild_Recommended
+dotnet_diagnostic.IDE0031.severity = warning
+dotnet_style_null_propagation = true
+
+# Title    : Use auto property
+# Category : Style
+# Help Link: https://docs.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0032
+# Tags     : Telemetry, EnforceOnBuild_Recommended
+dotnet_diagnostic.IDE0032.severity = warning
+dotnet_style_prefer_auto_properties = true
+
+# Title    : Use explicitly provided tuple name
+# Category : Style
+# Help Link: https://docs.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0033
+# Tags     : Telemetry, EnforceOnBuild_Recommended
+dotnet_diagnostic.IDE0033.severity = warning
+dotnet_style_explicit_tuple_names = true
+
+# Title    : Simplify 'default' expression
+# Category : Style
+# Help Link: https://docs.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0034
+# Tags     : Telemetry, EnforceOnBuild_Recommended, Unnecessary
+dotnet_diagnostic.IDE0034.severity = warning
+csharp_prefer_simple_default_expression = true
+
+# Title    : Unreachable code detected
+# Category : Style
+# Help Link: https://docs.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0035
+# Tags     : Telemetry, EnforceOnBuild_Never, NotConfigurable, Unnecessary
+# Comment  : This diagnostic only triggers in Visual Studio, not when building from the command-line
+dotnet_diagnostic.IDE0035.severity = warning
+
+# Title    : Order modifiers
+# Category : Style
+# Help Link: https://docs.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0036
+# Tags     : Telemetry, EnforceOnBuild_HighlyRecommended
+dotnet_diagnostic.IDE0036.severity = silent
+csharp_preferred_modifier_order = public,private,protected,internal,static,extern,new,virtual,abstract,sealed,override,readonly,unsafe,volatile,async
+
+# Title    : Use inferred member name
+# Category : Style
+# Help Link: https://docs.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0037
+# Tags     : Telemetry, EnforceOnBuild_WhenExplicitlyEnabled, Unnecessary
+dotnet_diagnostic.IDE0037.severity = silent
+dotnet_style_prefer_inferred_anonymous_type_member_names = true
+dotnet_style_prefer_inferred_tuple_names = true
+
+# Title    : Use local function
+# Category : Style
+# Help Link: https://docs.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0039
+# Tags     : Telemetry, EnforceOnBuild_Recommended
+dotnet_diagnostic.IDE0039.severity = silent
+csharp_style_prefer_local_over_anonymous_function = false
+
+# Title    : Add accessibility modifiers
+# Category : Style
+# Help Link: https://docs.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0040
+# Tags     : Telemetry, EnforceOnBuild_HighlyRecommended
+dotnet_diagnostic.IDE0040.severity = warning
+dotnet_style_require_accessibility_modifiers = for_non_interface_members
+
+# Title    : Use 'is null' check
+# Category : Style
+# Help Link: https://docs.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0041
+# Tags     : Telemetry, EnforceOnBuild_WhenExplicitlyEnabled
+dotnet_diagnostic.IDE0041.severity = warning
+dotnet_style_prefer_is_null_check_over_reference_equality_method = true
+
+# Title    : Deconstruct variable declaration
+# Category : Style
+# Help Link: https://docs.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0042
+# Tags     : Telemetry, EnforceOnBuild_Recommended
+dotnet_diagnostic.IDE0042.severity = silent
+csharp_style_deconstructed_variable_declaration = true
+
+# Title    : Invalid format string
+# Category : Compiler
+# Tags     : EnforceOnBuild_HighlyRecommended
+dotnet_diagnostic.IDE0043.severity = warning
+
+# Title    : Add readonly modifier
+# Category : Style
+# Help Link: https://docs.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0044
+# Tags     : Telemetry, EnforceOnBuild_HighlyRecommended
+dotnet_diagnostic.IDE0044.severity = warning
+dotnet_style_readonly_field = true:warning
+
+# Title    : Convert to conditional expression
+# Category : Style
+# Help Link: https://docs.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0045
+# Tags     : Telemetry, EnforceOnBuild_Recommended
+dotnet_diagnostic.IDE0045.severity = silent
+dotnet_style_prefer_conditional_expression_over_assignment = true
+
+# Title    : Convert to conditional expression
+# Category : Style
+# Help Link: https://docs.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0046
+# Tags     : Telemetry, EnforceOnBuild_Recommended
+dotnet_diagnostic.IDE0046.severity = silent
+dotnet_style_prefer_conditional_expression_over_return = true
+
+# Title    : Remove unnecessary parentheses
+# Category : Style
+# Help Link: https://docs.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0047
+# Tags     : Telemetry, EnforceOnBuild_Recommended, Unnecessary
+dotnet_diagnostic.IDE0047.severity = silent
+dotnet_style_parentheses_in_arithmetic_binary_operators = always_for_clarity
+dotnet_style_parentheses_in_other_binary_operators = always_for_clarity
+dotnet_style_parentheses_in_other_operators = never_if_unnecessary
+dotnet_style_parentheses_in_relational_binary_operators = always_for_clarity
+
+# Title    : Add parentheses for clarity
+# Category : Style
+# Help Link: https://docs.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0048
+# Tags     : Telemetry, EnforceOnBuild_WhenExplicitlyEnabled
+dotnet_diagnostic.IDE0048.severity = silent
+dotnet_style_parentheses_in_arithmetic_binary_operators = always_for_clarity
+dotnet_style_parentheses_in_other_binary_operators = always_for_clarity
+dotnet_style_parentheses_in_other_operators = never_if_unnecessary
+dotnet_style_parentheses_in_relational_binary_operators = always_for_clarity
+dotnet_style_predefined_type_for_locals_parameters_members = true
+dotnet_style_predefined_type_for_member_access = true
+
+# Title    : Use language keywords instead of framework type names for type references
+# Category : Style
+# Help Link: https://docs.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0049
+# Comment  : This diagnostic only triggers in Visual Studio, not when building from the command-line. This metadata was entered manually, since it is not exposed in the normal way from the analyzer assembly.
+dotnet_diagnostic.IDE0049.severity = none
+
+# Title    : Convert to tuple
+# Category : Style
+# Tags     : Telemetry
+# Comment  : This diagnostic only triggers in Visual Studio, not when building from the command-line
+dotnet_diagnostic.IDE0050.severity = silent
+
+# Title    : Remove unused private members
+# Category : CodeQuality
+# Help Link: https://docs.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0051
+# Tags     : Telemetry, EnforceOnBuild_HighlyRecommended, Unnecessary
+dotnet_diagnostic.IDE0051.severity = none
+
+# Title    : Remove unread private members
+# Category : CodeQuality
+# Help Link: https://docs.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0052
+# Tags     : Telemetry, EnforceOnBuild_HighlyRecommended, Unnecessary
+dotnet_diagnostic.IDE0052.severity = warning
+
+# Title    : Use expression body for lambda expressions
+# Category : Style
+# Help Link: https://docs.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0053
+# Tags     : Telemetry, EnforceOnBuild_Recommended
+# Comment  : This metadata was entered manually, since it is not exposed in the normal way from the analyzer assembly.
+dotnet_diagnostic.IDE0053.severity = suggestion
+csharp_style_expression_bodied_lambdas = when_on_single_line
+
+# Title    : Use compound assignment
+# Category : Style
+# Help Link: https://docs.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0054
+# Tags     : Telemetry, EnforceOnBuild_Recommended
+dotnet_diagnostic.IDE0054.severity = warning
+dotnet_style_prefer_compound_assignment = true
+
+# Title    : Fix formatting
+# Category : Style
+# Help Link: https://docs.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0055
+# Tags     : Telemetry, EnforceOnBuild_HighlyRecommended
+dotnet_diagnostic.IDE0055.severity = warning
+dotnet_style_namespace_match_folder = true
+csharp_new_line_before_catch = true
+csharp_new_line_before_else = true
+csharp_new_line_before_finally = true
+csharp_new_line_before_members_in_anonymous_types = true
+csharp_new_line_before_members_in_object_initializers = true
+csharp_new_line_before_open_brace = all
+csharp_new_line_between_query_expression_clauses = true
+csharp_indent_block_contents = true
+csharp_indent_braces = false
+csharp_indent_case_contents = true
+csharp_indent_case_contents_when_block = false
+csharp_indent_labels = flush_left
+csharp_indent_switch_labels = true
+csharp_space_after_cast = false
+csharp_space_after_colon_in_inheritance_clause = true
+csharp_space_after_comma = true
+csharp_space_after_dot = false
+csharp_space_after_keywords_in_control_flow_statements = true
+csharp_space_after_semicolon_in_for_statement = true
+csharp_space_around_binary_operators = before_and_after
+csharp_space_around_declaration_statements = false
+csharp_space_before_colon_in_inheritance_clause = true
+csharp_space_before_comma = false
+csharp_space_before_dot = false
+csharp_space_before_open_square_brackets = false
+csharp_space_before_semicolon_in_for_statement = false
+csharp_space_between_empty_square_brackets = false
+csharp_space_between_method_call_empty_parameter_list_parentheses = false
+csharp_space_between_method_call_name_and_opening_parenthesis = false
+csharp_space_between_method_call_parameter_list_parentheses = false
+csharp_space_between_method_declaration_empty_parameter_list_parentheses = false
+csharp_space_between_method_declaration_name_and_open_parenthesis = false
+csharp_space_between_method_declaration_parameter_list_parentheses = false
+csharp_space_between_parentheses = false
+csharp_space_between_square_brackets = false
+csharp_preserve_single_line_blocks = true
+csharp_preserve_single_line_statements = false
+
+# Title    : Use index operator
+# Category : Style
+# Help Link: https://docs.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0056
+# Tags     : Telemetry, EnforceOnBuild_Recommended
+dotnet_diagnostic.IDE0056.severity = silent
+csharp_style_prefer_index_operator = true
+
+# Title    : Use range operator
+# Category : Style
+# Help Link: https://docs.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0057
+# Tags     : Telemetry, EnforceOnBuild_Recommended
+dotnet_diagnostic.IDE0057.severity = silent
+csharp_style_prefer_range_operator = true:warning
+
+# Title    : Expression value is never used
+# Category : Style
+# Help Link: https://docs.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0058
+# Tags     : Telemetry, EnforceOnBuild_WhenExplicitlyEnabled
+dotnet_diagnostic.IDE0058.severity = none
+
+# Title    : Unnecessary assignment of a value
+# Category : Style
+# Help Link: https://docs.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0059
+# Tags     : Telemetry, EnforceOnBuild_HighlyRecommended, Unnecessary
+dotnet_diagnostic.IDE0059.severity = none
+
+# Title    : Remove unused parameter
+# Category : Style
+# Help Link: https://docs.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0060
+# Tags     : Telemetry, EnforceOnBuild_HighlyRecommended, Unnecessary
+dotnet_diagnostic.IDE0060.severity = warning
+dotnet_code_quality_unused_parameters = all
+
+# Title    : Use expression body for local functions
+# Category : Style
+# Help Link: https://docs.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0061
+# Tags     : Telemetry, EnforceOnBuild_Recommended
+dotnet_diagnostic.IDE0061.severity = warning
+csharp_style_expression_bodied_local_functions = true
+
+# Title    : Make local function 'static'
+# Category : Style
+# Help Link: https://docs.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0062
+# Tags     : Telemetry, EnforceOnBuild_Recommended
+dotnet_diagnostic.IDE0062.severity = warning
+csharp_prefer_static_local_function = true
+
+# Title    : Use simple 'using' statement
+# Category : Style
+# Help Link: https://docs.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0063
+# Tags     : Telemetry, EnforceOnBuild_Recommended
+dotnet_diagnostic.IDE0063.severity = warning
+csharp_prefer_simple_using_statement = true
+
+# Title    : Make readonly fields writable
+# Category : CodeQuality
+# Help Link: https://docs.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0064
+# Tags     : Telemetry, EnforceOnBuild_WhenExplicitlyEnabled
+dotnet_diagnostic.IDE0064.severity = warning
+
+# Title    : Misplaced using directive
+# Category : Style
+# Help Link: https://docs.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0065
+# Tags     : Telemetry, EnforceOnBuild_Recommended
+dotnet_diagnostic.IDE0065.severity = warning
+dotnet_separate_import_directive_groups = false
+dotnet_sort_system_directives_first = true
+csharp_using_directive_placement = outside_namespace:suggestion
+
+# Title    : Convert switch statement to expression
+# Category : Style
+# Help Link: https://docs.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0066
+# Tags     : Telemetry, EnforceOnBuild_WhenExplicitlyEnabled
+dotnet_diagnostic.IDE0066.severity = warning
+csharp_style_prefer_switch_expression = true:warning
+
+# Title    : Use 'System.HashCode'
+# Category : Style
+# Help Link: https://docs.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0070
+# Tags     : Telemetry, EnforceOnBuild_Recommended
+dotnet_diagnostic.IDE0070.severity = warning
+
+# Title    : Simplify interpolation
+# Category : Style
+# Help Link: https://docs.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0071
+# Tags     : Telemetry, EnforceOnBuild_Recommended, Unnecessary
+dotnet_diagnostic.IDE0071.severity = warning
+dotnet_style_prefer_simplified_interpolation = true
+
+# Title    : Add missing cases
+# Category : Style
+# Help Link: https://docs.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0072
+# Tags     : Telemetry, EnforceOnBuild_WhenExplicitlyEnabled
+dotnet_diagnostic.IDE0072.severity = silent
+
+# Title    : The file header is missing or not located at the top of the file
+# Category : Style
+# Help Link: https://docs.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0073
+# Tags     : Telemetry, EnforceOnBuild_HighlyRecommended
+dotnet_diagnostic.IDE0073.severity = warning
+
+# Title    : Use compound assignment
+# Category : Style
+# Help Link: https://docs.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0074
+# Tags     : Telemetry, EnforceOnBuild_Recommended
+# Comment  : This diagnostic only triggers in Visual Studio, not when building from the command-line
+dotnet_diagnostic.IDE0074.severity = suggestion
+dotnet_style_prefer_compound_assignment = true
+
+# Title    : Simplify conditional expression
+# Category : Style
+# Help Link: https://docs.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0075
+# Tags     : Telemetry, EnforceOnBuild_Recommended
+dotnet_diagnostic.IDE0075.severity = warning
+dotnet_style_prefer_simplified_boolean_expressions = true
+
+# Title    : Invalid global 'SuppressMessageAttribute'
+# Category : CodeQuality
+# Help Link: https://docs.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0076
+# Tags     : Telemetry, EnforceOnBuild_HighlyRecommended, Unnecessary
+dotnet_diagnostic.IDE0076.severity = warning
+
+# Title    : Avoid legacy format target in 'SuppressMessageAttribute'
+# Category : CodeQuality
+# Help Link: https://docs.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0077
+# Tags     : Telemetry, EnforceOnBuild_HighlyRecommended
+dotnet_diagnostic.IDE0077.severity = warning
+
+# Title    : Use pattern matching
+# Category : Style
+# Help Link: https://docs.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0078
+# Tags     : Telemetry, EnforceOnBuild_Recommended
+dotnet_diagnostic.IDE0078.severity = silent
+csharp_style_prefer_pattern_matching = true
+
+# Title    : Remove unnecessary suppression
+# Category : Style
+# Tags     : Telemetry
+# Comment  : This diagnostic only triggers in Visual Studio, not when building from the command-line
+dotnet_diagnostic.IDE0079.severity = suggestion
+dotnet_remove_unnecessary_suppression_exclusions = CS0618
+
+# Title    : Remove unnecessary suppression operator
+# Category : Style
+# Help Link: https://docs.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0080
+# Tags     : Telemetry, EnforceOnBuild_HighlyRecommended
+dotnet_diagnostic.IDE0080.severity = warning
+
+# Title    : 'typeof' can be converted  to 'nameof'
+# Category : Style
+# Help Link: https://docs.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0082
+# Tags     : Telemetry, EnforceOnBuild_Recommended
+dotnet_diagnostic.IDE0082.severity = warning
+
+# Title    : Use pattern matching
+# Category : Style
+# Help Link: https://docs.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0083
+# Tags     : Telemetry, EnforceOnBuild_Recommended
+dotnet_diagnostic.IDE0083.severity = silent
+csharp_style_prefer_not_pattern = true
+
+# Title    : Use 'new(...)'
+# Category : Style
+# Help Link: https://docs.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0090
+# Tags     : Telemetry, EnforceOnBuild_Recommended
+dotnet_diagnostic.IDE0090.severity = warning
+csharp_style_implicit_object_creation_when_type_is_apparent = true
+
+# Title    : Remove redundant equality
+# Category : Style
+# Help Link: https://docs.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0100
+# Tags     : Telemetry, EnforceOnBuild_Recommended
+# Comment  : S1125 triggers in more cases
+dotnet_diagnostic.IDE0100.severity = none
+
+# Title    : Remove unnecessary discard
+# Category : Style
+# Help Link: https://docs.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0110
+# Tags     : Telemetry, EnforceOnBuild_Recommended, Unnecessary
+dotnet_diagnostic.IDE0110.severity = warning
+
+# Title    : Simplify LINQ expression
+# Category : Style
+# Help Link: https://docs.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0120
+# Tags     : Telemetry, EnforceOnBuild_WhenExplicitlyEnabled
+dotnet_diagnostic.IDE0120.severity = silent
+
+# Title    : Namespace does not match folder structure
+# Category : Style
+# Help Link: https://docs.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0130
+# Tags     : Telemetry, EnforceOnBuild_Recommended
+dotnet_diagnostic.IDE0130.severity = silent
+
+# Title    : Prefer 'null' check over type check
+# Category : Style
+# Help Link: https://docs.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0150
+# Tags     : Telemetry, EnforceOnBuild_WhenExplicitlyEnabled
+dotnet_diagnostic.IDE0150.severity = warning
+csharp_style_prefer_null_check_over_type_check = true
+
+# Title    : Convert to block scoped namespace
+# Category : Style
+# Help Link: https://docs.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0160
+# Tags     : Telemetry, EnforceOnBuild_HighlyRecommended
+dotnet_diagnostic.IDE0160.severity = silent
+csharp_style_namespace_declarations = file_scoped
+
+# Title    : Convert to file-scoped namespace
+# Category : Style
+# Help Link: https://docs.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0161
+# Tags     : Telemetry, EnforceOnBuild_HighlyRecommended
+dotnet_diagnostic.IDE0161.severity = silent
+csharp_style_namespace_declarations = file_scoped
+
+# Title    : Property pattern can be simplified
+# Category : Style
+# Help Link: https://docs.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0170
+# Tags     : Telemetry, EnforceOnBuild_Recommended
+dotnet_diagnostic.IDE0170.severity = silent
+csharp_style_prefer_extended_property_pattern = true
+
+# Title    : Use tuple to swap values
+# Category : Style
+# Help Link: https://docs.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0180
+# Tags     : Telemetry, EnforceOnBuild_HighlyRecommended
+dotnet_diagnostic.IDE0180.severity = silent
+csharp_style_prefer_tuple_swap = true
+
+# Title    : Null check can be simplified
+# Category : Style
+# Help Link: https://docs.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0190
+# Tags     : Telemetry, EnforceOnBuild_WhenExplicitlyEnabled
+dotnet_diagnostic.IDE0190.severity = silent
+
+# Title    : Remove unnecessary lambda expression
+# Category : Style
+# Help Link: https://docs.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0200
+# Tags     : Telemetry, EnforceOnBuild_Recommended, Unnecessary
+dotnet_diagnostic.IDE0200.severity = silent
+
+# Title    : Convert to top-level statements
+# Category : Style
+# Help Link: https://docs.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0210
+# Tags     : Telemetry, EnforceOnBuild_WhenExplicitlyEnabled
+dotnet_diagnostic.IDE0210.severity = silent
+
+# Title    : Convert to 'Program.Main' style program
+# Category : Style
+# Help Link: https://docs.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0211
+# Tags     : Telemetry, EnforceOnBuild_WhenExplicitlyEnabled
+dotnet_diagnostic.IDE0211.severity = silent
+
+# Title    : Add explicit cast
+# Category : Style
+# Help Link: https://docs.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0220
+# Tags     : Telemetry, EnforceOnBuild_WhenExplicitlyEnabled
+dotnet_diagnostic.IDE0220.severity = silent
+
+# Title    : Use UTF-8 string literal
+# Category : Style
+# Help Link: https://docs.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0230
+# Tags     : Telemetry, EnforceOnBuild_WhenExplicitlyEnabled
+dotnet_diagnostic.IDE0230.severity = silent
+
+# Title    : Remove redundant nullable directive
+# Category : Style
+# Help Link: https://docs.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0240
+# Tags     : Telemetry, EnforceOnBuild_Recommended, Unnecessary
+dotnet_diagnostic.IDE0240.severity = warning
+
+# Title    : Remove unnecessary nullable directive
+# Category : Style
+# Help Link: https://docs.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0241
+# Tags     : Telemetry, EnforceOnBuild_Recommended, Unnecessary
+dotnet_diagnostic.IDE0241.severity = warning
+
+# Title    : Make struct 'readonly'
+# Category : Style
+# Help Link: https://docs.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0250
+# Tags     : Telemetry, EnforceOnBuild_Recommended
+dotnet_diagnostic.IDE0250.severity = warning
+
+# Title    : Delegate invocation can be simplified.
+# Category : Style
+# Help Link: https://docs.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide1005
+# Tags     : Telemetry, EnforceOnBuild_Recommended
+dotnet_diagnostic.IDE1005.severity = warning
+csharp_style_conditional_delegate_call = true
+
+# Title    : Naming Styles
+# Category : Style
+# Help Link: https://docs.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide1006
+# Tags     : Telemetry, EnforceOnBuild_Recommended
+dotnet_diagnostic.IDE1006.severity = warning
+dotnet_naming_rule.interface_should_be_ipascalcase.severity = warning
+dotnet_naming_rule.interface_should_be_ipascalcase.symbols = interface
+dotnet_naming_rule.interface_should_be_ipascalcase.style = ipascalcase
+dotnet_naming_rule.types_should_be_pascalcase.severity = warning
+dotnet_naming_rule.types_should_be_pascalcase.symbols = types
+dotnet_naming_rule.types_should_be_pascalcase.style = pascalcase
+dotnet_naming_rule.constant_should_be_pascalcase.severity = warning
+dotnet_naming_rule.constant_should_be_pascalcase.symbols = constant
+dotnet_naming_rule.constant_should_be_pascalcase.style = pascalcase
+dotnet_naming_rule.non_field_members_should_be_pascalcase.severity = warning
+dotnet_naming_rule.non_field_members_should_be_pascalcase.symbols = non_field_members
+dotnet_naming_rule.non_field_members_should_be_pascalcase.style = pascalcase
+dotnet_naming_rule.method_parameter_should_be_camelcase.severity = warning
+dotnet_naming_rule.method_parameter_should_be_camelcase.symbols = method_parameter
+dotnet_naming_rule.method_parameter_should_be_camelcase.style = camelcase
+dotnet_naming_rule.local_variable_should_be_camelcase.severity = warning
+dotnet_naming_rule.local_variable_should_be_camelcase.symbols = local_variable
+dotnet_naming_rule.local_variable_should_be_camelcase.style = camelcase
+dotnet_naming_rule.type_parameter_should_be_tpascalcase.severity = warning
+dotnet_naming_rule.type_parameter_should_be_tpascalcase.symbols = type_parameter
+dotnet_naming_rule.type_parameter_should_be_tpascalcase.style = tpascalcase
+dotnet_naming_rule.private_field_should_be__camelcase.severity = warning
+dotnet_naming_rule.private_field_should_be__camelcase.symbols = private_field
+dotnet_naming_rule.private_field_should_be__camelcase.style = _camelcase
+dotnet_naming_rule.field_should_be_pascalcase.severity = warning
+dotnet_naming_rule.field_should_be_pascalcase.symbols = field
+dotnet_naming_rule.field_should_be_pascalcase.style = pascalcase
+dotnet_naming_symbols.interface.applicable_kinds = interface
+dotnet_naming_symbols.interface.applicable_accessibilities = public, internal, private, protected, protected_internal, private_protected
+dotnet_naming_symbols.interface.required_modifiers =
+dotnet_naming_symbols.types.applicable_kinds = class, struct, interface, enum
+dotnet_naming_symbols.types.applicable_accessibilities = public, internal, private, protected, protected_internal, private_protected
+dotnet_naming_symbols.types.required_modifiers =
+dotnet_naming_symbols.non_field_members.applicable_kinds = property, event, method
+dotnet_naming_symbols.non_field_members.applicable_accessibilities = public, internal, private, protected, protected_internal, private_protected
+dotnet_naming_symbols.non_field_members.required_modifiers =
+dotnet_naming_symbols.method_parameter.applicable_kinds = parameter
+dotnet_naming_symbols.method_parameter.applicable_accessibilities = *
+dotnet_naming_symbols.method_parameter.required_modifiers =
+dotnet_naming_symbols.local_variable.applicable_kinds = local
+dotnet_naming_symbols.local_variable.applicable_accessibilities = local
+dotnet_naming_symbols.local_variable.required_modifiers =
+dotnet_naming_symbols.type_parameter.applicable_kinds = type_parameter
+dotnet_naming_symbols.type_parameter.applicable_accessibilities = *
+dotnet_naming_symbols.type_parameter.required_modifiers =
+dotnet_naming_symbols.constant.applicable_kinds = field, local
+dotnet_naming_symbols.constant.applicable_accessibilities = *
+dotnet_naming_symbols.constant.required_modifiers = const
+dotnet_naming_symbols.private_field.applicable_kinds = field
+dotnet_naming_symbols.private_field.applicable_accessibilities = private
+dotnet_naming_symbols.private_field.required_modifiers =
+dotnet_naming_symbols.field.applicable_kinds = field
+dotnet_naming_symbols.field.applicable_accessibilities = public, internal, protected, protected_internal, private_protected, local
+dotnet_naming_symbols.field.required_modifiers =
+dotnet_naming_style.pascalcase.required_prefix =
+dotnet_naming_style.pascalcase.required_suffix =
+dotnet_naming_style.pascalcase.word_separator =
+dotnet_naming_style.pascalcase.capitalization = pascal_case
+dotnet_naming_style.ipascalcase.required_prefix = I
+dotnet_naming_style.ipascalcase.required_suffix =
+dotnet_naming_style.ipascalcase.word_separator =
+dotnet_naming_style.ipascalcase.capitalization = pascal_case
+dotnet_naming_style.camelcase.required_prefix =
+dotnet_naming_style.camelcase.required_suffix =
+dotnet_naming_style.camelcase.word_separator =
+dotnet_naming_style.camelcase.capitalization = camel_case
+dotnet_naming_style._camelcase.required_prefix = _
+dotnet_naming_style._camelcase.required_suffix =
+dotnet_naming_style._camelcase.word_separator =
+dotnet_naming_style._camelcase.capitalization = camel_case
+dotnet_naming_style.tpascalcase.required_prefix = T
+dotnet_naming_style.tpascalcase.required_suffix =
+dotnet_naming_style.tpascalcase.word_separator =
+dotnet_naming_style.tpascalcase.capitalization = pascal_case
+
+# Title    : Avoid multiple blank lines
+# Category : Style
+# Help Link: https://docs.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide2000
+# Tags     : Telemetry, EnforceOnBuild_WhenExplicitlyEnabled
+dotnet_diagnostic.IDE2000.severity = warning
+dotnet_style_allow_multiple_blank_lines_experimental = false
+
+# Title    : Embedded statements must be on their own line
+# Category : Style
+# Help Link: https://docs.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide2001
+# Tags     : Telemetry, EnforceOnBuild_WhenExplicitlyEnabled
+dotnet_diagnostic.IDE2001.severity = warning
+
+# Title    : Consecutive braces must not have blank line between them
+# Category : Style
+# Help Link: https://docs.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide2002
+# Tags     : Telemetry, EnforceOnBuild_WhenExplicitlyEnabled
+dotnet_diagnostic.IDE2002.severity = warning
+
+# Title    : Blank line required between block and subsequent statement
+# Category : Style
+# Help Link: https://docs.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide2003
+# Tags     : Telemetry, EnforceOnBuild_WhenExplicitlyEnabled
+dotnet_diagnostic.IDE2003.severity = silent
+
+# Title    : Blank line not allowed after constructor initializer colon
+# Category : Style
+# Help Link: https://docs.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide2004
+# Tags     : Telemetry, EnforceOnBuild_WhenExplicitlyEnabled
+dotnet_diagnostic.IDE2004.severity = warning
+
+# Title    : 
+# Category : Style
+# Tags     : Telemetry, EnforceOnBuild_Never, NotConfigurable
+dotnet_diagnostic.RemoveUnnecessaryImportsFixable.severity = silent
+
+# Title    : XML comment analysis disabled
+# Category : StyleCop.CSharp.SpecialRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA0001.md
+dotnet_diagnostic.SA0001.severity = none
+
+# Title    : Invalid settings file
+# Category : StyleCop.CSharp.SpecialRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA0002.md
+dotnet_diagnostic.SA0002.severity = warning
+
+# Title    : Keywords should be spaced correctly
+# Category : StyleCop.CSharp.SpacingRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1000.md
+dotnet_diagnostic.SA1000.severity = none
+
+# Title    : Commas should be spaced correctly
+# Category : StyleCop.CSharp.SpacingRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1001.md
+dotnet_diagnostic.SA1001.severity = none
+
+# Title    : Semicolons should be spaced correctly
+# Category : StyleCop.CSharp.SpacingRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1002.md
+dotnet_diagnostic.SA1002.severity = none
+
+# Title    : Symbols should be spaced correctly
+# Category : StyleCop.CSharp.SpacingRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1003.md
+dotnet_diagnostic.SA1003.severity = none
+
+# Title    : Documentation lines should begin with single space
+# Category : StyleCop.CSharp.SpacingRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1004.md
+dotnet_diagnostic.SA1004.severity = warning
+
+# Title    : Single line comments should begin with single space
+# Category : StyleCop.CSharp.SpacingRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1005.md
+dotnet_diagnostic.SA1005.severity = warning
+
+# Title    : Preprocessor keywords should not be preceded by space
+# Category : StyleCop.CSharp.SpacingRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1006.md
+dotnet_diagnostic.SA1006.severity = warning
+
+# Title    : Operator keyword should be followed by space
+# Category : StyleCop.CSharp.SpacingRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1007.md
+dotnet_diagnostic.SA1007.severity = none
+
+# Title    : Opening parenthesis should be spaced correctly
+# Category : StyleCop.CSharp.SpacingRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1008.md
+dotnet_diagnostic.SA1008.severity = none
+
+# Title    : Closing parenthesis should be spaced correctly
+# Category : StyleCop.CSharp.SpacingRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1009.md
+dotnet_diagnostic.SA1009.severity = none
+
+# Title    : Opening square brackets should be spaced correctly
+# Category : StyleCop.CSharp.SpacingRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1010.md
+dotnet_diagnostic.SA1010.severity = none
+
+# Title    : Closing square brackets should be spaced correctly
+# Category : StyleCop.CSharp.SpacingRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1011.md
+dotnet_diagnostic.SA1011.severity = none
+
+# Title    : Opening braces should be spaced correctly
+# Category : StyleCop.CSharp.SpacingRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1012.md
+dotnet_diagnostic.SA1012.severity = none
+
+# Title    : Closing braces should be spaced correctly
+# Category : StyleCop.CSharp.SpacingRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1013.md
+dotnet_diagnostic.SA1013.severity = none
+
+# Title    : Opening generic brackets should be spaced correctly
+# Category : StyleCop.CSharp.SpacingRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1014.md
+dotnet_diagnostic.SA1014.severity = none
+
+# Title    : Closing generic brackets should be spaced correctly
+# Category : StyleCop.CSharp.SpacingRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1015.md
+dotnet_diagnostic.SA1015.severity = none
+
+# Title    : Opening attribute brackets should be spaced correctly
+# Category : StyleCop.CSharp.SpacingRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1016.md
+dotnet_diagnostic.SA1016.severity = none
+
+# Title    : Closing attribute brackets should be spaced correctly
+# Category : StyleCop.CSharp.SpacingRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1017.md
+dotnet_diagnostic.SA1017.severity = none
+
+# Title    : Nullable type symbols should be spaced correctly
+# Category : StyleCop.CSharp.SpacingRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1018.md
+dotnet_diagnostic.SA1018.severity = none
+
+# Title    : Member access symbols should be spaced correctly
+# Category : StyleCop.CSharp.SpacingRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1019.md
+dotnet_diagnostic.SA1019.severity = none
+
+# Title    : Increment decrement symbols should be spaced correctly
+# Category : StyleCop.CSharp.SpacingRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1020.md
+dotnet_diagnostic.SA1020.severity = none
+
+# Title    : Negative signs should be spaced correctly
+# Category : StyleCop.CSharp.SpacingRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1021.md
+dotnet_diagnostic.SA1021.severity = none
+
+# Title    : Positive signs should be spaced correctly
+# Category : StyleCop.CSharp.SpacingRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1022.md
+dotnet_diagnostic.SA1022.severity = none
+
+# Title    : Dereference and access of symbols should be spaced correctly
+# Category : StyleCop.CSharp.SpacingRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1023.md
+dotnet_diagnostic.SA1023.severity = none
+
+# Title    : Colons Should Be Spaced Correctly
+# Category : StyleCop.CSharp.SpacingRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1024.md
+dotnet_diagnostic.SA1024.severity = none
+
+# Title    : Code should not contain multiple whitespace in a row
+# Category : StyleCop.CSharp.SpacingRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1025.md
+dotnet_diagnostic.SA1025.severity = none
+
+# Title    : Code should not contain space after new or stackalloc keyword in implicitly typed array allocation
+# Category : StyleCop.CSharp.SpacingRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1026.md
+dotnet_diagnostic.SA1026.severity = none
+
+# Title    : Use tabs correctly
+# Category : StyleCop.CSharp.SpacingRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1027.md
+dotnet_diagnostic.SA1027.severity = warning
+
+# Title    : Code should not contain trailing whitespace
+# Category : StyleCop.CSharp.SpacingRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1028.md
+# Tags     : Unnecessary
+dotnet_diagnostic.SA1028.severity = warning
+
+# Title    : Do not prefix calls with base unless local implementation exists
+# Category : StyleCop.CSharp.ReadabilityRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1100.md
+dotnet_diagnostic.SA1100.severity = warning
+
+# Title    : Prefix local calls with this
+# Category : StyleCop.CSharp.ReadabilityRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1101.md
+dotnet_diagnostic.SA1101.severity = none
+
+# Title    : Query clause should follow previous clause
+# Category : StyleCop.CSharp.ReadabilityRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1102.md
+dotnet_diagnostic.SA1102.severity = warning
+
+# Title    : Query clauses should be on separate lines or all on one line
+# Category : StyleCop.CSharp.ReadabilityRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1103.md
+dotnet_diagnostic.SA1103.severity = warning
+
+# Title    : Query clause should begin on new line when previous clause spans multiple lines
+# Category : StyleCop.CSharp.ReadabilityRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1104.md
+dotnet_diagnostic.SA1104.severity = warning
+
+# Title    : Query clauses spanning multiple lines should begin on own line
+# Category : StyleCop.CSharp.ReadabilityRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1105.md
+dotnet_diagnostic.SA1105.severity = warning
+
+# Title    : Code should not contain empty statements
+# Category : StyleCop.CSharp.ReadabilityRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1106.md
+# Tags     : Unnecessary
+dotnet_diagnostic.SA1106.severity = warning
+
+# Title    : Code should not contain multiple statements on one line
+# Category : StyleCop.CSharp.ReadabilityRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1107.md
+dotnet_diagnostic.SA1107.severity = none
+
+# Title    : Block statements should not contain embedded comments
+# Category : StyleCop.CSharp.ReadabilityRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1108.md
+dotnet_diagnostic.SA1108.severity = warning
+
+# Title    : Block statements should not contain embedded regions
+# Category : StyleCop.CSharp.ReadabilityRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1109.md
+# Tags     : NotConfigurable
+dotnet_diagnostic.SA1109.severity = warning
+
+# Title    : Opening parenthesis or bracket should be on declaration line
+# Category : StyleCop.CSharp.ReadabilityRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1110.md
+dotnet_diagnostic.SA1110.severity = warning
+
+# Title    : Closing parenthesis should be on line of last parameter
+# Category : StyleCop.CSharp.ReadabilityRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1111.md
+dotnet_diagnostic.SA1111.severity = warning
+
+# Title    : Closing parenthesis should be on line of opening parenthesis
+# Category : StyleCop.CSharp.ReadabilityRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1112.md
+dotnet_diagnostic.SA1112.severity = warning
+
+# Title    : Comma should be on the same line as previous parameter
+# Category : StyleCop.CSharp.ReadabilityRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1113.md
+dotnet_diagnostic.SA1113.severity = warning
+
+# Title    : Parameter list should follow declaration
+# Category : StyleCop.CSharp.ReadabilityRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1114.md
+dotnet_diagnostic.SA1114.severity = warning
+
+# Title    : Parameter should follow comma
+# Category : StyleCop.CSharp.ReadabilityRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1115.md
+dotnet_diagnostic.SA1115.severity = none
+
+# Title    : Split parameters should start on line after declaration
+# Category : StyleCop.CSharp.ReadabilityRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1116.md
+dotnet_diagnostic.SA1116.severity = none
+
+# Title    : Parameters should be on same line or separate lines
+# Category : StyleCop.CSharp.ReadabilityRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1117.md
+dotnet_diagnostic.SA1117.severity = none
+
+# Title    : Parameter should not span multiple lines
+# Category : StyleCop.CSharp.ReadabilityRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1118.md
+dotnet_diagnostic.SA1118.severity = warning
+
+# Title    : Statement should not use unnecessary parenthesis
+# Category : StyleCop.CSharp.MaintainabilityRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1119.md
+dotnet_diagnostic.SA1119.severity = warning
+
+# Title    : Statement should not use unnecessary parenthesis
+# Category : StyleCop.CSharp.MaintainabilityRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1119.md
+# Tags     : Unnecessary, NotConfigurable
+dotnet_diagnostic.SA1119_p.severity = none
+
+# Title    : Comments should contain text
+# Category : StyleCop.CSharp.ReadabilityRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1120.md
+dotnet_diagnostic.SA1120.severity = warning
+
+# Title    : Use built-in type alias
+# Category : StyleCop.CSharp.ReadabilityRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1121.md
+# Tags     : Unnecessary
+dotnet_diagnostic.SA1121.severity = warning
+
+# Title    : Use string.Empty for empty strings
+# Category : StyleCop.CSharp.ReadabilityRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1122.md
+dotnet_diagnostic.SA1122.severity = none
+
+# Title    : Do not place regions within elements
+# Category : StyleCop.CSharp.ReadabilityRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1123.md
+dotnet_diagnostic.SA1123.severity = warning
+
+# Title    : Do not use regions
+# Category : StyleCop.CSharp.ReadabilityRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1124.md
+dotnet_diagnostic.SA1124.severity = none
+
+# Title    : Use shorthand for nullable types
+# Category : StyleCop.CSharp.ReadabilityRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1125.md
+dotnet_diagnostic.SA1125.severity = warning
+
+# Title    : Prefix calls correctly
+# Category : StyleCop.CSharp.ReadabilityRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1126.md
+# Tags     : NotConfigurable
+dotnet_diagnostic.SA1126.severity = none
+
+# Title    : Generic type constraints should be on their own line
+# Category : StyleCop.CSharp.ReadabilityRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1127.md
+dotnet_diagnostic.SA1127.severity = warning
+
+# Title    : Put constructor initializers on their own line
+# Category : StyleCop.CSharp.ReadabilityRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1128.md
+dotnet_diagnostic.SA1128.severity = warning
+
+# Title    : Do not use default value type constructor
+# Category : StyleCop.CSharp.ReadabilityRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1129.md
+dotnet_diagnostic.SA1129.severity = warning
+
+# Title    : Use lambda syntax
+# Category : StyleCop.CSharp.ReadabilityRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1130.md
+dotnet_diagnostic.SA1130.severity = warning
+
+# Title    : Use readable conditions
+# Category : StyleCop.CSharp.ReadabilityRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1131.md
+dotnet_diagnostic.SA1131.severity = warning
+
+# Title    : Do not combine fields
+# Category : StyleCop.CSharp.ReadabilityRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1132.md
+# Comment  : S1169 handles fields and variables
+dotnet_diagnostic.SA1132.severity = none
+
+# Title    : Do not combine attributes
+# Category : StyleCop.CSharp.ReadabilityRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1133.md
+dotnet_diagnostic.SA1133.severity = warning
+
+# Title    : Attributes should not share line
+# Category : StyleCop.CSharp.ReadabilityRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1134.md
+dotnet_diagnostic.SA1134.severity = none
+
+# Title    : Using directives should be qualified
+# Category : StyleCop.CSharp.ReadabilityRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1135.md
+dotnet_diagnostic.SA1135.severity = warning
+
+# Title    : Enum values should be on separate lines
+# Category : StyleCop.CSharp.ReadabilityRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1136.md
+dotnet_diagnostic.SA1136.severity = warning
+
+# Title    : Elements should have the same indentation
+# Category : StyleCop.CSharp.ReadabilityRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1137.md
+# Comment  : Doesn't work with file-scoped namespaces
+dotnet_diagnostic.SA1137.severity = none
+
+# Title    : Use literal suffix notation instead of casting
+# Category : StyleCop.CSharp.ReadabilityRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1139.md
+dotnet_diagnostic.SA1139.severity = warning
+
+# Title    : Use tuple syntax
+# Category : StyleCop.CSharp.ReadabilityRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1141.md
+dotnet_diagnostic.SA1141.severity = warning
+
+# Title    : Refer to tuple fields by name
+# Category : StyleCop.CSharp.ReadabilityRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1142.md
+dotnet_diagnostic.SA1142.severity = none
+
+# Title    : Using directives should be placed correctly
+# Category : StyleCop.CSharp.OrderingRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1200.md
+dotnet_diagnostic.SA1200.severity = none
+
+# Title    : Elements should appear in the correct order
+# Category : StyleCop.CSharp.OrderingRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1201.md
+dotnet_diagnostic.SA1201.severity = none
+
+# Title    : Elements should be ordered by access
+# Category : StyleCop.CSharp.OrderingRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1202.md
+dotnet_diagnostic.SA1202.severity = none
+
+# Title    : Constants should appear before fields
+# Category : StyleCop.CSharp.OrderingRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1203.md
+dotnet_diagnostic.SA1203.severity = warning
+
+# Title    : Static elements should appear before instance elements
+# Category : StyleCop.CSharp.OrderingRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1204.md
+dotnet_diagnostic.SA1204.severity = warning
+
+# Title    : Partial elements should declare access
+# Category : StyleCop.CSharp.OrderingRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1205.md
+dotnet_diagnostic.SA1205.severity = warning
+
+# Title    : Declaration keywords should follow order
+# Category : StyleCop.CSharp.OrderingRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1206.md
+dotnet_diagnostic.SA1206.severity = warning
+
+# Title    : Protected should come before internal
+# Category : StyleCop.CSharp.OrderingRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1207.md
+dotnet_diagnostic.SA1207.severity = warning
+
+# Title    : System using directives should be placed before other using directives
+# Category : StyleCop.CSharp.OrderingRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1208.md
+dotnet_diagnostic.SA1208.severity = warning
+
+# Title    : Using alias directives should be placed after other using directives
+# Category : StyleCop.CSharp.OrderingRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1209.md
+dotnet_diagnostic.SA1209.severity = warning
+
+# Title    : Using directives should be ordered alphabetically by namespace
+# Category : StyleCop.CSharp.OrderingRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1210.md
+dotnet_diagnostic.SA1210.severity = warning
+
+# Title    : Using alias directives should be ordered alphabetically by alias name
+# Category : StyleCop.CSharp.OrderingRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1211.md
+dotnet_diagnostic.SA1211.severity = warning
+
+# Title    : Property accessors should follow order
+# Category : StyleCop.CSharp.OrderingRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1212.md
+dotnet_diagnostic.SA1212.severity = warning
+
+# Title    : Event accessors should follow order
+# Category : StyleCop.CSharp.OrderingRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1213.md
+dotnet_diagnostic.SA1213.severity = warning
+
+# Title    : Readonly fields should appear before non-readonly fields
+# Category : StyleCop.CSharp.OrderingRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1214.md
+dotnet_diagnostic.SA1214.severity = warning
+
+# Title    : Using static directives should be placed at the correct location
+# Category : StyleCop.CSharp.OrderingRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1216.md
+dotnet_diagnostic.SA1216.severity = warning
+
+# Title    : Using static directives should be ordered alphabetically
+# Category : StyleCop.CSharp.OrderingRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1217.md
+dotnet_diagnostic.SA1217.severity = warning
+
+# Title    : Element should begin with upper-case letter
+# Category : StyleCop.CSharp.NamingRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1300.md
+dotnet_diagnostic.SA1300.severity = none
+
+# Title    : Element should begin with lower-case letter
+# Category : StyleCop.CSharp.NamingRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1301.md
+# Tags     : NotConfigurable
+dotnet_diagnostic.SA1301.severity = none
+
+# Title    : Interface names should begin with I
+# Category : StyleCop.CSharp.NamingRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1302.md
+dotnet_diagnostic.SA1302.severity = none
+
+# Title    : Const field names should begin with upper-case letter
+# Category : StyleCop.CSharp.NamingRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1303.md
+dotnet_diagnostic.SA1303.severity = none
+
+# Title    : Non-private readonly fields should begin with upper-case letter
+# Category : StyleCop.CSharp.NamingRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1304.md
+dotnet_diagnostic.SA1304.severity = none
+
+# Title    : Field names should not use Hungarian notation
+# Category : StyleCop.CSharp.NamingRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1305.md
+dotnet_diagnostic.SA1305.severity = none
+
+# Title    : Field names should begin with lower-case letter
+# Category : StyleCop.CSharp.NamingRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1306.md
+dotnet_diagnostic.SA1306.severity = none
+
+# Title    : Accessible fields should begin with upper-case letter
+# Category : StyleCop.CSharp.NamingRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1307.md
+dotnet_diagnostic.SA1307.severity = none
+
+# Title    : Variable names should not be prefixed
+# Category : StyleCop.CSharp.NamingRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1308.md
+dotnet_diagnostic.SA1308.severity = none
+
+# Title    : Field names should not begin with underscore
+# Category : StyleCop.CSharp.NamingRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1309.md
+dotnet_diagnostic.SA1309.severity = none
+
+# Title    : Field names should not contain underscore
+# Category : StyleCop.CSharp.NamingRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1310.md
+dotnet_diagnostic.SA1310.severity = warning
+
+# Title    : Static readonly fields should begin with upper-case letter
+# Category : StyleCop.CSharp.NamingRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1311.md
+dotnet_diagnostic.SA1311.severity = none
+
+# Title    : Variable names should begin with lower-case letter
+# Category : StyleCop.CSharp.NamingRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1312.md
+dotnet_diagnostic.SA1312.severity = none
+
+# Title    : Parameter names should begin with lower-case letter
+# Category : StyleCop.CSharp.NamingRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1313.md
+dotnet_diagnostic.SA1313.severity = none
+
+# Title    : Type parameter names should begin with T
+# Category : StyleCop.CSharp.NamingRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1314.md
+dotnet_diagnostic.SA1314.severity = none
+
+# Title    : Tuple element names should use correct casing
+# Category : StyleCop.CSharp.NamingRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1316.md
+dotnet_diagnostic.SA1316.severity = warning
+
+# Title    : Access modifier should be declared
+# Category : StyleCop.CSharp.MaintainabilityRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1400.md
+dotnet_diagnostic.SA1400.severity = warning
+
+# Title    : Fields should be private
+# Category : StyleCop.CSharp.MaintainabilityRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1401.md
+dotnet_diagnostic.SA1401.severity = none
+
+# Title    : File may only contain a single type
+# Category : StyleCop.CSharp.MaintainabilityRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1402.md
+dotnet_diagnostic.SA1402.severity = warning
+
+# Title    : File may only contain a single namespace
+# Category : StyleCop.CSharp.MaintainabilityRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1403.md
+dotnet_diagnostic.SA1403.severity = warning
+
+# Title    : Code analysis suppression should have justification
+# Category : StyleCop.CSharp.MaintainabilityRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1404.md
+dotnet_diagnostic.SA1404.severity = warning
+
+# Title    : Debug.Assert should provide message text
+# Category : StyleCop.CSharp.MaintainabilityRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1405.md
+dotnet_diagnostic.SA1405.severity = warning
+
+# Title    : Debug.Fail should provide message text
+# Category : StyleCop.CSharp.MaintainabilityRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1406.md
+dotnet_diagnostic.SA1406.severity = warning
+
+# Title    : Arithmetic expressions should declare precedence
+# Category : StyleCop.CSharp.MaintainabilityRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1407.md
+dotnet_diagnostic.SA1407.severity = warning
+
+# Title    : Conditional expressions should declare precedence
+# Category : StyleCop.CSharp.MaintainabilityRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1408.md
+dotnet_diagnostic.SA1408.severity = warning
+
+# Title    : Remove unnecessary code
+# Category : StyleCop.CSharp.MaintainabilityRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1409.md
+# Tags     : NotConfigurable
+dotnet_diagnostic.SA1409.severity = warning
+
+# Title    : Remove delegate parenthesis when possible
+# Category : StyleCop.CSharp.MaintainabilityRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1410.md
+# Tags     : Unnecessary
+dotnet_diagnostic.SA1410.severity = warning
+
+# Title    : Attribute constructor should not use unnecessary parenthesis
+# Category : StyleCop.CSharp.MaintainabilityRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1411.md
+# Tags     : Unnecessary
+dotnet_diagnostic.SA1411.severity = warning
+
+# Title    : Store files as UTF-8 with byte order mark
+# Category : StyleCop.CSharp.MaintainabilityRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1412.md
+# Comment  : Pedantic
+dotnet_diagnostic.SA1412.severity = none
+
+# Title    : Use trailing comma in multi-line initializers
+# Category : StyleCop.CSharp.MaintainabilityRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1413.md
+dotnet_diagnostic.SA1413.severity = none
+
+# Title    : Tuple types in signatures should have element names
+# Category : StyleCop.CSharp.ReadabilityRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1414.md
+dotnet_diagnostic.SA1414.severity = warning
+
+# Title    : Braces for multi-line statements should not share line
+# Category : StyleCop.CSharp.LayoutRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1500.md
+dotnet_diagnostic.SA1500.severity = warning
+
+# Title    : Statement should not be on a single line
+# Category : StyleCop.CSharp.LayoutRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1501.md
+dotnet_diagnostic.SA1501.severity = warning
+
+# Title    : Element should not be on a single line
+# Category : StyleCop.CSharp.LayoutRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1502.md
+dotnet_diagnostic.SA1502.severity = warning
+
+# Title    : Braces should not be omitted
+# Category : StyleCop.CSharp.LayoutRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1503.md
+dotnet_diagnostic.SA1503.severity = none
+
+# Title    : All accessors should be single-line or multi-line
+# Category : StyleCop.CSharp.LayoutRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1504.md
+dotnet_diagnostic.SA1504.severity = warning
+
+# Title    : Opening braces should not be followed by blank line
+# Category : StyleCop.CSharp.LayoutRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1505.md
+dotnet_diagnostic.SA1505.severity = warning
+
+# Title    : Element documentation headers should not be followed by blank line
+# Category : StyleCop.CSharp.LayoutRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1506.md
+dotnet_diagnostic.SA1506.severity = warning
+
+# Title    : Code should not contain multiple blank lines in a row
+# Category : StyleCop.CSharp.LayoutRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1507.md
+dotnet_diagnostic.SA1507.severity = none
+
+# Title    : Closing braces should not be preceded by blank line
+# Category : StyleCop.CSharp.LayoutRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1508.md
+dotnet_diagnostic.SA1508.severity = none
+
+# Title    : Opening braces should not be preceded by blank line
+# Category : StyleCop.CSharp.LayoutRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1509.md
+dotnet_diagnostic.SA1509.severity = warning
+
+# Title    : Chained statement blocks should not be preceded by blank line
+# Category : StyleCop.CSharp.LayoutRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1510.md
+dotnet_diagnostic.SA1510.severity = warning
+
+# Title    : While-do footer should not be preceded by blank line
+# Category : StyleCop.CSharp.LayoutRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1511.md
+dotnet_diagnostic.SA1511.severity = warning
+
+# Title    : Single-line comments should not be followed by blank line
+# Category : StyleCop.CSharp.LayoutRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1512.md
+dotnet_diagnostic.SA1512.severity = none
+
+# Title    : Closing brace should be followed by blank line
+# Category : StyleCop.CSharp.LayoutRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1513.md
+dotnet_diagnostic.SA1513.severity = warning
+
+# Title    : Element documentation header should be preceded by blank line
+# Category : StyleCop.CSharp.LayoutRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1514.md
+dotnet_diagnostic.SA1514.severity = warning
+
+# Title    : Single-line comment should be preceded by blank line
+# Category : StyleCop.CSharp.LayoutRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1515.md
+dotnet_diagnostic.SA1515.severity = warning
+
+# Title    : Elements should be separated by blank line
+# Category : StyleCop.CSharp.LayoutRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1516.md
+dotnet_diagnostic.SA1516.severity = none
+
+# Title    : Code should not contain blank lines at start of file
+# Category : StyleCop.CSharp.LayoutRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1517.md
+dotnet_diagnostic.SA1517.severity = warning
+
+# Title    : Use line endings correctly at end of file
+# Category : StyleCop.CSharp.LayoutRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1518.md
+dotnet_diagnostic.SA1518.severity = none
+
+# Title    : Braces should not be omitted from multi-line child statement
+# Category : StyleCop.CSharp.LayoutRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1519.md
+dotnet_diagnostic.SA1519.severity = warning
+
+# Title    : Use braces consistently
+# Category : StyleCop.CSharp.LayoutRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1520.md
+dotnet_diagnostic.SA1520.severity = warning
+
+# Title    : Elements should be documented
+# Category : StyleCop.CSharp.DocumentationRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1600.md
+dotnet_diagnostic.SA1600.severity = warning
+
+# Title    : Partial elements should be documented
+# Category : StyleCop.CSharp.DocumentationRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1601.md
+dotnet_diagnostic.SA1601.severity = none
+
+# Title    : Enumeration items should be documented
+# Category : StyleCop.CSharp.DocumentationRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1602.md
+dotnet_diagnostic.SA1602.severity = warning
+
+# Title    : Documentation should contain valid XML
+# Category : StyleCop.CSharp.DocumentationRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1603.md
+# Tags     : NotConfigurable
+dotnet_diagnostic.SA1603.severity = warning
+
+# Title    : Element documentation should have summary
+# Category : StyleCop.CSharp.DocumentationRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1604.md
+dotnet_diagnostic.SA1604.severity = warning
+
+# Title    : Partial element documentation should have summary
+# Category : StyleCop.CSharp.DocumentationRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1605.md
+dotnet_diagnostic.SA1605.severity = warning
+
+# Title    : Element documentation should have summary text
+# Category : StyleCop.CSharp.DocumentationRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1606.md
+dotnet_diagnostic.SA1606.severity = warning
+
+# Title    : Partial element documentation should have summary text
+# Category : StyleCop.CSharp.DocumentationRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1607.md
+dotnet_diagnostic.SA1607.severity = warning
+
+# Title    : Element documentation should not have default summary
+# Category : StyleCop.CSharp.DocumentationRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1608.md
+dotnet_diagnostic.SA1608.severity = warning
+
+# Title    : Property documentation should have value
+# Category : StyleCop.CSharp.DocumentationRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1609.md
+dotnet_diagnostic.SA1609.severity = none
+
+# Title    : Property documentation should have value text
+# Category : StyleCop.CSharp.DocumentationRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1610.md
+dotnet_diagnostic.SA1610.severity = none
+
+# Title    : Element parameters should be documented
+# Category : StyleCop.CSharp.DocumentationRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1611.md
+dotnet_diagnostic.SA1611.severity = warning
+
+# Title    : Element parameter documentation should match element parameters
+# Category : StyleCop.CSharp.DocumentationRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1612.md
+dotnet_diagnostic.SA1612.severity = warning
+
+# Title    : Element parameter documentation should declare parameter name
+# Category : StyleCop.CSharp.DocumentationRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1613.md
+dotnet_diagnostic.SA1613.severity = warning
+
+# Title    : Element parameter documentation should have text
+# Category : StyleCop.CSharp.DocumentationRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1614.md
+dotnet_diagnostic.SA1614.severity = warning
+
+# Title    : Element return value should be documented
+# Category : StyleCop.CSharp.DocumentationRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1615.md
+dotnet_diagnostic.SA1615.severity = warning
+
+# Title    : Element return value documentation should have text
+# Category : StyleCop.CSharp.DocumentationRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1616.md
+dotnet_diagnostic.SA1616.severity = warning
+
+# Title    : Void return value should not be documented
+# Category : StyleCop.CSharp.DocumentationRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1617.md
+dotnet_diagnostic.SA1617.severity = warning
+
+# Title    : Generic type parameters should be documented
+# Category : StyleCop.CSharp.DocumentationRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1618.md
+dotnet_diagnostic.SA1618.severity = warning
+
+# Title    : Generic type parameters should be documented partial class
+# Category : StyleCop.CSharp.DocumentationRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1619.md
+dotnet_diagnostic.SA1619.severity = warning
+
+# Title    : Generic type parameter documentation should match type parameters
+# Category : StyleCop.CSharp.DocumentationRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1620.md
+dotnet_diagnostic.SA1620.severity = warning
+
+# Title    : Generic type parameter documentation should declare parameter name
+# Category : StyleCop.CSharp.DocumentationRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1621.md
+dotnet_diagnostic.SA1621.severity = warning
+
+# Title    : Generic type parameter documentation should have text
+# Category : StyleCop.CSharp.DocumentationRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1622.md
+dotnet_diagnostic.SA1622.severity = warning
+
+# Title    : Property summary documentation should match accessors
+# Category : StyleCop.CSharp.DocumentationRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1623.md
+dotnet_diagnostic.SA1623.severity = warning
+
+# Title    : Property summary documentation should omit accessor with restricted access
+# Category : StyleCop.CSharp.DocumentationRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1624.md
+dotnet_diagnostic.SA1624.severity = warning
+
+# Title    : Element documentation should not be copied and pasted
+# Category : StyleCop.CSharp.DocumentationRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1625.md
+dotnet_diagnostic.SA1625.severity = warning
+
+# Title    : Single-line comments should not use documentation style slashes
+# Category : StyleCop.CSharp.DocumentationRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1626.md
+dotnet_diagnostic.SA1626.severity = warning
+
+# Title    : Documentation text should not be empty
+# Category : StyleCop.CSharp.DocumentationRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1627.md
+dotnet_diagnostic.SA1627.severity = warning
+
+# Title    : Documentation text should begin with a capital letter
+# Category : StyleCop.CSharp.DocumentationRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1628.md
+# Tags     : NotConfigurable
+dotnet_diagnostic.SA1628.severity = warning
+
+# Title    : Documentation text should end with a period
+# Category : StyleCop.CSharp.DocumentationRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1629.md
+dotnet_diagnostic.SA1629.severity = warning
+
+# Title    : Documentation text should contain whitespace
+# Category : StyleCop.CSharp.DocumentationRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1630.md
+# Tags     : NotConfigurable
+dotnet_diagnostic.SA1630.severity = warning
+
+# Title    : Documentation should meet character percentage
+# Category : StyleCop.CSharp.DocumentationRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1631.md
+# Tags     : NotConfigurable
+dotnet_diagnostic.SA1631.severity = warning
+
+# Title    : Documentation text should meet minimum character length
+# Category : StyleCop.CSharp.DocumentationRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1632.md
+# Tags     : NotConfigurable
+dotnet_diagnostic.SA1632.severity = warning
+
+# Title    : File should have header
+# Category : StyleCop.CSharp.DocumentationRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1633.md
+dotnet_diagnostic.SA1633.severity = none
+
+# Title    : File header should show copyright
+# Category : StyleCop.CSharp.DocumentationRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1634.md
+dotnet_diagnostic.SA1634.severity = none
+
+# Title    : File header should have copyright text
+# Category : StyleCop.CSharp.DocumentationRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1635.md
+dotnet_diagnostic.SA1635.severity = none
+
+# Title    : File header copyright text should match
+# Category : StyleCop.CSharp.DocumentationRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1636.md
+dotnet_diagnostic.SA1636.severity = none
+
+# Title    : File header should contain file name
+# Category : StyleCop.CSharp.DocumentationRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1637.md
+dotnet_diagnostic.SA1637.severity = none
+
+# Title    : File header file name documentation should match file name
+# Category : StyleCop.CSharp.DocumentationRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1638.md
+dotnet_diagnostic.SA1638.severity = none
+
+# Title    : File header should have summary
+# Category : StyleCop.CSharp.DocumentationRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1639.md
+dotnet_diagnostic.SA1639.severity = none
+
+# Title    : File header should have valid company text
+# Category : StyleCop.CSharp.DocumentationRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1640.md
+dotnet_diagnostic.SA1640.severity = none
+
+# Title    : File header company name text should match
+# Category : StyleCop.CSharp.DocumentationRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1641.md
+dotnet_diagnostic.SA1641.severity = none
+
+# Title    : Constructor summary documentation should begin with standard text
+# Category : StyleCop.CSharp.DocumentationRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1642.md
+dotnet_diagnostic.SA1642.severity = warning
+
+# Title    : Destructor summary documentation should begin with standard text
+# Category : StyleCop.CSharp.DocumentationRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1643.md
+dotnet_diagnostic.SA1643.severity = warning
+
+# Title    : Documentation headers should not contain blank lines
+# Category : StyleCop.CSharp.DocumentationRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1644.md
+# Tags     : NotConfigurable
+dotnet_diagnostic.SA1644.severity = warning
+
+# Title    : Included documentation file does not exist
+# Category : StyleCop.CSharp.DocumentationRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1645.md
+# Tags     : NotConfigurable
+dotnet_diagnostic.SA1645.severity = warning
+
+# Title    : Included documentation XPath does not exist
+# Category : StyleCop.CSharp.DocumentationRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1646.md
+# Tags     : NotConfigurable
+dotnet_diagnostic.SA1646.severity = warning
+
+# Title    : Include node does not contain valid file and path
+# Category : StyleCop.CSharp.DocumentationRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1647.md
+# Tags     : NotConfigurable
+dotnet_diagnostic.SA1647.severity = warning
+
+# Title    : inheritdoc should be used with inheriting class
+# Category : StyleCop.CSharp.DocumentationRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1648.md
+dotnet_diagnostic.SA1648.severity = warning
+
+# Title    : File name should match first type name
+# Category : StyleCop.CSharp.DocumentationRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1649.md
+dotnet_diagnostic.SA1649.severity = warning
+
+# Title    : Element documentation should be spelled correctly
+# Category : StyleCop.CSharp.DocumentationRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1650.md
+# Tags     : NotConfigurable
+# Comment  : Deprecated
+dotnet_diagnostic.SA1650.severity = warning
+
+# Title    : Do not use placeholder elements
+# Category : StyleCop.CSharp.DocumentationRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1651.md
+dotnet_diagnostic.SA1651.severity = warning
+
+# Title    : Do not prefix local calls with 'this.'
+# Category : StyleCop.CSharp.ReadabilityRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SX1101.md
+# Tags     : Unnecessary
+dotnet_diagnostic.SX1101.severity = warning
+
+# Title    : Field names should begin with underscore
+# Category : StyleCop.CSharp.NamingRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SX1309.md
+dotnet_diagnostic.SX1309.severity = none
+
+# Title    : Static field names should begin with underscore
+# Category : StyleCop.CSharp.NamingRules
+# Help Link: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SX1309S.md
+dotnet_diagnostic.SX1309S.severity = none
+

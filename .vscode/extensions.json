@@ -1,7 +1,9 @@
 {
   "recommendations": [
     "EditorConfig.EditorConfig",
+    "github.vscode-github-actions",
     "k--kato.docomment",
-    "ms-dotnettools.csharp"
+    "ms-dotnettools.csharp",
+    "yzhang.markdown-all-in-one"
   ]
 }

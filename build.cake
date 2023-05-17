@@ -10,6 +10,7 @@ var configuration = Argument<string>("configuration", "Release");
 //////////////////////////////////////////////////////////////////////
 
 #Tool "xunit.runner.console&version=2.4.2"
+#Tool "dotnet-stryker&version=3.7.1"
 
 //////////////////////////////////////////////////////////////////////
 // EXTERNAL NUGET LIBRARIES
@@ -45,6 +46,10 @@ Dictionary<string, object> gitVersionOutput;
 string nugetVersion;
 string assemblyVersion;
 string assemblySemver;
+
+// Stryker / Mutation Testing
+var strykerConfig = File("./eng/stryker-config.json");
+var strykerOutput = Directory("StrykerOutput");
 
 ///////////////////////////////////////////////////////////////////////////////
 // INNER CLASSES
@@ -84,7 +89,8 @@ Task("__Clean")
     {
         testResultsDir,
         nupkgDestDir,
-        artifactsDir
+        artifactsDir,
+        strykerOutput
   	};
 
     CleanDirectories(cleanDirectories);
@@ -179,6 +185,9 @@ Task("__BuildSolutions")
             },
         };
 
+        dotNetBuildSettings.MSBuildSettings.Properties["ContinuousIntegrationBuild"] = new[] { Environment.GetEnvironmentVariable("CI") ?? "false" };
+        dotNetBuildSettings.MSBuildSettings.Properties["Deterministic"] = new[] { "true" };
+
         DotNetBuild(solution.ToString(), dotNetBuildSettings);
     }
 });
@@ -193,24 +202,68 @@ Task("__RunTests")
         loggers = new[] { "GitHubActions;report-warnings=false" };
     }
 
-    foreach(var specsProj in GetFiles("./src/**/*.Specs.csproj"))
+    var projects = GetFiles("./src/**/*.Tests.csproj").Concat(GetFiles("./src/**/*.Specs.csproj"));
+
+    foreach(var proj in projects)
     {
-        DotNetTest(specsProj.FullPath, new DotNetTestSettings
+        DotNetTest(proj.FullPath, new DotNetTestSettings
         {
             Configuration = configuration,
             Loggers = loggers,
             NoBuild = true,
+            // Commented, because it causes random crashes on Windows
+            // ArgumentCustomization = args => args.Append($"--blame-hang-timeout 10s")
         });
     }
 });
 
-Task("__CreateSignedNuGetPackage")
+Task("__RunMutationTests")
     .Does(() =>
 {
-    var packageName = projectName;
+    var runMutationTests = EnvironmentVariable("RUN_MUTATION_TESTS") switch
+    {
+        "false" => false,
+        _ => true
+    };
 
-    Information("Building {0}.{1}.nupkg", packageName, nugetVersion);
+    if (!runMutationTests)
+    {
+        return;
+    }
+        
+    TestProject(File("./src/Polly.Core/Polly.Core.csproj"), File("./src/Polly.Core.Tests/Polly.Core.Tests.csproj"), "Polly.Core.csproj");
+    TestProject(File("./src/Polly.RateLimiting/Polly.RateLimiting.csproj"), File("./src/Polly.RateLimiting.Tests/Polly.RateLimiting.Tests.csproj"), "Polly.RateLimiting.csproj");
+    TestProject(File("./src/Polly.Extensions/Polly.Extensions.csproj"), File("./src/Polly.Extensions.Tests/Polly.Extensions.Tests.csproj"), "Polly.Extensions.csproj");
 
+    TestProject(File("./src/Polly/Polly.csproj"), File("./src/Polly.Specs/Polly.Specs.csproj"), "Polly.csproj");
+
+    void TestProject(FilePath proj, FilePath testProj, string project)
+    {
+        var dotNetBuildSettings = new DotNetBuildSettings
+        {
+            Configuration = "Debug",
+            Verbosity = DotNetVerbosity.Minimal,
+            NoRestore = true
+        };
+
+        DotNetBuild(proj.ToString(), dotNetBuildSettings);
+
+        var strykerPath = Context.Tools.Resolve("Stryker.CLI.dll");
+        var mutationScore = XmlPeek(proj, "/Project/PropertyGroup/MutationScore/text()", new XmlPeekSettings { SuppressWarning = true });
+        var score = int.Parse(mutationScore);
+
+        Information($"Running mutation tests for '{proj}'. Test Project: '{testProj}'");
+        var result = StartProcess("dotnet", $"{strykerPath} --project {project} --test-project {testProj} --break-at {score} --config-file {strykerConfig} --output {strykerOutput}/{project}");
+        if (result != 0)
+        {
+            throw new InvalidOperationException($"The mutation testing of '{project}' project failed.");
+        }
+    }
+});
+
+Task("__CreateSignedNuGetPackages")
+    .Does(() =>
+{
     var dotNetPackSettings = new DotNetPackSettings
     {
         Configuration = configuration,
@@ -225,7 +278,17 @@ Task("__CreateSignedNuGetPackage")
         },
     };
 
-    DotNetPack(System.IO.Path.Combine(srcDir, projectName + ".sln"), dotNetPackSettings);
+    Information("Building Polly.Core.{0}.nupkg", nugetVersion);
+    DotNetPack(System.IO.Path.Combine(srcDir, "Polly.Core", "Polly.Core.csproj"), dotNetPackSettings);
+
+    Information("Building Polly.{0}.nupkg", nugetVersion);
+    DotNetPack(System.IO.Path.Combine(srcDir, "Polly", "Polly.csproj"), dotNetPackSettings);
+
+    Information("Building Polly.RateLimiting.{0}.nupkg", nugetVersion);
+    DotNetPack(System.IO.Path.Combine(srcDir, "Polly.RateLimiting", "Polly.RateLimiting.csproj"), dotNetPackSettings);
+
+    Information("Building Polly.Extensions.{0}.nupkg", nugetVersion);
+    DotNetPack(System.IO.Path.Combine(srcDir, "Polly.Extensions", "Polly.Extensions.csproj"), dotNetPackSettings);
 });
 
 //////////////////////////////////////////////////////////////////////
@@ -238,7 +301,8 @@ Task("Build")
     .IsDependentOn("__UpdateAssemblyVersionInformation")
     .IsDependentOn("__BuildSolutions")
     .IsDependentOn("__RunTests")
-    .IsDependentOn("__CreateSignedNuGetPackage");
+    .IsDependentOn("__RunMutationTests")
+    .IsDependentOn("__CreateSignedNuGetPackages");
 
 ///////////////////////////////////////////////////////////////////////////////
 // PRIMARY TARGETS
