@@ -14,18 +14,18 @@ internal class PrimaryStringTasks
 
     public PrimaryStringTasks(TimeProvider timeProvider) => _timeProvider = timeProvider;
 
-    public static Task<string> InstantTask()
+    public static ValueTask<string> InstantTask()
     {
-        return Task.FromResult(InstantTaskResult);
+        return new ValueTask<string>(InstantTaskResult);
     }
 
-    public async Task<string> FastTask(CancellationToken token)
+    public async ValueTask<string> FastTask(CancellationToken token)
     {
         await _timeProvider.Delay(TimeSpan.FromMilliseconds(10), token);
         return FastTaskResult;
     }
 
-    public async Task<string> SlowTask(CancellationToken token)
+    public async ValueTask<string> SlowTask(CancellationToken token)
     {
         await _timeProvider.Delay(TimeSpan.FromDays(1), token);
         return SlowTaskResult;

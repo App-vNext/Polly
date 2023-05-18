@@ -69,7 +69,7 @@ public class HedgingResilienceStrategyTests : IDisposable
         var strategy = Create();
         _cts.Cancel();
 
-        await strategy.Invoking(s => s.ExecuteAsync(_ => Task.FromResult(Success), _cts.Token))
+        await strategy.Invoking(s => s.ExecuteAsync(_ => new ValueTask<string>(Success), _cts.Token).AsTask())
             .Should()
             .ThrowAsync<OperationCanceledException>();
     }
@@ -303,7 +303,7 @@ public class HedgingResilienceStrategyTests : IDisposable
         var strategy = Create();
 
         // act
-        var result = await strategy.ExecuteAsync((_, _) => Task.FromResult("primary"), primaryContext, "dummy");
+        var result = await strategy.ExecuteAsync((_, _) => new ValueTask<string>("primary"), primaryContext, "dummy");
 
         // assert
         primaryContext.CancellationToken.Should().Be(cancellationSource.Token);
@@ -349,7 +349,7 @@ public class HedgingResilienceStrategyTests : IDisposable
                 return primaryFails ? Failure : Success;
             },
             primaryContext,
-            "state");
+            "state").AsTask();
 
         // assert
 
@@ -394,7 +394,7 @@ public class HedgingResilienceStrategyTests : IDisposable
                 primaryContext.Properties.TryGetValue(key2, out var val).Should().BeTrue();
                 val.Should().Be("my-value-2");
                 context.Properties.Set(key, "my-value");
-                return Task.FromResult("primary");
+                return new ValueTask<string>("primary");
             },
             primaryContext, "dummy");
 
@@ -426,7 +426,7 @@ public class HedgingResilienceStrategyTests : IDisposable
         var strategy = Create();
 
         // act
-        var result = await strategy.ExecuteAsync((_, _) => Task.FromResult(Failure), primaryContext, "state");
+        var result = await strategy.ExecuteAsync((_, _) => new ValueTask<string>(Failure), primaryContext, "state");
 
         // assert
         result.Should().Be(Success);
@@ -513,7 +513,7 @@ public class HedgingResilienceStrategyTests : IDisposable
 
         cts.Cancel();
 
-        async Task<string> SlowTask(CancellationToken cancellationToken)
+        async ValueTask<string> SlowTask(CancellationToken cancellationToken)
         {
             var delay = Task.Delay(TimeSpan.FromDays(1), cancellationToken);
             backgroundTasks.Add(delay);
@@ -535,7 +535,7 @@ public class HedgingResilienceStrategyTests : IDisposable
         // arrange
         int executions = 0;
         using var allExecutionsReached = new ManualResetEvent(false);
-        ConfigureHedging(context => Execute(context.CancellationToken));
+        ConfigureHedging(context => Execute(context.CancellationToken).AsTask());
         _options.HedgingDelay = TimeSpan.Zero;
 
         // act
@@ -546,7 +546,7 @@ public class HedgingResilienceStrategyTests : IDisposable
         _timeProvider.Advance(LongDelay);
         await task;
 
-        async Task<string> Execute(CancellationToken token)
+        async ValueTask<string> Execute(CancellationToken token)
         {
             if (Interlocked.Increment(ref executions) == _options.MaxHedgedAttempts)
             {
@@ -565,7 +565,7 @@ public class HedgingResilienceStrategyTests : IDisposable
         bool executing = false;
         int executions = 0;
         using var allExecutions = new ManualResetEvent(true);
-        ConfigureHedging(context => Execute(context.CancellationToken));
+        ConfigureHedging(context => Execute(context.CancellationToken).AsTask());
 
         // act
         var pending = Create().ExecuteAsync(Execute, _cts.Token);
@@ -573,7 +573,7 @@ public class HedgingResilienceStrategyTests : IDisposable
         // assert
         Assert.True(allExecutions.WaitOne(AssertTimeout));
 
-        async Task<string> Execute(CancellationToken token)
+        async ValueTask<string> Execute(CancellationToken token)
         {
             if (executing)
             {
@@ -625,7 +625,7 @@ public class HedgingResilienceStrategyTests : IDisposable
         });
 
         var strategy = Create();
-        await strategy.Invoking(s => s.ExecuteAsync<string>(_ => throw new InvalidCastException())).Should().ThrowAsync<BadImageFormatException>();
+        await strategy.Invoking(s => s.ExecuteAsync<string>(_ => throw new InvalidCastException()).AsTask()).Should().ThrowAsync<BadImageFormatException>();
         attempts.Should().Be(3);
     }
 
@@ -656,7 +656,7 @@ public class HedgingResilienceStrategyTests : IDisposable
         });
 
         var strategy = Create();
-        await strategy.Invoking(s => s.ExecuteAsync<string>(_ => throw new InvalidCastException())).Should().ThrowAsync<InvalidCastException>();
+        await strategy.Invoking(s => s.ExecuteAsync<string>(_ => throw new InvalidCastException()).AsTask()).Should().ThrowAsync<InvalidCastException>();
         attempts.Should().Be(3);
     }
 
@@ -676,7 +676,7 @@ public class HedgingResilienceStrategyTests : IDisposable
         });
 
         var strategy = Create();
-        await strategy.Invoking(s => s.ExecuteAsync<string>(_ => throw new InvalidCastException())).Should().ThrowAsync<InvalidCastException>();
+        await strategy.Invoking(s => s.ExecuteAsync<string>(_ => throw new InvalidCastException()).AsTask()).Should().ThrowAsync<InvalidCastException>();
         attempts.Should().Be(0);
     }
 
@@ -752,12 +752,12 @@ public class HedgingResilienceStrategyTests : IDisposable
 
         var strategy = Create();
 
-        var exception = await strategy.Invoking(s => s.ExecuteAsync(PrimaryTaskThatThrowsError)).Should().ThrowAsync<InvalidOperationException>();
+        var exception = await strategy.Invoking(s => s.ExecuteAsync(PrimaryTaskThatThrowsError).AsTask()).Should().ThrowAsync<InvalidOperationException>();
 
         exception.WithMessage("Forced Error");
         exception.And.StackTrace.Should().Contain(nameof(PrimaryTaskThatThrowsError));
 
-        static Task<string> PrimaryTaskThatThrowsError(CancellationToken cancellationToken) => throw new InvalidOperationException("Forced Error");
+        static ValueTask<string> PrimaryTaskThatThrowsError(CancellationToken cancellationToken) => throw new InvalidOperationException("Forced Error");
     }
 
     [Fact]
@@ -776,7 +776,7 @@ public class HedgingResilienceStrategyTests : IDisposable
         });
 
         var strategy = Create();
-        await strategy.ExecuteAsync(_ => Task.FromResult(Failure));
+        await strategy.ExecuteAsync(_ => new ValueTask<string>(Failure));
 
         attempts.Should().HaveCount(_options.MaxHedgedAttempts);
         attempts.Should().BeInAscendingOrder();
@@ -795,7 +795,7 @@ public class HedgingResilienceStrategyTests : IDisposable
         });
 
         var strategy = Create();
-        await strategy.ExecuteAsync((_, _) => Task.FromResult(Failure), context, "state");
+        await strategy.ExecuteAsync((_, _) => new ValueTask<string>(Failure), context, "state");
 
         context.ResilienceEvents.Should().HaveCount(_options.MaxHedgedAttempts);
         context.ResilienceEvents.Select(v => v.EventName).Distinct().Should().ContainSingle("OnHedging");

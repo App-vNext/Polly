@@ -67,7 +67,7 @@ public class TimeoutResilienceStrategyTests : IDisposable
         _timeProvider.SetupCancelAfterNow(_delay);
 
         var sut = CreateSut();
-        await sut.Invoking(s => sut.ExecuteAsync(token => Task.Delay(_delay, token))).Should().ThrowAsync<TimeoutRejectedException>();
+        await sut.Invoking(s => sut.ExecuteAsync(async token => await Task.Delay(_delay, token)).AsTask()).Should().ThrowAsync<TimeoutRejectedException>();
 
         called.Should().BeTrue();
         _diagnosticSource.VerifyAll();
@@ -101,7 +101,7 @@ public class TimeoutResilienceStrategyTests : IDisposable
         var sut = CreateSut();
 
         await sut
-            .Invoking(s => s.ExecuteAsync(token => Delay(token), token))
+            .Invoking(s => s.ExecuteAsync(async token => await Delay(token), token).AsTask())
             .Should().ThrowAsync<TimeoutRejectedException>()
             .WithMessage("The operation didn't complete within the allowed timeout of '00:00:02'.");
 
@@ -121,7 +121,7 @@ public class TimeoutResilienceStrategyTests : IDisposable
 
         var sut = CreateSut();
 
-        await sut.Invoking(s => s.ExecuteAsync(token => Delay(token, () => cts.Cancel()), cts.Token))
+        await sut.Invoking(s => s.ExecuteAsync(async token => await Delay(token, () => cts.Cancel()), cts.Token).AsTask())
                  .Should()
                  .ThrowAsync<OperationCanceledException>();
 
@@ -149,7 +149,7 @@ public class TimeoutResilienceStrategyTests : IDisposable
             (r, _) =>
             {
                 r.CancellationToken.Should().NotBe(cts.Token);
-                return Task.CompletedTask;
+                return default;
             },
             context,
             string.Empty);
@@ -181,7 +181,7 @@ public class TimeoutResilienceStrategyTests : IDisposable
         // Act
         try
         {
-            await sut.ExecuteAsync(token => Delay(token, () => cts.Cancel()), cts.Token);
+            await sut.ExecuteAsync(async token => await Delay(token, () => cts.Cancel()), cts.Token);
         }
         catch (OperationCanceledException)
         {

@@ -12,7 +12,7 @@ public abstract partial class ResilienceStrategy
     /// <param name="state">The state associated with the callback.</param>
     /// <returns>The instance of <see cref="ValueTask"/> that represents the asynchronous execution.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="callback"/> or <paramref name="context"/> is <see langword="null"/>.</exception>
-    public ValueTask<TResult> ExecuteValueTaskAsync<TResult, TState>(
+    public ValueTask<TResult> ExecuteAsync<TResult, TState>(
         Func<ResilienceContext, TState, ValueTask<TResult>> callback,
         ResilienceContext context,
         TState state)
@@ -33,7 +33,7 @@ public abstract partial class ResilienceStrategy
     /// <param name="context">The context associated with the callback.</param>
     /// <returns>The instance of <see cref="ValueTask"/> that represents the asynchronous execution.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="callback"/> or <paramref name="context"/> is <see langword="null"/>.</exception>
-    public ValueTask<TResult> ExecuteValueTaskAsync<TResult>(
+    public ValueTask<TResult> ExecuteAsync<TResult>(
         Func<ResilienceContext, ValueTask<TResult>> callback,
         ResilienceContext context)
     {
@@ -55,7 +55,7 @@ public abstract partial class ResilienceStrategy
     /// <param name="cancellationToken">The <see cref="CancellationToken"/> associated with the callback.</param>
     /// <returns>The instance of <see cref="ValueTask"/> that represents the asynchronous execution.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="callback"/> is <see langword="null"/>.</exception>
-    public async ValueTask<TResult> ExecuteValueTaskAsync<TResult, TState>(
+    public async ValueTask<TResult> ExecuteAsync<TResult, TState>(
         Func<TState, CancellationToken, ValueTask<TResult>> callback,
         TState state,
         CancellationToken cancellationToken = default)
@@ -85,7 +85,7 @@ public abstract partial class ResilienceStrategy
     /// <param name="cancellationToken">The <see cref="CancellationToken"/> associated with the callback.</param>
     /// <returns>The instance of <see cref="ValueTask"/> that represents the asynchronous execution.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="callback"/> is <see langword="null"/>.</exception>
-    public async ValueTask<TResult> ExecuteValueTaskAsync<TResult>(
+    public async ValueTask<TResult> ExecuteAsync<TResult>(
         Func<CancellationToken, ValueTask<TResult>> callback,
         CancellationToken cancellationToken = default)
     {

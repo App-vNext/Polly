@@ -16,15 +16,15 @@ public class HedgingBenchmark
 
     [Benchmark(Baseline = true)]
     public async ValueTask Hedging_Primary()
-        => await _strategy!.ExecuteValueTaskAsync(static _ => new ValueTask<string>("primary")).ConfigureAwait(false);
+        => await _strategy!.ExecuteAsync(static _ => new ValueTask<string>("primary")).ConfigureAwait(false);
 
     [Benchmark]
     public async ValueTask Hedging_Secondary()
-        => await _strategy!.ExecuteValueTaskAsync(static _ => new ValueTask<string>(Helper.Failure)).ConfigureAwait(false);
+        => await _strategy!.ExecuteAsync(static _ => new ValueTask<string>(Helper.Failure)).ConfigureAwait(false);
 
     [Benchmark]
     public async ValueTask Hedging_Primary_AsyncWork()
-        => await _strategy!.ExecuteValueTaskAsync(
+        => await _strategy!.ExecuteAsync(
             static async _ =>
             {
                 await Task.Yield();
@@ -33,7 +33,7 @@ public class HedgingBenchmark
 
     [Benchmark]
     public async ValueTask Hedging_Secondary_AsyncWork()
-        => await _strategy!.ExecuteValueTaskAsync(
+        => await _strategy!.ExecuteAsync(
             static async _ =>
             {
                 await Task.Yield();
