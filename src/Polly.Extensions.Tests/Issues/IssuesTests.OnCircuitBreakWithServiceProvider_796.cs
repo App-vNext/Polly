@@ -44,11 +44,11 @@ public partial class IssuesTests
         // now trigger the circuit breaker by evaluating multiple result types
         for (int i = 0; i < 10; i++)
         {
-            await strategy.ExecuteAsync(_ => Task.FromResult("error"));
+            await strategy.ExecuteAsync(_ => new ValueTask<string>("error"));
         }
 
         // now the circuit breaker should be open
-        await strategy.Invoking(s => s.ExecuteAsync(_ => Task.FromResult("valid-result"))).Should().ThrowAsync<BrokenCircuitException>();
+        await strategy.Invoking(s => s.ExecuteAsync(_ => new ValueTask<string>("valid-result")).AsTask()).Should().ThrowAsync<BrokenCircuitException>();
 
         // check that service provider was received in the context
         contextChecked.Should().BeTrue();
