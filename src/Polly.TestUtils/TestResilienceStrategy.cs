@@ -1,3 +1,5 @@
+using System;
+
 namespace Polly.TestUtils;
 
 public class TestResilienceStrategy : ResilienceStrategy

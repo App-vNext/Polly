@@ -5,7 +5,6 @@ using System.Threading;
 using Polly.Hedging;
 using Polly.Hedging.Utils;
 using Polly.Strategy;
-using Polly.Utils;
 
 namespace Polly;
 

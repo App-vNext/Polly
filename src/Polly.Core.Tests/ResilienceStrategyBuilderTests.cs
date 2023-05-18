@@ -1,7 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using Moq;
 using Polly.Strategy;
-using Polly.Utils;
 
 namespace Polly.Core.Tests;
 

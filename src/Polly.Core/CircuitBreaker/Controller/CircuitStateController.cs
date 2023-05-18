@@ -272,7 +272,7 @@ internal sealed class CircuitStateController : IDisposable
 
     private bool PermitHalfOpenCircuitTest_NeedsLock()
     {
-        var now = _timeProvider.UtcNow;
+        var now = _timeProvider.GetUtcNow();
         if (now >= _blockedUntil)
         {
             _blockedUntil = now + _breakDuration;
@@ -307,7 +307,7 @@ internal sealed class CircuitStateController : IDisposable
     private void OpenCircuitFor_NeedsLock<TResult>(Outcome<TResult> outcome, TimeSpan breakDuration, bool manual, ResilienceContext context, out Task? scheduledTask)
     {
         scheduledTask = null;
-        var utcNow = _timeProvider.UtcNow;
+        var utcNow = _timeProvider.GetUtcNow();
 
         _blockedUntil = IsDateTimeOverflow(utcNow, breakDuration) ? DateTimeOffset.MaxValue : utcNow + breakDuration;
 

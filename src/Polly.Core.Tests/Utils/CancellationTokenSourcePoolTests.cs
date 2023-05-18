@@ -37,7 +37,10 @@ public class CancellationTokenSourcePoolTests
         pool.Return(cts);
 
         var cts2 = pool.Get(System.Threading.Timeout.InfiniteTimeSpan);
-#if NET6_0_OR_GREATER
+
+#if NET8_0_OR_GREATER
+        cts2.Should().BeSameAs(cts);
+#elif NET6_0_OR_GREATER
         if (timeProvider == TimeProvider.System)
         {
             cts2.Should().BeSameAs(cts);
@@ -70,11 +73,13 @@ public class CancellationTokenSourcePoolTests
     [Theory]
     public async Task Rent_Cancellable_EnsureCancelled(object timeProvider)
     {
-        if (timeProvider is Mock<TimeProvider> fakeTimeProvider)
+        if (timeProvider is FakeTimeProvider fakeTimeProvider)
         {
-            fakeTimeProvider
-                .Setup(v => v.CancelAfter(It.IsAny<CancellationTokenSource>(), TimeSpan.FromMilliseconds(1)))
-                .Callback<CancellationTokenSource, TimeSpan>((source, _) => source.Cancel());
+#if NET8_0_OR_GREATER
+            fakeTimeProvider.SetupAnyCreateTimer();
+#else
+            fakeTimeProvider.SetupCreateTimer(TimeSpan.FromMilliseconds(1));
+#endif
         }
         else
         {
@@ -87,6 +92,7 @@ public class CancellationTokenSourcePoolTests
         await Task.Delay(100);
 
         cts.IsCancellationRequested.Should().BeTrue();
+
         fakeTimeProvider?.VerifyAll();
     }
 
@@ -101,10 +107,13 @@ public class CancellationTokenSourcePoolTests
 
         cts.IsCancellationRequested.Should().BeFalse();
 
-        if (timeProvider is Mock<TimeProvider> fakeTimeProvider)
+        if (timeProvider is FakeTimeProvider fakeTimeProvider)
         {
-            fakeTimeProvider
-                .Verify(v => v.CancelAfter(It.IsAny<CancellationTokenSource>(), It.IsAny<TimeSpan>()), Times.Never());
+#if NET8_0_OR_GREATER
+            fakeTimeProvider.VerifyCreateTimer(Times.Once());
+#else
+            fakeTimeProvider.VerifyCreateTimer(Times.Never());
+#endif
         }
     }
 

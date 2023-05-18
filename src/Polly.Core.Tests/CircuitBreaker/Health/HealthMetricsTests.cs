@@ -1,7 +1,6 @@
 using System;
 using Polly.CircuitBreaker;
 using Polly.CircuitBreaker.Health;
-using Polly.Utils;
 
 namespace Polly.Core.Tests.CircuitBreaker.Health;
 

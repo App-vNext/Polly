@@ -1,5 +1,4 @@
 using Polly.Hedging;
-using Polly.Utils;
 
 namespace Polly.Core.Tests.Hedging;
 
@@ -40,19 +39,19 @@ internal class HedgingActions
 
     private async Task<string> GetApples(ResilienceContext context)
     {
-        await _timeProvider.Delay(TimeSpan.FromSeconds(10), context.CancellationToken);
+        await _timeProvider.DelayAsync(TimeSpan.FromSeconds(10), context.CancellationToken);
         return "Apples";
     }
 
     private async Task<string> GetPears(ResilienceContext context)
     {
-        await _timeProvider.Delay(TimeSpan.FromSeconds(3), context.CancellationToken);
+        await _timeProvider.DelayAsync(TimeSpan.FromSeconds(3), context.CancellationToken);
         return "Pears";
     }
 
     private async Task<string> GetOranges(ResilienceContext context)
     {
-        await _timeProvider.Delay(TimeSpan.FromSeconds(2), context.CancellationToken);
+        await _timeProvider.DelayAsync(TimeSpan.FromSeconds(2), context.CancellationToken);
         return "Oranges";
     }
 

@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Polly.Strategy;
 using Polly.Telemetry;
-using Polly.Utils;
 
 namespace Polly.Extensions.Telemetry;
 

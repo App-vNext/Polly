@@ -6,13 +6,23 @@ internal abstract partial class CancellationTokenSourcePool
 {
     public static CancellationTokenSourcePool Create(TimeProvider timeProvider)
     {
-#if NET6_0_OR_GREATER
+#if NET8_0_OR_GREATER
         if (timeProvider == TimeProvider.System)
         {
             return PooledCancellationTokenSourcePool.SystemInstance;
         }
-#endif
+
+        return new PooledCancellationTokenSourcePool(timeProvider);
+#elif NET6_0_OR_GREATER
+        if (timeProvider == TimeProvider.System)
+        {
+            return PooledCancellationTokenSourcePool.SystemInstance;
+        }
+
         return new DisposableCancellationTokenSourcePool(timeProvider);
+#else
+        return new DisposableCancellationTokenSourcePool(timeProvider);
+#endif
     }
 
     public CancellationTokenSource Get(TimeSpan delay)

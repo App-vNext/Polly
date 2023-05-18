@@ -43,7 +43,7 @@ public class RetryResilienceStrategyTests
         // arrange
         _options.RetryCount = 5;
         SetupNoDelay();
-        _timeProvider.SetupAnyDelay();
+        _timeProvider.SetupAnyCreateTimer();
         _options.ShouldRetry.HandleResult<DisposableResult>(_ => true);
         var results = new List<DisposableResult>();
         var sut = CreateSut();
@@ -132,13 +132,13 @@ public class RetryResilienceStrategyTests
         _options.RetryCount = 3;
         _options.BackoffType = RetryBackoffType.Constant;
         _options.RetryDelayGenerator.SetGenerator<int>((_, _) => TimeSpan.FromMilliseconds(123));
-        _timeProvider.SetupDelay(TimeSpan.FromMilliseconds(123));
+        _timeProvider.SetupCreateTimer(TimeSpan.FromMilliseconds(123));
 
         var sut = CreateSut();
 
         sut.Execute(() => 0);
 
-        _timeProvider.Verify(v => v.Delay(TimeSpan.FromMilliseconds(123), default), Times.Exactly(3));
+        _timeProvider.VerifyCreateTimer(TimeSpan.FromMilliseconds(123), Times.Exactly(3));
     }
 
     [Fact]
@@ -158,7 +158,7 @@ public class RetryResilienceStrategyTests
         _options.ShouldRetry.HandleResult<int>(0);
         _options.RetryCount = 3;
         _options.BackoffType = RetryBackoffType.Linear;
-        _timeProvider.SetupAnyDelay();
+        _timeProvider.SetupAnyCreateTimer();
 
         var sut = CreateSut();
 
@@ -185,7 +185,7 @@ public class RetryResilienceStrategyTests
         _options.ShouldRetry.HandleResult(0);
         _options.RetryCount = 3;
         _options.BackoffType = RetryBackoffType.Linear;
-        _timeProvider.SetupAnyDelay();
+        _timeProvider.SetupAnyCreateTimer();
 
         var sut = CreateSut();
 
@@ -213,7 +213,7 @@ public class RetryResilienceStrategyTests
         _options.ShouldRetry.HandleResult<int>(0);
         _options.RetryCount = 3;
         _options.BackoffType = RetryBackoffType.Linear;
-        _timeProvider.SetupAnyDelay();
+        _timeProvider.SetupAnyCreateTimer();
 
         var sut = CreateSut();
 

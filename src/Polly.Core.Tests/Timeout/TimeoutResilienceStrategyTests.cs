@@ -64,7 +64,7 @@ public class TimeoutResilienceStrategyTests : IDisposable
             called = true;
         });
 
-        _timeProvider.SetupCancelAfterNow(_delay);
+        _timeProvider.SetupCreateTimer(_delay);
 
         var sut = CreateSut();
         await sut.Invoking(s => sut.ExecuteAsync(token => Task.Delay(_delay, token))).Should().ThrowAsync<TimeoutRejectedException>();
@@ -97,7 +97,7 @@ public class TimeoutResilienceStrategyTests : IDisposable
         using var cts = new CancellationTokenSource();
         CancellationToken token = defaultCancellationToken ? default : cts.Token;
         _options.TimeoutGenerator.SetGenerator(args => TimeSpan.FromSeconds(2));
-        _timeProvider.SetupCancelAfterNow(TimeSpan.FromSeconds(2));
+        _timeProvider.SetupCreateTimer(TimeSpan.FromSeconds(2));
         var sut = CreateSut();
 
         await sut
@@ -117,7 +117,7 @@ public class TimeoutResilienceStrategyTests : IDisposable
         using var cts = new CancellationTokenSource();
         _options.TimeoutGenerator.SetGenerator(args => TimeSpan.FromSeconds(10));
         _options.OnTimeout.Register(() => onTimeoutCalled = true);
-        _timeProvider.Setup(v => v.CancelAfter(It.IsAny<CancellationTokenSource>(), delay));
+        _timeProvider.SetupCreateTimer(delay);
 
         var sut = CreateSut();
 
@@ -138,7 +138,7 @@ public class TimeoutResilienceStrategyTests : IDisposable
 
         using var cts = new CancellationTokenSource();
         _options.TimeoutGenerator.SetGenerator(args => TimeSpan.FromSeconds(10));
-        _timeProvider.Setup(v => v.CancelAfter(It.IsAny<CancellationTokenSource>(), delay));
+        _timeProvider.SetupCreateTimer(delay);
 
         var sut = CreateSut();
 
@@ -163,7 +163,7 @@ public class TimeoutResilienceStrategyTests : IDisposable
         // Arrange
         using var cts = new CancellationTokenSource();
         _options.TimeoutGenerator.SetGenerator(args => TimeSpan.FromSeconds(10));
-        _timeProvider.Setup(v => v.CancelAfter(It.IsAny<CancellationTokenSource>(), TimeSpan.FromSeconds(10)));
+        _timeProvider.SetupCreateTimer(TimeSpan.FromSeconds(10));
 
         var sut = CreateSut();
 

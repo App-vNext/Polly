@@ -1,5 +1,4 @@
 using Moq;
-using Polly.Utils;
 
 namespace Polly.Core.Tests.Helpers;
 
@@ -7,20 +6,16 @@ internal class FakeTimeProvider : Mock<TimeProvider>
 {
     private DateTimeOffset? _time;
 
-    public FakeTimeProvider(long frequency)
-        : base(MockBehavior.Strict, frequency)
+    public FakeTimeProvider SetupTimestampFrequency(long? frequency = null)
     {
-    }
-
-    public FakeTimeProvider()
-        : this(Stopwatch.Frequency)
-    {
+        Setup(v => v.TimestampFrequency).Returns(frequency ?? Stopwatch.Frequency);
+        return this;
     }
 
     public FakeTimeProvider SetupUtcNow(DateTimeOffset? time = null)
     {
         _time = time ?? DateTimeOffset.UtcNow;
-        Setup(x => x.UtcNow).Returns(() => _time.Value);
+        Setup(x => x.GetUtcNow()).Returns(() => _time.Value);
         return this;
     }
 
@@ -35,27 +30,45 @@ internal class FakeTimeProvider : Mock<TimeProvider>
         return this;
     }
 
-    public FakeTimeProvider SetupAnyDelay(CancellationToken cancellationToken = default)
+    public FakeTimeProvider SetupAnyCreateTimer()
     {
-        Setup(x => x.Delay(It.IsAny<TimeSpan>(), cancellationToken)).Returns(Task.CompletedTask);
+        Setup(t => t.CreateTimer(It.IsAny<TimerCallback>(), It.IsAny<object?>(), It.IsAny<TimeSpan>(), It.IsAny<TimeSpan>()))
+        .Callback((TimerCallback callback, object? state, TimeSpan _, TimeSpan _) => callback(state))
+        .Returns(Of<ITimer>());
+
         return this;
     }
 
-    public FakeTimeProvider SetupDelay(TimeSpan delay, CancellationToken cancellationToken = default)
+    public Mock<ITimer> SetupCreateTimer(TimeSpan delay)
     {
-        Setup(x => x.Delay(delay, cancellationToken)).Returns(Task.CompletedTask);
+        var timer = new Mock<ITimer>(MockBehavior.Loose);
+
+        Setup(t => t.CreateTimer(It.IsAny<TimerCallback>(), It.IsAny<object?>(), delay, It.IsAny<TimeSpan>()))
+        .Callback((TimerCallback callback, object? state, TimeSpan _, TimeSpan _) => callback(state))
+        .Returns(timer.Object);
+
+        return timer;
+    }
+
+    public FakeTimeProvider VerifyCreateTimer(Times times)
+    {
+        Verify(t => t.CreateTimer(It.IsAny<TimerCallback>(), It.IsAny<object?>(), It.IsAny<TimeSpan>(), It.IsAny<TimeSpan>()), times);
         return this;
     }
 
-    public FakeTimeProvider SetupDelayCancelled(TimeSpan delay, CancellationToken cancellationToken = default)
+    public FakeTimeProvider VerifyCreateTimer(TimeSpan delay, Times times)
     {
-        Setup(x => x.Delay(delay, cancellationToken)).ThrowsAsync(new OperationCanceledException());
+        Verify(t => t.CreateTimer(It.IsAny<TimerCallback>(), It.IsAny<object?>(), delay, It.IsAny<TimeSpan>()), times);
         return this;
     }
 
-    public FakeTimeProvider SetupCancelAfterNow(TimeSpan delay)
+    public FakeTimeProvider SetupCreateTimerException(TimeSpan delay, Exception exception)
     {
-        Setup(v => v.CancelAfter(It.IsAny<CancellationTokenSource>(), delay)).Callback<CancellationTokenSource, TimeSpan>((cts, _) => cts.Cancel());
+        Setup(t => t.CreateTimer(It.IsAny<TimerCallback>(), It.IsAny<object?>(), delay, It.IsAny<TimeSpan>()))
+        .Callback((TimerCallback _, object? _, TimeSpan _, TimeSpan _) => throw exception)
+        .Returns(Of<ITimer>());
+
         return this;
     }
+
 }

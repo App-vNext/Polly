@@ -13,7 +13,7 @@ public class CircuitStateControllerTests
     private readonly Action<IResilienceArguments> _onTelemetry = _ => { };
     private DateTimeOffset _utcNow = DateTimeOffset.UtcNow;
 
-    public CircuitStateControllerTests() => _timeProvider.Setup(v => v.UtcNow).Returns(() => _utcNow);
+    public CircuitStateControllerTests() => _timeProvider.Setup(v => v.GetUtcNow()).Returns(() => _utcNow);
 
     [Fact]
     public void Ctor_EnsureDefaults()
@@ -40,7 +40,7 @@ public class CircuitStateControllerTests
             called = true;
         });
 
-        _timeProvider.Setup(v => v.UtcNow).Returns(DateTime.UtcNow);
+        _timeProvider.Setup(v => v.GetUtcNow()).Returns(DateTime.UtcNow);
         using var controller = CreateController();
         var context = ResilienceContext.Get();
 
@@ -74,7 +74,7 @@ public class CircuitStateControllerTests
             called = true;
         });
 
-        _timeProvider.Setup(v => v.UtcNow).Returns(DateTime.UtcNow);
+        _timeProvider.Setup(v => v.GetUtcNow()).Returns(DateTime.UtcNow);
         using var controller = CreateController();
         await controller.IsolateCircuitAsync(ResilienceContext.Get());
         _circuitBehavior.Setup(v => v.OnCircuitClosed());

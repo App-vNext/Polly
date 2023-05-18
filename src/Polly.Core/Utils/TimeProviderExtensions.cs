@@ -43,13 +43,21 @@ internal static class TimeProviderExtensions
             if (context.IsSynchronous)
             {
 #pragma warning disable CA1849 // For synchronous scenarios we want to return completed task
+#if NET8_0_OR_GREATER
+                Task.Delay(delay, timeProvider, context.CancellationToken).GetAwaiter().GetResult();
+#else
                 timeProvider.Delay(delay, context.CancellationToken).GetAwaiter().GetResult();
+#endif
 #pragma warning restore CA1849
 
                 return Task.CompletedTask;
             }
 
+#if NET8_0_OR_GREATER
+            return Task.Delay(delay, timeProvider, context.CancellationToken);
+#else
             return timeProvider.Delay(delay, context.CancellationToken);
+#endif
         }
     }
 }
