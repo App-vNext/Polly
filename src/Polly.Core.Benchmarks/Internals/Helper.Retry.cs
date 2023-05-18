@@ -1,4 +1,5 @@
 using System;
+using Polly.Strategy;
 
 namespace Polly.Core.Benchmarks;
 
@@ -13,22 +14,24 @@ internal static partial class Helper
             PollyVersion.V7 =>
                 Policy
                     .HandleResult(10)
-                    .Or<InvalidOperationException>()
+                    .Or<HttpRequestException>()
                     .WaitAndRetryAsync(3, attempt => delay, (_, _) => Task.CompletedTask),
 
             PollyVersion.V8 => CreateStrategy(builder =>
             {
-                var options = new RetryStrategyOptions
+                builder.AddRetry(new RetryStrategyOptions
                 {
                     RetryCount = 3,
                     BackoffType = RetryBackoffType.Constant,
-                    BaseDelay = delay
-                };
-
-                options.ShouldRetry.HandleOutcome<int>((outcome, _) => outcome.Result == 10 || outcome.Exception is InvalidOperationException);
-                options.OnRetry.Register<int>(() => { });
-
-                builder.AddRetry(options);
+                    BaseDelay = delay,
+                    ShouldRetry = (outcome, _) => outcome switch
+                    {
+                        { Exception: HttpRequestException error } => PredicateResult.True,
+                        { Result: HttpResponseMessage response } when !response.IsSuccessStatusCode => PredicateResult.True,
+                        _ => PredicateResult.False
+                    },
+                    OnRetry = (_, _) => default
+                });
             }),
             _ => throw new NotSupportedException()
         };

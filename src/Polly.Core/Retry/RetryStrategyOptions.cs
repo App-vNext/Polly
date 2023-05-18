@@ -68,7 +68,7 @@ public class RetryStrategyOptions : ResilienceStrategyOptions
     /// By default, the predicate is empty and no results or exceptions are retried.
     /// </remarks>
     [Required]
-    public OutcomePredicate<ShouldRetryArguments> ShouldRetry { get; set; } = new();
+    public Func<Outcome, ShouldRetryArguments, ValueTask<bool>>? ShouldRetry { get; set; }
 
     /// <summary>
     /// Gets or sets the generator instance that is used to calculate the time between retries.
@@ -76,8 +76,7 @@ public class RetryStrategyOptions : ResilienceStrategyOptions
     /// <remarks>
     /// By default, the generator is empty and it does not affect the delay between retries.
     /// </remarks>
-    [Required]
-    public OutcomeGenerator<RetryDelayArguments, TimeSpan> RetryDelayGenerator { get; set; } = new();
+    public Func<Outcome, RetryDelayArguments, ValueTask<TimeSpan>>? RetryDelayGenerator { get; set; }
 
     /// <summary>
     /// Gets or sets an outcome event that is used to register on-retry callbacks.
@@ -90,6 +89,5 @@ public class RetryStrategyOptions : ResilienceStrategyOptions
     /// from the result within the event.
     /// </para>
     /// </remarks>
-    [Required]
-    public OutcomeEvent<OnRetryArguments> OnRetry { get; set; } = new();
+    public Func<Outcome, OnRetryArguments, ValueTask>? OnRetry { get; set; }
 }

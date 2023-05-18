@@ -18,7 +18,7 @@ public class RetryResilienceStrategyTests
     public void ShouldRetryEmpty_Skipped()
     {
         bool called = false;
-        _options.OnRetry.Register<int>(() => called = true);
+        _options.OnRetry = (_, _) => { called = true; return default; };
         SetupNoDelay();
         var sut = CreateSut();
 
@@ -44,7 +44,11 @@ public class RetryResilienceStrategyTests
         _options.RetryCount = 5;
         SetupNoDelay();
         _timeProvider.SetupAnyDelay();
-        _options.ShouldRetry.HandleResult<DisposableResult>(_ => true);
+        _options.ShouldRetry = (o, _) => o.Result switch
+        {
+            DisposableResult => PredicateResult.True,
+            _ => PredicateResult.False
+        };
         var results = new List<DisposableResult>();
         var sut = CreateSut();
 

@@ -64,7 +64,7 @@ public class RetryStrategyOptions<TResult> : ResilienceStrategyOptions
     /// By default, the predicate is empty and no results or exceptions are retried.
     /// </remarks>
     [Required]
-    public OutcomePredicate<ShouldRetryArguments, TResult> ShouldRetry { get; set; } = new();
+    public Func<Outcome<TResult>, ShouldRetryArguments, ValueTask<bool>>? ShouldRetry { get; set; }
 
     /// <summary>
     /// Gets or sets the generator instance that is used to calculate the time between retries.
@@ -72,8 +72,7 @@ public class RetryStrategyOptions<TResult> : ResilienceStrategyOptions
     /// <remarks>
     /// By default, the generator is empty and it does not affect the delay between retries.
     /// </remarks>
-    [Required]
-    public OutcomeGenerator<RetryDelayArguments, TimeSpan, TResult> RetryDelayGenerator { get; set; } = new();
+    public Func<Outcome<TResult>, RetryDelayArguments, ValueTask<TimeSpan>>? RetryDelayGenerator { get; set; }
 
     /// <summary>
     /// Gets or sets an outcome event that is used to register on-retry callbacks.
@@ -86,21 +85,46 @@ public class RetryStrategyOptions<TResult> : ResilienceStrategyOptions
     /// from the result within the event.
     /// </para>
     /// </remarks>
-    [Required]
-    public OutcomeEvent<OnRetryArguments, TResult> OnRetry { get; set; } = new();
+    public Func<Outcome<TResult>, OnRetryArguments, ValueTask>? OnRetry { get; set; }
 
     internal RetryStrategyOptions AsNonGenericOptions()
     {
-        return new RetryStrategyOptions
+        var options = new RetryStrategyOptions
         {
             BackoffType = BackoffType,
             BaseDelay = BaseDelay,
             RetryCount = RetryCount,
-            OnRetry = new OutcomeEvent<OnRetryArguments>().SetCallbacks(OnRetry),
-            RetryDelayGenerator = new OutcomeGenerator<RetryDelayArguments, TimeSpan>().SetGenerator(RetryDelayGenerator),
-            ShouldRetry = new OutcomePredicate<ShouldRetryArguments>().SetPredicates(ShouldRetry),
             StrategyName = StrategyName,
             StrategyType = StrategyType
         };
+
+        if (ShouldRetry is var shouldRetry)
+        {
+            options.ShouldRetry = (outcome, args) =>
+            {
+                if (args.Context.ResultType != typeof(TResult))
+                {
+                    return PredicateResult.False;
+                }
+
+                return shouldRetry!(outcome.AsOutcome<TResult>(), args);
+            };
+        }
+
+        if (OnRetry is var onRetry)
+        {
+            // no need to do type-check again because result will be retried so the type check was
+            // already done in ShouldRetry
+            options.OnRetry = (outcome, args) => onRetry!(outcome.AsOutcome<TResult>(), args);
+        }
+
+        if (RetryDelayGenerator is var generator)
+        {
+            // no need to do type-check again because result will be retried so the type check was
+            // already done in ShouldRetry
+            options.RetryDelayGenerator = (outcome, args) => generator!(outcome.AsOutcome<TResult>(), args);
+        }
+
+        return options;
     }
 }

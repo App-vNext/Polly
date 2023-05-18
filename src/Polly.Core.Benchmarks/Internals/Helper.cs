@@ -4,15 +4,17 @@ namespace Polly.Core.Benchmarks;
 
 internal static partial class Helper
 {
+    private static readonly HttpResponseMessage ResponseMessage = new();
+
     public static async ValueTask ExecuteAsync(this object obj, PollyVersion version)
     {
         switch (version)
         {
             case PollyVersion.V7:
-                await ((IAsyncPolicy<int>)obj).ExecuteAsync(static _ => Task.FromResult(999), CancellationToken.None).ConfigureAwait(false);
+                await ((IAsyncPolicy<HttpResponseMessage>)obj).ExecuteAsync(static _ => Task.FromResult(ResponseMessage), CancellationToken.None).ConfigureAwait(false);
                 return;
             case PollyVersion.V8:
-                await ((ResilienceStrategy)obj).ExecuteAsync(static _ => new ValueTask<int>(999), CancellationToken.None).ConfigureAwait(false);
+                await ((ResilienceStrategy)obj).ExecuteAsync(static _ => new ValueTask<HttpResponseMessage>(ResponseMessage), CancellationToken.None).ConfigureAwait(false);
                 return;
         }
 

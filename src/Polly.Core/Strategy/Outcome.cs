@@ -23,6 +23,17 @@ public readonly struct Outcome
         : this() => Result = result;
 
     /// <summary>
+    /// The object de-constructor.
+    /// </summary>
+    /// <param name="result">The outcome result, if any.</param>
+    /// <param name="exception">The outcome exception, if any.</param>
+    public void Deconstruct(out object? result, out Exception? exception)
+    {
+        exception = Exception;
+        result = Result;
+    }
+
+    /// <summary>
     /// Gets the exception that occurred during the operation, if any.
     /// </summary>
     public Exception? Exception { get; }

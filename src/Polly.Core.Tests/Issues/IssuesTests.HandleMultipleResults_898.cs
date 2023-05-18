@@ -1,4 +1,5 @@
 using Polly.Retry;
+using Polly.Strategy;
 
 namespace Polly.Core.Tests.Issues;
 
@@ -13,16 +14,22 @@ public partial class IssuesTests
             BackoffType = RetryBackoffType.Constant,
             RetryCount = 1,
             BaseDelay = TimeSpan.FromMilliseconds(1),
+
+            // now add a callback updates the resilience context with the retry marker
+            OnRetry = (_, args) =>
+            {
+                args.Context.Properties.Set(isRetryKey, true);
+                return default;
+            },
+
+            // handle multiple results
+            ShouldRetry = (outcome, _) => outcome.Result switch
+            {
+                int a when a == -1 => PredicateResult.True,
+                string message when message == "error" => PredicateResult.True,
+                _ => PredicateResult.False
+            }
         };
-
-        // now add a callback updates the resilience context with the retry marker
-        options.OnRetry.Register((_, args) => args.Context.Properties.Set(isRetryKey, true));
-
-        // handle int results
-        options.ShouldRetry.HandleResult(-1);
-
-        // handle string results
-        options.ShouldRetry.HandleResult("error");
 
         // create the strategy
         var strategy = new ResilienceStrategyBuilder { TimeProvider = TimeProvider.Object }.AddRetry(options).Build();

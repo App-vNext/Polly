@@ -13,8 +13,8 @@ internal static partial class Helper
         {
             PollyVersion.V7 =>
                 Policy
-                    .HandleResult(10)
-                    .Or<InvalidOperationException>()
+                    .HandleResult<HttpResponseMessage>(m => !m.IsSuccessStatusCode)
+                    .Or<HttpRequestException>()
                     .AdvancedCircuitBreakerAsync(0.5, TimeSpan.FromSeconds(30), 10, TimeSpan.FromSeconds(5)),
 
             PollyVersion.V8 => CreateStrategy(builder =>
