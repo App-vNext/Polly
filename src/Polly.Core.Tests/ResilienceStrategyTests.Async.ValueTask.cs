@@ -11,38 +11,38 @@ public partial class ResilienceStrategyTests
 
     private static IEnumerable<ExecuteParameters> ExecuteAsync_EnsureCorrectBehavior_ExecuteParameters()
     {
-        yield return new ExecuteParameters(r => r.ExecuteValueTaskAsync(async _ => { }))
+        yield return new ExecuteParameters(r => r.ExecuteAsync(async _ => { }))
         {
             Caption = "ExecuteAsync_NoCancellation",
             AssertContext = AssertResilienceContext,
         };
 
-        yield return new ExecuteParameters(r => r.ExecuteValueTaskAsync(async t => { t.Should().Be(CancellationToken); }, CancellationToken))
+        yield return new ExecuteParameters(r => r.ExecuteAsync(async t => { t.Should().Be(CancellationToken); }, CancellationToken))
         {
             Caption = "ExecuteAsync_Cancellation",
             AssertContext = AssertResilienceContextAndToken,
         };
 
-        yield return new ExecuteParameters(r => r.ExecuteValueTaskAsync(async (state, t) => { state.Should().Be("state"); t.Should().Be(CancellationToken); }, "state", CancellationToken))
+        yield return new ExecuteParameters(r => r.ExecuteAsync(async (state, t) => { state.Should().Be("state"); t.Should().Be(CancellationToken); }, "state", CancellationToken))
         {
             Caption = "ExecuteAsync_StateAndCancellation",
             AssertContext = AssertResilienceContextAndToken,
         };
 
-        yield return new ExecuteParameters(r => r.ExecuteValueTaskAsync(async (state, t) => { state.Should().Be("state"); t.Should().Be(CancellationToken); }, "state", CancellationToken))
+        yield return new ExecuteParameters(r => r.ExecuteAsync(async (state, t) => { state.Should().Be("state"); t.Should().Be(CancellationToken); }, "state", CancellationToken))
         {
             Caption = "ExecuteAsync_StateAndCancellation",
             AssertContext = AssertResilienceContextAndToken,
         };
 
-        yield return new ExecuteParameters(r => r.ExecuteValueTaskAsync(async (_, s) => { s.Should().Be("dummy-state"); }, ResilienceContext.Get(), "dummy-state"))
+        yield return new ExecuteParameters(r => r.ExecuteAsync(async (_, s) => { s.Should().Be("dummy-state"); }, ResilienceContext.Get(), "dummy-state"))
         {
             Caption = "ExecuteAsync_ResilienceContextAndState",
             AssertContext = AssertResilienceContext,
             AssertContextAfter = AssertContextInitialized,
         };
 
-        yield return new ExecuteParameters(r => r.ExecuteValueTaskAsync(context => default, ResilienceContext.Get()))
+        yield return new ExecuteParameters(r => r.ExecuteAsync(context => default, ResilienceContext.Get()))
         {
             Caption = "ExecuteAsync_ResilienceContext",
             AssertContext = AssertResilienceContext,

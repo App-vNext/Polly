@@ -12,7 +12,7 @@ internal static partial class Helper
                 await ((IAsyncPolicy<int>)obj).ExecuteAsync(static _ => Task.FromResult(999), CancellationToken.None).ConfigureAwait(false);
                 return;
             case PollyVersion.V8:
-                await ((ResilienceStrategy)obj).ExecuteValueTaskAsync(static _ => new ValueTask<int>(999), CancellationToken.None).ConfigureAwait(false);
+                await ((ResilienceStrategy)obj).ExecuteAsync(static _ => new ValueTask<int>(999), CancellationToken.None).ConfigureAwait(false);
                 return;
         }
 

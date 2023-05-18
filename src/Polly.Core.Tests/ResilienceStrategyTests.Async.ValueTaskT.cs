@@ -13,19 +13,19 @@ public partial class ResilienceStrategyTests
     {
         long result = 12345;
 
-        yield return new ExecuteParameters<long>(r => r.ExecuteValueTaskAsync(async t => result), result)
+        yield return new ExecuteParameters<long>(r => r.ExecuteAsync(async t => result), result)
         {
             Caption = "ExecuteAsyncT_NoCancellation",
             AssertContext = AssertResilienceContext,
         };
 
-        yield return new ExecuteParameters<long>(r => r.ExecuteValueTaskAsync(async t => { t.Should().Be(CancellationToken); return result; }, CancellationToken), result)
+        yield return new ExecuteParameters<long>(r => r.ExecuteAsync(async t => { t.Should().Be(CancellationToken); return result; }, CancellationToken), result)
         {
             Caption = "ExecuteAsyncT_Cancellation",
             AssertContext = AssertResilienceContextAndToken,
         };
 
-        yield return new ExecuteParameters<long>(r => r.ExecuteValueTaskAsync(async (state, t) =>
+        yield return new ExecuteParameters<long>(r => r.ExecuteAsync(async (state, t) =>
         {
             state.Should().Be("state");
             t.Should().Be(CancellationToken);
@@ -36,14 +36,14 @@ public partial class ResilienceStrategyTests
             AssertContext = AssertResilienceContextAndToken,
         };
 
-        yield return new ExecuteParameters<long>(r => r.ExecuteValueTaskAsync(async (_, s) => { s.Should().Be("dummy-state"); return result; }, ResilienceContext.Get(), "dummy-state"), result)
+        yield return new ExecuteParameters<long>(r => r.ExecuteAsync(async (_, s) => { s.Should().Be("dummy-state"); return result; }, ResilienceContext.Get(), "dummy-state"), result)
         {
             Caption = "ExecuteAsyncT_ResilienceContextAndState",
             AssertContext = AssertResilienceContext,
             AssertContextAfter = AssertContextInitialized,
         };
 
-        yield return new ExecuteParameters<long>(r => r.ExecuteValueTaskAsync(async _ => result, ResilienceContext.Get()), result)
+        yield return new ExecuteParameters<long>(r => r.ExecuteAsync(async _ => result, ResilienceContext.Get()), result)
         {
             Caption = "ExecuteAsyncT_ResilienceContext",
             AssertContext = AssertResilienceContext,
