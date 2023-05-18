@@ -25,7 +25,7 @@ jobs:
       uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
 
     - name: Update .NET SDK
-      uses: martincostello/update-dotnet-sdk@6cfd047b0c2ce72ea0e22708bc1918a3d912c050 # v2.2.0
+      uses: martincostello/update-dotnet-sdk@7bfa64a55911fa2c25b1c23a767f616521ba2b15 # v2.2.1
       with:
         labels: "dependencies,.NET"
         repo-token: ${{ secrets.GITHUB_TOKEN }}
