@@ -12,6 +12,7 @@ public class RetryStrategyOptionsTResultTests
     {
         var options = new RetryStrategyOptions<int>();
 
+        options.StrategyType.Should().Be("Retry");
         options.ShouldRetry.Should().NotBeNull();
         options.ShouldRetry.IsEmpty.Should().BeTrue();
 
