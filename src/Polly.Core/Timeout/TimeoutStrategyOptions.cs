@@ -10,9 +10,10 @@ namespace Polly.Timeout;
 public class TimeoutStrategyOptions : ResilienceStrategyOptions
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="TimeoutStrategyOptions"/> class.
+    /// Gets the strategy type.
     /// </summary>
-    public TimeoutStrategyOptions() => StrategyType = TimeoutConstants.StrategyType;
+    /// <remarks>Returns <c>Timeout</c> value.</remarks>
+    public sealed override string StrategyType => TimeoutConstants.StrategyType;
 
     /// <summary>
     /// Gets or sets the default timeout.

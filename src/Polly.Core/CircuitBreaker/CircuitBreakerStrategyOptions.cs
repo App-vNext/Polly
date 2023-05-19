@@ -18,9 +18,10 @@ namespace Polly.CircuitBreaker;
 public abstract class CircuitBreakerStrategyOptions : ResilienceStrategyOptions
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="CircuitBreakerStrategyOptions"/> class.
+    /// Gets the strategy type.
     /// </summary>
-    private protected CircuitBreakerStrategyOptions() => StrategyType = CircuitBreakerConstants.StrategyType;
+    /// <remarks>Returns <c>CircuitBreaker</c> value.</remarks>
+    public sealed override string StrategyType => CircuitBreakerConstants.StrategyType;
 
     /// <summary>
     /// Gets or sets the duration of break the circuit will stay open before resetting.

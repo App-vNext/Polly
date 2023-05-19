@@ -9,9 +9,10 @@ namespace Polly.Retry;
 public class RetryStrategyOptions : ResilienceStrategyOptions
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="RetryStrategyOptions"/> class.
+    /// Gets the strategy type.
     /// </summary>
-    public RetryStrategyOptions() => StrategyType = RetryConstants.StrategyType;
+    /// <remarks>Returns <c>Retry</c> value.</remarks>
+    public sealed override string StrategyType => RetryConstants.StrategyType;
 
     /// <summary>
     /// Value that represents infinite retries.

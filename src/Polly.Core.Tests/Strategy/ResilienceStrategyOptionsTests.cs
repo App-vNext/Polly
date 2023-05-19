@@ -7,9 +7,9 @@ public class ResilienceStrategyOptionsTests
     [Fact]
     public void Ctor_EnsureDefaults()
     {
-        var options = new ResilienceStrategyOptions();
+        var options = new TestResilienceStrategyOptions();
 
-        options.StrategyType.Should().Be("");
+        options.StrategyType.Should().Be("Test");
         options.StrategyName.Should().Be("");
     }
 }

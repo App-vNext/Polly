@@ -71,7 +71,6 @@ public class AdvancedCircuitBreakerOptionsTests
             FailureThreshold = 23,
             SamplingDuration = TimeSpan.FromSeconds(124),
             MinimumThroughput = 6,
-            StrategyType = "dummy-type",
             StrategyName = "dummy-name",
             OnOpened = new OutcomeEvent<OnCircuitOpenedArguments, int>().Register(() => onBreakCalled = true),
             OnClosed = new OutcomeEvent<OnCircuitClosedArguments, int>().Register(() => onResetCalled = true),
@@ -84,7 +83,7 @@ public class AdvancedCircuitBreakerOptionsTests
         var converted = options.AsNonGenericOptions();
 
         // assert converted options
-        converted.StrategyType.Should().Be("dummy-type");
+        converted.StrategyType.Should().Be("CircuitBreaker");
         converted.StrategyName.Should().Be("dummy-name");
         converted.FailureThreshold.Should().Be(23);
         converted.BreakDuration.Should().Be(TimeSpan.FromSeconds(123));

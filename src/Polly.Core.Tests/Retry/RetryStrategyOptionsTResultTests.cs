@@ -63,7 +63,6 @@ public class RetryStrategyOptionsTResultTests
             BaseDelay = TimeSpan.FromMilliseconds(555),
             RetryCount = 7,
             StrategyName = "my-name",
-            StrategyType = "my-type",
         };
 
         options.ShouldRetry.HandleResult(999);
@@ -75,7 +74,7 @@ public class RetryStrategyOptionsTResultTests
         nonGenericOptions.BaseDelay.Should().Be(TimeSpan.FromMilliseconds(555));
         nonGenericOptions.RetryCount.Should().Be(7);
         nonGenericOptions.StrategyName.Should().Be("my-name");
-        nonGenericOptions.StrategyType.Should().Be("my-type");
+        nonGenericOptions.StrategyType.Should().Be("Retry");
 
         var args = new ShouldRetryArguments(ResilienceContext.Get(), 0);
         var delayArgs = new RetryDelayArguments(ResilienceContext.Get(), 2, TimeSpan.FromMinutes(1));
