@@ -13,7 +13,7 @@ public class TelemetryResilienceStrategyBuilderExtensionsTests
     {
         _builder.EnableTelemetry(NullLoggerFactory.Instance);
         _builder.Properties.GetValue(new ResiliencePropertyKey<DiagnosticSource?>("DiagnosticSource"), null).Should().BeOfType<ResilienceTelemetryDiagnosticSource>();
-        _builder.AddStrategy(new TestResilienceStrategy()).Build().Should().NotBeOfType<TestResilienceStrategy>();
+        _builder.AddStrategy(new TestResilienceStrategy(), new TestResilienceStrategyOptions()).Build().Should().NotBeOfType<TestResilienceStrategy>();
     }
 
     [Fact]
@@ -21,7 +21,7 @@ public class TelemetryResilienceStrategyBuilderExtensionsTests
     {
         using var factory = TestUtilities.CreateLoggerFactory(out var fakeLogger);
         _builder.EnableTelemetry(factory);
-        _builder.AddStrategy(new TestResilienceStrategy()).Build().Execute(_ => { });
+        _builder.AddStrategy(new TestResilienceStrategy(), new TestResilienceStrategyOptions()).Build().Execute(_ => { });
 
         fakeLogger.GetRecords().Should().NotBeEmpty();
         fakeLogger.GetRecords().Should().HaveCount(2);
