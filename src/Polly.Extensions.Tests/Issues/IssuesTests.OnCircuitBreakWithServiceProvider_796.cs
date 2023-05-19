@@ -33,7 +33,7 @@ public partial class IssuesTests
         var serviceCollection = new ServiceCollection().AddResilienceStrategy("my-strategy", (builder, context) =>
         {
             builder
-                .AddStrategy(new ServiceProviderStrategy(context.ServiceProvider))
+                .AddStrategy(new ServiceProviderStrategy(context.ServiceProvider), new TestResilienceStrategyOptions())
                 .AddAdvancedCircuitBreaker(options);
         });
 

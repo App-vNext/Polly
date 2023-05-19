@@ -122,7 +122,8 @@ public static class CircuitBreakerResilienceStrategyBuilderExtensions
             var controller = new CircuitStateController(options, behavior, context.TimeProvider, context.Telemetry);
 
             return new CircuitBreakerResilienceStrategy(options, controller);
-        });
+        },
+        options);
     }
 }
 

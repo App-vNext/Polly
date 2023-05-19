@@ -5,23 +5,22 @@ namespace Polly.Strategy;
 /// <summary>
 /// The options associated with the <see cref="ResilienceStrategy"/>.
 /// </summary>
-public class ResilienceStrategyOptions
+public abstract class ResilienceStrategyOptions
 {
     /// <summary>
     /// Gets or sets the name of the strategy.
     /// </summary>
     /// <remarks>
     /// This property is also included in the telemetry that is produced by the individual resilience strategies.
-    /// Defaults to <see cref="string.Empty"/>.
+    /// Defaults to <see cref="string.Empty"/>. This name uniquely identifies particular instance of specific strategy.
     /// </remarks>
     [Required(AllowEmptyStrings = true)]
     public string StrategyName { get; set; } = string.Empty;
 
     /// <summary>
-    /// Gets or sets the type of the strategy.
+    /// Gets the strategy type.
     /// </summary>
-    /// <remarks>This property is also included in the telemetry that is produced by the individual resilience strategies.</remarks>
-    /// Defaults to <see cref="string.Empty"/>.
-    [Required(AllowEmptyStrings = true)]
-    public string StrategyType { get; set; } = string.Empty;
+    /// <remarks>This property is also included in the telemetry that is produced by the individual resilience strategies.
+    /// The strategy type uniquely identifies the strategy in the telemetry. The name should be in PascalCase (i.e. Retry, CircuitBreaker, Timeout).</remarks>
+    public abstract string StrategyType { get; }
 }

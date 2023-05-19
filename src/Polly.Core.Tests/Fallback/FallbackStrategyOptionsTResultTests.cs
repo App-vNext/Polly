@@ -51,13 +51,12 @@ public class FallbackStrategyOptionsTResultTests
             ShouldHandle = new OutcomePredicate<HandleFallbackArguments, int>().HandleResult(-1),
             FallbackAction = (_, _) => new ValueTask<int>(1),
             StrategyName = "Dummy",
-            StrategyType = "Dummy-Fallback"
         };
 
         var nonGeneric = options.AsNonGenericOptions();
 
         nonGeneric.Should().NotBeNull();
-        nonGeneric.StrategyType.Should().Be("Dummy-Fallback");
+        nonGeneric.StrategyType.Should().Be("Fallback");
         nonGeneric.StrategyName.Should().Be("Dummy");
         nonGeneric.Handler.IsEmpty.Should().BeFalse();
 

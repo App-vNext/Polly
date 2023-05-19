@@ -10,9 +10,10 @@ namespace Polly.RateLimiting;
 public class RateLimiterStrategyOptions : ResilienceStrategyOptions
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="RateLimiterStrategyOptions"/> class.
+    /// Gets the strategy type.
     /// </summary>
-    public RateLimiterStrategyOptions() => StrategyType = RateLimiterConstants.StrategyType;
+    /// <remarks>Returns <c>RateLimiter</c> value.</remarks>
+    public sealed override string StrategyType => RateLimiterConstants.StrategyType;
 
     /// <summary>
     /// Gets or sets an event that is raised when the execution of user-provided callback is rejected by the rate limiter.

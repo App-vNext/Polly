@@ -57,7 +57,6 @@ public class HedgingStrategyOptionsTResultTests
             HedgingDelayGenerator = new NoOutcomeGenerator<HedgingDelayArguments, TimeSpan>().SetGenerator(args => TimeSpan.FromSeconds(123)),
             ShouldHandle = new OutcomePredicate<HandleHedgingArguments, int>().HandleResult(-1),
             StrategyName = "Dummy",
-            StrategyType = "Dummy-Hedging",
             HedgingDelay = TimeSpan.FromSeconds(3),
             MaxHedgedAttempts = 4,
             HedgingActionGenerator = args => () => Task.FromResult(555),
@@ -72,7 +71,7 @@ public class HedgingStrategyOptionsTResultTests
         var nonGeneric = options.AsNonGenericOptions();
 
         nonGeneric.Should().NotBeNull();
-        nonGeneric.StrategyType.Should().Be("Dummy-Hedging");
+        nonGeneric.StrategyType.Should().Be("Hedging");
         nonGeneric.StrategyName.Should().Be("Dummy");
         nonGeneric.Handler.IsEmpty.Should().BeFalse();
         nonGeneric.MaxHedgedAttempts.Should().Be(4);

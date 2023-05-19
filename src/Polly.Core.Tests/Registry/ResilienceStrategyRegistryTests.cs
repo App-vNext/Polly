@@ -42,7 +42,7 @@ public class ResilienceStrategyRegistryTests
     {
         var registry = new ResilienceStrategyRegistry<string>();
 
-        registry.TryAddBuilder("C", (_, b) => b.AddStrategy(new TestResilienceStrategy()));
+        registry.TryAddBuilder("C", (_, b) => b.AddStrategy(new TestResilienceStrategy(), new TestResilienceStrategyOptions()));
 
         registry.TryAdd("A", new TestResilienceStrategy());
         registry.TryAdd("B", new TestResilienceStrategy());
@@ -74,7 +74,7 @@ public class ResilienceStrategyRegistryTests
     public void RemoveBuilder_Ok()
     {
         var registry = new ResilienceStrategyRegistry<string>();
-        registry.TryAddBuilder("A", (_, b) => b.AddStrategy(new TestResilienceStrategy()));
+        registry.TryAddBuilder("A", (_, b) => b.AddStrategy(new TestResilienceStrategy(), new TestResilienceStrategyOptions()));
 
         registry.RemoveBuilder("A").Should().BeTrue();
         registry.RemoveBuilder("A").Should().BeFalse();
@@ -88,7 +88,7 @@ public class ResilienceStrategyRegistryTests
         var builderName = "A";
         var registry = CreateRegistry();
         var strategies = new HashSet<ResilienceStrategy>();
-        registry.TryAddBuilder(StrategyId.Create(builderName), (_, builder) => builder.AddStrategy(new TestResilienceStrategy()));
+        registry.TryAddBuilder(StrategyId.Create(builderName), (_, builder) => builder.AddStrategy(new TestResilienceStrategy(), new TestResilienceStrategyOptions()));
 
         for (int i = 0; i < 100; i++)
         {
@@ -112,7 +112,7 @@ public class ResilienceStrategyRegistryTests
         var called = 0;
         registry.TryAddBuilder(StrategyId.Create("A"), (key, builder) =>
         {
-            builder.AddStrategy(new TestResilienceStrategy());
+            builder.AddStrategy(new TestResilienceStrategy(), new TestResilienceStrategyOptions());
             builder.Properties.Set(StrategyId.ResilienceKey, key);
             called++;
         });
@@ -142,7 +142,7 @@ public class ResilienceStrategyRegistryTests
         var registry = CreateRegistry();
         registry.TryAddBuilder(StrategyId.Create("A"), (_, builder) =>
         {
-            builder.AddStrategy(new TestResilienceStrategy());
+            builder.AddStrategy(new TestResilienceStrategy(), new TestResilienceStrategyOptions());
             builder.BuilderName.Should().Be("A");
             builder.Properties.TryGetValue(TelemetryUtil.StrategyKey, out var val).Should().BeTrue();
             val.Should().Be("Instance1");

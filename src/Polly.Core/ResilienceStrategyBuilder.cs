@@ -49,9 +49,10 @@ public class ResilienceStrategyBuilder
     /// <param name="options">The options associated with the strategy. If none are provided the default instance of <see cref="ResilienceStrategyOptions"/> is created.</param>
     /// <returns>The same builder instance.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="strategy"/> is null.</exception>
-    public ResilienceStrategyBuilder AddStrategy(ResilienceStrategy strategy, ResilienceStrategyOptions? options = null)
+    public ResilienceStrategyBuilder AddStrategy(ResilienceStrategy strategy, ResilienceStrategyOptions options)
     {
         Guard.NotNull(strategy);
+        Guard.NotNull(options);
 
         return AddStrategy(_ => strategy, options);
     }
@@ -63,21 +64,19 @@ public class ResilienceStrategyBuilder
     /// <param name="options">The options associated with the strategy. If none are provided the default instance of <see cref="ResilienceStrategyOptions"/> is created.</param>
     /// <returns>The same builder instance.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="factory"/> is null.</exception>
-    public ResilienceStrategyBuilder AddStrategy(Func<ResilienceStrategyBuilderContext, ResilienceStrategy> factory, ResilienceStrategyOptions? options = null)
+    public ResilienceStrategyBuilder AddStrategy(Func<ResilienceStrategyBuilderContext, ResilienceStrategy> factory, ResilienceStrategyOptions options)
     {
         Guard.NotNull(factory);
+        Guard.NotNull(options);
 
-        if (options is not null)
-        {
-            ValidationHelper.ValidateObject(options, $"The '{nameof(ResilienceStrategyOptions)}' options are not valid.");
-        }
+        ValidationHelper.ValidateObject(options, $"The '{nameof(ResilienceStrategyOptions)}' options are not valid.");
 
         if (_used)
         {
             throw new InvalidOperationException("Cannot add any more resilience strategies to the builder after it has been used to build a strategy once.");
         }
 
-        _entries.Add(new Entry(factory, options ?? new ResilienceStrategyOptions()));
+        _entries.Add(new Entry(factory, options));
 
         return this;
     }

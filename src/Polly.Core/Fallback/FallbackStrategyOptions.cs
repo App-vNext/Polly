@@ -9,9 +9,10 @@ namespace Polly.Fallback;
 public class FallbackStrategyOptions : ResilienceStrategyOptions
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="FallbackStrategyOptions"/> class.
+    /// Gets the strategy type.
     /// </summary>
-    public FallbackStrategyOptions() => StrategyType = FallbackConstants.StrategyType;
+    /// <remarks>Returns <c>Fallback</c> value.</remarks>
+    public sealed override string StrategyType => FallbackConstants.StrategyType;
 
     /// <summary>
     /// Gets or sets the <see cref="FallbackHandler"/> instance used for configure fallback scenarios.

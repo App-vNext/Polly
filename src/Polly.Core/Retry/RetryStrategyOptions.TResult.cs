@@ -10,9 +10,10 @@ namespace Polly.Retry;
 public class RetryStrategyOptions<TResult> : ResilienceStrategyOptions
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="RetryStrategyOptions{TResult}"/> class.
+    /// Gets the strategy type.
     /// </summary>
-    public RetryStrategyOptions() => StrategyType = RetryConstants.StrategyType;
+    /// <remarks>Returns <c>Retry</c> value.</remarks>
+    public sealed override string StrategyType => RetryConstants.StrategyType;
 
     /// <summary>
     /// Gets or sets the maximum number of retries to use, in addition to the original call.
@@ -100,7 +101,6 @@ public class RetryStrategyOptions<TResult> : ResilienceStrategyOptions
             RetryDelayGenerator = new OutcomeGenerator<RetryDelayArguments, TimeSpan>().SetGenerator(RetryDelayGenerator),
             ShouldRetry = new OutcomePredicate<ShouldRetryArguments>().SetPredicates(ShouldRetry),
             StrategyName = StrategyName,
-            StrategyType = StrategyType
         };
     }
 }
