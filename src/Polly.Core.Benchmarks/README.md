@@ -10,6 +10,16 @@ Job=MediumRun  Toolchain=InProcessEmitToolchain  IterationCount=15
 LaunchCount=2  WarmupCount=10
 ```
 
+## Genric vs Non-Generic classes
+
+This benchmark demonstrates that impact of having non-generic `ResilienceStrategy` is minimal.
+
+|                  Method |     Mean |    Error |   StdDev | Ratio | Allocated | Alloc Ratio |
+|------------------------ |---------:|---------:|---------:|------:|----------:|------------:|
+|    ExecuteAsync_Generic | 30.25 ns | 0.197 ns | 0.269 ns |  1.00 |         - |          NA |
+| ExecuteAsync_NonGeneric | 32.02 ns | 0.071 ns | 0.094 ns |  1.06 |         - |          NA |
+
+
 ## PIPELINES
 
 |             Method | Components |        Mean |     Error |     StdDev |      Median | Ratio | RatioSD |   Gen0 | Allocated | Alloc Ratio |
