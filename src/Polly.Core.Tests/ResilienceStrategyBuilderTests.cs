@@ -29,7 +29,7 @@ public class ResilienceStrategyBuilderTests
             After = (_, _) => executions.Add(3),
         };
 
-        builder.AddStrategy(first, new TestResilienceStrategyOptions());
+        builder.AddStrategy(first);
 
         // act
         var strategy = builder.Build();
@@ -63,9 +63,9 @@ public class ResilienceStrategyBuilderTests
             After = (_, _) => executions.Add(5),
         };
 
-        builder.AddStrategy(first, new TestResilienceStrategyOptions());
-        builder.AddStrategy(second, new TestResilienceStrategyOptions());
-        builder.AddStrategy(third, new TestResilienceStrategyOptions());
+        builder.AddStrategy(first);
+        builder.AddStrategy(second);
+        builder.AddStrategy(third);
 
         // act
         var strategy = builder.Build();
@@ -88,8 +88,8 @@ public class ResilienceStrategyBuilderTests
         // arrange
         var executions = new List<int>();
         var builder = new ResilienceStrategyBuilder()
-            .AddStrategy(NullResilienceStrategy.Instance, new TestResilienceStrategyOptions())
-            .AddStrategy(NullResilienceStrategy.Instance, new TestResilienceStrategyOptions());
+            .AddStrategy(NullResilienceStrategy.Instance)
+            .AddStrategy(NullResilienceStrategy.Instance);
 
         builder.Invoking(b => b.Build())
             .Should()
@@ -119,9 +119,9 @@ public class ResilienceStrategyBuilderTests
             After = () => executions.Add(5),
         };
 
-        builder.AddStrategy(first, new TestResilienceStrategyOptions());
-        builder.AddStrategy(second, new TestResilienceStrategyOptions());
-        builder.AddStrategy(third, new TestResilienceStrategyOptions());
+        builder.AddStrategy(first);
+        builder.AddStrategy(second);
+        builder.AddStrategy(third);
 
         // act
         var strategy = builder.Build();
@@ -147,7 +147,7 @@ public class ResilienceStrategyBuilderTests
         builder.Build();
 
         builder
-            .Invoking(b => b.AddStrategy(NullResilienceStrategy.Instance, new TestResilienceStrategyOptions()))
+            .Invoking(b => b.AddStrategy(NullResilienceStrategy.Instance))
             .Should()
             .Throw<InvalidOperationException>()
             .WithMessage("Cannot add any more resilience strategies to the builder after it has been used to build a strategy once.");
@@ -174,30 +174,12 @@ The BuilderName field is required.
     }
 
     [Fact]
-    public void AddStrategy_InvalidOptions_Throws()
-    {
-        var builder = new ResilienceStrategyBuilder();
-
-        builder
-            .Invoking(b => b.AddStrategy(NullResilienceStrategy.Instance, new TestResilienceStrategyOptions { StrategyName = null! }))
-            .Should()
-            .Throw<ValidationException>()
-            .WithMessage(
-"""
-The 'ResilienceStrategyOptions' options are not valid.
-
-Validation Errors:
-The StrategyName field is required.
-""");
-    }
-
-    [Fact]
     public void AddStrategy_NullFactory_Throws()
     {
         var builder = new ResilienceStrategyBuilder();
 
         builder
-            .Invoking(b => b.AddStrategy((Func<ResilienceStrategyBuilderContext, ResilienceStrategy>)null!, new TestResilienceStrategyOptions()))
+            .Invoking(b => b.AddStrategy(null!, new TestResilienceStrategyOptions()))
             .Should()
             .Throw<ArgumentNullException>()
             .And.ParamName
@@ -221,17 +203,17 @@ The StrategyName field is required.
             After = (_, _) => executions.Add(6),
         };
 
-        var pipeline1 = new ResilienceStrategyBuilder().AddStrategy(first, new TestResilienceStrategyOptions()).AddStrategy(second, new TestResilienceStrategyOptions()).Build();
+        var pipeline1 = new ResilienceStrategyBuilder().AddStrategy(first).AddStrategy(second).Build();
 
         var third = new TestResilienceStrategy
         {
             Before = (_, _) => executions.Add(3),
             After = (_, _) => executions.Add(5),
         };
-        var pipeline2 = new ResilienceStrategyBuilder().AddStrategy(third, new TestResilienceStrategyOptions()).Build();
+        var pipeline2 = new ResilienceStrategyBuilder().AddStrategy(third).Build();
 
         // act
-        var strategy = new ResilienceStrategyBuilder().AddStrategy(pipeline1, new TestResilienceStrategyOptions()).AddStrategy(pipeline2, new TestResilienceStrategyOptions()).Build();
+        var strategy = new ResilienceStrategyBuilder().AddStrategy(pipeline1).AddStrategy(pipeline2).Build();
 
         // assert
         strategy.Execute(_ => executions.Add(4));
@@ -305,13 +287,19 @@ The StrategyName field is required.
             }
         };
 
-        builder.AddStrategy(strategy, new TestResilienceStrategyOptions());
+        builder.AddStrategy(strategy);
 
         // act
         var finalStrategy = builder.Build();
 
         // assert
         finalStrategy.Should().BeOfType<ResilienceStrategyPipeline>();
+    }
+
+    [Fact]
+    public void EmptyOptions_Ok()
+    {
+        ResilienceStrategyBuilder.EmptyOptions.Instance.StrategyType.Should().Be("Empty");
     }
 
     private class Strategy : ResilienceStrategy

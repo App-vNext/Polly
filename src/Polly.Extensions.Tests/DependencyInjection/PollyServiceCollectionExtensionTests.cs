@@ -49,7 +49,7 @@ public class PollyServiceCollectionExtensionTests
     public void AddResilienceStrategy_MultipleRegistries_Ok()
     {
         AddResilienceStrategy(Key);
-        _services.AddResilienceStrategy(10, context => context.AddStrategy(new TestStrategy(), new TestResilienceStrategyOptions()));
+        _services.AddResilienceStrategy(10, context => context.AddStrategy(new TestStrategy()));
 
         var serviceProvider = _services.BuildServiceProvider();
 
@@ -67,7 +67,7 @@ public class PollyServiceCollectionExtensionTests
             context.Key.Should().Be(Key);
             builder.Should().NotBeNull();
             context.ServiceProvider.Should().NotBeNull();
-            builder.AddStrategy(new TestStrategy(), new TestResilienceStrategyOptions());
+            builder.AddStrategy(new TestStrategy());
             asserted = true;
         });
 
