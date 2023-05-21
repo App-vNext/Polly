@@ -48,6 +48,7 @@ public class ResilienceStrategyBuilder
     /// <param name="strategy">The strategy instance.</param>
     /// <returns>The same builder instance.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="strategy"/> is null.</exception>
+    /// <exception cref="InvalidOperationException">Thrown when this builder was already used to create a strategy. The builder cannot be modified after it has been used.</exception>
     public ResilienceStrategyBuilder AddStrategy(ResilienceStrategy strategy)
     {
         Guard.NotNull(strategy);
@@ -62,6 +63,8 @@ public class ResilienceStrategyBuilder
     /// <param name="options">The options associated with the strategy. If none are provided the default instance of <see cref="ResilienceStrategyOptions"/> is created.</param>
     /// <returns>The same builder instance.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="factory"/> is null.</exception>
+    /// <exception cref="InvalidOperationException">Thrown when this builder was already used to create a strategy. The builder cannot be modified after it has been used.</exception>
+    /// <exception cref="ValidationException">Thrown when the <paramref name="options"/> are invalid.</exception>
     public ResilienceStrategyBuilder AddStrategy(Func<ResilienceStrategyBuilderContext, ResilienceStrategy> factory, ResilienceStrategyOptions options)
     {
         Guard.NotNull(factory);
