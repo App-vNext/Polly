@@ -174,6 +174,24 @@ The BuilderName field is required.
     }
 
     [Fact]
+    public void AddStrategy_InvalidOptions_Throws()
+    {
+        var builder = new ResilienceStrategyBuilder();
+
+        builder
+            .Invoking(b => b.AddStrategy(_ => NullResilienceStrategy.Instance, new TestResilienceStrategyOptions { StrategyName = null! }))
+            .Should()
+            .Throw<ValidationException>()
+            .WithMessage(
+"""
+The 'ResilienceStrategyOptions' options are not valid.
+
+Validation Errors:
+The StrategyName field is required.
+""");
+    }
+
+    [Fact]
     public void AddStrategy_NullFactory_Throws()
     {
         var builder = new ResilienceStrategyBuilder();
