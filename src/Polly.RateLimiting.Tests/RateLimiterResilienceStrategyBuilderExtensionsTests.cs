@@ -79,6 +79,19 @@ public class RateLimiterResilienceStrategyBuilderExtensionsTests
     }
 
     [Fact]
+    public void AddRateLimiter_Ok()
+    {
+        new ResilienceStrategyBuilder().AddRateLimiter(new RateLimiterStrategyOptions
+        {
+            RateLimiter = new ConcurrencyLimiter(new ConcurrencyLimiterOptions
+            {
+                QueueLimit = 10,
+                PermitLimit = 10
+            })
+        }).Build().Should().BeOfType<RateLimiterResilienceStrategy>();
+    }
+
+    [Fact]
     public void AddRateLimiter_InvalidOptions_Throws()
     {
         new ResilienceStrategyBuilder().Invoking(b => b.AddRateLimiter(new RateLimiterStrategyOptions()))
