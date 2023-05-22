@@ -25,14 +25,14 @@ public static class CircuitBreakerResilienceStrategyBuilderExtensions
     /// </remarks>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="builder"/> or <paramref name="options"/> is <see langword="null"/>.</exception>
     /// <exception cref="ValidationException">Thrown when <paramref name="options"/> are invalid.</exception>
-    public static ResilienceStrategyBuilder AddAdvancedCircuitBreaker<TResult>(this ResilienceStrategyBuilder builder, AdvancedCircuitBreakerStrategyOptions<TResult> options)
+    public static ResilienceStrategyBuilder<TResult> AddAdvancedCircuitBreaker<TResult>(this ResilienceStrategyBuilder<TResult> builder, AdvancedCircuitBreakerStrategyOptions<TResult> options)
     {
         Guard.NotNull(builder);
         Guard.NotNull(options);
 
         ValidationHelper.ValidateObject(options, "The advanced circuit breaker strategy options are invalid.");
 
-        return builder.AddCircuitBreakerCore(options.AsNonGenericOptions());
+        return builder.ConfigureBuilder(buider => AddCircuitBreakerCore(buider, options.AsNonGenericOptions()));
     }
 
     /// <summary>
@@ -74,14 +74,14 @@ public static class CircuitBreakerResilienceStrategyBuilderExtensions
     /// </remarks>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="builder"/> or <paramref name="options"/> is <see langword="null"/>.</exception>
     /// <exception cref="ValidationException">Thrown when <paramref name="options"/> are invalid.</exception>
-    public static ResilienceStrategyBuilder AddSimpleCircuitBreaker<TResult>(this ResilienceStrategyBuilder builder, SimpleCircuitBreakerStrategyOptions<TResult> options)
+    public static ResilienceStrategyBuilder<TResult> AddSimpleCircuitBreaker<TResult>(this ResilienceStrategyBuilder<TResult> builder, SimpleCircuitBreakerStrategyOptions<TResult> options)
     {
         Guard.NotNull(builder);
         Guard.NotNull(options);
 
         ValidationHelper.ValidateObject(options, "The circuit breaker strategy options are invalid.");
 
-        return builder.AddCircuitBreakerCore(options.AsNonGenericOptions());
+        return builder.ConfigureBuilder(builder => builder.AddCircuitBreakerCore(options.AsNonGenericOptions()));
     }
 
     /// <summary>

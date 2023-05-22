@@ -17,14 +17,14 @@ public static class HedgingResilienceStrategyBuilderExtensions
     /// <returns>The builder instance with the hedging strategy added.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="builder"/> or <paramref name="options"/> is <see langword="null"/>.</exception>
     /// <exception cref="ValidationException">Thrown when <paramref name="options"/> are invalid.</exception>
-    public static ResilienceStrategyBuilder AddHedging<TResult>(this ResilienceStrategyBuilder builder, HedgingStrategyOptions<TResult> options)
+    public static ResilienceStrategyBuilder<TResult> AddHedging<TResult>(this ResilienceStrategyBuilder<TResult> builder, HedgingStrategyOptions<TResult> options)
     {
         Guard.NotNull(builder);
         Guard.NotNull(options);
 
         ValidationHelper.ValidateObject(options, "The hedging strategy options are invalid.");
 
-        return builder.AddHedging(options.AsNonGenericOptions());
+        return builder.ConfigureBuilder(builder => builder.AddHedging(options.AsNonGenericOptions()));
     }
 
     /// <summary>
