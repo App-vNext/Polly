@@ -12,7 +12,7 @@ public class TimeoutResilienceStrategyBuilderExtensionsTests
         yield return new object[]
         {
             timeout,
-            (ResilienceStrategyBuilder builder) => { builder.AddTimeout(timeout); },
+            (ResilienceStrategyBuilder<int> builder) => { builder.AddTimeout(timeout); },
             (TimeoutResilienceStrategy strategy) => { GetTimeout(strategy).Should().Be(timeout); }
         };
 
@@ -21,7 +21,7 @@ public class TimeoutResilienceStrategyBuilderExtensionsTests
         yield return new object[]
         {
             timeout,
-            (ResilienceStrategyBuilder builder) => { builder.AddTimeout(timeout, _=> called = true); },
+            (ResilienceStrategyBuilder<int> builder) => { builder.AddTimeout(timeout, _=> called = true); },
             (TimeoutResilienceStrategy strategy) =>
             {
                 GetTimeout(strategy).Should().Be(timeout);
@@ -35,7 +35,7 @@ public class TimeoutResilienceStrategyBuilderExtensionsTests
     [Theory]
     public void AddTimeout_InvalidTimeout_EnsureValidated(TimeSpan timeout)
     {
-        var builder = new ResilienceStrategyBuilder();
+        var builder = new ResilienceStrategyBuilder<int>();
 
         Assert.Throws<ValidationException>(() => builder.AddTimeout(timeout));
         Assert.Throws<ValidationException>(() => builder.AddTimeout(timeout, args => { }));
@@ -43,11 +43,11 @@ public class TimeoutResilienceStrategyBuilderExtensionsTests
 
     [MemberData(nameof(AddTimeout_Ok_Data))]
     [Theory]
-    internal void AddTimeout_Ok(TimeSpan timeout, Action<ResilienceStrategyBuilder> configure, Action<TimeoutResilienceStrategy> assert)
+    internal void AddTimeout_Ok(TimeSpan timeout, Action<ResilienceStrategyBuilder<int>> configure, Action<TimeoutResilienceStrategy> assert)
     {
-        var builder = new ResilienceStrategyBuilder();
+        var builder = new ResilienceStrategyBuilder<int>();
         configure(builder);
-        var strategy = builder.Build().Should().BeOfType<TimeoutResilienceStrategy>().Subject;
+        var strategy = builder.Build().Strategy.Should().BeOfType<TimeoutResilienceStrategy>().Subject;
         assert(strategy);
 
         GetTimeout(strategy).Should().Be(timeout);

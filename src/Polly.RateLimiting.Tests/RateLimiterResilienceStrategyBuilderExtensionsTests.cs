@@ -7,7 +7,7 @@ namespace Polly.RateLimiting.Tests;
 
 public class RateLimiterResilienceStrategyBuilderExtensionsTests
 {
-    public static readonly TheoryData<Action<ResilienceStrategyBuilder>> Data = new()
+    public static readonly TheoryData<Action<ResilienceStrategyBuilder<int>>> Data = new()
     {
         builder =>
         {
@@ -56,9 +56,9 @@ public class RateLimiterResilienceStrategyBuilderExtensionsTests
 
     [MemberData(nameof(Data))]
     [Theory(Skip = "https://github.com/stryker-mutator/stryker-net/issues/2144")]
-    public void AddRateLimiter_Extensions_Ok(Action<ResilienceStrategyBuilder> configure)
+    public void AddRateLimiter_Extensions_Ok(Action<ResilienceStrategyBuilder<int>> configure)
     {
-        var builder = new ResilienceStrategyBuilder();
+        var builder = new ResilienceStrategyBuilder<int>();
 
         configure(builder);
 
@@ -68,13 +68,13 @@ public class RateLimiterResilienceStrategyBuilderExtensionsTests
     [Fact]
     public void AddRateLimiter_AllExtensions_Ok()
     {
-        foreach (var configure in Data.Select(v => v[0]).Cast<Action<ResilienceStrategyBuilder>>())
+        foreach (var configure in Data.Select(v => v[0]).Cast<Action<ResilienceStrategyBuilder<int>>>())
         {
-            var builder = new ResilienceStrategyBuilder();
+            var builder = new ResilienceStrategyBuilder<int>();
 
             configure(builder);
 
-            builder.Build().Should().BeOfType<RateLimiterResilienceStrategy>();
+            GetResilienceStrategy(builder.Build()).Should().BeOfType<RateLimiterResilienceStrategy>();
         }
     }
 
@@ -105,9 +105,9 @@ public class RateLimiterResilienceStrategyBuilderExtensionsTests
         strategy.Should().BeOfType<RateLimiterResilienceStrategy>();
     }
 
-    private static void AssertRateLimiter(ResilienceStrategyBuilder builder, bool hasEvents)
+    private static void AssertRateLimiter(ResilienceStrategyBuilder<int> builder, bool hasEvents)
     {
-        var strategy = (RateLimiterResilienceStrategy)builder.Build();
+        var strategy = GetResilienceStrategy(builder.Build());
         strategy.Limiter.Should().NotBeNull();
 
         if (hasEvents)
@@ -123,9 +123,9 @@ public class RateLimiterResilienceStrategyBuilderExtensionsTests
         }
     }
 
-    private static void AssertConcurrencyLimiter(ResilienceStrategyBuilder builder, bool hasEvents)
+    private static void AssertConcurrencyLimiter(ResilienceStrategyBuilder<int> builder, bool hasEvents)
     {
-        var strategy = (RateLimiterResilienceStrategy)builder.Build();
+        var strategy = GetResilienceStrategy(builder.Build());
         strategy.Limiter.Should().BeOfType<ConcurrencyLimiter>();
 
         if (hasEvents)
@@ -139,5 +139,10 @@ public class RateLimiterResilienceStrategyBuilderExtensionsTests
         {
             strategy.OnLeaseRejected.Should().BeNull();
         }
+    }
+
+    private static RateLimiterResilienceStrategy GetResilienceStrategy<T>(ResilienceStrategy<T> strategy)
+    {
+        return (RateLimiterResilienceStrategy)strategy.GetType().GetProperty("Strategy", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(strategy)!;
     }
 }

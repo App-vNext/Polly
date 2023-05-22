@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using Polly.Retry;
+using Polly.Strategy;
 
 namespace Polly.Core.Tests.Retry;
 
@@ -11,7 +12,22 @@ public class RetryResilienceStrategyBuilderExtensionsTests
     {
         builder =>
         {
-            builder.AddRetry(retry=>retry.HandleResult(10));
+            builder.AddRetry(new RetryStrategyOptions
+            {
+                BackoffType = RetryBackoffType.Exponential,
+                RetryCount = 3,
+                BaseDelay = TimeSpan.FromSeconds(2)
+            });
+
+            AssertStrategy(builder, RetryBackoffType.Exponential, 3, TimeSpan.FromSeconds(2));
+        }
+    };
+
+    public static readonly TheoryData<Action<ResilienceStrategyBuilder<int>>> OverloadsDataGeneric = new()
+    {
+        builder =>
+        {
+            builder.AddRetry(retry => retry.HandleResult(10));
             AssertStrategy(builder, RetryBackoffType.ExponentialWithJitter, 3, TimeSpan.FromSeconds(2));
         },
         builder =>
@@ -32,7 +48,7 @@ public class RetryResilienceStrategyBuilderExtensionsTests
             {
                 var args = new RetryDelayArguments(ResilienceContext.Get(), 8, TimeSpan.Zero);
 
-                strategy.DelayGenerator!.GenerateAsync(new Polly.Strategy.Outcome<bool>(new InvalidOperationException()), args).Result.Should().Be(TimeSpan.FromMilliseconds(8));
+                strategy.DelayGenerator!.GenerateAsync(new Outcome<int>(new InvalidOperationException()), args).Result.Should().Be(TimeSpan.FromMilliseconds(8));
             });
         },
         builder =>
@@ -53,7 +69,15 @@ public class RetryResilienceStrategyBuilderExtensionsTests
     public void AddRetry_Overloads_Ok(Action<ResilienceStrategyBuilder> configure)
     {
         var builder = new ResilienceStrategyBuilder();
-        var options = new RetryStrategyOptions();
+
+        builder.Invoking(b => configure(b)).Should().NotThrow();
+    }
+
+    [MemberData(nameof(OverloadsDataGeneric))]
+    [Theory]
+    public void AddRetry_GenericOverloads_Ok(Action<ResilienceStrategyBuilder<int>> configure)
+    {
+        var builder = new ResilienceStrategyBuilder<int>();
 
         builder.Invoking(b => configure(b)).Should().NotThrow();
     }
@@ -80,18 +104,27 @@ public class RetryResilienceStrategyBuilderExtensionsTests
         assert?.Invoke(strategy);
     }
 
+    private static void AssertStrategy<T>(ResilienceStrategyBuilder<T> builder, RetryBackoffType type, int retries, TimeSpan delay, Action<RetryResilienceStrategy>? assert = null)
+    {
+        var strategy = (RetryResilienceStrategy)builder.Build().Strategy;
+
+        strategy.BackoffType.Should().Be(type);
+        strategy.RetryCount.Should().Be(retries);
+        strategy.BaseDelay.Should().Be(delay);
+
+        assert?.Invoke(strategy);
+    }
+
     [Fact]
     public void AddRetry_InvalidOptions_Throws()
     {
-        var builder = new ResilienceStrategyBuilder();
-
-        builder
+        new ResilienceStrategyBuilder()
             .Invoking(b => b.AddRetry(new RetryStrategyOptions { ShouldRetry = null! }))
             .Should()
             .Throw<ValidationException>()
             .WithMessage("The retry strategy options are invalid.*");
 
-        builder
+        new ResilienceStrategyBuilder<int>()
             .Invoking(b => b.AddRetry(new RetryStrategyOptions<int> { ShouldRetry = null! }))
             .Should()
             .Throw<ValidationException>()

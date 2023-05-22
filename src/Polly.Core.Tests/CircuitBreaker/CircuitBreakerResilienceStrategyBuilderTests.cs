@@ -8,22 +8,14 @@ public class CircuitBreakerResilienceStrategyBuilderTests
 {
     public static TheoryData<Action<ResilienceStrategyBuilder>> ConfigureData = new()
     {
-        builder =>
-        {
-            builder.AddAdvancedCircuitBreaker(new AdvancedCircuitBreakerStrategyOptions<int>());
-        },
-         builder =>
-        {
-            builder.AddAdvancedCircuitBreaker(new AdvancedCircuitBreakerStrategyOptions());
-        },
-        builder =>
-        {
-            builder.AddSimpleCircuitBreaker(new SimpleCircuitBreakerStrategyOptions<int>());
-        },
-        builder =>
-        {
-            builder.AddSimpleCircuitBreaker(new SimpleCircuitBreakerStrategyOptions());
-        },
+        builder => builder.AddAdvancedCircuitBreaker(new AdvancedCircuitBreakerStrategyOptions()),
+        builder => builder.AddSimpleCircuitBreaker(new SimpleCircuitBreakerStrategyOptions()),
+    };
+
+    public static TheoryData<Action<ResilienceStrategyBuilder<int>>> ConfigureDataGeneric = new()
+    {
+        builder => builder.AddAdvancedCircuitBreaker(new AdvancedCircuitBreakerStrategyOptions<int>()),
+        builder => builder.AddSimpleCircuitBreaker(new SimpleCircuitBreakerStrategyOptions<int>()),
     };
 
     [MemberData(nameof(ConfigureData))]
@@ -39,18 +31,29 @@ public class CircuitBreakerResilienceStrategyBuilderTests
         strategy.Should().BeOfType<CircuitBreakerResilienceStrategy>();
     }
 
+    [MemberData(nameof(ConfigureDataGeneric))]
+    [Theory]
+    public void AddCircuitBreaker_Generic_Configure(Action<ResilienceStrategyBuilder<int>> builderAction)
+    {
+        var builder = new ResilienceStrategyBuilder<int>();
+
+        builderAction(builder);
+
+        var strategy = builder.Build().Strategy;
+
+        strategy.Should().BeOfType<CircuitBreakerResilienceStrategy>();
+    }
+
     [Fact]
     public void AddCircuitBreaker_Validation()
     {
-        var builder = new ResilienceStrategyBuilder();
-
-        builder
+        new ResilienceStrategyBuilder<int>()
             .Invoking(b => b.AddSimpleCircuitBreaker(new SimpleCircuitBreakerStrategyOptions<int> { BreakDuration = TimeSpan.MinValue }))
             .Should()
             .Throw<ValidationException>()
             .WithMessage("The circuit breaker strategy options are invalid.*");
 
-        builder
+        new ResilienceStrategyBuilder()
             .Invoking(b => b.AddSimpleCircuitBreaker(new SimpleCircuitBreakerStrategyOptions { BreakDuration = TimeSpan.MinValue }))
             .Should()
             .Throw<ValidationException>()
@@ -60,15 +63,13 @@ public class CircuitBreakerResilienceStrategyBuilderTests
     [Fact]
     public void AddAdvancedCircuitBreaker_Validation()
     {
-        var builder = new ResilienceStrategyBuilder();
-
-        builder
+        new ResilienceStrategyBuilder<int>()
             .Invoking(b => b.AddAdvancedCircuitBreaker(new AdvancedCircuitBreakerStrategyOptions<int> { BreakDuration = TimeSpan.MinValue }))
             .Should()
             .Throw<ValidationException>()
             .WithMessage("The advanced circuit breaker strategy options are invalid.*");
 
-        builder
+        new ResilienceStrategyBuilder()
             .Invoking(b => b.AddAdvancedCircuitBreaker(new AdvancedCircuitBreakerStrategyOptions { BreakDuration = TimeSpan.MinValue }))
             .Should()
             .Throw<ValidationException>()
@@ -182,7 +183,10 @@ public class CircuitBreakerResilienceStrategyBuilderTests
     {
         var builder = new ResilienceStrategyBuilder();
 
-        builder.Invoking(b => b.AddCircuitBreakerCore(new DummyOptions()).Build()).Should().Throw<NotSupportedException>();
+        builder
+            .Invoking(b => CircuitBreakerResilienceStrategyBuilderExtensions.CreateStrategy(null!, new DummyOptions()))
+            .Should()
+            .Throw<NotSupportedException>();
     }
 
     private class DummyOptions : CircuitBreakerStrategyOptions
