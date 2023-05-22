@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.ExceptionServices;
 using System.Threading.Tasks;
 using Polly.Strategy;
 
@@ -24,7 +25,10 @@ internal sealed class TimeoutResilienceStrategy : ResilienceStrategy
 
     public Func<OnTimeoutArguments, ValueTask>? OnTimeout { get; }
 
-    protected internal override async ValueTask<TResult> ExecuteCoreAsync<TResult, TState>(Func<ResilienceContext, TState, ValueTask<TResult>> callback, ResilienceContext context, TState state)
+    protected internal override async ValueTask<Outcome<TResult>> ExecuteCoreAsync<TResult, TState>(
+        Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,
+        ResilienceContext context,
+        TState state)
     {
         var timeout = await GetTimeoutAsync(context).ConfigureAwait(context.ContinueOnCapturedContext);
 
@@ -47,33 +51,33 @@ internal sealed class TimeoutResilienceStrategy : ResilienceStrategy
 
         try
         {
-            var result = await callback(context, state).ConfigureAwait(context.ContinueOnCapturedContext);
+            var outcome = await callback(context, state).ConfigureAwait(context.ContinueOnCapturedContext);
 
-            await DisposeRegistration(registration).ConfigureAwait(context.ContinueOnCapturedContext);
-
-            return result;
-        }
-        catch (OperationCanceledException e) when (cancellationSource.IsCancellationRequested && !previousToken.IsCancellationRequested)
-        {
-            context.CancellationToken = previousToken;
-
-            var args = new OnTimeoutArguments(context, e, timeout);
-            _telemetry.Report(TimeoutConstants.OnTimeoutEvent, args);
-
-            if (OnTimeout != null)
+            if (outcome.Exception is OperationCanceledException e && cancellationSource.IsCancellationRequested && !previousToken.IsCancellationRequested)
             {
-                await OnTimeout(args).ConfigureAwait(context.ContinueOnCapturedContext);
+                context.CancellationToken = previousToken;
+
+                var args = new OnTimeoutArguments(context, e, timeout);
+                _telemetry.Report(TimeoutConstants.OnTimeoutEvent, args);
+
+                if (OnTimeout != null)
+                {
+                    await OnTimeout(args).ConfigureAwait(context.ContinueOnCapturedContext);
+                }
+
+                var timeoutException = new TimeoutRejectedException(
+                    $"The operation didn't complete within the allowed timeout of '{timeout}'.",
+                    timeout,
+                    e);
+
+                return new Outcome<TResult>(timeoutException, ExceptionDispatchInfo.Capture(timeoutException));
             }
 
-            await DisposeRegistration(registration).ConfigureAwait(context.ContinueOnCapturedContext);
-
-            throw new TimeoutRejectedException(
-                $"The operation didn't complete within the allowed timeout of '{timeout}'.",
-                timeout,
-                e);
+            return outcome;
         }
         finally
         {
+            await DisposeRegistration(registration).ConfigureAwait(context.ContinueOnCapturedContext);
             context.CancellationToken = previousToken;
             _cancellationTokenSourcePool.Return(cancellationSource);
         }

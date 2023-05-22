@@ -9,6 +9,7 @@ public class OutcomeTResultTests
         var outcome = new Outcome<int>(10);
         outcome.HasResult.Should().BeTrue();
         outcome.Exception.Should().BeNull();
+        outcome.ExceptionDispatchInfo.Should().BeNull();
         outcome.IsVoidResult.Should().BeFalse();
         outcome.TryGetResult(out var result).Should().BeTrue();
         result.Should().Be(10);
@@ -45,6 +46,7 @@ public class OutcomeTResultTests
         var outcome = new Outcome<VoidResult>(new InvalidOperationException("Dummy message."));
         outcome.HasResult.Should().BeFalse();
         outcome.Exception.Should().NotBeNull();
+        outcome.ExceptionDispatchInfo.Should().NotBeNull();
         outcome.IsVoidResult.Should().BeFalse();
         outcome.TryGetResult(out var result).Should().BeFalse();
         outcome.ToString().Should().Be("Dummy message.");
@@ -53,6 +55,7 @@ public class OutcomeTResultTests
         outcome.AsOutcome().Exception.Should().NotBeNull();
         outcome.AsOutcome().IsVoidResult.Should().BeFalse();
         outcome.AsOutcome().TryGetResult(out _).Should().BeFalse();
+        outcome.AsOutcome().ExceptionDispatchInfo.Should().Be(outcome.ExceptionDispatchInfo);
     }
 
     [Fact]

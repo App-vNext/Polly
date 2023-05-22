@@ -326,7 +326,10 @@ The StrategyName field is required.
 
         public Action? After { get; set; }
 
-        protected internal override async ValueTask<TResult> ExecuteCoreAsync<TResult, TState>(Func<ResilienceContext, TState, ValueTask<TResult>> callback, ResilienceContext context, TState state)
+        protected internal override async ValueTask<Outcome<TResult>> ExecuteCoreAsync<TResult, TState>(
+            Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,
+            ResilienceContext context,
+            TState state)
         {
             try
             {

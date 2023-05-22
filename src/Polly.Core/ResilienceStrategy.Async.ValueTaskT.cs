@@ -1,4 +1,9 @@
+using System.Runtime.ExceptionServices;
+using Polly.Strategy;
+
 namespace Polly;
+
+#pragma warning disable CA1031 // Do not catch general exception types
 
 public abstract partial class ResilienceStrategy
 {
@@ -22,7 +27,20 @@ public abstract partial class ResilienceStrategy
 
         InitializeAsyncContext<TResult>(context);
 
-        return ExecuteCoreAsync(callback, context, state);
+        return ExecuteCoreAndUnwrapAsync(
+            static async (context, state) =>
+            {
+                try
+                {
+                    return new Outcome<TResult>(await state.callback(context, state.state).ConfigureAwait(context.ContinueOnCapturedContext));
+                }
+                catch (Exception e)
+                {
+                    return new Outcome<TResult>(e, ExceptionDispatchInfo.Capture(e));
+                }
+            },
+            context,
+            (callback, state));
     }
 
     /// <summary>
@@ -42,7 +60,20 @@ public abstract partial class ResilienceStrategy
 
         InitializeAsyncContext<TResult>(context);
 
-        return ExecuteCoreAsync(static (context, state) => state(context), context, callback);
+        return ExecuteCoreAndUnwrapAsync(
+            static async (context, state) =>
+            {
+                try
+                {
+                    return new Outcome<TResult>(await state(context).ConfigureAwait(context.ContinueOnCapturedContext));
+                }
+                catch (Exception e)
+                {
+                    return new Outcome<TResult>(e, ExceptionDispatchInfo.Capture(e));
+                }
+            },
+            context,
+            callback);
     }
 
     /// <summary>
@@ -66,8 +97,18 @@ public abstract partial class ResilienceStrategy
 
         try
         {
-            return await ExecuteCoreAsync(
-                static (context, state) => state.callback(state.state, context.CancellationToken),
+            return await ExecuteCoreAndUnwrapAsync(
+                static async (context, state) =>
+                {
+                    try
+                    {
+                        return new Outcome<TResult>(await state.callback(state.state, context.CancellationToken).ConfigureAwait(context.ContinueOnCapturedContext));
+                    }
+                    catch (Exception e)
+                    {
+                        return new Outcome<TResult>(e, ExceptionDispatchInfo.Capture(e));
+                    }
+                },
                 context,
                 (callback, state)).ConfigureAwait(context.ContinueOnCapturedContext);
         }
@@ -95,8 +136,20 @@ public abstract partial class ResilienceStrategy
 
         try
         {
-            return await ExecuteCoreAsync(static (context, state) => state(context.CancellationToken), context, callback)
-                                 .ConfigureAwait(context.ContinueOnCapturedContext);
+            return await ExecuteCoreAndUnwrapAsync(
+                static async (context, state) =>
+                {
+                    try
+                    {
+                        return new Outcome<TResult>(await state(context.CancellationToken).ConfigureAwait(context.ContinueOnCapturedContext));
+                    }
+                    catch (Exception e)
+                    {
+                        return new Outcome<TResult>(e, ExceptionDispatchInfo.Capture(e));
+                    }
+                },
+                context,
+                callback).ConfigureAwait(context.ContinueOnCapturedContext);
         }
         finally
         {

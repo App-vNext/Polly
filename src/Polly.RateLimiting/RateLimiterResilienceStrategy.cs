@@ -19,7 +19,10 @@ internal sealed class RateLimiterResilienceStrategy : ResilienceStrategy
 
     public Func<OnRateLimiterRejectedArguments, ValueTask>? OnLeaseRejected { get; }
 
-    protected override async ValueTask<TResult> ExecuteCoreAsync<TResult, TState>(Func<ResilienceContext, TState, ValueTask<TResult>> callback, ResilienceContext context, TState state)
+    protected override async ValueTask<Outcome<TResult>> ExecuteCoreAsync<TResult, TState>(
+        Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,
+        ResilienceContext context,
+        TState state)
     {
         using var lease = await Limiter.AcquireAsync(
             permitCount: 1,
@@ -45,6 +48,6 @@ internal sealed class RateLimiterResilienceStrategy : ResilienceStrategy
             await OnLeaseRejected(new OnRateLimiterRejectedArguments(context, lease, retryAfter)).ConfigureAwait(context.ContinueOnCapturedContext);
         }
 
-        throw retryAfter.HasValue ? new RateLimiterRejectedException(retryAfter.Value) : new RateLimiterRejectedException();
+        return new Outcome<TResult>(retryAfter.HasValue ? new RateLimiterRejectedException(retryAfter.Value) : new RateLimiterRejectedException());
     }
 }

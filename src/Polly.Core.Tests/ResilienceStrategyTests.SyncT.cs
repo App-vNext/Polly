@@ -91,4 +91,30 @@ public partial class ResilienceStrategyTests
         parameters.AssertContextAfter(context!);
         parameters.AssertResult(result);
     }
+
+    [Fact]
+    public void Execute_T_EnsureCallStackPreserved()
+    {
+        AssertStackTrace(s => s.Execute(() => MyThrowingMethod()));
+        AssertStackTrace(s => s.Execute(_ => MyThrowingMethod()));
+        AssertStackTrace(s => s.Execute((_, _) => MyThrowingMethod(), ResilienceContext.Get()));
+        AssertStackTrace(s => s.Execute((_) => MyThrowingMethod(), ResilienceContext.Get()));
+        AssertStackTrace(s => s.Execute((_, _) => MyThrowingMethod(), ResilienceContext.Get(), "state"));
+        AssertStackTrace(s => s.Execute((_, _) => MyThrowingMethod(), "state"));
+        AssertStackTrace(s => s.Execute((_) => MyThrowingMethod(), "state"));
+
+        static void AssertStackTrace(Func<ResilienceStrategy, string> execute)
+        {
+            var strategy = new TestResilienceStrategy();
+
+            var error = strategy
+                .Invoking(s => execute(s))
+                .Should()
+                .Throw<FormatException>();
+
+            error.And.StackTrace.Should().Contain(nameof(MyThrowingMethod));
+        }
+
+        static string MyThrowingMethod() => throw new FormatException();
+    }
 }

@@ -38,6 +38,21 @@ public class ResilienceStrategyPipelineTests
     }
 
     [Fact]
+    public async Task CreatePipeline_EnsureExceptionsWrapped()
+    {
+        var strategies = new ResilienceStrategy[]
+        {
+            new Strategy(),
+            new Strategy(),
+        };
+
+        var pipeline = ResilienceStrategyPipeline.CreatePipeline(strategies);
+        var result = await pipeline.ExecuteCoreAsync((_, _) => new Outcome<int>(10).AsValueTask(), ResilienceContext.Get(), "state");
+
+        result.Exception.Should().BeOfType<NotSupportedException>();
+    }
+
+    [Fact]
     public void CreatePipeline_EnsurePipelineReusableAcrossDifferentPipelines()
     {
         var strategies = new ResilienceStrategy[]
@@ -58,8 +73,13 @@ public class ResilienceStrategyPipelineTests
 
     private class Strategy : ResilienceStrategy
     {
-        protected internal override ValueTask<TResult> ExecuteCoreAsync<TResult, TState>(Func<ResilienceContext, TState, ValueTask<TResult>> callback, ResilienceContext context, TState state)
+        protected internal override async ValueTask<Outcome<TResult>> ExecuteCoreAsync<TResult, TState>(
+            Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,
+            ResilienceContext context,
+            TState state)
         {
+            await callback(context, state);
+
             throw new NotSupportedException();
         }
     }

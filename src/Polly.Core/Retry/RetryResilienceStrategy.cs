@@ -35,7 +35,10 @@ internal sealed class RetryResilienceStrategy : ResilienceStrategy
 
     public OutcomeEvent<OnRetryArguments>.Handler? OnRetry { get; }
 
-    protected internal override async ValueTask<TResult> ExecuteCoreAsync<TResult, TState>(Func<ResilienceContext, TState, ValueTask<TResult>> callback, ResilienceContext context, TState state)
+    protected internal override async ValueTask<Outcome<TResult>> ExecuteCoreAsync<TResult, TState>(
+        Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,
+        ResilienceContext context,
+        TState state)
     {
         double retryState = 0;
 
@@ -50,26 +53,10 @@ internal sealed class RetryResilienceStrategy : ResilienceStrategy
         {
             context.CancellationToken.ThrowIfCancellationRequested();
 
-            Outcome<TResult> outcome;
-
-            try
+            Outcome<TResult> outcome = await callback(context, state).ConfigureAwait(context.ContinueOnCapturedContext);
+            if (IsLastAttempt(attempt) || !await ShouldRetry.ShouldHandleAsync(outcome, new ShouldRetryArguments(context, attempt)).ConfigureAwait(context.ContinueOnCapturedContext))
             {
-                var result = await callback(context, state).ConfigureAwait(context.ContinueOnCapturedContext);
-                outcome = new Outcome<TResult>(result);
-
-                if (IsLastAttempt(attempt) || !await ShouldRetry.ShouldHandleAsync(outcome, new ShouldRetryArguments(context, attempt)).ConfigureAwait(context.ContinueOnCapturedContext))
-                {
-                    return result;
-                }
-            }
-            catch (Exception e)
-            {
-                outcome = new Outcome<TResult>(e);
-
-                if (IsLastAttempt(attempt) || !await ShouldRetry.ShouldHandleAsync(outcome, new ShouldRetryArguments(context, attempt)).ConfigureAwait(context.ContinueOnCapturedContext))
-                {
-                    throw;
-                }
+                return outcome;
             }
 
             var delay = RetryHelper.GetRetryDelay(BackoffType, attempt, BaseDelay, ref retryState, _randomUtil);

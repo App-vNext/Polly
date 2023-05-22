@@ -48,6 +48,18 @@ public class FallbackResilienceStrategyTests
     }
 
     [Fact]
+    public void Handle_Result_FallbackActionThrows()
+    {
+        _options.Handler.SetFallback<int>(handler =>
+        {
+            handler.ShouldHandle.HandleResult(-1);
+            handler.FallbackAction = (_, _) => throw new InvalidOperationException();
+        });
+
+        Create().Invoking(s => s.Execute(_ => -1)).Should().Throw<InvalidOperationException>();
+    }
+
+    [Fact]
     public void Handle_Exception_Ok()
     {
         var called = false;

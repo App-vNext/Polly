@@ -81,7 +81,7 @@ internal sealed class TaskExecution
     public async ValueTask<bool> InitializeAsync<TResult, TState>(
         HedgedTaskType type,
         ContextSnapshot snapshot,
-        Func<ResilienceContext, TState, ValueTask<TResult>> primaryCallback,
+        Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> primaryCallback,
         TState state,
         int attempt)
     {
@@ -187,20 +187,9 @@ internal sealed class TaskExecution
         await UpdateOutcomeAsync(new Outcome<TResult>(e)).ConfigureAwait(Context.ContinueOnCapturedContext);
     }
 
-    private async Task ExecutePrimaryActionAsync<TResult, TState>(Func<ResilienceContext, TState, ValueTask<TResult>> primaryCallback, TState state)
+    private async Task ExecutePrimaryActionAsync<TResult, TState>(Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> primaryCallback, TState state)
     {
-        Outcome<TResult> outcome;
-
-        try
-        {
-            var result = await primaryCallback(Context, state).ConfigureAwait(Context.ContinueOnCapturedContext);
-            outcome = new Outcome<TResult>(result);
-        }
-        catch (Exception e)
-        {
-            outcome = new Outcome<TResult>(e);
-        }
-
+        var outcome = await primaryCallback(Context, state).ConfigureAwait(Context.ContinueOnCapturedContext);
         await UpdateOutcomeAsync(outcome).ConfigureAwait(Context.ContinueOnCapturedContext);
     }
 

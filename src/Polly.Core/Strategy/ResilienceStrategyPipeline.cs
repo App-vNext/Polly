@@ -1,9 +1,11 @@
 using System;
+using System.Runtime.ExceptionServices;
 using static System.Net.Mime.MediaTypeNames;
 
 namespace Polly.Strategy;
 
 #pragma warning disable S2302 // "nameof" should be used
+#pragma warning disable CA1031 // Do not catch general exception types
 
 /// <summary>
 /// A pipeline of strategies.
@@ -56,9 +58,19 @@ internal sealed class ResilienceStrategyPipeline : ResilienceStrategy
 
     public IReadOnlyList<ResilienceStrategy> Strategies { get; }
 
-    protected internal override ValueTask<TResult> ExecuteCoreAsync<TResult, TState>(Func<ResilienceContext, TState, ValueTask<TResult>> callback, ResilienceContext context, TState state)
+    protected internal override async ValueTask<Outcome<TResult>> ExecuteCoreAsync<TResult, TState>(
+        Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,
+        ResilienceContext context, TState state)
     {
-        return _pipeline.ExecuteCoreAsync(callback, context, state);
+        try
+        {
+            return await _pipeline.ExecuteCoreAsync(callback, context, state).ConfigureAwait(context.ContinueOnCapturedContext);
+        }
+        catch (Exception e)
+        {
+            return new Outcome<TResult>(e, ExceptionDispatchInfo.Capture(e));
+        }
+
     }
 
     /// <summary>
@@ -72,10 +84,23 @@ internal sealed class ResilienceStrategyPipeline : ResilienceStrategy
 
         public ResilienceStrategy? Next { get; set; }
 
-        protected internal override ValueTask<TResult> ExecuteCoreAsync<TResult, TState>(Func<ResilienceContext, TState, ValueTask<TResult>> callback, ResilienceContext context, TState state)
+        protected internal override ValueTask<Outcome<TResult>> ExecuteCoreAsync<TResult, TState>(
+            Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,
+            ResilienceContext context,
+            TState state)
         {
             return _strategy.ExecuteCoreAsync(
-                static (context, state) => state.Next!.ExecuteCoreAsync(state.callback, context, state.state),
+                static async (context, state) =>
+                {
+                    try
+                    {
+                        return await state.Next!.ExecuteCoreAsync(state.callback, context, state.state).ConfigureAwait(context.ContinueOnCapturedContext);
+                    }
+                    catch (Exception e)
+                    {
+                        return new Outcome<TResult>(e, ExceptionDispatchInfo.Capture(e));
+                    }
+                },
                 context,
                 (Next, callback, state));
         }

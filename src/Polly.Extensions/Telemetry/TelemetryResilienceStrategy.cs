@@ -46,39 +46,28 @@ internal sealed class TelemetryResilienceStrategy : ResilienceStrategy
 
     public Histogram<double> ExecutionDuration { get; }
 
-    protected internal override async ValueTask<TResult> ExecuteCoreAsync<TResult, TState>(Func<ResilienceContext, TState, ValueTask<TResult>> callback, ResilienceContext context, TState state)
+    protected internal override async ValueTask<Outcome<TResult>> ExecuteCoreAsync<TResult, TState>(
+        Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,
+        ResilienceContext context,
+        TState state)
     {
         var stamp = _timeProvider.GetTimestamp();
-
-        Outcome outcome = default;
-
         Log.ExecutingStrategy(_logger, _builderName, _strategyKey, context.GetResultType());
 
-        try
-        {
-            var result = await callback(context, state).ConfigureAwait(context.ContinueOnCapturedContext);
-            outcome = new Outcome(result);
-            return result;
-        }
-        catch (Exception exception)
-        {
-            outcome = new Outcome(exception);
-            throw;
-        }
-        finally
-        {
-            var duration = _timeProvider.GetElapsedTime(stamp);
-            Log.StrategyExecuted(
-                _logger,
-                _builderName,
-                _strategyKey,
-                context.GetResultType(),
-                ExpandOutcome(outcome),
-                context.GetExecutionHealth(),
-                duration.TotalMilliseconds,
-                outcome.Exception);
+        var outcome = await callback(context, state).ConfigureAwait(context.ContinueOnCapturedContext);
 
-            var tags = new TagList
+        var duration = _timeProvider.GetElapsedTime(stamp);
+        Log.StrategyExecuted(
+            _logger,
+            _builderName,
+            _strategyKey,
+            context.GetResultType(),
+            ExpandOutcome(outcome),
+            context.GetExecutionHealth(),
+            duration.TotalMilliseconds,
+            outcome.Exception);
+
+        var tags = new TagList
             {
                 { ResilienceTelemetryTags.BuilderName, _builderName },
                 { ResilienceTelemetryTags.StrategyKey, _strategyKey },
@@ -87,15 +76,16 @@ internal sealed class TelemetryResilienceStrategy : ResilienceStrategy
                 { ResilienceTelemetryTags.ExecutionHealth, context.GetExecutionHealth() }
             };
 
-            EnrichmentUtil.Enrich(ref tags, _enrichers, context, outcome, resilienceArguments: null);
+        EnrichmentUtil.Enrich(ref tags, _enrichers, context, outcome.AsOutcome(), resilienceArguments: null);
 
-            ExecutionDuration.Record(duration.TotalMilliseconds, tags);
-        }
+        ExecutionDuration.Record(duration.TotalMilliseconds, tags);
+
+        return outcome;
     }
 
-    private static object? ExpandOutcome(Outcome outcome)
+    private static object? ExpandOutcome<TResult>(Outcome<TResult> outcome)
     {
         // stryker disable once all: no means to test this
-        return outcome.Exception?.Message ?? outcome.Result;
+        return (object)outcome.Exception?.Message! ?? outcome.Result;
     }
 }

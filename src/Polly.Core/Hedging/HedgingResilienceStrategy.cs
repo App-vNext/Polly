@@ -1,6 +1,4 @@
-using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
-using System.Runtime.ExceptionServices;
 using System.Threading;
 using Polly.Hedging;
 using Polly.Hedging.Utils;
@@ -39,8 +37,8 @@ internal sealed class HedgingResilienceStrategy : ResilienceStrategy
 
     public OutcomeEvent<OnHedgingArguments>.Handler? OnHedgingHandler { get; }
 
-    protected internal override async ValueTask<TResult> ExecuteCoreAsync<TResult, TState>(
-        Func<ResilienceContext, TState, ValueTask<TResult>> callback,
+    protected internal override async ValueTask<Outcome<TResult>> ExecuteCoreAsync<TResult, TState>(
+        Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,
         ResilienceContext context,
         TState state)
     {
@@ -64,7 +62,7 @@ internal sealed class HedgingResilienceStrategy : ResilienceStrategy
 
                 if ((await hedgingContext.LoadExecutionAsync(callback, state).ConfigureAwait(context.ContinueOnCapturedContext)).Outcome is Outcome<TResult> outcome)
                 {
-                    return HandleOutcome(outcome);
+                    return outcome;
                 }
 
                 var delay = await GetHedgingDelayAsync(context, hedgingContext.LoadedTasks).ConfigureAwait(continueOnCapturedContext);
@@ -81,7 +79,7 @@ internal sealed class HedgingResilienceStrategy : ResilienceStrategy
                 if (!execution.IsHandled)
                 {
                     execution.AcceptOutcome();
-                    return HandleOutcome(outcome);
+                    return outcome;
                 }
 
                 var onHedgingArgs = new OnHedgingArguments(context, hedgingContext.LoadedTasks - 1);
@@ -100,17 +98,6 @@ internal sealed class HedgingResilienceStrategy : ResilienceStrategy
         {
             hedgingContext.Complete();
         }
-    }
-
-    [ExcludeFromCodeCoverage]
-    private static TResult HandleOutcome<TResult>(Outcome<TResult> outcome)
-    {
-        if (outcome.Exception is not null)
-        {
-            ExceptionDispatchInfo.Capture(outcome.Exception).Throw();
-        }
-
-        return outcome.Result!;
     }
 
     internal ValueTask<TimeSpan> GetHedgingDelayAsync(ResilienceContext context, int attempt)

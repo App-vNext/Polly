@@ -1,5 +1,7 @@
 #pragma warning disable CA1815 // Override equals and operator equals on value types
 
+using System.Runtime.ExceptionServices;
+
 namespace Polly.Strategy;
 
 /// <summary>
@@ -13,7 +15,16 @@ public readonly struct Outcome
     /// <param name="exception">The exception that occurred during the operation.</param>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="exception"/> is <see langword="null"/>.</exception>
     public Outcome(Exception exception)
-        : this() => Exception = Guard.NotNull(exception);
+        : this(Guard.NotNull(exception), ExceptionDispatchInfo.Capture(exception))
+    {
+    }
+
+    internal Outcome(Exception exception, ExceptionDispatchInfo exceptionDispatchInfo)
+        : this()
+    {
+        Exception = Guard.NotNull(exception);
+        ExceptionDispatchInfo = Guard.NotNull(exceptionDispatchInfo);
+    }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Outcome"/> struct with the specified result.
@@ -45,6 +56,11 @@ public readonly struct Outcome
     /// Gets a value indicating whether the operation produced a void result.
     /// </summary>
     public bool IsVoidResult => Result is VoidResult;
+
+    /// <summary>
+    /// Gets the <see cref="ExceptionDispatchInfo"/> associated with the exception, if any.
+    /// </summary>
+    public ExceptionDispatchInfo? ExceptionDispatchInfo { get; }
 
     /// <summary>
     /// Tries to get a result if available.
@@ -85,7 +101,7 @@ public readonly struct Outcome
     {
         if (Exception != null)
         {
-            return new Outcome<TResult>(Exception);
+            return new Outcome<TResult>(Exception, ExceptionDispatchInfo!);
         }
 
         return new Outcome<TResult>((TResult)Result!);

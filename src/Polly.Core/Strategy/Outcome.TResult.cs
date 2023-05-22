@@ -1,5 +1,7 @@
 #pragma warning disable CA1815 // Override equals and operator equals on value types
 
+using System.Runtime.ExceptionServices;
+
 namespace Polly.Strategy;
 
 /// <summary>
@@ -14,7 +16,18 @@ public readonly struct Outcome<TResult>
     /// <param name="exception">The exception that occurred during the operation.</param>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="exception"/> is <see langword="null"/>.</exception>
     public Outcome(Exception exception)
-        : this() => Exception = Guard.NotNull(exception);
+        : this()
+    {
+        Exception = Guard.NotNull(exception);
+        ExceptionDispatchInfo = ExceptionDispatchInfo.Capture(exception);
+    }
+
+    internal Outcome(Exception exception, ExceptionDispatchInfo exceptionDispatchInfo)
+        : this()
+    {
+        Exception = Guard.NotNull(exception);
+        ExceptionDispatchInfo = Guard.NotNull(exceptionDispatchInfo);
+    }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Outcome{TResult}"/> struct with the specified result.
@@ -27,6 +40,13 @@ public readonly struct Outcome<TResult>
     /// Gets the exception that occurred during the operation, if any.
     /// </summary>
     public Exception? Exception { get; }
+
+    /// <summary>
+    /// Gets the <see cref="ExceptionDispatchInfo"/> associated with the exception, if any.
+    /// </summary>
+    internal ExceptionDispatchInfo? ExceptionDispatchInfo { get; }
+
+    internal ValueTask<Outcome<TResult>> AsValueTask() => new(this);
 
     /// <summary>
     /// Gets the result produced by the operation, if any.
@@ -85,6 +105,6 @@ public readonly struct Outcome<TResult>
     internal Outcome AsOutcome() => Exception switch
     {
         null => new Outcome(Result),
-        _ => new Outcome(Exception)
+        _ => new Outcome(Exception, ExceptionDispatchInfo!)
     };
 }

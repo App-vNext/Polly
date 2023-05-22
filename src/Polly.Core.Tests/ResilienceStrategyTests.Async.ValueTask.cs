@@ -85,4 +85,30 @@ public partial class ResilienceStrategyTests
         parameters.AssertContextAfter(context!);
         parameters.AssertResult(result);
     }
+
+    [Fact]
+    public async Task ExecuteAsync_EnsureCallStackPreserved()
+    {
+        await AssertStackTrace(s => s.ExecuteAsync(_ => MyThrowingMethod()));
+        await AssertStackTrace(s => s.ExecuteAsync(_ => MyThrowingMethod(), ResilienceContext.Get()));
+        await AssertStackTrace(s => s.ExecuteAsync((_, _) => MyThrowingMethod(), ResilienceContext.Get(), "state"));
+        await AssertStackTrace(s => s.ExecuteAsync((_, _) => MyThrowingMethod(), "state"));
+
+        static async ValueTask AssertStackTrace(Func<ResilienceStrategy, ValueTask> execute)
+        {
+            var strategy = new TestResilienceStrategy();
+
+            var error = await strategy
+                .Invoking(s =>
+                {
+                    return execute(s).AsTask();
+                })
+                .Should()
+                .ThrowAsync<FormatException>();
+
+            error.And.StackTrace.Should().Contain(nameof(MyThrowingMethod));
+        }
+
+        static ValueTask MyThrowingMethod() => throw new FormatException();
+    }
 }

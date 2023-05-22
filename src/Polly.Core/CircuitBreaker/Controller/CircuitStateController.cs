@@ -1,3 +1,4 @@
+using System.Runtime.ExceptionServices;
 using Polly.Strategy;
 
 namespace Polly.CircuitBreaker;
@@ -106,7 +107,7 @@ internal sealed class CircuitStateController : IDisposable
         return ExecuteScheduledTaskAsync(task, context);
     }
 
-    public async ValueTask OnActionPreExecuteAsync(ResilienceContext context)
+    public async ValueTask<Outcome<TResult>?> OnActionPreExecuteAsync<TResult>(ResilienceContext context)
     {
         EnsureNotDisposed();
 
@@ -143,8 +144,10 @@ internal sealed class CircuitStateController : IDisposable
 
         if (exception is not null)
         {
-            throw exception;
+            return new Outcome<TResult>(exception, ExceptionDispatchInfo.Capture(exception));
         }
+
+        return null;
     }
 
     public ValueTask OnActionSuccessAsync<TResult>(Outcome<TResult> outcome, ResilienceContext context)
