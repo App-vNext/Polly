@@ -106,6 +106,20 @@ public class RateLimiterResilienceStrategyBuilderExtensionsTests
     }
 
     [Fact]
+    public void AddGenericRateLimiter_InvalidOptions_Throws()
+    {
+        new ResilienceStrategyBuilder<int>().Invoking(b => b.AddRateLimiter(new RateLimiterStrategyOptions()))
+            .Should()
+            .Throw<ValidationException>()
+            .WithMessage("""
+            The rate limiter strategy options are invalid.
+
+            Validation Errors:
+            The RateLimiter field is required.
+            """);
+    }
+
+    [Fact]
     public void AddRateLimiter_Options_Ok()
     {
         var strategy = new ResilienceStrategyBuilder()
