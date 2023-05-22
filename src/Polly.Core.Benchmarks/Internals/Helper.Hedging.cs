@@ -1,4 +1,5 @@
 using Polly.Hedging;
+using Polly.Strategy;
 
 namespace Polly.Core.Benchmarks;
 
@@ -6,17 +7,14 @@ internal static partial class Helper
 {
     public const string Failure = "failure";
 
-    public static ResilienceStrategy CreateHedging()
+    public static ResilienceStrategy<string> CreateHedging()
     {
         return CreateStrategy(builder =>
         {
-            builder.AddHedging(new HedgingStrategyOptions
+            builder.AddHedging(new HedgingStrategyOptions<string>
             {
-                Handler = new HedgingHandler().SetHedging<string>(handler =>
-                {
-                    handler.ShouldHandle.HandleResult(Failure);
-                    handler.HedgingActionGenerator = args => () => Task.FromResult("hedged response");
-                })
+                ShouldHandle = new OutcomePredicate<HandleHedgingArguments, string>().HandleResult(Failure),
+                HedgingActionGenerator = args => () => Task.FromResult("hedged response"),
             });
         });
     }

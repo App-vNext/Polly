@@ -65,7 +65,7 @@ public static class TimeoutResilienceStrategyBuilderExtensions
         Guard.NotNull(builder);
         Guard.NotNull(options);
 
-        return builder.ConfigureBuilder(b => b.AddTimeout(options));
+        return builder.AddStrategy(context => new TimeoutResilienceStrategy(options, context.TimeProvider, context.Telemetry), options);
     }
 
     /// <summary>

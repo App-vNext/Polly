@@ -13,7 +13,7 @@ internal static partial class Helper
 
         return technology switch
         {
-            PollyVersion.V7 => Policy.BulkheadAsync<int>(10, 10),
+            PollyVersion.V7 => Policy.BulkheadAsync<string>(10, 10),
             PollyVersion.V8 => CreateStrategy(builder => builder.AddConcurrencyLimiter(new ConcurrencyLimiterOptions
             {
                 PermitLimit = 10,

@@ -13,13 +13,13 @@ internal static partial class Helper
         {
             PollyVersion.V7 =>
                 Policy
-                    .HandleResult(10)
+                    .HandleResult(Failure)
                     .Or<InvalidOperationException>()
                     .AdvancedCircuitBreakerAsync(0.5, TimeSpan.FromSeconds(30), 10, TimeSpan.FromSeconds(5)),
 
             PollyVersion.V8 => CreateStrategy(builder =>
             {
-                var options = new AdvancedCircuitBreakerStrategyOptions
+                var options = new AdvancedCircuitBreakerStrategyOptions<string>
                 {
                     FailureThreshold = 0.5,
                     SamplingDuration = TimeSpan.FromSeconds(30),
@@ -27,7 +27,7 @@ internal static partial class Helper
                     BreakDuration = TimeSpan.FromSeconds(5),
                 };
 
-                options.ShouldHandle.HandleOutcome<int>((outcome, _) => outcome.Result == 10 || outcome.Exception is InvalidOperationException);
+                options.ShouldHandle.HandleOutcome((outcome, _) => outcome.Result == Failure || outcome.Exception is InvalidOperationException);
                 builder.AddAdvancedCircuitBreaker(options);
             }),
             _ => throw new NotSupportedException()

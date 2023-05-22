@@ -9,11 +9,11 @@ internal static partial class Helper
     public static object CreateStrategyPipeline(PollyVersion technology) => technology switch
     {
         PollyVersion.V7 => Policy.WrapAsync(
-            Policy.HandleResult(10).Or<InvalidOperationException>().AdvancedCircuitBreakerAsync(0.5, TimeSpan.FromSeconds(30), 10, TimeSpan.FromSeconds(5)),
-            Policy.TimeoutAsync<int>(TimeSpan.FromSeconds(1)),
-            Policy.Handle<InvalidOperationException>().OrResult(10).WaitAndRetryAsync(3, attempt => TimeSpan.FromSeconds(1)),
-            Policy.TimeoutAsync<int>(TimeSpan.FromSeconds(10)),
-            Policy.BulkheadAsync<int>(10, 10)),
+            Policy.HandleResult(Failure).Or<InvalidOperationException>().AdvancedCircuitBreakerAsync(0.5, TimeSpan.FromSeconds(30), 10, TimeSpan.FromSeconds(5)),
+            Policy.TimeoutAsync<string>(TimeSpan.FromSeconds(1)),
+            Policy.Handle<InvalidOperationException>().OrResult(Failure).WaitAndRetryAsync(3, attempt => TimeSpan.FromSeconds(1)),
+            Policy.TimeoutAsync<string>(TimeSpan.FromSeconds(10)),
+            Policy.BulkheadAsync<string>(10, 10)),
         PollyVersion.V8 => CreateStrategy(builder =>
         {
             builder
@@ -24,7 +24,7 @@ internal static partial class Helper
                 })
                 .AddTimeout(TimeSpan.FromSeconds(10))
                 .AddRetry(
-                    predicate => predicate.HandleException<InvalidOperationException>().HandleResult(10),
+                    predicate => predicate.HandleException<InvalidOperationException>().HandleResult(Failure),
                     RetryBackoffType.Constant,
                     3,
                     TimeSpan.FromSeconds(1))
@@ -35,8 +35,8 @@ internal static partial class Helper
                     SamplingDuration = TimeSpan.FromSeconds(30),
                     MinimumThroughput = 10,
                     BreakDuration = TimeSpan.FromSeconds(5),
-                    ShouldHandle = new OutcomePredicate<CircuitBreakerPredicateArguments>()
-                        .HandleOutcome<int>((outcome, _) => outcome.Result == 10 || outcome.Exception is InvalidOperationException)
+                    ShouldHandle = new OutcomePredicate<CircuitBreakerPredicateArguments, string>()
+                        .HandleOutcome((outcome, _) => outcome.Result == Failure || outcome.Exception is InvalidOperationException)
                 });
         }),
         _ => throw new NotSupportedException()

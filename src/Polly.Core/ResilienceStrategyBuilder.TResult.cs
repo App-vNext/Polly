@@ -78,7 +78,9 @@ public class ResilienceStrategyBuilder<TResult>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="factory"/> is <see langword="null"/>.</exception>
     /// <exception cref="InvalidOperationException">Thrown when this builder was already used to create a strategy. The builder cannot be modified after it has been used.</exception>
     /// <exception cref="ValidationException">Thrown when the <paramref name="options"/> are invalid.</exception>
-    public ResilienceStrategyBuilder<TResult> AddStrategy(Func<ResilienceStrategyBuilderContext, ResilienceStrategy> factory, ResilienceStrategyOptions options)
+    public ResilienceStrategyBuilder<TResult> AddStrategy(
+        Func<ResilienceStrategyBuilderContext, ResilienceStrategy> factory,
+        ResilienceStrategyOptions options)
     {
         Guard.NotNull(factory);
         Guard.NotNull(options);
@@ -94,10 +96,4 @@ public class ResilienceStrategyBuilder<TResult>
     /// <returns>An instance of <see cref="ResilienceStrategy{TResult}"/>.</returns>
     /// <exception cref="ValidationException">Thrown when this builder has invalid configuration.</exception>
     public ResilienceStrategy<TResult> Build() => new(_builder.Build());
-
-    internal ResilienceStrategyBuilder<TResult> ConfigureBuilder(Action<ResilienceStrategyBuilder> configure)
-    {
-        configure(_builder);
-        return this;
-    }
 }

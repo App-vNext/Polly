@@ -54,7 +54,7 @@ public static class FallbackResilienceStrategyBuilderExtensions
 
         ValidationHelper.ValidateObject(options, "The fallback strategy options are invalid.");
 
-        return builder.ConfigureBuilder(builder => builder.AddFallback(options.AsNonGenericOptions()));
+        return builder.AddStrategy(context => new FallbackResilienceStrategy(options.AsNonGenericOptions(), context.Telemetry), options);
     }
 
     /// <summary>
