@@ -6,7 +6,7 @@ namespace Polly.Benchmarks;
 
 public class HedgingBenchmark
 {
-    private ResilienceStrategy? _strategy;
+    private ResilienceStrategy<string>? _strategy;
 
     [GlobalSetup]
     public void Setup()

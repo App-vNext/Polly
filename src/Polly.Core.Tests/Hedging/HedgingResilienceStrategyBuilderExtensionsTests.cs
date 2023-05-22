@@ -8,28 +8,23 @@ namespace Polly.Core.Tests.Hedging;
 public class HedgingResilienceStrategyBuilderExtensionsTests
 {
     private readonly ResilienceStrategyBuilder _builder = new();
+    private readonly ResilienceStrategyBuilder<string> _genericBuilder = new();
 
-    public static readonly TheoryData<Action<ResilienceStrategyBuilder>> HedgingCases = new()
+    [Fact]
+    public void AddHedging_Ok()
     {
-        builder =>
-        {
-            builder.AddHedging(new HedgingStrategyOptions());
-        },
-        builder =>
-        {
-            builder.AddHedging(new HedgingStrategyOptions<double>
-            {
-                HedgingActionGenerator = args => () => Task.FromResult<double>(0)
-            });
-        },
-    };
-
-    [MemberData(nameof(HedgingCases))]
-    [Theory]
-    public void AddHedging_Ok(Action<ResilienceStrategyBuilder> configure)
-    {
-        configure(_builder);
+        _builder.AddHedging(new HedgingStrategyOptions());
         _builder.Build().Should().BeOfType<HedgingResilienceStrategy>();
+    }
+
+    [Fact]
+    public void AddHedging_Generic_Ok()
+    {
+        _genericBuilder.AddHedging(new HedgingStrategyOptions<string>
+        {
+            HedgingActionGenerator = args => () => Task.FromResult("dummy")
+        });
+        _genericBuilder.Build().Strategy.Should().BeOfType<HedgingResilienceStrategy>();
     }
 
     [Fact]
@@ -46,7 +41,13 @@ public class HedgingResilienceStrategyBuilderExtensionsTests
     public void AddHedgingT_InvalidOptions_Throws()
     {
         _builder
-            .Invoking(b => b.AddHedging(new HedgingStrategyOptions<double> { ShouldHandle = null! }))
+            .Invoking(b => b.AddHedging(new HedgingStrategyOptions { MaxHedgedAttempts = 1000 }))
+            .Should()
+            .Throw<ValidationException>()
+            .WithMessage("The hedging strategy options are invalid.*");
+
+        _genericBuilder
+            .Invoking(b => b.AddHedging(new HedgingStrategyOptions<string> { ShouldHandle = null! }))
             .Should()
             .Throw<ValidationException>()
             .WithMessage("The hedging strategy options are invalid.*");

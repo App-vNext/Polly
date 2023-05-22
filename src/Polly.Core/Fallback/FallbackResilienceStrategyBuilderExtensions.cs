@@ -19,8 +19,8 @@ public static class FallbackResilienceStrategyBuilderExtensions
     /// <param name="fallbackAction">The fallback action to be executed.</param>
     /// <returns>The builder instance with the fallback strategy added.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="builder"/> or <paramref name="shouldHandle"/> or <paramref name="fallbackAction"/> is <see langword="null"/>.</exception>
-    public static ResilienceStrategyBuilder AddFallback<TResult>(
-        this ResilienceStrategyBuilder builder,
+    public static ResilienceStrategyBuilder<TResult> AddFallback<TResult>(
+        this ResilienceStrategyBuilder<TResult> builder,
         Action<OutcomePredicate<HandleFallbackArguments, TResult>> shouldHandle,
         Func<Outcome<TResult>, HandleFallbackArguments, ValueTask<TResult>> fallbackAction)
     {
@@ -47,14 +47,14 @@ public static class FallbackResilienceStrategyBuilderExtensions
     /// <returns>The builder instance with the fallback strategy added.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="builder"/> or <paramref name="options"/> is <see langword="null"/>.</exception>
     /// <exception cref="ValidationException">Thrown when <paramref name="options"/> are invalid.</exception>
-    public static ResilienceStrategyBuilder AddFallback<TResult>(this ResilienceStrategyBuilder builder, FallbackStrategyOptions<TResult> options)
+    public static ResilienceStrategyBuilder<TResult> AddFallback<TResult>(this ResilienceStrategyBuilder<TResult> builder, FallbackStrategyOptions<TResult> options)
     {
         Guard.NotNull(builder);
         Guard.NotNull(options);
 
         ValidationHelper.ValidateObject(options, "The fallback strategy options are invalid.");
 
-        return builder.AddFallback(options.AsNonGenericOptions());
+        return builder.AddStrategy(context => new FallbackResilienceStrategy(options.AsNonGenericOptions(), context.Telemetry), options);
     }
 
     /// <summary>

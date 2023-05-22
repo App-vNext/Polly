@@ -13,12 +13,13 @@ public static class TimeoutResilienceStrategyBuilderExtensions
     /// <summary>
     /// Adds a timeout resilience strategy to the builder.
     /// </summary>
+    /// <typeparam name="TResult">The type of the result.</typeparam>
     /// <param name="builder">The builder instance.</param>
     /// <param name="timeout">The timeout value. This value should be greater than <see cref="TimeSpan.Zero"/> or <see cref="System.Threading.Timeout.InfiniteTimeSpan"/>.</param>
     /// <returns>The same builder instance.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="builder"/> is <see langword="null"/>.</exception>
     /// <exception cref="ValidationException">Thrown when the options produced from the arguments are invalid.</exception>
-    public static ResilienceStrategyBuilder AddTimeout(this ResilienceStrategyBuilder builder, TimeSpan timeout)
+    public static ResilienceStrategyBuilder<TResult> AddTimeout<TResult>(this ResilienceStrategyBuilder<TResult> builder, TimeSpan timeout)
     {
         Guard.NotNull(builder);
 
@@ -31,13 +32,14 @@ public static class TimeoutResilienceStrategyBuilderExtensions
     /// <summary>
     /// Adds a timeout resilience strategy to the builder.
     /// </summary>
+    /// <typeparam name="TResult">The type of the result.</typeparam>
     /// <param name="builder">The builder instance.</param>
     /// <param name="timeout">The timeout value. This value should be greater than <see cref="TimeSpan.Zero"/> or <see cref="System.Threading.Timeout.InfiniteTimeSpan"/>.</param>
     /// <param name="onTimeout">The callback that is executed when timeout happens.</param>
     /// <returns>The same builder instance.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="builder"/> or <paramref name="onTimeout"/> is <see langword="null"/>.</exception>
     /// <exception cref="ValidationException">Thrown when the options produced from the arguments are invalid.</exception>
-    public static ResilienceStrategyBuilder AddTimeout(this ResilienceStrategyBuilder builder, TimeSpan timeout, Action<OnTimeoutArguments> onTimeout)
+    public static ResilienceStrategyBuilder<TResult> AddTimeout<TResult>(this ResilienceStrategyBuilder<TResult> builder, TimeSpan timeout, Action<OnTimeoutArguments> onTimeout)
     {
         Guard.NotNull(builder);
         Guard.NotNull(onTimeout);
@@ -47,6 +49,23 @@ public static class TimeoutResilienceStrategyBuilderExtensions
             Timeout = timeout,
             OnTimeout = new NoOutcomeEvent<OnTimeoutArguments>().Register(onTimeout),
         });
+    }
+
+    /// <summary>
+    /// Adds a timeout resilience strategy to the builder.
+    /// </summary>
+    /// <typeparam name="TResult">The type of the result.</typeparam>
+    /// <param name="builder">The builder instance.</param>
+    /// <param name="options">The timeout options.</param>
+    /// <returns>The same builder instance.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="builder"/> or <paramref name="options"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ValidationException">Thrown when <paramref name="options"/> are invalid.</exception>
+    public static ResilienceStrategyBuilder<TResult> AddTimeout<TResult>(this ResilienceStrategyBuilder<TResult> builder, TimeoutStrategyOptions options)
+    {
+        Guard.NotNull(builder);
+        Guard.NotNull(options);
+
+        return builder.AddStrategy(context => new TimeoutResilienceStrategy(options, context.TimeProvider, context.Telemetry), options);
     }
 
     /// <summary>

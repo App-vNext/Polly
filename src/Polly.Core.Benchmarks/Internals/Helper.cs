@@ -9,19 +9,19 @@ internal static partial class Helper
         switch (version)
         {
             case PollyVersion.V7:
-                await ((IAsyncPolicy<int>)obj).ExecuteAsync(static _ => Task.FromResult(999), CancellationToken.None).ConfigureAwait(false);
+                await ((IAsyncPolicy<string>)obj).ExecuteAsync(static _ => Task.FromResult("dummy"), CancellationToken.None).ConfigureAwait(false);
                 return;
             case PollyVersion.V8:
-                await ((ResilienceStrategy)obj).ExecuteAsync(static _ => new ValueTask<int>(999), CancellationToken.None).ConfigureAwait(false);
+                await ((ResilienceStrategy<string>)obj).ExecuteAsync(static _ => new ValueTask<string>("dummy"), CancellationToken.None).ConfigureAwait(false);
                 return;
         }
 
         throw new NotSupportedException();
     }
 
-    private static ResilienceStrategy CreateStrategy(Action<ResilienceStrategyBuilder> configure)
+    private static ResilienceStrategy<string> CreateStrategy(Action<ResilienceStrategyBuilder<string>> configure)
     {
-        var builder = new ResilienceStrategyBuilder();
+        var builder = new ResilienceStrategyBuilder<string>();
         configure(builder);
         return builder.Build();
     }

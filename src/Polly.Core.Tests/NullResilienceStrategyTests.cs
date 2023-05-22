@@ -6,6 +6,8 @@ public class NullResilienceStrategyTests
     public void Instance_ShouldNotBeNull()
     {
         NullResilienceStrategy.Instance.Should().NotBeNull();
+        NullResilienceStrategy<string>.Instance.Should().NotBeNull();
+
     }
 
     [Fact]
@@ -13,7 +15,8 @@ public class NullResilienceStrategyTests
     {
         bool executed = false;
         NullResilienceStrategy.Instance.Execute(_ => executed = true);
-
         executed.Should().BeTrue();
+
+        NullResilienceStrategy<string>.Instance.Execute(_ => "res").Should().Be("res");
     }
 }
