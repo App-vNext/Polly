@@ -81,6 +81,12 @@ public class OutcomeGeneratorTests
         },
         sut =>
         {
+            sut.SetGenerator<object>((_, _) => GeneratedValue.Valid1);
+            InvokeHandler(sut, new Outcome<bool>(true), GeneratedValue.Valid1);
+            InvokeHandler(sut, new Outcome<int>(0), GeneratedValue.Valid1);
+        },
+        sut =>
+        {
             sut.SetGenerator<int>((_, _) => GeneratedValue.Valid1);
             sut.SetGenerator((_, _) => GeneratedValue.Valid2);
             InvokeHandler(sut, new Outcome<int>(10), GeneratedValue.Valid1);
