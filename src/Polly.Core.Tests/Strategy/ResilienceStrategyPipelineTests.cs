@@ -38,7 +38,7 @@ public class ResilienceStrategyPipelineTests
     }
 
     [Fact]
-    public async Task CreatePipeline_EnsureExceptionsWrapped()
+    public async Task CreatePipeline_EnsureExceptionsNotWrapped()
     {
         var strategies = new ResilienceStrategy[]
         {
@@ -47,9 +47,10 @@ public class ResilienceStrategyPipelineTests
         };
 
         var pipeline = ResilienceStrategyPipeline.CreatePipeline(strategies);
-        var result = await pipeline.ExecuteCoreAsync((_, _) => new Outcome<int>(10).AsValueTask(), ResilienceContext.Get(), "state");
-
-        result.Exception.Should().BeOfType<NotSupportedException>();
+        await pipeline
+            .Invoking(p => p.ExecuteCoreAsync((_, _) => new Outcome<int>(10).AsValueTask(), ResilienceContext.Get(), "state").AsTask())
+            .Should()
+            .ThrowAsync<NotSupportedException>();
     }
 
     [Fact]

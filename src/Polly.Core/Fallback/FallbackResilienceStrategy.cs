@@ -52,7 +52,7 @@ internal sealed class FallbackResilienceStrategy : ResilienceStrategy
         }
         catch (Exception e)
         {
-            return new Outcome<TResult>(e, ExceptionDispatchInfo.Capture(e));
+            return new Outcome<TResult>(ExceptionDispatchInfo.Capture(e));
         }
     }
 }

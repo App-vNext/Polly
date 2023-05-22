@@ -28,7 +28,7 @@ public abstract partial class ResilienceStrategy
 
         InitializeAsyncContext(context);
 
-        await ExecuteCoreAndUnwrapAsync(
+        var outcome = await ExecuteCoreAsync(
             static async (context, state) =>
             {
                 try
@@ -38,11 +38,13 @@ public abstract partial class ResilienceStrategy
                 }
                 catch (Exception e)
                 {
-                    return new Outcome<VoidResult>(e, ExceptionDispatchInfo.Capture(e));
+                    return new Outcome<VoidResult>(ExceptionDispatchInfo.Capture(e));
                 }
             },
             context,
             (callback, state)).ConfigureAwait(context.ContinueOnCapturedContext);
+
+        outcome.ExceptionDispatchInfo?.Throw();
     }
 
     /// <summary>
@@ -61,7 +63,7 @@ public abstract partial class ResilienceStrategy
 
         InitializeAsyncContext(context);
 
-        await ExecuteCoreAndUnwrapAsync(
+        var outcome = await ExecuteCoreAsync(
             static async (context, state) =>
             {
                 try
@@ -71,11 +73,13 @@ public abstract partial class ResilienceStrategy
                 }
                 catch (Exception e)
                 {
-                    return new Outcome<VoidResult>(e, ExceptionDispatchInfo.Capture(e));
+                    return new Outcome<VoidResult>(ExceptionDispatchInfo.Capture(e));
                 }
             },
             context,
             callback).ConfigureAwait(context.ContinueOnCapturedContext);
+
+        outcome.ExceptionDispatchInfo?.Throw();
     }
 
     /// <summary>
@@ -98,7 +102,7 @@ public abstract partial class ResilienceStrategy
 
         try
         {
-            await ExecuteCoreAndUnwrapAsync(
+            var outcome = await ExecuteCoreAsync(
                 static async (context, state) =>
                 {
                     try
@@ -108,11 +112,13 @@ public abstract partial class ResilienceStrategy
                     }
                     catch (Exception e)
                     {
-                        return new Outcome<VoidResult>(e, ExceptionDispatchInfo.Capture(e));
+                        return new Outcome<VoidResult>(ExceptionDispatchInfo.Capture(e));
                     }
                 },
                 context,
                 (callback, state)).ConfigureAwait(context.ContinueOnCapturedContext);
+
+            outcome.ExceptionDispatchInfo?.Throw();
         }
         finally
         {
@@ -137,7 +143,7 @@ public abstract partial class ResilienceStrategy
 
         try
         {
-            await ExecuteCoreAndUnwrapAsync(
+            var outcome = await ExecuteCoreAsync(
                 static async (context, state) =>
                 {
                     try
@@ -147,12 +153,14 @@ public abstract partial class ResilienceStrategy
                     }
                     catch (Exception e)
                     {
-                        return new Outcome<VoidResult>(e, ExceptionDispatchInfo.Capture(e));
+                        return new Outcome<VoidResult>(ExceptionDispatchInfo.Capture(e));
                     }
 
                 },
                 context,
                 callback).ConfigureAwait(context.ContinueOnCapturedContext);
+
+            outcome.ExceptionDispatchInfo?.Throw();
         }
         finally
         {

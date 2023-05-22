@@ -26,7 +26,7 @@ public abstract partial class ResilienceStrategy
 
         InitializeSyncContext(context);
 
-        ExecuteCoreAndUnwrapAsync(
+        ExecuteCoreSync(
             static (context, state) =>
             {
                 try
@@ -36,11 +36,11 @@ public abstract partial class ResilienceStrategy
                 }
                 catch (Exception e)
                 {
-                    return new ValueTask<Outcome<VoidResult>>(new Outcome<VoidResult>(e, ExceptionDispatchInfo.Capture(e)));
+                    return new ValueTask<Outcome<VoidResult>>(new Outcome<VoidResult>(ExceptionDispatchInfo.Capture(e)));
                 }
             },
             context,
-            (callback, state)).GetResult();
+            (callback, state)).ExceptionDispatchInfo?.Throw();
     }
 
     /// <summary>
@@ -58,7 +58,7 @@ public abstract partial class ResilienceStrategy
 
         InitializeSyncContext(context);
 
-        ExecuteCoreAndUnwrapAsync(
+        ExecuteCoreSync(
             static (context, state) =>
             {
                 try
@@ -68,11 +68,11 @@ public abstract partial class ResilienceStrategy
                 }
                 catch (Exception e)
                 {
-                    return new ValueTask<Outcome<VoidResult>>(new Outcome<VoidResult>(e, ExceptionDispatchInfo.Capture(e)));
+                    return new ValueTask<Outcome<VoidResult>>(new Outcome<VoidResult>(ExceptionDispatchInfo.Capture(e)));
                 }
             },
             context,
-            callback).GetResult();
+            callback).ExceptionDispatchInfo?.Throw();
     }
 
     /// <summary>
@@ -94,7 +94,7 @@ public abstract partial class ResilienceStrategy
 
         try
         {
-            ExecuteCoreAndUnwrapAsync(
+            ExecuteCoreSync(
                 static (context, state) =>
                 {
                     try
@@ -104,11 +104,11 @@ public abstract partial class ResilienceStrategy
                     }
                     catch (Exception e)
                     {
-                        return new ValueTask<Outcome<VoidResult>>(new Outcome<VoidResult>(e, ExceptionDispatchInfo.Capture(e)));
+                        return new ValueTask<Outcome<VoidResult>>(new Outcome<VoidResult>(ExceptionDispatchInfo.Capture(e)));
                     }
                 },
                 context,
-                (callback, state)).GetResult();
+                (callback, state)).ExceptionDispatchInfo?.Throw();
         }
         finally
         {
@@ -132,7 +132,7 @@ public abstract partial class ResilienceStrategy
 
         try
         {
-            ExecuteCoreAndUnwrapAsync(
+            ExecuteCoreSync(
                 static (context, state) =>
                 {
                     try
@@ -142,11 +142,11 @@ public abstract partial class ResilienceStrategy
                     }
                     catch (Exception e)
                     {
-                        return new ValueTask<Outcome<VoidResult>>(new Outcome<VoidResult>(e, ExceptionDispatchInfo.Capture(e)));
+                        return new ValueTask<Outcome<VoidResult>>(new Outcome<VoidResult>(ExceptionDispatchInfo.Capture(e)));
                     }
                 },
                 context,
-                callback).GetResult();
+                callback).ExceptionDispatchInfo?.Throw();
         }
         finally
         {
@@ -171,7 +171,7 @@ public abstract partial class ResilienceStrategy
 
         try
         {
-            ExecuteCoreAndUnwrapAsync(
+            ExecuteCoreSync(
                 static (_, state) =>
                 {
                     try
@@ -181,11 +181,11 @@ public abstract partial class ResilienceStrategy
                     }
                     catch (Exception e)
                     {
-                        return new ValueTask<Outcome<VoidResult>>(new Outcome<VoidResult>(e, ExceptionDispatchInfo.Capture(e)));
+                        return new ValueTask<Outcome<VoidResult>>(new Outcome<VoidResult>(ExceptionDispatchInfo.Capture(e)));
                     }
                 },
                 context,
-                (callback, state)).GetResult();
+                (callback, state)).ExceptionDispatchInfo?.Throw();
         }
         finally
         {
@@ -206,7 +206,7 @@ public abstract partial class ResilienceStrategy
 
         try
         {
-            ExecuteCoreAndUnwrapAsync(
+            ExecuteCoreSync(
                 static (_, state) =>
                 {
                     try
@@ -216,11 +216,11 @@ public abstract partial class ResilienceStrategy
                     }
                     catch (Exception e)
                     {
-                        return new ValueTask<Outcome<VoidResult>>(new Outcome<VoidResult>(e, ExceptionDispatchInfo.Capture(e)));
+                        return new ValueTask<Outcome<VoidResult>>(new Outcome<VoidResult>(ExceptionDispatchInfo.Capture(e)));
                     }
                 },
                 context,
-                callback).GetResult();
+                callback).ExceptionDispatchInfo?.Throw();
         }
         finally
         {

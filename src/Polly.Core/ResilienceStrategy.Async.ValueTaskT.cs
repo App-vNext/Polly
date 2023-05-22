@@ -17,7 +17,7 @@ public abstract partial class ResilienceStrategy
     /// <param name="state">The state associated with the callback.</param>
     /// <returns>The instance of <see cref="ValueTask"/> that represents the asynchronous execution.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="callback"/> or <paramref name="context"/> is <see langword="null"/>.</exception>
-    public ValueTask<TResult> ExecuteAsync<TResult, TState>(
+    public async ValueTask<TResult> ExecuteAsync<TResult, TState>(
         Func<ResilienceContext, TState, ValueTask<TResult>> callback,
         ResilienceContext context,
         TState state)
@@ -27,7 +27,7 @@ public abstract partial class ResilienceStrategy
 
         InitializeAsyncContext<TResult>(context);
 
-        return ExecuteCoreAndUnwrapAsync(
+        var outcome = await ExecuteCoreAsync(
             static async (context, state) =>
             {
                 try
@@ -36,11 +36,15 @@ public abstract partial class ResilienceStrategy
                 }
                 catch (Exception e)
                 {
-                    return new Outcome<TResult>(e, ExceptionDispatchInfo.Capture(e));
+                    return new Outcome<TResult>(ExceptionDispatchInfo.Capture(e));
                 }
             },
             context,
-            (callback, state));
+            (callback, state)).ConfigureAwait(context.ContinueOnCapturedContext);
+
+        outcome.ExceptionDispatchInfo?.Throw();
+
+        return outcome.Result!;
     }
 
     /// <summary>
@@ -51,7 +55,7 @@ public abstract partial class ResilienceStrategy
     /// <param name="context">The context associated with the callback.</param>
     /// <returns>The instance of <see cref="ValueTask"/> that represents the asynchronous execution.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="callback"/> or <paramref name="context"/> is <see langword="null"/>.</exception>
-    public ValueTask<TResult> ExecuteAsync<TResult>(
+    public async ValueTask<TResult> ExecuteAsync<TResult>(
         Func<ResilienceContext, ValueTask<TResult>> callback,
         ResilienceContext context)
     {
@@ -60,7 +64,7 @@ public abstract partial class ResilienceStrategy
 
         InitializeAsyncContext<TResult>(context);
 
-        return ExecuteCoreAndUnwrapAsync(
+        var outcome = await ExecuteCoreAsync(
             static async (context, state) =>
             {
                 try
@@ -69,11 +73,15 @@ public abstract partial class ResilienceStrategy
                 }
                 catch (Exception e)
                 {
-                    return new Outcome<TResult>(e, ExceptionDispatchInfo.Capture(e));
+                    return new Outcome<TResult>(ExceptionDispatchInfo.Capture(e));
                 }
             },
             context,
-            callback);
+            callback).ConfigureAwait(context.ContinueOnCapturedContext);
+
+        outcome.ExceptionDispatchInfo?.Throw();
+
+        return outcome.Result!;
     }
 
     /// <summary>
@@ -97,7 +105,7 @@ public abstract partial class ResilienceStrategy
 
         try
         {
-            return await ExecuteCoreAndUnwrapAsync(
+            var outcome = await ExecuteCoreAsync(
                 static async (context, state) =>
                 {
                     try
@@ -106,11 +114,15 @@ public abstract partial class ResilienceStrategy
                     }
                     catch (Exception e)
                     {
-                        return new Outcome<TResult>(e, ExceptionDispatchInfo.Capture(e));
+                        return new Outcome<TResult>(ExceptionDispatchInfo.Capture(e));
                     }
                 },
                 context,
                 (callback, state)).ConfigureAwait(context.ContinueOnCapturedContext);
+
+            outcome.ExceptionDispatchInfo?.Throw();
+
+            return outcome.Result!;
         }
         finally
         {
@@ -136,7 +148,7 @@ public abstract partial class ResilienceStrategy
 
         try
         {
-            return await ExecuteCoreAndUnwrapAsync(
+            var outcome = await ExecuteCoreAsync(
                 static async (context, state) =>
                 {
                     try
@@ -145,11 +157,15 @@ public abstract partial class ResilienceStrategy
                     }
                     catch (Exception e)
                     {
-                        return new Outcome<TResult>(e, ExceptionDispatchInfo.Capture(e));
+                        return new Outcome<TResult>(ExceptionDispatchInfo.Capture(e));
                     }
                 },
                 context,
                 callback).ConfigureAwait(context.ContinueOnCapturedContext);
+
+            outcome.ExceptionDispatchInfo?.Throw();
+
+            return outcome.Result!;
         }
         finally
         {

@@ -144,7 +144,7 @@ internal sealed class CircuitStateController : IDisposable
 
         if (exception is not null)
         {
-            return new Outcome<TResult>(exception, ExceptionDispatchInfo.Capture(exception));
+            return new Outcome<TResult>(ExceptionDispatchInfo.Capture(exception));
         }
 
         return null;

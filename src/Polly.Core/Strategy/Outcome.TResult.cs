@@ -16,18 +16,10 @@ public readonly struct Outcome<TResult>
     /// <param name="exception">The exception that occurred during the operation.</param>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="exception"/> is <see langword="null"/>.</exception>
     public Outcome(Exception exception)
-        : this()
-    {
-        Exception = Guard.NotNull(exception);
-        ExceptionDispatchInfo = ExceptionDispatchInfo.Capture(exception);
-    }
+        : this() => ExceptionDispatchInfo = ExceptionDispatchInfo.Capture(exception);
 
-    internal Outcome(Exception exception, ExceptionDispatchInfo exceptionDispatchInfo)
-        : this()
-    {
-        Exception = Guard.NotNull(exception);
-        ExceptionDispatchInfo = Guard.NotNull(exceptionDispatchInfo);
-    }
+    internal Outcome(ExceptionDispatchInfo exceptionDispatchInfo)
+        : this() => ExceptionDispatchInfo = Guard.NotNull(exceptionDispatchInfo);
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Outcome{TResult}"/> struct with the specified result.
@@ -39,7 +31,7 @@ public readonly struct Outcome<TResult>
     /// <summary>
     /// Gets the exception that occurred during the operation, if any.
     /// </summary>
-    public Exception? Exception { get; }
+    public Exception? Exception => ExceptionDispatchInfo?.SourceException;
 
     /// <summary>
     /// Gets the <see cref="ExceptionDispatchInfo"/> associated with the exception, if any.

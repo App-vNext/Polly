@@ -60,7 +60,7 @@ public readonly struct Outcome
     /// <summary>
     /// Gets the <see cref="ExceptionDispatchInfo"/> associated with the exception, if any.
     /// </summary>
-    public ExceptionDispatchInfo? ExceptionDispatchInfo { get; }
+    internal ExceptionDispatchInfo? ExceptionDispatchInfo { get; }
 
     /// <summary>
     /// Tries to get a result if available.
@@ -101,7 +101,7 @@ public readonly struct Outcome
     {
         if (Exception != null)
         {
-            return new Outcome<TResult>(Exception, ExceptionDispatchInfo!);
+            return new Outcome<TResult>(ExceptionDispatchInfo!);
         }
 
         return new Outcome<TResult>((TResult)Result!);

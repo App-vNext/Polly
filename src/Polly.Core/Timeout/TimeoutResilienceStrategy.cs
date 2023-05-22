@@ -70,7 +70,7 @@ internal sealed class TimeoutResilienceStrategy : ResilienceStrategy
                     timeout,
                     e);
 
-                return new Outcome<TResult>(timeoutException, ExceptionDispatchInfo.Capture(timeoutException));
+                return new Outcome<TResult>(ExceptionDispatchInfo.Capture(timeoutException));
             }
 
             return outcome;

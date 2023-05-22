@@ -1,4 +1,3 @@
-using System.Runtime.ExceptionServices;
 using Polly.Strategy;
 
 namespace Polly;
@@ -27,23 +26,17 @@ public abstract partial class ResilienceStrategy
     /// <para>
     /// The provided callback never throws an exception. Instead, the exception is captured and converted to an <see cref="Outcome{TResult}"/>.
     /// </para>
+    /// <para>
+    /// Do not throw exceptions from your strategy implementation. Instead, return exception instance as <see cref="Outcome{TResult}"/>.
+    /// </para>
     /// </remarks>
     protected internal abstract ValueTask<Outcome<TResult>> ExecuteCoreAsync<TResult, TState>(
         Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,
         ResilienceContext context,
         TState state);
 
-    private async ValueTask<TResult> ExecuteCoreAndUnwrapAsync<TResult, TState>(
+    private Outcome<TResult> ExecuteCoreSync<TResult, TState>(
         Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,
         ResilienceContext context,
-        TState state)
-    {
-        var outcome = await ExecuteCoreAsync(callback, context, state).ConfigureAwait(context.ContinueOnCapturedContext);
-        if (!outcome.HasResult)
-        {
-            outcome.ExceptionDispatchInfo!.Throw();
-        }
-
-        return outcome.Result!;
-    }
+        TState state) => ExecuteCoreAsync(callback, context, state).GetResult();
 }
