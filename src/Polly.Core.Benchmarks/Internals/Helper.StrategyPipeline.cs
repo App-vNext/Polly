@@ -1,5 +1,4 @@
 using Polly;
-using Polly.Strategy;
 
 namespace Polly.Core.Benchmarks;
 
@@ -13,14 +12,9 @@ internal static partial class Helper
         {
             for (var i = 0; i < count; i++)
             {
-                builder.AddStrategy(new EmptyResilienceStrategy(), new BenchmarkResilienceStrategyOptions());
+                builder.AddStrategy(new EmptyResilienceStrategy());
             }
         }),
         _ => throw new NotSupportedException()
     };
-
-    private class BenchmarkResilienceStrategyOptions : ResilienceStrategyOptions
-    {
-        public override string StrategyType => "Benchmark";
-    }
 }
