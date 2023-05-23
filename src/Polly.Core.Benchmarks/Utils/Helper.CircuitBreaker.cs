@@ -1,7 +1,7 @@
 using System;
 using Polly.CircuitBreaker;
 
-namespace Polly.Core.Benchmarks;
+namespace Polly.Core.Benchmarks.Utils;
 
 internal static partial class Helper
 {

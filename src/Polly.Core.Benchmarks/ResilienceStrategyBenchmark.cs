@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using BenchmarkDotNet.Attributes;
 using Polly.Strategy;
 
-namespace Polly.Benchmarks;
+namespace Polly.Core.Benchmarks;
 
 public class ResilienceStrategyBenchmark
 {

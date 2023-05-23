@@ -1,6 +1,4 @@
-using Polly;
-
-namespace Polly.Core.Benchmarks;
+namespace Polly.Core.Benchmarks.Utils;
 
 internal static partial class Helper
 {

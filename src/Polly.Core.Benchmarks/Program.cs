@@ -10,13 +10,4 @@ var config = ManualConfig
     .AddJob(Job.MediumRun.WithToolchain(InProcessEmitToolchain.Instance))
     .AddDiagnoser(MemoryDiagnoser.Default);
 
-var switcher = BenchmarkSwitcher.FromAssembly(typeof(PollyVersion).Assembly);
-
-if (args.Length > 0 && args[0] == "pick")
-{
-    switcher.Run(args, config);
-}
-else
-{
-    switcher.RunAll(config);
-}
+BenchmarkRunner.Run(typeof(PollyVersion).Assembly, config);
