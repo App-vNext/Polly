@@ -8,14 +8,14 @@ public class PredicateBuilderTests
 {
     public static TheoryData<Action<PredicateBuilder<string>>, Outcome<string>, bool> HandleResultData = new()
     {
-        { builder => builder.HandleResult("val") ,new Outcome<string>("val"), true },
-        { builder => builder.HandleResult("val") ,new Outcome<string>("val2"), false },
-        { builder => builder.HandleResult("val") ,new Outcome<string>(new InvalidOperationException()), false },
+        { builder => builder.HandleResult("val"), new Outcome<string>("val"), true },
+        { builder => builder.HandleResult("val"), new Outcome<string>("val2"), false },
+        { builder => builder.HandleResult("val"), new Outcome<string>(new InvalidOperationException()), false },
         { builder => builder.HandleResult("val", StringComparer.OrdinalIgnoreCase) ,new Outcome<string>("VAL"), true },
-        { builder => builder.HandleResult(r=>r == "val") ,new Outcome<string>("val"), true },
-        { builder => builder.HandleResult(r=>r == "val2") ,new Outcome<string>("val"), false },
-        { builder => builder.Handle<InvalidOperationException>() ,new Outcome<string>(new InvalidOperationException()), true },
-        { builder => builder.Handle<InvalidOperationException>() ,new Outcome<string>(new FormatException()), false },
+        { builder => builder.HandleResult(r => r == "val"), new Outcome<string>("val"), true },
+        { builder => builder.HandleResult(r => r == "val2"), new Outcome<string>("val"), false },
+        { builder => builder.Handle<InvalidOperationException>(), new Outcome<string>(new InvalidOperationException()), true },
+        { builder => builder.Handle<InvalidOperationException>(), new Outcome<string>(new FormatException()), false },
         { builder => builder.Handle<InvalidOperationException>(e => false), new Outcome<string>(new InvalidOperationException()), false },
         { builder => builder.HandleInner<InvalidOperationException>(e => false), new Outcome<string>(new InvalidOperationException()), false },
         { builder => builder.HandleInner<InvalidOperationException>(), new Outcome<string>("value"), false },
