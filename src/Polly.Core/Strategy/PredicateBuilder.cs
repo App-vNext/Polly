@@ -21,7 +21,7 @@ public sealed class PredicateBuilder<TResult>
     public PredicateBuilder<TResult> Handle<TException>()
         where TException : Exception
     {
-        return Handle<TException>(_ => true);
+        return Handle<TException>(static _ => true);
     }
 
     /// <summary>
@@ -47,7 +47,7 @@ public sealed class PredicateBuilder<TResult>
     public PredicateBuilder<TResult> HandleInner<TException>()
         where TException : Exception
     {
-        return HandleInner<TException>(_ => true);
+        return HandleInner<TException>(static _ => true);
     }
 
     /// <summary>
@@ -62,7 +62,7 @@ public sealed class PredicateBuilder<TResult>
     {
         Guard.NotNull(predicate);
 
-        return Add(outcome => outcome.Exception?.InnerException is TException exception && predicate(exception));
+        return Add(outcome => outcome.Exception?.InnerException is TException innerException && predicate(innerException));
     }
 
     /// <summary>
