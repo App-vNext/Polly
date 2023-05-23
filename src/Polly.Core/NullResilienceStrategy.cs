@@ -1,3 +1,5 @@
+using Polly.Strategy;
+
 namespace Polly;
 
 /// <summary>
@@ -15,7 +17,10 @@ public sealed class NullResilienceStrategy : ResilienceStrategy
     }
 
     /// <inheritdoc/>
-    protected internal override ValueTask<TResult> ExecuteCoreAsync<TResult, TState>(Func<ResilienceContext, TState, ValueTask<TResult>> callback, ResilienceContext context, TState state)
+    protected internal override ValueTask<Outcome<TResult>> ExecuteCoreAsync<TResult, TState>(
+        Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,
+        ResilienceContext context,
+        TState state)
     {
         Guard.NotNull(callback);
         Guard.NotNull(context);

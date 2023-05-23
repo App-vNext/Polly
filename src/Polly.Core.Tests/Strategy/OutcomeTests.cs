@@ -15,6 +15,7 @@ public class OutcomeTests
         outcome.TryGetResult(out var resultObj).Should().BeTrue();
         resultObj.Should().Be(10);
         outcome.ToString().Should().Be("10");
+        outcome.ExceptionDispatchInfo.Should().BeNull();
     }
 
     [Fact]
@@ -27,6 +28,7 @@ public class OutcomeTests
         outcome.IsVoidResult.Should().BeFalse();
         outcome.TryGetResult(out _).Should().BeFalse();
         outcome.ToString().Should().Be("Dummy message.");
+        outcome.ExceptionDispatchInfo.Should().NotBeNull();
     }
 
     [Fact]
@@ -34,5 +36,16 @@ public class OutcomeTests
     {
         var outcome = new Outcome((object)null!);
         outcome.ToString().Should().BeEmpty();
+    }
+
+    [Fact]
+    public void GetResultOrThrow_Ok()
+    {
+        var outcome = new Outcome<string>("dummy");
+        outcome.GetResultOrRethrow().Should().Be("dummy");
+
+        outcome = new Outcome<string>(new InvalidOperationException());
+
+        outcome.Invoking(o => o.GetResultOrRethrow()).Should().Throw<InvalidOperationException>();
     }
 }

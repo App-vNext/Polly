@@ -1,8 +1,11 @@
 using System;
+using System.Runtime.ExceptionServices;
 using System.Threading.Tasks;
 using Polly.Strategy;
 
 namespace Polly.Fallback;
+
+#pragma warning disable CA1031 // Do not catch general exception types
 
 internal sealed class FallbackResilienceStrategy : ResilienceStrategy
 {
@@ -17,37 +20,23 @@ internal sealed class FallbackResilienceStrategy : ResilienceStrategy
         _telemetry = telemetry;
     }
 
-    protected internal override async ValueTask<TResult> ExecuteCoreAsync<TResult, TState>(Func<ResilienceContext, TState, ValueTask<TResult>> callback, ResilienceContext context, TState state)
+    protected internal override async ValueTask<Outcome<TResult>> ExecuteCoreAsync<TResult, TState>(
+        Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,
+        ResilienceContext context,
+        TState state)
     {
         if (_handler == null)
         {
             return await callback(context, state).ConfigureAwait(context.ContinueOnCapturedContext);
         }
 
-        Outcome<TResult> outcome;
+        var outcome = await callback(context, state).ConfigureAwait(context.ContinueOnCapturedContext);
         var args = new HandleFallbackArguments(context);
-        Func<Outcome<TResult>, HandleFallbackArguments, ValueTask<TResult>>? action;
+        var action = await _handler.ShouldHandleAsync(outcome, args).ConfigureAwait(context.ContinueOnCapturedContext);
 
-        try
+        if (action == null)
         {
-            var result = await callback(context, state).ConfigureAwait(context.ContinueOnCapturedContext);
-            outcome = new Outcome<TResult>(result);
-            action = await _handler.ShouldHandleAsync(outcome, args).ConfigureAwait(context.ContinueOnCapturedContext);
-
-            if (action == null)
-            {
-                return result;
-            }
-        }
-        catch (Exception e)
-        {
-            outcome = new Outcome<TResult>(e);
-            action = await _handler.ShouldHandleAsync(outcome, args).ConfigureAwait(context.ContinueOnCapturedContext);
-
-            if (action == null)
-            {
-                throw;
-            }
+            return outcome;
         }
 
         _telemetry.Report(FallbackConstants.OnFallback, outcome, args);
@@ -57,6 +46,13 @@ internal sealed class FallbackResilienceStrategy : ResilienceStrategy
             await _onFallback.HandleAsync(outcome, new OnFallbackArguments(context)).ConfigureAwait(context.ContinueOnCapturedContext);
         }
 
-        return await action(outcome, args).ConfigureAwait(context.ContinueOnCapturedContext);
+        try
+        {
+            return new Outcome<TResult>(await action(outcome, args).ConfigureAwait(context.ContinueOnCapturedContext));
+        }
+        catch (Exception e)
+        {
+            return new Outcome<TResult>(ExceptionDispatchInfo.Capture(e));
+        }
     }
 }

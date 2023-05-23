@@ -47,7 +47,7 @@ public class TaskExecutionTests : IDisposable
             {
                 AssertPrimaryContext(context, execution);
                 state.Should().Be("dummy-state");
-                return new ValueTask<DisposableResult>(new DisposableResult { Name = value });
+                return new Outcome<DisposableResult>(new DisposableResult { Name = value }).AsValueTask();
             },
             "dummy-state",
             1);
@@ -160,8 +160,15 @@ public class TaskExecutionTests : IDisposable
         await execution.InitializeAsync(primary ? HedgedTaskType.Primary : HedgedTaskType.Secondary, _snapshot,
             async (context, _) =>
             {
-                await _timeProvider.Delay(TimeSpan.FromDays(1), context.CancellationToken);
-                return new DisposableResult();
+                try
+                {
+                    await _timeProvider.Delay(TimeSpan.FromDays(1), context.CancellationToken);
+                    return new Outcome<DisposableResult>(new DisposableResult());
+                }
+                catch (OperationCanceledException e)
+                {
+                    return new Outcome<DisposableResult>(e);
+                }
             },
             "dummy-state",
             1);
@@ -225,7 +232,7 @@ public class TaskExecutionTests : IDisposable
         await execution.InitializeAsync(HedgedTaskType.Primary, _snapshot, (context, _) =>
         {
             onContext?.Invoke(context);
-            return new ValueTask<DisposableResult>(result ?? new DisposableResult { Name = Handled });
+            return new Outcome<DisposableResult>(result ?? new DisposableResult { Name = Handled }).AsValueTask();
         }, "dummy-state", 1);
     }
 

@@ -56,7 +56,7 @@ internal sealed class HedgingExecutionContext
     private bool ContinueOnCapturedContext => Snapshot.Context.ContinueOnCapturedContext;
 
     public async ValueTask<ExecutionInfo<TResult>> LoadExecutionAsync<TResult, TState>(
-        Func<ResilienceContext, TState, ValueTask<TResult>> primaryCallback,
+        Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> primaryCallback,
         TState state)
     {
         if (LoadedTasks >= _maxAttempts)

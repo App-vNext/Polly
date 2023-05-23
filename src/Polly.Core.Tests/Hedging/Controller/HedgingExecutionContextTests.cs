@@ -98,7 +98,7 @@ public class HedgingExecutionContextTests : IDisposable
     {
         var context = Create();
         context.Initialize(_resilienceContext);
-        await context.LoadExecutionAsync((_, _) => new ValueTask<string>("dummy"), "state");
+        await context.LoadExecutionAsync((_, _) => new Outcome<string>("dummy").AsValueTask(), "state");
 
         var task = await context.TryWaitForCompletedExecutionAsync(TimeSpan.Zero);
 
@@ -180,8 +180,8 @@ public class HedgingExecutionContextTests : IDisposable
     {
         var context = Create();
         context.Initialize(_resilienceContext);
-        await context.LoadExecutionAsync((_, _) => new ValueTask<string>("dummy"), "state");
-        await context.LoadExecutionAsync((_, _) => new ValueTask<string>("dummy"), "state");
+        await context.LoadExecutionAsync((_, _) => new Outcome<string>("dummy").AsValueTask(), "state");
+        await context.LoadExecutionAsync((_, _) => new Outcome<string>("dummy").AsValueTask(), "state");
 
         var task = await context.TryWaitForCompletedExecutionAsync(TimeSpan.Zero);
 
@@ -440,7 +440,7 @@ public class HedgingExecutionContextTests : IDisposable
                     throw new InvalidOperationException("Forced error.");
                 }
 
-                return new DisposableResult { Name = "primary" };
+                return new Outcome<DisposableResult>(new DisposableResult { Name = "primary" });
             },
             "state");
     }

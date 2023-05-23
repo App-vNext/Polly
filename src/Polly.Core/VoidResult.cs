@@ -1,3 +1,5 @@
+using Polly.Strategy;
+
 namespace Polly;
 
 /// <summary>
@@ -10,6 +12,8 @@ internal sealed class VoidResult
     }
 
     public static readonly VoidResult Instance = new();
+
+    public static readonly Outcome<VoidResult> Outcome = new(Instance);
 
     public override string ToString() => "void";
 }

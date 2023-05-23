@@ -1,7 +1,11 @@
+using System.Runtime.ExceptionServices;
 using System.Threading;
 using Polly;
+using Polly.Strategy;
 
 namespace Polly;
+
+#pragma warning disable CA1031 // Do not catch general exception types
 
 public abstract partial class ResilienceStrategy
 {
@@ -24,14 +28,23 @@ public abstract partial class ResilienceStrategy
 
         InitializeAsyncContext(context);
 
-        await ExecuteCoreAsync(
+        var outcome = await ExecuteCoreAsync(
             static async (context, state) =>
             {
-                await state.callback(context, state.state).ConfigureAwait(context.ContinueOnCapturedContext);
-                return VoidResult.Instance;
+                try
+                {
+                    await state.callback(context, state.state).ConfigureAwait(context.ContinueOnCapturedContext);
+                    return VoidResult.Outcome;
+                }
+                catch (Exception e)
+                {
+                    return new Outcome<VoidResult>(ExceptionDispatchInfo.Capture(e));
+                }
             },
             context,
             (callback, state)).ConfigureAwait(context.ContinueOnCapturedContext);
+
+        outcome.GetResultOrRethrow();
     }
 
     /// <summary>
@@ -50,14 +63,23 @@ public abstract partial class ResilienceStrategy
 
         InitializeAsyncContext(context);
 
-        await ExecuteCoreAsync(
+        var outcome = await ExecuteCoreAsync(
             static async (context, state) =>
             {
-                await state(context).ConfigureAwait(context.ContinueOnCapturedContext);
-                return VoidResult.Instance;
+                try
+                {
+                    await state(context).ConfigureAwait(context.ContinueOnCapturedContext);
+                    return VoidResult.Outcome;
+                }
+                catch (Exception e)
+                {
+                    return new Outcome<VoidResult>(ExceptionDispatchInfo.Capture(e));
+                }
             },
             context,
             callback).ConfigureAwait(context.ContinueOnCapturedContext);
+
+        outcome.GetResultOrRethrow();
     }
 
     /// <summary>
@@ -80,14 +102,23 @@ public abstract partial class ResilienceStrategy
 
         try
         {
-            await ExecuteCoreAsync(
+            var outcome = await ExecuteCoreAsync(
                 static async (context, state) =>
                 {
-                    await state.callback(state.state, context.CancellationToken).ConfigureAwait(context.ContinueOnCapturedContext);
-                    return VoidResult.Instance;
+                    try
+                    {
+                        await state.callback(state.state, context.CancellationToken).ConfigureAwait(context.ContinueOnCapturedContext);
+                        return VoidResult.Outcome;
+                    }
+                    catch (Exception e)
+                    {
+                        return new Outcome<VoidResult>(ExceptionDispatchInfo.Capture(e));
+                    }
                 },
                 context,
                 (callback, state)).ConfigureAwait(context.ContinueOnCapturedContext);
+
+            outcome.GetResultOrRethrow();
         }
         finally
         {
@@ -112,14 +143,24 @@ public abstract partial class ResilienceStrategy
 
         try
         {
-            await ExecuteCoreAsync(
+            var outcome = await ExecuteCoreAsync(
                 static async (context, state) =>
                 {
-                    await state(context.CancellationToken).ConfigureAwait(context.ContinueOnCapturedContext);
-                    return VoidResult.Instance;
+                    try
+                    {
+                        await state(context.CancellationToken).ConfigureAwait(context.ContinueOnCapturedContext);
+                        return VoidResult.Outcome;
+                    }
+                    catch (Exception e)
+                    {
+                        return new Outcome<VoidResult>(ExceptionDispatchInfo.Capture(e));
+                    }
+
                 },
                 context,
                 callback).ConfigureAwait(context.ContinueOnCapturedContext);
+
+            outcome.GetResultOrRethrow();
         }
         finally
         {

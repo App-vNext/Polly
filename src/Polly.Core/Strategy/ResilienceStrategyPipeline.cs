@@ -1,5 +1,4 @@
 using System;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace Polly.Strategy;
 
@@ -56,7 +55,9 @@ internal sealed class ResilienceStrategyPipeline : ResilienceStrategy
 
     public IReadOnlyList<ResilienceStrategy> Strategies { get; }
 
-    protected internal override ValueTask<TResult> ExecuteCoreAsync<TResult, TState>(Func<ResilienceContext, TState, ValueTask<TResult>> callback, ResilienceContext context, TState state)
+    protected internal override ValueTask<Outcome<TResult>> ExecuteCoreAsync<TResult, TState>(
+        Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,
+        ResilienceContext context, TState state)
     {
         return _pipeline.ExecuteCoreAsync(callback, context, state);
     }
@@ -72,7 +73,10 @@ internal sealed class ResilienceStrategyPipeline : ResilienceStrategy
 
         public ResilienceStrategy? Next { get; set; }
 
-        protected internal override ValueTask<TResult> ExecuteCoreAsync<TResult, TState>(Func<ResilienceContext, TState, ValueTask<TResult>> callback, ResilienceContext context, TState state)
+        protected internal override ValueTask<Outcome<TResult>> ExecuteCoreAsync<TResult, TState>(
+            Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,
+            ResilienceContext context,
+            TState state)
         {
             return _strategy.ExecuteCoreAsync(
                 static (context, state) => state.Next!.ExecuteCoreAsync(state.callback, context, state.state),

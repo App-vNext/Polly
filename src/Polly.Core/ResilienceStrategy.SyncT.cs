@@ -1,6 +1,10 @@
+using System.Runtime.ExceptionServices;
 using Polly;
+using Polly.Strategy;
 
 namespace Polly;
+
+#pragma warning disable CA1031 // Do not catch general exception types
 
 public abstract partial class ResilienceStrategy
 {
@@ -24,10 +28,21 @@ public abstract partial class ResilienceStrategy
 
         InitializeSyncContext<TResult>(context);
 
-        return ExecuteCoreAsync(
-            static (context, state) => new ValueTask<TResult>(state.callback(context, state.state)),
-            context,
-            (callback, state)).GetResult();
+        return ExecuteCoreSync(
+           static (context, state) =>
+           {
+               try
+               {
+                   var result = state.callback(context, state.state);
+                   return new ValueTask<Outcome<TResult>>(new Outcome<TResult>(result));
+               }
+               catch (Exception e)
+               {
+                   return new ValueTask<Outcome<TResult>>(new Outcome<TResult>(ExceptionDispatchInfo.Capture(e)));
+               }
+           },
+           context,
+           (callback, state)).GetResultOrRethrow();
     }
 
     /// <summary>
@@ -47,10 +62,21 @@ public abstract partial class ResilienceStrategy
 
         InitializeSyncContext<TResult>(context);
 
-        return ExecuteCoreAsync(
-            static (context, state) => new ValueTask<TResult>(state(context)),
+        return ExecuteCoreSync(
+            static (context, state) =>
+            {
+                try
+                {
+                    var result = state(context);
+                    return new ValueTask<Outcome<TResult>>(new Outcome<TResult>(result));
+                }
+                catch (Exception e)
+                {
+                    return new ValueTask<Outcome<TResult>>(new Outcome<TResult>(ExceptionDispatchInfo.Capture(e)));
+                }
+            },
             context,
-            callback).GetResult();
+            callback).GetResultOrRethrow();
     }
 
     /// <summary>
@@ -71,10 +97,21 @@ public abstract partial class ResilienceStrategy
 
         try
         {
-            return ExecuteCoreAsync(
-                static (context, state) => new ValueTask<TResult>(state(context.CancellationToken)),
+            return ExecuteCoreSync(
+                static (context, state) =>
+                {
+                    try
+                    {
+                        var result = state(context.CancellationToken);
+                        return new ValueTask<Outcome<TResult>>(new Outcome<TResult>(result));
+                    }
+                    catch (Exception e)
+                    {
+                        return new ValueTask<Outcome<TResult>>(new Outcome<TResult>(ExceptionDispatchInfo.Capture(e)));
+                    }
+                },
                 context,
-                callback).GetResult();
+                callback).GetResultOrRethrow();
         }
         finally
         {
@@ -97,10 +134,21 @@ public abstract partial class ResilienceStrategy
 
         try
         {
-            return ExecuteCoreAsync(
-                static (_, state) => new ValueTask<TResult>(state()),
+            return ExecuteCoreSync(
+                static (_, state) =>
+                {
+                    try
+                    {
+                        var result = state();
+                        return new ValueTask<Outcome<TResult>>(new Outcome<TResult>(result));
+                    }
+                    catch (Exception e)
+                    {
+                        return new ValueTask<Outcome<TResult>>(new Outcome<TResult>(ExceptionDispatchInfo.Capture(e)));
+                    }
+                },
                 context,
-                callback).GetResult();
+                callback).GetResultOrRethrow();
         }
         finally
         {
@@ -125,10 +173,21 @@ public abstract partial class ResilienceStrategy
 
         try
         {
-            return ExecuteCoreAsync(
-                static (_, state) => new ValueTask<TResult>(state.callback(state.state)),
+            return ExecuteCoreSync(
+                static (_, state) =>
+                {
+                    try
+                    {
+                        var result = state.callback(state.state);
+                        return new ValueTask<Outcome<TResult>>(new Outcome<TResult>(result));
+                    }
+                    catch (Exception e)
+                    {
+                        return new ValueTask<Outcome<TResult>>(new Outcome<TResult>(ExceptionDispatchInfo.Capture(e)));
+                    }
+                },
                 context,
-                (callback, state)).GetResult();
+                (callback, state)).GetResultOrRethrow();
         }
         finally
         {
@@ -157,10 +216,21 @@ public abstract partial class ResilienceStrategy
 
         try
         {
-            return ExecuteCoreAsync(
-                static (context, state) => new ValueTask<TResult>(state.callback(state.state, context.CancellationToken)),
+            return ExecuteCoreSync(
+                static (context, state) =>
+                {
+                    try
+                    {
+                        var result = state.callback(state.state, context.CancellationToken);
+                        return new ValueTask<Outcome<TResult>>(new Outcome<TResult>(result));
+                    }
+                    catch (Exception e)
+                    {
+                        return new ValueTask<Outcome<TResult>>(new Outcome<TResult>(ExceptionDispatchInfo.Capture(e)));
+                    }
+                },
                 context,
-                (callback, state)).GetResult();
+                (callback, state)).GetResultOrRethrow();
         }
         finally
         {

@@ -1,4 +1,9 @@
+using System.Runtime.ExceptionServices;
+using Polly.Strategy;
+
 namespace Polly;
+
+#pragma warning disable CA1031 // Do not catch general exception types
 
 public abstract partial class ResilienceStrategy
 {
@@ -12,7 +17,7 @@ public abstract partial class ResilienceStrategy
     /// <param name="state">The state associated with the callback.</param>
     /// <returns>The instance of <see cref="ValueTask"/> that represents the asynchronous execution.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="callback"/> or <paramref name="context"/> is <see langword="null"/>.</exception>
-    public ValueTask<TResult> ExecuteAsync<TResult, TState>(
+    public async ValueTask<TResult> ExecuteAsync<TResult, TState>(
         Func<ResilienceContext, TState, ValueTask<TResult>> callback,
         ResilienceContext context,
         TState state)
@@ -22,7 +27,22 @@ public abstract partial class ResilienceStrategy
 
         InitializeAsyncContext<TResult>(context);
 
-        return ExecuteCoreAsync(callback, context, state);
+        var outcome = await ExecuteCoreAsync(
+            static async (context, state) =>
+            {
+                try
+                {
+                    return new Outcome<TResult>(await state.callback(context, state.state).ConfigureAwait(context.ContinueOnCapturedContext));
+                }
+                catch (Exception e)
+                {
+                    return new Outcome<TResult>(ExceptionDispatchInfo.Capture(e));
+                }
+            },
+            context,
+            (callback, state)).ConfigureAwait(context.ContinueOnCapturedContext);
+
+        return outcome.GetResultOrRethrow();
     }
 
     /// <summary>
@@ -33,7 +53,7 @@ public abstract partial class ResilienceStrategy
     /// <param name="context">The context associated with the callback.</param>
     /// <returns>The instance of <see cref="ValueTask"/> that represents the asynchronous execution.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="callback"/> or <paramref name="context"/> is <see langword="null"/>.</exception>
-    public ValueTask<TResult> ExecuteAsync<TResult>(
+    public async ValueTask<TResult> ExecuteAsync<TResult>(
         Func<ResilienceContext, ValueTask<TResult>> callback,
         ResilienceContext context)
     {
@@ -42,7 +62,22 @@ public abstract partial class ResilienceStrategy
 
         InitializeAsyncContext<TResult>(context);
 
-        return ExecuteCoreAsync(static (context, state) => state(context), context, callback);
+        var outcome = await ExecuteCoreAsync(
+            static async (context, state) =>
+            {
+                try
+                {
+                    return new Outcome<TResult>(await state(context).ConfigureAwait(context.ContinueOnCapturedContext));
+                }
+                catch (Exception e)
+                {
+                    return new Outcome<TResult>(ExceptionDispatchInfo.Capture(e));
+                }
+            },
+            context,
+            callback).ConfigureAwait(context.ContinueOnCapturedContext);
+
+        return outcome.GetResultOrRethrow();
     }
 
     /// <summary>
@@ -66,10 +101,22 @@ public abstract partial class ResilienceStrategy
 
         try
         {
-            return await ExecuteCoreAsync(
-                static (context, state) => state.callback(state.state, context.CancellationToken),
+            var outcome = await ExecuteCoreAsync(
+                static async (context, state) =>
+                {
+                    try
+                    {
+                        return new Outcome<TResult>(await state.callback(state.state, context.CancellationToken).ConfigureAwait(context.ContinueOnCapturedContext));
+                    }
+                    catch (Exception e)
+                    {
+                        return new Outcome<TResult>(ExceptionDispatchInfo.Capture(e));
+                    }
+                },
                 context,
                 (callback, state)).ConfigureAwait(context.ContinueOnCapturedContext);
+
+            return outcome.GetResultOrRethrow();
         }
         finally
         {
@@ -95,8 +142,22 @@ public abstract partial class ResilienceStrategy
 
         try
         {
-            return await ExecuteCoreAsync(static (context, state) => state(context.CancellationToken), context, callback)
-                                 .ConfigureAwait(context.ContinueOnCapturedContext);
+            var outcome = await ExecuteCoreAsync(
+                static async (context, state) =>
+                {
+                    try
+                    {
+                        return new Outcome<TResult>(await state(context.CancellationToken).ConfigureAwait(context.ContinueOnCapturedContext));
+                    }
+                    catch (Exception e)
+                    {
+                        return new Outcome<TResult>(ExceptionDispatchInfo.Capture(e));
+                    }
+                },
+                context,
+                callback).ConfigureAwait(context.ContinueOnCapturedContext);
+
+            return outcome.GetResultOrRethrow();
         }
         finally
         {

@@ -11,6 +11,7 @@ LaunchCount=2  WarmupCount=10
 ```
 |                                         Method |      Mean |    Error |   StdDev | Ratio | RatioSD | Allocated | Alloc Ratio |
 |----------------------------------------------- |----------:|---------:|---------:|------:|--------:|----------:|------------:|
-|         ExecuteAsync_ResilienceContextAndState |  67.14 ns | 0.473 ns | 0.708 ns |  1.00 |    0.00 |         - |          NA |
-|                 ExecuteAsync_CancellationToken | 115.73 ns | 0.874 ns | 1.253 ns |  1.72 |    0.01 |         - |          NA |
-| ExecuteAsync_GenericStrategy_CancellationToken | 117.85 ns | 0.346 ns | 0.486 ns |  1.76 |    0.02 |         - |          NA |
+|                            ExecuteOutcomeAsync |  61.80 ns | 0.537 ns | 0.770 ns |  1.00 |    0.00 |         - |          NA |
+|         ExecuteAsync_ResilienceContextAndState | 169.88 ns | 1.252 ns | 1.755 ns |  2.75 |    0.05 |         - |          NA |
+|                 ExecuteAsync_CancellationToken | 178.11 ns | 0.894 ns | 1.253 ns |  2.88 |    0.02 |         - |          NA |
+| ExecuteAsync_GenericStrategy_CancellationToken | 181.22 ns | 0.512 ns | 0.701 ns |  2.93 |    0.04 |         - |          NA |

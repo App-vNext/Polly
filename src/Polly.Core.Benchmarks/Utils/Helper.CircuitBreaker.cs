@@ -1,10 +1,41 @@
 using System;
 using Polly.CircuitBreaker;
+using Polly.Strategy;
 
 namespace Polly.Core.Benchmarks.Utils;
 
 internal static partial class Helper
 {
+    public static object CreateOpenedCircuitBreaker(PollyVersion version, bool handleOutcome)
+    {
+        var manualControl = new CircuitBreakerManualControl();
+        var options = new AdvancedCircuitBreakerStrategyOptions
+        {
+            ShouldHandle = new OutcomePredicate<CircuitBreakerPredicateArguments>().HandleResult<string>(r => true),
+            ManualControl = manualControl,
+        };
+
+        if (version == PollyVersion.V8)
+        {
+            var builder = new ResilienceStrategyBuilder();
+
+            if (handleOutcome)
+            {
+                builder.AddStrategy(new OutcomeHandlingStrategy());
+            }
+
+            var strategy = builder.AddAdvancedCircuitBreaker(options).Build();
+            manualControl.IsolateAsync().GetAwaiter().GetResult();
+            return strategy;
+        }
+        else
+        {
+            var policy = Policy.HandleResult<string>(r => true).AdvancedCircuitBreakerAsync(options.FailureThreshold, options.SamplingDuration, options.MinimumThroughput, options.BreakDuration);
+            policy.Isolate();
+            return policy;
+        }
+    }
+
     public static object CreateCircuitBreaker(PollyVersion technology)
     {
         var delay = TimeSpan.FromSeconds(10);
@@ -33,4 +64,23 @@ internal static partial class Helper
             _ => throw new NotSupportedException()
         };
     }
+
+    private class OutcomeHandlingStrategy : ResilienceStrategy
+    {
+        protected override async ValueTask<Outcome<TResult>> ExecuteCoreAsync<TResult, TState>(
+            Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,
+            ResilienceContext context,
+            TState state)
+        {
+            var result = await callback(context, state).ConfigureAwait(false);
+
+            if (result.Exception is not null)
+            {
+                return new Outcome<TResult>(default(TResult)!);
+            }
+
+            return result;
+        }
+    }
+
 }

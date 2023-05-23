@@ -2,6 +2,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Polly.CircuitBreaker;
 using Polly.Extensions.DependencyInjection;
 using Polly.Registry;
+using Polly.Strategy;
 
 namespace Polly.Core.Tests.Issues;
 
@@ -60,7 +61,10 @@ public partial class IssuesTests
 
         public ServiceProviderStrategy(IServiceProvider serviceProvider) => _serviceProvider = serviceProvider;
 
-        protected override ValueTask<TResult> ExecuteCoreAsync<TResult, TState>(Func<ResilienceContext, TState, ValueTask<TResult>> callback, ResilienceContext context, TState state)
+        protected override ValueTask<Outcome<TResult>> ExecuteCoreAsync<TResult, TState>(
+            Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,
+            ResilienceContext context,
+            TState state)
         {
             context.Properties.Set(PollyDependencyInjectionKeys.ServiceProvider, _serviceProvider);
             return callback(context, state);

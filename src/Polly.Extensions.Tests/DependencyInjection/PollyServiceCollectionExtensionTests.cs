@@ -199,9 +199,9 @@ public class PollyServiceCollectionExtensionTests
 
     private class TestStrategy : ResilienceStrategy
     {
-        protected override ValueTask<TResult> ExecuteCoreAsync<TResult, TState>(
-            Func<ResilienceContext, TState, ValueTask<TResult>> callback,
+        protected override ValueTask<Outcome<TResult>> ExecuteCoreAsync<TResult, TState>(
+            Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,
             ResilienceContext context,
-            TState state) => throw new NotSupportedException();
+            TState state) => new(new Outcome<TResult>(new NotSupportedException()));
     }
 }
