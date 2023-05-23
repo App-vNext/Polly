@@ -121,7 +121,7 @@ public partial class ResilienceStrategyTests
     {
         var result = await NullResilienceStrategy.Instance.ExecuteOutcomeAsync((context, state) =>
         {
-            state.Should().Be("state"); 
+            state.Should().Be("state");
             context.IsSynchronous.Should().BeFalse();
             context.ResultType.Should().Be(typeof(int));
             return new Outcome<int>(12345).AsValueTask();
