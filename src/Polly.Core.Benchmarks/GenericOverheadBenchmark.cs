@@ -3,7 +3,7 @@ using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using BenchmarkDotNet.Attributes;
 
-namespace Polly.Benchmarks;
+namespace Polly.Core.Benchmarks;
 
 public class GenericOverheadBenchmark
 {

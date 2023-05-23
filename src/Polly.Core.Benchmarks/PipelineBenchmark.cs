@@ -1,5 +1,4 @@
 using BenchmarkDotNet.Attributes;
-using Polly;
 
 namespace Polly.Core.Benchmarks;
 

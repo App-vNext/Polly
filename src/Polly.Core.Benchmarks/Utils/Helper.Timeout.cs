@@ -2,7 +2,7 @@
 
 using System;
 
-namespace Polly.Core.Benchmarks;
+namespace Polly.Core.Benchmarks.Utils;
 
 internal static partial class Helper
 {
@@ -12,7 +12,7 @@ internal static partial class Helper
 
         return technology switch
         {
-            PollyVersion.V7 => Policy.TimeoutAsync<int>(timeout),
+            PollyVersion.V7 => Policy.TimeoutAsync<string>(timeout),
             PollyVersion.V8 => CreateStrategy(builder => builder.AddTimeout(timeout)),
             _ => throw new NotSupportedException()
         };

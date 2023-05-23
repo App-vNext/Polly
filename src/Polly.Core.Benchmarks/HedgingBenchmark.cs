@@ -2,7 +2,7 @@ using System.Threading.Tasks;
 using BenchmarkDotNet.Attributes;
 using Polly.Core.Benchmarks;
 
-namespace Polly.Benchmarks;
+namespace Polly.Core.Benchmarks;
 
 public class HedgingBenchmark
 {

@@ -3,7 +3,7 @@
 using System;
 using System.Threading.RateLimiting;
 
-namespace Polly.Core.Benchmarks;
+namespace Polly.Core.Benchmarks.Utils;
 
 internal static partial class Helper
 {

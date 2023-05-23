@@ -1,8 +1,7 @@
 using System.Threading.RateLimiting;
-using Polly;
 using Polly.Strategy;
 
-namespace Polly.Core.Benchmarks;
+namespace Polly.Core.Benchmarks.Utils;
 
 internal static partial class Helper
 {

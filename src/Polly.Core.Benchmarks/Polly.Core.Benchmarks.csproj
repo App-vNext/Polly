@@ -2,7 +2,6 @@
 
   <PropertyGroup>
     <TargetFrameworks>net7.0</TargetFrameworks>
-    <RootNamespace>Polly</RootNamespace>
     <ImplicitUsings>true</ImplicitUsings>
     <ProjectType>Benchmark</ProjectType>
     <Nullable>enable</Nullable>
@@ -12,6 +11,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Using Include="Polly.Core.Benchmarks.Utils"/>
     <ProjectReference Include="..\Polly.Core\Polly.Core.csproj" />
     <ProjectReference Include="..\Polly.RateLimiting\Polly.RateLimiting.csproj" />
     <ProjectReference Include="..\Polly\Polly.csproj" />

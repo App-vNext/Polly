@@ -1,9 +1,8 @@
 using BenchmarkDotNet.Attributes;
-using Polly;
 
 namespace Polly.Core.Benchmarks;
 
-public class StrategyPipelineBenchmark
+public class MultipleStrategiesBenchmark
 {
     private object? _strategyV7;
     private object? _strategyV8;
