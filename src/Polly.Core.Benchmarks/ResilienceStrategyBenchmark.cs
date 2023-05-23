@@ -23,7 +23,7 @@ public class ResilienceStrategyBenchmark
     public async ValueTask ExecuteAsync_ResilienceContextAndState()
     {
         var context = ResilienceContext.Get();
-        await _strategy.ExecuteAsync((_, _) => new ValueTask<string>(new string("dummy")), context, "state").ConfigureAwait(false);
+        await _strategy.ExecuteAsync((_, _) => new ValueTask<string>("dummy"), context, "state").ConfigureAwait(false);
         ResilienceContext.Return(context);
     }
 

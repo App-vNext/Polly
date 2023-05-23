@@ -9,9 +9,9 @@ Job=MediumRun  Toolchain=InProcessEmitToolchain  IterationCount=15
 LaunchCount=2  WarmupCount=10  
 
 ```
-|                                         Method |      Mean |    Error |   StdDev | Ratio | RatioSD |   Gen0 | Allocated | Alloc Ratio |
-|----------------------------------------------- |----------:|---------:|---------:|------:|--------:|-------:|----------:|------------:|
-|                            ExecuteOutcomeAsync |  60.27 ns | 0.288 ns | 0.413 ns |  1.00 |    0.00 |      - |         - |          NA |
-|         ExecuteAsync_ResilienceContextAndState | 187.70 ns | 1.954 ns | 2.803 ns |  3.11 |    0.04 | 0.0012 |      32 B |          NA |
-|                 ExecuteAsync_CancellationToken | 178.10 ns | 0.834 ns | 1.142 ns |  2.96 |    0.03 |      - |         - |          NA |
-| ExecuteAsync_GenericStrategy_CancellationToken | 181.65 ns | 1.889 ns | 2.710 ns |  3.01 |    0.04 |      - |         - |          NA |
+|                                         Method |      Mean |    Error |   StdDev | Ratio | RatioSD | Allocated | Alloc Ratio |
+|----------------------------------------------- |----------:|---------:|---------:|------:|--------:|----------:|------------:|
+|                            ExecuteOutcomeAsync |  61.80 ns | 0.537 ns | 0.770 ns |  1.00 |    0.00 |         - |          NA |
+|         ExecuteAsync_ResilienceContextAndState | 169.88 ns | 1.252 ns | 1.755 ns |  2.75 |    0.05 |         - |          NA |
+|                 ExecuteAsync_CancellationToken | 178.11 ns | 0.894 ns | 1.253 ns |  2.88 |    0.02 |         - |          NA |
+| ExecuteAsync_GenericStrategy_CancellationToken | 181.22 ns | 0.512 ns | 0.701 ns |  2.93 |    0.04 |         - |          NA |
