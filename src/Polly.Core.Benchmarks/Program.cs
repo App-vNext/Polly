@@ -10,4 +10,4 @@ var config = ManualConfig
     .AddJob(Job.MediumRun.WithToolchain(InProcessEmitToolchain.Instance))
     .AddDiagnoser(MemoryDiagnoser.Default);
 
-BenchmarkRunner.Run(typeof(PollyVersion).Assembly, config);
+BenchmarkSwitcher.FromAssembly(typeof(PollyVersion).Assembly).Run(args, config);
