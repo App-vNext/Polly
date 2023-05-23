@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.ExceptionServices;
 using System.Threading.Tasks;
 using Polly.Strategy;
@@ -25,6 +26,7 @@ internal sealed class TimeoutResilienceStrategy : ResilienceStrategy
 
     public Func<OnTimeoutArguments, ValueTask>? OnTimeout { get; }
 
+    [ExcludeFromCodeCoverage]
     protected internal override async ValueTask<Outcome<TResult>> ExecuteCoreAsync<TResult, TState>(
         Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,
         ResilienceContext context,

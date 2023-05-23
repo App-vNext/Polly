@@ -40,7 +40,7 @@ public abstract partial class ResilienceStrategy
                 }
             },
             context,
-            (callback, state)).ExceptionDispatchInfo?.Throw();
+            (callback, state)).GetResultOrRethrow();
     }
 
     /// <summary>
@@ -72,7 +72,7 @@ public abstract partial class ResilienceStrategy
                 }
             },
             context,
-            callback).ExceptionDispatchInfo?.Throw();
+            callback).GetResultOrRethrow();
     }
 
     /// <summary>
@@ -108,7 +108,7 @@ public abstract partial class ResilienceStrategy
                     }
                 },
                 context,
-                (callback, state)).ExceptionDispatchInfo?.Throw();
+                (callback, state)).GetResultOrRethrow();
         }
         finally
         {
@@ -146,7 +146,7 @@ public abstract partial class ResilienceStrategy
                     }
                 },
                 context,
-                callback).ExceptionDispatchInfo?.Throw();
+                callback).GetResultOrRethrow();
         }
         finally
         {
@@ -185,7 +185,7 @@ public abstract partial class ResilienceStrategy
                     }
                 },
                 context,
-                (callback, state)).ExceptionDispatchInfo?.Throw();
+                (callback, state)).GetResultOrRethrow();
         }
         finally
         {
@@ -220,7 +220,7 @@ public abstract partial class ResilienceStrategy
                     }
                 },
                 context,
-                callback).ExceptionDispatchInfo?.Throw();
+                callback).GetResultOrRethrow();
         }
         finally
         {

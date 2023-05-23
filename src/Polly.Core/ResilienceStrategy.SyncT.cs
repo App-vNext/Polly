@@ -28,7 +28,7 @@ public abstract partial class ResilienceStrategy
 
         InitializeSyncContext<TResult>(context);
 
-        var outcome = ExecuteCoreSync(
+        return ExecuteCoreSync(
            static (context, state) =>
            {
                try
@@ -42,11 +42,7 @@ public abstract partial class ResilienceStrategy
                }
            },
            context,
-           (callback, state));
-
-        outcome.ExceptionDispatchInfo?.Throw();
-
-        return outcome.Result!;
+           (callback, state)).GetResultOrRethrow();
     }
 
     /// <summary>
@@ -66,7 +62,7 @@ public abstract partial class ResilienceStrategy
 
         InitializeSyncContext<TResult>(context);
 
-        var outcome = ExecuteCoreSync(
+        return ExecuteCoreSync(
             static (context, state) =>
             {
                 try
@@ -80,11 +76,7 @@ public abstract partial class ResilienceStrategy
                 }
             },
             context,
-            callback);
-
-        outcome.ExceptionDispatchInfo?.Throw();
-
-        return outcome.Result!;
+            callback).GetResultOrRethrow();
     }
 
     /// <summary>
@@ -105,7 +97,7 @@ public abstract partial class ResilienceStrategy
 
         try
         {
-            var outcome = ExecuteCoreSync(
+            return ExecuteCoreSync(
                 static (context, state) =>
                 {
                     try
@@ -119,11 +111,7 @@ public abstract partial class ResilienceStrategy
                     }
                 },
                 context,
-                callback);
-
-            outcome.ExceptionDispatchInfo?.Throw();
-
-            return outcome.Result!;
+                callback).GetResultOrRethrow();
         }
         finally
         {
@@ -146,7 +134,7 @@ public abstract partial class ResilienceStrategy
 
         try
         {
-            var outcome = ExecuteCoreSync(
+            return ExecuteCoreSync(
                 static (_, state) =>
                 {
                     try
@@ -160,11 +148,7 @@ public abstract partial class ResilienceStrategy
                     }
                 },
                 context,
-                callback);
-
-            outcome.ExceptionDispatchInfo?.Throw();
-
-            return outcome.Result!;
+                callback).GetResultOrRethrow();
         }
         finally
         {
@@ -189,7 +173,7 @@ public abstract partial class ResilienceStrategy
 
         try
         {
-            var outcome = ExecuteCoreSync(
+            return ExecuteCoreSync(
                 static (_, state) =>
                 {
                     try
@@ -203,11 +187,7 @@ public abstract partial class ResilienceStrategy
                     }
                 },
                 context,
-                (callback, state));
-
-            outcome.ExceptionDispatchInfo?.Throw();
-
-            return outcome.Result!;
+                (callback, state)).GetResultOrRethrow();
         }
         finally
         {
@@ -236,7 +216,7 @@ public abstract partial class ResilienceStrategy
 
         try
         {
-            var outcome = ExecuteCoreSync(
+            return ExecuteCoreSync(
                 static (context, state) =>
                 {
                     try
@@ -250,11 +230,7 @@ public abstract partial class ResilienceStrategy
                     }
                 },
                 context,
-                (callback, state));
-
-            outcome.ExceptionDispatchInfo?.Throw();
-
-            return outcome.Result!;
+                (callback, state)).GetResultOrRethrow();
         }
         finally
         {

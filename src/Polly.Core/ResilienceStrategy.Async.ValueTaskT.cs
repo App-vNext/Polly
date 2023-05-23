@@ -42,9 +42,7 @@ public abstract partial class ResilienceStrategy
             context,
             (callback, state)).ConfigureAwait(context.ContinueOnCapturedContext);
 
-        outcome.ExceptionDispatchInfo?.Throw();
-
-        return outcome.Result!;
+        return outcome.GetResultOrRethrow();
     }
 
     /// <summary>
@@ -79,9 +77,7 @@ public abstract partial class ResilienceStrategy
             context,
             callback).ConfigureAwait(context.ContinueOnCapturedContext);
 
-        outcome.ExceptionDispatchInfo?.Throw();
-
-        return outcome.Result!;
+        return outcome.GetResultOrRethrow();
     }
 
     /// <summary>
@@ -120,9 +116,7 @@ public abstract partial class ResilienceStrategy
                 context,
                 (callback, state)).ConfigureAwait(context.ContinueOnCapturedContext);
 
-            outcome.ExceptionDispatchInfo?.Throw();
-
-            return outcome.Result!;
+            return outcome.GetResultOrRethrow();
         }
         finally
         {
@@ -163,9 +157,7 @@ public abstract partial class ResilienceStrategy
                 context,
                 callback).ConfigureAwait(context.ContinueOnCapturedContext);
 
-            outcome.ExceptionDispatchInfo?.Throw();
-
-            return outcome.Result!;
+            return outcome.GetResultOrRethrow();
         }
         finally
         {

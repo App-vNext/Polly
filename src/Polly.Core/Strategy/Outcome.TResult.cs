@@ -94,6 +94,12 @@ public readonly struct Outcome<TResult>
         return Result?.ToString() ?? string.Empty;
     }
 
+    internal TResult GetResultOrRethrow()
+    {
+        ExceptionDispatchInfo?.Throw();
+        return Result!;
+    }
+
     internal Outcome AsOutcome() => Exception switch
     {
         null => new Outcome(Result),
