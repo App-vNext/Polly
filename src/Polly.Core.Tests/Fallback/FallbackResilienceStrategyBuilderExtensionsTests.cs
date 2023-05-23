@@ -15,7 +15,7 @@ public class FallbackResilienceStrategyBuilderExtensionsTests
         },
         builder =>
         {
-            builder.AddFallback(handle => { }, (_, _) =>  new ValueTask<int>(0));
+            builder.AddFallback(handle => handle.HandleResult(1), (_, _) =>  new ValueTask<int>(0));
         },
     };
 
