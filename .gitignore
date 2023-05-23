@@ -118,7 +118,9 @@ UpgradeLog*.XML
 
 artifacts
 build
-BenchmarkDotNet.Artifacts
+
+**/BenchmarkDotNet.Artifacts/**/*.*
+
 tools
 
 *.lock.json
@@ -129,3 +131,5 @@ coverage.*.json
 coverage-reports/
 
 !eng/**
+
+!**/BenchmarkDotNet.Artifacts/**/*.md
