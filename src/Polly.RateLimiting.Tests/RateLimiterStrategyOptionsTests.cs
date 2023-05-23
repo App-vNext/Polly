@@ -9,6 +9,6 @@ public class RateLimiterStrategyOptionsTests
 
         options.StrategyType.Should().Be(RateLimiterConstants.StrategyType);
         options.RateLimiter.Should().BeNull();
-        options.OnRejected.Should().NotBeNull();
+        options.OnRejected.Should().BeNull();
     }
 }

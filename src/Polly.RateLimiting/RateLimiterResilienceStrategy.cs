@@ -7,10 +7,13 @@ internal sealed class RateLimiterResilienceStrategy : ResilienceStrategy
 {
     private readonly ResilienceStrategyTelemetry _telemetry;
 
-    public RateLimiterResilienceStrategy(RateLimiter limiter, NoOutcomeEvent<OnRateLimiterRejectedArguments> @event, ResilienceStrategyTelemetry telemetry)
+    public RateLimiterResilienceStrategy(
+        RateLimiter limiter,
+        Func<OnRateLimiterRejectedArguments, ValueTask>? onRejected,
+        ResilienceStrategyTelemetry telemetry)
     {
         Limiter = limiter;
-        OnLeaseRejected = @event.CreateHandler();
+        OnLeaseRejected = onRejected;
 
         _telemetry = telemetry;
     }

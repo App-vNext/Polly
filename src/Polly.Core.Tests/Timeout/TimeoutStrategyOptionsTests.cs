@@ -11,8 +11,8 @@ public class TimeoutStrategyOptionsTests
     {
         var options = new TimeoutStrategyOptions();
 
-        options.TimeoutGenerator.Should().NotBeNull();
-        options.OnTimeout.Should().NotBeNull();
+        options.TimeoutGenerator.Should().BeNull();
+        options.OnTimeout.Should().BeNull();
         options.StrategyType.Should().Be(TimeoutConstants.StrategyType);
     }
 
