@@ -1,3 +1,5 @@
+using Polly.Strategy;
+
 namespace Polly.Core.Benchmarks.Utils;
 
 internal class EmptyResilienceStrategy : ResilienceStrategy

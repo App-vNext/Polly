@@ -12,10 +12,18 @@ public class ResilienceStrategyBenchmark
     private readonly ResilienceStrategy<string> _genericStrategy = NullResilienceStrategy<string>.Instance;
 
     [Benchmark(Baseline = true)]
+    public async ValueTask ExecuteOutcomeAsync()
+    {
+        var context = ResilienceContext.Get();
+        await _strategy.ExecuteOutcomeAsync((_, _) => new ValueTask<Outcome<string>>(new Outcome<string>("dummy")), context, "state").ConfigureAwait(false);
+        ResilienceContext.Return(context);
+    }
+
+    [Benchmark]
     public async ValueTask ExecuteAsync_ResilienceContextAndState()
     {
         var context = ResilienceContext.Get();
-        await _strategy.ExecuteAsync((_, _) => new ValueTask<Outcome<string>>(new Outcome<string>("dummy")), context, "state").ConfigureAwait(false);
+        await _strategy.ExecuteAsync((_, _) => new ValueTask<string>(new string("dummy")), context, "state").ConfigureAwait(false);
         ResilienceContext.Return(context);
     }
 
@@ -33,8 +41,13 @@ public class ResilienceStrategyBenchmark
 
     private class DummyResilienceStrategy : ResilienceStrategy
     {
-        protected override ValueTask<TResult> ExecuteCoreAsync<TResult, TState>(
-            Func<ResilienceContext, TState, ValueTask<TResult>> callback,
+        public ValueTask<Outcome<TResult>> ExecuteOutcomeAsync<TResult, TState>(
+            Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,
+            ResilienceContext context,
+            TState state) => ExecuteCoreAsync(callback, context, state);
+
+        protected override ValueTask<Outcome<TResult>> ExecuteCoreAsync<TResult, TState>(
+            Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,
             ResilienceContext context,
             TState state) => callback(context, state);
     }
