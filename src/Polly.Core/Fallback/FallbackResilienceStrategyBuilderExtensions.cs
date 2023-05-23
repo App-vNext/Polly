@@ -21,7 +21,7 @@ public static class FallbackResilienceStrategyBuilderExtensions
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="builder"/> or <paramref name="shouldHandle"/> or <paramref name="fallbackAction"/> is <see langword="null"/>.</exception>
     public static ResilienceStrategyBuilder<TResult> AddFallback<TResult>(
         this ResilienceStrategyBuilder<TResult> builder,
-        Action<OutcomePredicate<HandleFallbackArguments, TResult>> shouldHandle,
+        Action<PredicateBuilder<TResult>> shouldHandle,
         Func<Outcome<TResult>, HandleFallbackArguments, ValueTask<TResult>> fallbackAction)
     {
         Guard.NotNull(builder);
@@ -33,7 +33,10 @@ public static class FallbackResilienceStrategyBuilderExtensions
             FallbackAction = fallbackAction,
         };
 
-        shouldHandle(options.ShouldHandle);
+        var predicateBuilder = new PredicateBuilder<TResult>();
+        shouldHandle(predicateBuilder);
+
+        options.ShouldHandle.HandleOutcome(predicateBuilder.CreatePredicate<HandleFallbackArguments>());
 
         return builder.AddFallback(options);
     }

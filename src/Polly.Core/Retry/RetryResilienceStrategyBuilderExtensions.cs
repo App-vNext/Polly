@@ -21,13 +21,13 @@ public static class RetryResilienceStrategyBuilderExtensions
     /// <exception cref="ValidationException">Thrown when the options constructed from the arguments are invalid.</exception>
     public static ResilienceStrategyBuilder<TResult> AddRetry<TResult>(
         this ResilienceStrategyBuilder<TResult> builder,
-        Action<OutcomePredicate<ShouldRetryArguments, TResult>> shouldRetry)
+        Action<PredicateBuilder<TResult>> shouldRetry)
     {
         Guard.NotNull(builder);
         Guard.NotNull(shouldRetry);
 
         var options = new RetryStrategyOptions<TResult>();
-        shouldRetry(options.ShouldRetry);
+        ConfigureShouldRetry(shouldRetry, options);
 
         return builder.AddRetry(options);
     }
@@ -44,7 +44,7 @@ public static class RetryResilienceStrategyBuilderExtensions
     /// <exception cref="ValidationException">Thrown when the options constructed from the arguments are invalid.</exception>
     public static ResilienceStrategyBuilder<TResult> AddRetry<TResult>(
         this ResilienceStrategyBuilder<TResult> builder,
-        Action<OutcomePredicate<ShouldRetryArguments, TResult>> shouldRetry,
+        Action<PredicateBuilder<TResult>> shouldRetry,
         Func<int, TimeSpan> retryDelayGenerator)
     {
         Guard.NotNull(builder);
@@ -52,7 +52,7 @@ public static class RetryResilienceStrategyBuilderExtensions
         Guard.NotNull(retryDelayGenerator);
 
         var options = new RetryStrategyOptions<TResult>();
-        shouldRetry(options.ShouldRetry);
+        ConfigureShouldRetry(shouldRetry, options);
         options.RetryDelayGenerator.SetGenerator((_, args) => retryDelayGenerator(args.Attempt));
 
         return builder.AddRetry(options);
@@ -70,7 +70,7 @@ public static class RetryResilienceStrategyBuilderExtensions
     /// <exception cref="ValidationException">Thrown when the options constructed from the arguments are invalid.</exception>
     public static ResilienceStrategyBuilder<TResult> AddRetry<TResult>(
         this ResilienceStrategyBuilder<TResult> builder,
-        Action<OutcomePredicate<ShouldRetryArguments, TResult>> shouldRetry,
+        Action<PredicateBuilder<TResult>> shouldRetry,
         RetryBackoffType backoffType)
     {
         Guard.NotNull(builder);
@@ -83,7 +83,7 @@ public static class RetryResilienceStrategyBuilderExtensions
             BaseDelay = RetryConstants.DefaultBaseDelay
         };
 
-        shouldRetry(options.ShouldRetry);
+        ConfigureShouldRetry(shouldRetry, options);
 
         return builder.AddRetry(options);
     }
@@ -102,7 +102,7 @@ public static class RetryResilienceStrategyBuilderExtensions
     /// <exception cref="ValidationException">Thrown when the options constructed from the arguments are invalid.</exception>
     public static ResilienceStrategyBuilder<TResult> AddRetry<TResult>(
         this ResilienceStrategyBuilder<TResult> builder,
-        Action<OutcomePredicate<ShouldRetryArguments, TResult>> shouldRetry,
+        Action<PredicateBuilder<TResult>> shouldRetry,
         RetryBackoffType backoffType,
         int retryCount,
         TimeSpan baseDelay)
@@ -117,7 +117,7 @@ public static class RetryResilienceStrategyBuilderExtensions
             BaseDelay = baseDelay
         };
 
-        shouldRetry(options.ShouldRetry);
+        ConfigureShouldRetry(shouldRetry, options);
 
         return builder.AddRetry(options);
     }
@@ -157,5 +157,12 @@ public static class RetryResilienceStrategyBuilderExtensions
         ValidationHelper.ValidateObject(options, "The retry strategy options are invalid.");
 
         return builder.AddStrategy(context => new RetryResilienceStrategy(options, context.TimeProvider, context.Telemetry, RandomUtil.Instance), options);
+    }
+
+    private static void ConfigureShouldRetry<TResult>(Action<PredicateBuilder<TResult>> shouldRetry, RetryStrategyOptions<TResult> options)
+    {
+        var predicate = new PredicateBuilder<TResult>();
+        shouldRetry(predicate);
+        options.ShouldRetry.HandleOutcome(predicate.CreatePredicate<ShouldRetryArguments>());
     }
 }
