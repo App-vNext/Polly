@@ -44,11 +44,8 @@ internal sealed class TimeoutResilienceStrategy : ResilienceStrategy
         var cancellationSource = _cancellationTokenSourcePool.Get(timeout);
         context.CancellationToken = cancellationSource.Token;
 
-#if NETCOREAPP
-        await using var registration = CreateRegistration(cancellationSource, previousToken).ConfigureAwait(context.ContinueOnCapturedContext);
-#else
         using var registration = CreateRegistration(cancellationSource, previousToken);
-#endif
+
         var outcome = await callback(context, state).ConfigureAwait(context.ContinueOnCapturedContext);
         var isCancellationRequested = cancellationSource.IsCancellationRequested;
 
@@ -88,13 +85,13 @@ internal sealed class TimeoutResilienceStrategy : ResilienceStrategy
         return TimeoutGenerator(new TimeoutGeneratorArguments(context));
     }
 
-    private static CancellationTokenRegistration CreateRegistration(CancellationTokenSource cancellationSource, CancellationToken previousToken)
+    private static CancellationTokenRegistration? CreateRegistration(CancellationTokenSource cancellationSource, CancellationToken previousToken)
     {
         if (previousToken.CanBeCanceled)
         {
             return previousToken.Register(static state => ((CancellationTokenSource)state!).Cancel(), cancellationSource, useSynchronizationContext: false);
         }
 
-        return default;
+        return null;
     }
 }
