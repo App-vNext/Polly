@@ -11,5 +11,5 @@ LaunchCount=2  WarmupCount=10
 ```
 |          Method |     Mean |   Error |  StdDev | Ratio | RatioSD |   Gen0 | Allocated | Alloc Ratio |
 |---------------- |---------:|--------:|--------:|------:|--------:|-------:|----------:|------------:|
-| ExecuteRetry_V7 | 236.4 ns | 1.83 ns | 2.68 ns |  1.00 |    0.00 | 0.0219 |     552 B |        1.00 |
-| ExecuteRetry_V8 | 283.2 ns | 0.95 ns | 1.39 ns |  1.20 |    0.02 |      - |         - |        0.00 |
+| ExecuteRetry_V7 | 246.9 ns | 2.25 ns | 3.36 ns |  1.00 |    0.00 | 0.0219 |     552 B |        1.00 |
+| ExecuteRetry_V8 | 172.9 ns | 4.08 ns | 5.85 ns |  0.70 |    0.03 |      - |         - |        0.00 |

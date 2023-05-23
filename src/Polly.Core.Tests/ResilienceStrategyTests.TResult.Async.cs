@@ -1,3 +1,4 @@
+using Polly.Strategy;
 using Xunit;
 
 namespace Polly.Core.Tests;
@@ -76,5 +77,21 @@ public partial class ResilienceStrategyTests
         });
 
         await execute(strategy);
+    }
+
+    [Fact]
+    public async Task ExecuteOutcomeAsync_GenericStrategy_Ok()
+    {
+        var result = await NullResilienceStrategy<int>.Instance.ExecuteOutcomeAsync((context, state) =>
+        {
+            state.Should().Be("state");
+            context.IsSynchronous.Should().BeFalse();
+            context.ResultType.Should().Be(typeof(int));
+            return new Outcome<int>(12345).AsValueTask();
+        },
+        ResilienceContext.Get(),
+        "state");
+
+        result.Result.Should().Be(12345);
     }
 }

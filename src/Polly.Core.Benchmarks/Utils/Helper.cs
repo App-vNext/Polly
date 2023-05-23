@@ -1,5 +1,7 @@
 #pragma warning disable S4225 // Extension methods should not extend "object"
 
+using Polly.Strategy;
+
 namespace Polly.Core.Benchmarks.Utils;
 
 internal static partial class Helper
@@ -12,7 +14,14 @@ internal static partial class Helper
                 await ((IAsyncPolicy<string>)obj).ExecuteAsync(static _ => Task.FromResult("dummy"), CancellationToken.None).ConfigureAwait(false);
                 return;
             case PollyVersion.V8:
-                await ((ResilienceStrategy<string>)obj).ExecuteAsync(static _ => new ValueTask<string>("dummy"), CancellationToken.None).ConfigureAwait(false);
+                var context = ResilienceContext.Get();
+
+                await ((ResilienceStrategy<string>)obj).ExecuteOutcomeAsync(
+                    static (_, _) => new ValueTask<Outcome<string>>(new Outcome<string>("dummy")),
+                    context,
+                    string.Empty).ConfigureAwait(false);
+
+                ResilienceContext.Return(context);
                 return;
         }
 
