@@ -10,7 +10,7 @@ namespace Polly.Hedging;
 /// Every hedging handler requires a predicate that determines whether a hedging should be performed for a given void result and also
 /// the hedging generator that creates a hedged action to execute.
 /// </remarks>
-public sealed class VoidHedgingHandler
+internal sealed class VoidHedgingHandler
 {
     /// <summary>
     /// Gets or sets the predicate that determines whether a hedging should be performed for a given void-based result.

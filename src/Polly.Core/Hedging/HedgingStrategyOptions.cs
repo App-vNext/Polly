@@ -6,7 +6,7 @@ namespace Polly.Hedging;
 /// <summary>
 /// Hedging strategy options.
 /// </summary>
-public class HedgingStrategyOptions : ResilienceStrategyOptions
+internal class HedgingStrategyOptions : ResilienceStrategyOptions
 {
     /// <summary>
     /// Gets the strategy type.

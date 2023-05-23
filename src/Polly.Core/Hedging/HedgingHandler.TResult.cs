@@ -11,7 +11,7 @@ namespace Polly.Hedging;
 /// Every hedging handler requires a predicate that determines whether a hedging should be performed for a given result and also
 /// the hedging generator that creates a hedged action to execute.
 /// </remarks>
-public sealed class HedgingHandler<TResult>
+internal sealed class HedgingHandler<TResult>
 {
     /// <summary>
     /// Gets or sets the predicate that determines whether a hedging should be performed for a given result.
