@@ -42,45 +42,38 @@ internal sealed class TimeoutResilienceStrategy : ResilienceStrategy
         var cancellationSource = _cancellationTokenSourcePool.Get(timeout);
         context.CancellationToken = cancellationSource.Token;
 
-        CancellationTokenRegistration? registration = null;
+#if NETCOREAPP
+        await using var registration = CreateRegistration(cancellationSource, previousToken).ConfigureAwait(context.ContinueOnCapturedContext);
+#else
+        using var registration = CreateRegistration(cancellationSource, previousToken);
+#endif
+        var outcome = await callback(context, state).ConfigureAwait(context.ContinueOnCapturedContext);
+        var isCancellationRequested = cancellationSource.IsCancellationRequested;
 
-        if (previousToken.CanBeCanceled)
+        // execution is finished, cleanup
+        context.CancellationToken = previousToken;
+        _cancellationTokenSourcePool.Return(cancellationSource);
+
+        // check the outcome
+        if (outcome.Exception is OperationCanceledException e && isCancellationRequested && !previousToken.IsCancellationRequested)
         {
-            registration = previousToken.Register(static state => ((CancellationTokenSource)state!).Cancel(), cancellationSource, useSynchronizationContext: false);
-        }
+            var args = new OnTimeoutArguments(context, e, timeout);
+            _telemetry.Report(TimeoutConstants.OnTimeoutEvent, args);
 
-        try
-        {
-            var outcome = await callback(context, state).ConfigureAwait(context.ContinueOnCapturedContext);
-
-            if (outcome.Exception is OperationCanceledException e && cancellationSource.IsCancellationRequested && !previousToken.IsCancellationRequested)
+            if (OnTimeout != null)
             {
-                context.CancellationToken = previousToken;
-
-                var args = new OnTimeoutArguments(context, e, timeout);
-                _telemetry.Report(TimeoutConstants.OnTimeoutEvent, args);
-
-                if (OnTimeout != null)
-                {
-                    await OnTimeout(args).ConfigureAwait(context.ContinueOnCapturedContext);
-                }
-
-                var timeoutException = new TimeoutRejectedException(
-                    $"The operation didn't complete within the allowed timeout of '{timeout}'.",
-                    timeout,
-                    e);
-
-                return new Outcome<TResult>(ExceptionDispatchInfo.Capture(timeoutException));
+                await OnTimeout(args).ConfigureAwait(context.ContinueOnCapturedContext);
             }
 
-            return outcome;
+            var timeoutException = new TimeoutRejectedException(
+                $"The operation didn't complete within the allowed timeout of '{timeout}'.",
+                timeout,
+                e);
+
+            return new Outcome<TResult>(ExceptionDispatchInfo.Capture(timeoutException));
         }
-        finally
-        {
-            await DisposeRegistration(registration).ConfigureAwait(context.ContinueOnCapturedContext);
-            context.CancellationToken = previousToken;
-            _cancellationTokenSourcePool.Return(cancellationSource);
-        }
+
+        return outcome;
     }
 
     internal ValueTask<TimeSpan> GetTimeoutAsync(ResilienceContext context)
@@ -93,15 +86,11 @@ internal sealed class TimeoutResilienceStrategy : ResilienceStrategy
         return TimeoutGenerator(new TimeoutGeneratorArguments(context));
     }
 
-    private static ValueTask DisposeRegistration(CancellationTokenRegistration? registration)
+    private static CancellationTokenRegistration CreateRegistration(CancellationTokenSource cancellationSource, CancellationToken previousToken)
     {
-        if (registration.HasValue)
+        if (previousToken.CanBeCanceled)
         {
-#if NETCOREAPP
-            return registration.Value.DisposeAsync();
-#else
-            registration.Value.Dispose();
-#endif
+            return previousToken.Register(static state => ((CancellationTokenSource)state!).Cancel(), cancellationSource, useSynchronizationContext: false);
         }
 
         return default;
