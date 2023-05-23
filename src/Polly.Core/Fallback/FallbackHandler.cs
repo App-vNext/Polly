@@ -6,7 +6,7 @@ namespace Polly.Fallback;
 /// <summary>
 /// Represents a class for managing fallback handlers.
 /// </summary>
-public sealed partial class FallbackHandler
+internal sealed partial class FallbackHandler
 {
     private readonly OutcomePredicate<HandleFallbackArguments> _predicates = new();
     private readonly Dictionary<Type, object> _actions = new();

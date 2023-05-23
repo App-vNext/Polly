@@ -6,7 +6,7 @@ namespace Polly.Hedging;
 /// <summary>
 /// Represents a class for managing hedging handlers.
 /// </summary>
-public sealed partial class HedgingHandler
+internal sealed partial class HedgingHandler
 {
     private readonly OutcomePredicate<HandleHedgingArguments> _predicates = new();
     private readonly Dictionary<Type, object> _actions = new();

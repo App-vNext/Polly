@@ -68,7 +68,7 @@ public static class FallbackResilienceStrategyBuilderExtensions
     /// <returns>The builder instance with the fallback strategy added.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="builder"/> or <paramref name="options"/> is <see langword="null"/>.</exception>
     /// <exception cref="ValidationException">Thrown when <paramref name="options"/> are invalid.</exception>
-    public static ResilienceStrategyBuilder AddFallback(this ResilienceStrategyBuilder builder, FallbackStrategyOptions options)
+    internal static ResilienceStrategyBuilder AddFallback(this ResilienceStrategyBuilder builder, FallbackStrategyOptions options)
     {
         Guard.NotNull(builder);
         Guard.NotNull(options);

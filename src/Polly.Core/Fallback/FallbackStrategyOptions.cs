@@ -6,7 +6,7 @@ namespace Polly.Fallback;
 /// <summary>
 /// Represents the options for configuring a fallback resilience strategy.
 /// </summary>
-public class FallbackStrategyOptions : ResilienceStrategyOptions
+internal class FallbackStrategyOptions : ResilienceStrategyOptions
 {
     /// <summary>
     /// Gets the strategy type.

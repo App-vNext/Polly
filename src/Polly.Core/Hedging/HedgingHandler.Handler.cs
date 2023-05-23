@@ -2,7 +2,7 @@ using Polly.Strategy;
 
 namespace Polly.Hedging;
 
-public partial class HedgingHandler
+internal partial class HedgingHandler
 {
     internal sealed class Handler
     {
