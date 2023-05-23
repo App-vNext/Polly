@@ -1,3 +1,5 @@
+using Polly.Strategy;
+
 namespace Polly.Core.Tests;
 
 #pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
@@ -112,5 +114,21 @@ public partial class ResilienceStrategyTests
         }
 
         static ValueTask<string> MyThrowingMethod() => throw new FormatException();
+    }
+
+    [Fact]
+    public async Task ExecuteOutcomeAsync_Ok()
+    {
+        var result = await NullResilienceStrategy.Instance.ExecuteOutcomeAsync((context, state) =>
+        {
+            state.Should().Be("state"); 
+            context.IsSynchronous.Should().BeFalse();
+            context.ResultType.Should().Be(typeof(int));
+            return new Outcome<int>(12345).AsValueTask();
+        },
+        ResilienceContext.Get(),
+        "state");
+
+        result.Result.Should().Be(12345);
     }
 }

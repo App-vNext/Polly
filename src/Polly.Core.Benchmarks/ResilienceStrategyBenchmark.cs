@@ -6,16 +6,15 @@ using Polly.Strategy;
 
 namespace Polly.Core.Benchmarks;
 
+#pragma warning disable CA1822 // Mark members as static
+
 public class ResilienceStrategyBenchmark
 {
-    private readonly DummyResilienceStrategy _strategy = new();
-    private readonly ResilienceStrategy<string> _genericStrategy = NullResilienceStrategy<string>.Instance;
-
     [Benchmark(Baseline = true)]
     public async ValueTask ExecuteOutcomeAsync()
     {
         var context = ResilienceContext.Get();
-        await _strategy.ExecuteOutcomeAsync((_, _) => new ValueTask<Outcome<string>>(new Outcome<string>("dummy")), context, "state").ConfigureAwait(false);
+        await NullResilienceStrategy.Instance.ExecuteOutcomeAsync((_, _) => new ValueTask<Outcome<string>>(new Outcome<string>("dummy")), context, "state").ConfigureAwait(false);
         ResilienceContext.Return(context);
     }
 
@@ -23,33 +22,20 @@ public class ResilienceStrategyBenchmark
     public async ValueTask ExecuteAsync_ResilienceContextAndState()
     {
         var context = ResilienceContext.Get();
-        await _strategy.ExecuteAsync((_, _) => new ValueTask<string>("dummy"), context, "state").ConfigureAwait(false);
+        await NullResilienceStrategy.Instance.ExecuteAsync((_, _) => new ValueTask<string>("dummy"), context, "state").ConfigureAwait(false);
         ResilienceContext.Return(context);
     }
 
     [Benchmark]
     public async ValueTask ExecuteAsync_CancellationToken()
     {
-        await _strategy.ExecuteAsync(_ => new ValueTask<string>("dummy"), CancellationToken.None).ConfigureAwait(false);
+        await NullResilienceStrategy.Instance.ExecuteAsync(_ => new ValueTask<string>("dummy"), CancellationToken.None).ConfigureAwait(false);
     }
 
     [Benchmark]
     public async ValueTask ExecuteAsync_GenericStrategy_CancellationToken()
     {
-        await _genericStrategy.ExecuteAsync(_ => new ValueTask<string>("dummy"), CancellationToken.None).ConfigureAwait(false);
-    }
-
-    private class DummyResilienceStrategy : ResilienceStrategy
-    {
-        public ValueTask<Outcome<TResult>> ExecuteOutcomeAsync<TResult, TState>(
-            Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,
-            ResilienceContext context,
-            TState state) => ExecuteCoreAsync(callback, context, state);
-
-        protected override ValueTask<Outcome<TResult>> ExecuteCoreAsync<TResult, TState>(
-            Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,
-            ResilienceContext context,
-            TState state) => callback(context, state);
+        await NullResilienceStrategy<string>.Instance.ExecuteAsync(_ => new ValueTask<string>("dummy"), CancellationToken.None).ConfigureAwait(false);
     }
 
     public class NonGenericStrategy

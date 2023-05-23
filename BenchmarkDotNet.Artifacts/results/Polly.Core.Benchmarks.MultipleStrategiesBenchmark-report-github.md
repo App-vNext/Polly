@@ -11,5 +11,5 @@ LaunchCount=2  WarmupCount=10
 ```
 |                     Method |     Mean |     Error |    StdDev | Ratio | RatioSD |   Gen0 | Allocated | Alloc Ratio |
 |--------------------------- |---------:|----------:|----------:|------:|--------:|-------:|----------:|------------:|
-| ExecuteStrategyPipeline_V7 | 2.291 μs | 0.0265 μs | 0.0388 μs |  1.00 |    0.00 | 0.1106 |    2824 B |        1.00 |
-| ExecuteStrategyPipeline_V8 | 2.053 μs | 0.0118 μs | 0.0177 μs |  0.90 |    0.02 | 0.0038 |     136 B |        0.05 |
+| ExecuteStrategyPipeline_V7 | 2.405 μs | 0.0827 μs | 0.1238 μs |  1.00 |    0.00 | 0.1106 |    2824 B |        1.00 |
+| ExecuteStrategyPipeline_V8 | 2.072 μs | 0.0873 μs | 0.1279 μs |  0.86 |    0.06 | 0.0038 |     136 B |        0.05 |
