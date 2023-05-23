@@ -5,8 +5,8 @@ namespace Polly.Hedging.Utils;
 
 internal sealed class HedgingController
 {
-    private readonly IObjectPool<HedgingExecutionContext> _contextPool;
-    private readonly IObjectPool<TaskExecution> _executionPool;
+    private readonly ObjectPool<HedgingExecutionContext> _contextPool;
+    private readonly ObjectPool<TaskExecution> _executionPool;
     private int _rentedContexts;
     private int _rentedExecutions;
 

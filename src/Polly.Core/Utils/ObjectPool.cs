@@ -5,7 +5,7 @@ using System.Threading;
 namespace Polly.Utils;
 
 // copied from https://raw.githubusercontent.com/dotnet/aspnetcore/53124ab8cbf152f59120982f1c74e802e7970845/src/ObjectPool/src/DefaultObjectPool.cs
-internal sealed class ObjectPool<T> : IObjectPool<T>
+internal sealed class ObjectPool<T>
     where T : class
 {
     internal static readonly int MaxCapacity = (Environment.ProcessorCount * 2) - 1; // the - 1 is to account for _fastItem

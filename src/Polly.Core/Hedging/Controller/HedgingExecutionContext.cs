@@ -20,14 +20,14 @@ internal sealed class HedgingExecutionContext
 
     private readonly List<TaskExecution> _tasks = new();
     private readonly List<TaskExecution> _executingTasks = new();
-    private readonly IObjectPool<TaskExecution> _executionPool;
+    private readonly ObjectPool<TaskExecution> _executionPool;
     private readonly TimeProvider _timeProvider;
     private readonly int _maxAttempts;
     private readonly Action<HedgingExecutionContext> _onReset;
     private readonly ResilienceProperties _replacedProperties = new();
 
     public HedgingExecutionContext(
-        IObjectPool<TaskExecution> executionPool,
+        ObjectPool<TaskExecution> executionPool,
         TimeProvider timeProvider,
         int maxAttempts,
         Action<HedgingExecutionContext> onReset)
