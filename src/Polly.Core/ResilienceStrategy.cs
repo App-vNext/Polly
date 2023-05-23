@@ -27,7 +27,7 @@ public abstract partial class ResilienceStrategy
     /// The provided callback never throws an exception. Instead, the exception is captured and converted to an <see cref="Outcome{TResult}"/>.
     /// </para>
     /// <para>
-    /// Do not throw exceptions from your strategy implementation. Instead, return exception instance as <see cref="Outcome{TResult}"/>.
+    /// Do not throw exceptions from your strategy implementation. Instead, return an exception instance as <see cref="Outcome{TResult}"/>.
     /// </para>
     /// </remarks>
     protected internal abstract ValueTask<Outcome<TResult>> ExecuteCoreAsync<TResult, TState>(
