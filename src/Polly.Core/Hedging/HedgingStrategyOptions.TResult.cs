@@ -92,7 +92,7 @@ public class HedgingStrategyOptions<TResult> : ResilienceStrategyOptions
             HedgingDelayGenerator = HedgingDelayGenerator
         };
 
-        if (OnHedging is var onHedging)
+        if (OnHedging is { } onHedging)
         {
             options.OnHedging = (outcome, args) =>
             {
