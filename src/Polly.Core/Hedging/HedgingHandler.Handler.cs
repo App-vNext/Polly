@@ -6,12 +6,12 @@ internal partial class HedgingHandler
 {
     internal sealed class Handler
     {
-        private readonly OutcomePredicate<HandleHedgingArguments>.Handler? _predicateHandler;
+        private readonly Dictionary<Type, object> _predicates;
         private readonly Dictionary<Type, object> _generators;
 
-        internal Handler(OutcomePredicate<HandleHedgingArguments>.Handler? handler, Dictionary<Type, object> generators)
+        internal Handler(Dictionary<Type, object> predicates, Dictionary<Type, object> generators)
         {
-            _predicateHandler = handler;
+            _predicates = predicates;
             _generators = generators;
         }
 
@@ -19,12 +19,20 @@ internal partial class HedgingHandler
 
         public ValueTask<bool> ShouldHandleAsync<TResult>(Outcome<TResult> outcome, HandleHedgingArguments arguments)
         {
-            if (_predicateHandler == null)
+            if (!_predicates.TryGetValue(typeof(TResult), out var predicate))
             {
                 return new ValueTask<bool>(false);
             }
 
-            return _predicateHandler.ShouldHandleAsync(outcome, arguments);
+            if (typeof(TResult) == typeof(VoidResult))
+            {
+                return ((Func<Outcome, HandleHedgingArguments, ValueTask<bool>>)predicate)(outcome.AsOutcome(), arguments);
+            }
+            else
+            {
+                return ((Func<Outcome<TResult>, HandleHedgingArguments, ValueTask<bool>>)predicate)(outcome, arguments);
+
+            }
         }
 
         public Func<Task<TResult>>? TryCreateHedgedAction<TResult>(ResilienceContext context, int attempt)

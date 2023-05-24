@@ -15,8 +15,11 @@ internal sealed class VoidHedgingHandler
     /// <summary>
     /// Gets or sets the predicate that determines whether a hedging should be performed for a given void-based result.
     /// </summary>
+    /// <remarks>
+    /// This property is required. Defaults to <see langword="null"/>.
+    /// </remarks>
     [Required]
-    public VoidOutcomePredicate<HandleHedgingArguments> ShouldHandle { get; set; } = new();
+    public Func<Outcome, HandleHedgingArguments, ValueTask<bool>>? ShouldHandle { get; set; }
 
     /// <summary>
     /// Gets or sets the hedging action generator that creates hedged actions.

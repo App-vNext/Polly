@@ -14,10 +14,10 @@ public class HedgingStrategyOptionsTests
         options.StrategyType.Should().Be("Hedging");
         options.Handler.Should().NotBeNull();
         options.Handler.IsEmpty.Should().BeTrue();
-        options.HedgingDelayGenerator.IsEmpty.Should().BeTrue();
+        options.HedgingDelayGenerator.Should().BeNull();
         options.HedgingDelay.Should().Be(TimeSpan.FromSeconds(2));
         options.MaxHedgedAttempts.Should().Be(2);
-        options.OnHedging.IsEmpty.Should().BeTrue();
+        options.OnHedging.Should().BeNull();
     }
 
     [Fact]
@@ -41,8 +41,6 @@ public class HedgingStrategyOptionsTests
             Validation Errors:
             The field MaxHedgedAttempts must be between 2 and 10.
             The Handler field is required.
-            The HedgingDelayGenerator field is required.
-            The OnHedging field is required.
             """);
     }
 }

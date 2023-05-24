@@ -54,17 +54,15 @@ internal class HedgingStrategyOptions : ResilienceStrategyOptions
     /// </summary>
     /// <remarks>
     /// The <see cref="HedgingDelayGenerator"/> takes precedence over <see cref="HedgingDelay"/>. If specified, the <see cref="HedgingDelay"/> is ignored.
-    /// <para>By default, this generator is empty and does not have any custom hedging delays.</para>
+    /// <para>Defaults to <see langword="null"/>.</para>
     /// </remarks>
-    [Required]
-    public NoOutcomeGenerator<HedgingDelayArguments, TimeSpan> HedgingDelayGenerator { get; set; } = new();
+    public Func<HedgingDelayArguments, ValueTask<TimeSpan>>? HedgingDelayGenerator { get; set; }
 
     /// <summary>
-    /// Gets or sets the event that is triggered when a hedging is performed.
+    /// Gets or sets the event that is raised when a hedging is performed.
     /// </summary>
     /// <remarks>
-    /// This property is required. By default, this event is empty.
+    /// Defaults to <see langword="null"/>.
     /// </remarks>
-    [Required]
-    public OutcomeEvent<OnHedgingArguments> OnHedging { get; set; } = new();
+    public Func<Outcome, OnHedgingArguments, ValueTask>? OnHedging { get; set; }
 }

@@ -16,9 +16,9 @@ internal sealed class HedgingResilienceStrategy : ResilienceStrategy
     {
         HedgingDelay = options.HedgingDelay;
         MaxHedgedAttempts = options.MaxHedgedAttempts;
-        HedgingDelayGenerator = options.HedgingDelayGenerator.CreateHandler(HedgingConstants.DefaultHedgingDelay, static _ => true);
+        HedgingDelayGenerator = options.HedgingDelayGenerator;
         HedgingHandler = options.Handler.CreateHandler();
-        OnHedgingHandler = options.OnHedging.CreateHandler();
+        OnHedging = options.OnHedging;
 
         _telemetry = telemetry;
         if (HedgingHandler != null)
@@ -35,7 +35,7 @@ internal sealed class HedgingResilienceStrategy : ResilienceStrategy
 
     public HedgingHandler.Handler? HedgingHandler { get; }
 
-    public OutcomeEvent<OnHedgingArguments>.Handler? OnHedgingHandler { get; }
+    public Func<Outcome, OnHedgingArguments, ValueTask>? OnHedging { get; }
 
     protected internal override async ValueTask<Outcome<TResult>> ExecuteCoreAsync<TResult, TState>(
         Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,
@@ -85,12 +85,12 @@ internal sealed class HedgingResilienceStrategy : ResilienceStrategy
                 var onHedgingArgs = new OnHedgingArguments(context, hedgingContext.LoadedTasks - 1);
                 _telemetry.Report(HedgingConstants.OnHedgingEventName, outcome, onHedgingArgs);
 
-                if (OnHedgingHandler != null)
+                if (OnHedging is not null)
                 {
                     // If nothing has been returned or thrown yet, the result is a transient failure,
                     // and other hedged request will be awaited.
                     // Before it, one needs to perform the task adjacent to each hedged call.
-                    await OnHedgingHandler.HandleAsync(outcome, onHedgingArgs).ConfigureAwait(continueOnCapturedContext);
+                    await OnHedging(outcome.AsOutcome(), onHedgingArgs).ConfigureAwait(continueOnCapturedContext);
                 }
             }
         }

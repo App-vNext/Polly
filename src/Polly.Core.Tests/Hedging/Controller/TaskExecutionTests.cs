@@ -25,9 +25,13 @@ public class TaskExecutionTests : IDisposable
         _hedgingHandler = new HedgingHandler();
         _hedgingHandler.SetHedging<DisposableResult>(handler =>
         {
-            handler.ShouldHandle
-                .HandleResult(r => r!.Name == Handled)
-                .HandleException<ApplicationException>();
+            handler.ShouldHandle = (outcome, _) => outcome switch
+            {
+                { Exception: ApplicationException } => PredicateResult.True,
+                { Result: DisposableResult result } when result.Name == Handled => PredicateResult.True,
+                _ => PredicateResult.False
+            };
+
             handler.HedgingActionGenerator = args => Generator(args);
         });
 
