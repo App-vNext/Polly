@@ -56,10 +56,12 @@ public class HedgingHandlerTests
         var handler = new HedgingHandler()
             .SetHedging<int>(handler =>
             {
+                handler.ShouldHandle = (_, _) => PredicateResult.True;
                 handler.HedgingActionGenerator = args => () => Task.FromResult(10);
             })
             .SetVoidHedging(handler =>
             {
+                handler.ShouldHandle = (_, _) => PredicateResult.True;
                 handler.HedgingActionGenerator = args => () => Task.CompletedTask;
             });
 
@@ -74,7 +76,7 @@ public class HedgingHandlerTests
             .SetHedging<int>(handler =>
             {
                 handler.HedgingActionGenerator = args => () => Task.FromResult(0);
-                handler.ShouldHandle.HandleResult(-1);
+                handler.ShouldHandle = (outcome, _) => new ValueTask<bool>(outcome.Result == -1);
             })
             .CreateHandler();
 
@@ -110,7 +112,7 @@ public class HedgingHandlerTests
 
                     return () => Task.CompletedTask;
                 };
-                handler.ShouldHandle.HandleException<InvalidOperationException>();
+                handler.ShouldHandle = (outcome, _) => new ValueTask<bool>(outcome.Exception is InvalidOperationException);
             })
             .CreateHandler();
 
@@ -140,7 +142,7 @@ public class HedgingHandlerTests
             .SetHedging<int>(handler =>
             {
                 handler.HedgingActionGenerator = args => () => Task.FromResult(0);
-                handler.ShouldHandle.HandleException<InvalidOperationException>();
+                handler.ShouldHandle = (outcome, _) => new ValueTask<bool>(outcome.Exception is InvalidOperationException);
             })
             .SetHedging<string>(handler =>
             {
@@ -149,6 +151,8 @@ public class HedgingHandlerTests
                     args.Context.Should().NotBeNull();
                     return () => Task.FromResult("dummy");
                 };
+
+                handler.ShouldHandle = (outcome, _) => new ValueTask<bool>(outcome.Exception is InvalidOperationException);
             })
             .CreateHandler();
 

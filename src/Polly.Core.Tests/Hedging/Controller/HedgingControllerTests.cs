@@ -9,7 +9,11 @@ public class HedgingControllerTests
     [Fact]
     public async Task Pooling_Ok()
     {
-        var handler = new HedgingHandler().SetHedging<int>(handler => handler.HedgingActionGenerator = args => null).CreateHandler();
+        var handler = new HedgingHandler().SetHedging<int>(handler =>
+        {
+            handler.HedgingActionGenerator = args => null;
+            handler.ShouldHandle = (_, _) => PredicateResult.False;
+        }).CreateHandler();
         var controller = new HedgingController(new HedgingTimeProvider(), handler!, 3);
 
         var context1 = controller.GetContext(ResilienceContext.Get());

@@ -13,12 +13,11 @@ public class HedgingStrategyOptionsTResultTests
         var options = new HedgingStrategyOptions<int>();
 
         options.StrategyType.Should().Be("Hedging");
-        options.ShouldHandle.Should().NotBeNull();
-        options.ShouldHandle.IsEmpty.Should().BeTrue();
+        options.ShouldHandle.Should().BeNull();
         options.HedgingActionGenerator.Should().BeNull();
         options.HedgingDelay.Should().Be(TimeSpan.FromSeconds(2));
         options.MaxHedgedAttempts.Should().Be(2);
-        options.OnHedging.IsEmpty.Should().BeTrue();
+        options.OnHedging.Should().BeNull();
     }
 
     [Fact]
@@ -43,8 +42,6 @@ public class HedgingStrategyOptionsTResultTests
             The field MaxHedgedAttempts must be between 2 and 10.
             The ShouldHandle field is required.
             The HedgingActionGenerator field is required.
-            The HedgingDelayGenerator field is required.
-            The OnHedging field is required.
             """);
     }
 
@@ -54,18 +51,19 @@ public class HedgingStrategyOptionsTResultTests
         var onHedgingCalled = false;
         var options = new HedgingStrategyOptions<int>
         {
-            HedgingDelayGenerator = new NoOutcomeGenerator<HedgingDelayArguments, TimeSpan>().SetGenerator(args => TimeSpan.FromSeconds(123)),
-            ShouldHandle = new OutcomePredicate<HandleHedgingArguments, int>().HandleResult(-1),
+            HedgingDelayGenerator = args => new ValueTask<TimeSpan>(TimeSpan.FromSeconds(123)),
+            ShouldHandle = (outcome, _) => new ValueTask<bool>(outcome.Result == -1),
             StrategyName = "Dummy",
             HedgingDelay = TimeSpan.FromSeconds(3),
             MaxHedgedAttempts = 4,
             HedgingActionGenerator = args => () => Task.FromResult(555),
-            OnHedging = new OutcomeEvent<OnHedgingArguments, int>().Register((_, args) =>
+            OnHedging = (_, args) =>
             {
                 args.Context.Should().NotBeNull();
                 args.Attempt.Should().Be(3);
                 onHedgingCalled = true;
-            })
+                return default;
+            }
         };
 
         var nonGeneric = options.AsNonGenericOptions();
@@ -88,10 +86,13 @@ public class HedgingStrategyOptionsTResultTests
         result = await handler!.ShouldHandleAsync(new Outcome<int>(0), new HandleHedgingArguments(ResilienceContext.Get()));
         result.Should().BeFalse();
 
-        var delay = await nonGeneric.HedgingDelayGenerator.CreateHandler(TimeSpan.Zero, _ => true)!(new HedgingDelayArguments(ResilienceContext.Get(), 4));
+        var delay = await nonGeneric.HedgingDelayGenerator!(new HedgingDelayArguments(ResilienceContext.Get(), 4));
         delay.Should().Be(TimeSpan.FromSeconds(123));
 
-        await nonGeneric.OnHedging.CreateHandler()!.HandleAsync<int>(new Outcome<int>(10), new OnHedgingArguments(ResilienceContext.Get(), 3));
+        await nonGeneric.OnHedging!(new Outcome(10), new OnHedgingArguments(ResilienceContext.Get(), 3));
+        onHedgingCalled.Should().BeFalse();
+
+        await nonGeneric.OnHedging!(new Outcome(10), new OnHedgingArguments(ResilienceContext.Get().Initialize<int>(true), 3));
         onHedgingCalled.Should().BeTrue();
     }
 }

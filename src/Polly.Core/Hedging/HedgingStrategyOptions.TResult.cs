@@ -45,8 +45,11 @@ public class HedgingStrategyOptions<TResult> : ResilienceStrategyOptions
     /// <summary>
     /// Gets or sets the predicate that determines whether a hedging should be performed for a given result.
     /// </summary>
+    /// <remarks>
+    /// This property is required. Defaults to <see langword="null"/>.
+    /// </remarks>
     [Required]
-    public OutcomePredicate<HandleHedgingArguments, TResult> ShouldHandle { get; set; } = new();
+    public Func<Outcome<TResult>, HandleHedgingArguments, ValueTask<bool>>? ShouldHandle { get; set; }
 
     /// <summary>
     /// Gets or sets the hedging action generator that creates hedged actions.
@@ -62,34 +65,46 @@ public class HedgingStrategyOptions<TResult> : ResilienceStrategyOptions
     /// </summary>
     /// <remarks>
     /// The <see cref="HedgingDelayGenerator"/> takes precedence over <see cref="HedgingDelay"/>. If specified, the <see cref="HedgingDelay"/> is ignored.
-    /// <para>By default, this generator is empty and does not have any custom hedging delays.</para>
+    /// <para>Defaults to <see langword="null"/>.</para>
     /// </remarks>
-    [Required]
-    public NoOutcomeGenerator<HedgingDelayArguments, TimeSpan> HedgingDelayGenerator { get; set; } = new();
+    public Func<HedgingDelayArguments, ValueTask<TimeSpan>>? HedgingDelayGenerator { get; set; }
 
     /// <summary>
-    /// Gets or sets the event that is triggered when a hedging is performed.
+    /// Gets or sets the event that is raised when a hedging is performed.
     /// </summary>
     /// <remarks>
-    /// This property is required. By default, this event is empty.
+    /// Defaults to <see langword="null"/>.
     /// </remarks>
-    [Required]
-    public OutcomeEvent<OnHedgingArguments, TResult> OnHedging { get; set; } = new();
+    public Func<Outcome<TResult>, OnHedgingArguments, ValueTask>? OnHedging { get; set; }
 
     internal HedgingStrategyOptions AsNonGenericOptions()
     {
-        return new HedgingStrategyOptions
+        var options = new HedgingStrategyOptions
         {
             StrategyName = StrategyName,
             HedgingDelay = HedgingDelay,
-            HedgingDelayGenerator = HedgingDelayGenerator,
             Handler = new HedgingHandler().SetHedging<TResult>(handler =>
             {
                 handler.ShouldHandle = ShouldHandle;
                 handler.HedgingActionGenerator = HedgingActionGenerator;
             }),
             MaxHedgedAttempts = MaxHedgedAttempts,
-            OnHedging = new OutcomeEvent<OnHedgingArguments>().SetCallbacks(OnHedging)
+            HedgingDelayGenerator = HedgingDelayGenerator
         };
+
+        if (OnHedging is var onHedging)
+        {
+            options.OnHedging = (outcome, args) =>
+            {
+                if (args.Context.ResultType != typeof(TResult))
+                {
+                    return default;
+                }
+
+                return onHedging!(outcome.AsOutcome<TResult>(), args);
+            };
+        }
+
+        return options;
     }
 }

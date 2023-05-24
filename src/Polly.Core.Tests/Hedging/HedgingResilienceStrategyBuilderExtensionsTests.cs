@@ -2,6 +2,7 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using Polly.Hedging;
+using Polly.Strategy;
 
 namespace Polly.Core.Tests.Hedging;
 
@@ -22,7 +23,8 @@ public class HedgingResilienceStrategyBuilderExtensionsTests
     {
         _genericBuilder.AddHedging(new HedgingStrategyOptions<string>
         {
-            HedgingActionGenerator = args => () => Task.FromResult("dummy")
+            HedgingActionGenerator = args => () => Task.FromResult("dummy"),
+            ShouldHandle = (_, _) => PredicateResult.True
         });
         _genericBuilder.Build().Strategy.Should().BeOfType<HedgingResilienceStrategy>();
     }
@@ -65,7 +67,7 @@ public class HedgingResilienceStrategyBuilderExtensionsTests
                 HedgingDelay = TimeSpan.FromMilliseconds(20),
                 Handler = new HedgingHandler().SetHedging<string>(handler =>
                 {
-                    handler.ShouldHandle.HandleResult("error");
+                    handler.ShouldHandle = (outcome, _) => new ValueTask<bool>(outcome.Result == "error");
                     handler.HedgingActionGenerator = args =>
                     {
                         return async () =>
@@ -81,7 +83,7 @@ public class HedgingResilienceStrategyBuilderExtensionsTests
                         };
                     };
                 }),
-                OnHedging = new Polly.Strategy.OutcomeEvent<OnHedgingArguments>().Register<string>((outcome, _) => results.Enqueue(outcome.Result!))
+                OnHedging = (outcome, _) => { results.Enqueue(outcome.Result!.ToString()!); return default; }
             })
             .Build();
 

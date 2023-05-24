@@ -1,5 +1,4 @@
 using System.ComponentModel.DataAnnotations;
-using Polly.Strategy;
 
 namespace Polly.Hedging;
 
@@ -8,7 +7,7 @@ namespace Polly.Hedging;
 /// </summary>
 internal sealed partial class HedgingHandler
 {
-    private readonly OutcomePredicate<HandleHedgingArguments> _predicates = new();
+    private readonly Dictionary<Type, object> _predicates = new();
     private readonly Dictionary<Type, object> _actions = new();
 
     /// <summary>
@@ -33,7 +32,7 @@ internal sealed partial class HedgingHandler
 
         ValidationHelper.ValidateObject(handler, "The hedging handler configuration is invalid.");
 
-        _predicates.SetPredicates(handler.ShouldHandle);
+        _predicates[typeof(TResult)] = handler.ShouldHandle!;
         _actions[typeof(TResult)] = handler.HedgingActionGenerator!;
 
         return this;
@@ -55,7 +54,7 @@ internal sealed partial class HedgingHandler
 
         ValidationHelper.ValidateObject(handler, "The hedging handler configuration is invalid.");
 
-        _predicates.SetVoidPredicates(handler.ShouldHandle);
+        _predicates[typeof(VoidResult)] = handler.ShouldHandle!;
         _actions[typeof(VoidResult)] = CreateGenericGenerator(handler.HedgingActionGenerator!);
 
         return this;
@@ -68,7 +67,9 @@ internal sealed partial class HedgingHandler
             return null;
         }
 
-        return new Handler(_predicates.CreateHandler(), _actions);
+        return new Handler(
+            _predicates.ToDictionary(pair => pair.Key, pair => pair.Value),
+            _actions.ToDictionary(pair => pair.Key, pair => pair.Value));
     }
 
     private static Func<HedgingActionGeneratorArguments<VoidResult>, Func<Task<VoidResult>>?> CreateGenericGenerator(
