@@ -165,105 +165,79 @@ var resilienceStrategy = new ResilienceStrategyBuilder()
 
 The resilience extensibility is simple. You just expose extensions for `ResilienceStrategyBuilder` that use the `ResilienceStrategyBuilder.AddStrategy` methods.
 
-## Callback API
+# Resilience Strategy Delegates
 
-The callback can be used by individual resilience strategies to simplify the handling of various result types. Its use is entirely optional but it's recommended to all authors of custom resilience strategies. The core of the callback API is includes components, such as the `IResilienceArguments` interface, the `Outcome` struct, and the `Outcome<TResult>` struct.
+Resilience strategies leverage the following delegate types:
 
-These core components are then used in the following callback types (explained in each respective section):
+- **Predicates**: These are essential when a resilience strategy needs to determine whether or not to handle the execution result.
+- **Events**: These are invoked when significant events occur within the resilience strategy.
+- **Generators**: These are used when the resilience strategy requires a certain value from the caller.
 
-- **Generators**
-- **Events**
-- **Predicates**
+## Delegate Signature Guidelines
 
-All the callback types above use the following components:
+The suggested signatures for these delegates are as follows:
 
-- **`IResilienceArguments`**: Defines the recommended structure for arguments utilized by individual strategies. It exposes a single property, `Context`, which provides the context associated with the execution of a user-provided callback.
-- **`Outcome<TResult>`**: Captures the outcome of an operation that yields a result of a specific type, `TResult`, or an exception. This struct specializes its functionality to accommodate generic results. The `TryGetResult` method, for instance, is tailored to handle the generic result type, offering additional flexibility and extensibility.
-- **`Outcome`**: represents a non-generic outcome of an operation, encompassing both a result and an exception, if any. This struct is equipped with several properties and methods, such as `HasResult`, `IsVoidResult`, and `TryGetResult`, which facilitate the handling and evaluation of the outcome of an operation.
+**Predicates**
+- `Func<Outcome<T>, TArgs, ValueTask<bool>>`: This is the predicate for the generic outcome.
+- `Func<Outcome, TArgs, ValueTask<bool>>`: This is the predicate for the non-generic outcome.
 
-### Events
+**Events**
+- `Func<Outcome<T>, TArgs, ValueTask>`: This is the event for the generic outcome.
+- `Func<Outcome, TArgs, ValueTask>`: This is the event for the non-generic outcome.
+- `Func<Args, ValueTask>`: This is the event utilized by strategies that do not operate with an outcome (for example, Timeout, RateLimiter).
 
-Events are designed to handle various scenarios, such as events without outcomes, events with specific result types, and void-based events. They allow registering callbacks with different signatures, making it convenient to add synchronous and asynchronous event handlers.
+**Generators**
+- `Func<Outcome<T>, TArgs, ValueTask<TValue>>`: This is the generator for the generic outcome.
+- `Func<Outcome, TArgs, ValueTask<TValue>>`: This is the generator for the non-generic outcome.
+- `Func<Args, ValueTask<TValue>>`: This is the generator used by strategies that do not operate with an outcome (for example, Timeout, RateLimiter).
 
-- **`NoOutcomeEvent<TArgs>`**: holds a list of callbacks that are invoked when some event occurs. These callbacks are executed for all result types and do not require any `Outcome`. This class supports registering multiple event callbacks. The registered callbacks are executed one-by-one in the same order as they were registered.
-- **`OutcomeEvent<TArgs>`**: is designed for events that use `Outcome<TResult>` and `TArgs` in the registered event callbacks. This class allows registering callbacks for specific result types or for all result types, including void-based results.
-- **`OutcomeEvent<TArgs, TResult>`**: class is  base class for events that use `Outcome<TResult>` and `TArgs` in the registered event callbacks. This class allows registering callbacks for a specific result type.
-- **`VoidOutcomeEvent<TArgs>`**: class is designed for events that use `Outcome` and `TArgs` in the registered event callbacks specifically for void-based results. This class allows registering callbacks for void-based results.
+It's essential to note that all these delegates are asynchronous and return a `ValueTask`.
 
-API Usage:
+The delegates employ the following components:
 
-``` csharp
-var options = new RetryStrategyOptions();
-OutcomeEvent<OnRetryArguments> retryEvent = options.OnRetry;
+- **`IResilienceArguments`**: This interface sets out the preferred structure for arguments employed by individual strategies. It features a single property, `Context`, which supplies the context linked with the execution of a user-supplied callback.
+- **`Outcome<TResult>`**: This captures the result of an operation that yields a result of a specific type, `TResult`, or an exception. This structure specializes its functionality to accommodate generic results. The `TryGetResult` method, for instance, is customized to manage the generic result type, offering additional flexibility and extensibility.
+- **`Outcome`**: This represents a non-generic outcome of an operation, encompassing both a result and an exception, if one occurred. This structure is equipped with numerous properties and methods, such as `HasResult`, `IsVoidResult`, and `TryGetResult`, which facilitate the management and evaluation of the outcome of an operation.
 
-retryEvent
-    .Register(() => { }) // called for all result types
-    .Register<int>(() => { }) // called for only int result types
-    .RegisterVoid(() => { }) // called for void-based result types
-    .Register(async (outcome, args) => await OnEventAsync(outcome, args)) // called asynchronously with the outcome and arguments for all result types
-```
+## Examples
 
-The code above demonstrates how `OutcomeEvent<OnRetryArguments>` can be used to register multiple synchronous and asynchronous callbacks with different signatures under a single unified API.
+Below are a few examples showcasing the usage of these delegates:
 
-### Predicates
-
-Predicates are designed to provide the resilience strategy that uses them with the information about whether the specific outcome should or shouldn't be handled by the strategy. The predicate API allows registering many predicates with different signatures. These can be:
-
-- Asynchronous predicates
-- Synchronous predicates
-- Exception predicates
-- Combinations of the types above that take arguments or an outcome in the predicate arguments
-
-The API exposes the following built-in predicates:
-
-- **`OutcomePredicate<TArgs>`**: holds a list of predicates for various result types. The first predicate that returns `true` wins, if no predicate returns true the result is a `false` value indicating that the result should not be handled.
-- **`OutcomePredicate<TArgs, TResult>`**: holds a list of predicates for a single result type. The first predicate that returns `true` wins, if no predicate returns true the result is a `false` value indicating that the result should not be handled.
-- **`VoidOutcomePredicate<TArgs>`**: holds a list of predicates for a `void` result type. The first predicate that returns `true` wins, if no predicate returns true the result is a `false` value indicating that the result should not be handled.
-
-API Usage:
+A non-generic predicate defining retries for multiple result types:
 
 ``` csharp
-var options = new RetryStrategyOptions();
-OutcomePredicate<ShouldRetryArguments> predicate = options.ShouldRetry;
-
-predicate
-    .HandleException<InvalidOperationException>() // handle exception
-    .HandleResult<HttpResponseMessage>(message => !message.IsSuccessStatusCode) // access to response message
-    .HandleResult<double>(result => result > 0.5) // access to result
-    .HandleOutcome<int>((outcome, args) => { }) // access to both outcome and arguments
-    .HandleOutcome<int>((outcome, args) => await ShouldRetryAsync(outcome, args)) // access to both outcome and arguments
+new ResilienceStrategyBuilder()
+   .AddRetry(new RetryStrategyOptions
+    {
+        ShouldRetry = (outcome, _) => outcome switch
+        {
+            { Exception: InvalidOperationException } => PredicateResult.True,
+            { Result: string result } when result == Failure => PredicateResult.True,
+            { Result: int result } when result == -1 => PredicateResult.True,
+            _ => PredicateResult.False
+        },
+    })
+    .Build();
 ```
 
-The code above demonstrates how `OutcomePredicate<ShouldRetryArguments>` can be used to register multiple synchronous and asynchronous fallbacks with different signatures under a single unified API.
-
-### Generators
-
-Generators are designed to generate a value of a specific type for a resilience strategy that uses them. We recognize the following generator types:
-
-- **`NoOutcomeGenerator<TArgs>`**: the generator that does not require any `Outcome` to produce a value. Used in resilience strategies that do not access the `Outcome` such as timeout strategy.
-- **`OutcomeGenerator<TArgs, TValue>`**: holds a list of generators for various result types. These generators produce the value of `TValue` type.
-- **`OutcomeGenerator<TArgs, TValue, TResult>`**: holds a generator for a specific result type.
-- **`VoidOutcomeGenerator<TArgs, TValue>`**: holds a generator for a void-based result type.
-
-API Usage:
+A generic predicate defining retries for a single result type:
 
 ``` csharp
-var options = new RetryStrategyOptions();
-OutcomeGenerator<RetryDelayArguments, TimeSpan> generator = options.RetryDelayGenerator;
-
-generator
-    .SetGenerator((outcome, args) => TimeSpan.FromSeconds(args.Attempt)) // called for all result types
-    .SetGenerator<int>((outcome, args) => TimeSpan.FromSeconds(args.Attempt)) // called for int result type only
-    .SetVoidGenerator((outcome, args) => TimeSpan.FromSeconds(args.Attempt)) // called for void result type only
-    .SetVoidGenerator(async (outcome, args) => await GenerateDelayAsync(out, args));
+new ResilienceStrategyBuilder()
+   .AddRetry(new RetryStrategyOptions<string>
+    {
+        ShouldRetry = (outcome, _) => outcome switch
+        {
+            { Exception: InvalidOperationException } => PredicateResult.True,
+            { Result: result } when result == Failure => PredicateResult.True,
+            _ => PredicateResult.False
+        },
+    })
+    .Build();
 ```
 
-The code above demonstrates how `OutcomeGenerator<RetryDelayArguments, TimeSpan>` can be used to register multiple synchronous and asynchronous generators with different signatures under a single unified API.
+## Registering Custom Callbacks
 
-### Performance
+When setting the delegates, ensure to respect the `ResilienceContext.IsSynchronous
 
-The callback API is non-allocating and fast. However, the performance varies depending on number of callbacks you register. Optimum performance is achieved when your callbacks handle only a single result type with a single registered callback. In that scenario the underlying handler does not do any dictionary lookups.
-
-### Registering your custom callbacks
-
-If you are registering asynchronous callbacks, make sure that you respect the value of the `ResilienceContext.IsSynchronous` property and execute you callbacks synchronously for synchronous executions. You should also use the `ResilienceContext.ContinueOnCapturedContext` in case your user code uses execution and synchronization context (i.e. asynchronous calls in UI applications, such as in Windows Forms or WPF applications).
+` property's value and execute your delegates synchronously for synchronous executions. In addition, use the `ResilienceContext.ContinueOnCapturedContext` when your user code employs execution and synchronization context (for example, asynchronous calls in UI applications, such as in Windows Forms or WPF applications).
