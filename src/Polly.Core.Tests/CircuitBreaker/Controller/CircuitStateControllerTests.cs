@@ -30,7 +30,7 @@ public class CircuitStateControllerTests
     {
         // arrange
         bool called = false;
-        _options.OnOpened.RegisterVoid((outcome, args) =>
+        _options.OnOpened = (outcome, args) =>
         {
             args.BreakDuration.Should().Be(TimeSpan.MaxValue);
             args.Context.IsSynchronous.Should().BeFalse();
@@ -38,7 +38,8 @@ public class CircuitStateControllerTests
             args.IsManual.Should().BeTrue();
             outcome.IsVoidResult.Should().BeTrue();
             called = true;
-        });
+            return default;
+        };
 
         _timeProvider.Setup(v => v.UtcNow).Returns(DateTime.UtcNow);
         using var controller = CreateController();
@@ -66,14 +67,15 @@ public class CircuitStateControllerTests
     {
         // arrange
         bool called = false;
-        _options.OnClosed.RegisterVoid((outcome, args) =>
+        _options.OnClosed = (outcome, args) =>
         {
             args.Context.IsSynchronous.Should().BeFalse();
             args.Context.IsVoid.Should().BeTrue();
             args.IsManual.Should().BeTrue();
             outcome.IsVoidResult.Should().BeTrue();
             called = true;
-        });
+            return default;
+        };
 
         _timeProvider.Setup(v => v.UtcNow).Returns(DateTime.UtcNow);
         using var controller = CreateController();
@@ -201,7 +203,12 @@ public class CircuitStateControllerTests
     {
         // arrange
         var called = false;
-        _options.OnHalfOpened.Register(_ => called = true);
+        _options.OnHalfOpened = _ =>
+        {
+            called = true;
+            return default;
+        };
+
         using var controller = CreateController();
 
         await OpenCircuit(controller, new Outcome<int>(10));
@@ -225,11 +232,13 @@ public class CircuitStateControllerTests
     {
         // arrange
         var called = false;
-        _options.OnClosed.Register<int>((_, args) =>
+        _options.OnClosed = (_, args) =>
         {
             args.IsManual.Should().BeFalse();
             called = true;
-        });
+            return default;
+        };
+
         using var controller = CreateController();
 
         await TransitionToState(controller, state);
@@ -263,11 +272,20 @@ public class CircuitStateControllerTests
     {
         // arrange
         var called = false;
-        _options.OnOpened.Register<string>((_, args) =>
+        _options.OnOpened = (_, args) =>
         {
-            args.IsManual.Should().BeFalse();
+            if (state == CircuitState.Isolated)
+            {
+                args.IsManual.Should().BeTrue();
+            }
+            else
+            {
+                args.IsManual.Should().BeFalse();
+            }
+
             called = true;
-        });
+            return default;
+        };
         using var controller = CreateController();
 
         await TransitionToState(controller, state);

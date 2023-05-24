@@ -10,14 +10,17 @@ public partial class IssuesTests
         var options = new AdvancedCircuitBreakerStrategyOptions
         {
             FailureThreshold = 1,
-            MinimumThroughput = 10
+            MinimumThroughput = 10,
+            ShouldHandle = (outcome, _) => outcome.Result switch
+            {
+                // handle int results
+                int intVal when intVal == -1 => new ValueTask<bool>(true),
+
+                // handle string results
+                string stringVal when stringVal == "error" => new ValueTask<bool>(true),
+                _ => new ValueTask<bool>(false),
+            },
         };
-
-        // handle int results
-        options.ShouldHandle.HandleResult(-1);
-
-        // handle string results
-        options.ShouldHandle.HandleResult("error");
 
         // create the strategy
         var strategy = new ResilienceStrategyBuilder { TimeProvider = TimeProvider.Object }.AddAdvancedCircuitBreaker(options).Build();

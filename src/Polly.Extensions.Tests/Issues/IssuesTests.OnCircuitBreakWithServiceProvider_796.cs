@@ -12,30 +12,30 @@ public partial class IssuesTests
     public async Task OnCircuitBreakWithServiceProvider_796()
     {
         var contextChecked = false;
-        var options = new AdvancedCircuitBreakerStrategyOptions
-        {
-            FailureThreshold = 1,
-            MinimumThroughput = 10,
-        };
-
-        options.OnOpened.Register(async (_, args) =>
-        {
-            args.Context.Properties.GetValue(PollyDependencyInjectionKeys.ServiceProvider, null!).Should().NotBeNull();
-            contextChecked = true;
-
-            // do asynchronous call
-            await Task.Yield();
-        });
-
-        // handle string results
-        options.ShouldHandle.HandleResult("error");
 
         // create the strategy
         var serviceCollection = new ServiceCollection().AddResilienceStrategy("my-strategy", (builder, context) =>
         {
             builder
                 .AddStrategy(new ServiceProviderStrategy(context.ServiceProvider))
-                .AddAdvancedCircuitBreaker(options);
+                .AddAdvancedCircuitBreaker(new AdvancedCircuitBreakerStrategyOptions
+                {
+                    FailureThreshold = 1,
+                    MinimumThroughput = 10,
+                    OnOpened = async (_, args) =>
+                    {
+                        args.Context.Properties.GetValue(PollyDependencyInjectionKeys.ServiceProvider, null!).Should().NotBeNull();
+                        contextChecked = true;
+
+                        // do asynchronous call
+                        await Task.Yield();
+                    },
+                    ShouldHandle = (outcome, _) => outcome.Result switch
+                    {
+                        string result when result == "error" => PredicateResult.True,
+                        _ => PredicateResult.False
+                    }
+                });
         });
 
         // retrieve the provider

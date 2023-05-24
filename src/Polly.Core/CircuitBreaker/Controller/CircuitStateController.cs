@@ -10,8 +10,8 @@ internal sealed class CircuitStateController : IDisposable
 {
     private readonly object _lock = new();
     private readonly ScheduledTaskExecutor _executor = new();
-    private readonly OutcomeEvent<OnCircuitOpenedArguments>.Handler? _onOpened;
-    private readonly OutcomeEvent<OnCircuitClosedArguments>.Handler? _onClosed;
+    private readonly Func<Outcome, OnCircuitOpenedArguments, ValueTask>? _onOpened;
+    private readonly Func<Outcome, OnCircuitClosedArguments, ValueTask>? _onClosed;
     private readonly Func<OnCircuitHalfOpenedArguments, ValueTask>? _onHalfOpen;
     private readonly TimeProvider _timeProvider;
     private readonly ResilienceStrategyTelemetry _telemetry;
@@ -26,9 +26,9 @@ internal sealed class CircuitStateController : IDisposable
     public CircuitStateController(CircuitBreakerStrategyOptions options, CircuitBehavior behavior, TimeProvider timeProvider, ResilienceStrategyTelemetry telemetry)
     {
         _breakDuration = options.BreakDuration;
-        _onOpened = options.OnOpened.CreateHandler();
-        _onClosed = options.OnClosed.CreateHandler();
-        _onHalfOpen = options.OnHalfOpened.CreateHandler();
+        _onOpened = options.OnOpened;
+        _onClosed = options.OnClosed;
+        _onHalfOpen = options.OnHalfOpened;
         _behavior = behavior;
         _timeProvider = timeProvider;
         _telemetry = telemetry;
@@ -268,7 +268,7 @@ internal sealed class CircuitStateController : IDisposable
 
             if (_onClosed is not null)
             {
-                _executor.ScheduleTask(() => _onClosed.HandleAsync(outcome, args).AsTask(), context, out scheduledTask);
+                _executor.ScheduleTask(() => _onClosed(outcome.AsOutcome(), args).AsTask(), context, out scheduledTask);
             }
         }
     }
@@ -322,7 +322,7 @@ internal sealed class CircuitStateController : IDisposable
 
         if (_onOpened is not null)
         {
-            _executor.ScheduleTask(() => _onOpened.HandleAsync(outcome, args).AsTask(), context, out scheduledTask);
+            _executor.ScheduleTask(() => _onOpened(outcome.AsOutcome(), args).AsTask(), context, out scheduledTask);
         }
     }
 }
