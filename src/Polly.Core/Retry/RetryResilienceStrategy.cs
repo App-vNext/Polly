@@ -14,9 +14,9 @@ internal sealed class RetryResilienceStrategy : ResilienceStrategy
         _timeProvider = timeProvider;
         _telemetry = telemetry;
         _randomUtil = randomUtil;
-        OnRetry = options.OnRetry.CreateHandler();
-        DelayGenerator = options.RetryDelayGenerator.CreateHandler(TimeSpan.MinValue, RetryHelper.IsValidDelay);
-        ShouldRetry = options.ShouldRetry.CreateHandler();
+        OnRetry = options.OnRetry;
+        DelayGenerator = options.RetryDelayGenerator;
+        ShouldRetry = options.ShouldRetry!;
 
         BackoffType = options.BackoffType;
         BaseDelay = options.BaseDelay;
@@ -29,11 +29,11 @@ internal sealed class RetryResilienceStrategy : ResilienceStrategy
 
     public int RetryCount { get; }
 
-    public OutcomePredicate<ShouldRetryArguments>.Handler? ShouldRetry { get; }
+    public Func<Outcome, ShouldRetryArguments, ValueTask<bool>> ShouldRetry { get; set; }
 
-    public OutcomeGenerator<RetryDelayArguments, TimeSpan>.Handler? DelayGenerator { get; }
+    public Func<Outcome, RetryDelayArguments, ValueTask<TimeSpan>>? DelayGenerator { get; set; }
 
-    public OutcomeEvent<OnRetryArguments>.Handler? OnRetry { get; }
+    public Func<Outcome, OnRetryArguments, ValueTask>? OnRetry { get; set; }
 
     protected internal override async ValueTask<Outcome<TResult>> ExecuteCoreAsync<TResult, TState>(
         Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,
@@ -54,15 +54,15 @@ internal sealed class RetryResilienceStrategy : ResilienceStrategy
             context.CancellationToken.ThrowIfCancellationRequested();
 
             Outcome<TResult> outcome = await callback(context, state).ConfigureAwait(context.ContinueOnCapturedContext);
-            if (IsLastAttempt(attempt) || !await ShouldRetry.ShouldHandleAsync(outcome, new ShouldRetryArguments(context, attempt)).ConfigureAwait(context.ContinueOnCapturedContext))
+            if (IsLastAttempt(attempt) || !await ShouldRetry(outcome.AsOutcome(), new ShouldRetryArguments(context, attempt)).ConfigureAwait(context.ContinueOnCapturedContext))
             {
                 return outcome;
             }
 
             var delay = RetryHelper.GetRetryDelay(BackoffType, attempt, BaseDelay, ref retryState, _randomUtil);
-            if (DelayGenerator != null)
+            if (DelayGenerator is not null)
             {
-                var newDelay = await DelayGenerator.GenerateAsync(outcome, new RetryDelayArguments(context, attempt, delay)).ConfigureAwait(false);
+                var newDelay = await DelayGenerator(outcome.AsOutcome(), new RetryDelayArguments(context, attempt, delay)).ConfigureAwait(false);
                 if (RetryHelper.IsValidDelay(newDelay))
                 {
                     delay = newDelay;
@@ -73,9 +73,9 @@ internal sealed class RetryResilienceStrategy : ResilienceStrategy
 
             _telemetry.Report(RetryConstants.OnRetryEvent, outcome, args);
 
-            if (OnRetry != null)
+            if (OnRetry is not null)
             {
-                await OnRetry.HandleAsync(outcome, args).ConfigureAwait(context.ContinueOnCapturedContext);
+                await OnRetry(outcome.AsOutcome(), args).ConfigureAwait(context.ContinueOnCapturedContext);
             }
 
             if (outcome.TryGetResult(out var resultValue))

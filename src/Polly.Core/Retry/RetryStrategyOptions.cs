@@ -66,19 +66,18 @@ public class RetryStrategyOptions : ResilienceStrategyOptions
     /// Gets or sets an outcome predicate that is used to register the predicates to determine if a retry should be performed.
     /// </summary>
     /// <remarks>
-    /// By default, the predicate is empty and no results or exceptions are retried.
+    /// Defaults to <see langword="null"/>. This property is required.
     /// </remarks>
     [Required]
-    public OutcomePredicate<ShouldRetryArguments> ShouldRetry { get; set; } = new();
+    public Func<Outcome, ShouldRetryArguments, ValueTask<bool>>? ShouldRetry { get; set; }
 
     /// <summary>
     /// Gets or sets the generator instance that is used to calculate the time between retries.
     /// </summary>
     /// <remarks>
-    /// By default, the generator is empty and it does not affect the delay between retries.
+    /// Defaults to <see langword="null"/>.
     /// </remarks>
-    [Required]
-    public OutcomeGenerator<RetryDelayArguments, TimeSpan> RetryDelayGenerator { get; set; } = new();
+    public Func<Outcome, RetryDelayArguments, ValueTask<TimeSpan>>? RetryDelayGenerator { get; set; }
 
     /// <summary>
     /// Gets or sets an outcome event that is used to register on-retry callbacks.
@@ -90,7 +89,9 @@ public class RetryStrategyOptions : ResilienceStrategyOptions
     /// you need to preserve the result for further processing, create the copy of the result or extract and store all necessary information
     /// from the result within the event.
     /// </para>
+    /// <para>
+    /// Defaults to <see langword="null"/>.
+    /// </para>
     /// </remarks>
-    [Required]
-    public OutcomeEvent<OnRetryArguments> OnRetry { get; set; } = new();
+    public Func<Outcome, OnRetryArguments, ValueTask>? OnRetry { get; set; }
 }

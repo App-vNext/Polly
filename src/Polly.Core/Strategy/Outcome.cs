@@ -7,7 +7,7 @@ namespace Polly.Strategy;
 /// <summary>
 /// Represents the non-generic outcome of an operation.
 /// </summary>
-public readonly struct Outcome
+public readonly partial struct Outcome
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="Outcome"/> struct with the specified exception.

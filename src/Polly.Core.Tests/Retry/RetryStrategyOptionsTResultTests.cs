@@ -13,14 +13,11 @@ public class RetryStrategyOptionsTResultTests
         var options = new RetryStrategyOptions<int>();
 
         options.StrategyType.Should().Be("Retry");
-        options.ShouldRetry.Should().NotBeNull();
-        options.ShouldRetry.IsEmpty.Should().BeTrue();
+        options.ShouldRetry.Should().BeNull();
 
-        options.RetryDelayGenerator.Should().NotBeNull();
-        options.RetryDelayGenerator.IsEmpty.Should().BeTrue();
+        options.RetryDelayGenerator.Should().BeNull();
 
-        options.OnRetry.Should().NotBeNull();
-        options.OnRetry.IsEmpty.Should().BeTrue();
+        options.OnRetry.Should().BeNull();
 
         options.RetryCount.Should().Be(3);
         options.BackoffType.Should().Be(RetryBackoffType.ExponentialWithJitter);
@@ -49,8 +46,6 @@ public class RetryStrategyOptionsTResultTests
             The field RetryCount must be between -1 and 100.
             The field BaseDelay must be >= to 00:00:00.
             The ShouldRetry field is required.
-            The RetryDelayGenerator field is required.
-            The OnRetry field is required.
             """);
     }
 
@@ -64,11 +59,11 @@ public class RetryStrategyOptionsTResultTests
             BaseDelay = TimeSpan.FromMilliseconds(555),
             RetryCount = 7,
             StrategyName = "my-name",
+            ShouldRetry = (outcome, _) => new ValueTask<bool>(outcome.HasResult && outcome.Result == 999),
+            OnRetry = (_, _) => { called = true; return default; },
+            RetryDelayGenerator = (_, _) => new ValueTask<TimeSpan>(TimeSpan.FromSeconds(123))
         };
 
-        options.ShouldRetry.HandleResult(999);
-        options.OnRetry.Register(() => called = true);
-        options.RetryDelayGenerator.SetGenerator((_, _) => TimeSpan.FromSeconds(123));
         var nonGenericOptions = options.AsNonGenericOptions();
 
         nonGenericOptions.BackoffType.Should().Be(RetryBackoffType.Constant);
@@ -77,13 +72,21 @@ public class RetryStrategyOptionsTResultTests
         nonGenericOptions.StrategyName.Should().Be("my-name");
         nonGenericOptions.StrategyType.Should().Be("Retry");
 
-        var args = new ShouldRetryArguments(ResilienceContext.Get(), 0);
-        var delayArgs = new RetryDelayArguments(ResilienceContext.Get(), 2, TimeSpan.FromMinutes(1));
-        var retryArgs = new OnRetryArguments(ResilienceContext.Get(), 0, TimeSpan.Zero);
+        // wrong result type
+        var context = ResilienceContext.Get().Initialize<string>(true);
+        var args = new ShouldRetryArguments(context, 0);
+        var delayArgs = new RetryDelayArguments(context, 2, TimeSpan.FromMinutes(1));
+        var retryArgs = new OnRetryArguments(context, 0, TimeSpan.Zero);
+        (await nonGenericOptions.ShouldRetry!(new Outcome(999), args)).Should().BeFalse();
+        await nonGenericOptions.OnRetry!(new Outcome(999), retryArgs);
+        (await nonGenericOptions.RetryDelayGenerator!(new Outcome(999), delayArgs)).Should().Be(TimeSpan.MinValue);
+        called.Should().BeFalse();
 
-        (await nonGenericOptions.ShouldRetry.CreateHandler()!.ShouldHandleAsync(new Outcome<int>(999), args)).Should().BeTrue();
-        await nonGenericOptions.OnRetry.CreateHandler()!.HandleAsync(new Outcome<int>(999), retryArgs);
+        // correct result type
+        context.Initialize<int>(true);
+        (await nonGenericOptions.ShouldRetry!(new Outcome(999), args)).Should().BeTrue();
+        await nonGenericOptions.OnRetry!(new Outcome(999), retryArgs);
+        (await nonGenericOptions.RetryDelayGenerator!(new Outcome(999), delayArgs)).Should().Be(TimeSpan.FromSeconds(123));
         called.Should().BeTrue();
-        (await nonGenericOptions.RetryDelayGenerator.CreateHandler(default, _ => true)!.GenerateAsync(new Outcome<int>(999), delayArgs)).Should().Be(TimeSpan.FromSeconds(123));
     }
 }

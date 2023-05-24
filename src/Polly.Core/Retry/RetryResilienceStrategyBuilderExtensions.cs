@@ -53,7 +53,7 @@ public static class RetryResilienceStrategyBuilderExtensions
 
         var options = new RetryStrategyOptions<TResult>();
         ConfigureShouldRetry(shouldRetry, options);
-        options.RetryDelayGenerator.SetGenerator((_, args) => retryDelayGenerator(args.Attempt));
+        options.RetryDelayGenerator = (_, args) => new ValueTask<TimeSpan>(retryDelayGenerator(args.Attempt));
 
         return builder.AddRetry(options);
     }
@@ -163,6 +163,6 @@ public static class RetryResilienceStrategyBuilderExtensions
     {
         var predicate = new PredicateBuilder<TResult>();
         shouldRetry(predicate);
-        options.ShouldRetry.HandleOutcome(predicate.CreatePredicate<ShouldRetryArguments>());
+        options.ShouldRetry = predicate.CreatePredicate<ShouldRetryArguments>();
     }
 }
