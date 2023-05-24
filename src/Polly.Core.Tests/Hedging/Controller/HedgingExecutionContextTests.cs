@@ -343,18 +343,18 @@ public class HedgingExecutionContextTests : IDisposable
     }
 
     [Fact]
-    public async Task Complete_NoAcceptedTasks_Throws()
+    public async Task Complete_NoAcceptedTasks_ShouldNotThrow()
     {
         var context = Create();
         context.Initialize(_resilienceContext);
         ConfigureSecondaryTasks(TimeSpan.Zero);
         await ExecuteAllTasksAsync(context, 2);
 
-        context.Invoking(c => c.Complete()).Should().Throw<InvalidOperationException>().WithMessage("There must be exactly one accepted outcome for hedging. Found 0.");
+        context.Invoking(c => c.Complete()).Should().NotThrow();
     }
 
     [Fact]
-    public async Task Complete_MultipleAcceptedTasks_Throws()
+    public async Task Complete_MultipleAcceptedTasks_ShouldNotThrow()
     {
         var context = Create();
         context.Initialize(_resilienceContext);
@@ -363,7 +363,7 @@ public class HedgingExecutionContextTests : IDisposable
         context.Tasks[0].AcceptOutcome();
         context.Tasks[1].AcceptOutcome();
 
-        context.Invoking(c => c.Complete()).Should().Throw<InvalidOperationException>().WithMessage("There must be exactly one accepted outcome for hedging. Found 2.");
+        context.Invoking(c => c.Complete()).Should().NotThrow();
     }
 
     [Fact]

@@ -118,7 +118,7 @@ public abstract class CircuitBreakerStrategyOptions<TResult> : ResilienceStrateg
         options.BreakDuration = BreakDuration;
         options.StrategyName = StrategyName;
 
-        if (ShouldHandle is var shouldHandle)
+        if (ShouldHandle is { } shouldHandle)
         {
             options.ShouldHandle = (outcome, args) =>
             {
@@ -131,7 +131,7 @@ public abstract class CircuitBreakerStrategyOptions<TResult> : ResilienceStrateg
             };
         }
 
-        if (OnClosed is var onClosed)
+        if (OnClosed is { } onClosed)
         {
             options.OnClosed = (outcome, args) =>
             {
@@ -144,7 +144,7 @@ public abstract class CircuitBreakerStrategyOptions<TResult> : ResilienceStrateg
             };
         }
 
-        if (OnOpened is var onOpened)
+        if (OnOpened is { } onOpened)
         {
             options.OnOpened = (outcome, args) =>
             {

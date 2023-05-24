@@ -53,7 +53,7 @@ public class FallbackStrategyOptions<TResult> : ResilienceStrategyOptions
             })
         };
 
-        if (OnFallback is var fallback)
+        if (OnFallback is { } fallback)
         {
             options.OnFallback = (outcome, args) =>
             {

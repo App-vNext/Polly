@@ -123,6 +123,9 @@ public class CircuitBreakerResilienceStrategyTests : IDisposable
     [Fact]
     public void Execute_Ok()
     {
+        _options.ShouldHandle = (_, _) => PredicateResult.False;
+        _behavior.Setup(v => v.OnActionSuccess(CircuitState.Closed));
+
         Create().Invoking(s => s.Execute(_ => { })).Should().NotThrow();
     }
 

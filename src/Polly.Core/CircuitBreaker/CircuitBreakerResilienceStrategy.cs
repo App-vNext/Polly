@@ -24,11 +24,6 @@ internal sealed class CircuitBreakerResilienceStrategy : ResilienceStrategy
         ResilienceContext context,
         TState state)
     {
-        if (_handler == null)
-        {
-            return await callback(context, state).ConfigureAwait(context.ContinueOnCapturedContext);
-        }
-
         if (await _controller.OnActionPreExecuteAsync<TResult>(context).ConfigureAwait(context.ContinueOnCapturedContext) is Outcome<TResult> outcome)
         {
             return outcome;

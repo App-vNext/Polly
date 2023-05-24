@@ -10,7 +10,7 @@ namespace Polly;
 internal sealed class HedgingResilienceStrategy : ResilienceStrategy
 {
     private readonly ResilienceStrategyTelemetry _telemetry;
-    private readonly HedgingController? _controller;
+    private readonly HedgingController _controller;
 
     public HedgingResilienceStrategy(HedgingStrategyOptions options, TimeProvider timeProvider, ResilienceStrategyTelemetry telemetry)
     {
@@ -21,10 +21,7 @@ internal sealed class HedgingResilienceStrategy : ResilienceStrategy
         OnHedging = options.OnHedging;
 
         _telemetry = telemetry;
-        if (HedgingHandler != null)
-        {
-            _controller = new HedgingController(timeProvider, HedgingHandler, options.MaxHedgedAttempts);
-        }
+        _controller = new HedgingController(timeProvider, HedgingHandler, options.MaxHedgedAttempts);
     }
 
     public TimeSpan HedgingDelay { get; }
@@ -33,7 +30,7 @@ internal sealed class HedgingResilienceStrategy : ResilienceStrategy
 
     public Func<HedgingDelayArguments, ValueTask<TimeSpan>>? HedgingDelayGenerator { get; }
 
-    public HedgingHandler.Handler? HedgingHandler { get; }
+    public HedgingHandler.Handler HedgingHandler { get; }
 
     public Func<Outcome, OnHedgingArguments, ValueTask>? OnHedging { get; }
 
@@ -42,7 +39,7 @@ internal sealed class HedgingResilienceStrategy : ResilienceStrategy
         ResilienceContext context,
         TState state)
     {
-        if (_controller == null || !HedgingHandler!.HandlesHedging<TResult>())
+        if (!HedgingHandler.HandlesHedging<TResult>())
         {
             return await callback(context, state).ConfigureAwait(context.ContinueOnCapturedContext);
         }

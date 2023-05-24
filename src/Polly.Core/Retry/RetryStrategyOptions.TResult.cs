@@ -101,7 +101,7 @@ public class RetryStrategyOptions<TResult> : ResilienceStrategyOptions
             StrategyName = StrategyName,
         };
 
-        if (ShouldRetry is var shouldRetry)
+        if (ShouldRetry is { } shouldRetry)
         {
             options.ShouldRetry = (outcome, args) =>
             {
@@ -114,7 +114,7 @@ public class RetryStrategyOptions<TResult> : ResilienceStrategyOptions
             };
         }
 
-        if (OnRetry is var onRetry)
+        if (OnRetry is { } onRetry)
         {
             // no need to do type-check again because result will be retried so the type check was
             // already done in ShouldRetry
@@ -129,7 +129,7 @@ public class RetryStrategyOptions<TResult> : ResilienceStrategyOptions
             };
         }
 
-        if (RetryDelayGenerator is var generator)
+        if (RetryDelayGenerator is { } generator)
         {
             // no need to do type-check again because result will be retried so the type check was
             // already done in ShouldRetry

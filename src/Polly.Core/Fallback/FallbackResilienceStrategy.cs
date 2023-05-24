@@ -9,7 +9,7 @@ namespace Polly.Fallback;
 
 internal sealed class FallbackResilienceStrategy : ResilienceStrategy
 {
-    private readonly FallbackHandler.Handler? _handler;
+    private readonly FallbackHandler.Handler _handler;
     private readonly Func<Outcome, OnFallbackArguments, ValueTask>? _onFallback;
     private readonly ResilienceStrategyTelemetry _telemetry;
 
@@ -25,11 +25,6 @@ internal sealed class FallbackResilienceStrategy : ResilienceStrategy
         ResilienceContext context,
         TState state)
     {
-        if (_handler == null)
-        {
-            return await callback(context, state).ConfigureAwait(context.ContinueOnCapturedContext);
-        }
-
         var outcome = await callback(context, state).ConfigureAwait(context.ContinueOnCapturedContext);
         var args = new HandleFallbackArguments(context);
         var action = await _handler.ShouldHandleAsync(outcome, args).ConfigureAwait(context.ContinueOnCapturedContext);
