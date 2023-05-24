@@ -14,7 +14,7 @@ public class FallbackStrategyOptionsTests
         options.StrategyType.Should().Be("Fallback");
         options.Handler.Should().NotBeNull();
         options.Handler.IsEmpty.Should().BeTrue();
-        options.OnFallback.IsEmpty.Should().BeTrue();
+        options.OnFallback.Should().BeNull();
     }
 
     [Fact]
@@ -35,7 +35,6 @@ public class FallbackStrategyOptionsTests
 
             Validation Errors:
             The Handler field is required.
-            The OnFallback field is required.
             """);
     }
 }

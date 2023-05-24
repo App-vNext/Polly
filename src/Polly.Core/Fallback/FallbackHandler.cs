@@ -8,13 +8,12 @@ namespace Polly.Fallback;
 /// </summary>
 internal sealed partial class FallbackHandler
 {
-    private readonly OutcomePredicate<HandleFallbackArguments> _predicates = new();
-    private readonly Dictionary<Type, object> _actions = new();
+    private readonly Dictionary<Type, object> _handlers = new();
 
     /// <summary>
     /// Gets a value indicating whether the fallback handler is empty.
     /// </summary>
-    internal bool IsEmpty => _predicates.IsEmpty;
+    internal bool IsEmpty => _handlers.Count == 0;
 
     /// <summary>
     /// Configures a fallback handler for a specific result type.
@@ -33,13 +32,7 @@ internal sealed partial class FallbackHandler
 
         ValidationHelper.ValidateObject(handler, "The fallback handler configuration is invalid.");
 
-        if (handler.ShouldHandle.IsEmpty)
-        {
-            return this;
-        }
-
-        _predicates.SetPredicates(handler.ShouldHandle);
-        _actions[typeof(TResult)] = handler.FallbackAction!;
+        _handlers[typeof(TResult)] = handler!;
 
         return this;
     }
@@ -60,34 +53,31 @@ internal sealed partial class FallbackHandler
 
         ValidationHelper.ValidateObject(handler, "The fallback handler configuration is invalid.");
 
-        if (handler.ShouldHandle.IsEmpty)
-        {
-            return this;
-        }
-
-        _predicates.SetVoidPredicates(handler.ShouldHandle);
-        _actions[typeof(VoidResult)] = CreateGenericAction(handler.FallbackAction!);
+        _handlers[typeof(VoidResult)] = CreateGenericHandler(handler);
 
         return this;
     }
 
     internal Handler? CreateHandler()
     {
-        var shouldHandle = _predicates.CreateHandler();
-        if (shouldHandle == null)
+        if (IsEmpty)
         {
             return null;
         }
 
-        return new Handler(shouldHandle, _actions);
+        return new Handler(_handlers.ToDictionary(pair => pair.Key, pair => pair.Value));
     }
 
-    private static Func<Outcome<VoidResult>, HandleFallbackArguments, ValueTask<VoidResult>> CreateGenericAction(Func<Outcome, HandleFallbackArguments, ValueTask> action)
+    private static FallbackHandler<VoidResult> CreateGenericHandler(VoidFallbackHandler handler)
     {
-        return async (outcome, args) =>
+        return new()
         {
-            await action(outcome.AsOutcome(), args).ConfigureAwait(args.Context.ContinueOnCapturedContext);
-            return VoidResult.Instance;
+            FallbackAction = async (outcome, args) =>
+            {
+                await handler.FallbackAction!(outcome.AsOutcome(), args).ConfigureAwait(args.Context.ContinueOnCapturedContext);
+                return VoidResult.Instance;
+            },
+            ShouldHandle = (outcome, args) => handler.ShouldHandle!(outcome.AsOutcome(), args)
         };
     }
 }

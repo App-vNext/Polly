@@ -6,28 +6,18 @@ internal sealed partial class FallbackHandler
 {
     internal sealed class Handler
     {
-        private readonly OutcomePredicate<HandleFallbackArguments>.Handler _handler;
-        private readonly Dictionary<Type, object> _actions;
+        private readonly Dictionary<Type, object> _handlers;
 
-        internal Handler(OutcomePredicate<HandleFallbackArguments>.Handler handler, Dictionary<Type, object> generators)
-        {
-            _handler = handler;
-            _actions = generators;
-        }
+        internal Handler(Dictionary<Type, object> handlers) => _handlers = handlers;
 
-        public async ValueTask<Func<Outcome<TResult>, HandleFallbackArguments, ValueTask<TResult>>?> ShouldHandleAsync<TResult>(Outcome<TResult> outcome, HandleFallbackArguments arguments)
+        public ValueTask<Func<Outcome<TResult>, HandleFallbackArguments, ValueTask<TResult>>?> ShouldHandleAsync<TResult>(Outcome<TResult> outcome, HandleFallbackArguments arguments)
         {
-            if (!_actions.TryGetValue(typeof(TResult), out var action))
+            if (!_handlers.TryGetValue(typeof(TResult), out var handler))
             {
-                return null;
+                return new((Func<Outcome<TResult>, HandleFallbackArguments, ValueTask<TResult>>?)null);
             }
 
-            if (!await _handler.ShouldHandleAsync(outcome, arguments).ConfigureAwait(arguments.Context.ContinueOnCapturedContext))
-            {
-                return null;
-            }
-
-            return (Func<Outcome<TResult>, HandleFallbackArguments, ValueTask<TResult>>?)action;
+            return ((FallbackHandler<TResult>)handler).ShouldHandleAsync(outcome, arguments);
         }
     }
 }

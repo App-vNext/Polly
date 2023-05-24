@@ -10,13 +10,13 @@ namespace Polly.Fallback;
 internal sealed class FallbackResilienceStrategy : ResilienceStrategy
 {
     private readonly FallbackHandler.Handler? _handler;
-    private readonly OutcomeEvent<OnFallbackArguments>.Handler? _onFallback;
+    private readonly Func<Outcome, OnFallbackArguments, ValueTask>? _onFallback;
     private readonly ResilienceStrategyTelemetry _telemetry;
 
     public FallbackResilienceStrategy(FallbackStrategyOptions options, ResilienceStrategyTelemetry telemetry)
     {
         _handler = options.Handler.CreateHandler();
-        _onFallback = options.OnFallback.CreateHandler();
+        _onFallback = options.OnFallback;
         _telemetry = telemetry;
     }
 
@@ -41,9 +41,9 @@ internal sealed class FallbackResilienceStrategy : ResilienceStrategy
 
         _telemetry.Report(FallbackConstants.OnFallback, outcome, args);
 
-        if (_onFallback != null)
+        if (_onFallback is not null)
         {
-            await _onFallback.HandleAsync(outcome, new OnFallbackArguments(context)).ConfigureAwait(context.ContinueOnCapturedContext);
+            await _onFallback!(outcome.AsOutcome(), new OnFallbackArguments(context)).ConfigureAwait(context.ContinueOnCapturedContext);
         }
 
         try
