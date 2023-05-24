@@ -18,11 +18,6 @@ public sealed class OutcomeGenerator<TArgs, TValue, TResult>
     private Func<Outcome<TResult>, TArgs, ValueTask<TValue>>? _generator;
 
     /// <summary>
-    /// Gets a value indicating whether the generator is empty.
-    /// </summary>
-    internal bool IsEmpty => _generator is null;
-
-    /// <summary>
     /// Sets a result generator for a specific result type.
     /// </summary>
     /// <param name="generator">The value generator.</param>
