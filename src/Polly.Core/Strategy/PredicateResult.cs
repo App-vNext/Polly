@@ -6,12 +6,12 @@ namespace Polly.Strategy;
 public static class PredicateResult
 {
     /// <summary>
-    /// Gets a finished <see cref="ValueTask{TResult}"/> that returns <see langword="false"/> value.
+    /// Gets a finished <see cref="ValueTask{TResult}"/> that returns <see langword="true"/> value.
     /// </summary>
     public static ValueTask<bool> True => new(true);
 
     /// <summary>
-    /// Gets a finished <see cref="ValueTask{TResult}"/> that returns <see langword="true"/> value.
+    /// Gets a finished <see cref="ValueTask{TResult}"/> that returns <see langword="false"/> value.
     /// </summary>
     public static ValueTask<bool> False => new(false);
 }
