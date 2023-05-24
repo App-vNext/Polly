@@ -79,7 +79,11 @@ public static class RateLimiterResilienceStrategyBuilderExtensions
         return builder.AddRateLimiter(new RateLimiterStrategyOptions
         {
             RateLimiter = new ConcurrencyLimiter(options),
-            OnRejected = new NoOutcomeEvent<OnRateLimiterRejectedArguments>().Register(onRejected)
+            OnRejected = args =>
+            {
+                onRejected(args);
+                return default;
+            }
         });
     }
 
@@ -127,7 +131,11 @@ public static class RateLimiterResilienceStrategyBuilderExtensions
         return builder.AddRateLimiter(new RateLimiterStrategyOptions
         {
             RateLimiter = limiter,
-            OnRejected = new NoOutcomeEvent<OnRateLimiterRejectedArguments>().Register(onRejected)
+            OnRejected = args =>
+            {
+                onRejected(args);
+                return default;
+            }
         });
     }
 

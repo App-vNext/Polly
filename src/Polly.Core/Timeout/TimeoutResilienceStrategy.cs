@@ -14,8 +14,8 @@ internal sealed class TimeoutResilienceStrategy : ResilienceStrategy
     public TimeoutResilienceStrategy(TimeoutStrategyOptions options, TimeProvider timeProvider, ResilienceStrategyTelemetry telemetry)
     {
         DefaultTimeout = options.Timeout;
-        TimeoutGenerator = options.TimeoutGenerator.CreateHandler(DefaultTimeout, TimeoutUtil.IsTimeoutValid);
-        OnTimeout = options.OnTimeout.CreateHandler();
+        TimeoutGenerator = options.TimeoutGenerator;
+        OnTimeout = options.OnTimeout;
         _telemetry = telemetry;
         _cancellationTokenSourcePool = CancellationTokenSourcePool.Create(timeProvider);
     }
@@ -32,7 +32,11 @@ internal sealed class TimeoutResilienceStrategy : ResilienceStrategy
         ResilienceContext context,
         TState state)
     {
-        var timeout = await GetTimeoutAsync(context).ConfigureAwait(context.ContinueOnCapturedContext);
+        var timeout = DefaultTimeout;
+        if (TimeoutGenerator is not null)
+        {
+            timeout = await GenerateTimeoutAsync(context).ConfigureAwait(context.ContinueOnCapturedContext);
+        }
 
         if (!TimeoutUtil.ShouldApplyTimeout(timeout))
         {
@@ -59,7 +63,7 @@ internal sealed class TimeoutResilienceStrategy : ResilienceStrategy
             var args = new OnTimeoutArguments(context, e, timeout);
             _telemetry.Report(TimeoutConstants.OnTimeoutEvent, args);
 
-            if (OnTimeout != null)
+            if (OnTimeout is not null)
             {
                 await OnTimeout(args).ConfigureAwait(context.ContinueOnCapturedContext);
             }
@@ -75,14 +79,15 @@ internal sealed class TimeoutResilienceStrategy : ResilienceStrategy
         return outcome;
     }
 
-    internal ValueTask<TimeSpan> GetTimeoutAsync(ResilienceContext context)
+    internal async ValueTask<TimeSpan> GenerateTimeoutAsync(ResilienceContext context)
     {
-        if (TimeoutGenerator == null)
+        var timeout = await TimeoutGenerator!(new TimeoutGeneratorArguments(context)).ConfigureAwait(context.ContinueOnCapturedContext);
+        if (!TimeoutUtil.IsTimeoutValid(timeout))
         {
-            return new ValueTask<TimeSpan>(DefaultTimeout);
+            return DefaultTimeout;
         }
 
-        return TimeoutGenerator(new TimeoutGeneratorArguments(context));
+        return timeout;
     }
 
     private static CancellationTokenRegistration? CreateRegistration(CancellationTokenSource cancellationSource, CancellationToken previousToken)

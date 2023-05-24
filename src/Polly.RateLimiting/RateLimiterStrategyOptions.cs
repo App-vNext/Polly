@@ -18,8 +18,10 @@ public class RateLimiterStrategyOptions : ResilienceStrategyOptions
     /// <summary>
     /// Gets or sets an event that is raised when the execution of user-provided callback is rejected by the rate limiter.
     /// </summary>
-    [Required]
-    public NoOutcomeEvent<OnRateLimiterRejectedArguments> OnRejected { get; set; } = new();
+    /// <remarks>
+    /// Defaults to <see langword="null"/>.
+    /// </remarks>
+    public Func<OnRateLimiterRejectedArguments, ValueTask>? OnRejected { get; set; }
 
     /// <summary>
     ///  Gets or sets the rate limiter that the strategy uses.

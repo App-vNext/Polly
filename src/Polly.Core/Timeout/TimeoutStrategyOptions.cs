@@ -1,5 +1,4 @@
 using System;
-using System.ComponentModel.DataAnnotations;
 using Polly.Strategy;
 
 namespace Polly.Timeout;
@@ -28,19 +27,22 @@ public class TimeoutStrategyOptions : ResilienceStrategyOptions
     /// Gets or sets the timeout generator that generates the timeout for a given execution.
     /// </summary>
     /// <remarks>
-    /// By default, the generator is empty and the <see cref="Timeout"/> is used by default.
     /// If generator returns a <see cref="TimeSpan"/> value that is less or equal to <see cref="TimeSpan.Zero"/>
-    /// its value is ignored and <see cref="Timeout"/> is used instead.
+    /// its value is ignored and <see cref="Timeout"/> is used instead. When generator is <see langword="null"/> the <see cref="Timeout"/> is used.
     /// <para>
     /// Return <see cref="System.Threading.Timeout.InfiniteTimeSpan"/> to disable the timeout for the given execution.
     /// </para>
+    /// <para>
+    /// Defaults to <see langword="null"/>.
+    /// </para>
     /// </remarks>
-    [Required]
-    public NoOutcomeGenerator<TimeoutGeneratorArguments, TimeSpan> TimeoutGenerator { get; set; } = new();
+    public Func<TimeoutGeneratorArguments, ValueTask<TimeSpan>>? TimeoutGenerator { get; set; }
 
     /// <summary>
-    /// Gets or sets the timeout event that notifies the timeout occurred.
+    /// Gets or sets the timeout that's raised when timeout occurs.
     /// </summary>
-    [Required]
-    public NoOutcomeEvent<OnTimeoutArguments> OnTimeout { get; set; } = new();
+    /// <remarks>
+    /// Defaults to <see langword="null"/>.
+    /// </remarks>
+    public Func<OnTimeoutArguments, ValueTask>? OnTimeout { get; set; }
 }

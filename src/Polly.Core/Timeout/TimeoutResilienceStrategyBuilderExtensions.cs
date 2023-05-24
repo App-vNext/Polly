@@ -47,7 +47,11 @@ public static class TimeoutResilienceStrategyBuilderExtensions
         return builder.AddTimeout(new TimeoutStrategyOptions
         {
             Timeout = timeout,
-            OnTimeout = new NoOutcomeEvent<OnTimeoutArguments>().Register(onTimeout),
+            OnTimeout = (args) =>
+            {
+                onTimeout(args);
+                return default;
+            }
         });
     }
 
