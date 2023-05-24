@@ -12,19 +12,10 @@ public class RetryResilienceStrategyTests
     private readonly ResilienceStrategyTelemetry _telemetry;
     private readonly Mock<DiagnosticSource> _diagnosticSource = new();
 
-    public RetryResilienceStrategyTests() => _telemetry = TestUtilities.CreateResilienceTelemetry(_diagnosticSource.Object);
-
-    [Fact]
-    public void ShouldRetryEmpty_Skipped()
+    public RetryResilienceStrategyTests()
     {
-        bool called = false;
-        _options.OnRetry = (_, _) => { called = true; return default; };
-        SetupNoDelay();
-        var sut = CreateSut();
-
-        sut.Execute(() => 0);
-
-        called.Should().BeFalse();
+        _telemetry = TestUtilities.CreateResilienceTelemetry(_diagnosticSource.Object);
+        _options.ShouldRetry = (_, _) => new ValueTask<bool>(false);
     }
 
     [Fact]

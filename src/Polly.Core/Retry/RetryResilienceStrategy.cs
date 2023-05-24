@@ -29,11 +29,11 @@ internal sealed class RetryResilienceStrategy : ResilienceStrategy
 
     public int RetryCount { get; }
 
-    public Func<Outcome, ShouldRetryArguments, ValueTask<bool>> ShouldRetry { get; set; }
+    public Func<Outcome, ShouldRetryArguments, ValueTask<bool>> ShouldRetry { get; }
 
-    public Func<Outcome, RetryDelayArguments, ValueTask<TimeSpan>>? DelayGenerator { get; set; }
+    public Func<Outcome, RetryDelayArguments, ValueTask<TimeSpan>>? DelayGenerator { get; }
 
-    public Func<Outcome, OnRetryArguments, ValueTask>? OnRetry { get; set; }
+    public Func<Outcome, OnRetryArguments, ValueTask>? OnRetry { get; }
 
     protected internal override async ValueTask<Outcome<TResult>> ExecuteCoreAsync<TResult, TState>(
         Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,
@@ -41,11 +41,6 @@ internal sealed class RetryResilienceStrategy : ResilienceStrategy
         TState state)
     {
         double retryState = 0;
-
-        if (ShouldRetry == null)
-        {
-            return await callback(context, state).ConfigureAwait(context.ContinueOnCapturedContext);
-        }
 
         int attempt = 0;
 
