@@ -16,7 +16,7 @@ public readonly struct Outcome<TResult>
     /// <param name="exception">The exception that occurred during the operation.</param>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="exception"/> is <see langword="null"/>.</exception>
     public Outcome(Exception exception)
-        : this() => ExceptionDispatchInfo = ExceptionDispatchInfo.Capture(exception);
+        : this() => ExceptionDispatchInfo = ExceptionDispatchInfo.Capture(Guard.NotNull(exception));
 
     internal Outcome(ExceptionDispatchInfo exceptionDispatchInfo)
         : this() => ExceptionDispatchInfo = Guard.NotNull(exceptionDispatchInfo);
@@ -52,7 +52,7 @@ public readonly struct Outcome<TResult>
     /// If the operation returned a void result the value will be <see langword="true"/>.
     /// You can use <see cref="IsVoidResult"/> to determine if the result is a void result.
     /// </remarks>
-    public bool HasResult => Exception == null;
+    public bool HasResult => ExceptionDispatchInfo == null;
 
     /// <summary>
     /// Gets a value indicating whether the operation produced a void result.
@@ -84,15 +84,9 @@ public readonly struct Outcome<TResult>
     /// If the outcome represents an exception, then <see cref="Exception.Message"/> will be returned.
     /// If the outcome represents a result, then <see cref="Result"/> formatted as string will be returned.
     /// </remarks>
-    public override string ToString()
-    {
-        if (Exception != null)
-        {
-            return Exception.Message;
-        }
-
-        return Result?.ToString() ?? string.Empty;
-    }
+    public override string ToString() => ExceptionDispatchInfo != null
+        ? Exception!.Message
+        : Result?.ToString() ?? string.Empty;
 
     internal TResult GetResultOrRethrow()
     {
@@ -100,9 +94,7 @@ public readonly struct Outcome<TResult>
         return Result!;
     }
 
-    internal Outcome AsOutcome() => Exception switch
-    {
-        null => new Outcome(Result),
-        _ => new Outcome(Exception, ExceptionDispatchInfo!)
-    };
+    internal Outcome AsOutcome() => (ExceptionDispatchInfo != null)
+            ? new Outcome(ExceptionDispatchInfo)
+            : new Outcome(Result);
 }
