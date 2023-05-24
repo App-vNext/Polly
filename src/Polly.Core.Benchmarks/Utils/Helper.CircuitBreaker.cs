@@ -11,7 +11,7 @@ internal static partial class Helper
         var manualControl = new CircuitBreakerManualControl();
         var options = new AdvancedCircuitBreakerStrategyOptions
         {
-            ShouldHandle = new OutcomePredicate<CircuitBreakerPredicateArguments>().HandleResult<string>(r => true),
+            ShouldHandle = (_, _) => PredicateResult.True,
             ManualControl = manualControl,
         };
 
@@ -50,16 +50,19 @@ internal static partial class Helper
 
             PollyVersion.V8 => CreateStrategy(builder =>
             {
-                var options = new AdvancedCircuitBreakerStrategyOptions<string>
+                builder.AddAdvancedCircuitBreaker(new AdvancedCircuitBreakerStrategyOptions<string>
                 {
                     FailureThreshold = 0.5,
                     SamplingDuration = TimeSpan.FromSeconds(30),
                     MinimumThroughput = 10,
                     BreakDuration = TimeSpan.FromSeconds(5),
-                };
-
-                options.ShouldHandle.HandleOutcome((outcome, _) => outcome.Result == Failure || outcome.Exception is InvalidOperationException);
-                builder.AddAdvancedCircuitBreaker(options);
+                    ShouldHandle = (outcome, _) => outcome switch
+                    {
+                        { Exception: InvalidOperationException } => PredicateResult.True,
+                        { Result: string result } when result == Failure => PredicateResult.True,
+                        _ => PredicateResult.False
+                    }
+                });
             }),
             _ => throw new NotSupportedException()
         };

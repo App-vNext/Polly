@@ -37,8 +37,11 @@ public abstract class CircuitBreakerStrategyOptions<TResult> : ResilienceStrateg
     /// <summary>
     /// Gets or sets the predicates for the circuit breaker.
     /// </summary>
+    /// <remarks>
+    /// Defaults to <see langword="null"/>. This property is required.
+    /// </remarks>
     [Required]
-    public OutcomePredicate<CircuitBreakerPredicateArguments, TResult> ShouldHandle { get; set; } = new();
+    public Func<Outcome<TResult>, CircuitBreakerPredicateArguments, ValueTask<bool>>? ShouldHandle { get; set; }
 
     /// <summary>
     /// Gets or sets the event that is raised when the circuit resets to a <see cref="CircuitState.Closed"/> state.
@@ -52,9 +55,11 @@ public abstract class CircuitBreakerStrategyOptions<TResult> : ResilienceStrateg
     /// However, the invocation order of the <see cref="OnOpened"/>, <see cref="OnClosed"/>, and <see cref="OnHalfOpened"/> events is always
     /// maintained to ensure the correct sequence of state transitions.
     /// </para>
+    /// <para>
+    /// Defaults to <see langword="null"/>.
+    /// </para>
     /// </remarks>
-    [Required]
-    public OutcomeEvent<OnCircuitClosedArguments, TResult> OnClosed { get; set; } = new();
+    public Func<Outcome<TResult>, OnCircuitClosedArguments, ValueTask>? OnClosed { get; set; }
 
     /// <summary>
     /// Gets or sets the event that is raised when the circuit transitions to an <see cref="CircuitState.Open"/> state.
@@ -68,9 +73,11 @@ public abstract class CircuitBreakerStrategyOptions<TResult> : ResilienceStrateg
     /// However, the invocation order of the <see cref="OnOpened"/>, <see cref="OnClosed"/>, and <see cref="OnHalfOpened"/> events is always
     /// maintained to ensure the correct sequence of state transitions.
     /// </para>
+    /// <para>
+    /// Defaults to <see langword="null"/>.
+    /// </para>
     /// </remarks>
-    [Required]
-    public OutcomeEvent<OnCircuitOpenedArguments, TResult> OnOpened { get; set; } = new();
+    public Func<Outcome<TResult>, OnCircuitOpenedArguments, ValueTask>? OnOpened { get; set; }
 
     /// <summary>
     /// Gets or sets the event that is raised when when the circuit transitions to an <see cref="CircuitState.HalfOpen"/> state.
@@ -84,9 +91,11 @@ public abstract class CircuitBreakerStrategyOptions<TResult> : ResilienceStrateg
     /// However, the invocation order of the <see cref="OnOpened"/>, <see cref="OnClosed"/>, and <see cref="OnHalfOpened"/> events is always
     /// maintained to ensure the correct sequence of state transitions.
     /// </para>
+    /// <para>
+    /// Defaults to <see langword="null"/>.
+    /// </para>
     /// </remarks>
-    [Required]
-    public NoOutcomeEvent<OnCircuitHalfOpenedArguments> OnHalfOpened { get; set; } = new();
+    public Func<OnCircuitHalfOpenedArguments, ValueTask>? OnHalfOpened { get; set; }
 
     /// <summary>
     /// Gets or sets the manual control for the circuit breaker.
@@ -108,9 +117,46 @@ public abstract class CircuitBreakerStrategyOptions<TResult> : ResilienceStrateg
     {
         options.BreakDuration = BreakDuration;
         options.StrategyName = StrategyName;
-        options.ShouldHandle = new OutcomePredicate<CircuitBreakerPredicateArguments>().SetPredicates(ShouldHandle);
-        options.OnClosed = new OutcomeEvent<OnCircuitClosedArguments>().SetCallbacks(OnClosed);
-        options.OnOpened = new OutcomeEvent<OnCircuitOpenedArguments>().SetCallbacks(OnOpened);
+
+        if (ShouldHandle is var shouldHandle)
+        {
+            options.ShouldHandle = (outcome, args) =>
+            {
+                if (args.Context.ResultType != typeof(TResult))
+                {
+                    return new ValueTask<bool>(false);
+                }
+
+                return shouldHandle!(outcome.AsOutcome<TResult>(), args);
+            };
+        }
+
+        if (OnClosed is var onClosed)
+        {
+            options.OnClosed = (outcome, args) =>
+            {
+                if (args.Context.ResultType != typeof(TResult))
+                {
+                    return default;
+                }
+
+                return onClosed!(outcome.AsOutcome<TResult>(), args);
+            };
+        }
+
+        if (OnOpened is var onOpened)
+        {
+            options.OnOpened = (outcome, args) =>
+            {
+                if (args.Context.ResultType != typeof(TResult))
+                {
+                    return default;
+                }
+
+                return onOpened!(outcome.AsOutcome<TResult>(), args);
+            };
+        }
+
         options.OnHalfOpened = OnHalfOpened;
         options.ManualControl = ManualControl;
         options.StateProvider = StateProvider;

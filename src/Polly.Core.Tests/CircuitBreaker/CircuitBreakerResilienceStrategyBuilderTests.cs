@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using Polly.CircuitBreaker;
+using Polly.Strategy;
 using Xunit;
 
 namespace Polly.Core.Tests.CircuitBreaker;
@@ -8,14 +9,26 @@ public class CircuitBreakerResilienceStrategyBuilderTests
 {
     public static TheoryData<Action<ResilienceStrategyBuilder>> ConfigureData = new()
     {
-        builder => builder.AddAdvancedCircuitBreaker(new AdvancedCircuitBreakerStrategyOptions()),
-        builder => builder.AddSimpleCircuitBreaker(new SimpleCircuitBreakerStrategyOptions()),
+        builder => builder.AddAdvancedCircuitBreaker(new AdvancedCircuitBreakerStrategyOptions
+        {
+            ShouldHandle = (_, _) => PredicateResult.True
+        }),
+        builder => builder.AddSimpleCircuitBreaker(new SimpleCircuitBreakerStrategyOptions
+        {
+            ShouldHandle = (_, _) => PredicateResult.True
+        }),
     };
 
     public static TheoryData<Action<ResilienceStrategyBuilder<int>>> ConfigureDataGeneric = new()
     {
-        builder => builder.AddAdvancedCircuitBreaker(new AdvancedCircuitBreakerStrategyOptions<int>()),
-        builder => builder.AddSimpleCircuitBreaker(new SimpleCircuitBreakerStrategyOptions<int>()),
+        builder => builder.AddAdvancedCircuitBreaker(new AdvancedCircuitBreakerStrategyOptions<int>
+        {
+            ShouldHandle = (_, _) => PredicateResult.True
+        }),
+        builder => builder.AddSimpleCircuitBreaker(new SimpleCircuitBreakerStrategyOptions<int>
+        {
+            ShouldHandle = (_, _) => PredicateResult.True
+        }),
     };
 
     [MemberData(nameof(ConfigureData))]
@@ -87,12 +100,11 @@ public class CircuitBreakerResilienceStrategyBuilderTests
         {
             FailureThreshold = 5,
             BreakDuration = TimeSpan.FromMilliseconds(500),
+            ShouldHandle = (outcome, _) => new ValueTask<bool>(outcome.Result is -1),
+            OnOpened = (_, _) => { opened++; return default; },
+            OnClosed = (_, _) => { closed++; return default; },
+            OnHalfOpened = (_) => { halfOpened++; return default; }
         };
-
-        options.ShouldHandle.HandleResult(-1);
-        options.OnOpened.Register<int>(() => opened++);
-        options.OnClosed.Register<int>(() => closed++);
-        options.OnHalfOpened.Register(() => halfOpened++);
 
         var timeProvider = new FakeTimeProvider();
         var strategy = new ResilienceStrategyBuilder { TimeProvider = timeProvider.Object }.AddSimpleCircuitBreaker(options).Build();
@@ -139,12 +151,11 @@ public class CircuitBreakerResilienceStrategyBuilderTests
             MinimumThroughput = 10,
             SamplingDuration = TimeSpan.FromSeconds(10),
             BreakDuration = TimeSpan.FromSeconds(1),
+            ShouldHandle = (outcome, _) => new ValueTask<bool>(outcome.Result is -1),
+            OnOpened = (_, _) => { opened++; return default; },
+            OnClosed = (_, _) => { closed++; return default; },
+            OnHalfOpened = (_) => { halfOpened++; return default; }
         };
-
-        options.ShouldHandle.HandleResult(-1);
-        options.OnOpened.Register<int>(() => opened++);
-        options.OnClosed.Register<int>(() => closed++);
-        options.OnHalfOpened.Register(() => halfOpened++);
 
         var timeProvider = new FakeTimeProvider();
         var strategy = new ResilienceStrategyBuilder { TimeProvider = timeProvider.Object }.AddAdvancedCircuitBreaker(options).Build();

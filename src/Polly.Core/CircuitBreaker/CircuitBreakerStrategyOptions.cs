@@ -34,10 +34,13 @@ public abstract class CircuitBreakerStrategyOptions : ResilienceStrategyOptions
     public TimeSpan BreakDuration { get; set; } = CircuitBreakerConstants.DefaultBreakDuration;
 
     /// <summary>
-    /// Gets or sets the predicates for the circuit breaker.
+    /// Gets or sets the predicate for the circuit breaker.
     /// </summary>
+    /// <remarks>
+    /// Defaults to <see langword="null"/>. This property is required.
+    /// </remarks>
     [Required]
-    public OutcomePredicate<CircuitBreakerPredicateArguments> ShouldHandle { get; set; } = new();
+    public Func<Outcome, CircuitBreakerPredicateArguments, ValueTask<bool>>? ShouldHandle { get; set; }
 
     /// <summary>
     /// Gets or sets the event that is raised when the circuit resets to a <see cref="CircuitState.Closed"/> state.
@@ -51,9 +54,11 @@ public abstract class CircuitBreakerStrategyOptions : ResilienceStrategyOptions
     /// However, the invocation order of the <see cref="OnOpened"/>, <see cref="OnClosed"/>, and <see cref="OnHalfOpened"/> events is always
     /// maintained to ensure the correct sequence of state transitions.
     /// </para>
+    /// <para>
+    /// Defaults to <see langword="null"/>.
+    /// </para>
     /// </remarks>
-    [Required]
-    public OutcomeEvent<OnCircuitClosedArguments> OnClosed { get; set; } = new();
+    public Func<Outcome, OnCircuitClosedArguments, ValueTask>? OnClosed { get; set; }
 
     /// <summary>
     /// Gets or sets the event that is raised when the circuit transitions to an <see cref="CircuitState.Open"/> state.
@@ -67,9 +72,11 @@ public abstract class CircuitBreakerStrategyOptions : ResilienceStrategyOptions
     /// However, the invocation order of the <see cref="OnOpened"/>, <see cref="OnClosed"/>, and <see cref="OnHalfOpened"/> events is always
     /// maintained to ensure the correct sequence of state transitions.
     /// </para>
+    /// <para>
+    /// Defaults to <see langword="null"/>.
+    /// </para>
     /// </remarks>
-    [Required]
-    public OutcomeEvent<OnCircuitOpenedArguments> OnOpened { get; set; } = new();
+    public Func<Outcome, OnCircuitOpenedArguments, ValueTask>? OnOpened { get; set; }
 
     /// <summary>
     /// Gets or sets the event that is raised when when the circuit transitions to an <see cref="CircuitState.HalfOpen"/> state.
@@ -83,9 +90,11 @@ public abstract class CircuitBreakerStrategyOptions : ResilienceStrategyOptions
     /// However, the invocation order of the <see cref="OnOpened"/>, <see cref="OnClosed"/>, and <see cref="OnHalfOpened"/> events is always
     /// maintained to ensure the correct sequence of state transitions.
     /// </para>
+    /// <para>
+    /// Defaults to <see langword="null"/>.
+    /// </para>
     /// </remarks>
-    [Required]
-    public NoOutcomeEvent<OnCircuitHalfOpenedArguments> OnHalfOpened { get; set; } = new();
+    public Func<OnCircuitHalfOpenedArguments, ValueTask>? OnHalfOpened { get; set; }
 
     /// <summary>
     /// Gets or sets the manual control for the circuit breaker.

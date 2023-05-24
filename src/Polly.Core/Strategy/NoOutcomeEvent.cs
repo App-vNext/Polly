@@ -13,11 +13,6 @@ public sealed class NoOutcomeEvent<TArgs>
     private readonly List<Func<TArgs, ValueTask>> _callbacks = new();
 
     /// <summary>
-    /// Gets a value indicating whether the event is empty.
-    /// </summary>
-    internal bool IsEmpty => _callbacks.Count == 0;
-
-    /// <summary>
     /// Adds an asynchronous event callback.
     /// </summary>
     /// <param name="callback">The specified callback.</param>

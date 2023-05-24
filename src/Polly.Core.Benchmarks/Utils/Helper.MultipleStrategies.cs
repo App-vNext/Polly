@@ -34,8 +34,12 @@ internal static partial class Helper
                     SamplingDuration = TimeSpan.FromSeconds(30),
                     MinimumThroughput = 10,
                     BreakDuration = TimeSpan.FromSeconds(5),
-                    ShouldHandle = new OutcomePredicate<CircuitBreakerPredicateArguments, string>()
-                        .HandleOutcome((outcome, _) => outcome.Result == Failure || outcome.Exception is InvalidOperationException)
+                    ShouldHandle = (outcome, _) => outcome switch
+                    {
+                        { Exception: InvalidOperationException } => PredicateResult.True,
+                        { Result: string result } when result == Failure => PredicateResult.True,
+                        _ => PredicateResult.False
+                    }
                 });
         }),
         _ => throw new NotSupportedException()

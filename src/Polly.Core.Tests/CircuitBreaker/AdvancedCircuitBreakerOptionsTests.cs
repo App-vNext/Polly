@@ -12,15 +12,14 @@ public class AdvancedCircuitBreakerOptionsTests
     public void Ctor_Defaults()
     {
         var options = new AdvancedCircuitBreakerStrategyOptions();
-
         options.BreakDuration.Should().Be(TimeSpan.FromSeconds(5));
         options.FailureThreshold.Should().Be(0.1);
         options.MinimumThroughput.Should().Be(100);
         options.SamplingDuration.Should().Be(TimeSpan.FromSeconds(30));
-        options.OnOpened.IsEmpty.Should().BeTrue();
-        options.OnClosed.IsEmpty.Should().BeTrue();
-        options.OnHalfOpened.IsEmpty.Should().BeTrue();
-        options.ShouldHandle.IsEmpty.Should().BeTrue();
+        options.OnOpened.Should().BeNull();
+        options.OnClosed.Should().BeNull();
+        options.OnHalfOpened.Should().BeNull();
+        options.ShouldHandle.Should().BeNull();
         options.StrategyType.Should().Be("CircuitBreaker");
         options.StrategyName.Should().BeEmpty();
 
@@ -30,6 +29,7 @@ public class AdvancedCircuitBreakerOptionsTests
         options.MinimumThroughput = 2;
         options.SamplingDuration = TimeSpan.FromMilliseconds(500);
 
+        options.ShouldHandle = (_, _) => PredicateResult.True;
         ValidationHelper.ValidateObject(options, "Dummy.");
     }
 
@@ -42,10 +42,10 @@ public class AdvancedCircuitBreakerOptionsTests
         options.FailureThreshold.Should().Be(0.1);
         options.MinimumThroughput.Should().Be(100);
         options.SamplingDuration.Should().Be(TimeSpan.FromSeconds(30));
-        options.OnOpened.IsEmpty.Should().BeTrue();
-        options.OnClosed.IsEmpty.Should().BeTrue();
-        options.OnHalfOpened.IsEmpty.Should().BeTrue();
-        options.ShouldHandle.IsEmpty.Should().BeTrue();
+        options.OnOpened.Should().BeNull();
+        options.OnClosed.Should().BeNull();
+        options.OnHalfOpened.Should().BeNull();
+        options.ShouldHandle.Should().BeNull();
         options.StrategyType.Should().Be("CircuitBreaker");
         options.StrategyName.Should().BeEmpty();
 
@@ -55,14 +55,15 @@ public class AdvancedCircuitBreakerOptionsTests
         options.MinimumThroughput = 2;
         options.SamplingDuration = TimeSpan.FromMilliseconds(500);
 
+        options.ShouldHandle = (_, _) => PredicateResult.True;
         ValidationHelper.ValidateObject(options, "Dummy.");
     }
 
     [Fact]
     public async Task AsNonGenericOptions_Ok()
     {
-        bool onBreakCalled = false;
-        bool onResetCalled = false;
+        bool onOpenedCalled = false;
+        bool onClosedCalled = false;
         bool onHalfOpenCalled = false;
 
         var options = new AdvancedCircuitBreakerStrategyOptions<int>
@@ -72,10 +73,10 @@ public class AdvancedCircuitBreakerOptionsTests
             SamplingDuration = TimeSpan.FromSeconds(124),
             MinimumThroughput = 6,
             StrategyName = "dummy-name",
-            OnOpened = new OutcomeEvent<OnCircuitOpenedArguments, int>().Register(() => onBreakCalled = true),
-            OnClosed = new OutcomeEvent<OnCircuitClosedArguments, int>().Register(() => onResetCalled = true),
-            OnHalfOpened = new NoOutcomeEvent<OnCircuitHalfOpenedArguments>().Register(() => onHalfOpenCalled = true),
-            ShouldHandle = new OutcomePredicate<CircuitBreakerPredicateArguments, int>().HandleException<InvalidOperationException>(),
+            OnOpened = (_, _) => { onOpenedCalled = true; return default; },
+            OnClosed = (_, _) => { onClosedCalled = true; return default; },
+            OnHalfOpened = (_) => { onHalfOpenCalled = true; return default; },
+            ShouldHandle = (outcome, _) => new ValueTask<bool>(outcome.Exception is InvalidOperationException),
             ManualControl = new CircuitBreakerManualControl(),
             StateProvider = new CircuitBreakerStateProvider()
         };
@@ -92,17 +93,26 @@ public class AdvancedCircuitBreakerOptionsTests
         converted.ManualControl.Should().Be(options.ManualControl);
         converted.StateProvider.Should().Be(options.StateProvider);
 
-        var context = ResilienceContext.Get();
+        var context = ResilienceContext.Get().Initialize<string>(false);
 
-        (await converted.ShouldHandle.CreateHandler()!.ShouldHandleAsync(new Outcome<int>(new InvalidOperationException()), new CircuitBreakerPredicateArguments(context))).Should().BeTrue();
+        // check other type
+        (await converted.ShouldHandle!.Invoke(new Outcome(new InvalidOperationException()), new CircuitBreakerPredicateArguments(context))).Should().BeFalse();
+        await converted.OnClosed!.Invoke(new Outcome(new InvalidOperationException()), new OnCircuitClosedArguments(context, true));
+        await converted.OnOpened!.Invoke(new Outcome(new InvalidOperationException()), new OnCircuitOpenedArguments(context, TimeSpan.Zero, true));
+        await converted.OnHalfOpened!.Invoke(new OnCircuitHalfOpenedArguments(context));
+        onClosedCalled.Should().BeFalse();
+        onOpenedCalled.Should().BeFalse();
+        onHalfOpenCalled.Should().BeTrue();
+        onHalfOpenCalled = false;
 
-        await converted.OnClosed.CreateHandler()!.HandleAsync(new Outcome<int>(new InvalidOperationException()), new OnCircuitClosedArguments(context, true));
-        onResetCalled.Should().BeTrue();
-
-        await converted.OnOpened.CreateHandler()!.HandleAsync(new Outcome<int>(new InvalidOperationException()), new OnCircuitOpenedArguments(context, TimeSpan.Zero, true));
-        onBreakCalled.Should().BeTrue();
-
-        await converted.OnHalfOpened.CreateHandler()!(new OnCircuitHalfOpenedArguments(context));
+        // check correct type
+        context = ResilienceContext.Get().Initialize<int>(false);
+        (await converted.ShouldHandle!.Invoke(new Outcome(new InvalidOperationException()), new CircuitBreakerPredicateArguments(context))).Should().BeTrue();
+        await converted.OnClosed!.Invoke(new Outcome(new InvalidOperationException()), new OnCircuitClosedArguments(context, true));
+        await converted.OnOpened!.Invoke(new Outcome(new InvalidOperationException()), new OnCircuitOpenedArguments(context, TimeSpan.Zero, true));
+        await converted.OnHalfOpened!.Invoke(new OnCircuitHalfOpenedArguments(context));
+        onClosedCalled.Should().BeTrue();
+        onOpenedCalled.Should().BeTrue();
         onHalfOpenCalled.Should().BeTrue();
     }
 
@@ -133,9 +143,6 @@ public class AdvancedCircuitBreakerOptionsTests
             The field SamplingDuration must be >= to 00:00:00.5000000.
             The field BreakDuration must be >= to 00:00:00.5000000.
             The ShouldHandle field is required.
-            The OnClosed field is required.
-            The OnOpened field is required.
-            The OnHalfOpened field is required.
             """);
     }
 }
