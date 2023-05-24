@@ -13,9 +13,9 @@ public class FallbackStrategyOptionsTResultTests
         var options = new FallbackStrategyOptions<int>();
 
         options.StrategyType.Should().Be("Fallback");
-        options.ShouldHandle.Should().NotBeNull();
-        options.ShouldHandle.IsEmpty.Should().BeTrue();
-        options.OnFallback.IsEmpty.Should().BeTrue();
+        options.ShouldHandle.Should().BeNull();
+        options.OnFallback.Should().BeNull();
+        options.FallbackAction.Should().BeNull();
     }
 
     [Fact]
@@ -23,7 +23,6 @@ public class FallbackStrategyOptionsTResultTests
     {
         var options = new FallbackStrategyOptions<int>
         {
-            OnFallback = null!,
             ShouldHandle = null!
         };
 
@@ -37,7 +36,6 @@ public class FallbackStrategyOptionsTResultTests
             Validation Errors:
             The ShouldHandle field is required.
             The FallbackAction field is required.
-            The OnFallback field is required.
             """);
     }
 
@@ -47,8 +45,8 @@ public class FallbackStrategyOptionsTResultTests
         var called = false;
         var options = new FallbackStrategyOptions<int>
         {
-            OnFallback = new OutcomeEvent<OnFallbackArguments, int>().Register(() => called = true),
-            ShouldHandle = new OutcomePredicate<HandleFallbackArguments, int>().HandleResult(-1),
+            OnFallback = (_, _) => { called = true; return default; },
+            ShouldHandle = (outcome, _) => new ValueTask<bool>(outcome.Result == -1),
             FallbackAction = (_, _) => new ValueTask<int>(1),
             StrategyName = "Dummy",
         };
@@ -69,9 +67,11 @@ public class FallbackStrategyOptionsTResultTests
         result = await handler!.ShouldHandleAsync(new Outcome<int>(0), new HandleFallbackArguments(ResilienceContext.Get()));
         result.Should().BeNull();
 
-        nonGeneric.OnFallback.IsEmpty.Should().BeFalse();
-        await nonGeneric.OnFallback.CreateHandler()!.HandleAsync(new Outcome<int>(0), new OnFallbackArguments(ResilienceContext.Get()));
+        nonGeneric.OnFallback.Should().NotBeNull();
+        await nonGeneric.OnFallback!(new Outcome(0), new OnFallbackArguments(ResilienceContext.Get()));
+        called.Should().BeFalse();
 
+        await nonGeneric.OnFallback!(new Outcome(0), new OnFallbackArguments(ResilienceContext.Get().Initialize<int>(true)));
         called.Should().BeTrue();
     }
 }

@@ -1,3 +1,4 @@
+using System;
 using System.ComponentModel.DataAnnotations;
 using Polly.Strategy;
 
@@ -16,8 +17,11 @@ public sealed class FallbackHandler<TResult>
     /// <summary>
     /// Gets or sets the predicate that determines whether a fallback should be performed for a given result.
     /// </summary>
+    /// <remarks>
+    /// This property is required. Defaults to <see langword="null"/>.
+    /// </remarks>
     [Required]
-    public OutcomePredicate<HandleFallbackArguments, TResult> ShouldHandle { get; set; } = new();
+    public Func<Outcome<TResult>, HandleFallbackArguments, ValueTask<bool>>? ShouldHandle { get; set; }
 
     /// <summary>
     /// Gets or sets the fallback action to be executed if <see cref="ShouldHandle"/> predicate evaluates as true.
@@ -27,4 +31,16 @@ public sealed class FallbackHandler<TResult>
     /// </remarks>
     [Required]
     public Func<Outcome<TResult>, HandleFallbackArguments, ValueTask<TResult>>? FallbackAction { get; set; } = null;
+
+    internal async ValueTask<Func<Outcome<TResult>, HandleFallbackArguments, ValueTask<TResult>>?> ShouldHandleAsync(
+        Outcome<TResult> outcome,
+        HandleFallbackArguments arguments)
+    {
+        if (!await ShouldHandle!(outcome, arguments).ConfigureAwait(arguments.Context.ContinueOnCapturedContext))
+        {
+            return null;
+        }
+
+        return FallbackAction;
+    }
 }

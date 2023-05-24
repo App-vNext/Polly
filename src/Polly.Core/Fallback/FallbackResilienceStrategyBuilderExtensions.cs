@@ -36,7 +36,7 @@ public static class FallbackResilienceStrategyBuilderExtensions
         var predicateBuilder = new PredicateBuilder<TResult>();
         shouldHandle(predicateBuilder);
 
-        options.ShouldHandle.HandleOutcome(predicateBuilder.CreatePredicate<HandleFallbackArguments>());
+        options.ShouldHandle = predicateBuilder.CreatePredicate<HandleFallbackArguments>();
 
         return builder.AddFallback(options);
     }

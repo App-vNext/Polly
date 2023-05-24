@@ -27,9 +27,8 @@ internal class FallbackStrategyOptions : ResilienceStrategyOptions
     /// Gets or sets the outcome event instance for raising fallback events.
     /// </summary>
     /// <remarks>
-    /// This property is required.
+    /// Defaults to <see langword="null"/>.
     /// </remarks>
-    [Required]
-    public OutcomeEvent<OnFallbackArguments> OnFallback { get; set; } = new();
+    public Func<Outcome, OnFallbackArguments, ValueTask>? OnFallback { get; set; }
 }
 

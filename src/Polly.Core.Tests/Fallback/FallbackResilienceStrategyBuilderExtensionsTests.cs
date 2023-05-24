@@ -2,6 +2,7 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using Polly.Fallback;
+using Polly.Strategy;
 
 namespace Polly.Core.Tests.Fallback;
 
@@ -11,7 +12,11 @@ public class FallbackResilienceStrategyBuilderExtensionsTests
     {
         builder =>
         {
-            builder.AddFallback(new FallbackStrategyOptions<int>{ FallbackAction = (_, _) =>  new ValueTask<int>(0) });
+            builder.AddFallback(new FallbackStrategyOptions<int>
+            {
+                FallbackAction = (_, _) =>  new ValueTask<int>(0),
+                ShouldHandle = (_, _) => PredicateResult.False,
+            });
         },
         builder =>
         {
@@ -34,7 +39,7 @@ public class FallbackResilienceStrategyBuilderExtensionsTests
         var options = new FallbackStrategyOptions();
         options.Handler.SetFallback<int>(handler =>
         {
-            handler.ShouldHandle.HandleResult(-1).HandleException<InvalidOperationException>();
+            handler.ShouldHandle = (outcome, _) => new ValueTask<bool>(outcome.Exception is InvalidOperationException || outcome.Result == -1);
             handler.FallbackAction = (_, args) =>
             {
                 args.Context.Should().NotBeNull();

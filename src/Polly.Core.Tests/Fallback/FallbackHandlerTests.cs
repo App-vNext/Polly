@@ -53,16 +53,7 @@ public class FallbackHandlerTests
     [Fact]
     public void SetFallback_Empty_Discarded()
     {
-        var handler = new FallbackHandler()
-            .SetFallback<int>(handler =>
-            {
-                handler.FallbackAction = (_, _) => new ValueTask<int>(0);
-            })
-            .SetVoidFallback(handler =>
-            {
-                handler.FallbackAction = (_, _) => default;
-            });
-
+        var handler = new FallbackHandler();
         handler.IsEmpty.Should().BeTrue();
         handler.CreateHandler().Should().BeNull();
     }
@@ -74,7 +65,7 @@ public class FallbackHandlerTests
             .SetFallback<int>(handler =>
             {
                 handler.FallbackAction = (_, _) => new ValueTask<int>(0);
-                handler.ShouldHandle.HandleResult(-1);
+                handler.ShouldHandle = (outcome, _) => new ValueTask<bool>(outcome.Result == -1);
             })
             .CreateHandler();
 
@@ -94,7 +85,7 @@ public class FallbackHandlerTests
             .SetVoidFallback(handler =>
             {
                 handler.FallbackAction = (_, _) => default;
-                handler.ShouldHandle.HandleException<InvalidOperationException>();
+                handler.ShouldHandle = (outcome, _) => new ValueTask<bool>(outcome.Exception is InvalidOperationException);
             })
             .CreateHandler();
 
@@ -115,11 +106,12 @@ public class FallbackHandlerTests
             .SetFallback<int>(handler =>
             {
                 handler.FallbackAction = (_, _) => default;
-                handler.ShouldHandle.HandleException<InvalidOperationException>();
+                handler.ShouldHandle = (outcome, _) => new ValueTask<bool>(outcome.Exception is InvalidOperationException);
             })
             .SetFallback<string>(handler =>
             {
                 handler.FallbackAction = (_, _) => default;
+                handler.ShouldHandle = (_, _) => PredicateResult.True;
             })
             .CreateHandler();
 
