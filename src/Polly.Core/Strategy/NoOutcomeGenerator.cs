@@ -11,11 +11,6 @@ public sealed class NoOutcomeGenerator<TArgs, TValue>
     private Func<TArgs, ValueTask<TValue>>? _generator;
 
     /// <summary>
-    /// Gets a value indicating whether the generator is empty.
-    /// </summary>
-    internal bool IsEmpty => _generator is null;
-
-    /// <summary>
     /// Adds a result generator.
     /// </summary>
     /// <param name="generator">The generator to determine if the result should be retried.</param>
