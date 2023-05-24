@@ -16,7 +16,8 @@ public class RetryResilienceStrategyBuilderExtensionsTests
             {
                 BackoffType = RetryBackoffType.Exponential,
                 RetryCount = 3,
-                BaseDelay = TimeSpan.FromSeconds(2)
+                BaseDelay = TimeSpan.FromSeconds(2),
+                ShouldRetry = (_, _) => PredicateResult.True,
             });
 
             AssertStrategy(builder, RetryBackoffType.Exponential, 3, TimeSpan.FromSeconds(2));
@@ -32,12 +33,12 @@ public class RetryResilienceStrategyBuilderExtensionsTests
         },
         builder =>
         {
-            builder.AddRetry(retry=>retry.HandleResult(10), RetryBackoffType.Linear);
+            builder.AddRetry(retry => retry.HandleResult(10), RetryBackoffType.Linear);
             AssertStrategy(builder, RetryBackoffType.Linear, 3, TimeSpan.FromSeconds(2));
         },
         builder =>
         {
-            builder.AddRetry(retry=>retry.HandleResult(10), RetryBackoffType.Linear, 2, TimeSpan.FromSeconds(1));
+            builder.AddRetry(retry => retry.HandleResult(10), RetryBackoffType.Linear, 2, TimeSpan.FromSeconds(1));
             AssertStrategy(builder, RetryBackoffType.Linear, 2, TimeSpan.FromSeconds(1));
         },
         builder =>
@@ -46,9 +47,9 @@ public class RetryResilienceStrategyBuilderExtensionsTests
 
             AssertStrategy(builder, RetryBackoffType.ExponentialWithJitter, 3, TimeSpan.FromSeconds(2), strategy =>
             {
-                var args = new RetryDelayArguments(ResilienceContext.Get(), 8, TimeSpan.Zero);
+                var args = new RetryDelayArguments(ResilienceContext.Get().Initialize<int>(true), 8, TimeSpan.Zero);
 
-                strategy.DelayGenerator!.GenerateAsync(new Outcome<int>(new InvalidOperationException()), args).Result.Should().Be(TimeSpan.FromMilliseconds(8));
+                strategy.DelayGenerator!(new Outcome(new InvalidOperationException()), args).Result.Should().Be(TimeSpan.FromMilliseconds(8));
             });
         },
         builder =>
@@ -57,7 +58,8 @@ public class RetryResilienceStrategyBuilderExtensionsTests
             {
                 BackoffType = RetryBackoffType.Exponential,
                 RetryCount = 3,
-                BaseDelay = TimeSpan.FromSeconds(2)
+                BaseDelay = TimeSpan.FromSeconds(2),
+                ShouldRetry = (_, _) => PredicateResult.True
             });
 
             AssertStrategy(builder, RetryBackoffType.Exponential, 3, TimeSpan.FromSeconds(2));
@@ -86,7 +88,7 @@ public class RetryResilienceStrategyBuilderExtensionsTests
     public void AddRetry_DefaultOptions_Ok()
     {
         var builder = new ResilienceStrategyBuilder();
-        var options = new RetryStrategyOptions();
+        var options = new RetryStrategyOptions { ShouldRetry = (_, _) => PredicateResult.True };
 
         builder.AddRetry(options);
 

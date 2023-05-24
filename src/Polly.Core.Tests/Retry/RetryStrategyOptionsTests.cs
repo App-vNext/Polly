@@ -11,14 +11,9 @@ public class RetryStrategyOptionsTests
     {
         var options = new RetryStrategyOptions();
 
-        options.ShouldRetry.Should().NotBeNull();
-        options.ShouldRetry.IsEmpty.Should().BeTrue();
-
-        options.RetryDelayGenerator.Should().NotBeNull();
-        options.RetryDelayGenerator.IsEmpty.Should().BeTrue();
-
-        options.OnRetry.Should().NotBeNull();
-        options.OnRetry.IsEmpty.Should().BeTrue();
+        options.ShouldRetry.Should().BeNull();
+        options.RetryDelayGenerator.Should().BeNull();
+        options.OnRetry.Should().BeNull();
 
         options.RetryCount.Should().Be(3);
         options.BackoffType.Should().Be(RetryBackoffType.ExponentialWithJitter);
@@ -47,8 +42,6 @@ public class RetryStrategyOptionsTests
             The field RetryCount must be between -1 and 100.
             The field BaseDelay must be >= to 00:00:00.
             The ShouldRetry field is required.
-            The RetryDelayGenerator field is required.
-            The OnRetry field is required.
             """);
     }
 }
