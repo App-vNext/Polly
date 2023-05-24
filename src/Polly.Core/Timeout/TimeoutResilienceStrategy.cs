@@ -58,7 +58,7 @@ internal sealed class TimeoutResilienceStrategy : ResilienceStrategy
         _cancellationTokenSourcePool.Return(cancellationSource);
 
         // check the outcome
-        if (outcome.Exception is OperationCanceledException e && isCancellationRequested && !previousToken.IsCancellationRequested)
+        if (isCancellationRequested && outcome.Exception is OperationCanceledException e && !previousToken.IsCancellationRequested)
         {
             var args = new OnTimeoutArguments(context, e, timeout);
             _telemetry.Report(TimeoutConstants.OnTimeoutEvent, args);
