@@ -15,16 +15,12 @@ public readonly struct Outcome
     /// <param name="exception">The exception that occurred during the operation.</param>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="exception"/> is <see langword="null"/>.</exception>
     public Outcome(Exception exception)
-        : this(Guard.NotNull(exception), ExceptionDispatchInfo.Capture(exception))
+        : this(ExceptionDispatchInfo.Capture(Guard.NotNull(exception)))
     {
     }
 
-    internal Outcome(Exception exception, ExceptionDispatchInfo exceptionDispatchInfo)
-        : this()
-    {
-        Exception = Guard.NotNull(exception);
-        ExceptionDispatchInfo = Guard.NotNull(exceptionDispatchInfo);
-    }
+    internal Outcome(ExceptionDispatchInfo exceptionDispatchInfo)
+        : this() => ExceptionDispatchInfo = Guard.NotNull(exceptionDispatchInfo);
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Outcome"/> struct with the specified result.
@@ -36,7 +32,7 @@ public readonly struct Outcome
     /// <summary>
     /// Gets the exception that occurred during the operation, if any.
     /// </summary>
-    public Exception? Exception { get; }
+    public Exception? Exception => ExceptionDispatchInfo?.SourceException;
 
     /// <summary>
     /// Gets the result produced by the operation, if any.
@@ -50,7 +46,7 @@ public readonly struct Outcome
     /// If the operation returned a void result the value will be <see langword="true"/>.
     /// You can use <see cref="IsVoidResult"/> to determine if the result is a void result.
     /// </remarks>
-    public bool HasResult => Exception == null;
+    public bool HasResult => ExceptionDispatchInfo == null;
 
     /// <summary>
     /// Gets a value indicating whether the operation produced a void result.
@@ -87,23 +83,11 @@ public readonly struct Outcome
     /// If the outcome represents an exception, then <see cref="Exception.Message"/> will be returned.
     /// If the outcome represents a result, then <see cref="Result"/> formatted as string will be returned.
     /// </remarks>
-    public override string ToString()
-    {
-        if (Exception != null)
-        {
-            return Exception.Message;
-        }
+    public override string ToString() => ExceptionDispatchInfo != null
+        ? Exception!.Message
+        : Result?.ToString() ?? string.Empty;
 
-        return Result?.ToString() ?? string.Empty;
-    }
-
-    internal Outcome<TResult> AsOutcome<TResult>()
-    {
-        if (Exception != null)
-        {
-            return new Outcome<TResult>(ExceptionDispatchInfo!);
-        }
-
-        return new Outcome<TResult>((TResult)Result!);
-    }
+    internal Outcome<TResult> AsOutcome<TResult>() => ExceptionDispatchInfo != null
+        ? new Outcome<TResult>(ExceptionDispatchInfo)
+        : new Outcome<TResult>((TResult)Result!);
 }
