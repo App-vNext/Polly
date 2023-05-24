@@ -238,6 +238,4 @@ new ResilienceStrategyBuilder()
 
 ## Registering Custom Callbacks
 
-When setting the delegates, ensure to respect the `ResilienceContext.IsSynchronous
-
-` property's value and execute your delegates synchronously for synchronous executions. In addition, use the `ResilienceContext.ContinueOnCapturedContext` when your user code employs execution and synchronization context (for example, asynchronous calls in UI applications, such as in Windows Forms or WPF applications).
+When setting the delegates, ensure to respect the `ResilienceContext.IsSynchronous` property's value and execute your delegates synchronously for synchronous executions. In addition, use the `ResilienceContext.ContinueOnCapturedContext` property when your user code uses execution with synchronization context (for example, asynchronous calls in UI applications, such as in Windows Forms or WPF applications).
