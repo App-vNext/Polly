@@ -1,9 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using Polly.Strategy;
 
-namespace Polly;
+namespace Polly.Strategy;
 
 /// <summary>
 /// Defines a builder for creating predicates for <typeparamref name="TResult"/> and <see cref="Exception"/> combinations.
