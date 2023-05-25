@@ -183,7 +183,7 @@ internal sealed class HedgingExecutionContext
 
     private TaskExecution? TryRemoveExecutedTask()
     {
-        if (_executingTasks.FirstOrDefault(static v => v.ExecutionTaskSafe!.IsCompleted) is TaskExecution execution)
+        if (_executingTasks.Find(static v => v.ExecutionTaskSafe!.IsCompleted) is TaskExecution execution)
         {
             _executingTasks.Remove(execution);
             return execution;

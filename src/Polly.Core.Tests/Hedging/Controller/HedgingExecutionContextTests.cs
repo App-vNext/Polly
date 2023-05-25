@@ -132,8 +132,8 @@ public class HedgingExecutionContextTests : IDisposable
 
         _timeProvider.Advance(TimeSpan.FromDays(1));
         await context.TryWaitForCompletedExecutionAsync(TimeSpan.Zero);
-        await context.Tasks.First().ExecutionTaskSafe!;
-        context.Tasks.First().AcceptOutcome();
+        await context.Tasks[0].ExecutionTaskSafe!;
+        context.Tasks[0].AcceptOutcome();
     }
 
     [Fact]
@@ -152,7 +152,7 @@ public class HedgingExecutionContextTests : IDisposable
         task.Wait(20).Should().BeFalse();
         _timeProvider.Advance(TimeSpan.FromDays(1));
         await task;
-        context.Tasks.First().AcceptOutcome();
+        context.Tasks[0].AcceptOutcome();
     }
 
     [Fact]
@@ -175,8 +175,8 @@ public class HedgingExecutionContextTests : IDisposable
         _timeProvider.DelayEntries.Last().Delay.Should().Be(hedgingDelay);
         _timeProvider.Advance(TimeSpan.FromDays(1));
         await task;
-        await context.Tasks.First().ExecutionTaskSafe!;
-        context.Tasks.First().AcceptOutcome();
+        await context.Tasks[0].ExecutionTaskSafe!;
+        context.Tasks[0].AcceptOutcome();
     }
 
     [Fact]
