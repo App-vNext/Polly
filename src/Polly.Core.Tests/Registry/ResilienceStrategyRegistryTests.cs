@@ -332,7 +332,7 @@ public class ResilienceStrategyRegistryTests
         var expectedStrategy = new TestResilienceStrategy();
         var registry = CreateRegistry();
         var key = StrategyId.Create("A", "Instance");
-        registry.TryAdd(key, expectedStrategy);
+        registry.TryAdd(key, expectedStrategy).Should().BeTrue();
 
         registry.TryAdd(key, new TestResilienceStrategy()).Should().BeFalse();
 
@@ -346,7 +346,7 @@ public class ResilienceStrategyRegistryTests
         var expectedStrategy = new TestResilienceStrategy<string>();
         var registry = CreateRegistry();
         var key = StrategyId.Create("A", "Instance");
-        registry.TryAdd(key, expectedStrategy);
+        registry.TryAdd(key, expectedStrategy).Should().BeTrue();
 
         registry.TryAdd(key, new TestResilienceStrategy<string>()).Should().BeFalse();
 
