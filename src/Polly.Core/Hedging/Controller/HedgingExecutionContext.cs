@@ -219,7 +219,7 @@ internal sealed class HedgingExecutionContext
 
         if (acceptedExecution is not null)
         {
-            originalContext.Properties.Replace(acceptedExecution!.Properties);
+            originalContext.Properties.Replace(acceptedExecution.Properties);
 
             if (acceptedExecution.Type == HedgedTaskType.Secondary)
             {
