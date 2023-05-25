@@ -21,21 +21,38 @@ public class PollyServiceCollectionExtensionTests
     {
         _services = null!;
         Assert.Throws<ArgumentNullException>(() => AddResilienceStrategy(Key));
+        Assert.Throws<ArgumentNullException>(() => AddResilienceStrategy<string>(Key));
 
         _services = new ServiceCollection();
         Assert.Throws<ArgumentNullException>(() => _services.AddResilienceStrategy(
             Key,
             (Action<ResilienceStrategyBuilder, AddResilienceStrategyContext<string>>)null!));
+        Assert.Throws<ArgumentNullException>(() => _services.AddResilienceStrategy(
+            Key,
+            (Action<ResilienceStrategyBuilder<string>, AddResilienceStrategyContext<string>>)null!));
 
         Assert.Throws<ArgumentNullException>(() => _services.AddResilienceStrategy(
             Key,
             (Action<ResilienceStrategyBuilder>)null!));
+
+        Assert.Throws<ArgumentNullException>(() => _services.AddResilienceStrategy(
+            Key,
+            (Action<ResilienceStrategyBuilder<string>>)null!));
     }
 
-    [Fact]
-    public void AddResilienceStrategy_EnsureRegisteredServices()
+    [InlineData(true)]
+    [InlineData(false)]
+    [Theory]
+    public void AddResilienceStrategy_EnsureRegisteredServices(bool generic)
     {
-        AddResilienceStrategy(Key);
+        if (generic)
+        {
+            AddResilienceStrategy<string>(Key);
+        }
+        else
+        {
+            AddResilienceStrategy(Key);
+        }
 
         var serviceProvider = _services.BuildServiceProvider();
 
@@ -49,29 +66,57 @@ public class PollyServiceCollectionExtensionTests
     public void AddResilienceStrategy_MultipleRegistries_Ok()
     {
         AddResilienceStrategy(Key);
+        AddResilienceStrategy<string>(Key);
+        AddResilienceStrategy<int>(Key);
+
         _services.AddResilienceStrategy(10, context => context.AddStrategy(new TestStrategy()));
+        _services.AddResilienceStrategy<int, string>(10, context => context.AddStrategy(new TestStrategy()));
+        _services.AddResilienceStrategy<int, int>(10, context => context.AddStrategy(new TestStrategy()));
 
         var serviceProvider = _services.BuildServiceProvider();
 
         serviceProvider.GetRequiredService<ResilienceStrategyRegistry<string>>().Get(Key).Should().NotBeNull();
+        serviceProvider.GetRequiredService<ResilienceStrategyRegistry<string>>().Get<string>(Key).Should().NotBeNull();
+        serviceProvider.GetRequiredService<ResilienceStrategyRegistry<string>>().Get<int>(Key).Should().NotBeNull();
+
         serviceProvider.GetRequiredService<ResilienceStrategyRegistry<int>>().Get(10).Should().NotBeNull();
+        serviceProvider.GetRequiredService<ResilienceStrategyRegistry<int>>().Get<string>(10).Should().NotBeNull();
+        serviceProvider.GetRequiredService<ResilienceStrategyRegistry<int>>().Get<int>(10).Should().NotBeNull();
     }
 
-    [Fact]
-    public void AddResilienceStrategy_EnsureContextFilled()
+    [InlineData(true)]
+    [InlineData(false)]
+    [Theory]
+    public void AddResilienceStrategy_EnsureContextFilled(bool generic)
     {
         var asserted = false;
 
-        _services.AddResilienceStrategy(Key, (builder, context) =>
+        if (generic)
         {
-            context.Key.Should().Be(Key);
-            builder.Should().NotBeNull();
-            context.ServiceProvider.Should().NotBeNull();
-            builder.AddStrategy(new TestStrategy());
-            asserted = true;
-        });
+            _services.AddResilienceStrategy<string, string>(Key, (builder, context) =>
+            {
+                context.Key.Should().Be(Key);
+                builder.Should().NotBeNull();
+                context.ServiceProvider.Should().NotBeNull();
+                builder.AddStrategy(new TestStrategy());
+                asserted = true;
+            });
 
-        CreateProvider().Get(Key);
+            CreateProvider().Get<string>(Key);
+        }
+        else
+        {
+            _services.AddResilienceStrategy(Key, (builder, context) =>
+            {
+                context.Key.Should().Be(Key);
+                builder.Should().NotBeNull();
+                context.ServiceProvider.Should().NotBeNull();
+                builder.AddStrategy(new TestStrategy());
+                asserted = true;
+            });
+
+            CreateProvider().Get(Key);
+        }
 
         asserted.Should().BeTrue();
     }
@@ -152,16 +197,26 @@ public class PollyServiceCollectionExtensionTests
         provider.Get("my-strategy").Should().BeSameAs(provider.Get("my-strategy"));
     }
 
-    [Fact]
-    public void AddResilienceStrategy_Twice_LastOneWins()
+    [InlineData(true)]
+    [InlineData(false)]
+    [Theory]
+    public void AddResilienceStrategy_Twice_LastOneWins(bool generic)
     {
         var firstCalled = false;
         var secondCalled = false;
 
-        AddResilienceStrategy(Key, _ => firstCalled = true);
-        AddResilienceStrategy(Key, _ => secondCalled = true);
-
-        CreateProvider().Get(Key);
+        if (generic)
+        {
+            AddResilienceStrategy<string>(Key, _ => firstCalled = true);
+            AddResilienceStrategy<string>(Key, _ => secondCalled = true);
+            CreateProvider().Get<string>(Key);
+        }
+        else
+        {
+            AddResilienceStrategy(Key, _ => firstCalled = true);
+            AddResilienceStrategy(Key, _ => secondCalled = true);
+            CreateProvider().Get(Key);
+        }
 
         firstCalled.Should().BeFalse();
         secondCalled.Should().BeTrue();
@@ -173,16 +228,45 @@ public class PollyServiceCollectionExtensionTests
         for (var i = 0; i < 10; i++)
         {
             AddResilienceStrategy(i.ToString(CultureInfo.InvariantCulture));
+            AddResilienceStrategy<string>(i.ToString(CultureInfo.InvariantCulture));
+            AddResilienceStrategy<int>(i.ToString(CultureInfo.InvariantCulture));
         }
 
         var provider = CreateProvider();
 
-        Enumerable.Range(0, 10).Select(i => i.ToString(CultureInfo.InvariantCulture)).Distinct().Should().HaveCount(10);
+        Enumerable
+            .Range(0, 10)
+            .SelectMany(i =>
+            {
+                var name = i.ToString(CultureInfo.InvariantCulture);
+
+                return new object[]
+                {
+                    provider.Get(name),
+                    provider.Get<string>(name),
+                    provider.Get<int>(name)
+                };
+            })
+            .Distinct()
+            .Should()
+            .HaveCount(30);
     }
 
     private void AddResilienceStrategy(string key, Action<ResilienceStrategyBuilderContext>? onBuilding = null)
     {
         _services.AddResilienceStrategy(key, builder =>
+        {
+            builder.AddStrategy(context =>
+            {
+                onBuilding?.Invoke(context);
+                return new TestStrategy();
+            }, new TestResilienceStrategyOptions());
+        });
+    }
+
+    private void AddResilienceStrategy<TResult>(string key, Action<ResilienceStrategyBuilderContext>? onBuilding = null)
+    {
+        _services.AddResilienceStrategy<string, TResult>(key, builder =>
         {
             builder.AddStrategy(context =>
             {

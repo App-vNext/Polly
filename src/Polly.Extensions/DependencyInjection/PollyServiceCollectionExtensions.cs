@@ -1,3 +1,4 @@
+using System;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
@@ -16,6 +17,79 @@ namespace Microsoft.Extensions.DependencyInjection;
 /// </summary>
 public static class PollyServiceCollectionExtensions
 {
+    /// <summary>
+    /// Adds a generic resilience strategy to service collection.
+    /// </summary>
+    /// <typeparam name="TKey">The type of the key used to identify the resilience strategy.</typeparam>
+    /// <typeparam name="TResult">The type of result that the resilience strategy handles.</typeparam>
+    /// <param name="services">The <see cref="IServiceCollection"/> to add the resilience strategy to.</param>
+    /// <param name="key">The key used to identify the resilience strategy.</param>
+    /// <param name="configure">An action that configures the resilience strategy.</param>
+    /// <returns>The updated <see cref="IServiceCollection"/> with the registered resilience strategy.</returns>
+    /// <exception cref="InvalidOperationException">Thrown if the resilience strategy builder with the provided key has already been added to the registry.</exception>
+    /// <remarks>
+    /// You can retrieve the registered strategy by resolving the <see cref="ResilienceStrategyProvider{TKey}"/> class from the dependency injection container.
+    /// <para>
+    /// This call enables the telemetry for the registered resilience strategy.
+    /// </para>
+    /// </remarks>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="services"/> or <paramref name="configure"/> is <see langword="null"/>.</exception>
+    public static IServiceCollection AddResilienceStrategy<TKey, TResult>(
+        this IServiceCollection services,
+        TKey key,
+        Action<ResilienceStrategyBuilder<TResult>> configure)
+        where TKey : notnull
+    {
+        Guard.NotNull(services);
+        Guard.NotNull(configure);
+
+        return services.AddResilienceStrategy<TKey, TResult>(key, (builder, _) => configure(builder));
+    }
+
+    /// <summary>
+    /// Adds a generic resilience strategy to service collection.
+    /// </summary>
+    /// <typeparam name="TKey">The type of the key used to identify the resilience strategy.</typeparam>
+    /// <typeparam name="TResult">The type of result that the resilience strategy handles.</typeparam>
+    /// <param name="services">The <see cref="IServiceCollection"/> to add the resilience strategy to.</param>
+    /// <param name="key">The key used to identify the resilience strategy.</param>
+    /// <param name="configure">An action that configures the resilience strategy.</param>
+    /// <returns>The updated <see cref="IServiceCollection"/> with the registered resilience strategy.</returns>
+    /// <exception cref="InvalidOperationException">Thrown if the resilience strategy builder with the provided key has already been added to the registry.</exception>
+    /// <remarks>
+    /// You can retrieve the registered strategy by resolving the <see cref="ResilienceStrategyProvider{TKey}"/> class from the dependency injection container.
+    /// <para>
+    /// This call enables the telemetry for the registered resilience strategy.
+    /// </para>
+    /// </remarks>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="services"/> or <paramref name="configure"/> is <see langword="null"/>.</exception>
+    public static IServiceCollection AddResilienceStrategy<TKey, TResult>(
+        this IServiceCollection services,
+        TKey key,
+        Action<ResilienceStrategyBuilder<TResult>, AddResilienceStrategyContext<TKey>> configure)
+        where TKey : notnull
+    {
+        Guard.NotNull(services);
+        Guard.NotNull(configure);
+
+        services
+            .AddOptions<ConfigureResilienceStrategyRegistryOptions<TKey>>()
+            .Configure<IServiceProvider>((options, serviceProvider) =>
+            {
+                options.Actions.Add((registry) =>
+                {
+                    // the last added builder with the same key wins, this allows overriding the builders
+                    registry.RemoveBuilder<TResult>(key);
+                    registry.TryAddBuilder<TResult>(key, (key, builder) =>
+                    {
+                        configure(builder, new AddResilienceStrategyContext<TKey>(key, serviceProvider));
+                    });
+                });
+            });
+
+        return AddResilienceStrategyRegistry<TKey>(services);
+    }
+
     /// <summary>
     /// Adds a resilience strategy to service collection.
     /// </summary>
@@ -69,12 +143,27 @@ public static class PollyServiceCollectionExtensions
         Guard.NotNull(services);
         Guard.NotNull(configure);
 
-        services.AddOptions();
-        services.Configure<ConfigureResilienceStrategyRegistryOptions<TKey>>(options =>
-        {
-            options.Actions.Add(new ConfigureResilienceStrategyRegistryOptions<TKey>.Entry(key, configure));
-        });
+        services
+            .AddOptions<ConfigureResilienceStrategyRegistryOptions<TKey>>()
+            .Configure<IServiceProvider>((options, serviceProvider) =>
+            {
+                options.Actions.Add((registry) =>
+                {
+                    // the last added builder with the same key wins, this allows overriding the builders
+                    registry.RemoveBuilder(key);
+                    registry.TryAddBuilder(key, (key, builder) =>
+                    {
+                        configure(builder, new AddResilienceStrategyContext<TKey>(key, serviceProvider));
+                    });
+                });
+            });
 
+        return AddResilienceStrategyRegistry<TKey>(services);
+    }
+
+    private static IServiceCollection AddResilienceStrategyRegistry<TKey>(this IServiceCollection services)
+        where TKey : notnull
+    {
         // check marker to ensure the APIs bellow are called only once for each TKey type
         // this prevents polluting the service collection with unnecessary Configure calls
         if (services.Contains(RegistryMarker<TKey>.ServiceDescriptor))
@@ -82,16 +171,11 @@ public static class PollyServiceCollectionExtensions
             return services;
         }
 
+        services.AddOptions();
         services.Add(RegistryMarker<TKey>.ServiceDescriptor);
         services.AddResilienceStrategyBuilder();
         services.AddResilienceStrategyRegistry<TKey>();
 
-        return services;
-    }
-
-    private static IServiceCollection AddResilienceStrategyRegistry<TKey>(this IServiceCollection services)
-        where TKey : notnull
-    {
         services.TryAddSingleton(serviceProvider =>
         {
             var options = serviceProvider.GetRequiredService<IOptions<ResilienceStrategyRegistryOptions<TKey>>>().Value;
@@ -100,13 +184,7 @@ public static class PollyServiceCollectionExtensions
 
             foreach (var entry in configureActions)
             {
-                // the last added builder with the same key wins, this allows overriding the builders
-                registry.RemoveBuilder(entry.Key);
-                registry.TryAddBuilder(entry.Key, (key, builder) =>
-                {
-                    var context = new AddResilienceStrategyContext<TKey>(key, serviceProvider);
-                    entry.Configure(builder, context);
-                });
+                entry(registry);
             }
 
             return registry;

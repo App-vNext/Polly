@@ -14,7 +14,12 @@ namespace Polly;
 /// </remarks>
 public class ResilienceStrategyBuilder<TResult>
 {
-    private readonly ResilienceStrategyBuilder _builder = new();
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ResilienceStrategyBuilder{TResult}"/> class.
+    /// </summary>
+    public ResilienceStrategyBuilder() => Builder = new();
+
+    internal ResilienceStrategyBuilder(ResilienceStrategyBuilder builder) => Builder = builder;
 
     /// <summary>
     /// Gets or sets the name of the builder.
@@ -23,14 +28,14 @@ public class ResilienceStrategyBuilder<TResult>
     [Required(AllowEmptyStrings = true)]
     public string BuilderName
     {
-        get => _builder.BuilderName;
-        set => _builder.BuilderName = value;
+        get => Builder.BuilderName;
+        set => Builder.BuilderName = value;
     }
 
     /// <summary>
     /// Gets the custom properties attached to builder options.
     /// </summary>
-    public ResilienceProperties Properties => _builder.Properties;
+    public ResilienceProperties Properties => Builder.Properties;
 
     /// <summary>
     /// Gets or sets a <see cref="TimeProvider"/> that is used by strategies that work with time.
@@ -41,8 +46,8 @@ public class ResilienceStrategyBuilder<TResult>
     [Required]
     internal TimeProvider TimeProvider
     {
-        get => _builder.TimeProvider;
-        set => _builder.TimeProvider = value;
+        get => Builder.TimeProvider;
+        set => Builder.TimeProvider = value;
     }
 
     /// <summary>
@@ -50,9 +55,11 @@ public class ResilienceStrategyBuilder<TResult>
     /// </summary>
     internal Action<IList<ResilienceStrategy>>? OnCreatingStrategy
     {
-        get => _builder.OnCreatingStrategy;
-        set => _builder.OnCreatingStrategy = value;
+        get => Builder.OnCreatingStrategy;
+        set => Builder.OnCreatingStrategy = value;
     }
+
+    internal ResilienceStrategyBuilder Builder { get; }
 
     /// <summary>
     /// Adds an already created strategy instance to the builder.
@@ -65,7 +72,7 @@ public class ResilienceStrategyBuilder<TResult>
     {
         Guard.NotNull(strategy);
 
-        _builder.AddStrategy(strategy);
+        Builder.AddStrategy(strategy);
         return this;
     }
 
@@ -85,7 +92,7 @@ public class ResilienceStrategyBuilder<TResult>
         Guard.NotNull(factory);
         Guard.NotNull(options);
 
-        _builder.AddStrategy(factory, options);
+        Builder.AddStrategy(factory, options);
 
         return this;
     }
@@ -95,5 +102,5 @@ public class ResilienceStrategyBuilder<TResult>
     /// </summary>
     /// <returns>An instance of <see cref="ResilienceStrategy{TResult}"/>.</returns>
     /// <exception cref="ValidationException">Thrown when this builder has invalid configuration.</exception>
-    public ResilienceStrategy<TResult> Build() => new(_builder.Build());
+    public ResilienceStrategy<TResult> Build() => new(Builder.Build());
 }
