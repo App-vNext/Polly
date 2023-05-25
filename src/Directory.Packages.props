@@ -3,7 +3,7 @@
     <PackageVersion Include="coverlet.msbuild" Version="3.2.0" />
     <PackageVersion Include="BenchmarkDotNet" Version="0.13.5" />
     <PackageVersion Include="FluentAssertions" Version="6.11.0" />
-    <PackageVersion Include="GitHubActionsTestLogger" Version="2.2.1" />
+    <PackageVersion Include="GitHubActionsTestLogger" Version="2.3.0" />
     <PackageVersion Include="Microsoft.Bcl.AsyncInterfaces" Version="1.0.0" />
     <PackageVersion Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="7.0.1" />
     <PackageVersion Include="Microsoft.Extensions.Caching.Memory" Version="7.0.0" />
