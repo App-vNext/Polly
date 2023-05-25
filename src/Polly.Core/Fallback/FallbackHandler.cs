@@ -58,15 +58,7 @@ internal sealed partial class FallbackHandler
         return this;
     }
 
-    internal Handler? CreateHandler()
-    {
-        if (IsEmpty)
-        {
-            return null;
-        }
-
-        return new Handler(_handlers.ToDictionary(pair => pair.Key, pair => pair.Value));
-    }
+    internal Handler CreateHandler() => new(_handlers.ToDictionary(pair => pair.Key, pair => pair.Value));
 
     private static FallbackHandler<VoidResult> CreateGenericHandler(VoidFallbackHandler handler)
     {

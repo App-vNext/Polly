@@ -117,6 +117,17 @@ public class AdvancedCircuitBreakerOptionsTests
     }
 
     [Fact]
+    public void AsNonGenericOptions_NoDelegates_Ok()
+    {
+        var options = new AdvancedCircuitBreakerStrategyOptions<int>().AsNonGenericOptions();
+
+        options.OnOpened.Should().BeNull();
+        options.OnClosed.Should().BeNull();
+        options.OnHalfOpened.Should().BeNull();
+        options.ShouldHandle.Should().BeNull();
+    }
+
+    [Fact]
     public void InvalidOptions_Validate()
     {
         var options = new AdvancedCircuitBreakerStrategyOptions<int>

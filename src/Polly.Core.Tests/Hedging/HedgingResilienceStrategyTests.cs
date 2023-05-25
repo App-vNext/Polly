@@ -49,8 +49,7 @@ public class HedgingResilienceStrategyTests : IDisposable
         strategy.MaxHedgedAttempts.Should().Be(_options.MaxHedgedAttempts);
         strategy.HedgingDelay.Should().Be(_options.HedgingDelay);
         strategy.HedgingDelayGenerator.Should().BeNull();
-        strategy.HedgingHandler.Should().BeNull();
-        strategy.HedgingHandler.Should().BeNull();
+        strategy.HedgingHandler.Should().NotBeNull();
     }
 
     [Fact]
@@ -437,6 +436,22 @@ public class HedgingResilienceStrategyTests : IDisposable
         primaryContext.Properties.TryGetValue(key, out var val).Should().BeTrue();
         primaryContext.Properties.Should().BeSameAs(storedProps);
         val.Should().Be("my-value");
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_OnHedgingEventThrows_EnsureExceptionRethrown()
+    {
+        // arrange
+        ConfigureHedging(args => () => Task.FromResult(Success));
+        _options.OnHedging = (_, _) => throw new InvalidOperationException("my-exception");
+        var strategy = Create();
+
+        // act
+        (await strategy
+            .Invoking(s => s.ExecuteAsync(_ => new ValueTask<string>(Failure)).AsTask())
+            .Should()
+            .ThrowAsync<InvalidOperationException>())
+            .WithMessage("my-exception");
     }
 
     [Fact]

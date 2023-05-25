@@ -60,13 +60,8 @@ internal sealed partial class HedgingHandler
         return this;
     }
 
-    internal Handler? CreateHandler()
+    internal Handler CreateHandler()
     {
-        if (_actions.Count == 0)
-        {
-            return null;
-        }
-
         return new Handler(
             _predicates.ToDictionary(pair => pair.Key, pair => pair.Value),
             _actions.ToDictionary(pair => pair.Key, pair => pair.Value));

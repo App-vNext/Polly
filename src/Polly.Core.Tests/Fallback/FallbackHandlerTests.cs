@@ -51,11 +51,11 @@ public class FallbackHandlerTests
     }
 
     [Fact]
-    public void SetFallback_Empty_Discarded()
+    public void SetFallback_Empty_HandlerCreated()
     {
         var handler = new FallbackHandler();
         handler.IsEmpty.Should().BeTrue();
-        handler.CreateHandler().Should().BeNull();
+        handler.CreateHandler().Should().NotBeNull();
     }
 
     [Fact]

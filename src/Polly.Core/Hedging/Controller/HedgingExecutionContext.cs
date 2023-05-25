@@ -215,18 +215,18 @@ internal sealed class HedgingExecutionContext
             }
         }
 
-        if (accepted != 1)
-        {
-            throw new InvalidOperationException($"There must be exactly one accepted outcome for hedging. Found {accepted}.");
-        }
+        Debug.Assert(accepted == 1, $"There must be exactly one accepted outcome for hedging. Found {accepted}.");
 
-        originalContext.Properties.Replace(acceptedExecution!.Properties);
-
-        if (acceptedExecution.Type == HedgedTaskType.Secondary)
+        if (acceptedExecution is not null)
         {
-            foreach (var @event in acceptedExecution.Context.ResilienceEvents)
+            originalContext.Properties.Replace(acceptedExecution.Properties);
+
+            if (acceptedExecution.Type == HedgedTaskType.Secondary)
             {
-                originalContext.AddResilienceEvent(@event);
+                foreach (var @event in acceptedExecution.Context.ResilienceEvents)
+                {
+                    originalContext.AddResilienceEvent(@event);
+                }
             }
         }
     }

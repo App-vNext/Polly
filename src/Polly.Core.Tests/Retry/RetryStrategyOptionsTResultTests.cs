@@ -89,4 +89,14 @@ public class RetryStrategyOptionsTResultTests
         (await nonGenericOptions.RetryDelayGenerator!(new Outcome(999), delayArgs)).Should().Be(TimeSpan.FromSeconds(123));
         called.Should().BeTrue();
     }
+
+    [Fact]
+    public void AsNonGenericOptions_EmptyDelegates_Ok()
+    {
+        var options = new RetryStrategyOptions<int>().AsNonGenericOptions();
+
+        options.ShouldRetry.Should().BeNull();
+        options.RetryDelayGenerator.Should().BeNull();
+        options.OnRetry.Should().BeNull();
+    }
 }
