@@ -59,7 +59,7 @@ public abstract class ResilienceStrategyProvider<TKey>
     /// </summary>
     /// <typeparam name="TResult">The type of result that the resilience strategy handles.</typeparam>
     /// <param name="key">The key used to identify the resilience strategy.</param>
-    /// <param name="strategy">The output resilience strategy if found, <see langword="false"/> otherwise.</param>
+    /// <param name="strategy">The output resilience strategy if found, <see langword="null"/> otherwise.</param>
     /// <returns><see langword="true"/> if the strategy was found, <see langword="false"/> otherwise.</returns>
     public abstract bool TryGet<TResult>(TKey key, [NotNullWhen(true)] out ResilienceStrategy<TResult>? strategy);
 }
