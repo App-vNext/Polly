@@ -1,6 +1,6 @@
 <Project>
   <ItemGroup>
-    <PackageVersion Include="coverlet.msbuild" Version="3.2.0" />
+    <PackageVersion Include="coverlet.msbuild" Version="6.0.0" />
     <PackageVersion Include="BenchmarkDotNet" Version="0.13.5" />
     <PackageVersion Include="FluentAssertions" Version="6.11.0" />
     <PackageVersion Include="GitHubActionsTestLogger" Version="2.2.1" />
