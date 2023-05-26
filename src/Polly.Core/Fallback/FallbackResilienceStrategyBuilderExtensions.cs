@@ -57,7 +57,20 @@ public static class FallbackResilienceStrategyBuilderExtensions
 
         ValidationHelper.ValidateObject(options, "The fallback strategy options are invalid.");
 
-        return builder.AddStrategy(context => new FallbackResilienceStrategy(options.AsNonGenericOptions(), context.Telemetry), options);
+        var handler = new FallbackHandler()
+            .SetFallback<TResult>(handler =>
+            {
+                handler.FallbackAction = options.FallbackAction;
+                handler.ShouldHandle = options.ShouldHandle;
+            })
+            .CreateHandler();
+
+        return builder.AddStrategy(context =>
+            new FallbackResilienceStrategy(
+                handler,
+                EventInvoker<OnFallbackArguments>.Generic(options.OnFallback),
+                context.Telemetry),
+            options);
     }
 
     /// <summary>
@@ -75,6 +88,11 @@ public static class FallbackResilienceStrategyBuilderExtensions
 
         ValidationHelper.ValidateObject(options, "The fallback strategy options are invalid.");
 
-        return builder.AddStrategy(context => new FallbackResilienceStrategy(options, context.Telemetry), options);
+        return builder.AddStrategy(context =>
+            new FallbackResilienceStrategy(
+                options.Handler.CreateHandler(),
+                EventInvoker<OnFallbackArguments>.NonGeneric(options.OnFallback),
+                context.Telemetry),
+            options);
     }
 }
