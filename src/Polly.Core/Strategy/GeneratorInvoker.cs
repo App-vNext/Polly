@@ -1,7 +1,6 @@
 using System.Threading.Tasks;
-using Polly.Strategy;
 
-namespace Polly.Utils;
+namespace Polly.Strategy;
 
 internal abstract class GeneratorInvoker<TArgs, TValue>
     where TArgs : IResilienceArguments
