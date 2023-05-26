@@ -3,6 +3,8 @@
 > **Important Announcement: Architectural changes in v8**
 >
 > Major performance improvements are on the way! Please see our [blog post](https://www.thepollyproject.org/2023/03/03/we-want-your-feedback-introducing-polly-v8/) to learn more and provide feedback in the [related GitHub issue](https://github.com/App-vNext/Polly/issues/1048).
+> 
+> :rotating_light: :rotating_light: **UPDATE: The v8 public API is available for community feedback**: <https://github.com/App-vNext/Polly/pull/1233> :rotating_light: :rotating_light:
 
 # Polly
 
