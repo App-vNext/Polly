@@ -138,7 +138,18 @@ public static class RetryResilienceStrategyBuilderExtensions
 
         ValidationHelper.ValidateObject(options, "The retry strategy options are invalid.");
 
-        return builder.AddStrategy(context => new RetryResilienceStrategy(options.AsNonGenericOptions(), context.TimeProvider, context.Telemetry, RandomUtil.Instance), options);
+        return builder.AddStrategy(context =>
+            new RetryResilienceStrategy(
+                options.BaseDelay,
+                options.BackoffType,
+                options.RetryCount,
+                PredicateInvoker<ShouldRetryArguments>.Generic(options.ShouldRetry!),
+                EventInvoker<OnRetryArguments>.Generic(options.OnRetry),
+                GeneratorInvoker<RetryDelayArguments, TimeSpan>.Generic(options.RetryDelayGenerator, TimeSpan.MinValue),
+                context.TimeProvider,
+                context.Telemetry,
+                RandomUtil.Instance),
+            options);
     }
 
     /// <summary>
@@ -156,7 +167,18 @@ public static class RetryResilienceStrategyBuilderExtensions
 
         ValidationHelper.ValidateObject(options, "The retry strategy options are invalid.");
 
-        return builder.AddStrategy(context => new RetryResilienceStrategy(options, context.TimeProvider, context.Telemetry, RandomUtil.Instance), options);
+        return builder.AddStrategy(context =>
+            new RetryResilienceStrategy(
+                options.BaseDelay,
+                options.BackoffType,
+                options.RetryCount,
+                PredicateInvoker<ShouldRetryArguments>.NonGeneric(options.ShouldRetry!),
+                EventInvoker<OnRetryArguments>.NonGeneric(options.OnRetry),
+                GeneratorInvoker<RetryDelayArguments, TimeSpan>.NonGeneric(options.RetryDelayGenerator),
+                context.TimeProvider,
+                context.Telemetry,
+                RandomUtil.Instance),
+            options);
     }
 
     private static void ConfigureShouldRetry<TResult>(Action<PredicateBuilder<TResult>> shouldRetry, RetryStrategyOptions<TResult> options)

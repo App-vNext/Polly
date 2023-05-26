@@ -49,7 +49,7 @@ public class RetryResilienceStrategyBuilderExtensionsTests
             {
                 var args = new RetryDelayArguments(ResilienceContext.Get().Initialize<int>(true), 8, TimeSpan.Zero);
 
-                strategy.DelayGenerator!(new Outcome(new InvalidOperationException()), args).Result.Should().Be(TimeSpan.FromMilliseconds(8));
+                strategy.DelayGenerator!.HandleAsync<int>(new Outcome<int>(new InvalidOperationException()), args).Result.Should().Be(TimeSpan.FromMilliseconds(8));
             });
         },
         builder =>
