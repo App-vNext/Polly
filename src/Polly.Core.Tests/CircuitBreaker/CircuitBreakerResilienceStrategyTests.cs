@@ -20,7 +20,10 @@ public class CircuitBreakerResilienceStrategyTests : IDisposable
         _telemetry = TestUtilities.CreateResilienceTelemetry(Mock.Of<DiagnosticSource>());
         _options = new SimpleCircuitBreakerStrategyOptions();
         _controller = new CircuitStateController(
-            new SimpleCircuitBreakerStrategyOptions(),
+            CircuitBreakerConstants.DefaultBreakDuration,
+            null,
+            null,
+            null,
             _behavior.Object,
             _timeProvider.Object,
             _telemetry);
@@ -129,5 +132,8 @@ public class CircuitBreakerResilienceStrategyTests : IDisposable
         Create().Invoking(s => s.Execute(_ => { })).Should().NotThrow();
     }
 
-    private CircuitBreakerResilienceStrategy Create() => new(_options, _controller);
+    private CircuitBreakerResilienceStrategy Create()
+    {
+        return new(PredicateInvoker<CircuitBreakerPredicateArguments>.NonGeneric(_options.ShouldHandle!), _controller, _options.StateProvider, _options.ManualControl);
+    }
 }

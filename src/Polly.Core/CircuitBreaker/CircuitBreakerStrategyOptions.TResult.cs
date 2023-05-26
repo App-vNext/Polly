@@ -112,54 +112,5 @@ public abstract class CircuitBreakerStrategyOptions<TResult> : ResilienceStrateg
     /// Defaults to <see langword="null"/>.
     /// </remarks>
     public CircuitBreakerStateProvider? StateProvider { get; set; }
-
-    internal void UpdateNonGenericOptions(CircuitBreakerStrategyOptions options)
-    {
-        options.BreakDuration = BreakDuration;
-        options.StrategyName = StrategyName;
-
-        if (ShouldHandle is { } shouldHandle)
-        {
-            options.ShouldHandle = (outcome, args) =>
-            {
-                if (args.Context.ResultType != typeof(TResult))
-                {
-                    return new ValueTask<bool>(false);
-                }
-
-                return shouldHandle!(outcome.AsOutcome<TResult>(), args);
-            };
-        }
-
-        if (OnClosed is { } onClosed)
-        {
-            options.OnClosed = (outcome, args) =>
-            {
-                if (args.Context.ResultType != typeof(TResult))
-                {
-                    return default;
-                }
-
-                return onClosed!(outcome.AsOutcome<TResult>(), args);
-            };
-        }
-
-        if (OnOpened is { } onOpened)
-        {
-            options.OnOpened = (outcome, args) =>
-            {
-                if (args.Context.ResultType != typeof(TResult))
-                {
-                    return default;
-                }
-
-                return onOpened!(outcome.AsOutcome<TResult>(), args);
-            };
-        }
-
-        options.OnHalfOpened = OnHalfOpened;
-        options.ManualControl = ManualControl;
-        options.StateProvider = StateProvider;
-    }
 }
 

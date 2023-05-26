@@ -4,16 +4,20 @@ namespace Polly.CircuitBreaker;
 
 internal sealed class CircuitBreakerResilienceStrategy : ResilienceStrategy
 {
+    private readonly PredicateInvoker<CircuitBreakerPredicateArguments> _handler;
     private readonly CircuitStateController _controller;
-    private readonly Func<Outcome, CircuitBreakerPredicateArguments, ValueTask<bool>> _handler;
 
-    public CircuitBreakerResilienceStrategy(CircuitBreakerStrategyOptions options, CircuitStateController controller)
+    public CircuitBreakerResilienceStrategy(
+        PredicateInvoker<CircuitBreakerPredicateArguments> handler,
+        CircuitStateController controller,
+        CircuitBreakerStateProvider? stateProvider,
+        CircuitBreakerManualControl? manualControl)
     {
+        _handler = handler;
         _controller = controller;
-        _handler = options.ShouldHandle!;
 
-        options.StateProvider?.Initialize(() => _controller.CircuitState, () => _controller.LastHandledOutcome);
-        options.ManualControl?.Initialize(
+        stateProvider?.Initialize(() => _controller.CircuitState, () => _controller.LastHandledOutcome);
+        manualControl?.Initialize(
             async c => await _controller.IsolateCircuitAsync(c).ConfigureAwait(c.ContinueOnCapturedContext),
             async c => await _controller.CloseCircuitAsync(c).ConfigureAwait(c.ContinueOnCapturedContext),
             _controller.Dispose);
@@ -32,7 +36,7 @@ internal sealed class CircuitBreakerResilienceStrategy : ResilienceStrategy
         outcome = await callback(context, state).ConfigureAwait(context.ContinueOnCapturedContext);
 
         var args = new CircuitBreakerPredicateArguments(context);
-        if (await _handler!(outcome.AsOutcome(), args).ConfigureAwait(context.ContinueOnCapturedContext))
+        if (await _handler.HandleAsync(outcome, args).ConfigureAwait(context.ContinueOnCapturedContext))
         {
             await _controller.OnActionFailureAsync(outcome, context).ConfigureAwait(context.ContinueOnCapturedContext);
         }

@@ -188,19 +188,4 @@ public class CircuitBreakerResilienceStrategyBuilderTests
         halfOpened.Should().Be(2);
         closed.Should().Be(1);
     }
-
-    [Fact]
-    public void AddCircuitBreaker_UnrecognizedOptions_Throws()
-    {
-        var builder = new ResilienceStrategyBuilder();
-
-        builder
-            .Invoking(b => CircuitBreakerResilienceStrategyBuilderExtensions.CreateStrategy(null!, new DummyOptions()))
-            .Should()
-            .Throw<NotSupportedException>();
-    }
-
-    private class DummyOptions : CircuitBreakerStrategyOptions
-    {
-    }
 }

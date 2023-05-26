@@ -434,7 +434,10 @@ public class CircuitStateControllerTests
     private void AdvanceTime(TimeSpan timespan) => _utcNow += timespan;
 
     private CircuitStateController CreateController() => new(
-        _options,
+        _options.BreakDuration,
+        EventInvoker<OnCircuitOpenedArguments>.NonGeneric(_options.OnOpened),
+        EventInvoker<OnCircuitClosedArguments>.NonGeneric(_options.OnClosed),
+        _options.OnHalfOpened,
         _circuitBehavior.Object,
         _timeProvider.Object,
         TestUtilities.CreateResilienceTelemetry(args => _onTelemetry.Invoke(args)));
