@@ -11,11 +11,11 @@ internal abstract class HealthMetrics
 
     protected HealthMetrics(TimeProvider timeProvider) => TimeProvider = timeProvider;
 
-    public static HealthMetrics Create(AdvancedCircuitBreakerStrategyOptions options, TimeProvider timeProvider)
+    public static HealthMetrics Create(TimeSpan samplingDuration, TimeProvider timeProvider)
     {
-        return options.SamplingDuration < TimeSpan.FromTicks(ResolutionOfCircuitTimer.Ticks * NumberOfWindows)
-            ? new SingleHealthMetrics(options.SamplingDuration, timeProvider)
-            : new RollingHealthMetrics(options.SamplingDuration, NumberOfWindows, timeProvider);
+        return samplingDuration < TimeSpan.FromTicks(ResolutionOfCircuitTimer.Ticks * NumberOfWindows)
+            ? new SingleHealthMetrics(samplingDuration, timeProvider)
+            : new RollingHealthMetrics(samplingDuration, NumberOfWindows, timeProvider);
     }
 
     protected TimeProvider TimeProvider { get; }

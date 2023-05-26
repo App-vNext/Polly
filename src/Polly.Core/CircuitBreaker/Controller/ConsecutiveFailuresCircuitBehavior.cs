@@ -5,7 +5,7 @@ internal sealed class ConsecutiveFailuresCircuitBehavior : CircuitBehavior
     private readonly int _failureThreshold;
     private int _consecutiveFailures;
 
-    public ConsecutiveFailuresCircuitBehavior(SimpleCircuitBreakerStrategyOptions options) => _failureThreshold = options.FailureThreshold;
+    public ConsecutiveFailuresCircuitBehavior(int failureThreshold) => _failureThreshold = failureThreshold;
 
     public override void OnActionSuccess(CircuitState currentState)
     {

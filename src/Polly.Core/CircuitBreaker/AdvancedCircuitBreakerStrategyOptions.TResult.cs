@@ -54,15 +54,4 @@ public class AdvancedCircuitBreakerStrategyOptions<TResult> : CircuitBreakerStra
     /// </remarks>
     [TimeSpan("00:00:00.500")]
     public TimeSpan SamplingDuration { get; set; } = CircuitBreakerConstants.DefaultSamplingDuration;
-
-    internal AdvancedCircuitBreakerStrategyOptions AsNonGenericOptions()
-    {
-        var options = new AdvancedCircuitBreakerStrategyOptions();
-        UpdateNonGenericOptions(options);
-        options.FailureThreshold = FailureThreshold;
-        options.MinimumThroughput = MinimumThroughput;
-        options.SamplingDuration = SamplingDuration;
-
-        return options;
-    }
 }

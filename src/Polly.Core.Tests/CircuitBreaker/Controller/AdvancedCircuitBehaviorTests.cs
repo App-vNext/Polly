@@ -25,7 +25,7 @@ public class AdvancedCircuitBehaviorTests
         _metrics.Setup(m => m.IncrementFailure());
         _metrics.Setup(m => m.GetHealthInfo()).Returns(new HealthInfo(throughput, failureRate));
 
-        var behavior = new AdvancedCircuitBehavior(new AdvancedCircuitBreakerStrategyOptions { MinimumThroughput = minimumThruput, FailureThreshold = failureThreshold }, _metrics.Object);
+        var behavior = new AdvancedCircuitBehavior(failureThreshold, minimumThruput, _metrics.Object);
 
         behavior.OnActionFailure(CircuitState.Closed, out var shouldBreak);
 
@@ -68,5 +68,8 @@ public class AdvancedCircuitBehaviorTests
         _metrics.Verify(v => v.Reset(), Times.Once());
     }
 
-    private AdvancedCircuitBehavior Create() => new(new AdvancedCircuitBreakerStrategyOptions(), _metrics.Object);
+    private AdvancedCircuitBehavior Create()
+    {
+        return new AdvancedCircuitBehavior(CircuitBreakerConstants.DefaultAdvancedFailureThreshold, CircuitBreakerConstants.DefaultMinimumThroughput, _metrics.Object);
+    }
 }

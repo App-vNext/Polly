@@ -28,13 +28,4 @@ public class SimpleCircuitBreakerStrategyOptions<TResult> : CircuitBreakerStrate
     /// </remarks>
     [Range(1, int.MaxValue)]
     public int FailureThreshold { get; set; } = CircuitBreakerConstants.DefaultFailureThreshold;
-
-    internal SimpleCircuitBreakerStrategyOptions AsNonGenericOptions()
-    {
-        var options = new SimpleCircuitBreakerStrategyOptions();
-        UpdateNonGenericOptions(options);
-        options.FailureThreshold = FailureThreshold;
-
-        return options;
-    }
 }

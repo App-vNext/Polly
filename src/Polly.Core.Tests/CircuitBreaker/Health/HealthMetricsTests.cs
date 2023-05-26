@@ -1,5 +1,4 @@
 using System;
-using Polly.CircuitBreaker;
 using Polly.CircuitBreaker.Health;
 using Polly.Utils;
 
@@ -15,10 +14,7 @@ public class HealthMetricsTests
     public void Create_Ok(int samplingDurationMs, Type expectedType)
     {
         HealthMetrics.Create(
-            new AdvancedCircuitBreakerStrategyOptions
-            {
-                SamplingDuration = TimeSpan.FromMilliseconds(samplingDurationMs)
-            },
+            TimeSpan.FromMilliseconds(samplingDurationMs),
             TimeProvider.System)
             .Should()
             .BeOfType(expectedType);

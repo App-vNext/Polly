@@ -10,8 +10,8 @@ internal sealed class CircuitStateController : IDisposable
 {
     private readonly object _lock = new();
     private readonly ScheduledTaskExecutor _executor = new();
-    private readonly Func<Outcome, OnCircuitOpenedArguments, ValueTask>? _onOpened;
-    private readonly Func<Outcome, OnCircuitClosedArguments, ValueTask>? _onClosed;
+    private readonly EventInvoker<OnCircuitOpenedArguments>? _onOpened;
+    private readonly EventInvoker<OnCircuitClosedArguments>? _onClosed;
     private readonly Func<OnCircuitHalfOpenedArguments, ValueTask>? _onHalfOpen;
     private readonly TimeProvider _timeProvider;
     private readonly ResilienceStrategyTelemetry _telemetry;
@@ -23,12 +23,19 @@ internal sealed class CircuitStateController : IDisposable
     private BrokenCircuitException? _breakingException;
     private bool _disposed;
 
-    public CircuitStateController(CircuitBreakerStrategyOptions options, CircuitBehavior behavior, TimeProvider timeProvider, ResilienceStrategyTelemetry telemetry)
+    public CircuitStateController(
+        TimeSpan breakDuration,
+        EventInvoker<OnCircuitOpenedArguments>? onOpened,
+        EventInvoker<OnCircuitClosedArguments>? onClosed,
+        Func<OnCircuitHalfOpenedArguments, ValueTask>? onHalfOpen,
+        CircuitBehavior behavior,
+        TimeProvider timeProvider,
+        ResilienceStrategyTelemetry telemetry)
     {
-        _breakDuration = options.BreakDuration;
-        _onOpened = options.OnOpened;
-        _onClosed = options.OnClosed;
-        _onHalfOpen = options.OnHalfOpened;
+        _breakDuration = breakDuration;
+        _onOpened = onOpened;
+        _onClosed = onClosed;
+        _onHalfOpen = onHalfOpen;
         _behavior = behavior;
         _timeProvider = timeProvider;
         _telemetry = telemetry;
@@ -268,7 +275,7 @@ internal sealed class CircuitStateController : IDisposable
 
             if (_onClosed is not null)
             {
-                _executor.ScheduleTask(() => _onClosed(outcome.AsOutcome(), args).AsTask(), context, out scheduledTask);
+                _executor.ScheduleTask(() => _onClosed.HandleAsync(outcome, args).AsTask(), context, out scheduledTask);
             }
         }
     }
@@ -322,7 +329,7 @@ internal sealed class CircuitStateController : IDisposable
 
         if (_onOpened is not null)
         {
-            _executor.ScheduleTask(() => _onOpened(outcome.AsOutcome(), args).AsTask(), context, out scheduledTask);
+            _executor.ScheduleTask(() => _onOpened.HandleAsync(outcome, args).AsTask(), context, out scheduledTask);
         }
     }
 }

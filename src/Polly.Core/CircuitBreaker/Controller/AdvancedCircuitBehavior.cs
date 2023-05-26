@@ -8,11 +8,11 @@ internal sealed class AdvancedCircuitBehavior : CircuitBehavior
     private readonly double _failureThreshold;
     private readonly int _minimumThroughput;
 
-    public AdvancedCircuitBehavior(AdvancedCircuitBreakerStrategyOptions options, HealthMetrics metrics)
+    public AdvancedCircuitBehavior(double failureThreshold, int minimumThroughput, HealthMetrics metrics)
     {
         _metrics = metrics;
-        _failureThreshold = options.FailureThreshold;
-        _minimumThroughput = options.MinimumThroughput;
+        _failureThreshold = failureThreshold;
+        _minimumThroughput = minimumThroughput;
     }
 
     public override void OnActionSuccess(CircuitState currentState) => _metrics.IncrementSuccess();
