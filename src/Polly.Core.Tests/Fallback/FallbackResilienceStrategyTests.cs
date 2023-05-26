@@ -128,5 +128,8 @@ public class FallbackResilienceStrategyTests
         fallbackActionCalled.Should().BeFalse();
     }
 
-    private FallbackResilienceStrategy Create() => new(_options, _telemetry);
+    private FallbackResilienceStrategy Create() => new(
+        _options.Handler.CreateHandler(),
+        EventInvoker<OnFallbackArguments>.NonGeneric(_options.OnFallback),
+        _telemetry);
 }

@@ -40,33 +40,5 @@ public class FallbackStrategyOptions<TResult> : ResilienceStrategyOptions
     /// Defaults to <see langword="null"/> instance.
     /// </remarks>
     public Func<Outcome<TResult>, OnFallbackArguments, ValueTask>? OnFallback { get; set; }
-
-    internal FallbackStrategyOptions AsNonGenericOptions()
-    {
-        var options = new FallbackStrategyOptions
-        {
-            StrategyName = StrategyName,
-            Handler = new FallbackHandler().SetFallback<TResult>(handler =>
-            {
-                handler.ShouldHandle = ShouldHandle;
-                handler.FallbackAction = FallbackAction;
-            })
-        };
-
-        if (OnFallback is { } fallback)
-        {
-            options.OnFallback = (outcome, args) =>
-            {
-                if (args.Context.ResultType != typeof(TResult))
-                {
-                    return default;
-                }
-
-                return fallback!(outcome.AsOutcome<TResult>(), args);
-            };
-        }
-
-        return options;
-    }
 }
 

@@ -76,35 +76,4 @@ public class HedgingStrategyOptions<TResult> : ResilienceStrategyOptions
     /// Defaults to <see langword="null"/>.
     /// </remarks>
     public Func<Outcome<TResult>, OnHedgingArguments, ValueTask>? OnHedging { get; set; }
-
-    internal HedgingStrategyOptions AsNonGenericOptions()
-    {
-        var options = new HedgingStrategyOptions
-        {
-            StrategyName = StrategyName,
-            HedgingDelay = HedgingDelay,
-            Handler = new HedgingHandler().SetHedging<TResult>(handler =>
-            {
-                handler.ShouldHandle = ShouldHandle;
-                handler.HedgingActionGenerator = HedgingActionGenerator;
-            }),
-            MaxHedgedAttempts = MaxHedgedAttempts,
-            HedgingDelayGenerator = HedgingDelayGenerator
-        };
-
-        if (OnHedging is { } onHedging)
-        {
-            options.OnHedging = (outcome, args) =>
-            {
-                if (args.Context.ResultType != typeof(TResult))
-                {
-                    return default;
-                }
-
-                return onHedging!(outcome.AsOutcome<TResult>(), args);
-            };
-        }
-
-        return options;
-    }
 }

@@ -884,5 +884,12 @@ public class HedgingResilienceStrategyTests : IDisposable
         return "secondary";
     });
 
-    private HedgingResilienceStrategy Create() => new(_options, _timeProvider, _telemetry);
+    private HedgingResilienceStrategy Create() => new(
+        _options.HedgingDelay,
+        _options.MaxHedgedAttempts,
+        _options.Handler.CreateHandler(),
+        EventInvoker<OnHedgingArguments>.NonGeneric(_options.OnHedging),
+        _options.HedgingDelayGenerator,
+        _timeProvider,
+        _telemetry);
 }

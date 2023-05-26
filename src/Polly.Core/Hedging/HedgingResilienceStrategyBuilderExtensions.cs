@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using Polly.Hedging;
+using Polly.Strategy;
 
 namespace Polly;
 
@@ -24,7 +25,24 @@ public static class HedgingResilienceStrategyBuilderExtensions
 
         ValidationHelper.ValidateObject(options, "The hedging strategy options are invalid.");
 
-        return builder.AddStrategy(context => new HedgingResilienceStrategy(options.AsNonGenericOptions(), context.TimeProvider, context.Telemetry), options);
+        var handler = new HedgingHandler()
+            .SetHedging<TResult>(handler =>
+            {
+                handler.HedgingActionGenerator = options.HedgingActionGenerator;
+                handler.ShouldHandle = options.ShouldHandle;
+            })
+            .CreateHandler();
+
+        return builder.AddStrategy(context =>
+            new HedgingResilienceStrategy(
+                options.HedgingDelay,
+                options.MaxHedgedAttempts,
+                handler,
+                EventInvoker<OnHedgingArguments>.Generic(options.OnHedging),
+                options.HedgingDelayGenerator,
+                context.TimeProvider,
+                context.Telemetry),
+            options);
     }
 
     /// <summary>
@@ -42,6 +60,15 @@ public static class HedgingResilienceStrategyBuilderExtensions
 
         ValidationHelper.ValidateObject(options, "The hedging strategy options are invalid.");
 
-        return builder.AddStrategy(context => new HedgingResilienceStrategy(options, context.TimeProvider, context.Telemetry), options);
+        return builder.AddStrategy(context =>
+            new HedgingResilienceStrategy(
+                options.HedgingDelay,
+                options.MaxHedgedAttempts,
+                options.Handler.CreateHandler(),
+                EventInvoker<OnHedgingArguments>.NonGeneric(options.OnHedging),
+                options.HedgingDelayGenerator,
+                context.TimeProvider,
+                context.Telemetry),
+            options);
     }
 }
