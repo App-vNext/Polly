@@ -128,7 +128,7 @@ public static class CircuitBreakerResilienceStrategyBuilderExtensions
         return builder.AddStrategy(context => CreateStrategy(context, options, new ConsecutiveFailuresCircuitBehavior(options.FailureThreshold)), options);
     }
 
-    internal static CircuitBreakerResilienceStrategy CreateStrategy(ResilienceStrategyBuilderContext context, CircuitBreakerStrategyOptions options, CircuitBehavior behavior)
+    internal static CircuitBreakerResilienceStrategy CreateStrategy(ResilienceStrategyBuilderContext context, CircuitBreakerStrategyOptions<object> options, CircuitBehavior behavior)
     {
         var controller = new CircuitStateController(
             options.BreakDuration,

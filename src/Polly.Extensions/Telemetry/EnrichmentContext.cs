@@ -15,7 +15,7 @@ public sealed partial class EnrichmentContext
     /// <summary>
     /// Gets the outcome of the operation if any.
     /// </summary>
-    public Outcome? Outcome { get; internal set; }
+    public Outcome<object>? Outcome { get; internal set; }
 
     /// <summary>
     /// Gets the resilience arguments associated with the resilience event, if any.

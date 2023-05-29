@@ -7,7 +7,12 @@ namespace Polly.Strategy;
 /// </summary>
 public sealed class ResilienceStrategyBuilderContext
 {
-    internal ResilienceStrategyBuilderContext(string builderName, ResilienceProperties builderProperties, string strategyName, string strategyType, TimeProvider timeProvider)
+    internal ResilienceStrategyBuilderContext(
+        string builderName,
+        ResilienceProperties builderProperties,
+        string strategyName,
+        string strategyType,
+        TimeProvider timeProvider)
     {
         BuilderName = builderName;
         BuilderProperties = builderProperties;

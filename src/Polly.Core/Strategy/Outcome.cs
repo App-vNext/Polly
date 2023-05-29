@@ -5,28 +5,27 @@ using System.Runtime.ExceptionServices;
 namespace Polly.Strategy;
 
 /// <summary>
-/// Represents the non-generic outcome of an operation.
+/// Represents the outcome of an operation that returns a result of type TResult or an exception.
 /// </summary>
-public readonly struct Outcome
+/// <typeparam name="TResult">The type of the result produced by the operation.</typeparam>
+public readonly struct Outcome<TResult>
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="Outcome"/> struct with the specified exception.
+    /// Initializes a new instance of the <see cref="Outcome{TResult}"/> struct with the specified exception.
     /// </summary>
     /// <param name="exception">The exception that occurred during the operation.</param>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="exception"/> is <see langword="null"/>.</exception>
     public Outcome(Exception exception)
-        : this(ExceptionDispatchInfo.Capture(Guard.NotNull(exception)))
-    {
-    }
+        : this() => ExceptionDispatchInfo = ExceptionDispatchInfo.Capture(Guard.NotNull(exception));
 
     internal Outcome(ExceptionDispatchInfo exceptionDispatchInfo)
         : this() => ExceptionDispatchInfo = Guard.NotNull(exceptionDispatchInfo);
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="Outcome"/> struct with the specified result.
+    /// Initializes a new instance of the <see cref="Outcome{TResult}"/> struct with the specified result.
     /// </summary>
     /// <param name="result">The result produced by the operation.</param>
-    public Outcome(object? result)
+    public Outcome(TResult result)
         : this() => Result = result;
 
     /// <summary>
@@ -35,9 +34,16 @@ public readonly struct Outcome
     public Exception? Exception => ExceptionDispatchInfo?.SourceException;
 
     /// <summary>
+    /// Gets the <see cref="ExceptionDispatchInfo"/> associated with the exception, if any.
+    /// </summary>
+    internal ExceptionDispatchInfo? ExceptionDispatchInfo { get; }
+
+    internal ValueTask<Outcome<TResult>> AsValueTask() => new(this);
+
+    /// <summary>
     /// Gets the result produced by the operation, if any.
     /// </summary>
-    public object? Result { get; }
+    public TResult? Result { get; }
 
     /// <summary>
     /// Gets a value indicating whether the operation produced a result.
@@ -54,16 +60,11 @@ public readonly struct Outcome
     public bool IsVoidResult => Result is VoidResult;
 
     /// <summary>
-    /// Gets the <see cref="ExceptionDispatchInfo"/> associated with the exception, if any.
-    /// </summary>
-    internal ExceptionDispatchInfo? ExceptionDispatchInfo { get; }
-
-    /// <summary>
     /// Tries to get a result if available.
     /// </summary>
     /// <param name="result">The result instance.</param>
     /// <returns>True if result is available, false otherwise.</returns>
-    public bool TryGetResult(out object? result)
+    public bool TryGetResult(out TResult? result)
     {
         if (HasResult && !IsVoidResult)
         {
@@ -87,7 +88,15 @@ public readonly struct Outcome
         ? Exception!.Message
         : Result?.ToString() ?? string.Empty;
 
-    internal Outcome<TResult> AsOutcome<TResult>() => ExceptionDispatchInfo != null
-        ? new Outcome<TResult>(ExceptionDispatchInfo)
-        : new Outcome<TResult>((TResult)Result!);
+    internal TResult GetResultOrRethrow()
+    {
+        ExceptionDispatchInfo?.Throw();
+        return Result!;
+    }
+
+    internal Outcome<object> AsObjectOutcome() => Convert<object>();
+
+    internal Outcome<T> Convert<T>() => (ExceptionDispatchInfo != null)
+        ? new Outcome<T>(ExceptionDispatchInfo)
+        : new Outcome<T>((T)(object)Result!);
 }

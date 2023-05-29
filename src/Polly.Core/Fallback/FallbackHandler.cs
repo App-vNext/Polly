@@ -66,10 +66,10 @@ internal sealed partial class FallbackHandler
         {
             FallbackAction = async (outcome, args) =>
             {
-                await handler.FallbackAction!(outcome.AsOutcome(), args).ConfigureAwait(args.Context.ContinueOnCapturedContext);
+                await handler.FallbackAction!(outcome.AsObjectOutcome(), args).ConfigureAwait(args.Context.ContinueOnCapturedContext);
                 return VoidResult.Instance;
             },
-            ShouldHandle = (outcome, args) => handler.ShouldHandle!(outcome.AsOutcome(), args)
+            ShouldHandle = (outcome, args) => handler.ShouldHandle!(outcome.AsObjectOutcome(), args)
         };
     }
 }

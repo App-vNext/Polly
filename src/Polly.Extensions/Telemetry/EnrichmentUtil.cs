@@ -10,7 +10,7 @@ internal static class EnrichmentUtil
         ref TagList tags,
         List<Action<EnrichmentContext>> enrichers,
         ResilienceContext resilienceContext,
-        Outcome? outcome,
+        Outcome<object>? outcome,
         IResilienceArguments? resilienceArguments)
     {
         if (enrichers.Count == 0)

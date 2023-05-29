@@ -44,7 +44,7 @@ internal sealed class TaskExecution
     /// </remarks>
     public Task? ExecutionTaskSafe { get; private set; }
 
-    public Outcome Outcome { get; private set; }
+    public Outcome<object> Outcome { get; private set; }
 
     public bool IsHandled { get; private set; }
 
@@ -195,7 +195,7 @@ internal sealed class TaskExecution
 
     private async Task UpdateOutcomeAsync<TResult>(Outcome<TResult> outcome)
     {
-        Outcome = outcome.AsOutcome();
+        Outcome = outcome.AsObjectOutcome();
         IsHandled = await _handler.ShouldHandleAsync(outcome, new HandleHedgingArguments(Context)).ConfigureAwait(Context.ContinueOnCapturedContext);
     }
 

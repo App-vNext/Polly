@@ -85,7 +85,7 @@ public static class TestUtilities
         string strategyName,
         string strategyType,
         IResilienceArguments arguments,
-        Outcome? outcome)
+        Outcome<object>? outcome)
 #pragma warning restore S107 // Methods should not have too many parameters
     {
         source.Write(eventName, new TelemetryEventArguments(new ResilienceTelemetrySource(builderName, builderProperties, strategyName, strategyType), eventName, arguments, outcome));

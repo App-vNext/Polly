@@ -156,7 +156,7 @@ internal sealed class HedgingExecutionContext
         {
             var finishedExecution = _tasks.First(static t => t.ExecutionTaskSafe!.IsCompleted);
             finishedExecution.AcceptOutcome();
-            return new ExecutionInfo<TResult>(null, false, finishedExecution.Outcome.AsOutcome<TResult>());
+            return new ExecutionInfo<TResult>(null, false, finishedExecution.Outcome.Convert<TResult>());
         }
 
         return new ExecutionInfo<TResult>(null, false, null);

@@ -5,7 +5,7 @@ namespace Polly.Strategy;
 internal abstract class GeneratorInvoker<TArgs, TValue>
     where TArgs : IResilienceArguments
 {
-    public static GeneratorInvoker<TArgs, TValue>? NonGeneric(Func<Outcome, TArgs, ValueTask<TValue>>? generator)
+    public static GeneratorInvoker<TArgs, TValue>? NonGeneric(Func<Outcome<object>, TArgs, ValueTask<TValue>>? generator)
         => generator == null ? null : new NonGenericGeneratorInvoker(generator);
 
     public static GeneratorInvoker<TArgs, TValue>? Generic<TResult>(Func<Outcome<TResult>, TArgs, ValueTask<TValue>>? generator, TValue defaultValue)
@@ -15,11 +15,11 @@ internal abstract class GeneratorInvoker<TArgs, TValue>
 
     private sealed class NonGenericGeneratorInvoker : GeneratorInvoker<TArgs, TValue>
     {
-        private readonly Func<Outcome, TArgs, ValueTask<TValue>> _generator;
+        private readonly Func<Outcome<object>, TArgs, ValueTask<TValue>> _generator;
 
-        public NonGenericGeneratorInvoker(Func<Outcome, TArgs, ValueTask<TValue>> generator) => _generator = generator;
+        public NonGenericGeneratorInvoker(Func<Outcome<object>, TArgs, ValueTask<TValue>> generator) => _generator = generator;
 
-        public override ValueTask<TValue> HandleAsync<TResult>(Outcome<TResult> outcome, TArgs args) => _generator(outcome.AsOutcome(), args);
+        public override ValueTask<TValue> HandleAsync<TResult>(Outcome<TResult> outcome, TArgs args) => _generator(outcome.AsObjectOutcome(), args);
     }
 
     private sealed class GenericGeneratorInvoker<T> : GeneratorInvoker<TArgs, TValue>
