@@ -251,12 +251,14 @@ The StrategyName field is required.
         var builder = new ResilienceStrategyBuilder
         {
             BuilderName = "builder-name",
-            TimeProvider = new FakeTimeProvider().Object
+            TimeProvider = new FakeTimeProvider().Object,
+            IsGenericBuilder = true
         };
 
         builder.AddStrategy(
             context =>
             {
+                context.IsGenericBuilder.Should().BeTrue();
                 context.BuilderName.Should().Be("builder-name");
                 context.StrategyName.Should().Be("strategy-name");
                 context.StrategyType.Should().Be("Test");

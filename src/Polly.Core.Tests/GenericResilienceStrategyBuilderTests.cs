@@ -19,6 +19,12 @@ public class GenericResilienceStrategyBuilderTests
     }
 
     [Fact]
+    public void CopyCtor_Ok()
+    {
+        new ResilienceStrategyBuilder<string>(new ResilienceStrategyBuilder()).Builder.IsGenericBuilder.Should().BeTrue();
+    }
+
+    [Fact]
     public void Properties_GetSet_Ok()
     {
         _builder.BuilderName = "dummy";
