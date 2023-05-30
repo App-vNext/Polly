@@ -10,9 +10,9 @@ internal abstract class GeneratorInvoker<TArgs, TValue>
         TValue defaultValue,
         bool isGeneric) => generator switch
         {
-            null => null,
             Func<Outcome<object>, TArgs, ValueTask<TValue>> objectGenerator when !isGeneric => new NonGenericGeneratorInvoker(objectGenerator),
-            _ => new GenericGeneratorInvoker<TResult>(generator, defaultValue)
+            { } => new GenericGeneratorInvoker<TResult>(generator, defaultValue),
+            _ => null
         };
 
     public abstract ValueTask<TValue> HandleAsync<TResult>(Outcome<TResult> outcome, TArgs args);

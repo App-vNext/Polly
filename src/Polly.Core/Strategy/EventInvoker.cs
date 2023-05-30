@@ -7,9 +7,9 @@ internal abstract class EventInvoker<TArgs>
 {
     public static EventInvoker<TArgs>? Create<TResult>(Func<Outcome<TResult>, TArgs, ValueTask>? callback, bool isGeneric) => callback switch
     {
-        null => null,
         Func<Outcome<object>, TArgs, ValueTask> generic when !isGeneric => new NonGenericEventInvoker(generic),
-        _ => new GenericEventInvoker<TResult>(callback)
+        { } => new GenericEventInvoker<TResult>(callback),
+        _ => null,
     };
 
     public abstract ValueTask HandleAsync<TResult>(Outcome<TResult> outcome, TArgs args);

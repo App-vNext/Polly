@@ -7,9 +7,9 @@ internal abstract class PredicateInvoker<TArgs>
 {
     public static PredicateInvoker<TArgs>? Create<TResult>(Func<Outcome<TResult>, TArgs, ValueTask<bool>>? predicate, bool isGeneric) => predicate switch
     {
-        null => null,
         Func<Outcome<object>, TArgs, ValueTask<bool>> objectPredicate when !isGeneric => new NonGenericPredicateInvoker(objectPredicate),
-        _ => new GenericPredicateInvoker<TResult>(predicate)
+        { } => new GenericPredicateInvoker<TResult>(predicate),
+        _ => null,
     };
 
     public abstract ValueTask<bool> HandleAsync<TResult>(Outcome<TResult> outcome, TArgs args);

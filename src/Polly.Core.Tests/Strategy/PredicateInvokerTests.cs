@@ -7,6 +7,13 @@ namespace Polly.Core.Tests.Strategy;
 public class PredicateInvokerTests
 {
     [Fact]
+    public void NullCallback_Ok()
+    {
+        PredicateInvoker<TestArguments>.Create<string>(null, isGeneric: true).Should().BeNull();
+        PredicateInvoker<TestArguments>.Create<object>(null, isGeneric: true).Should().BeNull();
+    }
+
+    [Fact]
     public async Task HandleAsync_NonGeneric_Ok()
     {
         var args = new TestArguments(ResilienceContext.Get());
