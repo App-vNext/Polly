@@ -252,13 +252,12 @@ The StrategyName field is required.
         {
             BuilderName = "builder-name",
             TimeProvider = new FakeTimeProvider().Object,
-            IsGenericBuilder = true
         };
 
         builder.AddStrategy(
             context =>
             {
-                context.IsGenericBuilder.Should().BeTrue();
+                context.IsGenericBuilder.Should().BeFalse();
                 context.BuilderName.Should().Be("builder-name");
                 context.StrategyName.Should().Be("strategy-name");
                 context.StrategyType.Should().Be("Test");

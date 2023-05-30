@@ -125,6 +125,22 @@ public static class RetryResilienceStrategyBuilderExtensions
     /// <summary>
     /// Adds a retry strategy to the builder.
     /// </summary>
+    /// <param name="builder">The builder instance.</param>
+    /// <param name="options">The retry strategy options.</param>
+    /// <returns>The builder instance with the retry strategy added.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="builder"/> or <paramref name="options"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ValidationException">Thrown when <paramref name="options"/> are invalid.</exception>
+    public static ResilienceStrategyBuilder AddRetry(this ResilienceStrategyBuilder builder, RetryStrategyOptions options)
+    {
+        Guard.NotNull(builder);
+        Guard.NotNull(options);
+
+        return builder.AddRetryCore(options);
+    }
+
+    /// <summary>
+    /// Adds a retry strategy to the builder.
+    /// </summary>
     /// <typeparam name="TResult">The type of result the retry strategy handles.</typeparam>
     /// <param name="builder">The builder instance.</param>
     /// <param name="options">The retry strategy options.</param>
@@ -136,38 +152,15 @@ public static class RetryResilienceStrategyBuilderExtensions
         Guard.NotNull(builder);
         Guard.NotNull(options);
 
-        ValidationHelper.ValidateObject(options, "The retry strategy options are invalid.");
-
-        return builder.AddStrategy(context =>
-            new RetryResilienceStrategy(
-                options.BaseDelay,
-                options.BackoffType,
-                options.RetryCount,
-                context.CreateInvoker(options.ShouldRetry)!,
-                context.CreateInvoker(options.OnRetry),
-                context.CreateInvoker(options.RetryDelayGenerator, TimeSpan.MinValue),
-                context.TimeProvider,
-                context.Telemetry,
-                RandomUtil.Instance),
-            options);
+        return builder.AddRetryCore(options);
     }
 
-    /// <summary>
-    /// Adds a retry strategy to the builder.
-    /// </summary>
-    /// <param name="builder">The builder instance.</param>
-    /// <param name="options">The retry strategy options.</param>
-    /// <returns>The builder instance with the retry strategy added.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="builder"/> or <paramref name="options"/> is <see langword="null"/>.</exception>
-    /// <exception cref="ValidationException">Thrown when <paramref name="options"/> are invalid.</exception>
-    public static ResilienceStrategyBuilder AddRetry(this ResilienceStrategyBuilder builder, RetryStrategyOptions options)
+    private static TBuilder AddRetryCore<TBuilder, TResult>(this TBuilder builder, RetryStrategyOptions<TResult> options)
+        where TBuilder : ResilienceStrategyBuilderBase
     {
-        Guard.NotNull(builder);
-        Guard.NotNull(options);
-
         ValidationHelper.ValidateObject(options, "The retry strategy options are invalid.");
 
-        return builder.AddStrategy(context =>
+        builder.AddStrategy(context =>
             new RetryResilienceStrategy(
                 options.BaseDelay,
                 options.BackoffType,
@@ -179,6 +172,8 @@ public static class RetryResilienceStrategyBuilderExtensions
                 context.Telemetry,
                 RandomUtil.Instance),
             options);
+
+        return builder;
     }
 
     private static void ConfigureShouldRetry<TResult>(Action<PredicateBuilder<TResult>> shouldRetry, RetryStrategyOptions<TResult> options)
