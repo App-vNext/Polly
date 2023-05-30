@@ -57,19 +57,6 @@ public abstract class ResilienceStrategyBuilderBase
     internal abstract bool IsGenericBuilder { get; }
 
     /// <summary>
-    /// Adds an already created strategy instance to the builder.
-    /// </summary>
-    /// <param name="strategy">The strategy instance.</param>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="strategy"/> is null.</exception>
-    /// <exception cref="InvalidOperationException">Thrown when this builder was already used to create a strategy. The builder cannot be modified after it has been used.</exception>
-    public void AddStrategy(ResilienceStrategy strategy)
-    {
-        Guard.NotNull(strategy);
-
-        AddStrategy(_ => strategy, EmptyOptions.Instance);
-    }
-
-    /// <summary>
     /// Adds a strategy to the builder.
     /// </summary>
     /// <param name="factory">The factory that creates a resilience strategy.</param>
@@ -128,11 +115,4 @@ public abstract class ResilienceStrategyBuilderBase
     }
 
     private sealed record Entry(Func<ResilienceStrategyBuilderContext, ResilienceStrategy> Factory, ResilienceStrategyOptions Properties);
-
-    internal sealed class EmptyOptions : ResilienceStrategyOptions
-    {
-        public static readonly EmptyOptions Instance = new();
-
-        public override string StrategyType => "Empty";
-    }
 }

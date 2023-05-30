@@ -65,12 +65,14 @@ public static class FallbackResilienceStrategyBuilderExtensions
             })
             .CreateHandler();
 
-        return builder.AddStrategy(context =>
+        builder.AddStrategy(context =>
             new FallbackResilienceStrategy(
                 handler,
                 context.CreateInvoker(options.OnFallback),
                 context.Telemetry),
             options);
+
+        return builder;
     }
 
     /// <summary>
@@ -88,11 +90,13 @@ public static class FallbackResilienceStrategyBuilderExtensions
 
         ValidationHelper.ValidateObject(options, "The fallback strategy options are invalid.");
 
-        return builder.AddStrategy(context =>
+        builder.AddStrategy(context =>
             new FallbackResilienceStrategy(
                 options.Handler.CreateHandler(),
                 context.CreateInvoker(options.OnFallback),
                 context.Telemetry),
             options);
+
+        return builder;
     }
 }
