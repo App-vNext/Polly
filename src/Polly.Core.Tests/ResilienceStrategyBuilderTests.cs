@@ -319,7 +319,7 @@ The StrategyName field is required.
     [Fact]
     public void EmptyOptions_Ok()
     {
-        ResilienceStrategyBuilder.EmptyOptions.Instance.StrategyType.Should().Be("Empty");
+        ResilienceStrategyBuilderExtensions.EmptyOptions.Instance.StrategyType.Should().Be("Empty");
     }
 
     private class Strategy : ResilienceStrategy

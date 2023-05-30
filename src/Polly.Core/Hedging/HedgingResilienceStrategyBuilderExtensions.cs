@@ -33,7 +33,7 @@ public static class HedgingResilienceStrategyBuilderExtensions
             })
             .CreateHandler();
 
-        return builder.AddStrategy(context =>
+        builder.AddStrategy(context =>
             new HedgingResilienceStrategy(
                 options.HedgingDelay,
                 options.MaxHedgedAttempts,
@@ -43,6 +43,8 @@ public static class HedgingResilienceStrategyBuilderExtensions
                 context.TimeProvider,
                 context.Telemetry),
             options);
+
+        return builder;
     }
 
     /// <summary>
@@ -60,7 +62,7 @@ public static class HedgingResilienceStrategyBuilderExtensions
 
         ValidationHelper.ValidateObject(options, "The hedging strategy options are invalid.");
 
-        return builder.AddStrategy(context =>
+        builder.AddStrategy(context =>
             new HedgingResilienceStrategy(
                 options.HedgingDelay,
                 options.MaxHedgedAttempts,
@@ -70,5 +72,7 @@ public static class HedgingResilienceStrategyBuilderExtensions
                 context.TimeProvider,
                 context.Telemetry),
             options);
+
+        return builder;
     }
 }
