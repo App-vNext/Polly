@@ -15,6 +15,7 @@ public class ResilienceStrategyBuilderTests
         builder.BuilderName.Should().Be("");
         builder.Properties.Should().NotBeNull();
         builder.TimeProvider.Should().Be(TimeProvider.System);
+        builder.IsGenericBuilder.Should().BeFalse();
     }
 
     [Fact]

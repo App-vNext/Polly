@@ -232,9 +232,9 @@ public class RetryResilienceStrategyTests
             _options.BaseDelay,
             _options.BackoffType,
             _options.RetryCount,
-            PredicateInvoker<ShouldRetryArguments>.NonGeneric(_options.ShouldRetry!),
-            EventInvoker<OnRetryArguments>.NonGeneric(_options.OnRetry),
-            GeneratorInvoker<RetryDelayArguments, TimeSpan>.NonGeneric(_options.RetryDelayGenerator),
+            PredicateInvoker<ShouldRetryArguments>.Create(_options.ShouldRetry!, false)!,
+            EventInvoker<OnRetryArguments>.Create(_options.OnRetry, false),
+            GeneratorInvoker<RetryDelayArguments, TimeSpan>.Create(_options.RetryDelayGenerator, TimeSpan.MinValue, false),
             _timeProvider.Object,
             _telemetry,
             RandomUtil.Instance);

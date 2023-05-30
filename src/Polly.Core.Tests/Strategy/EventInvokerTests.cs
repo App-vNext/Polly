@@ -9,8 +9,8 @@ public class EventInvokerTests
     [Fact]
     public void NullCallback_Ok()
     {
-        EventInvoker<TestArguments>.NonGeneric(null).Should().BeNull();
-        EventInvoker<TestArguments>.Generic<string>(null).Should().BeNull();
+        EventInvoker<TestArguments>.Create<string>(null, isGeneric: true).Should().BeNull();
+        EventInvoker<TestArguments>.Create<object>(null, isGeneric: true).Should().BeNull();
     }
 
     [Fact]
@@ -18,13 +18,14 @@ public class EventInvokerTests
     {
         var args = new TestArguments(ResilienceContext.Get());
         var called = false;
-        var invoker = EventInvoker<TestArguments>.NonGeneric((outcome, args) =>
+        var invoker = EventInvoker<TestArguments>.Create<object>((outcome, args) =>
         {
             outcome.Result.Should().Be(10);
             args.Context.Should().NotBeNull();
             called = true;
             return default;
-        })!;
+        },
+        false)!;
 
         await invoker.HandleAsync(new Outcome<int>(10), args);
         called.Should().Be(true);
@@ -35,13 +36,14 @@ public class EventInvokerTests
     {
         var args = new TestArguments(ResilienceContext.Get());
         var called = false;
-        var invoker = EventInvoker<TestArguments>.Generic<int>((outcome, args) =>
+        var invoker = EventInvoker<TestArguments>.Create<int>((outcome, args) =>
         {
             args.Context.Should().NotBeNull();
             outcome.Result.Should().Be(10);
             called = true;
             return default;
-        })!;
+        },
+        true)!;
 
         await invoker.HandleAsync(new Outcome<int>(10), args);
         called.Should().Be(true);

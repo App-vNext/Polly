@@ -5,11 +5,15 @@ namespace Polly.Strategy;
 internal abstract class GeneratorInvoker<TArgs, TValue>
     where TArgs : IResilienceArguments
 {
-    public static GeneratorInvoker<TArgs, TValue>? NonGeneric(Func<Outcome<object>, TArgs, ValueTask<TValue>>? generator)
-        => generator == null ? null : new NonGenericGeneratorInvoker(generator);
-
-    public static GeneratorInvoker<TArgs, TValue>? Generic<TResult>(Func<Outcome<TResult>, TArgs, ValueTask<TValue>>? generator, TValue defaultValue)
-        => generator == null ? null : new GenericGeneratorInvoker<TResult>(generator, defaultValue);
+    public static GeneratorInvoker<TArgs, TValue>? Create<TResult>(
+        Func<Outcome<TResult>, TArgs, ValueTask<TValue>>? generator,
+        TValue defaultValue,
+        bool isGeneric) => generator switch
+        {
+            null => null,
+            Func<Outcome<object>, TArgs, ValueTask<TValue>> objectGenerator when !isGeneric => new NonGenericGeneratorInvoker(objectGenerator),
+            _ => new GenericGeneratorInvoker<TResult>(generator, defaultValue)
+        };
 
     public abstract ValueTask<TValue> HandleAsync<TResult>(Outcome<TResult> outcome, TArgs args);
 

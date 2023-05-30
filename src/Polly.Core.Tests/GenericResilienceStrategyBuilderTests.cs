@@ -15,6 +15,7 @@ public class GenericResilienceStrategyBuilderTests
         _builder.Properties.Should().NotBeNull();
         _builder.TimeProvider.Should().Be(TimeProvider.System);
         _builder.OnCreatingStrategy.Should().BeNull();
+        _builder.Builder.IsGenericBuilder.Should().BeTrue();
     }
 
     [Fact]

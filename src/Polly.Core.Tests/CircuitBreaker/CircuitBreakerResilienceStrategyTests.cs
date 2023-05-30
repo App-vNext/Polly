@@ -134,6 +134,6 @@ public class CircuitBreakerResilienceStrategyTests : IDisposable
 
     private CircuitBreakerResilienceStrategy Create()
     {
-        return new(PredicateInvoker<CircuitBreakerPredicateArguments>.NonGeneric(_options.ShouldHandle!), _controller, _options.StateProvider, _options.ManualControl);
+        return new(PredicateInvoker<CircuitBreakerPredicateArguments>.Create(_options.ShouldHandle!, false)!, _controller, _options.StateProvider, _options.ManualControl);
     }
 }
