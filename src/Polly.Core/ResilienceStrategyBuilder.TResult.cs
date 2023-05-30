@@ -26,6 +26,8 @@ public sealed class ResilienceStrategyBuilder<TResult> : ResilienceStrategyBuild
     {
     }
 
+    internal override bool IsGenericBuilder => true;
+
     /// <summary>
     /// Adds an already created strategy instance to the builder.
     /// </summary>

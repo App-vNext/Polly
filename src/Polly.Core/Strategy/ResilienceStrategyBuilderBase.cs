@@ -54,6 +54,8 @@ public abstract class ResilienceStrategyBuilderBase
     /// </summary>
     internal Action<IList<ResilienceStrategy>>? OnCreatingStrategy { get; set; }
 
+    internal abstract bool IsGenericBuilder { get; }
+
     /// <summary>
     /// Adds an already created strategy instance to the builder.
     /// </summary>
@@ -119,7 +121,8 @@ public abstract class ResilienceStrategyBuilderBase
             builderProperties: Properties,
             strategyName: entry.Properties.StrategyName,
             strategyType: entry.Properties.StrategyType,
-            timeProvider: TimeProvider);
+            timeProvider: TimeProvider,
+            IsGenericBuilder);
 
         return entry.Factory(context);
     }
