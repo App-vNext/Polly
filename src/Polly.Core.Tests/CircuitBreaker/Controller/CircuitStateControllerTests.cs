@@ -435,8 +435,8 @@ public class CircuitStateControllerTests
 
     private CircuitStateController CreateController() => new(
         _options.BreakDuration,
-        EventInvoker<OnCircuitOpenedArguments>.NonGeneric(_options.OnOpened),
-        EventInvoker<OnCircuitClosedArguments>.NonGeneric(_options.OnClosed),
+        EventInvoker<OnCircuitOpenedArguments>.Create(_options.OnOpened, false),
+        EventInvoker<OnCircuitClosedArguments>.Create(_options.OnClosed, false),
         _options.OnHalfOpened,
         _circuitBehavior.Object,
         _timeProvider.Object,

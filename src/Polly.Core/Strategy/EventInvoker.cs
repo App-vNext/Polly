@@ -5,11 +5,12 @@ namespace Polly.Strategy;
 internal abstract class EventInvoker<TArgs>
     where TArgs : IResilienceArguments
 {
-    public static EventInvoker<TArgs>? NonGeneric(Func<Outcome<object>, TArgs, ValueTask>? callback)
-        => callback == null ? null : new NonGenericEventInvoker(callback);
-
-    public static EventInvoker<TArgs>? Generic<TResult>(Func<Outcome<TResult>, TArgs, ValueTask>? callback)
-        => callback == null ? null : new GenericEventInvoker<TResult>(callback);
+    public static EventInvoker<TArgs>? Create<TResult>(Func<Outcome<TResult>, TArgs, ValueTask>? callback, bool isGeneric) => callback switch
+    {
+        Func<Outcome<object>, TArgs, ValueTask> generic when !isGeneric => new NonGenericEventInvoker(generic),
+        { } => new GenericEventInvoker<TResult>(callback),
+        _ => null,
+    };
 
     public abstract ValueTask HandleAsync<TResult>(Outcome<TResult> outcome, TArgs args);
 

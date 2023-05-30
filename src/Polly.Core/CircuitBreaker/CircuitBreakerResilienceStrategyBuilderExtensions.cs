@@ -132,15 +132,15 @@ public static class CircuitBreakerResilienceStrategyBuilderExtensions
     {
         var controller = new CircuitStateController(
             options.BreakDuration,
-            EventInvoker<OnCircuitOpenedArguments>.NonGeneric(options.OnOpened),
-            EventInvoker<OnCircuitClosedArguments>.NonGeneric(options.OnClosed),
+            context.CreateInvoker(options.OnOpened),
+            context.CreateInvoker(options.OnClosed),
             options.OnHalfOpened,
             behavior,
             context.TimeProvider,
             context.Telemetry);
 
         return new CircuitBreakerResilienceStrategy(
-            PredicateInvoker<CircuitBreakerPredicateArguments>.NonGeneric(options.ShouldHandle!),
+            context.CreateInvoker(options.ShouldHandle)!,
             controller,
             options.StateProvider,
             options.ManualControl);
@@ -150,15 +150,15 @@ public static class CircuitBreakerResilienceStrategyBuilderExtensions
     {
         var controller = new CircuitStateController(
             options.BreakDuration,
-            EventInvoker<OnCircuitOpenedArguments>.Generic(options.OnOpened),
-            EventInvoker<OnCircuitClosedArguments>.Generic(options.OnClosed),
+            context.CreateInvoker(options.OnOpened),
+            context.CreateInvoker(options.OnClosed),
             options.OnHalfOpened,
             behavior,
             context.TimeProvider,
             context.Telemetry);
 
         return new CircuitBreakerResilienceStrategy(
-            PredicateInvoker<CircuitBreakerPredicateArguments>.Generic(options.ShouldHandle!),
+            context.CreateInvoker(options.ShouldHandle)!,
             controller,
             options.StateProvider,
             options.ManualControl);

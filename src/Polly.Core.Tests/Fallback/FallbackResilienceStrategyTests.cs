@@ -130,6 +130,6 @@ public class FallbackResilienceStrategyTests
 
     private FallbackResilienceStrategy Create() => new(
         _options.Handler.CreateHandler(),
-        EventInvoker<OnFallbackArguments>.NonGeneric(_options.OnFallback),
+        EventInvoker<OnFallbackArguments>.Create(_options.OnFallback, false),
         _telemetry);
 }

@@ -68,7 +68,7 @@ public static class FallbackResilienceStrategyBuilderExtensions
         return builder.AddStrategy(context =>
             new FallbackResilienceStrategy(
                 handler,
-                EventInvoker<OnFallbackArguments>.Generic(options.OnFallback),
+                context.CreateInvoker(options.OnFallback),
                 context.Telemetry),
             options);
     }
@@ -91,7 +91,7 @@ public static class FallbackResilienceStrategyBuilderExtensions
         return builder.AddStrategy(context =>
             new FallbackResilienceStrategy(
                 options.Handler.CreateHandler(),
-                EventInvoker<OnFallbackArguments>.NonGeneric(options.OnFallback),
+                context.CreateInvoker(options.OnFallback),
                 context.Telemetry),
             options);
     }

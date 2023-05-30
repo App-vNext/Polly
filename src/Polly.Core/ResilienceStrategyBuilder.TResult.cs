@@ -17,9 +17,16 @@ public class ResilienceStrategyBuilder<TResult>
     /// <summary>
     /// Initializes a new instance of the <see cref="ResilienceStrategyBuilder{TResult}"/> class.
     /// </summary>
-    public ResilienceStrategyBuilder() => Builder = new();
+    public ResilienceStrategyBuilder() => Builder = new()
+    {
+        IsGenericBuilder = true
+    };
 
-    internal ResilienceStrategyBuilder(ResilienceStrategyBuilder builder) => Builder = builder;
+    internal ResilienceStrategyBuilder(ResilienceStrategyBuilder builder)
+    {
+        Builder = builder;
+        Builder.IsGenericBuilder = true;
+    }
 
     /// <summary>
     /// Gets or sets the name of the builder.

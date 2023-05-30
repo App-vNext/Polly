@@ -5,9 +5,12 @@ namespace Polly.Strategy;
 internal abstract class PredicateInvoker<TArgs>
     where TArgs : IResilienceArguments
 {
-    public static PredicateInvoker<TArgs> NonGeneric(Func<Outcome<object>, TArgs, ValueTask<bool>> predicate) => new NonGenericPredicateInvoker(predicate);
-
-    public static PredicateInvoker<TArgs> Generic<TResult>(Func<Outcome<TResult>, TArgs, ValueTask<bool>> predicate) => new GenericPredicateInvoker<TResult>(predicate);
+    public static PredicateInvoker<TArgs>? Create<TResult>(Func<Outcome<TResult>, TArgs, ValueTask<bool>>? predicate, bool isGeneric) => predicate switch
+    {
+        Func<Outcome<object>, TArgs, ValueTask<bool>> objectPredicate when !isGeneric => new NonGenericPredicateInvoker(objectPredicate),
+        { } => new GenericPredicateInvoker<TResult>(predicate),
+        _ => null,
+    };
 
     public abstract ValueTask<bool> HandleAsync<TResult>(Outcome<TResult> outcome, TArgs args);
 
