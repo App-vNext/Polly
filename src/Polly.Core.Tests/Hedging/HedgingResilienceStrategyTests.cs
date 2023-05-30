@@ -888,7 +888,7 @@ public class HedgingResilienceStrategyTests : IDisposable
         _options.HedgingDelay,
         _options.MaxHedgedAttempts,
         _options.Handler.CreateHandler(),
-        EventInvoker<OnHedgingArguments>.NonGeneric(_options.OnHedging),
+        EventInvoker<OnHedgingArguments>.Create(_options.OnHedging, false),
         _options.HedgingDelayGenerator,
         _timeProvider,
         _telemetry);
