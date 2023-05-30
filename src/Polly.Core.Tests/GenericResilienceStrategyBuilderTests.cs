@@ -15,13 +15,13 @@ public class GenericResilienceStrategyBuilderTests
         _builder.Properties.Should().NotBeNull();
         _builder.TimeProvider.Should().Be(TimeProvider.System);
         _builder.OnCreatingStrategy.Should().BeNull();
-        _builder.Builder.IsGenericBuilder.Should().BeTrue();
+        _builder.IsGenericBuilder.Should().BeTrue();
     }
 
     [Fact]
     public void CopyCtor_Ok()
     {
-        new ResilienceStrategyBuilder<string>(new ResilienceStrategyBuilder()).Builder.IsGenericBuilder.Should().BeTrue();
+        new ResilienceStrategyBuilder<string>(new ResilienceStrategyBuilder()).IsGenericBuilder.Should().BeTrue();
     }
 
     [Fact]
