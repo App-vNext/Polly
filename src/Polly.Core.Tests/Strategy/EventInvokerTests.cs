@@ -52,4 +52,17 @@ public class EventInvokerTests
         await invoker.HandleAsync(new Outcome<string>("dummy"), args);
         called.Should().Be(false);
     }
+
+    [Fact]
+    public async Task HandleAsync_GenericObject_Ok()
+    {
+        var called = false;
+        var args = new TestArguments(ResilienceContext.Get());
+        var invoker = EventInvoker<TestArguments>.Create<object>((_, _) => { called = true; return default; }, true);
+        await invoker!.HandleAsync(new Outcome<string>("dummy"), args);
+        called.Should().BeFalse();
+
+        await invoker!.HandleAsync(new Outcome<object>("dummy"), args);
+        called.Should().BeTrue();
+    }
 }

@@ -52,4 +52,13 @@ public class PredicateInvokerTests
         (await invoker.HandleAsync(new Outcome<string>("dummy"), args)).Should().Be(false);
         called.Should().Be(false);
     }
+
+    [Fact]
+    public async Task HandleAsync_GenericObject_Ok()
+    {
+        var args = new TestArguments(ResilienceContext.Get());
+        var invoker = PredicateInvoker<TestArguments>.Create<object>((_, _) => PredicateResult.True, true);
+        (await invoker!.HandleAsync(new Outcome<string>("dummy"), args)).Should().BeFalse();
+        (await invoker!.HandleAsync(new Outcome<object>("dummy"), args)).Should().BeTrue();
+    }
 }
