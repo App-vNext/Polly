@@ -195,7 +195,7 @@ internal sealed class TaskExecution
 
     private async Task UpdateOutcomeAsync<TResult>(Outcome<TResult> outcome)
     {
-        Outcome = outcome.AsObjectOutcome();
+        Outcome = outcome.AsOutcome();
         IsHandled = await _handler.ShouldHandleAsync(outcome, new HandleHedgingArguments(Context)).ConfigureAwait(Context.ContinueOnCapturedContext);
     }
 

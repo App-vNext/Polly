@@ -19,7 +19,7 @@ internal abstract class EventInvoker<TArgs>
 
         public NonGenericEventInvoker(Func<Outcome<object>, TArgs, ValueTask> callback) => _callback = callback;
 
-        public override ValueTask HandleAsync<TResult>(Outcome<TResult> outcome, TArgs args) => _callback(outcome.AsObjectOutcome(), args);
+        public override ValueTask HandleAsync<TResult>(Outcome<TResult> outcome, TArgs args) => _callback(outcome.AsOutcome(), args);
     }
 
     private sealed class GenericEventInvoker<T> : EventInvoker<TArgs>

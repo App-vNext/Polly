@@ -26,7 +26,7 @@ internal partial class HedgingHandler
 
             if (typeof(TResult) == typeof(VoidResult))
             {
-                return ((Func<Outcome<object>, HandleHedgingArguments, ValueTask<bool>>)predicate)(outcome.AsObjectOutcome(), arguments);
+                return ((Func<Outcome<object>, HandleHedgingArguments, ValueTask<bool>>)predicate)(outcome.AsOutcome(), arguments);
             }
             else
             {

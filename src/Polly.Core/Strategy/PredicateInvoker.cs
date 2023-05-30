@@ -17,7 +17,7 @@ internal abstract class PredicateInvoker<TArgs>
 
         public NonGenericPredicateInvoker(Func<Outcome<object>, TArgs, ValueTask<bool>> predicate) => _predicate = predicate;
 
-        public override ValueTask<bool> HandleAsync<TResult>(Outcome<TResult> outcome, TArgs args) => _predicate(outcome.AsObjectOutcome(), args);
+        public override ValueTask<bool> HandleAsync<TResult>(Outcome<TResult> outcome, TArgs args) => _predicate(outcome.AsOutcome(), args);
     }
 
     private sealed class GenericPredicateInvoker<T> : PredicateInvoker<TArgs>

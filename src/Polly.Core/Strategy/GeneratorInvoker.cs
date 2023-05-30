@@ -19,7 +19,7 @@ internal abstract class GeneratorInvoker<TArgs, TValue>
 
         public NonGenericGeneratorInvoker(Func<Outcome<object>, TArgs, ValueTask<TValue>> generator) => _generator = generator;
 
-        public override ValueTask<TValue> HandleAsync<TResult>(Outcome<TResult> outcome, TArgs args) => _generator(outcome.AsObjectOutcome(), args);
+        public override ValueTask<TValue> HandleAsync<TResult>(Outcome<TResult> outcome, TArgs args) => _generator(outcome.AsOutcome(), args);
     }
 
     private sealed class GenericGeneratorInvoker<T> : GeneratorInvoker<TArgs, TValue>

@@ -63,7 +63,7 @@ public sealed class ResilienceStrategyTelemetry
             return;
         }
 
-        DiagnosticSource.Write(eventName, new TelemetryEventArguments(TelemetrySource, eventName, args, outcome.AsObjectOutcome()));
+        DiagnosticSource.Write(eventName, new TelemetryEventArguments(TelemetrySource, eventName, args, outcome.AsOutcome()));
     }
 }
 

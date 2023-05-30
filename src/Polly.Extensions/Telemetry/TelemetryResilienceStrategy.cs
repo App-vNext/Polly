@@ -76,7 +76,7 @@ internal sealed class TelemetryResilienceStrategy : ResilienceStrategy
                 { ResilienceTelemetryTags.ExecutionHealth, context.GetExecutionHealth() }
             };
 
-        EnrichmentUtil.Enrich(ref tags, _enrichers, context, outcome.AsObjectOutcome(), resilienceArguments: null);
+        EnrichmentUtil.Enrich(ref tags, _enrichers, context, outcome.AsOutcome(), resilienceArguments: null);
 
         ExecutionDuration.Record(duration.TotalMilliseconds, tags);
 

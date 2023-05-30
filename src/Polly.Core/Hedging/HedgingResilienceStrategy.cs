@@ -78,7 +78,7 @@ internal sealed class HedgingResilienceStrategy : ResilienceStrategy
                     continue;
                 }
 
-                outcome = execution.Outcome.Convert<TResult>();
+                outcome = execution.Outcome.AsOutcome<TResult>();
 
                 if (!execution.IsHandled)
                 {

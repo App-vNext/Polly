@@ -29,7 +29,7 @@ public readonly struct Outcome<TResult>
         : this() => Result = result;
 
     /// <summary>
-    /// Gets the exception occurred during the operation, if any.
+    /// Gets the exception that occurred during the operation, if any.
     /// </summary>
     public Exception? Exception => ExceptionDispatchInfo?.SourceException;
 
@@ -91,9 +91,9 @@ public readonly struct Outcome<TResult>
         return Result!;
     }
 
-    internal Outcome<object> AsObjectOutcome() => Convert<object>();
+    internal Outcome<object> AsOutcome() => AsOutcome<object>();
 
-    internal Outcome<T> Convert<T>() => (ExceptionDispatchInfo != null)
+    internal Outcome<T> AsOutcome<T>() => (ExceptionDispatchInfo != null)
         ? new Outcome<T>(ExceptionDispatchInfo)
         : new Outcome<T>((T)(object)Result!);
 }
