@@ -6,6 +6,7 @@ namespace Polly.CircuitBreaker;
 /// <summary>
 /// The base options for circuit breaker resilience strategy.
 /// </summary>
+/// <typeparam name="TResult">The type of result the circuit breaker strategy handles.</typeparam>
 /// <remarks>
 /// The circuit will stay broken for the <see cref="BreakDuration"/>. Any attempt to execute the resilience strategy
 /// while the circuit is broken, will immediately throw a <see cref="BrokenCircuitException"/> containing the exception or result
@@ -15,7 +16,7 @@ namespace Polly.CircuitBreaker;
 /// again for another <see cref="BreakDuration"/>; if no exception or handled result is encountered, the circuit will reset.
 /// </para>
 /// </remarks>
-public abstract class CircuitBreakerStrategyOptions : ResilienceStrategyOptions
+public abstract class CircuitBreakerStrategyOptions<TResult> : ResilienceStrategyOptions
 {
     /// <summary>
     /// Gets the strategy type.
@@ -34,13 +35,13 @@ public abstract class CircuitBreakerStrategyOptions : ResilienceStrategyOptions
     public TimeSpan BreakDuration { get; set; } = CircuitBreakerConstants.DefaultBreakDuration;
 
     /// <summary>
-    /// Gets or sets the predicate for the circuit breaker.
+    /// Gets or sets the predicates for the circuit breaker.
     /// </summary>
     /// <remarks>
     /// Defaults to <see langword="null"/>. This property is required.
     /// </remarks>
     [Required]
-    public Func<Outcome, CircuitBreakerPredicateArguments, ValueTask<bool>>? ShouldHandle { get; set; }
+    public Func<Outcome<TResult>, CircuitBreakerPredicateArguments, ValueTask<bool>>? ShouldHandle { get; set; }
 
     /// <summary>
     /// Gets or sets the event that is raised when the circuit resets to a <see cref="CircuitState.Closed"/> state.
@@ -58,7 +59,7 @@ public abstract class CircuitBreakerStrategyOptions : ResilienceStrategyOptions
     /// Defaults to <see langword="null"/>.
     /// </para>
     /// </remarks>
-    public Func<Outcome, OnCircuitClosedArguments, ValueTask>? OnClosed { get; set; }
+    public Func<Outcome<TResult>, OnCircuitClosedArguments, ValueTask>? OnClosed { get; set; }
 
     /// <summary>
     /// Gets or sets the event that is raised when the circuit transitions to an <see cref="CircuitState.Open"/> state.
@@ -76,7 +77,7 @@ public abstract class CircuitBreakerStrategyOptions : ResilienceStrategyOptions
     /// Defaults to <see langword="null"/>.
     /// </para>
     /// </remarks>
-    public Func<Outcome, OnCircuitOpenedArguments, ValueTask>? OnOpened { get; set; }
+    public Func<Outcome<TResult>, OnCircuitOpenedArguments, ValueTask>? OnOpened { get; set; }
 
     /// <summary>
     /// Gets or sets the event that is raised when when the circuit transitions to an <see cref="CircuitState.HalfOpen"/> state.
@@ -111,5 +112,5 @@ public abstract class CircuitBreakerStrategyOptions : ResilienceStrategyOptions
     /// Defaults to <see langword="null"/>.
     /// </remarks>
     public CircuitBreakerStateProvider? StateProvider { get; set; }
-
 }
+

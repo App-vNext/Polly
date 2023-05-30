@@ -11,13 +11,13 @@ namespace Polly.CircuitBreaker;
 /// the proportion of actions resulting in a handled exception exceeds <see cref="FailureThreshold"/>,
 /// provided also that the number of actions through the circuit in the time-slice is at least <see cref="MinimumThroughput"/>.
 /// <para>
-/// The circuit will stay broken for the <see cref="CircuitBreakerStrategyOptions.BreakDuration"/>.
+/// The circuit will stay broken for the <see cref="CircuitBreakerStrategyOptions{TResult}.BreakDuration"/>.
 /// Any attempt to execute this while the circuit is broken, will immediately throw a <see cref="BrokenCircuitException"/> containing the exception
 /// that broke the circuit.
 /// </para>
 /// <para>
 /// If the first action after the break duration period results in a handled exception, the circuit will break
-/// again for another <see cref="CircuitBreakerStrategyOptions.BreakDuration"/>; if no exception is thrown, the circuit will reset.
+/// again for another <see cref="CircuitBreakerStrategyOptions{TResult}.BreakDuration"/>; if no exception is thrown, the circuit will reset.
 /// </para>
 /// </remarks>
 public class AdvancedCircuitBreakerStrategyOptions<TResult> : CircuitBreakerStrategyOptions<TResult>

@@ -8,9 +8,9 @@ namespace Polly.CircuitBreaker;
 public sealed class CircuitBreakerStateProvider
 {
     private Func<CircuitState>? _circuitStateProvider;
-    private Func<Outcome?>? _lastHandledOutcomeProvider;
+    private Func<Outcome<object>?>? _lastHandledOutcomeProvider;
 
-    internal void Initialize(Func<CircuitState> circuitStateProvider, Func<Outcome?> lastHandledOutcomeProvider)
+    internal void Initialize(Func<CircuitState> circuitStateProvider, Func<Outcome<object>?> lastHandledOutcomeProvider)
     {
         if (_circuitStateProvider != null)
         {
@@ -40,5 +40,5 @@ public sealed class CircuitBreakerStateProvider
     /// <remarks>
     /// This will be null if no exceptions or results have been handled by the circuit-breaker since the circuit last closed.</remarks>
     /// </summary>
-    public Outcome? LastHandledOutcome => _lastHandledOutcomeProvider?.Invoke();
+    public Outcome<object>? LastHandledOutcome => _lastHandledOutcomeProvider?.Invoke();
 }

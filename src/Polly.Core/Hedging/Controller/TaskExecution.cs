@@ -44,7 +44,7 @@ internal sealed class TaskExecution
     /// </remarks>
     public Task? ExecutionTaskSafe { get; private set; }
 
-    public Outcome Outcome { get; private set; }
+    public Outcome<object> Outcome { get; private set; }
 
     public bool IsHandled { get; private set; }
 

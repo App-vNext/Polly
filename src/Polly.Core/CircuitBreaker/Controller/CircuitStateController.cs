@@ -19,7 +19,7 @@ internal sealed class CircuitStateController : IDisposable
     private readonly TimeSpan _breakDuration;
     private DateTimeOffset _blockedUntil;
     private CircuitState _circuitState = CircuitState.Closed;
-    private Outcome? _lastOutcome;
+    private Outcome<object>? _lastOutcome;
     private BrokenCircuitException? _breakingException;
     private bool _disposed;
 
@@ -67,7 +67,7 @@ internal sealed class CircuitStateController : IDisposable
         }
     }
 
-    public Outcome? LastHandledOutcome
+    public Outcome<object>? LastHandledOutcome
     {
         get
         {

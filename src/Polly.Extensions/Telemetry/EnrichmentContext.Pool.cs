@@ -15,7 +15,7 @@ public partial class EnrichmentContext
             return true;
         });
 
-    internal static EnrichmentContext Get(ResilienceContext resilienceContext, IResilienceArguments? arguments, Outcome? outcome)
+    internal static EnrichmentContext Get(ResilienceContext resilienceContext, IResilienceArguments? arguments, Outcome<object>? outcome)
     {
         var context = ContextPool.Get();
         context.ResilienceContext = resilienceContext;

@@ -60,7 +60,7 @@ public class ResilienceTelemetryDiagnosticSourceTests : IDisposable
     public void WriteEvent_LoggingWithOutcome_Ok(bool noOutcome)
     {
         var telemetry = Create();
-        ReportEvent(telemetry, noOutcome ? null : new Outcome(true));
+        ReportEvent(telemetry, noOutcome ? null : new Outcome<object>(true));
 
         var messages = _logger.GetRecords(new EventId(0, "ResilienceEvent")).ToList();
         messages.Should().HaveCount(1);
@@ -81,7 +81,7 @@ public class ResilienceTelemetryDiagnosticSourceTests : IDisposable
     public void WriteEvent_LoggingWithException_Ok(bool noOutcome)
     {
         var telemetry = Create();
-        ReportEvent(telemetry, noOutcome ? null : new Outcome(new InvalidOperationException("Dummy message.")));
+        ReportEvent(telemetry, noOutcome ? null : new Outcome<object>(new InvalidOperationException("Dummy message.")));
 
         var messages = _logger.GetRecords(new EventId(0, "ResilienceEvent")).ToList();
 
@@ -121,11 +121,11 @@ public class ResilienceTelemetryDiagnosticSourceTests : IDisposable
     public void WriteEvent_MeteringWithoutEnrichers_Ok(bool noOutcome, bool exception)
     {
         var telemetry = Create();
-        Outcome? outcome = noOutcome switch
+        Outcome<object>? outcome = noOutcome switch
         {
             false => null,
-            true when exception => new Outcome(new InvalidOperationException("Dummy message.")),
-            _ => new Outcome(true)
+            true when exception => new Outcome<object>(new InvalidOperationException("Dummy message.")),
+            _ => new Outcome<object>(true)
         };
         ReportEvent(telemetry, outcome, context: ResilienceContext.Get().WithResultType<bool>());
 
@@ -180,8 +180,8 @@ public class ResilienceTelemetryDiagnosticSourceTests : IDisposable
             });
         });
 
-        ReportEvent(telemetry, noOutcome ? null : new Outcome(true));
-        ReportEvent(telemetry, noOutcome ? null : new Outcome(true));
+        ReportEvent(telemetry, noOutcome ? null : new Outcome<object>(true));
+        ReportEvent(telemetry, noOutcome ? null : new Outcome<object>(true));
 
         var events = GetEvents("resilience-events");
         var ev = events[0];
@@ -219,7 +219,7 @@ public class ResilienceTelemetryDiagnosticSourceTests : IDisposable
         return new(options);
     }
 
-    private static void ReportEvent(ResilienceTelemetryDiagnosticSource telemetry, Outcome? outcome, string? strategyKey = "my-strategy-key", ResilienceContext? context = null)
+    private static void ReportEvent(ResilienceTelemetryDiagnosticSource telemetry, Outcome<object>? outcome, string? strategyKey = "my-strategy-key", ResilienceContext? context = null)
     {
         var props = new ResilienceProperties();
         if (!string.IsNullOrEmpty(strategyKey))
