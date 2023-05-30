@@ -74,6 +74,8 @@ public static class TimeoutResilienceStrategyBuilderExtensions
         Guard.NotNull(builder);
         Guard.NotNull(options);
 
+        ValidationHelper.ValidateObject(options, "The timeout strategy options are invalid.*");
+
         builder.AddStrategy(context => new TimeoutResilienceStrategy(options, context.TimeProvider, context.Telemetry), options);
         return builder;
     }
