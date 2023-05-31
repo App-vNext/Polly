@@ -42,7 +42,7 @@ public class ResilienceStrategyRegistryTests
     {
         var registry = new ResilienceStrategyRegistry<string>();
 
-        registry.TryAddBuilder("C", (_, b) => b.AddStrategy(new TestResilienceStrategy()));
+        registry.TryAddBuilder("C", (b, _) => b.AddStrategy(new TestResilienceStrategy()));
 
         registry.TryAdd("A", new TestResilienceStrategy());
         registry.TryAdd("B", new TestResilienceStrategy());
@@ -60,7 +60,7 @@ public class ResilienceStrategyRegistryTests
     {
         var registry = new ResilienceStrategyRegistry<string>();
 
-        registry.TryAddBuilder<string>("C", (_, b) => b.AddStrategy(new TestResilienceStrategy()));
+        registry.TryAddBuilder<string>("C", (b, _) => b.AddStrategy(new TestResilienceStrategy()));
 
         registry.TryAdd("A", new TestResilienceStrategy<string>());
         registry.TryAdd("B", new TestResilienceStrategy<string>());
@@ -107,7 +107,7 @@ public class ResilienceStrategyRegistryTests
     public void RemoveBuilder_Ok()
     {
         var registry = new ResilienceStrategyRegistry<string>();
-        registry.TryAddBuilder("A", (_, b) => b.AddStrategy(new TestResilienceStrategy()));
+        registry.TryAddBuilder("A", (b, _) => b.AddStrategy(new TestResilienceStrategy()));
 
         registry.RemoveBuilder("A").Should().BeTrue();
         registry.RemoveBuilder("A").Should().BeFalse();
@@ -119,7 +119,7 @@ public class ResilienceStrategyRegistryTests
     public void RemoveBuilder_Generic_Ok()
     {
         var registry = new ResilienceStrategyRegistry<string>();
-        registry.TryAddBuilder<string>("A", (_, b) => b.AddStrategy(new TestResilienceStrategy()));
+        registry.TryAddBuilder<string>("A", (b, _) => b.AddStrategy(new TestResilienceStrategy()));
 
         registry.RemoveBuilder<string>("A").Should().BeTrue();
         registry.RemoveBuilder<string>("A").Should().BeFalse();
@@ -133,7 +133,7 @@ public class ResilienceStrategyRegistryTests
         var builderName = "A";
         var registry = CreateRegistry();
         var strategies = new HashSet<ResilienceStrategy>();
-        registry.TryAddBuilder(StrategyId.Create(builderName), (_, builder) => builder.AddStrategy(new TestResilienceStrategy()));
+        registry.TryAddBuilder(StrategyId.Create(builderName), (builder, _) => builder.AddStrategy(new TestResilienceStrategy()));
 
         for (int i = 0; i < 100; i++)
         {
@@ -154,7 +154,7 @@ public class ResilienceStrategyRegistryTests
         var builderName = "A";
         var registry = CreateRegistry();
         var strategies = new HashSet<ResilienceStrategy<string>>();
-        registry.TryAddBuilder<string>(StrategyId.Create(builderName), (_, builder) => builder.AddStrategy(new TestResilienceStrategy()));
+        registry.TryAddBuilder<string>(StrategyId.Create(builderName), (builder, _) => builder.AddStrategy(new TestResilienceStrategy()));
 
         for (int i = 0; i < 100; i++)
         {
@@ -176,10 +176,10 @@ public class ResilienceStrategyRegistryTests
         _callback = _ => activatorCalls++;
         var registry = CreateRegistry();
         var called = 0;
-        registry.TryAddBuilder(StrategyId.Create("A"), (key, builder) =>
+        registry.TryAddBuilder(StrategyId.Create("A"), (builder, context) =>
         {
             builder.AddStrategy(new TestResilienceStrategy());
-            builder.Properties.Set(StrategyId.ResilienceKey, key);
+            builder.Properties.Set(StrategyId.ResilienceKey, context.StrategyKey);
             called++;
         });
 
@@ -205,10 +205,10 @@ public class ResilienceStrategyRegistryTests
         _callback = _ => activatorCalls++;
         var registry = CreateRegistry();
         var called = 0;
-        registry.TryAddBuilder<string>(StrategyId.Create("A"), (key, builder) =>
+        registry.TryAddBuilder<string>(StrategyId.Create("A"), (builder, context) =>
         {
             builder.AddStrategy(new TestResilienceStrategy());
-            builder.Properties.Set(StrategyId.ResilienceKey, key);
+            builder.Properties.Set(StrategyId.ResilienceKey, context.StrategyKey);
             called++;
         });
 
@@ -235,8 +235,10 @@ public class ResilienceStrategyRegistryTests
 
         var called = false;
         var registry = CreateRegistry();
-        registry.TryAddBuilder(StrategyId.Create("A"), (_, builder) =>
+        registry.TryAddBuilder(StrategyId.Create("A"), (builder, context) =>
         {
+            context.BuilderName.Should().Be("A");
+            context.StrategyKeyString.Should().Be("Instance1");
             builder.AddStrategy(new TestResilienceStrategy());
             builder.BuilderName.Should().Be("A");
             builder.Properties.TryGetValue(TelemetryUtil.StrategyKey, out var val).Should().BeTrue();
@@ -252,8 +254,8 @@ public class ResilienceStrategyRegistryTests
     public void AddBuilder_MultipleGeneric_EnsureDistinctInstances()
     {
         var registry = CreateRegistry();
-        registry.TryAddBuilder<string>(StrategyId.Create("A"), (_, builder) => builder.AddStrategy(new TestResilienceStrategy()));
-        registry.TryAddBuilder<int>(StrategyId.Create("A"), (_, builder) => builder.AddStrategy(new TestResilienceStrategy()));
+        registry.TryAddBuilder<string>(StrategyId.Create("A"), (builder, _) => builder.AddStrategy(new TestResilienceStrategy()));
+        registry.TryAddBuilder<int>(StrategyId.Create("A"), (builder, _) => builder.AddStrategy(new TestResilienceStrategy()));
 
         registry.Get<string>(StrategyId.Create("A", "Instance1")).Should().BeSameAs(registry.Get<string>(StrategyId.Create("A", "Instance1")));
         registry.Get<int>(StrategyId.Create("A", "Instance1")).Should().BeSameAs(registry.Get<int>(StrategyId.Create("A", "Instance1")));
@@ -267,7 +269,7 @@ public class ResilienceStrategyRegistryTests
 
         var called = false;
         var registry = CreateRegistry();
-        registry.TryAddBuilder<string>(StrategyId.Create("A"), (_, builder) =>
+        registry.TryAddBuilder<string>(StrategyId.Create("A"), (builder, _) =>
         {
             builder.AddStrategy(new TestResilienceStrategy());
             builder.BuilderName.Should().Be("A");

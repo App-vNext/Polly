@@ -80,9 +80,9 @@ public static class PollyServiceCollectionExtensions
                 {
                     // the last added builder with the same key wins, this allows overriding the builders
                     registry.RemoveBuilder<TResult>(key);
-                    registry.TryAddBuilder<TResult>(key, (key, builder) =>
+                    registry.TryAddBuilder<TResult>(key, (builder, context) =>
                     {
-                        configure(builder, new AddResilienceStrategyContext<TKey>(key, serviceProvider));
+                        configure(builder, new AddResilienceStrategyContext<TKey>(context, serviceProvider));
                     });
                 });
             });
@@ -151,9 +151,9 @@ public static class PollyServiceCollectionExtensions
                 {
                     // the last added builder with the same key wins, this allows overriding the builders
                     registry.RemoveBuilder(key);
-                    registry.TryAddBuilder(key, (key, builder) =>
+                    registry.TryAddBuilder(key, (builder, context) =>
                     {
-                        configure(builder, new AddResilienceStrategyContext<TKey>(key, serviceProvider));
+                        configure(builder, new AddResilienceStrategyContext<TKey>(context, serviceProvider));
                     });
                 });
             });
