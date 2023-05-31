@@ -95,7 +95,7 @@ public class PollyServiceCollectionExtensionTests
         {
             _services.AddResilienceStrategy<string, string>(Key, (builder, context) =>
             {
-                context.Key.Should().Be(Key);
+                context.StrategyKey.Should().Be(Key);
                 builder.Should().NotBeNull();
                 context.ServiceProvider.Should().NotBeNull();
                 builder.AddStrategy(new TestStrategy());
@@ -108,7 +108,7 @@ public class PollyServiceCollectionExtensionTests
         {
             _services.AddResilienceStrategy(Key, (builder, context) =>
             {
-                context.Key.Should().Be(Key);
+                context.StrategyKey.Should().Be(Key);
                 builder.Should().NotBeNull();
                 context.ServiceProvider.Should().NotBeNull();
                 builder.AddStrategy(new TestStrategy());

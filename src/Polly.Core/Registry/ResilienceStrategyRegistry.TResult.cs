@@ -1,5 +1,4 @@
 using System.Diagnostics.CodeAnalysis;
-using Polly.Telemetry;
 
 namespace Polly.Registry;
 
@@ -9,7 +8,7 @@ public sealed partial class ResilienceStrategyRegistry<TKey> : ResilienceStrateg
     private sealed class GenericRegistry<TResult>
     {
         private readonly Func<ResilienceStrategyBuilder<TResult>> _activator;
-        private readonly ConcurrentDictionary<TKey, Action<TKey, ResilienceStrategyBuilder<TResult>>> _builders;
+        private readonly ConcurrentDictionary<TKey, Action<ResilienceStrategyBuilder<TResult>, ConfigureBuilderContext<TKey>>> _builders;
         private readonly ConcurrentDictionary<TKey, ResilienceStrategy<TResult>> _strategies;
 
         private readonly Func<TKey, string> _strategyKeyFormatter;
@@ -23,7 +22,7 @@ public sealed partial class ResilienceStrategyRegistry<TKey> : ResilienceStrateg
             Func<TKey, string> builderNameFormatter)
         {
             _activator = activator;
-            _builders = new ConcurrentDictionary<TKey, Action<TKey, ResilienceStrategyBuilder<TResult>>>(builderComparer);
+            _builders = new ConcurrentDictionary<TKey, Action<ResilienceStrategyBuilder<TResult>, ConfigureBuilderContext<TKey>>>(builderComparer);
             _strategies = new ConcurrentDictionary<TKey, ResilienceStrategy<TResult>>(strategyComparer);
             _strategyKeyFormatter = strategyKeyFormatter;
             _builderNameFormatter = builderNameFormatter;
@@ -44,11 +43,8 @@ public sealed partial class ResilienceStrategyRegistry<TKey> : ResilienceStrateg
             {
                 strategy = _strategies.GetOrAdd(key, key =>
                 {
-                    var builder = _activator();
-                    builder.BuilderName = _builderNameFormatter(key);
-                    builder.Properties.Set(TelemetryUtil.StrategyKey, _strategyKeyFormatter(key));
-                    configure(key, builder);
-                    return builder.Build();
+                    var context = new ConfigureBuilderContext<TKey>(key, _builderNameFormatter(key), _strategyKeyFormatter(key));
+                    return _strategies.GetOrAdd(key, key => new ResilienceStrategy<TResult>(CreateStrategy(_activator, context, configure)));
                 });
 
                 return true;
@@ -58,7 +54,7 @@ public sealed partial class ResilienceStrategyRegistry<TKey> : ResilienceStrateg
             return false;
         }
 
-        public bool TryAddBuilder(TKey key, Action<TKey, ResilienceStrategyBuilder<TResult>> configure) => _builders.TryAdd(key, configure);
+        public bool TryAddBuilder(TKey key, Action<ResilienceStrategyBuilder<TResult>, ConfigureBuilderContext<TKey>> configure) => _builders.TryAdd(key, configure);
 
         public bool RemoveBuilder(TKey key) => _builders.TryRemove(key, out _);
 

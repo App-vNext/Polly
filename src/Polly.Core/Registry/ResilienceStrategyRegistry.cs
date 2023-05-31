@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
+using Polly.Strategy;
 using Polly.Telemetry;
 
 namespace Polly.Registry;
@@ -20,7 +21,7 @@ public sealed partial class ResilienceStrategyRegistry<TKey> : ResilienceStrateg
     where TKey : notnull
 {
     private readonly Func<ResilienceStrategyBuilder> _activator;
-    private readonly ConcurrentDictionary<TKey, Action<TKey, ResilienceStrategyBuilder>> _builders;
+    private readonly ConcurrentDictionary<TKey, Action<ResilienceStrategyBuilder, ConfigureBuilderContext<TKey>>> _builders;
     private readonly ConcurrentDictionary<TKey, ResilienceStrategy> _strategies;
     private readonly ConcurrentDictionary<Type, object> _genericRegistry = new();
 
@@ -50,7 +51,7 @@ public sealed partial class ResilienceStrategyRegistry<TKey> : ResilienceStrateg
         ValidationHelper.ValidateObject(options, "The resilience strategy registry options are invalid.");
 
         _activator = options.BuilderFactory;
-        _builders = new ConcurrentDictionary<TKey, Action<TKey, ResilienceStrategyBuilder>>(options.BuilderComparer);
+        _builders = new ConcurrentDictionary<TKey, Action<ResilienceStrategyBuilder, ConfigureBuilderContext<TKey>>>(options.BuilderComparer);
         _strategies = new ConcurrentDictionary<TKey, ResilienceStrategy>(options.StrategyComparer);
         _strategyKeyFormatter = options.StrategyKeyFormatter;
         _builderNameFormatter = options.BuilderNameFormatter;
@@ -118,15 +119,8 @@ public sealed partial class ResilienceStrategyRegistry<TKey> : ResilienceStrateg
 
         if (_builders.TryGetValue(key, out var configure))
         {
-            strategy = _strategies.GetOrAdd(key, key =>
-            {
-                var builder = _activator();
-                builder.BuilderName = _builderNameFormatter(key);
-                builder.Properties.Set(TelemetryUtil.StrategyKey, _strategyKeyFormatter(key));
-                configure(key, builder);
-                return builder.Build();
-            });
-
+            var context = new ConfigureBuilderContext<TKey>(key, _builderNameFormatter(key), _strategyKeyFormatter(key));
+            strategy = _strategies.GetOrAdd(key, key => CreateStrategy(_activator, context, configure));
             return true;
         }
 
@@ -144,7 +138,7 @@ public sealed partial class ResilienceStrategyRegistry<TKey> : ResilienceStrateg
     /// Use this method when you want to create the strategy on-demand when it's first accessed.
     /// </remarks>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="configure"/> is <see langword="null"/>.</exception>
-    public bool TryAddBuilder(TKey key, Action<TKey, ResilienceStrategyBuilder> configure)
+    public bool TryAddBuilder(TKey key, Action<ResilienceStrategyBuilder, ConfigureBuilderContext<TKey>> configure)
     {
         Guard.NotNull(configure);
 
@@ -162,7 +156,7 @@ public sealed partial class ResilienceStrategyRegistry<TKey> : ResilienceStrateg
     /// Use this method when you want to create the strategy on-demand when it's first accessed.
     /// </remarks>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="configure"/> is <see langword="null"/>.</exception>
-    public bool TryAddBuilder<TResult>(TKey key, Action<TKey, ResilienceStrategyBuilder<TResult>> configure)
+    public bool TryAddBuilder<TResult>(TKey key, Action<ResilienceStrategyBuilder<TResult>, ConfigureBuilderContext<TKey>> configure)
     {
         Guard.NotNull(configure);
 
@@ -200,6 +194,19 @@ public sealed partial class ResilienceStrategyRegistry<TKey> : ResilienceStrateg
     /// This method only clears the cached strategies, the registered builders are kept unchanged.
     /// </remarks>
     public void Clear<TResult>() => GetGenericRegistry<TResult>().Clear();
+
+    private static ResilienceStrategy CreateStrategy<TBuilder>(
+        Func<TBuilder> activator,
+        ConfigureBuilderContext<TKey> context,
+        Action<TBuilder, ConfigureBuilderContext<TKey>> configure)
+        where TBuilder : ResilienceStrategyBuilderBase
+    {
+        var builder = activator();
+        builder.BuilderName = context.BuilderName;
+        builder.Properties.Set(TelemetryUtil.StrategyKey, context.StrategyKeyString);
+        configure(builder, context);
+        return builder.BuildStrategy();
+    }
 
     private GenericRegistry<TResult> GetGenericRegistry<TResult>()
     {
