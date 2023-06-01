@@ -14,7 +14,7 @@
     <PackageVersion Include="Moq" Version="4.18.4" />
     <PackageVersion Include="Polly.Contrib.WaitAndRetry" Version="1.1.1" />
     <PackageVersion Include="ReportGenerator" Version="5.1.21" />
-    <PackageVersion Include="SonarAnalyzer.CSharp" Version="9.1.0.70676" />
+    <PackageVersion Include="SonarAnalyzer.CSharp" Version="9.2.0.71021" />
     <PackageVersion Include="StyleCop.Analyzers" Version="1.2.0-beta.435" />
     <PackageVersion Include="System.ComponentModel.Annotations" Version="4.5.0" />
     <PackageVersion Include="System.Diagnostics.DiagnosticSource" Version="7.0.0" />
