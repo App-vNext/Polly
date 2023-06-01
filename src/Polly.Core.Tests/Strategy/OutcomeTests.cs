@@ -64,4 +64,20 @@ public class OutcomeTests
         var outcome = new Outcome<object>((object)null!);
         outcome.ToString().Should().BeEmpty();
     }
+
+    [Fact]
+    public void EnsureSuccess_Result()
+    {
+        var outcome = new Outcome<string>("dummy");
+
+        outcome.Invoking(o => o.EnsureSuccess()).Should().NotThrow();
+    }
+
+    [Fact]
+    public void EnsureSuccess_Exception()
+    {
+        var outcome = new Outcome<string>(new InvalidOperationException());
+
+        outcome.Invoking(o => o.EnsureSuccess()).Should().Throw<InvalidOperationException>();
+    }
 }

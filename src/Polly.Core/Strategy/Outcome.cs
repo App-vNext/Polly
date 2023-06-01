@@ -59,6 +59,14 @@ public readonly struct Outcome<TResult>
     public bool IsVoidResult => Result is VoidResult;
 
     /// <summary>
+    /// Throws an exception if the operation produced an exception.
+    /// </summary>
+    /// <remarks>
+    /// If the operation produced a result, this method does nothing. The thrown exception maintains its original stack trace.
+    /// </remarks>
+    public void EnsureSuccess() => ExceptionDispatchInfo?.Throw();
+
+    /// <summary>
     /// Tries to get the result, if available.
     /// </summary>
     /// <param name="result">Output parameter for the result.</param>
