@@ -40,7 +40,7 @@ public sealed class CircuitBreakerManualControl : IDisposable
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="context"/> is <see langword="null"/>.</exception>
     /// <exception cref="InvalidOperationException">Thrown when manual control is not initialized.</exception>
     /// <exception cref="ObjectDisposedException">Thrown when calling this method after this object is disposed.</exception>
-    public Task IsolateAsync(ResilienceContext context)
+    internal Task IsolateAsync(ResilienceContext context)
     {
         Guard.NotNull(context);
 
@@ -83,7 +83,7 @@ public sealed class CircuitBreakerManualControl : IDisposable
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="context"/> is <see langword="null"/>.</exception>
     /// <exception cref="InvalidOperationException">Thrown if manual control is not initialized.</exception>
     /// <exception cref="ObjectDisposedException">Thrown when calling this method after this object is disposed.</exception>
-    public Task CloseAsync(ResilienceContext context)
+    internal Task CloseAsync(ResilienceContext context)
     {
         Guard.NotNull(context);
 

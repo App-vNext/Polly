@@ -10,7 +10,7 @@ using Polly.Extensions.Telemetry;
 using Polly.Registry;
 using Polly.Utils;
 
-namespace Microsoft.Extensions.DependencyInjection;
+namespace Polly;
 
 /// <summary>
 /// Provides extension methods for registering resilience strategies using the <see cref="IServiceCollection"/>.

@@ -12,6 +12,10 @@ public sealed class PredicateBuilder<TResult>
 {
     private readonly List<Predicate<Outcome<TResult>>> _predicates = new();
 
+    internal PredicateBuilder()
+    {
+    }
+
     /// <summary>
     /// Adds a predicate for handling exceptions of the specified type.
     /// </summary>

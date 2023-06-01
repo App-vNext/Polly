@@ -25,7 +25,7 @@ public readonly struct Outcome<TResult>
     /// Initializes a new instance of the <see cref="Outcome{TResult}"/> struct.
     /// </summary>
     /// <param name="result">The result of the operation.</param>
-    public Outcome(TResult result)
+    public Outcome(TResult? result)
         : this() => Result = result;
 
     /// <summary>
