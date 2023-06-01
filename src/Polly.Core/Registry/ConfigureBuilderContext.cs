@@ -7,13 +7,7 @@ namespace Polly.Registry;
 public class ConfigureBuilderContext<TKey>
     where TKey : notnull
 {
-    /// <summary>
-    /// Initializes a new instance of the <see cref="ConfigureBuilderContext{TKey}"/> class.
-    /// </summary>
-    /// <param name="strategyKey">The strategy key.</param>
-    /// <param name="builderName">The builder name.</param>
-    /// <param name="strategyKeyString">The strategy key as string.</param>
-    public ConfigureBuilderContext(TKey strategyKey, string builderName, string strategyKeyString)
+    internal ConfigureBuilderContext(TKey strategyKey, string builderName, string strategyKeyString)
     {
         StrategyKey = strategyKey;
         BuilderName = builderName;
