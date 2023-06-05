@@ -11,7 +11,7 @@ LaunchCount=2  WarmupCount=10
 ```
 |                                         Method |      Mean |    Error |   StdDev |    Median | Ratio | RatioSD | Allocated | Alloc Ratio |
 |----------------------------------------------- |----------:|---------:|---------:|----------:|------:|--------:|----------:|------------:|
-|                            ExecuteOutcomeAsync |  68.96 ns | 0.111 ns | 0.163 ns |  68.91 ns |  1.00 |    0.00 |         - |          NA |
-|         ExecuteAsync_ResilienceContextAndState | 200.33 ns | 1.497 ns | 2.148 ns | 199.59 ns |  2.90 |    0.03 |         - |          NA |
-|                 ExecuteAsync_CancellationToken | 184.24 ns | 1.331 ns | 1.993 ns | 184.89 ns |  2.67 |    0.03 |         - |          NA |
-| ExecuteAsync_GenericStrategy_CancellationToken | 178.89 ns | 1.096 ns | 1.571 ns | 177.62 ns |  2.59 |    0.02 |         - |          NA |
+|                            ExecuteOutcomeAsync |  69.04 ns | 0.656 ns | 0.898 ns |  69.13 ns |  1.00 |    0.00 |         - |          NA |
+|         ExecuteAsync_ResilienceContextAndState | 169.91 ns | 2.823 ns | 4.049 ns | 167.61 ns |  2.47 |    0.09 |         - |          NA |
+|                 ExecuteAsync_CancellationToken | 179.82 ns | 1.461 ns | 2.142 ns | 179.23 ns |  2.61 |    0.04 |         - |          NA |
+| ExecuteAsync_GenericStrategy_CancellationToken | 179.50 ns | 1.440 ns | 2.065 ns | 179.23 ns |  2.60 |    0.05 |         - |          NA |
