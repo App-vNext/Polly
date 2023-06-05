@@ -225,7 +225,7 @@ public class ResilienceTelemetryDiagnosticSourceTests : IDisposable
         var props = new ResilienceProperties();
         if (!string.IsNullOrEmpty(strategyKey))
         {
-            props.Set(new ResiliencePropertyKey<string?>("StrategyKey"), strategyKey);
+            props.Set(new ResiliencePropertyKey<string?>("Polly.StrategyKey"), strategyKey);
         }
 
         telemetry.ReportEvent(

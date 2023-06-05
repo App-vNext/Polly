@@ -1,5 +1,6 @@
 using System.Diagnostics.Metrics;
 using Microsoft.Extensions.Logging;
+using Polly.Extensions.Utils;
 using Polly.Strategy;
 using Polly.Telemetry;
 

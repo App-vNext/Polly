@@ -2,8 +2,8 @@ using System;
 using System.Diagnostics.Metrics;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using Polly.Extensions.Utils;
 using Polly.Strategy;
-using Polly.Telemetry;
 using Polly.Utils;
 
 namespace Polly.Extensions.Telemetry;
@@ -46,7 +46,7 @@ internal sealed class TelemetryResilienceStrategy : ResilienceStrategy
 
     public Histogram<double> ExecutionDuration { get; }
 
-    protected internal override async ValueTask<Outcome<TResult>> ExecuteCoreAsync<TResult, TState>(
+    protected override async ValueTask<Outcome<TResult>> ExecuteCoreAsync<TResult, TState>(
         Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,
         ResilienceContext context,
         TState state)
@@ -76,7 +76,7 @@ internal sealed class TelemetryResilienceStrategy : ResilienceStrategy
                 { ResilienceTelemetryTags.ExecutionHealth, context.GetExecutionHealth() }
             };
 
-        EnrichmentUtil.Enrich(ref tags, _enrichers, context, outcome.AsOutcome(), resilienceArguments: null);
+        EnrichmentUtil.Enrich(ref tags, _enrichers, context, new Outcome<object>(outcome.HasResult ? outcome.Result : outcome.Exception), resilienceArguments: null);
 
         ExecutionDuration.Record(duration.TotalMilliseconds, tags);
 
