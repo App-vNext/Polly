@@ -12,7 +12,6 @@ namespace Polly.Strategy
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="OutcomeArguments{TResult, TArgs}"/> struct.
-        /// Creates a new instance of <see cref="OutcomeArguments{TResult, TArgs}"/>.
         /// </summary>
         /// <param name="context">The context in which the resilience operation or event is occurring.</param>
         /// <param name="outcome">The outcome of the resilience operation or event.</param>
