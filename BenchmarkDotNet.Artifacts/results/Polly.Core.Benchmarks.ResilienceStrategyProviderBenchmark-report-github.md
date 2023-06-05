@@ -11,5 +11,5 @@ LaunchCount=2  WarmupCount=10
 ```
 |         Method |     Mean |    Error |   StdDev |   Gen0 | Allocated |
 |--------------- |---------:|---------:|---------:|-------:|----------:|
-|         Get_Ok | 25.31 ns | 0.463 ns | 0.663 ns | 0.0013 |      32 B |
-| Get_Generic_Ok | 58.16 ns | 0.669 ns | 1.001 ns | 0.0013 |      32 B |
+|         Get_Ok | 25.41 ns | 0.186 ns | 0.273 ns | 0.0016 |      40 B |
+| Get_Generic_Ok | 53.83 ns | 0.672 ns | 1.005 ns | 0.0013 |      32 B |
