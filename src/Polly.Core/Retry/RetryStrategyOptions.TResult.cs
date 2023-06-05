@@ -65,7 +65,7 @@ public class RetryStrategyOptions<TResult> : ResilienceStrategyOptions
     /// Defaults to <see langword="null"/>. This property is required.
     /// </remarks>
     [Required]
-    public Func<Outcome<TResult>, ShouldRetryArguments, ValueTask<bool>>? ShouldRetry { get; set; }
+    public Func<OutcomeArguments<TResult, ShouldRetryArguments>, ValueTask<bool>>? ShouldRetry { get; set; }
 
     /// <summary>
     /// Gets or sets the generator instance that is used to calculate the time between retries.
@@ -73,7 +73,7 @@ public class RetryStrategyOptions<TResult> : ResilienceStrategyOptions
     /// <remarks>
     /// Defaults to <see langword="null"/>.
     /// </remarks>
-    public Func<Outcome<TResult>, RetryDelayArguments, ValueTask<TimeSpan>>? RetryDelayGenerator { get; set; }
+    public Func<OutcomeArguments<TResult, RetryDelayArguments>, ValueTask<TimeSpan>>? RetryDelayGenerator { get; set; }
 
     /// <summary>
     /// Gets or sets an outcome event that is used to register on-retry callbacks.
@@ -89,5 +89,5 @@ public class RetryStrategyOptions<TResult> : ResilienceStrategyOptions
     /// Defaults to <see langword="null"/>.
     /// </para>
     /// </remarks>
-    public Func<Outcome<TResult>, OnRetryArguments, ValueTask>? OnRetry { get; set; }
+    public Func<OutcomeArguments<TResult, OnRetryArguments>, ValueTask>? OnRetry { get; set; }
 }

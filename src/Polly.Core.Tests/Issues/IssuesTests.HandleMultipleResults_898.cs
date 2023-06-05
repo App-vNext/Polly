@@ -14,7 +14,7 @@ public partial class IssuesTests
             BackoffType = RetryBackoffType.Constant,
             RetryCount = 1,
             BaseDelay = TimeSpan.FromMilliseconds(1),
-            ShouldRetry = (outcome, _) => outcome switch
+            ShouldRetry = args => args switch
             {
                 // handle string results
                 { Result: string res } when res == "error" => PredicateResult.True,
@@ -23,7 +23,7 @@ public partial class IssuesTests
                 { Result: int res } when res == -1 => PredicateResult.True,
                 _ => PredicateResult.False
             },
-            OnRetry = (_, args) =>
+            OnRetry = args =>
             {
                 // add a callback updates the resilience context with the retry marker
                 args.Context.Properties.Set(isRetryKey, true);

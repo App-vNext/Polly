@@ -17,7 +17,7 @@ internal partial class HedgingHandler
 
         public bool HandlesHedging<TResult>() => _generators.ContainsKey(typeof(TResult));
 
-        public ValueTask<bool> ShouldHandleAsync<TResult>(Outcome<TResult> outcome, HandleHedgingArguments arguments)
+        public ValueTask<bool> ShouldHandleAsync<TResult>(OutcomeArguments<TResult, HandleHedgingArguments> args)
         {
             if (!_predicates.TryGetValue(typeof(TResult), out var predicate))
             {
@@ -26,11 +26,11 @@ internal partial class HedgingHandler
 
             if (typeof(TResult) == typeof(VoidResult))
             {
-                return ((Func<Outcome<object>, HandleHedgingArguments, ValueTask<bool>>)predicate)(outcome.AsOutcome(), arguments);
+                return ((Func<OutcomeArguments<object, HandleHedgingArguments>, ValueTask<bool>>)predicate)(args.AsObjectArguments());
             }
             else
             {
-                return ((Func<Outcome<TResult>, HandleHedgingArguments, ValueTask<bool>>)predicate)(outcome, arguments);
+                return ((Func<OutcomeArguments<TResult, HandleHedgingArguments>, ValueTask<bool>>)predicate)(args);
 
             }
         }

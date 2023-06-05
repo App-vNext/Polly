@@ -26,7 +26,7 @@ public class SimpleCircuitBreakerOptionsTests
         options.FailureThreshold = 1;
         options.BreakDuration = TimeSpan.FromMilliseconds(500);
 
-        options.ShouldHandle = (_, _) => PredicateResult.True;
+        options.ShouldHandle = _ => PredicateResult.True;
         ValidationHelper.ValidateObject(options, "Dummy.");
     }
 
@@ -48,7 +48,7 @@ public class SimpleCircuitBreakerOptionsTests
         options.FailureThreshold = 1;
         options.BreakDuration = TimeSpan.FromMilliseconds(500);
 
-        options.ShouldHandle = (_, _) => PredicateResult.True;
+        options.ShouldHandle = _ => PredicateResult.True;
         ValidationHelper.ValidateObject(options, "Dummy.");
     }
 

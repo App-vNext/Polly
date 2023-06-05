@@ -26,24 +26,26 @@ internal sealed class FallbackResilienceStrategy : ResilienceStrategy
         TState state)
     {
         var outcome = await callback(context, state).ConfigureAwait(context.ContinueOnCapturedContext);
-        var args = new HandleFallbackArguments(context);
-        var action = await _handler.ShouldHandleAsync(outcome, args).ConfigureAwait(context.ContinueOnCapturedContext);
+        var handleFallbackArgs = new OutcomeArguments<TResult, HandleFallbackArguments>(context, outcome, new HandleFallbackArguments());
+        var action = await _handler.ShouldHandleAsync(handleFallbackArgs).ConfigureAwait(context.ContinueOnCapturedContext);
 
         if (action == null)
         {
             return outcome;
         }
 
-        _telemetry.Report(FallbackConstants.OnFallback, outcome, args);
+        var onFallbackArgs = new OutcomeArguments<TResult, OnFallbackArguments>(context, outcome, new OnFallbackArguments());
+
+        _telemetry.Report(FallbackConstants.OnFallback, onFallbackArgs);
 
         if (_onFallback is not null)
         {
-            await _onFallback.HandleAsync(outcome, new OnFallbackArguments(context)).ConfigureAwait(context.ContinueOnCapturedContext);
+            await _onFallback.HandleAsync(onFallbackArgs).ConfigureAwait(context.ContinueOnCapturedContext);
         }
 
         try
         {
-            return new Outcome<TResult>(await action(outcome, args).ConfigureAwait(context.ContinueOnCapturedContext));
+            return new Outcome<TResult>(await action(handleFallbackArgs).ConfigureAwait(context.ContinueOnCapturedContext));
         }
         catch (Exception e)
         {

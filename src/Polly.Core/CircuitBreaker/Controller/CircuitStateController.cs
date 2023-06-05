@@ -129,7 +129,7 @@ internal sealed class CircuitStateController : IDisposable
             if (_circuitState == CircuitState.Open && PermitHalfOpenCircuitTest_NeedsLock())
             {
                 _circuitState = CircuitState.HalfOpen;
-                _telemetry.Report(CircuitBreakerConstants.OnHalfOpenEvent, new OnCircuitHalfOpenedArguments(context));
+                _telemetry.Report(CircuitBreakerConstants.OnHalfOpenEvent, context, new OnCircuitHalfOpenedArguments());
                 isHalfOpen = true;
             }
 
@@ -143,7 +143,7 @@ internal sealed class CircuitStateController : IDisposable
 
             if (isHalfOpen && _onHalfOpen is not null)
             {
-                _executor.ScheduleTask(() => _onHalfOpen(new OnCircuitHalfOpenedArguments(context)).AsTask(), context, out task);
+                _executor.ScheduleTask(() => _onHalfOpen(new OnCircuitHalfOpenedArguments()).AsTask(), context, out task);
             }
         }
 
@@ -270,12 +270,12 @@ internal sealed class CircuitStateController : IDisposable
 
         if (priorState != CircuitState.Closed)
         {
-            var args = new OnCircuitClosedArguments(context, manual);
-            _telemetry.Report(CircuitBreakerConstants.OnCircuitClosed, outcome, args);
+            var args = new OutcomeArguments<TResult, OnCircuitClosedArguments>(context, outcome, new OnCircuitClosedArguments(manual));
+            _telemetry.Report(CircuitBreakerConstants.OnCircuitClosed, args);
 
             if (_onClosed is not null)
             {
-                _executor.ScheduleTask(() => _onClosed.HandleAsync(outcome, args).AsTask(), context, out scheduledTask);
+                _executor.ScheduleTask(() => _onClosed.HandleAsync(args).AsTask(), context, out scheduledTask);
             }
         }
     }
@@ -324,12 +324,12 @@ internal sealed class CircuitStateController : IDisposable
         var transitionedState = _circuitState;
         _circuitState = CircuitState.Open;
 
-        var args = new OnCircuitOpenedArguments(context, breakDuration, manual);
-        _telemetry.Report(CircuitBreakerConstants.OnCircuitOpened, outcome, args);
+        var args = new OutcomeArguments<TResult, OnCircuitOpenedArguments>(context, outcome, new OnCircuitOpenedArguments(breakDuration, manual));
+        _telemetry.Report(CircuitBreakerConstants.OnCircuitOpened, args);
 
         if (_onOpened is not null)
         {
-            _executor.ScheduleTask(() => _onOpened.HandleAsync(outcome, args).AsTask(), context, out scheduledTask);
+            _executor.ScheduleTask(() => _onOpened.HandleAsync(args).AsTask(), context, out scheduledTask);
         }
     }
 }

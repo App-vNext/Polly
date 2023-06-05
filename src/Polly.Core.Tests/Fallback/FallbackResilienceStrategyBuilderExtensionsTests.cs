@@ -14,13 +14,13 @@ public class FallbackResilienceStrategyBuilderExtensionsTests
         {
             builder.AddFallback(new FallbackStrategyOptions<int>
             {
-                FallbackAction = (_, _) =>  new ValueTask<int>(0),
-                ShouldHandle = (_, _) => PredicateResult.False,
+                FallbackAction = _ =>  new ValueTask<int>(0),
+                ShouldHandle = _ => PredicateResult.False,
             });
         },
         builder =>
         {
-            builder.AddFallback(handle => handle.HandleResult(1), (_, _) =>  new ValueTask<int>(0));
+            builder.AddFallback(handle => handle.HandleResult(1), _ =>  new ValueTask<int>(0));
         },
     };
 
@@ -39,8 +39,8 @@ public class FallbackResilienceStrategyBuilderExtensionsTests
         var options = new FallbackStrategyOptions();
         options.Handler.SetFallback<int>(handler =>
         {
-            handler.ShouldHandle = (outcome, _) => new ValueTask<bool>(outcome.Exception is InvalidOperationException || outcome.Result == -1);
-            handler.FallbackAction = (_, args) =>
+            handler.ShouldHandle = args => new ValueTask<bool>(args.Exception is InvalidOperationException || args.Result == -1);
+            handler.FallbackAction = args =>
             {
                 args.Context.Should().NotBeNull();
                 return new ValueTask<int>(1);

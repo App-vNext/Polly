@@ -47,7 +47,7 @@ public class RateLimiterResilienceStrategyTests
     public void Execute_LeaseRejected(bool hasEvents, bool hasRetryAfter)
     {
         _diagnosticSource.Setup(v => v.IsEnabled("OnRateLimiterRejected")).Returns(true);
-        _diagnosticSource.Setup(v => v.Write("OnRateLimiterRejected", It.Is<object>(obj => obj is IResilienceArguments)));
+        _diagnosticSource.Setup(v => v.Write("OnRateLimiterRejected", It.Is<object>(obj => obj != null)));
 
         object? metadata = hasRetryAfter ? TimeSpan.FromSeconds(123) : null;
 

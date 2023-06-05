@@ -10,14 +10,14 @@ internal sealed partial class FallbackHandler
 
         internal Handler(Dictionary<Type, object> handlers) => _handlers = handlers;
 
-        public ValueTask<Func<Outcome<TResult>, HandleFallbackArguments, ValueTask<TResult>>?> ShouldHandleAsync<TResult>(Outcome<TResult> outcome, HandleFallbackArguments arguments)
+        public ValueTask<Func<OutcomeArguments<TResult, HandleFallbackArguments>, ValueTask<TResult>>?> ShouldHandleAsync<TResult>(OutcomeArguments<TResult, HandleFallbackArguments> args)
         {
             if (!_handlers.TryGetValue(typeof(TResult), out var handler))
             {
-                return new((Func<Outcome<TResult>, HandleFallbackArguments, ValueTask<TResult>>?)null);
+                return new((Func<OutcomeArguments<TResult, HandleFallbackArguments>, ValueTask<TResult>>?)null);
             }
 
-            return ((FallbackHandler<TResult>)handler).ShouldHandleAsync(outcome, arguments);
+            return ((FallbackHandler<TResult>)handler).ShouldHandleAsync(args);
         }
     }
 }

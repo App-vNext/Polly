@@ -15,7 +15,7 @@ public class HedgingResilienceStrategyTests : IDisposable
     private static readonly TimeSpan AssertTimeout = TimeSpan.FromSeconds(15);
 
     private readonly HedgingStrategyOptions _options = new();
-    private readonly List<IResilienceArguments> _events = new();
+    private readonly List<object> _events = new();
     private readonly ResilienceStrategyTelemetry _telemetry;
     private readonly HedgingTimeProvider _timeProvider;
     private readonly HedgingActions _actions;
@@ -217,7 +217,7 @@ public class HedgingResilienceStrategyTests : IDisposable
                 };
             };
 
-            handler.ShouldHandle = (_, _) => PredicateResult.False;
+            handler.ShouldHandle = _ => PredicateResult.False;
         });
 
         var strategy = Create();
@@ -268,7 +268,7 @@ public class HedgingResilienceStrategyTests : IDisposable
                 };
             };
 
-            handler.ShouldHandle = (_, _) => PredicateResult.False;
+            handler.ShouldHandle = _ => PredicateResult.False;
         });
 
         var strategy = Create();
@@ -443,7 +443,7 @@ public class HedgingResilienceStrategyTests : IDisposable
     {
         // arrange
         ConfigureHedging(args => () => Task.FromResult(Success));
-        _options.OnHedging = (_, _) => throw new InvalidOperationException("my-exception");
+        _options.OnHedging = _ => throw new InvalidOperationException("my-exception");
         var strategy = Create();
 
         // act
@@ -625,7 +625,7 @@ public class HedgingResilienceStrategyTests : IDisposable
 
         ConfigureHedging<string>(handler =>
         {
-            handler.ShouldHandle = (outcome, _) => outcome.Exception switch
+            handler.ShouldHandle = args => args.Exception switch
             {
                 InvalidOperationException => PredicateResult.True,
                 ArgumentException => PredicateResult.True,
@@ -659,7 +659,7 @@ public class HedgingResilienceStrategyTests : IDisposable
 
         ConfigureHedging<string>(handler =>
         {
-            handler.ShouldHandle = (outcome, _) => outcome.Exception switch
+            handler.ShouldHandle = args => args.Exception switch
             {
                 InvalidOperationException => PredicateResult.True,
                 ArgumentException => PredicateResult.True,
@@ -695,7 +695,7 @@ public class HedgingResilienceStrategyTests : IDisposable
 
         ConfigureHedging<string>(handler =>
         {
-            handler.ShouldHandle = (outcome, _) => outcome.Exception switch
+            handler.ShouldHandle = args => args.Exception switch
             {
                 InvalidOperationException => PredicateResult.True,
                 _ => PredicateResult.False
@@ -720,7 +720,7 @@ public class HedgingResilienceStrategyTests : IDisposable
 
         ConfigureHedging<string>(handler =>
         {
-            handler.ShouldHandle = (outcome, _) => outcome.Exception switch
+            handler.ShouldHandle = args => args.Exception switch
             {
                 InvalidOperationException => PredicateResult.True,
                 ArgumentException => PredicateResult.True,
@@ -766,7 +766,7 @@ public class HedgingResilienceStrategyTests : IDisposable
         ConfigureHedging<string>(handler =>
         {
             handler.HedgingActionGenerator = args => () => Task.FromResult(Success);
-            handler.ShouldHandle = (_, _) => PredicateResult.False;
+            handler.ShouldHandle = _ => PredicateResult.False;
         });
 
         var strategy = Create();
@@ -787,7 +787,7 @@ public class HedgingResilienceStrategyTests : IDisposable
         ConfigureHedging<string>(handler =>
         {
             handler.HedgingActionGenerator = args => null;
-            handler.ShouldHandle = (_, _) => PredicateResult.False;
+            handler.ShouldHandle = _ => PredicateResult.False;
         });
 
         var strategy = Create();
@@ -804,16 +804,16 @@ public class HedgingResilienceStrategyTests : IDisposable
     public async Task ExecuteAsync_EnsureOnHedgingCalled()
     {
         var attempts = new List<int>();
-        _options.OnHedging = (o, args) =>
+        _options.OnHedging = args =>
         {
-            o.Result.Should().Be(Failure);
-            attempts.Add(args.Attempt);
+            args.Result.Should().Be(Failure);
+            attempts.Add(args.Arguments.Attempt);
             return default;
         };
 
         ConfigureHedging<string>(handler =>
         {
-            handler.ShouldHandle = (outcome, _) => new ValueTask<bool>(outcome.Result == Failure);
+            handler.ShouldHandle = args => new ValueTask<bool>(args.Result == Failure);
             handler.HedgingActionGenerator = args => () => Task.FromResult(Failure);
         });
 
@@ -832,7 +832,7 @@ public class HedgingResilienceStrategyTests : IDisposable
 
         ConfigureHedging<string>(handler =>
         {
-            handler.ShouldHandle = (outcome, _) => new ValueTask<bool>(outcome.Result == Failure);
+            handler.ShouldHandle = args => new ValueTask<bool>(args.Result == Failure);
             handler.HedgingActionGenerator = args => () => Task.FromResult(Failure);
         });
 
@@ -845,11 +845,11 @@ public class HedgingResilienceStrategyTests : IDisposable
 
     private void ConfigureHedging()
     {
-        _options.OnHedging = (outcome, _) =>
+        _options.OnHedging = args =>
         {
             lock (_results)
             {
-                _results.Add(outcome.Result!);
+                _results.Add(args.Result!);
             }
 
             return default;
@@ -858,7 +858,7 @@ public class HedgingResilienceStrategyTests : IDisposable
         ConfigureHedging<string>(handler =>
         {
             handler.HedgingActionGenerator = _actions.Generator;
-            handler.ShouldHandle = (_, _) => PredicateResult.False;
+            handler.ShouldHandle = _ => PredicateResult.False;
         });
     }
 
@@ -872,7 +872,7 @@ public class HedgingResilienceStrategyTests : IDisposable
         ConfigureHedging<string>(handler =>
         {
             handler.HedgingActionGenerator = generator;
-            handler.ShouldHandle = (outcome, _) => new ValueTask<bool>(outcome.Result == Failure);
+            handler.ShouldHandle = args => new ValueTask<bool>(args.Result == Failure);
         });
     }
 

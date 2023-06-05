@@ -15,7 +15,7 @@ public class RetryResilienceStrategyTests
     public RetryResilienceStrategyTests()
     {
         _telemetry = TestUtilities.CreateResilienceTelemetry(_diagnosticSource.Object);
-        _options.ShouldRetry = (_, _) => new ValueTask<bool>(false);
+        _options.ShouldRetry = _ => new ValueTask<bool>(false);
     }
 
     [Fact]
@@ -35,7 +35,7 @@ public class RetryResilienceStrategyTests
         _options.RetryCount = 5;
         SetupNoDelay();
         _timeProvider.SetupAnyDelay();
-        _options.ShouldRetry = (_, _) => PredicateResult.True;
+        _options.ShouldRetry = _ => PredicateResult.True;
         var results = new List<DisposableResult>();
         var sut = CreateSut();
 
@@ -60,8 +60,8 @@ public class RetryResilienceStrategyTests
     public void Retry_RetryCount_Respected()
     {
         int calls = 0;
-        _options.OnRetry = (_, _) => { calls++; return default; };
-        _options.ShouldRetry = (outcome, _) => outcome.ResultPredicateAsync(0);
+        _options.OnRetry = _ => { calls++; return default; };
+        _options.ShouldRetry = args => args.Outcome.ResultPredicateAsync(0);
         _options.RetryCount = 12;
         SetupNoDelay();
         var sut = CreateSut();
@@ -75,14 +75,14 @@ public class RetryResilienceStrategyTests
     public void RetryException_RetryCount_Respected()
     {
         int calls = 0;
-        _options.OnRetry = (outcome, _) =>
+        _options.OnRetry = args =>
         {
-            outcome.Exception.Should().BeOfType<InvalidOperationException>();
+            args.Exception.Should().BeOfType<InvalidOperationException>();
             calls++;
             return default;
         };
 
-        _options.ShouldRetry = (outcome, _) => outcome.ExceptionPredicateAsync<InvalidOperationException>();
+        _options.ShouldRetry = args => args.Outcome.ExceptionPredicateAsync<InvalidOperationException>();
         _options.RetryCount = 3;
         SetupNoDelay();
         var sut = CreateSut();
@@ -97,9 +97,9 @@ public class RetryResilienceStrategyTests
     {
         int calls = 0;
         _options.BackoffType = RetryBackoffType.Constant;
-        _options.OnRetry = (_, args) =>
+        _options.OnRetry = args =>
         {
-            if (args.Attempt > RetryConstants.MaxRetryCount)
+            if (args.Arguments.Attempt > RetryConstants.MaxRetryCount)
             {
                 throw new InvalidOperationException();
             }
@@ -107,7 +107,7 @@ public class RetryResilienceStrategyTests
             calls++;
             return default;
         };
-        _options.ShouldRetry = (outcome, _) => outcome.ResultPredicateAsync(0);
+        _options.ShouldRetry = args => args.Outcome.ResultPredicateAsync(0);
         _options.RetryCount = RetryStrategyOptions.InfiniteRetryCount;
         SetupNoDelay();
         var sut = CreateSut();
@@ -121,11 +121,11 @@ public class RetryResilienceStrategyTests
     public void RetryDelayGenerator_Respected()
     {
         int calls = 0;
-        _options.OnRetry = (_, _) => { calls++; return default; };
-        _options.ShouldRetry = (outcome, _) => outcome.ResultPredicateAsync(0);
+        _options.OnRetry = _ => { calls++; return default; };
+        _options.ShouldRetry = args => args.Outcome.ResultPredicateAsync(0);
         _options.RetryCount = 3;
         _options.BackoffType = RetryBackoffType.Constant;
-        _options.RetryDelayGenerator = (_, _) => new ValueTask<TimeSpan>(TimeSpan.FromMilliseconds(123));
+        _options.RetryDelayGenerator = _ => new ValueTask<TimeSpan>(TimeSpan.FromMilliseconds(123));
         _timeProvider.SetupDelay(TimeSpan.FromMilliseconds(123));
 
         var sut = CreateSut();
@@ -140,17 +140,17 @@ public class RetryResilienceStrategyTests
     {
         var attempts = new List<int>();
         var delays = new List<TimeSpan>();
-        _options.OnRetry = (outcome, args) =>
+        _options.OnRetry = args =>
         {
-            attempts.Add(args.Attempt);
-            delays.Add(args.RetryDelay);
+            attempts.Add(args.Arguments.Attempt);
+            delays.Add(args.Arguments.RetryDelay);
 
-            outcome.Exception.Should().BeNull();
-            outcome.Result.Should().Be(0);
+            args.Exception.Should().BeNull();
+            args.Result.Should().Be(0);
             return default;
         };
 
-        _options.ShouldRetry = (outcome, _) => outcome.ResultPredicateAsync(0);
+        _options.ShouldRetry = args => args.Outcome.ResultPredicateAsync(0);
         _options.RetryCount = 3;
         _options.BackoffType = RetryBackoffType.Linear;
         _timeProvider.SetupAnyDelay();
@@ -177,7 +177,7 @@ public class RetryResilienceStrategyTests
 
         _diagnosticSource.Setup(v => v.IsEnabled("OnRetry")).Returns(true);
 
-        _options.ShouldRetry = (outcome, _) => outcome.ResultPredicateAsync(0);
+        _options.ShouldRetry = args => args.Outcome.ResultPredicateAsync(0);
         _options.RetryCount = 3;
         _options.BackoffType = RetryBackoffType.Linear;
         _timeProvider.SetupAnyDelay();
@@ -194,18 +194,18 @@ public class RetryResilienceStrategyTests
     {
         var attempts = new List<int>();
         var hints = new List<TimeSpan>();
-        _options.RetryDelayGenerator = (outcome, args) =>
+        _options.RetryDelayGenerator = args =>
         {
-            attempts.Add(args.Attempt);
-            hints.Add(args.DelayHint);
+            attempts.Add(args.Arguments.Attempt);
+            hints.Add(args.Arguments.DelayHint);
 
-            outcome.Exception.Should().BeNull();
-            outcome.Result.Should().Be(0);
+            args.Exception.Should().BeNull();
+            args.Result.Should().Be(0);
 
             return new ValueTask<TimeSpan>(TimeSpan.Zero);
         };
 
-        _options.ShouldRetry = (outcome, _) => outcome.ResultPredicateAsync(0);
+        _options.ShouldRetry = args => args.Outcome.ResultPredicateAsync(0);
         _options.RetryCount = 3;
         _options.BackoffType = RetryBackoffType.Linear;
         _timeProvider.SetupAnyDelay();
@@ -224,7 +224,7 @@ public class RetryResilienceStrategyTests
         hints[2].Should().Be(TimeSpan.FromSeconds(6));
     }
 
-    private void SetupNoDelay() => _options.RetryDelayGenerator = (_, _) => new ValueTask<TimeSpan>(TimeSpan.Zero);
+    private void SetupNoDelay() => _options.RetryDelayGenerator = _ => new ValueTask<TimeSpan>(TimeSpan.Zero);
 
     private RetryResilienceStrategy CreateSut()
     {

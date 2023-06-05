@@ -29,6 +29,6 @@ internal class FallbackStrategyOptions : ResilienceStrategyOptions
     /// <remarks>
     /// Defaults to <see langword="null"/>.
     /// </remarks>
-    public Func<Outcome<object>, OnFallbackArguments, ValueTask>? OnFallback { get; set; }
+    public Func<OutcomeArguments<object, OnFallbackArguments>, ValueTask>? OnFallback { get; set; }
 }
 

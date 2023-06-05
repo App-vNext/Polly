@@ -3,37 +3,36 @@ using System.Threading.Tasks;
 namespace Polly.Strategy;
 
 internal abstract class PredicateInvoker<TArgs>
-    where TArgs : IResilienceArguments
 {
-    public static PredicateInvoker<TArgs>? Create<TResult>(Func<Outcome<TResult>, TArgs, ValueTask<bool>>? predicate, bool isGeneric) => predicate switch
+    public static PredicateInvoker<TArgs>? Create<TResult>(Func<OutcomeArguments<TResult, TArgs>, ValueTask<bool>>? predicate, bool isGeneric) => predicate switch
     {
-        Func<Outcome<object>, TArgs, ValueTask<bool>> objectPredicate when !isGeneric => new NonGenericPredicateInvoker(objectPredicate),
+        Func<OutcomeArguments<object, TArgs>, ValueTask<bool>> objectPredicate when !isGeneric => new NonGenericPredicateInvoker(objectPredicate),
         { } => new GenericPredicateInvoker<TResult>(predicate),
         _ => null,
     };
 
-    public abstract ValueTask<bool> HandleAsync<TResult>(Outcome<TResult> outcome, TArgs args);
+    public abstract ValueTask<bool> HandleAsync<TResult>(OutcomeArguments<TResult, TArgs> args);
 
     private sealed class NonGenericPredicateInvoker : PredicateInvoker<TArgs>
     {
-        private readonly Func<Outcome<object>, TArgs, ValueTask<bool>> _predicate;
+        private readonly Func<OutcomeArguments<object, TArgs>, ValueTask<bool>> _predicate;
 
-        public NonGenericPredicateInvoker(Func<Outcome<object>, TArgs, ValueTask<bool>> predicate) => _predicate = predicate;
+        public NonGenericPredicateInvoker(Func<OutcomeArguments<object, TArgs>, ValueTask<bool>> predicate) => _predicate = predicate;
 
-        public override ValueTask<bool> HandleAsync<TResult>(Outcome<TResult> outcome, TArgs args) => _predicate(outcome.AsOutcome(), args);
+        public override ValueTask<bool> HandleAsync<TResult>(OutcomeArguments<TResult, TArgs> args) => _predicate(args.AsObjectArguments());
     }
 
     private sealed class GenericPredicateInvoker<T> : PredicateInvoker<TArgs>
     {
         private readonly object _predicate;
 
-        public GenericPredicateInvoker(Func<Outcome<T>, TArgs, ValueTask<bool>> predicate) => _predicate = predicate;
+        public GenericPredicateInvoker(Func<OutcomeArguments<T, TArgs>, ValueTask<bool>> predicate) => _predicate = predicate;
 
-        public override ValueTask<bool> HandleAsync<TResult>(Outcome<TResult> outcome, TArgs args)
+        public override ValueTask<bool> HandleAsync<TResult>(OutcomeArguments<TResult, TArgs> args)
         {
             if (typeof(TResult) == typeof(T))
             {
-                return ((Func<Outcome<TResult>, TArgs, ValueTask<bool>>)_predicate)(outcome, args);
+                return ((Func<OutcomeArguments<TResult, TArgs>, ValueTask<bool>>)_predicate)(args);
             }
 
             return PredicateResult.False;

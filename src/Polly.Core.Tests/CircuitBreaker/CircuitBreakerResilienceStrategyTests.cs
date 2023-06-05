@@ -50,7 +50,7 @@ public class CircuitBreakerResilienceStrategyTests : IDisposable
     [Fact]
     public async Task Ctor_ManualControl_EnsureAttached()
     {
-        _options.ShouldHandle = (outcome, _) => new ValueTask<bool>(outcome.Exception is InvalidOperationException);
+        _options.ShouldHandle = args => new ValueTask<bool>(args.Exception is InvalidOperationException);
         _options.ManualControl = new CircuitBreakerManualControl();
         var strategy = Create();
 
@@ -74,7 +74,7 @@ public class CircuitBreakerResilienceStrategyTests : IDisposable
     [Fact]
     public void Execute_HandledResult_OnFailureCalled()
     {
-        _options.ShouldHandle = (outcome, _) => new ValueTask<bool>(outcome.Result is -1);
+        _options.ShouldHandle = args => new ValueTask<bool>(args.Result is -1);
         var strategy = Create();
         var shouldBreak = false;
 
@@ -87,7 +87,7 @@ public class CircuitBreakerResilienceStrategyTests : IDisposable
     [Fact]
     public void Execute_UnhandledResult_OnActionSuccess()
     {
-        _options.ShouldHandle = (outcome, _) => new ValueTask<bool>(outcome.Result is -1);
+        _options.ShouldHandle = args => new ValueTask<bool>(args.Result is -1);
         var strategy = Create();
 
         _behavior.Setup(v => v.OnActionSuccess(CircuitState.Closed));
@@ -99,7 +99,7 @@ public class CircuitBreakerResilienceStrategyTests : IDisposable
     [Fact]
     public void Execute_HandledException_OnFailureCalled()
     {
-        _options.ShouldHandle = (outcome, _) => new ValueTask<bool>(outcome.Exception is InvalidOperationException);
+        _options.ShouldHandle = args => new ValueTask<bool>(args.Exception is InvalidOperationException);
         var strategy = Create();
         var shouldBreak = false;
 
@@ -113,7 +113,7 @@ public class CircuitBreakerResilienceStrategyTests : IDisposable
     [Fact]
     public void Execute_UnhandledException_NoCalls()
     {
-        _options.ShouldHandle = (outcome, _) => new ValueTask<bool>(outcome.Exception is InvalidOperationException);
+        _options.ShouldHandle = args => new ValueTask<bool>(args.Exception is InvalidOperationException);
         var strategy = Create();
 
         strategy.Invoking(s => s.Execute(_ => throw new ArgumentException())).Should().Throw<ArgumentException>();
@@ -126,7 +126,7 @@ public class CircuitBreakerResilienceStrategyTests : IDisposable
     [Fact]
     public void Execute_Ok()
     {
-        _options.ShouldHandle = (_, _) => PredicateResult.False;
+        _options.ShouldHandle = _ => PredicateResult.False;
         _behavior.Setup(v => v.OnActionSuccess(CircuitState.Closed));
 
         Create().Invoking(s => s.Execute(_ => { })).Should().NotThrow();

@@ -21,7 +21,7 @@ internal sealed class FallbackHandler<TResult>
     /// This property is required. Defaults to <see langword="null"/>.
     /// </remarks>
     [Required]
-    public Func<Outcome<TResult>, HandleFallbackArguments, ValueTask<bool>>? ShouldHandle { get; set; }
+    public Func<OutcomeArguments<TResult, HandleFallbackArguments>, ValueTask<bool>>? ShouldHandle { get; set; }
 
     /// <summary>
     /// Gets or sets the fallback action to be executed if <see cref="ShouldHandle"/> predicate evaluates as true.
@@ -30,13 +30,12 @@ internal sealed class FallbackHandler<TResult>
     /// This property is required. Defaults to <see langword="null"/>.
     /// </remarks>
     [Required]
-    public Func<Outcome<TResult>, HandleFallbackArguments, ValueTask<TResult>>? FallbackAction { get; set; } = null;
+    public Func<OutcomeArguments<TResult, HandleFallbackArguments>, ValueTask<TResult>>? FallbackAction { get; set; } = null;
 
-    internal async ValueTask<Func<Outcome<TResult>, HandleFallbackArguments, ValueTask<TResult>>?> ShouldHandleAsync(
-        Outcome<TResult> outcome,
-        HandleFallbackArguments arguments)
+    internal async ValueTask<Func<OutcomeArguments<TResult, HandleFallbackArguments>, ValueTask<TResult>>?> ShouldHandleAsync(
+        OutcomeArguments<TResult, HandleFallbackArguments> args)
     {
-        if (!await ShouldHandle!(outcome, arguments).ConfigureAwait(arguments.Context.ContinueOnCapturedContext))
+        if (!await ShouldHandle!(args).ConfigureAwait(args.Context.ContinueOnCapturedContext))
         {
             return null;
         }

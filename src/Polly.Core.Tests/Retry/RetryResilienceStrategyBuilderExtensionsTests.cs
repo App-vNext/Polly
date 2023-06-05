@@ -17,7 +17,7 @@ public class RetryResilienceStrategyBuilderExtensionsTests
                 BackoffType = RetryBackoffType.Exponential,
                 RetryCount = 3,
                 BaseDelay = TimeSpan.FromSeconds(2),
-                ShouldRetry = (_, _) => PredicateResult.True,
+                ShouldRetry = _ => PredicateResult.True,
             });
 
             AssertStrategy(builder, RetryBackoffType.Exponential, 3, TimeSpan.FromSeconds(2));
@@ -47,9 +47,10 @@ public class RetryResilienceStrategyBuilderExtensionsTests
 
             AssertStrategy(builder, RetryBackoffType.ExponentialWithJitter, 3, TimeSpan.FromSeconds(2), strategy =>
             {
-                var args = new RetryDelayArguments(ResilienceContext.Get().Initialize<int>(true), 8, TimeSpan.Zero);
+                var args = new RetryDelayArguments(8, TimeSpan.Zero);
+                var context = ResilienceContext.Get().Initialize<int>(true);
 
-                strategy.DelayGenerator!.HandleAsync<int>(new Outcome<int>(new InvalidOperationException()), args).Result.Should().Be(TimeSpan.FromMilliseconds(8));
+                strategy.DelayGenerator!.HandleAsync<int>(new(context, new Outcome<int>(new InvalidOperationException()), args)).Result.Should().Be(TimeSpan.FromMilliseconds(8));
             });
         },
         builder =>
@@ -59,7 +60,7 @@ public class RetryResilienceStrategyBuilderExtensionsTests
                 BackoffType = RetryBackoffType.Exponential,
                 RetryCount = 3,
                 BaseDelay = TimeSpan.FromSeconds(2),
-                ShouldRetry = (_, _) => PredicateResult.True
+                ShouldRetry = _ => PredicateResult.True
             });
 
             AssertStrategy(builder, RetryBackoffType.Exponential, 3, TimeSpan.FromSeconds(2));
@@ -88,7 +89,7 @@ public class RetryResilienceStrategyBuilderExtensionsTests
     public void AddRetry_DefaultOptions_Ok()
     {
         var builder = new ResilienceStrategyBuilder();
-        var options = new RetryStrategyOptions { ShouldRetry = (_, _) => PredicateResult.True };
+        var options = new RetryStrategyOptions { ShouldRetry = _ => PredicateResult.True };
 
         builder.AddRetry(options);
 

@@ -89,23 +89,23 @@ public sealed class PredicateBuilder<TResult>
         return HandleResult(r => comparer.Equals(r, result));
     }
 
-    internal Func<Outcome<TResult>, TArgs, ValueTask<bool>> CreatePredicate<TArgs>() => _predicates.Count switch
+    internal Func<OutcomeArguments<TResult, TArgs>, ValueTask<bool>> CreatePredicate<TArgs>() => _predicates.Count switch
     {
         0 => throw new ValidationException("No predicates were configured. There must be at least one predicate added."),
         1 => CreatePredicate<TArgs>(_predicates[0]),
         _ => CreatePredicate<TArgs>(_predicates.ToArray()),
     };
 
-    private static Func<Outcome<TResult>, TArgs, ValueTask<bool>> CreatePredicate<TArgs>(Predicate<Outcome<TResult>> predicate)
-        => (outcome, _) => new ValueTask<bool>(predicate(outcome));
+    private static Func<OutcomeArguments<TResult, TArgs>, ValueTask<bool>> CreatePredicate<TArgs>(Predicate<Outcome<TResult>> predicate)
+        => args => new ValueTask<bool>(predicate(args.Outcome));
 
-    private static Func<Outcome<TResult>, TArgs, ValueTask<bool>> CreatePredicate<TArgs>(Predicate<Outcome<TResult>>[] predicates)
+    private static Func<OutcomeArguments<TResult, TArgs>, ValueTask<bool>> CreatePredicate<TArgs>(Predicate<Outcome<TResult>>[] predicates)
     {
-        return (outcome, _) =>
+        return args =>
         {
             foreach (var predicate in predicates)
             {
-                if (predicate(outcome))
+                if (predicate(args.Outcome))
                 {
                     return new ValueTask<bool>(true);
                 }

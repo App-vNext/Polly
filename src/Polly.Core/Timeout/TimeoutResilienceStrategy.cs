@@ -61,7 +61,7 @@ internal sealed class TimeoutResilienceStrategy : ResilienceStrategy
         if (isCancellationRequested && outcome.Exception is OperationCanceledException e && !previousToken.IsCancellationRequested)
         {
             var args = new OnTimeoutArguments(context, e, timeout);
-            _telemetry.Report(TimeoutConstants.OnTimeoutEvent, args);
+            _telemetry.Report(TimeoutConstants.OnTimeoutEvent, context, args);
 
             if (OnTimeout is not null)
             {

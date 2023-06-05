@@ -19,7 +19,7 @@ internal sealed class VoidFallbackHandler
     /// This property is required. Defaults to <see langword="null"/>.
     /// </remarks>
     [Required]
-    public Func<Outcome<object>, HandleFallbackArguments, ValueTask<bool>>? ShouldHandle { get; set; }
+    public Func<OutcomeArguments<object, HandleFallbackArguments>, ValueTask<bool>>? ShouldHandle { get; set; }
 
     /// <summary>
     /// Gets or sets the fallback action to be executed when the <see cref="ShouldHandle"/> predicate evaluates as true.
@@ -28,5 +28,5 @@ internal sealed class VoidFallbackHandler
     /// This property is required. Defaults to <see langword="null"/>.
     /// </remarks>
     [Required]
-    public Func<Outcome<object>, HandleFallbackArguments, ValueTask>? FallbackAction { get; set; } = null;
+    public Func<OutcomeArguments<object, HandleFallbackArguments>, ValueTask>? FallbackAction { get; set; } = null;
 }

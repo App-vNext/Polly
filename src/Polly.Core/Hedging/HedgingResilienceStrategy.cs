@@ -86,15 +86,15 @@ internal sealed class HedgingResilienceStrategy : ResilienceStrategy
                     return outcome;
                 }
 
-                var onHedgingArgs = new OnHedgingArguments(context, hedgingContext.LoadedTasks - 1);
-                _telemetry.Report(HedgingConstants.OnHedgingEventName, outcome, onHedgingArgs);
+                var onHedgingArgs = new OutcomeArguments<TResult, OnHedgingArguments>(context, outcome, new OnHedgingArguments(hedgingContext.LoadedTasks - 1));
+                _telemetry.Report(HedgingConstants.OnHedgingEventName, onHedgingArgs);
 
                 if (OnHedging is not null)
                 {
                     // If nothing has been returned or thrown yet, the result is a transient failure,
                     // and other hedged request will be awaited.
                     // Before it, one needs to perform the task adjacent to each hedged call.
-                    await OnHedging.HandleAsync(outcome, onHedgingArgs).ConfigureAwait(continueOnCapturedContext);
+                    await OnHedging.HandleAsync(onHedgingArgs).ConfigureAwait(continueOnCapturedContext);
                 }
             }
         }

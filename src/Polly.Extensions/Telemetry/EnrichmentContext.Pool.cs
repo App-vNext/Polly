@@ -10,16 +10,16 @@ public partial class EnrichmentContext
         static context =>
         {
             context.Outcome = null;
-            context.ResilienceContext = null!;
+            context.Context = null!;
             context.Tags.Clear();
             return true;
         });
 
-    internal static EnrichmentContext Get(ResilienceContext resilienceContext, IResilienceArguments? arguments, Outcome<object>? outcome)
+    internal static EnrichmentContext Get(ResilienceContext resilienceContext, object? arguments, Outcome<object>? outcome)
     {
         var context = ContextPool.Get();
-        context.ResilienceContext = resilienceContext;
-        context.ResilienceArguments = arguments;
+        context.Context = resilienceContext;
+        context.Arguments = arguments;
         context.Outcome = outcome;
 
         return context;

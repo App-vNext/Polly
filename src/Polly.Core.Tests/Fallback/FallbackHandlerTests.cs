@@ -64,17 +64,17 @@ public class FallbackHandlerTests
         var handler = new FallbackHandler()
             .SetFallback<int>(handler =>
             {
-                handler.FallbackAction = (_, _) => new ValueTask<int>(0);
-                handler.ShouldHandle = (outcome, _) => new ValueTask<bool>(outcome.Result == -1);
+                handler.FallbackAction = _ => new ValueTask<int>(0);
+                handler.ShouldHandle = args => new ValueTask<bool>(args.Result == -1);
             })
             .CreateHandler();
 
-        var args = new HandleFallbackArguments(ResilienceContext.Get());
+        var args = new HandleFallbackArguments();
         handler.Should().NotBeNull();
-        var action = await handler!.ShouldHandleAsync(new Outcome<int>(-1), args);
-        (await action!(new Outcome<int>(-1), args)).Should().Be(0);
+        var action = await handler!.ShouldHandleAsync<int>(new(ResilienceContext.Get(), new Outcome<int>(-1), args));
+        (await action!(new(ResilienceContext.Get(), new Outcome<int>(-1), args))).Should().Be(0);
 
-        action = await handler!.ShouldHandleAsync(new Outcome<int>(0), args);
+        action = await handler!.ShouldHandleAsync<int>(new(ResilienceContext.Get(), new Outcome<int>(0), args));
         action.Should().BeNull();
     }
 
@@ -84,18 +84,18 @@ public class FallbackHandlerTests
         var handler = new FallbackHandler()
             .SetVoidFallback(handler =>
             {
-                handler.FallbackAction = (_, _) => default;
-                handler.ShouldHandle = (outcome, _) => new ValueTask<bool>(outcome.Exception is InvalidOperationException);
+                handler.FallbackAction = _ => default;
+                handler.ShouldHandle = args => new ValueTask<bool>(args.Exception is InvalidOperationException);
             })
             .CreateHandler();
 
-        var args = new HandleFallbackArguments(ResilienceContext.Get());
+        var args = new HandleFallbackArguments();
         handler.Should().NotBeNull();
-        var action = await handler!.ShouldHandleAsync(new Outcome<VoidResult>(new InvalidOperationException()), args);
+        var action = await handler!.ShouldHandleAsync<VoidResult>(new(ResilienceContext.Get(), new Outcome<VoidResult>(new InvalidOperationException()), args));
         action.Should().NotBeNull();
-        (await action!(new Outcome<VoidResult>(new InvalidOperationException()), args)).Should().Be(VoidResult.Instance);
+        (await action!(new(ResilienceContext.Get(), new Outcome<VoidResult>(new InvalidOperationException()), args))).Should().Be(VoidResult.Instance);
 
-        action = await handler!.ShouldHandleAsync(new Outcome<VoidResult>(new ArgumentNullException()), args);
+        action = await handler!.ShouldHandleAsync<VoidResult>(new(ResilienceContext.Get(), new Outcome<VoidResult>(new ArgumentNullException()), args));
         action.Should().BeNull();
     }
 
@@ -105,18 +105,19 @@ public class FallbackHandlerTests
         var handler = new FallbackHandler()
             .SetFallback<int>(handler =>
             {
-                handler.FallbackAction = (_, _) => default;
-                handler.ShouldHandle = (outcome, _) => new ValueTask<bool>(outcome.Exception is InvalidOperationException);
+                handler.FallbackAction = _ => default;
+                handler.ShouldHandle = args => new ValueTask<bool>(args.Exception is InvalidOperationException);
             })
             .SetFallback<string>(handler =>
             {
-                handler.FallbackAction = (_, _) => default;
-                handler.ShouldHandle = (_, _) => PredicateResult.True;
+                handler.FallbackAction = _ => default;
+                handler.ShouldHandle = _ => PredicateResult.True;
             })
             .CreateHandler();
 
-        var args = new HandleFallbackArguments(ResilienceContext.Get());
-        var action = await handler!.ShouldHandleAsync(new Outcome<double>(new InvalidOperationException()), args);
+        var context = ResilienceContext.Get();
+        var args = new HandleFallbackArguments();
+        var action = await handler!.ShouldHandleAsync<double>(new(context, new Outcome<double>(new InvalidOperationException()), args));
         action.Should().BeNull();
     }
 }

@@ -178,26 +178,26 @@ Resilience strategies leverage the following delegate types:
 The suggested signatures for these delegates are as follows:
 
 **Predicates**
-- `Func<Outcome<T>, TArgs, ValueTask<bool>>`: This is the predicate for the generic outcome.
-- `Func<Outcome, TArgs, ValueTask<bool>>`: This is the predicate for the non-generic outcome.
+- `Func<OutcomeArguments<T, TArgs>, ValueTask<bool>>`: This is the predicate for the generic outcome.
+- `Func<OutcomeArguments<object, TArgs>, ValueTask<bool>>`: This is the predicate for the non-generic outcome.
 
 **Events**
-- `Func<Outcome<T>, TArgs, ValueTask>`: This is the event for the generic outcome.
-- `Func<Outcome, TArgs, ValueTask>`: This is the event for the non-generic outcome.
+- `Func<OutcomeArguments<T, TArgs>, ValueTask>`: This is the event for the generic outcome.
+- `Func<OutcomeArguments<object, TArgs>, ValueTask>`: This is the event for the non-generic outcome.
 - `Func<Args, ValueTask>`: This is the event utilized by strategies that do not operate with an outcome (for example, Timeout, RateLimiter).
 
 **Generators**
-- `Func<Outcome<T>, TArgs, ValueTask<TValue>>`: This is the generator for the generic outcome.
-- `Func<Outcome, TArgs, ValueTask<TValue>>`: This is the generator for the non-generic outcome.
+- `Func<OutcomeArguments<T, TArgs>, ValueTask<TValue>>`: This is the generator for the generic outcome.
+- `Func<OutcomeArguments<object, TArgs>, ValueTask<TValue>>`: This is the generator for the non-generic outcome.
 - `Func<Args, ValueTask<TValue>>`: This is the generator used by strategies that do not operate with an outcome (for example, Timeout, RateLimiter).
 
-It's essential to note that all these delegates are asynchronous and return a `ValueTask`.
+It's essential to note that all these delegates are asynchronous and return a `ValueTask`. 
 
-The delegates employ the following components:
+The **`OutcomeArguments<T, TArgs>`** captures the following information that can be used by the delegate:
 
-- **`IResilienceArguments`**: This interface sets out the preferred structure for arguments employed by individual strategies. It features a single property, `Context`, which supplies the context linked with the execution of a user-supplied callback.
-- **`Outcome<TResult>`**: This captures the result of an operation that yields a result of a specific type, `TResult`, or an exception. This structure specializes its functionality to accommodate generic results. The `TryGetResult` method, for instance, is customized to manage the generic result type, offering additional flexibility and extensibility.
-- **`Outcome`**: This represents a non-generic outcome of an operation, encompassing both a result and an exception, if one occurred. This structure is equipped with numerous properties and methods, such as `HasResult`, `IsVoidResult`, and `TryGetResult`, which facilitate the management and evaluation of the outcome of an operation.
+- `Outcome<T>`: This captures the result of an operation that yields a result of a specific type, `TResult`, or an exception.
+- `Context`: The `ResilienceContext` of the operation.
+- `Arguments`: Additional arguments associated with the operation. Each resilience strategy can define different arguments for different operations or events.
 
 ## Examples
 
@@ -209,7 +209,7 @@ A non-generic predicate defining retries for multiple result types:
 new ResilienceStrategyBuilder()
    .AddRetry(new RetryStrategyOptions
     {
-        ShouldRetry = (outcome, _) => outcome switch
+        ShouldRetry = args => args switch
         {
             { Exception: InvalidOperationException } => PredicateResult.True,
             { Result: string result } when result == Failure => PredicateResult.True,
@@ -226,7 +226,7 @@ A generic predicate defining retries for a single result type:
 new ResilienceStrategyBuilder()
    .AddRetry(new RetryStrategyOptions<string>
     {
-        ShouldRetry = (outcome, _) => outcome switch
+        ShouldRetry = args => args switch
         {
             { Exception: InvalidOperationException } => PredicateResult.True,
             { Result: result } when result == Failure => PredicateResult.True,

@@ -34,7 +34,7 @@ public class ResilienceStrategyTelemetryTests
                 args.Context.Should().NotBeNull();
             });
 
-        _sut.Report("dummy-event", new TestArguments());
+        _sut.Report("dummy-event", ResilienceContext.Get(), new TestArguments());
 
         _diagnosticSource.VerifyAll();
     }
@@ -44,7 +44,7 @@ public class ResilienceStrategyTelemetryTests
     {
         _diagnosticSource.Setup(o => o.IsEnabled("dummy-event")).Returns(false);
 
-        _sut.Report("dummy-event", new TestArguments());
+        _sut.Report("dummy-event", ResilienceContext.Get(), new TestArguments());
 
         _diagnosticSource.VerifyAll();
         _diagnosticSource.VerifyNoOtherCalls();
@@ -55,9 +55,10 @@ public class ResilienceStrategyTelemetryTests
     {
         var source = new ResilienceTelemetrySource("builder", new ResilienceProperties(), "strategy-name", "strategy-type");
         var sut = new ResilienceStrategyTelemetry(source, null);
+        var context = ResilienceContext.Get();
 
-        sut.Invoking(s => s.Report("dummy", new TestArguments())).Should().NotThrow();
-        sut.Invoking(s => s.Report("dummy", new Outcome<int>(1), new TestArguments())).Should().NotThrow();
+        sut.Invoking(s => s.Report("dummy", context, new TestArguments())).Should().NotThrow();
+        sut.Invoking(s => s.Report("dummy", new OutcomeArguments<int, TestArguments>(context, new Outcome<int>(1), new TestArguments()))).Should().NotThrow();
     }
 
     [Fact]
@@ -82,7 +83,8 @@ public class ResilienceStrategyTelemetryTests
                 args.Context.Should().NotBeNull();
             });
 
-        _sut.Report("dummy-event", new Outcome<int>(99), new TestArguments());
+        var context = ResilienceContext.Get();
+        _sut.Report("dummy-event", new OutcomeArguments<int, TestArguments>(context, new Outcome<int>(99), new TestArguments()));
 
         _diagnosticSource.VerifyAll();
     }
@@ -91,8 +93,8 @@ public class ResilienceStrategyTelemetryTests
     public void Report_OutcomeWhenNotSubscribed_None()
     {
         _diagnosticSource.Setup(o => o.IsEnabled("dummy-event")).Returns(false);
-
-        _sut.Report("dummy-event", new Outcome<int>(10), new TestArguments());
+        var context = ResilienceContext.Get();
+        _sut.Report("dummy-event", new OutcomeArguments<int, TestArguments>(context, new Outcome<int>(10), new TestArguments()));
 
         _diagnosticSource.VerifyAll();
         _diagnosticSource.VerifyNoOtherCalls();

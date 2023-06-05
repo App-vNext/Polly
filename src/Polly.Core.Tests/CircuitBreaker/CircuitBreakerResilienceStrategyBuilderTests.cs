@@ -11,11 +11,11 @@ public class CircuitBreakerResilienceStrategyBuilderTests
     {
         builder => builder.AddAdvancedCircuitBreaker(new AdvancedCircuitBreakerStrategyOptions
         {
-            ShouldHandle = (_, _) => PredicateResult.True
+            ShouldHandle = _ => PredicateResult.True
         }),
         builder => builder.AddSimpleCircuitBreaker(new SimpleCircuitBreakerStrategyOptions
         {
-            ShouldHandle = (_, _) => PredicateResult.True
+            ShouldHandle = _ => PredicateResult.True
         }),
     };
 
@@ -23,11 +23,11 @@ public class CircuitBreakerResilienceStrategyBuilderTests
     {
         builder => builder.AddAdvancedCircuitBreaker(new AdvancedCircuitBreakerStrategyOptions<int>
         {
-            ShouldHandle = (_, _) => PredicateResult.True
+            ShouldHandle = _ => PredicateResult.True
         }),
         builder => builder.AddSimpleCircuitBreaker(new SimpleCircuitBreakerStrategyOptions<int>
         {
-            ShouldHandle = (_, _) => PredicateResult.True
+            ShouldHandle = _ => PredicateResult.True
         }),
     };
 
@@ -100,9 +100,9 @@ public class CircuitBreakerResilienceStrategyBuilderTests
         {
             FailureThreshold = 5,
             BreakDuration = TimeSpan.FromMilliseconds(500),
-            ShouldHandle = (outcome, _) => new ValueTask<bool>(outcome.Result is -1),
-            OnOpened = (_, _) => { opened++; return default; },
-            OnClosed = (_, _) => { closed++; return default; },
+            ShouldHandle = args => new ValueTask<bool>(args.Result is -1),
+            OnOpened = _ => { opened++; return default; },
+            OnClosed = _ => { closed++; return default; },
             OnHalfOpened = (_) => { halfOpened++; return default; }
         };
 
@@ -151,9 +151,9 @@ public class CircuitBreakerResilienceStrategyBuilderTests
             MinimumThroughput = 10,
             SamplingDuration = TimeSpan.FromSeconds(10),
             BreakDuration = TimeSpan.FromSeconds(1),
-            ShouldHandle = (outcome, _) => new ValueTask<bool>(outcome.Result is -1),
-            OnOpened = (_, _) => { opened++; return default; },
-            OnClosed = (_, _) => { closed++; return default; },
+            ShouldHandle = args => new ValueTask<bool>(args.Result is -1),
+            OnOpened = _ => { opened++; return default; },
+            OnClosed = _ => { closed++; return default; },
             OnHalfOpened = (_) => { halfOpened++; return default; }
         };
 

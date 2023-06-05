@@ -29,7 +29,7 @@ public class AdvancedCircuitBreakerOptionsTests
         options.MinimumThroughput = 2;
         options.SamplingDuration = TimeSpan.FromMilliseconds(500);
 
-        options.ShouldHandle = (_, _) => PredicateResult.True;
+        options.ShouldHandle = _ => PredicateResult.True;
         ValidationHelper.ValidateObject(options, "Dummy.");
     }
 
@@ -55,7 +55,7 @@ public class AdvancedCircuitBreakerOptionsTests
         options.MinimumThroughput = 2;
         options.SamplingDuration = TimeSpan.FromMilliseconds(500);
 
-        options.ShouldHandle = (_, _) => PredicateResult.True;
+        options.ShouldHandle = _ => PredicateResult.True;
         ValidationHelper.ValidateObject(options, "Dummy.");
     }
 
