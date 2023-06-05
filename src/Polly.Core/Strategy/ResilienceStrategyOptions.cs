@@ -1,5 +1,3 @@
-using System.ComponentModel.DataAnnotations;
-
 namespace Polly.Strategy;
 
 /// <summary>
@@ -12,10 +10,9 @@ public abstract class ResilienceStrategyOptions
     /// </summary>
     /// <remarks>
     /// This property is also included in the telemetry that is produced by the individual resilience strategies.
-    /// Defaults to <see cref="string.Empty"/>. This name uniquely identifies particular instance of specific strategy.
+    /// Defaults to <see langword="null"/>. This name uniquely identifies particular instance of specific strategy.
     /// </remarks>
-    [Required(AllowEmptyStrings = true)]
-    public string StrategyName { get; set; } = string.Empty;
+    public string? StrategyName { get; set; }
 
     /// <summary>
     /// Gets the strategy type.

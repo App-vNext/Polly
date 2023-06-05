@@ -10,7 +10,7 @@ internal static class TelemetryUtil
 
     internal static readonly ResiliencePropertyKey<string> StrategyKey = new("StrategyKey");
 
-    public static ResilienceStrategyTelemetry CreateTelemetry(string builderName, ResilienceProperties builderProperties, string strategyName, string strategyType)
+    public static ResilienceStrategyTelemetry CreateTelemetry(string? builderName, ResilienceProperties builderProperties, string? strategyName, string strategyType)
     {
         builderProperties.TryGetValue(DiagnosticSourceKey, out var diagnosticSource);
 

@@ -31,9 +31,11 @@ public abstract class ResilienceStrategyBuilderBase
     /// <summary>
     /// Gets or sets the name of the builder.
     /// </summary>
-    /// <remarks>This property is also included in the telemetry that is produced by the individual resilience strategies.</remarks>
-    [Required(AllowEmptyStrings = true)]
-    public string BuilderName { get; set; } = string.Empty;
+    /// <remarks>
+    /// This property is also included in the telemetry that is produced by the individual resilience strategies.
+    /// Defaults to <see langword="null"/>.
+    /// </remarks>
+    public string? BuilderName { get; set; }
 
     /// <summary>
     /// Gets the custom properties attached to builder options.

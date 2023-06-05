@@ -11,7 +11,7 @@ public class GenericResilienceStrategyBuilderTests
     [Fact]
     public void Ctor_EnsureDefaults()
     {
-        _builder.BuilderName.Should().Be("");
+        _builder.BuilderName.Should().BeNull();
         _builder.Properties.Should().NotBeNull();
         _builder.TimeProvider.Should().Be(TimeProvider.System);
         _builder.OnCreatingStrategy.Should().BeNull();
