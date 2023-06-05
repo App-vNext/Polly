@@ -64,5 +64,5 @@ internal class HedgingStrategyOptions : ResilienceStrategyOptions
     /// <remarks>
     /// Defaults to <see langword="null"/>.
     /// </remarks>
-    public Func<Outcome<object>, OnHedgingArguments, ValueTask>? OnHedging { get; set; }
+    public Func<OutcomeArguments<object, OnHedgingArguments>, ValueTask>? OnHedging { get; set; }
 }

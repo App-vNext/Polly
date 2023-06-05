@@ -41,7 +41,7 @@ public static class TestUtilities
     public static ResilienceStrategyTelemetry CreateResilienceTelemetry(DiagnosticSource source)
         => new(new ResilienceTelemetrySource("dummy-builder", new ResilienceProperties(), "strategy-name", "strategy-type"), source);
 
-    public static ResilienceStrategyTelemetry CreateResilienceTelemetry(Action<IResilienceArguments> callback)
+    public static ResilienceStrategyTelemetry CreateResilienceTelemetry(Action<object> callback)
         => new(new ResilienceTelemetrySource("dummy-builder", new ResilienceProperties(), "strategy-name", "strategy-type"), new CallbackDiagnosticSource(callback));
 
     public static ILoggerFactory CreateLoggerFactory(out FakeLogger logger)
@@ -84,11 +84,17 @@ public static class TestUtilities
         ResilienceProperties builderProperties,
         string strategyName,
         string strategyType,
-        IResilienceArguments arguments,
-        Outcome<object>? outcome)
+        ResilienceContext context,
+        Outcome<object>? outcome,
+        object arguments)
 #pragma warning restore S107 // Methods should not have too many parameters
     {
-        source.Write(eventName, new TelemetryEventArguments(new ResilienceTelemetrySource(builderName, builderProperties, strategyName, strategyType), eventName, arguments, outcome));
+        source.Write(eventName, new TelemetryEventArguments(
+            new ResilienceTelemetrySource(builderName, builderProperties, strategyName, strategyType),
+            eventName,
+            context,
+            outcome,
+            arguments));
     }
 
     public static ResilienceContext WithResultType<T>(this ResilienceContext context)
@@ -99,9 +105,9 @@ public static class TestUtilities
 
     private sealed class CallbackDiagnosticSource : DiagnosticSource
     {
-        private readonly Action<IResilienceArguments> _callback;
+        private readonly Action<object> _callback;
 
-        public CallbackDiagnosticSource(Action<IResilienceArguments> callback) => _callback = callback;
+        public CallbackDiagnosticSource(Action<object> callback) => _callback = callback;
 
         public override bool IsEnabled(string name) => true;
 

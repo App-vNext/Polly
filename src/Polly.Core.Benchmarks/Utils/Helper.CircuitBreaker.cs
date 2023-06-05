@@ -11,7 +11,7 @@ internal static partial class Helper
         var manualControl = new CircuitBreakerManualControl();
         var options = new AdvancedCircuitBreakerStrategyOptions
         {
-            ShouldHandle = (_, _) => PredicateResult.True,
+            ShouldHandle = _ => PredicateResult.True,
             ManualControl = manualControl,
         };
 
@@ -56,7 +56,7 @@ internal static partial class Helper
                     SamplingDuration = TimeSpan.FromSeconds(30),
                     MinimumThroughput = 10,
                     BreakDuration = TimeSpan.FromSeconds(5),
-                    ShouldHandle = (outcome, _) => outcome switch
+                    ShouldHandle = args => args switch
                     {
                         { Exception: InvalidOperationException } => PredicateResult.True,
                         { Result: string result } when result == Failure => PredicateResult.True,

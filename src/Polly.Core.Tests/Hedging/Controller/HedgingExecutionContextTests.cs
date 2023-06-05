@@ -32,7 +32,7 @@ public class HedgingExecutionContextTests : IDisposable
         _hedgingHandler = new HedgingHandler();
         _hedgingHandler.SetHedging<DisposableResult>(handler =>
         {
-            handler.ShouldHandle = (outcome, _) => outcome switch
+            handler.ShouldHandle = args => args switch
             {
                 { Exception: ApplicationException } => PredicateResult.True,
                 { Result: DisposableResult result } when result.Name == Handled => PredicateResult.True,

@@ -19,7 +19,7 @@ internal sealed class VoidHedgingHandler
     /// This property is required. Defaults to <see langword="null"/>.
     /// </remarks>
     [Required]
-    public Func<Outcome<object>, HandleHedgingArguments, ValueTask<bool>>? ShouldHandle { get; set; }
+    public Func<OutcomeArguments<object, HandleHedgingArguments>, ValueTask<bool>>? ShouldHandle { get; set; }
 
     /// <summary>
     /// Gets or sets the hedging action generator that creates hedged actions.

@@ -56,12 +56,12 @@ public class HedgingHandlerTests
         var handler = new HedgingHandler()
             .SetHedging<int>(handler =>
             {
-                handler.ShouldHandle = (_, _) => PredicateResult.True;
+                handler.ShouldHandle = _ => PredicateResult.True;
                 handler.HedgingActionGenerator = args => () => Task.FromResult(10);
             })
             .SetVoidHedging(handler =>
             {
-                handler.ShouldHandle = (_, _) => PredicateResult.True;
+                handler.ShouldHandle = _ => PredicateResult.True;
                 handler.HedgingActionGenerator = args => () => Task.CompletedTask;
             });
 
@@ -72,26 +72,27 @@ public class HedgingHandlerTests
     [Fact]
     public async Task SetHedging_Ok()
     {
+        var context = ResilienceContext.Get();
         var handler = new HedgingHandler()
             .SetHedging<int>(handler =>
             {
                 handler.HedgingActionGenerator = args => () => Task.FromResult(0);
-                handler.ShouldHandle = (outcome, _) => new ValueTask<bool>(outcome.Result == -1);
+                handler.ShouldHandle = args => new ValueTask<bool>(args.Result == -1);
             })
             .CreateHandler();
 
-        var args = new HandleHedgingArguments(ResilienceContext.Get());
+        var args = new HandleHedgingArguments();
         handler.Should().NotBeNull();
-        var result = await handler!.ShouldHandleAsync(new Outcome<int>(-1), args);
+        var result = await handler!.ShouldHandleAsync<int>(new(context, new Outcome<int>(-1), args));
         result.Should().BeTrue();
 
         handler.HandlesHedging<int>().Should().BeTrue();
 
-        var action = handler.TryCreateHedgedAction<int>(ResilienceContext.Get(), 0);
+        var action = handler.TryCreateHedgedAction<int>(context, 0);
         action.Should().NotBeNull();
         (await (action!()!)).Should().Be(0);
 
-        handler.TryCreateHedgedAction<double>(ResilienceContext.Get(), 0).Should().BeNull();
+        handler.TryCreateHedgedAction<double>(context, 0).Should().BeNull();
     }
 
     [InlineData(true)]
@@ -99,6 +100,7 @@ public class HedgingHandlerTests
     [Theory]
     public async Task SetVoidHedging_Ok(bool returnsNullAction)
     {
+        var context = ResilienceContext.Get();
         var handler = new HedgingHandler()
             .SetVoidHedging(handler =>
             {
@@ -112,13 +114,13 @@ public class HedgingHandlerTests
 
                     return () => Task.CompletedTask;
                 };
-                handler.ShouldHandle = (outcome, _) => new ValueTask<bool>(outcome.Exception is InvalidOperationException);
+                handler.ShouldHandle = args => new ValueTask<bool>(args.Exception is InvalidOperationException);
             })
             .CreateHandler();
 
-        var args = new HandleHedgingArguments(ResilienceContext.Get());
+        var args = new HandleHedgingArguments();
         handler.Should().NotBeNull();
-        var result = await handler!.ShouldHandleAsync(new Outcome<VoidResult>(new InvalidOperationException()), args);
+        var result = await handler!.ShouldHandleAsync<VoidResult>(new(context, new Outcome<VoidResult>(new InvalidOperationException()), args));
         result.Should().BeTrue();
 
         handler.HandlesHedging<VoidResult>().Should().BeTrue();
@@ -138,11 +140,12 @@ public class HedgingHandlerTests
     [Fact]
     public async Task ShouldHandleAsync_UnknownResultType_Null()
     {
+        var context = ResilienceContext.Get();
         var handler = new HedgingHandler()
             .SetHedging<int>(handler =>
             {
                 handler.HedgingActionGenerator = args => () => Task.FromResult(0);
-                handler.ShouldHandle = (outcome, _) => new ValueTask<bool>(outcome.Exception is InvalidOperationException);
+                handler.ShouldHandle = args => new ValueTask<bool>(args.Exception is InvalidOperationException);
             })
             .SetHedging<string>(handler =>
             {
@@ -152,12 +155,12 @@ public class HedgingHandlerTests
                     return () => Task.FromResult("dummy");
                 };
 
-                handler.ShouldHandle = (outcome, _) => new ValueTask<bool>(outcome.Exception is InvalidOperationException);
+                handler.ShouldHandle = args => new ValueTask<bool>(args.Exception is InvalidOperationException);
             })
             .CreateHandler();
 
-        var args = new HandleHedgingArguments(ResilienceContext.Get());
-        (await handler!.ShouldHandleAsync(new Outcome<double>(new InvalidOperationException()), args)).Should().BeFalse();
+        var args = new HandleHedgingArguments();
+        (await handler!.ShouldHandleAsync<double>(new(context, new Outcome<double>(new InvalidOperationException()), args))).Should().BeFalse();
         handler.HandlesHedging<double>().Should().BeFalse();
         handler.TryCreateHedgedAction<double>(ResilienceContext.Get(), 0).Should().BeNull();
     }

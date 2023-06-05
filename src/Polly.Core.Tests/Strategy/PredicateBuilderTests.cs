@@ -36,7 +36,7 @@ public class PredicateBuilderTests
 
         configure(predicate);
 
-        var result = await predicate.CreatePredicate<string>()(value, string.Empty);
+        var result = await predicate.CreatePredicate<string>()(new OutcomeArguments<string, string>(ResilienceContext.Get(), value, string.Empty));
         result.Should().Be(handled);
     }
 

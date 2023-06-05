@@ -12,7 +12,7 @@ public class HedgingControllerTests
         var handler = new HedgingHandler().SetHedging<int>(handler =>
         {
             handler.HedgingActionGenerator = args => null;
-            handler.ShouldHandle = (_, _) => PredicateResult.False;
+            handler.ShouldHandle = _ => PredicateResult.False;
         }).CreateHandler();
         var controller = new HedgingController(new HedgingTimeProvider(), handler!, 3);
 

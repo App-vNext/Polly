@@ -57,22 +57,19 @@ public sealed class ResilienceStrategyBuilderContext
 
     internal bool IsGenericBuilder { get; }
 
-    internal PredicateInvoker<TArgs>? CreateInvoker<TResult, TArgs>(Func<Outcome<TResult>, TArgs, ValueTask<bool>>? predicate)
-        where TArgs : IResilienceArguments
+    internal PredicateInvoker<TArgs>? CreateInvoker<TResult, TArgs>(Func<OutcomeArguments<TResult, TArgs>, ValueTask<bool>>? predicate)
     {
         return PredicateInvoker<TArgs>.Create(predicate, IsGenericBuilder);
     }
 
-    internal EventInvoker<TArgs>? CreateInvoker<TResult, TArgs>(Func<Outcome<TResult>, TArgs, ValueTask>? callback)
-        where TArgs : IResilienceArguments
+    internal EventInvoker<TArgs>? CreateInvoker<TResult, TArgs>(Func<OutcomeArguments<TResult, TArgs>, ValueTask>? callback)
     {
         return EventInvoker<TArgs>.Create(callback, IsGenericBuilder);
     }
 
     internal GeneratorInvoker<TArgs, TValue>? CreateInvoker<TResult, TArgs, TValue>(
-        Func<Outcome<TResult>, TArgs, ValueTask<TValue>>? generator,
+        Func<OutcomeArguments<TResult, TArgs>, ValueTask<TValue>>? generator,
         TValue defaultValue)
-        where TArgs : IResilienceArguments
     {
         return GeneratorInvoker<TArgs, TValue>.Create(generator, defaultValue, IsGenericBuilder);
     }

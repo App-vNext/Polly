@@ -10,7 +10,7 @@ public class CircuitStateControllerTests
     private readonly FakeTimeProvider _timeProvider = new();
     private readonly CircuitBreakerStrategyOptions<object> _options = new SimpleCircuitBreakerStrategyOptions();
     private readonly Mock<CircuitBehavior> _circuitBehavior = new(MockBehavior.Strict);
-    private readonly Action<IResilienceArguments> _onTelemetry = _ => { };
+    private readonly Action<object> _onTelemetry = _ => { };
     private DateTimeOffset _utcNow = DateTimeOffset.UtcNow;
 
     public CircuitStateControllerTests() => _timeProvider.Setup(v => v.UtcNow).Returns(() => _utcNow);
@@ -30,13 +30,13 @@ public class CircuitStateControllerTests
     {
         // arrange
         bool called = false;
-        _options.OnOpened = (outcome, args) =>
+        _options.OnOpened = args =>
         {
-            args.BreakDuration.Should().Be(TimeSpan.MaxValue);
+            args.Arguments.BreakDuration.Should().Be(TimeSpan.MaxValue);
             args.Context.IsSynchronous.Should().BeFalse();
             args.Context.IsVoid.Should().BeTrue();
-            args.IsManual.Should().BeTrue();
-            outcome.IsVoidResult.Should().BeTrue();
+            args.Arguments.IsManual.Should().BeTrue();
+            args.Outcome.IsVoidResult.Should().BeTrue();
             called = true;
             return default;
         };
@@ -67,12 +67,12 @@ public class CircuitStateControllerTests
     {
         // arrange
         bool called = false;
-        _options.OnClosed = (outcome, args) =>
+        _options.OnClosed = args =>
         {
             args.Context.IsSynchronous.Should().BeFalse();
             args.Context.IsVoid.Should().BeTrue();
-            args.IsManual.Should().BeTrue();
-            outcome.IsVoidResult.Should().BeTrue();
+            args.Arguments.IsManual.Should().BeTrue();
+            args.Outcome.IsVoidResult.Should().BeTrue();
             called = true;
             return default;
         };
@@ -232,9 +232,9 @@ public class CircuitStateControllerTests
     {
         // arrange
         var called = false;
-        _options.OnClosed = (_, args) =>
+        _options.OnClosed = args =>
         {
-            args.IsManual.Should().BeFalse();
+            args.Arguments.IsManual.Should().BeFalse();
             called = true;
             return default;
         };
@@ -272,15 +272,15 @@ public class CircuitStateControllerTests
     {
         // arrange
         var called = false;
-        _options.OnOpened = (_, args) =>
+        _options.OnOpened = args =>
         {
             if (state == CircuitState.Isolated)
             {
-                args.IsManual.Should().BeTrue();
+                args.Arguments.IsManual.Should().BeTrue();
             }
             else
             {
-                args.IsManual.Should().BeFalse();
+                args.Arguments.IsManual.Should().BeFalse();
             }
 
             called = true;

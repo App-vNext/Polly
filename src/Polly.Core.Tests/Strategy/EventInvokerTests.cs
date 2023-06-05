@@ -16,53 +16,56 @@ public class EventInvokerTests
     [Fact]
     public async Task HandleAsync_NonGeneric_Ok()
     {
-        var args = new TestArguments(ResilienceContext.Get());
+        var context = ResilienceContext.Get();
+        var args = new TestArguments();
         var called = false;
-        var invoker = EventInvoker<TestArguments>.Create<object>((outcome, args) =>
+        var invoker = EventInvoker<TestArguments>.Create<object>(args =>
         {
-            outcome.Result.Should().Be(10);
+            args.Result.Should().Be(10);
             args.Context.Should().NotBeNull();
             called = true;
             return default;
         },
         false)!;
 
-        await invoker.HandleAsync(new Outcome<int>(10), args);
+        await invoker.HandleAsync<int>(new(context, new Outcome<int>(10), args));
         called.Should().Be(true);
     }
 
     [Fact]
     public async Task HandleAsync_Generic_Ok()
     {
-        var args = new TestArguments(ResilienceContext.Get());
+        var context = ResilienceContext.Get();
+        var args = new TestArguments();
         var called = false;
-        var invoker = EventInvoker<TestArguments>.Create<int>((outcome, args) =>
+        var invoker = EventInvoker<TestArguments>.Create<int>(args =>
         {
             args.Context.Should().NotBeNull();
-            outcome.Result.Should().Be(10);
+            args.Result.Should().Be(10);
             called = true;
             return default;
         },
         true)!;
 
-        await invoker.HandleAsync(new Outcome<int>(10), args);
+        await invoker.HandleAsync<int>(new(context, new Outcome<int>(10), args));
         called.Should().Be(true);
 
         called = false;
-        await invoker.HandleAsync(new Outcome<string>("dummy"), args);
+        await invoker.HandleAsync<string>(new(ResilienceContext.Get(), new Outcome<string>("dummy"), args));
         called.Should().Be(false);
     }
 
     [Fact]
     public async Task HandleAsync_GenericObject_Ok()
     {
+        var context = ResilienceContext.Get();
         var called = false;
-        var args = new TestArguments(ResilienceContext.Get());
-        var invoker = EventInvoker<TestArguments>.Create<object>((_, _) => { called = true; return default; }, true);
-        await invoker!.HandleAsync(new Outcome<string>("dummy"), args);
+        var args = new TestArguments();
+        var invoker = EventInvoker<TestArguments>.Create<object>(_ => { called = true; return default; }, true);
+        await invoker!.HandleAsync<string>(new(context, new Outcome<string>("dummy"), args));
         called.Should().BeFalse();
 
-        await invoker!.HandleAsync(new Outcome<object>("dummy"), args);
+        await invoker!.HandleAsync<object>(new(context, new Outcome<object>("dummy"), args));
         called.Should().BeTrue();
     }
 }

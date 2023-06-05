@@ -16,49 +16,52 @@ public class PredicateInvokerTests
     [Fact]
     public async Task HandleAsync_NonGeneric_Ok()
     {
-        var args = new TestArguments(ResilienceContext.Get());
+        var context = ResilienceContext.Get();
+        var args = new TestArguments();
         var called = false;
-        var invoker = PredicateInvoker<TestArguments>.Create<object>((outcome, _) =>
+        var invoker = PredicateInvoker<TestArguments>.Create<object>(args =>
         {
-            outcome.Result.Should().Be(10);
+            args.Result.Should().Be(10);
             args.Context.Should().NotBeNull();
             called = true;
             return new ValueTask<bool>(true);
         },
         false);
 
-        (await invoker!.HandleAsync(new Outcome<int>(10), args)).Should().Be(true);
+        (await invoker!.HandleAsync<int>(new(context, new Outcome<int>(10), args))).Should().Be(true);
         called.Should().Be(true);
     }
 
     [Fact]
     public async Task HandleAsync_Generic_Ok()
     {
-        var args = new TestArguments(ResilienceContext.Get());
+        var context = ResilienceContext.Get();
+        var args = new TestArguments();
         var called = false;
-        var invoker = PredicateInvoker<TestArguments>.Create<int>((outcome, args) =>
+        var invoker = PredicateInvoker<TestArguments>.Create<int>(args =>
         {
-            outcome.Result.Should().Be(10);
+            args.Result.Should().Be(10);
             args.Context.Should().NotBeNull();
             called = true;
             return new ValueTask<bool>(true);
         },
         true);
 
-        (await invoker!.HandleAsync(new Outcome<int>(10), args)).Should().Be(true);
+        (await invoker!.HandleAsync<int>(new(context, new Outcome<int>(10), args))).Should().Be(true);
         called.Should().Be(true);
 
         called = false;
-        (await invoker.HandleAsync(new Outcome<string>("dummy"), args)).Should().Be(false);
+        (await invoker.HandleAsync<string>(new(context, new Outcome<string>("dummy"), args))).Should().Be(false);
         called.Should().Be(false);
     }
 
     [Fact]
     public async Task HandleAsync_GenericObject_Ok()
     {
-        var args = new TestArguments(ResilienceContext.Get());
-        var invoker = PredicateInvoker<TestArguments>.Create<object>((_, _) => PredicateResult.True, true);
-        (await invoker!.HandleAsync(new Outcome<string>("dummy"), args)).Should().BeFalse();
-        (await invoker!.HandleAsync(new Outcome<object>("dummy"), args)).Should().BeTrue();
+        var context = ResilienceContext.Get();
+        var args = new TestArguments();
+        var invoker = PredicateInvoker<TestArguments>.Create<object>(_ => PredicateResult.True, true);
+        (await invoker!.HandleAsync<string>(new(context, new Outcome<string>("dummy"), args))).Should().BeFalse();
+        (await invoker!.HandleAsync<object>(new(context, new Outcome<object>("dummy"), args))).Should().BeTrue();
     }
 }

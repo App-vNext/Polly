@@ -7,9 +7,7 @@ public class ShouldRetryArgumentsTests
     [Fact]
     public void Ctor_Ok()
     {
-        var args = new ShouldRetryArguments(ResilienceContext.Get(), 2);
-
-        args.Context.Should().NotBeNull();
+        var args = new ShouldRetryArguments(2);
         args.Attempt.Should().Be(2);
     }
 }

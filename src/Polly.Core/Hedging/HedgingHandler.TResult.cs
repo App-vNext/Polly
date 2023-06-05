@@ -20,7 +20,7 @@ internal sealed class HedgingHandler<TResult>
     /// This property is required. Defaults to <see langword="null"/>.
     /// </remarks>
     [Required]
-    public Func<Outcome<TResult>, HandleHedgingArguments, ValueTask<bool>>? ShouldHandle { get; set; }
+    public Func<OutcomeArguments<TResult, HandleHedgingArguments>, ValueTask<bool>>? ShouldHandle { get; set; }
 
     /// <summary>
     /// Gets or sets the hedging action generator that creates hedged actions.

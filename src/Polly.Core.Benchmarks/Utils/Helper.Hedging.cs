@@ -13,7 +13,7 @@ internal static partial class Helper
         {
             builder.AddHedging(new HedgingStrategyOptions<string>
             {
-                ShouldHandle = (outcome, _) => new ValueTask<bool>(outcome.Result == Failure),
+                ShouldHandle = args => new ValueTask<bool>(args.Result == Failure),
                 HedgingActionGenerator = args => () => Task.FromResult("hedged response"),
             });
         });

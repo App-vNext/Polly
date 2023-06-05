@@ -25,21 +25,22 @@ public sealed class ResilienceStrategyTelemetry
     /// </summary>
     /// <typeparam name="TArgs">The arguments associated with this event.</typeparam>
     /// <param name="eventName">The event name.</param>
+    /// <param name="context">The resilience context associated with this event.</param>
     /// <param name="args">The event arguments.</param>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="eventName"/> is <see langword="null"/>.</exception>
-    public void Report<TArgs>(string eventName, TArgs args)
-        where TArgs : IResilienceArguments
+    public void Report<TArgs>(string eventName, ResilienceContext context, TArgs args)
     {
         Guard.NotNull(eventName);
+        Guard.NotNull(context);
 
-        args.Context.AddResilienceEvent(new ReportedResilienceEvent(eventName));
+        context.AddResilienceEvent(new ReportedResilienceEvent(eventName));
 
         if (DiagnosticSource is null || !DiagnosticSource.IsEnabled(eventName))
         {
             return;
         }
 
-        DiagnosticSource.Write(eventName, new TelemetryEventArguments(TelemetrySource, eventName, args, null));
+        DiagnosticSource.Write(eventName, new TelemetryEventArguments(TelemetrySource, eventName, context, null, args!));
     }
 
     /// <summary>
@@ -48,11 +49,9 @@ public sealed class ResilienceStrategyTelemetry
     /// <typeparam name="TArgs">The arguments associated with this event.</typeparam>
     /// <typeparam name="TResult">The type of the result.</typeparam>
     /// <param name="eventName">The event name.</param>
-    /// <param name="outcome">The outcome associated with the event.</param>
     /// <param name="args">The event arguments.</param>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="eventName"/> is <see langword="null"/>.</exception>
-    public void Report<TArgs, TResult>(string eventName, Outcome<TResult> outcome, TArgs args)
-        where TArgs : IResilienceArguments
+    public void Report<TArgs, TResult>(string eventName, OutcomeArguments<TResult, TArgs> args)
     {
         Guard.NotNull(eventName);
 
@@ -63,7 +62,7 @@ public sealed class ResilienceStrategyTelemetry
             return;
         }
 
-        DiagnosticSource.Write(eventName, new TelemetryEventArguments(TelemetrySource, eventName, args, outcome.AsOutcome()));
+        DiagnosticSource.Write(eventName, new TelemetryEventArguments(TelemetrySource, eventName, args.Context, args.Outcome.AsOutcome(), args.Arguments!));
     }
 }
 

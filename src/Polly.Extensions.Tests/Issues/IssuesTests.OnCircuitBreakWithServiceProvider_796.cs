@@ -22,7 +22,7 @@ public partial class IssuesTests
                 {
                     FailureThreshold = 1,
                     MinimumThroughput = 10,
-                    OnOpened = async (_, args) =>
+                    OnOpened = async args =>
                     {
                         args.Context.Properties.GetValue(PollyDependencyInjectionKeys.ServiceProvider, null!).Should().NotBeNull();
                         contextChecked = true;
@@ -30,7 +30,7 @@ public partial class IssuesTests
                         // do asynchronous call
                         await Task.Yield();
                     },
-                    ShouldHandle = (outcome, _) => outcome.Result switch
+                    ShouldHandle = args => args.Result switch
                     {
                         string result when result == "error" => PredicateResult.True,
                         _ => PredicateResult.False

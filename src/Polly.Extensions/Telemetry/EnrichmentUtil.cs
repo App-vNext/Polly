@@ -11,7 +11,7 @@ internal static class EnrichmentUtil
         List<Action<EnrichmentContext>> enrichers,
         ResilienceContext resilienceContext,
         Outcome<object>? outcome,
-        IResilienceArguments? resilienceArguments)
+        object? resilienceArguments)
     {
         if (enrichers.Count == 0)
         {

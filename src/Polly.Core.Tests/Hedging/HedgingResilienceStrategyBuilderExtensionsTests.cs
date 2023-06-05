@@ -24,7 +24,7 @@ public class HedgingResilienceStrategyBuilderExtensionsTests
         _genericBuilder.AddHedging(new HedgingStrategyOptions<string>
         {
             HedgingActionGenerator = args => () => Task.FromResult("dummy"),
-            ShouldHandle = (_, _) => PredicateResult.True
+            ShouldHandle = _ => PredicateResult.True
         });
         _genericBuilder.Build().Strategy.Should().BeOfType<HedgingResilienceStrategy>();
     }
@@ -67,7 +67,7 @@ public class HedgingResilienceStrategyBuilderExtensionsTests
                 HedgingDelay = TimeSpan.FromMilliseconds(20),
                 Handler = new HedgingHandler().SetHedging<string>(handler =>
                 {
-                    handler.ShouldHandle = (outcome, _) => new ValueTask<bool>(outcome.Result == "error");
+                    handler.ShouldHandle = args => new ValueTask<bool>(args.Result == "error");
                     handler.HedgingActionGenerator = args =>
                     {
                         return async () =>
@@ -83,7 +83,7 @@ public class HedgingResilienceStrategyBuilderExtensionsTests
                         };
                     };
                 }),
-                OnHedging = (outcome, _) => { results.Enqueue(outcome.Result!.ToString()!); return default; }
+                OnHedging = args => { results.Enqueue(args.Result!.ToString()!); return default; }
             })
             .Build();
 

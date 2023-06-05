@@ -24,13 +24,13 @@ internal static partial class Helper
                     RetryCount = 3,
                     BackoffType = RetryBackoffType.Constant,
                     BaseDelay = delay,
-                    ShouldRetry = (outcome, _) => outcome switch
+                    ShouldRetry = args => args switch
                     {
                         { Exception: InvalidOperationException } => PredicateResult.True,
                         { Result: string result } when result == Failure => PredicateResult.True,
                         _ => PredicateResult.False
                     },
-                    OnRetry = (_, _) => default
+                    OnRetry = _ => default
                 });
             }),
             _ => throw new NotSupportedException()

@@ -22,7 +22,7 @@ public class FallbackStrategyOptions<TResult> : ResilienceStrategyOptions
     /// This property is required. Defaults to <see langword="null"/>.
     /// </remarks>
     [Required]
-    public Func<Outcome<TResult>, HandleFallbackArguments, ValueTask<bool>>? ShouldHandle { get; set; }
+    public Func<OutcomeArguments<TResult, HandleFallbackArguments>, ValueTask<bool>>? ShouldHandle { get; set; }
 
     /// <summary>
     /// Gets or sets the fallback action to be executed when the <see cref="ShouldHandle"/> predicate evaluates as true.
@@ -31,7 +31,7 @@ public class FallbackStrategyOptions<TResult> : ResilienceStrategyOptions
     /// This property is required. Defaults to <see langword="null"/>.
     /// </remarks>
     [Required]
-    public Func<Outcome<TResult>, HandleFallbackArguments, ValueTask<TResult>>? FallbackAction { get; set; }
+    public Func<OutcomeArguments<TResult, HandleFallbackArguments>, ValueTask<TResult>>? FallbackAction { get; set; }
 
     /// <summary>
     /// Gets or sets the outcome event instance responsible for triggering fallback events.
@@ -39,6 +39,6 @@ public class FallbackStrategyOptions<TResult> : ResilienceStrategyOptions
     /// <remarks>
     /// Defaults to <see langword="null"/> instance.
     /// </remarks>
-    public Func<Outcome<TResult>, OnFallbackArguments, ValueTask>? OnFallback { get; set; }
+    public Func<OutcomeArguments<TResult, OnFallbackArguments>, ValueTask>? OnFallback { get; set; }
 }
 

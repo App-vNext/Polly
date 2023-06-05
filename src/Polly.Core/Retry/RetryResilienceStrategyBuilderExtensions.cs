@@ -53,7 +53,7 @@ public static class RetryResilienceStrategyBuilderExtensions
 
         var options = new RetryStrategyOptions<TResult>();
         ConfigureShouldRetry(shouldRetry, options);
-        options.RetryDelayGenerator = (_, args) => new ValueTask<TimeSpan>(retryDelayGenerator(args.Attempt));
+        options.RetryDelayGenerator = args => new ValueTask<TimeSpan>(retryDelayGenerator(args.Arguments.Attempt));
 
         return builder.AddRetry(options);
     }

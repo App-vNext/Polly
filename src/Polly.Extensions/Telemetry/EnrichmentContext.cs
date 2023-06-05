@@ -20,12 +20,12 @@ public sealed partial class EnrichmentContext
     /// <summary>
     /// Gets the resilience arguments associated with the resilience event, if any.
     /// </summary>
-    public IResilienceArguments? ResilienceArguments { get; internal set; }
+    public object? Arguments { get; internal set; }
 
     /// <summary>
     /// Gets the resilience context associated with the operation that produced the resilience event.
     /// </summary>
-    public ResilienceContext ResilienceContext { get; internal set; } = null!;
+    public ResilienceContext Context { get; internal set; } = null!;
 
     /// <summary>
     /// Gets the tags associated with the resilience event.

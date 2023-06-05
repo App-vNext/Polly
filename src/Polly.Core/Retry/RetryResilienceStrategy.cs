@@ -60,8 +60,10 @@ internal sealed class RetryResilienceStrategy : ResilienceStrategy
         {
             context.CancellationToken.ThrowIfCancellationRequested();
 
-            Outcome<TResult> outcome = await callback(context, state).ConfigureAwait(context.ContinueOnCapturedContext);
-            if (IsLastAttempt(attempt) || !await ShouldRetry.HandleAsync(outcome, new ShouldRetryArguments(context, attempt)).ConfigureAwait(context.ContinueOnCapturedContext))
+            var outcome = await callback(context, state).ConfigureAwait(context.ContinueOnCapturedContext);
+            var shouldRetryArgs = new OutcomeArguments<TResult, ShouldRetryArguments>(context, outcome, new ShouldRetryArguments(attempt));
+
+            if (IsLastAttempt(attempt) || !await ShouldRetry.HandleAsync(shouldRetryArgs).ConfigureAwait(context.ContinueOnCapturedContext))
             {
                 return outcome;
             }
@@ -69,20 +71,20 @@ internal sealed class RetryResilienceStrategy : ResilienceStrategy
             var delay = RetryHelper.GetRetryDelay(BackoffType, attempt, BaseDelay, ref retryState, _randomUtil);
             if (DelayGenerator is not null)
             {
-                var newDelay = await DelayGenerator.HandleAsync(outcome, new RetryDelayArguments(context, attempt, delay)).ConfigureAwait(false);
+                var delayArgs = new OutcomeArguments<TResult, RetryDelayArguments>(context, outcome, new RetryDelayArguments(attempt, delay));
+                var newDelay = await DelayGenerator.HandleAsync(delayArgs).ConfigureAwait(false);
                 if (RetryHelper.IsValidDelay(newDelay))
                 {
                     delay = newDelay;
                 }
             }
 
-            var args = new OnRetryArguments(context, attempt, delay);
-
-            _telemetry.Report(RetryConstants.OnRetryEvent, outcome, args);
+            var onRetryArgs = new OutcomeArguments<TResult, OnRetryArguments>(context, outcome, new OnRetryArguments(attempt, delay));
+            _telemetry.Report(RetryConstants.OnRetryEvent, onRetryArgs);
 
             if (OnRetry is not null)
             {
-                await OnRetry.HandleAsync(outcome, args).ConfigureAwait(context.ContinueOnCapturedContext);
+                await OnRetry.HandleAsync(onRetryArgs).ConfigureAwait(context.ContinueOnCapturedContext);
             }
 
             if (outcome.TryGetResult(out var resultValue))

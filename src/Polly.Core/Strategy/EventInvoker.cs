@@ -3,37 +3,36 @@ using System.Threading.Tasks;
 namespace Polly.Strategy;
 
 internal abstract class EventInvoker<TArgs>
-    where TArgs : IResilienceArguments
 {
-    public static EventInvoker<TArgs>? Create<TResult>(Func<Outcome<TResult>, TArgs, ValueTask>? callback, bool isGeneric) => callback switch
+    public static EventInvoker<TArgs>? Create<TResult>(Func<OutcomeArguments<TResult, TArgs>, ValueTask>? callback, bool isGeneric) => callback switch
     {
-        Func<Outcome<object>, TArgs, ValueTask> generic when !isGeneric => new NonGenericEventInvoker(generic),
+        Func<OutcomeArguments<object, TArgs>, ValueTask> generic when !isGeneric => new NonGenericEventInvoker(generic),
         { } => new GenericEventInvoker<TResult>(callback),
         _ => null,
     };
 
-    public abstract ValueTask HandleAsync<TResult>(Outcome<TResult> outcome, TArgs args);
+    public abstract ValueTask HandleAsync<TResult>(OutcomeArguments<TResult, TArgs> args);
 
     private sealed class NonGenericEventInvoker : EventInvoker<TArgs>
     {
-        private readonly Func<Outcome<object>, TArgs, ValueTask> _callback;
+        private readonly Func<OutcomeArguments<object, TArgs>, ValueTask> _callback;
 
-        public NonGenericEventInvoker(Func<Outcome<object>, TArgs, ValueTask> callback) => _callback = callback;
+        public NonGenericEventInvoker(Func<OutcomeArguments<object, TArgs>, ValueTask> callback) => _callback = callback;
 
-        public override ValueTask HandleAsync<TResult>(Outcome<TResult> outcome, TArgs args) => _callback(outcome.AsOutcome(), args);
+        public override ValueTask HandleAsync<TResult>(OutcomeArguments<TResult, TArgs> args) => _callback(args.AsObjectArguments());
     }
 
     private sealed class GenericEventInvoker<T> : EventInvoker<TArgs>
     {
         private readonly object _callback;
 
-        public GenericEventInvoker(Func<Outcome<T>, TArgs, ValueTask> callback) => _callback = callback;
+        public GenericEventInvoker(Func<OutcomeArguments<T, TArgs>, ValueTask> callback) => _callback = callback;
 
-        public override ValueTask HandleAsync<TResult>(Outcome<TResult> outcome, TArgs args)
+        public override ValueTask HandleAsync<TResult>(OutcomeArguments<TResult, TArgs> args)
         {
             if (typeof(TResult) == typeof(T))
             {
-                return ((Func<Outcome<TResult>, TArgs, ValueTask>)_callback)(outcome, args);
+                return ((Func<OutcomeArguments<TResult, TArgs>, ValueTask>)_callback)(args);
             }
 
             return default;

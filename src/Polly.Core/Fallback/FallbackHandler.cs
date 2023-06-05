@@ -64,12 +64,12 @@ internal sealed partial class FallbackHandler
     {
         return new()
         {
-            FallbackAction = async (outcome, args) =>
+            FallbackAction = async args =>
             {
-                await handler.FallbackAction!(outcome.AsOutcome(), args).ConfigureAwait(args.Context.ContinueOnCapturedContext);
+                await handler.FallbackAction!(args.AsObjectArguments()).ConfigureAwait(args.Context.ContinueOnCapturedContext);
                 return VoidResult.Instance;
             },
-            ShouldHandle = (outcome, args) => handler.ShouldHandle!(outcome.AsOutcome(), args)
+            ShouldHandle = args => handler.ShouldHandle!(args.AsObjectArguments())
         };
     }
 }

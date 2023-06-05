@@ -7,8 +7,6 @@ public class HandleHedgingArgumentsTests
     [Fact]
     public void Ctor_Ok()
     {
-        var args = new HandleHedgingArguments(ResilienceContext.Get());
-
-        args.Context.Should().NotBeNull();
+        this.Invoking(_ => new HandleHedgingArguments()).Should().NotThrow();
     }
 }

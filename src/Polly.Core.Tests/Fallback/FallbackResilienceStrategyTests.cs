@@ -6,7 +6,7 @@ namespace Polly.Core.Tests.Fallback;
 public class FallbackResilienceStrategyTests
 {
     private readonly FallbackStrategyOptions _options = new();
-    private readonly List<IResilienceArguments> _args = new();
+    private readonly List<object> _args = new();
     private readonly ResilienceStrategyTelemetry _telemetry;
 
     public FallbackResilienceStrategyTests() => _telemetry = TestUtilities.CreateResilienceTelemetry(args => _args.Add(args));
@@ -29,13 +29,13 @@ public class FallbackResilienceStrategyTests
     public void Handle_Result_Ok()
     {
         var called = false;
-        _options.OnFallback = (_, _) => { called = true; return default; };
+        _options.OnFallback = _ => { called = true; return default; };
         _options.Handler.SetFallback<int>(handler =>
         {
-            handler.ShouldHandle = (outcome, _) => new ValueTask<bool>(outcome.Result == -1);
-            handler.FallbackAction = (outcome, args) =>
+            handler.ShouldHandle = args => new ValueTask<bool>(args.Result == -1);
+            handler.FallbackAction = args =>
             {
-                outcome.Result.Should().Be(-1);
+                args.Result.Should().Be(-1);
                 args.Context.Should().NotBeNull();
                 return new ValueTask<int>(0);
             };
@@ -43,7 +43,7 @@ public class FallbackResilienceStrategyTests
 
         Create().Execute(_ => -1).Should().Be(0);
 
-        _args.Should().ContainSingle(v => v is HandleFallbackArguments);
+        _args.Should().ContainSingle(v => v is OnFallbackArguments);
         called.Should().BeTrue();
     }
 
@@ -52,8 +52,8 @@ public class FallbackResilienceStrategyTests
     {
         _options.Handler.SetFallback<int>(handler =>
         {
-            handler.ShouldHandle = (outcome, _) => new ValueTask<bool>(outcome.Result == -1);
-            handler.FallbackAction = (_, _) => throw new InvalidOperationException();
+            handler.ShouldHandle = args => new ValueTask<bool>(args.Result == -1);
+            handler.FallbackAction = _ => throw new InvalidOperationException();
         });
 
         Create().Invoking(s => s.Execute(_ => -1)).Should().Throw<InvalidOperationException>();
@@ -63,13 +63,13 @@ public class FallbackResilienceStrategyTests
     public void Handle_Exception_Ok()
     {
         var called = false;
-        _options.OnFallback = (_, _) => { called = true; return default; };
+        _options.OnFallback = _ => { called = true; return default; };
         _options.Handler.SetFallback<int>(handler =>
         {
-            handler.ShouldHandle = (outcome, _) => new ValueTask<bool>(outcome.Exception is InvalidOperationException);
-            handler.FallbackAction = (outcome, args) =>
+            handler.ShouldHandle = args => new ValueTask<bool>(args.Exception is InvalidOperationException);
+            handler.FallbackAction = args =>
             {
-                outcome.Exception.Should().BeOfType<InvalidOperationException>();
+                args.Exception.Should().BeOfType<InvalidOperationException>();
                 args.Context.Should().NotBeNull();
                 return new ValueTask<int>(0);
             };
@@ -77,7 +77,7 @@ public class FallbackResilienceStrategyTests
 
         Create().Execute<int>(_ => throw new InvalidOperationException()).Should().Be(0);
 
-        _args.Should().ContainSingle(v => v is HandleFallbackArguments);
+        _args.Should().ContainSingle(v => v is OnFallbackArguments);
         called.Should().BeTrue();
     }
 
@@ -87,11 +87,11 @@ public class FallbackResilienceStrategyTests
         var called = false;
         var fallbackActionCalled = false;
 
-        _options.OnFallback = (_, _) => { called = true; return default; };
+        _options.OnFallback = _ => { called = true; return default; };
         _options.Handler.SetFallback<int>(handler =>
         {
-            handler.ShouldHandle = (outcome, _) => new ValueTask<bool>(outcome.Exception is InvalidOperationException);
-            handler.FallbackAction = (_, _) =>
+            handler.ShouldHandle = args => new ValueTask<bool>(args.Exception is InvalidOperationException);
+            handler.FallbackAction = _ =>
             {
                 fallbackActionCalled = true;
                 return new ValueTask<int>(0);
@@ -111,11 +111,11 @@ public class FallbackResilienceStrategyTests
         var called = false;
         var fallbackActionCalled = false;
 
-        _options.OnFallback = (_, _) => { called = true; return default; };
+        _options.OnFallback = _ => { called = true; return default; };
         _options.Handler.SetFallback<int>(handler =>
         {
-            handler.ShouldHandle = (outcome, _) => new ValueTask<bool>(outcome.Result == -1);
-            handler.FallbackAction = (_, _) =>
+            handler.ShouldHandle = args => new ValueTask<bool>(args.Result == -1);
+            handler.FallbackAction = _ =>
             {
                 fallbackActionCalled = true;
                 return new ValueTask<int>(0);

@@ -169,8 +169,8 @@ public class ResilienceTelemetryDiagnosticSourceTests : IDisposable
                     context.Outcome!.Value.Result.Should().Be(true);
                 }
 
-                context.ResilienceContext.Should().NotBeNull();
-                context.ResilienceArguments.Should().BeOfType<TestArguments>();
+                context.Context.Should().NotBeNull();
+                context.Arguments.Should().BeOfType<TestArguments>();
                 context.Tags.Add(new KeyValuePair<string, object?>("custom-1", "custom-1-value"));
             });
 
@@ -221,12 +221,21 @@ public class ResilienceTelemetryDiagnosticSourceTests : IDisposable
 
     private static void ReportEvent(ResilienceTelemetryDiagnosticSource telemetry, Outcome<object>? outcome, string? strategyKey = "my-strategy-key", ResilienceContext? context = null)
     {
+        context ??= ResilienceContext.Get();
         var props = new ResilienceProperties();
         if (!string.IsNullOrEmpty(strategyKey))
         {
             props.Set(new ResiliencePropertyKey<string?>("StrategyKey"), strategyKey);
         }
 
-        telemetry.ReportEvent("my-event", "my-builder", props, "my-strategy", "my-strategy-type", new TestArguments(context), outcome);
+        telemetry.ReportEvent(
+            "my-event",
+            "my-builder",
+            props,
+            "my-strategy",
+            "my-strategy-type",
+            context,
+            outcome,
+            new TestArguments());
     }
 }
