@@ -62,7 +62,7 @@ public sealed class CircuitBreakerManualControl : IDisposable
     /// <exception cref="ObjectDisposedException">Thrown when calling this method after this object is disposed.</exception>
     public async Task IsolateAsync(CancellationToken cancellationToken = default)
     {
-        var context = ResilienceContext.Get();
+        var context = ResilienceContextPool.Shared.Get();
         context.CancellationToken = cancellationToken;
 
         try
@@ -71,7 +71,7 @@ public sealed class CircuitBreakerManualControl : IDisposable
         }
         finally
         {
-            ResilienceContext.Return(context);
+            ResilienceContextPool.Shared.Return(context);
         }
     }
 
@@ -105,7 +105,7 @@ public sealed class CircuitBreakerManualControl : IDisposable
     /// <exception cref="ObjectDisposedException">Thrown when calling this method after this object is disposed.</exception>
     public async Task CloseAsync(CancellationToken cancellationToken = default)
     {
-        var context = ResilienceContext.Get();
+        var context = ResilienceContextPool.Shared.Get();
         context.CancellationToken = cancellationToken;
 
         try
@@ -114,7 +114,7 @@ public sealed class CircuitBreakerManualControl : IDisposable
         }
         finally
         {
-            ResilienceContext.Return(context);
+            ResilienceContextPool.Shared.Return(context);
         }
     }
 

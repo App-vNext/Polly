@@ -147,7 +147,7 @@ public abstract partial class ResilienceStrategy
         }
         finally
         {
-            ResilienceContext.Return(context);
+            ResilienceContextPool.Shared.Return(context);
         }
     }
 
@@ -188,13 +188,13 @@ public abstract partial class ResilienceStrategy
         }
         finally
         {
-            ResilienceContext.Return(context);
+            ResilienceContextPool.Shared.Return(context);
         }
     }
 
     private static ResilienceContext GetAsyncContext<TResult>(CancellationToken cancellationToken)
     {
-        var context = ResilienceContext.Get();
+        var context = ResilienceContextPool.Shared.Get();
         context.CancellationToken = cancellationToken;
 
         InitializeAsyncContext<TResult>(context);

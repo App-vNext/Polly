@@ -112,7 +112,7 @@ public abstract partial class ResilienceStrategy
         }
         finally
         {
-            ResilienceContext.Return(context);
+            ResilienceContextPool.Shared.Return(context);
         }
     }
 
@@ -150,7 +150,7 @@ public abstract partial class ResilienceStrategy
         }
         finally
         {
-            ResilienceContext.Return(context);
+            ResilienceContextPool.Shared.Return(context);
         }
     }
 
@@ -189,7 +189,7 @@ public abstract partial class ResilienceStrategy
         }
         finally
         {
-            ResilienceContext.Return(context);
+            ResilienceContextPool.Shared.Return(context);
         }
     }
 
@@ -224,7 +224,7 @@ public abstract partial class ResilienceStrategy
         }
         finally
         {
-            ResilienceContext.Return(context);
+            ResilienceContextPool.Shared.Return(context);
         }
     }
 

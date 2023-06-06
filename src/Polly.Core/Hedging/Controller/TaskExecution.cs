@@ -21,7 +21,7 @@ namespace Polly.Hedging.Controller;
 /// </summary>
 internal sealed class TaskExecution
 {
-    private readonly ResilienceContext _cachedContext = ResilienceContext.Get();
+    private readonly ResilienceContext _cachedContext = ResilienceContextPool.Shared.Get();
     private readonly HedgingHandler.Handler _handler;
     private readonly CancellationTokenSourcePool _cancellationTokenSourcePool;
     private CancellationTokenSource? _cancellationSource;
