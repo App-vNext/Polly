@@ -10,6 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Polly.TestUtils\Polly.TestUtils.csproj" />
     <ProjectReference Include="..\Polly\Polly.csproj" />
   </ItemGroup>
 </Project>
