@@ -78,6 +78,7 @@ jobs:
       with:
         name: packages-${{ matrix.os_name }}
         path: ./artifacts/nuget-packages
+        if-no-files-found: error
 
   validate-packages:
     needs: build
