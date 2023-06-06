@@ -76,12 +76,17 @@ internal sealed class TelemetryResilienceStrategy : ResilienceStrategy
                 { ResilienceTelemetryTags.ExecutionHealth, context.GetExecutionHealth() }
             };
 
-        EnrichmentUtil.Enrich(ref tags, _enrichers, context, new Outcome<object>(outcome.HasResult ? outcome.Result : outcome.Exception), resilienceArguments: null);
+        EnrichmentUtil.Enrich(ref tags, _enrichers, context, CreateOutcome(outcome), resilienceArguments: null);
 
         ExecutionDuration.Record(duration.TotalMilliseconds, tags);
 
         return outcome;
     }
+
+    private static Outcome<object> CreateOutcome<TResult>(Outcome<TResult> outcome) =>
+        outcome.HasResult ?
+            new Outcome<object>(outcome.Result) :
+            new Outcome<object>(outcome.Exception!);
 
     private static object? ExpandOutcome<TResult>(Outcome<TResult> outcome)
     {
