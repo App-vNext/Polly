@@ -14,7 +14,8 @@ public sealed class ResilienceStrategyBuilderContext
         string strategyName,
         string strategyType,
         TimeProvider timeProvider,
-        bool isGenericBuilder)
+        bool isGenericBuilder,
+        DiagnosticSource? diagnosticSource)
     {
         BuilderName = builderName;
         BuilderProperties = builderProperties;
@@ -22,7 +23,7 @@ public sealed class ResilienceStrategyBuilderContext
         StrategyType = strategyType;
         TimeProvider = timeProvider;
         IsGenericBuilder = isGenericBuilder;
-        Telemetry = TelemetryUtil.CreateTelemetry(builderName, builderProperties, strategyName, strategyType);
+        Telemetry = TelemetryUtil.CreateTelemetry(diagnosticSource, builderName, builderProperties, strategyName, strategyType);
     }
 
     /// <summary>

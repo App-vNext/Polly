@@ -10,7 +10,7 @@ public class ResilienceStrategyBuilderContextTests
     {
         var properties = new ResilienceProperties();
         var timeProvider = new FakeTimeProvider();
-        var context = new ResilienceStrategyBuilderContext("builder-name", properties, "strategy-name", "strategy-type", timeProvider.Object, true);
+        var context = new ResilienceStrategyBuilderContext("builder-name", properties, "strategy-name", "strategy-type", timeProvider.Object, true, Mock.Of<DiagnosticSource>());
 
         context.IsGenericBuilder.Should().BeTrue();
         context.BuilderName.Should().Be("builder-name");

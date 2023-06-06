@@ -17,12 +17,12 @@ public class TelemetryResilienceStrategyBuilderExtensionsTests
         if (generic)
         {
             _genericBuilder.EnableTelemetry(NullLoggerFactory.Instance);
-            _genericBuilder.Properties.GetValue(new ResiliencePropertyKey<DiagnosticSource?>("DiagnosticSource"), null).Should().BeOfType<ResilienceTelemetryDiagnosticSource>();
+            _genericBuilder.DiagnosticSource.Should().BeOfType<ResilienceTelemetryDiagnosticSource>();
         }
         else
         {
             _builder.EnableTelemetry(NullLoggerFactory.Instance);
-            _builder.Properties.GetValue(new ResiliencePropertyKey<DiagnosticSource?>("DiagnosticSource"), null).Should().BeOfType<ResilienceTelemetryDiagnosticSource>();
+            _builder.DiagnosticSource.Should().BeOfType<ResilienceTelemetryDiagnosticSource>();
             _builder.AddStrategy(new TestResilienceStrategy()).Build().Should().NotBeOfType<TestResilienceStrategy>();
         }
     }

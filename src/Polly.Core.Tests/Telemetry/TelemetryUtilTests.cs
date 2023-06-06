@@ -9,14 +9,13 @@ public class TelemetryUtilTests
     [Fact]
     public void Ctor_Ok()
     {
-        TelemetryUtil.DiagnosticSourceKey.Key.Should().Be("DiagnosticSource");
-        TelemetryUtil.StrategyKey.Key.Should().Be("StrategyKey");
+        TelemetryUtil.StrategyKey.Key.Should().Be("Polly.StrategyKey");
     }
 
     [Fact]
     public void CreateResilienceTelemetry_Ok()
     {
-        var telemetry = TelemetryUtil.CreateTelemetry("builder", new ResilienceProperties(), "strategy-name", "strategy-type");
+        var telemetry = TelemetryUtil.CreateTelemetry(null, "builder", new ResilienceProperties(), "strategy-name", "strategy-type");
 
         telemetry.TelemetrySource.BuilderName.Should().Be("builder");
         telemetry.TelemetrySource.StrategyName.Should().Be("strategy-name");
@@ -29,9 +28,8 @@ public class TelemetryUtilTests
     {
         var props = new ResilienceProperties();
         var source = Mock.Of<DiagnosticSource>();
-        props.Set(new ResiliencePropertyKey<DiagnosticSource>("DiagnosticSource"), source);
 
-        var telemetry = TelemetryUtil.CreateTelemetry("builder", props, "strategy-name", "strategy-type");
+        var telemetry = TelemetryUtil.CreateTelemetry(source, "builder", props, "strategy-name", "strategy-type");
 
         telemetry.DiagnosticSource.Should().Be(source);
     }

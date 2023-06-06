@@ -19,7 +19,6 @@
     <Using Remove="System.Net.Http" />
     <InternalsVisibleToTest Include="Polly.Core.Tests" />
     <InternalsVisibleToTest Include="Polly.TestUtils" />
-    <InternalsVisibleToTest Include="Polly.Extensions" />
   </ItemGroup>
 
   <ItemGroup>
