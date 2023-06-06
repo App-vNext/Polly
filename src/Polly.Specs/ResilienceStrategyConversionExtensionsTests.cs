@@ -1,3 +1,4 @@
+using Polly.Strategy;
 using Polly.TestUtils;
 
 namespace Polly.Specs;
@@ -150,6 +151,33 @@ public class ResilienceStrategyConversionExtensionsTests
 
         AssertContext(context);
         result.Should().Be("dummy");
+    }
+
+    [Fact]
+    public void RetryStrategy_AsSyncPolicy_Ok()
+    {
+        var policy = new ResilienceStrategyBuilder<string>()
+            .AddRetry(new RetryStrategyOptions<string>
+            {
+                ShouldRetry = _ => PredicateResult.True,
+                BackoffType = RetryBackoffType.Constant,
+                RetryCount = 5,
+                BaseDelay = TimeSpan.FromMilliseconds(1)
+            })
+            .Build()
+            .AsSyncPolicy();
+
+        var tries = 0;
+        policy.Execute(
+            () =>
+            {
+                tries++;
+                return "dummy";
+            })
+            .Should()
+            .Be("dummy");
+
+        tries.Should().Be(6);
     }
 
     private static void AssertContext(Context context)
