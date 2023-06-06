@@ -1,5 +1,6 @@
 using Polly.Strategy;
 using Polly.TestUtils;
+using Polly.Utilities.Wrappers;
 
 namespace Polly.Specs;
 
@@ -167,17 +168,20 @@ public class ResilienceStrategyConversionExtensionsTests
             .Build()
             .AsSyncPolicy();
 
-        var tries = 0;
+        var context = new Context();
+        context["retry"] = 0;
+
         policy.Execute(
-            () =>
+            c =>
             {
-                tries++;
+                c["retry"] = (int)c["retry"] + 1;
                 return "dummy";
-            })
+            },
+            context)
             .Should()
             .Be("dummy");
 
-        tries.Should().Be(6);
+        context["retry"].Should().Be(6);
     }
 
     private static void AssertContext(Context context)

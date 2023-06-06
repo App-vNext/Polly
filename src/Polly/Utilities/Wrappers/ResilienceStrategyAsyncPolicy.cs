@@ -12,21 +12,25 @@ internal sealed class ResilienceStrategyAsyncPolicy : AsyncPolicy
         CancellationToken cancellationToken,
         bool continueOnCapturedContext)
     {
-        var resilienceContext = ResilienceContextFactory.Create(context, cancellationToken, continueOnCapturedContext);
+        var resilienceContext = ResilienceContextFactory.Create(
+            context,
+            cancellationToken,
+            continueOnCapturedContext,
+            out var oldProperties);
 
         try
         {
             await _strategy.ExecuteAsync(
-                static async (context, state) =>
+                static async (resilienceContext, state) =>
                 {
-                    await state(context.GetContext(), context.CancellationToken).ConfigureAwait(context.ContinueOnCapturedContext);
+                    await state.action(state.context, resilienceContext.CancellationToken).ConfigureAwait(resilienceContext.ContinueOnCapturedContext);
                 },
                 resilienceContext,
-                action).ConfigureAwait(continueOnCapturedContext);
+                (action, context)).ConfigureAwait(continueOnCapturedContext);
         }
         finally
         {
-            ResilienceContextFactory.Restore(resilienceContext);
+            ResilienceContextFactory.Cleanup(resilienceContext, oldProperties);
         }
     }
 
@@ -36,21 +40,25 @@ internal sealed class ResilienceStrategyAsyncPolicy : AsyncPolicy
         CancellationToken cancellationToken,
         bool continueOnCapturedContext)
     {
-        var resilienceContext = ResilienceContextFactory.Create(context, cancellationToken, continueOnCapturedContext);
+        var resilienceContext = ResilienceContextFactory.Create(
+            context,
+            cancellationToken,
+            continueOnCapturedContext,
+            out var oldProperties);
 
         try
         {
             return await _strategy.ExecuteAsync(
-                static async (context, state) =>
+                static async (resilienceContext, state) =>
                 {
-                    return await state(context.GetContext(), context.CancellationToken).ConfigureAwait(context.ContinueOnCapturedContext);
+                    return await state.action(state.context, resilienceContext.CancellationToken).ConfigureAwait(resilienceContext.ContinueOnCapturedContext);
                 },
                 resilienceContext,
-                action).ConfigureAwait(continueOnCapturedContext);
+                (action, context)).ConfigureAwait(continueOnCapturedContext);
         }
         finally
         {
-            ResilienceContextFactory.Restore(resilienceContext);
+            ResilienceContextFactory.Cleanup(resilienceContext, oldProperties);
         }
     }
 }
