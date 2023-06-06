@@ -10,9 +10,9 @@ internal static class TelemetryUtil
 
     public static ResilienceStrategyTelemetry CreateTelemetry(
         DiagnosticSource? diagnosticSource,
-        string builderName,
+        string? builderName,
         ResilienceProperties builderProperties,
-        string strategyName,
+        string? strategyName,
         string strategyType)
     {
         var telemetrySource = new ResilienceTelemetrySource(builderName, builderProperties, strategyName, strategyType);

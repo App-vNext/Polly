@@ -12,7 +12,7 @@ public class ResilienceStrategyBuilderTests
     {
         var builder = new ResilienceStrategyBuilder();
 
-        builder.BuilderName.Should().Be("");
+        builder.BuilderName.Should().BeNull();
         builder.Properties.Should().NotBeNull();
         builder.TimeProvider.Should().Be(TimeProvider.System);
         builder.IsGenericBuilder.Should().BeFalse();
@@ -157,12 +157,9 @@ public class ResilienceStrategyBuilderTests
     [Fact]
     public void Build_InvalidBuilderOptions_Throw()
     {
-        var builder = new ResilienceStrategyBuilder
-        {
-            BuilderName = null!
-        };
+        var builder = new InvalidResilienceStrategyBuilder();
 
-        builder.Invoking(b => b.Build())
+        builder.Invoking(b => b.BuildStrategy())
             .Should()
             .Throw<ValidationException>()
             .WithMessage(
@@ -170,7 +167,7 @@ public class ResilienceStrategyBuilderTests
 The 'ResilienceStrategyBuilder' configuration is invalid.
 
 Validation Errors:
-The BuilderName field is required.
+The RequiredProperty field is required.
 """);
     }
 
@@ -180,7 +177,7 @@ The BuilderName field is required.
         var builder = new ResilienceStrategyBuilder();
 
         builder
-            .Invoking(b => b.AddStrategy(_ => NullResilienceStrategy.Instance, new TestResilienceStrategyOptions { StrategyName = null! }))
+            .Invoking(b => b.AddStrategy(_ => NullResilienceStrategy.Instance, new InvalidResilienceStrategyOptions()))
             .Should()
             .Throw<ValidationException>()
             .WithMessage(
@@ -188,7 +185,7 @@ The BuilderName field is required.
 The 'ResilienceStrategyOptions' options are not valid.
 
 Validation Errors:
-The StrategyName field is required.
+The RequiredProperty field is required.
 """);
     }
 
@@ -343,5 +340,21 @@ The StrategyName field is required.
                 After?.Invoke();
             }
         }
+    }
+
+    private class InvalidResilienceStrategyOptions : ResilienceStrategyOptions
+    {
+        [Required]
+        public string? RequiredProperty { get; set; }
+
+        public override string StrategyType => "Invalid";
+    }
+
+    private class InvalidResilienceStrategyBuilder : ResilienceStrategyBuilderBase
+    {
+        [Required]
+        public string? RequiredProperty { get; set; }
+
+        internal override bool IsGenericBuilder => false;
     }
 }

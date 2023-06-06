@@ -9,9 +9,9 @@ namespace Polly.Strategy;
 public sealed class ResilienceStrategyBuilderContext
 {
     internal ResilienceStrategyBuilderContext(
-        string builderName,
+        string? builderName,
         ResilienceProperties builderProperties,
-        string strategyName,
+        string? strategyName,
         string strategyType,
         TimeProvider timeProvider,
         bool isGenericBuilder,
@@ -29,7 +29,7 @@ public sealed class ResilienceStrategyBuilderContext
     /// <summary>
     /// Gets the name of the builder.
     /// </summary>
-    public string BuilderName { get; }
+    public string? BuilderName { get; }
 
     /// <summary>
     /// Gets the custom properties attached to the builder.
@@ -39,7 +39,7 @@ public sealed class ResilienceStrategyBuilderContext
     /// <summary>
     /// Gets the name of the strategy.
     /// </summary>
-    public string StrategyName { get; }
+    public string? StrategyName { get; }
 
     /// <summary>
     /// Gets the type of the strategy.
