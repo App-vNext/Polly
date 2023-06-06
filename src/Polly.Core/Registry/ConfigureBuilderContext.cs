@@ -32,12 +32,12 @@ public class ConfigureBuilderContext<TKey>
     internal Func<CancellationToken>? ReloadTokenProducer { get; private set; }
 
     /// <summary>
-    /// Enables the dynamic reloads for the strategy produced by current builder.
+    /// Enables dynamic reloading of strategy retrieved from <see cref="ResilienceStrategyRegistry{TKey}"/>.
     /// </summary>
     /// <param name="reloadTokenProducer">The producer of <see cref="CancellationToken"/> that is triggered when change occurs.</param>
     /// <remarks>
     /// The <paramref name="reloadTokenProducer"/> should always return a new <see cref="CancellationToken"/> instance when invoked otherwise
-    /// the reload infra will stop listening for changes.
+    /// the reload infrastructure will stop listening for changes.
     /// </remarks>
     public void EnableReloads(Func<CancellationToken> reloadTokenProducer)
     {

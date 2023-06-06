@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace Polly.Strategy;
 
-internal class ReloadableResilienceStrategy : ResilienceStrategy
+internal sealed class ReloadableResilienceStrategy : ResilienceStrategy
 {
     public const string StrategyName = "ReloadableStrategy";
 
