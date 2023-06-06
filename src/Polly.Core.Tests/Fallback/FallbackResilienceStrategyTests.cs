@@ -1,15 +1,16 @@
 using Polly.Fallback;
 using Polly.Strategy;
+using Polly.Telemetry;
 
 namespace Polly.Core.Tests.Fallback;
 
 public class FallbackResilienceStrategyTests
 {
     private readonly FallbackStrategyOptions _options = new();
-    private readonly List<object> _args = new();
+    private readonly List<TelemetryEventArguments> _args = new();
     private readonly ResilienceStrategyTelemetry _telemetry;
 
-    public FallbackResilienceStrategyTests() => _telemetry = TestUtilities.CreateResilienceTelemetry(args => _args.Add(args));
+    public FallbackResilienceStrategyTests() => _telemetry = TestUtilities.CreateResilienceTelemetry(_args.Add);
 
     [Fact]
     public void Ctor_Ok()
@@ -43,7 +44,7 @@ public class FallbackResilienceStrategyTests
 
         Create().Execute(_ => -1).Should().Be(0);
 
-        _args.Should().ContainSingle(v => v is OnFallbackArguments);
+        _args.Should().ContainSingle(v => v.Arguments is OnFallbackArguments);
         called.Should().BeTrue();
     }
 
@@ -77,7 +78,7 @@ public class FallbackResilienceStrategyTests
 
         Create().Execute<int>(_ => throw new InvalidOperationException()).Should().Be(0);
 
-        _args.Should().ContainSingle(v => v is OnFallbackArguments);
+        _args.Should().ContainSingle(v => v.Arguments is OnFallbackArguments);
         called.Should().BeTrue();
     }
 
