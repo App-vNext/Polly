@@ -68,13 +68,13 @@ internal sealed class TelemetryResilienceStrategy : ResilienceStrategy
             outcome.Exception);
 
         var tags = new TagList
-            {
-                { ResilienceTelemetryTags.BuilderName, _builderName },
-                { ResilienceTelemetryTags.StrategyKey, _strategyKey },
-                { ResilienceTelemetryTags.ResultType, context.GetResultType() },
-                { ResilienceTelemetryTags.ExceptionName, outcome.Exception?.GetType().FullName },
-                { ResilienceTelemetryTags.ExecutionHealth, context.GetExecutionHealth() }
-            };
+        {
+            { ResilienceTelemetryTags.BuilderName, _builderName },
+            { ResilienceTelemetryTags.StrategyKey, _strategyKey },
+            { ResilienceTelemetryTags.ResultType, context.GetResultType() },
+            { ResilienceTelemetryTags.ExceptionName, outcome.Exception?.GetType().FullName },
+            { ResilienceTelemetryTags.ExecutionHealth, context.GetExecutionHealth() }
+        };
 
         EnrichmentUtil.Enrich(ref tags, _enrichers, context, outcome.AsOutcome(), resilienceArguments: null);
 
