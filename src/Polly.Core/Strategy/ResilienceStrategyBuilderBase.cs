@@ -41,6 +41,9 @@ public abstract class ResilienceStrategyBuilderBase
     /// </summary>
     public ResilienceProperties Properties { get; } = new();
 
+    [Required]
+    public ResilienceContextPool ResilienceContextPool { get; set; } = ResilienceContextPool.Shared;
+
     /// <summary>
     /// Gets or sets a <see cref="TimeProvider"/> that is used by strategies that work with time.
     /// </summary>
@@ -106,6 +109,8 @@ public abstract class ResilienceStrategyBuilderBase
         {
             return NullResilienceStrategy.Instance;
         }
+
+        strategies[0].Pool = ResilienceContextPool;
 
         if (strategies.Count == 1)
         {

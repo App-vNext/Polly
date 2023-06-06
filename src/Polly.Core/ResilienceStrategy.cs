@@ -11,6 +11,8 @@ namespace Polly;
 /// </remarks>
 public abstract partial class ResilienceStrategy
 {
+    internal ResilienceContextPool Pool { get; set; }
+
     /// <summary>
     /// Executes the specified callback.
     /// </summary>
