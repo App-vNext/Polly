@@ -15,44 +15,44 @@ public class ResilienceStrategyConversionExtensionsTests
 
     private static readonly ResiliencePropertyKey<string> Outgoing = new ResiliencePropertyKey<string>("outgoing-key");
 
-    private readonly TestResilienceStrategy strategy;
-    private readonly ResilienceStrategy<string> genericStrategy;
-    private bool synchronous;
-    private bool @void;
-    private Type? resultType;
+    private readonly TestResilienceStrategy _strategy;
+    private readonly ResilienceStrategy<string> _genericStrategy;
+    private bool _isSynchronous;
+    private bool _isVoid;
+    private Type? _resultType;
 
     public ResilienceStrategyConversionExtensionsTests()
     {
-        strategy = new TestResilienceStrategy();
-        strategy.Before = (context, ct) =>
+        _strategy = new TestResilienceStrategy();
+        _strategy.Before = (context, ct) =>
         {
-            context.IsVoid.Should().Be(@void);
-            context.IsSynchronous.Should().Be(synchronous);
+            context.IsVoid.Should().Be(_isVoid);
+            context.IsSynchronous.Should().Be(_isSynchronous);
             context.Properties.Set(Outgoing, "outgoing-value");
             context.Properties.GetValue(Incoming, string.Empty).Should().Be("incoming-value");
 
-            if (resultType != null)
+            if (_resultType != null)
             {
-                context.ResultType.Should().Be(resultType);
+                context.ResultType.Should().Be(_resultType);
             }
         };
 
-        genericStrategy = new ResilienceStrategyBuilder<string>()
-            .AddStrategy(strategy)
+        _genericStrategy = new ResilienceStrategyBuilder<string>()
+            .AddStrategy(_strategy)
             .Build();
     }
 
     [Fact]
     public void AsSyncPolicy_Ok()
     {
-        @void = true;
-        synchronous = true;
+        _isVoid = true;
+        _isSynchronous = true;
         var context = new Context
         {
             [Incoming.Key] = "incoming-value"
         };
 
-        strategy.AsSyncPolicy().Execute(c =>
+        _strategy.AsSyncPolicy().Execute(c =>
         {
             context[Executing.Key] = "executing-value";
         },
@@ -64,15 +64,15 @@ public class ResilienceStrategyConversionExtensionsTests
     [Fact]
     public void AsSyncPolicy_Generic_Ok()
     {
-        @void = false;
-        synchronous = true;
-        resultType = typeof(string);
+        _isVoid = false;
+        _isSynchronous = true;
+        _resultType = typeof(string);
         var context = new Context
         {
             [Incoming.Key] = "incoming-value"
         };
 
-        var result = genericStrategy.AsSyncPolicy().Execute(c => { context[Executing.Key] = "executing-value"; return "dummy"; }, context);
+        var result = _genericStrategy.AsSyncPolicy().Execute(c => { context[Executing.Key] = "executing-value"; return "dummy"; }, context);
         AssertContext(context);
         result.Should().Be("dummy");
     }
@@ -80,15 +80,15 @@ public class ResilienceStrategyConversionExtensionsTests
     [Fact]
     public void AsSyncPolicy_Result_Ok()
     {
-        @void = false;
-        synchronous = true;
-        resultType = typeof(string);
+        _isVoid = false;
+        _isSynchronous = true;
+        _resultType = typeof(string);
         var context = new Context
         {
             [Incoming.Key] = "incoming-value"
         };
 
-        var result = strategy.AsSyncPolicy().Execute(c => { context[Executing.Key] = "executing-value"; return "dummy"; }, context);
+        var result = _strategy.AsSyncPolicy().Execute(c => { context[Executing.Key] = "executing-value"; return "dummy"; }, context);
 
         AssertContext(context);
         result.Should().Be("dummy");
@@ -97,14 +97,14 @@ public class ResilienceStrategyConversionExtensionsTests
     [Fact]
     public async Task AsAsyncPolicy_Ok()
     {
-        @void = true;
-        synchronous = false;
+        _isVoid = true;
+        _isSynchronous = false;
         var context = new Context
         {
             [Incoming.Key] = "incoming-value"
         };
 
-        await strategy.AsAsyncPolicy().ExecuteAsync(c =>
+        await _strategy.AsAsyncPolicy().ExecuteAsync(c =>
         {
             context[Executing.Key] = "executing-value";
             return Task.CompletedTask;
@@ -117,15 +117,15 @@ public class ResilienceStrategyConversionExtensionsTests
     [Fact]
     public async Task AsAsyncPolicy_Generic_Ok()
     {
-        @void = false;
-        synchronous = false;
-        resultType = typeof(string);
+        _isVoid = false;
+        _isSynchronous = false;
+        _resultType = typeof(string);
         var context = new Context
         {
             [Incoming.Key] = "incoming-value"
         };
 
-        var result = await genericStrategy.AsAsyncPolicy().ExecuteAsync(c =>
+        var result = await _genericStrategy.AsAsyncPolicy().ExecuteAsync(c =>
         {
             context[Executing.Key] = "executing-value";
             return Task.FromResult("dummy");
@@ -138,15 +138,15 @@ public class ResilienceStrategyConversionExtensionsTests
     [Fact]
     public async Task AsAsyncPolicy_Result_Ok()
     {
-        @void = false;
-        synchronous = false;
-        resultType = typeof(string);
+        _isVoid = false;
+        _isSynchronous = false;
+        _resultType = typeof(string);
         var context = new Context
         {
             [Incoming.Key] = "incoming-value"
         };
 
-        var result = await strategy.AsAsyncPolicy().ExecuteAsync(c =>
+        var result = await _strategy.AsAsyncPolicy().ExecuteAsync(c =>
         {
             context[Executing.Key] = "executing-value";
             return Task.FromResult("dummy");

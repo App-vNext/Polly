@@ -9,7 +9,7 @@ namespace Polly;
 public static class ResilienceStrategyConversionExtensions
 {
     /// <summary>
-    /// Converts <see cref="ResilienceStrategy"/> to <see cref="IAsyncPolicy"/>.
+    /// Converts a <see cref="ResilienceStrategy"/> to an <see cref="IAsyncPolicy"/>.
     /// </summary>
     /// <param name="strategy">The strategy instance.</param>
     /// <returns>An instance of <see cref="IAsyncPolicy"/>.</returns>
@@ -18,7 +18,7 @@ public static class ResilienceStrategyConversionExtensions
         => new ResilienceStrategyAsyncPolicy(strategy ?? throw new ArgumentNullException(nameof(strategy)));
 
     /// <summary>
-    /// Converts <see cref="ResilienceStrategy{TResult}"/> to <see cref="IAsyncPolicy{TResult}"/>.
+    /// Converts a <see cref="ResilienceStrategy{TResult}"/> to an <see cref="IAsyncPolicy{TResult}"/>.
     /// </summary>
     /// <param name="strategy">The strategy instance.</param>
     /// <returns>An instance of <see cref="IAsyncPolicy{TResult}"/>.</returns>
@@ -27,7 +27,7 @@ public static class ResilienceStrategyConversionExtensions
         => new ResilienceStrategyAsyncPolicy<TResult>(strategy ?? throw new ArgumentNullException(nameof(strategy)));
 
     /// <summary>
-    /// Converts <see cref="ResilienceStrategy"/> to <see cref="ISyncPolicy"/>.
+    /// Converts a <see cref="ResilienceStrategy"/> to an <see cref="ISyncPolicy"/>.
     /// </summary>
     /// <param name="strategy">The strategy instance.</param>
     /// <returns>An instance of <see cref="ISyncPolicy"/>.</returns>
@@ -36,7 +36,7 @@ public static class ResilienceStrategyConversionExtensions
         => new ResilienceStrategySyncPolicy(strategy ?? throw new ArgumentNullException(nameof(strategy)));
 
     /// <summary>
-    /// Converts <see cref="ResilienceStrategy{TResult}"/> to <see cref="ISyncPolicy{TResult}"/>.
+    /// Converts a <see cref="ResilienceStrategy{TResult}"/> to an <see cref="ISyncPolicy{TResult}"/>.
     /// </summary>
     /// <param name="strategy">The strategy instance.</param>
     /// <returns>An instance of <see cref="ISyncPolicy{TResult}"/>.</returns>

@@ -2,7 +2,7 @@ namespace Polly.Utilities.Wrappers;
 
 internal static class ResilienceContextFactory
 {
-    public static readonly ResiliencePropertyKey<Context> ContextKey = new("Polly.V7.Context");
+    public static readonly ResiliencePropertyKey<Context> ContextKey = new("Polly.Legacy.Context");
 
     public static ResilienceContext Create(Context context, CancellationToken cancellationToken, bool continueOnCapturedContext)
     {
