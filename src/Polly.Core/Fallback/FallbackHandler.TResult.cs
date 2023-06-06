@@ -1,6 +1,4 @@
-using System;
 using System.ComponentModel.DataAnnotations;
-using Polly.Strategy;
 
 namespace Polly.Fallback;
 

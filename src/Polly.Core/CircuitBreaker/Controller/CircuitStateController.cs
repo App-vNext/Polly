@@ -1,5 +1,5 @@
 using System.Runtime.ExceptionServices;
-using Polly.Strategy;
+using Polly.Telemetry;
 
 namespace Polly.CircuitBreaker;
 

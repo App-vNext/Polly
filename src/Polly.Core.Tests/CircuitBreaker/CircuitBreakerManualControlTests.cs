@@ -1,4 +1,3 @@
-using System;
 using Polly.CircuitBreaker;
 
 namespace Polly.Core.Tests.CircuitBreaker;

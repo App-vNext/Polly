@@ -1,8 +1,6 @@
 using System.ComponentModel.DataAnnotations;
-using Polly.Strategy;
-using Xunit;
 
-namespace Polly.Core.Tests.Strategy;
+namespace Polly.Core.Tests;
 
 public class PredicateBuilderTests
 {

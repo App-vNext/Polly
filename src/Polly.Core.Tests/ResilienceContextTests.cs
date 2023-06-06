@@ -1,4 +1,4 @@
-using Polly.Strategy;
+using Polly.Telemetry;
 
 namespace Polly.Core.Tests;
 
@@ -42,10 +42,10 @@ public class ResilienceContextTests
     {
         var context = ResilienceContext.Get();
 
-        context.AddResilienceEvent(new ReportedResilienceEvent("Dummy"));
+        context.AddResilienceEvent(new ResilienceEvent("Dummy"));
 
         context.ResilienceEvents.Should().HaveCount(1);
-        context.ResilienceEvents.Should().Contain(new ReportedResilienceEvent("Dummy"));
+        context.ResilienceEvents.Should().Contain(new ResilienceEvent("Dummy"));
     }
 
     [Fact]
@@ -59,7 +59,7 @@ public class ResilienceContextTests
             context.Initialize<bool>(true);
             context.CancellationToken.Should().Be(cts.Token);
             context.Properties.Set(new ResiliencePropertyKey<int>("abc"), 10);
-            context.AddResilienceEvent(new ReportedResilienceEvent("dummy"));
+            context.AddResilienceEvent(new ResilienceEvent("dummy"));
             ResilienceContext.Return(context);
 
             AssertDefaults(context);

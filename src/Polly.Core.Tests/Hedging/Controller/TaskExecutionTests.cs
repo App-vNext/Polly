@@ -1,10 +1,6 @@
-using System;
-using System.Threading.Tasks;
-using Polly.Core.Tests.Helpers;
 using Polly.Hedging;
 using Polly.Hedging.Controller;
 using Polly.Hedging.Utils;
-using Polly.Strategy;
 using Polly.Utils;
 
 namespace Polly.Core.Tests.Hedging.Controller;

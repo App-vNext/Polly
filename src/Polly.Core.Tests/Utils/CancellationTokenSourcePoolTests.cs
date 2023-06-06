@@ -1,9 +1,5 @@
-using System;
-using System.Threading;
 using Moq;
-using Polly.Core.Tests.Helpers;
 using Polly.Utils;
-using Xunit;
 
 namespace Polly.Core.Tests.Utils;
 

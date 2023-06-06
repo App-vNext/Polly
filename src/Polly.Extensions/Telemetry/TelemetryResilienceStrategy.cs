@@ -3,7 +3,6 @@ using System.Diagnostics.Metrics;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Polly.Extensions.Utils;
-using Polly.Strategy;
 using Polly.Utils;
 
 namespace Polly.Extensions.Telemetry;

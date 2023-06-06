@@ -1,6 +1,4 @@
-using Polly.Telemetry;
-
-namespace Polly.Strategy;
+namespace Polly.Telemetry;
 
 /// <summary>
 /// Resilience telemetry is used by individual resilience strategies to report some important events.
@@ -33,7 +31,7 @@ public sealed class ResilienceStrategyTelemetry
         Guard.NotNull(eventName);
         Guard.NotNull(context);
 
-        context.AddResilienceEvent(new ReportedResilienceEvent(eventName));
+        context.AddResilienceEvent(new ResilienceEvent(eventName));
 
         if (DiagnosticSource is null || !DiagnosticSource.IsEnabled(eventName))
         {
@@ -55,7 +53,7 @@ public sealed class ResilienceStrategyTelemetry
     {
         Guard.NotNull(eventName);
 
-        args.Context.AddResilienceEvent(new ReportedResilienceEvent(eventName));
+        args.Context.AddResilienceEvent(new ResilienceEvent(eventName));
 
         if (DiagnosticSource is null || !DiagnosticSource.IsEnabled(eventName))
         {

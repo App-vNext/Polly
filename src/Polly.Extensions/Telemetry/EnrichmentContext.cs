@@ -1,6 +1,3 @@
-using System.Collections.Generic;
-using Polly.Strategy;
-
 namespace Polly.Extensions.Telemetry;
 
 /// <summary>

@@ -1,4 +1,3 @@
-using Polly.Strategy;
 using Polly.TestUtils;
 using Polly.Utilities.Wrappers;
 

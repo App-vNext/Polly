@@ -1,6 +1,6 @@
 using Polly.Retry;
 
-namespace Polly.Core.Tests.Strategy;
+namespace Polly.Core.Tests.Retry;
 
 public class OnRetryArgumentsTests
 {

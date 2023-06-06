@@ -1,8 +1,5 @@
-using System;
 using System.ComponentModel.DataAnnotations;
-using System.Threading.Tasks;
 using Polly.Fallback;
-using Polly.Strategy;
 
 namespace Polly.Core.Tests.Fallback;
 

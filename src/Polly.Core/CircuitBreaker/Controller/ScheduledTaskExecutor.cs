@@ -1,6 +1,3 @@
-using System.Threading;
-using System.Threading.Tasks;
-
 namespace Polly.CircuitBreaker;
 
 #pragma warning disable CA1031 // Do not catch general exception types

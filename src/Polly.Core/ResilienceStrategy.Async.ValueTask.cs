@@ -1,7 +1,4 @@
 using System.Runtime.ExceptionServices;
-using System.Threading;
-using Polly;
-using Polly.Strategy;
 
 namespace Polly;
 

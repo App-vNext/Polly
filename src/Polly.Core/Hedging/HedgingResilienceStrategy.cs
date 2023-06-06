@@ -1,9 +1,6 @@
-using System.Runtime.CompilerServices;
-using System.Threading;
 using Polly.Hedging;
 using Polly.Hedging.Utils;
-using Polly.Strategy;
-using Polly.Utils;
+using Polly.Telemetry;
 
 namespace Polly;
 

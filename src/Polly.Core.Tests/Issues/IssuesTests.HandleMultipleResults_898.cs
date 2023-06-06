@@ -1,5 +1,4 @@
 using Polly.Retry;
-using Polly.Strategy;
 
 namespace Polly.Core.Tests.Issues;
 

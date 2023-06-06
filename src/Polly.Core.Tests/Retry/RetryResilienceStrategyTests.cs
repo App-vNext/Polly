@@ -1,6 +1,6 @@
 using Moq;
 using Polly.Retry;
-using Polly.Strategy;
+using Polly.Telemetry;
 using Polly.Utils;
 
 namespace Polly.Core.Tests.Retry;

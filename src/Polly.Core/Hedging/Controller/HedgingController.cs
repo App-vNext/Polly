@@ -1,5 +1,4 @@
 using Polly.Hedging.Controller;
-using Polly.Utils;
 
 namespace Polly.Hedging.Utils;
 

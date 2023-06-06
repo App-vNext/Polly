@@ -1,4 +1,4 @@
-namespace Polly.Strategy;
+namespace Polly;
 
 /// <summary>
 /// Class that represents the results that can be used in predicates.

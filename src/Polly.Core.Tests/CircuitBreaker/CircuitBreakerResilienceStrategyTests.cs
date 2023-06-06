@@ -1,6 +1,7 @@
 using Moq;
 using Polly.CircuitBreaker;
-using Polly.Strategy;
+using Polly.Telemetry;
+using Polly.Utils;
 
 namespace Polly.Core.Tests.CircuitBreaker;
 

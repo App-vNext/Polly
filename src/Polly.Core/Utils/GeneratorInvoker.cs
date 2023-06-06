@@ -1,6 +1,4 @@
-using System.Threading.Tasks;
-
-namespace Polly.Strategy;
+namespace Polly.Utils;
 
 internal abstract class GeneratorInvoker<TArgs, TValue>
 {

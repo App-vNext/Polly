@@ -1,7 +1,6 @@
-using System;
 using Polly.Telemetry;
 
-namespace Polly.Strategy;
+namespace Polly;
 
 /// <summary>
 /// The context used for building an individual resilience strategy.

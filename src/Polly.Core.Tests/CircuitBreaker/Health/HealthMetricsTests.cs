@@ -1,4 +1,3 @@
-using System;
 using Polly.CircuitBreaker.Health;
 using Polly.Utils;
 

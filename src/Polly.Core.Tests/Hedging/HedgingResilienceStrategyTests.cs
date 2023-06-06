@@ -1,7 +1,6 @@
-using System;
 using Polly.Hedging;
-using Polly.Strategy;
 using Polly.Telemetry;
+using Polly.Utils;
 using Xunit.Abstractions;
 
 namespace Polly.Core.Tests.Hedging;

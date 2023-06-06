@@ -1,9 +1,5 @@
-using System;
-using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
 using BenchmarkDotNet.Attributes;
 using Microsoft.Extensions.Logging.Abstractions;
-using Polly.Strategy;
 
 namespace Polly.Core.Benchmarks;
 
