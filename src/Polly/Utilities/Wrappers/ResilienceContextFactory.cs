@@ -1,42 +1,26 @@
+using Polly.Utils;
+
 namespace Polly.Utilities.Wrappers;
 
 internal static class ResilienceContextFactory
 {
-    public static readonly ResiliencePropertyKey<Context> ContextKey = new("Polly.Legacy.Context");
-
-    public static ResilienceContext Create(Context context, CancellationToken cancellationToken, bool continueOnCapturedContext)
+    public static ResilienceContext Create(
+        Context context,
+        CancellationToken cancellationToken,
+        bool continueOnCapturedContext,
+        out IDictionary<string, object> oldProperties)
     {
         var resilienceContext = ResilienceContext.Get();
         resilienceContext.CancellationToken = cancellationToken;
         resilienceContext.ContinueOnCapturedContext = continueOnCapturedContext;
-
-        foreach (var pair in context)
-        {
-            var props = (IDictionary<string, object>)resilienceContext.Properties;
-            props.Add(pair.Key, pair.Value);
-        }
-
-        resilienceContext.Properties.Set(ContextKey, context);
+        resilienceContext.Properties.SetProperties(context, out oldProperties);
 
         return resilienceContext;
     }
 
-    public static void Restore(ResilienceContext context)
+    public static void Cleanup(ResilienceContext resilienceContext, IDictionary<string, object> oldProperties)
     {
-        var originalContext = context.GetContext();
-
-        foreach (var pair in context.Properties)
-        {
-            if (pair.Key == ContextKey.Key)
-            {
-                continue;
-            }
-
-            originalContext[pair.Key] = pair.Value;
-        }
-
-        ResilienceContext.Return(context);
+        resilienceContext.Properties.SetProperties(oldProperties, out _);
+        ResilienceContext.Return(resilienceContext);
     }
-
-    public static Context GetContext(this ResilienceContext resilienceContext) => resilienceContext.Properties.GetValue(ContextKey, null!);
 }

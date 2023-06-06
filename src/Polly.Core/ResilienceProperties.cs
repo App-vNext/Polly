@@ -9,7 +9,7 @@ namespace Polly;
 /// </summary>
 public sealed class ResilienceProperties : IDictionary<string, object?>
 {
-    private Dictionary<string, object?> Options { get; } = new();
+    internal IDictionary<string, object?> Options { get; set; } = new Dictionary<string, object?>();
 
     /// <summary>
     /// Gets the value of a given property.
@@ -87,26 +87,26 @@ public sealed class ResilienceProperties : IDictionary<string, object?>
     int ICollection<KeyValuePair<string, object?>>.Count => Options.Count;
 
     /// <inheritdoc/>
-    bool ICollection<KeyValuePair<string, object?>>.IsReadOnly => ((IDictionary<string, object?>)Options).IsReadOnly;
+    bool ICollection<KeyValuePair<string, object?>>.IsReadOnly => Options.IsReadOnly;
 
     /// <inheritdoc/>
     void IDictionary<string, object?>.Add(string key, object? value) => Options.Add(key, value);
 
     /// <inheritdoc/>
-    void ICollection<KeyValuePair<string, object?>>.Add(KeyValuePair<string, object?> item) => ((IDictionary<string, object?>)Options).Add(item);
+    void ICollection<KeyValuePair<string, object?>>.Add(KeyValuePair<string, object?> item) => Options.Add(item);
 
     /// <inheritdoc/>
     void ICollection<KeyValuePair<string, object?>>.Clear() => Options.Clear();
 
     /// <inheritdoc/>
-    bool ICollection<KeyValuePair<string, object?>>.Contains(KeyValuePair<string, object?> item) => ((IDictionary<string, object?>)Options).Contains(item);
+    bool ICollection<KeyValuePair<string, object?>>.Contains(KeyValuePair<string, object?> item) => Options.Contains(item);
 
     /// <inheritdoc/>
     bool IDictionary<string, object?>.ContainsKey(string key) => Options.ContainsKey(key);
 
     /// <inheritdoc/>
     void ICollection<KeyValuePair<string, object?>>.CopyTo(KeyValuePair<string, object?>[] array, int arrayIndex) =>
-        ((IDictionary<string, object?>)Options).CopyTo(array, arrayIndex);
+        Options.CopyTo(array, arrayIndex);
 
     /// <inheritdoc/>
     IEnumerator<KeyValuePair<string, object?>> IEnumerable<KeyValuePair<string, object?>>.GetEnumerator() => Options.GetEnumerator();
@@ -118,7 +118,7 @@ public sealed class ResilienceProperties : IDictionary<string, object?>
     bool IDictionary<string, object?>.Remove(string key) => Options.Remove(key);
 
     /// <inheritdoc/>
-    bool ICollection<KeyValuePair<string, object?>>.Remove(KeyValuePair<string, object?> item) => ((IDictionary<string, object?>)Options).Remove(item);
+    bool ICollection<KeyValuePair<string, object?>>.Remove(KeyValuePair<string, object?> item) => Options.Remove(item);
 
     /// <inheritdoc/>
     bool IDictionary<string, object?>.TryGetValue(string key, out object? value) => Options.TryGetValue(key, out value);
