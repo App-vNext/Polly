@@ -75,6 +75,31 @@ public class TelemetryResilienceStrategyTests : IDisposable
     }
 
     [Fact]
+    public void Execute_WithException_EnsureEnrichmentContextWithCorrectOutcome()
+    {
+        var strategy = CreateStrategy();
+
+        _enricher = c =>
+        {
+            c.Outcome!.Value.Exception.Should().BeOfType<InvalidOperationException>();
+        };
+        strategy.Invoking(s => s.Execute(_ => throw new InvalidOperationException("Dummy message."))).Should().Throw<InvalidOperationException>();
+    }
+
+    [Fact]
+    public void Execute_WithResult_EnsureEnrichmentContextWithCorrectOutcome()
+    {
+        var strategy = CreateStrategy();
+
+        _enricher = c =>
+        {
+            c.Outcome!.Value.Result.Should().Be("dummy");
+        };
+
+        strategy.Execute(_ => "dummy");
+    }
+
+    [Fact]
     public void Execute_WithException_EnsureMetered()
     {
         var strategy = CreateStrategy();

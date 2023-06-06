@@ -9,9 +9,9 @@ Job=MediumRun  Toolchain=InProcessEmitToolchain  IterationCount=15
 LaunchCount=2  WarmupCount=10  
 
 ```
-|                      Method |     Mean |     Error |    StdDev | Ratio | RatioSD |   Gen0 |   Gen1 | Allocated | Alloc Ratio |
-|---------------------------- |---------:|----------:|----------:|------:|--------:|-------:|-------:|----------:|------------:|
-|             Hedging_Primary | 1.049 μs | 0.0074 μs | 0.0108 μs |  1.00 |    0.00 |      - |      - |      40 B |        1.00 |
-|           Hedging_Secondary | 1.788 μs | 0.0093 μs | 0.0139 μs |  1.71 |    0.02 | 0.0076 |      - |     200 B |        5.00 |
-|   Hedging_Primary_AsyncWork | 5.306 μs | 0.1484 μs | 0.2222 μs |  5.07 |    0.24 | 0.0534 | 0.0229 |    1444 B |       36.10 |
-| Hedging_Secondary_AsyncWork | 7.518 μs | 0.0869 μs | 0.1246 μs |  7.17 |    0.12 | 0.0610 | 0.0534 |    1684 B |       42.10 |
+|                      Method |       Mean |     Error |    StdDev | Ratio | RatioSD |   Gen0 |   Gen1 | Allocated | Alloc Ratio |
+|---------------------------- |-----------:|----------:|----------:|------:|--------:|-------:|-------:|----------:|------------:|
+|             Hedging_Primary |   941.7 ns |   5.45 ns |   7.81 ns |  1.00 |    0.00 |      - |      - |      40 B |        1.00 |
+|           Hedging_Secondary | 1,679.7 ns |   7.23 ns |  10.83 ns |  1.78 |    0.02 | 0.0076 |      - |     200 B |        5.00 |
+|   Hedging_Primary_AsyncWork | 4,867.5 ns |  71.40 ns | 102.40 ns |  5.17 |    0.12 | 0.0534 | 0.0229 |    1407 B |       35.17 |
+| Hedging_Secondary_AsyncWork | 7,093.2 ns | 234.32 ns | 343.47 ns |  7.51 |    0.37 | 0.0687 | 0.0610 |    1737 B |       43.42 |

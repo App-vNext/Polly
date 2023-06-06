@@ -94,8 +94,10 @@ public class RateLimiterResilienceStrategyTests
 
     private RateLimiterResilienceStrategy Create()
     {
-        var builder = new ResilienceStrategyBuilder();
-        builder.Properties.Set(new ResiliencePropertyKey<DiagnosticSource>("DiagnosticSource"), _diagnosticSource.Object);
+        var builder = new ResilienceStrategyBuilder
+        {
+            DiagnosticSource = _diagnosticSource.Object
+        };
 
         return (RateLimiterResilienceStrategy)builder
             .AddRateLimiter(new RateLimiterStrategyOptions

@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Moq;
 using Polly.CircuitBreaker;
 using Polly.Strategy;
+using Polly.Telemetry;
 
 namespace Polly.Core.Tests.CircuitBreaker.Controller;
 public class CircuitStateControllerTests
@@ -10,7 +11,7 @@ public class CircuitStateControllerTests
     private readonly FakeTimeProvider _timeProvider = new();
     private readonly CircuitBreakerStrategyOptions<object> _options = new SimpleCircuitBreakerStrategyOptions();
     private readonly Mock<CircuitBehavior> _circuitBehavior = new(MockBehavior.Strict);
-    private readonly Action<object> _onTelemetry = _ => { };
+    private readonly Action<TelemetryEventArguments> _onTelemetry = _ => { };
     private DateTimeOffset _utcNow = DateTimeOffset.UtcNow;
 
     public CircuitStateControllerTests() => _timeProvider.Setup(v => v.UtcNow).Returns(() => _utcNow);

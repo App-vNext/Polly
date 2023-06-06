@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using Polly.Strategy;
 
@@ -54,7 +55,20 @@ public abstract class ResilienceStrategyBuilderBase
     /// <summary>
     /// Gets or sets the callback that is invoked just before the final resilience strategy is being created.
     /// </summary>
-    internal Action<IList<ResilienceStrategy>>? OnCreatingStrategy { get; set; }
+    /// <remarks>
+    /// This property is used by the telemetry infrastructure and should not be used directly by user code.
+    /// </remarks>
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public Action<IList<ResilienceStrategy>>? OnCreatingStrategy { get; set; }
+
+    /// <summary>
+    /// Gets or sets the <see cref="DiagnosticSource"/> that is used by Polly to report resilience events.
+    /// </summary>
+    /// <remarks>
+    /// This property is used by the telemetry infrastructure and should not be used directly by user code.
+    /// </remarks>
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public DiagnosticSource? DiagnosticSource { get; set; }
 
     internal abstract bool IsGenericBuilder { get; }
 
@@ -111,7 +125,8 @@ public abstract class ResilienceStrategyBuilderBase
             strategyName: entry.Properties.StrategyName,
             strategyType: entry.Properties.StrategyType,
             timeProvider: TimeProvider,
-            IsGenericBuilder);
+            isGenericBuilder: IsGenericBuilder,
+            diagnosticSource: DiagnosticSource);
 
         return entry.Factory(context);
     }

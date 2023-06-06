@@ -1,7 +1,7 @@
 using Microsoft.Extensions.Logging;
 using Polly.Extensions.Telemetry;
+using Polly.Extensions.Utils;
 using Polly.Strategy;
-using Polly.Telemetry;
 using Polly.Utils;
 
 namespace Polly;
@@ -52,14 +52,12 @@ public static class TelemetryResilienceStrategyBuilderExtensions
 
         ValidationHelper.ValidateObject(options, "The resilience telemetry options are invalid.");
 
-        builder.Properties.Set(
-            TelemetryUtil.DiagnosticSourceKey,
-            new ResilienceTelemetryDiagnosticSource(options));
+        builder.DiagnosticSource = new ResilienceTelemetryDiagnosticSource(options);
 
         builder.OnCreatingStrategy = strategies =>
         {
             var telemetryStrategy = new TelemetryResilienceStrategy(
-                builder.TimeProvider,
+                TimeProvider.System,
                 builder.BuilderName,
                 builder.Properties.GetValue(TelemetryUtil.StrategyKey, null!),
                 options.LoggerFactory,

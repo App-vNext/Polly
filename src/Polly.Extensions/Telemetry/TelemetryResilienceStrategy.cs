@@ -2,8 +2,8 @@ using System;
 using System.Diagnostics.Metrics;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using Polly.Extensions.Utils;
 using Polly.Strategy;
-using Polly.Telemetry;
 using Polly.Utils;
 
 namespace Polly.Extensions.Telemetry;
@@ -46,7 +46,7 @@ internal sealed class TelemetryResilienceStrategy : ResilienceStrategy
 
     public Histogram<double> ExecutionDuration { get; }
 
-    protected internal override async ValueTask<Outcome<TResult>> ExecuteCoreAsync<TResult, TState>(
+    protected override async ValueTask<Outcome<TResult>> ExecuteCoreAsync<TResult, TState>(
         Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,
         ResilienceContext context,
         TState state)
@@ -68,20 +68,25 @@ internal sealed class TelemetryResilienceStrategy : ResilienceStrategy
             outcome.Exception);
 
         var tags = new TagList
-            {
-                { ResilienceTelemetryTags.BuilderName, _builderName },
-                { ResilienceTelemetryTags.StrategyKey, _strategyKey },
-                { ResilienceTelemetryTags.ResultType, context.GetResultType() },
-                { ResilienceTelemetryTags.ExceptionName, outcome.Exception?.GetType().FullName },
-                { ResilienceTelemetryTags.ExecutionHealth, context.GetExecutionHealth() }
-            };
+        {
+            { ResilienceTelemetryTags.BuilderName, _builderName },
+            { ResilienceTelemetryTags.StrategyKey, _strategyKey },
+            { ResilienceTelemetryTags.ResultType, context.GetResultType() },
+            { ResilienceTelemetryTags.ExceptionName, outcome.Exception?.GetType().FullName },
+            { ResilienceTelemetryTags.ExecutionHealth, context.GetExecutionHealth() }
+        };
 
-        EnrichmentUtil.Enrich(ref tags, _enrichers, context, outcome.AsOutcome(), resilienceArguments: null);
+        EnrichmentUtil.Enrich(ref tags, _enrichers, context, CreateOutcome(outcome), resilienceArguments: null);
 
         ExecutionDuration.Record(duration.TotalMilliseconds, tags);
 
         return outcome;
     }
+
+    private static Outcome<object> CreateOutcome<TResult>(Outcome<TResult> outcome) =>
+        outcome.HasResult ?
+            new Outcome<object>(outcome.Result) :
+            new Outcome<object>(outcome.Exception!);
 
     private static object? ExpandOutcome<TResult>(Outcome<TResult> outcome)
     {
