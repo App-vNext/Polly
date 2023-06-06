@@ -1,6 +1,8 @@
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using Polly.Registry;
+using Polly.Retry;
+using Polly.Strategy;
 using Polly.Telemetry;
 
 namespace Polly.Core.Tests.Registry;
@@ -354,6 +356,78 @@ public class ResilienceStrategyRegistryTests
 
         registry.TryGet<string>(key, out var strategy).Should().BeTrue();
         strategy.Should().BeSameAs(expectedStrategy);
+    }
+
+    [Fact]
+    public void EnableReloads_Ok()
+    {
+        // arrange
+        var retryCount = 2;
+        var registry = new ResilienceStrategyRegistry<string>();
+        using var changeSource = new CancellationTokenSource();
+
+        registry.TryAddBuilder("dummy", (builder, context) =>
+        {
+            // this call enables dynamic reloads for the dummy strategy
+            context.EnableReloads(() => changeSource.Token);
+
+            builder.AddRetry(new RetryStrategyOptions
+            {
+                ShouldRetry = _ => PredicateResult.True,
+                RetryCount = retryCount,
+                BaseDelay = TimeSpan.FromMilliseconds(2),
+            });
+        });
+
+        // act
+        var strategy = registry.Get("dummy");
+
+        // assert
+        var tries = 0;
+        strategy.Execute(() => tries++);
+        tries.Should().Be(retryCount + 1);
+
+        tries = 0;
+        retryCount = 5;
+        changeSource.Cancel();
+        strategy.Execute(() => tries++);
+        tries.Should().Be(retryCount + 1);
+    }
+
+    [Fact]
+    public void EnableReloads_Generic_Ok()
+    {
+        // arrange
+        var retryCount = 2;
+        var registry = new ResilienceStrategyRegistry<string>();
+        using var changeSource = new CancellationTokenSource();
+
+        registry.TryAddBuilder<string>("dummy", (builder, context) =>
+        {
+            // this call enables dynamic reloads for the dummy strategy
+            context.EnableReloads(() => changeSource.Token);
+
+            builder.AddRetry(new RetryStrategyOptions<string>
+            {
+                ShouldRetry = _ => PredicateResult.True,
+                RetryCount = retryCount,
+                BaseDelay = TimeSpan.FromMilliseconds(2),
+            });
+        });
+
+        // act
+        var strategy = registry.Get<string>("dummy");
+
+        // assert
+        var tries = 0;
+        strategy.Execute(() => { tries++; return "dummy"; });
+        tries.Should().Be(retryCount + 1);
+
+        tries = 0;
+        retryCount = 5;
+        changeSource.Cancel();
+        strategy.Execute(() => { tries++; return "dummy"; });
+        tries.Should().Be(retryCount + 1);
     }
 
     private ResilienceStrategyRegistry<StrategyId> CreateRegistry() => new(_options);
