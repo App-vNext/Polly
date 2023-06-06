@@ -90,7 +90,7 @@ jobs:
         name: packages-windows
 
     - name: Setup .NET SDK
-      uses: actions/setup-dotnet@607fce577a46308457984d59e4954e075820f10a # v3.0.3
+      uses: actions/setup-dotnet@3447fd6a9f9e57506b15f895c5b76d3b197dc7c2 # v3.2.0
 
     - name: Validate NuGet packages
       shell: pwsh
@@ -108,9 +108,38 @@ jobs:
           Write-Output "::error::$invalidPackages NuGet package(s) failed validation."
         }
 
-  publish-nuget:
+  publish-github:
     needs: validate-packages
+    permissions:
+      packages: write
     runs-on: ubuntu-latest
+    if: |
+      github.event.repository.fork == false &&
+      (github.ref == format('refs/heads/{0}', github.event.repository.default_branch) ||
+       startsWith(github.ref, 'refs/tags/v'))
+    steps:
+
+    - name: Download packages
+      uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
+      with:
+        name: packages-windows
+
+    - name: Setup .NET SDK
+      uses: actions/setup-dotnet@3447fd6a9f9e57506b15f895c5b76d3b197dc7c2 # v3.2.0
+
+    - name: Publish NuGet packages to GitHub Packages
+      run: dotnet nuget push "*.nupkg" --api-key ${{ secrets.GITHUB_TOKEN }} --skip-duplicate --no-symbols --source https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json
+
+  # TODO Add Authenticode signing step before publish-nuget.
+  # See https://github.com/dotnet/sign/blob/main/docs/gh-build-and-sign.yml.
+
+  publish-nuget:
+    needs: publish-github
+    runs-on: ubuntu-latest
+    # TODO Optionally use an environment to protect access to the token
+    #environment:
+    #  name: NuGet
+    #  url: https://www.nuget.org/packages/Polly
     if: |
       github.event.repository.fork == false &&
       startsWith(github.ref, 'refs/tags/')
@@ -122,7 +151,7 @@ jobs:
         name: packages-windows
 
     - name: Setup .NET SDK
-      uses: actions/setup-dotnet@607fce577a46308457984d59e4954e075820f10a # v3.0.3
+      uses: actions/setup-dotnet@3447fd6a9f9e57506b15f895c5b76d3b197dc7c2 # v3.2.0
 
     - name: Push NuGet packages to NuGet.org
       run: dotnet nuget push "*.nupkg" --api-key ${{ secrets.NUGET_TOKEN }} --skip-duplicate --source https://api.nuget.org/v3/index.json
