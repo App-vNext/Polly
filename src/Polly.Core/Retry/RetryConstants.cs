@@ -6,7 +6,7 @@ internal static class RetryConstants
 
     public const string OnRetryEvent = "OnRetry";
 
-    public const RetryBackoffType DefaultBackoffType = RetryBackoffType.ExponentialWithJitter;
+    public const RetryBackoffType DefaultBackoffType = RetryBackoffType.Constant;
 
     public const int DefaultRetryCount = 3;
 
