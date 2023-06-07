@@ -1,4 +1,3 @@
-using System.Linq;
 using Polly.Contrib.WaitAndRetry;
 using Polly.Retry;
 using Polly.Utils;

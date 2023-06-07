@@ -1,6 +1,5 @@
 using Polly.Hedging;
 using Polly.Hedging.Utils;
-using Polly.Strategy;
 
 namespace Polly.Core.Tests.Hedging.Controller;
 

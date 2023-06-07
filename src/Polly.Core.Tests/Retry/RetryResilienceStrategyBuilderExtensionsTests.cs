@@ -1,6 +1,5 @@
 using System.ComponentModel.DataAnnotations;
 using Polly.Retry;
-using Polly.Strategy;
 
 namespace Polly.Core.Tests.Retry;
 
@@ -29,7 +28,7 @@ public class RetryResilienceStrategyBuilderExtensionsTests
         builder =>
         {
             builder.AddRetry(retry => retry.HandleResult(10));
-            AssertStrategy(builder, RetryBackoffType.ExponentialWithJitter, 3, TimeSpan.FromSeconds(2));
+            AssertStrategy(builder, RetryBackoffType.Constant, 3, TimeSpan.FromSeconds(2));
         },
         builder =>
         {
@@ -45,7 +44,7 @@ public class RetryResilienceStrategyBuilderExtensionsTests
         {
             builder.AddRetry(retry => retry.HandleResult(10), attempt => TimeSpan.FromMilliseconds(attempt));
 
-            AssertStrategy(builder, RetryBackoffType.ExponentialWithJitter, 3, TimeSpan.FromSeconds(2), strategy =>
+            AssertStrategy(builder, RetryBackoffType.Constant, 3, TimeSpan.FromSeconds(2), strategy =>
             {
                 var args = new RetryDelayArguments(8, TimeSpan.Zero);
                 var context = ResilienceContext.Get().Initialize<int>(true);

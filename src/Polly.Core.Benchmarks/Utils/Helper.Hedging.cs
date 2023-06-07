@@ -1,5 +1,4 @@
 using Polly.Hedging;
-using Polly.Strategy;
 
 namespace Polly.Core.Benchmarks.Utils;
 

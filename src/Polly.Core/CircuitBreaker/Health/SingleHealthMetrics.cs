@@ -1,5 +1,3 @@
-using Polly;
-
 namespace Polly.CircuitBreaker.Health;
 
 /// <inheritdoc/>

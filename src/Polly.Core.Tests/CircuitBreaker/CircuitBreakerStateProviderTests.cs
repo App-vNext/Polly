@@ -1,6 +1,4 @@
-using System;
 using Polly.CircuitBreaker;
-using Polly.Strategy;
 
 namespace Polly.Core.Tests.CircuitBreaker;
 

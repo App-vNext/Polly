@@ -1,5 +1,3 @@
-using System;
-using System.Threading.Tasks;
 using Polly.Utils;
 
 namespace Polly.Core.Tests.Hedging;

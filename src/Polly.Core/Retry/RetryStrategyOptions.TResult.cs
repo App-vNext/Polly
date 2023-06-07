@@ -1,5 +1,4 @@
 using System.ComponentModel.DataAnnotations;
-using Polly.Strategy;
 
 namespace Polly.Retry;
 
@@ -28,7 +27,7 @@ public class RetryStrategyOptions<TResult> : ResilienceStrategyOptions
     /// Gets or sets the type of the back-off.
     /// </summary>
     /// <remarks>
-    /// Defaults to <see cref="RetryBackoffType.ExponentialWithJitter"/>.
+    /// Defaults to <see cref="RetryBackoffType.Constant"/>.
     /// </remarks>
     public RetryBackoffType BackoffType { get; set; } = RetryConstants.DefaultBackoffType;
 

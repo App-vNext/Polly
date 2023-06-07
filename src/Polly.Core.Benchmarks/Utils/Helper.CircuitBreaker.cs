@@ -1,7 +1,3 @@
-using System;
-using Polly.CircuitBreaker;
-using Polly.Strategy;
-
 namespace Polly.Core.Benchmarks.Utils;
 
 internal static partial class Helper

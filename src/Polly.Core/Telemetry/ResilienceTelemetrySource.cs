@@ -14,8 +14,8 @@ namespace Polly.Telemetry;
 /// </remarks>
 [EditorBrowsable(EditorBrowsableState.Never)]
 public sealed record class ResilienceTelemetrySource(
-    string BuilderName,
+    string? BuilderName,
     ResilienceProperties BuilderProperties,
-    string StrategyName,
+    string? StrategyName,
     string StrategyType);
 

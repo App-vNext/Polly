@@ -1,5 +1,5 @@
 using Moq;
-using Polly.Strategy;
+using Polly.Telemetry;
 using Polly.Timeout;
 
 namespace Polly.Core.Tests.Timeout;

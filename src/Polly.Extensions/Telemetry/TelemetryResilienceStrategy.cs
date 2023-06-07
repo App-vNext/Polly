@@ -3,7 +3,6 @@ using System.Diagnostics.Metrics;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Polly.Extensions.Utils;
-using Polly.Strategy;
 using Polly.Utils;
 
 namespace Polly.Extensions.Telemetry;
@@ -11,7 +10,7 @@ namespace Polly.Extensions.Telemetry;
 internal sealed class TelemetryResilienceStrategy : ResilienceStrategy
 {
     private readonly TimeProvider _timeProvider;
-    private readonly string _builderName;
+    private readonly string? _builderName;
     private readonly string? _strategyKey;
     private readonly List<Action<EnrichmentContext>> _enrichers;
     private readonly ILogger _logger;
@@ -28,7 +27,7 @@ internal sealed class TelemetryResilienceStrategy : ResilienceStrategy
 
     public TelemetryResilienceStrategy(
         TimeProvider timeProvider,
-        string builderName,
+        string? builderName,
         string? strategyKey,
         ILoggerFactory loggerFactory,
         List<Action<EnrichmentContext>> enrichers)

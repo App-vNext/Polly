@@ -1,5 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
-using Polly.Strategy;
+using Polly.Telemetry;
 
 namespace Polly;
 
@@ -17,7 +17,7 @@ public sealed class ResilienceContext
 
     private static readonly ObjectPool<ResilienceContext> Pool = new(static () => new ResilienceContext(), static c => c.Reset());
 
-    private readonly List<ReportedResilienceEvent> _resilienceEvents = new();
+    private readonly List<ResilienceEvent> _resilienceEvents = new();
 
     private ResilienceContext()
     {
@@ -64,7 +64,7 @@ public sealed class ResilienceContext
     /// <remarks>
     /// If the number of resilience events is greater than zero it's an indication that the execution was unhealthy.
     /// </remarks>
-    public IReadOnlyCollection<ReportedResilienceEvent> ResilienceEvents => _resilienceEvents;
+    public IReadOnlyCollection<ResilienceEvent> ResilienceEvents => _resilienceEvents;
 
     /// <summary>
     /// Gets a <see cref="ResilienceContext"/> instance from the pool.
@@ -114,7 +114,7 @@ public sealed class ResilienceContext
         return this;
     }
 
-    internal void AddResilienceEvent(ReportedResilienceEvent @event)
+    internal void AddResilienceEvent(ResilienceEvent @event)
     {
         _resilienceEvents.Add(@event);
     }

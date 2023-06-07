@@ -1,7 +1,6 @@
 using System.Diagnostics.Metrics;
 using Microsoft.Extensions.Logging;
 using Moq;
-using Polly.Strategy;
 using Polly.Telemetry;
 
 namespace Polly.TestUtils;

@@ -2,7 +2,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Polly.CircuitBreaker;
 using Polly.Extensions.DependencyInjection;
 using Polly.Registry;
-using Polly.Strategy;
 
 namespace Polly.Core.Tests.Issues;
 

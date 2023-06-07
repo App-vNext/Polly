@@ -1,6 +1,5 @@
 #pragma warning disable S4225 // Extension methods should not extend "object"
 
-using System;
 using System.Threading.RateLimiting;
 
 namespace Polly.Core.Benchmarks.Utils;

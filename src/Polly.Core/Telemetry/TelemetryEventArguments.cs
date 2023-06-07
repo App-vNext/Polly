@@ -1,5 +1,4 @@
 using System.ComponentModel;
-using Polly.Strategy;
 
 namespace Polly.Telemetry;
 

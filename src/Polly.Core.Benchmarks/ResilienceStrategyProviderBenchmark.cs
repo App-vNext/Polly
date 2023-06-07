@@ -1,6 +1,5 @@
 using BenchmarkDotNet.Attributes;
 using Microsoft.Extensions.DependencyInjection;
-using Polly.Core.Benchmarks;
 
 namespace Polly.Core.Benchmarks;
 

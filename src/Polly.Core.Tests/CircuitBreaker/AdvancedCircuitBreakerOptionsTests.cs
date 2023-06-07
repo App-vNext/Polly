@@ -1,8 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using Polly.CircuitBreaker;
-using Polly.Strategy;
 using Polly.Utils;
-using Xunit;
 
 namespace Polly.Core.Tests.CircuitBreaker;
 
@@ -21,7 +19,7 @@ public class AdvancedCircuitBreakerOptionsTests
         options.OnHalfOpened.Should().BeNull();
         options.ShouldHandle.Should().BeNull();
         options.StrategyType.Should().Be("CircuitBreaker");
-        options.StrategyName.Should().BeEmpty();
+        options.StrategyName.Should().BeNull();
 
         // now set to min values
         options.FailureThreshold = 0.001;
@@ -47,7 +45,7 @@ public class AdvancedCircuitBreakerOptionsTests
         options.OnHalfOpened.Should().BeNull();
         options.ShouldHandle.Should().BeNull();
         options.StrategyType.Should().Be("CircuitBreaker");
-        options.StrategyName.Should().BeEmpty();
+        options.StrategyName.Should().BeNull();
 
         // now set to min values
         options.FailureThreshold = 0.001;

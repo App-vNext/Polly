@@ -1,11 +1,8 @@
-using System;
 using System.Globalization;
-using System.Threading.Tasks;
-using Polly.Core.Tests.Helpers;
 using Polly.Hedging;
 using Polly.Hedging.Controller;
 using Polly.Hedging.Utils;
-using Polly.Strategy;
+using Polly.Telemetry;
 using Polly.Utils;
 
 namespace Polly.Core.Tests.Hedging.Controller;
@@ -460,7 +457,7 @@ public class HedgingExecutionContextTests : IDisposable
                 return null;
             }
 
-            args.Context.AddResilienceEvent(new ReportedResilienceEvent("dummy-event"));
+            args.Context.AddResilienceEvent(new ResilienceEvent("dummy-event"));
 
             return async () =>
             {

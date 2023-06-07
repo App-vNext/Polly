@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using Moq;
 using Polly.Telemetry;
 

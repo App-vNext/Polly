@@ -1,5 +1,3 @@
-using System.Threading;
-
 namespace Polly.Utils;
 
 #pragma warning disable S3872 // Parameter names should not duplicate the names of their methods
