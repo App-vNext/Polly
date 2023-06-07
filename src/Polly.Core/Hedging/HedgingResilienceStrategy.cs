@@ -1,8 +1,7 @@
-using Polly.Hedging;
 using Polly.Hedging.Utils;
 using Polly.Telemetry;
 
-namespace Polly;
+namespace Polly.Hedging;
 
 internal sealed class HedgingResilienceStrategy : ResilienceStrategy
 {
