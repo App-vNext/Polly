@@ -1,7 +1,8 @@
 using System;
 using System.Threading.Tasks;
+using Polly.Telemetry;
 
-namespace Polly.Strategy;
+namespace Polly.Utils;
 
 internal sealed class ReloadableResilienceStrategy : ResilienceStrategy
 {

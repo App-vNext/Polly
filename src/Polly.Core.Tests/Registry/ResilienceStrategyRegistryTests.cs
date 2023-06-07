@@ -2,7 +2,6 @@ using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using Polly.Registry;
 using Polly.Retry;
-using Polly.Strategy;
 using Polly.Telemetry;
 
 namespace Polly.Core.Tests.Registry;
