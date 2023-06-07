@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using Polly.Strategy;
 using Polly.Telemetry;
 
-namespace Polly.Core.Tests.Strategy;
+namespace Polly.Core.Tests.Utils;
 
 public class ReloadableResilienceStrategyTests : IDisposable
 {
