@@ -1,5 +1,3 @@
-using Polly.Strategy;
-
 namespace Polly.Fallback;
 
 internal sealed partial class FallbackHandler

@@ -1,4 +1,4 @@
-namespace Polly.Strategy;
+namespace Polly;
 
 /// <summary>
 /// The options associated with the <see cref="ResilienceStrategy"/>.

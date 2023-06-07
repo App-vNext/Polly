@@ -1,5 +1,3 @@
-using FluentAssertions;
-using Polly.Strategy;
 using Polly.Utils;
 
 namespace Polly.Core.Tests;

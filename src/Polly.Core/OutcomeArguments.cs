@@ -1,6 +1,6 @@
 #pragma warning disable CA1815 // Override equals and operator equals on value types
 
-namespace Polly.Strategy
+namespace Polly
 {
     /// <summary>
     /// Encapsulates the outcome of a resilience operation or event and its associated arguments.

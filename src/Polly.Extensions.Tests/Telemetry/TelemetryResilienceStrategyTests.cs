@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
 using Polly.Extensions.Telemetry;
-using Polly.Strategy;
+using Polly.Telemetry;
 
 namespace Polly.Extensions.Tests.Telemetry;
 
@@ -45,7 +45,7 @@ public class TelemetryResilienceStrategyTests : IDisposable
             {
                 if (!healthy)
                 {
-                    ((List<ReportedResilienceEvent>)c.ResilienceEvents).Add(new ReportedResilienceEvent("dummy"));
+                    ((List<ResilienceEvent>)c.ResilienceEvents).Add(new ResilienceEvent("dummy"));
                 }
             },
             ResilienceContext.Get(), string.Empty);
@@ -142,7 +142,7 @@ public class TelemetryResilienceStrategyTests : IDisposable
             {
                 if (!healthy)
                 {
-                    ((List<ReportedResilienceEvent>)c.ResilienceEvents).Add(new ReportedResilienceEvent("dummy"));
+                    ((List<ResilienceEvent>)c.ResilienceEvents).Add(new ResilienceEvent("dummy"));
                 }
 
                 return true;

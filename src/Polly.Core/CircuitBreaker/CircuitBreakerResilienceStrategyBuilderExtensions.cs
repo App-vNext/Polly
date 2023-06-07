@@ -1,7 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using Polly.CircuitBreaker;
 using Polly.CircuitBreaker.Health;
-using Polly.Strategy;
 
 namespace Polly;
 

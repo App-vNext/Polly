@@ -1,8 +1,6 @@
-using System.Diagnostics;
 using System.Threading.RateLimiting;
 using Moq;
 using Moq.Protected;
-using Polly.Strategy;
 
 namespace Polly.RateLimiting.Tests;
 

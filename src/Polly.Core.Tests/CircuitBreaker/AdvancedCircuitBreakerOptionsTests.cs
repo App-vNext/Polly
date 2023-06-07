@@ -1,8 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using Polly.CircuitBreaker;
-using Polly.Strategy;
 using Polly.Utils;
-using Xunit;
 
 namespace Polly.Core.Tests.CircuitBreaker;
 

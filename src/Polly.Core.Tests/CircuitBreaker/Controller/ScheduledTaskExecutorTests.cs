@@ -1,4 +1,3 @@
-using System.Threading.Tasks;
 using Polly.CircuitBreaker;
 
 namespace Polly.Core.Tests.CircuitBreaker.Controller;

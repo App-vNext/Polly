@@ -1,7 +1,5 @@
-using System;
 using System.ComponentModel.DataAnnotations;
 using Polly.Retry;
-using Polly.Strategy;
 
 namespace Polly;
 

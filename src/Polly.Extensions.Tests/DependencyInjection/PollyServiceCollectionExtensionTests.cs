@@ -5,7 +5,7 @@ using Microsoft.Extensions.Options;
 using Polly.Extensions.DependencyInjection;
 using Polly.Extensions.Telemetry;
 using Polly.Registry;
-using Polly.Strategy;
+using Polly.Telemetry;
 
 namespace Polly.Extensions.Tests.DependencyInjection;
 

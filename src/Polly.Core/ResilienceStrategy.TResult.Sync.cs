@@ -1,6 +1,3 @@
-using System.Threading;
-using Polly;
-
 namespace Polly;
 
 public partial class ResilienceStrategy<TResult>

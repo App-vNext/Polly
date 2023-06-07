@@ -2,7 +2,7 @@
 
 using System.Runtime.ExceptionServices;
 
-namespace Polly.Strategy;
+namespace Polly;
 
 /// <summary>
 /// Represents the outcome of an operation which could be a result of type <typeparamref name="TResult"/> or an exception.
@@ -101,7 +101,7 @@ public readonly struct Outcome<TResult>
 
     internal Outcome<object> AsOutcome() => AsOutcome<object>();
 
-    internal Outcome<T> AsOutcome<T>() => (ExceptionDispatchInfo != null)
+    internal Outcome<T> AsOutcome<T>() => ExceptionDispatchInfo != null
         ? new Outcome<T>(ExceptionDispatchInfo)
         : new Outcome<T>((T)(object)Result!);
 }

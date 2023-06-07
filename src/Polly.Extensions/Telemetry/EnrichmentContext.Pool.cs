@@ -1,4 +1,3 @@
-using Polly.Strategy;
 using Polly.Utils;
 
 namespace Polly.Extensions.Telemetry;

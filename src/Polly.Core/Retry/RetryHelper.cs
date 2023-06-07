@@ -1,5 +1,3 @@
-using System;
-
 namespace Polly.Retry;
 
 internal static class RetryHelper

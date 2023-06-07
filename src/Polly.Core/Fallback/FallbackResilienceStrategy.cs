@@ -1,7 +1,5 @@
-using System;
 using System.Runtime.ExceptionServices;
-using System.Threading.Tasks;
-using Polly.Strategy;
+using Polly.Telemetry;
 
 namespace Polly.Fallback;
 

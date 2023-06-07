@@ -1,10 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using Polly.Hedging.Controller;
-using Polly.Strategy;
-using Polly.Utils;
-using static Polly.Hedging.Utils.HedgingExecutionContext;
 
 namespace Polly.Hedging.Utils;
 

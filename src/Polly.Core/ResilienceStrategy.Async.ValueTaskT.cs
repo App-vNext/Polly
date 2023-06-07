@@ -1,5 +1,4 @@
 using System.Runtime.ExceptionServices;
-using Polly.Strategy;
 
 namespace Polly;
 

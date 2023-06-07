@@ -1,5 +1,5 @@
 using System.Threading.RateLimiting;
-using Polly.Strategy;
+using Polly.Telemetry;
 
 namespace Polly.RateLimiting;
 

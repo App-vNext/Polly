@@ -1,8 +1,7 @@
 using Moq;
-using Polly.Strategy;
 using Polly.Telemetry;
 
-namespace Polly.Core.Tests.Strategy;
+namespace Polly.Core.Tests.Telemetry;
 
 public class ResilienceStrategyTelemetryTests
 {

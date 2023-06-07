@@ -1,7 +1,5 @@
 #pragma warning disable S4225 // Extension methods should not extend "object"
 
-using System;
-
 namespace Polly.Core.Benchmarks.Utils;
 
 internal static partial class Helper

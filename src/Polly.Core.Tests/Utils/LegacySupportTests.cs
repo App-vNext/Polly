@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using Polly.Utils;
 
 namespace Polly.Core.Tests.Utils;

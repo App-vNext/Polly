@@ -1,6 +1,5 @@
 using System.ComponentModel.DataAnnotations;
 using Polly.Hedging;
-using Polly.Strategy;
 
 namespace Polly.Core.Tests.Hedging;
 

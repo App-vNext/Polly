@@ -1,5 +1,3 @@
-using Xunit;
-
 namespace Polly.Core.Tests;
 
 public partial class ResilienceStrategyTests

@@ -1,6 +1,4 @@
-using System.Threading.Tasks;
 using BenchmarkDotNet.Attributes;
-using Polly.Core.Benchmarks;
 
 namespace Polly.Core.Benchmarks;
 

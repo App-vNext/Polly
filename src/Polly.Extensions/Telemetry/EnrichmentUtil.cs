@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using Polly.Strategy;
-
 namespace Polly.Extensions.Telemetry;
 
 internal static class EnrichmentUtil

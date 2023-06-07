@@ -1,6 +1,3 @@
-using System;
-using Polly.Strategy;
-
 namespace Polly.Core.Benchmarks.Utils;
 
 internal static partial class Helper

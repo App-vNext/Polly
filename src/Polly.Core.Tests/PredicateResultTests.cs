@@ -1,7 +1,4 @@
-using System.Threading.Tasks;
-using Polly.Strategy;
-
-namespace Polly.Core.Tests.Strategy;
+namespace Polly.Core.Tests;
 
 public class PredicateResultTests
 {

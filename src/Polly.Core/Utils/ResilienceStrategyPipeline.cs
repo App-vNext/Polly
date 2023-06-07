@@ -1,6 +1,4 @@
-using System;
-
-namespace Polly.Strategy;
+namespace Polly.Utils;
 
 #pragma warning disable S2302 // "nameof" should be used
 

@@ -1,9 +1,7 @@
-using System;
-using System.Threading.Tasks;
 using Moq;
 using Polly.CircuitBreaker;
-using Polly.Strategy;
 using Polly.Telemetry;
+using Polly.Utils;
 
 namespace Polly.Core.Tests.CircuitBreaker.Controller;
 public class CircuitStateControllerTests
@@ -60,7 +58,7 @@ public class CircuitStateControllerTests
         _circuitBehavior.Setup(v => v.OnCircuitClosed());
         await controller.CloseCircuitAsync(ResilienceContext.Get());
         await controller.OnActionPreExecuteAsync<int>(ResilienceContext.Get());
-        context.ResilienceEvents.Should().Contain(new ReportedResilienceEvent("OnCircuitOpened"));
+        context.ResilienceEvents.Should().Contain(new ResilienceEvent("OnCircuitOpened"));
     }
 
     [Fact]
@@ -92,7 +90,7 @@ public class CircuitStateControllerTests
 
         await controller.OnActionPreExecuteAsync<string>(ResilienceContext.Get());
         _circuitBehavior.VerifyAll();
-        context.ResilienceEvents.Should().Contain(new ReportedResilienceEvent("OnCircuitClosed"));
+        context.ResilienceEvents.Should().Contain(new ResilienceEvent("OnCircuitClosed"));
     }
 
     [Fact]

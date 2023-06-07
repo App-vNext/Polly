@@ -1,5 +1,4 @@
-using System;
-using Polly.Strategy;
+using Polly.Telemetry;
 
 namespace Polly.Retry;
 

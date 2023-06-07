@@ -1,7 +1,6 @@
 using Moq;
-using Polly.Strategy;
 
-namespace Polly.Core.Tests.Strategy;
+namespace Polly.Core.Tests;
 
 public class ResilienceStrategyBuilderContextTests
 {
