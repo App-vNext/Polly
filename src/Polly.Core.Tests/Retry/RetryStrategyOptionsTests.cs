@@ -9,21 +9,24 @@ public class RetryStrategyOptionsTests
     [Fact]
     public void Ctor_Ok()
     {
-        var options = new RetryStrategyOptions();
+        var options = new RetryStrategyOptions<int>();
 
+        options.StrategyType.Should().Be("Retry");
         options.ShouldRetry.Should().BeNull();
+
         options.RetryDelayGenerator.Should().BeNull();
+
         options.OnRetry.Should().BeNull();
 
         options.RetryCount.Should().Be(3);
-        options.BackoffType.Should().Be(RetryBackoffType.ExponentialWithJitter);
+        options.BackoffType.Should().Be(RetryBackoffType.Constant);
         options.BaseDelay.Should().Be(TimeSpan.FromSeconds(2));
     }
 
     [Fact]
     public void InvalidOptions()
     {
-        var options = new RetryStrategyOptions
+        var options = new RetryStrategyOptions<int>
         {
             ShouldRetry = null!,
             RetryDelayGenerator = null!,
