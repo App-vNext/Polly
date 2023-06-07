@@ -200,11 +200,35 @@ public sealed partial class ResilienceStrategyRegistry<TKey> : ResilienceStrateg
         Action<TBuilder, ConfigureBuilderContext<TKey>> configure)
         where TBuilder : ResilienceStrategyBuilderBase
     {
-        var builder = activator();
-        builder.BuilderName = context.BuilderName;
-        builder.Properties.Set(TelemetryUtil.StrategyKey, context.StrategyKeyString);
-        configure(builder, context);
-        return builder.BuildStrategy();
+        Func<TBuilder> factory = () =>
+        {
+            var builder = activator();
+            builder.BuilderName = context.BuilderName;
+            builder.Properties.Set(TelemetryUtil.StrategyKey, context.StrategyKeyString);
+            configure(builder, context);
+
+            return builder;
+        };
+
+        var builder = factory();
+        var strategy = builder.BuildStrategy();
+        var diagnosticSource = builder.DiagnosticSource;
+
+        if (context.ReloadTokenProducer is null)
+        {
+            return strategy;
+        }
+
+        return new ReloadableResilienceStrategy(
+            strategy,
+            context.ReloadTokenProducer,
+            () => factory().BuildStrategy(),
+            TelemetryUtil.CreateTelemetry(
+                diagnosticSource,
+                context.BuilderName,
+                builder.Properties,
+                ReloadableResilienceStrategy.StrategyName,
+                ReloadableResilienceStrategy.StrategyType));
     }
 
     private GenericRegistry<TResult> GetGenericRegistry<TResult>()
