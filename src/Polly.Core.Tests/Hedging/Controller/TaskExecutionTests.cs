@@ -9,7 +9,7 @@ public class TaskExecutionTests : IDisposable
 {
     private const string Handled = "Handled";
     private readonly ResiliencePropertyKey<string> _myKey = new("my-key");
-    private readonly HedgingHandler _hedgingHandler;
+    private readonly HedgingHandler<DisposableResult> _hedgingHandler;
     private readonly CancellationTokenSource _cts;
     private readonly HedgingTimeProvider _timeProvider;
     private ContextSnapshot _snapshot;
@@ -18,18 +18,12 @@ public class TaskExecutionTests : IDisposable
     {
         _timeProvider = new HedgingTimeProvider();
         _cts = new CancellationTokenSource();
-        _hedgingHandler = new HedgingHandler();
-        _hedgingHandler.SetHedging<DisposableResult>(handler =>
+        _hedgingHandler = HedgingHelper.CreateHandler<DisposableResult>(outcome => outcome switch
         {
-            handler.ShouldHandle = args => args switch
-            {
-                { Exception: ApplicationException } => PredicateResult.True,
-                { Result: DisposableResult result } when result.Name == Handled => PredicateResult.True,
-                _ => PredicateResult.False
-            };
-
-            handler.HedgingActionGenerator = args => Generator(args);
-        });
+            { Exception: ApplicationException } => true,
+            { Result: DisposableResult result } when result.Name == Handled => true,
+            _ => false
+        }, args => Generator(args));
 
         CreateSnapshot();
     }
@@ -227,7 +221,7 @@ public class TaskExecutionTests : IDisposable
         }
     }
 
-    private async Task InitializePrimaryAsync(TaskExecution execution, DisposableResult? result = null, Action<ResilienceContext>? onContext = null)
+    private async Task InitializePrimaryAsync(TaskExecution<DisposableResult> execution, DisposableResult? result = null, Action<ResilienceContext>? onContext = null)
     {
         await execution.InitializeAsync(HedgedTaskType.Primary, _snapshot, (context, _) =>
         {
@@ -236,7 +230,7 @@ public class TaskExecutionTests : IDisposable
         }, "dummy-state", 1);
     }
 
-    private void AssertPrimaryContext(ResilienceContext context, TaskExecution execution)
+    private void AssertPrimaryContext(ResilienceContext context, TaskExecution<DisposableResult> execution)
     {
         context.IsInitialized.Should().BeTrue();
         context.Should().BeSameAs(_snapshot.Context);
@@ -250,7 +244,7 @@ public class TaskExecutionTests : IDisposable
         value.Should().Be("dummy-value");
     }
 
-    private void AssertSecondaryContext(ResilienceContext context, TaskExecution execution)
+    private void AssertSecondaryContext(ResilienceContext context, TaskExecution<DisposableResult> execution)
     {
         context.IsInitialized.Should().BeTrue();
         context.Should().NotBeSameAs(_snapshot.Context);
@@ -276,5 +270,5 @@ public class TaskExecutionTests : IDisposable
         return () => new DisposableResult { Name = Handled }.AsOutcomeAsync();
     };
 
-    private TaskExecution Create() => new(_hedgingHandler.CreateHandler()!, CancellationTokenSourcePool.Create(TimeProvider.System));
+    private TaskExecution<DisposableResult> Create() => new(_hedgingHandler, CancellationTokenSourcePool.Create(TimeProvider.System));
 }

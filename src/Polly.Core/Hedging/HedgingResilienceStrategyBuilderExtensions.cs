@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using Polly.Hedging;
+using Polly.Hedging.Utils;
 
 namespace Polly;
 
@@ -24,24 +25,23 @@ public static class HedgingResilienceStrategyBuilderExtensions
 
         ValidationHelper.ValidateObject(options, "The hedging strategy options are invalid.");
 
-        var handler = new HedgingHandler()
-            .SetHedging<TResult>(handler =>
-            {
-                handler.HedgingActionGenerator = options.HedgingActionGenerator;
-                handler.ShouldHandle = options.ShouldHandle;
-            })
-            .CreateHandler();
-
         builder.AddStrategy(context =>
-            new HedgingResilienceStrategy(
+        {
+            var handler = new HedgingHandler<TResult>(
+                context.CreateInvoker(options.ShouldHandle)!,
+                options.HedgingActionGenerator,
+                IsGeneric: true);
+
+            return new HedgingResilienceStrategy<TResult>(
                 options.HedgingDelay,
                 options.MaxHedgedAttempts,
                 handler,
                 context.CreateInvoker(options.OnHedging),
                 options.HedgingDelayGenerator,
                 context.TimeProvider,
-                context.Telemetry),
-            options);
+                context.Telemetry);
+        },
+        options);
 
         return builder;
     }
@@ -62,15 +62,22 @@ public static class HedgingResilienceStrategyBuilderExtensions
         ValidationHelper.ValidateObject(options, "The hedging strategy options are invalid.");
 
         builder.AddStrategy(context =>
-            new HedgingResilienceStrategy(
+        {
+            var handler = new HedgingHandler<object>(
+                context.CreateInvoker(options.ShouldHandle)!,
+                options.HedgingActionGenerator,
+                IsGeneric: false);
+
+            return new HedgingResilienceStrategy<object>(
                 options.HedgingDelay,
                 options.MaxHedgedAttempts,
-                options.Handler.CreateHandler(),
+                handler,
                 context.CreateInvoker(options.OnHedging),
                 options.HedgingDelayGenerator,
                 context.TimeProvider,
-                context.Telemetry),
-            options);
+                context.Telemetry);
+        },
+        options);
 
         return builder;
     }

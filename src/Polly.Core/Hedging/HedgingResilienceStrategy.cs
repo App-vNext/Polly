@@ -3,15 +3,15 @@ using Polly.Telemetry;
 
 namespace Polly.Hedging;
 
-internal sealed class HedgingResilienceStrategy : ResilienceStrategy
+internal sealed class HedgingResilienceStrategy<T> : ResilienceStrategy
 {
     private readonly ResilienceStrategyTelemetry _telemetry;
-    private readonly HedgingController _controller;
+    private readonly HedgingController<T> _controller;
 
     public HedgingResilienceStrategy(
         TimeSpan hedgingDelay,
         int maxHedgedAttempts,
-        HedgingHandler.Handler hedgingHandler,
+        HedgingHandler<T> hedgingHandler,
         EventInvoker<OnHedgingArguments>? onHedging,
         Func<HedgingDelayArguments, ValueTask<TimeSpan>>? hedgingDelayGenerator,
         TimeProvider timeProvider,
@@ -24,7 +24,7 @@ internal sealed class HedgingResilienceStrategy : ResilienceStrategy
         OnHedging = onHedging;
 
         _telemetry = telemetry;
-        _controller = new HedgingController(timeProvider, HedgingHandler, maxHedgedAttempts);
+        _controller = new HedgingController<T>(timeProvider, HedgingHandler, maxHedgedAttempts);
     }
 
     public TimeSpan HedgingDelay { get; }
@@ -33,7 +33,7 @@ internal sealed class HedgingResilienceStrategy : ResilienceStrategy
 
     public Func<HedgingDelayArguments, ValueTask<TimeSpan>>? HedgingDelayGenerator { get; }
 
-    public HedgingHandler.Handler HedgingHandler { get; }
+    public HedgingHandler<T> HedgingHandler { get; }
 
     public EventInvoker<OnHedgingArguments>? OnHedging { get; }
 

@@ -7,28 +7,32 @@ namespace Polly.Core.Tests.Hedging;
 public class HedgingStrategyOptionsTests
 {
     [Fact]
-    public void Ctor_EnsureDefaults()
+    public async Task Ctor_EnsureDefaults()
     {
-        var options = new HedgingStrategyOptions();
+        var options = new HedgingStrategyOptions<int>();
 
         options.StrategyType.Should().Be("Hedging");
-        options.Handler.Should().NotBeNull();
-        options.Handler.IsEmpty.Should().BeTrue();
-        options.HedgingDelayGenerator.Should().BeNull();
+        options.ShouldHandle.Should().BeNull();
+        options.HedgingActionGenerator.Should().NotBeNull();
         options.HedgingDelay.Should().Be(TimeSpan.FromSeconds(2));
         options.MaxHedgedAttempts.Should().Be(2);
         options.OnHedging.Should().BeNull();
+
+        var action = options.HedgingActionGenerator(new HedgingActionGeneratorArguments<int>(ResilienceContext.Get(), 1, c => 99.AsOutcomeAsync()))!;
+        action.Should().NotBeNull();
+        (await action()).Result.Should().Be(99);
     }
 
     [Fact]
     public void Validation()
     {
-        var options = new HedgingStrategyOptions
+        var options = new HedgingStrategyOptions<int>
         {
             HedgingDelayGenerator = null!,
-            Handler = null!,
+            ShouldHandle = null!,
             MaxHedgedAttempts = -1,
-            OnHedging = null!
+            OnHedging = null!,
+            HedgingActionGenerator = null!
         };
 
         options
@@ -40,7 +44,8 @@ public class HedgingStrategyOptionsTests
 
             Validation Errors:
             The field MaxHedgedAttempts must be between 2 and 10.
-            The Handler field is required.
+            The ShouldHandle field is required.
+            The HedgingActionGenerator field is required.
             """);
     }
 }
