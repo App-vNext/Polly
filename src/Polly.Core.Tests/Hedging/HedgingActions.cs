@@ -32,31 +32,34 @@ internal class HedgingActions
         };
     }
 
-    public Func<HedgingActionGeneratorArguments<string>, Func<Task<string>>?> Generator { get; }
+    public Func<HedgingActionGeneratorArguments<string>, Func<ValueTask<Outcome<string>>>?> Generator { get; }
 
-    public Func<HedgingActionGeneratorArguments<string>, Func<Task<string>>?> EmptyFunctionsProvider { get; } = args => null;
+    public Func<HedgingActionGeneratorArguments<string>, Func<ValueTask<Outcome<string>>>?> EmptyFunctionsProvider { get; } = args => null;
 
-    public List<Func<ResilienceContext, Task<string>>> Functions { get; }
+    public List<Func<ResilienceContext, ValueTask<Outcome<string>>>> Functions { get; }
 
-    private async Task<string> GetApples(ResilienceContext context)
+    private async ValueTask<Outcome<string>> GetApples(ResilienceContext context)
     {
         await _timeProvider.Delay(TimeSpan.FromSeconds(10), context.CancellationToken);
-        return "Apples";
+        return "Apples".AsOutcome();
     }
 
-    private async Task<string> GetPears(ResilienceContext context)
+    private async ValueTask<Outcome<string>> GetPears(ResilienceContext context)
     {
         await _timeProvider.Delay(TimeSpan.FromSeconds(3), context.CancellationToken);
-        return "Pears";
+        return "Pears".AsOutcome();
     }
 
-    private async Task<string> GetOranges(ResilienceContext context)
+    private async ValueTask<Outcome<string>> GetOranges(ResilienceContext context)
     {
         await _timeProvider.Delay(TimeSpan.FromSeconds(2), context.CancellationToken);
-        return "Oranges";
+        return "Oranges".AsOutcome();
     }
 
-    public static Func<HedgingActionGeneratorArguments<string>, Func<Task<string>>?> GetGenerator(Func<ResilienceContext, Task<string>> task) => args => () => task(args.Context);
+    public static Func<HedgingActionGeneratorArguments<string>, Func<ValueTask<Outcome<string>>>?> GetGenerator(Func<ResilienceContext, ValueTask<Outcome<string>>> task)
+    {
+        return args => () => task(args.Context);
+    }
 
     public int MaxHedgedTasks => Functions.Count + 1;
 }

@@ -33,5 +33,5 @@ internal sealed class HedgingHandler<TResult>
     /// </para>
     /// </remarks>
     [Required]
-    public Func<HedgingActionGeneratorArguments<TResult>, Func<Task<TResult>>?>? HedgingActionGenerator { get; set; } = null;
+    public Func<HedgingActionGeneratorArguments<TResult>, Func<ValueTask<Outcome<TResult>>>?>? HedgingActionGenerator { get; set; } = null;
 }

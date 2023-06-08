@@ -96,11 +96,11 @@ internal sealed class TaskExecution
 
         if (type == HedgedTaskType.Secondary)
         {
-            Func<Task<TResult>>? action = null;
+            Func<ValueTask<Outcome<TResult>>>? action = null;
 
             try
             {
-                action = _handler.TryCreateHedgedAction<TResult>(Context, attempt);
+                action = _handler.TryCreateHedgedAction(Context, attempt, (context) => primaryCallback(context, state));
                 if (action == null)
                 {
                     await ResetAsync().ConfigureAwait(false);
@@ -163,14 +163,13 @@ internal sealed class TaskExecution
         _cancellationSource = null!;
     }
 
-    private async Task ExecuteSecondaryActionAsync<TResult>(Func<Task<TResult>> action)
+    private async Task ExecuteSecondaryActionAsync<TResult>(Func<ValueTask<Outcome<TResult>>> action)
     {
         Outcome<TResult> outcome;
 
         try
         {
-            var result = await action().ConfigureAwait(Context.ContinueOnCapturedContext);
-            outcome = new Outcome<TResult>(result);
+            outcome = await action().ConfigureAwait(Context.ContinueOnCapturedContext);
         }
         catch (Exception e)
         {

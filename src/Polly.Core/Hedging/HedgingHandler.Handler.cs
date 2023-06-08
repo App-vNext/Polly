@@ -33,14 +33,14 @@ internal partial class HedgingHandler
             }
         }
 
-        public Func<Task<TResult>>? TryCreateHedgedAction<TResult>(ResilienceContext context, int attempt)
+        public Func<ValueTask<Outcome<TResult>>>? TryCreateHedgedAction<TResult>(ResilienceContext context, int attempt, Func<ResilienceContext, ValueTask<Outcome<TResult>>> callback)
         {
             if (!_generators.TryGetValue(typeof(TResult), out var generator))
             {
                 return null;
             }
 
-            return ((Func<HedgingActionGeneratorArguments<TResult>, Func<Task<TResult>>?>)generator)(new HedgingActionGeneratorArguments<TResult>(context, attempt));
+            return ((Func<HedgingActionGeneratorArguments<TResult>, Func<ValueTask<Outcome<TResult>>>?>)generator)(new HedgingActionGeneratorArguments<TResult>(context, attempt, callback));
         }
     }
 }

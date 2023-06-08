@@ -32,5 +32,5 @@ internal sealed class VoidHedgingHandler
     /// </para>
     /// </remarks>
     [Required]
-    public Func<HedgingActionGeneratorArguments, Func<Task>?>? HedgingActionGenerator { get; set; } = null;
+    public Func<HedgingActionGeneratorArguments, Func<ValueTask>?>? HedgingActionGenerator { get; set; } = null;
 }

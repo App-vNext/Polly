@@ -67,12 +67,12 @@ internal sealed partial class HedgingHandler
             _actions.ToDictionary(pair => pair.Key, pair => pair.Value));
     }
 
-    private static Func<HedgingActionGeneratorArguments<VoidResult>, Func<Task<VoidResult>>?> CreateGenericGenerator(
-        Func<HedgingActionGeneratorArguments, Func<Task>?> generator)
+    private static Func<HedgingActionGeneratorArguments<VoidResult>, Func<ValueTask<Outcome<VoidResult>>>?> CreateGenericGenerator(
+        Func<HedgingActionGeneratorArguments, Func<ValueTask>?> generator)
     {
         return (args) =>
         {
-            Func<Task>? action = generator(new HedgingActionGeneratorArguments(args.Context, args.Attempt));
+            Func<ValueTask>? action = generator(new HedgingActionGeneratorArguments(args.Context, args.Attempt));
             if (action == null)
             {
                 return null;
@@ -81,7 +81,7 @@ internal sealed partial class HedgingHandler
             return async () =>
             {
                 await action().ConfigureAwait(args.Context.ContinueOnCapturedContext);
-                return VoidResult.Instance;
+                return new Outcome<VoidResult>(VoidResult.Instance);
             };
         };
     }

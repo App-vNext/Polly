@@ -54,10 +54,16 @@ public class HedgingStrategyOptions<TResult> : ResilienceStrategyOptions
     /// Gets or sets the hedging action generator that creates hedged actions.
     /// </summary>
     /// <remarks>
-    /// This property is required. Defaults to <see langword="null"/>.
+    /// This property is required. The default delegate executes the original callback that was passed to the hedging resilience strategy.
     /// </remarks>
     [Required]
-    public Func<HedgingActionGeneratorArguments<TResult>, Func<Task<TResult>>?>? HedgingActionGenerator { get; set; } = null;
+    public Func<HedgingActionGeneratorArguments<TResult>, Func<ValueTask<Outcome<TResult>>>?> HedgingActionGenerator { get; set; } = args =>
+    {
+        return async () =>
+        {
+            return await args.Callback(args.Context).ConfigureAwait(args.Context.ContinueOnCapturedContext);
+        };
+    };
 
     /// <summary>
     /// Gets or sets the generator that generates hedging delays for each hedging attempt.

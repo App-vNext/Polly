@@ -20,7 +20,7 @@ public class HedgingResilienceStrategyBuilderExtensionsTests
     {
         _genericBuilder.AddHedging(new HedgingStrategyOptions<string>
         {
-            HedgingActionGenerator = args => () => Task.FromResult("dummy"),
+            HedgingActionGenerator = args => () => "dummy".AsOutcomeAsync(),
             ShouldHandle = _ => PredicateResult.True
         });
         _genericBuilder.Build().Strategy.Should().BeOfType<HedgingResilienceStrategy>();
@@ -73,10 +73,10 @@ public class HedgingResilienceStrategyBuilderExtensionsTests
 
                             if (args.Attempt == 3)
                             {
-                                return "success";
+                                return "success".AsOutcome();
                             }
 
-                            return "error";
+                            return "error".AsOutcome();
                         };
                     };
                 }),
