@@ -30,11 +30,11 @@ public abstract partial class ResilienceStrategy
                 try
                 {
                     state.callback(context, state.state);
-                    return new ValueTask<Outcome<VoidResult>>(VoidResult.Outcome);
+                    return VoidResult.Outcome;
                 }
                 catch (Exception e)
                 {
-                    return new ValueTask<Outcome<VoidResult>>(new Outcome<VoidResult>(ExceptionDispatchInfo.Capture(e)));
+                    return new Outcome<VoidResult>(ExceptionDispatchInfo.Capture(e));
                 }
             },
             context,
@@ -62,11 +62,11 @@ public abstract partial class ResilienceStrategy
                 try
                 {
                     state(context);
-                    return new ValueTask<Outcome<VoidResult>>(VoidResult.Outcome);
+                    return VoidResult.Outcome;
                 }
                 catch (Exception e)
                 {
-                    return new ValueTask<Outcome<VoidResult>>(new Outcome<VoidResult>(ExceptionDispatchInfo.Capture(e)));
+                    return new Outcome<VoidResult>(ExceptionDispatchInfo.Capture(e));
                 }
             },
             context,
@@ -98,11 +98,11 @@ public abstract partial class ResilienceStrategy
                     try
                     {
                         state.callback(state.state, context.CancellationToken);
-                        return new ValueTask<Outcome<VoidResult>>(VoidResult.Outcome);
+                        return VoidResult.Outcome;
                     }
                     catch (Exception e)
                     {
-                        return new ValueTask<Outcome<VoidResult>>(new Outcome<VoidResult>(ExceptionDispatchInfo.Capture(e)));
+                        return new Outcome<VoidResult>(ExceptionDispatchInfo.Capture(e));
                     }
                 },
                 context,
@@ -136,11 +136,11 @@ public abstract partial class ResilienceStrategy
                     try
                     {
                         state(context.CancellationToken);
-                        return new ValueTask<Outcome<VoidResult>>(VoidResult.Outcome);
+                        return VoidResult.Outcome;
                     }
                     catch (Exception e)
                     {
-                        return new ValueTask<Outcome<VoidResult>>(new Outcome<VoidResult>(ExceptionDispatchInfo.Capture(e)));
+                        return new Outcome<VoidResult>(ExceptionDispatchInfo.Capture(e));
                     }
                 },
                 context,
@@ -175,11 +175,11 @@ public abstract partial class ResilienceStrategy
                     try
                     {
                         state.callback(state.state);
-                        return new ValueTask<Outcome<VoidResult>>(VoidResult.Outcome);
+                        return VoidResult.Outcome;
                     }
                     catch (Exception e)
                     {
-                        return new ValueTask<Outcome<VoidResult>>(new Outcome<VoidResult>(ExceptionDispatchInfo.Capture(e)));
+                        return new Outcome<VoidResult>(ExceptionDispatchInfo.Capture(e));
                     }
                 },
                 context,
@@ -210,11 +210,11 @@ public abstract partial class ResilienceStrategy
                     try
                     {
                         state();
-                        return new ValueTask<Outcome<VoidResult>>(VoidResult.Outcome);
+                        return VoidResult.Outcome;
                     }
                     catch (Exception e)
                     {
-                        return new ValueTask<Outcome<VoidResult>>(new Outcome<VoidResult>(ExceptionDispatchInfo.Capture(e)));
+                        return new Outcome<VoidResult>(ExceptionDispatchInfo.Capture(e));
                     }
                 },
                 context,

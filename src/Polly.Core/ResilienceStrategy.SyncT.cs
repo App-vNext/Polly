@@ -32,11 +32,11 @@ public abstract partial class ResilienceStrategy
                try
                {
                    var result = state.callback(context, state.state);
-                   return new ValueTask<Outcome<TResult>>(new Outcome<TResult>(result));
+                   return new Outcome<TResult>(result);
                }
                catch (Exception e)
                {
-                   return new ValueTask<Outcome<TResult>>(new Outcome<TResult>(ExceptionDispatchInfo.Capture(e)));
+                   return new Outcome<TResult>(ExceptionDispatchInfo.Capture(e));
                }
            },
            context,
@@ -66,11 +66,11 @@ public abstract partial class ResilienceStrategy
                 try
                 {
                     var result = state(context);
-                    return new ValueTask<Outcome<TResult>>(new Outcome<TResult>(result));
+                    return new Outcome<TResult>(result);
                 }
                 catch (Exception e)
                 {
-                    return new ValueTask<Outcome<TResult>>(new Outcome<TResult>(ExceptionDispatchInfo.Capture(e)));
+                    return new Outcome<TResult>(ExceptionDispatchInfo.Capture(e));
                 }
             },
             context,
@@ -101,11 +101,11 @@ public abstract partial class ResilienceStrategy
                     try
                     {
                         var result = state(context.CancellationToken);
-                        return new ValueTask<Outcome<TResult>>(new Outcome<TResult>(result));
+                        return new Outcome<TResult>(result);
                     }
                     catch (Exception e)
                     {
-                        return new ValueTask<Outcome<TResult>>(new Outcome<TResult>(ExceptionDispatchInfo.Capture(e)));
+                        return new Outcome<TResult>(ExceptionDispatchInfo.Capture(e));
                     }
                 },
                 context,
@@ -138,11 +138,11 @@ public abstract partial class ResilienceStrategy
                     try
                     {
                         var result = state();
-                        return new ValueTask<Outcome<TResult>>(new Outcome<TResult>(result));
+                        return new Outcome<TResult>(result);
                     }
                     catch (Exception e)
                     {
-                        return new ValueTask<Outcome<TResult>>(new Outcome<TResult>(ExceptionDispatchInfo.Capture(e)));
+                        return new Outcome<TResult>(ExceptionDispatchInfo.Capture(e));
                     }
                 },
                 context,
@@ -177,11 +177,11 @@ public abstract partial class ResilienceStrategy
                     try
                     {
                         var result = state.callback(state.state);
-                        return new ValueTask<Outcome<TResult>>(new Outcome<TResult>(result));
+                        return new Outcome<TResult>(result);
                     }
                     catch (Exception e)
                     {
-                        return new ValueTask<Outcome<TResult>>(new Outcome<TResult>(ExceptionDispatchInfo.Capture(e)));
+                        return new Outcome<TResult>(ExceptionDispatchInfo.Capture(e));
                     }
                 },
                 context,
@@ -220,11 +220,11 @@ public abstract partial class ResilienceStrategy
                     try
                     {
                         var result = state.callback(state.state, context.CancellationToken);
-                        return new ValueTask<Outcome<TResult>>(new Outcome<TResult>(result));
+                        return new Outcome<TResult>(result);
                     }
                     catch (Exception e)
                     {
-                        return new ValueTask<Outcome<TResult>>(new Outcome<TResult>(ExceptionDispatchInfo.Capture(e)));
+                        return new Outcome<TResult>(ExceptionDispatchInfo.Capture(e));
                     }
                 },
                 context,

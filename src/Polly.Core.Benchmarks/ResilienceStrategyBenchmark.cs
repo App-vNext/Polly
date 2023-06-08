@@ -35,6 +35,26 @@ public class ResilienceStrategyBenchmark
         await NullResilienceStrategy<string>.Instance.ExecuteAsync(_ => new ValueTask<string>("dummy"), CancellationToken.None).ConfigureAwait(false);
     }
 
+    [Benchmark]
+    public void Execute_ResilienceContextAndState()
+    {
+        var context = ResilienceContext.Get();
+        NullResilienceStrategy.Instance.Execute((_, _) => "dummy", context, "state");
+        ResilienceContext.Return(context);
+    }
+
+    [Benchmark]
+    public void Execute_CancellationToken()
+    {
+        NullResilienceStrategy.Instance.Execute(_ => "dummy", CancellationToken.None);
+    }
+
+    [Benchmark]
+    public void Execute_GenericStrategy_CancellationToken()
+    {
+        NullResilienceStrategy<string>.Instance.Execute(_ => "dummy", CancellationToken.None);
+    }
+
     public class NonGenericStrategy
     {
         [MethodImpl(MethodImplOptions.NoOptimization)]
