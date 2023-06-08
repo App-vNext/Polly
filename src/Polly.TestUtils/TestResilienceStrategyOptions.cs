@@ -1,4 +1,4 @@
-﻿namespace Polly.TestUtils;
+namespace Polly.TestUtils;
 
 public sealed class TestResilienceStrategyOptions : ResilienceStrategyOptions
 {

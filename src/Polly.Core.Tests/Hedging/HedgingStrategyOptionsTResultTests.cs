@@ -13,7 +13,7 @@ public class HedgingStrategyOptionsTResultTests
 
         options.StrategyType.Should().Be("Hedging");
         options.ShouldHandle.Should().BeNull();
-        options.HedgingActionGenerator.Should().BeNull();
+        options.HedgingActionGenerator.Should().NotBeNull();
         options.HedgingDelay.Should().Be(TimeSpan.FromSeconds(2));
         options.MaxHedgedAttempts.Should().Be(2);
         options.OnHedging.Should().BeNull();
@@ -28,6 +28,7 @@ public class HedgingStrategyOptionsTResultTests
             ShouldHandle = null!,
             MaxHedgedAttempts = -1,
             OnHedging = null!,
+            HedgingActionGenerator = null!
         };
 
         options

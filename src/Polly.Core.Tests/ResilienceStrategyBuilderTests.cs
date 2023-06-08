@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using Polly.Utils;
 
 namespace Polly.Core.Tests;
@@ -317,6 +318,52 @@ The RequiredProperty field is required.
         ResilienceStrategyBuilderExtensions.EmptyOptions.Instance.StrategyType.Should().Be("Empty");
     }
 
+    [Fact]
+    public void ExecuteAsync_EnsureReceivedCallbackExecutesNextStrategy()
+    {
+        // arrange
+        var executions = new List<string>();
+        var first = new TestResilienceStrategy
+        {
+            Before = (_, _) => executions.Add("first-start"),
+            After = (_, _) => executions.Add("first-end"),
+        };
+
+        var second = new ExecuteCallbackTwiceStrategy
+        {
+            Before = () => executions.Add("second-start"),
+            After = () => executions.Add("second-end"),
+        };
+
+        var third = new TestResilienceStrategy
+        {
+            Before = (_, _) => executions.Add("third-start"),
+            After = (_, _) => executions.Add("third-end"),
+        };
+
+        var strategy = new ResilienceStrategyBuilder().AddStrategy(first).AddStrategy(second).AddStrategy(third).Build();
+
+        // act
+        strategy.Execute(_ => executions.Add("execute"));
+
+        // assert
+        executions.SequenceEqual(new[]
+        {
+            "first-start",
+            "second-start",
+            "third-start",
+            "execute",
+            "third-end",
+            "third-start",
+            "execute",
+            "third-end",
+            "second-end",
+            "first-end",
+        })
+        .Should()
+        .BeTrue();
+    }
+
     private class Strategy : ResilienceStrategy
     {
         public Action? Before { get; set; }
@@ -331,6 +378,30 @@ The RequiredProperty field is required.
             try
             {
                 Before?.Invoke();
+                return await callback(context, state);
+            }
+            finally
+            {
+                After?.Invoke();
+            }
+        }
+    }
+
+    private class ExecuteCallbackTwiceStrategy : ResilienceStrategy
+    {
+        public Action? Before { get; set; }
+
+        public Action? After { get; set; }
+
+        protected internal override async ValueTask<Outcome<TResult>> ExecuteCoreAsync<TResult, TState>(
+            Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,
+            ResilienceContext context,
+            TState state)
+        {
+            try
+            {
+                Before?.Invoke();
+                await callback(context, state);
                 return await callback(context, state);
             }
             finally

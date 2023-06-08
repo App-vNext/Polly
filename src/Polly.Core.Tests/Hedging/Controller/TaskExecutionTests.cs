@@ -68,7 +68,7 @@ public class TaskExecutionTests : IDisposable
         {
             AssertSecondaryContext(args.Context, execution);
             args.Attempt.Should().Be(4);
-            return () => Task.FromResult(new DisposableResult { Name = value });
+            return () => new DisposableResult { Name = value }.AsOutcomeAsync();
         };
 
         (await execution.InitializeAsync<DisposableResult, string>(HedgedTaskType.Secondary, _snapshot, null!, "dummy-state", 4)).Should().BeTrue();
@@ -151,7 +151,7 @@ public class TaskExecutionTests : IDisposable
             return async () =>
             {
                 await _timeProvider.Delay(TimeSpan.FromDays(1), args.Context.CancellationToken);
-                return new DisposableResult { Name = Handled };
+                return new DisposableResult { Name = Handled }.AsOutcome();
             };
         };
 
@@ -271,7 +271,10 @@ public class TaskExecutionTests : IDisposable
         _snapshot.OriginalProperties.Set(_myKey, "dummy-value");
     }
 
-    private Func<HedgingActionGeneratorArguments<DisposableResult>, Func<Task<DisposableResult>>?> Generator { get; set; } = args => () => Task.FromResult(new DisposableResult { Name = Handled });
+    private Func<HedgingActionGeneratorArguments<DisposableResult>, Func<ValueTask<Outcome<DisposableResult>>>?> Generator { get; set; } = args =>
+    {
+        return () => new DisposableResult { Name = Handled }.AsOutcomeAsync();
+    };
 
     private TaskExecution Create() => new(_hedgingHandler.CreateHandler()!, CancellationTokenSourcePool.Create(TimeProvider.System));
 }
