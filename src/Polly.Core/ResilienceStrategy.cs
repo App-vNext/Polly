@@ -34,7 +34,18 @@ public abstract partial class ResilienceStrategy
         TState state);
 
     private Outcome<TResult> ExecuteCoreSync<TResult, TState>(
-        Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,
+        Func<ResilienceContext, TState, Outcome<TResult>> callback,
         ResilienceContext context,
-        TState state) => ExecuteCoreAsync(callback, context, state).GetResult();
+        TState state)
+    {
+        return ExecuteCoreAsync(
+            (context, state) =>
+            {
+                var result = callback(context, state.state);
+
+                return new ValueTask<Outcome<TResult>>(result);
+            },
+            context,
+            (callback, state)).GetResult();
+    }
 }
