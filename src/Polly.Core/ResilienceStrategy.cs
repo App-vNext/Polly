@@ -39,9 +39,9 @@ public abstract partial class ResilienceStrategy
         TState state)
     {
         return ExecuteCoreAsync(
-            (context, state) =>
+            static (context, state) =>
             {
-                var result = callback(context, state.state);
+                var result = state.callback(context, state.state);
 
                 return new ValueTask<Outcome<TResult>>(result);
             },
