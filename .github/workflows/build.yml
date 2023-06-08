@@ -3,9 +3,19 @@ name: build
 on:
   push:
     branches: [ main ]
+    tags: [ '*' ]
   pull_request:
     branches: [ main ]
   workflow_dispatch:
+
+env:
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+  DOTNET_GENERATE_ASPNET_CERTIFICATE: false
+  DOTNET_NOLOGO: true
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+  DOTNET_SYSTEM_CONSOLE_ALLOW_ANSI_COLOR_REDIRECTION: 1
+  NUGET_XMLDOC_MODE: skip
+  TERM: xterm
 
 permissions:
   contents: read
@@ -48,13 +58,6 @@ jobs:
       shell: pwsh
       run: ./build.ps1
       env:
-        DOTNET_CLI_TELEMETRY_OPTOUT: true
-        DOTNET_GENERATE_ASPNET_CERTIFICATE: false
-        DOTNET_NOLOGO: true
-        DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
-        DOTNET_SYSTEM_CONSOLE_ALLOW_ANSI_COLOR_REDIRECTION: 1
-        NUGET_XMLDOC_MODE: skip
-        TERM: xterm
         RUN_MUTATION_TESTS: ${{ matrix.os_name == 'linux' && 'true' || 'false' }}
 
     - uses: codecov/codecov-action@eaaf4bedf32dbdc6b720b63067d99c4d77d6047d # v3.1.4
@@ -74,4 +77,82 @@ jobs:
       uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # v3.1.2
       with:
         name: packages-${{ matrix.os_name }}
-        path: ./artifacts/nuget-package
+        path: ./artifacts/nuget-packages
+        if-no-files-found: error
+
+  validate-packages:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Download packages
+      uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
+      with:
+        name: packages-windows
+
+    - name: Setup .NET SDK
+      uses: actions/setup-dotnet@3447fd6a9f9e57506b15f895c5b76d3b197dc7c2 # v3.2.0
+
+    - name: Validate NuGet packages
+      shell: pwsh
+      run: |
+        dotnet tool install --global dotnet-validate --version 0.0.1-preview.304
+        $packages = Get-ChildItem -Filter "*.nupkg" | ForEach-Object { $_.FullName }
+        $invalidPackages = 0
+        foreach ($package in $packages) {
+          dotnet validate package local $package
+          if ($LASTEXITCODE -ne 0) {
+            $invalidPackages++
+          }
+        }
+        if ($invalidPackages -gt 0) {
+          Write-Output "::error::$invalidPackages NuGet package(s) failed validation."
+        }
+
+  publish-github:
+    needs: validate-packages
+    permissions:
+      packages: write
+    runs-on: ubuntu-latest
+    if: |
+      github.event.repository.fork == false &&
+      (github.ref == format('refs/heads/{0}', github.event.repository.default_branch) ||
+       startsWith(github.ref, 'refs/tags/v'))
+    steps:
+
+    - name: Download packages
+      uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
+      with:
+        name: packages-windows
+
+    - name: Setup .NET SDK
+      uses: actions/setup-dotnet@3447fd6a9f9e57506b15f895c5b76d3b197dc7c2 # v3.2.0
+
+    - name: Publish NuGet packages to GitHub Packages
+      run: dotnet nuget push "*.nupkg" --api-key ${{ secrets.GITHUB_TOKEN }} --skip-duplicate --no-symbols --source https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json
+
+  # TODO Add Authenticode signing step before publish-nuget.
+  # See https://github.com/dotnet/sign/blob/main/docs/gh-build-and-sign.yml.
+
+  publish-nuget:
+    needs: publish-github
+    runs-on: ubuntu-latest
+    # TODO Optionally use an environment to protect access to the token
+    #environment:
+    #  name: NuGet
+    #  url: https://www.nuget.org/packages/Polly
+    if: |
+      github.event.repository.fork == false &&
+      startsWith(github.ref, 'refs/tags/')
+    steps:
+
+    - name: Download packages
+      uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
+      with:
+        name: packages-windows
+
+    - name: Setup .NET SDK
+      uses: actions/setup-dotnet@3447fd6a9f9e57506b15f895c5b76d3b197dc7c2 # v3.2.0
+
+    - name: Push NuGet packages to NuGet.org
+      run: dotnet nuget push "*.nupkg" --api-key ${{ secrets.NUGET_TOKEN }} --skip-duplicate --source https://api.nuget.org/v3/index.json

@@ -35,7 +35,7 @@ var artifactsDir = Directory("./artifacts");
 var testResultsDir = System.IO.Path.Combine(artifactsDir, Directory("test-results"));
 
 // NuGet
-var nupkgDestDir = System.IO.Path.Combine(artifactsDir, Directory("nuget-package"));
+var nupkgDestDir = System.IO.Path.Combine(artifactsDir, Directory("nuget-packages"));
 
 // GitVersion
 var gitVersionPath = ToolsExePath("GitVersion.exe");
