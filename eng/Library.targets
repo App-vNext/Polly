@@ -38,7 +38,13 @@
     <PackageProjectUrl>https://github.com/App-vNext/Polly</PackageProjectUrl>
     <PackageTags>Exception Handling Resilience Transient Fault Policy Circuit Breaker CircuitBreaker Retry Wait Cache Cache-aside Bulkhead Rate-limit Fallback Timeout Throttle Parallelization</PackageTags>
     <PackageReleaseNotes>See https://github.com/App-vNext/Polly/blob/master/CHANGELOG.md for details</PackageReleaseNotes>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="$(MsBuildThisFileDirectory)..\$(PackageIcon)" Pack="true" PackagePath="" />
+    <None Include="$(MsBuildThisFileDirectory)..\$(PackageReadmeFile)" Pack="true" PackagePath="" />
+  </ItemGroup>
 
   <Target Name="AddInternalsVisibleToDynamicProxyGenAssembly2" BeforeTargets="BeforeCompile">
     <ItemGroup>
