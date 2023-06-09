@@ -281,6 +281,7 @@ Task("__CreateSignedNuGetPackages")
             AssemblyVersion = assemblyVersion,
             FileVersion = assemblyFileVersion,
             TreatAllWarningsAs = MSBuildTreatAllWarningsAs.Error,
+            PackageVersion = nugetVersion,
             Version = nugetVersion,
         },
     };
