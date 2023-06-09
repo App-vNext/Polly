@@ -1,0 +1,4 @@
+next-version: 8.0.0
+branches:
+  main:
+    tag: v8alpha
