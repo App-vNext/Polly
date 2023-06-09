@@ -268,7 +268,7 @@ Task("__RunMutationTests")
     }
 });
 
-Task("__CreateSignedNuGetPackages")
+Task("__CreateNuGetPackages")
     .Does(() =>
 {
     var dotNetPackSettings = new DotNetPackSettings
@@ -310,7 +310,7 @@ Task("Build")
     .IsDependentOn("__BuildSolutions")
     .IsDependentOn("__RunTests")
     .IsDependentOn("__RunMutationTests")
-    .IsDependentOn("__CreateSignedNuGetPackages");
+    .IsDependentOn("__CreateNuGetPackages");
 
 ///////////////////////////////////////////////////////////////////////////////
 // PRIMARY TARGETS
