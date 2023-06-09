@@ -158,11 +158,11 @@ Task("__UpdateAssemblyVersionInformation")
     Information("FullSemVer -> {0}", gitVersionOutput["FullSemVer"]);
     Information("AssemblySemVer -> {0}", gitVersionOutput["AssemblySemVer"]);
     Information("MajorMinorPatch -> {0}", gitVersionOutput["MajorMinorPatch"]);
-    Information("BuildMetaData -> {0}", gitVersionOutput["BuildMetaData"]);
+    Information("CommitsSinceVersionSource -> {0}", gitVersionOutput["CommitsSinceVersionSource"]);
 
     nugetVersion = gitVersionOutput["NuGetVersion"].ToString();
     assemblyVersion = gitVersionOutput["Major"].ToString() + ".0.0.0";
-    assemblyFileVersion = gitVersionOutput["MajorMinorPatch"].ToString() + "." + gitVersionOutput["BuildMetaData"].ToString();
+    assemblyFileVersion = gitVersionOutput["MajorMinorPatch"].ToString() + "." + gitVersionOutput["CommitsSinceVersionSource"].ToString();
 
     Information("");
     Information("Mapping versioning information to:");
