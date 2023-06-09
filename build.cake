@@ -39,13 +39,13 @@ var nupkgDestDir = System.IO.Path.Combine(artifactsDir, Directory("nuget-package
 
 // GitVersion
 var gitVersionPath = ToolsExePath("GitVersion.exe");
-var gitVersionConfigFilePath = "./GitVersionConfig.yaml";
+var gitVersionConfigFilePath = "./GitVersion.yml";
 Dictionary<string, object> gitVersionOutput;
 
 // Versioning
 string nugetVersion;
 string assemblyVersion;
-string assemblySemver;
+string assemblyFileVersion;
 
 // Stryker / Mutation Testing
 var strykerConfig = File("./eng/stryker-config.json");
@@ -157,17 +157,18 @@ Task("__UpdateAssemblyVersionInformation")
     Information("NuGetVersion -> {0}", gitVersionOutput["NuGetVersion"]);
     Information("FullSemVer -> {0}", gitVersionOutput["FullSemVer"]);
     Information("AssemblySemVer -> {0}", gitVersionOutput["AssemblySemVer"]);
+    Information("MajorMinorPatch -> {0}", gitVersionOutput["MajorMinorPatch"]);
+    Information("BuildMetaData -> {0}", gitVersionOutput["BuildMetaData"]);
 
     nugetVersion = gitVersionOutput["NuGetVersion"].ToString();
     assemblyVersion = gitVersionOutput["Major"].ToString() + ".0.0.0";
-    assemblySemver = gitVersionOutput["AssemblySemVer"].ToString();
+    assemblyFileVersion = gitVersionOutput["MajorMinorPatch"].ToString() + "." + gitVersionOutput["BuildMetaData"].ToString();
 
     Information("");
     Information("Mapping versioning information to:");
     Information("NuGet package version -> {0}", nugetVersion);
     Information("AssemblyVersion -> {0}", assemblyVersion);
-    Information("AssemblyFileVersion -> {0}", assemblySemver);
-    Information("AssemblyInformationalVersion -> {0}", assemblySemver);
+    Information("AssemblyFileVersion -> {0}", assemblyFileVersion);
 });
 
 Task("__BuildSolutions")
@@ -185,7 +186,7 @@ Task("__BuildSolutions")
             MSBuildSettings = new DotNetMSBuildSettings
             {
                 AssemblyVersion = assemblyVersion,
-                FileVersion = assemblySemver,
+                FileVersion = assemblyFileVersion,
                 TreatAllWarningsAs = MSBuildTreatAllWarningsAs.Error,
                 Version = nugetVersion,
             },
@@ -278,7 +279,7 @@ Task("__CreateSignedNuGetPackages")
         MSBuildSettings = new DotNetMSBuildSettings
         {
             AssemblyVersion = assemblyVersion,
-            FileVersion = assemblySemver,
+            FileVersion = assemblyFileVersion,
             TreatAllWarningsAs = MSBuildTreatAllWarningsAs.Error,
             Version = nugetVersion,
         },
