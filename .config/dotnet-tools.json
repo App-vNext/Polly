@@ -7,12 +7,6 @@
       "commands": [
         "dotnet-cake"
       ]
-    },
-    "GitVersion.Tool": {
-      "version": "5.12.0",
-      "commands": [
-        "dotnet-gitversion"
-      ]
     }
   }
 }

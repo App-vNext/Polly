@@ -17,9 +17,7 @@ var configuration = Argument<string>("configuration", "Release");
 //////////////////////////////////////////////////////////////////////
 
 #addin nuget:?package=Cake.FileHelpers&version=6.0.0
-#addin nuget:?package=Cake.Yaml&version=6.0.0
 #addin nuget:?package=Newtonsoft.Json&version=13.0.2
-#addin nuget:?package=YamlDotNet&version=12.3.1
 
 ///////////////////////////////////////////////////////////////////////////////
 // GLOBAL VARIABLES
@@ -37,27 +35,9 @@ var testResultsDir = System.IO.Path.Combine(artifactsDir, Directory("test-result
 // NuGet
 var nupkgDestDir = System.IO.Path.Combine(artifactsDir, Directory("nuget-packages"));
 
-// GitVersion
-var gitVersionPath = ToolsExePath("GitVersion.exe");
-var gitVersionConfigFilePath = "./GitVersion.yml";
-Dictionary<string, object> gitVersionOutput;
-
-// Versioning
-string nugetVersion;
-string assemblyVersion;
-string assemblyFileVersion;
-
 // Stryker / Mutation Testing
 var strykerConfig = File("./eng/stryker-config.json");
 var strykerOutput = Directory("StrykerOutput");
-
-///////////////////////////////////////////////////////////////////////////////
-// INNER CLASSES
-///////////////////////////////////////////////////////////////////////////////
-class GitVersionConfigYaml
-{
-    public string NextVersion { get; set; }
-}
 
 ///////////////////////////////////////////////////////////////////////////////
 // SETUP / TEARDOWN
@@ -120,57 +100,6 @@ Task("__RestoreNuGetPackages")
     }
 });
 
-Task("__UpdateAssemblyVersionInformation")
-    .Does(() =>
-{
-    var gitVersionSettings = new ProcessSettings()
-        .SetRedirectStandardOutput(true)
-        .WithArguments(args => args.Append("gitversion"));
-
-    try
-    {
-        IEnumerable<string> outputLines;
-        StartProcess("dotnet", gitVersionSettings, out outputLines);
-
-        var output = string.Join("\n", outputLines);
-        gitVersionOutput = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, object>>(output);
-    }
-    catch
-    {
-        Information("Error reading git version information. Build may be running outside of a git repo. Falling back to version specified in " + gitVersionConfigFilePath);
-
-        string gitVersionYamlString = System.IO.File.ReadAllText(gitVersionConfigFilePath);
-        GitVersionConfigYaml deserialized = DeserializeYaml<GitVersionConfigYaml>(gitVersionYamlString.Replace("next-version", "NextVersion"));
-        string gitVersionConfig = deserialized.NextVersion;
-
-        gitVersionOutput = new Dictionary<string, object>
-        {
-            { "NuGetVersion", gitVersionConfig + "-NotFromGitRepo" },
-            { "FullSemVer", gitVersionConfig },
-            { "AssemblySemVer", gitVersionConfig },
-            { "Major", gitVersionConfig.Split('.')[0] },
-        };
-    }
-
-    Information("");
-    Information("Obtained raw version info for package versioning:");
-    Information("NuGetVersion -> {0}", gitVersionOutput["NuGetVersion"]);
-    Information("FullSemVer -> {0}", gitVersionOutput["FullSemVer"]);
-    Information("AssemblySemVer -> {0}", gitVersionOutput["AssemblySemVer"]);
-    Information("MajorMinorPatch -> {0}", gitVersionOutput["MajorMinorPatch"]);
-    Information("CommitsSinceVersionSource -> {0}", gitVersionOutput["CommitsSinceVersionSource"]);
-
-    nugetVersion = gitVersionOutput["NuGetVersion"].ToString();
-    assemblyVersion = gitVersionOutput["Major"].ToString() + ".0.0.0";
-    assemblyFileVersion = gitVersionOutput["MajorMinorPatch"].ToString() + "." + gitVersionOutput["CommitsSinceVersionSource"].ToString();
-
-    Information("");
-    Information("Mapping versioning information to:");
-    Information("NuGet package version -> {0}", nugetVersion);
-    Information("AssemblyVersion -> {0}", assemblyVersion);
-    Information("AssemblyFileVersion -> {0}", assemblyFileVersion);
-});
-
 Task("__BuildSolutions")
     .Does(() =>
 {
@@ -185,10 +114,7 @@ Task("__BuildSolutions")
             NoRestore = true,
             MSBuildSettings = new DotNetMSBuildSettings
             {
-                AssemblyVersion = assemblyVersion,
-                FileVersion = assemblyFileVersion,
                 TreatAllWarningsAs = MSBuildTreatAllWarningsAs.Error,
-                Version = nugetVersion,
             },
         };
 
@@ -278,25 +204,24 @@ Task("__CreateNuGetPackages")
         OutputDirectory = nupkgDestDir,
         MSBuildSettings = new DotNetMSBuildSettings
         {
-            AssemblyVersion = assemblyVersion,
-            FileVersion = assemblyFileVersion,
             TreatAllWarningsAs = MSBuildTreatAllWarningsAs.Error,
-            PackageVersion = nugetVersion,
-            Version = nugetVersion,
         },
     };
 
-    Information("Building Polly.Core.{0}.nupkg", nugetVersion);
-    DotNetPack(System.IO.Path.Combine(srcDir, "Polly.Core", "Polly.Core.csproj"), dotNetPackSettings);
+    var packages = new[]
+    {
+        System.IO.Path.Combine(srcDir, "Polly.Core", "Polly.Core.csproj"),
+        System.IO.Path.Combine(srcDir, "Polly", "Polly.csproj"),
+        System.IO.Path.Combine(srcDir, "Polly.RateLimiting", "Polly.RateLimiting.csproj"),
+        System.IO.Path.Combine(srcDir, "Polly.Extensions", "Polly.Extensions.csproj"),
+    };
 
-    Information("Building Polly.{0}.nupkg", nugetVersion);
-    DotNetPack(System.IO.Path.Combine(srcDir, "Polly", "Polly.csproj"), dotNetPackSettings);
+    Information("Building NuGet packages");
 
-    Information("Building Polly.RateLimiting.{0}.nupkg", nugetVersion);
-    DotNetPack(System.IO.Path.Combine(srcDir, "Polly.RateLimiting", "Polly.RateLimiting.csproj"), dotNetPackSettings);
-
-    Information("Building Polly.Extensions.{0}.nupkg", nugetVersion);
-    DotNetPack(System.IO.Path.Combine(srcDir, "Polly.Extensions", "Polly.Extensions.csproj"), dotNetPackSettings);
+    foreach (string project in packages)
+    {
+        DotNetPack(project, dotNetPackSettings);
+    }
 });
 
 //////////////////////////////////////////////////////////////////////
@@ -306,7 +231,6 @@ Task("__CreateNuGetPackages")
 Task("Build")
     .IsDependentOn("__Clean")
     .IsDependentOn("__RestoreNuGetPackages")
-    .IsDependentOn("__UpdateAssemblyVersionInformation")
     .IsDependentOn("__BuildSolutions")
     .IsDependentOn("__RunTests")
     .IsDependentOn("__RunMutationTests")
