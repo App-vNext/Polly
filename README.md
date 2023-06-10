@@ -3,12 +3,12 @@
 > **Important Announcement: Architectural changes in v8**
 >
 > Major performance improvements are on the way! Please see our [blog post](https://www.thepollyproject.org/2023/03/03/we-want-your-feedback-introducing-polly-v8/) to learn more and provide feedback in the [related GitHub issue](https://github.com/App-vNext/Polly/issues/1048).
-> 
+>
 > :rotating_light: :rotating_light: **UPDATE: The v8 public API is available for community feedback**: <https://github.com/App-vNext/Polly/pull/1233> :rotating_light: :rotating_light:
 
 # Polly
 
-Polly is a .NET resilience and transient-fault-handling library that allows developers to express policies such as Retry, Circuit Breaker, Timeout, Bulkhead Isolation, Rate-limiting and Fallback in a fluent and thread-safe manner.  
+Polly is a .NET resilience and transient-fault-handling library that allows developers to express policies such as Retry, Circuit Breaker, Timeout, Bulkhead Isolation, Rate-limiting and Fallback in a fluent and thread-safe manner.
 
 Polly targets .NET Standard 1.1 ([coverage](https://docs.microsoft.com/en-us/dotnet/standard/net-standard#net-implementation-support): .NET Core 1.0, Mono, Xamarin, UWP, WP8.1+) and .NET Standard 2.0+ ([coverage](https://docs.microsoft.com/en-us/dotnet/standard/net-standard#net-implementation-support): .NET Core 2.0+, .NET Core 3.0, and later Mono, Xamarin and UWP targets). The NuGet package also includes direct targets for .NET Framework 4.6.1 and 4.7.2.
 
@@ -28,69 +28,70 @@ We are a member of the [.NET Foundation](https://www.dotnetfoundation.org/about)
 <!-- This TOC can be maintained using VS Code's 'Markdown All in One' extension -->
 <!-- Just set the Toc: Levels setting to '2..4', open the command palette,  -->
 <!-- and run 'Markdown All in One: Update Table of Contents'  -->
-* [Get Started](#get-started)
-  * [Installing via the .NET SDK](#installing-via-the-net-sdk)
-  * [Supported targets](#supported-targets)
-  * [Using Polly with HttpClient factory from ASP.NET Core 2.1](#using-polly-with-httpclient-factory-from-aspnet-core-21)
-  * [Role of the readme and the wiki](#role-of-the-readme-and-the-wiki)
-* [Release notes](#release-notes)
-* [Resilience policies](#resilience-policies)
-* [Usage – fault-handling, reactive policies](#usage--fault-handling-reactive-policies)
-  * [Step 1 : Specify the exceptions/faults you want the policy to handle](#step-1--specify-the-exceptionsfaults-you-want-the-policy-to-handle)
-  * [Step 1b: (optionally) Specify return results you want to handle](#step-1b-optionally-specify-return-results-you-want-to-handle)
-  * [Step 2 : Specify how the policy should handle those faults](#step-2--specify-how-the-policy-should-handle-those-faults)
-    * [Retry](#retry)
-    * [Retry forever (until succeeds)](#retry-forever-until-succeeds)
-    * [Wait and retry](#wait-and-retry)
-    * [Wait and retry forever (until succeeds)](#wait-and-retry-forever-until-succeeds)
-    * [Circuit Breaker](#circuit-breaker)
-    * [Advanced Circuit Breaker](#advanced-circuit-breaker)
-    * [Fallback](#fallback)
-  * [Step 3 : Execute code through the policy](#step-3--execute-code-through-the-policy)
-    * [Richer policy consumption patterns](#richer-policy-consumption-patterns)
-* [Usage – proactive policies](#usage--proactive-policies)
-  * [Step 1 : Configure](#step-1--configure)
-    * [Optimistic timeout](#optimistic-timeout)
-    * [Pessimistic timeout](#pessimistic-timeout)
-    * [Bulkhead](#bulkhead)
-    * [Rate-Limit](#rate-limit)
-    * [Cache](#cache)
-    * [PolicyWrap](#policywrap)
-    * [NoOp](#noop)
-  * [Step 2 : Execute the policy](#step-2--execute-the-policy)
-* [Usage – results and exceptions](#usage--results-and-exceptions)
-  * [Getting execution results as a PolicyResult](#getting-execution-results-as-a-policyresult)
-  * [Getting execution results and return values with a HttpResponseMessage](#getting-execution-results-and-return-values-with-a-httpresponsemessage)
-  * [Getting execution results and return values with a Policy\<TResult\>](#getting-execution-results-and-return-values-with-a-policytresult)
-  * [Getting strongly-typed results with ExecuteAndCapture\<TResult\>()](#getting-strongly-typed-results-with-executeandcapturetresult)
-  * [State-change delegates on Policy\<TResult\> policies](#state-change-delegates-on-policytresult-policies)
-  * [BrokenCircuitException\<TResult\>](#brokencircuitexceptiontresult)
-* [Policy Keys and Context data](#policy-keys-and-context-data)
-* [PolicyRegistry](#policyregistry)
-* [Asynchronous Support](#asynchronous-support)
-  * [SynchronizationContext](#synchronizationcontext)
-  * [Cancellation support](#cancellation-support)
-* [Thread safety](#thread-safety)
-* [Interfaces](#interfaces)
-  * [Execution interfaces: `ISyncPolicy` etc](#execution-interfaces-isyncpolicy-etc)
-  * [Policy-kind interfaces: `ICircuitBreakerPolicy` etc](#policy-kind-interfaces-icircuitbreakerpolicy-etc)
-* [Custom policies](#custom-policies)
-* [Chaos engineering with Simmy](#chaos-engineering-with-simmy)
-* [Polly-Contrib](#polly-contrib)
-  * [Available via Polly-Contrib](#available-via-polly-contrib)
-* [3rd Party Libraries and Contributions](#3rd-party-libraries-and-contributions)
-* [Acknowledgements](#acknowledgements)
-* [Sample Projects](#sample-projects)
-* [Instructions for Contributing](#instructions-for-contributing)
-* [License](#license)
-* [Blogs, podcasts, courses, e-books, architecture samples and videos around Polly](#blogs-podcasts-courses-e-books-architecture-samples-and-videos-around-polly)
-  * [Blog posts](#blog-posts)
-  * [Podcasts](#podcasts)
-  * [PluralSight course](#pluralsight-course)
-  * [Sample microservices architecture and e-book](#sample-microservices-architecture-and-e-book)
-    * [Sample microservices architecture](#sample-microservices-architecture)
-    * [e-book](#e-book)
-* [Videos](#videos)
+- [Polly](#polly)
+  - [Get Started](#get-started)
+    - [Installing via the .NET SDK](#installing-via-the-net-sdk)
+    - [Supported targets](#supported-targets)
+    - [Using Polly with HttpClient factory from ASP.NET Core 2.1](#using-polly-with-httpclient-factory-from-aspnet-core-21)
+    - [Role of the readme and the wiki](#role-of-the-readme-and-the-wiki)
+  - [Release notes](#release-notes)
+  - [Resilience policies](#resilience-policies)
+  - [Usage – fault-handling, reactive policies](#usage--fault-handling-reactive-policies)
+    - [Step 1 : Specify the exceptions/faults you want the policy to handle](#step-1--specify-the-exceptionsfaults-you-want-the-policy-to-handle)
+    - [Step 1b: (optionally) Specify return results you want to handle](#step-1b-optionally-specify-return-results-you-want-to-handle)
+    - [Step 2 : Specify how the policy should handle those faults](#step-2--specify-how-the-policy-should-handle-those-faults)
+      - [Retry](#retry)
+      - [Retry forever (until succeeds)](#retry-forever-until-succeeds)
+      - [Wait and retry](#wait-and-retry)
+      - [Wait and retry forever (until succeeds)](#wait-and-retry-forever-until-succeeds)
+      - [Circuit Breaker](#circuit-breaker)
+      - [Advanced Circuit Breaker](#advanced-circuit-breaker)
+      - [Fallback](#fallback)
+    - [Step 3 : Execute code through the policy](#step-3--execute-code-through-the-policy)
+      - [Richer policy consumption patterns](#richer-policy-consumption-patterns)
+  - [Usage – proactive policies](#usage--proactive-policies)
+    - [Step 1 : Configure](#step-1--configure)
+      - [Optimistic timeout](#optimistic-timeout)
+      - [Pessimistic timeout](#pessimistic-timeout)
+      - [Bulkhead](#bulkhead)
+      - [Rate-Limit](#rate-limit)
+      - [Cache](#cache)
+      - [PolicyWrap](#policywrap)
+      - [NoOp](#noop)
+    - [Step 2 : Execute the policy](#step-2--execute-the-policy)
+  - [Usage – results and exceptions](#usage--results-and-exceptions)
+    - [Getting execution results as a PolicyResult](#getting-execution-results-as-a-policyresult)
+    - [Getting execution results and return values with a HttpResponseMessage](#getting-execution-results-and-return-values-with-a-httpresponsemessage)
+    - [Getting execution results and return values with a Policy\<TResult\>](#getting-execution-results-and-return-values-with-a-policytresult)
+    - [Getting strongly-typed results with ExecuteAndCapture\<TResult\>()](#getting-strongly-typed-results-with-executeandcapturetresult)
+    - [State-change delegates on Policy\<TResult\> policies](#state-change-delegates-on-policytresult-policies)
+    - [BrokenCircuitException\<TResult\>](#brokencircuitexceptiontresult)
+  - [Policy Keys and Context data](#policy-keys-and-context-data)
+  - [PolicyRegistry](#policyregistry)
+  - [Asynchronous Support](#asynchronous-support)
+    - [SynchronizationContext](#synchronizationcontext)
+    - [Cancellation support](#cancellation-support)
+  - [Thread safety](#thread-safety)
+  - [Interfaces](#interfaces)
+    - [Execution interfaces: `ISyncPolicy` etc](#execution-interfaces-isyncpolicy-etc)
+    - [Policy-kind interfaces: `ICircuitBreakerPolicy` etc](#policy-kind-interfaces-icircuitbreakerpolicy-etc)
+  - [Custom policies](#custom-policies)
+  - [Chaos engineering with Simmy](#chaos-engineering-with-simmy)
+  - [Polly-Contrib](#polly-contrib)
+    - [Available via Polly-Contrib](#available-via-polly-contrib)
+  - [3rd Party Libraries and Contributions](#3rd-party-libraries-and-contributions)
+  - [Acknowledgements](#acknowledgements)
+  - [Sample Projects](#sample-projects)
+  - [Instructions for Contributing](#instructions-for-contributing)
+  - [License](#license)
+  - [Blogs, podcasts, courses, e-books, architecture samples and videos around Polly](#blogs-podcasts-courses-e-books-architecture-samples-and-videos-around-polly)
+    - [Blog posts](#blog-posts)
+    - [Podcasts](#podcasts)
+    - [PluralSight course](#pluralsight-course)
+    - [Sample microservices architecture and e-book](#sample-microservices-architecture-and-e-book)
+      - [Sample microservices architecture](#sample-microservices-architecture)
+      - [e-book](#e-book)
+  - [Videos](#videos)
 
 ---
 
@@ -255,7 +256,7 @@ Policy
   .Handle<SomeExceptionType>()
   .RetryForever(onRetry: exception =>
   {
-        // Add logic to be executed before each retry, such as logging       
+        // Add logic to be executed before each retry, such as logging
   });
 
 // Retry forever, calling an action on each retry with the
@@ -264,7 +265,7 @@ Policy
   .Handle<SomeExceptionType>()
   .RetryForever(onRetry: (exception, context) =>
   {
-        // Add logic to be executed before each retry, such as logging       
+        // Add logic to be executed before each retry, such as logging
   });
 ```
 
@@ -295,7 +296,7 @@ Policy
     TimeSpan.FromSeconds(2),
     TimeSpan.FromSeconds(3)
   }, (exception, timeSpan) => {
-    // Add logic to be executed before each retry, such as logging    
+    // Add logic to be executed before each retry, such as logging
   });
 
 // Retry, waiting a specified duration between each retry,
@@ -309,7 +310,7 @@ Policy
     TimeSpan.FromSeconds(2),
     TimeSpan.FromSeconds(3)
   }, (exception, timeSpan, context) => {
-    // Add logic to be executed before each retry, such as logging    
+    // Add logic to be executed before each retry, such as logging
   });
 
 // Retry, waiting a specified duration between each retry,
@@ -323,7 +324,7 @@ Policy
     TimeSpan.FromSeconds(2),
     TimeSpan.FromSeconds(3)
   }, (exception, timeSpan, retryCount, context) => {
-    // Add logic to be executed before each retry, such as logging    
+    // Add logic to be executed before each retry, such as logging
   });
 
 // Retry a specified number of times, using a function to
@@ -388,10 +389,10 @@ Policy
 Policy
   .Handle<SomeExceptionType>()
   .WaitAndRetryForever(
-    retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),    
+    retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),
     (exception, timespan) =>
     {
-        // Add logic to be executed before each retry, such as logging       
+        // Add logic to be executed before each retry, such as logging
     });
 
 // Wait and retry forever, calling an action on each retry with the
@@ -399,10 +400,10 @@ Policy
 Policy
   .Handle<SomeExceptionType>()
   .WaitAndRetryForever(
-    retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),    
+    retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),
     (exception, timespan, context) =>
     {
-        // Add logic to be executed before each retry, such as logging       
+        // Add logic to be executed before each retry, such as logging
     });
 ```
 
@@ -583,7 +584,7 @@ Policy
 Defining and consuming the policy in the same scope, as shown above, is the most immediate way to use Polly.  Consider also:
 
 + Separate policy definition from policy consumption, and inject policies into the code which will consume them. This [enables many unit-testing scenarios](https://github.com/App-vNext/Polly/wiki/Unit-testing-with-Polly---with-examples).
-+ If your application uses Polly in a number of locations, define all policies at start-up, and place them in a [`PolicyRegistry`](https://github.com/App-vNext/Polly/wiki/PolicyRegistry).  This is a common pattern in .NET Core applications.  For instance, you might define your own extension method on `IServiceCollection` to configure the policies you will consume elsewhere in the application.  PolicyRegistry also [combines well with DI to support unit-testing](https://github.com/App-vNext/Polly/wiki/Unit-testing-with-Polly---with-examples#use-policyregistry-with-di-to-work-with-policy-collections).  
++ If your application uses Polly in a number of locations, define all policies at start-up, and place them in a [`PolicyRegistry`](https://github.com/App-vNext/Polly/wiki/PolicyRegistry).  This is a common pattern in .NET Core applications.  For instance, you might define your own extension method on `IServiceCollection` to configure the policies you will consume elsewhere in the application.  PolicyRegistry also [combines well with DI to support unit-testing](https://github.com/App-vNext/Polly/wiki/Unit-testing-with-Polly---with-examples#use-policyregistry-with-di-to-work-with-policy-collections).
 
 ```csharp
 public static ConfigurePollyPolicies(this IServiceCollection services)
@@ -833,7 +834,7 @@ Reputation reps = Policy
    .Handle<FooException>()
    .Fallback<Reputation>(Reputation.NotAvailable)
    .Wrap(commonResilience)
-   .Execute(() => { /* get reputation */ });  
+   .Execute(() => { /* get reputation */ });
 
 ```
 
@@ -866,8 +867,8 @@ var policyResult = await Policy
               .Handle<HttpRequestException>()
               .RetryAsync()
               .ExecuteAndCaptureAsync(() => DoSomethingAsync());
-/*              
-policyResult.Outcome - whether the call succeeded or failed         
+/*
+policyResult.Outcome - whether the call succeeded or failed
 policyResult.FinalException - the final exception captured, will be null if the call succeeded
 policyResult.ExceptionType - was the final exception an exception the policy was defined to handle (like HttpRequestException above) or an unhandled one (say Exception). Will be null if the call succeeded.
 policyResult.Result - if executing a func, the result if the call succeeded or the type's default value
@@ -903,14 +904,14 @@ Configuring a policy with `.HandleResult<TResult>(...)` or `.OrResult<TResult>(.
 These policies must be used to execute delegates returning `TResult`, i.e.:
 
 + `Execute(Func<TResult>)` (and related overloads)
-+ `ExecuteAsync(Func<CancellationToken, Task<TResult>>)` (and related overloads)  
++ `ExecuteAsync(Func<CancellationToken, Task<TResult>>)` (and related overloads)
 
 ### Getting strongly-typed results with ExecuteAndCapture&lt;TResult&gt;()
 
 `.ExecuteAndCapture(...)` on non-generic policies returns a `PolicyResult` with properties:
 
 ```txt
-policyResult.Outcome - whether the call succeeded or failed         
+policyResult.Outcome - whether the call succeeded or failed
 policyResult.FinalException - the final exception captured; will be null if the call succeeded
 policyResult.ExceptionType - was the final exception an exception the policy was defined to handle (like HttpRequestException above) or an unhandled one (say Exception)? Will be null if the call succeeded.
 policyResult.Result - if executing a func, the result if the call succeeded; otherwise, the type's default value
@@ -925,7 +926,7 @@ policyResult.FinalHandledResult - the final fault result handled; will be null o
 
 ### State-change delegates on Policy&lt;TResult&gt; policies
 
-In non-generic policies handling only exceptions, state-change delegates such as `onRetry` and `onBreak` take an `Exception` parameter.  
+In non-generic policies handling only exceptions, state-change delegates such as `onRetry` and `onBreak` take an `Exception` parameter.
 
 In generic-policies handling `TResult` return values, state-change delegates are identical except they take a `DelegateResult<TResult>` parameter in place of `Exception.` `DelegateResult<TResult>` has two properties:
 
@@ -1044,16 +1045,16 @@ await Policy
 
 ### SynchronizationContext
 
-Async continuations and retries by default do not run on a captured synchronization context. To change this, use `.ExecuteAsync(...)` overloads taking a boolean `continueOnCapturedContext` parameter.  
+Async continuations and retries by default do not run on a captured synchronization context. To change this, use `.ExecuteAsync(...)` overloads taking a boolean `continueOnCapturedContext` parameter.
 
 ### Cancellation support
 
-Async policy execution supports cancellation via `.ExecuteAsync(...)` overloads taking a `CancellationToken`.  
+Async policy execution supports cancellation via `.ExecuteAsync(...)` overloads taking a `CancellationToken`.
 
 The token you pass as the `cancellationToken` parameter to the `ExecuteAsync(...)` call serves three purposes:
 
 + It cancels Policy actions such as further retries, waits between retries or waits for a bulkhead execution slot.
-+ It is passed by the policy as the `CancellationToken` input parameter to any delegate executed through the policy, to support cancellation during delegate execution.  
++ It is passed by the policy as the `CancellationToken` input parameter to any delegate executed through the policy, to support cancellation during delegate execution.
 + In common with the Base Class Library implementation in `Task.Run(…)` and elsewhere, if the cancellation token is cancelled before execution begins, the user delegate is not executed at all.
 
 ```csharp
@@ -1087,7 +1088,7 @@ Execution interfaces [`ISyncPolicy`](https://github.com/App-vNext/Polly/tree/mai
 
 ### Policy-kind interfaces: `ICircuitBreakerPolicy` etc
 
-Orthogonal to the execution interfaces, interfaces specific to the kind of Policy define properties and methods common to that type of policy.  
+Orthogonal to the execution interfaces, interfaces specific to the kind of Policy define properties and methods common to that type of policy.
 
 For example, [`ICircuitBreakerPolicy`](https://github.com/App-vNext/Polly/tree/main/src/Polly/CircuitBreaker/ICircuitBreakerPolicy.cs) defines
 
@@ -1119,7 +1120,7 @@ We provide a [starter template for a custom policy](https://github.com/Polly-Con
 
 ## Chaos engineering with Simmy
 
-[Simmy](https://github.com/Polly-Contrib/Simmy) is a major new companion project adding a chaos-engineering and fault-injection dimension to Polly, through the provision of policies to selectively inject faults or latency.  
+[Simmy](https://github.com/Polly-Contrib/Simmy) is a major new companion project adding a chaos-engineering and fault-injection dimension to Polly, through the provision of policies to selectively inject faults or latency.
 
 Head over to the [Simmy](https://github.com/Polly-Contrib/Simmy) repo to find out more.
 
@@ -1152,7 +1153,7 @@ Both templates contain a full project structure referencing Polly, Polly's defau
 + [Steven van Deursen's ReadOnlyDictionary](http://www.cuttingedge.it/blogs/steven/pivot/entry.php?id=29) (until Polly v5.0.6)
 + [Stephen Cleary's AsyncEx library](https://github.com/StephenCleary/AsyncEx) for AsyncSemaphore (supports BulkheadAsync policy for .NET4.0 only) (until Polly v5.9.0) | [MIT license](https://github.com/StephenCleary/AsyncEx/blob/master/LICENSE)
 + [@theraot](https://github.com/theraot)'s [ExceptionDispatchInfo implementation for .NET4.0](https://stackoverflow.com/a/31226509/) (supports Timeout policy for .NET4.0 only) (until Polly v5.9.0) including also a contribution by [@migueldeicaza](https://github.com/migueldeicaza) | Licensed under and distributed under [Creative Commons Attribution Share Alike license](https://creativecommons.org/licenses/by-sa/3.0/) per [StackExchange Terms of Service](https://stackexchange.com/legal)
-+ Build powered by [Cake](http://cakebuild.net/) and [GitVersionTask](https://github.com/GitTools/GitVersion).  Developers powered by [Resharper](https://www.jetbrains.com/resharper/), with thanks to JetBrains for [OSS licensing](https://www.jetbrains.com/support/community/#section=open-source).
++ Build powered by [Cake](https://cakebuild.net/) and [MinVer](https://github.com/adamralph/minver).  Developers powered by [Resharper](https://www.jetbrains.com/resharper/), with thanks to JetBrains for [OSS licensing](https://www.jetbrains.com/support/community/#section=open-source).
 
 ## Acknowledgements
 
@@ -1177,11 +1178,11 @@ Both templates contain a full project structure referencing Polly, Polly's defau
 + [@christopherbahr](https://github.com/christopherbahr) - Added optimisation for circuit-breaker hot path.
 + [@Finity](https://github.com/Finity) - Fixed circuit-breaker threshold bug.
 + [@reisenberger](https://github.com/reisenberger) - Add some missing ExecuteAndCapture/Async overloads.
-+ [@brunolauze](https://github.com/brunolauze) - Add CancellationToken support to synchronous executions (to support TimeoutPolicy).  
-+ [@reisenberger](https://github.com/reisenberger) - Add PolicyWrap.  
++ [@brunolauze](https://github.com/brunolauze) - Add CancellationToken support to synchronous executions (to support TimeoutPolicy).
++ [@reisenberger](https://github.com/reisenberger) - Add PolicyWrap.
 + [@reisenberger](https://github.com/reisenberger) - Add Fallback policy.
 + [@reisenberger](https://github.com/reisenberger) - Add PolicyKeys and context to all policy executions, as bedrock for policy events and metrics tracking executions.
-+ [@reisenberger](https://github.com/reisenberger),  and contributions from [@brunolauze](https://github.com/brunolauze) -  Add Bulkhead Isolation policy.  
++ [@reisenberger](https://github.com/reisenberger),  and contributions from [@brunolauze](https://github.com/brunolauze) -  Add Bulkhead Isolation policy.
 + [@reisenberger](https://github.com/reisenberger) - Add Timeout policy.
 + [@reisenberger](https://github.com/reisenberger) - Fix .NETStandard 1.0 targeting.  Remove PCL259 target.  PCL259 support is provided via .NETStandard1.0 target, going forward.
 + [@reisenberger](https://github.com/reisenberger) - Fix CircuitBreaker HalfOpen state and cases when breakDuration is shorter than typical call timeout.  Thanks to [@vgouw](https://github.com/vgouw) and [@kharos](https://github.com/kharos) for the reports and insightful thinking.
@@ -1233,7 +1234,7 @@ Both templates contain a full project structure referencing Polly, Polly's defau
 
 ## Instructions for Contributing
 
-Please be sure to branch from the head of the default branch when developing contributions.  
+Please be sure to branch from the head of the default branch when developing contributions.
 
 For GitHub workflow, check out our [Wiki](https://github.com/App-vNext/Polly/wiki/Git-Workflow).
 
@@ -1277,7 +1278,7 @@ When we discover an interesting write-up on Polly, we'll add it to this list. If
 
 ### Podcasts
 
-+ June 2018: [DotNetRocks features Polly](https://www.dotnetrocks.com/?show=1556) as [Carl Franklin](https://twitter.com/carlfranklin) and [Richard Campbell](https://twitter.com/richcampbell) chat with [Dylan Reisenberger](https://twitter.com/softwarereisen) about policy patterns, and the new ASP NET Core 2.1 integration with IHttpClientFactory.  
++ June 2018: [DotNetRocks features Polly](https://www.dotnetrocks.com/?show=1556) as [Carl Franklin](https://twitter.com/carlfranklin) and [Richard Campbell](https://twitter.com/richcampbell) chat with [Dylan Reisenberger](https://twitter.com/softwarereisen) about policy patterns, and the new ASP NET Core 2.1 integration with IHttpClientFactory.
 + April 2017: [Dylan Reisenberger](https://twitter.com/softwarereisen) sits down virtually with [Bryan Hogan](https://twitter.com/bryanjhogan) of [NoDogmaBlog](http://nodogmablog.bryanhogan.net/) for an [Introduction to Polly podcast](http://nodogmapodcast.bryanhogan.net/71-dylan-reisenberger-the-polly-project/).  Why do I need Polly?  History of the Polly project.  What do we mean by resilience and transient faults?  How retry and circuit-breaker help.  Exponential backoff.  Stability patterns.  Bulkhead isolation.  Future directions (as at April 2017).
 
 ### PluralSight course
@@ -1288,7 +1289,7 @@ When we discover an interesting write-up on Polly, we'll add it to this list. If
 
 #### Sample microservices architecture
 
-+ [Cesar de la Torre](https://github.com/CESARDELATORRE) produced the Microsoft [eShopOnContainers project](https://github.com/dotnet-architecture/eShopOnContainers), a sample project demonstrating a .NET Microservices architecture. The project uses Polly retry and circuit-breaker policies for resilience in calls to microservices, and in establishing connections to transports such as RabbitMQ.  
++ [Cesar de la Torre](https://github.com/CESARDELATORRE) produced the Microsoft [eShopOnContainers project](https://github.com/dotnet-architecture/eShopOnContainers), a sample project demonstrating a .NET Microservices architecture. The project uses Polly retry and circuit-breaker policies for resilience in calls to microservices, and in establishing connections to transports such as RabbitMQ.
 
 #### e-book
 
