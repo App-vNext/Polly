@@ -126,7 +126,7 @@ internal sealed class HedgingExecutionContext<T>
 
         using var delayTaskCancellation = CancellationTokenSource.CreateLinkedTokenSource(Snapshot.Context.CancellationToken);
 
-        var delayTask = _timeProvider.DelayAsync(hedgingDelay, Snapshot.Context);
+        var delayTask = _timeProvider.Delay(hedgingDelay, delayTaskCancellation.Token);
         Task<Task> whenAnyHedgedTask = WaitForTaskCompetitionAsync();
         var completedTask = await Task.WhenAny(whenAnyHedgedTask, delayTask).ConfigureAwait(ContinueOnCapturedContext);
 
@@ -138,6 +138,7 @@ internal sealed class HedgingExecutionContext<T>
         // cancel the ongoing delay task
         // Stryker disable once boolean : no means to test this
         delayTaskCancellation.Cancel(throwOnFirstException: false);
+
         await whenAnyHedgedTask.ConfigureAwait(ContinueOnCapturedContext);
 
         return TryRemoveExecutedTask();
