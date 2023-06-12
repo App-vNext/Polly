@@ -4,29 +4,16 @@ namespace Polly.Extensions.Utils;
 
 internal sealed class OptionsReloadHelper<T> : IDisposable
 {
-    private readonly string? _name;
     private readonly IDisposable? _listener;
     private CancellationTokenSource _cancellation = new();
 
-    public OptionsReloadHelper(IOptionsMonitor<T> monitor, string? name)
+    public OptionsReloadHelper(IOptionsMonitor<T> monitor, string name) => _listener = monitor.OnChange((_, changedNamed) =>
     {
-        _name = name;
-
-        if (!string.IsNullOrEmpty(name))
+        if (name == changedNamed)
         {
-            _listener = monitor.OnChange((_, name) =>
-            {
-                if (name == _name)
-                {
-                    HandleChange();
-                }
-            });
+            HandleChange();
         }
-        else
-        {
-            _listener = monitor.OnChange(_ => HandleChange());
-        }
-    }
+    });
 
     public CancellationToken GetCancellationToken() => _cancellation.Token;
 

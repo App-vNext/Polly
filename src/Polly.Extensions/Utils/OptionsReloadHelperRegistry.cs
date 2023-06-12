@@ -14,6 +14,8 @@ internal sealed class OptionsReloadHelperRegistry<TKey> : IDisposable
 
     public OptionsReloadHelper<TOptions> Get<TOptions>(TKey key, string? name)
     {
+        name ??= Options.DefaultName;
+
         return (OptionsReloadHelper<TOptions>)_helpers.GetOrAdd((typeof(TOptions), key, name), _ =>
         {
             return new OptionsReloadHelper<TOptions>(_serviceProvider.GetRequiredService<IOptionsMonitor<TOptions>>(), name);
