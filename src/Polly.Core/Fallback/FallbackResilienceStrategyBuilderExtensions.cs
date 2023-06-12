@@ -20,7 +20,7 @@ public static class FallbackResilienceStrategyBuilderExtensions
     public static ResilienceStrategyBuilder<TResult> AddFallback<TResult>(
         this ResilienceStrategyBuilder<TResult> builder,
         Action<PredicateBuilder<TResult>> shouldHandle,
-        Func<OutcomeArguments<TResult, HandleFallbackArguments>, ValueTask<TResult>> fallbackAction)
+        Func<OutcomeArguments<TResult, HandleFallbackArguments>, ValueTask<Outcome<TResult>>> fallbackAction)
     {
         Guard.NotNull(builder);
         Guard.NotNull(shouldHandle);
@@ -53,23 +53,7 @@ public static class FallbackResilienceStrategyBuilderExtensions
         Guard.NotNull(builder);
         Guard.NotNull(options);
 
-        ValidationHelper.ValidateObject(options, "The fallback strategy options are invalid.");
-
-        var handler = new FallbackHandler()
-            .SetFallback<TResult>(handler =>
-            {
-                handler.FallbackAction = options.FallbackAction;
-                handler.ShouldHandle = options.ShouldHandle;
-            })
-            .CreateHandler();
-
-        builder.AddStrategy(context =>
-            new FallbackResilienceStrategy(
-                handler,
-                context.CreateInvoker(options.OnFallback),
-                context.Telemetry),
-            options);
-
+        builder.AddFallbackCore(options);
         return builder;
     }
 
@@ -86,15 +70,26 @@ public static class FallbackResilienceStrategyBuilderExtensions
         Guard.NotNull(builder);
         Guard.NotNull(options);
 
+        builder.AddFallbackCore(options);
+        return builder;
+    }
+
+    internal static void AddFallbackCore<TResult>(this ResilienceStrategyBuilderBase builder, FallbackStrategyOptions<TResult> options)
+    {
         ValidationHelper.ValidateObject(options, "The fallback strategy options are invalid.");
 
         builder.AddStrategy(context =>
-            new FallbackResilienceStrategy(
-                options.Handler.CreateHandler(),
-                context.CreateInvoker(options.OnFallback),
-                context.Telemetry),
-            options);
+        {
+            var handler = new FallbackHandler<TResult>(
+                context.CreateInvoker(options.ShouldHandle)!,
+                options.FallbackAction!,
+                IsGeneric: context.IsGenericBuilder);
 
-        return builder;
+            return new FallbackResilienceStrategy<TResult>(
+                handler,
+                context.CreateInvoker(options.OnFallback),
+                context.Telemetry);
+        },
+        options);
     }
 }

@@ -9,21 +9,20 @@ public class FallbackStrategyOptionsTests
     [Fact]
     public void Ctor_EnsureDefaults()
     {
-        var options = new FallbackStrategyOptions();
+        var options = new FallbackStrategyOptions<int>();
 
         options.StrategyType.Should().Be("Fallback");
-        options.Handler.Should().NotBeNull();
-        options.Handler.IsEmpty.Should().BeTrue();
+        options.ShouldHandle.Should().BeNull();
         options.OnFallback.Should().BeNull();
+        options.FallbackAction.Should().BeNull();
     }
 
     [Fact]
     public void Validation()
     {
-        var options = new FallbackStrategyOptions
+        var options = new FallbackStrategyOptions<int>
         {
-            OnFallback = null!,
-            Handler = null!
+            ShouldHandle = null!
         };
 
         options
@@ -34,7 +33,8 @@ public class FallbackStrategyOptionsTests
             Invalid.
 
             Validation Errors:
-            The Handler field is required.
+            The ShouldHandle field is required.
+            The FallbackAction field is required.
             """);
     }
 }
