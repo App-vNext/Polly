@@ -23,26 +23,7 @@ public static class HedgingResilienceStrategyBuilderExtensions
         Guard.NotNull(builder);
         Guard.NotNull(options);
 
-        ValidationHelper.ValidateObject(options, "The hedging strategy options are invalid.");
-
-        builder.AddStrategy(context =>
-        {
-            var handler = new HedgingHandler<TResult>(
-                context.CreateInvoker(options.ShouldHandle)!,
-                options.HedgingActionGenerator,
-                IsGeneric: true);
-
-            return new HedgingResilienceStrategy<TResult>(
-                options.HedgingDelay,
-                options.MaxHedgedAttempts,
-                handler,
-                context.CreateInvoker(options.OnHedging),
-                options.HedgingDelayGenerator,
-                context.TimeProvider,
-                context.Telemetry);
-        },
-        options);
-
+        builder.AddHedgingCore(options);
         return builder;
     }
 
@@ -59,16 +40,22 @@ public static class HedgingResilienceStrategyBuilderExtensions
         Guard.NotNull(builder);
         Guard.NotNull(options);
 
+        builder.AddHedgingCore(options);
+        return builder;
+    }
+
+    internal static void AddHedgingCore<TResult>(this ResilienceStrategyBuilderBase builder, HedgingStrategyOptions<TResult> options)
+    {
         ValidationHelper.ValidateObject(options, "The hedging strategy options are invalid.");
 
         builder.AddStrategy(context =>
         {
-            var handler = new HedgingHandler<object>(
+            var handler = new HedgingHandler<TResult>(
                 context.CreateInvoker(options.ShouldHandle)!,
                 options.HedgingActionGenerator,
-                IsGeneric: false);
+                context.IsGenericBuilder);
 
-            return new HedgingResilienceStrategy<object>(
+            return new HedgingResilienceStrategy<TResult>(
                 options.HedgingDelay,
                 options.MaxHedgedAttempts,
                 handler,
@@ -78,7 +65,5 @@ public static class HedgingResilienceStrategyBuilderExtensions
                 context.Telemetry);
         },
         options);
-
-        return builder;
     }
 }
