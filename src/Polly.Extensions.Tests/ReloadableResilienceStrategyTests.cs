@@ -85,7 +85,7 @@ public class ReloadableResilienceStrategyTests
     {
         var monitor = new Mock<IOptionsMonitor<ReloadableStrategyOptions>>();
 
-        using var helper = new OptionsReloadHelper<ReloadableStrategyOptions>(monitor.Object, null);
+        using var helper = new OptionsReloadHelper<ReloadableStrategyOptions>(monitor.Object, string.Empty);
 
         helper.Invoking(h => h.Dispose()).Should().NotThrow();
     }
