@@ -1,5 +1,7 @@
 namespace Polly;
 
+#pragma warning disable CA1031 // Do not catch general exception types
+
 /// <summary>
 /// Resilience strategy is used to execute the user-provided callbacks.
 /// </summary>
@@ -47,5 +49,43 @@ public abstract partial class ResilienceStrategy
             },
             context,
             (callback, state)).GetResult();
+    }
+
+    internal static ValueTask<Outcome<TResult>> ExecuteCallbackSafeAsync<TResult, TState>(
+        Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,
+        ResilienceContext context,
+        TState state)
+    {
+        if (context.CancellationToken.IsCancellationRequested)
+        {
+            return new ValueTask<Outcome<TResult>>(new Outcome<TResult>(new OperationCanceledException(context.CancellationToken)));
+        }
+
+        try
+        {
+            var callbackTask = callback(context, state);
+            if (callbackTask.IsCompleted)
+            {
+                return new ValueTask<Outcome<TResult>>(callbackTask.GetResult());
+            }
+
+            return AwaitTask(callbackTask, context.ContinueOnCapturedContext);
+        }
+        catch (Exception e)
+        {
+            return new ValueTask<Outcome<TResult>>(new Outcome<TResult>(e));
+        }
+
+        static async ValueTask<Outcome<T>> AwaitTask<T>(ValueTask<Outcome<T>> task, bool continueOnCapturedContext)
+        {
+            try
+            {
+                return await task.ConfigureAwait(continueOnCapturedContext);
+            }
+            catch (Exception e)
+            {
+                return new Outcome<T>(e);
+            }
+        }
     }
 }

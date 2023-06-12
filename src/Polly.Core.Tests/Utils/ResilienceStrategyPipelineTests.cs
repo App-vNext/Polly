@@ -72,6 +72,45 @@ public class ResilienceStrategyPipelineTests
             .NotThrow();
     }
 
+    [Fact]
+    public async Task CreatePipeline_Cancelled_EnsureNoExecution()
+    {
+        using var cancellation = new CancellationTokenSource();
+        cancellation.Cancel();
+        var strategies = new ResilienceStrategy[]
+        {
+            new TestResilienceStrategy(),
+            new TestResilienceStrategy(),
+        };
+
+        var pipeline = ResilienceStrategyPipeline.CreatePipeline(strategies);
+        var context = ResilienceContext.Get();
+        context.CancellationToken = cancellation.Token;
+
+        var result = await pipeline.ExecuteOutcomeAsync((_, _) => "result".AsOutcomeAsync(), context, "state");
+        result.Exception.Should().BeOfType<OperationCanceledException>();
+    }
+
+    [Fact]
+    public async Task CreatePipeline_CancelledLater_EnsureNoExecution()
+    {
+        var executed = false;
+        using var cancellation = new CancellationTokenSource();
+        var strategies = new ResilienceStrategy[]
+        {
+            new TestResilienceStrategy { Before = (_, _) => { executed = true; cancellation.Cancel(); } },
+            new TestResilienceStrategy(),
+        };
+
+        var pipeline = ResilienceStrategyPipeline.CreatePipeline(strategies);
+        var context = ResilienceContext.Get();
+        context.CancellationToken = cancellation.Token;
+
+        var result = await pipeline.ExecuteOutcomeAsync((_, _) => "result".AsOutcomeAsync(), context, "state");
+        result.Exception.Should().BeOfType<OperationCanceledException>();
+        executed.Should().BeTrue();
+    }
+
     private class Strategy : ResilienceStrategy
     {
         protected internal override async ValueTask<Outcome<TResult>> ExecuteCoreAsync<TResult, TState>(

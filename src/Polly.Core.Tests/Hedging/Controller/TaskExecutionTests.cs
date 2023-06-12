@@ -52,6 +52,20 @@ public class TaskExecutionTests : IDisposable
         AssertPrimaryContext(execution.Context, execution);
     }
 
+    [Fact]
+    public async Task Initialize_PrimaryCallbackThrows_EnsureExceptionHandled()
+    {
+        var execution = Create();
+        await execution.InitializeAsync<DisposableResult, string>(HedgedTaskType.Primary, _snapshot,
+            (_, _) => throw new InvalidOperationException(),
+            "dummy-state",
+            1);
+
+        await execution.ExecutionTaskSafe!;
+
+        execution.Outcome.Exception.Should().BeOfType<InvalidOperationException>();
+    }
+
     [InlineData(Handled, true)]
     [InlineData("Unhandled", false)]
     [Theory]

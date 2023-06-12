@@ -57,12 +57,10 @@ internal sealed class RetryResilienceStrategy : ResilienceStrategy
 
         while (true)
         {
-            context.CancellationToken.ThrowIfCancellationRequested();
-
-            var outcome = await callback(context, state).ConfigureAwait(context.ContinueOnCapturedContext);
+            var outcome = await ExecuteCallbackSafeAsync(callback, context, state).ConfigureAwait(context.ContinueOnCapturedContext);
             var shouldRetryArgs = new OutcomeArguments<TResult, ShouldRetryArguments>(context, outcome, new ShouldRetryArguments(attempt));
 
-            if (IsLastAttempt(attempt) || !await ShouldRetry.HandleAsync(shouldRetryArgs).ConfigureAwait(context.ContinueOnCapturedContext))
+            if (context.CancellationToken.IsCancellationRequested || IsLastAttempt(attempt) || !await ShouldRetry.HandleAsync(shouldRetryArgs).ConfigureAwait(context.ContinueOnCapturedContext))
             {
                 return outcome;
             }
@@ -93,7 +91,14 @@ internal sealed class RetryResilienceStrategy : ResilienceStrategy
 
             if (delay > TimeSpan.Zero)
             {
-                await _timeProvider.DelayAsync(delay, context).ConfigureAwait(context.ContinueOnCapturedContext);
+                try
+                {
+                    await _timeProvider.DelayAsync(delay, context).ConfigureAwait(context.ContinueOnCapturedContext);
+                }
+                catch (OperationCanceledException e)
+                {
+                    return new Outcome<TResult>(e);
+                }
             }
 
             attempt++;
