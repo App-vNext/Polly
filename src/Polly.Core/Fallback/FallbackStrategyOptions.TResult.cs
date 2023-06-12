@@ -30,7 +30,7 @@ public class FallbackStrategyOptions<TResult> : ResilienceStrategyOptions
     /// This property is required. Defaults to <see langword="null"/>.
     /// </remarks>
     [Required]
-    public Func<OutcomeArguments<TResult, HandleFallbackArguments>, ValueTask<TResult>>? FallbackAction { get; set; }
+    public Func<OutcomeArguments<TResult, HandleFallbackArguments>, ValueTask<Outcome<TResult>>>? FallbackAction { get; set; }
 
     /// <summary>
     /// Gets or sets the outcome event instance responsible for triggering fallback events.

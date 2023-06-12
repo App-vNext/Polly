@@ -5,13 +5,13 @@ namespace Polly.Fallback;
 
 #pragma warning disable CA1031 // Do not catch general exception types
 
-internal sealed class FallbackResilienceStrategy : ResilienceStrategy
+internal sealed class FallbackResilienceStrategy<T> : ResilienceStrategy
 {
-    private readonly FallbackHandler.Handler _handler;
+    private readonly FallbackHandler<T> _handler;
     private readonly EventInvoker<OnFallbackArguments>? _onFallback;
     private readonly ResilienceStrategyTelemetry _telemetry;
 
-    public FallbackResilienceStrategy(FallbackHandler.Handler handler, EventInvoker<OnFallbackArguments>? onFallback, ResilienceStrategyTelemetry telemetry)
+    public FallbackResilienceStrategy(FallbackHandler<T> handler, EventInvoker<OnFallbackArguments>? onFallback, ResilienceStrategyTelemetry telemetry)
     {
         _handler = handler;
         _onFallback = onFallback;
@@ -23,11 +23,14 @@ internal sealed class FallbackResilienceStrategy : ResilienceStrategy
         ResilienceContext context,
         TState state)
     {
+        if (!_handler.HandlesFallback<TResult>())
+        {
+            return await callback(context, state).ConfigureAwait(context.ContinueOnCapturedContext);
+        }
+
         var outcome = await callback(context, state).ConfigureAwait(context.ContinueOnCapturedContext);
         var handleFallbackArgs = new OutcomeArguments<TResult, HandleFallbackArguments>(context, outcome, new HandleFallbackArguments());
-        var action = await _handler.ShouldHandleAsync(handleFallbackArgs).ConfigureAwait(context.ContinueOnCapturedContext);
-
-        if (action == null)
+        if (!await _handler.ShouldHandle.HandleAsync(handleFallbackArgs).ConfigureAwait(context.ContinueOnCapturedContext))
         {
             return outcome;
         }
@@ -43,7 +46,7 @@ internal sealed class FallbackResilienceStrategy : ResilienceStrategy
 
         try
         {
-            return new Outcome<TResult>(await action(handleFallbackArgs).ConfigureAwait(context.ContinueOnCapturedContext));
+            return await _handler.GetFallbackOutcomeAsync(handleFallbackArgs).ConfigureAwait(context.ContinueOnCapturedContext);
         }
         catch (Exception e)
         {

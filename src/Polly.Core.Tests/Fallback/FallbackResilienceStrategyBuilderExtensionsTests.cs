@@ -11,13 +11,13 @@ public class FallbackResilienceStrategyBuilderExtensionsTests
         {
             builder.AddFallback(new FallbackStrategyOptions<int>
             {
-                FallbackAction = _ =>  new ValueTask<int>(0),
+                FallbackAction = _ =>  0.AsOutcomeAsync(),
                 ShouldHandle = _ => PredicateResult.False,
             });
         },
         builder =>
         {
-            builder.AddFallback(handle => handle.HandleResult(1), _ =>  new ValueTask<int>(0));
+            builder.AddFallback(handle => handle.HandleResult(1), _ =>  0.AsOutcomeAsync());
         },
     };
 
@@ -27,22 +27,22 @@ public class FallbackResilienceStrategyBuilderExtensionsTests
     {
         var builder = new ResilienceStrategyBuilder<int>();
         configure(builder);
-        builder.Build().Strategy.Should().BeOfType<FallbackResilienceStrategy>();
+        builder.Build().Strategy.Should().BeOfType<FallbackResilienceStrategy<int>>();
     }
 
     [Fact]
     public void AddFallback_Ok()
     {
-        var options = new FallbackStrategyOptions();
-        options.Handler.SetFallback<int>(handler =>
+        var options = new FallbackStrategyOptions
         {
-            handler.ShouldHandle = args => new ValueTask<bool>(args.Exception is InvalidOperationException || args.Result == -1);
-            handler.FallbackAction = args =>
+            ShouldHandle = args => args switch
             {
-                args.Context.Should().NotBeNull();
-                return new ValueTask<int>(1);
-            };
-        });
+                { Exception: InvalidOperationException } => PredicateResult.True,
+                { Result: -1 } => PredicateResult.True,
+                _ => PredicateResult.False
+            },
+            FallbackAction = _ => ((object)1).AsOutcomeAsync()
+        };
 
         var strategy = new ResilienceStrategyBuilder().AddFallback(options).Build();
 
@@ -54,7 +54,7 @@ public class FallbackResilienceStrategyBuilderExtensionsTests
     public void AddFallback_InvalidOptions_Throws()
     {
         new ResilienceStrategyBuilder()
-            .Invoking(b => b.AddFallback(new FallbackStrategyOptions { Handler = null! }))
+            .Invoking(b => b.AddFallback(new FallbackStrategyOptions()))
             .Should()
             .Throw<ValidationException>()
             .WithMessage("The fallback strategy options are invalid.*");
@@ -64,7 +64,7 @@ public class FallbackResilienceStrategyBuilderExtensionsTests
     public void AddFallbackT_InvalidOptions_Throws()
     {
         new ResilienceStrategyBuilder<double>()
-            .Invoking(b => b.AddFallback(new FallbackStrategyOptions<double> { ShouldHandle = null! }))
+            .Invoking(b => b.AddFallback(new FallbackStrategyOptions<double>()))
             .Should()
             .Throw<ValidationException>()
             .WithMessage("The fallback strategy options are invalid.*");

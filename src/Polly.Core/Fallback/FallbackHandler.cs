@@ -1,75 +1,24 @@
-using System.ComponentModel.DataAnnotations;
-
 namespace Polly.Fallback;
 
-/// <summary>
-/// Represents a class for managing fallback handlers.
-/// </summary>
-internal sealed partial class FallbackHandler
+internal sealed record class FallbackHandler<T>(
+    PredicateInvoker<HandleFallbackArguments> ShouldHandle,
+    Func<OutcomeArguments<T, HandleFallbackArguments>, ValueTask<Outcome<T>>> ActionGenerator,
+    bool IsGeneric)
 {
-    private readonly Dictionary<Type, object> _handlers = new();
-
-    /// <summary>
-    /// Gets a value indicating whether the fallback handler is empty.
-    /// </summary>
-    internal bool IsEmpty => _handlers.Count == 0;
-
-    /// <summary>
-    /// Configures a fallback handler for a specific result type.
-    /// </summary>
-    /// <typeparam name="TResult">The result type.</typeparam>
-    /// <param name="configure">An action that configures the fallback handler instance for a specific result.</param>
-    /// <returns>The current instance.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="configure"/> is <see langword="null"/>.</exception>
-    /// <exception cref="ValidationException">Thrown when the <see cref="FallbackHandler{TResult}"/> configured by <paramref name="configure"/> is invalid.</exception>
-    public FallbackHandler SetFallback<TResult>(Action<FallbackHandler<TResult>> configure)
+    public bool HandlesFallback<TResult>() => IsGeneric switch
     {
-        Guard.NotNull(configure);
+        true => typeof(TResult) == typeof(T),
+        _ => true
+    };
 
-        var handler = new FallbackHandler<TResult>();
-        configure(handler);
-
-        ValidationHelper.ValidateObject(handler, "The fallback handler configuration is invalid.");
-
-        _handlers[typeof(TResult)] = handler!;
-
-        return this;
-    }
-
-    /// <summary>
-    /// Configures a void-based fallback handler.
-    /// </summary>
-    /// <param name="configure">An action that configures the void-based fallback handler.</param>
-    /// <returns>The current instance.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="configure"/> is <see langword="null"/>.</exception>
-    /// <exception cref="ValidationException">Thrown when the <see cref="VoidFallbackHandler"/> configured by <paramref name="configure"/> is invalid.</exception>
-    public FallbackHandler SetVoidFallback(Action<VoidFallbackHandler> configure)
+    public async ValueTask<Outcome<TResult>> GetFallbackOutcomeAsync<TResult>(OutcomeArguments<TResult, HandleFallbackArguments> args)
     {
-        Guard.NotNull(configure);
+        var copiedArgs = new OutcomeArguments<T, HandleFallbackArguments>(
+            args.Context,
+            args.Outcome.AsOutcome<T>(),
+            args.Arguments);
 
-        var handler = new VoidFallbackHandler();
-        configure(handler);
-
-        ValidationHelper.ValidateObject(handler, "The fallback handler configuration is invalid.");
-
-        _handlers[typeof(VoidResult)] = CreateGenericHandler(handler);
-
-        return this;
-    }
-
-    internal Handler CreateHandler() => new(_handlers.ToDictionary(pair => pair.Key, pair => pair.Value));
-
-    private static FallbackHandler<VoidResult> CreateGenericHandler(VoidFallbackHandler handler)
-    {
-        return new()
-        {
-            FallbackAction = async args =>
-            {
-                await handler.FallbackAction!(args.AsObjectArguments()).ConfigureAwait(args.Context.ContinueOnCapturedContext);
-                return VoidResult.Instance;
-            },
-            ShouldHandle = args => handler.ShouldHandle!(args.AsObjectArguments())
-        };
+        return (await ActionGenerator(copiedArgs).ConfigureAwait(args.Context.ContinueOnCapturedContext)).AsOutcome<TResult>();
     }
 }
 
