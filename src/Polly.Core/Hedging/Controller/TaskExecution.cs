@@ -17,16 +17,16 @@ namespace Polly.Hedging.Controller;
 /// </item>
 /// </list>
 /// </summary>
-internal sealed class TaskExecution
+internal sealed class TaskExecution<T>
 {
     private readonly ResilienceContext _cachedContext = ResilienceContext.Get();
-    private readonly HedgingHandler.Handler _handler;
     private readonly CancellationTokenSourcePool _cancellationTokenSourcePool;
+    private readonly HedgingHandler<T> _handler;
     private CancellationTokenSource? _cancellationSource;
     private CancellationTokenRegistration? _cancellationRegistration;
     private ResilienceContext? _activeContext;
 
-    public TaskExecution(HedgingHandler.Handler handler, CancellationTokenSourcePool cancellationTokenSourcePool)
+    public TaskExecution(HedgingHandler<T> handler, CancellationTokenSourcePool cancellationTokenSourcePool)
     {
         _handler = handler;
         _cancellationTokenSourcePool = cancellationTokenSourcePool;
@@ -36,7 +36,7 @@ internal sealed class TaskExecution
     /// Gets the task that represents the execution of the hedged task.
     /// </summary>
     /// <remarks>
-    /// This property is not-null once the <see cref="TaskExecution"/> is initialized.
+    /// This property is not-null once the <see cref="TaskExecution{T}"/> is initialized.
     /// Awaiting this task will never throw as all exceptions are caught and stored
     /// into <see cref="Outcome"/> property.
     /// </remarks>
@@ -54,7 +54,7 @@ internal sealed class TaskExecution
 
     public HedgedTaskType Type { get; set; }
 
-    public Action<TaskExecution>? OnReset { get; set; }
+    public Action<TaskExecution<T>>? OnReset { get; set; }
 
     public void AcceptOutcome()
     {
@@ -100,7 +100,7 @@ internal sealed class TaskExecution
 
             try
             {
-                action = _handler.TryCreateHedgedAction(Context, attempt, (context) => primaryCallback(context, state));
+                action = _handler.GenerateAction(CreateArguments(primaryCallback, state, attempt));
                 if (action == null)
                 {
                     await ResetAsync().ConfigureAwait(false);
@@ -122,6 +122,11 @@ internal sealed class TaskExecution
 
         return true;
     }
+
+    private HedgingActionGeneratorArguments<TResult> CreateArguments<TResult, TState>(
+        Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> primaryCallback,
+        TState state,
+        int attempt) => new(Context, attempt, (context) => primaryCallback(context, state));
 
     public async ValueTask ResetAsync()
     {
@@ -194,7 +199,7 @@ internal sealed class TaskExecution
     {
         var args = new OutcomeArguments<TResult, HandleHedgingArguments>(Context, outcome, new HandleHedgingArguments());
         Outcome = outcome.AsOutcome();
-        IsHandled = await _handler.ShouldHandleAsync(args).ConfigureAwait(Context.ContinueOnCapturedContext);
+        IsHandled = await _handler.ShouldHandle.HandleAsync(args).ConfigureAwait(Context.ContinueOnCapturedContext);
     }
 
     private void PrepareContext(ref ContextSnapshot snapshot)

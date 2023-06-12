@@ -11,8 +11,8 @@ public class HedgingResilienceStrategyBuilderExtensionsTests
     [Fact]
     public void AddHedging_Ok()
     {
-        _builder.AddHedging(new HedgingStrategyOptions());
-        _builder.Build().Should().BeOfType<HedgingResilienceStrategy>();
+        _builder.AddHedging(new HedgingStrategyOptions { ShouldHandle = _ => PredicateResult.True });
+        _builder.Build().Should().BeOfType<HedgingResilienceStrategy<object>>();
     }
 
     [Fact]
@@ -23,14 +23,14 @@ public class HedgingResilienceStrategyBuilderExtensionsTests
             HedgingActionGenerator = args => () => "dummy".AsOutcomeAsync(),
             ShouldHandle = _ => PredicateResult.True
         });
-        _genericBuilder.Build().Strategy.Should().BeOfType<HedgingResilienceStrategy>();
+        _genericBuilder.Build().Strategy.Should().BeOfType<HedgingResilienceStrategy<string>>();
     }
 
     [Fact]
     public void AddHedging_InvalidOptions_Throws()
     {
         _builder
-            .Invoking(b => b.AddHedging(new HedgingStrategyOptions { Handler = null! }))
+            .Invoking(b => b.AddHedging(new HedgingStrategyOptions { HedgingActionGenerator = null! }))
             .Should()
             .Throw<ValidationException>()
             .WithMessage("The hedging strategy options are invalid.*");
@@ -62,24 +62,25 @@ public class HedgingResilienceStrategyBuilderExtensionsTests
             {
                 MaxHedgedAttempts = 4,
                 HedgingDelay = TimeSpan.FromMilliseconds(20),
-                Handler = new HedgingHandler().SetHedging<string>(handler =>
+                ShouldHandle = args => args.Result switch
                 {
-                    handler.ShouldHandle = args => new ValueTask<bool>(args.Result == "error");
-                    handler.HedgingActionGenerator = args =>
+                    "error" => PredicateResult.True,
+                    _ => PredicateResult.False
+                },
+                HedgingActionGenerator = args =>
+                {
+                    return async () =>
                     {
-                        return async () =>
+                        await Task.Delay(25, args.Context.CancellationToken);
+
+                        if (args.Attempt == 3)
                         {
-                            await Task.Delay(25, args.Context.CancellationToken);
+                            return "success".AsOutcome().AsOutcome();
+                        }
 
-                            if (args.Attempt == 3)
-                            {
-                                return "success".AsOutcome();
-                            }
-
-                            return "error".AsOutcome();
-                        };
+                        return "error".AsOutcome().AsOutcome();
                     };
-                }),
+                },
                 OnHedging = args => { results.Enqueue(args.Result!.ToString()!); return default; }
             })
             .Build();

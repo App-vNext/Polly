@@ -8,23 +8,23 @@ namespace Polly.Hedging.Utils;
 /// The context associated with an execution of hedging resilience strategy.
 /// It holds the resources for all executed hedged tasks (primary + secondary) and is responsible for resource disposal.
 /// </summary>
-internal sealed class HedgingExecutionContext
+internal sealed class HedgingExecutionContext<T>
 {
-    public readonly record struct ExecutionInfo<TResult>(TaskExecution? Execution, bool Loaded, Outcome<TResult>? Outcome);
+    public readonly record struct ExecutionInfo<TResult>(TaskExecution<T>? Execution, bool Loaded, Outcome<TResult>? Outcome);
 
-    private readonly List<TaskExecution> _tasks = new();
-    private readonly List<TaskExecution> _executingTasks = new();
-    private readonly ObjectPool<TaskExecution> _executionPool;
+    private readonly List<TaskExecution<T>> _tasks = new();
+    private readonly List<TaskExecution<T>> _executingTasks = new();
+    private readonly ObjectPool<TaskExecution<T>> _executionPool;
     private readonly TimeProvider _timeProvider;
     private readonly int _maxAttempts;
-    private readonly Action<HedgingExecutionContext> _onReset;
+    private readonly Action<HedgingExecutionContext<T>> _onReset;
     private readonly ResilienceProperties _replacedProperties = new();
 
     public HedgingExecutionContext(
-        ObjectPool<TaskExecution> executionPool,
+        ObjectPool<TaskExecution<T>> executionPool,
         TimeProvider timeProvider,
         int maxAttempts,
-        Action<HedgingExecutionContext> onReset)
+        Action<HedgingExecutionContext<T>> onReset)
     {
         _executionPool = executionPool;
         _timeProvider = timeProvider;
@@ -45,7 +45,7 @@ internal sealed class HedgingExecutionContext
 
     public bool IsInitialized => Snapshot.Context != null;
 
-    public IReadOnlyList<TaskExecution> Tasks => _tasks;
+    public IReadOnlyList<TaskExecution<T>> Tasks => _tasks;
 
     private bool ContinueOnCapturedContext => Snapshot.Context.ContinueOnCapturedContext;
 
@@ -97,10 +97,10 @@ internal sealed class HedgingExecutionContext
         _ = CleanupInBackgroundAsync();
     }
 
-    public async ValueTask<TaskExecution?> TryWaitForCompletedExecutionAsync(TimeSpan hedgingDelay)
+    public async ValueTask<TaskExecution<T>?> TryWaitForCompletedExecutionAsync(TimeSpan hedgingDelay)
     {
         // before doing anything expensive, let's check whether any existing task is already completed
-        if (TryRemoveExecutedTask() is TaskExecution execution)
+        if (TryRemoveExecutedTask() is TaskExecution<T> execution)
         {
             return execution;
         }
@@ -167,7 +167,7 @@ internal sealed class HedgingExecutionContext
         };
 #pragma warning restore S109 // Magic numbers should not be used
 
-        static async Task<Task> AwaitTask(TaskExecution task, bool continueOnCapturedContext)
+        static async Task<Task> AwaitTask(TaskExecution<T> task, bool continueOnCapturedContext)
         {
             // ExecutionTask never fails
             await task.ExecutionTaskSafe!.ConfigureAwait(continueOnCapturedContext);
@@ -175,9 +175,9 @@ internal sealed class HedgingExecutionContext
         }
     }
 
-    private TaskExecution? TryRemoveExecutedTask()
+    private TaskExecution<T>? TryRemoveExecutedTask()
     {
-        if (_executingTasks.Find(static v => v.ExecutionTaskSafe!.IsCompleted) is TaskExecution execution)
+        if (_executingTasks.Find(static v => v.ExecutionTaskSafe!.IsCompleted) is TaskExecution<T> execution)
         {
             _executingTasks.Remove(execution);
             return execution;
@@ -198,7 +198,7 @@ internal sealed class HedgingExecutionContext
         }
 
         int accepted = 0;
-        TaskExecution? acceptedExecution = null;
+        TaskExecution<T>? acceptedExecution = null;
 
         foreach (var task in Tasks)
         {

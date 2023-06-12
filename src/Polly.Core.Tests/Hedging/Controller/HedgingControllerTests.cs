@@ -1,4 +1,3 @@
-using Polly.Hedging;
 using Polly.Hedging.Utils;
 
 namespace Polly.Core.Tests.Hedging.Controller;
@@ -8,12 +7,7 @@ public class HedgingControllerTests
     [Fact]
     public async Task Pooling_Ok()
     {
-        var handler = new HedgingHandler().SetHedging<int>(handler =>
-        {
-            handler.HedgingActionGenerator = args => null;
-            handler.ShouldHandle = _ => PredicateResult.False;
-        }).CreateHandler();
-        var controller = new HedgingController(new HedgingTimeProvider(), handler!, 3);
+        var controller = new HedgingController<int>(new HedgingTimeProvider(), HedgingHelper.CreateHandler<int>(_ => false, args => null), 3);
 
         var context1 = controller.GetContext(ResilienceContext.Get());
         await PrepareAsync(context1);
@@ -31,7 +25,7 @@ public class HedgingControllerTests
         controller.RentedExecutions.Should().Be(0);
     }
 
-    private static async Task PrepareAsync(HedgingExecutionContext context)
+    private static async Task PrepareAsync(HedgingExecutionContext<int> context)
     {
         await context.LoadExecutionAsync((_, _) => new Outcome<int>(10).AsValueTask(), "state");
         await context.TryWaitForCompletedExecutionAsync(System.Threading.Timeout.InfiniteTimeSpan);

@@ -2,22 +2,25 @@ using Polly.Hedging.Controller;
 
 namespace Polly.Hedging.Utils;
 
-internal sealed class HedgingController
+internal sealed class HedgingController<T>
 {
-    private readonly ObjectPool<HedgingExecutionContext> _contextPool;
-    private readonly ObjectPool<TaskExecution> _executionPool;
+    private readonly ObjectPool<HedgingExecutionContext<T>> _contextPool;
+    private readonly ObjectPool<TaskExecution<T>> _executionPool;
     private int _rentedContexts;
     private int _rentedExecutions;
 
-    public HedgingController(TimeProvider provider, HedgingHandler.Handler handler, int maxAttempts)
+    public HedgingController(
+        TimeProvider provider,
+        HedgingHandler<T> handler,
+        int maxAttempts)
     {
         // retrieve the cancellation pool for this time provider
         var pool = CancellationTokenSourcePool.Create(provider);
 
-        _executionPool = new ObjectPool<TaskExecution>(() =>
+        _executionPool = new ObjectPool<TaskExecution<T>>(() =>
         {
             Interlocked.Increment(ref _rentedExecutions);
-            return new TaskExecution(handler, pool);
+            return new TaskExecution<T>(handler, pool);
         },
         _ =>
         {
@@ -27,11 +30,11 @@ internal sealed class HedgingController
             return true;
         });
 
-        _contextPool = new ObjectPool<HedgingExecutionContext>(
+        _contextPool = new ObjectPool<HedgingExecutionContext<T>>(
             () =>
             {
                 Interlocked.Increment(ref _rentedContexts);
-                return new HedgingExecutionContext(_executionPool, provider, maxAttempts, ReturnContext);
+                return new HedgingExecutionContext<T>(_executionPool, provider, maxAttempts, ReturnContext);
             },
             _ =>
             {
@@ -46,12 +49,12 @@ internal sealed class HedgingController
 
     public int RentedExecutions => _rentedExecutions;
 
-    public HedgingExecutionContext GetContext(ResilienceContext context)
+    public HedgingExecutionContext<T> GetContext(ResilienceContext context)
     {
         var executionContext = _contextPool.Get();
         executionContext.Initialize(context);
         return executionContext;
     }
 
-    private void ReturnContext(HedgingExecutionContext context) => _contextPool.Return(context);
+    private void ReturnContext(HedgingExecutionContext<T> context) => _contextPool.Return(context);
 }
