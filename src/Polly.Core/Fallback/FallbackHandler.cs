@@ -8,7 +8,7 @@ internal sealed record class FallbackHandler<T>(
     public bool HandlesFallback<TResult>() => IsGeneric switch
     {
         true => typeof(TResult) == typeof(T),
-        _ => true
+        false => true
     };
 
     public async ValueTask<Outcome<TResult>> GetFallbackOutcomeAsync<TResult>(OutcomeArguments<TResult, HandleFallbackArguments> args)
