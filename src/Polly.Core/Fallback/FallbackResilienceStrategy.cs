@@ -23,7 +23,7 @@ internal sealed class FallbackResilienceStrategy : ResilienceStrategy
         ResilienceContext context,
         TState state)
     {
-        var outcome = await callback(context, state).ConfigureAwait(context.ContinueOnCapturedContext);
+        var outcome = await ExecuteCallbackSafeAsync(callback, context, state).ConfigureAwait(context.ContinueOnCapturedContext);
         var handleFallbackArgs = new OutcomeArguments<TResult, HandleFallbackArguments>(context, outcome, new HandleFallbackArguments());
         var action = await _handler.ShouldHandleAsync(handleFallbackArgs).ConfigureAwait(context.ContinueOnCapturedContext);
 

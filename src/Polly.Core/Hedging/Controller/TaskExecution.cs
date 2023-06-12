@@ -186,7 +186,17 @@ internal sealed class TaskExecution
 
     private async Task ExecutePrimaryActionAsync<TResult, TState>(Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> primaryCallback, TState state)
     {
-        var outcome = await primaryCallback(Context, state).ConfigureAwait(Context.ContinueOnCapturedContext);
+        Outcome<TResult> outcome;
+
+        try
+        {
+            outcome = await primaryCallback(Context, state).ConfigureAwait(Context.ContinueOnCapturedContext);
+        }
+        catch (Exception e)
+        {
+            outcome = new Outcome<TResult>(e);
+        }
+
         await UpdateOutcomeAsync(outcome).ConfigureAwait(Context.ContinueOnCapturedContext);
     }
 

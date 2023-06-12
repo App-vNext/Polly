@@ -29,6 +29,44 @@ public class RetryResilienceStrategyTests
     }
 
     [Fact]
+    public async Task ExecuteAsync_CancellationRequested_EnsureNotRetried()
+    {
+        SetupNoDelay();
+        var sut = CreateSut();
+        using var cancellationToken = new CancellationTokenSource();
+        cancellationToken.Cancel();
+        var context = ResilienceContext.Get();
+        context.CancellationToken = cancellationToken.Token;
+        var executed = false;
+
+        var result = await sut.ExecuteOutcomeAsync((_, _) => { executed = true; return "dummy".AsOutcomeAsync(); }, context, "state");
+        result.Exception.Should().BeOfType<OperationCanceledException>();
+        executed.Should().BeFalse();
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_CancellationRequestedAfterCallback_EnsureNotRetried()
+    {
+        using var cancellationToken = new CancellationTokenSource();
+
+        _options.ShouldRetry = _ => PredicateResult.True;
+        _options.OnRetry = _ =>
+        {
+            cancellationToken.Cancel();
+            return default;
+        };
+
+        var sut = CreateSut(TimeProvider.System);
+        var context = ResilienceContext.Get();
+        context.CancellationToken = cancellationToken.Token;
+        var executed = false;
+
+        var result = await sut.ExecuteOutcomeAsync((_, _) => { executed = true; return "dummy".AsOutcomeAsync(); }, context, "state");
+        result.Exception.Should().BeOfType<OperationCanceledException>();
+        executed.Should().BeTrue();
+    }
+
+    [Fact]
     public void ExecuteAsync_MultipleRetries_EnsureDiscardedResultsDisposed()
     {
         // arrange
@@ -226,7 +264,7 @@ public class RetryResilienceStrategyTests
 
     private void SetupNoDelay() => _options.RetryDelayGenerator = _ => new ValueTask<TimeSpan>(TimeSpan.Zero);
 
-    private RetryResilienceStrategy CreateSut()
+    private RetryResilienceStrategy CreateSut(TimeProvider? timeProvider = null)
     {
         return new RetryResilienceStrategy(
             _options.BaseDelay,
@@ -235,7 +273,7 @@ public class RetryResilienceStrategyTests
             PredicateInvoker<ShouldRetryArguments>.Create(_options.ShouldRetry!, false)!,
             EventInvoker<OnRetryArguments>.Create(_options.OnRetry, false),
             GeneratorInvoker<RetryDelayArguments, TimeSpan>.Create(_options.RetryDelayGenerator, TimeSpan.MinValue, false),
-            _timeProvider.Object,
+            timeProvider ?? _timeProvider.Object,
             _telemetry,
             RandomUtil.Instance);
     }

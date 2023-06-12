@@ -31,7 +31,7 @@ internal sealed class CircuitBreakerResilienceStrategy : ResilienceStrategy
             return outcome;
         }
 
-        outcome = await callback(context, state).ConfigureAwait(context.ContinueOnCapturedContext);
+        outcome = await ExecuteCallbackSafeAsync(callback, context, state).ConfigureAwait(context.ContinueOnCapturedContext);
 
         var args = new OutcomeArguments<TResult, CircuitBreakerPredicateArguments>(context, outcome, new CircuitBreakerPredicateArguments());
         if (await _handler.HandleAsync(args).ConfigureAwait(context.ContinueOnCapturedContext))
