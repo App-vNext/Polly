@@ -33,16 +33,7 @@ internal sealed class RateLimiterResilienceStrategy : ResilienceStrategy
 
         if (lease.IsAcquired)
         {
-#pragma warning disable CA1031 // Do not catch general exception types
-            try
-            {
-                return await callback(context, state).ConfigureAwait(context.ContinueOnCapturedContext);
-            }
-            catch (Exception e)
-            {
-                return new Outcome<TResult>(e);
-            }
-#pragma warning restore CA1031 // Do not catch general exception types
+            return await callback(context, state).ConfigureAwait(context.ContinueOnCapturedContext);
         }
 
         TimeSpan? retryAfter = null;
