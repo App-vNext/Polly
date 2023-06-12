@@ -62,9 +62,20 @@ public sealed class ResilienceProperties : IDictionary<string, object?>
     {
         Clear();
 
-        foreach (var pair in other.Options)
+        // try to avoid enumerator allocation
+        if (other.Options is Dictionary<string, object?> otherOptions)
         {
-            Options[pair.Key] = pair.Value;
+            foreach (var pair in otherOptions)
+            {
+                Options[pair.Key] = pair.Value;
+            }
+        }
+        else
+        {
+            foreach (var pair in other.Options)
+            {
+                Options[pair.Key] = pair.Value;
+            }
         }
     }
 
