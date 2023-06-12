@@ -1,9 +1,8 @@
-using System;
 using Microsoft.Extensions.Options;
 
 namespace Polly.Extensions.Utils;
 
-internal class OptionsReloadHelper<T> : IDisposable
+internal sealed class OptionsReloadHelper<T> : IDisposable
 {
     private readonly string? _name;
     private readonly IDisposable? _listener;

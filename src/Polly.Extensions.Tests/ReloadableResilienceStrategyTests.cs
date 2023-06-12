@@ -1,5 +1,3 @@
-using System;
-using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -8,6 +6,7 @@ using Polly.Extensions.Utils;
 using Polly.Registry;
 
 namespace Polly.Extensions.Tests;
+
 public class ReloadableResilienceStrategyTests
 {
     private static readonly ResiliencePropertyKey<string> TagKey = new("tests.tag");

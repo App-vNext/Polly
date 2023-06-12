@@ -58,7 +58,7 @@ public sealed class AddResilienceStrategyContext<TKey>
     /// Gets the options identified by <paramref name="name"/>.
     /// </summary>
     /// <typeparam name="TOptions">The options type.</typeparam>
-    /// <param name="name">Tje options name, if any.</param>
+    /// <param name="name">The options name, if any.</param>
     /// <returns>The options instance.</returns>
     /// <remarks>
     /// If <paramref name="name"/> is <see langword="null"/> then the global options are returned.

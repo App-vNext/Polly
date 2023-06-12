@@ -1,10 +1,9 @@
-using System;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
 namespace Polly.Extensions.Utils;
 
-internal class OptionsReloadHelperRegistry<TKey> : IDisposable
+internal sealed class OptionsReloadHelperRegistry<TKey> : IDisposable
 {
     private readonly IServiceProvider _serviceProvider;
     private readonly ConcurrentDictionary<(Type optionsType, TKey key, string? name), object> _helpers = new();

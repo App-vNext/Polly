@@ -1,4 +1,3 @@
-using System.Threading.Tasks;
 using Polly.Extensions.Telemetry;
 
 namespace Polly.Extensions.Tests.Telemetry;
