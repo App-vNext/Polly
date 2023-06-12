@@ -14,6 +14,7 @@ public class ReloadableResilienceStrategyTests
 
     [InlineData(null)]
     [InlineData("custom-name")]
+    [InlineData("")]
     [Theory]
     public void AddResilienceStrategy_EnsureReloadable(string? name)
     {
