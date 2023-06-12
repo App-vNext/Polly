@@ -8,7 +8,7 @@ internal sealed record class HedgingHandler<T>(
     public bool HandlesHedging<TResult>() => IsGeneric switch
     {
         true => typeof(TResult) == typeof(T),
-        _ => true
+        false => true
     };
 
     public Func<ValueTask<Outcome<TResult>>>? GenerateAction<TResult>(HedgingActionGeneratorArguments<TResult> args)
