@@ -5,6 +5,6 @@ namespace Polly.CircuitBreaker;
 /// </summary>
 /// <param name="IsManual">Indicates whether the circuit was closed manually by using <see cref="CircuitBreakerManualControl"/>.</param>
 /// <remarks>
-/// Always use constructor when creating this struct, otherwise we do not guarantee the binary compatibility.
+/// Always use the constructor when creating this struct, otherwise we do not guarantee binary compatibility.
 /// </remarks>
 public readonly record struct OnCircuitClosedArguments(bool IsManual);
