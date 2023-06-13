@@ -25,7 +25,7 @@ internal class PollyConfig : ManualConfig
 
         if (useNuGet)
         {
-            result = result.WithNuGet("Polly", "7.2.3");
+            result = result.WithNuGet("Polly", "7.2.4");
         }
 
         return result;
