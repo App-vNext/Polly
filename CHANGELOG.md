@@ -1,3 +1,12 @@
+## 7.2.4
+
+- Fixed an incorrect exception argument - Thanks to [@FoxTes](https://github.com/FoxTes)
+- Upgrade FluentAssertions - Thanks to [@dotnetspark](https://github.com/dotnetspark)
+- Upgrade Cake - Thanks to [@eugeneogongo](https://github.com/eugeneogongo)
+- Fixed possible NullReferenceException - Thanks to [@FoxTes](https://github.com/FoxTes)
+- Migrate build to GitHub Actions - Thanks to [@martincostello](https://github.com/martincostello)
+- Authenticode sign the assembly and NuGet package - Thanks to [@martincostello](https://github.com/martincostello) and the .NET Foundation
+
 ## 7.2.3
 
 - Add RateLimit policy - Thanks to [@reisenberger](https://github.com/reisenberger)
@@ -111,7 +120,7 @@
 - (Upgrade solution to msbuild15)
 
 ## 5.3.0
-- Fix ExecuteAndCapture() usage with PolicyWrap   
+- Fix ExecuteAndCapture() usage with PolicyWrap
 - Allow Fallback delegates to take execution Context
 - Provide IReadOnlyPolicyRegistry interface
 
