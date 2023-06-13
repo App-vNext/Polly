@@ -7,13 +7,13 @@ namespace Polly.CircuitBreaker.Health;
 internal abstract class HealthMetrics
 {
     private const short NumberOfWindows = 10;
-    private static readonly TimeSpan _resolutionOfCircuitTimer = TimeSpan.FromMilliseconds(20);
+    private static readonly TimeSpan ResolutionOfCircuitTimer = TimeSpan.FromMilliseconds(20);
 
     protected HealthMetrics(TimeProvider timeProvider) => TimeProvider = timeProvider;
 
     public static HealthMetrics Create(TimeSpan samplingDuration, TimeProvider timeProvider)
     {
-        return samplingDuration < TimeSpan.FromTicks(_resolutionOfCircuitTimer.Ticks * NumberOfWindows)
+        return samplingDuration < TimeSpan.FromTicks(ResolutionOfCircuitTimer.Ticks * NumberOfWindows)
             ? new SingleHealthMetrics(samplingDuration, timeProvider)
             : new RollingHealthMetrics(samplingDuration, NumberOfWindows, timeProvider);
     }

@@ -44,7 +44,7 @@ internal static class Log
         object? result,
         Exception? exception);
 #else
-    private static readonly Action<ILogger, string, string?, string?, string, string?, object?, Exception?> _resilienceEventAction =
+    private static readonly Action<ILogger, string, string?, string?, string, string?, object?, Exception?> ResilienceEventAction =
         LoggerMessage.Define<string, string?, string?, string, string?, object?>(LogLevel.Warning, new EventId(0, "ResilienceEvent"), ResilienceEventMessage);
 
     public static void ResilienceEvent(
@@ -57,7 +57,7 @@ internal static class Log
         object? result,
         Exception? exception)
     {
-        _resilienceEventAction(logger, eventName, builderName, strategyName, strategyType, strategyKey, result, exception);
+        ResilienceEventAction(logger, eventName, builderName, strategyName, strategyType, strategyKey, result, exception);
     }
 #endif
 
@@ -69,7 +69,7 @@ internal static class Log
         string? strategyKey,
         string resultType);
 #else
-    private static readonly Action<ILogger, string?, string?, string, Exception?> _executingStrategyAction =
+    private static readonly Action<ILogger, string?, string?, string, Exception?> ExecutingStrategyAction =
         LoggerMessage.Define<string?, string?, string>(LogLevel.Debug, new EventId(1, "StrategyExecuting"), StrategyExecutingMessage);
 
     public static void ExecutingStrategy(
@@ -78,7 +78,7 @@ internal static class Log
         string? strategyKey,
         string resultType)
     {
-        _executingStrategyAction(logger, builderName, strategyKey, resultType, null);
+        ExecutingStrategyAction(logger, builderName, strategyKey, resultType, null);
     }
 #endif
 
@@ -94,7 +94,7 @@ internal static class Log
         double executionTime,
         Exception? exception);
 #else
-    private static readonly Action<ILogger, string?, string?, string, object?, string, double, Exception?> _strategyExecutedAction =
+    private static readonly Action<ILogger, string?, string?, string, object?, string, double, Exception?> StrategyExecutedAction =
         LoggerMessage.Define<string?, string?, string, object?, string, double>(LogLevel.Debug, new EventId(2, "StrategyExecuted"), StrategyExecutedMessage);
 
     public static void StrategyExecuted(
@@ -107,7 +107,7 @@ internal static class Log
         double executionTime,
         Exception? exception)
     {
-        _strategyExecutedAction(logger, builderName, strategyKey, resultType, result, executionHealth, executionTime, exception);
+        StrategyExecutedAction(logger, builderName, strategyKey, resultType, result, executionHealth, executionTime, exception);
     }
 #endif
 }
