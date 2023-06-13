@@ -31,7 +31,7 @@
   </ItemGroup>
 
   <PropertyGroup Label="SharedNuspecProperties">
-    <PackageIcon>Polly.png</PackageIcon>
+    <PackageIcon>package-icon.png</PackageIcon>
     <NeutralLanguage>en-US</NeutralLanguage>
     <PackageLicenseExpression>BSD-3-Clause</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/App-vNext/Polly</PackageProjectUrl>
