@@ -157,7 +157,7 @@ public class RetryForeverSpecs
     [Fact]
     public void Should_call_onretry_on_each_retry_with_the_current_exception()
     {
-        var expectedExceptions = new string[] { "Exception #1", "Exception #2", "Exception #3" };
+        var expectedExceptions = new[] { "Exception #1", "Exception #2", "Exception #3" };
         var retryExceptions = new List<Exception>();
 
         var policy = Policy

@@ -91,6 +91,6 @@ public abstract class TimeoutSpecsBase : IDisposable
     /// </summary>
     /// <param name="ex">The exception to throw.</param>
     [MethodImpl(MethodImplOptions.NoInlining)] // Tests that use this method assert that the exception was thrown from within this method; therefore, it is essential that
-    protected void Helper_ThrowException(Exception ex) =>
+    protected static void Helper_ThrowException(Exception ex) =>
         throw ex;
 }

@@ -1,5 +1,4 @@
 using Polly.TestUtils;
-using Polly.Utilities.Wrappers;
 
 namespace Polly.Specs;
 
@@ -19,17 +18,19 @@ public class ResilienceStrategyConversionExtensionsTests
 
     public ResilienceStrategyConversionExtensionsTests()
     {
-        _strategy = new TestResilienceStrategy();
-        _strategy.Before = (context, ct) =>
+        _strategy = new TestResilienceStrategy
         {
-            context.IsVoid.Should().Be(_isVoid);
-            context.IsSynchronous.Should().Be(_isSynchronous);
-            context.Properties.Set(Outgoing, "outgoing-value");
-            context.Properties.GetValue(Incoming, string.Empty).Should().Be("incoming-value");
-
-            if (_resultType != null)
+            Before = (context, _) =>
             {
-                context.ResultType.Should().Be(_resultType);
+                context.IsVoid.Should().Be(_isVoid);
+                context.IsSynchronous.Should().Be(_isSynchronous);
+                context.Properties.Set(Outgoing, "outgoing-value");
+                context.Properties.GetValue(Incoming, string.Empty).Should().Be("incoming-value");
+
+                if (_resultType != null)
+                {
+                    context.ResultType.Should().Be(_resultType);
+                }
             }
         };
 
@@ -48,7 +49,7 @@ public class ResilienceStrategyConversionExtensionsTests
             [Incoming.Key] = "incoming-value"
         };
 
-        _strategy.AsSyncPolicy().Execute(c =>
+        _strategy.AsSyncPolicy().Execute(_ =>
         {
             context[Executing.Key] = "executing-value";
         },
@@ -68,7 +69,7 @@ public class ResilienceStrategyConversionExtensionsTests
             [Incoming.Key] = "incoming-value"
         };
 
-        var result = _genericStrategy.AsSyncPolicy().Execute(c => { context[Executing.Key] = "executing-value"; return "dummy"; }, context);
+        var result = _genericStrategy.AsSyncPolicy().Execute(_ => { context[Executing.Key] = "executing-value"; return "dummy"; }, context);
         AssertContext(context);
         result.Should().Be("dummy");
     }
@@ -84,7 +85,7 @@ public class ResilienceStrategyConversionExtensionsTests
             [Incoming.Key] = "incoming-value"
         };
 
-        var result = _strategy.AsSyncPolicy().Execute(c => { context[Executing.Key] = "executing-value"; return "dummy"; }, context);
+        var result = _strategy.AsSyncPolicy().Execute(_ => { context[Executing.Key] = "executing-value"; return "dummy"; }, context);
 
         AssertContext(context);
         result.Should().Be("dummy");
@@ -100,7 +101,7 @@ public class ResilienceStrategyConversionExtensionsTests
             [Incoming.Key] = "incoming-value"
         };
 
-        await _strategy.AsAsyncPolicy().ExecuteAsync(c =>
+        await _strategy.AsAsyncPolicy().ExecuteAsync(_ =>
         {
             context[Executing.Key] = "executing-value";
             return Task.CompletedTask;
@@ -121,7 +122,7 @@ public class ResilienceStrategyConversionExtensionsTests
             [Incoming.Key] = "incoming-value"
         };
 
-        var result = await _genericStrategy.AsAsyncPolicy().ExecuteAsync(c =>
+        var result = await _genericStrategy.AsAsyncPolicy().ExecuteAsync(_ =>
         {
             context[Executing.Key] = "executing-value";
             return Task.FromResult("dummy");
@@ -142,7 +143,7 @@ public class ResilienceStrategyConversionExtensionsTests
             [Incoming.Key] = "incoming-value"
         };
 
-        var result = await _strategy.AsAsyncPolicy().ExecuteAsync(c =>
+        var result = await _strategy.AsAsyncPolicy().ExecuteAsync(_ =>
         {
             context[Executing.Key] = "executing-value";
             return Task.FromResult("dummy");

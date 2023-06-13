@@ -73,7 +73,8 @@ public abstract class BulkheadSpecsBase : IDisposable
 
     protected abstract Task ExecuteOnBulkhead(IBulkheadPolicy bulkhead, TraceableAction action);
 
-    [Theory, ClassData(typeof(BulkheadScenarios))]
+    [Theory]
+    [ClassData(typeof(BulkheadScenarios))]
     public void Should_control_executions_per_specification(int maxParallelization, int maxQueuingActions, int totalActions, bool cancelQueuing, bool cancelExecuting, string scenario)
     {
         if (totalActions < 0)
@@ -158,8 +159,9 @@ public abstract class BulkheadSpecsBase : IDisposable
 
                     cancelExecuting = false;
                 }
-                else // Complete an executing delegate.
+                else
                 {
+                    // Complete an executing delegate.
                     TestOutputHelper.WriteLine("Completing a task...");
 
                     Actions.First(a => a.Status == TraceableActionStatus.Executing).AllowCompletion();
@@ -308,7 +310,7 @@ public abstract class BulkheadSpecsBase : IDisposable
 
     #endregion
 
-    protected AssertionFailure? Expect(int expected, Func<int> actualFunc, string measure)
+    protected static AssertionFailure? Expect(int expected, Func<int> actualFunc, string measure)
     {
         int actual = actualFunc();
         return actual != expected ? new AssertionFailure(expected, actual, measure) : null;

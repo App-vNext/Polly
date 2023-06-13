@@ -16,10 +16,9 @@ public class ReadOnlyPolicyRegistrySpecs
     {
         Policy policy = Policy.NoOp();
         string key = Guid.NewGuid().ToString();
-        Policy? outPolicy = null;
 
         _registry.Add(key, policy);
-        ReadOnlyRegistry.TryGet(key, out outPolicy).Should().BeTrue();
+        ReadOnlyRegistry.TryGet(key, out Policy? outPolicy).Should().BeTrue();
         outPolicy.Should().BeSameAs(policy);
     }
 
@@ -28,10 +27,9 @@ public class ReadOnlyPolicyRegistrySpecs
     {
         Policy<ResultPrimitive> policy = Policy<ResultPrimitive>.HandleResult(ResultPrimitive.Fault).Retry();
         string key = Guid.NewGuid().ToString();
-        Policy<ResultPrimitive>? outPolicy = null;
 
         _registry.Add(key, policy);
-        ReadOnlyRegistry.TryGet(key, out outPolicy).Should().BeTrue();
+        ReadOnlyRegistry.TryGet(key, out Policy<ResultPrimitive>? outPolicy).Should().BeTrue();
         outPolicy.Should().BeSameAs(policy);
     }
 
@@ -40,10 +38,9 @@ public class ReadOnlyPolicyRegistrySpecs
     {
         ISyncPolicy<ResultPrimitive> policy = Policy<ResultPrimitive>.HandleResult(ResultPrimitive.Fault).Retry();
         string key = Guid.NewGuid().ToString();
-        ISyncPolicy<ResultPrimitive>? outPolicy;
 
         _registry.Add(key, policy);
-        ReadOnlyRegistry.TryGet(key, out outPolicy).Should().BeTrue();
+        ReadOnlyRegistry.TryGet(key, out ISyncPolicy<ResultPrimitive>? outPolicy).Should().BeTrue();
         outPolicy.Should().BeSameAs(policy);
     }
 

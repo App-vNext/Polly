@@ -29,7 +29,7 @@ public static class PolicyExtensionsAsync
         =>
         policy.RaiseExceptionAsync(1, configureException);
 
-    public static Task RaiseExceptionAsync<TException>(this AsyncPolicy policy, int numberOfTimesToRaiseException, Action<TException, int>? configureException = null, CancellationToken cancellationToken = default)
+    public static Task RaiseExceptionAsync<TException>(this AsyncPolicy policy, int numberOfTimesToRaiseException, Action<TException, int>? configureException = null)
         where TException : Exception, new()
     {
         ExceptionAndOrCancellationScenario scenario = new ExceptionAndOrCancellationScenario

@@ -191,7 +191,7 @@ public class WaitAndRetryForeverAsyncSpecs : IDisposable
     [Fact]
     public async Task Should_call_onretry_on_each_retry_with_the_current_exception()
     {
-        var expectedExceptions = new string[] { "Exception #1", "Exception #2", "Exception #3" };
+        var expectedExceptions = new[] { "Exception #1", "Exception #2", "Exception #3" };
         var retryExceptions = new List<Exception>();
         Func<int, TimeSpan> provider = _ => TimeSpan.Zero;
 
@@ -391,7 +391,8 @@ public class WaitAndRetryForeverAsyncSpecs : IDisposable
 
         while (executeDelegateInvocationsWhenOnRetryExits == 0)
         {
-        } // Wait for the onRetry delegate to complete.
+            // Wait for the onRetry delegate to complete.
+        }
 
         executeDelegateInvocationsWhenOnRetryExits.Should().Be(1); // If the async onRetry delegate is genuinely awaited, only one execution of the .Execute delegate should have occurred by the time onRetry completes.  If the async onRetry delegate were instead assigned to an Action<...>, then onRetry will return, and the second action execution will commence, before await Task.Delay() completes, leaving executeDelegateInvocationsWhenOnRetryExits == 2.
         executeDelegateInvocations.Should().Be(2);

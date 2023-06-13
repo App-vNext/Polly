@@ -11,9 +11,9 @@ public class TraceableAction : IDisposable
 
     private readonly TaskCompletionSource<object?> _tcsProxyForRealWork = new();
     private readonly CancellationTokenSource CancellationSource = new();
+    private readonly AutoResetEvent _statusChanged;
 
     private TraceableActionStatus _status;
-    private readonly AutoResetEvent _statusChanged;
 
     public TraceableActionStatus Status
     {
@@ -92,7 +92,9 @@ public class TraceableAction : IDisposable
                     } // else: was execution cancellation rethrown: ignore
                 }
                 else
+                {
                     throw;
+                }
             }
             catch (Exception e)
             {

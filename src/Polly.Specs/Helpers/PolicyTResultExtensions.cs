@@ -36,17 +36,17 @@ public static class PolicyTResultExtensions
             }
 
             object current = enumerator.Current;
-            if (current is Exception)
+            if (current is Exception exception)
             {
-                throw (Exception)current;
+                throw exception;
             }
-            else if (current is TResult)
+            else if (current is TResult result)
             {
-                return (TResult)current;
+                return result;
             }
             else
             {
-                throw new ArgumentOutOfRangeException(nameof(resultsOrExceptionsToRaise), $"Value is not either an {typeof(Exception).Name} or {typeof(TResult).Name}.");
+                throw new ArgumentOutOfRangeException(nameof(resultsOrExceptionsToRaise), $"Value is not either an {nameof(Exception)} or {typeof(TResult).Name}.");
             }
         });
     }

@@ -44,25 +44,25 @@ public static class PolicyTResultExtensionsAsync
             }
 
             object current = enumerator.Current;
-            if (current is Exception)
+            if (current is Exception exception)
             {
-                throw (Exception)current;
+                throw exception;
             }
-            else if (current is TResult)
+            else if (current is TResult result)
             {
-                return Task.FromResult((TResult)current);
+                return Task.FromResult(result);
             }
             else
             {
                 throw new ArgumentOutOfRangeException(nameof(resultsOrExceptionsToRaise),
-                    $"Value is not either an {typeof(Exception).Name} or {typeof(TResult).Name}.");
+                    $"Value is not either an {nameof(Exception)} or {typeof(TResult).Name}.");
             }
         }, cancellationToken);
     }
 
     public class ResultAndOrCancellationScenario
     {
-        public int? AttemptDuringWhichToCancel = null;
+        public int? AttemptDuringWhichToCancel;
 
         public bool ActionObservesCancellation = true;
     }

@@ -1,6 +1,6 @@
 ﻿namespace Polly.Specs.Bulkhead;
 
-internal struct BulkheadScenario
+internal readonly struct BulkheadScenario
 {
     private readonly int _maxParallelization;
     private readonly int _maxQueuingActions;

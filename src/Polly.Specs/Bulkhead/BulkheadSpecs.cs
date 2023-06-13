@@ -59,7 +59,7 @@ public class BulkheadSpecs : BulkheadSpecsBase
         Task.Run(() => { bulkhead.Execute(() => { tcs.Task.Wait(); }); });
 
         // Time for the other thread to kick up and take the bulkhead.
-        Within(CohesionTimeLimit, () => Expect(0, () => bulkhead.BulkheadAvailableCount, nameof(bulkhead.BulkheadAvailableCount)));
+        Within(CohesionTimeLimit, () => BulkheadSpecsBase.Expect(0, () => bulkhead.BulkheadAvailableCount, nameof(bulkhead.BulkheadAvailableCount)));
 
         bulkhead.Invoking(b => b.Execute(_ => { }, contextPassedToExecute)).Should()
             .Throw<BulkheadRejectedException>();
