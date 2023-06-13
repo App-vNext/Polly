@@ -4,6 +4,7 @@ internal static class Workloads
 {
     internal static void Action()
     {
+        // nothing
     }
 
     internal static Task ActionAsync() =>
@@ -12,6 +13,7 @@ internal static class Workloads
     internal static Task ActionAsync(CancellationToken cancellationToken) =>
         Task.CompletedTask;
 
+#pragma warning disable S2190
     internal static async Task ActionInfiniteAsync()
     {
         while (true)
@@ -19,6 +21,7 @@ internal static class Workloads
             await Task.Yield();
         }
     }
+#pragma warning restore S2190
 
     internal static async Task ActionInfiniteAsync(CancellationToken cancellationToken)
     {

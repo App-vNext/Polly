@@ -6,11 +6,10 @@
     <ProjectType>Benchmark</ProjectType>
     <Nullable>enable</Nullable>
     <OutputType>Exe</OutputType>
-    <UseDefaultAnalyzers>true</UseDefaultAnalyzers>
-    <NoWarn>$(NoWarn);SA1600</NoWarn>
   </PropertyGroup>
-
+  
   <ItemGroup>
+    <Using Include="Polly.Core.Benchmarks" />
     <Using Include="Polly.Core.Benchmarks.Utils" />
     <ProjectReference Include="..\..\src\Polly.Core\Polly.Core.csproj" />
     <ProjectReference Include="..\..\src\Polly.Extensions\Polly.Extensions.csproj" />
@@ -18,5 +17,4 @@
     <ProjectReference Include="..\..\src\Polly\Polly.csproj" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
   </ItemGroup>
-
 </Project>

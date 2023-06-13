@@ -1,4 +1,3 @@
-using BenchmarkDotNet.Attributes;
 using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Polly.Core.Benchmarks;

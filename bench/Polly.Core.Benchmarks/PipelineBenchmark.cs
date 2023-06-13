@@ -1,5 +1,3 @@
-using BenchmarkDotNet.Attributes;
-
 namespace Polly.Core.Benchmarks;
 
 public class PipelineBenchmark

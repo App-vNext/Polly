@@ -1,5 +1,4 @@
 using System.Runtime.CompilerServices;
-using BenchmarkDotNet.Attributes;
 
 namespace Polly.Core.Benchmarks;
 

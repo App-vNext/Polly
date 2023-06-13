@@ -4,11 +4,14 @@
     <OutputType>Exe</OutputType>
     <TargetFrameworks>net6.0;net7.0</TargetFrameworks>
     <Nullable>enable</Nullable>
+    <ProjectType>Benchmark</ProjectType>
+    <NoWarn>$(NoWarn);CA1822;SA1414;IDE0060</NoWarn>
   </PropertyGroup>
+
   <ItemGroup>
-    <PackageReference Include="BenchmarkDotNet" />
     <PackageReference Include="Microsoft.Extensions.Caching.Memory" />
   </ItemGroup>
+
   <ItemGroup Condition=" '$(BenchmarkFromNuGet)' != 'True' ">
     <ProjectReference Include="..\..\src\Polly\Polly.csproj" />
   </ItemGroup>

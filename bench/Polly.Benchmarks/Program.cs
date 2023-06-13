@@ -1,1 +1,5 @@
-﻿BenchmarkRunner.Run(Assembly.GetCallingAssembly(), args: args); 
+﻿// run benchmarks
+
+BenchmarkRunner.Run(
+    Assembly.GetCallingAssembly(),
+    args: args);

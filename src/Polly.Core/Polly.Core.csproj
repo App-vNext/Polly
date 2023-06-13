@@ -7,8 +7,6 @@
     <Nullable>enable</Nullable>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <ProjectType>Library</ProjectType>
-    <UseDefaultAnalyzers>true</UseDefaultAnalyzers>
-    <SkipPollyUsings>true</SkipPollyUsings>
     <MutationScore>100</MutationScore>
     <LegacySupport>true</LegacySupport>
     <InjectSharedSources>true</InjectSharedSources>
@@ -16,7 +14,6 @@
 
   <ItemGroup>
     <Using Include="Polly.Utils" />
-    <Using Remove="System.Net.Http" />
     <InternalsVisibleToTest Include="Polly.Core.Tests" />
     <InternalsVisibleToTest Include="Polly.TestUtils" />
   </ItemGroup>
