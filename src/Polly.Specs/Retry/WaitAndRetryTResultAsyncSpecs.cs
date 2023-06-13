@@ -3,10 +3,7 @@
 [Collection(Constants.SystemClockDependentTestCollection)]
 public class WaitAndRetryTResultAsyncSpecs : IDisposable
 {
-    public WaitAndRetryTResultAsyncSpecs() =>
-
-        // do nothing on call to sleep
-        SystemClock.SleepAsync = (_, _) => TaskHelper.EmptyTask;
+    public WaitAndRetryTResultAsyncSpecs() => SystemClock.SleepAsync = (_, _) => TaskHelper.EmptyTask;
 
     [Fact]
     public async Task Should_be_able_to_calculate_retry_timespans_based_on_the_handled_fault()

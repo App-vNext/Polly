@@ -5,10 +5,7 @@ namespace Polly.Specs.Retry;
 [Collection(Constants.SystemClockDependentTestCollection)]
 public class WaitAndRetryForeverAsyncSpecs : IDisposable
 {
-    public WaitAndRetryForeverAsyncSpecs() =>
-
-        // do nothing on call to sleep
-        SystemClock.SleepAsync = (_, _) => TaskHelper.EmptyTask;
+    public WaitAndRetryForeverAsyncSpecs() => SystemClock.SleepAsync = (_, _) => TaskHelper.EmptyTask;
 
     [Fact]
     public void Should_throw_when_sleep_duration_provider_is_null_without_context()

@@ -3,10 +3,7 @@
 [Collection(Constants.SystemClockDependentTestCollection)]
 public class WaitAndRetryTResultSpecs : IDisposable
 {
-    public WaitAndRetryTResultSpecs() =>
-
-        // do nothing on call to sleep
-        SystemClock.Sleep = (_, _) => { };
+    public WaitAndRetryTResultSpecs() => SystemClock.Sleep = (_, _) => { };
 
     [Fact]
     public void Should_be_able_to_calculate_retry_timespans_based_on_the_handled_fault()
