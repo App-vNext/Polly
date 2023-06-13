@@ -9,9 +9,9 @@ Job=MediumRun  Toolchain=InProcessEmitToolchain  IterationCount=15
 LaunchCount=2  WarmupCount=10  
 
 ```
-|  Method | Telemetry |      Mean |    Error |   StdDev |   Gen0 | Allocated |
-|-------- |---------- |----------:|---------:|---------:|-------:|----------:|
-| **Execute** |     **False** |  **69.25 ns** | **0.279 ns** | **0.373 ns** |      **-** |         **-** |
-|   Retry |     False | 323.60 ns | 3.308 ns | 4.951 ns |      - |         - |
-| **Execute** |      **True** | **348.06 ns** | **2.681 ns** | **4.013 ns** |      **-** |         **-** |
-|   Retry |      True | 844.17 ns | 2.915 ns | 4.181 ns | 0.0038 |     104 B |
+|  Method | Telemetry |      Mean |    Error |   StdDev |    Median |   Gen0 | Allocated |
+|-------- |---------- |----------:|---------:|---------:|----------:|-------:|----------:|
+| **Execute** |     **False** |  **71.49 ns** | **2.474 ns** | **3.627 ns** |  **69.31 ns** |      **-** |         **-** |
+|   Retry |     False | 356.87 ns | 1.355 ns | 1.943 ns | 356.15 ns |      - |         - |
+| **Execute** |      **True** | **280.70 ns** | **4.106 ns** | **5.756 ns** | **278.32 ns** |      **-** |         **-** |
+|   Retry |      True | 847.76 ns | 3.870 ns | 5.297 ns | 848.03 ns | 0.0038 |     104 B |
