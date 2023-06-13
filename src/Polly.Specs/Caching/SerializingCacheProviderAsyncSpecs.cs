@@ -9,8 +9,7 @@ public class AsyncSerializingCacheProviderSpecs
     {
         StubSerializer<object, StubSerialized> stubObjectSerializer = new StubSerializer<object, StubSerialized>(
             serialize: o => new StubSerialized(o),
-            deserialize: s => s?.Original ?? default
-        );
+            deserialize: s => s?.Original ?? default);
 
         Action configure = () => new AsyncSerializingCacheProvider<StubSerialized>(null!, stubObjectSerializer);
 
@@ -42,10 +41,9 @@ public class AsyncSerializingCacheProviderSpecs
         bool serializeInvoked = false;
         StubSerializer<object, StubSerialized> stubSerializer = new StubSerializer<object, StubSerialized>(
             serialize: o => { serializeInvoked = true; return new StubSerialized(o); },
-            deserialize: s => s?.Original ?? default
-        );
+            deserialize: s => s?.Original ?? default);
         StubCacheProvider stubCacheProvider = new StubCacheProvider();
-        object objectToCache = new object();
+        object objectToCache = new();
         string key = "some key";
 
         AsyncSerializingCacheProvider<StubSerialized> serializingCacheProvider = new AsyncSerializingCacheProvider<StubSerialized>(stubCacheProvider.AsyncFor<StubSerialized>(), stubSerializer);
@@ -66,8 +64,7 @@ public class AsyncSerializingCacheProviderSpecs
         bool serializeInvoked = false;
         StubSerializer<object, StubSerialized> stubSerializer = new StubSerializer<object, StubSerialized>(
             serialize: o => { serializeInvoked = true; return new StubSerialized(o); },
-            deserialize: s => s?.Original ?? default
-        );
+            deserialize: s => s?.Original ?? default);
         StubCacheProvider stubCacheProvider = new StubCacheProvider();
         object? objectToCache = null;
         string key = "some key";
@@ -90,11 +87,10 @@ public class AsyncSerializingCacheProviderSpecs
         bool deserializeInvoked = false;
         StubSerializer<object, StubSerialized> stubSerializer = new StubSerializer<object, StubSerialized>(
             serialize: o => new StubSerialized(o),
-            deserialize: s => { deserializeInvoked = true; return s?.Original ?? default; }
-        );
+            deserialize: s => { deserializeInvoked = true; return s?.Original ?? default; });
 
         var stubCacheProvider = new StubCacheProvider();
-        object objectToCache = new object();
+        object objectToCache = new();
         string key = "some key";
 
         await stubCacheProvider.PutAsync(key, new StubSerialized(objectToCache), new Ttl(TimeSpan.FromMinutes(1)), CancellationToken.None, false);
@@ -113,8 +109,7 @@ public class AsyncSerializingCacheProviderSpecs
         bool deserializeInvoked = false;
         StubSerializer<object, StubSerialized> stubSerializer = new StubSerializer<object, StubSerialized>(
             serialize: o => new StubSerialized(o),
-            deserialize: s => { deserializeInvoked = true; return s?.Original ?? default; }
-        );
+            deserialize: s => { deserializeInvoked = true; return s?.Original ?? default; });
         var stubCacheProvider = new StubCacheProvider();
         string key = "some key";
 
@@ -134,10 +129,9 @@ public class AsyncSerializingCacheProviderSpecs
         bool serializeInvoked = false;
         StubSerializer<object, StubSerialized> stubSerializer = new StubSerializer<object, StubSerialized>(
             serialize: o => { serializeInvoked = true; return new StubSerialized(o); },
-            deserialize: s => s?.Original ?? default
-        );
+            deserialize: s => s?.Original ?? default);
         StubCacheProvider stubCacheProvider = new StubCacheProvider();
-        object objectToCache = new object();
+        object objectToCache = new();
         string key = "some key";
 
         AsyncSerializingCacheProvider<StubSerialized> serializingCacheProvider = stubCacheProvider.AsyncFor<StubSerialized>().WithSerializer(stubSerializer);
@@ -158,8 +152,7 @@ public class AsyncSerializingCacheProviderSpecs
         bool serializeInvoked = false;
         StubSerializer<object, StubSerialized> stubSerializer = new StubSerializer<object, StubSerialized>(
             serialize: o => { serializeInvoked = true; return new StubSerialized(o); },
-            deserialize: s => s?.Original ?? default
-        );
+            deserialize: s => s?.Original ?? default);
         StubCacheProvider stubCacheProvider = new StubCacheProvider();
         object? objectToCache = null;
         string key = "some key";
@@ -182,10 +175,9 @@ public class AsyncSerializingCacheProviderSpecs
         bool deserializeInvoked = false;
         StubSerializer<object, StubSerialized> stubSerializer = new StubSerializer<object, StubSerialized>(
             serialize: o => new StubSerialized(o),
-            deserialize: s => { deserializeInvoked = true; return s?.Original ?? default; }
-        );
+            deserialize: s => { deserializeInvoked = true; return s?.Original ?? default; });
         var stubCacheProvider = new StubCacheProvider();
-        object objectToCache = new object();
+        object objectToCache = new();
         string key = "some key";
 
         await stubCacheProvider.PutAsync(key, new StubSerialized(objectToCache), new Ttl(TimeSpan.FromMinutes(1)), CancellationToken.None, false);
@@ -204,8 +196,7 @@ public class AsyncSerializingCacheProviderSpecs
         bool deserializeInvoked = false;
         StubSerializer<object, StubSerialized> stubSerializer = new StubSerializer<object, StubSerialized>(
             serialize: o => new StubSerialized(o),
-            deserialize: s => { deserializeInvoked = true; return s?.Original ?? default; }
-        );
+            deserialize: s => { deserializeInvoked = true; return s?.Original ?? default; });
         var stubCacheProvider = new StubCacheProvider();
         string key = "some key";
 
@@ -228,8 +219,7 @@ public class AsyncSerializingCacheProviderSpecs
     {
         StubSerializer<ResultPrimitive, StubSerialized<ResultPrimitive>> stubTResultSerializer = new StubSerializer<ResultPrimitive, StubSerialized<ResultPrimitive>>(
             serialize: o => new StubSerialized<ResultPrimitive>(o),
-            deserialize: s => s?.Original ?? default
-        );
+            deserialize: s => s?.Original ?? default);
 
         Action configure = () => new AsyncSerializingCacheProvider<ResultPrimitive, StubSerialized<ResultPrimitive>>(null!, stubTResultSerializer);
 
@@ -261,8 +251,7 @@ public class AsyncSerializingCacheProviderSpecs
         bool serializeInvoked = false;
         StubSerializer<ResultPrimitive, StubSerialized<ResultPrimitive>> stubTResultSerializer = new StubSerializer<ResultPrimitive, StubSerialized<ResultPrimitive>>(
             serialize: o => { serializeInvoked = true; return new StubSerialized<ResultPrimitive>(o); },
-            deserialize: s => s?.Original ?? default
-        );
+            deserialize: s => s?.Original ?? default);
         var stubCacheProvider = new StubCacheProvider();
         ResultPrimitive objectToCache = ResultPrimitive.Good;
         string key = "some key";
@@ -285,8 +274,7 @@ public class AsyncSerializingCacheProviderSpecs
         bool serializeInvoked = false;
         StubSerializer<ResultPrimitive, StubSerialized<ResultPrimitive>> stubTResultSerializer = new StubSerializer<ResultPrimitive, StubSerialized<ResultPrimitive>>(
             serialize: o => { serializeInvoked = true; return new StubSerialized<ResultPrimitive>(o); },
-            deserialize: s => s?.Original ?? default
-        );
+            deserialize: s => s?.Original ?? default);
         StubCacheProvider stubCacheProvider = new StubCacheProvider();
         ResultPrimitive objectToCache = default;
         string key = "some key";
@@ -309,8 +297,7 @@ public class AsyncSerializingCacheProviderSpecs
         bool deserializeInvoked = false;
         StubSerializer<ResultPrimitive, StubSerialized<ResultPrimitive>> stubTResultSerializer = new StubSerializer<ResultPrimitive, StubSerialized<ResultPrimitive>>(
             serialize: o => new StubSerialized<ResultPrimitive>(o),
-            deserialize: s => { deserializeInvoked = true; return s?.Original ?? default; }
-        );
+            deserialize: s => { deserializeInvoked = true; return s?.Original ?? default; });
         var stubCacheProvider = new StubCacheProvider();
         ResultPrimitive objectToCache = ResultPrimitive.Good;
         string key = "some key";
@@ -331,8 +318,7 @@ public class AsyncSerializingCacheProviderSpecs
         bool deserializeInvoked = false;
         StubSerializer<ResultPrimitive, StubSerialized<ResultPrimitive>> stubTResultSerializer = new StubSerializer<ResultPrimitive, StubSerialized<ResultPrimitive>>(
             serialize: o => new StubSerialized<ResultPrimitive>(o),
-            deserialize: s => { deserializeInvoked = true; return s?.Original ?? default; }
-        );
+            deserialize: s => { deserializeInvoked = true; return s?.Original ?? default; });
         var stubCacheProvider = new StubCacheProvider();
         string key = "some key";
 
@@ -352,8 +338,7 @@ public class AsyncSerializingCacheProviderSpecs
         bool serializeInvoked = false;
         StubSerializer<ResultPrimitive, StubSerialized<ResultPrimitive>> stubTResultSerializer = new StubSerializer<ResultPrimitive, StubSerialized<ResultPrimitive>>(
             serialize: o => { serializeInvoked = true; return new StubSerialized<ResultPrimitive>(o); },
-            deserialize: s => s?.Original ?? default
-        );
+            deserialize: s => s?.Original ?? default);
         var stubCacheProvider = new StubCacheProvider();
         ResultPrimitive objectToCache = ResultPrimitive.Good;
         string key = "some key";
@@ -376,8 +361,7 @@ public class AsyncSerializingCacheProviderSpecs
         bool serializeInvoked = false;
         StubSerializer<ResultPrimitive, StubSerialized<ResultPrimitive>> stubTResultSerializer = new StubSerializer<ResultPrimitive, StubSerialized<ResultPrimitive>>(
             serialize: o => { serializeInvoked = true; return new StubSerialized<ResultPrimitive>(o); },
-            deserialize: s => s?.Original ?? default
-        );
+            deserialize: s => s?.Original ?? default);
         StubCacheProvider stubCacheProvider = new StubCacheProvider();
         ResultPrimitive objectToCache = default;
         string key = "some key";
@@ -401,8 +385,7 @@ public class AsyncSerializingCacheProviderSpecs
         bool deserializeInvoked = false;
         StubSerializer<ResultPrimitive, StubSerialized<ResultPrimitive>> stubTResultSerializer = new StubSerializer<ResultPrimitive, StubSerialized<ResultPrimitive>>(
             serialize: o => new StubSerialized<ResultPrimitive>(o),
-            deserialize: s => { deserializeInvoked = true; return s?.Original ?? default; }
-        );
+            deserialize: s => { deserializeInvoked = true; return s?.Original ?? default; });
         var stubCacheProvider = new StubCacheProvider();
         ResultPrimitive objectToCache = ResultPrimitive.Good;
         string key = "some key";
@@ -424,8 +407,7 @@ public class AsyncSerializingCacheProviderSpecs
         bool deserializeInvoked = false;
         StubSerializer<ResultPrimitive, StubSerialized<ResultPrimitive>> stubTResultSerializer = new StubSerializer<ResultPrimitive, StubSerialized<ResultPrimitive>>(
             serialize: o => new StubSerialized<ResultPrimitive>(o),
-            deserialize: s => { deserializeInvoked = true; return s?.Original ?? default; }
-        );
+            deserialize: s => { deserializeInvoked = true; return s?.Original ?? default; });
         var stubCacheProvider = new StubCacheProvider();
         string key = "some key";
 

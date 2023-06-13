@@ -3,15 +3,14 @@
 internal abstract class CircuitStateController<TResult> : ICircuitController<TResult>
 {
     protected readonly TimeSpan _durationOfBreak;
-    protected long _blockedTill;
-    protected CircuitState _circuitState;
-    protected DelegateResult<TResult> _lastOutcome;
-
     protected readonly Action<DelegateResult<TResult>, CircuitState, TimeSpan, Context> _onBreak;
     protected readonly Action<Context> _onReset;
     protected readonly Action _onHalfOpen;
-
     protected readonly object _lock = new();
+
+    protected long _blockedTill;
+    protected CircuitState _circuitState;
+    protected DelegateResult<TResult> _lastOutcome;
 
     protected CircuitStateController(
         TimeSpan durationOfBreak,

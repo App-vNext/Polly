@@ -22,3 +22,24 @@ dotnet_code_quality.CA1062.null_check_validation_methods = NotNull
 
 # S2094 // Classes should not be empty
 dotnet_diagnostic.S2094.severity = suggestion
+
+# Prefer method-like constructs to have a block body
+csharp_style_expression_bodied_methods = true:error
+csharp_style_expression_bodied_constructors = true:error
+csharp_style_expression_bodied_operators = true:error
+csharp_place_expr_method_on_single_line = false
+
+# Prefer property-like constructs to have an expression-body
+csharp_style_expression_bodied_properties = true:error
+csharp_style_expression_bodied_indexers = true:error
+csharp_style_expression_bodied_accessors = true:error
+
+# static fields in PascalCase
+dotnet_naming_rule.static_fields_should_have_prefix.severity = warning
+dotnet_naming_rule.static_fields_should_have_prefix.symbols  = static_fields
+dotnet_naming_rule.static_fields_should_have_prefix.style    = static_prefix_style
+dotnet_naming_symbols.static_fields.applicable_kinds   = field
+dotnet_naming_symbols.static_fields.required_modifiers = static
+dotnet_naming_symbols.static_fields.applicable_accessibilities = private, internal, private_protected
+dotnet_naming_style.static_prefix_style.required_prefix = 
+dotnet_naming_style.static_prefix_style.capitalization = pascal_case

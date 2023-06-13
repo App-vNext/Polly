@@ -21,6 +21,7 @@ public class CacheTResultSpecs : IDisposable
         Action action = () => Policy.Cache<ResultPrimitive>(cacheProvider, ttlStrategy);
         action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be("ttlStrategy");
     }
+
     [Fact]
     public void Should_throw_when_cache_key_strategy_is_null()
     {

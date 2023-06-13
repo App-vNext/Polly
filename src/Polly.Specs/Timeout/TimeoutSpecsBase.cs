@@ -28,7 +28,8 @@ public abstract class TimeoutSpecsBase : IDisposable
         // Override SystemClock.CancelTokenAfter to record when the policy wants the token to cancel.
         SystemClock.CancelTokenAfter = (tokenSource, timespan) =>
         {
-            if (_trackedTokenSource != null && tokenSource != _trackedTokenSource) throw new InvalidOperationException("Timeout tests cannot track more than one timing out token at a time.");
+            if (_trackedTokenSource != null && tokenSource != _trackedTokenSource)
+                throw new InvalidOperationException("Timeout tests cannot track more than one timing out token at a time.");
 
             _trackedTokenSource = tokenSource;
 
@@ -41,7 +42,8 @@ public abstract class TimeoutSpecsBase : IDisposable
         // Override SystemClock.Sleep, to manipulate our artificial clock.  And - if it means sleeping beyond the time when a tracked token should cancel - cancel it!
         SystemClock.Sleep = (sleepTimespan, sleepCancellationToken) =>
         {
-            if (sleepCancellationToken.IsCancellationRequested) return;
+            if (sleepCancellationToken.IsCancellationRequested)
+                return;
 
             if (_trackedTokenSource == null || _trackedTokenSource.IsCancellationRequested)
             {
@@ -89,6 +91,6 @@ public abstract class TimeoutSpecsBase : IDisposable
     /// </summary>
     /// <param name="ex">The exception to throw.</param>
     [MethodImpl(MethodImplOptions.NoInlining)] // Tests that use this method assert that the exception was thrown from within this method; therefore, it is essential that
-    protected void Helper_ThrowException(Exception ex) =>
+    protected static void Helper_ThrowException(Exception ex) =>
         throw ex;
 }

@@ -173,6 +173,7 @@ public class PolicyWrapContextAndKeySpecsAsync
                 doneOnceOnly = true;
                 throw new Exception();
             }
+
             return TaskHelper.EmptyTask;
         });
 

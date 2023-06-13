@@ -18,7 +18,6 @@ public partial class AsyncPolicyWrap : AsyncPolicy, IPolicyWrap
     /// </summary>
     public IsPolicy Inner => _inner;
 
-
     internal AsyncPolicyWrap(AsyncPolicy outer, IAsyncPolicy inner)
         : base(outer.ExceptionPredicates)
     {

@@ -174,7 +174,7 @@ public class RetryAsyncSpecs
     [Fact]
     public async Task Should_call_onretry_on_each_retry_with_the_current_exception()
     {
-        var expectedExceptions = new string[] { "Exception #1", "Exception #2", "Exception #3" };
+        var expectedExceptions = new[] { "Exception #1", "Exception #2", "Exception #3" };
         var retryExceptions = new List<Exception>();
 
         var policy = Policy
@@ -246,8 +246,7 @@ public class RetryAsyncSpecs
             .RetryAsync((_, _, context) => contextData = context);
 
         policy.RaiseExceptionAsync<DivideByZeroException>(
-            new { key1 = "value1", key2 = "value2" }.AsDictionary()
-            );
+            new { key1 = "value1", key2 = "value2" }.AsDictionary());
 
         contextData.Should()
             .ContainKeys("key1", "key2").And
@@ -297,14 +296,12 @@ public class RetryAsyncSpecs
             .RetryAsync((_, _, context) => contextValue = context["key"].ToString());
 
         policy.RaiseExceptionAsync<DivideByZeroException>(
-            new { key = "original_value" }.AsDictionary()
-        );
+            new { key = "original_value" }.AsDictionary());
 
         contextValue.Should().Be("original_value");
 
         policy.RaiseExceptionAsync<DivideByZeroException>(
-            new { key = "new_value" }.AsDictionary()
-        );
+            new { key = "new_value" }.AsDictionary());
 
         contextValue.Should().Be("new_value");
     }
@@ -378,7 +375,10 @@ public class RetryAsyncSpecs
             throw new DivideByZeroException();
         })).Should().ThrowAsync<DivideByZeroException>();
 
-        while (executeDelegateInvocationsWhenOnRetryExits == 0) { } // Wait for the onRetry delegate to complete.
+        while (executeDelegateInvocationsWhenOnRetryExits == 0)
+        {
+            // Wait for the onRetry delegate to complete.
+        }
 
         executeDelegateInvocationsWhenOnRetryExits.Should().Be(1); // If the async onRetry delegate is genuinely awaited, only one execution of the .Execute delegate should have occurred by the time onRetry completes.  If the async onRetry delegate were instead assigned to an Action<...>, then onRetry will return, and the second action execution will commence, before await Task.Delay() completes, leaving executeDelegateInvocationsWhenOnRetryExits == 2.
         executeDelegateInvocations.Should().Be(2);

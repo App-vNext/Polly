@@ -10,7 +10,11 @@ internal static class TimeoutValidator
     internal static void ValidateTimeSpanTimeout(TimeSpan timeout)
     {
         if (timeout <= TimeSpan.Zero && timeout != System.Threading.Timeout.InfiniteTimeSpan)
-            throw new ArgumentOutOfRangeException(nameof(timeout), timeout,
+        {
+            throw new ArgumentOutOfRangeException(
+                nameof(timeout),
+                timeout,
                 $"{nameof(timeout)} must be a positive TimeSpan (or Timeout.InfiniteTimeSpan to indicate no timeout)");
+        }
     }
 }

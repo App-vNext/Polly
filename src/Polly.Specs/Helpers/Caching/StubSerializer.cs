@@ -15,6 +15,7 @@ internal class StubSerializer<TResult, TSerialized> : ICacheItemSerializer<TResu
         _serialize = serialize;
         _deserialize = deserialize;
     }
+
     public TSerialized? Serialize(TResult? objectToSerialize) =>
         _serialize(objectToSerialize);
 

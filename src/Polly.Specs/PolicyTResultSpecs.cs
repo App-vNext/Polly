@@ -105,7 +105,7 @@ public class PolicyTResultSpecs
             .HandleResult(ResultPrimitive.Fault)
             .Retry((_, _, _) => { });
 
-        policy.Invoking(p => p.Execute(_ => ResultPrimitive.Good, (Context)null!))
+        policy.Invoking(p => p.Execute(_ => ResultPrimitive.Good, null!))
             .Should().Throw<ArgumentNullException>().And
             .ParamName.Should().Be("context");
     }
@@ -142,7 +142,7 @@ public class PolicyTResultSpecs
             .HandleResult(ResultPrimitive.Fault)
             .Retry((_, _, _) => { });
 
-        policy.Invoking(p => p.ExecuteAndCapture(_ => ResultPrimitive.Good, (Context)null!))
+        policy.Invoking(p => p.ExecuteAndCapture(_ => ResultPrimitive.Good, null!))
               .Should().Throw<ArgumentNullException>().And
               .ParamName.Should().Be("context");
     }

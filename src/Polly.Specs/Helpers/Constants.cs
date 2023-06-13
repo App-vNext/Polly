@@ -3,7 +3,7 @@
 /// <summary>
 /// Constants supporting tests.
 /// </summary>
-public class Constants
+public static class Constants
 {
     /// <summary>
     /// Denotes a test collection dependent on manipulating the abstracted <see cref="Polly.Utilities.SystemClock"/>.  <remarks>These tests are not parallelized.</remarks>

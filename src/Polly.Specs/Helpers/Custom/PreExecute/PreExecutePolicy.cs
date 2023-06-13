@@ -2,7 +2,7 @@
 
 internal class PreExecutePolicy : Policy
 {
-    private Action _preExecute;
+    private readonly Action _preExecute;
 
     public static PreExecutePolicy Create(Action preExecute) => new(preExecute);
 
@@ -15,7 +15,7 @@ internal class PreExecutePolicy : Policy
 
 internal class PreExecutePolicy<TResult> : Policy<TResult>
 {
-    private Action _preExecute;
+    private readonly Action _preExecute;
 
     public static PreExecutePolicy<TResult> Create(Action preExecute) => new(preExecute);
 

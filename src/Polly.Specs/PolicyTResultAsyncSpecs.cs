@@ -87,7 +87,6 @@ public class PolicyTResultAsyncSpecs
 
     #region Context tests
 
-
     [Fact]
     public async Task Executing_the_policy_function_should_throw_when_context_data_is_null()
     {
@@ -106,7 +105,7 @@ public class PolicyTResultAsyncSpecs
             .HandleResult(ResultPrimitive.Fault)
             .RetryAsync((_, _, _) => { });
 
-        var ex = await policy.Awaiting(p => p.ExecuteAsync(_ => Task.FromResult(ResultPrimitive.Good), (Context)null!))
+        var ex = await policy.Awaiting(p => p.ExecuteAsync(_ => Task.FromResult(ResultPrimitive.Good), null!))
               .Should().ThrowAsync<ArgumentNullException>();
         ex.And.ParamName.Should().Be("context");
     }
@@ -118,7 +117,7 @@ public class PolicyTResultAsyncSpecs
             .HandleResult(ResultPrimitive.Fault)
             .RetryAsync((_, _, _) => { });
 
-        var ex = await policy.Awaiting(p => p.ExecuteAndCaptureAsync(_ => Task.FromResult(ResultPrimitive.Good), (Context)null!))
+        var ex = await policy.Awaiting(p => p.ExecuteAndCaptureAsync(_ => Task.FromResult(ResultPrimitive.Good), null!))
               .Should().ThrowAsync<ArgumentNullException>();
         ex.And.ParamName.Should().Be("context");
     }
@@ -144,7 +143,7 @@ public class PolicyTResultAsyncSpecs
             .HandleResult(ResultPrimitive.Fault)
             .RetryAsync((_, _, _) => { });
 
-        var ex = await policy.Awaiting(p => p.ExecuteAndCaptureAsync(_ => Task.FromResult(ResultPrimitive.Good), (Context)null!))
+        var ex = await policy.Awaiting(p => p.ExecuteAndCaptureAsync(_ => Task.FromResult(ResultPrimitive.Good), null!))
               .Should().ThrowAsync<ArgumentNullException>();
         ex.And.ParamName.Should().Be("context");
     }

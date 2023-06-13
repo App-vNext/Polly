@@ -150,6 +150,7 @@ public class PolicyKeyAsyncSpecs
                 firstExecution = false;
                 throw new Exception();
             }
+
             return 0;
         });
 
@@ -174,6 +175,7 @@ public class PolicyKeyAsyncSpecs
                 firstExecution = false;
                 throw new Exception();
             }
+
             return 0;
         }, new Context(operationKey));
 
@@ -309,6 +311,7 @@ public class PolicyTResultKeyAsyncSpecs
                 firstExecution = false;
                 return ResultPrimitive.Fault;
             }
+
             return ResultPrimitive.Good;
         }, new Context(operationKey));
 

@@ -73,7 +73,7 @@ public class CircuitBreakerTResultMixedResultExceptionSpecs : IDisposable
         breaker.Invoking(b => b.RaiseResultSequence(ResultPrimitive.Good))
             .Should().Throw<BrokenCircuitException<ResultPrimitive>>()
             .WithMessage("The circuit is now open and is not allowing calls.")
-            .Where(e => e. Result == ResultPrimitive.Fault);
+            .Where(e => e.Result == ResultPrimitive.Fault);
 
         breaker.CircuitState.Should().Be(CircuitState.Open);
     }
@@ -230,7 +230,8 @@ public class CircuitBreakerTResultMixedResultExceptionSpecs : IDisposable
         breaker.CircuitState.Should().Be(CircuitState.Closed);
     }
 
-    [Fact] public void Should_open_circuit_with_the_last_exception_after_specified_number_of_exceptions_and_results_have_been_raised__configuring_multiple_results_and_exceptions()
+    [Fact]
+    public void Should_open_circuit_with_the_last_exception_after_specified_number_of_exceptions_and_results_have_been_raised__configuring_multiple_results_and_exceptions()
     {
         CircuitBreakerPolicy<ResultPrimitive> breaker = Policy
             .Handle<DivideByZeroException>()
@@ -584,7 +585,6 @@ public class CircuitBreakerTResultMixedResultExceptionSpecs : IDisposable
     }
 
     #endregion
-
 
     public void Dispose() =>
         SystemClock.Reset();

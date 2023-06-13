@@ -54,7 +54,6 @@ public static class FallbackSyntax
         return policyBuilder.Fallback((_, _, _) => fallbackAction(), (exception, _) => onFallback(exception));
     }
 
-
     /// <summary>
     /// Builds a <see cref="FallbackPolicy"/> which provides a fallback action if the main execution fails.  Executes the main delegate, but if this throws a handled exception, first calls <paramref name="onFallback"/> with details of the handled exception; then calls <paramref name="fallbackAction"/>.
     /// </summary>

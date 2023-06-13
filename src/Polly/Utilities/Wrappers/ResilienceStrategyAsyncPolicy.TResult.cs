@@ -6,7 +6,7 @@ internal sealed class ResilienceStrategyAsyncPolicy<TResult> : AsyncPolicy<TResu
 
     public ResilienceStrategyAsyncPolicy(ResilienceStrategy<TResult> strategy) => _strategy = strategy;
 
-    protected sealed override async Task<TResult> ImplementationAsync(Func<Context, CancellationToken, Task<TResult>> action, Context context, CancellationToken cancellationToken, bool continueOnCapturedContext)
+    protected override async Task<TResult> ImplementationAsync(Func<Context, CancellationToken, Task<TResult>> action, Context context, CancellationToken cancellationToken, bool continueOnCapturedContext)
     {
         var resilienceContext = ResilienceContextFactory.Create(
             context,

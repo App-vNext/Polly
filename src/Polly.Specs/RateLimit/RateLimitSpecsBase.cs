@@ -7,7 +7,7 @@ public abstract class RateLimitSpecsBase
     /// </summary>
     /// <param name="timeSpan">The allowable timespan.</param>
     /// <param name="actionContainingAssertions">The action containing fluent assertions, which must succeed within the timespan.</param>
-    protected void Within(TimeSpan timeSpan, Action actionContainingAssertions)
+    protected static void Within(TimeSpan timeSpan, Action actionContainingAssertions)
     {
         TimeSpan retryInterval = TimeSpan.FromSeconds(0.2);
 
@@ -21,9 +21,15 @@ public abstract class RateLimitSpecsBase
             }
             catch (Exception e)
             {
-                if (!(e is AssertionFailedException || e is XunitException)) { throw; }
+                if (!(e is AssertionFailedException || e is XunitException))
+                {
+                    throw;
+                }
 
-                if (watch.Elapsed > timeSpan) { throw; }
+                if (watch.Elapsed > timeSpan)
+                {
+                    throw;
+                }
 
                 Thread.Sleep(retryInterval);
             }

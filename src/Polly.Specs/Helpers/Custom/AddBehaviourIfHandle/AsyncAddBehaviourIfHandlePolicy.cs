@@ -19,8 +19,7 @@ internal class AsyncAddBehaviourIfHandlePolicy : AsyncPolicy
             action,
             context,
             cancellationToken,
-            continueOnCapturedContext
-        );
+            continueOnCapturedContext);
 }
 
 internal class AsyncAddBehaviourIfHandlePolicy<TResult> : AsyncPolicy<TResult>
@@ -42,6 +41,5 @@ internal class AsyncAddBehaviourIfHandlePolicy<TResult> : AsyncPolicy<TResult>
             action,
             context,
             cancellationToken,
-            continueOnCapturedContext
-        );
+            continueOnCapturedContext);
 }

@@ -42,10 +42,11 @@ public partial class PolicyBuilder
     /// Specifies the type of exception that this policy can handle, with additional filters on this exception type, if found as an InnerException of a regular <see cref="Exception"/>, or at any level of nesting within an <see cref="AggregateException"/>.
     /// </summary>
     /// <typeparam name="TException">The type of the exception to handle.</typeparam>
+    /// <param name="exceptionPredicate">The exception predicate to filter the type of exception this policy can handle.</param>
     /// <returns>The PolicyBuilder instance, for fluent chaining.</returns>
     public PolicyBuilder OrInner<TException>(Func<TException, bool> exceptionPredicate) where TException : Exception
     {
-        ExceptionPredicates.Add(HandleInner(exception => exception is TException texception && exceptionPredicate(texception)));
+        ExceptionPredicates.Add(HandleInner(exception => exception is TException innerEx && exceptionPredicate(innerEx)));
         return this;
     }
 
@@ -54,7 +55,7 @@ public partial class PolicyBuilder
         {
             if (exception is AggregateException aggregateException)
             {
-                //search all inner exceptions wrapped inside the AggregateException recursively
+                // search all inner exceptions wrapped inside the AggregateException recursively
                 foreach (var innerException in aggregateException.Flatten().InnerExceptions)
                 {
                     var matchedInAggregate = HandleInnerNested(predicate, innerException);
@@ -166,6 +167,7 @@ public partial class PolicyBuilder<TResult>
     /// Specifies the type of exception that this policy can handle, with additional filters on this exception type, if found as an InnerException of a regular <see cref="Exception"/>, or at any level of nesting within an <see cref="AggregateException"/>.
     /// </summary>
     /// <typeparam name="TException">The type of the exception to handle.</typeparam>
+    /// <param name="exceptionPredicate">The exception predicate to filter the type of exception this policy can handle.</param>
     /// <returns>The PolicyBuilder instance, for fluent chaining.</returns>
     public PolicyBuilder<TResult> OrInner<TException>(Func<TException, bool> exceptionPredicate) where TException : Exception
     {

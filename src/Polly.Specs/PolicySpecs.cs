@@ -47,8 +47,8 @@ public class PolicySpecs
         result.Should().BeEquivalentTo(new
         {
             Outcome = OutcomeType.Successful,
-            FinalException = (Exception?) null,
-            ExceptionType = (ExceptionType?) null,
+            FinalException = (Exception?)null,
+            ExceptionType = (ExceptionType?)null,
         });
     }
 
@@ -94,7 +94,7 @@ public class PolicySpecs
         var result = Policy
             .Handle<DivideByZeroException>()
             .Retry((_, _) => { })
-            .ExecuteAndCapture(() => Int32.MaxValue);
+            .ExecuteAndCapture(() => int.MaxValue);
 
         result.Should().BeEquivalentTo(new
         {
@@ -103,7 +103,7 @@ public class PolicySpecs
             ExceptionType = (ExceptionType?)null,
             FaultType = (FaultType?)null,
             FinalHandledResult = default(int),
-            Result = Int32.MaxValue
+            Result = int.MaxValue
         });
     }
 
@@ -171,7 +171,7 @@ public class PolicySpecs
             .Handle<DivideByZeroException>()
             .Retry((_, _, _) => { });
 
-        policy.Invoking(p => p.Execute(_ => { }, (Context)null!))
+        policy.Invoking(p => p.Execute(_ => { }, null!))
             .Should().Throw<ArgumentNullException>().And
             .ParamName.Should().Be("context");
     }
@@ -194,7 +194,7 @@ public class PolicySpecs
             .Handle<DivideByZeroException>()
             .Retry((_, _, _) => { });
 
-        policy.Invoking(p => p.Execute(_ => 2, (Context)null!))
+        policy.Invoking(p => p.Execute(_ => 2, null!))
             .Should().Throw<ArgumentNullException>().And
             .ParamName.Should().Be("context");
     }
@@ -231,7 +231,7 @@ public class PolicySpecs
             .Handle<DivideByZeroException>()
             .Retry((_, _, _) => { });
 
-        policy.Invoking(p => p.ExecuteAndCapture(_ => { }, (Context)null!))
+        policy.Invoking(p => p.ExecuteAndCapture(_ => { }, null!))
             .Should().Throw<ArgumentNullException>().And
             .ParamName.Should().Be("context");
     }
@@ -254,7 +254,7 @@ public class PolicySpecs
             .Handle<DivideByZeroException>()
             .Retry((_, _, _) => { });
 
-        policy.Invoking(p => p.ExecuteAndCapture(_ => 2, (Context)null!))
+        policy.Invoking(p => p.ExecuteAndCapture(_ => 2, null!))
               .Should().Throw<ArgumentNullException>().And
               .ParamName.Should().Be("context");
     }

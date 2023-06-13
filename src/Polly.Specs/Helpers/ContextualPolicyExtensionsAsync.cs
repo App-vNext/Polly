@@ -2,7 +2,8 @@
 
 public static class ContextualPolicyExtensionsAsync
 {
-    public static Task RaiseExceptionAsync<TException>(this AsyncPolicy policy, int numberOfTimesToRaiseException, IDictionary<string, object> contextData, Action<TException, int>? configureException = null, CancellationToken cancellationToken = default) where TException : Exception, new()
+    public static Task RaiseExceptionAsync<TException>(this AsyncPolicy policy, int numberOfTimesToRaiseException, IDictionary<string, object> contextData, Action<TException, int>? configureException = null, CancellationToken cancellationToken = default)
+        where TException : Exception, new()
     {
         int counter = 0;
 
@@ -18,10 +19,13 @@ public static class ContextualPolicyExtensionsAsync
 
                 throw exception;
             }
+
             return TaskHelper.EmptyTask;
         }, contextData, cancellationToken);
     }
 
-    public static Task RaiseExceptionAsync<TException>(this AsyncPolicy policy, IDictionary<string, object> contextData, Action<TException, int>? configureException = null, CancellationToken cancellationToken = default) where TException : Exception, new() =>
+    public static Task RaiseExceptionAsync<TException>(this AsyncPolicy policy, IDictionary<string, object> contextData, Action<TException, int>? configureException = null, CancellationToken cancellationToken = default)
+        where TException : Exception, new()
+        =>
         policy.RaiseExceptionAsync(1, contextData, configureException, cancellationToken);
 }

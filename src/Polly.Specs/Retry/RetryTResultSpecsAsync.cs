@@ -259,8 +259,7 @@ public class RetryTResultSpecsAsync
 
         (await policy.RaiseResultSequenceAsync(
             new { key1 = "value1", key2 = "value2" }.AsDictionary(),
-            ResultPrimitive.Fault, ResultPrimitive.Good
-            ))
+            ResultPrimitive.Fault, ResultPrimitive.Good))
             .Should().Be(ResultPrimitive.Good);
 
         contextData.Should()
@@ -279,8 +278,7 @@ public class RetryTResultSpecsAsync
 
         PolicyResult<ResultPrimitive> result = await policy.RaiseResultSequenceOnExecuteAndCaptureAsync(
             new { key1 = "value1", key2 = "value2" }.AsDictionary(),
-            ResultPrimitive.Fault, ResultPrimitive.Good
-            );
+            ResultPrimitive.Fault, ResultPrimitive.Good);
 
         result.Should().BeEquivalentTo(new
         {
@@ -323,15 +321,13 @@ public class RetryTResultSpecsAsync
 
         await policy.RaiseResultSequenceAsync(
             new { key = "original_value" }.AsDictionary(),
-            ResultPrimitive.Fault, ResultPrimitive.Good
-        );
+            ResultPrimitive.Fault, ResultPrimitive.Good);
 
         contextValue.Should().Be("original_value");
 
         await policy.RaiseResultSequenceAsync(
             new { key = "new_value" }.AsDictionary(),
-            ResultPrimitive.Fault, ResultPrimitive.Good
-        );
+            ResultPrimitive.Fault, ResultPrimitive.Good);
 
         contextValue.Should().Be("new_value");
     }
@@ -347,15 +343,13 @@ public class RetryTResultSpecsAsync
 
         await policy.RaiseResultSequenceOnExecuteAndCaptureAsync(
             new { key = "original_value" }.AsDictionary(),
-            ResultPrimitive.Fault, ResultPrimitive.Good
-        );
+            ResultPrimitive.Fault, ResultPrimitive.Good);
 
         contextValue.Should().Be("original_value");
 
         await policy.RaiseResultSequenceOnExecuteAndCaptureAsync(
             new { key = "new_value" }.AsDictionary(),
-            ResultPrimitive.Fault, ResultPrimitive.Good
-        );
+            ResultPrimitive.Fault, ResultPrimitive.Good);
 
         contextValue.Should().Be("new_value");
     }
@@ -437,7 +431,10 @@ public class RetryTResultSpecsAsync
             return ResultPrimitive.Fault;
         })).Should().Be(ResultPrimitive.Fault);
 
-        while (executeDelegateInvocationsWhenOnRetryExits == 0) { } // Wait for the onRetry delegate to complete.
+        while (executeDelegateInvocationsWhenOnRetryExits == 0)
+        {
+            // Wait for the onRetry delegate to complete.
+        }
 
         executeDelegateInvocationsWhenOnRetryExits.Should().Be(1); // If the async onRetry delegate is genuinely awaited, only one execution of the .Execute delegate should have occurred by the time onRetry completes.  If the async onRetry delegate were instead assigned to an Action<...>, then onRetry will return, and the second action execution will commence, before await Task.Delay() completes, leaving executeDelegateInvocationsWhenOnRetryExits == 2.
         executeDelegateInvocations.Should().Be(2);

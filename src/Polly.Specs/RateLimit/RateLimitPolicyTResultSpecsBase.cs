@@ -40,8 +40,10 @@ public abstract class RateLimitPolicyTResultSpecsBase : RateLimitPolicySpecsBase
 
         // Assert - should be blocked - time not advanced.
         resultExpectedBlocked.ResultCode.Should().NotBe(ResultPrimitive.Good);
+
         // Result should be expressed per the retryAfterFactory.
         resultExpectedBlocked.RetryAfter.Should().Be(onePer);
+
         // Context should have been passed to the retryAfterFactory.
         contextPassedToRetryAfter.Should().NotBeNull();
         contextPassedToRetryAfter.Should().BeSameAs(contextToPassIn);

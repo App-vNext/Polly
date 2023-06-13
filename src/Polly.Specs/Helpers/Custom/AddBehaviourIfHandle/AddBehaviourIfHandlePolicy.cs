@@ -18,8 +18,7 @@ internal class AddBehaviourIfHandlePolicy : Policy
             outcome => _behaviourIfHandle(outcome.Exception),
             action,
             context,
-            cancellationToken
-        );
+            cancellationToken);
 }
 
 internal class AddBehaviourIfHandlePolicy<TResult> : Policy<TResult>
@@ -39,6 +38,5 @@ internal class AddBehaviourIfHandlePolicy<TResult> : Policy<TResult>
             _behaviourIfHandle,
             action,
             context,
-            cancellationToken
-        );
+            cancellationToken);
 }

@@ -2,10 +2,10 @@
 
 internal class StubErroringCacheProvider : ISyncCacheProvider, IAsyncCacheProvider
 {
-    private Exception? _getException;
-    private Exception? _putException;
+    private readonly Exception? _getException;
+    private readonly Exception? _putException;
 
-    private StubCacheProvider innerProvider = new();
+    private readonly StubCacheProvider innerProvider = new();
 
     public StubErroringCacheProvider(Exception? getException, Exception? putException)
     {
@@ -15,13 +15,15 @@ internal class StubErroringCacheProvider : ISyncCacheProvider, IAsyncCacheProvid
 
     public (bool, object?) TryGet(string key)
     {
-        if (_getException != null) throw _getException;
+        if (_getException != null)
+            throw _getException;
         return innerProvider.TryGet(key);
     }
 
     public void Put(string key, object? value, Ttl ttl)
     {
-        if (_putException != null) throw _putException;
+        if (_putException != null)
+            throw _putException;
         innerProvider.Put(key, value, ttl);
     }
 

@@ -10,7 +10,7 @@ public class PolicyWrapSpecsAsync
     {
         var retry = Policy.Handle<Exception>().RetryAsync(1);
 
-        Action config = () => retry.WrapAsync((AsyncPolicy)null!);
+        Action config = () => retry.WrapAsync(null!);
 
         config.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be("innerPolicy");
     }
@@ -20,7 +20,7 @@ public class PolicyWrapSpecsAsync
     {
         var retry = Policy.Handle<Exception>().RetryAsync(1);
 
-        Action config = () => retry.WrapAsync<int>((AsyncPolicy<int>)null!);
+        Action config = () => retry.WrapAsync<int>(null!);
 
         config.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be("innerPolicy");
     }
@@ -128,7 +128,7 @@ public class PolicyWrapSpecsAsync
     {
         IAsyncPolicy retry = Policy.Handle<Exception>().RetryAsync(1);
 
-        Action config = () => retry.WrapAsync((AsyncPolicy)null!);
+        Action config = () => retry.WrapAsync(null!);
 
         config.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be("innerPolicy");
     }
@@ -138,7 +138,7 @@ public class PolicyWrapSpecsAsync
     {
         IAsyncPolicy retry = Policy.Handle<Exception>().RetryAsync(1);
 
-        Action config = () => retry.WrapAsync<int>((AsyncPolicy<int>)null!);
+        Action config = () => retry.WrapAsync<int>(null!);
 
         config.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be("innerPolicy");
     }
@@ -496,7 +496,7 @@ public class PolicyWrapSpecsAsync
             .CircuitBreakerAsync(1, TimeSpan.Zero);
         AsyncPolicyWrap<ResultPrimitive> wrap = outerHandlingANE.WrapAsync(innerHandlingDBZE);
 
-        PolicyResult<ResultPrimitive> executeAndCaptureResultOnPolicyWrap = await  wrap.ExecuteAndCaptureAsync(() => { throw new ArgumentNullException(); });
+        PolicyResult<ResultPrimitive> executeAndCaptureResultOnPolicyWrap = await wrap.ExecuteAndCaptureAsync(() => { throw new ArgumentNullException(); });
 
         executeAndCaptureResultOnPolicyWrap.Outcome.Should().Be(OutcomeType.Failure);
         executeAndCaptureResultOnPolicyWrap.FinalException.Should().BeOfType<ArgumentNullException>();

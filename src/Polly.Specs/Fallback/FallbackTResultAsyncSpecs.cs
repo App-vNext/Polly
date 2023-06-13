@@ -248,7 +248,6 @@ public class FallbackTResultAsyncSpecs
         fallbackActionExecuted.Should().BeTrue();
     }
 
-
     [Fact]
     public async Task Should_execute_fallback_when_result_raised_matches_one_of_handling_predicates()
     {
@@ -314,7 +313,7 @@ public class FallbackTResultAsyncSpecs
     [Fact]
     public async Task Should_not_call_onFallback_when_executed_delegate_does_not_raise_fault()
     {
-                    Func<CancellationToken, Task<ResultPrimitive>> fallbackAction = _ => Task.FromResult(ResultPrimitive.Substitute);
+        Func<CancellationToken, Task<ResultPrimitive>> fallbackAction = _ => Task.FromResult(ResultPrimitive.Substitute);
 
         bool onFallbackExecuted = false;
         Func<DelegateResult<ResultPrimitive>, Task> onFallbackAsync = _ => { onFallbackExecuted = true; return TaskHelper.EmptyTask; };
@@ -478,7 +477,11 @@ public class FallbackTResultAsyncSpecs
         Context? capturedContext = null;
         bool fallbackExecuted = false;
 
-        Func<Context, CancellationToken, Task<ResultPrimitive>> fallbackActionAsync = (ctx, _) => { fallbackExecuted = true; capturedContext = ctx; return Task.FromResult(ResultPrimitive.Substitute);
+        Func<Context, CancellationToken, Task<ResultPrimitive>> fallbackActionAsync = (ctx, _) =>
+        {
+            fallbackExecuted = true;
+            capturedContext = ctx;
+            return Task.FromResult(ResultPrimitive.Substitute);
         };
         Func<DelegateResult<ResultPrimitive>, Context, Task> onFallbackAsync = (_, _) => TaskHelper.EmptyTask;
 
@@ -489,7 +492,6 @@ public class FallbackTResultAsyncSpecs
 
         (await fallbackPolicy.RaiseResultSequenceAsync(ResultPrimitive.Fault))
             .Should().Be(ResultPrimitive.Substitute);
-
 
         fallbackExecuted.Should().BeTrue();
         capturedContext.Should().BeEmpty();
@@ -564,7 +566,6 @@ public class FallbackTResultAsyncSpecs
     }
 
     #endregion
-
 
     #region Cancellation tests
 

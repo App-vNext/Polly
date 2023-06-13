@@ -1,5 +1,4 @@
 using Polly.Utilities.Wrappers;
-using Polly.Utils;
 
 namespace Polly;
 

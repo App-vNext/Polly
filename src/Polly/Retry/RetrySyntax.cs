@@ -315,7 +315,6 @@ public static class RetrySyntax
             );
     }
 
-
     /// <summary>
     /// Builds a <see cref="Policy"/> that will wait and retry <paramref name="retryCount"/> times
     /// calling <paramref name="onRetry"/> on each retry with the raised exception, current sleep duration, retry count, and context data.

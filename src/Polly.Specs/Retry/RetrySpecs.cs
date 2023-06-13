@@ -211,7 +211,7 @@ public class RetrySpecs
     [Fact]
     public void Should_call_onretry_on_each_retry_with_the_current_exception()
     {
-        var expectedExceptions = new string[] { "Exception #1", "Exception #2", "Exception #3" };
+        var expectedExceptions = new[] { "Exception #1", "Exception #2", "Exception #3" };
         var retryExceptions = new List<Exception>();
 
         var policy = Policy
@@ -357,8 +357,7 @@ public class RetrySpecs
             .Retry((_, _, context) => contextData = context);
 
         policy.RaiseException<DivideByZeroException>(
-            new { key1 = "value1", key2 = "value2" }.AsDictionary()
-            );
+            new { key1 = "value1", key2 = "value2" }.AsDictionary());
 
         contextData.Should()
             .ContainKeys("key1", "key2").And
@@ -374,7 +373,7 @@ public class RetrySpecs
             .Handle<DivideByZeroException>()
             .Retry((_, _, context) => contextData = context);
 
-        policy.Invoking(p => p.ExecuteAndCapture(_ => { throw new DivideByZeroException();},
+        policy.Invoking(p => p.ExecuteAndCapture(_ => { throw new DivideByZeroException(); },
             new { key1 = "value1", key2 = "value2" }.AsDictionary()))
             .Should().NotThrow();
 
@@ -408,14 +407,12 @@ public class RetrySpecs
             .Retry((_, _, context) => contextValue = context["key"].ToString());
 
         policy.RaiseException<DivideByZeroException>(
-            new { key = "original_value" }.AsDictionary()
-        );
+            new { key = "original_value" }.AsDictionary());
 
         contextValue.Should().Be("original_value");
 
         policy.RaiseException<DivideByZeroException>(
-            new { key = "new_value" }.AsDictionary()
-        );
+            new { key = "new_value" }.AsDictionary());
 
         contextValue.Should().Be("new_value");
     }
@@ -489,7 +486,6 @@ public class RetrySpecs
 
         retryInvoked.Should().BeFalse();
     }
-
 
     #region Sync cancellation tests
 

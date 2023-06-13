@@ -9,8 +9,7 @@ public class DelegateResult<TResult>
     /// Create an instance of <see cref="DelegateResult{TResult}"/> representing an execution which returned <paramref name="result"/>
     /// </summary>
     /// <param name="result">The result.</param>
-    public DelegateResult(TResult result) =>
-        Result = result;
+    public DelegateResult(TResult result) => Result = result;
 
     /// <summary>
     /// Create an instance of <see cref="DelegateResult{TResult}"/> representing an execution which threw <paramref name="exception"/>

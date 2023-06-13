@@ -33,10 +33,10 @@ public interface ISyncPolicy : IsPolicy
     void Execute(Action<Context> action, Context context);
 
     /// <summary>
-    /// 
+    /// Executes the specified action within the policy.
     /// </summary>
-    /// <param name="action"></param>
-    /// <param name="cancellationToken"></param>
+    /// <param name="action">The action to perform.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
     void Execute(Action<CancellationToken> action, CancellationToken cancellationToken);
 
     /// <summary>

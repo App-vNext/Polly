@@ -30,7 +30,7 @@ internal sealed class ResilienceStrategySyncPolicy : Policy
         }
     }
 
-    protected sealed override TResult Implementation<TResult>(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken)
+    protected override TResult Implementation<TResult>(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken)
     {
         var resilienceContext = ResilienceContextFactory.Create(
             context,

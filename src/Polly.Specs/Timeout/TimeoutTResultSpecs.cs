@@ -210,7 +210,8 @@ public class TimeoutTResultSpecs : TimeoutSpecsBase
         var result = ResultPrimitive.Undefined;
         var userCancellationToken = CancellationToken.None;
 
-        Action act = () => {
+        Action act = () =>
+        {
             result = policy.Execute(ct =>
             {
                 SystemClock.Sleep(TimeSpan.FromMilliseconds(500), ct);
@@ -261,7 +262,7 @@ public class TimeoutTResultSpecs : TimeoutSpecsBase
         // Check to see if nested aggregate exceptions are unwrapped correctly
         AggregateException exception = new AggregateException(msg, new NotImplementedException());
 
-        policy.Invoking(p => p.Execute(() => { Helper_ThrowException(exception); return ResultPrimitive.WhateverButTooLate; }))
+        policy.Invoking(p => p.Execute(() => { TimeoutSpecsBase.Helper_ThrowException(exception); return ResultPrimitive.WhateverButTooLate; }))
             .Should().Throw<AggregateException>()
             .WithMessage(exception.Message)
             .Where(e => e.InnerException is NotImplementedException)
@@ -277,7 +278,7 @@ public class TimeoutTResultSpecs : TimeoutSpecsBase
         Exception innerException1 = new NotImplementedException();
         Exception innerException2 = new DivideByZeroException();
         AggregateException aggregateException = new AggregateException(msg, innerException1, innerException2);
-        Func<ResultPrimitive> func = () => { Helper_ThrowException(aggregateException); return ResultPrimitive.WhateverButTooLate; };
+        Func<ResultPrimitive> func = () => { TimeoutSpecsBase.Helper_ThrowException(aggregateException); return ResultPrimitive.WhateverButTooLate; };
 
         // Whether executing the delegate directly, or through the policy, exception behavior should be the same.
         func.Should().Throw<AggregateException>()
@@ -360,7 +361,8 @@ public class TimeoutTResultSpecs : TimeoutSpecsBase
         var result = ResultPrimitive.Undefined;
         var userCancellationToken = CancellationToken.None;
 
-        Action act = () => {
+        Action act = () =>
+        {
             result = policy.Execute(ct =>
             {
                 SystemClock.Sleep(TimeSpan.FromMilliseconds(500), ct);
@@ -413,18 +415,15 @@ public class TimeoutTResultSpecs : TimeoutSpecsBase
         int timeout = 5;
         var policy = Policy.Timeout<ResultPrimitive>(timeout, TimeoutStrategy.Pessimistic);
 
-        using (CancellationTokenSource userTokenSource = new CancellationTokenSource())
-        {
-            policy.Invoking(p => p.Execute(
-                _ => {
-                    userTokenSource.Cancel(); // User token cancels in the middle of execution ...
-                    SystemClock.Sleep(TimeSpan.FromSeconds(timeout * 2),
-                        CancellationToken.None // ... but if the executed delegate does not observe it
-                       );
-                    return ResultPrimitive.WhateverButTooLate;
-                }, userTokenSource.Token)
-               ).Should().Throw<TimeoutRejectedException>(); // ... it's still the timeout we expect.
-        }
+        using CancellationTokenSource userTokenSource = new CancellationTokenSource();
+        policy.Invoking(p => p.Execute(
+            _ =>
+            {
+                userTokenSource.Cancel(); // User token cancels in the middle of execution ...
+                SystemClock.Sleep(TimeSpan.FromSeconds(timeout * 2),
+                    CancellationToken.None); // ... but if the executed delegate does not observe it
+                return ResultPrimitive.WhateverButTooLate;
+            }, userTokenSource.Token)).Should().Throw<TimeoutRejectedException>(); // ... it's still the timeout we expect.
     }
 
     [Fact]
@@ -458,15 +457,15 @@ public class TimeoutTResultSpecs : TimeoutSpecsBase
     {
         int timeout = 10;
         var policy = Policy.Timeout<ResultPrimitive>(timeout, TimeoutStrategy.Optimistic);
-        using (CancellationTokenSource userTokenSource = new CancellationTokenSource())
-        {
-            policy.Invoking(p => p.Execute(
-                ct => {
-                    userTokenSource.Cancel(); ct.ThrowIfCancellationRequested(); // Simulate cancel in the middle of execution
-                    return ResultPrimitive.WhateverButTooLate;
-                }, userTokenSource.Token) // ... with user token.
-               ).Should().Throw<OperationCanceledException>(); // Not a TimeoutRejectedException; i.e. policy can distinguish user cancellation from timeout cancellation.
-        }
+        using CancellationTokenSource userTokenSource = new CancellationTokenSource();
+        policy.Invoking(p => p.Execute(
+            ct =>
+            {
+                userTokenSource.Cancel();
+                ct.ThrowIfCancellationRequested(); // Simulate cancel in the middle of execution
+                return ResultPrimitive.WhateverButTooLate;
+            }, userTokenSource.Token)) // ... with user token.
+           .Should().Throw<OperationCanceledException>(); // Not a TimeoutRejectedException; i.e. policy can distinguish user cancellation from timeout cancellation.
     }
 
     [Fact]
@@ -545,7 +544,7 @@ public class TimeoutTResultSpecs : TimeoutSpecsBase
     [InlineData(3)]
     public void Should_call_ontimeout_with_timeout_supplied_different_for_each_execution_by_evaluating_func__pessimistic(int programaticallyControlledDelay)
     {
-        Func<TimeSpan> timeoutFunc = () => TimeSpan.FromMilliseconds(25*programaticallyControlledDelay);
+        Func<TimeSpan> timeoutFunc = () => TimeSpan.FromMilliseconds(25 * programaticallyControlledDelay);
 
         TimeSpan? timeoutPassedToOnTimeout = null;
         Action<Context, TimeSpan, Task> onTimeout = (_, span, _) => { timeoutPassedToOnTimeout = span; };
@@ -611,6 +610,7 @@ public class TimeoutTResultSpecs : TimeoutSpecsBase
     public void Should_call_ontimeout_with_task_wrapping_abandoned_action_allowing_capture_of_otherwise_unobserved_exception__pessimistic()
     {
         SystemClock.Reset(); // This is the only test which cannot work with the artificial SystemClock of TimeoutSpecsBase.  We want the invoked delegate to continue as far as: throw exceptionToThrow, to genuinely check that the walked-away-from task throws that, and that we pass it to onTimeout.
+
         // That means we can't use the SystemClock.Sleep(...) within the executed delegate to artificially trigger the timeout cancellation (as for example the test above does).
         // In real execution, it is the .Wait(timeoutCancellationTokenSource.Token) in the timeout implementation which throws for the timeout.  We don't want to go as far as abstracting Task.Wait() out into SystemClock, so we let this test run at real-world speed, not abstracted-clock speed.
 
@@ -661,7 +661,6 @@ public class TimeoutTResultSpecs : TimeoutSpecsBase
     }
 
     #endregion
-
 
     #region onTimeout overload - optimistic
 
@@ -717,7 +716,7 @@ public class TimeoutTResultSpecs : TimeoutSpecsBase
     [InlineData(3)]
     public void Should_call_ontimeout_with_timeout_supplied_different_for_each_execution_by_evaluating_func__optimistic(int programaticallyControlledDelay)
     {
-        Func<TimeSpan> timeoutFunc = () => TimeSpan.FromMilliseconds(25*programaticallyControlledDelay);
+        Func<TimeSpan> timeoutFunc = () => TimeSpan.FromMilliseconds(25 * programaticallyControlledDelay);
 
         TimeSpan? timeoutPassedToOnTimeout = null;
         Action<Context, TimeSpan, Task> onTimeout = (_, span, _) => { timeoutPassedToOnTimeout = span; };

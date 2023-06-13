@@ -177,9 +177,9 @@ public class CacheAsyncSpecs : IDisposable
         IAsyncCacheProvider stubCacheProvider = new StubCacheProvider();
         var cache = Policy.CacheAsync(stubCacheProvider, TimeSpan.MaxValue, context => context.OperationKey + context["id"]);
 
-        object person1 = new object();
+        object person1 = new();
         await stubCacheProvider.PutAsync("person1", person1, new Ttl(TimeSpan.MaxValue), CancellationToken.None, false);
-        object person2 = new object();
+        object person2 = new();
         await stubCacheProvider.PutAsync("person2", person2, new Ttl(TimeSpan.MaxValue), CancellationToken.None, false);
 
         bool funcExecuted = false;
@@ -202,9 +202,9 @@ public class CacheAsyncSpecs : IDisposable
         ICacheKeyStrategy cacheKeyStrategy = new StubCacheKeyStrategy(context => context.OperationKey + context["id"]);
         var cache = Policy.CacheAsync(stubCacheProvider, new RelativeTtl(TimeSpan.MaxValue), cacheKeyStrategy, emptyDelegate, emptyDelegate, emptyDelegate, noErrorHandling, noErrorHandling);
 
-        object person1 = new object();
+        object person1 = new();
         await stubCacheProvider.PutAsync("person1", person1, new Ttl(TimeSpan.MaxValue), CancellationToken.None, false);
-        object person2 = new object();
+        object person2 = new();
         await stubCacheProvider.PutAsync("person2", person2, new Ttl(TimeSpan.MaxValue), CancellationToken.None, false);
 
         bool funcExecuted = false;
@@ -407,7 +407,8 @@ public class CacheAsyncSpecs : IDisposable
         var cache = Policy.CacheAsync(new StubCacheProvider(), TimeSpan.MaxValue);
 
         int delegateInvocations = 0;
-        Func<Task<string>> func = async () => {
+        Func<Task<string>> func = async () =>
+        {
             delegateInvocations++;
             await TaskHelper.EmptyTask;
             return valueToReturn;
@@ -521,7 +522,6 @@ public class CacheAsyncSpecs : IDisposable
 
         bool delegateExecuted = false;
 
-
         // Even though value is in cache, get will error; so value is returned from execution.
         (await cache.ExecuteAsync(async _ =>
         {
@@ -558,7 +558,7 @@ public class CacheAsyncSpecs : IDisposable
 
         (await cache.ExecuteAsync(async _ => { await TaskHelper.EmptyTask; return valueToReturn; }, new Context(operationKey))).Should().Be(valueToReturn);
 
-        //  error should be captured by onError delegate.
+        // error should be captured by onError delegate.
         exceptionFromCacheProvider.Should().Be(ex);
 
         // failed to put it in the cache

@@ -9,18 +9,16 @@ public static class PolicyTResultExtensions
 
     public static TResult RaiseResultSequence<TResult>(this Policy<TResult> policy, IEnumerable<TResult> resultsToRaise)
     {
-        using (var enumerator = resultsToRaise.GetEnumerator())
+        using var enumerator = resultsToRaise.GetEnumerator();
+        return policy.Execute(() =>
         {
-            return policy.Execute(() =>
+            if (!enumerator.MoveNext())
             {
-                if (!enumerator.MoveNext())
-                {
-                    throw new ArgumentOutOfRangeException(nameof(resultsToRaise), $"Not enough {typeof(TResult).Name}  values in {nameof(resultsToRaise)}.");
-                }
+                throw new ArgumentOutOfRangeException(nameof(resultsToRaise), $"Not enough {typeof(TResult).Name}  values in {nameof(resultsToRaise)}.");
+            }
 
-                return enumerator.Current;
-            });
-        }
+            return enumerator.Current;
+        });
     }
 
     public static TResult RaiseResultAndOrExceptionSequence<TResult>(this Policy<TResult> policy, params object[] resultsOrExceptionsToRaise) =>
@@ -29,35 +27,33 @@ public static class PolicyTResultExtensions
     public static TResult RaiseResultAndOrExceptionSequence<TResult>(this Policy<TResult> policy,
         IEnumerable<object> resultsOrExceptionsToRaise)
     {
-        using (var enumerator = resultsOrExceptionsToRaise.GetEnumerator())
+        using var enumerator = resultsOrExceptionsToRaise.GetEnumerator();
+        return policy.Execute(() =>
         {
-            return policy.Execute(() =>
+            if (!enumerator.MoveNext())
             {
-                if (!enumerator.MoveNext())
-                {
-                    throw new ArgumentOutOfRangeException(nameof(resultsOrExceptionsToRaise), $"Not enough {typeof(TResult).Name} values in {nameof(resultsOrExceptionsToRaise)}.");
-                }
+                throw new ArgumentOutOfRangeException(nameof(resultsOrExceptionsToRaise), $"Not enough {typeof(TResult).Name} values in {nameof(resultsOrExceptionsToRaise)}.");
+            }
 
-                object current = enumerator.Current;
-                if (current is Exception)
-                {
-                    throw (Exception) current;
-                }
-                else if (current is TResult)
-                {
-                    return (TResult) current;
-                }
-                else
-                {
-                    throw new ArgumentOutOfRangeException(nameof(resultsOrExceptionsToRaise), $"Value is not either an {typeof(Exception).Name} or {typeof(TResult).Name}.");
-                }
-            });
-        }
+            object current = enumerator.Current;
+            if (current is Exception exception)
+            {
+                throw exception;
+            }
+            else if (current is TResult result)
+            {
+                return result;
+            }
+            else
+            {
+                throw new ArgumentOutOfRangeException(nameof(resultsOrExceptionsToRaise), $"Value is not either an {nameof(Exception)} or {typeof(TResult).Name}.");
+            }
+        });
     }
 
     public class ResultAndOrCancellationScenario
     {
-        public int? AttemptDuringWhichToCancel = null;
+        public int? AttemptDuringWhichToCancel;
 
         public bool ActionObservesCancellation = true;
     }
@@ -74,32 +70,30 @@ public static class PolicyTResultExtensions
 
         CancellationToken cancellationToken = cancellationTokenSource.Token;
 
-        using (var enumerator = resultsToRaise.GetEnumerator())
+        using var enumerator = resultsToRaise.GetEnumerator();
+        return policy.Execute(ct =>
         {
-            return policy.Execute(ct =>
+            onExecute();
+
+            counter++;
+
+            if (!enumerator.MoveNext())
             {
-                onExecute();
+                throw new ArgumentOutOfRangeException(nameof(resultsToRaise), $"Not enough {typeof(TResult).Name}  values in {nameof(resultsToRaise)}.");
+            }
 
-                counter++;
+            if (scenario.AttemptDuringWhichToCancel.HasValue && counter >= scenario.AttemptDuringWhichToCancel.Value)
+            {
+                cancellationTokenSource.Cancel();
+            }
 
-                if (!enumerator.MoveNext())
-                {
-                    throw new ArgumentOutOfRangeException(nameof(resultsToRaise), $"Not enough {typeof(TResult).Name}  values in {nameof(resultsToRaise)}.");
-                }
+            if (scenario.ActionObservesCancellation)
+            {
+                ct.ThrowIfCancellationRequested();
+            }
 
-                if (scenario.AttemptDuringWhichToCancel.HasValue && counter >= scenario.AttemptDuringWhichToCancel.Value)
-                {
-                    cancellationTokenSource.Cancel();
-                }
-
-                if (scenario.ActionObservesCancellation)
-                {
-                    ct.ThrowIfCancellationRequested();
-                }
-
-                return enumerator.Current;
-            }, cancellationToken);
-        }
+            return enumerator.Current;
+        }, cancellationToken);
     }
 }
 

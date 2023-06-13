@@ -98,7 +98,7 @@ public class PolicyAsyncSpecs
         var result = await Policy
             .Handle<DivideByZeroException>()
             .RetryAsync((_, _) => { })
-            .ExecuteAndCaptureAsync(() => Task.FromResult(Int32.MaxValue));
+            .ExecuteAndCaptureAsync(() => Task.FromResult(int.MaxValue));
 
         result.Should().BeEquivalentTo(new
         {
@@ -107,7 +107,7 @@ public class PolicyAsyncSpecs
             ExceptionType = (ExceptionType?)null,
             FaultType = (FaultType?)null,
             FinalHandledResult = default(int),
-            Result = Int32.MaxValue
+            Result = int.MaxValue
         });
     }
 
@@ -175,7 +175,7 @@ public class PolicyAsyncSpecs
             .Handle<DivideByZeroException>()
             .RetryAsync((_, _, _) => { });
 
-        var ex = await policy.Awaiting(p => p.ExecuteAsync(_ => TaskHelper.EmptyTask, (Context)null!))
+        var ex = await policy.Awaiting(p => p.ExecuteAsync(_ => TaskHelper.EmptyTask, null!))
             .Should().ThrowAsync<ArgumentNullException>();
         ex.And.ParamName.Should().Be("context");
     }
@@ -198,7 +198,7 @@ public class PolicyAsyncSpecs
             .Handle<DivideByZeroException>()
             .RetryAsync((_, _, _) => { });
 
-        var ex = await policy.Awaiting(p => p.ExecuteAsync(_ => Task.FromResult(2), (Context)null!))
+        var ex = await policy.Awaiting(p => p.ExecuteAsync(_ => Task.FromResult(2), null!))
               .Should().ThrowAsync<ArgumentNullException>();
         ex.And.ParamName.Should().Be("context");
     }
@@ -235,7 +235,7 @@ public class PolicyAsyncSpecs
             .Handle<DivideByZeroException>()
             .RetryAsync((_, _, _) => { });
 
-        var ex = await policy.Awaiting(p => p.ExecuteAndCaptureAsync(_ => TaskHelper.EmptyTask, (Context)null!))
+        var ex = await policy.Awaiting(p => p.ExecuteAndCaptureAsync(_ => TaskHelper.EmptyTask, null!))
             .Should().ThrowAsync<ArgumentNullException>();
         ex.And.ParamName.Should().Be("context");
     }
@@ -258,7 +258,7 @@ public class PolicyAsyncSpecs
             .Handle<DivideByZeroException>()
             .RetryAsync((_, _, _) => { });
 
-        var ex = await policy.Awaiting(p => p.ExecuteAndCaptureAsync(_ => Task.FromResult(2), (Context)null!))
+        var ex = await policy.Awaiting(p => p.ExecuteAndCaptureAsync(_ => Task.FromResult(2), null!))
               .Should().ThrowAsync<ArgumentNullException>();
         ex.And.ParamName.Should().Be("context");
     }

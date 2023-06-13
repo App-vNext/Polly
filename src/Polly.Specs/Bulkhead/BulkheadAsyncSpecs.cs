@@ -3,7 +3,10 @@
 [Collection(Helpers.Constants.ParallelThreadDependentTestCollection)]
 public class BulkheadAsyncSpecs : BulkheadSpecsBase
 {
-    public BulkheadAsyncSpecs(ITestOutputHelper testOutputHelper) : base(testOutputHelper) { }
+    public BulkheadAsyncSpecs(ITestOutputHelper testOutputHelper)
+        : base(testOutputHelper)
+    {
+    }
 
     #region Configuration
 
@@ -50,25 +53,23 @@ public class BulkheadAsyncSpecs : BulkheadSpecsBase
         Context? contextPassedToOnRejected = null;
         Func<Context, Task> onRejectedAsync = async ctx => { contextPassedToOnRejected = ctx; await TaskHelper.EmptyTask; };
 
-        using (var bulkhead = Policy.BulkheadAsync(1, onRejectedAsync))
+        using var bulkhead = Policy.BulkheadAsync(1, onRejectedAsync);
+        TaskCompletionSource<object> tcs = new TaskCompletionSource<object>();
+        using (CancellationTokenSource cancellationSource = new CancellationTokenSource())
         {
-            TaskCompletionSource<object> tcs = new TaskCompletionSource<object>();
-            using (CancellationTokenSource cancellationSource = new CancellationTokenSource())
-            {
-                _ = Task.Run(() => { bulkhead.ExecuteAsync(async () => { await tcs.Task; }); });
+            _ = Task.Run(() => { bulkhead.ExecuteAsync(async () => { await tcs.Task; }); });
 
-                Within(CohesionTimeLimit, () => Expect(0, () => bulkhead.BulkheadAvailableCount, nameof(bulkhead.BulkheadAvailableCount)));
+            Within(CohesionTimeLimit, () => BulkheadSpecsBase.Expect(0, () => bulkhead.BulkheadAvailableCount, nameof(bulkhead.BulkheadAvailableCount)));
 
-                await bulkhead.Awaiting(b => b.ExecuteAsync(_ => TaskHelper.EmptyTask, contextPassedToExecute)).Should().ThrowAsync<BulkheadRejectedException>();
+            await bulkhead.Awaiting(b => b.ExecuteAsync(_ => TaskHelper.EmptyTask, contextPassedToExecute)).Should().ThrowAsync<BulkheadRejectedException>();
 
-                cancellationSource.Cancel();
-                tcs.SetCanceled();
-            }
-
-            contextPassedToOnRejected!.Should().NotBeNull();
-            contextPassedToOnRejected!.OperationKey.Should().Be(operationKey);
-            contextPassedToOnRejected!.Should().BeSameAs(contextPassedToExecute);
+            cancellationSource.Cancel();
+            tcs.SetCanceled();
         }
+
+        contextPassedToOnRejected!.Should().NotBeNull();
+        contextPassedToOnRejected!.OperationKey.Should().Be(operationKey);
+        contextPassedToOnRejected!.Should().BeSameAs(contextPassedToExecute);
     }
 
     #endregion
@@ -79,7 +80,7 @@ public class BulkheadAsyncSpecs : BulkheadSpecsBase
         Policy.BulkheadAsync(maxParallelization, maxQueuingActions);
 
     protected override Task ExecuteOnBulkhead(IBulkheadPolicy bulkhead, TraceableAction action) =>
-        action.ExecuteOnBulkheadAsync((AsyncBulkheadPolicy) bulkhead);
+        action.ExecuteOnBulkheadAsync((AsyncBulkheadPolicy)bulkhead);
 
     #endregion
 }

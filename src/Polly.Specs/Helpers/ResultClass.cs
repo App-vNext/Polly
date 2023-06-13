@@ -8,7 +8,8 @@ internal class ResultClass
     public ResultClass(ResultPrimitive resultCode) =>
         ResultCode = resultCode;
 
-    public ResultClass(ResultPrimitive resultCode, string someString) : this(resultCode) =>
+    public ResultClass(ResultPrimitive resultCode, string someString)
+        : this(resultCode) =>
         SomeString = someString;
 
     public ResultPrimitive ResultCode { get; set; }

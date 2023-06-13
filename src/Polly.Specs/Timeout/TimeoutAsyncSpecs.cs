@@ -250,7 +250,6 @@ public class TimeoutAsyncSpecs : TimeoutSpecsBase
 
     #endregion
 
-
     #region Timeout operation - optimistic
 
     [Fact]
@@ -276,7 +275,8 @@ public class TimeoutAsyncSpecs : TimeoutSpecsBase
         var result = ResultPrimitive.Undefined;
         var userCancellationToken = CancellationToken.None;
 
-        Func<Task> act = async () => {
+        Func<Task> act = async () =>
+        {
             result = await policy.ExecuteAsync(async ct =>
                 {
                     await SystemClock.SleepAsync(TimeSpan.FromMilliseconds(500), ct);
@@ -328,17 +328,14 @@ public class TimeoutAsyncSpecs : TimeoutSpecsBase
         int timeout = 5;
         var policy = Policy.TimeoutAsync(timeout, TimeoutStrategy.Pessimistic);
 
-        using (CancellationTokenSource userTokenSource = new CancellationTokenSource())
+        using CancellationTokenSource userTokenSource = new CancellationTokenSource();
+        await policy.Awaiting(p => p.ExecuteAsync(async
+            _ =>
         {
-            await policy.Awaiting(p => p.ExecuteAsync(async
-                _ => {
-                    userTokenSource.Cancel(); // User token cancels in the middle of execution ...
-                    await SystemClock.SleepAsync(TimeSpan.FromSeconds(timeout * 2),
-                        CancellationToken.None // ... but if the executed delegate does not observe it
-                        );
-                }, userTokenSource.Token)
-               ).Should().ThrowAsync<TimeoutRejectedException>(); // ... it's still the timeout we expect.
-        }
+            userTokenSource.Cancel(); // User token cancels in the middle of execution ...
+            await SystemClock.SleepAsync(TimeSpan.FromSeconds(timeout * 2),
+                CancellationToken.None); // ... but if the executed delegate does not observe it
+        }, userTokenSource.Token)).Should().ThrowAsync<TimeoutRejectedException>(); // ... it's still the timeout we expect.
     }
 
     [Fact]
@@ -373,15 +370,15 @@ public class TimeoutAsyncSpecs : TimeoutSpecsBase
         int timeout = 10;
         var policy = Policy.TimeoutAsync(timeout, TimeoutStrategy.Optimistic);
 
-        using (CancellationTokenSource userTokenSource = new CancellationTokenSource())
-        {
-            await policy.Awaiting(p => p.ExecuteAsync(
-                ct => {
-                    userTokenSource.Cancel(); ct.ThrowIfCancellationRequested();   // Simulate cancel in the middle of execution
-                    return TaskHelper.EmptyTask;
-                }, userTokenSource.Token) // ... with user token.
-               ).Should().ThrowAsync<OperationCanceledException>();
-        }
+        using CancellationTokenSource userTokenSource = new CancellationTokenSource();
+        await policy.Awaiting(p => p.ExecuteAsync(
+            ct =>
+            {
+                userTokenSource.Cancel();
+                ct.ThrowIfCancellationRequested();   // Simulate cancel in the middle of execution
+                return TaskHelper.EmptyTask;
+            }, userTokenSource.Token)) // ... with user token.
+           .Should().ThrowAsync<OperationCanceledException>();
     }
 
     [Fact]
@@ -500,7 +497,7 @@ public class TimeoutAsyncSpecs : TimeoutSpecsBase
     [InlineData(3)]
     public async Task Should_call_ontimeout_with_timeout_supplied_different_for_each_execution_by_evaluating_func__pessimistic(int programaticallyControlledDelay)
     {
-        Func<TimeSpan> timeoutFunc = () => TimeSpan.FromMilliseconds(25*programaticallyControlledDelay);
+        Func<TimeSpan> timeoutFunc = () => TimeSpan.FromMilliseconds(25 * programaticallyControlledDelay);
 
         TimeSpan? timeoutPassedToOnTimeout = null;
         Func<Context, TimeSpan, Task, Task> onTimeoutAsync = (_, span, _) =>
@@ -575,6 +572,7 @@ public class TimeoutAsyncSpecs : TimeoutSpecsBase
     public async Task Should_call_ontimeout_with_task_wrapping_abandoned_action_allowing_capture_of_otherwise_unobserved_exception__pessimistic()
     {
         SystemClock.Reset(); // This is the only test which cannot work with the artificial SystemClock of TimeoutSpecsBase.  We want the invoked delegate to continue as far as: throw exceptionToThrow, to genuinely check that the walked-away-from task throws that, and that we pass it to onTimeoutAsync.
+
         // That means we can't use the SystemClock.SleepAsync(...) within the executed delegate to artificially trigger the timeout cancellation (as for example the test above does).
         // In real execution, it is the .WhenAny() in the timeout implementation which throws for the timeout.  We don't want to go as far as abstracting Task.WhenAny() out into SystemClock, so we let this test run at real-world speed, not abstracted-clock speed.
 
@@ -690,7 +688,7 @@ public class TimeoutAsyncSpecs : TimeoutSpecsBase
     [InlineData(3)]
     public async Task Should_call_ontimeout_with_timeout_supplied_different_for_each_execution_by_evaluating_func__optimistic(int programaticallyControlledDelay)
     {
-        Func<TimeSpan> timeoutFunc = () => TimeSpan.FromMilliseconds(25* programaticallyControlledDelay);
+        Func<TimeSpan> timeoutFunc = () => TimeSpan.FromMilliseconds(25 * programaticallyControlledDelay);
 
         TimeSpan? timeoutPassedToOnTimeout = null;
         Func<Context, TimeSpan, Task, Task> onTimeoutAsync = (_, span, _) =>

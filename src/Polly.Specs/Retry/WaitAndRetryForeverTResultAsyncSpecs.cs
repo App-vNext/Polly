@@ -3,9 +3,7 @@
 [Collection(Constants.SystemClockDependentTestCollection)]
 public class WaitAndRetryForeverTResultAsyncSpecs : IDisposable
 {
-    public WaitAndRetryForeverTResultAsyncSpecs() =>
-        // do nothing on call to sleep
-        SystemClock.SleepAsync = (_, _) => TaskHelper.EmptyTask;
+    public WaitAndRetryForeverTResultAsyncSpecs() => SystemClock.SleepAsync = (_, _) => TaskHelper.EmptyTask;
 
     [Fact]
     public async Task Should_be_able_to_calculate_retry_timespans_based_on_the_handled_fault()
@@ -34,8 +32,10 @@ public class WaitAndRetryForeverTResultAsyncSpecs : IDisposable
             await policy.ExecuteAsync(async () =>
             {
                 await TaskHelper.EmptyTask;
-                if (enumerator.MoveNext()) return enumerator.Current.Key;
-                else return ResultPrimitive.Undefined;
+                if (enumerator.MoveNext())
+                    return enumerator.Current.Key;
+                else
+                    return ResultPrimitive.Undefined;
             });
         }
 
