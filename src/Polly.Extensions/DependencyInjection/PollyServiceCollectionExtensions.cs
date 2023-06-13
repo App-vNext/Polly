@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
 using Polly.Extensions.DependencyInjection;
 using Polly.Extensions.Telemetry;
+using Polly.Extensions.Utils;
 using Polly.Registry;
 using Polly.Utils;
 
@@ -173,6 +174,7 @@ public static class PollyServiceCollectionExtensions
         services.Add(RegistryMarker<TKey>.ServiceDescriptor);
         services.AddResilienceStrategyBuilder();
         services.AddResilienceStrategyRegistry<TKey>();
+        services.TryAddSingleton<OptionsReloadHelperRegistry<TKey>>();
 
         services.TryAddSingleton(serviceProvider =>
         {

@@ -10,16 +10,18 @@
     <NoWarn>$(NoWarn);SA1600;SA1204;S6608</NoWarn>
     <Include>[Polly.Extensions]*</Include>
   </PropertyGroup>
+
   <ItemGroup>
     <Compile Include="..\Polly.Core.Tests\Helpers\FakeTimeProvider.cs" Link="Utils\FakeTimeProvider.cs" />
     <Compile Include="..\Polly.Core.Tests\Utils\ObjectPoolTests.cs" Link="Utils\ObjectPoolTests.cs" />
     <Compile Include="..\Polly.Core.Tests\Utils\SystemTimeProviderTests.cs" Link="Utils\SystemTimeProviderTests.cs" />
   </ItemGroup>
-  
+
   <ItemGroup>
     <Using Include="Polly.TestUtils" />
     <ProjectReference Include="..\Polly.Extensions\Polly.Extensions.csproj" />
     <ProjectReference Include="..\Polly.TestUtils\Polly.TestUtils.csproj" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" />
+    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" />
   </ItemGroup>
-  
 </Project>
