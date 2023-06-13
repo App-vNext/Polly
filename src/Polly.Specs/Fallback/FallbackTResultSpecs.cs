@@ -281,7 +281,6 @@ public class FallbackTResultSpecs
         fallbackActionExecuted.Should().BeTrue();
     }
 
-
     [Fact]
     public void Should_execute_fallback_when_result_raised_matches_one_of_handling_predicates()
     {
@@ -507,7 +506,7 @@ public class FallbackTResultSpecs
 
         Func<Context, CancellationToken, ResultPrimitive> fallbackAction = (ctx, _) => { fallbackExecuted = true; capturedContext = ctx; return ResultPrimitive.Substitute; };
 
-        Action<DelegateResult<ResultPrimitive>, Context> onFallback = (_, _) => {  };
+        Action<DelegateResult<ResultPrimitive>, Context> onFallback = (_, _) => { };
 
         FallbackPolicy<ResultPrimitive> fallbackPolicy = Policy
             .HandleResult(ResultPrimitive.Fault)

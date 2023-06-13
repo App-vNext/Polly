@@ -213,7 +213,7 @@ public class RetryTResultSpecs
     [Fact]
     public void Should_call_onretry_on_each_retry_with_the_current_handled_result()
     {
-        var expectedFaults = new [] { "Fault #1", "Fault #2", "Fault #3" };
+        var expectedFaults = new[] { "Fault #1", "Fault #2", "Fault #3" };
         var retryFaults = new List<string?>();
 
         Policy<ResultClass> policy = Policy
@@ -256,8 +256,7 @@ public class RetryTResultSpecs
 
         policy.RaiseResultSequence(
             new { key1 = "value1", key2 = "value2" }.AsDictionary(),
-            ResultPrimitive.Fault, ResultPrimitive.Good
-            )
+            ResultPrimitive.Fault, ResultPrimitive.Good)
             .Should().Be(ResultPrimitive.Good);
 
         contextData.Should()
@@ -276,8 +275,7 @@ public class RetryTResultSpecs
 
         PolicyResult<ResultPrimitive> result = policy.RaiseResultSequenceOnExecuteAndCapture(
             new { key1 = "value1", key2 = "value2" }.AsDictionary(),
-            ResultPrimitive.Fault, ResultPrimitive.Good
-            );
+            ResultPrimitive.Fault, ResultPrimitive.Good);
 
         result.Should().BeEquivalentTo(new
         {
@@ -320,15 +318,13 @@ public class RetryTResultSpecs
 
         policy.RaiseResultSequence(
             new { key = "original_value" }.AsDictionary(),
-            ResultPrimitive.Fault, ResultPrimitive.Good
-        );
+            ResultPrimitive.Fault, ResultPrimitive.Good);
 
         contextValue.Should().Be("original_value");
 
         policy.RaiseResultSequence(
             new { key = "new_value" }.AsDictionary(),
-            ResultPrimitive.Fault, ResultPrimitive.Good
-        );
+            ResultPrimitive.Fault, ResultPrimitive.Good);
 
         contextValue.Should().Be("new_value");
     }
@@ -344,15 +340,13 @@ public class RetryTResultSpecs
 
         policy.RaiseResultSequenceOnExecuteAndCapture(
             new { key = "original_value" }.AsDictionary(),
-            ResultPrimitive.Fault, ResultPrimitive.Good
-        );
+            ResultPrimitive.Fault, ResultPrimitive.Good);
 
         contextValue.Should().Be("original_value");
 
         policy.RaiseResultSequenceOnExecuteAndCapture(
             new { key = "new_value" }.AsDictionary(),
-            ResultPrimitive.Fault, ResultPrimitive.Good
-        );
+            ResultPrimitive.Fault, ResultPrimitive.Good);
 
         contextValue.Should().Be("new_value");
     }

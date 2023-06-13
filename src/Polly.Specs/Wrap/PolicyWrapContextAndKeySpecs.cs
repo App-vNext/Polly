@@ -41,7 +41,7 @@ public class PolicyWrapContextAndKeySpecs
         {
             policyWrapKeySetOnExecutionContext = context.PolicyWrapKey;
         };
-        Action<Context> onReset = _ => {};
+        Action<Context> onReset = _ => { };
 
         var retry = Policy.Handle<Exception>().Retry(1).WithPolicyKey(retryKey);
         var breaker = Policy.Handle<Exception>().CircuitBreaker(1, TimeSpan.Zero, onBreak, onReset).WithPolicyKey(breakerKey);
@@ -59,7 +59,7 @@ public class PolicyWrapContextAndKeySpecs
     {
         ISyncPolicy fallback = Policy
             .Handle<Exception>()
-            .Fallback(_ => {}, onFallback: (_, context) =>
+            .Fallback(_ => { }, onFallback: (_, context) =>
             {
                 context.PolicyWrapKey.Should().Be("PolicyWrap");
                 context.PolicyKey.Should().Be("FallbackPolicy");

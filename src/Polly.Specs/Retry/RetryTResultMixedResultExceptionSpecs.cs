@@ -162,7 +162,7 @@ public class RetryTResultMixedResultExceptionSpecs
             .OrResult<ResultClass>(r => r.ResultCode == ResultPrimitive.Fault)
             .Retry(2);
 
-        ResultClass result = policy.RaiseResultAndOrExceptionSequence(new ResultClass(ResultPrimitive.Fault), new ArgumentException("message","key"), new ResultClass(ResultPrimitive.Good));
+        ResultClass result = policy.RaiseResultAndOrExceptionSequence(new ResultClass(ResultPrimitive.Fault), new ArgumentException("message", "key"), new ResultClass(ResultPrimitive.Good));
         result.ResultCode.Should().Be(ResultPrimitive.Good);
     }
 

@@ -9,7 +9,7 @@ namespace Polly.Extensions.Tests;
 
 public class ReloadableResilienceStrategyTests
 {
-    private static readonly ResiliencePropertyKey<string> TagKey = new("tests.tag");
+    private static readonly ResiliencePropertyKey<string> _tagKey = new("tests.tag");
 
     [InlineData(null)]
     [InlineData("custom-name")]
@@ -47,14 +47,14 @@ public class ReloadableResilienceStrategyTests
 
         // initial
         strategy.Execute(_ => "dummy", context);
-        context.Properties.GetValue(TagKey, string.Empty).Should().Be("initial-tag");
+        context.Properties.GetValue(_tagKey, string.Empty).Should().Be("initial-tag");
 
         // reloads
         for (int i = 0; i < 10; i++)
         {
             reloadableConfig.Reload(new() { { "tag", $"reload-{i}" } });
             strategy.Execute(_ => "dummy", context);
-            context.Properties.GetValue(TagKey, string.Empty).Should().Be($"reload-{i}");
+            context.Properties.GetValue(_tagKey, string.Empty).Should().Be($"reload-{i}");
         }
 
         registry.Count.Should().Be(1);
@@ -101,7 +101,7 @@ public class ReloadableResilienceStrategyTests
             ResilienceContext context,
             TState state)
         {
-            context.Properties.Set(TagKey, Tag);
+            context.Properties.Set(_tagKey, Tag);
             return callback(context, state);
         }
     }

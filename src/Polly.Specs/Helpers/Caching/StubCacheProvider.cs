@@ -5,7 +5,7 @@
 /// </summary>
 internal class StubCacheProvider : ISyncCacheProvider, IAsyncCacheProvider
 {
-    class CacheItem
+    private class CacheItem
     {
         public CacheItem(object? value, Ttl ttl)
         {
@@ -32,6 +32,7 @@ internal class StubCacheProvider : ISyncCacheProvider, IAsyncCacheProvider
                 cachedValues.Remove(key);
             }
         }
+
         return (false, null);
     }
 

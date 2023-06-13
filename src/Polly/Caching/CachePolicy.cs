@@ -64,15 +64,15 @@ public class CachePolicy : Policy, ICachePolicy
 /// </summary>
 public class CachePolicy<TResult> : Policy<TResult>, ICachePolicy<TResult>
 {
-    private ISyncCacheProvider<TResult> _syncCacheProvider;
-    private ITtlStrategy<TResult> _ttlStrategy;
-    private Func<Context, string> _cacheKeyStrategy;
-
     private readonly Action<Context, string> _onCacheGet;
     private readonly Action<Context, string> _onCacheMiss;
     private readonly Action<Context, string> _onCachePut;
     private readonly Action<Context, string, Exception>? _onCacheGetError;
     private readonly Action<Context, string, Exception>? _onCachePutError;
+
+    private ISyncCacheProvider<TResult> _syncCacheProvider;
+    private ITtlStrategy<TResult> _ttlStrategy;
+    private Func<Context, string> _cacheKeyStrategy;
 
     internal CachePolicy(
         ISyncCacheProvider<TResult> syncCacheProvider,

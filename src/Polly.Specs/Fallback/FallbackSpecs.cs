@@ -178,7 +178,6 @@ public class FallbackSpecs
         fallbackActionExecuted.Should().BeFalse();
     }
 
-
     [Fact]
     public void Should_execute_fallback_when_executed_delegate_throws_exception_handled_by_policy()
     {
@@ -295,7 +294,7 @@ public class FallbackSpecs
         Action fallbackAction = () =>
         {
             fallbackActionExecuted = true;
-            throw new DivideByZeroException {HelpLink = "FromFallbackAction"};
+            throw new DivideByZeroException { HelpLink = "FromFallbackAction" };
         };
 
         FallbackPolicy fallbackPolicy = Policy
@@ -313,7 +312,7 @@ public class FallbackSpecs
     {
         FallbackPolicy fallbackPolicy = Policy
             .Handle<DivideByZeroException>()
-            .Fallback(() => {});
+            .Fallback(() => { });
 
         fallbackPolicy.Invoking(p => p.Execute<int>(() => 0)).Should().Throw<InvalidOperationException>();
     }
@@ -332,7 +331,7 @@ public class FallbackSpecs
             .Handle<DivideByZeroException>()
             .Fallback(fallbackAction);
 
-        Exception withInner = new Exception(String.Empty, new DivideByZeroException());
+        Exception withInner = new Exception(string.Empty, new DivideByZeroException());
 
         fallbackPolicy.Invoking(x => x.RaiseException(withInner)).Should().Throw<Exception>().And.InnerException.Should().BeOfType<DivideByZeroException>();
 
@@ -366,7 +365,7 @@ public class FallbackSpecs
             .HandleInner<DivideByZeroException>()
             .Fallback(fallbackAction);
 
-        Exception withInner = new Exception(String.Empty, new DivideByZeroException());
+        Exception withInner = new Exception(string.Empty, new DivideByZeroException());
 
         fallbackPolicy.Invoking(x => x.RaiseException(withInner)).Should().NotThrow();
 
@@ -384,7 +383,7 @@ public class FallbackSpecs
             .OrInner<ArgumentException>()
             .Fallback(fallbackAction);
 
-        Exception withInner = new Exception(String.Empty, new ArgumentException());
+        Exception withInner = new Exception(string.Empty, new ArgumentException());
 
         fallbackPolicy.Invoking(x => x.RaiseException(withInner)).Should().NotThrow();
 
@@ -401,13 +400,12 @@ public class FallbackSpecs
             .HandleInner<DivideByZeroException>()
             .Fallback(fallbackAction);
 
-        Exception withInner = new Exception(String.Empty, new Exception(String.Empty, new Exception(String.Empty, new DivideByZeroException())));
+        Exception withInner = new Exception(string.Empty, new Exception(string.Empty, new Exception(string.Empty, new DivideByZeroException())));
 
         fallbackPolicy.Invoking(x => x.RaiseException(withInner)).Should().NotThrow();
 
         fallbackActionExecuted.Should().BeTrue();
     }
-
 
     [Fact]
     public void Should_not_execute_fallback_when_executed_delegate_throws_inner_exception_not_handled_by_policy()
@@ -419,7 +417,7 @@ public class FallbackSpecs
                                 .HandleInner<DivideByZeroException>()
                                 .Fallback(fallbackAction);
 
-        Exception withInner = new Exception(String.Empty, new ArgumentException());
+        Exception withInner = new Exception(string.Empty, new ArgumentException());
 
         fallbackPolicy.Invoking(x => x.RaiseException(withInner)).Should().Throw<Exception>().And.InnerException.Should().BeOfType<ArgumentException>();
 
@@ -436,7 +434,7 @@ public class FallbackSpecs
             .HandleInner<DivideByZeroException>(_ => true)
             .Fallback(fallbackAction);
 
-        Exception withInner = new Exception(String.Empty, new DivideByZeroException());
+        Exception withInner = new Exception(string.Empty, new DivideByZeroException());
 
         fallbackPolicy.Invoking(x => x.RaiseException(withInner)).Should().NotThrow();
 
@@ -453,13 +451,12 @@ public class FallbackSpecs
             .HandleInner<DivideByZeroException>(_ => true)
             .Fallback(fallbackAction);
 
-        Exception withInner = new Exception(String.Empty, new Exception(String.Empty, new Exception(String.Empty, new DivideByZeroException())));
+        Exception withInner = new Exception(string.Empty, new Exception(string.Empty, new Exception(string.Empty, new DivideByZeroException())));
 
         fallbackPolicy.Invoking(x => x.RaiseException(withInner)).Should().NotThrow();
 
         fallbackActionExecuted.Should().BeTrue();
     }
-
 
     [Fact]
     public void Should_execute_fallback_when_inner_exception_thrown_matches_one_of_handling_predicates()
@@ -472,7 +469,7 @@ public class FallbackSpecs
             .OrInner<ArgumentNullException>(_ => true)
             .Fallback(fallbackAction);
 
-        Exception withInner = new Exception(String.Empty, new ArgumentNullException());
+        Exception withInner = new Exception(string.Empty, new ArgumentNullException());
 
         fallbackPolicy.Invoking(x => x.RaiseException(withInner)).Should().NotThrow();
 
@@ -489,7 +486,7 @@ public class FallbackSpecs
                                 .HandleInner<DivideByZeroException>(_ => false)
                                 .Fallback(fallbackAction);
 
-        Exception withInner = new Exception(String.Empty, new DivideByZeroException());
+        Exception withInner = new Exception(string.Empty, new DivideByZeroException());
 
         fallbackPolicy.Invoking(x => x.RaiseException(withInner)).Should().Throw<Exception>().And.InnerException.Should().BeOfType<DivideByZeroException>();
 
@@ -507,7 +504,7 @@ public class FallbackSpecs
                                 .OrInner<ArgumentNullException>(_ => false)
                                 .Fallback(fallbackAction);
 
-        Exception withInner = new Exception(String.Empty, new ArgumentNullException());
+        Exception withInner = new Exception(string.Empty, new ArgumentNullException());
 
         fallbackPolicy.Invoking(x => x.RaiseException(withInner)).Should().Throw<Exception>().And.InnerException.Should().BeOfType<ArgumentNullException>();
 
@@ -515,7 +512,6 @@ public class FallbackSpecs
     }
 
     #endregion
-
 
     #region HandleInner tests, inner of aggregate exceptions
 
@@ -619,7 +615,7 @@ public class FallbackSpecs
 
         fallbackPolicy.Invoking(x => x.RaiseException(withInner)).Should().Throw<AggregateException>().And.InnerExceptions.Should().ContainSingle(e => e is ArgumentException);
 
-         fallbackActionExecuted.Should().BeFalse();
+        fallbackActionExecuted.Should().BeFalse();
     }
 
     [Fact]
@@ -655,7 +651,6 @@ public class FallbackSpecs
 
         fallbackActionExecuted.Should().BeTrue();
     }
-
 
     [Fact]
     public void Should_execute_fallback_when_inner_of_aggregate_exception_thrown_matches_one_of_handling_predicates()
@@ -770,7 +765,7 @@ public class FallbackSpecs
             .Fallback(fallbackAction, onFallback);
 
         fallbackPolicy.Invoking(p => p.Execute(_ => throw new ArgumentNullException(),
-            new {key1 = "value1", key2 = "value2"}.AsDictionary()))
+            new { key1 = "value1", key2 = "value2" }.AsDictionary()))
             .Should().NotThrow();
 
         contextData.Should()
@@ -792,7 +787,7 @@ public class FallbackSpecs
             .Fallback(fallbackAction, onFallback);
 
         fallbackPolicy.Invoking(p => p.ExecuteAndCapture(_ => throw new ArgumentNullException(),
-            new {key1 = "value1", key2 = "value2"}.AsDictionary()))
+            new { key1 = "value1", key2 = "value2" }.AsDictionary()))
             .Should().NotThrow();
 
         contextData.Should()
@@ -815,18 +810,18 @@ public class FallbackSpecs
             .Fallback(fallbackAction, onFallback);
 
         fallbackPolicy.Invoking(
-            p => p.Execute(_ => throw new ArgumentNullException(), new {key = "value1"}.AsDictionary()))
+            p => p.Execute(_ => throw new ArgumentNullException(), new { key = "value1" }.AsDictionary()))
             .Should().NotThrow();
 
         fallbackPolicy.Invoking(
-            p => p.Execute(_ => throw new DivideByZeroException(), new {key = "value2"}.AsDictionary()))
+            p => p.Execute(_ => throw new DivideByZeroException(), new { key = "value2" }.AsDictionary()))
             .Should().NotThrow();
 
         contextData.Count.Should().Be(2);
-        contextData.Keys.Should().Contain(typeof (ArgumentNullException));
-        contextData.Keys.Should().Contain(typeof (DivideByZeroException));
-        contextData[typeof (ArgumentNullException)].Should().Be("value1");
-        contextData[typeof (DivideByZeroException)].Should().Be("value2");
+        contextData.Keys.Should().Contain(typeof(ArgumentNullException));
+        contextData.Keys.Should().Contain(typeof(DivideByZeroException));
+        contextData[typeof(ArgumentNullException)].Should().Be("value1");
+        contextData[typeof(DivideByZeroException)].Should().Be("value2");
 
     }
 
@@ -855,9 +850,9 @@ public class FallbackSpecs
     {
         IDictionary<string, object>? contextData = null;
 
-        Action<Context, CancellationToken> fallbackAction = (ctx, _) => { contextData = ctx;};
+        Action<Context, CancellationToken> fallbackAction = (ctx, _) => { contextData = ctx; };
 
-        Action<Exception, Context> onFallback = (_, _) => {  };
+        Action<Exception, Context> onFallback = (_, _) => { };
 
         FallbackPolicy fallbackPolicy = Policy
             .Handle<ArgumentNullException>()
@@ -900,8 +895,8 @@ public class FallbackSpecs
         Context? capturedContext = null;
         bool fallbackExecuted = false;
 
-        Action<Context, CancellationToken> fallbackAction = (ctx, _) => { fallbackExecuted = true; capturedContext = ctx;  };
-        Action<Exception, Context> onFallback = (_, _) => {};
+        Action<Context, CancellationToken> fallbackAction = (ctx, _) => { fallbackExecuted = true; capturedContext = ctx; };
+        Action<Exception, Context> onFallback = (_, _) => { };
 
         FallbackPolicy fallbackPolicy = Policy
             .Handle<ArgumentNullException>()
@@ -971,7 +966,7 @@ public class FallbackSpecs
             .Fallback(fallbackAction, onFallback);
 
         Exception instanceToCapture = new ArgumentNullException("myParam");
-        Exception instanceToThrow = new Exception(String.Empty, instanceToCapture);
+        Exception instanceToThrow = new Exception(string.Empty, instanceToCapture);
         fallbackPolicy.Invoking(p => p.RaiseException(instanceToThrow))
             .Should().NotThrow();
 
@@ -1004,8 +999,10 @@ public class FallbackSpecs
     {
         Exception? fallbackException = null;
 
-        Action<Exception, Context, CancellationToken> fallbackAction = (ex, _, _) => {
-            fallbackException = ex; };
+        Action<Exception, Context, CancellationToken> fallbackAction = (ex, _, _) =>
+        {
+            fallbackException = ex;
+        };
 
         Action<Exception, Context> onFallback = (_, _) => { };
 

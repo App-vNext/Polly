@@ -165,7 +165,7 @@ public enum OutcomeType
     /// Indicates that the policy ultimately failed
     /// </summary>
     Failure
-};
+}
 
 /// <summary>
 /// Represents the type of exception resulting from a failed policy

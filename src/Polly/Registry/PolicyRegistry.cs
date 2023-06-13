@@ -86,6 +86,7 @@ public class PolicyRegistry : IConcurrentPolicyRegistry<string>
     /// Gets the policy stored under the provided key, casting to <typeparamref name="TPolicy"/>.
     /// </summary>
     /// <typeparam name="TPolicy">The type of Policy.</typeparam>
+    /// <param name="key">The key of the policy to get.</param>
     /// <returns>The policy stored in the registry under the given key.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="key"/> is null.</exception>
     /// <exception cref="KeyNotFoundException">The given key was not present in the registry.</exception>
@@ -262,5 +263,5 @@ public class PolicyRegistry : IConcurrentPolicyRegistry<string>
     /// with only infrequent changes to the PolicyRegistry during app running, if using PolicyRegistry for dynamic updates during running.
     /// </remarks>
     IEnumerator IEnumerable.GetEnumerator() =>
-        this.GetEnumerator();
+        GetEnumerator();
 }

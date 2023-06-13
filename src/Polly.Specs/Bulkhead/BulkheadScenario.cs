@@ -2,21 +2,21 @@
 
 internal struct BulkheadScenario
 {
-    readonly int _maxParallelization;
-    readonly int _maxQueuingActions;
-    readonly int _totalTestLoad;
-    readonly string _scenario;
-    readonly bool _cancelQueuing;
-    readonly bool _cancelExecuting;
+    private readonly int _maxParallelization;
+    private readonly int _maxQueuingActions;
+    private readonly int _totalTestLoad;
+    private readonly string _scenario;
+    private readonly bool _cancelQueuing;
+    private readonly bool _cancelExecuting;
 
     public BulkheadScenario(int maxParallelization, int maxQueuingActions, int totalTestLoad, bool cancelQueuing, bool cancelExecuting, string scenario)
     {
-         _maxParallelization = maxParallelization;
-         _maxQueuingActions = maxQueuingActions;
-         _totalTestLoad = totalTestLoad;
-         _scenario = scenario;
-         _cancelQueuing = cancelQueuing;
-         _cancelExecuting = cancelExecuting;
+        _maxParallelization = maxParallelization;
+        _maxQueuingActions = maxQueuingActions;
+        _totalTestLoad = totalTestLoad;
+        _scenario = scenario;
+        _cancelQueuing = cancelQueuing;
+        _cancelExecuting = cancelExecuting;
     }
 
     public object[] ToTheoryData() =>

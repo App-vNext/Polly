@@ -2,7 +2,7 @@
 
 internal class AsyncPreExecutePolicy : AsyncPolicy
 {
-    private Func<Task> _preExecute;
+    private readonly Func<Task> _preExecute;
 
     public static AsyncPreExecutePolicy CreateAsync(Func<Task> preExecute) => new(preExecute);
 
@@ -16,10 +16,10 @@ internal class AsyncPreExecutePolicy : AsyncPolicy
 
 internal class AsyncPreExecutePolicy<TResult> : AsyncPolicy<TResult>
 {
-    private Func<Task> _preExecute;
+    private readonly Func<Task> _preExecute;
 
     public static AsyncPreExecutePolicy<TResult> CreateAsync(Func<Task> preExecute) =>
-        new AsyncPreExecutePolicy<TResult>(preExecute);
+        new(preExecute);
 
     internal AsyncPreExecutePolicy(Func<Task> preExecute) =>
         _preExecute = preExecute ?? throw new ArgumentNullException(nameof(preExecute));

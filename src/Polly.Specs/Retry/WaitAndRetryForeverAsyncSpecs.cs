@@ -6,6 +6,7 @@ namespace Polly.Specs.Retry;
 public class WaitAndRetryForeverAsyncSpecs : IDisposable
 {
     public WaitAndRetryForeverAsyncSpecs() =>
+
         // do nothing on call to sleep
         SystemClock.SleepAsync = (_, _) => TaskHelper.EmptyTask;
 
@@ -253,14 +254,12 @@ public class WaitAndRetryForeverAsyncSpecs : IDisposable
             (_, _, context) => contextValue = context["key"].ToString());
 
         policy.RaiseExceptionAsync<DivideByZeroException>(
-            new { key = "original_value" }.AsDictionary()
-        );
+            new { key = "original_value" }.AsDictionary());
 
         contextValue.Should().Be("original_value");
 
         policy.RaiseExceptionAsync<DivideByZeroException>(
-            new { key = "new_value" }.AsDictionary()
-        );
+            new { key = "new_value" }.AsDictionary());
 
         contextValue.Should().Be("new_value");
     }
@@ -283,8 +282,7 @@ public class WaitAndRetryForeverAsyncSpecs : IDisposable
             .Handle<DivideByZeroException>()
             .WaitAndRetryForeverAsync(
                 retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),
-                (_, timeSpan) => actualRetryWaits.Add(timeSpan)
-            );
+                (_, timeSpan) => actualRetryWaits.Add(timeSpan));
 
         await policy.RaiseExceptionAsync<DivideByZeroException>(5);
 
@@ -315,15 +313,16 @@ public class WaitAndRetryForeverAsyncSpecs : IDisposable
 
         using (var enumerator = expectedRetryWaits.GetEnumerator())
         {
-            await policy.ExecuteAsync(() => {
-                if (enumerator.MoveNext()) throw enumerator.Current.Key;
+            await policy.ExecuteAsync(() =>
+            {
+                if (enumerator.MoveNext())
+                    throw enumerator.Current.Key;
                 return TaskHelper.EmptyTask;
             });
         }
 
         actualRetryWaits.Should().ContainInOrder(expectedRetryWaits.Values);
     }
-
 
     [Fact]
     public async Task Should_be_able_to_pass_retry_duration_from_execution_to_sleepDurationProvider_via_context()
@@ -337,8 +336,7 @@ public class WaitAndRetryForeverAsyncSpecs : IDisposable
             .Handle<DivideByZeroException>()
             .WaitAndRetryForeverAsync(
                 sleepDurationProvider: (_, context) => context.ContainsKey("RetryAfter") ? (TimeSpan)context["RetryAfter"] : defaultRetryAfter, // Set sleep duration from Context, when available.
-                onRetry: (_, timeSpan, _) => actualRetryDuration = timeSpan // Capture the actual sleep duration that was used, for test verification purposes.
-            );
+                onRetry: (_, timeSpan, _) => actualRetryDuration = timeSpan); // Capture the actual sleep duration that was used, for test verification purposes.
 
         bool failedOnce = false;
         await policy.ExecuteAsync(async (context, _) =>
@@ -353,8 +351,7 @@ public class WaitAndRetryForeverAsyncSpecs : IDisposable
             }
         },
             new { RetryAfter = defaultRetryAfter }.AsDictionary(), // Can also set an initial value for RetryAfter, in the Context passed into the call.
-            CancellationToken.None
-            );
+            CancellationToken.None);
 
         actualRetryDuration.Should().Be(expectedRetryDuration);
     }
@@ -386,10 +383,15 @@ public class WaitAndRetryForeverAsyncSpecs : IDisposable
         {
             executeDelegateInvocations++;
             await TaskHelper.EmptyTask;
-            if (executeDelegateInvocations == 1) { throw new DivideByZeroException(); }
+            if (executeDelegateInvocations == 1)
+            {
+                throw new DivideByZeroException();
+            }
         })).Should().NotThrowAsync();
 
-        while (executeDelegateInvocationsWhenOnRetryExits == 0) { } // Wait for the onRetry delegate to complete.
+        while (executeDelegateInvocationsWhenOnRetryExits == 0)
+        {
+        } // Wait for the onRetry delegate to complete.
 
         executeDelegateInvocationsWhenOnRetryExits.Should().Be(1); // If the async onRetry delegate is genuinely awaited, only one execution of the .Execute delegate should have occurred by the time onRetry completes.  If the async onRetry delegate were instead assigned to an Action<...>, then onRetry will return, and the second action execution will commence, before await Task.Delay() completes, leaving executeDelegateInvocationsWhenOnRetryExits == 2.
         executeDelegateInvocations.Should().Be(2);

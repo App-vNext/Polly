@@ -175,9 +175,9 @@ public class CacheSpecs : IDisposable
         ISyncCacheProvider stubCacheProvider = new StubCacheProvider();
         CachePolicy cache = Policy.Cache(stubCacheProvider, TimeSpan.MaxValue, context => context.OperationKey + context["id"]);
 
-        object person1 = new object();
+        object person1 = new();
         stubCacheProvider.Put("person1", person1, new Ttl(TimeSpan.MaxValue));
-        object person2 = new object();
+        object person2 = new();
         stubCacheProvider.Put("person2", person2, new Ttl(TimeSpan.MaxValue));
 
         bool funcExecuted = false;
@@ -200,9 +200,9 @@ public class CacheSpecs : IDisposable
         ICacheKeyStrategy cacheKeyStrategy = new StubCacheKeyStrategy(context => context.OperationKey + context["id"]);
         CachePolicy cache = Policy.Cache(stubCacheProvider, new RelativeTtl(TimeSpan.MaxValue), cacheKeyStrategy, emptyDelegate, emptyDelegate, emptyDelegate, noErrorHandling, noErrorHandling);
 
-        object person1 = new object();
+        object person1 = new();
         stubCacheProvider.Put("person1", person1, new Ttl(TimeSpan.MaxValue));
-        object person2 = new object();
+        object person2 = new();
         stubCacheProvider.Put("person2", person2, new Ttl(TimeSpan.MaxValue));
 
         bool funcExecuted = false;
@@ -285,7 +285,7 @@ public class CacheSpecs : IDisposable
     [Fact]
     public void Should_return_value_from_cache_and_not_execute_delegate_if_cache_holds_value__default_for_value_type()
     {
-        ResultPrimitive valueToReturnFromCache = default; 
+        ResultPrimitive valueToReturnFromCache = default;
         ResultPrimitive valueToReturnFromExecution = ResultPrimitive.Good;
         valueToReturnFromExecution.Should().NotBe(valueToReturnFromCache);
         const string operationKey = "SomeOperationKey";
@@ -512,7 +512,6 @@ public class CacheSpecs : IDisposable
 
         bool delegateExecuted = false;
 
-
         // Even though value is in cache, get will error; so value is returned from execution.
         cache.Execute(_ =>
             {
@@ -547,7 +546,7 @@ public class CacheSpecs : IDisposable
 
         cache.Execute(_ => valueToReturn, new Context(operationKey)).Should().Be(valueToReturn);
 
-        //  error should be captured by onError delegate.
+        // error should be captured by onError delegate.
         exceptionFromCacheProvider.Should().Be(ex);
 
         // failed to put it in the cache

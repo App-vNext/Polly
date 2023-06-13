@@ -21,10 +21,11 @@ public class CustomTResultSpecs
 
         bool executed = false;
 
-        policy.Invoking(x => x.Execute(() => {
-                executed = true;
-                return ResultPrimitive.Undefined;
-            }))
+        policy.Invoking(x => x.Execute(() =>
+        {
+            executed = true;
+            return ResultPrimitive.Undefined;
+        }))
             .Should().NotThrow();
 
         executed.Should().BeTrue();

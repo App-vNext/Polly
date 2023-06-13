@@ -10,7 +10,7 @@ public class PolicyWrapSpecs
     {
         RetryPolicy retry = Policy.Handle<Exception>().Retry(1);
 
-        Action config = () => retry.Wrap((Policy)null!);
+        Action config = () => retry.Wrap(null!);
 
         config.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be("innerPolicy");
     }
@@ -20,7 +20,7 @@ public class PolicyWrapSpecs
     {
         RetryPolicy retry = Policy.Handle<Exception>().Retry(1);
 
-        Action config = () => retry.Wrap<int>((Policy<int>)null!);
+        Action config = () => retry.Wrap<int>(null!);
 
         config.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be("innerPolicy");
     }
@@ -62,7 +62,6 @@ public class PolicyWrapSpecs
 
         config.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be("innerPolicy");
     }
-
 
     [Fact]
     public void Generic_wraps_generic_instance_syntax_wrapping_null_should_throw()
@@ -129,7 +128,7 @@ public class PolicyWrapSpecs
     {
         ISyncPolicy retry = Policy.Handle<Exception>().Retry(1);
 
-        Action config = () => retry.Wrap((Policy)null!);
+        Action config = () => retry.Wrap(null!);
 
         config.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be("innerPolicy");
     }
@@ -139,7 +138,7 @@ public class PolicyWrapSpecs
     {
         ISyncPolicy retry = Policy.Handle<Exception>().Retry(1);
 
-        Action config = () => retry.Wrap<int>((Policy<int>)null!);
+        Action config = () => retry.Wrap<int>(null!);
 
         config.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be("innerPolicy");
     }
@@ -254,7 +253,7 @@ public class PolicyWrapSpecs
     public void Wrapping_only_one_policy_using_static_wrap_syntax_should_throw()
     {
         Policy singlePolicy = Policy.Handle<Exception>().Retry();
-        Action config = () => Policy.Wrap(new[] {singlePolicy});
+        Action config = () => Policy.Wrap(new[] { singlePolicy });
 
         config.Should().Throw<ArgumentException>().And.ParamName.Should().Be("policies");
     }
@@ -264,7 +263,7 @@ public class PolicyWrapSpecs
     {
         Policy retry = Policy.Handle<Exception>().Retry();
         Policy breaker = Policy.Handle<Exception>().CircuitBreaker(1, TimeSpan.FromSeconds(10));
-        Action config = () => Policy.Wrap(new[] {retry, breaker});
+        Action config = () => Policy.Wrap(new[] { retry, breaker });
 
         config.Should().NotThrow();
     }
@@ -276,7 +275,7 @@ public class PolicyWrapSpecs
         Policy divideByZeroRetry = Policy.Handle<DivideByZeroException>().Retry(2);
         Policy breaker = Policy.Handle<Exception>().CircuitBreaker(1, TimeSpan.FromSeconds(10));
 
-        Action config = () => Policy.Wrap(new[] {divideByZeroRetry, retry, breaker});
+        Action config = () => Policy.Wrap(new[] { divideByZeroRetry, retry, breaker });
 
         config.Should().NotThrow();
     }

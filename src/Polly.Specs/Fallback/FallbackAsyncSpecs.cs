@@ -36,7 +36,7 @@ public class FallbackAsyncSpecs
     [Fact]
     public void Should_throw_when_fallback_func_is_null_with_onFallback_with_context()
     {
-        Func<Context, CancellationToken, Task> fallbackActionAsync  = null!;
+        Func<Context, CancellationToken, Task> fallbackActionAsync = null!;
         Func<Exception, Context, Task> onFallbackAsync = (_, _) => TaskHelper.EmptyTask;
 
         Action policy = () => Policy
@@ -64,7 +64,7 @@ public class FallbackAsyncSpecs
     [Fact]
     public void Should_throw_when_onFallback_delegate_is_null_with_context()
     {
-        Func<Context, CancellationToken, Task> fallbackActionAsync  = (_, _) => TaskHelper.EmptyTask;
+        Func<Context, CancellationToken, Task> fallbackActionAsync = (_, _) => TaskHelper.EmptyTask;
         Func<Exception, Context, Task> onFallbackAsync = null!;
 
         Action policy = () => Policy
@@ -83,7 +83,7 @@ public class FallbackAsyncSpecs
     public async Task Should_not_execute_fallback_when_executed_delegate_does_not_throw()
     {
         bool fallbackActionExecuted = false;
-        Func<CancellationToken, Task> fallbackActionAsync  = _ => { fallbackActionExecuted = true; return TaskHelper.EmptyTask; };
+        Func<CancellationToken, Task> fallbackActionAsync = _ => { fallbackActionExecuted = true; return TaskHelper.EmptyTask; };
 
         var fallbackPolicy = Policy
                                 .Handle<DivideByZeroException>()
@@ -98,7 +98,7 @@ public class FallbackAsyncSpecs
     public async Task Should_not_execute_fallback_when_executed_delegate_throws_exception_not_handled_by_policy()
     {
         bool fallbackActionExecuted = false;
-        Func<CancellationToken, Task> fallbackActionAsync  = _ => { fallbackActionExecuted = true; return TaskHelper.EmptyTask; };
+        Func<CancellationToken, Task> fallbackActionAsync = _ => { fallbackActionExecuted = true; return TaskHelper.EmptyTask; };
 
         var fallbackPolicy = Policy
                                 .Handle<DivideByZeroException>()
@@ -113,7 +113,7 @@ public class FallbackAsyncSpecs
     public async Task Should_execute_fallback_when_executed_delegate_throws_exception_handled_by_policy()
     {
         bool fallbackActionExecuted = false;
-        Func<CancellationToken, Task> fallbackActionAsync  = _ => { fallbackActionExecuted = true; return TaskHelper.EmptyTask; };
+        Func<CancellationToken, Task> fallbackActionAsync = _ => { fallbackActionExecuted = true; return TaskHelper.EmptyTask; };
 
         var fallbackPolicy = Policy
                                 .Handle<DivideByZeroException>()
@@ -124,12 +124,11 @@ public class FallbackAsyncSpecs
         fallbackActionExecuted.Should().BeTrue();
     }
 
-
     [Fact]
     public async Task Should_execute_fallback_when_executed_delegate_throws_one_of_exceptions_handled_by_policy()
     {
         bool fallbackActionExecuted = false;
-        Func<CancellationToken, Task> fallbackActionAsync  = _ => { fallbackActionExecuted = true; return TaskHelper.EmptyTask; };
+        Func<CancellationToken, Task> fallbackActionAsync = _ => { fallbackActionExecuted = true; return TaskHelper.EmptyTask; };
 
         var fallbackPolicy = Policy
                                 .Handle<DivideByZeroException>()
@@ -141,12 +140,11 @@ public class FallbackAsyncSpecs
         fallbackActionExecuted.Should().BeTrue();
     }
 
-
     [Fact]
     public async Task Should_not_execute_fallback_when_executed_delegate_throws_exception_not_one_of_exceptions_handled_by_policy()
     {
         bool fallbackActionExecuted = false;
-        Func<CancellationToken, Task> fallbackActionAsync  = _ => { fallbackActionExecuted = true; return TaskHelper.EmptyTask; };
+        Func<CancellationToken, Task> fallbackActionAsync = _ => { fallbackActionExecuted = true; return TaskHelper.EmptyTask; };
 
         var fallbackPolicy = Policy
                                 .Handle<DivideByZeroException>()
@@ -162,7 +160,7 @@ public class FallbackAsyncSpecs
     public async Task Should_not_execute_fallback_when_exception_thrown_does_not_match_handling_predicates()
     {
         bool fallbackActionExecuted = false;
-        Func<CancellationToken, Task> fallbackActionAsync  = _ => { fallbackActionExecuted = true; return TaskHelper.EmptyTask; };
+        Func<CancellationToken, Task> fallbackActionAsync = _ => { fallbackActionExecuted = true; return TaskHelper.EmptyTask; };
 
         var fallbackPolicy = Policy
                                 .Handle<DivideByZeroException>(_ => false)
@@ -177,7 +175,7 @@ public class FallbackAsyncSpecs
     public async Task Should_not_execute_fallback_when_exception_thrown_does_not_match_any_of_handling_predicates()
     {
         bool fallbackActionExecuted = false;
-        Func<CancellationToken, Task> fallbackActionAsync  = _ => { fallbackActionExecuted = true; return TaskHelper.EmptyTask; };
+        Func<CancellationToken, Task> fallbackActionAsync = _ => { fallbackActionExecuted = true; return TaskHelper.EmptyTask; };
 
         var fallbackPolicy = Policy
                                 .Handle<DivideByZeroException>(_ => false)
@@ -193,7 +191,7 @@ public class FallbackAsyncSpecs
     public async Task Should_execute_fallback_when_exception_thrown_matches_handling_predicates()
     {
         bool fallbackActionExecuted = false;
-        Func<CancellationToken, Task> fallbackActionAsync  = _ => { fallbackActionExecuted = true; return TaskHelper.EmptyTask; };
+        Func<CancellationToken, Task> fallbackActionAsync = _ => { fallbackActionExecuted = true; return TaskHelper.EmptyTask; };
 
         var fallbackPolicy = Policy
                                 .Handle<DivideByZeroException>(_ => true)
@@ -204,12 +202,11 @@ public class FallbackAsyncSpecs
         fallbackActionExecuted.Should().BeTrue();
     }
 
-
     [Fact]
     public async Task Should_execute_fallback_when_exception_thrown_matches_one_of_handling_predicates()
     {
         bool fallbackActionExecuted = false;
-        Func<CancellationToken, Task> fallbackActionAsync  = _ => { fallbackActionExecuted = true; return TaskHelper.EmptyTask; };
+        Func<CancellationToken, Task> fallbackActionAsync = _ => { fallbackActionExecuted = true; return TaskHelper.EmptyTask; };
 
         var fallbackPolicy = Policy
                                 .Handle<DivideByZeroException>(_ => true)
@@ -225,7 +222,7 @@ public class FallbackAsyncSpecs
     public async Task Should_not_handle_exception_thrown_by_fallback_delegate_even_if_is_exception_handled_by_policy()
     {
         bool fallbackActionExecuted = false;
-        Func<CancellationToken, Task> fallbackActionAsync  = _ =>
+        Func<CancellationToken, Task> fallbackActionAsync = _ =>
         {
             fallbackActionExecuted = true;
             throw new DivideByZeroException { HelpLink = "FromFallbackAction" };
@@ -513,7 +510,7 @@ public class FallbackAsyncSpecs
             .FallbackAsync(fallbackFunc, onFallback);
 
         Exception instanceToCapture = new ArgumentNullException("myParam");
-        Exception instanceToThrow = new Exception(String.Empty, instanceToCapture);
+        Exception instanceToThrow = new Exception(string.Empty, instanceToCapture);
         await fallbackPolicy.Awaiting(p => p.RaiseExceptionAsync(instanceToThrow))
             .Should().NotThrowAsync();
 
@@ -753,7 +750,6 @@ public class FallbackAsyncSpecs
         bool fallbackActionExecuted = false;
         Func<CancellationToken, Task> fallbackActionAsync = _ => { fallbackActionExecuted = true; return TaskHelper.EmptyTask; };
 
-
         CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
         CancellationToken cancellationToken = cancellationTokenSource.Token;
 
@@ -783,7 +779,6 @@ public class FallbackAsyncSpecs
     {
         bool fallbackActionExecuted = false;
         Func<CancellationToken, Task> fallbackActionAsync = _ => { fallbackActionExecuted = true; return TaskHelper.EmptyTask; };
-
 
         CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
         CancellationToken cancellationToken = cancellationTokenSource.Token;

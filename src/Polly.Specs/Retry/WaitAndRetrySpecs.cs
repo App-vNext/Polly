@@ -4,6 +4,7 @@
 public class WaitAndRetrySpecs : IDisposable
 {
     public WaitAndRetrySpecs() =>
+
         // do nothing on call to sleep
         SystemClock.Sleep = (_, _) => { };
 
@@ -399,7 +400,7 @@ public class WaitAndRetrySpecs : IDisposable
     [Fact]
     public void Should_call_onretry_on_each_retry_with_the_current_timespan()
     {
-        var expectedRetryWaits = new []
+        var expectedRetryWaits = new[]
             {
                 1.Seconds(),
                 2.Seconds(),
@@ -515,8 +516,7 @@ public class WaitAndRetrySpecs : IDisposable
             }, (_, _, context) => contextData = context);
 
         policy.RaiseException<DivideByZeroException>(
-            new { key1 = "value1", key2 = "value2" }.AsDictionary()
-            );
+            new { key1 = "value1", key2 = "value2" }.AsDictionary());
 
         contextData.Should()
             .ContainKeys("key1", "key2").And
@@ -537,14 +537,12 @@ public class WaitAndRetrySpecs : IDisposable
             (_, _, context) => contextValue = context["key"].ToString());
 
         policy.RaiseException<DivideByZeroException>(
-            new { key = "original_value" }.AsDictionary()
-        );
+            new { key = "original_value" }.AsDictionary());
 
         contextValue.Should().Be("original_value");
 
         policy.RaiseException<DivideByZeroException>(
-            new { key = "new_value" }.AsDictionary()
-        );
+            new { key = "new_value" }.AsDictionary());
 
         contextValue.Should().Be("new_value");
     }
@@ -608,7 +606,7 @@ public class WaitAndRetrySpecs : IDisposable
 
         Action policy = () => Policy
                                   .Handle<DivideByZeroException>()
-                                  .WaitAndRetry(1, (Func<int, TimeSpan>) null!, onRetry);
+                                  .WaitAndRetry(1, (Func<int, TimeSpan>)null!, onRetry);
 
         policy.Should().Throw<ArgumentNullException>().And
               .ParamName.Should().Be("sleepDurationProvider");
@@ -684,8 +682,7 @@ public class WaitAndRetrySpecs : IDisposable
             .Handle<DivideByZeroException>()
             .WaitAndRetry(5,
                 retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),
-                (_, timeSpan) => actualRetryWaits.Add(timeSpan)
-            );
+                (_, timeSpan) => actualRetryWaits.Add(timeSpan));
 
         policy.RaiseException<DivideByZeroException>(5);
 
@@ -710,8 +707,7 @@ public class WaitAndRetrySpecs : IDisposable
                 },
                 onRetry: (_, _, _, _) =>
                 {
-                }
-            );
+                });
 
         policy.RaiseException(exceptionInstance);
 
@@ -733,12 +729,15 @@ public class WaitAndRetrySpecs : IDisposable
             .Handle<Exception>()
             .WaitAndRetry(2,
                 (_, exc, _) => expectedRetryWaits[exc],
-                (_, timeSpan, _, _) => actualRetryWaits.Add(timeSpan)
-            );
+                (_, timeSpan, _, _) => actualRetryWaits.Add(timeSpan));
 
         using (var enumerator = expectedRetryWaits.GetEnumerator())
         {
-            policy.Execute(() => { if (enumerator.MoveNext()) throw enumerator.Current.Key; });
+            policy.Execute(() =>
+            {
+                if (enumerator.MoveNext())
+                    throw enumerator.Current.Key;
+            });
         }
 
         actualRetryWaits.Should().ContainInOrder(expectedRetryWaits.Values);
@@ -756,8 +755,7 @@ public class WaitAndRetrySpecs : IDisposable
             .Handle<DivideByZeroException>()
             .WaitAndRetry(1,
                 sleepDurationProvider: (_, context) => context.ContainsKey("RetryAfter") ? (TimeSpan)context["RetryAfter"] : defaultRetryAfter, // Set sleep duration from Context, when available.
-                onRetry: (_, timeSpan, _) => actualRetryDuration = timeSpan // Capture the actual sleep duration that was used, for test verification purposes.
-            );
+                onRetry: (_, timeSpan, _) => actualRetryDuration = timeSpan); // Capture the actual sleep duration that was used, for test verification purposes.
 
         bool failedOnce = false;
         policy.Execute(context =>
@@ -771,11 +769,11 @@ public class WaitAndRetrySpecs : IDisposable
                 throw new DivideByZeroException();
             }
         },
-            new { RetryAfter = defaultRetryAfter }.AsDictionary() // Can also set an initial value for RetryAfter, in the Context passed into the call.
-            );
+            new { RetryAfter = defaultRetryAfter }.AsDictionary()); // Can also set an initial value for RetryAfter, in the Context passed into the call.
 
         actualRetryDuration.Should().Be(expectedRetryDuration);
     }
+
     [Fact]
     public void Should_not_call_onretry_when_retry_count_is_zero_without_context()
     {

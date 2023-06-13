@@ -79,7 +79,6 @@ public class PolicyKeySpecs
         keyRetrievedSecond.Should().Be(keyRetrievedFirst);
     }
 
-
     [Fact]
     public void Should_not_be_able_to_configure_the_policy_key_explicitly_after_retrieving_default_value()
     {
@@ -149,6 +148,7 @@ public class PolicyKeySpecs
                 firstExecution = false;
                 throw new Exception();
             }
+
             return 0;
         });
 
@@ -172,6 +172,7 @@ public class PolicyKeySpecs
                 firstExecution = false;
                 throw new Exception();
             }
+
             return 0;
         }, new Context(operationKey));
 
@@ -179,7 +180,6 @@ public class PolicyKeySpecs
     }
     #endregion
 }
-
 
 public class PolicyTResultKeySpecs
 {
@@ -260,7 +260,6 @@ public class PolicyTResultKeySpecs
         keyRetrievedSecond.Should().Be(keyRetrievedFirst);
     }
 
-
     [Fact]
     public void Should_not_be_able_to_configure_the_policy_key_explicitly_after_retrieving_default_value()
     {
@@ -308,6 +307,7 @@ public class PolicyTResultKeySpecs
                 firstExecution = false;
                 return ResultPrimitive.Fault;
             }
+
             return ResultPrimitive.Good;
         }, new Context(operationKey));
 

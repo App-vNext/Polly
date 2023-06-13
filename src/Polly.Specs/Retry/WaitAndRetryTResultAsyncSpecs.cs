@@ -4,6 +4,7 @@
 public class WaitAndRetryTResultAsyncSpecs : IDisposable
 {
     public WaitAndRetryTResultAsyncSpecs() =>
+
         // do nothing on call to sleep
         SystemClock.SleepAsync = (_, _) => TaskHelper.EmptyTask;
 
@@ -34,8 +35,10 @@ public class WaitAndRetryTResultAsyncSpecs : IDisposable
             await policy.ExecuteAsync(async () =>
             {
                 await TaskHelper.EmptyTask;
-                if (enumerator.MoveNext()) return enumerator.Current.Key;
-                else return ResultPrimitive.Undefined;
+                if (enumerator.MoveNext())
+                    return enumerator.Current.Key;
+                else
+                    return ResultPrimitive.Undefined;
             });
         }
 

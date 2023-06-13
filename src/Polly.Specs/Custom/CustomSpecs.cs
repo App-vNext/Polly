@@ -48,10 +48,11 @@ public class CustomSpecs
         Exception toThrow = new InvalidOperationException();
         bool executed = false;
 
-        policy.Invoking(x => x.Execute(() => {
-                executed = true;
-                throw toThrow;
-            }))
+        policy.Invoking(x => x.Execute(() =>
+        {
+            executed = true;
+            throw toThrow;
+        }))
             .Should().Throw<Exception>().Which.Should().Be(toThrow);
 
         executed.Should().BeTrue();
@@ -67,10 +68,11 @@ public class CustomSpecs
         Exception toThrow = new NotImplementedException();
         bool executed = false;
 
-        policy.Invoking(x => x.Execute(() => {
-                executed = true;
-                throw toThrow;
-            }))
+        policy.Invoking(x => x.Execute(() =>
+        {
+            executed = true;
+            throw toThrow;
+        }))
             .Should().Throw<Exception>().Which.Should().Be(toThrow);
 
         executed.Should().BeTrue();

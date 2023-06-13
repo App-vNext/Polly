@@ -17,5 +17,8 @@ internal class StubSerialized<TOriginal>
 /// </summary>
 internal class StubSerialized : StubSerialized<object>
 {
-    public StubSerialized(object? obj) : base(obj) { }
+    public StubSerialized(object? obj)
+        : base(obj)
+    {
+    }
 }

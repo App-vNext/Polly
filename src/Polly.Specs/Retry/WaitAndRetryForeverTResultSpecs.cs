@@ -4,6 +4,7 @@
 public class WaitAndRetryForeverTResultSpecs : IDisposable
 {
     public WaitAndRetryForeverTResultSpecs() =>
+
         // do nothing on call to sleep
         SystemClock.Sleep = (_, _) => { };
 
@@ -23,15 +24,16 @@ public class WaitAndRetryForeverTResultSpecs : IDisposable
             .OrResult(ResultPrimitive.FaultAgain)
             .WaitAndRetryForever(
                 (_, outcome, _) => expectedRetryWaits[outcome.Result],
-                (_, timeSpan, _) => actualRetryWaits.Add(timeSpan)
-            );
+                (_, timeSpan, _) => actualRetryWaits.Add(timeSpan));
 
         using (var enumerator = expectedRetryWaits.GetEnumerator())
         {
             policy.Execute(() =>
             {
-                if (enumerator.MoveNext()) return enumerator.Current.Key;
-                else return ResultPrimitive.Undefined;
+                if (enumerator.MoveNext())
+                    return enumerator.Current.Key;
+                else
+                    return ResultPrimitive.Undefined;
             });
         }
 

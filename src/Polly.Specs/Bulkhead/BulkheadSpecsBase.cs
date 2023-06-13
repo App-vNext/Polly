@@ -9,7 +9,7 @@ public abstract class BulkheadSpecsBase : IDisposable
     protected readonly TimeSpan CohesionTimeLimit = TimeSpan.FromMilliseconds(1000); // Consider increasing CohesionTimeLimit if bulkhead specs fail transiently in slower build environments.
 
     #endregion
-    public BulkheadSpecsBase(ITestOutputHelper testOutputHelper)
+    protected BulkheadSpecsBase(ITestOutputHelper testOutputHelper)
     {
 #if !DEBUG
         TestOutputHelper = new SilentOutputHelper();
@@ -47,11 +47,11 @@ public abstract class BulkheadSpecsBase : IDisposable
     #region Tracked metrics
 
     protected int ExpectedCompleted { get; set; }
-    protected int ExpectedCancelled  { get; set; }
-    protected int ExpectedExecuting  { get; set; }
-    protected int ExpectedRejects  { get; set; }
+    protected int ExpectedCancelled { get; set; }
+    protected int ExpectedExecuting { get; set; }
+    protected int ExpectedRejects { get; set; }
     protected int ExpectedQueuing { get; set; }
-    protected int ExpectedFaulted { get; set; } = 0;
+    protected int ExpectedFaulted { get; set; }
     protected int ExpectedBulkheadFree { get; set; }
     protected int ExpectedQueueFree { get; set; }
 
@@ -76,7 +76,8 @@ public abstract class BulkheadSpecsBase : IDisposable
     [Theory, ClassData(typeof(BulkheadScenarios))]
     public void Should_control_executions_per_specification(int maxParallelization, int maxQueuingActions, int totalActions, bool cancelQueuing, bool cancelExecuting, string scenario)
     {
-        if (totalActions < 0) throw new ArgumentOutOfRangeException(nameof(totalActions));
+        if (totalActions < 0)
+            throw new ArgumentOutOfRangeException(nameof(totalActions));
 
         MaxParallelization = maxParallelization;
         MaxQueuingActions = maxQueuingActions;
@@ -90,11 +91,17 @@ public abstract class BulkheadSpecsBase : IDisposable
 
             // Set up delegates which we can track whether they've started; and control when we allow them to complete (to release their semaphore slot).
             Actions = new TraceableAction[totalActions];
-            for (int i = 0; i < totalActions; i++) { Actions[i] = new TraceableAction(i, StatusChangedEvent, TestOutputHelper); }
+            for (int i = 0; i < totalActions; i++)
+            {
+                Actions[i] = new TraceableAction(i, StatusChangedEvent, TestOutputHelper);
+            }
 
             // Throw all the delegates at the bulkhead simultaneously.
             Tasks = new Task[totalActions];
-            for (int i = 0; i < totalActions; i++) { Tasks[i] = ExecuteOnBulkhead(bulkhead, Actions[i]); }
+            for (int i = 0; i < totalActions; i++)
+            {
+                Tasks[i] = ExecuteOnBulkhead(bulkhead, Actions[i]);
+            }
 
             OutputStatus("Immediately after queueing...");
 
@@ -354,11 +361,12 @@ public abstract class BulkheadSpecsBase : IDisposable
         {
             TestOutputHelper.WriteLine("Action {0}: {1}", i, Actions[i].Status);
         }
-        TestOutputHelper.WriteLine(String.Empty);
+
+        TestOutputHelper.WriteLine(string.Empty);
     }
 
     private void ShowTestOutput() =>
-        ((AnnotatedOutputHelper) TestOutputHelper).Flush();
+        ((AnnotatedOutputHelper)TestOutputHelper).Flush();
 
     #endregion
 

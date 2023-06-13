@@ -2,7 +2,7 @@
 
 public class ConcurrentPolicyRegistrySpecs
 {
-    IConcurrentPolicyRegistry<string> _registry;
+    private readonly IConcurrentPolicyRegistry<string> _registry;
 
     public ConcurrentPolicyRegistrySpecs() =>
         _registry = new PolicyRegistry();
@@ -199,7 +199,6 @@ public class ConcurrentPolicyRegistrySpecs
     {
         Policy newPolicy = Policy.NoOp();
         string key = Guid.NewGuid().ToString();
-
 
         var returnedPolicy = _registry.AddOrUpdate(
             key,

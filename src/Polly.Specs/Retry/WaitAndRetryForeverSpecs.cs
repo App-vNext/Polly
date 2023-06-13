@@ -4,6 +4,7 @@
 public class WaitAndRetryForeverSpecs : IDisposable
 {
     public WaitAndRetryForeverSpecs() =>
+
         // do nothing on call to sleep
         SystemClock.Sleep = (_, _) => { };
 
@@ -253,14 +254,12 @@ public class WaitAndRetryForeverSpecs : IDisposable
             (_, _, context) => contextValue = context["key"].ToString());
 
         policy.RaiseException<DivideByZeroException>(
-            new { key = "original_value" }.AsDictionary()
-        );
+            new { key = "original_value" }.AsDictionary());
 
         contextValue.Should().Be("original_value");
 
         policy.RaiseException<DivideByZeroException>(
-            new { key = "new_value" }.AsDictionary()
-        );
+            new { key = "new_value" }.AsDictionary());
 
         contextValue.Should().Be("new_value");
     }
@@ -283,8 +282,7 @@ public class WaitAndRetryForeverSpecs : IDisposable
             .Handle<DivideByZeroException>()
             .WaitAndRetryForever(
                 retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),
-                (_, timeSpan) => actualRetryWaits.Add(timeSpan)
-            );
+                (_, timeSpan) => actualRetryWaits.Add(timeSpan));
 
         policy.RaiseException<DivideByZeroException>(5);
 
@@ -307,12 +305,15 @@ public class WaitAndRetryForeverSpecs : IDisposable
             .Handle<Exception>()
             .WaitAndRetryForever(
                 (_, exc, _) => expectedRetryWaits[exc],
-                (_, timeSpan, _) => actualRetryWaits.Add(timeSpan)
-            );
+                (_, timeSpan, _) => actualRetryWaits.Add(timeSpan));
 
         using (var enumerator = expectedRetryWaits.GetEnumerator())
         {
-            policy.Execute(() => { if (enumerator.MoveNext()) throw enumerator.Current.Key; });
+            policy.Execute(() =>
+            {
+                if (enumerator.MoveNext())
+                    throw enumerator.Current.Key;
+            });
         }
 
         actualRetryWaits.Should().ContainInOrder(expectedRetryWaits.Values);
@@ -329,9 +330,8 @@ public class WaitAndRetryForeverSpecs : IDisposable
         var policy = Policy
             .Handle<DivideByZeroException>()
             .WaitAndRetryForever(
-                sleepDurationProvider: (_, context) => context.ContainsKey("RetryAfter") ? (TimeSpan) context["RetryAfter"] : defaultRetryAfter, // Set sleep duration from Context, when available.
-                onRetry: (_, timeSpan, _) => actualRetryDuration = timeSpan // Capture the actual sleep duration that was used, for test verification purposes.
-            );
+                sleepDurationProvider: (_, context) => context.ContainsKey("RetryAfter") ? (TimeSpan)context["RetryAfter"] : defaultRetryAfter, // Set sleep duration from Context, when available.
+                onRetry: (_, timeSpan, _) => actualRetryDuration = timeSpan); // Capture the actual sleep duration that was used, for test verification purposes.
 
         bool failedOnce = false;
         policy.Execute(context =>
@@ -345,8 +345,7 @@ public class WaitAndRetryForeverSpecs : IDisposable
                     throw new DivideByZeroException();
                 }
             },
-            new {RetryAfter = defaultRetryAfter}.AsDictionary() // Can also set an initial value for RetryAfter, in the Context passed into the call.
-            );
+            new { RetryAfter = defaultRetryAfter }.AsDictionary()); // Can also set an initial value for RetryAfter, in the Context passed into the call.
 
         actualRetryDuration.Should().Be(expectedRetryDuration);
     }

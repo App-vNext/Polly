@@ -21,9 +21,15 @@ public abstract class RateLimitSpecsBase
             }
             catch (Exception e)
             {
-                if (!(e is AssertionFailedException || e is XunitException)) { throw; }
+                if (!(e is AssertionFailedException || e is XunitException))
+                {
+                    throw;
+                }
 
-                if (watch.Elapsed > timeSpan) { throw; }
+                if (watch.Elapsed > timeSpan)
+                {
+                    throw;
+                }
 
                 Thread.Sleep(retryInterval);
             }

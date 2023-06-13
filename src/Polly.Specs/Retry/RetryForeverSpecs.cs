@@ -157,7 +157,7 @@ public class RetryForeverSpecs
     [Fact]
     public void Should_call_onretry_on_each_retry_with_the_current_exception()
     {
-        var expectedExceptions = new string[] {"Exception #1", "Exception #2", "Exception #3"};
+        var expectedExceptions = new string[] { "Exception #1", "Exception #2", "Exception #3" };
         var retryExceptions = new List<Exception>();
 
         var policy = Policy
@@ -182,8 +182,7 @@ public class RetryForeverSpecs
             .RetryForever((_, context) => contextData = context);
 
         policy.RaiseException<DivideByZeroException>(
-            new { key1 = "value1", key2 = "value2" }.AsDictionary()
-        );
+            new { key1 = "value1", key2 = "value2" }.AsDictionary());
 
         contextData.Should()
                    .ContainKeys("key1", "key2").And
@@ -232,14 +231,12 @@ public class RetryForeverSpecs
             .RetryForever((_, context) => contextValue = context["key"].ToString());
 
         policy.RaiseException<DivideByZeroException>(
-            new { key = "original_value" }.AsDictionary()
-        );
+            new { key = "original_value" }.AsDictionary());
 
         contextValue.Should().Be("original_value");
 
         policy.RaiseException<DivideByZeroException>(
-            new { key = "new_value" }.AsDictionary()
-        );
+            new { key = "new_value" }.AsDictionary());
 
         contextValue.Should().Be("new_value");
     }

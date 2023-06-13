@@ -6,7 +6,7 @@ internal sealed class ResilienceStrategySyncPolicy<TResult> : Policy<TResult>
 
     public ResilienceStrategySyncPolicy(ResilienceStrategy<TResult> strategy) => _strategy = strategy;
 
-    protected sealed override TResult Implementation(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken)
+    protected override TResult Implementation(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken)
     {
         var resilienceContext = ResilienceContextFactory.Create(
             context,

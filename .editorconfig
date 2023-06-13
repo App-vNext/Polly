@@ -22,3 +22,14 @@ dotnet_code_quality.CA1062.null_check_validation_methods = NotNull
 
 # S2094 // Classes should not be empty
 dotnet_diagnostic.S2094.severity = suggestion
+
+# Prefer method-like constructs to have a block body
+csharp_style_expression_bodied_methods = true:error
+csharp_style_expression_bodied_constructors = true:error
+csharp_style_expression_bodied_operators = true:error
+csharp_place_expr_method_on_single_line = false
+
+# Prefer property-like constructs to have an expression-body
+csharp_style_expression_bodied_properties = true:error
+csharp_style_expression_bodied_indexers = true:error
+csharp_style_expression_bodied_accessors = true:error

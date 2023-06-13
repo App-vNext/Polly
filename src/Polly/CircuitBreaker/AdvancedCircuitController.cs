@@ -20,8 +20,8 @@ internal class AdvancedCircuitController<TResult> : CircuitStateController<TResu
         ) : base(durationOfBreak, onBreak, onReset, onHalfOpen)
     {
         _metrics = samplingDuration.Ticks < ResolutionOfCircuitTimer * NumberOfWindows
-            ? (IHealthMetrics)new SingleHealthMetrics(samplingDuration)
-            : (IHealthMetrics)new RollingHealthMetrics(samplingDuration, NumberOfWindows);
+            ? new SingleHealthMetrics(samplingDuration)
+            : new RollingHealthMetrics(samplingDuration, NumberOfWindows);
 
         _failureThreshold = failureThreshold;
         _minimumThroughput = minimumThroughput;

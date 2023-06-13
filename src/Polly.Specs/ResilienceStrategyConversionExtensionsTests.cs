@@ -5,11 +5,11 @@ namespace Polly.Specs;
 
 public class ResilienceStrategyConversionExtensionsTests
 {
-    private static readonly ResiliencePropertyKey<string> Incoming = new ResiliencePropertyKey<string>("incoming-key");
+    private static readonly ResiliencePropertyKey<string> Incoming = new("incoming-key");
 
-    private static readonly ResiliencePropertyKey<string> Executing = new ResiliencePropertyKey<string>("executing-key");
+    private static readonly ResiliencePropertyKey<string> Executing = new("executing-key");
 
-    private static readonly ResiliencePropertyKey<string> Outgoing = new ResiliencePropertyKey<string>("outgoing-key");
+    private static readonly ResiliencePropertyKey<string> Outgoing = new("outgoing-key");
 
     private readonly TestResilienceStrategy _strategy;
     private readonly ResilienceStrategy<string> _genericStrategy;
@@ -167,8 +167,10 @@ public class ResilienceStrategyConversionExtensionsTests
             .Build()
             .AsSyncPolicy();
 
-        var context = new Context();
-        context["retry"] = 0;
+        var context = new Context
+        {
+            ["retry"] = 0
+        };
 
         policy.Execute(
             c =>

@@ -11,7 +11,8 @@ public static class PolicyExtensionsAsync
         public bool ActionObservesCancellation = true;
     }
 
-    public static Task RaiseExceptionAsync<TException>(this AsyncPolicy policy, TException instance) where TException : Exception
+    public static Task RaiseExceptionAsync<TException>(this AsyncPolicy policy, TException instance)
+        where TException : Exception
     {
         ExceptionAndOrCancellationScenario scenario = new ExceptionAndOrCancellationScenario
         {
@@ -23,10 +24,13 @@ public static class PolicyExtensionsAsync
         return policy.RaiseExceptionAndOrCancellationAsync(scenario, new CancellationTokenSource(), () => { }, _ => instance);
     }
 
-    public static Task RaiseExceptionAsync<TException>(this AsyncPolicy policy, Action<TException, int>? configureException = null) where TException : Exception, new() =>
+    public static Task RaiseExceptionAsync<TException>(this AsyncPolicy policy, Action<TException, int>? configureException = null)
+        where TException : Exception, new()
+        =>
         policy.RaiseExceptionAsync(1, configureException);
 
-    public static Task RaiseExceptionAsync<TException>(this AsyncPolicy policy, int numberOfTimesToRaiseException, Action<TException, int>? configureException = null, CancellationToken cancellationToken = default) where TException : Exception, new()
+    public static Task RaiseExceptionAsync<TException>(this AsyncPolicy policy, int numberOfTimesToRaiseException, Action<TException, int>? configureException = null, CancellationToken cancellationToken = default)
+        where TException : Exception, new()
     {
         ExceptionAndOrCancellationScenario scenario = new ExceptionAndOrCancellationScenario
         {
@@ -45,14 +49,19 @@ public static class PolicyExtensionsAsync
         return policy.RaiseExceptionAndOrCancellationAsync(scenario, new CancellationTokenSource(), () => { }, exceptionFactory);
     }
 
-    public static Task RaiseExceptionAndOrCancellationAsync<TException>(this AsyncPolicy policy, ExceptionAndOrCancellationScenario scenario, CancellationTokenSource cancellationTokenSource, Action onExecute) where TException : Exception, new() =>
+    public static Task RaiseExceptionAndOrCancellationAsync<TException>(this AsyncPolicy policy, ExceptionAndOrCancellationScenario scenario, CancellationTokenSource cancellationTokenSource, Action onExecute)
+        where TException : Exception, new()
+        =>
         policy.RaiseExceptionAndOrCancellationAsync<TException>(scenario, cancellationTokenSource, onExecute, _ => new TException());
 
-    public static Task<TResult> RaiseExceptionAndOrCancellationAsync<TException, TResult>(this AsyncPolicy policy, ExceptionAndOrCancellationScenario scenario, CancellationTokenSource cancellationTokenSource, Action onExecute, TResult successResult) where TException : Exception, new() =>
+    public static Task<TResult> RaiseExceptionAndOrCancellationAsync<TException, TResult>(this AsyncPolicy policy, ExceptionAndOrCancellationScenario scenario, CancellationTokenSource cancellationTokenSource, Action onExecute, TResult successResult)
+        where TException : Exception, new()
+        =>
         policy.RaiseExceptionAndOrCancellationAsync(scenario, cancellationTokenSource, onExecute,
             _ => new TException(), successResult);
 
-    public static Task RaiseExceptionAndOrCancellationAsync<TException>(this AsyncPolicy policy, ExceptionAndOrCancellationScenario scenario, CancellationTokenSource cancellationTokenSource, Action onExecute, Func<int, TException> exceptionFactory) where TException : Exception
+    public static Task RaiseExceptionAndOrCancellationAsync<TException>(this AsyncPolicy policy, ExceptionAndOrCancellationScenario scenario, CancellationTokenSource cancellationTokenSource, Action onExecute, Func<int, TException> exceptionFactory)
+        where TException : Exception
     {
         int counter = 0;
 
@@ -83,7 +92,8 @@ public static class PolicyExtensionsAsync
         }, cancellationToken);
     }
 
-    public static Task<TResult> RaiseExceptionAndOrCancellationAsync<TException, TResult>(this AsyncPolicy policy, ExceptionAndOrCancellationScenario scenario, CancellationTokenSource cancellationTokenSource, Action onExecute, Func<int, TException> exceptionFactory, TResult successResult) where TException : Exception
+    public static Task<TResult> RaiseExceptionAndOrCancellationAsync<TException, TResult>(this AsyncPolicy policy, ExceptionAndOrCancellationScenario scenario, CancellationTokenSource cancellationTokenSource, Action onExecute, Func<int, TException> exceptionFactory, TResult successResult)
+        where TException : Exception
     {
         int counter = 0;
 

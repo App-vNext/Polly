@@ -15,7 +15,7 @@ public sealed class ResilienceContext
 {
     private const bool ContinueOnCapturedContextDefault = false;
 
-    private static readonly ObjectPool<ResilienceContext> Pool = new(static () => new ResilienceContext(), static c => c.Reset());
+    private static readonly ObjectPool<ResilienceContext> _pool = new(static () => new ResilienceContext(), static c => c.Reset());
 
     private readonly List<ResilienceEvent> _resilienceEvents = new();
 
@@ -74,7 +74,7 @@ public sealed class ResilienceContext
     /// After the execution is finished you should return the <see cref="ResilienceContext"/> back to the pool
     /// by calling <see cref="Return(ResilienceContext)"/> method.
     /// </remarks>
-    public static ResilienceContext Get() => Pool.Get();
+    public static ResilienceContext Get() => _pool.Get();
 
     internal void InitializeFrom(ResilienceContext context)
     {
@@ -95,7 +95,7 @@ public sealed class ResilienceContext
     {
         Guard.NotNull(context);
 
-        Pool.Return(context);
+        _pool.Return(context);
     }
 
     [ExcludeFromCodeCoverage]

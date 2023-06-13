@@ -4,7 +4,7 @@ namespace Polly.Extensions.Telemetry;
 
 public partial class EnrichmentContext
 {
-    private static readonly ObjectPool<EnrichmentContext> ContextPool = new(
+    private static readonly ObjectPool<EnrichmentContext> _contextPool = new(
         static () => new EnrichmentContext(),
         static context =>
         {
@@ -16,7 +16,7 @@ public partial class EnrichmentContext
 
     internal static EnrichmentContext Get(ResilienceContext resilienceContext, object? arguments, Outcome<object>? outcome)
     {
-        var context = ContextPool.Get();
+        var context = _contextPool.Get();
         context.Context = resilienceContext;
         context.Arguments = arguments;
         context.Outcome = outcome;
@@ -27,6 +27,6 @@ public partial class EnrichmentContext
     internal static void Return(EnrichmentContext context)
     {
         context.Tags.Clear();
-        ContextPool.Return(context);
+        _contextPool.Return(context);
     }
 }

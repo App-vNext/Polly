@@ -2,9 +2,9 @@
 
 public class ReadOnlyPolicyRegistrySpecs
 {
-    IPolicyRegistry<string> _registry;
+    private readonly IPolicyRegistry<string> _registry;
 
-    IReadOnlyPolicyRegistry<string> ReadOnlyRegistry => _registry;
+    private IReadOnlyPolicyRegistry<string> ReadOnlyRegistry => _registry;
 
     public ReadOnlyPolicyRegistrySpecs() =>
         _registry = new PolicyRegistry();

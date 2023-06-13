@@ -2,7 +2,7 @@
 
 public class PolicyRegistrySpecs
 {
-    IPolicyRegistry<string> _registry;
+    private readonly IPolicyRegistry<string> _registry;
 
     public PolicyRegistrySpecs() =>
         _registry = new PolicyRegistry();
@@ -445,7 +445,7 @@ public class PolicyRegistrySpecs
         var testDictionary = new Mock<IDictionary<string, IsPolicy>>();
         var testRegistry = new PolicyRegistry(testDictionary.Object);
 
-        //Generally, using reflection is a bad practice, but we are accepting it given we own the implementation.
+        // Generally, using reflection is a bad practice, but we are accepting it given we own the implementation.
         var registryField = typeof(PolicyRegistry).GetField("_registry", BindingFlags.NonPublic | BindingFlags.GetField | BindingFlags.Instance)!;
         var registryFieldValue = registryField.GetValue(testRegistry);
         registryFieldValue.Should().Be(testDictionary.Object);
@@ -457,7 +457,7 @@ public class PolicyRegistrySpecs
         var expectedDictionaryType = typeof(ConcurrentDictionary<string, IsPolicy>);
         var testRegistry = new PolicyRegistry();
 
-        //Generally, using reflection is a bad practice, but we are accepting it given we own the implementation.
+        // Generally, using reflection is a bad practice, but we are accepting it given we own the implementation.
         var registryField = typeof(PolicyRegistry).GetField("_registry", BindingFlags.NonPublic | BindingFlags.GetField | BindingFlags.Instance)!;
         var registryFieldValue = registryField.GetValue(testRegistry);
         registryFieldValue.Should().BeOfType(expectedDictionaryType);
