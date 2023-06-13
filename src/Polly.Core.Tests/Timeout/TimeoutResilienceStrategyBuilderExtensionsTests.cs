@@ -8,26 +8,11 @@ public class TimeoutResilienceStrategyBuilderExtensionsTests
     public static IEnumerable<object[]> AddTimeout_Ok_Data()
     {
         var timeout = TimeSpan.FromSeconds(4);
-
         yield return new object[]
         {
             timeout,
             (ResilienceStrategyBuilder<int> builder) => { builder.AddTimeout(timeout); },
             (TimeoutResilienceStrategy strategy) => { GetTimeout(strategy).Should().Be(timeout); }
-        };
-
-        bool called = false;
-
-        yield return new object[]
-        {
-            timeout,
-            (ResilienceStrategyBuilder<int> builder) => { builder.AddTimeout(timeout, _=> called = true); },
-            (TimeoutResilienceStrategy strategy) =>
-            {
-                GetTimeout(strategy).Should().Be(timeout);
-                OnTimeout(strategy);
-                called.Should().BeTrue();
-            }
         };
     }
 
@@ -38,7 +23,6 @@ public class TimeoutResilienceStrategyBuilderExtensionsTests
         var builder = new ResilienceStrategyBuilder<int>();
 
         Assert.Throws<ValidationException>(() => builder.AddTimeout(timeout));
-        Assert.Throws<ValidationException>(() => builder.AddTimeout(timeout, args => { }));
     }
 
     [MemberData(nameof(AddTimeout_Ok_Data))]
@@ -78,10 +62,5 @@ public class TimeoutResilienceStrategyBuilderExtensionsTests
         }
 
         return strategy.GenerateTimeoutAsync(ResilienceContext.Get()).Preserve().GetAwaiter().GetResult();
-    }
-
-    private static void OnTimeout(TimeoutResilienceStrategy strategy)
-    {
-        strategy.OnTimeout?.Invoke(TimeoutTestUtils.OnTimeoutArguments()).AsTask().Wait();
     }
 }

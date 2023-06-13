@@ -27,30 +27,8 @@ public class RetryResilienceStrategyBuilderExtensionsTests
     {
         builder =>
         {
-            builder.AddRetry(retry => retry.HandleResult(10));
-            AssertStrategy(builder, RetryBackoffType.Constant, 3, TimeSpan.FromSeconds(2));
-        },
-        builder =>
-        {
-            builder.AddRetry(retry => retry.HandleResult(10), RetryBackoffType.Linear);
-            AssertStrategy(builder, RetryBackoffType.Linear, 3, TimeSpan.FromSeconds(2));
-        },
-        builder =>
-        {
             builder.AddRetry(retry => retry.HandleResult(10), RetryBackoffType.Linear, 2, TimeSpan.FromSeconds(1));
             AssertStrategy(builder, RetryBackoffType.Linear, 2, TimeSpan.FromSeconds(1));
-        },
-        builder =>
-        {
-            builder.AddRetry(retry => retry.HandleResult(10), attempt => TimeSpan.FromMilliseconds(attempt));
-
-            AssertStrategy(builder, RetryBackoffType.Constant, 3, TimeSpan.FromSeconds(2), strategy =>
-            {
-                var args = new RetryDelayArguments(8, TimeSpan.Zero);
-                var context = ResilienceContext.Get().Initialize<int>(true);
-
-                strategy.DelayGenerator!.HandleAsync<int>(new(context, new Outcome<int>(new InvalidOperationException()), args)).Result.Should().Be(TimeSpan.FromMilliseconds(8));
-            });
         },
         builder =>
         {

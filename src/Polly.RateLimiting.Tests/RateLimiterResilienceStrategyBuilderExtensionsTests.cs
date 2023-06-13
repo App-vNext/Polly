@@ -26,30 +26,8 @@ public class RateLimiterResilienceStrategyBuilderExtensionsTests
         },
         builder =>
         {
-            var called = false;
-
-            builder.AddConcurrencyLimiter(
-                new ConcurrencyLimiterOptions
-                {
-                    PermitLimit = 2,
-                    QueueLimit = 2
-                },
-                args => called = true);
-
-            AssertConcurrencyLimiter(builder, hasEvents: true);
-            called.Should().BeTrue();
-        },
-        builder =>
-        {
             builder.AddRateLimiter(Mock.Of<RateLimiter>());
             AssertRateLimiter(builder, hasEvents: false);
-        },
-        builder =>
-        {
-            var called = false;
-            builder.AddRateLimiter(Mock.Of<RateLimiter>(), args => called = true);
-            AssertRateLimiter(builder, hasEvents: true);
-            called.Should().BeTrue();
         }
     };
 
