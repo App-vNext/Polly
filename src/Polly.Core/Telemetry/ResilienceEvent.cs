@@ -4,6 +4,9 @@ namespace Polly.Telemetry;
 /// Represents a resilience event that has been reported.
 /// </summary>
 /// <param name="EventName">The event name.</param>
+/// <remarks>
+/// Always use the constructor when creating this struct, otherwise we do not guarantee binary compatibility.
+/// </remarks>
 public readonly record struct ResilienceEvent(string EventName)
 {
     /// <summary>

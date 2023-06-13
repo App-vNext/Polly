@@ -7,6 +7,9 @@ namespace Polly
     /// </summary>
     /// <typeparam name="TResult">The type of the result returned by the resilience operation or event.</typeparam>
     /// <typeparam name="TArgs">The type of the additional arguments associated with the specific resilience operation or event.</typeparam>
+    /// <remarks>
+    /// Always use the constructor when creating this struct, otherwise we do not guarantee binary compatibility.
+    /// </remarks>
     public readonly struct OutcomeArguments<TResult, TArgs>
 #pragma warning restore CA1815 // Override equals and operator equals on value types
     {
