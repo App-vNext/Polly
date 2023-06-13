@@ -10,7 +10,7 @@ namespace Polly.Core.Tests.Hedging.Controller;
 public class HedgingExecutionContextTests : IDisposable
 {
     private const string Handled = "Handled";
-    private static readonly TimeSpan AssertTimeout = TimeSpan.FromSeconds(5);
+    private static readonly TimeSpan _assertTimeout = TimeSpan.FromSeconds(5);
     private readonly ResiliencePropertyKey<string> _myKey = new("my-key");
     private readonly CancellationTokenSource _cts;
     private readonly HedgingTimeProvider _timeProvider;
@@ -390,8 +390,8 @@ public class HedgingExecutionContextTests : IDisposable
 
         await pending;
 
-        assertPrimary.WaitOne(AssertTimeout).Should().BeTrue();
-        assertSecondary.WaitOne(AssertTimeout).Should().BeTrue();
+        assertPrimary.WaitOne(_assertTimeout).Should().BeTrue();
+        assertSecondary.WaitOne(_assertTimeout).Should().BeTrue();
     }
 
     [Fact]
@@ -408,7 +408,7 @@ public class HedgingExecutionContextTests : IDisposable
         context.LoadedTasks.Should().Be(0);
         context.Snapshot.Context.Should().BeNull();
 
-        _onReset.WaitOne(AssertTimeout);
+        _onReset.WaitOne(_assertTimeout);
         _resets.Count.Should().Be(1);
         _returnedExecutions.Count.Should().Be(2);
     }

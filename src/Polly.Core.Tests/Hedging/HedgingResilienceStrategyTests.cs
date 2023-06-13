@@ -13,8 +13,8 @@ public class HedgingResilienceStrategyTests : IDisposable
 
     private const string Failure = "Failure";
 
-    private static readonly TimeSpan LongDelay = TimeSpan.FromDays(1);
-    private static readonly TimeSpan AssertTimeout = TimeSpan.FromSeconds(15);
+    private static readonly TimeSpan _longDelay = TimeSpan.FromDays(1);
+    private static readonly TimeSpan _assertTimeout = TimeSpan.FromSeconds(15);
 
     private readonly HedgingStrategyOptions _options = new();
     private readonly List<TelemetryEventArguments> _events = new();
@@ -134,7 +134,7 @@ public class HedgingResilienceStrategyTests : IDisposable
             try
             {
                 _testOutput.WriteLine("Hedged task executing...");
-                await Task.Delay(LongDelay, context.CancellationToken);
+                await Task.Delay(_longDelay, context.CancellationToken);
                 _testOutput.WriteLine("Hedged task executing...done (not-cancelled)");
             }
             catch (OperationCanceledException)
@@ -168,7 +168,7 @@ public class HedgingResilienceStrategyTests : IDisposable
 
         _timeProvider.Advance(TimeSpan.FromHours(1));
         (await result).Should().Be(Success);
-        cancelled.WaitOne(AssertTimeout).Should().BeTrue();
+        cancelled.WaitOne(_assertTimeout).Should().BeTrue();
     }
 
     [Fact]
@@ -226,13 +226,13 @@ public class HedgingResilienceStrategyTests : IDisposable
         var result = await strategy.ExecuteAsync(async token =>
         {
 #pragma warning disable CA2016 // Forward the 'CancellationToken' parameter to methods
-            await _timeProvider.Delay(LongDelay);
+            await _timeProvider.Delay(_longDelay);
 #pragma warning restore CA2016 // Forward the 'CancellationToken' parameter to methods
             return primaryResult;
         });
 
         // assert
-        _timeProvider.Advance(LongDelay);
+        _timeProvider.Advance(_longDelay);
 
         await primaryResult.WaitForDisposalAsync();
         primaryResult.IsDisposed.Should().BeTrue();
@@ -277,7 +277,7 @@ public class HedgingResilienceStrategyTests : IDisposable
                 context.Properties.GetValue(beforeKey, "wrong").Should().Be("before");
                 context.Should().Be(primaryContext);
                 contexts.Add(context);
-                await _timeProvider.Delay(LongDelay, context.CancellationToken);
+                await _timeProvider.Delay(_longDelay, context.CancellationToken);
                 return "primary";
             },
             primaryContext,
@@ -286,7 +286,7 @@ public class HedgingResilienceStrategyTests : IDisposable
         // assert
         contexts.Should().HaveCountGreaterThan(1);
         contexts.Count.Should().Be(contexts.Distinct().Count());
-        _timeProvider.Advance(LongDelay);
+        _timeProvider.Advance(_longDelay);
         tokenHashCodes.Distinct().Should().HaveCountGreaterThan(1);
     }
 
@@ -501,8 +501,8 @@ public class HedgingResilienceStrategyTests : IDisposable
         _timeProvider.Advance(TimeSpan.FromHours(1));
         await task.Invoking(async t => await t).Should().ThrowAsync<OperationCanceledException>();
 
-        primaryCancelled.WaitOne(AssertTimeout).Should().BeTrue();
-        secondaryCancelled.WaitOne(AssertTimeout).Should().BeTrue();
+        primaryCancelled.WaitOne(_assertTimeout).Should().BeTrue();
+        secondaryCancelled.WaitOne(_assertTimeout).Should().BeTrue();
     }
 
     [Fact]
@@ -556,8 +556,8 @@ public class HedgingResilienceStrategyTests : IDisposable
         var task = Create().ExecuteAsync(async c => (await Execute(c)).Result, default);
 
         // assert
-        Assert.True(allExecutionsReached.WaitOne(AssertTimeout));
-        _timeProvider.Advance(LongDelay);
+        Assert.True(allExecutionsReached.WaitOne(_assertTimeout));
+        _timeProvider.Advance(_longDelay);
         await task;
 
         async ValueTask<Outcome<string>> Execute(CancellationToken token)
@@ -567,7 +567,7 @@ public class HedgingResilienceStrategyTests : IDisposable
                 allExecutionsReached.Set();
             }
 
-            await _timeProvider.Delay(LongDelay, token);
+            await _timeProvider.Delay(_longDelay, token);
             return Success.AsOutcome();
         }
     }
@@ -585,7 +585,7 @@ public class HedgingResilienceStrategyTests : IDisposable
         var pending = Create().ExecuteAsync(Execute, _cts.Token);
 
         // assert
-        Assert.True(allExecutions.WaitOne(AssertTimeout));
+        Assert.True(allExecutions.WaitOne(_assertTimeout));
 
         async ValueTask<Outcome<string>> Execute(CancellationToken token)
         {
@@ -602,7 +602,7 @@ public class HedgingResilienceStrategyTests : IDisposable
                     allExecutions.Set();
                 }
 
-                await _timeProvider.Delay(LongDelay, token);
+                await _timeProvider.Delay(_longDelay, token);
 
                 return "dummy".AsOutcome();
             }

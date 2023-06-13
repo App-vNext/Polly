@@ -39,14 +39,15 @@ internal struct TimedLock : IDisposable
 
         return tl;
     }
-
+#if DEBUG
     private TimedLock(object o)
     {
         target = o;
-#if DEBUG
         leakDetector = new Sentinel();
-#endif
     }
+#else
+    private TimedLock(object o) => target = o;
+#endif
     private object target;
 
     public void Dispose()

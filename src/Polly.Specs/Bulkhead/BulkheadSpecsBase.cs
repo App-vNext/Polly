@@ -366,10 +366,10 @@ public abstract class BulkheadSpecsBase : IDisposable
 
         TestOutputHelper.WriteLine(string.Empty);
     }
-
+#if DEBUG
     private void ShowTestOutput() =>
         ((AnnotatedOutputHelper)TestOutputHelper).Flush();
-
+#endif
     #endregion
 
     public void Dispose()
