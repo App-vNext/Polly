@@ -1,9 +1,4 @@
 <Project>
-
-  <PropertyGroup>
-    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
-  </PropertyGroup>
-
   <ItemGroup>
     <Using Include="System.Collections" />
     <Using Include="System.Collections.Concurrent" />

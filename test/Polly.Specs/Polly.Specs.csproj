@@ -15,6 +15,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Polly.TestUtils\Polly.TestUtils.csproj" />
-    <ProjectReference Include="..\Polly\Polly.csproj" />
+    <ProjectReference Include="..\..\src\Polly\Polly.csproj" />
   </ItemGroup>
 </Project>

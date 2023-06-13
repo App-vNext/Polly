@@ -10,6 +10,6 @@
     <PackageReference Include="Microsoft.Extensions.Caching.Memory" />
   </ItemGroup>
   <ItemGroup Condition=" '$(BenchmarkFromNuGet)' != 'True' ">
-    <ProjectReference Include="..\Polly\Polly.csproj" />
+    <ProjectReference Include="..\..\src\Polly\Polly.csproj" />
   </ItemGroup>
 </Project>

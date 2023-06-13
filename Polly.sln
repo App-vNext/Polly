@@ -6,48 +6,54 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{79FE9DBE-1155-4F78-A41F-FE95DEFA19DD}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
-		..\eng\Analyzers.targets = ..\eng\Analyzers.targets
-		..\build.cake = ..\build.cake
-		..\.github\workflows\build.yml = ..\.github\workflows\build.yml
-		..\.github\dependabot.yml = ..\.github\dependabot.yml
+		eng\Analyzers.targets = eng\Analyzers.targets
+		build.cake = build.cake
+		.github\workflows\build.yml = .github\workflows\build.yml
+		.github\dependabot.yml = .github\dependabot.yml
 		Directory.Build.props = Directory.Build.props
 		Directory.Build.targets = Directory.Build.targets
 		Directory.Packages.props = Directory.Packages.props
-		..\GitVersion.yml = ..\GitVersion.yml
-		..\global.json = ..\global.json
-		..\README.md = ..\README.md
-		..\Version.props = ..\Version.props
+		GitVersion.yml = GitVersion.yml
+		global.json = global.json
+		README.md = README.md
+		Version.props = Version.props
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polly", "Polly\Polly.csproj", "{E273E6D8-87D4-4EC9-A2BE-734DD633EF15}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polly", "src\Polly\Polly.csproj", "{E273E6D8-87D4-4EC9-A2BE-734DD633EF15}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polly.Specs", "Polly.Specs\Polly.Specs.csproj", "{F771DF22-5684-43DF-B574-D76C35202AF4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polly.Specs", "test\Polly.Specs\Polly.Specs.csproj", "{F771DF22-5684-43DF-B574-D76C35202AF4}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polly.Benchmarks", "Polly.Benchmarks\Polly.Benchmarks.csproj", "{BED2624C-E418-4177-8696-0242363FFD43}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polly.Benchmarks", "bench\Polly.Benchmarks\Polly.Benchmarks.csproj", "{BED2624C-E418-4177-8696-0242363FFD43}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polly.Core", "Polly.Core\Polly.Core.csproj", "{E3831CE2-795D-4979-BB48-1C88CBF66651}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polly.Core", "src\Polly.Core\Polly.Core.csproj", "{E3831CE2-795D-4979-BB48-1C88CBF66651}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polly.Core.Tests", "Polly.Core.Tests\Polly.Core.Tests.csproj", "{AF1383E7-BABF-492A-91C8-F2789AE7B3B4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polly.Core.Tests", "test\Polly.Core.Tests\Polly.Core.Tests.csproj", "{AF1383E7-BABF-492A-91C8-F2789AE7B3B4}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "eng", "eng", "{04E3C7C5-31F7-4CD6-8BEC-C1032527D231}"
 	ProjectSection(SolutionItems) = preProject
-		..\eng\Analyzers.targets = ..\eng\Analyzers.targets
-		..\eng\Common.targets = ..\eng\Common.targets
-		..\eng\Library.targets = ..\eng\Library.targets
-		..\eng\Test.targets = ..\eng\Test.targets
+		eng\Analyzers.targets = eng\Analyzers.targets
+		eng\Common.targets = eng\Common.targets
+		eng\Library.targets = eng\Library.targets
+		eng\Test.targets = eng\Test.targets
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polly.Core.Benchmarks", "Polly.Core.Benchmarks\Polly.Core.Benchmarks.csproj", "{CC306C35-E3BC-4F0B-AB8C-B9D4C82DC3DE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polly.Core.Benchmarks", "bench\Polly.Core.Benchmarks\Polly.Core.Benchmarks.csproj", "{CC306C35-E3BC-4F0B-AB8C-B9D4C82DC3DE}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polly.Extensions", "Polly.Extensions\Polly.Extensions.csproj", "{F2FDE6BF-DA86-4DDE-A55C-E2A064CD30D8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polly.Extensions", "src\Polly.Extensions\Polly.Extensions.csproj", "{F2FDE6BF-DA86-4DDE-A55C-E2A064CD30D8}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polly.Extensions.Tests", "Polly.Extensions.Tests\Polly.Extensions.Tests.csproj", "{BB2843CA-B518-48A1-BAD9-B63238F21608}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polly.Extensions.Tests", "test\Polly.Extensions.Tests\Polly.Extensions.Tests.csproj", "{BB2843CA-B518-48A1-BAD9-B63238F21608}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polly.RateLimiting", "Polly.RateLimiting\Polly.RateLimiting.csproj", "{BCA09595-A4D3-4D74-AC80-3E7017E51B24}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polly.RateLimiting", "src\Polly.RateLimiting\Polly.RateLimiting.csproj", "{BCA09595-A4D3-4D74-AC80-3E7017E51B24}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polly.RateLimiting.Tests", "Polly.RateLimiting.Tests\Polly.RateLimiting.Tests.csproj", "{06070F42-6738-4D0B-8D7E-9400B4030193}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polly.RateLimiting.Tests", "test\Polly.RateLimiting.Tests\Polly.RateLimiting.Tests.csproj", "{06070F42-6738-4D0B-8D7E-9400B4030193}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polly.TestUtils", "Polly.TestUtils\Polly.TestUtils.csproj", "{C04DEE61-C1EA-4028-B457-CDBD304B8ED9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polly.TestUtils", "test\Polly.TestUtils\Polly.TestUtils.csproj", "{C04DEE61-C1EA-4028-B457-CDBD304B8ED9}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "bench", "bench", "{71C259E7-08A4-4A91-AA8C-ECE726893507}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{A6CC41B9-E0B9-44F8-916B-3E4A78DA3BFB}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{B7BF406B-B06F-4025-83E6-7219C53196A6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -104,7 +110,18 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
+		{E273E6D8-87D4-4EC9-A2BE-734DD633EF15} = {B7BF406B-B06F-4025-83E6-7219C53196A6}
+		{F771DF22-5684-43DF-B574-D76C35202AF4} = {A6CC41B9-E0B9-44F8-916B-3E4A78DA3BFB}
+		{BED2624C-E418-4177-8696-0242363FFD43} = {71C259E7-08A4-4A91-AA8C-ECE726893507}
+		{E3831CE2-795D-4979-BB48-1C88CBF66651} = {B7BF406B-B06F-4025-83E6-7219C53196A6}
+		{AF1383E7-BABF-492A-91C8-F2789AE7B3B4} = {A6CC41B9-E0B9-44F8-916B-3E4A78DA3BFB}
 		{04E3C7C5-31F7-4CD6-8BEC-C1032527D231} = {79FE9DBE-1155-4F78-A41F-FE95DEFA19DD}
+		{CC306C35-E3BC-4F0B-AB8C-B9D4C82DC3DE} = {71C259E7-08A4-4A91-AA8C-ECE726893507}
+		{F2FDE6BF-DA86-4DDE-A55C-E2A064CD30D8} = {B7BF406B-B06F-4025-83E6-7219C53196A6}
+		{BB2843CA-B518-48A1-BAD9-B63238F21608} = {A6CC41B9-E0B9-44F8-916B-3E4A78DA3BFB}
+		{BCA09595-A4D3-4D74-AC80-3E7017E51B24} = {B7BF406B-B06F-4025-83E6-7219C53196A6}
+		{06070F42-6738-4D0B-8D7E-9400B4030193} = {A6CC41B9-E0B9-44F8-916B-3E4A78DA3BFB}
+		{C04DEE61-C1EA-4028-B457-CDBD304B8ED9} = {A6CC41B9-E0B9-44F8-916B-3E4A78DA3BFB}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2E5D54CD-770A-4345-B585-1848FC2EA6F4}

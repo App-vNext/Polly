@@ -2,16 +2,18 @@
   <PropertyGroup>
     <TargetFrameworks>net7.0;net6.0</TargetFrameworks>
     <TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('Windows'))">$(TargetFrameworks);net481</TargetFrameworks>
-    <ProjectType>Test</ProjectType>
+    <ProjectType>Library</ProjectType>
     <UseDefaultAnalyzers>true</UseDefaultAnalyzers>
     <Nullable>enable</Nullable>
     <SkipPollyUsings>true</SkipPollyUsings>
-    <Threshold>100</Threshold>
-    <NoWarn>$(NoWarn);SA1600;SA1204</NoWarn>
-    <Include>[Polly.RateLimiting]*</Include>
+    <NoWarn>$(NoWarn);SA1600;SA1204;SA1602;CA1062</NoWarn>
+    <IsPackable>false</IsPackable>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Polly.RateLimiting\Polly.RateLimiting.csproj" />
+    <Using Remove="System.Net.Http" />
+    <ProjectReference Include="..\..\src\Polly.Core\Polly.Core.csproj" />
+    <PackageReference Include="Moq" />
+    <PackageReference Include="Microsoft.Extensions.Logging" />
   </ItemGroup>
 </Project>

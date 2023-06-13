@@ -19,7 +19,7 @@
 
   <ItemGroup>
     <Using Include="Polly.TestUtils" />
-    <ProjectReference Include="..\Polly.Extensions\Polly.Extensions.csproj" />
+    <ProjectReference Include="..\..\src\Polly.Extensions\Polly.Extensions.csproj" />
     <ProjectReference Include="..\Polly.TestUtils\Polly.TestUtils.csproj" />
     <PackageReference Include="Microsoft.Extensions.Configuration" />
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" />

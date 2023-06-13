@@ -12,10 +12,10 @@
 
   <ItemGroup>
     <Using Include="Polly.Core.Benchmarks.Utils" />
-    <ProjectReference Include="..\Polly.Core\Polly.Core.csproj" />
-    <ProjectReference Include="..\Polly.Extensions\Polly.Extensions.csproj" />
-    <ProjectReference Include="..\Polly.RateLimiting\Polly.RateLimiting.csproj" />
-    <ProjectReference Include="..\Polly\Polly.csproj" />
+    <ProjectReference Include="..\..\src\Polly.Core\Polly.Core.csproj" />
+    <ProjectReference Include="..\..\src\Polly.Extensions\Polly.Extensions.csproj" />
+    <ProjectReference Include="..\..\src\Polly.RateLimiting\Polly.RateLimiting.csproj" />
+    <ProjectReference Include="..\..\src\Polly\Polly.csproj" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
   </ItemGroup>
 

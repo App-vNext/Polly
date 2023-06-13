@@ -1,3 +1,3 @@
 {
-  "dotnet.defaultSolution": "src\\Polly.sln"
+  "dotnet.defaultSolution": "Polly.sln"
 }
