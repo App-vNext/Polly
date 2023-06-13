@@ -9,6 +9,9 @@ namespace Polly;
 /// Represents the outcome of an operation which could be a result of type <typeparamref name="TResult"/> or an exception.
 /// </summary>
 /// <typeparam name="TResult">The result type of the operation.</typeparam>
+/// <remarks>
+/// Always use constructor when creating this struct, otherwise we do not guarantee the binary compatibility.
+/// </remarks>
 public readonly struct Outcome<TResult>
 {
     /// <summary>

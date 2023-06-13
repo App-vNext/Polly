@@ -5,4 +5,9 @@ namespace Polly.Retry;
 /// </summary>
 /// <param name="Attempt">The zero-based attempt number. The first attempt is 0, the second attempt is 1, and so on.</param>
 /// <param name="RetryDelay">The delay before the next retry.</param>
-public readonly record struct OnRetryArguments(int Attempt, TimeSpan RetryDelay);
+/// <remarks>
+/// Always use constructor when creating this struct, otherwise we do not guarantee the binary compatibility.
+/// </remarks>
+public readonly record struct OnRetryArguments(int Attempt, TimeSpan RetryDelay)
+{
+}
