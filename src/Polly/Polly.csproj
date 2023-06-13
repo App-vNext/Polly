@@ -2,11 +2,6 @@
 
   <PropertyGroup>
     <TargetFrameworks>netstandard1.1;netstandard2.0;net461;net472</TargetFrameworks>
-    <Version>7.2.4</Version>
-    <AssemblyVersion>7.0.0.0</AssemblyVersion>
-    <FileVersion>7.2.4.0</FileVersion>
-    <InformationalVersion>7.2.4.0</InformationalVersion>
-    <PackageVersion>7.2.4</PackageVersion>
     <Company>App vNext</Company>
     <Copyright>Copyright (c) $([System.DateTime]::Now.ToString(yyyy)), App vNext</Copyright>
     <Description>Polly is a library that allows developers to express resilience and transient fault handling policies such as Retry, Circuit Breaker, Timeout, Bulkhead Isolation, and Fallback in a fluent and thread-safe manner.</Description>
@@ -40,11 +35,34 @@
   </ItemGroup>
   <PropertyGroup Label="NuspecProperties">
     <PackageIcon>Polly.png</PackageIcon>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
     <NeutralLanguage>en-US</NeutralLanguage>
     <AssemblyTitle>Polly</AssemblyTitle>
     <PackageLicenseExpression>BSD-3-Clause</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/App-vNext/Polly</PackageProjectUrl>
     <PackageTags>Exception Handling Resilience Transient Fault Policy Circuit Breaker CircuitBreaker Retry Wait Cache Cache-aside Bulkhead Rate-limit Fallback Timeout Throttle Parallelization</PackageTags>
-    <PackageReleaseNotes>See https://github.com/App-vNext/Polly/blob/master/CHANGELOG.md for details</PackageReleaseNotes>
+    <PackageReleaseNotes>See https://github.com/App-vNext/Polly/blob/main/CHANGELOG.md for details</PackageReleaseNotes>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="$(MsBuildThisFileDirectory)..\..\$(PackageIcon)" Pack="true" PackagePath="" />
+    <None Include="$(MsBuildThisFileDirectory)..\..\$(PackageReadmeFile)" Pack="true" PackagePath="" />
+  </ItemGroup>
+
+  <ItemGroup Label="MinVer">
+    <PackageReference Include="MinVer" Version="4.3.0" PrivateAssets="All" />
+  </ItemGroup>
+
+  <PropertyGroup Label="MinVer">
+    <MinVerMinimumMajorMinor>7.2</MinVerMinimumMajorMinor>
+  </PropertyGroup>
+
+  <Target Name="CustomizeVersions" AfterTargets="MinVer" Condition="'$(GITHUB_ACTIONS)' == 'true'">
+    <PropertyGroup>
+      <FileVersion>$(MinVerMajor).$(MinVerMinor).$(MinVerPatch).$(GITHUB_RUN_NUMBER)</FileVersion>
+    </PropertyGroup>
+    <PropertyGroup Condition="$(GITHUB_REF.StartsWith(`refs/pull/`))">
+      <PackageVersion>$(MinVerMajor).$(MinVerMinor).$(MinVerPatch)-pr.$(GITHUB_REF_NAME.Replace(`/merge`, ``)).$(GITHUB_RUN_NUMBER)</PackageVersion>
+    </PropertyGroup>
+  </Target>
 </Project>

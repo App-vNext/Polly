@@ -2,13 +2,13 @@
 
 ### The issue or feature being addressed
 
-<!-- Please include the existing github issue number where relevant -->
+<!-- Please include the existing GitHub issue number where relevant -->
 
 ### Details on the issue fix or feature implementation
 
 ### Confirm the following
 
-- [ ]  I started this PR by branching from the head of the latest dev vX.Y branch, or I have rebased on the latest dev vX.Y branch, or I have merged the latest changes from the dev vX.Y branch
-- [ ]  I have targeted the PR to merge into the latest dev vX.Y branch as the base branch
+- [ ]  I started this PR by branching from the head of the default branch
+- [ ]  I have targeted the PR to merge into the default branch
 - [ ]  I have included unit tests for the issue/feature
 - [ ]  I have successfully run a local build

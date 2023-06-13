@@ -4,7 +4,6 @@ VisualStudioVersion = 16.0.28705.295
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{79FE9DBE-1155-4F78-A41F-FE95DEFA19DD}"
 	ProjectSection(SolutionItems) = preProject
-		..\appveyor.yml = ..\appveyor.yml
 		..\build.cake = ..\build.cake
 		Directory.Build.props = Directory.Build.props
 		..\GitVersionConfig.yaml = ..\GitVersionConfig.yaml
