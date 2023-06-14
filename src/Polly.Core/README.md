@@ -136,7 +136,7 @@ This API exposes the following builders:
 
 - [ResilienceStrategyBuilder](ResilienceStrategyBuilder.cs): Used to create resilience strategies that can execute all types of callbacks. In general, these strategies only handle exceptions. 
 - [ResilienceStrategyBuilder<T>](ResilienceStrategyBuilder.TResult.cs): Used to create generic resilience strategies that can only execute callbacks that return the same result type.
-- [ResilienceStrategyBuilderBase](ResilienceStrategyBuilderBase.cs): The base class for both builders above. You can use is as a target for strategy extension that work for both builders above.  
+- [ResilienceStrategyBuilderBase](ResilienceStrategyBuilderBase.cs): The base class for both builders above. You can use it as a target for strategy extensions that work for both builders above.  
 
 To create a strategy or pipeline of strategies you chain various extensions for `ResilienceStrategyBuilder` followed by the `Build` call:
 
