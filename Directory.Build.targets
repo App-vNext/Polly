@@ -1,0 +1,26 @@
+<Project>
+  <Import Project="$(MsBuildThisFileDirectory)eng/Common.targets" />
+  <Import Project="$(MsBuildThisFileDirectory)eng/$(ProjectType).targets" Condition="$(ProjectType) != ''" />
+
+  <ItemGroup>
+    <Using Include="System.Collections" />
+    <Using Include="System.Collections.Concurrent" />
+    <Using Include="System.Diagnostics" />
+    <Using Include="System.Reflection" />
+    <Using Remove="System.Net.Http" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(IncludePollyUsings)' == 'true'">
+    <Using Include="Polly.Bulkhead" />
+    <Using Include="Polly.Caching" />
+    <Using Include="Polly.CircuitBreaker" />
+    <Using Include="Polly.Fallback" />
+    <Using Include="Polly.NoOp" />
+    <Using Include="Polly.RateLimit" />
+    <Using Include="Polly.Registry" />
+    <Using Include="Polly.Retry" />
+    <Using Include="Polly.Timeout" />
+    <Using Include="Polly.Utilities" />
+    <Using Include="Polly.Wrap" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFrameworks>net7.0</TargetFrameworks>
+    <ImplicitUsings>true</ImplicitUsings>
+    <ProjectType>Benchmark</ProjectType>
+    <Nullable>enable</Nullable>
+    <OutputType>Exe</OutputType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Using Include="Polly.Core.Benchmarks" />
+    <Using Include="Polly.Core.Benchmarks.Utils" />
+    <ProjectReference Include="..\..\src\Polly.Core\Polly.Core.csproj" />
+    <ProjectReference Include="..\..\src\Polly.Extensions\Polly.Extensions.csproj" />
+    <ProjectReference Include="..\..\src\Polly.RateLimiting\Polly.RateLimiting.csproj" />
+    <ProjectReference Include="..\..\src\Polly\Polly.csproj" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
+  </ItemGroup>
+</Project>

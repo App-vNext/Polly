@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFrameworks>net7.0;net6.0</TargetFrameworks>
+    <TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('Windows'))">$(TargetFrameworks);net481</TargetFrameworks>
+    <ProjectType>Test</ProjectType>
+    <Nullable>enable</Nullable>
+    <Threshold>100</Threshold>
+    <NoWarn>$(NoWarn);SA1600;SA1204;S6608</NoWarn>
+    <Include>[Polly.Extensions]*</Include>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="..\Polly.Core.Tests\Helpers\FakeTimeProvider.cs" Link="Utils\FakeTimeProvider.cs" />
+    <Compile Include="..\Polly.Core.Tests\Utils\ObjectPoolTests.cs" Link="Utils\ObjectPoolTests.cs" />
+    <Compile Include="..\Polly.Core.Tests\Utils\SystemTimeProviderTests.cs" Link="Utils\SystemTimeProviderTests.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="Polly.TestUtils" />
+    <ProjectReference Include="..\..\src\Polly.Extensions\Polly.Extensions.csproj" />
+    <ProjectReference Include="..\Polly.TestUtils\Polly.TestUtils.csproj" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" />
+    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" />
+  </ItemGroup>
+</Project>

@@ -1,6 +1,6 @@
 <Project>
   <PropertyGroup>
-    <AssemblyOriginatorKeyFile>..\Polly.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>$(MSBuildThisFileDirectory)..\Polly.snk</AssemblyOriginatorKeyFile>
     <SignAssembly>true</SignAssembly>
     <LangVersion>latest</LangVersion>
     <ImplicitUsings>enable</ImplicitUsings>

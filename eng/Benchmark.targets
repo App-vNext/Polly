@@ -1,7 +1,17 @@
 <Project>
+  <PropertyGroup>
+    <NoWarn>$(NoWarn);SA1600</NoWarn>
+    <IncludePollyUsings>true</IncludePollyUsings>
+  </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="BenchmarkDotNet" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Using Include="BenchmarkDotNet.Attributes" />
+    <Using Include="BenchmarkDotNet.Configs" />
+    <Using Include="BenchmarkDotNet.Jobs" />
+    <Using Include="BenchmarkDotNet.Running" />
+  </ItemGroup>
 </Project>

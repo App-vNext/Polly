@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFrameworks>net7.0;net6.0</TargetFrameworks>
+    <TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('Windows'))">$(TargetFrameworks);net481</TargetFrameworks>
+    <ProjectType>Test</ProjectType>
+    <Nullable>enable</Nullable>
+    <Threshold>100</Threshold>
+    <NoWarn>$(NoWarn);SA1600;SA1204;SA1602;S6608</NoWarn>
+    <Include>[Polly.Core]*</Include>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Polly.Contrib.WaitAndRetry" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Polly.Core\Polly.Core.csproj" />
+    <ProjectReference Include="..\Polly.TestUtils\Polly.TestUtils.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="Polly.TestUtils" />
+    <Using Include="Polly.Core.Tests.Helpers" />
+  </ItemGroup>
+</Project>
