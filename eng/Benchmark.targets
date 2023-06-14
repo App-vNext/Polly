@@ -14,5 +14,4 @@
     <Using Include="BenchmarkDotNet.Jobs" />
     <Using Include="BenchmarkDotNet.Running" />
   </ItemGroup>
-
 </Project>

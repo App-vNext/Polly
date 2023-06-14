@@ -113,7 +113,7 @@ Task("__BuildSolutions")
             Verbosity = DotNetVerbosity.Minimal,
             NoRestore = true,
             MSBuildSettings = new DotNetMSBuildSettings
-            {                
+            {
                 TreatAllWarningsAs = MSBuildTreatAllWarningsAs.Error,
             },
         };
