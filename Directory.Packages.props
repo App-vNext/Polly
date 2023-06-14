@@ -8,6 +8,7 @@
     <PackageVersion Include="FluentAssertions" Version="6.11.0" />
     <PackageVersion Include="GitHubActionsTestLogger" Version="2.3.2" />
     <PackageVersion Include="Microsoft.Bcl.AsyncInterfaces" Version="1.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Logging.Console" Version="7.0.0" />
     <PackageVersion Include="Microsoft.Extensions.Caching.Memory" Version="7.0.0" />
     <PackageVersion Include="Microsoft.Extensions.Configuration" Version="7.0.0" />
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
@@ -17,6 +18,7 @@
     <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="1.1.1" />
     <PackageVersion Include="MinVer" Version="4.3.0" />
     <PackageVersion Include="Moq" Version="4.18.4" />
+    <PackageVersion Include="Polly" Version="7.2.4" />
     <PackageVersion Include="Polly.Contrib.WaitAndRetry" Version="1.1.1" />
     <PackageVersion Include="ReportGenerator" Version="5.1.22" />
     <PackageVersion Include="SonarAnalyzer.CSharp" Version="9.3.0.71466" />

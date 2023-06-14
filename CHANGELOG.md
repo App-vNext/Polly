@@ -1,6 +1,11 @@
 ## 8.0.0-alpha.1
 
-- The first public preview of [Polly v8](https://github.com/App-vNext/Polly/issues/1048) with our [new high-performance core API](https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/README.md) and extensions - Thanks to:
+- The first public preview of [Polly v8](https://github.com/App-vNext/Polly/issues/1048) with our [new high-performance core API](https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/README.md) and extensions. Visit the [samples](samples/) to see Polly V8 in action.
+- Releasing [`Polly.Core`](https://nuget.org/packages/Polly.Core) NuGet package.
+- Releasing [`Polly.Extensions`](https://nuget.org/packages/Polly.Extensions) NuGet package.
+- Releasing [`Polly.RateLimiting`](https://nuget.org/packages/Polly.RateLimiting) NuGet package.
+
+Thanks to:
   - [@adamnova](https://github.com/adamnova)
   - [@andrey-noskov](https://github.com/andrey-noskov)
   - [@joelhulen](https://github.com/joelhulen)

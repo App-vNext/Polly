@@ -1,0 +1,74 @@
+﻿using Polly;
+using Polly.Retry;
+using Polly.Timeout;
+
+// ------------------------------------------------------------------------
+// 1. Create a simple resilience strategy using ResilienceStrategyBuilder
+// ------------------------------------------------------------------------
+
+// The ResilienceStrategyBuilder creates a ResilienceStrategy
+// that can be executed synchronously or asynchronously
+// and for both void and result-returning user-callbacks.
+ResilienceStrategy strategy = new ResilienceStrategyBuilder()
+    // Use convenience extension that accepts TimeSpan
+    .AddTimeout(TimeSpan.FromSeconds(5)) 
+    .Build();
+
+// ------------------------------------------------------------------------
+// 2. Execute the strategy
+// ------------------------------------------------------------------------
+
+// synchronously
+strategy.Execute(() => { });
+
+// asynchronously
+await strategy.ExecuteAsync(async token => { await Task.Yield(); }, CancellationToken.None);
+
+// synchronously with result
+strategy.Execute(token => "some-result");
+
+// asynchronously with result
+await strategy.ExecuteAsync(async token => { await Task.Yield(); return "some-result"; }, CancellationToken.None);
+
+// ------------------------------------------------------------------------
+// 3. Create and execute a pipeline of strategies
+// ------------------------------------------------------------------------
+
+strategy = new ResilienceStrategyBuilder()
+    // Add retries using the options
+    .AddRetry(new RetryStrategyOptions
+    {
+        ShouldRetry = outcome =>
+        {
+            // We want to retry on this specific exception
+            if (outcome.Exception is TimeoutRejectedException)
+            {
+                // The "PredicateResult.True" is shorthand to "new ValueTask<bool>(true)"
+                return PredicateResult.True;
+            }
+
+            return PredicateResult.False;
+        },
+        // Register user callback called whenever retry occurs
+        OnRetry = _ => { Console.WriteLine("Retrying..."); return default; },
+        BaseDelay = TimeSpan.FromMilliseconds(400),
+        BackoffType = RetryBackoffType.Constant,
+        RetryCount = 3
+    })
+    // Add timeout using the options
+    .AddTimeout(new TimeoutStrategyOptions
+    {
+        Timeout = TimeSpan.FromMilliseconds(500),
+        // Register user callback called whenever timeout occurs
+        OnTimeout = _ => { Console.WriteLine("Timeout occurred!"); return default; }
+    })
+    .Build();
+
+try
+{
+    await strategy.ExecuteAsync(async token => await Task.Delay(TimeSpan.FromSeconds(2), token), CancellationToken.None);
+}
+catch (TimeoutRejectedException)
+{
+    // ok, expected
+}
