@@ -15,7 +15,7 @@ At the heart of Polly V8 is the [ResilienceStrategy](ResilienceStrategy.cs) clas
 public abstract class ResilienceStrategy
 {
     // the main method that all the others call
-    protected virtual ValueTask<TResult> ExecuteCoreAsync<TResult, TState>(Func<ResilienceContext, TState, ValueTask<TResult>> execution, ResilienceContext context, TState state);
+    protected virtual ValueTask<Outcome<TResult>> ExecuteCoreAsync<TResult, TState>(Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> execution, ResilienceContext context, TState state);
 
     // convenience methods for various types of user-callbacks
     public void Execute(Action callback);
@@ -76,7 +76,7 @@ public void Execute(Action execute)
         strategy.ExecuteCoreAsync(static (context, state) =>
         {
             state();
-            return new ValueTask<VoidResult>(VoidResult.Instance);
+            return new ValueTask<Outcome<VoidResult>>(new(VoidResult.Instance));
         }, 
         context, 
         execute).GetAwaiter().GetResult();
@@ -109,7 +109,7 @@ internal class DelayStrategy : ResilienceStrategy
     }
 
     protected override async ValueTask<T> ExecuteCoreAsync<T, TState>(
-        Func<ResilienceContext, TState, ValueTask<T>> callback, 
+        Func<ResilienceContext, TState, ValueTask<Outcome<T>>> callback, 
         ResilienceContext context, 
         TState state)
     {
@@ -126,22 +126,17 @@ This way, the responsibility of how to execute method is lifted from the user an
 
 The life of extensibility author is also simplified as they only maintain one implementation of strategy instead of multiple ones. See the duplications in [`Polly.Retry`](https://github.com/App-vNext/Polly/tree/main/src/Polly/Retry).
 
+### Generic Resilience Strategy
+
+Polly also exposes the sealed `ResilienceStrategy<T>` strategy that is just a simple wrapper over `ResilienceStrategy`. This strategy is used for scenarios when the consumer handles the single result type.
+
 ## Creation of `ResilienceStrategy`
 
-This API exposes [ResilienceStrategyBuilder](Builder/ResilienceStrategyBuilder.cs) that can be used to create the resilience strategy:
+This API exposes the following builders:
 
-``` csharp
-public class ResilienceStrategyBuilder
-{
-    // omitted properties for simplicity
-
-    ResilienceStrategyBuilder AddStrategy(ResilienceStrategy strategy, ResilienceStrategyOptions? options = null);
-
-    ResilienceStrategyBuilder AddStrategy(Func<ResilienceStrategyBuilderContext, ResilienceStrategy> factory, ResilienceStrategyOptions? options = null);
-
-    ResilienceStrategy Build();
-}
-```
+- [ResilienceStrategyBuilder](ResilienceStrategyBuilder.cs): Used to create resilience strategies that can execute all types of callbacks. In general, these strategies only handle exceptions. 
+- [ResilienceStrategyBuilder<T>](ResilienceStrategyBuilder.TResult.cs): Used to create generic resilience strategies that can only execute callbacks that return the same result type.
+- [ResilienceStrategyBuilderBase](ResilienceStrategyBuilderBase.cs): The base class for both builders above. You can use is as a target for strategy extension that work for both builders above.  
 
 To create a strategy or pipeline of strategies you chain various extensions for `ResilienceStrategyBuilder` followed by the `Build` call:
 
@@ -164,6 +159,16 @@ var resilienceStrategy = new ResilienceStrategyBuilder()
 ## Extensibility
 
 The resilience extensibility is simple. You just expose extensions for `ResilienceStrategyBuilder` that use the `ResilienceStrategyBuilder.AddStrategy` methods.
+
+If you want to create a resilience strategy that works for both generic and non-generic builders you can use `ResilienceStrategyBuilderBase` as a target:
+
+``` csharp
+public static TBuilder AddMyStrategy<TBuilder>(this TBuilder builder)
+    where TBuilder : ResilienceStrategyBuilderBase
+{
+    return builder.AddStrategy(new MyStrategy());
+}
+```
 
 # Resilience Strategy Delegates
 
