@@ -32,7 +32,7 @@ public class TelemetryResilienceStrategyOptions
     /// Gets or sets the result formatter.
     /// </summary>
     /// <remarks>
-    /// Defaults to a formatter that returns a status code for HTTP based responses and result as-is for all other result types.
+    /// Defaults to a formatter that returns a status code for HTTP based responses and the result as-is for all other result types.
     /// <para>
     /// This property is required.
     /// </para>
