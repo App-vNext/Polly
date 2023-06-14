@@ -1,3 +1,18 @@
+## 8.0.0-alpha.1
+
+- The first public preview of [Polly v8](https://github.com/App-vNext/Polly/issues/1048) with our [new high-performance core API](https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/README.md) and extensions - Thanks to:
+  - [@adamnova](https://github.com/adamnova)
+  - [@andrey-noskov](https://github.com/andrey-noskov)
+  - [@joelhulen](https://github.com/joelhulen)
+  - [@juraj-blazek](https://github.com/juraj-blazek)
+  - [@geeknoid](https://github.com/geeknoid)
+  - [@laura-mi](https://github.com/laura-mi)
+  - [@martincostello](https://github.com/martincostello)
+  - [@martintmk](https://github.com/martintmk)
+  - [@SimonCropp](https://github.com/SimonCropp)
+  - [@tekian](https://github.com/tekian)
+  - [@terrajobst](https://github.com/terrajobst)
+
 ## 7.2.4
 
 - Fixed an incorrect exception argument - Thanks to [@FoxTes](https://github.com/FoxTes)
