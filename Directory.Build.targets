@@ -3,6 +3,10 @@
   <Import Project="$(MsBuildThisFileDirectory)eng/$(ProjectType).targets" Condition="$(ProjectType) != ''" />
 
   <ItemGroup>
+    <Using Include="System.Collections" />
+    <Using Include="System.Collections.Concurrent" />
+    <Using Include="System.Diagnostics" />
+    <Using Include="System.Reflection" />
     <Using Remove="System.Net.Http" />
   </ItemGroup>
 

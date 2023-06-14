@@ -1,8 +1,0 @@
-<Project>
-  <ItemGroup>
-    <Using Include="System.Collections" />
-    <Using Include="System.Collections.Concurrent" />
-    <Using Include="System.Diagnostics" />
-    <Using Include="System.Reflection" />
-  </ItemGroup>
-</Project>
