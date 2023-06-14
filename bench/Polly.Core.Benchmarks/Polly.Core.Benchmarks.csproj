@@ -1,5 +1,4 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <TargetFrameworks>net7.0</TargetFrameworks>
     <ImplicitUsings>true</ImplicitUsings>
@@ -7,7 +6,7 @@
     <Nullable>enable</Nullable>
     <OutputType>Exe</OutputType>
   </PropertyGroup>
-  
+
   <ItemGroup>
     <Using Include="Polly.Core.Benchmarks" />
     <Using Include="Polly.Core.Benchmarks.Utils" />
