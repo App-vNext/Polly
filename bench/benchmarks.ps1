@@ -18,7 +18,7 @@ if ($Interactive -ne $true) {
     $additionalArgs += "*"
 }
 
-$project = Join-Path "src" "Polly.Core.Benchmarks" "Polly.Core.Benchmarks.csproj"
+$project = Join-Path "Polly.Core.Benchmarks" "Polly.Core.Benchmarks.csproj"
 
 dotnet run --configuration $Configuration --framework net7.0 --project $project $additionalArgs
 
