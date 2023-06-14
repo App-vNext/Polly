@@ -12,14 +12,16 @@ internal sealed class TelemetryResilienceStrategy : ResilienceStrategy
     private readonly string? _strategyKey;
     private readonly List<Action<EnrichmentContext>> _enrichers;
     private readonly ILogger _logger;
+    private readonly Func<ResilienceContext, object?, object?> _resultFormatter;
 
     // Temporary only, until the TimeProvider is exposed
     public TelemetryResilienceStrategy(
         string builderName,
         string? strategyKey,
         ILoggerFactory loggerFactory,
+        Func<ResilienceContext, object?, object?> resultFormatter,
         List<Action<EnrichmentContext>> enrichers)
-        : this(TimeProvider.System, builderName, strategyKey, loggerFactory, enrichers)
+        : this(TimeProvider.System, builderName, strategyKey, loggerFactory, resultFormatter, enrichers)
     {
     }
 
@@ -28,11 +30,13 @@ internal sealed class TelemetryResilienceStrategy : ResilienceStrategy
         string? builderName,
         string? strategyKey,
         ILoggerFactory loggerFactory,
+        Func<ResilienceContext, object?, object?> resultFormatter,
         List<Action<EnrichmentContext>> enrichers)
     {
         _timeProvider = timeProvider;
         _builderName = builderName;
         _strategyKey = strategyKey;
+        _resultFormatter = resultFormatter;
         _enrichers = enrichers;
         _logger = loggerFactory.CreateLogger(TelemetryUtil.PollyDiagnosticSource);
         ExecutionDuration = ResilienceTelemetryDiagnosticSource.Meter.CreateHistogram<double>(
@@ -59,7 +63,7 @@ internal sealed class TelemetryResilienceStrategy : ResilienceStrategy
             _builderName,
             _strategyKey,
             context.GetResultType(),
-            ExpandOutcome(outcome),
+            ExpandOutcome(context, outcome),
             context.GetExecutionHealth(),
             duration.TotalMilliseconds,
             outcome.Exception);
@@ -85,9 +89,9 @@ internal sealed class TelemetryResilienceStrategy : ResilienceStrategy
             new Outcome<object>(outcome.Result) :
             new Outcome<object>(outcome.Exception!);
 
-    private static object? ExpandOutcome<TResult>(Outcome<TResult> outcome)
+    private object? ExpandOutcome<TResult>(ResilienceContext context, Outcome<TResult> outcome)
     {
         // stryker disable once all: no means to test this
-        return (object)outcome.Exception?.Message! ?? outcome.Result;
+        return (object)outcome.Exception?.Message! ?? _resultFormatter(context, outcome.Result);
     }
 }

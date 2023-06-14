@@ -60,6 +60,7 @@ public static class TelemetryResilienceStrategyBuilderExtensions
                 builder.BuilderName,
                 builder.Properties.GetValue(TelemetryUtil.StrategyKey, null!),
                 options.LoggerFactory,
+                options.ResultFormatter,
                 options.Enrichers.ToList());
 
             strategies.Insert(0, telemetryStrategy);

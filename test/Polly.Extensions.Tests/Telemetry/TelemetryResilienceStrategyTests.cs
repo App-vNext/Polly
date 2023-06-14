@@ -165,7 +165,8 @@ public class TelemetryResilienceStrategyTests : IDisposable
         }
     }
 
-    private TelemetryResilienceStrategy CreateStrategy() => new("my-builder", "my-key", _loggerFactory, new List<Action<EnrichmentContext>> { c => _enricher?.Invoke(c) });
+    private TelemetryResilienceStrategy CreateStrategy() => new("my-builder", "my-key", _loggerFactory, (_, r) => r, new List<Action<EnrichmentContext>> { c => _enricher?.Invoke(c) });
+
     public void Dispose()
     {
         _metering.Dispose();
