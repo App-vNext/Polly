@@ -75,7 +75,7 @@ public class RateLimiterResilienceStrategyBuilderExtensionsTests
             .Should()
             .Throw<ValidationException>()
             .WithMessage("""
-            The rate limiter strategy options are invalid.
+            The 'RateLimiterStrategyOptions' are invalid.
 
             Validation Errors:
             The RateLimiter field is required.
@@ -89,7 +89,7 @@ public class RateLimiterResilienceStrategyBuilderExtensionsTests
             .Should()
             .Throw<ValidationException>()
             .WithMessage("""
-            The rate limiter strategy options are invalid.
+            The 'RateLimiterStrategyOptions' are invalid.
 
             Validation Errors:
             The RateLimiter field is required.

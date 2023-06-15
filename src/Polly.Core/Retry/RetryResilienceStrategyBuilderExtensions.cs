@@ -78,8 +78,6 @@ public static class RetryResilienceStrategyBuilderExtensions
     private static TBuilder AddRetryCore<TBuilder, TResult>(this TBuilder builder, RetryStrategyOptions<TResult> options)
         where TBuilder : ResilienceStrategyBuilderBase
     {
-        ValidationHelper.ValidateObject(options, "The retry strategy options are invalid.");
-
         builder.AddStrategy(context =>
             new RetryResilienceStrategy(
                 options.BaseDelay,

@@ -76,8 +76,6 @@ public static class FallbackResilienceStrategyBuilderExtensions
 
     internal static void AddFallbackCore<TResult>(this ResilienceStrategyBuilderBase builder, FallbackStrategyOptions<TResult> options)
     {
-        ValidationHelper.ValidateObject(options, "The fallback strategy options are invalid.");
-
         builder.AddStrategy(context =>
         {
             var handler = new FallbackHandler<TResult>(

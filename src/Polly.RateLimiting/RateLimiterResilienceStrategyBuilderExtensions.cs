@@ -98,8 +98,6 @@ public static class RateLimiterResilienceStrategyBuilderExtensions
         Guard.NotNull(builder);
         Guard.NotNull(options);
 
-        ValidationHelper.ValidateObject(options, "The rate limiter strategy options are invalid.");
-
         builder.AddStrategy(context => new RateLimiterResilienceStrategy(options.RateLimiter!, options.OnRejected, context.Telemetry), options);
         return builder;
     }

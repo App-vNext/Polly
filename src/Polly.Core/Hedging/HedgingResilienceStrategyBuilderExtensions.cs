@@ -46,8 +46,6 @@ public static class HedgingResilienceStrategyBuilderExtensions
 
     internal static void AddHedgingCore<TResult>(this ResilienceStrategyBuilderBase builder, HedgingStrategyOptions<TResult> options)
     {
-        ValidationHelper.ValidateObject(options, "The hedging strategy options are invalid.");
-
         builder.AddStrategy(context =>
         {
             var handler = new HedgingHandler<TResult>(

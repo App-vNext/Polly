@@ -85,7 +85,7 @@ public abstract class ResilienceStrategyBuilderBase
         Guard.NotNull(factory);
         Guard.NotNull(options);
 
-        ValidationHelper.ValidateObject(options, $"The '{nameof(ResilienceStrategyOptions)}' options are not valid.");
+        ValidationHelper.ValidateObject(options, $"The '{TypeNameFormatter.Format(options.GetType())}' are invalid.");
 
         if (_used)
         {
