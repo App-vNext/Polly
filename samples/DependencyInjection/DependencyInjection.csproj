@@ -10,11 +10,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Logging.Console" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\..\src\Polly.Core\Polly.Core.csproj" />
-    <ProjectReference Include="..\..\src\Polly.Extensions\Polly.Extensions.csproj" />
+    <PackageReference Include="Polly.Extensions" />
   </ItemGroup>
 
 </Project>
