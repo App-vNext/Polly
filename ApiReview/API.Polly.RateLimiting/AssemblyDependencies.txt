@@ -1,0 +1,9 @@
+Polly.Core
+System.Collections
+System.ComponentModel.Annotations
+System.Private.CoreLib
+System.Private.Uri
+System.Runtime
+System.Runtime.CompilerServices.Unsafe
+System.Runtime.InteropServices
+System.Threading.RateLimiting
