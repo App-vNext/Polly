@@ -100,6 +100,7 @@ internal static class Log
 
     private static readonly Action<ILogger, string?, string?, string, object?, string, double, Exception?> StrategyExecutedActionWarning =
         LoggerMessage.Define<string?, string?, string, object?, string, double>(LogLevel.Warning, new EventId(2, "StrategyExecuted"), StrategyExecutedMessage);
+
     public static void StrategyExecuted(
         this ILogger logger,
         LogLevel logLevel,
