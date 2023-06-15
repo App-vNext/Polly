@@ -181,7 +181,7 @@ The RequiredProperty field is required.
             .Throw<ValidationException>()
             .WithMessage(
 """
-The 'ResilienceStrategyOptions' options are not valid.
+The 'InvalidResilienceStrategyOptions' are invalid.
 
 Validation Errors:
 The RequiredProperty field is required.

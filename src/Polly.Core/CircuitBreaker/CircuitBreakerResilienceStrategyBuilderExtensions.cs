@@ -102,8 +102,6 @@ public static class CircuitBreakerResilienceStrategyBuilderExtensions
     private static TBuilder AddAdvancedCircuitBreakerCore<TBuilder, TResult>(this TBuilder builder, AdvancedCircuitBreakerStrategyOptions<TResult> options)
         where TBuilder : ResilienceStrategyBuilderBase
     {
-        ValidationHelper.ValidateObject(options, "The advanced circuit breaker strategy options are invalid.");
-
         builder.AddStrategy(
             context =>
             {
@@ -122,8 +120,6 @@ public static class CircuitBreakerResilienceStrategyBuilderExtensions
     private static TBuilder AddSimpleCircuitBreakerCore<TBuilder, TResult>(this TBuilder builder, SimpleCircuitBreakerStrategyOptions<TResult> options)
         where TBuilder : ResilienceStrategyBuilderBase
     {
-        ValidationHelper.ValidateObject(options, "The circuit breaker strategy options are invalid.");
-
         builder.AddStrategy(context => CreateStrategy(context, options, new ConsecutiveFailuresCircuitBehavior(options.FailureThreshold)), options);
         return builder;
     }

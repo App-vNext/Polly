@@ -101,13 +101,11 @@ public class RetryResilienceStrategyBuilderExtensionsTests
         new ResilienceStrategyBuilder()
             .Invoking(b => b.AddRetry(new RetryStrategyOptions { ShouldRetry = null! }))
             .Should()
-            .Throw<ValidationException>()
-            .WithMessage("The retry strategy options are invalid.*");
+            .Throw<ValidationException>();
 
         new ResilienceStrategyBuilder<int>()
             .Invoking(b => b.AddRetry(new RetryStrategyOptions<int> { ShouldRetry = null! }))
             .Should()
-            .Throw<ValidationException>()
-            .WithMessage("The retry strategy options are invalid.*");
+            .Throw<ValidationException>();
     }
 }

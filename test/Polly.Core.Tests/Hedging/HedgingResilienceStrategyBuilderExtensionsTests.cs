@@ -32,8 +32,7 @@ public class HedgingResilienceStrategyBuilderExtensionsTests
         _builder
             .Invoking(b => b.AddHedging(new HedgingStrategyOptions { HedgingActionGenerator = null! }))
             .Should()
-            .Throw<ValidationException>()
-            .WithMessage("The hedging strategy options are invalid.*");
+            .Throw<ValidationException>();
     }
 
     [Fact]
@@ -42,14 +41,12 @@ public class HedgingResilienceStrategyBuilderExtensionsTests
         _builder
             .Invoking(b => b.AddHedging(new HedgingStrategyOptions { MaxHedgedAttempts = 1000 }))
             .Should()
-            .Throw<ValidationException>()
-            .WithMessage("The hedging strategy options are invalid.*");
+            .Throw<ValidationException>();
 
         _genericBuilder
             .Invoking(b => b.AddHedging(new HedgingStrategyOptions<string> { ShouldHandle = null! }))
             .Should()
-            .Throw<ValidationException>()
-            .WithMessage("The hedging strategy options are invalid.*");
+            .Throw<ValidationException>();
     }
 
     [Fact]

@@ -56,8 +56,7 @@ public class FallbackResilienceStrategyBuilderExtensionsTests
         new ResilienceStrategyBuilder()
             .Invoking(b => b.AddFallback(new FallbackStrategyOptions()))
             .Should()
-            .Throw<ValidationException>()
-            .WithMessage("The fallback strategy options are invalid.*");
+            .Throw<ValidationException>();
     }
 
     [Fact]
@@ -66,7 +65,6 @@ public class FallbackResilienceStrategyBuilderExtensionsTests
         new ResilienceStrategyBuilder<double>()
             .Invoking(b => b.AddFallback(new FallbackStrategyOptions<double>()))
             .Should()
-            .Throw<ValidationException>()
-            .WithMessage("The fallback strategy options are invalid.*");
+            .Throw<ValidationException>();
     }
 }

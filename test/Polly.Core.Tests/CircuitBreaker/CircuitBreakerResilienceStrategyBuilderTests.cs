@@ -61,14 +61,12 @@ public class CircuitBreakerResilienceStrategyBuilderTests
         new ResilienceStrategyBuilder<int>()
             .Invoking(b => b.AddSimpleCircuitBreaker(new SimpleCircuitBreakerStrategyOptions<int> { BreakDuration = TimeSpan.MinValue }))
             .Should()
-            .Throw<ValidationException>()
-            .WithMessage("The circuit breaker strategy options are invalid.*");
+            .Throw<ValidationException>();
 
         new ResilienceStrategyBuilder()
             .Invoking(b => b.AddSimpleCircuitBreaker(new SimpleCircuitBreakerStrategyOptions { BreakDuration = TimeSpan.MinValue }))
             .Should()
-            .Throw<ValidationException>()
-            .WithMessage("The circuit breaker strategy options are invalid.*");
+            .Throw<ValidationException>();
     }
 
     [Fact]
@@ -77,14 +75,12 @@ public class CircuitBreakerResilienceStrategyBuilderTests
         new ResilienceStrategyBuilder<int>()
             .Invoking(b => b.AddAdvancedCircuitBreaker(new AdvancedCircuitBreakerStrategyOptions<int> { BreakDuration = TimeSpan.MinValue }))
             .Should()
-            .Throw<ValidationException>()
-            .WithMessage("The advanced circuit breaker strategy options are invalid.*");
+            .Throw<ValidationException>();
 
         new ResilienceStrategyBuilder()
             .Invoking(b => b.AddAdvancedCircuitBreaker(new AdvancedCircuitBreakerStrategyOptions { BreakDuration = TimeSpan.MinValue }))
             .Should()
-            .Throw<ValidationException>()
-            .WithMessage("The advanced circuit breaker strategy options are invalid.*");
+            .Throw<ValidationException>();
     }
 
     [Fact]
