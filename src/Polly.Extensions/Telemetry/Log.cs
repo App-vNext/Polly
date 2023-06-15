@@ -83,9 +83,10 @@ internal static class Log
 #endif
 
 #if NET6_0_OR_GREATER
-    [LoggerMessage(2, LogLevel.Debug, StrategyExecutedMessage, EventName = "StrategyExecuted")]
+    [LoggerMessage(EventId = 2, Message = StrategyExecutedMessage, EventName = "StrategyExecuted")]
     public static partial void StrategyExecuted(
         this ILogger logger,
+        LogLevel logLevel,
         string? builderName,
         string? strategyKey,
         string resultType,
@@ -94,11 +95,14 @@ internal static class Log
         double executionTime,
         Exception? exception);
 #else
-    private static readonly Action<ILogger, string?, string?, string, object?, string, double, Exception?> StrategyExecutedAction =
+    private static readonly Action<ILogger, string?, string?, string, object?, string, double, Exception?> StrategyExecutedActionDebug =
         LoggerMessage.Define<string?, string?, string, object?, string, double>(LogLevel.Debug, new EventId(2, "StrategyExecuted"), StrategyExecutedMessage);
 
+    private static readonly Action<ILogger, string?, string?, string, object?, string, double, Exception?> StrategyExecutedActionWarning =
+        LoggerMessage.Define<string?, string?, string, object?, string, double>(LogLevel.Warning, new EventId(2, "StrategyExecuted"), StrategyExecutedMessage);
     public static void StrategyExecuted(
         this ILogger logger,
+        LogLevel logLevel,
         string? builderName,
         string? strategyKey,
         string resultType,
@@ -107,7 +111,14 @@ internal static class Log
         double executionTime,
         Exception? exception)
     {
-        StrategyExecutedAction(logger, builderName, strategyKey, resultType, result, executionHealth, executionTime, exception);
+        if (logLevel == LogLevel.Warning)
+        {
+            StrategyExecutedActionWarning(logger, builderName, strategyKey, resultType, result, executionHealth, executionTime, exception);
+        }
+        else
+        {
+            StrategyExecutedActionDebug(logger, builderName, strategyKey, resultType, result, executionHealth, executionTime, exception);
+        }
     }
 #endif
 }

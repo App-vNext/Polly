@@ -54,6 +54,7 @@ public class TelemetryResilienceStrategyTests : IDisposable
         messages = _logger.GetRecords(new EventId(2, "StrategyExecuted")).ToList();
         messages.Should().HaveCount(1);
         messages[0].Message.Should().Match($"Resilience strategy executed. Builder Name: 'my-builder', Strategy Key: 'my-key', Result Type: 'void', Result: 'void', Execution Health: '{healthString}', Execution Time: *ms");
+        messages[0].LogLevel.Should().Be(healthy ? LogLevel.Debug : LogLevel.Warning);
     }
 
     [Fact]

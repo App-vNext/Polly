@@ -58,8 +58,11 @@ internal sealed class TelemetryResilienceStrategy : ResilienceStrategy
         var outcome = await callback(context, state).ConfigureAwait(context.ContinueOnCapturedContext);
 
         var duration = _timeProvider.GetElapsedTime(stamp);
+        var logLevel = context.IsExecutionHealthy() ? LogLevel.Debug : LogLevel.Warning;
+
         Log.StrategyExecuted(
             _logger,
+            logLevel,
             _builderName,
             _strategyKey,
             context.GetResultType(),
