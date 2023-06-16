@@ -20,6 +20,7 @@ public static class RateLimiterResilienceStrategyBuilderExtensions
     /// <returns>The builder instance with the concurrency limiter strategy added.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="builder"/> is <see langword="null"/>.</exception>
     /// <exception cref="ValidationException">Thrown when the options constructed from the arguments are invalid.</exception>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="permitLimit"/> or <paramref name="queueLimit"/> is invalid.</exception>
     public static TBuilder AddConcurrencyLimiter<TBuilder>(
         this TBuilder builder,
         int permitLimit,
@@ -44,6 +45,7 @@ public static class RateLimiterResilienceStrategyBuilderExtensions
     /// <returns>The builder instance with the concurrency limiter strategy added.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="builder"/> or <paramref name="options"/> is <see langword="null"/>.</exception>
     /// <exception cref="ValidationException">Thrown when the options constructed from the arguments are invalid.</exception>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="options"/> are invalid.</exception>
     public static TBuilder AddConcurrencyLimiter<TBuilder>(
         this TBuilder builder,
         ConcurrencyLimiterOptions options)
@@ -54,7 +56,7 @@ public static class RateLimiterResilienceStrategyBuilderExtensions
 
         return builder.AddRateLimiter(new RateLimiterStrategyOptions
         {
-            RateLimiter = new ConcurrencyLimiter(options),
+            DefaultRateLimiterOptions = options
         });
     }
 
@@ -90,6 +92,7 @@ public static class RateLimiterResilienceStrategyBuilderExtensions
     /// <returns>The builder instance with the rate limiter strategy added.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="builder"/> or <paramref name="options"/> is <see langword="null"/>.</exception>
     /// <exception cref="ValidationException">Thrown when <paramref name="options"/> are invalid.</exception>
+    /// <exception cref="ArgumentException">Thrown when <see cref="RateLimiterStrategyOptions.DefaultRateLimiterOptions"/> for <paramref name="options"/> are invalid.</exception>
     public static TBuilder AddRateLimiter<TBuilder>(
         this TBuilder builder,
         RateLimiterStrategyOptions options)
@@ -98,7 +101,15 @@ public static class RateLimiterResilienceStrategyBuilderExtensions
         Guard.NotNull(builder);
         Guard.NotNull(options);
 
-        builder.AddStrategy(context => new RateLimiterResilienceStrategy(options.RateLimiter!, options.OnRejected, context.Telemetry), options);
+        builder.AddStrategy(
+            context =>
+            {
+                return new RateLimiterResilienceStrategy(
+                    options.RateLimiter ?? new ConcurrencyLimiter(options.DefaultRateLimiterOptions),
+                    options.OnRejected,
+                    context.Telemetry);
+            },
+            options);
         return builder;
     }
 }
