@@ -12,7 +12,7 @@ internal class ResilienceTelemetryDiagnosticSource : DiagnosticSource
     private readonly ILogger _logger;
     private readonly List<Action<EnrichmentContext>> _enrichers;
 
-    public ResilienceTelemetryDiagnosticSource(TelemetryResilienceStrategyOptions options)
+    public ResilienceTelemetryDiagnosticSource(TelemetryOptions options)
     {
         _enrichers = options.Enrichers.ToList();
         _logger = options.LoggerFactory.CreateLogger(TelemetryUtil.PollyDiagnosticSource);

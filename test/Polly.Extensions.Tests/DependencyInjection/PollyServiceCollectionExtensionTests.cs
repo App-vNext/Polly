@@ -147,7 +147,7 @@ public class PollyServiceCollectionExtensionTests
         var diagSource = telemetry!.GetType().GetProperty("DiagnosticSource", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(telemetry);
         diagSource.Should().BeOfType<ResilienceTelemetryDiagnosticSource>();
 
-        var factory = _services.BuildServiceProvider().GetRequiredService<IOptions<TelemetryResilienceStrategyOptions>>().Value.LoggerFactory;
+        var factory = _services.BuildServiceProvider().GetRequiredService<IOptions<TelemetryOptions>>().Value.LoggerFactory;
 
         if (hasLogging)
         {

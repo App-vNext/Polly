@@ -53,7 +53,7 @@ public class TelemetryResilienceStrategyBuilderExtensionsTests
     public void EnableTelemetry_InvalidOptions_Throws()
     {
         _builder
-            .Invoking(b => b.EnableTelemetry(new TelemetryResilienceStrategyOptions
+            .Invoking(b => b.EnableTelemetry(new TelemetryOptions
             {
                 LoggerFactory = null!,
             })).Should()
@@ -66,7 +66,7 @@ public class TelemetryResilienceStrategyBuilderExtensionsTests
             """);
 
         _genericBuilder
-            .Invoking(b => b.EnableTelemetry(new TelemetryResilienceStrategyOptions
+            .Invoking(b => b.EnableTelemetry(new TelemetryOptions
             {
                 LoggerFactory = null!,
             })).Should()
