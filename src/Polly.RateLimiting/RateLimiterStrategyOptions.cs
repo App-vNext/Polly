@@ -18,7 +18,7 @@ public class RateLimiterStrategyOptions : ResilienceStrategyOptions
     /// Gets or sets the default rate limiter options.
     /// </summary>
     /// <remarks>
-    /// The options for default limiter that will be used when <see cref="RateLimiter"/> is <see langword="null"/>.
+    /// The options for the default limiter that will be used when <see cref="RateLimiter"/> is <see langword="null"/>.
     /// <para>
     /// <see cref="ConcurrencyLimiterOptions.PermitLimit"/> defaults to 1000.
     /// <see cref="ConcurrencyLimiterOptions.QueueLimit"/> defaults to 0.
@@ -44,7 +44,7 @@ public class RateLimiterStrategyOptions : ResilienceStrategyOptions
     /// </summary>
     /// <remarks>
     /// Defaults to <see langword="null"/>. If this property is <see langword="null"/>,
-    /// then strategy will use <see cref="ConcurrencyLimiter"/> created from <see cref="DefaultRateLimiterOptions"/>.
+    /// then the strategy will use a <see cref="ConcurrencyLimiter"/> created using <see cref="DefaultRateLimiterOptions"/>.
     /// </remarks>
     public RateLimiter? RateLimiter { get; set; }
 }
