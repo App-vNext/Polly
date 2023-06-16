@@ -1,6 +1,12 @@
 ## 8.0.0-alpha.1
 
-- The first public preview of [Polly v8](https://github.com/App-vNext/Polly/issues/1048) with our [new high-performance core API](https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/README.md) and extensions - Thanks to:
+- The first public preview of [Polly v8](https://github.com/App-vNext/Polly/issues/1048) with our [new high-performance core API](https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/README.md) and extensions. Feel free to check out the [samples](samples/) to see the new and improved Polly V8 in action.
+- The first release of the new NuGet packages:
+  - [`Polly.Core`](https://nuget.org/packages/Polly.Core) - This package contains the new Polly V8 API.
+  - [`Polly.Extensions`](https://nuget.org/packages/Polly.Extensions) - This package is designed to integrate Polly with dependency injection and enable telemetry.
+  - [`Polly.RateLimiting`](https://nuget.org/packages/Polly.RateLimiting) - This package provides an integration between Polly and [`System.Threading.RateLimiting`](https://www.nuget.org/packages/System.Threading.RateLimiting/).
+
+Thanks to:
   - [@adamnova](https://github.com/adamnova)
   - [@andrey-noskov](https://github.com/andrey-noskov)
   - [@joelhulen](https://github.com/joelhulen)
