@@ -18,17 +18,20 @@ ResilienceStrategy strategy = new ResilienceStrategyBuilder()
 // 2. Execute the strategy
 // ------------------------------------------------------------------------
 
-// synchronously
+// Synchronously
 strategy.Execute(() => { });
 
-// asynchronously
+// Asynchronously
 await strategy.ExecuteAsync(async token => { await Task.Yield(); }, CancellationToken.None);
 
-// synchronously with result
+// Synchronously with result
 strategy.Execute(token => "some-result");
 
-// asynchronously with result
+// Asynchronously with result
 await strategy.ExecuteAsync(async token => { await Task.Yield(); return "some-result"; }, CancellationToken.None);
+
+// Use state to avoid lambda allocation
+strategy.Execute(static state => state, "my-state");
 
 // ------------------------------------------------------------------------
 // 3. Create and execute a pipeline of strategies
@@ -60,7 +63,12 @@ strategy = new ResilienceStrategyBuilder()
     {
         Timeout = TimeSpan.FromMilliseconds(500),
         // Register user callback called whenever timeout occurs
-        OnTimeout = _ => { Console.WriteLine("Timeout occurred!"); return default; }
+        OnTimeout = args =>
+        {
+            
+            Console.WriteLine($"Timeout occurred after {args.Timeout}!");
+            return default;
+        }
     })
     .Build();
 

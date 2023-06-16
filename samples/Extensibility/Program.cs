@@ -37,6 +37,14 @@ internal class MySimpleStrategy : ResilienceStrategy
     {
         Console.WriteLine("MySimpleStrategy executing!");
 
+        // The "context" holds information about execution mode
+        Console.WriteLine("context.IsSynchronous: {0}", context.IsSynchronous);
+        Console.WriteLine("context.ResultType: {0}", context.ResultType);
+        Console.WriteLine("context.IsVoid: {0}", context.IsVoid);
+
+        // The "state" is ambient value passed by the caller that holds his state.
+        // Here, we do not do anything with it, just pass it to the callback.
+
         // Execute the provided callback
         return callback(context, state);
     }
@@ -67,7 +75,7 @@ public class MyResilienceStrategyOptions : ResilienceStrategyOptions
 // 2. Create a custom resilience strategy that derives from ResilienceStrategy
 // ------------------------------------------------------------------------
 
-// The strategy should be internal
+// The strategy should be internal and not exposed as part of public API. Instead, expose options and extensions for resilience strategy builder.
 internal class MyResilienceStrategy : ResilienceStrategy
 {
     private readonly ResilienceStrategyTelemetry telemetry;
@@ -90,7 +98,7 @@ internal class MyResilienceStrategy : ResilienceStrategy
         // Here, do something after callback execution
         // ...
 
-        // You should report important telemetry events
+        // You can then report important telemetry events
         telemetry.Report("MyCustomEvent", context, new OnCustomEventArguments(context));
 
         // Call the delegate if provided by the user
@@ -113,10 +121,6 @@ public static class MyResilienceStrategyExtensions
     public static TBuilder AddMyResilienceStrategy<TBuilder>(this TBuilder builder, MyResilienceStrategyOptions options)
         where TBuilder : ResilienceStrategyBuilderBase
     {
-        // Validate arguments
-        ArgumentNullException.ThrowIfNull(builder);
-        ArgumentNullException.ThrowIfNull(options);
-
         builder.AddStrategy(
             // Provide a factory that creates the strategy
             context => new MyResilienceStrategy(context.Telemetry, options),

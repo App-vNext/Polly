@@ -3,7 +3,7 @@ using Polly.Retry;
 using System.Net;
 
 // ------------------------------------------------------------------------
-// 1. Create a retry strategy that only handles exceptions
+// 1. Create a retry strategy that only handles invalid operation exceptions
 // ------------------------------------------------------------------------
 
 ResilienceStrategy strategy = new ResilienceStrategyBuilder()
@@ -43,12 +43,13 @@ strategy = new ResilienceStrategyBuilder()
         BaseDelay = TimeSpan.FromSeconds(1),
 
         // The recommended backoff type for HTTP scenarios
+        // https://www.baeldung.com/resilience4j-backoff-jitter
         BackoffType = RetryBackoffType.ExponentialWithJitter
     })
     .Build();
 
 // ------------------------------------------------------------------------
-// 3. Register to callbacks
+// 3. Register the callbacks
 // ------------------------------------------------------------------------
 
 strategy = new ResilienceStrategyBuilder()
@@ -74,7 +75,7 @@ strategy = new ResilienceStrategyBuilder()
     .Build();
 
 // ------------------------------------------------------------------------
-// 4. Create a HTTP retry strategy that handles both exceptions and results
+// 4. Create an HTTP retry strategy that handles both exceptions and results
 // ------------------------------------------------------------------------
 
 ResilienceStrategy<HttpResponseMessage> httpStrategy = new ResilienceStrategyBuilder<HttpResponseMessage>()

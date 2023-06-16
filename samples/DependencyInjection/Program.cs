@@ -48,4 +48,5 @@ try
 }
 catch (TimeoutRejectedException)
 {
+    Console.WriteLine("Timeout!");
 }
