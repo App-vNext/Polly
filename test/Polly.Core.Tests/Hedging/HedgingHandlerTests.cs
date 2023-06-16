@@ -15,7 +15,7 @@ public class HedgingHandlerTests
             args => () => "ok".AsOutcomeAsync(),
             true);
 
-        var action = handler.GenerateAction(new HedgingActionGeneratorArguments<string>(ResilienceContext.Get(), 0, _ => "primary".AsOutcomeAsync()))!;
+        var action = handler.GenerateAction(new HedgingActionGeneratorArguments<string>(ResilienceContext.Get(), ResilienceContext.Get(), 0, _ => "primary".AsOutcomeAsync()))!;
         var res = await action();
 
         res.Result.Should().Be("ok");
@@ -39,7 +39,7 @@ public class HedgingHandlerTests
             },
             false);
 
-        var action = handler.GenerateAction(new HedgingActionGeneratorArguments<string>(ResilienceContext.Get(), 0, _ => "primary".AsOutcomeAsync()))!;
+        var action = handler.GenerateAction(new HedgingActionGeneratorArguments<string>(ResilienceContext.Get(), ResilienceContext.Get(), 0, _ => "primary".AsOutcomeAsync()))!;
         if (nullAction)
         {
             action.Should().BeNull();
@@ -56,10 +56,10 @@ public class HedgingHandlerTests
     {
         var handler = new HedgingHandler<object>(
             PredicateInvoker<HandleHedgingArguments>.Create<object>(args => PredicateResult.True, false)!,
-            args => () => args.Callback(args.Context),
+            args => () => args.Callback(args.ActionContext),
             false);
 
-        var action = handler.GenerateAction(new HedgingActionGeneratorArguments<string>(ResilienceContext.Get(), 0, _ => "callback".AsOutcomeAsync()))!;
+        var action = handler.GenerateAction(new HedgingActionGeneratorArguments<string>(ResilienceContext.Get(), ResilienceContext.Get(), 0, _ => "callback".AsOutcomeAsync()))!;
         var res = await action();
         res.Result.Should().Be("callback");
     }

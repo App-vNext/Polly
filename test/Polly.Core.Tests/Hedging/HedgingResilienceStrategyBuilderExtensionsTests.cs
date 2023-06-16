@@ -68,7 +68,7 @@ public class HedgingResilienceStrategyBuilderExtensionsTests
                 {
                     return async () =>
                     {
-                        await Task.Delay(25, args.Context.CancellationToken);
+                        await Task.Delay(25, args.ActionContext.CancellationToken);
 
                         if (args.Attempt == 3)
                         {

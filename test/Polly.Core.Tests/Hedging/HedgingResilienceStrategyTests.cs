@@ -121,6 +121,42 @@ public class HedgingResilienceStrategyTests : IDisposable
     }
 
     [Fact]
+    public async Task ExecuteAsync_EnsurePrimaryContextFlows()
+    {
+        var primaryContext = ResilienceContext.Get();
+        var attempts = 0;
+        var key = new ResiliencePropertyKey<string>("primary-key");
+
+        _options.MaxHedgedAttempts = 4;
+        _options.OnHedging = args =>
+        {
+            args.Context.Should().Be(primaryContext);
+
+            if (args.Arguments.Attempt == 0)
+            {
+                args.Context.Properties.Set(key, "dummy");
+            }
+
+            attempts++;
+
+            return default;
+        };
+
+        ConfigureHedging(args =>
+        {
+            args.PrimaryContext.Properties.GetValue(key, string.Empty).Should().Be("dummy");
+            args.PrimaryContext.Should().Be(primaryContext);
+            return () => Failure.AsOutcomeAsync();
+        });
+
+        var strategy = Create();
+        var result = await strategy.ExecuteAsync(_ => new ValueTask<string>(Failure), primaryContext);
+
+        attempts.Should().Be(4);
+        primaryContext.Properties.GetValue(key, string.Empty).Should().Be("dummy");
+    }
+
+    [Fact]
     public async void ExecuteAsync_EnsureHedgedTasksCancelled_Ok()
     {
         // arrange
@@ -256,12 +292,12 @@ public class HedgingResilienceStrategyTests : IDisposable
         {
             return async () =>
             {
-                tokenHashCodes.Add(args.Context.CancellationToken.GetHashCode());
-                args.Context.CancellationToken.CanBeCanceled.Should().BeTrue();
-                args.Context.Properties.GetValue(beforeKey, "wrong").Should().Be("before");
-                contexts.Add(args.Context);
+                tokenHashCodes.Add(args.ActionContext.CancellationToken.GetHashCode());
+                args.ActionContext.CancellationToken.CanBeCanceled.Should().BeTrue();
+                args.ActionContext.Properties.GetValue(beforeKey, "wrong").Should().Be("before");
+                contexts.Add(args.ActionContext);
                 await Task.Yield();
-                args.Context.Properties.Set(afterKey, "after");
+                args.ActionContext.Properties.Set(afterKey, "after");
                 return "secondary".AsOutcome();
             };
         });
@@ -327,10 +363,10 @@ public class HedgingResilienceStrategyTests : IDisposable
         {
             return async () =>
             {
-                contexts.Add(args.Context);
-                args.Context.Properties.GetValue(primaryKey, string.Empty).Should().Be("primary");
-                args.Context.Properties.Set(secondaryKey, "secondary");
-                await _timeProvider.Delay(TimeSpan.FromHours(1), args.Context.CancellationToken);
+                contexts.Add(args.ActionContext);
+                args.ActionContext.Properties.GetValue(primaryKey, string.Empty).Should().Be("primary");
+                args.ActionContext.Properties.Set(secondaryKey, "secondary");
+                await _timeProvider.Delay(TimeSpan.FromHours(1), args.ActionContext.CancellationToken);
                 return (primaryFails ? Success : Failure).AsOutcome();
             };
         });
@@ -415,9 +451,9 @@ public class HedgingResilienceStrategyTests : IDisposable
         {
             return () =>
             {
-                args.Context.Properties.TryGetValue(key2, out var val).Should().BeTrue();
+                args.ActionContext.Properties.TryGetValue(key2, out var val).Should().BeTrue();
                 val.Should().Be("my-value-2");
-                args.Context.Properties.Set(key, "my-value");
+                args.ActionContext.Properties.Set(key, "my-value");
                 return Success.AsOutcomeAsync();
             };
         });
@@ -820,7 +856,7 @@ public class HedgingResilienceStrategyTests : IDisposable
 
     private void ConfigureHedging(Func<ResilienceContext, ValueTask<Outcome<string>>> background)
     {
-        ConfigureHedging(args => () => background(args.Context));
+        ConfigureHedging(args => () => background(args.ActionContext));
     }
 
     private void ConfigureHedging(Func<HedgingActionGeneratorArguments<string>, Func<ValueTask<Outcome<string>>>?> generator)

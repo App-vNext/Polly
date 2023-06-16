@@ -61,7 +61,7 @@ public class HedgingStrategyOptions<TResult> : ResilienceStrategyOptions
     {
         return async () =>
         {
-            return await args.Callback(args.Context).ConfigureAwait(args.Context.ContinueOnCapturedContext);
+            return await args.Callback(args.ActionContext).ConfigureAwait(args.ActionContext.ContinueOnCapturedContext);
         };
     };
 

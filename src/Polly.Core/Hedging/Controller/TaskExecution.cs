@@ -100,7 +100,7 @@ internal sealed class TaskExecution<T>
 
             try
             {
-                action = _handler.GenerateAction(CreateArguments(primaryCallback, state, attempt));
+                action = _handler.GenerateAction(CreateArguments(primaryCallback, snapshot.Context, state, attempt));
                 if (action == null)
                 {
                     await ResetAsync().ConfigureAwait(false);
@@ -125,8 +125,9 @@ internal sealed class TaskExecution<T>
 
     private HedgingActionGeneratorArguments<TResult> CreateArguments<TResult, TState>(
         Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> primaryCallback,
+        ResilienceContext primaryContext,
         TState state,
-        int attempt) => new(Context, attempt, (context) => primaryCallback(context, state));
+        int attempt) => new(primaryContext, Context, attempt, (context) => primaryCallback(context, state));
 
     public async ValueTask ResetAsync()
     {

@@ -456,12 +456,12 @@ public class HedgingExecutionContextTests : IDisposable
                 return null;
             }
 
-            args.Context.AddResilienceEvent(new ResilienceEvent("dummy-event"));
+            args.ActionContext.AddResilienceEvent(new ResilienceEvent("dummy-event"));
 
             return async () =>
             {
-                args.Context.Properties.Set(new ResiliencePropertyKey<int>(attempt.ToString(CultureInfo.InvariantCulture)), attempt);
-                await _timeProvider.Delay(delays[attempt], args.Context.CancellationToken);
+                args.ActionContext.Properties.Set(new ResiliencePropertyKey<int>(attempt.ToString(CultureInfo.InvariantCulture)), attempt);
+                await _timeProvider.Delay(delays[attempt], args.ActionContext.CancellationToken);
                 return new DisposableResult(delays[attempt].ToString()).AsOutcome();
             };
         };
