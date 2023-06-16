@@ -43,7 +43,7 @@ strategy = new ResilienceStrategyBuilder()
         BaseDelay = TimeSpan.FromSeconds(1),
 
         // The recommended backoff type for HTTP scenarios
-        // https://www.baeldung.com/resilience4j-backoff-jitter
+        // See here for more information: https://github.com/App-vNext/Polly/wiki/Retry-with-jitter#more-complex-jitter
         BackoffType = RetryBackoffType.ExponentialWithJitter
     })
     .Build();

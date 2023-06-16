@@ -42,7 +42,7 @@ internal class MySimpleStrategy : ResilienceStrategy
         Console.WriteLine("context.ResultType: {0}", context.ResultType);
         Console.WriteLine("context.IsVoid: {0}", context.IsVoid);
 
-        // The "state" is ambient value passed by the caller that holds his state.
+        // The "state" is an ambient value passed by the caller that holds the state.
         // Here, we do not do anything with it, just pass it to the callback.
 
         // Execute the provided callback
@@ -75,7 +75,7 @@ public class MyResilienceStrategyOptions : ResilienceStrategyOptions
 // 2. Create a custom resilience strategy that derives from ResilienceStrategy
 // ------------------------------------------------------------------------
 
-// The strategy should be internal and not exposed as part of public API. Instead, expose options and extensions for resilience strategy builder.
+// The strategy should be internal and not exposed as part of any public API. Instead, expose options and extensions for resilience strategy builder.
 internal class MyResilienceStrategy : ResilienceStrategy
 {
     private readonly ResilienceStrategyTelemetry telemetry;
