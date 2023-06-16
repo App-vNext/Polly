@@ -24,6 +24,7 @@ strategy.Execute(() => { });
 // ------------------------------------------------------------------------
 
 strategy = new ResilienceStrategyBuilder()
+    // Just add the strategy instance directly
     .AddStrategy(new MySimpleStrategy())
     .Build();
 
@@ -92,8 +93,11 @@ internal class MyResilienceStrategy : ResilienceStrategy
         // You should report important telemetry events
         telemetry.Report("MyCustomEvent", context, new OnCustomEventArguments(context));
 
-        // Call the delegate
-        onCustomEvent?.Invoke(new OnCustomEventArguments(context));
+        // Call the delegate if provided by the user
+        if (onCustomEvent is not null)
+        {
+            await onCustomEvent(new OnCustomEventArguments(context));
+        }
 
         return outcome;
     }
@@ -109,11 +113,15 @@ public static class MyResilienceStrategyExtensions
     public static TBuilder AddMyResilienceStrategy<TBuilder>(this TBuilder builder, MyResilienceStrategyOptions options)
         where TBuilder : ResilienceStrategyBuilderBase
     {
+        // Validate arguments
+        ArgumentNullException.ThrowIfNull(builder);
+        ArgumentNullException.ThrowIfNull(options);
+
         builder.AddStrategy(
             // Provide a factory that creates the strategy
             context => new MyResilienceStrategy(context.Telemetry, options),
 
-            // Pass the options, note that the instance is automatically validated by the builder
+            // Pass the options, note that the options instance is automatically validated by the builder
             options);
 
         return builder;
