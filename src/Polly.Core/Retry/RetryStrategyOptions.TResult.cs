@@ -61,10 +61,16 @@ public class RetryStrategyOptions<TResult> : ResilienceStrategyOptions
     /// Gets or sets an outcome predicate that is used to register the predicates to determine if a retry should be performed.
     /// </summary>
     /// <remarks>
-    /// Defaults to <see langword="null"/>. This property is required.
+    /// Defaults to a delegate that retries on any exception except <see cref="OperationCanceledException"/>.
+    /// This property is required.
     /// </remarks>
     [Required]
-    public Func<OutcomeArguments<TResult, ShouldRetryArguments>, ValueTask<bool>>? ShouldRetry { get; set; }
+    public Func<OutcomeArguments<TResult, ShouldRetryArguments>, ValueTask<bool>> ShouldRetry { get; set; } = args => args.Exception switch
+    {
+        OperationCanceledException => PredicateResult.False,
+        Exception => PredicateResult.True,
+        _ => PredicateResult.False
+    };
 
     /// <summary>
     /// Gets or sets the generator instance that is used to calculate the time between retries.

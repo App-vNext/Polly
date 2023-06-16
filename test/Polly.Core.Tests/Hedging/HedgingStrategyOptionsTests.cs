@@ -12,7 +12,7 @@ public class HedgingStrategyOptionsTests
         var options = new HedgingStrategyOptions<int>();
 
         options.StrategyType.Should().Be("Hedging");
-        options.ShouldHandle.Should().BeNull();
+        options.ShouldHandle.Should().NotBeNull();
         options.HedgingActionGenerator.Should().NotBeNull();
         options.HedgingDelay.Should().Be(TimeSpan.FromSeconds(2));
         options.MaxHedgedAttempts.Should().Be(2);
@@ -21,6 +21,18 @@ public class HedgingStrategyOptionsTests
         var action = options.HedgingActionGenerator(new HedgingActionGeneratorArguments<int>(ResilienceContext.Get(), ResilienceContext.Get(), 1, c => 99.AsOutcomeAsync()))!;
         action.Should().NotBeNull();
         (await action()).Result.Should().Be(99);
+    }
+
+    [Fact]
+    public async Task ShouldHandle_EnsureDefaults()
+    {
+        var options = new HedgingStrategyOptions<int>();
+        var args = new HandleHedgingArguments();
+        var context = ResilienceContext.Get();
+
+        (await options.ShouldHandle(new(context, new Outcome<int>(0), args))).Should().Be(false);
+        (await options.ShouldHandle(new(context, new Outcome<int>(new OperationCanceledException()), args))).Should().Be(false);
+        (await options.ShouldHandle(new(context, new Outcome<int>(new InvalidOperationException()), args))).Should().Be(true);
     }
 
     [Fact]
