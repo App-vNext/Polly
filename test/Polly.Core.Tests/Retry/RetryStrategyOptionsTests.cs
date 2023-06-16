@@ -12,7 +12,7 @@ public class RetryStrategyOptionsTests
         var options = new RetryStrategyOptions<int>();
 
         options.StrategyType.Should().Be("Retry");
-        options.ShouldRetry.Should().BeNull();
+        options.ShouldRetry.Should().NotBeNull();
 
         options.RetryDelayGenerator.Should().BeNull();
 
@@ -21,6 +21,18 @@ public class RetryStrategyOptionsTests
         options.RetryCount.Should().Be(3);
         options.BackoffType.Should().Be(RetryBackoffType.Constant);
         options.BaseDelay.Should().Be(TimeSpan.FromSeconds(2));
+    }
+
+    [Fact]
+    public async Task ShouldHandle_EnsureDefaults()
+    {
+        var options = new RetryStrategyOptions<int>();
+        var args = new ShouldRetryArguments(0);
+        var context = ResilienceContext.Get();
+
+        (await options.ShouldRetry(new(context, new Outcome<int>(0), args))).Should().Be(false);
+        (await options.ShouldRetry(new(context, new Outcome<int>(new OperationCanceledException()), args))).Should().Be(false);
+        (await options.ShouldRetry(new(context, new Outcome<int>(new InvalidOperationException()), args))).Should().Be(true);
     }
 
     [Fact]

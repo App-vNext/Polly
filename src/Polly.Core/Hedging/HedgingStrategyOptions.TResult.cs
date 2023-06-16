@@ -45,10 +45,16 @@ public class HedgingStrategyOptions<TResult> : ResilienceStrategyOptions
     /// Gets or sets the predicate that determines whether a hedging should be performed for a given result.
     /// </summary>
     /// <remarks>
-    /// This property is required. Defaults to <see langword="null"/>.
+    /// Defaults to a delegate that hedges on any exception except <see cref="OperationCanceledException"/>.
+    /// This property is required.
     /// </remarks>
     [Required]
-    public Func<OutcomeArguments<TResult, HandleHedgingArguments>, ValueTask<bool>>? ShouldHandle { get; set; }
+    public Func<OutcomeArguments<TResult, HandleHedgingArguments>, ValueTask<bool>> ShouldHandle { get; set; } = args => args.Exception switch
+    {
+        OperationCanceledException => PredicateResult.False,
+        Exception => PredicateResult.True,
+        _ => PredicateResult.False
+    };
 
     /// <summary>
     /// Gets or sets the hedging action generator that creates hedged actions.
