@@ -10,7 +10,7 @@ public class HedgingActionGeneratorArgumentsTests
         var args = new HedgingActionGeneratorArguments<string>(ResilienceContext.Get(), ResilienceContext.Get(), 5, _ => "dummy".AsOutcomeAsync());
 
         args.PrimaryContext.Should().NotBeNull();
-        args.Context.Should().NotBeNull();
+        args.ActionContext.Should().NotBeNull();
         args.Attempt.Should().Be(5);
         args.Callback.Should().NotBeNull();
     }

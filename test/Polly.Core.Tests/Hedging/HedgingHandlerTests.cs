@@ -56,7 +56,7 @@ public class HedgingHandlerTests
     {
         var handler = new HedgingHandler<object>(
             PredicateInvoker<HandleHedgingArguments>.Create<object>(args => PredicateResult.True, false)!,
-            args => () => args.Callback(args.Context),
+            args => () => args.Callback(args.ActionContext),
             false);
 
         var action = handler.GenerateAction(new HedgingActionGeneratorArguments<string>(ResilienceContext.Get(), ResilienceContext.Get(), 0, _ => "callback".AsOutcomeAsync()))!;

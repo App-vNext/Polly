@@ -24,7 +24,7 @@ internal class HedgingActions
             {
                 return async () =>
                 {
-                    return await Functions[args.Attempt - 1]!(args.Context);
+                    return await Functions[args.Attempt - 1]!(args.ActionContext);
                 };
             }
 
@@ -58,7 +58,7 @@ internal class HedgingActions
 
     public static Func<HedgingActionGeneratorArguments<string>, Func<ValueTask<Outcome<string>>>?> GetGenerator(Func<ResilienceContext, ValueTask<Outcome<string>>> task)
     {
-        return args => () => task(args.Context);
+        return args => () => task(args.ActionContext);
     }
 
     public int MaxHedgedTasks => Functions.Count + 1;

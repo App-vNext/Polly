@@ -74,7 +74,7 @@ public class TaskExecutionTests : IDisposable
         var execution = Create();
         Generator = args =>
         {
-            AssertSecondaryContext(args.Context, execution);
+            AssertSecondaryContext(args.ActionContext, execution);
             args.Attempt.Should().Be(4);
             return () => new DisposableResult { Name = value }.AsOutcomeAsync();
         };
@@ -158,7 +158,7 @@ public class TaskExecutionTests : IDisposable
         {
             return async () =>
             {
-                await _timeProvider.Delay(TimeSpan.FromDays(1), args.Context.CancellationToken);
+                await _timeProvider.Delay(TimeSpan.FromDays(1), args.ActionContext.CancellationToken);
                 return new DisposableResult { Name = Handled }.AsOutcome();
             };
         };
