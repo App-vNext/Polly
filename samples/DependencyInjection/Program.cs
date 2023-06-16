@@ -48,5 +48,6 @@ try
 }
 catch (TimeoutRejectedException)
 {
+    // The timeout strategy cancels the user callback and throws this exception
     Console.WriteLine("Timeout!");
 }
