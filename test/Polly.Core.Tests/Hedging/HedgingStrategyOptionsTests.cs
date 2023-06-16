@@ -18,7 +18,7 @@ public class HedgingStrategyOptionsTests
         options.MaxHedgedAttempts.Should().Be(2);
         options.OnHedging.Should().BeNull();
 
-        var action = options.HedgingActionGenerator(new HedgingActionGeneratorArguments<int>(ResilienceContext.Get(), 1, c => 99.AsOutcomeAsync()))!;
+        var action = options.HedgingActionGenerator(new HedgingActionGeneratorArguments<int>(ResilienceContext.Get(), ResilienceContext.Get(), 1, c => 99.AsOutcomeAsync()))!;
         action.Should().NotBeNull();
         (await action()).Result.Should().Be(99);
     }

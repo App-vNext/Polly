@@ -84,7 +84,7 @@ internal sealed class HedgingResilienceStrategy<T> : ResilienceStrategy
                     return outcome;
                 }
 
-                var onHedgingArgs = new OutcomeArguments<TResult, OnHedgingArguments>(context, outcome, new OnHedgingArguments(hedgingContext.LoadedTasks - 1));
+                var onHedgingArgs = new OutcomeArguments<TResult, OnHedgingArguments>(context, outcome, new OnHedgingArguments(context, hedgingContext.LoadedTasks - 1));
                 _telemetry.Report(HedgingConstants.OnHedgingEventName, onHedgingArgs);
 
                 if (OnHedging is not null)

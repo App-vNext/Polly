@@ -16,6 +16,7 @@ internal sealed record class HedgingHandler<T>(
         if (IsGeneric)
         {
             var copiedArgs = new HedgingActionGeneratorArguments<T>(
+                args.PrimaryContext,
                 args.Context,
                 args.Attempt,
                 (Func<ResilienceContext, ValueTask<Outcome<T>>>)(object)args.Callback);
@@ -29,7 +30,7 @@ internal sealed record class HedgingHandler<T>(
     private Func<ValueTask<Outcome<TResult>>>? CreateNonGenericAction<TResult>(HedgingActionGeneratorArguments<TResult> args)
     {
         var generator = (Func<HedgingActionGeneratorArguments<object>, Func<ValueTask<Outcome<object>>>?>)(object)ActionGenerator;
-        var action = generator(new HedgingActionGeneratorArguments<object>(args.Context, args.Attempt, async context =>
+        var action = generator(new HedgingActionGeneratorArguments<object>(args.PrimaryContext, args.Context, args.Attempt, async context =>
         {
             var outcome = await args.Callback(context).ConfigureAwait(context.ContinueOnCapturedContext);
             return outcome.AsOutcome();

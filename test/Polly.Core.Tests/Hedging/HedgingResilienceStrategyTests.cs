@@ -121,6 +121,42 @@ public class HedgingResilienceStrategyTests : IDisposable
     }
 
     [Fact]
+    public async Task ExecuteAsync_EnsurePrimaryContextFlows()
+    {
+        var primaryContext = ResilienceContext.Get();
+        var attempts = 0;
+        var key = new ResiliencePropertyKey<string>("primary-key");
+
+        _options.MaxHedgedAttempts = 4;
+        _options.OnHedging = args =>
+        {
+            args.Context.Should().Be(primaryContext);
+
+            if (args.Arguments.Attempt == 0)
+            {
+                args.Context.Properties.Set(key, "dummy");
+            }
+
+            attempts++;
+
+            return default;
+        };
+
+        ConfigureHedging(args =>
+        {
+            args.PrimaryContext.Properties.GetValue(key, string.Empty).Should().Be("dummy");
+            args.PrimaryContext.Should().Be(primaryContext);
+            return () => Failure.AsOutcomeAsync();
+        });
+
+        var strategy = Create();
+        var result = await strategy.ExecuteAsync(_ => new ValueTask<string>(Failure), primaryContext);
+
+        attempts.Should().Be(4);
+        primaryContext.Properties.GetValue(key, string.Empty).Should().Be("dummy");
+    }
+
+    [Fact]
     public async void ExecuteAsync_EnsureHedgedTasksCancelled_Ok()
     {
         // arrange
