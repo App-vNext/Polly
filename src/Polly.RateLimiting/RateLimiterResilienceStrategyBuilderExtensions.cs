@@ -54,7 +54,7 @@ public static class RateLimiterResilienceStrategyBuilderExtensions
 
         return builder.AddRateLimiter(new RateLimiterStrategyOptions
         {
-            RateLimiter = new ConcurrencyLimiter(options),
+            DefaultRateLimiterOptions = options
         });
     }
 
@@ -98,7 +98,15 @@ public static class RateLimiterResilienceStrategyBuilderExtensions
         Guard.NotNull(builder);
         Guard.NotNull(options);
 
-        builder.AddStrategy(context => new RateLimiterResilienceStrategy(options.RateLimiter!, options.OnRejected, context.Telemetry), options);
+        builder.AddStrategy(
+            context =>
+            {
+                return new RateLimiterResilienceStrategy(
+                    options.RateLimiter ?? new ConcurrencyLimiter(options.DefaultRateLimiterOptions),
+                    options.OnRejected,
+                    context.Telemetry);
+            },
+            options);
         return builder;
     }
 }

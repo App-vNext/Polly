@@ -26,8 +26,9 @@ public class RateLimiterResilienceStrategyBuilderExtensionsTests
         },
         builder =>
         {
-            builder.AddRateLimiter(Mock.Of<RateLimiter>());
-            AssertRateLimiter(builder, hasEvents: false);
+            var expected = Mock.Of<RateLimiter>();
+            builder.AddRateLimiter(expected);
+            AssertRateLimiter(builder, hasEvents: false, limiter => limiter.Should().Be(expected));
         }
     };
 
@@ -71,28 +72,28 @@ public class RateLimiterResilienceStrategyBuilderExtensionsTests
     [Fact]
     public void AddRateLimiter_InvalidOptions_Throws()
     {
-        new ResilienceStrategyBuilder().Invoking(b => b.AddRateLimiter(new RateLimiterStrategyOptions()))
+        new ResilienceStrategyBuilder().Invoking(b => b.AddRateLimiter(new RateLimiterStrategyOptions { DefaultRateLimiterOptions = null! }))
             .Should()
             .Throw<ValidationException>()
             .WithMessage("""
             The 'RateLimiterStrategyOptions' are invalid.
 
             Validation Errors:
-            The RateLimiter field is required.
+            The DefaultRateLimiterOptions field is required.
             """);
     }
 
     [Fact]
     public void AddGenericRateLimiter_InvalidOptions_Throws()
     {
-        new ResilienceStrategyBuilder<int>().Invoking(b => b.AddRateLimiter(new RateLimiterStrategyOptions()))
+        new ResilienceStrategyBuilder<int>().Invoking(b => b.AddRateLimiter(new RateLimiterStrategyOptions { DefaultRateLimiterOptions = null! }))
             .Should()
             .Throw<ValidationException>()
             .WithMessage("""
             The 'RateLimiterStrategyOptions' are invalid.
 
             Validation Errors:
-            The RateLimiter field is required.
+            The DefaultRateLimiterOptions field is required.
             """);
     }
 
@@ -109,7 +110,7 @@ public class RateLimiterResilienceStrategyBuilderExtensionsTests
         strategy.Should().BeOfType<RateLimiterResilienceStrategy>();
     }
 
-    private static void AssertRateLimiter(ResilienceStrategyBuilder<int> builder, bool hasEvents)
+    private static void AssertRateLimiter(ResilienceStrategyBuilder<int> builder, bool hasEvents, Action<RateLimiter>? assertLimiter = null)
     {
         var strategy = GetResilienceStrategy(builder.Build());
         strategy.Limiter.Should().NotBeNull();
@@ -125,6 +126,8 @@ public class RateLimiterResilienceStrategyBuilderExtensionsTests
         {
             strategy.OnLeaseRejected.Should().BeNull();
         }
+
+        assertLimiter?.Invoke(strategy.Limiter);
     }
 
     private static void AssertConcurrencyLimiter(ResilienceStrategyBuilder<int> builder, bool hasEvents)
