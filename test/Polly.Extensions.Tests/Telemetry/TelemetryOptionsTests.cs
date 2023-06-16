@@ -5,12 +5,12 @@ using Polly.Extensions.Telemetry;
 
 namespace Polly.Extensions.Tests.Telemetry;
 
-public class TelemetryResilienceStrategyOptionsTests
+public class TelemetryOptionsTests
 {
     [Fact]
     public void Ctor_EnsureDefaults()
     {
-        var options = new TelemetryResilienceStrategyOptions();
+        var options = new TelemetryOptions();
 
         options.Enrichers.Should().BeEmpty();
         options.LoggerFactory.Should().Be(NullLoggerFactory.Instance);

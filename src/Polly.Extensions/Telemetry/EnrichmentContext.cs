@@ -1,7 +1,7 @@
 namespace Polly.Extensions.Telemetry;
 
 /// <summary>
-/// Enrichment context used when reporting resilience telemetry. This context is passed to the registered enrichers in <see cref="TelemetryResilienceStrategyOptions.Enrichers"/>.
+/// Enrichment context used when reporting resilience telemetry. This context is passed to the registered enrichers in <see cref="TelemetryOptions.Enrichers"/>.
 /// </summary>
 public sealed partial class EnrichmentContext
 {

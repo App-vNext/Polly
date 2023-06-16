@@ -30,7 +30,7 @@ public class ResilienceTelemetryDiagnosticSourceTests : IDisposable
     {
         ResilienceTelemetryDiagnosticSource.Meter.Name.Should().Be("Polly");
         ResilienceTelemetryDiagnosticSource.Meter.Version.Should().Be("1.0");
-        new ResilienceTelemetryDiagnosticSource(new TelemetryResilienceStrategyOptions())
+        new ResilienceTelemetryDiagnosticSource(new TelemetryOptions())
             .Counter.Description.Should().Be("Tracks the number of resilience events that occurred in resilience strategies.");
     }
 
@@ -207,7 +207,7 @@ public class ResilienceTelemetryDiagnosticSourceTests : IDisposable
 
     private ResilienceTelemetryDiagnosticSource Create(Action<ICollection<Action<EnrichmentContext>>>? configureEnrichers = null)
     {
-        var options = new TelemetryResilienceStrategyOptions
+        var options = new TelemetryOptions
         {
             LoggerFactory = _loggerFactory
         };

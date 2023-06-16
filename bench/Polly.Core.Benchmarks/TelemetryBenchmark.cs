@@ -34,7 +34,7 @@ public class TelemetryBenchmark
 
         if (Telemetry)
         {
-            TelemetryResilienceStrategyOptions options = new() { LoggerFactory = NullLoggerFactory.Instance };
+            TelemetryOptions options = new() { LoggerFactory = NullLoggerFactory.Instance };
 
             if (Enrichment)
             {
