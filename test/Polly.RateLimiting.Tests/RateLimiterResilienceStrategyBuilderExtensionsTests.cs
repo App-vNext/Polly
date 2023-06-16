@@ -44,6 +44,20 @@ public class RateLimiterResilienceStrategyBuilderExtensionsTests
     }
 
     [Fact]
+    public void AddConcurrencyLimiter_InvalidOptions_Throws()
+    {
+        Assert.Throws<ArgumentException>(() =>
+        {
+            return new ResilienceStrategyBuilder().AddConcurrencyLimiter(new ConcurrencyLimiterOptions
+            {
+                PermitLimit = -10,
+                QueueLimit = -10
+            })
+            .Build();
+        });
+    }
+
+    [Fact]
     public void AddRateLimiter_AllExtensions_Ok()
     {
         foreach (var configure in Data.Select(v => v[0]).Cast<Action<ResilienceStrategyBuilder<int>>>())
