@@ -16,14 +16,15 @@ ResilienceStrategy<HttpResponseMessage> strategy = new ResilienceStrategyBuilder
     {
         FallbackAction = async _ =>
         {
-            await Task.Yield();
+            await Task.Delay(10);
 
-            // return fallback result
+            // Return fallback result
             return new Outcome<HttpResponseMessage>(new HttpResponseMessage(System.Net.HttpStatusCode.OK));
         },
         // You can also use switch expressions for succinct syntax
         ShouldHandle = outcome => outcome switch
         {
+            // The "PredicateResult.True" is shorthand to "new ValueTask<bool>(true)"
             { Exception: HttpRequestException } => PredicateResult.True,
             { Result: HttpResponseMessage response } when response.StatusCode == HttpStatusCode.InternalServerError => PredicateResult.True,
             _ => PredicateResult.False
@@ -35,9 +36,8 @@ ResilienceStrategy<HttpResponseMessage> strategy = new ResilienceStrategyBuilder
         ShouldRetry = outcome =>
         {
             // We can handle specific result
-            if (outcome.Result?.StatusCode == System.Net.HttpStatusCode.InternalServerError)
+            if (outcome.Result?.StatusCode == HttpStatusCode.InternalServerError)
             {
-                // The "PredicateResult.True" is shorthand to "new ValueTask<bool>(true)"
                 return PredicateResult.True;
             }
 
@@ -66,7 +66,8 @@ ResilienceStrategy<HttpResponseMessage> strategy = new ResilienceStrategyBuilder
 var response = await strategy.ExecuteAsync(
     async token =>
     {
-        await Task.Yield();
+        await Task.Delay(10);
+        // This causes the action fail, thus using the fallback strategy above
         return new HttpResponseMessage(HttpStatusCode.InternalServerError);
     },
     CancellationToken.None);
