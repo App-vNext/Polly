@@ -1,7 +1,6 @@
 using Microsoft.Extensions.Logging.Abstractions;
 using Polly.Extensions.Telemetry;
 using Polly.Telemetry;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace Polly.Core.Benchmarks;
 
