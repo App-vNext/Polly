@@ -1,3 +1,4 @@
+using System.Net.Http;
 using Microsoft.Extensions.Logging;
 using Polly.Extensions.Telemetry;
 
@@ -58,7 +59,8 @@ public class ResilienceTelemetryDiagnosticSourceTests : IDisposable
     public void WriteEvent_LoggingWithOutcome_Ok(bool noOutcome)
     {
         var telemetry = Create();
-        ReportEvent(telemetry, noOutcome ? null : new Outcome<object>(true));
+        using var response = new HttpResponseMessage(System.Net.HttpStatusCode.OK);
+        ReportEvent(telemetry, noOutcome ? null : new Outcome<object>(response));
 
         var messages = _logger.GetRecords(new EventId(0, "ResilienceEvent")).ToList();
         messages.Should().HaveCount(1);
@@ -69,7 +71,7 @@ public class ResilienceTelemetryDiagnosticSourceTests : IDisposable
         }
         else
         {
-            messages[0].Message.Should().Be("Resilience event occurred. EventName: 'my-event', Builder Name: 'my-builder', Strategy Name: 'my-strategy', Strategy Type: 'my-strategy-type', Strategy Key: 'my-strategy-key', Result: 'True'");
+            messages[0].Message.Should().Be("Resilience event occurred. EventName: 'my-event', Builder Name: 'my-builder', Strategy Name: 'my-strategy', Strategy Type: 'my-strategy-type', Strategy Key: 'my-strategy-key', Result: '200'");
         }
     }
 
