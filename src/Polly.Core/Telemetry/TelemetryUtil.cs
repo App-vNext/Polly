@@ -4,6 +4,8 @@ internal static class TelemetryUtil
 {
     internal const string PollyDiagnosticSource = "Polly";
 
+    internal const string ExecutionAttempt = "ExecutionAttempt";
+
     internal static readonly ResiliencePropertyKey<string> StrategyKey = new("Polly.StrategyKey");
 
     public static ResilienceStrategyTelemetry CreateTelemetry(
@@ -16,5 +18,23 @@ internal static class TelemetryUtil
         var telemetrySource = new ResilienceTelemetrySource(builderName, builderProperties, strategyName, strategyType);
 
         return new ResilienceStrategyTelemetry(telemetrySource, diagnosticSource);
+    }
+
+    public static void ReportExecutionAttempt<TResult>(
+        ResilienceStrategyTelemetry telemetry,
+        ResilienceContext context,
+        Outcome<TResult> outcome,
+        int attempt,
+        TimeSpan executionTime,
+        bool handled)
+    {
+        if (!telemetry.IsEnabled)
+        {
+            return;
+        }
+
+        var attemptArgs = ExecutionAttemptArguments.Get(attempt, executionTime, handled);
+        telemetry.Report<ExecutionAttemptArguments, TResult>(ExecutionAttempt, new(context, outcome, attemptArgs));
+        ExecutionAttemptArguments.Return(attemptArgs);
     }
 }

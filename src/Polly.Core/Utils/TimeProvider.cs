@@ -22,7 +22,7 @@ internal abstract class TimeProvider
 
     public long TimestampFrequency { get; }
 
-    public abstract long GetTimestamp();
+    public virtual long GetTimestamp() => Environment.TickCount;
 
     public TimeSpan GetElapsedTime(long startingTimestamp, long endingTimestamp) => new((long)((endingTimestamp - startingTimestamp) * _tickFrequency));
 

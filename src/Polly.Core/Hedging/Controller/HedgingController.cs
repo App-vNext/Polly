@@ -1,4 +1,5 @@
 using Polly.Hedging.Controller;
+using Polly.Telemetry;
 
 namespace Polly.Hedging.Utils;
 
@@ -10,6 +11,7 @@ internal sealed class HedgingController<T>
     private int _rentedExecutions;
 
     public HedgingController(
+        ResilienceStrategyTelemetry telemetry,
         TimeProvider provider,
         HedgingHandler<T> handler,
         int maxAttempts)
@@ -20,7 +22,7 @@ internal sealed class HedgingController<T>
         _executionPool = new ObjectPool<TaskExecution<T>>(() =>
         {
             Interlocked.Increment(ref _rentedExecutions);
-            return new TaskExecution<T>(handler, pool);
+            return new TaskExecution<T>(handler, pool, provider, telemetry);
         },
         _ =>
         {

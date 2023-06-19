@@ -21,9 +21,13 @@ internal class HedgingTimeProvider : TimeProvider
         }
     }
 
+    public Func<int> TimeStampProvider { get; set; } = () => 0;
+
     public List<DelayEntry> DelayEntries { get; } = new List<DelayEntry>();
 
     public override DateTimeOffset UtcNow => _utcNow;
+
+    public override long GetTimestamp() => TimeStampProvider();
 
     public override void CancelAfter(CancellationTokenSource source, TimeSpan delay)
     {
@@ -40,8 +44,6 @@ internal class HedgingTimeProvider : TimeProvider
 
         return entry.Source.Task;
     }
-
-    public override long GetTimestamp() => throw new NotSupportedException();
 
     public record DelayEntry(TimeSpan Delay, TaskCompletionSource<bool> Source, DateTimeOffset TimeStamp)
     {

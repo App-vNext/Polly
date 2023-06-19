@@ -1,4 +1,6 @@
+using System;
 using Polly.Hedging.Utils;
+using Polly.Telemetry;
 
 namespace Polly.Hedging.Controller;
 
@@ -21,15 +23,21 @@ internal sealed class TaskExecution<T>
 {
     private readonly ResilienceContext _cachedContext = ResilienceContext.Get();
     private readonly CancellationTokenSourcePool _cancellationTokenSourcePool;
+    private readonly TimeProvider _timeProvider;
+    private readonly ResilienceStrategyTelemetry _telemetry;
     private readonly HedgingHandler<T> _handler;
     private CancellationTokenSource? _cancellationSource;
     private CancellationTokenRegistration? _cancellationRegistration;
     private ResilienceContext? _activeContext;
+    private long _startExecutionTimestamp;
+    private long _stopExecutionTimestamp;
 
-    public TaskExecution(HedgingHandler<T> handler, CancellationTokenSourcePool cancellationTokenSourcePool)
+    public TaskExecution(HedgingHandler<T> handler, CancellationTokenSourcePool cancellationTokenSourcePool, TimeProvider timeProvider, ResilienceStrategyTelemetry telemetry)
     {
         _handler = handler;
         _cancellationTokenSourcePool = cancellationTokenSourcePool;
+        _timeProvider = timeProvider;
+        _telemetry = telemetry;
     }
 
     /// <summary>
@@ -55,6 +63,10 @@ internal sealed class TaskExecution<T>
     public HedgedTaskType Type { get; set; }
 
     public Action<TaskExecution<T>>? OnReset { get; set; }
+
+    public TimeSpan ExecutionTime => _timeProvider.GetElapsedTime(_startExecutionTimestamp, _stopExecutionTimestamp);
+
+    public int Attempt { get; private set; }
 
     public void AcceptOutcome()
     {
@@ -83,8 +95,10 @@ internal sealed class TaskExecution<T>
         TState state,
         int attempt)
     {
+        Attempt = attempt;
         Type = type;
         _cancellationSource = _cancellationTokenSourcePool.Get(System.Threading.Timeout.InfiniteTimeSpan);
+        _startExecutionTimestamp = _timeProvider.GetTimestamp();
         Properties.Replace(snapshot.OriginalProperties);
 
         if (snapshot.OriginalCancellationToken.CanBeCanceled)
@@ -109,6 +123,7 @@ internal sealed class TaskExecution<T>
             }
             catch (Exception e)
             {
+                _stopExecutionTimestamp = _timeProvider.GetTimestamp();
                 ExecutionTaskSafe = ExecuteCreateActionException<TResult>(e);
                 return true;
             }
@@ -164,9 +179,12 @@ internal sealed class TaskExecution<T>
         IsHandled = false;
         Properties.Clear();
         OnReset = null;
+        Attempt = 0;
         _activeContext = null;
         _cachedContext.Reset();
         _cancellationSource = null!;
+        _startExecutionTimestamp = 0;
+        _stopExecutionTimestamp = 0;
     }
 
     private async Task ExecuteSecondaryActionAsync<TResult>(Func<ValueTask<Outcome<TResult>>> action)
@@ -182,6 +200,7 @@ internal sealed class TaskExecution<T>
             outcome = new Outcome<TResult>(e);
         }
 
+        _stopExecutionTimestamp = _timeProvider.GetTimestamp();
         await UpdateOutcomeAsync(outcome).ConfigureAwait(Context.ContinueOnCapturedContext);
     }
 
@@ -203,6 +222,7 @@ internal sealed class TaskExecution<T>
             outcome = new Outcome<TResult>(e);
         }
 
+        _stopExecutionTimestamp = _timeProvider.GetTimestamp();
         await UpdateOutcomeAsync(outcome).ConfigureAwait(Context.ContinueOnCapturedContext);
     }
 
@@ -211,6 +231,7 @@ internal sealed class TaskExecution<T>
         var args = new OutcomeArguments<TResult, HedgingPredicateArguments>(Context, outcome, new HedgingPredicateArguments());
         Outcome = outcome.AsOutcome();
         IsHandled = await _handler.ShouldHandle.HandleAsync(args).ConfigureAwait(Context.ContinueOnCapturedContext);
+        TelemetryUtil.ReportExecutionAttempt(_telemetry, Context, outcome, Attempt, ExecutionTime, IsHandled);
     }
 
     private void PrepareContext(ref ContextSnapshot snapshot)

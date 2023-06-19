@@ -80,6 +80,32 @@ public class HedgingResilienceStrategyTests : IDisposable
         outcome.Exception!.StackTrace.Should().Contain("Execute_CancellationRequested_Throws");
     }
 
+    [Fact]
+    public void ExecutePrimaryAndSecondary_EnsureAttemptReported()
+    {
+        int timeStamp = 0;
+        _timeProvider.TimeStampProvider = () =>
+        {
+            timeStamp += 1000;
+            return timeStamp;
+        };
+        _options.MaxHedgedAttempts = 2;
+        ConfigureHedging(_ => true, args => () => "any".AsOutcomeAsync());
+        var strategy = Create();
+
+        strategy.Execute(_ => "dummy");
+
+        var attempts = _events.Select(v => v.Arguments).OfType<ExecutionAttemptArguments>().ToArray();
+
+        attempts[0].Handled.Should().BeTrue();
+        attempts[0].ExecutionTime.Should().Be(_timeProvider.GetElapsedTime(0, 1000));
+        attempts[0].Attempt.Should().Be(0);
+
+        attempts[1].Handled.Should().BeTrue();
+        attempts[1].ExecutionTime.Should().Be(_timeProvider.GetElapsedTime(0, 1000));
+        attempts[1].Attempt.Should().Be(1);
+    }
+
     [InlineData(-1)]
     [InlineData(-1000)]
     [InlineData(0)]

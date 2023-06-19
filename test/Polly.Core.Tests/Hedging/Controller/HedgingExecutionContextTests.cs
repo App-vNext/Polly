@@ -477,7 +477,8 @@ public class HedgingExecutionContextTests : IDisposable
         var pool = new ObjectPool<TaskExecution<DisposableResult>>(
             () =>
             {
-                var execution = new TaskExecution<DisposableResult>(_hedgingHandler, CancellationTokenSourcePool.Create(_timeProvider));
+                var telemetry = TestUtilities.CreateResilienceTelemetry(_ => { });
+                var execution = new TaskExecution<DisposableResult>(_hedgingHandler, CancellationTokenSourcePool.Create(_timeProvider), _timeProvider, telemetry);
                 _createdExecutions.Add(execution);
                 return execution;
             },

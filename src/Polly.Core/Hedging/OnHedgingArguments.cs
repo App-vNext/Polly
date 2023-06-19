@@ -8,4 +8,8 @@ namespace Polly.Hedging;
 /// Determines whether the outcome is available before loading the next hedged task.
 /// No outcome indicates that the previous action did not finish within the hedging delay.
 /// </param>
-public record OnHedgingArguments(int Attempt, bool HasOutcome);
+/// <param name="ExecutionTime">
+/// The execution time of hedging attempt or the hedging delay
+/// in case the attempt was not finished in time.
+/// </param>
+public record OnHedgingArguments(int Attempt, bool HasOutcome, TimeSpan ExecutionTime);

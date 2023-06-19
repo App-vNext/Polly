@@ -17,4 +17,8 @@ internal class ResilienceTelemetryTags
     public const string ExceptionName = "exception-name";
 
     public const string ExecutionHealth = "execution-health";
+
+    public const string AttemptNumber = "attempt-number";
+
+    public const string AttemptResult = "attempt-result";
 }

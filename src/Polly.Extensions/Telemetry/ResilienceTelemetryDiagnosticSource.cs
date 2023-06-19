@@ -1,6 +1,5 @@
 using System.Diagnostics.Metrics;
 using Microsoft.Extensions.Logging;
-using Polly.Extensions.Utils;
 using Polly.Telemetry;
 
 namespace Polly.Extensions.Telemetry;
@@ -22,9 +21,16 @@ internal class ResilienceTelemetryDiagnosticSource : DiagnosticSource
         Counter = Meter.CreateCounter<int>(
             "resilience-events",
             description: "Tracks the number of resilience events that occurred in resilience strategies.");
+
+        AttemptDuration = Meter.CreateHistogram<double>(
+            "execution-attempt-duration",
+            unit: "ms",
+            description: "Tracks the duration of execution attempt for retries or hedging.");
     }
 
     public Counter<int> Counter { get; }
+
+    public Histogram<double> AttemptDuration { get; }
 
     public override bool IsEnabled(string name) => true;
 
@@ -39,16 +45,8 @@ internal class ResilienceTelemetryDiagnosticSource : DiagnosticSource
         MeterEvent(args);
     }
 
-    private void MeterEvent(TelemetryEventArguments args)
+    private static void AddCommonTags(TelemetryEventArguments args, ResilienceTelemetrySource source, EnrichmentContext enrichmentContext)
     {
-        if (!Counter.Enabled)
-        {
-            return;
-        }
-
-        var source = args.Source;
-
-        var enrichmentContext = EnrichmentContext.Get(args.Context, args.Arguments, args.Outcome);
         enrichmentContext.Tags.Add(new(ResilienceTelemetryTags.EventName, args.EventName));
         enrichmentContext.Tags.Add(new(ResilienceTelemetryTags.BuilderName, source.BuilderName));
         enrichmentContext.Tags.Add(new(ResilienceTelemetryTags.StrategyName, source.StrategyName));
@@ -56,11 +54,35 @@ internal class ResilienceTelemetryDiagnosticSource : DiagnosticSource
         enrichmentContext.Tags.Add(new(ResilienceTelemetryTags.StrategyKey, source.BuilderProperties.GetValue(TelemetryUtil.StrategyKey, null!)));
         enrichmentContext.Tags.Add(new(ResilienceTelemetryTags.ResultType, args.Context.GetResultType()));
         enrichmentContext.Tags.Add(new(ResilienceTelemetryTags.ExceptionName, args.Outcome?.Exception?.GetType().FullName));
-        EnrichmentUtil.Enrich(enrichmentContext, _enrichers);
+    }
 
-        Counter.Add(1, enrichmentContext.TagsSpan);
+    private void MeterEvent(TelemetryEventArguments args)
+    {
+        var source = args.Source;
 
-        EnrichmentContext.Return(enrichmentContext);
+        if (args.Arguments is ExecutionAttemptArguments executionAttempt)
+        {
+            if (!AttemptDuration.Enabled)
+            {
+                return;
+            }
+
+            var enrichmentContext = EnrichmentContext.Get(args.Context, args.Arguments, args.Outcome);
+            AddCommonTags(args, source, enrichmentContext);
+            enrichmentContext.Tags.Add(new(ResilienceTelemetryTags.AttemptNumber, executionAttempt.Attempt));
+            enrichmentContext.Tags.Add(new(ResilienceTelemetryTags.AttemptResult, executionAttempt.Handled.AsResultString()));
+            EnrichmentUtil.Enrich(enrichmentContext, _enrichers);
+            AttemptDuration.Record(executionAttempt.ExecutionTime.TotalMilliseconds, enrichmentContext.TagsSpan);
+            EnrichmentContext.Return(enrichmentContext);
+        }
+        else if (Counter.Enabled)
+        {
+            var enrichmentContext = EnrichmentContext.Get(args.Context, args.Arguments, args.Outcome);
+            AddCommonTags(args, source, enrichmentContext);
+            EnrichmentUtil.Enrich(enrichmentContext, _enrichers);
+            Counter.Add(1, enrichmentContext.TagsSpan);
+            EnrichmentContext.Return(enrichmentContext);
+        }
     }
 
     private void LogEvent(TelemetryEventArguments args)
