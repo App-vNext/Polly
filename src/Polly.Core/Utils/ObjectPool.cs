@@ -14,6 +14,11 @@ internal sealed class ObjectPool<T>
     private T? _fastItem;
     private int _numItems;
 
+    public ObjectPool(Func<T> createFunc, Action<T> reset)
+        : this(createFunc, o => { reset(o); return true; })
+    {
+    }
+
     public ObjectPool(Func<T> createFunc, Func<T, bool> returnFunc)
         : this(_ => createFunc(), returnFunc)
     {

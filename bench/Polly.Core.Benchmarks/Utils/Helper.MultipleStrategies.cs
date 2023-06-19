@@ -1,10 +1,11 @@
 using System.Threading.RateLimiting;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Polly.Core.Benchmarks.Utils;
 
 internal static partial class Helper
 {
-    public static object CreateStrategyPipeline(PollyVersion technology) => technology switch
+    public static object CreateStrategyPipeline(PollyVersion technology, bool telemetry) => technology switch
     {
         PollyVersion.V7 => Policy.WrapAsync(
             Policy.HandleResult(Failure).Or<InvalidOperationException>().AdvancedCircuitBreakerAsync(0.5, TimeSpan.FromSeconds(30), 10, TimeSpan.FromSeconds(5)),
@@ -40,6 +41,11 @@ internal static partial class Helper
                         _ => PredicateResult.False
                     }
                 });
+
+            if (telemetry)
+            {
+                builder.EnableTelemetry(NullLoggerFactory.Instance);
+            }
         }),
         _ => throw new NotSupportedException()
     };

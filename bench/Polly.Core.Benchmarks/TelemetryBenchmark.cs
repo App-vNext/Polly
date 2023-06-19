@@ -1,3 +1,4 @@
+using System.Diagnostics.Metrics;
 using Microsoft.Extensions.Logging.Abstractions;
 using Polly.Extensions.Telemetry;
 using Polly.Telemetry;
@@ -7,12 +8,21 @@ namespace Polly.Core.Benchmarks;
 public class TelemetryBenchmark
 {
     private ResilienceStrategy? _strategy;
+    private MeterListener? _meterListener;
 
     [GlobalSetup]
     public void Prepare()
     {
         _strategy = Build(new ResilienceStrategyBuilder());
+
+        if (Telemetry)
+        {
+            _meterListener = MeteringUtil.ListenPollyMetrics();
+        }
     }
+
+    [GlobalCleanup]
+    public void Cleanup() => _meterListener?.Dispose();
 
     [Params(true, false)]
     public bool Telemetry { get; set; }
@@ -72,5 +82,4 @@ public class TelemetryBenchmark
             return callback(context, state);
         }
     }
-
 }

@@ -1,5 +1,6 @@
 using System.Diagnostics.Metrics;
 using Microsoft.Extensions.Logging;
+using Polly.Extensions.Telemetry;
 using Polly.Extensions.Utils;
 using Polly.Utils;
 
@@ -71,26 +72,33 @@ internal sealed class TelemetryResilienceStrategy : ResilienceStrategy
             duration.TotalMilliseconds,
             outcome.Exception);
 
-        var tags = new TagList
-        {
-            { ResilienceTelemetryTags.BuilderName, _builderName },
-            { ResilienceTelemetryTags.StrategyKey, _strategyKey },
-            { ResilienceTelemetryTags.ResultType, context.GetResultType() },
-            { ResilienceTelemetryTags.ExceptionName, outcome.Exception?.GetType().FullName },
-            { ResilienceTelemetryTags.ExecutionHealth, context.GetExecutionHealth() }
-        };
-
-        EnrichmentUtil.Enrich(ref tags, _enrichers, context, CreateOutcome(outcome), resilienceArguments: null);
-
-        ExecutionDuration.Record(duration.TotalMilliseconds, tags);
+        RecordDuration(context, outcome, duration);
 
         return outcome;
     }
 
-    private static Outcome<object> CreateOutcome<TResult>(Outcome<TResult> outcome) =>
-        outcome.HasResult ?
-            new Outcome<object>(outcome.Result) :
-            new Outcome<object>(outcome.Exception!);
+    private static Outcome<object> CreateOutcome<TResult>(Outcome<TResult> outcome) => outcome.HasResult ?
+        new Outcome<object>(outcome.Result) :
+        new Outcome<object>(outcome.Exception!);
+
+    private void RecordDuration<TResult>(ResilienceContext context, Outcome<TResult> outcome, TimeSpan duration)
+    {
+        if (!ExecutionDuration.Enabled)
+        {
+            return;
+        }
+
+        var enrichmentContext = EnrichmentContext.Get(context, null, CreateOutcome(outcome));
+        enrichmentContext.Tags.Add(new(ResilienceTelemetryTags.BuilderName, _builderName));
+        enrichmentContext.Tags.Add(new(ResilienceTelemetryTags.StrategyKey, _strategyKey));
+        enrichmentContext.Tags.Add(new(ResilienceTelemetryTags.ResultType, context.GetResultType()));
+        enrichmentContext.Tags.Add(new(ResilienceTelemetryTags.ExceptionName, outcome.Exception?.GetType().FullName));
+        enrichmentContext.Tags.Add(new(ResilienceTelemetryTags.ExecutionHealth, context.GetExecutionHealth()));
+        EnrichmentUtil.Enrich(enrichmentContext, _enrichers);
+
+        ExecutionDuration.Record(duration.TotalMilliseconds, enrichmentContext.TagsSpan);
+        EnrichmentContext.Return(enrichmentContext);
+    }
 
     private object? ExpandOutcome<TResult>(ResilienceContext context, Outcome<TResult> outcome)
     {
