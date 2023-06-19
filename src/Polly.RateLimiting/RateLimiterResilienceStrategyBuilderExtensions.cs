@@ -101,7 +101,7 @@ public static class RateLimiterResilienceStrategyBuilderExtensions
         Guard.NotNull(builder);
         Guard.NotNull(options);
 
-        builder.AddStrategy(
+        return builder.AddStrategy(
             context =>
             {
                 return new RateLimiterResilienceStrategy(
@@ -110,6 +110,5 @@ public static class RateLimiterResilienceStrategyBuilderExtensions
                     context.Telemetry);
             },
             options);
-        return builder;
     }
 }

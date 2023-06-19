@@ -27,6 +27,9 @@ public class RetryStrategyOptions<TResult> : ResilienceStrategyOptions
     /// Gets or sets the type of the back-off.
     /// </summary>
     /// <remarks>
+    /// <para>
+    /// This property is ignored when <see cref="RetryDelayGenerator"/> is set.
+    /// </para>
     /// Defaults to <see cref="RetryBackoffType.Constant"/>.
     /// </remarks>
     public RetryBackoffType BackoffType { get; set; } = RetryConstants.DefaultBackoffType;
@@ -51,6 +54,9 @@ public class RetryStrategyOptions<TResult> : ResilienceStrategyOptions
     /// </item>
     /// </list>
     /// <para>
+    /// This property is ignored when <see cref="RetryDelayGenerator"/> is set.
+    /// </para>
+    /// <para>
     /// Defaults to 2 seconds.
     /// </para>
     /// </remarks>
@@ -71,6 +77,9 @@ public class RetryStrategyOptions<TResult> : ResilienceStrategyOptions
     /// Gets or sets the generator instance that is used to calculate the time between retries.
     /// </summary>
     /// <remarks>
+    /// <para>
+    /// The generator has precedence over <see cref="BaseDelay"/> and <see cref="BackoffType"/>.
+    /// </para>
     /// Defaults to <see langword="null"/>.
     /// </remarks>
     public Func<OutcomeArguments<TResult, RetryDelayArguments>, ValueTask<TimeSpan>>? RetryDelayGenerator { get; set; }

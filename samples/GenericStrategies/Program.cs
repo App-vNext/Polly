@@ -66,7 +66,7 @@ ResilienceStrategy<HttpResponseMessage> strategy = new ResilienceStrategyBuilder
 var response = await strategy.ExecuteAsync(
     async token =>
     {
-        await Task.Delay(10);
+        await Task.Delay(10, token);
         // This causes the action fail, thus using the fallback strategy above
         return new HttpResponseMessage(HttpStatusCode.InternalServerError);
     },

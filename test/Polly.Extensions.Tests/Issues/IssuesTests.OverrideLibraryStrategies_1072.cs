@@ -78,7 +78,7 @@ public partial class IssuesTests
     {
         private readonly ResilienceStrategy _strategy;
 
-        public LibraryApi(ResilienceStrategyProvider<string> provider) => _strategy = provider.Get("library-strategy");
+        public LibraryApi(ResilienceStrategyProvider<string> provider) => _strategy = provider.GetStrategy("library-strategy");
 
         public void ExecuteLibrary(Action execute) => _strategy.Execute(execute);
     }

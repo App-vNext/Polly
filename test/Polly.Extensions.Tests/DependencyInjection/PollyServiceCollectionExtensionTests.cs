@@ -75,13 +75,13 @@ public class PollyServiceCollectionExtensionTests
 
         var serviceProvider = _services.BuildServiceProvider();
 
-        serviceProvider.GetRequiredService<ResilienceStrategyRegistry<string>>().Get(Key).Should().NotBeNull();
-        serviceProvider.GetRequiredService<ResilienceStrategyRegistry<string>>().Get<string>(Key).Should().NotBeNull();
-        serviceProvider.GetRequiredService<ResilienceStrategyRegistry<string>>().Get<int>(Key).Should().NotBeNull();
+        serviceProvider.GetRequiredService<ResilienceStrategyRegistry<string>>().GetStrategy(Key).Should().NotBeNull();
+        serviceProvider.GetRequiredService<ResilienceStrategyRegistry<string>>().GetStrategy<string>(Key).Should().NotBeNull();
+        serviceProvider.GetRequiredService<ResilienceStrategyRegistry<string>>().GetStrategy<int>(Key).Should().NotBeNull();
 
-        serviceProvider.GetRequiredService<ResilienceStrategyRegistry<int>>().Get(10).Should().NotBeNull();
-        serviceProvider.GetRequiredService<ResilienceStrategyRegistry<int>>().Get<string>(10).Should().NotBeNull();
-        serviceProvider.GetRequiredService<ResilienceStrategyRegistry<int>>().Get<int>(10).Should().NotBeNull();
+        serviceProvider.GetRequiredService<ResilienceStrategyRegistry<int>>().GetStrategy(10).Should().NotBeNull();
+        serviceProvider.GetRequiredService<ResilienceStrategyRegistry<int>>().GetStrategy<string>(10).Should().NotBeNull();
+        serviceProvider.GetRequiredService<ResilienceStrategyRegistry<int>>().GetStrategy<int>(10).Should().NotBeNull();
     }
 
     [InlineData(true)]
@@ -103,7 +103,7 @@ public class PollyServiceCollectionExtensionTests
                 asserted = true;
             });
 
-            CreateProvider().Get<string>(Key);
+            CreateProvider().GetStrategy<string>(Key);
         }
         else
         {
@@ -116,7 +116,7 @@ public class PollyServiceCollectionExtensionTests
                 asserted = true;
             });
 
-            CreateProvider().Get(Key);
+            CreateProvider().GetStrategy(Key);
         }
 
         asserted.Should().BeTrue();
@@ -142,7 +142,7 @@ public class PollyServiceCollectionExtensionTests
             },
             new TestResilienceStrategyOptions()));
 
-        CreateProvider().Get(Key);
+        CreateProvider().GetStrategy(Key);
 
         var diagSource = telemetry!.GetType().GetProperty("DiagnosticSource", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(telemetry);
         diagSource.Should().BeOfType<ResilienceTelemetryDiagnosticSource>();
@@ -171,7 +171,7 @@ public class PollyServiceCollectionExtensionTests
             asserted = true;
         });
 
-        CreateProvider().Get(Key);
+        CreateProvider().GetStrategy(Key);
 
         asserted.Should().BeTrue();
     }
@@ -194,8 +194,8 @@ public class PollyServiceCollectionExtensionTests
 
         var provider = CreateProvider();
 
-        var strategy = provider.Get(Key);
-        provider.Get("my-strategy").Should().BeSameAs(provider.Get("my-strategy"));
+        var strategy = provider.GetStrategy(Key);
+        provider.GetStrategy("my-strategy").Should().BeSameAs(provider.GetStrategy("my-strategy"));
     }
 
     [InlineData(true)]
@@ -210,13 +210,13 @@ public class PollyServiceCollectionExtensionTests
         {
             AddResilienceStrategy<string>(Key, _ => firstCalled = true);
             AddResilienceStrategy<string>(Key, _ => secondCalled = true);
-            CreateProvider().Get<string>(Key);
+            CreateProvider().GetStrategy<string>(Key);
         }
         else
         {
             AddResilienceStrategy(Key, _ => firstCalled = true);
             AddResilienceStrategy(Key, _ => secondCalled = true);
-            CreateProvider().Get(Key);
+            CreateProvider().GetStrategy(Key);
         }
 
         firstCalled.Should().BeFalse();
@@ -243,9 +243,9 @@ public class PollyServiceCollectionExtensionTests
 
                 return new object[]
                 {
-                    provider.Get(name),
-                    provider.Get<string>(name),
-                    provider.Get<int>(name)
+                    provider.GetStrategy(name),
+                    provider.GetStrategy<string>(name),
+                    provider.GetStrategy<int>(name)
                 };
             })
             .Distinct()
