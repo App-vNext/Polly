@@ -1,4 +1,4 @@
-namespace Polly.Core.Tests.Issues;
+namespace Polly.Extensions.Tests.Issues;
 
 public partial class IssuesTests
 {

@@ -3,7 +3,7 @@ using Polly.CircuitBreaker;
 using Polly.Extensions.DependencyInjection;
 using Polly.Registry;
 
-namespace Polly.Core.Tests.Issues;
+namespace Polly.Extensions.Tests.Issues;
 
 public partial class IssuesTests
 {
