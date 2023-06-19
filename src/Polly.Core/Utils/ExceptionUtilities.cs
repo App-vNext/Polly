@@ -6,8 +6,9 @@ internal static class ExceptionUtilities
 {
 #if !NET6_0_OR_GREATER
     private static readonly FieldInfo StackTraceString = typeof(Exception).GetField("_stackTraceString", BindingFlags.NonPublic | BindingFlags.Instance)!;
-    private static readonly Type TraceFormat = Type.GetType("System.Diagnostics.StackTrace")!.GetNestedType("TraceFormat", BindingFlags.NonPublic)!;
+    private static readonly Type TraceFormat = typeof(StackTrace).GetNestedType("TraceFormat", BindingFlags.NonPublic)!;
     private static readonly MethodInfo TraceToString = typeof(StackTrace).GetMethod("ToString", BindingFlags.NonPublic | BindingFlags.Instance, null, new[] { TraceFormat }, null)!;
+    private static readonly object[] TraceToStringArgs = new[] { Enum.GetValues(TraceFormat).GetValue(0) };
 #endif
 
     public static T TrySetStackTrace<T>(this T exception)
@@ -29,7 +30,7 @@ internal static class ExceptionUtilities
 #if !NET6_0_OR_GREATER
     private static void SetStackTrace(this Exception target, StackTrace stack)
     {
-        var getStackTraceString = TraceToString.Invoke(stack, new[] { Enum.GetValues(TraceFormat).GetValue(0) });
+        var getStackTraceString = TraceToString.Invoke(stack, TraceToStringArgs);
         StackTraceString.SetValue(target, getStackTraceString);
     }
 #endif

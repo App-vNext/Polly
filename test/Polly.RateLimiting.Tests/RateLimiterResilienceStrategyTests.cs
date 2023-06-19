@@ -42,7 +42,7 @@ public class RateLimiterResilienceStrategyTests
     [InlineData(true, true)]
     [InlineData(true, false)]
     [Theory]
-    public void Execute_LeaseRejected(bool hasEvents, bool hasRetryAfter)
+    public async Task Execute_LeaseRejected(bool hasEvents, bool hasRetryAfter)
     {
         _diagnosticSource.Setup(v => v.IsEnabled("OnRateLimiterRejected")).Returns(true);
         _diagnosticSource.Setup(v => v.Write("OnRateLimiterRejected", It.Is<object>(obj => obj != null)));
@@ -70,13 +70,17 @@ public class RateLimiterResilienceStrategyTests
         }
 
         var strategy = Create();
+        var context = ResilienceContext.Get();
+        context.CancellationToken = cts.Token;
+        var outcome = await strategy.ExecuteOutcomeAsync((_, _) => new ValueTask<Outcome<string>>(new Outcome<string>("dummy")), context, "state");
 
-        var assertion = strategy
-            .Invoking(s => s.Execute(_ => { }, cts.Token))
+        outcome.Exception
             .Should()
-            .Throw<RateLimiterRejectedException>()
-            .And
-            .RetryAfter.Should().Be((TimeSpan?)metadata);
+            .BeOfType<RateLimiterRejectedException>().Subject
+            .RetryAfter
+            .Should().Be((TimeSpan?)metadata);
+
+        outcome.Exception!.StackTrace.Should().Contain("Execute_LeaseRejected");
 
         _limiter.VerifyAll();
         _lease.VerifyAll();

@@ -72,10 +72,12 @@ public class HedgingResilienceStrategyTests : IDisposable
 
         var strategy = Create();
         _cts.Cancel();
+        var context = ResilienceContext.Get();
+        context.CancellationToken = _cts.Token;
 
-        await strategy.Invoking(s => s.ExecuteAsync(_ => new ValueTask<string>(Success), _cts.Token).AsTask())
-            .Should()
-            .ThrowAsync<OperationCanceledException>();
+        var outcome = await strategy.ExecuteOutcomeAsync((c, t) => "dummy".AsOutcomeAsync(), context, "state");
+        outcome.Exception.Should().BeOfType<OperationCanceledException>();
+        outcome.Exception!.StackTrace.Should().Contain("Execute_CancellationRequested_Throws");
     }
 
     [InlineData(-1)]

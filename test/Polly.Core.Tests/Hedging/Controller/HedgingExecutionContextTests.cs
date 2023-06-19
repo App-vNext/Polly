@@ -309,7 +309,7 @@ public class HedgingExecutionContextTests : IDisposable
         context.Tasks.First(v => v.Type == type).AcceptOutcome();
 
         // act
-        await context.CompleteAsync();
+        await context.DisposeAsync();
 
         // assert
         _resilienceContext.Properties.Should().BeSameAs(originalProps);
@@ -331,7 +331,7 @@ public class HedgingExecutionContextTests : IDisposable
         var props = _resilienceContext.Properties;
         var context = Create();
         context.Initialize(_resilienceContext);
-        await context.CompleteAsync();
+        await context.DisposeAsync();
         _resilienceContext.Properties.Should().BeSameAs(props);
     }
 
@@ -343,7 +343,7 @@ public class HedgingExecutionContextTests : IDisposable
         ConfigureSecondaryTasks(TimeSpan.Zero);
         await ExecuteAllTasksAsync(context, 2);
 
-        context.Invoking(c => c.CompleteAsync().Wait()).Should().NotThrow();
+        context.Invoking(c => c.DisposeAsync().AsTask().Wait()).Should().NotThrow();
     }
 
     [Fact]
@@ -356,7 +356,7 @@ public class HedgingExecutionContextTests : IDisposable
         context.Tasks[0].AcceptOutcome();
         context.Tasks[1].AcceptOutcome();
 
-        context.Invoking(c => c.CompleteAsync().Wait()).Should().NotThrow();
+        context.Invoking(c => c.DisposeAsync().AsTask().Wait()).Should().NotThrow();
     }
 
     [Fact]
@@ -386,7 +386,7 @@ public class HedgingExecutionContextTests : IDisposable
         pending.Wait(10).Should().BeFalse();
 
         context.Tasks[0].AcceptOutcome();
-        await context.CompleteAsync();
+        await context.DisposeAsync();
 
         await pending;
 
@@ -403,7 +403,7 @@ public class HedgingExecutionContextTests : IDisposable
         await ExecuteAllTasksAsync(context, 2);
         context.Tasks[0].AcceptOutcome();
 
-        await context.CompleteAsync();
+        await context.DisposeAsync();
 
         context.LoadedTasks.Should().Be(0);
         context.Snapshot.Context.Should().BeNull();
