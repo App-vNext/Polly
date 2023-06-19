@@ -35,7 +35,7 @@ public static class ResilienceStrategyBuilderExtensions
     /// <returns>The same builder instance.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="builder"/>, <paramref name="factory"/> or <paramref name="options"/> is <see langword="null"/>.</exception>
     /// <exception cref="InvalidOperationException">Thrown when this builder was already used to create a strategy. The builder cannot be modified after it has been used.</exception>
-    /// <exception cref="ValidationException">Thrown when the <paramref name="options"/> are invalid.</exception>
+    /// <exception cref="ValidationException">Thrown when <paramref name="options"/> is invalid.</exception>
     public static TBuilder AddStrategy<TBuilder>(this TBuilder builder, Func<ResilienceStrategyBuilderContext, ResilienceStrategy> factory, ResilienceStrategyOptions options)
         where TBuilder : ResilienceStrategyBuilderBase
     {
