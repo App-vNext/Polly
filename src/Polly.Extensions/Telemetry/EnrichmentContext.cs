@@ -37,6 +37,7 @@ public sealed partial class EnrichmentContext
     {
         get
         {
+            // stryker disable once equality : no means to test this
             if (Tags.Count > _tagsArray.Length)
             {
                 Array.Resize(ref _tagsArray, Tags.Count);
