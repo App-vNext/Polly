@@ -39,7 +39,7 @@ public partial class IssuesTests
 
         // retrieve the provider
         var strategyProvider = serviceCollection.BuildServiceProvider().GetRequiredService<ResilienceStrategyProvider<string>>();
-        var strategy = strategyProvider.Get("my-strategy");
+        var strategy = strategyProvider.GetStrategy("my-strategy");
 
         // now trigger the circuit breaker by evaluating multiple result types
         for (int i = 0; i < 10; i++)

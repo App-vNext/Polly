@@ -17,8 +17,8 @@ public class ResilienceStrategyProviderBenchmark
     }
 
     [Benchmark]
-    public void Get_Ok() => _provider!.Get("dummy");
+    public void Get_Ok() => _provider!.GetStrategy("dummy");
 
     [Benchmark]
-    public void Get_Generic_Ok() => _provider!.Get<string>("dummy");
+    public void Get_Generic_Ok() => _provider!.GetStrategy<string>("dummy");
 }

@@ -102,7 +102,7 @@ public static class CircuitBreakerResilienceStrategyBuilderExtensions
     private static TBuilder AddAdvancedCircuitBreakerCore<TBuilder, TResult>(this TBuilder builder, AdvancedCircuitBreakerStrategyOptions<TResult> options)
         where TBuilder : ResilienceStrategyBuilderBase
     {
-        builder.AddStrategy(
+        return builder.AddStrategy(
             context =>
             {
                 var behavior = new AdvancedCircuitBehavior(
@@ -113,15 +113,12 @@ public static class CircuitBreakerResilienceStrategyBuilderExtensions
                 return CreateStrategy(context, options, behavior);
             },
             options);
-
-        return builder;
     }
 
     private static TBuilder AddSimpleCircuitBreakerCore<TBuilder, TResult>(this TBuilder builder, SimpleCircuitBreakerStrategyOptions<TResult> options)
         where TBuilder : ResilienceStrategyBuilderBase
     {
-        builder.AddStrategy(context => CreateStrategy(context, options, new ConsecutiveFailuresCircuitBehavior(options.FailureThreshold)), options);
-        return builder;
+        return builder.AddStrategy(context => CreateStrategy(context, options, new ConsecutiveFailuresCircuitBehavior(options.FailureThreshold)), options);
     }
 
     internal static CircuitBreakerResilienceStrategy CreateStrategy<TResult>(ResilienceStrategyBuilderContext context, CircuitBreakerStrategyOptions<TResult> options, CircuitBehavior behavior)

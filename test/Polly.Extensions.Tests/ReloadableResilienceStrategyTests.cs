@@ -41,7 +41,7 @@ public class ReloadableResilienceStrategyTests
         });
 
         var serviceProvider = services.BuildServiceProvider();
-        var strategy = serviceProvider.GetRequiredService<ResilienceStrategyProvider<string>>().Get("my-strategy");
+        var strategy = serviceProvider.GetRequiredService<ResilienceStrategyProvider<string>>().GetStrategy("my-strategy");
         var context = ResilienceContext.Get();
         var registry = serviceProvider.GetRequiredService<OptionsReloadHelperRegistry<string>>();
 

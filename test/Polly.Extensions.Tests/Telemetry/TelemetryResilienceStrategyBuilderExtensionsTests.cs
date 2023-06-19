@@ -12,16 +12,16 @@ public class TelemetryResilienceStrategyBuilderExtensionsTests
     [InlineData(true)]
     [InlineData(false)]
     [Theory]
-    public void EnableTelemetry_EnsureDiagnosticSourceUpdated(bool generic)
+    public void ConfigureTelemetry_EnsureDiagnosticSourceUpdated(bool generic)
     {
         if (generic)
         {
-            _genericBuilder.EnableTelemetry(NullLoggerFactory.Instance);
+            _genericBuilder.ConfigureTelemetry(NullLoggerFactory.Instance);
             _genericBuilder.DiagnosticSource.Should().BeOfType<ResilienceTelemetryDiagnosticSource>();
         }
         else
         {
-            _builder.EnableTelemetry(NullLoggerFactory.Instance);
+            _builder.ConfigureTelemetry(NullLoggerFactory.Instance);
             _builder.DiagnosticSource.Should().BeOfType<ResilienceTelemetryDiagnosticSource>();
             _builder.AddStrategy(new TestResilienceStrategy()).Build().Should().NotBeOfType<TestResilienceStrategy>();
         }
@@ -30,18 +30,18 @@ public class TelemetryResilienceStrategyBuilderExtensionsTests
     [InlineData(true)]
     [InlineData(false)]
     [Theory]
-    public void EnableTelemetry_EnsureLogging(bool generic)
+    public void ConfigureTelemetry_EnsureLogging(bool generic)
     {
         using var factory = TestUtilities.CreateLoggerFactory(out var fakeLogger);
 
         if (generic)
         {
-            _genericBuilder.EnableTelemetry(factory);
+            _genericBuilder.ConfigureTelemetry(factory);
             _genericBuilder.AddStrategy(new TestResilienceStrategy()).Build().Execute(_ => string.Empty);
         }
         else
         {
-            _builder.EnableTelemetry(factory);
+            _builder.ConfigureTelemetry(factory);
             _builder.AddStrategy(new TestResilienceStrategy()).Build().Execute(_ => { });
         }
 
@@ -50,10 +50,10 @@ public class TelemetryResilienceStrategyBuilderExtensionsTests
     }
 
     [Fact]
-    public void EnableTelemetry_InvalidOptions_Throws()
+    public void ConfigureTelemetry_InvalidOptions_Throws()
     {
         _builder
-            .Invoking(b => b.EnableTelemetry(new TelemetryOptions
+            .Invoking(b => b.ConfigureTelemetry(new TelemetryOptions
             {
                 LoggerFactory = null!,
             })).Should()
@@ -66,7 +66,7 @@ public class TelemetryResilienceStrategyBuilderExtensionsTests
             """);
 
         _genericBuilder
-            .Invoking(b => b.EnableTelemetry(new TelemetryOptions
+            .Invoking(b => b.ConfigureTelemetry(new TelemetryOptions
             {
                 LoggerFactory = null!,
             })).Should()

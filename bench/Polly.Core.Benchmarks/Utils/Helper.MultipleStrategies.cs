@@ -44,7 +44,7 @@ internal static partial class Helper
 
             if (telemetry)
             {
-                builder.EnableTelemetry(NullLoggerFactory.Instance);
+                builder.ConfigureTelemetry(NullLoggerFactory.Instance);
             }
         }),
         _ => throw new NotSupportedException()

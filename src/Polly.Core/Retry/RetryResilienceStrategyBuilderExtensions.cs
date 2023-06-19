@@ -78,7 +78,7 @@ public static class RetryResilienceStrategyBuilderExtensions
     private static TBuilder AddRetryCore<TBuilder, TResult>(this TBuilder builder, RetryStrategyOptions<TResult> options)
         where TBuilder : ResilienceStrategyBuilderBase
     {
-        builder.AddStrategy(context =>
+        return builder.AddStrategy(context =>
             new RetryResilienceStrategy(
                 options.BaseDelay,
                 options.BackoffType,
@@ -90,8 +90,6 @@ public static class RetryResilienceStrategyBuilderExtensions
                 context.Telemetry,
                 RandomUtil.Instance),
             options);
-
-        return builder;
     }
 
     private static void ConfigureShouldRetry<TResult>(Action<PredicateBuilder<TResult>> shouldRetry, RetryStrategyOptions<TResult> options)
