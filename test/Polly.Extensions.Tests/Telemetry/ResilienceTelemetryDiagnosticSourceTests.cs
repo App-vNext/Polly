@@ -151,50 +151,39 @@ public class ResilienceTelemetryDiagnosticSourceTests : IDisposable
         }
     }
 
-    [InlineData(true)]
-    [InlineData(false)]
+    [InlineData(1)]
+    [InlineData(100)]
     [Theory]
-    public void WriteEvent_MeteringWithEnrichers_Ok(bool noOutcome)
+    public void WriteEvent_MeteringWithEnrichers_Ok(int count)
     {
+        const int DefaultDimensions = 7;
         var telemetry = Create(enrichers =>
         {
             enrichers.Add(context =>
             {
-                if (noOutcome)
+                for (int i = 0; i < count; i++)
                 {
-                    context.Outcome.Should().BeNull();
+                    context.Tags.Add(new KeyValuePair<string, object?>($"custom-{i}", $"custom-{i}-value"));
                 }
-                else
-                {
-                    context.Outcome!.Value.Result.Should().Be(true);
-                }
-
-                context.Context.Should().NotBeNull();
-                context.Arguments.Should().BeOfType<TestArguments>();
-                context.Tags.Add(new KeyValuePair<string, object?>("custom-1", "custom-1-value"));
             });
 
             enrichers.Add(context =>
             {
-                context.Tags.Add(new KeyValuePair<string, object?>("custom-2", "custom-2-value"));
+                context.Tags.Add(new KeyValuePair<string, object?>("other", "other-value"));
             });
         });
 
-        ReportEvent(telemetry, noOutcome ? null : new Outcome<object>(true));
-        ReportEvent(telemetry, noOutcome ? null : new Outcome<object>(true));
+        ReportEvent(telemetry, new Outcome<object>(true));
 
         var events = GetEvents("resilience-events");
         var ev = events[0];
-        ev.Count.Should().Be(9);
+        ev.Count.Should().Be(DefaultDimensions + count + 1);
+        ev["other"].Should().Be("other-value");
 
-        ev["custom-1"].Should().Be("custom-1-value");
-        ev["custom-2"].Should().Be("custom-2-value");
-
-        ev = events[1];
-        ev.Count.Should().Be(9);
-
-        ev["custom-1"].Should().Be("custom-1-value");
-        ev["custom-2"].Should().Be("custom-2-value");
+        for (int i = 0; i < count; i++)
+        {
+            ev[$"custom-{i}"].Should().Be($"custom-{i}-value");
+        }
     }
 
     [Fact]
