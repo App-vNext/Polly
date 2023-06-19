@@ -72,10 +72,12 @@ public class HedgingResilienceStrategyTests : IDisposable
 
         var strategy = Create();
         _cts.Cancel();
+        var context = ResilienceContext.Get();
+        context.CancellationToken = _cts.Token;
 
-        await strategy.Invoking(s => s.ExecuteAsync(_ => new ValueTask<string>(Success), _cts.Token).AsTask())
-            .Should()
-            .ThrowAsync<OperationCanceledException>();
+        var outcome = await strategy.ExecuteOutcomeAsync((_, _) => "dummy".AsOutcomeAsync(), context, "state");
+        outcome.Exception.Should().BeOfType<OperationCanceledException>();
+        outcome.Exception!.StackTrace.Should().Contain("Execute_CancellationRequested_Throws");
     }
 
     [InlineData(-1)]
@@ -259,7 +261,7 @@ public class HedgingResilienceStrategyTests : IDisposable
         var strategy = Create(handler);
 
         // act
-        var result = await strategy.ExecuteAsync(async token =>
+        var resultTask = strategy.ExecuteAsync(async token =>
         {
 #pragma warning disable CA2016 // Forward the 'CancellationToken' parameter to methods
             await _timeProvider.Delay(LongDelay);
@@ -271,6 +273,8 @@ public class HedgingResilienceStrategyTests : IDisposable
         _timeProvider.Advance(LongDelay);
 
         await primaryResult.WaitForDisposalAsync();
+        await resultTask;
+
         primaryResult.IsDisposed.Should().BeTrue();
         secondaryResult.IsDisposed.Should().BeFalse();
     }

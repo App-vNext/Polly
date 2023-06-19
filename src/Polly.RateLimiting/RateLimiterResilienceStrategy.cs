@@ -51,6 +51,8 @@ internal sealed class RateLimiterResilienceStrategy : ResilienceStrategy
             await OnLeaseRejected(new OnRateLimiterRejectedArguments(context, lease, retryAfter)).ConfigureAwait(context.ContinueOnCapturedContext);
         }
 
-        return new Outcome<TResult>(retryAfter.HasValue ? new RateLimiterRejectedException(retryAfter.Value) : new RateLimiterRejectedException());
+        var exception = retryAfter.HasValue ? new RateLimiterRejectedException(retryAfter.Value) : new RateLimiterRejectedException();
+
+        return new Outcome<TResult>(exception.TrySetStackTrace());
     }
 }

@@ -15,7 +15,7 @@ public class RetryResilienceStrategyTests
     public RetryResilienceStrategyTests()
     {
         _telemetry = TestUtilities.CreateResilienceTelemetry(_diagnosticSource.Object);
-        _options.ShouldRetry = _ => new ValueTask<bool>(false);
+        _options.ShouldHandle = _ => new ValueTask<bool>(false);
     }
 
     [Fact]
@@ -49,7 +49,7 @@ public class RetryResilienceStrategyTests
     {
         using var cancellationToken = new CancellationTokenSource();
 
-        _options.ShouldRetry = _ => PredicateResult.True;
+        _options.ShouldHandle = _ => PredicateResult.True;
         _options.OnRetry = _ =>
         {
             cancellationToken.Cancel();
@@ -73,7 +73,7 @@ public class RetryResilienceStrategyTests
         _options.RetryCount = 5;
         SetupNoDelay();
         _timeProvider.SetupAnyDelay();
-        _options.ShouldRetry = _ => PredicateResult.True;
+        _options.ShouldHandle = _ => PredicateResult.True;
         var results = new List<DisposableResult>();
         var sut = CreateSut();
 
@@ -99,7 +99,7 @@ public class RetryResilienceStrategyTests
     {
         int calls = 0;
         _options.OnRetry = _ => { calls++; return default; };
-        _options.ShouldRetry = args => args.Outcome.ResultPredicateAsync(0);
+        _options.ShouldHandle = args => args.Outcome.ResultPredicateAsync(0);
         _options.RetryCount = 12;
         SetupNoDelay();
         var sut = CreateSut();
@@ -120,7 +120,7 @@ public class RetryResilienceStrategyTests
             return default;
         };
 
-        _options.ShouldRetry = args => args.Outcome.ExceptionPredicateAsync<InvalidOperationException>();
+        _options.ShouldHandle = args => args.Outcome.ExceptionPredicateAsync<InvalidOperationException>();
         _options.RetryCount = 3;
         SetupNoDelay();
         var sut = CreateSut();
@@ -145,7 +145,7 @@ public class RetryResilienceStrategyTests
             calls++;
             return default;
         };
-        _options.ShouldRetry = args => args.Outcome.ResultPredicateAsync(0);
+        _options.ShouldHandle = args => args.Outcome.ResultPredicateAsync(0);
         _options.RetryCount = RetryStrategyOptions.InfiniteRetryCount;
         SetupNoDelay();
         var sut = CreateSut();
@@ -160,7 +160,7 @@ public class RetryResilienceStrategyTests
     {
         int calls = 0;
         _options.OnRetry = _ => { calls++; return default; };
-        _options.ShouldRetry = args => args.Outcome.ResultPredicateAsync(0);
+        _options.ShouldHandle = args => args.Outcome.ResultPredicateAsync(0);
         _options.RetryCount = 3;
         _options.BackoffType = RetryBackoffType.Constant;
         _options.RetryDelayGenerator = _ => new ValueTask<TimeSpan>(TimeSpan.FromMilliseconds(123));
@@ -188,7 +188,7 @@ public class RetryResilienceStrategyTests
             return default;
         };
 
-        _options.ShouldRetry = args => args.Outcome.ResultPredicateAsync(0);
+        _options.ShouldHandle = args => args.Outcome.ResultPredicateAsync(0);
         _options.RetryCount = 3;
         _options.BackoffType = RetryBackoffType.Linear;
         _timeProvider.SetupAnyDelay();
@@ -215,7 +215,7 @@ public class RetryResilienceStrategyTests
 
         _diagnosticSource.Setup(v => v.IsEnabled("OnRetry")).Returns(true);
 
-        _options.ShouldRetry = args => args.Outcome.ResultPredicateAsync(0);
+        _options.ShouldHandle = args => args.Outcome.ResultPredicateAsync(0);
         _options.RetryCount = 3;
         _options.BackoffType = RetryBackoffType.Linear;
         _timeProvider.SetupAnyDelay();
@@ -243,7 +243,7 @@ public class RetryResilienceStrategyTests
             return new ValueTask<TimeSpan>(TimeSpan.Zero);
         };
 
-        _options.ShouldRetry = args => args.Outcome.ResultPredicateAsync(0);
+        _options.ShouldHandle = args => args.Outcome.ResultPredicateAsync(0);
         _options.RetryCount = 3;
         _options.BackoffType = RetryBackoffType.Linear;
         _timeProvider.SetupAnyDelay();
@@ -270,7 +270,7 @@ public class RetryResilienceStrategyTests
             _options.BaseDelay,
             _options.BackoffType,
             _options.RetryCount,
-            PredicateInvoker<ShouldRetryArguments>.Create(_options.ShouldRetry!, false)!,
+            PredicateInvoker<RetryPredicateArguments>.Create(_options.ShouldHandle!, false)!,
             EventInvoker<OnRetryArguments>.Create(_options.OnRetry, false),
             GeneratorInvoker<RetryDelayArguments, TimeSpan>.Create(_options.RetryDelayGenerator, TimeSpan.MinValue, false),
             timeProvider ?? _timeProvider.Object,

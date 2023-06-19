@@ -1,3 +1,5 @@
+using System.Diagnostics.CodeAnalysis;
+using System.Threading;
 using Polly.Hedging.Utils;
 using Polly.Telemetry;
 
@@ -37,6 +39,7 @@ internal sealed class HedgingResilienceStrategy<T> : ResilienceStrategy
 
     public EventInvoker<OnHedgingArguments>? OnHedging { get; }
 
+    [ExcludeFromCodeCoverage] // coverlet issue
     protected internal override async ValueTask<Outcome<TResult>> ExecuteCoreAsync<TResult, TState>(
         Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,
         ResilienceContext context,
@@ -47,58 +50,67 @@ internal sealed class HedgingResilienceStrategy<T> : ResilienceStrategy
             return await callback(context, state).ConfigureAwait(context.ContinueOnCapturedContext);
         }
 
-        var continueOnCapturedContext = context.ContinueOnCapturedContext;
-        var cancellationToken = context.CancellationToken;
-
         // create hedging execution context
         var hedgingContext = _controller.GetContext(context);
 
         try
         {
-            while (true)
-            {
-                if (cancellationToken.IsCancellationRequested)
-                {
-                    return new Outcome<TResult>(new OperationCanceledException(cancellationToken));
-                }
-
-                if ((await hedgingContext.LoadExecutionAsync(callback, state).ConfigureAwait(context.ContinueOnCapturedContext)).Outcome is Outcome<TResult> outcome)
-                {
-                    return outcome;
-                }
-
-                var delay = await GetHedgingDelayAsync(context, hedgingContext.LoadedTasks).ConfigureAwait(continueOnCapturedContext);
-                var execution = await hedgingContext.TryWaitForCompletedExecutionAsync(delay).ConfigureAwait(continueOnCapturedContext);
-                if (execution is null)
-                {
-                    // If completedHedgedTask is null it indicates that we still do not have any finished hedged task within the hedging delay.
-                    // We will create additional hedged task in the next iteration.
-                    continue;
-                }
-
-                outcome = execution.Outcome.AsOutcome<TResult>();
-
-                if (!execution.IsHandled)
-                {
-                    execution.AcceptOutcome();
-                    return outcome;
-                }
-
-                var onHedgingArgs = new OutcomeArguments<TResult, OnHedgingArguments>(context, outcome, new OnHedgingArguments(context, hedgingContext.LoadedTasks - 1));
-                _telemetry.Report(HedgingConstants.OnHedgingEventName, onHedgingArgs);
-
-                if (OnHedging is not null)
-                {
-                    // If nothing has been returned or thrown yet, the result is a transient failure,
-                    // and other hedged request will be awaited.
-                    // Before it, one needs to perform the task adjacent to each hedged call.
-                    await OnHedging.HandleAsync(onHedgingArgs).ConfigureAwait(continueOnCapturedContext);
-                }
-            }
+            return await ExecuteCoreAsync(hedgingContext, callback, context, state).ConfigureAwait(context.ContinueOnCapturedContext);
         }
         finally
         {
-            hedgingContext.Complete();
+            await hedgingContext.DisposeAsync().ConfigureAwait(context.ContinueOnCapturedContext);
+        }
+    }
+
+    private async ValueTask<Outcome<TResult>> ExecuteCoreAsync<TResult, TState>(
+        HedgingExecutionContext<T> hedgingContext,
+        Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,
+        ResilienceContext context,
+        TState state)
+    {
+        while (true)
+        {
+            var continueOnCapturedContext = context.ContinueOnCapturedContext;
+            var cancellationToken = context.CancellationToken;
+
+            if (cancellationToken.IsCancellationRequested)
+            {
+                return new Outcome<TResult>(new OperationCanceledException(cancellationToken).TrySetStackTrace());
+            }
+
+            if ((await hedgingContext.LoadExecutionAsync(callback, state).ConfigureAwait(context.ContinueOnCapturedContext)).Outcome is Outcome<TResult> outcome)
+            {
+                return outcome;
+            }
+
+            var delay = await GetHedgingDelayAsync(context, hedgingContext.LoadedTasks).ConfigureAwait(continueOnCapturedContext);
+            var execution = await hedgingContext.TryWaitForCompletedExecutionAsync(delay).ConfigureAwait(continueOnCapturedContext);
+            if (execution is null)
+            {
+                // If completedHedgedTask is null it indicates that we still do not have any finished hedged task within the hedging delay.
+                // We will create additional hedged task in the next iteration.
+                continue;
+            }
+
+            outcome = execution.Outcome.AsOutcome<TResult>();
+
+            if (!execution.IsHandled)
+            {
+                execution.AcceptOutcome();
+                return outcome;
+            }
+
+            var onHedgingArgs = new OutcomeArguments<TResult, OnHedgingArguments>(context, outcome, new OnHedgingArguments(context, hedgingContext.LoadedTasks - 1));
+            _telemetry.Report(HedgingConstants.OnHedgingEventName, onHedgingArgs);
+
+            if (OnHedging is not null)
+            {
+                // If nothing has been returned or thrown yet, the result is a transient failure,
+                // and other hedged request will be awaited.
+                // Before it, one needs to perform the task adjacent to each hedged call.
+                await OnHedging.HandleAsync(onHedgingArgs).ConfigureAwait(continueOnCapturedContext);
+            }
         }
     }
 

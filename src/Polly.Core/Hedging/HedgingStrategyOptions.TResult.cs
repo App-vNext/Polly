@@ -49,12 +49,7 @@ public class HedgingStrategyOptions<TResult> : ResilienceStrategyOptions
     /// This property is required.
     /// </remarks>
     [Required]
-    public Func<OutcomeArguments<TResult, HandleHedgingArguments>, ValueTask<bool>> ShouldHandle { get; set; } = args => args.Exception switch
-    {
-        OperationCanceledException => PredicateResult.False,
-        Exception => PredicateResult.True,
-        _ => PredicateResult.False
-    };
+    public Func<OutcomeArguments<TResult, HedgingPredicateArguments>, ValueTask<bool>> ShouldHandle { get; set; } = DefaultPredicates<HedgingPredicateArguments, TResult>.HandleOutcome;
 
     /// <summary>
     /// Gets or sets the hedging action generator that creates hedged actions.
@@ -67,6 +62,11 @@ public class HedgingStrategyOptions<TResult> : ResilienceStrategyOptions
     {
         return async () =>
         {
+            if (args.PrimaryContext.IsSynchronous)
+            {
+                return await Task.Run(() => args.Callback(args.ActionContext).AsTask()).ConfigureAwait(args.ActionContext.ContinueOnCapturedContext);
+            }
+
             return await args.Callback(args.ActionContext).ConfigureAwait(args.ActionContext.ContinueOnCapturedContext);
         };
     };

@@ -1,4 +1,3 @@
-using System.Runtime.ExceptionServices;
 using Polly.Telemetry;
 
 namespace Polly.Fallback;
@@ -29,7 +28,7 @@ internal sealed class FallbackResilienceStrategy<T> : ResilienceStrategy
         }
 
         var outcome = await ExecuteCallbackSafeAsync(callback, context, state).ConfigureAwait(context.ContinueOnCapturedContext);
-        var handleFallbackArgs = new OutcomeArguments<TResult, HandleFallbackArguments>(context, outcome, new HandleFallbackArguments());
+        var handleFallbackArgs = new OutcomeArguments<TResult, FallbackPredicateArguments>(context, outcome, new FallbackPredicateArguments());
         if (!await _handler.ShouldHandle.HandleAsync(handleFallbackArgs).ConfigureAwait(context.ContinueOnCapturedContext))
         {
             return outcome;
@@ -50,7 +49,7 @@ internal sealed class FallbackResilienceStrategy<T> : ResilienceStrategy
         }
         catch (Exception e)
         {
-            return new Outcome<TResult>(ExceptionDispatchInfo.Capture(e));
+            return new Outcome<TResult>(e);
         }
     }
 }

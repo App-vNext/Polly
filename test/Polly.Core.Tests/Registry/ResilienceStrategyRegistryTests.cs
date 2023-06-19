@@ -372,7 +372,7 @@ public class ResilienceStrategyRegistryTests
 
             builder.AddRetry(new RetryStrategyOptions
             {
-                ShouldRetry = _ => PredicateResult.True,
+                ShouldHandle = _ => PredicateResult.True,
                 RetryCount = retryCount,
                 BaseDelay = TimeSpan.FromMilliseconds(2),
             });
@@ -408,7 +408,7 @@ public class ResilienceStrategyRegistryTests
 
             builder.AddRetry(new RetryStrategyOptions<string>
             {
-                ShouldRetry = _ => PredicateResult.True,
+                ShouldHandle = _ => PredicateResult.True,
                 RetryCount = retryCount,
                 BaseDelay = TimeSpan.FromMilliseconds(2),
             });

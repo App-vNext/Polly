@@ -208,7 +208,7 @@ internal sealed class TaskExecution<T>
 
     private async Task UpdateOutcomeAsync<TResult>(Outcome<TResult> outcome)
     {
-        var args = new OutcomeArguments<TResult, HandleHedgingArguments>(Context, outcome, new HandleHedgingArguments());
+        var args = new OutcomeArguments<TResult, HedgingPredicateArguments>(Context, outcome, new HedgingPredicateArguments());
         Outcome = outcome.AsOutcome();
         IsHandled = await _handler.ShouldHandle.HandleAsync(args).ConfigureAwait(Context.ContinueOnCapturedContext);
     }

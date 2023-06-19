@@ -12,7 +12,7 @@ public class RetryStrategyOptionsTests
         var options = new RetryStrategyOptions<int>();
 
         options.StrategyType.Should().Be("Retry");
-        options.ShouldRetry.Should().NotBeNull();
+        options.ShouldHandle.Should().NotBeNull();
 
         options.RetryDelayGenerator.Should().BeNull();
 
@@ -27,12 +27,12 @@ public class RetryStrategyOptionsTests
     public async Task ShouldHandle_EnsureDefaults()
     {
         var options = new RetryStrategyOptions<int>();
-        var args = new ShouldRetryArguments(0);
+        var args = new RetryPredicateArguments(0);
         var context = ResilienceContext.Get();
 
-        (await options.ShouldRetry(new(context, new Outcome<int>(0), args))).Should().Be(false);
-        (await options.ShouldRetry(new(context, new Outcome<int>(new OperationCanceledException()), args))).Should().Be(false);
-        (await options.ShouldRetry(new(context, new Outcome<int>(new InvalidOperationException()), args))).Should().Be(true);
+        (await options.ShouldHandle(new(context, new Outcome<int>(0), args))).Should().Be(false);
+        (await options.ShouldHandle(new(context, new Outcome<int>(new OperationCanceledException()), args))).Should().Be(false);
+        (await options.ShouldHandle(new(context, new Outcome<int>(new InvalidOperationException()), args))).Should().Be(true);
     }
 
     [Fact]
@@ -40,7 +40,7 @@ public class RetryStrategyOptionsTests
     {
         var options = new RetryStrategyOptions<int>
         {
-            ShouldRetry = null!,
+            ShouldHandle = null!,
             RetryDelayGenerator = null!,
             OnRetry = null!,
             RetryCount = -3,
@@ -56,7 +56,7 @@ public class RetryStrategyOptionsTests
             Validation Errors:
             The field RetryCount must be between -1 and 100.
             The field BaseDelay must be >= to 00:00:00.
-            The ShouldRetry field is required.
+            The ShouldHandle field is required.
             """);
     }
 }

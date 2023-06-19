@@ -11,7 +11,7 @@ internal static class FallbackHelper
         bool isGeneric = true)
     {
         return new FallbackHandler<T>(
-            PredicateInvoker<HandleFallbackArguments>.Create<T>(args => new ValueTask<bool>(shouldHandle(args.Outcome!)), true)!,
+            PredicateInvoker<FallbackPredicateArguments>.Create<T>(args => new ValueTask<bool>(shouldHandle(args.Outcome!)), true)!,
             _ => fallback().AsValueTask(),
             isGeneric);
     }

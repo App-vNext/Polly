@@ -11,7 +11,7 @@ public class HedgingHandlerTests
     public async Task GenerateAction_Generic_Ok()
     {
         var handler = new HedgingHandler<string>(
-            PredicateInvoker<HandleHedgingArguments>.Create<string>(args => PredicateResult.True, true)!,
+            PredicateInvoker<HedgingPredicateArguments>.Create<string>(args => PredicateResult.True, true)!,
             args => () => "ok".AsOutcomeAsync(),
             true);
 
@@ -27,7 +27,7 @@ public class HedgingHandlerTests
     public async Task GenerateAction_NonGeneric_Ok(bool nullAction)
     {
         var handler = new HedgingHandler<object>(
-            PredicateInvoker<HandleHedgingArguments>.Create<object>(args => PredicateResult.True, false)!,
+            PredicateInvoker<HedgingPredicateArguments>.Create<object>(args => PredicateResult.True, false)!,
             args =>
             {
                 if (nullAction)
@@ -55,7 +55,7 @@ public class HedgingHandlerTests
     public async Task GenerateAction_NonGeneric_FromCallback()
     {
         var handler = new HedgingHandler<object>(
-            PredicateInvoker<HandleHedgingArguments>.Create<object>(args => PredicateResult.True, false)!,
+            PredicateInvoker<HedgingPredicateArguments>.Create<object>(args => PredicateResult.True, false)!,
             args => () => args.Callback(args.ActionContext),
             false);
 

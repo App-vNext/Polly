@@ -5,7 +5,4 @@ namespace Polly.CircuitBreaker;
 /// </summary>
 /// <param name="BreakDuration">The duration of break.</param>
 /// <param name="IsManual">Indicates whether the circuit was opened manually by using <see cref="CircuitBreakerManualControl"/>.</param>
-/// <remarks>
-/// Always use the constructor when creating this struct, otherwise we do not guarantee binary compatibility.
-/// </remarks>
-public readonly record struct OnCircuitOpenedArguments(TimeSpan BreakDuration, bool IsManual);
+public record OnCircuitOpenedArguments(TimeSpan BreakDuration, bool IsManual);
