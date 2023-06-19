@@ -41,20 +41,26 @@ internal class ResilienceTelemetryDiagnosticSource : DiagnosticSource
 
     private void MeterEvent(TelemetryEventArguments args)
     {
-        var source = args.Source;
-        var tags = new TagList
+        if (!Counter.Enabled)
         {
-            { ResilienceTelemetryTags.EventName, args.EventName },
-            { ResilienceTelemetryTags.BuilderName, source.BuilderName },
-            { ResilienceTelemetryTags.StrategyName, source.StrategyName },
-            { ResilienceTelemetryTags.StrategyType, source.StrategyType },
-            { ResilienceTelemetryTags.StrategyKey, source.BuilderProperties.GetValue(TelemetryUtil.StrategyKey, null!) },
-            { ResilienceTelemetryTags.ResultType, args.Context.GetResultType() },
-            { ResilienceTelemetryTags.ExceptionName, args.Outcome?.Exception?.GetType().FullName }
-        };
+            return;
+        }
 
-        EnrichmentUtil.Enrich(ref tags, _enrichers, args.Context, args.Outcome, args.Arguments);
-        Counter.Add(1, tags);
+        var source = args.Source;
+
+        var enrichmentContext = EnrichmentContext.Get(args.Context, args.Arguments, args.Outcome);
+        enrichmentContext.Tags.Add(new(ResilienceTelemetryTags.EventName, args.EventName));
+        enrichmentContext.Tags.Add(new(ResilienceTelemetryTags.BuilderName, source.BuilderName));
+        enrichmentContext.Tags.Add(new(ResilienceTelemetryTags.StrategyName, source.StrategyName));
+        enrichmentContext.Tags.Add(new(ResilienceTelemetryTags.StrategyType, source.StrategyType));
+        enrichmentContext.Tags.Add(new(ResilienceTelemetryTags.StrategyKey, source.BuilderProperties.GetValue(TelemetryUtil.StrategyKey, null!)));
+        enrichmentContext.Tags.Add(new(ResilienceTelemetryTags.ResultType, args.Context.GetResultType()));
+        enrichmentContext.Tags.Add(new(ResilienceTelemetryTags.ExceptionName, args.Outcome?.Exception?.GetType().FullName));
+        EnrichmentUtil.Enrich(enrichmentContext, _enrichers);
+
+        Counter.Add(1, enrichmentContext.TagsSpan);
+
+        EnrichmentContext.Return(enrichmentContext);
     }
 
     private void LogEvent(TelemetryEventArguments args)

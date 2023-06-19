@@ -5,6 +5,10 @@ namespace Polly.Extensions.Telemetry;
 /// </summary>
 public sealed partial class EnrichmentContext
 {
+    private const int InitialArraySize = 20;
+
+    private KeyValuePair<string, object?>[] _tagsArray = new KeyValuePair<string, object?>[InitialArraySize];
+
     private EnrichmentContext()
     {
     }
@@ -27,5 +31,23 @@ public sealed partial class EnrichmentContext
     /// <summary>
     /// Gets the tags associated with the resilience event.
     /// </summary>
-    public ICollection<KeyValuePair<string, object?>> Tags { get; } = new List<KeyValuePair<string, object?>>();
+    public IList<KeyValuePair<string, object?>> Tags { get; } = new List<KeyValuePair<string, object?>>();
+
+    internal ReadOnlySpan<KeyValuePair<string, object?>> TagsSpan
+    {
+        get
+        {
+            if (Tags.Count > _tagsArray.Length)
+            {
+                Array.Resize(ref _tagsArray, Tags.Count);
+            }
+
+            for (int i = 0; i < Tags.Count; i++)
+            {
+                _tagsArray[i] = Tags[i];
+            }
+
+            return _tagsArray.AsSpan(0, Tags.Count);
+        }
+    }
 }

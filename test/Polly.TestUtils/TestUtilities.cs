@@ -88,7 +88,7 @@ public static class TestUtilities
         object arguments)
 #pragma warning restore S107 // Methods should not have too many parameters
     {
-        source.Write(eventName, new TelemetryEventArguments(
+        source.Write(eventName, TelemetryEventArguments.Get(
             new ResilienceTelemetrySource(builderName, builderProperties, strategyName, strategyType),
             eventName,
             context,

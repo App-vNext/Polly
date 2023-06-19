@@ -26,6 +26,7 @@ public partial class EnrichmentContext
 
     internal static void Return(EnrichmentContext context)
     {
+        Array.Clear(context._tagsArray, 0, context.Tags.Count);
         context.Tags.Clear();
         ContextPool.Return(context);
     }

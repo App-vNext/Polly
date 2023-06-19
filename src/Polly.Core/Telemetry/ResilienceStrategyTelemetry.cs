@@ -38,7 +38,11 @@ public sealed class ResilienceStrategyTelemetry
             return;
         }
 
-        DiagnosticSource.Write(eventName, new TelemetryEventArguments(TelemetrySource, eventName, context, null, args!));
+        var telemetryArgs = TelemetryEventArguments.Get(TelemetrySource, eventName, context, null, args!);
+
+        DiagnosticSource.Write(eventName, telemetryArgs);
+
+        TelemetryEventArguments.Return(telemetryArgs);
     }
 
     /// <summary>
@@ -60,7 +64,11 @@ public sealed class ResilienceStrategyTelemetry
             return;
         }
 
-        DiagnosticSource.Write(eventName, new TelemetryEventArguments(TelemetrySource, eventName, args.Context, args.Outcome.AsOutcome(), args.Arguments!));
+        var telemetryArgs = TelemetryEventArguments.Get(TelemetrySource, eventName, args.Context, args.Outcome.AsOutcome(), args.Arguments!);
+
+        DiagnosticSource.Write(eventName, telemetryArgs);
+
+        TelemetryEventArguments.Return(telemetryArgs);
     }
 }
 
