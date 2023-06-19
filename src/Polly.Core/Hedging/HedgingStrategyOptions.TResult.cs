@@ -85,6 +85,10 @@ public class HedgingStrategyOptions<TResult> : ResilienceStrategyOptions
     /// </summary>
     /// <remarks>
     /// Defaults to <see langword="null"/>.
+    /// <para>
+    /// The hedging is executed when the current attempt outcome is not successful and the <see cref="ShouldHandle"/> predicate returns <see langword="true"/> or when
+    /// the current attempt did not finish within the <see cref="HedgingDelay"/>.
+    /// </para>
     /// </remarks>
     public Func<OutcomeArguments<TResult, OnHedgingArguments>, ValueTask>? OnHedging { get; set; }
 }

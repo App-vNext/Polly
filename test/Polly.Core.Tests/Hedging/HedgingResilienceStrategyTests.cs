@@ -244,6 +244,35 @@ public class HedgingResilienceStrategyTests : IDisposable
     }
 
     [Fact]
+    public async Task ExecuteAsync_EnsureSecondaryHedgedTaskReportedWithNoOutcome()
+    {
+        // arrange
+        using var cancelled = new ManualResetEvent(false);
+        var hasOutcome = true;
+        _options.OnHedging = args =>
+        {
+            hasOutcome = args.Arguments.HasOutcome;
+            return default;
+        };
+
+        ConfigureHedging(context => Success.AsOutcomeAsync());
+
+        var strategy = Create();
+
+        // act
+        var task = strategy.ExecuteAsync(async token =>
+        {
+            await _timeProvider.Delay(TimeSpan.FromHours(24), token);
+            return Success;
+        });
+
+        // assert
+        _timeProvider.Advance(TimeSpan.FromHours(2));
+        hasOutcome.Should().BeFalse();
+        await task;
+    }
+
+    [Fact]
     public async Task ExecuteAsync_EnsureDiscardedResultDisposed()
     {
         // arrange
@@ -814,6 +843,7 @@ public class HedgingResilienceStrategyTests : IDisposable
         var attempts = new List<int>();
         _options.OnHedging = args =>
         {
+            args.Arguments.HasOutcome.Should().BeTrue();
             args.Result.Should().Be(Failure);
             attempts.Add(args.Arguments.Attempt);
             return default;

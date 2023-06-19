@@ -69,8 +69,10 @@ internal sealed class HedgingResilienceStrategy<T> : ResilienceStrategy
         ResilienceContext context,
         TState state)
     {
+        var attempt = -1;
         while (true)
         {
+            attempt++;
             var continueOnCapturedContext = context.ContinueOnCapturedContext;
             var cancellationToken = context.CancellationToken;
 
@@ -79,7 +81,9 @@ internal sealed class HedgingResilienceStrategy<T> : ResilienceStrategy
                 return new Outcome<TResult>(new OperationCanceledException(cancellationToken).TrySetStackTrace());
             }
 
-            if ((await hedgingContext.LoadExecutionAsync(callback, state).ConfigureAwait(context.ContinueOnCapturedContext)).Outcome is Outcome<TResult> outcome)
+            var loadedExecution = await hedgingContext.LoadExecutionAsync(callback, state).ConfigureAwait(context.ContinueOnCapturedContext);
+
+            if (loadedExecution.Outcome is Outcome<TResult> outcome)
             {
                 return outcome;
             }
@@ -90,6 +94,10 @@ internal sealed class HedgingResilienceStrategy<T> : ResilienceStrategy
             {
                 // If completedHedgedTask is null it indicates that we still do not have any finished hedged task within the hedging delay.
                 // We will create additional hedged task in the next iteration.
+                await HandleOnHedgingAsync(
+                    context,
+                    new Outcome<TResult>(default(TResult)),
+                    new OnHedgingArguments(attempt, HasOutcome: false)).ConfigureAwait(context.ContinueOnCapturedContext);
                 continue;
             }
 
@@ -101,16 +109,28 @@ internal sealed class HedgingResilienceStrategy<T> : ResilienceStrategy
                 return outcome;
             }
 
-            var onHedgingArgs = new OutcomeArguments<TResult, OnHedgingArguments>(context, outcome, new OnHedgingArguments(context, hedgingContext.LoadedTasks - 1));
-            _telemetry.Report(HedgingConstants.OnHedgingEventName, onHedgingArgs);
+            await HandleOnHedgingAsync(
+                context,
+                outcome,
+                new OnHedgingArguments(attempt, HasOutcome: true)).ConfigureAwait(context.ContinueOnCapturedContext);
+        }
+    }
 
-            if (OnHedging is not null)
-            {
-                // If nothing has been returned or thrown yet, the result is a transient failure,
-                // and other hedged request will be awaited.
-                // Before it, one needs to perform the task adjacent to each hedged call.
-                await OnHedging.HandleAsync(onHedgingArgs).ConfigureAwait(continueOnCapturedContext);
-            }
+    private async ValueTask HandleOnHedgingAsync<TResult>(ResilienceContext context, Outcome<TResult> outcome, OnHedgingArguments args)
+    {
+        var onHedgingArgs = new OutcomeArguments<TResult, OnHedgingArguments>(
+            context,
+            outcome,
+            args);
+
+        _telemetry.Report(HedgingConstants.OnHedgingEventName, onHedgingArgs);
+
+        if (OnHedging is not null)
+        {
+            // If nothing has been returned or thrown yet, the result is a transient failure,
+            // and other hedged request will be awaited.
+            // Before it, one needs to perform the task adjacent to each hedged call.
+            await OnHedging.HandleAsync(onHedgingArgs).ConfigureAwait(context.ContinueOnCapturedContext);
         }
     }
 
