@@ -15,7 +15,7 @@ internal sealed class ObjectPool<T>
     private int _numItems;
 
     public ObjectPool(Func<T> createFunc, Action<T> reset)
-    : this(createFunc, o => { reset(o); return true; })
+        : this(createFunc, o => { reset(o); return true; })
     {
     }
 
