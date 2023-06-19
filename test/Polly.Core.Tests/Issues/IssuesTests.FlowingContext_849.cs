@@ -12,7 +12,7 @@ public partial class IssuesTests
             .AddRetry(new RetryStrategyOptions<int>
             {
                 // configure the predicate and use the context
-                ShouldRetry = args =>
+                ShouldHandle = args =>
                 {
                     // access the context to evaluate the retry
                     ResilienceContext context = args.Context;

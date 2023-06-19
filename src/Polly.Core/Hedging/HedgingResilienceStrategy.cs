@@ -59,7 +59,7 @@ internal sealed class HedgingResilienceStrategy<T> : ResilienceStrategy
             {
                 if (cancellationToken.IsCancellationRequested)
                 {
-                    return new Outcome<TResult>(new OperationCanceledException(cancellationToken));
+                    return new Outcome<TResult>(new OperationCanceledException(cancellationToken).TrySetStackTrace());
                 }
 
                 if ((await hedgingContext.LoadExecutionAsync(callback, state).ConfigureAwait(context.ContinueOnCapturedContext)).Outcome is Outcome<TResult> outcome)
@@ -98,7 +98,7 @@ internal sealed class HedgingResilienceStrategy<T> : ResilienceStrategy
         }
         finally
         {
-            hedgingContext.Complete();
+            await hedgingContext.CompleteAsync().ConfigureAwait(continueOnCapturedContext);
         }
     }
 

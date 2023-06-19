@@ -81,7 +81,7 @@ internal sealed class HedgingExecutionContext<T>
         }
     }
 
-    public void Complete()
+    public Task CompleteAsync()
     {
         UpdateOriginalContext();
 
@@ -94,7 +94,7 @@ internal sealed class HedgingExecutionContext<T>
         // We are intentionally doing the cleanup in the background as we do not want to
         // delay the hedging.
         // The background cleanup is safe. All exceptions are handled.
-        _ = CleanupInBackgroundAsync();
+        return CleanupInBackgroundAsync();
     }
 
     public async ValueTask<TaskExecution<T>?> TryWaitForCompletedExecutionAsync(TimeSpan hedgingDelay)

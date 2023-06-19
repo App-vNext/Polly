@@ -65,12 +65,7 @@ public class RetryStrategyOptions<TResult> : ResilienceStrategyOptions
     /// This property is required.
     /// </remarks>
     [Required]
-    public Func<OutcomeArguments<TResult, ShouldRetryArguments>, ValueTask<bool>> ShouldRetry { get; set; } = args => args.Exception switch
-    {
-        OperationCanceledException => PredicateResult.False,
-        Exception => PredicateResult.True,
-        _ => PredicateResult.False
-    };
+    public Func<OutcomeArguments<TResult, RetryPredicateArguments>, ValueTask<bool>> ShouldHandle { get; set; } = DefaultPredicates<RetryPredicateArguments, TResult>.HandleOutcome;
 
     /// <summary>
     /// Gets or sets the generator instance that is used to calculate the time between retries.

@@ -14,7 +14,7 @@ internal sealed class RetryResilienceStrategy : ResilienceStrategy
         TimeSpan baseDelay,
         RetryBackoffType backoffType,
         int retryCount,
-        PredicateInvoker<ShouldRetryArguments> shouldRetry,
+        PredicateInvoker<RetryPredicateArguments> shouldRetry,
         EventInvoker<OnRetryArguments>? onRetry,
         GeneratorInvoker<RetryDelayArguments, TimeSpan>? delayGenerator,
         TimeProvider timeProvider,
@@ -40,7 +40,7 @@ internal sealed class RetryResilienceStrategy : ResilienceStrategy
 
     public int RetryCount { get; }
 
-    public PredicateInvoker<ShouldRetryArguments> ShouldRetry { get; }
+    public PredicateInvoker<RetryPredicateArguments> ShouldRetry { get; }
 
     public GeneratorInvoker<RetryDelayArguments, TimeSpan>? DelayGenerator { get; }
 
@@ -58,7 +58,7 @@ internal sealed class RetryResilienceStrategy : ResilienceStrategy
         while (true)
         {
             var outcome = await ExecuteCallbackSafeAsync(callback, context, state).ConfigureAwait(context.ContinueOnCapturedContext);
-            var shouldRetryArgs = new OutcomeArguments<TResult, ShouldRetryArguments>(context, outcome, new ShouldRetryArguments(attempt));
+            var shouldRetryArgs = new OutcomeArguments<TResult, RetryPredicateArguments>(context, outcome, new RetryPredicateArguments(attempt));
 
             if (context.CancellationToken.IsCancellationRequested || IsLastAttempt(attempt) || !await ShouldRetry.HandleAsync(shouldRetryArgs).ConfigureAwait(context.ContinueOnCapturedContext))
             {

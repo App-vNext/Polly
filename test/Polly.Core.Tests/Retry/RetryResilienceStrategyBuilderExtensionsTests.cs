@@ -16,7 +16,7 @@ public class RetryResilienceStrategyBuilderExtensionsTests
                 BackoffType = RetryBackoffType.Exponential,
                 RetryCount = 3,
                 BaseDelay = TimeSpan.FromSeconds(2),
-                ShouldRetry = _ => PredicateResult.True,
+                ShouldHandle = _ => PredicateResult.True,
             });
 
             AssertStrategy(builder, RetryBackoffType.Exponential, 3, TimeSpan.FromSeconds(2));
@@ -37,7 +37,7 @@ public class RetryResilienceStrategyBuilderExtensionsTests
                 BackoffType = RetryBackoffType.Exponential,
                 RetryCount = 3,
                 BaseDelay = TimeSpan.FromSeconds(2),
-                ShouldRetry = _ => PredicateResult.True
+                ShouldHandle = _ => PredicateResult.True
             });
 
             AssertStrategy(builder, RetryBackoffType.Exponential, 3, TimeSpan.FromSeconds(2));
@@ -66,7 +66,7 @@ public class RetryResilienceStrategyBuilderExtensionsTests
     public void AddRetry_DefaultOptions_Ok()
     {
         var builder = new ResilienceStrategyBuilder();
-        var options = new RetryStrategyOptions { ShouldRetry = _ => PredicateResult.True };
+        var options = new RetryStrategyOptions { ShouldHandle = _ => PredicateResult.True };
 
         builder.AddRetry(options);
 
@@ -99,12 +99,12 @@ public class RetryResilienceStrategyBuilderExtensionsTests
     public void AddRetry_InvalidOptions_Throws()
     {
         new ResilienceStrategyBuilder()
-            .Invoking(b => b.AddRetry(new RetryStrategyOptions { ShouldRetry = null! }))
+            .Invoking(b => b.AddRetry(new RetryStrategyOptions { ShouldHandle = null! }))
             .Should()
             .Throw<ValidationException>();
 
         new ResilienceStrategyBuilder<int>()
-            .Invoking(b => b.AddRetry(new RetryStrategyOptions<int> { ShouldRetry = null! }))
+            .Invoking(b => b.AddRetry(new RetryStrategyOptions<int> { ShouldHandle = null! }))
             .Should()
             .Throw<ValidationException>();
     }

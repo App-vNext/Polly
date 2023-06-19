@@ -11,7 +11,7 @@ internal static class HedgingHelper
         Func<HedgingActionGeneratorArguments<T>, Func<ValueTask<Outcome<T>>>?> generator)
     {
         return new HedgingHandler<T>(
-            PredicateInvoker<HandleHedgingArguments>.Create<T>(args => new ValueTask<bool>(shouldHandle(args.Outcome!)), true)!,
+            PredicateInvoker<HedgingPredicateArguments>.Create<T>(args => new ValueTask<bool>(shouldHandle(args.Outcome!)), true)!,
             generator,
             true);
     }

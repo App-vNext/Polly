@@ -1,5 +1,3 @@
-using System.Runtime.ExceptionServices;
-
 namespace Polly;
 
 #pragma warning disable CA1031 // Do not catch general exception types
@@ -36,7 +34,7 @@ public abstract partial class ResilienceStrategy
                }
                catch (Exception e)
                {
-                   return new Outcome<TResult>(ExceptionDispatchInfo.Capture(e));
+                   return new Outcome<TResult>(e);
                }
            },
            context,
@@ -70,7 +68,7 @@ public abstract partial class ResilienceStrategy
                 }
                 catch (Exception e)
                 {
-                    return new Outcome<TResult>(ExceptionDispatchInfo.Capture(e));
+                    return new Outcome<TResult>(e);
                 }
             },
             context,
@@ -105,7 +103,7 @@ public abstract partial class ResilienceStrategy
                     }
                     catch (Exception e)
                     {
-                        return new Outcome<TResult>(ExceptionDispatchInfo.Capture(e));
+                        return new Outcome<TResult>(e);
                     }
                 },
                 context,
@@ -142,7 +140,7 @@ public abstract partial class ResilienceStrategy
                     }
                     catch (Exception e)
                     {
-                        return new Outcome<TResult>(ExceptionDispatchInfo.Capture(e));
+                        return new Outcome<TResult>(e);
                     }
                 },
                 context,
@@ -181,7 +179,7 @@ public abstract partial class ResilienceStrategy
                     }
                     catch (Exception e)
                     {
-                        return new Outcome<TResult>(ExceptionDispatchInfo.Capture(e));
+                        return new Outcome<TResult>(e);
                     }
                 },
                 context,
@@ -224,7 +222,7 @@ public abstract partial class ResilienceStrategy
                     }
                     catch (Exception e)
                     {
-                        return new Outcome<TResult>(ExceptionDispatchInfo.Capture(e));
+                        return new Outcome<TResult>(e);
                     }
                 },
                 context,

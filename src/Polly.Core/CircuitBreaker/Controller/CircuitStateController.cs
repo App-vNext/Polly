@@ -1,4 +1,3 @@
-using System.Runtime.ExceptionServices;
 using Polly.Telemetry;
 
 namespace Polly.CircuitBreaker;
@@ -151,7 +150,7 @@ internal sealed class CircuitStateController : IDisposable
 
         if (exception is not null)
         {
-            return new Outcome<TResult>(ExceptionDispatchInfo.Capture(exception));
+            return new Outcome<TResult>(exception);
         }
 
         return null;
@@ -305,6 +304,8 @@ internal sealed class CircuitStateController : IDisposable
         {
             _breakingException = new BrokenCircuitException<TResult>(BrokenCircuitException.DefaultMessage, result!);
         }
+
+        _breakingException?.TrySetStackTrace();
     }
 
     private BrokenCircuitException GetBreakingException_NeedsLock() => _breakingException ?? new BrokenCircuitException();

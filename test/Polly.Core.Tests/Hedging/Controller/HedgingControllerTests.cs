@@ -18,8 +18,8 @@ public class HedgingControllerTests
         controller.RentedContexts.Should().Be(2);
         controller.RentedExecutions.Should().Be(2);
 
-        context1.Complete();
-        context2.Complete();
+        await context1.CompleteAsync();
+        await context2.CompleteAsync();
 
         controller.RentedContexts.Should().Be(0);
         controller.RentedExecutions.Should().Be(0);

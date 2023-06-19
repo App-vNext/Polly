@@ -83,7 +83,7 @@ public static class RetryResilienceStrategyBuilderExtensions
                 options.BaseDelay,
                 options.BackoffType,
                 options.RetryCount,
-                context.CreateInvoker(options.ShouldRetry)!,
+                context.CreateInvoker(options.ShouldHandle)!,
                 context.CreateInvoker(options.OnRetry),
                 context.CreateInvoker(options.RetryDelayGenerator, TimeSpan.MinValue),
                 context.TimeProvider,
@@ -98,6 +98,6 @@ public static class RetryResilienceStrategyBuilderExtensions
     {
         var predicate = new PredicateBuilder<TResult>();
         shouldRetry(predicate);
-        options.ShouldRetry = predicate.CreatePredicate<ShouldRetryArguments>();
+        options.ShouldHandle = predicate.CreatePredicate<RetryPredicateArguments>();
     }
 }

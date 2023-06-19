@@ -20,7 +20,7 @@ public static class FallbackResilienceStrategyBuilderExtensions
     public static ResilienceStrategyBuilder<TResult> AddFallback<TResult>(
         this ResilienceStrategyBuilder<TResult> builder,
         Action<PredicateBuilder<TResult>> shouldHandle,
-        Func<OutcomeArguments<TResult, HandleFallbackArguments>, ValueTask<Outcome<TResult>>> fallbackAction)
+        Func<OutcomeArguments<TResult, FallbackPredicateArguments>, ValueTask<Outcome<TResult>>> fallbackAction)
     {
         Guard.NotNull(builder);
         Guard.NotNull(shouldHandle);
@@ -34,7 +34,7 @@ public static class FallbackResilienceStrategyBuilderExtensions
         var predicateBuilder = new PredicateBuilder<TResult>();
         shouldHandle(predicateBuilder);
 
-        options.ShouldHandle = predicateBuilder.CreatePredicate<HandleFallbackArguments>();
+        options.ShouldHandle = predicateBuilder.CreatePredicate<FallbackPredicateArguments>();
 
         return builder.AddFallback(options);
     }

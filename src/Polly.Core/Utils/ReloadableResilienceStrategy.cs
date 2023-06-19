@@ -1,5 +1,3 @@
-using System;
-using System.Threading.Tasks;
 using Polly.Telemetry;
 
 namespace Polly.Utils;

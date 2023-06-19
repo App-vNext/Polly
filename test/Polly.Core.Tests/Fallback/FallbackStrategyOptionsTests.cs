@@ -12,9 +12,21 @@ public class FallbackStrategyOptionsTests
         var options = new FallbackStrategyOptions<int>();
 
         options.StrategyType.Should().Be("Fallback");
-        options.ShouldHandle.Should().BeNull();
+        options.ShouldHandle.Should().NotBeNull();
         options.OnFallback.Should().BeNull();
         options.FallbackAction.Should().BeNull();
+    }
+
+    [Fact]
+    public async Task ShouldHandle_EnsureDefaults()
+    {
+        var options = new FallbackStrategyOptions<int>();
+        var args = new FallbackPredicateArguments();
+        var context = ResilienceContext.Get();
+
+        (await options.ShouldHandle(new(context, new Outcome<int>(0), args))).Should().Be(false);
+        (await options.ShouldHandle(new(context, new Outcome<int>(new OperationCanceledException()), args))).Should().Be(false);
+        (await options.ShouldHandle(new(context, new Outcome<int>(new InvalidOperationException()), args))).Should().Be(true);
     }
 
     [Fact]

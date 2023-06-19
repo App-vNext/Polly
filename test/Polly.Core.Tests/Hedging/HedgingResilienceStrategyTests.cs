@@ -259,7 +259,7 @@ public class HedgingResilienceStrategyTests : IDisposable
         var strategy = Create(handler);
 
         // act
-        var result = await strategy.ExecuteAsync(async token =>
+        var resultTask = strategy.ExecuteAsync(async token =>
         {
 #pragma warning disable CA2016 // Forward the 'CancellationToken' parameter to methods
             await _timeProvider.Delay(LongDelay);
@@ -271,6 +271,8 @@ public class HedgingResilienceStrategyTests : IDisposable
         _timeProvider.Advance(LongDelay);
 
         await primaryResult.WaitForDisposalAsync();
+        await resultTask;
+
         primaryResult.IsDisposed.Should().BeTrue();
         secondaryResult.IsDisposed.Should().BeFalse();
     }

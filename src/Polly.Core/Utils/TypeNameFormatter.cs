@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Polly.Utils;
+﻿namespace Polly.Utils;
 
 internal static class TypeNameFormatter
 {

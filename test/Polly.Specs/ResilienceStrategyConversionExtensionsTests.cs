@@ -160,7 +160,7 @@ public class ResilienceStrategyConversionExtensionsTests
         var policy = new ResilienceStrategyBuilder<string>()
             .AddRetry(new RetryStrategyOptions<string>
             {
-                ShouldRetry = _ => PredicateResult.True,
+                ShouldHandle = _ => PredicateResult.True,
                 BackoffType = RetryBackoffType.Constant,
                 RetryCount = 5,
                 BaseDelay = TimeSpan.FromMilliseconds(1)

@@ -309,7 +309,7 @@ public class HedgingExecutionContextTests : IDisposable
         context.Tasks.First(v => v.Type == type).AcceptOutcome();
 
         // act
-        context.Complete();
+        await context.CompleteAsync();
 
         // assert
         _resilienceContext.Properties.Should().BeSameAs(originalProps);
@@ -326,12 +326,12 @@ public class HedgingExecutionContextTests : IDisposable
     }
 
     [Fact]
-    public void Complete_NoTasks_EnsureCleaned()
+    public async Task Complete_NoTasks_EnsureCleaned()
     {
         var props = _resilienceContext.Properties;
         var context = Create();
         context.Initialize(_resilienceContext);
-        context.Complete();
+        await context.CompleteAsync();
         _resilienceContext.Properties.Should().BeSameAs(props);
     }
 
@@ -343,7 +343,7 @@ public class HedgingExecutionContextTests : IDisposable
         ConfigureSecondaryTasks(TimeSpan.Zero);
         await ExecuteAllTasksAsync(context, 2);
 
-        context.Invoking(c => c.Complete()).Should().NotThrow();
+        context.Invoking(c => c.CompleteAsync().Wait()).Should().NotThrow();
     }
 
     [Fact]
@@ -356,7 +356,7 @@ public class HedgingExecutionContextTests : IDisposable
         context.Tasks[0].AcceptOutcome();
         context.Tasks[1].AcceptOutcome();
 
-        context.Invoking(c => c.Complete()).Should().NotThrow();
+        context.Invoking(c => c.CompleteAsync().Wait()).Should().NotThrow();
     }
 
     [Fact]
@@ -386,7 +386,7 @@ public class HedgingExecutionContextTests : IDisposable
         pending.Wait(10).Should().BeFalse();
 
         context.Tasks[0].AcceptOutcome();
-        context.Complete();
+        await context.CompleteAsync();
 
         await pending;
 
@@ -403,7 +403,7 @@ public class HedgingExecutionContextTests : IDisposable
         await ExecuteAllTasksAsync(context, 2);
         context.Tasks[0].AcceptOutcome();
 
-        context.Complete();
+        await context.CompleteAsync();
 
         context.LoadedTasks.Should().Be(0);
         context.Snapshot.Context.Should().BeNull();

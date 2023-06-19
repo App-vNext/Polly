@@ -41,12 +41,7 @@ public abstract class CircuitBreakerStrategyOptions<TResult> : ResilienceStrateg
     /// This property is required.
     /// </remarks>
     [Required]
-    public Func<OutcomeArguments<TResult, CircuitBreakerPredicateArguments>, ValueTask<bool>> ShouldHandle { get; set; } = args => args.Exception switch
-    {
-        OperationCanceledException => PredicateResult.False,
-        Exception => PredicateResult.True,
-        _ => PredicateResult.False
-    };
+    public Func<OutcomeArguments<TResult, CircuitBreakerPredicateArguments>, ValueTask<bool>> ShouldHandle { get; set; } = DefaultPredicates<CircuitBreakerPredicateArguments, TResult>.HandleOutcome;
 
     /// <summary>
     /// Gets or sets the event that is raised when the circuit resets to a <see cref="CircuitState.Closed"/> state.

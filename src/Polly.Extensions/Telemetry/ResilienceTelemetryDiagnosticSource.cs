@@ -10,12 +10,15 @@ internal class ResilienceTelemetryDiagnosticSource : DiagnosticSource
     internal static readonly Meter Meter = new(TelemetryUtil.PollyDiagnosticSource, "1.0");
 
     private readonly ILogger _logger;
+    private readonly Func<ResilienceContext, object?, object?> _resultFormatter;
     private readonly List<Action<EnrichmentContext>> _enrichers;
 
     public ResilienceTelemetryDiagnosticSource(TelemetryOptions options)
     {
         _enrichers = options.Enrichers.ToList();
         _logger = options.LoggerFactory.CreateLogger(TelemetryUtil.PollyDiagnosticSource);
+        _resultFormatter = options.ResultFormatter;
+
         Counter = Meter.CreateCounter<int>(
             "resilience-events",
             description: "Tracks the number of resilience events that occurred in resilience strategies.");
@@ -64,7 +67,13 @@ internal class ResilienceTelemetryDiagnosticSource : DiagnosticSource
         }
         else
         {
-            Log.ResilienceEvent(_logger, args.EventName, args.Source.BuilderName, args.Source.StrategyName, args.Source.StrategyType, strategyKey, args.Outcome?.Result, null);
+            var result = args.Outcome?.Result;
+            if (result is not null)
+            {
+                result = _resultFormatter(args.Context, result);
+            }
+
+            Log.ResilienceEvent(_logger, args.EventName, args.Source.BuilderName, args.Source.StrategyName, args.Source.StrategyType, strategyKey, result, null);
         }
     }
 }
