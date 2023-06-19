@@ -17,9 +17,9 @@ public abstract class ResilienceStrategyProvider<TKey>
     /// <param name="key">The key used to identify the resilience strategy.</param>
     /// <returns>The resilience strategy associated with the specified key.</returns>
     /// <exception cref="KeyNotFoundException">Thrown when no resilience strategy is found for the specified key.</exception>
-    public virtual ResilienceStrategy Get(TKey key)
+    public virtual ResilienceStrategy GetStrategy(TKey key)
     {
-        if (TryGet(key, out var strategy))
+        if (TryGetStrategy(key, out var strategy))
         {
             return strategy;
         }
@@ -35,9 +35,9 @@ public abstract class ResilienceStrategyProvider<TKey>
     /// <param name="key">The key used to identify the resilience strategy.</param>
     /// <returns>The resilience strategy associated with the specified key.</returns>
     /// <exception cref="KeyNotFoundException">Thrown when no resilience strategy is found for the specified key.</exception>
-    public virtual ResilienceStrategy<TResult> Get<TResult>(TKey key)
+    public virtual ResilienceStrategy<TResult> GetStrategy<TResult>(TKey key)
     {
-        if (TryGet<TResult>(key, out var strategy))
+        if (TryGetStrategy<TResult>(key, out var strategy))
         {
             return strategy;
         }
@@ -52,7 +52,7 @@ public abstract class ResilienceStrategyProvider<TKey>
     /// <param name="key">The key used to identify the resilience strategy.</param>
     /// <param name="strategy">The output resilience strategy if found, <see langword="null"/> otherwise.</param>
     /// <returns><see langword="true"/> if the strategy was found, <see langword="false"/> otherwise.</returns>
-    public abstract bool TryGet(TKey key, [NotNullWhen(true)] out ResilienceStrategy? strategy);
+    public abstract bool TryGetStrategy(TKey key, [NotNullWhen(true)] out ResilienceStrategy? strategy);
 
     /// <summary>
     /// Tries to get a generic resilience strategy from the provider using the specified key.
@@ -61,5 +61,5 @@ public abstract class ResilienceStrategyProvider<TKey>
     /// <param name="key">The key used to identify the resilience strategy.</param>
     /// <param name="strategy">The output resilience strategy if found, <see langword="null"/> otherwise.</param>
     /// <returns><see langword="true"/> if the strategy was found, <see langword="false"/> otherwise.</returns>
-    public abstract bool TryGet<TResult>(TKey key, [NotNullWhen(true)] out ResilienceStrategy<TResult>? strategy);
+    public abstract bool TryGetStrategy<TResult>(TKey key, [NotNullWhen(true)] out ResilienceStrategy<TResult>? strategy);
 }

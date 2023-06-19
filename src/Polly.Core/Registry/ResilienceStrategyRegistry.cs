@@ -65,7 +65,7 @@ public sealed partial class ResilienceStrategyRegistry<TKey> : ResilienceStrateg
     /// <param name="strategy">The resilience strategy instance.</param>
     /// <returns><see langword="true"/> if the strategy was added successfully, <see langword="false"/> otherwise.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="strategy"/> is <see langword="null"/>.</exception>
-    public bool TryAdd(TKey key, ResilienceStrategy strategy)
+    public bool TryAddStrategy(TKey key, ResilienceStrategy strategy)
     {
         Guard.NotNull(strategy);
 
@@ -80,7 +80,7 @@ public sealed partial class ResilienceStrategyRegistry<TKey> : ResilienceStrateg
     /// <param name="strategy">The resilience strategy instance.</param>
     /// <returns><see langword="true"/> if the strategy was added successfully, <see langword="false"/> otherwise.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="strategy"/> is <see langword="null"/>.</exception>
-    public bool TryAdd<TResult>(TKey key, ResilienceStrategy<TResult> strategy)
+    public bool TryAddStrategy<TResult>(TKey key, ResilienceStrategy<TResult> strategy)
     {
         Guard.NotNull(strategy);
 
@@ -92,7 +92,7 @@ public sealed partial class ResilienceStrategyRegistry<TKey> : ResilienceStrateg
     /// </summary>
     /// <param name="key">The key used to identify the resilience strategy.</param>
     /// <returns><see langword="true"/> if the strategy was removed successfully, <see langword="false"/> otherwise.</returns>
-    public bool Remove(TKey key) => _strategies.TryRemove(key, out _);
+    public bool RemoveStrategy(TKey key) => _strategies.TryRemove(key, out _);
 
     /// <summary>
     /// Removes a generic resilience strategy from the registry.
@@ -100,16 +100,16 @@ public sealed partial class ResilienceStrategyRegistry<TKey> : ResilienceStrateg
     /// <typeparam name="TResult">The type of result that the resilience strategy handles.</typeparam>
     /// <param name="key">The key used to identify the resilience strategy.</param>
     /// <returns><see langword="true"/> if the strategy was removed successfully, <see langword="false"/> otherwise.</returns>
-    public bool Remove<TResult>(TKey key) => GetGenericRegistry<TResult>().Remove(key);
+    public bool RemoveStrategy<TResult>(TKey key) => GetGenericRegistry<TResult>().Remove(key);
 
     /// <inheritdoc/>
-    public override bool TryGet<TResult>(TKey key, [NotNullWhen(true)] out ResilienceStrategy<TResult>? strategy)
+    public override bool TryGetStrategy<TResult>(TKey key, [NotNullWhen(true)] out ResilienceStrategy<TResult>? strategy)
     {
         return GetGenericRegistry<TResult>().TryGet(key, out strategy);
     }
 
     /// <inheritdoc/>
-    public override bool TryGet(TKey key, [NotNullWhen(true)] out ResilienceStrategy? strategy)
+    public override bool TryGetStrategy(TKey key, [NotNullWhen(true)] out ResilienceStrategy? strategy)
     {
         if (_strategies.TryGetValue(key, out strategy))
         {
@@ -192,7 +192,7 @@ public sealed partial class ResilienceStrategyRegistry<TKey> : ResilienceStrateg
     /// <remarks>
     /// This method only clears the cached strategies, the registered builders are kept unchanged.
     /// </remarks>
-    public void Clear() => _strategies.Clear();
+    public void ClearStrategies() => _strategies.Clear();
 
     /// <summary>
     /// Clears all cached generic strategies.
@@ -201,7 +201,7 @@ public sealed partial class ResilienceStrategyRegistry<TKey> : ResilienceStrateg
     /// <remarks>
     /// This method only clears the cached strategies, the registered builders are kept unchanged.
     /// </remarks>
-    public void Clear<TResult>() => GetGenericRegistry<TResult>().Clear();
+    public void ClearStrategies<TResult>() => GetGenericRegistry<TResult>().Clear();
 
     private static ResilienceStrategy CreateStrategy<TBuilder>(
         Func<TBuilder> activator,

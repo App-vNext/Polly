@@ -22,13 +22,13 @@ ResilienceStrategy strategy = new ResilienceStrategyBuilder()
 strategy.Execute(() => { });
 
 // Asynchronously
-await strategy.ExecuteAsync(async token => { await Task.Delay(10); }, CancellationToken.None);
+await strategy.ExecuteAsync(async token => { await Task.Delay(10, token); }, CancellationToken.None);
 
 // Synchronously with result
 strategy.Execute(token => "some-result");
 
 // Asynchronously with result
-await strategy.ExecuteAsync(async token => { await Task.Delay(10); return "some-result"; }, CancellationToken.None);
+await strategy.ExecuteAsync(async token => { await Task.Delay(10, token); return "some-result"; }, CancellationToken.None);
 
 // Use state to avoid lambda allocation
 strategy.Execute(static state => state, "my-state");

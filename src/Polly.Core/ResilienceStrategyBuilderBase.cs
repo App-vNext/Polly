@@ -72,15 +72,7 @@ public abstract class ResilienceStrategyBuilderBase
 
     internal abstract bool IsGenericBuilder { get; }
 
-    /// <summary>
-    /// Adds a strategy to the builder.
-    /// </summary>
-    /// <param name="factory">The factory that creates a resilience strategy.</param>
-    /// <param name="options">The options associated with the strategy. If none are provided the default instance of <see cref="ResilienceStrategyOptions"/> is created.</param>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="factory"/> is null.</exception>
-    /// <exception cref="InvalidOperationException">Thrown when this builder was already used to create a strategy. The builder cannot be modified after it has been used.</exception>
-    /// <exception cref="ValidationException">Thrown when the <paramref name="options"/> are invalid.</exception>
-    public void AddStrategy(Func<ResilienceStrategyBuilderContext, ResilienceStrategy> factory, ResilienceStrategyOptions options)
+    internal void AddStrategyCore(Func<ResilienceStrategyBuilderContext, ResilienceStrategy> factory, ResilienceStrategyOptions options)
     {
         Guard.NotNull(factory);
         Guard.NotNull(options);

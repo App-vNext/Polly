@@ -21,13 +21,13 @@ public static class TelemetryResilienceStrategyBuilderExtensions
     /// Additionally, the telemetry strategy that logs and meters the executions is added to the beginning of the strategy pipeline.
     /// </remarks>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="builder"/> or <paramref name="loggerFactory"/> is <see langword="null"/>.</exception>
-    public static TBuilder EnableTelemetry<TBuilder>(this TBuilder builder, ILoggerFactory loggerFactory)
+    public static TBuilder ConfigureTelemetry<TBuilder>(this TBuilder builder, ILoggerFactory loggerFactory)
         where TBuilder : ResilienceStrategyBuilderBase
     {
         Guard.NotNull(builder);
         Guard.NotNull(loggerFactory);
 
-        return builder.EnableTelemetry(new TelemetryOptions { LoggerFactory = loggerFactory });
+        return builder.ConfigureTelemetry(new TelemetryOptions { LoggerFactory = loggerFactory });
     }
 
     /// <summary>
@@ -42,7 +42,7 @@ public static class TelemetryResilienceStrategyBuilderExtensions
     /// Additionally, the telemetry strategy that logs and meters the executions is added to the beginning of the strategy pipeline.
     /// </remarks>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="builder"/> or <paramref name="options"/> is <see langword="null"/>.</exception>
-    public static TBuilder EnableTelemetry<TBuilder>(this TBuilder builder, TelemetryOptions options)
+    public static TBuilder ConfigureTelemetry<TBuilder>(this TBuilder builder, TelemetryOptions options)
         where TBuilder : ResilienceStrategyBuilderBase
     {
         Guard.NotNull(builder);

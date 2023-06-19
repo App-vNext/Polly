@@ -219,7 +219,7 @@ public static class PollyServiceCollectionExtensions
         {
             var builder = new ResilienceStrategyBuilder();
             builder.Properties.Set(PollyDependencyInjectionKeys.ServiceProvider, serviceProvider);
-            builder.EnableTelemetry(serviceProvider.GetRequiredService<IOptions<TelemetryOptions>>().Value);
+            builder.ConfigureTelemetry(serviceProvider.GetRequiredService<IOptions<TelemetryOptions>>().Value);
             return builder;
         });
     }

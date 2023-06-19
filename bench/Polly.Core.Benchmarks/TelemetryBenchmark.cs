@@ -61,7 +61,7 @@ public class TelemetryBenchmark
                 });
             }
 
-            builder.EnableTelemetry(options);
+            builder.ConfigureTelemetry(options);
         }
 
         return builder.Build();
