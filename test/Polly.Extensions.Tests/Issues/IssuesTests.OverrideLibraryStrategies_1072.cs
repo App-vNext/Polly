@@ -39,11 +39,13 @@ public partial class IssuesTests
         // act && assert
         if (overrideStrategy)
         {
+            // The library now also handles SocketException.
             api.Invoking(a => a.ExecuteLibrary(UnstableCall)).Should().NotThrow();
 
         }
         else
         {
+            // Originally, the library strategy only handled InvalidOperationException.
             api.Invoking(a => a.ExecuteLibrary(UnstableCall)).Should().Throw<SocketException>();
         }
 
