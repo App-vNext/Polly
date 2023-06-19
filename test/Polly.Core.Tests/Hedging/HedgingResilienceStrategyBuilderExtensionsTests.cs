@@ -52,6 +52,7 @@ public class HedgingResilienceStrategyBuilderExtensionsTests
     [Fact]
     public async Task AddHedging_IntegrationTest()
     {
+        var hedgingWithoutOutcome = false;
         ConcurrentQueue<string> results = new();
 
         var strategy = _builder
@@ -78,7 +79,19 @@ public class HedgingResilienceStrategyBuilderExtensionsTests
                         return "error".AsOutcome().AsOutcome();
                     };
                 },
-                OnHedging = args => { results.Enqueue(args.Result!.ToString()!); return default; }
+                OnHedging = args =>
+                {
+                    if (args.Arguments.HasOutcome)
+                    {
+                        results.Enqueue(args.Result!.ToString()!);
+                    }
+                    else
+                    {
+                        hedgingWithoutOutcome = true;
+                    }
+
+                    return default;
+                }
             })
             .Build();
 
@@ -91,5 +104,6 @@ public class HedgingResilienceStrategyBuilderExtensionsTests
         result.Should().Be("success");
         results.Should().HaveCountGreaterThan(0);
         results.Distinct().Should().ContainSingle("error");
+        hedgingWithoutOutcome.Should().BeTrue();
     }
 }
