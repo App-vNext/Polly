@@ -843,6 +843,7 @@ public class HedgingResilienceStrategyTests : IDisposable
         var attempts = new List<int>();
         _options.OnHedging = args =>
         {
+            args.Arguments.HasOutcome.Should().BeTrue();
             args.Result.Should().Be(Failure);
             attempts.Add(args.Arguments.Attempt);
             return default;
