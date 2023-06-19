@@ -20,7 +20,7 @@ public sealed partial record class TelemetryEventArguments
     /// <summary>
     /// Gets the event name.
     /// </summary>
-    public string EventName { get; private set; } = string.Empty;
+    public string EventName { get; private set; } = null!;
 
     /// <summary>
     /// Gets the resilience context.
