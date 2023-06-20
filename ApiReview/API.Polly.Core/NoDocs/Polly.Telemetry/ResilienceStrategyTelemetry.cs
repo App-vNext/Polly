@@ -7,6 +7,7 @@ namespace Polly.Telemetry;
 
 public sealed class ResilienceStrategyTelemetry
 {
+    public bool IsEnabled { get; }
     public void Report<TArgs>(string eventName, ResilienceContext context, TArgs args);
     public void Report<TArgs, TResult>(string eventName, OutcomeArguments<TResult, TArgs> args);
 }

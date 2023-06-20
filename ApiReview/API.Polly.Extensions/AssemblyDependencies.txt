@@ -8,6 +8,7 @@ System.ComponentModel
 System.ComponentModel.Annotations
 System.Diagnostics.DiagnosticSource
 System.Linq
+System.Memory
 System.Net.Http
 System.Net.Primitives
 System.Private.CoreLib

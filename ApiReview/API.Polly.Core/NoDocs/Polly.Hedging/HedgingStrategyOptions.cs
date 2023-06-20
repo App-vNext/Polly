@@ -14,7 +14,7 @@ public class HedgingStrategyOptions<TResult> : ResilienceStrategyOptions
     [Range(2, 10)]
     public int MaxHedgedAttempts { get; set; }
     [Required]
-    public Func<OutcomeArguments<TResult, HandleHedgingArguments>, ValueTask<bool>>? ShouldHandle { get; set; }
+    public Func<OutcomeArguments<TResult, HedgingPredicateArguments>, ValueTask<bool>> ShouldHandle { get; set; }
     [Required]
     public Func<HedgingActionGeneratorArguments<TResult>, Func<ValueTask<Outcome<TResult>>>?> HedgingActionGenerator { get; set; }
     public Func<HedgingDelayArguments, ValueTask<TimeSpan>>? HedgingDelayGenerator { get; set; }

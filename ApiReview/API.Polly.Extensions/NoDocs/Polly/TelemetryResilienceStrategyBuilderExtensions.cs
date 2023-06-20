@@ -7,6 +7,6 @@ namespace Polly;
 
 public static class TelemetryResilienceStrategyBuilderExtensions
 {
-    public static TBuilder EnableTelemetry<TBuilder>(this TBuilder builder, ILoggerFactory loggerFactory) where TBuilder : ResilienceStrategyBuilderBase;
-    public static TBuilder EnableTelemetry<TBuilder>(this TBuilder builder, TelemetryResilienceStrategyOptions options) where TBuilder : ResilienceStrategyBuilderBase;
+    public static TBuilder ConfigureTelemetry<TBuilder>(this TBuilder builder, ILoggerFactory loggerFactory) where TBuilder : ResilienceStrategyBuilderBase;
+    public static TBuilder ConfigureTelemetry<TBuilder>(this TBuilder builder, TelemetryOptions options) where TBuilder : ResilienceStrategyBuilderBase;
 }

@@ -16,7 +16,7 @@ public class RetryStrategyOptions<TResult> : ResilienceStrategyOptions
     [TimeSpan("00:00:00", "1.00:00:00")]
     public TimeSpan BaseDelay { get; set; }
     [Required]
-    public Func<OutcomeArguments<TResult, ShouldRetryArguments>, ValueTask<bool>>? ShouldRetry { get; set; }
+    public Func<OutcomeArguments<TResult, RetryPredicateArguments>, ValueTask<bool>> ShouldHandle { get; set; }
     public Func<OutcomeArguments<TResult, RetryDelayArguments>, ValueTask<TimeSpan>>? RetryDelayGenerator { get; set; }
     public Func<OutcomeArguments<TResult, OnRetryArguments>, ValueTask>? OnRetry { get; set; }
     public RetryStrategyOptions();

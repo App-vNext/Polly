@@ -13,7 +13,7 @@ public abstract class CircuitBreakerStrategyOptions<TResult> : ResilienceStrateg
     [TimeSpan("00:00:00.500")]
     public TimeSpan BreakDuration { get; set; }
     [Required]
-    public Func<OutcomeArguments<TResult, CircuitBreakerPredicateArguments>, ValueTask<bool>>? ShouldHandle { get; set; }
+    public Func<OutcomeArguments<TResult, CircuitBreakerPredicateArguments>, ValueTask<bool>> ShouldHandle { get; set; }
     public Func<OutcomeArguments<TResult, OnCircuitClosedArguments>, ValueTask>? OnClosed { get; set; }
     public Func<OutcomeArguments<TResult, OnCircuitOpenedArguments>, ValueTask>? OnOpened { get; set; }
     public Func<OnCircuitHalfOpenedArguments, ValueTask>? OnHalfOpened { get; set; }

@@ -1,11 +1,13 @@
 // Assembly 'Polly.Core'
 
-using System.Runtime.InteropServices;
+using System;
+using System.Runtime.CompilerServices;
 
 namespace Polly.Fallback;
 
-[StructLayout(LayoutKind.Sequential, Size = 1)]
-public readonly record struct OnFallbackArguments
+public record OnFallbackArguments
 {
+    [CompilerGenerated]
+    protected virtual Type EqualityContract { get; }
     public OnFallbackArguments();
 }

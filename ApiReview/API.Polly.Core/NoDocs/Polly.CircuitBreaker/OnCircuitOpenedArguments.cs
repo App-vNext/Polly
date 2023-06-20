@@ -1,7 +1,12 @@
 // Assembly 'Polly.Core'
 
 using System;
+using System.Runtime.CompilerServices;
 
 namespace Polly.CircuitBreaker;
 
-public readonly record struct OnCircuitOpenedArguments(TimeSpan BreakDuration, bool IsManual);
+public record OnCircuitOpenedArguments(TimeSpan BreakDuration, bool IsManual)
+{
+    [CompilerGenerated]
+    protected virtual Type EqualityContract { get; }
+}

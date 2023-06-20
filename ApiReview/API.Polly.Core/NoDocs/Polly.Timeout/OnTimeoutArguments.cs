@@ -1,7 +1,12 @@
 // Assembly 'Polly.Core'
 
 using System;
+using System.Runtime.CompilerServices;
 
 namespace Polly.Timeout;
 
-public readonly record struct OnTimeoutArguments(ResilienceContext Context, Exception Exception, TimeSpan Timeout);
+public record OnTimeoutArguments(ResilienceContext Context, Exception Exception, TimeSpan Timeout)
+{
+    [CompilerGenerated]
+    protected virtual Type EqualityContract { get; }
+}

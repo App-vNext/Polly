@@ -18,5 +18,4 @@ public abstract class ResilienceStrategyBuilderBase
     public Action<IList<ResilienceStrategy>>? OnCreatingStrategy { get; set; }
     [EditorBrowsable(EditorBrowsableState.Never)]
     public DiagnosticSource? DiagnosticSource { get; set; }
-    public void AddStrategy(Func<ResilienceStrategyBuilderContext, ResilienceStrategy> factory, ResilienceStrategyOptions options);
 }

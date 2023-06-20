@@ -1,7 +1,12 @@
 // Assembly 'Polly.Core'
 
 using System;
+using System.Runtime.CompilerServices;
 
 namespace Polly.Retry;
 
-public readonly record struct OnRetryArguments(int Attempt, TimeSpan RetryDelay);
+public record OnRetryArguments(int Attempt, TimeSpan RetryDelay, TimeSpan ExecutionTime)
+{
+    [CompilerGenerated]
+    protected virtual Type EqualityContract { get; }
+}
