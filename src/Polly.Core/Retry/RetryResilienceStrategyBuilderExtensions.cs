@@ -79,13 +79,9 @@ public static class RetryResilienceStrategyBuilderExtensions
         where TBuilder : ResilienceStrategyBuilderBase
     {
         return builder.AddStrategy(context =>
-            new RetryResilienceStrategy(
-                options.BaseDelay,
-                options.BackoffType,
-                options.RetryCount,
-                context.CreateInvoker(options.ShouldHandle)!,
-                context.CreateInvoker(options.OnRetry),
-                context.CreateInvoker(options.RetryDelayGenerator, TimeSpan.MinValue),
+            new RetryResilienceStrategy<TResult>(
+                options,
+                context.IsGenericBuilder,
                 context.TimeProvider,
                 context.Telemetry,
                 RandomUtil.Instance),

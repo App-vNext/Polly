@@ -93,13 +93,13 @@ public class HedgingExecutionContextTests : IDisposable
     {
         var context = Create();
         context.Initialize(_resilienceContext);
-        await context.LoadExecutionAsync((_, _) => new Outcome<string>("dummy").AsValueTask(), "state");
+        await context.LoadExecutionAsync((_, _) => new DisposableResult("dummy").AsOutcomeAsync(), "state");
 
         var task = await context.TryWaitForCompletedExecutionAsync(TimeSpan.Zero);
 
         task.Should().NotBeNull();
         task!.ExecutionTaskSafe!.IsCompleted.Should().BeTrue();
-        task.Outcome.Result.Should().Be("dummy");
+        task.Outcome.AsOutcome<DisposableResult>().Result!.Name.Should().Be("dummy");
         task.AcceptOutcome();
         context.LoadedTasks.Should().Be(1);
     }

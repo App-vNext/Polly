@@ -8,6 +8,7 @@ public class MultipleStrategiesBenchmark
     private object? _strategyV7;
     private object? _strategyV8;
     private object? _strategyTelemetryV8;
+    private ResilienceStrategy? _nonGeneric;
 
     [GlobalSetup]
     public void Setup()
@@ -16,6 +17,7 @@ public class MultipleStrategiesBenchmark
         _strategyV7 = Helper.CreateStrategyPipeline(PollyVersion.V7, false);
         _strategyV8 = Helper.CreateStrategyPipeline(PollyVersion.V8, false);
         _strategyTelemetryV8 = Helper.CreateStrategyPipeline(PollyVersion.V8, true);
+        _nonGeneric = Helper.CreateNonGenericStrategyPipeline();
     }
 
     [GlobalCleanup]
@@ -29,4 +31,17 @@ public class MultipleStrategiesBenchmark
 
     [Benchmark]
     public ValueTask ExecuteStrategyPipeline_Telemetry_V8() => _strategyTelemetryV8!.ExecuteAsync(PollyVersion.V8);
+
+    [Benchmark]
+    public async ValueTask ExecuteStrategyPipeline_NonGeneric_V8()
+    {
+        var context = ResilienceContext.Get();
+
+        await _nonGeneric!.ExecuteOutcomeAsync(
+            static (_, _) => new ValueTask<Outcome<string>>(new Outcome<string>("dummy")),
+            context,
+            string.Empty).ConfigureAwait(false);
+
+        ResilienceContext.Return(context);
+    }
 }

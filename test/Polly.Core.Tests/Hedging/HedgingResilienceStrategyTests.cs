@@ -2,7 +2,6 @@ using Polly.Hedging;
 using Polly.Hedging.Utils;
 using Polly.Telemetry;
 using Polly.TestUtils;
-using Polly.Utils;
 using Xunit.Abstractions;
 
 namespace Polly.Core.Tests.Hedging;
@@ -16,7 +15,7 @@ public class HedgingResilienceStrategyTests : IDisposable
     private static readonly TimeSpan LongDelay = TimeSpan.FromDays(1);
     private static readonly TimeSpan AssertTimeout = TimeSpan.FromSeconds(15);
 
-    private readonly HedgingStrategyOptions _options = new();
+    private readonly HedgingStrategyOptions<string> _options = new();
     private readonly List<TelemetryEventArguments> _events = new();
     private readonly ResilienceStrategyTelemetry _telemetry;
     private readonly HedgingTimeProvider _timeProvider;
@@ -313,7 +312,7 @@ public class HedgingResilienceStrategyTests : IDisposable
             };
         });
 
-        var strategy = Create(handler);
+        var strategy = Create(handler, null);
 
         // act
         var resultTask = strategy.ExecuteAsync(async token =>
@@ -937,14 +936,17 @@ public class HedgingResilienceStrategyTests : IDisposable
         return "secondary".AsOutcome();
     });
 
-    private HedgingResilienceStrategy<string> Create() => Create(_handler!);
+    private HedgingResilienceStrategy<string> Create() => Create(_handler!, _options.OnHedging);
 
-    private HedgingResilienceStrategy<T> Create<T>(HedgingHandler<T> handler) => new(
+    private HedgingResilienceStrategy<T> Create<T>(
+        HedgingHandler<T> handler,
+        Func<OutcomeArguments<T, OnHedgingArguments>, ValueTask>? onHedging) => new(
         _options.HedgingDelay,
         _options.MaxHedgedAttempts,
         handler,
-        EventInvoker<OnHedgingArguments>.Create(_options.OnHedging, false),
+        onHedging,
         _options.HedgingDelayGenerator,
         _timeProvider,
-        _telemetry);
+        _telemetry,
+        true);
 }

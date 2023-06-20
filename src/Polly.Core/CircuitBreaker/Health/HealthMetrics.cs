@@ -2,7 +2,7 @@ namespace Polly.CircuitBreaker.Health;
 
 /// <summary>
 /// The health metrics for advanced circuit breaker.
-/// All operations here are executed from <see cref="CircuitStateController"/> under a lock and are thread safe.
+/// All operations here are executed from <see cref="CircuitStateController{T}"/> under a lock and are thread safe.
 /// </summary>
 internal abstract class HealthMetrics
 {

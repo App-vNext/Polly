@@ -1,7 +1,6 @@
 using FluentAssertions;
 using Polly.Hedging;
 using Polly.Hedging.Utils;
-using Polly.Utils;
 
 namespace Polly.Core.Tests.Hedging;
 
@@ -11,7 +10,7 @@ public class HedgingHandlerTests
     public async Task GenerateAction_Generic_Ok()
     {
         var handler = new HedgingHandler<string>(
-            PredicateInvoker<HedgingPredicateArguments>.Create<string>(args => PredicateResult.True, true)!,
+            args => PredicateResult.True,
             args => () => "ok".AsOutcomeAsync(),
             true);
 
@@ -27,7 +26,7 @@ public class HedgingHandlerTests
     public async Task GenerateAction_NonGeneric_Ok(bool nullAction)
     {
         var handler = new HedgingHandler<object>(
-            PredicateInvoker<HedgingPredicateArguments>.Create<object>(args => PredicateResult.True, false)!,
+            args => PredicateResult.True,
             args =>
             {
                 if (nullAction)
@@ -39,7 +38,7 @@ public class HedgingHandlerTests
             },
             false);
 
-        var action = handler.GenerateAction(new HedgingActionGeneratorArguments<string>(ResilienceContext.Get(), ResilienceContext.Get(), 0, _ => "primary".AsOutcomeAsync()))!;
+        var action = handler.GenerateAction(new HedgingActionGeneratorArguments<object>(ResilienceContext.Get(), ResilienceContext.Get(), 0, _ => ((object)"primary").AsOutcomeAsync()))!;
         if (nullAction)
         {
             action.Should().BeNull();
@@ -55,11 +54,11 @@ public class HedgingHandlerTests
     public async Task GenerateAction_NonGeneric_FromCallback()
     {
         var handler = new HedgingHandler<object>(
-            PredicateInvoker<HedgingPredicateArguments>.Create<object>(args => PredicateResult.True, false)!,
+            args => PredicateResult.True,
             args => () => args.Callback(args.ActionContext),
             false);
 
-        var action = handler.GenerateAction(new HedgingActionGeneratorArguments<string>(ResilienceContext.Get(), ResilienceContext.Get(), 0, _ => "callback".AsOutcomeAsync()))!;
+        var action = handler.GenerateAction(new HedgingActionGeneratorArguments<object>(ResilienceContext.Get(), ResilienceContext.Get(), 0, _ => ((object)"callback").AsOutcomeAsync()))!;
         var res = await action();
         res.Result.Should().Be("callback");
     }

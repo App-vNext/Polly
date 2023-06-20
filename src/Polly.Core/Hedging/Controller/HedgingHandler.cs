@@ -1,17 +1,11 @@
 namespace Polly.Hedging.Utils;
 
 internal sealed record class HedgingHandler<T>(
-    PredicateInvoker<HedgingPredicateArguments> ShouldHandle,
+    Func<OutcomeArguments<T, HedgingPredicateArguments>, ValueTask<bool>> ShouldHandle,
     Func<HedgingActionGeneratorArguments<T>, Func<ValueTask<Outcome<T>>>?> ActionGenerator,
     bool IsGeneric)
 {
-    public bool HandlesHedging<TResult>() => IsGeneric switch
-    {
-        true => typeof(TResult) == typeof(T),
-        false => true
-    };
-
-    public Func<ValueTask<Outcome<TResult>>>? GenerateAction<TResult>(HedgingActionGeneratorArguments<TResult> args)
+    public Func<ValueTask<Outcome<T>>>? GenerateAction(HedgingActionGeneratorArguments<T> args)
     {
         if (IsGeneric)
         {
@@ -21,13 +15,13 @@ internal sealed record class HedgingHandler<T>(
                 args.Attempt,
                 (Func<ResilienceContext, ValueTask<Outcome<T>>>)(object)args.Callback);
 
-            return (Func<ValueTask<Outcome<TResult>>>?)(object)ActionGenerator(copiedArgs)!;
+            return (Func<ValueTask<Outcome<T>>>?)(object)ActionGenerator(copiedArgs)!;
         }
 
         return CreateNonGenericAction(args);
     }
 
-    private Func<ValueTask<Outcome<TResult>>>? CreateNonGenericAction<TResult>(HedgingActionGeneratorArguments<TResult> args)
+    private Func<ValueTask<Outcome<T>>>? CreateNonGenericAction(HedgingActionGeneratorArguments<T> args)
     {
         var generator = (Func<HedgingActionGeneratorArguments<object>, Func<ValueTask<Outcome<object>>>?>)(object)ActionGenerator;
         var action = generator(new HedgingActionGeneratorArguments<object>(args.PrimaryContext, args.ActionContext, args.Attempt, async context =>
@@ -44,7 +38,7 @@ internal sealed record class HedgingHandler<T>(
         return async () =>
         {
             var outcome = await action().ConfigureAwait(args.ActionContext.ContinueOnCapturedContext);
-            return outcome.AsOutcome<TResult>();
+            return outcome.AsOutcome<T>();
         };
     }
 }

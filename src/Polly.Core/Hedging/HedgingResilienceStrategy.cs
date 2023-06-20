@@ -5,7 +5,7 @@ using Polly.Telemetry;
 
 namespace Polly.Hedging;
 
-internal sealed class HedgingResilienceStrategy<T> : ResilienceStrategy
+internal sealed class HedgingResilienceStrategy<T> : OutcomeResilienceStrategy<T>
 {
     private readonly TimeProvider _timeProvider;
     private readonly ResilienceStrategyTelemetry _telemetry;
@@ -15,10 +15,12 @@ internal sealed class HedgingResilienceStrategy<T> : ResilienceStrategy
         TimeSpan hedgingDelay,
         int maxHedgedAttempts,
         HedgingHandler<T> hedgingHandler,
-        EventInvoker<OnHedgingArguments>? onHedging,
+        Func<OutcomeArguments<T, OnHedgingArguments>, ValueTask>? onHedging,
         Func<HedgingDelayArguments, ValueTask<TimeSpan>>? hedgingDelayGenerator,
         TimeProvider timeProvider,
-        ResilienceStrategyTelemetry telemetry)
+        ResilienceStrategyTelemetry telemetry,
+        bool isGeneric)
+        : base(isGeneric)
     {
         HedgingDelay = hedgingDelay;
         MaxHedgedAttempts = maxHedgedAttempts;
@@ -39,19 +41,14 @@ internal sealed class HedgingResilienceStrategy<T> : ResilienceStrategy
 
     public HedgingHandler<T> HedgingHandler { get; }
 
-    public EventInvoker<OnHedgingArguments>? OnHedging { get; }
+    public Func<OutcomeArguments<T, OnHedgingArguments>, ValueTask>? OnHedging { get; }
 
     [ExcludeFromCodeCoverage] // coverlet issue
-    protected internal override async ValueTask<Outcome<TResult>> ExecuteCoreAsync<TResult, TState>(
-        Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,
+    protected override async ValueTask<Outcome<T>> ExecuteCallbackAsync<TState>(
+        Func<ResilienceContext, TState, ValueTask<Outcome<T>>> callback,
         ResilienceContext context,
         TState state)
     {
-        if (!HedgingHandler.HandlesHedging<TResult>())
-        {
-            return await callback(context, state).ConfigureAwait(context.ContinueOnCapturedContext);
-        }
-
         // create hedging execution context
         var hedgingContext = _controller.GetContext(context);
 
@@ -65,9 +62,9 @@ internal sealed class HedgingResilienceStrategy<T> : ResilienceStrategy
         }
     }
 
-    private async ValueTask<Outcome<TResult>> ExecuteCoreAsync<TResult, TState>(
+    private async ValueTask<Outcome<T>> ExecuteCoreAsync<TState>(
         HedgingExecutionContext<T> hedgingContext,
-        Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,
+        Func<ResilienceContext, TState, ValueTask<Outcome<T>>> callback,
         ResilienceContext context,
         TState state)
     {
@@ -80,12 +77,12 @@ internal sealed class HedgingResilienceStrategy<T> : ResilienceStrategy
             var start = _timeProvider.GetTimestamp();
             if (cancellationToken.IsCancellationRequested)
             {
-                return new Outcome<TResult>(new OperationCanceledException(cancellationToken).TrySetStackTrace());
+                return new Outcome<T>(new OperationCanceledException(cancellationToken).TrySetStackTrace());
             }
 
             var loadedExecution = await hedgingContext.LoadExecutionAsync(callback, state).ConfigureAwait(context.ContinueOnCapturedContext);
 
-            if (loadedExecution.Outcome is Outcome<TResult> outcome)
+            if (loadedExecution.Outcome is Outcome<T> outcome)
             {
                 return outcome;
             }
@@ -98,12 +95,12 @@ internal sealed class HedgingResilienceStrategy<T> : ResilienceStrategy
                 // We will create additional hedged task in the next iteration.
                 await HandleOnHedgingAsync(
                     context,
-                    new Outcome<TResult>(default(TResult)),
+                    new Outcome<T>(default(T)),
                     new OnHedgingArguments(attempt, HasOutcome: false, ExecutionTime: delay)).ConfigureAwait(context.ContinueOnCapturedContext);
                 continue;
             }
 
-            outcome = execution.Outcome.AsOutcome<TResult>();
+            outcome = execution.Outcome.AsOutcome<T>();
 
             if (!execution.IsHandled)
             {
@@ -119,9 +116,9 @@ internal sealed class HedgingResilienceStrategy<T> : ResilienceStrategy
         }
     }
 
-    private async ValueTask HandleOnHedgingAsync<TResult>(ResilienceContext context, Outcome<TResult> outcome, OnHedgingArguments args)
+    private async ValueTask HandleOnHedgingAsync(ResilienceContext context, Outcome<T> outcome, OnHedgingArguments args)
     {
-        var onHedgingArgs = new OutcomeArguments<TResult, OnHedgingArguments>(
+        var onHedgingArgs = new OutcomeArguments<T, OnHedgingArguments>(
             context,
             outcome,
             args);
@@ -133,7 +130,7 @@ internal sealed class HedgingResilienceStrategy<T> : ResilienceStrategy
             // If nothing has been returned or thrown yet, the result is a transient failure,
             // and other hedged request will be awaited.
             // Before it, one needs to perform the task adjacent to each hedged call.
-            await OnHedging.HandleAsync(onHedgingArgs).ConfigureAwait(context.ContinueOnCapturedContext);
+            await OnHedging(onHedgingArgs).ConfigureAwait(context.ContinueOnCapturedContext);
         }
     }
 

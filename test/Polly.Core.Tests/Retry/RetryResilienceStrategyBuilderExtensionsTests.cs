@@ -73,9 +73,9 @@ public class RetryResilienceStrategyBuilderExtensionsTests
         AssertStrategy(builder, options.BackoffType, options.RetryCount, options.BaseDelay);
     }
 
-    private static void AssertStrategy(ResilienceStrategyBuilder builder, RetryBackoffType type, int retries, TimeSpan delay, Action<RetryResilienceStrategy>? assert = null)
+    private static void AssertStrategy(ResilienceStrategyBuilder builder, RetryBackoffType type, int retries, TimeSpan delay, Action<RetryResilienceStrategy<object>>? assert = null)
     {
-        var strategy = (RetryResilienceStrategy)builder.Build();
+        var strategy = (RetryResilienceStrategy<object>)builder.Build();
 
         strategy.BackoffType.Should().Be(type);
         strategy.RetryCount.Should().Be(retries);
@@ -84,9 +84,9 @@ public class RetryResilienceStrategyBuilderExtensionsTests
         assert?.Invoke(strategy);
     }
 
-    private static void AssertStrategy<T>(ResilienceStrategyBuilder<T> builder, RetryBackoffType type, int retries, TimeSpan delay, Action<RetryResilienceStrategy>? assert = null)
+    private static void AssertStrategy<T>(ResilienceStrategyBuilder<T> builder, RetryBackoffType type, int retries, TimeSpan delay, Action<RetryResilienceStrategy<T>>? assert = null)
     {
-        var strategy = (RetryResilienceStrategy)builder.Build().Strategy;
+        var strategy = (RetryResilienceStrategy<T>)builder.Build().Strategy;
 
         strategy.BackoffType.Should().Be(type);
         strategy.RetryCount.Should().Be(retries);

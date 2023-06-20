@@ -313,15 +313,11 @@ public class RetryResilienceStrategyTests
 
     private void SetupNoDelay() => _options.RetryDelayGenerator = _ => new ValueTask<TimeSpan>(TimeSpan.Zero);
 
-    private RetryResilienceStrategy CreateSut(TimeProvider? timeProvider = null)
+    private RetryResilienceStrategy<object> CreateSut(TimeProvider? timeProvider = null)
     {
-        return new RetryResilienceStrategy(
-            _options.BaseDelay,
-            _options.BackoffType,
-            _options.RetryCount,
-            PredicateInvoker<RetryPredicateArguments>.Create(_options.ShouldHandle!, false)!,
-            EventInvoker<OnRetryArguments>.Create(_options.OnRetry, false),
-            GeneratorInvoker<RetryDelayArguments, TimeSpan>.Create(_options.RetryDelayGenerator, TimeSpan.MinValue, false),
+        return new RetryResilienceStrategy<object>(
+            _options,
+            false,
             timeProvider ?? _timeProvider.Object,
             _telemetry,
             RandomUtil.Instance);

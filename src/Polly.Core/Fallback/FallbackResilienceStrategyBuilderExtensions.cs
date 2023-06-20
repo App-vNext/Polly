@@ -79,14 +79,15 @@ public static class FallbackResilienceStrategyBuilderExtensions
         builder.AddStrategy(context =>
         {
             var handler = new FallbackHandler<TResult>(
-                context.CreateInvoker(options.ShouldHandle)!,
+                options.ShouldHandle!,
                 options.FallbackAction!,
                 IsGeneric: context.IsGenericBuilder);
 
             return new FallbackResilienceStrategy<TResult>(
                 handler,
-                context.CreateInvoker(options.OnFallback),
-                context.Telemetry);
+                options.OnFallback,
+                context.Telemetry,
+                context.IsGenericBuilder);
         },
         options);
     }

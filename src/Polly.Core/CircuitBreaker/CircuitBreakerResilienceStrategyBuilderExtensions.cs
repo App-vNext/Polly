@@ -121,22 +121,26 @@ public static class CircuitBreakerResilienceStrategyBuilderExtensions
         return builder.AddStrategy(context => CreateStrategy(context, options, new ConsecutiveFailuresCircuitBehavior(options.FailureThreshold)), options);
     }
 
-    internal static CircuitBreakerResilienceStrategy CreateStrategy<TResult>(ResilienceStrategyBuilderContext context, CircuitBreakerStrategyOptions<TResult> options, CircuitBehavior behavior)
+    internal static CircuitBreakerResilienceStrategy<TResult> CreateStrategy<TResult>(
+        ResilienceStrategyBuilderContext context,
+        CircuitBreakerStrategyOptions<TResult> options,
+        CircuitBehavior behavior)
     {
-        var controller = new CircuitStateController(
+        var controller = new CircuitStateController<TResult>(
             options.BreakDuration,
-            context.CreateInvoker(options.OnOpened),
-            context.CreateInvoker(options.OnClosed),
+            options.OnOpened,
+            options.OnClosed,
             options.OnHalfOpened,
             behavior,
             context.TimeProvider,
             context.Telemetry);
 
-        return new CircuitBreakerResilienceStrategy(
-            context.CreateInvoker(options.ShouldHandle)!,
+        return new CircuitBreakerResilienceStrategy<TResult>(
+            options.ShouldHandle!,
             controller,
             options.StateProvider,
-            options.ManualControl);
+            options.ManualControl,
+            context.IsGenericBuilder);
     }
 }
 

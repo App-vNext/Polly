@@ -1,6 +1,6 @@
 namespace Polly.CircuitBreaker;
 
 /// <inheritdoc/>
-public class SimpleCircuitBreakerStrategyOptions : SimpleCircuitBreakerStrategyOptions<object>
+public class SimpleCircuitBreakerStrategyOptions : SimpleCircuitBreakerStrategyOptions<int>
 {
 }

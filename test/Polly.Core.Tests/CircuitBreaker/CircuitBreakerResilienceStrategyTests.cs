@@ -11,7 +11,7 @@ public class CircuitBreakerResilienceStrategyTests : IDisposable
     private readonly Mock<CircuitBehavior> _behavior;
     private readonly ResilienceStrategyTelemetry _telemetry;
     private readonly SimpleCircuitBreakerStrategyOptions _options;
-    private readonly CircuitStateController _controller;
+    private readonly CircuitStateController<int> _controller;
 
     public CircuitBreakerResilienceStrategyTests()
     {
@@ -20,7 +20,7 @@ public class CircuitBreakerResilienceStrategyTests : IDisposable
         _behavior = new Mock<CircuitBehavior>(MockBehavior.Strict);
         _telemetry = TestUtilities.CreateResilienceTelemetry(Mock.Of<DiagnosticSource>());
         _options = new SimpleCircuitBreakerStrategyOptions();
-        _controller = new CircuitStateController(
+        _controller = new CircuitStateController<int>(
             CircuitBreakerConstants.DefaultBreakDuration,
             null,
             null,
@@ -133,8 +133,8 @@ public class CircuitBreakerResilienceStrategyTests : IDisposable
         Create().Invoking(s => s.Execute(_ => { })).Should().NotThrow();
     }
 
-    private CircuitBreakerResilienceStrategy Create()
+    private CircuitBreakerResilienceStrategy<int> Create()
     {
-        return new(PredicateInvoker<CircuitBreakerPredicateArguments>.Create(_options.ShouldHandle!, false)!, _controller, _options.StateProvider, _options.ManualControl);
+        return new(_options.ShouldHandle!, _controller, _options.StateProvider, _options.ManualControl, true);
     }
 }
