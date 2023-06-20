@@ -122,6 +122,8 @@ public readonly struct Outcome<TResult>
         if (typeof(T) == typeof(TResult))
         {
             var result = Result;
+
+            // We can use the unsafe cast here because we know for sure these two types are the same
             return new Outcome<T>(Unsafe.As<TResult, T>(ref result));
         }
 

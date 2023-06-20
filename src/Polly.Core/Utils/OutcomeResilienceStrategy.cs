@@ -18,7 +18,7 @@ internal abstract class OutcomeResilienceStrategy<T> : ResilienceStrategy
     {
         if (!isGeneric && typeof(T) != typeof(object))
         {
-            throw new NotSupportedException("For non-generic strategies the generic paramater should be 'object' type.");
+            throw new NotSupportedException("For non-generic strategies the generic parameter should be of type 'object'.");
         }
 
         _isGeneric = isGeneric;
@@ -49,7 +49,7 @@ internal abstract class OutcomeResilienceStrategy<T> : ResilienceStrategy
                 {
                     var outcome = await state.callback(context, state.state).ConfigureAwait(context.ContinueOnCapturedContext);
 
-                    // cast the outcome to "object" based one (T)
+                    // cast the outcome to "object" based on (T)
                     return outcome.AsOutcome<T>();
                 },
                 context,

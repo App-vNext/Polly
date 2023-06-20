@@ -114,12 +114,12 @@ public class CircuitBreakerResilienceStrategyBuilderTests
         opened.Should().Be(1);
         halfOpened.Should().Be(0);
         closed.Should().Be(0);
-        Assert.Throws<BrokenCircuitException<int>>(() => strategy.Execute(_ => 0));
+        Assert.Throws<BrokenCircuitException<object>>(() => strategy.Execute(_ => 0));
 
         // Circuit Half Opened
         time += options.BreakDuration;
         strategy.Execute(_ => -1);
-        Assert.Throws<BrokenCircuitException<int>>(() => strategy.Execute(_ => 0));
+        Assert.Throws<BrokenCircuitException<object>>(() => strategy.Execute(_ => 0));
         opened.Should().Be(2);
         halfOpened.Should().Be(1);
         closed.Should().Be(0);

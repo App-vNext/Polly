@@ -7,7 +7,7 @@ namespace Polly.Core.Tests.CircuitBreaker.Controller;
 public class CircuitStateControllerTests
 {
     private readonly FakeTimeProvider _timeProvider = new();
-    private readonly CircuitBreakerStrategyOptions<int> _options = new SimpleCircuitBreakerStrategyOptions();
+    private readonly CircuitBreakerStrategyOptions<int> _options = new SimpleCircuitBreakerStrategyOptions<int>();
     private readonly Mock<CircuitBehavior> _circuitBehavior = new(MockBehavior.Strict);
     private readonly Action<TelemetryEventArguments> _onTelemetry = _ => { };
     private DateTimeOffset _utcNow = DateTimeOffset.UtcNow;
@@ -33,9 +33,11 @@ public class CircuitStateControllerTests
         {
             args.Arguments.BreakDuration.Should().Be(TimeSpan.MaxValue);
             args.Context.IsSynchronous.Should().BeFalse();
-            args.Context.IsVoid.Should().BeTrue();
+            args.Context.IsVoid.Should().BeFalse();
+            args.Context.ResultType.Should().Be(typeof(int));
             args.Arguments.IsManual.Should().BeTrue();
-            args.Outcome.IsVoidResult.Should().BeTrue();
+            args.Outcome.IsVoidResult.Should().BeFalse();
+            args.Outcome.Result.Should().Be(0);
             called = true;
             return default;
         };
@@ -69,9 +71,11 @@ public class CircuitStateControllerTests
         _options.OnClosed = args =>
         {
             args.Context.IsSynchronous.Should().BeFalse();
-            args.Context.IsVoid.Should().BeTrue();
+            args.Context.IsVoid.Should().BeFalse();
+            args.Context.ResultType.Should().Be(typeof(int));
             args.Arguments.IsManual.Should().BeTrue();
-            args.Outcome.IsVoidResult.Should().BeTrue();
+            args.Outcome.IsVoidResult.Should().BeFalse();
+            args.Outcome.Result.Should().Be(0);
             called = true;
             return default;
         };
@@ -352,7 +356,7 @@ public class CircuitStateControllerTests
         // assert
         controller.LastException.Should().BeNull();
         var outcome = await controller.OnActionPreExecuteAsync(ResilienceContext.Get());
-        outcome.Value.Exception.Should().BeOfType<BrokenCircuitException>();
+        outcome.Value.Exception.Should().BeOfType<BrokenCircuitException<int>>();
     }
 
     [Fact]

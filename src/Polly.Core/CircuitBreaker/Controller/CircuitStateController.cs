@@ -83,13 +83,13 @@ internal sealed class CircuitStateController<T> : IDisposable
     {
         EnsureNotDisposed();
 
-        context.Initialize<VoidResult>(isSynchronous: false);
+        context.Initialize<T>(isSynchronous: false);
 
         Task? task;
 
         lock (_lock)
         {
-            SetLastHandledOutcome_NeedsLock(new Outcome<VoidResult>(new IsolatedCircuitException()));
+            SetLastHandledOutcome_NeedsLock(new Outcome<T>(new IsolatedCircuitException()));
             OpenCircuitFor_NeedsLock(new Outcome<T>(default(T)), TimeSpan.MaxValue, manual: true, context, out task);
             _circuitState = CircuitState.Isolated;
         }
@@ -101,7 +101,7 @@ internal sealed class CircuitStateController<T> : IDisposable
     {
         EnsureNotDisposed();
 
-        context.Initialize<VoidResult>(isSynchronous: false);
+        context.Initialize<T>(isSynchronous: false);
 
         Task? task;
 
