@@ -7,6 +7,7 @@ namespace Polly.Hedging;
 
 internal sealed class HedgingResilienceStrategy<T> : ResilienceStrategy
 {
+    private readonly TimeProvider _timeProvider;
     private readonly ResilienceStrategyTelemetry _telemetry;
     private readonly HedgingController<T> _controller;
 
@@ -22,11 +23,12 @@ internal sealed class HedgingResilienceStrategy<T> : ResilienceStrategy
         HedgingDelay = hedgingDelay;
         MaxHedgedAttempts = maxHedgedAttempts;
         HedgingDelayGenerator = hedgingDelayGenerator;
+        _timeProvider = timeProvider;
         HedgingHandler = hedgingHandler;
         OnHedging = onHedging;
 
         _telemetry = telemetry;
-        _controller = new HedgingController<T>(timeProvider, HedgingHandler, maxHedgedAttempts);
+        _controller = new HedgingController<T>(telemetry, timeProvider, HedgingHandler, maxHedgedAttempts);
     }
 
     public TimeSpan HedgingDelay { get; }
@@ -75,7 +77,7 @@ internal sealed class HedgingResilienceStrategy<T> : ResilienceStrategy
             attempt++;
             var continueOnCapturedContext = context.ContinueOnCapturedContext;
             var cancellationToken = context.CancellationToken;
-
+            var start = _timeProvider.GetTimestamp();
             if (cancellationToken.IsCancellationRequested)
             {
                 return new Outcome<TResult>(new OperationCanceledException(cancellationToken).TrySetStackTrace());
@@ -97,7 +99,7 @@ internal sealed class HedgingResilienceStrategy<T> : ResilienceStrategy
                 await HandleOnHedgingAsync(
                     context,
                     new Outcome<TResult>(default(TResult)),
-                    new OnHedgingArguments(attempt, HasOutcome: false)).ConfigureAwait(context.ContinueOnCapturedContext);
+                    new OnHedgingArguments(attempt, HasOutcome: false, ExecutionTime: delay)).ConfigureAwait(context.ContinueOnCapturedContext);
                 continue;
             }
 
@@ -109,10 +111,11 @@ internal sealed class HedgingResilienceStrategy<T> : ResilienceStrategy
                 return outcome;
             }
 
+            var executionTime = _timeProvider.GetElapsedTime(start);
             await HandleOnHedgingAsync(
                 context,
                 outcome,
-                new OnHedgingArguments(attempt, HasOutcome: true)).ConfigureAwait(context.ContinueOnCapturedContext);
+                new OnHedgingArguments(attempt, HasOutcome: true, executionTime)).ConfigureAwait(context.ContinueOnCapturedContext);
         }
     }
 

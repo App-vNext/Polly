@@ -39,6 +39,16 @@ public class ResilienceStrategyTelemetryTests
     }
 
     [Fact]
+    public void Report_Attempt_EnsureNotRecordedOnResilienceContext()
+    {
+        var context = ResilienceContext.Get();
+        _diagnosticSource.Setup(o => o.IsEnabled("dummy-event")).Returns(false);
+        _sut.Report("dummy-event", context, ExecutionAttemptArguments.Get(0, TimeSpan.Zero, true));
+
+        context.ResilienceEvents.Should().BeEmpty();
+    }
+
+    [Fact]
     public void Report_NoOutcomeWhenNotSubscribed_None()
     {
         _diagnosticSource.Setup(o => o.IsEnabled("dummy-event")).Returns(false);

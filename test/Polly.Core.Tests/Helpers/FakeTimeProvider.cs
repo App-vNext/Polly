@@ -41,6 +41,12 @@ internal class FakeTimeProvider : Mock<TimeProvider>
         return this;
     }
 
+    public FakeTimeProvider SetupGetTimestamp()
+    {
+        Setup(x => x.GetTimestamp()).Returns(0);
+        return this;
+    }
+
     public FakeTimeProvider SetupDelay(TimeSpan delay, CancellationToken cancellationToken = default)
     {
         Setup(x => x.Delay(delay, cancellationToken)).Returns(Task.CompletedTask);

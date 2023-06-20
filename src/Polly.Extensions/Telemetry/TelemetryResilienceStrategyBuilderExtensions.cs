@@ -1,6 +1,5 @@
 using Microsoft.Extensions.Logging;
 using Polly.Extensions.Telemetry;
-using Polly.Extensions.Utils;
 using Polly.Utils;
 
 namespace Polly;

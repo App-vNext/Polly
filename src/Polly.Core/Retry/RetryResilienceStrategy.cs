@@ -57,10 +57,15 @@ internal sealed class RetryResilienceStrategy : ResilienceStrategy
 
         while (true)
         {
+            var startTimestamp = _timeProvider.GetTimestamp();
             var outcome = await ExecuteCallbackSafeAsync(callback, context, state).ConfigureAwait(context.ContinueOnCapturedContext);
             var shouldRetryArgs = new OutcomeArguments<TResult, RetryPredicateArguments>(context, outcome, new RetryPredicateArguments(attempt));
+            var handle = await ShouldRetry.HandleAsync(shouldRetryArgs).ConfigureAwait(context.ContinueOnCapturedContext);
+            var executionTime = _timeProvider.GetElapsedTime(startTimestamp);
 
-            if (context.CancellationToken.IsCancellationRequested || IsLastAttempt(attempt) || !await ShouldRetry.HandleAsync(shouldRetryArgs).ConfigureAwait(context.ContinueOnCapturedContext))
+            TelemetryUtil.ReportExecutionAttempt(_telemetry, context, outcome, attempt, executionTime, handle);
+
+            if (context.CancellationToken.IsCancellationRequested || IsLastAttempt(attempt) || !handle)
             {
                 return outcome;
             }
@@ -76,7 +81,7 @@ internal sealed class RetryResilienceStrategy : ResilienceStrategy
                 }
             }
 
-            var onRetryArgs = new OutcomeArguments<TResult, OnRetryArguments>(context, outcome, new OnRetryArguments(attempt, delay));
+            var onRetryArgs = new OutcomeArguments<TResult, OnRetryArguments>(context, outcome, new OnRetryArguments(attempt, delay, executionTime));
             _telemetry.Report(RetryConstants.OnRetryEvent, onRetryArgs);
 
             if (OnRetry is not null)

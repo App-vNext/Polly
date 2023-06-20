@@ -1,6 +1,7 @@
 using Polly.Hedging;
 using Polly.Hedging.Controller;
 using Polly.Hedging.Utils;
+using Polly.Telemetry;
 using Polly.Utils;
 
 namespace Polly.Core.Tests.Hedging.Controller;
@@ -12,10 +13,20 @@ public class TaskExecutionTests : IDisposable
     private readonly HedgingHandler<DisposableResult> _hedgingHandler;
     private readonly CancellationTokenSource _cts;
     private readonly HedgingTimeProvider _timeProvider;
+    private readonly ResilienceStrategyTelemetry _telemetry;
+    private readonly List<ExecutionAttemptArguments> _args = new();
     private ContextSnapshot _snapshot;
 
     public TaskExecutionTests()
     {
+        _telemetry = TestUtilities.CreateResilienceTelemetry(args =>
+        {
+            if (args.Arguments is ExecutionAttemptArguments attempt)
+            {
+                _args.Add(ExecutionAttemptArguments.Get(attempt.Attempt, attempt.ExecutionTime, attempt.Handled));
+            }
+        });
+
         _timeProvider = new HedgingTimeProvider();
         _cts = new CancellationTokenSource();
         _hedgingHandler = HedgingHelper.CreateHandler<DisposableResult>(outcome => outcome switch
@@ -44,12 +55,16 @@ public class TaskExecutionTests : IDisposable
                 return new Outcome<DisposableResult>(new DisposableResult { Name = value }).AsValueTask();
             },
             "dummy-state",
-            1);
+            99);
 
         await execution.ExecutionTaskSafe!;
         ((DisposableResult)execution.Outcome.Result!).Name.Should().Be(value);
         execution.IsHandled.Should().Be(handled);
         AssertPrimaryContext(execution.Context, execution);
+
+        _args.Should().HaveCount(1);
+        _args[0].Handled.Should().Be(handled);
+        _args[0].Attempt.Should().Be(99);
     }
 
     [Fact]
@@ -284,5 +299,5 @@ public class TaskExecutionTests : IDisposable
         return () => new DisposableResult { Name = Handled }.AsOutcomeAsync();
     };
 
-    private TaskExecution<DisposableResult> Create() => new(_hedgingHandler, CancellationTokenSourcePool.Create(TimeProvider.System));
+    private TaskExecution<DisposableResult> Create() => new(_hedgingHandler, CancellationTokenSourcePool.Create(TimeProvider.System), _timeProvider, _telemetry);
 }

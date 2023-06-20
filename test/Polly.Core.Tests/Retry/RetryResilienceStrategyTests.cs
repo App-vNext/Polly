@@ -9,13 +9,15 @@ public class RetryResilienceStrategyTests
 {
     private readonly RetryStrategyOptions _options = new();
     private readonly FakeTimeProvider _timeProvider = new();
-    private readonly ResilienceStrategyTelemetry _telemetry;
     private readonly Mock<DiagnosticSource> _diagnosticSource = new();
+    private ResilienceStrategyTelemetry _telemetry;
 
     public RetryResilienceStrategyTests()
     {
         _telemetry = TestUtilities.CreateResilienceTelemetry(_diagnosticSource.Object);
         _options.ShouldHandle = _ => new ValueTask<bool>(false);
+
+        _timeProvider.SetupSequence(v => v.GetTimestamp()).Returns(0).Returns(100);
     }
 
     [Fact]
@@ -205,6 +207,53 @@ public class RetryResilienceStrategyTests
         delays[0].Should().Be(TimeSpan.FromSeconds(2));
         delays[1].Should().Be(TimeSpan.FromSeconds(4));
         delays[2].Should().Be(TimeSpan.FromSeconds(6));
+    }
+
+    [Fact]
+    public void OnRetry_EnsureExecutionTime()
+    {
+        _options.OnRetry = args =>
+        {
+            args.Arguments.ExecutionTime.Should().Be(_timeProvider.Object.GetElapsedTime(100, 1000));
+
+            return default;
+        };
+
+        _options.ShouldHandle = _ => PredicateResult.True;
+        _options.RetryCount = 1;
+        _options.BackoffType = RetryBackoffType.Linear;
+        _timeProvider.SetupAnyDelay();
+        _timeProvider
+            .SetupSequence(v => v.GetTimestamp())
+            .Returns(100)
+            .Returns(1000)
+            .Returns(100)
+            .Returns(1000);
+
+        var sut = CreateSut();
+
+        sut.Execute(() => 0);
+    }
+
+    [Fact]
+    public void Execute_EnsureAttemptReported()
+    {
+        var called = false;
+        _timeProvider.SetupSequence(v => v.GetTimestamp()).Returns(100).Returns(1000);
+        _telemetry = TestUtilities.CreateResilienceTelemetry(args =>
+        {
+            var attempt = args.Arguments.Should().BeOfType<ExecutionAttemptArguments>().Subject;
+
+            attempt.Handled.Should().BeFalse();
+            attempt.Attempt.Should().Be(0);
+            attempt.ExecutionTime.Should().Be(_timeProvider.Object.GetElapsedTime(100, 1000));
+            called = true;
+        });
+
+        var sut = CreateSut();
+
+        sut.Execute(() => 0);
+        called.Should().BeTrue();
     }
 
     [Fact]

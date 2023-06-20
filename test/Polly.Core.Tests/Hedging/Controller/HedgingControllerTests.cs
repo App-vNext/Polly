@@ -1,4 +1,5 @@
 using Polly.Hedging.Utils;
+using Polly.Telemetry;
 
 namespace Polly.Core.Tests.Hedging.Controller;
 
@@ -7,7 +8,8 @@ public class HedgingControllerTests
     [Fact]
     public async Task Pooling_Ok()
     {
-        var controller = new HedgingController<int>(new HedgingTimeProvider(), HedgingHelper.CreateHandler<int>(_ => false, args => null), 3);
+        var telemetry = TestUtilities.CreateResilienceTelemetry(_ => { });
+        var controller = new HedgingController<int>(telemetry, new HedgingTimeProvider(), HedgingHelper.CreateHandler<int>(_ => false, args => null), 3);
 
         var context1 = controller.GetContext(ResilienceContext.Get());
         await PrepareAsync(context1);
