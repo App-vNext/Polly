@@ -197,7 +197,7 @@ internal sealed class TaskExecution<T>
         }
         catch (Exception e)
         {
-            outcome = new Outcome<T>(e);
+            outcome = Polly.Outcome.FromException<T>(e);
         }
 
         _stopExecutionTimestamp = _timeProvider.GetTimestamp();
@@ -206,7 +206,7 @@ internal sealed class TaskExecution<T>
 
     private async Task ExecuteCreateActionException(Exception e)
     {
-        await UpdateOutcomeAsync(new Outcome<T>(e)).ConfigureAwait(Context.ContinueOnCapturedContext);
+        await UpdateOutcomeAsync(Polly.Outcome.FromException<T>(e)).ConfigureAwait(Context.ContinueOnCapturedContext);
     }
 
     private async Task ExecutePrimaryActionAsync<TState>(Func<ResilienceContext, TState, ValueTask<Outcome<T>>> primaryCallback, TState state)
@@ -219,7 +219,7 @@ internal sealed class TaskExecution<T>
         }
         catch (Exception e)
         {
-            outcome = new Outcome<T>(e);
+            outcome = Polly.Outcome.FromException<T>(e);
         }
 
         _stopExecutionTimestamp = _timeProvider.GetTimestamp();

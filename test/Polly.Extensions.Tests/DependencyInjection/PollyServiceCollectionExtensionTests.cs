@@ -287,6 +287,6 @@ public class PollyServiceCollectionExtensionTests
         protected override ValueTask<Outcome<TResult>> ExecuteCoreAsync<TResult, TState>(
             Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,
             ResilienceContext context,
-            TState state) => new(new Outcome<TResult>(new NotSupportedException()));
+            TState state) => new(Outcome.FromException<TResult>(new NotSupportedException()));
     }
 }

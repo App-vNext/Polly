@@ -42,7 +42,7 @@ internal sealed class FallbackResilienceStrategy<T> : OutcomeResilienceStrategy<
         }
         catch (Exception e)
         {
-            return new Outcome<T>(e);
+            return Outcome.FromException<T>(e);
         }
     }
 }

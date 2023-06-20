@@ -67,7 +67,7 @@ public class ResilienceStrategyTelemetryTests
         var context = ResilienceContext.Get();
 
         sut.Invoking(s => s.Report("dummy", context, new TestArguments())).Should().NotThrow();
-        sut.Invoking(s => s.Report("dummy", new OutcomeArguments<int, TestArguments>(context, new Outcome<int>(1), new TestArguments()))).Should().NotThrow();
+        sut.Invoking(s => s.Report("dummy", new OutcomeArguments<int, TestArguments>(context, Outcome.FromResult(1), new TestArguments()))).Should().NotThrow();
     }
 
     [Fact]
@@ -93,7 +93,7 @@ public class ResilienceStrategyTelemetryTests
             });
 
         var context = ResilienceContext.Get();
-        _sut.Report("dummy-event", new OutcomeArguments<int, TestArguments>(context, new Outcome<int>(99), new TestArguments()));
+        _sut.Report("dummy-event", new OutcomeArguments<int, TestArguments>(context, Outcome.FromResult(99), new TestArguments()));
 
         _diagnosticSource.VerifyAll();
     }
@@ -103,7 +103,7 @@ public class ResilienceStrategyTelemetryTests
     {
         _diagnosticSource.Setup(o => o.IsEnabled("dummy-event")).Returns(false);
         var context = ResilienceContext.Get();
-        _sut.Report("dummy-event", new OutcomeArguments<int, TestArguments>(context, new Outcome<int>(10), new TestArguments()));
+        _sut.Report("dummy-event", new OutcomeArguments<int, TestArguments>(context, Outcome.FromResult(10), new TestArguments()));
 
         _diagnosticSource.VerifyAll();
         _diagnosticSource.VerifyNoOtherCalls();

@@ -76,8 +76,8 @@ internal sealed class TelemetryResilienceStrategy : ResilienceStrategy
     }
 
     private static Outcome<object> CreateOutcome<TResult>(Outcome<TResult> outcome) => outcome.HasResult ?
-        new Outcome<object>(outcome.Result) :
-        new Outcome<object>(outcome.Exception!);
+        Outcome.FromResult<object>(outcome.Result) :
+        Outcome.FromException<object>(outcome.Exception!);
 
     private void RecordDuration<TResult>(ResilienceContext context, Outcome<TResult> outcome, TimeSpan duration)
     {

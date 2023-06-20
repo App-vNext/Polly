@@ -77,7 +77,7 @@ internal sealed class HedgingResilienceStrategy<T> : OutcomeResilienceStrategy<T
             var start = _timeProvider.GetTimestamp();
             if (cancellationToken.IsCancellationRequested)
             {
-                return new Outcome<T>(new OperationCanceledException(cancellationToken).TrySetStackTrace());
+                return Outcome.FromException<T>(new OperationCanceledException(cancellationToken).TrySetStackTrace());
             }
 
             var loadedExecution = await hedgingContext.LoadExecutionAsync(callback, state).ConfigureAwait(context.ContinueOnCapturedContext);
@@ -95,7 +95,7 @@ internal sealed class HedgingResilienceStrategy<T> : OutcomeResilienceStrategy<T
                 // We will create additional hedged task in the next iteration.
                 await HandleOnHedgingAsync(
                     context,
-                    new Outcome<T>(default(T)),
+                    Outcome.FromResult<T>(default),
                     new OnHedgingArguments(attempt, HasOutcome: false, ExecutionTime: delay)).ConfigureAwait(context.ContinueOnCapturedContext);
                 continue;
             }

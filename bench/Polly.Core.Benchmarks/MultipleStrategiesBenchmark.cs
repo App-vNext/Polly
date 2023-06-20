@@ -38,7 +38,7 @@ public class MultipleStrategiesBenchmark
         var context = ResilienceContext.Get();
 
         await _nonGeneric!.ExecuteOutcomeAsync(
-            static (_, _) => new ValueTask<Outcome<string>>(new Outcome<string>("dummy")),
+            static (_, _) => new ValueTask<Outcome<string>>(Outcome.FromResult("dummy")),
             context,
             string.Empty).ConfigureAwait(false);
 

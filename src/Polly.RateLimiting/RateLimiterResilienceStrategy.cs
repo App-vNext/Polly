@@ -53,6 +53,6 @@ internal sealed class RateLimiterResilienceStrategy : ResilienceStrategy
 
         var exception = retryAfter.HasValue ? new RateLimiterRejectedException(retryAfter.Value) : new RateLimiterRejectedException();
 
-        return new Outcome<TResult>(exception.TrySetStackTrace());
+        return Outcome.FromException<TResult>(exception.TrySetStackTrace());
     }
 }

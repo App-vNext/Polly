@@ -72,7 +72,7 @@ public class RateLimiterResilienceStrategyTests
         var strategy = Create();
         var context = ResilienceContext.Get();
         context.CancellationToken = cts.Token;
-        var outcome = await strategy.ExecuteOutcomeAsync((_, _) => new ValueTask<Outcome<string>>(new Outcome<string>("dummy")), context, "state");
+        var outcome = await strategy.ExecuteOutcomeAsync((_, _) => Outcome.FromResultAsTask("dummy"), context, "state");
 
         outcome.Exception
             .Should()

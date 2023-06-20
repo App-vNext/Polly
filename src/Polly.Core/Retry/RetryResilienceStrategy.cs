@@ -94,7 +94,7 @@ internal sealed class RetryResilienceStrategy<T> : OutcomeResilienceStrategy<T>
                 }
                 catch (OperationCanceledException e)
                 {
-                    return new Outcome<T>(e);
+                    return Outcome.FromException<T>(e);
                 }
             }
 

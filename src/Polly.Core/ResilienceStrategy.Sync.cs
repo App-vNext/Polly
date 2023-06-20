@@ -28,11 +28,11 @@ public abstract partial class ResilienceStrategy
                 try
                 {
                     state.callback(context, state.state);
-                    return VoidResult.Outcome;
+                    return Outcome.Void;
                 }
                 catch (Exception e)
                 {
-                    return new Outcome<VoidResult>(e);
+                    return Outcome.FromException(e);
                 }
             },
             context,
@@ -60,11 +60,11 @@ public abstract partial class ResilienceStrategy
                 try
                 {
                     state(context);
-                    return VoidResult.Outcome;
+                    return Outcome.Void;
                 }
                 catch (Exception e)
                 {
-                    return new Outcome<VoidResult>(e);
+                    return Outcome.FromException(e);
                 }
             },
             context,
@@ -96,11 +96,11 @@ public abstract partial class ResilienceStrategy
                     try
                     {
                         state.callback(state.state, context.CancellationToken);
-                        return VoidResult.Outcome;
+                        return Outcome.Void;
                     }
                     catch (Exception e)
                     {
-                        return new Outcome<VoidResult>(e);
+                        return Outcome.FromException(e);
                     }
                 },
                 context,
@@ -134,11 +134,11 @@ public abstract partial class ResilienceStrategy
                     try
                     {
                         state(context.CancellationToken);
-                        return VoidResult.Outcome;
+                        return Outcome.Void;
                     }
                     catch (Exception e)
                     {
-                        return new Outcome<VoidResult>(e);
+                        return Outcome.FromException(e);
                     }
                 },
                 context,
@@ -173,11 +173,11 @@ public abstract partial class ResilienceStrategy
                     try
                     {
                         state.callback(state.state);
-                        return VoidResult.Outcome;
+                        return Outcome.Void;
                     }
                     catch (Exception e)
                     {
-                        return new Outcome<VoidResult>(e);
+                        return Outcome.FromException(e);
                     }
                 },
                 context,
@@ -208,11 +208,11 @@ public abstract partial class ResilienceStrategy
                     try
                     {
                         state();
-                        return VoidResult.Outcome;
+                        return Outcome.Void;
                     }
                     catch (Exception e)
                     {
-                        return new Outcome<VoidResult>(e);
+                        return Outcome.FromException(e);
                     }
                 },
                 context,

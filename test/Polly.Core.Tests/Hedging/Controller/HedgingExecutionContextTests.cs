@@ -93,7 +93,7 @@ public class HedgingExecutionContextTests : IDisposable
     {
         var context = Create();
         context.Initialize(_resilienceContext);
-        await context.LoadExecutionAsync((_, _) => new DisposableResult("dummy").AsOutcomeAsync(), "state");
+        await context.LoadExecutionAsync((_, _) => Outcome.FromResultAsTask(new DisposableResult("dummy")), "state");
 
         var task = await context.TryWaitForCompletedExecutionAsync(TimeSpan.Zero);
 
@@ -177,8 +177,8 @@ public class HedgingExecutionContextTests : IDisposable
 
         var context = Create();
         context.Initialize(_resilienceContext);
-        await context.LoadExecutionAsync((_, _) => new DisposableResult("dummy").AsOutcomeAsync(), "state");
-        await context.LoadExecutionAsync((_, _) => new DisposableResult("dummy").AsOutcomeAsync(), "state");
+        await context.LoadExecutionAsync((_, _) => Outcome.FromResultAsTask(new DisposableResult("dummy")), "state");
+        await context.LoadExecutionAsync((_, _) => Outcome.FromResultAsTask(new DisposableResult("dummy")), "state");
 
         var task = await context.TryWaitForCompletedExecutionAsync(TimeSpan.Zero);
 
@@ -194,7 +194,7 @@ public class HedgingExecutionContextTests : IDisposable
         await LoadExecutionAsync(context);
         await LoadExecutionAsync(context);
 
-        Generator = args => () => new DisposableResult { Name = "secondary" }.AsOutcomeAsync();
+        Generator = args => () => Outcome.FromResultAsTask(new DisposableResult { Name = "secondary" });
 
         var task = await context.TryWaitForCompletedExecutionAsync(TimeSpan.Zero);
         task!.Type.Should().Be(HedgedTaskType.Primary);
@@ -440,7 +440,7 @@ public class HedgingExecutionContextTests : IDisposable
                     throw new InvalidOperationException("Forced error.");
                 }
 
-                return new Outcome<DisposableResult>(new DisposableResult { Name = "primary" });
+                return Outcome.FromResult(new DisposableResult { Name = "primary" });
             },
             "state");
     }
@@ -462,14 +462,14 @@ public class HedgingExecutionContextTests : IDisposable
             {
                 args.ActionContext.Properties.Set(new ResiliencePropertyKey<int>(attempt.ToString(CultureInfo.InvariantCulture)), attempt);
                 await _timeProvider.Delay(delays[attempt], args.ActionContext.CancellationToken);
-                return new DisposableResult(delays[attempt].ToString()).AsOutcome();
+                return Outcome.FromResult(new DisposableResult(delays[attempt].ToString()));
             };
         };
     }
 
     private Func<HedgingActionGeneratorArguments<DisposableResult>, Func<ValueTask<Outcome<DisposableResult>>>?> Generator { get; set; } = args =>
     {
-        return () => new DisposableResult { Name = Handled }.AsOutcomeAsync();
+        return () => Outcome.FromResultAsTask(new DisposableResult { Name = Handled });
     };
 
     private HedgingExecutionContext<DisposableResult> Create()

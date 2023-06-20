@@ -113,7 +113,7 @@ public class TimeoutResilienceStrategyTests : IDisposable
         _timeProvider.SetupCancelAfterNow(TimeSpan.FromSeconds(2));
         var sut = CreateSut();
 
-        var outcome = await sut.ExecuteOutcomeAsync(async (c, _) => { await Delay(c.CancellationToken); return "dummy".AsOutcome(); }, ResilienceContext.Get(), "state");
+        var outcome = await sut.ExecuteOutcomeAsync(async (c, _) => { await Delay(c.CancellationToken); return Outcome.FromResult("dummy"); }, ResilienceContext.Get(), "state");
         outcome.Exception.Should().BeOfType<TimeoutRejectedException>();
         outcome.Exception!.StackTrace.Should().Contain("Execute_Timeout_EnsureStackTrace");
     }

@@ -58,7 +58,7 @@ public abstract partial class ResilienceStrategy
     {
         if (context.CancellationToken.IsCancellationRequested)
         {
-            return new ValueTask<Outcome<TResult>>(new Outcome<TResult>(new OperationCanceledException(context.CancellationToken)));
+            return new ValueTask<Outcome<TResult>>(Outcome.FromException<TResult>(new OperationCanceledException(context.CancellationToken)));
         }
 
         try
@@ -73,7 +73,7 @@ public abstract partial class ResilienceStrategy
         }
         catch (Exception e)
         {
-            return new ValueTask<Outcome<TResult>>(new Outcome<TResult>(e));
+            return new ValueTask<Outcome<TResult>>(Outcome.FromException<TResult>(e));
         }
 
         static async ValueTask<Outcome<T>> AwaitTask<T>(ValueTask<Outcome<T>> task, bool continueOnCapturedContext)
@@ -84,7 +84,7 @@ public abstract partial class ResilienceStrategy
             }
             catch (Exception e)
             {
-                return new Outcome<T>(e);
+                return Outcome.FromException<T>(e);
             }
         }
     }

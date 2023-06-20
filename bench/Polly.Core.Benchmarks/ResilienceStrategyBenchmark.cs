@@ -10,7 +10,7 @@ public class ResilienceStrategyBenchmark
     public async ValueTask ExecuteOutcomeAsync()
     {
         var context = ResilienceContext.Get();
-        await NullResilienceStrategy.Instance.ExecuteOutcomeAsync((_, _) => new ValueTask<Outcome<string>>(new Outcome<string>("dummy")), context, "state").ConfigureAwait(false);
+        await NullResilienceStrategy.Instance.ExecuteOutcomeAsync((_, _) => Outcome.FromResultAsTask("dummy"), context, "state").ConfigureAwait(false);
         ResilienceContext.Return(context);
     }
 

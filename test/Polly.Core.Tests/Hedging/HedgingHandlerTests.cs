@@ -11,10 +11,10 @@ public class HedgingHandlerTests
     {
         var handler = new HedgingHandler<string>(
             args => PredicateResult.True,
-            args => () => "ok".AsOutcomeAsync(),
+            args => () => Outcome.FromResultAsTask("ok"),
             true);
 
-        var action = handler.GenerateAction(new HedgingActionGeneratorArguments<string>(ResilienceContext.Get(), ResilienceContext.Get(), 0, _ => "primary".AsOutcomeAsync()))!;
+        var action = handler.GenerateAction(new HedgingActionGeneratorArguments<string>(ResilienceContext.Get(), ResilienceContext.Get(), 0, _ => Outcome.FromResultAsTask("primary")))!;
         var res = await action();
 
         res.Result.Should().Be("ok");
@@ -34,11 +34,11 @@ public class HedgingHandlerTests
                     return null;
                 }
 
-                return () => ((object)"ok").AsOutcomeAsync();
+                return () => Outcome.FromResultAsTask((object)"ok");
             },
             false);
 
-        var action = handler.GenerateAction(new HedgingActionGeneratorArguments<object>(ResilienceContext.Get(), ResilienceContext.Get(), 0, _ => ((object)"primary").AsOutcomeAsync()))!;
+        var action = handler.GenerateAction(new HedgingActionGeneratorArguments<object>(ResilienceContext.Get(), ResilienceContext.Get(), 0, _ => Outcome.FromResultAsTask((object)"primary")))!;
         if (nullAction)
         {
             action.Should().BeNull();
@@ -58,7 +58,7 @@ public class HedgingHandlerTests
             args => () => args.Callback(args.ActionContext),
             false);
 
-        var action = handler.GenerateAction(new HedgingActionGeneratorArguments<object>(ResilienceContext.Get(), ResilienceContext.Get(), 0, _ => ((object)"callback").AsOutcomeAsync()))!;
+        var action = handler.GenerateAction(new HedgingActionGeneratorArguments<object>(ResilienceContext.Get(), ResilienceContext.Get(), 0, _ => Outcome.FromResultAsTask((object)"callback")))!;
         var res = await action();
         res.Result.Should().Be("callback");
     }
