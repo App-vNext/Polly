@@ -45,7 +45,7 @@ public readonly struct Outcome<TResult>
     /// <remarks>
     /// Returns <see langword="true"/> even if the result is void. Use <see cref="IsVoidResult"/> to check for void results.
     /// </remarks>
-    public bool HasResult => ExceptionDispatchInfo == null;
+    public bool HasResult => ExceptionDispatchInfo is null;
 
     /// <summary>
     /// Gets a value indicating whether the operation produced a void result.
