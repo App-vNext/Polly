@@ -1,6 +1,7 @@
 using System.Net.Http;
 using Microsoft.Extensions.Logging;
 using Polly.Extensions.Telemetry;
+using Polly.Telemetry;
 
 namespace Polly.Extensions.Tests.Telemetry;
 
@@ -31,8 +32,11 @@ public class ResilienceTelemetryDiagnosticSourceTests : IDisposable
     {
         ResilienceTelemetryDiagnosticSource.Meter.Name.Should().Be("Polly");
         ResilienceTelemetryDiagnosticSource.Meter.Version.Should().Be("1.0");
-        new ResilienceTelemetryDiagnosticSource(new TelemetryOptions())
-            .Counter.Description.Should().Be("Tracks the number of resilience events that occurred in resilience strategies.");
+        var source = new ResilienceTelemetryDiagnosticSource(new TelemetryOptions());
+
+        source.Counter.Description.Should().Be("Tracks the number of resilience events that occurred in resilience strategies.");
+        source.AttemptDuration.Description.Should().Be("Tracks the duration of execution attempts.");
+        source.AttemptDuration.Unit.Should().Be("ms");
     }
 
     [Fact]
@@ -151,6 +155,49 @@ public class ResilienceTelemetryDiagnosticSourceTests : IDisposable
         }
     }
 
+    [InlineData(true, false)]
+    [InlineData(false, false)]
+    [InlineData(true, true)]
+    [InlineData(false, true)]
+    [Theory]
+    public void WriteExecutionAttemptEvent_Metering_Ok(bool noOutcome, bool exception)
+    {
+        var telemetry = Create();
+        var attemptArg = new ExecutionAttemptArguments(5, TimeSpan.FromSeconds(50), true);
+        Outcome<object>? outcome = noOutcome switch
+        {
+            false => null,
+            true when exception => new Outcome<object>(new InvalidOperationException("Dummy message.")),
+            _ => new Outcome<object>(true)
+        };
+        ReportEvent(telemetry, outcome, context: ResilienceContext.Get().WithResultType<bool>(), arg: attemptArg);
+
+        var events = GetEvents("execution-attempt-duration");
+        events.Should().HaveCount(1);
+        var ev = events[0];
+
+        ev.Count.Should().Be(9);
+        ev["event-name"].Should().Be("my-event");
+        ev["strategy-type"].Should().Be("my-strategy-type");
+        ev["strategy-name"].Should().Be("my-strategy");
+        ev["strategy-key"].Should().Be("my-strategy-key");
+        ev["builder-name"].Should().Be("my-builder");
+        ev["result-type"].Should().Be("Boolean");
+        ev["attempt-number"].Should().Be(5);
+        ev["attempt-handled"].Should().Be(true);
+
+        if (outcome?.Exception is not null)
+        {
+            ev["exception-name"].Should().Be("System.InvalidOperationException");
+        }
+        else
+        {
+            ev["exception-name"].Should().Be(null);
+        }
+
+        _events.Single(v => v.Name == "execution-attempt-duration").Measurement.Should().Be(50000);
+    }
+
     [InlineData(1)]
     [InlineData(100)]
     [Theory]
@@ -208,7 +255,12 @@ public class ResilienceTelemetryDiagnosticSourceTests : IDisposable
         return new(options);
     }
 
-    private static void ReportEvent(ResilienceTelemetryDiagnosticSource telemetry, Outcome<object>? outcome, string? strategyKey = "my-strategy-key", ResilienceContext? context = null)
+    private static void ReportEvent(
+        ResilienceTelemetryDiagnosticSource telemetry,
+        Outcome<object>? outcome,
+        string? strategyKey = "my-strategy-key",
+        ResilienceContext? context = null,
+        object? arg = null)
     {
         context ??= ResilienceContext.Get();
         var props = new ResilienceProperties();
@@ -225,6 +277,6 @@ public class ResilienceTelemetryDiagnosticSourceTests : IDisposable
             "my-strategy-type",
             context,
             outcome,
-            new TestArguments());
+            arg ?? new TestArguments());
     }
 }

@@ -25,7 +25,7 @@ internal class ResilienceTelemetryDiagnosticSource : DiagnosticSource
         AttemptDuration = Meter.CreateHistogram<double>(
             "execution-attempt-duration",
             unit: "ms",
-            description: "Tracks the duration of execution attempt for retries or hedging.");
+            description: "Tracks the duration of execution attempts.");
     }
 
     public Counter<int> Counter { get; }
@@ -69,8 +69,8 @@ internal class ResilienceTelemetryDiagnosticSource : DiagnosticSource
 
             var enrichmentContext = EnrichmentContext.Get(args.Context, args.Arguments, args.Outcome);
             AddCommonTags(args, source, enrichmentContext);
-            enrichmentContext.Tags.Add(new(ResilienceTelemetryTags.AttemptNumber, executionAttempt.Attempt));
-            enrichmentContext.Tags.Add(new(ResilienceTelemetryTags.AttemptResult, executionAttempt.Handled.AsResultString()));
+            enrichmentContext.Tags.Add(new(ResilienceTelemetryTags.AttemptNumber, executionAttempt.Attempt.AsBoxedInt()));
+            enrichmentContext.Tags.Add(new(ResilienceTelemetryTags.AttemptHandled, executionAttempt.Handled.AsBoxedBool()));
             EnrichmentUtil.Enrich(enrichmentContext, _enrichers);
             AttemptDuration.Record(executionAttempt.ExecutionTime.TotalMilliseconds, enrichmentContext.TagsSpan);
             EnrichmentContext.Return(enrichmentContext);

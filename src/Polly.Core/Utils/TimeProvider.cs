@@ -1,3 +1,5 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace Polly.Utils;
 
 #pragma warning disable S3872 // Parameter names should not duplicate the names of their methods
@@ -6,6 +8,7 @@ namespace Polly.Utils;
 /// TEMPORARY ONLY, to be replaced with System.TimeProvider - https://github.com/dotnet/runtime/issues/36617 later.
 /// </summary>
 /// <remarks>We trimmed some of the API that's not relevant for us too.</remarks>
+[ExcludeFromCodeCoverage]
 internal abstract class TimeProvider
 {
     private readonly double _tickFrequency;

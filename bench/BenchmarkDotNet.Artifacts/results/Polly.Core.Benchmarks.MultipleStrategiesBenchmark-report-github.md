@@ -9,8 +9,8 @@ Job=MediumRun  Toolchain=InProcessEmitToolchain  IterationCount=15
 LaunchCount=2  WarmupCount=10  
 
 ```
-|                               Method |     Mean |     Error |    StdDev | Ratio |   Gen0 | Allocated | Alloc Ratio |
-|------------------------------------- |---------:|----------:|----------:|------:|-------:|----------:|------------:|
-|           ExecuteStrategyPipeline_V7 | 2.269 μs | 0.0136 μs | 0.0204 μs |  1.00 | 0.1106 |    2824 B |        1.00 |
-|           ExecuteStrategyPipeline_V8 | 1.861 μs | 0.0111 μs | 0.0155 μs |  0.82 |      - |      40 B |        0.01 |
-| ExecuteStrategyPipeline_Telemetry_V8 | 2.402 μs | 0.0104 μs | 0.0156 μs |  1.06 |      - |      40 B |        0.01 |
+|                               Method |     Mean |     Error |    StdDev | Ratio | RatioSD |   Gen0 | Allocated | Alloc Ratio |
+|------------------------------------- |---------:|----------:|----------:|------:|--------:|-------:|----------:|------------:|
+|           ExecuteStrategyPipeline_V7 | 2.220 μs | 0.0164 μs | 0.0236 μs |  1.00 |    0.00 | 0.1106 |    2824 B |        1.00 |
+|           ExecuteStrategyPipeline_V8 | 1.901 μs | 0.0089 μs | 0.0127 μs |  0.86 |    0.01 |      - |      40 B |        0.01 |
+| ExecuteStrategyPipeline_Telemetry_V8 | 2.947 μs | 0.0077 μs | 0.0115 μs |  1.33 |    0.02 |      - |      40 B |        0.01 |

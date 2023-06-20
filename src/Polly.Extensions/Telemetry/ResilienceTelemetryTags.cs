@@ -20,5 +20,5 @@ internal class ResilienceTelemetryTags
 
     public const string AttemptNumber = "attempt-number";
 
-    public const string AttemptResult = "attempt-result";
+    public const string AttemptHandled = "attempt-handled";
 }

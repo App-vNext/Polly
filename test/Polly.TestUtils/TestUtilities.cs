@@ -70,7 +70,7 @@ public static class TestUtilities
         meterListener.Start();
 
         void OnMeasurementRecorded<T>(Instrument instrument, T measurement, ReadOnlySpan<KeyValuePair<string, object?>> tags, object? state)
-            => events.Add(new MeteringEvent(instrument.Name, tags.ToArray().ToDictionary(v => v.Key, v => v.Value)));
+            => events.Add(new MeteringEvent(measurement!, instrument.Name, tags.ToArray().ToDictionary(v => v.Key, v => v.Value)));
 
         return meterListener;
     }
