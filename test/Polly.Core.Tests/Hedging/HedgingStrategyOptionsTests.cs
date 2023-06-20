@@ -39,7 +39,7 @@ public class HedgingStrategyOptionsTests
                 Thread.CurrentThread.ManagedThreadId.Should().Be(threadId);
             }
 
-            return 99.AsOutcomeAsync();
+            return Outcome.FromResultAsTask(99);
         }))!;
 
         action.Should().NotBeNull();
@@ -53,9 +53,9 @@ public class HedgingStrategyOptionsTests
         var args = new HedgingPredicateArguments();
         var context = ResilienceContext.Get();
 
-        (await options.ShouldHandle(new(context, new Outcome<int>(0), args))).Should().Be(false);
-        (await options.ShouldHandle(new(context, new Outcome<int>(new OperationCanceledException()), args))).Should().Be(false);
-        (await options.ShouldHandle(new(context, new Outcome<int>(new InvalidOperationException()), args))).Should().Be(true);
+        (await options.ShouldHandle(new(context, Outcome.FromResult(0), args))).Should().Be(false);
+        (await options.ShouldHandle(new(context, Outcome.FromException<int>(new OperationCanceledException()), args))).Should().Be(false);
+        (await options.ShouldHandle(new(context, Outcome.FromException<int>(new InvalidOperationException()), args))).Should().Be(true);
     }
 
     [Fact]

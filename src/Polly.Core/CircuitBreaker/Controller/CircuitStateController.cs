@@ -89,8 +89,8 @@ internal sealed class CircuitStateController<T> : IDisposable
 
         lock (_lock)
         {
-            SetLastHandledOutcome_NeedsLock(new Outcome<T>(new IsolatedCircuitException()));
-            OpenCircuitFor_NeedsLock(new Outcome<T>(default(T)), TimeSpan.MaxValue, manual: true, context, out task);
+            SetLastHandledOutcome_NeedsLock(Outcome.FromException<T>(new IsolatedCircuitException()));
+            OpenCircuitFor_NeedsLock(Outcome.FromResult<T>(default), TimeSpan.MaxValue, manual: true, context, out task);
             _circuitState = CircuitState.Isolated;
         }
 
@@ -107,7 +107,7 @@ internal sealed class CircuitStateController<T> : IDisposable
 
         lock (_lock)
         {
-            CloseCircuit_NeedsLock(new Outcome<T>(default(T)), manual: true, context, out task);
+            CloseCircuit_NeedsLock(Outcome.FromResult<T>(default), manual: true, context, out task);
         }
 
         return ExecuteScheduledTaskAsync(task, context);
@@ -150,7 +150,7 @@ internal sealed class CircuitStateController<T> : IDisposable
 
         if (exception is not null)
         {
-            return new Outcome<T>(exception);
+            return Outcome.FromException<T>(exception);
         }
 
         return null;

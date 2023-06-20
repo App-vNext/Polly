@@ -122,7 +122,7 @@ public partial class ResilienceStrategyTests
             state.Should().Be("state");
             context.IsSynchronous.Should().BeFalse();
             context.ResultType.Should().Be(typeof(int));
-            return new Outcome<int>(12345).AsValueTask();
+            return Outcome.FromResultAsTask(12345);
         },
         ResilienceContext.Get(),
         "state");

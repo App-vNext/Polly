@@ -11,13 +11,13 @@ public class FallbackResilienceStrategyBuilderExtensionsTests
         {
             builder.AddFallback(new FallbackStrategyOptions<int>
             {
-                FallbackAction = _ =>  0.AsOutcomeAsync(),
+                FallbackAction = _ => Outcome.FromResultAsTask(0),
                 ShouldHandle = _ => PredicateResult.False,
             });
         },
         builder =>
         {
-            builder.AddFallback(handle => handle.HandleResult(1), _ =>  0.AsOutcomeAsync());
+            builder.AddFallback(handle => handle.HandleResult(1), _ =>  Outcome.FromResultAsTask(0));
         },
     };
 
@@ -41,7 +41,7 @@ public class FallbackResilienceStrategyBuilderExtensionsTests
                 { Result: -1 } => PredicateResult.True,
                 _ => PredicateResult.False
             },
-            FallbackAction = _ => ((object)1).AsOutcomeAsync()
+            FallbackAction = _ => Outcome.FromResultAsTask((object)1)
         };
 
         var strategy = new ResilienceStrategyBuilder().AddFallback(options).Build();

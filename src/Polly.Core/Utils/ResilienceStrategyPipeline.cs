@@ -59,7 +59,7 @@ internal sealed class ResilienceStrategyPipeline : ResilienceStrategy
     {
         if (context.CancellationToken.IsCancellationRequested)
         {
-            return new ValueTask<Outcome<TResult>>(new Outcome<TResult>(new OperationCanceledException(context.CancellationToken).TrySetStackTrace()));
+            return Outcome.FromExceptionAsTask<TResult>(new OperationCanceledException(context.CancellationToken).TrySetStackTrace());
         }
 
         return _pipeline.ExecuteCoreAsync(callback, context, state);
@@ -86,7 +86,7 @@ internal sealed class ResilienceStrategyPipeline : ResilienceStrategy
                 {
                     if (context.CancellationToken.IsCancellationRequested)
                     {
-                        return new ValueTask<Outcome<TResult>>(new Outcome<TResult>(new OperationCanceledException(context.CancellationToken).TrySetStackTrace()));
+                        return Outcome.FromExceptionAsTask<TResult>(new OperationCanceledException(context.CancellationToken).TrySetStackTrace());
                     }
 
                     return state.Next!.ExecuteCoreAsync(state.callback, context, state.state);

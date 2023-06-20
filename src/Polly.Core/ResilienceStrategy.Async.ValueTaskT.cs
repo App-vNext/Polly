@@ -56,11 +56,11 @@ public abstract partial class ResilienceStrategy
             {
                 try
                 {
-                    return new Outcome<TResult>(await state.callback(context, state.state).ConfigureAwait(context.ContinueOnCapturedContext));
+                    return Outcome.FromResult(await state.callback(context, state.state).ConfigureAwait(context.ContinueOnCapturedContext));
                 }
                 catch (Exception e)
                 {
-                    return new Outcome<TResult>(e);
+                    return Outcome.FromException<TResult>(e);
                 }
             },
             context,
@@ -91,11 +91,11 @@ public abstract partial class ResilienceStrategy
             {
                 try
                 {
-                    return new Outcome<TResult>(await state(context).ConfigureAwait(context.ContinueOnCapturedContext));
+                    return Outcome.FromResult(await state(context).ConfigureAwait(context.ContinueOnCapturedContext));
                 }
                 catch (Exception e)
                 {
-                    return new Outcome<TResult>(e);
+                    return Outcome.FromException<TResult>(e);
                 }
             },
             context,
@@ -130,11 +130,11 @@ public abstract partial class ResilienceStrategy
                 {
                     try
                     {
-                        return new Outcome<TResult>(await state.callback(state.state, context.CancellationToken).ConfigureAwait(context.ContinueOnCapturedContext));
+                        return Outcome.FromResult(await state.callback(state.state, context.CancellationToken).ConfigureAwait(context.ContinueOnCapturedContext));
                     }
                     catch (Exception e)
                     {
-                        return new Outcome<TResult>(e);
+                        return Outcome.FromException<TResult>(e);
                     }
                 },
                 context,
@@ -171,11 +171,11 @@ public abstract partial class ResilienceStrategy
                 {
                     try
                     {
-                        return new Outcome<TResult>(await state(context.CancellationToken).ConfigureAwait(context.ContinueOnCapturedContext));
+                        return Outcome.FromResult(await state(context.CancellationToken).ConfigureAwait(context.ContinueOnCapturedContext));
                     }
                     catch (Exception e)
                     {
-                        return new Outcome<TResult>(e);
+                        return Outcome.FromException<TResult>(e);
                     }
                 },
                 context,

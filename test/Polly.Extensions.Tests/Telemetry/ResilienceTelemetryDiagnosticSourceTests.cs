@@ -64,7 +64,7 @@ public class ResilienceTelemetryDiagnosticSourceTests : IDisposable
     {
         var telemetry = Create();
         using var response = new HttpResponseMessage(System.Net.HttpStatusCode.OK);
-        ReportEvent(telemetry, noOutcome ? null : new Outcome<object>(response));
+        ReportEvent(telemetry, noOutcome ? null : Outcome.FromResult<object>(response));
 
         var messages = _logger.GetRecords(new EventId(0, "ResilienceEvent")).ToList();
         messages.Should().HaveCount(1);
@@ -85,7 +85,7 @@ public class ResilienceTelemetryDiagnosticSourceTests : IDisposable
     public void WriteEvent_LoggingWithException_Ok(bool noOutcome)
     {
         var telemetry = Create();
-        ReportEvent(telemetry, noOutcome ? null : new Outcome<object>(new InvalidOperationException("Dummy message.")));
+        ReportEvent(telemetry, noOutcome ? null : Outcome.FromException<object>(new InvalidOperationException("Dummy message.")));
 
         var messages = _logger.GetRecords(new EventId(0, "ResilienceEvent")).ToList();
 
@@ -128,8 +128,8 @@ public class ResilienceTelemetryDiagnosticSourceTests : IDisposable
         Outcome<object>? outcome = noOutcome switch
         {
             false => null,
-            true when exception => new Outcome<object>(new InvalidOperationException("Dummy message.")),
-            _ => new Outcome<object>(true)
+            true when exception => Outcome.FromException<object>(new InvalidOperationException("Dummy message.")),
+            _ => Outcome.FromResult<object>(true)
         };
         ReportEvent(telemetry, outcome, context: ResilienceContext.Get().WithResultType<bool>());
 
@@ -167,8 +167,8 @@ public class ResilienceTelemetryDiagnosticSourceTests : IDisposable
         Outcome<object>? outcome = noOutcome switch
         {
             false => null,
-            true when exception => new Outcome<object>(new InvalidOperationException("Dummy message.")),
-            _ => new Outcome<object>(true)
+            true when exception => Outcome.FromException<object>(new InvalidOperationException("Dummy message.")),
+            _ => Outcome.FromResult<object>(true)
         };
         ReportEvent(telemetry, outcome, context: ResilienceContext.Get().WithResultType<bool>(), arg: attemptArg);
 
@@ -220,7 +220,7 @@ public class ResilienceTelemetryDiagnosticSourceTests : IDisposable
             });
         });
 
-        ReportEvent(telemetry, new Outcome<object>(true));
+        ReportEvent(telemetry, Outcome.FromResult<object>(true));
 
         var events = GetEvents("resilience-events");
         var ev = events[0];

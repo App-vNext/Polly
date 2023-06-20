@@ -41,7 +41,7 @@ public class RetryResilienceStrategyTests
         context.CancellationToken = cancellationToken.Token;
         var executed = false;
 
-        var result = await sut.ExecuteOutcomeAsync((_, _) => { executed = true; return "dummy".AsOutcomeAsync(); }, context, "state");
+        var result = await sut.ExecuteOutcomeAsync((_, _) => { executed = true; return Outcome.FromResultAsTask("dummy"); }, context, "state");
         result.Exception.Should().BeOfType<OperationCanceledException>();
         executed.Should().BeFalse();
     }
@@ -63,7 +63,7 @@ public class RetryResilienceStrategyTests
         context.CancellationToken = cancellationToken.Token;
         var executed = false;
 
-        var result = await sut.ExecuteOutcomeAsync((_, _) => { executed = true; return "dummy".AsOutcomeAsync(); }, context, "state");
+        var result = await sut.ExecuteOutcomeAsync((_, _) => { executed = true; return Outcome.FromResultAsTask("dummy"); }, context, "state");
         result.Exception.Should().BeOfType<OperationCanceledException>();
         executed.Should().BeTrue();
     }

@@ -11,7 +11,7 @@ public class TelemetryEventArgumentsTests
     public void Get_Ok()
     {
         var context = ResilienceContext.Get();
-        var args = TelemetryEventArguments.Get(_source, "ev", context, new Outcome<object>("dummy"), "arg");
+        var args = TelemetryEventArguments.Get(_source, "ev", context, Outcome.FromResult<object>("dummy"), "arg");
 
         args.Outcome!.Value.Result.Should().Be("dummy");
         args.Context.Should().Be(context);
@@ -25,15 +25,18 @@ public class TelemetryEventArgumentsTests
     public void Return_EnsurePropertiesCleared()
     {
         var context = ResilienceContext.Get();
-        var args = TelemetryEventArguments.Get(_source, "ev", context, new Outcome<object>("dummy"), "arg");
+        var args = TelemetryEventArguments.Get(_source, "ev", context, Outcome.FromResult<object>("dummy"), "arg");
 
         TelemetryEventArguments.Return(args);
 
-        args.Outcome.Should().BeNull();
-        args.Context.Should().BeNull();
-        args.EventName.Should().BeNull();
-        args.Source.Should().BeNull();
-        args.Arguments.Should().BeNull();
-        args.Context.Should().BeNull();
+        TestUtilities.AssertWithTimeoutAsync(() =>
+        {
+            args.Outcome.Should().BeNull();
+            args.Context.Should().BeNull();
+            args.EventName.Should().BeNull();
+            args.Source.Should().BeNull();
+            args.Arguments.Should().BeNull();
+            args.Context.Should().BeNull();
+        });
     }
 }

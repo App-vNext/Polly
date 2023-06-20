@@ -29,11 +29,11 @@ public abstract partial class ResilienceStrategy
                 try
                 {
                     await state.callback(context, state.state).ConfigureAwait(context.ContinueOnCapturedContext);
-                    return VoidResult.Outcome;
+                    return Outcome.Void;
                 }
                 catch (Exception e)
                 {
-                    return new Outcome<VoidResult>(e);
+                    return Outcome.FromException(e);
                 }
             },
             context,
@@ -64,11 +64,11 @@ public abstract partial class ResilienceStrategy
                 try
                 {
                     await state(context).ConfigureAwait(context.ContinueOnCapturedContext);
-                    return VoidResult.Outcome;
+                    return Outcome.Void;
                 }
                 catch (Exception e)
                 {
-                    return new Outcome<VoidResult>(e);
+                    return Outcome.FromException(e);
                 }
             },
             context,
@@ -103,11 +103,11 @@ public abstract partial class ResilienceStrategy
                     try
                     {
                         await state.callback(state.state, context.CancellationToken).ConfigureAwait(context.ContinueOnCapturedContext);
-                        return VoidResult.Outcome;
+                        return Outcome.Void;
                     }
                     catch (Exception e)
                     {
-                        return new Outcome<VoidResult>(e);
+                        return Outcome.FromException(e);
                     }
                 },
                 context,
@@ -144,11 +144,11 @@ public abstract partial class ResilienceStrategy
                     try
                     {
                         await state(context.CancellationToken).ConfigureAwait(context.ContinueOnCapturedContext);
-                        return VoidResult.Outcome;
+                        return Outcome.Void;
                     }
                     catch (Exception e)
                     {
-                        return new Outcome<VoidResult>(e);
+                        return Outcome.FromException(e);
                     }
 
                 },

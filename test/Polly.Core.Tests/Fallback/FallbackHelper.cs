@@ -11,7 +11,7 @@ internal static class FallbackHelper
     {
         return new FallbackHandler<T>(
             args => new ValueTask<bool>(shouldHandle(args.Outcome)),
-            _ => fallback().AsValueTask(),
+            _ => new ValueTask<Outcome<T>>(fallback()),
             isGeneric);
     }
 }

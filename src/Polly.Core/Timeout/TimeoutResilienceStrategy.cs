@@ -74,7 +74,7 @@ internal sealed class TimeoutResilienceStrategy : ResilienceStrategy
                 timeout,
                 e);
 
-            return new Outcome<TResult>(timeoutException.TrySetStackTrace());
+            return Outcome.FromException<TResult>(timeoutException.TrySetStackTrace());
         }
 
         return outcome;
