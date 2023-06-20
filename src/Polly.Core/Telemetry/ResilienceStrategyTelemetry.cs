@@ -19,7 +19,7 @@ public sealed class ResilienceStrategyTelemetry
     internal ResilienceTelemetrySource TelemetrySource { get; }
 
     /// <summary>
-    /// Gets a value indicating whether the telemetry is enabled.
+    /// Gets a value indicating whether telemetry is enabled.
     /// </summary>
     public bool IsEnabled => DiagnosticSource is not null;
 
