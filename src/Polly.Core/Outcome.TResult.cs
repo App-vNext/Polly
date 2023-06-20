@@ -83,7 +83,7 @@ public readonly struct Outcome<TResult>
     /// <returns>
     /// The exception message if the outcome is an exception; otherwise, the string representation of the result.
     /// </returns>
-    public override string ToString() => ExceptionDispatchInfo != null
+    public override string ToString() => ExceptionDispatchInfo is null
         ? Exception!.Message
         : Result?.ToString() ?? string.Empty;
 

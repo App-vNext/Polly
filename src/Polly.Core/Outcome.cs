@@ -1,6 +1,4 @@
-﻿#pragma warning disable CA1815 // Override equals and operator equals on value types
-
-namespace Polly;
+﻿namespace Polly;
 
 /// <summary>
 /// Produces instances of <see cref="Outcome{TResult}"/>.
