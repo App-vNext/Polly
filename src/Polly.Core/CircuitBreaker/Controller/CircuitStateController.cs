@@ -19,7 +19,7 @@ internal sealed class CircuitStateController<T> : IDisposable
     private DateTimeOffset _blockedUntil;
     private CircuitState _circuitState = CircuitState.Closed;
     private Outcome<object>? _lastOutcome;
-    private BrokenCircuitException? _breakingException;
+    private BrokenCircuitException _breakingException = new();
     private bool _disposed;
 
     public CircuitStateController(
@@ -134,8 +134,8 @@ internal sealed class CircuitStateController<T> : IDisposable
 
             exception = _circuitState switch
             {
-                CircuitState.Open => GetBreakingException_NeedsLock(),
-                CircuitState.HalfOpen when isHalfOpen is false => GetBreakingException_NeedsLock(),
+                CircuitState.Open => _breakingException,
+                CircuitState.HalfOpen when isHalfOpen is false => _breakingException,
                 CircuitState.Isolated => new IsolatedCircuitException(),
                 _ => null
             };
@@ -261,7 +261,6 @@ internal sealed class CircuitStateController<T> : IDisposable
 
         _blockedUntil = DateTimeOffset.MinValue;
         _lastOutcome = null;
-        _breakingException = null;
 
         CircuitState priorState = _circuitState;
         _circuitState = CircuitState.Closed;
@@ -294,7 +293,6 @@ internal sealed class CircuitStateController<T> : IDisposable
     private void SetLastHandledOutcome_NeedsLock<TResult>(Outcome<TResult> outcome)
     {
         _lastOutcome = outcome.AsOutcome();
-        _breakingException = null;
 
         if (outcome.Exception is Exception exception)
         {
@@ -304,11 +302,7 @@ internal sealed class CircuitStateController<T> : IDisposable
         {
             _breakingException = new BrokenCircuitException<TResult>(BrokenCircuitException.DefaultMessage, result!);
         }
-
-        _breakingException?.TrySetStackTrace();
     }
-
-    private BrokenCircuitException GetBreakingException_NeedsLock() => _breakingException ?? new BrokenCircuitException();
 
     private void OpenCircuit_NeedsLock(Outcome<T> outcome, bool manual, ResilienceContext context, out Task? scheduledTask)
     {
