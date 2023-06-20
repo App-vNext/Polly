@@ -49,13 +49,13 @@ internal sealed class HedgingExecutionContext<T> : IAsyncDisposable
 
     private bool ContinueOnCapturedContext => Snapshot.Context.ContinueOnCapturedContext;
 
-    public async ValueTask<ExecutionInfo<TResult>> LoadExecutionAsync<TResult, TState>(
-        Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> primaryCallback,
+    public async ValueTask<ExecutionInfo<T>> LoadExecutionAsync<TState>(
+        Func<ResilienceContext, TState, ValueTask<Outcome<T>>> primaryCallback,
         TState state)
     {
         if (LoadedTasks >= _maxAttempts)
         {
-            return CreateExecutionInfoWhenNoExecution<TResult>();
+            return CreateExecutionInfoWhenNoExecution<T>();
         }
 
         // determine what type of task we are creating
@@ -72,12 +72,12 @@ internal sealed class HedgingExecutionContext<T> : IAsyncDisposable
             // we were able to start a new execution, register it
             _tasks.Add(execution);
             _executingTasks.Add(execution);
-            return new ExecutionInfo<TResult>(execution, true, null);
+            return new ExecutionInfo<T>(execution, true, null);
         }
         else
         {
             _executionPool.Return(execution);
-            return CreateExecutionInfoWhenNoExecution<TResult>();
+            return CreateExecutionInfoWhenNoExecution<T>();
         }
     }
 

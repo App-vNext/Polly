@@ -1,12 +1,11 @@
 using Polly.Fallback;
 using Polly.Telemetry;
-using Polly.Utils;
 
 namespace Polly.Core.Tests.Fallback;
 
 public class FallbackResilienceStrategyTests
 {
-    private readonly FallbackStrategyOptions _options = new();
+    private readonly FallbackStrategyOptions<string> _options = new();
     private readonly List<TelemetryEventArguments> _args = new();
     private readonly ResilienceStrategyTelemetry _telemetry;
     private FallbackHandler<string>? _handler;
@@ -103,6 +102,7 @@ public class FallbackResilienceStrategyTests
 
     private FallbackResilienceStrategy<string> Create() => new(
         _handler!,
-        EventInvoker<OnFallbackArguments>.Create(_options.OnFallback, false),
-        _telemetry);
+        _options.OnFallback,
+        _telemetry,
+        true);
 }

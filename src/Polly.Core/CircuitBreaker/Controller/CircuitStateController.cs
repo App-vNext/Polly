@@ -5,12 +5,12 @@ namespace Polly.CircuitBreaker;
 /// <summary>
 /// Thread-safe controller that holds and manages the circuit breaker state transitions.
 /// </summary>
-internal sealed class CircuitStateController : IDisposable
+internal sealed class CircuitStateController<T> : IDisposable
 {
     private readonly object _lock = new();
     private readonly ScheduledTaskExecutor _executor = new();
-    private readonly EventInvoker<OnCircuitOpenedArguments>? _onOpened;
-    private readonly EventInvoker<OnCircuitClosedArguments>? _onClosed;
+    private readonly Func<OutcomeArguments<T, OnCircuitOpenedArguments>, ValueTask>? _onOpened;
+    private readonly Func<OutcomeArguments<T, OnCircuitClosedArguments>, ValueTask>? _onClosed;
     private readonly Func<OnCircuitHalfOpenedArguments, ValueTask>? _onHalfOpen;
     private readonly TimeProvider _timeProvider;
     private readonly ResilienceStrategyTelemetry _telemetry;
@@ -19,13 +19,13 @@ internal sealed class CircuitStateController : IDisposable
     private DateTimeOffset _blockedUntil;
     private CircuitState _circuitState = CircuitState.Closed;
     private Outcome<object>? _lastOutcome;
-    private BrokenCircuitException? _breakingException;
+    private BrokenCircuitException _breakingException = new();
     private bool _disposed;
 
     public CircuitStateController(
         TimeSpan breakDuration,
-        EventInvoker<OnCircuitOpenedArguments>? onOpened,
-        EventInvoker<OnCircuitClosedArguments>? onClosed,
+        Func<OutcomeArguments<T, OnCircuitOpenedArguments>, ValueTask>? onOpened,
+        Func<OutcomeArguments<T, OnCircuitClosedArguments>, ValueTask>? onClosed,
         Func<OnCircuitHalfOpenedArguments, ValueTask>? onHalfOpen,
         CircuitBehavior behavior,
         TimeProvider timeProvider,
@@ -83,14 +83,14 @@ internal sealed class CircuitStateController : IDisposable
     {
         EnsureNotDisposed();
 
-        context.Initialize<VoidResult>(isSynchronous: false);
+        context.Initialize<T>(isSynchronous: false);
 
         Task? task;
 
         lock (_lock)
         {
-            SetLastHandledOutcome_NeedsLock(new Outcome<VoidResult>(new IsolatedCircuitException()));
-            OpenCircuitFor_NeedsLock(new Outcome<VoidResult>(VoidResult.Instance), TimeSpan.MaxValue, manual: true, context, out task);
+            SetLastHandledOutcome_NeedsLock(new Outcome<T>(new IsolatedCircuitException()));
+            OpenCircuitFor_NeedsLock(new Outcome<T>(default(T)), TimeSpan.MaxValue, manual: true, context, out task);
             _circuitState = CircuitState.Isolated;
         }
 
@@ -101,19 +101,19 @@ internal sealed class CircuitStateController : IDisposable
     {
         EnsureNotDisposed();
 
-        context.Initialize<VoidResult>(isSynchronous: false);
+        context.Initialize<T>(isSynchronous: false);
 
         Task? task;
 
         lock (_lock)
         {
-            CloseCircuit_NeedsLock(new Outcome<VoidResult>(VoidResult.Instance), manual: true, context, out task);
+            CloseCircuit_NeedsLock(new Outcome<T>(default(T)), manual: true, context, out task);
         }
 
         return ExecuteScheduledTaskAsync(task, context);
     }
 
-    public async ValueTask<Outcome<TResult>?> OnActionPreExecuteAsync<TResult>(ResilienceContext context)
+    public async ValueTask<Outcome<T>?> OnActionPreExecuteAsync(ResilienceContext context)
     {
         EnsureNotDisposed();
 
@@ -134,8 +134,8 @@ internal sealed class CircuitStateController : IDisposable
 
             exception = _circuitState switch
             {
-                CircuitState.Open => GetBreakingException_NeedsLock(),
-                CircuitState.HalfOpen when isHalfOpen is false => GetBreakingException_NeedsLock(),
+                CircuitState.Open => _breakingException,
+                CircuitState.HalfOpen when isHalfOpen is false => _breakingException,
                 CircuitState.Isolated => new IsolatedCircuitException(),
                 _ => null
             };
@@ -150,13 +150,13 @@ internal sealed class CircuitStateController : IDisposable
 
         if (exception is not null)
         {
-            return new Outcome<TResult>(exception);
+            return new Outcome<T>(exception);
         }
 
         return null;
     }
 
-    public ValueTask OnActionSuccessAsync<TResult>(Outcome<TResult> outcome, ResilienceContext context)
+    public ValueTask OnActionSuccessAsync(Outcome<T> outcome, ResilienceContext context)
     {
         EnsureNotDisposed();
 
@@ -182,7 +182,7 @@ internal sealed class CircuitStateController : IDisposable
         return ExecuteScheduledTaskAsync(task, context);
     }
 
-    public ValueTask OnActionFailureAsync<TResult>(Outcome<TResult> outcome, ResilienceContext context)
+    public ValueTask OnActionFailureAsync(Outcome<T> outcome, ResilienceContext context)
     {
         EnsureNotDisposed();
 
@@ -251,17 +251,16 @@ internal sealed class CircuitStateController : IDisposable
     {
         if (_disposed)
         {
-            throw new ObjectDisposedException(nameof(CircuitStateController));
+            throw new ObjectDisposedException(nameof(CircuitStateController<T>));
         }
     }
 
-    private void CloseCircuit_NeedsLock<TResult>(Outcome<TResult> outcome, bool manual, ResilienceContext context, out Task? scheduledTask)
+    private void CloseCircuit_NeedsLock(Outcome<T> outcome, bool manual, ResilienceContext context, out Task? scheduledTask)
     {
         scheduledTask = null;
 
         _blockedUntil = DateTimeOffset.MinValue;
         _lastOutcome = null;
-        _breakingException = null;
 
         CircuitState priorState = _circuitState;
         _circuitState = CircuitState.Closed;
@@ -269,12 +268,12 @@ internal sealed class CircuitStateController : IDisposable
 
         if (priorState != CircuitState.Closed)
         {
-            var args = new OutcomeArguments<TResult, OnCircuitClosedArguments>(context, outcome, new OnCircuitClosedArguments(manual));
+            var args = new OutcomeArguments<T, OnCircuitClosedArguments>(context, outcome, new OnCircuitClosedArguments(manual));
             _telemetry.Report(CircuitBreakerConstants.OnCircuitClosed, args);
 
             if (_onClosed is not null)
             {
-                _executor.ScheduleTask(() => _onClosed.HandleAsync(args).AsTask(), context, out scheduledTask);
+                _executor.ScheduleTask(() => _onClosed(args).AsTask(), context, out scheduledTask);
             }
         }
     }
@@ -294,7 +293,6 @@ internal sealed class CircuitStateController : IDisposable
     private void SetLastHandledOutcome_NeedsLock<TResult>(Outcome<TResult> outcome)
     {
         _lastOutcome = outcome.AsOutcome();
-        _breakingException = null;
 
         if (outcome.Exception is Exception exception)
         {
@@ -304,18 +302,14 @@ internal sealed class CircuitStateController : IDisposable
         {
             _breakingException = new BrokenCircuitException<TResult>(BrokenCircuitException.DefaultMessage, result!);
         }
-
-        _breakingException?.TrySetStackTrace();
     }
 
-    private BrokenCircuitException GetBreakingException_NeedsLock() => _breakingException ?? new BrokenCircuitException();
-
-    private void OpenCircuit_NeedsLock<TResult>(Outcome<TResult> outcome, bool manual, ResilienceContext context, out Task? scheduledTask)
+    private void OpenCircuit_NeedsLock(Outcome<T> outcome, bool manual, ResilienceContext context, out Task? scheduledTask)
     {
         OpenCircuitFor_NeedsLock(outcome, _breakDuration, manual, context, out scheduledTask);
     }
 
-    private void OpenCircuitFor_NeedsLock<TResult>(Outcome<TResult> outcome, TimeSpan breakDuration, bool manual, ResilienceContext context, out Task? scheduledTask)
+    private void OpenCircuitFor_NeedsLock(Outcome<T> outcome, TimeSpan breakDuration, bool manual, ResilienceContext context, out Task? scheduledTask)
     {
         scheduledTask = null;
         var utcNow = _timeProvider.UtcNow;
@@ -325,12 +319,12 @@ internal sealed class CircuitStateController : IDisposable
         var transitionedState = _circuitState;
         _circuitState = CircuitState.Open;
 
-        var args = new OutcomeArguments<TResult, OnCircuitOpenedArguments>(context, outcome, new OnCircuitOpenedArguments(breakDuration, manual));
+        var args = new OutcomeArguments<T, OnCircuitOpenedArguments>(context, outcome, new OnCircuitOpenedArguments(breakDuration, manual));
         _telemetry.Report(CircuitBreakerConstants.OnCircuitOpened, args);
 
         if (_onOpened is not null)
         {
-            _executor.ScheduleTask(() => _onOpened.HandleAsync(args).AsTask(), context, out scheduledTask);
+            _executor.ScheduleTask(() => _onOpened(args).AsTask(), context, out scheduledTask);
         }
     }
 }

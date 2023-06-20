@@ -1,37 +1,32 @@
 using Polly.Telemetry;
+using Polly.Utils;
 
 namespace Polly.Retry;
 
-#pragma warning disable S107 // Methods should not have too many parameters
-
-internal sealed class RetryResilienceStrategy : ResilienceStrategy
+internal sealed class RetryResilienceStrategy<T> : OutcomeResilienceStrategy<T>
 {
     private readonly TimeProvider _timeProvider;
     private readonly ResilienceStrategyTelemetry _telemetry;
     private readonly RandomUtil _randomUtil;
 
     public RetryResilienceStrategy(
-        TimeSpan baseDelay,
-        RetryBackoffType backoffType,
-        int retryCount,
-        PredicateInvoker<RetryPredicateArguments> shouldRetry,
-        EventInvoker<OnRetryArguments>? onRetry,
-        GeneratorInvoker<RetryDelayArguments, TimeSpan>? delayGenerator,
+        RetryStrategyOptions<T> options,
+        bool isGeneric,
         TimeProvider timeProvider,
         ResilienceStrategyTelemetry telemetry,
         RandomUtil randomUtil)
+        : base(isGeneric)
     {
-        BaseDelay = baseDelay;
-        BackoffType = backoffType;
-        RetryCount = retryCount;
-        ShouldRetry = shouldRetry;
-        OnRetry = onRetry;
-        DelayGenerator = delayGenerator;
+        ShouldHandle = options.ShouldHandle;
+        BaseDelay = options.BaseDelay;
+        BackoffType = options.BackoffType;
+        RetryCount = options.RetryCount;
+        OnRetry = options.OnRetry;
+        DelayGenerator = options.RetryDelayGenerator;
 
         _timeProvider = timeProvider;
         _telemetry = telemetry;
         _randomUtil = randomUtil;
-
     }
 
     public TimeSpan BaseDelay { get; }
@@ -40,16 +35,13 @@ internal sealed class RetryResilienceStrategy : ResilienceStrategy
 
     public int RetryCount { get; }
 
-    public PredicateInvoker<RetryPredicateArguments> ShouldRetry { get; }
+    public Func<OutcomeArguments<T, RetryPredicateArguments>, ValueTask<bool>> ShouldHandle { get; }
 
-    public GeneratorInvoker<RetryDelayArguments, TimeSpan>? DelayGenerator { get; }
+    public Func<OutcomeArguments<T, RetryDelayArguments>, ValueTask<TimeSpan>>? DelayGenerator { get; }
 
-    public EventInvoker<OnRetryArguments>? OnRetry { get; }
+    public Func<OutcomeArguments<T, OnRetryArguments>, ValueTask>? OnRetry { get; }
 
-    protected internal override async ValueTask<Outcome<TResult>> ExecuteCoreAsync<TResult, TState>(
-        Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,
-        ResilienceContext context,
-        TState state)
+    protected override async ValueTask<Outcome<T>> ExecuteCallbackAsync<TState>(Func<ResilienceContext, TState, ValueTask<Outcome<T>>> callback, ResilienceContext context, TState state)
     {
         double retryState = 0;
 
@@ -59,8 +51,8 @@ internal sealed class RetryResilienceStrategy : ResilienceStrategy
         {
             var startTimestamp = _timeProvider.GetTimestamp();
             var outcome = await ExecuteCallbackSafeAsync(callback, context, state).ConfigureAwait(context.ContinueOnCapturedContext);
-            var shouldRetryArgs = new OutcomeArguments<TResult, RetryPredicateArguments>(context, outcome, new RetryPredicateArguments(attempt));
-            var handle = await ShouldRetry.HandleAsync(shouldRetryArgs).ConfigureAwait(context.ContinueOnCapturedContext);
+            var shouldRetryArgs = new OutcomeArguments<T, RetryPredicateArguments>(context, outcome, new RetryPredicateArguments(attempt));
+            var handle = await ShouldHandle(shouldRetryArgs).ConfigureAwait(context.ContinueOnCapturedContext);
             var executionTime = _timeProvider.GetElapsedTime(startTimestamp);
 
             TelemetryUtil.ReportExecutionAttempt(_telemetry, context, outcome, attempt, executionTime, handle);
@@ -73,20 +65,20 @@ internal sealed class RetryResilienceStrategy : ResilienceStrategy
             var delay = RetryHelper.GetRetryDelay(BackoffType, attempt, BaseDelay, ref retryState, _randomUtil);
             if (DelayGenerator is not null)
             {
-                var delayArgs = new OutcomeArguments<TResult, RetryDelayArguments>(context, outcome, new RetryDelayArguments(attempt, delay));
-                var newDelay = await DelayGenerator.HandleAsync(delayArgs).ConfigureAwait(false);
+                var delayArgs = new OutcomeArguments<T, RetryDelayArguments>(context, outcome, new RetryDelayArguments(attempt, delay));
+                var newDelay = await DelayGenerator(delayArgs).ConfigureAwait(false);
                 if (RetryHelper.IsValidDelay(newDelay))
                 {
                     delay = newDelay;
                 }
             }
 
-            var onRetryArgs = new OutcomeArguments<TResult, OnRetryArguments>(context, outcome, new OnRetryArguments(attempt, delay, executionTime));
+            var onRetryArgs = new OutcomeArguments<T, OnRetryArguments>(context, outcome, new OnRetryArguments(attempt, delay, executionTime));
             _telemetry.Report(RetryConstants.OnRetryEvent, onRetryArgs);
 
             if (OnRetry is not null)
             {
-                await OnRetry.HandleAsync(onRetryArgs).ConfigureAwait(context.ContinueOnCapturedContext);
+                await OnRetry(onRetryArgs).ConfigureAwait(context.ContinueOnCapturedContext);
             }
 
             if (outcome.TryGetResult(out var resultValue))
@@ -102,7 +94,7 @@ internal sealed class RetryResilienceStrategy : ResilienceStrategy
                 }
                 catch (OperationCanceledException e)
                 {
-                    return new Outcome<TResult>(e);
+                    return new Outcome<T>(e);
                 }
             }
 

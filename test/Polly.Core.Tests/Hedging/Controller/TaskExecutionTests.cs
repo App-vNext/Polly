@@ -71,7 +71,7 @@ public class TaskExecutionTests : IDisposable
     public async Task Initialize_PrimaryCallbackThrows_EnsureExceptionHandled()
     {
         var execution = Create();
-        await execution.InitializeAsync<DisposableResult, string>(HedgedTaskType.Primary, _snapshot,
+        await execution.InitializeAsync<string>(HedgedTaskType.Primary, _snapshot,
             (_, _) => throw new InvalidOperationException(),
             "dummy-state",
             1);
@@ -94,7 +94,7 @@ public class TaskExecutionTests : IDisposable
             return () => new DisposableResult { Name = value }.AsOutcomeAsync();
         };
 
-        (await execution.InitializeAsync<DisposableResult, string>(HedgedTaskType.Secondary, _snapshot, null!, "dummy-state", 4)).Should().BeTrue();
+        (await execution.InitializeAsync<string>(HedgedTaskType.Secondary, _snapshot, null!, "dummy-state", 4)).Should().BeTrue();
 
         await execution.ExecutionTaskSafe!;
 
@@ -109,7 +109,7 @@ public class TaskExecutionTests : IDisposable
         var execution = Create();
         Generator = args => null;
 
-        (await execution.InitializeAsync<DisposableResult, string>(HedgedTaskType.Secondary, _snapshot, null!, "dummy-state", 4)).Should().BeFalse();
+        (await execution.InitializeAsync<string>(HedgedTaskType.Secondary, _snapshot, null!, "dummy-state", 4)).Should().BeFalse();
 
         execution.Invoking(e => e.Context).Should().Throw<InvalidOperationException>();
     }
@@ -146,7 +146,7 @@ public class TaskExecutionTests : IDisposable
         var execution = Create();
         Generator = args => throw new FormatException();
 
-        (await execution.InitializeAsync<DisposableResult, string>(HedgedTaskType.Secondary, _snapshot, null!, "dummy-state", 4)).Should().BeTrue();
+        (await execution.InitializeAsync<string>(HedgedTaskType.Secondary, _snapshot, null!, "dummy-state", 4)).Should().BeTrue();
 
         await execution.ExecutionTaskSafe!;
         execution.Outcome.Exception.Should().BeOfType<FormatException>();
@@ -158,7 +158,7 @@ public class TaskExecutionTests : IDisposable
         var execution = Create();
         Generator = args => throw new FormatException();
 
-        (await execution.InitializeAsync<DisposableResult, string>(HedgedTaskType.Secondary, _snapshot, null!, "dummy-state", 4)).Should().BeTrue();
+        (await execution.InitializeAsync<string>(HedgedTaskType.Secondary, _snapshot, null!, "dummy-state", 4)).Should().BeTrue();
 
         await execution.ExecutionTaskSafe!.Invoking(async t => await t).Should().NotThrowAsync();
     }

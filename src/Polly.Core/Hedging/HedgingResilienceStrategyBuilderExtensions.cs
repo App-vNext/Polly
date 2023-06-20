@@ -49,7 +49,7 @@ public static class HedgingResilienceStrategyBuilderExtensions
         builder.AddStrategy(context =>
         {
             var handler = new HedgingHandler<TResult>(
-                context.CreateInvoker(options.ShouldHandle)!,
+                options.ShouldHandle!,
                 options.HedgingActionGenerator,
                 context.IsGenericBuilder);
 
@@ -57,10 +57,11 @@ public static class HedgingResilienceStrategyBuilderExtensions
                 options.HedgingDelay,
                 options.MaxHedgedAttempts,
                 handler,
-                context.CreateInvoker(options.OnHedging),
+                options.OnHedging,
                 options.HedgingDelayGenerator,
                 context.TimeProvider,
-                context.Telemetry);
+                context.Telemetry,
+                context.IsGenericBuilder);
         },
         options);
     }

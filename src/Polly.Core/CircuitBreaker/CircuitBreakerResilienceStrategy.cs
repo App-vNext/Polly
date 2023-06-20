@@ -1,15 +1,17 @@
 namespace Polly.CircuitBreaker;
 
-internal sealed class CircuitBreakerResilienceStrategy : ResilienceStrategy
+internal sealed class CircuitBreakerResilienceStrategy<T> : OutcomeResilienceStrategy<T>
 {
-    private readonly PredicateInvoker<CircuitBreakerPredicateArguments> _handler;
-    private readonly CircuitStateController _controller;
+    private readonly Func<OutcomeArguments<T, CircuitBreakerPredicateArguments>, ValueTask<bool>> _handler;
+    private readonly CircuitStateController<T> _controller;
 
     public CircuitBreakerResilienceStrategy(
-        PredicateInvoker<CircuitBreakerPredicateArguments> handler,
-        CircuitStateController controller,
+        Func<OutcomeArguments<T, CircuitBreakerPredicateArguments>, ValueTask<bool>> handler,
+        CircuitStateController<T> controller,
         CircuitBreakerStateProvider? stateProvider,
-        CircuitBreakerManualControl? manualControl)
+        CircuitBreakerManualControl? manualControl,
+        bool isGeneric)
+        : base(isGeneric)
     {
         _handler = handler;
         _controller = controller;
@@ -21,20 +23,17 @@ internal sealed class CircuitBreakerResilienceStrategy : ResilienceStrategy
             _controller.Dispose);
     }
 
-    protected internal override async ValueTask<Outcome<TResult>> ExecuteCoreAsync<TResult, TState>(
-        Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,
-        ResilienceContext context,
-        TState state)
+    protected override async ValueTask<Outcome<T>> ExecuteCallbackAsync<TState>(Func<ResilienceContext, TState, ValueTask<Outcome<T>>> callback, ResilienceContext context, TState state)
     {
-        if (await _controller.OnActionPreExecuteAsync<TResult>(context).ConfigureAwait(context.ContinueOnCapturedContext) is Outcome<TResult> outcome)
+        if (await _controller.OnActionPreExecuteAsync(context).ConfigureAwait(context.ContinueOnCapturedContext) is Outcome<T> outcome)
         {
             return outcome;
         }
 
         outcome = await ExecuteCallbackSafeAsync(callback, context, state).ConfigureAwait(context.ContinueOnCapturedContext);
 
-        var args = new OutcomeArguments<TResult, CircuitBreakerPredicateArguments>(context, outcome, new CircuitBreakerPredicateArguments());
-        if (await _handler.HandleAsync(args).ConfigureAwait(context.ContinueOnCapturedContext))
+        var args = new OutcomeArguments<T, CircuitBreakerPredicateArguments>(context, outcome, new CircuitBreakerPredicateArguments());
+        if (await _handler(args).ConfigureAwait(context.ContinueOnCapturedContext))
         {
             await _controller.OnActionFailureAsync(outcome, context).ConfigureAwait(context.ContinueOnCapturedContext);
         }

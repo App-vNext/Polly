@@ -1,6 +1,7 @@
 #pragma warning disable CA1815 // Override equals and operator equals on value types
 
 using System;
+using System.Runtime.CompilerServices;
 using System.Runtime.ExceptionServices;
 
 namespace Polly;
@@ -105,7 +106,27 @@ public readonly struct Outcome<TResult>
 
     internal Outcome<object> AsOutcome() => AsOutcome<object>();
 
-    internal Outcome<T> AsOutcome<T>() => ExceptionDispatchInfo != null
-        ? new Outcome<T>(ExceptionDispatchInfo)
-        : new Outcome<T>((T)(object)Result!);
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal Outcome<T> AsOutcome<T>()
+    {
+        if (ExceptionDispatchInfo is not null)
+        {
+            return new Outcome<T>(ExceptionDispatchInfo);
+        }
+
+        if (Result is null)
+        {
+            return new Outcome<T>(default(T));
+        }
+
+        if (typeof(T) == typeof(TResult))
+        {
+            var result = Result;
+
+            // We can use the unsafe cast here because we know for sure these two types are the same
+            return new Outcome<T>(Unsafe.As<TResult, T>(ref result));
+        }
+
+        return new Outcome<T>((T)(object)Result);
+    }
 }

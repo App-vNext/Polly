@@ -88,10 +88,10 @@ internal sealed class TaskExecution<T>
         }
     }
 
-    public async ValueTask<bool> InitializeAsync<TResult, TState>(
+    public async ValueTask<bool> InitializeAsync<TState>(
         HedgedTaskType type,
         ContextSnapshot snapshot,
-        Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> primaryCallback,
+        Func<ResilienceContext, TState, ValueTask<Outcome<T>>> primaryCallback,
         TState state,
         int attempt)
     {
@@ -110,7 +110,7 @@ internal sealed class TaskExecution<T>
 
         if (type == HedgedTaskType.Secondary)
         {
-            Func<ValueTask<Outcome<TResult>>>? action = null;
+            Func<ValueTask<Outcome<T>>>? action = null;
 
             try
             {
@@ -124,7 +124,7 @@ internal sealed class TaskExecution<T>
             catch (Exception e)
             {
                 _stopExecutionTimestamp = _timeProvider.GetTimestamp();
-                ExecutionTaskSafe = ExecuteCreateActionException<TResult>(e);
+                ExecutionTaskSafe = ExecuteCreateActionException(e);
                 return true;
             }
 
@@ -187,9 +187,9 @@ internal sealed class TaskExecution<T>
         _stopExecutionTimestamp = 0;
     }
 
-    private async Task ExecuteSecondaryActionAsync<TResult>(Func<ValueTask<Outcome<TResult>>> action)
+    private async Task ExecuteSecondaryActionAsync(Func<ValueTask<Outcome<T>>> action)
     {
-        Outcome<TResult> outcome;
+        Outcome<T> outcome;
 
         try
         {
@@ -197,21 +197,21 @@ internal sealed class TaskExecution<T>
         }
         catch (Exception e)
         {
-            outcome = new Outcome<TResult>(e);
+            outcome = new Outcome<T>(e);
         }
 
         _stopExecutionTimestamp = _timeProvider.GetTimestamp();
         await UpdateOutcomeAsync(outcome).ConfigureAwait(Context.ContinueOnCapturedContext);
     }
 
-    private async Task ExecuteCreateActionException<TResult>(Exception e)
+    private async Task ExecuteCreateActionException(Exception e)
     {
-        await UpdateOutcomeAsync(new Outcome<TResult>(e)).ConfigureAwait(Context.ContinueOnCapturedContext);
+        await UpdateOutcomeAsync(new Outcome<T>(e)).ConfigureAwait(Context.ContinueOnCapturedContext);
     }
 
-    private async Task ExecutePrimaryActionAsync<TResult, TState>(Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> primaryCallback, TState state)
+    private async Task ExecutePrimaryActionAsync<TState>(Func<ResilienceContext, TState, ValueTask<Outcome<T>>> primaryCallback, TState state)
     {
-        Outcome<TResult> outcome;
+        Outcome<T> outcome;
 
         try
         {
@@ -219,18 +219,18 @@ internal sealed class TaskExecution<T>
         }
         catch (Exception e)
         {
-            outcome = new Outcome<TResult>(e);
+            outcome = new Outcome<T>(e);
         }
 
         _stopExecutionTimestamp = _timeProvider.GetTimestamp();
         await UpdateOutcomeAsync(outcome).ConfigureAwait(Context.ContinueOnCapturedContext);
     }
 
-    private async Task UpdateOutcomeAsync<TResult>(Outcome<TResult> outcome)
+    private async Task UpdateOutcomeAsync(Outcome<T> outcome)
     {
-        var args = new OutcomeArguments<TResult, HedgingPredicateArguments>(Context, outcome, new HedgingPredicateArguments());
+        var args = new OutcomeArguments<T, HedgingPredicateArguments>(Context, outcome, new HedgingPredicateArguments());
         Outcome = outcome.AsOutcome();
-        IsHandled = await _handler.ShouldHandle.HandleAsync(args).ConfigureAwait(Context.ContinueOnCapturedContext);
+        IsHandled = await _handler.ShouldHandle(args).ConfigureAwait(Context.ContinueOnCapturedContext);
         TelemetryUtil.ReportExecutionAttempt(_telemetry, Context, outcome, Attempt, ExecutionTime, IsHandled);
     }
 

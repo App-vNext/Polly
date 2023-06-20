@@ -1,5 +1,4 @@
 using Polly.Fallback;
-using Polly.Utils;
 
 namespace Polly.Core.Tests.Fallback;
 
@@ -11,7 +10,7 @@ internal static class FallbackHelper
         bool isGeneric = true)
     {
         return new FallbackHandler<T>(
-            PredicateInvoker<FallbackPredicateArguments>.Create<T>(args => new ValueTask<bool>(shouldHandle(args.Outcome!)), true)!,
+            args => new ValueTask<bool>(shouldHandle(args.Outcome)),
             _ => fallback().AsValueTask(),
             isGeneric);
     }

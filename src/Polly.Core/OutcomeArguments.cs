@@ -52,7 +52,5 @@ namespace Polly
         /// Gets the result, if any, produced by the resilience operation or event.
         /// </summary>
         public TResult? Result => Outcome.Result;
-
-        internal OutcomeArguments<object, TArgs> AsObjectArguments() => new(Context, Outcome.AsOutcome(), Arguments);
     }
 }

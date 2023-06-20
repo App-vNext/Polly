@@ -1,6 +1,5 @@
 using Polly.Hedging;
 using Polly.Hedging.Utils;
-using Polly.Utils;
 
 namespace Polly.Core.Tests.Hedging;
 
@@ -11,7 +10,7 @@ internal static class HedgingHelper
         Func<HedgingActionGeneratorArguments<T>, Func<ValueTask<Outcome<T>>>?> generator)
     {
         return new HedgingHandler<T>(
-            PredicateInvoker<HedgingPredicateArguments>.Create<T>(args => new ValueTask<bool>(shouldHandle(args.Outcome!)), true)!,
+            args => new ValueTask<bool>(shouldHandle(args.Outcome!))!,
             generator,
             true);
     }

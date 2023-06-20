@@ -22,11 +22,18 @@ internal static partial class Helper
                     PermitLimit = 10
                 })
                 .AddTimeout(TimeSpan.FromSeconds(10))
-                .AddRetry(
-                    predicate => predicate.Handle<InvalidOperationException>().HandleResult(Failure),
-                    RetryBackoffType.Constant,
-                    3,
-                    TimeSpan.FromSeconds(1))
+                .AddRetry(new()
+                {
+                    BackoffType = RetryBackoffType.Constant,
+                    RetryCount = 3,
+                    BaseDelay = TimeSpan.FromSeconds(1),
+                    ShouldHandle = args => args switch
+                    {
+                        { Exception: InvalidOperationException } => PredicateResult.True,
+                        { Result: var result } when result == Failure => PredicateResult.True,
+                        _ => PredicateResult.False
+                    }
+                })
                 .AddTimeout(TimeSpan.FromSeconds(1))
                 .AddAdvancedCircuitBreaker(new()
                 {
@@ -49,4 +56,42 @@ internal static partial class Helper
         }),
         _ => throw new NotSupportedException()
     };
+
+    public static ResilienceStrategy CreateNonGenericStrategyPipeline()
+    {
+        return new ResilienceStrategyBuilder()
+            .AddConcurrencyLimiter(new ConcurrencyLimiterOptions
+            {
+                QueueLimit = 10,
+                PermitLimit = 10
+            })
+            .AddTimeout(TimeSpan.FromSeconds(10))
+            .AddRetry(new()
+            {
+                BackoffType = RetryBackoffType.Constant,
+                RetryCount = 3,
+                BaseDelay = TimeSpan.FromSeconds(1),
+                ShouldHandle = args => args switch
+                {
+                    { Exception: InvalidOperationException } => PredicateResult.True,
+                    { Result: string result } when result == Failure => PredicateResult.True,
+                    _ => PredicateResult.False
+                }
+            })
+            .AddTimeout(TimeSpan.FromSeconds(1))
+            .AddAdvancedCircuitBreaker(new()
+            {
+                FailureThreshold = 0.5,
+                SamplingDuration = TimeSpan.FromSeconds(30),
+                MinimumThroughput = 10,
+                BreakDuration = TimeSpan.FromSeconds(5),
+                ShouldHandle = args => args switch
+                {
+                    { Exception: InvalidOperationException } => PredicateResult.True,
+                    { Result: string result } when result == Failure => PredicateResult.True,
+                    _ => PredicateResult.False
+                }
+            })
+            .Build();
+    }
 }
