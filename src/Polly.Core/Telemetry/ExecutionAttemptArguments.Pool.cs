@@ -7,7 +7,6 @@ public partial class ExecutionAttemptArguments
         args.ExecutionTime = TimeSpan.Zero;
         args.Attempt = 0;
         args.Handled = false;
-        return true;
     });
 
     internal static ExecutionAttemptArguments Get(int attempt, TimeSpan executionTime, bool handled)
