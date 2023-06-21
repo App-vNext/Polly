@@ -27,11 +27,6 @@ public class RetryResilienceStrategyBuilderExtensionsTests
     {
         builder =>
         {
-            builder.AddRetry(retry => retry.HandleResult(10), RetryBackoffType.Linear, 2, TimeSpan.FromSeconds(1));
-            AssertStrategy(builder, RetryBackoffType.Linear, 2, TimeSpan.FromSeconds(1));
-        },
-        builder =>
-        {
             builder.AddRetry(new RetryStrategyOptions<int>
             {
                 BackoffType = RetryBackoffType.Exponential,

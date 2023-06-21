@@ -1,4 +1,7 @@
-using System.ComponentModel.DataAnnotations;
+using Polly.CircuitBreaker;
+using Polly.Fallback;
+using Polly.Hedging;
+using Polly.Retry;
 
 namespace Polly.Core.Tests;
 
@@ -26,15 +29,22 @@ public class PredicateBuilderTests
         { builder => builder.HandleInner<FormatException>(e => e.Message == "x"), Outcome.FromException<string>(new InvalidOperationException("dummy", new FormatException("m") )), false },
     };
 
+    [Fact]
+    public void Ctor_Ok()
+    {
+        new PredicateBuilder().Should().NotBeNull();
+        new PredicateBuilder<string>().Should().NotBeNull();
+    }
+
     [MemberData(nameof(HandleResultData))]
     [Theory]
-    public async Task HandleResult_Ok(Action<PredicateBuilder<string>> configure, Outcome<string> value, bool handled)
+    public void HandleResult_Ok(Action<PredicateBuilder<string>> configure, Outcome<string> value, bool handled)
     {
         var predicate = new PredicateBuilder<string>();
 
         configure(predicate);
 
-        var result = await predicate.CreatePredicate<string>()(new OutcomeArguments<string, string>(ResilienceContext.Get(), value, string.Empty));
+        var result = predicate.Build()(value);
         result.Should().Be(handled);
     }
 
@@ -42,9 +52,61 @@ public class PredicateBuilderTests
     public void CreatePredicate_NotConfigured_Throws()
     {
         var predicate = new PredicateBuilder<string>()
-            .Invoking(b => b.CreatePredicate<string>())
+            .Invoking(b => b.Build())
             .Should()
-            .Throw<ValidationException>()
+            .Throw<InvalidOperationException>()
             .WithMessage("No predicates were configured. There must be at least one predicate added.");
+    }
+
+    [Fact]
+    public async Task Operator_RetryStrategyOptions_Ok()
+    {
+        var options = new RetryStrategyOptions<string>
+        {
+            ShouldHandle = new PredicateBuilder<string>().HandleResult("error")
+        };
+
+        var handled = await options.ShouldHandle(new(ResilienceContext.Get(), Outcome.FromResult("error"), new RetryPredicateArguments(0)));
+
+        handled.Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task Operator_FallbackStrategyOptions_Ok()
+    {
+        var options = new FallbackStrategyOptions<string>
+        {
+            ShouldHandle = new PredicateBuilder<string>().HandleResult("error")
+        };
+
+        var handled = await options.ShouldHandle(new(ResilienceContext.Get(), Outcome.FromResult("error"), new FallbackPredicateArguments()));
+
+        handled.Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task Operator_HedgingStrategyOptions_Ok()
+    {
+        var options = new HedgingStrategyOptions<string>
+        {
+            ShouldHandle = new PredicateBuilder<string>().HandleResult("error")
+        };
+
+        var handled = await options.ShouldHandle(new(ResilienceContext.Get(), Outcome.FromResult("error"), new HedgingPredicateArguments()));
+
+        handled.Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task Operator_AdvancedCircuitBreakerStrategyOptions_Ok()
+    {
+        var options = new AdvancedCircuitBreakerStrategyOptions<string>
+        {
+            ShouldHandle = new PredicateBuilder<string>().HandleResult("error")
+        };
+
+        var handled = await options.ShouldHandle(new(ResilienceContext.Get(), Outcome.FromResult("error"), new CircuitBreakerPredicateArguments()));
+
+        handled.Should().BeTrue();
     }
 }
