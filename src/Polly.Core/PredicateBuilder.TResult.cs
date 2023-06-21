@@ -88,7 +88,7 @@ public partial class PredicateBuilder<TResult>
     /// <exception cref="InvalidOperationException">Thrown when no predicates were configured using this builder.</exception>
     /// <remarks>
     /// The returned predicate will return <see langword="true"/> if any of the configured predicates return <see langword="true"/>.
-    /// Please be aware of performance penalty if you register too many predicates with this builder. In such case, it's better to create your own predicate
+    /// Please be aware of the performance penalty if you register too many predicates with this builder. In such case, it's better to create your own predicate
     /// manually as a delegate.
     /// </remarks>
     public Predicate<Outcome<TResult>> Build() => _predicates.Count switch
@@ -106,7 +106,7 @@ public partial class PredicateBuilder<TResult>
     /// <exception cref="InvalidOperationException">Thrown when no predicates were configured using this builder.</exception>
     /// <remarks>
     /// The returned predicate will return <see langword="true"/> if any of the configured predicates return <see langword="true"/>.
-    /// Please be aware of performance penalty if you register too many predicates with this builder. In such case, it's better to create your own predicate
+    /// Please be aware of the performance penalty if you register too many predicates with this builder. In such case, it's better to create your own predicate
     /// manually as a delegate.
     /// </remarks>
     public Func<OutcomeArguments<TResult, TArgs>, ValueTask<bool>> Build<TArgs>()
