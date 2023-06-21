@@ -36,7 +36,6 @@ public class PredicateBenchmark
     public ValueTask<bool> Predicate_SwitchExpression()
     {
         return _delegate.ShouldHandle(_args);
-
     }
 
     [Benchmark]
