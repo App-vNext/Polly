@@ -30,10 +30,6 @@ jobs:
       matrix:
         os: [ windows-latest ]
         include:
-          - os: macos-latest
-            os_name: macos
-          - os: ubuntu-latest
-            os_name: linux
           - os: windows-latest
             os_name: windows
 
@@ -60,19 +56,6 @@ jobs:
       env:
         RUN_MUTATION_TESTS: ${{ matrix.os_name == 'linux' && 'true' || 'false' }}
 
-    - uses: codecov/codecov-action@eaaf4bedf32dbdc6b720b63067d99c4d77d6047d # v3.1.4
-      name: Upload coverage to Codecov
-      with:
-        files: ./artifacts/coverage-reports/Polly.Core.Tests/Cobertura.xml,./artifacts/coverage-reports/Polly.Specs/Cobertura.xml,./artifacts/coverage-reports/Polly.RateLimiting.Tests/Cobertura.xml,./artifacts/coverage-reports/Polly.Extensions.Tests/Cobertura.xml,
-        flags: ${{ matrix.os_name }}
-
-    - name: Upload Mutation Report
-      if: always() && matrix.os_name == 'linux'
-      uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # v3.1.2
-      with:
-        name: mutation-report
-        path: StrykerOutput
-
     - name: Publish NuGet packages
       uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # v3.1.2
       with:
@@ -87,63 +70,9 @@ jobs:
         path: eng/signing
         if-no-files-found: error
 
-  validate-packages:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-
-    - name: Download packages
-      uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
-      with:
-        name: packages-windows
-
-    - name: Setup .NET SDK
-      uses: actions/setup-dotnet@3447fd6a9f9e57506b15f895c5b76d3b197dc7c2 # v3.2.0
-
-    - name: Validate NuGet packages
-      shell: pwsh
-      run: |
-        dotnet tool install --global dotnet-validate --version 0.0.1-preview.304
-        $packages = Get-ChildItem -Filter "*.nupkg" | ForEach-Object { $_.FullName }
-        $invalidPackages = 0
-        foreach ($package in $packages) {
-          dotnet validate package local $package
-          if ($LASTEXITCODE -ne 0) {
-            $invalidPackages++
-          }
-        }
-        if ($invalidPackages -gt 0) {
-          Write-Output "::error::$invalidPackages NuGet package(s) failed validation."
-        }
-
-  publish-github:
-    needs: validate-packages
-    permissions:
-      packages: write
-    runs-on: ubuntu-latest
-    if: |
-      github.event.repository.fork == false &&
-      (github.ref == format('refs/heads/{0}', github.event.repository.default_branch) ||
-       startsWith(github.ref, 'refs/tags/'))
-    steps:
-
-    - name: Download packages
-      uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
-      with:
-        name: packages-windows
-
-    - name: Setup .NET SDK
-      uses: actions/setup-dotnet@3447fd6a9f9e57506b15f895c5b76d3b197dc7c2 # v3.2.0
-
-    - name: Publish NuGet packages to GitHub Packages
-      run: dotnet nuget push "*.nupkg" --api-key ${{ secrets.GITHUB_TOKEN }} --skip-duplicate --no-symbols --source https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json
-
   sign:
-    needs: publish-github
+    needs: build
     runs-on: windows-latest
-    if: |
-      github.event.repository.fork == false &&
-      startsWith(github.ref, 'refs/tags/')
 
     steps:
 
@@ -271,6 +200,15 @@ jobs:
           } else {
             Write-Output "All $($dlls.Length) DLLs in NuGet package $package have valid signatures."
           }
+
+          dotnet nuget verify $package
+
+          if ($LASTEXITCODE -ne 0) {
+            Write-Output "::warning::$package failed signature validation."
+            $invalidPackages++
+          } else {
+            Write-Output "$package has a valid signature."
+          }
         }
         if ($invalidPackages -gt 0) {
           Write-Output "::error::$invalidPackages NuGet package(s) failed signature validation."
@@ -278,19 +216,3 @@ jobs:
         } else {
           Write-Output "All $($packages.Length) NuGet packages have valid signatures."
         }
-
-  publish-nuget:
-    needs: validate-signed-packages
-    runs-on: ubuntu-latest
-    steps:
-
-    - name: Download signed packages
-      uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
-      with:
-        name: signed-packages
-
-    - name: Setup .NET SDK
-      uses: actions/setup-dotnet@3447fd6a9f9e57506b15f895c5b76d3b197dc7c2 # v3.2.0
-
-    - name: Push signed NuGet packages to NuGet.org
-      run: dotnet nuget push "*.nupkg" --api-key ${{ secrets.NUGET_TOKEN }} --skip-duplicate --source https://api.nuget.org/v3/index.json
