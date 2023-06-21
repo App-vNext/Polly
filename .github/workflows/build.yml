@@ -271,6 +271,15 @@ jobs:
           } else {
             Write-Output "All $($dlls.Length) DLLs in NuGet package $package have valid signatures."
           }
+
+          dotnet nuget verify $package
+
+          if ($LASTEXITCODE -ne 0) {
+            Write-Output "::warning::$package failed signature validation."
+            $invalidPackages++
+          } else {
+            Write-Output "$package has a valid signature."
+          }
         }
         if ($invalidPackages -gt 0) {
           Write-Output "::error::$invalidPackages NuGet package(s) failed signature validation."
