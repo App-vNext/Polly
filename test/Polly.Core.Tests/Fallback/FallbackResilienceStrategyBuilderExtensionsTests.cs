@@ -14,11 +14,7 @@ public class FallbackResilienceStrategyBuilderExtensionsTests
                 FallbackAction = _ => Outcome.FromResultAsTask(0),
                 ShouldHandle = _ => PredicateResult.False,
             });
-        },
-        builder =>
-        {
-            builder.AddFallback(handle => handle.HandleResult(1), _ =>  Outcome.FromResultAsTask(0));
-        },
+        }
     };
 
     [MemberData(nameof(FallbackOverloadsGeneric))]
