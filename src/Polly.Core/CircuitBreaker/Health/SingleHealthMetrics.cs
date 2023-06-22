@@ -13,7 +13,7 @@ internal sealed class SingleHealthMetrics : HealthMetrics
         : base(timeProvider)
     {
         _samplingDuration = samplingDuration;
-        _startedAt = timeProvider.UtcNow;
+        _startedAt = timeProvider.GetUtcNow();
     }
 
     public override void IncrementSuccess()
@@ -30,7 +30,7 @@ internal sealed class SingleHealthMetrics : HealthMetrics
 
     public override void Reset()
     {
-        _startedAt = TimeProvider.UtcNow;
+        _startedAt = TimeProvider.GetUtcNow();
         _successes = 0;
         _failures = 0;
     }
@@ -44,7 +44,7 @@ internal sealed class SingleHealthMetrics : HealthMetrics
 
     private void TryReset()
     {
-        if (TimeProvider.UtcNow - _startedAt >= _samplingDuration)
+        if (TimeProvider.GetUtcNow() - _startedAt >= _samplingDuration)
         {
             Reset();
         }

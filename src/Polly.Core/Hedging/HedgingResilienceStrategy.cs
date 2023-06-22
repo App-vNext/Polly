@@ -1,5 +1,4 @@
 using System.Diagnostics.CodeAnalysis;
-using System.Threading;
 using Polly.Hedging.Utils;
 using Polly.Telemetry;
 

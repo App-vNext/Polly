@@ -1,4 +1,3 @@
-using System;
 using Polly.Hedging.Utils;
 using Polly.Telemetry;
 
@@ -148,7 +147,7 @@ internal sealed class TaskExecution<T>
     {
         OnReset?.Invoke(this);
 
-        if (_cancellationRegistration is CancellationTokenRegistration registration)
+        if (_cancellationRegistration is { } registration)
         {
 #if NETCOREAPP
             await registration.DisposeAsync().ConfigureAwait(false);
@@ -204,10 +203,7 @@ internal sealed class TaskExecution<T>
         await UpdateOutcomeAsync(outcome).ConfigureAwait(Context.ContinueOnCapturedContext);
     }
 
-    private async Task ExecuteCreateActionException(Exception e)
-    {
-        await UpdateOutcomeAsync(Polly.Outcome.FromException<T>(e)).ConfigureAwait(Context.ContinueOnCapturedContext);
-    }
+    private async Task ExecuteCreateActionException(Exception e) => await UpdateOutcomeAsync(Polly.Outcome.FromException<T>(e)).ConfigureAwait(Context.ContinueOnCapturedContext);
 
     private async Task ExecutePrimaryActionAsync<TState>(Func<ResilienceContext, TState, ValueTask<Outcome<T>>> primaryCallback, TState state)
     {

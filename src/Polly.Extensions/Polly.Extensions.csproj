@@ -12,7 +12,7 @@
   <ItemGroup>
     <Compile Include="..\Polly.Core\Utils\Guard.cs" Link="Utils\Guard.cs" />
     <Compile Include="..\Polly.Core\Utils\ObjectPool.cs" Link="Utils\ObjectPool.cs" />
-    <Compile Include="..\Polly.Core\Utils\TimeProvider.cs" Link="Utils\TimeProvider.cs" />
+    <Compile Include="..\Polly.Core\ToBeRemoved\TimeProvider.cs" Link="ToBeRemoved\TimeProvider.cs" />
     <Compile Include="..\Polly.Core\Utils\ValidationHelper.cs" Link="Utils\ValidationHelper.cs" />
   </ItemGroup>
 

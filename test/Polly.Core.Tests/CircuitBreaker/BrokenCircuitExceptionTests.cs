@@ -7,7 +7,6 @@ public class BrokenCircuitExceptionTests
     [Fact]
     public void Ctor_Ok()
     {
-        var brokenCircuit = new BrokenCircuitException();
         new BrokenCircuitException("Dummy.").Message.Should().Be("Dummy.");
         new BrokenCircuitException("Dummy.", new InvalidOperationException()).Message.Should().Be("Dummy.");
         new BrokenCircuitException("Dummy.", new InvalidOperationException()).InnerException.Should().BeOfType<InvalidOperationException>();

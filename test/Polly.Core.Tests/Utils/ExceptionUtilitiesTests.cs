@@ -1,5 +1,4 @@
-﻿using System;
-using Polly.Utils;
+﻿using Polly.Utils;
 
 namespace Polly.Core.Tests.Utils;
 

@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using Polly.Telemetry;
 using Polly.Utils;
 

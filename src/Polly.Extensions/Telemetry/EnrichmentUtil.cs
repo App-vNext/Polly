@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 namespace Polly.Extensions.Telemetry;
 
 internal static class EnrichmentUtil

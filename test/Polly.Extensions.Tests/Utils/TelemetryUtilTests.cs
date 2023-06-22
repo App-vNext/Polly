@@ -1,5 +1,4 @@
-﻿using FluentAssertions;
-using Polly.Extensions.Telemetry;
+﻿using Polly.Extensions.Telemetry;
 
 namespace Polly.Extensions.Tests.Utils;
 

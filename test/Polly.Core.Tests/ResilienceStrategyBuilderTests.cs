@@ -1,5 +1,4 @@
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 using Polly.Utils;
 
 namespace Polly.Core.Tests;

@@ -103,7 +103,7 @@ public class CircuitBreakerResilienceStrategyBuilderTests
         var timeProvider = new FakeTimeProvider();
         var strategy = new ResilienceStrategyBuilder { TimeProvider = timeProvider.Object }.AddSimpleCircuitBreaker(options).Build();
         var time = DateTime.UtcNow;
-        timeProvider.Setup(v => v.UtcNow).Returns(() => time);
+        timeProvider.Setup(v => v.GetUtcNow()).Returns(() => time);
 
         for (int i = 0; i < options.FailureThreshold; i++)
         {
@@ -154,7 +154,7 @@ public class CircuitBreakerResilienceStrategyBuilderTests
         var timeProvider = new FakeTimeProvider();
         var strategy = new ResilienceStrategyBuilder { TimeProvider = timeProvider.Object }.AddAdvancedCircuitBreaker(options).Build();
         var time = DateTime.UtcNow;
-        timeProvider.Setup(v => v.UtcNow).Returns(() => time);
+        timeProvider.Setup(v => v.GetUtcNow()).Returns(() => time);
 
         for (int i = 0; i < 10; i++)
         {

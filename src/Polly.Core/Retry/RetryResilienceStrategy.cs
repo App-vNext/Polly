@@ -1,5 +1,4 @@
 using Polly.Telemetry;
-using Polly.Utils;
 
 namespace Polly.Retry;
 

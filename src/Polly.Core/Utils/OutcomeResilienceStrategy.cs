@@ -1,6 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-
-namespace Polly.Utils;
+﻿namespace Polly.Utils;
 
 /// <summary>
 /// This base strategy class is used to simplify the implementation of generic (reactive)

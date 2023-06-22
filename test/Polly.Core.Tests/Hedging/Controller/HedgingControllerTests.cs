@@ -1,5 +1,4 @@
 using Polly.Hedging.Utils;
-using Polly.Telemetry;
 
 namespace Polly.Core.Tests.Hedging.Controller;
 

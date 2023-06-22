@@ -1,6 +1,5 @@
 using BenchmarkDotNet.Diagnosers;
 using BenchmarkDotNet.Toolchains.InProcess.Emit;
-using Polly.Core.Benchmarks;
 
 var config = ManualConfig
     .Create(DefaultConfig.Instance)
