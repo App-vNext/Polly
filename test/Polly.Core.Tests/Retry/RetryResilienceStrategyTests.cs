@@ -17,6 +17,7 @@ public class RetryResilienceStrategyTests
         _telemetry = TestUtilities.CreateResilienceTelemetry(_diagnosticSource.Object);
         _options.ShouldHandle = _ => new ValueTask<bool>(false);
 
+        _timeProvider.Setup(v => v.TimestampFrequency).Returns(Stopwatch.Frequency);
         _timeProvider.SetupSequence(v => v.GetTimestamp()).Returns(0).Returns(100);
     }
 

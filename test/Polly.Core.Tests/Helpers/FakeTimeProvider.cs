@@ -7,7 +7,9 @@ internal class FakeTimeProvider : Mock<TimeProvider>
     private DateTimeOffset? _time;
 
     public FakeTimeProvider()
-        : base(MockBehavior.Strict) => Setup(v => v.TimestampFrequency).Returns(Stopwatch.Frequency);
+        : base(MockBehavior.Loose)
+    {
+    }
 
     public FakeTimeProvider SetupUtcNow(DateTimeOffset? time = null)
     {
@@ -24,6 +26,12 @@ internal class FakeTimeProvider : Mock<TimeProvider>
         }
 
         _time = _time!.Value.Add(time);
+        return this;
+    }
+
+    public FakeTimeProvider SetupTimestampFrequency()
+    {
+        Setup(x => x.TimestampFrequency).Returns(Stopwatch.Frequency);
         return this;
     }
 
