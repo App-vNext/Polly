@@ -6,7 +6,7 @@ using System.Net;
 var helper = new ExecuteHelper();
 
 // ------------------------------------------------------------------------
-// 1. Create a retry strategy that only handles all exceptions
+// 1. Create a retry strategy that handles all exceptions
 // ------------------------------------------------------------------------
 
 ResilienceStrategy strategy = new ResilienceStrategyBuilder()
