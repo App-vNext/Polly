@@ -1,7 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.Threading.RateLimiting;
 using Polly.RateLimiting;
-using Polly.Utils;
 
 namespace Polly;
 

@@ -16,7 +16,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		GitVersion.yml = GitVersion.yml
 		global.json = global.json
 		README.md = README.md
-		Version.props = Version.props
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polly", "src\Polly\Polly.csproj", "{E273E6D8-87D4-4EC9-A2BE-734DD633EF15}"

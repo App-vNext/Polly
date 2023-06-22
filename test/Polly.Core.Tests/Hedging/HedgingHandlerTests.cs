@@ -1,4 +1,3 @@
-using FluentAssertions;
 using Polly.Hedging;
 using Polly.Hedging.Utils;
 

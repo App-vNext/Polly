@@ -1,4 +1,3 @@
-using System;
 using System.ComponentModel.DataAnnotations;
 using System.Net.Http;
 using Microsoft.Extensions.Logging;

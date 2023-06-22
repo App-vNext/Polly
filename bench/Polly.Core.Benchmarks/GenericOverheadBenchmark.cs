@@ -22,18 +22,12 @@ public class GenericOverheadBenchmark
     public class GenericStrategy<T>
     {
         [MethodImpl(MethodImplOptions.NoOptimization)]
-        public virtual ValueTask<T> ExecuteAsync(Func<ValueTask<T>> callback)
-        {
-            return callback();
-        }
+        public virtual ValueTask<T> ExecuteAsync(Func<ValueTask<T>> callback) => callback();
     }
 
     public class NonGenericStrategy
     {
         [MethodImpl(MethodImplOptions.NoOptimization)]
-        public virtual ValueTask<T> ExecuteAsync<T>(Func<ValueTask<T>> callback)
-        {
-            return callback();
-        }
+        public virtual ValueTask<T> ExecuteAsync<T>(Func<ValueTask<T>> callback) => callback();
     }
 }

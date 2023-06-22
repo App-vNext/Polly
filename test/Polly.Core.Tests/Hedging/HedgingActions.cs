@@ -1,5 +1,4 @@
 using Polly.Hedging;
-using Polly.Utils;
 
 namespace Polly.Core.Tests.Hedging;
 

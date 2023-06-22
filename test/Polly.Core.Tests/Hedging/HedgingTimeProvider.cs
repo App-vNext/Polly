@@ -1,5 +1,3 @@
-using Polly.Utils;
-
 namespace Polly.Core.Tests.Hedging;
 
 internal class HedgingTimeProvider : TimeProvider
@@ -28,10 +26,7 @@ internal class HedgingTimeProvider : TimeProvider
 
     public override long GetTimestamp() => TimeStampProvider();
 
-    public override void CancelAfter(CancellationTokenSource source, TimeSpan delay)
-    {
-        throw new NotSupportedException();
-    }
+    public override void CancelAfter(CancellationTokenSource source, TimeSpan delay) => throw new NotSupportedException();
 
     public override Task Delay(TimeSpan delayValue, CancellationToken cancellationToken = default)
     {
@@ -46,9 +41,6 @@ internal class HedgingTimeProvider : TimeProvider
 
     public record DelayEntry(TimeSpan Delay, TaskCompletionSource<bool> Source, DateTimeOffset TimeStamp)
     {
-        public void Complete()
-        {
-            Source.TrySetResult(true);
-        }
+        public void Complete() => Source.TrySetResult(true);
     }
 }

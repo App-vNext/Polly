@@ -1,5 +1,4 @@
-﻿using System;
-using Polly.Telemetry;
+﻿using Polly.Telemetry;
 
 namespace Polly.Extensions.Tests.Telemetry;
 

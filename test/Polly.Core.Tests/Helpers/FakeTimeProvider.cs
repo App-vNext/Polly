@@ -6,15 +6,8 @@ internal class FakeTimeProvider : Mock<TimeProvider>
 {
     private DateTimeOffset? _time;
 
-    public FakeTimeProvider(long frequency)
-        : base(MockBehavior.Strict, frequency)
-    {
-    }
-
     public FakeTimeProvider()
-        : this(Stopwatch.Frequency)
-    {
-    }
+        : base(MockBehavior.Strict) => Setup(v => v.TimestampFrequency).Returns(Stopwatch.Frequency);
 
     public FakeTimeProvider SetupUtcNow(DateTimeOffset? time = null)
     {

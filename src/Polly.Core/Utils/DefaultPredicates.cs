@@ -1,7 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-
-namespace Polly.Utils;
+﻿namespace Polly.Utils;
 
 internal static class DefaultPredicates<TArgs, TResult>
 {
