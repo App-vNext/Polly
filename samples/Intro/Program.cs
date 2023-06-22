@@ -41,16 +41,14 @@ strategy = new ResilienceStrategyBuilder()
     // Add retries using the options
     .AddRetry(new RetryStrategyOptions
     {
-        ShouldRetry = outcome =>
+        // To configure the predicate you can use switch expressions
+        ShouldHandle = args => args.Exception switch
         {
-            // We want to retry on this specific exception
-            if (outcome.Exception is TimeoutRejectedException)
-            {
-                // The "PredicateResult.True" is shorthand to "new ValueTask<bool>(true)"
-                return PredicateResult.True;
-            }
+            TimeoutRejectedException => PredicateResult.True,
 
-            return PredicateResult.False;
+            // The "PredicateResult.False" is just shorthand for "new ValueTask<bool>(true)"
+            // You can also use "new PredicateBuilder().Handle<TimeoutRejectedException>()"
+            _ => PredicateResult.False
         },
         // Register user callback called whenever retry occurs
         OnRetry = args => { Console.WriteLine($"Retrying...{args.Arguments.Attempt} attempt"); return default; },
@@ -65,7 +63,6 @@ strategy = new ResilienceStrategyBuilder()
         // Register user callback called whenever timeout occurs
         OnTimeout = args =>
         {
-            
             Console.WriteLine($"Timeout occurred after {args.Timeout}!");
             return default;
         }

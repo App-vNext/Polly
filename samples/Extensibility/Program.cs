@@ -118,18 +118,13 @@ internal class MyResilienceStrategy : ResilienceStrategy
 public static class MyResilienceStrategyExtensions
 {
     // Add new extension that works for both "ResilienceStrategyBuilder" and "ResilienceStrategyBuilder<T>"
-    public static TBuilder AddMyResilienceStrategy<TBuilder>(this TBuilder builder, MyResilienceStrategyOptions options)
-        where TBuilder : ResilienceStrategyBuilderBase
-    {
-        builder.AddStrategy(
+    public static TBuilder AddMyResilienceStrategy<TBuilder>(this TBuilder builder, MyResilienceStrategyOptions options) where TBuilder : ResilienceStrategyBuilderBase
+        => builder.AddStrategy(
             // Provide a factory that creates the strategy
             context => new MyResilienceStrategy(context.Telemetry, options),
 
             // Pass the options, note that the options instance is automatically validated by the builder
             options);
-
-        return builder;
-    }
 }
 
 

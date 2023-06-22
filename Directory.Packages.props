@@ -1,7 +1,7 @@
 <Project>
   <PropertyGroup>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
-    <PollyVersion>8.0.0-alpha.1</PollyVersion>
+    <PollyVersion>8.0.0-alpha.2</PollyVersion>
   </PropertyGroup>
   <ItemGroup>
     <PackageVersion Include="coverlet.msbuild" Version="6.0.0" />
