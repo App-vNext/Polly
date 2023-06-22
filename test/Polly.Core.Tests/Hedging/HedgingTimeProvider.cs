@@ -6,8 +6,7 @@ internal class HedgingTimeProvider : TimeProvider
 {
     private DateTimeOffset _utcNow;
 
-    public HedgingTimeProvider()
-        : base(Stopwatch.Frequency) => _utcNow = DateTimeOffset.UtcNow;
+    public HedgingTimeProvider() => _utcNow = DateTimeOffset.UtcNow;
 
     public TimeSpan AutoAdvance { get; set; }
 
@@ -25,7 +24,7 @@ internal class HedgingTimeProvider : TimeProvider
 
     public List<DelayEntry> DelayEntries { get; } = new List<DelayEntry>();
 
-    public override DateTimeOffset UtcNow => _utcNow;
+    public override DateTimeOffset GetUtcNow() => _utcNow;
 
     public override long GetTimestamp() => TimeStampProvider();
 

@@ -1,5 +1,4 @@
 using Moq;
-using Polly.Utils;
 
 namespace Polly.Core.Tests.Helpers;
 
@@ -20,7 +19,7 @@ internal class FakeTimeProvider : Mock<TimeProvider>
     public FakeTimeProvider SetupUtcNow(DateTimeOffset? time = null)
     {
         _time = time ?? DateTimeOffset.UtcNow;
-        Setup(x => x.UtcNow).Returns(() => _time.Value);
+        Setup(x => x.GetUtcNow()).Returns(() => _time.Value);
         return this;
     }
 

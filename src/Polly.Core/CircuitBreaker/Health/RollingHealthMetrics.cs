@@ -44,7 +44,7 @@ internal sealed class RollingHealthMetrics : HealthMetrics
 
     private HealthWindow UpdateCurrentWindow()
     {
-        var now = TimeProvider.UtcNow;
+        var now = TimeProvider.GetUtcNow();
         if (_currentWindow == null || now - _currentWindow.StartedAt >= _windowDuration)
         {
             _currentWindow = new()
