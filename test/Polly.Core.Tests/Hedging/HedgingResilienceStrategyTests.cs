@@ -104,6 +104,28 @@ public class HedgingResilienceStrategyTests : IDisposable
         attempts[1].Attempt.Should().Be(1);
     }
 
+    [Fact]
+    public async Task ExecutePrimary_Cancelled_SecondaryShouldBeExecuted()
+    {
+        _options.MaxHedgedAttempts = 2;
+
+        ConfigureHedging(o => o.Result == "primary", args => () => Outcome.FromResultAsTask("secondary"));
+        var strategy = Create();
+
+        var result = await strategy.ExecuteAsync(
+            context =>
+            {
+                var source = new CancellationTokenSource();
+                source.Cancel();
+                context.CancellationToken = source.Token;
+
+                return new ValueTask<string>("primary");
+            },
+            ResilienceContext.Get());
+
+        result.Should().Be("secondary");
+    }
+
     [InlineData(-1)]
     [InlineData(-1000)]
     [InlineData(0)]
