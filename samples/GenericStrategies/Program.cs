@@ -14,12 +14,10 @@ using System.Net;
 ResilienceStrategy<HttpResponseMessage> strategy = new ResilienceStrategyBuilder<HttpResponseMessage>()
     .AddFallback(new FallbackStrategyOptions<HttpResponseMessage>
     {
-        FallbackAction = async _ =>
+        FallbackAction = _ =>
         {
-            await Task.Delay(10);
-
             // Return fallback result
-            return new Outcome<HttpResponseMessage>(new HttpResponseMessage(System.Net.HttpStatusCode.OK));
+            return Outcome.FromResultAsTask(new HttpResponseMessage(HttpStatusCode.OK));
         },
         // You can also use switch expressions for succinct syntax
         ShouldHandle = outcome => outcome switch
@@ -33,22 +31,10 @@ ResilienceStrategy<HttpResponseMessage> strategy = new ResilienceStrategyBuilder
     })
     .AddRetry(new RetryStrategyOptions<HttpResponseMessage>
     {
-        ShouldRetry = outcome =>
-        {
-            // We can handle specific result
-            if (outcome.Result?.StatusCode == HttpStatusCode.InternalServerError)
-            {
-                return PredicateResult.True;
-            }
-
-            // Or exception
-            if ( outcome.Exception is HttpRequestException)
-            {
-                return PredicateResult.True;
-            }
-
-            return PredicateResult.False;
-        },
+        // You can use "PredicateBuilder" to configure the predicates
+        ShouldHandle = new PredicateBuilder<HttpResponseMessage>()
+            .HandleResult(r => r.StatusCode == HttpStatusCode.InternalServerError)
+            .Handle<HttpRequestException>(),
         // Register user callback called whenever retry occurs
         OnRetry = outcome => { Console.WriteLine($"Retrying '{outcome.Result?.StatusCode}'..."); return default; },
         BaseDelay = TimeSpan.FromMilliseconds(400),

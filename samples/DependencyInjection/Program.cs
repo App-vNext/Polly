@@ -21,7 +21,7 @@ var serviceProvider = new ServiceCollection()
     // You can also register result-based (generic) resilience strategies
     // First generic parameter is the key type, the second one is the result type
     // This overload does not use the context argument (simple scenarios)
-    .AddResilienceStrategy<string, HttpResponseMessage>("my-strategy", builder =>
+    .AddResilienceStrategy<string, HttpResponseMessage>("my-http-strategy", builder =>
     {
         builder.AddTimeout(TimeSpan.FromSeconds(1));
     })
@@ -35,10 +35,10 @@ var serviceProvider = new ServiceCollection()
 ResilienceStrategyProvider<string> strategyProvider = serviceProvider.GetRequiredService<ResilienceStrategyProvider<string>>();
 
 // Retrieve the strategy by name
-ResilienceStrategy strategy = strategyProvider.Get("my-strategy");
+ResilienceStrategy strategy = strategyProvider.GetStrategy("my-strategy");
 
 // Retrieve the generic strategy by name
-ResilienceStrategy<HttpResponseMessage> genericStrategy = strategyProvider.Get<HttpResponseMessage>("my-strategy");
+ResilienceStrategy<HttpResponseMessage> genericStrategy = strategyProvider.GetStrategy<HttpResponseMessage>("my-http-strategy");
 
 try
 {

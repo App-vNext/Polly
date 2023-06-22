@@ -1,26 +1,21 @@
 ﻿using Polly;
 using Polly.Retry;
+using Retries;
 using System.Net;
 
+var helper = new ExecuteHelper();
+
 // ------------------------------------------------------------------------
-// 1. Create a retry strategy that only handles invalid operation exceptions
+// 1. Create a retry strategy that only handles all exceptions
 // ------------------------------------------------------------------------
 
 ResilienceStrategy strategy = new ResilienceStrategyBuilder()
-    .AddRetry(new RetryStrategyOptions
-    {
-        // Specify what exceptions should be retried
-        ShouldRetry = outcome =>
-        {
-            if (outcome.Exception is InvalidOperationException)
-            {
-                return PredicateResult.True;
-            }
-
-            return PredicateResult.False;
-        },
-    })
+    // Default retry options handle all exceptions
+    .AddRetry(new RetryStrategyOptions())
     .Build();
+
+Console.WriteLine("---------------------------------------");
+strategy.Execute(helper.ExecuteUnstable);
 
 // ------------------------------------------------------------------------
 // 2. Customize the retry behavior
@@ -29,16 +24,8 @@ ResilienceStrategy strategy = new ResilienceStrategyBuilder()
 strategy = new ResilienceStrategyBuilder()
     .AddRetry(new RetryStrategyOptions
     {
-        // Specify what exceptions should be retried
-        ShouldRetry = outcome =>
-        {
-            if (outcome.Exception is InvalidOperationException)
-            {
-                return PredicateResult.True;
-            }
-
-            return PredicateResult.False;
-        },
+        // Specify what exceptions should be retried using PredicateBuilder
+        ShouldHandle = new PredicateBuilder().Handle<InvalidOperationException>(),
         RetryCount = 4,
         BaseDelay = TimeSpan.FromSeconds(1),
 
@@ -48,6 +35,9 @@ strategy = new ResilienceStrategyBuilder()
     })
     .Build();
 
+Console.WriteLine("---------------------------------------");
+strategy.Execute(helper.ExecuteUnstable);
+
 // ------------------------------------------------------------------------
 // 3. Register the callbacks
 // ------------------------------------------------------------------------
@@ -55,17 +45,12 @@ strategy = new ResilienceStrategyBuilder()
 strategy = new ResilienceStrategyBuilder()
     .AddRetry(new RetryStrategyOptions
     {
-        // Specify what exceptions should be retried
-        ShouldRetry = outcome =>
+        // Specify what exceptions should be retried using switch expressions
+        ShouldHandle = args => args.Exception switch
         {
-            if (outcome.Exception is InvalidOperationException)
-            {
-                return PredicateResult.True;
-            }
-
-            return PredicateResult.False;
+            InvalidOperationException => PredicateResult.True,
+            _ => PredicateResult.False,
         },
-
         OnRetry = outcome =>
         {
             Console.WriteLine($"Retrying attempt {outcome.Arguments.Attempt}...");
@@ -73,6 +58,9 @@ strategy = new ResilienceStrategyBuilder()
         }
     })
     .Build();
+
+Console.WriteLine("---------------------------------------");
+strategy.Execute(helper.ExecuteUnstable);
 
 // ------------------------------------------------------------------------
 // 4. Create an HTTP retry strategy that handles both exceptions and results
@@ -82,22 +70,10 @@ ResilienceStrategy<HttpResponseMessage> httpStrategy = new ResilienceStrategyBui
     .AddRetry(new RetryStrategyOptions<HttpResponseMessage>
     {
         // Specify what exceptions or results should be retried
-        ShouldRetry = outcome =>
-        {
-            // Now, also handle results
-            if (outcome.Result?.StatusCode == HttpStatusCode.InternalServerError)
-            {
-                return PredicateResult.True;
-            }
-
-            if (outcome.Exception is InvalidOperationException)
-            {
-                return PredicateResult.True;
-            }
-
-            return PredicateResult.False;
-        },
-
+        ShouldHandle = new PredicateBuilder<HttpResponseMessage>()
+            .Handle<HttpRequestException>()
+            .Handle<InvalidOperationException>()
+            .HandleResult(r=>r.StatusCode == HttpStatusCode.InternalServerError),
         // Specify delay generator
         RetryDelayGenerator = outcome =>
         {
@@ -112,3 +88,6 @@ ResilienceStrategy<HttpResponseMessage> httpStrategy = new ResilienceStrategyBui
         }
     })
     .Build();
+
+Console.WriteLine("---------------------------------------");
+httpStrategy.Execute(helper.ExecuteUnstable);
