@@ -67,12 +67,16 @@ internal sealed class HedgingResilienceStrategy<T> : OutcomeResilienceStrategy<T
         ResilienceContext context,
         TState state)
     {
+        // Capture the original cancellation token so it stays the same while hedging is executing.
+        // If we do not do this the inner strategy can replace the cancellation token and with the concurrent
+        // nature of hedging this can cause issues.
+        var cancellationToken = context.CancellationToken;
+        var continueOnCapturedContext = context.ContinueOnCapturedContext;
+
         var attempt = -1;
         while (true)
         {
             attempt++;
-            var continueOnCapturedContext = context.ContinueOnCapturedContext;
-            var cancellationToken = context.CancellationToken;
             var start = _timeProvider.GetTimestamp();
             if (cancellationToken.IsCancellationRequested)
             {
