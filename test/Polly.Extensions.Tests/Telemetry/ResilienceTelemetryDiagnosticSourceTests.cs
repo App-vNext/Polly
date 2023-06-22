@@ -117,6 +117,70 @@ public class ResilienceTelemetryDiagnosticSourceTests : IDisposable
         messages[0].Message.Should().Be("Resilience event occurred. EventName: 'my-event', Builder Name: 'my-builder', Strategy Name: 'my-strategy', Strategy Type: 'my-strategy-type', Strategy Key: '(null)', Result: '(null)'");
     }
 
+    [Fact]
+    public void WriteExecutionAttempt_LoggingWithException_Ok()
+    {
+        var telemetry = Create();
+        using var response = new HttpResponseMessage(System.Net.HttpStatusCode.OK);
+        ReportEvent(telemetry, Outcome.FromException<object>(new InvalidOperationException("Dummy message.")), arg: new ExecutionAttemptArguments(4, TimeSpan.FromMilliseconds(123), true));
+
+        var messages = _logger.GetRecords(new EventId(3, "ExecutionAttempt")).ToList();
+        messages.Should().HaveCount(1);
+
+        messages[0].Message.Should().Be("Execution attempt. Builder Name: 'my-builder', Strategy Name: 'my-strategy', Strategy Type: 'my-strategy-type', Strategy Key: 'my-strategy-key', Result: 'Dummy message.', Handled: 'True', Attempt: '4', Execution Time: '123'");
+    }
+
+    [InlineData(true, true)]
+    [InlineData(false, true)]
+    [InlineData(true, false)]
+    [InlineData(false, false)]
+    [Theory]
+    public void WriteExecutionAttempt_LoggingWithOutcome_Ok(bool noOutcome, bool handled)
+    {
+        var telemetry = Create();
+        using var response = new HttpResponseMessage(System.Net.HttpStatusCode.OK);
+        ReportEvent(telemetry, noOutcome ? null : Outcome.FromResult<object>(response), arg: new ExecutionAttemptArguments(4, TimeSpan.FromMilliseconds(123), handled));
+
+        var messages = _logger.GetRecords(new EventId(3, "ExecutionAttempt")).ToList();
+        messages.Should().HaveCount(1);
+
+        if (noOutcome)
+        {
+#if NET6_0_OR_GREATER
+            string resultString = string.Empty;
+#else
+            string resultString = "(null)";
+#endif
+
+            messages[0].Message.Should().Be($"Execution attempt. Builder Name: 'my-builder', Strategy Name: 'my-strategy', Strategy Type: 'my-strategy-type', Strategy Key: 'my-strategy-key', Result: '{resultString}', Handled: '{handled}', Attempt: '4', Execution Time: '123'");
+        }
+        else
+        {
+            messages[0].Message.Should().Be($"Execution attempt. Builder Name: 'my-builder', Strategy Name: 'my-strategy', Strategy Type: 'my-strategy-type', Strategy Key: 'my-strategy-key', Result: '200', Handled: '{handled}', Attempt: '4', Execution Time: '123'");
+        }
+
+        if (handled)
+        {
+            messages[0].LogLevel.Should().Be(LogLevel.Warning);
+        }
+        else
+        {
+            messages[0].LogLevel.Should().Be(LogLevel.Debug);
+        }
+    }
+
+    [Fact]
+    public void WriteExecutionAttempt_NotEnabled_EnsureNotLogged()
+    {
+        var telemetry = Create();
+        _logger.Enabled = false;
+
+        ReportEvent(telemetry, null, arg: new ExecutionAttemptArguments(4, TimeSpan.FromMilliseconds(123), true));
+
+        var messages = _logger.GetRecords(new EventId(3, "ExecutionAttempt")).ToList();
+        messages.Should().HaveCount(0);
+    }
+
     [InlineData(true, false)]
     [InlineData(false, false)]
     [InlineData(true, true)]

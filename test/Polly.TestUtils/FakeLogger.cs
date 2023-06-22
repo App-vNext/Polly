@@ -8,6 +8,8 @@ public class FakeLogger : ILogger
 {
     private readonly List<LogRecord> _records = new();
 
+    public bool Enabled { get; set; } = true;
+
     public IEnumerable<LogRecord> GetRecords() => _records;
 
     public IEnumerable<LogRecord> GetRecords(EventId eventId) => GetRecords().Where(v => v.EventId.Id == eventId.Id && v.EventId.Name == eventId.Name);
@@ -15,7 +17,7 @@ public class FakeLogger : ILogger
     public IDisposable BeginScope<TState>(TState state)
         where TState : notnull => null!;
 
-    public bool IsEnabled(LogLevel logLevel) => true;
+    public bool IsEnabled(LogLevel logLevel) => Enabled;
 
     public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
          where TState : notnull
