@@ -167,6 +167,24 @@ public class ResilienceTelemetryDiagnosticSourceTests : IDisposable
         {
             messages[0].LogLevel.Should().Be(LogLevel.Debug);
         }
+
+#if NET6_0_OR_GREATER
+        // verify reported state
+        var coll = messages[0].State.Should().BeAssignableTo<IReadOnlyList<KeyValuePair<string, object>>>().Subject;
+        coll.Count.Should().Be(9);
+        coll.AsEnumerable().Should().HaveCount(9);
+        (coll as IEnumerable).GetEnumerator().Should().NotBeNull();
+
+        for (int i = 0; i < coll.Count; i++)
+        {
+            if (!noOutcome)
+            {
+                coll[i].Value.Should().NotBeNull();
+            }
+        }
+
+        coll.Invoking(c => c[coll.Count + 1]).Should().Throw<IndexOutOfRangeException>();
+#endif
     }
 
     [Fact]
