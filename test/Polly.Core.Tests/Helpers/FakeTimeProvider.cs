@@ -7,7 +7,7 @@ internal class FakeTimeProvider : Mock<TimeProvider>
     private DateTimeOffset? _time;
 
     public FakeTimeProvider()
-        : base(MockBehavior.Loose)
+        : base(MockBehavior.Strict)
     {
     }
 
