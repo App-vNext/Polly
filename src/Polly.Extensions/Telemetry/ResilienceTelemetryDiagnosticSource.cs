@@ -88,20 +88,39 @@ internal class ResilienceTelemetryDiagnosticSource : DiagnosticSource
     private void LogEvent(TelemetryEventArguments args)
     {
         var strategyKey = args.Source.BuilderProperties.GetValue(TelemetryUtil.StrategyKey, null!);
-
-        if (args.Outcome?.Exception is Exception exception)
+        var result = args.Outcome?.Result;
+        if (result is not null)
         {
-            Log.ResilienceEvent(_logger, args.EventName, args.Source.BuilderName, args.Source.StrategyName, args.Source.StrategyType, strategyKey, exception.Message, exception);
+            result = _resultFormatter(args.Context, result);
+        }
+        else if (args.Outcome?.Exception is Exception e)
+        {
+            result = e.Message;
+        }
+
+        if (args.Arguments is ExecutionAttemptArguments executionAttempt)
+        {
+            var level = executionAttempt.Handled ? LogLevel.Warning : LogLevel.Debug;
+
+            if (_logger.IsEnabled(level))
+            {
+                Log.ExecutionAttempt(
+                    _logger,
+                    level,
+                    args.Source.BuilderName,
+                    args.Source.StrategyName,
+                    args.Source.StrategyType,
+                    strategyKey,
+                    result,
+                    executionAttempt.Handled,
+                    executionAttempt.Attempt,
+                    executionAttempt.ExecutionTime.TotalMilliseconds,
+                    args.Outcome?.Exception);
+            }
         }
         else
         {
-            var result = args.Outcome?.Result;
-            if (result is not null)
-            {
-                result = _resultFormatter(args.Context, result);
-            }
-
-            Log.ResilienceEvent(_logger, args.EventName, args.Source.BuilderName, args.Source.StrategyName, args.Source.StrategyType, strategyKey, result, null);
+            Log.ResilienceEvent(_logger, args.EventName, args.Source.BuilderName, args.Source.StrategyName, args.Source.StrategyType, strategyKey, result, args.Outcome?.Exception);
         }
     }
 }
