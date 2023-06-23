@@ -1,3 +1,48 @@
+## 8.0.0-alpha.3
+
+* Update README.md with v8 Alpha v2 release announcement by [@joelhulen](https://github.com/joelhulen) in https://github.com/App-vNext/Polly/pull/1337
+* Adopt Alpha 2 in samples by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1338
+* Add net6.0 and net7.0 to Polly by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/1336
+* Sync TimeProvider and cleanup by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1339
+* Fix hedging being cancelled too early by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1340
+* Fix logging of execution attempt by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1341
+* Bump github/codeql-action from 2.20.0 to 2.20.1 by [@dependabot](https://github.com/dependabot) in https://github.com/App-vNext/Polly/pull/1344
+* Bump martincostello/update-dotnet-sdk from 2.2.2 to 2.2.3 by [@dependabot](https://github.com/dependabot) in https://github.com/App-vNext/Polly/pull/1345
+* Bump StyleCop.Analyzers from 1.2.0-beta.435 to 1.2.0-beta.507 by [@dependabot](https://github.com/dependabot) in https://github.com/App-vNext/Polly/pull/1342
+* Bump SonarAnalyzer.CSharp from 9.3.0.71466 to 9.4.0.72892 by [@dependabot](https://github.com/dependabot) in https://github.com/App-vNext/Polly/pull/1343
+* Expose Randomizer property and use it in retry strategy by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1346
+
+**Full Changelog**: https://github.com/App-vNext/Polly/compare/8.0.0-alpha.2...8.0.0-alpha.3
+
+## 8.0.0-alpha.2
+
+- Drop redundant validation of resilience strategy options by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1299
+- Add NuGet configuration file by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/1305
+- Log unhealthy executions with warning level by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1306
+- Add hedging to package tags by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/1307
+- Bump github/codeql-action from 2.3.6 to 2.20.0 by [@dependabot](https://github.com/dependabot) in https://github.com/App-vNext/Polly/pull/1310
+- Bump actions/checkout from 3.5.2 to 3.5.3 by [@dependabot](https://github.com/dependabot) in https://github.com/App-vNext/Polly/pull/1309
+- Introduce `samples` folder by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1295
+- Update telemetry benchmark by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1311
+- Enhance `OnHedgingArguments` by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1314
+- The options that handle outcomes now have sensible defaults by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1316
+- Update README.md with v8 alpha announcement by [@joelhulen](https://github.com/joelhulen) in https://github.com/App-vNext/Polly/pull/1317
+- The deafult RateLimiterStrategyOptions instance is now valid by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1315
+- Rename `TelemetryResilienceStrategyOptions` to `TelemetryOptions` by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1318
+- Alpha fixes and improvements by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1319
+- Fix OnHedging not being called by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1320
+- Reduce allocations in telemetry by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1321
+- Add new issue test that demonstrates library scenario by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1322
+- Fix relative links by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/1325
+- API feedback by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1327
+- Introduce ExecutionAttemptArguments by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1326
+- Introduce OutcomeResilienceStrategy and drop some internals by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1330
+- Introduce Outcome by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1331
+- Validate NuGet package signatures by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/1335
+- Allow implicit conversion of `PredicateBuilder` to delegates by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1332
+
+**Full Changelog**: https://github.com/App-vNext/Polly/compare/8.0.0-alpha.1...8.0.0-alpha.2
+
 ## 8.0.0-alpha.1
 
 - The first public preview of [Polly v8](https://github.com/App-vNext/Polly/issues/1048) with our [new high-performance core API](https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/README.md) and extensions. Feel free to check out the [samples](samples/) to see the new and improved Polly V8 in action.
