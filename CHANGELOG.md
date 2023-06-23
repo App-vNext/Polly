@@ -1,3 +1,32 @@
+## 8.0.0-alpha.2
+
+- Drop redundant validation of resilience strategy options by @martintmk in https://github.com/App-vNext/Polly/pull/1299
+- Add NuGet configuration file by @martincostello in https://github.com/App-vNext/Polly/pull/1305
+- Log unhealthy executions with warning level by @martintmk in https://github.com/App-vNext/Polly/pull/1306
+- Add hedging to package tags by @martincostello in https://github.com/App-vNext/Polly/pull/1307
+- Bump github/codeql-action from 2.3.6 to 2.20.0 by @dependabot in https://github.com/App-vNext/Polly/pull/1310
+- Bump actions/checkout from 3.5.2 to 3.5.3 by @dependabot in https://github.com/App-vNext/Polly/pull/1309
+- Introduce `samples` folder by @martintmk in https://github.com/App-vNext/Polly/pull/1295
+- Update telemetry benchmark by @martintmk in https://github.com/App-vNext/Polly/pull/1311
+- Enhance `OnHedgingArguments` by @martintmk in https://github.com/App-vNext/Polly/pull/1314
+- The options that handle outcomes now have sensible defaults by @martintmk in https://github.com/App-vNext/Polly/pull/1316
+- Update README.md with v8 alpha announcement by @joelhulen in https://github.com/App-vNext/Polly/pull/1317
+- The deafult RateLimiterStrategyOptions instance is now valid by @martintmk in https://github.com/App-vNext/Polly/pull/1315
+- Rename `TelemetryResilienceStrategyOptions` to `TelemetryOptions` by @martintmk in https://github.com/App-vNext/Polly/pull/1318
+- Alpha fixes and improvements by @martintmk in https://github.com/App-vNext/Polly/pull/1319
+- Fix OnHedging not being called by @martintmk in https://github.com/App-vNext/Polly/pull/1320
+- Reduce allocations in telemetry by @martintmk in https://github.com/App-vNext/Polly/pull/1321
+- Add new issue test that demonstrates library scenario by @martintmk in https://github.com/App-vNext/Polly/pull/1322
+- Fix relative links by @martincostello in https://github.com/App-vNext/Polly/pull/1325
+- API feedback by @martintmk in https://github.com/App-vNext/Polly/pull/1327
+- Introduce ExecutionAttemptArguments by @martintmk in https://github.com/App-vNext/Polly/pull/1326
+- Introduce OutcomeResilienceStrategy and drop some internals by @martintmk in https://github.com/App-vNext/Polly/pull/1330
+- Introduce Outcome by @martintmk in https://github.com/App-vNext/Polly/pull/1331
+- Validate NuGet package signatures by @martincostello in https://github.com/App-vNext/Polly/pull/1335
+- Allow implicit conversion of `PredicateBuilder` to delegates by @martintmk in https://github.com/App-vNext/Polly/pull/1332
+
+**Full Changelog**: https://github.com/App-vNext/Polly/compare/8.0.0-alpha.1...8.0.0-alpha.2
+
 ## 8.0.0-alpha.1
 
 - The first public preview of [Polly v8](https://github.com/App-vNext/Polly/issues/1048) with our [new high-performance core API](https://github.com/App-vNext/Polly/blob/main/src/Polly.Core/README.md) and extensions. Feel free to check out the [samples](samples/) to see the new and improved Polly V8 in action.
