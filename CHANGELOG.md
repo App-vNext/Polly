@@ -1,4 +1,4 @@
-## What's Changed
+## 8.0.0-alpha.3
 
 * Update README.md with v8 Alpha v2 release announcement by [@joelhulen](https://github.com/joelhulen) in https://github.com/App-vNext/Polly/pull/1337
 * Adopt Alpha 2 in samples by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1338
