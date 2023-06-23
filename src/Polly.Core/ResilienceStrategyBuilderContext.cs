@@ -2,6 +2,8 @@ using Polly.Telemetry;
 
 namespace Polly;
 
+#pragma warning disable S107
+
 /// <summary>
 /// The context used for building an individual resilience strategy.
 /// </summary>
@@ -14,7 +16,8 @@ public sealed class ResilienceStrategyBuilderContext
         string strategyType,
         TimeProvider timeProvider,
         bool isGenericBuilder,
-        DiagnosticSource? diagnosticSource)
+        DiagnosticSource? diagnosticSource,
+        Func<double> randomizer)
     {
         BuilderName = builderName;
         BuilderProperties = builderProperties;
@@ -23,6 +26,7 @@ public sealed class ResilienceStrategyBuilderContext
         TimeProvider = timeProvider;
         IsGenericBuilder = isGenericBuilder;
         Telemetry = TelemetryUtil.CreateTelemetry(diagnosticSource, builderName, builderProperties, strategyName, strategyType);
+        Randomizer = randomizer;
     }
 
     /// <summary>
@@ -54,6 +58,8 @@ public sealed class ResilienceStrategyBuilderContext
     /// Gets the <see cref="TimeProvider"/> used by this strategy.
     /// </summary>
     internal TimeProvider TimeProvider { get; }
+
+    internal Func<double> Randomizer { get; }
 
     internal bool IsGenericBuilder { get; }
 }
