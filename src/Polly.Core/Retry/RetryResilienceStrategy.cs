@@ -1,3 +1,4 @@
+using System;
 using Polly.Telemetry;
 
 namespace Polly.Retry;
@@ -6,14 +7,14 @@ internal sealed class RetryResilienceStrategy<T> : OutcomeResilienceStrategy<T>
 {
     private readonly TimeProvider _timeProvider;
     private readonly ResilienceStrategyTelemetry _telemetry;
-    private readonly RandomUtil _randomUtil;
+    private readonly Func<double> _randomizer;
 
     public RetryResilienceStrategy(
         RetryStrategyOptions<T> options,
         bool isGeneric,
         TimeProvider timeProvider,
         ResilienceStrategyTelemetry telemetry,
-        RandomUtil randomUtil)
+        Func<double> randomizer)
         : base(isGeneric)
     {
         ShouldHandle = options.ShouldHandle;
@@ -25,7 +26,7 @@ internal sealed class RetryResilienceStrategy<T> : OutcomeResilienceStrategy<T>
 
         _timeProvider = timeProvider;
         _telemetry = telemetry;
-        _randomUtil = randomUtil;
+        _randomizer = randomizer;
     }
 
     public TimeSpan BaseDelay { get; }
@@ -61,7 +62,7 @@ internal sealed class RetryResilienceStrategy<T> : OutcomeResilienceStrategy<T>
                 return outcome;
             }
 
-            var delay = RetryHelper.GetRetryDelay(BackoffType, attempt, BaseDelay, ref retryState, _randomUtil);
+            var delay = RetryHelper.GetRetryDelay(BackoffType, attempt, BaseDelay, ref retryState, _randomizer);
             if (DelayGenerator is not null)
             {
                 var delayArgs = new OutcomeArguments<T, RetryDelayArguments>(context, outcome, new RetryDelayArguments(attempt, delay));

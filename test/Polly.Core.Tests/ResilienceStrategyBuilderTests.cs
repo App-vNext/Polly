@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using Moq;
 using Polly.Utils;
 
 namespace Polly.Core.Tests;
@@ -14,6 +15,30 @@ public class ResilienceStrategyBuilderTests
         builder.Properties.Should().NotBeNull();
         builder.TimeProvider.Should().Be(TimeProvider.System);
         builder.IsGenericBuilder.Should().BeFalse();
+        builder.Randomizer.Should().NotBeNull();
+    }
+
+    [Fact]
+    public void CopyCtor_Ok()
+    {
+        var builder = new ResilienceStrategyBuilder
+        {
+            TimeProvider = Mock.Of<TimeProvider>(),
+            BuilderName = "dummy",
+            Randomizer = () => 0.0,
+            DiagnosticSource = Mock.Of<DiagnosticSource>(),
+            OnCreatingStrategy = _ => { },
+        };
+
+        builder.Properties.Set(new ResiliencePropertyKey<string>("dummy"), "dummy");
+
+        var other = new ResilienceStrategyBuilder<double>(builder);
+        other.BuilderName.Should().Be(builder.BuilderName);
+        other.TimeProvider.Should().Be(builder.TimeProvider);
+        other.Randomizer.Should().BeSameAs(builder.Randomizer);
+        other.DiagnosticSource.Should().BeSameAs(builder.DiagnosticSource);
+        other.OnCreatingStrategy.Should().BeSameAs(builder.OnCreatingStrategy);
+        other.Properties.GetValue(new ResiliencePropertyKey<string>("dummy"), "").Should().Be("dummy");
     }
 
     [Fact]
@@ -133,10 +158,7 @@ public class ResilienceStrategyBuilderTests
     }
 
     [Fact]
-    public void Build_Empty_ReturnsNullResilienceStrategy()
-    {
-        new ResilienceStrategyBuilder().Build().Should().BeSameAs(NullResilienceStrategy.Instance);
-    }
+    public void Build_Empty_ReturnsNullResilienceStrategy() => new ResilienceStrategyBuilder().Build().Should().BeSameAs(NullResilienceStrategy.Instance);
 
     [Fact]
     public void AddStrategy_AfterUsed_Throws()
@@ -259,6 +281,7 @@ The RequiredProperty field is required.
                 context.BuilderProperties.Should().BeSameAs(builder.Properties);
                 context.Telemetry.Should().NotBeNull();
                 context.TimeProvider.Should().Be(builder.TimeProvider);
+                context.Randomizer.Should().BeSameAs(builder.Randomizer);
                 verified1 = true;
 
                 return new TestResilienceStrategy();
@@ -312,10 +335,7 @@ The RequiredProperty field is required.
     }
 
     [Fact]
-    public void EmptyOptions_Ok()
-    {
-        ResilienceStrategyBuilderExtensions.EmptyOptions.Instance.StrategyType.Should().Be("Empty");
-    }
+    public void EmptyOptions_Ok() => ResilienceStrategyBuilderExtensions.EmptyOptions.Instance.StrategyType.Should().Be("Empty");
 
     [Fact]
     public void ExecuteAsync_EnsureReceivedCallbackExecutesNextStrategy()

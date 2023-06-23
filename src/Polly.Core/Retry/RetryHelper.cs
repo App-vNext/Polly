@@ -6,7 +6,7 @@ internal static class RetryHelper
 
     public static bool IsValidDelay(TimeSpan delay) => delay >= TimeSpan.Zero;
 
-    public static TimeSpan GetRetryDelay(RetryBackoffType type, int attempt, TimeSpan baseDelay, ref double state, RandomUtil random)
+    public static TimeSpan GetRetryDelay(RetryBackoffType type, int attempt, TimeSpan baseDelay, ref double state, Func<double> randomizer)
     {
         if (baseDelay == TimeSpan.Zero)
         {
@@ -23,7 +23,7 @@ internal static class RetryHelper
             RetryBackoffType.Linear => (attempt + 1) * baseDelay,
             RetryBackoffType.Exponential => Math.Pow(ExponentialFactor, attempt) * baseDelay,
 #endif
-            RetryBackoffType.ExponentialWithJitter => DecorrelatedJitterBackoffV2(attempt, baseDelay, ref state, random),
+            RetryBackoffType.ExponentialWithJitter => DecorrelatedJitterBackoffV2(attempt, baseDelay, ref state, randomizer),
             _ => throw new ArgumentOutOfRangeException(nameof(type), type, "The retry backoff type is not supported.")
         };
     }
@@ -40,11 +40,11 @@ internal static class RetryHelper
     /// The actual amount of delay-before-retry for try t may be distributed between 0 and <c>f * (2^(t+1) - 2^(t-1)) for t >= 2;</c>
     /// or between 0 and <c>f * 2^(t+1)</c>, for t is 0 or 1.</param>
     /// <param name="prev">The previous state value used for calculations.</param>
-    /// <param name="random">The random utility to use.</param>
+    /// <param name="randomizer">The generator to use.</param>
     /// <remarks>
     /// This code was adopted from https://github.com/Polly-Contrib/Polly.Contrib.WaitAndRetry/blob/master/src/Polly.Contrib.WaitAndRetry/Backoff.DecorrelatedJitterV2.cs.
     /// </remarks>
-    private static TimeSpan DecorrelatedJitterBackoffV2(int attempt, TimeSpan baseDelay, ref double prev, RandomUtil random)
+    private static TimeSpan DecorrelatedJitterBackoffV2(int attempt, TimeSpan baseDelay, ref double prev, Func<double> randomizer)
     {
         // The original author/credit for this jitter formula is @george-polevoy .
         // Jitter formula used with permission as described at https://github.com/App-vNext/Polly/issues/530#issuecomment-526555979
@@ -64,7 +64,7 @@ internal static class RetryHelper
 
         long targetTicksFirstDelay = baseDelay.Ticks;
 
-        double t = attempt + random.NextDouble();
+        double t = attempt + randomizer();
         double next = Math.Pow(2, t) * Math.Tanh(Math.Sqrt(PFactor * t));
 
         double formulaIntrinsicValue = next - prev;

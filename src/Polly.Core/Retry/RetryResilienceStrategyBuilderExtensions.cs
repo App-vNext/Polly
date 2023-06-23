@@ -50,7 +50,7 @@ public static class RetryResilienceStrategyBuilderExtensions
                 context.IsGenericBuilder,
                 context.TimeProvider,
                 context.Telemetry,
-                RandomUtil.Instance),
+                context.Randomizer),
             options);
     }
 }

@@ -1,7 +1,6 @@
 using Moq;
 using Polly.Retry;
 using Polly.Telemetry;
-using Polly.Utils;
 
 namespace Polly.Core.Tests.Retry;
 
@@ -314,13 +313,10 @@ public class RetryResilienceStrategyTests
 
     private void SetupNoDelay() => _options.RetryDelayGenerator = _ => new ValueTask<TimeSpan>(TimeSpan.Zero);
 
-    private RetryResilienceStrategy<object> CreateSut(TimeProvider? timeProvider = null)
-    {
-        return new RetryResilienceStrategy<object>(
-            _options,
+    private RetryResilienceStrategy<object> CreateSut(TimeProvider? timeProvider = null) =>
+        new(_options,
             false,
             timeProvider ?? _timeProvider.Object,
             _telemetry,
-            RandomUtil.Instance);
-    }
+            () => 1.0);
 }

@@ -103,4 +103,48 @@ public class RetryResilienceStrategyBuilderExtensionsTests
             .Should()
             .Throw<ValidationException>();
     }
+
+    [Fact]
+    public void GetAggregatedDelay_ShouldReturnTheSameValue()
+    {
+        var options = new RetryStrategyOptions { BackoffType = RetryBackoffType.ExponentialWithJitter };
+
+        var delay = GetAggregatedDelay(options);
+        GetAggregatedDelay(options).Should().Be(delay);
+    }
+
+    [Fact]
+    public void GetAggregatedDelay_EnsureCorrectValue()
+    {
+        var options = new RetryStrategyOptions { BackoffType = RetryBackoffType.Constant, BaseDelay = TimeSpan.FromSeconds(1), RetryCount = 5 };
+
+        GetAggregatedDelay(options).Should().Be(TimeSpan.FromSeconds(5));
+    }
+
+    private static TimeSpan GetAggregatedDelay<T>(RetryStrategyOptions<T> options)
+    {
+        var aggregatedDelay = TimeSpan.Zero;
+
+        var strategy = new ResilienceStrategyBuilder { Randomizer = () => 1.0 }.AddRetry(new()
+        {
+            RetryCount = options.RetryCount,
+            BaseDelay = options.BaseDelay,
+            BackoffType = options.BackoffType,
+            ShouldHandle = _ => PredicateResult.True, // always retry until all retries are exhausted
+            RetryDelayGenerator = args =>
+            {
+                // the delay hint is calculated for this attempt by the retry strategy
+                aggregatedDelay += args.Arguments.DelayHint;
+
+                // return zero delay, so no waiting
+                return new ValueTask<TimeSpan>(TimeSpan.Zero);
+            }
+        })
+        .Build();
+
+        // this executes all retries and we aggregate the delays immediately
+        strategy.Execute(() => { });
+
+        return aggregatedDelay;
+    }
 }

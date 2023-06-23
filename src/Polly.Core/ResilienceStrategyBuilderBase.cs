@@ -27,6 +27,8 @@ public abstract class ResilienceStrategyBuilderBase
         Properties = other.Properties;
         TimeProvider = other.TimeProvider;
         OnCreatingStrategy = other.OnCreatingStrategy;
+        Randomizer = other.Randomizer;
+        DiagnosticSource = other.DiagnosticSource;
     }
 
     /// <summary>
@@ -69,6 +71,16 @@ public abstract class ResilienceStrategyBuilderBase
     /// </remarks>
     [EditorBrowsable(EditorBrowsableState.Never)]
     public DiagnosticSource? DiagnosticSource { get; set; }
+
+    /// <summary>
+    /// Gets or sets the randomizer that is used by strategies that need to generate random numbers.
+    /// </summary>
+    /// <remarks>
+    /// The default randomizer is thread safe and returns values between 0.0 and 1.0.
+    /// </remarks>
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    [Required]
+    public Func<double> Randomizer { get; set; } = RandomUtil.Instance.NextDouble;
 
     internal abstract bool IsGenericBuilder { get; }
 
@@ -118,7 +130,8 @@ public abstract class ResilienceStrategyBuilderBase
             strategyType: entry.Properties.StrategyType,
             timeProvider: TimeProvider,
             isGenericBuilder: IsGenericBuilder,
-            diagnosticSource: DiagnosticSource);
+            diagnosticSource: DiagnosticSource,
+            randomizer: Randomizer);
 
         return entry.Factory(context);
     }
