@@ -8,14 +8,4 @@ internal static class TimeoutUtil
     {
         return timeout > TimeSpan.Zero;
     }
-
-    public static bool IsTimeoutValid(TimeSpan timeout)
-    {
-        if (timeout > TimeSpan.Zero)
-        {
-            return true;
-        }
-
-        return timeout == System.Threading.Timeout.InfiniteTimeSpan || timeout > TimeSpan.Zero;
-    }
 }

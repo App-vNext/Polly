@@ -83,7 +83,7 @@ public class SimpleCircuitBreakerOptionsTests
 
             Validation Errors:
             The field FailureThreshold must be between 1 and 2147483647.
-            The field BreakDuration must be >= to 00:00:00.5000000.
+            The field BreakDuration must be between 00:00:00.5000000 and 1.00:00:00.
             The ShouldHandle field is required.
             """);
     }

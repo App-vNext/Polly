@@ -79,8 +79,8 @@ public class TimeoutResilienceStrategyTests : IDisposable
     public void Execute_NoTimeout(TimeSpan timeout)
     {
         var called = false;
-        var sut = CreateSut();
         SetTimeout(timeout);
+        var sut = CreateSut();
         sut.Execute(_ => { });
 
         called.Should().BeFalse();

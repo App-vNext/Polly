@@ -60,7 +60,7 @@ public class RetryStrategyOptions<TResult> : ResilienceStrategyOptions
     /// Defaults to 2 seconds.
     /// </para>
     /// </remarks>
-    [TimeSpan("00:00:00", "1.00:00:00")]
+    [Range(typeof(TimeSpan), "00:00:00", "1.00:00:00")]
     public TimeSpan BaseDelay { get; set; } = RetryConstants.DefaultBaseDelay;
 
     /// <summary>

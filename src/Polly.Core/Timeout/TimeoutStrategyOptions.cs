@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace Polly.Timeout;
 
 /// <summary>
@@ -15,10 +17,10 @@ public class TimeoutStrategyOptions : ResilienceStrategyOptions
     /// Gets or sets the default timeout.
     /// </summary>
     /// <remarks>
-    /// By default, the value is set to <see cref="System.Threading.Timeout.InfiniteTimeSpan"/> thus making the timeout strategy disabled.
+    /// Defaults to 30 seconds. This value must be greater than 1 second and less than 24 hours.
     /// </remarks>
-    [Timeout]
-    public TimeSpan Timeout { get; set; } = System.Threading.Timeout.InfiniteTimeSpan;
+    [Range(typeof(TimeSpan), "00:00:01", "1.00:00:00")]
+    public TimeSpan Timeout { get; set; } = TimeSpan.FromSeconds(30);
 
     /// <summary>
     /// Gets or sets the timeout generator that generates the timeout for a given execution.

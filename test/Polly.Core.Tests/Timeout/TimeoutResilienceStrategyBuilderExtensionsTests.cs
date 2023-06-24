@@ -56,11 +56,11 @@ public class TimeoutResilienceStrategyBuilderExtensionsTests
 
     private static TimeSpan GetTimeout(TimeoutResilienceStrategy strategy)
     {
-        if (strategy.TimeoutGenerator == null)
+        if (strategy.TimeoutGenerator is null)
         {
             return strategy.DefaultTimeout;
         }
 
-        return strategy.GenerateTimeoutAsync(ResilienceContext.Get()).Preserve().GetAwaiter().GetResult();
+        return strategy.TimeoutGenerator(new TimeoutGeneratorArguments(ResilienceContext.Get())).Preserve().GetAwaiter().GetResult();
     }
 }

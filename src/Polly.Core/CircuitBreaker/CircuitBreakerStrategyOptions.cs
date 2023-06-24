@@ -30,7 +30,7 @@ public abstract class CircuitBreakerStrategyOptions<TResult> : ResilienceStrateg
     /// Value must be greater than 0.5 seconds.
     /// Defaults to 5 seconds.
     /// </remarks>
-    [TimeSpan("00:00:00.500")]
+    [Range(typeof(TimeSpan), "00:00:00.500", "1.00:00:00")]
     public TimeSpan BreakDuration { get; set; } = CircuitBreakerConstants.DefaultBreakDuration;
 
     /// <summary>

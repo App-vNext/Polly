@@ -52,6 +52,6 @@ public class AdvancedCircuitBreakerStrategyOptions<TResult> : CircuitBreakerStra
     /// <remarks>
     /// Value must be greater than 0.5 seconds. Defaults to 30 seconds.
     /// </remarks>
-    [TimeSpan("00:00:00.500")]
+    [Range(typeof(TimeSpan), "00:00:00.500", "1.00:00:00")]
     public TimeSpan SamplingDuration { get; set; } = CircuitBreakerConstants.DefaultSamplingDuration;
 }
