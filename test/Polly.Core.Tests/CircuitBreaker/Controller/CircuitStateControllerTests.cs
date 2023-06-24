@@ -5,7 +5,7 @@ using Polly.Telemetry;
 namespace Polly.Core.Tests.CircuitBreaker.Controller;
 public class CircuitStateControllerTests
 {
-    private readonly FakeTimeProvider _timeProvider = new();
+    private readonly MockTimeProvider _timeProvider = new();
     private readonly CircuitBreakerStrategyOptions<int> _options = new SimpleCircuitBreakerStrategyOptions<int>();
     private readonly Mock<CircuitBehavior> _circuitBehavior = new(MockBehavior.Strict);
     private readonly Action<TelemetryEventArguments> _onTelemetry = _ => { };

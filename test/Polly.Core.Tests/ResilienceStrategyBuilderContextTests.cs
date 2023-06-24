@@ -8,7 +8,7 @@ public class ResilienceStrategyBuilderContextTests
     public void Ctor_EnsureDefaults()
     {
         var properties = new ResilienceProperties();
-        var timeProvider = new FakeTimeProvider();
+        var timeProvider = new MockTimeProvider();
         var context = new ResilienceStrategyBuilderContext("builder-name", properties, "strategy-name", "strategy-type", timeProvider.Object, true, Mock.Of<DiagnosticSource>(), () => 1.0);
 
         context.IsGenericBuilder.Should().BeTrue();

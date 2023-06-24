@@ -268,7 +268,7 @@ The RequiredProperty field is required.
         var builder = new ResilienceStrategyBuilder
         {
             BuilderName = "builder-name",
-            TimeProvider = new FakeTimeProvider().Object,
+            TimeProvider = new MockTimeProvider().Object,
         };
 
         builder.AddStrategy(
