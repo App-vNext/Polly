@@ -28,7 +28,7 @@ public class GenericResilienceStrategyBuilderTests
         _builder.BuilderName = "dummy";
         _builder.BuilderName.Should().Be("dummy");
 
-        var timeProvider = new FakeTimeProvider().Object;
+        var timeProvider = new MockTimeProvider().Object;
         _builder.TimeProvider = timeProvider;
         _builder.TimeProvider.Should().Be(timeProvider);
 

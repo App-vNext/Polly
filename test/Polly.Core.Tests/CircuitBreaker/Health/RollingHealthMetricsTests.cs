@@ -3,11 +3,11 @@ using Polly.CircuitBreaker.Health;
 namespace Polly.Core.Tests.CircuitBreaker.Health;
 public class RollingHealthMetricsTests
 {
-    private readonly FakeTimeProvider _timeProvider;
+    private readonly MockTimeProvider _timeProvider;
     private readonly TimeSpan _samplingDuration = TimeSpan.FromSeconds(10);
     private readonly short _windows = 10;
 
-    public RollingHealthMetricsTests() => _timeProvider = new FakeTimeProvider().SetupUtcNow();
+    public RollingHealthMetricsTests() => _timeProvider = new MockTimeProvider().SetupUtcNow();
 
     [Fact]
     public void Ctor_EnsureDefaults()

@@ -3,9 +3,9 @@ using Polly.CircuitBreaker.Health;
 namespace Polly.Core.Tests.CircuitBreaker.Health;
 public class SingleHealthMetricsTests
 {
-    private readonly FakeTimeProvider _timeProvider;
+    private readonly MockTimeProvider _timeProvider;
 
-    public SingleHealthMetricsTests() => _timeProvider = new FakeTimeProvider().SetupUtcNow();
+    public SingleHealthMetricsTests() => _timeProvider = new MockTimeProvider().SetupUtcNow();
 
     [Fact]
     public void Ctor_EnsureDefaults()

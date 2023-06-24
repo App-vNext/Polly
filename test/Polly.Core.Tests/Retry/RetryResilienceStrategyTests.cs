@@ -7,7 +7,7 @@ namespace Polly.Core.Tests.Retry;
 public class RetryResilienceStrategyTests
 {
     private readonly RetryStrategyOptions _options = new();
-    private readonly FakeTimeProvider _timeProvider = new();
+    private readonly MockTimeProvider _timeProvider = new();
     private readonly Mock<DiagnosticSource> _diagnosticSource = new();
     private ResilienceStrategyTelemetry _telemetry;
 

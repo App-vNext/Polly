@@ -7,7 +7,7 @@ namespace Polly.Core.Tests.Timeout;
 public class TimeoutResilienceStrategyTests : IDisposable
 {
     private readonly ResilienceStrategyTelemetry _telemetry;
-    private readonly FakeTimeProvider _timeProvider;
+    private readonly MockTimeProvider _timeProvider;
     private readonly TimeoutStrategyOptions _options;
     private readonly CancellationTokenSource _cancellationSource;
     private readonly TimeSpan _delay = TimeSpan.FromSeconds(12);
@@ -16,7 +16,7 @@ public class TimeoutResilienceStrategyTests : IDisposable
     public TimeoutResilienceStrategyTests()
     {
         _telemetry = TestUtilities.CreateResilienceTelemetry(_diagnosticSource.Object);
-        _timeProvider = new FakeTimeProvider();
+        _timeProvider = new MockTimeProvider();
         _options = new TimeoutStrategyOptions();
         _cancellationSource = new CancellationTokenSource();
     }

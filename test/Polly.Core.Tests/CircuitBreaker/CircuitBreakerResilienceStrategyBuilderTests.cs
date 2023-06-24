@@ -100,7 +100,7 @@ public class CircuitBreakerResilienceStrategyBuilderTests
             OnHalfOpened = (_) => { halfOpened++; return default; }
         };
 
-        var timeProvider = new FakeTimeProvider();
+        var timeProvider = new MockTimeProvider();
         var strategy = new ResilienceStrategyBuilder { TimeProvider = timeProvider.Object }.AddSimpleCircuitBreaker(options).Build();
         var time = DateTime.UtcNow;
         timeProvider.Setup(v => v.GetUtcNow()).Returns(() => time);
@@ -151,7 +151,7 @@ public class CircuitBreakerResilienceStrategyBuilderTests
             OnHalfOpened = (_) => { halfOpened++; return default; }
         };
 
-        var timeProvider = new FakeTimeProvider();
+        var timeProvider = new MockTimeProvider();
         var strategy = new ResilienceStrategyBuilder { TimeProvider = timeProvider.Object }.AddAdvancedCircuitBreaker(options).Build();
         var time = DateTime.UtcNow;
         timeProvider.Setup(v => v.GetUtcNow()).Returns(() => time);
