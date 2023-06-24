@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Time.Testing;
 using Moq;
 using Polly.CircuitBreaker;
 using Polly.Telemetry;
@@ -6,7 +7,7 @@ namespace Polly.Core.Tests.CircuitBreaker;
 
 public class CircuitBreakerResilienceStrategyTests : IDisposable
 {
-    private readonly MockTimeProvider _timeProvider;
+    private readonly FakeTimeProvider _timeProvider;
     private readonly Mock<CircuitBehavior> _behavior;
     private readonly ResilienceStrategyTelemetry _telemetry;
     private readonly SimpleCircuitBreakerStrategyOptions<int> _options;
@@ -14,8 +15,7 @@ public class CircuitBreakerResilienceStrategyTests : IDisposable
 
     public CircuitBreakerResilienceStrategyTests()
     {
-        _timeProvider = new MockTimeProvider();
-        _timeProvider.Setup(v => v.GetUtcNow()).Returns(DateTime.UtcNow);
+        _timeProvider = new FakeTimeProvider();
         _behavior = new Mock<CircuitBehavior>(MockBehavior.Strict);
         _telemetry = TestUtilities.CreateResilienceTelemetry(Mock.Of<DiagnosticSource>());
         _options = new SimpleCircuitBreakerStrategyOptions<int>();
@@ -25,7 +25,7 @@ public class CircuitBreakerResilienceStrategyTests : IDisposable
             null,
             null,
             _behavior.Object,
-            _timeProvider.Object,
+            _timeProvider,
             _telemetry);
     }
 
