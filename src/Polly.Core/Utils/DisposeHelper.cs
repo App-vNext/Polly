@@ -32,9 +32,9 @@ internal static class DisposeHelper
                 }
             }
         }
-        catch (Exception e)
+        catch (Exception)
         {
-            Debug.Assert(false, e.ToString());
+            // Swallow any exception
         }
     }
 }
