@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using Microsoft.Extensions.Time.Testing;
 using Polly.CircuitBreaker;
 
 namespace Polly.Core.Tests.CircuitBreaker;
@@ -100,10 +101,8 @@ public class CircuitBreakerResilienceStrategyBuilderTests
             OnHalfOpened = (_) => { halfOpened++; return default; }
         };
 
-        var timeProvider = new MockTimeProvider();
-        var strategy = new ResilienceStrategyBuilder { TimeProvider = timeProvider.Object }.AddSimpleCircuitBreaker(options).Build();
-        var time = DateTime.UtcNow;
-        timeProvider.Setup(v => v.GetUtcNow()).Returns(() => time);
+        var timeProvider = new FakeTimeProvider();
+        var strategy = new ResilienceStrategyBuilder { TimeProvider = timeProvider }.AddSimpleCircuitBreaker(options).Build();
 
         for (int i = 0; i < options.FailureThreshold; i++)
         {
@@ -117,7 +116,7 @@ public class CircuitBreakerResilienceStrategyBuilderTests
         Assert.Throws<BrokenCircuitException<object>>(() => strategy.Execute(_ => 0));
 
         // Circuit Half Opened
-        time += options.BreakDuration;
+        timeProvider.Advance(options.BreakDuration);
         strategy.Execute(_ => -1);
         Assert.Throws<BrokenCircuitException<object>>(() => strategy.Execute(_ => 0));
         opened.Should().Be(2);
@@ -125,7 +124,7 @@ public class CircuitBreakerResilienceStrategyBuilderTests
         closed.Should().Be(0);
 
         // Now close it
-        time += options.BreakDuration;
+        timeProvider.Advance(options.BreakDuration);
         strategy.Execute(_ => 0);
         opened.Should().Be(2);
         halfOpened.Should().Be(2);
@@ -151,10 +150,8 @@ public class CircuitBreakerResilienceStrategyBuilderTests
             OnHalfOpened = (_) => { halfOpened++; return default; }
         };
 
-        var timeProvider = new MockTimeProvider();
-        var strategy = new ResilienceStrategyBuilder { TimeProvider = timeProvider.Object }.AddAdvancedCircuitBreaker(options).Build();
-        var time = DateTime.UtcNow;
-        timeProvider.Setup(v => v.GetUtcNow()).Returns(() => time);
+        var timeProvider = new FakeTimeProvider();
+        var strategy = new ResilienceStrategyBuilder { TimeProvider = timeProvider }.AddAdvancedCircuitBreaker(options).Build();
 
         for (int i = 0; i < 10; i++)
         {
@@ -168,7 +165,7 @@ public class CircuitBreakerResilienceStrategyBuilderTests
         Assert.Throws<BrokenCircuitException<object>>(() => strategy.Execute(_ => 0));
 
         // Circuit Half Opened
-        time += options.BreakDuration;
+        timeProvider.Advance(options.BreakDuration);
         strategy.Execute(_ => -1);
         Assert.Throws<BrokenCircuitException<object>>(() => strategy.Execute(_ => 0));
         opened.Should().Be(2);
@@ -176,7 +173,7 @@ public class CircuitBreakerResilienceStrategyBuilderTests
         closed.Should().Be(0);
 
         // Now close it
-        time += options.BreakDuration;
+        timeProvider.Advance(options.BreakDuration);
         strategy.Execute(_ => 0);
         opened.Should().Be(2);
         halfOpened.Should().Be(2);

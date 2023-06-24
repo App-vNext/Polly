@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using Microsoft.Extensions.Time.Testing;
 using Moq;
 using Polly.Utils;
 
@@ -268,7 +269,7 @@ The RequiredProperty field is required.
         var builder = new ResilienceStrategyBuilder
         {
             BuilderName = "builder-name",
-            TimeProvider = new MockTimeProvider().Object,
+            TimeProvider = new FakeTimeProvider(),
         };
 
         builder.AddStrategy(

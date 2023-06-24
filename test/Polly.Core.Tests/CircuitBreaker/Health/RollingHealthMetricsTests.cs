@@ -1,13 +1,15 @@
+using Microsoft.Extensions.Time.Testing;
 using Polly.CircuitBreaker.Health;
 
 namespace Polly.Core.Tests.CircuitBreaker.Health;
+
 public class RollingHealthMetricsTests
 {
-    private readonly MockTimeProvider _timeProvider;
+    private readonly FakeTimeProvider _timeProvider;
     private readonly TimeSpan _samplingDuration = TimeSpan.FromSeconds(10);
     private readonly short _windows = 10;
 
-    public RollingHealthMetricsTests() => _timeProvider = new MockTimeProvider().SetupUtcNow();
+    public RollingHealthMetricsTests() => _timeProvider = new FakeTimeProvider();
 
     [Fact]
     public void Ctor_EnsureDefaults()
@@ -53,11 +55,11 @@ public class RollingHealthMetricsTests
             }
 
             metrics.IncrementSuccess();
-            _timeProvider.AdvanceTime(TimeSpan.FromSeconds(2));
+            _timeProvider.Advance(TimeSpan.FromSeconds(2));
             health.Add(metrics.GetHealthInfo());
         }
 
-        _timeProvider.AdvanceTime(TimeSpan.FromSeconds(2));
+        _timeProvider.Advance(TimeSpan.FromSeconds(2));
         health.Add(metrics.GetHealthInfo());
 
         health[0].Should().Be(new HealthInfo(2, 0.5));
@@ -76,11 +78,11 @@ public class RollingHealthMetricsTests
         for (int i = 0; i < _windows; i++)
         {
             metrics.IncrementSuccess();
-            _timeProvider.AdvanceTime(delay);
+            _timeProvider.Advance(delay);
         }
 
         metrics.GetHealthInfo().Throughput.Should().Be(9);
-        _timeProvider.AdvanceTime(delay);
+        _timeProvider.Advance(delay);
         metrics.GetHealthInfo().Throughput.Should().Be(8);
     }
 
@@ -105,10 +107,10 @@ public class RollingHealthMetricsTests
         metrics.IncrementSuccess();
         metrics.IncrementSuccess();
 
-        _timeProvider.AdvanceTime(_samplingDuration + (variance ? TimeSpan.FromMilliseconds(1) : TimeSpan.Zero));
+        _timeProvider.Advance(_samplingDuration + (variance ? TimeSpan.FromMilliseconds(1) : TimeSpan.Zero));
 
         metrics.GetHealthInfo().Should().Be(new HealthInfo(0, 0));
     }
 
-    private RollingHealthMetrics Create() => new(_samplingDuration, _windows, _timeProvider.Object);
+    private RollingHealthMetrics Create() => new(_samplingDuration, _windows, _timeProvider);
 }

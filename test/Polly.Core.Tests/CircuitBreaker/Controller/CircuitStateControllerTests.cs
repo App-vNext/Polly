@@ -1,17 +1,17 @@
+using Microsoft.Extensions.Time.Testing;
 using Moq;
 using Polly.CircuitBreaker;
 using Polly.Telemetry;
 
 namespace Polly.Core.Tests.CircuitBreaker.Controller;
+
 public class CircuitStateControllerTests
 {
-    private readonly MockTimeProvider _timeProvider = new();
+    private readonly FakeTimeProvider _timeProvider = new();
+
     private readonly CircuitBreakerStrategyOptions<int> _options = new SimpleCircuitBreakerStrategyOptions<int>();
     private readonly Mock<CircuitBehavior> _circuitBehavior = new(MockBehavior.Strict);
     private readonly Action<TelemetryEventArguments> _onTelemetry = _ => { };
-    private DateTimeOffset _utcNow = DateTimeOffset.UtcNow;
-
-    public CircuitStateControllerTests() => _timeProvider.Setup(v => v.GetUtcNow()).Returns(() => _utcNow);
 
     [Fact]
     public void Ctor_EnsureDefaults()
@@ -41,7 +41,7 @@ public class CircuitStateControllerTests
             return default;
         };
 
-        _timeProvider.Setup(v => v.GetUtcNow()).Returns(DateTime.UtcNow);
+        _timeProvider.Advance(TimeSpan.FromSeconds(1));
         using var controller = CreateController();
         var context = ResilienceContext.Get();
 
@@ -79,7 +79,7 @@ public class CircuitStateControllerTests
             return default;
         };
 
-        _timeProvider.Setup(v => v.GetUtcNow()).Returns(DateTime.UtcNow);
+        _timeProvider.Advance(TimeSpan.FromSeconds(1));
         using var controller = CreateController();
         await controller.IsolateCircuitAsync(ResilienceContext.Get());
         _circuitBehavior.Setup(v => v.OnCircuitClosed());
@@ -123,7 +123,7 @@ public class CircuitStateControllerTests
         error.Should().BeOfType<BrokenCircuitException<int>>();
         error.Result.Should().Be(99);
 
-        GetBlockedTill(controller).Should().Be(_utcNow + _options.BreakDuration);
+        GetBlockedTill(controller).Should().Be(_timeProvider.GetUtcNow() + _options.BreakDuration);
     }
 
     [Fact]
@@ -132,7 +132,7 @@ public class CircuitStateControllerTests
         using var controller = CreateController();
 
         await TransitionToState(controller, CircuitState.HalfOpen);
-        GetBlockedTill(controller).Should().Be(_utcNow + _options.BreakDuration);
+        GetBlockedTill(controller).Should().Be(_timeProvider.GetUtcNow() + _options.BreakDuration);
     }
 
     [InlineData(true)]
@@ -316,11 +316,13 @@ public class CircuitStateControllerTests
         using var controller = CreateController();
         var shouldBreak = true;
         await TransitionToState(controller, CircuitState.HalfOpen);
-        _utcNow = DateTime.MaxValue - _options.BreakDuration;
+        var utcNow = DateTime.MaxValue - _options.BreakDuration;
         if (overflow)
         {
-            _utcNow += TimeSpan.FromMilliseconds(10);
+            utcNow += TimeSpan.FromMilliseconds(10);
         }
+
+        _timeProvider.SetUtcNow(utcNow);
 
         _circuitBehavior.Setup(v => v.OnActionFailure(CircuitState.HalfOpen, out shouldBreak));
 
@@ -336,7 +338,7 @@ public class CircuitStateControllerTests
         }
         else
         {
-            blockedTill.Should().Be(_utcNow + _options.BreakDuration);
+            blockedTill.Should().Be(utcNow + _options.BreakDuration);
         }
     }
 
@@ -433,7 +435,7 @@ public class CircuitStateControllerTests
         await controller.OnActionFailureAsync(outcome ?? Outcome.FromResult(10), ResilienceContext.Get().Initialize<int>(true));
     }
 
-    private void AdvanceTime(TimeSpan timespan) => _utcNow += timespan;
+    private void AdvanceTime(TimeSpan timespan) => _timeProvider.Advance(timespan);
 
     private CircuitStateController<int> CreateController() => new(
         _options.BreakDuration,
@@ -441,6 +443,6 @@ public class CircuitStateControllerTests
         _options.OnClosed,
         _options.OnHalfOpened,
         _circuitBehavior.Object,
-        _timeProvider.Object,
-        TestUtilities.CreateResilienceTelemetry(args => _onTelemetry.Invoke(args)));
+        _timeProvider,
+        TestUtilities.CreateResilienceTelemetry(_onTelemetry.Invoke));
 }

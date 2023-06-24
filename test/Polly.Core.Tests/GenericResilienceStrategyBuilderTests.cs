@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Time.Testing;
 using Polly.Utils;
 
 namespace Polly.Core.Tests;
@@ -28,7 +29,7 @@ public class GenericResilienceStrategyBuilderTests
         _builder.BuilderName = "dummy";
         _builder.BuilderName.Should().Be("dummy");
 
-        var timeProvider = new MockTimeProvider().Object;
+        var timeProvider = new FakeTimeProvider();
         _builder.TimeProvider = timeProvider;
         _builder.TimeProvider.Should().Be(timeProvider);
 
