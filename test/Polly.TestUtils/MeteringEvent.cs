@@ -1,3 +1,3 @@
 namespace Polly.TestUtils;
 
-public record MeteringEvent(string Name, Dictionary<string, object?> Tags);
+public record MeteringEvent(object Measurement, string Name, Dictionary<string, object?> Tags);

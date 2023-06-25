@@ -23,7 +23,7 @@ public partial class IssuesTests
         };
 
         // create the strategy
-        var strategy = new ResilienceStrategyBuilder { TimeProvider = TimeProvider.Object }.AddAdvancedCircuitBreaker(options).Build();
+        var strategy = new ResilienceStrategyBuilder { TimeProvider = TimeProvider }.AddAdvancedCircuitBreaker(options).Build();
 
         // now trigger the circuit breaker by evaluating multiple result types
         for (int i = 0; i < 5; i++)
@@ -37,7 +37,7 @@ public partial class IssuesTests
         strategy.Invoking(s => s.Execute(_ => "valid-result")).Should().Throw<BrokenCircuitException>();
 
         // now wait for recovery
-        TimeProvider.AdvanceTime(options.BreakDuration);
+        TimeProvider.Advance(options.BreakDuration);
 
         // OK, circuit is closed now
         strategy.Execute(_ => 0);

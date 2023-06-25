@@ -54,6 +54,20 @@ public class TelemetryResilienceStrategyTests : IDisposable
         messages = _logger.GetRecords(new EventId(2, "StrategyExecuted")).ToList();
         messages.Should().HaveCount(1);
         messages[0].Message.Should().Match($"Resilience strategy executed. Builder Name: 'my-builder', Strategy Key: 'my-key', Result Type: 'void', Result: 'void', Execution Health: '{healthString}', Execution Time: *ms");
+        messages[0].LogLevel.Should().Be(healthy ? LogLevel.Debug : LogLevel.Warning);
+
+        // verify reported state
+        var coll = messages[0].State.Should().BeAssignableTo<IReadOnlyList<KeyValuePair<string, object>>>().Subject;
+        coll.Count.Should().Be(7);
+        coll.AsEnumerable().Should().HaveCount(7);
+        (coll as IEnumerable).GetEnumerator().Should().NotBeNull();
+
+        for (int i = 0; i < coll.Count; i++)
+        {
+            coll[i].Value.Should().NotBeNull();
+        }
+
+        coll.Invoking(c => c[coll.Count + 1]).Should().Throw<IndexOutOfRangeException>();
     }
 
     [Fact]

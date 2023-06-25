@@ -93,13 +93,13 @@ public class HedgingExecutionContextTests : IDisposable
     {
         var context = Create();
         context.Initialize(_resilienceContext);
-        await context.LoadExecutionAsync((_, _) => new Outcome<string>("dummy").AsValueTask(), "state");
+        await context.LoadExecutionAsync((_, _) => Outcome.FromResultAsTask(new DisposableResult("dummy")), "state");
 
         var task = await context.TryWaitForCompletedExecutionAsync(TimeSpan.Zero);
 
         task.Should().NotBeNull();
         task!.ExecutionTaskSafe!.IsCompleted.Should().BeTrue();
-        task.Outcome.Result.Should().Be("dummy");
+        task.Outcome.AsOutcome<DisposableResult>().Result!.Name.Should().Be("dummy");
         task.AcceptOutcome();
         context.LoadedTasks.Should().Be(1);
     }
@@ -177,8 +177,8 @@ public class HedgingExecutionContextTests : IDisposable
 
         var context = Create();
         context.Initialize(_resilienceContext);
-        await context.LoadExecutionAsync((_, _) => new DisposableResult("dummy").AsOutcomeAsync(), "state");
-        await context.LoadExecutionAsync((_, _) => new DisposableResult("dummy").AsOutcomeAsync(), "state");
+        await context.LoadExecutionAsync((_, _) => Outcome.FromResultAsTask(new DisposableResult("dummy")), "state");
+        await context.LoadExecutionAsync((_, _) => Outcome.FromResultAsTask(new DisposableResult("dummy")), "state");
 
         var task = await context.TryWaitForCompletedExecutionAsync(TimeSpan.Zero);
 
@@ -194,7 +194,7 @@ public class HedgingExecutionContextTests : IDisposable
         await LoadExecutionAsync(context);
         await LoadExecutionAsync(context);
 
-        Generator = args => () => new DisposableResult { Name = "secondary" }.AsOutcomeAsync();
+        Generator = args => () => Outcome.FromResultAsTask(new DisposableResult { Name = "secondary" });
 
         var task = await context.TryWaitForCompletedExecutionAsync(TimeSpan.Zero);
         task!.Type.Should().Be(HedgedTaskType.Primary);
@@ -309,7 +309,7 @@ public class HedgingExecutionContextTests : IDisposable
         context.Tasks.First(v => v.Type == type).AcceptOutcome();
 
         // act
-        context.Complete();
+        await context.DisposeAsync();
 
         // assert
         _resilienceContext.Properties.Should().BeSameAs(originalProps);
@@ -326,12 +326,12 @@ public class HedgingExecutionContextTests : IDisposable
     }
 
     [Fact]
-    public void Complete_NoTasks_EnsureCleaned()
+    public async Task Complete_NoTasks_EnsureCleaned()
     {
         var props = _resilienceContext.Properties;
         var context = Create();
         context.Initialize(_resilienceContext);
-        context.Complete();
+        await context.DisposeAsync();
         _resilienceContext.Properties.Should().BeSameAs(props);
     }
 
@@ -343,7 +343,7 @@ public class HedgingExecutionContextTests : IDisposable
         ConfigureSecondaryTasks(TimeSpan.Zero);
         await ExecuteAllTasksAsync(context, 2);
 
-        context.Invoking(c => c.Complete()).Should().NotThrow();
+        context.Invoking(c => c.DisposeAsync().AsTask().Wait()).Should().NotThrow();
     }
 
     [Fact]
@@ -356,7 +356,7 @@ public class HedgingExecutionContextTests : IDisposable
         context.Tasks[0].AcceptOutcome();
         context.Tasks[1].AcceptOutcome();
 
-        context.Invoking(c => c.Complete()).Should().NotThrow();
+        context.Invoking(c => c.DisposeAsync().AsTask().Wait()).Should().NotThrow();
     }
 
     [Fact]
@@ -386,7 +386,7 @@ public class HedgingExecutionContextTests : IDisposable
         pending.Wait(10).Should().BeFalse();
 
         context.Tasks[0].AcceptOutcome();
-        context.Complete();
+        await context.DisposeAsync();
 
         await pending;
 
@@ -403,7 +403,7 @@ public class HedgingExecutionContextTests : IDisposable
         await ExecuteAllTasksAsync(context, 2);
         context.Tasks[0].AcceptOutcome();
 
-        context.Complete();
+        await context.DisposeAsync();
 
         context.LoadedTasks.Should().Be(0);
         context.Snapshot.Context.Should().BeNull();
@@ -440,7 +440,7 @@ public class HedgingExecutionContextTests : IDisposable
                     throw new InvalidOperationException("Forced error.");
                 }
 
-                return new Outcome<DisposableResult>(new DisposableResult { Name = "primary" });
+                return Outcome.FromResult(new DisposableResult { Name = "primary" });
             },
             "state");
     }
@@ -456,20 +456,20 @@ public class HedgingExecutionContextTests : IDisposable
                 return null;
             }
 
-            args.Context.AddResilienceEvent(new ResilienceEvent("dummy-event"));
+            args.ActionContext.AddResilienceEvent(new ResilienceEvent("dummy-event"));
 
             return async () =>
             {
-                args.Context.Properties.Set(new ResiliencePropertyKey<int>(attempt.ToString(CultureInfo.InvariantCulture)), attempt);
-                await _timeProvider.Delay(delays[attempt], args.Context.CancellationToken);
-                return new DisposableResult(delays[attempt].ToString()).AsOutcome();
+                args.ActionContext.Properties.Set(new ResiliencePropertyKey<int>(attempt.ToString(CultureInfo.InvariantCulture)), attempt);
+                await _timeProvider.Delay(delays[attempt], args.ActionContext.CancellationToken);
+                return Outcome.FromResult(new DisposableResult(delays[attempt].ToString()));
             };
         };
     }
 
     private Func<HedgingActionGeneratorArguments<DisposableResult>, Func<ValueTask<Outcome<DisposableResult>>>?> Generator { get; set; } = args =>
     {
-        return () => new DisposableResult { Name = Handled }.AsOutcomeAsync();
+        return () => Outcome.FromResultAsTask(new DisposableResult { Name = Handled });
     };
 
     private HedgingExecutionContext<DisposableResult> Create()
@@ -477,7 +477,8 @@ public class HedgingExecutionContextTests : IDisposable
         var pool = new ObjectPool<TaskExecution<DisposableResult>>(
             () =>
             {
-                var execution = new TaskExecution<DisposableResult>(_hedgingHandler, CancellationTokenSourcePool.Create(_timeProvider));
+                var telemetry = TestUtilities.CreateResilienceTelemetry(_ => { });
+                var execution = new TaskExecution<DisposableResult>(_hedgingHandler, CancellationTokenSourcePool.Create(_timeProvider), _timeProvider, telemetry);
                 _createdExecutions.Add(execution);
                 return execution;
             },

@@ -7,7 +7,7 @@ public class OutcomeArgumentsTests
     {
         var args = new OutcomeArguments<string, string>(
             ResilienceContext.Get(),
-            new Outcome<string>("dummy"),
+            Outcome.FromResult("dummy"),
             "args");
 
         args.Context.Should().NotBeNull();
@@ -22,7 +22,7 @@ public class OutcomeArgumentsTests
     {
         var args = new OutcomeArguments<string, string>(
             ResilienceContext.Get(),
-            new Outcome<string>(new InvalidOperationException()),
+            Outcome.FromException<string>(new InvalidOperationException()),
             "args");
 
         args.Context.Should().NotBeNull();

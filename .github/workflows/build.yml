@@ -40,7 +40,7 @@ jobs:
     steps:
 
     - name: Checkout code
-      uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
+      uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
       with:
         fetch-depth: 0
 
@@ -219,7 +219,7 @@ jobs:
         }
 
     - name: Checkout vcsjones/AuthenticodeLint
-      uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
+      uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
       with:
         path: AuthenticodeLint
         ref: ccfaec53ee5c1b14f029cb8156e0653c530f8b65
@@ -270,6 +270,15 @@ jobs:
             $invalidPackages++
           } else {
             Write-Output "All $($dlls.Length) DLLs in NuGet package $package have valid signatures."
+          }
+
+          dotnet nuget verify $package
+
+          if ($LASTEXITCODE -ne 0) {
+            Write-Output "::warning::$package failed signature validation."
+            $invalidPackages++
+          } else {
+            Write-Output "$package has a valid signature."
           }
         }
         if ($invalidPackages -gt 0) {

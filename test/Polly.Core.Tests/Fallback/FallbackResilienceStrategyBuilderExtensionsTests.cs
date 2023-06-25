@@ -11,14 +11,10 @@ public class FallbackResilienceStrategyBuilderExtensionsTests
         {
             builder.AddFallback(new FallbackStrategyOptions<int>
             {
-                FallbackAction = _ =>  0.AsOutcomeAsync(),
+                FallbackAction = _ => Outcome.FromResultAsTask(0),
                 ShouldHandle = _ => PredicateResult.False,
             });
-        },
-        builder =>
-        {
-            builder.AddFallback(handle => handle.HandleResult(1), _ =>  0.AsOutcomeAsync());
-        },
+        }
     };
 
     [MemberData(nameof(FallbackOverloadsGeneric))]
@@ -41,7 +37,7 @@ public class FallbackResilienceStrategyBuilderExtensionsTests
                 { Result: -1 } => PredicateResult.True,
                 _ => PredicateResult.False
             },
-            FallbackAction = _ => ((object)1).AsOutcomeAsync()
+            FallbackAction = _ => Outcome.FromResultAsTask((object)1)
         };
 
         var strategy = new ResilienceStrategyBuilder().AddFallback(options).Build();
@@ -56,8 +52,7 @@ public class FallbackResilienceStrategyBuilderExtensionsTests
         new ResilienceStrategyBuilder()
             .Invoking(b => b.AddFallback(new FallbackStrategyOptions()))
             .Should()
-            .Throw<ValidationException>()
-            .WithMessage("The fallback strategy options are invalid.*");
+            .Throw<ValidationException>();
     }
 
     [Fact]
@@ -66,7 +61,6 @@ public class FallbackResilienceStrategyBuilderExtensionsTests
         new ResilienceStrategyBuilder<double>()
             .Invoking(b => b.AddFallback(new FallbackStrategyOptions<double>()))
             .Should()
-            .Throw<ValidationException>()
-            .WithMessage("The fallback strategy options are invalid.*");
+            .Throw<ValidationException>();
     }
 }

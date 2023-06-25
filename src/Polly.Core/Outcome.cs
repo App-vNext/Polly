@@ -1,111 +1,56 @@
-#pragma warning disable CA1815 // Override equals and operator equals on value types
-
-using System;
-using System.Runtime.ExceptionServices;
-
-namespace Polly;
+﻿namespace Polly;
 
 /// <summary>
-/// Represents the outcome of an operation which could be a result of type <typeparamref name="TResult"/> or an exception.
+/// Produces instances of <see cref="Outcome{TResult}"/>.
 /// </summary>
-/// <typeparam name="TResult">The result type of the operation.</typeparam>
-/// <remarks>
-/// Always use the constructor when creating this struct, otherwise we do not guarantee binary compatibility.
-/// </remarks>
-public readonly struct Outcome<TResult>
+public static class Outcome
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="Outcome{TResult}"/> struct.
+    /// Returns a <see cref="Outcome{TResult}"/> with the given <paramref name="value"/>.
     /// </summary>
-    /// <param name="exception">The occurred exception during the operation.</param>
-    /// <exception cref="ArgumentNullException">Thrown if <paramref name="exception"/> is <see langword="null"/>.</exception>
-    public Outcome(Exception exception)
-        : this() => ExceptionDispatchInfo = ExceptionDispatchInfo.Capture(Guard.NotNull(exception));
-
-    internal Outcome(ExceptionDispatchInfo exceptionDispatchInfo)
-        : this() => ExceptionDispatchInfo = Guard.NotNull(exceptionDispatchInfo);
+    /// <typeparam name="TResult">The type of the result.</typeparam>
+    /// <param name="value">The result value.</param>
+    /// <returns>An instance of <see cref="Outcome{TResult}"/>.</returns>
+    public static Outcome<TResult> FromResult<TResult>(TResult? value) => new(value);
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="Outcome{TResult}"/> struct.
+    /// Returns a <see cref="Outcome{TResult}"/> with the given <paramref name="value"/> wrapped as <see cref="ValueTask{TResult}"/>.
     /// </summary>
-    /// <param name="result">The result of the operation.</param>
-    public Outcome(TResult? result)
-        : this() => Result = result;
+    /// <typeparam name="TResult">The type of the result.</typeparam>
+    /// <param name="value">The result value.</param>
+    /// <returns>A completed <see cref="ValueTask{TResult}"/> that produces <see cref="Outcome{TResult}"/>.</returns>
+    public static ValueTask<Outcome<TResult>> FromResultAsTask<TResult>(TResult value) => new(FromResult(value));
 
     /// <summary>
-    /// Gets the exception that occurred during the operation, if any.
+    /// Returns a <see cref="Outcome{TResult}"/> with the given <paramref name="exception"/>.
     /// </summary>
-    public Exception? Exception => ExceptionDispatchInfo?.SourceException;
-
-    /// <summary>
-    /// Gets the <see cref="ExceptionDispatchInfo"/> associated with the exception, if any.
-    /// </summary>
-    internal ExceptionDispatchInfo? ExceptionDispatchInfo { get; }
-
-    internal ValueTask<Outcome<TResult>> AsValueTask() => new(this);
-
-    /// <summary>
-    /// Gets the result of the operation, if any.
-    /// </summary>
-    public TResult? Result { get; }
-
-    /// <summary>
-    /// Gets a value indicating whether the operation produced a result.
-    /// </summary>
-    /// <remarks>
-    /// Returns <see langword="true"/> even if the result is void. Use <see cref="IsVoidResult"/> to check for void results.
-    /// </remarks>
-    public bool HasResult => ExceptionDispatchInfo == null;
-
-    /// <summary>
-    /// Gets a value indicating whether the operation produced a void result.
-    /// </summary>
-    public bool IsVoidResult => Result is VoidResult;
-
-    /// <summary>
-    /// Throws an exception if the operation produced an exception.
-    /// </summary>
-    /// <remarks>
-    /// If the operation produced a result, this method does nothing. The thrown exception maintains its original stack trace.
-    /// </remarks>
-    public void EnsureSuccess() => ExceptionDispatchInfo?.Throw();
-
-    /// <summary>
-    /// Tries to get the result, if available.
-    /// </summary>
-    /// <param name="result">Output parameter for the result.</param>
-    /// <returns><see langword="true"/> if the result is available; <see langword="false"/> otherwise.</returns>
-    public bool TryGetResult(out TResult? result)
+    /// <typeparam name="TResult">The type of the result.</typeparam>
+    /// <param name="exception">The exception.</param>
+    /// <returns>An instance of <see cref="Outcome{TResult}"/>.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="exception"/> is <see langword="null"/>.</exception>
+    public static Outcome<TResult> FromException<TResult>(Exception exception)
     {
-        if (HasResult && !IsVoidResult)
-        {
-            result = Result!;
-            return true;
-        }
+        Guard.NotNull(exception);
 
-        result = default;
-        return false;
+        return new(exception);
     }
 
     /// <summary>
-    /// Returns the string representation of the outcome.
+    /// Returns a <see cref="Outcome{TResult}"/> with the given <paramref name="exception"/> wrapped as <see cref="ValueTask{TResult}"/>.
     /// </summary>
-    /// <returns>
-    /// The exception message if the outcome is an exception; otherwise, the string representation of the result.
-    /// </returns>
-    public override string ToString() => ExceptionDispatchInfo != null
-        ? Exception!.Message
-        : Result?.ToString() ?? string.Empty;
-
-    internal TResult GetResultOrRethrow()
+    /// <typeparam name="TResult">The type of the result.</typeparam>
+    /// <param name="exception">The exception.</param>
+    /// <returns>A completed <see cref="ValueTask{TResult}"/> that produces <see cref="Outcome{TResult}"/>.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="exception"/> is <see langword="null"/>.</exception>
+    public static ValueTask<Outcome<TResult>> FromExceptionAsTask<TResult>(Exception exception)
     {
-        ExceptionDispatchInfo?.Throw();
-        return Result!;
+        Guard.NotNull(exception);
+
+        return new(FromException<TResult>(exception));
     }
 
-    internal Outcome<object> AsOutcome() => AsOutcome<object>();
+    internal static Outcome<VoidResult> Void => FromResult(VoidResult.Instance);
 
-    internal Outcome<T> AsOutcome<T>() => ExceptionDispatchInfo != null
-        ? new Outcome<T>(ExceptionDispatchInfo)
-        : new Outcome<T>((T)(object)Result!);
+    internal static Outcome<VoidResult> FromException(Exception exception) => FromException<VoidResult>(exception);
+
 }

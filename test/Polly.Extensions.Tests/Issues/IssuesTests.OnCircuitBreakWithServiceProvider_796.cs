@@ -3,7 +3,7 @@ using Polly.CircuitBreaker;
 using Polly.Extensions.DependencyInjection;
 using Polly.Registry;
 
-namespace Polly.Core.Tests.Issues;
+namespace Polly.Extensions.Tests.Issues;
 
 public partial class IssuesTests
 {
@@ -39,7 +39,7 @@ public partial class IssuesTests
 
         // retrieve the provider
         var strategyProvider = serviceCollection.BuildServiceProvider().GetRequiredService<ResilienceStrategyProvider<string>>();
-        var strategy = strategyProvider.Get("my-strategy");
+        var strategy = strategyProvider.GetStrategy("my-strategy");
 
         // now trigger the circuit breaker by evaluating multiple result types
         for (int i = 0; i < 10; i++)

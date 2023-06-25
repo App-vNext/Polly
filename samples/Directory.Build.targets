@@ -1,0 +1,3 @@
+<Project>
+<!-- Intentionally empty to not include Directory.Build.targets in the root. -->
+</Project>

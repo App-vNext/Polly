@@ -7,20 +7,55 @@ namespace Polly.Core.Tests.Hedging;
 public class HedgingStrategyOptionsTests
 {
     [Fact]
-    public async Task Ctor_EnsureDefaults()
+    public void Ctor_EnsureDefaults()
     {
         var options = new HedgingStrategyOptions<int>();
 
         options.StrategyType.Should().Be("Hedging");
-        options.ShouldHandle.Should().BeNull();
+        options.ShouldHandle.Should().NotBeNull();
         options.HedgingActionGenerator.Should().NotBeNull();
         options.HedgingDelay.Should().Be(TimeSpan.FromSeconds(2));
         options.MaxHedgedAttempts.Should().Be(2);
         options.OnHedging.Should().BeNull();
+    }
 
-        var action = options.HedgingActionGenerator(new HedgingActionGeneratorArguments<int>(ResilienceContext.Get(), 1, c => 99.AsOutcomeAsync()))!;
+    [InlineData(true)]
+    [InlineData(false)]
+    [Theory]
+    public async Task HedgingActionGenerator_EnsureDefaults(bool synchronous)
+    {
+        var options = new HedgingStrategyOptions<int>();
+        var context = ResilienceContext.Get().Initialize<int>(synchronous);
+        var threadId = Thread.CurrentThread.ManagedThreadId;
+
+        var action = options.HedgingActionGenerator(new HedgingActionGeneratorArguments<int>(context, context, 1, c =>
+        {
+            if (synchronous)
+            {
+                Thread.CurrentThread.ManagedThreadId.Should().NotBe(threadId);
+            }
+            else
+            {
+                Thread.CurrentThread.ManagedThreadId.Should().Be(threadId);
+            }
+
+            return Outcome.FromResultAsTask(99);
+        }))!;
+
         action.Should().NotBeNull();
         (await action()).Result.Should().Be(99);
+    }
+
+    [Fact]
+    public async Task ShouldHandle_EnsureDefaults()
+    {
+        var options = new HedgingStrategyOptions<int>();
+        var args = new HedgingPredicateArguments();
+        var context = ResilienceContext.Get();
+
+        (await options.ShouldHandle(new(context, Outcome.FromResult(0), args))).Should().Be(false);
+        (await options.ShouldHandle(new(context, Outcome.FromException<int>(new OperationCanceledException()), args))).Should().Be(false);
+        (await options.ShouldHandle(new(context, Outcome.FromException<int>(new InvalidOperationException()), args))).Should().Be(true);
     }
 
     [Fact]

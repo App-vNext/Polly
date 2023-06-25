@@ -70,7 +70,7 @@ public static class TestUtilities
         meterListener.Start();
 
         void OnMeasurementRecorded<T>(Instrument instrument, T measurement, ReadOnlySpan<KeyValuePair<string, object?>> tags, object? state)
-            => events.Add(new MeteringEvent(instrument.Name, tags.ToArray().ToDictionary(v => v.Key, v => v.Value)));
+            => events.Add(new MeteringEvent(measurement!, instrument.Name, tags.ToArray().ToDictionary(v => v.Key, v => v.Value)));
 
         return meterListener;
     }
@@ -88,7 +88,7 @@ public static class TestUtilities
         object arguments)
 #pragma warning restore S107 // Methods should not have too many parameters
     {
-        source.Write(eventName, new TelemetryEventArguments(
+        source.Write(eventName, TelemetryEventArguments.Get(
             new ResilienceTelemetrySource(builderName, builderProperties, strategyName, strategyType),
             eventName,
             context,
@@ -110,6 +110,19 @@ public static class TestUtilities
 
         public override bool IsEnabled(string name) => true;
 
-        public override void Write(string name, object? value) => _callback((TelemetryEventArguments)value!);
+        public override void Write(string name, object? value)
+        {
+            var args = (TelemetryEventArguments)value!;
+            var arguments = args.Arguments;
+
+            if (arguments is ExecutionAttemptArguments attempt)
+            {
+                arguments = ExecutionAttemptArguments.Get(attempt.Attempt, attempt.ExecutionTime, attempt.Handled);
+            }
+
+            // copy the args because these are pooled and in tests we want to preserve them
+            args = TelemetryEventArguments.Get(args.Source, args.EventName, args.Context, args.Outcome, arguments);
+            _callback(args);
+        }
     }
 }

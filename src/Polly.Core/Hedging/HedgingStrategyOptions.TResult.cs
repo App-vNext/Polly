@@ -45,10 +45,11 @@ public class HedgingStrategyOptions<TResult> : ResilienceStrategyOptions
     /// Gets or sets the predicate that determines whether a hedging should be performed for a given result.
     /// </summary>
     /// <remarks>
-    /// This property is required. Defaults to <see langword="null"/>.
+    /// Defaults to a delegate that hedges on any exception except <see cref="OperationCanceledException"/>.
+    /// This property is required.
     /// </remarks>
     [Required]
-    public Func<OutcomeArguments<TResult, HandleHedgingArguments>, ValueTask<bool>>? ShouldHandle { get; set; }
+    public Func<OutcomeArguments<TResult, HedgingPredicateArguments>, ValueTask<bool>> ShouldHandle { get; set; } = DefaultPredicates<HedgingPredicateArguments, TResult>.HandleOutcome;
 
     /// <summary>
     /// Gets or sets the hedging action generator that creates hedged actions.
@@ -61,7 +62,12 @@ public class HedgingStrategyOptions<TResult> : ResilienceStrategyOptions
     {
         return async () =>
         {
-            return await args.Callback(args.Context).ConfigureAwait(args.Context.ContinueOnCapturedContext);
+            if (args.PrimaryContext.IsSynchronous)
+            {
+                return await Task.Run(() => args.Callback(args.ActionContext).AsTask()).ConfigureAwait(args.ActionContext.ContinueOnCapturedContext);
+            }
+
+            return await args.Callback(args.ActionContext).ConfigureAwait(args.ActionContext.ContinueOnCapturedContext);
         };
     };
 
@@ -79,6 +85,10 @@ public class HedgingStrategyOptions<TResult> : ResilienceStrategyOptions
     /// </summary>
     /// <remarks>
     /// Defaults to <see langword="null"/>.
+    /// <para>
+    /// The hedging is executed when the current attempt outcome is not successful and the <see cref="ShouldHandle"/> predicate returns <see langword="true"/> or when
+    /// the current attempt did not finish within the <see cref="HedgingDelay"/>.
+    /// </para>
     /// </remarks>
     public Func<OutcomeArguments<TResult, OnHedgingArguments>, ValueTask>? OnHedging { get; set; }
 }

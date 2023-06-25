@@ -2,6 +2,8 @@ using Polly.Telemetry;
 
 namespace Polly;
 
+#pragma warning disable S107
+
 /// <summary>
 /// The context used for building an individual resilience strategy.
 /// </summary>
@@ -14,7 +16,8 @@ public sealed class ResilienceStrategyBuilderContext
         string strategyType,
         TimeProvider timeProvider,
         bool isGenericBuilder,
-        DiagnosticSource? diagnosticSource)
+        DiagnosticSource? diagnosticSource,
+        Func<double> randomizer)
     {
         BuilderName = builderName;
         BuilderProperties = builderProperties;
@@ -23,6 +26,7 @@ public sealed class ResilienceStrategyBuilderContext
         TimeProvider = timeProvider;
         IsGenericBuilder = isGenericBuilder;
         Telemetry = TelemetryUtil.CreateTelemetry(diagnosticSource, builderName, builderProperties, strategyName, strategyType);
+        Randomizer = randomizer;
     }
 
     /// <summary>
@@ -55,22 +59,7 @@ public sealed class ResilienceStrategyBuilderContext
     /// </summary>
     internal TimeProvider TimeProvider { get; }
 
+    internal Func<double> Randomizer { get; }
+
     internal bool IsGenericBuilder { get; }
-
-    internal PredicateInvoker<TArgs>? CreateInvoker<TResult, TArgs>(Func<OutcomeArguments<TResult, TArgs>, ValueTask<bool>>? predicate)
-    {
-        return PredicateInvoker<TArgs>.Create(predicate, IsGenericBuilder);
-    }
-
-    internal EventInvoker<TArgs>? CreateInvoker<TResult, TArgs>(Func<OutcomeArguments<TResult, TArgs>, ValueTask>? callback)
-    {
-        return EventInvoker<TArgs>.Create(callback, IsGenericBuilder);
-    }
-
-    internal GeneratorInvoker<TArgs, TValue>? CreateInvoker<TResult, TArgs, TValue>(
-        Func<OutcomeArguments<TResult, TArgs>, ValueTask<TValue>>? generator,
-        TValue defaultValue)
-    {
-        return GeneratorInvoker<TArgs, TValue>.Create(generator, defaultValue, IsGenericBuilder);
-    }
 }

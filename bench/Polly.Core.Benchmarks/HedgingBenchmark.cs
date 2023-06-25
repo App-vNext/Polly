@@ -5,10 +5,8 @@ public class HedgingBenchmark
     private ResilienceStrategy<string>? _strategy;
 
     [GlobalSetup]
-    public void Setup()
-    {
+    public void Setup() =>
         _strategy = Helper.CreateHedging();
-    }
 
     [Benchmark(Baseline = true)]
     public async ValueTask Hedging_Primary()

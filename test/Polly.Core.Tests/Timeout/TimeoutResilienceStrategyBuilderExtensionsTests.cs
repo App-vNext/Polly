@@ -51,7 +51,7 @@ public class TimeoutResilienceStrategyBuilderExtensionsTests
         new ResilienceStrategyBuilder()
             .Invoking(b => b.AddTimeout(new TimeoutStrategyOptions { Timeout = TimeSpan.Zero }))
             .Should()
-            .Throw<ValidationException>().WithMessage("The timeout strategy options are invalid.*");
+            .Throw<ValidationException>();
     }
 
     private static TimeSpan GetTimeout(TimeoutResilienceStrategy strategy)

@@ -46,12 +46,10 @@ public static class HedgingResilienceStrategyBuilderExtensions
 
     internal static void AddHedgingCore<TResult>(this ResilienceStrategyBuilderBase builder, HedgingStrategyOptions<TResult> options)
     {
-        ValidationHelper.ValidateObject(options, "The hedging strategy options are invalid.");
-
         builder.AddStrategy(context =>
         {
             var handler = new HedgingHandler<TResult>(
-                context.CreateInvoker(options.ShouldHandle)!,
+                options.ShouldHandle!,
                 options.HedgingActionGenerator,
                 context.IsGenericBuilder);
 
@@ -59,10 +57,11 @@ public static class HedgingResilienceStrategyBuilderExtensions
                 options.HedgingDelay,
                 options.MaxHedgedAttempts,
                 handler,
-                context.CreateInvoker(options.OnHedging),
+                options.OnHedging,
                 options.HedgingDelayGenerator,
                 context.TimeProvider,
-                context.Telemetry);
+                context.Telemetry,
+                context.IsGenericBuilder);
         },
         options);
     }

@@ -48,7 +48,7 @@ public class ResilienceStrategyPipelineTests
 
         var pipeline = ResilienceStrategyPipeline.CreatePipeline(strategies);
         await pipeline
-            .Invoking(p => p.ExecuteCoreAsync((_, _) => new Outcome<int>(10).AsValueTask(), ResilienceContext.Get(), "state").AsTask())
+            .Invoking(p => p.ExecuteCoreAsync((_, _) => Outcome.FromResultAsTask(10), ResilienceContext.Get(), "state").AsTask())
             .Should()
             .ThrowAsync<NotSupportedException>();
     }
@@ -87,7 +87,7 @@ public class ResilienceStrategyPipelineTests
         var context = ResilienceContext.Get();
         context.CancellationToken = cancellation.Token;
 
-        var result = await pipeline.ExecuteOutcomeAsync((_, _) => "result".AsOutcomeAsync(), context, "state");
+        var result = await pipeline.ExecuteOutcomeAsync((_, _) => Outcome.FromResultAsTask("result"), context, "state");
         result.Exception.Should().BeOfType<OperationCanceledException>();
     }
 
@@ -106,7 +106,7 @@ public class ResilienceStrategyPipelineTests
         var context = ResilienceContext.Get();
         context.CancellationToken = cancellation.Token;
 
-        var result = await pipeline.ExecuteOutcomeAsync((_, _) => "result".AsOutcomeAsync(), context, "state");
+        var result = await pipeline.ExecuteOutcomeAsync((_, _) => Outcome.FromResultAsTask("result"), context, "state");
         result.Exception.Should().BeOfType<OperationCanceledException>();
         executed.Should().BeTrue();
     }

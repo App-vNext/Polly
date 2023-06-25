@@ -45,15 +45,15 @@ public class ResilienceStrategyRegistryTests
 
         registry.TryAddBuilder("C", (b, _) => b.AddStrategy(new TestResilienceStrategy()));
 
-        registry.TryAdd("A", new TestResilienceStrategy());
-        registry.TryAdd("B", new TestResilienceStrategy());
-        registry.TryAdd("C", new TestResilienceStrategy());
+        registry.TryAddStrategy("A", new TestResilienceStrategy());
+        registry.TryAddStrategy("B", new TestResilienceStrategy());
+        registry.TryAddStrategy("C", new TestResilienceStrategy());
 
-        registry.Clear();
+        registry.ClearStrategies();
 
-        registry.TryGet("A", out _).Should().BeFalse();
-        registry.TryGet("B", out _).Should().BeFalse();
-        registry.TryGet("C", out _).Should().BeTrue();
+        registry.TryGetStrategy("A", out _).Should().BeFalse();
+        registry.TryGetStrategy("B", out _).Should().BeFalse();
+        registry.TryGetStrategy("C", out _).Should().BeTrue();
     }
 
     [Fact]
@@ -63,15 +63,15 @@ public class ResilienceStrategyRegistryTests
 
         registry.TryAddBuilder<string>("C", (b, _) => b.AddStrategy(new TestResilienceStrategy()));
 
-        registry.TryAdd("A", new TestResilienceStrategy<string>());
-        registry.TryAdd("B", new TestResilienceStrategy<string>());
-        registry.TryAdd("C", new TestResilienceStrategy<string>());
+        registry.TryAddStrategy("A", new TestResilienceStrategy<string>());
+        registry.TryAddStrategy("B", new TestResilienceStrategy<string>());
+        registry.TryAddStrategy("C", new TestResilienceStrategy<string>());
 
-        registry.Clear<string>();
+        registry.ClearStrategies<string>();
 
-        registry.TryGet<string>("A", out _).Should().BeFalse();
-        registry.TryGet<string>("B", out _).Should().BeFalse();
-        registry.TryGet<string>("C", out _).Should().BeTrue();
+        registry.TryGetStrategy<string>("A", out _).Should().BeFalse();
+        registry.TryGetStrategy<string>("B", out _).Should().BeFalse();
+        registry.TryGetStrategy<string>("C", out _).Should().BeTrue();
     }
 
     [Fact]
@@ -79,14 +79,14 @@ public class ResilienceStrategyRegistryTests
     {
         var registry = new ResilienceStrategyRegistry<string>();
 
-        registry.TryAdd("A", new TestResilienceStrategy());
-        registry.TryAdd("B", new TestResilienceStrategy());
+        registry.TryAddStrategy("A", new TestResilienceStrategy());
+        registry.TryAddStrategy("B", new TestResilienceStrategy());
 
-        registry.Remove("A").Should().BeTrue();
-        registry.Remove("A").Should().BeFalse();
+        registry.RemoveStrategy("A").Should().BeTrue();
+        registry.RemoveStrategy("A").Should().BeFalse();
 
-        registry.TryGet("A", out _).Should().BeFalse();
-        registry.TryGet("B", out _).Should().BeTrue();
+        registry.TryGetStrategy("A", out _).Should().BeFalse();
+        registry.TryGetStrategy("B", out _).Should().BeTrue();
     }
 
     [Fact]
@@ -94,14 +94,14 @@ public class ResilienceStrategyRegistryTests
     {
         var registry = new ResilienceStrategyRegistry<string>();
 
-        registry.TryAdd("A", new TestResilienceStrategy<string>());
-        registry.TryAdd("B", new TestResilienceStrategy<string>());
+        registry.TryAddStrategy("A", new TestResilienceStrategy<string>());
+        registry.TryAddStrategy("B", new TestResilienceStrategy<string>());
 
-        registry.Remove<string>("A").Should().BeTrue();
-        registry.Remove<string>("A").Should().BeFalse();
+        registry.RemoveStrategy<string>("A").Should().BeTrue();
+        registry.RemoveStrategy<string>("A").Should().BeFalse();
 
-        registry.TryGet<string>("A", out _).Should().BeFalse();
-        registry.TryGet<string>("B", out _).Should().BeTrue();
+        registry.TryGetStrategy<string>("A", out _).Should().BeFalse();
+        registry.TryGetStrategy<string>("B", out _).Should().BeTrue();
     }
 
     [Fact]
@@ -113,7 +113,7 @@ public class ResilienceStrategyRegistryTests
         registry.RemoveBuilder("A").Should().BeTrue();
         registry.RemoveBuilder("A").Should().BeFalse();
 
-        registry.TryGet("A", out _).Should().BeFalse();
+        registry.TryGetStrategy("A", out _).Should().BeFalse();
     }
 
     [Fact]
@@ -125,7 +125,7 @@ public class ResilienceStrategyRegistryTests
         registry.RemoveBuilder<string>("A").Should().BeTrue();
         registry.RemoveBuilder<string>("A").Should().BeFalse();
 
-        registry.TryGet<string>("A", out _).Should().BeFalse();
+        registry.TryGetStrategy<string>("A", out _).Should().BeFalse();
     }
 
     [Fact]
@@ -140,10 +140,10 @@ public class ResilienceStrategyRegistryTests
         {
             var key = StrategyId.Create(builderName, i.ToString(CultureInfo.InvariantCulture));
 
-            strategies.Add(registry.Get(key));
+            strategies.Add(registry.GetStrategy(key));
 
             // call again, the strategy should be already cached
-            strategies.Add(registry.Get(key));
+            strategies.Add(registry.GetStrategy(key));
         }
 
         strategies.Should().HaveCount(100);
@@ -161,10 +161,10 @@ public class ResilienceStrategyRegistryTests
         {
             var key = StrategyId.Create(builderName, i.ToString(CultureInfo.InvariantCulture));
 
-            strategies.Add(registry.Get<string>(key));
+            strategies.Add(registry.GetStrategy<string>(key));
 
             // call again, the strategy should be already cached
-            strategies.Add(registry.Get<string>(key));
+            strategies.Add(registry.GetStrategy<string>(key));
         }
 
         strategies.Should().HaveCount(100);
@@ -188,10 +188,10 @@ public class ResilienceStrategyRegistryTests
         var key2 = StrategyId.Create("A", "Instance1");
         var key3 = StrategyId.Create("A", "Instance2");
         var keys = new[] { key1, key2, key3 };
-        var strategies = keys.ToDictionary(k => k, registry.Get);
+        var strategies = keys.ToDictionary(k => k, registry.GetStrategy);
         foreach (var key in keys)
         {
-            registry.Get(key);
+            registry.GetStrategy(key);
         }
 
         called.Should().Be(3);
@@ -217,10 +217,10 @@ public class ResilienceStrategyRegistryTests
         var key2 = StrategyId.Create("A", "Instance1");
         var key3 = StrategyId.Create("A", "Instance2");
         var keys = new[] { key1, key2, key3 };
-        var strategies = keys.ToDictionary(k => k, registry.Get<string>);
+        var strategies = keys.ToDictionary(k => k, registry.GetStrategy<string>);
         foreach (var key in keys)
         {
-            registry.Get<string>(key);
+            registry.GetStrategy<string>(key);
         }
 
         called.Should().Be(3);
@@ -247,7 +247,7 @@ public class ResilienceStrategyRegistryTests
             called = true;
         });
 
-        registry.Get(StrategyId.Create("A", "Instance1"));
+        registry.GetStrategy(StrategyId.Create("A", "Instance1"));
         called.Should().BeTrue();
     }
 
@@ -258,8 +258,8 @@ public class ResilienceStrategyRegistryTests
         registry.TryAddBuilder<string>(StrategyId.Create("A"), (builder, _) => builder.AddStrategy(new TestResilienceStrategy()));
         registry.TryAddBuilder<int>(StrategyId.Create("A"), (builder, _) => builder.AddStrategy(new TestResilienceStrategy()));
 
-        registry.Get<string>(StrategyId.Create("A", "Instance1")).Should().BeSameAs(registry.Get<string>(StrategyId.Create("A", "Instance1")));
-        registry.Get<int>(StrategyId.Create("A", "Instance1")).Should().BeSameAs(registry.Get<int>(StrategyId.Create("A", "Instance1")));
+        registry.GetStrategy<string>(StrategyId.Create("A", "Instance1")).Should().BeSameAs(registry.GetStrategy<string>(StrategyId.Create("A", "Instance1")));
+        registry.GetStrategy<int>(StrategyId.Create("A", "Instance1")).Should().BeSameAs(registry.GetStrategy<int>(StrategyId.Create("A", "Instance1")));
     }
 
     [Fact]
@@ -279,7 +279,7 @@ public class ResilienceStrategyRegistryTests
             called = true;
         });
 
-        registry.Get<string>(StrategyId.Create("A", "Instance1"));
+        registry.GetStrategy<string>(StrategyId.Create("A", "Instance1"));
         called.Should().BeTrue();
     }
 
@@ -289,7 +289,7 @@ public class ResilienceStrategyRegistryTests
         var registry = CreateRegistry();
         var key = StrategyId.Create("A");
 
-        registry.TryGet(key, out var strategy).Should().BeFalse();
+        registry.TryGetStrategy(key, out var strategy).Should().BeFalse();
         strategy.Should().BeNull();
     }
 
@@ -299,7 +299,7 @@ public class ResilienceStrategyRegistryTests
         var registry = CreateRegistry();
         var key = StrategyId.Create("A");
 
-        registry.TryGet<string>(key, out var strategy).Should().BeFalse();
+        registry.TryGetStrategy<string>(key, out var strategy).Should().BeFalse();
         strategy.Should().BeNull();
     }
 
@@ -309,9 +309,9 @@ public class ResilienceStrategyRegistryTests
         var expectedStrategy = new TestResilienceStrategy();
         var registry = CreateRegistry();
         var key = StrategyId.Create("A", "Instance");
-        registry.TryAdd(key, expectedStrategy).Should().BeTrue();
+        registry.TryAddStrategy(key, expectedStrategy).Should().BeTrue();
 
-        registry.TryGet(key, out var strategy).Should().BeTrue();
+        registry.TryGetStrategy(key, out var strategy).Should().BeTrue();
 
         strategy.Should().BeSameAs(expectedStrategy);
     }
@@ -322,9 +322,9 @@ public class ResilienceStrategyRegistryTests
         var expectedStrategy = new TestResilienceStrategy<string>();
         var registry = CreateRegistry();
         var key = StrategyId.Create("A", "Instance");
-        registry.TryAdd<string>(key, expectedStrategy).Should().BeTrue();
+        registry.TryAddStrategy<string>(key, expectedStrategy).Should().BeTrue();
 
-        registry.TryGet<string>(key, out var strategy).Should().BeTrue();
+        registry.TryGetStrategy<string>(key, out var strategy).Should().BeTrue();
 
         strategy.Should().BeSameAs(expectedStrategy);
     }
@@ -335,11 +335,11 @@ public class ResilienceStrategyRegistryTests
         var expectedStrategy = new TestResilienceStrategy();
         var registry = CreateRegistry();
         var key = StrategyId.Create("A", "Instance");
-        registry.TryAdd(key, expectedStrategy).Should().BeTrue();
+        registry.TryAddStrategy(key, expectedStrategy).Should().BeTrue();
 
-        registry.TryAdd(key, new TestResilienceStrategy()).Should().BeFalse();
+        registry.TryAddStrategy(key, new TestResilienceStrategy()).Should().BeFalse();
 
-        registry.TryGet(key, out var strategy).Should().BeTrue();
+        registry.TryGetStrategy(key, out var strategy).Should().BeTrue();
         strategy.Should().BeSameAs(expectedStrategy);
     }
 
@@ -349,11 +349,11 @@ public class ResilienceStrategyRegistryTests
         var expectedStrategy = new TestResilienceStrategy<string>();
         var registry = CreateRegistry();
         var key = StrategyId.Create("A", "Instance");
-        registry.TryAdd(key, expectedStrategy).Should().BeTrue();
+        registry.TryAddStrategy(key, expectedStrategy).Should().BeTrue();
 
-        registry.TryAdd(key, new TestResilienceStrategy<string>()).Should().BeFalse();
+        registry.TryAddStrategy(key, new TestResilienceStrategy<string>()).Should().BeFalse();
 
-        registry.TryGet<string>(key, out var strategy).Should().BeTrue();
+        registry.TryGetStrategy<string>(key, out var strategy).Should().BeTrue();
         strategy.Should().BeSameAs(expectedStrategy);
     }
 
@@ -372,14 +372,14 @@ public class ResilienceStrategyRegistryTests
 
             builder.AddRetry(new RetryStrategyOptions
             {
-                ShouldRetry = _ => PredicateResult.True,
+                ShouldHandle = _ => PredicateResult.True,
                 RetryCount = retryCount,
                 BaseDelay = TimeSpan.FromMilliseconds(2),
             });
         });
 
         // act
-        var strategy = registry.Get("dummy");
+        var strategy = registry.GetStrategy("dummy");
 
         // assert
         var tries = 0;
@@ -408,14 +408,14 @@ public class ResilienceStrategyRegistryTests
 
             builder.AddRetry(new RetryStrategyOptions<string>
             {
-                ShouldRetry = _ => PredicateResult.True,
+                ShouldHandle = _ => PredicateResult.True,
                 RetryCount = retryCount,
                 BaseDelay = TimeSpan.FromMilliseconds(2),
             });
         });
 
         // act
-        var strategy = registry.Get<string>("dummy");
+        var strategy = registry.GetStrategy<string>("dummy");
 
         // assert
         var tries = 0;

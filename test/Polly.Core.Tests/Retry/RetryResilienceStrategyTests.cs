@@ -1,21 +1,23 @@
 using Moq;
 using Polly.Retry;
 using Polly.Telemetry;
-using Polly.Utils;
 
 namespace Polly.Core.Tests.Retry;
 
 public class RetryResilienceStrategyTests
 {
     private readonly RetryStrategyOptions _options = new();
-    private readonly FakeTimeProvider _timeProvider = new();
-    private readonly ResilienceStrategyTelemetry _telemetry;
+    private readonly MockTimeProvider _timeProvider = new();
     private readonly Mock<DiagnosticSource> _diagnosticSource = new();
+    private ResilienceStrategyTelemetry _telemetry;
 
     public RetryResilienceStrategyTests()
     {
         _telemetry = TestUtilities.CreateResilienceTelemetry(_diagnosticSource.Object);
-        _options.ShouldRetry = _ => new ValueTask<bool>(false);
+        _options.ShouldHandle = _ => new ValueTask<bool>(false);
+
+        _timeProvider.Setup(v => v.TimestampFrequency).Returns(Stopwatch.Frequency);
+        _timeProvider.SetupSequence(v => v.GetTimestamp()).Returns(0).Returns(100);
     }
 
     [Fact]
@@ -39,7 +41,7 @@ public class RetryResilienceStrategyTests
         context.CancellationToken = cancellationToken.Token;
         var executed = false;
 
-        var result = await sut.ExecuteOutcomeAsync((_, _) => { executed = true; return "dummy".AsOutcomeAsync(); }, context, "state");
+        var result = await sut.ExecuteOutcomeAsync((_, _) => { executed = true; return Outcome.FromResultAsTask("dummy"); }, context, "state");
         result.Exception.Should().BeOfType<OperationCanceledException>();
         executed.Should().BeFalse();
     }
@@ -49,7 +51,7 @@ public class RetryResilienceStrategyTests
     {
         using var cancellationToken = new CancellationTokenSource();
 
-        _options.ShouldRetry = _ => PredicateResult.True;
+        _options.ShouldHandle = _ => PredicateResult.True;
         _options.OnRetry = _ =>
         {
             cancellationToken.Cancel();
@@ -61,7 +63,7 @@ public class RetryResilienceStrategyTests
         context.CancellationToken = cancellationToken.Token;
         var executed = false;
 
-        var result = await sut.ExecuteOutcomeAsync((_, _) => { executed = true; return "dummy".AsOutcomeAsync(); }, context, "state");
+        var result = await sut.ExecuteOutcomeAsync((_, _) => { executed = true; return Outcome.FromResultAsTask("dummy"); }, context, "state");
         result.Exception.Should().BeOfType<OperationCanceledException>();
         executed.Should().BeTrue();
     }
@@ -73,7 +75,7 @@ public class RetryResilienceStrategyTests
         _options.RetryCount = 5;
         SetupNoDelay();
         _timeProvider.SetupAnyDelay();
-        _options.ShouldRetry = _ => PredicateResult.True;
+        _options.ShouldHandle = _ => PredicateResult.True;
         var results = new List<DisposableResult>();
         var sut = CreateSut();
 
@@ -99,7 +101,7 @@ public class RetryResilienceStrategyTests
     {
         int calls = 0;
         _options.OnRetry = _ => { calls++; return default; };
-        _options.ShouldRetry = args => args.Outcome.ResultPredicateAsync(0);
+        _options.ShouldHandle = args => args.Outcome.ResultPredicateAsync(0);
         _options.RetryCount = 12;
         SetupNoDelay();
         var sut = CreateSut();
@@ -120,7 +122,7 @@ public class RetryResilienceStrategyTests
             return default;
         };
 
-        _options.ShouldRetry = args => args.Outcome.ExceptionPredicateAsync<InvalidOperationException>();
+        _options.ShouldHandle = args => args.Outcome.ExceptionPredicateAsync<InvalidOperationException>();
         _options.RetryCount = 3;
         SetupNoDelay();
         var sut = CreateSut();
@@ -145,7 +147,7 @@ public class RetryResilienceStrategyTests
             calls++;
             return default;
         };
-        _options.ShouldRetry = args => args.Outcome.ResultPredicateAsync(0);
+        _options.ShouldHandle = args => args.Outcome.ResultPredicateAsync(0);
         _options.RetryCount = RetryStrategyOptions.InfiniteRetryCount;
         SetupNoDelay();
         var sut = CreateSut();
@@ -160,7 +162,7 @@ public class RetryResilienceStrategyTests
     {
         int calls = 0;
         _options.OnRetry = _ => { calls++; return default; };
-        _options.ShouldRetry = args => args.Outcome.ResultPredicateAsync(0);
+        _options.ShouldHandle = args => args.Outcome.ResultPredicateAsync(0);
         _options.RetryCount = 3;
         _options.BackoffType = RetryBackoffType.Constant;
         _options.RetryDelayGenerator = _ => new ValueTask<TimeSpan>(TimeSpan.FromMilliseconds(123));
@@ -188,7 +190,7 @@ public class RetryResilienceStrategyTests
             return default;
         };
 
-        _options.ShouldRetry = args => args.Outcome.ResultPredicateAsync(0);
+        _options.ShouldHandle = args => args.Outcome.ResultPredicateAsync(0);
         _options.RetryCount = 3;
         _options.BackoffType = RetryBackoffType.Linear;
         _timeProvider.SetupAnyDelay();
@@ -208,6 +210,53 @@ public class RetryResilienceStrategyTests
     }
 
     [Fact]
+    public void OnRetry_EnsureExecutionTime()
+    {
+        _options.OnRetry = args =>
+        {
+            args.Arguments.ExecutionTime.Should().Be(_timeProvider.Object.GetElapsedTime(100, 1000));
+
+            return default;
+        };
+
+        _options.ShouldHandle = _ => PredicateResult.True;
+        _options.RetryCount = 1;
+        _options.BackoffType = RetryBackoffType.Linear;
+        _timeProvider.SetupAnyDelay();
+        _timeProvider
+            .SetupSequence(v => v.GetTimestamp())
+            .Returns(100)
+            .Returns(1000)
+            .Returns(100)
+            .Returns(1000);
+
+        var sut = CreateSut();
+
+        sut.Execute(() => 0);
+    }
+
+    [Fact]
+    public void Execute_EnsureAttemptReported()
+    {
+        var called = false;
+        _timeProvider.SetupSequence(v => v.GetTimestamp()).Returns(100).Returns(1000);
+        _telemetry = TestUtilities.CreateResilienceTelemetry(args =>
+        {
+            var attempt = args.Arguments.Should().BeOfType<ExecutionAttemptArguments>().Subject;
+
+            attempt.Handled.Should().BeFalse();
+            attempt.Attempt.Should().Be(0);
+            attempt.ExecutionTime.Should().Be(_timeProvider.Object.GetElapsedTime(100, 1000));
+            called = true;
+        });
+
+        var sut = CreateSut();
+
+        sut.Execute(() => 0);
+        called.Should().BeTrue();
+    }
+
+    [Fact]
     public void OnRetry_EnsureTelemetry()
     {
         var attempts = new List<int>();
@@ -215,7 +264,7 @@ public class RetryResilienceStrategyTests
 
         _diagnosticSource.Setup(v => v.IsEnabled("OnRetry")).Returns(true);
 
-        _options.ShouldRetry = args => args.Outcome.ResultPredicateAsync(0);
+        _options.ShouldHandle = args => args.Outcome.ResultPredicateAsync(0);
         _options.RetryCount = 3;
         _options.BackoffType = RetryBackoffType.Linear;
         _timeProvider.SetupAnyDelay();
@@ -243,7 +292,7 @@ public class RetryResilienceStrategyTests
             return new ValueTask<TimeSpan>(TimeSpan.Zero);
         };
 
-        _options.ShouldRetry = args => args.Outcome.ResultPredicateAsync(0);
+        _options.ShouldHandle = args => args.Outcome.ResultPredicateAsync(0);
         _options.RetryCount = 3;
         _options.BackoffType = RetryBackoffType.Linear;
         _timeProvider.SetupAnyDelay();
@@ -264,17 +313,10 @@ public class RetryResilienceStrategyTests
 
     private void SetupNoDelay() => _options.RetryDelayGenerator = _ => new ValueTask<TimeSpan>(TimeSpan.Zero);
 
-    private RetryResilienceStrategy CreateSut(TimeProvider? timeProvider = null)
-    {
-        return new RetryResilienceStrategy(
-            _options.BaseDelay,
-            _options.BackoffType,
-            _options.RetryCount,
-            PredicateInvoker<ShouldRetryArguments>.Create(_options.ShouldRetry!, false)!,
-            EventInvoker<OnRetryArguments>.Create(_options.OnRetry, false),
-            GeneratorInvoker<RetryDelayArguments, TimeSpan>.Create(_options.RetryDelayGenerator, TimeSpan.MinValue, false),
+    private RetryResilienceStrategy<object> CreateSut(TimeProvider? timeProvider = null) =>
+        new(_options,
+            false,
             timeProvider ?? _timeProvider.Object,
             _telemetry,
-            RandomUtil.Instance);
-    }
+            () => 1.0);
 }

@@ -1,13 +1,10 @@
-using Polly.Utils;
-
 namespace Polly.Core.Tests.Hedging;
 
 internal class HedgingTimeProvider : TimeProvider
 {
     private DateTimeOffset _utcNow;
 
-    public HedgingTimeProvider()
-        : base(Stopwatch.Frequency) => _utcNow = DateTimeOffset.UtcNow;
+    public HedgingTimeProvider() => _utcNow = DateTimeOffset.UtcNow;
 
     public TimeSpan AutoAdvance { get; set; }
 
@@ -21,14 +18,15 @@ internal class HedgingTimeProvider : TimeProvider
         }
     }
 
+    public Func<int> TimeStampProvider { get; set; } = () => 0;
+
     public List<DelayEntry> DelayEntries { get; } = new List<DelayEntry>();
 
-    public override DateTimeOffset UtcNow => _utcNow;
+    public override DateTimeOffset GetUtcNow() => _utcNow;
 
-    public override void CancelAfter(CancellationTokenSource source, TimeSpan delay)
-    {
-        throw new NotSupportedException();
-    }
+    public override long GetTimestamp() => TimeStampProvider();
+
+    public override void CancelAfter(CancellationTokenSource source, TimeSpan delay) => throw new NotSupportedException();
 
     public override Task Delay(TimeSpan delayValue, CancellationToken cancellationToken = default)
     {
@@ -41,13 +39,8 @@ internal class HedgingTimeProvider : TimeProvider
         return entry.Source.Task;
     }
 
-    public override long GetTimestamp() => throw new NotSupportedException();
-
     public record DelayEntry(TimeSpan Delay, TaskCompletionSource<bool> Source, DateTimeOffset TimeStamp)
     {
-        public void Complete()
-        {
-            Source.TrySetResult(true);
-        }
+        public void Complete() => Source.TrySetResult(true);
     }
 }

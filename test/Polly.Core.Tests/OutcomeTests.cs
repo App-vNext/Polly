@@ -4,7 +4,7 @@ public class OutcomeTests
     [Fact]
     public void Ctor_Result_Ok()
     {
-        var outcome = new Outcome<int>(10);
+        var outcome = Outcome.FromResult(10);
         outcome.HasResult.Should().BeTrue();
         outcome.Exception.Should().BeNull();
         outcome.ExceptionDispatchInfo.Should().BeNull();
@@ -23,7 +23,7 @@ public class OutcomeTests
     [Fact]
     public void Ctor_VoidResult_Ok()
     {
-        var outcome = new Outcome<VoidResult>(VoidResult.Instance);
+        var outcome = Outcome.Void;
         outcome.HasResult.Should().BeTrue();
         outcome.Exception.Should().BeNull();
         outcome.IsVoidResult.Should().BeTrue();
@@ -41,7 +41,7 @@ public class OutcomeTests
     [Fact]
     public void Ctor_Exception_Ok()
     {
-        var outcome = new Outcome<VoidResult>(new InvalidOperationException("Dummy message."));
+        var outcome = Outcome.FromException(new InvalidOperationException("Dummy message."));
         outcome.HasResult.Should().BeFalse();
         outcome.Exception.Should().NotBeNull();
         outcome.ExceptionDispatchInfo.Should().NotBeNull();
@@ -59,14 +59,14 @@ public class OutcomeTests
     [Fact]
     public void ToString_NullResult_ShouldBeEmpty()
     {
-        var outcome = new Outcome<object>((object)null!);
+        var outcome = Outcome.FromResult<object>(default);
         outcome.ToString().Should().BeEmpty();
     }
 
     [Fact]
     public void EnsureSuccess_Result()
     {
-        var outcome = new Outcome<string>("dummy");
+        var outcome = Outcome.FromResult("dummy");
 
         outcome.Invoking(o => o.EnsureSuccess()).Should().NotThrow();
     }
@@ -74,7 +74,7 @@ public class OutcomeTests
     [Fact]
     public void EnsureSuccess_Exception()
     {
-        var outcome = new Outcome<string>(new InvalidOperationException());
+        var outcome = Outcome.FromException<string>(new InvalidOperationException());
 
         outcome.Invoking(o => o.EnsureSuccess()).Should().Throw<InvalidOperationException>();
     }

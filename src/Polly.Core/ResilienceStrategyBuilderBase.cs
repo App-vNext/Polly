@@ -27,6 +27,8 @@ public abstract class ResilienceStrategyBuilderBase
         Properties = other.Properties;
         TimeProvider = other.TimeProvider;
         OnCreatingStrategy = other.OnCreatingStrategy;
+        Randomizer = other.Randomizer;
+        DiagnosticSource = other.DiagnosticSource;
     }
 
     /// <summary>
@@ -70,22 +72,24 @@ public abstract class ResilienceStrategyBuilderBase
     [EditorBrowsable(EditorBrowsableState.Never)]
     public DiagnosticSource? DiagnosticSource { get; set; }
 
+    /// <summary>
+    /// Gets or sets the randomizer that is used by strategies that need to generate random numbers.
+    /// </summary>
+    /// <remarks>
+    /// The default randomizer is thread safe and returns values between 0.0 and 1.0.
+    /// </remarks>
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    [Required]
+    public Func<double> Randomizer { get; set; } = RandomUtil.Instance.NextDouble;
+
     internal abstract bool IsGenericBuilder { get; }
 
-    /// <summary>
-    /// Adds a strategy to the builder.
-    /// </summary>
-    /// <param name="factory">The factory that creates a resilience strategy.</param>
-    /// <param name="options">The options associated with the strategy. If none are provided the default instance of <see cref="ResilienceStrategyOptions"/> is created.</param>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="factory"/> is null.</exception>
-    /// <exception cref="InvalidOperationException">Thrown when this builder was already used to create a strategy. The builder cannot be modified after it has been used.</exception>
-    /// <exception cref="ValidationException">Thrown when the <paramref name="options"/> are invalid.</exception>
-    public void AddStrategy(Func<ResilienceStrategyBuilderContext, ResilienceStrategy> factory, ResilienceStrategyOptions options)
+    internal void AddStrategyCore(Func<ResilienceStrategyBuilderContext, ResilienceStrategy> factory, ResilienceStrategyOptions options)
     {
         Guard.NotNull(factory);
         Guard.NotNull(options);
 
-        ValidationHelper.ValidateObject(options, $"The '{nameof(ResilienceStrategyOptions)}' options are not valid.");
+        ValidationHelper.ValidateObject(options, $"The '{TypeNameFormatter.Format(options.GetType())}' are invalid.");
 
         if (_used)
         {
@@ -126,7 +130,8 @@ public abstract class ResilienceStrategyBuilderBase
             strategyType: entry.Properties.StrategyType,
             timeProvider: TimeProvider,
             isGenericBuilder: IsGenericBuilder,
-            diagnosticSource: DiagnosticSource);
+            diagnosticSource: DiagnosticSource,
+            randomizer: Randomizer);
 
         return entry.Factory(context);
     }

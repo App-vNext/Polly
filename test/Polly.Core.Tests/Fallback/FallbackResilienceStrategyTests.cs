@@ -1,12 +1,11 @@
 using Polly.Fallback;
 using Polly.Telemetry;
-using Polly.Utils;
 
 namespace Polly.Core.Tests.Fallback;
 
 public class FallbackResilienceStrategyTests
 {
-    private readonly FallbackStrategyOptions _options = new();
+    private readonly FallbackStrategyOptions<string> _options = new();
     private readonly List<TelemetryEventArguments> _args = new();
     private readonly ResilienceStrategyTelemetry _telemetry;
     private FallbackHandler<string>? _handler;
@@ -22,7 +21,7 @@ public class FallbackResilienceStrategyTests
     [Fact]
     public void DoesntHandle_Skips()
     {
-        SetHandler(_ => true, () => "dummy".AsOutcome(), true);
+        SetHandler(_ => true, () => Outcome.FromResult("dummy"), true);
 
         Create().Execute(() => -1).Should().Be(-1);
 
@@ -34,7 +33,7 @@ public class FallbackResilienceStrategyTests
     {
         var called = false;
         _options.OnFallback = _ => { called = true; return default; };
-        SetHandler(outcome => outcome.Result == "error", () => "success".AsOutcome());
+        SetHandler(outcome => outcome.Result == "error", () => Outcome.FromResult("success"));
 
         Create().Execute(_ => "error").Should().Be("success");
 
@@ -55,7 +54,7 @@ public class FallbackResilienceStrategyTests
         var called = false;
         _options.OnFallback = _ => { called = true; return default; };
 
-        SetHandler(outcome => outcome.Exception is InvalidOperationException, () => "secondary".AsOutcome());
+        SetHandler(outcome => outcome.Exception is InvalidOperationException, () => Outcome.FromResult("secondary"));
         Create().Execute<string>(_ => throw new InvalidOperationException()).Should().Be("secondary");
 
         _args.Should().ContainSingle(v => v.Arguments is OnFallbackArguments);
@@ -69,7 +68,7 @@ public class FallbackResilienceStrategyTests
         var fallbackActionCalled = false;
 
         _options.OnFallback = _ => { called = true; return default; };
-        SetHandler(outcome => outcome.Exception is InvalidOperationException, () => { fallbackActionCalled = true; return "secondary".AsOutcome(); });
+        SetHandler(outcome => outcome.Exception is InvalidOperationException, () => { fallbackActionCalled = true; return Outcome.FromResult("secondary"); });
 
         Create().Invoking(s => s.Execute<int>(_ => throw new ArgumentException())).Should().Throw<ArgumentException>();
 
@@ -85,7 +84,7 @@ public class FallbackResilienceStrategyTests
         var fallbackActionCalled = false;
 
         _options.OnFallback = _ => { called = true; return default; };
-        SetHandler(outcome => false, () => "secondary".AsOutcome());
+        SetHandler(outcome => false, () => Outcome.FromResult("secondary"));
 
         Create().Execute(_ => "primary").Should().Be("primary");
         _args.Should().BeEmpty();
@@ -103,6 +102,7 @@ public class FallbackResilienceStrategyTests
 
     private FallbackResilienceStrategy<string> Create() => new(
         _handler!,
-        EventInvoker<OnFallbackArguments>.Create(_options.OnFallback, false),
-        _telemetry);
+        _options.OnFallback,
+        _telemetry,
+        true);
 }

@@ -27,6 +27,16 @@ internal static class Log
                 "Strategy Key: '{StrategyKey}', " +
                 "Result: '{Result}'";
 
+    private const string ExecutionAttemptMessage = "Execution attempt. " +
+                "Builder Name: '{BuilderName}', " +
+                "Strategy Name: '{StrategyName}', " +
+                "Strategy Type: '{StrategyType}', " +
+                "Strategy Key: '{StrategyKey}', " +
+                "Result: '{Result}', " +
+                "Handled: '{Handled}', " +
+                "Attempt: '{Attempt}', " +
+                "Execution Time: '{ExecutionTimeMs}'";
+
     private const string StrategyExecutingMessage = "Resilience strategy executing. " +
             "Builder Name: '{BuilderName}', " +
             "Strategy Key: '{StrategyKey}', " +
@@ -83,9 +93,10 @@ internal static class Log
 #endif
 
 #if NET6_0_OR_GREATER
-    [LoggerMessage(2, LogLevel.Debug, StrategyExecutedMessage, EventName = "StrategyExecuted")]
+    [LoggerMessage(EventId = 2, Message = StrategyExecutedMessage, EventName = "StrategyExecuted")]
     public static partial void StrategyExecuted(
         this ILogger logger,
+        LogLevel logLevel,
         string? builderName,
         string? strategyKey,
         string resultType,
@@ -94,11 +105,15 @@ internal static class Log
         double executionTime,
         Exception? exception);
 #else
-    private static readonly Action<ILogger, string?, string?, string, object?, string, double, Exception?> StrategyExecutedAction =
+    private static readonly Action<ILogger, string?, string?, string, object?, string, double, Exception?> StrategyExecutedActionDebug =
         LoggerMessage.Define<string?, string?, string, object?, string, double>(LogLevel.Debug, new EventId(2, "StrategyExecuted"), StrategyExecutedMessage);
+
+    private static readonly Action<ILogger, string?, string?, string, object?, string, double, Exception?> StrategyExecutedActionWarning =
+        LoggerMessage.Define<string?, string?, string, object?, string, double>(LogLevel.Warning, new EventId(2, "StrategyExecuted"), StrategyExecutedMessage);
 
     public static void StrategyExecuted(
         this ILogger logger,
+        LogLevel logLevel,
         string? builderName,
         string? strategyKey,
         string resultType,
@@ -107,7 +122,55 @@ internal static class Log
         double executionTime,
         Exception? exception)
     {
-        StrategyExecutedAction(logger, builderName, strategyKey, resultType, result, executionHealth, executionTime, exception);
+        if (logLevel == LogLevel.Warning)
+        {
+            StrategyExecutedActionWarning(logger, builderName, strategyKey, resultType, result, executionHealth, executionTime, exception);
+        }
+        else
+        {
+            StrategyExecutedActionDebug(logger, builderName, strategyKey, resultType, result, executionHealth, executionTime, exception);
+        }
+    }
+#endif
+
+#if NET6_0_OR_GREATER
+    [LoggerMessage(EventId = 3, Message = ExecutionAttemptMessage, EventName = "ExecutionAttempt", SkipEnabledCheck = true)]
+    public static partial void ExecutionAttempt(
+        this ILogger logger,
+        LogLevel level,
+        string? builderName,
+        string? strategyName,
+        string strategyType,
+        string? strategyKey,
+        object? result,
+        bool handled,
+        int attempt,
+        double executionTimeMs,
+        Exception? exception);
+#else
+    public static void ExecutionAttempt(
+        this ILogger logger,
+        LogLevel level,
+        string? builderName,
+        string? strategyName,
+        string strategyType,
+        string? strategyKey,
+        object? result,
+        bool handled,
+        int attempt,
+        double executionTimeMs,
+        Exception? exception)
+    {
+#pragma warning disable CA1848 // Use the LoggerMessage delegates
+        if (exception is null)
+        {
+            logger.Log(level, new EventId(3, "ExecutionAttempt"), ExecutionAttemptMessage, builderName, strategyName, strategyType, strategyKey, result, handled, attempt, executionTimeMs);
+        }
+        else
+        {
+            logger.Log(level, new EventId(3, "ExecutionAttempt"), exception, ExecutionAttemptMessage, builderName, strategyName, strategyType, strategyKey, result, handled, attempt, executionTimeMs);
+        }
+#pragma warning restore CA1848 // Use the LoggerMessage delegates
     }
 #endif
 }

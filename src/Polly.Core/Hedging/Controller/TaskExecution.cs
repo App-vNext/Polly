@@ -1,4 +1,5 @@
 using Polly.Hedging.Utils;
+using Polly.Telemetry;
 
 namespace Polly.Hedging.Controller;
 
@@ -21,15 +22,21 @@ internal sealed class TaskExecution<T>
 {
     private readonly ResilienceContext _cachedContext = ResilienceContext.Get();
     private readonly CancellationTokenSourcePool _cancellationTokenSourcePool;
+    private readonly TimeProvider _timeProvider;
+    private readonly ResilienceStrategyTelemetry _telemetry;
     private readonly HedgingHandler<T> _handler;
     private CancellationTokenSource? _cancellationSource;
     private CancellationTokenRegistration? _cancellationRegistration;
     private ResilienceContext? _activeContext;
+    private long _startExecutionTimestamp;
+    private long _stopExecutionTimestamp;
 
-    public TaskExecution(HedgingHandler<T> handler, CancellationTokenSourcePool cancellationTokenSourcePool)
+    public TaskExecution(HedgingHandler<T> handler, CancellationTokenSourcePool cancellationTokenSourcePool, TimeProvider timeProvider, ResilienceStrategyTelemetry telemetry)
     {
         _handler = handler;
         _cancellationTokenSourcePool = cancellationTokenSourcePool;
+        _timeProvider = timeProvider;
+        _telemetry = telemetry;
     }
 
     /// <summary>
@@ -56,6 +63,10 @@ internal sealed class TaskExecution<T>
 
     public Action<TaskExecution<T>>? OnReset { get; set; }
 
+    public TimeSpan ExecutionTime => _timeProvider.GetElapsedTime(_startExecutionTimestamp, _stopExecutionTimestamp);
+
+    public int Attempt { get; private set; }
+
     public void AcceptOutcome()
     {
         if (ExecutionTaskSafe?.IsCompleted == true)
@@ -76,15 +87,17 @@ internal sealed class TaskExecution<T>
         }
     }
 
-    public async ValueTask<bool> InitializeAsync<TResult, TState>(
+    public async ValueTask<bool> InitializeAsync<TState>(
         HedgedTaskType type,
         ContextSnapshot snapshot,
-        Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> primaryCallback,
+        Func<ResilienceContext, TState, ValueTask<Outcome<T>>> primaryCallback,
         TState state,
         int attempt)
     {
+        Attempt = attempt;
         Type = type;
         _cancellationSource = _cancellationTokenSourcePool.Get(System.Threading.Timeout.InfiniteTimeSpan);
+        _startExecutionTimestamp = _timeProvider.GetTimestamp();
         Properties.Replace(snapshot.OriginalProperties);
 
         if (snapshot.OriginalCancellationToken.CanBeCanceled)
@@ -96,11 +109,11 @@ internal sealed class TaskExecution<T>
 
         if (type == HedgedTaskType.Secondary)
         {
-            Func<ValueTask<Outcome<TResult>>>? action = null;
+            Func<ValueTask<Outcome<T>>>? action = null;
 
             try
             {
-                action = _handler.GenerateAction(CreateArguments(primaryCallback, state, attempt));
+                action = _handler.GenerateAction(CreateArguments(primaryCallback, snapshot.Context, state, attempt));
                 if (action == null)
                 {
                     await ResetAsync().ConfigureAwait(false);
@@ -109,7 +122,8 @@ internal sealed class TaskExecution<T>
             }
             catch (Exception e)
             {
-                ExecutionTaskSafe = ExecuteCreateActionException<TResult>(e);
+                _stopExecutionTimestamp = _timeProvider.GetTimestamp();
+                ExecutionTaskSafe = ExecuteCreateActionException(e);
                 return true;
             }
 
@@ -125,14 +139,15 @@ internal sealed class TaskExecution<T>
 
     private HedgingActionGeneratorArguments<TResult> CreateArguments<TResult, TState>(
         Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> primaryCallback,
+        ResilienceContext primaryContext,
         TState state,
-        int attempt) => new(Context, attempt, (context) => primaryCallback(context, state));
+        int attempt) => new(primaryContext, Context, attempt, (context) => primaryCallback(context, state));
 
     public async ValueTask ResetAsync()
     {
         OnReset?.Invoke(this);
 
-        if (_cancellationRegistration is CancellationTokenRegistration registration)
+        if (_cancellationRegistration is { } registration)
         {
 #if NETCOREAPP
             await registration.DisposeAsync().ConfigureAwait(false);
@@ -163,14 +178,17 @@ internal sealed class TaskExecution<T>
         IsHandled = false;
         Properties.Clear();
         OnReset = null;
+        Attempt = 0;
         _activeContext = null;
         _cachedContext.Reset();
         _cancellationSource = null!;
+        _startExecutionTimestamp = 0;
+        _stopExecutionTimestamp = 0;
     }
 
-    private async Task ExecuteSecondaryActionAsync<TResult>(Func<ValueTask<Outcome<TResult>>> action)
+    private async Task ExecuteSecondaryActionAsync(Func<ValueTask<Outcome<T>>> action)
     {
-        Outcome<TResult> outcome;
+        Outcome<T> outcome;
 
         try
         {
@@ -178,20 +196,18 @@ internal sealed class TaskExecution<T>
         }
         catch (Exception e)
         {
-            outcome = new Outcome<TResult>(e);
+            outcome = Polly.Outcome.FromException<T>(e);
         }
 
+        _stopExecutionTimestamp = _timeProvider.GetTimestamp();
         await UpdateOutcomeAsync(outcome).ConfigureAwait(Context.ContinueOnCapturedContext);
     }
 
-    private async Task ExecuteCreateActionException<TResult>(Exception e)
-    {
-        await UpdateOutcomeAsync(new Outcome<TResult>(e)).ConfigureAwait(Context.ContinueOnCapturedContext);
-    }
+    private async Task ExecuteCreateActionException(Exception e) => await UpdateOutcomeAsync(Polly.Outcome.FromException<T>(e)).ConfigureAwait(Context.ContinueOnCapturedContext);
 
-    private async Task ExecutePrimaryActionAsync<TResult, TState>(Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> primaryCallback, TState state)
+    private async Task ExecutePrimaryActionAsync<TState>(Func<ResilienceContext, TState, ValueTask<Outcome<T>>> primaryCallback, TState state)
     {
-        Outcome<TResult> outcome;
+        Outcome<T> outcome;
 
         try
         {
@@ -199,17 +215,19 @@ internal sealed class TaskExecution<T>
         }
         catch (Exception e)
         {
-            outcome = new Outcome<TResult>(e);
+            outcome = Polly.Outcome.FromException<T>(e);
         }
 
+        _stopExecutionTimestamp = _timeProvider.GetTimestamp();
         await UpdateOutcomeAsync(outcome).ConfigureAwait(Context.ContinueOnCapturedContext);
     }
 
-    private async Task UpdateOutcomeAsync<TResult>(Outcome<TResult> outcome)
+    private async Task UpdateOutcomeAsync(Outcome<T> outcome)
     {
-        var args = new OutcomeArguments<TResult, HandleHedgingArguments>(Context, outcome, new HandleHedgingArguments());
+        var args = new OutcomeArguments<T, HedgingPredicateArguments>(Context, outcome, new HedgingPredicateArguments());
         Outcome = outcome.AsOutcome();
-        IsHandled = await _handler.ShouldHandle.HandleAsync(args).ConfigureAwait(Context.ContinueOnCapturedContext);
+        IsHandled = await _handler.ShouldHandle(args).ConfigureAwait(Context.ContinueOnCapturedContext);
+        TelemetryUtil.ReportExecutionAttempt(_telemetry, Context, outcome, Attempt, ExecutionTime, IsHandled);
     }
 
     private void PrepareContext(ref ContextSnapshot snapshot)

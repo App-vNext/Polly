@@ -1,5 +1,3 @@
-using System.Runtime.ExceptionServices;
-
 namespace Polly;
 
 #pragma warning disable CA1031 // Do not catch general exception types
@@ -32,11 +30,11 @@ public abstract partial class ResilienceStrategy
                try
                {
                    var result = state.callback(context, state.state);
-                   return new Outcome<TResult>(result);
+                   return Outcome.FromResult(result);
                }
                catch (Exception e)
                {
-                   return new Outcome<TResult>(ExceptionDispatchInfo.Capture(e));
+                   return Outcome.FromException<TResult>(e);
                }
            },
            context,
@@ -66,11 +64,11 @@ public abstract partial class ResilienceStrategy
                 try
                 {
                     var result = state(context);
-                    return new Outcome<TResult>(result);
+                    return Outcome.FromResult(result);
                 }
                 catch (Exception e)
                 {
-                    return new Outcome<TResult>(ExceptionDispatchInfo.Capture(e));
+                    return Outcome.FromException<TResult>(e);
                 }
             },
             context,
@@ -100,12 +98,11 @@ public abstract partial class ResilienceStrategy
                 {
                     try
                     {
-                        var result = state(context.CancellationToken);
-                        return new Outcome<TResult>(result);
+                        return Outcome.FromResult(state(context.CancellationToken));
                     }
                     catch (Exception e)
                     {
-                        return new Outcome<TResult>(ExceptionDispatchInfo.Capture(e));
+                        return Outcome.FromException<TResult>(e);
                     }
                 },
                 context,
@@ -137,12 +134,11 @@ public abstract partial class ResilienceStrategy
                 {
                     try
                     {
-                        var result = state();
-                        return new Outcome<TResult>(result);
+                        return Outcome.FromResult(state());
                     }
                     catch (Exception e)
                     {
-                        return new Outcome<TResult>(ExceptionDispatchInfo.Capture(e));
+                        return Outcome.FromException<TResult>(e);
                     }
                 },
                 context,
@@ -176,12 +172,11 @@ public abstract partial class ResilienceStrategy
                 {
                     try
                     {
-                        var result = state.callback(state.state);
-                        return new Outcome<TResult>(result);
+                        return Outcome.FromResult(state.callback(state.state));
                     }
                     catch (Exception e)
                     {
-                        return new Outcome<TResult>(ExceptionDispatchInfo.Capture(e));
+                        return Outcome.FromException<TResult>(e);
                     }
                 },
                 context,
@@ -219,12 +214,11 @@ public abstract partial class ResilienceStrategy
                 {
                     try
                     {
-                        var result = state.callback(state.state, context.CancellationToken);
-                        return new Outcome<TResult>(result);
+                        return Outcome.FromResult(state.callback(state.state, context.CancellationToken));
                     }
                     catch (Exception e)
                     {
-                        return new Outcome<TResult>(ExceptionDispatchInfo.Capture(e));
+                        return Outcome.FromException<TResult>(e);
                     }
                 },
                 context,

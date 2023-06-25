@@ -1,16 +1,18 @@
+using Microsoft.Extensions.Time.Testing;
 using Polly.CircuitBreaker.Health;
 
 namespace Polly.Core.Tests.CircuitBreaker.Health;
+
 public class SingleHealthMetricsTests
 {
     private readonly FakeTimeProvider _timeProvider;
 
-    public SingleHealthMetricsTests() => _timeProvider = new FakeTimeProvider().SetupUtcNow();
+    public SingleHealthMetricsTests() => _timeProvider = new FakeTimeProvider();
 
     [Fact]
     public void Ctor_EnsureDefaults()
     {
-        var metrics = new SingleHealthMetrics(TimeSpan.FromMilliseconds(100), _timeProvider.Object);
+        var metrics = new SingleHealthMetrics(TimeSpan.FromMilliseconds(100), _timeProvider);
         var health = metrics.GetHealthInfo();
 
         health.FailureRate.Should().Be(0);
@@ -20,7 +22,7 @@ public class SingleHealthMetricsTests
     [Fact]
     public void Increment_Ok()
     {
-        var metrics = new SingleHealthMetrics(TimeSpan.FromMilliseconds(100), _timeProvider.Object);
+        var metrics = new SingleHealthMetrics(TimeSpan.FromMilliseconds(100), _timeProvider);
 
         metrics.IncrementFailure();
         metrics.IncrementSuccess();
@@ -37,7 +39,7 @@ public class SingleHealthMetricsTests
     [Fact]
     public void Reset_Ok()
     {
-        var metrics = new SingleHealthMetrics(TimeSpan.FromMilliseconds(100), _timeProvider.Object);
+        var metrics = new SingleHealthMetrics(TimeSpan.FromMilliseconds(100), _timeProvider);
 
         metrics.IncrementSuccess();
         metrics.Reset();
@@ -48,12 +50,12 @@ public class SingleHealthMetricsTests
     [Fact]
     public void SamplingDurationRespected_Ok()
     {
-        var metrics = new SingleHealthMetrics(TimeSpan.FromMilliseconds(100), _timeProvider.Object);
+        var metrics = new SingleHealthMetrics(TimeSpan.FromMilliseconds(100), _timeProvider);
 
         metrics.IncrementSuccess();
         metrics.IncrementSuccess();
 
-        _timeProvider.AdvanceTime(TimeSpan.FromMilliseconds(100));
+        _timeProvider.Advance(TimeSpan.FromMilliseconds(100));
 
         metrics.GetHealthInfo().Throughput.Should().Be(0);
     }

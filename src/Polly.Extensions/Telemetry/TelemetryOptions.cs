@@ -1,4 +1,3 @@
-using System;
 using System.ComponentModel.DataAnnotations;
 using System.Net.Http;
 using Microsoft.Extensions.Logging;
@@ -9,7 +8,7 @@ namespace Polly.Extensions.Telemetry;
 /// <summary>
 /// The options that are used to configure the telemetry that is produced by the resilience strategies.
 /// </summary>
-public class TelemetryResilienceStrategyOptions
+public class TelemetryOptions
 {
     /// <summary>
     /// Gets or sets the logger factory.

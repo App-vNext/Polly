@@ -8,6 +8,9 @@
     <NoWarn>$(NoWarn);SA1600;SA1204</NoWarn>
     <Include>[Polly.RateLimiting]*</Include>
   </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="..\Polly.Core.Tests\Utils\ExceptionUtilitiesTests.cs" Link="ExceptionUtilitiesTests.cs" />
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Polly.RateLimiting\Polly.RateLimiting.csproj" />

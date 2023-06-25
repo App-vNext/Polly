@@ -20,7 +20,7 @@ public class HedgingResilienceStrategyBuilderExtensionsTests
     {
         _genericBuilder.AddHedging(new HedgingStrategyOptions<string>
         {
-            HedgingActionGenerator = args => () => "dummy".AsOutcomeAsync(),
+            HedgingActionGenerator = args => () => Outcome.FromResultAsTask("dummy"),
             ShouldHandle = _ => PredicateResult.True
         });
         _genericBuilder.Build().Strategy.Should().BeOfType<HedgingResilienceStrategy<string>>();
@@ -32,8 +32,7 @@ public class HedgingResilienceStrategyBuilderExtensionsTests
         _builder
             .Invoking(b => b.AddHedging(new HedgingStrategyOptions { HedgingActionGenerator = null! }))
             .Should()
-            .Throw<ValidationException>()
-            .WithMessage("The hedging strategy options are invalid.*");
+            .Throw<ValidationException>();
     }
 
     [Fact]
@@ -42,19 +41,18 @@ public class HedgingResilienceStrategyBuilderExtensionsTests
         _builder
             .Invoking(b => b.AddHedging(new HedgingStrategyOptions { MaxHedgedAttempts = 1000 }))
             .Should()
-            .Throw<ValidationException>()
-            .WithMessage("The hedging strategy options are invalid.*");
+            .Throw<ValidationException>();
 
         _genericBuilder
             .Invoking(b => b.AddHedging(new HedgingStrategyOptions<string> { ShouldHandle = null! }))
             .Should()
-            .Throw<ValidationException>()
-            .WithMessage("The hedging strategy options are invalid.*");
+            .Throw<ValidationException>();
     }
 
     [Fact]
     public async Task AddHedging_IntegrationTest()
     {
+        var hedgingWithoutOutcome = false;
         ConcurrentQueue<string> results = new();
 
         var strategy = _builder
@@ -71,17 +69,29 @@ public class HedgingResilienceStrategyBuilderExtensionsTests
                 {
                     return async () =>
                     {
-                        await Task.Delay(25, args.Context.CancellationToken);
+                        await Task.Delay(25, args.ActionContext.CancellationToken);
 
                         if (args.Attempt == 3)
                         {
-                            return "success".AsOutcome().AsOutcome();
+                            return Outcome.FromResult((object)"success");
                         }
 
-                        return "error".AsOutcome().AsOutcome();
+                        return Outcome.FromResult((object)"error");
                     };
                 },
-                OnHedging = args => { results.Enqueue(args.Result!.ToString()!); return default; }
+                OnHedging = args =>
+                {
+                    if (args.Arguments.HasOutcome)
+                    {
+                        results.Enqueue(args.Result!.ToString()!);
+                    }
+                    else
+                    {
+                        hedgingWithoutOutcome = true;
+                    }
+
+                    return default;
+                }
             })
             .Build();
 
@@ -94,5 +104,6 @@ public class HedgingResilienceStrategyBuilderExtensionsTests
         result.Should().Be("success");
         results.Should().HaveCountGreaterThan(0);
         results.Distinct().Should().ContainSingle("error");
+        hedgingWithoutOutcome.Should().BeTrue();
     }
 }

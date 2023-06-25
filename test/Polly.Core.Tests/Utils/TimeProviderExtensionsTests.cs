@@ -18,7 +18,7 @@ public class TimeProviderExtensionsTests
         using var tcs = new CancellationTokenSource();
         var token = hasCancellation ? tcs.Token : default;
         var delay = TimeSpan.FromMilliseconds(10);
-        var mock = new FakeTimeProvider();
+        var mock = new MockTimeProvider();
         var timeProvider = mocked ? mock.Object : TimeProvider.System;
         var context = ResilienceContext.Get();
         context.Initialize<VoidResult>(isSynchronous: synchronous);
@@ -83,7 +83,7 @@ public class TimeProviderExtensionsTests
         tcs.Cancel();
         var token = tcs.Token;
         var delay = TimeSpan.FromMilliseconds(10);
-        var mock = new FakeTimeProvider();
+        var mock = new MockTimeProvider();
         var timeProvider = mocked ? mock.Object : TimeProvider.System;
         var context = ResilienceContext.Get();
         context.Initialize<VoidResult>(isSynchronous: synchronous);
@@ -104,7 +104,7 @@ public class TimeProviderExtensionsTests
 
         await TestUtilities.AssertWithTimeoutAsync(async () =>
         {
-            var mock = new FakeTimeProvider();
+            var mock = new MockTimeProvider();
             using var tcs = new CancellationTokenSource();
             var token = tcs.Token;
             var timeProvider = mocked ? mock.Object : TimeProvider.System;

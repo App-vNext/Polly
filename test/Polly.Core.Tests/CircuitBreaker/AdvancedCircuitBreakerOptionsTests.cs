@@ -17,7 +17,7 @@ public class AdvancedCircuitBreakerOptionsTests
         options.OnOpened.Should().BeNull();
         options.OnClosed.Should().BeNull();
         options.OnHalfOpened.Should().BeNull();
-        options.ShouldHandle.Should().BeNull();
+        options.ShouldHandle.Should().NotBeNull();
         options.StrategyType.Should().Be("CircuitBreaker");
         options.StrategyName.Should().BeNull();
 
@@ -27,8 +27,19 @@ public class AdvancedCircuitBreakerOptionsTests
         options.MinimumThroughput = 2;
         options.SamplingDuration = TimeSpan.FromMilliseconds(500);
 
-        options.ShouldHandle = _ => PredicateResult.True;
         ValidationHelper.ValidateObject(options, "Dummy.");
+    }
+
+    [Fact]
+    public async Task ShouldHandle_EnsureDefaults()
+    {
+        var options = new AdvancedCircuitBreakerStrategyOptions();
+        var args = new CircuitBreakerPredicateArguments();
+        var context = ResilienceContext.Get();
+
+        (await options.ShouldHandle(new(context, Outcome.FromResult<object>("dummy"), args))).Should().Be(false);
+        (await options.ShouldHandle(new(context, Outcome.FromException<object>(new OperationCanceledException()), args))).Should().Be(false);
+        (await options.ShouldHandle(new(context, Outcome.FromException<object>(new InvalidOperationException()), args))).Should().Be(true);
     }
 
     [Fact]
@@ -43,7 +54,7 @@ public class AdvancedCircuitBreakerOptionsTests
         options.OnOpened.Should().BeNull();
         options.OnClosed.Should().BeNull();
         options.OnHalfOpened.Should().BeNull();
-        options.ShouldHandle.Should().BeNull();
+        options.ShouldHandle.Should().NotBeNull();
         options.StrategyType.Should().Be("CircuitBreaker");
         options.StrategyName.Should().BeNull();
 
@@ -53,7 +64,6 @@ public class AdvancedCircuitBreakerOptionsTests
         options.MinimumThroughput = 2;
         options.SamplingDuration = TimeSpan.FromMilliseconds(500);
 
-        options.ShouldHandle = _ => PredicateResult.True;
         ValidationHelper.ValidateObject(options, "Dummy.");
     }
 

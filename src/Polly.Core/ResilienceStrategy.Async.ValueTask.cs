@@ -1,5 +1,3 @@
-using System.Runtime.ExceptionServices;
-
 namespace Polly;
 
 #pragma warning disable CA1031 // Do not catch general exception types
@@ -31,11 +29,11 @@ public abstract partial class ResilienceStrategy
                 try
                 {
                     await state.callback(context, state.state).ConfigureAwait(context.ContinueOnCapturedContext);
-                    return VoidResult.Outcome;
+                    return Outcome.Void;
                 }
                 catch (Exception e)
                 {
-                    return new Outcome<VoidResult>(ExceptionDispatchInfo.Capture(e));
+                    return Outcome.FromException(e);
                 }
             },
             context,
@@ -66,11 +64,11 @@ public abstract partial class ResilienceStrategy
                 try
                 {
                     await state(context).ConfigureAwait(context.ContinueOnCapturedContext);
-                    return VoidResult.Outcome;
+                    return Outcome.Void;
                 }
                 catch (Exception e)
                 {
-                    return new Outcome<VoidResult>(ExceptionDispatchInfo.Capture(e));
+                    return Outcome.FromException(e);
                 }
             },
             context,
@@ -105,11 +103,11 @@ public abstract partial class ResilienceStrategy
                     try
                     {
                         await state.callback(state.state, context.CancellationToken).ConfigureAwait(context.ContinueOnCapturedContext);
-                        return VoidResult.Outcome;
+                        return Outcome.Void;
                     }
                     catch (Exception e)
                     {
-                        return new Outcome<VoidResult>(ExceptionDispatchInfo.Capture(e));
+                        return Outcome.FromException(e);
                     }
                 },
                 context,
@@ -146,11 +144,11 @@ public abstract partial class ResilienceStrategy
                     try
                     {
                         await state(context.CancellationToken).ConfigureAwait(context.ContinueOnCapturedContext);
-                        return VoidResult.Outcome;
+                        return Outcome.Void;
                     }
                     catch (Exception e)
                     {
-                        return new Outcome<VoidResult>(ExceptionDispatchInfo.Capture(e));
+                        return Outcome.FromException(e);
                     }
 
                 },

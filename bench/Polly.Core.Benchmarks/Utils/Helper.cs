@@ -15,7 +15,7 @@ internal static partial class Helper
                 var context = ResilienceContext.Get();
 
                 await ((ResilienceStrategy<string>)obj).ExecuteOutcomeAsync(
-                    static (_, _) => new ValueTask<Outcome<string>>(new Outcome<string>("dummy")),
+                    static (_, _) => Outcome.FromResultAsTask("dummy"),
                     context,
                     string.Empty).ConfigureAwait(false);
 

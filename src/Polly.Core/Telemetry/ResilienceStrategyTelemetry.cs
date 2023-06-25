@@ -19,6 +19,11 @@ public sealed class ResilienceStrategyTelemetry
     internal ResilienceTelemetrySource TelemetrySource { get; }
 
     /// <summary>
+    /// Gets a value indicating whether telemetry is enabled.
+    /// </summary>
+    public bool IsEnabled => DiagnosticSource is not null;
+
+    /// <summary>
     /// Reports an event that occurred in a resilience strategy.
     /// </summary>
     /// <typeparam name="TArgs">The arguments associated with this event.</typeparam>
@@ -31,14 +36,18 @@ public sealed class ResilienceStrategyTelemetry
         Guard.NotNull(eventName);
         Guard.NotNull(context);
 
-        context.AddResilienceEvent(new ResilienceEvent(eventName));
+        AddResilienceEvent(eventName, context, args);
 
         if (DiagnosticSource is null || !DiagnosticSource.IsEnabled(eventName))
         {
             return;
         }
 
-        DiagnosticSource.Write(eventName, new TelemetryEventArguments(TelemetrySource, eventName, context, null, args!));
+        var telemetryArgs = TelemetryEventArguments.Get(TelemetrySource, eventName, context, null, args!);
+
+        DiagnosticSource.Write(eventName, telemetryArgs);
+
+        TelemetryEventArguments.Return(telemetryArgs);
     }
 
     /// <summary>
@@ -53,14 +62,30 @@ public sealed class ResilienceStrategyTelemetry
     {
         Guard.NotNull(eventName);
 
-        args.Context.AddResilienceEvent(new ResilienceEvent(eventName));
+        AddResilienceEvent(eventName, args.Context, args.Arguments);
 
         if (DiagnosticSource is null || !DiagnosticSource.IsEnabled(eventName))
         {
             return;
         }
 
-        DiagnosticSource.Write(eventName, new TelemetryEventArguments(TelemetrySource, eventName, args.Context, args.Outcome.AsOutcome(), args.Arguments!));
+        var telemetryArgs = TelemetryEventArguments.Get(TelemetrySource, eventName, args.Context, args.Outcome.AsOutcome(), args.Arguments!);
+
+        DiagnosticSource.Write(eventName, telemetryArgs);
+
+        TelemetryEventArguments.Return(telemetryArgs);
+    }
+
+    private static void AddResilienceEvent<TArgs>(string eventName, ResilienceContext context, TArgs args)
+    {
+        // ExecutionAttemptArguments is not reported as resilience event because that information is already contained
+        // in OnHedgingArguments and OnRetryArguments
+        if (args is ExecutionAttemptArguments attempt)
+        {
+            return;
+        }
+
+        context.AddResilienceEvent(new ResilienceEvent(eventName));
     }
 }
 

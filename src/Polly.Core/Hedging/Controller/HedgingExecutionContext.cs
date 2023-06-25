@@ -8,7 +8,7 @@ namespace Polly.Hedging.Utils;
 /// The context associated with an execution of hedging resilience strategy.
 /// It holds the resources for all executed hedged tasks (primary + secondary) and is responsible for resource disposal.
 /// </summary>
-internal sealed class HedgingExecutionContext<T>
+internal sealed class HedgingExecutionContext<T> : IAsyncDisposable
 {
     public readonly record struct ExecutionInfo<TResult>(TaskExecution<T>? Execution, bool Loaded, Outcome<TResult>? Outcome);
 
@@ -49,13 +49,13 @@ internal sealed class HedgingExecutionContext<T>
 
     private bool ContinueOnCapturedContext => Snapshot.Context.ContinueOnCapturedContext;
 
-    public async ValueTask<ExecutionInfo<TResult>> LoadExecutionAsync<TResult, TState>(
-        Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> primaryCallback,
+    public async ValueTask<ExecutionInfo<T>> LoadExecutionAsync<TState>(
+        Func<ResilienceContext, TState, ValueTask<Outcome<T>>> primaryCallback,
         TState state)
     {
         if (LoadedTasks >= _maxAttempts)
         {
-            return CreateExecutionInfoWhenNoExecution<TResult>();
+            return CreateExecutionInfoWhenNoExecution<T>();
         }
 
         // determine what type of task we are creating
@@ -72,16 +72,16 @@ internal sealed class HedgingExecutionContext<T>
             // we were able to start a new execution, register it
             _tasks.Add(execution);
             _executingTasks.Add(execution);
-            return new ExecutionInfo<TResult>(execution, true, null);
+            return new ExecutionInfo<T>(execution, true, null);
         }
         else
         {
             _executionPool.Return(execution);
-            return CreateExecutionInfoWhenNoExecution<TResult>();
+            return CreateExecutionInfoWhenNoExecution<T>();
         }
     }
 
-    public void Complete()
+    public async ValueTask DisposeAsync()
     {
         UpdateOriginalContext();
 
@@ -91,10 +91,14 @@ internal sealed class HedgingExecutionContext<T>
             pair.Cancel();
         }
 
-        // We are intentionally doing the cleanup in the background as we do not want to
-        // delay the hedging.
-        // The background cleanup is safe. All exceptions are handled.
-        _ = CleanupInBackgroundAsync();
+        foreach (var task in _tasks)
+        {
+            await task.ExecutionTaskSafe!.ConfigureAwait(false);
+            await task.ResetAsync().ConfigureAwait(false);
+            _executionPool.Return(task);
+        }
+
+        Reset();
     }
 
     public async ValueTask<TaskExecution<T>?> TryWaitForCompletedExecutionAsync(TimeSpan hedgingDelay)
@@ -224,18 +228,6 @@ internal sealed class HedgingExecutionContext<T>
                 }
             }
         }
-    }
-
-    private async Task CleanupInBackgroundAsync()
-    {
-        foreach (var task in _tasks)
-        {
-            await task.ExecutionTaskSafe!.ConfigureAwait(false);
-            await task.ResetAsync().ConfigureAwait(false);
-            _executionPool.Return(task);
-        }
-
-        Reset();
     }
 
     private void Reset()

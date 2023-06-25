@@ -16,7 +16,7 @@ public class RetryResilienceStrategyBuilderExtensionsTests
                 BackoffType = RetryBackoffType.Exponential,
                 RetryCount = 3,
                 BaseDelay = TimeSpan.FromSeconds(2),
-                ShouldRetry = _ => PredicateResult.True,
+                ShouldHandle = _ => PredicateResult.True,
             });
 
             AssertStrategy(builder, RetryBackoffType.Exponential, 3, TimeSpan.FromSeconds(2));
@@ -27,17 +27,12 @@ public class RetryResilienceStrategyBuilderExtensionsTests
     {
         builder =>
         {
-            builder.AddRetry(retry => retry.HandleResult(10), RetryBackoffType.Linear, 2, TimeSpan.FromSeconds(1));
-            AssertStrategy(builder, RetryBackoffType.Linear, 2, TimeSpan.FromSeconds(1));
-        },
-        builder =>
-        {
             builder.AddRetry(new RetryStrategyOptions<int>
             {
                 BackoffType = RetryBackoffType.Exponential,
                 RetryCount = 3,
                 BaseDelay = TimeSpan.FromSeconds(2),
-                ShouldRetry = _ => PredicateResult.True
+                ShouldHandle = _ => PredicateResult.True
             });
 
             AssertStrategy(builder, RetryBackoffType.Exponential, 3, TimeSpan.FromSeconds(2));
@@ -66,16 +61,16 @@ public class RetryResilienceStrategyBuilderExtensionsTests
     public void AddRetry_DefaultOptions_Ok()
     {
         var builder = new ResilienceStrategyBuilder();
-        var options = new RetryStrategyOptions { ShouldRetry = _ => PredicateResult.True };
+        var options = new RetryStrategyOptions { ShouldHandle = _ => PredicateResult.True };
 
         builder.AddRetry(options);
 
         AssertStrategy(builder, options.BackoffType, options.RetryCount, options.BaseDelay);
     }
 
-    private static void AssertStrategy(ResilienceStrategyBuilder builder, RetryBackoffType type, int retries, TimeSpan delay, Action<RetryResilienceStrategy>? assert = null)
+    private static void AssertStrategy(ResilienceStrategyBuilder builder, RetryBackoffType type, int retries, TimeSpan delay, Action<RetryResilienceStrategy<object>>? assert = null)
     {
-        var strategy = (RetryResilienceStrategy)builder.Build();
+        var strategy = (RetryResilienceStrategy<object>)builder.Build();
 
         strategy.BackoffType.Should().Be(type);
         strategy.RetryCount.Should().Be(retries);
@@ -84,9 +79,9 @@ public class RetryResilienceStrategyBuilderExtensionsTests
         assert?.Invoke(strategy);
     }
 
-    private static void AssertStrategy<T>(ResilienceStrategyBuilder<T> builder, RetryBackoffType type, int retries, TimeSpan delay, Action<RetryResilienceStrategy>? assert = null)
+    private static void AssertStrategy<T>(ResilienceStrategyBuilder<T> builder, RetryBackoffType type, int retries, TimeSpan delay, Action<RetryResilienceStrategy<T>>? assert = null)
     {
-        var strategy = (RetryResilienceStrategy)builder.Build().Strategy;
+        var strategy = (RetryResilienceStrategy<T>)builder.Build().Strategy;
 
         strategy.BackoffType.Should().Be(type);
         strategy.RetryCount.Should().Be(retries);
@@ -99,15 +94,57 @@ public class RetryResilienceStrategyBuilderExtensionsTests
     public void AddRetry_InvalidOptions_Throws()
     {
         new ResilienceStrategyBuilder()
-            .Invoking(b => b.AddRetry(new RetryStrategyOptions { ShouldRetry = null! }))
+            .Invoking(b => b.AddRetry(new RetryStrategyOptions { ShouldHandle = null! }))
             .Should()
-            .Throw<ValidationException>()
-            .WithMessage("The retry strategy options are invalid.*");
+            .Throw<ValidationException>();
 
         new ResilienceStrategyBuilder<int>()
-            .Invoking(b => b.AddRetry(new RetryStrategyOptions<int> { ShouldRetry = null! }))
+            .Invoking(b => b.AddRetry(new RetryStrategyOptions<int> { ShouldHandle = null! }))
             .Should()
-            .Throw<ValidationException>()
-            .WithMessage("The retry strategy options are invalid.*");
+            .Throw<ValidationException>();
+    }
+
+    [Fact]
+    public void GetAggregatedDelay_ShouldReturnTheSameValue()
+    {
+        var options = new RetryStrategyOptions { BackoffType = RetryBackoffType.ExponentialWithJitter };
+
+        var delay = GetAggregatedDelay(options);
+        GetAggregatedDelay(options).Should().Be(delay);
+    }
+
+    [Fact]
+    public void GetAggregatedDelay_EnsureCorrectValue()
+    {
+        var options = new RetryStrategyOptions { BackoffType = RetryBackoffType.Constant, BaseDelay = TimeSpan.FromSeconds(1), RetryCount = 5 };
+
+        GetAggregatedDelay(options).Should().Be(TimeSpan.FromSeconds(5));
+    }
+
+    private static TimeSpan GetAggregatedDelay<T>(RetryStrategyOptions<T> options)
+    {
+        var aggregatedDelay = TimeSpan.Zero;
+
+        var strategy = new ResilienceStrategyBuilder { Randomizer = () => 1.0 }.AddRetry(new()
+        {
+            RetryCount = options.RetryCount,
+            BaseDelay = options.BaseDelay,
+            BackoffType = options.BackoffType,
+            ShouldHandle = _ => PredicateResult.True, // always retry until all retries are exhausted
+            RetryDelayGenerator = args =>
+            {
+                // the delay hint is calculated for this attempt by the retry strategy
+                aggregatedDelay += args.Arguments.DelayHint;
+
+                // return zero delay, so no waiting
+                return new ValueTask<TimeSpan>(TimeSpan.Zero);
+            }
+        })
+        .Build();
+
+        // this executes all retries and we aggregate the delays immediately
+        strategy.Execute(() => { });
+
+        return aggregatedDelay;
     }
 }

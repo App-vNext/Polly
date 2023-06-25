@@ -102,9 +102,7 @@ public static class CircuitBreakerResilienceStrategyBuilderExtensions
     private static TBuilder AddAdvancedCircuitBreakerCore<TBuilder, TResult>(this TBuilder builder, AdvancedCircuitBreakerStrategyOptions<TResult> options)
         where TBuilder : ResilienceStrategyBuilderBase
     {
-        ValidationHelper.ValidateObject(options, "The advanced circuit breaker strategy options are invalid.");
-
-        builder.AddStrategy(
+        return builder.AddStrategy(
             context =>
             {
                 var behavior = new AdvancedCircuitBehavior(
@@ -115,35 +113,34 @@ public static class CircuitBreakerResilienceStrategyBuilderExtensions
                 return CreateStrategy(context, options, behavior);
             },
             options);
-
-        return builder;
     }
 
     private static TBuilder AddSimpleCircuitBreakerCore<TBuilder, TResult>(this TBuilder builder, SimpleCircuitBreakerStrategyOptions<TResult> options)
         where TBuilder : ResilienceStrategyBuilderBase
     {
-        ValidationHelper.ValidateObject(options, "The circuit breaker strategy options are invalid.");
-
-        builder.AddStrategy(context => CreateStrategy(context, options, new ConsecutiveFailuresCircuitBehavior(options.FailureThreshold)), options);
-        return builder;
+        return builder.AddStrategy(context => CreateStrategy(context, options, new ConsecutiveFailuresCircuitBehavior(options.FailureThreshold)), options);
     }
 
-    internal static CircuitBreakerResilienceStrategy CreateStrategy<TResult>(ResilienceStrategyBuilderContext context, CircuitBreakerStrategyOptions<TResult> options, CircuitBehavior behavior)
+    internal static CircuitBreakerResilienceStrategy<TResult> CreateStrategy<TResult>(
+        ResilienceStrategyBuilderContext context,
+        CircuitBreakerStrategyOptions<TResult> options,
+        CircuitBehavior behavior)
     {
-        var controller = new CircuitStateController(
+        var controller = new CircuitStateController<TResult>(
             options.BreakDuration,
-            context.CreateInvoker(options.OnOpened),
-            context.CreateInvoker(options.OnClosed),
+            options.OnOpened,
+            options.OnClosed,
             options.OnHalfOpened,
             behavior,
             context.TimeProvider,
             context.Telemetry);
 
-        return new CircuitBreakerResilienceStrategy(
-            context.CreateInvoker(options.ShouldHandle)!,
+        return new CircuitBreakerResilienceStrategy<TResult>(
+            options.ShouldHandle!,
             controller,
             options.StateProvider,
-            options.ManualControl);
+            options.ManualControl,
+            context.IsGenericBuilder);
     }
 }
 

@@ -8,7 +8,7 @@ public class CancellationTokenSourcePoolTests
     public static IEnumerable<object[]> TimeProviders()
     {
         yield return new object[] { TimeProvider.System };
-        yield return new object[] { new FakeTimeProvider() };
+        yield return new object[] { new MockTimeProvider() };
     }
 
     [Fact]

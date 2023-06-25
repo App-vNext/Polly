@@ -75,7 +75,7 @@ internal static partial class Helper
 
             if (result.Exception is not null)
             {
-                return new Outcome<TResult>(default(TResult)!);
+                return Outcome.FromResult<TResult>(default);
             }
 
             return result;

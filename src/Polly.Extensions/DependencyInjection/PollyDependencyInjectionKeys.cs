@@ -3,7 +3,7 @@ namespace Polly.Extensions.DependencyInjection;
 /// <summary>
 /// The resilience keys used in the dependency injection scenarios.
 /// </summary>
-public static class PollyDependencyInjectionKeys
+internal static class PollyDependencyInjectionKeys
 {
     /// <summary>
     /// The key used to store and access the <see cref="IServiceProvider"/> from <see cref="ResilienceProperties"/>.

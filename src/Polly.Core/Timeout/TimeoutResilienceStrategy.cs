@@ -1,5 +1,4 @@
 using System.Diagnostics.CodeAnalysis;
-using System.Runtime.ExceptionServices;
 using Polly.Telemetry;
 
 namespace Polly.Timeout;
@@ -46,13 +45,17 @@ internal sealed class TimeoutResilienceStrategy : ResilienceStrategy
         var cancellationSource = _cancellationTokenSourcePool.Get(timeout);
         context.CancellationToken = cancellationSource.Token;
 
-        using var registration = CreateRegistration(cancellationSource, previousToken);
+        var registration = CreateRegistration(cancellationSource, previousToken);
 
         var outcome = await ExecuteCallbackSafeAsync(callback, context, state).ConfigureAwait(context.ContinueOnCapturedContext);
         var isCancellationRequested = cancellationSource.IsCancellationRequested;
 
         // execution is finished, cleanup
         context.CancellationToken = previousToken;
+#pragma warning disable CA1849 // Call async methods when in an async method, OK here as the callback is synchronous
+        registration.Dispose();
+#pragma warning restore CA1849 // Call async methods when in an async method
+
         _cancellationTokenSourcePool.Return(cancellationSource);
 
         // check the outcome
@@ -71,7 +74,7 @@ internal sealed class TimeoutResilienceStrategy : ResilienceStrategy
                 timeout,
                 e);
 
-            return new Outcome<TResult>(ExceptionDispatchInfo.Capture(timeoutException));
+            return Outcome.FromException<TResult>(timeoutException.TrySetStackTrace());
         }
 
         return outcome;
@@ -88,13 +91,13 @@ internal sealed class TimeoutResilienceStrategy : ResilienceStrategy
         return timeout;
     }
 
-    private static CancellationTokenRegistration? CreateRegistration(CancellationTokenSource cancellationSource, CancellationToken previousToken)
+    private static CancellationTokenRegistration CreateRegistration(CancellationTokenSource cancellationSource, CancellationToken previousToken)
     {
         if (previousToken.CanBeCanceled)
         {
             return previousToken.Register(static state => ((CancellationTokenSource)state!).Cancel(), cancellationSource, useSynchronizationContext: false);
         }
 
-        return null;
+        return default;
     }
 }

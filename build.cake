@@ -174,7 +174,7 @@ Task("__RunMutationTests")
     TestProject(File("../src/Polly/Polly.csproj"), File("./Polly.Specs/Polly.Specs.csproj"), "Polly.csproj");
 
     context.Environment.WorkingDirectory = oldDirectory;
-    
+
     void TestProject(FilePath proj, FilePath testProj, string project)
     {
         var dotNetBuildSettings = new DotNetBuildSettings
@@ -191,9 +191,9 @@ Task("__RunMutationTests")
         var score = int.Parse(mutationScore);
 
         Information($"Running mutation tests for '{proj}'. Test Project: '{testProj}'");
-        
+
         var args = $"{strykerPath} --project {project} --test-project {testProj.FullPath} --break-at {score} --config-file {strykerConfig} --output {strykerOutput}/{project}";
-        
+
         var result = StartProcess("dotnet", args);
         if (result != 0)
         {

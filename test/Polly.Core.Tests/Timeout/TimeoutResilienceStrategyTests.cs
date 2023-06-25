@@ -7,7 +7,7 @@ namespace Polly.Core.Tests.Timeout;
 public class TimeoutResilienceStrategyTests : IDisposable
 {
     private readonly ResilienceStrategyTelemetry _telemetry;
-    private readonly FakeTimeProvider _timeProvider;
+    private readonly MockTimeProvider _timeProvider;
     private readonly TimeoutStrategyOptions _options;
     private readonly CancellationTokenSource _cancellationSource;
     private readonly TimeSpan _delay = TimeSpan.FromSeconds(12);
@@ -16,7 +16,7 @@ public class TimeoutResilienceStrategyTests : IDisposable
     public TimeoutResilienceStrategyTests()
     {
         _telemetry = TestUtilities.CreateResilienceTelemetry(_diagnosticSource.Object);
-        _timeProvider = new FakeTimeProvider();
+        _timeProvider = new MockTimeProvider();
         _options = new TimeoutStrategyOptions();
         _cancellationSource = new CancellationTokenSource();
     }
@@ -103,6 +103,19 @@ public class TimeoutResilienceStrategyTests : IDisposable
             .WithMessage("The operation didn't complete within the allowed timeout of '00:00:02'.");
 
         _timeProvider.VerifyAll();
+    }
+
+    [Fact]
+    public async Task Execute_Timeout_EnsureStackTrace()
+    {
+        using var cts = new CancellationTokenSource();
+        SetTimeout(TimeSpan.FromSeconds(2));
+        _timeProvider.SetupCancelAfterNow(TimeSpan.FromSeconds(2));
+        var sut = CreateSut();
+
+        var outcome = await sut.ExecuteOutcomeAsync(async (c, _) => { await Delay(c.CancellationToken); return Outcome.FromResult("dummy"); }, ResilienceContext.Get(), "state");
+        outcome.Exception.Should().BeOfType<TimeoutRejectedException>();
+        outcome.Exception!.StackTrace.Should().Contain("Execute_Timeout_EnsureStackTrace");
     }
 
     [Fact]

@@ -1,5 +1,3 @@
-using System;
-using System.Threading.Tasks;
 using Polly.Telemetry;
 
 namespace Polly.Utils;
@@ -60,7 +58,7 @@ internal sealed class ReloadableResilienceStrategy : ResilienceStrategy
             catch (Exception e)
             {
                 var context = ResilienceContext.Get().Initialize<VoidResult>(isSynchronous: true);
-                var args = new OutcomeArguments<VoidResult, ReloadFailedArguments>(context, new Outcome<VoidResult>(e), new ReloadFailedArguments(e));
+                var args = new OutcomeArguments<VoidResult, ReloadFailedArguments>(context, Outcome.FromException(e), new ReloadFailedArguments(e));
                 _telemetry.Report(ReloadFailedEvent, args);
                 ResilienceContext.Return(context);
             }

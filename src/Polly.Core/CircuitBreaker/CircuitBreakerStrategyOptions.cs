@@ -37,10 +37,11 @@ public abstract class CircuitBreakerStrategyOptions<TResult> : ResilienceStrateg
     /// Gets or sets the predicates for the circuit breaker.
     /// </summary>
     /// <remarks>
-    /// Defaults to <see langword="null"/>. This property is required.
+    /// Defaults to a delegate that handles circuit breaker on any exception except <see cref="OperationCanceledException"/>.
+    /// This property is required.
     /// </remarks>
     [Required]
-    public Func<OutcomeArguments<TResult, CircuitBreakerPredicateArguments>, ValueTask<bool>>? ShouldHandle { get; set; }
+    public Func<OutcomeArguments<TResult, CircuitBreakerPredicateArguments>, ValueTask<bool>> ShouldHandle { get; set; } = DefaultPredicates<CircuitBreakerPredicateArguments, TResult>.HandleOutcome;
 
     /// <summary>
     /// Gets or sets the event that is raised when the circuit resets to a <see cref="CircuitState.Closed"/> state.
