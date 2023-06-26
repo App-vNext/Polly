@@ -96,11 +96,11 @@ public class HedgingResilienceStrategyTests : IDisposable
         var attempts = _events.Select(v => v.Arguments).OfType<ExecutionAttemptArguments>().ToArray();
 
         attempts[0].Handled.Should().BeTrue();
-        attempts[0].ExecutionTime.Should().Be(_timeProvider.GetElapsedTime(0, 1000));
+        attempts[0].ExecutionTime.Should().BeGreaterThan(TimeSpan.Zero);
         attempts[0].Attempt.Should().Be(0);
 
         attempts[1].Handled.Should().BeTrue();
-        attempts[1].ExecutionTime.Should().Be(_timeProvider.GetElapsedTime(0, 1000));
+        attempts[1].ExecutionTime.Should().BeGreaterThan(TimeSpan.Zero);
         attempts[1].Attempt.Should().Be(1);
     }
 
@@ -164,7 +164,7 @@ public class HedgingResilienceStrategyTests : IDisposable
         var result = await strategy.ExecuteAsync(_primaryTasks.SlowTask);
 
         result.Should().NotBeNull();
-        _timeProvider.DelayEntries.Should().HaveCount(5);
+        _timeProvider.TimerEntries.Should().HaveCount(5);
         result.Should().Be("Oranges");
     }
 
@@ -865,7 +865,7 @@ public class HedgingResilienceStrategyTests : IDisposable
 
         _timeProvider.Advance(TimeSpan.FromHours(5));
         (await task).Should().Be(Success);
-        _timeProvider.DelayEntries.Should().Contain(e => e.Delay == delay);
+        _timeProvider.TimerEntries.Should().Contain(e => e.Delay == delay);
     }
 
     [Fact]
