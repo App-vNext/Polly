@@ -1,3 +1,10 @@
+## 8.0.0-alpha.4
+
+* Rename FakeTimeProvider by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/1349
+* Adopt FakeTimeProvider by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/1350
+* Drop custom validation attributes by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1351
+* Drop TimeProvider.CancelAfter by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1352
+
 ## 8.0.0-alpha.3
 
 * Update README.md with v8 Alpha v2 release announcement by [@joelhulen](https://github.com/joelhulen) in https://github.com/App-vNext/Polly/pull/1337
@@ -11,8 +18,6 @@
 * Bump StyleCop.Analyzers from 1.2.0-beta.435 to 1.2.0-beta.507 by [@dependabot](https://github.com/dependabot) in https://github.com/App-vNext/Polly/pull/1342
 * Bump SonarAnalyzer.CSharp from 9.3.0.71466 to 9.4.0.72892 by [@dependabot](https://github.com/dependabot) in https://github.com/App-vNext/Polly/pull/1343
 * Expose Randomizer property and use it in retry strategy by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1346
-
-**Full Changelog**: https://github.com/App-vNext/Polly/compare/8.0.0-alpha.2...8.0.0-alpha.3
 
 ## 8.0.0-alpha.2
 
@@ -40,8 +45,6 @@
 - Introduce Outcome by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1331
 - Validate NuGet package signatures by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/1335
 - Allow implicit conversion of `PredicateBuilder` to delegates by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1332
-
-**Full Changelog**: https://github.com/App-vNext/Polly/compare/8.0.0-alpha.1...8.0.0-alpha.2
 
 ## 8.0.0-alpha.1
 

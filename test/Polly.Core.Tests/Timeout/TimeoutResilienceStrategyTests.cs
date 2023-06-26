@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Time.Testing;
 using Moq;
 using Polly.Telemetry;
 using Polly.Timeout;
@@ -7,16 +8,16 @@ namespace Polly.Core.Tests.Timeout;
 public class TimeoutResilienceStrategyTests : IDisposable
 {
     private readonly ResilienceStrategyTelemetry _telemetry;
-    private readonly MockTimeProvider _timeProvider;
+    private readonly FakeTimeProvider _timeProvider = new();
     private readonly TimeoutStrategyOptions _options;
     private readonly CancellationTokenSource _cancellationSource;
     private readonly TimeSpan _delay = TimeSpan.FromSeconds(12);
+
     private readonly Mock<DiagnosticSource> _diagnosticSource = new();
 
     public TimeoutResilienceStrategyTests()
     {
         _telemetry = TestUtilities.CreateResilienceTelemetry(_diagnosticSource.Object);
-        _timeProvider = new MockTimeProvider();
         _options = new TimeoutStrategyOptions();
         _cancellationSource = new CancellationTokenSource();
     }
@@ -55,6 +56,8 @@ public class TimeoutResilienceStrategyTests : IDisposable
 
         var called = false;
         SetTimeout(_delay);
+
+        var executionTime = _delay + TimeSpan.FromSeconds(1);
         _options.OnTimeout = args =>
         {
             args.Exception.Should().BeAssignableTo<OperationCanceledException>();
@@ -65,10 +68,14 @@ public class TimeoutResilienceStrategyTests : IDisposable
             return default;
         };
 
-        _timeProvider.SetupCancelAfterNow(_delay);
-
         var sut = CreateSut();
-        await sut.Invoking(s => sut.ExecuteAsync(async token => await Task.Delay(_delay, token)).AsTask()).Should().ThrowAsync<TimeoutRejectedException>();
+        await sut.Invoking(s => sut.ExecuteAsync(async token =>
+        {
+            var delay = _timeProvider.Delay(executionTime, token);
+            _timeProvider.Advance(_delay);
+            await delay;
+        })
+        .AsTask()).Should().ThrowAsync<TimeoutRejectedException>();
 
         called.Should().BeTrue();
         _diagnosticSource.VerifyAll();
@@ -79,8 +86,8 @@ public class TimeoutResilienceStrategyTests : IDisposable
     public void Execute_NoTimeout(TimeSpan timeout)
     {
         var called = false;
-        var sut = CreateSut();
         SetTimeout(timeout);
+        var sut = CreateSut();
         sut.Execute(_ => { });
 
         called.Should().BeFalse();
@@ -94,26 +101,37 @@ public class TimeoutResilienceStrategyTests : IDisposable
         using var cts = new CancellationTokenSource();
         CancellationToken token = defaultCancellationToken ? default : cts.Token;
         SetTimeout(TimeSpan.FromSeconds(2));
-        _timeProvider.SetupCancelAfterNow(TimeSpan.FromSeconds(2));
         var sut = CreateSut();
 
         await sut
-            .Invoking(s => s.ExecuteAsync(async token => await Delay(token), token).AsTask())
+            .Invoking(s => s.ExecuteAsync(async token =>
+            {
+                var delay = _timeProvider.Delay(TimeSpan.FromSeconds(4), token);
+                _timeProvider.Advance(TimeSpan.FromSeconds(2));
+                await delay;
+            },
+            token)
+            .AsTask())
             .Should().ThrowAsync<TimeoutRejectedException>()
             .WithMessage("The operation didn't complete within the allowed timeout of '00:00:02'.");
-
-        _timeProvider.VerifyAll();
     }
 
     [Fact]
     public async Task Execute_Timeout_EnsureStackTrace()
     {
-        using var cts = new CancellationTokenSource();
         SetTimeout(TimeSpan.FromSeconds(2));
-        _timeProvider.SetupCancelAfterNow(TimeSpan.FromSeconds(2));
         var sut = CreateSut();
 
-        var outcome = await sut.ExecuteOutcomeAsync(async (c, _) => { await Delay(c.CancellationToken); return Outcome.FromResult("dummy"); }, ResilienceContext.Get(), "state");
+        var outcome = await sut.ExecuteOutcomeAsync(async (c, _) =>
+        {
+            var delay = _timeProvider.Delay(TimeSpan.FromSeconds(4), c.CancellationToken);
+            _timeProvider.Advance(TimeSpan.FromSeconds(2));
+            await delay;
+
+            return Outcome.FromResult("dummy");
+        },
+        ResilienceContext.Get(),
+        "state");
         outcome.Exception.Should().BeOfType<TimeoutRejectedException>();
         outcome.Exception!.StackTrace.Should().Contain("Execute_Timeout_EnsureStackTrace");
     }
@@ -132,15 +150,18 @@ public class TimeoutResilienceStrategyTests : IDisposable
             return default;
         };
 
-        _timeProvider.Setup(v => v.CancelAfter(It.IsAny<CancellationTokenSource>(), delay));
-
         var sut = CreateSut();
 
-        await sut.Invoking(s => s.ExecuteAsync(async token => await Delay(token, () => cts.Cancel()), cts.Token).AsTask())
-                 .Should()
-                 .ThrowAsync<OperationCanceledException>();
+        await sut.Invoking(s => s.ExecuteAsync(async token =>
+        {
+            var task = _timeProvider.Delay(delay, token);
+            cts.Cancel();
+            await task;
+        },
+        cts.Token).AsTask())
+        .Should()
+        .ThrowAsync<OperationCanceledException>();
 
-        _timeProvider.VerifyAll();
         onTimeoutCalled.Should().BeFalse();
 
         _diagnosticSource.Verify(v => v.IsEnabled("OnTimeout"), Times.Never());
@@ -153,7 +174,7 @@ public class TimeoutResilienceStrategyTests : IDisposable
 
         using var cts = new CancellationTokenSource();
         SetTimeout(TimeSpan.FromSeconds(10));
-        _timeProvider.Setup(v => v.CancelAfter(It.IsAny<CancellationTokenSource>(), delay));
+        _timeProvider.Advance(delay);
 
         var sut = CreateSut();
 
@@ -178,7 +199,6 @@ public class TimeoutResilienceStrategyTests : IDisposable
         // Arrange
         using var cts = new CancellationTokenSource();
         SetTimeout(TimeSpan.FromSeconds(10));
-        _timeProvider.Setup(v => v.CancelAfter(It.IsAny<CancellationTokenSource>(), TimeSpan.FromSeconds(10)));
 
         var sut = CreateSut();
 
@@ -196,7 +216,13 @@ public class TimeoutResilienceStrategyTests : IDisposable
         // Act
         try
         {
-            await sut.ExecuteAsync(async token => await Delay(token, () => cts.Cancel()), cts.Token);
+            await sut.ExecuteAsync(async token =>
+            {
+                Task delayTask = Task.Delay(TimeSpan.FromSeconds(10), token);
+                cts.Cancel();
+                await delayTask;
+            },
+            cts.Token);
         }
         catch (OperationCanceledException)
         {
@@ -209,19 +235,5 @@ public class TimeoutResilienceStrategyTests : IDisposable
 
     private void SetTimeout(TimeSpan timeout) => _options.TimeoutGenerator = args => new ValueTask<TimeSpan>(timeout);
 
-    private TimeoutResilienceStrategy CreateSut() => new(_options, _timeProvider.Object, _telemetry);
-
-    private static Task Delay(CancellationToken token, Action? onWaiting = null)
-    {
-        Task delayTask = Task.CompletedTask;
-
-        try
-        {
-            return Task.Delay(TimeSpan.FromSeconds(2), token);
-        }
-        finally
-        {
-            onWaiting?.Invoke();
-        }
-    }
+    private TimeoutResilienceStrategy CreateSut() => new(_options, _timeProvider, _telemetry);
 }

@@ -9,27 +9,44 @@ internal class MockTimeProvider : Mock<TimeProvider>
     {
     }
 
-    public MockTimeProvider SetupAnyDelay(CancellationToken cancellationToken = default)
+    public MockTimeProvider SetupAnyCreateTimer()
     {
-        Setup(x => x.Delay(It.IsAny<TimeSpan>(), cancellationToken)).Returns(Task.CompletedTask);
+        Setup(t => t.CreateTimer(It.IsAny<TimerCallback>(), It.IsAny<object?>(), It.IsAny<TimeSpan>(), It.IsAny<TimeSpan>()))
+        .Callback((TimerCallback callback, object? state, TimeSpan _, TimeSpan _) => callback(state))
+        .Returns(Of<ITimer>());
+
         return this;
     }
 
-    public MockTimeProvider SetupDelay(TimeSpan delay, CancellationToken cancellationToken = default)
+    public Mock<ITimer> SetupCreateTimer(TimeSpan delay)
     {
-        Setup(x => x.Delay(delay, cancellationToken)).Returns(Task.CompletedTask);
+        var timer = new Mock<ITimer>(MockBehavior.Loose);
+
+        Setup(t => t.CreateTimer(It.IsAny<TimerCallback>(), It.IsAny<object?>(), delay, It.IsAny<TimeSpan>()))
+        .Callback((TimerCallback callback, object? state, TimeSpan _, TimeSpan _) => callback(state))
+        .Returns(timer.Object);
+
+        return timer;
+    }
+
+    public MockTimeProvider VerifyCreateTimer(Times times)
+    {
+        Verify(t => t.CreateTimer(It.IsAny<TimerCallback>(), It.IsAny<object?>(), It.IsAny<TimeSpan>(), It.IsAny<TimeSpan>()), times);
         return this;
     }
 
-    public MockTimeProvider SetupDelayCancelled(TimeSpan delay, CancellationToken cancellationToken = default)
+    public MockTimeProvider VerifyCreateTimer(TimeSpan delay, Times times)
     {
-        Setup(x => x.Delay(delay, cancellationToken)).ThrowsAsync(new OperationCanceledException());
+        Verify(t => t.CreateTimer(It.IsAny<TimerCallback>(), It.IsAny<object?>(), delay, It.IsAny<TimeSpan>()), times);
         return this;
     }
 
-    public MockTimeProvider SetupCancelAfterNow(TimeSpan delay)
+    public MockTimeProvider SetupCreateTimerException(TimeSpan delay, Exception exception)
     {
-        Setup(v => v.CancelAfter(It.IsAny<CancellationTokenSource>(), delay)).Callback<CancellationTokenSource, TimeSpan>((cts, _) => cts.Cancel());
+        Setup(t => t.CreateTimer(It.IsAny<TimerCallback>(), It.IsAny<object?>(), delay, It.IsAny<TimeSpan>()))
+        .Callback((TimerCallback _, object? _, TimeSpan _, TimeSpan _) => throw exception)
+        .Returns(Of<ITimer>());
+
         return this;
     }
 }
