@@ -156,7 +156,7 @@ public class RetryResilienceStrategyTests
     }
 
     [Fact]
-    public void RetryDelayGenerator_Respected()
+    public async Task RetryDelayGenerator_Respected()
     {
         int calls = 0;
         _options.OnRetry = _ => { calls++; return default; };
@@ -170,13 +170,13 @@ public class RetryResilienceStrategyTests
         provider.Setup(p => p.TimestampFrequency).Returns(10000);
 
         var sut = CreateSut(provider.Object);
-        sut.Execute(_ => { });
+        await sut.ExecuteAsync(_ => default);
 
         provider.VerifyAll();
     }
 
     [Fact]
-    public void RetryDelayGenerator_ZeroDelay_NoTimeProviderCalls()
+    public async Task RetryDelayGenerator_ZeroDelay_NoTimeProviderCalls()
     {
         int calls = 0;
         _options.OnRetry = _ => { calls++; return default; };
@@ -188,7 +188,7 @@ public class RetryResilienceStrategyTests
         provider.Setup(p => p.TimestampFrequency).Returns(10000);
 
         var sut = CreateSut(provider.Object);
-        sut.Execute(_ => { });
+        await sut.ExecuteAsync(_ => default);
 
         provider.VerifyAll();
         provider.VerifyNoOtherCalls();
