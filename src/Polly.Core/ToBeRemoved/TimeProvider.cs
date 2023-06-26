@@ -3,15 +3,7 @@
 
 using System.Diagnostics.CodeAnalysis;
 
-#pragma warning disable S3872 // Parameter names should not duplicate the names of their methods
-#pragma warning disable SA1403 // File may only contain a single namespace
-#pragma warning disable SA1600 // Elements should be documented
-#pragma warning disable SA1649 // File name should match first type name
-#pragma warning disable SA1402 // File may only contain a single type
-#pragma warning disable CA2208 // Instantiate argument exceptions correctly
-#pragma warning disable S3928 // Parameter names used into ArgumentException constructors should match an existing one
-#pragma warning disable CA1001 // Types that own disposable fields should be disposable
-#pragma warning disable CA1849 // Call async methods when in an async method
+#pragma warning disable
 
 namespace System.Threading
 {
