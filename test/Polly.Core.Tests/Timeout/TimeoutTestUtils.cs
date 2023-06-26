@@ -12,12 +12,13 @@ public static class TimeoutTestUtils
     {
         TimeSpan.MinValue,
         TimeSpan.Zero,
-        TimeSpan.FromSeconds(-1)
+        TimeSpan.FromSeconds(-1),
+        TimeSpan.FromHours(25),
     };
 
     public static readonly TheoryData<TimeSpan> ValidTimeouts = new()
     {
-        System.Threading.Timeout.InfiniteTimeSpan,
-        TimeSpan.FromSeconds(1)
+        TimeSpan.FromSeconds(1),
+        TimeSpan.FromHours(1),
     };
 }

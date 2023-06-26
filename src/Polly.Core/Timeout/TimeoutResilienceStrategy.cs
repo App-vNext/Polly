@@ -32,7 +32,7 @@ internal sealed class TimeoutResilienceStrategy : ResilienceStrategy
         var timeout = DefaultTimeout;
         if (TimeoutGenerator is not null)
         {
-            timeout = await GenerateTimeoutAsync(context).ConfigureAwait(context.ContinueOnCapturedContext);
+            timeout = await TimeoutGenerator!(new TimeoutGeneratorArguments(context)).ConfigureAwait(context.ContinueOnCapturedContext);
         }
 
         if (!TimeoutUtil.ShouldApplyTimeout(timeout))
@@ -78,17 +78,6 @@ internal sealed class TimeoutResilienceStrategy : ResilienceStrategy
         }
 
         return outcome;
-    }
-
-    internal async ValueTask<TimeSpan> GenerateTimeoutAsync(ResilienceContext context)
-    {
-        var timeout = await TimeoutGenerator!(new TimeoutGeneratorArguments(context)).ConfigureAwait(context.ContinueOnCapturedContext);
-        if (!TimeoutUtil.IsTimeoutValid(timeout))
-        {
-            return DefaultTimeout;
-        }
-
-        return timeout;
     }
 
     private static CancellationTokenRegistration CreateRegistration(CancellationTokenSource cancellationSource, CancellationToken previousToken)
