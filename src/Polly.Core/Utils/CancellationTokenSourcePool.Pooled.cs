@@ -5,14 +5,11 @@ internal abstract partial class CancellationTokenSourcePool
 #if NET6_0_OR_GREATER
     private sealed class PooledCancellationTokenSourcePool : CancellationTokenSourcePool
     {
-        public static readonly PooledCancellationTokenSourcePool SystemInstance = new(TimeProvider.System);
+        public static readonly PooledCancellationTokenSourcePool SystemInstance = new();
 
-        public PooledCancellationTokenSourcePool(TimeProvider timeProvider) => _timeProvider = timeProvider;
+        private readonly ObjectPool<CancellationTokenSource> _pool;
 
-        private readonly ObjectPool<CancellationTokenSource> _pool = new(
-            static () => new CancellationTokenSource(),
-            static cts => true);
-        private readonly TimeProvider _timeProvider;
+        public PooledCancellationTokenSourcePool() => _pool = new(static () => new CancellationTokenSource(), static cts => true);
 
         protected override CancellationTokenSource GetCore(TimeSpan delay)
         {
@@ -20,7 +17,7 @@ internal abstract partial class CancellationTokenSourcePool
 
             if (IsCancellable(delay))
             {
-                _timeProvider.CancelAfter(source, delay);
+                source.CancelAfter(delay);
             }
 
             return source;
