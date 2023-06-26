@@ -176,6 +176,25 @@ public class RetryResilienceStrategyTests
     }
 
     [Fact]
+    public void RetryDelayGenerator_ZeroDelay_NoTimeProviderCalls()
+    {
+        int calls = 0;
+        _options.OnRetry = _ => { calls++; return default; };
+        _options.ShouldHandle = _ => PredicateResult.True;
+        _options.RetryCount = 1;
+        _options.RetryDelayGenerator = _ => new ValueTask<TimeSpan>(TimeSpan.FromMilliseconds(0));
+        var provider = new MockTimeProvider();
+        provider.Setup(p => p.GetTimestamp()).Returns(0);
+        provider.Setup(p => p.TimestampFrequency).Returns(10000);
+
+        var sut = CreateSut(provider.Object);
+        sut.Execute(_ => { });
+
+        provider.VerifyAll();
+        provider.VerifyNoOtherCalls();
+    }
+
+    [Fact]
     public async void OnRetry_EnsureCorrectArguments()
     {
         var attempts = new List<int>();
