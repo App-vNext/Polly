@@ -26,10 +26,4 @@ internal class MockTimeProvider : Mock<TimeProvider>
         Setup(x => x.Delay(delay, cancellationToken)).ThrowsAsync(new OperationCanceledException());
         return this;
     }
-
-    public MockTimeProvider SetupCancelAfterNow(TimeSpan delay)
-    {
-        Setup(v => v.CancelAfter(It.IsAny<CancellationTokenSource>(), delay)).Callback<CancellationTokenSource, TimeSpan>((cts, _) => cts.Cancel());
-        return this;
-    }
 }

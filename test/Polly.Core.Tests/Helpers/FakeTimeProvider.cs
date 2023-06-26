@@ -164,6 +164,14 @@ internal class FakeTimeProvider : TimeProvider
     /// <returns>A string representing the provider's current time.</returns>
     public override string ToString() => GetUtcNow().ToString("yyyy-MM-ddTHH:mm:ss.fff", CultureInfo.InvariantCulture);
 
+    /// <inheritdoc />
+    public override ITimer CreateTimer(TimerCallback callback, object? state, TimeSpan dueTime, TimeSpan period)
+    {
+        var timer = new Timer(this, callback, state);
+        _ = timer.Change(dueTime, period);
+        return timer;
+    }
+
     internal void RemoveWaiter(Waiter waiter)
     {
         lock (Waiters)
@@ -275,5 +283,93 @@ internal sealed class Waiter
     public void InvokeCallback()
     {
         _callback(_state);
+    }
+}
+
+// This implements the timer abstractions and is a thin wrapper around a waiter object.
+// The main role of this type is to create the waiter, add it to the waiter list, and ensure it gets
+// removed from the waiter list when the dispose is disposed or collected.
+internal sealed class Timer : ITimer
+{
+    private const uint MaxSupportedTimeout = 0xfffffffe;
+
+    private Waiter? _waiter;
+    private FakeTimeProvider? _timeProvider;
+    private TimerCallback? _callback;
+    private object? _state;
+
+    public Timer(FakeTimeProvider timeProvider, TimerCallback callback, object? state)
+    {
+        _timeProvider = timeProvider;
+        _callback = callback;
+        _state = state;
+    }
+
+    public bool Change(TimeSpan dueTime, TimeSpan period)
+    {
+        var dueTimeMs = (long)dueTime.TotalMilliseconds;
+        var periodMs = (long)period.TotalMilliseconds;
+
+        if (_timeProvider == null)
+        {
+            // timer has been disposed
+            return false;
+        }
+
+        if (_waiter != null)
+        {
+            // remove any previous waiter
+            _timeProvider.RemoveWaiter(_waiter);
+            _waiter = null;
+        }
+
+        if (dueTimeMs < 0)
+        {
+            // this waiter will never wake up, so just bail
+            return true;
+        }
+
+        if (periodMs < 0 || periodMs == Timeout.Infinite)
+        {
+            // normalize
+            period = TimeSpan.Zero;
+        }
+
+        _waiter = new Waiter(_callback!, _state, period.Ticks);
+        _timeProvider.AddWaiter(_waiter, dueTime.Ticks);
+        return true;
+    }
+
+    // In case the timer is not disposed, this will remove the Waiter instance from the provider.
+    ~Timer() => Dispose(false);
+
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
+    public ValueTask DisposeAsync()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
+#if NET5_0_OR_GREATER
+        return ValueTask.CompletedTask;
+#else
+        return default;
+#endif
+    }
+
+    private void Dispose(bool _)
+    {
+        if (_waiter != null)
+        {
+            _timeProvider!.RemoveWaiter(_waiter);
+            _waiter = null;
+        }
+
+        _timeProvider = null;
+        _callback = null;
+        _state = null;
     }
 }

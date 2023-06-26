@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Time.Testing;
 using Moq;
 using Polly.Utils;
 
@@ -8,7 +9,7 @@ public class CancellationTokenSourcePoolTests
     public static IEnumerable<object[]> TimeProviders()
     {
         yield return new object[] { TimeProvider.System };
-        yield return new object[] { new MockTimeProvider() };
+        yield return new object[] { new FakeTimeProvider() };
     }
 
     [Fact]
@@ -66,24 +67,17 @@ public class CancellationTokenSourcePoolTests
     [Theory]
     public async Task Rent_Cancellable_EnsureCancelled(object timeProvider)
     {
-        if (timeProvider is Mock<TimeProvider> fakeTimeProvider)
-        {
-            fakeTimeProvider
-                .Setup(v => v.CancelAfter(It.IsAny<CancellationTokenSource>(), TimeSpan.FromMilliseconds(1)))
-                .Callback<CancellationTokenSource, TimeSpan>((source, _) => source.Cancel());
-        }
-        else
-        {
-            fakeTimeProvider = null!;
-        }
-
         var pool = CancellationTokenSourcePool.Create(GetTimeProvider(timeProvider));
         var cts = pool.Get(TimeSpan.FromMilliseconds(1));
+
+        if (timeProvider is FakeTimeProvider fakeTimeProvider)
+        {
+            fakeTimeProvider.Advance(TimeSpan.FromSeconds(1));
+        }
 
         await Task.Delay(100);
 
         cts.IsCancellationRequested.Should().BeTrue();
-        fakeTimeProvider?.VerifyAll();
     }
 
     [MemberData(nameof(TimeProviders))]
@@ -96,12 +90,6 @@ public class CancellationTokenSourcePoolTests
         await Task.Delay(20);
 
         cts.IsCancellationRequested.Should().BeFalse();
-
-        if (timeProvider is Mock<TimeProvider> fakeTimeProvider)
-        {
-            fakeTimeProvider
-                .Verify(v => v.CancelAfter(It.IsAny<CancellationTokenSource>(), It.IsAny<TimeSpan>()), Times.Never());
-        }
     }
 
     private static TimeProvider GetTimeProvider(object timeProvider) => timeProvider switch
