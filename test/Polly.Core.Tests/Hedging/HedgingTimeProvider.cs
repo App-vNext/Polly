@@ -26,8 +26,6 @@ internal class HedgingTimeProvider : TimeProvider
 
     public override long GetTimestamp() => TimeStampProvider();
 
-    public override void CancelAfter(CancellationTokenSource source, TimeSpan delay) => throw new NotSupportedException();
-
     public override Task Delay(TimeSpan delayValue, CancellationToken cancellationToken = default)
     {
         var entry = new DelayEntry(delayValue, new TaskCompletionSource<bool>(), _utcNow.Add(delayValue));

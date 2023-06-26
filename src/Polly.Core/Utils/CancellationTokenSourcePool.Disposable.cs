@@ -10,14 +10,12 @@ internal abstract partial class CancellationTokenSourcePool
 
         protected override CancellationTokenSource GetCore(TimeSpan delay)
         {
-            var source = new CancellationTokenSource();
-
-            if (IsCancellable(delay))
+            if (!IsCancellable(delay))
             {
-                _timeProvider.CancelAfter(source, delay);
+                return new CancellationTokenSource();
             }
 
-            return source;
+            return _timeProvider.CreateCancellationTokenSource(delay);
         }
 
         public override void Return(CancellationTokenSource source) => source.Dispose();

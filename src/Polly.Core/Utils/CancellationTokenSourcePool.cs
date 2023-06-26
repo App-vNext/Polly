@@ -11,8 +11,11 @@ internal abstract partial class CancellationTokenSourcePool
         {
             return PooledCancellationTokenSourcePool.SystemInstance;
         }
-#endif
+
         return new DisposableCancellationTokenSourcePool(timeProvider);
+#else
+        return new DisposableCancellationTokenSourcePool(timeProvider);
+#endif
     }
 
     public CancellationTokenSource Get(TimeSpan delay)
