@@ -58,7 +58,7 @@ jobs:
       shell: pwsh
       run: ./build.ps1
       env:
-        RUN_MUTATION_TESTS: ${{ matrix.os_name == 'linux' && 'true' || 'false' }}
+        RUN_MUTATION_TESTS: ${{ matrix.os_name == 'linux' && !startsWith(github.ref, 'refs/tags/') && 'true' || 'false' }}
 
     - uses: codecov/codecov-action@eaaf4bedf32dbdc6b720b63067d99c4d77d6047d # v3.1.4
       name: Upload coverage to Codecov
