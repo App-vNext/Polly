@@ -156,18 +156,23 @@ public class RetryResilienceStrategyTests
     }
 
     [Fact]
-    public async Task RetryDelayGenerator_Respected()
+    public void RetryDelayGenerator_Respected()
     {
         int calls = 0;
         _options.OnRetry = _ => { calls++; return default; };
-        _options.ShouldHandle = args => args.Outcome.ResultPredicateAsync(0);
+        _options.ShouldHandle = _ => PredicateResult.True;
         _options.RetryCount = 3;
         _options.BackoffType = RetryBackoffType.Constant;
         _options.RetryDelayGenerator = _ => new ValueTask<TimeSpan>(TimeSpan.FromMilliseconds(123));
+        var provider = new MockTimeProvider();
+        provider.SetupCreateTimer(TimeSpan.FromMilliseconds(123));
+        provider.Setup(p => p.GetTimestamp()).Returns(0);
+        provider.Setup(p => p.TimestampFrequency).Returns(10000);
 
-        var sut = CreateSut();
+        var sut = CreateSut(provider.Object);
+        sut.Execute(_ => { });
 
-        await ExecuteAndAdvance(sut);
+        provider.VerifyAll();
     }
 
     [Fact]
