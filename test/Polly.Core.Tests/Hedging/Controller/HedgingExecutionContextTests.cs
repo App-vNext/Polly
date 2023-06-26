@@ -159,11 +159,11 @@ public class HedgingExecutionContextTests : IDisposable
         }
 
         var hedgingDelay = TimeSpan.FromSeconds(5);
-        var count = _timeProvider.DelayEntries.Count;
+        var count = _timeProvider.TimerEntries.Count;
         var task = context.TryWaitForCompletedExecutionAsync(hedgingDelay).AsTask();
         task.Wait(20).Should().BeFalse();
-        _timeProvider.DelayEntries.Should().HaveCount(count + 1);
-        _timeProvider.DelayEntries.Last().Delay.Should().Be(hedgingDelay);
+        _timeProvider.TimerEntries.Should().HaveCount(count + 1);
+        _timeProvider.TimerEntries.Last().Delay.Should().Be(hedgingDelay);
         _timeProvider.Advance(TimeSpan.FromDays(1));
         await task;
         await context.Tasks[0].ExecutionTaskSafe!;

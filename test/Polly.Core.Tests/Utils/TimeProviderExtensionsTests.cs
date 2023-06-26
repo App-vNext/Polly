@@ -23,7 +23,7 @@ public class TimeProviderExtensionsTests
         var context = ResilienceContext.Get();
         context.Initialize<VoidResult>(isSynchronous: synchronous);
         context.CancellationToken = token;
-        mock.SetupDelay(delay, token);
+        mock.SetupCreateTimer(delay);
 
         await TestUtilities.AssertWithTimeoutAsync(async () =>
         {
@@ -88,7 +88,7 @@ public class TimeProviderExtensionsTests
         var context = ResilienceContext.Get();
         context.Initialize<VoidResult>(isSynchronous: synchronous);
         context.CancellationToken = token;
-        mock.SetupDelayCancelled(delay, token);
+        mock.SetupCreateTimer(delay);
 
         await Assert.ThrowsAsync<OperationCanceledException>(() => timeProvider.DelayAsync(delay, context));
     }
@@ -111,7 +111,7 @@ public class TimeProviderExtensionsTests
             var context = ResilienceContext.Get();
             context.Initialize<VoidResult>(isSynchronous: synchronous);
             context.CancellationToken = token;
-            mock.SetupDelayCancelled(delay, token);
+            mock.SetupCreateTimerException(delay, new OperationCanceledException());
 
             tcs.CancelAfter(TimeSpan.FromMilliseconds(5));
 

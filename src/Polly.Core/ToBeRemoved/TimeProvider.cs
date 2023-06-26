@@ -58,9 +58,6 @@ namespace System
 
         public virtual long GetTimestamp() => Stopwatch.GetTimestamp();
 
-        // This one is not on TimeProvider, temporarly we need to use it
-        public virtual Task Delay(TimeSpan delay, CancellationToken cancellationToken = default) => Task.Delay(delay, cancellationToken);
-
         public TimeSpan GetElapsedTime(long startingTimestamp, long endingTimestamp)
         {
             long timestampFrequency = TimestampFrequency;
