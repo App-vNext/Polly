@@ -13,7 +13,7 @@ public class RetryStrategyOptions<TResult> : ResilienceStrategyOptions
     [Range(-1, 100)]
     public int RetryCount { get; set; }
     public RetryBackoffType BackoffType { get; set; }
-    [TimeSpan("00:00:00", "1.00:00:00")]
+    [Range(typeof(TimeSpan), "00:00:00", "1.00:00:00")]
     public TimeSpan BaseDelay { get; set; }
     [Required]
     public Func<OutcomeArguments<TResult, RetryPredicateArguments>, ValueTask<bool>> ShouldHandle { get; set; }

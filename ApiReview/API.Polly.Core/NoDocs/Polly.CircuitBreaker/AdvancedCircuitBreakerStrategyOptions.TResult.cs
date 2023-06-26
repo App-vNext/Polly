@@ -12,7 +12,7 @@ public class AdvancedCircuitBreakerStrategyOptions<TResult> : CircuitBreakerStra
     public double FailureThreshold { get; set; }
     [Range(2, int.MaxValue)]
     public int MinimumThroughput { get; set; }
-    [TimeSpan("00:00:00.500")]
+    [Range(typeof(TimeSpan), "00:00:00.500", "1.00:00:00")]
     public TimeSpan SamplingDuration { get; set; }
     public AdvancedCircuitBreakerStrategyOptions();
 }

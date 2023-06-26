@@ -1,9 +1,9 @@
 // Assembly 'Polly.Core'
 
+using System;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using Polly.Telemetry;
-using Polly.Utils;
 
 namespace Polly;
 
