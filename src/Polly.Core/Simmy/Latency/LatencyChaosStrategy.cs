@@ -27,7 +27,7 @@ internal sealed class LatencyChaosStrategy : MonkeyStrategy
 
     public Func<OnDelayedArguments, ValueTask>? OnDelayed { get; }
 
-    public Func<ResilienceContext, Task<TimeSpan>> LatencyGenerator { get; }
+    public Func<ResilienceContext, ValueTask<TimeSpan>> LatencyGenerator { get; }
 
     protected internal override async ValueTask<Outcome<TResult>> ExecuteCoreAsync<TResult, TState>(
         Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback, ResilienceContext context, TState state)

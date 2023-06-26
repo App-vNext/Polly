@@ -29,5 +29,5 @@ public class LatencyStrategyOptions : MonkeyStrategyOptions
     /// Defaults to <see langword="null"/>. This property is required.
     /// </remarks>
     [Required]
-    public Func<ResilienceContext, Task<TimeSpan>> LatencyGenerator { get; set; }
+    public Func<ResilienceContext, ValueTask<TimeSpan>> LatencyGenerator { get; set; }
 }
