@@ -16,7 +16,7 @@ public enum ResilienceEventSeverity
     Warning,
 
     /// <summary>
-    /// The resilience event should be treated as a warning.
+    /// The resilience event should be treated as an error.
     /// </summary>
     Error,
 }
