@@ -10,14 +10,14 @@ var configuration = Argument<string>("configuration", "Release");
 //////////////////////////////////////////////////////////////////////
 
 #Tool "xunit.runner.console&version=2.4.2"
-#Tool "dotnet-stryker&version=3.7.1"
+#Tool "dotnet-stryker&version=3.9.2"
 
 //////////////////////////////////////////////////////////////////////
 // EXTERNAL NUGET LIBRARIES
 //////////////////////////////////////////////////////////////////////
 
-#addin nuget:?package=Cake.FileHelpers&version=6.0.0
-#addin nuget:?package=Newtonsoft.Json&version=13.0.2
+#addin nuget:?package=Cake.FileHelpers&version=6.1.3
+#addin nuget:?package=Newtonsoft.Json&version=13.0.3
 
 ///////////////////////////////////////////////////////////////////////////////
 // GLOBAL VARIABLES
@@ -170,7 +170,6 @@ Task("__RunMutationTests")
     TestProject(File("../src/Polly.Core/Polly.Core.csproj"), File("./Polly.Core.Tests/Polly.Core.Tests.csproj"), "Polly.Core.csproj");
     TestProject(File("../src/Polly.RateLimiting/Polly.RateLimiting.csproj"), File("./Polly.RateLimiting.Tests/Polly.RateLimiting.Tests.csproj"), "Polly.RateLimiting.csproj");
     TestProject(File("../src/Polly.Extensions/Polly.Extensions.csproj"), File("./Polly.Extensions.Tests/Polly.Extensions.Tests.csproj"), "Polly.Extensions.csproj");
-
     TestProject(File("../src/Polly/Polly.csproj"), File("./Polly.Specs/Polly.Specs.csproj"), "Polly.csproj");
 
     context.Environment.WorkingDirectory = oldDirectory;
