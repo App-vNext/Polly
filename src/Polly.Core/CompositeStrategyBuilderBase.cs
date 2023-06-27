@@ -66,14 +66,11 @@ public abstract class CompositeStrategyBuilderBase
     /// <summary>
     /// Gets or sets a <see cref="TimeProvider"/> that is used by strategies that work with time.
     /// </summary>
-    /// <remarks>
-    /// This property is internal until we switch to official System.TimeProvider.
-    /// </remarks>
     /// <value>
     /// The default value is <see cref="TimeProvider.System"/>.
     /// </value>
     [Required]
-    internal TimeProvider TimeProvider { get; set; } = TimeProvider.System;
+    public TimeProvider TimeProvider { get; set; } = TimeProvider.System;
 
     /// <summary>
     /// Gets or sets the callback that is invoked just before the final resilience strategy is being created.
