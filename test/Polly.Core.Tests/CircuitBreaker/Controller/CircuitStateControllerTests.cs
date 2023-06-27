@@ -59,7 +59,7 @@ public class CircuitStateControllerTests
         _circuitBehavior.Setup(v => v.OnCircuitClosed());
         await controller.CloseCircuitAsync(ResilienceContext.Get());
         await controller.OnActionPreExecuteAsync(ResilienceContext.Get());
-        context.ResilienceEvents.Should().Contain(new ResilienceEvent("OnCircuitOpened"));
+        context.ResilienceEvents.Should().Contain(new ResilienceEvent(ResilienceEventSeverity.Error, "OnCircuitOpened"));
     }
 
     [Fact]
@@ -93,7 +93,7 @@ public class CircuitStateControllerTests
 
         await controller.OnActionPreExecuteAsync(ResilienceContext.Get());
         _circuitBehavior.VerifyAll();
-        context.ResilienceEvents.Should().Contain(new ResilienceEvent("OnCircuitClosed"));
+        context.ResilienceEvents.Should().Contain(new ResilienceEvent(ResilienceEventSeverity.Information, "OnCircuitClosed"));
     }
 
     [Fact]

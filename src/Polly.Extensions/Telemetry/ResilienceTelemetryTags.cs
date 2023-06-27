@@ -4,6 +4,8 @@ internal class ResilienceTelemetryTags
 {
     public const string EventName = "event-name";
 
+    public const string EventSeverity = "event-severity";
+
     public const string BuilderName = "builder-name";
 
     public const string StrategyName = "strategy-name";
@@ -21,4 +23,5 @@ internal class ResilienceTelemetryTags
     public const string AttemptNumber = "attempt-number";
 
     public const string AttemptHandled = "attempt-handled";
+
 }

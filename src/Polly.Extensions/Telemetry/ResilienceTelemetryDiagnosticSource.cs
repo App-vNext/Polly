@@ -47,7 +47,8 @@ internal class ResilienceTelemetryDiagnosticSource : DiagnosticSource
 
     private static void AddCommonTags(TelemetryEventArguments args, ResilienceTelemetrySource source, EnrichmentContext enrichmentContext)
     {
-        enrichmentContext.Tags.Add(new(ResilienceTelemetryTags.EventName, args.EventName));
+        enrichmentContext.Tags.Add(new(ResilienceTelemetryTags.EventName, args.Event.EventName));
+        enrichmentContext.Tags.Add(new(ResilienceTelemetryTags.EventSeverity, args.Event.Severity.AsString()));
         enrichmentContext.Tags.Add(new(ResilienceTelemetryTags.BuilderName, source.BuilderName));
         enrichmentContext.Tags.Add(new(ResilienceTelemetryTags.StrategyName, source.StrategyName));
         enrichmentContext.Tags.Add(new(ResilienceTelemetryTags.StrategyType, source.StrategyType));
@@ -98,10 +99,10 @@ internal class ResilienceTelemetryDiagnosticSource : DiagnosticSource
             result = e.Message;
         }
 
+        var level = args.Event.Severity.AsLogLevel();
+
         if (args.Arguments is ExecutionAttemptArguments executionAttempt)
         {
-            var level = executionAttempt.Handled ? LogLevel.Warning : LogLevel.Debug;
-
             if (_logger.IsEnabled(level))
             {
                 Log.ExecutionAttempt(
@@ -120,7 +121,7 @@ internal class ResilienceTelemetryDiagnosticSource : DiagnosticSource
         }
         else
         {
-            Log.ResilienceEvent(_logger, args.EventName, args.Source.BuilderName, args.Source.StrategyName, args.Source.StrategyType, strategyKey, result, args.Outcome?.Exception);
+            Log.ResilienceEvent(_logger, level, args.Event.EventName, args.Source.BuilderName, args.Source.StrategyName, args.Source.StrategyType, strategyKey, result, args.Outcome?.Exception);
         }
     }
 }

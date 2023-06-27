@@ -29,7 +29,7 @@ internal sealed class FallbackResilienceStrategy<T> : OutcomeResilienceStrategy<
 
         var onFallbackArgs = new OutcomeArguments<T, OnFallbackArguments>(context, outcome, new OnFallbackArguments());
 
-        _telemetry.Report(FallbackConstants.OnFallback, onFallbackArgs);
+        _telemetry.Report(new(ResilienceEventSeverity.Warning, FallbackConstants.OnFallback), onFallbackArgs);
 
         if (_onFallback is not null)
         {

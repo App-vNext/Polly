@@ -27,25 +27,24 @@ public sealed class ResilienceStrategyTelemetry
     /// Reports an event that occurred in a resilience strategy.
     /// </summary>
     /// <typeparam name="TArgs">The arguments associated with this event.</typeparam>
-    /// <param name="eventName">The event name.</param>
+    /// <param name="resilienceEvent">The reported resilience event.</param>
     /// <param name="context">The resilience context associated with this event.</param>
     /// <param name="args">The event arguments.</param>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="eventName"/> is <see langword="null"/>.</exception>
-    public void Report<TArgs>(string eventName, ResilienceContext context, TArgs args)
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="context"/> is <see langword="null"/>.</exception>
+    public void Report<TArgs>(ResilienceEvent resilienceEvent, ResilienceContext context, TArgs args)
     {
-        Guard.NotNull(eventName);
         Guard.NotNull(context);
 
-        AddResilienceEvent(eventName, context, args);
+        context.AddResilienceEvent(resilienceEvent);
 
-        if (DiagnosticSource is null || !DiagnosticSource.IsEnabled(eventName))
+        if (DiagnosticSource is null || !DiagnosticSource.IsEnabled(resilienceEvent.EventName))
         {
             return;
         }
 
-        var telemetryArgs = TelemetryEventArguments.Get(TelemetrySource, eventName, context, null, args!);
+        var telemetryArgs = TelemetryEventArguments.Get(TelemetrySource, resilienceEvent, context, null, args!);
 
-        DiagnosticSource.Write(eventName, telemetryArgs);
+        DiagnosticSource.Write(resilienceEvent.EventName, telemetryArgs);
 
         TelemetryEventArguments.Return(telemetryArgs);
     }
@@ -55,37 +54,22 @@ public sealed class ResilienceStrategyTelemetry
     /// </summary>
     /// <typeparam name="TArgs">The arguments associated with this event.</typeparam>
     /// <typeparam name="TResult">The type of the result.</typeparam>
-    /// <param name="eventName">The event name.</param>
+    /// <param name="resilienceEvent">The reported resilience event.</param>
     /// <param name="args">The event arguments.</param>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="eventName"/> is <see langword="null"/>.</exception>
-    public void Report<TArgs, TResult>(string eventName, OutcomeArguments<TResult, TArgs> args)
+    public void Report<TArgs, TResult>(ResilienceEvent resilienceEvent, OutcomeArguments<TResult, TArgs> args)
     {
-        Guard.NotNull(eventName);
+        args.Context.AddResilienceEvent(resilienceEvent);
 
-        AddResilienceEvent(eventName, args.Context, args.Arguments);
-
-        if (DiagnosticSource is null || !DiagnosticSource.IsEnabled(eventName))
+        if (DiagnosticSource is null || !DiagnosticSource.IsEnabled(resilienceEvent.EventName))
         {
             return;
         }
 
-        var telemetryArgs = TelemetryEventArguments.Get(TelemetrySource, eventName, args.Context, args.Outcome.AsOutcome(), args.Arguments!);
+        var telemetryArgs = TelemetryEventArguments.Get(TelemetrySource, resilienceEvent, args.Context, args.Outcome.AsOutcome(), args.Arguments!);
 
-        DiagnosticSource.Write(eventName, telemetryArgs);
+        DiagnosticSource.Write(resilienceEvent.EventName, telemetryArgs);
 
         TelemetryEventArguments.Return(telemetryArgs);
-    }
-
-    private static void AddResilienceEvent<TArgs>(string eventName, ResilienceContext context, TArgs args)
-    {
-        // ExecutionAttemptArguments is not reported as resilience event because that information is already contained
-        // in OnHedgingArguments and OnRetryArguments
-        if (args is ExecutionAttemptArguments attempt)
-        {
-            return;
-        }
-
-        context.AddResilienceEvent(new ResilienceEvent(eventName));
     }
 }
 

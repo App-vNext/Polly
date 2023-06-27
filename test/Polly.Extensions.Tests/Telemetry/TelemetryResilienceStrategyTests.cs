@@ -43,7 +43,7 @@ public class TelemetryResilienceStrategyTests : IDisposable
             {
                 if (!healthy)
                 {
-                    ((List<ResilienceEvent>)c.ResilienceEvents).Add(new ResilienceEvent("dummy"));
+                    ((List<ResilienceEvent>)c.ResilienceEvents).Add(new ResilienceEvent(ResilienceEventSeverity.Warning, "dummy"));
                 }
             },
             ResilienceContext.Get(), string.Empty);
@@ -154,7 +154,7 @@ public class TelemetryResilienceStrategyTests : IDisposable
             {
                 if (!healthy)
                 {
-                    ((List<ResilienceEvent>)c.ResilienceEvents).Add(new ResilienceEvent("dummy"));
+                    ((List<ResilienceEvent>)c.ResilienceEvents).Add(new ResilienceEvent(ResilienceEventSeverity.Warning, "dummy"));
                 }
 
                 return true;

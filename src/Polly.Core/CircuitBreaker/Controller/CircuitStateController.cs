@@ -128,7 +128,7 @@ internal sealed class CircuitStateController<T> : IDisposable
             if (_circuitState == CircuitState.Open && PermitHalfOpenCircuitTest_NeedsLock())
             {
                 _circuitState = CircuitState.HalfOpen;
-                _telemetry.Report(CircuitBreakerConstants.OnHalfOpenEvent, context, new OnCircuitHalfOpenedArguments());
+                _telemetry.Report(new(ResilienceEventSeverity.Warning, CircuitBreakerConstants.OnHalfOpenEvent), context, new OnCircuitHalfOpenedArguments());
                 isHalfOpen = true;
             }
 
@@ -269,7 +269,7 @@ internal sealed class CircuitStateController<T> : IDisposable
         if (priorState != CircuitState.Closed)
         {
             var args = new OutcomeArguments<T, OnCircuitClosedArguments>(context, outcome, new OnCircuitClosedArguments(manual));
-            _telemetry.Report(CircuitBreakerConstants.OnCircuitClosed, args);
+            _telemetry.Report(new(ResilienceEventSeverity.Information, CircuitBreakerConstants.OnCircuitClosed), args);
 
             if (_onClosed is not null)
             {
@@ -320,7 +320,7 @@ internal sealed class CircuitStateController<T> : IDisposable
         _circuitState = CircuitState.Open;
 
         var args = new OutcomeArguments<T, OnCircuitOpenedArguments>(context, outcome, new OnCircuitOpenedArguments(breakDuration, manual));
-        _telemetry.Report(CircuitBreakerConstants.OnCircuitOpened, args);
+        _telemetry.Report(new(ResilienceEventSeverity.Error, CircuitBreakerConstants.OnCircuitOpened), args);
 
         if (_onOpened is not null)
         {

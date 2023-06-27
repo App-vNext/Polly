@@ -10,6 +10,8 @@ internal sealed class ReloadableResilienceStrategy : ResilienceStrategy
 
     public const string ReloadFailedEvent = "ReloadFailed";
 
+    public const string OnReloadEvent = "OnReload";
+
     private readonly Func<CancellationToken> _onReload;
     private readonly Func<ResilienceStrategy> _resilienceStrategyFactory;
     private readonly ResilienceStrategyTelemetry _telemetry;
@@ -50,16 +52,18 @@ internal sealed class ReloadableResilienceStrategy : ResilienceStrategy
 
         _registration = token.Register(() =>
         {
+            var context = ResilienceContext.Get().Initialize<VoidResult>(isSynchronous: true);
+
 #pragma warning disable CA1031 // Do not catch general exception types
             try
             {
+                _telemetry.Report(new(ResilienceEventSeverity.Information, OnReloadEvent), context, new OnReloadArguments());
                 Strategy = _resilienceStrategyFactory();
             }
             catch (Exception e)
             {
-                var context = ResilienceContext.Get().Initialize<VoidResult>(isSynchronous: true);
                 var args = new OutcomeArguments<VoidResult, ReloadFailedArguments>(context, Outcome.FromException(e), new ReloadFailedArguments(e));
-                _telemetry.Report(ReloadFailedEvent, args);
+                _telemetry.Report(new(ResilienceEventSeverity.Error, ReloadFailedEvent), args);
                 ResilienceContext.Return(context);
             }
 #pragma warning restore CA1031 // Do not catch general exception types
@@ -70,4 +74,6 @@ internal sealed class ReloadableResilienceStrategy : ResilienceStrategy
     }
 
     internal readonly record struct ReloadFailedArguments(Exception Exception);
+
+    internal readonly record struct OnReloadArguments();
 }

@@ -42,10 +42,10 @@ public class ResilienceContextTests
     {
         var context = ResilienceContext.Get();
 
-        context.AddResilienceEvent(new ResilienceEvent("Dummy"));
+        context.AddResilienceEvent(new ResilienceEvent(ResilienceEventSeverity.Information, "Dummy"));
 
         context.ResilienceEvents.Should().HaveCount(1);
-        context.ResilienceEvents.Should().Contain(new ResilienceEvent("Dummy"));
+        context.ResilienceEvents.Should().Contain(new ResilienceEvent(ResilienceEventSeverity.Information, "Dummy"));
     }
 
     [Fact]
@@ -59,7 +59,7 @@ public class ResilienceContextTests
             context.Initialize<bool>(true);
             context.CancellationToken.Should().Be(cts.Token);
             context.Properties.Set(new ResiliencePropertyKey<int>("abc"), 10);
-            context.AddResilienceEvent(new ResilienceEvent("dummy"));
+            context.AddResilienceEvent(new ResilienceEvent(ResilienceEventSeverity.Information, "dummy"));
             ResilienceContext.Return(context);
 
             AssertDefaults(context);

@@ -5,7 +5,7 @@ public sealed partial record class TelemetryEventArguments
     private static readonly ObjectPool<TelemetryEventArguments> Pool = new(() => new TelemetryEventArguments(), args =>
     {
         args.Source = null!;
-        args.EventName = null!;
+        args.Event = default;
         args.Context = null!;
         args.Outcome = default;
         args.Arguments = null!;
@@ -13,7 +13,7 @@ public sealed partial record class TelemetryEventArguments
 
     internal static TelemetryEventArguments Get(
         ResilienceTelemetrySource source,
-        string eventName,
+        ResilienceEvent resilienceEvent,
         ResilienceContext context,
         Outcome<object>? outcome,
         object arguments)
@@ -21,7 +21,7 @@ public sealed partial record class TelemetryEventArguments
         var args = Pool.Get();
 
         args.Source = source;
-        args.EventName = eventName;
+        args.Event = resilienceEvent;
         args.Context = context;
         args.Outcome = outcome;
         args.Arguments = arguments;
