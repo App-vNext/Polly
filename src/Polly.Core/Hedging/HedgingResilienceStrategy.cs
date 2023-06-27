@@ -126,7 +126,7 @@ internal sealed class HedgingResilienceStrategy<T> : OutcomeResilienceStrategy<T
             outcome,
             args);
 
-        _telemetry.Report(HedgingConstants.OnHedgingEventName, onHedgingArgs);
+        _telemetry.Report(new(ResilienceEventSeverity.Warning, HedgingConstants.OnHedgingEventName), onHedgingArgs);
 
         if (OnHedging is not null)
         {

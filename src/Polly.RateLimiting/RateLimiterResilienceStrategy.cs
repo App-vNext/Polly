@@ -44,7 +44,7 @@ internal sealed class RateLimiterResilienceStrategy : ResilienceStrategy
         }
 
         var args = new OnRateLimiterRejectedArguments(context, lease, retryAfter);
-        _telemetry.Report(RateLimiterConstants.OnRateLimiterRejectedEvent, context, args);
+        _telemetry.Report(new(ResilienceEventSeverity.Error, RateLimiterConstants.OnRateLimiterRejectedEvent), context, args);
 
         if (OnLeaseRejected != null)
         {

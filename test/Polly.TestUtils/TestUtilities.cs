@@ -78,7 +78,7 @@ public static class TestUtilities
 #pragma warning disable S107 // Methods should not have too many parameters
     public static void ReportEvent(
         this DiagnosticSource source,
-        string eventName,
+        ResilienceEvent resilienceEvent,
         string builderName,
         ResilienceProperties builderProperties,
         string strategyName,
@@ -88,9 +88,9 @@ public static class TestUtilities
         object arguments)
 #pragma warning restore S107 // Methods should not have too many parameters
     {
-        source.Write(eventName, TelemetryEventArguments.Get(
+        source.Write(resilienceEvent.EventName, TelemetryEventArguments.Get(
             new ResilienceTelemetrySource(builderName, builderProperties, strategyName, strategyType),
-            eventName,
+            resilienceEvent,
             context,
             outcome,
             arguments));
@@ -122,7 +122,7 @@ public static class TestUtilities
             }
 
             // copy the args because these are pooled and in tests we want to preserve them
-            args = TelemetryEventArguments.Get(args.Source, args.EventName, args.Context, args.Outcome, arguments);
+            args = TelemetryEventArguments.Get(args.Source, args.Event, args.Context, args.Outcome, arguments);
 
             lock (_syncRoot)
             {

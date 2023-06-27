@@ -49,7 +49,8 @@ public class ReloadableResilienceStrategyTests : IDisposable
             sut.Strategy.Should().NotBe(strategy);
         }
 
-        _events.Should().HaveCount(0);
+        _events.Where(e => e.Event.EventName == "ReloadFailed").Should().HaveCount(0);
+        _events.Where(e => e.Event.EventName == "OnReload").Should().HaveCount(10);
     }
 
     [Fact]
@@ -61,8 +62,14 @@ public class ReloadableResilienceStrategyTests : IDisposable
         _cancellationTokenSource.Cancel();
 
         sut.Strategy.Should().Be(strategy);
-        _events.Should().HaveCount(1);
-        var args = _events[0]
+        _events.Should().HaveCount(2);
+
+        _events[0]
+            .Arguments
+            .Should()
+            .BeOfType<ReloadableResilienceStrategy.OnReloadArguments>();
+
+        var args = _events[1]
             .Arguments
             .Should()
             .BeOfType<ReloadableResilienceStrategy.ReloadFailedArguments>()

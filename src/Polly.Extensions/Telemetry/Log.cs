@@ -1,45 +1,26 @@
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.Logging;
 
 namespace Polly.Extensions.Telemetry;
 
 #pragma warning disable S107 // Methods should not have too many parameters
 
+[ExcludeFromCodeCoverage]
 internal static partial class Log
 {
-    private const string StrategyExecutedMessage = "Resilience strategy executed. " +
-            "Builder Name: '{BuilderName}', " +
-            "Strategy Key: '{StrategyKey}', " +
-            "Result Type: '{ResultType}', " +
-            "Result: '{Result}', " +
-            "Execution Health: '{ExecutionHealth}', " +
-            "Execution Time: {ExecutionTime}ms";
-
-    private const string ResilienceEventMessage = "Resilience event occurred. " +
+    [LoggerMessage(
+        EventId = 0,
+        Message = "Resilience event occurred. " +
                 "EventName: '{EventName}', " +
                 "Builder Name: '{BuilderName}', " +
                 "Strategy Name: '{StrategyName}', " +
                 "Strategy Type: '{StrategyType}', " +
                 "Strategy Key: '{StrategyKey}', " +
-                "Result: '{Result}'";
-
-    private const string ExecutionAttemptMessage = "Execution attempt. " +
-                "Builder Name: '{BuilderName}', " +
-                "Strategy Name: '{StrategyName}', " +
-                "Strategy Type: '{StrategyType}', " +
-                "Strategy Key: '{StrategyKey}', " +
-                "Result: '{Result}', " +
-                "Handled: '{Handled}', " +
-                "Attempt: '{Attempt}', " +
-                "Execution Time: '{ExecutionTimeMs}'";
-
-    private const string StrategyExecutingMessage = "Resilience strategy executing. " +
-            "Builder Name: '{BuilderName}', " +
-            "Strategy Key: '{StrategyKey}', " +
-            "Result Type: '{ResultType}'";
-
-    [LoggerMessage(0, LogLevel.Warning, ResilienceEventMessage, EventName = "ResilienceEvent")]
+                "Result: '{Result}'",
+        EventName = "ResilienceEvent")]
     public static partial void ResilienceEvent(
         this ILogger logger,
+        LogLevel logLevel,
         string eventName,
         string? builderName,
         string? strategyName,
@@ -48,14 +29,30 @@ internal static partial class Log
         object? result,
         Exception? exception);
 
-    [LoggerMessage(1, LogLevel.Debug, StrategyExecutingMessage, EventName = "StrategyExecuting")]
+    [LoggerMessage(
+        1,
+        LogLevel.Debug,
+        "Resilience strategy executing. " +
+        "Builder Name: '{BuilderName}', " +
+        "Strategy Key: '{StrategyKey}', " +
+        "Result Type: '{ResultType}'",
+        EventName = "StrategyExecuting")]
     public static partial void ExecutingStrategy(
         this ILogger logger,
         string? builderName,
         string? strategyKey,
         string resultType);
 
-    [LoggerMessage(EventId = 2, Message = StrategyExecutedMessage, EventName = "StrategyExecuted")]
+    [LoggerMessage(
+        EventId = 2,
+        Message = "Resilience strategy executed. " +
+            "Builder Name: '{BuilderName}', " +
+            "Strategy Key: '{StrategyKey}', " +
+            "Result Type: '{ResultType}', " +
+            "Result: '{Result}', " +
+            "Execution Health: '{ExecutionHealth}', " +
+            "Execution Time: {ExecutionTime}ms",
+        EventName = "StrategyExecuted")]
     public static partial void StrategyExecuted(
         this ILogger logger,
         LogLevel logLevel,
@@ -67,7 +64,19 @@ internal static partial class Log
         double executionTime,
         Exception? exception);
 
-    [LoggerMessage(EventId = 3, Message = ExecutionAttemptMessage, EventName = "ExecutionAttempt", SkipEnabledCheck = true)]
+    [LoggerMessage(
+        EventId = 3,
+        Message = "Execution attempt. " +
+                "Builder Name: '{BuilderName}', " +
+                "Strategy Name: '{StrategyName}', " +
+                "Strategy Type: '{StrategyType}', " +
+                "Strategy Key: '{StrategyKey}', " +
+                "Result: '{Result}', " +
+                "Handled: '{Handled}', " +
+                "Attempt: '{Attempt}', " +
+                "Execution Time: '{ExecutionTimeMs}'",
+        EventName = "ExecutionAttempt",
+        SkipEnabledCheck = true)]
     public static partial void ExecutionAttempt(
         this ILogger logger,
         LogLevel level,

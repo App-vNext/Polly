@@ -74,7 +74,7 @@ internal sealed class RetryResilienceStrategy<T> : OutcomeResilienceStrategy<T>
             }
 
             var onRetryArgs = new OutcomeArguments<T, OnRetryArguments>(context, outcome, new OnRetryArguments(attempt, delay, executionTime));
-            _telemetry.Report(RetryConstants.OnRetryEvent, onRetryArgs);
+            _telemetry.Report(new(ResilienceEventSeverity.Warning, RetryConstants.OnRetryEvent), onRetryArgs);
 
             if (OnRetry is not null)
             {

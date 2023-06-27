@@ -316,12 +316,12 @@ public class HedgingExecutionContextTests : IDisposable
         if (primary)
         {
             _resilienceContext.Properties.Should().HaveCount(1);
-            _resilienceContext.ResilienceEvents.Should().HaveCount(0);
+            _resilienceContext.ResilienceEvents.Should().HaveCount(1);
         }
         else
         {
             _resilienceContext.Properties.Should().HaveCount(2);
-            _resilienceContext.ResilienceEvents.Should().HaveCount(1);
+            _resilienceContext.ResilienceEvents.Should().HaveCount(4);
         }
     }
 
@@ -456,7 +456,7 @@ public class HedgingExecutionContextTests : IDisposable
                 return null;
             }
 
-            args.ActionContext.AddResilienceEvent(new ResilienceEvent("dummy-event"));
+            args.ActionContext.AddResilienceEvent(new ResilienceEvent(ResilienceEventSeverity.Information, "dummy-event"));
 
             return async () =>
             {

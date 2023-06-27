@@ -64,7 +64,7 @@ public sealed class ResilienceContext
     /// <remarks>
     /// If the number of resilience events is greater than zero it's an indication that the execution was unhealthy.
     /// </remarks>
-    public IReadOnlyCollection<ResilienceEvent> ResilienceEvents => _resilienceEvents;
+    public IReadOnlyList<ResilienceEvent> ResilienceEvents => _resilienceEvents;
 
     /// <summary>
     /// Gets a <see cref="ResilienceContext"/> instance from the pool.

@@ -78,7 +78,7 @@ public class TelemetryBenchmark
             ResilienceContext context,
             TState state)
         {
-            _telemetry.Report("DummyEvent", context, "dummy-args");
+            _telemetry.Report(new ResilienceEvent(ResilienceEventSeverity.Warning, "DummyEvent"), context, "dummy-args");
             return callback(context, state);
         }
     }

@@ -8,5 +8,16 @@ internal static class ResilienceContextExtensions
 
     public static string GetExecutionHealth(this ResilienceContext context) => context.IsExecutionHealthy() ? "Healthy" : "Unhealthy";
 
-    public static bool IsExecutionHealthy(this ResilienceContext context) => context.ResilienceEvents.Count == 0;
+    public static bool IsExecutionHealthy(this ResilienceContext context)
+    {
+        for (int i = 0; i < context.ResilienceEvents.Count; i++)
+        {
+            if (context.ResilienceEvents[i].Severity > Polly.Telemetry.ResilienceEventSeverity.Information)
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
 }
