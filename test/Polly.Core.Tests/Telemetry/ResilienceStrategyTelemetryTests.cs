@@ -89,6 +89,19 @@ public class ResilienceStrategyTelemetryTests
     }
 
     [Fact]
+    public void Report_SeverityNone_Skipped()
+    {
+        _diagnosticSource.Setup(o => o.IsEnabled("dummy-event")).Returns(true);
+
+        var context = ResilienceContext.Get();
+        _sut.Report(new(ResilienceEventSeverity.None, "dummy-event"), new OutcomeArguments<int, TestArguments>(context, Outcome.FromResult(99), new TestArguments()));
+        _sut.Report(new(ResilienceEventSeverity.None, "dummy-event"), ResilienceContext.Get(), new TestArguments());
+
+        _diagnosticSource.VerifyAll();
+        _diagnosticSource.VerifyNoOtherCalls();
+    }
+
+    [Fact]
     public void Report_OutcomeWhenNotSubscribed_None()
     {
         _diagnosticSource.Setup(o => o.IsEnabled("dummy-event")).Returns(false);

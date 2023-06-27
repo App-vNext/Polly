@@ -37,7 +37,7 @@ public sealed class ResilienceStrategyTelemetry
 
         context.AddResilienceEvent(resilienceEvent);
 
-        if (DiagnosticSource is null || !DiagnosticSource.IsEnabled(resilienceEvent.EventName))
+        if (DiagnosticSource is null || !DiagnosticSource.IsEnabled(resilienceEvent.EventName) || resilienceEvent.Severity == ResilienceEventSeverity.None)
         {
             return;
         }
@@ -60,7 +60,7 @@ public sealed class ResilienceStrategyTelemetry
     {
         args.Context.AddResilienceEvent(resilienceEvent);
 
-        if (DiagnosticSource is null || !DiagnosticSource.IsEnabled(resilienceEvent.EventName))
+        if (DiagnosticSource is null || !DiagnosticSource.IsEnabled(resilienceEvent.EventName) || resilienceEvent.Severity == ResilienceEventSeverity.None)
         {
             return;
         }

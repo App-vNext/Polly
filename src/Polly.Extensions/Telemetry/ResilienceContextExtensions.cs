@@ -12,7 +12,7 @@ internal static class ResilienceContextExtensions
     {
         for (int i = 0; i < context.ResilienceEvents.Count; i++)
         {
-            if (context.ResilienceEvents[i].Severity != Polly.Telemetry.ResilienceEventSeverity.Information)
+            if (context.ResilienceEvents[i].Severity > Polly.Telemetry.ResilienceEventSeverity.Information)
             {
                 return false;
             }

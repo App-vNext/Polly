@@ -120,7 +120,10 @@ public class ResilienceTelemetryDiagnosticSourceTests : IDisposable
     [InlineData(ResilienceEventSeverity.Error, LogLevel.Error)]
     [InlineData(ResilienceEventSeverity.Warning, LogLevel.Warning)]
     [InlineData(ResilienceEventSeverity.Information, LogLevel.Information)]
-    [InlineData((ResilienceEventSeverity)99, LogLevel.Information)]
+    [InlineData(ResilienceEventSeverity.Debug, LogLevel.Debug)]
+    [InlineData(ResilienceEventSeverity.Critical, LogLevel.Critical)]
+    [InlineData(ResilienceEventSeverity.None, LogLevel.None)]
+    [InlineData((ResilienceEventSeverity)99, LogLevel.None)]
     [Theory]
     public void WriteEvent_EnsureSeverityRespected(ResilienceEventSeverity severity, LogLevel logLevel)
     {
