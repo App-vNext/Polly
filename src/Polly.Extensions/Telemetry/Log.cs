@@ -1,9 +1,11 @@
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.Logging;
 
 namespace Polly.Extensions.Telemetry;
 
 #pragma warning disable S107 // Methods should not have too many parameters
 
+[ExcludeFromCodeCoverage]
 internal static partial class Log
 {
     [LoggerMessage(
