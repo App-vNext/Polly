@@ -179,6 +179,42 @@ public class TelemetryResilienceStrategyTests : IDisposable
         }
     }
 
+    [InlineData(true)]
+    [InlineData(false)]
+    [Theory]
+    public void Execute_ExecutionHealth(bool healthy)
+    {
+        var strategy = CreateStrategy();
+        strategy.Execute(
+            (c, _) =>
+            {
+                if (healthy)
+                {
+                    ((List<ResilienceEvent>)c.ResilienceEvents).Add(new ResilienceEvent(ResilienceEventSeverity.Information, "dummy"));
+                    ((List<ResilienceEvent>)c.ResilienceEvents).Add(new ResilienceEvent(ResilienceEventSeverity.Information, "dummy"));
+                }
+                else
+                {
+                    ((List<ResilienceEvent>)c.ResilienceEvents).Add(new ResilienceEvent(ResilienceEventSeverity.Information, "dummy"));
+                    ((List<ResilienceEvent>)c.ResilienceEvents).Add(new ResilienceEvent(ResilienceEventSeverity.Warning, "dummy"));
+                }
+
+                return true;
+            },
+            ResilienceContext.Get(), string.Empty);
+
+        var ev = _events.Single(v => v.Name == "strategy-execution-duration").Tags;
+
+        if (healthy)
+        {
+            ev["execution-health"].Should().Be("Healthy");
+        }
+        else
+        {
+            ev["execution-health"].Should().Be("Unhealthy");
+        }
+    }
+
     private TelemetryResilienceStrategy CreateStrategy() => new("my-builder", "my-key", _loggerFactory, (_, r) => r, new List<Action<EnrichmentContext>> { c => _enricher?.Invoke(c) });
 
     public void Dispose()
