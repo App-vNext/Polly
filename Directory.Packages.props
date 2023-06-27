@@ -44,6 +44,6 @@
   </ItemGroup>
   <ItemGroup Condition="!$([MSBuild]::IsTargetFrameworkCompatible($(TargetFramework), 'netcoreapp3.1'))">
     <PackageVersion Include="Microsoft.Extensions.Options" Version="2.2.0" />
-    <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="2.2.0" />
+    <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.0" />
   </ItemGroup>
 </Project>
