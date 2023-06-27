@@ -146,12 +146,7 @@ public class ResilienceTelemetryDiagnosticSourceTests : IDisposable
 
         if (noOutcome)
         {
-#if NET6_0_OR_GREATER
             string resultString = string.Empty;
-#else
-            string resultString = "(null)";
-#endif
-
             messages[0].Message.Should().Be($"Execution attempt. Builder Name: 'my-builder', Strategy Name: 'my-strategy', Strategy Type: 'my-strategy-type', Strategy Key: 'my-strategy-key', Result: '{resultString}', Handled: '{handled}', Attempt: '4', Execution Time: '123'");
         }
         else
@@ -168,7 +163,6 @@ public class ResilienceTelemetryDiagnosticSourceTests : IDisposable
             messages[0].LogLevel.Should().Be(LogLevel.Debug);
         }
 
-#if NET6_0_OR_GREATER
         // verify reported state
         var coll = messages[0].State.Should().BeAssignableTo<IReadOnlyList<KeyValuePair<string, object>>>().Subject;
         coll.Count.Should().Be(9);
@@ -184,7 +178,6 @@ public class ResilienceTelemetryDiagnosticSourceTests : IDisposable
         }
 
         coll.Invoking(c => c[coll.Count + 1]).Should().Throw<IndexOutOfRangeException>();
-#endif
     }
 
     [Fact]
