@@ -1,4 +1,3 @@
-using System.Diagnostics.CodeAnalysis;
 using Polly.Telemetry;
 
 namespace Polly.Timeout;
@@ -23,7 +22,6 @@ internal sealed class TimeoutResilienceStrategy : ResilienceStrategy
 
     public Func<OnTimeoutArguments, ValueTask>? OnTimeout { get; }
 
-    [ExcludeFromCodeCoverage]
     protected internal override async ValueTask<Outcome<TResult>> ExecuteCoreAsync<TResult, TState>(
         Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,
         ResilienceContext context,
@@ -50,7 +48,7 @@ internal sealed class TimeoutResilienceStrategy : ResilienceStrategy
         var outcome = await ExecuteCallbackSafeAsync(callback, context, state).ConfigureAwait(context.ContinueOnCapturedContext);
         var isCancellationRequested = cancellationSource.IsCancellationRequested;
 
-        // execution is finished, cleanup
+        // execution is finished, clean up
         context.CancellationToken = previousToken;
 #pragma warning disable CA1849 // Call async methods when in an async method, OK here as the callback is synchronous
         registration.Dispose();

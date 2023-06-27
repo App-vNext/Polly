@@ -1,6 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFrameworks>net7.0</TargetFrameworks>
+    <RootNamespace>Polly</RootNamespace>
     <ImplicitUsings>true</ImplicitUsings>
     <ProjectType>Benchmark</ProjectType>
     <Nullable>enable</Nullable>
