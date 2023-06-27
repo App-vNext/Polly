@@ -34,6 +34,7 @@ public class CancellationTokenSourcePoolTests
         pool.Return(cts);
 
         var cts2 = pool.Get(System.Threading.Timeout.InfiniteTimeSpan);
+
 #if NET6_0_OR_GREATER
         if (timeProvider == TimeProvider.System)
         {

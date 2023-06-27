@@ -224,7 +224,7 @@ public class TimeoutResilienceStrategyTests : IDisposable
             },
             cts.Token);
         }
-        catch (OperationCanceledException)
+        catch (TaskCanceledException)
         {
             // ok
         }
