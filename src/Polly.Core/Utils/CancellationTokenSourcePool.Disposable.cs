@@ -2,6 +2,7 @@ namespace Polly.Utils;
 
 internal abstract partial class CancellationTokenSourcePool
 {
+#if !NET8_0_OR_GREATER
     private sealed class DisposableCancellationTokenSourcePool : CancellationTokenSourcePool
     {
         private readonly TimeProvider _timeProvider;
@@ -20,4 +21,5 @@ internal abstract partial class CancellationTokenSourcePool
 
         public override void Return(CancellationTokenSource source) => source.Dispose();
     }
+#endif
 }

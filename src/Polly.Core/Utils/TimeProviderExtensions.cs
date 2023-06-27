@@ -30,12 +30,20 @@ internal static class TimeProviderExtensions
             // the use of Thread.Sleep() here because it is not cancellable and to
             // simplify the code. Sync-over-async is not a concern here because it
             // only applies in the case of a resilience event and not on the hot path.
+#if NET8_0_OR_GREATER
+            Task.Delay(delay, timeProvider, context.CancellationToken).GetAwaiter().GetResult();
+#else
             timeProvider.Delay(delay, context.CancellationToken).GetAwaiter().GetResult();
+#endif
 #pragma warning restore CA1849
 
             return Task.CompletedTask;
         }
 
+#if NET8_0_OR_GREATER
+        return Task.Delay(delay, timeProvider, context.CancellationToken);
+#else
         return timeProvider.Delay(delay, context.CancellationToken);
+#endif
     }
 }
