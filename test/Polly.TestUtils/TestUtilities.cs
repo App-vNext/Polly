@@ -105,6 +105,7 @@ public static class TestUtilities
     private sealed class CallbackDiagnosticSource : DiagnosticSource
     {
         private readonly Action<TelemetryEventArguments> _callback;
+        private readonly object _syncRoot = new();
 
         public CallbackDiagnosticSource(Action<TelemetryEventArguments> callback) => _callback = callback;
 
@@ -122,7 +123,11 @@ public static class TestUtilities
 
             // copy the args because these are pooled and in tests we want to preserve them
             args = TelemetryEventArguments.Get(args.Source, args.EventName, args.Context, args.Outcome, arguments);
-            _callback(args);
+
+            lock (_syncRoot)
+            {
+                _callback(args);
+            }
         }
     }
 }

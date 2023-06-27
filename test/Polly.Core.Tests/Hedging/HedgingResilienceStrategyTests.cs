@@ -15,7 +15,7 @@ public class HedgingResilienceStrategyTests : IDisposable
     private static readonly TimeSpan AssertTimeout = TimeSpan.FromSeconds(15);
 
     private readonly HedgingStrategyOptions<string> _options = new();
-    private readonly List<TelemetryEventArguments> _events = new();
+    private readonly ConcurrentQueue<TelemetryEventArguments> _events = new();
     private readonly ResilienceStrategyTelemetry _telemetry;
     private readonly HedgingTimeProvider _timeProvider;
     private readonly HedgingActions _actions;
@@ -27,7 +27,7 @@ public class HedgingResilienceStrategyTests : IDisposable
 
     public HedgingResilienceStrategyTests(ITestOutputHelper testOutput)
     {
-        _telemetry = TestUtilities.CreateResilienceTelemetry(_events.Add);
+        _telemetry = TestUtilities.CreateResilienceTelemetry(_events.Enqueue);
         _timeProvider = new HedgingTimeProvider { AutoAdvance = _options.HedgingDelay };
         _actions = new HedgingActions(_timeProvider);
         _primaryTasks = new PrimaryStringTasks(_timeProvider);
