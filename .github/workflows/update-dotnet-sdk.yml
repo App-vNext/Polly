@@ -7,25 +7,29 @@ on:
 
 permissions:
   contents: read
-  pull-requests: read
 
 jobs:
   update-dotnet-sdk:
-    name: Update .NET SDK
-    runs-on: ubuntu-latest
-    if: ${{ github.event.repository.fork == false }}
+    uses: martincostello/update-dotnet-sdk/.github/workflows/update-dotnet-sdk.yml@ff9a6f247704ef1b77eb3c478070d8fa69c2360e # v2.2.3
+    with:
+      labels: "dependencies,.NET"
+      update-nuget-packages: false
+      user-email: '138034000+polly-updater-bot[bot]@users.noreply.github.com'
+      user-name: 'polly-updater-bot[bot]'
+    secrets:
+      application-id: ${{ secrets.POLLY_UPDATER_BOT_APP_ID }}
+      application-private-key: ${{ secrets.POLLY_UPDATER_BOT_KEY }}
 
+  add-security-label:
+    needs: update-dotnet-sdk
     permissions:
-      contents: write
       pull-requests: write
-
+    runs-on: ubuntu-latest
+    if : |
+      needs.update-dotnet-sdk.outputs.sdk-updated =='true' &&
+      needs.update-dotnet-sdk.outputs.security == 'true'
     steps:
-
-    - name: Checkout code
-      uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
-
-    - name: Update .NET SDK
-      uses: martincostello/update-dotnet-sdk@ff9a6f247704ef1b77eb3c478070d8fa69c2360e # v2.2.3
-      with:
-        labels: "dependencies,.NET"
-        repo-token: ${{ secrets.GITHUB_TOKEN }}
+    - name: Add security label
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: gh pr edit "${{ needs.update-dotnet-sdk.outputs.pull-request-html-url }}" --add-label security
