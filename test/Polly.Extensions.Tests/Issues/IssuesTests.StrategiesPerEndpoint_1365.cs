@@ -94,14 +94,14 @@ public partial class IssuesTests
     {
         public class BuilderComparer : IEqualityComparer<EndpointKey>
         {
-            public bool Equals(EndpointKey? x, EndpointKey? y) => StringComparer.Ordinal.Equals(x.BuilderName, y.BuilderName);
+            public bool Equals(EndpointKey? x, EndpointKey? y) => StringComparer.Ordinal.Equals(x?.BuilderName, y?.BuilderName);
 
             public int GetHashCode([DisallowNull] EndpointKey obj) => StringComparer.Ordinal.GetHashCode(obj.BuilderName);
         }
 
         public class StrategyComparer : IEqualityComparer<EndpointKey>
         {
-            public bool Equals(EndpointKey? x, EndpointKey? y) => (x.BuilderName, x.EndpointName, x.Resource) == (y.BuilderName, y.EndpointName, y.Resource);
+            public bool Equals(EndpointKey? x, EndpointKey? y) => (x?.BuilderName, x?.EndpointName, x?.Resource) == (y?.BuilderName, y?.EndpointName, y?.Resource);
 
             public int GetHashCode([DisallowNull] EndpointKey obj) => (obj.BuilderName, obj.EndpointName, obj.Resource).GetHashCode();
         }
