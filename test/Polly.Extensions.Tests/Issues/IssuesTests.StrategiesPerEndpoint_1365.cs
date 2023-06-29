@@ -79,6 +79,8 @@ public partial class IssuesTests
         var strategy2 = provider.GetStrategy<HttpResponseMessage>(resource2Key);
 
         strategy1.Should().NotBe(strategy2);
+        provider.GetStrategy<HttpResponseMessage>(resource1Key).Should().BeSameAs(strategy1);
+        provider.GetStrategy<HttpResponseMessage>(resource2Key).Should().BeSameAs(strategy2);
     }
 
     public class EndpointOptions
