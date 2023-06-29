@@ -38,7 +38,6 @@ public partial class IssuesTests
             });
 
             // apply timeout
-
             builder.AddTimeout(new TimeoutStrategyOptions
             {
                 StrategyName = $"{context.StrategyKey.EndpointName}-Timeout",
