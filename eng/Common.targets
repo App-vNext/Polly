@@ -4,6 +4,7 @@
     <SignAssembly>true</SignAssembly>
     <LangVersion>latest</LangVersion>
     <ImplicitUsings>enable</ImplicitUsings>
+    <AccelerateBuildsInVisualStudio>true</AccelerateBuildsInVisualStudio>
   </PropertyGroup>
 
   <Import Project="$(MsBuildThisFileDirectory)Analyzers.targets" />
