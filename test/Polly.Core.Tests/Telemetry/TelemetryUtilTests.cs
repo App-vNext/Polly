@@ -32,4 +32,21 @@ public class TelemetryUtilTests
 
         telemetry.DiagnosticSource.Should().Be(source);
     }
+
+    [InlineData(true, ResilienceEventSeverity.Warning)]
+    [InlineData(false, ResilienceEventSeverity.Information)]
+    [Theory]
+    public void ReportExecutionAttempt_Ok(bool handled, ResilienceEventSeverity severity)
+    {
+        var asserted = false;
+        var props = new ResilienceProperties();
+        var telemetry = TestUtilities.CreateResilienceTelemetry(args =>
+        {
+            args.Event.Severity.Should().Be(severity);
+            asserted = true;
+        });
+
+        TelemetryUtil.ReportExecutionAttempt(telemetry, ResilienceContext.Get(), Outcome.FromResult("dummy"), 0, TimeSpan.Zero, handled);
+        asserted.Should().BeTrue();
+    }
 }
