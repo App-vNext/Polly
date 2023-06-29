@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Net.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Polly.Registry;
 using Polly.Retry;
@@ -16,7 +15,7 @@ public partial class IssuesTests
         var services = new ServiceCollection();
 
         // add resilience strategy, keyed by EndpointKey that only defines the builder name
-        services.AddResilienceStrategy<EndpointKey, HttpResponseMessage>(new EndpointKey("my-pipeline", string.Empty, string.Empty, new()), (builder, context) =>
+        services.AddResilienceStrategy(new EndpointKey("my-pipeline", string.Empty, string.Empty, new()), (builder, context) =>
         {
             var endpointOptions = context.StrategyKey.EndpointOptions;
 
@@ -75,12 +74,12 @@ public partial class IssuesTests
         var resource1Key = new EndpointKey("my-pipeline", "Endpoint 1", "Resource 1", endpoint1Options);
         var resource2Key = new EndpointKey("my-pipeline", "Endpoint 1", "Resource 2", endpoint1Options);
 
-        var strategy1 = provider.GetStrategy<HttpResponseMessage>(resource1Key);
-        var strategy2 = provider.GetStrategy<HttpResponseMessage>(resource2Key);
+        var strategy1 = provider.GetStrategy(resource1Key);
+        var strategy2 = provider.GetStrategy(resource2Key);
 
         strategy1.Should().NotBe(strategy2);
-        provider.GetStrategy<HttpResponseMessage>(resource1Key).Should().BeSameAs(strategy1);
-        provider.GetStrategy<HttpResponseMessage>(resource2Key).Should().BeSameAs(strategy2);
+        provider.GetStrategy(resource1Key).Should().BeSameAs(strategy1);
+        provider.GetStrategy(resource2Key).Should().BeSameAs(strategy2);
     }
 
     public class EndpointOptions
