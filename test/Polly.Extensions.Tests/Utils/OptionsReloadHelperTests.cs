@@ -15,7 +15,7 @@ public class OptionsReloadHelperTests
             .Setup(m => m.OnChange(It.IsAny<Action<string, string?>>()))
             .Returns(() => Mock.Of<IDisposable>());
 
-        using var helper = new OptionsReloadHelper<string>(monitor.Object, "name");
+        var helper = new OptionsReloadHelper<string>(monitor.Object, "name");
 
         monitor.VerifyAll();
     }
