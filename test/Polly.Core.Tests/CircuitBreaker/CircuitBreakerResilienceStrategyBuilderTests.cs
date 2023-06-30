@@ -179,4 +179,27 @@ public class CircuitBreakerResilienceStrategyBuilderTests
         halfOpened.Should().Be(2);
         closed.Should().Be(1);
     }
+
+    [Fact]
+    public async Task AddCircuitBreakers_WithIsolatedManualControl_ShouldBeIsolated()
+    {
+        var manualControl = new CircuitBreakerManualControl();
+        await manualControl.IsolateAsync();
+
+        var strategy1 = new ResilienceStrategyBuilder()
+            .AddAdvancedCircuitBreaker(new() { ManualControl = manualControl })
+            .Build();
+
+        var strategy2 = new ResilienceStrategyBuilder()
+            .AddAdvancedCircuitBreaker(new() { ManualControl = manualControl })
+            .Build();
+
+        strategy1.Invoking(s => s.Execute(() => { })).Should().Throw<IsolatedCircuitException>();
+        strategy2.Invoking(s => s.Execute(() => { })).Should().Throw<IsolatedCircuitException>();
+
+        await manualControl.CloseAsync();
+
+        strategy1.Execute(() => { });
+        strategy2.Execute(() => { });
+    }
 }

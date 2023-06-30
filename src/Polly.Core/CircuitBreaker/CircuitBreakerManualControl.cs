@@ -1,34 +1,34 @@
+using System.Collections.Generic;
+
 namespace Polly.CircuitBreaker;
 
 /// <summary>
 /// Allows manual control of the circuit-breaker.
 /// </summary>
+/// <remarks>
+/// The instance of this class can be reused across multiple circuit breakers.
+/// </remarks>
 public sealed class CircuitBreakerManualControl : IDisposable
 {
-    private Action? _onDispose;
-    private Func<ResilienceContext, Task>? _onIsolate;
-    private Func<ResilienceContext, Task>? _onReset;
+    private readonly HashSet<Action> _onDispose = new();
+    private readonly HashSet<Func<ResilienceContext, Task>> _onIsolate = new();
+    private readonly HashSet<Func<ResilienceContext, Task>> _onReset = new();
+    private bool _isolated;
 
     internal void Initialize(Func<ResilienceContext, Task> onIsolate, Func<ResilienceContext, Task> onReset, Action onDispose)
     {
-        if (_onIsolate != null)
+        _onDispose.Add(onDispose);
+        _onIsolate.Add(onIsolate);
+        _onReset.Add(onReset);
+
+        if (_isolated)
         {
-            throw new InvalidOperationException($"This instance of '{nameof(CircuitBreakerManualControl)}' is already initialized and cannot be used in a different circuit-breaker strategy.");
+            var context = ResilienceContext.Get().Initialize<VoidResult>(isSynchronous: true);
+
+            // if the control indicates that circuit breaker should be isolated, we isolate it right away
+            IsolateAsync(context).GetAwaiter().GetResult();
         }
-
-        _onDispose = onDispose;
-        _onIsolate = onIsolate;
-        _onReset = onReset;
     }
-
-    /// <summary>
-    /// Gets a value indicating whether the manual control is initialized.
-    /// </summary>
-    /// <remarks>
-    /// The initialization happens when the circuit-breaker strategy is attached to this class.
-    /// This happens when the final strategy is created by the <see cref="ResilienceStrategyBuilder.Build"/> call.
-    /// </remarks>
-    internal bool IsInitialized => _onIsolate != null;
 
     /// <summary>
     /// Isolates (opens) the circuit manually, and holds it in this state until a call to <see cref="CloseAsync(CancellationToken)"/> is made.
@@ -36,19 +36,17 @@ public sealed class CircuitBreakerManualControl : IDisposable
     /// <param name="context">The resilience context.</param>
     /// <returns>The instance of <see cref="Task"/> that represents the asynchronous execution.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="context"/> is <see langword="null"/>.</exception>
-    /// <exception cref="InvalidOperationException">Thrown when manual control is not initialized.</exception>
     /// <exception cref="ObjectDisposedException">Thrown when calling this method after this object is disposed.</exception>
-    internal Task IsolateAsync(ResilienceContext context)
+    internal async Task IsolateAsync(ResilienceContext context)
     {
         Guard.NotNull(context);
 
-        if (_onIsolate == null)
-        {
-            throw new InvalidOperationException("The circuit-breaker manual control is not initialized");
-        }
+        _isolated = true;
 
-        context.Initialize<VoidResult>(isSynchronous: false);
-        return _onIsolate(context);
+        foreach (var action in _onIsolate)
+        {
+            await action(context).ConfigureAwait(context.ContinueOnCapturedContext);
+        }
     }
 
     /// <summary>
@@ -56,11 +54,10 @@ public sealed class CircuitBreakerManualControl : IDisposable
     /// </summary>
     /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns>The instance of <see cref="Task"/> that represents the asynchronous execution.</returns>
-    /// <exception cref="InvalidOperationException">Thrown if manual control is not initialized.</exception>
     /// <exception cref="ObjectDisposedException">Thrown when calling this method after this object is disposed.</exception>
     public async Task IsolateAsync(CancellationToken cancellationToken = default)
     {
-        var context = ResilienceContext.Get();
+        var context = ResilienceContext.Get().Initialize<VoidResult>(isSynchronous: false);
         context.CancellationToken = cancellationToken;
 
         try
@@ -79,19 +76,19 @@ public sealed class CircuitBreakerManualControl : IDisposable
     /// <param name="context">The resilience context.</param>
     /// <returns>The instance of <see cref="Task"/> that represents the asynchronous execution.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="context"/> is <see langword="null"/>.</exception>
-    /// <exception cref="InvalidOperationException">Thrown if manual control is not initialized.</exception>
     /// <exception cref="ObjectDisposedException">Thrown when calling this method after this object is disposed.</exception>
-    internal Task CloseAsync(ResilienceContext context)
+    internal async Task CloseAsync(ResilienceContext context)
     {
         Guard.NotNull(context);
 
-        if (_onReset == null)
-        {
-            throw new InvalidOperationException("The circuit-breaker manual control is not initialized");
-        }
+        _isolated = false;
 
         context.Initialize<VoidResult>(isSynchronous: false);
-        return _onReset(context);
+
+        foreach (var action in _onReset)
+        {
+            await action(context).ConfigureAwait(context.ContinueOnCapturedContext);
+        }
     }
 
     /// <summary>
@@ -99,7 +96,6 @@ public sealed class CircuitBreakerManualControl : IDisposable
     /// </summary>
     /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns>The instance of <see cref="Task"/> that represents the asynchronous execution.</returns>
-    /// <exception cref="InvalidOperationException">Thrown if manual control is not initialized.</exception>
     /// <exception cref="ObjectDisposedException">Thrown when calling this method after this object is disposed.</exception>
     public async Task CloseAsync(CancellationToken cancellationToken = default)
     {
@@ -119,5 +115,15 @@ public sealed class CircuitBreakerManualControl : IDisposable
     /// <summary>
     /// Disposes the current class.
     /// </summary>
-    public void Dispose() => _onDispose?.Invoke();
+    public void Dispose()
+    {
+        foreach (var action in _onDispose)
+        {
+            action();
+        }
+
+        _onDispose.Clear();
+        _onIsolate.Clear();
+        _onReset.Clear();
+    }
 }

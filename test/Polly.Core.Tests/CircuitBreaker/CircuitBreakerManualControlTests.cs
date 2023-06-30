@@ -4,46 +4,58 @@ namespace Polly.Core.Tests.CircuitBreaker;
 
 public class CircuitBreakerManualControlTests
 {
-    [Fact]
-    public void Ctor_Ok()
+    [InlineData(true)]
+    [InlineData(false)]
+    [Theory]
+    public async Task IsolateAsync_NotInitialized_Ok(bool closedAfter)
     {
         using var control = new CircuitBreakerManualControl();
+        await control.IsolateAsync();
+        if (closedAfter)
+        {
+            await control.CloseAsync();
+        }
 
-        control.IsInitialized.Should().BeFalse();
+        var isolated = false;
+
+        control.Initialize(
+            c =>
+            {
+                c.IsSynchronous.Should().BeTrue();
+                isolated = true;
+                return Task.CompletedTask;
+            },
+            _ => Task.CompletedTask,
+            () => { });
+
+        isolated.Should().Be(!closedAfter);
     }
 
     [Fact]
-    public async Task IsolateAsync_NotInitialized_Throws()
-    {
-        using var control = new CircuitBreakerManualControl();
-
-        await control
-            .Invoking(c => c.IsolateAsync(CancellationToken.None))
-            .Should()
-            .ThrowAsync<InvalidOperationException>();
-    }
-
-    [Fact]
-    public async Task ResetAsync_NotInitialized_Throws()
+    public async Task ResetAsync_NotInitialized_Ok()
     {
         using var control = new CircuitBreakerManualControl();
 
         await control
             .Invoking(c => c.CloseAsync(CancellationToken.None))
             .Should()
-            .ThrowAsync<InvalidOperationException>();
+            .NotThrowAsync();
     }
 
     [Fact]
-    public void Initialize_Twice_Throws()
+    public async Task Initialize_Twice_Ok()
     {
-        using var control = new CircuitBreakerManualControl();
+        int called = 0;
+        var control = new CircuitBreakerManualControl();
         control.Initialize(_ => Task.CompletedTask, _ => Task.CompletedTask, () => { });
+        control.Initialize(_ => { called++; return Task.CompletedTask; }, _ => { called++; return Task.CompletedTask; }, () => { called++; });
 
-        control
-            .Invoking(c => c.Initialize(_ => Task.CompletedTask, _ => Task.CompletedTask, () => { }))
-            .Should()
-            .Throw<InvalidOperationException>();
+        await control.IsolateAsync();
+        await control.CloseAsync();
+
+        control.Dispose();
+
+        called.Should().Be(3);
     }
 
     [Fact]

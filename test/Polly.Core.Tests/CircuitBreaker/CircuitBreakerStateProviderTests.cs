@@ -29,7 +29,7 @@ public class CircuitBreakerStateProviderTests
         await control
             .Invoking(c => c.CloseAsync(CancellationToken.None))
             .Should()
-            .ThrowAsync<InvalidOperationException>();
+            .NotThrowAsync<InvalidOperationException>();
     }
 
     [Fact]

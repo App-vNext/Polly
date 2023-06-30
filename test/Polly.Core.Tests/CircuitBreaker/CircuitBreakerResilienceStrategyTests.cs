@@ -54,8 +54,6 @@ public class CircuitBreakerResilienceStrategyTests : IDisposable
         _options.ManualControl = new CircuitBreakerManualControl();
         var strategy = Create();
 
-        _options.ManualControl.IsInitialized.Should().BeTrue();
-
         await _options.ManualControl.IsolateAsync(CancellationToken.None);
         strategy.Invoking(s => s.Execute(_ => 0)).Should().Throw<IsolatedCircuitException>();
 
