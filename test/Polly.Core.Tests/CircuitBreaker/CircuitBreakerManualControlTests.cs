@@ -5,33 +5,34 @@ namespace Polly.Core.Tests.CircuitBreaker;
 public class CircuitBreakerManualControlTests
 {
     [Fact]
-    public void Ctor_Ok()
+    public async Task IsolateAsync_NotInitialized_Ok()
     {
         using var control = new CircuitBreakerManualControl();
+        await control.IsolateAsync();
+        var isolated = false;
 
-        control.IsInitialized.Should().BeFalse();
+        control.Initialize(
+            c =>
+            {
+                c.IsSynchronous.Should().BeTrue();
+                isolated = true;
+                return Task.CompletedTask;
+            },
+            _ => Task.CompletedTask,
+            () => { });
+
+        isolated.Should().BeTrue();
     }
 
     [Fact]
-    public async Task IsolateAsync_NotInitialized_Throws()
-    {
-        using var control = new CircuitBreakerManualControl();
-
-        await control
-            .Invoking(c => c.IsolateAsync(CancellationToken.None))
-            .Should()
-            .ThrowAsync<InvalidOperationException>();
-    }
-
-    [Fact]
-    public async Task ResetAsync_NotInitialized_Throws()
+    public async Task ResetAsync_NotInitialized_Ok()
     {
         using var control = new CircuitBreakerManualControl();
 
         await control
             .Invoking(c => c.CloseAsync(CancellationToken.None))
             .Should()
-            .ThrowAsync<InvalidOperationException>();
+            .NotThrowAsync();
     }
 
     [Fact]

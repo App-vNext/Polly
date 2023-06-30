@@ -10,22 +10,22 @@ public sealed class CircuitBreakerManualControl : IDisposable
     private readonly HashSet<Action> _onDispose = new();
     private readonly HashSet<Func<ResilienceContext, Task>> _onIsolate = new();
     private readonly HashSet<Func<ResilienceContext, Task>> _onReset = new();
+    private bool _isolated;
 
     internal void Initialize(Func<ResilienceContext, Task> onIsolate, Func<ResilienceContext, Task> onReset, Action onDispose)
     {
         _onDispose.Add(onDispose);
         _onIsolate.Add(onIsolate);
         _onReset.Add(onReset);
-    }
 
-    /// <summary>
-    /// Gets a value indicating whether the manual control is initialized.
-    /// </summary>
-    /// <remarks>
-    /// The initialization happens when the circuit-breaker strategy is attached to this class.
-    /// This happens when the final strategy is created by the <see cref="ResilienceStrategyBuilder.Build"/> call.
-    /// </remarks>
-    internal bool IsInitialized => _onIsolate.Count > 0;
+        if (_isolated)
+        {
+            var context = ResilienceContext.Get().Initialize<VoidResult>(isSynchronous: true);
+
+            // if the control indicates that circuit breaker should be isolated, we isolate it right away
+            IsolateAsync(context).GetAwaiter().GetResult();
+        }
+    }
 
     /// <summary>
     /// Isolates (opens) the circuit manually, and holds it in this state until a call to <see cref="CloseAsync(CancellationToken)"/> is made.
@@ -39,12 +39,7 @@ public sealed class CircuitBreakerManualControl : IDisposable
     {
         Guard.NotNull(context);
 
-        if (!IsInitialized)
-        {
-            throw new InvalidOperationException("The circuit-breaker manual control is not initialized");
-        }
-
-        context.Initialize<VoidResult>(isSynchronous: false);
+        _isolated = true;
 
         foreach (var action in _onIsolate)
         {
@@ -61,7 +56,7 @@ public sealed class CircuitBreakerManualControl : IDisposable
     /// <exception cref="ObjectDisposedException">Thrown when calling this method after this object is disposed.</exception>
     public async Task IsolateAsync(CancellationToken cancellationToken = default)
     {
-        var context = ResilienceContext.Get();
+        var context = ResilienceContext.Get().Initialize<VoidResult>(isSynchronous: false);
         context.CancellationToken = cancellationToken;
 
         try
@@ -86,10 +81,7 @@ public sealed class CircuitBreakerManualControl : IDisposable
     {
         Guard.NotNull(context);
 
-        if (!IsInitialized)
-        {
-            throw new InvalidOperationException("The circuit-breaker manual control is not initialized");
-        }
+        _isolated = false;
 
         context.Initialize<VoidResult>(isSynchronous: false);
 
