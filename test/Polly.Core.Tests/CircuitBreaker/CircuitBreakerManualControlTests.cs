@@ -35,15 +35,19 @@ public class CircuitBreakerManualControlTests
     }
 
     [Fact]
-    public void Initialize_Twice_Throws()
+    public async Task Initialize_Twice_Ok()
     {
-        using var control = new CircuitBreakerManualControl();
+        int called = 0;
+        var control = new CircuitBreakerManualControl();
         control.Initialize(_ => Task.CompletedTask, _ => Task.CompletedTask, () => { });
+        control.Initialize(_ => { called++; return Task.CompletedTask; }, _ => { called++; return Task.CompletedTask; }, () => { called++; });
 
-        control
-            .Invoking(c => c.Initialize(_ => Task.CompletedTask, _ => Task.CompletedTask, () => { }))
-            .Should()
-            .Throw<InvalidOperationException>();
+        await control.IsolateAsync();
+        await control.CloseAsync();
+
+        control.Dispose();
+
+        called.Should().Be(3);
     }
 
     [Fact]
