@@ -1,8 +1,5 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
-using Moq;
-using Polly.Extensions.Utils;
 using Polly.Registry;
 
 namespace Polly.Extensions.Tests;
@@ -43,7 +40,6 @@ public class ReloadableResilienceStrategyTests
         var serviceProvider = services.BuildServiceProvider();
         var strategy = serviceProvider.GetRequiredService<ResilienceStrategyProvider<string>>().GetStrategy("my-strategy");
         var context = ResilienceContext.Get();
-        var registry = serviceProvider.GetRequiredService<OptionsReloadHelperRegistry<string>>();
 
         // initial
         strategy.Execute(_ => "dummy", context);
@@ -56,38 +52,6 @@ public class ReloadableResilienceStrategyTests
             strategy.Execute(_ => "dummy", context);
             context.Properties.GetValue(TagKey, string.Empty).Should().Be($"reload-{i}");
         }
-
-        registry.Count.Should().Be(1);
-        serviceProvider.Dispose();
-        registry.Count.Should().Be(0);
-    }
-
-    [Fact]
-    public void OptionsReloadHelperRegistry_EnsureTracksDifferentHelpers()
-    {
-        var services = new ServiceCollection().AddResilienceStrategy("dummy", builder => { });
-        var serviceProvider = services.BuildServiceProvider();
-        var registry = serviceProvider.GetRequiredService<OptionsReloadHelperRegistry<string>>();
-
-        registry.Get<ReloadableStrategy>("A", null);
-        registry.Get<ReloadableStrategy>("A", "dummy");
-        registry.Get<ReloadableStrategy>("B", null);
-        registry.Get<ReloadableStrategy>("B", "dummy");
-
-        registry.Count.Should().Be(4);
-
-        registry.Dispose();
-        registry.Count.Should().Be(0);
-    }
-
-    [Fact]
-    public void OptionsReloadHelper_Dispose_Ok()
-    {
-        var monitor = new Mock<IOptionsMonitor<ReloadableStrategyOptions>>();
-
-        using var helper = new OptionsReloadHelper<ReloadableStrategyOptions>(monitor.Object, string.Empty);
-
-        helper.Invoking(h => h.Dispose()).Should().NotThrow();
     }
 
     public class ReloadableStrategy : ResilienceStrategy

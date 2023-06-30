@@ -2,12 +2,14 @@ using Microsoft.Extensions.Options;
 
 namespace Polly.Extensions.Utils;
 
-internal sealed class OptionsReloadHelper<T> : IDisposable
+#pragma warning disable CA1001 // we can get away of not disposing this class because it's active for a lifetime of app
+#pragma warning disable S2931
+
+internal sealed class OptionsReloadHelper<T>
 {
-    private readonly IDisposable? _listener;
     private CancellationTokenSource _cancellation = new();
 
-    public OptionsReloadHelper(IOptionsMonitor<T> monitor, string name) => _listener = monitor.OnChange((_, changedNamed) =>
+    public OptionsReloadHelper(IOptionsMonitor<T> monitor, string name) => monitor.OnChange((_, changedNamed) =>
     {
         if (name == changedNamed)
         {
@@ -16,12 +18,6 @@ internal sealed class OptionsReloadHelper<T> : IDisposable
     });
 
     public CancellationToken GetCancellationToken() => _cancellation.Token;
-
-    public void Dispose()
-    {
-        _cancellation.Dispose();
-        _listener?.Dispose();
-    }
 
     private void HandleChange()
     {

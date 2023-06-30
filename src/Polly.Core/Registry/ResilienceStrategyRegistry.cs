@@ -230,7 +230,7 @@ public sealed partial class ResilienceStrategyRegistry<TKey> : ResilienceStrateg
 
         return new ReloadableResilienceStrategy(
             strategy,
-            context.ReloadTokenProducer,
+            context.ReloadTokenProducer(),
             () => factory().BuildStrategy(),
             TelemetryUtil.CreateTelemetry(
                 diagnosticSource,

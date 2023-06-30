@@ -1,3 +1,4 @@
+using System;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Polly.Extensions.Utils;
@@ -17,7 +18,13 @@ public sealed class AddResilienceStrategyContext<TKey>
         RegistryContext = registryContext;
         ServiceProvider = serviceProvider;
         StrategyKey = registryContext.StrategyKey;
+        BuilderName = registryContext.BuilderName;
     }
+
+    /// <summary>
+    /// Gets the strategy key for the strategy being created.
+    /// </summary>
+    public string BuilderName { get; }
 
     /// <summary>
     /// Gets the strategy key for the strategy being created.
@@ -32,7 +39,7 @@ public sealed class AddResilienceStrategyContext<TKey>
     /// <summary>
     /// Gets the context that is used by the registry.
     /// </summary>
-    public ConfigureBuilderContext<TKey> RegistryContext { get; }
+    internal ConfigureBuilderContext<TKey> RegistryContext { get; }
 
     /// <summary>
     /// Enables dynamic reloading of the resilience strategy whenever the <typeparamref name="TOptions"/> options are changed.
@@ -48,10 +55,9 @@ public sealed class AddResilienceStrategyContext<TKey>
     /// </remarks>
     public void EnableReloads<TOptions>(string? name = null)
     {
-        var registry = ServiceProvider.GetRequiredService<OptionsReloadHelperRegistry<TKey>>();
-        var helper = registry.Get<TOptions>(StrategyKey, name);
+        var monitor = ServiceProvider.GetRequiredService<IOptionsMonitor<TOptions>>();
 
-        RegistryContext.EnableReloads(helper.GetCancellationToken);
+        RegistryContext.EnableReloads(() => new OptionsReloadHelper<TOptions>(monitor, name ?? Options.DefaultName).GetCancellationToken);
     }
 
     /// <summary>
