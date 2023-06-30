@@ -4,11 +4,18 @@ namespace Polly.Core.Tests.CircuitBreaker;
 
 public class CircuitBreakerManualControlTests
 {
-    [Fact]
-    public async Task IsolateAsync_NotInitialized_Ok()
+    [InlineData(true)]
+    [InlineData(false)]
+    [Theory]
+    public async Task IsolateAsync_NotInitialized_Ok(bool closedAfter)
     {
         using var control = new CircuitBreakerManualControl();
         await control.IsolateAsync();
+        if (closedAfter)
+        {
+            await control.CloseAsync();
+        }
+
         var isolated = false;
 
         control.Initialize(
@@ -21,7 +28,7 @@ public class CircuitBreakerManualControlTests
             _ => Task.CompletedTask,
             () => { });
 
-        isolated.Should().BeTrue();
+        isolated.Should().Be(!closedAfter);
     }
 
     [Fact]
