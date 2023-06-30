@@ -5,6 +5,9 @@ namespace Polly.CircuitBreaker;
 /// <summary>
 /// Allows manual control of the circuit-breaker.
 /// </summary>
+/// <remarks>
+/// The instance of this class can be reused across multiple circuit breakers.
+/// </remarks>
 public sealed class CircuitBreakerManualControl : IDisposable
 {
     private readonly HashSet<Action> _onDispose = new();
@@ -33,7 +36,6 @@ public sealed class CircuitBreakerManualControl : IDisposable
     /// <param name="context">The resilience context.</param>
     /// <returns>The instance of <see cref="Task"/> that represents the asynchronous execution.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="context"/> is <see langword="null"/>.</exception>
-    /// <exception cref="InvalidOperationException">Thrown when manual control is not initialized.</exception>
     /// <exception cref="ObjectDisposedException">Thrown when calling this method after this object is disposed.</exception>
     internal async Task IsolateAsync(ResilienceContext context)
     {
@@ -52,7 +54,6 @@ public sealed class CircuitBreakerManualControl : IDisposable
     /// </summary>
     /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns>The instance of <see cref="Task"/> that represents the asynchronous execution.</returns>
-    /// <exception cref="InvalidOperationException">Thrown if manual control is not initialized.</exception>
     /// <exception cref="ObjectDisposedException">Thrown when calling this method after this object is disposed.</exception>
     public async Task IsolateAsync(CancellationToken cancellationToken = default)
     {
@@ -75,7 +76,6 @@ public sealed class CircuitBreakerManualControl : IDisposable
     /// <param name="context">The resilience context.</param>
     /// <returns>The instance of <see cref="Task"/> that represents the asynchronous execution.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="context"/> is <see langword="null"/>.</exception>
-    /// <exception cref="InvalidOperationException">Thrown if manual control is not initialized.</exception>
     /// <exception cref="ObjectDisposedException">Thrown when calling this method after this object is disposed.</exception>
     internal async Task CloseAsync(ResilienceContext context)
     {
@@ -96,7 +96,6 @@ public sealed class CircuitBreakerManualControl : IDisposable
     /// </summary>
     /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns>The instance of <see cref="Task"/> that represents the asynchronous execution.</returns>
-    /// <exception cref="InvalidOperationException">Thrown if manual control is not initialized.</exception>
     /// <exception cref="ObjectDisposedException">Thrown when calling this method after this object is disposed.</exception>
     public async Task CloseAsync(CancellationToken cancellationToken = default)
     {
