@@ -1,3 +1,5 @@
+using System.ComponentModel;
+
 namespace Polly.Registry;
 
 /// <summary>
@@ -29,20 +31,21 @@ public class ConfigureBuilderContext<TKey>
     /// </summary>
     public string StrategyKeyString { get; }
 
-    internal Func<CancellationToken>? ReloadTokenProducer { get; private set; }
+    internal Func<Func<CancellationToken>>? ReloadTokenProducer { get; private set; }
 
     /// <summary>
     /// Enables dynamic reloading of the strategy retrieved from <see cref="ResilienceStrategyRegistry{TKey}"/>.
     /// </summary>
-    /// <param name="reloadTokenProducer">The producer of <see cref="CancellationToken"/> that is triggered when change occurs.</param>
+    /// <param name="tokenProducerFactory">The producer of <see cref="CancellationToken"/> that is triggered when change occurs.</param>
     /// <remarks>
-    /// The <paramref name="reloadTokenProducer"/> should always return a new <see cref="CancellationToken"/> instance when invoked otherwise
-    /// the reload infrastructure will stop listening for changes.
+    /// The <paramref name="tokenProducerFactory"/> should always return function that returns a new <see cref="CancellationToken"/> instance when invoked otherwise
+    /// the reload infrastructure will stop listening for changes. The <paramref name="tokenProducerFactory"/> is called only once for each streategy.
     /// </remarks>
-    public void EnableReloads(Func<CancellationToken> reloadTokenProducer)
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public void EnableReloads(Func<Func<CancellationToken>> tokenProducerFactory)
     {
-        Guard.NotNull(reloadTokenProducer);
+        Guard.NotNull(tokenProducerFactory);
 
-        ReloadTokenProducer = reloadTokenProducer;
+        ReloadTokenProducer = tokenProducerFactory;
     }
 }
