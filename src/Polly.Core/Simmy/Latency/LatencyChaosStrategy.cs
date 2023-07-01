@@ -42,7 +42,7 @@ internal sealed class LatencyChaosStrategy : MonkeyStrategy
                 await _timeProvider.DelayAsync(latency, context).ConfigureAwait(context.ContinueOnCapturedContext);
 
                 var args = new OnDelayedArguments(context, latency);
-                _telemetry.Report(LatencyConstants.OnDelayedEvent, context, args);
+                _telemetry.Report(new(ResilienceEventSeverity.Warning, LatencyConstants.OnDelayedEvent), context, args);
 
                 if (OnDelayed is not null)
                 {
