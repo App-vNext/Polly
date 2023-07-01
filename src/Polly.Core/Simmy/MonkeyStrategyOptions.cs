@@ -10,27 +10,49 @@ namespace Polly.Simmy;
 public abstract class MonkeyStrategyOptions : ResilienceStrategyOptions
 {
     /// <summary>
-    /// Gets or sets the lambda to get injection rate between [0, 1].
+    /// Gets or sets the injection rate for a given execution, which the value should be between [0, 1].
     /// </summary>
     /// <remarks>
-    /// Defaults to <see langword="null"/>. This property is required.
+    /// Defaults to <see langword="null"/>. Either <see cref="InjectionRateGenerator"/> or this property is required.
+    /// When this property is <see langword="null"/> the <see cref="InjectionRateGenerator"/> is used.
     /// </remarks>
-    [Required]
     [Range(MonkeyStrategyConstants.MinInjectionThreshold, MonkeyStrategyConstants.MaxInjectionThreshold)]
-    public Func<ResilienceContext, ValueTask<double>> InjectionRate { get; set; }
+    public double? InjectionRate { get; set; }
 
     /// <summary>
-    /// Gets or sets tge lambda to check if this policy is enabled in current context.
+    /// Gets or sets the injection rate generator for a given execution, which the value should be between [0, 1].
     /// </summary>
     /// <remarks>
-    /// Defaults to <see langword="null"/>. This property is required.
+    /// Defaults to <see langword="null"/>. Either <see cref="InjectionRate"/> or this property is required.
+    /// When this property is <see langword="null"/> the <see cref="InjectionRate"/> is used.
     /// </remarks>
-    [Required]
-    public Func<ResilienceContext, ValueTask<bool>> Enabled { get; set; }
+    public Func<ResilienceContext, ValueTask<double>> InjectionRateGenerator { get; set; }
 
     /// <summary>
-    /// Gets or sets the <see cref="RandomUtil"/> instance.
+    /// Gets or sets the enable generator that indicates whether or not the chaos strategy is enabled for a given execution.
     /// </summary>
+    /// <remarks>
+    /// Defaults to <see langword="null"/>. Either <see cref="Enabled"/> or this property is required.
+    /// When this property is <see langword="null"/> the <see cref="Enabled"/> is used.
+    /// </remarks>
+    public Func<ResilienceContext, ValueTask<bool>> EnabledGenerator { get; set; }
+
+    /// <summary>
+    /// Gets or sets a value that indicates whether or not the chaos strategy is enabled for a given execution.
+    /// </summary>
+    /// <remarks>
+    /// Defaults to <see langword="null"/>. Either <see cref="EnabledGenerator"/> or this property is required.
+    /// When this property is <see langword="null"/> the <see cref="EnabledGenerator"/> is used.
+    /// </remarks>
+    public bool? Enabled { get; set; }
+
+    /// <summary>
+    /// Gets or sets the Randomizer generator instance that is used to evaluate the injection rate.
+    /// </summary>
+    /// <remarks>
+    /// The default randomizer is thread safe and returns values between 0.0 and 1.0.
+    /// </remarks>
     [Required]
-    internal RandomUtil RandomUtil { get; set; }
+    public Func<double> Randomizer { get; set; } = RandomUtil.Instance.NextDouble;
 }
+
