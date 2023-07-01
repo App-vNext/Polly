@@ -60,8 +60,16 @@ jobs:
       env:
         RUN_MUTATION_TESTS: ${{ matrix.os_name == 'linux' && !startsWith(github.ref, 'refs/tags/') && 'true' || 'false' }}
 
-    - uses: codecov/codecov-action@eaaf4bedf32dbdc6b720b63067d99c4d77d6047d # v3.1.4
-      name: Upload coverage to Codecov
+    - name: Upload Coverage Reports
+      if: always()
+      uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # v3.1.2
+      with:
+        name: coverage-${{ matrix.os_name }}
+        path: ./artifacts/coverage-reports
+        if-no-files-found: ignore
+
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@eaaf4bedf32dbdc6b720b63067d99c4d77d6047d # v3.1.4
       with:
         files: ./artifacts/coverage-reports/Polly.Core.Tests/Cobertura.xml,./artifacts/coverage-reports/Polly.Specs/Cobertura.xml,./artifacts/coverage-reports/Polly.RateLimiting.Tests/Cobertura.xml,./artifacts/coverage-reports/Polly.Extensions.Tests/Cobertura.xml,
         flags: ${{ matrix.os_name }}

@@ -4,38 +4,27 @@ namespace Polly.Core.Tests.Utils;
 
 public class TimeProviderExtensionsTests
 {
-    [InlineData(false, false, false)]
-    [InlineData(false, false, true)]
-    [InlineData(false, true, true)]
-    [InlineData(false, true, false)]
-    [InlineData(true, false, false)]
-    [InlineData(true, false, true)]
-    [InlineData(true, true, true)]
-    [InlineData(true, true, false)]
+    [InlineData(false, false)]
+    [InlineData(false, true)]
+    [InlineData(true, false)]
+    [InlineData(true, true)]
     [Theory]
-    public async Task DelayAsync_System_Ok(bool synchronous, bool mocked, bool hasCancellation)
+    public async Task DelayAsync_System_Ok(bool synchronous, bool hasCancellation)
     {
         using var tcs = new CancellationTokenSource();
         var token = hasCancellation ? tcs.Token : default;
         var delay = TimeSpan.FromMilliseconds(10);
-        var mock = new MockTimeProvider();
-        var timeProvider = mocked ? mock.Object : TimeProvider.System;
+        var timeProvider = TimeProvider.System;
         var context = ResilienceContext.Get();
         context.Initialize<VoidResult>(isSynchronous: synchronous);
         context.CancellationToken = token;
-        mock.SetupCreateTimer(delay);
 
         await TestUtilities.AssertWithTimeoutAsync(async () =>
         {
             var task = timeProvider.DelayAsync(delay, context);
-            task.IsCompleted.Should().Be(synchronous || mocked);
+            task.IsCompleted.Should().Be(synchronous);
             await task;
         });
-
-        if (mocked)
-        {
-            mock.VerifyAll();
-        }
     }
 
     [Fact]
@@ -72,46 +61,38 @@ public class TimeProviderExtensionsTests
         });
     }
 
-    [InlineData(false, false)]
-    [InlineData(false, true)]
-    [InlineData(true, false)]
-    [InlineData(true, true)]
+    [InlineData(false)]
+    [InlineData(true)]
     [Theory]
-    public async Task DelayAsync_CancellationRequestedBefore_Throws(bool synchronous, bool mocked)
+    public async Task DelayAsync_CancellationRequestedBefore_Throws(bool synchronous)
     {
         using var tcs = new CancellationTokenSource();
         tcs.Cancel();
         var token = tcs.Token;
         var delay = TimeSpan.FromMilliseconds(10);
-        var mock = new MockTimeProvider();
-        var timeProvider = mocked ? mock.Object : TimeProvider.System;
+        var timeProvider = TimeProvider.System;
         var context = ResilienceContext.Get();
         context.Initialize<VoidResult>(isSynchronous: synchronous);
         context.CancellationToken = token;
-        mock.SetupCreateTimer(delay);
 
         await Assert.ThrowsAsync<OperationCanceledException>(() => timeProvider.DelayAsync(delay, context));
     }
 
-    [InlineData(false, false)]
-    [InlineData(false, true)]
-    [InlineData(true, false)]
-    [InlineData(true, true)]
+    [InlineData(false)]
+    [InlineData(true)]
     [Theory]
-    public async Task DelayAsync_CancellationAfter_Throws(bool synchronous, bool mocked)
+    public async Task DelayAsync_CancellationAfter_Throws(bool synchronous)
     {
         var delay = TimeSpan.FromMilliseconds(20);
 
         await TestUtilities.AssertWithTimeoutAsync(async () =>
         {
-            var mock = new MockTimeProvider();
             using var tcs = new CancellationTokenSource();
             var token = tcs.Token;
-            var timeProvider = mocked ? mock.Object : TimeProvider.System;
+            var timeProvider = TimeProvider.System;
             var context = ResilienceContext.Get();
             context.Initialize<VoidResult>(isSynchronous: synchronous);
             context.CancellationToken = token;
-            mock.SetupCreateTimerException(delay, new OperationCanceledException());
 
             tcs.CancelAfter(TimeSpan.FromMilliseconds(5));
 

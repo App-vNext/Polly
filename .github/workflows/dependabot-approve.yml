@@ -1,0 +1,56 @@
+name: dependabot-approve
+
+on: pull_request_target
+
+permissions:
+  contents: read
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.repository.fork == false && github.event.pull_request.user.login == 'dependabot[bot]' }}
+
+    steps:
+
+      - name: Get dependabot metadata
+        uses: dependabot/fetch-metadata@c9c4182bf1b97f5224aee3906fd373f6b61b4526 # v1.6.0
+        id: dependabot-metadata
+
+      - name: Generate GitHub application token
+        id: generate-application-token
+        uses: peter-murray/workflow-application-token-action@8e1ba3bf1619726336414f1014e37f17fbadf1db # v2.1.0
+        with:
+          application_id: ${{ secrets.POLLY_REVIEWER_BOT_APP_ID }}
+          application_private_key: ${{ secrets.POLLY_REVIEWER_BOT_KEY }}
+          permissions: "contents:write, pull_requests:write, workflows:write"
+
+      - name: Checkout code
+        uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
+
+      - name: Approve pull request and enable auto-merge
+        shell: bash
+        if: |
+          contains(steps.dependabot-metadata.outputs.dependency-names, 'actions/cache') ||
+          contains(steps.dependabot-metadata.outputs.dependency-names, 'actions/checkout') ||
+          contains(steps.dependabot-metadata.outputs.dependency-names, 'actions/dependency-review-action') ||
+          contains(steps.dependabot-metadata.outputs.dependency-names, 'actions/download-artifact') ||
+          contains(steps.dependabot-metadata.outputs.dependency-names, 'actions/setup-dotnet') ||
+          contains(steps.dependabot-metadata.outputs.dependency-names, 'actions/stale') ||
+          contains(steps.dependabot-metadata.outputs.dependency-names, 'actions/upload-artifact') ||
+          contains(steps.dependabot-metadata.outputs.dependency-names, 'codecov/codecov-action') ||
+          contains(steps.dependabot-metadata.outputs.dependency-names, 'dependabot/fetch-metadata') ||
+          contains(steps.dependabot-metadata.outputs.dependency-names, 'github/codeql-action') ||
+          contains(steps.dependabot-metadata.outputs.dependency-names, 'Microsoft.NET.Test.Sdk') ||
+          contains(steps.dependabot-metadata.outputs.dependency-names, 'Polly') ||
+          contains(steps.dependabot-metadata.outputs.dependency-names, 'Polly.Core') ||
+          contains(steps.dependabot-metadata.outputs.dependency-names, 'Polly.Extensions') ||
+          contains(steps.dependabot-metadata.outputs.dependency-names, 'xunit') ||
+          contains(steps.dependabot-metadata.outputs.dependency-names, 'xunit.runner.visualstudio')
+        env:
+          GH_TOKEN: ${{ steps.generate-application-token.outputs.token }}
+          PR_URL: ${{ github.event.pull_request.html_url }}
+        run: |
+          gh pr checkout "$PR_URL"
+          if [ "$(gh pr status --json reviewDecision -q .currentBranch.reviewDecision)" != "APPROVED" ];
+          then gh pr review --approve "$PR_URL" && gh pr merge --auto --squash "$PR_URL"
+          fi

@@ -23,33 +23,19 @@ internal static class TimeProviderExtensions
 
         context.CancellationToken.ThrowIfCancellationRequested();
 
-        if (context.IsSynchronous && timeProvider == TimeProvider.System)
+        if (context.IsSynchronous)
         {
-            // Stryker disable once boolean : no means to test this
-            if (context.CancellationToken.CanBeCanceled)
-            {
-                context.CancellationToken.WaitHandle.WaitOne(delay);
-                context.CancellationToken.ThrowIfCancellationRequested();
-            }
-            else
-            {
-                Thread.Sleep(delay);
-            }
+#pragma warning disable CA1849
+            // For synchronous scenarios we want to return a completed task. We avoid
+            // the use of Thread.Sleep() here because it is not cancellable and to
+            // simplify the code. Sync-over-async is not a concern here because it
+            // only applies in the case of a reilience event and not on the hot path.
+            timeProvider.Delay(delay, context.CancellationToken).GetAwaiter().GetResult();
+#pragma warning restore CA1849
 
             return Task.CompletedTask;
         }
-        else
-        {
-            if (context.IsSynchronous)
-            {
-#pragma warning disable CA1849 // For synchronous scenarios we want to return completed task
-                timeProvider.Delay(delay, context.CancellationToken).GetAwaiter().GetResult();
-#pragma warning restore CA1849
 
-                return Task.CompletedTask;
-            }
-
-            return timeProvider.Delay(delay, context.CancellationToken);
-        }
+        return timeProvider.Delay(delay, context.CancellationToken);
     }
 }

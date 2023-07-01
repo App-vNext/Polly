@@ -10,11 +10,12 @@ public class TelemetryEventArgumentsTests
     public void Get_Ok()
     {
         var context = ResilienceContext.Get();
-        var args = TelemetryEventArguments.Get(_source, "ev", context, Outcome.FromResult<object>("dummy"), "arg");
+        var args = TelemetryEventArguments.Get(_source, new ResilienceEvent(ResilienceEventSeverity.Warning, "ev"), context, Outcome.FromResult<object>("dummy"), "arg");
 
         args.Outcome!.Value.Result.Should().Be("dummy");
         args.Context.Should().Be(context);
-        args.EventName.Should().Be("ev");
+        args.Event.EventName.Should().Be("ev");
+        args.Event.Severity.Should().Be(ResilienceEventSeverity.Warning);
         args.Source.Should().Be(_source);
         args.Arguments.Should().BeEquivalentTo("arg");
         args.Context.Should().Be(context);
@@ -24,7 +25,7 @@ public class TelemetryEventArgumentsTests
     public void Return_EnsurePropertiesCleared()
     {
         var context = ResilienceContext.Get();
-        var args = TelemetryEventArguments.Get(_source, "ev", context, Outcome.FromResult<object>("dummy"), "arg");
+        var args = TelemetryEventArguments.Get(_source, new ResilienceEvent(ResilienceEventSeverity.Warning, "ev"), context, Outcome.FromResult<object>("dummy"), "arg");
 
         TelemetryEventArguments.Return(args);
 
@@ -32,7 +33,7 @@ public class TelemetryEventArgumentsTests
         {
             args.Outcome.Should().BeNull();
             args.Context.Should().BeNull();
-            args.EventName.Should().BeNull();
+            args.Event.EventName.Should().BeNullOrEmpty();
             args.Source.Should().BeNull();
             args.Arguments.Should().BeNull();
             args.Context.Should().BeNull();

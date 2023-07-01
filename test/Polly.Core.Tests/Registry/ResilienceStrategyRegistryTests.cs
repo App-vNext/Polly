@@ -368,7 +368,7 @@ public class ResilienceStrategyRegistryTests
         registry.TryAddBuilder("dummy", (builder, context) =>
         {
             // this call enables dynamic reloads for the dummy strategy
-            context.EnableReloads(() => changeSource.Token);
+            context.EnableReloads(() => () => changeSource.Token);
 
             builder.AddRetry(new RetryStrategyOptions
             {
@@ -404,7 +404,7 @@ public class ResilienceStrategyRegistryTests
         registry.TryAddBuilder<string>("dummy", (builder, context) =>
         {
             // this call enables dynamic reloads for the dummy strategy
-            context.EnableReloads(() => changeSource.Token);
+            context.EnableReloads(() => () => changeSource.Token);
 
             builder.AddRetry(new RetryStrategyOptions<string>
             {

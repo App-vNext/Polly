@@ -34,7 +34,9 @@ internal static class TelemetryUtil
         }
 
         var attemptArgs = ExecutionAttemptArguments.Get(attempt, executionTime, handled);
-        telemetry.Report<ExecutionAttemptArguments, TResult>(ExecutionAttempt, new(context, outcome, attemptArgs));
+        telemetry.Report<ExecutionAttemptArguments, TResult>(
+            new(handled ? ResilienceEventSeverity.Warning : ResilienceEventSeverity.Information, ExecutionAttempt),
+            new(context, outcome, attemptArgs));
         ExecutionAttemptArguments.Return(attemptArgs);
     }
 }

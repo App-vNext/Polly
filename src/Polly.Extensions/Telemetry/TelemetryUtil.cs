@@ -1,3 +1,6 @@
+using Microsoft.Extensions.Logging;
+using Polly.Telemetry;
+
 namespace Polly.Extensions.Telemetry;
 
 internal static class TelemetryUtil
@@ -24,5 +27,26 @@ internal static class TelemetryUtil
     {
         >= 0 and < MaxIntegers => Integers[value],
         _ => value,
+    };
+
+    public static LogLevel AsLogLevel(this ResilienceEventSeverity severity) => severity switch
+    {
+        ResilienceEventSeverity.Debug => LogLevel.Debug,
+        ResilienceEventSeverity.Information => LogLevel.Information,
+        ResilienceEventSeverity.Warning => LogLevel.Warning,
+        ResilienceEventSeverity.Error => LogLevel.Error,
+        ResilienceEventSeverity.Critical => LogLevel.Critical,
+        _ => LogLevel.None,
+    };
+
+    public static string AsString(this ResilienceEventSeverity severity) => severity switch
+    {
+        ResilienceEventSeverity.None => nameof(ResilienceEventSeverity.None),
+        ResilienceEventSeverity.Debug => nameof(ResilienceEventSeverity.Debug),
+        ResilienceEventSeverity.Information => nameof(ResilienceEventSeverity.Information),
+        ResilienceEventSeverity.Warning => nameof(ResilienceEventSeverity.Warning),
+        ResilienceEventSeverity.Error => nameof(ResilienceEventSeverity.Error),
+        ResilienceEventSeverity.Critical => nameof(ResilienceEventSeverity.Critical),
+        _ => severity.ToString(),
     };
 }

@@ -1,0 +1,144 @@
+name: updater-approve
+
+on:
+  pull_request:
+    branches: [ main ]
+
+permissions:
+  contents: read
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.repository.fork == false && github.event.pull_request.user.login == 'polly-updater-bot[bot]' }}
+
+    env:
+      REVIEWER_LOGIN: "polly-reviewer-bot[bot]"
+      UPDATER_LOGIN: "polly-updater-bot[bot]"
+
+    steps:
+
+    - name: Generate GitHub application token
+      id: generate-application-token
+      uses: peter-murray/workflow-application-token-action@8e1ba3bf1619726336414f1014e37f17fbadf1db # v2.1.0
+      with:
+        application_id: ${{ secrets.POLLY_REVIEWER_BOT_APP_ID }}
+        application_private_key: ${{ secrets.POLLY_REVIEWER_BOT_KEY }}
+        permissions: "contents:write, pull_requests:write"
+
+    - name: Install powershell-yaml
+      shell: pwsh
+      run: Install-Module -Name powershell-yaml -Force -MaximumVersion "0.4.7"
+
+    - name: Check which dependencies were updated
+      id: check-dependencies
+      env:
+        INCLUDE_NUGET_PACKAGES: "Microsoft.AspNetCore.,Microsoft.EntityFrameworkCore.,Microsoft.Extensions.,System.Text.Json"
+        GH_TOKEN: ${{ steps.generate-application-token.outputs.token }}
+      shell: pwsh
+      run: |
+        $commits = gh api `
+          /repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/commits `
+          --jq '.[] | { author: .author.login, message: .commit.message }' | ConvertFrom-Json
+
+        $expectedUser = $env:UPDATER_LOGIN
+        $onlyDependencyUpdates = $True
+        $onlyChangesFromUser = $True
+
+        $dependencies = @()
+
+        foreach ($commit in $commits) {
+          if ($commit.Author -ne $expectedUser) {
+            # Some other commit is in the pull request
+            $onlyChangesFromUser = $False
+          }
+          # Extract the YAML metadata block from the commit message.
+          $match = [Regex]::Match($commit.Message, '(?m)^-{3}\s(?<dependencies>[\S|\s]*?)\s^\.{3}$')
+          if ($match.Success -eq $True) {
+            # Extract the names and update type from each dependency.
+            $metadata = ($match.Value | ConvertFrom-Yaml -Ordered)
+            $updates = $metadata["updated-dependencies"]
+            if ($updates) {
+              foreach ($update in $updates) {
+                $dependencies += @{
+                  Name = $update['dependency-name'];
+                  Type = $update['update-type'];
+                }
+              }
+            }
+          }
+          else {
+            # The pull request contains a commit that we didn't expect as the metadata is missing.
+            $onlyDependencyUpdates = $False
+          }
+        }
+
+        # Did we find at least one dependency?
+        $isPatch = $dependencies.Length -gt 0
+        $onlyTrusted = $dependencies.Length -gt 0
+        $trustedPackages = $env:INCLUDE_NUGET_PACKAGES.Split(',')
+
+        foreach ($dependency in $dependencies) {
+          $isPatch = $isPatch -And $dependency.Type -eq "version-update:semver-patch"
+          $onlyTrusted = $onlyTrusted -And
+            (
+              ($dependency.Name -eq "Microsoft.NET.Sdk") -Or
+              (($trustedPackages | Where-Object { $dependency.Name.StartsWith($_) }).Count -gt 0)
+            )
+        }
+
+        # We only trust the pull request to approve and auto-merge it
+        # if it only contains commits which change the .NET SDK and
+        # Microsoft-published NuGet packages that were made by the GitHub
+        # login we expect to make those changes in the other workflow.
+        $isTrusted = (($onlyTrusted -And $isPatch) -And $onlyChangesFromUser) -And $onlyDependencyUpdates
+        "is-trusted-update=$isTrusted" >> $env:GITHUB_OUTPUT
+
+    - name: Checkout code
+      uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
+
+    - name: Approve pull request and enable auto-merge
+      if: ${{ steps.check-dependencies.outputs.is-trusted-update == 'true' }}
+      env:
+        GH_TOKEN: ${{ steps.generate-application-token.outputs.token }}
+        PR_URL: ${{ github.event.pull_request.html_url }}
+      shell: pwsh
+      run: |
+        $approvals = gh api /repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/reviews | ConvertFrom-Json
+        $approvals = $approvals | Where-Object { $_.user.login -eq $env:REVIEWER_LOGIN }
+        $approvals = $approvals | Where-Object { $_.state -eq "APPROVED" }
+
+        if ($approvals.Length -eq 0) {
+          gh pr checkout "$env:PR_URL"
+          gh pr review --approve "$env:PR_URL"
+          gh pr merge --auto --squash "$env:PR_URL"
+        }
+        else {
+          Write-Host "PR already approved.";
+        }
+
+    - name: Disable auto-merge and dismiss approvals
+      if: ${{ steps.check-dependencies.outputs.is-trusted-update != 'true' }}
+      env:
+        GH_TOKEN: ${{ steps.generate-application-token.outputs.token }}
+        PR_URL: ${{ github.event.pull_request.html_url }}
+      shell: pwsh
+      run: |
+        $approvals = gh api /repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/reviews | ConvertFrom-Json
+        $approvals = $approvals | Where-Object { $_.user.login -eq $env:REVIEWER_LOGIN }
+        $approvals = $approvals | Where-Object { $_.state -eq "APPROVED" }
+
+        if ($approvals.Length -gt 0) {
+          gh pr checkout "$env:PR_URL"
+          gh pr merge --disable-auto "$env:PR_URL"
+          foreach ($approval in $approvals) {
+            gh api `
+              --method PUT `
+              /repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/reviews/$($approval.id)/dismissals `
+              -f message='Cannot approve as other changes have been introduced.' `
+              -f event='DISMISS'
+          }
+        }
+        else {
+          Write-Host "PR not already approved.";
+        }

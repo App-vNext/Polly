@@ -20,14 +20,14 @@ internal class HedgingTimeProvider : TimeProvider
 
     public Func<int> TimeStampProvider { get; set; } = () => 0;
 
-    public List<TimerEntry> TimerEntries { get; } = new List<TimerEntry>();
+    public ConcurrentQueue<TimerEntry> TimerEntries { get; } = new();
 
     public override DateTimeOffset GetUtcNow() => _utcNow;
 
     public override ITimer CreateTimer(TimerCallback callback, object? state, TimeSpan dueTime, TimeSpan period)
     {
         var entry = new TimerEntry(dueTime, new TaskCompletionSource<bool>(), _utcNow.Add(dueTime), () => callback(state));
-        TimerEntries.Add(entry);
+        TimerEntries.Enqueue(entry);
 
         Advance(AutoAdvance);
 

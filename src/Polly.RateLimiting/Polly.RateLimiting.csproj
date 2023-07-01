@@ -9,7 +9,7 @@
     <MutationScore>100</MutationScore>
     <LegacySupport>true</LegacySupport>
   </PropertyGroup>
-  
+
   <ItemGroup>
     <Using Include="Polly.Utils" />
     <Compile Include="..\Polly.Core\Utils\ExceptionUtilities.cs" Link="utils\ExceptionUtilities.cs" />

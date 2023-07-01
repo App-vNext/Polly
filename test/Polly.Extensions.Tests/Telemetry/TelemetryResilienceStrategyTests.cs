@@ -43,7 +43,7 @@ public class TelemetryResilienceStrategyTests : IDisposable
             {
                 if (!healthy)
                 {
-                    ((List<ResilienceEvent>)c.ResilienceEvents).Add(new ResilienceEvent("dummy"));
+                    ((List<ResilienceEvent>)c.ResilienceEvents).Add(new ResilienceEvent(ResilienceEventSeverity.Warning, "dummy"));
                 }
             },
             ResilienceContext.Get(), string.Empty);
@@ -154,7 +154,7 @@ public class TelemetryResilienceStrategyTests : IDisposable
             {
                 if (!healthy)
                 {
-                    ((List<ResilienceEvent>)c.ResilienceEvents).Add(new ResilienceEvent("dummy"));
+                    ((List<ResilienceEvent>)c.ResilienceEvents).Add(new ResilienceEvent(ResilienceEventSeverity.Warning, "dummy"));
                 }
 
                 return true;
@@ -168,6 +168,42 @@ public class TelemetryResilienceStrategyTests : IDisposable
         ev["builder-name"].Should().Be("my-builder");
         ev["result-type"].Should().Be("Boolean");
         ev["exception-name"].Should().BeNull();
+
+        if (healthy)
+        {
+            ev["execution-health"].Should().Be("Healthy");
+        }
+        else
+        {
+            ev["execution-health"].Should().Be("Unhealthy");
+        }
+    }
+
+    [InlineData(true)]
+    [InlineData(false)]
+    [Theory]
+    public void Execute_ExecutionHealth(bool healthy)
+    {
+        var strategy = CreateStrategy();
+        strategy.Execute(
+            (c, _) =>
+            {
+                if (healthy)
+                {
+                    ((List<ResilienceEvent>)c.ResilienceEvents).Add(new ResilienceEvent(ResilienceEventSeverity.Information, "dummy"));
+                    ((List<ResilienceEvent>)c.ResilienceEvents).Add(new ResilienceEvent(ResilienceEventSeverity.Information, "dummy"));
+                }
+                else
+                {
+                    ((List<ResilienceEvent>)c.ResilienceEvents).Add(new ResilienceEvent(ResilienceEventSeverity.Information, "dummy"));
+                    ((List<ResilienceEvent>)c.ResilienceEvents).Add(new ResilienceEvent(ResilienceEventSeverity.Warning, "dummy"));
+                }
+
+                return true;
+            },
+            ResilienceContext.Get(), string.Empty);
+
+        var ev = _events.Single(v => v.Name == "strategy-execution-duration").Tags;
 
         if (healthy)
         {
