@@ -2,6 +2,8 @@
 
 namespace Polly.Simmy.Latency;
 
+#pragma warning disable S3928 // Custom ArgumentNullException message
+
 internal sealed class LatencyChaosStrategy : MonkeyStrategy
 {
     private readonly TimeProvider _timeProvider;
@@ -15,11 +17,15 @@ internal sealed class LatencyChaosStrategy : MonkeyStrategy
     {
         Guard.NotNull(telemetry);
         Guard.NotNull(timeProvider);
-        Guard.NotNull(options.LatencyGenerator);
 
-        OnDelayed = options.OnDelayed;
+        if (options.Latency is null && options.LatencyGenerator is null)
+        {
+            throw new ArgumentNullException(nameof(options.Latency), "Either Latency or LatencyGenerator is required.");
+        }
+
         Latency = options.Latency;
         LatencyGenerator = options.Latency.HasValue ? (_) => new(options.Latency.Value) : options.LatencyGenerator;
+        OnDelayed = options.OnDelayed;
 
         _telemetry = telemetry;
         _timeProvider = timeProvider;
