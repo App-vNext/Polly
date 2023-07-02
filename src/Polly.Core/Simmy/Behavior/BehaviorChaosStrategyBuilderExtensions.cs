@@ -1,48 +1,48 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Polly.Simmy.Latency;
+namespace Polly.Simmy.Behavior;
 
 /// <summary>
-/// Extension methods for adding latency to a <see cref="ResilienceStrategyBuilder"/>.
+/// Extension methods for adding custom behaviors to a <see cref="ResilienceStrategyBuilder"/>.
 /// </summary>
-public static class LatencyChaosStrategyBuilderExtensions
+public static class BehaviorChaosStrategyBuilderExtensions
 {
     /// <summary>
     /// Adds a latency chaos strategy to the builder.
     /// </summary>
     /// <typeparam name="TBuilder">The builder type.</typeparam>
     /// <param name="builder">The builder instance.</param>
-    /// <param name="delay">The delay value.</param>
+    /// <param name="behavior">The behavior to be injected.</param>
     /// <returns>The same builder instance.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="builder"/> is <see langword="null"/>.</exception>
     /// <exception cref="ValidationException">Thrown when the options produced from the arguments are invalid.</exception>
-    public static TBuilder AddLatency<TBuilder>(this TBuilder builder, TimeSpan delay)
+    public static TBuilder AddBehavior<TBuilder>(this TBuilder builder, Func<ValueTask> behavior)
         where TBuilder : ResilienceStrategyBuilderBase
     {
         Guard.NotNull(builder);
 
-        return builder.AddLatency(new LatencyStrategyOptions
+        return builder.AddBehavior(new BehaviorStrategyOptions
         {
-            LatencyGenerator = (_) => new(delay)
+            Behavior = (_) => behavior()
         });
     }
 
     /// <summary>
-    /// Adds a latency chaos strategy to the builder.
+    /// Adds a behavior chaos strategy to the builder.
     /// </summary>
     /// <typeparam name="TBuilder">The builder type.</typeparam>
     /// <param name="builder">The builder instance.</param>
-    /// <param name="options">The latency options.</param>
+    /// <param name="options">The behavior options.</param>
     /// <returns>The same builder instance.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="builder"/> or <paramref name="options"/> is <see langword="null"/>.</exception>
     /// <exception cref="ValidationException">Thrown when <paramref name="options"/> are invalid.</exception>
-    public static TBuilder AddLatency<TBuilder>(this TBuilder builder, LatencyStrategyOptions options)
+    public static TBuilder AddBehavior<TBuilder>(this TBuilder builder, BehaviorStrategyOptions options)
         where TBuilder : ResilienceStrategyBuilderBase
     {
         Guard.NotNull(builder);
         Guard.NotNull(options);
 
-        builder.AddStrategy(context => new LatencyChaosStrategy(options, context.TimeProvider, context.Telemetry), options);
+        builder.AddStrategy(context => new BehaviorChaosStrategy(options, context.Telemetry), options);
         return builder;
     }
 }

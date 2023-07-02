@@ -27,7 +27,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Simmy\Behavior\" />
     <Folder Include="Simmy\Outcomes\" />
   </ItemGroup>
 
