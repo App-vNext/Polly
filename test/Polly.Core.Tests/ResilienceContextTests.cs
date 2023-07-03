@@ -19,6 +19,29 @@ public class ResilienceContextTests
     }
 
     [Fact]
+    public void Get_CancellationToken_Ok()
+    {
+        using var token = new CancellationTokenSource();
+
+        var context = ResilienceContext.Get(token.Token);
+
+        context.CancellationToken.Should().Be(token.Token);
+    }
+
+    [InlineData(null)]
+    [InlineData("")]
+    [InlineData("some-key")]
+    [Theory]
+    public void Get_OperationKeyAndCancellationToken_Ok(string? key)
+    {
+        using var token = new CancellationTokenSource();
+
+        var context = ResilienceContext.Get(key!, token.Token);
+        context.OperationKey.Should().Be(key);
+        context.CancellationToken.Should().Be(token.Token);
+    }
+
+    [Fact]
     public async Task Get_EnsurePooled()
     {
         await TestUtilities.AssertWithTimeoutAsync(() =>
@@ -86,7 +109,7 @@ public class ResilienceContextTests
     [Theory]
     public void Initialize_From_Ok(bool synchronous)
     {
-        var context = ResilienceContext.Get();
+        var context = ResilienceContext.Get("some-key");
         context.Initialize<bool>(synchronous);
         context.ContinueOnCapturedContext = true;
 
@@ -98,6 +121,7 @@ public class ResilienceContextTests
         other.IsInitialized.Should().BeTrue();
         other.IsSynchronous.Should().Be(synchronous);
         other.ContinueOnCapturedContext.Should().BeTrue();
+        other.OperationKey.Should().Be("some-key");
     }
 
     [InlineData(true)]
@@ -125,5 +149,6 @@ public class ResilienceContextTests
         context.CancellationToken.Should().Be(CancellationToken.None);
         context.Properties.Should().BeEmpty();
         context.ResilienceEvents.Should().BeEmpty();
+        context.OperationKey.Should().BeNull();
     }
 }

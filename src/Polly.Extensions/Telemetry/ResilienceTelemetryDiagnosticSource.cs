@@ -53,6 +53,7 @@ internal class ResilienceTelemetryDiagnosticSource : DiagnosticSource
         enrichmentContext.Tags.Add(new(ResilienceTelemetryTags.StrategyName, source.StrategyName));
         enrichmentContext.Tags.Add(new(ResilienceTelemetryTags.StrategyType, source.StrategyType));
         enrichmentContext.Tags.Add(new(ResilienceTelemetryTags.StrategyKey, source.BuilderProperties.GetValue(TelemetryUtil.StrategyKey, null!)));
+        enrichmentContext.Tags.Add(new(ResilienceTelemetryTags.OperationKey, enrichmentContext.Context.OperationKey));
         enrichmentContext.Tags.Add(new(ResilienceTelemetryTags.ResultType, args.Context.GetResultType()));
         enrichmentContext.Tags.Add(new(ResilienceTelemetryTags.ExceptionName, args.Outcome?.Exception?.GetType().FullName));
     }
@@ -112,6 +113,7 @@ internal class ResilienceTelemetryDiagnosticSource : DiagnosticSource
                     args.Source.StrategyName,
                     args.Source.StrategyType,
                     strategyKey,
+                    args.Context.OperationKey,
                     result,
                     executionAttempt.Handled,
                     executionAttempt.Attempt,
@@ -121,7 +123,17 @@ internal class ResilienceTelemetryDiagnosticSource : DiagnosticSource
         }
         else
         {
-            Log.ResilienceEvent(_logger, level, args.Event.EventName, args.Source.BuilderName, args.Source.StrategyName, args.Source.StrategyType, strategyKey, result, args.Outcome?.Exception);
+            Log.ResilienceEvent(
+                _logger,
+                level,
+                args.Event.EventName,
+                args.Source.BuilderName,
+                args.Source.StrategyName,
+                args.Source.StrategyType,
+                strategyKey,
+                args.Context.OperationKey,
+                result,
+                args.Outcome?.Exception);
         }
     }
 }

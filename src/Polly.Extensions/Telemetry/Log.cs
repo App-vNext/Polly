@@ -16,6 +16,7 @@ internal static partial class Log
                 "Strategy Name: '{StrategyName}', " +
                 "Strategy Type: '{StrategyType}', " +
                 "Strategy Key: '{StrategyKey}', " +
+                "Operation Key: '{OperationKey}', " +
                 "Result: '{Result}'",
         EventName = "ResilienceEvent")]
     public static partial void ResilienceEvent(
@@ -26,6 +27,7 @@ internal static partial class Log
         string? strategyName,
         string strategyType,
         string? strategyKey,
+        string? operationKey,
         object? result,
         Exception? exception);
 
@@ -35,12 +37,14 @@ internal static partial class Log
         "Resilience strategy executing. " +
         "Builder Name: '{BuilderName}', " +
         "Strategy Key: '{StrategyKey}', " +
+        "Operation Key: '{OperationKey}', " +
         "Result Type: '{ResultType}'",
         EventName = "StrategyExecuting")]
     public static partial void ExecutingStrategy(
         this ILogger logger,
         string? builderName,
         string? strategyKey,
+        string? operationKey,
         string resultType);
 
     [LoggerMessage(
@@ -48,6 +52,7 @@ internal static partial class Log
         Message = "Resilience strategy executed. " +
             "Builder Name: '{BuilderName}', " +
             "Strategy Key: '{StrategyKey}', " +
+            "Operation Key: '{OperationKey}', " +
             "Result Type: '{ResultType}', " +
             "Result: '{Result}', " +
             "Execution Health: '{ExecutionHealth}', " +
@@ -58,6 +63,7 @@ internal static partial class Log
         LogLevel logLevel,
         string? builderName,
         string? strategyKey,
+        string? operationKey,
         string resultType,
         object? result,
         string executionHealth,
@@ -71,6 +77,7 @@ internal static partial class Log
                 "Strategy Name: '{StrategyName}', " +
                 "Strategy Type: '{StrategyType}', " +
                 "Strategy Key: '{StrategyKey}', " +
+                "Operation Key: '{OperationKey}', " +
                 "Result: '{Result}', " +
                 "Handled: '{Handled}', " +
                 "Attempt: '{Attempt}', " +
@@ -84,6 +91,7 @@ internal static partial class Log
         string? strategyName,
         string strategyType,
         string? strategyKey,
+        string? operationKey,
         object? result,
         bool handled,
         int attempt,

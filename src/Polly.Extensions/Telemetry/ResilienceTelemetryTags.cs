@@ -16,6 +16,8 @@ internal class ResilienceTelemetryTags
 
     public const string ResultType = "result-type";
 
+    public const string OperationKey = "operation-key";
+
     public const string ExceptionName = "exception-name";
 
     public const string ExecutionHealth = "execution-health";
@@ -23,5 +25,4 @@ internal class ResilienceTelemetryTags
     public const string AttemptNumber = "attempt-number";
 
     public const string AttemptHandled = "attempt-handled";
-
 }
