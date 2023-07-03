@@ -1,3 +1,5 @@
+using System.Diagnostics;
+
 namespace Polly.Utils;
 
 #pragma warning disable S2302 // "nameof" should be used
@@ -5,6 +7,7 @@ namespace Polly.Utils;
 /// <summary>
 /// A pipeline of strategies.
 /// </summary>
+[DebuggerDisplay("ResilienceStrategyPipeline, Strategies = {Strategies.Count}")]
 internal sealed class ResilienceStrategyPipeline : ResilienceStrategy
 {
     private readonly ResilienceStrategy _pipeline;
