@@ -38,7 +38,7 @@ internal abstract class OutcomeResilienceStrategy<T> : ResilienceStrategy
             var callbackCasted = (Func<ResilienceContext, TState, ValueTask<Outcome<T>>>)(object)callback;
             var valueTask = ExecuteCallbackAsync(callbackCasted, context, state);
 
-            return ConvertValueTask<TResult>(valueTask, context);
+            return OutcomeResilienceStrategyHelper<T>.ConvertValueTask<TResult>(valueTask, context);
         }
         else
         {
@@ -53,7 +53,7 @@ internal abstract class OutcomeResilienceStrategy<T> : ResilienceStrategy
                 context,
                 (callback, state));
 
-            return ConvertValueTask<TResult>(valueTask, context);
+            return OutcomeResilienceStrategyHelper<T>.ConvertValueTask<TResult>(valueTask, context);
         }
     }
 
@@ -61,20 +61,4 @@ internal abstract class OutcomeResilienceStrategy<T> : ResilienceStrategy
         Func<ResilienceContext, TState, ValueTask<Outcome<T>>> callback,
         ResilienceContext context,
         TState state);
-
-    private static ValueTask<Outcome<TResult>> ConvertValueTask<TResult>(ValueTask<Outcome<T>> valueTask, ResilienceContext resilienceContext)
-    {
-        if (valueTask.IsCompletedSuccessfully)
-        {
-            return new ValueTask<Outcome<TResult>>(valueTask.Result.AsOutcome<TResult>());
-        }
-
-        return ConvertValueTaskAsync(valueTask, resilienceContext);
-
-        static async ValueTask<Outcome<TResult>> ConvertValueTaskAsync(ValueTask<Outcome<T>> valueTask, ResilienceContext resilienceContext)
-        {
-            var outcome = await valueTask.ConfigureAwait(resilienceContext.ContinueOnCapturedContext);
-            return outcome.AsOutcome<TResult>();
-        }
-    }
 }

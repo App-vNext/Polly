@@ -55,23 +55,6 @@ public abstract class MonkeyStrategy<T> : MonkeyStrategy
         var callbackCasted = (Func<ResilienceContext, TState, ValueTask<Outcome<T>>>)(object)callback;
         var valueTask = ExecuteCoreAsync(callbackCasted, context, state);
 
-        return ConvertValueTask<TResult>(valueTask, context);
-    }
-
-    // TODO: Consider abstract this out as an utility or in the ResilienceStrategy? it's also being used in OutcomeResilienceStrategy
-    private static ValueTask<Outcome<TResult>> ConvertValueTask<TResult>(ValueTask<Outcome<T>> valueTask, ResilienceContext resilienceContext)
-    {
-        if (valueTask.IsCompletedSuccessfully)
-        {
-            return new ValueTask<Outcome<TResult>>(valueTask.Result.AsOutcome<TResult>());
-        }
-
-        return ConvertValueTaskAsync(valueTask, resilienceContext);
-
-        static async ValueTask<Outcome<TResult>> ConvertValueTaskAsync(ValueTask<Outcome<T>> valueTask, ResilienceContext resilienceContext)
-        {
-            var outcome = await valueTask.ConfigureAwait(resilienceContext.ContinueOnCapturedContext);
-            return outcome.AsOutcome<TResult>();
-        }
+        return OutcomeResilienceStrategyHelper<T>.ConvertValueTask<TResult>(valueTask, context);
     }
 }
