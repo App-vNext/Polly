@@ -19,7 +19,6 @@ public abstract class MonkeyStrategy<T> : MonkeyStrategy
     /// Executes the specified callback.
     /// </summary>
     /// <typeparam name="TState">The type of state associated with the callback.</typeparam>
-    /// <typeparam name="T">The type of result returned by the callback.</typeparam>
     /// <param name="callback">The user-provided callback.</param>
     /// <param name="context">The context associated with the callback.</param>
     /// <param name="state">The state associated with the callback.</param>
@@ -28,10 +27,10 @@ public abstract class MonkeyStrategy<T> : MonkeyStrategy
     /// This method is called by various methods exposed on <see cref="ResilienceStrategy"/>. These methods make sure that
     /// <paramref name="context"/> is properly initialized with details about the execution mode.
     /// <para>
-    /// The provided callback never throws an exception. Instead, the exception is captured and converted to an <see cref="Outcome{TResult}"/>.
+    /// The provided callback never throws an exception. Instead, the exception is captured and converted to an <see cref="Outcome{T}"/>.
     /// </para>
     /// <para>
-    /// Do not throw exceptions from your strategy implementation. Instead, return an exception instance as <see cref="Outcome{TResult}"/>.
+    /// Do not throw exceptions from your strategy implementation. Instead, return an exception instance as <see cref="Outcome{T}"/>.
     /// </para>
     /// </remarks>
     protected internal abstract ValueTask<Outcome<T>> ExecuteCoreAsync<TState>(
@@ -59,7 +58,7 @@ public abstract class MonkeyStrategy<T> : MonkeyStrategy
         return ConvertValueTask<TResult>(valueTask, context);
     }
 
-    // TODO: Consider abstract this out as an utility? it's also being used in OutcomeResilienceStrategy
+    // TODO: Consider abstract this out as an utility or in the ResilienceStrategy? it's also being used in OutcomeResilienceStrategy
     private static ValueTask<Outcome<TResult>> ConvertValueTask<TResult>(ValueTask<Outcome<T>> valueTask, ResilienceContext resilienceContext)
     {
         if (valueTask.IsCompletedSuccessfully)
