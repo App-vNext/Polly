@@ -232,8 +232,7 @@ public abstract partial class ResilienceStrategy
 
     private static ResilienceContext GetSyncContext<TResult>(CancellationToken cancellationToken)
     {
-        var context = ResilienceContext.Get();
-        context.CancellationToken = cancellationToken;
+        var context = ResilienceContext.Get(cancellationToken);
 
         InitializeSyncContext<TResult>(context);
 

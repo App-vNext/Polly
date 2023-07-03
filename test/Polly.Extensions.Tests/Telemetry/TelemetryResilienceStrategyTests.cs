@@ -46,20 +46,20 @@ public class TelemetryResilienceStrategyTests : IDisposable
                     ((List<ResilienceEvent>)c.ResilienceEvents).Add(new ResilienceEvent(ResilienceEventSeverity.Warning, "dummy"));
                 }
             },
-            ResilienceContext.Get(), string.Empty);
+            ResilienceContext.Get("op-key"), string.Empty);
 
         var messages = _logger.GetRecords(new EventId(1, "StrategyExecuting")).ToList();
         messages.Should().HaveCount(1);
-        messages[0].Message.Should().Be("Resilience strategy executing. Builder Name: 'my-builder', Strategy Key: 'my-key', Result Type: 'void'");
+        messages[0].Message.Should().Be("Resilience strategy executing. Builder Name: 'my-builder', Strategy Key: 'my-key', Operation Key: 'op-key', Result Type: 'void'");
         messages = _logger.GetRecords(new EventId(2, "StrategyExecuted")).ToList();
         messages.Should().HaveCount(1);
-        messages[0].Message.Should().Match($"Resilience strategy executed. Builder Name: 'my-builder', Strategy Key: 'my-key', Result Type: 'void', Result: 'void', Execution Health: '{healthString}', Execution Time: *ms");
+        messages[0].Message.Should().Match($"Resilience strategy executed. Builder Name: 'my-builder', Strategy Key: 'my-key', Operation Key: 'op-key', Result Type: 'void', Result: 'void', Execution Health: '{healthString}', Execution Time: *ms");
         messages[0].LogLevel.Should().Be(healthy ? LogLevel.Debug : LogLevel.Warning);
 
         // verify reported state
         var coll = messages[0].State.Should().BeAssignableTo<IReadOnlyList<KeyValuePair<string, object>>>().Subject;
-        coll.Count.Should().Be(7);
-        coll.AsEnumerable().Should().HaveCount(7);
+        coll.Count.Should().Be(8);
+        coll.AsEnumerable().Should().HaveCount(8);
         (coll as IEnumerable).GetEnumerator().Should().NotBeNull();
 
         for (int i = 0; i < coll.Count; i++)
@@ -74,15 +74,15 @@ public class TelemetryResilienceStrategyTests : IDisposable
     public void Execute_WithException_EnsureLogged()
     {
         var strategy = CreateStrategy();
-        strategy.Invoking(s => s.Execute(_ => throw new InvalidOperationException("Dummy message."))).Should().Throw<InvalidOperationException>();
+        strategy.Invoking(s => s.Execute(_ => throw new InvalidOperationException("Dummy message."), ResilienceContext.Get("op-key"))).Should().Throw<InvalidOperationException>();
 
         var messages = _logger.GetRecords(new EventId(1, "StrategyExecuting")).ToList();
         messages.Should().HaveCount(1);
-        messages[0].Message.Should().Be("Resilience strategy executing. Builder Name: 'my-builder', Strategy Key: 'my-key', Result Type: 'void'");
+        messages[0].Message.Should().Be("Resilience strategy executing. Builder Name: 'my-builder', Strategy Key: 'my-key', Operation Key: 'op-key', Result Type: 'void'");
 
         messages = _logger.GetRecords(new EventId(2, "StrategyExecuted")).ToList();
         messages.Should().HaveCount(1);
-        messages[0].Message.Should().Match($"Resilience strategy executed. Builder Name: 'my-builder', Strategy Key: 'my-key', Result Type: 'void', Result: 'Dummy message.', Execution Health: 'Healthy', Execution Time: *ms");
+        messages[0].Message.Should().Match($"Resilience strategy executed. Builder Name: 'my-builder', Strategy Key: 'my-key', Operation Key: 'op-key', Result Type: 'void', Result: 'Dummy message.', Execution Health: 'Healthy', Execution Time: *ms");
         messages[0].Exception.Should().BeOfType<InvalidOperationException>();
     }
 
@@ -115,12 +115,13 @@ public class TelemetryResilienceStrategyTests : IDisposable
     public void Execute_WithException_EnsureMetered()
     {
         var strategy = CreateStrategy();
-        strategy.Invoking(s => s.Execute(_ => throw new InvalidOperationException("Dummy message."))).Should().Throw<InvalidOperationException>();
+        strategy.Invoking(s => s.Execute(_ => throw new InvalidOperationException("Dummy message."), ResilienceContext.Get("op-key"))).Should().Throw<InvalidOperationException>();
 
         var ev = _events.Single(v => v.Name == "strategy-execution-duration").Tags;
 
-        ev.Count.Should().Be(5);
+        ev.Count.Should().Be(6);
         ev["strategy-key"].Should().Be("my-key");
+        ev["operation-key"].Should().Be("op-key");
         ev["builder-name"].Should().Be("my-builder");
         ev["result-type"].Should().Be("void");
         ev["exception-name"].Should().Be("System.InvalidOperationException");
@@ -139,7 +140,7 @@ public class TelemetryResilienceStrategyTests : IDisposable
 
         var ev = _events.Single(v => v.Name == "strategy-execution-duration").Tags;
 
-        ev.Count.Should().Be(6);
+        ev.Count.Should().Be(7);
         ev["my-custom-tag"].Should().Be("my-tag-value");
     }
 
@@ -159,12 +160,13 @@ public class TelemetryResilienceStrategyTests : IDisposable
 
                 return true;
             },
-            ResilienceContext.Get(), string.Empty);
+            ResilienceContext.Get("op-key"), string.Empty);
 
         var ev = _events.Single(v => v.Name == "strategy-execution-duration").Tags;
 
-        ev.Count.Should().Be(5);
+        ev.Count.Should().Be(6);
         ev["strategy-key"].Should().Be("my-key");
+        ev["operation-key"].Should().Be("op-key");
         ev["builder-name"].Should().Be("my-builder");
         ev["result-type"].Should().Be("Boolean");
         ev["exception-name"].Should().BeNull();
