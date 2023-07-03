@@ -2,7 +2,7 @@
 
 public abstract partial class ResilienceStrategy
 {
-    internal class DebuggerProxy
+    internal sealed class DebuggerProxy
     {
         private readonly ResilienceStrategy _resilienceStrategy;
 

@@ -2,7 +2,7 @@
 
 public partial class ResilienceStrategy<TResult>
 {
-    internal class DebuggerProxy
+    internal sealed class DebuggerProxy
     {
         private readonly ResilienceStrategy.DebuggerProxy _proxy;
 
