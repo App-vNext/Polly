@@ -1,3 +1,22 @@
+## 8.0.0-alpha.5
+
+* Skip mutation tests for tagged builds by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/1354
+* Update CHANGELOG by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/1353
+* Drop TimeProvider.Delay by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1355
+* Fix race conditions in tests by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1358
+* Simplify the logging by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1359
+* Prepare for .NET 8 by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/1360
+* Introduce ResilienceEventSeverity by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1361
+* Upload coverage reports by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/1363
+* Kill mutant by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1368
+* Accelerate build in VS by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1369
+* Simplify handling of reloads by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1374
+* Allow reusing CircuitBreakerManualControl across multiple CBs by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1375
+* PR and issue automation by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/1370
+* Exclude some labels from stale by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/1378
+* Debugger proxies for resilience strategies by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1379
+* Introduce `ResilienceContext.OperationKey` by [@martintmk](https://github.com/martintmk) in https://github.com/App-vNext/Polly/pull/1380
+
 ## 8.0.0-alpha.4
 
 * Rename FakeTimeProvider by [@martincostello](https://github.com/martincostello) in https://github.com/App-vNext/Polly/pull/1349

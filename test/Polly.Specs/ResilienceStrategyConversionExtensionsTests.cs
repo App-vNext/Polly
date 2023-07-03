@@ -26,6 +26,7 @@ public class ResilienceStrategyConversionExtensionsTests
                 context.IsSynchronous.Should().Be(_isSynchronous);
                 context.Properties.Set(Outgoing, "outgoing-value");
                 context.Properties.GetValue(Incoming, string.Empty).Should().Be("incoming-value");
+                context.OperationKey.Should().Be("op-key");
 
                 if (_resultType != null)
                 {
@@ -44,7 +45,7 @@ public class ResilienceStrategyConversionExtensionsTests
     {
         _isVoid = true;
         _isSynchronous = true;
-        var context = new Context
+        var context = new Context("op-key")
         {
             [Incoming.Key] = "incoming-value"
         };
@@ -64,7 +65,7 @@ public class ResilienceStrategyConversionExtensionsTests
         _isVoid = false;
         _isSynchronous = true;
         _resultType = typeof(string);
-        var context = new Context
+        var context = new Context("op-key")
         {
             [Incoming.Key] = "incoming-value"
         };
@@ -80,7 +81,7 @@ public class ResilienceStrategyConversionExtensionsTests
         _isVoid = false;
         _isSynchronous = true;
         _resultType = typeof(string);
-        var context = new Context
+        var context = new Context("op-key")
         {
             [Incoming.Key] = "incoming-value"
         };
@@ -96,7 +97,7 @@ public class ResilienceStrategyConversionExtensionsTests
     {
         _isVoid = true;
         _isSynchronous = false;
-        var context = new Context
+        var context = new Context("op-key")
         {
             [Incoming.Key] = "incoming-value"
         };
@@ -117,7 +118,7 @@ public class ResilienceStrategyConversionExtensionsTests
         _isVoid = false;
         _isSynchronous = false;
         _resultType = typeof(string);
-        var context = new Context
+        var context = new Context("op-key")
         {
             [Incoming.Key] = "incoming-value"
         };
@@ -138,7 +139,7 @@ public class ResilienceStrategyConversionExtensionsTests
         _isVoid = false;
         _isSynchronous = false;
         _resultType = typeof(string);
-        var context = new Context
+        var context = new Context("op-key")
         {
             [Incoming.Key] = "incoming-value"
         };
@@ -168,7 +169,7 @@ public class ResilienceStrategyConversionExtensionsTests
             .Build()
             .AsSyncPolicy();
 
-        var context = new Context
+        var context = new Context("op-key")
         {
             ["retry"] = 0
         };

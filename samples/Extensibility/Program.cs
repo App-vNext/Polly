@@ -99,7 +99,10 @@ internal class MyResilienceStrategy : ResilienceStrategy
         // ...
 
         // You can then report important telemetry events
-        telemetry.Report("MyCustomEvent", context, new OnCustomEventArguments(context));
+        telemetry.Report(
+            new ResilienceEvent(ResilienceEventSeverity.Information, "MyCustomEvent"),
+            context,
+            new OnCustomEventArguments(context));
 
         // Call the delegate if provided by the user
         if (onCustomEvent is not null)

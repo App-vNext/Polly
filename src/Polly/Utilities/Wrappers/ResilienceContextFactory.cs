@@ -10,8 +10,7 @@ internal static class ResilienceContextFactory
         bool continueOnCapturedContext,
         out IDictionary<string, object> oldProperties)
     {
-        var resilienceContext = ResilienceContext.Get();
-        resilienceContext.CancellationToken = cancellationToken;
+        var resilienceContext = ResilienceContext.Get(context.OperationKey, cancellationToken);
         resilienceContext.ContinueOnCapturedContext = continueOnCapturedContext;
         resilienceContext.Properties.SetProperties(context, out oldProperties);
 

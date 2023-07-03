@@ -9,7 +9,7 @@ namespace Polly;
 /// </summary>
 /// <remarks>
 /// Do not re-use an instance of <see cref="ResilienceContext"/> across more than one execution. The <see cref="ResilienceContext"/> is retrieved from the pool
-/// by calling the <see cref="Get"/> method. After you are done with it you should return it to the pool by calling the <see cref="Return"/> method.
+/// by calling the <see cref="Get(CancellationToken)"/> method. After you are done with it you should return it to the pool by calling the <see cref="Return"/> method.
 /// </remarks>
 public sealed class ResilienceContext
 {
@@ -22,6 +22,19 @@ public sealed class ResilienceContext
     private ResilienceContext()
     {
     }
+
+    /// <summary>
+    /// Gets a key unique to the call site of the current execution.
+    /// </summary>
+    /// <remarks>
+    /// Resilience strategy instances are commonly reused across multiple call sites.
+    /// Set an <see cref="OperationKey"/> so that logging and metrics can distinguish usages of policy instances at different call sites.
+    /// The operation key value should have a low cardinality (i.e. do not assign values such as <see cref="Guid"/> to this property).
+    /// <para>
+    /// Defaults to <see langword="null"/>.
+    /// </para>
+    /// </remarks>
+    public string? OperationKey { get; private set; }
 
     /// <summary>
     /// Gets or sets the <see cref="CancellationToken"/> associated with the execution.
@@ -69,15 +82,40 @@ public sealed class ResilienceContext
     /// <summary>
     /// Gets a <see cref="ResilienceContext"/> instance from the pool.
     /// </summary>
+    /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns>An instance of <see cref="ResilienceContext"/>.</returns>
     /// <remarks>
     /// After the execution is finished you should return the <see cref="ResilienceContext"/> back to the pool
     /// by calling <see cref="Return(ResilienceContext)"/> method.
     /// </remarks>
-    public static ResilienceContext Get() => Pool.Get();
+    public static ResilienceContext Get(CancellationToken cancellationToken = default)
+    {
+        var context = Pool.Get();
+        context.CancellationToken = cancellationToken;
+        return context;
+    }
+
+    /// <summary>
+    /// Gets a <see cref="ResilienceContext"/> instance from the pool.
+    /// </summary>
+    /// <param name="operationKey">An operation key associated with the context.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>An instance of <see cref="ResilienceContext"/>.</returns>
+    /// <remarks>
+    /// After the execution is finished you should return the <see cref="ResilienceContext"/> back to the pool
+    /// by calling <see cref="Return(ResilienceContext)"/> method.
+    /// </remarks>
+    public static ResilienceContext Get(string operationKey, CancellationToken cancellationToken = default)
+    {
+        var context = Pool.Get();
+        context.OperationKey = operationKey;
+        context.CancellationToken = cancellationToken;
+        return context;
+    }
 
     internal void InitializeFrom(ResilienceContext context)
     {
+        OperationKey = context.OperationKey;
         ResultType = context.ResultType;
         IsSynchronous = context.IsSynchronous;
         CancellationToken = context.CancellationToken;
@@ -121,6 +159,7 @@ public sealed class ResilienceContext
 
     internal bool Reset()
     {
+        OperationKey = null;
         IsSynchronous = false;
         ResultType = typeof(UnknownResult);
         ContinueOnCapturedContext = false;

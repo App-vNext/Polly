@@ -51,7 +51,7 @@ internal sealed class TelemetryResilienceStrategy : ResilienceStrategy
         TState state)
     {
         var stamp = _timeProvider.GetTimestamp();
-        Log.ExecutingStrategy(_logger, _builderName, _strategyKey, context.GetResultType());
+        Log.ExecutingStrategy(_logger, _builderName, _strategyKey, context.OperationKey, context.GetResultType());
 
         var outcome = await callback(context, state).ConfigureAwait(context.ContinueOnCapturedContext);
 
@@ -63,6 +63,7 @@ internal sealed class TelemetryResilienceStrategy : ResilienceStrategy
             logLevel,
             _builderName,
             _strategyKey,
+            context.OperationKey,
             context.GetResultType(),
             ExpandOutcome(context, outcome),
             context.GetExecutionHealth(),
@@ -88,6 +89,7 @@ internal sealed class TelemetryResilienceStrategy : ResilienceStrategy
         var enrichmentContext = EnrichmentContext.Get(context, null, CreateOutcome(outcome));
         enrichmentContext.Tags.Add(new(ResilienceTelemetryTags.BuilderName, _builderName));
         enrichmentContext.Tags.Add(new(ResilienceTelemetryTags.StrategyKey, _strategyKey));
+        enrichmentContext.Tags.Add(new(ResilienceTelemetryTags.OperationKey, context.OperationKey));
         enrichmentContext.Tags.Add(new(ResilienceTelemetryTags.ResultType, context.GetResultType()));
         enrichmentContext.Tags.Add(new(ResilienceTelemetryTags.ExceptionName, outcome.Exception?.GetType().FullName));
         enrichmentContext.Tags.Add(new(ResilienceTelemetryTags.ExecutionHealth, context.GetExecutionHealth()));
