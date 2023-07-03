@@ -31,8 +31,8 @@ internal sealed class OutcomeChaosStrategy<T> : MonkeyStrategy<T>
 
     public Outcome<T> Outcome { get; }
 
-    protected internal override async ValueTask<Outcome<TResult>> ExecuteCoreAsync<TResult, TState>(
-        Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback, ResilienceContext context, TState state)
+    protected internal override async ValueTask<Outcome<T>> ExecuteCoreAsync<TState>(
+        Func<ResilienceContext, TState, ValueTask<Outcome<T>>> callback, ResilienceContext context, TState state)
     {
         try
         {
@@ -47,14 +47,14 @@ internal sealed class OutcomeChaosStrategy<T> : MonkeyStrategy<T>
                     await OnOutcomeInjected(args).ConfigureAwait(context.ContinueOnCapturedContext);
                 }
 
-                return outcome.AsOutcome<TResult>();
+                return outcome;
             }
 
             return await ExecuteCallbackSafeAsync(callback, context, state).ConfigureAwait(context.ContinueOnCapturedContext);
         }
         catch (OperationCanceledException e)
         {
-            return new Outcome<TResult>(e);
+            return new Outcome<T>(e);
         }
     }
 }
