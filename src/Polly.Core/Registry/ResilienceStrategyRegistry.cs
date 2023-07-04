@@ -118,22 +118,81 @@ public sealed partial class ResilienceStrategyRegistry<TKey> : ResilienceStrateg
 
         if (_builders.TryGetValue(key, out var configure))
         {
-            var context = new ConfigureBuilderContext<TKey>(key, _builderNameFormatter(key), _strategyKeyFormatter(key));
-
-#if NETCOREAPP3_0_OR_GREATER
-            strategy = _strategies.GetOrAdd(key, static (_, factory) =>
-            {
-                return CreateStrategy(factory.instance._activator, factory.context, factory.configure);
-            },
-            (instance: this, context, configure));
-#else
-            strategy = _strategies.GetOrAdd(key, _ => CreateStrategy(_activator, context, configure));
-#endif
+            strategy = GetOrAddStrategy(key, configure);
             return true;
         }
 
         strategy = null;
         return false;
+    }
+
+    /// <summary>
+    /// Gets existing strategy or creates a new one using the <paramref name="configure"/> callback.
+    /// </summary>
+    /// <param name="key">The key used to identify the resilience strategy.</param>
+    /// <param name="configure">The callback that configures the strategy builder.</param>
+    /// <returns>An instance of strategy.</returns>
+    public ResilienceStrategy GetOrAddStrategy(TKey key, Action<ResilienceStrategyBuilder> configure)
+    {
+        Guard.NotNull(configure);
+
+        return GetOrAddStrategy(key, (builder, _) => configure(builder));
+    }
+
+    /// <summary>
+    /// Gets existing strategy or creates a new one using the <paramref name="configure"/> callback.
+    /// </summary>
+    /// <param name="key">The key used to identify the resilience strategy.</param>
+    /// <param name="configure">The callback that configures the strategy builder.</param>
+    /// <returns>An instance of strategy.</returns>
+    public ResilienceStrategy GetOrAddStrategy(TKey key, Action<ResilienceStrategyBuilder, ConfigureBuilderContext<TKey>> configure)
+    {
+        Guard.NotNull(configure);
+
+        if (_strategies.TryGetValue(key, out var strategy))
+        {
+            return strategy;
+        }
+
+        var context = new ConfigureBuilderContext<TKey>(key, _builderNameFormatter(key), _strategyKeyFormatter(key));
+
+#if NETCOREAPP3_0_OR_GREATER
+        return _strategies.GetOrAdd(key, static (_, factory) =>
+        {
+            return CreateStrategy(factory.instance._activator, factory.context, factory.configure);
+        },
+        (instance: this, context, configure));
+#else
+        return _strategies.GetOrAdd(key, _ => CreateStrategy(_activator, context, configure));
+#endif
+    }
+
+    /// <summary>
+    /// Gets existing strategy or creates a new one using the <paramref name="configure"/> callback.
+    /// </summary>
+    /// <typeparam name="TResult">The type of result that the resilience strategy handles.</typeparam>
+    /// <param name="key">The key used to identify the resilience strategy.</param>
+    /// <param name="configure">The callback that configures the strategy builder.</param>
+    /// <returns>An instance of strategy.</returns>
+    public ResilienceStrategy<TResult> GetOrAddStrategy<TResult>(TKey key, Action<ResilienceStrategyBuilder<TResult>> configure)
+    {
+        Guard.NotNull(configure);
+
+        return GetOrAddStrategy<TResult>(key, (builder, _) => configure(builder));
+    }
+
+    /// <summary>
+    /// Gets existing strategy or creates a new one using the <paramref name="configure"/> callback.
+    /// </summary>
+    /// <typeparam name="TResult">The type of result that the resilience strategy handles.</typeparam>
+    /// <param name="key">The key used to identify the resilience strategy.</param>
+    /// <param name="configure">The callback that configures the strategy builder.</param>
+    /// <returns>An instance of strategy.</returns>
+    public ResilienceStrategy<TResult> GetOrAddStrategy<TResult>(TKey key, Action<ResilienceStrategyBuilder<TResult>, ConfigureBuilderContext<TKey>> configure)
+    {
+        Guard.NotNull(configure);
+
+        return GetGenericRegistry<TResult>().GetOrAdd(key, configure);
     }
 
     /// <summary>
