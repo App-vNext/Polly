@@ -85,7 +85,7 @@ public static class PollyServiceCollectionExtensions
                 });
             });
 
-        return AddResilienceStrategyRegistry<TKey>(services);
+        return AddResilienceStrategy<TKey>(services);
     }
 
     /// <summary>
@@ -156,12 +156,29 @@ public static class PollyServiceCollectionExtensions
                 });
             });
 
-        return AddResilienceStrategyRegistry<TKey>(services);
+        return AddResilienceStrategy<TKey>(services);
     }
 
-    private static IServiceCollection AddResilienceStrategyRegistry<TKey>(this IServiceCollection services)
+    /// <summary>
+    /// Adds the infrastructure that allows configuring and retrieving resilience strategies using the <typeparamref name="TKey"/> key.
+    /// </summary>
+    /// <typeparam name="TKey">The type of the key used to identify the resilience strategy.</typeparam>
+    /// <param name="services">The <see cref="IServiceCollection"/> to add the resilience strategy to.</param>
+    /// <returns>The updated <see cref="IServiceCollection"/> with additional services added.</returns>
+    /// <exception cref="InvalidOperationException">Thrown if the resilience strategy builder with the provided key has already been added to the registry.</exception>
+    /// <remarks>
+    /// You can retrieve the strategy registry by resolving the <see cref="ResilienceStrategyProvider{TKey}"/>
+    /// or <see cref="ResilienceStrategyRegistry{TKey}"/> class from the dependency injection container.
+    /// <para>
+    /// This call enables the telemetry for al resilience strategies created using <see cref="ResilienceStrategyRegistry{TKey}"/>.
+    /// </para>
+    /// </remarks>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="services"/> is <see langword="null"/>.</exception>
+    public static IServiceCollection AddResilienceStrategy<TKey>(this IServiceCollection services)
         where TKey : notnull
     {
+        Guard.NotNull(services);
+
         // check marker to ensure the APIs bellow are called only once for each TKey type
         // this prevents polluting the service collection with unnecessary Configure calls
         if (services.Contains(RegistryMarker<TKey>.ServiceDescriptor))
@@ -172,7 +189,7 @@ public static class PollyServiceCollectionExtensions
         services.AddOptions();
         services.Add(RegistryMarker<TKey>.ServiceDescriptor);
         services.AddResilienceStrategyBuilder();
-        services.AddResilienceStrategyRegistry<TKey>();
+        services.AddResilienceStrategy<TKey>();
 
         services.TryAddSingleton(serviceProvider =>
         {

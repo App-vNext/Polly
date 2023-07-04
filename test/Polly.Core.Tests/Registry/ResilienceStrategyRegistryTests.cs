@@ -3,6 +3,7 @@ using System.Globalization;
 using Polly.Registry;
 using Polly.Retry;
 using Polly.Telemetry;
+using Polly.Timeout;
 
 namespace Polly.Core.Tests.Registry;
 
@@ -427,6 +428,32 @@ public class ResilienceStrategyRegistryTests
         changeSource.Cancel();
         strategy.Execute(() => { tries++; return "dummy"; });
         tries.Should().Be(retryCount + 1);
+    }
+
+    [Fact]
+    public void GetOrAddStrategy_Ok()
+    {
+        var id = new StrategyId(typeof(string), "A");
+
+        var registry = CreateRegistry();
+        var strategy = registry.GetOrAddStrategy(id, builder => builder.AddTimeout(TimeSpan.FromSeconds(1)));
+        var otherStrategy = registry.GetOrAddStrategy(id, builder => builder.AddTimeout(TimeSpan.FromSeconds(1)));
+
+        strategy.Should().BeOfType<TimeoutResilienceStrategy>();
+        strategy.Should().BeSameAs(otherStrategy);
+    }
+
+    [Fact]
+    public void GetOrAddStrategy_Generic_Ok()
+    {
+        var id = new StrategyId(typeof(string), "A");
+
+        var registry = CreateRegistry();
+        var strategy = registry.GetOrAddStrategy<string>(id, builder => builder.AddTimeout(TimeSpan.FromSeconds(1)));
+        var otherStrategy = registry.GetOrAddStrategy<string>(id, builder => builder.AddTimeout(TimeSpan.FromSeconds(1)));
+
+        strategy.Strategy.Should().BeOfType<TimeoutResilienceStrategy>();
+        strategy.Should().BeSameAs(otherStrategy);
     }
 
     private ResilienceStrategyRegistry<StrategyId> CreateRegistry() => new(_options);

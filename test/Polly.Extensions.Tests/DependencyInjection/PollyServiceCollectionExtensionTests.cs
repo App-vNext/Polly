@@ -254,6 +254,16 @@ public class PollyServiceCollectionExtensionTests
             .HaveCount(30);
     }
 
+    [Fact]
+    public void AddResilienceStrategyInfra_Ok()
+    {
+        var provider = new ServiceCollection().AddResilienceStrategy<string>().BuildServiceProvider();
+
+        provider.GetRequiredService<ResilienceStrategyRegistry<string>>().Should().NotBeNull();
+        provider.GetRequiredService<ResilienceStrategyProvider<string>>().Should().NotBeNull();
+        provider.GetRequiredService<ResilienceStrategyBuilder>().DiagnosticSource.Should().NotBeNull();
+    }
+
     private void AddResilienceStrategy(string key, Action<ResilienceStrategyBuilderContext>? onBuilding = null)
     {
         _services.AddResilienceStrategy(key, builder =>
