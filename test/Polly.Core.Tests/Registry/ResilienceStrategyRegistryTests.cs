@@ -434,23 +434,26 @@ public class ResilienceStrategyRegistryTests
     public void GetOrAddStrategy_Ok()
     {
         var id = new StrategyId(typeof(string), "A");
+        var called = 0;
 
         var registry = CreateRegistry();
-        var strategy = registry.GetOrAddStrategy(id, builder => builder.AddTimeout(TimeSpan.FromSeconds(1)));
-        var otherStrategy = registry.GetOrAddStrategy(id, builder => builder.AddTimeout(TimeSpan.FromSeconds(1)));
+        var strategy = registry.GetOrAddStrategy(id, builder => { builder.AddTimeout(TimeSpan.FromSeconds(1)); called++; });
+        var otherStrategy = registry.GetOrAddStrategy(id, builder => { builder.AddTimeout(TimeSpan.FromSeconds(1)); called++; });
 
         strategy.Should().BeOfType<TimeoutResilienceStrategy>();
         strategy.Should().BeSameAs(otherStrategy);
+        called.Should().Be(1);
     }
 
     [Fact]
     public void GetOrAddStrategy_Generic_Ok()
     {
         var id = new StrategyId(typeof(string), "A");
+        var called = 0;
 
         var registry = CreateRegistry();
-        var strategy = registry.GetOrAddStrategy<string>(id, builder => builder.AddTimeout(TimeSpan.FromSeconds(1)));
-        var otherStrategy = registry.GetOrAddStrategy<string>(id, builder => builder.AddTimeout(TimeSpan.FromSeconds(1)));
+        var strategy = registry.GetOrAddStrategy<string>(id, builder => { builder.AddTimeout(TimeSpan.FromSeconds(1)); called++; });
+        var otherStrategy = registry.GetOrAddStrategy<string>(id, builder => { builder.AddTimeout(TimeSpan.FromSeconds(1)); called++; });
 
         strategy.Strategy.Should().BeOfType<TimeoutResilienceStrategy>();
         strategy.Should().BeSameAs(otherStrategy);
