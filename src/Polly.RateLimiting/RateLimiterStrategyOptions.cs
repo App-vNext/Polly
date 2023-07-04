@@ -46,5 +46,5 @@ public class RateLimiterStrategyOptions : ResilienceStrategyOptions
     /// Defaults to <see langword="null"/>. If this property is <see langword="null"/>,
     /// then the strategy will use a <see cref="ConcurrencyLimiter"/> created using <see cref="DefaultRateLimiterOptions"/>.
     /// </remarks>
-    public RateLimiter? RateLimiter { get; set; }
+    public ResilienceRateLimiter? RateLimiter { get; set; }
 }
