@@ -10,6 +10,7 @@ internal class ResilienceTelemetryDiagnosticSource : DiagnosticSource
 
     private readonly ILogger _logger;
     private readonly Func<ResilienceContext, object?, object?> _resultFormatter;
+    private readonly Action<TelemetryEventArguments>? _onEvent;
     private readonly List<Action<EnrichmentContext>> _enrichers;
 
     public ResilienceTelemetryDiagnosticSource(TelemetryOptions options)
@@ -17,6 +18,7 @@ internal class ResilienceTelemetryDiagnosticSource : DiagnosticSource
         _enrichers = options.Enrichers.ToList();
         _logger = options.LoggerFactory.CreateLogger(TelemetryUtil.PollyDiagnosticSource);
         _resultFormatter = options.ResultFormatter;
+        _onEvent = options.OnTelemetryEvent;
 
         Counter = Meter.CreateCounter<int>(
             "resilience-events",
@@ -40,6 +42,8 @@ internal class ResilienceTelemetryDiagnosticSource : DiagnosticSource
         {
             return;
         }
+
+        _onEvent?.Invoke(args);
 
         LogEvent(args);
         MeterEvent(args);

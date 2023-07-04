@@ -2,6 +2,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Net.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
+using Polly.Telemetry;
 
 namespace Polly.Extensions.Telemetry;
 
@@ -10,6 +11,14 @@ namespace Polly.Extensions.Telemetry;
 /// </summary>
 public class TelemetryOptions
 {
+    /// <summary>
+    /// Gets or sets the callback that is raised when <see cref="TelemetryEventArguments"/> is received from Polly.
+    /// </summary>
+    /// <remarks>
+    /// Defaults to <see langword="null"/>.
+    /// </remarks>
+    public Action<TelemetryEventArguments>? OnTelemetryEvent { get; set; }
+
     /// <summary>
     /// Gets or sets the logger factory.
     /// </summary>

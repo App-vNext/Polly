@@ -1,11 +1,8 @@
-using System.ComponentModel;
-
 namespace Polly.Telemetry;
 
 /// <summary>
 /// The arguments of the telemetry event.
 /// </summary>
-[EditorBrowsable(EditorBrowsableState.Never)]
 public sealed partial record class TelemetryEventArguments
 {
     private TelemetryEventArguments()
