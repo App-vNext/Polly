@@ -104,7 +104,7 @@ public class RateLimiterResilienceStrategyTests
         return (RateLimiterResilienceStrategy)builder
             .AddRateLimiter(new RateLimiterStrategyOptions
             {
-                RateLimiter = _limiter.Object,
+                RateLimiter = ResilienceRateLimiter.Create(_limiter.Object),
                 OnRejected = _event
             })
             .Build();
