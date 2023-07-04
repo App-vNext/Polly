@@ -1,5 +1,3 @@
-using System.ComponentModel;
-
 namespace Polly.Telemetry;
 
 /// <summary>
@@ -12,7 +10,6 @@ namespace Polly.Telemetry;
 /// <remarks>
 /// This class is used by the telemetry infrastructure and should not be used directly by user code.
 /// </remarks>
-[EditorBrowsable(EditorBrowsableState.Never)]
 public sealed record class ResilienceTelemetrySource(
     string? BuilderName,
     ResilienceProperties BuilderProperties,

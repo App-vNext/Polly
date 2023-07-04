@@ -14,6 +14,7 @@ public class ResilienceTelemetryDiagnosticSourceTests : IDisposable
     private readonly ILoggerFactory _loggerFactory;
     private readonly List<MeteringEvent> _events = new();
     private readonly IDisposable _metering;
+    private Action<TelemetryEventArguments>? _onEvent;
 
     public ResilienceTelemetryDiagnosticSourceTests()
     {
@@ -319,13 +320,32 @@ public class ResilienceTelemetryDiagnosticSourceTests : IDisposable
         var events = GetEvents("resilience-events")[0]["strategy-key"].Should().BeNull();
     }
 
+    [InlineData(true)]
+    [InlineData(false)]
+    [Theory]
+    public void OnTelemetryEvent_Ok(bool hasCallback)
+    {
+        var called = false;
+
+        if (hasCallback)
+        {
+            _onEvent = e => called = true;
+        }
+
+        var telemetry = Create();
+        ReportEvent(telemetry, null, strategyKey: null);
+
+        called.Should().Be(hasCallback);
+    }
+
     private List<Dictionary<string, object?>> GetEvents(string eventName) => _events.Where(e => e.Name == eventName).Select(v => v.Tags).ToList();
 
     private ResilienceTelemetryDiagnosticSource Create(Action<ICollection<Action<EnrichmentContext>>>? configureEnrichers = null)
     {
         var options = new TelemetryOptions
         {
-            LoggerFactory = _loggerFactory
+            LoggerFactory = _loggerFactory,
+            OnTelemetryEvent = _onEvent
         };
 
         configureEnrichers?.Invoke(options.Enrichers);
