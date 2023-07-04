@@ -25,13 +25,13 @@ public static class PollyServiceCollectionExtensions
     /// <param name="configure">An action that configures the resilience strategy.</param>
     /// <returns>The updated <see cref="IServiceCollection"/> with the registered resilience strategy.</returns>
     /// <exception cref="InvalidOperationException">Thrown if the resilience strategy builder with the provided key has already been added to the registry.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="services"/> or <paramref name="configure"/> is <see langword="null"/>.</exception>
     /// <remarks>
     /// You can retrieve the registered strategy by resolving the <see cref="ResilienceStrategyProvider{TKey}"/> class from the dependency injection container.
     /// <para>
     /// This call enables the telemetry for the registered resilience strategy.
     /// </para>
     /// </remarks>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="services"/> or <paramref name="configure"/> is <see langword="null"/>.</exception>
     public static IServiceCollection AddResilienceStrategy<TKey, TResult>(
         this IServiceCollection services,
         TKey key,
@@ -54,13 +54,13 @@ public static class PollyServiceCollectionExtensions
     /// <param name="configure">An action that configures the resilience strategy.</param>
     /// <returns>The updated <see cref="IServiceCollection"/> with the registered resilience strategy.</returns>
     /// <exception cref="InvalidOperationException">Thrown if the resilience strategy builder with the provided key has already been added to the registry.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="services"/> or <paramref name="configure"/> is <see langword="null"/>.</exception>
     /// <remarks>
     /// You can retrieve the registered strategy by resolving the <see cref="ResilienceStrategyProvider{TKey}"/> class from the dependency injection container.
     /// <para>
     /// This call enables the telemetry for the registered resilience strategy.
     /// </para>
     /// </remarks>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="services"/> or <paramref name="configure"/> is <see langword="null"/>.</exception>
     public static IServiceCollection AddResilienceStrategy<TKey, TResult>(
         this IServiceCollection services,
         TKey key,
@@ -97,13 +97,13 @@ public static class PollyServiceCollectionExtensions
     /// <param name="configure">An action that configures the resilience strategy.</param>
     /// <returns>The updated <see cref="IServiceCollection"/> with the registered resilience strategy.</returns>
     /// <exception cref="InvalidOperationException">Thrown if the resilience strategy builder with the provided key has already been added to the registry.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="services"/> or <paramref name="configure"/> is <see langword="null"/>.</exception>
     /// <remarks>
     /// You can retrieve the registered strategy by resolving the <see cref="ResilienceStrategyProvider{TKey}"/> class from the dependency injection container.
     /// <para>
     /// This call enables the telemetry for the registered resilience strategy.
     /// </para>
     /// </remarks>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="services"/> or <paramref name="configure"/> is <see langword="null"/>.</exception>
     public static IServiceCollection AddResilienceStrategy<TKey>(
         this IServiceCollection services,
         TKey key,
@@ -125,13 +125,13 @@ public static class PollyServiceCollectionExtensions
     /// <param name="configure">An action that configures the resilience strategy.</param>
     /// <returns>The updated <see cref="IServiceCollection"/> with the registered resilience strategy.</returns>
     /// <exception cref="InvalidOperationException">Thrown if the resilience strategy builder with the provided key has already been added to the registry.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="services"/> or <paramref name="configure"/> is <see langword="null"/>.</exception>
     /// <remarks>
     /// You can retrieve the registered strategy by resolving the <see cref="ResilienceStrategyProvider{TKey}"/> class from the dependency injection container.
     /// <para>
     /// This call enables the telemetry for the registered resilience strategy.
     /// </para>
     /// </remarks>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="services"/> or <paramref name="configure"/> is <see langword="null"/>.</exception>
     public static IServiceCollection AddResilienceStrategy<TKey>(
         this IServiceCollection services,
         TKey key,
@@ -165,7 +165,7 @@ public static class PollyServiceCollectionExtensions
     /// <typeparam name="TKey">The type of the key used to identify the resilience strategy.</typeparam>
     /// <param name="services">The <see cref="IServiceCollection"/> to add the resilience strategy to.</param>
     /// <returns>The updated <see cref="IServiceCollection"/> with additional services added.</returns>
-    /// <exception cref="InvalidOperationException">Thrown if the resilience strategy builder with the provided key has already been added to the registry.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="services"/> is <see langword="null"/>.</exception>
     /// <remarks>
     /// You can retrieve the strategy registry by resolving the <see cref="ResilienceStrategyProvider{TKey}"/>
     /// or <see cref="ResilienceStrategyRegistry{TKey}"/> class from the dependency injection container.
@@ -173,7 +173,6 @@ public static class PollyServiceCollectionExtensions
     /// This call enables telemetry for all resilience strategies created using <see cref="ResilienceStrategyRegistry{TKey}"/>.
     /// </para>
     /// </remarks>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="services"/> is <see langword="null"/>.</exception>
     public static IServiceCollection AddResilienceStrategy<TKey>(this IServiceCollection services)
         where TKey : notnull
     {
