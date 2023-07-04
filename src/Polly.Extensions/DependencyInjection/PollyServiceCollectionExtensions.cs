@@ -170,7 +170,7 @@ public static class PollyServiceCollectionExtensions
     /// You can retrieve the strategy registry by resolving the <see cref="ResilienceStrategyProvider{TKey}"/>
     /// or <see cref="ResilienceStrategyRegistry{TKey}"/> class from the dependency injection container.
     /// <para>
-    /// This call enables the telemetry for al resilience strategies created using <see cref="ResilienceStrategyRegistry{TKey}"/>.
+    /// This call enables telemetry for all resilience strategies created using <see cref="ResilienceStrategyRegistry{TKey}"/>.
     /// </para>
     /// </remarks>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="services"/> is <see langword="null"/>.</exception>
