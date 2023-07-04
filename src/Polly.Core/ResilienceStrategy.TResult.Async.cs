@@ -10,7 +10,6 @@ namespace Polly;
 /// Resilience strategy supports various types of callbacks of <typeparamref name="TResult"/> result type
 /// and provides a unified way to execute them. This includes overloads for synchronous and asynchronous callbacks.
 /// </remarks>
-[DebuggerTypeProxy(typeof(ResilienceStrategy<>.DebuggerProxy))]
 public partial class ResilienceStrategy<TResult>
 {
     internal ResilienceStrategy(ResilienceStrategy strategy) => Strategy = strategy;

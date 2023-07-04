@@ -1,4 +1,3 @@
-using Moq;
 using Polly.Utils;
 
 namespace Polly.Core.Tests;
@@ -39,12 +38,8 @@ public partial class ResilienceStrategyTests
             new TestResilienceStrategy(),
             new TestResilienceStrategy()
         });
-        var reloadable = new ReloadableResilienceStrategy(pipeline, () => default, () => pipeline, TestUtilities.CreateResilienceTelemetry(Mock.Of<DiagnosticSource>()));
 
-        new ResilienceStrategy.DebuggerProxy(NullResilienceStrategy.Instance).Strategies.Should().HaveCount(1);
-        new ResilienceStrategy.DebuggerProxy(pipeline).Strategies.Should().HaveCount(2);
-        new ResilienceStrategy.DebuggerProxy(reloadable).Strategies.Should().HaveCount(3);
-        new ResilienceStrategy<string>.DebuggerProxy(NullResilienceStrategy<string>.Instance).Strategies.Should().HaveCount(1);
+        new ResilienceStrategyPipeline.DebuggerProxy(pipeline).Strategies.Should().HaveCount(2);
     }
 
     public class ExecuteParameters<T> : ExecuteParameters
