@@ -51,4 +51,19 @@ public class GenericResilienceStrategyBuilderTests
         strategy.Should().NotBeNull();
         strategy.Strategy.Should().BeOfType<ResilienceStrategyPipeline>().Subject.Strategies.Should().HaveCount(2);
     }
+
+    [Fact]
+    public void AddGenericStrategy_Ok()
+    {
+        // arrange
+        var testStrategy = new ResilienceStrategy<string>(new TestResilienceStrategy());
+        _builder.AddStrategy(testStrategy);
+
+        // act
+        var strategy = _builder.Build();
+
+        // assert
+        strategy.Should().NotBeNull();
+        strategy.Strategy.Should().Be(testStrategy.Strategy);
+    }
 }
