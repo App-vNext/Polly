@@ -6,16 +6,15 @@ internal static class TelemetryUtil
 
     internal const string ExecutionAttempt = "ExecutionAttempt";
 
-    internal static readonly ResiliencePropertyKey<string> StrategyKey = new("Polly.StrategyKey");
-
     public static ResilienceStrategyTelemetry CreateTelemetry(
         DiagnosticSource? diagnosticSource,
         string? builderName,
+        string? builderInstanceName,
         ResilienceProperties builderProperties,
         string? strategyName,
         string strategyType)
     {
-        var telemetrySource = new ResilienceTelemetrySource(builderName, builderProperties, strategyName, strategyType);
+        var telemetrySource = new ResilienceTelemetrySource(builderName, builderInstanceName, builderProperties, strategyName, strategyType);
 
         return new ResilienceStrategyTelemetry(telemetrySource, diagnosticSource);
     }

@@ -9,11 +9,11 @@ namespace Polly.Registry;
 public class ConfigureBuilderContext<TKey>
     where TKey : notnull
 {
-    internal ConfigureBuilderContext(TKey strategyKey, string builderName, string strategyKeyString)
+    internal ConfigureBuilderContext(TKey strategyKey, string builderName, string? builderInstanceName)
     {
         StrategyKey = strategyKey;
         BuilderName = builderName;
-        StrategyKeyString = strategyKeyString;
+        BuilderInstanceName = builderInstanceName;
     }
 
     /// <summary>
@@ -27,9 +27,9 @@ public class ConfigureBuilderContext<TKey>
     public string BuilderName { get; }
 
     /// <summary>
-    /// Gets the string representation of strategy key for the strategy being created.
+    /// Gets the instance name for the builder being used to create the strategy.
     /// </summary>
-    public string StrategyKeyString { get; }
+    public string? BuilderInstanceName { get; }
 
     internal Func<Func<CancellationToken>>? ReloadTokenProducer { get; private set; }
 

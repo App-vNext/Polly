@@ -2,7 +2,6 @@ using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using Polly.Registry;
 using Polly.Retry;
-using Polly.Telemetry;
 using Polly.Timeout;
 
 namespace Polly.Core.Tests.Registry;
@@ -233,18 +232,16 @@ public class ResilienceStrategyRegistryTests
     public void AddBuilder_EnsureStrategyKey()
     {
         _options.BuilderNameFormatter = k => k.BuilderName;
-        _options.StrategyKeyFormatter = k => k.InstanceName;
+        _options.InstanceNameFormatter = k => k.InstanceName;
 
         var called = false;
         var registry = CreateRegistry();
         registry.TryAddBuilder(StrategyId.Create("A"), (builder, context) =>
         {
             context.BuilderName.Should().Be("A");
-            context.StrategyKeyString.Should().Be("Instance1");
+            context.BuilderInstanceName.Should().Be("Instance1");
             builder.AddStrategy(new TestResilienceStrategy());
             builder.BuilderName.Should().Be("A");
-            builder.Properties.TryGetValue(TelemetryUtil.StrategyKey, out var val).Should().BeTrue();
-            val.Should().Be("Instance1");
             called = true;
         });
 
@@ -267,7 +264,7 @@ public class ResilienceStrategyRegistryTests
     public void AddBuilder_Generic_EnsureStrategyKey()
     {
         _options.BuilderNameFormatter = k => k.BuilderName;
-        _options.StrategyKeyFormatter = k => k.InstanceName;
+        _options.InstanceNameFormatter = k => k.InstanceName;
 
         var called = false;
         var registry = CreateRegistry();
@@ -275,8 +272,7 @@ public class ResilienceStrategyRegistryTests
         {
             builder.AddStrategy(new TestResilienceStrategy());
             builder.BuilderName.Should().Be("A");
-            builder.Properties.TryGetValue(TelemetryUtil.StrategyKey, out var val).Should().BeTrue();
-            val.Should().Be("Instance1");
+            builder.InstanceName.Should().Be("Instance1");
             called = true;
         });
 

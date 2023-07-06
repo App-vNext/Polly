@@ -11,21 +11,21 @@ public sealed partial class ResilienceStrategyRegistry<TKey> : ResilienceStrateg
         private readonly ConcurrentDictionary<TKey, Action<ResilienceStrategyBuilder<TResult>, ConfigureBuilderContext<TKey>>> _builders;
         private readonly ConcurrentDictionary<TKey, ResilienceStrategy<TResult>> _strategies;
 
-        private readonly Func<TKey, string> _strategyKeyFormatter;
         private readonly Func<TKey, string> _builderNameFormatter;
+        private readonly Func<TKey, string>? _instanceNameFormatter;
 
         public GenericRegistry(
             Func<ResilienceStrategyBuilder<TResult>> activator,
             IEqualityComparer<TKey> builderComparer,
             IEqualityComparer<TKey> strategyComparer,
-            Func<TKey, string> strategyKeyFormatter,
-            Func<TKey, string> builderNameFormatter)
+            Func<TKey, string> builderNameFormatter,
+            Func<TKey, string>? instanceNameFormatter)
         {
             _activator = activator;
             _builders = new ConcurrentDictionary<TKey, Action<ResilienceStrategyBuilder<TResult>, ConfigureBuilderContext<TKey>>>(builderComparer);
             _strategies = new ConcurrentDictionary<TKey, ResilienceStrategy<TResult>>(strategyComparer);
-            _strategyKeyFormatter = strategyKeyFormatter;
             _builderNameFormatter = builderNameFormatter;
+            _instanceNameFormatter = instanceNameFormatter;
         }
 
         public bool TryAdd(TKey key, ResilienceStrategy<TResult> strategy) => _strategies.TryAdd(key, strategy);
@@ -51,7 +51,7 @@ public sealed partial class ResilienceStrategyRegistry<TKey> : ResilienceStrateg
 
         public ResilienceStrategy<TResult> GetOrAdd(TKey key, Action<ResilienceStrategyBuilder<TResult>, ConfigureBuilderContext<TKey>> configure)
         {
-            var context = new ConfigureBuilderContext<TKey>(key, _builderNameFormatter(key), _strategyKeyFormatter(key));
+            var context = new ConfigureBuilderContext<TKey>(key, _builderNameFormatter(key), _instanceNameFormatter?.Invoke(key));
 
 #if NETCOREAPP3_0_OR_GREATER
             return _strategies.GetOrAdd(key, static (_, factory) =>

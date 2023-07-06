@@ -8,9 +8,7 @@ public class ResilienceStrategyRegistryOptionsTests
     {
         ResilienceStrategyRegistryOptions<object> options = new();
 
-        options.StrategyKeyFormatter.Should().NotBeNull();
-        options.StrategyKeyFormatter(null!).Should().Be("");
-        options.StrategyKeyFormatter("ABC").Should().Be("ABC");
+        options.InstanceNameFormatter.Should().BeNull();
 
         options.BuilderNameFormatter.Should().NotBeNull();
         options.BuilderNameFormatter(null!).Should().Be("");

@@ -4,6 +4,7 @@ namespace Polly.Telemetry;
 /// The source of resilience telemetry events.
 /// </summary>
 /// <param name="BuilderName">The builder name.</param>
+/// <param name="BuilderInstanceName">The builder instance name.</param>
 /// <param name="BuilderProperties">The builder properties.</param>
 /// <param name="StrategyName">The strategy name. </param>
 /// <param name="StrategyType">The strategy type.</param>
@@ -12,6 +13,7 @@ namespace Polly.Telemetry;
 /// </remarks>
 public sealed record class ResilienceTelemetrySource(
     string? BuilderName,
+    string? BuilderInstanceName,
     ResilienceProperties BuilderProperties,
     string? StrategyName,
     string StrategyType);
