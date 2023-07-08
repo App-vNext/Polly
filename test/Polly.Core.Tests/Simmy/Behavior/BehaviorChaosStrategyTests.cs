@@ -1,0 +1,98 @@
+﻿using Moq;
+using Polly.Simmy.Behavior;
+using Polly.Telemetry;
+
+namespace Polly.Core.Tests.Simmy.Behavior;
+public class BehaviorChaosStrategyTests
+{
+    private readonly ResilienceStrategyTelemetry _telemetry;
+    private readonly BehaviorStrategyOptions _options;
+    private readonly CancellationTokenSource _cancellationSource;
+    private readonly Mock<DiagnosticSource> _diagnosticSource = new();
+
+    public BehaviorChaosStrategyTests()
+    {
+        _telemetry = TestUtilities.CreateResilienceTelemetry(_diagnosticSource.Object);
+        _options = new();
+        _cancellationSource = new CancellationTokenSource();
+    }
+
+    [Fact]
+    public void Given_not_enabled_should_not_inject_behaviour()
+    {
+        var userDelegateExecuted = false;
+        var injectedBehaviourExecuted = false;
+
+        _options.InjectionRate = 0.6;
+        _options.Enabled = false;
+        _options.Randomizer = () => 0.5;
+        _options.Behavior = (_) => { injectedBehaviourExecuted = true; return default; };
+
+        var sut = CreateSut();
+        sut.Execute(() => { userDelegateExecuted = true; });
+
+        userDelegateExecuted.Should().BeTrue();
+        injectedBehaviourExecuted.Should().BeFalse();
+    }
+
+    [Fact]
+    public async Task Given_enabled_and_randomly_within_threshold_should_inject_behaviour()
+    {
+        var userDelegateExecuted = false;
+        var injectedBehaviourExecuted = false;
+
+        _options.InjectionRate = 0.6;
+        _options.Enabled = true;
+        _options.Randomizer = () => 0.5;
+        _options.Behavior = (_) => { injectedBehaviourExecuted = true; return default; };
+
+        var sut = CreateSut();
+        await sut.ExecuteAsync((_) => { userDelegateExecuted = true; return default; });
+
+        userDelegateExecuted.Should().BeTrue();
+        injectedBehaviourExecuted.Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task Given_enabled_and_randomly_not_within_threshold_should_not_inject_behaviour()
+    {
+        var userDelegateExecuted = false;
+        var injectedBehaviourExecuted = false;
+
+        _options.InjectionRate = 0.4;
+        _options.Enabled = false;
+        _options.Randomizer = () => 0.5;
+        _options.Behavior = (_) => { injectedBehaviourExecuted = true; return default; };
+
+        var sut = CreateSut();
+        await sut.ExecuteAsync((_) => { userDelegateExecuted = true; return default; });
+
+        userDelegateExecuted.Should().BeTrue();
+        injectedBehaviourExecuted.Should().BeFalse();
+    }
+
+    [Fact]
+    public async Task Should_inject_behaviour_before_executing_user_delegate()
+    {
+        var userDelegateExecuted = false;
+        var injectedBehaviourExecuted = false;
+
+        _options.InjectionRate = 0.6;
+        _options.Enabled = true;
+        _options.Randomizer = () => 0.5;
+        _options.Behavior = (_) =>
+        {
+            userDelegateExecuted.Should().BeFalse(); // Not yet executed at the time the injected behaviour runs.
+            injectedBehaviourExecuted = true;
+            return default;
+        };
+
+        var sut = CreateSut();
+        await sut.ExecuteAsync((_) => { userDelegateExecuted = true; return default; });
+
+        userDelegateExecuted.Should().BeTrue();
+        injectedBehaviourExecuted.Should().BeTrue();
+    }
+
+    private BehaviorChaosStrategy CreateSut() => new(_options, _telemetry);
+}

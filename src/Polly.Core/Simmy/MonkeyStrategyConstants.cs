@@ -2,7 +2,7 @@
 
 internal static class MonkeyStrategyConstants
 {
-    public const int MinInjectionThreshold = 0;
+    public const double MinInjectionThreshold = 0;
 
-    public const int MaxInjectionThreshold = 1;
+    public const double MaxInjectionThreshold = 1;
 }
