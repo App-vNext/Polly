@@ -8,7 +8,7 @@ internal sealed class RateLimiterResilienceStrategy : ResilienceStrategy
     private readonly ResilienceStrategyTelemetry _telemetry;
 
     public RateLimiterResilienceStrategy(
-        RateLimiter limiter,
+        ResilienceRateLimiter limiter,
         Func<OnRateLimiterRejectedArguments, ValueTask>? onRejected,
         ResilienceStrategyTelemetry telemetry)
     {
@@ -18,7 +18,7 @@ internal sealed class RateLimiterResilienceStrategy : ResilienceStrategy
         _telemetry = telemetry;
     }
 
-    public RateLimiter Limiter { get; }
+    public ResilienceRateLimiter Limiter { get; }
 
     public Func<OnRateLimiterRejectedArguments, ValueTask>? OnLeaseRejected { get; }
 
@@ -27,9 +27,7 @@ internal sealed class RateLimiterResilienceStrategy : ResilienceStrategy
         ResilienceContext context,
         TState state)
     {
-        using var lease = await Limiter.AcquireAsync(
-            permitCount: 1,
-            context.CancellationToken).ConfigureAwait(context.ContinueOnCapturedContext);
+        using var lease = await Limiter.AcquireAsync(context).ConfigureAwait(context.ContinueOnCapturedContext);
 
         if (lease.IsAcquired)
         {

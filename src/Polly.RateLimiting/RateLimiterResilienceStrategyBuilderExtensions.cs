@@ -78,7 +78,7 @@ public static class RateLimiterResilienceStrategyBuilderExtensions
 
         return builder.AddRateLimiter(new RateLimiterStrategyOptions
         {
-            RateLimiter = limiter,
+            RateLimiter = ResilienceRateLimiter.Create(limiter),
         });
     }
 
@@ -104,7 +104,7 @@ public static class RateLimiterResilienceStrategyBuilderExtensions
             context =>
             {
                 return new RateLimiterResilienceStrategy(
-                    options.RateLimiter ?? new ConcurrencyLimiter(options.DefaultRateLimiterOptions),
+                    options.RateLimiter ?? ResilienceRateLimiter.Create(new ConcurrencyLimiter(options.DefaultRateLimiterOptions)),
                     options.OnRejected,
                     context.Telemetry);
             },

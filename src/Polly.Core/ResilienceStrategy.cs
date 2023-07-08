@@ -9,7 +9,6 @@ namespace Polly;
 /// Resilience strategy supports various types of callbacks and provides a unified way to execute them.
 /// This includes overloads for synchronous and asynchronous callbacks, generic and non-generic callbacks.
 /// </remarks>
-[DebuggerTypeProxy(typeof(DebuggerProxy))]
 public abstract partial class ResilienceStrategy
 {
     /// <summary>

@@ -41,23 +41,27 @@ public sealed partial class ResilienceStrategyRegistry<TKey> : ResilienceStrateg
 
             if (_builders.TryGetValue(key, out var configure))
             {
-                var context = new ConfigureBuilderContext<TKey>(key, _builderNameFormatter(key), _strategyKeyFormatter(key));
-
-#if NETCOREAPP3_0_OR_GREATER
-                strategy = _strategies.GetOrAdd(key, static (_, factory) =>
-                {
-                    return new ResilienceStrategy<TResult>(CreateStrategy(factory.instance._activator, factory.context, factory.configure));
-                },
-                (instance: this, context, configure));
-#else
-                strategy = _strategies.GetOrAdd(key, _ => new ResilienceStrategy<TResult>(CreateStrategy(_activator, context, configure)));
-#endif
-
+                strategy = GetOrAdd(key, configure);
                 return true;
             }
 
             strategy = null;
             return false;
+        }
+
+        public ResilienceStrategy<TResult> GetOrAdd(TKey key, Action<ResilienceStrategyBuilder<TResult>, ConfigureBuilderContext<TKey>> configure)
+        {
+            var context = new ConfigureBuilderContext<TKey>(key, _builderNameFormatter(key), _strategyKeyFormatter(key));
+
+#if NETCOREAPP3_0_OR_GREATER
+            return _strategies.GetOrAdd(key, static (_, factory) =>
+            {
+                return new ResilienceStrategy<TResult>(CreateStrategy(factory.instance._activator, factory.context, factory.configure));
+            },
+            (instance: this, context, configure));
+#else
+            return _strategies.GetOrAdd(key, _ => new ResilienceStrategy<TResult>(CreateStrategy(_activator, context, configure)));
+#endif
         }
 
         public bool TryAddBuilder(TKey key, Action<ResilienceStrategyBuilder<TResult>, ConfigureBuilderContext<TKey>> configure) => _builders.TryAdd(key, configure);

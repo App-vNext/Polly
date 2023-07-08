@@ -26,6 +26,23 @@ public static class ResilienceStrategyBuilderExtensions
     }
 
     /// <summary>
+    /// Adds an already created strategy instance to the builder.
+    /// </summary>
+    /// <typeparam name="TResult">The type of the result.</typeparam>
+    /// <param name="builder">The builder instance.</param>
+    /// <param name="strategy">The strategy instance.</param>
+    /// <returns>The same builder instance.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="strategy"/> is null.</exception>
+    /// <exception cref="InvalidOperationException">Thrown when this builder was already used to create a strategy. The builder cannot be modified after it has been used.</exception>
+    public static ResilienceStrategyBuilder<TResult> AddStrategy<TResult>(this ResilienceStrategyBuilder<TResult> builder, ResilienceStrategy<TResult> strategy)
+    {
+        Guard.NotNull(builder);
+        Guard.NotNull(strategy);
+
+        return builder.AddStrategy(strategy.Strategy);
+    }
+
+    /// <summary>
     /// Adds a strategy to the builder.
     /// </summary>
     /// <typeparam name="TBuilder">The builder type.</typeparam>

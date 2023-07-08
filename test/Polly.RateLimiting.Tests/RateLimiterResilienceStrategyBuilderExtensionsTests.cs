@@ -73,14 +73,20 @@ public class RateLimiterResilienceStrategyBuilderExtensionsTests
     [Fact]
     public void AddRateLimiter_Ok()
     {
-        new ResilienceStrategyBuilder().AddRateLimiter(new RateLimiterStrategyOptions
+        using var limiter = new ConcurrencyLimiter(new ConcurrencyLimiterOptions
         {
-            RateLimiter = new ConcurrencyLimiter(new ConcurrencyLimiterOptions
+            QueueLimit = 10,
+            PermitLimit = 10
+        });
+
+        new ResilienceStrategyBuilder()
+            .AddRateLimiter(new RateLimiterStrategyOptions
             {
-                QueueLimit = 10,
-                PermitLimit = 10
+                RateLimiter = ResilienceRateLimiter.Create(limiter)
             })
-        }).Build().Should().BeOfType<RateLimiterResilienceStrategy>();
+            .Build()
+            .Should()
+            .BeOfType<RateLimiterResilienceStrategy>();
     }
 
     [Fact]
@@ -117,7 +123,7 @@ public class RateLimiterResilienceStrategyBuilderExtensionsTests
         var strategy = new ResilienceStrategyBuilder()
             .AddRateLimiter(new RateLimiterStrategyOptions
             {
-                RateLimiter = Mock.Of<RateLimiter>()
+                RateLimiter = ResilienceRateLimiter.Create(Mock.Of<RateLimiter>())
             })
             .Build();
 
@@ -141,13 +147,13 @@ public class RateLimiterResilienceStrategyBuilderExtensionsTests
             strategy.OnLeaseRejected.Should().BeNull();
         }
 
-        assertLimiter?.Invoke(strategy.Limiter);
+        assertLimiter?.Invoke(strategy.Limiter.Limiter!);
     }
 
     private static void AssertConcurrencyLimiter(ResilienceStrategyBuilder<int> builder, bool hasEvents)
     {
         var strategy = GetResilienceStrategy(builder.Build());
-        strategy.Limiter.Should().BeOfType<ConcurrencyLimiter>();
+        strategy.Limiter.Limiter.Should().BeOfType<ConcurrencyLimiter>();
 
         if (hasEvents)
         {

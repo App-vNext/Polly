@@ -8,7 +8,8 @@ namespace Polly.Utils;
 /// A pipeline of strategies.
 /// </summary>
 [DebuggerDisplay("ResilienceStrategyPipeline, Strategies = {Strategies.Count}")]
-internal sealed class ResilienceStrategyPipeline : ResilienceStrategy
+[DebuggerTypeProxy(typeof(DebuggerProxy))]
+internal sealed partial class ResilienceStrategyPipeline : ResilienceStrategy
 {
     private readonly ResilienceStrategy _pipeline;
 
