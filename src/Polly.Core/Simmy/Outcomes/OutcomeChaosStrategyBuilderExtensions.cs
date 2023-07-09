@@ -9,14 +9,18 @@ public static class OutcomeChaosStrategyBuilderExtensions
     /// Adds a fault chaos strategy to the builder.
     /// </summary>
     /// <param name="builder">The builder instance.</param>
+    /// <param name="enabled">A value that indicates whether or not the chaos strategy is enabled for a given execution.</param>
+    /// <param name="injectionRate">The injection rate for a given execution, which the value should be between [0, 1].</param>
     /// <param name="fault">The exception to inject.</param>
     /// <returns>The builder instance with the retry strategy added.</returns>
-    public static ResilienceStrategyBuilder AddFault(this ResilienceStrategyBuilder builder, Exception fault)
+    public static ResilienceStrategyBuilder AddFault(this ResilienceStrategyBuilder builder, bool enabled, double injectionRate, Exception fault)
     {
         Guard.NotNull(builder);
 
         return builder.AddOutcomeCore(new OutcomeStrategyOptions<Exception>
         {
+            Enabled = enabled,
+            InjectionRate = injectionRate,
             Outcome = new(fault)
         });
     }
@@ -25,14 +29,18 @@ public static class OutcomeChaosStrategyBuilderExtensions
     /// Adds a fault chaos strategy to the builder.
     /// </summary>
     /// <param name="builder">The builder instance.</param>
+    /// <param name="enabled">A value that indicates whether or not the chaos strategy is enabled for a given execution.</param>
+    /// <param name="injectionRate">The injection rate for a given execution, which the value should be between [0, 1].</param>
     /// <param name="faultGenerator">The exception generator delegate.</param>
     /// <returns>The builder instance with the retry strategy added.</returns>
-    public static ResilienceStrategyBuilder AddFault(this ResilienceStrategyBuilder builder, Func<ValueTask<Outcome<Exception>>> faultGenerator)
+    public static ResilienceStrategyBuilder AddFault(this ResilienceStrategyBuilder builder, bool enabled, double injectionRate, Func<ValueTask<Outcome<Exception>>> faultGenerator)
     {
         Guard.NotNull(builder);
 
         return builder.AddOutcomeCore(new OutcomeStrategyOptions<Exception>
         {
+            Enabled = enabled,
+            InjectionRate = injectionRate,
             OutcomeGenerator = (_) => faultGenerator()
         });
     }
@@ -56,14 +64,18 @@ public static class OutcomeChaosStrategyBuilderExtensions
     /// </summary>
     /// <typeparam name="TResult">The type of result the retry strategy handles.</typeparam>
     /// <param name="builder">The builder instance.</param>
+    /// <param name="enabled">A value that indicates whether or not the chaos strategy is enabled for a given execution.</param>
+    /// <param name="injectionRate">The injection rate for a given execution, which the value should be between [0, 1].</param>
     /// <param name="result">The outcome to inject.</param>
     /// <returns>The builder instance with the retry strategy added.</returns>
-    public static ResilienceStrategyBuilder<TResult> AddResult<TResult>(this ResilienceStrategyBuilder<TResult> builder, TResult result)
+    public static ResilienceStrategyBuilder<TResult> AddResult<TResult>(this ResilienceStrategyBuilder<TResult> builder, bool enabled, double injectionRate, TResult result)
     {
         Guard.NotNull(builder);
 
         return builder.AddOutcomeCore(new OutcomeStrategyOptions<TResult>
         {
+            Enabled = enabled,
+            InjectionRate = injectionRate,
             Outcome = new(result)
         });
     }
@@ -73,14 +85,19 @@ public static class OutcomeChaosStrategyBuilderExtensions
     /// </summary>
     /// <typeparam name="TResult">The type of result the retry strategy handles.</typeparam>
     /// <param name="builder">The builder instance.</param>
+    /// <param name="enabled">A value that indicates whether or not the chaos strategy is enabled for a given execution.</param>
+    /// <param name="injectionRate">The injection rate for a given execution, which the value should be between [0, 1].</param>
     /// <param name="outcomeGenerator">The outcome generator delegate.</param>
     /// <returns>The builder instance with the retry strategy added.</returns>
-    public static ResilienceStrategyBuilder<TResult> AddResult<TResult>(this ResilienceStrategyBuilder<TResult> builder, Func<ValueTask<Outcome<TResult>>> outcomeGenerator)
+    public static ResilienceStrategyBuilder<TResult> AddResult<TResult>(
+        this ResilienceStrategyBuilder<TResult> builder, bool enabled, double injectionRate, Func<ValueTask<Outcome<TResult>>> outcomeGenerator)
     {
         Guard.NotNull(builder);
 
         return builder.AddOutcomeCore(new OutcomeStrategyOptions<TResult>
         {
+            Enabled = enabled,
+            InjectionRate = injectionRate,
             OutcomeGenerator = (_) => outcomeGenerator()
         });
     }
