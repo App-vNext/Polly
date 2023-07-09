@@ -67,23 +67,6 @@ public class MonkeyStrategyTests
     }
 
     [Fact]
-    public async Task Should_inject_chaos()
-    {
-        var wasMonkeyUnleashed = false;
-
-        _options.EnabledGenerator = (_) => new ValueTask<bool>(true);
-        _options.InjectionRate = 0.6;
-        _options.Randomizer = () => 0.5;
-
-        var sut = CreateSut();
-        sut.OnExecute = (_, _) => { wasMonkeyUnleashed = true; return Task.CompletedTask; };
-
-        await sut.ExecuteAsync((_) => { return default; });
-
-        wasMonkeyUnleashed.Should().BeTrue();
-    }
-
-    [Fact]
     public async Task Should_not_inject_chaos_when_it_was_cancelled_before_evaluating_strategy()
     {
         var wasMonkeyUnleashed = false;
@@ -113,6 +96,87 @@ public class MonkeyStrategyTests
         wasMonkeyUnleashed.Should().BeFalse();
         enableGeneratorExecuted.Should().BeFalse();
         injectionRateGeneratorExecuted.Should().BeFalse();
+    }
+
+    [Fact]
+    public async Task Should_not_inject_chaos_when_it_was_cancelled_on_enable_generator()
+    {
+        var wasMonkeyUnleashed = false;
+        var enableGeneratorExecuted = false;
+        var injectionRateGeneratorExecuted = false;
+
+        using var cts = new CancellationTokenSource();
+        _options.Randomizer = () => 0.5;
+        _options.EnabledGenerator = (_) =>
+        {
+            cts.Cancel();
+            enableGeneratorExecuted = true;
+            return new ValueTask<bool>(true);
+        };
+        _options.InjectionRateGenerator = (_) =>
+        {
+            injectionRateGeneratorExecuted = true;
+            return new ValueTask<double>(0.6);
+        };
+
+        var sut = CreateSut();
+
+        await sut.Invoking(s => s.ExecuteAsync(async _ => { await Task.CompletedTask; }, cts.Token).AsTask())
+            .Should()
+            .ThrowAsync<OperationCanceledException>();
+
+        wasMonkeyUnleashed.Should().BeFalse();
+        enableGeneratorExecuted.Should().BeTrue();
+        injectionRateGeneratorExecuted.Should().BeFalse();
+    }
+
+    [Fact]
+    public async Task Should_not_inject_chaos_when_it_was_cancelled_on_injection_rate_generator()
+    {
+        var wasMonkeyUnleashed = false;
+        var enableGeneratorExecuted = false;
+        var injectionRateGeneratorExecuted = false;
+
+        using var cts = new CancellationTokenSource();
+        _options.Randomizer = () => 0.5;
+        _options.EnabledGenerator = (_) =>
+        {
+            enableGeneratorExecuted = true;
+            return new ValueTask<bool>(true);
+        };
+        _options.InjectionRateGenerator = (_) =>
+        {
+            cts.Cancel();
+            injectionRateGeneratorExecuted = true;
+            return new ValueTask<double>(0.6);
+        };
+
+        var sut = CreateSut();
+
+        await sut.Invoking(s => s.ExecuteAsync(async _ => { await Task.CompletedTask; }, cts.Token).AsTask())
+            .Should()
+            .ThrowAsync<OperationCanceledException>();
+
+        wasMonkeyUnleashed.Should().BeFalse();
+        enableGeneratorExecuted.Should().BeTrue();
+        injectionRateGeneratorExecuted.Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task Should_inject_chaos()
+    {
+        var wasMonkeyUnleashed = false;
+
+        _options.EnabledGenerator = (_) => new ValueTask<bool>(true);
+        _options.InjectionRate = 0.6;
+        _options.Randomizer = () => 0.5;
+
+        var sut = CreateSut();
+        sut.OnExecute = (_, _) => { wasMonkeyUnleashed = true; return Task.CompletedTask; };
+
+        await sut.ExecuteAsync((_) => { return default; });
+
+        wasMonkeyUnleashed.Should().BeTrue();
     }
 
     private TestChaosStrategy CreateSut() => new(_options);

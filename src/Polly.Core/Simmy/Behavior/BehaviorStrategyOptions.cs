@@ -1,4 +1,6 @@
-﻿namespace Polly.Simmy.Behavior;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Polly.Simmy.Behavior;
 
 #pragma warning disable CS8618 // Required members are not initialized in constructor since this is a DTO, default value is null
 
@@ -26,5 +28,6 @@ public class BehaviorStrategyOptions : MonkeyStrategyOptions
     /// <remarks>
     /// Defaults to <see langword="null"/>.
     /// </remarks>
+    [Required]
     public Func<ResilienceContext, ValueTask> Behavior { get; set; }
 }

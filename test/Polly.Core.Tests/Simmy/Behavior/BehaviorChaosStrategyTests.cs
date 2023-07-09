@@ -7,14 +7,12 @@ public class BehaviorChaosStrategyTests
 {
     private readonly ResilienceStrategyTelemetry _telemetry;
     private readonly BehaviorStrategyOptions _options;
-    private readonly CancellationTokenSource _cancellationSource;
     private readonly Mock<DiagnosticSource> _diagnosticSource = new();
 
     public BehaviorChaosStrategyTests()
     {
         _telemetry = TestUtilities.CreateResilienceTelemetry(_diagnosticSource.Object);
         _options = new();
-        _cancellationSource = new CancellationTokenSource();
     }
 
     [Fact]
@@ -51,6 +49,35 @@ public class BehaviorChaosStrategyTests
 
         userDelegateExecuted.Should().BeTrue();
         injectedBehaviourExecuted.Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task Given_enabled_and_randomly_within_threshold_ensure_on_behavior_injected_called()
+    {
+        var called = false;
+        var userDelegateExecuted = false;
+        var injectedBehaviourExecuted = false;
+        _diagnosticSource.Setup(v => v.IsEnabled(BehaviorConstants.OnBehaviorInjectedEvent)).Returns(true);
+
+        _options.InjectionRate = 0.6;
+        _options.Enabled = true;
+        _options.Randomizer = () => 0.5;
+        _options.Behavior = (_) => { injectedBehaviourExecuted = true; return default; };
+        _options.OnBehaviorInjected = args =>
+        {
+            args.Context.Should().NotBeNull();
+            args.Context.CancellationToken.IsCancellationRequested.Should().BeFalse();
+            called = true;
+            return default;
+        };
+
+        var sut = CreateSut();
+        await sut.ExecuteAsync((_) => { userDelegateExecuted = true; return default; });
+
+        called.Should().BeTrue();
+        userDelegateExecuted.Should().BeTrue();
+        injectedBehaviourExecuted.Should().BeTrue();
+        _diagnosticSource.VerifyAll();
     }
 
     [Fact]
@@ -91,6 +118,32 @@ public class BehaviorChaosStrategyTests
         await sut.ExecuteAsync((_) => { userDelegateExecuted = true; return default; });
 
         userDelegateExecuted.Should().BeTrue();
+        injectedBehaviourExecuted.Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task Should_not_execute_user_delegate_when_it_was_cancelled_running_the_strategy()
+    {
+        var userDelegateExecuted = false;
+        var injectedBehaviourExecuted = false;
+
+        using var cts = new CancellationTokenSource();
+        _options.InjectionRate = 0.6;
+        _options.Enabled = true;
+        _options.Randomizer = () => 0.5;
+        _options.Behavior = (_) =>
+        {
+            cts.Cancel();
+            injectedBehaviourExecuted = true;
+            return default;
+        };
+
+        var sut = CreateSut();
+        await sut.Invoking(s => s.ExecuteAsync(async _ => { await Task.CompletedTask; }, cts.Token).AsTask())
+            .Should()
+            .ThrowAsync<OperationCanceledException>();
+
+        userDelegateExecuted.Should().BeFalse();
         injectedBehaviourExecuted.Should().BeTrue();
     }
 
