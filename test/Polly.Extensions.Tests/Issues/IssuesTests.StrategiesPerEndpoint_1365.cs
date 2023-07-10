@@ -2,6 +2,8 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.RateLimiting;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
+using Polly.Extensions.Registry;
 using Polly.Registry;
 using Polly.Retry;
 using Polly.Timeout;
@@ -16,18 +18,24 @@ public partial class IssuesTests
         var services = new ServiceCollection();
 
         services.AddResilienceStrategy<string>();
+        services.AddOptions<EndpointsOptions>();
 
         // add resilience strategy, keyed by EndpointKey that only defines the builder name
-        services.AddResilienceStrategy(new EndpointKey("endpoint-pipeline", string.Empty, string.Empty, new()), (builder, context) =>
+        services.AddResilienceStrategy(new EndpointKey("endpoint-pipeline", string.Empty, string.Empty), (builder, context) =>
         {
-            var endpointOptions = context.StrategyKey.EndpointOptions;
+            // we want this pipeline to react to changes in options
+            context.EnableReloads<EndpointsOptions>();
 
+            var endpointOptions = context.GetOptions<EndpointsOptions>().Endpoints[context.StrategyKey.EndpointName];
             var registry = context.ServiceProvider.GetRequiredService<ResilienceStrategyRegistry<string>>();
 
             // we want to limit the number of concurrent requests per endpoint and not include the resource.
             // using a registry we can create and cache the shared resilience strategy
-            var rateLimiterStrategy = registry.GetOrAddStrategy($"rate-limiter/{context.StrategyKey.EndpointName}", b =>
+            var rateLimiterStrategy = registry.GetOrAddStrategy($"rate-limiter/{context.StrategyKey.EndpointName}", (b, c) =>
             {
+                // let's also enable reloads for rate limiter
+                c.EnableReloads(context.ServiceProvider.GetRequiredService<IOptionsMonitor<EndpointsOptions>>());
+
                 b.AddConcurrencyLimiter(new ConcurrencyLimiterOptions { PermitLimit = endpointOptions.MaxParallelization });
             });
 
@@ -75,17 +83,9 @@ public partial class IssuesTests
         // create the strategy provider
         var provider = services.BuildServiceProvider().GetRequiredService<ResilienceStrategyProvider<EndpointKey>>();
 
-        // Endpoint 1
-        var endpoint1Options = new EndpointOptions
-        {
-            Retries = 3,
-            BreakDuration = TimeSpan.FromSeconds(30),
-            Timeout = TimeSpan.FromSeconds(10),
-        };
-
         // define a key for each resource/endpoint combination
-        var resource1Key = new EndpointKey("endpoint-pipeline", "Endpoint 1", "Resource 1", endpoint1Options);
-        var resource2Key = new EndpointKey("endpoint-pipeline", "Endpoint 1", "Resource 2", endpoint1Options);
+        var resource1Key = new EndpointKey("endpoint-pipeline", "Endpoint 1", "Resource 1");
+        var resource2Key = new EndpointKey("endpoint-pipeline", "Endpoint 1", "Resource 2");
 
         var strategy1 = provider.GetStrategy(resource1Key);
         var strategy2 = provider.GetStrategy(resource2Key);
@@ -97,16 +97,25 @@ public partial class IssuesTests
 
     public class EndpointOptions
     {
-        public int Retries { get; set; }
+        public int Retries { get; set; } = 3;
 
-        public TimeSpan BreakDuration { get; set; }
+        public TimeSpan BreakDuration { get; set; } = TimeSpan.FromSeconds(10);
 
-        public TimeSpan Timeout { get; set; }
+        public TimeSpan Timeout { get; set; } = TimeSpan.FromSeconds(4);
 
         public int MaxParallelization { get; set; } = 10;
     }
 
-    public record EndpointKey(string BuilderName, string EndpointName, string Resource, EndpointOptions EndpointOptions)
+    public class EndpointsOptions
+    {
+        public Dictionary<string, EndpointOptions> Endpoints { get; set; } = new()
+        {
+            {  "Endpoint 1", new EndpointOptions { Retries = 2 } },
+            {  "Endpoint 2", new EndpointOptions { Retries = 3 } },
+        };
+    }
+
+    public record EndpointKey(string BuilderName, string EndpointName, string Resource)
     {
         public class BuilderComparer : IEqualityComparer<EndpointKey>
         {
