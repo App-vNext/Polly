@@ -41,6 +41,16 @@ public abstract class ResilienceStrategyBuilderBase
     public string? BuilderName { get; set; }
 
     /// <summary>
+    /// Gets or sets the instance name of the builder.
+    /// </summary>
+    /// <remarks>
+    /// This property is also included in the telemetry that is produced by the individual resilience strategies.
+    /// The instance name can be used to differentiate between multiple builder instances with the same <see cref="BuilderName"/>.
+    /// Defaults to <see langword="null"/>.
+    /// </remarks>
+    public string? InstanceName { get; set; }
+
+    /// <summary>
     /// Gets the custom properties attached to builder options.
     /// </summary>
     public ResilienceProperties Properties { get; } = new();
@@ -125,6 +135,7 @@ public abstract class ResilienceStrategyBuilderBase
     {
         var context = new ResilienceStrategyBuilderContext(
             builderName: BuilderName,
+            builderInstanceName: InstanceName,
             builderProperties: Properties,
             strategyName: entry.Properties.StrategyName,
             strategyType: entry.Properties.StrategyType,

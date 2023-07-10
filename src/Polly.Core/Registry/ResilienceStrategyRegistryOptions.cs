@@ -37,17 +37,16 @@ public class ResilienceStrategyRegistryOptions<TKey>
 
     /// <summary>
     /// Gets or sets the formatter that is used by the registry to format the <typeparamref name="TKey"/> to a string that
-    /// represents the strategy key.
+    /// represents the instance name of the builder.
     /// </summary>
     /// <remarks>
-    /// By default, the formatter uses the <see cref="object.ToString"/> method.
+    /// Defaults to <see langword="null"/>.
     /// <para>
-    /// Use custom formatter for composite keys in case you want to have different metric values for a builder and strategy key.
-    /// In general, strategies can have the same builder name and different strategy keys.
+    /// Use custom formatter for composite keys in case you want to have different metric values for a builder and instance key.
+    /// In general, strategies can have the same builder name and different instance names.
     /// </para>
     /// </remarks>
-    [Required]
-    public Func<TKey, string> StrategyKeyFormatter { get; set; } = (key) => key?.ToString() ?? string.Empty;
+    public Func<TKey, string>? InstanceNameFormatter { get; set; }
 
     /// <summary>
     /// Gets or sets the formatter that is used by the registry to format the <typeparamref name="TKey"/> to a string that

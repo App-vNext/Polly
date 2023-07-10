@@ -54,9 +54,9 @@ internal class ResilienceTelemetryDiagnosticSource : DiagnosticSource
         enrichmentContext.Tags.Add(new(ResilienceTelemetryTags.EventName, args.Event.EventName));
         enrichmentContext.Tags.Add(new(ResilienceTelemetryTags.EventSeverity, args.Event.Severity.AsString()));
         enrichmentContext.Tags.Add(new(ResilienceTelemetryTags.BuilderName, source.BuilderName));
+        enrichmentContext.Tags.Add(new(ResilienceTelemetryTags.BuilderInstance, source.BuilderInstanceName));
         enrichmentContext.Tags.Add(new(ResilienceTelemetryTags.StrategyName, source.StrategyName));
         enrichmentContext.Tags.Add(new(ResilienceTelemetryTags.StrategyType, source.StrategyType));
-        enrichmentContext.Tags.Add(new(ResilienceTelemetryTags.StrategyKey, source.BuilderProperties.GetValue(TelemetryUtil.StrategyKey, null!)));
         enrichmentContext.Tags.Add(new(ResilienceTelemetryTags.OperationKey, enrichmentContext.Context.OperationKey));
         enrichmentContext.Tags.Add(new(ResilienceTelemetryTags.ResultType, args.Context.GetResultType()));
         enrichmentContext.Tags.Add(new(ResilienceTelemetryTags.ExceptionName, args.Outcome?.Exception?.GetType().FullName));
@@ -93,7 +93,6 @@ internal class ResilienceTelemetryDiagnosticSource : DiagnosticSource
 
     private void LogEvent(TelemetryEventArguments args)
     {
-        var strategyKey = args.Source.BuilderProperties.GetValue(TelemetryUtil.StrategyKey, null!);
         var result = args.Outcome?.Result;
         if (result is not null)
         {
@@ -114,9 +113,9 @@ internal class ResilienceTelemetryDiagnosticSource : DiagnosticSource
                     _logger,
                     level,
                     args.Source.BuilderName,
+                    args.Source.BuilderInstanceName,
                     args.Source.StrategyName,
                     args.Source.StrategyType,
-                    strategyKey,
                     args.Context.OperationKey,
                     result,
                     executionAttempt.Handled,
@@ -132,9 +131,9 @@ internal class ResilienceTelemetryDiagnosticSource : DiagnosticSource
                 level,
                 args.Event.EventName,
                 args.Source.BuilderName,
+                args.Source.BuilderInstanceName,
                 args.Source.StrategyName,
                 args.Source.StrategyType,
-                strategyKey,
                 args.Context.OperationKey,
                 result,
                 args.Outcome?.Exception);

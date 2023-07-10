@@ -7,7 +7,12 @@ public class ResilienceStrategyTelemetryTests
 {
     private readonly Mock<DiagnosticSource> _diagnosticSource = new(MockBehavior.Strict);
 
-    public ResilienceStrategyTelemetryTests() => _sut = new(new ResilienceTelemetrySource("builder", new ResilienceProperties(), "strategy-name", "strategy-type"), _diagnosticSource.Object);
+    public ResilienceStrategyTelemetryTests() => _sut = new(new ResilienceTelemetrySource(
+        "builder",
+        "instance",
+        new ResilienceProperties(),
+        "strategy-name",
+        "strategy-type"), _diagnosticSource.Object);
 
     private readonly ResilienceStrategyTelemetry _sut;
 
@@ -52,7 +57,7 @@ public class ResilienceStrategyTelemetryTests
     [Fact]
     public void ResilienceStrategyTelemetry_NoDiagnosticSource_Ok()
     {
-        var source = new ResilienceTelemetrySource("builder", new ResilienceProperties(), "strategy-name", "strategy-type");
+        var source = new ResilienceTelemetrySource("builder", "instance", new ResilienceProperties(), "strategy-name", "strategy-type");
         var sut = new ResilienceStrategyTelemetry(source, null);
         var context = ResilienceContext.Get();
 
