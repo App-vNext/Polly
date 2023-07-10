@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Threading.RateLimiting;
 using Microsoft.Extensions.DependencyInjection;
 using Polly.Registry;
 using Polly.Retry;
@@ -14,10 +15,23 @@ public partial class IssuesTests
     {
         var services = new ServiceCollection();
 
+        services.AddResilienceStrategy<string>();
+
         // add resilience strategy, keyed by EndpointKey that only defines the builder name
-        services.AddResilienceStrategy(new EndpointKey("my-pipeline", string.Empty, string.Empty, new()), (builder, context) =>
+        services.AddResilienceStrategy(new EndpointKey("endpoint-pipeline", string.Empty, string.Empty, new()), (builder, context) =>
         {
             var endpointOptions = context.StrategyKey.EndpointOptions;
+
+            var registry = context.ServiceProvider.GetRequiredService<ResilienceStrategyRegistry<string>>();
+
+            // we want to limit the number of concurrent requests per endpoint and not include the resource.
+            // using a registry we can create and cache the shared resilience strategy
+            var rateLimiterStrategy = registry.GetOrAddStrategy($"rate-limiter/{context.StrategyKey.EndpointName}", b =>
+            {
+                b.AddConcurrencyLimiter(new ConcurrencyLimiterOptions { PermitLimit = endpointOptions.MaxParallelization });
+            });
+
+            builder.AddStrategy(rateLimiterStrategy);
 
             // apply retries optionally per-endpoint
             if (endpointOptions.Retries > 0)
@@ -70,8 +84,8 @@ public partial class IssuesTests
         };
 
         // define a key for each resource/endpoint combination
-        var resource1Key = new EndpointKey("my-pipeline", "Endpoint 1", "Resource 1", endpoint1Options);
-        var resource2Key = new EndpointKey("my-pipeline", "Endpoint 1", "Resource 2", endpoint1Options);
+        var resource1Key = new EndpointKey("endpoint-pipeline", "Endpoint 1", "Resource 1", endpoint1Options);
+        var resource2Key = new EndpointKey("endpoint-pipeline", "Endpoint 1", "Resource 2", endpoint1Options);
 
         var strategy1 = provider.GetStrategy(resource1Key);
         var strategy2 = provider.GetStrategy(resource2Key);
@@ -88,6 +102,8 @@ public partial class IssuesTests
         public TimeSpan BreakDuration { get; set; }
 
         public TimeSpan Timeout { get; set; }
+
+        public int MaxParallelization { get; set; } = 10;
     }
 
     public record EndpointKey(string BuilderName, string EndpointName, string Resource, EndpointOptions EndpointOptions)
