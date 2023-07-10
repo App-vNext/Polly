@@ -11,6 +11,7 @@ public sealed class ResilienceStrategyBuilderContext
 {
     internal ResilienceStrategyBuilderContext(
         string? builderName,
+        string? builderInstanceName,
         ResilienceProperties builderProperties,
         string? strategyName,
         string strategyType,
@@ -20,12 +21,13 @@ public sealed class ResilienceStrategyBuilderContext
         Func<double> randomizer)
     {
         BuilderName = builderName;
+        BuilderInstanceName = builderInstanceName;
         BuilderProperties = builderProperties;
         StrategyName = strategyName;
         StrategyType = strategyType;
         TimeProvider = timeProvider;
         IsGenericBuilder = isGenericBuilder;
-        Telemetry = TelemetryUtil.CreateTelemetry(diagnosticSource, builderName, builderProperties, strategyName, strategyType);
+        Telemetry = TelemetryUtil.CreateTelemetry(diagnosticSource, builderName, builderInstanceName, builderProperties, strategyName, strategyType);
         Randomizer = randomizer;
     }
 
@@ -33,6 +35,11 @@ public sealed class ResilienceStrategyBuilderContext
     /// Gets the name of the builder.
     /// </summary>
     public string? BuilderName { get; }
+
+    /// <summary>
+    /// Gets the instance name of the builder.
+    /// </summary>
+    public string? BuilderInstanceName { get; }
 
     /// <summary>
     /// Gets the custom properties attached to the builder.

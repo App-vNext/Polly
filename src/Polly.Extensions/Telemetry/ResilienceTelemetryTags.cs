@@ -8,11 +8,11 @@ internal class ResilienceTelemetryTags
 
     public const string BuilderName = "builder-name";
 
+    public const string BuilderInstance = "builder-instance";
+
     public const string StrategyName = "strategy-name";
 
     public const string StrategyType = "strategy-type";
-
-    public const string StrategyKey = "strategy-key";
 
     public const string ResultType = "result-type";
 

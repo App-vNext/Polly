@@ -24,7 +24,7 @@ public sealed partial class ResilienceStrategyRegistry<TKey> : ResilienceStrateg
     private readonly ConcurrentDictionary<TKey, ResilienceStrategy> _strategies;
     private readonly ConcurrentDictionary<Type, object> _genericRegistry = new();
 
-    private readonly Func<TKey, string> _strategyKeyFormatter;
+    private readonly Func<TKey, string>? _instanceNameFormatter;
     private readonly Func<TKey, string> _builderNameFormatter;
     private readonly IEqualityComparer<TKey> _builderComparer;
     private readonly IEqualityComparer<TKey> _strategyComparer;
@@ -52,7 +52,7 @@ public sealed partial class ResilienceStrategyRegistry<TKey> : ResilienceStrateg
         _activator = options.BuilderFactory;
         _builders = new ConcurrentDictionary<TKey, Action<ResilienceStrategyBuilder, ConfigureBuilderContext<TKey>>>(options.BuilderComparer);
         _strategies = new ConcurrentDictionary<TKey, ResilienceStrategy>(options.StrategyComparer);
-        _strategyKeyFormatter = options.StrategyKeyFormatter;
+        _instanceNameFormatter = options.InstanceNameFormatter;
         _builderNameFormatter = options.BuilderNameFormatter;
         _builderComparer = options.BuilderComparer;
         _strategyComparer = options.StrategyComparer;
@@ -154,7 +154,7 @@ public sealed partial class ResilienceStrategyRegistry<TKey> : ResilienceStrateg
             return strategy;
         }
 
-        var context = new ConfigureBuilderContext<TKey>(key, _builderNameFormatter(key), _strategyKeyFormatter(key));
+        var context = new ConfigureBuilderContext<TKey>(key, _builderNameFormatter(key), _instanceNameFormatter?.Invoke(key));
 
 #if NETCOREAPP3_0_OR_GREATER
         return _strategies.GetOrAdd(key, static (_, factory) =>
@@ -272,7 +272,7 @@ public sealed partial class ResilienceStrategyRegistry<TKey> : ResilienceStrateg
         {
             var builder = activator();
             builder.BuilderName = context.BuilderName;
-            builder.Properties.Set(TelemetryUtil.StrategyKey, context.StrategyKeyString);
+            builder.InstanceName = context.BuilderInstanceName;
             configure(builder, context);
 
             return builder;
@@ -294,6 +294,7 @@ public sealed partial class ResilienceStrategyRegistry<TKey> : ResilienceStrateg
             TelemetryUtil.CreateTelemetry(
                 diagnosticSource,
                 context.BuilderName,
+                context.BuilderInstanceName,
                 builder.Properties,
                 ReloadableResilienceStrategy.StrategyName,
                 ReloadableResilienceStrategy.StrategyType));
@@ -312,8 +313,8 @@ public sealed partial class ResilienceStrategyRegistry<TKey> : ResilienceStrateg
                 () => new ResilienceStrategyBuilder<TResult>(_activator()),
                 _builderComparer,
                 _strategyComparer,
-                _strategyKeyFormatter,
-                _builderNameFormatter);
+                _builderNameFormatter,
+                _instanceNameFormatter);
         });
     }
 }

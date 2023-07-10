@@ -57,7 +57,7 @@ public static class TelemetryResilienceStrategyBuilderExtensions
             var telemetryStrategy = new TelemetryResilienceStrategy(
                 TimeProvider.System,
                 builder.BuilderName,
-                builder.Properties.GetValue(TelemetryUtil.StrategyKey, null!),
+                builder.InstanceName,
                 options.LoggerFactory,
                 options.ResultFormatter,
                 options.Enrichers.ToList());
