@@ -12,4 +12,5 @@ public static class PollyServiceCollectionExtensions
     public static IServiceCollection AddResilienceStrategy<TKey, TResult>(this IServiceCollection services, TKey key, Action<ResilienceStrategyBuilder<TResult>, AddResilienceStrategyContext<TKey>> configure) where TKey : notnull;
     public static IServiceCollection AddResilienceStrategy<TKey>(this IServiceCollection services, TKey key, Action<ResilienceStrategyBuilder> configure) where TKey : notnull;
     public static IServiceCollection AddResilienceStrategy<TKey>(this IServiceCollection services, TKey key, Action<ResilienceStrategyBuilder, AddResilienceStrategyContext<TKey>> configure) where TKey : notnull;
+    public static IServiceCollection AddResilienceStrategy<TKey>(this IServiceCollection services) where TKey : notnull;
 }

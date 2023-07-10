@@ -10,6 +10,7 @@ namespace Polly;
 public sealed class ResilienceStrategyBuilderContext
 {
     public string? BuilderName { get; }
+    public string? BuilderInstanceName { get; }
     public ResilienceProperties BuilderProperties { get; }
     public string? StrategyName { get; }
     public string StrategyType { get; }

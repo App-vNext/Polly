@@ -15,8 +15,7 @@ public class ResilienceStrategyRegistryOptions<TKey>
     public IEqualityComparer<TKey> StrategyComparer { get; set; }
     [Required]
     public IEqualityComparer<TKey> BuilderComparer { get; set; }
-    [Required]
-    public Func<TKey, string> StrategyKeyFormatter { get; set; }
+    public Func<TKey, string>? InstanceNameFormatter { get; set; }
     [Required]
     public Func<TKey, string> BuilderNameFormatter { get; set; }
     public ResilienceStrategyRegistryOptions();

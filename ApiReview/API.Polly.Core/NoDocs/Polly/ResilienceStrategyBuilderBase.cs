@@ -12,6 +12,7 @@ namespace Polly;
 public abstract class ResilienceStrategyBuilderBase
 {
     public string? BuilderName { get; set; }
+    public string? InstanceName { get; set; }
     public ResilienceProperties Properties { get; }
     [EditorBrowsable(EditorBrowsableState.Never)]
     public Action<IList<ResilienceStrategy>>? OnCreatingStrategy { get; set; }

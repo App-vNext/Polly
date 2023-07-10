@@ -17,6 +17,10 @@ public sealed class ResilienceStrategyRegistry<TKey> : ResilienceStrategyProvide
     public bool RemoveStrategy<TResult>(TKey key);
     public override bool TryGetStrategy<TResult>(TKey key, [NotNullWhen(true)] out ResilienceStrategy<TResult>? strategy);
     public override bool TryGetStrategy(TKey key, [NotNullWhen(true)] out ResilienceStrategy? strategy);
+    public ResilienceStrategy GetOrAddStrategy(TKey key, Action<ResilienceStrategyBuilder> configure);
+    public ResilienceStrategy GetOrAddStrategy(TKey key, Action<ResilienceStrategyBuilder, ConfigureBuilderContext<TKey>> configure);
+    public ResilienceStrategy<TResult> GetOrAddStrategy<TResult>(TKey key, Action<ResilienceStrategyBuilder<TResult>> configure);
+    public ResilienceStrategy<TResult> GetOrAddStrategy<TResult>(TKey key, Action<ResilienceStrategyBuilder<TResult>, ConfigureBuilderContext<TKey>> configure);
     public bool TryAddBuilder(TKey key, Action<ResilienceStrategyBuilder, ConfigureBuilderContext<TKey>> configure);
     public bool TryAddBuilder<TResult>(TKey key, Action<ResilienceStrategyBuilder<TResult>, ConfigureBuilderContext<TKey>> configure);
     public bool RemoveBuilder(TKey key);
