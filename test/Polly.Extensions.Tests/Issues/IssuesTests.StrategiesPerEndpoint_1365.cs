@@ -23,20 +23,21 @@ public partial class IssuesTests
         // add resilience strategy, keyed by EndpointKey that only defines the builder name
         services.AddResilienceStrategy(new EndpointKey("endpoint-pipeline", string.Empty, string.Empty), (builder, context) =>
         {
-            // we want this pipeline to react to changes in options
-            context.EnableReloads<EndpointsOptions>();
-
+            var serviceProvider = context.ServiceProvider;
             var endpointOptions = context.GetOptions<EndpointsOptions>().Endpoints[context.StrategyKey.EndpointName];
             var registry = context.ServiceProvider.GetRequiredService<ResilienceStrategyRegistry<string>>();
 
+            // we want this pipeline to react to changes to the options
+            context.EnableReloads<EndpointsOptions>();
+
             // we want to limit the number of concurrent requests per endpoint and not include the resource.
             // using a registry we can create and cache the shared resilience strategy
-            var rateLimiterStrategy = registry.GetOrAddStrategy($"rate-limiter/{context.StrategyKey.EndpointName}", (b, c) =>
+            var rateLimiterStrategy = registry.GetOrAddStrategy($"rate-limiter/{context.StrategyKey.EndpointName}", (builder, context) =>
             {
-                // let's also enable reloads for rate limiter
-                c.EnableReloads(context.ServiceProvider.GetRequiredService<IOptionsMonitor<EndpointsOptions>>());
+                // let's also enable reloads for the rate limiter
+                context.EnableReloads(serviceProvider.GetRequiredService<IOptionsMonitor<EndpointsOptions>>());
 
-                b.AddConcurrencyLimiter(new ConcurrencyLimiterOptions { PermitLimit = endpointOptions.MaxParallelization });
+                builder.AddConcurrencyLimiter(new ConcurrencyLimiterOptions { PermitLimit = endpointOptions.MaxParallelization });
             });
 
             builder.AddStrategy(rateLimiterStrategy);
@@ -110,8 +111,8 @@ public partial class IssuesTests
     {
         public Dictionary<string, EndpointOptions> Endpoints { get; set; } = new()
         {
-            {  "Endpoint 1", new EndpointOptions { Retries = 2 } },
-            {  "Endpoint 2", new EndpointOptions { Retries = 3 } },
+            ["Endpoint 1"] = new EndpointOptions { Retries = 2 },
+            ["Endpoint 2"] = new EndpointOptions { Retries = 3 },
         };
     }
 
