@@ -15,6 +15,8 @@ public partial class IssuesTests
     [Fact]
     public void StrategiesPerEndpoint_1365()
     {
+        var events = new List<MeteringEvent>();
+        using var listener = TestUtilities.EnablePollyMetering(events);
         var services = new ServiceCollection();
 
         services.AddResilienceStrategy<string>();
@@ -75,7 +77,7 @@ public partial class IssuesTests
             options.StrategyComparer = new EndpointKey.StrategyComparer();
 
             // format the key for telemetry
-            options.StrategyKeyFormatter = key => $"{key.BuilderName}-{key.EndpointName}-{key.Resource}";
+            options.InstanceNameFormatter = key => $"{key.EndpointName}/{key.Resource}";
 
             // format the builder name for telemetry
             options.BuilderNameFormatter = key => key.BuilderName;
@@ -94,6 +96,11 @@ public partial class IssuesTests
         strategy1.Should().NotBe(strategy2);
         provider.GetStrategy(resource1Key).Should().BeSameAs(strategy1);
         provider.GetStrategy(resource2Key).Should().BeSameAs(strategy2);
+
+        strategy1.Execute(() => { });
+        events.Should().HaveCount(3);
+        events[0].Tags["builder-name"].Should().Be("endpoint-pipeline");
+        events[0].Tags["builder-instance"].Should().Be("Endpoint 1/Resource 1");
     }
 
     public class EndpointOptions
