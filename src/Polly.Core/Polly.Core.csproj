@@ -15,6 +15,7 @@
   <ItemGroup>
     <Using Include="Polly.Utils" />
     <InternalsVisibleToTest Include="Polly.Core.Tests" />
+    <InternalsVisibleToTest Include="Polly.Testing" />
     <InternalsVisibleToTest Include="Polly.TestUtils" />
   </ItemGroup>
 
