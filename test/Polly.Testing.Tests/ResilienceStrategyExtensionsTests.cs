@@ -53,6 +53,24 @@ public class ResilienceStrategyExtensionsTests
     }
 
     [Fact]
+    public void GetInnerStrategies_SingleStrategy_Ok()
+    {
+        // arrange
+        var strategy = new ResilienceStrategyBuilder<string>()
+            .AddTimeout(TimeSpan.FromSeconds(1))
+            .Build();
+
+        // act
+        var descriptor = strategy.GetInnerStrategies();
+
+        // assert
+        descriptor.HasTelemetry.Should().BeFalse();
+        descriptor.IsReloadable.Should().BeFalse();
+        descriptor.Strategies.Should().HaveCount(1);
+        descriptor.Strategies[0].Options.Should().BeOfType<TimeoutStrategyOptions>();
+    }
+
+    [Fact]
     public void GetInnerStrategies_Reloadable_Ok()
     {
         // arrange
