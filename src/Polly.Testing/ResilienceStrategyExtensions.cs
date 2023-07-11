@@ -7,6 +7,8 @@ namespace Polly.Testing;
 /// </summary>
 public static class ResilienceStrategyExtensions
 {
+    private const string TelemetryResilienceStrategy = "Polly.Extensions.Telemetry.TelemetryResilienceStrategy";
+
     /// <summary>
     /// Gets the inner strategies the <paramref name="strategy"/> is composed of.
     /// </summary>
@@ -38,11 +40,11 @@ public static class ResilienceStrategyExtensions
 
         return new InnerStrategiesDescriptor(
             innerStrategies.Where(s => !ShouldSkip(s.StrategyType)).ToList().AsReadOnly(),
-            HasTelemetry: innerStrategies.Exists(s => s.StrategyType.FullName == "Polly.Extensions.Telemetry.TelemetryResilienceStrategy"),
+            HasTelemetry: innerStrategies.Exists(s => s.StrategyType.FullName == TelemetryResilienceStrategy),
             IsReloadable: innerStrategies.Exists(s => s.StrategyType == typeof(ReloadableResilienceStrategy)));
     }
 
-    private static bool ShouldSkip(Type type) => type == typeof(ReloadableResilienceStrategy) || type.FullName == "Polly.Extensions.Telemetry.TelemetryResilienceStrategy";
+    private static bool ShouldSkip(Type type) => type == typeof(ReloadableResilienceStrategy) || type.FullName == TelemetryResilienceStrategy;
 
     private static void ExpandStrategies(this ResilienceStrategy strategy, List<ResilienceStrategy> strategies)
     {
