@@ -32,23 +32,23 @@ public class ResilienceStrategyExtensionsTests
             .Build();
 
         // act
-        var strategies = strategy.GetInnerStrategies();
+        var descriptor = strategy.GetInnerStrategies();
 
         // assert
-        strategies.HasTelemetry.Should().BeTrue();
-        strategies.Strategies.Should().HaveCount(7);
-        strategies.Strategies[0].Options.Should().BeOfType<FallbackStrategyOptions<string>>();
-        strategies.Strategies[1].Options.Should().BeOfType<RetryStrategyOptions<string>>();
-        strategies.Strategies[2].Options.Should().BeOfType<AdvancedCircuitBreakerStrategyOptions<string>>();
-        strategies.Strategies[3].Options.Should().BeOfType<TimeoutStrategyOptions>();
-        strategies.Strategies[3].Options
+        descriptor.HasTelemetry.Should().BeTrue();
+        descriptor.Strategies.Should().HaveCount(7);
+        descriptor.Strategies[0].Options.Should().BeOfType<FallbackStrategyOptions<string>>();
+        descriptor.Strategies[1].Options.Should().BeOfType<RetryStrategyOptions<string>>();
+        descriptor.Strategies[2].Options.Should().BeOfType<AdvancedCircuitBreakerStrategyOptions<string>>();
+        descriptor.Strategies[3].Options.Should().BeOfType<TimeoutStrategyOptions>();
+        descriptor.Strategies[3].Options
             .Should()
             .BeOfType<TimeoutStrategyOptions>().Subject.Timeout
             .Should().Be(TimeSpan.FromSeconds(1));
 
-        strategies.Strategies[4].Options.Should().BeOfType<HedgingStrategyOptions<string>>();
-        strategies.Strategies[5].Options.Should().BeOfType<RateLimiterStrategyOptions>();
-        strategies.Strategies[6].StrategyType.Should().Be(typeof(CustomStrategy));
+        descriptor.Strategies[4].Options.Should().BeOfType<HedgingStrategyOptions<string>>();
+        descriptor.Strategies[5].Options.Should().BeOfType<RateLimiterStrategyOptions>();
+        descriptor.Strategies[6].StrategyType.Should().Be(typeof(CustomStrategy));
     }
 
     [Fact]
@@ -65,14 +65,14 @@ public class ResilienceStrategyExtensionsTests
         });
 
         // act
-        var strategies = strategy.GetInnerStrategies();
+        var descriptor = strategy.GetInnerStrategies();
 
         // assert
-        strategies.IsReloadable.Should().BeTrue();
-        strategies.HasTelemetry.Should().BeFalse();
-        strategies.Strategies.Should().HaveCount(2);
-        strategies.Strategies[0].Options.Should().BeOfType<RateLimiterStrategyOptions>();
-        strategies.Strategies[1].StrategyType.Should().Be(typeof(CustomStrategy));
+        descriptor.IsReloadable.Should().BeTrue();
+        descriptor.HasTelemetry.Should().BeFalse();
+        descriptor.Strategies.Should().HaveCount(2);
+        descriptor.Strategies[0].Options.Should().BeOfType<RateLimiterStrategyOptions>();
+        descriptor.Strategies[1].StrategyType.Should().Be(typeof(CustomStrategy));
     }
 
     private sealed class CustomStrategy : ResilienceStrategy
