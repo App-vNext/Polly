@@ -36,6 +36,7 @@ public class ResilienceStrategyExtensionsTests
 
         // assert
         descriptor.HasTelemetry.Should().BeTrue();
+        descriptor.IsReloadable.Should().BeFalse();
         descriptor.Strategies.Should().HaveCount(7);
         descriptor.Strategies[0].Options.Should().BeOfType<FallbackStrategyOptions<string>>();
         descriptor.Strategies[1].Options.Should().BeOfType<RetryStrategyOptions<string>>();
@@ -68,8 +69,8 @@ public class ResilienceStrategyExtensionsTests
         var descriptor = strategy.GetInnerStrategies();
 
         // assert
-        descriptor.IsReloadable.Should().BeTrue();
         descriptor.HasTelemetry.Should().BeFalse();
+        descriptor.IsReloadable.Should().BeTrue();
         descriptor.Strategies.Should().HaveCount(2);
         descriptor.Strategies[0].Options.Should().BeOfType<RateLimiterStrategyOptions>();
         descriptor.Strategies[1].StrategyType.Should().Be(typeof(CustomStrategy));
