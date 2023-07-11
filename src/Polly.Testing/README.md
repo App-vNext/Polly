@@ -1,6 +1,6 @@
 # About Polly.Testing
 
-This package exposes API and utilities that can be used to assert the composition of resilience strategies.
+This package exposes APIs and utilities that can be used to assert on the composition of resilience strategies.
 
 ``` csharp
 // Build your resilience strategy.
