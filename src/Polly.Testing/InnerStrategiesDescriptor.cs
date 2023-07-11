@@ -1,7 +1,7 @@
 ﻿namespace Polly.Testing;
 
 /// <summary>
-/// Describes the pipeline of resilience strategy.
+/// Describes the pipeline of a resilience strategy.
 /// </summary>
 /// <param name="Strategies">The strategies the pipeline is composed of.</param>
 /// <param name="HasTelemetry">Gets a value indicating whether the pipeline has telemetry enabled.</param>
