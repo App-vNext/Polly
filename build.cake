@@ -170,6 +170,7 @@ Task("__RunMutationTests")
     TestProject(File("../src/Polly.Core/Polly.Core.csproj"), File("./Polly.Core.Tests/Polly.Core.Tests.csproj"), "Polly.Core.csproj");
     TestProject(File("../src/Polly.RateLimiting/Polly.RateLimiting.csproj"), File("./Polly.RateLimiting.Tests/Polly.RateLimiting.Tests.csproj"), "Polly.RateLimiting.csproj");
     TestProject(File("../src/Polly.Extensions/Polly.Extensions.csproj"), File("./Polly.Extensions.Tests/Polly.Extensions.Tests.csproj"), "Polly.Extensions.csproj");
+    TestProject(File("../src/Polly.Testing/Polly.Testing.csproj"), File("./Polly.Testing.Tests/Polly.Testing.Tests.csproj"), "Polly.Testing.csproj");
     TestProject(File("../src/Polly/Polly.csproj"), File("./Polly.Specs/Polly.Specs.csproj"), "Polly.csproj");
 
     context.Environment.WorkingDirectory = oldDirectory;
@@ -221,6 +222,7 @@ Task("__CreateNuGetPackages")
         System.IO.Path.Combine(srcDir, "Polly", "Polly.csproj"),
         System.IO.Path.Combine(srcDir, "Polly.RateLimiting", "Polly.RateLimiting.csproj"),
         System.IO.Path.Combine(srcDir, "Polly.Extensions", "Polly.Extensions.csproj"),
+        System.IO.Path.Combine(srcDir, "Polly.Testing", "Polly.Testing.csproj"),
     };
 
     Information("Building NuGet packages");

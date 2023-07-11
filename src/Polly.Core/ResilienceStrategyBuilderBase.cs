@@ -137,15 +137,17 @@ public abstract class ResilienceStrategyBuilderBase
             builderName: BuilderName,
             builderInstanceName: InstanceName,
             builderProperties: Properties,
-            strategyName: entry.Properties.StrategyName,
-            strategyType: entry.Properties.StrategyType,
+            strategyName: entry.Options.StrategyName,
+            strategyType: entry.Options.StrategyType,
             timeProvider: TimeProvider,
             isGenericBuilder: IsGenericBuilder,
             diagnosticSource: DiagnosticSource,
             randomizer: Randomizer);
 
-        return entry.Factory(context);
+        var strategy = entry.Factory(context);
+        strategy.Options = entry.Options;
+        return strategy;
     }
 
-    private sealed record Entry(Func<ResilienceStrategyBuilderContext, ResilienceStrategy> Factory, ResilienceStrategyOptions Properties);
+    private sealed record Entry(Func<ResilienceStrategyBuilderContext, ResilienceStrategy> Factory, ResilienceStrategyOptions Options);
 }
