@@ -86,8 +86,7 @@ internal sealed class RetryResilienceStrategy<T> : OutcomeResilienceStrategy<T>
                 await DisposeHelper.TryDisposeSafeAsync(resultValue, context.IsSynchronous).ConfigureAwait(context.ContinueOnCapturedContext);
             }
 
-            // stryker disable once equality : no means to test this
-            // stryker disable once boolean : no means to test this
+            // stryker disable once all : no means to test this
             if (delay > TimeSpan.Zero)
             {
                 try
