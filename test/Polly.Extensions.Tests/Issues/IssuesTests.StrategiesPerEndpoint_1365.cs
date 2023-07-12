@@ -19,7 +19,7 @@ public partial class IssuesTests
         using var listener = TestUtilities.EnablePollyMetering(events);
         var services = new ServiceCollection();
 
-        services.AddResilienceStrategy<string>();
+        services.AddResilienceStrategyRegistry<string>();
         services.AddOptions<EndpointsOptions>();
 
         // add resilience strategy, keyed by EndpointKey that only defines the builder name
@@ -71,7 +71,7 @@ public partial class IssuesTests
         });
 
         // configure the registry to allow multi-dimensional keys
-        services.Configure<ResilienceStrategyRegistryOptions<EndpointKey>>(options =>
+        services.AddResilienceStrategyRegistry<EndpointKey>(options =>
         {
             options.BuilderComparer = new EndpointKey.BuilderComparer();
             options.StrategyComparer = new EndpointKey.StrategyComparer();
