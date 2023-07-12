@@ -1,6 +1,6 @@
 <Project>
   <PropertyGroup>
-    <MicrosoftExtensionsVersion>8.0.0-preview.5.23280.8</MicrosoftExtensionsVersion>
+    <MicrosoftExtensionsVersion>8.0.0-preview.6.23329.7</MicrosoftExtensionsVersion>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
     <PollyVersion>8.0.0-alpha.7</PollyVersion>
   </PropertyGroup>
