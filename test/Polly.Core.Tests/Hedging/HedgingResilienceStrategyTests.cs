@@ -285,7 +285,12 @@ public class HedgingResilienceStrategyTests : IDisposable
 
         // assert
         _timeProvider.Advance(TimeSpan.FromHours(2));
-        cancelled.WaitOne(TimeSpan.FromSeconds(1)).Should().BeTrue();
+
+        await TestUtilities.AssertWithTimeoutAsync(() =>
+        {
+            cancelled.WaitOne(TimeSpan.FromMilliseconds(10)).Should().BeTrue();
+        });
+
         await task;
     }
 
