@@ -85,7 +85,7 @@ public static class PollyServiceCollectionExtensions
                 });
             });
 
-        return AddResilienceStrategy<TKey>(services);
+        return AddResilienceStrategyRegistry<TKey>(services);
     }
 
     /// <summary>
@@ -156,24 +156,47 @@ public static class PollyServiceCollectionExtensions
                 });
             });
 
-        return AddResilienceStrategy<TKey>(services);
+        return AddResilienceStrategyRegistry<TKey>(services);
     }
 
     /// <summary>
-    /// Adds the infrastructure that allows configuring and retrieving resilience strategies using the <typeparamref name="TKey"/> key.
+    /// Adds <see cref="ResilienceStrategyRegistry{TKey}"/> and <see cref="ResilienceStrategyProvider{TKey}"/> that allows configuring
+    /// and retrieving resilience strategies using the <typeparamref name="TKey"/> key.
+    /// </summary>
+    /// <typeparam name="TKey">The type of the key used to identify the resilience strategy.</typeparam>
+    /// <param name="services">The <see cref="IServiceCollection"/> to add the resilience strategy to.</param>
+    /// <param name="configure">The action that configures the <see cref="ResilienceStrategyRegistryOptions{TKey}"/> that are used by the registry.</param>
+    /// <returns>The updated <see cref="IServiceCollection"/> with additional services added.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="services"/> is <see langword="null"/>.</exception>
+    /// <remarks>
+    /// This call enables telemetry for all resilience strategies created using <see cref="ResilienceStrategyRegistry{TKey}"/>.
+    /// </remarks>
+    public static IServiceCollection AddResilienceStrategyRegistry<TKey>(
+        this IServiceCollection services,
+        Action<ResilienceStrategyRegistryOptions<TKey>> configure)
+        where TKey : notnull
+    {
+        Guard.NotNull(services);
+        Guard.NotNull(configure);
+
+        services.AddResilienceStrategyRegistry<TKey>();
+        services.Configure(configure);
+
+        return services;
+    }
+
+    /// <summary>
+    /// Adds <see cref="ResilienceStrategyRegistry{TKey}"/> and <see cref="ResilienceStrategyProvider{TKey}"/> that allows configuring
+    /// and retrieving resilience strategies using the <typeparamref name="TKey"/> key.
     /// </summary>
     /// <typeparam name="TKey">The type of the key used to identify the resilience strategy.</typeparam>
     /// <param name="services">The <see cref="IServiceCollection"/> to add the resilience strategy to.</param>
     /// <returns>The updated <see cref="IServiceCollection"/> with additional services added.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="services"/> is <see langword="null"/>.</exception>
     /// <remarks>
-    /// You can retrieve the strategy registry by resolving the <see cref="ResilienceStrategyProvider{TKey}"/>
-    /// or <see cref="ResilienceStrategyRegistry{TKey}"/> class from the dependency injection container.
-    /// <para>
     /// This call enables telemetry for all resilience strategies created using <see cref="ResilienceStrategyRegistry{TKey}"/>.
-    /// </para>
     /// </remarks>
-    public static IServiceCollection AddResilienceStrategy<TKey>(this IServiceCollection services)
+    public static IServiceCollection AddResilienceStrategyRegistry<TKey>(this IServiceCollection services)
         where TKey : notnull
     {
         Guard.NotNull(services);
@@ -188,7 +211,6 @@ public static class PollyServiceCollectionExtensions
         services.AddOptions();
         services.Add(RegistryMarker<TKey>.ServiceDescriptor);
         services.AddResilienceStrategyBuilder();
-        services.AddResilienceStrategy<TKey>();
 
         services.TryAddSingleton(serviceProvider =>
         {
@@ -204,10 +226,7 @@ public static class PollyServiceCollectionExtensions
             return registry;
         });
 
-        services.TryAddSingleton<ResilienceStrategyProvider<TKey>>(serviceProvider =>
-        {
-            return serviceProvider.GetRequiredService<ResilienceStrategyRegistry<TKey>>();
-        });
+        services.TryAddSingleton<ResilienceStrategyProvider<TKey>>(serviceProvider => serviceProvider.GetRequiredService<ResilienceStrategyRegistry<TKey>>());
 
         // configure options
         services

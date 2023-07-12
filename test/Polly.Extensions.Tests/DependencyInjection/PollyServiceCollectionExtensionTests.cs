@@ -255,13 +255,25 @@ public class PollyServiceCollectionExtensionTests
     }
 
     [Fact]
-    public void AddResilienceStrategyInfra_Ok()
+    public void AddResilienceStrategyRegistry_Ok()
     {
-        var provider = new ServiceCollection().AddResilienceStrategy<string>().BuildServiceProvider();
+        var provider = new ServiceCollection().AddResilienceStrategyRegistry<string>().BuildServiceProvider();
 
         provider.GetRequiredService<ResilienceStrategyRegistry<string>>().Should().NotBeNull();
         provider.GetRequiredService<ResilienceStrategyProvider<string>>().Should().NotBeNull();
         provider.GetRequiredService<ResilienceStrategyBuilder>().DiagnosticSource.Should().NotBeNull();
+    }
+
+    [Fact]
+    public void AddResilienceStrategyRegistry_ConfigureCallback_Ok()
+    {
+        Func<string, string> formatter = s => s;
+
+        var provider = new ServiceCollection().AddResilienceStrategyRegistry<string>(options => options.InstanceNameFormatter = formatter).BuildServiceProvider();
+
+        provider.GetRequiredService<ResilienceStrategyRegistry<string>>().Should().NotBeNull();
+        provider.GetRequiredService<ResilienceStrategyProvider<string>>().Should().NotBeNull();
+        provider.GetRequiredService<IOptions<ResilienceStrategyRegistryOptions<string>>>().Value.InstanceNameFormatter.Should().Be(formatter);
     }
 
     private void AddResilienceStrategy(string key, Action<ResilienceStrategyBuilderContext>? onBuilding = null)
