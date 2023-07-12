@@ -211,7 +211,6 @@ public static class PollyServiceCollectionExtensions
         services.AddOptions();
         services.Add(RegistryMarker<TKey>.ServiceDescriptor);
         services.AddResilienceStrategyBuilder();
-        services.AddResilienceStrategyRegistry<TKey>();
 
         services.TryAddSingleton(serviceProvider =>
         {
