@@ -36,17 +36,17 @@ public abstract class ExecutionRejectedException : Exception
     {
     }
 
+#pragma warning disable RS0016 // Add public types and members to the declared API
 #if !NETCOREAPP
     /// <summary>
     /// Initializes a new instance of the <see cref="ExecutionRejectedException"/> class.
     /// </summary>
     /// <param name="info">The <see cref="SerializationInfo" /> that holds the serialized object data about the exception being thrown.</param>
     /// <param name="context">The <see cref="StreamingContext" /> that contains contextual information about the source or destination.</param>
-#pragma warning disable RS0016 // Add public types and members to the declared API
     protected ExecutionRejectedException(SerializationInfo info, StreamingContext context)
-#pragma warning restore RS0016 // Add public types and members to the declared API
         : base(info, context)
     {
     }
 #endif
+#pragma warning restore RS0016 // Add public types and members to the declared API
 }
