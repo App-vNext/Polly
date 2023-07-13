@@ -1,6 +1,6 @@
-# Polly.Hosting Overview
+# Polly.Extensions Overview
 
-`Polly.Hosting` provides a set of features that streamline the integration of Polly with the standard `IServiceCollection` Dependency Injection (DI) container. It further enhances telemetry by exposing a `ConfigureTelemetry` extension method that enables [logging](https://learn.microsoft.com/dotnet/core/extensions/logging?tabs=command-line) and [metering](https://learn.microsoft.com/dotnet/core/diagnostics/metrics) for all strategies created via DI extension points. Note that telemetry is enabled by default when utilizing the `AddResilienceStrategy` extension method.
+`Polly.Extensions` provides a set of features that streamline the integration of Polly with the standard `IServiceCollection` Dependency Injection (DI) container. It further enhances telemetry by exposing a `ConfigureTelemetry` extension method that enables [logging](https://learn.microsoft.com/dotnet/core/extensions/logging?tabs=command-line) and [metering](https://learn.microsoft.com/dotnet/core/diagnostics/metrics) for all strategies created via DI extension points. Note that telemetry is enabled by default when utilizing the `AddResilienceStrategy` extension method.
 
 Below is an example illustrating these capabilities:
 
