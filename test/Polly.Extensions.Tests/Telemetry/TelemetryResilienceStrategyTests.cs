@@ -27,7 +27,7 @@ public class TelemetryResilienceStrategyTests : IDisposable
         var duration = CreateStrategy().ExecutionDuration;
 
         duration.Unit.Should().Be("ms");
-        duration.Description.Should().Be("The execution duration and execution result of resilience strategies.");
+        duration.Description.Should().Be("The execution duration and execution results of resilience strategies.");
     }
 
     [InlineData(true)]
