@@ -136,3 +136,21 @@ Dimensions:
 |`result-type`| The result type (`string`, `HttpResponseMessage`). |
 |`exception-name`| The full name of the exception assigned to the execution result (`System.InvalidOperationException`). |
 |`execution-health`| Indicates whether the execution was healthy or not (`Healthy`, `Unhealthy`). |
+
+### Logs
+
+Logs are registered under the `Polly` logger name. Here are some examples of the logs:
+
+``` text
+// This log is recorded whenever a resilience event occurs. EventId = 0
+Resilience event occurred. EventName: '{EventName}', Source: '{BuilderName}[{BuilderInstance}]/{StrategyType}[{StrategyName}]', Operation Key: '{OperationKey}', Result: '{Result}'
+
+// This log is recorded when a resilience strategy begins executing. EventId = 1
+Resilience strategy executing. Source: '{BuilderName}[{BuilderInstance}]', Operation Key: '{OperationKey}', Result Type: '{ResultType}'
+
+// This log is recorded when a resilience strategy finishes execution. EventId = 2
+Resilience strategy executed. Source: '{BuilderName}[{BuilderInstance}]', Operation Key: '{OperationKey}', Result Type: '{ResultType}', Result: '{Result}', Execution Health: '{ExecutionHealth}', Execution Time: {ExecutionTime}ms
+
+// This log is recorded upon the completion of every execution attempt. EventId = 3
+Execution attempt. Source: '{BuilderName}[{BuilderInstance}]/{StrategyType}[{StrategyName}]', Operation Key: '{OperationKey}', Result: '{Result}', Handled: '{Handled}', Attempt: '{Attempt}', Execution Time: '{ExecutionTimeMs}'
+```
