@@ -88,51 +88,51 @@ Dimensions:
 
 |Name|Description|
 |---| ---|
-|event-name| The name of the emitted event.| 
-|event-severity| The severity of the event (`Debug`, `Information`, `Warning`, `Error`, `Critical`).|
-|builder-name| The name of the builder corresponding to the resilience strategy.|
-|builder-instance| The instance name of the builder corresponding to the resilience strategy.|
-|strategy-name| The name of the strategy generating this event.|
-|strategy-type| The type of the strategy generating this event.|
-|operation-key| The operation key associated with the call site. |
-|result-type| The result type (`String`, `HttpResponseMessage`). |
-|exception-name| The full name of the exception assigned to the execution result (`System.InvalidOperationException`). |
+|`event-name`| The name of the emitted event.| 
+|`event-severity`| The severity of the event (`Debug`, `Information`, `Warning`, `Error`, `Critical`).|
+|`builder-name`| The name of the builder corresponding to the resilience strategy.|
+|`builder-instance`| The instance name of the builder corresponding to the resilience strategy.|
+|`strategy-name`| The name of the strategy generating this event.|
+|`strategy-type`| The type of the strategy generating this event.|
+|`operation-key`| The operation key associated with the call site. |
+|`result-type`| The result type (`string`, `HttpResponseMessage`). |
+|`exception-name`| The full name of the exception assigned to the execution result (`System.InvalidOperationException`). |
 
 #### execution-attempt-duration
 
 - Type: *Histogram*
-- Unit: *ms*
+- Unit: *milliseconds*
 - Description: Tracks the duration of execution attempts, produced by `Retry` and `Hedging` resilience strategies.
 
 Dimensions:
 
 |Name|Description|
 |---| ---|
-|event-name| The name of the emitted event.| 
-|event-severity| The severity of the event (`Debug`, `Information`, `Warning`, `Error`, `Critical`).|
-|builder-name| The name of the builder corresponding to the resilience strategy.|
-|builder-instance| The instance name of the builder corresponding to the resilience strategy.|
-|strategy-name| The name of the strategy generating this event.|
-|strategy-type| The type of the strategy generating this event.|
-|operation-key| The operation key associated with the call site. |
-|result-type| The result type (`String`, `HttpResponseMessage`). |
-|exception-name| The full name of the exception assigned to the execution result (`System.InvalidOperationException`). |
-|attempt-number| The execution attempt number, starting at 0 (0, 1, 2). |
-|attempt-handled| Indicates if the execution outcome was handled. A handled outcome indicates execution failure and the need for retry (`True`, `False`). |
+|`event-name`| The name of the emitted event.| 
+|`event-severity`| The severity of the event (`Debug`, `Information`, `Warning`, `Error`, `Critical`).|
+|`builder-name`| The name of the builder corresponding to the resilience strategy.|
+|`builder-instance`| The instance name of the builder corresponding to the resilience strategy.|
+|`strategy-name`| The name of the strategy generating this event.|
+|`strategy-type`| The type of the strategy generating this event.|
+|`operation-key`| The operation key associated with the call site. |
+|`result-type`| The result type (`string`, `HttpResponseMessage`). |
+|`exception-name`| The full name of the exception assigned to the execution result (`System.InvalidOperationException`). |
+|`attempt-number`| The execution attempt number, starting at 0 (0, 1, 2). |
+|`attempt-handled`| Indicates if the execution outcome was handled. A handled outcome indicates execution failure and the need for retry (`true`, `false`). |
 
 #### strategy-execution-duration
 
 - Type: *Histogram*
-- Unit: *ms*
+- Unit: *milliseconds*
 - Description: Measures the duration and results of resilience strategy executions.
 
 Dimensions:
 
 |Name|Description|
 |---| ---|
-|builder-name| The name of the builder corresponding to the resilience strategy.|
-|builder-instance| The instance name of the builder corresponding to the resilience strategy.|
-|operation-key| The operation key associated with the call site. |
-|result-type| The result type (`String`, `HttpResponseMessage`). |
-|exception-name| The full name of the exception assigned to the execution result (`System.InvalidOperationException`). |
-|execution-health| Indicates whether the execution was healthy or not (`Healthy`, `Unhealthy`). |
+|`builder-name`| The name of the builder corresponding to the resilience strategy.|
+|`builder-instance`| The instance name of the builder corresponding to the resilience strategy.|
+|`operation-key`| The operation key associated with the call site. |
+|`result-type`| The result type (`string`, `HttpResponseMessage`). |
+|`exception-name`| The full name of the exception assigned to the execution result (`System.InvalidOperationException`). |
+|`execution-health`| Indicates whether the execution was healthy or not (`Healthy`, `Unhealthy`). |
