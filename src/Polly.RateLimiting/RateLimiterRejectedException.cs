@@ -74,6 +74,7 @@ public sealed class RateLimiterRejectedException : ExecutionRejectedException
     /// </remarks>
     public TimeSpan? RetryAfter { get; }
 
+#pragma warning disable RS0016 // Add public types and members to the declared API
 #if !NETCOREAPP
     /// <summary>
     /// Initializes a new instance of the <see cref="RateLimiterRejectedException"/> class.
@@ -91,9 +92,7 @@ public sealed class RateLimiterRejectedException : ExecutionRejectedException
     }
 
     /// <inheritdoc/>
-#pragma warning disable RS0016 // Add public types and members to the declared API
     public override void GetObjectData(SerializationInfo info, StreamingContext context)
-#pragma warning restore RS0016 // Add public types and members to the declared API
     {
         Guard.NotNull(info);
 
@@ -109,4 +108,5 @@ public sealed class RateLimiterRejectedException : ExecutionRejectedException
         base.GetObjectData(info, context);
     }
 #endif
+#pragma warning restore RS0016 // Add public types and members to the declared API
 }
