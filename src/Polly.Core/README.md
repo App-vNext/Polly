@@ -244,3 +244,10 @@ new ResilienceStrategyBuilder()
 ## Registering Custom Callbacks
 
 When setting the delegates, ensure to respect the `ResilienceContext.IsSynchronous` property's value and execute your delegates synchronously for synchronous executions. In addition, use the `ResilienceContext.ContinueOnCapturedContext` property when your user code uses execution with synchronization context (for example, asynchronous calls in UI applications, such as in Windows Forms or WPF applications).
+
+## Telemetry
+
+Each individual resilience strategy can emit telemetry by using the [`ResilienceStrategyTelemetry`](Telemetry/ResilienceStrategyTelemetry.cs) API. Polly wraps the arguments as [`TelemetryEventArguments`](Telemetry/TelemetryEventArguments.cs) and emits them using `DiagnosticSource`.
+Tu consume the telemetry, Polly adopters needs to assign instance of `DiagnosticSource` to `ResilienceStrategyBuilder.DiagnosticSource` and consume `TelemetryEventArguments`.
+
+For common use-cases, it is anticipated that Polly users would leverage `Polly.Extensions`. This allows all of the aforementioned functionalities by invoking the `ResilienceStrategyBuilder.ConfigureTelemetry(...)` extension method. `ConfigureTelemetry` processes `TelemetryEventArguments` and generates logs and metrics from it.
