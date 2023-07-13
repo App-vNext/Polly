@@ -40,7 +40,7 @@ internal sealed class TelemetryResilienceStrategy : ResilienceStrategy
         ExecutionDuration = ResilienceTelemetryDiagnosticSource.Meter.CreateHistogram<double>(
             "strategy-execution-duration",
             unit: "ms",
-            description: "The execution duration and execution result of resilience strategies.");
+            description: "The execution duration and execution results of resilience strategies.");
     }
 
     public Histogram<double> ExecutionDuration { get; }
