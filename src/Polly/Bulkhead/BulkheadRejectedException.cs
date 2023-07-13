@@ -5,8 +5,6 @@ using System.Runtime.Serialization;
 
 namespace Polly.Bulkhead;
 
-#pragma warning disable RS0016 // Add public types and members to the declared API
-
 /// <summary>
 /// Exception thrown when a bulkhead's semaphore and queue are full.
 /// </summary>
@@ -39,6 +37,7 @@ public class BulkheadRejectedException : ExecutionRejectedException
     {
     }
 
+#pragma warning disable RS0016 // Add public types and members to the declared API
 #if NETSTANDARD2_0
     /// <summary>
     /// Initializes a new instance of the <see cref="BulkheadRejectedException"/> class.
@@ -49,4 +48,5 @@ public class BulkheadRejectedException : ExecutionRejectedException
     {
     }
 #endif
+#pragma warning restore RS0016 // Add public types and members to the declared API
 }
