@@ -65,6 +65,15 @@ public sealed class RateLimiterRejectedException : ExecutionRejectedException
     public RateLimiterRejectedException(string message, TimeSpan retryAfter, Exception inner)
         : base(message, inner) => RetryAfter = retryAfter;
 
+    /// <summary>
+    /// Gets the amount of time to wait before retrying again.
+    /// </summary>
+    /// <remarks>
+    /// This value was retrieved from the <see cref="RateLimitLease"/> by reading the <see cref="MetadataName.RetryAfter"/>.
+    /// Defaults to <c>null</c>.
+    /// </remarks>
+    public TimeSpan? RetryAfter { get; }
+
 #if !NETCOREAPP
     /// <summary>
     /// Initializes a new instance of the <see cref="RateLimiterRejectedException"/> class.
@@ -80,18 +89,7 @@ public sealed class RateLimiterRejectedException : ExecutionRejectedException
             RetryAfter = TimeSpan.FromSeconds(value);
         }
     }
-#endif
 
-    /// <summary>
-    /// Gets the amount of time to wait before retrying again.
-    /// </summary>
-    /// <remarks>
-    /// This value was retrieved from the <see cref="RateLimitLease"/> by reading the <see cref="MetadataName.RetryAfter"/>.
-    /// Defaults to <c>null</c>.
-    /// </remarks>
-    public TimeSpan? RetryAfter { get; }
-
-#if !NETCOREAPP
     /// <inheritdoc/>
 #pragma warning disable RS0016 // Add public types and members to the declared API
     public override void GetObjectData(SerializationInfo info, StreamingContext context)

@@ -63,6 +63,11 @@ public class TimeoutRejectedException : ExecutionRejectedException
     public TimeoutRejectedException(string message, TimeSpan timeout, Exception innerException)
         : base(message, innerException) => Timeout = timeout;
 
+    /// <summary>
+    /// Gets the timeout value that caused this exception.
+    /// </summary>
+    public TimeSpan Timeout { get; private set; } = System.Threading.Timeout.InfiniteTimeSpan;
+
 #if !NETCOREAPP
     /// <summary>
     /// Initializes a new instance of the <see cref="TimeoutRejectedException"/> class.
@@ -71,14 +76,7 @@ public class TimeoutRejectedException : ExecutionRejectedException
     /// <param name="context">The context.</param>
     private TimeoutRejectedException(SerializationInfo info, StreamingContext context)
         : base(info, context) => Timeout = TimeSpan.FromSeconds(info.GetDouble("Timeout"));
-#endif
 
-    /// <summary>
-    /// Gets the timeout value that caused this exception.
-    /// </summary>
-    public TimeSpan Timeout { get; private set; } = System.Threading.Timeout.InfiniteTimeSpan;
-
-#if !NETCOREAPP
     /// <inheritdoc/>
 #pragma warning disable RS0016 // Add public types and members to the declared API
     public override void GetObjectData(SerializationInfo info, StreamingContext context)
